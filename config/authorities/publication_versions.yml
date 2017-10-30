@@ -1,0 +1,8 @@
+## config/authorities/publication_versions.yml
+terms:
+  - id: Preprint
+    term: Preprint
+  - id: Postprint
+    term: Postprint
+  - id: Publisher
+    term: Publisher

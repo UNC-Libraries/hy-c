@@ -1,0 +1,8 @@
+it:
+  hyrax:
+    icons:
+      masters_paper:     'fa fa-file-text-o'
+    select_type:
+      masters_paper:
+        name:               "Masters Paper"
+        description:        "Masters paper opere"

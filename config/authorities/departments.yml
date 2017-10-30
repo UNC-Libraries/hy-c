@@ -1,0 +1,14 @@
+## config/authorities/departments.yml
+terms:
+  - id: Biology
+    active: true
+    term: Biology
+  - id: Chemistry
+    active: true
+    term: Chemistry
+  - id: History
+    active: true
+    term: History
+  - id: example
+    active: false
+    term: Example Department

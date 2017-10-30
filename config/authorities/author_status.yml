@@ -1,0 +1,10 @@
+## config/authorities/author_status.yml
+terms:
+  - id: Faculty
+    term: Faculty
+  - id: Student
+    term: Student
+  - id: Staff
+    term: Staff
+  - id: Post-Doctoral
+    term: Post-Doctoral

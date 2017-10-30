@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<foxml:digitalObject VERSION="1.1" PID="uuid:b94a2a24-29c8-404a-8351-f0f1064a4520"
+xmlns:foxml="info:fedora/fedora-system:def/foxml#"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="info:fedora/fedora-system:def/foxml# http://www.fedora.info/definitions/1/0/foxml1-1.xsd">
+<foxml:objectProperties>
+<foxml:property NAME="info:fedora/fedora-system:def/model#state" VALUE="Active"/>
+<foxml:property NAME="info:fedora/fedora-system:def/model#label" VALUE="The Project Gutenberg eBook of The Adventures of Sherlock Holmes, by Sir Arthur Conan Doyle.pdf"/>
+<foxml:property NAME="info:fedora/fedora-system:def/model#ownerId" VALUE=""/>
+<foxml:property NAME="info:fedora/fedora-system:def/model#createdDate" VALUE="2017-10-02T17:55:57.598Z"/>
+<foxml:property NAME="info:fedora/fedora-system:def/view#lastModifiedDate" VALUE="2017-10-02T17:55:58.082Z"/>
+</foxml:objectProperties>
+<foxml:datastream ID="MD_DESCRIPTIVE" STATE="A" CONTROL_GROUP="X" VERSIONABLE="true">
+<foxml:datastreamVersion ID="MD_DESCRIPTIVE1.0" LABEL="Descriptive Metadata" CREATED="2017-10-02T17:55:57.598Z" MIMETYPE="text/xml" SIZE="3163">
+<foxml:contentDigest TYPE="MD5" DIGEST="6327a7090afae60275c32ca2eed07a3a"/>
+<foxml:xmlContent>
+<mods:mods xmlns:mods="http://www.loc.gov/mods/v3" xmlns:epdcx="http://purl.org/eprint/epdcx/2006-11-16/" xmlns:rights="http://www.cdlib.org/inside/diglib/copyrightMD" xmlns:xlink2="http://www.w3.org/1999/xlink">
+          <mods:titleInfo>
+            <mods:title>The Adventures of Sherlock Holmes</mods:title>
+          </mods:titleInfo>
+          <mods:abstract>Abstract</mods:abstract>
+          <mods:name>
+            <mods:namePart>Dolye, Sir Arthur Conan</mods:namePart>
+          </mods:name>
+          <mods:language>
+            <mods:languageTerm authority="iso639-2b" type="code">eng</mods:languageTerm>
+          </mods:language>
+          <mods:typeOfResource>text</mods:typeOfResource>
+          <mods:genre authorityURI="http://purl.org/eprint/type/" valueURI="http://purl.org/eprint/type/Book" type="work type">Book</mods:genre>
+          <mods:subject>fiction</mods:subject>
+          <mods:originInfo>
+            <mods:publisher>Project Gutenberg</mods:publisher>
+            <mods:dateIssued>2017-09-01</mods:dateIssued>
+          </mods:originInfo>
+          <mods:location>
+            <mods:url>http://dx.doi.org/10.1186/1753-6561-3-S7-S87</mods:url>
+          </mods:location>
+        </mods:mods>
+</foxml:xmlContent>
+</foxml:datastreamVersion>
+</foxml:datastream>
+</foxml:digitalObject>

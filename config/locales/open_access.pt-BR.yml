@@ -1,0 +1,8 @@
+pt-BR:
+  hyrax:
+    icons:
+      open_access:     'fa fa-file-text-o'
+    select_type:
+      open_access:
+        name:               "Open Access"
+        description:        "Open access trabalhos"

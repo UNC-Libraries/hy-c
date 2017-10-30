@@ -1,0 +1,8 @@
+<% # app/views/records/edit_fields/_author_degree_granted.html.erb %>
+<%= f.input :author_degree_granted, as: :select,
+            collection: SilsDegreesService.select_all_options,
+            include_blank: true,
+            item_helper: SilsDegreesService.method(:include_current_value),
+            label: 'Author Degree Granted',
+            input_html: { class: 'form-control' }
+%>

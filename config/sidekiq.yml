@@ -1,0 +1,4 @@
+---
+:queue:
+  - default
+:logfile: ./log/sidekiq.log

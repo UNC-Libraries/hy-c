@@ -1,0 +1,10 @@
+zh:
+  hyrax:
+    icons:
+      masters_paper:     'fa fa-file-text-o'
+    select_type:
+      masters_paper:
+        # TODO: translate `human_name` into Chinese
+        name:               "Masters Paper"
+        # TODO: translate `human_name` into Chinese
+        description:        "Masters paper 作品"

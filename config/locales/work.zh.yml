@@ -1,0 +1,10 @@
+zh:
+  hyrax:
+    icons:
+      work:     'fa fa-file-text-o'
+    select_type:
+      work:
+        # TODO: translate `human_name` into Chinese
+        name:               "Work"
+        # TODO: translate `human_name` into Chinese
+        description:        "Work 作品"
