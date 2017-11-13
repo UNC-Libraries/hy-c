@@ -88,8 +88,10 @@ namespace :cdr do
       file_set = FileSet.new
       file_set.title = resource[:resource][:title]
       actor = ::Hyrax::Actors::FileSetActor.new(file_set, User.find_by_email(DEPOSITOR_EMAIL))
+      actor.create_metadata(resource)
       actor.create_content(File.open(f))
       actor.attach_to_work(parent)
+      actor.file_set.permissions_attributes = parent.permissions.map(&:to_hash)
 
       file_set
     end
@@ -103,7 +105,12 @@ namespace :cdr do
       uuid_dir_name = uuid.split(':')[1]
 
       file_full = Array.new(0)
-      representative = ""
+      representative = ''
+      visibility_during_embargo = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
+      visibility_after_embargo = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
+      embargo_release_date = ''
+      visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
+
       file_name = Dir.glob("#{metadata_dir}/#{uuid_dir_name}/#{uuid_dir_name}-DATA_FILE.*")
       if file_name.count == 1
         file_full << file_name.first
@@ -168,6 +175,26 @@ namespace :cdr do
       publisher = mods_version.xpath('mods:originInfo//mods:publisher',MigrationConstants::NS).text
       language = mods_version.xpath('mods:language//mods:languageTerm',MigrationConstants::NS).text
 
+      if rdf_version.to_s.match(/metadata-patron/)
+        patron = rdf_version.xpath("rdf:Description/*[local-name() = 'metadata-patron']", MigrationConstants::NS).text
+        if patron == 'public'
+          visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_AUTHENTICATED
+        end
+      elsif rdf_version.to_s.match(/embargo-until/)
+        embargo_release_date = Date.parse rdf_version.xpath("rdf:Description/*[local-name() = 'embargo-until']", MigrationConstants::NS).text
+        visibility = visibility_during_embargo
+      elsif rdf_version.to_s.match(/isPublished/)
+        published = rdf_version.xpath("rdf:Description/*[local-name() = 'isPublished']", MigrationConstants::NS).text
+        if published == 'no'
+          visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
+        end
+      elsif rdf_version.to_s.match(/inheritPermissions/)
+        published = rdf_version.xpath("rdf:Description/*[local-name() = 'inheritPermissions']", MigrationConstants::NS).text
+        if published == 'false'
+          visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
+        end
+      end
+
       if language == 'eng'
         language = 'English'
       end
@@ -185,7 +212,11 @@ namespace :cdr do
           'publisher'=>[publisher],
           'subject'=>subjects,
           'resource_type'=>[resource_type],
-          'language'=>[language]
+          'language'=>[language],
+          'visibility'=>visibility,
+          'embargo_release_date'=>embargo_release_date,
+          'visibility_during_embargo'=>visibility_during_embargo,
+          'visibility_after_embargo'=>visibility_after_embargo
       }
 
       if contained_files
@@ -218,7 +249,12 @@ namespace :cdr do
       resource.resource_type = work_attributes['resource_type']
       resource.language = work_attributes['language']
       resource.rights_statement = ['http://www.europeana.eu/portal/rights/rr-r.html']
-      resource.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
+      resource.visibility = work_attributes['visibility']
+      unless work_attributes['embargo_release_date'].blank?
+      resource.embargo_release_date = work_attributes['embargo_release_date']
+      resource.visibility_during_embargo = work_attributes['visibility_during_embargo']
+      resource.visibility_after_embargo = work_attributes['visibility_after_embargo']
+      end
 
       resource
     end
@@ -239,7 +275,6 @@ namespace :cdr do
       resource[:resource_type] = work_attributes['resource_type']
       resource[:language] = work_attributes['language']
       resource[:rights_statement] = ['http://www.europeana.eu/portal/rights/rr-r.html']
-      resource[:visibility] = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
 
       resource
     end
