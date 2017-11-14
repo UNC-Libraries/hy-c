@@ -53,6 +53,7 @@
             <ns6:hasModel rdf:resource="info:fedora/cdr-model:Container"></ns6:hasModel>
             <ns6:hasModel rdf:resource="info:fedora/cdr-model:PreservedObject"></ns6:hasModel>
             <cdr:defaultWebObject xmlns:cdr="http://cdr.unc.edu/definitions/1.0/base-model.xml#" rdf:resource="info:fedora/uuid:b2ec09b8-b1ca-4811-9a0a-623c9e8d92be"></cdr:defaultWebObject>
+            <embargo-until rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2090-12-31T00:00:00</embargo-until>
           </rdf:Description>
         </rdf:RDF>
       </foxml:xmlContent>

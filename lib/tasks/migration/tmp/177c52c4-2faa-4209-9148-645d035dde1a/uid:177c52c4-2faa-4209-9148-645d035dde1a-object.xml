@@ -53,6 +53,8 @@
             <ns6:hasModel rdf:resource="info:fedora/cdr-model:Container"></ns6:hasModel>
             <ns6:hasModel rdf:resource="info:fedora/cdr-model:PreservedObject"></ns6:hasModel>
             <cdr:defaultWebObject xmlns:cdr="http://cdr.unc.edu/definitions/1.0/base-model.xml#" rdf:resource="info:fedora/uuid:a12ad214-fe35-4fc3-9973-d2a59f6fc7ef"></cdr:defaultWebObject>
+            <isPublished>no</isPublished>>
+            <inheritPermissions>false</inheritPermissions>
           </rdf:Description>
         </rdf:RDF>
       </foxml:xmlContent>
