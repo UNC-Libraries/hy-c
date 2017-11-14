@@ -22,7 +22,11 @@ module Hyrax
 
       single_value_fields.each do |field|
         if attrs[field]
-          attrs[field] = Array(attrs[field])
+          if attrs[field].blank?
+            attrs[field] = []
+          else
+            attrs[field] = Array(attrs[field])
+          end
         end
       end
 

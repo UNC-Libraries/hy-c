@@ -5,7 +5,7 @@ module Hyrax
     class_attribute :single_value_fields
 
     self.model_class = ::Article
-    self.terms += [:resource_type, :doi, :date_published, :institution]
+    self.terms += [:resource_type, :doi, :date_published, :institution, :citation]
     self.terms -= [:contributor, :date_created, :identifier, :based_near, :related_url, :source]
     self.single_value_fields = [:title, :publisher, :citation]
 
@@ -23,7 +23,11 @@ module Hyrax
 
       single_value_fields.each do |field|
         if attrs[field]
-          attrs[field] = Array(attrs[field])
+          if attrs[field].blank?
+            attrs[field] = []
+          else
+            attrs[field] = Array(attrs[field])
+          end
         end
       end
 
