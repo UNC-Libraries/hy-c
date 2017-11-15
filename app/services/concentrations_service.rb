@@ -4,7 +4,7 @@ module ConcentrationsService
   self.authority = Qa::Authorities::Local.subauthority_for('concentrations')
 
   def self.select_all_options
-    authority.all.map do |element|
+    authority.all.reject{ |item| item['active'] == false }.map do |element|
       [element[:label], element[:id]]
     end
   end
