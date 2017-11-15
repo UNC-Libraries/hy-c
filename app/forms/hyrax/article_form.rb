@@ -7,7 +7,7 @@ module Hyrax
     self.model_class = ::Article
     self.terms += [:resource_type, :doi, :date_published, :institution, :citation]
     self.terms -= [:contributor, :date_created, :identifier, :based_near, :related_url, :source]
-    self.single_value_fields = [:title, :publisher, :citation]
+    self.single_value_fields = [:title, :publisher]
 
     def self.multiple?(field)
       if single_value_fields.include? field.to_sym
@@ -41,10 +41,5 @@ module Hyrax
     def publisher
       super.first || ""
     end
-
-    def citation
-      super.first || ""
-    end
-
   end
 end

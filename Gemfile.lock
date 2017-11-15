@@ -1072,6 +1072,8 @@ GEM
       rdf-xsd (~> 2.2)
       sparql (~> 2.2)
       sxp (~> 1.0)
+    shoulda-matchers (3.1.2)
+      activesupport (>= 4.0.0)
     sidekiq (5.0.4)
       concurrent-ruby (~> 1.0)
       connection_pool (~> 2.2, >= 2.2.0)
@@ -1182,6 +1184,7 @@ DEPENDENCIES
   rsolr (>= 1.0)
   rspec-rails
   sass-rails (~> 5.0)
+  shoulda-matchers (~> 3.1)
   sidekiq
   solr_wrapper (>= 0.3)
   therubyracer
@@ -1191,4 +1194,4 @@ DEPENDENCIES
   web-console (>= 3.3.0)
 
 BUNDLED WITH
-   1.15.4
+   1.16.0

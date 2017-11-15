@@ -44,7 +44,7 @@ RSpec.describe Hyrax::DissertationForm do
 
     it 'permits parameters' do
       expect(subject['title']).to eq ['foo']
-      expect(subject['citation']).to eq ['some citation']
+      expect(subject['citation']).to eq 'some citation'
       expect(subject['description']).to be_empty
       expect(subject['visibility']).to eq 'open'
       expect(subject['keyword']).to eq ['derp']

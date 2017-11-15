@@ -3,11 +3,6 @@
 require 'rails_helper'
 
 RSpec.describe Work do
-  # TODO: write tests for 'work' work type
-  # need to verify that the work type accepts all expected properties
-  # include the workflow here?
-  # check that single-valued fields only have one value (title) <= do in form tests
-  # test form services
 
   it 'has a title' do
     subject.title = ['foo']

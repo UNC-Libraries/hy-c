@@ -46,7 +46,7 @@ RSpec.describe Hyrax::ArticleForm do
     it 'permits parameters' do
       expect(subject['title']).to eq ['foo']
       expect(subject['publisher']).to eq ['a publisher']
-      expect(subject['citation']).to eq ['some citation']
+      expect(subject['citation']).to eq 'some citation'
       expect(subject['description']).to be_empty
       expect(subject['visibility']).to eq 'open'
       expect(subject['license']).to eq ['http://creativecommons.org/licenses/by/3.0/us/']

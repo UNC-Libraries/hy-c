@@ -5,9 +5,10 @@ module Hyrax
     class_attribute :single_value_fields
 
     self.model_class = ::Dissertation
-    self.terms += [:faculty_advisor_name, :date_published, :author_graduation_date, :author_degree_granted, :author_academic_concentration, :institution, :citation]
+    self.terms += [:faculty_advisor_name, :date_published, :author_graduation_date, :author_degree_granted,
+                   :author_academic_concentration, :institution, :citation]
     self.terms -= [:contributor, :publisher, :date_created, :identifier, :based_near, :related_url, :source, :license]
-    self.single_value_fields = [:title, :citation]
+    self.single_value_fields = [:title]
 
     def self.multiple?(field)
       if single_value_fields.include? field.to_sym
@@ -36,10 +37,5 @@ module Hyrax
     def title
       super.first || ""
     end
-
-    def citation
-      super.first || ""
-    end
-
   end
 end
