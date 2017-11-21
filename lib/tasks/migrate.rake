@@ -77,7 +77,7 @@ namespace :cdr do
 
       files.each do |f|
         file_metadata = metadata(f, metadata_dir)
-        file_set = ingest_file(parent: resource, resource: file_metadata, f: file_metadata[:files][0])
+        file_set = ingest_file(parent: resource, resource: file_metadata[:resource], f: file_metadata[:files][0])
         ordered_members << file_set if file_set
       end
 
@@ -85,13 +85,13 @@ namespace :cdr do
     end
 
     def ingest_file(parent: nil, resource: nil, f: nil)
-      file_set = FileSet.new
-      file_set.title = resource[:resource][:title]
-      actor = ::Hyrax::Actors::FileSetActor.new(file_set, User.find_by_email(DEPOSITOR_EMAIL))
-      actor.create_metadata(resource)
+      file_set = FileSet.create(resource)
+      actor = Hyrax::Actors::FileSetActor.new(file_set, User.find_by_email(DEPOSITOR_EMAIL))
+      actor.create_metadata(resource.slice(:visibility, :visibility_during_lease, :visibility_after_lease,
+                                            :lease_expiration_date, :embargo_release_date, :visibility_during_embargo,
+                                            :visibility_after_embargo))
       actor.create_content(File.open(f))
       actor.attach_to_work(parent)
-      actor.file_set.permissions_attributes = parent.permissions.map(&:to_hash)
 
       file_set
     end
@@ -178,7 +178,11 @@ namespace :cdr do
       if rdf_version.to_s.match(/metadata-patron/)
         patron = rdf_version.xpath("rdf:Description/*[local-name() = 'metadata-patron']", MigrationConstants::NS).text
         if patron == 'public'
-          visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_AUTHENTICATED
+          if rdf_version.to_s.match(/contains/)
+            visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
+          else
+            visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
+          end
         end
       elsif rdf_version.to_s.match(/embargo-until/)
         embargo_release_date = Date.parse rdf_version.xpath("rdf:Description/*[local-name() = 'embargo-until']", MigrationConstants::NS).text
@@ -189,9 +193,14 @@ namespace :cdr do
           visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
         end
       elsif rdf_version.to_s.match(/inheritPermissions/)
-        published = rdf_version.xpath("rdf:Description/*[local-name() = 'inheritPermissions']", MigrationConstants::NS).text
-        if published == 'false'
+        inherit = rdf_version.xpath("rdf:Description/*[local-name() = 'inheritPermissions']", MigrationConstants::NS).text
+        if inherit == 'false'
           visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
+        end
+      elsif rdf_version.to_s.match(/cdr-role:patron>authenticated/)
+        authenticated = rdf_version.xpath("rdf:Description/*[local-name() = 'patron']", MigrationConstants::NS).text
+        if authenticated == 'authenticated'
+          visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_AUTHENTICATED
         end
       end
 
@@ -232,6 +241,7 @@ namespace :cdr do
     def work_record(work_attributes)
       resource = Work.new
       resource.creator = work_attributes['creator']
+      resource.depositor = DEPOSITOR_EMAIL
       resource.save
 
       resource.label = work_attributes['title']
@@ -275,6 +285,12 @@ namespace :cdr do
       resource[:resource_type] = work_attributes['resource_type']
       resource[:language] = work_attributes['language']
       resource[:rights_statement] = ['http://www.europeana.eu/portal/rights/rr-r.html']
+      resource[:visibility] = work_attributes['visibility']
+      unless work_attributes['embargo_release_date'].blank?
+        resource[:embargo_release_date] = work_attributes['embargo_release_date']
+        resource[:visibility_during_embargo] = work_attributes['visibility_during_embargo']
+        resource[:visibility_after_embargo] = work_attributes['visibility_after_embargo']
+      end
 
       resource
     end
