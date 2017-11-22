@@ -51,4 +51,16 @@ xsi:schemaLocation="info:fedora/fedora-system:def/foxml# http://www.fedora.info/
 </foxml:xmlContent>
 </foxml:datastreamVersion>
 </foxml:datastream>
+<foxml:datastream ID="RELS-EXT" STATE="A" CONTROL_GROUP="X" VERSIONABLE="false">
+  <foxml:datastreamVersion ID="RELS-EXT.1" LABEL="Fedora Object-to-Object Relationship Metadata" CREATED="2017-06-15T19:22:24.429Z" MIMETYPE="text/xml" SIZE="4020">
+    <foxml:contentDigest TYPE="MD5" DIGEST="ae2c7a001ad9bb5467e40194102f638e"/>
+    <foxml:xmlContent>
+      <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:ns5="http://cdr.unc.edu/definitions/1.0/base-model.xml#" xmlns:ns6="info:fedora/fedora-system:def/model#" xmlns:owl="http://www.w3.org/2002/07/owl#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <rdf:Description rdf:about="info:fedora/uuid:118aa655-dd0f-4a87-8a25-20bd9edf2afb">
+          <metadata-patron>public</metadata-patron>
+        </rdf:Description>
+      </rdf:RDF>
+    </foxml:xmlContent>
+  </foxml:datastreamVersion>
+</foxml:datastream>
 </foxml:digitalObject>
