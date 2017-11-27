@@ -1,0 +1,14 @@
+## config/authorities/reviewers.yml
+terms:
+  - id: Biology
+    active: true
+    term: person1@example.com
+  - id: Chemistry
+    active: true
+    term: person2@example.com
+  - id: History
+    active: true
+    term: person3@example.com
+  - id: example
+    active: false
+    term: person4@example.com

@@ -18,7 +18,8 @@
                         }
                     ],
                     "methods": [
-                        "Hyrax::Workflow::DeactivateObject"
+                        "Hyrax::Workflow::DeactivateObject",
+                        "Hyrax::Workflow::AssignReviewerByDepartment"
                     ]
                 }, {
                     "name": "request_changes",
