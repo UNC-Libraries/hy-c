@@ -113,9 +113,12 @@ RSpec.describe Hyrax::MastersPaperPresenter do
     end
 
     context "with a field that doesn't exist" do
-      it "logs a warning" do
-        expect(Rails.logger).to receive(:warn).with('Hyrax::MastersPaperPresenter attempted to render restrictions, but no method exists with that name.')
-        presenter.attribute_to_html(:restrictions)
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:something, 'foo', {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).not_to receive(:render)
       end
     end
   end
