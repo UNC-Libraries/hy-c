@@ -1,0 +1,14 @@
+## config/authorities/concentrations.yml
+terms:
+  - id: cell_biology
+    active: true
+    term: Cell Biology
+  - id: organic_chemistry
+    active: true
+    term: Organic Chemistry
+  - id: american_history
+    active: true
+    term: American History
+  - id: old_concentration
+    active: false
+    term: Old Concentration

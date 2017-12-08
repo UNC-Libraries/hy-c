@@ -10,6 +10,10 @@ class Article < ActiveFedora::Base
 
   self.human_readable_type = 'Article'
 
+  property :citation, predicate: ::RDF::Vocab::DC.bibliographicCitation, multiple: false do |index|
+    index.as :stored_searchable
+  end
+
   property :doi,
            predicate: ::RDF::Vocab::MADS.code, multiple: false do |index|
     index.as :stored_searchable

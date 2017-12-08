@@ -1,34 +1,16 @@
 # Generated via
 #  `rails generate hyrax:work Article`
 module Hyrax
-  class ArticleForm < Hyrax::Forms::WorkForm
+  class ArticleForm < ::SingleValueForm
+
     class_attribute :single_value_fields
 
     self.model_class = ::Article
-    self.terms += [:resource_type, :doi, :date_published, :institution]
+    self.terms += [:resource_type, :doi, :date_published, :institution, :citation]
     self.terms -= [:contributor, :date_created, :identifier, :based_near, :related_url, :source]
-    self.single_value_fields = [:title, :publisher, :citation]
+    self.single_value_fields = [:title, :publisher]
 
-    def self.multiple?(field)
-      if single_value_fields.include? field.to_sym
-        false
-      else
-        super
-      end
-    end
-
-    # cast single value fields back to multivalued so they will actually deposit
-    def self.model_attributes(_)
-      attrs = super
-
-      single_value_fields.each do |field|
-        if attrs[field]
-          attrs[field] = Array(attrs[field])
-        end
-      end
-
-      attrs
-    end
+    # Add overrides for required properties which are becoming single-valued
 
     def title
       super.first || ""
@@ -37,10 +19,5 @@ module Hyrax
     def publisher
       super.first || ""
     end
-
-    def citation
-      super.first || ""
-    end
-
   end
 end

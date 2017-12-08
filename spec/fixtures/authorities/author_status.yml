@@ -1,0 +1,10 @@
+## spec/fixtures/authorities/author_status.yml
+terms:
+  - id: faculty
+    term: Faculty
+  - id: student
+    term: Student
+  - id: staff
+    term: Staff
+  - id: post_doc
+    term: Post-Doctoral

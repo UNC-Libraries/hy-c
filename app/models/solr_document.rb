@@ -72,6 +72,10 @@ class SolrDocument
     self[Solrizer.solr_name('author_status')]
   end
 
+  def citation
+    self[Solrizer.solr_name('citation')]
+  end
+
   def coauthor
     self[Solrizer.solr_name('coauthor')]
   end

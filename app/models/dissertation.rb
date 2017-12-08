@@ -20,6 +20,10 @@ class Dissertation < ActiveFedora::Base
     index.as :stored_searchable
   end
 
+  property :citation, predicate: ::RDF::Vocab::DC.bibliographicCitation, multiple: false do |index|
+    index.as :stored_searchable
+  end
+
   property :institution, predicate: ::RDF::Vocab::DC11.publisher, multiple: true do |index|
     index.as :stored_searchable
   end
