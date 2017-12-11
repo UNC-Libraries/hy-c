@@ -1,0 +1,14 @@
+## config/authorities/publication_versions.yml
+terms:
+  - id: preprint
+    term: Preprint
+    active: true
+  - id: postprint
+    term: Postprint
+    active: true
+  - id: publisher
+    term: Publisher
+    active: true
+  - id: other
+    term: Other Version
+    active: false

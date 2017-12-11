@@ -9,59 +9,53 @@ end
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.0.3'
 # Use postgresql as the database for Active Record
-gem 'pg', '~> 0.18'
+gem 'pg', '~> 0.21.0'
 # Use Puma as the app server
-gem 'puma', '~> 3.0'
+gem 'puma', '~> 3.10.0'
 # Use SCSS for stylesheets
-gem 'sass-rails', '~> 5.0'
+gem 'sass-rails', '~> 5.0.6'
 # Use Uglifier as compressor for JavaScript assets
-gem 'uglifier', '>= 1.3.0'
+gem 'uglifier', '~> 3.2.0'
 # Use CoffeeScript for .coffee assets and views
-gem 'coffee-rails', '~> 4.2'
+gem 'coffee-rails', '~> 4.2.2'
 # See https://github.com/rails/execjs#readme for more supported runtimes
-gem 'therubyracer', platforms: :ruby
+gem 'therubyracer', '~> 0.12.3', platforms: :ruby
 gem 'hyrax', '2.0.0'
-gem 'hydra-role-management'
-gem 'clamav'
-gem 'sidekiq'
+gem 'hydra-role-management', '~> 0.2.2'
+gem 'clamav', '~> 0.4.1'
+gem 'sidekiq', '~> 5.0.4'
 gem 'blacklight_oai_provider', git: 'https://github.com/UNC-Libraries/blacklight_oai_provider.git', branch: 'master'
 
 # Use jquery as the JavaScript library
-gem 'jquery-rails'
+gem 'jquery-rails', '~> 4.3.1'
 # Turbolinks makes navigating your web application faster. Read more: https://github.com/turbolinks/turbolinks
-gem 'turbolinks', '~> 5'
+gem 'turbolinks', '~> 5.0.1'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
-gem 'jbuilder', '~> 2.5'
+gem 'jbuilder', '~> 2.7.0'
 # Use Redis adapter to run Action Cable in production
-# gem 'redis', '~> 3.0'
-# Use ActiveModel has_secure_password
-# gem 'bcrypt', '~> 3.1.7'
+gem 'redis', '~> 3.3.0'
 
-# Use Capistrano for deployment
-# gem 'capistrano-rails', group: :development
+# Windows does not include zoneinfo files, so bundle the tzinfo-data gem
+# gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
+
+gem 'rsolr', '~> 2.0.2'
+gem 'devise', '~> 4.3.0'
+gem 'devise-guests', '~> 0.6.0'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
-  gem 'byebug', platform: :mri
+  gem 'byebug', '~> 9.1.0', platform: :mri
+  gem 'solr_wrapper', '~> 1.1.0'
+  gem 'fcrepo_wrapper', '~> 0.8.0'
+  gem 'rspec-rails', '~> 3.6.0'
 end
 
 group :development do
   # Access an IRB console on exception pages or by using <%= console %> anywhere in the code.
-  gem 'web-console', '>= 3.3.0'
+  gem 'web-console', '~> 3.5.1'
   gem 'listen', '~> 3.0.5'
 end
 
-# Windows does not include zoneinfo files, so bundle the tzinfo-data gem
-gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
-
-group :development, :test do
-  gem 'solr_wrapper', '>= 0.3'
-end
-
-gem 'rsolr', '>= 1.0'
-gem 'devise'
-gem 'devise-guests', '~> 0.6'
-group :development, :test do
-  gem 'fcrepo_wrapper'
-  gem 'rspec-rails'
+group :test do
+  gem 'shoulda-matchers', '~> 3.1.2'
 end

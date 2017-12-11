@@ -112,6 +112,7 @@ class CatalogController < ApplicationController
     config.add_index_field solr_name("author_academic_concentration", :stored_searchable), label: "Author Academic Concentration"
     config.add_index_field solr_name("author_graduation_date", :stored_searchable), label: "Author Graduation Date"
     config.add_index_field solr_name("author_status", :stored_searchable), label: "Status"
+    config.add_index_field solr_name("citation", :stored_searchable), label: "Citation"
     config.add_index_field solr_name("coauthor", :stored_searchable), label: "Co-Authors"
     config.add_index_field solr_name("date_published", :stored_searchable), label: "Date Published"
     config.add_index_field solr_name("faculty_advisor_name", :stored_searchable), label: "Faculty Advisor Name"

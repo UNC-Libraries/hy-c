@@ -1,0 +1,6 @@
+## config/authorities/sils_degrees.yml
+terms:
+  - id: msis
+    term: MSIS
+  - id: msls
+    term: MSLS
