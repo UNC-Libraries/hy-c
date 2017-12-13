@@ -9,11 +9,7 @@ module Hyrax::Workflow::AssignReviewerByAcademicDepartment
   end
 
   def self.find_reviewer_for(department:)
-    agent = Sipity::Agent.where(proxy_for_id: Role.find_by_name(department.to_s.downcase+'_reviewer').id,
-                                proxy_for_type: 'Role').first
-    if agent.nil?
-      agent = Sipity::Agent.create(proxy_for: Role.find_by_name(department.to_s.downcase+'_reviewer'))
-    end
-    agent
+    Sipity::Agent.where(proxy_for_id: department.to_s.downcase+'_reviewer',
+                                proxy_for_type: 'Hyrax::Group').first_or_create
   end
 end
