@@ -5,7 +5,7 @@ module Hyrax::Workflow::AssignReviewerByAcademicDepartment
     # This assigns database permissions, but does not grant permissions on the Fedora object.
     Hyrax::Workflow::PermissionGenerator.call(entity: target, agents: [reviewer],
                                               roles: ['approving'],
-                                              workflow: Sipity::Workflow.find_by_name('one_step_mediated_deposit'))
+                                              workflow: Sipity::Workflow.find_by_name('honors_thesis_one_step_mediated_deposit'))
   end
 
   def self.find_reviewer_for(department:)
