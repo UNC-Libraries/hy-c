@@ -8,21 +8,17 @@ Hyrax::Workflow::StatusListService.class_eval do
      entities = entities_for_user
      query_params = []
 
-     unless actionable_roles.blank?
-       if !entities.blank?
-         query_params << "((({!terms f=actionable_workflow_roles_ssim}#{actionable_roles.join(',')})"
-         query_params << @filter_condition+')'
-       else
-         query_params << "({!terms f=actionable_workflow_roles_ssim}#{actionable_roles.join(',')})"
-         query_params << @filter_condition
-       end
-     end
-     unless entities.blank?
-       if !actionable_roles.blank?
-         query_params << ") OR ((id:#{entities.join(' OR id:')}) AND #{@filter_condition}))"
-       else
-         query_params << "((id:#{entities.join(' OR id:')}) AND #{@filter_condition})"
-       end
+     if !actionable_roles.blank? && entities.blank?
+       query_params << "({!terms f=actionable_workflow_roles_ssim}#{actionable_roles.join(',')})"
+       query_params << @filter_condition
+     elsif actionable_roles.blank? && !entities.blank?
+       query_params << "((id:#{entities.join(' OR id:')}) AND #{@filter_condition})"
+     elsif !actionable_roles.blank? && !entities.blank?
+       query_params << "((({!terms f=actionable_workflow_roles_ssim}#{actionable_roles.join(',')})"
+       query_params << @filter_condition+')'
+       query_params << ") OR ((id:#{entities.join(' OR id:')}) AND #{@filter_condition}))"
+     else
+       query_params << @filter_condition
      end
 
      query_params
