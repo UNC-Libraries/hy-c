@@ -1,2 +1,9 @@
-<%= f.input :title,
-            input_html: { class: 'form-control' } %>
+<% if f.object.try(:single_value_fields) %>
+    <% if f.object.single_value_fields.include? key %>
+        <%= f.input :title, input_html: { class: 'form-control'} %>
+    <% else %>
+        <%= f.input :title, as: :multi_value, input_html: { class: 'form-control' } %>
+    <% end %>
+<% else %>
+    <%= f.input :title, as: :multi_value, input_html: { class: 'form-control' } %>
+<% end %>
