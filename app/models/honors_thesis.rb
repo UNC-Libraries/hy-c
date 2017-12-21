@@ -24,6 +24,10 @@ class HonorsThesis < ActiveFedora::Base
     index.as :stored_searchable
   end
 
+  property :access, predicate: ::RDF::Vocab::DC.accessRights do |index|
+    index.as :stored_searchable
+  end
+
   property :advisor, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/ths') do |index|
     index.as :stored_searchable
   end
@@ -48,19 +52,11 @@ class HonorsThesis < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :keyword, predicate: ::RDF::Vocab::SCHEMA.keywords do |index|
-    index.as :stored_searchable
-  end
-
   property :note, predicate: ::RDF::Vocab::SKOS.note do |index|
     index.as :stored_searchable
   end
 
   property :rights, predicate: ::RDF::Vocab::DC11.rights do |index|
-    index.as :stored_searchable
-  end
-
-  property :subject, predicate: ::RDF::Vocab::DC.subject do |index|
     index.as :stored_searchable
   end
 

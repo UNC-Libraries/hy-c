@@ -64,6 +64,10 @@ class SolrDocument
     self[Solrizer.solr_name('additional_funding')]
   end
 
+  def access
+    self[Solrizer.solr_name('access')]
+  end
+
   def advisor
     self[Solrizer.solr_name('advisor')]
   end

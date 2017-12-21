@@ -17,6 +17,7 @@ RSpec.describe Hyrax::HonorsThesisPresenter do
       "abstract_tesim" => ['an abstract'],
       "academic_concentration_tesim" => ['a concentration'],
       "academic_department_tesim" => ['a department'],
+      "access_tesim" => ['an access right'],
       "advisor_tesim" => ['an advisor'],
       "degree_tesim" => ['a degree'],
       "degree_granting_institution_tesim" => ['an institution'],
@@ -107,6 +108,17 @@ RSpec.describe Hyrax::HonorsThesisPresenter do
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:academic_department)
+      end
+    end
+
+    context "with a custom access field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:access, ['an access right'], {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:access)
       end
     end
 
