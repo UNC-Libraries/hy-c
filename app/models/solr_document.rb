@@ -60,10 +60,6 @@ class SolrDocument
     self[Solrizer.solr_name('academic_department')]
   end
 
-  def additional_funding
-    self[Solrizer.solr_name('additional_funding')]
-  end
-
   def access
     self[Solrizer.solr_name('access')]
   end
@@ -84,16 +80,8 @@ class SolrDocument
     self[Solrizer.solr_name('author_graduation_date')]
   end
 
-  def author_status
-    self[Solrizer.solr_name('author_status')]
-  end
-
   def citation
     self[Solrizer.solr_name('citation')]
-  end
-
-  def coauthor
-    self[Solrizer.solr_name('coauthor')]
   end
 
   def date_published
@@ -124,44 +112,16 @@ class SolrDocument
     self[Solrizer.solr_name('graduation_year')]
   end
 
-  def granting_agency
-    self[Solrizer.solr_name('granting_agency')]
-  end
-
   def honors_level
     self[Solrizer.solr_name('honors_level')]
-  end
-
-  def issue
-    self[Solrizer.solr_name('issue')]
   end
 
   def institution
     self[Solrizer.solr_name('institution')]
   end
 
-  def link_to_publisher_version
-    self[Solrizer.solr_name('link_to_publisher_version')]
-  end
-
   def note
     self[Solrizer.solr_name('note')]
-  end
-
-  def orcid
-    self[Solrizer.solr_name('orcid')]
-  end
-
-  def publication
-    self[Solrizer.solr_name('publication')]
-  end
-
-  def publication_date
-    self[Solrizer.solr_name('publication_date')]
-  end
-
-  def publication_version
-    self[Solrizer.solr_name('publication_version')]
   end
 
   def sets
