@@ -41,12 +41,12 @@ RSpec.describe Dissertation do
       expect(subject).to respond_to(:resource_type)
 
       # Additional metadata
-      expect(subject).to respond_to(:author_degree_granted)
-      expect(subject).to respond_to(:author_academic_concentration)
-      expect(subject).to respond_to(:institution)
-      expect(subject).to respond_to(:author_graduation_date)
+      expect(subject).to respond_to(:degree)
+      expect(subject).to respond_to(:academic_concentration)
+      expect(subject).to respond_to(:degree_granting_institution)
+      expect(subject).to respond_to(:graduation_year)
       expect(subject).to respond_to(:date_published)
-      expect(subject).to respond_to(:faculty_advisor_name)
+      expect(subject).to respond_to(:advisor)
     end
   end
 end

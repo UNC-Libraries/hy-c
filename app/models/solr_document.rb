@@ -68,18 +68,6 @@ class SolrDocument
     self[Solrizer.solr_name('advisor')]
   end
 
-  def author_degree_granted
-    self[Solrizer.solr_name('author_degree_granted')]
-  end
-
-  def author_academic_concentration
-    self[Solrizer.solr_name('author_academic_concentration')]
-  end
-
-  def author_graduation_date
-    self[Solrizer.solr_name('author_graduation_date')]
-  end
-
   def citation
     self[Solrizer.solr_name('citation')]
   end
@@ -100,10 +88,6 @@ class SolrDocument
     self[Solrizer.solr_name('doi')]
   end
 
-  def faculty_advisor_name
-    self[Solrizer.solr_name('faculty_advisor_name')]
-  end
-
   def genre
     self[Solrizer.solr_name('genre')]
   end
@@ -114,10 +98,6 @@ class SolrDocument
 
   def honors_level
     self[Solrizer.solr_name('honors_level')]
-  end
-
-  def institution
-    self[Solrizer.solr_name('institution')]
   end
 
   def note

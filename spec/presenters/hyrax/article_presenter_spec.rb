@@ -16,7 +16,7 @@ RSpec.describe Hyrax::ArticlePresenter do
       "depositor_tesim" => user_key,
       "doi_tesim" => ['a doi'],
       "date_published_tesim" => ['10-08-2017'],
-      "institution_tesim" => ['an institution'],
+      "degree_granting_institution_tesim" => ['an institution'],
       "citation_tesim" => ['a citation']
     }
   end
@@ -41,7 +41,7 @@ RSpec.describe Hyrax::ArticlePresenter do
   it { is_expected.to delegate_method(:itemtype).to(:solr_document) }
   it { is_expected.to delegate_method(:doi).to(:solr_document) }
   it { is_expected.to delegate_method(:date_published).to(:solr_document) }
-  it { is_expected.to delegate_method(:institution).to(:solr_document) }
+  it { is_expected.to delegate_method(:degree_granting_institution).to(:solr_document) }
   it { is_expected.to delegate_method(:citation).to(:solr_document) }
 
   describe "#model_name" do
@@ -86,14 +86,14 @@ RSpec.describe Hyrax::ArticlePresenter do
       end
     end
 
-    context "with a custom institution field" do
+    context "with a custom degree_granting_institution field" do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:institution, ['an institution'], {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:degree_granting_institution, ['an institution'], {}).and_return(renderer)
       end
 
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
-        presenter.attribute_to_html(:institution)
+        presenter.attribute_to_html(:degree_granting_institution)
       end
     end
 

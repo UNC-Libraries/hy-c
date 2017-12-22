@@ -41,9 +41,10 @@ RSpec.describe Article do
       expect(subject).to respond_to(:resource_type)
 
       # Additional metadata
+      expect(subject).to respond_to(:citation)
       expect(subject).to respond_to(:doi)
       expect(subject).to respond_to(:date_published)
-      expect(subject).to respond_to(:institution)
+      expect(subject).to respond_to(:degree_granting_institution)
     end
   end
 end
