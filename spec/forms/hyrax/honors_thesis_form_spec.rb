@@ -36,6 +36,7 @@ RSpec.describe Hyrax::HonorsThesisForm do
           visibility: 'open',
           representative_id: '456',
           thumbnail_id: '789',
+          degree_granting_institution: 'UNC',
           keyword: ['test'],
           license: ['http://creativecommons.org/licenses/by/3.0/us/'],
           member_of_collection_ids: ['123456', 'abcdef']
@@ -51,6 +52,7 @@ RSpec.describe Hyrax::HonorsThesisForm do
       expect(subject['visibility']).to eq 'open'
       expect(subject['representative_id']).to eq '456'
       expect(subject['thumbnail_id']).to eq '789'
+      expect(subject['degree_granting_institution']).to eq 'UNC'
       expect(subject['license']).to eq ['http://creativecommons.org/licenses/by/3.0/us/']
       expect(subject['keyword']).to eq ['test']
       expect(subject['member_of_collection_ids']).to eq ['123456', 'abcdef']
