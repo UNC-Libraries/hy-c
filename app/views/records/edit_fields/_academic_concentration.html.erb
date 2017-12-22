@@ -1,5 +1,5 @@
 <% # app/views/records/edit_fields/_academic_concentration.html.erb %>
-<%= f.input :author_academic_concentration, as: :select,
+<%= f.input :academic_concentration, as: :select,
             collection: ConcentrationsService.select_all_options,
             include_blank: true,
             item_helper: ConcentrationsService.method(:include_current_value),
