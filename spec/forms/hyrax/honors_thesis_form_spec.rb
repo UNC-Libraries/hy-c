@@ -10,20 +10,20 @@ RSpec.describe Hyrax::HonorsThesisForm do
     subject { form.required_fields }
 
     it { is_expected.to match_array [:title, :creator, :rights_statement, :abstract, :academic_department,
-                                     :advisor, :degree_granting_institution, :resource_type] }
+                                     :advisor, :degree_granting_institution, :resource_type, :license] }
   end
 
   describe "#primary_terms" do
     subject { form.primary_terms }
 
     it { is_expected.to match_array [:title, :creator, :rights_statement, :abstract, :academic_department,
-                                     :advisor, :degree_granting_institution, :resource_type] }
+                                     :advisor, :degree_granting_institution, :resource_type, :license] }
   end
 
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:license, :subject, :language, :degree, :genre, :graduation_year,
+    it { is_expected.to match_array [:subject, :language, :degree, :genre, :graduation_year,
                                      :honors_level, :note, :academic_concentration, :keyword, :related_url, :access] }
   end
 
