@@ -88,8 +88,16 @@ class SolrDocument
     self[Solrizer.solr_name('doi')]
   end
 
+  def extent
+    self[Solrizer.solr_name('extent')]
+  end
+
   def genre
     self[Solrizer.solr_name('genre')]
+  end
+
+  def geographic_subject
+    self[Solrizer.solr_name('geographic_subject')]
   end
 
   def graduation_year
@@ -100,8 +108,16 @@ class SolrDocument
     self[Solrizer.solr_name('honors_level')]
   end
 
+  def medium
+    self[Solrizer.solr_name('medium')]
+  end
+
   def note
     self[Solrizer.solr_name('note')]
+  end
+
+  def reviewer
+    self[Solrizer.solr_name('reviewer')]
   end
 
   def sets

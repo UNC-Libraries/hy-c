@@ -57,7 +57,7 @@ class MastersPaper < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :meduim, predicate: ::RDF::Vocab::DC.medium do |index|
+  property :medium, predicate: ::RDF::Vocab::DC.medium do |index|
     index.as :stored_searchable
   end
 
