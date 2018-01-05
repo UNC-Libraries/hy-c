@@ -24,7 +24,7 @@ gem 'hyrax', '2.0.0'
 gem 'hydra-role-management', '~> 0.2.2'
 gem 'clamav', '~> 0.4.1'
 gem 'sidekiq', '~> 5.0.4'
-gem 'blacklight_oai_provider', git: 'https://github.com/UNC-Libraries/blacklight_oai_provider.git', branch: 'master'
+gem 'blacklight_oai_provider', git: 'https://github.com/projectblacklight/blacklight_oai_provider.git', branch: 'v6.1'
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails', '~> 4.3.1'

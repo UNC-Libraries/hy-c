@@ -1,12 +1,12 @@
 GIT
-  remote: https://github.com/UNC-Libraries/blacklight_oai_provider.git
-  revision: 6e6b2718292bb7db7b57a93242281fcef607fb21
-  branch: master
+  remote: https://github.com/projectblacklight/blacklight_oai_provider.git
+  revision: 6fd7aa6c5f69064cd2f4e505a5d5f702a238ef22
+  branch: v6.1
   specs:
-    blacklight_oai_provider (1.4.1)
-      blacklight (>= 6.1)
-      oai (~> 0.4.0)
-      rails (>= 4.2)
+    blacklight_oai_provider (5.0.0.pre1)
+      blacklight (~> 6.10)
+      oai (~> 0.4)
+      rails (>= 4.2, < 6)
 
 GEM
   remote: https://rubygems.org/
