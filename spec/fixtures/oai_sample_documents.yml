@@ -1,0 +1,481 @@
+# /spec/fixtures/oai_sample_documents.yml
+
+1:
+  creator: 'Irving, Washington'
+  depositor: admin@example.com
+  label: The Legend of Sleepy Hollow
+  title: The Legend of Sleepy Hollow
+  date_created: 2017-10-02T17:50:37Z
+  date_modified: 2017-10-02T17:50:37Z
+  contributor: 'Smith, Jennifer'
+  description: 'Abstract'
+  related_url: 'http://dx.doi.org/10.1186/1753-6561-3-S7-S87'
+  publisher: 'Project Gutenberg'
+  resource_type: 'Book'
+  language: 'English'
+  rights_statement: 'http://www.europeana.eu/portal/rights/rr-r.html'
+  visibility: open
+
+2:
+  creator: 'Christie, Agatha'
+  depositor: admin@example.com
+  label: The Mysterious Affair at Styles
+  title: The Mysterious Affair at Styles
+  date_created: 2017-10-02T17:51:26Z
+  date_modified: 2017-10-02T17:51:26Z
+  contributor: 'Smith, Jennifer'
+  description: 'Abstract'
+  related_url: 'http://dx.doi.org/10.1186/1753-6561-3-S7-S87'
+  publisher: 'Project Gutenberg'
+  resource_type: 'Book'
+  language: 'English'
+  rights_statement: 'http://www.europeana.eu/portal/rights/rr-r.html'
+  visibility: open
+
+3:
+  creator: 'Unknown'
+  depositor: admin@example.com
+  label: Beowulf
+  title: Beowulf
+  date_created: 2017-10-02T17:26:47Z
+  date_modified: 2017-10-02T17:26:47Z
+  contributor: 'Smith, Jennifer'
+  description: 'Abstract'
+  related_url: 'http://dx.doi.org/10.1186/1753-6561-3-S7-S87'
+  publisher: 'Project Gutenberg'
+  resource_type: 'Book'
+  language: 'English'
+  rights_statement: 'http://www.europeana.eu/portal/rights/rr-r.html'
+  visibility: open
+
+4:
+  creator: 'Hobbes, Thomas'
+  depositor: admin@example.com
+  label: Leviathan
+  title: Leviathan
+  date_created: 2017-10-02T17:47:12Z
+  date_modified: 2017-10-02T17:47:12Z
+  contributor: 'Smith, Jennifer'
+  description: 'Abstract'
+  related_url: 'http://dx.doi.org/10.1186/1753-6561-3-S7-S87'
+  publisher: 'Project Gutenberg'
+  resource_type: 'Book'
+  language: 'English'
+  rights_statement: 'http://www.europeana.eu/portal/rights/rr-r.html'
+  visibility: open
+
+5:
+  creator: 'Slater, Gilbert'
+  depositor: admin@example.com
+  label: The English Peasantry and the Enclosure of Common Fields
+  title: The English Peasantry and the Enclosure of Common Fields
+  date_created: 2017-10-02T17:56:55Z
+  date_modified: 2017-10-02T17:56:55Z
+  contributor: 'Smith, Jennifer'
+  description: 'Abstract'
+  related_url: 'http://dx.doi.org/10.1186/1753-6561-3-S7-S87'
+  publisher: 'Project Gutenberg'
+  resource_type: 'Book'
+  language: 'English'
+  rights_statement: 'http://www.europeana.eu/portal/rights/rr-r.html'
+  visibility: open
+
+6:
+  creator: 'Dickens, Charles'
+  depositor: admin@example.com
+  label: Great Expectations
+  title: Great Expectations
+  date_created: 2017-10-02T17:39:32Z
+  date_modified: 2017-10-02T17:39:32Z
+  contributor: 'Smith, Jennifer'
+  description: 'Abstract'
+  related_url: 'http://dx.doi.org/10.1186/1753-6561-3-S7-S87'
+  publisher: 'Project Gutenberg'
+  resource_type: 'Book'
+  language: 'English'
+  rights_statement: 'http://www.europeana.eu/portal/rights/rr-r.html'
+  visibility: open
+
+7:
+  creator: 'Homer'
+  depositor: admin@example.com
+  label: The Iliad
+  title: The Iliad
+  date_created: 2017-10-02T17:17:42Z
+  date_modified: 2017-10-02T17:17:42Z
+  contributor: 'Smith, Jennifer'
+  description: 'Abstract'
+  related_url: 'http://dx.doi.org/10.1186/1753-6561-3-S7-S87'
+  publisher: 'Project Gutenberg'
+  resource_type: 'Book'
+  language: 'English'
+  rights_statement: 'http://www.europeana.eu/portal/rights/rr-r.html'
+  visibility: open
+
+8:
+  creator: 'Hugo, Victor'
+  depositor: admin@example.com
+  label: Les Miserables
+  title: Les Miserables
+  date_created: 2017-10-02T17:46:27Z
+  date_modified: 2017-10-02T17:46:27Z
+  contributor: 'Smith, Jennifer'
+  description: 'Abstract'
+  related_url: 'http://dx.doi.org/10.1186/1753-6561-3-S7-S87'
+  publisher: 'Project Gutenberg'
+  resource_type: 'Book'
+  language: 'English'
+  rights_statement: 'http://www.europeana.eu/portal/rights/rr-r.html'
+  visibility: open
+
+9:
+  creator: 'Melville, Herman'
+  depositor: admin@example.com
+  label: Moby Dick
+  title: Moby Dick
+  date_created: 2017-10-02T17:47:51Z
+  date_modified: 2017-10-02T17:47:51Z
+  contributor: 'Smith, Jennifer'
+  description: 'Abstract'
+  related_url: 'http://dx.doi.org/10.1186/1753-6561-3-S7-S87'
+  publisher: 'Project Gutenberg'
+  resource_type: 'Book'
+  language: 'English'
+  rights_statement: 'http://www.europeana.eu/portal/rights/rr-r.html'
+  visibility: open
+
+10:
+  creator: 'Tolstoy, Leo'
+  depositor: admin@example.com
+  label: War and Peace
+  title: War and Peace
+  date_created: 2017-10-02T17:14:47Z
+  date_modified: 2017-10-02T17:14:47Z
+  contributor: 'Smith, Jennifer'
+  description: 'Abstract'
+  related_url: 'http://dx.doi.org/10.1186/1753-6561-3-S7-S87'
+  publisher: 'Project Gutenberg'
+  resource_type: 'Book'
+  language: 'English'
+  rights_statement: 'http://www.europeana.eu/portal/rights/rr-r.html'
+  visibility: open
+
+11:
+  creator: 'Bronte, Charlotte'
+  depositor: admin@example.com
+  label: Jane Eyre
+  title: Jane Eyre
+  date_created: 2017-10-02T17:42:38Z
+  date_modified: 2017-10-02T17:42:38Z
+  contributor: 'Smith, Jennifer'
+  description: 'Abstract'
+  related_url: 'http://dx.doi.org/10.1186/1753-6561-3-S7-S87'
+  publisher: 'Project Gutenberg'
+  resource_type: 'Book'
+  language: 'English'
+  rights_statement: 'http://www.europeana.eu/portal/rights/rr-r.html'
+  visibility: open
+
+12:
+  creator: 'Dolye, Sir Arthur Conan'
+  depositor: admin@example.com
+  label: The Adventures of Sherlock Holmes
+  title: The Adventures of Sherlock Holmes
+  date_created: 2017-10-02T17:55:57Z
+  date_modified: 2017-10-02T17:55:57Z
+  contributor: 'Smith, Jennifer'
+  description: 'Abstract'
+  related_url: 'http://dx.doi.org/10.1186/1753-6561-3-S7-S87'
+  publisher: 'Project Gutenberg'
+  resource_type: 'Book'
+  language: 'English'
+  rights_statement: 'http://www.europeana.eu/portal/rights/rr-r.html'
+  visibility: open
+
+13:
+  creator: 'Austen, Jane'
+  depositor: admin@example.com
+  label: Pride and Prejudice
+  title: Pride and Prejudice
+  date_created: 2017-10-02T17:14:40Z
+  date_modified: 2017-10-02T17:14:40Z
+  contributor: 'Smith, Jennifer'
+  description: 'Abstract'
+  related_url: 'http://dx.doi.org/10.1186/1753-6561-3-S7-S87'
+  publisher: 'Project Gutenberg'
+  resource_type: 'Book'
+  language: 'English'
+  rights_statement: 'http://www.europeana.eu/portal/rights/rr-r.html'
+  visibility: open
+
+14:
+  creator: 'Carroll, Lewis'
+  depositor: admin@example.com
+  label: Alice's Adventures in Wonderland
+  title: Alice's Adventures in Wonderland
+  date_created: 2017-10-02T15:38:56Z
+  date_modified: 2017-10-02T15:38:56Z
+  contributor: 'Smith, Jennifer'
+  description: 'Abstract'
+  related_url: 'http://dx.doi.org/10.1186/1753-6561-3-S7-S87'
+  publisher: 'Project Gutenberg'
+  resource_type: 'Book'
+  language: 'English'
+  rights_statement: 'http://www.europeana.eu/portal/rights/rr-r.html'
+  visibility: open
+
+15:
+  creator: 'Nagai, Kafu'
+  depositor: admin@example.com
+  label: Udekurabe
+  title: Udekurabe
+  date_created: 2017-10-02T17:59:37Z
+  date_modified: 2017-10-02T17:59:37Z
+  contributor: 'Smith, Jennifer'
+  description: 'Abstract'
+  related_url: 'http://dx.doi.org/10.1186/1753-6561-3-S7-S87'
+  publisher: 'Project Gutenberg'
+  resource_type: 'Book'
+  language: 'Japanese'
+  rights_statement: 'http://www.europeana.eu/portal/rights/rr-r.html'
+  visibility: open
+
+16:
+  creator: 'Brothers Grimm, The'
+  depositor: admin@example.com
+  label: Grimms' Fairy Tales
+  title: Grimms' Fairy Tales
+  date_created: 2017-10-02T17:16:20Z
+  date_modified: 2017-10-02T17:16:20Z
+  contributor: 'Smith, Jennifer'
+  description: 'Abstract'
+  related_url: 'http://dx.doi.org/10.1186/1753-6561-3-S7-S87'
+  publisher: 'Project Gutenberg'
+  resource_type: 'Book'
+  language: 'English'
+  rights_statement: 'http://www.europeana.eu/portal/rights/rr-r.html'
+  visibility: open
+
+17:
+  creator: 'Twain, Mark'
+  depositor: admin@example.com
+  label: The Adventures of Tom Sawyer
+  title: The Adventures of Tom Sawyer
+  date_created: 2017-10-02T17:25:48Z
+  date_modified: 2017-10-02T17:25:48Z
+  contributor: 'Smith, Jennifer'
+  description: 'Abstract'
+  related_url: 'http://dx.doi.org/10.1186/1753-6561-3-S7-S87'
+  publisher: 'Project Gutenberg'
+  resource_type: 'Book'
+  language: 'English'
+  rights_statement: 'http://www.europeana.eu/portal/rights/rr-r.html'
+  visibility: open
+
+18:
+  creator: 'Franklin, Benjamin'
+  depositor: admin@example.com
+  label: Autobiography of Benjamin Franklin
+  title: Autobiography of Benjamin Franklin
+  date_created: 2017-10-02T17:54:29Z
+  date_modified: 2017-10-02T17:54:29Z
+  contributor: 'Smith, Jennifer'
+  description: 'Abstract'
+  related_url: 'http://dx.doi.org/10.1186/1753-6561-3-S7-S87'
+  publisher: 'Project Gutenberg'
+  resource_type: 'Book'
+  language: 'English'
+  rights_statement: 'http://www.europeana.eu/portal/rights/rr-r.html'
+  visibility: open
+
+19:
+  creator: 'Wells, H. G.'
+  depositor: admin@example.com
+  label: The Time Machine
+  title: The Time Machine
+  date_created: 2017-10-02T17:58:46Z
+  date_modified: 2017-10-02T17:58:46Z
+  contributor: 'Smith, Jennifer'
+  description: 'Abstract'
+  related_url: 'http://dx.doi.org/10.1186/1753-6561-3-S7-S87'
+  publisher: 'Project Gutenberg'
+  resource_type: 'Book'
+  language: 'English'
+  rights_statement: 'http://www.europeana.eu/portal/rights/rr-r.html'
+  visibility: open
+
+20:
+  creator: 'Twain, Mark'
+  depositor: admin@example.com
+  label: Adventures of Huckleberry Finn
+  title: Adventures of Huckleberry Finn
+  date_created: 2017-10-02T17:41:49Z
+  date_modified: 2017-10-02T17:41:49Z
+  contributor: 'Smith, Jennifer'
+  description: 'Abstract'
+  related_url: 'http://dx.doi.org/10.1186/1753-6561-3-S7-S87'
+  publisher: 'Project Gutenberg'
+  resource_type: 'Book'
+  language: 'English'
+  rights_statement: 'http://www.europeana.eu/portal/rights/rr-r.html'
+  visibility: open
+
+21:
+  creator: 'Paine, Thomas'
+  depositor: admin@example.com
+  label: Common Sense
+  title: Common Sense
+  date_created: 2017-10-02T17:53:00Z
+  date_modified: 2017-10-02T17:53:00Z
+  contributor: 'Smith, Jennifer'
+  description: 'Abstract'
+  related_url: 'http://dx.doi.org/10.1186/1753-6561-3-S7-S87'
+  publisher: 'Project Gutenberg'
+  resource_type: 'Book'
+  language: 'English'
+  rights_statement: 'http://www.europeana.eu/portal/rights/rr-r.html'
+  visibility: open
+
+22:
+  creator: 'Wilde, Oscar'
+  depositor: admin@example.com
+  label: The Importance of Being Earnest
+  title: The Importance of Being Earnest
+  date_created: 2017-10-02T17:49:22Z
+  date_modified: 2017-10-02T17:49:22Z
+  contributor: 'Smith, Jennifer'
+  description: 'Abstract'
+  related_url: 'http://dx.doi.org/10.1186/1753-6561-3-S7-S87'
+  publisher: 'Project Gutenberg'
+  resource_type: 'Book'
+  language: 'English'
+  rights_statement: 'http://www.europeana.eu/portal/rights/rr-r.html'
+  visibility: open
+
+23:
+  creator: 'Hawthorne, Nathaniel'
+  depositor: admin@example.com
+  label: The Scarlet Letter
+  title: The Scarlet Letter
+  date_created: 2017-10-02T17:57:36Z
+  date_modified: 2017-10-02T17:57:36Z
+  contributor: 'Smith, Jennifer'
+  description: 'Abstract'
+  related_url: 'http://dx.doi.org/10.1186/1753-6561-3-S7-S87'
+  publisher: 'Project Gutenberg'
+  resource_type: 'Book'
+  language: 'English'
+  rights_statement: 'http://www.europeana.eu/portal/rights/rr-r.html'
+  visibility: open
+
+24:
+  creator: 'Austen, Jane'
+  depositor: admin@example.com
+  label: Emma
+  title: Emma
+  date_created: 2017-10-02T17:13:31Z
+  date_modified: 2017-10-02T17:13:31Z
+  contributor: 'Smith, Jennifer'
+  description: 'Abstract'
+  related_url: 'http://dx.doi.org/10.1186/1753-6561-3-S7-S87'
+  publisher: 'Project Gutenberg'
+  resource_type: 'Book'
+  language: 'English'
+  rights_statement: 'http://www.europeana.eu/portal/rights/rr-r.html'
+  visibility: open
+
+25:
+  creator: 'Bronte, Charlotte'
+  depositor: admin@example.com
+  label: Wuthering Heights
+  title: Wuthering Heights
+  date_created: 2017-10-03T14:34:07Z
+  date_modified: 2017-10-03T14:34:07Z
+  contributor: 'Smith, Jennifer'
+  description: 'Abstract'
+  related_url: 'http://dx.doi.org/10.1186/1753-6561-3-S7-S87'
+  publisher: 'Project Gutenberg'
+  resource_type: 'Book'
+  language: 'English'
+  rights_statement: 'http://www.europeana.eu/portal/rights/rr-r.html'
+  visibility: open
+
+26:
+  creator: 'Stoker, Bram'
+  depositor: admin@example.com
+  label: Dracula
+  title: Dracula
+  date_created: 2017-10-02T17:55:07Z
+  date_modified: 2017-10-02T17:55:07Z
+  contributor: 'Smith, Jennifer'
+  description: 'Abstract'
+  related_url: 'http://dx.doi.org/10.1186/1753-6561-3-S7-S87'
+  publisher: 'Project Gutenberg'
+  resource_type: 'Book'
+  language: 'English'
+  rights_statement: 'http://www.europeana.eu/portal/rights/rr-r.html'
+  visibility: open
+
+27:
+  creator: 'Barrie, J. M.'
+  depositor: admin@example.com
+  label: Peter Pan
+  title: Peter Pan
+  date_created: 2017-10-02T17:48:33Z
+  date_modified: 2017-10-02T17:48:33Z
+  contributor: 'Smith, Jennifer'
+  description: 'Abstract'
+  related_url: 'http://dx.doi.org/10.1186/1753-6561-3-S7-S87'
+  publisher: 'Project Gutenberg'
+  resource_type: 'Book'
+  language: 'English'
+  rights_statement: 'http://www.europeana.eu/portal/rights/rr-r.html'
+  visibility: open
+
+28:
+  creator: 'Masamune, Hakucho'
+  depositor: admin@example.com
+  label: Doko e
+  title: Doko e
+  date_created: 2017-10-02T17:51:26Z
+  date_modified: 2017-10-02T17:51:26Z
+  contributor: 'Smith, Jennifer'
+  description: 'Abstract'
+  related_url: 'http://dx.doi.org/10.1186/1753-6561-3-S7-S87'
+  publisher: 'Project Gutenberg'
+  resource_type: 'Book'
+  language: 'Japanese'
+  rights_statement: 'http://www.europeana.eu/portal/rights/rr-r.html'
+  visibility: open
+
+29:
+  creator: 'Dickens, Charles'
+  depositor: admin@example.com
+  label: A Tale of Two Cities
+  title: A Tale of Two Cities
+  date_created: 2017-10-02T17:18:31Z
+  date_modified: 2017-10-02T17:18:31Z
+  contributor: 'Smith, Jennifer'
+  description: 'Abstract'
+  related_url: 'http://dx.doi.org/10.1186/1753-6561-3-S7-S87'
+  publisher: 'Project Gutenberg'
+  resource_type: 'Book'
+  language: 'English'
+  rights_statement: 'http://www.europeana.eu/portal/rights/rr-r.html'
+  visibility: open
+
+30:
+  creator: 'Shelley, Mary'
+  depositor: admin@example.com
+  label: Frankenstein
+  title: Frankenstein
+  date_created: 2017-10-02T17:53:34Z
+  date_modified: 2017-10-02T17:53:34Z
+  contributor: 'Smith, Jennifer'
+  description: 'Abstract'
+  related_url: 'http://dx.doi.org/10.1186/1753-6561-3-S7-S87'
+  publisher: 'Project Gutenberg'
+  resource_type: 'Book'
+  language: 'English'
+  rights_statement: 'http://www.europeana.eu/portal/rights/rr-r.html'
+  visibility: open
