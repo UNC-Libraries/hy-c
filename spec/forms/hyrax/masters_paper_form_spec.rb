@@ -24,7 +24,7 @@ RSpec.describe Hyrax::MastersPaperForm do
     subject { form.secondary_terms }
 
     it { is_expected.to match_array [:keyword, :date_created, :subject, :academic_concentration, :degree, :graduation_year,
-                            :genre, :access, :extent, :reviewer, :geographic_subject, :note, :medium] }
+                            :genre, :access, :extent, :reviewer, :geographic_subject, :note, :medium, :language] }
   end
 
   describe '.model_attributes' do

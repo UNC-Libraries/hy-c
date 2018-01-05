@@ -28,6 +28,7 @@ RSpec.describe MastersPaper do
       expect(subject).to respond_to(:date_uploaded)
       expect(subject).to respond_to(:date_modified)
       expect(subject).to respond_to(:subject)
+      expect(subject).to respond_to(:language)
       expect(subject).to respond_to(:license)
       expect(subject).to respond_to(:rights_statement)
       expect(subject).to respond_to(:resource_type)
