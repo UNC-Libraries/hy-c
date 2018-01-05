@@ -18,7 +18,7 @@ module Hyrax
       property :description, predicate: ::RDF::Vocab::DC11.description
       property :keyword, predicate: ::RDF::Vocab::SCHEMA.keywords
       # Used for a license
-      property :license, predicate: ::RDF::Vocab::DC.rights
+      property :license, predicate: ::RDF::Vocab::DC11.rights
 
       # This is for the rights statement
       property :rights_statement, predicate: ::RDF::Vocab::EDM.rights
