@@ -96,6 +96,10 @@ class SolrDocument
     self[Solrizer.solr_name('coauthor')]
   end
 
+  def date_issued
+    self[Solrizer.solr_name('date_issued')]
+  end
+
   def date_published
     self[Solrizer.solr_name('date_published')]
   end
@@ -108,12 +112,20 @@ class SolrDocument
     self[Solrizer.solr_name('degree_granting_institution')]
   end
 
+  def discipline
+    self[Solrizer.solr_name('discipline')]
+  end
+
   def doi
     self[Solrizer.solr_name('doi')]
   end
 
   def faculty_advisor_name
     self[Solrizer.solr_name('faculty_advisor_name')]
+  end
+
+  def format
+    self[Solrizer.solr_name('format')]
   end
 
   def genre
@@ -152,6 +164,10 @@ class SolrDocument
     self[Solrizer.solr_name('orcid')]
   end
 
+  def place_of_publication
+    self[Solrizer.solr_name('place_of_publication')]
+  end
+
   def publication
     self[Solrizer.solr_name('publication')]
   end
@@ -162,6 +178,14 @@ class SolrDocument
 
   def publication_version
     self[Solrizer.solr_name('publication_version')]
+  end
+
+  def record_content_source
+    self[Solrizer.solr_name('record_content_source')]
+  end
+
+  def reviewer
+    self[Solrizer.solr_name('reviewer')]
   end
 
   def sets
