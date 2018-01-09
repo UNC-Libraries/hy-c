@@ -15,8 +15,7 @@ Hyrax::Workflow::StatusListService.class_eval do
         query_params << "((id:#{entities.join(' OR id:')}) AND #{@filter_condition})"
       elsif !actionable_roles.blank? && !entities.blank?
         query_params << "((({!terms f=actionable_workflow_roles_ssim}#{actionable_roles.join(',')})"
-        query_params << @filter_condition+')'
-        query_params << ") OR ((id:#{entities.join(' OR id:')}) AND #{@filter_condition}))"
+        query_params << @filter_condition+")) OR ((id:#{entities.join(' OR id:')}) AND #{@filter_condition}))"
       else
         query_params << @filter_condition
       end
@@ -37,14 +36,16 @@ Hyrax::Workflow::StatusListService.class_eval do
 
 
     def entities_for_user
+      entity_array = []
       approving_role = Sipity::Role.find_by(name: Hyrax::RoleRegistry::APPROVING)
       Hyrax::Workflow::PermissionQuery.scope_processing_agents_for(user: user).map do |agent|
         entities = agent.entity_specific_responsibilities.joins(:workflow_role).where('sipity_workflow_roles.role_id' => approving_role.id)
         unless entities.blank?
           entities.each do |entity|
-            "#{(Sipity::Entity.find(entity.entity_id).proxy_for_global_id).split('/')[-1]}"
+            entity_array << "#{(Sipity::Entity.find(entity.entity_id).proxy_for_global_id).split('/')[-1]}"
           end
         end
       end
+      entity_array
     end
 end
