@@ -32,12 +32,20 @@ class HonorsThesis < ActiveFedora::Base
     index.as :stored_searchable
   end
 
+  property :date_issued, predicate: ::RDF::Vocab::DC.issued, multiple: false do |index|
+    index.as :stored_searchable
+  end
+
   property :degree, predicate: ::RDF::Vocab::BIBO.degree, multiple: false do |index|
     index.as :stored_searchable
   end
 
   property :degree_granting_institution, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/ddg'),
            multiple: false do |index|
+    index.as :stored_searchable
+  end
+
+  property :extent, predicate: ::RDF::Vocab::DC.extent do |index|
     index.as :stored_searchable
   end
 

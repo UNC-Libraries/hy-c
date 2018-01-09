@@ -96,6 +96,10 @@ class SolrDocument
     self[Solrizer.solr_name('coauthor')]
   end
 
+  def date_issued
+    self[Solrizer.solr_name('date_issued')]
+  end
+
   def date_published
     self[Solrizer.solr_name('date_published')]
   end
@@ -110,6 +114,10 @@ class SolrDocument
 
   def doi
     self[Solrizer.solr_name('doi')]
+  end
+
+  def extent
+    self[Solrizer.solr_name('extent')]
   end
 
   def faculty_advisor_name
