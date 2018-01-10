@@ -9,24 +9,23 @@ RSpec.describe Hyrax::DissertationForm do
   describe "#required_fields" do
     subject { form.required_fields }
 
-    it { is_expected.to match_array [:title, :creator, :rights_statement, :academic_department,
-                                     :degree_granting_institution, :abstract, :advisor, :resource_type, :license] }
+    it { is_expected.to match_array [:title, :creator, :degree_granting_institution] }
   end
 
   describe "#primary_terms" do
     subject { form.primary_terms }
 
-    it { is_expected.to match_array [:title, :creator, :rights_statement, :academic_department,
-                                     :degree_granting_institution, :abstract, :advisor, :resource_type, :license] }
+    it { is_expected.to match_array [:title, :creator, :degree_granting_institution] }
   end
 
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:academic_concentration, :access, :date_issued, :degree, :discipline, :doi,
-                                     :format, :genre, :graduation_year, :note, :place_of_publication,
-                                     :record_content_source, :reviewer, :contributor, :identifier, :subject, :publisher,
-                                     :language, :related_url, :keyword] }
+    it { is_expected.to match_array [:abstract, :academic_concentration, :academic_department, :access, :advisor,
+                                     :date_issued, :degree, :discipline, :doi, :format, :genre, :graduation_year, :note,
+                                     :place_of_publication, :record_content_source, :reviewer, :contributor,
+                                     :identifier, :subject, :publisher, :language, :keyword, :rights_statement,
+                                     :license, :resource_type] }
   end
 
   describe '.model_attributes' do
