@@ -9,22 +9,22 @@ RSpec.describe Hyrax::MastersPaperForm do
   describe "#required_fields" do
     subject { form.required_fields }
 
-    it { is_expected.to match_array [:title, :creator, :rights_statement, :academic_department, :degree_granting_institution,
-                            :abstract, :advisor, :resource_type, :license] }
+    it { is_expected.to match_array [:title, :creator, :degree_granting_institution] }
   end
 
   describe "#primary_terms" do
     subject { form.primary_terms }
 
-    it { is_expected.to match_array [:title, :creator, :rights_statement, :academic_department, :degree_granting_institution,
-                            :abstract, :advisor, :resource_type, :license] }
+    it { is_expected.to match_array [:title, :creator, :degree_granting_institution] }
   end
 
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:keyword, :date_created, :subject, :academic_concentration, :degree, :graduation_year,
-                            :genre, :access, :extent, :reviewer, :geographic_subject, :note, :medium, :language] }
+    it { is_expected.to match_array [:keyword, :date_created, :subject, :language, :rights_statement, :license,
+                                     :academic_concentration, :academic_department, :degree, :graduation_year,
+                                     :abstract, :advisor, :genre, :access, :extent, :reviewer, :geographic_subject,
+                                     :note, :medium, :resource_type] }
   end
 
   describe '.model_attributes' do
@@ -41,6 +41,7 @@ RSpec.describe Hyrax::MastersPaperForm do
           degree: 'MS',
           degree_granting_institution: 'UNC',
           graduation_year: '2017',
+          date_created: 'a date',
           license: ['http://creativecommons.org/licenses/by/3.0/us/'],
           member_of_collection_ids: ['123456', 'abcdef']
       )
@@ -59,6 +60,7 @@ RSpec.describe Hyrax::MastersPaperForm do
       expect(subject['degree']).to eq 'MS'
       expect(subject['degree_granting_institution']).to eq 'UNC'
       expect(subject['graduation_year']).to eq '2017'
+      expect(subject['date_created']).to eq 'a date'
       expect(subject['member_of_collection_ids']).to eq ['123456', 'abcdef']
     end
 
