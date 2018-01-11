@@ -9,21 +9,20 @@ RSpec.describe Hyrax::HonorsThesisForm do
   describe "#required_fields" do
     subject { form.required_fields }
 
-    it { is_expected.to match_array [:title, :creator, :rights_statement, :abstract, :academic_department,
-                                     :advisor, :degree_granting_institution, :resource_type, :license] }
+    it { is_expected.to match_array [:title, :creator, :degree_granting_institution] }
   end
 
   describe "#primary_terms" do
     subject { form.primary_terms }
 
-    it { is_expected.to match_array [:title, :creator, :rights_statement, :abstract, :academic_department,
-                                     :advisor, :degree_granting_institution, :resource_type, :license] }
+    it { is_expected.to match_array [:title, :creator, :degree_granting_institution] }
   end
 
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:subject, :language, :degree, :genre, :graduation_year,
+    it { is_expected.to match_array [:abstract, :academic_department, :advisor, :license, :resource_type,
+                                     :rights_statement, :subject, :language, :degree, :genre, :graduation_year,
                                      :honors_level, :note, :academic_concentration, :keyword, :related_url, :access] }
   end
 
@@ -38,6 +37,9 @@ RSpec.describe Hyrax::HonorsThesisForm do
           thumbnail_id: '789',
           degree_granting_institution: 'UNC',
           keyword: ['test'],
+          access: 'public',
+          degree: 'MS',
+          graduation_year: '2017',
           license: ['http://creativecommons.org/licenses/by/3.0/us/'],
           member_of_collection_ids: ['123456', 'abcdef']
       )
@@ -55,6 +57,9 @@ RSpec.describe Hyrax::HonorsThesisForm do
       expect(subject['degree_granting_institution']).to eq 'UNC'
       expect(subject['license']).to eq ['http://creativecommons.org/licenses/by/3.0/us/']
       expect(subject['keyword']).to eq ['test']
+      expect(subject['access']).to eq 'public'
+      expect(subject['degree']).to eq 'MS'
+      expect(subject['graduation_year']).to eq '2017'
       expect(subject['member_of_collection_ids']).to eq ['123456', 'abcdef']
     end
 

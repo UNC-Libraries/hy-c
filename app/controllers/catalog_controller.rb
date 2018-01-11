@@ -113,6 +113,7 @@ class CatalogController < ApplicationController
     config.add_index_field solr_name("advisor", :stored_searchable), label: "Advisor"
     config.add_index_field solr_name("author_status", :stored_searchable), label: "Status"
     config.add_index_field solr_name("citation", :stored_searchable), label: "Citation"
+    config.add_index_field solr_name("date_issued", :stored_searchable), label: "Date Issued"
     config.add_index_field solr_name("date_published", :stored_searchable), label: "Date Published"
     config.add_index_field solr_name("degree", :stored_searchable), label: "Degree"
     config.add_index_field solr_name("degree_granting_institution", :stored_searchable), label: "Degree Granting Institution"

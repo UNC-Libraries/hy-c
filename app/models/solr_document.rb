@@ -72,6 +72,10 @@ class SolrDocument
     self[Solrizer.solr_name('citation')]
   end
 
+  def date_issued
+    self[Solrizer.solr_name('date_issued')]
+  end
+
   def date_published
     self[Solrizer.solr_name('date_published')]
   end

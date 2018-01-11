@@ -24,7 +24,7 @@ class HonorsThesis < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :access, predicate: ::RDF::Vocab::DC.accessRights do |index|
+  property :access, predicate: ::RDF::Vocab::DC.accessRights, multiple: false do |index|
     index.as :stored_searchable
   end
 
@@ -32,7 +32,11 @@ class HonorsThesis < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :degree, predicate: ::RDF::Vocab::BIBO.degree do |index|
+  property :date_issued, predicate: ::RDF::Vocab::DC.issued, multiple: false do |index|
+    index.as :stored_searchable
+  end
+
+  property :degree, predicate: ::RDF::Vocab::BIBO.degree, multiple: false do |index|
     index.as :stored_searchable
   end
 
@@ -41,11 +45,16 @@ class HonorsThesis < ActiveFedora::Base
     index.as :stored_searchable
   end
 
+  property :extent, predicate: ::RDF::Vocab::DC.extent do |index|
+    index.as :stored_searchable
+  end
+
   property :genre, predicate: ::RDF::Vocab::EDM.hasType do |index|
     index.as :stored_searchable
   end
 
-  property :graduation_year, predicate: ::RDF::URI('http://rdaregistry.info/Elements/w/yearDegreeGranted.en') do |index|
+  property :graduation_year, predicate: ::RDF::URI('http://rdaregistry.info/Elements/w/yearDegreeGranted.en'),
+           multiple: false do |index|
     index.as :stored_searchable
   end
 
