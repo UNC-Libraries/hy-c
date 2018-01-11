@@ -48,12 +48,28 @@ class SolrDocument
 
   use_extension( Hydra::ContentNegotiation )
 
+  def abstract
+    self[Solrizer.solr_name('abstract')]
+  end
+
+  def academic_concentration
+    self[Solrizer.solr_name('academic_concentration')]
+  end
+
   def academic_department
     self[Solrizer.solr_name('academic_department')]
   end
 
   def additional_funding
     self[Solrizer.solr_name('additional_funding')]
+  end
+
+  def access
+    self[Solrizer.solr_name('access')]
+  end
+
+  def advisor
+    self[Solrizer.solr_name('advisor')]
   end
 
   def author_degree_granted
@@ -80,20 +96,48 @@ class SolrDocument
     self[Solrizer.solr_name('coauthor')]
   end
 
+  def date_issued
+    self[Solrizer.solr_name('date_issued')]
+  end
+
   def date_published
     self[Solrizer.solr_name('date_published')]
+  end
+
+  def degree
+    self[Solrizer.solr_name('degree')]
+  end
+
+  def degree_granting_institution
+    self[Solrizer.solr_name('degree_granting_institution')]
   end
 
   def doi
     self[Solrizer.solr_name('doi')]
   end
 
+  def extent
+    self[Solrizer.solr_name('extent')]
+  end
+
   def faculty_advisor_name
     self[Solrizer.solr_name('faculty_advisor_name')]
   end
 
+  def genre
+    self[Solrizer.solr_name('genre')]
+  end
+
+  def graduation_year
+    self[Solrizer.solr_name('graduation_year')]
+  end
+
   def granting_agency
     self[Solrizer.solr_name('granting_agency')]
+  end
+
+  def honors_level
+    self[Solrizer.solr_name('honors_level')]
   end
 
   def issue
@@ -106,6 +150,10 @@ class SolrDocument
 
   def link_to_publisher_version
     self[Solrizer.solr_name('link_to_publisher_version')]
+  end
+
+  def note
+    self[Solrizer.solr_name('note')]
   end
 
   def orcid
