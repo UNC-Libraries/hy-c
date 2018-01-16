@@ -10,9 +10,7 @@ class OpenAccess < ActiveFedora::Base
 
   self.human_readable_type = 'Open Access'
 
-  property :academic_department,
-           predicate: ::RDF::URI("http://vivoweb.org/ontology/core#AcademicDepartment"),
-           multiple: false do |index|
+  property :academic_department, predicate: ::RDF::URI("http://vivoweb.org/ontology/core#AcademicDepartment") do |index|
     index.as :stored_searchable
   end
 
