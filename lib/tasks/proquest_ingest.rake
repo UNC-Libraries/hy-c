@@ -172,7 +172,11 @@ namespace :proquest do
       advisor.xpath('DISS_surname').text+', '+advisor.xpath('DISS_fname').text+' '+advisor.xpath('DISS_middle').text
     end
     degree = metadata.xpath('//DISS_description/DISS_degree').text
-    academic_department = metadata.xpath('//DISS_description/DISS_categorization/DISS_category/DISS_cat_desc').text
+    academic_department = metadata.xpath('//DISS_description/DISS_institution/DISS_inst_contact').text
+    language = metadata.xpath('//DISS_description/DISS_categorization/DISS_language').text
+    if language == 'en'
+      language = 'English'
+    end
 
     file_full << metadata.xpath('//DISS_content/DISS_binary').text
     file_full += metadata.xpath('//DISS_content/DISS_attachment').map do |file_name|
@@ -190,6 +194,7 @@ namespace :proquest do
         'advisor'=>advisor,
         'degree'=>degree,
         'academic_department'=>academic_department,
+        'language'=>language,
         'visibility'=>visibility,
         'embargo_release_date'=>embargo_release_date,
         'visibility_during_embargo'=>visibility_during_embargo,
@@ -215,6 +220,7 @@ namespace :proquest do
     resource.advisor = work_attributes['advisor']
     resource.degree = work_attributes['degree']
     resource.academic_department = [work_attributes['academic_department']]
+    resource.language = [work_attributes['language']]
     resource.date_modified = Time.now()
     resource.date_uploaded = Time.now()
     resource.rights_statement = ['http://rightsstatements.org/vocab/InC-EDU/1.0/']
