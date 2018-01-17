@@ -6,44 +6,44 @@ namespace :proquest do
   require 'tasks/migration/migration_constants'
   require 'zip'
 
-  #set fedora access URL. replace with fedora username and password
-  #test environment will not have access to ERA's fedora
+  # set fedora access URL. replace with fedora username and password
+  # test environment will not have access to ERA's fedora
 
   # Must include the email address of a valid user in order to ingest files
   @depositor_email = 'admin@example.com'
 
-  #Use the ERA public interface to download original file and foxml
+  # Use the ERA public interface to download original file and foxml
   @fedora_url = ENV['FEDORA_PRODUCTION_URL']
 
-  #temporary location for file download
+  # temporary location for file download
   @temp = 'lib/tasks/ingest/tmp'
   @file_store = 'lib/tasks/migration/files'
   @temp_foxml = 'lib/tasks/tmp/tmp'
   FileUtils::mkdir_p @temp
 
-  #report directory
+  # report directory
   @reports = 'lib/tasks/migration/reports/'
-  #Oddities report
+  # Oddities report
   @oddities = @reports+ 'oddities.txt'
-  #verification error report
+  # verification error report
   @verification_error = @reports + 'verification_errors.txt'
-  #item migration list
+  # item migration list
   @item_list = @reports + 'item_list.txt'
-  #collection list
+  # collection list
   @collection_list = @reports + 'collection_list.txt'
   FileUtils::mkdir_p @reports
-  #successful_path
+  # successful_path
   @completed_dir = 'lib/tasks/migration/completed'
   FileUtils::mkdir_p @completed_dir
 
-  # Sample data is currently stored in the hyrax/lib/tasks/migration/tmp directory.  Each object is stored in a
-  # directory labelled with its uuid. Container objects only contain a metadata file and are stored as
-  # {uuid}/uuid:{uuid}-object.xml. File objects contain a metadata file and the file to be imported which are stored in
-  # the same directory as {uuid}/uuid:{uuid}.xml and {uuid}/{uuid}-DATA_FILE.*, respectively.
 
   desc 'batch migrate generic files from FOXML file'
   task :ingest, [:dir, :migrate_datastreams] => :environment do |t, args|
     args.with_defaults(:migrate_datastreams => "true")
+
+    # Should deposit works into an admin set
+    # Update title parameter to reflect correct admin set
+    @admin_set_id = ::AdminSet.where(title: 'default').first.id
 
     metadata_dir = args.dir
     migrate_objects(metadata_dir)
@@ -66,7 +66,10 @@ namespace :proquest do
           resource = work_record(metadata_fields[:resource])
           resource.save!
 
-          ingest_files(resource: resource, files: metadata_fields[:files], metadata: metadata_fields[:resource], zip_dir_files: metadata_files)
+          ingest_files(resource: resource,
+                       files: metadata_fields[:files],
+                       metadata: metadata_fields[:resource],
+                       zip_dir_files: metadata_files)
         end
       end
     end
@@ -104,11 +107,14 @@ namespace :proquest do
 
   def ingest_file(parent: nil, resource: nil, f: nil)
     puts 'ingesting... '+f.to_s
-    file_set = FileSet.create(resource.slice(:title, :label, :creator, :depositor, :visibility))
+    fileset_metadata = resource.slice('visibility', 'embargo_release_date', 'visibility_during_embargo',
+                                      'visibility_after_embargo')
+    if resource['embargo_release_date'].blank?
+      fileset_metadata.except!('embargo_release_date', 'visibility_during_embargo', 'visibility_after_embargo')
+    end
+    file_set = FileSet.create(fileset_metadata)
     actor = Hyrax::Actors::FileSetActor.new(file_set, User.find_by_email(@depositor_email))
-    actor.create_metadata(resource.slice(:visibility, :visibility_during_lease, :visibility_after_lease,
-                                          :lease_expiration_date, :embargo_release_date, :visibility_during_embargo,
-                                          :visibility_after_embargo))
+    actor.create_metadata(resource)
     file = File.open(f)
     actor.create_content(file)
     actor.attach_to_work(parent)
@@ -127,6 +133,31 @@ namespace :proquest do
     visibility_after_embargo = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
     embargo_release_date = ''
     visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
+
+    embargo_code = metadata.xpath('//DISS_submission/@embargo_code').text
+
+    unless embargo_code.blank?
+      current_date = DateTime.now
+      comp_date_string = metadata.xpath('//DISS_description/DISS_dates/DISS_comp_date').text
+      comp_date = DateTime.new(comp_date_string.to_i, 12, 31)
+      embargo_release_date = current_date < comp_date ? current_date : comp_date
+
+      if embargo_code == '2'
+        embargo_release_date += 4.year
+      elsif ['3', '4'].include? embargo_release_date
+        embargo_release_date += 2.years
+      else
+        embargo_release_date = ''
+      end
+
+      if !embargo_release_date.blank? && embargo_release_date != current_date && embargo_release_date < current_date
+        embargo_release_date = ''
+      end
+
+      unless embargo_release_date.blank?
+        visibility = visibility_during_embargo
+      end
+    end
 
     title = metadata.xpath('//DISS_description/DISS_title').text
     creators = metadata.xpath('//DISS_submission/DISS_authorship/DISS_author/DISS_name').map do |creator|
@@ -151,7 +182,7 @@ namespace :proquest do
     file.close
 
     work_attributes = {
-        'title'=>[title+Time.now().strftime('%Y-%m-%dT%H:%M:%S.%N%Z')],
+        'title'=>[title],
         'creator'=>creators,
         'degree_granting_institution'=> degree_granting_institution,
         'keyword'=>keywords,
@@ -162,7 +193,8 @@ namespace :proquest do
         'visibility'=>visibility,
         'embargo_release_date'=>embargo_release_date,
         'visibility_during_embargo'=>visibility_during_embargo,
-        'visibility_after_embargo'=>visibility_after_embargo
+        'visibility_after_embargo'=>visibility_after_embargo,
+        'admin_set_id'=>@admin_set_id
     }
 
     { resource: work_attributes, files: file_full }
@@ -183,8 +215,10 @@ namespace :proquest do
     resource.advisor = work_attributes['advisor']
     resource.degree = work_attributes['degree']
     resource.academic_department = [work_attributes['academic_department']]
-    resource.date_modified = Time.now().strftime('%Y-%m-%dT%H:%M:%S.%N%Z')
+    resource.date_modified = Time.now()
+    resource.date_uploaded = Time.now()
     resource.rights_statement = ['http://rightsstatements.org/vocab/InC-EDU/1.0/']
+    resource.admin_set_id = work_attributes['admin_set_id']
     resource.visibility = work_attributes['visibility']
     unless work_attributes['embargo_release_date'].blank?
     resource.embargo_release_date = work_attributes['embargo_release_date']
@@ -194,5 +228,4 @@ namespace :proquest do
 
     resource
   end
-
 end
