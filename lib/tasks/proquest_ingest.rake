@@ -143,7 +143,7 @@ namespace :proquest do
       embargo_release_date = current_date < comp_date ? current_date : comp_date
 
       if embargo_code == '2'
-        embargo_release_date += 4.year
+        embargo_release_date += 1.year
       elsif ['3', '4'].include? embargo_release_date
         embargo_release_date += 2.years
       else
