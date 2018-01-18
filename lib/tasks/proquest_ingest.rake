@@ -51,41 +51,40 @@ namespace :proquest do
 
   def migrate_objects(metadata_dir)
     proquest_packages = Dir.glob("#{metadata_dir}/*.zip")
-    extract_files(proquest_packages)
-    metadata_files = Dir.glob("#{@temp}/**/*")
+    proquest_packages.each do |package|
+      puts 'Unpacking '+package
+      extract_files(package)
+      metadata_files = Dir.glob("#{@temp}/**/*")
 
-    puts 'Object count: '+metadata_files.count.to_s
+      metadata_files.sort.each do |file|
+        if File.file?(file)
+          if file.match('.xml')
+            metadata_fields = metadata(file, metadata_dir)
 
-    metadata_files.sort.each do |file|
-      if File.file?(file)
-        if file.match('.xml')
-          metadata_fields = metadata(file, metadata_dir)
+            puts 'Number of files: '+metadata_fields[:files].count.to_s
 
-          puts 'Number of files: '+metadata_fields[:files].count.to_s
+            resource = work_record(metadata_fields[:resource])
+            resource.save!
 
-          resource = work_record(metadata_fields[:resource])
-          resource.save!
-
-          ingest_files(resource: resource,
-                       files: metadata_fields[:files],
-                       metadata: metadata_fields[:resource],
-                       zip_dir_files: metadata_files)
+            ingest_files(resource: resource,
+                         files: metadata_fields[:files],
+                         metadata: metadata_fields[:resource],
+                         zip_dir_files: metadata_files)
+          end
         end
       end
+      FileUtils.rm_rf(@temp)
     end
-    FileUtils.rm_rf(@temp)
   end
 
-  def extract_files(files)
-    files.each do |file|
-      fname = file.split('.zip')[0].split('/')[-1]
-      FileUtils::mkdir_p @temp+'/'+fname
-      Zip::File.open(file) do |zip_file|
-        zip_file.each do |f|
-          fpath = File.join(@temp+'/'+fname, f.name)
-          puts fpath
-          zip_file.extract(f, fpath) unless File.exist?(fpath)
-        end
+  def extract_files(file)
+    fname = file.split('.zip')[0].split('/')[-1]
+    FileUtils::mkdir_p @temp+'/'+fname
+    Zip::File.open(file) do |zip_file|
+      zip_file.each do |f|
+        fpath = File.join(@temp+'/'+fname, f.name)
+        puts fpath
+        zip_file.extract(f, fpath) unless File.exist?(fpath)
       end
     end
   end
@@ -95,7 +94,7 @@ namespace :proquest do
 
     files.each do |f|
       file_path = zip_dir_files.find { |e| e.match(f) }
-      puts 'testing... '+f.to_s
+      puts 'trying... '+f.to_s
       if !file_path.nil? && File.file?(file_path)
         file_set = ingest_file(parent: resource, resource: metadata, f: file_path)
         ordered_members << file_set if file_set
@@ -173,6 +172,20 @@ namespace :proquest do
     end
     degree = metadata.xpath('//DISS_description/DISS_degree').text
     academic_department = metadata.xpath('//DISS_description/DISS_institution/DISS_inst_contact').text
+
+    accept_date = metadata.xpath('//DISS_description/DISS_dates/DISS_accept_date').text
+    accept_date = Date.strptime(accept_date,"%m/%d/%Y")
+    graduation_semester = ''
+    if accept_date.month >= 2 && accept_date.month <= 6
+      graduation_semester = 'Spring'
+    elsif accept_date.month >= 7 && accept_date.month <= 9
+      graduation_semester = 'Summer'
+    else
+      graduation_semester = 'Winter'
+    end
+    graduation_year = graduation_semester+' '+accept_date.year.to_s
+    puts graduation_year
+
     language = metadata.xpath('//DISS_description/DISS_categorization/DISS_language').text
     if language == 'en'
       language = 'English'
@@ -194,6 +207,7 @@ namespace :proquest do
         'advisor'=>advisor,
         'degree'=>degree,
         'academic_department'=>academic_department,
+        'graduation_year'=>graduation_year,
         'language'=>language,
         'visibility'=>visibility,
         'embargo_release_date'=>embargo_release_date,
@@ -220,6 +234,7 @@ namespace :proquest do
     resource.advisor = work_attributes['advisor']
     resource.degree = work_attributes['degree']
     resource.academic_department = [work_attributes['academic_department']]
+    resource.graduation_year = work_attributes['graduation_year']
     resource.language = [work_attributes['language']]
     resource.date_modified = Time.now()
     resource.date_uploaded = Time.now()
