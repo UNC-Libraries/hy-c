@@ -53,6 +53,7 @@ namespace :proquest do
     proquest_packages = Dir.glob("#{metadata_dir}/*.zip")
     proquest_packages.each do |package|
       puts 'Unpacking '+package
+      @file_last_modified = ''
       extract_files(package)
       metadata_files = Dir.glob("#{@temp}/**/*")
 
@@ -82,6 +83,9 @@ namespace :proquest do
     FileUtils::mkdir_p @temp+'/'+fname
     Zip::File.open(file) do |zip_file|
       zip_file.each do |f|
+        if f.name.match(/DATA.xml/)
+          @file_last_modified = Date.strptime(zip_file.get_entry(f).as_json['time'].split('T')[0],"%Y-%m-%d")
+        end
         fpath = File.join(@temp+'/'+fname, f.name)
         puts fpath
         zip_file.extract(f, fpath) unless File.exist?(fpath)
@@ -159,32 +163,57 @@ namespace :proquest do
     end
 
     title = metadata.xpath('//DISS_description/DISS_title').text
+
     creators = metadata.xpath('//DISS_submission/DISS_authorship/DISS_author/DISS_name').map do |creator|
       if creator.xpath('DISS_affiliation').text.eql? 'University of North Carolina at Chapel Hill'
         creator.xpath('DISS_surname').text+', '+creator.xpath('DISS_fname').text+' '+creator.xpath('DISS_middle').text
       end
     end
+
     degree_granting_institution = metadata.xpath('//DISS_description/DISS_institution/DISS_inst_name').text
+
     keywords = metadata.xpath('//DISS_description/DISS_categorization/DISS_keyword').text.split(', ')
-    abstract = metadata.xpath('//DISS_content/DISS_abstract/DISS_para').text
+    keywords << metadata.xpath('//DISS_description/DISS_categorization/DISS_category/DISS_cat_desc').text
+
+    abstract = metadata.xpath('//DISS_content/DISS_abstract').text
+
     advisor = metadata.xpath('//DISS_description/DISS_advisor/DISS_name').map do |advisor|
       advisor.xpath('DISS_surname').text+', '+advisor.xpath('DISS_fname').text+' '+advisor.xpath('DISS_middle').text
     end
-    degree = metadata.xpath('//DISS_description/DISS_degree').text
-    academic_department = metadata.xpath('//DISS_description/DISS_institution/DISS_inst_contact').text
+    committee_members = metadata.xpath('//DISS_description/DISS_cmte_member/DISS_name').map do |advisor|
+      advisor.xpath('DISS_surname').text+', '+advisor.xpath('DISS_fname').text+' '+advisor.xpath('DISS_middle').text
+    end
+    advisor += committee_members
 
-    accept_date = metadata.xpath('//DISS_description/DISS_dates/DISS_accept_date').text
-    accept_date = Date.strptime(accept_date,"%m/%d/%Y")
+    degree = metadata.xpath('//DISS_description/DISS_degree').text
+
+    genre = ''
+    resource_type = ''
+    normalized_degree = degree.downcase.gsub('.', '')
+    if normalized_degree.in? ['edd', 'phd', 'drph']
+      genre = 'Dissertation'
+      resource_type = 'Dissertation'
+    else
+      genre = 'Thesis'
+      resource_type = 'Masters Thesis'
+    end
+
+    academic_concentration = metadata.xpath('//DISS_description/DISS_institution/DISS_inst_contact').text
+
+    academic_department = metadata.xpath('//DISS_description/DISS_institution/DISS_inst_contact').text.split(':')[0].split('(')[0].strip
+
+    date_issued = metadata.xpath('//DISS_description/DISS_dates/DISS_accept_date').text
+    date_issued = Date.strptime(date_issued,"%m/%d/%Y")
+
     graduation_semester = ''
-    if accept_date.month >= 2 && accept_date.month <= 6
+    if @file_last_modified.month >= 2 && @file_last_modified.month <= 6
       graduation_semester = 'Spring'
-    elsif accept_date.month >= 7 && accept_date.month <= 9
+    elsif @file_last_modified.month >= 7 && @file_last_modified.month <= 9
       graduation_semester = 'Summer'
     else
       graduation_semester = 'Winter'
     end
-    graduation_year = graduation_semester+' '+accept_date.year.to_s
-    puts graduation_year
+    graduation_year = graduation_semester+' '+@file_last_modified.year.to_s
 
     language = metadata.xpath('//DISS_description/DISS_categorization/DISS_language').text
     if language == 'en'
@@ -207,7 +236,11 @@ namespace :proquest do
         'advisor'=>advisor,
         'degree'=>degree,
         'academic_department'=>academic_department,
+        'academic_concentration'=>academic_concentration,
         'graduation_year'=>graduation_year,
+        'date_issued'=>date_issued,
+        'genre'=>genre,
+        'resource_type'=>resource_type,
         'language'=>language,
         'visibility'=>visibility,
         'embargo_release_date'=>embargo_release_date,
@@ -234,10 +267,14 @@ namespace :proquest do
     resource.advisor = work_attributes['advisor']
     resource.degree = work_attributes['degree']
     resource.academic_department = [work_attributes['academic_department']]
+    resource.academic_concentration = [work_attributes['academic_concentration']]
     resource.graduation_year = work_attributes['graduation_year']
     resource.language = [work_attributes['language']]
-    resource.date_modified = Time.now()
-    resource.date_uploaded = Time.now()
+    resource.date_issued = work_attributes['date_issued']
+    resource.genre = [work_attributes['genre']]
+    resource.resource_type = [work_attributes['resource_type']]
+    resource.date_modified = DateTime.now()
+    resource.date_uploaded = DateTime.now()
     resource.rights_statement = ['http://rightsstatements.org/vocab/InC-EDU/1.0/']
     resource.admin_set_id = work_attributes['admin_set_id']
     resource.visibility = work_attributes['visibility']
