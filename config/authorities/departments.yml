@@ -1,14 +1,19 @@
 ## config/authorities/departments.yml
 terms:
-  - id: Biology
+  - id: art_sci
     active: true
-    term: Biology
-  - id: Chemistry
-    active: true
-    term: Chemistry
-  - id: History
-    active: true
-    term: History
-  - id: example
-    active: false
-    term: Example Department
+    other: some info
+    term: College of Arts and Sciences
+    departments:
+      - id: bio
+        active: true
+        term: Biology
+      - id: Chemistry
+        active: true
+        term: Chemistry
+      - id: History
+        active: true
+        term: History
+      - id: example
+        active: false
+        term: Example Department

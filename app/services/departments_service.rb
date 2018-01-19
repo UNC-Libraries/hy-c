@@ -1,12 +1,19 @@
 # app/services/departments_service.rb
 module DepartmentsService
-  mattr_accessor :authority
-  self.authority = Qa::Authorities::Local.subauthority_for('departments')
+  @departments_list = YAML.load_file(Rails.root.join('config', 'authorities', 'departments.yml'))
 
   def self.select_all_options
-    authority.all.reject{ |item| item['active'] == false }.map do |element|
-      [element[:label], element[:id]]
+    Rails.logger.info "\n\n##########\n#{@departments_list}\n##########\n\n"
+    Rails.logger.info "\n\n##########\n#{@departments_list['terms'].count}\n##########\n\n"
+    results_array = []
+    @departments_list['terms'].each do |element|
+      Rails.logger.info "\n\n##########\n#{element}\n##########\n\n"
+      results_array = [element['term']]
+      element['departments'].reject{ |item| item['active'] == false }.map do |dept|
+        results_array << [dept['id'], dept['term']]
+      end
     end
+    results_array
   end
 
   def self.label(id)
