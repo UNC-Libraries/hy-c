@@ -1,7 +1,7 @@
 class CatalogController < ApplicationController
   include Hydra::Catalog
   include Hydra::Controller::ControllerBehavior
-  include BlacklightOaiProvider::CatalogControllerBehavior
+  include BlacklightOaiProvider::Controller
 
   # This filter applies the hydra access controls
   before_action :enforce_show_permissions, only: :show
@@ -321,8 +321,8 @@ class CatalogController < ApplicationController
         },
         document: {
             limit: 25,
-            set_fields: 'language_tesim',
-            set_class: 'LanguageSet'
+            set_model: LanguageSet,
+            set_fields: [{ label: 'language', solr_field: 'language_tesim' }]
         }
     }
   end
