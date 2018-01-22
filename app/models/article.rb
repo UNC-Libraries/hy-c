@@ -23,7 +23,8 @@ class Article < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :institution, predicate: ::RDF::Vocab::DC.source, multiple: true do |index|
+  property :degree_granting_institution, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/ddg'),
+           multiple: true do |index|
     index.as :stored_searchable
   end
 

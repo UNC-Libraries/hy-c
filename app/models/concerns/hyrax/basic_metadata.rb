@@ -23,8 +23,8 @@ module Hyrax
       # This is for the rights statement
       property :rights_statement, predicate: ::RDF::Vocab::EDM.rights
       property :publisher, predicate: ::RDF::Vocab::DC11.publisher
-      property :date_created, predicate: ::RDF::Vocab::DC.created
-      property :subject, predicate: ::RDF::Vocab::DC.subject
+      property :date_created, predicate: ::RDF::Vocab::DC.created, multiple: false
+      property :subject, predicate: ::RDF::Vocab::DC11.subject
       property :language, predicate: ::RDF::Vocab::DC11.language
       property :identifier, predicate: ::RDF::Vocab::DC.identifier
       property :based_near, predicate: ::RDF::Vocab::FOAF.based_near, class_name: Hyrax::ControlledVocabularies::Location

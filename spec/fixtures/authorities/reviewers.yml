@@ -1,0 +1,14 @@
+## spec/fixtures/authorities/reviewers.yml
+terms:
+  - id: biology
+    active: true
+    term: person1@example.com
+  - id: chemistry
+    active: true
+    term: person2@example.com
+  - id: history
+    active: true
+    term: person3@example.com
+  - id: example
+    active: false
+    term: person4@example.com

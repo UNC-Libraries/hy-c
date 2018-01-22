@@ -60,32 +60,12 @@ class SolrDocument
     self[Solrizer.solr_name('academic_department')]
   end
 
-  def additional_funding
-    self[Solrizer.solr_name('additional_funding')]
-  end
-
   def access
     self[Solrizer.solr_name('access')]
   end
 
   def advisor
     self[Solrizer.solr_name('advisor')]
-  end
-
-  def author_degree_granted
-    self[Solrizer.solr_name('author_degree_granted')]
-  end
-
-  def author_academic_concentration
-    self[Solrizer.solr_name('author_academic_concentration')]
-  end
-
-  def author_graduation_date
-    self[Solrizer.solr_name('author_graduation_date')]
-  end
-
-  def author_status
-    self[Solrizer.solr_name('author_status')]
   end
 
   def citation
@@ -120,8 +100,8 @@ class SolrDocument
     self[Solrizer.solr_name('doi')]
   end
 
-  def faculty_advisor_name
-    self[Solrizer.solr_name('faculty_advisor_name')]
+  def extent
+    self[Solrizer.solr_name('extent')]
   end
 
   def format
@@ -132,28 +112,20 @@ class SolrDocument
     self[Solrizer.solr_name('genre')]
   end
 
-  def graduation_year
-    self[Solrizer.solr_name('graduation_year')]
+  def geographic_subject
+    self[Solrizer.solr_name('geographic_subject')]
   end
 
-  def granting_agency
-    self[Solrizer.solr_name('granting_agency')]
+  def graduation_year
+    self[Solrizer.solr_name('graduation_year')]
   end
 
   def honors_level
     self[Solrizer.solr_name('honors_level')]
   end
 
-  def issue
-    self[Solrizer.solr_name('issue')]
-  end
-
-  def institution
-    self[Solrizer.solr_name('institution')]
-  end
-
-  def link_to_publisher_version
-    self[Solrizer.solr_name('link_to_publisher_version')]
+  def medium
+    self[Solrizer.solr_name('medium')]
   end
 
   def note
