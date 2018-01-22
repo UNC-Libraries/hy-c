@@ -5,15 +5,18 @@ terms:
     other: some info
     term: College of Arts and Sciences
     departments:
-      - id: bio
+      - id: Biology
         active: true
-        term: Biology
       - id: Chemistry
         active: true
-        term: Chemistry
       - id: History
         active: true
-        term: History
       - id: example
         active: false
-        term: Example Department
+  - id: something
+    active: true
+    other: hi
+    term: Grad School
+    departments:
+      - id: Gillings School of Public Health
+        active: true

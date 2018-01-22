@@ -3,17 +3,17 @@ module DepartmentsService
   @departments_list = YAML.load_file(Rails.root.join('config', 'authorities', 'departments.yml'))
 
   def self.select_all_options
-    Rails.logger.info "\n\n##########\n#{@departments_list}\n##########\n\n"
-    Rails.logger.info "\n\n##########\n#{@departments_list['terms'].count}\n##########\n\n"
-    results_array = []
+    select_options_array = []
     @departments_list['terms'].each do |element|
-      Rails.logger.info "\n\n##########\n#{element}\n##########\n\n"
-      results_array = [element['term']]
+      school_array = [element['term']]
+      department_array = []
       element['departments'].reject{ |item| item['active'] == false }.map do |dept|
-        results_array << [dept['id'], dept['term']]
+        department_array << dept['id']
       end
+      school_array << department_array
+      select_options_array << school_array
     end
-    results_array
+    select_options_array
   end
 
   def self.label(id)
