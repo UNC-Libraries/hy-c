@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 class SolrDocument
   include Blacklight::Solr::Document
-  include BlacklightOaiProvider::SolrDocumentBehavior
+  include BlacklightOaiProvider::SolrDocument
 
   use_extension Blacklight::Document::DublinCore
 
@@ -125,6 +125,6 @@ class SolrDocument
   end
 
   def sets
-    fetch('language_tesim', []).map { |l| BlacklightOaiProvider::Set.new("language_tesim:#{l}") }
+    LanguageSet.sets_for(self)
   end
 end
