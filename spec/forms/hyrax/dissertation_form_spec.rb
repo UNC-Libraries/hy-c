@@ -21,9 +21,8 @@ RSpec.describe Hyrax::DissertationForm do
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to eq [:description, :subject, :language, :faculty_advisor_name, :date_published,
-                            :author_graduation_date, :author_degree_granted, :author_academic_concentration,
-                            :institution, :citation] }
+    it { is_expected.to eq [:description, :subject, :language, :advisor, :date_published, :graduation_year, :degree,
+                            :academic_concentration, :degree_granting_institution, :citation] }
   end
 
   describe '.model_attributes' do

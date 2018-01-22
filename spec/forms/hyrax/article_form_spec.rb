@@ -22,7 +22,7 @@ RSpec.describe Hyrax::ArticleForm do
     subject { form.secondary_terms }
 
     it { is_expected.to eq [:description, :license, :publisher, :subject, :language, :resource_type, :doi,
-                            :date_published, :institution, :citation] }
+                            :date_published, :degree_granting_institution, :citation] }
   end
 
   describe '.model_attributes' do

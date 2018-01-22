@@ -1,5 +1,5 @@
 <% # app/views/records/edit_fields/_academic_department.html.erb %>
-<%= f.input :academic_department, as: :select,
+<%= f.input :academic_department, as: :multi_value_select,
             collection: DepartmentsService.select_all_options,
             include_blank: true,
             item_helper: DepartmentsService.method(:include_current_value),

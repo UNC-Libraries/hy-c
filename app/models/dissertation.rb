@@ -10,13 +10,12 @@ class Dissertation < ActiveFedora::Base
 
   self.human_readable_type = 'Dissertation'
 
-  property :author_degree_granted,
-           predicate: ::RDF::URI("http://purl.org/ontology/bibo/ThesisDegree"), multiple: false do |index|
+  property :academic_concentration, predicate: ::RDF::URI('http://vivoweb.org/ontology/core#majorField'),
+           multiple: true do |index|
     index.as :stored_searchable
   end
 
-  property :author_academic_concentration,
-           predicate: ::RDF::URI("http://cdr.lib.unc.edu/concentration"), multiple: true do |index|
+  property :advisor, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/ths'), multiple: false do |index|
     index.as :stored_searchable
   end
 
@@ -24,19 +23,21 @@ class Dissertation < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :institution, predicate: ::RDF::Vocab::DC11.publisher, multiple: true do |index|
-    index.as :stored_searchable
-  end
-
-  property :author_graduation_date, predicate: ::RDF::Vocab::DC11.date, multiple: false do |index|
-    index.as :stored_searchable
-  end
-
   property :date_published, predicate: ::RDF::Vocab::DC.issued, multiple: false do |index|
     index.as :stored_searchable
   end
 
-  property :faculty_advisor_name, predicate: ::RDF::Vocab::MARCRelators.ths, multiple: false do |index|
+  property :degree, predicate: ::RDF::Vocab::BIBO.degree, multiple: false do |index|
+    index.as :stored_searchable
+  end
+
+  property :degree_granting_institution, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/ddg'),
+           multiple: true do |index|
+    index.as :stored_searchable
+  end
+
+  property :graduation_year, predicate: ::RDF::URI('http://rdaregistry.info/Elements/w/yearDegreeGranted.en'),
+           multiple: false do |index|
     index.as :stored_searchable
   end
 
