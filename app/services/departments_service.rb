@@ -4,13 +4,13 @@ module DepartmentsService
 
   def self.select_all_options
     select_options_array = []
-    @departments_list['terms'].each do |element|
-      school_array = [element['term']]
+    @departments_list['schools'].each do |element|
+      school_array = [element['name']]
       department_array = []
       element['departments'].reject{ |item| item['active'] == false }.map do |dept|
-        department_array << dept['id']
+        department_array << dept['name']
       end
-      school_array << department_array
+      school_array << department_array.sort!
       select_options_array << school_array
     end
     select_options_array

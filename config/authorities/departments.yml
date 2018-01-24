@@ -1,22 +1,175 @@
 ## config/authorities/departments.yml
-terms:
+schools:
   - id: art_sci
     active: true
-    other: some info
-    term: College of Arts and Sciences
+    name: College of Arts and Sciences
     departments:
-      - id: Biology
+      - name: Art
         active: true
-      - id: Chemistry
+      - name: Dramatic Art
         active: true
-      - id: History
+      - name: Music
         active: true
-      - id: example
-        active: false
-  - id: something
+      - name: American Studies
+        active: true
+      - name: Classics
+        active: true
+      - name: Communication
+        active: true
+      - name: English and Comparative Literature
+        active: true
+      - name: Germanic and Slavic Languages and Literatures
+        active: true
+      - name: Linguistics
+        active: true
+      - name: Philosophy
+        active: true
+      - name: Religious Studies
+        active: true
+      - name: Romance Studies
+        active: true
+      - name: Women's and Gender Studies
+        active: true
+      - name: Applied Physical Science
+        active: true
+      - name: Biology
+        active: true
+      - name: Biomedical Engineering
+        active: true
+      - name: Chemistry
+        active: true
+      - name: Computer Science
+        active: true
+      - name: Environment and Ecology
+        active: true
+      - name: Exercise and Sport Science
+        active: true
+      - name: Geological Sciences
+        active: true
+      - name: Marine Sciences
+        active: true
+      - name: Mathematics
+        active: true
+      - name: Physics and Astronomy
+        active: true
+      - name: Psychology and Neuroscience
+        active: true
+      - name: Statistics and Operations Research
+        active: true
+      - name: Aerospace Studies
+        active: true
+      - name: African, African American, and Diaspora Studies
+        active: true
+      - name: Anthropology
+        active: true
+      - name: Archaeology
+        active: true
+      - name: Asian Studies
+        active: true
+      - name: City and Regional Planning
+        active: true
+      - name: Economics
+        active: true
+      - name: European Studies, Contemporary
+        active: true
+      - name: Geography
+        active: true
+      - name: Global Studies
+        active: true
+      - name: History
+        active: true
+      - name: Latin American Studies
+        active: true
+      - name: Military Science
+        active: true
+      - name: Naval Science
+        active: true
+      - name: Peace, War, and Defense
+        active: true
+      - name: Political Science
+        active: true
+      - name: Public Policy
+        active: true
+      - name: Sociology
+        active: true
+  - id: medicine
     active: true
-    other: hi
-    term: Grad School
+    name: School of Medicine
     departments:
-      - id: Gillings School of Public Health
+      - name: Allied Health Sciences
         active: true
+      - name: Biochemistry and Biophysics
+        active: true
+      - name: Cell Biology and Physiology
+        active: true
+      - name: Clinical Laboratory Science
+        active: true
+      - name: Microbiology and Immunology
+        active: true
+      - name: Radiologic Science
+        active: true
+      - name: Pathology and Laboratory Medicine
+        active: true
+      - name: Speech and Hearing Sciences
+        active: true
+  - id: gillings
+    active: true
+    name: Gillings School of Global Public Health
+    departments:
+      - name: Biostatistics
+        active: true
+      - name: Environmental Sciences and Engineering
+        active: true
+      - name: Epidemiology
+        active: true
+      - name: Health Behavior
+        active: true
+      - name: Health Policy and Management
+        active: true
+      - name: Maternal and Child Health
+        active: true
+      - name: Nutrition
+        active: true
+      - name: Public Health Leadership Program
+        active: true
+  - id: dentistry
+    active: true
+    name: School of Dentistry
+    departments:
+      - name: Dentistry
+        active: true
+  - id: nursing
+    active: true
+    name: School of Nursing
+    departments:
+      - name: Nursing
+        active: true
+  - id: pharmacy
+    active: true
+    name: Eshelman School of Pharmacy
+    departments:
+      - name: Pharmacy
+        active: true
+  - id: business
+    active: true
+    name: Kenan–Flagler Business School
+    departments:
+      - name: Business Administration
+        active: true
+  - id: education
+    active: true
+    name: School of Education
+    departments:
+      - name: Education
+        active: true
+  - id: sils
+    active: true
+    name: School of Information and Library Science
+    departments:
+      - name: Information and Library Science
+        active: true
+  - id: journalism
+    active: true
+    name: School of Media and Journalism
+    departments:
+      - name: Media and Journalism
