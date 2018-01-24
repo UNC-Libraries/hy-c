@@ -200,7 +200,8 @@ namespace :proquest do
 
     academic_concentration = metadata.xpath('//DISS_description/DISS_institution/DISS_inst_contact').text
 
-    academic_department = metadata.xpath('//DISS_description/DISS_institution/DISS_inst_contact').text.split(':')[0].split('(')[0].strip
+    affiliation = metadata.xpath('//DISS_description/DISS_institution/DISS_inst_contact').text.strip
+    academic_department = ProquestDepartmentMappingsService.standard_department_name(affiliation)
 
     date_issued = metadata.xpath('//DISS_description/DISS_dates/DISS_accept_date').text
     date_issued = Date.strptime(date_issued,"%m/%d/%Y")
@@ -266,7 +267,7 @@ namespace :proquest do
     resource.abstract = [work_attributes['abstract']]
     resource.advisor = work_attributes['advisor']
     resource.degree = work_attributes['degree']
-    resource.academic_department = [work_attributes['academic_department']]
+    resource.academic_department = work_attributes['academic_department']
     resource.academic_concentration = [work_attributes['academic_concentration']]
     resource.graduation_year = work_attributes['graduation_year']
     resource.language = [work_attributes['language']]
