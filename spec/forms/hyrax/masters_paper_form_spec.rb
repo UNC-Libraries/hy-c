@@ -9,31 +9,39 @@ RSpec.describe Hyrax::MastersPaperForm do
   describe "#required_fields" do
     subject { form.required_fields }
 
-    it { is_expected.to eq [:title, :creator, :keyword, :rights_statement] }
+    it { is_expected.to match_array [:title, :creator, :degree_granting_institution] }
   end
 
   describe "#primary_terms" do
     subject { form.primary_terms }
 
-    it { is_expected.to eq [:title, :creator, :keyword, :rights_statement] }
+    it { is_expected.to match_array [:title, :creator, :degree_granting_institution] }
   end
 
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to eq [:description, :license, :subject, :faculty_advisor_name, :date_published,
-                            :author_graduation_date, :author_degree_granted] }
+    it { is_expected.to match_array [:keyword, :date_created, :subject, :language, :rights_statement, :license,
+                                     :academic_concentration, :academic_department, :degree, :graduation_year,
+                                     :abstract, :advisor, :genre, :access, :extent, :reviewer, :geographic_subject,
+                                     :note, :medium, :resource_type] }
   end
 
   describe '.model_attributes' do
     let(:params) do
       ActionController::Parameters.new(
           title: 'foo', # single-valued
-          description: [''],
+          abstract: [''],
           visibility: 'open',
           representative_id: '456',
           thumbnail_id: '789',
           keyword: ['derp'],
+          academic_department: ['biology'],
+          access: 'public',
+          degree: 'MS',
+          degree_granting_institution: 'UNC',
+          graduation_year: '2017',
+          date_created: 'a date',
           license: ['http://creativecommons.org/licenses/by/3.0/us/'],
           member_of_collection_ids: ['123456', 'abcdef']
       )
@@ -43,10 +51,16 @@ RSpec.describe Hyrax::MastersPaperForm do
 
     it 'permits parameters' do
       expect(subject['title']).to eq ['foo']
-      expect(subject['description']).to be_empty
+      expect(subject['abstract']).to be_empty
       expect(subject['visibility']).to eq 'open'
       expect(subject['license']).to eq ['http://creativecommons.org/licenses/by/3.0/us/']
       expect(subject['keyword']).to eq ['derp']
+      expect(subject['academic_department']).to eq ['biology']
+      expect(subject['access']).to eq 'public'
+      expect(subject['degree']).to eq 'MS'
+      expect(subject['degree_granting_institution']).to eq 'UNC'
+      expect(subject['graduation_year']).to eq '2017'
+      expect(subject['date_created']).to eq 'a date'
       expect(subject['member_of_collection_ids']).to eq ['123456', 'abcdef']
     end
 
@@ -54,7 +68,7 @@ RSpec.describe Hyrax::MastersPaperForm do
       let(:params) do
         ActionController::Parameters.new(
             title: '',
-            description: [''],
+            abstract: [''],
             keyword: [''],
             license: [''],
             member_of_collection_ids: [''],
@@ -64,7 +78,7 @@ RSpec.describe Hyrax::MastersPaperForm do
 
       it 'removes blank parameters' do
         expect(subject['title']).to be_empty
-        expect(subject['description']).to be_empty
+        expect(subject['abstract']).to be_empty
         expect(subject['license']).to be_empty
         expect(subject['keyword']).to be_empty
         expect(subject['member_of_collection_ids']).to be_empty

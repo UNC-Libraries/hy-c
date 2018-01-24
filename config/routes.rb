@@ -1,12 +1,12 @@
 Rails.application.routes.draw do
-  concern :oai_provider, BlacklightOaiProvider::Routes::Provider.new
+  concern :oai_provider, BlacklightOaiProvider::Routes.new
 
   require 'sidekiq/web'
   mount Sidekiq::Web => '/sidekiq'
   
   mount Blacklight::Engine => '/'
   
-    concern :searchable, Blacklight::Routes::Searchable.new
+  concern :searchable, Blacklight::Routes::Searchable.new
 
   resource :catalog, only: [:index], as: 'catalog', path: '/catalog', controller: 'catalog' do
     concerns :oai_provider

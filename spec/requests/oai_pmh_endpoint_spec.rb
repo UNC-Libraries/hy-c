@@ -15,7 +15,8 @@ RSpec.describe 'OAI-PMH catalog endpoint' do
       config.oai = oai_config
     end
 
-    solrRecords = ActiveFedora::SolrService.get('has_model_ssim:Work', rows: 50)
+    solrRecords = ActiveFedora::SolrService.get('has_model_ssim:(Work OR Dissertation OR Article OR MastersPaper OR '+
+                                                    'HonorsThesis) AND visibility_ssi:open', rows: 50)
     solrRecords['response']['docs'].each do |doc|
       timestamps << doc['timestamp']
     end
@@ -24,20 +25,20 @@ RSpec.describe 'OAI-PMH catalog endpoint' do
 
   describe 'root page' do
     it 'displays an error message about missing verb' do
-      get oai_provider_catalog_path
+      get oai_catalog_path
       expect(response.body).to include('not a legal OAI-PMH verb')
     end
   end
 
   describe 'Identify verb' do
     scenario 'displays repository information' do
-      get oai_provider_catalog_path(verb: 'Identify')
+      get oai_catalog_path(verb: 'Identify')
       expect(response.body).to include(repo_name)
     end
 
     context 'as a POST request' do
       scenario 'displays repository information' do
-        post oai_provider_catalog_path(verb: 'Identify')
+        post oai_catalog_path(verb: 'Identify')
         expect(response.body).to include(repo_name)
       end
     end
@@ -45,7 +46,7 @@ RSpec.describe 'OAI-PMH catalog endpoint' do
 
   describe 'ListRecords verb', :vcr do
     scenario 'displays a limited list of records' do
-      get oai_provider_catalog_path(verb: 'ListRecords', metadataPrefix: format)
+      get oai_catalog_path(verb: 'ListRecords', metadataPrefix: format)
       records = xpath '//xmlns:record'
 
       expect(records.count).to eq limit
@@ -57,9 +58,9 @@ RSpec.describe 'OAI-PMH catalog endpoint' do
       scenario 'a resumption token is provided' do
         params = { verb: 'ListRecords', metadataPrefix: format }
         expected_token = 'oai_dc.f('+Time.parse(timestamps.first).utc.iso8601+').u('+
-            (Time.parse(timestamps.last)+1.second).utc.iso8601+'):25'
+            (Time.parse(timestamps.last)).utc.iso8601+').t('+timestamps.count.to_s+'):25'
 
-        get oai_provider_catalog_path(params)
+        get oai_catalog_path(params)
         token = xpath '//xmlns:resumptionToken'
         records = xpath '//xmlns:record'
 
@@ -70,19 +71,19 @@ RSpec.describe 'OAI-PMH catalog endpoint' do
       scenario 'a resumption token displays the next page of records' do
         params = { verb: 'ListRecords',
                    resumptionToken: 'oai_dc.f('+Time.parse(timestamps.first).utc.iso8601+').u('+
-                       (Time.parse(timestamps.last)+1.second).utc.iso8601+'):25' }
+                       (Time.parse(timestamps.last)).utc.iso8601+').t('+timestamps.count.to_s+'):25' }
 
-        get oai_provider_catalog_path(params)
+        get oai_catalog_path(params)
         records = xpath '//xmlns:record'
 
-        expect(records.count).to be 5
+        expect(records.count).to be(timestamps.count % 25) # should be 10
       end
 
       scenario 'the last page of records provides an empty resumption token' do
         params = { verb: 'ListRecords', resumptionToken: 'oai_dc.f('+Time.parse(timestamps.first).utc.iso8601+').u('+
-            Time.parse(timestamps.last).utc.iso8601+'):25' }
+            Time.parse(timestamps.last).utc.iso8601+').t(30):25' }
 
-        get oai_provider_catalog_path(params)
+        get oai_catalog_path(params)
         token = xpath '//xmlns:resumptionToken'
 
         expect(token.count).to be 1
@@ -91,12 +92,12 @@ RSpec.describe 'OAI-PMH catalog endpoint' do
     end
 
     context 'with a set' do
-      let(:document_config) { { set_fields: 'language_tesim' } }
+      let(:document_config) { { set_model: LanguageSet, set_fields: [{ label: 'language', solr_field: 'language_tesim' }] } }
 
       scenario 'only records from the set are returned' do
-        params = { verb: 'ListRecords', metadataPrefix: format, set: 'language_tesim:Japanese' }
+        params = { verb: 'ListRecords', metadataPrefix: format, set: 'language:japanese' }
 
-        get oai_provider_catalog_path(params)
+        get oai_catalog_path(params)
         records = xpath '//xmlns:record'
 
         expect(records.count).to be 2
@@ -108,7 +109,7 @@ RSpec.describe 'OAI-PMH catalog endpoint' do
         params = { verb: 'ListRecords', metadataPrefix: format,
                    from: Time.parse(timestamps[timestamps.count-2]).utc.iso8601 }
 
-        get oai_provider_catalog_path(params)
+        get oai_catalog_path(params)
         records = xpath '//xmlns:record'
 
         expect(records.count).to be 2
@@ -123,7 +124,7 @@ RSpec.describe 'OAI-PMH catalog endpoint' do
                      from: Time.parse(timestamps[3]).utc.iso8601,
                      until: Time.parse(timestamps[8]).utc.iso8601 }
 
-          get oai_provider_catalog_path(params)
+          get oai_catalog_path(params)
           records = xpath '//xmlns:record'
 
           expect(records.count).to be 6
@@ -139,7 +140,7 @@ RSpec.describe 'OAI-PMH catalog endpoint' do
       scenario 'only records with a timestamp before the date are shown' do
         params = { verb: 'ListRecords', metadataPrefix: format, until: Time.parse(timestamps[0]).utc.iso8601 }
 
-        get oai_provider_catalog_path(params)
+        get oai_catalog_path(params)
         records = xpath '//xmlns:record'
 
         expect(records.count).to be 1
@@ -157,50 +158,51 @@ RSpec.describe 'OAI-PMH catalog endpoint' do
     let(:identifier) { 'oai:localhost:'+oai_identifier }
 
     scenario 'displays a single record' do
-      get oai_provider_catalog_path(params)
+      get oai_catalog_path(params)
       records = xpath '//xmlns:record'
 
       expect(records.count).to be 1
       expect(response.body).to include(identifier)
     end
 
-    context 'with an invalid identifier' do
-      let(:identifier) { 'oai:localhost:not_a_valid_id' }
-
-      it 'returns an error response' do
-        get oai_provider_catalog_path(params)
-        expect(response.body).to include('idDoesNotExist')
-      end
-    end
+    # Not currently implemented in official gem
+    # context 'with an invalid identifier' do
+    #   let(:identifier) { ':not_a_valid_id' }
+    #
+    #   it 'returns an error response' do
+    #     get oai_catalog_path(params)
+    #     expect(response.body).to include('idDoesNotExist')
+    #   end
+    # end
   end
 
   describe 'ListSets verb' do
     context 'without set configuration' do
       scenario 'shows that no sets exist' do
-        get oai_provider_catalog_path(verb: 'ListSets')
-        expect(response.body).to include('This repository does not support sets')
+        get oai_catalog_path(verb: 'ListSets')
+        expect(response.body).to include('This repository does not support sets.')
       end
     end
 
     context 'with set configuration', :vcr do
-      let(:document_config) { { set_fields: 'language_tesim' } }
+      let(:document_config) { { set_model: LanguageSet, set_fields: [{ label: 'language', solr_field: 'language_tesim' }] } }
 
       scenario 'shows all sets' do
-        get oai_provider_catalog_path(verb: 'ListSets')
+        get oai_catalog_path(verb: 'ListSets')
         sets = xpath '//xmlns:set'
         expect(sets.count).to be 2 # There are currently sample documents in English and Japanese
       end
 
       scenario 'shows the correct verb' do
-        get oai_provider_catalog_path(verb: 'ListSets')
-        expect(response.body).to include('"verb"=&gt;"ListSets"')
+        get oai_catalog_path(verb: 'ListSets')
+        expect(response.body).to include('request verb="ListSets"')
       end
 
       context 'where sets include descriptions' do
-        let(:document_config) { { set_fields: 'language_tesim', set_class: 'LanguageSet' } }
+        let(:document_config) { { set_model: LanguageSet, set_fields: [{ label: 'language', solr_field: 'language_tesim' }] } }
 
         scenario 'shows the set description object' do
-          get oai_provider_catalog_path(verb: 'ListSets')
+          get oai_catalog_path(verb: 'ListSets')
           descriptions = xpath '//xmlns:set/xmlns:setDescription/oai_dc:dc/dc:description',
                                'xmlns' => 'http://www.openarchives.org/OAI/2.0/',
                                'dc' => 'http://purl.org/dc/elements/1.1/',
@@ -216,21 +218,21 @@ RSpec.describe 'OAI-PMH catalog endpoint' do
 
   describe 'ListMetadataFormats verb' do
     scenario 'lists the oai_dc format' do
-      get oai_provider_catalog_path(verb: 'ListMetadataFormats')
+      get oai_catalog_path(verb: 'ListMetadataFormats')
       expect(response.body).to include('<metadataPrefix>'+format+'</metadataPrefix>')
     end
   end
 
-  describe 'ListIdentifiers verb', :vcr do
-    solrRecords = ActiveFedora::SolrService.get('has_model_ssim:Work', rows: 50)
-    # The limit is currently 10, so we should execpt to get the first 10 items
+  describe 'ListIdentifiers verb' do
+    solrRecords = ActiveFedora::SolrService.get('has_model_ssim:Work', rows: 50, sort: 'timestamp asc')
+    # The limit is currently 10, so we should expect to get the first 10 items
     oai_identifier1 =  solrRecords['response']['docs'][0]['id']
     oai_identifier2 =  solrRecords['response']['docs'][9]['id']
 
     let(:expected_ids) { %W(oai:localhost:#{oai_identifier1} oai:localhost:#{oai_identifier2}) }
 
     scenario 'lists identifiers for works' do
-      get oai_provider_catalog_path(verb: 'ListIdentifiers', metadataPrefix: format)
+      get oai_catalog_path(verb: 'ListIdentifiers', metadataPrefix: format)
       expect(response.body).to include(*expected_ids)
     end
   end

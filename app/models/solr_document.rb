@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 class SolrDocument
   include Blacklight::Solr::Document
-  include BlacklightOaiProvider::SolrDocumentBehavior
+  include BlacklightOaiProvider::SolrDocument
 
   use_extension Blacklight::Document::DublinCore
 
@@ -60,32 +60,12 @@ class SolrDocument
     self[Solrizer.solr_name('academic_department')]
   end
 
-  def additional_funding
-    self[Solrizer.solr_name('additional_funding')]
-  end
-
   def access
     self[Solrizer.solr_name('access')]
   end
 
   def advisor
     self[Solrizer.solr_name('advisor')]
-  end
-
-  def author_degree_granted
-    self[Solrizer.solr_name('author_degree_granted')]
-  end
-
-  def author_academic_concentration
-    self[Solrizer.solr_name('author_academic_concentration')]
-  end
-
-  def author_graduation_date
-    self[Solrizer.solr_name('author_graduation_date')]
-  end
-
-  def author_status
-    self[Solrizer.solr_name('author_status')]
   end
 
   def citation
@@ -112,6 +92,10 @@ class SolrDocument
     self[Solrizer.solr_name('degree_granting_institution')]
   end
 
+  def discipline
+    self[Solrizer.solr_name('discipline')]
+  end
+
   def doi
     self[Solrizer.solr_name('doi')]
   end
@@ -120,36 +104,28 @@ class SolrDocument
     self[Solrizer.solr_name('extent')]
   end
 
-  def faculty_advisor_name
-    self[Solrizer.solr_name('faculty_advisor_name')]
+  def format
+    self[Solrizer.solr_name('format')]
   end
 
   def genre
     self[Solrizer.solr_name('genre')]
   end
 
-  def graduation_year
-    self[Solrizer.solr_name('graduation_year')]
+  def geographic_subject
+    self[Solrizer.solr_name('geographic_subject')]
   end
 
-  def granting_agency
-    self[Solrizer.solr_name('granting_agency')]
+  def graduation_year
+    self[Solrizer.solr_name('graduation_year')]
   end
 
   def honors_level
     self[Solrizer.solr_name('honors_level')]
   end
 
-  def issue
-    self[Solrizer.solr_name('issue')]
-  end
-
-  def institution
-    self[Solrizer.solr_name('institution')]
-  end
-
-  def link_to_publisher_version
-    self[Solrizer.solr_name('link_to_publisher_version')]
+  def medium
+    self[Solrizer.solr_name('medium')]
   end
 
   def note
@@ -158,6 +134,10 @@ class SolrDocument
 
   def orcid
     self[Solrizer.solr_name('orcid')]
+  end
+
+  def place_of_publication
+    self[Solrizer.solr_name('place_of_publication')]
   end
 
   def publication
@@ -172,7 +152,15 @@ class SolrDocument
     self[Solrizer.solr_name('publication_version')]
   end
 
+  def record_content_source
+    self[Solrizer.solr_name('record_content_source')]
+  end
+
+  def reviewer
+    self[Solrizer.solr_name('reviewer')]
+  end
+
   def sets
-    fetch('language_tesim', []).map { |l| BlacklightOaiProvider::Set.new("language_tesim:#{l}") }
+    LanguageSet.sets_for(self)
   end
 end

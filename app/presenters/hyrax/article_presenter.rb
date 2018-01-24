@@ -2,6 +2,6 @@
 #  `rails generate hyrax:work Article`
 module Hyrax
   class ArticlePresenter < Hyrax::WorkShowPresenter
-    delegate :doi, :date_published, :institution, :citation, to: :solr_document
+    delegate :doi, :date_published, :degree_granting_institution, :citation, to: :solr_document
   end
 end

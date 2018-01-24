@@ -1,7 +1,7 @@
 class CatalogController < ApplicationController
   include Hydra::Catalog
   include Hydra::Controller::ControllerBehavior
-  include BlacklightOaiProvider::CatalogControllerBehavior
+  include BlacklightOaiProvider::Controller
 
   # This filter applies the hydra access controls
   before_action :enforce_show_permissions, only: :show
@@ -109,11 +109,8 @@ class CatalogController < ApplicationController
     config.add_index_field solr_name("abstract", :stored_searchable), label: "Abstract"
     config.add_index_field solr_name("academic_concentration", :stored_searchable), label: "Academic Concentration"
     config.add_index_field solr_name("academic_department", :stored_searchable), label: "Affiliation"
-    config.add_index_field solr_name("additional_funding", :stored_searchable), label: "Additional Funding"
+    config.add_index_field solr_name("access", :stored_searchable), label: "Access"
     config.add_index_field solr_name("advisor", :stored_searchable), label: "Advisor"
-    config.add_index_field solr_name("author_degree_granted", :stored_searchable), label: "Author Degree Granted"
-    config.add_index_field solr_name("author_academic_concentration", :stored_searchable), label: "Author Academic Concentration"
-    config.add_index_field solr_name("author_graduation_date", :stored_searchable), label: "Author Graduation Date"
     config.add_index_field solr_name("author_status", :stored_searchable), label: "Status"
     config.add_index_field solr_name("citation", :stored_searchable), label: "Citation"
     config.add_index_field solr_name("coauthor", :stored_searchable), label: "Co-Authors"
@@ -121,21 +118,25 @@ class CatalogController < ApplicationController
     config.add_index_field solr_name("date_published", :stored_searchable), label: "Date Published"
     config.add_index_field solr_name("degree", :stored_searchable), label: "Degree"
     config.add_index_field solr_name("degree_granting_institution", :stored_searchable), label: "Degree Granting Institution"
+    config.add_index_field solr_name("discipline", :stored_searchable), label: "Discipline"
     config.add_index_field solr_name("doi", :stored_searchable), label: "DOI"
     config.add_index_field solr_name("extent", :stored_searchable), label: "Extent"
     config.add_index_field solr_name("faculty_advisor_name", :stored_searchable), label: "Faculty Advisor Name"
+    config.add_index_field solr_name("format", :stored_searchable), label: "Format"
     config.add_index_field solr_name("genre", :stored_searchable), label: "Genre"
+    config.add_index_field solr_name("geographic_subject", :stored_searchable), label: "Geographic Subject"
     config.add_index_field solr_name("graduation_year", :stored_searchable), label: "Graduation Year"
-    config.add_index_field solr_name("granting_agency", :stored_searchable), label: "Granting Agency"
     config.add_index_field solr_name("honors_level", :stored_searchable), label: "Honors Level"
     config.add_index_field solr_name("institution", :stored_searchable), label: "Institution"
-    config.add_index_field solr_name("issue", :stored_searchable), label: "Issue"
-    config.add_index_field solr_name("link_to_publisher_version", :stored_searchable), label: "Link to Publisher Version"
+    config.add_index_field solr_name("medium", :stored_searchable), label: "Medium"
     config.add_index_field solr_name("note", :stored_searchable), label: "Note"
     config.add_index_field solr_name("orcid", :stored_searchable), label: "ORCID"
+    config.add_index_field solr_name("place_of_publication", :stored_searchable), label: "Place of publication"
     config.add_index_field solr_name("publication", :stored_searchable), label: "Publication"
     config.add_index_field solr_name("publication_date", :stored_searchable), label: "Publication Date"
     config.add_index_field solr_name("publication_version", :stored_searchable), label: "Version"
+    config.add_index_field solr_name("record_content_source", :stored_searchable), label: "Record Content Source"
+    config.add_index_field solr_name("reviewer", :stored_searchable), label: "Reviewer"
 
     # "fielded" search configuration. Used by pulldown among other places.
     # For supported keys in hash, see rdoc for Blacklight::SearchFields
@@ -320,8 +321,8 @@ class CatalogController < ApplicationController
         },
         document: {
             limit: 25,
-            set_fields: 'language_tesim',
-            set_class: 'LanguageSet'
+            set_model: LanguageSet,
+            set_fields: [{ label: 'language', solr_field: 'language_tesim' }]
         }
     }
   end

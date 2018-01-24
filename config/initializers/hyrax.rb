@@ -3,8 +3,6 @@ Hyrax.config do |config|
   config.register_curation_concern :work
   # Injected via `rails g hyrax:work MastersPaper`
   config.register_curation_concern :masters_paper
-  # Injected via `rails g hyrax:work OpenAccess`
-  config.register_curation_concern :open_access
   # Injected via `rails g hyrax:work Article`
   config.register_curation_concern :article
   # Injected via `rails g hyrax:work Dissertation`

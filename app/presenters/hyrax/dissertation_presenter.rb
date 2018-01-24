@@ -2,7 +2,8 @@
 #  `rails generate hyrax:work Dissertation`
 module Hyrax
   class DissertationPresenter < Hyrax::WorkShowPresenter
-    delegate :author_degree_granted, :author_academic_concentration, :author_graduation_date, :date_published,
-             :faculty_advisor_name, :institution, :citation, to: :solr_document
+    delegate :abstract, :academic_concentration, :academic_department, :access, :advisor, :date_issued, :degree,
+             :degree_granting_institution, :discipline, :doi, :format, :genre, :graduation_year,
+             :note, :place_of_publication, :record_content_source, :reviewer, to: :solr_document
   end
 end
