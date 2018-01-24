@@ -6,7 +6,7 @@ module Hyrax
     class_attribute :single_value_fields
 
     self.model_class = ::Article
-    self.terms += [:resource_type, :doi, :date_published, :institution, :citation]
+    self.terms += [:resource_type, :doi, :date_published, :degree_granting_institution, :citation]
     self.terms -= [:contributor, :date_created, :identifier, :based_near, :related_url, :source]
     self.single_value_fields = [:title, :publisher]
 
