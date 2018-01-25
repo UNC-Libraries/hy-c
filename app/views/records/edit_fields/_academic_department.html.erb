@@ -1,5 +1,5 @@
 <% # app/views/records/edit_fields/_academic_department.html.erb %>
-<%= f.input :academic_department, as: :grouped_select,
+<%= f.input :affiliation, as: :grouped_select,
             group_method: :last,
             collection: DepartmentsService.select_all_options,
             include_blank: true,

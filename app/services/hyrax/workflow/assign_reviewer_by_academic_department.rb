@@ -1,7 +1,7 @@
 module Hyrax::Workflow::AssignReviewerByAcademicDepartment
 
   def self.call(target:, **)
-    reviewer = find_reviewer_for(department: target.academic_department)
+    reviewer = find_reviewer_for(department: target.affiliation)
     permission_template_id = Hyrax::PermissionTemplate.find_by_admin_set_id(target.admin_set_id).id
 
     # This assigns database permissions, but does not grant permissions on the Fedora object.

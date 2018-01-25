@@ -21,7 +21,7 @@ RSpec.describe Hyrax::HonorsThesisForm do
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:abstract, :academic_department, :advisor, :license, :resource_type,
+    it { is_expected.to match_array [:abstract, :affiliation, :advisor, :license, :resource_type,
                                      :rights_statement, :subject, :language, :degree, :genre, :graduation_year,
                                      :honors_level, :note, :academic_concentration, :keyword, :related_url, :access] }
   end
@@ -37,6 +37,7 @@ RSpec.describe Hyrax::HonorsThesisForm do
           thumbnail_id: '789',
           degree_granting_institution: 'UNC',
           keyword: ['test'],
+          affiliation: ['biology'],
           access: 'public',
           degree: 'MS',
           graduation_year: '2017',
@@ -55,6 +56,7 @@ RSpec.describe Hyrax::HonorsThesisForm do
       expect(subject['representative_id']).to eq '456'
       expect(subject['thumbnail_id']).to eq '789'
       expect(subject['degree_granting_institution']).to eq 'UNC'
+      expect(subject['affiliation']).to eq ['biology']
       expect(subject['license']).to eq ['http://creativecommons.org/licenses/by/3.0/us/']
       expect(subject['keyword']).to eq ['test']
       expect(subject['access']).to eq 'public'

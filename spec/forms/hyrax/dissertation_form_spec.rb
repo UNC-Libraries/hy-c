@@ -21,7 +21,7 @@ RSpec.describe Hyrax::DissertationForm do
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:abstract, :academic_concentration, :academic_department, :access, :advisor,
+    it { is_expected.to match_array [:abstract, :academic_concentration, :affiliation, :access, :advisor,
                                      :date_issued, :degree, :discipline, :doi, :format, :genre, :graduation_year, :note,
                                      :place_of_publication, :record_content_source, :reviewer, :contributor,
                                      :identifier, :subject, :publisher, :language, :keyword, :rights_statement,
@@ -39,6 +39,7 @@ RSpec.describe Hyrax::DissertationForm do
           keyword: ['derp'],
           member_of_collection_ids: ['123456', 'abcdef'],
           abstract: ['an abstract'],
+          affiliation: ['biology'],
           access: 'public',
           date_issued: '2018-01-08',
           degree: 'MSIS',
@@ -58,6 +59,7 @@ RSpec.describe Hyrax::DissertationForm do
       expect(subject['keyword']).to eq ['derp']
       expect(subject['member_of_collection_ids']).to eq ['123456', 'abcdef']
       expect(subject['abstract']).to eq ['an abstract']
+      expect(subject['affiliation']).to eq ['biology']
       expect(subject['access']).to eq 'public'
       expect(subject['date_issued']).to eq '2018-01-08'
       expect(subject['degree']).to eq 'MSIS'

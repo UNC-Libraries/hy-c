@@ -56,16 +56,16 @@ class SolrDocument
     self[Solrizer.solr_name('academic_concentration')]
   end
 
-  def academic_department
-    self[Solrizer.solr_name('academic_department')]
-  end
-
   def access
     self[Solrizer.solr_name('access')]
   end
 
   def advisor
     self[Solrizer.solr_name('advisor')]
+  end
+
+  def affiliation
+    self[Solrizer.solr_name('affiliation')]
   end
 
   def citation
