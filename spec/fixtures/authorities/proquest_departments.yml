@@ -1,4 +1,4 @@
-## config/authorities/proquest_departments.yml
+## spec/fixtures/authorities/proquest_departments.yml
 terms:
   - id: American Studies
     term: College of Arts and Sciences, Department of American Studies

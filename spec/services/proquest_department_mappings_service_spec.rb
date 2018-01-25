@@ -13,7 +13,7 @@ RSpec.describe Hyrax::ProquestDepartmentMappingsService do
       expect(service.standard_department_name('Biology')).to eq ['College of Arts and Sciences, Department of Biology']
     end
 
-    it "returns niil for unmapped proquest department" do
+    it "returns nil for unmapped proquest department" do
       expect(service.standard_department_name('American History')).to be_nil
     end
   end
