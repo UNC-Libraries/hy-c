@@ -136,7 +136,25 @@ schools:
     active: true
     name: School of Dentistry
     departments:
-      - name: Dentistry
+      - name: Dental Hygiene
+        active: true
+      - name: Endodontics
+        active: true
+      - name: Operative Dentistry
+        active: true
+      - name: Oral Biology
+        active: true
+      - name: Oral and Maxillofacial Pathology
+        active: true
+      - name: Oral and Maxillofacial Radiology
+        active: true
+      - name: Orthodontics
+        active: true
+      - name: Pediatric Dentistry
+        active: true
+      - name: Periodontology
+        active: true
+      - name: Prosthodontics
         active: true
   - id: nursing
     active: true
