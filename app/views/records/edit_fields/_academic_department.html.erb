@@ -1,9 +1,0 @@
-<% # app/views/records/edit_fields/_academic_department.html.erb %>
-<%= f.input :affiliation, as: :grouped_select,
-            group_method: :last,
-            collection: DepartmentsService.select_all_options,
-            include_blank: true,
-            item_helper: DepartmentsService.method(:include_current_value),
-            label: 'Affiliation',
-            input_html: { class: 'form-control', multiple: true }
--%>

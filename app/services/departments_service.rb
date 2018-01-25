@@ -1,25 +1,22 @@
 # app/services/departments_service.rb
 module DepartmentsService
-  @departments_list = YAML.load_file(Rails.root.join('config', 'authorities', 'departments.yml'))
+  mattr_accessor :authority
+  self.authority = Qa::Authorities::Local.subauthority_for('departments')
 
   def self.select_all_options
-    select_options_array = []
-    @departments_list['schools'].each do |element|
-      school_array = [element['name']]
-      department_array = []
-      element['departments'].reject{ |item| item['active'] == false }.map do |dept|
-        department_array << dept['name']
-      end
-      school_array << department_array.sort!
-      select_options_array << school_array
+    authority.all.reject{ |item| item['active'] == false }.map do |element|
+      [element[:id], element[:label]]
     end
-    select_options_array
+  end
+
+  def self.label(id)
+    authority.find(id).fetch('term')
   end
 
   def self.include_current_value(value, _index, render_options, html_options)
-    unless value.blank? || active?(value)
+    unless value.blank?
       html_options[:class] << ' force-select'
-      render_options += [value]
+      render_options += [[value, label(value)]]
     end
     [render_options, html_options]
   end

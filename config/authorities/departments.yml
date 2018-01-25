@@ -1,193 +1,868 @@
 ## config/authorities/departments.yml
-schools:
-  - id: art_sci
+terms:
+  - id: Art History Program
+    term: College of Arts and Sciences, Department of Art, Art History Program
     active: true
-    name: College of Arts and Sciences
-    departments:
-      - name: Art
-        active: true
-      - name: Dramatic Art
-        active: true
-      - name: Music
-        active: true
-      - name: American Studies
-        active: true
-      - name: Classics
-        active: true
-      - name: Communication
-        active: true
-      - name: English and Comparative Literature
-        active: true
-      - name: Germanic and Slavic Languages and Literatures
-        active: true
-      - name: Linguistics
-        active: true
-      - name: Philosophy
-        active: true
-      - name: Religious Studies
-        active: true
-      - name: Romance Studies
-        active: true
-      - name: Women's and Gender Studies
-        active: true
-      - name: Applied Physical Science
-        active: true
-      - name: Biology
-        active: true
-      - name: Biomedical Engineering
-        active: true
-      - name: Chemistry
-        active: true
-      - name: Computer Science
-        active: true
-      - name: Environment and Ecology
-        active: true
-      - name: Exercise and Sport Science
-        active: true
-      - name: Geological Sciences
-        active: true
-      - name: Marine Sciences
-        active: true
-      - name: Mathematics
-        active: true
-      - name: Physics and Astronomy
-        active: true
-      - name: Psychology and Neuroscience
-        active: true
-      - name: Statistics and Operations Research
-        active: true
-      - name: Aerospace Studies
-        active: true
-      - name: African, African American, and Diaspora Studies
-        active: true
-      - name: Anthropology
-        active: true
-      - name: Archaeology
-        active: true
-      - name: Asian Studies
-        active: true
-      - name: City and Regional Planning
-        active: true
-      - name: Economics
-        active: true
-      - name: European Studies, Contemporary
-        active: true
-      - name: Geography
-        active: true
-      - name: Global Studies
-        active: true
-      - name: History
-        active: true
-      - name: Latin American Studies
-        active: true
-      - name: Military Science
-        active: true
-      - name: Naval Science
-        active: true
-      - name: Peace, War, and Defense
-        active: true
-      - name: Political Science
-        active: true
-      - name: Public Policy
-        active: true
-      - name: Sociology
-        active: true
-  - id: medicine
+  - id: Athletic Training Education Program
+    term: College of Arts and Sciences, Department of Exercise and Sport Science, Athletic Training Education Program
     active: true
-    name: School of Medicine
-    departments:
-      - name: Allied Health Sciences
-        active: true
-      - name: Biochemistry and Biophysics
-        active: true
-      - name: Cell Biology and Physiology
-        active: true
-      - name: Clinical Laboratory Science
-        active: true
-      - name: Microbiology and Immunology
-        active: true
-      - name: Radiologic Science
-        active: true
-      - name: Pathology and Laboratory Medicine
-        active: true
-      - name: Speech and Hearing Sciences
-        active: true
-  - id: gillings
+  - id: BBSP
+    term: Biological and Biomedical Sciences Program
+    active: false
+  - id: Biological and Biomedical Sciences Program
+    term: Biological and Biomedical Sciences Program
     active: true
-    name: Gillings School of Global Public Health
-    departments:
-      - name: Biostatistics
-        active: true
-      - name: Environmental Sciences and Engineering
-        active: true
-      - name: Epidemiology
-        active: true
-      - name: Health Behavior
-        active: true
-      - name: Health Policy and Management
-        active: true
-      - name: Maternal and Child Health
-        active: true
-      - name: Nutrition
-        active: true
-      - name: Public Health Leadership Program
-        active: true
-  - id: dentistry
+  - id: BRIC
+    term: School of Medicine, Biomedical Research Imaging Center
+    active: false
+  - id: Biomedical Research Imaging Center
+    term: School of Medicine, Biomedical Research Imaging Center
     active: true
-    name: School of Dentistry
-    departments:
-      - name: Dental Hygiene
-        active: true
-      - name: Endodontics
-        active: true
-      - name: Operative Dentistry
-        active: true
-      - name: Oral Biology
-        active: true
-      - name: Oral and Maxillofacial Pathology
-        active: true
-      - name: Oral and Maxillofacial Radiology
-        active: true
-      - name: Orthodontics
-        active: true
-      - name: Pediatric Dentistry
-        active: true
-      - name: Periodontology
-        active: true
-      - name: Prosthodontics
-        active: true
-  - id: nursing
+  - id: Bowles Center for Alcohol Studies
+    term: School of Medicine, Bowles Center for Alcohol Studies
     active: true
-    name: School of Nursing
-    departments:
-      - name: Nursing
-        active: true
-  - id: pharmacy
+  - id: CCGS
+    term: School of Medicine, Carolina Center for Genome Sciences
+    active: false
+  - id: Carolina Center for Genome Sciences
+    term: School of Medicine, Carolina Center for Genome Sciences
     active: true
-    name: Eshelman School of Pharmacy
-    departments:
-      - name: Pharmacy
-        active: true
-  - id: business
+  - id: CGBI
+    term: Gillings School of Global Public Health, Carolina Global Breastfeeding Institute
+    active: false
+  - id: Carolina Global Breastfeeding Institute
+    term: Gillings School of Global Public Health, Carolina Global Breastfeeding Institute
     active: true
-    name: Kenan–Flagler Business School
-    departments:
-      - name: Business Administration
-        active: true
-  - id: education
+  - id: Neurodevelopment Disorders Research Center
+    term: School of Medicine, Neurodevelopment Disorders Research Center, Carolina Institute for Developmental Disabilities
+    active: false
+  - id: NDDRC
+    term: School of Medicine, Neurodevelopment Disorders Research Center, Carolina Institute for Developmental Disabilities
+    active: false
+  - id: CIDD
+    term: School of Medicine, Neurodevelopment Disorders Research Center, Carolina Institute for Developmental Disabilities
+    active: false
+  - id: Carolina Institute for Developmental Disabilities
+    term: School of Medicine, Neurodevelopment Disorders Research Center, Carolina Institute for Developmental Disabilities
     active: true
-    name: School of Education
-    departments:
-      - name: Education
-        active: true
-  - id: sils
+  - id: CPC
+    term: Carolina Population Center
+    active: false
+  - id: Carolina Population Center
+    term: Carolina Population Center
     active: true
-    name: School of Information and Library Science
-    departments:
-      - name: Information and Library Science
-        active: true
-  - id: journalism
+  - id: Carolina Vaccine Institute
+    term: School of Medicine, Carolina Vaccine Institute
     active: true
-    name: School of Media and Journalism
-    departments:
-      - name: Media and Journalism
+  - id: Sheps Center for Health Services Research
+    term: Cecil G. Sheps Center for Health Services Research
+    active: false
+  - id: Cecil G. Sheps Center for Health Services Research
+    term: Cecil G. Sheps Center for Health Services Research
+    active: true
+  - id: Center for Aging and Health
+    term: School of Medicine, Center for Aging and Health
+    active: true
+  - id: Center for AIDS Research
+    term: School of Medicine, Center for AIDS Research
+    active: true
+  - id: CDS
+    term: Center for Developmental Science
+    active: false
+  - id: Center for Developmental Science
+    term: Center for Developmental Science
+    active: true
+  - id: CEMALB
+    term: School of Medicine, Center for Environmental Medicine, Asthma and Lung Biology
+    active: false
+  - id: Center for Environmental Medicine, Asthma and Lung Biology
+    term: School of Medicine, Center for Environmental Medicine, Asthma and Lung Biology
+    active: true
+  - id: Center for European Studies
+    term: College of Arts and Sciences, Center for European Studies
+    active: true
+  - id: CGS
+    term: Center for Galapagos Studies
+    active: false
+  - id: Center for Galapagos Studies
+    term: Center for Galapagos Studies
+    active: true
+  - id: CGIBD
+    term: Center for Gastrointestinal Biology and Disease
+    active: false
+  - id: Gastrointestinal Biology and Disease Center
+    term: Center for Gastrointestinal Biology and Disease
+    active: false
+  - id: Center for Gastrointestinal Biology and Disease
+    term: Center for Gastrointestinal Biology and Disease
+    active: true
+  - id: Heart and Vascular Center
+    term: School of Medicine, Center for Heart and Vascular Care
+    active: false
+  - id: Center for Heart and Vascular Care
+    term: School of Medicine, Center for Heart and Vascular Care
+    active: true
+  - id: Center for Maternal and Infant Health
+    term: School of Medicine, Center for Maternal and Infant Health
+    active: true
+  - id: Center for Slavic, Eurasian, and East European Studies
+    term: College of Arts and Sciences, Center for Slavic, Eurasian, and East European Studies
+    active: true
+  - id: Center for Urban and Regional Studies
+    term: College of Arts and Sciences, Center for Urban and Regional Studies
+    active: true
+  - id: Center for Women's Health Research
+    term: School of Medicine, Center for Women's Health Research
+    active: true
+  - id: Coaching Education Minor
+    term: College of Arts and Sciences, Department of Exercise and Sport Science, Coaching Education Minor
+    active: true
+  - id: CHC
+    term: Coastal Hazards Center of Excellence
+    active: false
+  - id: Coastal Hazards Center of Excellence
+    term: Coastal Hazards Center of Excellence
+    active: true
+  - id: College of Arts and Sciences
+    term: College of Arts and Sciences
+    active: true
+  - id: Creative Writing Program
+    term: College of Arts and Sciences, Department of English and Comparative Literature, Creative Writing Program
+    active: true
+  - id: Cultural Studies
+    term: College of Arts and Sciences, Cultural Studies
+    active: true
+  - id: Curriculum and Instruction
+    term: School of Education, Curriculum and Instruction
+    active: true
+  - id: Curriculum for Ecology
+    term: College of Arts and Sciences, Curriculum in Environment and Ecology
+    active: false
+  - id: Curriculum in Environment and Ecology
+    term: College of Arts and Sciences, Curriculum in Environment and Ecology
+    active: true
+  - id: Curriculum in Applied Sciences and Engineering
+    term: Curriculum in Applied Sciences and Engineering
+    active: true
+  - id: Curriculum in Archaeology
+    term: College of Arts and Sciences, Curriculum in Archaeology
+    active: true
+  - id: Curriculum in Bioinformatics and Computational Biology
+    term: School of Medicine, Curriculum in Bioinformatics and Computational Biology
+    active: true
+  - id: Curriculum in Contemporary European Studies
+    term: College of Arts and Sciences, Curriculum in Contemporary European Studies
+    active: true
+  - id: GMB
+    term: School of Medicine, Curriculum in Genetics and Molecular Biology
+    active: false
+  - id: Curriculum in Genetics and Molecular Biology
+    term: School of Medicine, Curriculum in Genetics and Molecular Biology
+    active: true
+  - id: Curriculum in Human Movement Science
+    term: School of Medicine, Department of Allied Health Sciences, Curriculum in Human Movement Science
+    active: true
+  - id: Curriculum in Latin American Studies
+    term: College of Arts and Sciences, Curriculum in Latin American Studies
+    active: true
+  - id: Curriculum in Peace, War, and Defense
+    term: College of Arts and Sciences, Curriculum in Peace, War, and Defense
+    active: true
+  - id: Curriculum in Russian and East European Studies
+    term: College of Arts and Sciences, Center for Slavic, Eurasian, and East European Studies, Curriculum in Russian and East European Studies
+    active: true
+  - id: Curriculum in Toxicology
+    term: School of Medicine, Curriculum in Toxicology
+    active: true
+  - id: CF/Pulmonary Research and Treatment Center
+    term: School of Medicine, Cystic Fibrosis and Pulmonary Diseases Research and Treatment Center
+    active: false
+  - id: CF Center
+    term: School of Medicine, Cystic Fibrosis and Pulmonary Diseases Research and Treatment Center
+    active: false
+  - id: Cystic Fibrosis and Pulmonary Diseases Research and Treatment Center
+    term: School of Medicine, Cystic Fibrosis and Pulmonary Diseases Research and Treatment Center
+    active: true
+  - id: MSDH
+    term: School of Dentistry, Division of Allied Dental Education, Dental Hygiene Master's Program
+    active: false
+  - id: Dental Hygiene Education
+    term: School of Dentistry, Division of Allied Dental Education, Dental Hygiene Master's Program
+    active: false
+  - id: Dental Hygiene Master's Program
+    term: School of Dentistry, Division of Allied Dental Education, Dental Hygiene Master's Program
+    active: true
+  - id: Department of Aerospace Studies
+    term: College of Arts and Sciences, Department of Aerospace Studies
+    active: true
+  - id: Department of African, African American, and Diaspora Studies
+    term: College of Arts and Sciences, Department of African, African American, and Diaspora Studies
+    active: true
+  - id: Department of Allied Health Sciences
+    term: College of Arts and Sciences, Department of Allied Health Sciences
+    active: true
+  - id: Department of American Studies
+    term: College of Arts and Sciences, Department of American Studies
+    active: true
+  - id: Department of Anesthesiology
+    term: School of Medicine, Department of Anesthesiology
+    active: true
+  - id: Department of Anthropology
+    term: College of Arts and Sciences, Department of Anthropology
+    active: true
+  - id: Department of Applied Physical Sciences
+    term: College of Arts and Sciences, Department of Applied Physical Sciences
+    active: true
+  - id: Department of Art
+    term: College of Arts and Sciences, Department of Art
+    active: true
+  - id: Department of Asian Studies
+    term: College of Arts and Sciences, Department of Asian Studies
+    active: true
+  - id: Department of Biochemistry and Biophysics
+    term: School of Medicine, Department of Biochemistry and Biophysics
+    active: true
+  - id: Department of Biology
+    term: College of Arts and Sciences, Department of Biology
+    active: true
+  - id: Department of Biostatistics
+    term: Gillings School of Global Public Health, Department of Biostatistics
+    active: true
+  - id: Department of Cell and Molecular Physiology
+    term: School of Medicine, Department of Cell and Molecular Physiology
+    active: true
+  - id: Department of Cell and Developmental Biology
+    term: School of Medicine, Department of Cell Biology and Physiology
+    active: false
+  - id: Department of Cell Biology and Physiology
+    term: School of Medicine, Department of Cell Biology and Physiology
+    active: true
+  - id: Department of Chemistry
+    term: College of Arts and Sciences, Department of Chemistry
+    active: true
+  - id: Urban Studies
+    term: College of Arts and Sciences, Department of City and Regional Planning
+    active: false
+  - id: Department of City and Regional Planning
+    term: College of Arts and Sciences, Department of City and Regional Planning
+    active: true
+  - id: Department of Classics
+    term: College of Arts and Sciences, Department of Classics
+    active: true
+  - id: Department of Communication Studies
+    term: College of Arts and Sciences, Department of Communication
+    active: false
+  - id: Department of Communication
+    term: College of Arts and Sciences, Department of Communication
+    active: true
+  - id: Department of Computer Science
+    term: College of Arts and Sciences, Department of Computer Science
+    active: true
+  - id: Department of Dental Ecology
+    term: School of Dentistry, Department of Dental Ecology
+    active: true
+  - id: Department of Dermatology
+    term: School of Medicine, Department of Dermatology
+    active: true
+  - id: Department of Diagnostic Sciences and General Dentistry
+    term: School of Dentistry, Department of Diagnostic Sciences
+    active: false
+  - id: Department of Diagnostic Sciences
+    term: School of Dentistry, Department of Diagnostic Sciences
+    active: true
+  - id: Department of Dramatic Art
+    term: College of Arts and Sciences, Department of Dramatic Art
+    active: true
+  - id: Department of Economics
+    term: College of Arts and Sciences, Department of Economics
+    active: true
+  - id: Department of Emergency Medicine
+    term: School of Medicine, Department of Emergency Medicine
+    active: true
+  - id: Department of Endodontics
+    term: School of Dentistry, Department of Endodontics
+    active: true
+  - id: Department of English and Comparative Literature
+    term: College of Arts and Sciences, Department of English and Comparative Literature
+    active: true
+  - id: Department of Environmental Sciences and Engineering
+    term: Gillings School of Global Public Health, Department of Environmental Sciences and Engineering
+    active: true
+  - id: Department of Epidemiology
+    term: Gillings School of Global Public Health, Department of Epidemiology
+    active: true
+  - id: EXSS
+    term: College of Arts and Sciences, Department of Exercise and Sport Science
+    active: false
+  - id: Department of Exercise and Sport Science
+    term: College of Arts and Sciences, Department of Exercise and Sport Science
+    active: true
+  - id: Department of Family Medicine
+    term: School of Medicine, Department of Family Medicine
+    active: true
+  - id: Department of Genetics
+    term: School of Medicine, Department of Genetics
+    active: true
+  - id: Department of Geography
+    term: College of Arts and Sciences, Department of Geography
+    active: true
+  - id: Department of Geological Sciences
+    term: College of Arts and Sciences, Department of Geological Sciences
+    active: true
+  - id: Department of Germanic Languages and Literatures
+    term: College of Arts and Sciences, Department of Germanic and Slavic Languages and Literatures
+    active: false
+  - id: Department of Slavic Languages and Literatures
+    term: College of Arts and Sciences, Department of Germanic and Slavic Languages and Literatures
+    active: false
+  - id: Department of Germanic Languages
+    term: College of Arts and Sciences, Department of Germanic and Slavic Languages and Literatures
+    active: false
+  - id: Department of Germanic and Slavic Languages and Literatures
+    term: College of Arts and Sciences, Department of Germanic and Slavic Languages and Literatures
+    active: true
+  - id: Department of Global Studies
+    term: College of Arts and Sciences, Department of Global Studies
+    active: true
+  - id: Department of Health Behavior and Education
+    term: Gillings School of Global Public Health, Department of Health Behavior
+    active: false
+  - id: Department of Health Behavior and Health Education
+    term: Gillings School of Global Public Health, Department of Health Behavior
+    active: false
+  - id: Department of Health Behavior
+    term: Gillings School of Global Public Health, Department of Health Behavior
+    active: true
+  - id: Department of Health Policy and Administration
+    term: Gillings School of Global Public Health, Department of Health Policy and Management
+    active: false
+  - id: Department of Health Policy and Management
+    term: Gillings School of Global Public Health, Department of Health Policy and Management
+    active: true
+  - id: Department of History
+    term: College of Arts and Sciences, Department of History
+    active: true
+  - id: Department of Linguistics
+    term: College of Arts and Sciences, Department of Linguistics
+    active: true
+  - id: Department of Marine Sciences
+    term: College of Arts and Sciences, Department of Marine Sciences
+    active: true
+  - id: Department of Maternal and Child Health
+    term: Gillings School of Global Public Health, Department of Maternal and Child Health
+    active: true
+  - id: Department of Mathematics
+    term: College of Arts and Sciences, Department of Mathematics
+    active: true
+  - id: Department of Medicine
+    term: School of Medicine, Department of Medicine
+    active: true
+  - id: Microbiology
+    term: School of Medicine, Department of Microbiology and Immunology
+    active: false
+  - id: Department of Microbiology and Immunology
+    term: School of Medicine, Department of Microbiology and Immunology
+    active: true
+  - id: Department of Military Science
+    term: College of Arts and Sciences, Department of Military Science
+    active: true
+  - id: Department of Music
+    term: College of Arts and Sciences, Department of Music
+    active: true
+  - id: Department of Naval Science
+    term: College of Arts and Sciences, Department of Naval Science
+    active: true
+  - id: Department of Neurology
+    term: School of Medicine, Department of Neurology
+    active: true
+  - id: Department of Neurosurgery
+    term: School of Medicine, Department of Neurosurgery
+    active: true
+  - id: Department of Nutrition
+    term: Gillings School of Global Public Health, Department of Nutrition
+    active: true
+  - id: Department of Obstetrics and Gynecology
+    term: School of Medicine, Department of Obstetrics and Gynecology
+    active: true
+  - id: Department of Operative Dentistry
+    term: School of Dentistry, Department of Operative Dentistry
+    active: true
+  - id: Department of Ophthalmology
+    term: School of Medicine, Department of Ophthalmology
+    active: true
+  - id: Department of Oral and Maxillofacial Surgery
+    term: School of Dentistry, Department of Oral and Maxillofacial Surgery
+    active: true
+  - id: Department of Orthodontics
+    term: School of Dentistry, Department of Orthodontics
+    active: true
+  - id: Department of Orthopaedics
+    term: School of Medicine, Department of Orthopaedics
+    active: true
+  - id: Department of Otolaryngology/Head and Neck Surgery
+    term: School of Medicine, Department of Otolaryngology/Head and Neck Surgery
+    active: true
+  - id: Department of Pathology
+    term: School of Medicine, Department of Pathology and Laboratory Medicine
+    active: false
+  - id: Department of Pathology and Laboratory Medicine
+    term: School of Medicine, Department of Pathology and Laboratory Medicine
+    active: true
+  - id: Department of Pediatric Dentistry
+    term: School of Dentistry, Department of Pediatric Dentistry
+    active: true
+  - id: Department of Pediatrics
+    term: School of Medicine, Department of Pediatrics
+    active: true
+  - id: Department of Periodontology
+    term: School of Dentistry, Department of Periodontology
+    active: true
+  - id: Department of Pharmacology
+    term: School of Medicine, Department of Pharmacology
+    active: true
+  - id: Department of Philosophy
+    term: College of Arts and Sciences, Department of Philosophy
+    active: true
+  - id: Department of Physical Medicine and Rehabilitation
+    term: School of Medicine, Department of Physical Medicine and Rehabilitation
+    active: true
+  - id: Department of Physics
+    term: College of Arts and Sciences, Department of Physics and Astronomy
+    active: false
+  - id: Department of Physics and Astronomy
+    term: College of Arts and Sciences, Department of Physics and Astronomy
+    active: true
+  - id: Department of Political Science
+    term: College of Arts and Sciences, Department of Political Science
+    active: true
+  - id: Department of Prosthodontics
+    term: School of Dentistry, Department of Prosthodontics
+    active: true
+  - id: Department of Psychiatry
+    term: School of Medicine, Department of Psychiatry
+    active: true
+  - id: Department of Psychology
+    term: College of Arts and Sciences, Department of Psychology and Neuroscience
+    active: false
+  - id: Department of Psychology and Neuroscience
+    term: College of Arts and Sciences, Department of Psychology and Neuroscience
+    active: true
+  - id: Department of Public Policy
+    term: College of Arts and Sciences, Department of Public Policy
+    active: true
+  - id: Department of Radiation Oncology
+    term: School of Medicine, Department of Radiation Oncology
+    active: true
+  - id: Department of Radiology
+    term: School of Medicine, Department of Radiology
+    active: true
+  - id: Department of Religious Studies
+    term: College of Arts and Sciences, Department of Religious Studies
+    active: true
+  - id: Department of Romance Languages
+    term: College of Arts and Sciences, Department of Romance Studies
+    active: false
+  - id: Department of Romance Studies
+    term: College of Arts and Sciences, Department of Romance Studies
+    active: true
+  - id: Department of Social Medicine
+    term: School of Medicine, Department of Social Medicine
+    active: true
+  - id: Department of Sociology
+    term: College of Arts and Sciences, Department of Sociology
+    active: true
+  - id: Department of Statistics
+    term: College of Arts and Sciences, Department of Statistics and Operations Research
+    active: false
+  - id: Department of Operations Research
+    term: College of Arts and Sciences, Department of Statistics and Operations Research
+    active: false
+  - id: Department of Statistics and Operations Research
+    term: College of Arts and Sciences, Department of Statistics and Operations Research
+    active: true
+  - id: Department of Surgery
+    term: School of Medicine, Department of Surgery
+    active: true
+  - id: Department of Urology
+    term: School of Medicine, Department of Urology
+    active: true
+  - id: Department of Women's and Gender Studies
+    term: College of Arts and Sciences, Department of Women's and Gender Studies
+    active: true
+  - id: Diabetes Center for Research
+    term: School of Medicine, Diabetes Center for Excellence
+    active: false
+  - id: DCR
+    term: School of Medicine, Diabetes Center for Excellence
+    active: false
+  - id: Diabetes Center for Excellence
+    term: School of Medicine, Diabetes Center for Excellence
+    active: true
+  - id: Data Intensive Cyber Environments Center
+    term: DICE Center
+    active: false
+  - id: DICE Center
+    term: DICE Center
+    active: true
+  - id: Division of Allied Dental Education
+    term: School of Dentistry, Division of Allied Dental Education
+    active: true
+  - id: Division of Chemical Biology and Medicinal Chemistry
+    term: Eshelman School of Pharmacy, Division of Chemical Biology and Medicinal Chemistry
+    active: true
+  - id: Division of Hematology/Oncology
+    term: School of Medicine, Division of Hematology/Oncology
+    active: true
+  - id: DLAM
+    term: Division of Laboratory Animal Medicine
+    active: false
+  - id: Division of Laboratory Animal Medicine
+    term: Division of Laboratory Animal Medicine
+    active: true
+  - id: Division of Molecular Pharmaceutics
+    term: Eshelman School of Pharmacy, Division of Molecular Pharmaceutics
+    active: true
+  - id: Division of Occupational Science
+    term: School of Medicine, Department of Allied Health Sciences, Division of Occupational Science and Occupational Therapy
+    active: false
+  - id: Division of Occupational Science and Occupational Therapy
+    term: School of Medicine, Department of Allied Health Sciences, Division of Occupational Science and Occupational Therapy
+    active: true
+  - id: Division of Pharmaceutical Outcomes and Policy
+    term: Eshelman School of Pharmacy, Division of Pharmaceutical Outcomes and Policy
+    active: true
+  - id: Division of Pharmacotherapy and Experimental Therapeutics
+    term: Eshelman School of Pharmacy, Division of Pharmacotherapy and Experimental Therapeutics
+    active: true
+  - id: Division of Speech and Hearing Sciences
+    term: School of Medicine, Department of Allied Health Sciences, Division of Speech and Hearing Sciences
+    active: true
+  - id: MEDX
+    term: School of Education, Education for Experienced Teachers
+    active: false
+  - id: Education for Experienced Teachers
+    term: School of Education, Education for Experienced Teachers
+    active: true
+  - id: Educational Leadership
+    term: School of Education, Educational Leadership
+    active: true
+  - id: Educational Psychology
+    term: School of Education, Educational Psychology, Measurement, and Evaluation
+    active: false
+  - id: Educational Psychology, Measurement, and Evaluation
+    term: School of Education, Educational Psychology, Measurement, and Evaluation
+    active: true
+  - id: English
+    term: College of Arts and Sciences, Department of English and Comparative Literature, English
+    active: true
+  - id: Environmental Health Sciences
+    term: Gillings School of Global Public Health, Department of Environmental Sciences and Engineering, Environmental Health Sciences
+    active: true
+  - id: Curriculum in Ecology
+    term: College of Arts and Sciences, Curriculum in Environment and Ecology, Environmental Studies
+    active: false
+  - id: Environmental Studies
+    term: College of Arts and Sciences, Curriculum in Environment and Ecology, Environmental Studies
+    active: true
+  - id: School of Pharmacy
+    term: Eshelman School of Pharmacy
+    active: false
+  - id: Eshelman School of Pharmacy
+    term: Eshelman School of Pharmacy
+    active: true
+  - id: Fitness Professional Concentration
+    term: College of Arts and Sciences, Department of Exercise and Sport Science, Fitness Professional Concentration
+    active: true
+  - id: Folklore Program
+    term: College of Arts and Sciences, Department of American Studies, Folklore Program
+    active: true
+  - id: FPG Child Development Institute
+    term: Frank Porter Graham Child Development Institute
+    active: false
+  - id: Frank Porter Graham Child Development Institute
+    term: Frank Porter Graham Child Development Institute
+    active: true
+  - id: Gene Therapy Center
+    term: School of Medicine, Gene Therapy Center
+    active: true
+  - id: School of Public Health
+    term: Gillings School of Global Public Health
+    active: false
+  - id: Gillings School of Global Public Health
+    term: Gillings School of Global Public Health
+    active: true
+  - id: Highway Safety Research Center
+    term: Highway Safety Research Center
+    active: true
+  - id: Honors Carolina
+    term: Honors Carolina
+    active: true
+  - id: Odum Institute
+    term: Howard W. Odum Institute for Research in Social Science
+    active: false
+  - id: Howard W. Odum Institute for Research in Social Science
+    term: Howard W. Odum Institute for Research in Social Science
+    active: true
+  - id: IMS
+    term: Institute of Marine Sciences
+    active: false
+  - id: IPRC
+    term: Injury Prevention Research Center
+    active: false
+  - id: Injury Prevention Research Center
+    term: Injury Prevention Research Center
+    active: true
+  - id: IAM
+    term: Institute for Advanced Materials, Nanoscience and Technology
+    active: false
+  - id: Institute for Advanced Materials, Nanoscience and Technology
+    term: Institute for Advanced Materials, Nanoscience and Technology
+    active: true
+  - id: Center for Drug Safety Sciences
+    term: School of Medicine, Institute for Drug Safety Sciences
+    active: false
+  - id: IDSS
+    term: School of Medicine, Institute for Drug Safety Sciences
+    active: false
+  - id: Institute for Drug Safety Sciences
+    term: School of Medicine, Institute for Drug Safety Sciences
+    active: true
+  - id: Institute for Global Health and Infectious Disease
+    term: School of Medicine, Institute for Global Health and Infectious Disease
+    active: true
+  - id: Institute for the Study of the Americas
+    term: Institute for the Study of the Americas
+    active: true
+  - id: Institute of Marine Sciences
+    term: Institute of Marine Sciences
+    active: true
+  - id: Program in Molecular Biology and Biotechnology
+    term: School of Medicine, Integrative Program for Biological and Genome Sciences
+    active: false
+  - id: Biological and Genome Sciences
+    term: School of Medicine, Integrative Program for Biological and Genome Sciences
+    active: false
+  - id: IBGS
+    term: School of Medicine, Integrative Program for Biological and Genome Sciences
+    active: false
+  - id: Integrative Program for Biological and Genome Sciences
+    term: School of Medicine, Integrative Program for Biological and Genome Sciences
+    active: true
+  - id: Interdisciplinary Studies Program
+    term: College of Arts and Sciences, Interdisciplinary Studies Program
+    active: true
+  - id: International and Comparative American Studies
+    term: College of Arts and Sciences, Department of American Studies, International and Comparative American Studies
+    active: true
+  - id: Department of Biomedical Engineering
+    term:
+      - School of Medicine, Joint Department of Biomedical Engineering
+      - North Carolina State University, Joint Department of Biomedical Engineering
+    active: false
+  - id: Joint Department of Biomedical Engineering
+    term:
+      - School of Medicine, Joint Department of Biomedical Engineering
+      - North Carolina State University, Joint Department of Biomedical Engineering
+    active: true
+  - id: Kenan Center for the Utilization of Carbon Dioxide
+    term: Kenan Center for the Utilization of Carbon Dioxide
+    active: true
+  - id: School of Business
+    term: Kenan-Flagler Business School
+    active: false
+  - id: Business Administration
+    term: Kenan-Flagler Business School
+    active: false
+  - id: Kenan-Flagler Business School
+    term: Kenan-Flagler Business School
+    active: true
+  - id: Mass Communication Graduate Program
+    term: School of Media and Journalism, Mass Communication Graduate Program
+    active: true
+  - id: Materials Science Program
+    term: College of Arts and Sciences, Department of Applied Physical Sciences, Materials Science Program
+    active: true
+  - id: Mathematical Decision Sciences Program
+    term: College of Arts and Sciences, Department of Statistics and Operations Research, Mathematical Decision Sciences Program
+    active: true
+  - id: Molecular and Cellular Pathology Graduate Program
+    term: School of Medicine, Department of Pathology and Laboratory Medicine, Molecular and Cellular Pathology Graduate Program
+    active: true
+  - id: Musicology Graduate Program
+    term: College of Arts and Sciences, Department of Music, Musicology Graduate Program
+    active: true
+  - id: Curriculum in Neurobiology
+    term:
+      - School of Medicine, Neurobiology Curriculum
+      - Neuroscience Center, Neurobiology Curriculum
+    active: false
+  - id: Neurobiology Curriculum
+    term:
+      - School of Medicine, Neurobiology Curriculum
+      - Neuroscience Center, Neurobiology Curriculum
+    active: true
+  - id: Neuroscience Center
+    term: School of Medicine, Neuroscience Center
+    active: true
+  - id: NRI
+    term: Nutrition Research Institute
+    active: false
+  - id: Nutrition Research Institute
+    term: Nutrition Research Institute
+    active: true
+  - id: Oral and Maxillofacial Pathology Graduate Program
+    term: School of Dentistry, Oral Pathology Section, Oral and Maxillofacial Pathology Graduate Program
+    active: true
+  - id: Oral and Maxillofacial Radiology Graduate Program
+    term: School of Dentistry, Oral Pathology Section, Oral and Maxillofacial Radiology Graduate Program
+    active: true
+  - id: Oral Biology PhD Program
+    term: School of Dentistry, Oral Biology PhD Program
+    active: true
+  - id: Oral Pathology Section
+    term: School of Dentistry, Oral Pathology Section
+    active: true
+  - id: Organic Chemistry Program
+    term: College of Arts and Sciences, Department of Chemistry, Organic Chemistry Program
+    active: true
+  - id: Pharmaceutical Sciences Program
+    term: Eshelman School of Pharmacy, Pharmaceutical Sciences Program
+    active: true
+  - id: Physician Assistant Program
+    term: School of Medicine, Department of Allied Health Sciences, Physician Assistant Program
+    active: true
+  - id: Program in Comparative Literature
+    term: College of Arts and Sciences, Department of English and Comparative Literature, Program in Comparative Literature
+    active: true
+  - id: Public Administration Program
+    term: School of Government, Public Administration Program
+    active: true
+  - id: PHLP
+    term: Gillings School of Global Public Health, Public Health Leadership Program
+    active: false
+  - id: Public Health Leadership Program
+    term: Gillings School of Global Public Health, Public Health Leadership Program
+    active: true
+  - id: Recreation Administration Minor
+    term: College of Arts and Sciences, Department of Exercise and Sport Science, Recreation Administration Minor
+    active: true
+  - id: RENCI
+    term: Renaissance Computing Institute
+    active: false
+  - id: Renaissance Computing Institute
+    term: Renaissance Computing Institute
+    active: true
+  - id: School Administration
+    term: School of Education, School Administration
+    active: true
+  - id: School Counseling
+    term: School of Education, School Counseling
+    active: true
+  - id: School of Dentistry
+    term: School of Dentistry
+    active: true
+  - id: School of Education
+    term: School of Education
+    active: true
+  - id: School of Government
+    term: School of Government
+    active: true
+  - id: School of Information and Library Science
+    term: School of Information and Library Science
+    active: true
+  - id: School of Law
+    term: School of Law
+    active: true
+  - id: UNC School of Media and Journalism
+    term: School of Media and Journalism
+    active: false
+  - id: School of Journalism and Mass Communication
+    term: School of Media and Journalism
+    active: false
+  - id: School of Media and Journalism
+    term: School of Media and Journalism
+    active: true
+  - id: School of Medicine
+    term: School of Medicine
+    active: true
+  - id: School of Nursing
+    term: School of Nursing
+    active: true
+  - id: School of Social Work
+    term: School of Social Work
+    active: true
+  - id: School Psychology
+    term: School of Education, School Psychology
+    active: true
+  - id: Southern Studies Concentration
+    term: College of Arts and Sciences, Department of American Studies, Southern Studies Concentration
+    active: true
+  - id: Sport Administration Program
+    term: College of Arts and Sciences, Department of Exercise and Sport Science, Sport Administration Program
+    active: true
+  - id: Studio Art Program
+    term: College of Arts and Sciences, Department of Art, Studio Art Program
+    active: true
+  - id: Thurston Arthritis Research Center
+    term: School of Medicine, Thurston Arthritis Research Center
+    active: true
+  - id: UNC Center for Health Promotion and Disease Prevention
+    term: UNC Center for Health Promotion and Disease Prevention
+    active: true
+  - id: UNC Institute for the Environment
+    term: UNC Institute for the Environment
+    active: true
+  - id: UNC Institute On Aging
+    term: UNC Institute On Aging
+    active: true
+  - id: Kidney Center
+    term: School of Medicine, UNC Kidney Center
+    active: false
+  - id: UNC Kidney Center
+    term: School of Medicine, UNC Kidney Center
+    active: true
+  - id: Lineberger Comprehensive Cancer Center
+    term: N.C. Cancer Hospital, UNC Lineberger Comprehensive Cancer Center
+    active: false
+  - id: UNC Lineberger Comprehensive Cancer Center
+    term: N.C. Cancer Hospital, UNC Lineberger Comprehensive Cancer Center
+    active: true
+  - id: McAllister Heart Institute
+    term: School of Medicine, UNC McAllister Heart Institute
+    active: false
+  - id: MHI
+    term: School of Medicine, UNC McAllister Heart Institute
+    active: false
+  - id: UNC McAllister Heart Institute
+    term: School of Medicine, UNC McAllister Heart Institute
+    active: true
+  - id: Health Sciences Library
+    term: University of North Carolina at Chapel Hill. Health Sciences Library
+    active: false
+  - id: HSL
+    term: University of North Carolina at Chapel Hill. Health Sciences Library
+    active: false
+  - id: University of North Carolina at Chapel Hill. Health Sciences Library
+    term: University of North Carolina at Chapel Hill. Health Sciences Library
+    active: true
+  - id: University Libraries
+    term: University of North Carolina at Chapel Hill. Library
+    active: false
+  - id: University of North Carolina at Chapel Hill. University Libraries
+    term: University of North Carolina at Chapel Hill. Library
+    active: false
+  - id: Walter Royal Davis Library
+    term: University of North Carolina at Chapel Hill. Library
+    active: false
+  - id: Davis Library
+    term: University of North Carolina at Chapel Hill. Library
+    active: false
+  - id: Wilson Library
+    term: University of North Carolina at Chapel Hill. Library
+    active: false
+  - id: Louis Round Wilson Library
+    term: University of North Carolina at Chapel Hill. Library
+    active: false
+  - id: University of North Carolina at Chapel Hill. Library
+    term: University of North Carolina at Chapel Hill. Library
+    active: true
