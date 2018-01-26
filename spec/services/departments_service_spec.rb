@@ -10,8 +10,8 @@ RSpec.describe Hyrax::DepartmentsService do
 
   describe "#select_all_options" do
     it "returns only active terms" do
-      expect(service.select_all_options).to include(['biology', 'biology'], ['chemistry', 'chemistry'],
-                                                    ['history', 'history'])
+      expect(service.select_all_options).to include(['biology', 'Biology'], ['chemistry', 'Chemistry'],
+                                                    ['history', 'History'])
     end
   end
 
@@ -22,6 +22,12 @@ RSpec.describe Hyrax::DepartmentsService do
 
     it "resolves for ids of inactive terms" do
       expect(service.label('example')).to eq('Some College, Example Department')
+    end
+  end
+
+  describe "#identifier" do
+    it "resolves for labels of active terms" do
+      expect(service.identifier('History')).to eq('history')
     end
   end
 end

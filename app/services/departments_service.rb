@@ -9,6 +9,14 @@ module DepartmentsService
     end
   end
 
+  def self.identifier(term)
+    begin
+      authority.all.reject{ |item| item['active'] == false }.select { |department| department['label'] == term }.first['id']
+    rescue
+      nil
+    end
+  end
+
   def self.label(id)
     authority.find(id).fetch('term')
   end
@@ -16,7 +24,7 @@ module DepartmentsService
   def self.include_current_value(value, _index, render_options, html_options)
     unless value.blank?
       html_options[:class] << ' force-select'
-      render_options += [[value, label(value)]]
+      render_options += [[identifier(value), value]]
     end
     [render_options, html_options]
   end
