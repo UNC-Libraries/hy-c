@@ -15,5 +15,11 @@ module Hyrax
     self.required_fields -= [:keyword]
 
     self.single_value_fields = [:title]
+
+    # Add overrides for required properties which are becoming single-valued
+
+    def title
+      super.first || ""
+    end
   end
 end
