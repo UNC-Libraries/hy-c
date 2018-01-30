@@ -1,7 +1,7 @@
 # Generated via
 #  `rails generate hyrax:work Journal`
 module Hyrax
-  class JournalForm < Hyrax::Forms::WorkForm
+  class JournalForm < ::SingleValueForm
     class_attribute :single_value_fields
     
     self.model_class = ::Journal
