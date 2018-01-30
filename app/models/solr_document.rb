@@ -68,6 +68,10 @@ class SolrDocument
     self[Solrizer.solr_name('advisor')]
   end
 
+  def alternate_title
+    self[Solrizer.solr_name('alternate_title')]
+  end
+
   def citation
     self[Solrizer.solr_name('citation')]
   end
@@ -120,6 +124,10 @@ class SolrDocument
     self[Solrizer.solr_name('honors_level')]
   end
 
+  def issn
+    self[Solrizer.solr_name('issn')]
+  end
+
   def medium
     self[Solrizer.solr_name('medium')]
   end
@@ -155,4 +163,9 @@ class SolrDocument
   def sets
     LanguageSet.sets_for(self)
   end
+
+  def table_of_contents
+    self[Solrizer.solr_name('table_of_contents')]
+  end
+
 end

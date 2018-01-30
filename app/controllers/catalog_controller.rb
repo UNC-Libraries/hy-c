@@ -111,6 +111,7 @@ class CatalogController < ApplicationController
     config.add_index_field solr_name("academic_department", :stored_searchable), label: "Affiliation"
     config.add_index_field solr_name("access", :stored_searchable), label: "Access"
     config.add_index_field solr_name("advisor", :stored_searchable), label: "Advisor"
+    config.add_index_field solr_name("alternate_title", :stored_searchable), label: "Alternate Title"
     config.add_index_field solr_name("author_status", :stored_searchable), label: "Status"
     config.add_index_field solr_name("citation", :stored_searchable), label: "Citation"
     config.add_index_field solr_name("coauthor", :stored_searchable), label: "Co-Authors"
@@ -128,6 +129,7 @@ class CatalogController < ApplicationController
     config.add_index_field solr_name("graduation_year", :stored_searchable), label: "Graduation Year"
     config.add_index_field solr_name("honors_level", :stored_searchable), label: "Honors Level"
     config.add_index_field solr_name("institution", :stored_searchable), label: "Institution"
+    config.add_index_field solr_name("issn", :stored_searchable), label: "ISSN"
     config.add_index_field solr_name("medium", :stored_searchable), label: "Medium"
     config.add_index_field solr_name("note", :stored_searchable), label: "Note"
     config.add_index_field solr_name("orcid", :stored_searchable), label: "ORCID"
@@ -137,6 +139,7 @@ class CatalogController < ApplicationController
     config.add_index_field solr_name("publication_version", :stored_searchable), label: "Version"
     config.add_index_field solr_name("record_content_source", :stored_searchable), label: "Record Content Source"
     config.add_index_field solr_name("reviewer", :stored_searchable), label: "Reviewer"
+    config.add_index_field solr_name("table_of_contents", :stored_searchable), label: "Table of Contents"
 
     # "fielded" search configuration. Used by pulldown among other places.
     # For supported keys in hash, see rdoc for Blacklight::SearchFields
