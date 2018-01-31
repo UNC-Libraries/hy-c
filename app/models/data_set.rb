@@ -54,7 +54,7 @@ class DataSet < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :other_affiliation, predicate: ::RDF::Vocab::SCHEMA.affiliation do |index|
+  property :other_affiliation, predicate: ::RDF::URI('http://schema.org/affiliation') do |index|
     index.as :stored_searchable
   end
 
