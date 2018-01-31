@@ -58,7 +58,7 @@ RSpec.describe Hyrax::JournalForm do
       expect(subject['keyword']).to eq ['journal']
       expect(subject['member_of_collection_ids']).to eq ['123456', 'abcdef']
       expect(subject['abstract']).to eq ['an abstract']
-      expect(subject['alternate_title']).to eq ['alt_title']
+      expect(subject['alternate_title']).to eq ['alt title']
       expect(subject['date_issued']).to eq '2018-01-08'
       expect(subject['extent']).to eq ['1993']
       expect(subject['genre']).to eq ['science']
