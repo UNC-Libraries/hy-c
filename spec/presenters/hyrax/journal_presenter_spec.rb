@@ -15,7 +15,6 @@ RSpec.describe Hyrax::JournalPresenter do
       "date_created_tesim" => ['an unformatted date'],
       "depositor_tesim" => user_key,
       "abstract_tesim" => ['an abstract'],
-      "access_tesim" => ['an access state'],
       "alternate_title_tesim" => ['a different title'],
       "date_issued_tesim" => ['2018-01-08'],
       "discipline_tesim" => ['a discipline'],
@@ -23,13 +22,13 @@ RSpec.describe Hyrax::JournalPresenter do
       "format_tesim" => ['a format'],
       "genre_tesim" => ['a genre'],
       "geographic_subject_tesim" => ['California'],
-      "issn_tesim" => ['a issn'],
+      "issn_tesim" => ['12345'],
       "note_tesim" => ['a note'],
-      "place_of_publication_tesim" => ['a place'],
+      "place_of_publication_tesim" => ['California'],
       "record_content_source_tesim" => ['a source'],
       "resource_type_tesim" => ['a type'],
       "reviewer_tesim" => ['a reviewer'],
-      "table_of_contents_tesim" => ['cool table of contents']
+      "table_of_contents_tesim" => ['table of contents']
     }
   end
 
@@ -82,7 +81,7 @@ RSpec.describe Hyrax::JournalPresenter do
 
     context "with a custom alternate title field" do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:alternate_title, ['alt title'], {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:alternate_title, ['a different title'], {}).and_return(renderer)
       end
 
       it "calls the AttributeRenderer" do
