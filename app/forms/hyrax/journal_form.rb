@@ -11,7 +11,6 @@ module Hyrax
     ]
     self.terms -= [:description, :based_near, :related_url]
 
-    self.required_fields += [:date_issued, :resource_type]
     self.required_fields -= [:keyword]
 
     self.single_value_fields = [:title]

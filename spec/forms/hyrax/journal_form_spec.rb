@@ -9,13 +9,13 @@ RSpec.describe Hyrax::JournalForm do
   describe "#required_fields" do
     subject { form.required_fields }
 
-    it { is_expected.to match_array [:title, :creator, :rights_statement, :date_issued, :resource_type] }
+    it { is_expected.to match_array [:title, :creator, :rights_statement] }
   end
 
   describe "#primary_terms" do
     subject { form.primary_terms }
 
-    it { is_expected.to match_array [:title, :creator, :rights_statement, :date_issued, :resource_type] }
+    it { is_expected.to match_array [:title, :creator, :rights_statement] }
   end
 
   describe "#secondary_terms" do
@@ -23,7 +23,7 @@ RSpec.describe Hyrax::JournalForm do
 
     it { is_expected.to match_array [:abstract, :alternate_title, :contributor, :date_created, :extent,
                                      :genre, :geographic_subject, :identifier, :issn, :license, :note,
-                                     :place_of_publication, :source, :subject,
+                                     :place_of_publication, :source, :subject, :date_issued, :resource_type,
                                      :publisher, :language, :keyword, :table_of_contents] }
   end
 
