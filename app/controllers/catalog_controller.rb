@@ -113,6 +113,7 @@ class CatalogController < ApplicationController
     config.add_index_field solr_name("advisor", :stored_searchable), label: "Advisor"
     config.add_index_field solr_name("author_status", :stored_searchable), label: "Status"
     config.add_index_field solr_name("citation", :stored_searchable), label: "Citation"
+    config.add_index_field solr_name("copyright_date", :stored_searchable), label: "Copyright Date"
     config.add_index_field solr_name("date_issued", :stored_searchable), label: "Date Issued"
     config.add_index_field solr_name("date_published", :stored_searchable), label: "Date Published"
     config.add_index_field solr_name("degree", :stored_searchable), label: "Degree"
@@ -124,9 +125,17 @@ class CatalogController < ApplicationController
     config.add_index_field solr_name("graduation_year", :stored_searchable), label: "Graduation Year"
     config.add_index_field solr_name("honors_level", :stored_searchable), label: "Honors Level"
     config.add_index_field solr_name("institution", :stored_searchable), label: "Institution"
+    config.add_index_field solr_name("last_modified_date", :stored_searchable), label: "Last Modified Date"
     config.add_index_field solr_name("medium", :stored_searchable), label: "Medium"
     config.add_index_field solr_name("note", :stored_searchable), label: "Note"
+    config.add_index_field solr_name("orcid", :stored_searchable), label: "Orcid"
+    config.add_index_field solr_name("other_affiliation", :stored_searchable), label: "Other Affiliation"
+    config.add_index_field solr_name("project_director", :stored_searchable), label: "Project Director"
+    config.add_index_field solr_name("researcher", :stored_searchable), label: "Researcher"
     config.add_index_field solr_name("reviewer", :stored_searchable), label: "Reviewer"
+    config.add_index_field solr_name("rights_holder", :stored_searchable), label: "Rights Holder"
+    config.add_index_field solr_name("sponsor", :stored_searchable), label: "Sponsor"
+    config.add_index_field solr_name("use", :stored_searchable), label: "Use"
 
     # "fielded" search configuration. Used by pulldown among other places.
     # For supported keys in hash, see rdoc for Blacklight::SearchFields

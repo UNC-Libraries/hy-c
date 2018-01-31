@@ -72,6 +72,10 @@ class SolrDocument
     self[Solrizer.solr_name('citation')]
   end
 
+  def copyright_date
+    self[Solrizer.solr_name('copyright_date')]
+  end
+
   def date_issued
     self[Solrizer.solr_name('date_issued')]
   end
@@ -112,6 +116,10 @@ class SolrDocument
     self[Solrizer.solr_name('honors_level')]
   end
 
+  def last_date_modified
+    self[Solrizer.solr_name('last_date_modified')]
+  end
+
   def medium
     self[Solrizer.solr_name('medium')]
   end
@@ -120,11 +128,39 @@ class SolrDocument
     self[Solrizer.solr_name('note')]
   end
 
+  def orcid
+    self[Solrizer.solr_name('orcid')]
+  end
+
+  def other_affiliation
+    self[Solrizer.solr_name('other_affiliation')]
+  end
+
+  def project_director
+    self[Solrizer.solr_name('project_director')]
+  end
+
+  def researcher
+    self[Solrizer.solr_name('researcher')]
+  end
+
   def reviewer
     self[Solrizer.solr_name('reviewer')]
   end
 
+  def rights_holder
+    self[Solrizer.solr_name('rights_holder')]
+  end
+
   def sets
     LanguageSet.sets_for(self)
+  end
+
+  def sponsor
+    self[Solrizer.solr_name('sponsor')]
+  end
+
+  def use
+    self[Solrizer.solr_name('use')]
   end
 end
