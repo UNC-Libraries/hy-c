@@ -17,14 +17,14 @@ RSpec.describe Hyrax::DataSetPresenter do
       "abstract_tesim" => ['an abstract'],
       "academic_department_tesim" => ['library'],
       "access_tesim" => ['public'],
-      "copyright_date_tesim" => ['2017-12-19'],
-      "date_issued_tesim" => ['2018-01-08'],
-      "doi_tesim" => ['12345'],
+      "copyright_date_tesim" => '2017-12-19',
+      "date_issued_tesim" => '2018-01-08',
+      "doi_tesim" => '12345',
       "extent_tesim" => ['1993'],
-      "funder_tesim" => ['a format'],
+      "funder_tesim" => ['unc'],
       "genre_tesim" => ['a genre'],
       "geographic_subject_tesim" => ['California'],
-      "last_date_modified_tesim" => ['2018-01-29'],
+      "last_date_modified_tesim" => '2018-01-29',
       "orcid_tesim" => ['12345'],
       "other_affiliation_tesim" => ['duke'],
       "project_director_tesim" => ['ben'],
@@ -116,7 +116,7 @@ RSpec.describe Hyrax::DataSetPresenter do
 
     context "with a custom copyright date field" do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:copyright_date, ['2017-12-19'], {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:copyright_date, '2017-12-19', {}).and_return(renderer)
       end
 
       it "calls the AttributeRenderer" do
@@ -127,7 +127,7 @@ RSpec.describe Hyrax::DataSetPresenter do
 
     context "with a custom date issued field" do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:date_issued, ['2018-01-08'], {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:date_issued, '2018-01-08', {}).and_return(renderer)
       end
 
       it "calls the AttributeRenderer" do
@@ -138,7 +138,7 @@ RSpec.describe Hyrax::DataSetPresenter do
 
     context "with a custom doi field" do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:doi, ['12345'], {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:doi, '12345', {}).and_return(renderer)
       end
 
       it "calls the AttributeRenderer" do
@@ -160,7 +160,7 @@ RSpec.describe Hyrax::DataSetPresenter do
 
     context "with a custom funder field" do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:funder, ['1993'], {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:funder, ['unc'], {}).and_return(renderer)
       end
 
       it "calls the AttributeRenderer" do
@@ -194,7 +194,7 @@ RSpec.describe Hyrax::DataSetPresenter do
 
     context "with a custom last date modified field" do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:last_date_modified, ['2018-01-29'], {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:last_date_modified, '2018-01-29', {}).and_return(renderer)
       end
 
       it "calls the AttributeRenderer" do
