@@ -136,6 +136,10 @@ class SolrDocument
     self[Solrizer.solr_name('place_of_publication')]
   end
 
+  def publication
+    self[Solrizer.solr_name('publication')]
+  end
+
   def publication_version
     self[Solrizer.solr_name('publication_version')]
   end
