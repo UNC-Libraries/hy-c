@@ -40,6 +40,7 @@ RSpec.describe Hyrax::DataSetForm do
           member_of_collection_ids: ['123456', 'abcdef'],
           abstract: ['an abstract'],
           access: 'public',
+          academic_department: ['library'],
           contributor: ['dean'],
           copyright_date: '2017-12-25',
           date_issued: '2018-01-08',
@@ -68,6 +69,9 @@ RSpec.describe Hyrax::DataSetForm do
       expect(subject['keyword']).to eq ['data set']
       expect(subject['member_of_collection_ids']).to eq ['123456', 'abcdef']
       expect(subject['abstract']).to eq ['an abstract']
+      expect(subject['academic_department']).to eq ['library']
+      expect(subject['access']).to eq 'public'
+      expect(subject['copyright_date']).to eq '2017-12-25'
       expect(subject['date_issued']).to eq '2018-01-08'
       expect(subject['doi']).to eq '12345'
       expect(subject['extent']).to eq ['1993']
