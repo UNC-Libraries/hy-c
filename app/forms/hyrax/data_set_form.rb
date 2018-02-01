@@ -15,33 +15,9 @@ module Hyrax
 
     self.required_fields -= [:keyword]
 
-    self.single_value_fields = [:access, :copyright_date, :date_created, :date_issued,
-                                :doi, :last_date_modified, :title]
+    self.single_value_fields = [:title]
 
     # Add overrides for required properties which are becoming single-valued
-    def access
-      super.first || ""
-    end
-
-    def copyright_date
-      super.first || ""
-    end
-
-    def date_created
-      super.first || ""
-    end
-
-    def date_issued
-      super.first || ""
-    end
-
-    def doi
-      super.first || ""
-    end
-
-    def last_date_modified
-      super.first || ""
-    end
 
     def title
       super.first || ""
