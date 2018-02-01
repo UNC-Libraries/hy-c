@@ -134,12 +134,11 @@ class CatalogController < ApplicationController
     config.add_index_field solr_name("medium", :stored_searchable), label: "Medium"
     config.add_index_field solr_name("note", :stored_searchable), label: "Note"
     config.add_index_field solr_name("orcid", :stored_searchable), label: "ORCID"
-    config.add_index_field solr_name("place_of_publication", :stored_searchable), label: "Place of publication"
+    config.add_index_field solr_name("place_of_publication", :stored_searchable), label: "Place of Publication"
     config.add_index_field solr_name("publication", :stored_searchable), label: "Publication"
     config.add_index_field solr_name("publication_date", :stored_searchable), label: "Publication Date"
     config.add_index_field solr_name("publication_version", :stored_searchable), label: "Version"
     config.add_index_field solr_name("record_content_source", :stored_searchable), label: "Record Content Source"
-    config.add_index_field solr_name("place_of_publication", :stored_searchable), label: "Place of Publication"
     config.add_index_field solr_name("reviewer", :stored_searchable), label: "Reviewer"
     config.add_index_field solr_name("table_of_contents", :stored_searchable), label: "Table of Contents"
 
