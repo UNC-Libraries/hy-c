@@ -68,13 +68,13 @@ RSpec.describe Hyrax::DataSetForm do
       expect(subject['keyword']).to eq ['data set']
       expect(subject['member_of_collection_ids']).to eq ['123456', 'abcdef']
       expect(subject['abstract']).to eq ['an abstract']
-      expect(subject['date_issued']).to eq ['2018-01-08']
-      expect(subject['doi']).to eq ['12345']
+      expect(subject['date_issued']).to eq '2018-01-08'
+      expect(subject['doi']).to eq '12345'
       expect(subject['extent']).to eq ['1993']
       expect(subject['funder']).to eq ['dean']
       expect(subject['genre']).to eq ['science']
       expect(subject['geographic_subject']).to eq ['California']
-      expect(subject['last_date_modified']).to eq ['2018-01-23']
+      expect(subject['last_date_modified']).to eq '2018-01-23'
       expect(subject['orcid']).to eq ['12345']
       expect(subject['other_affiliation']).to eq ['duke']
       expect(subject['project_director']).to eq ['dean']
