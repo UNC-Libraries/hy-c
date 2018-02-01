@@ -11,7 +11,9 @@ module Hyrax
                    :project_director, :researcher, :rights_holder, :sponsor, :use
     ]
 
-    self.terms -= [:based_near]
+    self.terms -= [:based_near, :publisher]
+
+    self.required_fields -= [:keyword]
 
     self.single_value_fields = [:access, :copyright_date, :date_created, :date_issued,
                                 :doi, :last_date_modified, :title

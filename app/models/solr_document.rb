@@ -100,6 +100,10 @@ class SolrDocument
     self[Solrizer.solr_name('extent')]
   end
 
+  def funder
+    self[Solrizer.solr_name('funder')]
+  end
+
   def genre
     self[Solrizer.solr_name('genre')]
   end
