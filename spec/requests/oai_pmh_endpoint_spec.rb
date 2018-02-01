@@ -15,7 +15,8 @@ RSpec.describe 'OAI-PMH catalog endpoint' do
       config.oai = oai_config
     end
 
-    solrRecords = ActiveFedora::SolrService.get('has_model_ssim:Work', rows: 50)
+    solrRecords = ActiveFedora::SolrService.get('has_model_ssim:(Work OR Dissertation OR Article OR MastersPaper OR '+
+                                                    'HonorsThesis) AND visibility_ssi:open', rows: 50)
     solrRecords['response']['docs'].each do |doc|
       timestamps << doc['timestamp']
     end
@@ -57,7 +58,7 @@ RSpec.describe 'OAI-PMH catalog endpoint' do
       scenario 'a resumption token is provided' do
         params = { verb: 'ListRecords', metadataPrefix: format }
         expected_token = 'oai_dc.f('+Time.parse(timestamps.first).utc.iso8601+').u('+
-            (Time.parse(timestamps.last)).utc.iso8601+').t(30):25'
+            (Time.parse(timestamps.last)).utc.iso8601+').t('+timestamps.count.to_s+'):25'
 
         get oai_catalog_path(params)
         token = xpath '//xmlns:resumptionToken'
@@ -70,12 +71,12 @@ RSpec.describe 'OAI-PMH catalog endpoint' do
       scenario 'a resumption token displays the next page of records' do
         params = { verb: 'ListRecords',
                    resumptionToken: 'oai_dc.f('+Time.parse(timestamps.first).utc.iso8601+').u('+
-                       (Time.parse(timestamps.last)).utc.iso8601+').t(30):25' }
+                       (Time.parse(timestamps.last)).utc.iso8601+').t('+timestamps.count.to_s+'):25' }
 
         get oai_catalog_path(params)
         records = xpath '//xmlns:record'
 
-        expect(records.count).to be 5
+        expect(records.count).to be(timestamps.count % 25) # should be 10
       end
 
       scenario 'the last page of records provides an empty resumption token' do
