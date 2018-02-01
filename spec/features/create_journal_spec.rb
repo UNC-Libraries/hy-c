@@ -41,8 +41,8 @@ RSpec.feature 'Create a Journal', js: false do
       fill_in 'Title', with: 'Test Journal'
       fill_in 'Creator', with: 'Test Default Creator'
       fill_in 'Keyword', with: 'Test Default Keyword'
-      select "In Copyright", :from => "article_rights_statement"
-      choose "article_visibility_open"
+      select "In Copyright", :from => "journal_rights_statement"
+      choose "journal_visibility_open"
       check 'agreement'
 
       click_link "Files" # switch tab
