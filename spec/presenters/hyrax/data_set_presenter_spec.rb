@@ -21,7 +21,7 @@ RSpec.describe Hyrax::DataSetPresenter do
       "date_issued_tesim" => ['2018-01-08'],
       "doi_tesim" => ['12345'],
       "extent_tesim" => ['1993'],
-      "format_tesim" => ['a format'],
+      "funder_tesim" => ['a format'],
       "genre_tesim" => ['a genre'],
       "geographic_subject_tesim" => ['California'],
       "last_date_modified_tesim" => ['2018-01-29'],
@@ -60,7 +60,7 @@ RSpec.describe Hyrax::DataSetPresenter do
   it { is_expected.to delegate_method(:date_issued).to(:solr_document) }
   it { is_expected.to delegate_method(:doi).to(:solr_document) }
   it { is_expected.to delegate_method(:extent).to(:solr_document) }
-  it { is_expected.to delegate_method(:format).to(:solr_document) }
+  it { is_expected.to delegate_method(:funder).to(:solr_document) }
   it { is_expected.to delegate_method(:genre).to(:solr_document) }
   it { is_expected.to delegate_method(:geographic_subject).to(:solr_document) }
   it { is_expected.to delegate_method(:last_date_modified).to(:solr_document) }
@@ -158,16 +158,17 @@ RSpec.describe Hyrax::DataSetPresenter do
       end
     end
 
-    context "with a custom format field" do
+    context "with a custom funder field" do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:format, ['a format'], {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:funder, ['1993'], {}).and_return(renderer)
       end
 
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
-        presenter.attribute_to_html(:format)
+        presenter.attribute_to_html(:funder)
       end
     end
+
 
     context "with a custom genre field" do
       before do
@@ -193,7 +194,7 @@ RSpec.describe Hyrax::DataSetPresenter do
 
     context "with a custom last date modified field" do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:last_date_modified, ['California'], {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:last_date_modified, ['2018-01-29'], {}).and_return(renderer)
       end
 
       it "calls the AttributeRenderer" do
@@ -204,12 +205,12 @@ RSpec.describe Hyrax::DataSetPresenter do
 
     context "with a custom orcid field" do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:geographic_subject, ['12345'], {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:orcid, ['12345'], {}).and_return(renderer)
       end
 
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
-        presenter.attribute_to_html(:geographic_subject)
+        presenter.attribute_to_html(:orcid)
       end
     end
 

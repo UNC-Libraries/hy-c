@@ -22,7 +22,7 @@ RSpec.describe Hyrax::DataSetForm do
     subject { form.secondary_terms }
 
     it { is_expected.to match_array [:abstract, :academic_department, :access, :contributor,
-                                     :copyright_date, :date_created, :date_issued, :doi, :extent,
+                                     :copyright_date, :date_created, :date_issued, :doi, :extent, :funder,
                                      :genre, :geographic_subject, :last_date_modified, :identifier,:license,
                                      :orcid, :other_affiliation, :source, :subject, :project_director,
                                      :researcher, :rights_holder, :sponsor, :use,
@@ -45,6 +45,7 @@ RSpec.describe Hyrax::DataSetForm do
           date_issued: '2018-01-08',
           doi: '12345',
           extent: ['1993'],
+          funder: ['dean'],
           genre: ['science'],
           geographic_subject: ['California'],
           last_date_modified: '2018-01-23',
@@ -71,6 +72,7 @@ RSpec.describe Hyrax::DataSetForm do
       expect(subject['date_issued']).to eq '2018-01-08'
       expect(subject['doi']).to eq '12345'
       expect(subject['extent']).to eq ['1993']
+      expect(subject['funder']).to eq ['dean']
       expect(subject['genre']).to eq ['science']
       expect(subject['geographic_subject']).to eq ['California']
       expect(subject['last_modified']).to eq '2018-01-23'
