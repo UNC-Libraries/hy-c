@@ -21,7 +21,7 @@ RSpec.describe Hyrax::JournalForm do
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:abstract, :alternate_title, :contributor, :date_created, :extent,
+    it { is_expected.to match_array [:abstract, :alternate_title, :conference_name, :contributor, :date_created, :extent,
                                      :genre, :geographic_subject, :identifier, :issn, :license, :note,
                                      :place_of_publication, :source, :subject, :date_issued, :resource_type,
                                      :publisher, :language, :keyword, :table_of_contents] }
@@ -39,6 +39,7 @@ RSpec.describe Hyrax::JournalForm do
           member_of_collection_ids: ['123456', 'abcdef'],
           abstract: ['an abstract'],
           alternate_title: ['alt title'],
+          conference_name: ['Code4Lib'],
           date_issued: '2018-01-08',
           extent: ['1993'],
           genre: ['science'],
@@ -59,6 +60,7 @@ RSpec.describe Hyrax::JournalForm do
       expect(subject['member_of_collection_ids']).to eq ['123456', 'abcdef']
       expect(subject['abstract']).to eq ['an abstract']
       expect(subject['alternate_title']).to eq ['alt title']
+      expect(subject['conference_name']).to eq ['Code4Lib']
       expect(subject['date_issued']).to eq '2018-01-08'
       expect(subject['extent']).to eq ['1993']
       expect(subject['genre']).to eq ['science']

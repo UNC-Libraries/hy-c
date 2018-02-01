@@ -76,6 +76,10 @@ class SolrDocument
     self[Solrizer.solr_name('citation')]
   end
 
+  def conference_name
+    self[Solrizer.solr_name('conference_name')]
+  end
+
   def date_issued
     self[Solrizer.solr_name('date_issued')]
   end

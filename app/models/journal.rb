@@ -18,6 +18,10 @@ class Journal < ActiveFedora::Base
     index.as :stored_searchable
   end
 
+  property :conference_name, predicate: ::RDF::Vocab::BIBO.presentedAt do |index|
+    index.as :stored_searchable
+  end
+
   property :date_issued, predicate: ::RDF::Vocab::DC.issued, multiple: false do |index|
     index.as :stored_searchable
   end

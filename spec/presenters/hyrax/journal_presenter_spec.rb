@@ -16,6 +16,7 @@ RSpec.describe Hyrax::JournalPresenter do
       "depositor_tesim" => user_key,
       "abstract_tesim" => ['an abstract'],
       "alternate_title_tesim" => ['a different title'],
+      "conference_name_tesim" => ['Code4Lib'],
       "date_issued_tesim" => ['2018-01-08'],
       "discipline_tesim" => ['a discipline'],
       "extent_tesim" => ['1993'],
@@ -50,6 +51,7 @@ RSpec.describe Hyrax::JournalPresenter do
 
   it { is_expected.to delegate_method(:abstract).to(:solr_document) }
   it { is_expected.to delegate_method(:alternate_title).to(:solr_document) }
+  it { is_expected.to delegate_method(:conference_name).to(:solr_document) }
   it { is_expected.to delegate_method(:date_issued).to(:solr_document) }
   it { is_expected.to delegate_method(:extent).to(:solr_document) }
   it { is_expected.to delegate_method(:issn).to(:solr_document) }
@@ -87,6 +89,17 @@ RSpec.describe Hyrax::JournalPresenter do
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:alternate_title)
+      end
+    end
+
+    context "with a custom conference name field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:conference_name, ['Code4Lib'], {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:conference_name)
       end
     end
 
