@@ -72,10 +72,6 @@ class SolrDocument
     self[Solrizer.solr_name('citation')]
   end
 
-  def coauthor
-    self[Solrizer.solr_name('coauthor')]
-  end
-
   def date_issued
     self[Solrizer.solr_name('date_issued')]
   end
@@ -138,14 +134,6 @@ class SolrDocument
 
   def place_of_publication
     self[Solrizer.solr_name('place_of_publication')]
-  end
-
-  def publication
-    self[Solrizer.solr_name('publication')]
-  end
-
-  def publication_date
-    self[Solrizer.solr_name('publication_date')]
   end
 
   def publication_version

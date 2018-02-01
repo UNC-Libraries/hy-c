@@ -49,9 +49,6 @@ RSpec.feature 'Create a Work', js: false do
       expect(page).to have_content 'Your files are being processed by Hyrax'
       visit '/dashboard/my/works/'
       expect(page).to have_content 'Test Work work'
-      # within '.document-title' do
-      #   find('Test Work').click
-      # end
       first('.document-title', text: 'Test Work work').click
       expect(page).to have_content 'Test Default Keyword'
     end
