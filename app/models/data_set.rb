@@ -14,11 +14,11 @@ class DataSet < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :academic_department, predicate: ::RDF::URI('http://vivoweb.org/ontology/core#AcademicDepartment') do |index|
+  property :access, predicate: ::RDF::Vocab::DC.accessRights, multiple: false do |index|
     index.as :stored_searchable
   end
 
-  property :access, predicate: ::RDF::Vocab::DC.accessRights, multiple: false do |index|
+  property :affiliation, predicate: ::RDF::URI('http://vivoweb.org/ontology/core#AcademicDepartment') do |index|
     index.as :stored_searchable
   end
 

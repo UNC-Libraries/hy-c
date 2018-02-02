@@ -37,8 +37,8 @@ RSpec.describe DataSet do
 
       # Custom fields
       expect(subject).to respond_to(:abstract)
-      expect(subject).to respond_to(:academic_department)
       expect(subject).to respond_to(:access)
+      expect(subject).to respond_to(:affiliation)
       expect(subject).to respond_to(:copyright_date)
       expect(subject).to respond_to(:date_issued)
       expect(subject).to respond_to(:doi)

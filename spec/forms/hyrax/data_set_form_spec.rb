@@ -21,7 +21,7 @@ RSpec.describe Hyrax::DataSetForm do
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:abstract, :academic_department, :access, :contributor,
+    it { is_expected.to match_array [:abstract, :access, :affiliation, :contributor,
                                      :copyright_date, :date_created, :date_issued, :doi, :extent, :funder,
                                      :genre, :geographic_subject, :last_date_modified, :identifier,:license,
                                      :orcid, :other_affiliation, :source, :subject, :project_director,
@@ -40,7 +40,7 @@ RSpec.describe Hyrax::DataSetForm do
           member_of_collection_ids: ['123456', 'abcdef'],
           abstract: ['an abstract'],
           access: 'public',
-          academic_department: ['library'],
+          affiliation: ['library'],
           contributor: ['dean'],
           copyright_date: '2017-12-25',
           date_issued: '2018-01-08',
@@ -69,8 +69,8 @@ RSpec.describe Hyrax::DataSetForm do
       expect(subject['keyword']).to eq ['data set']
       expect(subject['member_of_collection_ids']).to eq ['123456', 'abcdef']
       expect(subject['abstract']).to eq ['an abstract']
-      expect(subject['academic_department']).to eq ['library']
       expect(subject['access']).to eq 'public'
+      expect(subject['affiliation']).to eq ['library']
       expect(subject['copyright_date']).to eq '2017-12-25'
       expect(subject['date_issued']).to eq '2018-01-08'
       expect(subject['doi']).to eq '12345'
