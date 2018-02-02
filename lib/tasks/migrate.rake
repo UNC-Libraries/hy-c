@@ -11,9 +11,6 @@ namespace :cdr do
   # Must include the email address of a valid user in order to ingest files
   DEPOSITOR_EMAIL = 'admin@example.com'
 
-  #Use the ERA public interface to download original file and foxml
-  FEDORA_URL = ENV['FEDORA_PRODUCTION_URL']
-
   #temporary location for file download
   TEMP = 'lib/tasks/migration/tmp'
   FILE_STORE = 'lib/tasks/migration/files'

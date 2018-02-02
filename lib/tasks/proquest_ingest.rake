@@ -12,9 +12,6 @@ namespace :proquest do
   # Must include the email address of a valid user in order to ingest files
   @depositor_email = 'admin@example.com'
 
-  # Use the ERA public interface to download original file and foxml
-  @fedora_url = ENV['FEDORA_PRODUCTION_URL']
-
   # temporary location for file download
   @temp = 'lib/tasks/ingest/tmp'
   @file_store = 'lib/tasks/migration/files'
@@ -38,21 +35,21 @@ namespace :proquest do
 
 
   desc 'batch migrate generic files from FOXML file'
-  task :ingest, [:dir, :migrate_datastreams] => :environment do |t, args|
-    args.with_defaults(:migrate_datastreams => "true")
+  task :ingest => :environment do
+    ARGV.each { |arg| task arg.to_sym do ; end }
 
     # Should deposit works into an admin set
     # Update title parameter to reflect correct admin set
-    @admin_set_id = ::AdminSet.where(title: 'default').first.id
+    @admin_set_id = ::AdminSet.where(title: ARGV[2]).first.id
 
-    metadata_dir = args.dir
+    metadata_dir = ARGV[1]
     migrate_objects(metadata_dir)
   end
 
   def migrate_objects(metadata_dir)
     proquest_packages = Dir.glob("#{metadata_dir}/*.zip")
     proquest_packages.each do |package|
-      puts 'Unpacking '+package
+      puts "Unpacking #{package}"
       @file_last_modified = ''
       extract_files(package)
       metadata_files = Dir.glob("#{@temp}/**/*")
@@ -62,7 +59,7 @@ namespace :proquest do
           if file.match('.xml')
             metadata_fields = metadata(file, metadata_dir)
 
-            puts 'Number of files: '+metadata_fields[:files].count.to_s
+            puts "Number of files: #{metadata_fields[:files].count.to_s}"
 
             resource = work_record(metadata_fields[:resource])
             resource.save!
@@ -98,7 +95,7 @@ namespace :proquest do
 
     files.each do |f|
       file_path = zip_dir_files.find { |e| e.match(f) }
-      puts 'trying... '+f.to_s
+      puts "trying...#{f.to_s}"
       if !file_path.nil? && File.file?(file_path)
         file_set = ingest_file(parent: resource, resource: metadata, f: file_path)
         ordered_members << file_set if file_set
@@ -109,7 +106,7 @@ namespace :proquest do
   end
 
   def ingest_file(parent: nil, resource: nil, f: nil)
-    puts 'ingesting... '+f.to_s
+    puts "ingesting... #{f.to_s}"
     fileset_metadata = resource.slice('visibility', 'embargo_release_date', 'visibility_during_embargo',
                                       'visibility_after_embargo')
     if resource['embargo_release_date'].blank?
@@ -129,6 +126,7 @@ namespace :proquest do
   def metadata(metadata_file, metadata_dir)
     file = File.open(metadata_file)
     metadata = Nokogiri::XML(file)
+    file.close
 
     file_full = Array.new(0)
     representative = ''
@@ -166,7 +164,7 @@ namespace :proquest do
 
     creators = metadata.xpath('//DISS_submission/DISS_authorship/DISS_author/DISS_name').map do |creator|
       if creator.xpath('DISS_affiliation').text.eql? 'University of North Carolina at Chapel Hill'
-        creator.xpath('DISS_surname').text+', '+creator.xpath('DISS_fname').text+' '+creator.xpath('DISS_middle').text
+        format_name(creator)
       end
     end
 
@@ -181,7 +179,7 @@ namespace :proquest do
       advisor.xpath('DISS_surname').text+', '+advisor.xpath('DISS_fname').text+' '+advisor.xpath('DISS_middle').text
     end
     committee_members = metadata.xpath('//DISS_description/DISS_cmte_member/DISS_name').map do |advisor|
-      advisor.xpath('DISS_surname').text+', '+advisor.xpath('DISS_fname').text+' '+advisor.xpath('DISS_middle').text
+      format_name(advisor)
     end
     advisor += committee_members
 
@@ -225,8 +223,6 @@ namespace :proquest do
       file_name.xpath('DISS_file_name').text
     end
 
-    file.close
-
     work_attributes = {
         'title'=>[title],
         'creator'=>creators,
@@ -257,7 +253,6 @@ namespace :proquest do
     resource = Dissertation.new
     resource.creator = work_attributes['creator']
     resource.depositor = @depositor_email
-    resource.save
 
     resource.label = work_attributes['title'][0]
     resource.title = work_attributes['title']
@@ -285,5 +280,9 @@ namespace :proquest do
     end
 
     resource
+  end
+
+  def format_name(person)
+    (person.xpath('DISS_surname').text+', '+person.xpath('DISS_fname').text+' '+person.xpath('DISS_middle').text).split.join(' ')
   end
 end
