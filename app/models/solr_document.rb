@@ -65,7 +65,7 @@ class SolrDocument
   end
 
   def affiliation
-    self[Solrizer.solr_name('academic_department')]
+    self[Solrizer.solr_name('affiliation')]
   end
 
   def alternate_title

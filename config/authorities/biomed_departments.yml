@@ -1,0 +1,1370 @@
+## config/authorities/biomed_departments.yml
+terms:
+  - id: 3113 Michael Hooker Research Center, Department of Microbiology and Immunology, University of North Carolina at Chapel Hill, Chapel Hill, NC, 27599, USA	
+    term: School of Medicine, Department of Microbiology and Immunology
+  - id: 3301 Michael Hooker Research Center, Department of Epidemiology, University of North Carolina at Chapel Hill, Campus Box 7435, Chapel Hill, NC 27599-7435, USA	
+    term: Gillings School of Global Public Health, Department of Epidemiology
+  - id: 6129 Thurston Bowles, Michael Hooker Microscopy Facility, University of North Carolina at Chapel Hill, Campus Box 7248, Chapel Hill, NC, 27599-7248, USA	
+    term: null
+  - id: AIDS Neurological Center, University of North Carolina at Chapel Hill	
+    term: null
+  - id: Applied Physiology Laboratory, Department of Exercise and Sport Science, University of North Carolina Chapel Hill, Chapel Hill, NC, 27599-8605, USA	
+    term: 
+      - College of Arts and Sciences, Department of Exercise and Sport Science
+      - Graduate School, Department of Exercise and Sport Science
+  - id: Biological and Biomedical Sciences Program, University of North Carolina at Chapel Hill, Chapel Hill, NC, USA	
+    term: Biological and Biomedical Sciences Program
+  - id: Biomedical Research Imaging Center, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Biomedical Research Imaging Center
+  - id: Biostatistics Core Facility, University of North Carolina at Chapel Hill	
+    term: null
+  - id: Biostatistics and Clinical Data Management Core, Lineberger Comprehensive Cancer Center, University of North Carolina at Chapel Hill	
+    term: Gillings School of Global Public Health, Department of Biostatistics
+  - id: Biostatistics, Gillings School of Global Public Health, University of North Carolina, Chapel Hill, NC, USA	
+    term: Gillings School of Global Public Health, Department of Biostatistics
+  - id: Biostatistics, Lineberger Comprehensive Cancer Center, University of North Carolina, Chapel Hill, NC, 27599-7295, USA	
+    term: 
+      - Gillings School of Global Public Health, Department of Biostatistics
+      - UNC Lineberger Comprehensive Cancer Center
+  - id: Bowles Center for Alcohol Studies, School of Medicine, University of North Carolina at Chapel Hill	
+    term: School of Medicine
+  - id: Bowles Center for Alcohol Studies, University of North Carolina, Chapel Hill	
+    term: School of Medicine, Bowles Center for Alcohol Studies
+  - id: CF/Pulmonary Research and Treatment Center, School of Medicine, The University of North Carolina, Chapel Hill	
+    term: School of Medicine, Cystic Fibrosis and Pulmonary Diseases Research and Treatment Center
+  - id: CF/Pulmonary Research and Treatment Center, School of Medicine, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Cystic Fibrosis and Pulmonary Diseases Research and Treatment Center
+  - id: CF/Pulmonary Research and Treatment Center, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Cystic Fibrosis and Pulmonary Diseases Research and Treatment Center
+  - id: Cancer Genetics Program, Lineberger Comprehensive Cancer Center, University of North Carolina at Chapel Hill	
+    term: UNC Lineberger Comprehensive Cancer Center
+  - id: Carolina Cardiovascular Biology Center, University of North Carolina at Chapel Hill	
+    term: null
+  - id: Carolina Center for Computational Toxicology, University of North Carolina at Chapel Hill	
+    term: null
+  - id: Carolina Center for Genome Sciences, School of Public Health, University of North Carolina, Chapel Hill, NC, 27514, USA	
+    term: Gillings School of Global Public Health
+  - id: Carolina Center for Genome Sciences, School of Public Health, University of North Carolina, Chapel Hill, NC, USA	
+    term: Gillings School of Global Public Health
+  - id: Carolina Center for Genome Sciences, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Carolina Center for Genome Sciences
+  - id: Carolina Center for Genome Sciences, University of North Carolina at Chapel Hill, Chapel Hill, NC, USA	
+    term: School of Medicine, Carolina Center for Genome Sciences
+  - id: Carolina Center for Genome Sciences, University of North Carolina, Chapel Hill	
+    term: School of Medicine, Carolina Center for Genome Sciences
+  - id: Carolina Environmental Bioinformatics Center, University of North Carolina at Chapel Hill	
+    term: null
+  - id: Carolina Global Breastfeeding Institute (CGBI), Department of Maternal and Child Health, Gillings School of Global Public Health, University of North Carolina, Chapel Hill, USA	
+    term: Gillings School of Global Public Health, Department of Maternal and Child Health
+  - id: Carolina Global Breastfeeding Institute, Department of Maternal and Child Health, Gillings School of Global Public Health, The University of North Carolina at Chapel Hill	
+    term: Gillings School of Global Public Health, Carolina Global Breastfeeding Institute
+  - id: Carolina Global Breastfeeding Institute, Department of Maternal and Child Health, The University of North Carolina at Chapel Hill, Chapel Hill NC, USA	
+    term: Gillings School of Global Public Health, Carolina Global Breastfeeding Institute
+  - id: Carolina Global Breastfeeding Institute, Department of Maternal and Child Health, UNC Gillings School of Global Public Health, University of North Carolina at Chapel Hill, Chapel Hill, NC, USA	
+    term: Gillings School of Global Public Health, Carolina Global Breastfeeding Institute
+  - id: Carolina Institute for Developmental Disabilities, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Carolina Institute for Developmental Disabilities
+  - id: Carolina Institute for Developmental Disabilities, University of North Carolina at Chapel Hill School of Medicine, CB# 3366, 101 Manning Drive, Chapel Hill, NC, 27599-7160, USA	
+    term: School of Medicine, Carolina Institute for Developmental Disabilities
+  - id: Carolina Institute for Developmental Disabilities, University of North Carolina at Chapel Hill School of Medicine, CB# 3367, Chapel Hill, NC, 27599, USA	
+    term: School of Medicine, Carolina Institute for Developmental Disabilities
+  - id: Carolina Institute for Developmental Disabilities, University of North Carolina at Chapel Hill, 100 Renee Lynne Court, Carrboro, NC, 27510, USA	
+    term: School of Medicine, Carolina Institute for Developmental Disabilities
+  - id: Carolina Institute for Developmental Disabilities, University of North Carolina at Chapel Hill, Campus Box 7255, Chapel Hill, NC 27599-7255, USA	
+    term: School of Medicine, Carolina Institute for Developmental Disabilities
+  - id: Carolina Institute for Developmental Disabilities, University of North Carolina at Chapel Hill, School of Medicine, CB# 3367, Chapel Hill, NC 27599, USA	
+    term: School of Medicine, Carolina Institute for Developmental Disabilities
+  - id: Carolina Institute for Developmental Disabilities, University of North Carolina at Chapel Hill, School of Medicine, Chapel Hill, NC, USA	
+    term: School of Medicine, Carolina Institute for Developmental Disabilities
+  - id: Carolina Population Center, The University of North Carolina at Chapel Hill, Chapel Hill, NC, USA	
+    term: Carolina Population Center
+  - id: Carolina Population Center, University of North Carolina at Chapel Hill	
+    term: Carolina Population Center
+  - id: Carolina Population Center, University of North Carolina at Chapel Hill (UNC), Chapel Hill, NC, 27599, USA	
+    term: Carolina Population Center
+  - id: Carolina Population Center, University of North Carolina at Chapel Hill, 206 W Franklin St, Chapel Hill, NC 27516, USA	
+    term: Carolina Population Center
+  - id: Carolina Population Center, University of North Carolina at Chapel Hill, Chapel Hill, USA	
+    term: Carolina Population Center
+  - id: Carolina Population Center, University of North Carolina – Chapel Hill, Chapel Hill, NC, USA	
+    term: Carolina Population Center
+  - id: Carolina Vaccine Institute, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Carolina Vaccine Institute
+  - id: Cecil G. Sheps Center for Health Services Research, Chapel Hill, NC 27599, USA	
+    term: Cecil G. Sheps Center for Health Services Research
+  - id: Cecil G. Sheps Center for Health Services Research, Chapel Hill, NC, USA	
+    term: Cecil G. Sheps Center for Health Services Research
+  - id: Cecil G. Sheps Center for Health Services Research, Division of General Internal Medicine, University of North Carolina, Chapel Hill, NC, USA	
+    term: Cecil G. Sheps Center for Health Services Research
+  - id: Cecil G. Sheps Center for Health Services Research, The University of North Carolina at Chapel Hill	
+    term: Cecil G. Sheps Center for Health Services Research
+  - id: Cecil G. Sheps Center for Health Services Research, The University of North Carolina, Chapel Hill, NC, 27412, USA	
+    term: Cecil G. Sheps Center for Health Services Research
+  - id: Cecil G. Sheps Center for Health Services Research, University of North Carolina at Chapel Hill	
+    term: Cecil G. Sheps Center for Health Services Research
+  - id: Cecil G. Sheps Center for Health Services Research, University of North Carolina, Campus Box 7590, Chapel Hill, NC 27599, USA	
+    term: Cecil G. Sheps Center for Health Services Research
+  - id: Cecil G. Sheps Center for Health Services Research, University of North Carolina, Chapel Hill	
+    term: Cecil G. Sheps Center for Health Services Research
+  - id: Cecil G. Sheps Center for Health Services Research, University of North Carolina, Chapel Hill, NC, USA	
+    term: Cecil G. Sheps Center for Health Services Research
+  - id: Cecil G. Sheps Centre for Health Services Research, University of North Carolina at Chapel Hill	
+    term: null
+  - id: Cell and Molecular Physiology, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Department of Cell and Molecular Physiology
+  - id: Center for AIDS Research, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Center for AIDS Research
+  - id: Center for AIDS Research, University of North Carolina, Chapel Hill	
+    term: School of Medicine, Center for AIDS Research
+  - id: Center for Bioethics, University of North Carolina at Chapel Hill	
+    term: null
+  - id: Center for Bioinformatics, University of North Carolina at Chapel Hill	
+    term: null
+  - id: Center for Bioinformatics, University of North Carolina at Chapel Hill, Chapel Hill, NC, 27599, USA	
+    term: null
+  - id: Center for Decision Making Research, Cecil G. Sheps Center for Health Services Research, University of North Carolina at Chapel Hill	
+    term: Cecil G. Sheps Center for Health Services Research
+  - id: Center for Decision Making Research, Cecil G. Sheps Center for Health Services Research, University of North Carolina-Chapel Hill	
+    term: Cecil G. Sheps Center for Health Services Research
+  - id: Center for Environmental Bioinformatics, University of North Carolina at Chapel Hill	
+    term: null
+  - id: Center for Environmental Health and Susceptibility, University of North Carolina at Chapel Hill	
+    term: null
+  - id: Center for Environmental Medicine, Asthma and Lung Biology, School of Medicine, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Center for Environmental Medicine, Asthma and Lung Biology
+  - id: Center for Environmental Medicine, Asthma and Lung Biology, School of Medicine, University of North Carolina, Chapel Hill, NC, USA	
+    term: School of Medicine, Center for Environmental Medicine, Asthma and Lung Biology
+  - id: Center for Environmental Medicine, Asthma and Lung Biology, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Center for Environmental Medicine, Asthma and Lung Biology
+  - id: Center for Environmental Medicine, Asthma and Lung Biology, University of North Carolina at Chapel Hill, Chapel Hill, NC, USA	
+    term: School of Medicine, Center for Environmental Medicine, Asthma and Lung Biology
+  - id: Center for Environmental Medicine, Asthma and Lung Biology, University of North Carolina, CB#7310, 104 Mason Farm Road, Chapel Hill, NC 27599-7310, USA	
+    term: School of Medicine, Center for Environmental Medicine, Asthma and Lung Biology
+  - id: Center for Environmental Medicine, Asthma and Lung Biology, University of North Carolina-Chapel Hill	
+    term: School of Medicine, Center for Environmental Medicine, Asthma and Lung Biology
+  - id: Center for Environmental Medicine, Asthma, and Lung Biology, School of Medicine, University of North Carolina at Chapel Hill, 104 Mason Farm Rd; CB# 7310, Chapel Hill, NC, 27599-7310, USA	
+    term: School of Medicine
+  - id: Center for Environmental Medicine, Asthma, and Lung Biology, School of Medicine, University of North Carolina, Chapel Hill, NC, USA	
+    term: School of Medicine
+  - id: Center for Environmental Medicine, Asthma, and Lung Biology, University of North Carolina, Chapel Hill, NC, 27599, USA	
+    term: null
+  - id: Center for Esophageal Diseases and Swallowing, University of North Carolina at Chapel Hill	
+    term: null
+  - id: Center for Excellence in Chronic Illness Care, UNC Health System, University of North Carolina at Chapel Hill	
+    term: null
+  - id: Center for Excellence in Chronic Illness Care, University of North Carolina at Chapel Hill	
+    term: null
+  - id: Center for Functional GI &amp; Motility Disorders, University of North Carolina at Chapel Hill	
+    term: null
+  - id: Center for Gastrointestinal Biology and Disease, Department of Medicine, School of Medicine, University of North Carolina at Chapel Hill	
+    term: 
+      - School of Medicine, Center for Gastrointestinal Biology and Disease
+      - School of Medicine, Department of Medicine
+  - id: Center for Gastrointestinal Biology and Disease, School of Medicine, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Center for Gastrointestinal Biology and Disease
+  - id: Center for Gastrointestinal Biology and Disease, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Center for Gastrointestinal Biology and Disease
+  - id: Center for Gastrointestinal Biology and Disease, University of North Carolina, 103 Mason Farm Road, 7340 Medical Biomolecular Research Building, CB # 7032, 27599-7032, Chapel Hill, NC, USA	
+    term: School of Medicine, Center for Gastrointestinal Biology and Disease
+  - id: Center for Gastrointestinal Biology and Diseases, University of North Carolina, Chapel Hill, NC 27599, USA	
+    term: null
+  - id: Center for Genomics and Society, University of North Carolina, Chapel Hill, USA	
+    term: null
+  - id: Center for Health Promotion &amp; Disease Prevention, Gillings School of Public Health, University of North Carolina at Chapel Hill, Chapel Hill, NC, USA	
+    term: Gillings School of Global Public Health
+  - id: Center for Health Promotion and Disease Prevention, UNC Chapel Hill, Chapel Hill, NC 27599, USA	
+    term: UNC Center for Health Promotion and Disease Prevention
+  - id: Center for Health Promotion and Disease Prevention, University of North Carolina at Chapel Hill	
+    term: UNC Center for Health Promotion and Disease Prevention
+  - id: Center for Health Promotion and Disease Prevention, University of North Carolina at Chapel Hill, 1700 Martin L. King Jr. Blvd., CB 7426, Chapel Hill, NC, 27599-7426, USA	
+    term: UNC Center for Health Promotion and Disease Prevention
+  - id: Center for Health Promotion and Disease Prevention, University of North Carolina at Chapel Hill, 1700 Martin Luther King Jr. BLVD. CB#7426, Chapel Hill, NC 27599, USA	
+    term: UNC Center for Health Promotion and Disease Prevention
+  - id: Center for Health Promotion and Disease Prevention, University of North Carolina at Chapel Hill, 1700 Martin Luther King Jr. Blvd, Chapel Hill, NC, USA	
+    term: UNC Center for Health Promotion and Disease Prevention
+  - id: Center for Infant and Young Child Feeding and Care, Department of Maternal and Child Health, University of North Carolina School of Public Health, Chapel Hill	
+    term: Gillings School of Global Public Health, Department of Maternal and Child Health
+  - id: Center for Infant and Young Child Feeding and Care, Department of Maternal and Child Health, University of North Carolina at Chapel Hill	
+    term: Gillings School of Global Public Health, Department of Maternal and Child Health
+  - id: Center for Infectious Diseases, University of North Carolina at Chapel Hill	
+    term: null
+  - id: Center for Nanotechnology in Drug Delivery, UNC Eshelman School of Pharmacy, University of North Carolina at Chapel Hill	
+    term: Eshelman School of Pharmacy
+  - id: Center for Neurosensory Disorders, School of Dentistry, University of North Carolina, Chapel Hill	
+    term: School of Dentistry
+  - id: Center for Neurosensory Disorders, University of North Carolina at Chapel Hill	
+    term: null
+  - id: Center for Neurosensory Disorders, University of North Carolina, Chapel Hill, NC 27599, USA	
+    term: null
+  - id: Center for Oral and Systemic Diseases, School of Dentistry, University of North Carolina at Chapel Hill	
+    term: School of Dentistry
+  - id: Center for Oral and Systemic Diseases, University of North Carolina at Chapel Hill	
+    term: null
+  - id: Center for Women’s Health Research, University of North Carolina, Chapel Hill, USA	
+    term: null
+  - id: Clinical Center for the Study of Development and Learning, Carolina Institute for Developmental Disabilities, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Carolina Institute for Developmental Disabilities
+  - id: Clinical Center for the Study of Development and Learning, University of North Carolina at Chapel Hill	
+    term: null
+  - id: Collaborative Studies Coordinating Center, University of North Carolina at Chapel Hill	
+    term: null
+  - id: Comprehensive Center for Inflammatory Disorders, School of Dentistry, University of North Carolina, Chapel Hill	
+    term: School of Dentistry
+  - id: Comprehensive Center for Inflammatory Disorders, University of North Carolina at Chapel Hill	
+    term: null
+  - id: Craniofacial Center, School of Dentistry, University of North Carolina at Chapel Hill	
+    term: School of Dentistry
+  - id: 'Current affiliation: Institute for Pharmacogenomics &amp; Individualized Therapy, University of North Carolina, Chapel Hill, NC 27599, USA'
+    term: null
+  - id: Curriculum in Bioinformatics and Computational Biology, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Curriculum in Bioinformatics and Computational Biology
+  - id: Curriculum in Genetics and Molecular Biology, School of Medicine, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Curriculum in Genetics and Molecular Biology
+  - id: Curriculum in Genetics and Molecular Biology, The University of North Carolina at Chapel Hill	
+    term: School of Medicine, Curriculum in Genetics and Molecular Biology
+  - id: Curriculum in Genetics and Molecular Biology, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Curriculum in Genetics and Molecular Biology
+  - id: Curriculum in Molecular Biology and Genetics, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Department of Genetics
+  - id: Curriculum in Neurobiology, University of North Carolina at Chapel Hill, Chapel Hill, NC 27599, USA	
+    term: School of Medicine, Neuroscience Center, Neurobiology Curriculum
+  - id: Curriculum in Toxicology, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Curriculum in Toxicology
+  - id: Curriculum in Toxicology, University of North Carolina at Chapel Hill, Chapel Hill, NC, USA	
+    term: School of Medicine, Curriculum in Toxicology
+  - id: Department of Allied Health Sciences, The University of North Carolina at Chapel Hill	
+    term: School of Medicine, Department of Allied Health Sciences
+  - id: Department of Allied Health Sciences, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Department of Allied Health Sciences
+  - id: Department of Anesthesiology, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Department of Anesthesiology
+  - id: Department of Anthropology, University of North Carolina, Chapel Hill, USA	
+    term: College of Arts and Sciences, Department of Anthropology
+  - id: Department of Biochemistry &amp; Biophysics, UNC School of Medicine, Chapel Hill, NC, USA	
+    term: School of Medicine, Department of Biochemistry and Biophysics
+  - id: Department of Biochemistry and Biophysics, School of Medicine University of North Carolina, Chapel Hill, NC 27599, USA	
+    term: School of Medicine, Department of Biochemistry and Biophysics
+  - id: Department of Biochemistry and Biophysics, School of Medicine, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Department of Biochemistry and Biophysics
+  - id: Department of Biochemistry and Biophysics, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Department of Biochemistry and Biophysics
+  - id: Department of Biochemistry and Biophysics, University of North Carolina, Chapel Hill	
+    term: School of Medicine, Department of Biochemistry and Biophysics
+  - id: Department of Biology, CB 3280, University of North Carolina, Chapel Hill, NC, 27599-3280, USA	
+    term: College of Arts and Sciences, Department of Biology
+  - id: Department of Biology, The University of North Carolina at Chapel Hill	
+    term: College of Arts and Sciences, Department of Biology
+  - id: Department of Biology, The University of North Carolina at Chapel Hill, Chapel Hill	
+    term: College of Arts and Sciences, Department of Biology
+  - id: Department of Biology, University of North Carolina at Chapel Hill	
+    term: College of Arts and Sciences, Department of Biology
+  - id: Department of Biology, University of North Carolina at Chapel Hill, Chapel Hill, North Carolina, USA	
+    term: College of Arts and Sciences, Department of Biology
+  - id: Department of Biology, University of North Carolina, Chapel Hill, NC 27599-3280, USA	
+    term: College of Arts and Sciences, Department of Biology
+  - id: Department of Biology, University of North Carolina, Chapel Hill, North Carolina, 27599, USA	
+    term: College of Arts and Sciences, Department of Biology
+  - id: Department of Biology, University of North Carolina, Chapel Hill, North Carolina, USA	
+    term: College of Arts and Sciences, Department of Biology
+  - id: Department of Biomedical Engineering, School of Medicine, University of North Carolina at Chapel Hill	
+    term: 
+      - College of Arts and Sciences, Joint Department of Biomedical Engineering
+      - School of Medicine
+  - id: Department of Biomedical Engineering, University of North Carolina at Chapel Hill	
+    term: College of Arts and Sciences, Joint Department of Biomedical Engineering
+  - id: Department of Biomedical Engineering, University of North Carolina at Chapel Hill, Chapel Hill, North Carolina 27559, USA	
+    term: College of Arts and Sciences, Joint Department of Biomedical Engineering
+  - id: Department of Biostatistics Gillings School of Global Public Health University of North Carolina, Chapel Hill, NC 27599, USA	
+    term: null
+  - id: Department of Biostatistics, Gillings School of Global Public Health, The University of North Carolina at Chapel Hill	
+    term: Gillings School of Global Public Health, Department of Biostatistics
+  - id: Department of Biostatistics, Gillings School of Global Public Health, University of North Carolina at Chapel Hill	
+    term: Gillings School of Global Public Health, Department of Biostatistics
+  - id: Department of Biostatistics, Gillings School of Global Public Health, University of North Carolina – Chapel Hill, Chapel Hill, NC, USA	
+    term: Gillings School of Global Public Health, Department of Biostatistics
+  - id: Department of Biostatistics, Gillings School of Global Public Health, University of North Carolina, Chapel Hill	
+    term: Gillings School of Global Public Health, Department of Biostatistics
+  - id: Department of Biostatistics, Gillings School of Global Public Health, University of North Carolina, Chapel Hill, 27599, USA	
+    term: Gillings School of Global Public Health, Department of Biostatistics
+  - id: Department of Biostatistics, Gillings School of Global Public Health, University of North Carolina, Chapel Hill, NC 27599, USA	
+    term: Gillings School of Global Public Health, Department of Biostatistics
+  - id: Department of Biostatistics, Gillings School of Global Public Health, University of North Carolina, Chapel Hill, NC, USA	
+    term: Gillings School of Global Public Health, Department of Biostatistics
+  - id: Department of Biostatistics, Gillings School of Global Public Health, University of North Carolina, Chapel Hill, NC, United States of America	
+    term: Gillings School of Global Public Health, Department of Biostatistics
+  - id: Department of Biostatistics, School of Medicine, University of North Carolina at Chapel Hill	
+    term: 
+      - Gillings School of Global Public Health, Department of Biostatistics
+      - School of Medicine
+  - id: Department of Biostatistics, School of Public Health, University of North Carolina at Chapel Hill	
+    term: Gillings School of Global Public Health, Department of Biostatistics
+  - id: Department of Biostatistics, University of North Carolina School of Public Health, Chapel Hill	
+    term: Gillings School of Global Public Health, Department of Biostatistics
+  - id: Department of Biostatistics, University of North Carolina School of Public Health, Chapel Hill, North Carolina, USA	
+    term: Gillings School of Global Public Health, Department of Biostatistics
+  - id: Department of Biostatistics, University of North Carolina at Chapel Hill	
+    term: Gillings School of Global Public Health, Department of Biostatistics
+  - id: Department of Biostatistics, University of North Carolina, Chapel Hill	
+    term: Gillings School of Global Public Health, Department of Biostatistics
+  - id: Department of Biostatistics, University of North Carolina, Chapel Hill, NC, USA	
+    term: Gillings School of Global Public Health, Department of Biostatistics
+  - id: Department of Biostatistics, University of North Carolina, McGavran Greenberg Hall, CB#7420, Chapel Hill, NC, 27599, USA	
+    term: Gillings School of Global Public Health, Department of Biostatistics
+  - id: Department of Cell Biology &amp; Physiology, UNC Neuroscience Center, University of North Carolina at Chapel Hill, NRB 5109D, CB #7545, 115 Mason Farm Road, Chapel Hill, NC 27599, USA	
+    term: 
+      - School of Medicine, Department of Cell Biology and Physiology
+      - School of Medicine, Neuroscience Center
+  - id: Department of Cell and Developmental Biology, School of Medicine, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Department of Cell Biology and Physiology
+  - id: Department of Cell and Developmental Biology, University of North Carolina School of Medicine, Chapel Hill, NC 27599, USA	
+    term: School of Medicine, Department of Cell Biology and Physiology
+  - id: Department of Cell and Developmental Biology, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Department of Cell Biology and Physiology
+  - id: Department of Cell and Developmental Biology, University of North Carolina, Chapel Hill, NC 27599, USA	
+    term: School of Medicine, Department of Cell Biology and Physiology
+  - id: Department of Cell and Developmental Biology, University of North Carolina, Chapel Hill, NC, 27599, USA	
+    term: School of Medicine, Department of Cell Biology and Physiology
+  - id: Department of Cell and Molecular Physiology, School of Medicine, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Department of Cell and Molecular Physiology
+  - id: Department of Cell and Molecular Physiology, School of Medicine, University of North Carolina, Chapel Hill, North Carolina	
+    term: School of Medicine, Department of Cell and Molecular Physiology
+  - id: Department of Cell and Molecular Physiology, The University of North Carolina, Chapel Hill	
+    term: School of Medicine, Department of Cell and Molecular Physiology
+  - id: Department of Cell and Molecular Physiology, UNC Neuroscience Center, The University of North Carolina at Chapel Hill	
+    term: 
+      - School of Medicine, Department of Cell and Molecular Physiology
+      - School of Medicine, Neuroscience Center
+  - id: Department of Cell and Molecular Physiology, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Department of Cell and Molecular Physiology
+  - id: Department of Cell and Molecular Physiology, University of North Carolina at Chapel Hill, CB#7575, Chapel Hill, NC, USA	
+    term: School of Medicine, Department of Cell and Molecular Physiology
+  - id: Department of Cell and Molecular Physiology, University of North Carolina, Chapel Hill	
+    term: School of Medicine, Department of Cell and Molecular Physiology
+  - id: Department of Chemistry University of North Carolina, Chapel Hill, NC 27599, USA	
+    term: College of Arts and Sciences, Department of Chemistry
+  - id: Department of Chemistry, University of North Carolina at Chapel Hill	
+    term: College of Arts and Sciences, Department of Chemistry
+  - id: Department of Chemistry, University of North Carolina, Chapel Hill	
+    term: College of Arts and Sciences, Department of Chemistry
+  - id: Department of City and Regional Planning in the College of Arts and Sciences, 319 New East, Chapel Hill, NC, 27514, USA	
+    term: null
+  - id: Department of City and Regional Planning, College of Arts and Sciences, University of North Carolina at Chapel Hill	
+    term: College of Arts and Sciences, Department of City and Regional Planning
+  - id: Department of City and Regional Planning, University of North Carolina at Chapel Hill	
+    term: College of Arts and Sciences, Department of City and Regional Planning
+  - id: Department of City and Regional Planning, University of North Carolina – Chapel Hill, Chapel Hill, NC, USA	
+    term: College of Arts and Sciences, Department of City and Regional Planning
+  - id: Department of City and Regional Planning, University of North Carolina, Chapel Hill, NC, USA	
+    term: College of Arts and Sciences, Department of City and Regional Planning
+  - id: Department of Computer Science, University of North Carolina at Chapel Hill	
+    term: College of Arts and Sciences, Department of Computer Science
+  - id: Department of Computer Science, University of North Carolina, Chapel Hill	
+    term: College of Arts and Sciences, Department of Computer Science
+  - id: Department of Dental Ecology, School of Dentistry, University of North Carolina at Chapel Hill	
+    term: School of Dentistry, Department of Dental Ecology
+  - id: Department of Dental Ecology, University of North Carolina at Chapel Hill	
+    term: School of Dentistry, Department of Dental Ecology
+  - id: Department of Department of Maternal and Child Health, University of North Carolina at Chapel Hill	
+    term: Gillings School of Global Public Health, Department of Maternal and Child Health
+  - id: Department of Dermatology, School of Medicine, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Department of Dermatology
+  - id: Department of Economics, University of North Carolina at Chapel Hill	
+    term: College of Arts and Sciences, Department of Economics
+  - id: Department of Emergency Medicine, University of North Carolina Hospitals, 170 Manning Drive, Chapel Hill, NC 27514, USA	
+    term: School of Medicine, Department of Emergency Medicine
+  - id: Department of Emergency Medicine, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Department of Emergency Medicine
+  - id: Department of Endodontics, University of North Carolina at Chapel Hill	
+    term: School of Dentistry, Department of Endodontics
+  - id: Department of Environmental Sciences and Engineering, Gillings School of Global Public Health, University of North Carolina at Chapel Hill	
+    term: Gillings School of Global Public Health, Department of Environmental Sciences and Engineering
+  - id: Department of Environmental Sciences and Engineering, Gillings School of Global Public Health, University of North Carolina, Chapel Hill, NC, USA	
+    term: Gillings School of Global Public Health, Department of Environmental Sciences and Engineering
+  - id: Department of Environmental Sciences and Engineering, Gillings School of Global Public Health, University of North Carolina-Chapel Hill, Campus Box 7431, Chapel Hill 27599-7431, NC, USA	
+    term: Gillings School of Global Public Health, Department of Environmental Sciences and Engineering
+  - id: Department of Environmental Sciences and Engineering, University of North Carolina at Chapel Hill	
+    term: Gillings School of Global Public Health, Department of Environmental Sciences and Engineering
+  - id: Department of Epidemiology in the Gillings School of Global Public Health, Center for Health Promotion and Disease Prevention, Bank of America Center, 137 East Franklin St, Suite 306, CB # 8050, Chapel Hill, NC, 27514, USA	
+    term: UNC Center for Health Promotion and Disease Prevention
+  - id: Department of Epidemiology, 137 East Franklin Street Suite 306, Chapel Hill, NC 27514, USA	
+    term: Gillings School of Global Public Health, Department of Epidemiology
+  - id: Department of Epidemiology, Gilings School of Public Health, University of North Carolina, Chapel Hill, NC, USA	
+    term: Gillings School of Global Public Health
+  - id: Department of Epidemiology, Gillings Global School of Public Health, University of North Carolina, Chapel Hill, NC, USA	
+    term: Gillings School of Global Public Health
+  - id: Department of Epidemiology, Gillings School of Global Public Health, University of North Carolina - Chapel Hill, 137 East Franklin Street, Suite 306, Chapel Hill, NC, 27514, USA	
+    term: Gillings School of Global Public Health, Department of Epidemiology
+  - id: Department of Epidemiology, Gillings School of Global Public Health, University of North Carolina Chapel Hill, 137 East Franklin Street, Suite 306, Chapel Hill, NC 27514, USA	
+    term: Gillings School of Global Public Health, Department of Epidemiology
+  - id: Department of Epidemiology, Gillings School of Global Public Health, University of North Carolina at Chapel Hill	
+    term: Gillings School of Global Public Health, Department of Epidemiology
+  - id: Department of Epidemiology, Gillings School of Global Public Health, University of North Carolina at Chapel Hill, Chapel Hill, NC, USA	
+    term: Gillings School of Global Public Health, Department of Epidemiology
+  - id: Department of Epidemiology, Gillings School of Global Public Health, University of North Carolina – Chapel Hill, Chapel Hill, NC, USA	
+    term: Gillings School of Global Public Health, Department of Epidemiology
+  - id: Department of Epidemiology, Gillings School of Global Public Health, University of North Carolina, Chapel Hill	
+    term: Gillings School of Global Public Health, Department of Epidemiology
+  - id: Department of Epidemiology, Gillings School of Global Public Health, University of North Carolina, Chapel Hill, NC, USA	
+    term: Gillings School of Global Public Health, Department of Epidemiology
+  - id: Department of Epidemiology, Gillings School of Global Public Health, University of North Carolina, Chapel Hill, NC, United States of America	
+    term: Gillings School of Global Public Health, Department of Epidemiology
+  - id: Department of Epidemiology, Gillings School of Global Public Health, University of North Carolina, McGavran-Greenberg Hall, Campus Box 7435, Chapel Hill, 27599-7435, USA	
+    term: Gillings School of Global Public Health, Department of Epidemiology
+  - id: Department of Epidemiology, Gillings School of Public Health, Department of Medicine, University of North Carolina, Chapel Hill, NC, USA	
+    term: 
+      - Gillings School of Global Public Health
+      - School of Medicine, Department of Medicine
+  - id: Department of Epidemiology, Gillings School of Public Health, University of North Carolina at Chapel Hill	
+    term: Gillings School of Global Public Health
+  - id: Department of Epidemiology, School of Dentistry, University of North Carolina at Chapel Hill	
+    term: 
+      - Gillings School of Global Public Health, Department of Epidemiology
+      - School of Dentistry
+  - id: Department of Epidemiology, School of Public Health, University of North Carolina Chapel Hill	
+    term: Gillings School of Global Public Health, Department of Epidemiology
+  - id: Department of Epidemiology, School of Public Health, University of North Carolina at Chapel Hill	
+    term: Gillings School of Global Public Health, Department of Epidemiology
+  - id: Department of Epidemiology, School of Public Health, University of North Carolina at Chapel Hill, Chapel Hill, NC, 27514, USA	
+    term: Gillings School of Global Public Health, Department of Epidemiology
+  - id: Department of Epidemiology, School of Public Health, University of North Carolina at Chapel Hill, Chapel Hill, NC, USA	
+    term: Gillings School of Global Public Health, Department of Epidemiology
+  - id: Department of Epidemiology, School of Public Health, University of North Carolina – Chapel Hill	
+    term: Gillings School of Global Public Health, Department of Epidemiology
+  - id: Department of Epidemiology, School of Public Health, University of North Carolina-Chapel Hill	
+    term: Gillings School of Global Public Health, Department of Epidemiology
+  - id: Department of Epidemiology, The University of North Carolina at Chapel Hill, Chapel Hill, NC, USA	
+    term: Gillings School of Global Public Health, Department of Epidemiology
+  - id: Department of Epidemiology, UNC School of Public Health, University of North Carolina at Chapel Hill	
+    term: Gillings School of Global Public Health
+  - id: Department of Epidemiology, UNC-CH, Campus Box 7435, Chapel Hill, NC, 27599-7435, USA	
+    term: Gillings School of Global Public Health, Department of Epidemiology
+  - id: Department of Epidemiology, University of North Carolina Chapel Hill	
+    term: Gillings School of Global Public Health, Department of Epidemiology
+  - id: Department of Epidemiology, University of North Carolina School of Public Health, Chapel Hill	
+    term: Gillings School of Global Public Health, Department of Epidemiology
+  - id: Department of Epidemiology, University of North Carolina at Chapel Hill	
+    term: Gillings School of Global Public Health, Department of Epidemiology
+  - id: Department of Epidemiology, University of North Carolina at Chapel Hill, 130 Mason Farm Rd, Chapel Hill, NC, USA	
+    term: Gillings School of Global Public Health, Department of Epidemiology
+  - id: Department of Epidemiology, University of North Carolina at Chapel Hill, Chapel Hill, NC, USA	
+    term: Gillings School of Global Public Health, Department of Epidemiology
+  - id: Department of Epidemiology, University of North Carolina at Chapel Hill, McGavran-Greenberg Hall, CB #7435, Chapel Hill, NC 27599-7435, USA	
+    term: Gillings School of Global Public Health, Department of Epidemiology
+  - id: Department of Epidemiology, University of North Carolina at Chapel Hill, Raleigh, North Carolina, USA	
+    term: Gillings School of Global Public Health, Department of Epidemiology
+  - id: Department of Epidemiology, University of North Carolina, Chapel Hill	
+    term: Gillings School of Global Public Health, Department of Epidemiology
+  - id: Department of Epidemiology, University of North Carolina, Chapel Hill, NC, USA	
+    term: Gillings School of Global Public Health, Department of Epidemiology
+  - id: Department of Epidemiology, University of North Carolina, Chapel Hill, North Carolina, 27599-7435, USA	
+    term: Gillings School of Global Public Health, Department of Epidemiology
+  - id: Department of Epidemiology, University of North Carolina, Chapel Hill, North Carolina, USA	
+    term: Gillings School of Global Public Health, Department of Epidemiology
+  - id: Department of Epidemiology, University of North Carolina-Chapel Hill	
+    term: Gillings School of Global Public Health, Department of Epidemiology
+  - id: Department of Exercise and Sport Science, University of North Carolina at Chapel Hill	
+    term: 
+      - College of Arts and Sciences, Department of Exercise and Sport Science
+      - Graduate School, Department of Exercise and Sport Science
+  - id: Department of Family Medicine, Mountain Area Health Education Center and University of North Carolina, Chapel Hill, NC, USA	
+    term: School of Medicine, Department of Family Medicine
+  - id: Department of Family Medicine, School of Medicine, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Department of Family Medicine
+  - id: Department of Family Medicine, University of North Carolina School of Medicine, CB #7595, Chapel Hill, NC 27599, USA	
+    term: School of Medicine, Department of Family Medicine
+  - id: Department of Family Medicine, University of North Carolina School of Medicine, and Public Health Leadership Program, University of North Carolina Gillings School of Global Public Health, Chapel Hill, NC, USA	
+    term: 
+      - School of Medicine, Department of Family Medicine
+      - Gillings School of Global Public Health, Public Health Leadership Program
+  - id: Department of Family Medicine, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Department of Family Medicine
+  - id: Department of Family Medicine, University of North Carolina at Chapel Hill, 590 Manning Drive, Chapel Hill, NC 27599, USA	
+    term: School of Medicine, Department of Family Medicine
+  - id: Department of Family Medicine, University of North Carolina at Chapel Hill, Chapel Hill, NC, USA	
+    term: School of Medicine, Department of Family Medicine
+  - id: Department of Family Medicine, University of North Carolina, Chapel Hill, NC 27514, USA	
+    term: School of Medicine, Department of Family Medicine
+  - id: Department of Family Medicine, University of North Carolina, Chapel Hill, USA	
+    term: School of Medicine, Department of Family Medicine
+  - id: Department of Gastroenterology and Hepatology, School of Medicine, University of North Carolina at Chapel Hill	
+    term: School of Medicine
+  - id: Department of Genetic, University of North Carolina, Chapel HillUSA, NC 27599	
+    term: null
+  - id: Department of Genetics and Lineberger Comprehensive Cancer Center, University of North Carolina at Chapel Hill, Chapel Hill, NC 27599-7265, U.S.A	
+    term: 
+      - School of Medicine, Department of Genetics
+      - UNC Lineberger Comprehensive Cancer Center
+  - id: Department of Genetics, CB 7264, University of North Carolina at Chapel Hill, Chapel Hill, NC 27599-7264, USA	
+    term: School of Medicine, Department of Genetics
+  - id: Department of Genetics, Carolina Center for Genome Sciences and Lineberger Comprehensive Cancer Center, University of North Carolina, Chapel Hill, NC 27599, USA	
+    term: UNC Lineberger Comprehensive Cancer Center
+  - id: Department of Genetics, Carolina Center for Genome Sciences, University of North Carolina School of Medicine, Chapel Hill, NC 27599, USA	
+    term: 
+      - School of Medicine, Department of Genetics
+      - School of Medicine, Carolina Center for Genome Sciences
+  - id: Department of Genetics, School of Medicine, Carolina Center for Genome Sciences, University of North Carolina, Wilson Hall, Rm 341, CB#3280, Chapel Hill, NC, 27599-3280, USA	
+    term: School of Medicine, Department of Genetics
+  - id: Department of Genetics, School of Medicine, University of North Carolina at Chapel Hill (UNC), Chapel Hill, NC, USA	
+    term: School of Medicine, Department of Genetics
+  - id: Department of Genetics, School of Medicine, University of North Carolina, Chapel Hill	
+    term: School of Medicine, Department of Genetics
+  - id: Department of Genetics, University of North Carolina School of Medicine, Chapel Hill, NC, USA	
+    term: School of Medicine, Department of Genetics
+  - id: Department of Genetics, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Department of Genetics
+  - id: Department of Genetics, University of North Carolina at Chapel Hill, Chapel Hill, NC, USA	
+    term: School of Medicine, Department of Genetics
+  - id: Department of Genetics, University of North Carolina at Chapel Hill, NC, USA	
+    term: School of Medicine, Department of Genetics
+  - id: Department of Genetics, University of North Carolina, Chapel Hill	
+    term: School of Medicine, Department of Genetics
+  - id: Department of Genetics, University of North Carolina, Chapel Hill, NC, USA	
+    term: School of Medicine, Department of Genetics
+  - id: Department of Geography, The University of North Carolina at Chapel Hill	
+    term: College of Arts and Sciences, Department of Geography
+  - id: Department of Geography, University of North Carolina at Chapel Hill	
+    term: College of Arts and Sciences, Department of Geography
+  - id: Department of Health Behavior and Health Education, Gillings School of Global Public Health, University of North Carolina at Chapel Hill	
+    term: Gillings School of Global Public Health, Department of Health Behavior
+  - id: Department of Health Behavior and Health Education, School of Public Health, University of North Carolina at Chapel Hill	
+    term: Gillings School of Global Public Health, Department of Health Behavior
+  - id: Department of Health Behavior and Health Education, University of North Carolina at Chapel Hill	
+    term: Gillings School of Global Public Health, Department of Health Behavior
+  - id: Department of Health Behavior, Department of Nutrition, Lineberger Comprehensive Cancer Center, The University of North Carolina at Chapel Hill, Chapel Hill, NC, USA	
+    term: Gillings School of Global Public Health, Department of Health Behavior
+  - id: Department of Health Behavior, Gillings School of Global Public Health, Thurston Arthritis Research Center, University of North Carolina at Chapel Hill, Chapel Hill, NC, USA	
+    term: 
+      - Gillings School of Global Public Health, Department of Health Behavior
+      - School of Medicine, Thurston Arthritis Research Center
+  - id: Department of Health Behavior, Gillings School of Global Public Health, University of North Carolina at Chapel Hill	
+    term: Gillings School of Global Public Health, Department of Health Behavior
+  - id: Department of Health Behavior, Gillings School of Global Public Health, University of North Carolina, Chapel Hill, NC, USA	
+    term: Gillings School of Global Public Health, Department of Health Behavior
+  - id: Department of Health Behavior, Gillings School of Global Public Health, University of North Carolina-Chapel Hill, CB #7440, Chapel Hill, North Carolina, USA	
+    term: Gillings School of Global Public Health, Department of Health Behavior
+  - id: Department of Health Behavior, School of Public Health, University of North Carolina at Chapel Hill	
+    term: Gillings School of Global Public Health, Department of Health Behavior
+  - id: Department of Health Behavior, UNC Gillings School of Global Public Health, 308 Rosenau Hall, Campus Box 7440, Chapel Hill, NC 27599-7440, USA	
+    term: Gillings School of Global Public Health, Department of Health Behavior
+  - id: Department of Health Behavior, University of North Carolina at Chapel Hill	
+    term: Gillings School of Global Public Health, Department of Health Behavior
+  - id: Department of Health Behaviour and Health Education, Gillings School of Global Public Health, University of North Carolina at Chapel Hill, Chapel Hill, USA	
+    term: Gillings School of Global Public Health
+  - id: Department of Health Policy and Management, CB 7411, UNC Gillings School of Global Public Health, University of North Carolina at Chapel Hill, Chapel Hill, NC 27599-7411, USA	
+    term: Gillings School of Global Public Health, Department of Health Policy and Management
+  - id: Department of Health Policy and Management, Gillings School of Global Public Health, University of North Carolina Chapel Hill	
+    term: Gillings School of Global Public Health, Department of Health Policy and Management
+  - id: Department of Health Policy and Management, Gillings School of Global Public Health, University of North Carolina at Chapel Hill	
+    term: Gillings School of Global Public Health, Department of Health Policy and Management
+  - id: Department of Health Policy and Management, Gillings School of Global Public Health, University of North Carolina at Chapel Hill, 135 Dauer Drive, Chapel Hill, NC, USA	
+    term: Gillings School of Global Public Health, Department of Health Policy and Management
+  - id: Department of Health Policy and Management, Gillings School of Global Public Health, University of North Carolina at Chapel Hill, Campus Box 7411, 135 Dauer Drive, Chapel Hill, NC, 27599, USA	
+    term: Gillings School of Global Public Health, Department of Health Policy and Management
+  - id: Department of Health Policy and Management, Gillings School of Global Public Health, University of North Carolina at Chapel Hill, Chapel Hill, NC, USA	
+    term: Gillings School of Global Public Health, Department of Health Policy and Management
+  - id: Department of Health Policy and Management, Gillings School of Global Public Health, University of North Carolina, Chapel Hill, NC, USA	
+    term: Gillings School of Global Public Health, Department of Health Policy and Management
+  - id: Department of Health Policy and Management, Gillings School of Public Health, University of North Carolina at Chapel Hill	
+    term: Gillings School of Global Public Health
+  - id: Department of Health Policy and Management, Gillings School of Public Health, University of North Carolina at Chapel Hill, Chapel Hill, NC, USA	
+    term: Gillings School of Global Public Health
+  - id: Department of Health Policy and Management, School of Public Health, University of North Carolina at Chapel Hill	
+    term: Gillings School of Global Public Health, Department of Health Policy and Management
+  - id: Department of Health Policy and Management, School of Public Health, University of North Carolina at Chapel Hill, Chapel Hill, NC, 27599, USA	
+    term: Gillings School of Global Public Health, Department of Health Policy and Management
+  - id: Department of Health Policy and Management, University of North Carolina at Chapel Hill	
+    term: Gillings School of Global Public Health, Department of Health Policy and Management
+  - id: Department of Health Policy and Management, University of North Carolina at Chapel Hill, Chapel Hill, NC, USA	
+    term: Gillings School of Global Public Health, Department of Health Policy and Management
+  - id: Department of Internal Medicine, University of North Carolina at Chapel Hill, Chapel Hill, NC, USA	
+    term: null
+  - id: Department of Maternal and Child Health, Gillings School of Global Public Health, The University of North Carolina at Chapel Hill	
+    term: Gillings School of Global Public Health, Department of Maternal and Child Health
+  - id: Department of Maternal and Child Health, Gillings School of Global Public Health, The University of North Carolina at Chapel Hill, 170 Rosenau Hall, Campus Box 7400, Chapel Hill 27599-7400, NC, USA	
+    term: Gillings School of Global Public Health, Department of Maternal and Child Health
+  - id: Department of Maternal and Child Health, Gillings School of Global Public Health, The University of North Carolina at Chapel Hill, Chapel Hill, NC, USA	
+    term: Gillings School of Global Public Health, Department of Maternal and Child Health
+  - id: Department of Maternal and Child Health, Gillings School of Global Public Health, University of North Carolina at Chapel Hill	
+    term: Gillings School of Global Public Health, Department of Maternal and Child Health
+  - id: Department of Maternal and Child Health, Gillings School of Global Public Health, University of North Carolina, Chapel Hill, NC, USA	
+    term: Gillings School of Global Public Health, Department of Maternal and Child Health
+  - id: Department of Maternal and Child Health, School of Public Health, University of North Carolina at Chapel Hill	
+    term: Gillings School of Global Public Health, Department of Maternal and Child Health
+  - id: Department of Maternal and Child Health, UNC Gillings School of Global Public Health, University of North Carolina at Chapel Hill	
+    term: Gillings School of Global Public Health, Department of Maternal and Child Health
+  - id: Department of Maternal and Child Health, University of North Carolina at Chapel Hill	
+    term: Gillings School of Global Public Health, Department of Maternal and Child Health
+  - id: Department of Mathematics, University of North Carolina at Chapel Hill	
+    term: College of Arts and Sciences, Department of Mathematics
+  - id: Department of Mathematics, University of North Carolina, Chapel Hill	
+    term: College of Arts and Sciences, Department of Mathematics
+  - id: Department of Medicine Administration, School of Medicine, The University of North Carolina at Chapel Hill	
+    term: School of Medicine
+  - id: Department of Medicine Administration, University of North Carolina at Chapel Hill	
+    term: null
+  - id: Department of Medicine and Center for Gastrointestinal Biology &amp; Disease School of Medicine, University of North Carolina, Chapel Hill, North Carolina	
+    term: 
+      - School of Medicine, Department of Medicine
+      - School of Medicine, Center for Gastrointestinal Biology and Disease
+  - id: Department of Medicine and Epidemiology, Division of Gastroenterology and Hepatology, University of North Carolina at Chapel Hill, Chapel Hill, NC 27514, USA	
+    term: 
+      - School of Medicine, Department of Medicine
+      - Gillings School of Global Public Health, Department of Epidemiology
+  - id: Department of Medicine and Social Medicine, University of North Carolina at Chapel Hill, Chapel Hill, NC, USA	
+    term: 
+      - School of Medicine, Department of Medicine
+      - School of Medicine, Department of Social Medicine
+  - id: Department of Medicine, School of Medicine, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Department of Medicine
+  - id: Department of Medicine, School of Medicine, University of North Carolina at Chapel Hill, Chapel Hill, NC, USA	
+    term: School of Medicine, Department of Medicine
+  - id: Department of Medicine, School of Medicine, University of North Carolina, CB#7020, Chapel Hill, NC 27599-7020, USA	
+    term: School of Medicine, Department of Medicine
+  - id: Department of Medicine, School of Medicine, University of North Carolina-Chapel Hill, Chapel Hill, NC, USA	
+    term: School of Medicine, Department of Medicine
+  - id: Department of Medicine, UNC Chapel Hill, Chapel Hill, NC 27599, USA	
+    term: School of Medicine, Department of Medicine
+  - id: Department of Medicine, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Department of Medicine
+  - id: Department of Medicine, University of North Carolina at Chapel Hill School of Medicine, Chapel Hill	
+    term: School of Medicine, Department of Medicine
+  - id: Department of Medicine, University of North Carolina at Chapel Hill, Chapel Hill, NC, USA	
+    term: School of Medicine, Department of Medicine
+  - id: Department of Medicine, University of North Carolina, Chapel Hill, NC, USA	
+    term: School of Medicine, Department of Medicine
+  - id: Department of Medicine, University of North Carolina, Manning Drive, Chapel Hill, NC, USA	
+    term: School of Medicine, Department of Medicine
+  - id: Department of Microbiology and Immunology, School of Medicine, The University of North Carolina at Chapel Hill	
+    term: School of Medicine, Department of Microbiology and Immunology
+  - id: Department of Microbiology and Immunology, School of Medicine, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Department of Microbiology and Immunology
+  - id: Department of Microbiology and Immunology, School of Medicine, University of North Carolina at Chapel Hill, Chapel Hill, NC, USA	
+    term: School of Medicine, Department of Microbiology and Immunology
+  - id: Department of Microbiology and Immunology, School of Medicine, University of North Carolina, Chapel Hill, NC, 27599, USA	
+    term: School of Medicine, Department of Microbiology and Immunology
+  - id: Department of Microbiology and Immunology, University of North Carolina School of Medicine, Chapel Hill	
+    term: School of Medicine, Department of Microbiology and Immunology
+  - id: Department of Microbiology and Immunology, University of North Carolina School of Medicine, Chapel Hill, NC, USA	
+    term: School of Medicine, Department of Microbiology and Immunology
+  - id: Department of Microbiology and Immunology, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Department of Microbiology and Immunology
+  - id: Department of Microbiology and Immunology, University of North Carolina at Chapel Hill, 220 E Cameron Ave, Chapel Hill, NC 27514, USA	
+    term: School of Medicine, Department of Microbiology and Immunology
+  - id: Department of Microbiology and Immunology, University of North Carolina at Chapel Hill, 31–353 Lineberger Comprehensive Cancer Center, Chapel Hill, NC, USA	
+    term: School of Medicine, Department of Microbiology and Immunology
+  - id: Department of Microbiology and Immunology, University of North Carolina at Chapel Hill, 715 Mary Ellen Jones Building, Chapel Hill, NC, USA	
+    term: School of Medicine, Department of Microbiology and Immunology
+  - id: Department of Microbiology and Immunology, University of North Carolina, Chapel Hill, NC, USA	
+    term: School of Medicine, Department of Microbiology and Immunology
+  - id: Department of Molecular Biology, University of North Carolina at Chapel Hill	
+    term: null
+  - id: Department of Neurology, School of Medicine, The University of North Carolina at Chapel Hill	
+    term: School of Medicine, Department of Neurology
+  - id: Department of Neurology, School of Medicine, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Department of Neurology
+  - id: Department of Neurology, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Department of Neurology
+  - id: Department of Neurology, University of North Carolina at Chapel Hill, Chapel Hill, NC, USA	
+    term: School of Medicine, Department of Neurology
+  - id: Department of Neurology, University of North Carolina, Chapel Hill	
+    term: School of Medicine, Department of Neurology
+  - id: Department of Neurology, University of North Carolina, Chapel Hill, NC 27599, USA	
+    term: School of Medicine, Department of Neurology
+  - id: Department of Neurology, University of North Carolina, Chapel Hill, NC, 27599, USA	
+    term: School of Medicine, Department of Neurology
+  - id: Department of Neurology, University of North Carolina, Chapel Hill, USA	
+    term: School of Medicine, Department of Neurology
+  - id: Department of Neurosurgery and Neurology, Lineberger Cancer Center, School of Medicine, University of North Carolina, Chapel Hill, NC 27599, USA	
+    term: School of Medicine, Department of Neurosurgery
+  - id: Department of Neurosurgery, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Department of Neurosurgery
+  - id: Department of Nutrition, Gillings School of Global Public Health and School of Medicine, University of North Carolina at Chapel Hill, Chapel Hill, NC, USA	
+    term: School of Medicine
+  - id: Department of Nutrition, Gillings School of Global Public Health, Director, Center for Health Promotion and Disease Prevention, University of North Carolina at Chapel Hill, CB# 7426, Chapel Hill, NC 27599-7426, USA	
+    term: UNC Center for Health Promotion and Disease Prevention
+  - id: Department of Nutrition, Gillings School of Global Public Health, The University of North Carolina at Chapel Hill	
+    term: Gillings School of Global Public Health, Department of Nutrition
+  - id: Department of Nutrition, Gillings School of Global Public Health, University of North Carolina at Chapel Hill	
+    term: Gillings School of Global Public Health, Department of Nutrition
+  - id: Department of Nutrition, Gillings School of Global Public Health, University of North Carolina at Chapel Hill, 2207 McGavran-Greenberg Hall, CB 7461, Chapel Hill, NC 27599-7461, USA	
+    term: Gillings School of Global Public Health, Department of Nutrition
+  - id: Department of Nutrition, Lineberger Comprehensive Cancer Center, The University of North Carolina at Chapel Hill, Chapel Hill, NC, USA	
+    term: 
+      - Gillings School of Global Public Health, Department of Nutrition
+      - UNC Lineberger Comprehensive Cancer Center
+  - id: Department of Nutrition, School of Public Health, University of North Carolina at Chapel Hill	
+    term: Gillings School of Global Public Health, Department of Nutrition
+  - id: Department of Nutrition, The University of North Carolina at Chapel Hill, Chapel Hill, NC, USA	
+    term: Gillings School of Global Public Health, Department of Nutrition
+  - id: Department of Nutrition, UNC Gillings School of Global Public Health, University of North Carolina at Chapel Hill	
+    term: Gillings School of Global Public Health, Department of Nutrition
+  - id: Department of Nutrition, University of North Carolina at Chapel Hill	
+    term: Gillings School of Global Public Health, Department of Nutrition
+  - id: Department of Nutrition, University of North Carolina at Chapel Hill, 245 Rosenau Hall CB#7461, Chapel Hill, NC 27599, USA	
+    term: Gillings School of Global Public Health, Department of Nutrition
+  - id: Department of Nutrition, University of North Carolina, Chapel Hill	
+    term: Gillings School of Global Public Health, Department of Nutrition
+  - id: Department of Nutrition, University of North Carolina, Chapel Hill, CB # 8120 University Square, 123 W. Franklin Street, Chapel Hill, North Carolina, NC 27516-3997, USA	
+    term: Gillings School of Global Public Health, Department of Nutrition
+  - id: Department of Obstetrics and Gynecology, Division of Maternal-Fetal Medicine, University of North Carolina School of Medicine, 3010 Old Clinic Building, Campus Box 7516, Chapel Hill 27599-7516, NC, USA	
+    term: School of Medicine, Department of Obstetrics and Gynecology
+  - id: Department of Obstetrics and Gynecology, School of Medicine, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Department of Obstetrics and Gynecology
+  - id: Department of Obstetrics and Gynecology, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Department of Obstetrics and Gynecology
+  - id: Department of Obstetrics and Gynecology, University of North Carolina at Chapel Hill, Chapel Hill, NC 27599, USA	
+    term: School of Medicine, Department of Obstetrics and Gynecology
+  - id: Department of Obstetrics and Gynecology, University of North Carolina, Chapel Hill, 27599, USA	
+    term: School of Medicine, Department of Obstetrics and Gynecology
+  - id: Department of Obstetrics and Gynecology, University of North Carolina, Chapel Hill, USA	
+    term: School of Medicine, Department of Obstetrics and Gynecology
+  - id: Department of Operative Dentistry, University of North Carolina at Chapel Hill	
+    term: School of Dentistry, Department of Operative Dentistry
+  - id: Department of Ophthalmology, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Department of Ophthalmology
+  - id: Department of Ophthalmology, University of North Carolina at Chapel Hill, Chapel Hill, NC, USA	
+    term: School of Medicine, Department of Ophthalmology
+  - id: Department of Oral and Maxillofacial Surgery, School of Dentistry, University of North Carolina at Chapel Hill	
+    term: School of Dentistry, Department of Oral and Maxillofacial Surgery
+  - id: Department of Orthodontics, School of Dentistry, University of North Carolina at Chapel Hill	
+    term: School of Dentistry, Department of Orthodontics
+  - id: Department of Orthopaedics, School of Medicine, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Department of Orthopaedics
+  - id: Department of Orthopaedics, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Department of Orthopaedics
+  - id: Department of Otolaryngology/Head and Neck Surgery, School of Medicine, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Department of Otolaryngology/Head and Neck Surgery
+  - id: Department of Otolaryngology/Head and Neck Surgery, University of North Carolina, Chapel Hill	
+    term: School of Medicine, Department of Otolaryngology/Head and Neck Surgery
+  - id: Department of Pathology &amp; Laboratory Medicine, Lineberger Comprehensive Cancer Center, University of North Carolina, 913 Brinkhous-Bullitt Building, Chapel Hill, NC, 27599-7525, USA	
+    term: 
+      - School of Medicine, Department of Pathology and Laboratory Medicine
+      - UNC Lineberger Comprehensive Cancer Center
+  - id: Department of Pathology &amp; Laboratory Medicine, University of North Carolina School of Medicine, Chapel Hill, NC, USA	
+    term: School of Medicine, Department of Pathology and Laboratory Medicine
+  - id: Department of Pathology &amp; Laboratory Medicine, University of North Carolina, 913 Brinkhous-Bullitt Building, Chapel Hill, NC, 27599-7525, USA	
+    term: School of Medicine, Department of Pathology and Laboratory Medicine
+  - id: Department of Pathology and Laboratory Medicine, School of Medicine, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Department of Pathology and Laboratory Medicine
+  - id: Department of Pathology and Laboratory Medicine, School of Medicine, University of North Carolina, Chapel Hill	
+    term: School of Medicine, Department of Pathology and Laboratory Medicine
+  - id: Department of Pathology and Laboratory Medicine, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Department of Pathology and Laboratory Medicine
+  - id: Department of Pathology and Laboratory Medicine, University of North Carolina at Chapel Hill, Chapel Hill, NC 27514, USA	
+    term: School of Medicine, Department of Pathology and Laboratory Medicine
+  - id: Department of Pathology and Laboratory Medicine, University of North Carolina, Chapel Hill	
+    term: School of Medicine, Department of Pathology and Laboratory Medicine
+  - id: Department of Pathology, Division of Neuropathology, University of North Carolina, Chapel Hill, NC 27599, USA	
+    term: null
+  - id: Department of Pathology, Division of Neuropathology, University of North Carolina, Chapel Hill, NC, 27599, USA	
+    term: null
+  - id: Department of Pediatric Dentistry, School of Dentistry, University of North Carolina at Chapel Hill	
+    term: School of Dentistry, Department of Pediatric Dentistry
+  - id: Department of Pediatric Dentistry, School of Dentistry, University of North Carolina, 228 Brauer Hall, Chapel Hill, NC, USA	
+    term: School of Dentistry, Department of Pediatric Dentistry
+  - id: Department of Pediatric Dentistry, UNC School of Dentistry, University of North Carolina-Chapel Hill, Chapel Hill, Brauer 228, CB#7450, Chapel Hill NC 27599, USA	
+    term: School of Dentistry
+  - id: Department of Pediatrics University of North Carolina at Chapel Hill, Chapel Hill, NC, USA	
+    term: School of Medicine, Department of Pediatrics
+  - id: Department of Pediatrics, School of Medicine, The University of North Carolina at Chapel Hill	
+    term: School of Medicine, Department of Pediatrics
+  - id: Department of Pediatrics, School of Medicine, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Department of Pediatrics
+  - id: Department of Pediatrics, School of Medicine, University of North Carolina, Chapel Hill, NC 7220, USA	
+    term: School of Medicine, Department of Pediatrics
+  - id: Department of Pediatrics, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Department of Pediatrics
+  - id: Department of Pediatrics, University of North Carolina at Chapel Hill, Chapel Hill, NC, USA	
+    term: School of Medicine, Department of Pediatrics
+  - id: Department of Pediatrics, University of North Carolina, Chapel Hill, NC, USA	
+    term: School of Medicine, Department of Pediatrics
+  - id: Department of Pediatrics, University of North Carolina, Chapel Hill, North Carolina, USA	
+    term: School of Medicine, Department of Pediatrics
+  - id: Department of Pediatrics, University of North Carolina, School of Medicine University of North Carolina at Chapel Hill, Chapel Hill, NC, USA	
+    term: School of Medicine, Department of Pediatrics
+  - id: Department of Periodontology, School of Dentistry, University of North Carolina at Chapel Hill	
+    term: School of Dentistry, Department of Periodontology
+  - id: Department of Pharmacology, School of Medicine, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Department of Pharmacology
+  - id: Department of Pharmacology, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Department of Pharmacology
+  - id: Department of Pharmacology, University of North Carolina, Chapel Hill	
+    term: School of Medicine, Department of Pharmacology
+  - id: Department of Physical Medicine and Rehabilitation, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Department of Physical Medicine and Rehabilitation
+  - id: Department of Physics and Astronomy, University of North Carolina at Chapel Hill	
+    term: College of Arts and Sciences, Department of Physics and Astronomy
+  - id: Department of Physics and Astronomy, University of North Carolina at Chapel Hill, Chapel Hill, NC 27599, USA	
+    term: College of Arts and Sciences, Department of Physics and Astronomy
+  - id: Department of Political Science, University of North Carolina at Chapel Hill, Chapel Hill, 27599, North Carolina, USA	
+    term: College of Arts and Sciences, Department of Political Science
+  - id: Department of Psychiatry, School of Medicine, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Department of Psychiatry
+  - id: Department of Psychiatry, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Department of Psychiatry
+  - id: Department of Psychiatry, University of North Carolina at Chapel Hill School of Medicine, CB# 7160, Chapel Hill, NC, 27599, USA	
+    term: School of Medicine, Department of Psychiatry
+  - id: Department of Psychiatry, University of North Carolina at Chapel Hill School of Medicine, Chapel Hill, NC, USA	
+    term: School of Medicine, Department of Psychiatry
+  - id: Department of Psychiatry, University of North Carolina at Chapel Hill, Chapel Hill, NC, USA	
+    term: School of Medicine, Department of Psychiatry
+  - id: Department of Psychiatry, University of North Carolina, 101 Manning Drive CB #7167, Chapel Hill, NC 27599, USA	
+    term: School of Medicine, Department of Psychiatry
+  - id: Department of Psychology, The University of North Carolina at Chapel Hill, Chapel Hill, NC, USA	
+    term: College of Arts and Sciences, Department of Psychology
+  - id: Department of Psychology, University of North Carolina at Chapel Hill	
+    term: College of Arts and Sciences, Department of Psychology
+  - id: Department of Psychology, University of North Carolina at Chapel Hill, Chapel Hill, NC, USA	
+    term: College of Arts and Sciences, Department of Psychology
+  - id: Department of Psychology, University of North Carolina, 209 South Rd., Chapel Hill, NC 27599, USA	
+    term: College of Arts and Sciences, Department of Psychology
+  - id: Department of Public Policy, University of North Carolina at Chapel Hill	
+    term: College of Arts and Sciences, Department of Public Policy
+  - id: Department of Radiation Oncology, School of Medicine, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Department of Radiation Oncology
+  - id: Department of Radiation Oncology, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Department of Radiation Oncology
+  - id: Department of Radiology, School of Medicine, University of North Carolina, Chapel Hill, NC, USA	
+    term: School of Medicine, Department of Radiology
+  - id: Department of Radiology, University of North Carolina School of Medicine, 100 Manning Drive, Radiology CB#7510, Old Clinic Building, Chapel Hill, NC 27599-7510, USA	
+    term: School of Medicine, Department of Radiology
+  - id: Department of Radiology, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Department of Radiology
+  - id: Department of Radiology, University of North Carolina, Chapel Hill	
+    term: School of Medicine, Department of Radiology
+  - id: Department of Radiology, University of North Carolina, Chapel Hill, NC, 27599, USA	
+    term: School of Medicine, Department of Radiology
+  - id: Department of Social Medicine, CB 7240, University of North Carolina at Chapel Hill, Chapel Hill, NC 27599-7240, USA	
+    term: School of Medicine, Department of Social Medicine
+  - id: Department of Social Medicine, School of Medicine, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Department of Social Medicine
+  - id: Department of Social Medicine, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Department of Social Medicine
+  - id: Department of Social Medicine, University of North Carolina, 27599-7240, Chapel Hill, NC, USA	
+    term: School of Medicine, Department of Social Medicine
+  - id: Department of Sociology, University of North Carolina at Chapel Hill, Chapel Hill, NC 27599-3355, USA	
+    term: College of Arts and Sciences, Department of Sociology
+  - id: Department of Sociology, University of North Carolina, Chapel Hill, USA	
+    term: College of Arts and Sciences, Department of Sociology
+  - id: Department of Statistics and Operations Research, The University of North Carolina at Chapel Hill	
+    term: College of Arts and Sciences, Department of Statistics and Operations Research
+  - id: Department of Statistics and Operations Research, UNC College of Arts &amp; Sciences, University of North Carolina at Chapel Hill	
+    term: College of Arts and Sciences, Department of Statistics and Operations Research
+  - id: Department of Statistics and Operations Research, University of North Carolina at Chapel Hill	
+    term: College of Arts and Sciences, Department of Statistics and Operations Research
+  - id: Department of Statistics and Operations Research, University of North Carolina, Chapel Hill	
+    term: College of Arts and Sciences, Department of Statistics and Operations Research
+  - id: Department of Surgery, School of Medicine, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Department of Surgery
+  - id: Department of Surgery, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Department of Surgery
+  - id: Department of Surgery, University of North Carolina, Chapel Hill	
+    term: School of Medicine, Department of Surgery
+  - id: Department of Surgical Pathology, School of Medicine, University of North Carolina at Chapel Hill	
+    term: School of Medicine
+  - id: Department of Urology, University of North Carolina, Chapel Hill, NC, USA	
+    term: School of Medicine, Department of Urology
+  - id: Departments of Biomedical Engineering, University of North Carolina at Chapel Hill	
+    term: null
+  - id: Departments of Biomedical Engineering, University of North Carolina at Chapel Hill, CB#7575, Chapel Hill, NC, USA	
+    term: null
+  - id: Departments of Epidemiology, University of North Carolina, Chapel Hill, NC, USA	
+    term: null
+  - id: Departments of Exercise &amp; Sport Science, University of North Carolina, Chapel Hill	
+    term: null
+  - id: Departments of Genetics, University of North Carolina at Chapel Hill	
+    term: null
+  - id: Departments of Internal Medicine and Pediatrics, University of North Carolina School of Medicine, 101 Manning Drive, Chapel Hill, NC 27514, USA	
+    term: School of Medicine, Department of Pediatrics
+  - id: Departments of Pediatrics and Internal Medicine, Division of Hematology and Oncology, University of North Carolina School of Medicine, 170 Manning Drive 1185A, Physician Office Building CB#7236, Chapel Hill, NC 27599-7236, USA	
+    term: School of Medicine, Department of Pediatrics
+  - id: Diabetes Center, University of North Carolina, Chapel Hill, USA	
+    term: null
+  - id: Director, Biostatistical Support Unit, Center for Health Promotion and Disease Prevention, 1700 Martin Luther King Jr. Blvd, CB# 7426, Chapel Hill, NC, 27599-7426, USA	
+    term: UNC Center for Health Promotion and Disease Prevention
+  - id: Division of Allergy, Immunology, Rheumatology and Infectious Disease, Department of Pediatrics, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Department of Pediatrics
+  - id: Division of Cardiology, Department of Medicine, School of Medicine, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Department of Medicine
+  - id: Division of Cardiology, School of Medicine, University of North Carolina at Chapel Hill	
+    term: School of Medicine
+  - id: Division of Cardiology, School of Medicine, University of North Carolina, Chapel Hill	
+    term: School of Medicine
+  - id: Division of Cardiology, University of North Carolina School of Medicine, Chapel Hill	
+    term: null
+  - id: Division of Cardiology, University of North Carolina at Chapel Hill	
+    term: null
+  - id: Division of GI Surgery, University of North Carolina at Chapel Hill	
+    term: null
+  - id: Division of Gastroenterology and Hepatology, Department of Medicine, School of Medicine, The University of North Carolina at Chapel Hill	
+    term: School of Medicine, Department of Medicine
+  - id: Division of Gastroenterology and Hepatology, Department of Medicine, School of Medicine, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Department of Medicine
+  - id: Division of Gastroenterology and Hepatology, University of North Carolina at Chapel Hill	
+    term: null
+  - id: Division of General Internal Medicine and Clinical Epidemiology, Department of Medicine, School of Medicine, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Department of Medicine
+  - id: Division of General Internal Medicine and Clinical Epidemiology, Department of Medicine, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Department of Medicine
+  - id: Division of General Internal Medicine and Clinical Epidemiology, School of Medicine, The University of North Carolina at Chapel Hill	
+    term: School of Medicine
+  - id: Division of General Internal Medicine and Clinical Epidemiology, School of Medicine, University of North Carolina at Chapel Hill	
+    term: School of Medicine
+  - id: Division of General Internal Medicine and Clinical Epidemiology, University of North Carolina School of Medicine, Chapel Hill	
+    term: null
+  - id: Division of General Internal Medicine and Clinical Epidemiology, University of North Carolina at Chapel Hill	
+    term: null
+  - id: Division of General Internal Medicine, School of Medicine, University of North Carolina at Chapel Hill	
+    term: School of Medicine
+  - id: Division of General Internal Medicine, School of Medicine, University of North Carolina, 5041 Old Clinic Building, CB#7110 Chapel Hill, NC, USA	
+    term: School of Medicine
+  - id: Division of General Internal Medicine, School of Medicine, University of North Carolina- Chapel Hill	
+    term: School of Medicine
+  - id: Division of General Internal Medicine, University of North Carolina, Chapel Hill, NC, USA	
+    term: null
+  - id: Division of General Medicine and Clinical Epidemiology, School of Medicine, University of North Carolina, Chapel Hill, NC, 27599-7110, USA	
+    term: School of Medicine
+  - id: Division of General Medicine and Clinical Epidemiology, University of North Carolina at Chapel Hill	
+    term: null
+  - id: Division of General Medicine and Clinical Epidemiology, University of North Carolina, Campus Box 7110, Chapel Hill, NC 27599, USA	
+    term: null
+  - id: Division of Genetics and Metabolism, Department of Pediatrics, School of Medicine, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Department of Pediatrics
+  - id: Division of Geriatrics, University of North Carolina at Chapel Hill	
+    term: null
+  - id: Division of Hematology/Oncology, Department of Medicine, School of Medicine, University of North Carolina at Chapel Hill	
+    term: 
+      - School of Medicine, Division of Hematology/Oncology
+      - School of Medicine, Department of Medicine
+  - id: Division of Hematology/Oncology, Department of Medicine, University of North Carolina at Chapel Hill	
+    term: 
+      - School of Medicine, Division of Hematology/Oncology
+      - School of Medicine, Department of Medicine
+  - id: Division of Hematology/Oncology, Department of Medicine, University of North Carolina, Chapel Hill	
+    term: 
+      - School of Medicine, Division of Hematology/Oncology
+      - School of Medicine, Department of Medicine
+  - id: Division of Hematology/Oncology, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Division of Hematology/Oncology
+  - id: Division of Infectious Diseases, Center for AIDS Research, University of North Carolina School of Medicine, 120 Mason Farm Rd., CB 7042, Genetic Medicine Building 2044, Chapel Hill, NC, USA	
+    term: School of Medicine, Center for AIDS Research
+  - id: Division of Infectious Diseases, Center for AIDS Research, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Center for AIDS Research
+  - id: Division of Infectious Diseases, Department of Medicine, School of Medicine, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Department of Medicine
+  - id: Division of Infectious Diseases, Department of Medicine, School of Medicine, University of North Carolina, Chapel Hill	
+    term: School of Medicine, Department of Medicine
+  - id: Division of Infectious Diseases, Department of Medicine, University of North Carolina, Chapel Hill, NC, USA	
+    term: School of Medicine, Department of Medicine
+  - id: Division of Infectious Diseases, School of Medicine, University of North Carolina at Chapel Hill	
+    term: School of Medicine
+  - id: Division of Infectious Diseases, University of North Carolina School of Medicine, Chapel Hill, NC, USA	
+    term: null
+  - id: Division of Infectious Diseases, University of North Carolina at Chapel Hill	
+    term: null
+  - id: Division of Infectious Diseases, University of North Carolina at Chapel Hill, 130 Mason Farm Rd, Chapel Hill, NC, USA	
+    term: null
+  - id: Division of Molecular Pharmaceutics, UNC Eshelman School of Pharmacy, 2070 Genetic Medicine Building CB#7362, Chapel Hill, NC, 27599, USA	
+    term: Eshelman School of Pharmacy, Division of Molecular Pharmaceutics
+  - id: Division of Molecular Pharmaceutics, UNC Eshelman School of Pharmacy, University of North Carolina at Chapel Hill	
+    term: Eshelman School of Pharmacy
+  - id: Division of Neonatal-Perinatal Medicine, University of North Carolina at Chapel Hill	
+    term: null
+  - id: Division of Nephrology and Hypertension, Department of Medicine, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Department of Medicine
+  - id: Division of Occupational Science and Occupational Therapy, Department of Allied Health Sciences, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Department of Allied Health Sciences, Division of Occupational Science and Occupational Therapy
+  - id: Division of Pediatric Endocrine, Department of Pediatrics, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Department of Pediatrics
+  - id: Division of Pediatric Endocrinology, Department of Pediatrics, School of Medicine, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Department of Pediatrics
+  - id: Division of Pediatric Endocrinology, Department of Pediatrics, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Department of Pediatrics
+  - id: Division of Pediatric Endocrinology, University of North Carolina at Chapel Hill	
+    term: null
+  - id: Division of Pediatric Surgery, University of North Carolina at Chapel Hill	
+    term: null
+  - id: Division of Pharmaceutical Outcomes &amp; Policy, School of Pharmacy, University of North Carolina, Chapel Hill, NC, USA	
+    term: Eshelman School of Pharmacy, Division of Pharmaceutical Outcomes and Policy
+  - id: Division of Pharmaceutical Outcomes and Policy, Eshelman School of Pharmacy, University of North Carolina at Chapel Hill	
+    term: Eshelman School of Pharmacy
+  - id: Division of Pharmaceutical Outcomes and Policy, School of Pharmacy, University of North Carolina at Chapel Hill	
+    term: Eshelman School of Pharmacy, Division of Pharmaceutical Outcomes and Policy
+  - id: Division of Pharmaceutical Outcomes and Policy, University of North Carolina Eshelman School of Pharmacy, Chapel Hill, NC, USA	
+    term: Eshelman School of Pharmacy, Division of Pharmaceutical Outcomes and Policy
+  - id: Division of Pharmacotherapy and Experimental Therapeutics, School of Pharmacy, University of North Carolina at Chapel Hill	
+    term: Eshelman School of Pharmacy, Division of Pharmacotherapy and Experimental Therapeutics
+  - id: Division of Pharmacotherapy and Experimental Therapeutics, University of North Carolina at Chapel Hill School of Pharmacy	
+    term: Eshelman School of Pharmacy, Division of Pharmacotherapy and Experimental Therapeutics
+  - id: Division of Physical Therapy, School of Medicine, University of North Carolina at Chapel Hill	
+    term: School of Medicine
+  - id: Division of Plastic and Reconstructive Surgery, Department of Surgery, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Department of Surgery
+  - id: Division of Pulmonary Diseases and Critical Care Medicine, Department of Medicine, School of Medicine, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Department of Medicine
+  - id: Division of Pulmonary and Critical Care Medicine, School of Medicine, University of North Carolina at Chapel Hill	
+    term: School of Medicine
+  - id: Division of Pulmonary and Critical Care Medicine, University of North Carolina at Chapel Hill	
+    term: null
+  - id: Division of Reproductive Endocrinology and Infertility, Department of Obstetrics and Gynecology, School of Medicine, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Department of Obstetrics and Gynecology
+  - id: Division of Surgical Oncology, Department of Sugery, School of Medicine, University of North Carolina at Chapel Hill	
+    term: School of Medicine
+  - id: Division of Surgical Oncology, University of North Carolina at Chapel Hill	
+    term: null
+  - id: Division of Trauma and Critical Care Surgery, Department of Surgery, School of Medicine, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Department of Surgery
+  - id: Environmental Public Health Division, NHEERL, U.S. EPA, Chapel Hill, NC, USA	
+    term: null
+  - id: Environmental Public Health Division, National Health and Environmental Effects Research Laboratory, US Environmental Protection Agency, Chapel Hill, NC, 27599, USA	
+    term: null
+  - id: Eshelman School of Pharmacy, University of North Carolina at Chapel Hill	
+    term: Eshelman School of Pharmacy
+  - id: Fetzer Hall, University of North Carolina, Chapel Hill, NC, USA	
+    term: null
+  - id: Francis Owen Blood Research Lab, University of North Carolina at Chapel Hill	
+    term: null
+  - id: Frank Porter Graham Child Development Institute, University of North Carolina at Chapel Hill	
+    term: Frank Porter Graham Child Development Institute
+  - id: Gastroenterology and Hepatology Division, Department of Medicine, University of North Carolina, Chapel Hill, NC, 27599-7080, USA	
+    term: School of Medicine, Department of Medicine
+  - id: Gene Therapy Center, School of Medicine, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Gene Therapy Center
+  - id: Gene Therapy Center, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Gene Therapy Center
+  - id: Gene Therapy Center, University of North Carolina at Chapel Hill, Chapel Hill, NC, USA	
+    term: School of Medicine, Gene Therapy Center
+  - id: Geographic Information Systems Librarian, Reference Department in the Walter Royal Davis Library, 208 Raleigh St CB #3900, Chapel Hill, NC, 27514, USA	
+    term: null
+  - id: Gillings School of Global Public Health, The University of North Carolina at Chapel Hill	
+    term: Gillings School of Global Public Health
+  - id: Gillings School of Global Public Health, University of North Carolina at Chapel Hill	
+    term: Gillings School of Global Public Health
+  - id: Gillings School of Global Public Health, University of North Carolina at Chapel Hill, Chapel Hill, North Carolina, USA	
+    term: Gillings School of Global Public Health
+  - id: Gillings School of Global Public Health, University of North Carolina, 325 Rosenau Hall, CB 7440, Chapel Hill, NC, 27599, USA	
+    term: Gillings School of Global Public Health
+  - id: Gillings School of Global Public Health, University of North Carolina, Chapel Hill, NC, USA	
+    term: Gillings School of Global Public Health
+  - id: Global Health Policy, Department of Public Policy, University of North Carolina at Chapel Hill, 218 Abernethy Hall, CB #3435, Chapel Hill, NC, 27599, USA	
+    term: College of Arts and Sciences, Department of Public Policy
+  - id: HW Odum Institute for Research in Social Science, University of North Carolina at Chapel Hill, Chapel Hill, NC 27599-3355, USA	
+    term: null
+  - id: Hayes Laboratory, Lineberger Comprehensive Cancer Center, University of North Carolina at Chapel Hill	
+    term: UNC Lineberger Comprehensive Cancer Center
+  - id: Health Behavior, Gillings School of Global Public Health, Lineberger Comprehensive Cancer Center, University of North Carolina at Chapel Hill, Chapel Hill, NC, USA	
+    term: 
+      - Gillings School of Global Public Health, Department of Health Behavior
+      - UNC Lineberger Comprehensive Cancer Center
+  - id: Health Behavior, Gillings School of Global Public Health, University of North Carolina at Chapel Hill, Chapel Hill, NC, USA	
+    term: Gillings School of Global Public Health, Department of Health Behavior
+  - id: Health Behavior, University of North Carolina, Chapel Hill, NC, USA	
+    term: Gillings School of Global Public Health, Department of Health Behavior
+  - id: Health Policy and Management Student, Gillings School of Public Health, University of North Carolina at Chapel Hill, Chapel Hill, USA	
+    term: Gillings School of Global Public Health
+  - id: Health Policy and Management, Gillings School of Global Public Health, University of North Carolina at Chapel Hill, 1102F McGavran-Greenberg, 135 Dauer Drive, Chapel Hill, NC 27599, USA	
+    term: Gillings School of Global Public Health, Department of Health Policy and Management
+  - id: Health Policy and Management, University of North Carolina at Chapel Hill	
+    term: Gillings School of Global Public Health, Department of Health Policy and Management
+  - id: Health Policy and Management, University of North Carolina, Chapel Hill, NC, USA	
+    term: Gillings School of Global Public Health, Department of Health Policy and Management
+  - id: Health Sciences Library, University of North Carolina at Chapel Hill	
+    term: null
+  - id: Healthy Eating Research Assistant, Center for Health Promotion and Disease Prevention, 1700 Martin Luther King Jr. Blvd, CB# 7426, Chapel Hill, NC, 27599-7426, USA	
+    term: UNC Center for Health Promotion and Disease Prevention
+  - id: High-Throughput Sequencing Facility, University of North Carolina, 2234 Nelson Highway, Chapel Hill, NC, NC 27516, USA	
+    term: null
+  - id: Institute for Global Health and Infectious Diseases, University of North Carolina at Chapel Hill	
+    term: null
+  - id: Institute for Pharmacogenomics and Individualized Therapy, University of North Carolina at Chapel Hill	
+    term: null
+  - id: Institute for Pharmacogenomics and Individualized Therapy, University of North Carolina at Chapel Hill, Chapel Hill, NC, USA	
+    term: null
+  - id: Institute for the Environment, The University of North Carolina at Chapel Hill	
+    term: UNC Institute for the Environment
+  - id: Institute for the Environment, University of North Carolina at Chapel Hill	
+    term: UNC Institute for the Environment
+  - id: Institute on Aging, University of North Carolina at Chapel Hill	
+    term: UNC Institute On Aging
+  - id: Integrative Health Center of Chapel Hill, Chapel Hill, NC, USA	
+    term: null
+  - id: IntraHealth Internationall, 6340 Quadrangle Drive, Suite 200, Chapel Hill, North Carolina, 27517, USA	
+    term: null
+  - id: Ipas, 300 Market St., Suite 200, Chapel Hill, NC 27516, USA	
+    term: null
+  - id: Joint Department of Biomedical Engineering, NC State University and UNC Chapel Hill, Chapel Hill, NC, 27599, USA	
+    term: null
+  - id: Joint Department of Biomedical Engineering, School of Medicine, University of North Carolina at Chapel Hill	
+    term: 
+      - College of Arts and Sciences, Joint Department of Biomedical Engineering
+      - School of Medicine
+  - id: Joint Department of Biomedical Engineering, University of North Carolina at Chapel Hill	
+    term: College of Arts and Sciences, Joint Department of Biomedical Engineering
+  - id: Joint Department of Biomedical Engineering, University of North Carolina at Chapel Hill and North Carolina State University, 109 Mason Farm Road, 304 Taylor Hall, CB 7575, Chapel Hill NC 27599, USA	
+    term: College of Arts and Sciences, Joint Department of Biomedical Engineering
+  - id: Kidney Center, Department of Medicine, University of North Carolina at Chapel Hill	
+    term: 
+      - School of Medicine, UNC Kidney Center
+      - School of Medicine, Department of Medicine
+  - id: Kidney Center, University of North Carolina at Chapel Hill	
+    term: School of Medicine, UNC Kidney Center
+  - id: Laboratories for Reproductive Biology, Department of Pediatrics, University of North Carolina School of Medicine, Chapel Hill, NC 27599, USA	
+    term: School of Medicine, Department of Pediatrics
+  - id: Laboratories for Reproductive Biology, School of Medicine, University of North Carolina at Chapel Hill	
+    term: School of Medicine
+  - id: Laboratories for Reproductive Biology, University of North Carolina at Chapel Hill	
+    term: null
+  - id: Laboratories for Reproductive Biology, University of North Carolina, Chapel Hill	
+    term: null
+  - id: Linberger Comprehensive Cancer Center, University of North Carolina, Chapel Hill, NC, USA	
+    term: null
+  - id: Lineberger Comprehensive Cancer Center and Department of Genetics and Department of Pathology &amp; Laboratory Medicine, University of North Carolina at Chapel Hill, Chapel Hill, NC, USA	
+    term: 
+      - UNC Lineberger Comprehensive Cancer Center
+      - School of Medicine, Department of Genetics
+      - School of Medicine, Department of Pathology and Laboratory Medicine
+  - id: Lineberger Comprehensive Cancer Center, Department of Biochemistry and Biophysics and Curriculum in Genetics and Molecular Biology, University of North Carolina, Chapel Hill, North Carolina 27599, USA	
+    term: UNC Lineberger Comprehensive Cancer Center
+  - id: Lineberger Comprehensive Cancer Center, School of Medicine, University of North Carolina at Chapel Hill	
+    term: 
+      - UNC Lineberger Comprehensive Cancer Center
+      - School of Medicine
+  - id: Lineberger Comprehensive Cancer Center, The University of North Carolina at Chapel Hill	
+    term: UNC Lineberger Comprehensive Cancer Center
+  - id: Lineberger Comprehensive Cancer Center, The University of North Carolina, Chapel Hill	
+    term: UNC Lineberger Comprehensive Cancer Center
+  - id: Lineberger Comprehensive Cancer Center, University of North Carolina School of Medicine, Chapel Hill, NC 27599, USA	
+    term: UNC Lineberger Comprehensive Cancer Center
+  - id: Lineberger Comprehensive Cancer Center, University of North Carolina at Chapel Hill	
+    term: UNC Lineberger Comprehensive Cancer Center
+  - id: Lineberger Comprehensive Cancer Center, University of North Carolina, Campus Box 7295, Chapel Hill, NC 27599, USA	
+    term: UNC Lineberger Comprehensive Cancer Center
+  - id: Lineberger Comprehensive Cancer Center, University of North Carolina, Chapel Hill	
+    term: UNC Lineberger Comprehensive Cancer Center
+  - id: Lineberger Comprehensive Cancer Center, University of North Carolina, Chapel Hill, NC 27599, USA	
+    term: UNC Lineberger Comprehensive Cancer Center
+  - id: Lineberger Comprehensive Cancer Center, University of North Carolina, Chapel Hill, NC, 27599, USA	
+    term: UNC Lineberger Comprehensive Cancer Center
+  - id: Lineberger Comprehensive Cancer Center, University of North Carolina, Chapel Hill, NC, USA	
+    term: UNC Lineberger Comprehensive Cancer Center
+  - id: Lineberger Comprehensive Cancer Center, University of North Carolina, Chapel Hill, North Carolina 27599, USA	
+    term: UNC Lineberger Comprehensive Cancer Center
+  - id: MEASURE Evaluation Project, University of North Carolina at Chapel Hill	
+    term: null
+  - id: MEASURE Evaluation, Carolina Population Center, The University of North Carolina at Chapel Hill	
+    term: Carolina Population Center
+  - id: MEASURE Evaluation, Carolina Population Center, University of North Carolina at Chapel Hill	
+    term: Carolina Population Center
+  - id: MEASURE Evaluation, Carolina Population Center, University of North Carolina at Chapel Hill, 206 W. Franklin Street, 2nd Floor, CB 8120, Chapel Hill, NC 27516, USA	
+    term: Carolina Population Center
+  - id: Measurement, Learning, and Evaluation Project, Carolina Population Center, University of North Carolina, Chapel Hill, NC, USA	
+    term: Carolina Population Center
+  - id: Multidisciplinary Thoracic Oncology Program, Division of Cardiothoracic Surgery, Department of Surgery, School of Medicine, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Department of Surgery
+  - id: Natural Products Research Laboratories, School of Pharmacy, University of North Carolina, Chapel Hill	
+    term: Eshelman School of Pharmacy
+  - id: Neuroscience Center, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Neuroscience Center
+  - id: Neuroscience Center, University of North Carolina, Chapel Hill, NC 27599, USA	
+    term: School of Medicine, Neuroscience Center
+  - id: Neuroscience Center, University of North Carolina, Chapel Hill, NC, 27599, USA	
+    term: School of Medicine, Neuroscience Center
+  - id: North Carolina Children&apos;s Heart Center, Department of Pediatrics, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Department of Pediatrics
+  - id: North Carolina Institute for Public Health, Gillings School of Global Public Health, University of North Carolina at Chapel Hill	
+    term: Gillings School of Global Public Health
+  - id: North Carolina Jaycee Burn Center, University of North Carolina, Chapel Hill	
+    term: null
+  - id: North Carolina Oral Health Institute, School of Dentistry, University of North Carolina at Chapel Hill	
+    term: School of Dentistry
+  - id: North Carolina Preparedness and Emergency Response Research Center, Gillings School of Global Public Health, University of North Carolina at Chapel Hill	
+    term: Gillings School of Global Public Health
+  - id: North Carolina Translational and Clinical Sciences Institute, University of North Carolina at Chapel Hill	
+    term: null
+  - id: Odum Institute for Research in Social Science, University of North Carolina at Chapel Hill	
+    term: null
+  - id: Odum Institute, University of North Carolina at Chapel Hill	
+    term: Howard W. Odum Institute for Research in Social Science
+  - id: Pediatric Nephrology, UNC Kidney Center, The University of North Carolina at Chapel Hill, Chapel Hill, NC, USA	
+    term: School of Medicine, UNC Kidney Center
+  - id: 'Present Address: Clinical Associate Professor, Department of Medicine, University of North Carolina at Chapel Hill Physicians Office Building, 3rd Floor, Suite 3116, CB #7305, 170 Manning Drive, Chapel Hill, NC, 27599, USA'
+    term: School of Medicine, Department of Medicine
+  - id: Preventive Medicine Residency Program, University of North Carolina at Chapel Hill	
+    term: null
+  - id: Program in Human Movement Science, University of North Carolina at Chapel Hill	
+    term: null
+  - id: Program in Molecular Biology &amp; Biotechnology, UNC School of Medicine, Chapel Hill, NC, USA	
+    term: School of Medicine, Integrative Program for Biological and Genome Sciences
+  - id: Program in Molecular Biology and Biophysics, Department of Biochemistry and Biophysics, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Department of Biochemistry and Biophysics
+  - id: Program in Molecular Biology and Biotechnology, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Integrative Program for Biological and Genome Sciences
+  - id: Program in Molecular Biology and Biotechnology, University of North Carolina, Chapel Hill	
+    term: School of Medicine, Integrative Program for Biological and Genome Sciences
+  - id: Program on Aging, Disability, and Long-Term Care, Cecil G. Sheps Center for Health Services Research, The University of North Carolina at Chapel Hill, CB# 7590, 725 Martin Luther King Jr. Blvd., Chapel Hill, NC 27599-7590, USA	
+    term: Cecil G. Sheps Center for Health Services Research
+  - id: Program on Aging, Disability, and Long-Term Care, Cecil G. Sheps Center for Health Services Research, University of North Carolina, Chapel Hill, NC 27514, USA	
+    term: Cecil G. Sheps Center for Health Services Research
+  - id: Program on Integrative Medicine, Department of Physical Medicine and Rehabilitation, School of Medicine, The University of North Carolina at Chapel Hill	
+    term: School of Medicine, Department of Physical Medicine and Rehabilitation
+  - id: Program on Integrative Medicine, Department of Physical Medicine and Rehabilitation, School of Medicine, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Department of Physical Medicine and Rehabilitation
+  - id: Public Health Leadership Program, Gillings School of Global Public Health, University of North Carolina at Chapel Hill	
+    term: Gillings School of Global Public Health, Public Health Leadership Program
+  - id: Public Health Leadership Program, Gillings School of Global Public Health; School of Medicine, University of North Carolina at Chapel Hill, Chapel Hill, NC, USA	
+    term: School of Medicine
+  - id: R. L. Juliano Structural Bioinformatics Core Facility, University of North Carolina at Chapel Hill	
+    term: null
+  - id: R.L. Juliano Structural Bioinformatics Core Facility, Center for Structural Biology, University of North Carolina at Chapel Hill	
+    term: null
+  - id: Radiation Oncology, University of North Carolina, Chapel Hill, NC, USA	
+    term: School of Medicine, Department of Radiation Oncology
+  - id: Renaissance Computing Institute, University of North Carolina at Chapel Hill	
+    term: Renaissance Computing Institute
+  - id: Research and Instructional Services Department, Davis Library, University of North Carolina at Chapel Hill	
+    term: null
+  - id: Robert Wood Johnson Clinical Scholars Program, University of North Carolina at Chapel Hill	
+    term: null
+  - id: School of Information and Library Science, University of North Carolina at Chapel Hill	
+    term: School of Information and Library Science
+  - id: School of Journalism and Mass Communication, University of North Carolina at Chapel Hill	
+    term: School of Journalism and Mass Communication
+  - id: School of Law, University of North Carolina at Chapel Hill	
+    term: School of Law
+  - id: School of Medicine, The University of North Carolina at Chapel Hill, Chapel Hill, NC, USA	
+    term: School of Medicine
+  - id: School of Medicine, University of North Carolina at Chapel Hill	
+    term: School of Medicine
+  - id: School of Medicine, University of North Carolina at Chapel Hill, Chapel Hill, NC, 27599-7264, USA	
+    term: School of Medicine
+  - id: School of Medicine, University of North Carolina, Chapel Hill, NC 27599, USA	
+    term: School of Medicine
+  - id: School of Nursing, The University of North Carolina at Chapel Hill, Campus Box 7460, Chapel Hill 27599-7460, NC, USA	
+    term: School of Nursing
+  - id: School of Nursing, University of North Carolina at Chapel Hill	
+    term: School of Nursing
+  - id: School of Nursing, University of North Carolina, Chapel Hill	
+    term: School of Nursing
+  - id: School of Pharmacy, University of North Carolina at Chapel Hill	
+    term: Eshelman School of Pharmacy
+  - id: School of Public Health, University of North Carolina at Chapel Hill	
+    term: Gillings School of Global Public Health
+  - id: School of Public Health, University of North Carolina, Chapel Hill, USA	
+    term: Gillings School of Global Public Health
+  - id: School of Social Work, University of North Carolina at Chapel Hill	
+    term: School of Social Work
+  - id: School of Social Work, University of North Carolina, Chapel Hill, USA	
+    term: School of Social Work
+  - id: Sheps Center for Health Service Research, University of North Carolina, Chapel Hill, NC, USA	
+    term: null
+  - id: Sheps Center for Health Services Research, University of North Carolina, Chapel Hill, NC, USA	
+    term: Cecil G. Sheps Center for Health Services Research
+  - id: Spatial Data Analyst, Center for Health Promotion and Disease Prevention, 319 New East, Chapel Hill, NC, 27514, USA	
+    term: UNC Center for Health Promotion and Disease Prevention
+  - id: Surgical Oncology, Lineberger Comprehensive Cancer Center, P1150 Physician’s Office Bldg. 170 Manning Dr, Chapel Hill, NC, 27599-7213, USA	
+    term: UNC Lineberger Comprehensive Cancer Center
+  - id: The Carla Chamblee Smith Distinguished Professor of Global Nutrition, Department of Nutrition, Gillings School of Global Public Health and School of Medicine, CB # 8120 University Square, Chapel Hill, NC 27516-3997, USA	
+    term: null
+  - id: The Curriculum in Toxicology, University of North Carolina at Chapel Hill, Chapel Hill, NC, USA	
+    term: School of Medicine, Curriculum in Toxicology
+  - id: The Department of Microbiology and Immunology, School of Medicine, University of North Carolina at Chapel Hill, Chapel Hill, NC, USA	
+    term: School of Medicine, Department of Microbiology and Immunology
+  - id: The Department of Pediatrics, School of Medicine, University of North Carolina at Chapel Hill, Chapel Hill, NC, USA	
+    term: School of Medicine, Department of Pediatrics
+  - id: The Laboratories for Reproductive Biology, Department of Pediatrics, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Department of Pediatrics
+  - id: The Odum Institute, University of North Carolina at Chapel Hill, Chapel Hill, NC, USA	
+    term: Howard W. Odum Institute for Research in Social Science
+  - id: The School of Social Work, University of North Carolina, Chapel Hill, NC 27514, USA	
+    term: School of Social Work
+  - id: The University of North Carolina at Chapel Hill, Chapel Hill, NC, USA	
+    term: null
+  - id: The University of North Carolina at Chapel Hill, School of Nursing, Chapel Hill, NC, USA	
+    term: School of Nursing
+  - id: Thurston Arthritis Research Center and Department of Radiology, University of North Carolina at Chapel Hill, Chapel Hill, NC, USA	
+    term: 
+      - School of Medicine, Thurston Arthritis Research Center
+      - School of Medicine, Department of Radiology
+  - id: Thurston Arthritis Research Center and Departments of Medicine and Orthopedics, University of North Carolina at Chapel Hill, Chapel Hill, NC, USA	
+    term: 
+      - School of Medicine, Thurston Arthritis Research Center
+      - School of Medicine, Department of Medicine
+  - id: Thurston Arthritis Research Center and Departments of Medicine and Social Medicine, University of North Carolina at Chapel Hill, Chapel Hill, NC, USA	
+    term: 
+      - School of Medicine, Thurston Arthritis Research Center
+      - School of Medicine, Department of Medicine
+      - School of Medicine, Department of Social Medicine
+  - id: Thurston Arthritis Research Center, School of Medicine, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Thurston Arthritis Research Center
+  - id: Thurston Arthritis Research Center, School of Medicine, University of North Carolina at Chapel Hill, Chapel Hill, NC, USA	
+    term: School of Medicine, Thurston Arthritis Research Center
+  - id: Thurston Arthritis Research Center, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Thurston Arthritis Research Center
+  - id: Thurston Arthritis Research Center, University of North Carolina at Chapel Hill, Chapel Hill, NC, USA	
+    term: School of Medicine, Thurston Arthritis Research Center
+  - id: Thurston Arthritis Research Center, University of North Carolina, Chapel Hill	
+    term: School of Medicine, Thurston Arthritis Research Center
+  - id: Tobacco Prevention and Evaluation Program, Department of Family Medicine, School of Medicine, University of North Carolina at Chapel Hill	
+    term: School of Medicine, Department of Family Medicine
+  - id: Training Program in Cardiovascular Disease, University of North Carolina at Chapel Hill	
+    term: null
+  - id: Training and Talent Development, Human Resources, The University of North Carolina at Chapel Hill	
+    term: null
+  - id: UNC Center for Health Promotion and Disease Prevention, CB# 7426, 1700 MLK Jr. Blvd, Chapel Hill, NC 27599-7426, USA	
+    term: UNC Center for Health Promotion and Disease Prevention
+  - id: UNC Departments of Medicine and Health Behavior &amp; Health Education; UNC Center for AIDS Research, Cecil G. Sheps Center for Health Services Research, Chapel Hill, NC, 27599, USA	
+    term: 
+      - School of Medicine, Department of Medicine
+      - Gillings School of Global Public Health, Department of Health Behavior
+  - id: UNC Gillings School of Global Public Health, Chapel Hill, NC, USA and Chair, CAPS Registry Steering Committee, Chapel Hill, NC, USA	
+    term: Gillings School of Global Public Health
+  - id: UNC Hospitals Stroke Center, Chapel Hill	
+    term: null
+  - id: UNC School of Dentistry, North Carolina Oral Health Institute, Chapel Hill, NC, 27599, USA	
+    term: School of Dentistry
+  - id: UNC School of Medicine, 170 Manning Drive CB7025, Chapel Hill, NC 27599, USA	
+    term: School of Medicine
+  - id: UNC School of Medicine, 170 Manning Drive CB7025, Chapel Hill, NC, 27599, USA	
+    term: School of Medicine
+  - id: University of North Carolina Center for Health Promotion and Disease Prevention, Chapel Hill, NC, USA	
+    term: null
+  - id: University of North Carolina Kidney Center, UNC School of Medicine, Chapel Hill, NC, USA	
+    term: School of Medicine
+  - id: University of North Carolina School of Medicine Chapel Hill, Wilmington, NC, USA	
+    term: null
+  - id: University of North Carolina School of Medicine, Chapel Hill, NC, USA	
+    term: null
+  - id: University of North Carolina School of Medicine, University of North Carolina at Chapel Hill, Chapel Hill, NC, USA	
+    term: School of Medicine
+  - id: University of North Carolina at Chapel Hill	
+    term: null
+  - id: University of North Carolina at Chapel Hill, 5039 Old Clinic Building, CB #7110, Chapel Hill, NC 27599-7110, USA	
+    term: null
+  - id: University of North Carolina at Chapel Hill, Chapel Hill, NC, USA	
+    term: null
+  - id: University of North Carolina at Chapel Hill, Chapel Hill, North Carolina, USA	
+    term: null
+  - id: University of North Carolina at Chapel Hill, Gillings School of Global Public Health, Chapel Hill, NC, USA	
+    term: Gillings School of Global Public Health
+  - id: University of North Carolina at Chapel Hill, Gillings School of Global Public Health, Department of Maternal and Child Health, Chapel Hill, NC, USA	
+    term: Gillings School of Global Public Health, Department of Maternal and Child Health
+  - id: University of North Carolina at Chapel Hill, North Carolina, USA	
+    term: null
+  - id: University of North Carolina at Chapel Hill, School of Psychology and early Childhood Education, 105 G Peabody Hall, CB 3500, Chapel Hill, NC, 27599-3500, USA	
+    term: null
+  - id: University of North Carolina, CB# 7596, 4th Floor, UNC Hospitals, Chapel Hill, NC 27599-7596, USA	
+    term: null
+  - id: University of North Carolina, Cecil G. Sheps Center for Health Services Research and the NCTRaCS Institute, Chapel Hill, NC, USA	
+    term: Cecil G. Sheps Center for Health Services Research
+  - id: University of North Carolina, Chapel Hill	
+    term: null
+  - id: University of North Carolina, Chapel Hill, NC, USA	
+    term: null
+  - id: University of North Carolina, Gillings School of Global Public Health, CB #7435, Chapel Hill, NC, 27599, USA	
+    term: Gillings School of Global Public Health
+  - id: University of North Carolina, School of Medicine, Chapel Hill, NC, USA	
+    term: School of Medicine
+  - id: University of North Carolina, School of Medicine, Department of Orthopaedics, Campus Box #7055, Bioinformatics Building, Chapel Hill, NC 27599-7055, USA	
+    term: School of Medicine
+  - id: Vector Core Facility, University of North Carolina at Chapel Hill	
+    term: null

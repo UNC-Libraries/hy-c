@@ -5,7 +5,15 @@ module DepartmentsService
 
   def self.select_all_options
     authority.all.reject{ |item| item['active'] == false }.map do |element|
-      [element[:label], element[:id]]
+      [element[:id], element[:label]]
+    end
+  end
+
+  def self.identifier(term)
+    begin
+      authority.all.reject{ |item| item['active'] == false }.select { |department| department['label'] == term }.first['id']
+    rescue
+      nil
     end
   end
 
@@ -14,9 +22,9 @@ module DepartmentsService
   end
 
   def self.include_current_value(value, _index, render_options, html_options)
-    unless value.blank? || active?(value)
+    unless value.blank?
       html_options[:class] << ' force-select'
-      render_options += [[label(value), value]]
+      render_options += [[identifier(value), value]]
     end
     [render_options, html_options]
   end
