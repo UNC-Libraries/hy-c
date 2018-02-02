@@ -1,0 +1,10 @@
+es:
+  hyrax:
+    icons:
+      journal:     'fa fa-file-text-o'
+    select_type:
+      journal:
+        # TODO: translate `human_name` into Spanish
+        name:               "Journal"
+        # TODO: translate `human_name` into Spanish
+        description:        "Journal trabajos"
