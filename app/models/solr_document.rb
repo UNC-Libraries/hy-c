@@ -63,7 +63,7 @@ class SolrDocument
   def advisor
     self[Solrizer.solr_name('advisor')]
   end
-  
+
   def affiliation
     self[Solrizer.solr_name('academic_department')]
   end
@@ -79,7 +79,7 @@ class SolrDocument
   def conference_name
     self[Solrizer.solr_name('conference_name')]
   end
-  
+
   def copyright_date
     self[Solrizer.solr_name('copyright_date')]
   end
@@ -111,7 +111,7 @@ class SolrDocument
   def extent
     self[Solrizer.solr_name('extent')]
   end
-  
+
   def format
     self[Solrizer.solr_name('format')]
   end
@@ -134,12 +134,12 @@ class SolrDocument
 
   def honors_level
     self[Solrizer.solr_name('honors_level')]
-  end 
+  end
 
   def issn
     self[Solrizer.solr_name('issn')]
   end
-  
+
   def last_date_modified
     self[Solrizer.solr_name('last_date_modified')]
   end
@@ -163,11 +163,11 @@ class SolrDocument
   def project_director
     self[Solrizer.solr_name('project_director')]
   end
-  
+
   def place_of_publication
     self[Solrizer.solr_name('place_of_publication')]
   end
-  
+
   def publication
     self[Solrizer.solr_name('publication')]
   end
@@ -178,6 +178,7 @@ class SolrDocument
 
   def record_content_source
     self[Solrizer.solr_name('record_content_source')]
+  end
 
   def researcher
     self[Solrizer.solr_name('researcher')]
@@ -202,7 +203,7 @@ class SolrDocument
   def table_of_contents
     self[Solrizer.solr_name('table_of_contents')]
   end
-    
+
   def use
     self[Solrizer.solr_name('use')]
   end
