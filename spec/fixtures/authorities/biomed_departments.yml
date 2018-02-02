@@ -1,0 +1,10 @@
+## spec/fixtures/authorities/biomed_departments.yml
+terms:
+  - id: Biomedical Research Imaging Center, University of North Carolina at Chapel Hill
+    term: School of Medicine, Biomedical Research Imaging Center
+  - id: Biostatistics, Lineberger Comprehensive Cancer Center, University of North Carolina, Chapel Hill, NC, 27599-7295, USA
+    term:
+      - Gillings School of Global Public Health, Department of Biostatistics
+      - UNC Lineberger Comprehensive Cancer Center
+  - id: some other address
+    term: null

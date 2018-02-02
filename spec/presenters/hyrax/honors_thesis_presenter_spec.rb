@@ -16,7 +16,7 @@ RSpec.describe Hyrax::HonorsThesisPresenter do
       "depositor_tesim" => user_key,
       "abstract_tesim" => ['an abstract'],
       "academic_concentration_tesim" => ['a concentration'],
-      "academic_department_tesim" => ['a department'],
+      "affiliation_tesim" => ['a department'],
       "access_tesim" => ['an access right'],
       "advisor_tesim" => ['an advisor'],
       "degree_tesim" => ['a degree'],
@@ -49,7 +49,7 @@ RSpec.describe Hyrax::HonorsThesisPresenter do
 
   it { is_expected.to delegate_method(:abstract).to(:solr_document) }
   it { is_expected.to delegate_method(:academic_concentration).to(:solr_document) }
-  it { is_expected.to delegate_method(:academic_department).to(:solr_document) }
+  it { is_expected.to delegate_method(:affiliation).to(:solr_document) }
   it { is_expected.to delegate_method(:advisor).to(:solr_document) }
   it { is_expected.to delegate_method(:degree).to(:solr_document) }
   it { is_expected.to delegate_method(:degree_granting_institution).to(:solr_document) }
@@ -100,14 +100,14 @@ RSpec.describe Hyrax::HonorsThesisPresenter do
       end
     end
 
-    context "with a custom academic_department field" do
+    context "with a custom affiliation field" do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:academic_department, ['a department'], {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:affiliation, ['a department'], {}).and_return(renderer)
       end
 
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
-        presenter.attribute_to_html(:academic_department)
+        presenter.attribute_to_html(:affiliation)
       end
     end
 
