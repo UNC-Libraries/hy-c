@@ -1,0 +1,8 @@
+it:
+  hyrax:
+    icons:
+      journal:     'fa fa-file-text-o'
+    select_type:
+      journal:
+        name:               "Journal"
+        description:        "Journal opere"
