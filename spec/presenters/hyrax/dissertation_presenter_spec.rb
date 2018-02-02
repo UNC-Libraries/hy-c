@@ -113,7 +113,7 @@ RSpec.describe Hyrax::DissertationPresenter do
       end
     end
 
-    context "with a custom academic_department field" do
+    context "with a custom affiliation field" do
       before do
         allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:affiliation, ['a department'], {}).and_return(renderer)
       end
