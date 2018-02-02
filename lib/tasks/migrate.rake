@@ -257,7 +257,7 @@ namespace :cdr do
       resource.subject = work_attributes['subjects']
       resource.resource_type = work_attributes['resource_type']
       resource.language = work_attributes['language']
-      resource.rights_statement = ['http://www.europeana.eu/portal/rights/rr-r.html']
+      resource.rights_statement = ['http://rightsstatements.org/vocab/InC-EDU/1.0/']
       resource.visibility = work_attributes['visibility']
       unless work_attributes['embargo_release_date'].blank?
       resource.embargo_release_date = work_attributes['embargo_release_date']
@@ -282,7 +282,7 @@ namespace :cdr do
       resource[:subject] = work_attributes['subjects']
       resource[:resource_type] = work_attributes['resource_type']
       resource[:language] = work_attributes['language']
-      resource[:rights_statement] = ['http://www.europeana.eu/portal/rights/rr-r.html']
+      resource[:rights_statement] = ['http://rightsstatements.org/vocab/InC-EDU/1.0/']
       resource[:visibility] = work_attributes['visibility']
       unless work_attributes['embargo_release_date'].blank?
         resource[:embargo_release_date] = work_attributes['embargo_release_date']

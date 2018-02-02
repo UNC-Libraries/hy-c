@@ -1,33 +1,28 @@
 # Generated via
-#  `rails generate hyrax:work Dissertation`
+#  `rails generate hyrax:work Journal`
 require 'rails_helper'
 
-RSpec.describe Dissertation do
-
-  it 'has a title' do
-    subject.title = ['foo']
-    expect(subject.title).to eq ['foo']
+RSpec.describe Journal do
+  it "has a title" do
+    subject.title = ['journal']
+    expect(subject.title).to eq ['journal']
   end
 
   describe '.model_name' do
     subject { described_class.model_name.singular_route_key }
 
-    it { is_expected.to eq 'hyrax_dissertation' }
+    it { is_expected.to eq 'hyrax_journal' }
   end
 
   describe "metadata" do
-    it "has descriptive metadata" do
-      # Basic hyrax metadata
+    it "has metadata" do
       expect(subject).to respond_to(:relative_path)
       expect(subject).to respond_to(:depositor)
-      expect(subject).to respond_to(:related_url)
-      expect(subject).to respond_to(:based_near)
       expect(subject).to respond_to(:contributor)
       expect(subject).to respond_to(:creator)
       expect(subject).to respond_to(:title)
       expect(subject).to respond_to(:label)
       expect(subject).to respond_to(:keyword)
-      expect(subject).to respond_to(:description)
       expect(subject).to respond_to(:publisher)
       expect(subject).to respond_to(:date_created)
       expect(subject).to respond_to(:date_uploaded)
@@ -40,24 +35,18 @@ RSpec.describe Dissertation do
       expect(subject).to respond_to(:source)
       expect(subject).to respond_to(:resource_type)
 
-      # Additional metadata
+      # Custom fields
       expect(subject).to respond_to(:abstract)
-      expect(subject).to respond_to(:academic_concentration)
-      expect(subject).to respond_to(:academic_department)
-      expect(subject).to respond_to(:access)
-      expect(subject).to respond_to(:advisor)
+      expect(subject).to respond_to(:alternate_title)
+      expect(subject).to respond_to(:conference_name)
       expect(subject).to respond_to(:date_issued)
-      expect(subject).to respond_to(:degree)
-      expect(subject).to respond_to(:degree_granting_institution)
-      expect(subject).to respond_to(:discipline)
-      expect(subject).to respond_to(:doi)
-      expect(subject).to respond_to(:format)
+      expect(subject).to respond_to(:extent)
       expect(subject).to respond_to(:genre)
-      expect(subject).to respond_to(:graduation_year)
+      expect(subject).to respond_to(:geographic_subject)
+      expect(subject).to respond_to(:issn)
       expect(subject).to respond_to(:note)
       expect(subject).to respond_to(:place_of_publication)
-      expect(subject).to respond_to(:record_content_source)
-      expect(subject).to respond_to(:reviewer)
+      expect(subject).to respond_to(:table_of_contents)
     end
   end
 end

@@ -1,13 +1,17 @@
 # Generated via
-#  `rails generate hyrax:work Work`
+#  `rails generate hyrax:work Journal`
 require 'rails_helper'
 include Warden::Test::Helpers
 
 # NOTE: If you generated more than one work, you have to set "js: true"
-RSpec.feature 'Create a Work', js: false do
+RSpec.feature 'Create a Journal', js: false do
   context 'a logged in user' do
+    let(:user_attributes) do
+      { email: 'test@example.com', guest: false }
+    end
+    
     let(:user) do
-      User.new(email: 'test@example.com',guest: false) { |u| u.save!(validate: false)}
+      User.new(user_attributes) { |u| u.save(validate: false) }
     end
 
     let(:admin_set) do
@@ -15,7 +19,7 @@ RSpec.feature 'Create a Work', js: false do
                       description: ["some description"],
                       edit_users: [user.user_key])
     end
-
+    
     let(:permission_template) do
       Hyrax::PermissionTemplate.create!(admin_set_id: admin_set.id)
     end
@@ -31,25 +35,28 @@ RSpec.feature 'Create a Work', js: false do
     end
 
     scenario do
-      visit new_hyrax_work_path
+      visit new_hyrax_journal_path
+      expect(page).to have_content "Add New Journal"
 
-      expect(page).to have_content "Add New Work"
-      fill_in 'Title', with: 'Test Work work'
+      fill_in 'Title', with: 'Test Journal'
       fill_in 'Creator', with: 'Test Default Creator'
       fill_in 'Keyword', with: 'Test Default Keyword'
-      select "In Copyright", :from => "work_rights_statement"
-      choose "work_visibility_open"
+      select "In Copyright", :from => "journal_rights_statement"
+      choose "journal_visibility_open"
       check 'agreement'
 
       click_link "Files" # switch tab
       within "//span[@id=addfiles]" do
         attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'))
       end
+
       click_button 'Save'
       expect(page).to have_content 'Your files are being processed by Hyrax'
+
       visit '/dashboard/my/works/'
-      expect(page).to have_content 'Test Work work'
-      first('.document-title', text: 'Test Work work').click
+      expect(page).to have_content 'Test Journal'
+
+      first('.document-title', text: 'Test Journal').click
       expect(page).to have_content 'Test Default Keyword'
     end
   end
