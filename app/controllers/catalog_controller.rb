@@ -108,9 +108,9 @@ class CatalogController < ApplicationController
     # Custom fields
     config.add_index_field solr_name("abstract", :stored_searchable), label: "Abstract"
     config.add_index_field solr_name("academic_concentration", :stored_searchable), label: "Academic Concentration"
-    config.add_index_field solr_name("academic_department", :stored_searchable), label: "Affiliation"
     config.add_index_field solr_name("access", :stored_searchable), label: "Access"
     config.add_index_field solr_name("advisor", :stored_searchable), label: "Advisor"
+    config.add_index_field solr_name("affiliation", :stored_searchable), label: "Affiliation"
     config.add_index_field solr_name("alternate_title", :stored_searchable), label: "Alternate Title"
     config.add_index_field solr_name("author_status", :stored_searchable), label: "Status"
     config.add_index_field solr_name("citation", :stored_searchable), label: "Citation"

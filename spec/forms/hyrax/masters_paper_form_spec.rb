@@ -22,7 +22,7 @@ RSpec.describe Hyrax::MastersPaperForm do
     subject { form.secondary_terms }
 
     it { is_expected.to match_array [:keyword, :date_created, :subject, :language, :rights_statement, :license,
-                                     :academic_concentration, :academic_department, :degree, :graduation_year,
+                                     :academic_concentration, :affiliation, :degree, :graduation_year,
                                      :abstract, :advisor, :genre, :access, :extent, :reviewer, :geographic_subject,
                                      :note, :medium, :resource_type] }
   end
@@ -36,7 +36,7 @@ RSpec.describe Hyrax::MastersPaperForm do
           representative_id: '456',
           thumbnail_id: '789',
           keyword: ['derp'],
-          academic_department: ['biology'],
+          affiliation: ['biology'],
           access: 'public',
           degree: 'MS',
           degree_granting_institution: 'UNC',
@@ -55,7 +55,7 @@ RSpec.describe Hyrax::MastersPaperForm do
       expect(subject['visibility']).to eq 'open'
       expect(subject['license']).to eq ['http://creativecommons.org/licenses/by/3.0/us/']
       expect(subject['keyword']).to eq ['derp']
-      expect(subject['academic_department']).to eq ['biology']
+      expect(subject['affiliation']).to eq ['biology']
       expect(subject['access']).to eq 'public'
       expect(subject['degree']).to eq 'MS'
       expect(subject['degree_granting_institution']).to eq 'UNC'

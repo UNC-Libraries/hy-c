@@ -43,7 +43,7 @@ RSpec.describe Dissertation do
       # Additional metadata
       expect(subject).to respond_to(:abstract)
       expect(subject).to respond_to(:academic_concentration)
-      expect(subject).to respond_to(:academic_department)
+      expect(subject).to respond_to(:affiliation)
       expect(subject).to respond_to(:access)
       expect(subject).to respond_to(:advisor)
       expect(subject).to respond_to(:date_issued)
