@@ -1,12 +1,14 @@
 require 'rails_helper'
 
 RSpec.describe "work_types/index", type: :view do
-  before do
+  let(:admin_set) {
     AdminSet.create(title: ['default'])
+  }
 
+  before do
     @work_types = [
-      WorkType.create!(work_type_name: "some work type", admin_set_id: AdminSet.where(title: 'default').first.id),
-      WorkType.create!(work_type_name: "another work type", admin_set_id: AdminSet.where(title: 'default').first.id)
+      WorkType.create!(work_type_name: "some work type", admin_set_id: admin_set.id),
+      WorkType.create!(work_type_name: "another work type", admin_set_id: admin_set.id)
     ]
   end
 
