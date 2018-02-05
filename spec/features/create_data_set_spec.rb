@@ -35,8 +35,8 @@ RSpec.feature 'Create a DataSet', js: false do
     end
 
     scenario do
-      visit new_hyrax_journal_path
-      expect(page).to have_content "Add New Data set"
+      visit new_hyrax_data_set_path
+      expect(page).to have_content "Add New Data Set"
 
       fill_in 'Title', with: 'Test Data Set'
       fill_in 'Creator', with: 'Test Default Creator'
