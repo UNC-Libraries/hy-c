@@ -6,9 +6,16 @@ class WorkTypesController < ApplicationController
   layout 'dashboard'
 
   def index
+    add_breadcrumb t(:'hyrax.controls.home'), root_path
+    add_breadcrumb t(:'hyrax.dashboard.breadcrumbs.admin'), hyrax.dashboard_path
+    add_breadcrumb 'Work Types', request.path
   end
 
   def edit
+    add_breadcrumb t(:'hyrax.controls.home'), root_path
+    add_breadcrumb t(:'hyrax.dashboard.breadcrumbs.admin'), hyrax.dashboard_path
+    add_breadcrumb 'Work Types', main_app.work_types_path
+    add_breadcrumb 'Edit', request.path
   end
 
   def update

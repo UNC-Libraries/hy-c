@@ -1,32 +1,42 @@
-<h1>Editing Work Type</h1>
+<p id="notice"><%= notice %></p>
 
-<%= form_for :work_type, url: main_app.update_work_types_path, html: {method: :patch} do |f| %>
-
-  <table class="table table-striped works-list">
-    <caption class="sr-only">Work Types <%= application_name %></caption>
-    <thead>
-    <tr>
-      <th>Work type</th>
-      <th>Admin set title</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    <% @work_types.each do |work_type| %>
-    <%= fields_for "work_types[]", work_type do |work_type_fields| %>
-      <tr>
-        <td><%= work_type.work_type_name %></td>
-        <%= work_type_fields.hidden_field :work_type_name, text: work_type.work_type_name, readonly: true %>
-        <td><%= work_type_fields.select(:admin_set_id, options_for_select(@admin_sets, work_type.admin_set_id)) %></td>
-      </tr>
-    <% end %>
-    <% end %>
-    </tbody>
-  </table>
-
-  <div class="actions">
-    <%= f.submit 'Save', class: 'btn btn-default' %>
+<div class="row">
+  <div class="col-xs-12 main-header">
+    <h1><span class="fa fa-edit"></span> Edit Work Types</h1>
   </div>
-<% end %>
+</div>
 
-<%= link_to 'Back', main_app.work_types_path, class: 'btn btn-default' %>
+<div class="panel panel-default">
+  <div class="panel-body">
+    <div class="table-responsive">
+      <%= form_for :work_type, url: main_app.update_work_types_path, html: {method: :patch} do |f| %>
+      <table class="table table-striped works-list datatable">
+        <caption class="sr-only">Work Types <%= application_name %></caption>
+        <thead>
+        <tr>
+          <th>Work type</th>
+          <th>Admin set title</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <% @work_types.each do |work_type| %>
+          <%= fields_for "work_types[]", work_type do |work_type_fields| %>
+            <tr>
+              <td><%= work_type.work_type_name %></td>
+              <%= work_type_fields.hidden_field :work_type_name, text: work_type.work_type_name, readonly: true %>
+              <td><%= work_type_fields.select(:admin_set_id, options_for_select(@admin_sets, work_type.admin_set_id)) %></td>
+            </tr>
+          <% end %>
+        <% end %>
+        </tbody>
+      </table>
+
+      <div class="actions">
+        <a href="main_app.work_types_path" class="btn btn-default pull-right">Cancel</a>
+        <%= f.submit 'Save', class: 'btn btn-primary pull-right' %>
+      </div>
+      <% end %>
+    </div>
+  </div>
+</div>
