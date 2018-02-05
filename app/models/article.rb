@@ -74,9 +74,9 @@ class Article < ActiveFedora::Base
     index.as :stored_searchable
   end
 
- # property :journal_title, predicate: ::RDF::Vocab::BIBO::issue, multiple: false do |index|
- #   index.as :stored_searchable
- # end
+  property :journal_title, predicate: ::RDF::Vocab::URI('http://rdaregistry.info/Elements/u/containedIn.en'), multiple: false do |index|
+    index.as :stored_searchable
+  end
 
   property :journal_volume, predicate: ::RDF::Vocab::BIBO::volume, multiple: false do |index|
     index.as :stored_searchable
