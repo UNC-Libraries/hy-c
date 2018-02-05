@@ -25,7 +25,7 @@
             <tr>
               <td><%= work_type.work_type_name %></td>
               <%= work_type_fields.hidden_field :work_type_name, text: work_type.work_type_name, readonly: true %>
-              <td><%= work_type_fields.select(:admin_set_id, options_for_select(@admin_sets, work_type.admin_set_id)) %></td>
+              <td><%= work_type_fields.select(:admin_set_id, options_for_select(@admin_sets, work_type.admin_set_id), class: 'form-control') %></td>
             </tr>
           <% end %>
         <% end %>
