@@ -84,8 +84,21 @@ class SolrDocument
     self[Solrizer.solr_name('copyright_date')]
   end
 
+  def date_captured
+    self[Solrizer.solr_name('date_captured')]
+  end
+
+  def date_created
+    self[Solrizer.solr_name('date_created')]
+
+  end
+
   def date_issued
     self[Solrizer.solr_name('date_issued')]
+  end
+
+  def date_other
+    self[Solrizer.solr_name('date_other')]
   end
 
   def date_published
@@ -140,6 +153,18 @@ class SolrDocument
     self[Solrizer.solr_name('issn')]
   end
 
+  def journal_issue
+    self[Solrizer.solr_name('journal_issue')]
+  end
+
+  def journal_title
+    self[Solrizer.solr_name('journal_title')]
+  end
+
+  def journal_volume
+    self[Solrizer.solr_name('journal_volume')]
+  end
+
   def last_date_modified
     self[Solrizer.solr_name('last_date_modified')]
   end
@@ -162,6 +187,18 @@ class SolrDocument
 
   def project_director
     self[Solrizer.solr_name('project_director')]
+  end
+
+  def page_end
+    self[Solrizer.solr_name('page_end')]
+  end
+
+  def page_start
+    self[Solrizer.solr_name('page_start')]
+  end
+
+  def peer_review_status
+    self[Solrizer.solr_name('peer_review_status')]
   end
 
   def place_of_publication
@@ -202,6 +239,14 @@ class SolrDocument
 
   def table_of_contents
     self[Solrizer.solr_name('table_of_contents')]
+  end
+
+  def translator
+    self[Solrizer.solr_name('translator')]
+  end
+
+  def url
+    self[Solrizer.solr_name('url')]
   end
 
   def use

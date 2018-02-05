@@ -7,7 +7,7 @@ module Hyrax
 
     self.model_class = ::Article
     self.terms += [:resource_type, :abstract, :access, :affiliation, :citation, :copyright_date, :date_captured,
-                   :date_created, :date_issued, :date_other, :doi, :edition, :extent, :funder, :funder, :genre,
+                   :date_created, :date_issued, :date_other, :doi, :edition, :extent, :funder, :genre,
                    :geographic_subject, :issn, :journal_issue, :journal_title, :journal_volume, :note, :orcid,
                    :other_affiliation, :page_end, :page_start, :peer_review_status, :place_of_publication, :rights_holder,
                    :table_of_contents, :translator, :url, :use]
