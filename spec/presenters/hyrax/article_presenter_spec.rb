@@ -14,12 +14,39 @@ RSpec.describe Hyrax::ArticlePresenter do
       "has_model_ssim" => ["Article"],
       "date_created_tesim" => ['an unformatted date'],
       "depositor_tesim" => user_key,
+      "access_tesim" => 'public',
+      "affiliation_tesim" => ['unc'],
+      "citation_tesim" => ['a citation'],
+      "copyright_date_tesim" => '2017-01-22',
+      "date_captured_tesim" => '2017-01-22',
+      "date_created_tesim" => '2017-01-22',
+      "date_issued_tesim" => '2017-01-22',
+      "date_other_tesim" => ['2017-01-22'],
       "doi_tesim" => ['a doi'],
-      "date_published_tesim" => ['10-08-2017'],
-      "degree_granting_institution_tesim" => ['an institution'],
-      "citation_tesim" => ['a citation']
+      "edition_tesim" => ['new edition'],
+      "extent_tesim" => ['1993'],
+      "funder" => ['dean'],
+      "genre" => ['science fiction'],
+      "geographic_subject" => ['California'],
+      "issn" => ['12345'],
+      "journal_issue_tesim" => '27',
+      "journal_title_tesim" => 'Journal Title',
+      "journal_volume_tesim" => '4',
+      "note_tesim" => ['a note'],
+      "orcid_tesim" => ['12345'],
+      "other_affiliation_tesim" => ['duke'],
+      "page_end_tesim" => '11',
+      "page_start_tesim" => '8',
+      "peer_review_status_tesim" => 'in review',
+      "place_of_publication_tesim" => ['durham'],
+      "rights_holder_tesim" => ['rights holder'],
+      "table_of_contents_tesim" => ['contents of yon table'],
+      "translator_tesim" => ['dean'],
+      "url_tesim" => ['http://unc.edu'],
+      "use_tesim" => ['a use']
     }
   end
+
   let(:ability) { nil }
   let(:presenter) { described_class.new(solr_document, ability, request) }
 
@@ -39,10 +66,37 @@ RSpec.describe Hyrax::ArticlePresenter do
   it { is_expected.to delegate_method(:resource_type).to(:solr_document) }
   it { is_expected.to delegate_method(:keyword).to(:solr_document) }
   it { is_expected.to delegate_method(:itemtype).to(:solr_document) }
-  it { is_expected.to delegate_method(:doi).to(:solr_document) }
-  it { is_expected.to delegate_method(:date_published).to(:solr_document) }
-  it { is_expected.to delegate_method(:degree_granting_institution).to(:solr_document) }
+
+  it { is_expected.to delegate_method(:access).to(:solr_document) }
+  it { is_expected.to delegate_method(:affiliation).to(:solr_document) }
   it { is_expected.to delegate_method(:citation).to(:solr_document) }
+  it { is_expected.to delegate_method(:copyright_date).to(:solr_document) }
+  it { is_expected.to delegate_method(:date_captured).to(:solr_document) }
+  it { is_expected.to delegate_method(:date_created).to(:solr_document) }
+  it { is_expected.to delegate_method(:date_issued).to(:solr_document) }
+  it { is_expected.to delegate_method(:date_other).to(:solr_document) }
+  it { is_expected.to delegate_method(:doi).to(:solr_document) }
+  it { is_expected.to delegate_method(:edition).to(:solr_document) }
+  it { is_expected.to delegate_method(:extent).to(:solr_document) }
+  it { is_expected.to delegate_method(:funder).to(:solr_document) }
+  it { is_expected.to delegate_method(:genre).to(:solr_document) }
+  it { is_expected.to delegate_method(:geographic_subject).to(:solr_document) }
+  it { is_expected.to delegate_method(:issn).to(:solr_document) }
+  it { is_expected.to delegate_method(:journal_issue).to(:solr_document) }
+  it { is_expected.to delegate_method(:journal_title).to(:solr_document) }
+  it { is_expected.to delegate_method(:journal_volume).to(:solr_document) }
+  it { is_expected.to delegate_method(:note).to(:solr_document) }
+  it { is_expected.to delegate_method(:orcid).to(:solr_document) }
+  it { is_expected.to delegate_method(:other_affiliation).to(:solr_document) }
+  it { is_expected.to delegate_method(:page_end).to(:solr_document) }
+  it { is_expected.to delegate_method(:page_start).to(:solr_document) }
+  it { is_expected.to delegate_method(:peer_review_status).to(:solr_document) }
+  it { is_expected.to delegate_method(:place_of_publication).to(:solr_document) }
+  it { is_expected.to delegate_method(:rights_holder).to(:solr_document) }
+  it { is_expected.to delegate_method(:table_of_contents).to(:solr_document) }
+  it { is_expected.to delegate_method(:translator).to(:solr_document) }
+  it { is_expected.to delegate_method(:url).to(:solr_document) }
+  it { is_expected.to delegate_method(:use).to(:solr_document) }
 
   describe "#model_name" do
     subject { presenter.model_name }
@@ -64,36 +118,25 @@ RSpec.describe Hyrax::ArticlePresenter do
       end
     end
 
-    context "with a custom doi field" do
+    context "with a custom access field" do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:doi, ['a doi'], {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:access, 'public', {}).and_return(renderer)
       end
 
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
-        presenter.attribute_to_html(:doi)
+        presenter.attribute_to_html(:access)
       end
     end
 
-    context "with a custom date_published field" do
+    context "with a custom affiliation field" do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:date_published, ['10-08-2017'], {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:affiliation, ['unc'], {}).and_return(renderer)
       end
 
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
-        presenter.attribute_to_html(:date_published)
-      end
-    end
-
-    context "with a custom degree_granting_institution field" do
-      before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:degree_granting_institution, ['an institution'], {}).and_return(renderer)
-      end
-
-      it "calls the AttributeRenderer" do
-        expect(renderer).to receive(:render)
-        presenter.attribute_to_html(:degree_granting_institution)
+        presenter.attribute_to_html(:affiliation)
       end
     end
 
@@ -105,6 +148,303 @@ RSpec.describe Hyrax::ArticlePresenter do
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:citation)
+      end
+    end
+
+    context "with a custom copyright date field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:copyright_date, '2017-01-22', {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:copyright_date)
+      end
+    end
+
+    context "with a custom date captured field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:date_captured, '2017-01-22', {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:date_captured)
+      end
+    end
+
+    context "with a custom date created field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:date_created, '2017-01-22', {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:date_created)
+      end
+    end
+
+    context "with a custom date issued field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:date_issued, '2017-01-22', {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:date_issued)
+      end
+    end
+
+    context "with a custom date other field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:date_other, '2017-01-22', {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:date_other)
+      end
+    end
+
+    context "with a custom doi field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:doi, ['a doi'], {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:doi)
+      end
+    end
+
+    context "with a custom edition field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:edition, ['new edition'], {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:edition)
+      end
+    end
+
+    context "with a custom extent field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:extent, ['1993'], {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:extent)
+      end
+    end
+
+    context "with a custom funder field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:funder, ['dean'], {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:funder)
+      end
+    end
+
+    context "with a custom genre field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:genre, ['science fiction'], {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:genre)
+      end
+    end
+
+    context "with a custom geographic subject field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:geographic_subject, ['California'], {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:geographic_subject)
+      end
+    end
+
+    context "with a custom issn field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:issn, ['12345'], {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:issn)
+      end
+    end
+
+    context "with a custom journal issue field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:journal_issue, '27', {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:journal_issue)
+      end
+    end
+
+    context "with a custom journal title field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:journal_title, 'Journal Title', {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:journal_title)
+      end
+    end
+
+    context "with a custom journal volume field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:journal_volume, '4', {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:journal_volume)
+      end
+    end
+
+    context "with a custom note field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:note, ['a note'], {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:note)
+      end
+    end
+
+    context "with a custom orcid field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:orcid, ['12345'], {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:orcid)
+      end
+    end
+
+    context "with a custom other affiliation field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:other_affiliation, ['duke'], {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:other_affiliation)
+      end
+    end
+
+    context "with a custom page end field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:page_end, '11', {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:page_end)
+      end
+    end
+
+    context "with a custom page start field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:page_start, '8', {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:page_end)
+      end
+    end
+
+    context "with a custom peer review status field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:peer_review_status, 'in review', {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:peer_review_status)
+      end
+    end
+
+    context "with a custom place of publication field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:place_of_publication, ['durham'], {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:place_of_publication)
+      end
+    end
+
+    context "with a custom rights holder field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:rights_holder, ['rights holder'], {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:rights_holder)
+      end
+    end
+
+    context "with a custom table of contents field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:table_of_contents, ['contents of yon table'], {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:table_of_contents)
+      end
+    end
+
+    context "with a custom translator field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:translator, ['dean'], {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:translator)
+      end
+    end
+
+    context "with a custom url field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:url, ['http://unc.edu'], {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:url)
+      end
+    end
+
+    context "with a custom use field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:use, ['a use'], {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:use)
       end
     end
 
