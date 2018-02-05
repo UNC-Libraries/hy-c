@@ -121,6 +121,10 @@ class SolrDocument
     self[Solrizer.solr_name('doi')]
   end
 
+  def edition
+    self[Solrizer.solr_name('edition')]
+  end
+
   def extent
     self[Solrizer.solr_name('extent')]
   end

@@ -12,6 +12,8 @@ module Hyrax
                    :other_affiliation, :page_end, :page_start, :peer_review_status, :place_of_publication, :rights_holder,
                    :table_of_contents, :translator, :url, :use]
 
+    self.required_fields -= [:keyword]
+
     self.terms -= [:contributor, :based_near, :related_url, :source]
     
     self.single_value_fields = [:title, :publisher]
