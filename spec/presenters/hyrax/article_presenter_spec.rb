@@ -14,6 +14,7 @@ RSpec.describe Hyrax::ArticlePresenter do
       "has_model_ssim" => ["Article"],
       "date_created_tesim" => ['an unformatted date'],
       "depositor_tesim" => user_key,
+      "abstract_tesim" => ['an abstract'],
       "access_tesim" => 'public',
       "affiliation_tesim" => ['unc'],
       "citation_tesim" => ['a citation'],
@@ -25,10 +26,10 @@ RSpec.describe Hyrax::ArticlePresenter do
       "doi_tesim" => ['a doi'],
       "edition_tesim" => ['new edition'],
       "extent_tesim" => ['1993'],
-      "funder" => ['dean'],
-      "genre" => ['science fiction'],
-      "geographic_subject" => ['California'],
-      "issn" => ['12345'],
+      "funder_tesim" => ['dean'],
+      "genre_tesim" => ['science fiction'],
+      "geographic_subject_tesim" => ['California'],
+      "issn_tesim" => ['12345'],
       "journal_issue_tesim" => '27',
       "journal_title_tesim" => 'Journal Title',
       "journal_volume_tesim" => '4',
@@ -67,6 +68,7 @@ RSpec.describe Hyrax::ArticlePresenter do
   it { is_expected.to delegate_method(:keyword).to(:solr_document) }
   it { is_expected.to delegate_method(:itemtype).to(:solr_document) }
 
+  it { is_expected.to delegate_method(:abstract).to(:solr_document) }
   it { is_expected.to delegate_method(:access).to(:solr_document) }
   it { is_expected.to delegate_method(:affiliation).to(:solr_document) }
   it { is_expected.to delegate_method(:citation).to(:solr_document) }
@@ -115,6 +117,17 @@ RSpec.describe Hyrax::ArticlePresenter do
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:title)
+      end
+    end
+
+    context "with a custom abstract field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:abstract, ['an abstract'], {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:abstract)
       end
     end
 
@@ -197,7 +210,7 @@ RSpec.describe Hyrax::ArticlePresenter do
 
     context "with a custom date other field" do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:date_other, '2017-01-22', {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:date_other, ['2017-01-22'], {}).and_return(renderer)
       end
 
       it "calls the AttributeRenderer" do
@@ -367,7 +380,7 @@ RSpec.describe Hyrax::ArticlePresenter do
 
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
-        presenter.attribute_to_html(:page_end)
+        presenter.attribute_to_html(:page_start)
       end
     end
 

@@ -26,8 +26,8 @@ RSpec.describe Hyrax::ArticleForm do
                             :geographic_subject, :issn, :journal_issue, :journal_title, :journal_volume, :note, :orcid,
                             :other_affiliation, :page_end, :page_start, :peer_review_status, :place_of_publication,
                             :rights_holder, :table_of_contents, :translator, :url, :use, :contributor,
-                            :identifier, :subject, :publisher, :language, :keyword, :rights_statement,
-                            :license, :resource_type] }
+                            :identifier, :subject, :publisher, :language, :keyword,
+                            :license, :resource_type, :description, :subject, :source, :identifier] }
   end
 
   describe '.model_attributes' do
@@ -50,7 +50,7 @@ RSpec.describe Hyrax::ArticleForm do
           date_captured: '2017-01-22',
           date_created: '2017-01-22',
           date_issued: '2017-01-22',
-          date_other: '2017-01-22',
+          date_other: ['2017-01-22'],
           doi: ['12345'],
           edition: ['an edition'],
           extent: ['1993'],
@@ -81,7 +81,6 @@ RSpec.describe Hyrax::ArticleForm do
     it 'permits parameters' do
       expect(subject['title']).to eq ['foo']
       expect(subject['publisher']).to eq ['a publisher']
-      expect(subject['citation']).to eq 'some citation'
       expect(subject['description']).to be_empty
       expect(subject['visibility']).to eq 'open'
       expect(subject['license']).to eq ['http://creativecommons.org/licenses/by/3.0/us/']
@@ -96,7 +95,7 @@ RSpec.describe Hyrax::ArticleForm do
       expect(subject['date_captured']).to eq '2017-01-22'
       expect(subject['date_created']).to eq '2017-01-22'
       expect(subject['date_issued']).to eq '2017-01-22'
-      expect(subject['date_other']).to eq '2017-01-22'
+      expect(subject['date_other']).to eq ['2017-01-22']
       expect(subject['doi']).to eq ['12345']
       expect(subject['edition']).to eq ['an edition']
       expect(subject['extent']).to eq ['1993']
