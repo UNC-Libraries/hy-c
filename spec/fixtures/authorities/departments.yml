@@ -11,4 +11,7 @@ terms:
     term: History
   - id: example
     active: false
-    term: Example Department
+    term: Some College, Example Department
+  - id: Example Department
+    active: true
+    term: Some College, Example Department
