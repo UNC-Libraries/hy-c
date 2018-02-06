@@ -3,23 +3,14 @@ include Warden::Test::Helpers
 
 RSpec.feature 'Edit Work Types', js: false do
   context 'a logged in user' do
-    let(:user) {
+    let(:user) do
       User.find_by_user_key('admin@example.com')
-    }
-
-    let(:default_admin_set) {
-      AdminSet.create(title: ["default admin set"],
-                      description: ["some description"],
-                      edit_users: [user.user_key])
-    }
-
-    let(:other_admin_set) {
-      AdminSet.create(title: ["other admin set"],
-                      description: ["some description"],
-                      edit_users: [user.user_key])
-    }
+    end
 
     before do
+      AdminSet.delete_all
+      AdminSet.create(title: ["default"], description: ["some description"], edit_users: [user.user_key])
+      AdminSet.create(title: ["other admin set"], description: ["some description"], edit_users: [user.user_key])
       login_as user
     end
 
@@ -34,7 +25,7 @@ RSpec.feature 'Edit Work Types', js: false do
       expect(page).to have_selector 'tr>td', text: 'HonorsThesis'
       expect(page).to have_selector 'tr>td', text: 'MastersPaper'
       expect(page).to have_selector 'tr>td', text: 'Dissertation'
-      expect(page).to have_selector 'tr>td', text: 'default admin set', count: 6
+      expect(page).to have_selector 'tr>td', text: 'default', count: 6
 
       click_link 'Edit default admin sets'
 
@@ -46,7 +37,7 @@ RSpec.feature 'Edit Work Types', js: false do
       expect(page).to have_selector 'tr>td', text: 'HonorsThesis'
       expect(page).to have_selector 'tr>td', text: 'MastersPaper'
       expect(page).to have_selector 'tr>td', text: 'Dissertation'
-      expect(page).to have_selector 'tr>td', text: 'default admin set', count: 6
+      expect(page).to have_selector 'tr>td', text: 'default', count: 6
 
       first('tr>td>select').find(:xpath, 'option[2]').select_option
 
@@ -60,7 +51,8 @@ RSpec.feature 'Edit Work Types', js: false do
       expect(page).to have_selector 'tr>td', text: 'HonorsThesis'
       expect(page).to have_selector 'tr>td', text: 'MastersPaper'
       expect(page).to have_selector 'tr>td', text: 'Dissertation'
-      expect(page).to have_selector 'tr>td', text: 'default admin set', count: 6
+      expect(page).to have_selector 'tr>td', text: 'default', count: 5
+      expect(page).to have_selector 'tr>td', text: 'other admin set', count: 1
     end
   end
 end
