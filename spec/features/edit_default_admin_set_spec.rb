@@ -25,7 +25,7 @@ RSpec.feature 'Edit Work Types', js: false do
       expect(page).to have_selector 'tr>td', text: 'HonorsThesis'
       expect(page).to have_selector 'tr>td', text: 'MastersPaper'
       expect(page).to have_selector 'tr>td', text: 'Dissertation'
-      expect(page).to have_selector 'tr>td', text: 'default', count: 6
+      expect(page).to have_selector 'tr>td', text: 'default', count: 7
 
       click_link 'Edit default admin sets'
 
@@ -37,7 +37,7 @@ RSpec.feature 'Edit Work Types', js: false do
       expect(page).to have_selector 'tr>td', text: 'HonorsThesis'
       expect(page).to have_selector 'tr>td', text: 'MastersPaper'
       expect(page).to have_selector 'tr>td', text: 'Dissertation'
-      expect(page).to have_selector 'tr>td', text: 'default', count: 6
+      expect(page).to have_selector 'tr>td', text: 'default', count: 7
 
       first('tr>td>select').find(:xpath, 'option[2]').select_option
 
@@ -51,7 +51,7 @@ RSpec.feature 'Edit Work Types', js: false do
       expect(page).to have_selector 'tr>td', text: 'HonorsThesis'
       expect(page).to have_selector 'tr>td', text: 'MastersPaper'
       expect(page).to have_selector 'tr>td', text: 'Dissertation'
-      expect(page).to have_selector 'tr>td', text: 'default', count: 5
+      expect(page).to have_selector 'tr>td', text: 'default', count: 6
       expect(page).to have_selector 'tr>td', text: 'other admin set', count: 1
     end
   end
