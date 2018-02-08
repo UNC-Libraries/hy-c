@@ -189,10 +189,6 @@ class SolrDocument
     self[Solrizer.solr_name('other_affiliation')]
   end
 
-  def project_director
-    self[Solrizer.solr_name('project_director')]
-  end
-
   def page_end
     self[Solrizer.solr_name('page_end')]
   end
@@ -207,6 +203,10 @@ class SolrDocument
 
   def place_of_publication
     self[Solrizer.solr_name('place_of_publication')]
+  end
+
+  def project_director
+    self[Solrizer.solr_name('project_director')]
   end
 
   def publication

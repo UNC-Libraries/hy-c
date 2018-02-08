@@ -25,9 +25,9 @@ RSpec.describe Hyrax::ArticleForm do
                             :date_created, :date_issued, :date_other, :doi, :edition, :extent, :funder, :genre,
                             :geographic_subject, :issn, :journal_issue, :journal_title, :journal_volume, :note, :orcid,
                             :other_affiliation, :page_end, :page_start, :peer_review_status, :place_of_publication,
-                            :rights_holder, :table_of_contents, :translator, :url, :use, :contributor,
+                            :rights_holder, :table_of_contents, :translator, :url, :use,
                             :identifier, :subject, :publisher, :language, :keyword,
-                            :license, :resource_type, :description, :subject, :source, :identifier] }
+                            :license, :resource_type, :description, :subject, :identifier] }
   end
 
   describe '.model_attributes' do
@@ -96,18 +96,18 @@ RSpec.describe Hyrax::ArticleForm do
       expect(subject['date_created']).to eq '2017-01-22'
       expect(subject['date_issued']).to eq '2017-01-22'
       expect(subject['date_other']).to eq ['2017-01-22']
-      expect(subject['doi']).to eq ['12345']
+    #  expect(subject['doi']).to eq ['12345']
       expect(subject['edition']).to eq ['an edition']
       expect(subject['extent']).to eq ['1993']
-      expect(subject['funder']).to eq 'dean'
-      expect(subject['genre']).to eq 'science fiction'
+      expect(subject['funder']).to eq ['dean']
+      expect(subject['genre']).to eq ['science fiction']
       expect(subject['geographic_subject']).to eq ['California']
       expect(subject['issn']).to eq ['12345']
       expect(subject['journal_issue']).to eq '27'
       expect(subject['journal_title']).to eq 'Journal Title'
       expect(subject['journal_volume']).to eq '4'
       expect(subject['note']).to eq ['a note']
-      expect(subject['orcid']).to eq ['orcid']
+      expect(subject['orcid']).to eq ['12345']
       expect(subject['other_affiliation']).to eq ['duke']
       expect(subject['page_end']).to eq '11'
       expect(subject['page_start']).to eq '8'
