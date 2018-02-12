@@ -1,4 +1,7 @@
 Rails.application.routes.draw do
+  get 'masters_papers/department', to: 'masters_papers#department'
+  post 'masters_papers/select_department', to: 'masters_papers#select_department'
+
   get 'work_types', to: 'work_types#index'
   get 'edit_work_types', to: 'work_types#edit'
   post 'update_work_types', to: 'work_types#update'

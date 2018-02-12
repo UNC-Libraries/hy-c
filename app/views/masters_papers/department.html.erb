@@ -1,0 +1,21 @@
+<h1>MastersPapers#department</h1>
+<p>Find me in app/views/masters_papers/department.html.erb</p>
+
+<p>need to pass department in masters_paper_affiliation parameter</p>
+
+<div class="panel panel-default">
+  <div class="panel-body">
+  <%= form_for :masters_paper, url: main_app.masters_papers_select_department_path do |f| %>
+    <div class="row">
+      <div class="form-group col-xs-4">
+        <%= f.label 'Choose a department:' %>
+        <%= f.select :affiliation, options_for_select(DepartmentsService.select_all_options), {multiple: true}, class: 'form-control' %>
+      </div>
+    </div>
+
+    <div class="actions">
+      <%= f.submit 'Save', class: 'btn btn-primary' %>
+    </div>
+  <% end %>
+  </div>
+</div>
