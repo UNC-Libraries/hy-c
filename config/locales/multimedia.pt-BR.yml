@@ -1,0 +1,8 @@
+pt-BR:
+  hyrax:
+    icons:
+      multimedia:     'fa fa-file-text-o'
+    select_type:
+      multimedia:
+        name:               "Multimedia"
+        description:        "Multimedia trabalhos"

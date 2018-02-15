@@ -1,0 +1,10 @@
+es:
+  hyrax:
+    icons:
+      multimedia:     'fa fa-file-text-o'
+    select_type:
+      multimedia:
+        # TODO: translate `human_name` into Spanish
+        name:               "Multimedia"
+        # TODO: translate `human_name` into Spanish
+        description:        "Multimedia trabajos"
