@@ -3,7 +3,7 @@
 module Hyrax
   class MultimediaForm < Hyrax::Forms::WorkForm
     self.model_class = ::Multimedia
-    self.terms += [:abstract, :extent, :geographic_subject, :note, :genre, :resource_type]
+    self.terms += [:abstract, :extent, :genre, :geographic_subject, :note, :resource_type]
 
     self.terms -= [:admin_set_id, :based_near, :bibliographic_citation, :contributor, :description,
                    :embargo_release_date, :files, :identifier, :import_url, :in_works_ids, :label,
