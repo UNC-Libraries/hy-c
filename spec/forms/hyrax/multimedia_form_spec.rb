@@ -9,19 +9,19 @@ RSpec.describe Hyrax::MultimediaForm do
   describe "#required_fields" do
     subject { form.required_fields }
 
-    it { is_expected.to match_array [:title, :creator, :rights_statement] }
+    it { is_expected.to match_array [:title, :creator] }
   end
 
   describe "#primary_terms" do
     subject { form.primary_terms }
 
-    it { is_expected.to match_array [:title, :creator, :rights_statement] }
+    it { is_expected.to match_array [:title, :creator] }
   end
 
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:abstract, :extent, :genre, :geographic_subject, :note, :resource_type]
+    it { is_expected.to match_array [:abstract, :extent, :genre, :geographic_subject, :note, :resource_type] }
   end
 
   describe ".model_attributes" do
