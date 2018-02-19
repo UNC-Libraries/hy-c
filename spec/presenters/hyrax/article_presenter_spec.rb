@@ -12,7 +12,6 @@ RSpec.describe Hyrax::ArticlePresenter do
       "title_tesim" => ['foo'],
       "human_readable_type_tesim" => ["Article"],
       "has_model_ssim" => ["Article"],
-      "date_created_tesim" => ['an unformatted date'],
       "depositor_tesim" => user_key,
       "abstract_tesim" => ['an abstract'],
       "access_tesim" => 'public',
@@ -23,7 +22,7 @@ RSpec.describe Hyrax::ArticlePresenter do
       "date_created_tesim" => '2017-01-22',
       "date_issued_tesim" => '2017-01-22',
       "date_other_tesim" => ['2017-01-22'],
-      "doi_tesim" => ['a doi'],
+      "doi_tesim" => '12345',
       "edition_tesim" => ['new edition'],
       "extent_tesim" => ['1993'],
       "funder_tesim" => ['dean'],
@@ -71,10 +70,8 @@ RSpec.describe Hyrax::ArticlePresenter do
   it { is_expected.to delegate_method(:abstract).to(:solr_document) }
   it { is_expected.to delegate_method(:access).to(:solr_document) }
   it { is_expected.to delegate_method(:affiliation).to(:solr_document) }
-  it { is_expected.to delegate_method(:citation).to(:solr_document) }
   it { is_expected.to delegate_method(:copyright_date).to(:solr_document) }
   it { is_expected.to delegate_method(:date_captured).to(:solr_document) }
-  it { is_expected.to delegate_method(:date_created).to(:solr_document) }
   it { is_expected.to delegate_method(:date_issued).to(:solr_document) }
   it { is_expected.to delegate_method(:date_other).to(:solr_document) }
   it { is_expected.to delegate_method(:doi).to(:solr_document) }
@@ -153,17 +150,6 @@ RSpec.describe Hyrax::ArticlePresenter do
       end
     end
 
-    context "with a custom citation field" do
-      before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:citation, ['a citation'], {}).and_return(renderer)
-      end
-
-      it "calls the AttributeRenderer" do
-        expect(renderer).to receive(:render)
-        presenter.attribute_to_html(:citation)
-      end
-    end
-
     context "with a custom copyright date field" do
       before do
         allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:copyright_date, '2017-01-22', {}).and_return(renderer)
@@ -183,17 +169,6 @@ RSpec.describe Hyrax::ArticlePresenter do
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:date_captured)
-      end
-    end
-
-    context "with a custom date created field" do
-      before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:date_created, '2017-01-22', {}).and_return(renderer)
-      end
-
-      it "calls the AttributeRenderer" do
-        expect(renderer).to receive(:render)
-        presenter.attribute_to_html(:date_created)
       end
     end
 
@@ -221,7 +196,7 @@ RSpec.describe Hyrax::ArticlePresenter do
 
     context "with a custom doi field" do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:doi, ['a doi'], {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:doi, '12345', {}).and_return(renderer)
       end
 
       it "calls the AttributeRenderer" do

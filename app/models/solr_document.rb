@@ -72,10 +72,6 @@ class SolrDocument
     self[Solrizer.solr_name('alternate_title')]
   end
 
-  def citation
-    self[Solrizer.solr_name('citation')]
-  end
-
   def conference_name
     self[Solrizer.solr_name('conference_name')]
   end
@@ -86,11 +82,6 @@ class SolrDocument
 
   def date_captured
     self[Solrizer.solr_name('date_captured')]
-  end
-
-  def date_created
-    self[Solrizer.solr_name('date_created')]
-
   end
 
   def date_issued

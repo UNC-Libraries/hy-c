@@ -21,13 +21,13 @@ RSpec.describe Hyrax::ArticleForm do
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to eq [:abstract, :access, :affiliation, :citation, :copyright_date, :date_captured,
-                            :date_created, :date_issued, :date_other, :doi, :edition, :extent, :funder, :genre,
+    it { is_expected.to eq [:description, :keyword, :license, :publisher, :date_created, :subject, :language, :identifier, :resource_type,
+                            :abstract, :access, :affiliation, :copyright_date, :date_captured,
+                            :date_issued, :date_other, :doi, :edition, :extent, :funder, :genre,
                             :geographic_subject, :issn, :journal_issue, :journal_title, :journal_volume, :note, :orcid,
                             :other_affiliation, :page_end, :page_start, :peer_review_status, :place_of_publication,
-                            :rights_holder, :table_of_contents, :translator, :url, :use,
-                            :identifier, :subject, :publisher, :language, :keyword,
-                            :license, :resource_type, :description, :subject, :identifier] }
+                            :rights_holder, :table_of_contents, :translator, :url, :use
+                            ] }
   end
 
   describe '.model_attributes' do
@@ -45,13 +45,12 @@ RSpec.describe Hyrax::ArticleForm do
           abstract: ['an abstract'],
           access: 'public',
           affiliation: ['unc'],
-          citation: ['a citation'],
           copyright_date: '2017-01-22',
           date_captured: '2017-01-22',
           date_created: '2017-01-22',
           date_issued: '2017-01-22',
           date_other: ['2017-01-22'],
-          doi: ['12345'],
+          doi: '12345',
           edition: ['an edition'],
           extent: ['1993'],
           funder: ['dean'],
@@ -64,8 +63,8 @@ RSpec.describe Hyrax::ArticleForm do
           note: ['a note'],
           orcid: ['12345'],
           other_affiliation: ['duke'],
-          page_end: ['11'],
-          page_start: ['8'],
+          page_end: '11',
+          page_start: '8',
           peer_review_status: 'in review',
           place_of_publication: ['durham'],
           rights_holder: ['dean'],
@@ -90,13 +89,12 @@ RSpec.describe Hyrax::ArticleForm do
       expect(subject['abstract']).to eq ['an abstract']
       expect(subject['access']).to eq 'public'
       expect(subject['affiliation']).to eq ['unc']
-      expect(subject['citation']).to eq ['a citation']
       expect(subject['copyright_date']).to eq '2017-01-22'
       expect(subject['date_captured']).to eq '2017-01-22'
       expect(subject['date_created']).to eq '2017-01-22'
       expect(subject['date_issued']).to eq '2017-01-22'
       expect(subject['date_other']).to eq ['2017-01-22']
-    #  expect(subject['doi']).to eq ['12345']
+      expect(subject['doi']).to eq '12345'
       expect(subject['edition']).to eq ['an edition']
       expect(subject['extent']).to eq ['1993']
       expect(subject['funder']).to eq ['dean']

@@ -22,10 +22,6 @@ class Article < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :citation, predicate: ::RDF::Vocab::DC.bibliographicCitation do |index|
-    index.as :stored_searchable
-  end
-
   property :copyright_date, predicate: ::RDF::Vocab::DC.dateCopyrighted, multiple: false do |index|
     index.as :stored_searchable
   end
