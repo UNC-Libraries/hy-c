@@ -1,8 +1,8 @@
 # Generated via
-#  `rails generate hyrax:work Multimedia`
+#  `rails generate hyrax:work Multimed`
 require 'rails_helper'
 
-RSpec.describe Hyrax::MultimediaPresenter do
+RSpec.describe Hyrax::MultimedPresenter do
   let(:solr_document) { SolrDocument.new(attributes) }
   let(:request) { double(host: 'example.org') }
   let(:user_key) { 'a_user_key' }
@@ -10,8 +10,8 @@ RSpec.describe Hyrax::MultimediaPresenter do
   let(:attributes) do
     { "id" => '888888',
       "title_tesim" => ['foo'],
-      "human_readable_type_tesim" => ["Multimedia"],
-      "has_model_ssim" => ["Multimedia"],
+      "human_readable_type_tesim" => ["Multimed"],
+      "has_model_ssim" => ["Multimed"],
       "date_created_tesim" => ['an unformatted date'],
       "depositor_tesim" => user_key,
       "abstract_tesim" => ['an abstract'],

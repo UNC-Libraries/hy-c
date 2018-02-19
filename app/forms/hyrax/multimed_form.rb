@@ -1,13 +1,13 @@
 # Generated via
-#  `rails generate hyrax:work Multimedia`
+#  `rails generate hyrax:work Multimed`
 module Hyrax
-  class MultimediaForm < ::SingleValueForm
+  class MultimedForm < ::SingleValueForm
     class_attribute :single_value_fields
 
-    self.model_class = ::Multimedia
+    self.model_class = ::Multimed
     self.terms += [:abstract, :extent, :genre, :geographic_subject, :note, :resource_type]
 
-    self.terms -= [:based_near, :contributor, :description, :publisher, :related_url]
+    self.terms -= [:based_near, :contributor, :description, :identifier, :publisher, :related_url, :source]
 
     self.required_fields -= [:keyword, :rights_statement]
 

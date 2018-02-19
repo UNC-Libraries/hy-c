@@ -1,9 +1,9 @@
 zh:
   hyrax:
     icons:
-      multimedia:     'fa fa-file-text-o'
+      multimed:     'fa fa-file-text-o'
     select_type:
-      multimedia:
+      multimed:
         # TODO: translate `human_name` into Chinese
         name:               "Multimedia"
         # TODO: translate `human_name` into Chinese

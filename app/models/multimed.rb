@@ -1,14 +1,14 @@
 # Generated via
-#  `rails generate hyrax:work Multimedia`
-class Multimedia < ActiveFedora::Base
+#  `rails generate hyrax:work Multimed`
+class Multimed < ActiveFedora::Base
   include ::Hyrax::WorkBehavior
 
-  self.indexer = MultimediaIndexer
+  self.indexer = MultimedIndexer
   # Change this to restrict which works can be added as a child.
   # self.valid_child_concerns = []
   validates :title, presence: { message: 'Your work must have a title.' }
 
-  self.human_readable_type = 'Multimedia'
+  self.human_readable_type = 'Multimed'
 
   property :abstract, predicate: ::RDF::Vocab::DC.abstract do |index|
     index.as :stored_searchable

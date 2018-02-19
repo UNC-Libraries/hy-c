@@ -1,10 +1,10 @@
 # Generated via
-#  `rails generate hyrax:work Multimedia`
+#  `rails generate hyrax:work Multimed`
 require 'rails_helper'
 include Warden::Test::Helpers
 
 # NOTE: If you generated more than one work, you have to set "js: true"
-RSpec.feature 'Create a Multimedia', js: false do
+RSpec.feature 'Create a Multimed', js: false do
   context 'a logged in user' do
     let(:user_attributes) do
       { email: 'test@example.com', guest: false }
@@ -35,14 +35,14 @@ RSpec.feature 'Create a Multimedia', js: false do
     end
 
     scenario do
-      visit new_hyrax_multimedia_path
-      expect(page).to have_content "Add New Multimedia"
+      visit new_hyrax_multimed_path
+      expect(page).to have_content "Add New Multimed"
 
-      fill_in 'Title', with: 'Test Multimedia'
+      fill_in 'Title', with: 'Test Multimed'
       fill_in 'Creator', with: 'Test Default Creator'
       fill_in 'Keyword', with: 'Test Default Keyword'
-      select "In Copyright", :from => "multimedia_rights_statement"
-      choose "multimedia_visibility_open"
+      select "In Copyright", :from => "multimed_rights_statement"
+      choose "multimed_visibility_open"
       check 'agreement'
 
       click_link "Files" # switch tab
@@ -54,9 +54,9 @@ RSpec.feature 'Create a Multimedia', js: false do
       expect(page).to have_content 'Your files are being processed by Hyrax'
 
       visit '/dashboard/my/works/'
-      expect(page).to have_content 'Test Multimedia'
+      expect(page).to have_content 'Test Multimed'
 
-      first('.document-title', text: 'Test Multimedia').click
+      first('.document-title', text: 'Test Multimed').click
       expect(page).to have_content 'Test Default Keyword'
     end
   end

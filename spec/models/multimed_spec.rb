@@ -1,17 +1,17 @@
 # Generated via
-#  `rails generate hyrax:work Multimedia`
+#  `rails generate hyrax:work Multimed`
 require 'rails_helper'
 
-RSpec.describe Multimedia do
+RSpec.describe Multimed do
   it "has a title" do
-    subject.title = ['multimedia']
-    expect(subject.title).to eq ['multimedia']
+    subject.title = ['multimed']
+    expect(subject.title).to eq ['multimed']
   end
 
   describe '.model_name' do
     subject { described_class.model_name.singular_route_key }
 
-    it { is_expected.to eq 'hyrax_multimedia' }
+    it { is_expected.to eq 'hyrax_multimed' }
   end
 
   describe "metadata" do

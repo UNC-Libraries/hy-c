@@ -1,9 +1,9 @@
 # Generated via
-#  `rails generate hyrax:work Multimedia`
+#  `rails generate hyrax:work Multimed`
 require 'rails_helper'
 
-RSpec.describe Hyrax::MultimediaForm do
-  let(:work) { Multimedia.new }
+RSpec.describe Hyrax::MultimedForm do
+  let(:work) { Multimed.new }
   let(:form) { described_class.new(work, nil, nil) }
 
   describe "#required_fields" do
@@ -21,15 +21,16 @@ RSpec.describe Hyrax::MultimediaForm do
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:abstract, :extent, :genre, :geographic_subject, :note, :resource_type] }
+    it { is_expected.to match_array [:abstract, :date_created, :extent, :genre, :geographic_subject, :keyword,
+                                     :language, :license, :note, :resource_type, :rights_statement, :subject] }
   end
 
   describe ".model_attributes" do
     let(:params) do
       ActionController::Parameters.new(
-          title: 'multimedia name', # single-valued
+          title: 'multimed name', # single-valued
           note: ['a note'],
-          keyword: ['multimedia'],
+          keyword: ['multimed'],
           abstract: ['an abstract'],
           extent: ['1999'],
           genre: ['food'],
@@ -40,9 +41,9 @@ RSpec.describe Hyrax::MultimediaForm do
     subject { described_class.model_attributes(params) }
 
     it "permits parameters" do
-      expect(subject['title']).to eq ['multimedia name']
+      expect(subject['title']).to eq ['multimed name']
       expect(subject['note']).to eq ['a note']
-      expect(subject['keyword']).to eq ['multimedia']
+      expect(subject['keyword']).to eq ['multimed']
       expect(subject['abstract']).to eq ['an abstract']
       expect(subject['extent']).to eq ['1999']
       expect(subject['genre']).to eq ['food']
