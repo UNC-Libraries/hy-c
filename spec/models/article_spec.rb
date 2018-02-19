@@ -45,7 +45,6 @@ RSpec.describe Article do
       expect(subject).to respond_to(:abstract)
       expect(subject).to respond_to(:access)
       expect(subject).to respond_to(:affiliation)
-      expect(subject).to respond_to(:citation)
       expect(subject).to respond_to(:copyright_date)
       expect(subject).to respond_to(:date_captured)
       expect(subject).to respond_to(:date_issued)
