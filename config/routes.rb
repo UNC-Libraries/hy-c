@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :default_admin_sets, except: :show
   get 'masters_papers/department', to: 'masters_papers#department'
   post 'masters_papers/select_department', to: 'masters_papers#select_department'
 

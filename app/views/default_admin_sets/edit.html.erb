@@ -1,0 +1,19 @@
+<div class="row">
+  <div class="col-xs-12 main-header">
+    <h1><span class="fa fa-edit"></span> Editing Default Admin Set</h1>
+
+    <div class="pull-right">
+      <a href="<%= new_default_admin_set_path %>" class="btn btn-primary">
+        <span class="fa fa-edit"></span> Add new default admin set
+      </a>
+    </div>
+  </div>
+</div>
+
+<div class="panel panel-default">
+  <div class="panel-body">
+
+    <%= render 'form', default_admin_set: @default_admin_set %>
+
+  </div>
+</div>

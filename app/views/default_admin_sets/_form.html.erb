@@ -1,0 +1,44 @@
+<%= form_for(default_admin_set) do |f| %>
+  <div class="row">
+    <div class="col-xs-12">
+      <% if default_admin_set.errors.any? %>
+        <div id="error_explanation">
+          <h2><%= pluralize(default_admin_set.errors.count, "error") %> prohibited this default_admin_set from being saved:</h2>
+
+          <ul>
+          <% default_admin_set.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <div class="field">
+        <%= f.label :work_type_name %>
+        <%= f.select :work_type_name, options_for_select(@work_type_names, @default_admin_set.work_type_name), {}, class: 'form-control' %>
+      </div>
+
+      <div class="field">
+        <%= f.label :admin_set_id %>
+        <%= f.select :admin_set_id, options_for_select(@admin_sets, @default_admin_set.admin_set_id), {}, class: 'form-control' %>
+      </div>
+
+      <div class="field">
+        <%= f.label :department %>
+        <%= f.select :department, options_for_select(DepartmentsService.select_all_options.sort,
+                                                     DepartmentsService.method(:include_current_value)),
+                     {include_blank: true}, class: 'form-control' %>
+      </div>
+    </div>
+  </div>
+
+  <br>
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="actions">
+        <%= f.submit 'Save', class: 'btn btn-primary' %>
+        <%= link_to 'Cancel', default_admin_sets_path, class: 'btn btn-default' %>
+      </div>
+    </div>
+  </div>
+<% end %>
