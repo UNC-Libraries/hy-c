@@ -23,7 +23,7 @@ class DefaultAdminSetsController < ApplicationController
 
     respond_to do |format|
       if @default_admin_set.save
-        format.html { redirect_to @default_admin_set, notice: 'Default admin set was successfully created.' }
+        format.html { redirect_to default_admin_sets_path, notice: 'Default admin set was successfully created.' }
       else
         format.html { render :new }
       end
@@ -33,7 +33,7 @@ class DefaultAdminSetsController < ApplicationController
   def update
     respond_to do |format|
       if @default_admin_set.update(default_admin_set_params)
-        format.html { redirect_to @default_admin_set, notice: 'Default admin set was successfully updated.' }
+        format.html { redirect_to default_admin_sets_path, notice: 'Default admin set was successfully updated.' }
       else
         format.html { render :edit }
       end

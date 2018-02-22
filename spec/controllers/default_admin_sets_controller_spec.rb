@@ -67,7 +67,7 @@ RSpec.describe DefaultAdminSetsController, type: :controller do
 
       it "redirects to the created default_admin_set" do
         post :create, params: {default_admin_set: valid_attributes}, session: valid_session
-        expect(response).to redirect_to(DefaultAdminSet.last)
+        expect(response).to redirect_to(default_admin_sets_path)
       end
     end
 
@@ -99,7 +99,7 @@ RSpec.describe DefaultAdminSetsController, type: :controller do
       it "redirects to the default_admin_set" do
         default_admin_set = DefaultAdminSet.create! valid_attributes
         put :update, params: {id: default_admin_set.to_param, default_admin_set: valid_attributes}, session: valid_session
-        expect(response).to redirect_to(default_admin_set)
+        expect(response).to redirect_to(default_admin_sets_path)
       end
     end
 

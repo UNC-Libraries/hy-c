@@ -19,5 +19,5 @@ RSpec.describe DefaultAdminSet, type: :model do
     expect(subject).to_not be_valid
   end
 
-  it { should validate_uniqueness_of(:work_type_name) }
+  it { should validate_uniqueness_of(:work_type_name).scoped_to(:department) }
 end

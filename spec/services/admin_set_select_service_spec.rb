@@ -5,7 +5,7 @@ RSpec.describe Hyrax::AdminSetSelectService do
 
   describe "#select" do
     before do
-      WorkType.create(work_type_name: 'HonorsThesis', admin_set_id: 'honors-thesis-id')
+      DefaultAdminSet.create(work_type_name: 'HonorsThesis', admin_set_id: 'honors-thesis-id')
     end
 
     context "when only one select_option exists" do

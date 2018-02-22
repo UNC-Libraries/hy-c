@@ -32,7 +32,7 @@ RSpec.feature 'Create a Work', js: false do
       Hyrax::PermissionTemplateAccess.create(permission_template: permission_template, agent_type: 'user', agent_id: user.user_key, access: 'deposit')
       Hyrax::PermissionTemplateAccess.create(permission_template: permission_template, agent_type: 'user', agent_id: admin_user.user_key, access: 'deposit')
       Sipity::WorkflowAction.create(id: 4, name: 'show', workflow_id: workflow.id)
-      WorkType.create(work_type_name: 'Work', admin_set_id: admin_set.id)
+      DefaultAdminSet.create(work_type_name: 'Work', admin_set_id: admin_set.id)
     end
 
     scenario 'as a non-admin' do

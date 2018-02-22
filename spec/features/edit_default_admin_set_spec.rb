@@ -34,29 +34,61 @@ RSpec.feature 'Create and edit default admin set', js: false do
 
       click_link 'Add new default admin set'
 
-      expect(page).to have_content "Edit Work Types"
+      expect(page).to have_content "New Default Admin Set"
 
+      expect(page).to have_content 'Work type name'
+      expect(page).to have_selector '#default_admin_set_work_type_name', text: 'Work'
+      expect(page).to have_content 'Admin set'
+      expect(page).to have_selector '#default_admin_set_admin_set_id', text: 'default'
+      expect(page).to have_content 'Department'
+      expect(page).to have_selector '#default_admin_set_department', text: ''
+      expect(page).to have_content 'Cancel'
+
+      select 'Journal', from: 'Work type name'
+      select 'Art History Program', from: 'Department'
+
+      find('input[name="commit"]').click
+
+      expect(page).to have_content "Default Admin Sets"
+
+      expect(page).to have_selector 'tr>th', text: 'Work type name'
+      expect(page).to have_selector 'tr>th', text: 'Admin set title'
+      expect(page).to have_selector 'tr>th', text: 'Department'
       expect(page).to have_selector 'tr>td', text: 'Work'
       expect(page).to have_selector 'tr>td', text: 'Journal'
+      expect(page).to have_selector 'tr>td', text: 'Article'
+      expect(page).to have_selector 'tr>td', text: 'HonorsThesis'
+      expect(page).to have_selector 'tr>td', text: 'MastersPaper'
+      expect(page).to have_selector 'tr>td', text: 'Dissertation'
+      expect(page).to have_selector 'tr>td', text: 'Journal'
+      expect(page).to have_selector 'tr>td', text: 'Art History Program'
+      expect(page).to have_selector 'tr>td', text: 'default', count: 8
+
+      first(:link, 'Edit').click
+
+      expect(page).to have_content "Edit Default Admin Set"
+
+      expect(page).to have_content 'Work type name'
+      expect(page).to have_selector '#default_admin_set_work_type_name', text: 'Work'
+      expect(page).to have_content 'Admin set'
+      expect(page).to have_selector '#default_admin_set_admin_set_id', text: 'default'
+      expect(page).to have_content 'Department'
+      expect(page).to have_selector '#default_admin_set_department', text: ''
+      expect(page).to have_content 'Cancel'
+
+      select 'other admin set', from: 'Admin set'
+
+      find('input[name="commit"]').click
+
+      expect(page).to have_content "Default Admin Sets"
+
+      expect(page).to have_selector 'tr>td', text: 'Work'
+      expect(page).to have_selector 'tr>td', text: 'Journal', count: 2
       expect(page).to have_selector 'tr>td', text: 'Article'
       expect(page).to have_selector 'tr>td', text: 'HonorsThesis'
       expect(page).to have_selector 'tr>td', text: 'MastersPaper'
       expect(page).to have_selector 'tr>td', text: 'Dissertation'
       expect(page).to have_selector 'tr>td', text: 'default', count: 7
-
-      first('tr>td>select').find(:xpath, 'option[2]').select_option
-
-      find('input[name="commit"]').click
-
-      expect(page).to have_content "Work Types"
-
-      expect(page).to have_selector 'tr>td', text: 'Work'
-      expect(page).to have_selector 'tr>td', text: 'Journal'
-      expect(page).to have_selector 'tr>td', text: 'Article'
-      expect(page).to have_selector 'tr>td', text: 'HonorsThesis'
-      expect(page).to have_selector 'tr>td', text: 'MastersPaper'
-      expect(page).to have_selector 'tr>td', text: 'Dissertation'
-      expect(page).to have_selector 'tr>td', text: 'default', count: 6
       expect(page).to have_selector 'tr>td', text: 'other admin set', count: 1
     end
   end
