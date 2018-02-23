@@ -20,25 +20,45 @@ RSpec.feature 'Create a MastersPaper', js: false do
                       edit_users: [user.user_key])
     end
 
+    let(:dept_admin_set) do
+      AdminSet.create(title: ["dept admin set"],
+                      description: ["some description"],
+                      edit_users: [user.user_key])
+    end
+
     let(:permission_template) do
       Hyrax::PermissionTemplate.create!(admin_set_id: admin_set.id)
+    end
+
+    let(:dept_permission_template) do
+      Hyrax::PermissionTemplate.create!(admin_set_id: dept_admin_set.id)
     end
 
     let(:workflow) do
       Sipity::Workflow.create(name: 'test', allows_access_grant: true, active: true, permission_template_id: permission_template.id)
     end
 
+    let(:dept_workflow) do
+      Sipity::Workflow.create(name: 'test', allows_access_grant: true, active: true, permission_template_id: dept_permission_template.id)
+    end
+
     before do
-      Hyrax::PermissionTemplateAccess.create(permission_template: permission_template, agent_type: 'user', agent_id: user.user_key, access: 'deposit')
+      Hyrax::PermissionTemplateAccess.create(permission_template: dept_permission_template, agent_type: 'user', agent_id: user.user_key, access: 'deposit')
       Hyrax::PermissionTemplateAccess.create(permission_template: permission_template, agent_type: 'user', agent_id: admin_user.user_key, access: 'deposit')
       Sipity::WorkflowAction.create(id: 4, name: 'show', workflow_id: workflow.id)
+      Sipity::WorkflowAction.create(id: 5, name: 'show', workflow_id: dept_workflow.id)
       DefaultAdminSet.create(work_type_name: 'MastersPaper', admin_set_id: admin_set.id)
+      DefaultAdminSet.create(work_type_name: 'MastersPaper', department: 'College of Arts and Sciences, Department of Art, Art History Program', admin_set_id: dept_admin_set.id)
     end
 
     scenario 'as a non-admin' do
       login_as user
 
-      visit new_hyrax_masters_paper_path
+      visit masters_papers_department_path
+      expect(page).to have_content "Add New Masters Paper"
+      select 'Art History Program', from: 'masters_paper_affiliation'
+      click_on 'Save'
+
       expect(page).to have_content "Add New Masters Paper"
 
       fill_in 'Title', with: 'Test MastersPaper work'
@@ -64,13 +84,17 @@ RSpec.feature 'Create a MastersPaper', js: false do
 
       first('.document-title', text: 'Test MastersPaper work').click
       expect(page).to have_content 'Test Default Keyword'
-      expect(page).to have_content 'In Administrative Set: masters paper admin set'
+      expect(page).to have_content 'In Administrative Set: dept admin set'
     end
 
     scenario 'as an admin' do
       login_as admin_user
 
-      visit new_hyrax_masters_paper_path
+      visit masters_papers_department_path
+      expect(page).to have_content "Add New Masters Paper"
+      select 'Department of Chemistry', from: 'masters_paper_affiliation'
+      click_on 'Save'
+
       expect(page).to have_content "Add New Masters Paper"
 
       fill_in 'Title', with: 'Test MastersPaper work'

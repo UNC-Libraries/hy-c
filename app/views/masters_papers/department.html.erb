@@ -1,7 +1,6 @@
-<h1>MastersPapers#department</h1>
-<p>Find me in app/views/masters_papers/department.html.erb</p>
-
-<p>need to pass department in masters_paper_affiliation parameter</p>
+<div class="col-xs-12 main-header">
+  <h1>Add New Masters Paper</h1>
+</div>
 
 <div class="panel panel-default">
   <div class="panel-body">
@@ -10,6 +9,7 @@
       <div class="form-group col-xs-4">
         <%= f.label 'Choose a department:' %>
         <%= f.select :affiliation, options_for_select(DepartmentsService.select_all_options), {multiple: true}, class: 'form-control' %>
+        <%= f.hidden_field :add_works_to_collection, value: params[:add_works_to_collection] %>
       </div>
     </div>
 

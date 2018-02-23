@@ -9,10 +9,6 @@
   <% end %>
 <% end %>
 
-<%= menu.nav_link(main_app.masters_papers_department_path) do %>
-  <span class="fa fa-rocket"></span> <span class="sidebar-action-text">MP Dept</span>
-<% end %>
-
 <%= menu.nav_link(hyrax.my_collections_path,
                   also_active_for: hyrax.dashboard_collections_path) do %>
   <span class="fa fa-folder-open"></span> <span class="sidebar-action-text"><%= t('hyrax.admin.sidebar.collections') %></span>

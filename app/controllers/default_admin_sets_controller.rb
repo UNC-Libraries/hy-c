@@ -1,21 +1,32 @@
 class DefaultAdminSetsController < ApplicationController
   before_action :set_default_admin_set, only: [:edit, :update, :destroy]
   before_action :create_default_records, only: [:edit, :new, :index]
-  before_action :set_admin_sets, only: [:edit, :new]
-  before_action :set_work_types, only: [:edit, :new]
+  before_action :set_admin_sets, only: [:edit, :new, :create, :update]
+  before_action :set_work_types, only: [:edit, :new, :create, :update]
   before_action :ensure_admin!
 
   layout 'dashboard'
 
   def index
+    add_breadcrumb t(:'hyrax.controls.home'), root_path
+    add_breadcrumb t(:'hyrax.dashboard.breadcrumbs.admin'), hyrax.dashboard_path
+    add_breadcrumb 'Default Admin Sets', request.path
     @default_admin_sets = DefaultAdminSet.all
   end
 
   def new
+    add_breadcrumb t(:'hyrax.controls.home'), root_path
+    add_breadcrumb t(:'hyrax.dashboard.breadcrumbs.admin'), hyrax.dashboard_path
+    add_breadcrumb 'Default Admin Sets', main_app.default_admin_sets_path
+    add_breadcrumb 'New Default Admin Set', request.path
     @default_admin_set = DefaultAdminSet.new
   end
 
   def edit
+    add_breadcrumb t(:'hyrax.controls.home'), root_path
+    add_breadcrumb t(:'hyrax.dashboard.breadcrumbs.admin'), hyrax.dashboard_path
+    add_breadcrumb 'Default Admin Sets', main_app.default_admin_sets_path
+    add_breadcrumb 'Edit Default Admin Set', request.path
   end
 
   def create
