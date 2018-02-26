@@ -1,0 +1,8 @@
+en:
+  hyrax:
+    icons:
+      multimed:     'fa fa-file-text-o'
+    select_type:
+      multimed:
+        name:               "Multimedia"
+        description:        "Multimedia works"

@@ -1,0 +1,10 @@
+zh:
+  hyrax:
+    icons:
+      multimed:     'fa fa-file-text-o'
+    select_type:
+      multimed:
+        # TODO: translate `human_name` into Chinese
+        name:               "Multimedia"
+        # TODO: translate `human_name` into Chinese
+        description:        "Multimedia 作品"

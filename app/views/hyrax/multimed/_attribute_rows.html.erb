@@ -1,0 +1,13 @@
+<%= presenter.attribute_to_html(:date_modified, label: 'Last Modified') %>
+<%= presenter.attribute_to_html(:creator, render_as: :faceted) %>
+<%= presenter.attribute_to_html(:subject, render_as: :faceted) %>
+<%= presenter.attribute_to_html(:language, render_as: :faceted) %>
+<%= presenter.attribute_to_html(:keyword, render_as: :faceted) %>
+<%= presenter.attribute_to_html(:date_created, render_as: :linked, search_field: 'date_created_tesim') %>
+<%= presenter.attribute_to_html(:resource_type, render_as: :faceted) %>
+<%= presenter.attribute_to_html(:rights_statement) %>
+<%= presenter.attribute_to_html(:abstract) %>
+<%= presenter.attribute_to_html(:extent) %>
+<%= presenter.attribute_to_html(:genre) %>
+<%= presenter.attribute_to_html(:geographic_subject) %>
+<%= presenter.attribute_to_html(:note) %>
