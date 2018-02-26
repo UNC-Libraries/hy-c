@@ -33,7 +33,8 @@
             <td><%= AdminSet.find(default_admin_set.admin_set_id).title.first %></td>
             <td><%= default_admin_set.department %></td>
             <td><%= link_to 'Edit', edit_default_admin_set_path(default_admin_set), class:'btn btn-primary' %></td>
-            <td><%= link_to 'Delete', default_admin_set, method: :delete, data: { confirm: 'Are you sure?' }, class:'btn btn-danger' %></td>
+            <td><%= link_to 'Delete', default_admin_set, method: :delete, data: { confirm: 'Are you sure?' },
+                            class:'btn btn-danger' %></td>
           </tr>
         <% end %>
         </tbody>

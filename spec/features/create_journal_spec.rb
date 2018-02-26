@@ -29,12 +29,19 @@ RSpec.feature 'Create a Journal', js: false do
     end
 
     let(:workflow) do
-      Sipity::Workflow.create(name: 'test', allows_access_grant: true, active: true, permission_template_id: permission_template.id)
+      Sipity::Workflow.create(name: 'test', allows_access_grant: true, active: true,
+                              permission_template_id: permission_template.id)
     end
 
     before do
-      Hyrax::PermissionTemplateAccess.create(permission_template: permission_template, agent_type: 'user', agent_id: user.user_key, access: 'deposit')
-      Hyrax::PermissionTemplateAccess.create(permission_template: permission_template, agent_type: 'user', agent_id: admin_user.user_key, access: 'deposit')
+      Hyrax::PermissionTemplateAccess.create(permission_template: permission_template,
+                                             agent_type: 'user',
+                                             agent_id: user.user_key,
+                                             access: 'deposit')
+      Hyrax::PermissionTemplateAccess.create(permission_template: permission_template,
+                                             agent_type: 'user',
+                                             agent_id: admin_user.user_key,
+                                             access: 'deposit')
       Sipity::WorkflowAction.create(id: 4, name: 'show', workflow_id: workflow.id)
       DefaultAdminSet.create(work_type_name: 'Journal', admin_set_id: admin_set.id)
     end

@@ -91,14 +91,16 @@ RSpec.describe DefaultAdminSetsController, type: :controller do
 
       it "updates the requested default_admin_set" do
         default_admin_set = DefaultAdminSet.create! valid_attributes
-        put :update, params: {id: default_admin_set.to_param, default_admin_set: new_attributes}, session: valid_session
+        put :update, params: {id: default_admin_set.to_param, default_admin_set: new_attributes},
+            session: valid_session
         default_admin_set.reload
         skip("Add assertions for updated state")
       end
 
       it "redirects to the default_admin_set" do
         default_admin_set = DefaultAdminSet.create! valid_attributes
-        put :update, params: {id: default_admin_set.to_param, default_admin_set: valid_attributes}, session: valid_session
+        put :update, params: {id: default_admin_set.to_param, default_admin_set: valid_attributes},
+            session: valid_session
         expect(response).to redirect_to(default_admin_sets_path)
       end
     end
@@ -106,7 +108,8 @@ RSpec.describe DefaultAdminSetsController, type: :controller do
     context "with invalid params" do
       it "returns a success response (i.e. to display the 'edit' template)" do
         default_admin_set = DefaultAdminSet.create! valid_attributes
-        put :update, params: {id: default_admin_set.to_param, default_admin_set: invalid_attributes}, session: valid_session
+        put :update, params: {id: default_admin_set.to_param, default_admin_set: invalid_attributes},
+            session: valid_session
         expect(response).to be_success
       end
     end

@@ -1,8 +1,7 @@
 class DefaultAdminSetsController < ApplicationController
   before_action :set_default_admin_set, only: [:edit, :update, :destroy]
   before_action :create_default_records, only: [:edit, :new, :index]
-  before_action :set_admin_sets, only: [:edit, :new, :create, :update]
-  before_action :set_work_types, only: [:edit, :new, :create, :update]
+  before_action :set_admin_sets, :set_work_types, only: [:edit, :new, :create, :update]
   before_action :ensure_admin!
 
   layout 'dashboard'
@@ -54,7 +53,7 @@ class DefaultAdminSetsController < ApplicationController
   def destroy
     @default_admin_set.destroy
     respond_to do |format|
-      format.html { redirect_to default_admin_sets_url, notice: 'Default admin set was successfully destroyed.' }
+      format.html { redirect_to default_admin_sets_url, notice: 'Default admin set was successfully deleted.' }
     end
   end
 

@@ -35,20 +35,30 @@ RSpec.feature 'Create a MastersPaper', js: false do
     end
 
     let(:workflow) do
-      Sipity::Workflow.create(name: 'test', allows_access_grant: true, active: true, permission_template_id: permission_template.id)
+      Sipity::Workflow.create(name: 'test', allows_access_grant: true, active: true,
+                              permission_template_id: permission_template.id)
     end
 
     let(:dept_workflow) do
-      Sipity::Workflow.create(name: 'test', allows_access_grant: true, active: true, permission_template_id: dept_permission_template.id)
+      Sipity::Workflow.create(name: 'test', allows_access_grant: true, active: true,
+                              permission_template_id: dept_permission_template.id)
     end
 
     before do
-      Hyrax::PermissionTemplateAccess.create(permission_template: dept_permission_template, agent_type: 'user', agent_id: user.user_key, access: 'deposit')
-      Hyrax::PermissionTemplateAccess.create(permission_template: permission_template, agent_type: 'user', agent_id: admin_user.user_key, access: 'deposit')
+      Hyrax::PermissionTemplateAccess.create(permission_template: dept_permission_template,
+                                             agent_type: 'user',
+                                             agent_id: user.user_key,
+                                             access: 'deposit')
+      Hyrax::PermissionTemplateAccess.create(permission_template: permission_template,
+                                             agent_type: 'user',
+                                             agent_id: admin_user.user_key,
+                                             access: 'deposit')
       Sipity::WorkflowAction.create(id: 4, name: 'show', workflow_id: workflow.id)
       Sipity::WorkflowAction.create(id: 5, name: 'show', workflow_id: dept_workflow.id)
       DefaultAdminSet.create(work_type_name: 'MastersPaper', admin_set_id: admin_set.id)
-      DefaultAdminSet.create(work_type_name: 'MastersPaper', department: 'College of Arts and Sciences, Department of Art, Art History Program', admin_set_id: dept_admin_set.id)
+      DefaultAdminSet.create(work_type_name: 'MastersPaper',
+                             department: 'College of Arts and Sciences, Department of Art, Art History Program',
+                             admin_set_id: dept_admin_set.id)
     end
 
     scenario 'as a non-admin' do
