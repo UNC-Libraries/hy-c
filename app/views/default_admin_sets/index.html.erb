@@ -3,6 +3,7 @@
 <div class="row">
   <div class="col-xs-12 main-header">
     <h1><span class="fa fa-archive"></span> Default Admin Sets</h1>
+    <h4>A listing of the admin sets chosen for each work type or work type-department combination.</h4>
 
     <div class="pull-right">
       <a href="<%= new_default_admin_set_path %>" class="btn btn-primary">
@@ -15,14 +16,15 @@
 <div class="panel panel-default">
   <div class="panel-body">
     <div class="table-responsive">
-      <table class="table table-striped default-admin-set-list datatable">
+      <table class="table table-striped datatable">
         <caption class="sr-only">Default admin sets <%= application_name %></caption>
         <thead>
         <tr>
-          <th>Work type name</th>
-          <th>Admin set title</th>
+          <th>Work Type</th>
           <th>Department</th>
-          <th colspan="2"></th>
+          <th>Selected Admin Set</th>
+          <th></th>
+          <th></th>
         </tr>
         </thead>
 
@@ -30,8 +32,8 @@
         <% @default_admin_sets.each do |default_admin_set| %>
           <tr>
             <td><%= default_admin_set.work_type_name %></td>
-            <td><%= AdminSet.find(default_admin_set.admin_set_id).title.first %></td>
             <td><%= default_admin_set.department %></td>
+            <td><%= AdminSet.find(default_admin_set.admin_set_id).title.first %></td>
             <td><%= link_to 'Edit', edit_default_admin_set_path(default_admin_set), class:'btn btn-primary' %></td>
             <td><%= link_to 'Delete', default_admin_set, method: :delete, data: { confirm: 'Are you sure?' },
                             class:'btn btn-danger' %></td>
