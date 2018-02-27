@@ -6,7 +6,7 @@
   <div class="panel-body">
   <%= form_for :masters_paper, url: main_app.masters_papers_select_department_path do |f| %>
     <div class="row">
-      <div class="form-group col-xs-4">
+      <div class="form-group col-xs-12">
         <%= f.label 'Choose a department:' %>
         <%= f.select :affiliation, options_for_select(DepartmentsService.select_all_options), {multiple: true},
                      class: 'form-control' %>
@@ -15,7 +15,7 @@
     </div>
 
     <div class="actions">
-      <%= f.submit 'Save', class: 'btn btn-primary' %>
+      <%= f.submit 'Select', class: 'btn btn-primary' %>
     </div>
   <% end %>
   </div>
