@@ -19,18 +19,18 @@ RSpec.feature 'Create and edit default admin set', js: false do
 
       expect(page).to have_content "Default Admin Sets"
 
-      expect(page).to have_selector 'tr>th', text: 'Work type name'
-      expect(page).to have_selector 'tr>th', text: 'Admin set title'
+      expect(page).to have_selector 'tr>th', text: 'Work Type'
       expect(page).to have_selector 'tr>th', text: 'Department'
+      expect(page).to have_selector 'tr>th', text: 'Selected Admin Set'
       expect(page).to have_selector 'tr>td', text: 'Work'
       expect(page).to have_selector 'tr>td', text: 'Journal'
       expect(page).to have_selector 'tr>td', text: 'Article'
       expect(page).to have_selector 'tr>td', text: 'HonorsThesis'
       expect(page).to have_selector 'tr>td', text: 'MastersPaper'
       expect(page).to have_selector 'tr>td', text: 'Dissertation'
-      expect(page).to have_selector 'tr>td', text: 'default', count: 7
-      expect(page).to have_selector 'tr>td>a', text: 'Edit', count: 7
-      expect(page).to have_selector 'tr>td>a', text: 'Delete', count: 7
+      expect(page).to have_selector 'tr>td', text: 'default', count: 8
+      expect(page).to have_selector 'tr>td>a', text: 'Edit', count: 8
+      expect(page).to have_selector 'tr>td>a', text: 'Delete', count: 8
 
       click_link 'Add new default admin set'
 
@@ -51,9 +51,9 @@ RSpec.feature 'Create and edit default admin set', js: false do
 
       expect(page).to have_content "Default Admin Sets"
 
-      expect(page).to have_selector 'tr>th', text: 'Work type name'
-      expect(page).to have_selector 'tr>th', text: 'Admin set title'
+      expect(page).to have_selector 'tr>th', text: 'Work Type'
       expect(page).to have_selector 'tr>th', text: 'Department'
+      expect(page).to have_selector 'tr>th', text: 'Selected Admin Set'
       expect(page).to have_selector 'tr>td', text: 'Work'
       expect(page).to have_selector 'tr>td', text: 'Journal'
       expect(page).to have_selector 'tr>td', text: 'Article'
@@ -62,7 +62,7 @@ RSpec.feature 'Create and edit default admin set', js: false do
       expect(page).to have_selector 'tr>td', text: 'Dissertation'
       expect(page).to have_selector 'tr>td', text: 'Journal'
       expect(page).to have_selector 'tr>td', text: 'Art History Program'
-      expect(page).to have_selector 'tr>td', text: 'default', count: 8
+      expect(page).to have_selector 'tr>td', text: 'default', count: 9
 
       first(:link, 'Edit').click
 
@@ -88,7 +88,7 @@ RSpec.feature 'Create and edit default admin set', js: false do
       expect(page).to have_selector 'tr>td', text: 'HonorsThesis'
       expect(page).to have_selector 'tr>td', text: 'MastersPaper'
       expect(page).to have_selector 'tr>td', text: 'Dissertation'
-      expect(page).to have_selector 'tr>td', text: 'default', count: 7
+      expect(page).to have_selector 'tr>td', text: 'default', count: 8
       expect(page).to have_selector 'tr>td', text: 'other admin set', count: 1
     end
   end

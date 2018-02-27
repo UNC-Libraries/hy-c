@@ -67,7 +67,7 @@ RSpec.feature 'Create a MastersPaper', js: false do
       visit masters_papers_department_path
       expect(page).to have_content "Add New Masters Paper"
       select 'Art History Program', from: 'masters_paper_affiliation'
-      click_on 'Save'
+      click_on 'Select'
 
       expect(page).to have_content "Add New Masters Paper"
 
@@ -103,7 +103,7 @@ RSpec.feature 'Create a MastersPaper', js: false do
       visit masters_papers_department_path
       expect(page).to have_content "Add New Masters Paper"
       select 'Department of Chemistry', from: 'masters_paper_affiliation'
-      click_on 'Save'
+      click_on 'Select'
 
       expect(page).to have_content "Add New Masters Paper"
 
