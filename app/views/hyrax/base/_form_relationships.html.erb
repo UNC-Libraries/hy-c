@@ -1,4 +1,4 @@
-<!-- Overriding partial in hyrax gem in order to auto-select an admin set -->
+<%# Overriding partial in hyrax gem in order to auto-select an admin set %>
 <% if Flipflop.assign_admin_set? %>
   <% if current_user.admin? %>
   <%= f.input :admin_set_id, as: :select,

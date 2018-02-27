@@ -1,4 +1,4 @@
-<% # app/views/records/edit_fields/_affiliation.html.erb %>
+<%# app/views/records/edit_fields/_affiliation.html.erb %>
 <% if params[:affiliation] %>
   <%= f.input :affiliation, as: :select,
               collection: DepartmentsService.select_all_options.sort,
