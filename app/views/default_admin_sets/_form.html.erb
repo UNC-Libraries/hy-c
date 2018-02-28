@@ -1,0 +1,44 @@
+<%= form_for(default_admin_set) do |f| %>
+  <div class="form-group">
+    <% if default_admin_set.errors.any? %>
+      <div class="alert alert-danger alert-dismissable" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="alert-heading">
+          <%= pluralize(default_admin_set.errors.count, "error") %> prohibited this default_admin_set from being saved:
+        </h4>
+
+        <ul>
+          <% default_admin_set.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div class="field">
+      <%= f.label :work_type_name %>
+      <%= f.select :work_type_name, options_for_select(@work_type_names, @default_admin_set.work_type_name), {},
+                   class: 'form-control' %>
+    </div>
+
+    <div class="field">
+      <%= f.label :admin_set_id %>
+      <%= f.select :admin_set_id, options_for_select(@admin_sets, @default_admin_set.admin_set_id), {},
+                   class: 'form-control' %>
+    </div>
+
+    <div class="field">
+      <%= f.label 'Department (only available for Masters Papers)' %>
+      <%= f.select :department, options_for_select(DepartmentsService.select_all_options.sort,
+                                                   @default_admin_set.department),
+                   {include_blank: true}, class: 'form-control' %>
+    </div>
+  </div>
+
+  <div class="actions pull-right">
+    <%= f.submit 'Save', class: 'btn btn-primary' %>
+    <%= link_to 'Cancel', default_admin_sets_path, class: 'btn btn-default' %>
+  </div>
+<% end %>
