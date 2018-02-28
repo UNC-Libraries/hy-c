@@ -3,7 +3,7 @@ task :test_data_import => :environment do
   sample_data = YAML.load(File.read(File.expand_path('../../../spec/fixtures/oai_sample_documents.yml', __FILE__)))
   sample_data.each do |data|
     doc = data[1]
-    work = Work.new
+    work = Article.new
     work.creator = [doc['creator']]
     work.depositor = doc['depositor']
     work.label = doc['label']
