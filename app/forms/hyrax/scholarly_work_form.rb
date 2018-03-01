@@ -8,7 +8,7 @@ module Hyrax
 
     self.terms += [:resource_type, :abstract, :advisor, :affiliation, :conference_name, :date_issued, :genre,
                    :geographic_subject, :orcid, :other_affiliation]
-    self.terms -= [:contributor, :publisher, :identifier, :based_near, :related_url]
+    self.terms -= [:contributor, :publisher, :identifier, :based_near, :related_url, :source]
     self.required_fields -= [:keyword, :rights_statement]
     self.single_value_fields = [:title]
 

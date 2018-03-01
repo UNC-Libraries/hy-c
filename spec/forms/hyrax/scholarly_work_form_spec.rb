@@ -23,8 +23,7 @@ RSpec.describe Hyrax::ScholarlyWorkForm do
 
     it { is_expected.to match_array [:abstract, :advisor, :affiliation, :conference_name, :date_issued, :genre,
                                      :geographic_subject, :orcid, :other_affiliation, :date_created, :description,
-                                     :keyword, :language, :license, :resource_type, :rights_statement, :source,
-                                     :subject] }
+                                     :keyword, :language, :license, :resource_type, :rights_statement, :subject] }
   end
 
   describe '.model_attributes' do
