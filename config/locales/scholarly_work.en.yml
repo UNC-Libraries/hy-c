@@ -1,0 +1,8 @@
+en:
+  hyrax:
+    icons:
+      scholarly_work:     'fa fa-file-text-o'
+    select_type:
+      scholarly_work:
+        name:               "Scholarly Work"
+        description:        "Scholarly work works"
