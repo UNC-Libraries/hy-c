@@ -7,7 +7,9 @@
     <%= link_to "Edit", edit_polymorphic_path([main_app, presenter]), class: 'btn btn-default' %>
     <%# Changes start here %>
     <% if current_user.admin? %>
-    <%= link_to "Delete", [main_app, presenter], class: 'btn btn-danger', data: { confirm: "Delete this #{presenter.human_readable_type}?" }, method: :delete %>
+      <%= link_to "Delete", [main_app, presenter], class: 'btn btn-danger', data: { confirm: "Delete this #{presenter.human_readable_type}?" }, method: :delete %>
+    <% else %>
+      <button class="btn btn-danger" data-toggle="modal" data-target="#deletion-request-modal">Request Deletion</button>
     <% end %>
     <%# Changes end here %>
     <% if presenter.member_presenters.size > 1 %>
