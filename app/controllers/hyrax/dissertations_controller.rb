@@ -3,6 +3,7 @@
 
 module Hyrax
   class DissertationsController < ApplicationController
+    before_action :ensure_admin!
     # Adds Hyrax behaviors to the controller.
     include Hyrax::WorksControllerBehavior
     include Hyrax::BreadcrumbsForWorks
@@ -10,5 +11,10 @@ module Hyrax
 
     # Use this line if you want to use a custom presenter
     self.show_presenter = Hyrax::DissertationPresenter
+
+    private
+      def ensure_admin!
+        authorize! :read, :admin_dashboard
+      end
   end
 end

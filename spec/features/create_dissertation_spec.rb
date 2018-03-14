@@ -46,32 +46,7 @@ RSpec.feature 'Create a Dissertation', js: false do
       login_as user
 
       visit new_hyrax_dissertation_path
-      expect(page).to have_content "Add New Dissertation"
-
-      fill_in 'Title', with: 'Test Dissertation work'
-      fill_in 'Creator', with: 'Test Default Creator'
-      fill_in 'Keyword', with: 'Test Default Keyword'
-      select "In Copyright", :from => "dissertation_rights_statement"
-      choose "dissertation_visibility_open"
-      check 'agreement'
-
-      click_link "Files" # switch tab
-      within "//span[@id=addfiles]" do
-        attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'))
-      end
-
-      click_link "Relationships"
-      expect(page).to_not have_content 'Add as member of administrative set'
-
-      click_button 'Save'
-      expect(page).to have_content 'Your files are being processed by Hyrax'
-
-      visit '/dashboard/my/works/'
-      expect(page).to have_content 'Test Dissertation work'
-
-      first('.document-title', text: 'Test Dissertation work').click
-      expect(page).to have_content 'Test Default Keyword'
-      expect(page).to have_content 'In Administrative Set: dissertation admin set'
+      expect(page).to have_content "You are not authorized to access this page"
     end
 
     scenario 'as an admin' do
