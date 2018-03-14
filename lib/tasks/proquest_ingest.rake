@@ -43,28 +43,28 @@ namespace :proquest do
     @admin_set_id = ::AdminSet.where(title: ARGV[2]).first.id
 
     metadata_dir = ARGV[1]
-    migrate_objects(metadata_dir)
+    migrate_proquest_packages(metadata_dir)
   end
 
-  def migrate_objects(metadata_dir)
+  def migrate_proquest_packages(metadata_dir)
     proquest_packages = Dir.glob("#{metadata_dir}/*.zip")
     proquest_packages.each do |package|
       puts "Unpacking #{package}"
       @file_last_modified = ''
-      extract_files(package)
+      extract_proquest_files(package)
       metadata_files = Dir.glob("#{@temp}/**/*")
 
       metadata_files.sort.each do |file|
         if File.file?(file)
           if file.match('.xml')
-            metadata_fields = metadata(file, metadata_dir)
+            metadata_fields = proquest_metadata(file, metadata_dir)
 
             puts "Number of files: #{metadata_fields[:files].count.to_s}"
 
-            resource = work_record(metadata_fields[:resource])
+            resource = proquest_record(metadata_fields[:resource])
             resource.save!
 
-            ingest_files(resource: resource,
+            ingest_proquest_files(resource: resource,
                          files: metadata_fields[:files],
                          metadata: metadata_fields[:resource],
                          zip_dir_files: metadata_files)
@@ -75,7 +75,7 @@ namespace :proquest do
     end
   end
 
-  def extract_files(file)
+  def extract_proquest_files(file)
     fname = file.split('.zip')[0].split('/')[-1]
     FileUtils::mkdir_p @temp+'/'+fname
     Zip::File.open(file) do |zip_file|
@@ -90,14 +90,14 @@ namespace :proquest do
     end
   end
 
-  def ingest_files(resource: nil, files: [], metadata: nil, zip_dir_files: nil)
+  def ingest_proquest_files(resource: nil, files: [], metadata: nil, zip_dir_files: nil)
     ordered_members = []
 
     files.each do |f|
       file_path = zip_dir_files.find { |e| e.match(f) }
       puts "trying...#{f.to_s}"
       if !file_path.nil? && File.file?(file_path)
-        file_set = ingest_file(parent: resource, resource: metadata, f: file_path)
+        file_set = ingest_proquest_file(parent: resource, resource: metadata, f: file_path)
         ordered_members << file_set if file_set
       end
     end
@@ -105,7 +105,7 @@ namespace :proquest do
     resource.ordered_members = ordered_members
   end
 
-  def ingest_file(parent: nil, resource: nil, f: nil)
+  def ingest_proquest_file(parent: nil, resource: nil, f: nil)
     puts "ingesting... #{f.to_s}"
     fileset_metadata = resource.slice('visibility', 'embargo_release_date', 'visibility_during_embargo',
                                       'visibility_after_embargo')
@@ -123,7 +123,7 @@ namespace :proquest do
     file_set
   end
 
-  def metadata(metadata_file, metadata_dir)
+  def proquest_metadata(metadata_file, metadata_dir)
     file = File.open(metadata_file)
     metadata = Nokogiri::XML(file)
     file.close
@@ -250,7 +250,7 @@ namespace :proquest do
 
   end
 
-  def work_record(work_attributes)
+  def proquest_record(work_attributes)
     resource = Dissertation.new
     resource.creator = work_attributes['creator']
     resource.depositor = @depositor_email

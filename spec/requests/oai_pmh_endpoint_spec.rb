@@ -15,7 +15,7 @@ RSpec.describe 'OAI-PMH catalog endpoint' do
       config.oai = oai_config
     end
 
-    solrRecords = ActiveFedora::SolrService.get('has_model_ssim:(Work OR Dissertation OR Article OR MastersPaper OR '+
+    solrRecords = ActiveFedora::SolrService.get('has_model_ssim:(Dissertation OR Article OR MastersPaper OR '+
                                                     'HonorsThesis OR Journal OR DataSet OR Multimed OR ScholarlyWork) '+
                                                     'AND visibility_ssi:open', rows: 50)
     solrRecords['response']['docs'].each do |doc|
@@ -152,7 +152,7 @@ RSpec.describe 'OAI-PMH catalog endpoint' do
   end
 
   describe 'GetRecord verb', :vcr do
-    solrRecords = ActiveFedora::SolrService.get('has_model_ssim:Work', rows: 50)
+    solrRecords = ActiveFedora::SolrService.get('has_model_ssim:Article', rows: 50)
     oai_identifier =  solrRecords['response']['docs'][0]['id']
 
     let(:params) { { verb: 'GetRecord', metadataPrefix: format, identifier: identifier } }
@@ -225,7 +225,7 @@ RSpec.describe 'OAI-PMH catalog endpoint' do
   end
 
   describe 'ListIdentifiers verb' do
-    solrRecords = ActiveFedora::SolrService.get('has_model_ssim:Work', rows: 50, sort: 'timestamp asc')
+    solrRecords = ActiveFedora::SolrService.get('has_model_ssim:Article', rows: 50, sort: 'timestamp asc')
     # The limit is currently 10, so we should expect to get the first 10 items
     oai_identifier1 =  solrRecords['response']['docs'][0]['id']
     oai_identifier2 =  solrRecords['response']['docs'][9]['id']
