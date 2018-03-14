@@ -3,7 +3,7 @@
 
 module Hyrax
   class DissertationsController < ApplicationController
-    before_action :ensure_admin!
+    before_action :ensure_admin!, except: :show
     # Adds Hyrax behaviors to the controller.
     include Hyrax::WorksControllerBehavior
     include Hyrax::BreadcrumbsForWorks
