@@ -40,10 +40,12 @@ namespace :cdr do
   namespace :migration do
 
     desc 'batch migrate generic files from FOXML file'
-    task :items, [:dir, :migrate_datastreams] => :environment do |t, args|
-      args.with_defaults(:migrate_datastreams => "true")
+    task :items => :environment do
+      ARGV.each { |arg| task arg.to_sym do ; end }
 
-      metadata_dir = args.dir
+      @work_type = ARGV[2]
+
+      metadata_dir = ARGV[1]
       migrate_objects(metadata_dir)
     end
 
@@ -236,7 +238,7 @@ namespace :cdr do
     end
 
     def work_record(work_attributes)
-      resource = Work.new
+      resource = @work_type.singularize.classify.constantize.new
       resource.creator = work_attributes['creator']
       resource.depositor = DEPOSITOR_EMAIL
       resource.save
