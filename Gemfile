@@ -25,6 +25,7 @@ gem 'hydra-role-management', '~> 0.2.2'
 gem 'clamav', '~> 0.4.1'
 gem 'sidekiq', '~> 5.0.4'
 gem 'blacklight_oai_provider', '6.0.0.pre1'
+gem 'edtf-humanize', '0.0.7'
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails', '~> 4.3.1'
