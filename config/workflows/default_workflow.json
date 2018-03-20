@@ -15,7 +15,20 @@
                         "Hyrax::Workflow::ActivateObject"
                     ]
                 }, {
-                    "name": "request_deletion",
+                    "name": "tombstone",
+                    "from_states": [{"names": ["deposited"], "roles": ["approving"]}],
+                    "transition_to": "tombstoned",
+                    "notifications": [
+                        {
+                            "notification_type": "email",
+                            "name": "Hyrax::Workflow::DeletionApprovalNotification",
+                            "to": ["depositing"]
+                        }
+                    ],
+                    "methods": [
+                        "Hyrax::Workflow::MetadataOnlyRecord"
+                    ]
+                }, {"name": "request_deletion",
                     "from_states": [{"names": ["deposited"], "roles": ["approving", "depositing"]}],
                     "transition_to": "pending_deletion",
                     "notifications": [
