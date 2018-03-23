@@ -5,8 +5,12 @@ module Hyrax
       private
 
       def attribute_value_to_html(value)
-        Date.try(:edtf, value).try(:humanize) ||
-            Date.parse(value).to_formatted_s(:standard).try(:edtf).try(:humanize)
+        begin
+          Date.try(:edtf, value).try(:humanize) ||
+              Date.parse(value).to_formatted_s(:standard).try(:edtf).try(:humanize)
+        rescue ArgumentError
+          value
+        end
       end
     end
   end
