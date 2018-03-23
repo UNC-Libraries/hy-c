@@ -59,6 +59,8 @@ namespace :proquest do
           if file.match('.xml')
             metadata_fields = proquest_metadata(file, metadata_dir)
 
+            puts metadata_fields
+
             puts "Number of files: #{metadata_fields[:files].count.to_s}"
 
             resource = proquest_record(metadata_fields[:resource])
@@ -202,7 +204,7 @@ namespace :proquest do
     affiliation = ProquestDepartmentMappingsService.standard_department_name(department)
 
     date_issued = metadata.xpath('//DISS_description/DISS_dates/DISS_accept_date').text
-    date_issued = Date.strptime(date_issued,"%m/%d/%Y")
+    date_issued = Date.strptime(date_issued,"%m/%d/%Y").strftime('%Y-%m-%d')
 
     graduation_semester = ''
     if @file_last_modified.month >= 2 && @file_last_modified.month <= 6
@@ -235,12 +237,12 @@ namespace :proquest do
         'affiliation'=>affiliation,
         'academic_concentration'=>academic_concentration,
         'graduation_year'=>graduation_year,
-        'date_issued'=>date_issued,
+        'date_issued'=>(Date.try(:edtf, date_issued) || date_issued).to_s,
         'genre'=>genre,
         'resource_type'=>resource_type,
         'language'=>language,
         'visibility'=>visibility,
-        'embargo_release_date'=>embargo_release_date,
+        'embargo_release_date'=>(Date.try(:edtf, date_issued) || embargo_release_date).to_s,
         'visibility_during_embargo'=>visibility_during_embargo,
         'visibility_after_embargo'=>visibility_after_embargo,
         'admin_set_id'=>@admin_set_id
