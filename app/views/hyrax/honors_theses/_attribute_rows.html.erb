@@ -7,7 +7,7 @@
 <%= presenter.attribute_to_html(:resource_type, render_as: :faceted) %>
 <%= presenter.attribute_to_html(:rights_statement, render_as: :rights_statement) %>
 <%= presenter.attribute_to_html(:degree) %>
-<%= presenter.attribute_to_html(:graduation_year) %>
+<%= presenter.attribute_to_html(:graduation_year, render_as: :date) %>
 <%= presenter.attribute_to_html(:advisor) %>
 <%= presenter.attribute_to_html(:academic_concentration) %>
 <%= presenter.attribute_to_html(:degree_granting_institution) %>

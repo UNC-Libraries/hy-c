@@ -20,7 +20,7 @@
 <%= presenter.attribute_to_html(:doi) %>
 <%= presenter.attribute_to_html(:format) %>
 <%= presenter.attribute_to_html(:genre) %>
-<%= presenter.attribute_to_html(:graduation_year) %>
+<%= presenter.attribute_to_html(:graduation_year, render_as: :date) %>
 <%= presenter.attribute_to_html(:note) %>
 <%= presenter.attribute_to_html(:place_of_publication) %>
 <%= presenter.attribute_to_html(:record_content_source) %>
