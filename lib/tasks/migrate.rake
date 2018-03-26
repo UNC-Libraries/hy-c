@@ -69,7 +69,6 @@ namespace :cdr do
           end
         end
       end
-      end
     end
    
     def ingest_files(parent: nil, resource: nil, files: [], metadata_dir: nil)
