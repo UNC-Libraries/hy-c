@@ -54,8 +54,6 @@ namespace :cdr do
 
       puts 'Object count: '+metadata_files.count.to_s
 
-      count = 0
-      unless count > 0
       metadata_files.sort.each do |file|
         uuid = file.split(metadata_dir)[1].split('/')[1]
         if Dir.glob("#{metadata_dir}/#{uuid}/#{uuid}-DATA_FILE.*").blank?
@@ -66,7 +64,6 @@ namespace :cdr do
           if metadata_fields[:files][0].match(/.+\.xml/)
             resource = metadata_fields[:resource]
             resource.save!
-            count += 1
 
             ingest_files(resource: resource, files: metadata_fields[:files], metadata_dir: metadata_dir)
           end

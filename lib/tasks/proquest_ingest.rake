@@ -59,8 +59,6 @@ namespace :proquest do
           if file.match('.xml')
             metadata_fields = proquest_metadata(file, metadata_dir)
 
-            puts metadata_fields
-
             puts "Number of files: #{metadata_fields[:files].count.to_s}"
 
             resource = proquest_record(metadata_fields[:resource])
