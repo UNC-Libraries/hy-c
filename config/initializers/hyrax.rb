@@ -13,6 +13,8 @@ Hyrax.config do |config|
   config.register_curation_concern :data_set
   # Injected via `rails g hyrax:work Multimed`
   config.register_curation_concern :multimed
+  # Injected via `rails g hyrax:work ScholarlyWork`
+  config.register_curation_concern :scholarly_work
 
   # Register roles that are expected by your implementation.
   # @see Hyrax::RoleRegistry for additional details.
