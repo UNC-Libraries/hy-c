@@ -1,4 +1,4 @@
-<%= presenter.attribute_to_html(:date_modified, label: 'Last Modified') %>
+<%= presenter.attribute_to_html(:date_modified, label: 'Last Modified', render_as: :date) %>
 <%= presenter.attribute_to_html(:creator, render_as: :faceted) %>
 <%= presenter.attribute_to_html(:subject, render_as: :faceted) %>
 <%= presenter.attribute_to_html(:description) %>
@@ -12,7 +12,7 @@
 <%= presenter.attribute_to_html(:advisor) %>
 <%= presenter.attribute_to_html(:affiliation) %>
 <%= presenter.attribute_to_html(:conference_name) %>
-<%= presenter.attribute_to_html(:date_issued) %>
+<%= presenter.attribute_to_html(:date_issued, render_as: :date) %>
 <%= presenter.attribute_to_html(:genre) %>
 <%= presenter.attribute_to_html(:geographic_subject) %>
 <%= presenter.attribute_to_html(:orcid) %>
