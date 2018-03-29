@@ -1,10 +1,10 @@
 # Generated via
-#  `rails generate hyrax:work Dissertation`
+#  `rails generate hyrax:work ScholarlyWork`
 require 'rails_helper'
 include Warden::Test::Helpers
 
 # NOTE: If you generated more than one work, you have to set "js: true"
-RSpec.feature 'Create a Dissertation', js: false do
+RSpec.feature 'Create a ScholarlyWork', js: false do
   context 'a logged in user' do
     let(:user) do
       User.new(email: 'test@example.com',guest: false) { |u| u.save!(validate: false)}
@@ -15,7 +15,7 @@ RSpec.feature 'Create a Dissertation', js: false do
     end
 
     let(:admin_set) do
-      AdminSet.create(title: ["dissertation admin set"],
+      AdminSet.create(title: ["scholarly work admin set"],
                       description: ["some description"],
                       edit_users: [user.user_key])
     end
@@ -39,27 +39,52 @@ RSpec.feature 'Create a Dissertation', js: false do
                                              agent_id: admin_user.user_key,
                                              access: 'deposit')
       Sipity::WorkflowAction.create(id: 4, name: 'show', workflow_id: workflow.id)
-      DefaultAdminSet.create(work_type_name: 'Dissertation', admin_set_id: admin_set.id)
+      DefaultAdminSet.create(work_type_name: 'ScholarlyWork', admin_set_id: admin_set.id)
     end
 
     scenario 'as a non-admin' do
       login_as user
 
-      visit new_hyrax_dissertation_path
-      expect(page).to have_content "You are not authorized to access this page"
+      visit new_hyrax_scholarly_work_path
+      expect(page).to have_content "Add New Scholarly Work"
+
+      fill_in 'Title', with: 'Test ScholarlyWork work'
+      fill_in 'Creator', with: 'Test Default Creator'
+      fill_in 'Keyword', with: 'Test Default Keyword'
+      select "In Copyright", :from => "scholarly_work_rights_statement"
+      choose "scholarly_work_visibility_open"
+      check 'agreement'
+
+      click_link "Files" # switch tab
+      within "//span[@id=addfiles]" do
+        attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'))
+      end
+
+      click_link "Relationships"
+      expect(page).to_not have_content 'Add as member of administrative set'
+
+      click_button 'Save'
+      expect(page).to have_content 'Your files are being processed by Hyrax'
+
+      visit '/dashboard/my/works/'
+      expect(page).to have_content 'Test ScholarlyWork work'
+
+      first('.document-title', text: 'Test ScholarlyWork work').click
+      expect(page).to have_content 'Test Default Keyword'
+      expect(page).to have_content 'In Administrative Set: scholarly work admin set'
     end
 
     scenario 'as an admin' do
       login_as admin_user
 
-      visit new_hyrax_dissertation_path
-      expect(page).to have_content "Add New Dissertation"
+      visit new_hyrax_scholarly_work_path
+      expect(page).to have_content "Add New Scholarly Work"
 
-      fill_in 'Title', with: 'Test Dissertation work'
+      fill_in 'Title', with: 'Test ScholarlyWork work'
       fill_in 'Creator', with: 'Test Default Creator'
       fill_in 'Keyword', with: 'Test Default Keyword'
-      select "In Copyright", :from => "dissertation_rights_statement"
-      choose "dissertation_visibility_open"
+      select "In Copyright", :from => "scholarly_work_rights_statement"
+      choose "scholarly_work_visibility_open"
       check 'agreement'
 
       click_link "Files" # switch tab
@@ -69,17 +94,17 @@ RSpec.feature 'Create a Dissertation', js: false do
 
       click_link "Relationships"
       expect(page).to have_content 'Add as member of administrative set'
-      find('#dissertation_admin_set_id').text eq 'dissertation admin set'
+      find('#scholarly_work_admin_set_id').text eq 'scholarly work admin set'
 
       click_button 'Save'
       expect(page).to have_content 'Your files are being processed by Hyrax'
 
       visit '/dashboard/my/works/'
-      expect(page).to have_content 'Test Dissertation work'
+      expect(page).to have_content 'Test ScholarlyWork work'
 
-      first('.document-title', text: 'Test Dissertation work').click
+      first('.document-title', text: 'Test ScholarlyWork work').click
       expect(page).to have_content 'Test Default Keyword'
-      expect(page).to have_content 'In Administrative Set: dissertation admin set'
+      expect(page).to have_content 'In Administrative Set: scholarly work admin set'
     end
   end
 end
