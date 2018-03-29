@@ -80,6 +80,7 @@ RSpec.feature 'Create a Dissertation', js: false do
       first('.document-title', text: 'Test Dissertation work').click
       expect(page).to have_content 'Test Default Keyword'
       expect(page).to have_content 'In Administrative Set: dissertation admin set'
+      expect(page).to have_content "Last Modified #{Date.edtf(DateTime.now.to_s).humanize}"
     end
   end
 end

@@ -1,4 +1,4 @@
-<%= presenter.attribute_to_html(:date_modified, label: 'Last Modified') %>
+<%= presenter.attribute_to_html(:date_modified, label: 'Last Modified', render_as: :date) %>
 <%= presenter.attribute_to_html(:creator, render_as: :faceted) %>
 <%= presenter.attribute_to_html(:contributor, render_as: :faceted) %>
 <%= presenter.attribute_to_html(:subject, render_as: :faceted) %>
@@ -6,7 +6,6 @@
 <%= presenter.attribute_to_html(:language, render_as: :faceted) %>
 <%= presenter.attribute_to_html(:identifier, render_as: :linked, search_field: 'identifier_tesim') %>
 <%= presenter.attribute_to_html(:keyword, render_as: :faceted) %>
-<%= presenter.attribute_to_html(:date_created, render_as: :linked, search_field: 'date_created_tesim') %>
 <%= presenter.attribute_to_html(:resource_type, render_as: :faceted) %>
 <%= presenter.attribute_to_html(:rights_statement, render_as: :rights_statement) %>
 <%= presenter.attribute_to_html(:abstract) %>
@@ -14,14 +13,14 @@
 <%= presenter.attribute_to_html(:affiliation) %>
 <%= presenter.attribute_to_html(:access) %>
 <%= presenter.attribute_to_html(:advisor) %>
-<%= presenter.attribute_to_html(:date_issued) %>
+<%= presenter.attribute_to_html(:date_issued, render_as: :date) %>
 <%= presenter.attribute_to_html(:degree) %>
 <%= presenter.attribute_to_html(:degree_granting_institution) %>
 <%= presenter.attribute_to_html(:discipline) %>
 <%= presenter.attribute_to_html(:doi) %>
 <%= presenter.attribute_to_html(:format) %>
 <%= presenter.attribute_to_html(:genre) %>
-<%= presenter.attribute_to_html(:graduation_year) %>
+<%= presenter.attribute_to_html(:graduation_year, render_as: :date) %>
 <%= presenter.attribute_to_html(:note) %>
 <%= presenter.attribute_to_html(:place_of_publication) %>
 <%= presenter.attribute_to_html(:record_content_source) %>

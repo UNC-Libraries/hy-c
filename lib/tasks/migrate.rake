@@ -121,10 +121,10 @@ namespace :cdr do
 
       #get the date_created
       date_created_string = metadata.xpath("//foxml:objectProperties/foxml:property[contains(@NAME, 'model#createdDate')]/@VALUE", MigrationConstants::NS).to_s
-      date_created = DateTime.strptime(date_created_string, '%Y-%m-%dT%H:%M:%S.%N%Z') unless date_created_string.nil?
+      date_created = DateTime.strptime(date_created_string, '%Y-%m-%dT%H:%M:%S.%N%Z').strftime('%Y-%m-%d') unless date_created_string.nil?
       #get the modifiedDate
       date_modified_string = metadata.xpath("//foxml:objectProperties/foxml:property[contains(@NAME, 'view#lastModifiedDate')]/@VALUE", MigrationConstants::NS).to_s
-      date_modified = DateTime.strptime(date_modified_string, '%Y-%m-%dT%H:%M:%S.%N%Z') unless date_modified_string.nil?
+      date_modified = DateTime.strptime(date_modified_string, '%Y-%m-%dT%H:%M:%S.%N%Z').strftime('%Y-%m-%d') unless date_modified_string.nil?
       MigrationLogger.info 'Get the current version of MODS'
       mods_version = metadata.xpath("//foxml:datastream[contains(@ID, 'MD_DESCRIPTIVE')]//foxml:xmlContent//mods:mods", MigrationConstants::NS).last
 
@@ -210,9 +210,9 @@ namespace :cdr do
       work_attributes = {
           'title'=>title,
           'creator'=>creators,
-          'date_created'=>date_created,
+          'date_created'=>(Date.try(:edtf, date_created) || date_created).to_s,
           'keyword'=>keywords,
-          'date_modified'=>date_modified,
+          'date_modified'=>(Date.try(:edtf, date_modified) || date_modified).to_s,
           'contributor'=>contributors,
           'description'=>[description],
           'identifier'=>identifier,
@@ -222,7 +222,7 @@ namespace :cdr do
           'resource_type'=>[resource_type],
           'language'=>[language],
           'visibility'=>visibility,
-          'embargo_release_date'=>embargo_release_date,
+          'embargo_release_date'=>(Date.try(:edtf, embargo_release_date) || embargo_release_date).to_s,
           'visibility_during_embargo'=>visibility_during_embargo,
           'visibility_after_embargo'=>visibility_after_embargo
       }

@@ -9,11 +9,11 @@
 <%= presenter.attribute_to_html(:access) %>
 <%= presenter.attribute_to_html(:affiliation) %>
 <%= presenter.attribute_to_html(:bibliographic_citation) %>
-<%= presenter.attribute_to_html(:copyright_date) %>
-<%= presenter.attribute_to_html(:date_captured) %>
-<%= presenter.attribute_to_html(:date_created) %>
-<%= presenter.attribute_to_html(:date_issued) %>
-<%= presenter.attribute_to_html(:date_other) %>
+<%= presenter.attribute_to_html(:copyright_date, render_as: :date) %>
+<%= presenter.attribute_to_html(:date_captured, render_as: :date) %>
+<%= presenter.attribute_to_html(:date_created, render_as: :date) %>
+<%= presenter.attribute_to_html(:date_issued, render_as: :date) %>
+<%= presenter.attribute_to_html(:date_other, render_as: :date) %>
 <%= presenter.attribute_to_html(:doi) %>
 <%= presenter.attribute_to_html(:edition) %>
 <%= presenter.attribute_to_html(:extent) %>
