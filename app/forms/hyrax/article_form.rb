@@ -27,5 +27,9 @@ module Hyrax
     def publisher
       super.first || ""
     end
+
+    def date_created
+      super.first || ""
+    end
   end
 end
