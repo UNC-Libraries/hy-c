@@ -10,7 +10,7 @@ module Hyrax
                    :geographic_subject, :orcid, :other_affiliation]
     self.terms -= [:contributor, :publisher, :identifier, :based_near, :related_url, :source]
     self.required_fields -= [:keyword, :rights_statement]
-    self.single_value_fields = [:title]
+    self.single_value_fields = [:title, :date_created]
 
     # Add overrides for required properties which are becoming single-valued
 

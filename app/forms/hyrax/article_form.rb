@@ -16,7 +16,7 @@ module Hyrax
 
     self.terms -= [:contributor, :based_near, :related_url, :source]
     
-    self.single_value_fields = [:title, :publisher]
+    self.single_value_fields = [:title, :publisher, :date_created]
 
     # Add overrides for required properties which are becoming single-valued
 

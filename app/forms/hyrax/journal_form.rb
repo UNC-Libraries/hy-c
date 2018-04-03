@@ -13,7 +13,7 @@ module Hyrax
 
     self.required_fields -= [:keyword]
 
-    self.single_value_fields = [:title]
+    self.single_value_fields = [:title, :date_created]
 
     # Add overrides for required properties which are becoming single-valued
 

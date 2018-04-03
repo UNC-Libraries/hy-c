@@ -47,7 +47,7 @@ RSpec.describe Hyrax::ArticleForm do
           affiliation: ['unc'],
           copyright_date: '2017-01-22',
           date_captured: '2017-01-22',
-          date_created: '2017-01-22',
+          date_created: '2017-01-22', # single-valued
           date_issued: '2017-01-22',
           date_other: ['2017-01-22'],
           doi: '12345',
@@ -91,7 +91,7 @@ RSpec.describe Hyrax::ArticleForm do
       expect(subject['affiliation']).to eq ['unc']
       expect(subject['copyright_date']).to eq '2017-01-22'
       expect(subject['date_captured']).to eq '2017-01-22'
-      expect(subject['date_created']).to eq '2017-01-22'
+      expect(subject['date_created']).to eq ['2017-01-22']
       expect(subject['date_issued']).to eq '2017-01-22'
       expect(subject['date_other']).to eq ['2017-01-22']
       expect(subject['doi']).to eq '12345'
