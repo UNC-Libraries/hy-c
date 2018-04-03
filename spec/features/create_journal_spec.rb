@@ -56,6 +56,8 @@ RSpec.feature 'Create a Journal', js: false do
       fill_in 'Creator', with: 'Test Default Creator'
       fill_in 'Keyword', with: 'Test Default Keyword'
       select "In Copyright", :from => "journal_rights_statement"
+      expect(page).to have_field('journal_visibility_embargo')
+      expect(page).not_to have_field('journal_visibility_lease')
       choose "journal_visibility_open"
       check 'agreement'
 
@@ -88,6 +90,8 @@ RSpec.feature 'Create a Journal', js: false do
       fill_in 'Creator', with: 'Test Default Creator'
       fill_in 'Keyword', with: 'Test Default Keyword'
       select "In Copyright", :from => "journal_rights_statement"
+      expect(page).to have_field('journal_visibility_embargo')
+      expect(page).not_to have_field('journal_visibility_lease')
       choose "journal_visibility_open"
       check 'agreement'
 

@@ -75,6 +75,8 @@ RSpec.feature 'Create a MastersPaper', js: false do
       fill_in 'Creator', with: 'Test Default Creator'
       fill_in 'Keyword', with: 'Test Default Keyword'
       select "In Copyright", :from => "masters_paper_rights_statement"
+      expect(page).to have_field('masters_paper_visibility_embargo')
+      expect(page).not_to have_field('masters_paper_visibility_lease')
       choose "masters_paper_visibility_open"
       check 'agreement'
 
@@ -111,6 +113,8 @@ RSpec.feature 'Create a MastersPaper', js: false do
       fill_in 'Creator', with: 'Test Default Creator'
       fill_in 'Keyword', with: 'Test Default Keyword'
       select "In Copyright", :from => "masters_paper_rights_statement"
+      expect(page).to have_field('masters_paper_visibility_embargo')
+      expect(page).not_to have_field('masters_paper_visibility_lease')
       choose "masters_paper_visibility_open"
       check 'agreement'
 

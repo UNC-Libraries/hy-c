@@ -43,6 +43,8 @@ RSpec.feature 'Create a Multimed', js: false do
       fill_in 'Creator', with: 'Test Default Creator'
       fill_in 'Keyword', with: 'Test Default Keyword'
       select "In Copyright", :from => "multimed_rights_statement"
+      expect(page).to have_field('multimed_visibility_embargo')
+      expect(page).not_to have_field('multimed_visibility_lease')
       choose "multimed_visibility_open"
       check 'agreement'
 
