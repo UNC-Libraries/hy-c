@@ -1,6 +1,9 @@
 <%# Overriding partial in hyrax gem in order to hide lease option %>
 <% if f.object.embargo_release_date %>
   <%= render 'form_permission_under_embargo', f: f %>
+<%# Remove lease panel %>
+<%# elsif f.object.lease_expiration_date %>
+  <%# render 'form_permission_under_lease', f: f %>
 <% else %>
   <fieldset>
     <legend class="legend-save-work">Visibility</legend>
@@ -40,6 +43,23 @@
           </div>
         </label>
       </li>
+      <%# Remove lease option %>
+      <%# <li class="radio"> %>
+        <%# <label> %>
+          <%#= f.radio_button :visibility, Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_LEASE, data: { 'target': '#collapseLease' } %>
+          <%#= visibility_badge(Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_LEASE) %>
+          <%# <br /> %>
+          <%#= t('hyrax.visibility.lease.note_html') %>
+          <%# <div class="collapse" id="collapseLease"> %>
+            <%# <div class="form-inline"> %>
+              <%#= f.input :visibility_during_lease, wrapper: :inline, collection: visibility_options(:loosen), include_blank: false %>
+              <%#= t('hyrax.works.form.visibility_until') %>
+              <%#= f.date_field :lease_expiration_date, wrapper: :inline, value: f.object.lease_expiration_date || Date.tomorrow, class: 'datepicker form-control' %>
+              <%#= f.input :visibility_after_lease, wrapper: :inline, collection: visibility_options(:restrict), include_blank: false %>
+            <%# </div> %>
+          <%# </div> %>
+        <%# </label> %>
+      <%# </li> %>
       <li class="radio">
         <label>
           <%= f.radio_button :visibility, Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE %>
