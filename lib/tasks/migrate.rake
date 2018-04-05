@@ -210,7 +210,7 @@ namespace :cdr do
       work_attributes = {
           'title'=>title,
           'creator'=>creators,
-          'date_created'=>(Date.try(:edtf, date_created) || date_created).to_s,
+          'date_created'=>[(Date.try(:edtf, date_created) || date_created).to_s],
           'keyword'=>keywords,
           'date_modified'=>(Date.try(:edtf, date_modified) || date_modified).to_s,
           'contributor'=>contributors,
