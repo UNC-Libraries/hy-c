@@ -35,14 +35,13 @@ namespace :proquest do
 
 
   desc 'batch migrate generic files from FOXML file'
-  task :ingest => :environment do
-    ARGV.each { |arg| task arg.to_sym do ; end }
+  task :ingest, [:directory, :admin_set] => :environment do |t, args|
 
     # Should deposit works into an admin set
     # Update title parameter to reflect correct admin set
-    @admin_set_id = ::AdminSet.where(title: ARGV[2]).first.id
+    @admin_set_id = ::AdminSet.where(title: args[:admin_set]).first.id
 
-    metadata_dir = ARGV[1]
+    metadata_dir = args[:directory]
     migrate_proquest_packages(metadata_dir)
   end
 
@@ -240,7 +239,7 @@ namespace :proquest do
         'resource_type'=>resource_type,
         'language'=>language,
         'visibility'=>visibility,
-        'embargo_release_date'=>(Date.try(:edtf, date_issued) || embargo_release_date).to_s,
+        'embargo_release_date'=>(Date.try(:edtf, embargo_release_date)).to_s,
         'visibility_during_embargo'=>visibility_during_embargo,
         'visibility_after_embargo'=>visibility_after_embargo,
         'admin_set_id'=>@admin_set_id

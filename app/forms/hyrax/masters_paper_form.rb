@@ -11,11 +11,15 @@ module Hyrax
     self.terms -= [:contributor, :publisher, :identifier, :based_near, :related_url, :source, :description]
     self.required_fields -= [:keyword, :rights_statement]
     self.required_fields += [:degree_granting_institution]
-    self.single_value_fields = [:title]
+    self.single_value_fields = [:title, :date_created]
 
     # Add overrides for required properties which are becoming single-valued
 
     def title
+      super.first || ""
+    end
+
+    def date_created
       super.first || ""
     end
   end

@@ -41,7 +41,7 @@ RSpec.describe Hyrax::MastersPaperForm do
           degree: 'MS',
           degree_granting_institution: 'UNC',
           graduation_year: '2017',
-          date_created: 'a date',
+          date_created: 'a date', # single-valued
           license: ['http://creativecommons.org/licenses/by/3.0/us/'],
           member_of_collection_ids: ['123456', 'abcdef']
       )
@@ -60,7 +60,7 @@ RSpec.describe Hyrax::MastersPaperForm do
       expect(subject['degree']).to eq 'MS'
       expect(subject['degree_granting_institution']).to eq 'UNC'
       expect(subject['graduation_year']).to eq '2017'
-      expect(subject['date_created']).to eq 'a date'
+      expect(subject['date_created']).to eq ['a date']
       expect(subject['member_of_collection_ids']).to eq ['123456', 'abcdef']
     end
 

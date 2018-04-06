@@ -23,7 +23,7 @@ module Hyrax
       # This is for the rights statement
       property :rights_statement, predicate: ::RDF::Vocab::EDM.rights
       property :publisher, predicate: ::RDF::Vocab::DC11.publisher
-      property :date_created, predicate: ::RDF::Vocab::DC.created, multiple: false
+      property :date_created, predicate: ::RDF::Vocab::DC.created
       property :subject, predicate: ::RDF::Vocab::DC11.subject
       property :language, predicate: ::RDF::Vocab::DC11.language
       property :identifier, predicate: ::RDF::Vocab::DC.identifier

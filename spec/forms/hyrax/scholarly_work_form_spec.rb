@@ -38,6 +38,7 @@ RSpec.describe Hyrax::ScholarlyWorkForm do
           advisor: ['an advisor'],
           affiliation: ['an affiliation'],
           conference_name: ['a conference name'],
+          date_created: 'a date', # single-valued
           date_issued: 'a date', # single-valued
           genre: ['a genre'],
           geographic_subject: ['a geographic subject'],
@@ -63,6 +64,7 @@ RSpec.describe Hyrax::ScholarlyWorkForm do
       expect(subject['affiliation']).to eq ['an affiliation']
       expect(subject['other_affiliation']).to eq ['another affiliation']
       expect(subject['conference_name']).to eq ['a conference name']
+      expect(subject['date_created']).to eq ['a date']
       expect(subject['date_issued']).to eq 'a date'
       expect(subject['genre']).to eq ['a genre']
       expect(subject['geographic_subject']).to eq ['a geographic subject']

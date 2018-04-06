@@ -40,12 +40,10 @@ namespace :cdr do
   namespace :migration do
 
     desc 'batch migrate generic files from FOXML file'
-    task :items => :environment do
-      ARGV.each { |arg| task arg.to_sym do ; end }
+    task :items, [:directory, :work_type] => :environment do |t, args|
+      @work_type = args[:work_type]
 
-      @work_type = ARGV[2]
-
-      metadata_dir = ARGV[1]
+      metadata_dir = args[:directory]
       migrate_objects(metadata_dir)
     end
 
@@ -210,7 +208,7 @@ namespace :cdr do
       work_attributes = {
           'title'=>title,
           'creator'=>creators,
-          'date_created'=>(Date.try(:edtf, date_created) || date_created).to_s,
+          'date_created'=>[(Date.try(:edtf, date_created) || date_created).to_s],
           'keyword'=>keywords,
           'date_modified'=>(Date.try(:edtf, date_modified) || date_modified).to_s,
           'contributor'=>contributors,
