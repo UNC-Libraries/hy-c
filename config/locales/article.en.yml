@@ -6,3 +6,17 @@ en:
       article:
         name:               "Article"
         description:        "Article works"
+    links:
+      about: About
+      accessibility: Accessibility
+      browse_collections: Browse Collections
+      contact: Contact Us
+      home: Home
+      library_home: Library Home
+      privacy_policy: Privacy Policy
+    deposit:
+      header: Deposit Your Work
+      article: Article
+      student_paper: Student Papers
+      dataset: Datasets
+      other: Other Deposits

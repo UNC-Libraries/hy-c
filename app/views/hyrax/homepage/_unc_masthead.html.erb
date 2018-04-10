@@ -1,0 +1,16 @@
+<div id="unc-search" class="row">
+  <div class="col-sm-6 col-xs-12">
+    <%= image_tag("UNC_logo_white.png", alt: "UNC logo") %>
+  </div>
+  <div class="col-sm-6 col-xs-12">
+    <%= render "catalog/search_form" if controller_name == 'homepage' %>
+  </div>
+  <div class="link-tabs col-xs-12 col-sm-11">
+    <ul class="list-unstyled pull-right">
+      <li><button><%= link_to "Home", "/" %></button></li>
+      <li><button><%= link_to "Collections", "/" %></button></li>
+      <li><button><%= link_to "Departments", "/" %></button></li>
+      <li><button><%= link_to "Deposit", "/" %></button></li>
+    </ul>
+  </div>
+</div>
