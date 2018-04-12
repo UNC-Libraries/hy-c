@@ -40,6 +40,7 @@ RSpec.describe Hyrax::JournalForm do
           abstract: ['an abstract'],
           alternate_title: ['alt title'],
           conference_name: ['Code4Lib'],
+          date_created: '2018-01-09', # single-valued
           date_issued: '2018-01-08',
           extent: ['1993'],
           genre: ['science'],
@@ -61,6 +62,7 @@ RSpec.describe Hyrax::JournalForm do
       expect(subject['abstract']).to eq ['an abstract']
       expect(subject['alternate_title']).to eq ['alt title']
       expect(subject['conference_name']).to eq ['Code4Lib']
+      expect(subject['date_created']).to eq ['2018-01-09']
       expect(subject['date_issued']).to eq '2018-01-08'
       expect(subject['extent']).to eq ['1993']
       expect(subject['genre']).to eq ['science']

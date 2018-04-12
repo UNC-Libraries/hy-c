@@ -43,6 +43,7 @@ RSpec.describe Hyrax::DataSetForm do
           affiliation: ['library'],
           contributor: ['dean'],
           copyright_date: '2017-12-25',
+          date_created: '2017-04-02', # single-valued
           date_issued: '2018-01-08',
           doi: '12345',
           extent: ['1993'],
@@ -72,6 +73,7 @@ RSpec.describe Hyrax::DataSetForm do
       expect(subject['access']).to eq 'public'
       expect(subject['affiliation']).to eq ['library']
       expect(subject['copyright_date']).to eq '2017-12-25'
+      expect(subject['date_created']).to eq ['2017-04-02']
       expect(subject['date_issued']).to eq '2018-01-08'
       expect(subject['doi']).to eq '12345'
       expect(subject['extent']).to eq ['1993']

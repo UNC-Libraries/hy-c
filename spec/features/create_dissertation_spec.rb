@@ -59,6 +59,8 @@ RSpec.feature 'Create a Dissertation', js: false do
       fill_in 'Creator', with: 'Test Default Creator'
       fill_in 'Keyword', with: 'Test Default Keyword'
       select "In Copyright", :from => "dissertation_rights_statement"
+      expect(page).to have_field('dissertation_visibility_embargo')
+      expect(page).not_to have_field('dissertation_visibility_lease')
       choose "dissertation_visibility_open"
       check 'agreement'
 

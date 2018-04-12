@@ -32,6 +32,7 @@ RSpec.describe Hyrax::MultimedForm do
           note: ['a note'],
           keyword: ['multimed'],
           abstract: ['an abstract'],
+          date_created: '2018-01-09', # single-valued
           extent: ['1999'],
           genre: ['food'],
           geographic_subject: ['Italy']
@@ -45,6 +46,7 @@ RSpec.describe Hyrax::MultimedForm do
       expect(subject['note']).to eq ['a note']
       expect(subject['keyword']).to eq ['multimed']
       expect(subject['abstract']).to eq ['an abstract']
+      expect(subject['date_created']).to eq ['2018-01-09']
       expect(subject['extent']).to eq ['1999']
       expect(subject['genre']).to eq ['food']
       expect(subject['geographic_subject']).to eq ['Italy']
