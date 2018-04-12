@@ -183,7 +183,6 @@ $light-gray: lightgray;
   #unc-footer {
     height: auto;
     margin-top: 15px;
-    margin-bottom: 25px;
 
     ul li {
       padding-top: 10px;
@@ -192,15 +191,34 @@ $light-gray: lightgray;
   }
 }
 
+@media only screen and (max-width: 830px) {
+  #unc-text {
+    div {
+      width: 95%;
+    }
+  }
+
+  .social {
+    margin-bottom: 15px;
+  }
+}
+
 @media only screen and (max-width: 480px) {
   #unc-text {
     div {
       width: 100%;
       height: auto;
+      margin-top: -10px;
+
+      p {
+        font-size: .9em;
+      }
+
     }
   }
   .social {
     height: auto;
+    padding-bottom: 25px;
 
     li {
       display: block;
@@ -208,13 +226,13 @@ $light-gray: lightgray;
   }
 
   .site-footer {
-    position: inherit;
+    position: absolute;
   }
 
   #unc-footer {
     ul li {
       display: block;
-      margin-top: 15px;
+      margin-top: 5px;
     }
   }
 }
