@@ -17,6 +17,10 @@ body {
 #masthead {
   background-color: $carolina-blue-dark;
   margin-bottom: 0;
+
+  &+ nav {
+    margin-top: 0;
+  }
 }
 
 .image-masthead {
@@ -52,7 +56,6 @@ body {
 
 .container {
   width: 100%;
-  padding-left: 0;
   padding-right: 30px;
 }
 
@@ -213,12 +216,10 @@ body {
       border-right: none;
     }
   }
-}
 
-@media only screen and (max-width: 830px) {
   #unc-text {
     div {
-      width: 95%;
+      width: 100%;
     }
   }
 
@@ -227,14 +228,9 @@ body {
   }
 }
 
-@media only screen and (max-width: 480px) {
-  #unc-description {
-    text-align: center;
-  }
-
+@media only screen and (max-width: 600px) {
   #unc-text {
     div {
-      width: 100%;
       height: auto;
       margin-top: -10px;
 
@@ -243,6 +239,12 @@ body {
       }
 
     }
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  #unc-description {
+    text-align: center;
   }
 
   .social {
