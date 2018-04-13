@@ -206,7 +206,7 @@ body {
   }
 }
 
-@media only screen and (max-width: 830px) {
+@media only screen and (max-width: 865px) {
   #unc-footer {
     height: auto;
     margin-top: 15px;
@@ -220,6 +220,12 @@ body {
   #unc-text {
     div {
       width: 100%;
+      height: auto;
+      margin-top: -10px;
+    }
+
+    p {
+      font-size: 1.05em;
     }
   }
 
@@ -228,23 +234,15 @@ body {
   }
 }
 
-@media only screen and (max-width: 600px) {
-  #unc-text {
-    div {
-      height: auto;
-      margin-top: -10px;
-
-      p {
-        font-size: .9em;
-      }
-
-    }
-  }
-}
-
 @media only screen and (max-width: 480px) {
   #unc-description {
     text-align: center;
+  }
+
+  #unc-text {
+    p {
+      font-size: .9em;
+    }
   }
 
   .social {
