@@ -3,6 +3,16 @@ $carolina-blue-dark: #13294b;
 $carolina-blue: #4b9cd3;
 $text-color: white;
 $light-gray: lightgray;
+$shadow-base-top: 0 10px 10px -10px;
+$shadow-base-bottom: 0 -10px 10px -10px;
+$shadow-prefixed: inset $shadow-base-top #000, inset $shadow-base-bottom #000;
+$shadow: inner $shadow-base-top #000, inner $shadow-base-bottom #000;
+$description-shadow-prefixed: inset $shadow-base-top gray, inset $shadow-base-bottom gray;
+$description-shadow: inner $shadow-base-top gray, inner $shadow-base-bottom gray;
+
+body {
+  font-family: Verdana, Arial, sans-serif;
+}
 
 #masthead {
   background-color: $carolina-blue-dark;
@@ -12,21 +22,19 @@ $light-gray: lightgray;
 .image-masthead {
   margin-bottom: 0;
   height: 225px;
+  -moz-box-shadow: $shadow-prefixed;
+  -webkit-box-shadow: $shadow-prefixed;
+  box-shadow: $shadow;
 }
 
 #unc-search {
   background-color: $carolina-blue;
-  height: 50%;
+  height: 45%;
   padding-top: 15px;
   margin-right: 0;
 
   #search-form-header {
     margin-top: 25px;
-    width: 85%;
-  }
-
-  input {
-    height: 120%;
   }
 
   img {
@@ -35,10 +43,17 @@ $light-gray: lightgray;
     padding-left: 25px;
     padding-bottom: 15px;
   }
+
+  .fa-arrow-circle-up {
+    color: $text-color;
+    margin-right: 5px;
+  }
 }
 
 .container {
   width: 100%;
+  padding-left: 0;
+  padding-right: 30px;
 }
 
 .link-tabs {
@@ -84,18 +99,26 @@ $light-gray: lightgray;
     -moz-border-radius: 5px;
     border-radius: 5px;
     padding: 10px;
+    font-size: 1.2em;
   }
 }
 
 #unc-deposit {
   background-color: $carolina-blue;
   color: $text-color;
+  padding-left: 0;
+  padding-right: 30px;
 
   a {
     color: $text-color;
     font-weight: bold;
+
     &:hover {
       color: $light-gray;
+    }
+
+    div {
+      font-size: 18px;
     }
   }
 
@@ -119,18 +142,19 @@ $light-gray: lightgray;
   img {
     max-width: 45%;
     max-height: 45%;
+    margin: 0 auto;
   }
 
   p {
-    font-size: 1.15em;
+    font-size: 16px;
   }
 }
 
 #unc-featured {
   background-color: #e4e4e4;
-  border-image: linear-gradient(#fff, $light-gray) 100% 0 100% 0/10px 0 10px 0 stretch;
-  border-top: 1px solid $light-gray;
-  border-bottom: 1px solid $light-gray;
+  -moz-box-shadow: $description-shadow-prefixed;
+  -webkit-box-shadow: $description-shadow-prefixed;
+  box-shadow: $description-shadow;
 
   div {
     margin-bottom: 25px;
@@ -204,6 +228,10 @@ $light-gray: lightgray;
 }
 
 @media only screen and (max-width: 480px) {
+  #unc-description {
+    text-align: center;
+  }
+
   #unc-text {
     div {
       width: 100%;
@@ -216,6 +244,7 @@ $light-gray: lightgray;
 
     }
   }
+
   .social {
     height: auto;
     padding-bottom: 25px;
