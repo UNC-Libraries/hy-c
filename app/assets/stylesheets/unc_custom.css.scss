@@ -1,0 +1,267 @@
+/** Homepage customizations **/
+$carolina-blue-dark: #13294b;
+$carolina-blue: #4b9cd3;
+$text-color: white;
+$light-gray: lightgray;
+$shadow-base-top: 0 10px 10px -10px;
+$shadow-base-bottom: 0 -10px 10px -10px;
+$shadow-prefixed: inset $shadow-base-top #000, inset $shadow-base-bottom #000;
+$shadow: inner $shadow-base-top #000, inner $shadow-base-bottom #000;
+$description-shadow-prefixed: inset $shadow-base-top gray, inset $shadow-base-bottom gray;
+$description-shadow: inner $shadow-base-top gray, inner $shadow-base-bottom gray;
+
+body {
+  font-family: Verdana, Arial, sans-serif;
+}
+
+#masthead {
+  background-color: $carolina-blue-dark;
+  margin-bottom: 0;
+
+  &+ nav {
+    margin-top: 0;
+  }
+}
+
+.image-masthead {
+  margin-bottom: 0;
+  height: 225px;
+  -moz-box-shadow: $shadow-prefixed;
+  -webkit-box-shadow: $shadow-prefixed;
+  box-shadow: $shadow;
+}
+
+#unc-search {
+  background-color: $carolina-blue;
+  height: 45%;
+  padding-top: 15px;
+  margin-right: 0;
+
+  #search-form-header {
+    margin-top: 25px;
+  }
+
+  img {
+    max-width: 55%;
+    max-height: 55%;
+    padding-left: 25px;
+    padding-bottom: 15px;
+  }
+
+  .fa-arrow-circle-up {
+    color: $text-color;
+    margin-right: 5px;
+  }
+}
+
+.container {
+  width: 100%;
+  padding-right: 30px;
+}
+
+.link-tabs {
+  background-color: $carolina-blue;
+
+  ul {
+    margin-bottom: 0;
+
+    li {
+      display: inline-block;
+    }
+
+    button {
+      border: 1px outset $carolina-blue-dark;
+      background-color: $carolina-blue-dark;
+      height: 40px;
+      &:hover {
+        background-color: #1c4c80;
+      }
+
+      a {
+        color: $text-color;
+        &:hover {
+          color: $light-gray;
+        }
+      }
+    }
+  }
+}
+
+#unc-text {
+  color: $text-color !important;
+
+  div {
+    width: 65%;
+    margin: 0 auto;
+  }
+
+  p {
+    background-color: rgba(0, 0, 0, 0.6);
+    text-align: center;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 1.2em;
+  }
+}
+
+#unc-deposit {
+  background-color: $carolina-blue;
+  color: $text-color;
+  padding-left: 0;
+  padding-right: 30px;
+
+  a {
+    color: $text-color;
+    font-weight: bold;
+
+    &:hover {
+      color: $light-gray;
+    }
+
+    div {
+      font-size: 18px;
+    }
+  }
+
+  .unc-block {
+    display: inline-block;
+    margin-top: 25px;
+  }
+
+  i, div {
+    margin-bottom: 15px;
+  }
+}
+
+#unc-description {
+  padding-top: 25px;
+
+  &> div {
+    margin-bottom: 50px;
+  }
+
+  img {
+    max-width: 45%;
+    max-height: 45%;
+    margin: 0 auto;
+  }
+
+  p {
+    font-size: 16px;
+  }
+}
+
+#unc-featured {
+  background-color: #e4e4e4;
+  -moz-box-shadow: $description-shadow-prefixed;
+  -webkit-box-shadow: $description-shadow-prefixed;
+  box-shadow: $description-shadow;
+
+  div {
+    margin-bottom: 25px;
+  }
+
+  img {
+    max-width: 45%;
+    max-height: 45%;
+  }
+}
+
+.social {
+  width: 100%;
+  margin-top: 25px;
+
+  ul {
+    padding: 0 40%;
+
+    li {
+      display: inline-block;
+      margin-right: 15px;
+    }
+  }
+}
+
+.site-footer, .social {
+  height: 30px;
+}
+
+#unc-footer {
+  background-color: $carolina-blue-dark;
+
+  ul {
+    text-align: center;
+
+    li {
+      display: inline-block;
+      margin: -10px 0 0 15px;
+      padding-right: 15px;
+      border-right: 1px solid $text-color;
+
+      &:last-child {
+        border-right: none;
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 865px) {
+  #unc-footer {
+    height: auto;
+    margin-top: 15px;
+
+    ul li {
+      padding-top: 10px;
+      border-right: none;
+    }
+  }
+
+  #unc-text {
+    div {
+      width: 100%;
+      height: auto;
+      margin-top: -10px;
+    }
+
+    p {
+      font-size: 1.05em;
+    }
+  }
+
+  .social {
+    margin-bottom: 15px;
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  #unc-description {
+    text-align: center;
+  }
+
+  #unc-text {
+    p {
+      font-size: .9em;
+    }
+  }
+
+  .social {
+    height: auto;
+    padding-bottom: 25px;
+
+    li {
+      display: block;
+    }
+  }
+
+  .site-footer {
+    position: absolute;
+  }
+
+  #unc-footer {
+    ul li {
+      display: block;
+      margin-top: 5px;
+    }
+  }
+}

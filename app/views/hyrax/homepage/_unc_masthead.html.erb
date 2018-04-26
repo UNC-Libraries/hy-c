@@ -1,0 +1,16 @@
+<div id="unc-search" class="row">
+  <div class="col-sm-offset-0 col-sm-6 col-xs-offset-1 col-xs-11">
+    <%= image_tag("UNC_logo_white.png", alt: t('hyrax.homepage_images.unc_logo')) %>
+  </div>
+  <div class="col-sm-offset-0 col-sm-6 col-xs-offset-1 col-xs-11">
+    <%= render "catalog/search_form" if controller_name == 'homepage' %>
+  </div>
+  <div class="link-tabs col-xs-12 col-sm-12">
+    <ul class="list-unstyled pull-right">
+      <li><button><%= link_to t('hyrax.links.home'), "/" %></button></li>
+      <li><button><%= link_to t('hyrax.links.browse_collections'), "/" %></button></li>
+      <li><button><%= link_to t('hyrax.links.departments'), "/" %></button></li>
+      <li><button><i class="fa fa-arrow-circle-up" aria-hidden="true"></i><%= link_to t('hyrax.links.deposit'), "/" %></button></li>
+    </ul>
+  </div>
+</div>
