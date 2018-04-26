@@ -6,8 +6,12 @@ describe "rake proquest:ingest", type: :task do
     User.find_by_user_key('admin@example.com')
   end
 
+  let(:time) do
+    Time.now
+  end
+
   let(:admin_set) do
-    AdminSet.create!(title: ["default"],
+    AdminSet.create!(title: ["proquest default "+time.to_s],
                     description: ["some description"])
   end
 
@@ -34,19 +38,16 @@ describe "rake proquest:ingest", type: :task do
   end
 
   it "creates a new work" do
-    expect { Rake::Task['proquest:ingest'].invoke('spec/fixtures/proquest', 'default', 'RAILS_ENV=test') }
+    expect { Rake::Task['proquest:ingest'].invoke('spec/fixtures/proquest', 'proquest default '+time.to_s, 'RAILS_ENV=test') }
         .to change{ Dissertation.count }.by(1)
-    puts Dissertation.last.as_json
     expect(Dissertation.last['depositor']).to eq 'admin@example.com'
     expect(Dissertation.last['title']).to match_array ['Perspective on Attachments and Ingests']
-    expect(Dissertation.last['label']).to eq 'Perspectives on Attachments and Ingests'
-    expect(Dissertation.last['date_modified']).to eq DateTime.now.strftime('%Y-%m-%d')
-    expect(Dissertation.last['date_modified']).to eq '2011-01-01'
+    expect(Dissertation.last['label']).to eq 'Perspective on Attachments and Ingests'
+    expect(Dissertation.last['date_issued']).to eq '2011-01-01'
     expect(Dissertation.last['creator']).to match_array ['Smith, Blandy']
-    expect(Dissertation.last['contributor']).to match_array ['Smith, Blandy']
     expect(Dissertation.last['keyword']).to match_array ['Philosophy', 'attachments', 'aesthetics']
     expect(Dissertation.last['resource_type']).to match_array ['Dissertation']
-    expect(Dissertation.last['abstract']).to match_array ['The purpose of this study is to test ingest of a proquest deposit object without any attachemnts']
+    expect(Dissertation.last['abstract']).to match_array ['The purpose of this study is to test ingest of a proquest deposit object without any attachments']
     expect(Dissertation.last['academic_concentration']).to match_array ['Philosophy']
     expect(Dissertation.last['advisor']).to match_array ['Advisor, John T']
     expect(Dissertation.last['degree']).to eq 'Ph.D.'

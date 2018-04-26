@@ -12,13 +12,14 @@ describe "rake cdr:migration:items", type: :task do
   it "creates a new work" do
     expect { Rake::Task['cdr:migration:items'].invoke('spec/fixtures/migration', 'Article', 'RAILS_ENV=test') }
         .to change{ Article.count }.by(1)
-    expect(Article.last['depositor']).to eq 'admin@example.com'
-    expect(Article.last['title']).to match_array ['Les Miserables']
-    expect(Article.last['label']).to eq 'Les Miserables'
-    expect(Article.last['date_created']).to match_array ['2017-10-02']
-    expect(Article.last['date_modified']).to eq '2017-10-02'
-    expect(Article.last['creator']).to match_array ['Hugo, Victor']
-    expect(Article.last['contributor']).to match_array ['Hugo, Victor']
-    expect(Article.last['publisher']).to match_array ['Project Gutenberg']
+    new_article = Article.all[-1]
+    expect(new_article['depositor']).to eq 'admin@example.com'
+    expect(new_article['title']).to match_array ['Les Miserables']
+    expect(new_article['label']).to eq 'Les Miserables'
+    expect(new_article['date_created']).to match_array ['2017-10-02']
+    expect(new_article['date_modified']).to eq '2017-10-02'
+    expect(new_article['creator']).to match_array ['Hugo, Victor']
+    expect(new_article['contributor']).to match_array ['Hugo, Victor']
+    expect(new_article['publisher']).to match_array ['Project Gutenberg']
   end
 end

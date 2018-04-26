@@ -228,7 +228,7 @@ namespace :proquest do
         'creator'=>creators,
         'degree_granting_institution'=> degree_granting_institution,
         'keyword'=>keywords,
-        'abstract'=>abstract,
+        'abstract'=>abstract.gsub(/\n/, "").strip,
         'advisor'=>advisor,
         'degree'=>degree,
         'affiliation'=>affiliation,
