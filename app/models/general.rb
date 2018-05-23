@@ -10,7 +10,7 @@ class General < ActiveFedora::Base
 
   self.human_readable_type = 'General'
 
-  property :alternative_title, predicate: ::RDF::Vocab::DC.alternative do |index|
+  property :alternate_title, predicate: ::RDF::Vocab::DC.alternative do |index|
     index.as :stored_serachable
   end
 
@@ -70,7 +70,7 @@ class General < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :last_date_modified, predicate: ::RDF::Vocab::MODS.dateModified, multiple: false do |index|
+  property :last_modified_date, predicate: ::RDF::Vocab::MODS.dateModified, multiple: false do |index|
     index.as :stored_serachable
   end
 
@@ -103,7 +103,7 @@ class General < ActiveFedora::Base
     index.as :stored_serachable
   end
 
-  property :citation, predicate: ::RDF::Vocab::DC.bibliographicCitation do |index|
+  property :bibliographic_citation, predicate: ::RDF::Vocab::DC.bibliographicCitation do |index|
     index.as :stored_serachable
   end
 
@@ -188,11 +188,11 @@ class General < ActiveFedora::Base
     index.as :stored_serachable
   end
 
-  property :start_page, predicate: ::RDF::Vocab::SCHEMA.pageStart, multiple: false do |index|
+  property :page_start, predicate: ::RDF::Vocab::SCHEMA.pageStart, multiple: false do |index|
     index.as :stored_serachable
   end
 
-  property :end_page, predicate: ::RDF::Vocab::SCHEMA.pageEnd, multiple: false do |index|
+  property :page_end, predicate: ::RDF::Vocab::SCHEMA.pageEnd, multiple: false do |index|
     index.as :stored_serachable
   end
 
