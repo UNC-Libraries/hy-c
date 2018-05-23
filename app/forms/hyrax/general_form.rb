@@ -7,14 +7,13 @@ module Hyrax
 
     self.model_class = ::General
 
-    self.terms += [:resource_type, :alternate_title, :advisor, :funder, :project_director, :researcher, :sponsor,
-                   :translator, :reviewer, :degree_granting_institution, :conference_name, :orcid, :affiliation,
-                   :other_affiliation, :date_issued, :copyright_date, :last_modified_date, :date_other, :date_captured,
-                   :graduation_year, :abstract, :note, :extent, :table_of_contents, :bibliographic_citation, :edition,
-                   :peer_review_status, :degree, :academic_concentration, :discipline, :award, :medium, :kind_of_data,
-                   :series, :geographic_subject, :use, :rights_holder, :access, :doi, :issn, :isbn,
-                   :place_of_publication, :journal_title, :journal_volume, :journal_issue, :page_start, :page_end, :url,
-                   :digital_collection]
+    self.terms += [:resource_type, :abstract, :academic_concentration, :access, :advisor, :affiliation, :alternate_title,
+                   :award, :bibliographic_citation, :conference_name, :copyright_date, :date_captured, :date_issued, :date_other,
+                   :degree, :degree_granting_institution, :digital_collection, :discipline, :doi, :edition, :extent, :funder,
+                   :geographic_subject, :graduation_year, :isbn, :issn, :journal_issue, :journal_title, :journal_volume,
+                   :kind_of_data, :last_modified_date, :medium, :note, :orcid, :other_affiliation, :page_start, :page_end,
+                   :peer_review_status, :place_of_publication, :project_director, :researcher, :reviewer, :rights_holder,
+                   :series, :sponsor, :table_of_contents, :translator, :url, :use]
 
     self.required_fields -= [:creator, :keyword, :rights_statement]
 
