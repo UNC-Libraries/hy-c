@@ -50,7 +50,7 @@ class DataSet < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :last_date_modified, predicate: ::RDF::Vocab::MODS.dateModified, multiple: false do |index|
+  property :last_modified_date, predicate: ::RDF::Vocab::MODS.dateModified, multiple: false do |index|
     index.as :stored_searchable
   end
 
