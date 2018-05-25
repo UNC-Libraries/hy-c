@@ -26,4 +26,4 @@ jdk:
 env:
   global:
     - NOKOGIRI_USE_SYSTEM_LIBRARIES=true
-    - ENV['DEFAULT_ADMIN_SET']='default'
+    - DEFAULT_ADMIN_SET='default'
