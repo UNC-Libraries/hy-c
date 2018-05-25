@@ -15,6 +15,7 @@ rvm:
   - 2.4
 before_script:
   - bundle exec rake db:create
+  - bundle exec rake hydra:test_server &
   - sleep 75
   - bundle exec rake db:migrate RAILS_ENV=test
 before_install:
