@@ -1,0 +1,25 @@
+sudo: false
+dist: trusty
+language: ruby
+addons:
+  apt:
+    packages:
+      - libclamav-dev
+      - clamav
+cache:
+  - bundler: true
+services:
+  - redis-server
+  - postgresql
+rvm:
+  - 2.4
+before_script:
+  - bundle exec rake db:create
+before_install:
+  - gem update --system
+  - gem install bundler
+jdk:
+  - oraclejdk8
+env:
+  global:
+    - NOKOGIRI_USE_SYSTEM_LIBRARIES=true
