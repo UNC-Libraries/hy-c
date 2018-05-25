@@ -16,6 +16,7 @@ rvm:
 before_script:
   - bundle exec rake db:create
   - bundle exec rake hydra:test_server &
+  - sleep 75
   - bundle exec rake test_setup RAILS_ENV=test
 before_install:
   - gem update --system
