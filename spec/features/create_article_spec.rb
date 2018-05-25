@@ -72,7 +72,7 @@ RSpec.feature 'Create a Article', js: false do
       expect(page).to have_content 'Test Article work'
 
       first('.document-title', text: 'Test Article work').click
-      expect(page).to have_content 'Test Default Keyword hi there'
+      expect(page).to have_content 'Test Default Keyword'
       expect(page).to have_content 'In Administrative Set: article admin set'
       expect(page).to_not have_selector(:link, 'Delete')
     end
