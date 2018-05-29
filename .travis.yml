@@ -14,8 +14,8 @@ services:
 rvm:
   - 2.4
 before_script:
-  - psql -c "create role hyrax with createdb superuser login password 'password';" -U postgres
-  - psql -c 'create database hyrax_test;' -U hyrax
+  - psql -c "create role hyrax with createdb nosuperuser login password 'password';" -U postgres
+  - psql -c 'create database hyrax_test with owner hyrax;' -U postgres
   - bundle exec rake hydra:test_server &
   - sleep 75
   - bundle exec rake test_setup RAILS_ENV=test
