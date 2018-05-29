@@ -4,5 +4,5 @@ en:
       data_set:     'fa fa-file-text-o'
     select_type:
       data_set:
-        name:               "Data Set"
-        description:        "Data set works"
+        name:               "Datasets"
+        description:        "Deposit your dataset.  Datasets may be associated with an article or deposited separately."

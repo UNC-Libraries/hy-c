@@ -4,5 +4,5 @@ en:
       dissertation:     'fa fa-file-text-o'
     select_type:
       dissertation:
-        name:               "Dissertation"
-        description:        "Dissertation works"
+        name:               "Dissertations and Theses"
+        description:        "Dissertations and theses sent to the CDR via ProQuest"

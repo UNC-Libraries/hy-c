@@ -4,5 +4,6 @@ en:
       masters_paper:     'fa fa-file-text-o'
     select_type:
       masters_paper:
-        name:               "Masters Paper"
-        description:        "Masters Papers"
+        name:               "Master's Papers"
+        description:        "Deposit your masters paper, project or other capstone work.  Theses will be sent to the
+                            CDR automatically via ProQuest and do not need to be deposited."
