@@ -14,7 +14,8 @@ services:
 rvm:
   - 2.4
 before_script:
-  - bundle exec rake db:create
+  - psql -c 'create role hyrax with login password "password";'
+  - psql -c 'create database hyrax_test;' -U hyrax
   - bundle exec rake hydra:test_server &
   - sleep 75
   - bundle exec rake test_setup RAILS_ENV=test
@@ -27,3 +28,4 @@ env:
   global:
     - NOKOGIRI_USE_SYSTEM_LIBRARIES=true
     - DEFAULT_ADMIN_SET='default'
+    - HYRAX_DATABASE_PASSWORD='password'
