@@ -40,19 +40,20 @@ describe "rake proquest:ingest", type: :task do
   it "creates a new work" do
     expect { Rake::Task['proquest:ingest'].invoke('spec/fixtures/proquest', 'proquest default '+time.to_s, 'RAILS_ENV=test') }
         .to change{ Dissertation.count }.by(1)
-    expect(Dissertation.last['depositor']).to eq 'admin@example.com'
-    expect(Dissertation.last['title']).to match_array ['Perspective on Attachments and Ingests']
-    expect(Dissertation.last['label']).to eq 'Perspective on Attachments and Ingests'
-    expect(Dissertation.last['date_issued']).to eq '2011-01-01'
-    expect(Dissertation.last['creator']).to match_array ['Smith, Blandy']
-    expect(Dissertation.last['keyword']).to match_array ['Philosophy', 'attachments', 'aesthetics']
-    expect(Dissertation.last['resource_type']).to match_array ['Dissertation']
-    expect(Dissertation.last['abstract']).to match_array ['The purpose of this study is to test ingest of a proquest deposit object without any attachments']
-    expect(Dissertation.last['academic_concentration']).to match_array ['Philosophy']
-    expect(Dissertation.last['advisor']).to match_array ['Advisor, John T']
-    expect(Dissertation.last['degree']).to eq 'Ph.D.'
-    expect(Dissertation.last['degree_granting_institution']).to eq 'University of North Carolina at Chapel Hill Graduate School'
-    expect(Dissertation.last['genre']).to match_array ['Dissertation']
-    expect(Dissertation.last['graduation_year']).to eq 'Spring 2014'
+    new_dissertation = Dissertation.all[-1]
+    expect(new_dissertation['depositor']).to eq 'admin@example.com'
+    expect(new_dissertation['title']).to match_array ['Perspective on Attachments and Ingests']
+    expect(new_dissertation['label']).to eq 'Perspective on Attachments and Ingests'
+    expect(new_dissertation['date_issued']).to eq '2011-01-01'
+    expect(new_dissertation['creator']).to match_array ['Smith, Blandy']
+    expect(new_dissertation['keyword']).to match_array ['Philosophy', 'attachments', 'aesthetics']
+    expect(new_dissertation['resource_type']).to match_array ['Dissertation']
+    expect(new_dissertation['abstract']).to match_array ['The purpose of this study is to test ingest of a proquest deposit object without any attachments']
+    expect(new_dissertation['academic_concentration']).to match_array ['Philosophy']
+    expect(new_dissertation['advisor']).to match_array ['Advisor, John T']
+    expect(new_dissertation['degree']).to eq 'Ph.D.'
+    expect(new_dissertation['degree_granting_institution']).to eq 'University of North Carolina at Chapel Hill Graduate School'
+    expect(new_dissertation['genre']).to match_array ['Dissertation']
+    expect(new_dissertation['graduation_year']).to eq 'Spring 2014'
   end
 end
