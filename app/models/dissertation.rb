@@ -38,7 +38,7 @@ class Dissertation < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :degree_granting_institution, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/ddg'), multiple: false do |index|
+  property :degree_granting_institution, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/dgg'), multiple: false do |index|
     index.as :stored_searchable
   end
 

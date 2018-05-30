@@ -66,7 +66,7 @@ class General < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :degree_granting_institution, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/ddg'),
+  property :degree_granting_institution, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/dgg'),
            multiple: false do |index|
     index.as :stored_searchable
   end
