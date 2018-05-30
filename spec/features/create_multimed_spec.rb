@@ -37,7 +37,7 @@ RSpec.feature 'Create a Multimed', js: false do
 
     scenario do
       visit new_hyrax_multimed_path
-      expect(page).to have_content "Add New Multimed"
+      expect(page).to have_content "Add New Multimedia"
 
       fill_in 'Title', with: 'Test Multimed'
       fill_in 'Creator', with: 'Test Default Creator'

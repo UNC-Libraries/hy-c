@@ -50,7 +50,7 @@ RSpec.feature 'Create a Journal', js: false do
       login_as user
 
       visit new_hyrax_journal_path
-      expect(page).to have_content "Add New Journal"
+      expect(page).to have_content "Add New Scholarly Journal, Newsletter or Book"
 
       fill_in 'Title', with: 'Test Journal'
       fill_in 'Creator', with: 'Test Default Creator'
@@ -84,7 +84,7 @@ RSpec.feature 'Create a Journal', js: false do
       login_as admin_user
 
       visit new_hyrax_journal_path
-      expect(page).to have_content "Add New Journal"
+      expect(page).to have_content "Add New Scholarly Journal, Newsletter or Book"
 
       fill_in 'Title', with: 'Test Journal'
       fill_in 'Creator', with: 'Test Default Creator'

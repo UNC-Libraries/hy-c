@@ -53,7 +53,7 @@ RSpec.feature 'Create a Dissertation', js: false do
       login_as admin_user
 
       visit new_hyrax_dissertation_path
-      expect(page).to have_content "Add New Dissertation"
+      expect(page).to have_content "Add New Dissertation or Thesis"
 
       fill_in 'Title', with: 'Test Dissertation work'
       fill_in 'Creator', with: 'Test Default Creator'

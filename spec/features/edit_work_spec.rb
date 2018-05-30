@@ -57,7 +57,7 @@ RSpec.feature 'Edit a work', js: false do
       login_as admin_user
 
       visit new_hyrax_article_path
-      expect(page).to have_content 'Add New Article'
+      expect(page).to have_content 'Add New Scholarly Article or Book Chapter'
 
       fill_in 'Title', with: 'Test Article work'
       fill_in 'Creator', with: 'Test Default Creator'

@@ -5,4 +5,4 @@ en:
     select_type:
       multimed:
         name:               "Multimedia"
-        description:        "Multimedia works"
+        description:        "Deposit your 3D objects, audio, images or video."

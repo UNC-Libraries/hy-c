@@ -46,7 +46,7 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       login_as user
 
       visit new_hyrax_honors_thesis_path
-      expect(page).to have_content "Add New Honors Thesis"
+      expect(page).to have_content "Add New Undergraduate Honors Thesis"
 
       fill_in 'Title', with: 'Test HonorsThesis work'
       fill_in 'Creator', with: 'Test Default Creator'
@@ -80,7 +80,7 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       login_as admin_user
 
       visit new_hyrax_honors_thesis_path
-      expect(page).to have_content "Add New Honors Thesis"
+      expect(page).to have_content "Add New Undergraduate Honors Thesis"
 
       fill_in 'Title', with: 'Test HonorsThesis work'
       fill_in 'Creator', with: 'Test Default Creator'
