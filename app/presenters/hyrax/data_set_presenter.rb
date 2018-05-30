@@ -3,7 +3,7 @@
 module Hyrax
   class DataSetPresenter < Hyrax::WorkShowPresenter
     delegate :abstract, :access, :affiliation, :copyright_date, :date_issued, :doi, :extent,
-             :funder, :genre, :geographic_subject, :last_date_modified, :orcid, :other_affiliation,
+             :funder, :genre, :geographic_subject, :last_modified_date, :orcid, :other_affiliation,
              :project_director, :researcher, :rights_holder, :sponsor, :use, to: :solr_document
   end
 end

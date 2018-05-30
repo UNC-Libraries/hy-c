@@ -23,7 +23,7 @@ RSpec.describe Hyrax::DataSetForm do
 
     it { is_expected.to match_array [:abstract, :access, :affiliation, :contributor,
                                      :copyright_date, :date_created, :date_issued, :doi, :extent, :funder,
-                                     :genre, :geographic_subject, :last_date_modified, :identifier,:license,
+                                     :genre, :geographic_subject, :last_modified_date, :identifier,:license,
                                      :orcid, :other_affiliation, :source, :subject, :project_director,
                                      :researcher, :rights_holder, :sponsor, :use,
                                      :language, :keyword, :related_url, :resource_type, :description] }
@@ -50,7 +50,7 @@ RSpec.describe Hyrax::DataSetForm do
           funder: ['dean'],
           genre: ['science'],
           geographic_subject: ['California'],
-          last_date_modified: '2018-01-23',
+          last_modified_date: '2018-01-23',
           orcid: ['12345'],
           other_affiliation: ['duke'],
           project_director: ['dean'],
@@ -80,7 +80,7 @@ RSpec.describe Hyrax::DataSetForm do
       expect(subject['funder']).to eq ['dean']
       expect(subject['genre']).to eq ['science']
       expect(subject['geographic_subject']).to eq ['California']
-      expect(subject['last_date_modified']).to eq '2018-01-23'
+      expect(subject['last_modified_date']).to eq '2018-01-23'
       expect(subject['orcid']).to eq ['12345']
       expect(subject['other_affiliation']).to eq ['duke']
       expect(subject['project_director']).to eq ['dean']

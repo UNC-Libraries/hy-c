@@ -1,10 +1,10 @@
 # Generated via
-#  `rails generate hyrax:work Article`
+#  `rails generate hyrax:work General`
 require 'rails_helper'
 include Warden::Test::Helpers
 
 # NOTE: If you generated more than one work, you have to set "js: true"
-RSpec.feature 'Create a Article', js: false do
+RSpec.feature 'Create a General', js: false do
   context 'a logged in user' do
     let(:user) do
       User.new(email: 'test@example.com', guest: false) { |u| u.save!(validate: false)}
@@ -15,7 +15,7 @@ RSpec.feature 'Create a Article', js: false do
     end
 
     let(:admin_set) do
-      AdminSet.create(title: ["article admin set"],
+      AdminSet.create(title: ["general admin set"],
                       description: ["some description"],
                       edit_users: [user.user_key])
     end
@@ -39,22 +39,22 @@ RSpec.feature 'Create a Article', js: false do
                                              agent_id: admin_user.user_key,
                                              access: 'deposit')
       Sipity::WorkflowAction.create(id: 4, name: 'show', workflow_id: workflow.id)
-      DefaultAdminSet.create(work_type_name: 'Article', admin_set_id: admin_set.id)
+      DefaultAdminSet.create(work_type_name: 'General', admin_set_id: admin_set.id)
     end
 
     scenario 'as a non-admin' do
       login_as user
 
-      visit new_hyrax_article_path
-      expect(page).to have_content "Add New Article"
+      visit new_hyrax_general_path
+      expect(page).to have_content "Add New General"
 
-      fill_in 'Title', with: 'Test Article work'
+      fill_in 'Title', with: 'Test General work'
       fill_in 'Creator', with: 'Test Default Creator'
       fill_in 'Keyword', with: 'Test Default Keyword'
-      select "In Copyright", :from => "article_rights_statement"
-      expect(page).to have_field('article_visibility_embargo')
-      expect(page).not_to have_field('article_visibility_lease')
-      choose "article_visibility_open"
+      select "In Copyright", :from => "general_rights_statement"
+      expect(page).to have_field('general_visibility_embargo')
+      expect(page).not_to have_field('general_visibility_lease')
+      choose "general_visibility_open"
       check 'agreement'
 
       click_link "Files" # switch tab
@@ -69,27 +69,27 @@ RSpec.feature 'Create a Article', js: false do
       expect(page).to have_content 'Your files are being processed by Hyrax'
 
       visit '/dashboard/my/works/'
-      expect(page).to have_content 'Test Article work'
+      expect(page).to have_content 'Test General work'
 
-      first('.document-title', text: 'Test Article work').click
+      first('.document-title', text: 'Test General work').click
       expect(page).to have_content 'Test Default Keyword'
-      expect(page).to have_content 'In Administrative Set: article admin set'
+      expect(page).to have_content 'In Administrative Set: general admin set'
       expect(page).to_not have_selector(:link, 'Delete')
     end
 
     scenario 'as an admin' do
       login_as admin_user
 
-      visit new_hyrax_article_path
-      expect(page).to have_content "Add New Article"
+      visit new_hyrax_general_path
+      expect(page).to have_content "Add New General"
 
-      fill_in 'Title', with: 'Test Article work'
+      fill_in 'Title', with: 'Test General work'
       fill_in 'Creator', with: 'Test Default Creator'
       fill_in 'Keyword', with: 'Test Default Keyword'
-      select "In Copyright", :from => "article_rights_statement"
-      expect(page).to have_field('article_visibility_embargo')
-      expect(page).not_to have_field('article_visibility_lease')
-      choose "article_visibility_open"
+      select "In Copyright", :from => "general_rights_statement"
+      expect(page).to have_field('general_visibility_embargo')
+      expect(page).not_to have_field('general_visibility_lease')
+      choose "general_visibility_open"
       check 'agreement'
 
       click_link "Files" # switch tab
@@ -99,17 +99,17 @@ RSpec.feature 'Create a Article', js: false do
 
       click_link "Relationships"
       expect(page).to have_content 'Add as member of administrative set'
-      find('#article_admin_set_id').text eq 'article admin set'
+      find('#general_admin_set_id').text eq 'general admin set'
 
       click_button 'Save'
       expect(page).to have_content 'Your files are being processed by Hyrax'
 
       visit '/dashboard/my/works/'
-      expect(page).to have_content 'Test Article work'
+      expect(page).to have_content 'Test General work'
 
-      first('.document-title', text: 'Test Article work').click
+      first('.document-title', text: 'Test General work').click
       expect(page).to have_content 'Test Default Keyword'
-      expect(page).to have_content 'In Administrative Set: article admin set'
+      expect(page).to have_content 'In Administrative Set: general admin set'
       expect(page).to have_selector(:link, 'Delete')
     end
   end

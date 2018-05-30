@@ -1,0 +1,10 @@
+zh:
+  hyrax:
+    icons:
+      general:     'fa fa-file-text-o'
+    select_type:
+      general:
+        # TODO: translate `human_name` into Chinese
+        name:               "General"
+        # TODO: translate `human_name` into Chinese
+        description:        "General 作品"
