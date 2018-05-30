@@ -15,12 +15,9 @@ services:
 rvm:
   - 2.4
 before_script:
-  - pwd
-  - ls
-  - mkdir -p /usr/local/bin
-  - curl -o /usr/local/bin/fits-1.0.5.zip https://projects.iq.harvard.edu/files/fits/files/fits-1.0.5.zip
-  - unzip /usr/local/bin/fits-1.0.5.zip -d /usr/local/bin
-  - chmod u=u+x /usr/local/bin/fits-1.0.5/fits.sh
+  - curl -o /home/travis/fits-1.0.5.zip https://projects.iq.harvard.edu/files/fits/files/fits-1.0.5.zip | cat
+  - unzip /home/travis/fits-1.0.5.zip -d /home/travis
+  - chmod u=u+x /home/travis/fits-1.0.5/fits.sh
   - psql -c "create role hyrax with createdb nosuperuser login password 'password';" -U postgres
   - psql -c 'create database hyrax_test with owner hyrax;' -U postgres
   - bundle exec rake hydra:test_server &
@@ -36,4 +33,4 @@ env:
     - NOKOGIRI_USE_SYSTEM_LIBRARIES=true
     - DEFAULT_ADMIN_SET='default'
     - HYRAX_DATABASE_PASSWORD='password'
-    - FITS_LOCATION='/usr/local/bin/fits-1.0.5/fits.sh'
+    - FITS_LOCATION='/home/travis/fits-1.0.5/fits.sh'
