@@ -493,6 +493,9 @@ GEM
       rails (> 3.2.0)
     orm_adapter (0.5.0)
     os (0.9.6)
+    passenger (5.2.3)
+      rack
+      rake (>= 0.8.1)
     pg (0.21.0)
     posix-spawn (0.3.13)
     power_converter (0.1.2)
@@ -761,6 +764,7 @@ DEPENDENCIES
   jbuilder (~> 2.7.0)
   jquery-rails (~> 4.3.1)
   listen (~> 3.0.5)
+  passenger (~> 5.2.3)
   pg (~> 0.21.0)
   puma (~> 3.10.0)
   rails (~> 5.0.3)
@@ -777,4 +781,4 @@ DEPENDENCIES
   web-console (~> 3.5.1)
 
 BUNDLED WITH
-   1.16.1
+   1.16.2
