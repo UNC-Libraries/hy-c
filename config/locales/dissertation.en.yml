@@ -5,4 +5,4 @@ en:
     select_type:
       dissertation:
         name:               "Dissertations and Theses"
-        description:        "Dissertations and theses sent to the CDR via ProQuest"
+        description:        "Dissertations and theses sent to the CDR via ProQuest."
