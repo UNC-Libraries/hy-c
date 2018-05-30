@@ -8,6 +8,7 @@ addons:
       - clamav
       - unzip
       - imagemagick
+      - ghostscript
 cache:
   - bundler: true
 services:
