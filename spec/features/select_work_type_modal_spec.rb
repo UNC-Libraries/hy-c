@@ -15,13 +15,13 @@ RSpec.feature 'Select work type modal', js: false do
     login_as user
 
     visit '/'
-    expect(page).to_not have_content 'Dissertation'
+    expect(page).to_not have_content 'Dissertations and Theses'
   end
 
   scenario 'as an admin' do
     login_as admin_user
 
     visit '/'
-    expect(page).to have_content 'Dissertation'
+    expect(page).to have_content 'Dissertations and Theses'
   end
 end
