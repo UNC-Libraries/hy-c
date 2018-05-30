@@ -15,6 +15,9 @@ services:
 rvm:
   - 2.4
 before_script:
+  - pwd
+  - ls
+  - mkdir -p /usr/local/bin
   - curl -o /usr/local/bin/fits-1.0.5.zip https://projects.iq.harvard.edu/files/fits/files/fits-1.0.5.zip
   - unzip /usr/local/bin/fits-1.0.5.zip -d /usr/local/bin
   - chmod u=u+x /usr/local/bin/fits-1.0.5/fits.sh
