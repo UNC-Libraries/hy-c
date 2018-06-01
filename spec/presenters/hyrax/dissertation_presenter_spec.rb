@@ -9,29 +9,30 @@ RSpec.describe Hyrax::DissertationPresenter do
 
   let(:attributes) do
     { "id" => '888888',
-      "title_tesim" => ['foo'],
+      "title_tesim" => ['a title'],
+      "license_tesim" => ['a license'],
+      "resource_type_tesim" => ['a type'],
       "human_readable_type_tesim" => ["Dissertation"],
       "has_model_ssim" => ["Dissertation"],
       "date_created_tesim" => ['an unformatted date'],
       "depositor_tesim" => user_key,
       "abstract_tesim" => ['an abstract'],
       "academic_concentration_tesim" => ['a concentration'],
-      "affiliation_tesim" => ['a department'],
       "access_tesim" => ['an access state'],
       "advisor_tesim" => ['an advisor'],
+      "alternative_title_tesim" => ['another title'],
       "date_issued_tesim" => ['2018-01-08'],
       "degree_tesim" => ['a degree'],
       "degree_granting_institution_tesim" => ['an institution'],
       "discipline_tesim" => ['a discipline'],
       "doi_tesim" => ['a doi'],
-      "format_tesim" => ['a format'],
       "genre_tesim" => ['a genre'],
+      "geographic_subject_tesim" => ['a geographic subject'],
       "graduation_year_tesim" => ['a year'],
       "note_tesim" => ['a note'],
       "place_of_publication_tesim" => ['a place'],
-      "record_content_source_tesim" => ['a source'],
-      "resource_type_tesim" => ['a type'],
-      "reviewer_tesim" => ['a reviewer']
+      "reviewer_tesim" => ['a reviewer'],
+      "use_tesim" => ['a use']
     }
   end
   let(:ability) { nil }
@@ -40,6 +41,8 @@ RSpec.describe Hyrax::DissertationPresenter do
   subject { described_class.new(double, double) }
 
   it { is_expected.to delegate_method(:to_s).to(:solr_document) }
+  it { is_expected.to delegate_method(:title).to(:solr_document) }
+  it { is_expected.to delegate_method(:license).to(:solr_document) }
   it { is_expected.to delegate_method(:human_readable_type).to(:solr_document) }
   it { is_expected.to delegate_method(:date_created).to(:solr_document) }
   it { is_expected.to delegate_method(:date_modified).to(:solr_document) }
@@ -55,21 +58,21 @@ RSpec.describe Hyrax::DissertationPresenter do
 
   it { is_expected.to delegate_method(:abstract).to(:solr_document) }
   it { is_expected.to delegate_method(:academic_concentration).to(:solr_document) }
-  it { is_expected.to delegate_method(:affiliation).to(:solr_document) }
   it { is_expected.to delegate_method(:access).to(:solr_document) }
   it { is_expected.to delegate_method(:advisor).to(:solr_document) }
+  it { is_expected.to delegate_method(:alternative_title).to(:solr_document) }
   it { is_expected.to delegate_method(:date_issued).to(:solr_document) }
   it { is_expected.to delegate_method(:degree).to(:solr_document) }
   it { is_expected.to delegate_method(:degree_granting_institution).to(:solr_document) }
   it { is_expected.to delegate_method(:discipline).to(:solr_document) }
   it { is_expected.to delegate_method(:doi).to(:solr_document) }
-  it { is_expected.to delegate_method(:format).to(:solr_document) }
   it { is_expected.to delegate_method(:genre).to(:solr_document) }
+  it { is_expected.to delegate_method(:geographic_subject).to(:solr_document) }
   it { is_expected.to delegate_method(:graduation_year).to(:solr_document) }
   it { is_expected.to delegate_method(:note).to(:solr_document) }
   it { is_expected.to delegate_method(:place_of_publication).to(:solr_document) }
-  it { is_expected.to delegate_method(:record_content_source).to(:solr_document) }
   it { is_expected.to delegate_method(:reviewer).to(:solr_document) }
+  it { is_expected.to delegate_method(:use).to(:solr_document) }
 
   describe "#model_name" do
     subject { presenter.model_name }
@@ -82,12 +85,23 @@ RSpec.describe Hyrax::DissertationPresenter do
 
     context 'with an existing field' do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:title, ['foo'], {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:title, ['a title'], {}).and_return(renderer)
       end
 
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:title)
+      end
+    end
+
+    context 'with an existing license field' do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:license, ['a license'], {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:license)
       end
     end
 
@@ -113,17 +127,6 @@ RSpec.describe Hyrax::DissertationPresenter do
       end
     end
 
-    context "with a custom affiliation field" do
-      before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:affiliation, ['a department'], {}).and_return(renderer)
-      end
-
-      it "calls the AttributeRenderer" do
-        expect(renderer).to receive(:render)
-        presenter.attribute_to_html(:affiliation)
-      end
-    end
-
     context "with a custom access field" do
       before do
         allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:access, ['an access state'], {}).and_return(renderer)
@@ -143,6 +146,17 @@ RSpec.describe Hyrax::DissertationPresenter do
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:advisor)
+      end
+    end
+
+    context "with a custom alternative_title field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:alternative_title, ['another title'], {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:alternative_title)
       end
     end
 
@@ -201,17 +215,6 @@ RSpec.describe Hyrax::DissertationPresenter do
       end
     end
 
-    context "with a custom format field" do
-      before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:format, ['a format'], {}).and_return(renderer)
-      end
-
-      it "calls the AttributeRenderer" do
-        expect(renderer).to receive(:render)
-        presenter.attribute_to_html(:format)
-      end
-    end
-
     context "with a custom genre field" do
       before do
         allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:genre, ['a genre'], {}).and_return(renderer)
@@ -220,6 +223,17 @@ RSpec.describe Hyrax::DissertationPresenter do
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:genre)
+      end
+    end
+
+    context "with a custom geographic_subject field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:geographic_subject, ['a geographic subject'], {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:geographic_subject)
       end
     end
 
@@ -256,17 +270,6 @@ RSpec.describe Hyrax::DissertationPresenter do
       end
     end
 
-    context "with a custom record_content_source field" do
-      before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:record_content_source, ['a source'], {}).and_return(renderer)
-      end
-
-      it "calls the AttributeRenderer" do
-        expect(renderer).to receive(:render)
-        presenter.attribute_to_html(:record_content_source)
-      end
-    end
-
     context "with a custom resource_type field" do
       before do
         allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:resource_type, ['a type'], {}).and_return(renderer)
@@ -286,6 +289,17 @@ RSpec.describe Hyrax::DissertationPresenter do
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:reviewer)
+      end
+    end
+
+    context "with a custom use field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:use, ['a use'], {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:use)
       end
     end
 
