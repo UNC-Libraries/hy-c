@@ -16,15 +16,19 @@ RSpec.describe Hyrax::HonorsThesisPresenter do
       "depositor_tesim" => user_key,
       "abstract_tesim" => ['an abstract'],
       "academic_concentration_tesim" => ['a concentration'],
-      "affiliation_tesim" => ['a department'],
       "access_tesim" => ['an access right'],
       "advisor_tesim" => ['an advisor'],
+      "alternative_title_tesim" => ['another title'],
+      "award_tesim" => ['an award'],
+      "date_issued_tesim" => ['a date'],
       "degree_tesim" => ['a degree'],
       "degree_granting_institution_tesim" => ['an institution'],
+      "extent_tesim" => ['an extent'],
       "genre_tesim" => ['a genre'],
+      "geographic_subject_tesim" => ['a geographic subject'],
       "graduation_year_tesim" => ['a graduation year'],
-      "honors_level_tesim" => ['an honors level'],
-      "note_tesim" => ['a note']
+      "note_tesim" => ['a note'],
+      "use_tesim" => ['a use']
     }
   end
   let(:ability) { nil }
@@ -49,14 +53,18 @@ RSpec.describe Hyrax::HonorsThesisPresenter do
 
   it { is_expected.to delegate_method(:abstract).to(:solr_document) }
   it { is_expected.to delegate_method(:academic_concentration).to(:solr_document) }
-  it { is_expected.to delegate_method(:affiliation).to(:solr_document) }
   it { is_expected.to delegate_method(:advisor).to(:solr_document) }
+  it { is_expected.to delegate_method(:alternative_title).to(:solr_document) }
+  it { is_expected.to delegate_method(:award).to(:solr_document) }
+  it { is_expected.to delegate_method(:date_issued).to(:solr_document) }
   it { is_expected.to delegate_method(:degree).to(:solr_document) }
   it { is_expected.to delegate_method(:degree_granting_institution).to(:solr_document) }
+  it { is_expected.to delegate_method(:extent).to(:solr_document) }
   it { is_expected.to delegate_method(:genre).to(:solr_document) }
+  it { is_expected.to delegate_method(:geographic_subject).to(:solr_document) }
   it { is_expected.to delegate_method(:graduation_year).to(:solr_document) }
-  it { is_expected.to delegate_method(:honors_level).to(:solr_document) }
   it { is_expected.to delegate_method(:note).to(:solr_document) }
+  it { is_expected.to delegate_method(:use).to(:solr_document) }
 
   describe "#model_name" do
     subject { presenter.model_name }
@@ -100,17 +108,6 @@ RSpec.describe Hyrax::HonorsThesisPresenter do
       end
     end
 
-    context "with a custom affiliation field" do
-      before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:affiliation, ['a department'], {}).and_return(renderer)
-      end
-
-      it "calls the AttributeRenderer" do
-        expect(renderer).to receive(:render)
-        presenter.attribute_to_html(:affiliation)
-      end
-    end
-
     context "with a custom access field" do
       before do
         allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:access, ['an access right'], {}).and_return(renderer)
@@ -130,6 +127,39 @@ RSpec.describe Hyrax::HonorsThesisPresenter do
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:advisor)
+      end
+    end
+
+    context "with a custom alternative_title field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:alternative_title, ['another title'], {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:alternative_title)
+      end
+    end
+
+    context "with a custom award field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:award, ['an award'], {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:award)
+      end
+    end
+
+    context "with a custom date_issued field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:date_issued, ['a date'], {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:date_issued)
       end
     end
 
@@ -155,6 +185,17 @@ RSpec.describe Hyrax::HonorsThesisPresenter do
       end
     end
 
+    context "with a custom extent field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:extent, ['an extent'], {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:extent)
+      end
+    end
+
     context "with a custom genre field" do
       before do
         allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:genre, ['a genre'], {}).and_return(renderer)
@@ -163,6 +204,17 @@ RSpec.describe Hyrax::HonorsThesisPresenter do
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:genre)
+      end
+    end
+
+    context "with a custom geographic_subject field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:geographic_subject, ['a geographic subject'], {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:geographic_subject)
       end
     end
 
@@ -177,17 +229,6 @@ RSpec.describe Hyrax::HonorsThesisPresenter do
       end
     end
 
-    context "with a custom honors_level field" do
-      before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:honors_level, ['an honors level'], {}).and_return(renderer)
-      end
-
-      it "calls the AttributeRenderer" do
-        expect(renderer).to receive(:render)
-        presenter.attribute_to_html(:honors_level)
-      end
-    end
-
     context "with a custom note field" do
       before do
         allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:note, ['a note'], {}).and_return(renderer)
@@ -196,6 +237,17 @@ RSpec.describe Hyrax::HonorsThesisPresenter do
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:note)
+      end
+    end
+
+    context "with a custom use field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:use, ['a use'], {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:use)
       end
     end
 

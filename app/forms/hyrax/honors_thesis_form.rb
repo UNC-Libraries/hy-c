@@ -6,16 +6,23 @@ module Hyrax
 
     class_attribute :single_value_fields
 
-    self.terms += [:abstract, :academic_concentration, :affiliation, :access, :advisor, :degree,
-                   :degree_granting_institution, :genre, :graduation_year, :honors_level, :note, :resource_type]
-    self.terms -= [:based_near, :contributor, :date_created, :description, :identifier, :publisher, :source]
-    self.required_fields += [:degree_granting_institution]
-    self.required_fields -= [:keyword, :rights_statement]
-    self.single_value_fields = [:title]
+    self.terms += [:abstract, :academic_concentration, :access, :advisor, :alternative_title, :award,
+                   :degree, :degree_granting_institution, :extent, :genre, :geographic_subject, :graduation_year, :note,
+                   :use, :resource_type]
+    self.terms -= [:based_near, :contributor, :description, :identifier, :publisher, :source]
+    self.required_fields = [:title, :creator, :degree_granting_institution, :date_created]
+    self.single_value_fields = [:title, :license, :rights_statement]
 
     # Add overrides for required properties which are becoming single-valued
 
     def title
+      super.first || ""
+    end
+
+    def license
+      super.first || ""
+    end
+    def rights_statement
       super.first || ""
     end
   end

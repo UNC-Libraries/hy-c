@@ -59,7 +59,7 @@ class Dissertation < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :graduation_year, predicate: ::RDF::URI('http://rdaregistry.info/Elements/w/yearDegreeGranted.en'),
+  property :graduation_year, predicate: ::RDF::URI('http://rdaregistry.info/Elements/u/yearDegreeGranted.en'),
            multiple: false do |index|
     index.as :stored_searchable
   end

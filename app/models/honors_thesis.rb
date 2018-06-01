@@ -18,15 +18,19 @@ class HonorsThesis < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :affiliation, predicate: ::RDF::URI('http://vivoweb.org/ontology/core#AcademicDepartment') do |index|
-    index.as :stored_searchable
-  end
-
   property :access, predicate: ::RDF::Vocab::DC.accessRights, multiple: false do |index|
     index.as :stored_searchable
   end
 
   property :advisor, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/ths') do |index|
+    index.as :stored_searchable
+  end
+
+  property :alternative_title, predicate: ::RDF::Vocab::DC.alternative do |index|
+    index.as :stored_searchable
+  end
+
+  property :award, predicate: ::RDF::Vocab::SCHEMA.award do |index|
     index.as :stored_searchable
   end
 
@@ -43,7 +47,7 @@ class HonorsThesis < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :extent, predicate: ::RDF::Vocab::DC.extent do |index|
+  property :extent, predicate: ::RDF::URI('http://rdaregistry.info/Elements/u/extent.en') do |index|
     index.as :stored_searchable
   end
 
@@ -51,12 +55,12 @@ class HonorsThesis < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :graduation_year, predicate: ::RDF::URI('http://rdaregistry.info/Elements/w/yearDegreeGranted.en'),
-           multiple: false do |index|
+  property :geographic_subject, predicate: ::RDF::Vocab::DC.spatial do |index|
     index.as :stored_searchable
   end
 
-  property :honors_level, predicate: ::RDF::Vocab::SCHEMA.award do |index|
+  property :graduation_year, predicate: ::RDF::URI('http://rdaregistry.info/Elements/u/yearDegreeGranted.en'),
+           multiple: false do |index|
     index.as :stored_searchable
   end
 
@@ -64,7 +68,7 @@ class HonorsThesis < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :rights, predicate: ::RDF::Vocab::DC11.rights do |index|
+  property :use, predicate: ::RDF::Vocab::DC11.rights do |index|
     index.as :stored_searchable
   end
 
