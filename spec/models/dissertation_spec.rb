@@ -43,21 +43,21 @@ RSpec.describe Dissertation do
       # Additional metadata
       expect(subject).to respond_to(:abstract)
       expect(subject).to respond_to(:academic_concentration)
-      expect(subject).to respond_to(:affiliation)
       expect(subject).to respond_to(:access)
       expect(subject).to respond_to(:advisor)
+      expect(subject).to respond_to(:alternative_title)
       expect(subject).to respond_to(:date_issued)
       expect(subject).to respond_to(:degree)
       expect(subject).to respond_to(:degree_granting_institution)
       expect(subject).to respond_to(:discipline)
       expect(subject).to respond_to(:doi)
-      expect(subject).to respond_to(:format)
       expect(subject).to respond_to(:genre)
+      expect(subject).to respond_to(:geographic_subject)
       expect(subject).to respond_to(:graduation_year)
       expect(subject).to respond_to(:note)
       expect(subject).to respond_to(:place_of_publication)
-      expect(subject).to respond_to(:record_content_source)
       expect(subject).to respond_to(:reviewer)
+      expect(subject).to respond_to(:use)
     end
   end
 end
