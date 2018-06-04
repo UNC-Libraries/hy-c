@@ -37,8 +37,6 @@ RSpec.describe DataSet do
 
       # Custom fields
       expect(subject).to respond_to(:abstract)
-      expect(subject).to respond_to(:access)
-      expect(subject).to respond_to(:affiliation)
       expect(subject).to respond_to(:copyright_date)
       expect(subject).to respond_to(:date_issued)
       expect(subject).to respond_to(:doi)
@@ -46,14 +44,12 @@ RSpec.describe DataSet do
       expect(subject).to respond_to(:funder)
       expect(subject).to respond_to(:genre)
       expect(subject).to respond_to(:geographic_subject)
+      expect(subject).to respond_to(:kind_of_data)
       expect(subject).to respond_to(:last_modified_date)
-      expect(subject).to respond_to(:orcid)
-      expect(subject).to respond_to(:other_affiliation)
       expect(subject).to respond_to(:project_director)
       expect(subject).to respond_to(:researcher)
       expect(subject).to respond_to(:rights_holder)
       expect(subject).to respond_to(:sponsor)
-      expect(subject).to respond_to(:use)
     end
   end
 end

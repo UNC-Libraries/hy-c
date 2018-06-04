@@ -14,9 +14,8 @@ RSpec.describe Hyrax::DataSetPresenter do
       "has_model_ssim" => ['DataSet'],
       "date_created_tesim" => ['an unformatted date'],
       "depositor_tesim" => user_key,
+      "resource_type_tesim" => ['a type'],
       "abstract_tesim" => ['an abstract'],
-      "access_tesim" => ['public'],
-      "affiliation_tesim" => ['library'],
       "copyright_date_tesim" => '2017-12-19',
       "date_issued_tesim" => '2018-01-08',
       "doi_tesim" => '12345',
@@ -24,16 +23,12 @@ RSpec.describe Hyrax::DataSetPresenter do
       "funder_tesim" => ['unc'],
       "genre_tesim" => ['a genre'],
       "geographic_subject_tesim" => ['California'],
+      "kind_of_data_tesim" => ['some data'],
       "last_modified_date_tesim" => '2018-01-29',
-      "orcid_tesim" => ['12345'],
-      "other_affiliation_tesim" => ['duke'],
       "project_director_tesim" => ['ben'],
-      "record_content_source_tesim" => ['a source'],
-      "resource_type_tesim" => ['a type'],
       "researcher_tesim" => ['jennifer'],
       "rights_holder_tesim" => ['julie'],
       "sponsor_tesim" => ['joe'],
-      "use_tesim" => ['a use']
     }
   end
 
@@ -54,8 +49,6 @@ RSpec.describe Hyrax::DataSetPresenter do
   it { is_expected.to delegate_method(:itemtype).to(:solr_document) }
 
   it { is_expected.to delegate_method(:abstract).to(:solr_document) }
-  it { is_expected.to delegate_method(:access).to(:solr_document) }
-  it { is_expected.to delegate_method(:affiliation).to(:solr_document) }
   it { is_expected.to delegate_method(:copyright_date).to(:solr_document) }
   it { is_expected.to delegate_method(:date_issued).to(:solr_document) }
   it { is_expected.to delegate_method(:doi).to(:solr_document) }
@@ -63,15 +56,12 @@ RSpec.describe Hyrax::DataSetPresenter do
   it { is_expected.to delegate_method(:funder).to(:solr_document) }
   it { is_expected.to delegate_method(:genre).to(:solr_document) }
   it { is_expected.to delegate_method(:geographic_subject).to(:solr_document) }
+  it { is_expected.to delegate_method(:kind_of_data).to(:solr_document) }
   it { is_expected.to delegate_method(:last_modified_date).to(:solr_document) }
-  it { is_expected.to delegate_method(:orcid).to(:solr_document) }
-  it { is_expected.to delegate_method(:other_affiliation).to(:solr_document) }
   it { is_expected.to delegate_method(:project_director).to(:solr_document) }
   it { is_expected.to delegate_method(:researcher).to(:solr_document) }
   it { is_expected.to delegate_method(:rights_holder).to(:solr_document) }
   it { is_expected.to delegate_method(:sponsor).to(:solr_document) }
-  it { is_expected.to delegate_method(:use).to(:solr_document) }
-
   describe "#model_name" do
     subject { presenter.model_name }
 
@@ -89,28 +79,6 @@ RSpec.describe Hyrax::DataSetPresenter do
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:abstract)
-      end
-    end
-
-    context "with a custom access field" do
-      before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:access, ['public'], {}).and_return(renderer)
-      end
-
-      it "calls the AttributeRenderer" do
-        expect(renderer).to receive(:render)
-        presenter.attribute_to_html(:access)
-      end
-    end
-
-    context "with a custom affiliation field" do
-      before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:affiliation, ['library'], {}).and_return(renderer)
-      end
-
-      it "calls the AttributeRenderer" do
-        expect(renderer).to receive(:render)
-        presenter.attribute_to_html(:affiliation)
       end
     end
 
@@ -192,6 +160,17 @@ RSpec.describe Hyrax::DataSetPresenter do
       end
     end
 
+    context "with a custom kind_of_data field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:kind_of_data, ['some data'], {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:kind_of_data)
+      end
+    end
+
     context "with a custom last date modified field" do
       before do
         allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:last_modified_date, '2018-01-29', {}).and_return(renderer)
@@ -200,28 +179,6 @@ RSpec.describe Hyrax::DataSetPresenter do
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:last_modified_date)
-      end
-    end
-
-    context "with a custom orcid field" do
-      before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:orcid, ['12345'], {}).and_return(renderer)
-      end
-
-      it "calls the AttributeRenderer" do
-        expect(renderer).to receive(:render)
-        presenter.attribute_to_html(:orcid)
-      end
-    end
-
-    context "with a custom other affiliation" do
-      before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:other_affiliation, ['duke'], {}).and_return(renderer)
-      end
-
-      it "calls the AttributeRenderer" do
-        expect(renderer).to receive(:render)
-        presenter.attribute_to_html(:other_affiliation)
       end
     end
 
@@ -268,17 +225,5 @@ RSpec.describe Hyrax::DataSetPresenter do
         presenter.attribute_to_html(:sponsor)
       end
     end
-
-    context "with a custom use field" do
-      before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:use, ['a use'], {}).and_return(renderer)
-      end
-
-      it "calls the AttributeRenderer" do
-        expect(renderer).to receive(:render)
-        presenter.attribute_to_html(:use)
-      end
-    end
-    
   end
 end
