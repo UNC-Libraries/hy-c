@@ -5,13 +5,15 @@ module Hyrax
     class_attribute :single_value_fields
     
     self.model_class = ::MastersPaper
-    self.terms += [:academic_concentration, :affiliation, :degree, :degree_granting_institution,
-                   :graduation_year, :abstract, :advisor, :genre, :access, :extent, :reviewer, :geographic_subject,
-                   :note, :medium, :resource_type]
-    self.terms -= [:contributor, :publisher, :identifier, :based_near, :related_url, :source, :description]
-    self.required_fields -= [:keyword, :rights_statement]
-    self.required_fields += [:degree_granting_institution]
-    self.single_value_fields = [:title, :date_created]
+    self.terms += [:abstract, :academic_concentration, :access, :advisor, :date_issued, :degree,
+                   :degree_granting_institution, :extent, :genre, :geographic_subject, :graduation_year, :medium, :note,
+                   :reviewer, :use, :resource_type]
+
+    self.terms -= [:contributor, :publisher, :identifier, :based_near, :related_url, :source, :description, :date_created]
+
+    self.required_fields = [:title, :creator, :date_issued, :degree_granting_institution]
+
+    self.single_value_fields = [:title, :license, :rights_statement]
 
     # Add overrides for required properties which are becoming single-valued
 
@@ -19,7 +21,11 @@ module Hyrax
       super.first || ""
     end
 
-    def date_created
+    def license
+      super.first || ""
+    end
+
+    def rights_statement
       super.first || ""
     end
   end

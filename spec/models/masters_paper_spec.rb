@@ -34,22 +34,21 @@ RSpec.describe MastersPaper do
       expect(subject).to respond_to(:resource_type)
 
       # Additional metadata
+      expect(subject).to respond_to(:abstract)
       expect(subject).to respond_to(:academic_concentration)
-      expect(subject).to respond_to(:affiliation)
+      expect(subject).to respond_to(:access)
+      expect(subject).to respond_to(:advisor)
       expect(subject).to respond_to(:date_issued)
       expect(subject).to respond_to(:degree)
       expect(subject).to respond_to(:degree_granting_institution)
-      expect(subject).to respond_to(:graduation_year)
-      expect(subject).to respond_to(:abstract)
-      expect(subject).to respond_to(:advisor)
-      expect(subject).to respond_to(:genre)
-      expect(subject).to respond_to(:access)
       expect(subject).to respond_to(:extent)
-      expect(subject).to respond_to(:reviewer)
+      expect(subject).to respond_to(:genre)
       expect(subject).to respond_to(:geographic_subject)
-      expect(subject).to respond_to(:note)
+      expect(subject).to respond_to(:graduation_year)
       expect(subject).to respond_to(:medium)
-      expect(subject).to respond_to(:resource_type)
+      expect(subject).to respond_to(:note)
+      expect(subject).to respond_to(:reviewer)
+      expect(subject).to respond_to(:use)
     end
   end
 end
