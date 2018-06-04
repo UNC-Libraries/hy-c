@@ -37,8 +37,7 @@ RSpec.describe Journal do
 
       # Custom fields
       expect(subject).to respond_to(:abstract)
-      expect(subject).to respond_to(:alternate_title)
-      expect(subject).to respond_to(:conference_name)
+      expect(subject).to respond_to(:alternative_title)
       expect(subject).to respond_to(:date_issued)
       expect(subject).to respond_to(:extent)
       expect(subject).to respond_to(:genre)
