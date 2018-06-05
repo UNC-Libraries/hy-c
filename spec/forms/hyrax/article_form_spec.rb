@@ -9,63 +9,64 @@ RSpec.describe Hyrax::ArticleForm do
   describe "#required_fields" do
     subject { form.required_fields }
 
-    it { is_expected.to eq [:title, :creator, :rights_statement] }
+    it { is_expected.to eq [:title, :creator, :date_issued] }
   end
 
   describe "#primary_terms" do
     subject { form.primary_terms }
 
-    it { is_expected.to eq [:title, :creator, :rights_statement] }
+    it { is_expected.to eq [:title, :creator, :date_issued] }
   end
 
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to eq [:description, :keyword, :license, :publisher, :date_created, :subject, :language, :identifier, :resource_type,
-                            :abstract, :access, :affiliation, :copyright_date, :date_captured,
-                            :date_issued, :date_other, :doi, :edition, :extent, :funder, :genre,
-                            :geographic_subject, :issn, :journal_issue, :journal_title, :journal_volume, :note, :orcid,
-                            :other_affiliation, :page_end, :page_start, :peer_review_status, :place_of_publication,
-                            :rights_holder, :table_of_contents, :translator, :url, :use
-                            ] }
+    it { is_expected.to eq [:keyword, :license, :rights_statement, :publisher, :date_created, :subject, :language,
+                            :identifier, :resource_type, :abstract, :access, :bibliographic_citation, :copyright_date,
+                            :date_captured, :date_other, :doi, :edition, :extent, :funder, :genre, :geographic_subject,
+                            :issn, :journal_issue, :journal_title, :journal_volume, :note, :page_end, :page_start,
+                            :peer_review_status, :place_of_publication, :rights_holder, :table_of_contents, :translator,
+                            :url, :use] }
   end
 
   describe '.model_attributes' do
     let(:params) do
       ActionController::Parameters.new(
           title: 'foo', # single-valued
-          publisher: 'a publisher', # single-valued
-          description: [''],
+          bibliographic_citation: ['a citation'],
+          creator: ['a creator'],
+          date_created: '2017-01-22', # single-valued
+          language: ['a language'],
+          publisher: ['a publisher'],
+          resource_type: ['a type'],
+          rights_statement: 'a statement', # single-valued
+          subject: ['a subject'],
           visibility: 'open',
           representative_id: '456',
           thumbnail_id: '789',
           keyword: ['derp'],
-          license: ['http://creativecommons.org/licenses/by/3.0/us/'],
+          license: 'http://creativecommons.org/licenses/by/3.0/us/', # single-valued
           member_of_collection_ids: ['123456', 'abcdef'],
           abstract: ['an abstract'],
-          access: 'public',
-          affiliation: ['unc'],
-          copyright_date: '2017-01-22',
-          date_captured: '2017-01-22',
-          date_created: '2017-01-22', # single-valued
-          date_issued: '2017-01-22',
-          date_other: ['2017-01-22'],
-          doi: '12345',
+          access: 'public', # single-valued
+          copyright_date: '2017-01-22', # single-valued
+          date_captured: '2017-01-22', # single-valued
+          date_issued: '2017-01-22', # single-valued
+          date_other: [''],
+          doi: '12345', # single-valued
           edition: ['an edition'],
           extent: ['1993'],
           funder: ['dean'],
           genre: ['science fiction'],
           geographic_subject: ['California'],
           issn: ['12345'],
-          journal_issue: '27',
-          journal_title: 'Journal Title',
-          journal_volume: '4',
+          journal_issue: '27', # single-valued
+          journal_title: 'Journal Title', # single-valued
+          journal_volume: '4', # single-valued
           note: ['a note'],
-          orcid: ['12345'],
-          other_affiliation: ['duke'],
-          page_end: '11',
-          page_start: '8',
-          peer_review_status: 'in review',
+          page_end: '11', # single-valued
+          page_start: '8', # single-valued
+          peer_review_status: 'in review', # single-valued
           place_of_publication: ['durham'],
           rights_holder: ['dean'],
           table_of_contents: ['cool table'],
@@ -79,21 +80,24 @@ RSpec.describe Hyrax::ArticleForm do
 
     it 'permits parameters' do
       expect(subject['title']).to eq ['foo']
+      expect(subject['bibliographic_citation']).to eq ['a citation']
+      expect(subject['creator']).to eq ['a creator']
+      expect(subject['date_created']).to eq ['2017-01-22']
+      expect(subject['language']).to eq ['a language']
       expect(subject['publisher']).to eq ['a publisher']
-      expect(subject['description']).to be_empty
+      expect(subject['resource_type']).to eq ['a type']
+      expect(subject['rights_statement']).to eq ['a statement']
+      expect(subject['subject']).to eq ['a subject']
       expect(subject['visibility']).to eq 'open'
       expect(subject['license']).to eq ['http://creativecommons.org/licenses/by/3.0/us/']
       expect(subject['keyword']).to eq ['derp']
       expect(subject['member_of_collection_ids']).to eq ['123456', 'abcdef']
-
       expect(subject['abstract']).to eq ['an abstract']
       expect(subject['access']).to eq 'public'
-      expect(subject['affiliation']).to eq ['unc']
       expect(subject['copyright_date']).to eq '2017-01-22'
       expect(subject['date_captured']).to eq '2017-01-22'
-      expect(subject['date_created']).to eq ['2017-01-22']
       expect(subject['date_issued']).to eq '2017-01-22'
-      expect(subject['date_other']).to eq ['2017-01-22']
+      expect(subject['date_other']).to be_empty
       expect(subject['doi']).to eq '12345'
       expect(subject['edition']).to eq ['an edition']
       expect(subject['extent']).to eq ['1993']
@@ -105,8 +109,6 @@ RSpec.describe Hyrax::ArticleForm do
       expect(subject['journal_title']).to eq 'Journal Title'
       expect(subject['journal_volume']).to eq '4'
       expect(subject['note']).to eq ['a note']
-      expect(subject['orcid']).to eq ['12345']
-      expect(subject['other_affiliation']).to eq ['duke']
       expect(subject['page_end']).to eq '11'
       expect(subject['page_start']).to eq '8'
       expect(subject['peer_review_status']).to eq 'in review'
@@ -122,9 +124,8 @@ RSpec.describe Hyrax::ArticleForm do
       let(:params) do
         ActionController::Parameters.new(
             title: '',
-            description: [''],
             keyword: [''],
-            license: [''],
+            license: '',
             member_of_collection_ids: [''],
             on_behalf_of: 'Melissa'
         )
@@ -132,7 +133,6 @@ RSpec.describe Hyrax::ArticleForm do
 
       it 'removes blank parameters' do
         expect(subject['title']).to be_empty
-        expect(subject['description']).to be_empty
         expect(subject['license']).to be_empty
         expect(subject['keyword']).to be_empty
         expect(subject['member_of_collection_ids']).to be_empty
