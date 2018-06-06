@@ -13,8 +13,8 @@ module Hyrax
 
       property :import_url, predicate: ::RDF::URI.new('http://scholarsphere.psu.edu/ns#importUrl'), multiple: false
       property :resource_type, predicate: ::RDF::Vocab::DC.type
-      property :creator, predicate: ::RDF::Vocab::DC11.creator
-      property :contributor, predicate: ::RDF::Vocab::DC11.contributor
+      property :creator, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/cre')
+      property :contributor, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/ctb')
       property :description, predicate: ::RDF::Vocab::DC11.description
       property :keyword, predicate: ::RDF::Vocab::SCHEMA.keywords
       # Used for a license
@@ -26,7 +26,7 @@ module Hyrax
       property :date_created, predicate: ::RDF::Vocab::DC.created
       property :subject, predicate: ::RDF::Vocab::DC11.subject
       property :language, predicate: ::RDF::Vocab::DC11.language
-      property :identifier, predicate: ::RDF::Vocab::DC.identifier
+      property :identifier, predicate: ::RDF::Vocab::Identifiers.local
       property :based_near, predicate: ::RDF::Vocab::FOAF.based_near, class_name: Hyrax::ControlledVocabularies::Location
       property :related_url, predicate: ::RDF::RDFS.seeAlso
       property :bibliographic_citation, predicate: ::RDF::Vocab::DC.bibliographicCitation

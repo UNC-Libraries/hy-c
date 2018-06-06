@@ -64,12 +64,12 @@ class SolrDocument
     self[Solrizer.solr_name('advisor')]
   end
 
-  def affiliation
-    self[Solrizer.solr_name('affiliation')]
+  def alternative_title
+    self[Solrizer.solr_name('alternative_title')]
   end
 
-  def alternate_title
-    self[Solrizer.solr_name('alternate_title')]
+  def arranger
+    self[Solrizer.solr_name('arranger')]
   end
 
   def award
@@ -78,6 +78,10 @@ class SolrDocument
 
   def bibliographic_citation
     self[Solrizer.solr_name('bibliographic_citation')]
+  end
+
+  def composer
+    self[Solrizer.solr_name('composer')]
   end
 
   def conference_name
@@ -98,10 +102,6 @@ class SolrDocument
 
   def date_other
     self[Solrizer.solr_name('date_other')]
-  end
-
-  def date_published
-    self[Solrizer.solr_name('date_published')]
   end
 
   def degree
@@ -132,10 +132,6 @@ class SolrDocument
     self[Solrizer.solr_name('extent')]
   end
 
-  def format
-    self[Solrizer.solr_name('format')]
-  end
-
   def funder
     self[Solrizer.solr_name('funder')]
   end
@@ -150,10 +146,6 @@ class SolrDocument
 
   def graduation_year
     self[Solrizer.solr_name('graduation_year')]
-  end
-
-  def honors_level
-    self[Solrizer.solr_name('honors_level')]
   end
 
   def isbn
@@ -192,14 +184,6 @@ class SolrDocument
     self[Solrizer.solr_name('note')]
   end
 
-  def orcid
-    self[Solrizer.solr_name('orcid')]
-  end
-
-  def other_affiliation
-    self[Solrizer.solr_name('other_affiliation')]
-  end
-
   def page_end
     self[Solrizer.solr_name('page_end')]
   end
@@ -218,18 +202,6 @@ class SolrDocument
 
   def project_director
     self[Solrizer.solr_name('project_director')]
-  end
-
-  def publication
-    self[Solrizer.solr_name('publication')]
-  end
-
-  def publication_version
-    self[Solrizer.solr_name('publication_version')]
-  end
-
-  def record_content_source
-    self[Solrizer.solr_name('record_content_source')]
   end
 
   def researcher
