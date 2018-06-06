@@ -6,11 +6,13 @@ module Hyrax
 
     self.model_class = ::ScholarlyWork
 
-    self.terms += [:resource_type, :abstract, :advisor, :affiliation, :conference_name, :date_issued, :genre,
-                   :geographic_subject, :orcid, :other_affiliation]
+    self.terms += [:resource_type, :abstract, :advisor, :conference_name, :date_issued, :genre, :geographic_subject]
+
     self.terms -= [:contributor, :publisher, :identifier, :based_near, :related_url, :source]
-    self.required_fields -= [:keyword, :rights_statement]
-    self.single_value_fields = [:title, :date_created]
+
+    self.required_fields = [:title, :creator, :date_created]
+
+    self.single_value_fields = [:title, :date_created, :license, :rights_statement]
 
     # Add overrides for required properties which are becoming single-valued
 
@@ -19,6 +21,14 @@ module Hyrax
     end
 
     def date_created
+      super.first || ""
+    end
+
+    def license
+      super.first || ""
+    end
+
+    def rights_statement
       super.first || ""
     end
   end
