@@ -23,43 +23,50 @@ RSpec.describe Hyrax::GeneralForm do
 
     it { is_expected.to match_array [:contributor, :creator, :date_created, :description, :identifier, :keyword,
                                      :language, :license, :publisher, :related_url, :resource_type, :rights_statement,
-                                     :source, :subject, :abstract, :academic_concentration, :access, :advisor,
-                                     :affiliation, :alternate_title, :award, :bibliographic_citation, :conference_name,
+                                     :subject, :bibliographic_citation, :abstract, :academic_concentration, :access,
+                                     :advisor, :alternative_title, :arranger, :award, :composer, :conference_name,
                                      :copyright_date, :date_captured, :date_issued, :date_other, :degree,
                                      :degree_granting_institution, :digital_collection, :discipline, :doi, :edition,
-                                     :extent, :funder, :geographic_subject, :graduation_year, :isbn, :issn,
+                                     :extent, :funder, :genre, :geographic_subject, :graduation_year, :isbn, :issn,
                                      :journal_issue, :journal_title, :journal_volume, :kind_of_data,
-                                     :last_modified_date, :medium, :note, :orcid, :other_affiliation, :page_start,
-                                     :page_end, :peer_review_status, :place_of_publication, :project_director,
-                                     :researcher, :reviewer, :rights_holder, :series, :sponsor, :table_of_contents,
-                                     :translator, :url, :use
-                           ] }
+                                     :last_modified_date, :medium, :note, :page_start, :page_end, :peer_review_status,
+                                     :place_of_publication, :project_director, :researcher, :reviewer, :rights_holder,
+                                     :series, :sponsor, :table_of_contents, :translator, :url, :use] }
   end
 
   describe '.model_attributes' do
     let(:params) do
       ActionController::Parameters.new(
           title: 'foo', # single-valued
+          bibliographic_citation: ['a citation'],
+          contributor: ['a contributor'],
+          creator: ['a creator'],
+          date_created: ['2017-01-22'],
+          identifier: ['an identifier'],
+          language: ['a language'],
+          license: 'http://creativecommons.org/licenses/by/3.0/us/', # single-valued
+          keyword: ['derp'],
           publisher: ['a publisher'],
+          related_url: ['a url'],
+          resource_type: ['a type'],
+          rights_statement: 'a statement', # single-valued
+          subject: ['a subject'],
           description: [''],
           visibility: 'open',
           representative_id: '456',
           thumbnail_id: '789',
-          keyword: ['derp'],
-          license: ['http://creativecommons.org/licenses/by/3.0/us/'],
           member_of_collection_ids: ['123456', 'abcdef'],
           abstract: ['an abstract'],
           academic_concentration: ['a concentration'],
           access: 'public', # single-valued
           advisor: ['an advisor'],
-          affiliation: ['unc'],
-          alternate_title: ['some title'],
+          alternative_title: ['some title'],
+          arranger: ['an arranger'],
           award: ['an award'],
-          bibliographic_citation: ['a citation'],
+          composer: ['a composer'],
           conference_name: ['a conference'],
           copyright_date: ['2017-01-22'],
           date_captured: '2017-01-22', # single-valued
-          date_created: ['2017-01-22'],
           date_issued: ['2017-01-22'],
           date_other: ['2017-01-22'],
           degree: 'something', # single-valued
@@ -70,8 +77,9 @@ RSpec.describe Hyrax::GeneralForm do
           edition: ['an edition'],
           extent: ['1993'],
           funder: ['dean'],
+          genre: ['a genre'],
           geographic_subject: ['California'],
-          graduation_year: '2018',
+          graduation_year: '2018', # single-valued
           isbn: ['123456'],
           issn: ['12345'],
           journal_issue: '27', # single-valued
@@ -81,8 +89,6 @@ RSpec.describe Hyrax::GeneralForm do
           last_modified_date: 'hi', # single-valued
           medium: ['a medium'],
           note: ['a note'],
-          orcid: ['12345'],
-          other_affiliation: ['duke'],
           page_end: '11', # single-valued
           page_start: '8', # single-valued
           peer_review_status: 'in review', # single-valued
@@ -104,37 +110,43 @@ RSpec.describe Hyrax::GeneralForm do
 
     it 'permits parameters' do
       expect(subject['title']).to eq ['foo']
+      expect(subject['bibliographic_citation']).to eq ['a citation']
+      expect(subject['contributor']).to eq ['a contributor']
+      expect(subject['date_created']).to eq ['2017-01-22']
+      expect(subject['identifier']).to eq ['an identifier']
+      expect(subject['language']).to eq ['a language']
       expect(subject['publisher']).to eq ['a publisher']
+      expect(subject['related_url']).to eq ['a url']
+      expect(subject['resource_type']).to eq ['a type']
+      expect(subject['rights_statement']).to eq ['a statement']
+      expect(subject['subject']).to eq ['a subject']
       expect(subject['description']).to be_empty
       expect(subject['visibility']).to eq 'open'
       expect(subject['license']).to eq ['http://creativecommons.org/licenses/by/3.0/us/']
       expect(subject['keyword']).to eq ['derp']
       expect(subject['member_of_collection_ids']).to eq ['123456', 'abcdef']
-
       expect(subject['abstract']).to eq ['an abstract']
       expect(subject['academic_concentration']).to eq ['a concentration']
       expect(subject['access']).to eq 'public'
       expect(subject['advisor']).to eq ['an advisor']
-      expect(subject['affiliation']).to eq ['unc']
-      expect(subject['alternate_title']).to eq ['some title']
+      expect(subject['alternative_title']).to eq ['some title']
+      expect(subject['arranger']).to eq ['an arranger']
       expect(subject['award']).to eq ['an award']
-      expect(subject['bibliographic_citation']).to eq ['a citation']
+      expect(subject['composer']).to eq ['a composer']
       expect(subject['conference_name']).to eq ['a conference']
       expect(subject['copyright_date']).to eq ['2017-01-22']
-      expect(subject['degree']).to eq 'something'
-      expect(subject['degree_granting_institution']).to eq 'unc'
-      expect(subject['digital_collection']).to eq ['a collection']
-      expect(subject['discipline']).to eq ['a discipline']
       expect(subject['date_captured']).to eq '2017-01-22'
-      expect(subject['date_created']).to eq ['2017-01-22']
       expect(subject['date_issued']).to eq ['2017-01-22']
       expect(subject['date_other']).to eq ['2017-01-22']
       expect(subject['degree']).to eq 'something'
       expect(subject['degree_granting_institution']).to eq 'unc'
+      expect(subject['digital_collection']).to eq ['a collection']
+      expect(subject['discipline']).to eq ['a discipline']
       expect(subject['doi']).to eq '12345'
       expect(subject['edition']).to eq ['an edition']
       expect(subject['extent']).to eq ['1993']
       expect(subject['funder']).to eq ['dean']
+      expect(subject['genre']).to eq ['a genre']
       expect(subject['geographic_subject']).to eq ['California']
       expect(subject['graduation_year']).to eq '2018'
       expect(subject['isbn']).to eq ['123456']
@@ -146,8 +158,6 @@ RSpec.describe Hyrax::GeneralForm do
       expect(subject['last_modified_date']).to eq 'hi'
       expect(subject['medium']).to eq ['a medium']
       expect(subject['note']).to eq ['a note']
-      expect(subject['orcid']).to eq ['12345']
-      expect(subject['other_affiliation']).to eq ['duke']
       expect(subject['page_end']).to eq '11'
       expect(subject['page_start']).to eq '8'
       expect(subject['peer_review_status']).to eq 'in review'
@@ -170,7 +180,7 @@ RSpec.describe Hyrax::GeneralForm do
             title: '',
             description: [''],
             keyword: [''],
-            license: [''],
+            license: '',
             member_of_collection_ids: [''],
             on_behalf_of: 'Melissa'
         )
