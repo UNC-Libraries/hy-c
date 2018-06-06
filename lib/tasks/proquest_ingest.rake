@@ -261,7 +261,7 @@ namespace :proquest do
     resource.abstract = [work_attributes['abstract']]
     resource.advisor = work_attributes['advisor']
     resource.degree = work_attributes['degree']
-    resource.affiliation = work_attributes['affiliation']
+    # resource.affiliation = work_attributes['affiliation']
     resource.academic_concentration = [work_attributes['academic_concentration']]
     resource.graduation_year = work_attributes['graduation_year']
     resource.language = [work_attributes['language']]
