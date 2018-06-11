@@ -1,4 +1,4 @@
-<%# Overriding partial in hyrax gem in order to auto-select an admin set %>
+<%# [hyc-override] Overriding partial in hyrax gem in order to auto-select an admin set %>
 <% if Flipflop.assign_admin_set? %>
   <% if f.object.model.title.blank? %>
     <% admin_set_id = AdminSetSelectService.select(f.object.model.class.to_s,

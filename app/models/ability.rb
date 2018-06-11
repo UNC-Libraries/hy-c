@@ -25,7 +25,7 @@ class Ability
 
   private
 
-    # Overriding review ability to include entity-specific permissions
+    # [hyc-override] Overriding review ability to include entity-specific permissions
     def can_review_submissions?
       # Short-circuit logic for admins, who should have the ability
       # to review submissions whether or not they are explicitly

@@ -1,4 +1,4 @@
-# Overriding default basic metadata to follow MAP
+# [hyc-override] Overriding default basic metadata to follow MAP
 module Hyrax
   # An optional model mixin to define some simple properties. This must be mixed
   # after all other properties are defined because no other properties will
@@ -13,19 +13,24 @@ module Hyrax
 
       property :import_url, predicate: ::RDF::URI.new('http://scholarsphere.psu.edu/ns#importUrl'), multiple: false
       property :resource_type, predicate: ::RDF::Vocab::DC.type
+      # predicate changed
       property :creator, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/cre')
+      # predicate changed
       property :contributor, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/ctb')
       property :description, predicate: ::RDF::Vocab::DC11.description
+      # predicate changed
       property :keyword, predicate: ::RDF::Vocab::SCHEMA.keywords
-      # Used for a license
+      # predicate changed
       property :license, predicate: ::RDF::Vocab::DC.rights
 
       # This is for the rights statement
       property :rights_statement, predicate: ::RDF::Vocab::EDM.rights
       property :publisher, predicate: ::RDF::Vocab::DC11.publisher
       property :date_created, predicate: ::RDF::Vocab::DC.created
+      # predicate changed
       property :subject, predicate: ::RDF::Vocab::DC11.subject
       property :language, predicate: ::RDF::Vocab::DC11.language
+      # predicate changed
       property :identifier, predicate: ::RDF::Vocab::Identifiers.local
       property :based_near, predicate: ::RDF::Vocab::FOAF.based_near, class_name: Hyrax::ControlledVocabularies::Location
       property :related_url, predicate: ::RDF::RDFS.seeAlso
