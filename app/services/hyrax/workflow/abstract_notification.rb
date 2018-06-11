@@ -47,7 +47,8 @@ module Hyrax
         @entity.proxy_for
       end
 
-      # Overriding document_path method to return full url instead of the relative path
+      # [hyc-override] Overriding document_path method to return full url instead of the relative path
+      # Replacing "_path" with "_url"
       def document_path
         key = document.model_name.singular_route_key
         Rails.application.routes.url_helpers.send(key + "_url", document.id)
