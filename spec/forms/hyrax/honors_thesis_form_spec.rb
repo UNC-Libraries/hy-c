@@ -22,9 +22,9 @@ RSpec.describe Hyrax::HonorsThesisForm do
     subject { form.secondary_terms }
 
     it { is_expected.to match_array [:abstract, :academic_concentration, :access, :advisor, :alternative_title,
-                                     :award, :degree, :extent, :genre, :geographic_subject, :graduation_year, :note,
-                                     :use, :language, :license, :resource_type, :rights_statement, :subject, :keyword,
-                                     :related_url] }
+                                     :award, :date_issued, :degree, :extent, :genre, :geographic_subject,
+                                     :graduation_year, :note, :use, :language, :license, :resource_type,
+                                     :rights_statement, :subject, :keyword, :related_url] }
   end
 
   describe '.model_attributes' do
