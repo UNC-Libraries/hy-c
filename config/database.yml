@@ -83,6 +83,7 @@ test:
 #
 production:
   <<: *default
-  database: hyrax_production
+  database: hyrax
   username: hyrax
   password: <%= ENV['HYRAX_DATABASE_PASSWORD'] %>
+  url: <%= ENV['DATABASE_URL'] %>
