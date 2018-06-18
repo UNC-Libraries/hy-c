@@ -1,0 +1,10 @@
+es:
+  hyrax:
+    icons:
+      general:     'fa fa-file-text-o'
+    select_type:
+      general:
+        # TODO: translate `human_name` into Spanish
+        name:               "General"
+        # TODO: translate `human_name` into Spanish
+        description:        "General trabajos"

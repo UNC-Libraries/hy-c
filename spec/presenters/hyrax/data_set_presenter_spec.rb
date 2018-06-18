@@ -24,7 +24,7 @@ RSpec.describe Hyrax::DataSetPresenter do
       "funder_tesim" => ['unc'],
       "genre_tesim" => ['a genre'],
       "geographic_subject_tesim" => ['California'],
-      "last_date_modified_tesim" => '2018-01-29',
+      "last_modified_date_tesim" => '2018-01-29',
       "orcid_tesim" => ['12345'],
       "other_affiliation_tesim" => ['duke'],
       "project_director_tesim" => ['ben'],
@@ -63,7 +63,7 @@ RSpec.describe Hyrax::DataSetPresenter do
   it { is_expected.to delegate_method(:funder).to(:solr_document) }
   it { is_expected.to delegate_method(:genre).to(:solr_document) }
   it { is_expected.to delegate_method(:geographic_subject).to(:solr_document) }
-  it { is_expected.to delegate_method(:last_date_modified).to(:solr_document) }
+  it { is_expected.to delegate_method(:last_modified_date).to(:solr_document) }
   it { is_expected.to delegate_method(:orcid).to(:solr_document) }
   it { is_expected.to delegate_method(:other_affiliation).to(:solr_document) }
   it { is_expected.to delegate_method(:project_director).to(:solr_document) }
@@ -194,12 +194,12 @@ RSpec.describe Hyrax::DataSetPresenter do
 
     context "with a custom last date modified field" do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:last_date_modified, '2018-01-29', {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:last_modified_date, '2018-01-29', {}).and_return(renderer)
       end
 
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
-        presenter.attribute_to_html(:last_date_modified)
+        presenter.attribute_to_html(:last_modified_date)
       end
     end
 

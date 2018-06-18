@@ -4,5 +4,7 @@ en:
       journal:     'fa fa-file-text-o'
     select_type:
       journal:
-        name:               "Journal"
-        description:        "Journal works"
+        name:               "Scholarly Journals, Newsletter or Book"
+        description:        "Deposit a complete issue of a scholarly journal, newsletter or book.  If you would like to
+                            deposit an article or book chapter, use the “Scholarly Articles and Book Chapters” deposit
+                            option."

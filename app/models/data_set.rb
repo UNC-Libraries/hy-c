@@ -8,7 +8,7 @@ class DataSet < ActiveFedora::Base
   # self.valid_child_concerns = []
   validates :title, presence: { message: 'Your work must have a title.' }
 
-  self.human_readable_type = 'Data Set'
+  self.human_readable_type = 'Dataset'
 
   property :abstract, predicate: ::RDF::Vocab::DC.abstract do |index|
     index.as :stored_searchable
@@ -50,7 +50,7 @@ class DataSet < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :last_date_modified, predicate: ::RDF::Vocab::MODS.dateModified, multiple: false do |index|
+  property :last_modified_date, predicate: ::RDF::Vocab::MODS.dateModified, multiple: false do |index|
     index.as :stored_searchable
   end
 

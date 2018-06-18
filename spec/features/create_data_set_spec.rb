@@ -50,7 +50,7 @@ RSpec.feature 'Create a DataSet', js: false do
       login_as user
 
       visit new_hyrax_data_set_path
-      expect(page).to have_content "Add New Data Set"
+      expect(page).to have_content "Add New Dataset"
 
       fill_in 'Title', with: 'Test Data Set'
       fill_in 'Creator', with: 'Test Default Creator'
@@ -84,7 +84,7 @@ RSpec.feature 'Create a DataSet', js: false do
       login_as admin_user
 
       visit new_hyrax_data_set_path
-      expect(page).to have_content "Add New Data Set"
+      expect(page).to have_content "Add New Dataset"
 
       fill_in 'Title', with: 'Test Data Set'
       fill_in 'Creator', with: 'Test Default Creator'

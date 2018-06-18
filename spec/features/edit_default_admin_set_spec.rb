@@ -31,9 +31,10 @@ RSpec.feature 'Create and edit default admin set', js: false do
       expect(page).to have_selector 'tr>td', text: 'DataSet', count: 1
       expect(page).to have_selector 'tr>td', text: 'Multimed', count: 1
       expect(page).to have_selector 'tr>td', text: 'ScholarlyWork', count: 1
-      expect(page).to have_selector 'tr>td', text: 'default', count: 8
-      expect(page).to have_selector 'tr>td>a', text: 'Edit', count: 8
-      expect(page).to have_selector 'tr>td>a', text: 'Delete', count: 8
+      expect(page).to have_selector 'tr>td', text: 'General', count: 1
+      expect(page).to have_selector 'tr>td', text: 'default', count: 9
+      expect(page).to have_selector 'tr>td>a', text: 'Edit', count: 9
+      expect(page).to have_selector 'tr>td>a', text: 'Delete', count: 9
 
       click_link 'Add new default admin set'
 
@@ -65,8 +66,9 @@ RSpec.feature 'Create and edit default admin set', js: false do
       expect(page).to have_selector 'tr>td', text: 'DataSet', count: 1
       expect(page).to have_selector 'tr>td', text: 'Multimed', count: 1
       expect(page).to have_selector 'tr>td', text: 'ScholarlyWork', count: 1
+      expect(page).to have_selector 'tr>td', text: 'General', count: 1
       expect(page).to have_selector 'tr>td', text: 'Art History Program', count: 1
-      expect(page).to have_selector 'tr>td', text: 'default', count: 9
+      expect(page).to have_selector 'tr>td', text: 'default', count: 10
 
       first(:link, 'Edit').click
 
@@ -93,7 +95,8 @@ RSpec.feature 'Create and edit default admin set', js: false do
       expect(page).to have_selector 'tr>td', text: 'Dissertation', count: 1
       expect(page).to have_selector 'tr>td', text: 'DataSet', count: 1
       expect(page).to have_selector 'tr>td', text: 'Multimed', count: 1
-      expect(page).to have_selector 'tr>td', text: 'default', count: 8
+      expect(page).to have_selector 'tr>td', text: 'General', count: 1
+      expect(page).to have_selector 'tr>td', text: 'default', count: 9
       expect(page).to have_selector 'tr>td', text: 'other admin set', count: 1
     end
   end

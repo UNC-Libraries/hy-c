@@ -8,7 +8,7 @@ class MastersPaper < ActiveFedora::Base
   # self.valid_child_concerns = []
   validates :title, presence: { message: 'Your work must have a title.' }
 
-  self.human_readable_type = 'Masters Paper'
+  self.human_readable_type = "Master's Paper"
 
   property :abstract, predicate: ::RDF::Vocab::DC.abstract do |index|
     index.as :stored_searchable
@@ -39,7 +39,7 @@ class MastersPaper < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :degree_granting_institution, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/ddg'),
+  property :degree_granting_institution, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/dgg'),
            multiple: false do |index|
     index.as :stored_searchable
   end

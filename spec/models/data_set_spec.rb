@@ -46,7 +46,7 @@ RSpec.describe DataSet do
       expect(subject).to respond_to(:funder)
       expect(subject).to respond_to(:genre)
       expect(subject).to respond_to(:geographic_subject)
-      expect(subject).to respond_to(:last_date_modified)
+      expect(subject).to respond_to(:last_modified_date)
       expect(subject).to respond_to(:orcid)
       expect(subject).to respond_to(:other_affiliation)
       expect(subject).to respond_to(:project_director)

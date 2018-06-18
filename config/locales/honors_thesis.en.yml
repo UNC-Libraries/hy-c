@@ -4,5 +4,5 @@ en:
       honors_thesis:     'fa fa-file-text-o'
     select_type:
       honors_thesis:
-        name:               "Honors Thesis"
-        description:        "Honors thesis works"
+        name:               "Undergraduate Honors Theses"
+        description:        "Deposit your senior honors thesis."

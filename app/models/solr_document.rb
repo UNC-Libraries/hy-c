@@ -72,6 +72,14 @@ class SolrDocument
     self[Solrizer.solr_name('alternate_title')]
   end
 
+  def award
+    self[Solrizer.solr_name('award')]
+  end
+
+  def bibliographic_citation
+    self[Solrizer.solr_name('bibliographic_citation')]
+  end
+
   def conference_name
     self[Solrizer.solr_name('conference_name')]
   end
@@ -102,6 +110,10 @@ class SolrDocument
 
   def degree_granting_institution
     self[Solrizer.solr_name('degree_granting_institution')]
+  end
+
+  def digital_collection
+    self[Solrizer.solr_name('digital_collection')]
   end
 
   def discipline
@@ -144,6 +156,10 @@ class SolrDocument
     self[Solrizer.solr_name('honors_level')]
   end
 
+  def isbn
+    self[Solrizer.solr_name('isbn')]
+  end
+
   def issn
     self[Solrizer.solr_name('issn')]
   end
@@ -160,8 +176,12 @@ class SolrDocument
     self[Solrizer.solr_name('journal_volume')]
   end
 
-  def last_date_modified
-    self[Solrizer.solr_name('last_date_modified')]
+  def kind_of_data
+    self[Solrizer.solr_name('kind_of_data')]
+  end
+
+  def last_modified_date
+    self[Solrizer.solr_name('last_modified_date')]
   end
 
   def medium
@@ -226,6 +246,10 @@ class SolrDocument
 
   def sets
     LanguageSet.sets_for(self)
+  end
+
+  def series
+    self[Solrizer.solr_name('series')]
   end
 
   def sponsor

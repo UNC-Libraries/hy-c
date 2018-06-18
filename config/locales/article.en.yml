@@ -4,8 +4,9 @@ en:
       article:     'fa fa-file-text-o'
     select_type:
       article:
-        name:               "Article"
-        description:        "Article works"
+        name:               "Scholarly Articles and Book Chapters"
+        description:        "Deposit a peer-reviewed article or book chapter.  If you would like to deposit a poster,
+                            presentation, conference paper or white paper, use the “Scholarly Works” deposit form."
     links:
       about: About
       accessibility: Accessibility
@@ -24,6 +25,6 @@ en:
       dataset: Datasets
       other: Other Deposits
     homepage_images:
-      unc_logo: UNC logo
+      unc_libraries_logo: UNC libraries logo
       accessible: accessible and discoverable
       access: you decide who gets access

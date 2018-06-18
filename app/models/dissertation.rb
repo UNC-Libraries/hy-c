@@ -8,7 +8,7 @@ class Dissertation < ActiveFedora::Base
   # self.valid_child_concerns = []
   validates :title, presence: { message: 'Your work must have a title.' }
 
-  self.human_readable_type = 'Dissertation'
+  self.human_readable_type = 'Dissertation or Thesis'
 
   property :abstract, predicate: ::RDF::Vocab::DC.abstract do |index|
     index.as :stored_searchable
@@ -38,7 +38,7 @@ class Dissertation < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :degree_granting_institution, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/ddg'), multiple: false do |index|
+  property :degree_granting_institution, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/dgg'), multiple: false do |index|
     index.as :stored_searchable
   end
 
