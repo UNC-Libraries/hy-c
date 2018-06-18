@@ -50,12 +50,12 @@ end
 module Hyrax::User
   module ClassMethods
     def find_or_create_system_user(user_key)
-      u = ::User.find_or_create_by(uid: user_key)
-      u.display_name = user_key
-      u.email = "#{user_key}@email.unc.edu"
-      u.password = ('a'..'z').to_a.shuffle(random: Random.new).join if AuthConfig.use_database_auth?
-      u.save
-      u
+      user = ::User.find_or_create_by(uid: user_key)
+      user.display_name = user_key
+      user.email = "#{user_key}@email.unc.edu"
+      user.password = ('a'..'z').to_a.shuffle(random: Random.new).join if AuthConfig.use_database_auth?
+      user.save
+      user
     end
   end
 end
