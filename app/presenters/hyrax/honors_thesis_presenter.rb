@@ -2,7 +2,8 @@
 #  `rails generate hyrax:work HonorsThesis`
 module Hyrax
   class HonorsThesisPresenter < Hyrax::WorkShowPresenter
-    delegate :abstract, :affiliation, :academic_concentration, :access, :advisor, :degree,
-             :degree_granting_institution, :genre, :graduation_year, :honors_level, :note, to: :solr_document
+    delegate :abstract, :academic_concentration, :access, :advisor, :alternative_title, :award,
+             :date_issued, :degree, :degree_granting_institution, :extent, :genre, :geographic_subject,
+             :graduation_year, :note, :use, to: :solr_document
   end
 end

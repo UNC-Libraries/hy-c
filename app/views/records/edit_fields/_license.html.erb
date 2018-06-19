@@ -1,0 +1,7 @@
+<%# [hyc-override] Overriding partial in hyrax gem in order to make license single-valued %>
+<% license_service = Hyrax::LicenseService.new %>
+<%= f.input :license, as: :select,
+            collection: license_service.select_active_options,
+            include_blank: true,
+            item_helper: license_service.method(:include_current_value),
+            input_html: { class: 'form-control' } %>

@@ -15,8 +15,7 @@ RSpec.describe Hyrax::ArticlePresenter do
       "depositor_tesim" => user_key,
       "abstract_tesim" => ['an abstract'],
       "access_tesim" => 'public',
-      "affiliation_tesim" => ['unc'],
-      "citation_tesim" => ['a citation'],
+      "bibliographic_citation_tesim" => ['a citation'],
       "copyright_date_tesim" => '2017-01-22',
       "date_captured_tesim" => '2017-01-22',
       "date_created_tesim" => '2017-01-22',
@@ -33,8 +32,6 @@ RSpec.describe Hyrax::ArticlePresenter do
       "journal_title_tesim" => 'Journal Title',
       "journal_volume_tesim" => '4',
       "note_tesim" => ['a note'],
-      "orcid_tesim" => ['12345'],
-      "other_affiliation_tesim" => ['duke'],
       "page_end_tesim" => '11',
       "page_start_tesim" => '8',
       "peer_review_status_tesim" => 'in review',
@@ -58,7 +55,6 @@ RSpec.describe Hyrax::ArticlePresenter do
   it { is_expected.to delegate_method(:date_modified).to(:solr_document) }
   it { is_expected.to delegate_method(:date_uploaded).to(:solr_document) }
   it { is_expected.to delegate_method(:rights_statement).to(:solr_document) }
-
   it { is_expected.to delegate_method(:based_near_label).to(:solr_document) }
   it { is_expected.to delegate_method(:related_url).to(:solr_document) }
   it { is_expected.to delegate_method(:depositor).to(:solr_document) }
@@ -69,7 +65,7 @@ RSpec.describe Hyrax::ArticlePresenter do
 
   it { is_expected.to delegate_method(:abstract).to(:solr_document) }
   it { is_expected.to delegate_method(:access).to(:solr_document) }
-  it { is_expected.to delegate_method(:affiliation).to(:solr_document) }
+  it { is_expected.to delegate_method(:bibliographic_citation).to(:solr_document) }
   it { is_expected.to delegate_method(:copyright_date).to(:solr_document) }
   it { is_expected.to delegate_method(:date_captured).to(:solr_document) }
   it { is_expected.to delegate_method(:date_issued).to(:solr_document) }
@@ -85,8 +81,6 @@ RSpec.describe Hyrax::ArticlePresenter do
   it { is_expected.to delegate_method(:journal_title).to(:solr_document) }
   it { is_expected.to delegate_method(:journal_volume).to(:solr_document) }
   it { is_expected.to delegate_method(:note).to(:solr_document) }
-  it { is_expected.to delegate_method(:orcid).to(:solr_document) }
-  it { is_expected.to delegate_method(:other_affiliation).to(:solr_document) }
   it { is_expected.to delegate_method(:page_end).to(:solr_document) }
   it { is_expected.to delegate_method(:page_start).to(:solr_document) }
   it { is_expected.to delegate_method(:peer_review_status).to(:solr_document) }
@@ -139,14 +133,14 @@ RSpec.describe Hyrax::ArticlePresenter do
       end
     end
 
-    context "with a custom affiliation field" do
+    context "with a custom bibliographic_citation field" do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:affiliation, ['unc'], {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:bibliographic_citation, ['a citation'], {}).and_return(renderer)
       end
 
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
-        presenter.attribute_to_html(:affiliation)
+        presenter.attribute_to_html(:bibliographic_citation)
       end
     end
 
@@ -312,28 +306,6 @@ RSpec.describe Hyrax::ArticlePresenter do
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:note)
-      end
-    end
-
-    context "with a custom orcid field" do
-      before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:orcid, ['12345'], {}).and_return(renderer)
-      end
-
-      it "calls the AttributeRenderer" do
-        expect(renderer).to receive(:render)
-        presenter.attribute_to_html(:orcid)
-      end
-    end
-
-    context "with a custom other affiliation field" do
-      before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:other_affiliation, ['duke'], {}).and_return(renderer)
-      end
-
-      it "calls the AttributeRenderer" do
-        expect(renderer).to receive(:render)
-        presenter.attribute_to_html(:other_affiliation)
       end
     end
 

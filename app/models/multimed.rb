@@ -14,7 +14,7 @@ class Multimed < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :extent, predicate: ::RDF::Vocab::DC.extent do |index|
+  property :extent, predicate: ::RDF::URI('http://rdaregistry.info/Elements/u/extent.en') do |index|
     index.as :stored_searchable
   end
 

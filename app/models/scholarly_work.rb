@@ -18,11 +18,7 @@ class ScholarlyWork < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :affiliation, predicate: ::RDF::URI('http://vivoweb.org/ontology/core#AcademicDepartment') do |index|
-    index.as :stored_searchable
-  end
-
-  property :conference_name, predicate: ::RDF::Vocab::BIBO.presentedAt do |index|
+  property :conference_name, predicate: ::RDF::Vocab::EBUCore.eventName do |index|
     index.as :stored_searchable
   end
 
@@ -35,14 +31,6 @@ class ScholarlyWork < ActiveFedora::Base
   end
 
   property :geographic_subject, predicate: ::RDF::Vocab::DC.spatial do |index|
-    index.as :stored_searchable
-  end
-
-  property :orcid, predicate: ::RDF::Vocab::Identifiers.orcid do |index|
-    index.as :stored_searchable
-  end
-
-  property :other_affiliation, predicate: ::RDF::Vocab::SCHEMA.affiliation do |index|
     index.as :stored_searchable
   end
 

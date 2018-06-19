@@ -15,14 +15,11 @@ RSpec.describe Hyrax::ScholarlyWorkPresenter do
       "date_created_tesim" => ['an unformatted date'],
       "depositor_tesim" => user_key,
       "abstract_tesim" => ['an abstract'],
-      "affiliation_tesim" => ['a department'],
       "advisor_tesim" => ['an advisor'],
       "conference_name_tesim" => ['a conference'],
       "date_issued_tesim" => ['a date'],
       "genre_tesim" => ['a genre'],
-      "geographic_subject_tesim" => ['a geographic subject'],
-      "orcid_tesim" => ['an orcid'],
-      "other_affiliation_tesim" => ['another affiliation']
+      "geographic_subject_tesim" => ['a geographic subject']
     }
   end
   let(:ability) { nil }
@@ -46,13 +43,10 @@ RSpec.describe Hyrax::ScholarlyWorkPresenter do
 
   it { is_expected.to delegate_method(:abstract).to(:solr_document) }
   it { is_expected.to delegate_method(:advisor).to(:solr_document) }
-  it { is_expected.to delegate_method(:affiliation).to(:solr_document) }
   it { is_expected.to delegate_method(:conference_name).to(:solr_document) }
   it { is_expected.to delegate_method(:date_issued).to(:solr_document) }
   it { is_expected.to delegate_method(:genre).to(:solr_document) }
   it { is_expected.to delegate_method(:geographic_subject).to(:solr_document) }
-  it { is_expected.to delegate_method(:orcid).to(:solr_document) }
-  it { is_expected.to delegate_method(:other_affiliation).to(:solr_document) }
 
   describe "#model_name" do
     subject { presenter.model_name }
@@ -82,17 +76,6 @@ RSpec.describe Hyrax::ScholarlyWorkPresenter do
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:abstract)
-      end
-    end
-
-    context "with a custom affiliation field" do
-      before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:affiliation, ['a department'], {}).and_return(renderer)
-      end
-
-      it "calls the AttributeRenderer" do
-        expect(renderer).to receive(:render)
-        presenter.attribute_to_html(:affiliation)
       end
     end
 
@@ -148,28 +131,6 @@ RSpec.describe Hyrax::ScholarlyWorkPresenter do
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:geographic_subject)
-      end
-    end
-
-    context "with a custom orcid field" do
-      before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:orcid, ['an orcid'], {}).and_return(renderer)
-      end
-
-      it "calls the AttributeRenderer" do
-        expect(renderer).to receive(:render)
-        presenter.attribute_to_html(:orcid)
-      end
-    end
-
-    context "with a custom other_affiliation field" do
-      before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:other_affiliation, ['another affiliation'], {}).and_return(renderer)
-      end
-
-      it "calls the AttributeRenderer" do
-        expect(renderer).to receive(:render)
-        presenter.attribute_to_html(:other_affiliation)
       end
     end
 

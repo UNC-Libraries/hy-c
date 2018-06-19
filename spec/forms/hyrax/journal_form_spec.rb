@@ -9,43 +9,47 @@ RSpec.describe Hyrax::JournalForm do
   describe "#required_fields" do
     subject { form.required_fields }
 
-    it { is_expected.to match_array [:title, :creator, :rights_statement] }
+    it { is_expected.to match_array [:title, :date_issued] }
   end
 
   describe "#primary_terms" do
     subject { form.primary_terms }
 
-    it { is_expected.to match_array [:title, :creator, :rights_statement] }
+    it { is_expected.to match_array [:title, :date_issued] }
   end
 
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:abstract, :alternate_title, :conference_name, :contributor, :date_created, :extent,
-                                     :genre, :geographic_subject, :identifier, :issn, :license, :note,
-                                     :place_of_publication, :source, :subject, :date_issued, :resource_type,
-                                     :publisher, :language, :keyword, :table_of_contents] }
+    it { is_expected.to match_array [:abstract, :alternative_title, :extent, :genre, :geographic_subject, :issn,
+                                     :note, :place_of_publication, :table_of_contents, :creator, :subject, :keyword,
+                                     :language, :resource_type, :license, :rights_statement, :publisher] }
   end
 
   describe ".model_attributes" do
     let(:params) do
       ActionController::Parameters.new(
           title: 'journal name', # single-valued
-          note: [''],
+          creator: ['a creator'],
+          subject: ['a subject'],
+          keyword: ['a keyword'],
+          language: ['a language'],
+          resource_type: ['a type'],
+          license: 'a license', # single-valued
+          rights_statement: 'a statement', # single-valued
+          publisher: ['a publisher'],
           visibility: 'open',
           representative_id: '456',
           thumbnail_id: '789',
-          keyword: ['journal'],
           member_of_collection_ids: ['123456', 'abcdef'],
           abstract: ['an abstract'],
-          alternate_title: ['alt title'],
-          conference_name: ['Code4Lib'],
-          date_created: '2018-01-09', # single-valued
-          date_issued: '2018-01-08',
+          alternative_title: ['alt title'],
+          date_issued: '2018-01-08', # single-valued
           extent: ['1993'],
           genre: ['science'],
           geographic_subject: ['California'],
           issn: ['12345'],
+          note: [''],
           place_of_publication: ['California'],
           table_of_contents: ['table of contents']
       )
@@ -55,19 +59,24 @@ RSpec.describe Hyrax::JournalForm do
 
     it "permits parameters" do
       expect(subject['title']).to eq ['journal name']
-      expect(subject['note']).to be_empty
+      expect(subject['creator']).to eq ['a creator']
+      expect(subject['subject']).to eq ['a subject']
+      expect(subject['keyword']).to eq ['a keyword']
+      expect(subject['language']).to eq ['a language']
+      expect(subject['resource_type']).to eq ['a type']
+      expect(subject['license']).to eq ['a license']
+      expect(subject['rights_statement']).to eq ['a statement']
+      expect(subject['publisher']).to eq ['a publisher']
       expect(subject['visibility']).to eq 'open'
-      expect(subject['keyword']).to eq ['journal']
       expect(subject['member_of_collection_ids']).to eq ['123456', 'abcdef']
       expect(subject['abstract']).to eq ['an abstract']
-      expect(subject['alternate_title']).to eq ['alt title']
-      expect(subject['conference_name']).to eq ['Code4Lib']
-      expect(subject['date_created']).to eq ['2018-01-09']
+      expect(subject['alternative_title']).to eq ['alt title']
       expect(subject['date_issued']).to eq '2018-01-08'
       expect(subject['extent']).to eq ['1993']
       expect(subject['genre']).to eq ['science']
       expect(subject['geographic_subject']).to eq ['California']
       expect(subject['issn']).to eq ['12345']
+      expect(subject['note']).to be_empty
       expect(subject['place_of_publication']).to eq ['California']
       expect(subject['table_of_contents']).to eq ['table of contents']
     end

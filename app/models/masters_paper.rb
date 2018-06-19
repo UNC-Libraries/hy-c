@@ -18,11 +18,6 @@ class MastersPaper < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :affiliation,
-           predicate: ::RDF::URI('http://vivoweb.org/ontology/core#AcademicDepartment') do |index|
-    index.as :stored_searchable
-  end
-
   property :access, predicate: ::RDF::Vocab::DC.accessRights, multiple: false do |index|
     index.as :stored_searchable
   end
@@ -44,7 +39,7 @@ class MastersPaper < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :extent, predicate: ::RDF::Vocab::DC.extent do |index|
+  property :extent, predicate: ::RDF::URI('http://rdaregistry.info/Elements/u/extent.en') do |index|
     index.as :stored_searchable
   end
 
@@ -70,6 +65,10 @@ class MastersPaper < ActiveFedora::Base
   end
 
   property :reviewer, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/rev') do |index|
+    index.as :stored_searchable
+  end
+
+  property :use, predicate: ::RDF::Vocab::DC11.rights do |index|
     index.as :stored_searchable
   end
 

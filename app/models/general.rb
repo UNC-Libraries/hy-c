@@ -26,11 +26,11 @@ class General < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :affiliation, predicate: ::RDF::URI('http://vivoweb.org/ontology/core#AcademicDepartment') do |index|
+  property :alternative_title, predicate: ::RDF::Vocab::DC.alternative do |index|
     index.as :stored_searchable
   end
 
-  property :alternate_title, predicate: ::RDF::Vocab::DC.alternative do |index|
+  property :arranger, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/arr') do |index|
     index.as :stored_searchable
   end
 
@@ -38,11 +38,11 @@ class General < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :bibliographic_citation, predicate: ::RDF::Vocab::DC.bibliographicCitation do |index|
+  property :conference_name, predicate: ::RDF::Vocab::EBUCore.eventName do |index|
     index.as :stored_searchable
   end
 
-  property :conference_name, predicate: ::RDF::Vocab::EBUCore.eventName do |index|
+  property :composer, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/cmp') do |index|
     index.as :stored_searchable
   end
 
@@ -95,6 +95,10 @@ class General < ActiveFedora::Base
     index.as :stored_searchable
   end
 
+  property :genre, predicate: ::RDF::Vocab::EDM.hasType do |index|
+    index.as :stored_searchable
+  end
+
   property :geographic_subject, predicate: ::RDF::Vocab::DC.spatial do |index|
     index.as :stored_searchable
   end
@@ -138,14 +142,6 @@ class General < ActiveFedora::Base
   end
 
   property :note, predicate: ::RDF::Vocab::SKOS.note do |index|
-    index.as :stored_searchable
-  end
-
-  property :orcid, predicate: ::RDF::Vocab::Identifiers.orcid do |index|
-    index.as :stored_searchable
-  end
-
-  property :other_affiliation, predicate: ::RDF::Vocab::SCHEMA.affiliation do |index|
     index.as :stored_searchable
   end
 

@@ -1,4 +1,4 @@
-# Overriding workflow permissions methods
+# [hyc-override] Overriding workflow permissions methods
 Hyrax::Workflow::StatusListService.class_eval do
 
   private

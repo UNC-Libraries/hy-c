@@ -1,4 +1,4 @@
-<%# Overriding partial in hyrax gem in order to change the delete button %>
+<%# [hyc-override] Overriding partial in hyrax gem in order to change the delete button %>
 <div class="show-actions">
   <% if Hyrax.config.analytics? %>
     <%= link_to "Analytics", presenter.stats_path, id: 'stats', class: 'btn btn-default', data: { turbolinks: false } %>

@@ -9,44 +9,59 @@ RSpec.describe Hyrax::DissertationForm do
   describe "#required_fields" do
     subject { form.required_fields }
 
-    it { is_expected.to match_array [:title, :creator, :degree_granting_institution] }
+    it { is_expected.to match_array [:title, :creator, :degree_granting_institution, :date_issued] }
   end
 
   describe "#primary_terms" do
     subject { form.primary_terms }
 
-    it { is_expected.to match_array [:title, :creator, :degree_granting_institution] }
+    it { is_expected.to match_array [:title, :creator, :degree_granting_institution, :date_issued] }
   end
 
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:abstract, :academic_concentration, :affiliation, :access, :advisor,
-                                     :date_issued, :degree, :discipline, :doi, :format, :genre, :graduation_year, :note,
-                                     :place_of_publication, :record_content_source, :reviewer, :contributor,
-                                     :identifier, :subject, :publisher, :language, :keyword, :rights_statement,
-                                     :license, :resource_type] }
+    it { is_expected.to match_array [:abstract, :academic_concentration, :access, :advisor, :alternative_title,
+                                     :degree, :discipline, :doi, :genre, :geographic_subject, :graduation_year, :note,
+                                     :place_of_publication, :reviewer, :use, :contributor, :identifier, :subject,
+                                     :publisher, :language, :keyword, :rights_statement, :license, :resource_type] }
   end
 
   describe '.model_attributes' do
     let(:params) do
       ActionController::Parameters.new(
           title: 'foo', # single-valued
-          note: [''],
+          contributor: ['a contributor'],
+          creator: ['a creator'],
+          identifier: ['an id'],
+          keyword: ['a keyword'],
+          language: ['a language'],
+          license: 'a license', # single-valued
+          publisher: ['a publisher'],
+          resource_type: ['a type'],
+          rights_statement: 'a statement', # single-valued
+          subject: ['a subject'],
           visibility: 'open',
           representative_id: '456',
           thumbnail_id: '789',
-          keyword: ['derp'],
           member_of_collection_ids: ['123456', 'abcdef'],
           abstract: ['an abstract'],
-          affiliation: ['biology'],
-          access: 'public',
-          date_issued: '2018-01-08',
-          degree: 'MSIS',
-          degree_granting_institution: 'UNC',
-          doi: 'hi.org',
+          academic_concentration: ['a concentration'],
+          access: 'public', # single-valued
+          advisor: ['an advisor'],
+          alternative_title: ['another title'],
+          date_issued: '2018-01-08', # single-valued
+          degree: 'MSIS', # single-valued
+          degree_granting_institution: 'UNC', # single-valued
+          discipline: ['a discipline'],
+          doi: 'hi.org', # single-valued
+          genre: ['a genre'],
+          geographic_subject: ['a geographic subject'],
           graduation_year: '2017',
-          record_content_source: 'journal'
+          note: [''],
+          place_of_publication: ['a place'],
+          reviewer: ['a reviewer'],
+          use: ['a use']
       )
     end
 
@@ -54,19 +69,35 @@ RSpec.describe Hyrax::DissertationForm do
 
     it 'permits parameters' do
       expect(subject['title']).to eq ['foo']
-      expect(subject['note']).to be_empty
+      expect(subject['contributor']).to eq ['a contributor']
+      expect(subject['creator']).to eq ['a creator']
+      expect(subject['identifier']).to eq ['an id']
+      expect(subject['keyword']).to eq ['a keyword']
+      expect(subject['language']).to eq ['a language']
+      expect(subject['license']).to eq ['a license']
+      expect(subject['publisher']).to eq ['a publisher']
+      expect(subject['resource_type']).to eq ['a type']
+      expect(subject['rights_statement']).to eq ['a statement']
+      expect(subject['subject']).to eq ['a subject']
       expect(subject['visibility']).to eq 'open'
-      expect(subject['keyword']).to eq ['derp']
       expect(subject['member_of_collection_ids']).to eq ['123456', 'abcdef']
       expect(subject['abstract']).to eq ['an abstract']
-      expect(subject['affiliation']).to eq ['biology']
+      expect(subject['academic_concentration']).to eq ['a concentration']
       expect(subject['access']).to eq 'public'
+      expect(subject['advisor']).to eq ['an advisor']
+      expect(subject['alternative_title']).to eq ['another title']
       expect(subject['date_issued']).to eq '2018-01-08'
       expect(subject['degree']).to eq 'MSIS'
       expect(subject['degree_granting_institution']).to eq 'UNC'
+      expect(subject['discipline']).to eq ['a discipline']
       expect(subject['doi']).to eq 'hi.org'
+      expect(subject['genre']).to eq ['a genre']
+      expect(subject['geographic_subject']).to eq ['a geographic subject']
       expect(subject['graduation_year']).to eq '2017'
-      expect(subject['record_content_source']).to eq 'journal'
+      expect(subject['note']).to be_empty
+      expect(subject['place_of_publication']).to eq ['a place']
+      expect(subject['reviewer']).to eq ['a reviewer']
+      expect(subject['use']).to eq ['a use']
     end
 
     context '.model_attributes' do

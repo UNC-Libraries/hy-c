@@ -9,21 +9,21 @@ RSpec.describe Hyrax::ScholarlyWorkForm do
   describe "#required_fields" do
     subject { form.required_fields }
 
-    it { is_expected.to match_array [:title, :creator] }
+    it { is_expected.to match_array [:title, :creator, :date_created] }
   end
 
   describe "#primary_terms" do
     subject { form.primary_terms }
 
-    it { is_expected.to match_array [:title, :creator] }
+    it { is_expected.to match_array [:title, :creator, :date_created] }
   end
 
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:abstract, :advisor, :affiliation, :conference_name, :date_issued, :genre,
-                                     :geographic_subject, :orcid, :other_affiliation, :date_created, :description,
-                                     :keyword, :language, :license, :resource_type, :rights_statement, :subject] }
+    it { is_expected.to match_array [:abstract, :advisor, :conference_name, :date_issued, :genre,
+                                     :geographic_subject, :description, :keyword, :language, :license, :resource_type,
+                                     :rights_statement, :subject] }
   end
 
   describe '.model_attributes' do
@@ -31,22 +31,24 @@ RSpec.describe Hyrax::ScholarlyWorkForm do
       ActionController::Parameters.new(
           title: 'foo', # single-valued
           creator: ['someone@example.com'],
+          date_created: 'a date', # single-valued
+          description: ['a description'],
+          subject: ['a subject'],
+          language: ['a language'],
+          keyword: ['test'],
+          resource_type: ['a type'],
+          license: 'http://creativecommons.org/licenses/by/3.0/us/', # single-valued
+          rights_statement: 'a statement', # single-valued
+          member_of_collection_ids: ['123456', 'abcdef'],
           visibility: 'open',
           representative_id: '456',
           thumbnail_id: '789',
           abstract: [''],
           advisor: ['an advisor'],
-          affiliation: ['an affiliation'],
           conference_name: ['a conference name'],
-          date_created: 'a date', # single-valued
           date_issued: 'a date', # single-valued
           genre: ['a genre'],
-          geographic_subject: ['a geographic subject'],
-          orcid: ['an orcid id'],
-          other_affiliation: ['another affiliation'],
-          keyword: ['test'],
-          license: ['http://creativecommons.org/licenses/by/3.0/us/'],
-          member_of_collection_ids: ['123456', 'abcdef']
+          geographic_subject: ['a geographic subject']
       )
     end
 
@@ -54,21 +56,23 @@ RSpec.describe Hyrax::ScholarlyWorkForm do
 
     it 'permits parameters' do
       expect(subject['title']).to eq ['foo']
-      expect(subject['abstract']).to be_empty
       expect(subject['creator']).to eq ['someone@example.com']
+      expect(subject['date_created']).to eq ['a date']
+      expect(subject['description']).to eq ['a description']
+      expect(subject['subject']).to eq ['a subject']
+      expect(subject['language']).to eq ['a language']
+      expect(subject['keyword']).to eq ['test']
+      expect(subject['resource_type']).to eq ['a type']
+      expect(subject['license']).to eq ['http://creativecommons.org/licenses/by/3.0/us/']
+      expect(subject['rights_statement']).to eq ['a statement']
       expect(subject['visibility']).to eq 'open'
       expect(subject['representative_id']).to eq '456'
       expect(subject['thumbnail_id']).to eq '789'
-      expect(subject['license']).to eq ['http://creativecommons.org/licenses/by/3.0/us/']
-      expect(subject['keyword']).to eq ['test']
-      expect(subject['affiliation']).to eq ['an affiliation']
-      expect(subject['other_affiliation']).to eq ['another affiliation']
+      expect(subject['abstract']).to be_empty
       expect(subject['conference_name']).to eq ['a conference name']
-      expect(subject['date_created']).to eq ['a date']
       expect(subject['date_issued']).to eq 'a date'
       expect(subject['genre']).to eq ['a genre']
       expect(subject['geographic_subject']).to eq ['a geographic subject']
-      expect(subject['orcid']).to eq ['an orcid id']
       expect(subject['member_of_collection_ids']).to eq ['123456', 'abcdef']
     end
 
@@ -78,7 +82,7 @@ RSpec.describe Hyrax::ScholarlyWorkForm do
             title: '',
             abstract: [''],
             keyword: [''],
-            license: [''],
+            license: '',
             member_of_collection_ids: [''],
             on_behalf_of: 'Melissa'
         )

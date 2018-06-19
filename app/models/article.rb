@@ -18,10 +18,6 @@ class Article < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :affiliation, predicate: ::RDF::URI('http://vivoweb.org/ontology/core#AcademicDepartment') do |index|
-    index.as :stored_searchable
-  end
-
   property :copyright_date, predicate: ::RDF::Vocab::DC.dateCopyrighted, multiple: false do |index|
     index.as :stored_searchable
   end
@@ -46,7 +42,7 @@ class Article < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :extent, predicate: ::RDF::Vocab::DC.extent do |index|
+  property :extent, predicate: ::RDF::URI('http://rdaregistry.info/Elements/u/extent.en') do |index|
     index.as :stored_searchable
   end
 
@@ -79,14 +75,6 @@ class Article < ActiveFedora::Base
   end
 
   property :note, predicate: ::RDF::Vocab::SKOS.note do |index|
-    index.as :stored_searchable
-  end
-
-  property :orcid, predicate: ::RDF::Vocab::Identifiers.orcid do |index|
-    index.as :stored_searchable
-  end
-
-  property :other_affiliation, predicate: ::RDF::Vocab::SCHEMA.affiliation do |index|
     index.as :stored_searchable
   end
 
