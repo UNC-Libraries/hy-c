@@ -7,7 +7,7 @@ include Warden::Test::Helpers
 RSpec.feature 'Create a MastersPaper', js: false do
   context 'a logged in user' do
     let(:user) do
-      User.new(email: 'test@example.com', guest: false) { |u| u.save!(validate: false)}
+      User.new(email: 'test@example.com', guest: false, uid: 'test@example.com') { |u| u.save!(validate: false)}
     end
 
     let(:admin_user) do
