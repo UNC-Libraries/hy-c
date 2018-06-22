@@ -1,4 +1,4 @@
-module LicenseService
+module CdrLicenseService
   mattr_accessor :authority
   self.authority = Qa::Authorities::Local.subauthority_for('licenses')
 
