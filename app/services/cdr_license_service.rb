@@ -4,14 +4,13 @@ module CdrLicenseService
 
   def self.select(work_type)
     if work_type. == 'hyrax/data_sets'
-      licenses = authority.search('data')
+      license_type = 'all'
     else
-      licenses = authority.all
+      license_type = ''
     end
 
-    licenses.map do |element|
-      license = element[:label].split('?')[0] # Remove "data only attribute from label, if present"
-      [license, element[:id]]
+    authority.all.reject{ |item| item['active'] == license_type }.map do |element|
+      [element[:label], element[:id]]
     end
   end
 
