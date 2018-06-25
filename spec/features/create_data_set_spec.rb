@@ -55,7 +55,8 @@ RSpec.feature 'Create a DataSet', js: false do
       fill_in 'Title', with: 'Test Data Set'
       fill_in 'Creator', with: 'Test Default Creator'
       fill_in 'Keyword', with: 'Test Default Keyword'
-      select "In Copyright", :from => "data_set_rights_statement"
+
+      expect(page).not_to have_field('data_set_rights_statement')
       expect(page).to have_field('data_set_visibility_embargo')
       expect(page).not_to have_field('data_set_visibility_lease')
       choose "data_set_visibility_open"
@@ -89,7 +90,8 @@ RSpec.feature 'Create a DataSet', js: false do
       fill_in 'Title', with: 'Test Data Set'
       fill_in 'Creator', with: 'Test Default Creator'
       fill_in 'Keyword', with: 'Test Default Keyword'
-      select "In Copyright", :from => "data_set_rights_statement"
+
+      expect(page).not_to have_field('data_set_rights_statement')
       expect(page).to have_field('data_set_visibility_embargo')
       expect(page).not_to have_field('data_set_visibility_lease')
       choose "data_set_visibility_open"
