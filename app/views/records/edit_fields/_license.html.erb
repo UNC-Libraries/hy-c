@@ -1,4 +1,4 @@
-<%# [hyc-override] Overriding partial in hyrax gem in order to make license single-valued %>
+<%# [hyc-override] Overriding partial in hyrax gem in order to make license single-valued and add custom service %>
 <%= f.input :license, as: :select,
             collection: CdrLicenseService.select(params[:controller]),
             include_blank: true,

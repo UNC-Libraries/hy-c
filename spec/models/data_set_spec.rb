@@ -30,7 +30,6 @@ RSpec.describe DataSet do
       expect(subject).to respond_to(:subject)
       expect(subject).to respond_to(:language)
       expect(subject).to respond_to(:license)
-      expect(subject).to respond_to(:rights_statement)
       expect(subject).to respond_to(:identifier)
       expect(subject).to respond_to(:source)
       expect(subject).to respond_to(:resource_type)

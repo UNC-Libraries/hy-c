@@ -35,6 +35,3 @@ terms:
   - id: http://rightsstatements.org/vocab/NKC/1.0/
     term: "No Known Copyright"
     active: all
-  - id: http://www.europeana.eu/portal/rights/rr-r.html
-    term: "Old - Do Not Use"
-    active: general

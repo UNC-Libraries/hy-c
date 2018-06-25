@@ -1,15 +1,16 @@
-module CdrLicenseService
+module CdrRightsStatementsService
   mattr_accessor :authority
-  self.authority = Qa::Authorities::Local.subauthority_for('licenses')
+  self.authority = Qa::Authorities::Local.subauthority_for('rights_statements')
 
+  # Allow all rights statements only for "General" works
   def self.select(work_type)
-    if work_type == 'hyrax/data_sets'
-      license_type = 'all'
+    if work_type == 'hyrax/generals'
+      rights_type = ''
     else
-      license_type = ''
+      rights_type = 'general'
     end
 
-    authority.all.reject{ |item| item['active'] == license_type }.map do |element|
+    authority.all.reject{ |item| item['active'] == rights_type }.map do |element|
       [element[:label], element[:id]]
     end
   end
@@ -25,9 +26,4 @@ module CdrLicenseService
     end
     [render_options, html_options]
   end
-
-  def self.default_license(work_type)
-    work_type == 'hyrax/data_sets' ? 'http://creativecommons.org/publicdomain/zero/1.0/' : ''
-  end
-
 end
