@@ -1,6 +1,6 @@
 class MastersPapersController < ApplicationController
 
-  layout 'dashboard'
+  layout 'hyrax/dashboard'
 
   def department
     add_breadcrumb t(:'hyrax.controls.home'), root_path

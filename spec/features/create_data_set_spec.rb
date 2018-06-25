@@ -25,7 +25,7 @@ RSpec.feature 'Create a DataSet', js: false do
     end
 
     let(:permission_template) do
-      Hyrax::PermissionTemplate.create!(admin_set_id: admin_set.id)
+      Hyrax::PermissionTemplate.create!(source_id: admin_set.id)
     end
 
     let(:workflow) do
@@ -67,7 +67,7 @@ RSpec.feature 'Create a DataSet', js: false do
       end
 
       click_link "Relationships"
-      expect(page).to_not have_content 'Add as member of administrative set'
+      expect(page).to_not have_content 'Administrative Set'
 
       click_button 'Save'
       expect(page).to have_content 'Your files are being processed by Hyrax'
@@ -101,7 +101,7 @@ RSpec.feature 'Create a DataSet', js: false do
       end
 
       click_link "Relationships"
-      expect(page).to have_content 'Add as member of administrative set'
+      expect(page).to have_content 'Administrative Set'
       find('#data_set_admin_set_id').text eq 'data set admin set'
 
       click_button 'Save'

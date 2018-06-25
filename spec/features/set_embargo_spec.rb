@@ -19,7 +19,7 @@ RSpec.feature 'Edit embargo', js: false do
     end
 
     let(:permission_template) do
-      Hyrax::PermissionTemplate.create!(admin_set_id: admin_set.id, release_period: '6mos')
+      Hyrax::PermissionTemplate.create!(source_id: admin_set.id, release_period: '6mos')
     end
 
     let(:workflow) do
@@ -108,7 +108,7 @@ RSpec.feature 'Edit embargo', js: false do
       end
 
       click_link 'Relationships'
-      expect(page).to have_content 'Add as member of administrative set'
+      expect(page).to have_content 'Administrative Set'
       find('#article_admin_set_id').text eq 'article admin set'
 
       click_button 'Save'
