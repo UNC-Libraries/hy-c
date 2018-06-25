@@ -4,7 +4,7 @@ module CdrRightsStatementsService
 
   # Allow all rights statements only for "General" works
   def self.select(work_type)
-    if work_type == 'hyrax/generals'
+    if work_type.match?('generals')
       rights_type = ''
     else
       rights_type = 'general'
