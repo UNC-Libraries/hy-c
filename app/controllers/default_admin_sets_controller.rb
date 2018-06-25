@@ -4,7 +4,7 @@ class DefaultAdminSetsController < ApplicationController
   before_action :set_admin_sets, :set_work_types, only: [:edit, :new, :create, :update]
   before_action :ensure_admin!
 
-  layout 'dashboard'
+  layout 'hyrax/dashboard'
 
   def index
     add_breadcrumb t(:'hyrax.controls.home'), root_path

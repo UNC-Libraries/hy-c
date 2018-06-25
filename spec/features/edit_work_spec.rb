@@ -21,11 +21,11 @@ RSpec.feature 'Edit a work', js: false do
     end
 
     let(:permission_template) do
-      Hyrax::PermissionTemplate.create!(admin_set_id: admin_set.id)
+      Hyrax::PermissionTemplate.create!(source_id: admin_set.id)
     end
 
     let(:other_permission_template) do
-      Hyrax::PermissionTemplate.create!(admin_set_id: other_admin_set.id)
+      Hyrax::PermissionTemplate.create!(source_id: other_admin_set.id)
     end
 
     let(:workflow) do
@@ -72,7 +72,7 @@ RSpec.feature 'Edit a work', js: false do
       end
 
       click_link 'Relationships'
-      expect(page).to have_content 'Add as member of administrative set'
+      expect(page).to have_content 'Administrative Set'
       find('#article_admin_set_id').text eq 'article admin set'
       find('#article_admin_set_id').select 'other admin set'
 
