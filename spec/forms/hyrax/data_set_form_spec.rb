@@ -25,7 +25,7 @@ RSpec.describe Hyrax::DataSetForm do
                                      :geographic_subject, :kind_of_data, :last_modified_date, :project_director,
                                      :researcher, :rights_holder, :sponsor, :language, :keyword, :related_url,
                                      :resource_type, :description, :license, :contributor, :date_created,
-                                     :rights_statement, :subject] }
+                                     :subject] }
   end
 
   describe ".model_attributes" do

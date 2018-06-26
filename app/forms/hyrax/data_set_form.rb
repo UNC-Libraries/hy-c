@@ -11,11 +11,11 @@ module Hyrax
                    :project_director, :researcher, :rights_holder, :sponsor
     ]
 
-    self.terms -= [:based_near, :publisher, :source, :identifier]
+    self.terms -= [:based_near, :publisher, :source, :identifier, :rights_statement]
 
     self.required_fields = [:title, :creator, :date_issued]
 
-    self.single_value_fields = [:title, :date_created, :license, :rights_statement]
+    self.single_value_fields = [:title, :date_created, :license]
 
     # Add overrides for required properties which are becoming single-valued
 
@@ -28,10 +28,6 @@ module Hyrax
     end
 
     def license
-      super.first || ""
-    end
-
-    def rights_statement
       super.first || ""
     end
   end
