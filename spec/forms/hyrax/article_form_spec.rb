@@ -132,7 +132,7 @@ RSpec.describe Hyrax::ArticleForm do
       end
 
       it 'removes blank parameters' do
-        expect(subject['title']).to be_empty
+        expect(subject['title']).to be_nil
         expect(subject['license']).to be_empty
         expect(subject['keyword']).to be_empty
         expect(subject['member_of_collection_ids']).to be_empty

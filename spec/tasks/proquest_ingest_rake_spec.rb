@@ -16,7 +16,7 @@ describe "rake proquest:ingest", type: :task do
   end
 
   let(:permission_template) do
-    Hyrax::PermissionTemplate.create!(admin_set_id: admin_set.id)
+    Hyrax::PermissionTemplate.create!(source_id: admin_set.id)
   end
 
   let(:workflow) do

@@ -4,7 +4,7 @@ RSpec.describe AssignPermissionsToWorkJob, type: :job do
   let(:user) { create(:user) }
 
   let(:admin_set) { AdminSet.create(title: ['an admin set']) }
-  let(:permission_template) { Hyrax::PermissionTemplate.create(admin_set_id: admin_set.id) }
+  let(:permission_template) { Hyrax::PermissionTemplate.create(source_id: admin_set.id) }
   let(:workflow) { Sipity::Workflow.create(name: 'a workflow', permission_template_id: permission_template.id, active: true)}
   let(:work) { HonorsThesis.create(title: ['a title'],
                                    depositor: 'admin@example.com',
