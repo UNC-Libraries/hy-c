@@ -34,6 +34,10 @@ class Article < ActiveFedora::Base
     index.as :stored_searchable
   end
 
+  property :doi, predicate: ::RDF::Vocab::Identifiers.doi, multiple: false do |index|
+    index.as :stored_searchable
+  end
+
   property :edition, predicate: ::RDF::Vocab::BF2.editionStatement do |index|
     index.as :stored_searchable
   end
@@ -59,10 +63,6 @@ class Article < ActiveFedora::Base
   end
 
   property :journal_issue, predicate: ::RDF::Vocab::BIBO::issue, multiple: false do |index|
-    index.as :stored_searchable
-  end
-
-  property :journal_title, predicate: ::RDF::URI('http://rdaregistry.info/Elements/u/containedIn.en'), multiple: false do |index|
     index.as :stored_searchable
   end
 
