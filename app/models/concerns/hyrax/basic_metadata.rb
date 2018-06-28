@@ -36,6 +36,8 @@ module Hyrax
       property :related_url, predicate: ::RDF::RDFS.seeAlso
       property :bibliographic_citation, predicate: ::RDF::Vocab::DC.bibliographicCitation
       property :source, predicate: ::RDF::Vocab::DC.source
+      # UNC addition
+      property :doi, predicate: ::RDF::Vocab::Identifiers.doi, multiple: false
 
       id_blank = proc { |attributes| attributes[:id].blank? }
 
