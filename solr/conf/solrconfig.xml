@@ -386,6 +386,8 @@
       -->
   </searchComponent>
 
+  <!-- TURN OFF SUGGEST - it causes performance issues -->
+  <!--
   <searchComponent name="suggest" class="solr.SuggestComponent">
     <lst name="suggester">
       <str name="name">mySuggester</str>
@@ -406,6 +408,7 @@
       <str>suggest</str>
     </arr>
   </requestHandler>
+  -->
 
 </config>
 
