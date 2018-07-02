@@ -15,7 +15,16 @@ RSpec.feature 'Create and edit default admin set', js: false do
       login_as user
     end
 
-    scenario do
+    scenario 'without an admin set' do
+      AdminSet.delete_all
+
+      visit default_admin_sets_path
+
+      expect(page).to have_content 'You must create an admin set before selecting a default.'
+      expect(page).not_to have_selector 'tr>th', text: 'Work Type'
+    end
+
+    scenario 'with an admin set' do
       visit default_admin_sets_path
 
       expect(page).to have_content "Default Admin Sets"

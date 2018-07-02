@@ -3,7 +3,7 @@ include Warden::Test::Helpers
 
 # NOTE: If you generated more than one work, you have to set 'js: true'
 RSpec.feature 'Edit a work', js: false do
-  context 'a logged in user' do
+  context 'a logged in user with an admin set' do
     let(:admin_user) do
       User.find_by_user_key('admin@example.com')
     end
@@ -53,6 +53,7 @@ RSpec.feature 'Edit a work', js: false do
       DefaultAdminSet.create(work_type_name: 'Article', admin_set_id: admin_set.id)
     end
 
+    # Administrators can change admin sets
     scenario 'as an admin' do
       login_as admin_user
 
@@ -90,6 +91,38 @@ RSpec.feature 'Edit a work', js: false do
       click_link 'Edit'
       # Make sure that default admin set selector does not overwrite saved value
       find('#article_admin_set_id').text eq 'other admin set'
+    end
+  end
+
+  # Do not allow works to be edited before an admin set has been created
+  context 'a logged in user without an admin set' do
+    let(:admin_user) do
+      User.find_by_user_key('admin@example.com')
+    end
+    
+    before do
+      AdminSet.delete_all
+    end
+    
+    scenario do
+      login_as admin_user
+      
+      visit '/'
+      fill_in "search-field-header", with: 'Alice'
+      click_button 'search-submit-header'
+
+      expect(page).to have_content "Alice's Adventures in Wonderland"
+
+      click_link "Alice's Adventures in Wonderland"
+
+      expect(page).to have_content "Alice's Adventures in Wonderland"
+      expect(page).to have_content 'Abstract'
+      expect(page).to have_content 'Items'
+
+      click_link 'Edit'
+
+      expect(page).to have_content "Alice's Adventures in Wonderland"
+      expect(page).to have_content 'No Admin Sets have been created.'
     end
   end
 end

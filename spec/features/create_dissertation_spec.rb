@@ -42,12 +42,12 @@ RSpec.feature 'Create a Dissertation', js: false do
       DefaultAdminSet.create(work_type_name: 'Dissertation', admin_set_id: admin_set.id)
     end
 
-    # scenario 'as a non-admin' do
-    #   login_as user
-    #
-    #   visit new_hyrax_dissertation_path
-    #   expect(page).to have_content "You are not authorized to access this page"
-    # end
+    scenario 'as a non-admin' do
+      login_as user
+
+      visit new_hyrax_dissertation_path
+      expect(page).to have_content "You are not authorized to access this page"
+    end
 
     scenario 'as an admin' do
       login_as admin_user

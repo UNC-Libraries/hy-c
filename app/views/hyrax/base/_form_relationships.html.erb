@@ -7,7 +7,11 @@
                                                        .new(Hyrax::AdminSetService.new(controller)).select_options)
     %>
   <% else %>
-    <% admin_set_id = f.object.model.admin_set_id %>
+    <% if f.object.model.admin_set_id.blank? %>
+      <% admin_set_id = AdminSet.where(title: ENV['DEFAULT_ADMIN_SET']).first.id %>
+    <% else %>
+      <% admin_set_id = f.object.model.admin_set_id %>
+    <% end %>
   <% end %>
   <% if current_user.admin? %>
   <%= f.input :admin_set_id, as: :select,
