@@ -16,7 +16,7 @@ describe "rake proquest:ingest", type: :task do
   end
 
   let(:permission_template) do
-    Hyrax::PermissionTemplate.create!(admin_set_id: admin_set.id)
+    Hyrax::PermissionTemplate.create!(source_id: admin_set.id)
   end
 
   let(:workflow) do
@@ -25,6 +25,8 @@ describe "rake proquest:ingest", type: :task do
   end
 
   before do
+    AdminSet.delete_all
+    Hyrax::PermissionTemplate.delete_all
     Hyrax::PermissionTemplateAccess.create!(permission_template: permission_template,
                                            agent_type: 'user',
                                            agent_id: admin_user.user_key,
