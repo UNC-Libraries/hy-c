@@ -13,6 +13,7 @@ module Hyrax
           text << add_publisher_text_for(work)
           # UNC customization. Add DOI
           text << work.doi[0] if !work.doi.nil? && work.doi.length > 0
+
           text.html_safe
         end
 
@@ -66,7 +67,7 @@ module Hyrax
           if pub_info.nil?
             ''
           else
-            pub_info + "."
+            pub_info + ". "
           end
         end
 
