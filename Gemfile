@@ -62,5 +62,4 @@ end
 group :test do
   gem 'shoulda-matchers', '~> 3.1.2'
   gem 'capybara', '~> 2.17.0'
-  gem 'factory_bot', '~> 4.4'
 end
