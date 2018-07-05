@@ -13,7 +13,6 @@
 # it.
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
-require 'factory_bot'
 require 'capybara/rspec'
 require 'shoulda/matchers'
 Shoulda::Matchers.configure do |config|
@@ -57,10 +56,6 @@ RSpec.configure do |config|
     # Noid minting causes extra LDP requests which slow the test suite.
     Hyrax.config.enable_noids = false
   end
-
-  config.include FactoryBot::Syntax::Methods
-  FactoryBot.definition_file_paths = [File.expand_path("../factories", __FILE__)]
-  FactoryBot.find_definitions
 end
 
 # The settings below are suggested to provide a good initial experience
