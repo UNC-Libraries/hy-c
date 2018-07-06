@@ -5,7 +5,7 @@ module Hyrax
     class_attribute :single_value_fields
 
     self.model_class = ::Multimed
-    self.terms += [:abstract, :extent, :genre, :geographic_subject, :note, :resource_type]
+    self.terms += [:abstract, :doi, :extent, :genre, :geographic_subject, :note, :resource_type]
 
     self.terms -= [:based_near, :contributor, :description, :identifier, :publisher, :related_url, :source]
 

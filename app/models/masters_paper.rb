@@ -39,6 +39,10 @@ class MastersPaper < ActiveFedora::Base
     index.as :stored_searchable
   end
 
+  property :doi, predicate: ::RDF::Vocab::Identifiers.doi, multiple: false do |index|
+    index.as :stored_searchable
+  end
+
   property :extent, predicate: ::RDF::URI('http://rdaregistry.info/Elements/u/extent.en') do |index|
     index.as :stored_searchable
   end

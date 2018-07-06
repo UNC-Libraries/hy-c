@@ -38,6 +38,7 @@ RSpec.describe Hyrax::MultimedForm do
           license: 'a license', # single-valued
           rights_statement: 'a statement', # single-valued
           abstract: ['an abstract'],
+          doi: '12345',
           extent: ['1999'],
           genre: ['food'],
           geographic_subject: ['Italy'],
@@ -59,6 +60,7 @@ RSpec.describe Hyrax::MultimedForm do
       expect(subject['keyword']).to eq ['multimed']
       expect(subject['abstract']).to eq ['an abstract']
       expect(subject['date_created']).to eq ['2018-01-09']
+      expect(subject['doi']).to eq '12345'
       expect(subject['extent']).to eq ['1999']
       expect(subject['genre']).to eq ['food']
       expect(subject['geographic_subject']).to eq ['Italy']

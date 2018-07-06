@@ -39,6 +39,7 @@ RSpec.describe Journal do
       expect(subject).to respond_to(:abstract)
       expect(subject).to respond_to(:alternative_title)
       expect(subject).to respond_to(:date_issued)
+      expect(subject).to respond_to(:doi)
       expect(subject).to respond_to(:extent)
       expect(subject).to respond_to(:genre)
       expect(subject).to respond_to(:geographic_subject)

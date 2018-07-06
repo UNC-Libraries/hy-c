@@ -49,6 +49,7 @@ RSpec.describe Hyrax::MastersPaperForm do
           date_issued: 'a date', # single-valued
           degree: 'MS', # single-valued
           degree_granting_institution: 'UNC', # single-valued
+          doi: '12345',
           extent: ['an extent'],
           genre: ['a genre'],
           geographic_subject: ['a geographic subject'],
@@ -81,6 +82,7 @@ RSpec.describe Hyrax::MastersPaperForm do
       expect(subject['date_issued']).to eq 'a date'
       expect(subject['degree']).to eq 'MS'
       expect(subject['degree_granting_institution']).to eq 'UNC'
+      expect(subject['doi']).to eq '12345'
       expect(subject['extent']).to eq ['an extent']
       expect(subject['genre']).to eq ['a genre']
       expect(subject['geographic_subject']).to eq ['a geographic subject']

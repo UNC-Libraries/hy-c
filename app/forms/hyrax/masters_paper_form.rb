@@ -6,7 +6,7 @@ module Hyrax
     
     self.model_class = ::MastersPaper
     self.terms += [:abstract, :academic_concentration, :access, :advisor, :date_issued, :degree,
-                   :degree_granting_institution, :extent, :genre, :geographic_subject, :graduation_year, :medium, :note,
+                   :degree_granting_institution, :doi, :extent, :genre, :geographic_subject, :graduation_year, :medium, :note,
                    :reviewer, :use, :resource_type]
 
     self.terms -= [:contributor, :publisher, :identifier, :based_near, :related_url, :source, :description, :date_created]
