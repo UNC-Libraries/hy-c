@@ -21,7 +21,7 @@ RSpec.describe Hyrax::ScholarlyWorkForm do
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:abstract, :advisor, :conference_name, :date_issued, :genre,
+    it { is_expected.to match_array [:abstract, :advisor, :conference_name, :date_issued, :doi, :genre,
                                      :geographic_subject, :description, :keyword, :language, :license, :resource_type,
                                      :rights_statement, :subject] }
   end

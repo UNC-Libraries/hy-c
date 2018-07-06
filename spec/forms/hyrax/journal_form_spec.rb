@@ -21,7 +21,7 @@ RSpec.describe Hyrax::JournalForm do
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:abstract, :alternative_title, :extent, :genre, :geographic_subject, :issn,
+    it { is_expected.to match_array [:abstract, :alternative_title, :doi, :extent, :genre, :geographic_subject, :issn,
                                      :note, :place_of_publication, :table_of_contents, :creator, :subject, :keyword,
                                      :language, :resource_type, :license, :rights_statement, :publisher] }
   end

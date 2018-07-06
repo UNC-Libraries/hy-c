@@ -21,7 +21,7 @@ RSpec.describe Hyrax::MultimedForm do
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:abstract, :date_created, :extent, :genre, :geographic_subject, :keyword,
+    it { is_expected.to match_array [:abstract, :date_created, :doi, :extent, :genre, :geographic_subject, :keyword,
                                      :language, :license, :note, :resource_type, :rights_statement, :subject] }
   end
 
