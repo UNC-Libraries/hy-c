@@ -27,10 +27,6 @@ module Hyrax
       super.first || ""
     end
 
-    def deposit_record
-      super.first || ""
-    end
-
     def license
       super.first || ""
     end
