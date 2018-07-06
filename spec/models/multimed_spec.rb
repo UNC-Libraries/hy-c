@@ -41,6 +41,7 @@ RSpec.describe Multimed do
 
       # Additional metadata
       expect(subject).to respond_to(:abstract)
+      expect(subject).to respond_to(:doi)
       expect(subject).to respond_to(:extent)
       expect(subject).to respond_to(:genre)
       expect(subject).to respond_to(:geographic_subject)
