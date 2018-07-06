@@ -18,6 +18,7 @@ RSpec.describe Hyrax::JournalPresenter do
       "alternative_title_tesim" => ['a different title'],
       "date_issued_tesim" => ['2018-01-08'],
       "extent_tesim" => ['1993'],
+      "deposit_record_tesim" => 'a deposit record',
       "genre_tesim" => ['a genre'],
       "geographic_subject_tesim" => ['California'],
       "issn_tesim" => ['12345'],
@@ -47,6 +48,7 @@ RSpec.describe Hyrax::JournalPresenter do
   it { is_expected.to delegate_method(:abstract).to(:solr_document) }
   it { is_expected.to delegate_method(:alternative_title).to(:solr_document) }
   it { is_expected.to delegate_method(:date_issued).to(:solr_document) }
+  it { is_expected.to delegate_method(:deposit_record).to(:solr_document) }
   it { is_expected.to delegate_method(:extent).to(:solr_document) }
   it { is_expected.to delegate_method(:genre).to(:solr_document) }
   it { is_expected.to delegate_method(:geographic_subject).to(:solr_document) }
@@ -94,6 +96,17 @@ RSpec.describe Hyrax::JournalPresenter do
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:date_issued)
+      end
+    end
+
+    context "with a custom deposit_record field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:deposit_record, 'a deposit record', {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:deposit_record)
       end
     end
 

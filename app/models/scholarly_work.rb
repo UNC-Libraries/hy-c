@@ -26,6 +26,11 @@ class ScholarlyWork < ActiveFedora::Base
     index.as :stored_searchable
   end
 
+  # link to previous deposit record
+  property :deposit_record, predicate: ::RDF::Vocab::SKOS.changeNote, multiple: false do |index|
+    index.as :stored_searchable
+  end
+
   property :genre, predicate: ::RDF::Vocab::EDM.hasType do |index|
     index.as :stored_searchable
   end

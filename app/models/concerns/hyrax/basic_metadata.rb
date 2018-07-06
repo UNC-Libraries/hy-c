@@ -36,8 +36,6 @@ module Hyrax
       property :related_url, predicate: ::RDF::RDFS.seeAlso
       property :bibliographic_citation, predicate: ::RDF::Vocab::DC.bibliographicCitation
       property :source, predicate: ::RDF::Vocab::DC.source
-      # UNC addition
-      property :deposit_record, predicate: ::RDF::Vocab::SKOS.changeNote, multiple: false # link to previous deposit record
 
       id_blank = proc { |attributes| attributes[:id].blank? }
 

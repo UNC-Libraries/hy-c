@@ -19,7 +19,7 @@ module Hyrax
 
     self.terms -= [:based_near, :source]
 
-    self.single_value_fields = [:title, :deposit_record, :license, :rights_statement]
+    self.single_value_fields = [:title, :license, :rights_statement]
 
     # Add overrides for required properties which are becoming single-valued
 
@@ -30,6 +30,7 @@ module Hyrax
     def license
       super.first || ""
     end
+
     def rights_statement
       super.first || ""
     end

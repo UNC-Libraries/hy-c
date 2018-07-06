@@ -122,6 +122,7 @@ class CatalogController < ApplicationController
     config.add_index_field solr_name("date_other", :stored_searchable), label: "Date Other"
     config.add_index_field solr_name("degree", :stored_searchable), label: "Degree"
     config.add_index_field solr_name("degree_granting_institution", :stored_searchable), label: "Degree Granting Institution"
+    config.add_index_field solr_name("deposit_record", :stored_searchable), label: "Deposit Record"
     config.add_index_field solr_name("digital_collection", :stored_searchable), label: "Digital Collection"
     config.add_index_field solr_name("discipline", :stored_searchable), label: "Discipline"
     config.add_index_field solr_name("doi", :stored_searchable), label: "DOI"
