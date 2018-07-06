@@ -114,7 +114,7 @@ RSpec.describe Hyrax::GeneralForm do
       expect(subject['bibliographic_citation']).to eq ['a citation']
       expect(subject['contributor']).to eq ['a contributor']
       expect(subject['date_created']).to eq ['2017-01-22']
-      expect(subject['deposit_record']).to eq ['uuid:1234']
+      expect(subject['deposit_record']).to eq 'uuid:1234'
       expect(subject['identifier']).to eq ['an identifier']
       expect(subject['language']).to eq ['a language']
       expect(subject['publisher']).to eq ['a publisher']
