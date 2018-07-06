@@ -1,3 +1,4 @@
+# [hyc-override] Overriding doi to hyrax citation tests
 require 'rails_helper'
 
 RSpec.describe 'hyrax/citations/work.html.erb', type: :view do

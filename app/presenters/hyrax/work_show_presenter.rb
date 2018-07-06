@@ -1,7 +1,9 @@
+# [hyc-override] Overriding helper in order to add doi to citation, see line 40
 module Hyrax
   class WorkShowPresenter
     include ModelProxy
     include PresentsAttributes
+
 
     attr_accessor :solr_document, :current_ability, :request
 
