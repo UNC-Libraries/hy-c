@@ -21,8 +21,8 @@ RSpec.describe Hyrax::GeneralForm do
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:contributor, :creator, :date_created, :description, :identifier, :keyword,
-                                     :language, :license, :publisher, :related_url, :resource_type, :rights_statement,
+    it { is_expected.to match_array [:contributor, :creator, :date_created, :description, :deposit_record, :keyword,
+                                     :identifier, :language, :license, :publisher, :related_url, :resource_type, :rights_statement,
                                      :subject, :bibliographic_citation, :abstract, :academic_concentration, :access,
                                      :advisor, :alternative_title, :arranger, :award, :composer, :conference_name,
                                      :copyright_date, :date_captured, :date_issued, :date_other, :degree,
@@ -42,6 +42,7 @@ RSpec.describe Hyrax::GeneralForm do
           contributor: ['a contributor'],
           creator: ['a creator'],
           date_created: ['2017-01-22'],
+          deposit_record: 'uuid:1234',
           identifier: ['an identifier'],
           language: ['a language'],
           license: 'http://creativecommons.org/licenses/by/3.0/us/', # single-valued
@@ -113,6 +114,7 @@ RSpec.describe Hyrax::GeneralForm do
       expect(subject['bibliographic_citation']).to eq ['a citation']
       expect(subject['contributor']).to eq ['a contributor']
       expect(subject['date_created']).to eq ['2017-01-22']
+      expect(subject['deposit_record']).to eq ['uuid:1234']
       expect(subject['identifier']).to eq ['an identifier']
       expect(subject['language']).to eq ['a language']
       expect(subject['publisher']).to eq ['a publisher']
