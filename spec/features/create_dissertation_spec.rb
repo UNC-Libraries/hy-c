@@ -21,7 +21,7 @@ RSpec.feature 'Create a Dissertation', js: false do
     end
 
     let(:permission_template) do
-      Hyrax::PermissionTemplate.create!(admin_set_id: admin_set.id)
+      Hyrax::PermissionTemplate.create!(source_id: admin_set.id)
     end
 
     let(:workflow) do
@@ -70,7 +70,7 @@ RSpec.feature 'Create a Dissertation', js: false do
       end
 
       click_link "Relationships"
-      expect(page).to have_content 'Add as member of administrative set'
+      expect(page).to have_content 'Administrative Set'
       find('#dissertation_admin_set_id').text eq 'dissertation admin set'
 
       click_button 'Save'

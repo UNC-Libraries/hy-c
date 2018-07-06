@@ -104,9 +104,9 @@ RSpec.describe Hyrax::HonorsThesisForm do
       end
 
       it 'removes blank parameters' do
-        expect(subject['title']).to be_empty
+        expect(subject['title']).to be_nil
         expect(subject['abstract']).to be_empty
-        expect(subject['license']).to be_empty
+        expect(subject['license']).to be_nil
         expect(subject['keyword']).to be_empty
         expect(subject['member_of_collection_ids']).to be_empty
         expect(subject['on_behalf_of']).to eq 'Melissa'
