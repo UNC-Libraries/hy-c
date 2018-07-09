@@ -8,7 +8,7 @@ module Hyrax
 
         def format(work)
           text = ''
-          text << authors_text_for(work)
+          text << authors_text_for(work) if work.creator.length > 0
           text << pub_date_text_for(work)
           text << add_title_text_for(work)
           text << add_publisher_text_for(work)

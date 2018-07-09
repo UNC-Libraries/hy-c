@@ -15,7 +15,7 @@ module Hyrax
                    :page_start, :page_end, :peer_review_status, :place_of_publication, :project_director, :researcher,
                    :reviewer, :rights_holder, :series, :sponsor, :table_of_contents, :translator, :url, :use]
 
-    self.required_fields = [:title, :creator]
+    self.required_fields = [:title]
 
     self.terms -= [:based_near, :source]
 
