@@ -47,6 +47,11 @@ class HonorsThesis < ActiveFedora::Base
     index.as :stored_searchable
   end
 
+  # link to previous deposit record
+  property :deposit_record, predicate: ::RDF::Vocab::SKOS.changeNote, multiple: false do |index|
+    index.as :stored_searchable
+  end
+
   property :doi, predicate: ::RDF::Vocab::Identifiers.doi, multiple: false do |index|
     index.as :stored_searchable
   end

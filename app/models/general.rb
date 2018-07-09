@@ -71,6 +71,11 @@ class General < ActiveFedora::Base
     index.as :stored_searchable
   end
 
+  # link to previous deposit record
+  property :deposit_record, predicate: ::RDF::Vocab::SKOS.changeNote, multiple: false do |index|
+    index.as :stored_searchable
+  end
+
   property :digital_collection, predicate: ::RDF::URI('http://pcdm.org/models#memberOf') do |index|
     index.as :stored_searchable
   end
