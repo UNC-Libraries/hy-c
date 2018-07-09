@@ -112,6 +112,10 @@ class SolrDocument
     self[Solrizer.solr_name('degree_granting_institution')]
   end
 
+  def deposit_record
+    self[Solrizer.solr_name('deposit_record')]
+  end
+
   def digital_collection
     self[Solrizer.solr_name('digital_collection')]
   end
