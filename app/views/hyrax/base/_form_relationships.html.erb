@@ -1,4 +1,4 @@
-<%# Overriding partial in hyrax gem in order to auto-select an admin set %>
+<%# [hyc-override] Overriding partial in hyrax gem in order to auto-select an admin set %>
 <% if Flipflop.assign_admin_set? %>
   <% if f.object.model.title.blank? %>
     <% admin_set_id = AdminSetSelectService.select(f.object.model.class.to_s,
@@ -7,7 +7,11 @@
                                                        .new(Hyrax::AdminSetService.new(controller)).select_options)
     %>
   <% else %>
-    <% admin_set_id = f.object.model.admin_set_id %>
+    <% if f.object.model.admin_set_id.blank? %>
+      <% admin_set_id = AdminSet.where(title: ENV['DEFAULT_ADMIN_SET']).first.id %>
+    <% else %>
+      <% admin_set_id = f.object.model.admin_set_id %>
+    <% end %>
   <% end %>
   <% if current_user.admin? %>
   <%= f.input :admin_set_id, as: :select,
@@ -26,6 +30,6 @@
 <%= render 'form_member_of_collections', f: f %>
 
 <% if f.object.persisted? %>
-  <h3><%= t("hyrax.works.form.in_this_work") %></h3>
-  <%= render 'form_child_work_relationships', f: f  %>
+  <h2><%= t("hyrax.works.form.in_this_work") %></h2>
+  <%= render 'form_child_work_relationships', f: f %>
 <% end %>

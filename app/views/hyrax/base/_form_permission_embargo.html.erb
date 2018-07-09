@@ -1,4 +1,4 @@
-<%# Overriding partial from gem to fix problem with editing embargos and switching admin sets %>
+<%# [hyc-override] Overriding partial from gem to fix problem with editing embargos and switching admin sets %>
 <div class="form-inline">
   <%= visibility_badge(Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_EMBARGO) %>
   <%= f.input :visibility_during_embargo, wrapper: :inline, collection: visibility_options(:restrict), include_blank: false %>

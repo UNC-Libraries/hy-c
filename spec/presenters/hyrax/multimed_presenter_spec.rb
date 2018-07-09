@@ -15,6 +15,7 @@ RSpec.describe Hyrax::MultimedPresenter do
       "date_created_tesim" => ['an unformatted date'],
       "depositor_tesim" => user_key,
       "abstract_tesim" => ['an abstract'],
+      "doi_tesim" => '12345',
       "extent_tesim" => ['1999'],
       "genre_tesim" => ['a genre'],
       "geographic_subject_tesim" => ['Italy'],
@@ -38,6 +39,7 @@ RSpec.describe Hyrax::MultimedPresenter do
 
   it { is_expected.to delegate_method(:abstract).to(:solr_document) }
   it { is_expected.to delegate_method(:extent).to(:solr_document) }
+  it { is_expected.to delegate_method(:doi).to(:solr_document) }
   it { is_expected.to delegate_method(:genre).to(:solr_document) }
   it { is_expected.to delegate_method(:geographic_subject).to(:solr_document) }
   it { is_expected.to delegate_method(:note).to(:solr_document) }
@@ -70,6 +72,17 @@ RSpec.describe Hyrax::MultimedPresenter do
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:abstract)
+      end
+    end
+
+    context "with a custom doi field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:doi, '12345', {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:doi)
       end
     end
 

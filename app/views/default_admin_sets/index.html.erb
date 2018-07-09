@@ -1,3 +1,18 @@
+<% if @default_admin_sets.nil? %>
+<p id="notice"><%= notice %></p>
+
+<div class="row">
+  <div class="col-xs-12 main-header">
+    <h1><span class="fa fa-archive"></span> Default Admin Sets</h1>
+  </div>
+</div>
+
+<div class="panel panel-default">
+  <div class="panel-body">
+    <p>You must create an admin set before selecting a default.</p>
+  </div>
+</div>
+<% else %>
 <p id="notice"><%= notice %></p>
 
 <div class="row">
@@ -44,3 +59,4 @@
     </div>
   </div>
 </div>
+<% end %>

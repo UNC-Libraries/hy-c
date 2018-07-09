@@ -17,7 +17,7 @@ RSpec.feature 'Create a Multimed', js: false do
     end
 
     let(:permission_template) do
-      Hyrax::PermissionTemplate.create!(admin_set_id: admin_set.id)
+      Hyrax::PermissionTemplate.create!(source_id: admin_set.id)
     end
 
     let(:workflow) do

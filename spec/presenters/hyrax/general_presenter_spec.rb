@@ -14,17 +14,17 @@ RSpec.describe Hyrax::GeneralPresenter do
       "has_model_ssim" => ["Article"],
       "depositor_tesim" => user_key,
       "abstract_tesim" => ['an abstract'],
-      "access_tesim" => 'public',
       "academic_concentration_tesim" => ['a concentration'],
+      "access_tesim" => 'public',
       "advisor_tesim" => ['an advisor'],
-      "affiliation_tesim" => ['unc'],
-      "alternate_title_tesim" => ['some title'],
+      "alternative_title_tesim" => ['some title'],
+      "arranger_tesim" => ['an arranger'],
       "award_tesim" => ['an award'],
       "bibliographic_citation_tesim" => ['a citation'],
+      "composer_tesim" => ['a composer'],
       "conference_name_tesim" => ['a conference'],
       "copyright_date_tesim" => '2017-01-22',
       "date_captured_tesim" => '2017-01-22',
-      "date_created_tesim" => '2017-01-22',
       "date_issued_tesim" => '2017-01-22',
       "date_other_tesim" => ['2017-01-22'],
       "degree_tesim" => 'a degree',
@@ -35,6 +35,7 @@ RSpec.describe Hyrax::GeneralPresenter do
       "edition_tesim" => ['new edition'],
       "extent_tesim" => ['1993'],
       "funder_tesim" => ['dean'],
+      "genre_tesim" => ['a genre'],
       "geographic_subject_tesim" => ['California'],
       "graduation_year_tesim" => '2018',
       "isbn_tesim" => ['123456'],
@@ -46,8 +47,6 @@ RSpec.describe Hyrax::GeneralPresenter do
       "last_modified_date_tesim" => 'hi',
       "medium_tesim" => ['a medium'],
       "note_tesim" => ['a note'],
-      "orcid_tesim" => ['12345'],
-      "other_affiliation_tesim" => ['duke'],
       "page_end_tesim" => '11',
       "page_start_tesim" => '8',
       "peer_review_status_tesim" => 'in review',
@@ -89,10 +88,11 @@ RSpec.describe Hyrax::GeneralPresenter do
   it { is_expected.to delegate_method(:academic_concentration).to(:solr_document) }
   it { is_expected.to delegate_method(:access).to(:solr_document) }
   it { is_expected.to delegate_method(:advisor).to(:solr_document) }
-  it { is_expected.to delegate_method(:affiliation).to(:solr_document) }
-  it { is_expected.to delegate_method(:alternate_title).to(:solr_document) }
+  it { is_expected.to delegate_method(:alternative_title).to(:solr_document) }
+  it { is_expected.to delegate_method(:arranger).to(:solr_document) }
   it { is_expected.to delegate_method(:award).to(:solr_document) }
   it { is_expected.to delegate_method(:bibliographic_citation).to(:solr_document) }
+  it { is_expected.to delegate_method(:composer).to(:solr_document) }
   it { is_expected.to delegate_method(:copyright_date).to(:solr_document) }
   it { is_expected.to delegate_method(:conference_name).to(:solr_document) }
   it { is_expected.to delegate_method(:date_captured).to(:solr_document) }
@@ -106,6 +106,7 @@ RSpec.describe Hyrax::GeneralPresenter do
   it { is_expected.to delegate_method(:edition).to(:solr_document) }
   it { is_expected.to delegate_method(:extent).to(:solr_document) }
   it { is_expected.to delegate_method(:funder).to(:solr_document) }
+  it { is_expected.to delegate_method(:genre).to(:solr_document) }
   it { is_expected.to delegate_method(:geographic_subject).to(:solr_document) }
   it { is_expected.to delegate_method(:graduation_year).to(:solr_document) }
   it { is_expected.to delegate_method(:isbn).to(:solr_document) }
@@ -117,8 +118,6 @@ RSpec.describe Hyrax::GeneralPresenter do
   it { is_expected.to delegate_method(:last_modified_date).to(:solr_document) }
   it { is_expected.to delegate_method(:medium).to(:solr_document) }
   it { is_expected.to delegate_method(:note).to(:solr_document) }
-  it { is_expected.to delegate_method(:orcid).to(:solr_document) }
-  it { is_expected.to delegate_method(:other_affiliation).to(:solr_document) }
   it { is_expected.to delegate_method(:page_end).to(:solr_document) }
   it { is_expected.to delegate_method(:page_start).to(:solr_document) }
   it { is_expected.to delegate_method(:peer_review_status).to(:solr_document) }
@@ -198,25 +197,25 @@ RSpec.describe Hyrax::GeneralPresenter do
       end
     end
 
-    context "with a custom affiliation field" do
+    context "with a custom alternative_title field" do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:affiliation, ['unc'], {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:alternative_title, ['some title'], {}).and_return(renderer)
       end
 
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
-        presenter.attribute_to_html(:affiliation)
+        presenter.attribute_to_html(:alternative_title)
       end
     end
 
-    context "with a custom alternate_title field" do
+    context "with a custom arranger field" do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:alternate_title, ['some title'], {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:arranger, ['an arranger'], {}).and_return(renderer)
       end
 
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
-        presenter.attribute_to_html(:alternate_title)
+        presenter.attribute_to_html(:arranger)
       end
     end
 
@@ -239,6 +238,17 @@ RSpec.describe Hyrax::GeneralPresenter do
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:bibliographic_citation)
+      end
+    end
+
+    context "with a custom composer field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:composer, ['a composer'], {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:composer)
       end
     end
 
@@ -385,6 +395,17 @@ RSpec.describe Hyrax::GeneralPresenter do
       end
     end
 
+    context "with a custom genre field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:genre, ['a genre'], {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:genre)
+      end
+    end
+
     context "with a custom geographic subject field" do
       before do
         allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:geographic_subject, ['California'], {}).and_return(renderer)
@@ -503,28 +524,6 @@ RSpec.describe Hyrax::GeneralPresenter do
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:note)
-      end
-    end
-
-    context "with a custom orcid field" do
-      before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:orcid, ['12345'], {}).and_return(renderer)
-      end
-
-      it "calls the AttributeRenderer" do
-        expect(renderer).to receive(:render)
-        presenter.attribute_to_html(:orcid)
-      end
-    end
-
-    context "with a custom other affiliation field" do
-      before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:other_affiliation, ['duke'], {}).and_return(renderer)
-      end
-
-      it "calls the AttributeRenderer" do
-        expect(renderer).to receive(:render)
-        presenter.attribute_to_html(:other_affiliation)
       end
     end
 

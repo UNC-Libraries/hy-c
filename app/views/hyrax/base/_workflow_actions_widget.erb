@@ -1,4 +1,4 @@
-<%# Overriding partial in hyrax gem in order to change the workflow action panel %>
+<%# [hyc-override] Overriding partial in hyrax gem in order to change the workflow action panel %>
 <div class="col-xs-12">
   <div class="workflow-actions">
     <%= render 'workflow_actions', presenter: @presenter if @presenter.workflow.actions.present? &&

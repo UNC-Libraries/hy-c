@@ -25,6 +25,8 @@ default: &default
 development:
   <<: *default
   database: hyrax_development
+  username: hyrax
+  password: <%= ENV['HYRAX_DATABASE_PASSWORD'] %>
 
   # The specified database role being used to connect to postgres.
   # To create additional roles in postgres see `$ createuser --help`.
@@ -83,6 +85,7 @@ test:
 #
 production:
   <<: *default
-  database: hyrax_production
+  database: hyrax
   username: hyrax
   password: <%= ENV['HYRAX_DATABASE_PASSWORD'] %>
+  url: <%= ENV['DATABASE_URL'] %>

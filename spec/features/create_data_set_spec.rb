@@ -21,7 +21,7 @@ RSpec.feature 'Create a DataSet', js: false do
     end
 
     let(:permission_template) do
-      Hyrax::PermissionTemplate.create!(admin_set_id: admin_set.id)
+      Hyrax::PermissionTemplate.create!(source_id: admin_set.id)
     end
 
     let(:workflow) do
@@ -51,7 +51,8 @@ RSpec.feature 'Create a DataSet', js: false do
       fill_in 'Title', with: 'Test Data Set'
       fill_in 'Creator', with: 'Test Default Creator'
       fill_in 'Keyword', with: 'Test Default Keyword'
-      select "In Copyright", :from => "data_set_rights_statement"
+
+      expect(page).not_to have_field('data_set_rights_statement')
       expect(page).to have_field('data_set_visibility_embargo')
       expect(page).not_to have_field('data_set_visibility_lease')
       choose "data_set_visibility_open"
@@ -63,7 +64,7 @@ RSpec.feature 'Create a DataSet', js: false do
       end
 
       click_link "Relationships"
-      expect(page).to_not have_content 'Add as member of administrative set'
+      expect(page).to_not have_content 'Administrative Set'
 
       click_button 'Save'
       expect(page).to have_content 'Your files are being processed by Hyrax'
@@ -85,7 +86,8 @@ RSpec.feature 'Create a DataSet', js: false do
       fill_in 'Title', with: 'Test Data Set'
       fill_in 'Creator', with: 'Test Default Creator'
       fill_in 'Keyword', with: 'Test Default Keyword'
-      select "In Copyright", :from => "data_set_rights_statement"
+
+      expect(page).not_to have_field('data_set_rights_statement')
       expect(page).to have_field('data_set_visibility_embargo')
       expect(page).not_to have_field('data_set_visibility_lease')
       choose "data_set_visibility_open"
@@ -97,7 +99,7 @@ RSpec.feature 'Create a DataSet', js: false do
       end
 
       click_link "Relationships"
-      expect(page).to have_content 'Add as member of administrative set'
+      expect(page).to have_content 'Administrative Set'
       find('#data_set_admin_set_id').text eq 'data set admin set'
 
       click_button 'Save'

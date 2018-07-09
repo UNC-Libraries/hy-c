@@ -11,7 +11,7 @@ RSpec.describe Hyrax::Workflow::DeletionApprovalNotification do
                     edit_users: [depositor.user_key])
   end
   let(:permission_template) do
-    Hyrax::PermissionTemplate.create!(admin_set_id: admin_set.id)
+    Hyrax::PermissionTemplate.create!(source_id: admin_set.id)
   end
   let(:workflow) do
     Sipity::Workflow.create(name: 'test', allows_access_grant: true, active: true,
@@ -25,7 +25,7 @@ RSpec.describe Hyrax::Workflow::DeletionApprovalNotification do
     it 'sends a message to all users' do
       expect(approver).to receive(:send_message)
                               .with(anything,
-                                    "The deletion request for #{work.title[0]} (<a href=\"/concern/articles/#{work.id}\">#{work.id}</a>) "\
+                                    "The deletion request for #{work.title[0]} (<a href=\"#{ENV['HYRAX_HOST']}/concern/articles/#{work.id}\">#{work.id}</a>) "\
       "was approved by #{approver.user_key}. #{comment.comment}",
                                     anything).exactly(3).times.and_call_original
 

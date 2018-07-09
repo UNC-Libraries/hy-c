@@ -6,14 +6,14 @@ module Hyrax
     
     self.model_class = ::Journal
 
-    self.terms += [:resource_type, :abstract, :alternate_title, :conference_name, :date_issued, :extent, :genre,
-                   :geographic_subject, :issn, :note, :place_of_publication, :table_of_contents
-    ]
-    self.terms -= [:description, :based_near, :related_url]
+    self.terms += [:abstract, :alternative_title, :date_issued, :doi, :extent, :genre, :geographic_subject, :issn, :note,
+                  :place_of_publication, :table_of_contents, :resource_type]
 
-    self.required_fields -= [:keyword]
+    self.terms -= [:description, :based_near, :related_url, :identifier, :contributor, :source, :date_created]
 
-    self.single_value_fields = [:title, :date_created]
+    self.required_fields = [:title, :date_issued]
+
+    self.single_value_fields = [:title, :license, :rights_statement]
 
     # Add overrides for required properties which are becoming single-valued
 
@@ -21,7 +21,11 @@ module Hyrax
       super.first || ""
     end
 
-    def date_created
+    def license
+      super.first || ""
+    end
+
+    def rights_statement
       super.first || ""
     end
   end

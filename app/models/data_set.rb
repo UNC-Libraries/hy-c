@@ -14,14 +14,6 @@ class DataSet < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :access, predicate: ::RDF::Vocab::DC.accessRights, multiple: false do |index|
-    index.as :stored_searchable
-  end
-
-  property :affiliation, predicate: ::RDF::URI('http://vivoweb.org/ontology/core#AcademicDepartment') do |index|
-    index.as :stored_searchable
-  end
-
   property :copyright_date, predicate: ::RDF::Vocab::DC.dateCopyrighted, multiple: false do |index|
     index.as :stored_searchable
   end
@@ -34,7 +26,7 @@ class DataSet < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :extent, predicate: ::RDF::Vocab::DC.extent do |index|
+  property :extent, predicate: ::RDF::URI('http://rdaregistry.info/Elements/u/extent.en') do |index|
     index.as :stored_searchable
   end
 
@@ -50,15 +42,11 @@ class DataSet < ActiveFedora::Base
     index.as :stored_searchable
   end
 
+  property :kind_of_data, predicate: ::RDF::Vocab::DISCO.kindOfData do |index|
+    index.as :stored_searchable
+  end
+
   property :last_modified_date, predicate: ::RDF::Vocab::MODS.dateModified, multiple: false do |index|
-    index.as :stored_searchable
-  end
-
-  property :other_affiliation, predicate: ::RDF::URI('http://schema.org/affiliation') do |index|
-    index.as :stored_searchable
-  end
-
-  property :orcid, predicate: ::RDF::Vocab::Identifiers.orcid do |index|
     index.as :stored_searchable
   end
 
@@ -75,10 +63,6 @@ class DataSet < ActiveFedora::Base
   end
 
   property :sponsor, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/spn') do |index|
-    index.as :stored_searchable
-  end
-
-  property :use, predicate: ::RDF::Vocab::DC11.rights do |index|
     index.as :stored_searchable
   end
 

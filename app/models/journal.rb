@@ -14,11 +14,7 @@ class Journal < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :alternate_title, predicate: ::RDF::Vocab::DC.alternative do |index|
-    index.as :stored_searchable
-  end
-
-  property :conference_name, predicate: ::RDF::Vocab::BIBO.presentedAt do |index|
+  property :alternative_title, predicate: ::RDF::Vocab::DC.alternative do |index|
     index.as :stored_searchable
   end
 
@@ -26,7 +22,11 @@ class Journal < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :extent, predicate: ::RDF::Vocab::DC.extent do |index|
+  property :doi, predicate: ::RDF::Vocab::Identifiers.doi, multiple: false do |index|
+    index.as :stored_searchable
+  end
+
+  property :extent, predicate: ::RDF::URI('http://rdaregistry.info/Elements/u/extent.en') do |index|
     index.as :stored_searchable
   end
 

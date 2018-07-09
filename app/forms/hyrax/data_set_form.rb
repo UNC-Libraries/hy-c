@@ -6,16 +6,16 @@ module Hyrax
 
     self.model_class = ::DataSet
 
-    self.terms += [:resource_type, :abstract, :access, :affiliation, :copyright_date, :date_issued, :doi, :extent,
-                   :funder, :genre, :geographic_subject, :last_modified_date, :orcid, :other_affiliation,
-                   :project_director, :researcher, :rights_holder, :sponsor, :use
+    self.terms += [:resource_type, :abstract, :copyright_date, :date_issued, :doi, :extent,
+                   :funder, :genre, :geographic_subject, :kind_of_data, :last_modified_date,
+                   :project_director, :researcher, :rights_holder, :sponsor
     ]
 
-    self.terms -= [:based_near, :publisher]
+    self.terms -= [:based_near, :publisher, :source, :identifier, :rights_statement]
 
-    self.required_fields -= [:keyword]
+    self.required_fields = [:title, :creator, :date_issued]
 
-    self.single_value_fields = [:title, :date_created]
+    self.single_value_fields = [:title, :date_created, :license]
 
     # Add overrides for required properties which are becoming single-valued
 
@@ -24,6 +24,10 @@ module Hyrax
     end
 
     def date_created
+      super.first || ""
+    end
+
+    def license
       super.first || ""
     end
   end

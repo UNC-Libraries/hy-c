@@ -36,4 +36,6 @@ env:
     - DEFAULT_ADMIN_SET='default'
     - HYRAX_DATABASE_PASSWORD='password'
     - FITS_LOCATION='/home/travis/fits-1.0.5/fits.sh'
+    - HYRAX_HOST='http://example.com'
+    - EMAIL_FROM_ADDRESS='hyraxapp@example.com'
     - DATABASE_AUTH=true

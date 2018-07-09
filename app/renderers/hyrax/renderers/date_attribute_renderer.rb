@@ -1,4 +1,4 @@
-# Overriding renderer from gem to display readable versions of EDTF dates
+# [hyc-override] Overriding renderer from gem to display readable versions of EDTF dates
 module Hyrax
   module Renderers
     class DateAttributeRenderer < AttributeRenderer

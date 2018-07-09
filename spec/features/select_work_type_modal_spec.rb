@@ -21,7 +21,7 @@ RSpec.feature 'Select work type modal', js: false do
   scenario 'as an admin' do
     login_as admin_user
 
-    visit '/'
+    visit hyrax.dashboard_works_path
     expect(page).to have_content 'Dissertations and Theses'
   end
 end

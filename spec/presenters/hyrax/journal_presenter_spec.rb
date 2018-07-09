@@ -15,20 +15,16 @@ RSpec.describe Hyrax::JournalPresenter do
       "date_created_tesim" => ['an unformatted date'],
       "depositor_tesim" => user_key,
       "abstract_tesim" => ['an abstract'],
-      "alternate_title_tesim" => ['a different title'],
-      "conference_name_tesim" => ['Code4Lib'],
+      "alternative_title_tesim" => ['a different title'],
       "date_issued_tesim" => ['2018-01-08'],
-      "discipline_tesim" => ['a discipline'],
+      "doi_tesim" => '12345',
       "extent_tesim" => ['1993'],
-      "format_tesim" => ['a format'],
       "genre_tesim" => ['a genre'],
       "geographic_subject_tesim" => ['California'],
       "issn_tesim" => ['12345'],
       "note_tesim" => ['a note'],
       "place_of_publication_tesim" => ['California'],
-      "record_content_source_tesim" => ['a source'],
       "resource_type_tesim" => ['a type'],
-      "reviewer_tesim" => ['a reviewer'],
       "table_of_contents_tesim" => ['table of contents']
     }
   end
@@ -50,13 +46,13 @@ RSpec.describe Hyrax::JournalPresenter do
   it { is_expected.to delegate_method(:itemtype).to(:solr_document) }
 
   it { is_expected.to delegate_method(:abstract).to(:solr_document) }
-  it { is_expected.to delegate_method(:alternate_title).to(:solr_document) }
-  it { is_expected.to delegate_method(:conference_name).to(:solr_document) }
+  it { is_expected.to delegate_method(:alternative_title).to(:solr_document) }
   it { is_expected.to delegate_method(:date_issued).to(:solr_document) }
+  it { is_expected.to delegate_method(:doi).to(:solr_document) }
   it { is_expected.to delegate_method(:extent).to(:solr_document) }
-  it { is_expected.to delegate_method(:issn).to(:solr_document) }
   it { is_expected.to delegate_method(:genre).to(:solr_document) }
   it { is_expected.to delegate_method(:geographic_subject).to(:solr_document) }
+  it { is_expected.to delegate_method(:issn).to(:solr_document) }
   it { is_expected.to delegate_method(:note).to(:solr_document) }
   it { is_expected.to delegate_method(:place_of_publication).to(:solr_document) }
   it { is_expected.to delegate_method(:table_of_contents).to(:solr_document) }
@@ -81,25 +77,36 @@ RSpec.describe Hyrax::JournalPresenter do
       end
     end
 
-    context "with a custom alternate title field" do
+    context "with a custom alternative title field" do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:alternate_title, ['a different title'], {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:alternative_title, ['a different title'], {}).and_return(renderer)
       end
 
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
-        presenter.attribute_to_html(:alternate_title)
+        presenter.attribute_to_html(:alternative_title)
       end
     end
 
-    context "with a custom conference name field" do
+    context "with a custom date_issued field" do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:conference_name, ['Code4Lib'], {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:date_issued, ['2018-01-08'], {}).and_return(renderer)
       end
 
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
-        presenter.attribute_to_html(:conference_name)
+        presenter.attribute_to_html(:date_issued)
+      end
+    end
+
+    context "with a custom doi field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:doi, '12345', {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:doi)
       end
     end
 

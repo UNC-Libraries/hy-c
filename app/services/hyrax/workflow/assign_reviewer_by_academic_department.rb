@@ -1,8 +1,8 @@
 module Hyrax::Workflow::AssignReviewerByAcademicDepartment
 
   def self.call(target:, **)
-    reviewer = find_reviewer_for(department: target.affiliation)
-    permission_template_id = Hyrax::PermissionTemplate.find_by_admin_set_id(target.admin_set_id).id
+    reviewer = find_reviewer_for(department: target.academic_concentration)
+    permission_template_id = Hyrax::PermissionTemplate.find_by_source_id(target.admin_set_id).id
 
     # This assigns database permissions, but does not grant permissions on the Fedora object.
     Hyrax::Workflow::PermissionGenerator.call(entity: target, agents: [reviewer],
@@ -10,7 +10,11 @@ module Hyrax::Workflow::AssignReviewerByAcademicDepartment
                                               workflow: Sipity::Workflow.where(permission_template_id: permission_template_id, active: true).first)
 
     # This grants read access to the Fedora object.
-    ::AssignPermissionsToWorkJob.perform_later(target.class.name, target.id, target.affiliation.to_s.downcase+'_reviewer', 'group', 'read')
+    ::AssignPermissionsToWorkJob.perform_later(target.class.name,
+                                               target.id,
+                                               target.academic_concentration.to_s.downcase+'_reviewer',
+                                               'group',
+                                               'read')
   end
 
   def self.find_reviewer_for(department:)
