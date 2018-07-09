@@ -6,7 +6,11 @@ Rails.application.routes.draw do
   concern :oai_provider, BlacklightOaiProvider::Routes.new
 
   require 'sidekiq/web'
-  mount Sidekiq::Web => '/sidekiq'
+  require 'constraint/unc_admin'
+
+  # Restrict to admins
+  mount Sidekiq::Web => '/sidekiq', :constraints => Constraint::UncAdmin.new
+
   
   mount Blacklight::Engine => '/'
   
