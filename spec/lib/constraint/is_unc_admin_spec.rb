@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Constraint::UncAdmin do
+describe Constraint::IsUncAdmin do
   subject(:constraint) { described_class.new }
   let(:a_request) { double('Request', env: { 'warden' => warden }) }
   let(:warden) { double('Warden') }
@@ -22,7 +22,7 @@ describe Constraint::UncAdmin do
       expect(constraint.matches?(a_request)).to be(false)
     end
 
-    it 'allows an amdin user' do
+    it 'allows an admin user' do
       allow(user).to receive(:admin?) { true }
       expect(constraint.matches?(a_request)).to be(true)
     end

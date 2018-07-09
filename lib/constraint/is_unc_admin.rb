@@ -1,5 +1,5 @@
 module Constraint
-  class UncAdmin
+  class IsUncAdmin
 
     def matches?(request)
       warden(request).authenticated? &&
