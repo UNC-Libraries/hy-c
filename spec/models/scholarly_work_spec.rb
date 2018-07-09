@@ -46,6 +46,7 @@ RSpec.describe ScholarlyWork do
       expect(subject).to respond_to(:advisor)
       expect(subject).to respond_to(:conference_name)
       expect(subject).to respond_to(:date_issued)
+      expect(subject).to respond_to(:doi)
       expect(subject).to respond_to(:genre)
       expect(subject).to respond_to(:geographic_subject)
     end

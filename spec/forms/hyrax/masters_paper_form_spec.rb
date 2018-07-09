@@ -21,7 +21,7 @@ RSpec.describe Hyrax::MastersPaperForm do
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:abstract, :academic_concentration, :access, :advisor, :degree, :extent,
+    it { is_expected.to match_array [:abstract, :academic_concentration, :access, :advisor, :degree, :doi, :extent,
                                      :genre, :geographic_subject, :graduation_year, :medium, :note, :reviewer, :use,
                                      :keyword, :subject, :language, :rights_statement, :license, :resource_type] }
   end
@@ -49,6 +49,7 @@ RSpec.describe Hyrax::MastersPaperForm do
           date_issued: 'a date', # single-valued
           degree: 'MS', # single-valued
           degree_granting_institution: 'UNC', # single-valued
+          doi: '12345',
           extent: ['an extent'],
           genre: ['a genre'],
           geographic_subject: ['a geographic subject'],
@@ -81,6 +82,7 @@ RSpec.describe Hyrax::MastersPaperForm do
       expect(subject['date_issued']).to eq 'a date'
       expect(subject['degree']).to eq 'MS'
       expect(subject['degree_granting_institution']).to eq 'UNC'
+      expect(subject['doi']).to eq '12345'
       expect(subject['extent']).to eq ['an extent']
       expect(subject['genre']).to eq ['a genre']
       expect(subject['geographic_subject']).to eq ['a geographic subject']

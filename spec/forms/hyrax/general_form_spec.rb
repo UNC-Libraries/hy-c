@@ -9,19 +9,19 @@ RSpec.describe Hyrax::GeneralForm do
   describe "#required_fields" do
     subject { form.required_fields }
 
-    it { is_expected.to eq [:title] }
+    it { is_expected.to eq [:title, :creator] }
   end
 
   describe "#primary_terms" do
     subject { form.primary_terms }
 
-    it { is_expected.to eq [:title] }
+    it { is_expected.to eq [:title, :creator] }
   end
 
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:contributor, :creator, :date_created, :description, :deposit_record, :keyword,
+    it { is_expected.to match_array [:contributor, :date_created, :description, :deposit_record, :keyword,
                                      :identifier, :language, :license, :publisher, :related_url, :resource_type, :rights_statement,
                                      :subject, :bibliographic_citation, :abstract, :academic_concentration, :access,
                                      :advisor, :alternative_title, :arranger, :award, :composer, :conference_name,
