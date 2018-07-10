@@ -10,8 +10,24 @@ $shadow: inner $shadow-base-top #000, inner $shadow-base-bottom #000;
 $description-shadow-prefixed: inset $shadow-base-top gray, inset $shadow-base-bottom gray;
 $description-shadow: inner $shadow-base-top gray, inner $shadow-base-bottom gray;
 
+@font-face {
+  font-family: LibreBaskerville;
+  src: url(asset-path("libre-baskerville/LibreBaskerville-Regular.otf")) format("opentype");
+}
+
 body {
   font-family: Verdana, Arial, sans-serif;
+}
+
+#logo {
+  img {
+    max-width: 20%;
+    margin-top: -10px;
+  }
+}
+
+span.institution_name {
+  font-family: LibreBaskerville, sans-serif;
 }
 
 #masthead {
@@ -20,6 +36,10 @@ body {
 
   &+ nav {
     margin-top: 0;
+  }
+
+  .navbar-header {
+    width: 65%;
   }
 }
 
@@ -42,8 +62,8 @@ body {
   }
 
   img {
-    max-width: 80%;
-    max-height: 80%;
+    max-width: 60%;
+    max-height: 60%;
     padding-left: 25px;
     padding-bottom: 15px;
   }
@@ -206,7 +226,91 @@ body {
   }
 }
 
+@media only screen and (max-width: 1600px) {
+  #masthead {
+    .navbar-header {
+      width: 60%;
+    }
+  }
+}
+
+@media only screen and (max-width: 1375px) {
+  #masthead {
+    .navbar-header {
+      width: 55%;
+    }
+  }
+
+  .navbar-brand {
+    padding: 10px 15px;
+  }
+
+  #logo {
+    img {
+      max-width: 30%;
+      margin-top: 0;
+    }
+  }
+}
+
+@media only screen and (max-width: 1225px) {
+  #masthead {
+    .navbar-header {
+      width: 50%;
+    }
+  }
+}
+
+@media only screen and (max-width: 1100px) {
+  #masthead {
+    .navbar-header {
+      width: 40%;
+    }
+  }
+
+  .navbar-brand {
+    padding: 10px 15px;
+  }
+
+  span.institution_name {
+    font-size: 12px;
+  }
+}
+
+@media only screen and (max-width: 950px) {
+  #masthead {
+    .navbar-header {
+      width: 35%;
+    }
+  }
+
+  #logo {
+    img {
+      max-width: 35%;
+    }
+  }
+}
+
 @media only screen and (max-width: 865px) {
+  #logo {
+    min-width: 300px;
+  }
+
+  #masthead {
+    .navbar-header {
+      margin-top: -5px;
+      width: 25%;
+    }
+  }
+
+  .navbar-brand {
+    padding: 15px 15px;
+  }
+
+  span.institution_name {
+    font-size: 10px;
+  }
+
   #unc-footer {
     height: auto;
     margin-top: 15px;
@@ -231,6 +335,23 @@ body {
 
   .social {
     margin-bottom: 15px;
+  }
+}
+
+@media only screen and (max-width: 800px) {
+  #masthead {
+    .navbar-header {
+      text-align: center;
+      width: 100%;
+    }
+  }
+
+  #logo {
+    max-width: 75%;
+  }
+
+  span.institution_name {
+    font-size: 12px;
   }
 }
 
