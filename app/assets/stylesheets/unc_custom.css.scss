@@ -61,6 +61,12 @@ span.institution_name {
   height: 45%;
   padding-top: 15px;
   margin-right: 0;
+  color: $text-color;
+
+  .repo-name {
+    font-family: LibreBaskerville, sans-serif;
+    padding-left: 25px;
+  }
 
   #search-form-header {
     margin-top: 25px;
@@ -70,11 +76,9 @@ span.institution_name {
     max-width: 60%;
     max-height: 60%;
     padding-left: 25px;
-    padding-bottom: 15px;
   }
 
   .fa-arrow-circle-up {
-    color: $text-color;
     margin-right: 5px;
   }
 }
