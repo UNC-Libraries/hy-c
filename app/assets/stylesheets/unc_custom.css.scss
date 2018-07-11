@@ -28,6 +28,11 @@ body {
 
 span.institution_name {
   font-family: LibreBaskerville, sans-serif;
+
+  a, a:hover, a:visited {
+    color: $text-color;
+    text-decoration: none;
+  }
 }
 
 #masthead {
