@@ -11,7 +11,7 @@ $(function() {
 
     $('#student-papers-work-types').on('click', function (d) {
         all_work_types.filter(function(index) {
-            return index >= 4 || index === 1;
+            return index >= 4;
         }).addClass('hidden');
     });
 
