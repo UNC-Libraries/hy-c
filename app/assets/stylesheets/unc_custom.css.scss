@@ -50,7 +50,6 @@ body {
 
   .fa-arrow-circle-up {
     color: $text-color;
-    margin-right: 5px;
   }
 }
 
@@ -69,10 +68,11 @@ body {
       display: inline-block;
     }
 
-    button {
+    div {
       border: 1px outset $carolina-blue-dark;
       background-color: $carolina-blue-dark;
       height: 40px;
+      padding:8px;
       &:hover {
         background-color: #1c4c80;
       }
@@ -81,6 +81,7 @@ body {
         color: $text-color;
         &:hover {
           color: $light-gray;
+          text-decoration: none;
         }
       }
     }
@@ -237,6 +238,12 @@ body {
 @media only screen and (max-width: 480px) {
   #unc-description {
     text-align: center;
+  }
+
+  .link-tabs {
+    div {
+      margin-top: 5px;
+    }
   }
 
   #unc-text {
