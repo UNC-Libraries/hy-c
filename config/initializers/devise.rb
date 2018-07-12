@@ -254,8 +254,7 @@ Devise.setup do |config|
 
   config.omniauth :shibboleth,
                   uid_field: 'uid',
-                  info_fields: { display_name: 'displayName', uid: 'uid', mail: 'mail' },
-                  callback_url: '/users/auth/shibboleth/callback',
+                  info_fields: { display_name: 'eppn', uid: 'uid', mail: 'mail' },
                   strategy_class: OmniAuth::Strategies::Shibboleth
 
   # ==> Warden configuration
