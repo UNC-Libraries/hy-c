@@ -18,8 +18,21 @@ class User < ApplicationRecord
   include Blacklight::User
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
-  devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :trackable, :validatable
+  devise_modules = [:omniauthable, :rememberable, :trackable, omniauth_providers: [:shibboleth], authentication_keys: [:uid]]
+  devise_modules.prepend(:database_authenticatable) if AuthConfig.use_database_auth?
+  devise(*devise_modules)
+
+  # When a user authenticates via shibboleth, find their User object or make
+  # a new one. Populate it with data we get from shibboleth.
+  # @param [OmniAuth::AuthHash] auth
+  def self.from_omniauth(auth)
+    # Rails.logger.debug "auth = #{auth.inspect}"
+    # Uncomment the debugger above to capture what a shib auth object looks like for testing
+    user = where(provider: auth.provider, uid: auth.info.uid, email: auth.info.mail).first_or_create
+    user.display_name = auth.info.uid
+    user.save
+    user
+  end
 
   # Method added by Blacklight; Blacklight uses #to_s on your
   # user class to get a user-displayable login/identifier for
@@ -32,5 +45,21 @@ class User < ApplicationRecord
   # in order to send emails
   def mailboxer_email(_object)
     email
+  end
+end
+
+# Override a Hyrax class that expects to create system users with passwords.
+# Since in production we're using shibboleth, and this removes the password
+# methods from the User model, we need to override it.
+module Hyrax::User
+  module ClassMethods
+    def find_or_create_system_user(user_key)
+      user = ::User.find_or_create_by(uid: user_key)
+      user.display_name = user_key
+      user.email = "#{user_key}@email.unc.edu"
+      user.password = ('a'..'z').to_a.shuffle(random: Random.new).join if AuthConfig.use_database_auth?
+      user.save
+      user
+    end
   end
 end
