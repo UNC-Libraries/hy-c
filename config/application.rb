@@ -19,5 +19,8 @@ module Hyrax
     end
 
     Rails.application.routes.default_url_options[:host] = ENV["HYRAX_HOST"]
+
+    # Add custom error pages
+    config.exceptions_app = self.routes
   end
 end
