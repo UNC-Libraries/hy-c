@@ -8,10 +8,13 @@
   </div>
   <div class="link-tabs col-xs-12 col-sm-12">
     <ul class="list-unstyled pull-right">
-      <li><button><%= link_to t('hyrax.links.home'), "/" %></button></li>
-      <li><button><%= link_to t('hyrax.links.browse_collections'), "/" %></button></li>
-      <li><button><%= link_to t('hyrax.links.departments'), "/" %></button></li>
-      <li><button><i class="fa fa-arrow-circle-up" aria-hidden="true"></i><%= link_to t('hyrax.links.deposit'), "/" %></button></li>
+      <li><div><%= link_to t('hyrax.links.home'), "/" %></div></li>
+      <li><div><%= link_to t('hyrax.links.browse_collections'), main_app.search_catalog_path %></div></li>
+      <li><div><%= link_to t('hyrax.links.departments'), "/" %></div></li>
+      <li><div><i class="fa fa-arrow-circle-up" aria-hidden="true"></i>
+        <%= link_to t('hyrax.links.deposit'), '#', class: 'all-unc-work-types',
+                    data: { behavior: 'select-work', target: '#worktypes-to-create', 'create-type' => 'single' } %>
+      </div></li>
     </ul>
   </div>
 </div>

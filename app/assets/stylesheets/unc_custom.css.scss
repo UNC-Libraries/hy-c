@@ -79,7 +79,7 @@ span.institution_name {
   }
 
   .fa-arrow-circle-up {
-    margin-right: 5px;
+    color: $text-color;
   }
 }
 
@@ -98,10 +98,11 @@ span.institution_name {
       display: inline-block;
     }
 
-    button {
+    div {
       border: 1px outset $carolina-blue-dark;
       background-color: $carolina-blue-dark;
       height: 40px;
+      padding:8px;
       &:hover {
         background-color: #1c4c80;
       }
@@ -110,6 +111,7 @@ span.institution_name {
         color: $text-color;
         &:hover {
           color: $light-gray;
+          text-decoration: none;
         }
       }
     }
@@ -369,6 +371,12 @@ span.institution_name {
     text-align: center;
   }
 
+  .link-tabs {
+    div {
+      margin-top: 5px;
+    }
+  }
+
   #unc-text {
     p {
       font-size: .9em;
@@ -394,4 +402,9 @@ span.institution_name {
       margin-top: 5px;
     }
   }
+}
+
+// Make sure date picker is the top element
+.ui-datepicker-div {
+  z-index: 100;
 }
