@@ -54,6 +54,16 @@ span.institution_name {
   -moz-box-shadow: $shadow-prefixed;
   -webkit-box-shadow: $shadow-prefixed;
   box-shadow: $shadow;
+
+  .background-container {
+    -ms-filter: none;
+    -webkit-filter: none;
+    filter: none;
+  }
+
+  .background-container-gradient {
+    background: none;
+  }
 }
 
 #unc-search {
