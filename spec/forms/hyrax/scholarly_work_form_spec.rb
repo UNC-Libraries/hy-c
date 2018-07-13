@@ -21,7 +21,7 @@ RSpec.describe Hyrax::ScholarlyWorkForm do
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:abstract, :advisor, :conference_name, :date_issued, :genre,
+    it { is_expected.to match_array [:abstract, :advisor, :conference_name, :date_issued, :doi, :genre,
                                      :geographic_subject, :description, :keyword, :language, :license, :resource_type,
                                      :rights_statement, :subject] }
   end
@@ -47,6 +47,7 @@ RSpec.describe Hyrax::ScholarlyWorkForm do
           advisor: ['an advisor'],
           conference_name: ['a conference name'],
           date_issued: 'a date', # single-valued
+          doi: '12345',
           genre: ['a genre'],
           geographic_subject: ['a geographic subject']
       )
@@ -59,6 +60,7 @@ RSpec.describe Hyrax::ScholarlyWorkForm do
       expect(subject['creator']).to eq ['someone@example.com']
       expect(subject['date_created']).to eq ['a date']
       expect(subject['description']).to eq ['a description']
+      expect(subject['doi']).to eq '12345'
       expect(subject['subject']).to eq ['a subject']
       expect(subject['language']).to eq ['a language']
       expect(subject['keyword']).to eq ['test']

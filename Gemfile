@@ -44,6 +44,7 @@ gem 'redis', '~> 3.3.0'
 gem 'rsolr', '~> 2.0.2'
 gem 'devise', '~> 4.3.0'
 gem 'devise-guests', '~> 0.6.0'
+gem 'omniauth-shibboleth', '~> 1.3'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

@@ -22,7 +22,7 @@ RSpec.describe Hyrax::HonorsThesisForm do
     subject { form.secondary_terms }
 
     it { is_expected.to match_array [:abstract, :academic_concentration, :access, :advisor, :alternative_title,
-                                     :award, :date_issued, :degree, :extent, :genre, :geographic_subject,
+                                     :award, :date_issued, :degree, :doi, :extent, :genre, :geographic_subject,
                                      :graduation_year, :note, :use, :language, :license, :resource_type,
                                      :rights_statement, :subject, :keyword, :related_url] }
   end
@@ -50,6 +50,7 @@ RSpec.describe Hyrax::HonorsThesisForm do
           award: ['an award'],
           degree: 'MSIS', # single-valued
           degree_granting_institution: 'UNC', # single-valued
+          doi: '12345',
           extent: ['an extent'],
           genre: ['a genre'],
           geographic_subject: ['a geographic subject'],
@@ -74,7 +75,7 @@ RSpec.describe Hyrax::HonorsThesisForm do
       expect(subject['representative_id']).to eq '456'
       expect(subject['thumbnail_id']).to eq '789'
       expect(subject['member_of_collection_ids']).to eq ['123456', 'abcdef']
-
+      expect(subject['doi']).to eq '12345'
       expect(subject['abstract']).to be_empty
       expect(subject['academic_concentration']).to eq ['a concentration']
       expect(subject['access']).to eq 'public'

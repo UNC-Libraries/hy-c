@@ -23,6 +23,8 @@ RSpec.describe Hyrax::HonorsThesisPresenter do
       "date_issued_tesim" => ['a date'],
       "degree_tesim" => ['a degree'],
       "degree_granting_institution_tesim" => ['an institution'],
+      "deposit_record_tesim" => 'a deposit record',
+      "doi_tesim" => '12345',
       "extent_tesim" => ['an extent'],
       "genre_tesim" => ['a genre'],
       "geographic_subject_tesim" => ['a geographic subject'],
@@ -59,6 +61,8 @@ RSpec.describe Hyrax::HonorsThesisPresenter do
   it { is_expected.to delegate_method(:date_issued).to(:solr_document) }
   it { is_expected.to delegate_method(:degree).to(:solr_document) }
   it { is_expected.to delegate_method(:degree_granting_institution).to(:solr_document) }
+  it { is_expected.to delegate_method(:deposit_record).to(:solr_document) }
+  it { is_expected.to delegate_method(:doi).to(:solr_document) }
   it { is_expected.to delegate_method(:extent).to(:solr_document) }
   it { is_expected.to delegate_method(:genre).to(:solr_document) }
   it { is_expected.to delegate_method(:geographic_subject).to(:solr_document) }
@@ -182,6 +186,28 @@ RSpec.describe Hyrax::HonorsThesisPresenter do
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:degree_granting_institution)
+      end
+    end
+
+    context "with a custom deposit_record field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:deposit_record, 'a deposit record', {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:deposit_record)
+      end
+    end
+
+    context "with a custom doi field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:doi, '12345', {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:doi)
       end
     end
 

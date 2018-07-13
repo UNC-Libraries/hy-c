@@ -1,4 +1,7 @@
 Rails.application.routes.draw do
+  match "/404", :to => "errors#not_found", :via => :all
+  match "/500", :to => "errors#internal_server_error", :via => :all
+
   resources :default_admin_sets, except: :show
   get 'masters_papers/department', to: 'masters_papers#department'
   post 'masters_papers/select_department', to: 'masters_papers#select_department'
@@ -6,7 +9,11 @@ Rails.application.routes.draw do
   concern :oai_provider, BlacklightOaiProvider::Routes.new
 
   require 'sidekiq/web'
-  mount Sidekiq::Web => '/sidekiq'
+  require 'constraint/is_unc_admin'
+
+  # Restrict to admins
+  mount Sidekiq::Web => '/sidekiq', :constraints => Constraint::IsUncAdmin.new
+
   
   mount Blacklight::Engine => '/'
   
@@ -17,7 +24,18 @@ Rails.application.routes.draw do
     concerns :searchable
   end
 
-  devise_for :users
+  devise_for :users, controllers: { omniauth_callbacks: "omniauth_callbacks" }
+
+  # Disable these routes if you are using Devise's
+  # database_authenticatable in your development environment.
+  unless AuthConfig.use_database_auth?
+    devise_scope :user do
+      get 'sign_in', to: 'omniauth#new', as: :new_user_session
+      post 'sign_in', to: 'omniauth_callbacks#shibboleth', as: :new_session
+      get 'sign_out', to: 'devise/sessions#destroy', as: :destroy_user_session
+    end
+  end
+
   mount Hydra::RoleManagement::Engine => '/'
 
   mount Qa::Engine => '/authorities'

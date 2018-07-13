@@ -18,6 +18,7 @@ RSpec.describe Hyrax::DataSetPresenter do
       "abstract_tesim" => ['an abstract'],
       "copyright_date_tesim" => '2017-12-19',
       "date_issued_tesim" => '2018-01-08',
+      "deposit_record_tesim" => 'a deposit record',
       "doi_tesim" => '12345',
       "extent_tesim" => ['1993'],
       "funder_tesim" => ['unc'],
@@ -51,6 +52,7 @@ RSpec.describe Hyrax::DataSetPresenter do
   it { is_expected.to delegate_method(:abstract).to(:solr_document) }
   it { is_expected.to delegate_method(:copyright_date).to(:solr_document) }
   it { is_expected.to delegate_method(:date_issued).to(:solr_document) }
+  it { is_expected.to delegate_method(:deposit_record).to(:solr_document) }
   it { is_expected.to delegate_method(:doi).to(:solr_document) }
   it { is_expected.to delegate_method(:extent).to(:solr_document) }
   it { is_expected.to delegate_method(:funder).to(:solr_document) }

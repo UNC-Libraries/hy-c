@@ -32,6 +32,7 @@ RSpec.describe MastersPaper do
       expect(subject).to respond_to(:license)
       expect(subject).to respond_to(:rights_statement)
       expect(subject).to respond_to(:resource_type)
+      expect(subject).to respond_to(:deposit_record)
 
       # Additional metadata
       expect(subject).to respond_to(:abstract)
@@ -41,6 +42,7 @@ RSpec.describe MastersPaper do
       expect(subject).to respond_to(:date_issued)
       expect(subject).to respond_to(:degree)
       expect(subject).to respond_to(:degree_granting_institution)
+      expect(subject).to respond_to(:doi)
       expect(subject).to respond_to(:extent)
       expect(subject).to respond_to(:genre)
       expect(subject).to respond_to(:geographic_subject)

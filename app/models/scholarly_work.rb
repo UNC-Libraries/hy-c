@@ -26,6 +26,15 @@ class ScholarlyWork < ActiveFedora::Base
     index.as :stored_searchable
   end
 
+  # link to previous deposit record
+  property :deposit_record, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#DepositRecord'), multiple: false do |index|
+    index.as :stored_searchable
+  end
+
+  property :doi, predicate: ::RDF::Vocab::Identifiers.doi, multiple: false do |index|
+    index.as :stored_searchable
+  end
+
   property :genre, predicate: ::RDF::Vocab::EDM.hasType do |index|
     index.as :stored_searchable
   end

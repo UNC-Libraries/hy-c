@@ -6,16 +6,12 @@ include Warden::Test::Helpers
 # NOTE: If you generated more than one work, you have to set "js: true"
 RSpec.feature 'Create a DataSet', js: false do
   context 'a logged in user' do
-    let(:user_attributes) do
-      { email: 'test@example.com', guest: false }
+    let(:user) do
+      User.new(email: 'test@example.com', guest: false, uid: 'test@example.com') { |u| u.save!(validate: false)}
     end
 
     let(:admin_user) do
       User.find_by_user_key('admin@example.com')
-    end
-
-    let(:user) do
-      User.new(user_attributes) { |u| u.save(validate: false) }
     end
 
     let(:admin_set) do
