@@ -10,8 +10,9 @@ $(function() {
     var all_work_types = $('form.new-work-select .select-worktype');
 
     $('#student-papers-work-types').on('click', function (d) {
-        all_work_types.filter(function(index) {
-            return index === 1 || index === 2 || index >= 4;
+        all_work_types.filter(function(index, element) {
+            var work_type = $(this).find('input[type=radio]').attr('value');
+            return !/MastersPaper|HonorsThesis/.test(work_type);
         }).addClass('hidden');
     });
 
