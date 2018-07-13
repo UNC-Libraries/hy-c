@@ -48,7 +48,7 @@ class HonorsThesis < ActiveFedora::Base
   end
 
   # link to previous deposit record
-  property :deposit_record, predicate: ::RDF::Vocab::SKOS.changeNote, multiple: false do |index|
+  property :deposit_record, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#DepositRecord'), multiple: false do |index|
     index.as :stored_searchable
   end
 
