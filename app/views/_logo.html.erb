@@ -1,7 +1,9 @@
-<a id="logo" class="navbar-brand" href="<%= hyrax.root_path %>" data-no-turbolink="true">
-  <i class="fa fa-university" aria-hidden="true"></i>
-  <span class="institution_name">Carolina Digital Repository</span>
-</a>
+<div id="logo" class="navbar-brand">
+  <span class="institution_name">
+    <a href="/"><%= image_tag("unc_libraries_logo.png", alt: t('hyrax.homepage_images.unc_libraries_logo')) %>
+      Carolina Digital Repository</a>
+  </span>
+</div>
 <!-- Don't want default log
 <a id="logo" class="navbar-brand" href="<%# hyrax.root_path %>" data-no-turbolink="true">
   <span class="glyphio-tuglyphicon-globe"></span>
