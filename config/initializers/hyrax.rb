@@ -74,6 +74,7 @@ Hyrax.config do |config|
 
   # Where to store tempfiles, leave blank for the system temp directory (e.g. /tmp)
   # config.temp_file_base = '/home/developer1'
+  config.temp_file_base = ENV['DATA_STORAGE']
 
   # Hostpath to be used in Endnote exports
   # config.persistent_hostpath = 'http://localhost/files/'
@@ -143,11 +144,14 @@ Hyrax.config do |config|
   # Temporary paths to hold uploads before they are ingested into FCrepo
   # These must be lambdas that return a Pathname. Can be configured separately
   #  config.upload_path = ->() { Rails.root + 'tmp' + 'uploads' }
+   config.upload_path = ->() { Pathname.new ENV['DATA_STORAGE'] }
   #  config.cache_path = ->() { Rails.root + 'tmp' + 'uploads' + 'cache' }
+   config.cache_path = ->() { Pathname.new ENV['DATA_STORAGE'] + '/cache' }
 
   # Location on local file system where derivatives will be stored
   # If you use a multi-server architecture, this MUST be a shared volume
   # config.derivatives_path = Rails.root.join('tmp', 'derivatives')
+  config.derivatives_path = ENV['DERIVATIVE_STORAGE']
 
   # Should schema.org microdata be displayed?
   # config.display_microdata = true
@@ -160,6 +164,7 @@ Hyrax.config do |config|
   # prior to being ingested into the repository or having derivatives generated.
   # If you use a multi-server architecture, this MUST be a shared volume.
   # config.working_path = Rails.root.join( 'tmp', 'uploads')
+  config.working_path = ENV['DATA_STORAGE']
 
   # Should the media display partial render a download link?
   # config.display_media_download_link = true
