@@ -6,7 +6,7 @@ $(function() {
     // Add datepicker to date fields in forms
     (function datePicking() {
         var datepicker_options = {
-            dateFormat: 'ISO_8601',
+            dateFormat: 'yy-mm-dd',
             beforeShow:function(field) {
                 // Make sure datepicker is always top element
                 $(field).css({
