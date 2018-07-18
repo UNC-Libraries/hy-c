@@ -1,4 +1,4 @@
-desc "Adds generic admin role to hyrax application"
+desc "Adds generic user to hyrax application"
 task :new_user => :environment do
   User.create(email: 'person@example.com',
               password: 'password',
