@@ -5,9 +5,10 @@
 $(function() {
     // Add datepicker to date fields in forms
     (function datePicking() {
+        // Check for leading _ plus date, otherwise selects things like "update" too
+        var date_inputs = $('div.form-group input[id*="_date"]');
         var datepicker_options = {
-            dateFormat: 'yy-mm-dd',
-            beforeShow:function(field) {
+            beforeShow: function(field) {
                 // Make sure datepicker is always top element
                 $(field).css({
                     'position': 'relative',
@@ -23,8 +24,11 @@ $(function() {
             datepicker_options['maxDate'] = '+0D';
         }
 
-        // Check for leading _ plus date, otherwise selects things like "update" too
-        $('input[id*="_date"]').datepicker(datepicker_options);
+        // Make sure datepicker works with turbolinks
+        $(document).on('turbolinks:load', function() {
+            date_inputs.datepicker('destroy');
+            date_inputs.datepicker(datepicker_options);
+        });
     })();
 
 
@@ -32,7 +36,7 @@ $(function() {
     (function visibleForms() {
         var all_work_types = $('form.new-work-select .select-worktype');
 
-        $('#student-papers-work-types').on('click', function () {
+        $('#student-papers-work-types').on('click', function() {
             all_work_types.filter(function(index, element) {
                 var work_type = $(this).find('input[type=radio]').attr('value');
                 return !/MastersPaper|HonorsThesis/.test(work_type);
