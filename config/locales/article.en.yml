@@ -7,6 +7,9 @@ en:
         name:               "Scholarly Articles and Book Chapters"
         description:        "Deposit a peer-reviewed article or book chapter.  If you would like to deposit a poster,
                             presentation, conference paper or white paper, use the “Scholarly Works” deposit form."
+    citations:
+      citation: Citation
+      citation_services: Citation Services
     links:
       about: About
       accessibility: Accessibility
