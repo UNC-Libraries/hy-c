@@ -40,8 +40,9 @@ namespace :cdr do
   namespace :migration do
 
     desc 'batch migrate generic files from FOXML file'
-    task :items, [:collection_objects_file, :objects_file, :binaries_file, :work_type] => :environment do |t, args|
+    task :items, [:collection_objects_file, :objects_file, :binaries_file, :work_type, :admin_set] => :environment do |t, args|
       @work_type = args[:work_type]
+      @admin_set = args[:admin_set]
 
       # Hash of all binaries in storage directory
       @binary_hash = Hash.new
@@ -245,7 +246,8 @@ namespace :cdr do
           'visibility'=>visibility,
           'embargo_release_date'=>(Date.try(:edtf, embargo_release_date) || embargo_release_date).to_s,
           'visibility_during_embargo'=>visibility_during_embargo,
-          'visibility_after_embargo'=>visibility_after_embargo
+          'visibility_after_embargo'=>visibility_after_embargo,
+          'admin_set_id'=>(AdminSet.where(title: @admin_set).first || AdminSet.where(title: ENV['DEFAULT_ADMIN_SET']).first).id
       }
 
       if contained_files
@@ -284,6 +286,7 @@ namespace :cdr do
       resource.visibility_during_embargo = work_attributes['visibility_during_embargo']
       resource.visibility_after_embargo = work_attributes['visibility_after_embargo']
       end
+      resource.admin_set_id = work_attributes['admin_set_id']
 
       resource
     end

@@ -10,7 +10,12 @@ describe "rake cdr:migration:items", type: :task do
   end
 
   it "creates a new work" do
-    expect { Rake::Task['cdr:migration:items'].invoke('spec/fixtures/migration', 'Article', 'RAILS_ENV=test') }
+    expect { Rake::Task['cdr:migration:items'].invoke('spec/fixtures/migration/objects.txt',
+                                                      'spec/fixtures/migration/objects.txt',
+                                                      'spec/fixtures/migration/binaries.txt',
+                                                      'Article',
+                                                      'default',
+                                                      'RAILS_ENV=test') }
         .to change{ Article.count }.by(1)
     new_article = Article.all[-1]
     expect(new_article['depositor']).to eq 'admin@example.com'
