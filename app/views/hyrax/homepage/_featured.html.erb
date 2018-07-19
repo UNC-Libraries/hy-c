@@ -1,0 +1,7 @@
+<!-- [hyc-override] Overriding hyrax default -->
+<% presenter = featured.presenter %>
+
+<div class="col-xs-12 col-sm-6">
+  <%= render_thumbnail_tag presenter %>
+  <%= render 'hyrax/homepage/featured_fields', featured: presenter %>
+</div>
