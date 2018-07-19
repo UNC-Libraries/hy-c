@@ -40,22 +40,51 @@ namespace :cdr do
   namespace :migration do
 
     desc 'batch migrate generic files from FOXML file'
-    task :items, [:directory, :work_type] => :environment do |t, args|
+    task :items, [:collection_objects_file, :objects_file, :binaries_file, :work_type] => :environment do |t, args|
       @work_type = args[:work_type]
 
-      metadata_dir = args[:directory]
-      migrate_objects(metadata_dir)
+      # Hash of all binaries in storage directory
+      @binary_hash = Hash.new
+      open_file = File.open(args[:binaries_file]) do |file|
+        file.each do |line|
+          value = line.strip
+          key = value.slice(/\w{8}-\w{4}-\w{4}-\w{4}-\w{12}/)
+          @binary_hash[key] = value
+        end
+      end
+      open_file.close
+
+      # Hash of all objects in storage directory
+      @object_hash = Hash.new
+      open_file = File.open(args[:objects_file]) do |file|
+        file.each do |line|
+          value = line.strip
+          key = value.slice(/\w{8}-\w{4}-\w{4}-\w{4}-\w{12}/)
+          @object_hash[key] = value
+        end
+      end
+      open_file.close
+
+      metadata_list = args[:collection_objects_file]
+      migrate_objects(metadata_list)
     end
 
-    def migrate_objects(metadata_dir)
-      metadata_files = Dir.glob("#{metadata_dir}/**/*-object.xml")
+    def migrate_objects(metadata_list)
+      metadata_files = Array.new
+      open_file = File.open(metadata_list) do |file|
+        file.each do |line|
+          metadata_files.append(line.strip)
+        end
+      end
+      open_file.close
 
       puts 'Object count: '+metadata_files.count.to_s
 
-      metadata_files.sort.each do |file|
-        uuid = file.split(metadata_dir)[1].split('/')[1]
-        if Dir.glob("#{metadata_dir}/#{uuid}/#{uuid}-DATA_FILE.*").blank?
-          metadata_fields = metadata(file, metadata_dir)
+      metadata_files.each do |file|
+        uuid = file.slice(/\w{8}-\w{4}-\w{4}-\w{4}-\w{12}/)
+        # Assuming uuid for metadata and binary are the same
+        if @binary_hash[uuid].blank?
+          metadata_fields = metadata(file)
 
           puts 'Number of files: '+metadata_fields[:files].count.to_s
 
@@ -63,17 +92,17 @@ namespace :cdr do
             resource = metadata_fields[:resource]
             resource.save!
 
-            ingest_files(resource: resource, files: metadata_fields[:files], metadata_dir: metadata_dir)
+            ingest_files(resource: resource, files: metadata_fields[:files])
           end
         end
       end
     end
    
-    def ingest_files(parent: nil, resource: nil, files: [], metadata_dir: nil)
+    def ingest_files(parent: nil, resource: nil, files: [])
       ordered_members = []
 
       files.each do |f|
-        file_metadata = metadata(f, metadata_dir)
+        file_metadata = metadata(f)
         file_set = ingest_file(parent: resource, resource: file_metadata[:resource], f: file_metadata[:files][0])
         ordered_members << file_set if file_set
       end
@@ -93,13 +122,12 @@ namespace :cdr do
       file_set
     end
     
-    def metadata(file, metadata_dir)
+    def metadata(file)
       metadata = Nokogiri::XML(File.open(file))
 
       #get the uuid of the object
-      uuid = metadata.at_xpath('foxml:digitalObject/@PID', MigrationConstants::NS).value
+      uuid = metadata.at_xpath('foxml:digitalObject/@PID', MigrationConstants::NS).value.slice(/\w{8}-\w{4}-\w{4}-\w{4}-\w{12}/)
       puts 'getting metadata for: '+uuid
-      uuid_dir_name = uuid.split(':')[1]
 
       file_full = Array.new(0)
       representative = ''
@@ -108,13 +136,8 @@ namespace :cdr do
       embargo_release_date = ''
       visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
 
-      file_name = Dir.glob("#{metadata_dir}/#{uuid_dir_name}/#{uuid_dir_name}-DATA_FILE.*")
-      if file_name.count == 1
-        file_full << file_name.first
-      elsif file_name.count > 1
-        puts 'FAIL #1'
-        MigrationLogger.fatal 'Too many files linked to object'
-        return
+      if !@binary_hash[uuid].blank?
+        file_full << @binary_hash[uuid]
       end
 
       #get the date_created
@@ -137,14 +160,14 @@ namespace :cdr do
       if rdf_version.to_s.match(/contains/)
         contained_files = rdf_version.xpath("rdf:Description/*[local-name() = 'contains']/@rdf:resource", MigrationConstants::NS)
         contained_files.each do |contained_file|
-          tmp_uuid = contained_file.to_s.split('fedora/')[1]
-          file_full << metadata_dir+'/'+tmp_uuid.split(':')[1]+'/'+tmp_uuid+'-object.xml'
+          tmp_uuid = contained_file.to_s.slice(/\w{8}-\w{4}-\w{4}-\w{4}-\w{12}/)
+          file_full << @object_hash[tmp_uuid]
         end
 
         if file_full.count > 1
           representative = rdf_version.xpath('rdf:Description/*[local-name() = "defaultWebObject"]/@rdf:resource', MigrationConstants::NS).to_s.split('/')[1]
           if representative
-            representative = metadata_dir+'/'+representative.split(':')[1]+'/'+representative+'-object.xml'
+            representative = @object_hash[representative.slice(/\w{8}-\w{4}-\w{4}-\w{4}-\w{12}/)]
             file_full -= [representative]
             file_full = [representative] + file_full
           end
