@@ -27,7 +27,7 @@ gem 'clamav', '~> 0.4.1'
 gem 'sidekiq', '~> 5.0.4'
 gem 'blacklight_oai_provider', '6.0.0.pre1'
 gem 'edtf-humanize', '0.0.7'
-gem 'passenger', '~> 5.2.3', require: 'phusion_passenger/rack_handler'
+gem 'passenger', '~> 5.3.3', require: 'phusion_passenger/rack_handler'
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails', '~> 4.3.1'
