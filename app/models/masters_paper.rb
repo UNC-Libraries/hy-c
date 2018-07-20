@@ -26,6 +26,10 @@ class MastersPaper < ActiveFedora::Base
     index.as :stored_searchable
   end
 
+  property :affiliation, predicate: ::RDF::URI('http://vivoweb.org/ontology/core#AcademicDepartment') do |index|
+    index.as :stored_searchable
+  end
+
   property :date_issued, predicate: ::RDF::Vocab::DC.issued, multiple: false do |index|
     index.as :stored_searchable
   end
