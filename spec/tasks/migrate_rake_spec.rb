@@ -2,8 +2,34 @@ require "rails_helper"
 require "rake"
 
 describe "rake cdr:migration:items", type: :task do
+  let(:user) do
+    User.new(email: 'test@example.com', guest: false, uid: 'test@example.com') { |u| u.save!(validate: false)}
+  end
 
-  before { Hyrax::Application.load_tasks if Rake::Task.tasks.empty? }
+  let(:admin_set) do
+    AdminSet.create(title: ['article admin set'],
+                    description: ['some description'],
+                    edit_users: [user.user_key])
+  end
+
+  let(:permission_template) do
+    Hyrax::PermissionTemplate.create!(source_id: admin_set.id)
+  end
+
+  let(:workflow) do
+    Sipity::Workflow.create(name: 'test', allows_access_grant: true, active: true,
+                            permission_template_id: permission_template.id)
+  end
+
+  before do
+    Hyrax::Application.load_tasks if Rake::Task.tasks.empty?
+    AdminSet.delete_all
+    Hyrax::PermissionTemplateAccess.create(permission_template: permission_template,
+                                           agent_type: 'user',
+                                           agent_id: user.user_key,
+                                           access: 'deposit')
+    Sipity::WorkflowAction.create(id: 4, name: 'show', workflow_id: workflow.id)
+  end
 
   it "preloads the Rails environment" do
     expect(Rake::Task['cdr:migration:items'].prerequisites).to include "environment"
@@ -14,7 +40,8 @@ describe "rake cdr:migration:items", type: :task do
                                                       'spec/fixtures/migration/objects.txt',
                                                       'spec/fixtures/migration/binaries.txt',
                                                       'Article',
-                                                      'default',
+                                                      'article admin set',
+                                                      '/hyrax/spec/fixtures/migration/mapping.csv',
                                                       'RAILS_ENV=test') }
         .to change{ Article.count }.by(1)
     new_article = Article.all[-1]
@@ -26,5 +53,7 @@ describe "rake cdr:migration:items", type: :task do
     expect(new_article['creator']).to match_array ['Hugo, Victor']
     expect(new_article['contributor']).to match_array ['Hugo, Victor']
     expect(new_article['publisher']).to match_array ['Project Gutenberg']
+    expect(new_article['admin_set_id']).to eq admin_set.id
+    File.delete('/hyrax/spec/fixtures/migration/mapping.csv')
   end
 end

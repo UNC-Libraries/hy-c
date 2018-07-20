@@ -4,6 +4,7 @@ namespace :cdr do
   require 'tasks/migration/migration_logging'
   require 'htmlentities'
   require 'tasks/migration/migration_constants'
+  require 'csv'
 
   #set fedora access URL. replace with fedora username and password
   #test environment will not have access to ERA's fedora
@@ -40,31 +41,35 @@ namespace :cdr do
   namespace :migration do
 
     desc 'batch migrate generic files from FOXML file'
-    task :items, [:collection_objects_file, :objects_file, :binaries_file, :work_type, :admin_set] => :environment do |t, args|
+    task :items, [:collection_objects_file, :objects_file, :binaries_file, :work_type, :admin_set, :mapping_file] => :environment do |t, args|
       @work_type = args[:work_type]
       @admin_set = args[:admin_set]
 
       # Hash of all binaries in storage directory
       @binary_hash = Hash.new
-      open_file = File.open(args[:binaries_file]) do |file|
+      File.open(args[:binaries_file]) do |file|
         file.each do |line|
           value = line.strip
           key = value.slice(/\w{8}-\w{4}-\w{4}-\w{4}-\w{12}/)
           @binary_hash[key] = value
         end
       end
-      open_file.close
 
       # Hash of all objects in storage directory
       @object_hash = Hash.new
-      open_file = File.open(args[:objects_file]) do |file|
+      File.open(args[:objects_file]) do |file|
         file.each do |line|
           value = line.strip
           key = value.slice(/\w{8}-\w{4}-\w{4}-\w{4}-\w{12}/)
           @object_hash[key] = value
         end
       end
-      open_file.close
+
+      # Create file mapping new and old ids
+      @csv_output = args[:mapping_file]
+      if !File.exist?(@csv_output)
+        @csv_output = File.new(@csv_output, 'w')
+      end
 
       metadata_list = args[:collection_objects_file]
       migrate_objects(metadata_list)
@@ -72,12 +77,11 @@ namespace :cdr do
 
     def migrate_objects(metadata_list)
       metadata_files = Array.new
-      open_file = File.open(metadata_list) do |file|
+      File.open(metadata_list) do |file|
         file.each do |line|
           metadata_files.append(line.strip)
         end
       end
-      open_file.close
 
       puts 'Object count: '+metadata_files.count.to_s
 
@@ -92,6 +96,10 @@ namespace :cdr do
           if metadata_fields[:files][0].match(/.+\.xml/)
             resource = metadata_fields[:resource]
             resource.save!
+
+            CSV.open(@csv_output, 'a+') do |csv|
+              csv << [uuid, resource.id]
+            end
 
             ingest_files(resource: resource, files: metadata_fields[:files])
           end
@@ -119,6 +127,10 @@ namespace :cdr do
                                             :visibility_after_embargo))
       actor.create_content(File.open(f))
       actor.attach_to_work(parent)
+
+      CSV.open(@csv_output, 'a+') do |csv|
+        csv << [f.slice(/\w{8}-\w{4}-\w{4}-\w{4}-\w{12}/), file_set.id]
+      end
 
       file_set
     end
