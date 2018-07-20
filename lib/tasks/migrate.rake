@@ -5,6 +5,7 @@ namespace :cdr do
   require 'htmlentities'
   require 'tasks/migration/migration_constants'
   require 'csv'
+  require 'yaml'
 
   # Must include the email address of a valid user in order to ingest files
   DEPOSITOR_EMAIL = 'admin@example.com'
@@ -17,13 +18,16 @@ namespace :cdr do
   namespace :migration do
 
     desc 'batch migrate generic files from FOXML file'
-    task :items, [:collection_objects_file, :objects_file, :binaries_file, :work_type, :admin_set, :mapping_file] => :environment do |t, args|
-      @work_type = args[:work_type]
-      @admin_set = args[:admin_set]
+    task :items, [:collection, :mapping_file] => :environment do |t, args|
+      config = YAML.load_file('lib/tasks/migration_config.yml')
+      collection_config = config[args[:collection]]
+      @work_type = collection_config['work_type']
+      puts collection_config
+      @admin_set = collection_config['admin_set']
 
       # Hash of all binaries in storage directory
       @binary_hash = Hash.new
-      File.open(args[:binaries_file]) do |file|
+      File.open(collection_config['binaries']) do |file|
         file.each do |line|
           value = line.strip
           key = value.slice(/\w{8}-\w{4}-\w{4}-\w{4}-\w{12}/)
@@ -33,7 +37,7 @@ namespace :cdr do
 
       # Hash of all objects in storage directory
       @object_hash = Hash.new
-      File.open(args[:objects_file]) do |file|
+      File.open(collection_config['objects']) do |file|
         file.each do |line|
           value = line.strip
           key = value.slice(/\w{8}-\w{4}-\w{4}-\w{4}-\w{12}/)
@@ -47,7 +51,7 @@ namespace :cdr do
         @csv_output = File.new(@csv_output, 'w')
       end
 
-      metadata_list = args[:collection_objects_file]
+      metadata_list = collection_config['collection_objects']
       migrate_objects(metadata_list)
     end
 

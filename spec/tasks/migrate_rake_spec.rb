@@ -7,7 +7,7 @@ describe "rake cdr:migration:items", type: :task do
   end
 
   let(:admin_set) do
-    AdminSet.create(title: ['article admin set'],
+    AdminSet.create(title: ['default'],
                     description: ['some description'],
                     edit_users: [user.user_key])
   end
@@ -36,11 +36,7 @@ describe "rake cdr:migration:items", type: :task do
   end
 
   it "creates a new work" do
-    expect { Rake::Task['cdr:migration:items'].invoke('spec/fixtures/migration/objects.txt',
-                                                      'spec/fixtures/migration/objects.txt',
-                                                      'spec/fixtures/migration/binaries.txt',
-                                                      'Article',
-                                                      'article admin set',
+    expect { Rake::Task['cdr:migration:items'].invoke('collection1',
                                                       'spec/fixtures/migration/mapping.csv',
                                                       'RAILS_ENV=test') }
         .to change{ Article.count }.by(1)
