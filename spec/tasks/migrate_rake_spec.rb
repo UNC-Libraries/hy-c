@@ -41,7 +41,7 @@ describe "rake cdr:migration:items", type: :task do
                                                       'spec/fixtures/migration/binaries.txt',
                                                       'Article',
                                                       'article admin set',
-                                                      '/hyrax/spec/fixtures/migration/mapping.csv',
+                                                      'spec/fixtures/migration/mapping.csv',
                                                       'RAILS_ENV=test') }
         .to change{ Article.count }.by(1)
     new_article = Article.all[-1]
@@ -54,6 +54,6 @@ describe "rake cdr:migration:items", type: :task do
     expect(new_article['contributor']).to match_array ['Hugo, Victor']
     expect(new_article['publisher']).to match_array ['Project Gutenberg']
     expect(new_article['admin_set_id']).to eq admin_set.id
-    File.delete('/hyrax/spec/fixtures/migration/mapping.csv')
+    File.delete('spec/fixtures/migration/mapping.csv')
   end
 end
