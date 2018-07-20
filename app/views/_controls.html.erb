@@ -6,12 +6,20 @@
           <%= link_to t(:'hyrax.links.collections'), hyrax.root_path %></li>
         <li <%= 'class=active' if current_page?(hyrax.root_path) %>>
           <%= link_to t(:'hyrax.links.departments'), hyrax.root_path %></li>
-        <li><%= link_to  '#', class: 'all-unc-work-types',
-                         data: { behavior: 'select-work', target: '#worktypes-to-create', 'create-type' => 'single' } do %>
-            <i class="fa fa-arrow-circle-up" aria-hidden="true"></i>
-            <%= t('hyrax.links.deposit') %>
-          <% end %>
-        </li>
+          <li>
+            <% if user_signed_in? %>
+              <%= link_to '#', class: 'all-unc-work-types',
+                             data: { behavior: 'select-work', target: '#worktypes-to-create', 'create-type' => 'single' } do %>
+                <i class="fa fa-arrow-circle-up" aria-hidden="true"></i>
+                <%= t('hyrax.links.deposit') %>
+              <% end %>
+            <% else %>
+              <%= link_to main_app.new_user_session_path do %>
+                <i class="fa fa-arrow-circle-up" aria-hidden="true"></i>
+                <%= t('hyrax.links.deposit') %>
+              <% end %>
+            <% end %>
+          </li>
       </ul><!-- /.nav -->
       <div class="searchbar-right navbar-right col-sm-7 col-md-6">
         <%= render partial: 'catalog/search_form' %>

@@ -12,8 +12,12 @@
       <li><div><%= link_to t('hyrax.links.browse_collections'), main_app.search_catalog_path %></div></li>
       <li><div><%= link_to t('hyrax.links.departments'), "/" %></div></li>
       <li><div><i class="fa fa-arrow-circle-up" aria-hidden="true"></i>
-        <%= link_to t('hyrax.links.deposit'), '#', class: 'all-unc-work-types',
-                    data: { behavior: 'select-work', target: '#worktypes-to-create', 'create-type' => 'single' } %>
+        <% if user_signed_in? %>
+          <%= link_to t('hyrax.links.deposit'), '#', class: 'all-unc-work-types',
+                      data: { behavior: 'select-work', target: '#worktypes-to-create', 'create-type' => 'single' } %>
+        <% else %>
+          <%= link_to t('hyrax.links.deposit'), main_app.new_user_session_path %>
+        <% end %>
       </div></li>
     </ul>
   </div>
