@@ -6,32 +6,8 @@ namespace :cdr do
   require 'tasks/migration/migration_constants'
   require 'csv'
 
-  #set fedora access URL. replace with fedora username and password
-  #test environment will not have access to ERA's fedora
-
   # Must include the email address of a valid user in order to ingest files
   DEPOSITOR_EMAIL = 'admin@example.com'
-
-  #temporary location for file download
-  TEMP = 'lib/tasks/migration/tmp'
-  FILE_STORE = 'lib/tasks/migration/files'
-  TEMP_FOXML = 'lib/tasks/migration/tmp'
-  FileUtils::mkdir_p TEMP
-
-  #report directory
-  REPORTS = 'lib/tasks/migration/reports/'
-  #Oddities report
-  ODDITIES = REPORTS+ 'oddities.txt'
-  #verification error report
-  VERIFICATION_ERROR = REPORTS + 'verification_errors.txt'
-  #item migration list
-  ITEM_LIST = REPORTS + 'item_list.txt'
-  #collection list
-  COLLECTION_LIST = REPORTS + 'collection_list.txt'
-  FileUtils::mkdir_p REPORTS
-  #successful_path
-  COMPLETED_DIR = 'lib/tasks/migration/completed'
-  FileUtils::mkdir_p COMPLETED_DIR
 
   # Sample data is currently stored in the hyrax/lib/tasks/migration/tmp directory.  Each object is stored in a
   # directory labelled with its uuid. Container objects only contain a metadata file and are stored as
@@ -97,6 +73,7 @@ namespace :cdr do
             resource = metadata_fields[:resource]
             resource.save!
 
+            # Record old and new ids for works
             CSV.open(@csv_output, 'a+') do |csv|
               csv << [uuid, resource.id]
             end
@@ -128,6 +105,7 @@ namespace :cdr do
       actor.create_content(File.open(f))
       actor.attach_to_work(parent)
 
+      # Record old and new ids for files
       CSV.open(@csv_output, 'a+') do |csv|
         csv << [f.slice(/\w{8}-\w{4}-\w{4}-\w{4}-\w{12}/), file_set.id]
       end
