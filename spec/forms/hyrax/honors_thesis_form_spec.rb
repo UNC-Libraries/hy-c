@@ -21,7 +21,7 @@ RSpec.describe Hyrax::HonorsThesisForm do
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:abstract, :academic_concentration, :access, :advisor, :alternative_title,
+    it { is_expected.to match_array [:abstract, :academic_concentration, :access, :advisor, :affiliation, :alternative_title,
                                      :award, :date_issued, :degree, :doi, :extent, :genre, :geographic_subject,
                                      :graduation_year, :note, :use, :language, :license, :resource_type,
                                      :rights_statement, :subject, :keyword, :related_url] }
@@ -46,6 +46,7 @@ RSpec.describe Hyrax::HonorsThesisForm do
           academic_concentration: ['a concentration'],
           access: 'public', # single-valued
           advisor: ['an advisor'],
+          affiliation: ['SILS'],
           alternative_title: ['another title'],
           award: ['an award'],
           degree: 'MSIS', # single-valued
@@ -80,6 +81,7 @@ RSpec.describe Hyrax::HonorsThesisForm do
       expect(subject['academic_concentration']).to eq ['a concentration']
       expect(subject['access']).to eq 'public'
       expect(subject['advisor']).to eq ['an advisor']
+      expect(subject['affiliation']).to eq ['SILS']
       expect(subject['alternative_title']).to eq ['another title']
       expect(subject['award']).to eq ['an award']
       expect(subject['degree']).to eq 'MSIS'
