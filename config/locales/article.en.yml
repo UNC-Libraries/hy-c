@@ -7,26 +7,3 @@ en:
         name:               "Scholarly Articles and Book Chapters"
         description:        "Deposit a peer-reviewed article or book chapter.  If you would like to deposit a poster,
                             presentation, conference paper or white paper, use the “Scholarly Works” deposit form."
-    citations:
-      citation: Citation
-    links:
-      about: About
-      accessibility: Accessibility
-      browse_collections: Browse Collections
-      contact: Contact Us
-      home: Home
-      library_home: Library Home
-      privacy_policy: Privacy Policy
-      departments: Departments
-      collections: Collections
-      deposit: Deposit
-    deposit:
-      header: Deposit Your Work
-      article: Article
-      student_paper: Student Papers
-      dataset: Datasets
-      other: Other Deposits
-    homepage_images:
-      unc_libraries_logo: UNC libraries logo
-      accessible: accessible and discoverable
-      access: you decide who gets access
