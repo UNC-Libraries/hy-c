@@ -22,7 +22,7 @@ RSpec.describe Hyrax::ArticleForm do
     subject { form.secondary_terms }
 
     it { is_expected.to eq [:keyword, :license, :rights_statement, :publisher, :date_created, :subject, :language,
-                            :identifier, :resource_type, :abstract, :access, :bibliographic_citation, :copyright_date,
+                            :identifier, :resource_type, :abstract, :access, :affiliation, :bibliographic_citation, :copyright_date,
                             :date_captured, :date_other, :doi, :edition, :extent, :funder, :genre, :geographic_subject,
                             :issn, :journal_issue, :journal_title, :journal_volume, :note, :page_end, :page_start,
                             :peer_review_status, :place_of_publication, :rights_holder, :table_of_contents, :translator,
@@ -49,6 +49,7 @@ RSpec.describe Hyrax::ArticleForm do
           member_of_collection_ids: ['123456', 'abcdef'],
           abstract: ['an abstract'],
           access: 'public', # single-valued
+          affiliation: ['SILS'],
           copyright_date: '2017-01-22', # single-valued
           date_captured: '2017-01-22', # single-valued
           date_issued: '2017-01-22', # single-valued
@@ -94,6 +95,7 @@ RSpec.describe Hyrax::ArticleForm do
       expect(subject['member_of_collection_ids']).to eq ['123456', 'abcdef']
       expect(subject['abstract']).to eq ['an abstract']
       expect(subject['access']).to eq 'public'
+      expect(subject['affiliation']).to eq ['SILS']
       expect(subject['copyright_date']).to eq '2017-01-22'
       expect(subject['date_captured']).to eq '2017-01-22'
       expect(subject['date_issued']).to eq '2017-01-22'
