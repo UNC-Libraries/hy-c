@@ -15,7 +15,7 @@ RSpec.describe Hyrax::ArticlePresenter do
       "depositor_tesim" => user_key,
       "abstract_tesim" => ['an abstract'],
       "access_tesim" => 'public',
-      "affliation_tesim" => ['SILS'],
+      "affiliation_tesim" => ['SILS'],
       "bibliographic_citation_tesim" => ['a citation'],
       "copyright_date_tesim" => '2017-01-22',
       "date_captured_tesim" => '2017-01-22',

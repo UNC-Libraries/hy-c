@@ -110,6 +110,7 @@ class CatalogController < ApplicationController
     config.add_index_field solr_name("academic_concentration", :stored_searchable), label: "Academic Concentration"
     config.add_index_field solr_name("access", :stored_searchable), label: "Access"
     config.add_index_field solr_name("advisor", :stored_searchable), label: "Advisor"
+    config.add_index_field solr_name("affiliation", :stored_searchable), label: "Affiliation"
     config.add_index_field solr_name("alternative_title", :stored_searchable), label: "Alternative Title"
     config.add_index_field solr_name("arranger", :stored_searchable), label: "Arranger"
     config.add_index_field solr_name("award", :stored_searchable), label: "Award"
