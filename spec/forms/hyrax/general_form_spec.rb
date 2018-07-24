@@ -26,7 +26,7 @@ RSpec.describe Hyrax::GeneralForm do
                                      :subject, :bibliographic_citation, :abstract, :academic_concentration, :access,
                                      :advisor, :alternative_title, :arranger, :award, :composer, :conference_name,
                                      :copyright_date, :date_captured, :date_issued, :date_other, :degree,
-                                     :degree_granting_institution, :digital_collection, :discipline, :doi, :edition,
+                                     :degree_granting_institution, :discipline, :doi, :edition,
                                      :extent, :funder, :genre, :geographic_subject, :graduation_year, :isbn, :issn,
                                      :journal_issue, :journal_title, :journal_volume, :kind_of_data,
                                      :last_modified_date, :medium, :note, :page_start, :page_end, :peer_review_status,
@@ -142,7 +142,7 @@ RSpec.describe Hyrax::GeneralForm do
       expect(subject['date_other']).to eq ['2017-01-22']
       expect(subject['degree']).to eq 'something'
       expect(subject['degree_granting_institution']).to eq 'unc'
-      expect(subject['digital_collection']).to eq ['a collection']
+      expect(subject['digital_collection']).to be_nil
       expect(subject['discipline']).to eq ['a discipline']
       expect(subject['doi']).to eq '12345'
       expect(subject['edition']).to eq ['an edition']
