@@ -8,6 +8,7 @@ $(function() {
         // Check for leading _ plus date, otherwise selects things like "update" too
         var date_inputs = $('div.form-group input[id*="_date"]');
         var datepicker_options = {
+            dateFormat: 'yy-mm-dd',
             beforeShow: function(field) {
                 // Make sure datepicker is always top element
                 $(field).css({
