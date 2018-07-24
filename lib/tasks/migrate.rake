@@ -22,7 +22,6 @@ namespace :cdr do
       config = YAML.load_file('lib/tasks/migration_config.yml')
       collection_config = config[args[:collection]]
       @work_type = collection_config['work_type']
-      puts collection_config
       @admin_set = collection_config['admin_set']
 
       # Hash of all binaries in storage directory
@@ -30,17 +29,17 @@ namespace :cdr do
       File.open(collection_config['binaries']) do |file|
         file.each do |line|
           value = line.strip
-          key = value.slice(/\w{8}-\w{4}-\w{4}-\w{4}-\w{12}/)
+          key = get_uuid_from_path(value)
           @binary_hash[key] = value
         end
       end
 
-      # Hash of all objects in storage directory
+      # Hash of all .xml objects in storage directory
       @object_hash = Hash.new
       File.open(collection_config['objects']) do |file|
         file.each do |line|
           value = line.strip
-          key = value.slice(/\w{8}-\w{4}-\w{4}-\w{4}-\w{12}/)
+          key = get_uuid_from_path(value)
           @object_hash[key] = value
         end
       end
@@ -51,25 +50,27 @@ namespace :cdr do
         @csv_output = File.new(@csv_output, 'w')
       end
 
-      metadata_list = collection_config['collection_objects']
-      migrate_objects(metadata_list)
+      collection_ids_file = collection_config['collection_list']
+      migrate_objects(collection_ids_file)
     end
 
-    def migrate_objects(metadata_list)
-      metadata_files = Array.new
-      File.open(metadata_list) do |file|
+    def migrate_objects(collection_ids_file)
+      collection_uuids = Array.new
+      CSV.open(collection_ids_file) do |file|
         file.each do |line|
-          metadata_files.append(line.strip)
+          collection_uuids.append(line[0].strip)
         end
       end
 
-      puts 'Object count: '+metadata_files.count.to_s
+      puts 'Object count: '+collection_uuids.count.to_s
 
-      metadata_files.each do |file|
-        uuid = file.slice(/\w{8}-\w{4}-\w{4}-\w{4}-\w{12}/)
+      collection_uuids.each do |collection_uuid|
+        uuid = get_uuid_from_path(collection_uuid)
         # Assuming uuid for metadata and binary are the same
-        if @binary_hash[uuid].blank?
-          metadata_fields = metadata(file)
+        # Skip file/binary metadata
+        # solr returns column header; skip that, too
+        if @binary_hash[uuid].blank? && !uuid.blank?
+          metadata_fields = metadata(@object_hash[uuid])
 
           puts 'Number of files: '+metadata_fields[:files].count.to_s
 
@@ -92,6 +93,7 @@ namespace :cdr do
       ordered_members = []
 
       files.each do |f|
+        # Get file/binary object metadata
         file_metadata = metadata(f)
         file_set = ingest_file(parent: resource, resource: file_metadata[:resource], f: file_metadata[:files][0])
         ordered_members << file_set if file_set
@@ -111,7 +113,7 @@ namespace :cdr do
 
       # Record old and new ids for files
       CSV.open(@csv_output, 'a+') do |csv|
-        csv << [f.slice(/\w{8}-\w{4}-\w{4}-\w{4}-\w{12}/), file_set.id]
+        csv << [get_uuid_from_path(f), file_set.id]
       end
 
       file_set
@@ -121,7 +123,7 @@ namespace :cdr do
       metadata = Nokogiri::XML(File.open(file))
 
       #get the uuid of the object
-      uuid = metadata.at_xpath('foxml:digitalObject/@PID', MigrationConstants::NS).value.slice(/\w{8}-\w{4}-\w{4}-\w{4}-\w{12}/)
+      uuid = get_uuid_from_path(metadata.at_xpath('foxml:digitalObject/@PID', MigrationConstants::NS).value)
       puts 'getting metadata for: '+uuid
 
       file_full = Array.new(0)
@@ -155,14 +157,14 @@ namespace :cdr do
       if rdf_version.to_s.match(/contains/)
         contained_files = rdf_version.xpath("rdf:Description/*[local-name() = 'contains']/@rdf:resource", MigrationConstants::NS)
         contained_files.each do |contained_file|
-          tmp_uuid = contained_file.to_s.slice(/\w{8}-\w{4}-\w{4}-\w{4}-\w{12}/)
+          tmp_uuid = get_uuid_from_path(contained_file.to_s)
           file_full << @object_hash[tmp_uuid]
         end
 
         if file_full.count > 1
           representative = rdf_version.xpath('rdf:Description/*[local-name() = "defaultWebObject"]/@rdf:resource', MigrationConstants::NS).to_s.split('/')[1]
           if representative
-            representative = @object_hash[representative.slice(/\w{8}-\w{4}-\w{4}-\w{4}-\w{12}/)]
+            representative = @object_hash[get_uuid_from_path(representative)]
             file_full -= [representative]
             file_full = [representative] + file_full
           end
@@ -308,6 +310,10 @@ namespace :cdr do
       end
 
       resource
+    end
+
+    def get_uuid_from_path(path)
+      path.slice(/\w{8}-\w{4}-\w{4}-\w{4}-\w{12}/)
     end
   end
 end

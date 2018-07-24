@@ -1,12 +1,12 @@
 # Example configuration for migration script
 collection1:
-  collection_objects: spec/fixtures/migration/objects.txt
+  collection_list: spec/fixtures/migration/collection.csv
   objects: spec/fixtures/migration/objects.txt
   binaries: spec/fixtures/migration/binaries.txt
   work_type: Article
   admin_set: default
 collection2:
-  collection_objects: spec/fixtures/migration/objects.txt
+  collection_list: spec/fixtures/migration/collection.csv
   objects: spec/fixtures/migration/objects.txt
   binaries: spec/fixtures/migration/binaries.txt
   work_type: General
