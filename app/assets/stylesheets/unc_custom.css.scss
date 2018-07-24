@@ -200,13 +200,27 @@ span.institution_name {
   -webkit-box-shadow: $description-shadow-prefixed;
   box-shadow: $description-shadow;
 
-  div {
+  .is-featured {
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+
+    -webkit-justify-content: center;
+    justify-content: center;
+
+    -ms-flex-direction: column;
+    -webkit-flex-direction: column;
+    flex-direction: column;
+
+    height: 200px;
+  }
+
+  div, h2 {
     margin-bottom: 25px;
   }
 
-  img {
-    max-width: 45%;
-    max-height: 45%;
+  .featured-item-title {
+    margin-top: 15px;
   }
 }
 
@@ -391,6 +405,12 @@ div.unc-citation-modal {
 }
 
 @media only screen and (max-width: 800px) {
+  #unc-featured {
+    .is-featured {
+      margin-bottom: 0;
+    }
+  }
+
   #masthead {
     .navbar-header {
       text-align: center;

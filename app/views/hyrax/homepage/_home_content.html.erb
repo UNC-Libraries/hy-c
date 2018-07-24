@@ -5,7 +5,8 @@
   <h2>Featured Deposits</h2>
   <%= render 'featured_works' %>
   <div class="col-xs-12 col-sm-12">
-    <p class="text-center">Interested in seeing more? <a href="/">Explore the repository &rarr;</a></p>
+    <p class="text-center">Interested in seeing more? <%= link_to "Explore the repository &rarr;".html_safe,
+                                                                  main_app.search_catalog_path(f: { human_readable_type_sim: ["Collection"]}) %></p>
   </div>
 </div>
 
