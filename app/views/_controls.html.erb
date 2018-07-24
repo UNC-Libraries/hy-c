@@ -5,7 +5,7 @@
         <li <%= 'class=active' if current_page?(hyrax.root_path) %>>
           <%= link_to t(:'hyrax.links.collections'), main_app.search_catalog_path(f: { human_readable_type_sim: ["Collection"]}) %></li>
         <li <%= 'class=active' if current_page?(hyrax.root_path) %>>
-          <%= link_to t(:'hyrax.links.departments'), hyrax.root_path %></li>
+          <%= link_to t(:'hyrax.links.departments'), main_app.facet_catalog_path(id: 'affiliation_sim') %></li>
           <li>
             <% if user_signed_in? %>
               <%= link_to '#', class: 'all-unc-work-types',

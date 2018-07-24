@@ -19,7 +19,7 @@ class Article < ActiveFedora::Base
   end
 
   property :affiliation, predicate: ::RDF::URI('http://vivoweb.org/ontology/core#AcademicDepartment') do |index|
-    index.as :stored_searchable
+    index.as :stored_searchable, :facetable
   end
 
   property :copyright_date, predicate: ::RDF::Vocab::DC.dateCopyrighted, multiple: false do |index|
