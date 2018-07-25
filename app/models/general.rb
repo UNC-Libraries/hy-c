@@ -76,7 +76,7 @@ class General < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :digital_collection, predicate: ::RDF::URI('http://pcdm.org/models#memberOf') do |index|
+  property :digital_collection, predicate: ::RDF::URI('http://purl.org/cld/terms/associatedCollection') do |index|
     index.as :stored_searchable
   end
 
