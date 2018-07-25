@@ -88,7 +88,7 @@ class General < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :edition, predicate: ::RDF::Vocab::BF2.editionStatement do |index|
+  property :edition, predicate: ::RDF::Vocab::BF2.editionStatement, multiple: false do |index|
     index.as :stored_searchable
   end
 
