@@ -54,7 +54,7 @@ RSpec.describe Hyrax::ArticleForm do
           date_issued: '2017-01-22', # single-valued
           date_other: [''],
           doi: '12345', # single-valued
-          edition: ['an edition'],
+          edition: 'an edition',
           extent: ['1993'],
           funder: ['dean'],
           genre: ['science fiction'],
@@ -99,7 +99,7 @@ RSpec.describe Hyrax::ArticleForm do
       expect(subject['date_issued']).to eq '2017-01-22'
       expect(subject['date_other']).to be_empty
       expect(subject['doi']).to eq '12345'
-      expect(subject['edition']).to eq ['an edition']
+      expect(subject['edition']).to eq 'an edition'
       expect(subject['extent']).to eq ['1993']
       expect(subject['funder']).to eq ['dean']
       expect(subject['genre']).to eq ['science fiction']
