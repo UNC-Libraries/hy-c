@@ -43,9 +43,26 @@ $(function() {
             }).addClass('hidden');
         });
 
-        // Make sure all forms ar visible when non student papers deposits links are clicked
+        // Make sure all forms are visible when non student papers deposits links are clicked
         $('.all-unc-work-types').on('click', function() {
             all_work_types.removeClass('hidden');
         });
+    })();
+
+    // If a featured work comes in without a thumbnail restrict the default image's size
+    // Default images come from the assets directory
+    (function featuredWorks() {
+        var featuredImg = $('.is-featured img');
+        var noThumbnail = featuredImg.filter(function(index, element) {
+            return /assets/.test($(element).attr('src'));
+        });
+
+        noThumbnail.css({
+            'max-width': '35%',
+            'max-height': '35%'
+        });
+
+        // Restrict margins of image's link text
+        noThumbnail.parent().next().css('margin-top', '-5px');
     })();
 });
