@@ -1,4 +1,4 @@
-<!-- [hyc-override] Overriding hyrax default -->
+<%#  [hyc-override] Overriding hyrax default %>
 <div class="featured-item-title">
     <span class="sr-only"><%= t('hyrax.homepage.featured_works.document.title_label') %></span>
     <%= link_to featured.title.first, [main_app, featured] %>
@@ -6,17 +6,3 @@
       <p><strong>Collection:</strong> <%= Collection.find(featured.member_of_collection_ids.first).title.first %></p>
     <% end %>
 </div>
-<!--
-<div class="col-xs-12 col-sm-6">
-  <div><%# image_tag("9224.jpg", :alt => "effects of glacial advance") %></div>
-  <%# link_to "Effects of Glacial Advance", "/" %>
-  <p><strong>Collection:</strong> Research Labs of Archeology</p>
-</div>
-<div class="col-xs-12 col-sm-6">
-  <div><%# image_tag("Shell_Necklace.jpg", :alt => "shell necklace") %></div>
-  <%# link_to "Vir 150, Shell Necklace, Mecklenburg Co.", "/" %>
-  <p><strong>Collection:</strong> Research Labs of Archeology</p>
-</div>
-<div class="col-xs-12 col-sm-12">
-  <p class="text-center">Interested in seeing more? <a href="/">Explore the repository &rarr;</a></p>
-</div> -->

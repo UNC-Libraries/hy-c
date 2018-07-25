@@ -48,15 +48,4 @@ $(function() {
             all_work_types.removeClass('hidden');
         });
     })();
-
-    // If a featured work comes in without a thumbnail restrict the default image's link margins
-    // Default images come from the assets directory
-    (function featuredWorks() {
-        var featuredImg = $('.is-featured img');
-        var noThumbnail = featuredImg.filter(function(index, element) {
-            return /assets/.test($(element).attr('src'));
-        });
-
-        noThumbnail.parent().next().css('margin-top', 0);
-    })();
 });
