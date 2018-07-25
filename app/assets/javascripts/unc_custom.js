@@ -44,7 +44,7 @@ $(function() {
             }).addClass('hidden');
         });
 
-        // Make sure all forms ar visible when non student papers deposits links are clicked
+        // Make sure all forms are visible when non student papers deposits links are clicked
         $('.all-unc-work-types').on('click', function() {
             all_work_types.removeClass('hidden');
         });

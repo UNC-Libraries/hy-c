@@ -199,14 +199,42 @@ span.institution_name {
   -moz-box-shadow: $description-shadow-prefixed;
   -webkit-box-shadow: $description-shadow-prefixed;
   box-shadow: $description-shadow;
+  padding: 0 10px;
+
+  .is-featured {
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+
+    -webkit-justify-content: center;
+    justify-content: center;
+
+    -ms-flex-direction: column;
+    -webkit-flex-direction: column;
+    flex-direction: column;
+
+    height: 200px;
+
+    img {
+      max-width: 200px;
+      max-height: 175px;
+    }
+
+    .featured-author + p {
+      margin-top: -10px;
+    }
+  }
+
+  h2 {
+    margin-bottom: 50px;
+  }
 
   div {
     margin-bottom: 25px;
   }
 
-  img {
-    max-width: 45%;
-    max-height: 45%;
+  .featured-item-title {
+    margin-top: 15px;
   }
 }
 
@@ -319,7 +347,6 @@ div.unc-citation-modal {
       width: 40%;
     }
   }
-
   .navbar-brand {
     padding: 10px 15px;
   }
@@ -373,6 +400,14 @@ div.unc-citation-modal {
     }
   }
 
+  #unc-featured {
+    .is-featured {
+      img {
+        max-width: 175px;
+      }
+    }
+  }
+
   #unc-text {
     div {
       width: 100%;
@@ -391,6 +426,12 @@ div.unc-citation-modal {
 }
 
 @media only screen and (max-width: 800px) {
+  #unc-featured {
+    h2 {
+      margin-bottom: 50px;
+    }
+  }
+
   #masthead {
     .navbar-header {
       text-align: center;
@@ -404,6 +445,10 @@ div.unc-citation-modal {
 
   span.institution_name {
     font-size: 12px;
+  }
+
+  .nav {
+    padding-left: 15px;
   }
 }
 
