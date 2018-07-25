@@ -199,6 +199,7 @@ span.institution_name {
   -moz-box-shadow: $description-shadow-prefixed;
   -webkit-box-shadow: $description-shadow-prefixed;
   box-shadow: $description-shadow;
+  padding: 0 10px;
 
   .is-featured {
     display: -ms-flexbox;
@@ -346,7 +347,6 @@ div.unc-citation-modal {
       width: 40%;
     }
   }
-
   .navbar-brand {
     padding: 10px 15px;
   }
@@ -397,6 +397,14 @@ div.unc-citation-modal {
     ul li {
       padding-top: 10px;
       border-right: none;
+    }
+  }
+
+  #unc-featured {
+    .is-featured {
+      img {
+        max-width: 175px;
+      }
     }
   }
 
