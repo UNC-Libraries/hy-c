@@ -76,7 +76,7 @@ RSpec.describe Hyrax::GeneralForm do
           digital_collection: ['a collection'],
           discipline: ['a discipline'],
           doi: '12345', # single-valued
-          edition: ['an edition'],
+          edition: 'an edition',
           extent: ['1993'],
           funder: ['dean'],
           genre: ['a genre'],
@@ -147,7 +147,7 @@ RSpec.describe Hyrax::GeneralForm do
       expect(subject['digital_collection']).to be_nil
       expect(subject['discipline']).to eq ['a discipline']
       expect(subject['doi']).to eq '12345'
-      expect(subject['edition']).to eq ['an edition']
+      expect(subject['edition']).to eq 'an edition'
       expect(subject['extent']).to eq ['1993']
       expect(subject['funder']).to eq ['dean']
       expect(subject['genre']).to eq ['a genre']

@@ -34,7 +34,7 @@ RSpec.describe Hyrax::GeneralPresenter do
       "digital_collection_tesim" => ['a collection'],
       "discipline_tesim" => ['a discipline'],
       "doi_tesim" => '12345',
-      "edition_tesim" => ['new edition'],
+      "edition_tesim" => 'new edition',
       "extent_tesim" => ['1993'],
       "funder_tesim" => ['dean'],
       "genre_tesim" => ['a genre'],
@@ -390,7 +390,7 @@ RSpec.describe Hyrax::GeneralPresenter do
 
     context "with a custom edition field" do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:edition, ['new edition'], {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:edition, 'new edition', {}).and_return(renderer)
       end
 
       it "calls the AttributeRenderer" do

@@ -24,7 +24,7 @@ RSpec.describe Hyrax::ArticlePresenter do
       "date_other_tesim" => ['2017-01-22'],
       "deposit_record_tesim" => 'a deposit record',
       "doi_tesim" => '12345',
-      "edition_tesim" => ['new edition'],
+      "edition_tesim" => 'new edition',
       "extent_tesim" => ['1993'],
       "funder_tesim" => ['dean'],
       "genre_tesim" => ['science fiction'],
@@ -227,7 +227,7 @@ RSpec.describe Hyrax::ArticlePresenter do
 
     context "with a custom edition field" do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:edition, ['new edition'], {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:edition, 'new edition', {}).and_return(renderer)
       end
 
       it "calls the AttributeRenderer" do
