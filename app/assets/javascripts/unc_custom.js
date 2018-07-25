@@ -49,7 +49,7 @@ $(function() {
         });
     })();
 
-    // If a featured work comes in without a thumbnail restrict the default image's size
+    // If a featured work comes in without a thumbnail restrict the default image's link margins
     // Default images come from the assets directory
     (function featuredWorks() {
         var featuredImg = $('.is-featured img');
@@ -57,12 +57,6 @@ $(function() {
             return /assets/.test($(element).attr('src'));
         });
 
-        noThumbnail.css({
-            'max-width': '35%',
-            'max-height': '35%'
-        });
-
-        // Restrict margins of image's link text
-        noThumbnail.parent().next().css('margin-top', '-5px');
+        noThumbnail.parent().next().css('margin-top', 0);
     })();
 });

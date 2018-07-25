@@ -213,6 +213,11 @@ span.institution_name {
     flex-direction: column;
 
     height: 200px;
+
+    img {
+      max-width: 200px;
+      max-height: 175px;
+    }
   }
 
   div, h2 {
@@ -408,6 +413,10 @@ div.unc-citation-modal {
   #unc-featured {
     .is-featured {
       margin-bottom: 0;
+    }
+
+    h2 {
+      margin-bottom: 50px;
     }
   }
 
