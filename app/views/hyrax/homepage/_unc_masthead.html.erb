@@ -9,7 +9,7 @@
   <div class="link-tabs col-xs-12 col-sm-12">
     <ul class="list-unstyled pull-right">
       <li><div><%= link_to t('hyrax.links.browse_collections'), main_app.search_catalog_path(f: { human_readable_type_sim: ["Collection"]}) %></div></li>
-      <li><div><%= link_to t('hyrax.links.departments'), "/" %></div></li>
+      <li><div><%= link_to t(:'hyrax.links.departments'), main_app.facet_catalog_path(id: 'affiliation_sim') %></div></li>
       <li><div><i class="fa fa-arrow-circle-up" aria-hidden="true"></i>
         <% if user_signed_in? %>
           <%= link_to t('hyrax.links.deposit'), '#', class: 'all-unc-work-types',

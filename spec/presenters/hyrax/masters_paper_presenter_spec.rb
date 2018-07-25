@@ -19,6 +19,7 @@ RSpec.describe Hyrax::MastersPaperPresenter do
       "academic_concentration_tesim"=> ['a concentration'],
       "access_tesim" => 'access',
       "advisor_tesim" => ['an advisor'],
+      "affiliation_tesim" => ['SILS'],
       "date_issued_tesim" => ['a date'],
       "degree_tesim" => 'degree',
       "degree_granting_institution_tesim" => 'an institution',
@@ -57,6 +58,7 @@ RSpec.describe Hyrax::MastersPaperPresenter do
   it { is_expected.to delegate_method(:academic_concentration).to(:solr_document) }
   it { is_expected.to delegate_method(:access).to(:solr_document) }
   it { is_expected.to delegate_method(:advisor).to(:solr_document) }
+  it { is_expected.to delegate_method(:affiliation).to(:solr_document) }
   it { is_expected.to delegate_method(:date_issued).to(:solr_document) }
   it { is_expected.to delegate_method(:degree).to(:solr_document) }
   it { is_expected.to delegate_method(:degree_granting_institution).to(:solr_document) }
@@ -110,6 +112,17 @@ RSpec.describe Hyrax::MastersPaperPresenter do
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:academic_concentration)
+      end
+    end
+
+    context "with a custom affiliation field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:affiliation, ['SILS'], {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:affiliation)
       end
     end
 

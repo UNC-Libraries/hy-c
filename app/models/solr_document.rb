@@ -64,6 +64,10 @@ class SolrDocument
     self[Solrizer.solr_name('advisor')]
   end
 
+  def affiliation
+    self[Solrizer.solr_name('affiliation')]
+  end
+
   def alternative_title
     self[Solrizer.solr_name('alternative_title')]
   end

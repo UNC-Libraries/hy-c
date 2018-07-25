@@ -8,7 +8,7 @@ RSpec.describe AssignPermissionsToWorkJob, type: :job do
   let(:workflow) { Sipity::Workflow.create(name: 'a workflow', permission_template_id: permission_template.id, active: true)}
   let(:work) { HonorsThesis.create(title: ['a title'],
                                    depositor: 'admin@example.com',
-                                   academic_concentration: ['biology'],
+                                   affiliation: ['biology'],
                                    admin_set_id: admin_set.id,
                                    visibility: Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE) }
 

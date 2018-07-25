@@ -46,6 +46,7 @@ RSpec.describe Dissertation do
       expect(subject).to respond_to(:academic_concentration)
       expect(subject).to respond_to(:access)
       expect(subject).to respond_to(:advisor)
+      expect(subject).to respond_to(:affiliation)
       expect(subject).to respond_to(:alternative_title)
       expect(subject).to respond_to(:date_issued)
       expect(subject).to respond_to(:degree)

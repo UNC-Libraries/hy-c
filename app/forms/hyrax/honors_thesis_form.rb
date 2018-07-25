@@ -6,7 +6,7 @@ module Hyrax
 
     class_attribute :single_value_fields
 
-    self.terms += [:abstract, :academic_concentration, :access, :advisor, :alternative_title, :award, :date_issued,
+    self.terms += [:abstract, :academic_concentration, :access, :advisor, :affiliation, :alternative_title, :award, :date_issued,
                    :degree, :degree_granting_institution, :doi, :extent, :genre, :geographic_subject, :graduation_year, :note,
                    :use, :resource_type]
     self.terms -= [:based_near, :contributor, :description, :identifier, :publisher, :source]

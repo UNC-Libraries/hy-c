@@ -5,7 +5,7 @@ module Hyrax
     class_attribute :single_value_fields
     
     self.model_class = ::MastersPaper
-    self.terms += [:abstract, :academic_concentration, :access, :advisor, :date_issued, :degree,
+    self.terms += [:abstract, :academic_concentration, :access, :advisor, :affiliation, :date_issued, :degree,
                    :degree_granting_institution, :doi, :extent, :genre, :geographic_subject, :graduation_year, :medium, :note,
                    :reviewer, :use, :resource_type]
 

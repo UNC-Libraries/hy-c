@@ -39,6 +39,7 @@ RSpec.describe MastersPaper do
       expect(subject).to respond_to(:academic_concentration)
       expect(subject).to respond_to(:access)
       expect(subject).to respond_to(:advisor)
+      expect(subject).to respond_to(:affiliation)
       expect(subject).to respond_to(:date_issued)
       expect(subject).to respond_to(:degree)
       expect(subject).to respond_to(:degree_granting_institution)

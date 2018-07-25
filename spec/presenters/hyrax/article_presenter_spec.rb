@@ -15,6 +15,7 @@ RSpec.describe Hyrax::ArticlePresenter do
       "depositor_tesim" => user_key,
       "abstract_tesim" => ['an abstract'],
       "access_tesim" => 'public',
+      "affiliation_tesim" => ['SILS'],
       "bibliographic_citation_tesim" => ['a citation'],
       "copyright_date_tesim" => '2017-01-22',
       "date_captured_tesim" => '2017-01-22',
@@ -66,6 +67,7 @@ RSpec.describe Hyrax::ArticlePresenter do
 
   it { is_expected.to delegate_method(:abstract).to(:solr_document) }
   it { is_expected.to delegate_method(:access).to(:solr_document) }
+  it { is_expected.to delegate_method(:affiliation).to(:solr_document) }
   it { is_expected.to delegate_method(:bibliographic_citation).to(:solr_document) }
   it { is_expected.to delegate_method(:copyright_date).to(:solr_document) }
   it { is_expected.to delegate_method(:date_captured).to(:solr_document) }
@@ -132,6 +134,17 @@ RSpec.describe Hyrax::ArticlePresenter do
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:access)
+      end
+    end
+
+    context "with a custom affiliation field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:affiliation, ['SILS'], {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:affiliation)
       end
     end
 

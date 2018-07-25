@@ -7,7 +7,7 @@ module Hyrax
 
     self.model_class = ::General
 
-    self.terms += [:resource_type, :bibliographic_citation, :abstract, :academic_concentration, :access, :advisor,
+    self.terms += [:resource_type, :bibliographic_citation, :abstract, :academic_concentration, :access, :advisor, :affiliation,
                    :alternative_title, :arranger, :award, :composer, :conference_name, :copyright_date, :date_captured,
                    :date_issued, :date_other, :degree, :degree_granting_institution, :deposit_record, :discipline,
                    :doi, :edition, :extent, :funder, :genre, :geographic_subject, :graduation_year, :isbn, :issn,
