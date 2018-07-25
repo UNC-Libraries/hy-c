@@ -219,8 +219,8 @@ span.institution_name {
       max-height: 175px;
     }
 
-    .featured-author {
-      margin-bottom: 0;
+    .featured-author + p {
+      margin-top: -10px;
     }
   }
 
