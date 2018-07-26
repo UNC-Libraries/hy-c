@@ -4,6 +4,10 @@ RSpec.describe Hyrax::AdminSetSelectService do
   let(:service) { described_class }
 
   describe "#select" do
+    let(:admin_set) do
+      AdminSet.create(title: ['default'])
+    end
+
     before do
       DefaultAdminSet.create(work_type_name: 'HonorsThesis', admin_set_id: 'honors-thesis-id')
       DefaultAdminSet.create(work_type_name: 'MastersPaper',
@@ -15,7 +19,7 @@ RSpec.describe Hyrax::AdminSetSelectService do
     context "when only one select_option exists" do
       it "returns an admin set" do
         expect(service.select("HonorsThesis", nil,
-                              [['honors thesis', 'honors-thesis-id']])).to eq ['honors thesis', 'honors-thesis-id']
+                              [['honors thesis', 'honors-thesis-id']])).to eq 'honors-thesis-id'
       end
     end
 
@@ -25,7 +29,7 @@ RSpec.describe Hyrax::AdminSetSelectService do
                               [['default', 'default-id'], [
                                   'mediated', 'mediated-id'],
                                ['honors thesis', 'honors-thesis-id']]))
-            .to eq ['honors thesis', 'honors-thesis-id']
+            .to eq 'honors-thesis-id'
       end
     end
 
@@ -35,7 +39,7 @@ RSpec.describe Hyrax::AdminSetSelectService do
                               [['default', 'default-id'],
                                ['mediated', 'mediated-id'],
                                ['masters papers', 'masters-papers-id']]))
-            .to eq ['masters papers', 'masters-papers-id']
+            .to eq 'masters-papers-id'
       end
     end
 
@@ -45,17 +49,17 @@ RSpec.describe Hyrax::AdminSetSelectService do
                               [['default', 'default-id'],
                                ['mediated', 'mediated-id'],
                                ['masters papers', 'masters-papers-id']]))
-            .to eq ['mediated', 'mediated-id']
+            .to eq 'mediated-id'
       end
     end
 
     context "when no matches found" do
       before do
-        allow(ENV).to receive(:[]).with("DEFAULT_ADMIN_SET").and_return("default")
+        ENV['DEFAULT_ADMIN_SET']='default'
       end
       it "returns the default admin set" do
-        expect(service.select("HonorsThesis", nil, [['default', 'default-id'], ['mediated', 'mediated-id']]))
-            .to eq ['default', 'default-id']
+        expect(service.select("HonorsThesis", nil, [['default', admin_set.id], ['mediated', 'mediated-id']]))
+            .to eq admin_set.id
       end
     end
   end

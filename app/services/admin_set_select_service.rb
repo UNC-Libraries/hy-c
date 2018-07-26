@@ -11,15 +11,17 @@ class AdminSetSelectService
       default_admin_set = DefaultAdminSet.where(work_type_name: model, department: '')
     end
 
-    # Select default admin set for work type or use the system default admin set
+    # Select default admin set for work type
     admin_set_id = ''
-    if !default_admin_set.blank?
+    unless default_admin_set.blank?
       admin_set_id = default_admin_set.first.admin_set_id
-    else
-      admin_set_id = (AdminSet.where(title: ENV['DEFAULT_ADMIN_SET']).first || AdminSet.first).id
     end
 
-    # Return admin set id
-    admin_set_id
+    # Use work type's default if available
+    if select_options.find { |o| o.second.casecmp(admin_set_id).zero? }
+      admin_set_id
+    else
+      (AdminSet.where(title: ENV['DEFAULT_ADMIN_SET']).first || AdminSet.first).id
+    end
   end
 end
