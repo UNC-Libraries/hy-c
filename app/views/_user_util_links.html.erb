@@ -22,7 +22,7 @@
       </ul>
     </li><!-- /.btn-group -->
   <% else %>
-    <li>
+    <li data-turbolinks="false">
       <%= link_to main_app.new_user_session_path do %>
         <span class="glyphicon glyphicon-log-in" aria-hidden="true"></span> <%= t("hyrax.toolbar.profile.login") %>
       <% end %>

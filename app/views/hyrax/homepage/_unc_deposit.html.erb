@@ -6,7 +6,7 @@
       <div><%= t('hyrax.deposit.article') %></div>
     <% end %>
   </div>
-  <div class="col-sm-3 col-xs-6 unc-block">
+  <div class="col-sm-3 col-xs-6 unc-block" data-turbolinks="false">
     <% if user_signed_in? %>
       <%= link_to '#', id: 'student-papers-work-types',  data: { behavior: 'select-work', target: '#worktypes-to-create', 'create-type' => 'single' } do %>
         <i class="fa fa-graduation-cap fa-5x" aria-hidden="true"></i>
@@ -25,7 +25,7 @@
       <div><%= t('hyrax.deposit.dataset') %></div>
     <% end %>
   </div>
-  <div class="col-sm-3 col-xs-6 unc-block">
+  <div class="col-sm-3 col-xs-6 unc-block" data-turbolinks="false">
     <% if user_signed_in? %>
       <%= link_to  '#', class: 'all-unc-work-types', data: { behavior: 'select-work', target: '#worktypes-to-create', 'create-type' => 'single' } do %>
         <i class="fa fa-upload fa-5x" aria-hidden="true"></i>
