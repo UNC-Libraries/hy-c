@@ -8,21 +8,22 @@
     %>
   <% else %>
     <% if f.object.model.admin_set_id.blank? %>
-      <% admin_set_id = AdminSet.where(title: ENV['DEFAULT_ADMIN_SET']).first.id %>
+      <% admin_set_id = (AdminSet.where(title: ENV['DEFAULT_ADMIN_SET']).first || AdminSet.first).id %>
     <% else %>
       <% admin_set_id = f.object.model.admin_set_id %>
     <% end %>
   <% end %>
+
   <% if current_user.admin? %>
-  <%= f.input :admin_set_id, as: :select,
-              selected: admin_set_id,
-              include_blank: true,
-              collection: Hyrax::AdminSetOptionsPresenter.new(Hyrax::AdminSetService.new(controller)).select_options,
-              input_html: { class: 'form-control' } %>
+    <%= f.input :admin_set_id, as: :select,
+                selected: admin_set_id,
+                include_blank: true,
+                collection: Hyrax::AdminSetOptionsPresenter.new(Hyrax::AdminSetService.new(controller)).select_options,
+                input_html: { class: 'form-control' } %>
   <% else %>
-  <%= f.input :admin_set_id, as: :hidden,
-              input_html: { class: 'form-control', value: admin_set_id[1] },
-              readonly: true %>
+    <%= f.input :admin_set_id, as: :hidden,
+                input_html: { class: 'form-control', value: admin_set_id },
+                readonly: true %>
   <% end%>
 <% end %>
 
