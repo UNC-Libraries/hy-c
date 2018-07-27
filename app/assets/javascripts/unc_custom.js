@@ -34,7 +34,7 @@ $(function() {
 
 
     // Only show student paper options in modal when clicking "Student Papers" link on homepage
-    (function visibleForms() {
+    function visibleForms() {
         var all_work_types = $('form.new-work-select .select-worktype');
 
         $('#student-papers-work-types').on('click', function() {
@@ -48,5 +48,11 @@ $(function() {
         $('.all-unc-work-types').on('click', function() {
             all_work_types.removeClass('hidden');
         });
-    })();
+    }
+    visibleForms();
+
+    // Make sure that form visibility gets set after page changes
+    $(document).on('turbolinks:load', function() {
+      visibleForms();
+    });
 });
