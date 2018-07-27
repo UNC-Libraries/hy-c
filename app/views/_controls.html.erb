@@ -7,17 +7,10 @@
         <li <%= 'class=active' if current_page?(hyrax.root_path) %>>
           <%= link_to t(:'hyrax.links.departments'), main_app.facet_catalog_path(id: 'affiliation_sim') %></li>
           <li data-turbolinks="false">
-            <% if user_signed_in? %>
-              <%= link_to '#', class: 'all-unc-work-types',
-                             data: { behavior: 'select-work', target: '#worktypes-to-create', 'create-type' => 'single' } do %>
-                <i class="fa fa-arrow-circle-up" aria-hidden="true"></i>
-                <%= t('hyrax.links.deposit') %>
-              <% end %>
-            <% else %>
-              <%= link_to main_app.new_user_session_path do %>
-                <i class="fa fa-arrow-circle-up" aria-hidden="true"></i>
-                <%= t('hyrax.links.deposit') %>
-              <% end %>
+            <%= link_to '#', class: 'all-unc-work-types',
+                           data: { behavior: 'select-work', target: '#worktypes-to-create', 'create-type' => 'single' } do %>
+              <i class="fa fa-arrow-circle-up" aria-hidden="true"></i>
+              <%= t('hyrax.links.deposit') %>
             <% end %>
           </li>
       </ul><!-- /.nav -->
