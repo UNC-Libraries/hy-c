@@ -1,5 +1,7 @@
 class MastersPapersController < ApplicationController
 
+  before_action :authenticate_user!
+
   layout 'hyrax/dashboard'
 
   def department

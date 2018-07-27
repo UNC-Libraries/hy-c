@@ -8,7 +8,7 @@
       </div>
       <div class="modal-body">
         <% create_work_presenter.each do |row_presenter| %>
-          <% unless row_presenter.concern.to_s == 'Dissertation' && !current_user.admin? %>
+          <% if row_presenter.concern.to_s != 'Dissertation' || (current_user && current_user.admin?) %>
           <div class="select-worktype">
             <label>
               <% if row_presenter.concern.to_s == 'MastersPaper' %>
