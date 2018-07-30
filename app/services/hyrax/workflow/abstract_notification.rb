@@ -1,4 +1,4 @@
-# Overriding abstract notification service from gem
+# [hyc-override] Overriding abstract notification service from gem
 module Hyrax
   module Workflow
     class AbstractNotification

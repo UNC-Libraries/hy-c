@@ -1,4 +1,4 @@
-# [devise-override] Overriding omniauth callbacks for shibboleth integration
+# [hyc-override] Overriding omniauth callbacks in devise gem for shibboleth integration
 class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   def shibboleth
     #Rails.logger.debug "OmniauthCallbacksController#shibboleth: request.env['omniauth.auth']: #{request.env['omniauth.auth']}"
