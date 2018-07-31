@@ -1,4 +1,4 @@
-<%= f.input :language, as: :select,
+<%= f.input :language, as: :multi_value_select,
             collection: LanguagesService.select_all_options,
             include_blank: true,
             item_helper: LanguagesService.method(:include_current_value),

@@ -1,4 +1,6 @@
 terms:
+  - id: http://id.loc.gov/vocabulary/iso639-2/eng
+    term: English
   - id: http://id.loc.gov/vocabulary/iso639-2/aar
     term: Afar
   - id: http://id.loc.gov/vocabulary/iso639-2/abk
@@ -255,8 +257,6 @@ terms:
     term: Greek, Modern (1453-)
   - id: http://id.loc.gov/vocabulary/iso639-2/elx
     term: Elamite
-  - id: http://id.loc.gov/vocabulary/iso639-2/eng
-    term: English
   - id: http://id.loc.gov/vocabulary/iso639-2/enm
     term: English, Middle (1100-1500)
   - id: http://id.loc.gov/vocabulary/iso639-2/epo

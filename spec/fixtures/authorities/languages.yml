@@ -1,0 +1,7 @@
+terms:
+  - id: http://id.loc.gov/vocabulary/iso639-2/eng
+    term: English
+  - id: http://id.loc.gov/vocabulary/iso639-2/aar
+    term: Afar
+  - id: http://id.loc.gov/vocabulary/iso639-2/abk
+    term: Abkhazian
