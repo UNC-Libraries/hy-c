@@ -4,9 +4,9 @@
  */
 $(function() {
     // Add datepicker to date fields in forms
-    (function datePicking() {
+    function datePicking() {
         // Check for leading _ plus date, otherwise selects things like "update" too
-        var date_inputs = $('div.form-group input[id*="_date"]');
+        var date_inputs = $('div.form-group input[id*="_date"], div.form-group li.input-group input[name*="date"]');
         var datepicker_options = {
             dateFormat: 'yy-mm-dd',
             beforeShow: function(field) {
@@ -26,11 +26,15 @@ $(function() {
         }
 
         // Make sure datepicker works with turbolinks
-        $(document).on('turbolinks:load', function() {
-            date_inputs.datepicker('destroy');
-            date_inputs.datepicker(datepicker_options);
-        });
-    })();
+        date_inputs.datepicker('destroy');
+        date_inputs.datepicker(datepicker_options);
+    }
+
+    datePicking();
+    // Make sure datepicker works with turbolinks
+    $(document).on('turbolinks:load', function() {
+        datePicking();
+    });
 
 
     // Only show student paper options in modal when clicking "Student Papers" link on homepage
