@@ -43,7 +43,7 @@ class DataSet < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :genre, predicate: ::RDF::Vocab::EDM.hasType do |index|
+  property :genre, predicate: ::RDF::URI('http://purl.org/dc/terms/type') do |index|
     index.as :stored_searchable
   end
 
