@@ -83,7 +83,9 @@
                     "methods": [
                         "Hyrax::Workflow::MetadataOnlyRecord"
                     ]
-                }, {"name": "request_deletion",
+                }, {
+                    "name": "request_deletion",
+                    "_comment" : "This action is suppressed from default rendering with other review/approval actions",
                     "from_states": [{"names": ["deposited"], "roles": ["approving", "depositing"]}],
                     "transition_to": "pending_deletion",
                     "notifications": [
