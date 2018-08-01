@@ -3,11 +3,11 @@ require 'rails_helper'
 RSpec.describe AccountsController, type: :controller do
 
   let(:valid_attributes) {
-    {onyen: 'new_test_person1'}
+    {email: 'new_test_person1'}
   }
 
   let(:invalid_attributes) {
-    {onyen: 'admin'}
+    {email: 'admin'}
   }
 
   describe "GET #new" do
