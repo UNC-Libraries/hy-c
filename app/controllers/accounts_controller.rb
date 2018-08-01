@@ -7,7 +7,7 @@ class AccountsController < ApplicationController
   end
 
   def create
-    notice = create_user(account_params[:email])
+    notice = create_user(account_params[:email]).strip
 
     respond_to do |format|
       format.html { redirect_to hyrax.admin_users_path, notice: notice }
