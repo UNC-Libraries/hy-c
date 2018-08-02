@@ -81,7 +81,11 @@ module Hyrax
 
       def find_language(language)
         if @field.to_s == 'language'
-          LanguagesService.label(language)
+          begin
+            LanguagesService.label(language)
+          rescue KeyError
+            language
+          end
         else
           language
         end
