@@ -83,7 +83,7 @@ module Hyrax
         if @field.to_s == 'language'
           LanguagesService.label(language)
         else
-          value
+          language
         end
       end
 
