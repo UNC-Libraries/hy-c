@@ -23,7 +23,7 @@ RSpec.describe Hyrax::ArticleForm do
 
     it { is_expected.to eq [:keyword, :license, :rights_statement, :publisher, :date_created, :subject, :language,
                             :identifier, :resource_type, :abstract, :access, :affiliation, :bibliographic_citation, :copyright_date,
-                            :date_captured, :date_other, :doi, :edition, :extent, :funder, :genre, :geographic_subject,
+                            :date_captured, :date_other, :doi, :edition, :extent, :funder, :dcmi_type, :geographic_subject,
                             :issn, :journal_issue, :journal_title, :journal_volume, :note, :page_end, :page_start,
                             :peer_review_status, :place_of_publication, :rights_holder, :table_of_contents, :translator,
                             :url, :use] }
@@ -58,7 +58,7 @@ RSpec.describe Hyrax::ArticleForm do
           edition: 'an edition',
           extent: ['1993'],
           funder: ['dean'],
-          genre: ['science fiction'],
+          dcmi_type: ['science fiction'],
           geographic_subject: ['California'],
           issn: ['12345'],
           journal_issue: '27', # single-valued
@@ -104,7 +104,7 @@ RSpec.describe Hyrax::ArticleForm do
       expect(subject['edition']).to eq 'an edition'
       expect(subject['extent']).to eq ['1993']
       expect(subject['funder']).to eq ['dean']
-      expect(subject['genre']).to eq ['science fiction']
+      expect(subject['dcmi_type']).to eq ['science fiction']
       expect(subject['geographic_subject']).to eq ['California']
       expect(subject['issn']).to eq ['12345']
       expect(subject['journal_issue']).to eq '27'

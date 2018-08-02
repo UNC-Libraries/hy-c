@@ -6,7 +6,7 @@ module Hyrax
 
     self.model_class = ::ScholarlyWork
 
-    self.terms += [:resource_type, :abstract, :advisor, :conference_name, :date_issued, :doi, :genre, :geographic_subject]
+    self.terms += [:resource_type, :abstract, :advisor, :conference_name, :date_issued, :doi, :dcmi_type, :geographic_subject]
 
     self.terms -= [:contributor, :publisher, :identifier, :based_near, :related_url, :source]
 

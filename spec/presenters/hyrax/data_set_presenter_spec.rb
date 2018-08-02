@@ -23,7 +23,7 @@ RSpec.describe Hyrax::DataSetPresenter do
       "doi_tesim" => '12345',
       "extent_tesim" => ['1993'],
       "funder_tesim" => ['unc'],
-      "genre_tesim" => ['a genre'],
+      "dcmi_type_tesim" => ['a genre'],
       "geographic_subject_tesim" => ['California'],
       "kind_of_data_tesim" => ['some data'],
       "last_modified_date_tesim" => '2018-01-29',
@@ -58,7 +58,7 @@ RSpec.describe Hyrax::DataSetPresenter do
   it { is_expected.to delegate_method(:doi).to(:solr_document) }
   it { is_expected.to delegate_method(:extent).to(:solr_document) }
   it { is_expected.to delegate_method(:funder).to(:solr_document) }
-  it { is_expected.to delegate_method(:genre).to(:solr_document) }
+  it { is_expected.to delegate_method(:dcmi_type).to(:solr_document) }
   it { is_expected.to delegate_method(:geographic_subject).to(:solr_document) }
   it { is_expected.to delegate_method(:kind_of_data).to(:solr_document) }
   it { is_expected.to delegate_method(:last_modified_date).to(:solr_document) }
@@ -153,14 +153,14 @@ RSpec.describe Hyrax::DataSetPresenter do
     end
 
 
-    context "with a custom genre field" do
+    context "with a custom dcmi_type field" do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:genre, ['a genre'], {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:dcmi_type, ['a genre'], {}).and_return(renderer)
       end
 
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
-        presenter.attribute_to_html(:genre)
+        presenter.attribute_to_html(:dcmi_type)
       end
     end
 

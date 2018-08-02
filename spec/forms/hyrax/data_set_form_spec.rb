@@ -21,7 +21,7 @@ RSpec.describe Hyrax::DataSetForm do
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:abstract, :affiliation, :copyright_date, :doi, :extent, :funder, :genre,
+    it { is_expected.to match_array [:abstract, :affiliation, :copyright_date, :doi, :extent, :funder, :dcmi_type,
                                      :geographic_subject, :kind_of_data, :last_modified_date, :project_director,
                                      :researcher, :rights_holder, :sponsor, :language, :keyword, :related_url,
                                      :resource_type, :description, :license, :contributor, :date_created,
@@ -47,7 +47,7 @@ RSpec.describe Hyrax::DataSetForm do
           doi: '12345',
           extent: ['1993'],
           funder: ['dean'],
-          genre: ['science'],
+          dcmi_type: ['science'],
           geographic_subject: ['California'],
           kind_of_data: ['some data'],
           last_modified_date: '2018-01-23',

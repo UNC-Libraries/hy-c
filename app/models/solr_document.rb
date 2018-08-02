@@ -144,8 +144,8 @@ class SolrDocument
     self[Solrizer.solr_name('funder')]
   end
 
-  def genre
-    self[Solrizer.solr_name('genre')]
+  def dcmi_type
+    self[Solrizer.solr_name('dcmi_type')]
   end
 
   def geographic_subject

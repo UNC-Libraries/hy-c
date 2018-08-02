@@ -22,7 +22,7 @@ RSpec.describe Hyrax::DissertationForm do
     subject { form.secondary_terms }
 
     it { is_expected.to match_array [:abstract, :academic_concentration, :access, :advisor, :affiliation, :alternative_title,
-                                     :degree, :discipline, :doi, :genre, :geographic_subject, :graduation_year, :note,
+                                     :degree, :discipline, :doi, :dcmi_type, :geographic_subject, :graduation_year, :note,
                                      :place_of_publication, :reviewer, :use, :contributor, :identifier, :subject,
                                      :publisher, :language, :keyword, :rights_statement, :license, :resource_type] }
   end
@@ -56,7 +56,7 @@ RSpec.describe Hyrax::DissertationForm do
           degree_granting_institution: 'UNC', # single-valued
           discipline: ['a discipline'],
           doi: 'hi.org', # single-valued
-          genre: ['a genre'],
+          dcmi_type: ['a genre'],
           geographic_subject: ['a geographic subject'],
           graduation_year: '2017',
           note: [''],
@@ -93,7 +93,7 @@ RSpec.describe Hyrax::DissertationForm do
       expect(subject['degree_granting_institution']).to eq 'UNC'
       expect(subject['discipline']).to eq ['a discipline']
       expect(subject['doi']).to eq 'hi.org'
-      expect(subject['genre']).to eq ['a genre']
+      expect(subject['dcmi_type']).to eq ['a genre']
       expect(subject['geographic_subject']).to eq ['a geographic subject']
       expect(subject['graduation_year']).to eq '2017'
       expect(subject['note']).to be_empty

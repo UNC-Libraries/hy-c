@@ -7,7 +7,7 @@ module Hyrax
     self.model_class = ::DataSet
 
     self.terms += [:resource_type, :abstract, :affiliation, :copyright_date, :date_issued, :doi, :extent,
-                   :funder, :genre, :geographic_subject, :kind_of_data, :last_modified_date,
+                   :funder, :dcmi_type, :geographic_subject, :kind_of_data, :last_modified_date,
                    :project_director, :researcher, :rights_holder, :sponsor
     ]
 

@@ -21,7 +21,7 @@ RSpec.describe Hyrax::MultimedForm do
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:abstract, :date_created, :doi, :extent, :genre, :geographic_subject, :keyword,
+    it { is_expected.to match_array [:abstract, :date_created, :doi, :extent, :dcmi_type, :geographic_subject, :keyword,
                                      :language, :license, :note, :resource_type, :rights_statement, :subject] }
   end
 
@@ -40,7 +40,7 @@ RSpec.describe Hyrax::MultimedForm do
           abstract: ['an abstract'],
           doi: '12345',
           extent: ['1999'],
-          genre: ['food'],
+          dcmi_type: ['food'],
           geographic_subject: ['Italy'],
           keyword: ['multimed'],
       )
@@ -62,7 +62,7 @@ RSpec.describe Hyrax::MultimedForm do
       expect(subject['date_created']).to eq ['2018-01-09']
       expect(subject['doi']).to eq '12345'
       expect(subject['extent']).to eq ['1999']
-      expect(subject['genre']).to eq ['food']
+      expect(subject['dcmi_type']).to eq ['food']
       expect(subject['geographic_subject']).to eq ['Italy']
     end
 

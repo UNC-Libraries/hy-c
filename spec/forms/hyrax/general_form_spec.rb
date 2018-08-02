@@ -27,7 +27,7 @@ RSpec.describe Hyrax::GeneralForm do
                                      :advisor, :affiliation, :alternative_title, :arranger, :award, :composer, :conference_name,
                                      :copyright_date, :date_captured, :date_issued, :date_other, :degree,
                                      :degree_granting_institution, :discipline, :doi, :edition,
-                                     :extent, :funder, :genre, :geographic_subject, :graduation_year, :isbn, :issn,
+                                     :extent, :funder, :dcmi_type, :geographic_subject, :graduation_year, :isbn, :issn,
                                      :journal_issue, :journal_title, :journal_volume, :kind_of_data,
                                      :last_modified_date, :medium, :note, :page_start, :page_end, :peer_review_status,
                                      :place_of_publication, :project_director, :researcher, :reviewer, :rights_holder,
@@ -79,7 +79,7 @@ RSpec.describe Hyrax::GeneralForm do
           edition: 'an edition',
           extent: ['1993'],
           funder: ['dean'],
-          genre: ['a genre'],
+          dcmi_type: ['a genre'],
           geographic_subject: ['California'],
           graduation_year: '2018', # single-valued
           isbn: ['123456'],
@@ -150,7 +150,7 @@ RSpec.describe Hyrax::GeneralForm do
       expect(subject['edition']).to eq 'an edition'
       expect(subject['extent']).to eq ['1993']
       expect(subject['funder']).to eq ['dean']
-      expect(subject['genre']).to eq ['a genre']
+      expect(subject['dcmi_type']).to eq ['a genre']
       expect(subject['geographic_subject']).to eq ['California']
       expect(subject['graduation_year']).to eq '2018'
       expect(subject['isbn']).to eq ['123456']
