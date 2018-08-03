@@ -1,12 +1,13 @@
 /**
  * Grouped into functional units for easier grouping of code
- * Each function is self executing
  */
 $(function() {
+    var date_field = 'div[class*="date"] input, input[class*="date"]';
+
     // Add datepicker to date fields in forms
     function datePicking() {
         // Check for leading _ plus date, otherwise selects things like "update" too
-        var date_inputs = $('div.form-group input[id*="_date"], div.form-group li.input-group input[name*="date"]');
+        var date_inputs = $(date_field);
         var datepicker_options = {
             dateFormat: 'yy-mm-dd',
             beforeShow: function(field) {
@@ -25,17 +26,16 @@ $(function() {
             datepicker_options['maxDate'] = '+0D';
         }
 
-        // Make sure datepicker works with turbolinks
-        date_inputs.datepicker('destroy');
-        date_inputs.datepicker(datepicker_options);
+        // Ensure each date field has a unique id so cloned date fields select the right input
+        date_inputs.each(function(index) {
+            var self = $(this);
+            var updated_id = self.attr('id') + '-' + index;
+
+            self.attr('id', updated_id);
+            self.removeClass('hasDatepicker');
+            $('#' + updated_id).datepicker(datepicker_options);
+        });
     }
-
-    datePicking();
-    // Make sure datepicker works with turbolinks
-    $(document).on('turbolinks:load', function() {
-        datePicking();
-    });
-
 
     // Only show student paper options in modal when clicking "Student Papers" link on homepage
     function visibleForms() {
@@ -53,10 +53,17 @@ $(function() {
             all_work_types.removeClass('hidden');
         });
     }
+
     visibleForms();
 
-    // Make sure that form visibility gets set after page changes
+    // Make sure that datepicker works with cloned date fields
+    $(document).on('focus', date_field, function() {
+        datePicking();
+    });
+
+    // Make sure that form visibility and datepicker work with turbolinks
     $(document).on('turbolinks:load', function() {
-      visibleForms();
+        datePicking();
+        visibleForms();
     });
 });
