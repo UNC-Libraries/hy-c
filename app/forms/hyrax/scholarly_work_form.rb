@@ -12,15 +12,11 @@ module Hyrax
 
     self.required_fields = [:title, :creator, :date_created]
 
-    self.single_value_fields = [:title, :date_created, :license, :rights_statement]
+    self.single_value_fields = [:title, :license, :rights_statement]
 
     # Add overrides for required properties which are becoming single-valued
 
     def title
-      super.first || ""
-    end
-
-    def date_created
       super.first || ""
     end
 
