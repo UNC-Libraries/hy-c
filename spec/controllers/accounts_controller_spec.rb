@@ -10,7 +10,7 @@ RSpec.describe AccountsController, type: :controller do
     {email: 'admin'}
   }
 
-  describe "GET #new" do
+  describe "GET #new as admin" do
     before do
       allow(controller).to receive(:authorize!).with(:read, :admin_dashboard).and_return(true)
     end
@@ -21,7 +21,15 @@ RSpec.describe AccountsController, type: :controller do
     end
   end
 
-  describe "POST #create" do
+  describe "GET #new as non-admin" do
+    it "redirects to sign in page" do
+      get :new
+      expect(response).to have_http_status(:redirect)
+      expect(response.header['Location']).to eq 'http://test.host/users/sign_in?locale=en'
+    end
+  end
+
+  describe "POST #create as admin" do
     before do
       allow(controller).to receive(:authorize!).with(:read, :admin_dashboard).and_return(true)
     end
@@ -44,6 +52,14 @@ RSpec.describe AccountsController, type: :controller do
         post :create, params: {account: invalid_attributes}
         expect(response).to redirect_to('/admin/users?locale=en')
       end
+    end
+  end
+
+  describe "POST #create as non-admin" do
+    it "redirects to sign in page" do
+      post :create, params: {account: valid_attributes}
+      expect(response).to have_http_status(:redirect)
+      expect(response.header['Location']).to eq 'http://test.host/users/sign_in?locale=en'
     end
   end
 end
