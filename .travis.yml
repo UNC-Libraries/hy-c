@@ -39,3 +39,4 @@ env:
     - HYRAX_HOST='http://example.com'
     - EMAIL_FROM_ADDRESS='hyraxapp@example.com'
     - DATABASE_AUTH=true
+    - DATA_STORAGE=./public
