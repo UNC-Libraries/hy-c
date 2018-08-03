@@ -77,7 +77,7 @@ RSpec.describe Hyrax::DataSetForm do
       expect(subject['doi']).to eq '12345'
       expect(subject['extent']).to eq ['1993']
       expect(subject['funder']).to eq ['dean']
-      expect(subject['genre']).to eq ['science']
+      expect(subject['dcmi_type']).to eq ['science']
       expect(subject['geographic_subject']).to eq ['California']
       expect(subject['kind_of_data']).to eq ['some data']
       expect(subject['last_modified_date']).to eq '2018-01-23'
