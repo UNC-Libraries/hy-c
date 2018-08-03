@@ -10,6 +10,9 @@ class General < ActiveFedora::Base
 
   self.human_readable_type = 'General'
 
+  before_save :index_advisor_names
+
+
   property :abstract, predicate: ::RDF::Vocab::DC.abstract do |index|
     index.as :stored_searchable
   end
@@ -22,9 +25,7 @@ class General < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :advisor, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/ths') do |index|
-    index.as :stored_searchable, :facetable
-  end
+  property :advisor, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/ths'), class_name: 'Person'
 
   property :affiliation, predicate: ::RDF::Vocab::SCHEMA.affiliation do |index|
     index.as :stored_searchable
@@ -236,7 +237,26 @@ class General < ActiveFedora::Base
   end
 
 
+  def index_advisor_names
+    return unless advisor && advisor.first
+    advisor_names << advisor.map { |e| e.name.first }
+    self.advisor_names = advisor.map { |e| e.name.first }
+  end
+
   # This must be included at the end, because it finalizes the metadata
   # schema (by adding accepts_nested_attributes)
   include ::Hyrax::BasicMetadata
+
+  # accepts_nested_attributes_for can not be called until all
+  # the properties are declared because it calls resource_class,
+  # which finalizes the property declarations.
+  # See https://github.com/projecthydra/active_fedora/issues/847
+  accepts_nested_attributes_for :advisor,
+                                allow_destroy: true,
+                                reject_if: proc { |attrs|
+                                  ['name', 'affiliation', 'netid'].all? do |key|
+                                    Array(attrs[key]).all?(&:blank?)
+                                  end
+                                }
+
 end

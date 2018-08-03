@@ -37,5 +37,27 @@ module Hyrax
     def rights_statement
       super.first || ""
     end
+   
+    # In the view we have "fields_for :advisor".
+    # This method is needed to make fields_for behave as an
+    # association and populate the form with the correct
+    # committee member data.
+    delegate :advisor_attributes=, to: :model
+
+    # We need to call ".to_a" on advisor to force it
+    # to resolve.  Otherwise in the form, the fields don't
+    # display the advisor's name and affiliation.
+    # Instead they display something like:
+    # "#<ActiveTriples::Relation:0x007fb564969c88>"
+    def advisor
+      model.advisor.build if model.advisor.blank?
+      model.advisor.to_a
+    end
+
+    def self.build_permitted_params
+      permitted = super
+      permitted << { advisor_attributes: [:id, { name: [] }, { affiliation: [] }, { netid: [] }, :_destroy] }
+      permitted
+    end
   end
 end
