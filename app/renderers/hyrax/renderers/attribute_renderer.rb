@@ -60,6 +60,18 @@ module Hyrax
         )
       end
 
+      def find_language(language)
+        if not /iso639-2/.match(language).nil?
+          begin
+            LanguagesService.label(language)
+          rescue KeyError
+            language
+          end
+        else
+          language
+        end
+      end
+
       private
 
         def attribute_value_to_html(value)
@@ -77,18 +89,6 @@ module Hyrax
             buffer << %(="#{v}") if v.present?
           end
           buffer
-        end
-
-        def find_language(language)
-          if @field.to_s == 'language'
-            begin
-              LanguagesService.label(language)
-            rescue KeyError
-              language
-            end
-          else
-            language
-          end
         end
 
         def li_value(value)
