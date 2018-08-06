@@ -20,6 +20,9 @@ module Hyrax
     self.terms -= [:based_near, :source]
 
     self.single_value_fields = [:title, :license, :rights_statement]
+    
+    self.suppressed_terms = [:dcmi_type]
+    self.fixed_term_values = { :dcmi_type => [] }
 
     # Add overrides for required properties which are becoming single-valued
 

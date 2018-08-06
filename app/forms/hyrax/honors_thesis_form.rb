@@ -12,6 +12,9 @@ module Hyrax
     self.terms -= [:based_near, :contributor, :description, :identifier, :publisher, :source]
     self.required_fields = [:title, :creator, :degree_granting_institution, :date_created]
     self.single_value_fields = [:title, :license, :rights_statement]
+    
+    self.suppressed_terms = [:dcmi_type]
+    self.fixed_term_values = { :dcmi_type => ["http://purl.org/dc/dcmitype/Text"] }
 
     # Add overrides for required properties which are becoming single-valued
 
