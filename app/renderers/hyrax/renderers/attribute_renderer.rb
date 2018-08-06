@@ -53,52 +53,52 @@ module Hyrax
       #   name. Can be overridden if more complicated logic is needed.
       def label
         translate(
-            :"blacklight.search.fields.#{work_type_label_key}.show.#{field}",
-            default: [:"blacklight.search.fields.show.#{field}",
-                      :"blacklight.search.fields.#{field}",
-                      options.fetch(:label, field.to_s.humanize)]
+          :"blacklight.search.fields.#{work_type_label_key}.show.#{field}",
+          default: [:"blacklight.search.fields.show.#{field}",
+                    :"blacklight.search.fields.#{field}",
+                    options.fetch(:label, field.to_s.humanize)]
         )
       end
 
       private
 
-      def attribute_value_to_html(value)
-        if microdata_value_attributes(field).present?
-          "<span#{html_attributes(microdata_value_attributes(field))}>#{li_value(value)}</span>"
-        else
-          li_value(value)
+        def attribute_value_to_html(value)
+          if microdata_value_attributes(field).present?
+            "<span#{html_attributes(microdata_value_attributes(field))}>#{li_value(value)}</span>"
+          else
+            li_value(value)
+          end
         end
-      end
 
-      def html_attributes(attributes)
-        buffer = ""
-        attributes.each do |k, v|
-          buffer << " #{k}"
-          buffer << %(="#{v}") if v.present?
+        def html_attributes(attributes)
+          buffer = ""
+          attributes.each do |k, v|
+            buffer << " #{k}"
+            buffer << %(="#{v}") if v.present?
+          end
+          buffer
         end
-        buffer
-      end
 
-      def find_language(language)
-        if @field.to_s == 'language'
-          begin
-            LanguagesService.label(language)
-          rescue KeyError
+        def find_language(language)
+          if @field.to_s == 'language'
+            begin
+              LanguagesService.label(language)
+            rescue KeyError
+              language
+            end
+          else
             language
           end
-        else
-          language
         end
-      end
 
-      def li_value(value)
-        field_value = find_language(value)
-        auto_link(ERB::Util.h(field_value))
-      end
+        def li_value(value)
+          field_value = find_language(value)
+          auto_link(ERB::Util.h(field_value))
+        end
 
-      def work_type_label_key
-        options[:work_type] ? options[:work_type].underscore : nil
-      end
+        def work_type_label_key
+          options[:work_type] ? options[:work_type].underscore : nil
+        end
     end
   end
 end
