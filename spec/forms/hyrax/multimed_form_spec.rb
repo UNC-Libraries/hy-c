@@ -64,7 +64,7 @@ RSpec.describe Hyrax::MultimedForm do
       expect(subject['note']).to eq ['a note']
       expect(subject['keyword']).to eq ['multimed']
       expect(subject['abstract']).to eq ['an abstract']
-      expect(subject['date_created']).to eq ['2018-01-09']
+      expect(subject['date_created']).to eq '2018-01-09'
       expect(subject['doi']).to eq '12345'
       expect(subject['extent']).to eq ['1999']
       expect(subject['dcmi_type']).to be_empty

@@ -63,7 +63,7 @@ RSpec.describe Hyrax::ScholarlyWorkForm do
     it 'permits parameters' do
       expect(subject['title']).to eq ['foo']
       expect(subject['creator']).to eq ['someone@example.com']
-      expect(subject['date_created']).to eq ['a date']
+      expect(subject['date_created']).to eq 'a date'
       expect(subject['description']).to eq ['a description']
       expect(subject['doi']).to eq '12345'
       expect(subject['subject']).to eq ['a subject']

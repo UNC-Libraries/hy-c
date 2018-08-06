@@ -88,7 +88,7 @@ RSpec.describe Hyrax::ArticleForm do
       expect(subject['title']).to eq ['foo']
       expect(subject['bibliographic_citation']).to eq ['a citation']
       expect(subject['creator']).to eq ['a creator']
-      expect(subject['date_created']).to eq ['2017-01-22']
+      expect(subject['date_created']).to eq '2017-01-22'
       expect(subject['language']).to eq ['a language']
       expect(subject['publisher']).to eq ['a publisher']
       expect(subject['resource_type']).to eq ['a type']

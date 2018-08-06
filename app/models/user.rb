@@ -1,3 +1,4 @@
+# [hyc-override] Overriding user model to allow shibboleth integration
 class User < ApplicationRecord
   # Connects this user object to Hydra behaviors.
   include Hydra::User
