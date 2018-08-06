@@ -15,15 +15,11 @@ module Hyrax
 
     self.terms -= [:contributor, :based_near, :related_url, :source, :description]
     
-    self.single_value_fields = [:title, :date_created, :license, :rights_statement]
+    self.single_value_fields = [:title, :license, :rights_statement]
 
     # Add overrides for required properties which are becoming single-valued
 
     def title
-      super.first || ""
-    end
-
-    def date_created
       super.first || ""
     end
 

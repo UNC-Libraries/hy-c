@@ -44,7 +44,7 @@ describe "rake cdr:migration:items", type: :task do
     expect(new_article['depositor']).to eq 'admin@example.com'
     expect(new_article['title']).to match_array ['Les Miserables']
     expect(new_article['label']).to eq 'Les Miserables'
-    expect(new_article['date_created']).to match_array ['2017-10-02']
+    expect(new_article['date_created']).to eq '2017-10-02'
     expect(new_article['date_modified']).to eq '2017-10-02'
     expect(new_article['creator']).to match_array ['Hugo, Victor']
     expect(new_article['contributor']).to match_array ['Hugo, Victor']

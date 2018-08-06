@@ -72,7 +72,7 @@ RSpec.describe Hyrax::DataSetForm do
       expect(subject['abstract']).to eq ['an abstract']
       expect(subject['affiliation']).to eq ['SILS']
       expect(subject['copyright_date']).to eq '2017-12-25'
-      expect(subject['date_created']).to eq ['2017-04-02']
+      expect(subject['date_created']).to eq '2017-04-02'
       expect(subject['date_issued']).to eq '2018-01-08'
       expect(subject['doi']).to eq '12345'
       expect(subject['extent']).to eq ['1993']

@@ -41,7 +41,7 @@ RSpec.describe Hyrax::GeneralForm do
           bibliographic_citation: ['a citation'],
           contributor: ['a contributor'],
           creator: ['a creator'],
-          date_created: ['2017-01-22'],
+          date_created: '2017-01-22',
           deposit_record: 'uuid:1234',
           identifier: ['an identifier'],
           language: ['a language'],
@@ -114,7 +114,7 @@ RSpec.describe Hyrax::GeneralForm do
       expect(subject['title']).to eq ['foo']
       expect(subject['bibliographic_citation']).to eq ['a citation']
       expect(subject['contributor']).to eq ['a contributor']
-      expect(subject['date_created']).to eq ['2017-01-22']
+      expect(subject['date_created']).to eq '2017-01-22'
       expect(subject['deposit_record']).to eq 'uuid:1234'
       expect(subject['identifier']).to eq ['an identifier']
       expect(subject['language']).to eq ['a language']
