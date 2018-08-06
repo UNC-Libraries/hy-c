@@ -2,12 +2,13 @@
  * Grouped into functional units for easier grouping of code
  */
 $(function() {
-    var date_field = 'div[class*="date"] input, input[class*="date"]';
+    // Check for leading _ plus date, otherwise selects things like "update" too
+    var date_field = 'div[class*="_date"] input, input[class*="_date"]';
 
     // Add datepicker to date fields in forms
     function datePicking() {
-        // Check for leading _ plus date, otherwise selects things like "update" too
-        var date_inputs = $(date_field);
+        // Remove embargo date field
+        var date_inputs = $(date_field).not('input[type=date]');
         var datepicker_options = {
             dateFormat: 'yy-mm-dd',
             beforeShow: function(field) {
@@ -29,7 +30,8 @@ $(function() {
         // Ensure each date field has a unique id so cloned date fields select the right input
         date_inputs.each(function(index) {
             var self = $(this);
-            var updated_id = self.attr('id') + '-' + index;
+            var current_id = self.attr('id').split(/-\d{1,}$/);
+            var updated_id = current_id[0] + '-' + index;
 
             self.attr('id', updated_id);
             self.removeClass('hasDatepicker');
