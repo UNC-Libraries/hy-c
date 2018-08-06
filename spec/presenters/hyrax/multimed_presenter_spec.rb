@@ -18,7 +18,6 @@ RSpec.describe Hyrax::MultimedPresenter do
       "deposit_record_tesim" => 'a deposit record',
       "doi_tesim" => '12345',
       "extent_tesim" => ['1999'],
-      "dcmi_type_tesim" => ['a genre'],
       "geographic_subject_tesim" => ['Italy'],
       "note_tesim" => ['a note'],
       "resource_type_tesim" => ['a type'],
@@ -42,7 +41,6 @@ RSpec.describe Hyrax::MultimedPresenter do
   it { is_expected.to delegate_method(:deposit_record).to(:solr_document) }
   it { is_expected.to delegate_method(:extent).to(:solr_document) }
   it { is_expected.to delegate_method(:doi).to(:solr_document) }
-  it { is_expected.to delegate_method(:dcmi_type).to(:solr_document) }
   it { is_expected.to delegate_method(:geographic_subject).to(:solr_document) }
   it { is_expected.to delegate_method(:note).to(:solr_document) }
 
@@ -107,17 +105,6 @@ RSpec.describe Hyrax::MultimedPresenter do
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:extent)
-      end
-    end
-
-    context "with a custom dcmi_type field" do
-      before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:dcmi_type, ['a genre'], {}).and_return(renderer)
-      end
-
-      it "calls the AttributeRenderer" do
-        expect(renderer).to receive(:render)
-        presenter.attribute_to_html(:dcmi_type)
       end
     end
 

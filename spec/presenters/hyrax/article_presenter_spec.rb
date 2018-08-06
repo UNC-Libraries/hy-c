@@ -27,7 +27,6 @@ RSpec.describe Hyrax::ArticlePresenter do
       "edition_tesim" => 'new edition',
       "extent_tesim" => ['1993'],
       "funder_tesim" => ['dean'],
-      "dcmi_type_tesim" => ['science fiction'],
       "geographic_subject_tesim" => ['California'],
       "issn_tesim" => ['12345'],
       "journal_issue_tesim" => '27',
@@ -78,7 +77,6 @@ RSpec.describe Hyrax::ArticlePresenter do
   it { is_expected.to delegate_method(:edition).to(:solr_document) }
   it { is_expected.to delegate_method(:extent).to(:solr_document) }
   it { is_expected.to delegate_method(:funder).to(:solr_document) }
-  it { is_expected.to delegate_method(:dcmi_type).to(:solr_document) }
   it { is_expected.to delegate_method(:geographic_subject).to(:solr_document) }
   it { is_expected.to delegate_method(:issn).to(:solr_document) }
   it { is_expected.to delegate_method(:journal_issue).to(:solr_document) }
@@ -255,17 +253,6 @@ RSpec.describe Hyrax::ArticlePresenter do
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:funder)
-      end
-    end
-
-    context "with a custom genre field" do
-      before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:dcmi_type, ['science fiction'], {}).and_return(renderer)
-      end
-
-      it "calls the AttributeRenderer" do
-        expect(renderer).to receive(:render)
-        presenter.attribute_to_html(:dcmi_type)
       end
     end
 

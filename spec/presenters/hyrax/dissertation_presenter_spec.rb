@@ -28,7 +28,6 @@ RSpec.describe Hyrax::DissertationPresenter do
       "deposit_record_tesim" => 'a deposit record',
       "discipline_tesim" => ['a discipline'],
       "doi_tesim" => ['a doi'],
-      "dcmi_type_tesim" => ['a genre'],
       "geographic_subject_tesim" => ['a geographic subject'],
       "graduation_year_tesim" => ['a year'],
       "note_tesim" => ['a note'],
@@ -70,7 +69,6 @@ RSpec.describe Hyrax::DissertationPresenter do
   it { is_expected.to delegate_method(:deposit_record).to(:solr_document) }
   it { is_expected.to delegate_method(:discipline).to(:solr_document) }
   it { is_expected.to delegate_method(:doi).to(:solr_document) }
-  it { is_expected.to delegate_method(:dcmi_type).to(:solr_document) }
   it { is_expected.to delegate_method(:geographic_subject).to(:solr_document) }
   it { is_expected.to delegate_method(:graduation_year).to(:solr_document) }
   it { is_expected.to delegate_method(:note).to(:solr_document) }
@@ -238,17 +236,6 @@ RSpec.describe Hyrax::DissertationPresenter do
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:doi)
-      end
-    end
-
-    context "with a custom dcmi_type field" do
-      before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:dcmi_type, ['a genre'], {}).and_return(renderer)
-      end
-
-      it "calls the AttributeRenderer" do
-        expect(renderer).to receive(:render)
-        presenter.attribute_to_html(:dcmi_type)
       end
     end
 
