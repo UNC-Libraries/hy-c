@@ -1,3 +1,4 @@
+# [hyc-override] Overriding presenter in hyrax gem to update homepage
 module Hyrax
   class HomepagePresenter
     class_attribute :create_work_presenter_class

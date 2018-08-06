@@ -1,3 +1,4 @@
+# [hyc-override] Overriding work form in hyrax gem to allow default fields to be singular
 class SingleValueForm < Hyrax::Forms::WorkForm
 
   def self.multiple?(field)

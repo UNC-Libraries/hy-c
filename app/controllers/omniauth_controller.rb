@@ -1,5 +1,5 @@
 require 'cgi'
-# [devise-override] Overriding sessions controller to trigger shibboleth logout
+# [hyc-override] Overriding sessions controller in devise gem to trigger shibboleth logout
 class OmniauthController < Devise::SessionsController
   def new
     # Rails.logger.debug "SessionsController#new: request.referer = #{request.referer}"
