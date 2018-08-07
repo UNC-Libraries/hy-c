@@ -8,3 +8,9 @@ en:
         description:        "Deposit a complete issue of a scholarly journal, newsletter or book.  If you would like to
                             deposit an article or book chapter, use the “Scholarly Articles and Book Chapters” deposit
                             option."
+  simple_form:
+    labels:
+      journal:
+        creator: "Author"
+        date_issued: "Date of Publication"
+        related_url: "Related Resource Url"
