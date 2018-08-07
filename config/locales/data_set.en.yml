@@ -1,8 +1,16 @@
 en:
   hyrax:
+    deposit:
+
     icons:
       data_set:     'fa fa-file-text-o'
     select_type:
       data_set:
         name:               "Datasets"
         description:        "Deposit your dataset.  Datasets may be associated with an article or deposited separately."
+  simple_form:
+    labels:
+      data_set:
+        date_issued: "Date of Publication"
+        description: "Methods"
+        related_url: "Related Resource Url"
