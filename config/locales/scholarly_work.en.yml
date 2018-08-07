@@ -8,3 +8,8 @@ en:
         description:        "Deposit scholarly works such as posters, presentations, conference papers or white papers.
                             If you would like to deposit a peer-reviewed article or book chapter, use the “Scholarly
                             Articles and Book Chapters” deposit option."
+  simple_form:
+    labels:
+      scholarly_work:
+        date_issued: "Date of Publication"
+        related_url: "Related Resource Url"
