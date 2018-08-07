@@ -1,7 +1,7 @@
 # app/services/concentrations_service.rb
-module ConcentrationsService
+module AcademicConcentrationService
   mattr_accessor :authority
-  self.authority = Qa::Authorities::Local.subauthority_for('concentrations')
+  self.authority = Qa::Authorities::Local.subauthority_for('academic_concentration')
 
   def self.select_all_options
     authority.all.reject{ |item| item['active'] == false }.map do |element|
