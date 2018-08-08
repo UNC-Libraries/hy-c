@@ -49,7 +49,7 @@ module Hyrax
     # display the advisor's name and affiliation.
     # Instead they display something like:
     # "#<ActiveTriples::Relation:0x007fb564969c88>"
-    def advisor
+    def advisors
       model.advisor.build if model.advisor.blank?
       model.advisor.to_a
     end

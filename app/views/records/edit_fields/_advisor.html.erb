@@ -1,11 +1,11 @@
-<div class="confirm_well col-sm-12 no-advisors">
-  <div class="checkbox well">
-    <label class="boolean optional" for="etd_no_advisors">
-      <span class="sr-only">Warning:</span>
-      <%= f.input :no_advisors, as: :boolean, label: "I do not have advisors.", input_html: { id: 'no_advisors' } %>
-    </label>
-  </div>
-</div>
+<!--<div class="confirm_well col-sm-12 no-advisors">-->
+  <!--<div class="checkbox well">-->
+    <!--<label class="boolean optional" for="etd_no_advisors">-->
+      <!--<span class="sr-only">Warning:</span>-->
+      <!--< %= f.input :no_advisors, as: :boolean, label: "I do not have advisors.", input_html: { id: 'no_advisors' } %>-->
+    <!--</label>-->
+  <!--</div>-->
+<!--</div>-->
 <%= f.fields_for :advisors, @form.advisors do |cm| %>
   <div class="advisor row">
 
