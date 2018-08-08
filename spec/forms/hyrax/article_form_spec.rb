@@ -9,20 +9,20 @@ RSpec.describe Hyrax::ArticleForm do
   describe "#required_fields" do
     subject { form.required_fields }
 
-    it { is_expected.to eq [:title, :creator, :date_issued] }
+    it { is_expected.to eq [:title, :creator, :abstract, :date_issued] }
   end
 
   describe "#primary_terms" do
     subject { form.primary_terms }
 
-    it { is_expected.to eq [:title, :creator, :date_issued] }
+    it { is_expected.to eq [:title, :creator, :abstract, :date_issued] }
   end
 
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
     it { is_expected.to eq [:keyword, :license, :rights_statement, :publisher, :date_created, :subject, :language,
-                            :identifier, :resource_type, :abstract, :access, :affiliation, :bibliographic_citation, :copyright_date,
+                            :identifier, :resource_type, :access, :affiliation, :bibliographic_citation, :copyright_date,
                             :date_captured, :date_other, :doi, :edition, :extent, :funder, :genre, :geographic_subject,
                             :issn, :journal_issue, :journal_title, :journal_volume, :note, :page_end, :page_start,
                             :peer_review_status, :place_of_publication, :rights_holder, :table_of_contents, :translator,

@@ -9,20 +9,20 @@ RSpec.describe Hyrax::MultimedForm do
   describe "#required_fields" do
     subject { form.required_fields }
 
-    it { is_expected.to match_array [:title, :creator] }
+    it { is_expected.to match_array [:title, :creator, :abstract, :resource_type] }
   end
 
   describe "#primary_terms" do
     subject { form.primary_terms }
 
-    it { is_expected.to match_array [:title, :creator] }
+    it { is_expected.to match_array [:title, :creator, :abstract, :resource_type] }
   end
 
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:abstract, :date_created, :doi, :extent, :genre, :geographic_subject, :keyword,
-                                     :language, :license, :note, :resource_type, :rights_statement, :subject] }
+    it { is_expected.to match_array [:date_created, :doi, :extent, :genre, :geographic_subject, :keyword,
+                                     :language, :license, :note,  :rights_statement, :subject] }
   end
 
   describe ".model_attributes" do
