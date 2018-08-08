@@ -7,11 +7,11 @@ module Hyrax
     self.model_class = ::Journal
 
     self.terms += [:abstract, :alternative_title, :date_issued, :doi, :extent, :genre, :geographic_subject, :issn, :note,
-                  :place_of_publication, :table_of_contents, :resource_type]
+                  :place_of_publication, :publisher, :table_of_contents, :resource_type]
 
     self.terms -= [:description, :based_near, :related_url, :identifier, :contributor, :source, :date_created]
 
-    self.required_fields = [:title, :date_issued]
+    self.required_fields = [:title, :date_issued, :publisher]
 
     self.single_value_fields = [:title, :license, :rights_statement]
 

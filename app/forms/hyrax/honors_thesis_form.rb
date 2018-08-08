@@ -10,7 +10,8 @@ module Hyrax
                    :degree, :degree_granting_institution, :doi, :extent, :genre, :geographic_subject, :graduation_year, :note,
                    :use, :resource_type]
     self.terms -= [:based_near, :contributor, :description, :identifier, :publisher, :source]
-    self.required_fields = [:title, :creator, :degree_granting_institution, :date_created]
+    self.required_fields = [:title, :abstract, :academic_concentration, :advisor, :creator,
+                            :degree, :date_created, :graduation_year]
     self.single_value_fields = [:title, :license, :rights_statement]
 
     # Add overrides for required properties which are becoming single-valued

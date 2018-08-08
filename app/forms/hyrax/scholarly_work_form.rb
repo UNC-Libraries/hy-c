@@ -10,7 +10,7 @@ module Hyrax
 
     self.terms -= [:contributor, :publisher, :identifier, :based_near, :related_url, :source]
 
-    self.required_fields = [:title, :creator, :date_created]
+    self.required_fields = [:title, :creator, :abstract, :date_issued]
 
     self.single_value_fields = [:title, :license, :rights_statement]
 

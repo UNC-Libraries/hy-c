@@ -11,7 +11,7 @@ module Hyrax
                    :project_director, :researcher, :rights_holder, :sponsor
     ]
 
-    self.terms -= [:based_near, :publisher, :source, :identifier, :rights_statement]
+    self.terms -= [:based_near, :description, :kind_of_data, :publisher, :source, :identifier, :rights_statement]
 
     self.required_fields = [:title, :creator, :date_issued]
 
