@@ -1,4 +1,6 @@
 terms:
+  - id: 3D Object
+    term: 3D Object
   - id: Article
     term: Article
   - id: Audio
@@ -13,14 +15,24 @@ terms:
     term: Dataset
   - id: Dissertation
     term: Dissertation
+  - id: Honors Thesis
+    term: Honors Thesis
   - id: Image
     term: Image
   - id: Journal
     term: Journal
+  - id: Journal Item
+    term: Journal Item
   - id: Map or Cartographic Material
     term: Map or Cartographic Material
+  - id: Masters Paper
+    term: Masters Paper
   - id: Masters Thesis
     term: Masters Thesis
+  - id: Newsletter
+    term: Newsletter
+  - id: Other
+    term: Other
   - id: Part of Book
     term: Part of Book
   - id: Poster
@@ -35,7 +47,9 @@ terms:
     term: Research Paper
   - id: Software or Program Code
     term: Software or Program Code
+  - id: Undergraduate Thesis
+    term: Undergraduate Thesis
   - id: Video
     term: Video
-  - id: Other
-    term: Other
+  - id: Working Paper
+    term: Working Paper
