@@ -19,7 +19,7 @@ RSpec.describe Hyrax::DataSetPresenter do
       "affiliation_tesim" => ['SILS'],
       "copyright_date_tesim" => '2017-12-19',
       "date_issued_tesim" => '2018-01-08',
-      "dcmi_tesim" => ['a type'],
+      "dcmi_type_tesim" => ['science fiction'],
       "deposit_record_tesim" => 'a deposit record',
       "doi_tesim" => '12345',
       "extent_tesim" => ['1993'],

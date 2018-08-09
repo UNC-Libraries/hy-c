@@ -15,7 +15,7 @@ RSpec.describe Hyrax::MultimedPresenter do
       "date_created_tesim" => ['an unformatted date'],
       "depositor_tesim" => user_key,
       "abstract_tesim" => ['an abstract'],
-      "dcmi_tesim" => ['a type'],
+      "dcmi_type_tesim" => ['science fiction'],
       "deposit_record_tesim" => 'a deposit record',
       "doi_tesim" => '12345',
       "extent_tesim" => ['1999'],

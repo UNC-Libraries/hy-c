@@ -22,7 +22,7 @@ RSpec.describe Hyrax::ArticlePresenter do
       "date_created_tesim" => '2017-01-22',
       "date_issued_tesim" => '2017-01-22',
       "date_other_tesim" => ['2017-01-22'],
-      "dcmi_tesim" => ['a type'],
+      "dcmi_type_tesim" => ['science fiction'],
       "deposit_record_tesim" => 'a deposit record',
       "doi_tesim" => '12345',
       "edition_tesim" => 'new edition',

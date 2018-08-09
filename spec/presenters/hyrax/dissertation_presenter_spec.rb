@@ -23,7 +23,7 @@ RSpec.describe Hyrax::DissertationPresenter do
       "affiliation_tesim" => ['SILS'],
       "alternative_title_tesim" => ['another title'],
       "date_issued_tesim" => ['2018-01-08'],
-      "dcmi_tesim" => ['a type'],
+      "dcmi_type_tesim" => ['science fiction'],
       "degree_tesim" => ['a degree'],
       "degree_granting_institution_tesim" => ['an institution'],
       "deposit_record_tesim" => 'a deposit record',

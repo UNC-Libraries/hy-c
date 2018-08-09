@@ -18,9 +18,9 @@ RSpec.describe Hyrax::ScholarlyWorkPresenter do
       "advisor_tesim" => ['an advisor'],
       "conference_name_tesim" => ['a conference'],
       "date_issued_tesim" => ['a date'],
+      "dcmi_type_tesim" => ['science fiction'],
       "deposit_record_tesim" => 'a deposit record',
       "doi_tesim" => '12345',
-      "dcmi_tesim" => ['a type'],
       "geographic_subject_tesim" => ['a geographic subject']
     }
   end
@@ -50,7 +50,6 @@ RSpec.describe Hyrax::ScholarlyWorkPresenter do
   it { is_expected.to delegate_method(:dcmi_type).to(:solr_document) }
   it { is_expected.to delegate_method(:deposit_record).to(:solr_document) }
   it { is_expected.to delegate_method(:doi).to(:solr_document) }
-  it { is_expected.to delegate_method(:dcmi_type).to(:solr_document) }
   it { is_expected.to delegate_method(:geographic_subject).to(:solr_document) }
 
   describe "#model_name" do

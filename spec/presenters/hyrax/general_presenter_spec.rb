@@ -28,7 +28,7 @@ RSpec.describe Hyrax::GeneralPresenter do
       "date_captured_tesim" => '2017-01-22',
       "date_issued_tesim" => '2017-01-22',
       "date_other_tesim" => ['2017-01-22'],
-      "dcmi_tesim" => ['a type'],
+      "dcmi_type_tesim" => ['science fiction'],
       "degree_tesim" => 'a degree',
       "degree_granting_institution_tesim" => 'unc',
       "deposit_record_tesim" => 'a deposit record',
