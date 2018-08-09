@@ -177,8 +177,16 @@ span.institution_name {
   padding-top: 25px;
 
   .describe {
+    display: -ms-flexbox;
+    display: -webkit-flex;
     display: flex;
+
+    -ms-flex-direction: row;
+    -webkit-flex-direction: row;
     flex-direction: row;
+
+    -ms-flex-align: center;
+    -webkit-align-items: center;
     align-items: center;
   }
 
