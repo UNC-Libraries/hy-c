@@ -13,6 +13,7 @@ RSpec.describe Hyrax::JournalPresenter do
       "human_readable_type_tesim" => ["Journal"],
       "has_model_ssim" => ["Journal"],
       "date_created_tesim" => ['an unformatted date'],
+      "dcmi_tesim" => ['a type'],
       "depositor_tesim" => user_key,
       "abstract_tesim" => ['an abstract'],
       "alternative_title_tesim" => ['a different title'],
@@ -48,6 +49,7 @@ RSpec.describe Hyrax::JournalPresenter do
   it { is_expected.to delegate_method(:abstract).to(:solr_document) }
   it { is_expected.to delegate_method(:alternative_title).to(:solr_document) }
   it { is_expected.to delegate_method(:date_issued).to(:solr_document) }
+  it { is_expected.to delegate_method(:dcmi_type).to(:solr_document) }
   it { is_expected.to delegate_method(:deposit_record).to(:solr_document) }
   it { is_expected.to delegate_method(:doi).to(:solr_document) }
   it { is_expected.to delegate_method(:extent).to(:solr_document) }
@@ -129,6 +131,16 @@ RSpec.describe Hyrax::JournalPresenter do
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:extent)
+      end
+    end
+
+    context "with a custom dcmi_type field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:dcmi_type, ['science fiction'], {}).and_return(renderer)
+      end
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:dcmi_type)
       end
     end
 
