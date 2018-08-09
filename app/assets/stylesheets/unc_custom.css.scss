@@ -176,10 +176,16 @@ span.institution_name {
 #unc-description {
   padding-top: 25px;
 
+  .describe {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+
   img {
-    max-width: 100%;
-    max-height: 100%;
-    margin: 0 auto;
+    max-width: 20%;
+    max-height: 20%;
+    margin: 0 0 0 5%;
   }
 
   p {
@@ -420,6 +426,9 @@ div.unc-citation-modal {
 
 @media only screen and (max-width: 800px) {
   #unc-description {
+    .describe {
+      display: block;
+    }
     div {
       text-align: center;
     }
