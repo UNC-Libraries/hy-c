@@ -2,11 +2,18 @@
 class SingleValueForm < Hyrax::Forms::WorkForm
   
   # Field which will not be rendered to the work form
-  class_attribute :suppressed_terms
-  self.suppressed_terms = Array.new
-  # Map of fields to fixed values for those fields, which will override any value assigned
-  class_attribute :fixed_term_values
-  self.fixed_term_values = Hash.new
+  class_attribute :admin_only_terms
+  self.admin_only_terms = Array.new
+  # Map of fields to default values
+  class_attribute :default_term_values
+  self.default_term_values = Hash.new
+  
+  def initialize(model, current_ability, controller)
+    puts "Calling initializer"
+    initialize_default_term_values(model)
+    
+    super(model, current_ability, controller)
+  end
 
   def self.multiple?(field)
     if single_value_fields.include? field.to_sym
@@ -29,24 +36,23 @@ class SingleValueForm < Hyrax::Forms::WorkForm
         end
       end
     end
-    
-    # Insert fixed values, overriding any already defined values
-    fixed_term_values.each do |field, values|
-      if multiple? field
-        attrs[field] = values
-      else
-        if single_value_fields.include? field
-          attrs[field] = [values.first]
-        else
-          attrs[field] = values.first
-        end
-      end
-    end
 
     attrs
   end
   
-  def secondary_terms
-    super - suppressed_terms
-  end
+  private
+    def initialize_default_term_values(model)
+      default_term_values.each do |field, values|
+        Rails.logger.debug "Init field #{field} with default values #{values.inspect} or retain existing #{model[field].inspect}"
+        if single_value_fields.include? field.to_sym
+          if model[field].blank?
+            model[field].set(values)
+          end
+        else
+          if model[field].blank?
+            model[field].set(values.first)
+          end
+        end
+      end
+    end
 end

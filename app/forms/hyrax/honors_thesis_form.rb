@@ -6,15 +6,15 @@ module Hyrax
 
     class_attribute :single_value_fields
 
-    self.terms += [:abstract, :academic_concentration, :access, :advisor, :affiliation, :alternative_title, :award, :date_issued,
-                   :degree, :degree_granting_institution, :doi, :extent, :dcmi_type, :geographic_subject, :graduation_year, :note,
+    self.terms += [:abstract, :academic_concentration, :access, :advisor, :affiliation, :alternative_title, :award, :date_issued, :dcmi_type,
+                   :degree, :degree_granting_institution, :doi, :extent, :geographic_subject, :graduation_year, :note,
                    :use, :resource_type]
     self.terms -= [:based_near, :contributor, :description, :identifier, :publisher, :source]
     self.required_fields = [:title, :creator, :degree_granting_institution, :date_created]
     self.single_value_fields = [:title, :license, :rights_statement]
     
-    self.suppressed_terms = [:dcmi_type]
-    self.fixed_term_values = { :dcmi_type => ["http://purl.org/dc/dcmitype/Text"] }
+    self.admin_only_terms = [:dcmi_type]
+    self.default_term_values = { :dcmi_type => ["http://purl.org/dc/dcmitype/Text"] }
 
     # Add overrides for required properties which are becoming single-valued
 

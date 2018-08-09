@@ -6,7 +6,7 @@ module Hyrax
     
     self.model_class = ::Journal
 
-    self.terms += [:abstract, :alternative_title, :date_issued, :doi, :extent, :dcmi_type, :geographic_subject, :issn, :note,
+    self.terms += [:abstract, :alternative_title, :date_issued, :dcmi_type, :doi, :extent, :geographic_subject, :issn, :note,
                   :place_of_publication, :table_of_contents, :resource_type]
 
     self.terms -= [:description, :based_near, :related_url, :identifier, :contributor, :source, :date_created]
@@ -15,8 +15,8 @@ module Hyrax
 
     self.single_value_fields = [:title, :license, :rights_statement]
     
-    self.suppressed_terms = [:dcmi_type]
-    self.fixed_term_values = { :dcmi_type => ["http://purl.org/dc/dcmitype/Text"] }
+    self.admin_only_terms = [:dcmi_type]
+    self.default_term_values = { :dcmi_type => ["http://purl.org/dc/dcmitype/Text"] }
 
     # Add overrides for required properties which are becoming single-valued
 
