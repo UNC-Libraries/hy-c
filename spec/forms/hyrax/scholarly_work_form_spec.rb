@@ -21,13 +21,13 @@ RSpec.describe Hyrax::ScholarlyWorkForm do
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:abstract, :advisor, :conference_name, :date_issued, :doi,
+    it { is_expected.to match_array [:abstract, :advisor, :conference_name, :date_issued, :dcmi_type, :doi,
                                      :geographic_subject, :description, :keyword, :language, :license, :resource_type,
                                      :rights_statement, :subject] }
   end
   
-  describe "#suppressed_terms" do
-    subject { form.suppressed_terms }
+  describe "#admin_only_terms" do
+    subject { form.admin_only_terms }
 
     it { is_expected.to match_array [:dcmi_type] }
   end
@@ -53,6 +53,7 @@ RSpec.describe Hyrax::ScholarlyWorkForm do
           advisor: ['an advisor'],
           conference_name: ['a conference name'],
           date_issued: 'a date', # single-valued
+          dcmi_type: ['type'],
           doi: '12345',
           geographic_subject: ['a geographic subject']
       )
@@ -78,7 +79,7 @@ RSpec.describe Hyrax::ScholarlyWorkForm do
       expect(subject['abstract']).to be_empty
       expect(subject['conference_name']).to eq ['a conference name']
       expect(subject['date_issued']).to eq 'a date'
-      expect(subject['dcmi_type']).to be_empty
+      expect(subject['dcmi_type']).to eq ['type']
       expect(subject['geographic_subject']).to eq ['a geographic subject']
       expect(subject['member_of_collection_ids']).to eq ['123456', 'abcdef']
     end
