@@ -1,66 +1,66 @@
-<!--<div class="confirm_well col-sm-12 no-advisors">-->
-  <!--<div class="checkbox well">-->
-    <!--<label class="boolean optional" for="etd_no_advisors">-->
-      <!--<span class="sr-only">Warning:</span>-->
-      <!--< %= f.input :no_advisors, as: :boolean, label: "I do not have advisors.", input_html: { id: 'no_advisors' } %>-->
-    <!--</label>-->
-  <!--</div>-->
-<!--</div>-->
-<%= f.fields_for :advisors, @form.advisors do |cm| %>
+<div class="confirm_well col-sm-12 no-advisors">
+  <div class="checkbox well">
+    <label class="boolean optional" for="general_no_advisors">
+      <span class="sr-only">Warning:</span>
+      <%= f.input :no_advisors, as: :boolean, label: "I do not have advisors.", input_html: { id: 'no_advisors' } %>
+    </label>
+  </div>
+</div>
+<%= f.fields_for :advisors, @form.advisors do |advisor| %>
   <div class="advisor row">
 
     <div class="col-sm-6 member">
 
-      <%= cm.input "affiliation_type", required: true,
+      <%= advisor.input "affiliation_type", required: true,
                    label: "Advisor's Affiliation",
-                   selected: @form.cm_affiliation_type(cm.object.affiliation),
-                   collection: @form.cm_affiliation_options,
+                   selected: @form.affiliation_type(advisor.object.affiliation),
+                   collection: @form.affiliation_options,
                    input_html: { class: 'form-control advisor-select' }
       %>
 
-      <%= cm.input :affiliation, as: :advisor, disabled: @form.cm_affiliation_type(cm.object.affiliation) != 'Non-Emory Advisor', required: true, label: false, input_html: { class: 'form-control advisor advisor-school' } %>
+      <%= advisor.input :affiliation, as: :advisor, disabled: @form.affiliation_type(advisor.object.affiliation) != 'Non-Emory Advisor', required: true, label: false, input_html: { class: 'form-control advisor advisor-school' } %>
 
     </div>
 
     <div class="col-sm-6 member-name">
-      <%= cm.input :name, as: :advisor, label: "Advisor", required: true, input_html: { placeholder: 'Last Name, First Name', class: 'form-control advisor advisor-name' }, disabled: @form.cm_affiliation_type(cm.object.affiliation) == 'No Advisors' %>
+      <%= advisor.input :name, as: :advisor, label: "Advisor", required: true, input_html: { placeholder: 'Last Name, First Name', class: 'form-control advisor advisor-name' }, disabled: @form.affiliation_type(advisor.object.affiliation) == 'No Advisors' %>
 
-      <% if cm.index > 0 %>
+      <% if advisor.index > 0 %>
         <button type="button" class="btn btn-link remove remove-current-member"><span class="glyphicon glyphicon-remove"></span> <span class="controls-remove-text">Remove Advisor</span></button>
       <% end %>
     </div>
   </div>
 <% end %>
 
-<% member_index = @form.advisors.count %>
-<!-- this hidden element keeps track of the member count for an about_me_and_my_program.es6 function -->
-<input type='hidden' name='index-member' id='index-member' value="<%= member_index %>" />
+<!--< % member_index = @form.advisors.count %>-->
+<!--&lt;!&ndash; this hidden element keeps track of the member count for an about_me_and_my_program.es6 function &ndash;&gt;-->
+<!--<input type='hidden' name='index-member' id='index-member' value="< %= member_index %>" />-->
 
-<div class="advisor row cloning hidden" id='member-cloning_row'>
-  <div class="col-sm-6 member">
+<!--<div class="advisor row cloning hidden" id='member-cloning_row'>-->
+  <!--<div class="col-sm-6 member">-->
 
-    <div class="form-group select optional etd_advisors_affiliation_type">
+    <!--<div class="form-group select optional general_advisors_affiliation_type">-->
 
-      <label class="control-label select optional" for="etd_advisors_attributes_#{member_index}_affiliation_type">Advisor's Affiliation</label>
+      <!--<label class="control-label select optional" for="general_advisors_attributes_#{member_index}_affiliation_type">Advisor's Affiliation</label>-->
 
-      <%= f.select_tag "affiliation_type",
-                       options_for_select(@form.cm_affiliation_options, @form.cm_affiliation_options[0]),
-                       required: false,
-                       name: "etd[advisors_attributes][#{member_index}][affiliation_type]",
-                       class: 'form-control advisor-select optional' %>
-    </div>
+      <!--< %= f.select "affiliation_type",-->
+<!--#                        options_for_select(@form.affiliation_options, @form.affiliation_options[0]),-->
+<!--#                        required: false,-->
+<!--#                        name: "general[advisors_attributes][#{member_index}][affiliation_type]",-->
+                       <!--class: 'form-control advisor-select optional' %>-->
+    <!--</div>-->
 
-    <div class="form-group advisor optional disabled etd_advisors_affiliation">
-      <%= f.text_field_tag "etd[advisors_attributes][#{member_index}][affiliation][]", 'Emory',
-                           disabled: true, required: false, label: false, class: 'form-control advisor optional' %>
-    </div>
-  </div>
+    <!--<div class="form-group advisor optional disabled general_advisors_affiliation">-->
+      <!--< %= f.text_field_tag "general[advisors_attributes][#{member_index}][affiliation][]", 'Emory',-->
+                           <!--disabled: true, required: false, label: false, class: 'form-control advisor optional' %>-->
+    <!--</div>-->
+  <!--</div>-->
 
-  <div class="col-sm-6 member-name">
-    <label class="control-label advisor optional" for="etd_advisors_attributes_#{member_index}_name">Advisor</label>
+  <!--<div class="col-sm-6 member-name">-->
+    <!--<label class="control-label advisor optional" for="general_advisors_attributes_#{member_index}_name">Advisor</label>-->
 
-    <%= f.text_field_tag "etd[advisors_attributes][#{member_index}][name][]", '', required: false, placeholder: 'Last Name, First Name', class: 'form-control advisor optional' %>
+    <!--< %= f.text_field_tag "general[advisors_attributes][#{member_index}][name][]", '', required: false, placeholder: 'Last Name, First Name', class: 'form-control advisor optional' %>-->
 
-    <button type="button" class="btn btn-link remove remove-member"><span class="glyphicon glyphicon-remove"></span> <span class="controls-remove-text">Remove Advisor</span></button>
-  </div>
-</div>
+    <!--<button type="button" class="btn btn-link remove remove-member"><span class="glyphicon glyphicon-remove"></span> <span class="controls-remove-text">Remove Advisor</span></button>-->
+  <!--</div>-->
+<!--</div>-->

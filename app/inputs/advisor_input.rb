@@ -1,4 +1,4 @@
-class PersonInput < MultiValueInput
+class AdvisorInput < MultiValueInput
   # Overriding method from hydra-editor:
   # We are actually just displaying a single value for each
   # field of a person, so we override this method

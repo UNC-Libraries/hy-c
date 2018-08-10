@@ -25,7 +25,9 @@ class General < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :advisor, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/ths'), class_name: 'Person'
+  property :advisor, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/ths'), class_name: 'Person' do |index|
+    index.as :stored_searchable
+  end
 
   property :affiliation, predicate: ::RDF::Vocab::SCHEMA.affiliation do |index|
     index.as :stored_searchable
@@ -236,11 +238,15 @@ class General < ActiveFedora::Base
     index.as :stored_searchable
   end
 
+  property :advisor_names, predicate: ::RDF::URI('http://www.example.com/advisor_names') do |index|
+    index.as :stored_searchable
+  end
+
 
   def index_advisor_names
-    return unless advisor && advisor.first
-    advisor_names << advisor.map { |e| e.name.first }
-    self.advisor_names = advisor.map { |e| e.name.first }
+    return unless advisors && advisors.first
+    advisor_names << advisors.map { |e| [e.name.first, e.affiliation] }
+    self.advisor_names = advisors.map { |e| [e.name.first, e.affiliation] }
   end
 
   # This must be included at the end, because it finalizes the metadata
@@ -251,7 +257,7 @@ class General < ActiveFedora::Base
   # the properties are declared because it calls resource_class,
   # which finalizes the property declarations.
   # See https://github.com/projecthydra/active_fedora/issues/847
-  accepts_nested_attributes_for :advisor,
+  accepts_nested_attributes_for :advisors,
                                 allow_destroy: true,
                                 reject_if: proc { |attrs|
                                   ['name', 'affiliation', 'netid'].all? do |key|

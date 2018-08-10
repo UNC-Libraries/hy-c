@@ -37,27 +37,80 @@ module Hyrax
     def rights_statement
       super.first || ""
     end
-   
-    # In the view we have "fields_for :advisor".
+
+
+    # Select the correct affiliation type for committee member
+    def affiliation_type(value)
+      value = Array(value).first
+      if value.blank? || value == 'UNC'
+        affiliation_options[0]
+      else
+        affiliation_options[1]
+      end
+    end
+
+    def affiliation_options
+      ["UNC Advisor", "Non-UNC Advisor"]
+    end
+
+    # In the view we have "fields_for :advisors".
     # This method is needed to make fields_for behave as an
     # association and populate the form with the correct
     # committee member data.
-    delegate :advisor_attributes=, to: :model
+    delegate :advisors_attributes=, to: :model
 
-    # We need to call ".to_a" on advisor to force it
+    # We need to call '.to_a' on advisors to force it
     # to resolve.  Otherwise in the form, the fields don't
-    # display the advisor's name and affiliation.
+    # display the committee member's name and affiliation.
     # Instead they display something like:
-    # "#<ActiveTriples::Relation:0x007fb564969c88>"
+    # '#<ActiveTriples::Relation:0x007fb564969c88>'
     def advisors
-      model.advisor.build if model.advisor.blank?
-      model.advisor.to_a
+      model.advisors.build if model.advisors.blank?
+      model.advisors.to_a
+    end
+
+    def no_advisors
+      str_advisors = model.advisors.to_a.join(',')
+      value = str_advisors.count("a-zA-Z").zero?
+      empty_advisors = value
+      model.persisted? && empty_advisors
     end
 
     def self.build_permitted_params
       permitted = super
-      permitted << { advisor_attributes: [:id, { name: [] }, { affiliation: [] }, { netid: [] }, :_destroy] }
+      permitted << { advisors_attributes: [:id, { name: [] }, { affiliation: [] }, :affiliation_type, { netid: [] }, :_destroy] }
       permitted
+    end
+
+    # If the student selects 'Emory Committee Chair' or
+    # 'Emory Committee Member' for the 'affiliation_type' field,
+    # then the 'affiliation' field becomes disabled in the form.
+    # In that case, we need to fill in the 'affiliation' data
+    # with 'Emory University', and we need to remove the
+    # 'affiliation_type' field because that is not a valid field
+    # for the CommitteeMember model.
+    def self.model_attributes(form_params)
+      attrs = super
+      keys = ['advisors_attributes']
+
+      keys.each do |field_name|
+        next if attrs[field_name].blank?
+        attrs[field_name].each do |member_key, member_attrs|
+          aff_type = attrs[field_name][member_key].delete 'affiliation_type'
+
+          names = attrs[field_name][member_key]['name'] || []
+          netids = attrs[field_name][member_key]['netid'] || []
+          names_blank = names.all?(&:blank?)
+          netids_blank = netids.all?(&:blank?)
+          next if names_blank && netids_blank
+
+          if member_attrs['affliation'].blank? && aff_type && aff_type.start_with?('UNC')
+            attrs[field_name][member_key]['affiliation'] = ['UNC']
+          end
+        end
+      end
+
+      attrs
     end
   end
 end
