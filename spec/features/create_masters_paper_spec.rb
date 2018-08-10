@@ -72,7 +72,7 @@ RSpec.feature 'Create a MastersPaper', js: false do
       expect(page).to have_content "Add New Master's Paper"
 
       fill_in 'Title', with: 'Test MastersPaper work'
-      fill_in 'Creator', with: 'Test Default Creator'
+      fill_in 'Author', with: 'Test Default Creator'
       fill_in 'Keyword', with: 'Test Default Keyword'
       select "In Copyright", :from => "masters_paper_rights_statement"
       expect(page).to have_field('masters_paper_visibility_embargo')
@@ -110,7 +110,7 @@ RSpec.feature 'Create a MastersPaper', js: false do
       expect(page).to have_content "Add New Master's Paper"
 
       fill_in 'Title', with: 'Test MastersPaper work'
-      fill_in 'Creator', with: 'Test Default Creator'
+      fill_in 'Author', with: 'Test Default Creator'
       fill_in 'Keyword', with: 'Test Default Keyword'
       select "In Copyright", :from => "masters_paper_rights_statement"
       expect(page).to have_field('masters_paper_visibility_embargo')

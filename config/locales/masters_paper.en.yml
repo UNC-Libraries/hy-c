@@ -7,3 +7,9 @@ en:
         name:               "Master's Papers"
         description:        "Deposit your masters paper, project or other capstone work.  Theses will be sent to the
                             CDR automatically via ProQuest and do not need to be deposited."
+  simple_form:
+    labels:
+      masters_paper:
+        creator: "Author"
+        date_issued: "Date of Publication"
+        related_url: "Related Resource URL"

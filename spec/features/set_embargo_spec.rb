@@ -47,7 +47,7 @@ RSpec.feature 'Edit embargo', js: false do
       expect(page).to have_content 'Add New Scholarly Article or Book Chapter'
 
       fill_in 'Title', with: 'Test Article work'
-      fill_in 'Creator', with: 'Test Default Creator'
+      fill_in 'Author', with: 'Test Default Creator'
       fill_in 'Keyword', with: 'Test Default Keyword'
       select 'In Copyright', :from => 'article_rights_statement'
       choose 'article_visibility_embargo'
@@ -67,7 +67,7 @@ RSpec.feature 'Edit embargo', js: false do
 
       # Hyrax empties the form
       fill_in 'Title', with: 'Test Article work'
-      fill_in 'Creator', with: 'Test Default Creator'
+      fill_in 'Author', with: 'Test Default Creator'
       fill_in 'Keyword', with: 'Test Default Keyword'
       select 'In Copyright', :from => 'article_rights_statement'
       choose 'article_visibility_embargo'
@@ -96,7 +96,7 @@ RSpec.feature 'Edit embargo', js: false do
       expect(page).to have_content 'Add New Scholarly Article or Book Chapter'
 
       fill_in 'Title', with: 'Test Article work'
-      fill_in 'Creator', with: 'Test Default Creator'
+      fill_in 'Author', with: 'Test Default Creator'
       fill_in 'Keyword', with: 'Test Default Keyword'
       select 'In Copyright', :from => 'article_rights_statement'
       choose 'article_visibility_embargo'
