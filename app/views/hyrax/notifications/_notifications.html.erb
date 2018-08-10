@@ -12,8 +12,6 @@
       </thead>
       <tbody>
       <% messages.each do |msg| %>
-      <h1><%= msg.last_message.created_at %></h1>
-        <h1><%= msg.last_message.body.html_safe %></h1>
         <tr>
           <td>
             <relative-time datetime="<%= msg.last_message.created_at.getutc.iso8601 %>" title="<%= msg.last_message.created_at.to_formatted_s(:standard) %>">
