@@ -56,6 +56,9 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       expect(page).not_to have_field('honors_thesis_visibility_lease')
       choose "honors_thesis_visibility_open"
       check 'agreement'
+      
+      # Verify that admin only field is not visible
+      expect(page).to have_selector('div.hidden #honors_thesis_dcmi_type')
 
       click_link "Files" # switch tab
       within "//span[@id=addfiles]" do
@@ -90,6 +93,10 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       expect(page).not_to have_field('honors_thesis_visibility_lease')
       choose "honors_thesis_visibility_open"
       check 'agreement'
+      
+      # Verify that admin only field is visible
+      expect(page).not_to have_selector('div.hidden #honors_thesis_dcmi_type')
+      expect(page).to have_selector('#honors_thesis_dcmi_type')
 
       click_link "Files" # switch tab
       within "//span[@id=addfiles]" do

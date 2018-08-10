@@ -57,6 +57,9 @@ RSpec.feature 'Create a DataSet', js: false do
       expect(page).not_to have_field('data_set_visibility_lease')
       choose "data_set_visibility_open"
       check 'agreement'
+      
+      # Verify that admin only field is not visible
+      expect(page).to have_selector('div.hidden #data_set_dcmi_type')
 
       click_link "Files" # switch tab
       within "//span[@id=addfiles]" do
@@ -92,6 +95,10 @@ RSpec.feature 'Create a DataSet', js: false do
       expect(page).not_to have_field('data_set_visibility_lease')
       choose "data_set_visibility_open"
       check 'agreement'
+      
+      # Verify that admin only field is visible
+      expect(page).not_to have_selector('div.hidden #data_set_dcmi_type')
+      expect(page).to have_selector('#data_set_dcmi_type')
 
       click_link "Files" # switch tab
       within "//span[@id=addfiles]" do

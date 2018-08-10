@@ -79,6 +79,9 @@ RSpec.feature 'Create a MastersPaper', js: false do
       expect(page).not_to have_field('masters_paper_visibility_lease')
       choose "masters_paper_visibility_open"
       check 'agreement'
+      
+      # Verify that admin only field is not visible
+      expect(page).to have_selector('div.hidden #masters_paper_dcmi_type')
 
       click_link "Files" # switch tab
       within "//span[@id=addfiles]" do
@@ -117,6 +120,10 @@ RSpec.feature 'Create a MastersPaper', js: false do
       expect(page).not_to have_field('masters_paper_visibility_lease')
       choose "masters_paper_visibility_open"
       check 'agreement'
+      
+      # Verify that admin only field is visible
+      expect(page).not_to have_selector('div.hidden #masters_paper_dcmi_type')
+      expect(page).to have_selector('#masters_paper_dcmi_type')
 
       click_link "Files" # switch tab
       within "//span[@id=addfiles]" do

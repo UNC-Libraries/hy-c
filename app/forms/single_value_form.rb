@@ -9,7 +9,6 @@ class SingleValueForm < Hyrax::Forms::WorkForm
   self.default_term_values = Hash.new
   
   def initialize(model, current_ability, controller)
-    puts "Calling initializer"
     initialize_default_term_values(model)
     
     super(model, current_ability, controller)
