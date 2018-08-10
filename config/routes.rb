@@ -11,12 +11,11 @@ Rails.application.routes.draw do
 
   concern :oai_provider, BlacklightOaiProvider::Routes.new
 
-  require 'sidekiq/web'
-  require 'constraint/is_unc_admin'
-
-  # Restrict to admins
-  mount Sidekiq::Web => '/sidekiq', :constraints => Constraint::IsUncAdmin.new
-
+  authenticate :user, ->(u) { u.admin? } do
+    require 'sidekiq/web'
+    mount Sidekiq::Web => '/sidekiq'
+    match 'users', to: 'hyrax/users#index', via: :all
+  end
   
   mount Blacklight::Engine => '/'
   

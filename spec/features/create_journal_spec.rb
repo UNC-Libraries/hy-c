@@ -49,7 +49,7 @@ RSpec.feature 'Create a Journal', js: false do
       expect(page).to have_content "Add New Scholarly Journal, Newsletter or Book"
 
       fill_in 'Title', with: 'Test Journal'
-      fill_in 'Creator', with: 'Test Default Creator'
+      fill_in 'Author', with: 'Test Default Creator'
       fill_in 'Keyword', with: 'Test Default Keyword'
       select "In Copyright", :from => "journal_rights_statement"
       expect(page).to have_field('journal_visibility_embargo')
@@ -86,7 +86,7 @@ RSpec.feature 'Create a Journal', js: false do
       expect(page).to have_content "Add New Scholarly Journal, Newsletter or Book"
 
       fill_in 'Title', with: 'Test Journal'
-      fill_in 'Creator', with: 'Test Default Creator'
+      fill_in 'Author', with: 'Test Default Creator'
       fill_in 'Keyword', with: 'Test Default Keyword'
       select "In Copyright", :from => "journal_rights_statement"
       expect(page).to have_field('journal_visibility_embargo')

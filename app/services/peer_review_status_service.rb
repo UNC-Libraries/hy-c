@@ -1,10 +1,9 @@
-# app/services/concentrations_service.rb
-module ConcentrationsService
+module PeerReviewStatusService
   mattr_accessor :authority
-  self.authority = Qa::Authorities::Local.subauthority_for('concentrations')
+  self.authority = Qa::Authorities::Local.subauthority_for('peer_review_status')
 
   def self.select_all_options
-    authority.all.reject{ |item| item['active'] == false }.map do |element|
+    authority.all.map do |element|
       [element[:label], element[:id]]
     end
   end

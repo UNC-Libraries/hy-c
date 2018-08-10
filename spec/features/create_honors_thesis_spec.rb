@@ -49,7 +49,7 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       expect(page).to have_content "Add New Undergraduate Honors Thesis"
 
       fill_in 'Title', with: 'Test HonorsThesis work'
-      fill_in 'Creator', with: 'Test Default Creator'
+      fill_in 'Author', with: 'Test Default Creator'
       fill_in 'Keyword', with: 'Test Default Keyword'
       select "In Copyright", :from => "honors_thesis_rights_statement"
       expect(page).to have_field('honors_thesis_visibility_embargo')
@@ -86,7 +86,7 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       expect(page).to have_content "Add New Undergraduate Honors Thesis"
 
       fill_in 'Title', with: 'Test HonorsThesis work'
-      fill_in 'Creator', with: 'Test Default Creator'
+      fill_in 'Author', with: 'Test Default Creator'
       fill_in 'Keyword', with: 'Test Default Keyword'
       select "In Copyright", :from => "honors_thesis_rights_statement"
       expect(page).to have_field('honors_thesis_visibility_embargo')

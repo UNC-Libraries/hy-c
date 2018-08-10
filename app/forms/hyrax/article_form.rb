@@ -11,9 +11,9 @@ module Hyrax
                    :journal_issue, :journal_title, :journal_volume, :note, :page_end, :page_start, :peer_review_status,
                    :place_of_publication, :rights_holder, :table_of_contents, :translator, :url, :use]
 
-    self.required_fields = [:title, :creator, :date_issued]
+    self.required_fields = [:title, :creator, :abstract, :date_issued]
 
-    self.terms -= [:contributor, :based_near, :related_url, :source, :description]
+    self.terms -= [:contributor, :based_near, :source, :description]
     
     self.single_value_fields = [:title, :license, :rights_statement]
     

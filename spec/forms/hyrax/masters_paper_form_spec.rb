@@ -9,21 +9,22 @@ RSpec.describe Hyrax::MastersPaperForm do
   describe "#required_fields" do
     subject { form.required_fields }
 
-    it { is_expected.to match_array [:title, :creator, :date_issued, :degree_granting_institution] }
+    it { is_expected.to match_array [:title, :creator, :abstract, :advisor, :date_issued, :degree, :resource_type] }
   end
 
   describe "#primary_terms" do
     subject { form.primary_terms }
 
-    it { is_expected.to match_array [:title, :creator, :date_issued, :degree_granting_institution] }
+    it { is_expected.to match_array [:title, :creator, :abstract, :advisor, :date_issued, :degree, :resource_type] }
   end
 
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:abstract, :academic_concentration, :access, :advisor, :affiliation, :dcmi_type, :degree, :doi, :extent,
+    it { is_expected.to match_array [:academic_concentration, :access, :affiliation, :dcmi_type
+                                     :degree_granting_institution, :doi, :extent,
                                      :geographic_subject, :graduation_year, :medium, :note, :reviewer, :use,
-                                     :keyword, :subject, :language, :rights_statement, :license, :resource_type] }
+                                     :keyword, :subject, :language, :rights_statement, :license] }
   end
   
   describe "#admin_only_terms" do

@@ -9,19 +9,19 @@ RSpec.describe Hyrax::ScholarlyWorkForm do
   describe "#required_fields" do
     subject { form.required_fields }
 
-    it { is_expected.to match_array [:title, :creator, :date_created] }
+    it { is_expected.to match_array [:title, :creator, :abstract, :date_issued] }
   end
 
   describe "#primary_terms" do
     subject { form.primary_terms }
 
-    it { is_expected.to match_array [:title, :creator, :date_created] }
+    it { is_expected.to match_array [:title, :creator, :abstract, :date_issued] }
   end
 
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:abstract, :advisor, :conference_name, :date_issued, :dcmi_type, :doi,
+    it { is_expected.to match_array [:advisor, :conference_name, :date_created, :dcmi_type, :doi,
                                      :geographic_subject, :description, :keyword, :language, :license, :resource_type,
                                      :rights_statement, :subject] }
   end
