@@ -1,8 +1,2 @@
 <%# app/views/records/edit_fields/_academic_concentration.html.erb %>
-<%= f.input :academic_concentration, as: :select,
-            collection: AcademicConcentrationService.select_all_options,
-            include_blank: true,
-            item_helper: AcademicConcentrationService.method(:include_current_value),
-            label: 'Academic Concentration',
-            input_html: { class: 'form-control', multiple: true }
-%>
+<%= f.input :academic_concentration, as: :multi_value, input_html: { class: 'form-control', multiple: true } %>
