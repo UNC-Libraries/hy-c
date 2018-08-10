@@ -74,7 +74,7 @@ RSpec.feature 'Create a DataSet', js: false do
 
       first('.document-title', text: 'Test Data Set').click
       expect(page).to have_content 'Test Default Keyword'
-      expect(page).to have_content 'In Administrative Set: data set admin set'
+      expect(page).to_not have_content 'In Administrative Set: data set admin set'
     end
 
     scenario 'as an admin' do

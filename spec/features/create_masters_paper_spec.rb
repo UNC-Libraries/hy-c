@@ -96,7 +96,7 @@ RSpec.feature 'Create a MastersPaper', js: false do
 
       first('.document-title', text: 'Test MastersPaper work').click
       expect(page).to have_content 'Test Default Keyword'
-      expect(page).to have_content 'In Administrative Set: dept admin set'
+      expect(page).to_not have_content 'In Administrative Set: dept admin set'
     end
 
     scenario 'as an admin' do
