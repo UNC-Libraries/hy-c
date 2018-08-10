@@ -11,6 +11,7 @@
   <% end %>
 <% end %>
 
-<% if current_user.admin? %>
+<%# checks if user present and if they're an admin %>
+<% if current_user&.admin? %>
   <%= presenter.attribute_to_html(:admin_set, render_as: :faceted, html_dl: true) %>
 <% end %>
