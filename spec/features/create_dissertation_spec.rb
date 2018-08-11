@@ -64,8 +64,6 @@ RSpec.feature 'Create a Dissertation', js: false do
       choose "dissertation_visibility_open"
       check 'agreement'
       
-      # Verify that admin only field is visible
-      expect(page).not_to have_selector('div.hidden #dissertation_dcmi_type')
       expect(page).to have_selector('#dissertation_dcmi_type')
 
       click_link "Files" # switch tab

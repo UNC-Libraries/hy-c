@@ -57,8 +57,7 @@ RSpec.feature 'Create a General', js: false do
       choose "general_visibility_open"
       check 'agreement'
       
-      # Verify that admin only field is not visible
-      expect(page).to have_selector('div.hidden #general_dcmi_type')
+      expect(page).not_to have_selector('#general_dcmi_type')
 
       click_link "Files" # switch tab
       within "//span[@id=addfiles]" do
@@ -95,8 +94,6 @@ RSpec.feature 'Create a General', js: false do
       choose "general_visibility_open"
       check 'agreement'
       
-      # Verify that admin only field is visible
-      expect(page).not_to have_selector('div.hidden #general_dcmi_type')
       expect(page).to have_selector('#general_dcmi_type')
 
       click_link "Files" # switch tab

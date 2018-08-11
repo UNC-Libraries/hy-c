@@ -57,8 +57,7 @@ RSpec.feature 'Create a Journal', js: false do
       choose "journal_visibility_open"
       check 'agreement'
       
-      # Verify that admin only field is not visible
-      expect(page).to have_selector('div.hidden #journal_dcmi_type')
+      expect(page).not_to have_selector('#journal_dcmi_type')
 
       click_link "Files" # switch tab
       within "//span[@id=addfiles]" do
@@ -94,8 +93,6 @@ RSpec.feature 'Create a Journal', js: false do
       choose "journal_visibility_open"
       check 'agreement'
       
-      # Verify that admin only field is visible
-      expect(page).not_to have_selector('div.hidden #journal_dcmi_type')
       expect(page).to have_selector('#journal_dcmi_type')
 
       click_link "Files" # switch tab

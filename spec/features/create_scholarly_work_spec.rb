@@ -58,7 +58,7 @@ RSpec.feature 'Create a ScholarlyWork', js: false do
       check 'agreement'
       
       # Verify that admin only field is not visible
-      expect(page).to have_selector('div.hidden #scholarly_work_dcmi_type')
+      expect(page).not_to have_selector('#scholarly_work_dcmi_type')
 
       click_link "Files" # switch tab
       within "//span[@id=addfiles]" do
@@ -94,8 +94,6 @@ RSpec.feature 'Create a ScholarlyWork', js: false do
       choose "scholarly_work_visibility_open"
       check 'agreement'
       
-      # Verify that admin only field is visible
-      expect(page).not_to have_selector('div.hidden #scholary_work_dcmi_type')
       expect(page).to have_selector('#scholarly_work_dcmi_type')
 
       click_link "Files" # switch tab

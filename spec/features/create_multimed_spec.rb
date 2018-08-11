@@ -44,8 +44,7 @@ RSpec.feature 'Create a Multimed', js: false do
       choose "multimed_visibility_open"
       check 'agreement'
       
-      # Verify that admin only field is not visible
-      expect(page).to have_selector('div.hidden #multimed_dcmi_type')
+      expect(page).to have_selector('#multimed_dcmi_type')
 
       click_link "Files" # switch tab
       within "//span[@id=addfiles]" do
