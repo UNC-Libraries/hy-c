@@ -44,7 +44,7 @@ RSpec.feature 'Create a Multimed', js: false do
       choose "multimed_visibility_open"
       check 'agreement'
       
-      expect(page).to have_selector('#multimed_dcmi_type')
+      expect(page).not_to have_selector('#multimed_dcmi_type')
 
       click_link "Files" # switch tab
       within "//span[@id=addfiles]" do
