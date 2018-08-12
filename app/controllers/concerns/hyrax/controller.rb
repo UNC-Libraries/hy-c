@@ -1,14 +1,14 @@
+# [hyc-override] added create_unrestricted_work_presenter as a replacement for deprecated create_work_presenter
 module Hyrax::Controller
   extend ActiveSupport::Concern
 
   included do
-    class_attribute :create_work_presenter_class
-    self.create_work_presenter_class = Hyrax::SelectTypeListPresenter
     self.search_state_class = Hyrax::SearchState
 
     # Adds Hydra behaviors into the application controller
     include Hydra::Controller::ControllerBehavior
-    helper_method :create_work_presenter
+    helper_method :create_unrestricted_work_presenter
+    # helper_method :create_work_presenter
     before_action :set_locale
   end
 
@@ -16,12 +16,26 @@ module Hyrax::Controller
   def user_root_path
     hyrax.dashboard_path
   end
-
-  # A presenter for selecting a work type to create
-  # this is needed here because the selector is in the header on every page
-  def create_work_presenter
-    @create_work_presenter ||= create_work_presenter_class.new(current_user)
+  
+  # A presenter for selecting a work type to create, showing work types which are visible to non-admins.
+  # Provided as a helper method for all pages.
+  def create_unrestricted_work_presenter
+    Hyrax::UnrestrictedSelectTypeListPresenter.new(current_ability.current_user)
   end
+
+  ##
+  # @deprecated this helper is no longer used by Hyrax; if you need access to
+  #   this presenter on every page, you may need to readd it manually.
+  #
+  # A presenter for selecting a work type to create this is needed here because
+  # the selector is in the header on every page.
+   def create_work_presenter
+     Deprecation.warn(self, "The `create_work_presenter` helper is deprecated " \
+                            "for removal in Hyrax 3.0. The work selector has " \
+                            "been removed the masthead in Hyrax 2.1.")
+
+     Hyrax::SelectTypeListPresenter.new(current_user)
+   end
 
   # Ensure that the locale choice is persistent across requests
   def default_url_options
@@ -46,7 +60,7 @@ module Hyrax::Controller
       # For the JSON message, we don't want to display the default CanCan messages,
       # just custom Hydra messages such as "This item is under embargo.", etc.
       json_message = exception.message if exception.is_a? Hydra::AccessDenied
-      if current_user && current_user.persisted?
+      if current_user&.persisted?
         deny_access_for_current_user(exception, json_message)
       else
         deny_access_for_anonymous_user(exception, json_message)
