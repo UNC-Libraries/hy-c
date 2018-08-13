@@ -22,9 +22,22 @@ RSpec.describe Hyrax::DissertationForm do
     subject { form.secondary_terms }
 
     it { is_expected.to match_array [:abstract, :academic_concentration, :access, :advisor, :affiliation, :alternative_title,
-                                     :degree, :discipline, :doi, :genre, :geographic_subject, :graduation_year, :note,
+                                     :dcmi_type, :degree, :discipline, :doi, :geographic_subject, :graduation_year, :note,
                                      :place_of_publication, :reviewer, :use, :contributor, :identifier, :subject,
                                      :publisher, :language, :keyword, :rights_statement, :license, :resource_type] }
+  end
+  
+  describe "#admin_only_terms" do
+    subject { form.admin_only_terms }
+
+    it { is_expected.to match_array [:dcmi_type] }
+  end
+  
+  describe 'default value set' do
+    subject { form }
+    it "dcmi type must have default values" do
+      expect(form.model['dcmi_type']).to eq ['http://purl.org/dc/dcmitype/Text'] 
+    end
   end
 
   describe '.model_attributes' do
@@ -52,11 +65,11 @@ RSpec.describe Hyrax::DissertationForm do
           affiliation: ['SILS'],
           alternative_title: ['another title'],
           date_issued: '2018-01-08', # single-valued
+          dcmi_type: ['type'],
           degree: 'MSIS', # single-valued
           degree_granting_institution: 'UNC', # single-valued
           discipline: ['a discipline'],
           doi: 'hi.org', # single-valued
-          genre: ['a genre'],
           geographic_subject: ['a geographic subject'],
           graduation_year: '2017',
           note: [''],
@@ -93,7 +106,7 @@ RSpec.describe Hyrax::DissertationForm do
       expect(subject['degree_granting_institution']).to eq 'UNC'
       expect(subject['discipline']).to eq ['a discipline']
       expect(subject['doi']).to eq 'hi.org'
-      expect(subject['genre']).to eq ['a genre']
+      expect(subject['dcmi_type']).to eq ['type']
       expect(subject['geographic_subject']).to eq ['a geographic subject']
       expect(subject['graduation_year']).to eq '2017'
       expect(subject['note']).to be_empty

@@ -21,10 +21,23 @@ RSpec.describe Hyrax::MastersPaperForm do
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:academic_concentration, :access, :affiliation,
+    it { is_expected.to match_array [:academic_concentration, :access, :affiliation, :dcmi_type,
                                      :degree_granting_institution, :doi, :extent,
-                                     :genre, :geographic_subject, :graduation_year, :medium, :note, :reviewer, :use,
+                                     :geographic_subject, :graduation_year, :medium, :note, :reviewer, :use,
                                      :keyword, :subject, :language, :rights_statement, :license] }
+  end
+  
+  describe "#admin_only_terms" do
+    subject { form.admin_only_terms }
+
+    it { is_expected.to match_array [:dcmi_type] }
+  end
+  
+  describe 'default value set' do
+    subject { form }
+    it "dcmi type must have default values" do
+      expect(form.model['dcmi_type']).to eq ['http://purl.org/dc/dcmitype/Text'] 
+    end
   end
 
   describe '.model_attributes' do
@@ -49,11 +62,11 @@ RSpec.describe Hyrax::MastersPaperForm do
           advisor: ['an advisor'],
           affiliation: ['SILS'],
           date_issued: 'a date', # single-valued
+          dcmi_type: ['type'],
           degree: 'MS', # single-valued
           degree_granting_institution: 'UNC', # single-valued
           doi: '12345',
           extent: ['an extent'],
-          genre: ['a genre'],
           geographic_subject: ['a geographic subject'],
           graduation_year: '2017',
           medium: ['a medium'],
@@ -87,7 +100,7 @@ RSpec.describe Hyrax::MastersPaperForm do
       expect(subject['degree_granting_institution']).to eq 'UNC'
       expect(subject['doi']).to eq '12345'
       expect(subject['extent']).to eq ['an extent']
-      expect(subject['genre']).to eq ['a genre']
+      expect(subject['dcmi_type']).to eq ['type']
       expect(subject['geographic_subject']).to eq ['a geographic subject']
       expect(subject['graduation_year']).to eq '2017'
       expect(subject['medium']).to eq ['a medium']

@@ -184,14 +184,14 @@ namespace :proquest do
 
     degree = metadata.xpath('//DISS_description/DISS_degree').text
 
-    genre = ''
+    dcmi_type = ''
     resource_type = ''
     normalized_degree = degree.downcase.gsub('.', '')
     if normalized_degree.in? ['edd', 'phd', 'drph']
-      genre = 'Dissertation'
+      dcmi_type = 'Dissertation'
       resource_type = 'Dissertation'
     else
-      genre = 'Thesis'
+      dcmi_type = 'Thesis'
       resource_type = 'Masters Thesis'
     end
 
@@ -233,7 +233,7 @@ namespace :proquest do
         'academic_concentration'=>academic_concentration,
         'graduation_year'=>graduation_year,
         'date_issued'=>(Date.try(:edtf, date_issued) || date_issued).to_s,
-        'genre'=>genre,
+        'dcmi_type'=>dcmi_type,
         'resource_type'=>resource_type,
         'language'=>language,
         'visibility'=>visibility,
@@ -263,7 +263,7 @@ namespace :proquest do
     resource.graduation_year = work_attributes['graduation_year']
     resource.language = [work_attributes['language']]
     resource.date_issued = work_attributes['date_issued']
-    resource.genre = [work_attributes['genre']]
+    resource.dcmi_type = [work_attributes['dcmi_type']]
     resource.resource_type = [work_attributes['resource_type']]
     resource.date_modified = DateTime.now()
     resource.date_uploaded = DateTime.now()

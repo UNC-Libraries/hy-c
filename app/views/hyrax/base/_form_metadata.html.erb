@@ -1,0 +1,23 @@
+<%# [hyc-override] Overriding partial from gem to allow for suppressed fields only visible to admins %>
+        <div class="base-terms">
+          <% f.object.primary_terms.each do |term| %>
+            <%= render_edit_field_partial(term, f: f) %>
+          <% end %>
+        </div>
+        <% if f.object.display_additional_fields? %>
+          <%= link_to t('hyrax.works.form.additional_fields'),
+                      '#extended-terms',
+                      class: 'btn btn-default additional-fields',
+                      data: { toggle: 'collapse' },
+                      role: "button",
+                      'aria-expanded'=> "false",
+                      'aria-controls'=> "extended-terms" %>
+          <div id="extended-terms" class='collapse'>
+            <%= render 'form_media', f: f %>
+            <% f.object.secondary_terms.each do |term| %>
+              <% if !(f.object.admin_only_terms.include? term) || current_user.admin? %>
+                <%= render_edit_field_partial(term, f: f) %>
+              <% end %>
+            <% end %>
+          </div>
+        <% end %>

@@ -56,6 +56,8 @@ RSpec.feature 'Create a Article', js: false do
       expect(page).not_to have_field('article_visibility_lease')
       choose "article_visibility_open"
       check 'agreement'
+      
+      expect(page).not_to have_selector('#article_dcmi_type')
 
       click_link "Files" # switch tab
       within "//span[@id=addfiles]" do
@@ -74,6 +76,7 @@ RSpec.feature 'Create a Article', js: false do
       first('.document-title', text: 'Test Article work').click
       expect(page).to have_content 'Test Default Keyword'
       expect(page).to have_content 'In Administrative Set: article admin set'
+      expect(page).to have_content 'Type http://purl.org/dc/dcmitype/Text'
       expect(page).to_not have_selector(:link, 'Delete')
     end
 
@@ -91,6 +94,10 @@ RSpec.feature 'Create a Article', js: false do
       expect(page).not_to have_field('article_visibility_lease')
       choose "article_visibility_open"
       check 'agreement'
+      
+      expect(page).to have_selector('#article_dcmi_type')
+      expect(page).to have_selector("input[value='http://purl.org/dc/dcmitype/Text']")
+      fill_in 'Dcmi type', with: 'http://purl.org/dc/dcmitype/Image'
 
       click_link "Files" # switch tab
       within "//span[@id=addfiles]" do
@@ -110,6 +117,7 @@ RSpec.feature 'Create a Article', js: false do
       first('.document-title', text: 'Test Article work').click
       expect(page).to have_content 'Test Default Keyword'
       expect(page).to have_content 'In Administrative Set: article admin set'
+      expect(page).to have_content 'Type http://purl.org/dc/dcmitype/Image'
       expect(page).to have_selector(:link, 'Delete')
     end
   end

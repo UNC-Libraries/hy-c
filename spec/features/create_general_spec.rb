@@ -56,6 +56,8 @@ RSpec.feature 'Create a General', js: false do
       expect(page).not_to have_field('general_visibility_lease')
       choose "general_visibility_open"
       check 'agreement'
+      
+      expect(page).not_to have_selector('#general_dcmi_type')
 
       click_link "Files" # switch tab
       within "//span[@id=addfiles]" do
@@ -91,6 +93,8 @@ RSpec.feature 'Create a General', js: false do
       expect(page).not_to have_field('general_visibility_lease')
       choose "general_visibility_open"
       check 'agreement'
+      
+      expect(page).to have_selector('#general_dcmi_type')
 
       click_link "Files" # switch tab
       within "//span[@id=addfiles]" do
