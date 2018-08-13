@@ -76,6 +76,7 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       first('.document-title', text: 'Test HonorsThesis work').click
       expect(page).to have_content 'Test Default Keyword'
       expect(page).to have_content 'In Administrative Set: honors thesis admin set'
+      expect(page).to have_content 'Type http://purl.org/dc/dcmitype/Text'
     end
 
     scenario 'as an admin' do
@@ -94,6 +95,8 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       check 'agreement'
       
       expect(page).to have_selector('#honors_thesis_dcmi_type')
+      expect(page).to have_selector("input[value='http://purl.org/dc/dcmitype/Text']")
+      fill_in 'Dcmi type', with: 'http://purl.org/dc/dcmitype/Image'
 
       click_link "Files" # switch tab
       within "//span[@id=addfiles]" do
@@ -113,6 +116,7 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       first('.document-title', text: 'Test HonorsThesis work').click
       expect(page).to have_content 'Test Default Keyword'
       expect(page).to have_content 'In Administrative Set: honors thesis admin set'
+      expect(page).to have_content 'Type http://purl.org/dc/dcmitype/Image'
     end
   end
 end

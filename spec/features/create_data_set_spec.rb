@@ -77,6 +77,7 @@ RSpec.feature 'Create a DataSet', js: false do
       first('.document-title', text: 'Test Data Set').click
       expect(page).to have_content 'Test Default Keyword'
       expect(page).to have_content 'In Administrative Set: data set admin set'
+      expect(page).to have_content 'Type http://purl.org/dc/dcmitype/Dataset'
     end
 
     scenario 'as an admin' do
@@ -96,6 +97,8 @@ RSpec.feature 'Create a DataSet', js: false do
       check 'agreement'
       
       expect(page).to have_selector('#data_set_dcmi_type')
+      expect(page).to have_selector("input[value='http://purl.org/dc/dcmitype/Dataset']")
+      fill_in 'Dcmi type', with: 'http://purl.org/dc/dcmitype/Image'
 
       click_link "Files" # switch tab
       within "//span[@id=addfiles]" do
@@ -115,6 +118,7 @@ RSpec.feature 'Create a DataSet', js: false do
       first('.document-title', text: 'Test Data Set').click
       expect(page).to have_content 'Test Default Keyword'
       expect(page).to have_content 'In Administrative Set: data set admin set'
+      expect(page).to have_content 'Type http://purl.org/dc/dcmitype/Image'
     end
   end
 end

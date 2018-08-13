@@ -100,6 +100,7 @@ RSpec.feature 'Create a MastersPaper', js: false do
       first('.document-title', text: 'Test MastersPaper work').click
       expect(page).to have_content 'Test Default Keyword'
       expect(page).to have_content 'In Administrative Set: dept admin set'
+      expect(page).to have_content 'Type http://purl.org/dc/dcmitype/Text'
     end
 
     scenario 'as an admin' do
@@ -122,6 +123,8 @@ RSpec.feature 'Create a MastersPaper', js: false do
       check 'agreement'
       
       expect(page).to have_selector('#masters_paper_dcmi_type')
+      expect(page).to have_selector("input[value='http://purl.org/dc/dcmitype/Text']")
+      fill_in 'Dcmi type', with: 'http://purl.org/dc/dcmitype/Image'
 
       click_link "Files" # switch tab
       within "//span[@id=addfiles]" do
@@ -141,6 +144,7 @@ RSpec.feature 'Create a MastersPaper', js: false do
       first('.document-title', text: 'Test MastersPaper work').click
       expect(page).to have_content 'Test Default Keyword'
       expect(page).to have_content 'In Administrative Set: masters paper admin set'
+      expect(page).to have_content 'Type http://purl.org/dc/dcmitype/Image'
     end
   end
 end
