@@ -9,7 +9,7 @@ RSpec.describe Hyrax::HonorsThesisForm do
   describe "#required_fields" do
     subject { form.required_fields }
 
-    it do  is_expected.to match_array [:title, :abstract, :academic_concentration, :advisor,
+    it do  is_expected.to match_array [:title, :abstract, :affiliation, :advisor,
                                        :creator, :degree, :date_created, :graduation_year,]
     end
   end
@@ -17,7 +17,7 @@ RSpec.describe Hyrax::HonorsThesisForm do
   describe "#primary_terms" do
     subject { form.primary_terms }
 
-    it do  is_expected.to match_array [:title, :abstract, :academic_concentration, :advisor,
+    it do  is_expected.to match_array [:title, :abstract, :affiliation, :advisor,
                                        :creator, :degree, :date_created, :graduation_year,]
     end
   end
@@ -25,7 +25,7 @@ RSpec.describe Hyrax::HonorsThesisForm do
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:access, :affiliation, :alternative_title,
+    it { is_expected.to match_array [:access, :academic_concentration, :alternative_title,
                                      :award, :date_issued, :dcmi_type, :degree_granting_institution, :doi, :extent,
                                      :geographic_subject, :note, :use, :language, :license, :resource_type,
                                      :rights_statement, :subject, :keyword, :related_url] }
@@ -63,7 +63,7 @@ RSpec.describe Hyrax::HonorsThesisForm do
           academic_concentration: ['a concentration'],
           access: 'public', # single-valued
           advisor: ['an advisor'],
-          affiliation: ['SILS'],
+          affiliation: 'SILS',
           alternative_title: ['another title'],
           award: ['an award'],
           dcmi_type: ['type'],
