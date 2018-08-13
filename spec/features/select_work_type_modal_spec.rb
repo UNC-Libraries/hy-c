@@ -24,4 +24,32 @@ RSpec.feature 'Select work type modal', js: false do
     visit hyrax.dashboard_works_path
     expect(page).to have_content 'Dissertations and Theses'
   end
+  
+  scenario 'as a unauthenticated on homepage' do
+    visit '/'
+    
+    expect(page).to have_selector('input[value="MastersPaper"]')
+    expect(page).to have_selector('input[value="HonorsThesis"]')
+    expect(page).to have_selector('input[value="DataSet"]')
+    expect(page).to have_selector('input[value="Article"]')
+    expect(page).to have_selector('input[value="Journal"]')
+    expect(page).to have_selector('input[value="ScholarlyWork"]')
+    expect(page).to have_selector('input[value="General"]')
+    
+    expect(page).to_not have_content 'Dissertations and Theses'
+  end
+  
+  scenario 'as a unauthenticated on search result' do
+    visit '/catalog'
+    
+    expect(page).to have_selector('input[value="MastersPaper"]')
+    expect(page).to have_selector('input[value="HonorsThesis"]')
+    expect(page).to have_selector('input[value="DataSet"]')
+    expect(page).to have_selector('input[value="Article"]')
+    expect(page).to have_selector('input[value="Journal"]')
+    expect(page).to have_selector('input[value="ScholarlyWork"]')
+    expect(page).to have_selector('input[value="General"]')
+    
+    expect(page).to_not have_content 'Dissertations and Theses'
+  end
 end
