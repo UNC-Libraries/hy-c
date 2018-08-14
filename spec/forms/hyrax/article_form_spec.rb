@@ -9,24 +9,37 @@ RSpec.describe Hyrax::ArticleForm do
   describe "#required_fields" do
     subject { form.required_fields }
 
-    it { is_expected.to eq [:title, :creator, :date_issued] }
+    it { is_expected.to eq [:title, :creator, :abstract, :date_issued] }
   end
 
   describe "#primary_terms" do
     subject { form.primary_terms }
 
-    it { is_expected.to eq [:title, :creator, :date_issued] }
+    it { is_expected.to eq [:title, :creator, :abstract, :date_issued] }
   end
 
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
     it { is_expected.to eq [:keyword, :license, :rights_statement, :publisher, :date_created, :subject, :language,
-                            :identifier, :resource_type, :abstract, :access, :affiliation, :bibliographic_citation, :copyright_date,
-                            :date_captured, :date_other, :doi, :edition, :extent, :funder, :genre, :geographic_subject,
+                            :identifier, :related_url, :resource_type, :access, :affiliation, :bibliographic_citation, :copyright_date,
+                            :date_captured, :date_other, :dcmi_type, :doi, :edition, :extent, :funder, :geographic_subject,
                             :issn, :journal_issue, :journal_title, :journal_volume, :note, :page_end, :page_start,
                             :peer_review_status, :place_of_publication, :rights_holder, :table_of_contents, :translator,
                             :url, :use] }
+  end
+  
+  describe "#admin_only_terms" do
+    subject { form.admin_only_terms }
+
+    it { is_expected.to match_array [:dcmi_type] }
+  end
+  
+  describe 'default value set' do
+    subject { form }
+    it "dcmi type must have default values" do
+      expect(form.model['dcmi_type']).to eq ['http://purl.org/dc/dcmitype/Text'] 
+    end
   end
 
   describe '.model_attributes' do
@@ -38,6 +51,7 @@ RSpec.describe Hyrax::ArticleForm do
           date_created: '2017-01-22', # single-valued
           language: ['a language'],
           publisher: ['a publisher'],
+          related_url: ['a url'],
           resource_type: ['a type'],
           rights_statement: 'a statement', # single-valued
           subject: ['a subject'],
@@ -54,11 +68,11 @@ RSpec.describe Hyrax::ArticleForm do
           date_captured: '2017-01-22', # single-valued
           date_issued: '2017-01-22', # single-valued
           date_other: [''],
+          dcmi_type: ['type'],
           doi: '12345', # single-valued
           edition: 'an edition',
           extent: ['1993'],
           funder: ['dean'],
-          genre: ['science fiction'],
           geographic_subject: ['California'],
           issn: ['12345'],
           journal_issue: '27', # single-valued
@@ -86,6 +100,7 @@ RSpec.describe Hyrax::ArticleForm do
       expect(subject['date_created']).to eq '2017-01-22'
       expect(subject['language']).to eq ['a language']
       expect(subject['publisher']).to eq ['a publisher']
+      expect(subject['related_url']).to eq ['a url']
       expect(subject['resource_type']).to eq ['a type']
       expect(subject['rights_statement']).to eq ['a statement']
       expect(subject['subject']).to eq ['a subject']
@@ -104,7 +119,7 @@ RSpec.describe Hyrax::ArticleForm do
       expect(subject['edition']).to eq 'an edition'
       expect(subject['extent']).to eq ['1993']
       expect(subject['funder']).to eq ['dean']
-      expect(subject['genre']).to eq ['science fiction']
+      expect(subject['dcmi_type']).to eq ['type']
       expect(subject['geographic_subject']).to eq ['California']
       expect(subject['issn']).to eq ['12345']
       expect(subject['journal_issue']).to eq '27'

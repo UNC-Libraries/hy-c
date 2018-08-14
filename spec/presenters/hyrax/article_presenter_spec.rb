@@ -22,12 +22,12 @@ RSpec.describe Hyrax::ArticlePresenter do
       "date_created_tesim" => '2017-01-22',
       "date_issued_tesim" => '2017-01-22',
       "date_other_tesim" => ['2017-01-22'],
+      "dcmi_type_tesim" => ['science fiction'],
       "deposit_record_tesim" => 'a deposit record',
       "doi_tesim" => '12345',
       "edition_tesim" => 'new edition',
       "extent_tesim" => ['1993'],
       "funder_tesim" => ['dean'],
-      "genre_tesim" => ['science fiction'],
       "geographic_subject_tesim" => ['California'],
       "issn_tesim" => ['12345'],
       "journal_issue_tesim" => '27',
@@ -73,12 +73,12 @@ RSpec.describe Hyrax::ArticlePresenter do
   it { is_expected.to delegate_method(:date_captured).to(:solr_document) }
   it { is_expected.to delegate_method(:date_issued).to(:solr_document) }
   it { is_expected.to delegate_method(:date_other).to(:solr_document) }
+  it { is_expected.to delegate_method(:dcmi_type).to(:solr_document) }
   it { is_expected.to delegate_method(:deposit_record).to(:solr_document) }
   it { is_expected.to delegate_method(:doi).to(:solr_document) }
   it { is_expected.to delegate_method(:edition).to(:solr_document) }
   it { is_expected.to delegate_method(:extent).to(:solr_document) }
   it { is_expected.to delegate_method(:funder).to(:solr_document) }
-  it { is_expected.to delegate_method(:genre).to(:solr_document) }
   it { is_expected.to delegate_method(:geographic_subject).to(:solr_document) }
   it { is_expected.to delegate_method(:issn).to(:solr_document) }
   it { is_expected.to delegate_method(:journal_issue).to(:solr_document) }
@@ -258,14 +258,13 @@ RSpec.describe Hyrax::ArticlePresenter do
       end
     end
 
-    context "with a custom genre field" do
+    context "with a custom dcmi_type field" do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:genre, ['science fiction'], {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:dcmi_type, ['science fiction'], {}).and_return(renderer)
       end
-
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
-        presenter.attribute_to_html(:genre)
+        presenter.attribute_to_html(:dcmi_type)
       end
     end
 

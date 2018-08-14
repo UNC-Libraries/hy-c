@@ -1,0 +1,21 @@
+terms:
+  - id: Numeric
+    term: Numeric 
+  - id: Text
+    term: Text 
+  - id: Still Image
+    term: Still Image 
+  - id: Geospatial
+    term: Geospatial 
+  - id: Audio
+    term: Audio 
+  - id: Video
+    term: Video
+  - id: Software
+    term: Software 
+  - id: Interactive Resource
+    term: Interactive Resource 
+  - id: 3D
+    term: 3D 
+  - id: Other
+    term: Other 

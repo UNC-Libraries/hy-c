@@ -57,6 +57,8 @@ RSpec.feature 'Create a DataSet', js: false do
       expect(page).not_to have_field('data_set_visibility_lease')
       choose "data_set_visibility_open"
       check 'agreement'
+      
+      expect(page).not_to have_selector('#data_set_dcmi_type')
 
       click_link "Files" # switch tab
       within "//span[@id=addfiles]" do
@@ -75,6 +77,7 @@ RSpec.feature 'Create a DataSet', js: false do
       first('.document-title', text: 'Test Data Set').click
       expect(page).to have_content 'Test Default Keyword'
       expect(page).to_not have_content 'In Administrative Set: data set admin set'
+      expect(page).to have_content 'Type http://purl.org/dc/dcmitype/Dataset'
     end
 
     scenario 'as an admin' do
@@ -92,6 +95,10 @@ RSpec.feature 'Create a DataSet', js: false do
       expect(page).not_to have_field('data_set_visibility_lease')
       choose "data_set_visibility_open"
       check 'agreement'
+      
+      expect(page).to have_selector('#data_set_dcmi_type')
+      expect(page).to have_selector("input[value='http://purl.org/dc/dcmitype/Dataset']")
+      fill_in 'Dcmi type', with: 'http://purl.org/dc/dcmitype/Image'
 
       click_link "Files" # switch tab
       within "//span[@id=addfiles]" do
@@ -111,6 +118,7 @@ RSpec.feature 'Create a DataSet', js: false do
       first('.document-title', text: 'Test Data Set').click
       expect(page).to have_content 'Test Default Keyword'
       expect(page).to have_content 'In Administrative Set: data set admin set'
+      expect(page).to have_content 'Type http://purl.org/dc/dcmitype/Image'
     end
   end
 end

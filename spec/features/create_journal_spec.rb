@@ -49,13 +49,15 @@ RSpec.feature 'Create a Journal', js: false do
       expect(page).to have_content "Add New Scholarly Journal, Newsletter or Book"
 
       fill_in 'Title', with: 'Test Journal'
-      fill_in 'Creator', with: 'Test Default Creator'
+      fill_in 'Author', with: 'Test Default Creator'
       fill_in 'Keyword', with: 'Test Default Keyword'
       select "In Copyright", :from => "journal_rights_statement"
       expect(page).to have_field('journal_visibility_embargo')
       expect(page).not_to have_field('journal_visibility_lease')
       choose "journal_visibility_open"
       check 'agreement'
+      
+      expect(page).not_to have_selector('#journal_dcmi_type')
 
       click_link "Files" # switch tab
       within "//span[@id=addfiles]" do
@@ -74,6 +76,7 @@ RSpec.feature 'Create a Journal', js: false do
       first('.document-title', text: 'Test Journal').click
       expect(page).to have_content 'Test Default Keyword'
       expect(page).to_not have_content 'In Administrative Set: journal admin set'
+      expect(page).to have_content 'Type http://purl.org/dc/dcmitype/Text'
     end
 
     scenario 'as an admin' do
@@ -83,13 +86,17 @@ RSpec.feature 'Create a Journal', js: false do
       expect(page).to have_content "Add New Scholarly Journal, Newsletter or Book"
 
       fill_in 'Title', with: 'Test Journal'
-      fill_in 'Creator', with: 'Test Default Creator'
+      fill_in 'Author', with: 'Test Default Creator'
       fill_in 'Keyword', with: 'Test Default Keyword'
       select "In Copyright", :from => "journal_rights_statement"
       expect(page).to have_field('journal_visibility_embargo')
       expect(page).not_to have_field('journal_visibility_lease')
       choose "journal_visibility_open"
       check 'agreement'
+      
+      expect(page).to have_selector('#journal_dcmi_type')
+      expect(page).to have_selector("input[value='http://purl.org/dc/dcmitype/Text']")
+      fill_in 'Dcmi type', with: 'http://purl.org/dc/dcmitype/Image'
 
       click_link "Files" # switch tab
       within "//span[@id=addfiles]" do
@@ -109,6 +116,7 @@ RSpec.feature 'Create a Journal', js: false do
       first('.document-title', text: 'Test Journal').click
       expect(page).to have_content 'Test Default Keyword'
       expect(page).to have_content 'In Administrative Set: journal admin set'
+      expect(page).to have_content 'Type http://purl.org/dc/dcmitype/Image'
     end
   end
 end

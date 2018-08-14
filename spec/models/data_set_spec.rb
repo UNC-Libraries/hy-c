@@ -43,7 +43,7 @@ RSpec.describe DataSet do
       expect(subject).to respond_to(:doi)
       expect(subject).to respond_to(:extent)
       expect(subject).to respond_to(:funder)
-      expect(subject).to respond_to(:genre)
+      expect(subject).to respond_to(:dcmi_type)
       expect(subject).to respond_to(:geographic_subject)
       expect(subject).to respond_to(:kind_of_data)
       expect(subject).to respond_to(:last_modified_date)
