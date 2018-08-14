@@ -75,7 +75,7 @@ RSpec.feature 'Create a HonorsThesis', js: false do
 
       first('.document-title', text: 'Test HonorsThesis work').click
       expect(page).to have_content 'Test Default Keyword'
-      expect(page).to have_content 'In Administrative Set: honors thesis admin set'
+      expect(page).to_not have_content 'In Administrative Set: honors thesis admin set'
       expect(page).to have_content 'Type http://purl.org/dc/dcmitype/Text'
     end
 

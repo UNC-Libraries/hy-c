@@ -75,7 +75,8 @@ RSpec.feature 'Create a Article', js: false do
 
       first('.document-title', text: 'Test Article work').click
       expect(page).to have_content 'Test Default Keyword'
-      expect(page).to have_content 'In Administrative Set: article admin set'
+
+      expect(page).to_not have_content 'In Administrative Set: article admin set'
       expect(page).to have_content 'Type http://purl.org/dc/dcmitype/Text'
       expect(page).to_not have_selector(:link, 'Delete')
     end

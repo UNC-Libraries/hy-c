@@ -76,7 +76,7 @@ RSpec.feature 'Create a ScholarlyWork', js: false do
 
       first('.document-title', text: 'Test ScholarlyWork work').click
       expect(page).to have_content 'Test Default Keyword'
-      expect(page).to have_content 'In Administrative Set: scholarly work admin set'
+      expect(page).to_not have_content 'In Administrative Set: scholarly work admin set'
     end
 
     scenario 'as an admin' do

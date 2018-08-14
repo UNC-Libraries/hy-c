@@ -75,7 +75,7 @@ RSpec.feature 'Create a General', js: false do
 
       first('.document-title', text: 'Test General work').click
       expect(page).to have_content 'Test Default Keyword'
-      expect(page).to have_content 'In Administrative Set: general admin set'
+      expect(page).to_not have_content 'In Administrative Set: general admin set'
       expect(page).to_not have_selector(:link, 'Delete')
     end
 
