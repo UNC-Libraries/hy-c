@@ -172,7 +172,6 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       expect(page).to have_content 'Your files are being processed by Hyrax'
       expect(page).to have_content 'Pending review'
       expect(page).to have_content 'Test Default Keyword'
-      expect(page).to have_content 'In Administrative Set: honors thesis admin set'
       expect(page).to have_content 'Affiliation College of Arts and Sciences, Department of Biology'
       expect(page).to have_content 'Type http://purl.org/dc/dcmitype/Text'
 
@@ -221,7 +220,6 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       expect(page).not_to have_content 'Pending review'
       expect(page).to have_content 'Honors workflow test'
       expect(page).to have_content 'Test Default Keyword'
-      expect(page).to have_content 'In Administrative Set: honors thesis admin set'
       expect(page).to have_content 'Affiliation College of Arts and Sciences, Department of Biology'
       expect(page).to have_content 'Type http://purl.org/dc/dcmitype/Text'
     end
