@@ -1,5 +1,5 @@
 <%# app/views/records/edit_fields/_affiliation.html.erb %>
-<% if (f.object.try(:single_value_fields)) && (f.object.single_value_fields.include? key) %>
+<% if (f.object.try(:single_value_fields)) && (f.object.single_value_fields.include? key) && !current_user.admin? %>
     <%= f.input :affiliation, as: :select,
                 collection: DepartmentsService.select_all_options.sort,
                 include_blank: true,
