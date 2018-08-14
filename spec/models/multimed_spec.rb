@@ -44,7 +44,7 @@ RSpec.describe Multimed do
       expect(subject).to respond_to(:abstract)
       expect(subject).to respond_to(:doi)
       expect(subject).to respond_to(:extent)
-      expect(subject).to respond_to(:genre)
+      expect(subject).to respond_to(:dcmi_type)
       expect(subject).to respond_to(:geographic_subject)
       expect(subject).to respond_to(:note)
     end
