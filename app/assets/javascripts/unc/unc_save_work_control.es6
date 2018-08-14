@@ -1,3 +1,4 @@
+// [hyc-override] Overriding activate to pick up our local visibility component
 import SaveWorkControl from 'hyrax/save_work/save_work_control'
 import { RequiredFields } from 'hyrax/save_work/required_fields'
 import { ChecklistItem } from 'hyrax/save_work/checklist_item'
@@ -29,6 +30,7 @@ export default class UncSaveWorkControl extends SaveWorkControl {
         this.addFileUploadEventListeners();
     }
 
+    // Should be picked up when extending the class, but give an error if not included
     addFileUploadEventListeners() {
         let $uploadsEl = this.uploads.element;
         const $cancelBtn = this.uploads.form.find('#file-upload-cancel-btn');

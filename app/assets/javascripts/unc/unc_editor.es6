@@ -1,3 +1,4 @@
+// [hyc-override] Overriding saveWorkControl to pick up our local changes
 import Editor from 'hyrax/editor'
 import UncSaveWorkControl from 'unc/unc_save_work_control'
 

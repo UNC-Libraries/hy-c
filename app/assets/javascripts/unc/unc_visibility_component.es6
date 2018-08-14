@@ -1,3 +1,4 @@
+// [hyc-override] Overriding visibility settings
 import VisibilityComponent from 'hyrax/save_work/visibility_component'
 
 export default class UncVisibilityComponent extends VisibilityComponent {
@@ -17,7 +18,9 @@ export default class UncVisibilityComponent extends VisibilityComponent {
         let is_admin = this.isAdmin();
 
         // Restrictions require either a visibility requirement or a date requirement (or both)
-        if(visibility || release_no_delay || release_date) {
+        if (is_admin) {
+            this.enableAllOptions();
+        } else if (visibility || release_no_delay || release_date) {
             this.applyRestrictions(visibility, release_no_delay, release_date, release_before);
         } else {
             this.enableAllOptions();
@@ -37,11 +40,22 @@ export default class UncVisibilityComponent extends VisibilityComponent {
         return is_admin;
     }
 
+    limitByAdminSet() {
+        if(this.adminSetWidget) {
+            this.adminSetWidget.on('change', (data) => this.restrictToVisibility(data))
+            if (this.adminSetWidget.isEmpty()) {
+                console.error("No data was passed from the admin set. Perhaps there are no selectable options?")
+                return
+            }
+            this.restrictToVisibility(this.adminSetWidget.data())
+        }
+    }
+
     selectVisibility(visibility) {
         let allowed_fields = this.element.find("[type='radio'][value='" + visibility + "']");
         let allowed_parent = allowed_fields.parent();
 
-        allowed_fields.prop("disabled", false);
+        allowed_fields.prop("disabled", false).prop("checked", true);
         allowed_parent.removeClass('highlight-disabled');
 
         let disallowed_fields = this.element.find("[type='radio'][value!='" + visibility + "']");
