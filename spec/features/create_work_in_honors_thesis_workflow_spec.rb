@@ -18,6 +18,10 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       User.new(email: 'reviewer@example.com', guest: false, uid: 'reviewer@example.com') { |u| u.save!(validate: false)}
     end
 
+    let(:nonreviewer) do
+      User.new(email: 'nonreviewer@example.com', guest: false, uid: 'nonreviewer@example.com') { |u| u.save!(validate: false)}
+    end
+
     let(:admin_set) do
       AdminSet.create(title: ["honors thesis admin set"],
                       description: ["some description"],
@@ -188,6 +192,17 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       expect(page).to have_content "Accounts: reviewer@example.com"
 
       logout admin_user
+
+      # Check that non-reviewer cannot review work
+      login_as nonreviewer
+
+      visit '/dashboard'
+      expect(page).to have_content 'Your activity'
+      expect(page).not_to have_content 'Review Submissions'
+
+      visit '/concern/honors_theses/'+HonorsThesis.all[-1].id
+      expect(page).to have_content 'Honors workflow test'
+      expect(page).not_to have_content 'Review and Approval'
 
       # Check that reviewer can review work
       login_as reviewer
