@@ -55,7 +55,7 @@ export default class UncVisibilityComponent extends VisibilityComponent {
         let allowed_fields = this.element.find("[type='radio'][value='" + visibility + "']");
         let allowed_parent = allowed_fields.parent();
 
-        allowed_fields.prop("disabled", false).prop("checked", true);
+        allowed_fields.prop("disabled", false);
         allowed_parent.removeClass('highlight-disabled');
 
         let disallowed_fields = this.element.find("[type='radio'][value!='" + visibility + "']");
