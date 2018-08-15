@@ -148,7 +148,7 @@ module Hyrax
 
       # Validate visibility complies with AdminSet template requirements
       def validate_visibility(env, attributes, template)
-        # Added this to allow admins to override visibility settings in admin set
+        # Added this to allow saving of overridden visibility settings in admin set
         return true if env.current_ability.can?(:edit, env.curation_concern)
         # NOTE: For embargo/lease, attributes[:visibility] will be nil (see sanitize_params), so visibility will be validated as part of embargo/lease
         return true if attributes[:visibility].blank?
