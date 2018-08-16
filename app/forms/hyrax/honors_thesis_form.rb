@@ -4,8 +4,6 @@ module Hyrax
   class HonorsThesisForm < ::SingleValueForm
     self.model_class = ::HonorsThesis
 
-    class_attribute :single_value_fields
-    class_attribute :admin_multi_value_fields
 
     self.terms += [:abstract, :academic_concentration, :access, :advisor, :affiliation, :alternative_title, :award,
                    :date_issued, :dcmi_type, :degree, :degree_granting_institution, :doi, :extent, :geographic_subject,
