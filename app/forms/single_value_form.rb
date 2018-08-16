@@ -24,6 +24,10 @@ class SingleValueForm < Hyrax::Forms::WorkForm
 
   # cast single value fields back to multivalued so they will actually deposit
   def self.model_attributes(form_params)
+    admin_multi_value_fields.each do |field|
+      form_params[field] = Array(form_params[field])
+    end
+
     attrs = super
 
     single_value_fields.each do |field|
