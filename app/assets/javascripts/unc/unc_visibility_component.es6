@@ -51,7 +51,7 @@ export default class UncVisibilityComponent extends VisibilityComponent {
         if(matchEnabled) {
             let allowed_fields = this.element.find(matchEnabled);
             allowed_fields.prop("disabled", false);
-            allowed_fields.removeClass('highlight-disabled')
+            allowed_fields.parent().removeClass('highlight-disabled')
         }
         let disallowed__fields = this.element.find(matchDisabled);
         disallowed__fields.prop("disabled", true);
