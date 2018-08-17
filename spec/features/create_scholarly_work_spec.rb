@@ -56,6 +56,9 @@ RSpec.feature 'Create a ScholarlyWork', js: false do
       expect(page).not_to have_field('scholarly_work_visibility_lease')
       choose "scholarly_work_visibility_open"
       check 'agreement'
+      
+      # Verify that admin only field is not visible
+      expect(page).not_to have_selector('#scholarly_work_dcmi_type')
 
       click_link "Files" # switch tab
       within "//span[@id=addfiles]" do
@@ -73,7 +76,7 @@ RSpec.feature 'Create a ScholarlyWork', js: false do
 
       first('.document-title', text: 'Test ScholarlyWork work').click
       expect(page).to have_content 'Test Default Keyword'
-      expect(page).to have_content 'In Administrative Set: scholarly work admin set'
+      expect(page).to_not have_content 'In Administrative Set: scholarly work admin set'
     end
 
     scenario 'as an admin' do
@@ -90,6 +93,8 @@ RSpec.feature 'Create a ScholarlyWork', js: false do
       expect(page).not_to have_field('scholarly_work_visibility_lease')
       choose "scholarly_work_visibility_open"
       check 'agreement'
+      
+      expect(page).to have_selector('#scholarly_work_dcmi_type')
 
       click_link "Files" # switch tab
       within "//span[@id=addfiles]" do

@@ -72,13 +72,16 @@ RSpec.feature 'Create a MastersPaper', js: false do
       expect(page).to have_content "Add New Master's Paper"
 
       fill_in 'Title', with: 'Test MastersPaper work'
-      fill_in 'Creator', with: 'Test Default Creator'
+      fill_in 'Author', with: 'Test Default Creator'
       fill_in 'Keyword', with: 'Test Default Keyword'
       select "In Copyright", :from => "masters_paper_rights_statement"
       expect(page).to have_field('masters_paper_visibility_embargo')
       expect(page).not_to have_field('masters_paper_visibility_lease')
       choose "masters_paper_visibility_open"
       check 'agreement'
+      
+      # Verify that admin only field is not visible
+      expect(page).not_to have_selector('#masters_paper_dcmi_type')
 
       click_link "Files" # switch tab
       within "//span[@id=addfiles]" do
@@ -96,7 +99,8 @@ RSpec.feature 'Create a MastersPaper', js: false do
 
       first('.document-title', text: 'Test MastersPaper work').click
       expect(page).to have_content 'Test Default Keyword'
-      expect(page).to have_content 'In Administrative Set: dept admin set'
+      expect(page).to_not have_content 'In Administrative Set: dept admin set'
+      expect(page).to have_content 'Type http://purl.org/dc/dcmitype/Text'
     end
 
     scenario 'as an admin' do
@@ -110,13 +114,17 @@ RSpec.feature 'Create a MastersPaper', js: false do
       expect(page).to have_content "Add New Master's Paper"
 
       fill_in 'Title', with: 'Test MastersPaper work'
-      fill_in 'Creator', with: 'Test Default Creator'
+      fill_in 'Author', with: 'Test Default Creator'
       fill_in 'Keyword', with: 'Test Default Keyword'
       select "In Copyright", :from => "masters_paper_rights_statement"
       expect(page).to have_field('masters_paper_visibility_embargo')
       expect(page).not_to have_field('masters_paper_visibility_lease')
       choose "masters_paper_visibility_open"
       check 'agreement'
+      
+      expect(page).to have_selector('#masters_paper_dcmi_type')
+      expect(page).to have_selector("input[value='http://purl.org/dc/dcmitype/Text']")
+      fill_in 'Dcmi type', with: 'http://purl.org/dc/dcmitype/Image'
 
       click_link "Files" # switch tab
       within "//span[@id=addfiles]" do
@@ -136,6 +144,7 @@ RSpec.feature 'Create a MastersPaper', js: false do
       first('.document-title', text: 'Test MastersPaper work').click
       expect(page).to have_content 'Test Default Keyword'
       expect(page).to have_content 'In Administrative Set: masters paper admin set'
+      expect(page).to have_content 'Type http://purl.org/dc/dcmitype/Image'
     end
   end
 end

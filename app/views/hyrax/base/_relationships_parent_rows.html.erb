@@ -1,0 +1,17 @@
+<%# [hyc-override] Overriding partial in hyrax gem. Only show admin set membership to admins %>
+<%# Render presenters which aren't specified in the 'presenter_types' %>
+<% presenter.grouped_presenters(except: presenter.presenter_types).each_pair do |model_name, items| %>
+  <%= render 'relationships_parent_row', type: model_name, items: items, presenter: presenter %>
+<% end %>
+
+<%# Render grouped presenters. Show rows if there are any items of that type %>
+<% presenter.presenter_types.each do |type| %>
+  <% presenter.grouped_presenters(filtered_by: type).each_pair do |_, items| %>
+    <%= render 'relationships_parent_row', type: type, items: items, presenter: presenter %>
+  <% end %>
+<% end %>
+
+<%# checks if user present and if they're an admin %>
+<% if current_user&.admin? %>
+  <%= presenter.attribute_to_html(:admin_set, render_as: :faceted, html_dl: true) %>
+<% end %>

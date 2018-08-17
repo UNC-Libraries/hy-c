@@ -133,7 +133,7 @@ class CatalogController < ApplicationController
     config.add_index_field solr_name("edition", :stored_searchable), label: "Edition"
     config.add_index_field solr_name("extent", :stored_searchable), label: "Extent"
     config.add_index_field solr_name("funder", :stored_searchable), label: "Funder"
-    config.add_index_field solr_name("genre", :stored_searchable), label: "Genre"
+    config.add_index_field solr_name("dcmi_type", :stored_searchable), label: "Type"
     config.add_index_field solr_name("geographic_subject", :stored_searchable), label: "Geographic Subject"
     config.add_index_field solr_name("graduation_year", :stored_searchable), label: "Graduation Year"
     config.add_index_field solr_name("isbn", :stored_searchable), label: "ISBN"

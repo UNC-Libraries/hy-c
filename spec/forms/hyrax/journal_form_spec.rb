@@ -9,21 +9,34 @@ RSpec.describe Hyrax::JournalForm do
   describe "#required_fields" do
     subject { form.required_fields }
 
-    it { is_expected.to match_array [:title, :date_issued] }
+    it { is_expected.to match_array [:title, :date_issued, :publisher] }
   end
 
   describe "#primary_terms" do
     subject { form.primary_terms }
 
-    it { is_expected.to match_array [:title, :date_issued] }
+    it { is_expected.to match_array [:title, :date_issued, :publisher] }
   end
 
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:abstract, :alternative_title, :doi, :extent, :genre, :geographic_subject, :issn,
+    it { is_expected.to match_array [:abstract, :alternative_title, :dcmi_type, :doi, :extent, :geographic_subject, :issn,
                                      :note, :place_of_publication, :table_of_contents, :creator, :subject, :keyword,
-                                     :language, :resource_type, :license, :rights_statement, :publisher] }
+                                     :language, :resource_type, :license, :rights_statement] }
+  end
+  
+  describe "#admin_only_terms" do
+    subject { form.admin_only_terms }
+
+    it { is_expected.to match_array [:dcmi_type] }
+  end
+  
+  describe 'default value set' do
+    subject { form }
+    it "dcmi type must have default values" do
+      expect(form.model['dcmi_type']).to eq ['http://purl.org/dc/dcmitype/Text'] 
+    end
   end
 
   describe ".model_attributes" do
@@ -45,9 +58,9 @@ RSpec.describe Hyrax::JournalForm do
           abstract: ['an abstract'],
           alternative_title: ['alt title'],
           date_issued: '2018-01-08', # single-valued
+          dcmi_type: ['type'],
           doi: '12345',
           extent: ['1993'],
-          genre: ['science'],
           geographic_subject: ['California'],
           issn: ['12345'],
           note: [''],
@@ -75,7 +88,7 @@ RSpec.describe Hyrax::JournalForm do
       expect(subject['date_issued']).to eq '2018-01-08'
       expect(subject['doi']).to eq '12345'
       expect(subject['extent']).to eq ['1993']
-      expect(subject['genre']).to eq ['science']
+      expect(subject['dcmi_type']).to eq ['type']
       expect(subject['geographic_subject']).to eq ['California']
       expect(subject['issn']).to eq ['12345']
       expect(subject['note']).to be_empty

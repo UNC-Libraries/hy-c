@@ -77,7 +77,7 @@
                         {
                             "notification_type": "email",
                             "name": "Hyrax::Workflow::DeletionApprovalNotification",
-                            "to": ["depositing"]
+                            "to": ["depositing", "managing"]
                         }
                     ],
                     "methods": [

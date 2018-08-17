@@ -53,7 +53,7 @@ RSpec.describe Dissertation do
       expect(subject).to respond_to(:degree_granting_institution)
       expect(subject).to respond_to(:discipline)
       expect(subject).to respond_to(:doi)
-      expect(subject).to respond_to(:genre)
+      expect(subject).to respond_to(:dcmi_type)
       expect(subject).to respond_to(:geographic_subject)
       expect(subject).to respond_to(:graduation_year)
       expect(subject).to respond_to(:note)
