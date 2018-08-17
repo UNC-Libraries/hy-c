@@ -21,7 +21,7 @@ RSpec.describe Hyrax::DepartmentsService do
     end
 
     it "resolves for ids of inactive terms" do
-      expect(service.label('example')).to eq('Some College, Example Department')
+      expect(service.label('example')).to eq('Some College; Example Department')
     end
   end
 
