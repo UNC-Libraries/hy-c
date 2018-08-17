@@ -18,11 +18,19 @@ class ScholarlyWork < ActiveFedora::Base
     index.as :stored_searchable
   end
 
+  property :affiliation, predicate: ::RDF::Vocab::SCHEMA.affiliation do |index|
+    index.as :stored_searchable, :facetable
+  end
+
   property :conference_name, predicate: ::RDF::Vocab::EBUCore.eventName do |index|
     index.as :stored_searchable
   end
 
   property :date_issued, predicate: ::RDF::Vocab::DC.issued, multiple: false do |index|
+    index.as :stored_searchable
+  end
+
+  property :dcmi_type, predicate: ::RDF::Vocab::DC.type do |index|
     index.as :stored_searchable
   end
 
@@ -35,11 +43,15 @@ class ScholarlyWork < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :dcmi_type, predicate: ::RDF::Vocab::DC.type do |index|
+  property :geographic_subject, predicate: ::RDF::Vocab::DC.spatial do |index|
     index.as :stored_searchable
   end
 
-  property :geographic_subject, predicate: ::RDF::Vocab::DC.spatial do |index|
+  property :orcid, predicate: ::RDF::Vocab::Identifiers.orcid do |index|
+    index.as :stored_searchable
+  end
+
+  property :other_affiliation, predicate: ::RDF::Vocab::EBUCore.hasAffiliation do |index|
     index.as :stored_searchable
   end
 

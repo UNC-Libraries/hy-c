@@ -6,8 +6,8 @@ module Hyrax
     
     self.model_class = ::Journal
 
-    self.terms += [:abstract, :alternative_title, :date_issued, :dcmi_type, :doi, :extent, :geographic_subject, :issn, :note,
-                  :place_of_publication, :publisher, :table_of_contents, :resource_type]
+    self.terms += [:abstract, :alternative_title, :date_issued, :dcmi_type, :doi, :extent, :geographic_subject, :isbn,
+                   :issn, :note, :place_of_publication, :publisher, :table_of_contents, :resource_type]
 
     self.terms -= [:description, :based_near, :related_url, :identifier, :contributor, :source, :date_created]
 
