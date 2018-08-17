@@ -9,26 +9,25 @@ RSpec.describe Hyrax::HonorsThesisForm do
   describe "#required_fields" do
     subject { form.required_fields }
 
-    it do  is_expected.to match_array [:title, :abstract, :academic_concentration, :advisor,
-                                       :creator, :degree, :date_created, :graduation_year,]
+    it do  is_expected.to match_array [:title, :abstract, :advisor, :creator, :degree, :date_created,
+                                       :graduation_year, :affiliation, :degree_granting_institution]
     end
   end
 
   describe "#primary_terms" do
     subject { form.primary_terms }
 
-    it do  is_expected.to match_array [:title, :abstract, :academic_concentration, :advisor,
-                                       :creator, :degree, :date_created, :graduation_year,]
+    it do  is_expected.to match_array [:title, :abstract, :advisor, :creator, :degree, :date_created,
+                                       :graduation_year, :affiliation, :degree_granting_institution]
     end
   end
 
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:access, :affiliation, :alternative_title,
-                                     :award, :date_issued, :dcmi_type, :degree_granting_institution, :doi, :extent,
-                                     :geographic_subject, :note, :use, :language, :license, :resource_type,
-                                     :rights_statement, :subject, :keyword, :related_url] }
+    it { is_expected.to match_array [:access, :academic_concentration, :alternative_title, :award, :date_issued,
+                                     :dcmi_type, :doi, :extent, :geographic_subject, :note, :use, :language, :license,
+                                     :resource_type, :rights_statement, :subject, :keyword, :related_url, :url] }
   end
   
   describe "#admin_only_terms" do
@@ -74,7 +73,8 @@ RSpec.describe Hyrax::HonorsThesisForm do
           geographic_subject: ['a geographic subject'],
           graduation_year: '2017',
           note: [''],
-          use: ['a use']
+          use: ['a use'],
+          url: ['a url']
       )
     end
 
@@ -109,6 +109,7 @@ RSpec.describe Hyrax::HonorsThesisForm do
       expect(subject['graduation_year']).to eq '2017'
       expect(subject['note']).to be_empty
       expect(subject['use']).to eq ['a use']
+      expect(subject['url']).to eq ['a url']
     end
 
     context '.model_attributes' do

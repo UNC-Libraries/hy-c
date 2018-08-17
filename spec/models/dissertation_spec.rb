@@ -39,7 +39,6 @@ RSpec.describe Dissertation do
       expect(subject).to respond_to(:identifier)
       expect(subject).to respond_to(:source)
       expect(subject).to respond_to(:resource_type)
-      expect(subject).to respond_to(:deposit_record)
 
       # Additional metadata
       expect(subject).to respond_to(:abstract)
@@ -51,7 +50,7 @@ RSpec.describe Dissertation do
       expect(subject).to respond_to(:date_issued)
       expect(subject).to respond_to(:degree)
       expect(subject).to respond_to(:degree_granting_institution)
-      expect(subject).to respond_to(:discipline)
+      expect(subject).to respond_to(:deposit_record)
       expect(subject).to respond_to(:doi)
       expect(subject).to respond_to(:dcmi_type)
       expect(subject).to respond_to(:geographic_subject)

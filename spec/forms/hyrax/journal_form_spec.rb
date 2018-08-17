@@ -21,9 +21,9 @@ RSpec.describe Hyrax::JournalForm do
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:abstract, :alternative_title, :dcmi_type, :doi, :extent, :geographic_subject, :issn,
-                                     :note, :place_of_publication, :table_of_contents, :creator, :subject, :keyword,
-                                     :language, :resource_type, :license, :rights_statement] }
+    it { is_expected.to match_array [:abstract, :alternative_title, :dcmi_type, :doi, :extent, :geographic_subject,
+                                     :isbn, :issn, :note, :place_of_publication, :table_of_contents, :creator, :subject,
+                                     :keyword, :language, :resource_type, :license, :rights_statement] }
   end
   
   describe "#admin_only_terms" do
@@ -62,6 +62,7 @@ RSpec.describe Hyrax::JournalForm do
           doi: '12345',
           extent: ['1993'],
           geographic_subject: ['California'],
+          isbn: ['123456'],
           issn: ['12345'],
           note: [''],
           place_of_publication: ['California'],
@@ -90,6 +91,7 @@ RSpec.describe Hyrax::JournalForm do
       expect(subject['extent']).to eq ['1993']
       expect(subject['dcmi_type']).to eq ['type']
       expect(subject['geographic_subject']).to eq ['California']
+      expect(subject['isbn']).to eq ['123456']
       expect(subject['issn']).to eq ['12345']
       expect(subject['note']).to be_empty
       expect(subject['place_of_publication']).to eq ['California']

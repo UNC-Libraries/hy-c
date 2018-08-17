@@ -22,11 +22,11 @@ RSpec.describe Hyrax::ArticleForm do
     subject { form.secondary_terms }
 
     it { is_expected.to eq [:keyword, :license, :rights_statement, :publisher, :date_created, :subject, :language,
-                            :identifier, :related_url, :resource_type, :access, :affiliation, :bibliographic_citation, :copyright_date,
-                            :date_captured, :date_other, :dcmi_type, :doi, :edition, :extent, :funder, :geographic_subject,
-                            :issn, :journal_issue, :journal_title, :journal_volume, :note, :page_end, :page_start,
-                            :peer_review_status, :place_of_publication, :rights_holder, :table_of_contents, :translator,
-                            :url, :use] }
+                            :identifier, :related_url, :resource_type, :access, :affiliation, :bibliographic_citation,
+                            :copyright_date, :date_captured, :date_other, :dcmi_type, :doi, :edition, :extent, :funder,
+                            :geographic_subject, :issn, :journal_issue, :journal_title, :journal_volume, :note, :orcid,
+                            :other_affiliation, :page_end, :page_start, :peer_review_status, :place_of_publication,
+                            :rights_holder, :table_of_contents, :translator, :url, :use] }
   end
   
   describe "#admin_only_terms" do
@@ -70,7 +70,7 @@ RSpec.describe Hyrax::ArticleForm do
           date_other: [''],
           dcmi_type: ['type'],
           doi: '12345', # single-valued
-          edition: 'an edition',
+          edition: ['an edition'],
           extent: ['1993'],
           funder: ['dean'],
           geographic_subject: ['California'],
@@ -79,6 +79,8 @@ RSpec.describe Hyrax::ArticleForm do
           journal_title: 'Journal Title', # single-valued
           journal_volume: '4', # single-valued
           note: ['a note'],
+          orcid: ['an orcid'],
+          other_affiliation: ['another affiliation'],
           page_end: '11', # single-valued
           page_start: '8', # single-valued
           peer_review_status: 'in review', # single-valued
@@ -116,7 +118,7 @@ RSpec.describe Hyrax::ArticleForm do
       expect(subject['date_issued']).to eq '2017-01-22'
       expect(subject['date_other']).to be_empty
       expect(subject['doi']).to eq '12345'
-      expect(subject['edition']).to eq 'an edition'
+      expect(subject['edition']).to eq ['an edition']
       expect(subject['extent']).to eq ['1993']
       expect(subject['funder']).to eq ['dean']
       expect(subject['dcmi_type']).to eq ['type']
@@ -126,6 +128,8 @@ RSpec.describe Hyrax::ArticleForm do
       expect(subject['journal_title']).to eq 'Journal Title'
       expect(subject['journal_volume']).to eq '4'
       expect(subject['note']).to eq ['a note']
+      expect(subject['orcid']).to eq ['an orcid']
+      expect(subject['other_affiliation']).to eq ['another affiliation']
       expect(subject['page_end']).to eq '11'
       expect(subject['page_start']).to eq '8'
       expect(subject['peer_review_status']).to eq 'in review'

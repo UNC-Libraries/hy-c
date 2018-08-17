@@ -9,22 +9,23 @@ RSpec.describe Hyrax::MastersPaperForm do
   describe "#required_fields" do
     subject { form.required_fields }
 
-    it { is_expected.to match_array [:title, :creator, :abstract, :advisor, :date_issued, :degree, :resource_type] }
+    it { is_expected.to match_array [:title, :creator, :abstract, :advisor, :date_issued, :degree, :resource_type,
+                                     :degree_granting_institution, :graduation_year] }
   end
 
   describe "#primary_terms" do
     subject { form.primary_terms }
 
-    it { is_expected.to match_array [:title, :creator, :abstract, :advisor, :date_issued, :degree, :resource_type] }
+    it { is_expected.to match_array [:title, :creator, :abstract, :advisor, :date_issued, :degree, :resource_type,
+                                     :degree_granting_institution, :graduation_year] }
   end
 
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:academic_concentration, :access, :affiliation, :dcmi_type,
-                                     :degree_granting_institution, :doi, :extent,
-                                     :geographic_subject, :graduation_year, :medium, :note, :reviewer, :use,
-                                     :keyword, :subject, :language, :rights_statement, :license] }
+    it { is_expected.to match_array [:academic_concentration, :access, :affiliation, :dcmi_type, :doi, :extent,
+                                     :geographic_subject, :note, :reviewer, :use, :keyword, :subject, :language,
+                                     :rights_statement, :license] }
   end
   
   describe "#admin_only_terms" do
@@ -60,7 +61,7 @@ RSpec.describe Hyrax::MastersPaperForm do
           academic_concentration: ['a concentration'],
           access: 'public', # single-valued
           advisor: ['an advisor'],
-          affiliation: ['SILS'],
+          affiliation: 'SILS',
           date_issued: 'a date', # single-valued
           dcmi_type: ['type'],
           degree: 'MS', # single-valued
@@ -69,7 +70,6 @@ RSpec.describe Hyrax::MastersPaperForm do
           extent: ['an extent'],
           geographic_subject: ['a geographic subject'],
           graduation_year: '2017',
-          medium: ['a medium'],
           note: ['a note'],
           reviewer: ['a reviewer'],
           use: ['a use']
@@ -94,7 +94,7 @@ RSpec.describe Hyrax::MastersPaperForm do
       expect(subject['academic_concentration']).to eq ['a concentration']
       expect(subject['access']).to eq 'public'
       expect(subject['advisor']).to eq ['an advisor']
-      expect(subject['affiliation']).to eq ['SILS']
+      expect(subject['affiliation']).to eq 'SILS'
       expect(subject['date_issued']).to eq 'a date'
       expect(subject['degree']).to eq 'MS'
       expect(subject['degree_granting_institution']).to eq 'UNC'
@@ -103,7 +103,6 @@ RSpec.describe Hyrax::MastersPaperForm do
       expect(subject['dcmi_type']).to eq ['type']
       expect(subject['geographic_subject']).to eq ['a geographic subject']
       expect(subject['graduation_year']).to eq '2017'
-      expect(subject['medium']).to eq ['a medium']
       expect(subject['note']).to eq ['a note']
       expect(subject['reviewer']).to eq ['a reviewer']
       expect(subject['use']).to eq ['a use']

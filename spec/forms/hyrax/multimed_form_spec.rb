@@ -9,20 +9,20 @@ RSpec.describe Hyrax::MultimedForm do
   describe "#required_fields" do
     subject { form.required_fields }
 
-    it { is_expected.to match_array [:title, :creator, :abstract, :resource_type] }
+    it { is_expected.to match_array [:title, :creator, :abstract, :resource_type, :date_created] }
   end
 
   describe "#primary_terms" do
     subject { form.primary_terms }
 
-    it { is_expected.to match_array [:title, :creator, :abstract, :resource_type] }
+    it { is_expected.to match_array [:title, :creator, :abstract, :resource_type, :date_created] }
   end
 
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:date_created, :dcmi_type, :doi, :extent, :geographic_subject, :keyword,
-                                     :language, :license, :note,  :rights_statement, :subject] }
+    it { is_expected.to match_array [:dcmi_type, :doi, :extent, :geographic_subject, :keyword,
+                                     :language, :license, :medium, :note,  :rights_statement, :subject] }
   end
   
   describe "#admin_only_terms" do
@@ -40,6 +40,7 @@ RSpec.describe Hyrax::MultimedForm do
           subject: ['a subject'],
           language: ['a language'],
           note: ['a note'],
+          medium: ['a medium'],
           resource_type: ['a type'],
           license: 'a license', # single-valued
           rights_statement: 'a statement', # single-valued
@@ -63,9 +64,10 @@ RSpec.describe Hyrax::MultimedForm do
       expect(subject['license']).to eq ['a license']
       expect(subject['rights_statement']).to eq ['a statement']
       expect(subject['note']).to eq ['a note']
+      expect(subject['medium']).to eq ['a medium']
       expect(subject['keyword']).to eq ['multimed']
       expect(subject['abstract']).to eq ['an abstract']
-      expect(subject['date_created']).to eq '2018-01-09'
+      expect(subject['date_created']).to eq ['2018-01-09']
       expect(subject['doi']).to eq '12345'
       expect(subject['extent']).to eq ['1999']
       expect(subject['dcmi_type']).to eq ['type']

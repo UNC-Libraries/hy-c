@@ -38,14 +38,15 @@ RSpec.describe Multimed do
       expect(subject).to respond_to(:identifier)
       expect(subject).to respond_to(:source)
       expect(subject).to respond_to(:resource_type)
-      expect(subject).to respond_to(:deposit_record)
 
       # Additional metadata
       expect(subject).to respond_to(:abstract)
+      expect(subject).to respond_to(:deposit_record)
       expect(subject).to respond_to(:doi)
       expect(subject).to respond_to(:extent)
       expect(subject).to respond_to(:dcmi_type)
       expect(subject).to respond_to(:geographic_subject)
+      expect(subject).to respond_to(:medium)
       expect(subject).to respond_to(:note)
     end
   end

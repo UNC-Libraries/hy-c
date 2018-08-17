@@ -34,6 +34,8 @@ RSpec.describe Hyrax::ArticlePresenter do
       "journal_title_tesim" => 'Journal Title',
       "journal_volume_tesim" => '4',
       "note_tesim" => ['a note'],
+      "orcid_tesim" => ['an orcid'],
+      "other_affiliation_tesim" => ['another affiliation'],
       "page_end_tesim" => '11',
       "page_start_tesim" => '8',
       "peer_review_status_tesim" => 'in review',
@@ -85,6 +87,8 @@ RSpec.describe Hyrax::ArticlePresenter do
   it { is_expected.to delegate_method(:journal_title).to(:solr_document) }
   it { is_expected.to delegate_method(:journal_volume).to(:solr_document) }
   it { is_expected.to delegate_method(:note).to(:solr_document) }
+  it { is_expected.to delegate_method(:orcid).to(:solr_document) }
+  it { is_expected.to delegate_method(:other_affiliation).to(:solr_document) }
   it { is_expected.to delegate_method(:page_end).to(:solr_document) }
   it { is_expected.to delegate_method(:page_start).to(:solr_document) }
   it { is_expected.to delegate_method(:peer_review_status).to(:solr_document) }
@@ -331,6 +335,28 @@ RSpec.describe Hyrax::ArticlePresenter do
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:note)
+      end
+    end
+
+    context "with a custom orcid field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:orcid, ['an orcid'], {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:orcid)
+      end
+    end
+
+    context "with a custom other_affiliation field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:other_affiliation, ['another affiliation'], {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:other_affiliation)
       end
     end
 

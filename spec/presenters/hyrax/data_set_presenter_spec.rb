@@ -27,6 +27,8 @@ RSpec.describe Hyrax::DataSetPresenter do
       "geographic_subject_tesim" => ['California'],
       "kind_of_data_tesim" => ['some data'],
       "last_modified_date_tesim" => '2018-01-29',
+      "orcid_tesim" => ['an orcid'],
+      "other_affiliation_tesim" => ['another affiliation'],
       "project_director_tesim" => ['ben'],
       "researcher_tesim" => ['jennifer'],
       "rights_holder_tesim" => ['julie'],
@@ -62,6 +64,8 @@ RSpec.describe Hyrax::DataSetPresenter do
   it { is_expected.to delegate_method(:geographic_subject).to(:solr_document) }
   it { is_expected.to delegate_method(:kind_of_data).to(:solr_document) }
   it { is_expected.to delegate_method(:last_modified_date).to(:solr_document) }
+  it { is_expected.to delegate_method(:orcid).to(:solr_document) }
+  it { is_expected.to delegate_method(:other_affiliation).to(:solr_document) }
   it { is_expected.to delegate_method(:project_director).to(:solr_document) }
   it { is_expected.to delegate_method(:researcher).to(:solr_document) }
   it { is_expected.to delegate_method(:rights_holder).to(:solr_document) }
@@ -192,6 +196,28 @@ RSpec.describe Hyrax::DataSetPresenter do
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:last_modified_date)
+      end
+    end
+
+    context "with a custom orcid field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:orcid, ['an orcid'], {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:orcid)
+      end
+    end
+
+    context "with a custom other_affiliation field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:other_affiliation, ['another affiliation'], {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:other_affiliation)
       end
     end
 

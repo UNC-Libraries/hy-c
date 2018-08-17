@@ -31,6 +31,7 @@ RSpec.describe Hyrax::HonorsThesisPresenter do
       "geographic_subject_tesim" => ['a geographic subject'],
       "graduation_year_tesim" => ['a graduation year'],
       "note_tesim" => ['a note'],
+      "url_tesim" => ['a url'],
       "use_tesim" => ['a use']
     }
   end
@@ -70,6 +71,7 @@ RSpec.describe Hyrax::HonorsThesisPresenter do
   it { is_expected.to delegate_method(:geographic_subject).to(:solr_document) }
   it { is_expected.to delegate_method(:graduation_year).to(:solr_document) }
   it { is_expected.to delegate_method(:note).to(:solr_document) }
+  it { is_expected.to delegate_method(:url).to(:solr_document) }
   it { is_expected.to delegate_method(:use).to(:solr_document) }
 
   describe "#model_name" do
@@ -275,6 +277,17 @@ RSpec.describe Hyrax::HonorsThesisPresenter do
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:note)
+      end
+    end
+
+    context "with a custom url field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:url, ['a url'], {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:url)
       end
     end
 

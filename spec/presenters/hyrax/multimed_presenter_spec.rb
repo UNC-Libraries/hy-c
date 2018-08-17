@@ -20,6 +20,7 @@ RSpec.describe Hyrax::MultimedPresenter do
       "doi_tesim" => '12345',
       "extent_tesim" => ['1999'],
       "geographic_subject_tesim" => ['Italy'],
+      "medium_tesim" => ['a medium'],
       "note_tesim" => ['a note'],
       "resource_type_tesim" => ['a type'],
     }
@@ -44,6 +45,7 @@ RSpec.describe Hyrax::MultimedPresenter do
   it { is_expected.to delegate_method(:dcmi_type).to(:solr_document) }
   it { is_expected.to delegate_method(:doi).to(:solr_document) }
   it { is_expected.to delegate_method(:geographic_subject).to(:solr_document) }
+  it { is_expected.to delegate_method(:medium).to(:solr_document) }
   it { is_expected.to delegate_method(:note).to(:solr_document) }
 
   describe "#model_name" do
@@ -128,6 +130,17 @@ RSpec.describe Hyrax::MultimedPresenter do
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:geographic_subject)
+      end
+    end
+
+    context "with a custom medium field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:medium, ['a medium'], {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:medium)
       end
     end
 

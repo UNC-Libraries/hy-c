@@ -40,7 +40,6 @@ RSpec.describe Article do
       expect(subject).to respond_to(:identifier)
       expect(subject).to respond_to(:source)
       expect(subject).to respond_to(:resource_type)
-      expect(subject).to respond_to(:deposit_record)
 
       # Additional metadata
       expect(subject).to respond_to(:abstract)
@@ -51,6 +50,7 @@ RSpec.describe Article do
       expect(subject).to respond_to(:date_captured)
       expect(subject).to respond_to(:date_issued)
       expect(subject).to respond_to(:date_other)
+      expect(subject).to respond_to(:deposit_record)
       expect(subject).to respond_to(:doi)
       expect(subject).to respond_to(:edition)
       expect(subject).to respond_to(:extent)
@@ -62,6 +62,8 @@ RSpec.describe Article do
       expect(subject).to respond_to(:journal_title)
       expect(subject).to respond_to(:journal_volume)
       expect(subject).to respond_to(:note)
+      expect(subject).to respond_to(:orcid)
+      expect(subject).to respond_to(:other_affiliation)
       expect(subject).to respond_to(:page_end)
       expect(subject).to respond_to(:page_start)
       expect(subject).to respond_to(:peer_review_status)
