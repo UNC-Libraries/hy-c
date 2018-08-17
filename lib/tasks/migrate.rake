@@ -156,7 +156,7 @@ namespace :cdr do
       alternative_title = mods_version.xpath("mods:titleInfo[contains(@type, 'alternative')]/mods:title", MigrationConstants::NS).text
       creator = mods_version.xpath('mods:name/mods:namePart', MigrationConstants::NS).map(&:text) if mods_version.xpath("mods:name/mods:namePart/mods:role[@roleTerm='Creator']", MigrationConstants::NS)
       contributor = mods_version.xpath('mods:name/mods:namePart', MigrationConstants::NS).map(&:text) if mods_version.xpath("mods:name/mods:namePart/mods:role[contains(@roleTerm, 'Contributor')]", MigrationConstants::NS)
-      advisor = mods_version.xpath('mods:namemods:namePart', MigrationConstants::NS).map(&:text) if mods_version.xpath("mods:name/mods:namePart/mods:role[contains(@roleTerm, 'Thesis advisor')]", MigrationConstants::NS)
+      advisor = mods_version.xpath('mods:name/mods:namePart', MigrationConstants::NS).map(&:text) if mods_version.xpath("mods:name/mods:namePart/mods:role[contains(@roleTerm, 'Thesis advisor')]", MigrationConstants::NS)
       funder = mods_version.xpath('mods:name/mods:namePart', MigrationConstants::NS).map(&:text) if mods_version.xpath("mods:name[contains(@type, 'corporate')]/mods:namePart/mods:role[contains(@roleTerm, 'Funder')]", MigrationConstants::NS)
       project_director = mods_version.xpath('mods:name/mods:namePart', MigrationConstants::NS).map(&:text) if mods_version.xpath("mods:name/mods:namePart/mods:role[contains(@roleTerm, 'Project director')]", MigrationConstants::NS)
       researcher = mods_version.xpath('mods:name/mods:namePart', MigrationConstants::NS).map(&:text) if mods_version.xpath("mods:name/mods:namePart/mods:role[contains(@roleTerm, 'Researcher')]", MigrationConstants::NS)
@@ -167,6 +167,9 @@ namespace :cdr do
       arranger = mods_version.xpath('mods:name/mods:namePart', MigrationConstants::NS).map(&:text) if mods_version.xpath("mods:name/mods:namePart/mods:role[contains(@roleTerm, 'Arranger')]", MigrationConstants::NS)
       degree_granting_institution = mods_version.xpath('mods:name/mods:namePart', MigrationConstants::NS).map(&:text) if mods_version.xpath("mods:name[contains(@type, 'corporate')]/mods:namePart/mods:role[contains(@roleTerm, 'Degree granting institution')]", MigrationConstants::NS)
       conference_name = mods_version.xpath('mods:name/mods:namePart', MigrationConstants::NS).map(&:text) if mods_version.xpath("mods:name[@displayLabel='Conference' and @type='conference']", MigrationConstants::NS)
+      orcid = mods_version.xpath('mods:name/mods:nameIdentifier', MigrationConstants::NS).map(&:text)
+      affiliation = mods_version.xpath('mods:name/mods:nameAffiliation', MigrationConstants::NS).map(&:text)
+      other_affiliation = mods_version.xpath('mods:name/mods:nameDescription', MigrationConstants::NS).map(&:text)
       date_issued = mods_version.xpath('mods:originInfo/mods:dateIssued', MigrationConstants::NS).text
       date_created = mods_version.xpath('mods:originInfo/mods:dateCreated', MigrationConstants::NS).text
       copyright_date = mods_version.xpath('mods:originInfo/mods:copyrightDate', MigrationConstants::NS).text
@@ -184,18 +187,41 @@ namespace :cdr do
       peer_review_status = mods_version.xpath('mods:genre[@authority="local"]', MigrationConstants::NS).map(&:text)
       degree = mods_version.xpath('mods:note[@displayLabel="Degree"]', MigrationConstants::NS).map(&:text)
       academic_concentration = mods_version.xpath('mods:note[@displayLabel="Academic concentration"]', MigrationConstants::NS).map(&:text)
-      discipline = mods_version.xpath('mods:note[@displayLabel="Thesis degree discipline"]', MigrationConstants::NS).map(&:text)
       award = mods_version.xpath('mods:note[@displayLabel="Honors Level"]', MigrationConstants::NS).map(&:text)
       medium = mods_version.xpath('mods:physicalDescription/mods:form', MigrationConstants::NS).map(&:text)
       kind_of_data = mods_version.xpath('mods:genre[@authority="ddi"]', MigrationConstants::NS).map(&:text)
       series = mods_version.xpath('mods:relatedItem[@type="series"]', MigrationConstants::NS).map(&:text)
       subject = mods_version.xpath('mods:subject/mods:topic', MigrationConstants::NS).map(&:text)
-      keywords = mods_version.xpath('mods:note/mods:geographic/@valueURI', MigrationConstants::NS).map(&:text)
+      geographic_subject = mods_version.xpath('mods:subject/mods:geographic/@valueURI', MigrationConstants::NS).map(&:text)
+      keywords = mods_version.xpath('mods:note[@displayLabel="Keywords"]', MigrationConstants::NS).map(&:text)
       language = mods_version.xpath('mods:language/mods:languageTerm',MigrationConstants::NS).text
-      resource_type = mods_version.xpath('mods:language/mods:languageTerm',MigrationConstants::NS).text
+      resource_type = mods_version.xpath('mods:genre',MigrationConstants::NS).map(&:text)
+      dcmi_type = mods_version.xpath('mods:typeOfResource/@valueURI',MigrationConstants::NS).map(&:text)
+      use = mods_version.xpath('mods:accessCondition[@type="use and reproduction"]',MigrationConstants::NS).map(&:text)
+      license = mods_version.xpath('mods:accessCondition[@displayLabel="License" and @type="use and reproduction"]/@xlink:href',MigrationConstants::NS).map(&:text)
+      rights_statement = mods_version.xpath('mods:accessCondition[@displayLabel="Rights Statement" and @type="use and reproduction"]/@xlink:href',MigrationConstants::NS).map(&:text)
+      rights_holder = mods_version.xpath('mods:accessCondition/rights:copyright/rights:rights.holder/rights:name',MigrationConstants::NS).map(&:text)
+      access = mods_version.xpath('mods:accessCondition[@type="restriction on access"]',MigrationConstants::NS).map(&:text)
+      doi = mods_version.xpath('mods:identifier[@type="doi"]',MigrationConstants::NS).map(&:text)
+      identifier = mods_version.xpath('mods:identifier[@type="pdf"]/identifier[@type="pmpid"]',MigrationConstants::NS).map(&:text)
+      isbn = mods_version.xpath('mods:identifier[@type="isbn"]',MigrationConstants::NS).map(&:text)
+      issn = mods_version.xpath('mods:relatedItem/mods:identifier[@type="issn"]',MigrationConstants::NS).map(&:text)
+      publisher = mods_version.xpath('mods:originInfo/mods:publisher',MigrationConstants::NS).map(&:text)
+      place_of_publication = mods_version.xpath('mods:originInfo/mods:place/mods:placeTerm',MigrationConstants::NS).map(&:text)
+      journal_title = mods_version.xpath('mods:relatedItem[@type="host"]/mods:titleInfo/mods:title',MigrationConstants::NS).text
+      journal_volume = mods_version.xpath('mods:relatedItem[@type="host"]/mods:part/mods:detail[@type="volume"]/mods:number',MigrationConstants::NS).text
+      journal_issue = mods_version.xpath('mods:relatedItem[@type="host"]/mods:part/mods:detail[@type="issue"]/mods:number',MigrationConstants::NS).text
+      start_page = mods_version.xpath('mods:relatedItem[@type="host"]/mods:part/mods:extent[@type="page"]/mods:start',MigrationConstants::NS).text
+      end_page = mods_version.xpath('mods:relatedItem[@type="host"]/mods:part/mods:extent[@type="page"]/mods:end',MigrationConstants::NS).text
+      related_url = mods_version.xpath('mods:relatedItem/mods:location/mods:url',MigrationConstants::NS).map(&:text)
+      url = mods_version.xpath('mods:location/mods:url',MigrationConstants::NS).map(&:text)
+      publisher_version = mods_version.xpath('mods:location/mods:url[@displayLabel="Publisher Version"] | mods:relatedItem[@type="otherVersion"]/mods:location',MigrationConstants::NS).map(&:text)
+      digital_collection = mods_version.xpath('mods:relatedItem[@displayLabel="Collection" and @type="host"]/mods:titleInfo/mods:title',MigrationConstants::NS).map(&:text)
 
 
       rdf_version = metadata.xpath("//foxml:xmlContent//rdf:RDF", MigrationConstants::NS).last
+      deposit_record = rdf_version.xpath('rdf:Description/*[local-name() = "originalDeposit"]/@rdf:resource', MigrationConstants::NS).text
+
       if rdf_version.to_s.match(/contains/)
         contained_files = rdf_version.xpath("rdf:Description/*[local-name() = 'contains']/@rdf:resource", MigrationConstants::NS)
         contained_files.each do |contained_file|
@@ -212,26 +238,6 @@ namespace :cdr do
           end
         end
       end
-
-      # creators = mods_version.xpath('mods:name//mods:namePart', MigrationConstants::NS).map(&:text) if mods_version.xpath('mods:name//mods:namePart', MigrationConstants::NS)
-      # contributors = mods_version.xpath('mods:name//mods:namePart', MigrationConstants::NS).map(&:text) if mods_version.xpath('mods:name//mods:namePart',MigrationConstants::NS)
-      # keywords = mods_version.xpath("mods:note[contains(@displayLabel, 'Keywords')]", MigrationConstants::NS).map(&:text)
-      # keywords.uniq!
-      #
-      # # original_filename = file_version.attribute('LABEL').to_s
-      # subjects = mods_version.xpath('mods:subject',MigrationConstants::NS).map(&:text)
-      # description = mods_version.xpath('mods:abstract',MigrationConstants::NS).text.gsub(/\n/,' ').gsub(/\t/,' ')
-      # description = HTMLEntities.new.decode description
-      # date = mods_version.xpath('mods:dateCreate',MigrationConstants::NS).text
-      # identifier = mods_version.xpath('mods:identifier',MigrationConstants::NS).map(&:text)
-      # related_url = mods_version.xpath('mods:location//mods:url', MigrationConstants::NS).map(&:text)
-      # resource_type = mods_version.xpath('mods:genre', MigrationConstants::NS).text.strip
-      #
-      # if resource_type == 'Journal Article'
-      #   resource_type = 'Article'
-      # end
-      #
-      # publisher = mods_version.xpath('mods:originInfo//mods:publisher',MigrationConstants::NS).text
 
       if rdf_version.to_s.match(/metadata-patron/)
         patron = rdf_version.xpath("rdf:Description/*[local-name() = 'metadata-patron']", MigrationConstants::NS).text
@@ -277,19 +283,20 @@ namespace :cdr do
           'identifier'=>identifier,
           'keyword'=>keywords,
           'language'=>[language],
-          'license'=>nil,
+          'license'=>license,
           'publisher'=>[publisher],
           'related_url' => related_url,
           'resource_type'=>[resource_type],
-          'rights_statement'=>nil,
-          'subject'=>subjects,
+          'rights_statement'=>rights_statement,
+          'subject'=>subject,
           'abstract'=>abstract,
-          'academic_concentration'=>nil,
-          'access'=>nil,
+          'academic_concentration'=>academic_concentration,
+          'access'=>access,
           'advisor'=>advisor,
+          'affiliation'=>affiliation,
           'alternative_title'=>alternative_title,
           'arranger'=>arranger,
-          'award'=>nil,
+          'award'=>award,
           'bibliographic_citation'=>citation,
           'composer'=>composer,
           'conference_name'=>conference_name,
@@ -297,40 +304,43 @@ namespace :cdr do
           'date_captured'=>date_captured,
           'date_issued'=>date_issued,
           'date_other'=>date_other,
-          'degree'=>nil,
+          'dcmi_type'=>dcmi_type,
+          'degree'=>degree,
           'degree_granting_institution'=>degree_granting_institution,
-          'digital_collection'=>nil,
-          'discipline'=>nil,
-          'doi'=>nil,
+          'deposit_record'=>deposit_record,
+          'digital_collection'=>digital_collection,
+          'doi'=>doi,
           'edition'=>edition,
           'extent'=>extent,
           'funder'=>funder,
-          'genre'=>nil,
-          'geographic_subject'=>nil,
+          'geographic_subject'=>geographic_subject,
           'graduation_year'=>graduation_year,
-          'isbn'=>nil,
-          'issn'=>nil,
-          'journal_issue'=>nil,
-          'journal_title'=>nil,
-          'journal_volume'=>nil,
-          'kind_of_data'=>nil,
+          'isbn'=>isbn,
+          'issn'=>issn,
+          'journal_issue'=>journal_issue,
+          'journal_title'=>journal_title,
+          'journal_volume'=>journal_volume,
+          'kind_of_data'=>kind_of_data,
           'last_modified_date'=>last_date_modified,
-          'medium'=>nil,
+          'medium'=>medium,
           'note'=>note,
-          'page_end'=>nil,
-          'page_start'=>nil,
+          'orcid'=>orcid,
+          'other_affiliation'=>other_affiliation,
+          'page_end'=>end_page,
+          'page_start'=>start_page,
           'peer_review_status'=>peer_review_status,
-          'place_of_publication'=>nil,
+          'place_of_publication'=>place_of_publication,
           'project_director'=>project_director,
+          'publisher_version'=>publisher_version,
           'researcher'=>researcher,
           'reviewer'=>reviewer,
-          'rights_holder'=>nil,
-          'series'=>nil,
+          'rights_holder'=>rights_holder,
+          'series'=>series,
           'sponsor'=>sponsor,
           'table_of_contents'=>table_of_contents,
           'translator'=>translator,
-          'url'=>nil,
-          'use'=>nil,
+          'url'=>url,
+          'use'=>use,
           'visibility'=>visibility,
           'embargo_release_date'=>(Date.try(:edtf, embargo_release_date) || embargo_release_date).to_s,
           'visibility_during_embargo'=>visibility_during_embargo,

@@ -19,6 +19,8 @@
             <mods:title>Les Miserables</mods:title>
           </mods:titleInfo>
           <mods:abstract>Abstract</mods:abstract>
+          <mods:accessCondition displayLabel="Rights Statement" type="use and reproduction" xlink:href="http://rightsstatements.org/vocab/InC/1.0/"/>
+          <mods:accessCondition displayLabel="License" type="use and reproduction" xlink:href="http://creativecommons.org/licenses/by/3.0/us/"/>
           <mods:name>
             <mods:namePart>Hugo, Victor</mods:namePart>
           </mods:name>
