@@ -26,7 +26,7 @@ class General < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :affiliation, predicate: ::RDF::URI('http://vivoweb.org/ontology/core#AcademicDepartment') do |index|
+  property :affiliation, predicate: ::RDF::Vocab::SCHEMA.affiliation do |index|
     index.as :stored_searchable, :facetable
   end
 
@@ -42,11 +42,11 @@ class General < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :conference_name, predicate: ::RDF::Vocab::EBUCore.eventName do |index|
+  property :composer, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/cmp') do |index|
     index.as :stored_searchable
   end
 
-  property :composer, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/cmp') do |index|
+  property :conference_name, predicate: ::RDF::Vocab::EBUCore.eventName do |index|
     index.as :stored_searchable
   end
 
@@ -66,6 +66,10 @@ class General < ActiveFedora::Base
     index.as :stored_searchable
   end
 
+  property :dcmi_type, predicate: ::RDF::Vocab::DC.type do |index|
+    index.as :stored_searchable
+  end
+
   property :degree, predicate: ::RDF::Vocab::BIBO.degree, multiple: false do |index|
     index.as :stored_searchable
   end
@@ -80,11 +84,7 @@ class General < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :digital_collection, predicate: ::RDF::URI('http://purl.org/cld/terms/associatedCollection') do |index|
-    index.as :stored_searchable
-  end
-
-  property :discipline, predicate: ::RDF::URI('http://dbpedia.org/ontology/academicDiscipline') do |index|
+  property :digital_collection, predicate: ::RDF::URI('http://dbpedia.org/ontology/collection') do |index|
     index.as :stored_searchable
   end
 
@@ -92,7 +92,7 @@ class General < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :edition, predicate: ::RDF::Vocab::BF2.editionStatement, multiple: false do |index|
+  property :edition, predicate: ::RDF::Vocab::BF2.editionStatement do |index|
     index.as :stored_searchable
   end
 
@@ -101,10 +101,6 @@ class General < ActiveFedora::Base
   end
 
   property :funder, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/fnd') do |index|
-    index.as :stored_searchable
-  end
-
-  property :dcmi_type, predicate: ::RDF::Vocab::DC.type do |index|
     index.as :stored_searchable
   end
 
@@ -146,11 +142,19 @@ class General < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :medium, predicate: ::RDF::Vocab::DC.medium do |index|
+  property :medium, predicate: ::RDF::Vocab::DC11.format do |index|
     index.as :stored_searchable
   end
 
   property :note, predicate: ::RDF::Vocab::SKOS.note do |index|
+    index.as :stored_searchable
+  end
+
+  property :orcid, predicate: ::RDF::Vocab::Identifiers.orcid do |index|
+    index.as :stored_searchable
+  end
+
+  property :other_affiliation, predicate: ::RDF::Vocab::EBUCore.hasAffiliation do |index|
     index.as :stored_searchable
   end
 
@@ -172,6 +176,10 @@ class General < ActiveFedora::Base
   end
 
   property :project_director, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/pdr') do |index|
+    index.as :stored_searchable
+  end
+
+  property :publisher_version, predicate: ::RDF::Vocab::DC.hasVersion do |index|
     index.as :stored_searchable
   end
 

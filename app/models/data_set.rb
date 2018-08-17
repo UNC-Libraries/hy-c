@@ -14,7 +14,7 @@ class DataSet < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :affiliation, predicate: ::RDF::URI('http://vivoweb.org/ontology/core#AcademicDepartment') do |index|
+  property :affiliation, predicate: ::RDF::Vocab::SCHEMA.affiliation do |index|
     index.as :stored_searchable, :facetable
   end
 
@@ -23,6 +23,10 @@ class DataSet < ActiveFedora::Base
   end
 
   property :date_issued, predicate: ::RDF::Vocab::DC.issued, multiple: false do |index|
+    index.as :stored_searchable
+  end
+
+  property :dcmi_type, predicate: ::RDF::Vocab::DC.type do |index|
     index.as :stored_searchable
   end
 
@@ -43,10 +47,6 @@ class DataSet < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :dcmi_type, predicate: ::RDF::Vocab::DC.type do |index|
-    index.as :stored_searchable
-  end
-
   property :geographic_subject, predicate: ::RDF::Vocab::DC.spatial do |index|
     index.as :stored_searchable
   end
@@ -56,6 +56,14 @@ class DataSet < ActiveFedora::Base
   end
 
   property :last_modified_date, predicate: ::RDF::Vocab::MODS.dateModified, multiple: false do |index|
+    index.as :stored_searchable
+  end
+
+  property :orcid, predicate: ::RDF::Vocab::Identifiers.orcid do |index|
+    index.as :stored_searchable
+  end
+
+  property :other_affiliation, predicate: ::RDF::Vocab::EBUCore.hasAffiliation do |index|
     index.as :stored_searchable
   end
 

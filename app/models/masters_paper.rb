@@ -26,11 +26,15 @@ class MastersPaper < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :affiliation, predicate: ::RDF::URI('http://vivoweb.org/ontology/core#AcademicDepartment') do |index|
+  property :affiliation, predicate: ::RDF::Vocab::SCHEMA.affiliation, multiple: false do |index|
     index.as :stored_searchable, :facetable
   end
 
   property :date_issued, predicate: ::RDF::Vocab::DC.issued, multiple: false do |index|
+    index.as :stored_searchable
+  end
+
+  property :dcmi_type, predicate: ::RDF::Vocab::DC.type do |index|
     index.as :stored_searchable
   end
 
@@ -56,20 +60,12 @@ class MastersPaper < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :dcmi_type, predicate: ::RDF::Vocab::DC.type do |index|
-    index.as :stored_searchable
-  end
-
   property :geographic_subject, predicate: ::RDF::Vocab::DC.spatial do |index|
     index.as :stored_searchable
   end
 
   property :graduation_year, predicate: ::RDF::URI('http://rdaregistry.info/Elements/w/yearDegreeGranted.en'),
            multiple: false do |index|
-    index.as :stored_searchable
-  end
-
-  property :medium, predicate: ::RDF::Vocab::DC.medium do |index|
     index.as :stored_searchable
   end
 
