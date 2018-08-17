@@ -57,6 +57,19 @@ class SingleValueForm < Hyrax::Forms::WorkForm
       end
     end
 
+    # Split out affiliations
+    unless !attrs.key?(:affiliation) || attrs[:affiliation].blank?
+      affiliations = []
+
+      attrs[:affiliation].each do |aff|
+        aff.split(';').each do |value|
+          affiliations.push(value)
+        end
+      end
+
+      attrs[:affiliation] = affiliations.uniq
+    end
+
     attrs
   end
   
