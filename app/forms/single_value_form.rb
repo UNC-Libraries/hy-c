@@ -23,6 +23,7 @@ class SingleValueForm < Hyrax::Forms::WorkForm
   end
 
   # cast single value fields back to multivalued so they will actually deposit
+  # Split out affiliations for deposit and display
   def self.model_attributes(form_params)
     attrs = super
 
@@ -55,6 +56,19 @@ class SingleValueForm < Hyrax::Forms::WorkForm
           end
         end
       end
+    end
+
+    # Split out affiliations
+    unless !attrs.key?(:affiliation) || attrs[:affiliation].blank?
+      affiliations = []
+
+      attrs[:affiliation].each do |aff|
+        aff.split(';').each do |value|
+          affiliations.push(value)
+        end
+      end
+
+      attrs[:affiliation] = affiliations.uniq
     end
 
     attrs
