@@ -726,6 +726,7 @@ GEM
       actionpack (>= 4.0)
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
+    staccato (0.5.1)
     stomp (1.4.4)
     sxp (1.0.1)
       rdf (>= 2.2, < 4.0)
@@ -795,10 +796,11 @@ DEPENDENCIES
   shoulda-matchers (~> 3.1.2)
   sidekiq (~> 5.0.4)
   solr_wrapper (~> 1.1.0)
+  staccato
   therubyracer (~> 0.12.3)
   turbolinks (~> 5.0.1)
   uglifier (~> 3.2.0)
   web-console (~> 3.5.1)
 
 BUNDLED WITH
-   1.16.2
+   1.16.3
