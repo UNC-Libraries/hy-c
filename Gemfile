@@ -64,4 +64,6 @@ end
 group :test do
   gem 'shoulda-matchers', '~> 3.1.2'
   gem 'capybara', '~> 2.17.0'
+  gem 'rspec-mocks'
+  gem 'webmock'
 end
