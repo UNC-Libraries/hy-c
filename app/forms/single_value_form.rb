@@ -63,7 +63,7 @@ class SingleValueForm < Hyrax::Forms::WorkForm
 
       attrs[:affiliation].each do |aff|
         aff.split(';').each do |value|
-          affiliations.push(value)
+          affiliations.push(value.squish!)
         end
       end
 
