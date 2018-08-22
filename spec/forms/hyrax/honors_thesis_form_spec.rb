@@ -63,7 +63,7 @@ RSpec.describe Hyrax::HonorsThesisForm do
           academic_concentration: ['a concentration'],
           access: 'public', # single-valued
           advisor: ['an advisor'],
-          affiliation: ['SILS'],
+          affiliation: ['School of Medicine; Carolina Center for Genome Sciences'], # Make sure whitespace gets stripped
           alternative_title: ['another title'],
           award: ['an award'],
           dcmi_type: ['type'],
@@ -98,7 +98,7 @@ RSpec.describe Hyrax::HonorsThesisForm do
       expect(subject['academic_concentration']).to eq ['a concentration']
       expect(subject['access']).to eq 'public'
       expect(subject['advisor']).to eq ['an advisor']
-      expect(subject['affiliation']).to eq ['SILS']
+      expect(subject['affiliation']).to eq ['School of Medicine', 'Carolina Center for Genome Sciences']
       expect(subject['alternative_title']).to eq ['another title']
       expect(subject['award']).to eq ['an award']
       expect(subject['degree']).to eq 'MSIS'

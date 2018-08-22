@@ -52,7 +52,7 @@ RSpec.describe Hyrax::DataSetForm do
           member_of_collection_ids: ['123456', 'abcdef'],
           abstract: ['an abstract'],
           access: 'public',
-          affiliation: ['SILS'],
+          affiliation: ['School of Medicine; Carolina Center for Genome Sciences'], # Make sure whitespace gets stripped
           contributor: ['dean'],
           copyright_date: '2017-12-25',
           date_created: '2017-04-02', # single-valued
@@ -83,7 +83,7 @@ RSpec.describe Hyrax::DataSetForm do
       expect(subject['keyword']).to eq ['data set']
       expect(subject['member_of_collection_ids']).to eq ['123456', 'abcdef']
       expect(subject['abstract']).to eq ['an abstract']
-      expect(subject['affiliation']).to eq ['SILS']
+      expect(subject['affiliation']).to eq ['School of Medicine', 'Carolina Center for Genome Sciences']
       expect(subject['copyright_date']).to eq '2017-12-25'
       expect(subject['date_created']).to eq '2017-04-02'
       expect(subject['date_issued']).to eq '2018-01-08'

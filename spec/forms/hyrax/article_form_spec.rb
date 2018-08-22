@@ -63,7 +63,7 @@ RSpec.describe Hyrax::ArticleForm do
           member_of_collection_ids: ['123456', 'abcdef'],
           abstract: ['an abstract'],
           access: 'public', # single-valued
-          affiliation: ['SILS'],
+          affiliation: ['School of Medicine; Carolina Center for Genome Sciences'], # Make sure whitespace gets stripped
           copyright_date: '2017-01-22', # single-valued
           date_captured: '2017-01-22', # single-valued
           date_issued: '2017-01-22', # single-valued
@@ -110,7 +110,7 @@ RSpec.describe Hyrax::ArticleForm do
       expect(subject['member_of_collection_ids']).to eq ['123456', 'abcdef']
       expect(subject['abstract']).to eq ['an abstract']
       expect(subject['access']).to eq 'public'
-      expect(subject['affiliation']).to eq ['SILS']
+      expect(subject['affiliation']).to eq ['School of Medicine', 'Carolina Center for Genome Sciences']
       expect(subject['copyright_date']).to eq '2017-01-22'
       expect(subject['date_captured']).to eq '2017-01-22'
       expect(subject['date_issued']).to eq '2017-01-22'

@@ -55,12 +55,11 @@ RSpec.describe Hyrax::MastersPaperForm do
           thumbnail_id: '789',
           keyword: ['derp'],
           member_of_collection_ids: ['123456', 'abcdef'],
-
           abstract: [''],
           academic_concentration: ['a concentration'],
           access: 'public', # single-valued
           advisor: ['an advisor'],
-          affiliation: ['SILS'],
+          affiliation: ['School of Medicine; Carolina Center for Genome Sciences'], # Make sure whitespace gets stripped
           date_issued: 'a date', # single-valued
           dcmi_type: ['type'],
           degree: 'MS', # single-valued
@@ -89,12 +88,11 @@ RSpec.describe Hyrax::MastersPaperForm do
       expect(subject['keyword']).to eq ['derp']
       expect(subject['visibility']).to eq 'open'
       expect(subject['member_of_collection_ids']).to eq ['123456', 'abcdef']
-
       expect(subject['abstract']).to be_empty
       expect(subject['academic_concentration']).to eq ['a concentration']
       expect(subject['access']).to eq 'public'
       expect(subject['advisor']).to eq ['an advisor']
-      expect(subject['affiliation']).to eq ['SILS']
+      expect(subject['affiliation']).to eq ['School of Medicine', 'Carolina Center for Genome Sciences']
       expect(subject['date_issued']).to eq 'a date'
       expect(subject['degree']).to eq 'MS'
       expect(subject['degree_granting_institution']).to eq 'UNC'
