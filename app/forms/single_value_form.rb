@@ -57,22 +57,15 @@ class SingleValueForm < Hyrax::Forms::WorkForm
       end
     end
 
-    # Split out affiliations
-    unless !attrs.key?(:affiliation) || attrs[:affiliation].blank?
-      affiliations = []
-
-      attrs[:affiliation].each do |aff|
-        aff.split(';').each do |value|
-          affiliations.push(value.squish!)
-        end
-      end
-
-      attrs[:affiliation] = affiliations.uniq
+    if attrs.key?(:affiliation) && !attrs[:affiliation].blank?
+      attrs[:affiliation] = split_affiliations(attrs[:affiliation])
     end
 
     attrs
   end
-  
+
+
+
   private
     def initialize_default_term_values(model)
       # Do not set default values for existing works
@@ -92,5 +85,18 @@ class SingleValueForm < Hyrax::Forms::WorkForm
           end
         end
       end
+    end
+
+    # split affiliations out
+    def self.split_affiliations(affiliations)
+      affiliations_list = []
+
+      affiliations.each do |aff|
+        aff.split(';').each do |value|
+          affiliations_list.push(value.squish!)
+        end
+      end
+
+      affiliations_list.uniq
     end
 end
