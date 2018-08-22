@@ -5,9 +5,60 @@ collection1:
   binaries: spec/fixtures/migration/binaries.txt
   work_type: Article
   admin_set: default
+  depositor_email: admin@example.com
 collection2:
   collection_list: spec/fixtures/migration/collection.csv
   objects: spec/fixtures/migration/objects.txt
   binaries: spec/fixtures/migration/binaries.txt
   work_type: General
   admin_set: default
+  depositor_email: admin@example.com
+collection3:
+  collection_list: spec/fixtures/migration/collection.csv
+  objects: spec/fixtures/migration/objects.txt
+  binaries: spec/fixtures/migration/binaries.txt
+  work_type: DataSet
+  admin_set: default
+  depositor_email: admin@example.com
+collection4:
+  collection_list: spec/fixtures/migration/collection.csv
+  objects: spec/fixtures/migration/objects.txt
+  binaries: spec/fixtures/migration/binaries.txt
+  work_type: Dissertation
+  admin_set: default
+  depositor_email: admin@example.com
+collection5:
+  collection_list: spec/fixtures/migration/collection.csv
+  objects: spec/fixtures/migration/objects.txt
+  binaries: spec/fixtures/migration/binaries.txt
+  work_type: HonorsThesis
+  admin_set: default
+  depositor_email: admin@example.com
+collection6:
+  collection_list: spec/fixtures/migration/collection.csv
+  objects: spec/fixtures/migration/objects.txt
+  binaries: spec/fixtures/migration/binaries.txt
+  work_type: Journal
+  admin_set: default
+  depositor_email: admin@example.com
+collection7:
+  collection_list: spec/fixtures/migration/collection.csv
+  objects: spec/fixtures/migration/objects.txt
+  binaries: spec/fixtures/migration/binaries.txt
+  work_type: MastersPaper
+  admin_set: default
+  depositor_email: admin@example.com
+collection8:
+  collection_list: spec/fixtures/migration/collection.csv
+  objects: spec/fixtures/migration/objects.txt
+  binaries: spec/fixtures/migration/binaries.txt
+  work_type: Multimed
+  admin_set: default
+  depositor_email: admin@example.com
+collection9:
+  collection_list: spec/fixtures/migration/collection.csv
+  objects: spec/fixtures/migration/objects.txt
+  binaries: spec/fixtures/migration/binaries.txt
+  work_type: ScholarlyWork
+  admin_set: default
+  depositor_email: admin@example.com
