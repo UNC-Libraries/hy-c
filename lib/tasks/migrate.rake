@@ -22,6 +22,7 @@ namespace :cdr do
         @work_type = collection_config['work_type']
         @admin_set = collection_config['admin_set']
         @depositor_email = collection_config['depositor_email']
+        @collection_name = collection_config['collection_name']
 
         # Hash of all binaries in storage directory
         @binary_hash = Hash.new
@@ -391,7 +392,8 @@ namespace :cdr do
           'embargo_release_date'=>(Date.try(:edtf, embargo_release_date) || embargo_release_date).to_s,
           'visibility_during_embargo'=>visibility_during_embargo,
           'visibility_after_embargo'=>visibility_after_embargo,
-          'admin_set_id'=>(AdminSet.where(title: @admin_set).first || AdminSet.where(title: ENV['DEFAULT_ADMIN_SET']).first).id
+          'admin_set_id'=>(AdminSet.where(title: @admin_set).first || AdminSet.where(title: ENV['DEFAULT_ADMIN_SET']).first).id,
+          'member_of_collections'=>[Collection.where(title: @collection_name).first]
       }
 
       work_attributes.reject!{|k,v| v.blank? || v.empty?}
@@ -432,6 +434,9 @@ namespace :cdr do
       resource.visibility_after_embargo = work_attributes['visibility_after_embargo']
       end
       resource.admin_set_id = work_attributes['admin_set_id']
+      if !@collection_name.blank? && !work_attributes['member_of_collections'].first.blank?
+        resource.member_of_collections = work_attributes['member_of_collections']
+      end
 
       resource
     end

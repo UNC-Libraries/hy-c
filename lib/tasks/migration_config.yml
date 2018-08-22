@@ -13,6 +13,7 @@ collection2:
   work_type: General
   admin_set: default
   depositor_email: admin@example.com
+  collection_name: New Collection
 collection3:
   collection_list: spec/fixtures/migration/collection.csv
   objects: spec/fixtures/migration/objects.txt
