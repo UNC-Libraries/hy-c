@@ -24,7 +24,11 @@ module DepartmentsService
   def self.include_current_value(value, _index, render_options, html_options)
     unless value.blank?
       html_options[:class] << ' force-select'
-      render_options += [[identifier(value), value]]
+      # Add the current value to the options if it is not already present
+      value_index = render_options.index { |opt| opt[0] == value }
+      if value_index == nil
+        render_options += [[value, value]]
+      end
     end
     [render_options, html_options]
   end
