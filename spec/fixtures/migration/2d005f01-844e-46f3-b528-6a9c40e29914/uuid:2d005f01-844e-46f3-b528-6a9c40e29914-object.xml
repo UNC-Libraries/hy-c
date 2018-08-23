@@ -21,8 +21,19 @@
           <mods:abstract>Abstract</mods:abstract>
           <mods:accessCondition displayLabel="Rights Statement" type="use and reproduction" xlink:href="http://rightsstatements.org/vocab/InC/1.0/"/>
           <mods:accessCondition displayLabel="License" type="use and reproduction" xlink:href="http://creativecommons.org/licenses/by/3.0/us/"/>
-          <mods:name>
-            <mods:namePart>Hugo, Victor</mods:namePart>
+          <mods:name type="personal">
+            <mods:role>
+              <mods:roleTerm authority="marcrelator" type="text">Creator</mods:roleTerm>
+            </mods:role>
+            <mods:namePart type="given">Victor</mods:namePart>
+            <mods:namePart type="family">Hugo</mods:namePart>
+          </mods:name>
+          <mods:name type="personal">
+            <mods:role>
+              <mods:roleTerm authority="marcrelator" type="text">Contributor</mods:roleTerm>
+            </mods:role>
+            <mods:namePart type="given">Victor</mods:namePart>
+            <mods:namePart type="family">Hugo</mods:namePart>
           </mods:name>
           <mods:language>
             <mods:languageTerm authority="iso639-2b" type="code">eng</mods:languageTerm>

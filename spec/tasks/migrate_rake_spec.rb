@@ -3,7 +3,7 @@ require "rake"
 
 describe "rake cdr:migration:items", type: :task do
   let(:user) do
-    User.new(email: 'test@example.com', guest: false, uid: 'test@example.com') { |u| u.save!(validate: false)}
+    User.new(email: 'admin@example.com', guest: false, uid: 'admin@example.com') { |u| u.save!(validate: false)}
   end
 
   let(:admin_set) do

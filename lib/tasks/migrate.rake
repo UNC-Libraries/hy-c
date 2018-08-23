@@ -21,7 +21,7 @@ namespace :cdr do
         collection_config = config[args[:collection]]
         @work_type = collection_config['work_type']
         @admin_set = collection_config['admin_set']
-        @depositor_email = collection_config['depositor_email']
+        @depositor_key = User.where(email: collection_config['depositor_email']).first.uid
         @collection_name = collection_config['collection_name']
 
         # Hash of all binaries in storage directory
@@ -107,7 +107,7 @@ namespace :cdr do
 
     def ingest_file(parent: nil, resource: nil, f: nil)
       file_set = FileSet.create(resource)
-      actor = Hyrax::Actors::FileSetActor.new(file_set, User.find_by_email(@depositor_email))
+      actor = Hyrax::Actors::FileSetActor.new(file_set, User.find_by_email(@depositor_key))
       actor.create_metadata(resource.slice(:visibility, :visibility_during_lease, :visibility_after_lease,
                                             :lease_expiration_date, :embargo_release_date, :visibility_during_embargo,
                                             :visibility_after_embargo))
@@ -320,10 +320,10 @@ namespace :cdr do
       language.map!{|e| e == 'eng' ? 'English' : e}
 
       collection = Collection.where(title: @collection_name).first
-      if collection.blank?
+      if !@collection_name.blank? && collection.blank?
         user_collection_type = Hyrax::CollectionType.where(title: 'User Collection').first.gid
         collection = Collection.create(title: [@collection_name],
-                                       depositor: @depositor_email,
+                                       depositor: @depositor_key,
                                        collection_type_gid: user_collection_type)
       end
 
@@ -419,7 +419,7 @@ namespace :cdr do
     def work_record(work_attributes)
       resource = @work_type.singularize.classify.constantize.new
       resource.creator = work_attributes['creator']
-      resource.depositor = @depositor_email
+      resource.depositor = @depositor_key
       resource.save
 
       # Singularize non-enumerable attributes
@@ -461,7 +461,7 @@ namespace :cdr do
         end
       end
       resource[:creator] = work_attributes['creator']
-      resource[:depositor] = @depositor_email
+      resource[:depositor] = @depositor_key
       resource[:label] = work_attributes['label']
       resource[:title] = work_attributes['title']
       resource[:bibliographic_citation] =  work_attributes['bibliographic_citation']
