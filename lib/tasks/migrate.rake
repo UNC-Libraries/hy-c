@@ -319,6 +319,14 @@ namespace :cdr do
 
       language.map!{|e| e == 'eng' ? 'English' : e}
 
+      collection = Collection.where(title: @collection_name).first
+      if collection.blank?
+        user_collection_type = Hyrax::CollectionType.where(title: 'User Collection').first.gid
+        collection = Collection.create(title: [@collection_name],
+                                       depositor: @depositor_email,
+                                       collection_type_gid: user_collection_type)
+      end
+
       work_attributes = {
           'title'=>title,
           'label'=>title,
