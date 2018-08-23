@@ -22,6 +22,10 @@ class Article < ActiveFedora::Base
     index.as :stored_searchable, :facetable
   end
 
+  property :affiliation_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#AffiliationLabel') do |index|
+    index.as :stored_searchable
+  end
+
   property :copyright_date, predicate: ::RDF::Vocab::DC.dateCopyrighted, multiple: false do |index|
     index.as :stored_searchable
   end

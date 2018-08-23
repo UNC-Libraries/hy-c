@@ -3,15 +3,22 @@
   <%= f.input :affiliation, as: :select,
               collection: DepartmentsService.select_all_options.sort,
               include_blank: true,
-              selected: params[:affiliation],
+              selected: DepartmentsService.label(params[:affiliation]),
               item_helper: DepartmentsService.method(:include_current_value),
               input_html: { class: 'form-control', multiple: true }
   -%>
+<% elsif f.object.affiliation.entries[0] != '' %>
+    <%= f.input :affiliation_label, as: :multi_value_select,
+                label: 'Affiliation',
+                collection: DepartmentsService.select_all_options.sort,
+                include_blank: true,
+                item_helper: DepartmentsService.method(:include_current_value),
+                input_html: { class: 'form-control' }
+    -%>
 <% else %>
-  <%= f.input :affiliation, as: :multi_value_select,
-              collection: DepartmentsService.select_all_options.sort,
-              include_blank: true,
-              item_helper: DepartmentsService.method(:include_current_value),
-              input_html: { class: 'form-control' }
-  -%>
+<%= f.input :affiliation, as: :multi_value_select,
+            collection: DepartmentsService.select_all_options.sort,
+            include_blank: true,
+            item_helper: DepartmentsService.method(:include_current_value),
+            input_html: { class: 'form-control', multiple: true } -%>
 <% end %>

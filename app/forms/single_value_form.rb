@@ -57,7 +57,14 @@ class SingleValueForm < Hyrax::Forms::WorkForm
       end
     end
 
-    if attrs.key?(:affiliation) && !attrs[:affiliation].blank?
+    # Uses the affiliation_label field for editing
+    # Uses the affiliation field for display
+    # affiliation_label value gets copied over to the affiliations field
+    # or the reverse, depending on which mode the record is in
+    if attrs.key?(:affiliation_label) && !attrs[:affiliation_label].blank?
+      attrs[:affiliation] = split_affiliations(attrs[:affiliation_label])
+    elsif attrs.key?(:affiliation) && !attrs[:affiliation].blank?
+      attrs[:affiliation_label] = attrs[:affiliation]
       attrs[:affiliation] = split_affiliations(attrs[:affiliation])
     end
 
