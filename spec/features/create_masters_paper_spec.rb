@@ -57,7 +57,7 @@ RSpec.feature 'Create a MastersPaper', js: false do
       Sipity::WorkflowAction.create(id: 5, name: 'show', workflow_id: dept_workflow.id)
       DefaultAdminSet.create(work_type_name: 'MastersPaper', admin_set_id: admin_set.id)
       DefaultAdminSet.create(work_type_name: 'MastersPaper',
-                             department: 'College of Arts and Sciences; Department of Art; Art History Program',
+                             department: 'Art History Program',
                              admin_set_id: dept_admin_set.id)
     end
 
