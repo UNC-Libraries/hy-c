@@ -55,7 +55,7 @@ class CatalogController < ApplicationController
     config.add_facet_field solr_name('member_of_collections', :symbol), limit: 5, label: 'Collections'
 
     # UNC Custom
-    config.add_facet_field solr_name("affiliation", :facetable), label: "Departments", limit: 5
+    config.add_facet_field solr_name("affiliation_label", :facetable), label: "Departments", limit: 5
 
     # The generic_type isn't displayed on the facet list
     # It's used to give a label to the filter that comes from the user profile
