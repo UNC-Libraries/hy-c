@@ -3,7 +3,7 @@
   <%= f.input :affiliation, as: :select,
               collection: DepartmentsService.select_all_options.sort,
               include_blank: true,
-              selected: DepartmentsService.label(params[:affiliation]),
+              selected: params[:affiliation],
               item_helper: DepartmentsService.method(:include_current_value),
               input_html: { class: 'form-control', multiple: true }
   -%>
