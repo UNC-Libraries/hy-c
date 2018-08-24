@@ -4,11 +4,11 @@ module HyraxHelper
   include Hyrax::HyraxHelperBehavior
 
   def language_links(options)
-    if not /iso639-2/.match(options.to_s).nil? && /SolrDocument/.match(options.to_s).nil?
+    unless /iso639-2/.match(options.to_s).nil?
       begin
-        link_to LanguagesService.label(options), options
-      rescue KeyError
-        options
+        to_sentence(options[:value].map { |lang| link_to LanguagesService.label(lang), main_app.search_catalog_path(f: { language_sim: [lang] })})
+      rescue
+        nil
       end
     end
   end
