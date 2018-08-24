@@ -21,7 +21,7 @@ RSpec.describe Hyrax::MastersPaperForm do
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:academic_concentration, :access, :affiliation, :dcmi_type,
+    it { is_expected.to match_array [:academic_concentration, :access, :affiliation, :affiliation_label, :dcmi_type,
                                      :degree_granting_institution, :doi, :extent,
                                      :geographic_subject, :graduation_year, :medium, :note, :reviewer, :use,
                                      :keyword, :subject, :language, :rights_statement, :license] }
@@ -59,7 +59,8 @@ RSpec.describe Hyrax::MastersPaperForm do
           academic_concentration: ['a concentration'],
           access: 'public', # single-valued
           advisor: ['an advisor'],
-          affiliation: ['School of Medicine; Carolina Center for Genome Sciences'], # Make sure whitespace gets stripped
+          affiliation: ['School of Medicine', 'Carolina Center for Genome Sciences'],
+          affiliation_label: ['School of Medicine', 'Carolina Center for Genome Sciences'],
           date_issued: 'a date', # single-valued
           dcmi_type: ['type'],
           degree: 'MS', # single-valued
@@ -93,6 +94,7 @@ RSpec.describe Hyrax::MastersPaperForm do
       expect(subject['access']).to eq 'public'
       expect(subject['advisor']).to eq ['an advisor']
       expect(subject['affiliation']).to eq ['School of Medicine', 'Carolina Center for Genome Sciences']
+      expect(subject['affiliation_label']).to eq ['School of Medicine', 'Carolina Center for Genome Sciences']
       expect(subject['date_issued']).to eq 'a date'
       expect(subject['degree']).to eq 'MS'
       expect(subject['degree_granting_institution']).to eq 'UNC'
