@@ -2,8 +2,9 @@
 #  `rails generate hyrax:work HonorsThesis`
 module Hyrax
   class HonorsThesisForm < ::SingleValueForm
-    self.model_class = ::HonorsThesis
+    class_attribute :single_value_fields
 
+    self.model_class = ::HonorsThesis
 
     self.terms += [:abstract, :academic_concentration, :access, :advisor, :affiliation, :alternative_title, :award,
                    :date_issued, :dcmi_type, :degree, :degree_granting_institution, :doi, :extent, :geographic_subject,
@@ -15,8 +16,6 @@ module Hyrax
 
     self.single_value_fields = [:title, :license, :rights_statement]
 
-    self.admin_multi_value_fields = [:affiliation]
-    
     self.admin_only_terms = [:dcmi_type]
 
     self.default_term_values = { :dcmi_type => ["http://purl.org/dc/dcmitype/Text"] }

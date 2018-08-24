@@ -63,7 +63,7 @@ RSpec.describe Hyrax::HonorsThesisForm do
           academic_concentration: ['a concentration'],
           access: 'public', # single-valued
           advisor: ['an advisor'],
-          affiliation: 'SILS',
+          affiliation: ['SILS'],
           alternative_title: ['another title'],
           award: ['an award'],
           dcmi_type: ['type'],

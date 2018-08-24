@@ -1,6 +1,6 @@
 desc "Adds generic admin role to hyrax application"
 task :admin_role => :environment do
-  User.create(email: 'admin@example.com',
+  User.first_or_create(email: 'admin@example.com',
               password: 'password',
               password_confirmation: 'password',
               uid: 'admin@example.com')

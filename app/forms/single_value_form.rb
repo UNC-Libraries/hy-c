@@ -7,10 +7,6 @@ class SingleValueForm < Hyrax::Forms::WorkForm
   # Map of fields to default values
   class_attribute :default_term_values
   self.default_term_values = Hash.new
-  class_attribute :admin_multi_value_fields
-  self.admin_multi_value_fields = Array.new
-  class_attribute :single_value_fields
-  self.single_value_fields = Array.new
 
   def initialize(model, current_ability, controller)
     initialize_default_term_values(model)
@@ -28,10 +24,6 @@ class SingleValueForm < Hyrax::Forms::WorkForm
 
   # cast single value fields back to multivalued so they will actually deposit
   def self.model_attributes(form_params)
-    admin_multi_value_fields.each do |field|
-      form_params[field] = Array(form_params[field])
-    end
-
     attrs = super
 
     single_value_fields.each do |field|
