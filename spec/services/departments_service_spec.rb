@@ -10,8 +10,8 @@ RSpec.describe Hyrax::DepartmentsService do
 
   describe "#select_all_options" do
     it "returns only active terms" do
-      expect(service.select_all_options).to include(['biology', 'Biology'], ['chemistry', 'Chemistry'],
-                                                    ['history', 'History'])
+      expect(service.select_all_options).to include(['biology', 'biology'], ['chemistry', 'chemistry'],
+                                                    ['history', 'history'])
     end
   end
 
