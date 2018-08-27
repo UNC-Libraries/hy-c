@@ -23,7 +23,7 @@ class General < ActiveFedora::Base
   end
 
   property :advisor, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/ths') do |index|
-    index.as :stored_searchable
+    index.as :stored_searchable, :facetable
   end
 
   property :affiliation, predicate: ::RDF::URI('http://vivoweb.org/ontology/core#AcademicDepartment') do |index|
@@ -63,7 +63,7 @@ class General < ActiveFedora::Base
   end
 
   property :date_issued, predicate: ::RDF::Vocab::DC.issued do |index|
-    index.as :stored_searchable
+    index.as :stored_searchable, :facetable
   end
 
   property :date_other, predicate: ::RDF::Vocab::DC.date do |index|
@@ -97,7 +97,7 @@ class General < ActiveFedora::Base
   end
 
   property :edition, predicate: ::RDF::Vocab::BF2.editionStatement, multiple: false do |index|
-    index.as :stored_searchable
+    index.as :stored_searchable, :facetable
   end
 
   property :extent, predicate: ::RDF::URI('http://rdaregistry.info/Elements/w/extent.en') do |index|

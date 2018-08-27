@@ -20,8 +20,9 @@
 // Required by Blacklight
 //= require blacklight/blacklight
 
-//= require_tree .
 //= require hyrax
-//= require unc_custom
-
-
+//= require almond
+//= require unc/unc_visibility_component
+//= require unc/unc_save_work_control
+//= require unc/unc_editor
+//= require unc/unc_custom
