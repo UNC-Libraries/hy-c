@@ -1,5 +1,5 @@
 <%# [hyc-override] Overriding to hide tombstoned files %>
-<% if (current_user && current_user.admin?) || (@presenter.workflow.actions.present? &&
+<% if (current_user && current_user.admin?) || (@presenter.workflow.badge.present? &&
     /Tombstoned|Pending.deletion/.match(@presenter.workflow.badge).nil? && Hyrax.config.display_media_download_link?) %>
   <div class="no-preview">
     <%= t('hyrax.works.show.no_preview') %>
