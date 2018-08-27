@@ -1,12 +1,12 @@
-<div class="no-preview">
-  <%= t('hyrax.works.show.no_preview') %>
-  <%# [hyc-override] Overriding to hide tombstoned files %>
-  <% if (current_user && current_user.admin?) || (@presenter.workflow.actions.present? &&
-      /Tombstoned/.match(@presenter.workflow.badge).nil? && Hyrax.config.display_media_download_link?) %>
-    <p /><%= link_to t('hyrax.file_set.show.download'),
-      hyrax.download_path(file_set),
-      id: "file_download",
-      data: { label: file_set.id },
-      target: "_new" %>
-  <% end %>
-</div>
+<%# [hyc-override] Overriding to hide tombstoned files %>
+<% if (current_user && current_user.admin?) || (@presenter.workflow.actions.present? &&
+    /Tombstoned|Pending.deletion/.match(@presenter.workflow.badge).nil? && Hyrax.config.display_media_download_link?) %>
+  <div class="no-preview">
+    <%= t('hyrax.works.show.no_preview') %>
+      <p /><%= link_to t('hyrax.file_set.show.download'),
+        hyrax.download_path(file_set),
+        id: "file_download",
+        data: { label: file_set.id },
+        target: "_new" %>
+  </div>
+<% end %>
