@@ -23,7 +23,7 @@ class HonorsThesis < ActiveFedora::Base
   end
 
   property :advisor, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/ths') do |index|
-    index.as :stored_searchable
+    index.as :stored_searchable, :facetable
   end
 
   property :affiliation, predicate: ::RDF::Vocab::SCHEMA.affiliation do |index|
@@ -39,7 +39,7 @@ class HonorsThesis < ActiveFedora::Base
   end
 
   property :date_issued, predicate: ::RDF::Vocab::DC.issued, multiple: false do |index|
-    index.as :stored_searchable
+    index.as :stored_searchable, :facetable
   end
 
   property :dcmi_type, predicate: ::RDF::Vocab::DC.type do |index|

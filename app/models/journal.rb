@@ -19,7 +19,7 @@ class Journal < ActiveFedora::Base
   end
 
   property :date_issued, predicate: ::RDF::Vocab::DC.issued, multiple: false do |index|
-    index.as :stored_searchable
+    index.as :stored_searchable, :facetable
   end
 
   property :dcmi_type, predicate: ::RDF::Vocab::DC.type do |index|
