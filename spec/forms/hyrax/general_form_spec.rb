@@ -31,8 +31,8 @@ RSpec.describe Hyrax::GeneralForm do
                                      :journal_issue, :journal_title, :journal_volume, :kind_of_data,
                                      :last_modified_date, :medium, :note, :orcid, :other_affiliation, :page_start,
                                      :page_end, :peer_review_status, :place_of_publication, :project_director,
-                                     :researcher, :reviewer, :rights_holder, :series, :sponsor, :table_of_contents,
-                                     :translator, :url, :use] }
+                                     :publisher_version, :researcher, :reviewer, :rights_holder, :series, :sponsor,
+                                     :table_of_contents, :translator, :url, :use] }
   end
   
   describe "#admin_only_terms" do
@@ -104,6 +104,7 @@ RSpec.describe Hyrax::GeneralForm do
           peer_review_status: 'in review', # single-valued
           place_of_publication: ['durham'],
           project_director: ['someone'],
+          publisher_version: ['a version'],
           researcher: ['a researcher'],
           reviewer: ['a reviewer'],
           rights_holder: ['dean'],
@@ -176,6 +177,7 @@ RSpec.describe Hyrax::GeneralForm do
       expect(subject['peer_review_status']).to eq 'in review'
       expect(subject['place_of_publication']).to eq ['durham']
       expect(subject['project_director']).to eq ['someone']
+      expect(subject['publisher_version']).to eq ['a version']
       expect(subject['researcher']).to eq ['a researcher']
       expect(subject['reviewer']).to eq ['a reviewer']
       expect(subject['rights_holder']).to eq ['dean']

@@ -49,6 +49,7 @@ RSpec.describe MastersPaper do
       expect(subject).to respond_to(:geographic_subject)
       expect(subject).to respond_to(:graduation_year)
       expect(subject).to respond_to(:note)
+      expect(subject).to respond_to(:orcid)
       expect(subject).to respond_to(:reviewer)
       expect(subject).to respond_to(:use)
     end

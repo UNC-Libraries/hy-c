@@ -22,6 +22,7 @@ RSpec.describe Hyrax::MultimedPresenter do
       "geographic_subject_tesim" => ['Italy'],
       "medium_tesim" => ['a medium'],
       "note_tesim" => ['a note'],
+      "orcid_tesim" => ['an orcid'],
       "resource_type_tesim" => ['a type'],
     }
   end
@@ -47,6 +48,7 @@ RSpec.describe Hyrax::MultimedPresenter do
   it { is_expected.to delegate_method(:geographic_subject).to(:solr_document) }
   it { is_expected.to delegate_method(:medium).to(:solr_document) }
   it { is_expected.to delegate_method(:note).to(:solr_document) }
+  it { is_expected.to delegate_method(:orcid).to(:solr_document) }
 
   describe "#model_name" do
     subject { presenter.model_name }
@@ -152,6 +154,17 @@ RSpec.describe Hyrax::MultimedPresenter do
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:note)
+      end
+    end
+
+    context "with a custom orcid field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:orcid, ['an orcid'], {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:orcid)
       end
     end
 

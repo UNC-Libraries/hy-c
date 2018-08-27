@@ -8,7 +8,7 @@ module Hyrax
 
     self.terms += [:abstract, :academic_concentration, :access, :advisor, :affiliation, :alternative_title, :award,
                    :date_issued, :dcmi_type, :degree, :degree_granting_institution, :doi, :extent, :geographic_subject,
-                   :graduation_year, :note, :url, :use, :resource_type]
+                   :graduation_year, :note, :orcid, :url, :use, :resource_type]
 
     self.terms -= [:based_near, :contributor, :description, :identifier, :publisher, :source]
     self.required_fields = [:title, :abstract, :advisor, :affiliation, :creator, :date_created, :degree,

@@ -31,6 +31,7 @@ RSpec.describe Hyrax::DissertationPresenter do
       "geographic_subject_tesim" => ['a geographic subject'],
       "graduation_year_tesim" => ['a year'],
       "note_tesim" => ['a note'],
+      "orcid_tesim" => ['an orcid'],
       "place_of_publication_tesim" => ['a place'],
       "reviewer_tesim" => ['a reviewer'],
       "use_tesim" => ['a use']
@@ -72,6 +73,7 @@ RSpec.describe Hyrax::DissertationPresenter do
   it { is_expected.to delegate_method(:geographic_subject).to(:solr_document) }
   it { is_expected.to delegate_method(:graduation_year).to(:solr_document) }
   it { is_expected.to delegate_method(:note).to(:solr_document) }
+  it { is_expected.to delegate_method(:orcid).to(:solr_document) }
   it { is_expected.to delegate_method(:place_of_publication).to(:solr_document) }
   it { is_expected.to delegate_method(:reviewer).to(:solr_document) }
   it { is_expected.to delegate_method(:use).to(:solr_document) }
@@ -268,6 +270,17 @@ RSpec.describe Hyrax::DissertationPresenter do
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:note)
+      end
+    end
+
+    context "with a custom orcid field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:orcid, ['an orcid'], {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:orcid)
       end
     end
 

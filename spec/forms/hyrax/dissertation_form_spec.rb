@@ -23,9 +23,9 @@ RSpec.describe Hyrax::DissertationForm do
 
     it { is_expected.to match_array [:abstract, :academic_concentration, :access, :advisor, :affiliation,
                                      :alternative_title, :dcmi_type, :degree, :doi, :geographic_subject,
-                                     :graduation_year, :note, :place_of_publication, :reviewer, :use, :contributor,
-                                     :identifier, :subject, :publisher, :language, :keyword, :rights_statement,
-                                     :license, :resource_type] }
+                                     :graduation_year, :note, :orcid, :place_of_publication, :reviewer, :use,
+                                     :contributor, :identifier, :subject, :publisher, :language, :keyword,
+                                     :rights_statement, :license, :resource_type] }
   end
   
   describe "#admin_only_terms" do
@@ -73,6 +73,7 @@ RSpec.describe Hyrax::DissertationForm do
           geographic_subject: ['a geographic subject'],
           graduation_year: '2017',
           note: [''],
+          orcid: ['some id'],
           place_of_publication: ['a place'],
           reviewer: ['a reviewer'],
           use: ['a use']
@@ -109,6 +110,7 @@ RSpec.describe Hyrax::DissertationForm do
       expect(subject['geographic_subject']).to eq ['a geographic subject']
       expect(subject['graduation_year']).to eq '2017'
       expect(subject['note']).to be_empty
+      expect(subject['orcid']).to eq ['some id']
       expect(subject['place_of_publication']).to eq ['a place']
       expect(subject['reviewer']).to eq ['a reviewer']
       expect(subject['use']).to eq ['a use']

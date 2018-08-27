@@ -48,6 +48,7 @@ RSpec.describe Multimed do
       expect(subject).to respond_to(:geographic_subject)
       expect(subject).to respond_to(:medium)
       expect(subject).to respond_to(:note)
+      expect(subject).to respond_to(:orcid)
     end
   end
 end

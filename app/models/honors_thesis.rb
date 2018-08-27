@@ -81,6 +81,10 @@ class HonorsThesis < ActiveFedora::Base
     index.as :stored_searchable
   end
 
+  property :orcid, predicate: ::RDF::Vocab::Identifiers.orcid do |index|
+    index.as :stored_searchable
+  end
+
   property :url, predicate: ::RDF::Vocab::SCHEMA.url do |index|
     index.as :stored_searchable
   end

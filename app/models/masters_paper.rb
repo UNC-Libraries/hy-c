@@ -73,6 +73,10 @@ class MastersPaper < ActiveFedora::Base
     index.as :stored_searchable
   end
 
+  property :orcid, predicate: ::RDF::Vocab::Identifiers.orcid do |index|
+    index.as :stored_searchable
+  end
+
   property :reviewer, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/rev') do |index|
     index.as :stored_searchable
   end

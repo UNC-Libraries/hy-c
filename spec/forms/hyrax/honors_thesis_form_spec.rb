@@ -26,8 +26,9 @@ RSpec.describe Hyrax::HonorsThesisForm do
     subject { form.secondary_terms }
 
     it { is_expected.to match_array [:access, :academic_concentration, :alternative_title, :award, :date_issued,
-                                     :dcmi_type, :doi, :extent, :geographic_subject, :note, :use, :language, :license,
-                                     :resource_type, :rights_statement, :subject, :keyword, :related_url, :url] }
+                                     :dcmi_type, :doi, :extent, :geographic_subject, :note, :orcid, :use, :language,
+                                     :license, :resource_type, :rights_statement, :subject, :keyword, :related_url,
+                                     :url] }
   end
   
   describe "#admin_only_terms" do
@@ -73,6 +74,7 @@ RSpec.describe Hyrax::HonorsThesisForm do
           geographic_subject: ['a geographic subject'],
           graduation_year: '2017',
           note: [''],
+          orcid: ['an orcid'],
           use: ['a use'],
           url: ['a url']
       )
@@ -108,6 +110,7 @@ RSpec.describe Hyrax::HonorsThesisForm do
       expect(subject['geographic_subject']).to eq ['a geographic subject']
       expect(subject['graduation_year']).to eq '2017'
       expect(subject['note']).to be_empty
+      expect(subject['orcid']).to eq ['an orcid']
       expect(subject['use']).to eq ['a use']
       expect(subject['url']).to eq ['a url']
     end

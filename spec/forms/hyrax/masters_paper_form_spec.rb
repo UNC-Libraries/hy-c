@@ -24,7 +24,7 @@ RSpec.describe Hyrax::MastersPaperForm do
     subject { form.secondary_terms }
 
     it { is_expected.to match_array [:academic_concentration, :access, :affiliation, :dcmi_type, :doi, :extent,
-                                     :geographic_subject, :note, :reviewer, :use, :keyword, :subject, :language,
+                                     :geographic_subject, :note, :orcid, :reviewer, :use, :keyword, :subject, :language,
                                      :rights_statement, :license] }
   end
   
@@ -71,6 +71,7 @@ RSpec.describe Hyrax::MastersPaperForm do
           geographic_subject: ['a geographic subject'],
           graduation_year: '2017',
           note: ['a note'],
+          orcid: ['an orcid'],
           reviewer: ['a reviewer'],
           use: ['a use']
       )
@@ -104,6 +105,7 @@ RSpec.describe Hyrax::MastersPaperForm do
       expect(subject['geographic_subject']).to eq ['a geographic subject']
       expect(subject['graduation_year']).to eq '2017'
       expect(subject['note']).to eq ['a note']
+      expect(subject['orcid']).to eq ['an orcid']
       expect(subject['reviewer']).to eq ['a reviewer']
       expect(subject['use']).to eq ['a use']
     end

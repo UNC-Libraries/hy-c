@@ -47,6 +47,7 @@ RSpec.describe Journal do
       expect(subject).to respond_to(:isbn)
       expect(subject).to respond_to(:issn)
       expect(subject).to respond_to(:note)
+      expect(subject).to respond_to(:orcid)
       expect(subject).to respond_to(:place_of_publication)
       expect(subject).to respond_to(:table_of_contents)
     end
