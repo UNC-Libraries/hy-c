@@ -1,6 +1,6 @@
 <%# [hyc-override] Overriding to hide tombstoned files %>
-<% if (current_user && current_user.admin?) || (@presenter.workflow.actions.present? &&
-    @presenter.workflow.actions.select{|action| action[0] == 'tombstone'}.blank?) %>
+<% if (current_user && current_user.admin?) || (@presenter.workflow.present? &&
+    /Tombstoned/.match(@presenter.workflow.badge).nil?) %>
   <h2><%= t('.header') %></h2>
   <%  array_of_ids = presenter.list_of_item_ids_to_display %>
   <%  members = presenter.member_presenters_for(array_of_ids) %>

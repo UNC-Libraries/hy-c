@@ -2,7 +2,7 @@
   <%= t('hyrax.works.show.no_preview') %>
   <%# [hyc-override] Overriding to hide tombstoned files %>
   <% if (current_user && current_user.admin?) || (@presenter.workflow.actions.present? &&
-      @presenter.workflow.actions.select{|action| action[0] == 'tombstone'}.blank? && Hyrax.config.display_media_download_link?) %>
+      /Tombstoned/.match(@presenter.workflow.badge).nil? && Hyrax.config.display_media_download_link?) %>
     <p /><%= link_to t('hyrax.file_set.show.download'),
       hyrax.download_path(file_set),
       id: "file_download",
