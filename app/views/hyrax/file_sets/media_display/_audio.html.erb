@@ -1,4 +1,6 @@
-<% if Hyrax.config.display_media_download_link? %>
+<%# [hyc-override] Overriding to hide tombstoned files %>
+<% if (current_user && current_user.admin?) || (@presenter.workflow.actions.present? &&
+    @presenter.workflow.actions.select{|action| action[0] == 'tombstone'}.blank? && Hyrax.config.display_media_download_link?) %>
     <div>
       <h2 class="sr-only"><%= t('hyrax.file_set.show.downloadable_content.heading') %></h2>
       <audio controls="controls" class="audiojs" style="width:100%" controlsList="nodownload" preload="auto">
