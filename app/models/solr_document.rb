@@ -37,7 +37,7 @@ class SolrDocument
       language:    'language_tesim',
       publisher:   'publisher_tesim',
       relation:    'relation_tesim',
-      rights:      'rights_statement_tesim',
+      rights_statement: 'rights_statement_tesim',
       source:      'source_tesim',
       subject:     'subject_tesim',
       title:       'title_tesim',
