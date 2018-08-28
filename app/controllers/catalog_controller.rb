@@ -44,7 +44,6 @@ class CatalogController < ApplicationController
     #   The ordering of the field names is the order of the display
 
     config.add_facet_field solr_name("advisor", :facetable), label: "Advisor", limit: 5
-    config.add_facet_field solr_name("affiliation", :facetable), label: "Affiliation", limit: 5
     config.add_facet_field solr_name('member_of_collections', :symbol), limit: 5, label: 'Collection'
     config.add_facet_field solr_name("creator", :facetable), limit: 5
     config.add_facet_field solr_name("date_issued", :facetable), label: "Date", limit: 5
@@ -52,7 +51,13 @@ class CatalogController < ApplicationController
     config.add_facet_field solr_name("language", :facetable), helper_method: :language_links_facets, limit: 5
     config.add_facet_field solr_name("resource_type", :facetable), label: "Resource Type", limit: 5
     config.add_facet_field solr_name("subject", :facetable), limit: 5
-    config.add_facet_field solr_name("edition", :facetable), label: "Version", limit: 5
+    config.add_facet_field solr_name("based_near_label", :facetable), limit: 5
+    config.add_facet_field solr_name("publisher", :facetable), limit: 5
+    config.add_facet_field solr_name("file_format", :facetable), limit: 5
+
+    # UNC Custom
+    config.add_facet_field solr_name("affiliation_label", :facetable), label: "Departments", limit: 5
+
 
     # The generic_type isn't displayed on the facet list
     # It's used to give a label to the filter that comes from the user profile
@@ -111,6 +116,7 @@ class CatalogController < ApplicationController
     config.add_index_field solr_name("access", :stored_searchable), label: "Access"
     config.add_index_field solr_name("advisor", :stored_searchable), label: "Advisor"
     config.add_index_field solr_name("affiliation", :stored_searchable), label: "Departments", link_to_search: solr_name("affiliation", :facetable)
+    config.add_index_field solr_name("affiliation_label", :stored_searchable)
     config.add_index_field solr_name("alternative_title", :stored_searchable), label: "Alternative Title"
     config.add_index_field solr_name("arranger", :stored_searchable), label: "Arranger"
     config.add_index_field solr_name("award", :stored_searchable), label: "Award"
