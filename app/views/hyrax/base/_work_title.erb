@@ -4,11 +4,7 @@
     <div class="col-sm-8">
       <% if index == 0 %>
         <h2><%= title %>
-          <% if /Tombstoned/.match(presenter.workflow.badge).nil? %>
             <small class="text-muted"><%= presenter.permission_badge %> <%= presenter.workflow.badge %></small>
-            <% else %>
-            <small class="text-muted"><%= presenter.permission_badge %> <%= content_tag(:span, "Withdrawn", class: "state state-tombstoned label label-primary") %></small>
-          <%end %>
         </h2>
       <% else %>
         <h2><%= title %></h2>

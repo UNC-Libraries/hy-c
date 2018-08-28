@@ -1,6 +1,5 @@
 <%# [hyc-override] Overriding to hide tombstoned files %>
-<% if (current_user && current_user.admin?) || (@presenter.workflow.badge.present? &&
-    /Tombstoned|Pending.deletion/.match(@presenter.workflow.badge).nil? && Hyrax.config.display_media_download_link?) %>
+<% if (current_user&.admin?) || (@presenter.workflow.can_view? && Hyrax.config.display_media_download_link?) %>
     <div>
       <h2 class="sr-only"><%= t('hyrax.file_set.show.downloadable_content.heading') %></h2>
       <video controls="controls" class="video-js vjs-default-skin" style="width:100%" data-setup="{}" controlsList="nodownload" preload="auto">
@@ -14,8 +13,7 @@
                   target: :_blank,
                   id: "file_download" %>
     </div>
-<% elsif @presenter.workflow.badge.present? &&
-    /Tombstoned|Pending.deletion/.match(@presenter.workflow.badge).nil? %>
+<% elsif @presenter.workflow.can_view? %>
     <div>
       <video controls="controls" class="video-js vjs-default-skin" style="width:100%" data-setup="{}" controlsList="nodownload" preload="auto">
         <source src="<%= hyrax.download_path(file_set, file: 'webm') %>" type="video/webm" />

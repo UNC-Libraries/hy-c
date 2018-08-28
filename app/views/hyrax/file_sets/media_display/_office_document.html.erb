@@ -1,6 +1,5 @@
 <%# [hyc-override] Overriding to hide tombstoned files %>
-<% if (current_user && current_user.admin?) || (@presenter.workflow.badge.present? &&
-    /Tombstoned|Pending.deletion/.match(@presenter.workflow.badge).nil? && Hyrax.config.display_media_download_link?) %>
+<% if (current_user&.admin?) || (@presenter.workflow.can_view? && Hyrax.config.display_media_download_link?) %>
     <div>
       <h2 class="sr-only"><%= t('hyrax.file_set.show.downloadable_content.heading') %></h2>
       <%= image_tag thumbnail_url(file_set),
@@ -13,8 +12,7 @@
                   id: "file_download",
                   data: { label: file_set.id } %>
     </div>
-<% elsif @presenter.workflow.badge.present? &&
-    /Tombstoned|Pending.deletion/.match(@presenter.workflow.badge).nil? %>
+<% elsif @presenter.workflow.can_view? %>
     <div>
       <%= image_tag thumbnail_url(file_set),
                     class: "representative-media",
