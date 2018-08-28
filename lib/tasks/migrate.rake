@@ -15,14 +15,20 @@ namespace :cdr do
   namespace :migration do
 
     desc 'batch migrate generic files from FOXML file'
-    task :items, [:collection, :mapping_file] => :environment do |t, args|
+    task :items, [:collection, :configuration_file, :mapping_file] => :environment do |t, args|
       if AdminSet.where(title: ENV['DEFAULT_ADMIN_SET']).count != 0
-        config = YAML.load_file('lib/tasks/migration_config.yml')
+        config = YAML.load_file(args[:configuration_file])
         collection_config = config[args[:collection]]
         @work_type = collection_config['work_type']
         @admin_set = collection_config['admin_set']
         @depositor_key = User.where(email: collection_config['depositor_email']).first.uid
         @collection_name = collection_config['collection_name']
+        @child_work_type = collection_config['child_work_type']
+
+        # Store parent-child relationships
+        @parent_hash = Hash.new
+        # Store uuid/hyrax-id mappings for current collection
+        @mapping = Hash.new
 
         # Hash of all binaries in storage directory
         @binary_hash = Hash.new
@@ -52,6 +58,9 @@ namespace :cdr do
 
         collection_ids_file = collection_config['collection_list']
         migrate_objects(collection_ids_file)
+        if !@child_work_type.blank?
+          attach_children
+        end
       else
         puts 'The default admin set does not exist'
       end
@@ -67,12 +76,14 @@ namespace :cdr do
 
       puts 'Object count: '+collection_uuids.count.to_s
 
+      count = 0
+
       collection_uuids.each do |collection_uuid|
         uuid = get_uuid_from_path(collection_uuid)
         # Assuming uuid for metadata and binary are the same
         # Skip file/binary metadata
         # solr returns column header; skip that, too
-        if @binary_hash[uuid].blank? && !uuid.blank?
+        if @binary_hash[uuid].blank? && !uuid.blank? && count < 2
           metadata_fields = metadata(@object_hash[uuid])
 
           puts 'Number of files: '+metadata_fields[:files].count.to_s
@@ -80,6 +91,10 @@ namespace :cdr do
           if metadata_fields[:files][0].match(/.+\.xml/)
             resource = metadata_fields[:resource]
             resource.save!
+
+            count = count + 1
+
+            @mapping[uuid] = resource.id
 
             # Record old and new ids for works
             CSV.open(@csv_output, 'a+') do |csv|
@@ -125,7 +140,7 @@ namespace :cdr do
     def metadata(file)
       metadata = Nokogiri::XML(File.open(file))
 
-      #get the uuid of the object
+      # get the uuid of the object
       uuid = get_uuid_from_path(metadata.at_xpath('foxml:digitalObject/@PID', MigrationConstants::NS).value)
       puts 'getting metadata for: '+uuid
 
@@ -264,18 +279,39 @@ namespace :cdr do
       publisher_version = mods_version.xpath('mods:location/mods:url[@displayLabel="Publisher Version"] | mods:relatedItem[@type="otherVersion"]/mods:location',MigrationConstants::NS).map(&:text)
       digital_collection = mods_version.xpath('mods:relatedItem[@displayLabel="Collection" and @type="host"]/mods:titleInfo/mods:title',MigrationConstants::NS).map(&:text)
 
+
+      deposit_record = ''
+      cdr_model_type = ''
       rdf_version = metadata.xpath("//rdf:RDF", MigrationConstants::NS).last
       if rdf_version
         if rdf_version.to_s.match(/originalDeposit/)
           deposit_record = rdf_version.xpath('rdf:Description/*[local-name() = "originalDeposit"]/@rdf:resource', MigrationConstants::NS).map(&:text)
         end
 
+        if rdf_version.to_s.match(/hasModel/)
+          cdr_model_type = rdf_version.xpath('rdf:Description/*[local-name() = "hasModel"]/@rdf:resource', MigrationConstants::NS).map(&:text)
+          cdr_model_type = (cdr_model_type.include? 'info:fedora/cdr-model:AggregateWork') ? 'aggregate' : ''
+        end
+
+        if cdr_model_type == 'aggregate'
+          @parent_hash[uuid] = Array.new
+        end
+
         if rdf_version.to_s.match(/contains/)
           contained_files = rdf_version.xpath("rdf:Description/*[local-name() = 'contains']/@rdf:resource", MigrationConstants::NS)
+          puts 'contained: ', contained_files
           contained_files.each do |contained_file|
             tmp_uuid = get_uuid_from_path(contained_file.to_s)
-            file_full << @object_hash[tmp_uuid]
+            if !@binary_hash[tmp_uuid].blank?
+              file_full << @object_hash[tmp_uuid]
+            else
+              @parent_hash[uuid] << tmp_uuid
+            end
           end
+
+          puts 'files: ', file_full
+
+          puts 'parent: ', @parent_hash
 
           if file_full.count > 1
             representative = rdf_version.xpath('rdf:Description/*[local-name() = "defaultWebObject"]/@rdf:resource', MigrationConstants::NS).to_s.split('/')[1]
@@ -317,7 +353,11 @@ namespace :cdr do
         end
       end
 
-      language.map!{|e| e == 'eng' ? 'English' : e}
+      if !language.blank?
+        puts language
+        language.map!{|e| LanguagesService.label("http://id.loc.gov/vocabulary/iso639-2/#{e.downcase}") ?
+                              "http://id.loc.gov/vocabulary/iso639-2/#{e.downcase}" : e}
+      end
 
       collection = Collection.where(title: @collection_name).first
       if !@collection_name.blank? && collection.blank?
@@ -401,7 +441,8 @@ namespace :cdr do
           'visibility_during_embargo'=>visibility_during_embargo,
           'visibility_after_embargo'=>visibility_after_embargo,
           'admin_set_id'=>(AdminSet.where(title: @admin_set).first || AdminSet.where(title: ENV['DEFAULT_ADMIN_SET']).first).id,
-          'member_of_collections'=>[Collection.where(title: @collection_name).first]
+          'member_of_collections'=>[Collection.where(title: @collection_name).first],
+          'cdr_model_type'=>cdr_model_type
       }
 
       work_attributes.reject!{|k,v| v.blank? || v.empty?}
@@ -417,7 +458,11 @@ namespace :cdr do
     end
 
     def work_record(work_attributes)
-      resource = @work_type.singularize.classify.constantize.new
+      if !@child_work_type.blank? && work_attributes['cdr_model_type'] != 'aggregate'
+        resource = @child_work_type.singularize.classify.constantize.new
+      else
+        resource = @work_type.singularize.classify.constantize.new
+      end
       resource.creator = work_attributes['creator']
       resource.depositor = @depositor_key
       resource.save
@@ -493,6 +538,20 @@ namespace :cdr do
 
     def get_uuid_from_path(path)
       path.slice(/\w{8}-\w{4}-\w{4}-\w{4}-\w{12}/)
+    end
+
+    def attach_children
+      @parent_hash.each do |k, v|
+        hyrax_id = @mapping[k]
+        parent = @work_type.singularize.classify.constantize.find(hyrax_id)
+        puts parent.inspect, parent.ordered_members.inspect
+        v.each do |child|
+          if @mapping[child]
+            # TODO: find another way to add children/parents; this is not working
+            parent.ordered_members.push(@mapping[child])
+          end
+        end
+      end
     end
   end
 end

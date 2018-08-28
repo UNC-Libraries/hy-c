@@ -59,6 +59,8 @@
           <rdf:Description rdf:about="info:fedora/uuid:118aa655-dd0f-4a87-8a25-20bd9edf2afb">
             <ns5:allowIndexing>yes</ns5:allowIndexing>
             <ns5:contains rdf:resource="info:fedora/uuid:17449143-3045-43af-9dd8-02f1bdf9bc66"></ns5:contains>
+            <ns5:contains rdf:resource="info:fedora/uuid:3cd2a4ff-63db-4fb3-a59e-9dedd7d0b5bd"></ns5:contains>
+            <ns5:contains rdf:resource="info:fedora/uuid:1288fd77-3428-4052-97f1-e15cdb20b367"></ns5:contains>
             <ns5:owner rdf:resource="http://example.com/morganem"></ns5:owner>
             <ns5:slug>2008_Pierson</ns5:slug>
             <ns6:hasModel rdf:resource="info:fedora/cdr-model:AggregateWork"></ns6:hasModel>

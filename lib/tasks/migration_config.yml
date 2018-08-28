@@ -36,12 +36,13 @@ collection5:
   admin_set: default
   depositor_email: admin@example.com
 collection6:
-  collection_list: spec/fixtures/migration/collection.csv
-  objects: spec/fixtures/migration/objects.txt
-  binaries: spec/fixtures/migration/binaries.txt
+  collection_list: lib/tasks/migration/collection.csv
+  objects: lib/tasks/migration/objects.txt
+  binaries: lib/tasks/migration/binaries.txt
   work_type: Journal
   admin_set: default
   depositor_email: admin@example.com
+  child_work_type: Article
 collection7:
   collection_list: spec/fixtures/migration/collection.csv
   objects: spec/fixtures/migration/objects.txt
