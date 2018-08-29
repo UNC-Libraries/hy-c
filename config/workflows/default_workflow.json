@@ -26,6 +26,7 @@
                         }
                     ],
                     "methods": [
+                        "Hyrax::Workflow::RevokeEditFromDepositor",
                         "Hyrax::Workflow::MetadataOnlyRecord"
                     ]
                 }, {
@@ -41,11 +42,12 @@
                         }
                     ],
                     "methods": [
-                        "Hyrax::Workflow::RevokeEditFromDepositor"
+                        "Hyrax::Workflow::RevokeEditFromDepositor",
+                        "Hyrax::Workflow::MetadataOnlyRecord"
                     ]
                 }, {
                     "name": "approve_deletion",
-                    "from_states": [{"names": ["pending_deletion"], "roles": ["approving"]}],
+                    "from_states": [{"names": ["deposited", "pending_deletion"], "roles": ["approving"]}],
                     "transition_to": "tombstoned",
                     "notifications": [
                         {
@@ -55,6 +57,7 @@
                         }
                     ],
                     "methods": [
+                        "Hyrax::Workflow::RevokeEditFromDepositor",
                         "Hyrax::Workflow::MetadataOnlyRecord"
                     ]
                 }, {
