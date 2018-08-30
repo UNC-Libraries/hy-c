@@ -28,17 +28,17 @@ RSpec.describe Hyrax::WorkflowPresenter do
     end
   end
 
-  describe "#can_view?" do
+  describe "#in_workflow_state?" do
     let(:workflow) { create(:workflow, name: 'testing') }
 
-    subject { presenter.can_view? }
+    subject { presenter.in_workflow_state?(['withdrawn', 'pending deletion']) }
 
     context 'with a Sipity::Entity marked as Tombstoned' do
       before do
         allow(entity).to receive(:workflow_state_name).and_return('tombstoned')
         allow(presenter).to receive(:sipity_entity).and_return(entity)
       end
-      it { is_expected.to be false }
+      it { is_expected.to be true }
     end
 
     context 'with a Sipity::Entity marked as Pending Deletion' do
@@ -46,7 +46,7 @@ RSpec.describe Hyrax::WorkflowPresenter do
         allow(entity).to receive(:workflow_state_name).and_return('pending deletion')
         allow(presenter).to receive(:sipity_entity).and_return(entity)
       end
-      it { is_expected.to be false }
+      it { is_expected.to be true }
     end
 
     context 'with a Sipity::Entity marked as Deposited' do
@@ -54,7 +54,7 @@ RSpec.describe Hyrax::WorkflowPresenter do
         allow(entity).to receive(:workflow_state_name).and_return('deposited')
         allow(presenter).to receive(:sipity_entity).and_return(entity)
       end
-      it { is_expected.to be true }
+      it { is_expected.to be false }
     end
   end
 end

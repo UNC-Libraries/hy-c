@@ -42,10 +42,17 @@ module Hyrax
       content_tag(:span, state_label, class: "state state-#{state} label label-primary")
     end
 
-    def can_view?
-      return true unless state
-      /withdrawn|pending.deletion/.match(state).nil?
+    def in_workflow_state?(test_states = [])
+      return false unless state && !test_states.blank?
+
+      test_state_regex = test_states.join('|').gsub(/\s+/, '.+')
+      !/#{test_state_regex}/.match(state).nil?
     end
+
+    # def can_view?
+    #   return true unless state
+    #   /withdrawn|pending.deletion/.match(state).nil?
+    # end
 
     private
 
