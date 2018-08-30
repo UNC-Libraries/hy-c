@@ -78,7 +78,9 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       expect(page).to have_content 'Test Default Keyword'
       expect(page).to_not have_content 'In Administrative Set: honors thesis admin set'
       expect(page).to have_content 'Type http://purl.org/dc/dcmitype/Text'
-      expect(page).to have_content 'Affiliation College of Arts and SciencesDepartment of Biology'
+      expect(page).to have_content 'Affiliation'
+      expect(page).to have_content 'College of Arts and Sciences'
+      expect(page).to have_content 'Department of Biology'
     end
 
     scenario 'as an admin' do
@@ -120,7 +122,9 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       expect(page).to have_content 'Test Default Keyword'
       expect(page).to have_content 'In Administrative Set: honors thesis admin set'
       expect(page).to have_content 'Type http://purl.org/dc/dcmitype/Image'
-      expect(page).to have_content 'Affiliation College of Arts and SciencesDepartment of Biology'
+      expect(page).to have_content 'Affiliation'
+      expect(page).to have_content 'College of Arts and Sciences'
+      expect(page).to have_content 'Department of Biology'
     end
   end
 end
