@@ -25,10 +25,10 @@ RSpec.describe Hyrax::HonorsThesisForm do
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:access, :academic_concentration, :alternative_title, :award, :date_issued,
-                                     :dcmi_type, :doi, :extent, :geographic_subject, :note, :orcid, :use, :language,
-                                     :license, :resource_type, :rights_statement, :subject, :keyword, :related_url,
-                                     :url] }
+    it { is_expected.to match_array [:access, :academic_concentration, :alternative_title, :affiliation_label,
+                                     :award, :date_issued, :dcmi_type, :doi, :extent, :geographic_subject, :note,
+                                     :orcid, :use, :language, :license, :resource_type, :rights_statement, :subject,
+                                     :keyword, :related_url, :url] }
   end
   
   describe "#admin_only_terms" do
@@ -63,7 +63,8 @@ RSpec.describe Hyrax::HonorsThesisForm do
           academic_concentration: ['a concentration'],
           access: 'public', # single-valued
           advisor: ['an advisor'],
-          affiliation: ['SILS'],
+          affiliation: ['School of Medicine', 'Carolina Center for Genome Sciences'],
+          affiliation_label: ['School of Medicine', 'Carolina Center for Genome Sciences'],
           alternative_title: ['another title'],
           award: ['an award'],
           dcmi_type: ['type'],
@@ -100,7 +101,8 @@ RSpec.describe Hyrax::HonorsThesisForm do
       expect(subject['academic_concentration']).to eq ['a concentration']
       expect(subject['access']).to eq 'public'
       expect(subject['advisor']).to eq ['an advisor']
-      expect(subject['affiliation']).to eq ['SILS']
+      expect(subject['affiliation']).to eq ['School of Medicine', 'Carolina Center for Genome Sciences']
+      expect(subject['affiliation_label']).to eq ['School of Medicine', 'Carolina Center for Genome Sciences']
       expect(subject['alternative_title']).to eq ['another title']
       expect(subject['award']).to eq ['an award']
       expect(subject['degree']).to eq 'MSIS'

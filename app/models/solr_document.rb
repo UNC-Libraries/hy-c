@@ -68,6 +68,10 @@ class SolrDocument
     self[Solrizer.solr_name('affiliation')]
   end
 
+  def affiliation_label
+    self[Solrizer.solr_name('affiliation_label')]
+  end
+
   def alternative_title
     self[Solrizer.solr_name('alternative_title')]
   end

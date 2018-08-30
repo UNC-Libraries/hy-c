@@ -24,15 +24,16 @@ RSpec.describe Hyrax::GeneralForm do
     it { is_expected.to match_array [:contributor, :creator, :date_created, :description, :deposit_record,
                                      :keyword, :identifier, :language, :license, :publisher, :related_url,
                                      :resource_type, :rights_statement, :subject, :bibliographic_citation, :abstract,
-                                     :academic_concentration, :access, :advisor, :affiliation, :alternative_title,
-                                     :arranger, :award, :composer, :conference_name, :copyright_date, :date_captured,
-                                     :date_issued, :date_other, :dcmi_type, :degree, :degree_granting_institution, :doi,
-                                     :edition, :extent, :funder, :geographic_subject, :graduation_year, :isbn, :issn,
-                                     :journal_issue, :journal_title, :journal_volume, :kind_of_data,
-                                     :last_modified_date, :medium, :note, :orcid, :other_affiliation, :page_start,
-                                     :page_end, :peer_review_status, :place_of_publication, :project_director,
-                                     :publisher_version, :researcher, :reviewer, :rights_holder, :series, :sponsor,
-                                     :table_of_contents, :translator, :url, :use] }
+                                     :academic_concentration, :access, :advisor, :affiliation, :affiliation_label,
+                                     :alternative_title, :arranger, :award, :composer, :conference_name,
+                                     :copyright_date, :date_captured, :date_issued, :date_other, :dcmi_type, :degree,
+                                     :degree_granting_institution, :doi, :edition, :extent, :funder,
+                                     :geographic_subject, :graduation_year, :isbn, :issn, :journal_issue,
+                                     :journal_title, :journal_volume, :kind_of_data, :last_modified_date, :medium,
+                                     :note, :orcid, :other_affiliation, :page_start, :page_end, :peer_review_status,
+                                     :place_of_publication, :project_director, :publisher_version, :researcher,
+                                     :reviewer, :rights_holder, :series, :sponsor, :table_of_contents, :translator,
+                                     :url, :use] }
   end
   
   describe "#admin_only_terms" do
@@ -68,7 +69,8 @@ RSpec.describe Hyrax::GeneralForm do
           academic_concentration: ['a concentration'],
           access: 'public', # single-valued
           advisor: ['an advisor'],
-          affiliation: ['SILS'],
+          affiliation: ['School of Medicine', 'Carolina Center for Genome Sciences'],
+          affiliation_label: ['School of Medicine', 'Carolina Center for Genome Sciences'],
           alternative_title: ['some title'],
           arranger: ['an arranger'],
           award: ['an award'],
@@ -141,7 +143,8 @@ RSpec.describe Hyrax::GeneralForm do
       expect(subject['academic_concentration']).to eq ['a concentration']
       expect(subject['access']).to eq 'public'
       expect(subject['advisor']).to eq ['an advisor']
-      expect(subject['affiliation']).to eq ['SILS']
+      expect(subject['affiliation']).to eq ['School of Medicine', 'Carolina Center for Genome Sciences']
+      expect(subject['affiliation_label']).to eq ['School of Medicine', 'Carolina Center for Genome Sciences']
       expect(subject['alternative_title']).to eq ['some title']
       expect(subject['arranger']).to eq ['an arranger']
       expect(subject['award']).to eq ['an award']

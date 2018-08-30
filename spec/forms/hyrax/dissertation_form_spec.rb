@@ -22,10 +22,10 @@ RSpec.describe Hyrax::DissertationForm do
     subject { form.secondary_terms }
 
     it { is_expected.to match_array [:abstract, :academic_concentration, :access, :advisor, :affiliation,
-                                     :alternative_title, :dcmi_type, :degree, :doi, :geographic_subject,
-                                     :graduation_year, :note, :orcid, :place_of_publication, :reviewer, :use,
-                                     :contributor, :identifier, :subject, :publisher, :language, :keyword,
-                                     :rights_statement, :license, :resource_type] }
+                                     :affiliation_label, :alternative_title, :dcmi_type, :degree, :doi,
+                                     :geographic_subject, :graduation_year, :note, :orcid, :place_of_publication,
+                                     :reviewer, :use, :contributor, :identifier, :subject, :publisher, :language,
+                                     :keyword, :rights_statement, :license, :resource_type] }
   end
   
   describe "#admin_only_terms" do
@@ -63,7 +63,8 @@ RSpec.describe Hyrax::DissertationForm do
           academic_concentration: ['a concentration'],
           access: 'public', # single-valued
           advisor: ['an advisor'],
-          affiliation: ['SILS'],
+          affiliation: ['School of Medicine', 'Carolina Center for Genome Sciences'],
+          affiliation_label: ['School of Medicine', 'Carolina Center for Genome Sciences'],
           alternative_title: ['another title'],
           date_issued: '2018-01-08', # single-valued
           dcmi_type: ['type'],
@@ -100,7 +101,8 @@ RSpec.describe Hyrax::DissertationForm do
       expect(subject['academic_concentration']).to eq ['a concentration']
       expect(subject['access']).to eq 'public'
       expect(subject['advisor']).to eq ['an advisor']
-      expect(subject['affiliation']).to eq ['SILS']
+      expect(subject['affiliation']).to eq ['School of Medicine', 'Carolina Center for Genome Sciences']
+      expect(subject['affiliation_label']).to eq ['School of Medicine', 'Carolina Center for Genome Sciences']
       expect(subject['alternative_title']).to eq ['another title']
       expect(subject['date_issued']).to eq '2018-01-08'
       expect(subject['degree']).to eq 'MSIS'

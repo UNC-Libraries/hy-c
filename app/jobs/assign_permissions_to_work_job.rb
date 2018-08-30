@@ -1,4 +1,4 @@
-# Called by AssignReviewerByAcademicDepartment service
+# Called by AssignReviewerByAffiliation service
 class AssignPermissionsToWorkJob < Hyrax::ApplicationJob
   queue_as Hyrax.config.ingest_queue_name
 
