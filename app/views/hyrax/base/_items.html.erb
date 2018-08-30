@@ -1,5 +1,5 @@
 <%# [hyc-override] Overriding to hide tombstoned files %>
-<% if (current_user&.admin?) || !@presenter.workflow.in_workflow_state?(['withdrawn', 'pending deletion']) %>
+<% if current_user&.admin? || (@presenter.respond_to?('workflow') && !@presenter.workflow.in_workflow_state?(['withdrawn', 'pending deletion']) ) %>
   <h2><%= t('.header') %></h2>
   <%  array_of_ids = presenter.list_of_item_ids_to_display %>
   <%  members = presenter.member_presenters_for(array_of_ids) %>

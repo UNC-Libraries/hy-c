@@ -1,5 +1,5 @@
 <%# [hyc-override] Overriding to hide tombstoned files %>
-<% if (current_user&.admin?) || (!@presenter.workflow.in_workflow_state?(['withdrawn', 'pending deletion']) && Hyrax.config.display_media_download_link?) %>
+<% if current_user&.admin? || (@presenter.respond_to?('workflow') && !@presenter.workflow.in_workflow_state?(['withdrawn', 'pending deletion'])  && Hyrax.config.display_media_download_link?) %>
     <div>
       <h2 class="sr-only"><%= t('hyrax.file_set.show.downloadable_content.heading') %></h2>
       <audio controls="controls" class="audiojs" style="width:100%" controlsList="nodownload" preload="auto">
@@ -13,7 +13,7 @@
                   target: :_blank,
                   id: "file_download" %>
     </div>
-<% elsif !@presenter.workflow.in_workflow_state?(['withdrawn', 'pending deletion']) %>
+<% elsif presenter.respond_to?('workflow') && !@presenter.workflow.in_workflow_state?(['withdrawn', 'pending deletion']) %>
     <div>
       <audio controls="controls" class="audiojs" style="width:100%" controlsList="nodownload" preload="auto">
         <source src="<%= hyrax.download_path(file_set, file: 'ogg') %>" type="audio/ogg" />
@@ -21,4 +21,14 @@
         Your browser does not support the audio tag.
       </audio>
     </div>
+<% elsif presenter.respond_to?('workflow') && @presenter.workflow.in_workflow_state?(['withdrawn', 'pending deletion']) %>
+  <%# Display nothing %>
+<% else %>
+  <div>
+    <audio controls="controls" class="audiojs" style="width:100%" controlsList="nodownload" preload="auto">
+      <source src="<%= hyrax.download_path(file_set, file: 'ogg') %>" type="audio/ogg" />
+      <source src="<%= hyrax.download_path(file_set, file: 'mp3') %>" type="audio/mpeg" />
+      Your browser does not support the audio tag.
+    </audio>
+  </div>
 <% end %>
