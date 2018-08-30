@@ -2,7 +2,7 @@ module Hyrax::Workflow::AssignReviewerByAffiliation
 
   def self.call(target:, **)
     target.affiliation.each do |affiliation|
-      department = (affiliation.split(',')[-1]).strip.to_s.downcase.gsub(' ', '_')
+      department = affiliation.strip.to_s.downcase.gsub(' ', '_')
       reviewer = find_reviewer_for(department: department)
       permission_template_id = Hyrax::PermissionTemplate.find_by_source_id(target.admin_set_id).id
 

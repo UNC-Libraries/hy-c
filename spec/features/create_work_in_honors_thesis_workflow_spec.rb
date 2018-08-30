@@ -151,7 +151,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       fill_in 'Title', with: 'Honors workflow test'
       fill_in 'Author', with: 'Test Default Creator'
       fill_in 'Keyword', with: 'Test Default Keyword'
-      select 'Department of Biology', from: 'Affiliation'
+      select 'Department of Biology', from: 'honors_thesis_affiliation'
       select "In Copyright", from: "honors_thesis_rights_statement"
       expect(page).to have_field('honors_thesis_visibility_embargo')
       expect(page).not_to have_field('honors_thesis_visibility_lease')
@@ -172,7 +172,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       expect(page).to have_content 'Your files are being processed by Hyrax'
       expect(page).to have_content 'Pending review'
       expect(page).to have_content 'Test Default Keyword'
-      expect(page).to have_content 'Affiliation College of Arts and Sciences, Department of Biology'
+      expect(page).to have_content 'Affiliation College of Arts and SciencesDepartment of Biology'
       expect(page).to have_content 'Type http://purl.org/dc/dcmitype/Text'
 
       logout user
@@ -220,7 +220,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       expect(page).not_to have_content 'Pending review'
       expect(page).to have_content 'Honors workflow test'
       expect(page).to have_content 'Test Default Keyword'
-      expect(page).to have_content 'Affiliation College of Arts and Sciences, Department of Biology'
+      expect(page).to have_content 'Affiliation College of Arts and SciencesDepartment of Biology'
       expect(page).to have_content 'Type http://purl.org/dc/dcmitype/Text'
     end
   end

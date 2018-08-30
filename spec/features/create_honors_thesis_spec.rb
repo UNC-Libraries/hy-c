@@ -51,7 +51,7 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       fill_in 'Title', with: 'Test HonorsThesis work'
       fill_in 'Author', with: 'Test Default Creator'
       fill_in 'Keyword', with: 'Test Default Keyword'
-      select 'Department of Biology', from: 'Affiliation'
+      select 'Department of Biology', from: 'honors_thesis_affiliation'
       select "In Copyright", :from => "honors_thesis_rights_statement"
       expect(page).to have_field('honors_thesis_visibility_embargo')
       expect(page).not_to have_field('honors_thesis_visibility_lease')
@@ -78,7 +78,7 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       expect(page).to have_content 'Test Default Keyword'
       expect(page).to_not have_content 'In Administrative Set: honors thesis admin set'
       expect(page).to have_content 'Type http://purl.org/dc/dcmitype/Text'
-      expect(page).to have_content 'Affiliation College of Arts and Sciences, Department of Biology'
+      expect(page).to have_content 'Affiliation College of Arts and SciencesDepartment of Biology'
     end
 
     scenario 'as an admin' do
@@ -90,7 +90,7 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       fill_in 'Title', with: 'Test HonorsThesis work'
       fill_in 'Author', with: 'Test Default Creator'
       fill_in 'Keyword', with: 'Test Default Keyword'
-      select 'Department of Biology', from: 'Affiliation'
+      select 'Department of Biology', from: 'honors_thesis_affiliation'
       select "In Copyright", :from => "honors_thesis_rights_statement"
       expect(page).to have_field('honors_thesis_visibility_embargo')
       expect(page).not_to have_field('honors_thesis_visibility_lease')
@@ -120,7 +120,7 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       expect(page).to have_content 'Test Default Keyword'
       expect(page).to have_content 'In Administrative Set: honors thesis admin set'
       expect(page).to have_content 'Type http://purl.org/dc/dcmitype/Image'
-      expect(page).to have_content 'Affiliation College of Arts and Sciences, Department of Biology'
+      expect(page).to have_content 'Affiliation College of Arts and SciencesDepartment of Biology'
     end
   end
 end
