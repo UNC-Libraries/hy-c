@@ -37,6 +37,7 @@ describe "rake cdr:migration:items", type: :task do
 
   it "creates a new work" do
     expect { Rake::Task['cdr:migration:items'].invoke('collection1',
+                                                      'spec/fixtures/migration/migration_config.yml',
                                                       'spec/fixtures/migration/mapping.csv',
                                                       'RAILS_ENV=test') }
         .to change{ Article.count }.by(1)

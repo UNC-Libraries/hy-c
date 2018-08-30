@@ -1,16 +1,10 @@
 namespace :cdr do
-  # coding: utf-8
   require 'fileutils'
   require 'tasks/migration/migration_logging'
   require 'htmlentities'
   require 'tasks/migration/migration_constants'
   require 'csv'
   require 'yaml'
-
-  # Sample data is currently stored in the hyrax/lib/tasks/migration/tmp directory.  Each object is stored in a
-  # directory labelled with its uuid. Container objects only contain a metadata file and are stored as
-  # {uuid}/uuid:{uuid}-object.xml. File objects contain a metadata file and the file to be imported which are stored in
-  # the same directory as {uuid}/uuid:{uuid}.xml and {uuid}/{uuid}-DATA_FILE.*, respectively.
 
   namespace :migration do
 
@@ -76,22 +70,18 @@ namespace :cdr do
 
       puts 'Object count: '+collection_uuids.count.to_s
 
-      count = 0
-
       collection_uuids.each do |collection_uuid|
         uuid = get_uuid_from_path(collection_uuid)
         # Assuming uuid for metadata and binary are the same
         # Skip file/binary metadata
         # solr returns column header; skip that, too
-        if @binary_hash[uuid].blank? && !uuid.blank? && count < 2
+        if @binary_hash[uuid].blank? && !uuid.blank?
           metadata_fields = metadata(@object_hash[uuid])
 
           puts 'Number of files: '+metadata_fields[:files].count.to_s
 
           resource = metadata_fields[:resource]
           resource.save!
-
-          count = count + 1
 
           @mapping[uuid] = resource.id
 
@@ -169,7 +159,6 @@ namespace :cdr do
         return
       end
 
-      # TODO: add all generic work attributes
       title = mods_version.xpath('mods:titleInfo/mods:title', MigrationConstants::NS).map(&:text)
       alternative_title = mods_version.xpath("mods:titleInfo[@type='alternative']/mods:title", MigrationConstants::NS).map(&:text)
       creator_node = mods_version.xpath('mods:name[mods:role/mods:roleTerm/text()="Creator"]', MigrationConstants::NS)
@@ -299,7 +288,6 @@ namespace :cdr do
 
         if rdf_version.to_s.match(/contains/)
           contained_files = rdf_version.xpath("rdf:Description/*[local-name() = 'contains']/@rdf:resource", MigrationConstants::NS)
-          puts 'contained: ', contained_files
           contained_files.each do |contained_file|
             tmp_uuid = get_uuid_from_path(contained_file.to_s)
             if !@binary_hash[tmp_uuid].blank?
@@ -308,10 +296,6 @@ namespace :cdr do
               @parent_hash[uuid] << tmp_uuid
             end
           end
-
-          puts 'files: ', file_full
-
-          puts 'parent: ', @parent_hash
 
           if file_full.count > 1
             representative = rdf_version.xpath('rdf:Description/*[local-name() = "defaultWebObject"]/@rdf:resource', MigrationConstants::NS).to_s.split('/')[1]
@@ -354,7 +338,6 @@ namespace :cdr do
       end
 
       if !language.blank?
-        puts language
         language.map!{|e| LanguagesService.label("http://id.loc.gov/vocabulary/iso639-2/#{e.downcase}") ?
                               "http://id.loc.gov/vocabulary/iso639-2/#{e.downcase}" : e}
       end
@@ -541,31 +524,16 @@ namespace :cdr do
     end
 
     def attach_children
-      # puts @work_type, @child_work_type
-      @parent_hash.each do |k, v|
-        hyrax_id = @mapping[k]
+      @parent_hash.each do |parent_id, children|
+        hyrax_id = @mapping[parent_id]
         parent = @work_type.singularize.classify.constantize.find(hyrax_id)
-        # puts parent.inspect, parent.ordered_members.inspect
-        children = Hash.new
-        v.each_with_index do |child, index|
+        children.each do |child|
           if @mapping[child]
-            # puts parent.members.inspect, parent.ordered_members.inspect
-            # TODO: find another way to add children/parents; this is not working
-            children[index] = {id: @mapping[child]}
-            # parent.ordered_members << ActiveFedora::Base.find(@mapping[child])
-            # parent.members << ActiveFedora::Base.find(@mapping[child])
+            parent.ordered_members << ActiveFedora::Base.find(@mapping[child])
+            parent.members << ActiveFedora::Base.find(@mapping[child])
           end
         end
-        indiff_hash = HashWithIndifferentAccess.new(work_members_attributes: children)
-        ability = User.find_by_user_key(@depositor_key).ability
-        env = Hyrax::Actors::Environment.new(parent, ability, indiff_hash)
-        # parent.work_members_attributes = children
-        stack = ActionDispatch::MiddlewareStack.new.tap do |middleware|
-          middleware.use Hyrax::Actors::AttachMembersActor
-        end
-        middleware = stack.build(Hyrax::Actors::Terminator.new)
-        middleware.update(env)
-        # parent.update(env)
+        parent.save!
       end
     end
   end
