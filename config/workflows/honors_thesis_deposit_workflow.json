@@ -19,7 +19,7 @@
                     ],
                     "methods": [
                         "Hyrax::Workflow::DeactivateObject",
-                        "Hyrax::Workflow::AssignReviewerByAcademicDepartment"
+                        "Hyrax::Workflow::AssignReviewerByAffiliation"
                     ]
                 }, {
                     "name": "request_changes",

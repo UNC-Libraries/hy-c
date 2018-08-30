@@ -1,4 +1,5 @@
 <%# app/views/records/edit_fields/_affiliation.html.erb %>
+<%# Pre-select affiliation for master's papers based on department form selection %>
 <% if params[:affiliation] %>
   <%= f.input :affiliation, as: :select,
               collection: DepartmentsService.select_all_options.sort,

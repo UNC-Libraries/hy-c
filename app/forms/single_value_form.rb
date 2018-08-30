@@ -7,7 +7,7 @@ class SingleValueForm < Hyrax::Forms::WorkForm
   # Map of fields to default values
   class_attribute :default_term_values
   self.default_term_values = Hash.new
-  
+
   def initialize(model, current_ability, controller)
     initialize_default_term_values(model)
     
