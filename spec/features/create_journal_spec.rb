@@ -65,7 +65,7 @@ RSpec.feature 'Create a Journal', js: false do
       end
 
       click_link "Relationships"
-      expect(page).to_not have_content 'Administrative Set'
+      expect(page).to have_content 'Administrative Set'
 
       click_button 'Save'
       expect(page).to have_content 'Your files are being processed by Hyrax'

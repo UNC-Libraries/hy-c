@@ -6,7 +6,7 @@ module Hyrax
     class_attribute :single_value_fields
 
     self.model_class = ::Article
-    self.terms += [:resource_type, :abstract, :access, :affiliation, :bibliographic_citation, :copyright_date, :date_captured,
+    self.terms += [:resource_type, :abstract, :access, :affiliation, :affiliation_label, :bibliographic_citation, :copyright_date, :date_captured,
                    :date_issued, :date_other, :dcmi_type, :doi, :edition, :extent, :funder, :geographic_subject, :issn,
                    :journal_issue, :journal_title, :journal_volume, :note, :page_end, :page_start, :peer_review_status,
                    :place_of_publication, :rights_holder, :table_of_contents, :translator, :url, :use]

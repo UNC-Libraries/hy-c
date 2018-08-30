@@ -4,7 +4,7 @@ task :admin_role => :environment do
               password: 'password',
               password_confirmation: 'password',
               uid: 'admin@example.com')
-  admin = Role.create(name: 'admin')
-  admin.users << User.find_by_user_key('admin@example.com')
+  admin = Role.first_or_create(name: 'admin')
+  admin.users << User.find_by_user_key('admin@example.com') if admin.users.blank?
   admin.save
 end
