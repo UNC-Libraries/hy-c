@@ -80,9 +80,10 @@
                             "to": ["depositing", "managing"]
                         }
                     ],
+                    "_comment" : "MetadataOnlyRecord must be called before RevokeEditFromDepositor",
                     "methods": [
-                        "Hyrax::Workflow::RevokeEditFromDepositor",
-                        "Hyrax::Workflow::MetadataOnlyRecord"
+                        "Hyrax::Workflow::MetadataOnlyRecord",
+                        "Hyrax::Workflow::RevokeEditFromDepositor"
                     ]
                 }, {
                     "name": "request_deletion",
@@ -97,8 +98,8 @@
                         }
                     ],
                     "methods": [
-                        "Hyrax::Workflow::RevokeEditFromDepositor",
-                        "Hyrax::Workflow::MetadataOnlyRecord"
+                        "Hyrax::Workflow::MetadataOnlyRecord",
+                        "Hyrax::Workflow::RevokeEditFromDepositor"
                     ]
                 }, {
                     "name": "approve_deletion",
@@ -112,8 +113,8 @@
                         }
                     ],
                     "methods": [
-                        "Hyrax::Workflow::RevokeEditFromDepositor",
-                        "Hyrax::Workflow::MetadataOnlyRecord"
+                        "Hyrax::Workflow::MetadataOnlyRecord",
+                        "Hyrax::Workflow::RevokeEditFromDepositor"
                     ]
                 }, {
                     "name": "republish",
