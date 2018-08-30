@@ -88,19 +88,19 @@ namespace :cdr do
 
           puts 'Number of files: '+metadata_fields[:files].count.to_s
 
-          if metadata_fields[:files][0].match(/.+\.xml/)
-            resource = metadata_fields[:resource]
-            resource.save!
+          resource = metadata_fields[:resource]
+          resource.save!
 
-            count = count + 1
+          count = count + 1
 
-            @mapping[uuid] = resource.id
+          @mapping[uuid] = resource.id
 
-            # Record old and new ids for works
-            CSV.open(@csv_output, 'a+') do |csv|
-              csv << [uuid, resource.id]
-            end
+          # Record old and new ids for works
+          CSV.open(@csv_output, 'a+') do |csv|
+            csv << [uuid, resource.id]
+          end
 
+          if !metadata_fields[:files].blank? && metadata_fields[:files][0].match(/.+\.xml/)
             ingest_files(resource: resource, files: metadata_fields[:files])
           end
         end
@@ -122,7 +122,7 @@ namespace :cdr do
 
     def ingest_file(parent: nil, resource: nil, f: nil)
       file_set = FileSet.create(resource)
-      actor = Hyrax::Actors::FileSetActor.new(file_set, User.find_by_email(@depositor_key))
+      actor = Hyrax::Actors::FileSetActor.new(file_set, User.find_by_user_key(@depositor_key))
       actor.create_metadata(resource.slice(:visibility, :visibility_during_lease, :visibility_after_lease,
                                             :lease_expiration_date, :embargo_release_date, :visibility_during_embargo,
                                             :visibility_after_embargo))
@@ -541,16 +541,31 @@ namespace :cdr do
     end
 
     def attach_children
+      # puts @work_type, @child_work_type
       @parent_hash.each do |k, v|
         hyrax_id = @mapping[k]
         parent = @work_type.singularize.classify.constantize.find(hyrax_id)
-        puts parent.inspect, parent.ordered_members.inspect
-        v.each do |child|
+        # puts parent.inspect, parent.ordered_members.inspect
+        children = Hash.new
+        v.each_with_index do |child, index|
           if @mapping[child]
+            # puts parent.members.inspect, parent.ordered_members.inspect
             # TODO: find another way to add children/parents; this is not working
-            parent.ordered_members.push(@mapping[child])
+            children[index] = {id: @mapping[child]}
+            # parent.ordered_members << ActiveFedora::Base.find(@mapping[child])
+            # parent.members << ActiveFedora::Base.find(@mapping[child])
           end
         end
+        indiff_hash = HashWithIndifferentAccess.new(work_members_attributes: children)
+        ability = User.find_by_user_key(@depositor_key).ability
+        env = Hyrax::Actors::Environment.new(parent, ability, indiff_hash)
+        # parent.work_members_attributes = children
+        stack = ActionDispatch::MiddlewareStack.new.tap do |middleware|
+          middleware.use Hyrax::Actors::AttachMembersActor
+        end
+        middleware = stack.build(Hyrax::Actors::Terminator.new)
+        middleware.update(env)
+        # parent.update(env)
       end
     end
   end
