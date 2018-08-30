@@ -49,11 +49,6 @@ module Hyrax
       !/#{test_state_regex}/.match(state).nil?
     end
 
-    # def can_view?
-    #   return true unless state
-    #   /withdrawn|pending.deletion/.match(state).nil?
-    # end
-
     private
 
     def action_label(action)

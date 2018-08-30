@@ -1,11 +1,8 @@
 <%# [hyc-override] Overriding partial in hyrax gem in order to change the workflow action panel %>
 <div class="col-xs-12">
   <div class="workflow-actions">
-    <%= render 'workflow_actions', presenter: @presenter if @presenter.workflow.actions.present? &&
-        @presenter.workflow.actions.select{|action| action[0] == 'request_deletion'}.blank? %>
-
-    <% if @presenter.workflow.actions.present? &&
-        !@presenter.workflow.actions.select{|action| action[0] == 'request_deletion'}.blank? %>
+    <%= render 'workflow_actions', presenter: @presenter unless @presenter.workflow.in_workflow_state?(['request deletion']) %>
+    <% unless @presenter.workflow.in_workflow_state?(['request deletion']) %>
       <div class="modal fade" id="deletion-request-modal">
         <div class="modal-dialog" role="document">
           <div class="modal-content">

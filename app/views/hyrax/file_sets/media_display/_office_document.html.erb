@@ -12,7 +12,7 @@
                   id: "file_download",
                   data: { label: file_set.id } %>
     </div>
-<% elsif @presenter.workflow&.can_view? %>
+<% elsif !@presenter.workflow.in_workflow_state?(['withdrawn', 'pending deletion']) %>
     <div>
       <%= image_tag thumbnail_url(file_set),
                     class: "representative-media",
