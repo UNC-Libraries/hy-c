@@ -51,7 +51,8 @@ RSpec.describe Hyrax::ScholarlyWorkForm do
           thumbnail_id: '789',
           abstract: [''],
           advisor: ['an advisor'],
-          affiliation: ['an affiliation'],
+          affiliation: ['Carolina Center for Genome Sciences'],
+          affiliation_label: ['School of Medicine', 'Carolina Center for Genome Sciences'],
           conference_name: ['a conference name'],
           date_issued: 'a date', # single-valued
           dcmi_type: ['type'],
@@ -80,7 +81,8 @@ RSpec.describe Hyrax::ScholarlyWorkForm do
       expect(subject['representative_id']).to eq '456'
       expect(subject['thumbnail_id']).to eq '789'
       expect(subject['abstract']).to be_empty
-      expect(subject['affiliation']).to eq ['an affiliation']
+      expect(subject['affiliation']).to eq ['Carolina Center for Genome Sciences']
+      expect(subject['affiliation_label']).to eq ['School of Medicine', 'Carolina Center for Genome Sciences']
       expect(subject['conference_name']).to eq ['a conference name']
       expect(subject['date_issued']).to eq 'a date'
       expect(subject['dcmi_type']).to eq ['type']

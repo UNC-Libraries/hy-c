@@ -61,7 +61,7 @@ RSpec.describe Hyrax::MastersPaperForm do
           academic_concentration: ['a concentration'],
           access: 'public', # single-valued
           advisor: ['an advisor'],
-          affiliation: ['School of Medicine', 'Carolina Center for Genome Sciences'],
+          affiliation: 'Carolina Center for Genome Sciences',
           affiliation_label: ['School of Medicine', 'Carolina Center for Genome Sciences'],
           date_issued: 'a date', # single-valued
           dcmi_type: ['type'],
@@ -96,7 +96,7 @@ RSpec.describe Hyrax::MastersPaperForm do
       expect(subject['academic_concentration']).to eq ['a concentration']
       expect(subject['access']).to eq 'public'
       expect(subject['advisor']).to eq ['an advisor']
-      expect(subject['affiliation']).to eq ['School of Medicine', 'Carolina Center for Genome Sciences']
+      expect(subject['affiliation']).to eq 'Carolina Center for Genome Sciences'
       expect(subject['affiliation_label']).to eq ['School of Medicine', 'Carolina Center for Genome Sciences']
       expect(subject['date_issued']).to eq 'a date'
       expect(subject['degree']).to eq 'MS'
