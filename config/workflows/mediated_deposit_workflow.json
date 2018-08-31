@@ -69,9 +69,9 @@
                         { "names": ["changes_required"], "roles": ["depositing"] }
                     ]
                 }, {
-                    "name": "tombstone",
+                    "name": "withdrawn",
                     "from_states": [{"names": ["deposited"], "roles": ["approving"]}],
-                    "transition_to": "tombstoned",
+                    "transition_to": "withdrawn",
                     "notifications": [
                         {
                             "notification_type": "email",
@@ -103,7 +103,7 @@
                 }, {
                     "name": "approve_deletion",
                     "from_states": [{"names": ["deposited", "pending_deletion"], "roles": ["approving"]}],
-                    "transition_to": "tombstoned",
+                    "transition_to": "withdrawn",
                     "notifications": [
                         {
                             "notification_type": "email",
