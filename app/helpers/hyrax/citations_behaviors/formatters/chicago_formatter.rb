@@ -14,13 +14,13 @@ module Hyrax
           text = "<span class=\"citation-author\">#{text}</span>" if text.present?
           # Get Pub Date
           pub_date = setup_pub_date(work)
-          text << " #{pub_date}." unless pub_date.nil?
+          text << " #{whitewash(pub_date)}." unless pub_date.nil?
 
           text << format_title(work.to_s)
           pub_info = setup_pub_info(work, false)
-          text << " #{pub_info}." if pub_info.present?
+          text << " #{whitewash(pub_info)}." if pub_info.present?
           # UNC customization. Add DOI
-          text << " #{work.doi[0]}" if !work.doi.nil? && work.doi.length > 0
+          text << " #{whitewash(work.doi[0])}" if !work.doi.nil? && work.doi.length > 0
           text.html_safe
         end
 
@@ -39,7 +39,7 @@ module Hyrax
           # if for some reason the first author ended with a comma
           text.gsub!(',,', ',')
           text << "." unless text =~ /\.$/
-          text
+          whitewash(text)
         end
         # rubocop:enable Metrics/MethodLength
 
@@ -49,8 +49,14 @@ module Hyrax
           return "" if title_info.blank?
           title_text = chicago_citation_title(title_info)
           title_text << '.' unless title_text =~ /\.$/
-          title_text = Loofah.fragment(title_text).scrub!(:whitewash).to_s
+          title_text = whitewash(title_text)
           " <i class=\"citation-title\">#{title_text}</i>"
+        end
+
+        private
+
+        def whitewash(text)
+          Loofah.fragment(text.to_s).scrub!(:whitewash).to_s
         end
       end
     end
