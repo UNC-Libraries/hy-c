@@ -13,7 +13,8 @@
                   id: "file_download",
                   data: { label: file_set.id } %>
     </div>
-<% elsif presenter.respond_to?('workflow') && !@presenter.workflow.in_workflow_state?(['withdrawn', 'pending deletion']) %>
+<% elsif (presenter.respond_to?('workflow') && !@presenter.workflow.in_workflow_state?(['withdrawn', 'pending deletion'])) ||
+    !@presenter.respond_to?('workflow') %>
     <div>
       <%= image_tag thumbnail_url(file_set),
                     class: "representative-media",
@@ -22,11 +23,4 @@
     </div>
 <% elsif presenter.respond_to?('workflow') && @presenter.workflow.in_workflow_state?(['withdrawn', 'pending deletion']) %>
   <%# Display nothing %>
-<% else %>
-  <div>
-    <%= image_tag thumbnail_url(file_set),
-                  class: "representative-media",
-                  alt: "",
-                  role: "presentation" %>
-  </div>
 <% end %>
