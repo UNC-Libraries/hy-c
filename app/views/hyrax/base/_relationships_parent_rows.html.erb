@@ -6,7 +6,7 @@
   <%= render 'relationships_parent_row', type: model_name, items: items, presenter: presenter %>
 <% end %>
 
-<%= render 'parent_relationship_table', memberships: presenter.solr_document.id %>
+<%= render 'parent_relationship_table', child_id: presenter.solr_document.id %>
 
 <%# Render grouped presenters. Show rows if there are any items of that type %>
 <% presenter.presenter_types.each do |type| %>
