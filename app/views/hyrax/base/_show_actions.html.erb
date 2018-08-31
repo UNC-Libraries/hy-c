@@ -1,5 +1,13 @@
 <%# [hyc-override] Overriding partial in hyrax gem in order to change the delete button %>
+<%# [hyc-override] Overriding partial in hyrax gem to show link to parent record %>
+<% parent_solr_docs = ParentQueryService.query_parents_for_id(presenter.solr_document.id) %>
+
 <div class="show-actions">
+  <% unless parent_solr_docs.blank? %>
+    <% parent_solr_docs.first(1).each do |item| %>
+      <%= link_to 'Back to Parent Record', url_for_document(SolrDocument.find(item["id"])), class: 'btn btn-success', data: { turbolinks: false } %>
+    <% end %>
+  <% end %>
   <% if Hyrax.config.analytics? %>
     <%= link_to "Analytics", presenter.stats_path, id: 'stats', class: 'btn btn-default', data: { turbolinks: false } %>
   <% end %>
