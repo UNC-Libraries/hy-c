@@ -61,7 +61,7 @@ RSpec.feature 'Edit a work', js: false do
       expect(page).to have_content 'Add New Scholarly Article or Book Chapter'
 
       fill_in 'Title', with: 'Test Article work'
-      fill_in 'Creator', with: 'Test Default Creator'
+      fill_in 'Author', with: 'Test Default Creator'
       fill_in 'Keyword', with: 'Test Default Keyword'
       select 'In Copyright', :from => 'article_rights_statement'
       choose 'article_visibility_open'
@@ -121,7 +121,7 @@ RSpec.feature 'Edit a work', js: false do
 
       click_link 'Edit'
 
-      expect(page).to have_content "Alice's Adventures in Wonderland"
+      expect(page).to have_content "Deposit Your Work"
       expect(page).to have_content 'No Admin Sets have been created.'
     end
   end

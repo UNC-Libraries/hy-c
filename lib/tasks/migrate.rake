@@ -4,33 +4,11 @@ namespace :cdr do
   require 'tasks/migration/migration_logging'
   require 'htmlentities'
   require 'tasks/migration/migration_constants'
-
-  #set fedora access URL. replace with fedora username and password
-  #test environment will not have access to ERA's fedora
+  require 'csv'
+  require 'yaml'
 
   # Must include the email address of a valid user in order to ingest files
   DEPOSITOR_EMAIL = 'admin@example.com'
-
-  #temporary location for file download
-  TEMP = 'lib/tasks/migration/tmp'
-  FILE_STORE = 'lib/tasks/migration/files'
-  TEMP_FOXML = 'lib/tasks/migration/tmp'
-  FileUtils::mkdir_p TEMP
-
-  #report directory
-  REPORTS = 'lib/tasks/migration/reports/'
-  #Oddities report
-  ODDITIES = REPORTS+ 'oddities.txt'
-  #verification error report
-  VERIFICATION_ERROR = REPORTS + 'verification_errors.txt'
-  #item migration list
-  ITEM_LIST = REPORTS + 'item_list.txt'
-  #collection list
-  COLLECTION_LIST = REPORTS + 'collection_list.txt'
-  FileUtils::mkdir_p REPORTS
-  #successful_path
-  COMPLETED_DIR = 'lib/tasks/migration/completed'
-  FileUtils::mkdir_p COMPLETED_DIR
 
   # Sample data is currently stored in the hyrax/lib/tasks/migration/tmp directory.  Each object is stored in a
   # directory labelled with its uuid. Container objects only contain a metadata file and are stored as
@@ -40,22 +18,59 @@ namespace :cdr do
   namespace :migration do
 
     desc 'batch migrate generic files from FOXML file'
-    task :items, [:directory, :work_type] => :environment do |t, args|
-      @work_type = args[:work_type]
+    task :items, [:collection, :mapping_file] => :environment do |t, args|
+      config = YAML.load_file('lib/tasks/migration_config.yml')
+      collection_config = config[args[:collection]]
+      @work_type = collection_config['work_type']
+      @admin_set = collection_config['admin_set']
 
-      metadata_dir = args[:directory]
-      migrate_objects(metadata_dir)
+      # Hash of all binaries in storage directory
+      @binary_hash = Hash.new
+      File.open(collection_config['binaries']) do |file|
+        file.each do |line|
+          value = line.strip
+          key = get_uuid_from_path(value)
+          @binary_hash[key] = value
+        end
+      end
+
+      # Hash of all .xml objects in storage directory
+      @object_hash = Hash.new
+      File.open(collection_config['objects']) do |file|
+        file.each do |line|
+          value = line.strip
+          key = get_uuid_from_path(value)
+          @object_hash[key] = value
+        end
+      end
+
+      # Create file mapping new and old ids
+      @csv_output = args[:mapping_file]
+      if !File.exist?(@csv_output)
+        @csv_output = File.new(@csv_output, 'w')
+      end
+
+      collection_ids_file = collection_config['collection_list']
+      migrate_objects(collection_ids_file)
     end
 
-    def migrate_objects(metadata_dir)
-      metadata_files = Dir.glob("#{metadata_dir}/**/*-object.xml")
+    def migrate_objects(collection_ids_file)
+      collection_uuids = Array.new
+      CSV.open(collection_ids_file) do |file|
+        file.each do |line|
+          collection_uuids.append(line[0].strip)
+        end
+      end
 
-      puts 'Object count: '+metadata_files.count.to_s
+      puts 'Object count: '+collection_uuids.count.to_s
 
-      metadata_files.sort.each do |file|
-        uuid = file.split(metadata_dir)[1].split('/')[1]
-        if Dir.glob("#{metadata_dir}/#{uuid}/#{uuid}-DATA_FILE.*").blank?
-          metadata_fields = metadata(file, metadata_dir)
+      collection_uuids.each do |collection_uuid|
+        uuid = get_uuid_from_path(collection_uuid)
+        # Assuming uuid for metadata and binary are the same
+        # Skip file/binary metadata
+        # solr returns column header; skip that, too
+        if @binary_hash[uuid].blank? && !uuid.blank?
+          metadata_fields = metadata(@object_hash[uuid])
 
           puts 'Number of files: '+metadata_fields[:files].count.to_s
 
@@ -63,17 +78,23 @@ namespace :cdr do
             resource = metadata_fields[:resource]
             resource.save!
 
-            ingest_files(resource: resource, files: metadata_fields[:files], metadata_dir: metadata_dir)
+            # Record old and new ids for works
+            CSV.open(@csv_output, 'a+') do |csv|
+              csv << [uuid, resource.id]
+            end
+
+            ingest_files(resource: resource, files: metadata_fields[:files])
           end
         end
       end
     end
    
-    def ingest_files(parent: nil, resource: nil, files: [], metadata_dir: nil)
+    def ingest_files(parent: nil, resource: nil, files: [])
       ordered_members = []
 
       files.each do |f|
-        file_metadata = metadata(f, metadata_dir)
+        # Get file/binary object metadata
+        file_metadata = metadata(f)
         file_set = ingest_file(parent: resource, resource: file_metadata[:resource], f: file_metadata[:files][0])
         ordered_members << file_set if file_set
       end
@@ -90,16 +111,20 @@ namespace :cdr do
       actor.create_content(File.open(f))
       actor.attach_to_work(parent)
 
+      # Record old and new ids for files
+      CSV.open(@csv_output, 'a+') do |csv|
+        csv << [get_uuid_from_path(f), file_set.id]
+      end
+
       file_set
     end
     
-    def metadata(file, metadata_dir)
+    def metadata(file)
       metadata = Nokogiri::XML(File.open(file))
 
       #get the uuid of the object
-      uuid = metadata.at_xpath('foxml:digitalObject/@PID', MigrationConstants::NS).value
+      uuid = get_uuid_from_path(metadata.at_xpath('foxml:digitalObject/@PID', MigrationConstants::NS).value)
       puts 'getting metadata for: '+uuid
-      uuid_dir_name = uuid.split(':')[1]
 
       file_full = Array.new(0)
       representative = ''
@@ -108,13 +133,8 @@ namespace :cdr do
       embargo_release_date = ''
       visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
 
-      file_name = Dir.glob("#{metadata_dir}/#{uuid_dir_name}/#{uuid_dir_name}-DATA_FILE.*")
-      if file_name.count == 1
-        file_full << file_name.first
-      elsif file_name.count > 1
-        puts 'FAIL #1'
-        MigrationLogger.fatal 'Too many files linked to object'
-        return
+      if !@binary_hash[uuid].blank?
+        file_full << @binary_hash[uuid]
       end
 
       #get the date_created
@@ -137,14 +157,14 @@ namespace :cdr do
       if rdf_version.to_s.match(/contains/)
         contained_files = rdf_version.xpath("rdf:Description/*[local-name() = 'contains']/@rdf:resource", MigrationConstants::NS)
         contained_files.each do |contained_file|
-          tmp_uuid = contained_file.to_s.split('fedora/')[1]
-          file_full << metadata_dir+'/'+tmp_uuid.split(':')[1]+'/'+tmp_uuid+'-object.xml'
+          tmp_uuid = get_uuid_from_path(contained_file.to_s)
+          file_full << @object_hash[tmp_uuid]
         end
 
         if file_full.count > 1
           representative = rdf_version.xpath('rdf:Description/*[local-name() = "defaultWebObject"]/@rdf:resource', MigrationConstants::NS).to_s.split('/')[1]
           if representative
-            representative = metadata_dir+'/'+representative.split(':')[1]+'/'+representative+'-object.xml'
+            representative = @object_hash[get_uuid_from_path(representative)]
             file_full -= [representative]
             file_full = [representative] + file_full
           end
@@ -208,7 +228,7 @@ namespace :cdr do
       work_attributes = {
           'title'=>title,
           'creator'=>creators,
-          'date_created'=>[(Date.try(:edtf, date_created) || date_created).to_s],
+          'date_created'=>(Date.try(:edtf, date_created) || date_created).to_s,
           'keyword'=>keywords,
           'date_modified'=>(Date.try(:edtf, date_modified) || date_modified).to_s,
           'contributor'=>contributors,
@@ -222,7 +242,8 @@ namespace :cdr do
           'visibility'=>visibility,
           'embargo_release_date'=>(Date.try(:edtf, embargo_release_date) || embargo_release_date).to_s,
           'visibility_during_embargo'=>visibility_during_embargo,
-          'visibility_after_embargo'=>visibility_after_embargo
+          'visibility_after_embargo'=>visibility_after_embargo,
+          'admin_set_id'=>(AdminSet.where(title: @admin_set).first || AdminSet.where(title: ENV['DEFAULT_ADMIN_SET']).first).id
       }
 
       if contained_files
@@ -261,6 +282,7 @@ namespace :cdr do
       resource.visibility_during_embargo = work_attributes['visibility_during_embargo']
       resource.visibility_after_embargo = work_attributes['visibility_after_embargo']
       end
+      resource.admin_set_id = work_attributes['admin_set_id']
 
       resource
     end
@@ -288,6 +310,10 @@ namespace :cdr do
       end
 
       resource
+    end
+
+    def get_uuid_from_path(path)
+      path.slice(/\w{8}-\w{4}-\w{4}-\w{4}-\w{12}/)
     end
   end
 end

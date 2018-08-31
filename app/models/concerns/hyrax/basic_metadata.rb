@@ -12,7 +12,7 @@ module Hyrax
       property :relative_path, predicate: ::RDF::URI.new('http://scholarsphere.psu.edu/ns#relativePath'), multiple: false
 
       property :import_url, predicate: ::RDF::URI.new('http://scholarsphere.psu.edu/ns#importUrl'), multiple: false
-      property :resource_type, predicate: ::RDF::Vocab::DC.type
+      property :resource_type, predicate: ::RDF::Vocab::EDM.hasType
       # predicate changed
       property :creator, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/cre')
       # predicate changed
@@ -26,7 +26,7 @@ module Hyrax
       # This is for the rights statement
       property :rights_statement, predicate: ::RDF::Vocab::EDM.rights
       property :publisher, predicate: ::RDF::Vocab::DC11.publisher
-      property :date_created, predicate: ::RDF::Vocab::DC.created
+      property :date_created, predicate: ::RDF::Vocab::DC.created, multiple: false
       # predicate changed
       property :subject, predicate: ::RDF::Vocab::DC11.subject
       property :language, predicate: ::RDF::Vocab::DC11.language

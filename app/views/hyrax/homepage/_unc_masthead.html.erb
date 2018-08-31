@@ -1,6 +1,6 @@
 <div id="unc-search" class="row">
   <div class="col-sm-offset-0 col-sm-6 col-xs-offset-1 col-xs-11">
-    <%= image_tag("unc_libraries_logo.png", alt: t('hyrax.homepage_images.unc_libraries_logo')) %>
+    <%= image_tag("unc_libraries_logo.png", alt: t('hyrax.homepage_images.unc_libraries_logo'), class: "banner-img") %>
     <h2 class="repo-name">Carolina Digital Repository</h2>
   </div>
   <div class="col-sm-offset-0 col-sm-6 col-xs-offset-1 col-xs-11">
@@ -8,10 +8,9 @@
   </div>
   <div class="link-tabs col-xs-12 col-sm-12">
     <ul class="list-unstyled pull-right">
-      <li><div><%= link_to t('hyrax.links.home'), "/" %></div></li>
-      <li><div><%= link_to t('hyrax.links.browse_collections'), main_app.search_catalog_path %></div></li>
-      <li><div><%= link_to t('hyrax.links.departments'), "/" %></div></li>
-      <li><div><i class="fa fa-arrow-circle-up" aria-hidden="true"></i>
+      <li><div><%= link_to t('hyrax.links.browse_collections'), main_app.search_catalog_path(f: { human_readable_type_sim: ["Collection"]}) %></div></li>
+      <li><div><%= link_to t(:'hyrax.links.departments'), main_app.facet_catalog_path(id: 'affiliation_label_sim') %></div></li>
+      <li><div data-turbolinks="false"><i class="fa fa-arrow-circle-up" aria-hidden="true"></i>
         <%= link_to t('hyrax.links.deposit'), '#', class: 'all-unc-work-types',
                     data: { behavior: 'select-work', target: '#worktypes-to-create', 'create-type' => 'single' } %>
       </div></li>

@@ -18,6 +18,14 @@ class Article < ActiveFedora::Base
     index.as :stored_searchable
   end
 
+  property :affiliation, predicate: ::RDF::URI('http://vivoweb.org/ontology/core#AcademicDepartment') do |index|
+    index.as :stored_searchable
+  end
+
+  property :affiliation_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#AffiliationLabel') do |index|
+    index.as :stored_searchable, :facetable
+  end
+
   property :copyright_date, predicate: ::RDF::Vocab::DC.dateCopyrighted, multiple: false do |index|
     index.as :stored_searchable
   end
@@ -27,7 +35,7 @@ class Article < ActiveFedora::Base
   end
 
   property :date_issued, predicate: ::RDF::Vocab::DC.issued, multiple: false do |index|
-    index.as :stored_searchable
+    index.as :stored_searchable, :facetable
   end
 
   property :date_other, predicate: ::RDF::Vocab::DC.date do |index|
@@ -43,8 +51,8 @@ class Article < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :edition, predicate: ::RDF::Vocab::BF2.editionStatement do |index|
-    index.as :stored_searchable
+  property :edition, predicate: ::RDF::Vocab::BF2.editionStatement, multiple: false do |index|
+    index.as :stored_searchable, :facetable
   end
 
   property :extent, predicate: ::RDF::URI('http://rdaregistry.info/Elements/u/extent.en') do |index|
@@ -55,7 +63,7 @@ class Article < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :genre, predicate: ::RDF::Vocab::EDM.hasType do |index|
+  property :dcmi_type, predicate: ::RDF::Vocab::DC.type do |index|
     index.as :stored_searchable
   end
 

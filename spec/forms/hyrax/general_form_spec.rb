@@ -24,14 +24,20 @@ RSpec.describe Hyrax::GeneralForm do
     it { is_expected.to match_array [:contributor, :creator, :date_created, :description, :deposit_record, :keyword,
                                      :identifier, :language, :license, :publisher, :related_url, :resource_type, :rights_statement,
                                      :subject, :bibliographic_citation, :abstract, :academic_concentration, :access,
-                                     :advisor, :alternative_title, :arranger, :award, :composer, :conference_name,
-                                     :copyright_date, :date_captured, :date_issued, :date_other, :degree,
-                                     :degree_granting_institution, :digital_collection, :discipline, :doi, :edition,
-                                     :extent, :funder, :genre, :geographic_subject, :graduation_year, :isbn, :issn,
+                                     :advisor, :affiliation, :affiliation_label, :alternative_title, :arranger, :award, :composer, :conference_name,
+                                     :copyright_date, :date_captured, :date_issued, :date_other, :dcmi_type, :degree,
+                                     :degree_granting_institution, :discipline, :doi, :edition,
+                                     :extent, :funder, :geographic_subject, :graduation_year, :isbn, :issn,
                                      :journal_issue, :journal_title, :journal_volume, :kind_of_data,
                                      :last_modified_date, :medium, :note, :page_start, :page_end, :peer_review_status,
                                      :place_of_publication, :project_director, :researcher, :reviewer, :rights_holder,
                                      :series, :sponsor, :table_of_contents, :translator, :url, :use] }
+  end
+  
+  describe "#admin_only_terms" do
+    subject { form.admin_only_terms }
+
+    it { is_expected.to match_array [:dcmi_type] }
   end
 
   describe '.model_attributes' do
@@ -41,7 +47,7 @@ RSpec.describe Hyrax::GeneralForm do
           bibliographic_citation: ['a citation'],
           contributor: ['a contributor'],
           creator: ['a creator'],
-          date_created: ['2017-01-22'],
+          date_created: '2017-01-22',
           deposit_record: 'uuid:1234',
           identifier: ['an identifier'],
           language: ['a language'],
@@ -61,6 +67,8 @@ RSpec.describe Hyrax::GeneralForm do
           academic_concentration: ['a concentration'],
           access: 'public', # single-valued
           advisor: ['an advisor'],
+          affiliation: ['School of Medicine', 'Carolina Center for Genome Sciences'],
+          affiliation_label: ['School of Medicine', 'Carolina Center for Genome Sciences'],
           alternative_title: ['some title'],
           arranger: ['an arranger'],
           award: ['an award'],
@@ -70,15 +78,15 @@ RSpec.describe Hyrax::GeneralForm do
           date_captured: '2017-01-22', # single-valued
           date_issued: ['2017-01-22'],
           date_other: ['2017-01-22'],
+          dcmi_type: ['type'],
           degree: 'something', # single-valued
           degree_granting_institution: 'unc', # single-valued
           digital_collection: ['a collection'],
           discipline: ['a discipline'],
           doi: '12345', # single-valued
-          edition: ['an edition'],
+          edition: 'an edition',
           extent: ['1993'],
           funder: ['dean'],
-          genre: ['a genre'],
           geographic_subject: ['California'],
           graduation_year: '2018', # single-valued
           isbn: ['123456'],
@@ -113,7 +121,7 @@ RSpec.describe Hyrax::GeneralForm do
       expect(subject['title']).to eq ['foo']
       expect(subject['bibliographic_citation']).to eq ['a citation']
       expect(subject['contributor']).to eq ['a contributor']
-      expect(subject['date_created']).to eq ['2017-01-22']
+      expect(subject['date_created']).to eq '2017-01-22'
       expect(subject['deposit_record']).to eq 'uuid:1234'
       expect(subject['identifier']).to eq ['an identifier']
       expect(subject['language']).to eq ['a language']
@@ -131,6 +139,8 @@ RSpec.describe Hyrax::GeneralForm do
       expect(subject['academic_concentration']).to eq ['a concentration']
       expect(subject['access']).to eq 'public'
       expect(subject['advisor']).to eq ['an advisor']
+      expect(subject['affiliation']).to eq ['School of Medicine', 'Carolina Center for Genome Sciences']
+      expect(subject['affiliation_label']).to eq ['School of Medicine', 'Carolina Center for Genome Sciences']
       expect(subject['alternative_title']).to eq ['some title']
       expect(subject['arranger']).to eq ['an arranger']
       expect(subject['award']).to eq ['an award']
@@ -142,13 +152,13 @@ RSpec.describe Hyrax::GeneralForm do
       expect(subject['date_other']).to eq ['2017-01-22']
       expect(subject['degree']).to eq 'something'
       expect(subject['degree_granting_institution']).to eq 'unc'
-      expect(subject['digital_collection']).to eq ['a collection']
+      expect(subject['digital_collection']).to be_nil
       expect(subject['discipline']).to eq ['a discipline']
       expect(subject['doi']).to eq '12345'
-      expect(subject['edition']).to eq ['an edition']
+      expect(subject['edition']).to eq 'an edition'
       expect(subject['extent']).to eq ['1993']
       expect(subject['funder']).to eq ['dean']
-      expect(subject['genre']).to eq ['a genre']
+      expect(subject['dcmi_type']).to eq ['type']
       expect(subject['geographic_subject']).to eq ['California']
       expect(subject['graduation_year']).to eq '2018'
       expect(subject['isbn']).to eq ['123456']

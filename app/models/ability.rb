@@ -1,3 +1,4 @@
+# [hyc-override] Adding permissions to admin group
 class Ability
   include Hydra::Ability
   

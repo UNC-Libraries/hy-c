@@ -12,7 +12,7 @@ $description-shadow: inner $shadow-base-top gray, inner $shadow-base-bottom gray
 
 @font-face {
   font-family: LibreBaskerville;
-  src: url(asset-path("libre-baskerville/LibreBaskerville-Regular.otf")) format("opentype");
+  src: url(asset-path("libre-baskerville/LibreBaskerville-Italic.otf")) format("opentype");
 }
 
 body {
@@ -59,6 +59,7 @@ span.institution_name {
     -ms-filter: none;
     -webkit-filter: none;
     filter: none;
+    box-shadow: 0 1px 10px #000c;
   }
 
   .background-container-gradient {
@@ -75,17 +76,13 @@ span.institution_name {
 
   .repo-name {
     font-family: LibreBaskerville, sans-serif;
-    padding-left: 25px;
+    padding-left: 15px;
   }
 
-  #search-form-header {
-    margin-top: 25px;
-  }
-
-  img {
-    max-width: 60%;
+  img.banner-img {
+    max-width: 300px;
     max-height: 60%;
-    padding-left: 25px;
+    padding-left: 15px;
   }
 
   .fa-arrow-circle-up {
@@ -179,14 +176,24 @@ span.institution_name {
 #unc-description {
   padding-top: 25px;
 
-  &> div {
-    margin-bottom: 50px;
+  .describe {
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+
+    -ms-flex-direction: row;
+    -webkit-flex-direction: row;
+    flex-direction: row;
+
+    -ms-flex-align: center;
+    -webkit-align-items: center;
+    align-items: center;
   }
 
   img {
-    max-width: 45%;
-    max-height: 45%;
-    margin: 0 auto;
+    max-width: 20%;
+    max-height: 20%;
+    margin: 0 0 0 5%;
   }
 
   p {
@@ -199,14 +206,42 @@ span.institution_name {
   -moz-box-shadow: $description-shadow-prefixed;
   -webkit-box-shadow: $description-shadow-prefixed;
   box-shadow: $description-shadow;
+  padding: 0 10px;
+
+  .is-featured {
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+
+    -webkit-justify-content: center;
+    justify-content: center;
+
+    -ms-flex-direction: column;
+    -webkit-flex-direction: column;
+    flex-direction: column;
+
+    height: 200px;
+
+    img {
+      max-width: 200px;
+      max-height: 175px;
+    }
+
+    .featured-author + p {
+      margin-top: -10px;
+    }
+  }
+
+  h2 {
+    margin-bottom: 50px;
+  }
 
   div {
     margin-bottom: 25px;
   }
 
-  img {
-    max-width: 45%;
-    max-height: 45%;
+  .featured-item-title {
+    margin-top: 15px;
   }
 }
 
@@ -245,6 +280,31 @@ span.institution_name {
       }
     }
   }
+}
+
+div.unc-citation-modal {
+  h4 {
+    text-align: left;
+  }
+
+  .cite {
+    margin: 0 15px;
+    text-align: left;
+  }
+
+  ul {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid $light-gray;
+  }
+}
+
+.creator-affiliates {
+  display: inline-block;
+}
+
+.highlight-disabled {
+  opacity: .65;
 }
 
 /* Hyrax override */
@@ -298,7 +358,6 @@ span.institution_name {
       width: 40%;
     }
   }
-
   .navbar-brand {
     padding: 10px 15px;
   }
@@ -352,6 +411,14 @@ span.institution_name {
     }
   }
 
+  #unc-featured {
+    .is-featured {
+      img {
+        max-width: 175px;
+      }
+    }
+  }
+
   #unc-text {
     div {
       width: 100%;
@@ -370,6 +437,32 @@ span.institution_name {
 }
 
 @media only screen and (max-width: 800px) {
+  #unc-description {
+    .describe {
+      display: block;
+    }
+    div {
+      text-align: center;
+    }
+
+    img {
+      max-width: 50%;
+      max-height: 100%;
+    }
+  }
+
+  #unc-featured {
+    h2 {
+      margin-bottom: 50px;
+    }
+  }
+
+  #unc-search {
+    .link-tabs {
+      text-align: center;
+    }
+  }
+
   #masthead {
     .navbar-header {
       text-align: center;
@@ -383,6 +476,10 @@ span.institution_name {
 
   span.institution_name {
     font-size: 12px;
+  }
+
+  .nav {
+    padding-left: 15px;
   }
 }
 

@@ -7,24 +7,18 @@ en:
         name:               "Scholarly Articles and Book Chapters"
         description:        "Deposit a peer-reviewed article or book chapter.  If you would like to deposit a poster,
                             presentation, conference paper or white paper, use the “Scholarly Works” deposit form."
-    links:
-      about: About
-      accessibility: Accessibility
-      browse_collections: Browse Collections
-      contact: Contact Us
-      home: Home
-      library_home: Library Home
-      privacy_policy: Privacy Policy
-      departments: Departments
-      collections: Collections
-      deposit: Deposit
-    deposit:
-      header: Deposit Your Work
-      article: Article
-      student_paper: Student Papers
-      dataset: Datasets
-      other: Other Deposits
-    homepage_images:
-      unc_libraries_logo: UNC libraries logo
-      accessible: accessible and discoverable
-      access: you decide who gets access
+    visibility:
+      open:
+        warning_html: '<p> <strong>Please note</strong>, making something visible to the world (i.e. marking this as %{label})
+         may be viewed as publishing which could impact your ability to: </p> <ul> <li>Patent your work</li> <li>Publish your work in a journal</li> </ul>
+          <p> Check out <a target="_blank" href="http://www.sherpa.ac.uk/romeo/">SHERPA/RoMEO</a> for more information about publisher copyright policies. </p>'
+  simple_form:
+    labels:
+      article:
+        creator: "Author"
+        date_issued: "Date of Publication"
+        doi: "Publisher-issued DOI"
+        edition: "Version"
+        peer_review_status: "Is the article or chapter peer-reviewed?"
+        related_url: "Related Resource URL"
+        url: "Link to Publisher Version"

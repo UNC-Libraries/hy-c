@@ -15,7 +15,7 @@ class ScholarlyWork < ActiveFedora::Base
   end
 
   property :advisor, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/ths') do |index|
-    index.as :stored_searchable
+    index.as :stored_searchable, :facetable
   end
 
   property :conference_name, predicate: ::RDF::Vocab::EBUCore.eventName do |index|
@@ -23,7 +23,7 @@ class ScholarlyWork < ActiveFedora::Base
   end
 
   property :date_issued, predicate: ::RDF::Vocab::DC.issued, multiple: false do |index|
-    index.as :stored_searchable
+    index.as :stored_searchable, :facetable
   end
 
   # link to previous deposit record
@@ -35,7 +35,7 @@ class ScholarlyWork < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :genre, predicate: ::RDF::Vocab::EDM.hasType do |index|
+  property :dcmi_type, predicate: ::RDF::Vocab::DC.type do |index|
     index.as :stored_searchable
   end
 

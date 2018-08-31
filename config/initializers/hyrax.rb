@@ -58,10 +58,10 @@ Hyrax.config do |config|
   # Enable displaying usage statistics in the UI
   # Defaults to false
   # Requires a Google Analytics id and OAuth2 keyfile.  See README for more info
-  # config.analytics = false
+  config.analytics = true
 
   # Google Analytics tracking ID to gather usage statistics
-  # config.google_analytics_id = 'UA-99999999-1'
+  config.google_analytics_id = ENV['GOOGLE_ANALYTICS_ID']
 
   # Date you wish to start collecting Google Analytic statistics for
   # Leaving it blank will set the start date to when ever the file was uploaded by
@@ -153,6 +153,9 @@ Hyrax.config do |config|
   # config.derivatives_path = Rails.root.join('tmp', 'derivatives')
   config.derivatives_path = ENV['DERIVATIVE_STORAGE']
 
+  # Store banner images in data storage directory
+  config.branding_path = ENV['DATA_STORAGE']+'/branding'
+
   # Should schema.org microdata be displayed?
   # config.display_microdata = true
 
@@ -228,5 +231,5 @@ end
 Date::DATE_FORMATS[:standard] = "%Y-%m-%d"
 
 Qa::Authorities::Local.register_subauthority('subjects', 'Qa::Authorities::Local::TableBasedAuthority')
-Qa::Authorities::Local.register_subauthority('languages', 'Qa::Authorities::Local::TableBasedAuthority')
+# Qa::Authorities::Local.register_subauthority('languages', 'Qa::Authorities::Local::TableBasedAuthority')
 Qa::Authorities::Local.register_subauthority('genres', 'Qa::Authorities::Local::TableBasedAuthority')

@@ -9,21 +9,35 @@ RSpec.describe Hyrax::MastersPaperForm do
   describe "#required_fields" do
     subject { form.required_fields }
 
-    it { is_expected.to match_array [:title, :creator, :date_issued, :degree_granting_institution] }
+    it { is_expected.to match_array [:title, :creator, :abstract, :advisor, :date_issued, :degree, :resource_type] }
   end
 
   describe "#primary_terms" do
     subject { form.primary_terms }
 
-    it { is_expected.to match_array [:title, :creator, :date_issued, :degree_granting_institution] }
+    it { is_expected.to match_array [:title, :creator, :abstract, :advisor, :date_issued, :degree, :resource_type] }
   end
 
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:abstract, :academic_concentration, :access, :advisor, :degree, :doi, :extent,
-                                     :genre, :geographic_subject, :graduation_year, :medium, :note, :reviewer, :use,
-                                     :keyword, :subject, :language, :rights_statement, :license, :resource_type] }
+    it { is_expected.to match_array [:academic_concentration, :access, :affiliation, :affiliation_label, :dcmi_type,
+                                     :degree_granting_institution, :doi, :extent,
+                                     :geographic_subject, :graduation_year, :medium, :note, :reviewer, :use,
+                                     :keyword, :subject, :language, :rights_statement, :license] }
+  end
+  
+  describe "#admin_only_terms" do
+    subject { form.admin_only_terms }
+
+    it { is_expected.to match_array [:dcmi_type] }
+  end
+  
+  describe 'default value set' do
+    subject { form }
+    it "dcmi type must have default values" do
+      expect(form.model['dcmi_type']).to eq ['http://purl.org/dc/dcmitype/Text'] 
+    end
   end
 
   describe '.model_attributes' do
@@ -41,17 +55,18 @@ RSpec.describe Hyrax::MastersPaperForm do
           thumbnail_id: '789',
           keyword: ['derp'],
           member_of_collection_ids: ['123456', 'abcdef'],
-
           abstract: [''],
           academic_concentration: ['a concentration'],
           access: 'public', # single-valued
           advisor: ['an advisor'],
+          affiliation: ['School of Medicine', 'Carolina Center for Genome Sciences'],
+          affiliation_label: ['School of Medicine', 'Carolina Center for Genome Sciences'],
           date_issued: 'a date', # single-valued
+          dcmi_type: ['type'],
           degree: 'MS', # single-valued
           degree_granting_institution: 'UNC', # single-valued
           doi: '12345',
           extent: ['an extent'],
-          genre: ['a genre'],
           geographic_subject: ['a geographic subject'],
           graduation_year: '2017',
           medium: ['a medium'],
@@ -74,17 +89,18 @@ RSpec.describe Hyrax::MastersPaperForm do
       expect(subject['keyword']).to eq ['derp']
       expect(subject['visibility']).to eq 'open'
       expect(subject['member_of_collection_ids']).to eq ['123456', 'abcdef']
-
       expect(subject['abstract']).to be_empty
       expect(subject['academic_concentration']).to eq ['a concentration']
       expect(subject['access']).to eq 'public'
       expect(subject['advisor']).to eq ['an advisor']
+      expect(subject['affiliation']).to eq ['School of Medicine', 'Carolina Center for Genome Sciences']
+      expect(subject['affiliation_label']).to eq ['School of Medicine', 'Carolina Center for Genome Sciences']
       expect(subject['date_issued']).to eq 'a date'
       expect(subject['degree']).to eq 'MS'
       expect(subject['degree_granting_institution']).to eq 'UNC'
       expect(subject['doi']).to eq '12345'
       expect(subject['extent']).to eq ['an extent']
-      expect(subject['genre']).to eq ['a genre']
+      expect(subject['dcmi_type']).to eq ['type']
       expect(subject['geographic_subject']).to eq ['a geographic subject']
       expect(subject['graduation_year']).to eq '2017'
       expect(subject['medium']).to eq ['a medium']

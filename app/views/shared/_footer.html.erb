@@ -1,10 +1,11 @@
+<%# [hyc-override] Overriding partial in hyrax gem to update homepage %>
 <footer id="unc-footer" class="navbar navbar-inverse site-footer">
   <div class="container-fluid">
     <div class="navbar-text">
       <ul class="navbar-nav list-unstyled">
         <li><%= link_to t('hyrax.links.home'), '/' %></li>
-        <li><%= link_to t('hyrax.links.browse_collections'), main_app.search_catalog_path %></li>
-        <li><%= link_to t('hyrax.links.about'), "https://blogs.lib.unc.edu/cdr" %></li>
+        <li><%= link_to t('hyrax.links.browse_collections'), main_app.search_catalog_path(f: { human_readable_type_sim: ["Collection"]}) %></li>
+        <li><%= link_to t('hyrax.links.help'), "https://blogs.lib.unc.edu/cdr" %></li>
         <li><%= link_to t('hyrax.links.contact'), "https://blogs.lib.unc.edu/cdr/index.php/contact-us" %></li>
         <li><%= link_to t('hyrax.links.library_home'), "https://library.unc.edu" %></li>
         <li><%= link_to t('hyrax.links.privacy_policy'), "https://library.unc.edu/privacy-policy" %></li>
@@ -14,19 +15,3 @@
   </div>
 </footer>
 <%= render '/shared/select_work_type_modal' %>
-<!--
-<footer class="navbar navbar-inverse site-footer">
-  <div class="container-fluid">
-    <div class="navbar-text text-left">
-        <p><%# t('hyrax.footer.service_html') %></p>
-        <p><%# t('hyrax.product_name') %> v<%# Hyrax::VERSION %></p>
-    </div>
-    <div class="navbar-right">
-      <div class="navbar-text text-right">
-        <p><%# t('hyrax.footer.copyright_html') %></p>
-        <p><%# t('hyrax.background_attribution_html') %></p>
-      </div>
-    </div>
-  </div>
-</footer>
--->

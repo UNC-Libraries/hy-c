@@ -23,7 +23,15 @@ class HonorsThesis < ActiveFedora::Base
   end
 
   property :advisor, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/ths') do |index|
+    index.as :stored_searchable, :facetable
+  end
+
+  property :affiliation, predicate: ::RDF::URI('http://vivoweb.org/ontology/core#AcademicDepartment') do |index|
     index.as :stored_searchable
+  end
+
+  property :affiliation_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#AffiliationLabel') do |index|
+    index.as :stored_searchable, :facetable
   end
 
   property :alternative_title, predicate: ::RDF::Vocab::DC.alternative do |index|
@@ -35,7 +43,7 @@ class HonorsThesis < ActiveFedora::Base
   end
 
   property :date_issued, predicate: ::RDF::Vocab::DC.issued, multiple: false do |index|
-    index.as :stored_searchable
+    index.as :stored_searchable, :facetable
   end
 
   property :degree, predicate: ::RDF::Vocab::BIBO.degree, multiple: false do |index|
@@ -60,7 +68,7 @@ class HonorsThesis < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :genre, predicate: ::RDF::Vocab::EDM.hasType do |index|
+  property :dcmi_type, predicate: ::RDF::Vocab::DC.type do |index|
     index.as :stored_searchable
   end
 

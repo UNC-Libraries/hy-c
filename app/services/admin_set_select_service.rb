@@ -5,15 +5,23 @@ class AdminSetSelectService
   # Inputs: Model, Affiliation, Select Options
   # Output: Array with stingified admin set name ["Article"]
   def self.select(model, affiliation, select_options)
+    # Check to see if there is a default admin set for work type
     default_admin_set = DefaultAdminSet.where(work_type_name: model, department: affiliation)
     if default_admin_set.blank?
       default_admin_set = DefaultAdminSet.where(work_type_name: model, department: '')
     end
+
+    # Select default admin set for work type
     admin_set_id = ''
     unless default_admin_set.blank?
       admin_set_id = default_admin_set.first.admin_set_id
     end
-    mapped_admin_set = select_options.find { |o| o.second.casecmp(admin_set_id).zero? }
-    [ mapped_admin_set || select_options.find { |o| o.first.casecmp(ENV["DEFAULT_ADMIN_SET"]).zero? } ].flatten
+
+    # Use work type's default if available
+    if select_options.find { |o| o.second.casecmp(admin_set_id).zero? }
+      admin_set_id
+    else
+      (AdminSet.where(title: ENV['DEFAULT_ADMIN_SET']).first || AdminSet.first).id
+    end
   end
 end

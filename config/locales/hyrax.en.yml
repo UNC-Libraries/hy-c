@@ -53,6 +53,28 @@ en:
     footer:
       copyright_html: "<strong>Copyright &copy; 2017 Samvera</strong> Licensed under the Apache License, Version 2.0"
       service_html: A service of <a href="http://samvera.org/" class="navbar-link" target="_blank">Samvera</a>.
+    citations:
+      citation: Citation
+    links:
+      help: Help
+      accessibility: Accessibility
+      browse_collections: Browse Collections
+      contact: Contact Us
+      library_home: Library Home
+      privacy_policy: Privacy Policy
+      departments: Departments
+      collections: Collections
+      deposit: Deposit
+    deposit:
+      header: Deposit Your Work
+      article: Article
+      student_paper: Student Papers
+      dataset: Datasets
+      other: Other Deposits
+    homepage_images:
+      unc_libraries_logo: UNC libraries logo
+      accessible: accessible and discoverable
+      access: you decide who gets access
   simple_form:
     labels:
       defaults:

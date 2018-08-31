@@ -14,12 +14,20 @@ class DataSet < ActiveFedora::Base
     index.as :stored_searchable
   end
 
+  property :affiliation, predicate: ::RDF::URI('http://vivoweb.org/ontology/core#AcademicDepartment') do |index|
+    index.as :stored_searchable
+  end
+
+  property :affiliation_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#AffiliationLabel') do |index|
+    index.as :stored_searchable, :facetable
+  end
+
   property :copyright_date, predicate: ::RDF::Vocab::DC.dateCopyrighted, multiple: false do |index|
     index.as :stored_searchable
   end
 
   property :date_issued, predicate: ::RDF::Vocab::DC.issued, multiple: false do |index|
-    index.as :stored_searchable
+    index.as :stored_searchable, :facetable
   end
 
   # link to previous deposit record
@@ -39,7 +47,7 @@ class DataSet < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :genre, predicate: ::RDF::Vocab::EDM.hasType do |index|
+  property :dcmi_type, predicate: ::RDF::Vocab::DC.type do |index|
     index.as :stored_searchable
   end
 

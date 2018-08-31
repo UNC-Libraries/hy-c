@@ -9,22 +9,39 @@ RSpec.describe Hyrax::HonorsThesisForm do
   describe "#required_fields" do
     subject { form.required_fields }
 
-    it { is_expected.to match_array [:title, :creator, :degree_granting_institution, :date_created] }
+    it do  is_expected.to match_array [:title, :abstract, :affiliation, :advisor,
+                                       :creator, :degree, :date_created, :graduation_year,]
+    end
   end
 
   describe "#primary_terms" do
     subject { form.primary_terms }
 
-    it { is_expected.to match_array [:title, :creator, :degree_granting_institution, :date_created] }
+    it do  is_expected.to match_array [:title, :abstract, :affiliation, :advisor,
+                                       :creator, :degree, :date_created, :graduation_year,]
+    end
   end
 
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:abstract, :academic_concentration, :access, :advisor, :alternative_title,
-                                     :award, :date_issued, :degree, :doi, :extent, :genre, :geographic_subject,
-                                     :graduation_year, :note, :use, :language, :license, :resource_type,
+    it { is_expected.to match_array [:access, :academic_concentration, :affiliation_label, :alternative_title,
+                                     :award, :date_issued, :dcmi_type, :degree_granting_institution, :doi, :extent,
+                                     :geographic_subject, :note, :use, :language, :license, :resource_type,
                                      :rights_statement, :subject, :keyword, :related_url] }
+  end
+  
+  describe "#admin_only_terms" do
+    subject { form.admin_only_terms }
+
+    it { is_expected.to match_array [:dcmi_type] }
+  end
+  
+  describe 'default value set' do
+    subject { form }
+    it "dcmi type must have default values" do
+      expect(form.model['dcmi_type']).to eq ['http://purl.org/dc/dcmitype/Text'] 
+    end
   end
 
   describe '.model_attributes' do
@@ -46,13 +63,15 @@ RSpec.describe Hyrax::HonorsThesisForm do
           academic_concentration: ['a concentration'],
           access: 'public', # single-valued
           advisor: ['an advisor'],
+          affiliation: ['School of Medicine', 'Carolina Center for Genome Sciences'],
+          affiliation_label: ['School of Medicine', 'Carolina Center for Genome Sciences'],
           alternative_title: ['another title'],
           award: ['an award'],
+          dcmi_type: ['type'],
           degree: 'MSIS', # single-valued
           degree_granting_institution: 'UNC', # single-valued
           doi: '12345',
           extent: ['an extent'],
-          genre: ['a genre'],
           geographic_subject: ['a geographic subject'],
           graduation_year: '2017',
           note: [''],
@@ -80,12 +99,14 @@ RSpec.describe Hyrax::HonorsThesisForm do
       expect(subject['academic_concentration']).to eq ['a concentration']
       expect(subject['access']).to eq 'public'
       expect(subject['advisor']).to eq ['an advisor']
+      expect(subject['affiliation']).to eq ['School of Medicine', 'Carolina Center for Genome Sciences']
+      expect(subject['affiliation_label']).to eq ['School of Medicine', 'Carolina Center for Genome Sciences']
       expect(subject['alternative_title']).to eq ['another title']
       expect(subject['award']).to eq ['an award']
       expect(subject['degree']).to eq 'MSIS'
       expect(subject['degree_granting_institution']).to eq 'UNC'
       expect(subject['extent']).to eq ['an extent']
-      expect(subject['genre']).to eq ['a genre']
+      expect(subject['dcmi_type']).to eq ['type']
       expect(subject['geographic_subject']).to eq ['a geographic subject']
       expect(subject['graduation_year']).to eq '2017'
       expect(subject['note']).to be_empty

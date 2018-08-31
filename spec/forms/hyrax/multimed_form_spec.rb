@@ -9,20 +9,26 @@ RSpec.describe Hyrax::MultimedForm do
   describe "#required_fields" do
     subject { form.required_fields }
 
-    it { is_expected.to match_array [:title, :creator] }
+    it { is_expected.to match_array [:title, :creator, :abstract, :resource_type] }
   end
 
   describe "#primary_terms" do
     subject { form.primary_terms }
 
-    it { is_expected.to match_array [:title, :creator] }
+    it { is_expected.to match_array [:title, :creator, :abstract, :resource_type] }
   end
 
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:abstract, :date_created, :doi, :extent, :genre, :geographic_subject, :keyword,
-                                     :language, :license, :note, :resource_type, :rights_statement, :subject] }
+    it { is_expected.to match_array [:date_created, :dcmi_type, :doi, :extent, :geographic_subject, :keyword,
+                                     :language, :license, :note,  :rights_statement, :subject] }
+  end
+  
+  describe "#admin_only_terms" do
+    subject { form.admin_only_terms }
+
+    it { is_expected.to match_array [:dcmi_type] }
   end
 
   describe ".model_attributes" do
@@ -38,9 +44,9 @@ RSpec.describe Hyrax::MultimedForm do
           license: 'a license', # single-valued
           rights_statement: 'a statement', # single-valued
           abstract: ['an abstract'],
+          dcmi_type: ['type'],
           doi: '12345',
           extent: ['1999'],
-          genre: ['food'],
           geographic_subject: ['Italy'],
           keyword: ['multimed'],
       )
@@ -59,10 +65,10 @@ RSpec.describe Hyrax::MultimedForm do
       expect(subject['note']).to eq ['a note']
       expect(subject['keyword']).to eq ['multimed']
       expect(subject['abstract']).to eq ['an abstract']
-      expect(subject['date_created']).to eq ['2018-01-09']
+      expect(subject['date_created']).to eq '2018-01-09'
       expect(subject['doi']).to eq '12345'
       expect(subject['extent']).to eq ['1999']
-      expect(subject['genre']).to eq ['food']
+      expect(subject['dcmi_type']).to eq ['type']
       expect(subject['geographic_subject']).to eq ['Italy']
     end
 

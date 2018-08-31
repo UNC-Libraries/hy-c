@@ -37,7 +37,7 @@ class SolrDocument
       language:    'language_tesim',
       publisher:   'publisher_tesim',
       relation:    'relation_tesim',
-      rights:      'rights_statement_tesim',
+      rights_statement: 'rights_statement_tesim',
       source:      'source_tesim',
       subject:     'subject_tesim',
       title:       'title_tesim',
@@ -62,6 +62,14 @@ class SolrDocument
 
   def advisor
     self[Solrizer.solr_name('advisor')]
+  end
+
+  def affiliation
+    self[Solrizer.solr_name('affiliation')]
+  end
+
+  def affiliation_label
+    self[Solrizer.solr_name('affiliation_label')]
   end
 
   def alternative_title
@@ -140,8 +148,8 @@ class SolrDocument
     self[Solrizer.solr_name('funder')]
   end
 
-  def genre
-    self[Solrizer.solr_name('genre')]
+  def dcmi_type
+    self[Solrizer.solr_name('dcmi_type')]
   end
 
   def geographic_subject

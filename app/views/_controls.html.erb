@@ -1,17 +1,19 @@
+<%# [hyc-override] Overriding partial in hyrax gem to update homepage %>
 <nav class="navbar navbar-default navbar-static-top" role="navigation">
   <div class="container-fluid">
     <div class="row">
       <ul class="nav navbar-nav col-sm-5 col-md-6">
         <li <%= 'class=active' if current_page?(hyrax.root_path) %>>
-          <%= link_to t(:'hyrax.links.collections'), hyrax.root_path %></li>
+          <%= link_to t(:'hyrax.links.collections'), main_app.search_catalog_path(f: { human_readable_type_sim: ["Collection"]}) %></li>
         <li <%= 'class=active' if current_page?(hyrax.root_path) %>>
-          <%= link_to t(:'hyrax.links.departments'), hyrax.root_path %></li>
-        <li><%= link_to  '#', class: 'all-unc-work-types',
-                         data: { behavior: 'select-work', target: '#worktypes-to-create', 'create-type' => 'single' } do %>
-            <i class="fa fa-arrow-circle-up" aria-hidden="true"></i>
-            <%= t('hyrax.links.deposit') %>
-          <% end %>
-        </li>
+          <%= link_to t(:'hyrax.links.departments'), main_app.facet_catalog_path(id: 'affiliation_label_sim') %></li>
+          <li data-turbolinks="false">
+            <%= link_to '#', class: 'all-unc-work-types',
+                           data: { behavior: 'select-work', target: '#worktypes-to-create', 'create-type' => 'single' } do %>
+              <i class="fa fa-arrow-circle-up" aria-hidden="true"></i>
+              <%= t('hyrax.links.deposit') %>
+            <% end %>
+          </li>
       </ul><!-- /.nav -->
       <div class="searchbar-right navbar-right col-sm-7 col-md-6">
         <%= render partial: 'catalog/search_form' %>

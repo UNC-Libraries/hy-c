@@ -16,13 +16,14 @@ RSpec.describe Hyrax::DataSetPresenter do
       "depositor_tesim" => user_key,
       "resource_type_tesim" => ['a type'],
       "abstract_tesim" => ['an abstract'],
+      "affiliation_tesim" => ['SILS'],
       "copyright_date_tesim" => '2017-12-19',
       "date_issued_tesim" => '2018-01-08',
+      "dcmi_type_tesim" => ['science fiction'],
       "deposit_record_tesim" => 'a deposit record',
       "doi_tesim" => '12345',
       "extent_tesim" => ['1993'],
       "funder_tesim" => ['unc'],
-      "genre_tesim" => ['a genre'],
       "geographic_subject_tesim" => ['California'],
       "kind_of_data_tesim" => ['some data'],
       "last_modified_date_tesim" => '2018-01-29',
@@ -50,13 +51,14 @@ RSpec.describe Hyrax::DataSetPresenter do
   it { is_expected.to delegate_method(:itemtype).to(:solr_document) }
 
   it { is_expected.to delegate_method(:abstract).to(:solr_document) }
+  it { is_expected.to delegate_method(:affiliation).to(:solr_document) }
   it { is_expected.to delegate_method(:copyright_date).to(:solr_document) }
   it { is_expected.to delegate_method(:date_issued).to(:solr_document) }
+  it { is_expected.to delegate_method(:dcmi_type).to(:solr_document) }
   it { is_expected.to delegate_method(:deposit_record).to(:solr_document) }
   it { is_expected.to delegate_method(:doi).to(:solr_document) }
   it { is_expected.to delegate_method(:extent).to(:solr_document) }
   it { is_expected.to delegate_method(:funder).to(:solr_document) }
-  it { is_expected.to delegate_method(:genre).to(:solr_document) }
   it { is_expected.to delegate_method(:geographic_subject).to(:solr_document) }
   it { is_expected.to delegate_method(:kind_of_data).to(:solr_document) }
   it { is_expected.to delegate_method(:last_modified_date).to(:solr_document) }
@@ -81,6 +83,17 @@ RSpec.describe Hyrax::DataSetPresenter do
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:abstract)
+      end
+    end
+
+    context "with a custom affiliation field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:affiliation, ['SILS'], {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:affiliation)
       end
     end
 
@@ -139,15 +152,13 @@ RSpec.describe Hyrax::DataSetPresenter do
       end
     end
 
-
-    context "with a custom genre field" do
+    context "with a custom dcmi_type field" do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:genre, ['a genre'], {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:dcmi_type, ['science fiction'], {}).and_return(renderer)
       end
-
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
-        presenter.attribute_to_html(:genre)
+        presenter.attribute_to_html(:dcmi_type)
       end
     end
 

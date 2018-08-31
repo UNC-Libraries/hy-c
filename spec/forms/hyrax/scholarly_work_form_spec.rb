@@ -9,21 +9,27 @@ RSpec.describe Hyrax::ScholarlyWorkForm do
   describe "#required_fields" do
     subject { form.required_fields }
 
-    it { is_expected.to match_array [:title, :creator, :date_created] }
+    it { is_expected.to match_array [:title, :creator, :abstract, :date_issued] }
   end
 
   describe "#primary_terms" do
     subject { form.primary_terms }
 
-    it { is_expected.to match_array [:title, :creator, :date_created] }
+    it { is_expected.to match_array [:title, :creator, :abstract, :date_issued] }
   end
 
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:abstract, :advisor, :conference_name, :date_issued, :doi, :genre,
+    it { is_expected.to match_array [:advisor, :conference_name, :date_created, :dcmi_type, :doi,
                                      :geographic_subject, :description, :keyword, :language, :license, :resource_type,
                                      :rights_statement, :subject] }
+  end
+  
+  describe "#admin_only_terms" do
+    subject { form.admin_only_terms }
+
+    it { is_expected.to match_array [:dcmi_type] }
   end
 
   describe '.model_attributes' do
@@ -47,8 +53,8 @@ RSpec.describe Hyrax::ScholarlyWorkForm do
           advisor: ['an advisor'],
           conference_name: ['a conference name'],
           date_issued: 'a date', # single-valued
+          dcmi_type: ['type'],
           doi: '12345',
-          genre: ['a genre'],
           geographic_subject: ['a geographic subject']
       )
     end
@@ -58,7 +64,7 @@ RSpec.describe Hyrax::ScholarlyWorkForm do
     it 'permits parameters' do
       expect(subject['title']).to eq ['foo']
       expect(subject['creator']).to eq ['someone@example.com']
-      expect(subject['date_created']).to eq ['a date']
+      expect(subject['date_created']).to eq 'a date'
       expect(subject['description']).to eq ['a description']
       expect(subject['doi']).to eq '12345'
       expect(subject['subject']).to eq ['a subject']
@@ -73,7 +79,7 @@ RSpec.describe Hyrax::ScholarlyWorkForm do
       expect(subject['abstract']).to be_empty
       expect(subject['conference_name']).to eq ['a conference name']
       expect(subject['date_issued']).to eq 'a date'
-      expect(subject['genre']).to eq ['a genre']
+      expect(subject['dcmi_type']).to eq ['type']
       expect(subject['geographic_subject']).to eq ['a geographic subject']
       expect(subject['member_of_collection_ids']).to eq ['123456', 'abcdef']
     end

@@ -49,13 +49,16 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       expect(page).to have_content "Add New Undergraduate Honors Thesis"
 
       fill_in 'Title', with: 'Test HonorsThesis work'
-      fill_in 'Creator', with: 'Test Default Creator'
+      fill_in 'Author', with: 'Test Default Creator'
       fill_in 'Keyword', with: 'Test Default Keyword'
+      select 'Department of Biology', from: 'honors_thesis_affiliation'
       select "In Copyright", :from => "honors_thesis_rights_statement"
       expect(page).to have_field('honors_thesis_visibility_embargo')
       expect(page).not_to have_field('honors_thesis_visibility_lease')
       choose "honors_thesis_visibility_open"
       check 'agreement'
+      
+      expect(page).not_to have_selector('#honors_thesis_dcmi_type')
 
       click_link "Files" # switch tab
       within "//span[@id=addfiles]" do
@@ -73,7 +76,11 @@ RSpec.feature 'Create a HonorsThesis', js: false do
 
       first('.document-title', text: 'Test HonorsThesis work').click
       expect(page).to have_content 'Test Default Keyword'
-      expect(page).to have_content 'In Administrative Set: honors thesis admin set'
+      expect(page).to_not have_content 'In Administrative Set: honors thesis admin set'
+      expect(page).to have_content 'Type http://purl.org/dc/dcmitype/Text'
+      expect(page).to have_content 'Affiliation'
+      expect(page).to have_content 'College of Arts and Sciences'
+      expect(page).to have_content 'Department of Biology'
     end
 
     scenario 'as an admin' do
@@ -83,13 +90,18 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       expect(page).to have_content "Add New Undergraduate Honors Thesis"
 
       fill_in 'Title', with: 'Test HonorsThesis work'
-      fill_in 'Creator', with: 'Test Default Creator'
+      fill_in 'Author', with: 'Test Default Creator'
       fill_in 'Keyword', with: 'Test Default Keyword'
+      select 'Department of Biology', from: 'honors_thesis_affiliation'
       select "In Copyright", :from => "honors_thesis_rights_statement"
       expect(page).to have_field('honors_thesis_visibility_embargo')
       expect(page).not_to have_field('honors_thesis_visibility_lease')
       choose "honors_thesis_visibility_open"
       check 'agreement'
+      
+      expect(page).to have_selector('#honors_thesis_dcmi_type')
+      expect(page).to have_selector("input[value='http://purl.org/dc/dcmitype/Text']")
+      fill_in 'Dcmi type', with: 'http://purl.org/dc/dcmitype/Image'
 
       click_link "Files" # switch tab
       within "//span[@id=addfiles]" do
@@ -109,6 +121,10 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       first('.document-title', text: 'Test HonorsThesis work').click
       expect(page).to have_content 'Test Default Keyword'
       expect(page).to have_content 'In Administrative Set: honors thesis admin set'
+      expect(page).to have_content 'Type http://purl.org/dc/dcmitype/Image'
+      expect(page).to have_content 'Affiliation'
+      expect(page).to have_content 'College of Arts and Sciences'
+      expect(page).to have_content 'Department of Biology'
     end
   end
 end

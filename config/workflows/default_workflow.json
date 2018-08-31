@@ -22,13 +22,17 @@
                         {
                             "notification_type": "email",
                             "name": "Hyrax::Workflow::DeletionApprovalNotification",
-                            "to": ["depositing"]
+                            "to": ["depositing", "managing"]
                         }
                     ],
+                    "_comment" : "MetadataOnlyRecord must be called before RevokeEditFromDepositor",
                     "methods": [
-                        "Hyrax::Workflow::MetadataOnlyRecord"
+                        "Hyrax::Workflow::MetadataOnlyRecord",
+                        "Hyrax::Workflow::RevokeEditFromDepositor"
                     ]
-                }, {"name": "request_deletion",
+                }, {
+                    "name": "request_deletion",
+                    "_comment" : "This action is suppressed from normal rendering with other review/approval actions",
                     "from_states": [{"names": ["deposited"], "roles": ["approving", "depositing"]}],
                     "transition_to": "pending_deletion",
                     "notifications": [
@@ -39,11 +43,12 @@
                         }
                     ],
                     "methods": [
+                        "Hyrax::Workflow::MetadataOnlyRecord",
                         "Hyrax::Workflow::RevokeEditFromDepositor"
                     ]
                 }, {
                     "name": "approve_deletion",
-                    "from_states": [{"names": ["pending_deletion"], "roles": ["approving"]}],
+                    "from_states": [{"names": ["deposited", "pending_deletion"], "roles": ["approving"]}],
                     "transition_to": "tombstoned",
                     "notifications": [
                         {
@@ -53,7 +58,8 @@
                         }
                     ],
                     "methods": [
-                        "Hyrax::Workflow::MetadataOnlyRecord"
+                        "Hyrax::Workflow::MetadataOnlyRecord",
+                        "Hyrax::Workflow::RevokeEditFromDepositor"
                     ]
                 }, {
                     "name": "republish",

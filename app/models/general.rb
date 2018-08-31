@@ -23,7 +23,15 @@ class General < ActiveFedora::Base
   end
 
   property :advisor, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/ths') do |index|
+    index.as :stored_searchable, :facetable
+  end
+
+  property :affiliation, predicate: ::RDF::URI('http://vivoweb.org/ontology/core#AcademicDepartment') do |index|
     index.as :stored_searchable
+  end
+
+  property :affiliation_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#AffiliationLabel') do |index|
+    index.as :stored_searchable, :facetable
   end
 
   property :alternative_title, predicate: ::RDF::Vocab::DC.alternative do |index|
@@ -55,7 +63,7 @@ class General < ActiveFedora::Base
   end
 
   property :date_issued, predicate: ::RDF::Vocab::DC.issued do |index|
-    index.as :stored_searchable
+    index.as :stored_searchable, :facetable
   end
 
   property :date_other, predicate: ::RDF::Vocab::DC.date do |index|
@@ -76,7 +84,7 @@ class General < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :digital_collection, predicate: ::RDF::URI('http://pcdm.org/models#memberOf') do |index|
+  property :digital_collection, predicate: ::RDF::URI('http://purl.org/cld/terms/associatedCollection') do |index|
     index.as :stored_searchable
   end
 
@@ -88,8 +96,8 @@ class General < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :edition, predicate: ::RDF::Vocab::BF2.editionStatement do |index|
-    index.as :stored_searchable
+  property :edition, predicate: ::RDF::Vocab::BF2.editionStatement, multiple: false do |index|
+    index.as :stored_searchable, :facetable
   end
 
   property :extent, predicate: ::RDF::URI('http://rdaregistry.info/Elements/w/extent.en') do |index|
@@ -100,7 +108,7 @@ class General < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :genre, predicate: ::RDF::Vocab::EDM.hasType do |index|
+  property :dcmi_type, predicate: ::RDF::Vocab::DC.type do |index|
     index.as :stored_searchable
   end
 
