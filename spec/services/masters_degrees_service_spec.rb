@@ -10,13 +10,13 @@ RSpec.describe Hyrax::MastersDegreesService do
 
   describe "#select_all_options" do
     it "returns all terms" do
-      expect(service.select_all_options).to include(['MSIS', 'MSIS'], ['MSLS', 'MSIS'])
+      expect(service.select_all_options).to include(['MSIS', 'MSIS'], ['MSLS', 'MSLS'])
     end
   end
 
   describe "#label" do
     it "resolves for ids of active terms" do
-      expect(service.label('msis')).to eq("MSIS")
+      expect(service.label('MSIS')).to eq("MSIS")
     end
   end
 end
