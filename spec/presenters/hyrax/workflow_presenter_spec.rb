@@ -21,7 +21,7 @@ RSpec.describe Hyrax::WorkflowPresenter do
 
     context 'with a Sipity::Entity marked as Tombstoned' do
       before do
-        allow(entity).to receive(:workflow_state_name).and_return('tombstoned')
+        allow(entity).to receive(:workflow_state_name).and_return('withdrawn')
         allow(presenter).to receive(:sipity_entity).and_return(entity)
       end
       it { is_expected.to eq '<span class="state state-withdrawn label label-primary">Withdrawn</span>' }
@@ -33,9 +33,9 @@ RSpec.describe Hyrax::WorkflowPresenter do
 
     subject { presenter.in_workflow_state?(['withdrawn', 'pending deletion']) }
 
-    context 'with a Sipity::Entity marked as Tombstoned' do
+    context 'with a Sipity::Entity marked as Withdrawn' do
       before do
-        allow(entity).to receive(:workflow_state_name).and_return('tombstoned')
+        allow(entity).to receive(:workflow_state_name).and_return('withdrawn')
         allow(presenter).to receive(:sipity_entity).and_return(entity)
       end
       it { is_expected.to be true }
