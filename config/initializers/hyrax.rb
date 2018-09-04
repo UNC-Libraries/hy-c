@@ -153,9 +153,6 @@ Hyrax.config do |config|
   # config.derivatives_path = Rails.root.join('tmp', 'derivatives')
   config.derivatives_path = ENV['DERIVATIVE_STORAGE']
 
-  # Store banner images in data storage directory
-  config.branding_path = ENV['DATA_STORAGE']+'/branding'
-
   # Should schema.org microdata be displayed?
   # config.display_microdata = true
 
