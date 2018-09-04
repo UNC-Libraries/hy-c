@@ -52,11 +52,11 @@ class CatalogController < ApplicationController
     config.add_facet_field solr_name("resource_type", :facetable), label: "Resource Type", limit: 5
     config.add_facet_field solr_name("subject", :facetable), limit: 5
     config.add_facet_field solr_name("based_near_label", :facetable), limit: 5
-    config.add_facet_field solr_name("publisher", :facetable), limit: 5
     config.add_facet_field solr_name("file_format", :facetable), limit: 5
 
     # UNC Custom
     config.add_facet_field solr_name("affiliation_label", :facetable), label: "Departments", limit: 5
+    config.add_facet_field solr_name("edition", :facetable), label: "Version", limit: 5
 
 
     # The generic_type isn't displayed on the facet list
