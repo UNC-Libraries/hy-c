@@ -21,7 +21,7 @@ module Hyrax
 
     def ensure_admin_set!
       if AdminSet.all.count == 0
-        return redirect_to :back, alert: 'No Admin Sets have been created.'
+        return redirect_to root_path, alert: 'No Admin Sets have been created.'
       end
     end
   end

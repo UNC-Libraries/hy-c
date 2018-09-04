@@ -19,6 +19,10 @@ class Article < ActiveFedora::Base
   end
 
   property :affiliation, predicate: ::RDF::URI('http://vivoweb.org/ontology/core#AcademicDepartment') do |index|
+    index.as :stored_searchable
+  end
+
+  property :affiliation_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#AffiliationLabel') do |index|
     index.as :stored_searchable, :facetable
   end
 

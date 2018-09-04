@@ -19,7 +19,7 @@
                     ],
                     "methods": [
                         "Hyrax::Workflow::DeactivateObject",
-                        "Hyrax::Workflow::AssignReviewerByAcademicDepartment"
+                        "Hyrax::Workflow::AssignReviewerByAffiliation"
                     ]
                 }, {
                     "name": "request_changes",
@@ -80,8 +80,10 @@
                             "to": ["depositing", "managing"]
                         }
                     ],
+                    "_comment" : "MetadataOnlyRecord must be called before RevokeEditFromDepositor",
                     "methods": [
-                        "Hyrax::Workflow::MetadataOnlyRecord"
+                        "Hyrax::Workflow::MetadataOnlyRecord",
+                        "Hyrax::Workflow::RevokeEditFromDepositor"
                     ]
                 }, {
                     "name": "request_deletion",
@@ -96,11 +98,12 @@
                         }
                     ],
                     "methods": [
+                        "Hyrax::Workflow::MetadataOnlyRecord",
                         "Hyrax::Workflow::RevokeEditFromDepositor"
                     ]
                 }, {
                     "name": "approve_deletion",
-                    "from_states": [{"names": ["pending_deletion"], "roles": ["approving"]}],
+                    "from_states": [{"names": ["deposited", "pending_deletion"], "roles": ["approving"]}],
                     "transition_to": "tombstoned",
                     "notifications": [
                         {
@@ -110,7 +113,8 @@
                         }
                     ],
                     "methods": [
-                        "Hyrax::Workflow::MetadataOnlyRecord"
+                        "Hyrax::Workflow::MetadataOnlyRecord",
+                        "Hyrax::Workflow::RevokeEditFromDepositor"
                     ]
                 }, {
                     "name": "republish",

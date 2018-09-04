@@ -1,6 +1,6 @@
 <%# [hyc-override] Overriding partial in hyrax gem in order to add link to admin dashboard %>
 <li class="h5"><%= t('hyrax.admin.sidebar.repository_objects') %></li>
-<% if can? :manage_any, AdminSet %>
+<% if can? :read, :admin_dashboard %>
   <%= menu.nav_link(main_app.default_admin_sets_path) do %>
     <span class="fa fa-archive"></span> <span class="sidebar-action-text">Default Admin Sets</span>
   <% end %>
