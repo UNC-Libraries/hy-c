@@ -7,13 +7,13 @@ module Hyrax
     self.model_class = ::DataSet
 
     self.terms += [:resource_type, :abstract, :affiliation, :copyright_date, :date_issued, :dcmi_type, :doi, :extent,
-                   :funder, :geographic_subject, :kind_of_data, :last_modified_date,
+                   :funder, :geographic_subject, :kind_of_data, :last_modified_date, :orcid, :other_affiliation,
                    :project_director, :researcher, :rights_holder, :sponsor
     ]
 
-    self.terms -= [:based_near, :publisher, :source, :identifier, :rights_statement]
+    self.terms -= [:based_near, :bibliographic_citation, :publisher, :source, :identifier]
 
-    self.required_fields = [:title, :creator, :date_issued]
+    self.required_fields = [:title, :creator, :date_issued, :abstract, :kind_of_data, :resource_type]
 
     self.single_value_fields = [:title, :license]
     

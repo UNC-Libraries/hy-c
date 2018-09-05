@@ -26,7 +26,7 @@ class MastersPaper < ActiveFedora::Base
     index.as :stored_searchable, :facetable
   end
 
-  property :affiliation, predicate: ::RDF::URI('http://vivoweb.org/ontology/core#AcademicDepartment') do |index|
+  property :affiliation, predicate: ::RDF::Vocab::SCHEMA.affiliation, multiple: false do |index|
     index.as :stored_searchable
   end
 
@@ -36,6 +36,10 @@ class MastersPaper < ActiveFedora::Base
 
   property :date_issued, predicate: ::RDF::Vocab::DC.issued, multiple: false do |index|
     index.as :stored_searchable, :facetable
+  end
+
+  property :dcmi_type, predicate: ::RDF::Vocab::DC.type do |index|
+    index.as :stored_searchable
   end
 
   property :degree, predicate: ::RDF::Vocab::BIBO.degree, multiple: false do |index|
@@ -60,10 +64,6 @@ class MastersPaper < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :dcmi_type, predicate: ::RDF::Vocab::DC.type do |index|
-    index.as :stored_searchable
-  end
-
   property :geographic_subject, predicate: ::RDF::Vocab::DC.spatial do |index|
     index.as :stored_searchable
   end
@@ -73,11 +73,11 @@ class MastersPaper < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :medium, predicate: ::RDF::Vocab::DC.medium do |index|
+  property :note, predicate: ::RDF::Vocab::SKOS.note do |index|
     index.as :stored_searchable
   end
 
-  property :note, predicate: ::RDF::Vocab::SKOS.note do |index|
+  property :orcid, predicate: ::RDF::Vocab::Identifiers.orcid do |index|
     index.as :stored_searchable
   end
 

@@ -196,6 +196,14 @@ class SolrDocument
     self[Solrizer.solr_name('note')]
   end
 
+  def orcid
+    self[Solrizer.solr_name('orcid')]
+  end
+
+  def other_affiliation
+    self[Solrizer.solr_name('other_affiliation')]
+  end
+
   def page_end
     self[Solrizer.solr_name('page_end')]
   end
@@ -214,6 +222,10 @@ class SolrDocument
 
   def project_director
     self[Solrizer.solr_name('project_director')]
+  end
+
+  def publisher_version
+    self[Solrizer.solr_name('publisher_version')]
   end
 
   def researcher

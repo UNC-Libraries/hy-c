@@ -5,13 +5,14 @@ module Hyrax
     class_attribute :single_value_fields
     
     self.model_class = ::MastersPaper
-    self.terms += [:abstract, :academic_concentration, :access, :advisor, :affiliation,  :affiliation_label, :date_issued, :dcmi_type, :degree,
-                   :degree_granting_institution, :doi, :extent, :geographic_subject, :graduation_year, :medium, :note,
-                   :reviewer, :use, :resource_type]
+    self.terms += [:abstract, :academic_concentration, :access, :advisor, :affiliation, :affiliation_label,
+                   :date_issued, :dcmi_type, :degree, :degree_granting_institution, :doi, :extent, :geographic_subject,
+                   :graduation_year, :note, :orcid, :reviewer, :use, :resource_type]
 
     self.terms -= [:contributor, :publisher, :identifier, :based_near, :related_url, :source, :description, :date_created]
 
-    self.required_fields = [:title, :creator, :abstract, :advisor, :date_issued, :degree, :resource_type]
+    self.required_fields = [:title, :creator, :abstract, :advisor, :date_issued, :degree, :degree_granting_institution,
+                            :graduation_year, :resource_type]
 
     self.single_value_fields = [:title, :license, :rights_statement]
     

@@ -22,6 +22,10 @@ class Journal < ActiveFedora::Base
     index.as :stored_searchable, :facetable
   end
 
+  property :dcmi_type, predicate: ::RDF::Vocab::DC.type do |index|
+    index.as :stored_searchable
+  end
+
   # link to previous deposit record
   property :deposit_record, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#DepositRecord'), multiple: false do |index|
     index.as :stored_searchable
@@ -35,11 +39,11 @@ class Journal < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :dcmi_type, predicate: ::RDF::Vocab::DC.type do |index|
+  property :geographic_subject, predicate: ::RDF::Vocab::DC.spatial do |index|
     index.as :stored_searchable
   end
 
-  property :geographic_subject, predicate: ::RDF::Vocab::DC.spatial do |index|
+  property :isbn, predicate: ::RDF::Vocab::Identifiers.isbn do |index|
     index.as :stored_searchable
   end
 
@@ -48,6 +52,10 @@ class Journal < ActiveFedora::Base
   end
 
   property :note, predicate: ::RDF::Vocab::SKOS.note do |index|
+    index.as :stored_searchable
+  end
+
+  property :orcid, predicate: ::RDF::Vocab::Identifiers.orcid do |index|
     index.as :stored_searchable
   end
 
