@@ -9,6 +9,8 @@ Rails.application.routes.draw do
   get 'masters_papers/department', to: 'masters_papers#department'
   post 'masters_papers/select_department', to: 'masters_papers#select_department'
 
+  get '/downloads/:id(.:format)', to: 'hyc/downloads#show', as: 'download'
+
   concern :oai_provider, BlacklightOaiProvider::Routes.new
 
   authenticate :user, ->(u) { u.admin? } do
