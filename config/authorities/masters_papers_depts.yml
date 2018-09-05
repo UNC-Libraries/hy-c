@@ -1,0 +1,31 @@
+terms:
+  - id: Department of City and Regional Planning
+    term: College of Arts and Sciences; Department of City and Regional Planning
+    active: true
+  - id: Department of Environmental Sciences and Engineering
+    term: Gillings School of Global Public Health; Department of Environmental Sciences and Engineering
+    active: true
+  - id: Department of Health Behavior
+    term: Gillings School of Global Public Health; Department of Health Behavior
+    active: true
+  - id: Department of Health Policy and Management
+    term: Gillings School of Global Public Health; Department of Health Policy and Management
+    active: true
+  - id: Department of Maternal and Child Health
+    term: Gillings School of Global Public Health; Department of Maternal and Child Health
+    active: true
+  - id: Department of Nutrition
+    term: Gillings School of Global Public Health; Department of Nutrition
+    active: true
+  - id: Physician Assistant Program
+    term: School of Medicine; Department of Allied Health Sciences; Physician Assistant Program
+    active: true
+  - id: Public Health Leadership Program
+    term: Gillings School of Global Public Health; Public Health Leadership Program
+    active: true
+  - id: School of Information and Library Science
+    term: School of Information and Library Science
+    active: true
+  - id: Studio Art Program
+    term: College of Arts and Sciences; Department of Art; Studio Art Program
+    active: true

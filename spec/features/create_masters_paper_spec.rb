@@ -57,7 +57,7 @@ RSpec.feature 'Create a MastersPaper', js: false do
       Sipity::WorkflowAction.create(id: 5, name: 'show', workflow_id: dept_workflow.id)
       DefaultAdminSet.create(work_type_name: 'MastersPaper', admin_set_id: admin_set.id)
       DefaultAdminSet.create(work_type_name: 'MastersPaper',
-                             department: 'Art History Program',
+                             department: 'Department of City and Regional Planning',
                              admin_set_id: dept_admin_set.id)
     end
 
@@ -66,7 +66,7 @@ RSpec.feature 'Create a MastersPaper', js: false do
 
       visit masters_papers_department_path
       expect(page).to have_content "Add New Master's Paper"
-      select 'Art History Program', from: 'masters_paper_affiliation'
+      select 'Department of City and Regional Planning', from: 'masters_paper_affiliation'
       click_on 'Select'
 
       expect(page).to have_content "Add New Master's Paper"
@@ -108,7 +108,7 @@ RSpec.feature 'Create a MastersPaper', js: false do
 
       visit masters_papers_department_path
       expect(page).to have_content "Add New Master's Paper"
-      select 'Department of Chemistry', from: 'masters_paper_affiliation'
+      select 'Studio Art Program', from: 'masters_paper_affiliation'
       click_on 'Select'
 
       expect(page).to have_content "Add New Master's Paper"
