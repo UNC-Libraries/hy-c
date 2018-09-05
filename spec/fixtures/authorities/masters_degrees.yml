@@ -1,4 +1,4 @@
-## config/authorities/sils_degrees.yml
+## config/authorities/masters_degrees.yml
 terms:
   - id: MSIS
     term: MSIS
