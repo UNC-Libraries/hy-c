@@ -1,11 +1,11 @@
-<%# [hyc-override] Overriding partial in hyrax gem. Only show admin set membership to admins %>
-<%# [hyc-override] Overriding partial in hyrax gem. Show parent relationships for child %>
+<%# [hyc-override] Only show admin set membership to admins %>
 
 <%# Render presenters which aren't specified in the 'presenter_types' %>
 <% presenter.grouped_presenters(except: presenter.presenter_types).each_pair do |model_name, items| %>
   <%= render 'relationships_parent_row', type: model_name, items: items, presenter: presenter %>
 <% end %>
 
+<%# [hyc-override] Show parent relationships for child %>
 <%= render 'parent_relationship_table', child_id: presenter.solr_document.id %>
 
 <%# Render grouped presenters. Show rows if there are any items of that type %>
