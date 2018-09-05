@@ -1,4 +1,4 @@
-# [hyc-override] Overriding to add permission checks to hide tombstoned files
+# [hyc-override] Add permission checks to hide withdrawn files
 module Hyrax
   class WorkflowPresenter
     include ActionView::Helpers::TagHelper

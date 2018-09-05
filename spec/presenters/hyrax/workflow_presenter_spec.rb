@@ -19,7 +19,7 @@ RSpec.describe Hyrax::WorkflowPresenter do
 
     subject { presenter.badge }
 
-    context 'with a Sipity::Entity marked as Tombstoned' do
+    context 'with a Sipity::Entity marked as withdrawn' do
       before do
         allow(entity).to receive(:workflow_state_name).and_return('withdrawn')
         allow(presenter).to receive(:sipity_entity).and_return(entity)
