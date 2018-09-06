@@ -1,4 +1,4 @@
-<%# [hyc-override] Overriding to hide tombstoned files %>
+<%# [hyc-override] Overriding to hide withdrawn files %>
 <% if current_user&.admin? || (@presenter.respond_to?('workflow') && !@presenter.workflow.in_workflow_state?(['withdrawn', 'pending deletion'])  &&
     Hyrax.config.display_media_download_link? && can?(:download, file_set.id)) %>
     <div>
