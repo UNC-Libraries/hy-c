@@ -1,0 +1,18 @@
+## config/authorities/masters_degrees.yml
+terms:
+  - id: MCRP
+    term: MCRP
+  - id: MFA
+    term: MFA
+  - id: MHA
+    term: MHA
+  - id: MPH
+    term: MPH
+  - id: MSEE
+    term: MSEE
+  - id: MSIS
+    term: MSIS
+  - id: MSLS
+    term: MSLS
+  - id: MSPH
+    term: MSPH

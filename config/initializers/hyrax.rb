@@ -66,7 +66,7 @@ Hyrax.config do |config|
   # Date you wish to start collecting Google Analytic statistics for
   # Leaving it blank will set the start date to when ever the file was uploaded by
   # NOTE: if you have always sent analytics to GA for downloads and page views leave this commented out
-  # config.analytic_start_date = DateTime.new(2014, 9, 10)
+  config.analytic_start_date = DateTime.new(2018, 9, 1)
 
   # Enables a link to the citations page for a work
   # Default is false
@@ -152,9 +152,6 @@ Hyrax.config do |config|
   # If you use a multi-server architecture, this MUST be a shared volume
   # config.derivatives_path = Rails.root.join('tmp', 'derivatives')
   config.derivatives_path = ENV['DERIVATIVE_STORAGE']
-
-  # Store banner images in data storage directory
-  config.branding_path = ENV['DATA_STORAGE']+'/branding'
 
   # Should schema.org microdata be displayed?
   # config.display_microdata = true

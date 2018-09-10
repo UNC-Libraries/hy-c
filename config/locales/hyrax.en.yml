@@ -75,6 +75,9 @@ en:
       unc_libraries_logo: UNC libraries logo
       accessible: accessible and discoverable
       access: you decide who gets access
+    relationships_parent_rows:
+      empty_text: "This work has no parents."
+      label: "Parents:"
   simple_form:
     labels:
       defaults:

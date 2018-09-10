@@ -33,7 +33,6 @@ RSpec.describe Hyrax::GeneralPresenter do
       "degree_granting_institution_tesim" => 'unc',
       "deposit_record_tesim" => 'a deposit record',
       "digital_collection_tesim" => ['a collection'],
-      "discipline_tesim" => ['a discipline'],
       "doi_tesim" => '12345',
       "edition_tesim" => 'new edition',
       "extent_tesim" => ['1993'],
@@ -49,11 +48,14 @@ RSpec.describe Hyrax::GeneralPresenter do
       "last_modified_date_tesim" => 'hi',
       "medium_tesim" => ['a medium'],
       "note_tesim" => ['a note'],
+      "orcid_tesim" => ['an orcid'],
+      "other_affiliation_tesim" => ['another affiliation'],
       "page_end_tesim" => '11',
       "page_start_tesim" => '8',
       "peer_review_status_tesim" => 'in review',
       "place_of_publication_tesim" => ['durham'],
       "project_director_tesim" => ['a director'],
+      "publisher_version_tesim" => ['a version'],
       "researcher_tesim" => ['a researcher'],
       "reviewer_tesim" => ['a reviewer'],
       "rights_holder_tesim" => ['rights holder'],
@@ -106,7 +108,6 @@ RSpec.describe Hyrax::GeneralPresenter do
   it { is_expected.to delegate_method(:degree_granting_institution).to(:solr_document) }
   it { is_expected.to delegate_method(:deposit_record).to(:solr_document) }
   it { is_expected.to delegate_method(:digital_collection).to(:solr_document) }
-  it { is_expected.to delegate_method(:discipline).to(:solr_document) }
   it { is_expected.to delegate_method(:doi).to(:solr_document) }
   it { is_expected.to delegate_method(:edition).to(:solr_document) }
   it { is_expected.to delegate_method(:extent).to(:solr_document) }
@@ -122,11 +123,14 @@ RSpec.describe Hyrax::GeneralPresenter do
   it { is_expected.to delegate_method(:last_modified_date).to(:solr_document) }
   it { is_expected.to delegate_method(:medium).to(:solr_document) }
   it { is_expected.to delegate_method(:note).to(:solr_document) }
+  it { is_expected.to delegate_method(:orcid).to(:solr_document) }
+  it { is_expected.to delegate_method(:other_affiliation).to(:solr_document) }
   it { is_expected.to delegate_method(:page_end).to(:solr_document) }
   it { is_expected.to delegate_method(:page_start).to(:solr_document) }
   it { is_expected.to delegate_method(:peer_review_status).to(:solr_document) }
   it { is_expected.to delegate_method(:place_of_publication).to(:solr_document) }
   it { is_expected.to delegate_method(:project_director).to(:solr_document) }
+  it { is_expected.to delegate_method(:publisher_version).to(:solr_document) }
   it { is_expected.to delegate_method(:rights_holder).to(:solr_document) }
   it { is_expected.to delegate_method(:researcher).to(:solr_document) }
   it { is_expected.to delegate_method(:reviewer).to(:solr_document) }
@@ -366,17 +370,6 @@ RSpec.describe Hyrax::GeneralPresenter do
       end
     end
 
-    context "with a custom discipline field" do
-      before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:discipline, ['a discipline'], {}).and_return(renderer)
-      end
-
-      it "calls the AttributeRenderer" do
-        expect(renderer).to receive(:render)
-        presenter.attribute_to_html(:discipline)
-      end
-    end
-
     context "with a custom doi field" do
       before do
         allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:doi, '12345', {}).and_return(renderer)
@@ -552,6 +545,28 @@ RSpec.describe Hyrax::GeneralPresenter do
       end
     end
 
+    context "with a custom orcid field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:orcid, ['an orcid'], {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:orcid)
+      end
+    end
+
+    context "with a custom other_affiliation field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:other_affiliation, ['another affiliation'], {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:other_affiliation)
+      end
+    end
+
     context "with a custom page end field" do
       before do
         allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:page_end, '11', {}).and_return(renderer)
@@ -604,6 +619,17 @@ RSpec.describe Hyrax::GeneralPresenter do
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:project_director)
+      end
+    end
+
+    context "with a custom publisher_version field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:publisher_version, ['a version'], {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:publisher_version)
       end
     end
 

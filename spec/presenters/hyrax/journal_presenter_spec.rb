@@ -22,8 +22,10 @@ RSpec.describe Hyrax::JournalPresenter do
       "doi_tesim" => '12345',
       "extent_tesim" => ['1993'],
       "geographic_subject_tesim" => ['California'],
+      "isbn_tesim" => ['123456'],
       "issn_tesim" => ['12345'],
       "note_tesim" => ['a note'],
+      "orcid_tesim" => ['an orcid'],
       "place_of_publication_tesim" => ['California'],
       "resource_type_tesim" => ['a type'],
       "table_of_contents_tesim" => ['table of contents']
@@ -54,8 +56,10 @@ RSpec.describe Hyrax::JournalPresenter do
   it { is_expected.to delegate_method(:doi).to(:solr_document) }
   it { is_expected.to delegate_method(:extent).to(:solr_document) }
   it { is_expected.to delegate_method(:geographic_subject).to(:solr_document) }
+  it { is_expected.to delegate_method(:isbn).to(:solr_document) }
   it { is_expected.to delegate_method(:issn).to(:solr_document) }
   it { is_expected.to delegate_method(:note).to(:solr_document) }
+  it { is_expected.to delegate_method(:orcid).to(:solr_document) }
   it { is_expected.to delegate_method(:place_of_publication).to(:solr_document) }
   it { is_expected.to delegate_method(:table_of_contents).to(:solr_document) }
 
@@ -155,6 +159,17 @@ RSpec.describe Hyrax::JournalPresenter do
       end
     end
 
+    context "with a custom isbn field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:isbn, ['123456'], {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:isbn)
+      end
+    end
+
     context "with a custom issn field" do
       before do
         allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:issn, ['12345'], {}).and_return(renderer)
@@ -174,6 +189,17 @@ RSpec.describe Hyrax::JournalPresenter do
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:note)
+      end
+    end
+
+    context "with a custom orcid field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:orcid, ['an orcid'], {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:orcid)
       end
     end
 

@@ -1,4 +1,4 @@
-# [hyc-override] Overriding to add permission checks to hide tombstoned files
+# [hyc-override] Add permission checks to hide withdrawn files
 module Hyrax
   class WorkflowPresenter
     include ActionView::Helpers::TagHelper
@@ -11,13 +11,7 @@ module Hyrax
     attr_reader :solr_document, :current_ability
 
     def state
-      state_value = sipity_entity&.workflow_state_name
-
-      if state_value == 'tombstoned'
-        state_value = 'withdrawn'
-      end
-
-      state_value
+      sipity_entity&.workflow_state_name
     end
 
     def state_label
