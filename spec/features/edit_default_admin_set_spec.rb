@@ -58,6 +58,7 @@ RSpec.feature 'Create and edit default admin set', js: false do
       expect(page).to have_content 'Cancel'
 
       select 'Journal', from: 'Work type name'
+      select 'default', from: 'Admin set'
       select 'Art History Program', from: 'default_admin_set[department]'
 
       find('input[name="commit"]').click
