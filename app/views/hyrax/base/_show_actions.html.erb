@@ -1,5 +1,13 @@
-<%# [hyc-override] Overriding partial in hyrax gem in order to change the delete button %>
+<%# [hyc-override] Change the delete button %>
+<%# [hyc-override] Show link to parent record %>
+<% parent_solr_docs = ParentQueryService.query_parents_for_id(presenter.solr_document.id) %>
+
 <div class="show-actions">
+  <% unless parent_solr_docs.blank? %>
+    <% parent_solr_docs.first(1).each do |item| %>
+      <%= link_to 'Back to Parent Record', url_for_document(SolrDocument.find(item["id"])), class: 'btn btn-success', data: { turbolinks: false } %>
+    <% end %>
+  <% end %>
   <% if Hyrax.config.analytics? %>
     <%= link_to "Analytics", presenter.stats_path, id: 'stats', class: 'btn btn-default', data: { turbolinks: false } %>
   <% end %>
@@ -9,10 +17,10 @@
     <% if current_user.admin? %>
       <%= link_to "Delete", [main_app, presenter], class: 'btn btn-danger', data: { confirm: "Delete this #{presenter.human_readable_type}?" }, method: :delete %>
       <% if @presenter.workflow.actions.present? &&
-          !@presenter.workflow.actions.select{|action| action[0] == 'tombstone'}.blank? %>
+          !@presenter.workflow.actions.select{|action| action[0] == 'withdraw'}.blank? %>
         <%= form_tag main_app.hyrax_workflow_action_path(presenter), method: :put do %>
-          <%= hidden_field :workflow_action, :name, value: 'tombstone' %>
-          <input class="btn btn-danger" type="submit" value="Tombstone">
+          <%= hidden_field :workflow_action, :name, value: 'withdraw' %>
+          <input class="btn btn-danger" type="submit" value="Withdraw">
         <% end %>
       <% end %>
     <% end %>

@@ -11,9 +11,12 @@
 <%= presenter.attribute_to_html(:license, html_dl: true) %>
 <%= presenter.attribute_to_html(:abstract, html_dl: true) %>
 <%= presenter.attribute_to_html(:advisor, html_dl: true) %>
+<%= presenter.attribute_to_html(:affiliation, html_dl: true) %>
 <%= presenter.attribute_to_html(:conference_name, html_dl: true) %>
 <%= presenter.attribute_to_html(:date_issued, render_as: :date, html_dl: true) %>
 <%= presenter.attribute_to_html(:deposit_record, html_dl: true) %>
 <%= presenter.attribute_to_html(:doi, html_dl: true) %>
 <%= presenter.attribute_to_html(:dcmi_type, html_dl: true, label: "Type") %>
 <%= presenter.attribute_to_html(:geographic_subject, html_dl: true) %>
+<%= presenter.attribute_to_html(:orcid, html_dl: true) %>
+<%= presenter.attribute_to_html(:other_affiliation, html_dl: true) %>

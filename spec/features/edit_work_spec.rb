@@ -121,7 +121,7 @@ RSpec.feature 'Edit a work', js: false do
 
       click_link 'Edit'
 
-      expect(page).to have_content "Alice's Adventures in Wonderland"
+      expect(page).to have_content "Deposit Your Work"
       expect(page).to have_content 'No Admin Sets have been created.'
     end
   end

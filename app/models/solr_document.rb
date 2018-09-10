@@ -37,7 +37,7 @@ class SolrDocument
       language:    'language_tesim',
       publisher:   'publisher_tesim',
       relation:    'relation_tesim',
-      rights:      'rights_statement_tesim',
+      rights_statement: 'rights_statement_tesim',
       source:      'source_tesim',
       subject:     'subject_tesim',
       title:       'title_tesim',
@@ -66,6 +66,10 @@ class SolrDocument
 
   def affiliation
     self[Solrizer.solr_name('affiliation')]
+  end
+
+  def affiliation_label
+    self[Solrizer.solr_name('affiliation_label')]
   end
 
   def alternative_title
@@ -192,6 +196,14 @@ class SolrDocument
     self[Solrizer.solr_name('note')]
   end
 
+  def orcid
+    self[Solrizer.solr_name('orcid')]
+  end
+
+  def other_affiliation
+    self[Solrizer.solr_name('other_affiliation')]
+  end
+
   def page_end
     self[Solrizer.solr_name('page_end')]
   end
@@ -210,6 +222,10 @@ class SolrDocument
 
   def project_director
     self[Solrizer.solr_name('project_director')]
+  end
+
+  def publisher_version
+    self[Solrizer.solr_name('publisher_version')]
   end
 
   def researcher

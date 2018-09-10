@@ -9,23 +9,23 @@ RSpec.describe Hyrax::DataSetForm do
   describe "#required_fields" do
     subject { form.required_fields }
 
-    it { is_expected.to match_array [:title, :creator, :date_issued] }
+    it { is_expected.to match_array [:title, :creator, :date_issued, :abstract, :kind_of_data, :resource_type] }
   end
 
   describe "#primary_terms" do
     subject { form.primary_terms }
 
-    it { is_expected.to match_array [:title, :creator, :date_issued] }
+    it { is_expected.to match_array [:title, :creator, :date_issued, :abstract, :kind_of_data, :resource_type] }
   end
 
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:abstract, :affiliation, :copyright_date, :dcmi_type, :doi, :extent, :funder,
-                                     :geographic_subject, :kind_of_data, :last_modified_date, :project_director,
-                                     :researcher, :rights_holder, :sponsor, :language, :keyword, :related_url,
-                                     :resource_type, :description, :license, :contributor, :date_created,
-                                     :subject] }
+    it { is_expected.to match_array [:affiliation, :copyright_date, :dcmi_type, :doi, :extent, :funder,
+                                     :geographic_subject, :last_modified_date, :project_director, :researcher,
+                                     :rights_holder, :sponsor, :language, :keyword, :related_url, :description,
+                                     :license, :contributor, :date_created, :subject, :orcid, :other_affiliation,
+                                     :rights_statement] }
   end
   
   describe "#admin_only_terms" do
@@ -52,7 +52,7 @@ RSpec.describe Hyrax::DataSetForm do
           member_of_collection_ids: ['123456', 'abcdef'],
           abstract: ['an abstract'],
           access: 'public',
-          affiliation: ['SILS'],
+          affiliation: ['School of Medicine', 'Carolina Center for Genome Sciences'],
           contributor: ['dean'],
           copyright_date: '2017-12-25',
           date_created: '2017-04-02', # single-valued
@@ -64,8 +64,8 @@ RSpec.describe Hyrax::DataSetForm do
           geographic_subject: ['California'],
           kind_of_data: ['some data'],
           last_modified_date: '2018-01-23',
-          orcid: ['12345'],
-          other_affiliation: ['duke'],
+          orcid: ['an orcid'],
+          other_affiliation: ['another affiliation'],
           project_director: ['dean'],
           researcher: ['carmen'],
           rights_holder: ['dean'],
@@ -83,7 +83,8 @@ RSpec.describe Hyrax::DataSetForm do
       expect(subject['keyword']).to eq ['data set']
       expect(subject['member_of_collection_ids']).to eq ['123456', 'abcdef']
       expect(subject['abstract']).to eq ['an abstract']
-      expect(subject['affiliation']).to eq ['SILS']
+      expect(subject['affiliation']).to eq ['School of Medicine', 'Carolina Center for Genome Sciences']
+      expect(subject['affiliation_label']).to eq ['School of Medicine', 'Carolina Center for Genome Sciences']
       expect(subject['copyright_date']).to eq '2017-12-25'
       expect(subject['date_created']).to eq '2017-04-02'
       expect(subject['date_issued']).to eq '2018-01-08'
@@ -94,6 +95,8 @@ RSpec.describe Hyrax::DataSetForm do
       expect(subject['geographic_subject']).to eq ['California']
       expect(subject['kind_of_data']).to eq ['some data']
       expect(subject['last_modified_date']).to eq '2018-01-23'
+      expect(subject['orcid']).to eq ['an orcid']
+      expect(subject['other_affiliation']).to eq ['another affiliation']
       expect(subject['project_director']).to eq ['dean']
       expect(subject['researcher']).to eq ['carmen']
       expect(subject['rights_holder']).to eq ['dean']

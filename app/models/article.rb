@@ -19,6 +19,10 @@ class Article < ActiveFedora::Base
   end
 
   property :affiliation, predicate: ::RDF::Vocab::SCHEMA.affiliation do |index|
+    index.as :stored_searchable
+  end
+
+  property :affiliation_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#AffiliationLabel') do |index|
     index.as :stored_searchable, :facetable
   end
 
@@ -31,7 +35,7 @@ class Article < ActiveFedora::Base
   end
 
   property :date_issued, predicate: ::RDF::Vocab::DC.issued, multiple: false do |index|
-    index.as :stored_searchable
+    index.as :stored_searchable, :facetable
   end
 
   property :date_other, predicate: ::RDF::Vocab::DC.date do |index|
@@ -52,7 +56,7 @@ class Article < ActiveFedora::Base
   end
 
   property :edition, predicate: ::RDF::Vocab::BF2.editionStatement do |index|
-    index.as :stored_searchable
+    index.as :stored_searchable, :facetable
   end
 
   property :extent, predicate: ::RDF::URI('http://rdaregistry.info/Elements/u/extent.en') do |index|

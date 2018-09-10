@@ -69,9 +69,9 @@
                         { "names": ["changes_required"], "roles": ["depositing"] }
                     ]
                 }, {
-                    "name": "tombstone",
+                    "name": "withdrawn",
                     "from_states": [{"names": ["deposited"], "roles": ["approving"]}],
-                    "transition_to": "tombstoned",
+                    "transition_to": "withdrawn",
                     "notifications": [
                         {
                             "notification_type": "email",
@@ -79,8 +79,10 @@
                             "to": ["depositing", "managing"]
                         }
                     ],
+                    "_comment" : "MetadataOnlyRecord must be called before RevokeEditFromDepositor",
                     "methods": [
-                        "Hyrax::Workflow::MetadataOnlyRecord"
+                        "Hyrax::Workflow::MetadataOnlyRecord",
+                        "Hyrax::Workflow::RevokeEditFromDepositor"
                     ]
                 }, {
                     "name": "request_deletion",
@@ -95,12 +97,13 @@
                         }
                     ],
                     "methods": [
+                        "Hyrax::Workflow::MetadataOnlyRecord",
                         "Hyrax::Workflow::RevokeEditFromDepositor"
                     ]
                 }, {
                     "name": "approve_deletion",
-                    "from_states": [{"names": ["pending_deletion"], "roles": ["approving"]}],
-                    "transition_to": "tombstoned",
+                    "from_states": [{"names": ["deposited", "pending_deletion"], "roles": ["approving"]}],
+                    "transition_to": "withdrawn",
                     "notifications": [
                         {
                             "notification_type": "email",
@@ -109,7 +112,8 @@
                         }
                     ],
                     "methods": [
-                        "Hyrax::Workflow::MetadataOnlyRecord"
+                        "Hyrax::Workflow::MetadataOnlyRecord",
+                        "Hyrax::Workflow::RevokeEditFromDepositor"
                     ]
                 }, {
                     "name": "republish",

@@ -21,17 +21,19 @@ RSpec.describe Hyrax::GeneralForm do
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:contributor, :creator, :date_created, :description, :deposit_record, :keyword,
-                                     :identifier, :language, :license, :publisher, :related_url, :resource_type, :rights_statement,
-                                     :subject, :bibliographic_citation, :abstract, :academic_concentration, :access,
-                                     :advisor, :affiliation, :alternative_title, :arranger, :award, :composer, :conference_name,
+    it { is_expected.to match_array [:contributor, :creator, :date_created, :description, :deposit_record,
+                                     :keyword, :identifier, :language, :license, :publisher, :related_url,
+                                     :resource_type, :rights_statement, :subject, :bibliographic_citation, :abstract,
+                                     :academic_concentration, :access, :advisor, :affiliation, :affiliation_label,
+                                     :alternative_title, :arranger, :award, :composer, :conference_name,
                                      :copyright_date, :date_captured, :date_issued, :date_other, :dcmi_type, :degree,
-                                     :degree_granting_institution, :discipline, :doi, :edition,
-                                     :extent, :funder, :geographic_subject, :graduation_year, :isbn, :issn,
-                                     :journal_issue, :journal_title, :journal_volume, :kind_of_data,
-                                     :last_modified_date, :medium, :note, :page_start, :page_end, :peer_review_status,
-                                     :place_of_publication, :project_director, :researcher, :reviewer, :rights_holder,
-                                     :series, :sponsor, :table_of_contents, :translator, :url, :use] }
+                                     :degree_granting_institution, :doi, :edition, :extent, :funder,
+                                     :geographic_subject, :graduation_year, :isbn, :issn, :journal_issue,
+                                     :journal_title, :journal_volume, :kind_of_data, :last_modified_date, :medium,
+                                     :note, :orcid, :other_affiliation, :page_start, :page_end, :peer_review_status,
+                                     :place_of_publication, :project_director, :publisher_version, :researcher,
+                                     :reviewer, :rights_holder, :series, :sponsor, :table_of_contents, :translator,
+                                     :url, :use] }
   end
   
   describe "#admin_only_terms" do
@@ -67,7 +69,8 @@ RSpec.describe Hyrax::GeneralForm do
           academic_concentration: ['a concentration'],
           access: 'public', # single-valued
           advisor: ['an advisor'],
-          affiliation: ['SILS'],
+          affiliation: ['School of Medicine', 'Carolina Center for Genome Sciences'],
+          affiliation_label: ['School of Medicine', 'Carolina Center for Genome Sciences'],
           alternative_title: ['some title'],
           arranger: ['an arranger'],
           award: ['an award'],
@@ -81,9 +84,8 @@ RSpec.describe Hyrax::GeneralForm do
           degree: 'something', # single-valued
           degree_granting_institution: 'unc', # single-valued
           digital_collection: ['a collection'],
-          discipline: ['a discipline'],
           doi: '12345', # single-valued
-          edition: 'an edition',
+          edition: ['an edition'],
           extent: ['1993'],
           funder: ['dean'],
           geographic_subject: ['California'],
@@ -97,11 +99,14 @@ RSpec.describe Hyrax::GeneralForm do
           last_modified_date: 'hi', # single-valued
           medium: ['a medium'],
           note: ['a note'],
+          orcid: ['an orcid'],
+          other_affiliation: ['another affiliation'],
           page_end: '11', # single-valued
           page_start: '8', # single-valued
           peer_review_status: 'in review', # single-valued
           place_of_publication: ['durham'],
           project_director: ['someone'],
+          publisher_version: ['a version'],
           researcher: ['a researcher'],
           reviewer: ['a reviewer'],
           rights_holder: ['dean'],
@@ -138,7 +143,8 @@ RSpec.describe Hyrax::GeneralForm do
       expect(subject['academic_concentration']).to eq ['a concentration']
       expect(subject['access']).to eq 'public'
       expect(subject['advisor']).to eq ['an advisor']
-      expect(subject['affiliation']).to eq ['SILS']
+      expect(subject['affiliation']).to eq ['School of Medicine', 'Carolina Center for Genome Sciences']
+      expect(subject['affiliation_label']).to eq ['School of Medicine', 'Carolina Center for Genome Sciences']
       expect(subject['alternative_title']).to eq ['some title']
       expect(subject['arranger']).to eq ['an arranger']
       expect(subject['award']).to eq ['an award']
@@ -151,9 +157,8 @@ RSpec.describe Hyrax::GeneralForm do
       expect(subject['degree']).to eq 'something'
       expect(subject['degree_granting_institution']).to eq 'unc'
       expect(subject['digital_collection']).to be_nil
-      expect(subject['discipline']).to eq ['a discipline']
       expect(subject['doi']).to eq '12345'
-      expect(subject['edition']).to eq 'an edition'
+      expect(subject['edition']).to eq ['an edition']
       expect(subject['extent']).to eq ['1993']
       expect(subject['funder']).to eq ['dean']
       expect(subject['dcmi_type']).to eq ['type']
@@ -168,11 +173,14 @@ RSpec.describe Hyrax::GeneralForm do
       expect(subject['last_modified_date']).to eq 'hi'
       expect(subject['medium']).to eq ['a medium']
       expect(subject['note']).to eq ['a note']
+      expect(subject['orcid']).to eq ['an orcid']
+      expect(subject['other_affiliation']).to eq ['another affiliation']
       expect(subject['page_end']).to eq '11'
       expect(subject['page_start']).to eq '8'
       expect(subject['peer_review_status']).to eq 'in review'
       expect(subject['place_of_publication']).to eq ['durham']
       expect(subject['project_director']).to eq ['someone']
+      expect(subject['publisher_version']).to eq ['a version']
       expect(subject['researcher']).to eq ['a researcher']
       expect(subject['reviewer']).to eq ['a reviewer']
       expect(subject['rights_holder']).to eq ['dean']

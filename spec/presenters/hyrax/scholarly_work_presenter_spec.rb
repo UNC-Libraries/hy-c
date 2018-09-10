@@ -21,7 +21,9 @@ RSpec.describe Hyrax::ScholarlyWorkPresenter do
       "dcmi_type_tesim" => ['science fiction'],
       "deposit_record_tesim" => 'a deposit record',
       "doi_tesim" => '12345',
-      "geographic_subject_tesim" => ['a geographic subject']
+      "geographic_subject_tesim" => ['a geographic subject'],
+      "orcid_tesim" => ['an orcid'],
+      "other_affiliation_tesim" => ['another affiliation']
     }
   end
   let(:ability) { nil }
@@ -51,6 +53,8 @@ RSpec.describe Hyrax::ScholarlyWorkPresenter do
   it { is_expected.to delegate_method(:deposit_record).to(:solr_document) }
   it { is_expected.to delegate_method(:doi).to(:solr_document) }
   it { is_expected.to delegate_method(:geographic_subject).to(:solr_document) }
+  it { is_expected.to delegate_method(:orcid).to(:solr_document) }
+  it { is_expected.to delegate_method(:other_affiliation).to(:solr_document) }
 
   describe "#model_name" do
     subject { presenter.model_name }
@@ -156,6 +160,28 @@ RSpec.describe Hyrax::ScholarlyWorkPresenter do
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:geographic_subject)
+      end
+    end
+
+    context "with a custom orcid field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:orcid, ['an orcid'], {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:orcid)
+      end
+    end
+
+    context "with a custom other_affiliation field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:other_affiliation, ['another affiliation'], {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:other_affiliation)
       end
     end
 

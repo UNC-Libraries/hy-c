@@ -12,7 +12,7 @@
 <%= presenter.attribute_to_html(:academic_concentration, html_dl: true) %>
 <%= presenter.attribute_to_html(:access, html_dl: true) %>
 <%= presenter.attribute_to_html(:advisor, html_dl: true) %>
-<%= presenter.attribute_to_html(:affiliation, html_dl: true) %>
+<%= presenter.attribute_to_html(:affiliation_label, html_dl: true, label: 'Affiliation') %>
 <%= presenter.attribute_to_html(:alternative_title, html_dl: true) %>
 <%= presenter.attribute_to_html(:award, html_dl: true) %>
 <%= presenter.attribute_to_html(:date_issued, html_dl: true) %>
@@ -25,4 +25,6 @@
 <%= presenter.attribute_to_html(:geographic_subject, html_dl: true) %>
 <%= presenter.attribute_to_html(:graduation_year, render_as: :date, html_dl: true) %>
 <%= presenter.attribute_to_html(:note, html_dl: true) %>
+<%= presenter.attribute_to_html(:orcid, html_dl: true) %>
+<%= presenter.attribute_to_html(:url, html_dl: true) %>
 <%= presenter.attribute_to_html(:use, html_dl: true) %>

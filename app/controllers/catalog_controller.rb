@@ -42,20 +42,22 @@ class CatalogController < ApplicationController
 
     # solr fields that will be treated as facets by the blacklight application
     #   The ordering of the field names is the order of the display
-    config.add_facet_field solr_name("human_readable_type", :facetable), label: "Type", limit: 5
-    config.add_facet_field solr_name("resource_type", :facetable), label: "Resource Type", limit: 5
+
+    config.add_facet_field solr_name("advisor", :facetable), label: "Advisor", limit: 5
+    config.add_facet_field solr_name('member_of_collections', :symbol), limit: 5, label: 'Collection'
     config.add_facet_field solr_name("creator", :facetable), limit: 5
-    config.add_facet_field solr_name("contributor", :facetable), label: "Contributor", limit: 5
+    config.add_facet_field solr_name("date_issued", :facetable), label: "Date", limit: 5
     config.add_facet_field solr_name("keyword", :facetable), limit: 5
+    config.add_facet_field solr_name("language", :facetable), helper_method: :language_links_facets, limit: 5
+    config.add_facet_field solr_name("resource_type", :facetable), label: "Resource Type", limit: 5
     config.add_facet_field solr_name("subject", :facetable), limit: 5
-    config.add_facet_field solr_name("language", :facetable), limit: 5
     config.add_facet_field solr_name("based_near_label", :facetable), limit: 5
-    config.add_facet_field solr_name("publisher", :facetable), limit: 5
     config.add_facet_field solr_name("file_format", :facetable), limit: 5
-    config.add_facet_field solr_name('member_of_collections', :symbol), limit: 5, label: 'Collections'
 
     # UNC Custom
-    config.add_facet_field solr_name("affiliation", :facetable), label: "Departments", limit: 5
+    config.add_facet_field solr_name("affiliation_label", :facetable), label: "Departments", limit: 5
+    config.add_facet_field solr_name("edition", :facetable), label: "Version", limit: 5
+
 
     # The generic_type isn't displayed on the facet list
     # It's used to give a label to the filter that comes from the user profile
@@ -78,11 +80,11 @@ class CatalogController < ApplicationController
     config.add_index_field solr_name("depositor"), label: "Owner", helper_method: :link_to_profile
     config.add_index_field solr_name("publisher", :stored_searchable), itemprop: 'publisher', link_to_search: solr_name("publisher", :facetable)
     config.add_index_field solr_name("based_near_label", :stored_searchable), itemprop: 'contentLocation', link_to_search: solr_name("based_near_label", :facetable)
-    config.add_index_field solr_name("language", :stored_searchable), itemprop: 'inLanguage', link_to_search: solr_name("language", :facetable)
+    config.add_index_field solr_name("language", :stored_searchable), helper_method: :language_links, link_to_search: solr_name("language", :facetable)
     config.add_index_field solr_name("date_uploaded", :stored_sortable, type: :date), itemprop: 'datePublished', helper_method: :human_readable_date
     config.add_index_field solr_name("date_modified", :stored_sortable, type: :date), itemprop: 'dateModified', helper_method: :human_readable_date
     config.add_index_field solr_name("date_created", :stored_searchable), itemprop: 'dateCreated'
-    config.add_index_field solr_name("rights", :stored_searchable), helper_method: :license_links
+    config.add_index_field solr_name("rights_statement", :stored_searchable), label: "Rights Statement", helper_method: :rights_statement_links, link_to_search: solr_name("rights_statement", :facetable)
     config.add_index_field solr_name("resource_type", :stored_searchable), label: "Resource Type", link_to_search: solr_name("resource_type", :facetable)
     config.add_index_field solr_name("file_format", :stored_searchable), link_to_search: solr_name("file_format", :facetable)
     config.add_index_field solr_name("identifier", :stored_searchable), helper_method: :index_field_link, field_name: 'identifier'
@@ -99,11 +101,11 @@ class CatalogController < ApplicationController
     config.add_show_field solr_name("contributor", :stored_searchable)
     config.add_show_field solr_name("publisher", :stored_searchable)
     config.add_show_field solr_name("based_near_label", :stored_searchable)
-    config.add_show_field solr_name("language", :stored_searchable)
+    config.add_show_field solr_name("language", :stored_searchable), helper_method: :language_links
     config.add_show_field solr_name("date_uploaded", :stored_searchable)
     config.add_show_field solr_name("date_modified", :stored_searchable)
     config.add_show_field solr_name("date_created", :stored_searchable)
-    config.add_show_field solr_name("rights", :stored_searchable)
+    config.add_show_field solr_name("rights_statement", :stored_searchable), helper_method: :rights_statement_links
     config.add_show_field solr_name("resource_type", :stored_searchable), label: "Resource Type"
     config.add_show_field solr_name("format", :stored_searchable)
     config.add_show_field solr_name("identifier", :stored_searchable)
@@ -114,10 +116,11 @@ class CatalogController < ApplicationController
     config.add_index_field solr_name("access", :stored_searchable), label: "Access"
     config.add_index_field solr_name("advisor", :stored_searchable), label: "Advisor"
     config.add_index_field solr_name("affiliation", :stored_searchable), label: "Departments", link_to_search: solr_name("affiliation", :facetable)
+    config.add_index_field solr_name("affiliation_label", :stored_searchable)
     config.add_index_field solr_name("alternative_title", :stored_searchable), label: "Alternative Title"
     config.add_index_field solr_name("arranger", :stored_searchable), label: "Arranger"
     config.add_index_field solr_name("award", :stored_searchable), label: "Award"
-    config.add_index_field solr_name("bibliographic_citation", :stored_searchable), label: "Biblipgraphic Citation"
+    config.add_index_field solr_name("bibliographic_citation", :stored_searchable), label: "Bibliographic Citation"
     config.add_index_field solr_name("composer", :stored_searchable), label: "Composer"
     config.add_index_field solr_name("conference_name", :stored_searchable), label: "Conference Name"
     config.add_index_field solr_name("copyright_date", :stored_searchable), label: "Copyright Date"
@@ -145,11 +148,14 @@ class CatalogController < ApplicationController
     config.add_index_field solr_name("last_modified_date", :stored_searchable), label: "Last Modified Date"
     config.add_index_field solr_name("medium", :stored_searchable), label: "Medium"
     config.add_index_field solr_name("note", :stored_searchable), label: "Note"
+    config.add_index_field solr_name("orcid", :stored_searchable), label: "ORCID"
+    config.add_index_field solr_name("other_affiliation", :stored_searchable), label: "Other Affiliation"
     config.add_index_field solr_name("page_end", :stored_searchable), label: "Page End"
     config.add_index_field solr_name("page_start", :stored_searchable), label: "Page Start"
     config.add_index_field solr_name("peer_review_status", :stored_searchable), label: "Peer Review Status"
     config.add_index_field solr_name("place_of_publication", :stored_searchable), label: "Place of Publication"
     config.add_index_field solr_name("project_director", :stored_searchable), label: "Project Director"
+    config.add_index_field solr_name("publisher_version", :stored_searchable), label: "Publisher Version"
     config.add_index_field solr_name("researcher", :stored_searchable), label: "Researcher"
     config.add_index_field solr_name("reviewer", :stored_searchable), label: "Reviewer"
     config.add_index_field solr_name("rights_holder", :stored_searchable), label: "Rights Holder"
@@ -312,8 +318,8 @@ class CatalogController < ApplicationController
       }
     end
 
-    config.add_search_field('rights') do |field|
-      solr_name = solr_name("rights", :stored_searchable)
+    config.add_search_field('rights_statement') do |field|
+      solr_name = solr_name("rights_statement", :stored_searchable)
       field.solr_local_parameters = {
         qf: solr_name,
         pf: solr_name

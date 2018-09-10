@@ -7,7 +7,7 @@ class SingleValueForm < Hyrax::Forms::WorkForm
   # Map of fields to default values
   class_attribute :default_term_values
   self.default_term_values = Hash.new
-  
+
   def initialize(model, current_ability, controller)
     initialize_default_term_values(model)
     
@@ -57,9 +57,15 @@ class SingleValueForm < Hyrax::Forms::WorkForm
       end
     end
 
+    if attrs.key?(:affiliation) && !attrs[:affiliation].blank?
+      attrs[:affiliation_label] = split_affiliations(attrs[:affiliation])
+    end
+
     attrs
   end
-  
+
+
+
   private
     def initialize_default_term_values(model)
       # Do not set default values for existing works
@@ -79,5 +85,18 @@ class SingleValueForm < Hyrax::Forms::WorkForm
           end
         end
       end
+    end
+
+    # split affiliations out
+    def self.split_affiliations(affiliations)
+      affiliations_list = []
+
+      Array(affiliations).each do |aff|
+        DepartmentsService.label(aff).split(';').each do |value|
+          affiliations_list.push(value.squish!)
+        end
+      end
+
+      affiliations_list.uniq
     end
 end

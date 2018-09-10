@@ -21,9 +21,9 @@ RSpec.describe Hyrax::ScholarlyWorkForm do
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:advisor, :conference_name, :date_created, :dcmi_type, :doi,
-                                     :geographic_subject, :description, :keyword, :language, :license, :resource_type,
-                                     :rights_statement, :subject] }
+    it { is_expected.to match_array [:advisor, :affiliation, :conference_name, :date_created, :dcmi_type, :doi,
+                                     :geographic_subject, :description, :keyword, :language, :license, :orcid,
+                                     :other_affiliation, :resource_type, :rights_statement, :subject] }
   end
   
   describe "#admin_only_terms" do
@@ -51,11 +51,15 @@ RSpec.describe Hyrax::ScholarlyWorkForm do
           thumbnail_id: '789',
           abstract: [''],
           advisor: ['an advisor'],
+          affiliation: ['Carolina Center for Genome Sciences'],
+          affiliation_label: ['School of Medicine', 'Carolina Center for Genome Sciences'],
           conference_name: ['a conference name'],
           date_issued: 'a date', # single-valued
           dcmi_type: ['type'],
           doi: '12345',
-          geographic_subject: ['a geographic subject']
+          geographic_subject: ['a geographic subject'],
+          orcid: ['an orcid'],
+          other_affiliation: ['another affiliation']
       )
     end
 
@@ -64,7 +68,7 @@ RSpec.describe Hyrax::ScholarlyWorkForm do
     it 'permits parameters' do
       expect(subject['title']).to eq ['foo']
       expect(subject['creator']).to eq ['someone@example.com']
-      expect(subject['date_created']).to eq 'a date'
+      expect(subject['date_created']).to eq ['a date']
       expect(subject['description']).to eq ['a description']
       expect(subject['doi']).to eq '12345'
       expect(subject['subject']).to eq ['a subject']
@@ -77,10 +81,14 @@ RSpec.describe Hyrax::ScholarlyWorkForm do
       expect(subject['representative_id']).to eq '456'
       expect(subject['thumbnail_id']).to eq '789'
       expect(subject['abstract']).to be_empty
+      expect(subject['affiliation']).to eq ['Carolina Center for Genome Sciences']
+      expect(subject['affiliation_label']).to eq ['School of Medicine', 'Carolina Center for Genome Sciences']
       expect(subject['conference_name']).to eq ['a conference name']
       expect(subject['date_issued']).to eq 'a date'
       expect(subject['dcmi_type']).to eq ['type']
       expect(subject['geographic_subject']).to eq ['a geographic subject']
+      expect(subject['orcid']).to eq ['an orcid']
+      expect(subject['other_affiliation']).to eq ['another affiliation']
       expect(subject['member_of_collection_ids']).to eq ['123456', 'abcdef']
     end
 
