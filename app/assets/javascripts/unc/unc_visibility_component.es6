@@ -40,27 +40,44 @@ export default class UncVisibilityComponent extends VisibilityComponent {
         return is_admin;
     }
 
+    isNewFile() {
+        return /\/new/.test(window.location);
+    }
+
     // Enable one or more visibility option (based on array of passed in options),
     // disabling all other options
     // If embargoes are enabled Hyrax will use this method to determine visibility
     enableVisibilityOptions(options) {
-        let matchEnabled = this.getMatcherForVisibilities(options)
-        let matchDisabled = this.getMatcherForNotVisibilities(options)
+        let matchEnabled = this.getMatcherForVisibilities(options);
+        let matchDisabled = this.getMatcherForNotVisibilities(options);
 
         // Enable all that match "matchEnabled" (if any), and disable those matching "matchDisabled"
         if(matchEnabled) {
             let allowed_fields = this.element.find(matchEnabled);
             allowed_fields.prop("disabled", false);
+
+            // Set to allowed visibility if new file
+            if (this.isNewFile()) {
+                allowed_fields.prop('checked', true);
+                this.openSelected();
+            }
+
             allowed_fields.parent().removeClass('highlight-disabled')
         }
-        let disallowed__fields = this.element.find(matchDisabled);
-        disallowed__fields.prop("disabled", true);
-        disallowed__fields.parent().addClass('highlight-disabled');
+        let disallowed_fields = this.element.find(matchDisabled);
+        disallowed_fields.prop("disabled", true);
+        disallowed_fields.parent().addClass('highlight-disabled');
     }
 
     // If embargoes aren't enabled Hyrax will use this method to determine visibility
     selectVisibility(visibility) {
         let allowed_fields = this.element.find("[type='radio'][value='" + visibility + "']");
+
+        // Set to allowed visibility if new file
+        if (this.isNewFile()) {
+            allowed_fields.prop('checked', true);
+        }
+
         let allowed_parent = allowed_fields.parent();
 
         allowed_fields.prop("disabled", false);
