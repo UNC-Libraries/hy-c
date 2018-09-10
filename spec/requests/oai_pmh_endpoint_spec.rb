@@ -211,7 +211,7 @@ RSpec.describe 'OAI-PMH catalog endpoint' do
 
           expect(descriptions.count).to be 2
           expect(descriptions[0].text).to eq('This set includes files in the English language.')
-          expect(descriptions[1].text).to eq('This set includes files in the Japanese language.')
+          expect(descriptions[1].text).to eq('This set includes files in the Jpn language.')
         end
       end
     end
