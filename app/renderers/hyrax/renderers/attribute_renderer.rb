@@ -45,7 +45,7 @@ module Hyrax
           markup << "<li#{html_attributes(attributes)}>#{attribute_value_to_html(value.to_s)}</li>"
         end
         markup << %(</ul></dd>)
-        markup.html_safe
+        sanitize markup
       end
 
       # @return The human-readable label for this field.
@@ -60,6 +60,7 @@ module Hyrax
         )
       end
 
+      # [hyc-override] new method to call language service
       def find_language(language)
         if not /iso639-2/.match(language).nil?
           begin
@@ -91,8 +92,9 @@ module Hyrax
           buffer
         end
 
+        # [hyc-override] call find_language
         def li_value(value)
-          field_value = find_language(value)
+          field_value = find_language(value) || value
           auto_link(ERB::Util.h(field_value))
         end
 
