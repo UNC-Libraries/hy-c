@@ -1,7 +1,6 @@
 <%= presenter.attribute_to_html(:date_modified, label: 'Last Modified', render_as: :date, html_dl: true) %>
 <%= presenter.attribute_to_html(:creator, render_as: :faceted, html_dl: true) %>
 <%= presenter.attribute_to_html(:subject, render_as: :faceted, html_dl: true) %>
-<%= presenter.attribute_to_html(:description, html_dl: true) %>
 <%= presenter.attribute_to_html(:language, render_as: :faceted, html_dl: true) %>
 <%= presenter.attribute_to_html(:identifier, render_as: :linked, search_field: 'identifier_tesim', html_dl: true) %>
 <%= presenter.attribute_to_html(:keyword, render_as: :faceted, html_dl: true) %>
