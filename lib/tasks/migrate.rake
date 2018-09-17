@@ -10,6 +10,7 @@ namespace :cdr do
 
     desc 'batch migrate generic files from FOXML file'
     task :items, [:collection, :configuration_file, :mapping_file] => :environment do |t, args|
+      puts Time.now
       if AdminSet.where(title: ENV['DEFAULT_ADMIN_SET']).count != 0
         config = YAML.load_file(args[:configuration_file])
         collection_config = config[args[:collection]]
@@ -40,7 +41,9 @@ namespace :cdr do
           file.each do |line|
             value = line.strip
             key = get_uuid_from_path(value)
-            @object_hash[key] = value
+            if !key.blank?
+              @object_hash[key] = value
+            end
           end
         end
 
@@ -58,13 +61,14 @@ namespace :cdr do
       else
         puts 'The default admin set does not exist'
       end
+      puts Time.now
     end
 
     def migrate_objects(collection_ids_file)
       collection_uuids = Array.new
       CSV.open(collection_ids_file) do |file|
         file.each do |line|
-          collection_uuids.append(line[0].strip)
+          collection_uuids.append(line[0].strip) unless line.blank?
         end
       end
 
@@ -78,7 +82,7 @@ namespace :cdr do
         if @binary_hash[uuid].blank? && !uuid.blank?
           metadata_fields = metadata(@object_hash[uuid])
 
-          puts 'Number of files: '+metadata_fields[:files].count.to_s
+          puts 'Number of files: '+metadata_fields[:files].count.to_s if !metadata_fields[:files].blank?
 
           resource = metadata_fields[:resource]
           resource.save!
@@ -90,7 +94,7 @@ namespace :cdr do
             csv << [uuid, resource.id]
           end
 
-          if !metadata_fields[:files].blank? && metadata_fields[:files][0].match(/.+\.xml/)
+          if !metadata_fields[:files].blank? && !metadata_fields[:files][0].blank?
             ingest_files(resource: resource, files: metadata_fields[:files])
           end
         end
@@ -145,10 +149,10 @@ namespace :cdr do
         file_full << @binary_hash[uuid]
       end
 
-      #get the date_created
+      # get the date_created
       date_created_string = metadata.xpath("//foxml:objectProperties/foxml:property[contains(@NAME, 'model#createdDate')]/@VALUE", MigrationConstants::NS).to_s
       date_created = DateTime.strptime(date_created_string, '%Y-%m-%dT%H:%M:%S.%N%Z').strftime('%Y-%m-%d') unless date_created_string.nil?
-      #get the modifiedDate
+      # get the modifiedDate
       date_modified_string = metadata.xpath("//foxml:objectProperties/foxml:property[contains(@NAME, 'view#lastModifiedDate')]/@VALUE", MigrationConstants::NS).to_s
       date_modified = DateTime.strptime(date_modified_string, '%Y-%m-%dT%H:%M:%S.%N%Z').strftime('%Y-%m-%d') unless date_modified_string.nil?
       MigrationLogger.info 'Get the current version of MODS'
@@ -159,66 +163,110 @@ namespace :cdr do
         return
       end
 
-      title = mods_version.xpath('mods:titleInfo/mods:title', MigrationConstants::NS).map(&:text)
-      alternative_title = mods_version.xpath("mods:titleInfo[@type='alternative']/mods:title", MigrationConstants::NS).map(&:text)
+      title = mods_version.xpath('mods:titleInfo[not(@*)]/mods:title', MigrationConstants::NS).map(&:text)
+      alternative_title = mods_version.xpath("mods:titleInfo[@type='alternative' or @type='translated']/mods:title", MigrationConstants::NS).map(&:text)
       creator_node = mods_version.xpath('mods:name[mods:role/mods:roleTerm/text()="Creator"]', MigrationConstants::NS)
       creator = []
       creator_node.each do |node|
-        creator << node.xpath('concat(mods:namePart[@type="family"], ", ", mods:namePart[@type="given"])', MigrationConstants::NS)
+        if !node.xpath('mods:namePart[@type="family"]', MigrationConstants::NS).text.blank?
+          creator << node.xpath('concat(mods:namePart[@type="family"], ", ", mods:namePart[@type="given"])', MigrationConstants::NS)
+        else
+          creator << node.xpath('mods:namePart', MigrationConstants::NS).text
+        end
       end
       contributor_node = mods_version.xpath('mods:name[mods:role/mods:roleTerm/text()="Contributor"]', MigrationConstants::NS)
       contributor = []
       contributor_node.each do |node|
-        contributor << node.xpath('concat(mods:namePart[@type="family"], ", ", mods:namePart[@type="given"])', MigrationConstants::NS)
+        if !node.xpath('mods:namePart[@type="family"]', MigrationConstants::NS).text.blank?
+          contributor << node.xpath('concat(mods:namePart[@type="family"], ", ", mods:namePart[@type="given"])', MigrationConstants::NS)
+        else
+          contributor << node.xpath('mods:namePart', MigrationConstants::NS).text
+        end
       end
       advisor_node = mods_version.xpath('mods:name[mods:role/mods:roleTerm/text()="Thesis advisor"]', MigrationConstants::NS)
       advisor = []
       advisor_node.each do |node|
-        advisor << node.xpath('concat(mods:namePart[@type="family"], ", ", mods:namePart[@type="given"])', MigrationConstants::NS)
+        if !node.xpath('mods:namePart[@type="family"]', MigrationConstants::NS).text.blank?
+          advisor << node.xpath('concat(mods:namePart[@type="family"], ", ", mods:namePart[@type="given"])', MigrationConstants::NS)
+        else
+          advisor << node.xpath('mods:namePart', MigrationConstants::NS).text
+        end
       end
       funder_node = mods_version.xpath('mods:name[mods:role/mods:roleTerm/text()="Funder"]', MigrationConstants::NS)
       funder = []
       funder_node.each do |node|
-        funder << node.xpath('concat(mods:namePart[@type="family"], ", ", mods:namePart[@type="given"])', MigrationConstants::NS)
+        if !node.xpath('mods:namePart[@type="family"]', MigrationConstants::NS).text.blank?
+          funder << node.xpath('concat(mods:namePart[@type="family"], ", ", mods:namePart[@type="given"])', MigrationConstants::NS)
+        else
+          funder << node.xpath('mods:namePart', MigrationConstants::NS).text
+        end
       end
       project_director_node = mods_version.xpath('mods:name[mods:role/mods:roleTerm/text()="Project director"]', MigrationConstants::NS)
       project_director = []
       project_director_node.each do |node|
-        project_director << node.xpath('concat(mods:namePart[@type="family"], ", ", mods:namePart[@type="given"])', MigrationConstants::NS)
+        if !node.xpath('mods:namePart[@type="family"]', MigrationConstants::NS).text.blank?
+          project_director << node.xpath('concat(mods:namePart[@type="family"], ", ", mods:namePart[@type="given"])', MigrationConstants::NS)
+        else
+          project_director << node.xpath('mods:namePart', MigrationConstants::NS).text
+        end
       end
       researcher_node = mods_version.xpath('mods:name[mods:role/mods:roleTerm/text()="Researcher"]', MigrationConstants::NS)
       researcher = []
       researcher_node.each do |node|
-        researcher << node.xpath('concat(mods:namePart[@type="family"], ", ", mods:namePart[@type="given"])', MigrationConstants::NS)
+        if !node.xpath('mods:namePart[@type="family"]', MigrationConstants::NS).text.blank?
+          researcher << node.xpath('concat(mods:namePart[@type="family"], ", ", mods:namePart[@type="given"])', MigrationConstants::NS)
+        else
+          researcher << node.xpath('mods:namePart', MigrationConstants::NS).text
+        end
       end
       sponsor_node = mods_version.xpath('mods:name[mods:role/mods:roleTerm/text()="Sponsor"]', MigrationConstants::NS)
       sponsor = []
       sponsor_node.each do |node|
-        sponsor << node.xpath('concat(mods:namePart[@type="family"], ", ", mods:namePart[@type="given"])', MigrationConstants::NS)
+        if !node.xpath('mods:namePart[@type="family"]', MigrationConstants::NS).text.blank?
+          sponsor << node.xpath('concat(mods:namePart[@type="family"], ", ", mods:namePart[@type="given"])', MigrationConstants::NS)
+        else
+          sponsor << node.xpath('mods:namePart', MigrationConstants::NS).text
+        end
       end
       translator_node = mods_version.xpath('mods:name[mods:role/mods:roleTerm/text()="Translator"]', MigrationConstants::NS)
       translator = []
       translator_node.each do |node|
-        translator << node.xpath('concat(mods:namePart[@type="family"], ", ", mods:namePart[@type="given"])', MigrationConstants::NS)
+        if !node.xpath('mods:namePart[@type="family"]', MigrationConstants::NS).text.blank?
+          translator << node.xpath('concat(mods:namePart[@type="family"], ", ", mods:namePart[@type="given"])', MigrationConstants::NS)
+        else
+          translator << node.xpath('mods:namePart', MigrationConstants::NS).text
+        end
       end
       reviewer_node = mods_version.xpath('mods:name[mods:role/mods:roleTerm/text()="Reviewer"]', MigrationConstants::NS)
       reviewer = []
       reviewer_node.each do |node|
-        reviewer << node.xpath('concat(mods:namePart[@type="family"], ", ", mods:namePart[@type="given"])', MigrationConstants::NS)
+        if !node.xpath('mods:namePart[@type="family"]', MigrationConstants::NS).text.blank?
+          reviewer << node.xpath('concat(mods:namePart[@type="family"], ", ", mods:namePart[@type="given"])', MigrationConstants::NS)
+        else
+          reviewer << node.xpath('mods:namePart', MigrationConstants::NS).text
+        end
       end
       composer_node = mods_version.xpath('mods:name[mods:role/mods:roleTerm/text()="Composer"]', MigrationConstants::NS)
       composer = []
       composer_node.each do |node|
-        composer << node.xpath('concat(mods:namePart[@type="family"], ", ", mods:namePart[@type="given"])', MigrationConstants::NS)
+        if !node.xpath('mods:namePart[@type="family"]', MigrationConstants::NS).text.blank?
+          composer << node.xpath('concat(mods:namePart[@type="family"], ", ", mods:namePart[@type="given"])', MigrationConstants::NS)
+        else
+          composer << node.xpath('mods:namePart', MigrationConstants::NS).text
+        end
       end
       arranger_node = mods_version.xpath('mods:name[mods:role/mods:roleTerm/text()="Arranger"]', MigrationConstants::NS)
       arranger = []
       arranger_node.each do |node|
-        arranger << node.xpath('concat(mods:namePart[@type="family"], ", ", mods:namePart[@type="given"])', MigrationConstants::NS)
+        if !node.xpath('mods:namePart[@type="family"]', MigrationConstants::NS).text.blank?
+          arranger << node.xpath('concat(mods:namePart[@type="family"], ", ", mods:namePart[@type="given"])', MigrationConstants::NS)
+        else
+          arranger << node.xpath('mods:namePart', MigrationConstants::NS).text
+        end
       end
       degree_granting_institution = mods_version.xpath('mods:name[mods:role/mods:roleTerm/text()="Degree granting institution"]/mods:namePart', MigrationConstants::NS).map(&:text)
       conference_name = mods_version.xpath('mods:name[@displayLabel="Conference" and @type="conference"]/mods:namePart', MigrationConstants::NS).map(&:text)
-      orcid = mods_version.xpath('mods:name/mods:identifier', MigrationConstants::NS).map(&:text)
+      orcid = mods_version.xpath('mods:name/mods:nameIdentifier[@type="orcid"]', MigrationConstants::NS).map(&:text)
       affiliation = mods_version.xpath('mods:name/mods:affiliation', MigrationConstants::NS).map(&:text)
       other_affiliation = mods_version.xpath('mods:name/mods:description', MigrationConstants::NS).map(&:text)
       date_issued = mods_version.xpath('mods:originInfo/mods:dateIssued', MigrationConstants::NS).map(&:text)
@@ -243,11 +291,24 @@ namespace :cdr do
       series = mods_version.xpath('mods:relatedItem[@type="series"]', MigrationConstants::NS).map(&:text)
       subject = mods_version.xpath('mods:subject/mods:topic', MigrationConstants::NS).map(&:text)
       geographic_subject = mods_version.xpath('mods:subject/mods:geographic/@valueURI', MigrationConstants::NS).map(&:text)
-      keywords = mods_version.xpath('mods:note[@displayLabel="Keywords"]', MigrationConstants::NS).map(&:text)
+      keyword_string = mods_version.xpath('mods:note[@displayLabel="Keywords"]', MigrationConstants::NS).map(&:text)
+      keywords = []
+      # Keywords delimited in different ways in current mods records
+      keyword_string.each do |keyword|
+        if keyword.match(/\n/)
+          keywords.concat keyword.split(/\n/).collect(&:strip)
+        elsif keyword.match(';')
+          keywords.concat keyword.split(';').collect(&:strip)
+        elsif keyword.match(',')
+          keywords.concat keyword.split(',').collect(&:strip)
+        else
+          keywords.concat keyword.split(' ').collect(&:strip)
+        end
+      end
       language = mods_version.xpath('mods:language/mods:languageTerm',MigrationConstants::NS).map(&:text)
       resource_type = mods_version.xpath('mods:genre',MigrationConstants::NS).map(&:text)
       dcmi_type = mods_version.xpath('mods:typeOfResource/@valueURI',MigrationConstants::NS).map(&:text)
-      use = mods_version.xpath('mods:accessCondition[@type="use and reproduction" and @displayLabel!="License" and @displayLabel!="Rights Statement"]/@*[name()="xlink:href"]',MigrationConstants::NS).map(&:text)
+      use = mods_version.xpath('mods:accessCondition[@type="use and reproduction" and ((@displayLabel!="License" and @displayLabel!="Rights Statement") or not(@displayLabel))]/@*[name()="xlink:href"]',MigrationConstants::NS).map(&:text)
       license = mods_version.xpath('mods:accessCondition[@displayLabel="License" and @type="use and reproduction"]/@*[name()="xlink:href"]',MigrationConstants::NS).map(&:text)
       rights_statement = mods_version.xpath('mods:accessCondition[@displayLabel="Rights Statement" and @type="use and reproduction"]/@*[name()="xlink:href"]',MigrationConstants::NS).map(&:text)
       rights_holder = mods_version.xpath('mods:accessCondition/rights:copyright/rights:rights.holder/rights:name',MigrationConstants::NS).map(&:text)
@@ -261,8 +322,8 @@ namespace :cdr do
       journal_title = mods_version.xpath('mods:relatedItem[@type="host"]/mods:titleInfo/mods:title',MigrationConstants::NS).map(&:text)
       journal_volume = mods_version.xpath('mods:relatedItem[@type="host"]/mods:part/mods:detail[@type="volume"]/mods:number',MigrationConstants::NS).map(&:text)
       journal_issue = mods_version.xpath('mods:relatedItem[@type="host"]/mods:part/mods:detail[@type="issue"]/mods:number',MigrationConstants::NS).map(&:text)
-      start_page = mods_version.xpath('mods:relatedItem[@type="host"]/mods:part/mods:extent[@type="page"]/mods:start',MigrationConstants::NS).map(&:text)
-      end_page = mods_version.xpath('mods:relatedItem[@type="host"]/mods:part/mods:extent[@type="page"]/mods:end',MigrationConstants::NS).map(&:text)
+      start_page = mods_version.xpath('mods:relatedItem[@type="host"]/mods:part/mods:extent[@unit="page"]/mods:start',MigrationConstants::NS).map(&:text)
+      end_page = mods_version.xpath('mods:relatedItem[@type="host"]/mods:part/mods:extent[@unit="page"]/mods:end',MigrationConstants::NS).map(&:text)
       related_url = mods_version.xpath('mods:relatedItem/mods:location/mods:url',MigrationConstants::NS).map(&:text)
       url = mods_version.xpath('mods:location/mods:url',MigrationConstants::NS).map(&:text)
       publisher_version = mods_version.xpath('mods:location/mods:url[@displayLabel="Publisher Version"] | mods:relatedItem[@type="otherVersion"]/mods:location',MigrationConstants::NS).map(&:text)
@@ -286,13 +347,13 @@ namespace :cdr do
           @parent_hash[uuid] = Array.new
         end
 
-        if rdf_version.to_s.match(/contains/)
-          contained_files = rdf_version.xpath("rdf:Description/*[local-name() = 'contains']/@rdf:resource", MigrationConstants::NS)
+        if rdf_version.to_s.match(/resource/)
+          contained_files = rdf_version.xpath("rdf:Description/*[not(local-name()='originalDeposit') and not(local-name() = 'defaultWebObject') and contains(@rdf:resource, 'uuid')]", MigrationConstants::NS)
           contained_files.each do |contained_file|
             tmp_uuid = get_uuid_from_path(contained_file.to_s)
             if !@binary_hash[tmp_uuid].blank?
               file_full << @object_hash[tmp_uuid]
-            else
+            elsif !@object_hash[tmp_uuid].blank? && tmp_uuid != uuid
               @parent_hash[uuid] << tmp_uuid
             end
           end
@@ -300,13 +361,15 @@ namespace :cdr do
           if file_full.count > 1
             representative = rdf_version.xpath('rdf:Description/*[local-name() = "defaultWebObject"]/@rdf:resource', MigrationConstants::NS).to_s.split('/')[1]
             if representative
-              representative = @object_hash[get_uuid_from_path(representative)]
+              representative = @object_hash['2f847077-7060-445b-99b3-190e7cff0067']
               file_full -= [representative]
               file_full = [representative] + file_full
             end
           end
         end
 
+        # Set default visibility first
+        visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
         if rdf_version.to_s.match(/metadata-patron/)
           patron = rdf_version.xpath("rdf:Description/*[local-name() = 'metadata-patron']", MigrationConstants::NS).text
           if patron == 'public'
@@ -372,6 +435,7 @@ namespace :cdr do
           'access'=>access,
           'advisor'=>advisor,
           'affiliation'=>affiliation,
+          'affiliation_label'=>affiliation,
           'alternative_title'=>alternative_title,
           'arranger'=>arranger,
           'award'=>award,
@@ -437,7 +501,6 @@ namespace :cdr do
 
         { resource: file_record(work_attributes, resource), files: file_full }
       end
-
     end
 
     def work_record(work_attributes)
