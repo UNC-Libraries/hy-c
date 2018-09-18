@@ -14,7 +14,7 @@
                   target: :_blank,
                   id: "file_download" %>
     </div>
-<% elsif (presenter.respond_to?('workflow') && !@presenter.workflow.in_workflow_state?(['withdrawn', 'pending deletion'])) ||
+<% elsif (@presenter.respond_to?('workflow') && !@presenter.workflow.in_workflow_state?(['withdrawn', 'pending deletion'])) ||
     !@presenter.respond_to?('workflow') %>
     <div>
       <video controls="controls" class="video-js vjs-default-skin" style="width:100%" data-setup="{}" controlsList="nodownload" preload="auto">
@@ -23,6 +23,6 @@
         Your browser does not support the video tag.
       </video>
     </div>
-<% elsif presenter.respond_to?('workflow') && @presenter.workflow.in_workflow_state?(['withdrawn', 'pending deletion']) %>
+<% elsif @presenter.respond_to?('workflow') && @presenter.workflow.in_workflow_state?(['withdrawn', 'pending deletion']) %>
   <%# Display nothing %>
 <% end %>

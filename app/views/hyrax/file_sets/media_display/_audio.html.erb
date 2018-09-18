@@ -13,7 +13,7 @@
                   target: :_blank,
                   id: "file_download" %>
     </div>
-<% elsif (presenter.respond_to?('workflow') && !@presenter.workflow.in_workflow_state?(['withdrawn', 'pending deletion'])) ||
+<% elsif (@presenter.respond_to?('workflow') && !@presenter.workflow.in_workflow_state?(['withdrawn', 'pending deletion'])) ||
     !@presenter.respond_to?('workflow') %>
     <div>
       <audio controls="controls" class="audiojs" style="width:100%" controlsList="nodownload" preload="auto">
@@ -22,6 +22,6 @@
         Your browser does not support the audio tag.
       </audio>
     </div>
-<% elsif presenter.respond_to?('workflow') && @presenter.workflow.in_workflow_state?(['withdrawn', 'pending deletion']) %>
+<% elsif @presenter.respond_to?('workflow') && @presenter.workflow.in_workflow_state?(['withdrawn', 'pending deletion']) %>
   <%# Display nothing %>
 <% end %>

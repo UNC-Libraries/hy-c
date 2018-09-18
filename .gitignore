@@ -24,3 +24,8 @@ fits.log
 db/schema.rb
 
 /**/.DS_Store
+
+public/branding
+public/tmp
+
+lib/tasks/migration/mapping.csv
