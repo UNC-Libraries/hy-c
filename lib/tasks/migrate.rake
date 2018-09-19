@@ -1,3 +1,5 @@
+# The default admin set and designated depositor must exist before running this script
+
 namespace :cdr do
   require 'fileutils'
   require 'tasks/migration/migration_logging'
@@ -10,18 +12,20 @@ namespace :cdr do
 
     desc 'batch migrate generic files from FOXML file'
     task :items, [:collection, :configuration_file, :mapping_file] => :environment do |t, args|
-      puts Time.now
+
+      puts '['+Time.now.to_s+'] Start migration of '+args[:collection]
+
       if AdminSet.where(title: ENV['DEFAULT_ADMIN_SET']).count != 0
         config = YAML.load_file(args[:configuration_file])
         collection_config = config[args[:collection]]
         @work_type = collection_config['work_type']
         @admin_set = collection_config['admin_set']
-        @depositor_key = User.where(email: collection_config['depositor_email']).first.uid
+        @depositor = User.where(email: collection_config['depositor_email']).first
         @collection_name = collection_config['collection_name']
         @child_work_type = collection_config['child_work_type']
 
         # Store parent-child relationships
-        @parent_hash = Hash.new
+        @parent_hash = Hash.new {|h,k| h[k] = Array.new }
         # Store uuid/hyrax-id mappings for current collection
         @mapping = Hash.new
 
@@ -61,14 +65,16 @@ namespace :cdr do
       else
         puts 'The default admin set does not exist'
       end
-      puts Time.now
+
+      puts '['+Time.now.to_s+'] Finish migration of '+args[:collection]
     end
+
 
     def migrate_objects(collection_ids_file)
       collection_uuids = Array.new
       CSV.open(collection_ids_file) do |file|
         file.each do |line|
-          collection_uuids.append(line[0].strip) unless line.blank?
+          collection_uuids.append(get_uuid_from_path(line[0].strip)) unless line.blank?
         end
       end
 
@@ -76,7 +82,7 @@ namespace :cdr do
 
       collection_uuids.each do |collection_uuid|
         uuid = get_uuid_from_path(collection_uuid)
-        # Assuming uuid for metadata and binary are the same
+        # Assuming uuid for metadata and binary are not the same
         # Skip file/binary metadata
         # solr returns column header; skip that, too
         if @binary_hash[uuid].blank? && !uuid.blank?
@@ -94,13 +100,15 @@ namespace :cdr do
             csv << [uuid, resource.id]
           end
 
+          # Ingest files for work if at least one is found
           if !metadata_fields[:files].blank? && !metadata_fields[:files][0].blank?
             ingest_files(resource: resource, files: metadata_fields[:files])
           end
         end
       end
     end
-   
+
+
     def ingest_files(parent: nil, resource: nil, files: [])
       ordered_members = []
 
@@ -116,7 +124,7 @@ namespace :cdr do
 
     def ingest_file(parent: nil, resource: nil, f: nil)
       file_set = FileSet.create(resource)
-      actor = Hyrax::Actors::FileSetActor.new(file_set, User.find_by_user_key(@depositor_key))
+      actor = Hyrax::Actors::FileSetActor.new(file_set, @depositor)
       actor.create_metadata(resource.slice(:visibility, :visibility_during_lease, :visibility_after_lease,
                                             :lease_expiration_date, :embargo_release_date, :visibility_during_embargo,
                                             :visibility_after_embargo))
@@ -130,7 +138,8 @@ namespace :cdr do
 
       file_set
     end
-    
+
+
     def metadata(file)
       metadata = Nokogiri::XML(File.open(file))
 
@@ -334,19 +343,18 @@ namespace :cdr do
       cdr_model_type = ''
       rdf_version = metadata.xpath("//rdf:RDF", MigrationConstants::NS).last
       if rdf_version
+        # Check for deposit record
         if rdf_version.to_s.match(/originalDeposit/)
           deposit_record = rdf_version.xpath('rdf:Description/*[local-name() = "originalDeposit"]/@rdf:resource', MigrationConstants::NS).map(&:text)
         end
 
+        # Check if aggregate work
         if rdf_version.to_s.match(/hasModel/)
           cdr_model_type = rdf_version.xpath('rdf:Description/*[local-name() = "hasModel"]/@rdf:resource', MigrationConstants::NS).map(&:text)
-          cdr_model_type = (cdr_model_type.include? 'info:fedora/cdr-model:AggregateWork') ? 'aggregate' : ''
+          cdr_model_type = (cdr_model_type.include? 'info:fedora/cdr-model:AggregateWork') ? 'aggregate' : cdr_model_type
         end
 
-        if cdr_model_type == 'aggregate'
-          @parent_hash[uuid] = Array.new
-        end
-
+        # Create lists of attached files and children
         if rdf_version.to_s.match(/resource/)
           contained_files = rdf_version.xpath("rdf:Description/*[not(local-name()='originalDeposit') and not(local-name() = 'defaultWebObject') and contains(@rdf:resource, 'uuid')]", MigrationConstants::NS)
           contained_files.each do |contained_file|
@@ -368,6 +376,8 @@ namespace :cdr do
           end
         end
 
+
+        # Set access controls for work
         # Set default visibility first
         visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
         if rdf_version.to_s.match(/metadata-patron/)
@@ -400,19 +410,23 @@ namespace :cdr do
         end
       end
 
+      # Use language code to get iso639-2 uri from service
       if !language.blank?
         language.map!{|e| LanguagesService.label("http://id.loc.gov/vocabulary/iso639-2/#{e.downcase}") ?
                               "http://id.loc.gov/vocabulary/iso639-2/#{e.downcase}" : e}
       end
 
+      # Add work to specified collection
       collection = Collection.where(title: @collection_name).first
+      # Create collection if it does not yet exist
       if !@collection_name.blank? && collection.blank?
         user_collection_type = Hyrax::CollectionType.where(title: 'User Collection').first.gid
         collection = Collection.create(title: [@collection_name],
-                                       depositor: @depositor_key,
+                                       depositor: @depositor.uid,
                                        collection_type_gid: user_collection_type)
       end
 
+      # Collect attributes
       work_attributes = {
           'title'=>title,
           'label'=>title,
@@ -503,6 +517,7 @@ namespace :cdr do
       end
     end
 
+
     def work_record(work_attributes)
       if !@child_work_type.blank? && work_attributes['cdr_model_type'] != 'aggregate'
         resource = @child_work_type.singularize.classify.constantize.new
@@ -510,7 +525,7 @@ namespace :cdr do
         resource = @work_type.singularize.classify.constantize.new
       end
       resource.creator = work_attributes['creator']
-      resource.depositor = @depositor_key
+      resource.depositor = @depositor.uid
       resource.save
 
       # Singularize non-enumerable attributes
@@ -540,6 +555,7 @@ namespace :cdr do
       resource
     end
 
+
     # FileSets can include any metadata listed in BasicMetadata file
     def file_record(work_attributes, resource)
       file_set = FileSet.new
@@ -552,7 +568,7 @@ namespace :cdr do
         end
       end
       resource[:creator] = work_attributes['creator']
-      resource[:depositor] = @depositor_key
+      resource[:depositor] = @depositor.uid
       resource[:label] = work_attributes['label']
       resource[:title] = work_attributes['title']
       resource[:bibliographic_citation] =  work_attributes['bibliographic_citation']
@@ -582,9 +598,11 @@ namespace :cdr do
       resource
     end
 
+
     def get_uuid_from_path(path)
       path.slice(/\w{8}-\w{4}-\w{4}-\w{4}-\w{12}/)
     end
+
 
     def attach_children
       @parent_hash.each do |parent_id, children|
