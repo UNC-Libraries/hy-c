@@ -74,7 +74,7 @@ namespace :cdr do
       collection_uuids = Array.new
       CSV.open(collection_ids_file) do |file|
         file.each do |line|
-          collection_uuids.append(get_uuid_from_path(line[0].strip)) unless line.blank?
+          collection_uuids.append(line[0].strip) unless line.blank?
         end
       end
 
