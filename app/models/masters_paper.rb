@@ -26,7 +26,7 @@ class MastersPaper < ActiveFedora::Base
     index.as :stored_searchable, :facetable
   end
 
-  property :affiliation, predicate: ::RDF::Vocab::SCHEMA.affiliation, multiple: false do |index|
+  property :affiliation, predicate: ::RDF::Vocab::SCHEMA.affiliation do |index|
     index.as :stored_searchable
   end
 
