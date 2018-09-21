@@ -1,7 +1,7 @@
 require "rails_helper"
 require "rake"
 
-describe "rake cdr:migration:items", type: :task do
+describe "rake migrate:works", type: :task do
   let(:user) do
     User.find_by_user_key('admin@example.com')
   end
@@ -32,11 +32,11 @@ describe "rake cdr:migration:items", type: :task do
   end
 
   it "preloads the Rails environment" do
-    expect(Rake::Task['cdr:migration:items'].prerequisites).to include "environment"
+    expect(Rake::Task['migrate:works'].prerequisites).to include "environment"
   end
 
   it "creates a new work" do
-    expect { Rake::Task['cdr:migration:items'].invoke('collection1',
+    expect { Rake::Task['migrate:works'].invoke('collection1',
                                                       'spec/fixtures/migration/migration_config.yml',
                                                       'spec/fixtures/migration/mapping.csv',
                                                       'RAILS_ENV=test') }
