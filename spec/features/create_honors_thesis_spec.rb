@@ -24,10 +24,10 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       Hyrax::PermissionTemplate.create!(source_id: admin_set.id)
     end
 
-    let(:workflow) do
-      Sipity::Workflow.create(name: 'test', allows_access_grant: true, active: true,
-                              permission_template_id: permission_template.id)
-    end
+    let(:workflow) { Sipity::Workflow.find_by!(name: 'default', permission_template: permission_template) }
+
+    let(:admin_agent) { Sipity::Agent.where(proxy_for_id: admin_user.id, proxy_for_type: 'User').first_or_create }
+    let(:user_agent) { Sipity::Agent.where(proxy_for_id: user.id, proxy_for_type: 'User').first_or_create }
 
     before do
       Hyrax::PermissionTemplateAccess.create(permission_template: permission_template,
@@ -38,7 +38,15 @@ RSpec.feature 'Create a HonorsThesis', js: false do
                                              agent_type: 'user',
                                              agent_id: admin_user.user_key,
                                              access: 'deposit')
-      Sipity::WorkflowAction.create(id: 4, name: 'show', workflow_id: workflow.id)
+      Hyrax::Workflow::WorkflowImporter.generate_from_json_file(path: Rails.root.join('config',
+                                                                                      'workflows',
+                                                                                      'default_workflow.json'),
+                                                                permission_template: permission_template)
+      Hyrax::Workflow::PermissionGenerator.call(roles: 'approving', workflow: workflow, agents: user_agent)
+      Hyrax::Workflow::PermissionGenerator.call(roles: 'depositing', workflow: workflow, agents: user_agent)
+      Hyrax::Workflow::PermissionGenerator.call(roles: 'approving', workflow: workflow, agents: admin_agent)
+      Hyrax::Workflow::PermissionGenerator.call(roles: 'depositing', workflow: workflow, agents: admin_agent)
+      permission_template.available_workflows.first.update!(active: true)
       DefaultAdminSet.create(work_type_name: 'HonorsThesis', admin_set_id: admin_set.id)
     end
 
@@ -81,6 +89,10 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       expect(page).to have_content 'Affiliation'
       expect(page).to have_content 'College of Arts and Sciences'
       expect(page).to have_content 'Department of Biology'
+
+      click_link 'Edit'
+
+      expect(page).to have_content 'Edit Work'
     end
 
     scenario 'as an admin' do
@@ -125,6 +137,10 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       expect(page).to have_content 'Affiliation'
       expect(page).to have_content 'College of Arts and Sciences'
       expect(page).to have_content 'Department of Biology'
+
+      click_link 'Edit'
+
+      expect(page).to have_content 'Edit Work'
     end
   end
 end
