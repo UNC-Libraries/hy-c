@@ -1,3 +1,4 @@
+<%# [hyc-override] %>
 <% provide :page_title, @presenter.page_title %>
 
 <%= render 'shared/citations' %>
@@ -17,7 +18,8 @@
           <%= render 'workflow_actions_widget', presenter: @presenter %>
           <%# [hyc-override] Show message to attach child works for art mfa deposits %>
           <%if @presenter.workflow.is_mfa_in_review? %>
-            <p class="bg-success mfa-child-works">If you haven't already done so; please add your child works now.</p>
+            <p class="bg-success mfa-child-works">If you haven't already done so; please add your child works now.
+            </p>
           <% end %>
           <% if @presenter.universal_viewer? %>
             <div class="col-sm-12">
