@@ -44,11 +44,25 @@ export default class UncVisibilityComponent extends VisibilityComponent {
         return /\/new/.test(window.location);
     }
 
+    leastRestrictiveStatus(options) {
+        if (options.indexOf('open') !== -1) {
+            return ['open'];
+        } else if (options.indexOf('authenticated') !== -1) {
+            return ['authenticated'];
+        } else if (options.indexOf('embargo') !== -1) {
+            return ['embargo'];
+        } else if (options.indexOf('restricted') !== -1) {
+            return ['restricted'];
+        } else {
+            return ['open'];
+        }
+    }
+
     // Enable one or more visibility option (based on array of passed in options),
     // disabling all other options
     // If embargoes are enabled Hyrax will use this method to determine visibility
     enableVisibilityOptions(options) {
-        let matchEnabled = this.getMatcherForVisibilities(options);
+        let matchEnabled = this.getMatcherForVisibilities(this.leastRestrictiveStatus(options));
         let matchDisabled = this.getMatcherForNotVisibilities(options);
 
         // Enable all that match "matchEnabled" (if any), and disable those matching "matchDisabled"
