@@ -47,6 +47,7 @@ module Migrate
         end
 
         work_attributes['title'] = mods_version.xpath('mods:titleInfo[not(@*)]/mods:title', MigrationConstants::NS).map(&:text)
+        work_attributes['label'] = work_attributes['title']
         work_attributes['alternative_title'] = mods_version.xpath("mods:titleInfo[@type='alternative' or @type='translated']/mods:title", MigrationConstants::NS).map(&:text)
         work_attributes['creator'] = parse_names_from_mods(mods_version, 'Creator')
         work_attributes['contributor'] = parse_names_from_mods(mods_version, 'Contributor')
@@ -63,12 +64,13 @@ module Migrate
         work_attributes['conference_name'] = mods_version.xpath('mods:name[@displayLabel="Conference" and @type="conference"]/mods:namePart', MigrationConstants::NS).map(&:text)
         work_attributes['orcid'] = mods_version.xpath('mods:name/mods:nameIdentifier[@type="orcid"]', MigrationConstants::NS).map(&:text)
         work_attributes['affiliation'] = mods_version.xpath('mods:name/mods:affiliation', MigrationConstants::NS).map(&:text)
+        work_attributes['affiliation_label'] = work_attributes['affiliation']
         work_attributes['other_affiliation'] = mods_version.xpath('mods:name/mods:description', MigrationConstants::NS).map(&:text)
         date_issued = mods_version.xpath('mods:originInfo/mods:dateIssued', MigrationConstants::NS).map(&:text)
         work_attributes['date_issued'] = date_issued.map{|date| (Date.try(:edtf, date) || date).to_s}
         copyright_date = mods_version.xpath('mods:originInfo/mods:copyrightDate', MigrationConstants::NS).map(&:text)
         work_attributes['copyright_date'] = copyright_date.map{|date| (Date.try(:edtf, date) || date).to_s}
-        work_attributes['last_date_modified'] = mods_version.xpath('mods:originInfo[@displayLabel="Last Date Modified"]/mods:dateModified', MigrationConstants::NS).map(&:text)
+        work_attributes['last_modified_date'] = mods_version.xpath('mods:originInfo[@displayLabel="Last Date Modified"]/mods:dateModified', MigrationConstants::NS).map(&:text)
         date_other = mods_version.xpath('mods:originInfo/mods:dateOther', MigrationConstants::NS).map(&:text)
         work_attributes['date_other'] = date_other.map{|date| (Date.try(:edtf, date) || date).to_s}
         date_captured = mods_version.xpath('mods:originInfo/mods:dateCaptured', MigrationConstants::NS).map(&:text)
@@ -79,7 +81,7 @@ module Migrate
         work_attributes['description'] = mods_version.xpath('mods:note[@displayLabel="Description" or @displayLabel="Methods"]', MigrationConstants::NS).map(&:text)
         work_attributes['extent'] = mods_version.xpath('mods:physicalDescription/mods:extent', MigrationConstants::NS).map(&:text)
         work_attributes['table_of_contents'] = mods_version.xpath('mods:tableOfContents', MigrationConstants::NS).map(&:text)
-        work_attributes['citation'] = mods_version.xpath('mods:note[@type="citation/reference"]', MigrationConstants::NS).map(&:text)
+        work_attributes['bibliographic_citation'] = mods_version.xpath('mods:note[@type="citation/reference"]', MigrationConstants::NS).map(&:text)
         work_attributes['edition'] = mods_version.xpath('mods:originInfo/mods:edition', MigrationConstants::NS).map(&:text)
         work_attributes['peer_review_status'] = mods_version.xpath('mods:genre[@authority="local"]', MigrationConstants::NS).map(&:text)
         work_attributes['degree'] = mods_version.xpath('mods:note[@displayLabel="Degree"]', MigrationConstants::NS).map(&:text)
@@ -91,17 +93,17 @@ module Migrate
         work_attributes['subject'] = mods_version.xpath('mods:subject/mods:topic', MigrationConstants::NS).map(&:text)
         work_attributes['geographic_subject'] = mods_version.xpath('mods:subject/mods:geographic/@valueURI', MigrationConstants::NS).map(&:text)
         keyword_string = mods_version.xpath('mods:note[@displayLabel="Keywords"]', MigrationConstants::NS).map(&:text)
-        work_attributes['keywords'] = []
+        work_attributes['keyword'] = []
         # Keywords delimited in different ways in current mods records
         keyword_string.each do |keyword|
           if keyword.match(/\n/)
-            work_attributes['keywords'].concat keyword.split(/\n/).collect(&:strip)
+            work_attributes['keyword'].concat keyword.split(/\n/).collect(&:strip)
           elsif keyword.match(';')
-            work_attributes['keywords'].concat keyword.split(';').collect(&:strip)
+            work_attributes['keyword'].concat keyword.split(';').collect(&:strip)
           elsif keyword.match(',')
-            work_attributes['keywords'].concat keyword.split(',').collect(&:strip)
+            work_attributes['keyword'].concat keyword.split(',').collect(&:strip)
           else
-            work_attributes['keywords'].concat keyword.split(' ').collect(&:strip)
+            work_attributes['keyword'].concat keyword.split(' ').collect(&:strip)
           end
         end
         languages = mods_version.xpath('mods:language/mods:languageTerm',MigrationConstants::NS).map(&:text)
@@ -122,8 +124,8 @@ module Migrate
         work_attributes['journal_title'] = mods_version.xpath('mods:relatedItem[@type="host"]/mods:titleInfo/mods:title',MigrationConstants::NS).map(&:text)
         work_attributes['journal_volume'] = mods_version.xpath('mods:relatedItem[@type="host"]/mods:part/mods:detail[@type="volume"]/mods:number',MigrationConstants::NS).map(&:text)
         work_attributes['journal_issue'] = mods_version.xpath('mods:relatedItem[@type="host"]/mods:part/mods:detail[@type="issue"]/mods:number',MigrationConstants::NS).map(&:text)
-        work_attributes['start_page'] = mods_version.xpath('mods:relatedItem[@type="host"]/mods:part/mods:extent[@unit="page"]/mods:start',MigrationConstants::NS).map(&:text)
-        work_attributes['end_page'] = mods_version.xpath('mods:relatedItem[@type="host"]/mods:part/mods:extent[@unit="page"]/mods:end',MigrationConstants::NS).map(&:text)
+        work_attributes['page_start'] = mods_version.xpath('mods:relatedItem[@type="host"]/mods:part/mods:extent[@unit="page"]/mods:start',MigrationConstants::NS).map(&:text)
+        work_attributes['page_end'] = mods_version.xpath('mods:relatedItem[@type="host"]/mods:part/mods:extent[@unit="page"]/mods:end',MigrationConstants::NS).map(&:text)
         work_attributes['related_url'] = mods_version.xpath('mods:relatedItem/mods:location/mods:url',MigrationConstants::NS).map(&:text)
         work_attributes['url'] = mods_version.xpath('mods:location/mods:url',MigrationConstants::NS).map(&:text)
         work_attributes['publisher_version'] = mods_version.xpath('mods:location/mods:url[@displayLabel="Publisher Version"] | mods:relatedItem[@type="otherVersion"]/mods:location',MigrationConstants::NS).map(&:text)
@@ -148,8 +150,8 @@ module Migrate
 
           # Create lists of attached files and children
           if rdf_version.to_s.match(/resource/)
-            contained_files = rdf_version.xpath("rdf:Description/*[not(local-name()='originalDeposit') and not(local-name() = 'defaultWebObject') and contains(@rdf:resource, 'uuid')]", MigrationConstants::NS)
-            contained_files.each do |contained_file|
+            work_attributes['contained_files'] = rdf_version.xpath("rdf:Description/*[not(local-name()='originalDeposit') and not(local-name() = 'defaultWebObject') and contains(@rdf:resource, 'uuid')]", MigrationConstants::NS)
+            work_attributes['contained_files'].each do |contained_file|
               tmp_uuid = get_uuid_from_path(contained_file.to_s)
               if !@binary_hash[tmp_uuid].blank?
                 work_attributes['file_full'] << @object_hash[tmp_uuid]
