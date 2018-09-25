@@ -324,6 +324,15 @@ div.unc-citation-modal {
   }
 }
 
+.fileupload-buttonbar, #fileupload p {
+  padding-top: 5px;
+  padding-left: 15px;
+}
+
+#fileupload {
+  margin-bottom: 75px;
+}
+
 @media only screen and (max-width: 1600px) {
   #masthead {
     .navbar-header {
@@ -487,6 +496,11 @@ div.unc-citation-modal {
 
   .nav {
     padding-left: 15px;
+  }
+
+  /* Hyrax overrides */
+  .fileinput-button {
+    margin-bottom: .2em;
   }
 }
 
