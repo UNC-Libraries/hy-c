@@ -2,12 +2,13 @@ module Migrate
   module Services
     class ModsParser
 
-      attr_accessor :metadata_file, :object_hash, :binary_hash
+      attr_accessor :metadata_file, :object_hash, :binary_hash, :collection_name
 
-      def initialize(metadata_file, object_hash, binary_hash)
+      def initialize(metadata_file, object_hash, binary_hash, collection_name)
         @metadata_file = metadata_file
         @object_hash = object_hash
         @binary_hash = binary_hash
+        @collection_name = collection_name
       end
 
       def parse
@@ -19,15 +20,15 @@ module Migrate
 
         work_attributes = Hash.new
 
-        work_attributes['file_full'] = Array.new(0)
         representative = ''
         work_attributes['visibility_during_embargo'] = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
         work_attributes['visibility_after_embargo'] = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
         work_attributes['embargo_release_date'] = ''
         visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
 
+        work_attributes['contained_files'] = Array.new(0)
         if !@binary_hash[uuid].blank?
-          work_attributes['file_full'] << @binary_hash[uuid]
+          work_attributes['contained_files'] << @binary_hash[uuid]
         end
 
         # get the date_created
@@ -144,28 +145,27 @@ module Migrate
 
           # Check if aggregate work
           if rdf_version.to_s.match(/hasModel/)
-            cdr_model_type = rdf_version.xpath('rdf:Description/*[local-name() = "hasModel"]/@rdf:resource', MigrationConstants::NS).map(&:text)
-            work_attributes['cdr_model_type'] = (cdr_model_type.include? 'info:fedora/cdr-model:AggregateWork') ? 'aggregate' : cdr_model_type
+            work_attributes['cdr_model_type'] = rdf_version.xpath('rdf:Description/*[local-name() = "hasModel"]/@rdf:resource', MigrationConstants::NS).map(&:text)
           end
 
           # Create lists of attached files and children
           if rdf_version.to_s.match(/resource/)
-            work_attributes['contained_files'] = rdf_version.xpath("rdf:Description/*[not(local-name()='originalDeposit') and not(local-name() = 'defaultWebObject') and contains(@rdf:resource, 'uuid')]", MigrationConstants::NS)
-            work_attributes['contained_files'].each do |contained_file|
+            contained_files = rdf_version.xpath("rdf:Description/*[not(local-name()='originalDeposit') and not(local-name() = 'defaultWebObject') and contains(@rdf:resource, 'uuid')]", MigrationConstants::NS)
+            contained_files.each do |contained_file|
               tmp_uuid = get_uuid_from_path(contained_file.to_s)
               if !@binary_hash[tmp_uuid].blank?
-                work_attributes['file_full'] << @object_hash[tmp_uuid]
+                work_attributes['contained_files'] << @object_hash[tmp_uuid]
               elsif !@object_hash[tmp_uuid].blank? && tmp_uuid != uuid
                 @parent_hash[uuid] << tmp_uuid
               end
             end
 
-            if work_attributes['file_full'].count > 1
+            if work_attributes['contained_files'].count > 1
               representative = rdf_version.xpath('rdf:Description/*[local-name() = "defaultWebObject"]/@rdf:resource', MigrationConstants::NS).to_s.split('/')[1]
               if representative
                 representative = @object_hash['2f847077-7060-445b-99b3-190e7cff0067']
-                work_attributes['file_full'] -= [representative]
-                work_attributes['file_full'] = [representative] + work_attributes['file_full']
+                work_attributes['contained_files'] -= [representative]
+                work_attributes['contained_files'] = [representative] + work_attributes['contained_files']
               end
             end
           end
