@@ -58,9 +58,21 @@ export default class UncVisibilityComponent extends VisibilityComponent {
         }
     }
 
+    enableAllOptions() {
+        this.element.find("[type='radio']").prop("disabled", false);
+        this.getEmbargoDateInput().prop("disabled", false);
+        this.getVisibilityAfterEmbargoInput().prop("disabled", false);
+
+        // [hyc-override] Override to select "Public" if no restrictions are in place
+        if (this.isNewFile()) {
+            this.element.find("[type='radio'][value='open']").prop('checked', true);
+        }
+    }
+
     // Enable one or more visibility option (based on array of passed in options),
     // disabling all other options
     // If embargoes are enabled Hyrax will use this method to determine visibility
+    // [hyc-override] Override to gray out disallowed options
     enableVisibilityOptions(options) {
         let matchEnabled = this.getMatcherForVisibilities(this.leastRestrictiveStatus(options));
         let matchDisabled = this.getMatcherForNotVisibilities(options);
@@ -83,7 +95,31 @@ export default class UncVisibilityComponent extends VisibilityComponent {
         disallowed_fields.parent().addClass('highlight-disabled');
     }
 
+    // Disable one or more visibility option (based on array of passed in options),
+    // disabling all other options
+    // [hyc-override] Override to gray out embargo option if embargo isn't allowed, but visibility options are set to "Allow All"
+    // [hyc-override] Override to select "Public" if embargo isn't allowed, but visibility options are set to "Allow All"
+    disableVisibilityOptions(options) {
+        let matchDisabled = this.getMatcherForVisibilities(options);
+        let matchEnabled = this.getMatcherForNotVisibilities(options);
+
+        // Disable those matching "matchDisabled" (if any), and enable all that match "matchEnabled"
+        if(matchDisabled) {
+            let disabledField = this.element.find(matchDisabled);
+            disabledField.prop("disabled", true);
+            disabledField.parent().addClass('highlight-disabled');
+        }
+        let enabledField = this.element.find(matchEnabled);
+        enabledField.prop("disabled", false);
+        enabledField.parent().removeClass('highlight-disabled');
+
+        if (this.isNewFile()) {
+            enabledField.first().prop('checked', true);
+        }
+    }
+
     // If embargoes aren't enabled Hyrax will use this method to determine visibility
+    // [hyc-override] Override to gray out disallowed options
     selectVisibility(visibility) {
         let allowed_fields = this.element.find("[type='radio'][value='" + visibility + "']");
 
