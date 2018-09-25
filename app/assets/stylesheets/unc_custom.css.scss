@@ -381,6 +381,10 @@ div.unc-citation-modal {
   span.institution_name {
     font-size: 12px;
   }
+
+  dl.work-show {
+    margin-left: 75px;
+  }
 }
 
 @media only screen and (max-width: 950px) {
@@ -450,6 +454,11 @@ div.unc-citation-modal {
   .social {
     margin-bottom: 15px;
   }
+
+  /* Hyrax overrides */
+  .fileinput-button {
+    margin-bottom: .2em;
+  }
 }
 
 @media only screen and (max-width: 800px) {
@@ -497,11 +506,6 @@ div.unc-citation-modal {
   .nav {
     padding-left: 15px;
   }
-
-  /* Hyrax overrides */
-  .fileinput-button {
-    margin-bottom: .2em;
-  }
 }
 
 @media only screen and (max-width: 480px) {
@@ -539,5 +543,9 @@ div.unc-citation-modal {
       display: block;
       margin-top: 5px;
     }
+  }
+
+  dl.work-show {
+    margin-left: auto;
   }
 }
