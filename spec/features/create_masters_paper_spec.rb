@@ -34,15 +34,11 @@ RSpec.feature 'Create a MastersPaper', js: false do
       Hyrax::PermissionTemplate.create!(source_id: dept_admin_set.id)
     end
 
-    let(:workflow) do
-      Sipity::Workflow.create(name: 'test', allows_access_grant: true, active: true,
-                              permission_template_id: permission_template.id)
-    end
+    let(:workflow) { Sipity::Workflow.find_by!(name: 'default', permission_template: permission_template) }
+    let(:dept_workflow) { Sipity::Workflow.find_by!(name: 'default', permission_template: dept_permission_template) }
+    let(:admin_agent) { Sipity::Agent.where(proxy_for_id: admin_user.id, proxy_for_type: 'User').first_or_create }
+    let(:user_agent) { Sipity::Agent.where(proxy_for_id: user.id, proxy_for_type: 'User').first_or_create }
 
-    let(:dept_workflow) do
-      Sipity::Workflow.create(name: 'test', allows_access_grant: true, active: true,
-                              permission_template_id: dept_permission_template.id)
-    end
 
     before do
       Hyrax::PermissionTemplateAccess.create(permission_template: dept_permission_template,
@@ -53,8 +49,26 @@ RSpec.feature 'Create a MastersPaper', js: false do
                                              agent_type: 'user',
                                              agent_id: admin_user.user_key,
                                              access: 'deposit')
-      Sipity::WorkflowAction.create(id: 4, name: 'show', workflow_id: workflow.id)
-      Sipity::WorkflowAction.create(id: 5, name: 'show', workflow_id: dept_workflow.id)
+      Hyrax::Workflow::WorkflowImporter.generate_from_json_file(path: Rails.root.join('config',
+                                                                                      'workflows',
+                                                                                      'default_workflow.json'),
+                                                                permission_template: permission_template)
+      Hyrax::Workflow::WorkflowImporter.generate_from_json_file(path: Rails.root.join('config',
+                                                                                      'workflows',
+                                                                                      'default_workflow.json'),
+                                                                permission_template: dept_permission_template)
+      Hyrax::Workflow::PermissionGenerator.call(roles: 'approving', workflow: dept_workflow, agents: user_agent)
+      Hyrax::Workflow::PermissionGenerator.call(roles: 'depositing', workflow: dept_workflow, agents: user_agent)
+      Hyrax::Workflow::PermissionGenerator.call(roles: 'approving', workflow: dept_workflow, agents: admin_agent)
+      Hyrax::Workflow::PermissionGenerator.call(roles: 'depositing', workflow: dept_workflow, agents: admin_agent)
+      Hyrax::Workflow::PermissionGenerator.call(roles: 'approving', workflow: workflow, agents: admin_agent)
+      Hyrax::Workflow::PermissionGenerator.call(roles: 'depositing', workflow: workflow, agents: admin_agent)
+      permission_template.available_workflows.first.update!(active: true)
+      dept_permission_template.available_workflows.first.update!(active: true)
+
+
+      # Sipity::WorkflowAction.create(id: 4, name: 'show', workflow_id: workflow.id)
+      # Sipity::WorkflowAction.create(id: 5, name: 'show', workflow_id: dept_workflow.id)
       DefaultAdminSet.create(work_type_name: 'MastersPaper', admin_set_id: admin_set.id)
       DefaultAdminSet.create(work_type_name: 'MastersPaper',
                              department: 'Department of City and Regional Planning',
@@ -101,6 +115,11 @@ RSpec.feature 'Create a MastersPaper', js: false do
       expect(page).to have_content 'Test Default Keyword'
       expect(page).to_not have_content 'In Administrative Set: dept admin set'
       expect(page).to have_content 'Type http://purl.org/dc/dcmitype/Text'
+
+      expect(page).to have_content 'Edit'
+      click_link 'Edit'
+
+      expect(page).to have_content 'Edit Work'
     end
 
     scenario 'as an admin' do
@@ -145,6 +164,10 @@ RSpec.feature 'Create a MastersPaper', js: false do
       expect(page).to have_content 'Test Default Keyword'
       expect(page).to have_content 'In Administrative Set: masters paper admin set'
       expect(page).to have_content 'Type http://purl.org/dc/dcmitype/Image'
+
+      click_link 'Edit'
+
+      expect(page).to have_content 'Edit Work'
     end
   end
 end
