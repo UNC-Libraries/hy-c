@@ -28,6 +28,48 @@ RSpec.describe Hyrax::WorkflowPresenter do
     end
   end
 
+  describe "#is_mfa_in_review?" do
+    let(:workflow) { create(:workflow, name: 'testing') }
+
+    subject { presenter.is_mfa_in_review? }
+
+    context 'with a Sipity::Entity marked as Pending Review and Art MFA Workflow' do
+      before do
+        allow(entity).to receive(:workflow_state_name).and_return('pending_review')
+        allow(entity).to receive(:workflow_name).and_return('art_mfa_deposit')
+        allow(presenter).to receive(:sipity_entity).and_return(entity)
+      end
+      it { is_expected.to be true }
+    end
+
+    context 'with a Sipity::Entity marked as Pending Review and Test Workflow' do
+      before do
+        allow(entity).to receive(:workflow_state_name).and_return('pending_review')
+        allow(entity).to receive(:workflow_name).and_return('test_workflow')
+        allow(presenter).to receive(:sipity_entity).and_return(entity)
+      end
+      it { is_expected.to be false }
+    end
+
+    context 'with a Sipity::Entity marked as Deposited and Art MFA Workflow' do
+      before do
+        allow(entity).to receive(:workflow_state_name).and_return('deposited')
+        allow(entity).to receive(:workflow_name).and_return('art_mfa_deposit')
+        allow(presenter).to receive(:sipity_entity).and_return(entity)
+      end
+      it { is_expected.to be false }
+    end
+
+    context 'with a Sipity::Entity marked as Deposited and Test Workflow' do
+      before do
+        allow(entity).to receive(:workflow_state_name).and_return('deposited')
+        allow(entity).to receive(:workflow_name).and_return('test_workflow')
+        allow(presenter).to receive(:sipity_entity).and_return(entity)
+      end
+      it { is_expected.to be false }
+    end
+  end
+
   describe "#in_workflow_state?" do
     let(:workflow) { create(:workflow, name: 'testing') }
 
