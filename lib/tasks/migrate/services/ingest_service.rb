@@ -5,9 +5,6 @@ module Migrate
 
     class IngestService
 
-      attr_accessor :collection_ids_file, :object_hash, :binary_hash, :work_type, :child_work_type, :mapping_file,
-                    :collection_name, :depositor
-
       def initialize(config, object_hash, binary_hash, mapping_file, depositor)
         @config = config
         @collection_ids_file = config['collection_list']

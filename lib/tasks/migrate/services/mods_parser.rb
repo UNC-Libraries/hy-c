@@ -2,8 +2,6 @@ module Migrate
   module Services
     class ModsParser
 
-      attr_accessor :metadata_file, :object_hash, :binary_hash, :parent_hash, :collection_name, :depositor
-
       def initialize(metadata_file, object_hash, binary_hash, parent_hash, collection_name, depositor)
         @metadata_file = metadata_file
         @object_hash = object_hash

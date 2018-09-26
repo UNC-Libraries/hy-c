@@ -2,8 +2,6 @@ module Migrate
   module Services
     class IdMapper
 
-      attr_accessor :filename
-
       def initialize(filename)
         @filename = filename
         create_csv
