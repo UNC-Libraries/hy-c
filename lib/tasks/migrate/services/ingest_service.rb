@@ -35,7 +35,11 @@ module Migrate
 
         # get metadata for each record
         collection_uuids.each do |uuid|
-          work_attributes = Migrate::Services::ModsParser.new(@object_hash[uuid], @object_hash, @binary_hash, @collection_name).parse
+          work_attributes = Migrate::Services::ModsParser.new(@object_hash[uuid],
+                                                              @object_hash,
+                                                              @binary_hash,
+                                                              @collection_name,
+                                                              @depositor).parse
           new_work = work_record(work_attributes)
           new_work.save!
 
@@ -51,12 +55,15 @@ module Migrate
           # Create children
           if !work_attributes['cdr_model_type'].blank? &&
               (work_attributes['cdr_model_type'].include? 'info:fedora/cdr-model:AggregateWork')
-            # { resource: work_record(work_attributes), files: work_attributes['file_full'] }
-            if !@child_work_type.blank?
+            if @child_work_type.blank?
               # attach children as filesets
               work_attributes['contained_files'].each do |file|
                 metadata_file = @object_hash[get_uuid_from_path(file)]
-                fileset_attrs = file_record(Migrate::Services::ModsParser.new(metadata_file, @object_hash, @binary_hash, @collection_name).parse)
+                fileset_attrs = file_record(Migrate::Services::ModsParser.new(metadata_file,
+                                                                              @object_hash,
+                                                                              @binary_hash,
+                                                                              @collection_name,
+                                                                              @depositor).parse)
                 fileset = create_fileset(parent: new_work, resource: fileset_attrs, file: file)
 
                 # Record old and new ids for works

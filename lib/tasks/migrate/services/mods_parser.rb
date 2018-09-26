@@ -2,13 +2,14 @@ module Migrate
   module Services
     class ModsParser
 
-      attr_accessor :metadata_file, :object_hash, :binary_hash, :collection_name
+      attr_accessor :metadata_file, :object_hash, :binary_hash, :collection_name, :depositor
 
-      def initialize(metadata_file, object_hash, binary_hash, collection_name)
+      def initialize(metadata_file, object_hash, binary_hash, collection_name, depositor)
         @metadata_file = metadata_file
         @object_hash = object_hash
         @binary_hash = binary_hash
         @collection_name = collection_name
+        @depositor = depositor
       end
 
       def parse
@@ -207,20 +208,18 @@ module Migrate
 
 
         # Add work to specified collection
-        work_attributes['collection'] = Collection.where(title: @collection_name).first
+        work_attributes['member_of_collections'] = Array(Collection.where(title: @collection_name).first)
         # Create collection if it does not yet exist
-        if !@collection_name.blank? && work_attributes['collection'].blank?
+        if !@collection_name.blank? && work_attributes['member_of_collections'].first.blank?
           user_collection_type = Hyrax::CollectionType.where(title: 'User Collection').first.gid
-          work_attributes['collection'] = Collection.create(title: [@collection_name],
+          work_attributes['member_of_collections'] = Array(Collection.create(title: [@collection_name],
                                          depositor: @depositor.uid,
-                                         collection_type_gid: user_collection_type)
+                                         collection_type_gid: user_collection_type))
         end
 
         work_attributes['admin_set_id'] = (AdminSet.where(title: @admin_set).first || AdminSet.where(title: ENV['DEFAULT_ADMIN_SET']).first).id
-        work_attributes['member_of_collections'] = [Collection.where(title: @collection_name).first]
 
-
-        work_attributes.reject!{|k,v| v.blank? || v.empty?}
+        work_attributes.reject!{|k,v| v.blank?}
       end
 
       private
