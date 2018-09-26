@@ -139,6 +139,8 @@ module Hyrax
 
       # Validate the selected release settings against template, checking for when embargoes/leases are not allowed
       def validate_release_type(env, intention, template)
+        # [hyc-override] Overriding actor to allow admins to create embargoes even if not allowed by the admin set policy
+        return true if env.current_ability.admin?
         # It's valid as long as embargo is not specified when a template requires no release delays
         return true unless intention.wants_embargo? && template.present? && template.release_no_delay?
 
