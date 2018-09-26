@@ -2,12 +2,13 @@ module Migrate
   module Services
     class ModsParser
 
-      attr_accessor :metadata_file, :object_hash, :binary_hash, :collection_name, :depositor
+      attr_accessor :metadata_file, :object_hash, :binary_hash, :parent_hash, :collection_name, :depositor
 
-      def initialize(metadata_file, object_hash, binary_hash, collection_name, depositor)
+      def initialize(metadata_file, object_hash, binary_hash, parent_hash, collection_name, depositor)
         @metadata_file = metadata_file
         @object_hash = object_hash
         @binary_hash = binary_hash
+        @parent_hash = parent_hash
         @collection_name = collection_name
         @depositor = depositor
       end
@@ -219,7 +220,7 @@ module Migrate
 
         work_attributes['admin_set_id'] = (AdminSet.where(title: @admin_set).first || AdminSet.where(title: ENV['DEFAULT_ADMIN_SET']).first).id
 
-        work_attributes.reject!{|k,v| v.blank?}
+        { work_attributes: work_attributes.reject!{|k,v| v.blank?}, parent_hash: @parent_hash }
       end
 
       private

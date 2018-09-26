@@ -35,11 +35,16 @@ module Migrate
 
         # get metadata for each record
         collection_uuids.each do |uuid|
-          work_attributes = Migrate::Services::ModsParser.new(@object_hash[uuid],
+          parsed_data = Migrate::Services::ModsParser.new(@object_hash[uuid],
                                                               @object_hash,
                                                               @binary_hash,
+                                                              @parent_hash,
                                                               @collection_name,
                                                               @depositor).parse
+          work_attributes = parsed_data[:work_attributes]
+          @parent_hash = parsed_data[:parent_hash]
+
+          # Create new work record and save
           new_work = work_record(work_attributes)
           new_work.save!
 
@@ -59,11 +64,15 @@ module Migrate
               # attach children as filesets
               work_attributes['contained_files'].each do |file|
                 metadata_file = @object_hash[get_uuid_from_path(file)]
-                fileset_attrs = file_record(Migrate::Services::ModsParser.new(metadata_file,
+                parsed_file_data = Migrate::Services::ModsParser.new(metadata_file,
                                                                               @object_hash,
                                                                               @binary_hash,
+                                                                              @parent_hash,
                                                                               @collection_name,
-                                                                              @depositor).parse)
+                                                                              @depositor).parse
+                fileset_attrs = file_record(parsed_file_data[:work_attributes])
+                @parent_hash = parsed_file_data[:parent_hash]
+
                 fileset = create_fileset(parent: new_work, resource: fileset_attrs, file: file)
 
                 # Record old and new ids for works
