@@ -67,7 +67,6 @@ RSpec.feature 'Edit a work', js: false do
       choose 'article_visibility_open'
       check 'agreement'
 
-      click_link 'Files' # switch tab
       within '//span[@id=addfiles]' do
         attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'))
       end

@@ -68,7 +68,6 @@ RSpec.feature 'Create a DataSet', js: false do
       
       expect(page).not_to have_selector('#data_set_dcmi_type')
 
-      click_link "Files" # switch tab
       within "//span[@id=addfiles]" do
         attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'))
       end
@@ -112,7 +111,6 @@ RSpec.feature 'Create a DataSet', js: false do
       expect(page).to have_selector("input[value='http://purl.org/dc/dcmitype/Dataset']")
       fill_in 'Dcmi type', with: 'http://purl.org/dc/dcmitype/Image'
 
-      click_link "Files" # switch tab
       within "//span[@id=addfiles]" do
         attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'))
       end
