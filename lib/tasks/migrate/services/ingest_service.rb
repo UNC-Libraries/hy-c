@@ -67,10 +67,10 @@ module Migrate
                                                                               @parent_hash,
                                                                               @collection_name,
                                                                               @depositor).parse
-                fileset_attrs = file_record(parsed_file_data[:work_attributes])
+                fileset_attrs = file_record(work_attributes.merge(parsed_file_data[:work_attributes]) { |k, old, new| new })
                 @parent_hash = parsed_file_data[:parent_hash]
 
-                fileset = create_fileset(parent: new_work, resource: fileset_attrs, file: file)
+                fileset = create_fileset(parent: new_work, resource: fileset_attrs, file: @binary_hash[get_uuid_from_path(file)])
 
                 # Record old and new ids for works
                 id_mapper.add_row([get_uuid_from_path(file), fileset.id])
@@ -86,6 +86,8 @@ module Migrate
             # use same metadata for work and fileset
             work_attributes['contained_files'].each do |file|
               binary_file = @binary_hash[get_uuid_from_path(file)]
+              work_attributes['title'] = work_attributes['dc_title']
+              work_attributes['label'] = work_attributes['dc_title']
               fileset_attrs = file_record(work_attributes)
               fileset = create_fileset(parent: new_work, resource: fileset_attrs, file: binary_file)
 
@@ -110,7 +112,7 @@ module Migrate
         actor.create_metadata(resource.slice(:visibility, :visibility_during_lease, :visibility_after_lease,
                                              :lease_expiration_date, :embargo_release_date, :visibility_during_embargo,
                                              :visibility_after_embargo))
-        actor.create_content(File.open(file))
+        actor.create_content(Hyrax::UploadedFile.create(file: File.open(file), user: @depositor))
         actor.attach_to_work(parent)
 
         file_set
