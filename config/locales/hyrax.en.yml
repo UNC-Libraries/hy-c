@@ -81,7 +81,7 @@ en:
     works:
       form:
         tab:
-          metadata: Create/Edit Work
+          metadata: Work
   simple_form:
     labels:
       defaults:

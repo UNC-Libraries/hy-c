@@ -1,15 +1,14 @@
 <%# [hyc-override] Overriding partial in hyrax to merge description and file tabs %>
 
 <% # we will yield to content_for for each tab, e.g. :files_tab %>
-<% tabs ||= %w[metadata files relationships] # default tab order %>
+<%# [hyc-override] Don't create "Files" tab %>
+<% tabs ||= %w[metadata relationships] # default tab order %>
 <div class="row">
   <div class="col-xs-12 col-sm-8">
     <div class="panel panel-default tabs" role="main">
       <!-- Nav tabs -->
       <ul class="nav nav-tabs" role="tablist">
         <% tabs.each_with_index do | tab, i | %>
-          <%# [hyc-override] Don't create "Files" tab %>
-          <% if tab != 'files' %>
             <% if i == 0 %>
               <li role="presentation" class="active">
             <% else %>
@@ -19,7 +18,6 @@
               <%= t("hyrax.works.form.tab.#{tab}") %>
             </a>
             </li>
-          <% end %>
         <% end %>
 
         <li role="presentation" id="tab-share" class="hidden">
@@ -41,16 +39,15 @@
           <%# [hyc-override] only show files partial on metadata page %>
           <% if tab == 'metadata' %>
             <%= render 'form_files' %>
+            <hr class="file-upload-divider">
           <% end %>
 
           <%# [hyc-override] Don't add undisplayable "files" tab text to dom %>
-          <% if tab != 'files' %>
             <div class="form-tab-content">
               <% # metadata_tab is sometimes provided %>
               <%= yield "#{tab}_tab".to_sym if content_for? "#{tab}_tab".to_sym %>
               <%= render "form_#{tab}", f: f %>
             </div>
-          <% end %>
           </div>
         <% end %>
 

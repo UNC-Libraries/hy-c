@@ -329,8 +329,16 @@ div.unc-citation-modal {
   padding-left: 15px;
 }
 
-#fileupload {
-  margin-bottom: 75px;
+.dropzone {
+  margin: 0 auto;
+  width: 95%;
+}
+
+.file-upload-divider {
+  height: 1px;
+  width: 95%;
+  background-color: $carolina-blue-dark;
+  margin: 40px auto;
 }
 
 @media only screen and (max-width: 1600px) {
