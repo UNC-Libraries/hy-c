@@ -1,7 +1,7 @@
-# app/services/masters_degrees_service.rb
-module MastersDegreesService
+# app/services/degrees_service.rb
+module DegreesService
   mattr_accessor :authority
-  self.authority = Qa::Authorities::Local.subauthority_for('masters_degrees')
+  self.authority = Qa::Authorities::Local.subauthority_for('degrees')
 
   def self.select_all_options
     authority.all.map do |element|
