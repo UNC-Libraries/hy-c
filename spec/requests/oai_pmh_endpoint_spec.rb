@@ -17,7 +17,7 @@ RSpec.describe 'OAI-PMH catalog endpoint' do
 
     solrRecords = ActiveFedora::SolrService.get('has_model_ssim:(Dissertation OR Article OR MastersPaper OR '+
                                                     'HonorsThesis OR Journal OR DataSet OR Multimed OR ScholarlyWork '+
-                                                    'OR General) AND visibility_ssi:open', rows: 60)
+                                                    'OR General OR ArtWork) AND visibility_ssi:open', rows: 60)
     solrRecords['response']['docs'].each do |doc|
       timestamps << doc['timestamp']
     end
