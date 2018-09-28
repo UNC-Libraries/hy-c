@@ -38,7 +38,9 @@
 
           <%# [hyc-override] only show files partial on metadata page %>
           <% if tab == 'metadata' %>
-            <%= render 'form_files' %>
+            <div class="table-responsive">
+              <%= render 'form_files' %>
+            </div>
             <hr class="file-upload-divider">
           <% end %>
 

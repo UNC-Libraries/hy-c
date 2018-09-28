@@ -341,6 +341,20 @@ div.unc-citation-modal {
   margin: 40px auto;
 }
 
+div.fileupload-progress {
+  height: 0;
+}
+
+table p.name span {
+  word-break: break-word;
+  display: block;
+}
+
+.progress-bar-active {
+  height: auto;
+  overflow: auto
+}
+
 @media only screen and (max-width: 1600px) {
   #masthead {
     .navbar-header {
