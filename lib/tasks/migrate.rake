@@ -232,7 +232,7 @@ namespace :cdr do
           'keyword'=>keywords,
           'date_modified'=>(Date.try(:edtf, date_modified) || date_modified).to_s,
           'contributor'=>contributors,
-          'description'=>[description],
+          'description'=>description,
           'identifier'=>identifier,
           'related_url' => related_url,
           'publisher'=>[publisher],
