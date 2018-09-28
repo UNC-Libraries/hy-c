@@ -38,7 +38,7 @@ RSpec.describe Hyrax::ScholarlyWorkForm do
           title: 'foo', # single-valued
           creator: ['someone@example.com'],
           date_created: 'a date', # single-valued
-          description: ['a description'],
+          description: 'a description', # single-valued
           subject: ['a subject'],
           language: ['a language'],
           keyword: ['test'],
@@ -69,7 +69,7 @@ RSpec.describe Hyrax::ScholarlyWorkForm do
       expect(subject['title']).to eq ['foo']
       expect(subject['creator']).to eq ['someone@example.com']
       expect(subject['date_created']).to eq ['a date']
-      expect(subject['description']).to eq ['a description']
+      expect(subject['description']).to eq 'a description'
       expect(subject['doi']).to eq '12345'
       expect(subject['subject']).to eq ['a subject']
       expect(subject['language']).to eq ['a language']
