@@ -78,6 +78,10 @@ en:
     relationships_parent_rows:
       empty_text: "This work has no parents."
       label: "Parents:"
+    works:
+      form:
+        tab:
+          metadata: Work
   simple_form:
     labels:
       defaults:
