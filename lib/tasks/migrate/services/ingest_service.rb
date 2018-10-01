@@ -23,7 +23,7 @@ module Migrate
         @mappings = Hash.new
 
         # Store parent-child relationships
-        @parent_hash = Hash.new {|k,v| k[v] = Array.new }
+        @parent_hash = Hash.new
 
         # get array of record uuids
         collection_uuids = get_collection_uuids
@@ -33,13 +33,13 @@ module Migrate
         # get metadata for each record
         collection_uuids.each do |uuid|
           parsed_data = Migrate::Services::ModsParser.new(@object_hash[uuid],
-                                                              @object_hash,
-                                                              @binary_hash,
-                                                              @parent_hash,
-                                                              @collection_name,
-                                                              @depositor).parse
+                                                          @object_hash,
+                                                          @binary_hash,
+                                                          collection_uuids,
+                                                          @collection_name,
+                                                          @depositor).parse
           work_attributes = parsed_data[:work_attributes]
-          @parent_hash = parsed_data[:parent_hash]
+          @parent_hash[uuid] = parsed_data[:child_works] if !parsed_data[:child_works].blank?
 
           # Create new work record and save
           new_work = work_record(work_attributes)
@@ -57,44 +57,41 @@ module Migrate
           # Create children
           if !work_attributes['cdr_model_type'].blank? &&
               (work_attributes['cdr_model_type'].include? 'info:fedora/cdr-model:AggregateWork')
-            if @child_work_type.blank?
               # attach children as filesets
               work_attributes['contained_files'].each do |file|
-                metadata_file = @object_hash[get_uuid_from_path(file)]
-                parsed_file_data = Migrate::Services::ModsParser.new(metadata_file,
-                                                                              @object_hash,
-                                                                              @binary_hash,
-                                                                              @parent_hash,
-                                                                              @collection_name,
-                                                                              @depositor).parse
-                fileset_attrs = file_record(work_attributes.merge(parsed_file_data[:work_attributes]) { |k, old, new| new })
-                @parent_hash = parsed_file_data[:parent_hash]
+                if @object_hash[work_attributes['contained_files']] || @binary_hash[work_attributes['contained_files']]
+                  metadata_file = @object_hash[get_uuid_from_path(file)]
+                  parsed_file_data = Migrate::Services::ModsParser.new(metadata_file,
+                                                                       @object_hash,
+                                                                       @binary_hash,
+                                                                       collection_uuids,
+                                                                       @collection_name,
+                                                                       @depositor).parse
+                  fileset_attrs = file_record(work_attributes.map{ |k, v| parsed_file_data[:work_attributes][k] || v })
 
-                fileset = create_fileset(parent: new_work, resource: fileset_attrs, file: @binary_hash[get_uuid_from_path(file)])
+                  fileset = create_fileset(parent: new_work, resource: fileset_attrs, file: @binary_hash[get_uuid_from_path(file)])
+
+                  # Record old and new ids for works
+                  id_mapper.add_row([get_uuid_from_path(file), fileset.id])
+
+                  ordered_members << fileset
+                end
+              end
+          else
+            # use same metadata for work and fileset
+            if !work_attributes['contained_files'].blank?
+              work_attributes['contained_files'].each do |file|
+                binary_file = @binary_hash[get_uuid_from_path(file)]
+                work_attributes['title'] = work_attributes['dc_title']
+                work_attributes['label'] = work_attributes['dc_title']
+                fileset_attrs = file_record(work_attributes)
+                fileset = create_fileset(parent: new_work, resource: fileset_attrs, file: binary_file)
 
                 # Record old and new ids for works
                 id_mapper.add_row([get_uuid_from_path(file), fileset.id])
-                
+
                 ordered_members << fileset
               end
-            else
-              # attach children as child works (add to parent hash)
-              # assuming that child work uuids will be listed in collection csv
-              @parent_hash[uuid] = work_attributes['contained_files']
-            end
-          else
-            # use same metadata for work and fileset
-            work_attributes['contained_files'].each do |file|
-              binary_file = @binary_hash[get_uuid_from_path(file)]
-              work_attributes['title'] = work_attributes['dc_title']
-              work_attributes['label'] = work_attributes['dc_title']
-              fileset_attrs = file_record(work_attributes)
-              fileset = create_fileset(parent: new_work, resource: fileset_attrs, file: binary_file)
-
-              # Record old and new ids for works
-              id_mapper.add_row([get_uuid_from_path(file), fileset.id])
-
-              ordered_members << fileset
             end
           end
 
@@ -112,8 +109,13 @@ module Migrate
         actor.create_metadata(resource.slice(:visibility, :visibility_during_lease, :visibility_after_lease,
                                              :lease_expiration_date, :embargo_release_date, :visibility_during_embargo,
                                              :visibility_after_embargo))
-        actor.create_content(Hyrax::UploadedFile.create(file: File.open(file), user: @depositor))
+        renamed_file = "/tmp/migration/#{parent.id}/#{resource['title'].first}"
+        FileUtils.mkpath("/tmp/migration/#{parent.id}")
+        FileUtils.cp(file, renamed_file)
+        actor.create_content(Hyrax::UploadedFile.create(file: File.open(renamed_file), user: @depositor))
         actor.attach_to_work(parent)
+
+        File.delete(renamed_file)
 
         file_set
       end
@@ -139,8 +141,8 @@ module Migrate
         end
 
         def work_record(work_attributes)
-          # FIXME: changing determination of parent/child work type
-          if !@child_work_type.blank? && work_attributes['cdr_model_type'] != 'aggregate'
+          if !@child_work_type.blank? && !work_attributes['cdr_model_type'].blank? &&
+              !(work_attributes['cdr_model_type'].include? 'info:fedora/cdr-model:AggregateWork')
             resource = @child_work_type.singularize.classify.constantize.new
           else
             resource = @work_type.singularize.classify.constantize.new
