@@ -45,4 +45,13 @@ $(function() {
             progess_bar.removeClass('progress-bar-active');
         }
     }());
+
+    (function hideNonRequiredFormFields() {
+        // Remove class to hide non-required fields
+        // Isn't there by default so fields still show if JS is turned off
+        $('#extended-terms').removeClass('in').attr('aria-expanded', false);
+
+        // Set to false if JS is turned on
+        $('a.additional-fields').attr('aria-expanded', false);
+    }());
 });
