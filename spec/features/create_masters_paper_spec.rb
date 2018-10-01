@@ -91,6 +91,7 @@ RSpec.feature 'Create a MastersPaper', js: false do
       select "In Copyright", :from => "masters_paper_rights_statement"
       expect(page).to have_field('masters_paper_visibility_embargo')
       expect(page).not_to have_field('masters_paper_visibility_lease')
+      expect(page).to have_select('masters_paper_resource_type', selected: 'Masters Paper')
       choose "masters_paper_visibility_open"
       check 'agreement'
       
@@ -137,6 +138,7 @@ RSpec.feature 'Create a MastersPaper', js: false do
       select "In Copyright", :from => "masters_paper_rights_statement"
       expect(page).to have_field('masters_paper_visibility_embargo')
       expect(page).not_to have_field('masters_paper_visibility_lease')
+      expect(page).to have_select('masters_paper_resource_type', selected: 'Masters Paper')
       choose "masters_paper_visibility_open"
       check 'agreement'
       

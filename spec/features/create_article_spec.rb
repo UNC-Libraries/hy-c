@@ -62,6 +62,7 @@ RSpec.feature 'Create a Article', js: false do
       select "In Copyright", :from => "article_rights_statement"
       expect(page).to have_field('article_visibility_embargo')
       expect(page).not_to have_field('article_visibility_lease')
+      expect(page).to have_select('article_resource_type', selected: 'Article')
       choose "article_visibility_open"
       check 'agreement'
       
@@ -104,6 +105,7 @@ RSpec.feature 'Create a Article', js: false do
       select "In Copyright", :from => "article_rights_statement"
       expect(page).to have_field('article_visibility_embargo')
       expect(page).not_to have_field('article_visibility_lease')
+      expect(page).to have_select('article_resource_type', selected: 'Article')
       choose "article_visibility_open"
       check 'agreement'
       
