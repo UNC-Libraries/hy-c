@@ -1,0 +1,6 @@
+## config/authorities/degrees.yml
+terms:
+  - id: Master of Science in Information Science
+    term: Master of Science in Information Science
+  - id: Master of Science in Library Science
+    term: Master of Science in Library Science

@@ -1,8 +1,0 @@
-<%# app/views/records/edit_fields/_degree.erb %>
-<%= f.input :degree, as: :select,
-            collection: MastersDegreesService.select_all_options,
-            include_blank: true,
-            item_helper: MastersDegreesService.method(:include_current_value),
-            label: 'Degree',
-            input_html: { class: 'form-control' }
-%>

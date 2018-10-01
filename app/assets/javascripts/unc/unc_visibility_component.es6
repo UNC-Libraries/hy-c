@@ -40,27 +40,94 @@ export default class UncVisibilityComponent extends VisibilityComponent {
         return is_admin;
     }
 
+    isNewFile() {
+        return /\/new/.test(window.location);
+    }
+
+    leastRestrictiveStatus(options) {
+        if (options.indexOf('open') !== -1) {
+            return ['open'];
+        } else if (options.indexOf('authenticated') !== -1) {
+            return ['authenticated'];
+        } else if (options.indexOf('embargo') !== -1) {
+            return ['embargo'];
+        } else if (options.indexOf('restricted') !== -1) {
+            return ['restricted'];
+        } else {
+            return ['open'];
+        }
+    }
+
+    enableAllOptions() {
+        this.element.find("[type='radio']").prop("disabled", false);
+        this.getEmbargoDateInput().prop("disabled", false);
+        this.getVisibilityAfterEmbargoInput().prop("disabled", false);
+
+        // [hyc-override] Override to select "Public" if no restrictions are in place
+        if (this.isNewFile()) {
+            this.element.find("[type='radio'][value='open']").prop('checked', true);
+        }
+    }
+
     // Enable one or more visibility option (based on array of passed in options),
     // disabling all other options
     // If embargoes are enabled Hyrax will use this method to determine visibility
+    // [hyc-override] Override to gray out disallowed options
     enableVisibilityOptions(options) {
-        let matchEnabled = this.getMatcherForVisibilities(options)
-        let matchDisabled = this.getMatcherForNotVisibilities(options)
+        let matchEnabled = this.getMatcherForVisibilities(this.leastRestrictiveStatus(options));
+        let matchDisabled = this.getMatcherForNotVisibilities(options);
 
         // Enable all that match "matchEnabled" (if any), and disable those matching "matchDisabled"
         if(matchEnabled) {
             let allowed_fields = this.element.find(matchEnabled);
             allowed_fields.prop("disabled", false);
+
+            // Set to allowed visibility if new file
+            if (this.isNewFile()) {
+                allowed_fields.prop('checked', true);
+                this.openSelected();
+            }
+
             allowed_fields.parent().removeClass('highlight-disabled')
         }
-        let disallowed__fields = this.element.find(matchDisabled);
-        disallowed__fields.prop("disabled", true);
-        disallowed__fields.parent().addClass('highlight-disabled');
+        let disallowed_fields = this.element.find(matchDisabled);
+        disallowed_fields.prop("disabled", true);
+        disallowed_fields.parent().addClass('highlight-disabled');
+    }
+
+    // Disable one or more visibility option (based on array of passed in options),
+    // disabling all other options
+    // [hyc-override] Override to gray out embargo option if embargo isn't allowed, but visibility options are set to "Allow All"
+    // [hyc-override] Override to select "Public" if embargo isn't allowed, but visibility options are set to "Allow All"
+    disableVisibilityOptions(options) {
+        let matchDisabled = this.getMatcherForVisibilities(options);
+        let matchEnabled = this.getMatcherForNotVisibilities(options);
+
+        // Disable those matching "matchDisabled" (if any), and enable all that match "matchEnabled"
+        if(matchDisabled) {
+            let disabledField = this.element.find(matchDisabled);
+            disabledField.prop("disabled", true);
+            disabledField.parent().addClass('highlight-disabled');
+        }
+        let enabledField = this.element.find(matchEnabled);
+        enabledField.prop("disabled", false);
+        enabledField.parent().removeClass('highlight-disabled');
+
+        if (this.isNewFile()) {
+            enabledField.first().prop('checked', true);
+        }
     }
 
     // If embargoes aren't enabled Hyrax will use this method to determine visibility
+    // [hyc-override] Override to gray out disallowed options
     selectVisibility(visibility) {
         let allowed_fields = this.element.find("[type='radio'][value='" + visibility + "']");
+
+        // Set to allowed visibility if new file
+        if (this.isNewFile()) {
+            allowed_fields.prop('checked', true);
+        }
+
         let allowed_parent = allowed_fields.parent();
 
         allowed_fields.prop("disabled", false);

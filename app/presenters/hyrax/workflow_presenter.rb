@@ -1,4 +1,4 @@
-# [hyc-override] Add permission checks to hide withdrawn files
+# [hyc-override]
 module Hyrax
   class WorkflowPresenter
     include ActionView::Helpers::TagHelper
@@ -36,6 +36,13 @@ module Hyrax
       content_tag(:span, state_label, class: "state state-#{state} label label-primary")
     end
 
+    # [hyc-override] Add check to display message to MFA workflow depositor
+    def is_mfa_in_review?
+      return false unless sipity_entity
+      sipity_entity&.workflow_name == 'art_mfa_deposit' && state == 'pending_review'
+    end
+
+    # [hyc-override] Add permission checks to hide withdrawn files
     def in_workflow_state?(test_states = [])
       return false unless state && !test_states.blank?
 
