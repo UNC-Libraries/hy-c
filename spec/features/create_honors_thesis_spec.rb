@@ -63,6 +63,7 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       select "In Copyright", :from => "honors_thesis_rights_statement"
       expect(page).to have_field('honors_thesis_visibility_embargo')
       expect(page).not_to have_field('honors_thesis_visibility_lease')
+      expect(page).to have_select('honors_thesis_resource_type', selected: 'Honors Thesis')
       choose "honors_thesis_visibility_open"
       check 'agreement'
       
@@ -108,6 +109,7 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       select "In Copyright", :from => "honors_thesis_rights_statement"
       expect(page).to have_field('honors_thesis_visibility_embargo')
       expect(page).not_to have_field('honors_thesis_visibility_lease')
+      expect(page).to have_select('honors_thesis_resource_type', selected: 'Honors Thesis')
       choose "honors_thesis_visibility_open"
       check 'agreement'
       

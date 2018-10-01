@@ -63,6 +63,7 @@ RSpec.feature 'Create a DataSet', js: false do
       expect(page).to have_field('data_set_rights_statement')
       expect(page).to have_field('data_set_visibility_embargo')
       expect(page).not_to have_field('data_set_visibility_lease')
+      expect(page).to have_select('data_set_resource_type', selected: 'Dataset')
       choose "data_set_visibility_open"
       check 'agreement'
       
@@ -105,6 +106,7 @@ RSpec.feature 'Create a DataSet', js: false do
       expect(page).to have_field('data_set_rights_statement')
       expect(page).to have_field('data_set_visibility_embargo')
       expect(page).not_to have_field('data_set_visibility_lease')
+      expect(page).to have_select('data_set_resource_type', selected: 'Dataset')
       choose "data_set_visibility_open"
       check 'agreement'
       
