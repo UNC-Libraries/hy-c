@@ -77,4 +77,15 @@ $(function() {
             new Editor(element).init();
         }
     };
+
+    // Make file upload div height larger/smaller based on activity
+    (function() {
+        var progess_bar = $('div.fileupload-progress');
+
+        if (progess_bar.is(':visible')) {
+            progess_bar.addClass('progress-bar-active');
+        } else {
+            progess_bar.removeClass('progress-bar-active');
+        }
+    }());
 });

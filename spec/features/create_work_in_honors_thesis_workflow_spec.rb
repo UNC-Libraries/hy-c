@@ -103,7 +103,6 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
 
       expect(page).not_to have_selector('#honors_thesis_dcmi_type')
 
-      click_link "Files" # switch tab
       within "//span[@id=addfiles]" do
         attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'))
       end

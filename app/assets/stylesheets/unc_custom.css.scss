@@ -324,6 +324,37 @@ div.unc-citation-modal {
   }
 }
 
+.fileupload-buttonbar, #fileupload p {
+  padding-top: 5px;
+  padding-left: 15px;
+}
+
+.dropzone {
+  margin: 0 auto;
+  width: 95%;
+}
+
+.file-upload-divider {
+  height: 1px;
+  width: 95%;
+  background-color: #c0c0c0;
+  margin: 40px auto;
+}
+
+div.fileupload-progress {
+  height: 0;
+}
+
+table p.name span {
+  word-break: break-word;
+  display: block;
+}
+
+.progress-bar-active {
+  height: auto;
+  overflow: auto
+}
+
 @media only screen and (max-width: 1600px) {
   #masthead {
     .navbar-header {
@@ -371,6 +402,10 @@ div.unc-citation-modal {
 
   span.institution_name {
     font-size: 12px;
+  }
+
+  dl.work-show {
+    margin-left: 75px;
   }
 }
 
@@ -440,6 +475,11 @@ div.unc-citation-modal {
 
   .social {
     margin-bottom: 15px;
+  }
+
+  /* Hyrax overrides */
+  .fileinput-button {
+    margin-bottom: .2em;
   }
 }
 
@@ -525,5 +565,9 @@ div.unc-citation-modal {
       display: block;
       margin-top: 5px;
     }
+  }
+
+  dl.work-show {
+    margin-left: auto;
   }
 }

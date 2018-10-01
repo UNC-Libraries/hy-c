@@ -67,7 +67,6 @@ RSpec.feature 'Create a Multimed', js: false do
       
       expect(page).not_to have_selector('#multimed_dcmi_type')
 
-      click_link "Files" # switch tab
       within "//span[@id=addfiles]" do
         attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'))
       end
@@ -106,7 +105,6 @@ RSpec.feature 'Create a Multimed', js: false do
 
       expect(page).to have_selector('#multimed_dcmi_type')
 
-      click_link "Files" # switch tab
       within "//span[@id=addfiles]" do
         attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'))
       end
