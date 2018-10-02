@@ -2,13 +2,14 @@ module Migrate
   module Services
     class ModsParser
 
-      def initialize(metadata_file, object_hash, binary_hash, collection_uuids, collection_name, depositor)
+      def initialize(metadata_file, object_hash, binary_hash, collection_uuids, collection_name, depositor, admin_set)
         @metadata_file = metadata_file
         @object_hash = object_hash
         @binary_hash = binary_hash
         @collection_uuids = collection_uuids
         @collection_name = collection_name
         @depositor = depositor
+        @admin_set = admin_set
       end
 
       def parse

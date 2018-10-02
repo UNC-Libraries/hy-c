@@ -6,11 +6,11 @@ module Migrate
     class IngestService
 
       def initialize(config, object_hash, binary_hash, mapping_file, depositor)
-        @config = config
         @collection_ids_file = config['collection_list']
         @object_hash = object_hash
         @binary_hash = binary_hash
         @work_type = config['work_type']
+        @admin_set = config['admin_set']
         @child_work_type = config['child_work_type']
         @mapping_file = mapping_file
         @collection_name = config['collection_name']
@@ -32,12 +32,15 @@ module Migrate
 
         # get metadata for each record
         collection_uuids.each do |uuid|
+          start_time = Time.now
+          puts "[#{start_time.to_s}] Start migration of #{uuid}"
           parsed_data = Migrate::Services::ModsParser.new(@object_hash[uuid],
                                                           @object_hash,
                                                           @binary_hash,
                                                           collection_uuids,
                                                           @collection_name,
-                                                          @depositor).parse
+                                                          @depositor,
+                                                          @admin_set).parse
           work_attributes = parsed_data[:work_attributes]
           @parent_hash[uuid] = parsed_data[:child_works] if !parsed_data[:child_works].blank?
 
@@ -57,26 +60,27 @@ module Migrate
           # Create children
           if !work_attributes['cdr_model_type'].blank? &&
               (work_attributes['cdr_model_type'].include? 'info:fedora/cdr-model:AggregateWork')
-              # attach children as filesets
-              work_attributes['contained_files'].each do |file|
-                if @object_hash[work_attributes['contained_files']] || @binary_hash[work_attributes['contained_files']]
-                  metadata_file = @object_hash[get_uuid_from_path(file)]
-                  parsed_file_data = Migrate::Services::ModsParser.new(metadata_file,
-                                                                       @object_hash,
-                                                                       @binary_hash,
-                                                                       collection_uuids,
-                                                                       @collection_name,
-                                                                       @depositor).parse
-                  fileset_attrs = file_record(work_attributes.map{ |k, v| parsed_file_data[:work_attributes][k] || v })
+            # attach children as filesets
+            work_attributes['contained_files'].each do |file|
+              metadata_file = @object_hash[get_uuid_from_path(file)]
+              parsed_file_data = Migrate::Services::ModsParser.new(metadata_file,
+                                                                   @object_hash,
+                                                                   @binary_hash,
+                                                                   collection_uuids,
+                                                                   @collection_name,
+                                                                   @depositor,
+                                                                   @admin_set).parse
 
-                  fileset = create_fileset(parent: new_work, resource: fileset_attrs, file: @binary_hash[get_uuid_from_path(file)])
+              file_work_attributes = (parsed_file_data[:work_attributes].blank? ? {} : parsed_file_data[:work_attributes])
+              fileset_attrs = file_record(work_attributes.merge(file_work_attributes))
 
-                  # Record old and new ids for works
-                  id_mapper.add_row([get_uuid_from_path(file), fileset.id])
+              fileset = create_fileset(parent: new_work, resource: fileset_attrs, file: @binary_hash[get_uuid_from_path(file)])
 
-                  ordered_members << fileset
-                end
-              end
+              # Record old and new ids for works
+              id_mapper.add_row([get_uuid_from_path(file), fileset.id])
+
+              ordered_members << fileset
+            end
           else
             # use same metadata for work and fileset
             if !work_attributes['contained_files'].blank?
@@ -96,6 +100,8 @@ module Migrate
           end
 
           new_work.ordered_members = ordered_members
+          end_time = Time.now
+          puts "[#{end_time.to_s}] Completed migration of #{uuid} in #{end_time-start_time} seconds"
         end
 
         if !@child_work_type.blank?
@@ -106,14 +112,18 @@ module Migrate
       def create_fileset(parent: nil, resource: nil, file: nil)
         file_set = FileSet.create(resource)
         actor = Hyrax::Actors::FileSetActor.new(file_set, @depositor)
-        actor.create_metadata(resource.slice(:visibility, :visibility_during_lease, :visibility_after_lease,
-                                             :lease_expiration_date, :embargo_release_date, :visibility_during_embargo,
-                                             :visibility_after_embargo))
-        renamed_file = "/tmp/migration/#{parent.id}/#{resource['title'].first}"
-        FileUtils.mkpath("/tmp/migration/#{parent.id}")
-        FileUtils.cp(file, renamed_file)
+        actor.create_metadata(resource)
+
+        if file.match('DATA_FILE')
+          renamed_file = "/tmp/migration/#{parent.id}/#{Array(resource['title']).first}"
+          FileUtils.mkpath("/tmp/migration/#{parent.id}")
+          FileUtils.cp(file, renamed_file)
+        else
+          renamed_file = file
+        end
+
         actor.create_content(Hyrax::UploadedFile.create(file: File.open(renamed_file), user: @depositor))
-        actor.attach_to_work(parent)
+        actor.attach_to_work(parent, resource)
 
         File.delete(renamed_file)
 
@@ -191,6 +201,12 @@ module Migrate
                 file_attributes[k] = v
               end
             end
+          end
+          file_attributes[:visibility] = work_attributes['visibility']
+          unless work_attributes['embargo_release_date'].blank?
+            file_attributes[:embargo_release_date] = work_attributes['embargo_release_date']
+            file_attributes[:visibility_during_embargo] = work_attributes['visibility_during_embargo']
+            file_attributes[:visibility_after_embargo] = work_attributes['visibility_after_embargo']
           end
 
           file_attributes

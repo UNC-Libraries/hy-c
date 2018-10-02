@@ -12,7 +12,8 @@ namespace :migrate do
   desc 'batch migrate records from FOXML file'
   task :works, [:collection, :configuration_file, :mapping_file] => :environment do |t, args|
 
-    puts "[#{Time.now.to_s}] Start migration of #{args[:collection]}"
+    start_time = Time.now
+    puts "[#{start_time.to_s}] Start migration of #{args[:collection]}"
 
     config = YAML.load_file(args[:configuration_file])
     collection_config = config[args[:collection]]
@@ -53,7 +54,8 @@ namespace :migrate do
       puts 'The default admin set or specified depositor does not exist'
     end
 
-    puts "[#{Time.now.to_s}] Finish migration of #{args[:collection]}"
+    end_time = Time.now
+    puts "[#{end_time.to_s}] Completed migration of #{args[:collection]} in #{end_time-start_time} seconds"
   end
 
   private
