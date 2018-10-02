@@ -63,8 +63,6 @@ RSpec.feature 'Create an Art Work', js: false do
       choose "art_work_visibility_open"
       check 'agreement'
 
-
-      click_link "Files" # switch tab
       within "//span[@id=addfiles]" do
         attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'))
       end
@@ -101,7 +99,6 @@ RSpec.feature 'Create an Art Work', js: false do
       choose "art_work_visibility_open"
       check 'agreement'
 
-      click_link "Files" # switch tab
       within "//span[@id=addfiles]" do
         attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'))
       end
