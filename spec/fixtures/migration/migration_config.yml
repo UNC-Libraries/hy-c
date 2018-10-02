@@ -6,3 +6,4 @@ collection1:
   work_type: Article
   admin_set: default
   depositor_email: admin@example.com
+  tmp_file_location: spec/fixtures/migration/files

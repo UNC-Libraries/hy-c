@@ -15,6 +15,7 @@ module Migrate
         @mapping_file = mapping_file
         @collection_name = config['collection_name']
         @depositor = depositor
+        @tmp_file_location = config['tmp_file_location']
       end
 
       def ingest_records
@@ -115,8 +116,8 @@ module Migrate
         actor.create_metadata(resource)
 
         if file.match('DATA_FILE')
-          renamed_file = "/tmp/migration/#{parent.id}/#{Array(resource['title']).first}"
-          FileUtils.mkpath("/tmp/migration/#{parent.id}")
+          renamed_file = "#{@tmp_file_location}/#{parent.id}/#{Array(resource['title']).first}"
+          FileUtils.mkpath("#{@tmp_file_location}/#{parent.id}")
           FileUtils.cp(file, renamed_file)
         else
           renamed_file = file
