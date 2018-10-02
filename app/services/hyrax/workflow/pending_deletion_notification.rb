@@ -1,10 +1,11 @@
+# [hyc-override] Overriding  in hyrax to change email text
 module Hyrax
   module Workflow
     class PendingDeletionNotification < AbstractNotification
       private
 
       def subject
-        'Deletion request needs review'
+        'CDR deletion request needs review'
       end
 
       def message
