@@ -17,7 +17,7 @@ module Hyrax
       property :creator, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/cre')
       # predicate changed
       property :contributor, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/ctb')
-      property :description, predicate: ::RDF::Vocab::DC11.description
+      property :description, predicate: ::RDF::Vocab::DC11.description, multiple: false
       # predicate changed
       property :keyword, predicate: ::RDF::Vocab::SCHEMA.keywords
       # predicate changed

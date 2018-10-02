@@ -60,7 +60,7 @@ RSpec.describe Hyrax::GeneralForm do
           resource_type: ['a type'],
           rights_statement: 'a statement', # single-valued
           subject: ['a subject'],
-          description: [''],
+          description: 'a good work', # single-valued
           visibility: 'open',
           representative_id: '456',
           thumbnail_id: '789',
@@ -134,7 +134,7 @@ RSpec.describe Hyrax::GeneralForm do
       expect(subject['resource_type']).to eq ['a type']
       expect(subject['rights_statement']).to eq ['a statement']
       expect(subject['subject']).to eq ['a subject']
-      expect(subject['description']).to be_empty
+      expect(subject['description']).to eq 'a good work'
       expect(subject['visibility']).to eq 'open'
       expect(subject['license']).to eq ['http://creativecommons.org/licenses/by/3.0/us/']
       expect(subject['keyword']).to eq ['derp']
@@ -196,7 +196,7 @@ RSpec.describe Hyrax::GeneralForm do
       let(:params) do
         ActionController::Parameters.new(
             title: '',
-            description: [''],
+            description: '',
             keyword: [''],
             license: '',
             member_of_collection_ids: [''],
@@ -206,7 +206,7 @@ RSpec.describe Hyrax::GeneralForm do
 
       it 'removes blank parameters' do
         expect(subject['title']).to be_nil
-        expect(subject['description']).to be_empty
+        expect(subject['description']).to be_nil
         expect(subject['license']).to be_nil
         expect(subject['keyword']).to be_empty
         expect(subject['member_of_collection_ids']).to be_empty
