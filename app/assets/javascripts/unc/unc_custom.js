@@ -51,23 +51,10 @@ $(function() {
         });
 
 
-        // Make sure all non-admin forms are visible when non student papers deposits links are clicked from homepage
+        // Remove any currently hidden student work types
         $('.all-unc-work-types').on('click', function() {
-            worktypesFilter();
+            all_work_types.removeClass('hidden'); //
         });
-
-        function worktypesFilter() {
-            all_work_types.removeClass('hidden'); // Remove any currently hidden options
-
-            if (/Group.Management/.test($('span.fa-user-circle + span').text())) {
-                return; // Show all options. They're an admin
-            }
-
-            all_work_types.filter(function(index, element) {
-                var work_type = $(this).find('input[type=radio]').attr('value');
-                return /Dissertation|General|ArtMfa/.test(work_type);
-            }).addClass('hidden');
-        }
     }
 
     visibleForms();
