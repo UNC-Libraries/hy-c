@@ -1,4 +1,4 @@
-<%= f.input :edition, as: :select,
+<%= f.input :edition, as: :multi_value_select,
             collection: EditionsService.select_all_options,
             include_blank: true,
             item_helper: EditionsService.method(:include_current_value),
