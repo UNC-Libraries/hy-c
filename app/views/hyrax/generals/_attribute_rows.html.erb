@@ -43,7 +43,7 @@
 <%= presenter.attribute_to_html(:journal_title, html_dl: true) %>
 <%= presenter.attribute_to_html(:journal_volume, html_dl: true) %>
 <%= presenter.attribute_to_html(:kind_of_data, html_dl: true) %>
-<%= presenter.attribute_to_html(:last_modified_date, html_dl: true) %>
+<%= presenter.attribute_to_html(:last_modified_date, render_as: :date, html_dl: true) %>
 <%= presenter.attribute_to_html(:medium, html_dl: true) %>
 <%= presenter.attribute_to_html(:note, html_dl: true) %>
 <%= presenter.attribute_to_html(:orcid, html_dl: true) %>

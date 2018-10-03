@@ -3,7 +3,7 @@
 require 'rails_helper'
 include Warden::Test::Helpers
 
-# NOTE: If you generated more than one work, you have to set "js: true"
+# NOTE: If you generated more than one work, you have to set 'js: true'
 RSpec.feature 'Create a Dissertation', js: false do
   context 'a logged in user' do
     let(:user) do
@@ -15,8 +15,8 @@ RSpec.feature 'Create a Dissertation', js: false do
     end
 
     let(:admin_set) do
-      AdminSet.create(title: ["dissertation admin set"],
-                      description: ["some description"],
+      AdminSet.create(title: ['dissertation admin set'],
+                      description: ['some description'],
                       edit_users: [user.user_key])
     end
 
@@ -54,33 +54,61 @@ RSpec.feature 'Create a Dissertation', js: false do
       login_as user
 
       visit new_hyrax_dissertation_path
-      expect(page).to have_content "You are not authorized to access this page"
+      expect(page).to have_content 'You are not authorized to access this page'
     end
 
     scenario 'as an admin' do
       login_as admin_user
 
       visit new_hyrax_dissertation_path
-      expect(page).to have_content "Add New Dissertation or Thesis"
+      expect(page).to have_content 'Add New Dissertation or Thesis'
 
+      # required fields
       fill_in 'Title', with: 'Test Dissertation work'
       fill_in 'Creator', with: 'Test Default Creator'
+      fill_in 'Date issued', with: '2018-10-03'
+      fill_in 'Degree granting institution', with: 'UNC'
+
+      # extra fields
+      fill_in 'Abstract', with: 'some abstract'
+      select 'Clinical Nutrition', from: 'Academic Concentration'
+      fill_in 'Advisor', with: 'an advisor'
+      select 'Department of Biology', from: 'dissertation_affiliation'
+      fill_in 'Alternative title', with: 'another title'
+      fill_in 'Contributor', with: 'a contributor'
+      select 'Bachelor of Science', from: 'dissertation_degree'
+      fill_in 'Doi', with: 'some doi'
+      select 'Dissertation', from: 'dissertation_resource_type'
+      fill_in 'Access', with: 'some access'
+      fill_in 'Geographic subject', with: 'some geographic subject'
+      fill_in 'Graduation year', with: '2018'
+      fill_in 'Identifier', with: 'some id'
       fill_in 'Keyword', with: 'Test Default Keyword'
-      select "In Copyright", :from => "dissertation_rights_statement"
+      select 'English', from: 'dissertation_language'
+      select 'Attribution 3.0 United States', :from => 'dissertation_license'
+      fill_in 'Note', with: 'a note'
+      fill_in 'Orcid', with: 'an orcid'
+      fill_in 'Place of publication', with: 'UNC'
+      fill_in 'Publisher', with: 'UNC Press'
+      fill_in 'Reviewer', with: 'a reviewer'
+      select 'In Copyright', :from => 'dissertation_rights_statement'
+      fill_in 'Subject', with: 'test'
+      fill_in 'Use', with: 'some use'
+
       expect(page).to have_field('dissertation_visibility_embargo')
       expect(page).not_to have_field('dissertation_visibility_lease')
-      choose "dissertation_visibility_open"
+      choose 'dissertation_visibility_open'
       check 'agreement'
       
       expect(page).to have_selector('#dissertation_dcmi_type')
       expect(page).to have_selector("input[value='http://purl.org/dc/dcmitype/Text']")
       fill_in 'Dcmi type', with: 'http://purl.org/dc/dcmitype/Image'
 
-      within "//span[@id=addfiles]" do
+      within '//span[@id=addfiles]' do
         attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'))
       end
 
-      click_link "Relationships"
+      click_link 'Relationships'
       expect(page).to have_content 'Administrative Set'
       find('#dissertation_admin_set_id').text eq 'dissertation admin set'
 
@@ -91,6 +119,39 @@ RSpec.feature 'Create a Dissertation', js: false do
       expect(page).to have_content 'Test Dissertation work'
 
       first('.document-title', text: 'Test Dissertation work').click
+      expect(page).to have_content 'Creator Test Default Creator'
+      expect(page).to have_content 'Date issued October 3, 2018'
+      expect(page).to have_content 'Degree granting institution UNC'
+
+      # extra fields
+      expect(page).to have_content 'Abstract some abstract'
+      expect(page).to have_content 'Academic concentration Clinical Nutrition'
+      expect(page).to have_content 'Advisor an advisor'
+      expect(page).to have_content 'Affiliation'
+      expect(page).to have_content 'College of Arts and Sciences'
+      expect(page).to have_content 'Department of Biology'
+      expect(page).to have_content 'Alternative title another title'
+      expect(page).to have_content 'Contributors a contributor'
+      expect(page).to have_content 'Degree Bachelor of Science'
+      expect(page).to have_content 'Doi some doi'
+      expect(page).to have_content 'Resource type Dissertation'
+      expect(page).to have_content 'Access some access'
+      expect(page).to have_content 'Geographic subject some geographic subject'
+      expect(page).to have_content 'Graduation year 2018'
+      expect(page).to have_content 'Identifier some id'
+      expect(page).to have_content 'Keyword Test Default Keyword'
+      expect(page).to have_content 'Language http://id.loc.gov/vocabulary/iso639-2/eng'
+      expect(page).to have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
+      expect(page).to have_content 'Note a note'
+      expect(page).to have_content 'Orcid an orcid'
+      expect(page).to have_content 'Place of publication UNC'
+      expect(page).to have_content 'Publisher UNC Press'
+      expect(page).to have_content 'Reviewer a reviewer'
+      expect(page).to have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'
+      expect(page).to have_content 'Subject test'
+      expect(page).to have_content 'Use some use'
+      
+      
       expect(page).to have_content 'Test Default Keyword'
       expect(page).to have_content 'In Administrative Set: dissertation admin set'
       expect(page).to have_content 'Type http://purl.org/dc/dcmitype/Image'
