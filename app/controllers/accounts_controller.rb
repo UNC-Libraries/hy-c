@@ -27,7 +27,7 @@ class AccountsController < ApplicationController
   def create_user(onyen)
     email = "#{onyen}@ad.unc.edu"
     if User.where(uid: onyen).blank?
-      user = User.where(provider: 'shibboleth', uid: onyen, email: email).first_or_create
+      user = User.where(uid: onyen).first_or_create(provider: 'shibboleth', email: email)
       user.display_name = onyen
       user.save
       "A user account for #{email} has been created."
