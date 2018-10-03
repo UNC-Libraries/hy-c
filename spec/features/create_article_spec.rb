@@ -3,7 +3,7 @@
 require 'rails_helper'
 include Warden::Test::Helpers
 
-# NOTE: If you generated more than one work, you have to set "js: true"
+# NOTE: If you generated more than one work, you have to set 'js: true'
 RSpec.feature 'Create a Article', js: false do
   context 'a logged in user' do
     let(:user) do
@@ -15,8 +15,8 @@ RSpec.feature 'Create a Article', js: false do
     end
 
     let(:admin_set) do
-      AdminSet.create(title: ["article admin set"],
-                      description: ["some description"],
+      AdminSet.create(title: ['article admin set'],
+                      description: ['some description'],
                       edit_users: [user.user_key])
     end
 
@@ -54,7 +54,7 @@ RSpec.feature 'Create a Article', js: false do
       login_as user
 
       visit new_hyrax_article_path
-      expect(page).to have_content "Add New Scholarly Article or Book Chapter"
+      expect(page).to have_content 'Add New Scholarly Article or Book Chapter'
 
       # required fields
       fill_in 'Title', with: 'Test Article work'
@@ -64,8 +64,8 @@ RSpec.feature 'Create a Article', js: false do
 
       # extra fields
       fill_in 'Keyword', with: 'Test Default Keyword'
-      select "Attribution 3.0 United States", :from => "article_license"
-      select "In Copyright", :from => "article_rights_statement"
+      select 'Attribution 3.0 United States', :from => 'article_license'
+      select 'In Copyright', :from => 'article_rights_statement'
       fill_in 'Publisher', with: 'UNC Press'
       fill_in 'Date Created', with: '2018-10-03'
       fill_in 'Subject', with: 'test'
@@ -105,16 +105,16 @@ RSpec.feature 'Create a Article', js: false do
       expect(page).to have_field('article_visibility_embargo')
       expect(page).not_to have_field('article_visibility_lease')
       expect(page).to have_select('article_resource_type', selected: 'Article')
-      choose "article_visibility_open"
+      choose 'article_visibility_open'
       check 'agreement'
       
       expect(page).not_to have_selector('#article_dcmi_type')
 
-      within "//span[@id=addfiles]" do
+      within '//span[@id=addfiles]' do
         attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'))
       end
 
-      click_link "Relationships"
+      click_link 'Relationships'
       expect(page).to_not have_content 'Administrative Set'
 
       click_button 'Save'
@@ -180,7 +180,7 @@ RSpec.feature 'Create a Article', js: false do
       login_as admin_user
 
       visit new_hyrax_article_path
-      expect(page).to have_content "Add New Scholarly Article or Book Chapter"
+      expect(page).to have_content 'Add New Scholarly Article or Book Chapter'
 
       # required fields
       fill_in 'Title', with: 'Test Article work'
@@ -190,8 +190,8 @@ RSpec.feature 'Create a Article', js: false do
 
       # extra fields
       fill_in 'Keyword', with: 'Test Default Keyword'
-      select "Attribution 3.0 United States", :from => "article_license"
-      select "In Copyright", :from => "article_rights_statement"
+      select 'Attribution 3.0 United States', :from => 'article_license'
+      select 'In Copyright', :from => 'article_rights_statement'
       fill_in 'Publisher', with: 'UNC Press'
       fill_in 'Date Created', with: '2018-10-03'
       fill_in 'Subject', with: 'test'
@@ -230,18 +230,18 @@ RSpec.feature 'Create a Article', js: false do
       expect(page).to have_field('article_visibility_embargo')
       expect(page).not_to have_field('article_visibility_lease')
       expect(page).to have_select('article_resource_type', selected: 'Article')
-      choose "article_visibility_open"
+      choose 'article_visibility_open'
       check 'agreement'
       
       expect(page).to have_selector('#article_dcmi_type')
       expect(page).to have_selector("input[value='http://purl.org/dc/dcmitype/Text']")
       fill_in 'Dcmi type', with: 'http://purl.org/dc/dcmitype/Image'
 
-      within "//span[@id=addfiles]" do
+      within '//span[@id=addfiles]' do
         attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'))
       end
 
-      click_link "Relationships"
+      click_link 'Relationships'
       expect(page).to have_content 'Administrative Set'
       find('#article_admin_set_id').text eq 'article admin set'
 
