@@ -2,43 +2,6 @@
  * Grouped into functional units for easier grouping of code
  */
 $(function() {
-    // Check for leading _ plus date, otherwise selects things like "update" too
-    var date_field = 'div[class*="_date"] input, input[class*="_date"]';
-
-    // Add datepicker to date fields in forms
-    function datePicking() {
-        // Remove embargo date field
-        var date_inputs = $(date_field).not('input[type=date]');
-        var datepicker_options = {
-            dateFormat: 'yy-mm-dd',
-            beforeShow: function(field) {
-                // Make sure datepicker is always top element
-                $(field).css({
-                    'position': 'relative',
-                    'z-index': 100
-                });
-            }
-        };
-
-        // Allow future dates for embargoes
-        if ($('#file_set_embargo_release_date').length > 0) {
-            datepicker_options['maxDate'] = null;
-        } else {
-            datepicker_options['maxDate'] = '+0D';
-        }
-
-        // Ensure each date field has a unique id so cloned date fields select the right input
-        date_inputs.each(function(index) {
-            var self = $(this);
-            var current_id = self.attr('id').split(/-\d{1,}$/);
-            var updated_id = current_id[0] + '-' + index;
-
-            self.attr('id', updated_id);
-            self.removeClass('hasDatepicker');
-            $('#' + updated_id).datepicker(datepicker_options);
-        });
-    }
-
     // Only show student paper options in modal when clicking "Student Papers" link on homepage
     function visibleForms() {
         var all_work_types = $('form.new-work-select .select-worktype');
@@ -58,14 +21,8 @@ $(function() {
 
     visibleForms();
 
-    // Make sure that datepicker works with cloned date fields
-    $(document).on('focus', date_field, function() {
-        datePicking();
-    });
-
     // Make sure that form visibility and datepicker work with turbolinks
     $(document).on('turbolinks:load', function() {
-        datePicking();
         visibleForms();
     });
 
@@ -87,5 +44,14 @@ $(function() {
         } else {
             progess_bar.removeClass('progress-bar-active');
         }
+    }());
+
+    (function hideNonRequiredFormFields() {
+        // Remove class to hide non-required fields
+        // Isn't there by default so fields still show if JS is turned off
+        $('#extended-terms').removeClass('in').attr('aria-expanded', false);
+
+        // Set to false if JS is turned on
+        $('a.additional-fields').attr('aria-expanded', false);
     }());
 });
