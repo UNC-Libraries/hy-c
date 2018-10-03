@@ -21,6 +21,7 @@
 <%= presenter.attribute_to_html(:funder, html_dl: true) %>
 <%= presenter.attribute_to_html(:dcmi_type, html_dl: true, label: "Type") %>
 <%= presenter.attribute_to_html(:geographic_subject, html_dl: true) %>
+<%= presenter.attribute_to_html(:identifier, html_dl: true) %>
 <%= presenter.attribute_to_html(:issn, html_dl: true) %>
 <%= presenter.attribute_to_html(:journal_issue, html_dl: true) %>
 <%= presenter.attribute_to_html(:journal_title, html_dl: true) %>
@@ -32,6 +33,8 @@
 <%= presenter.attribute_to_html(:page_start, html_dl: true) %>
 <%= presenter.attribute_to_html(:peer_review_status, html_dl: true) %>
 <%= presenter.attribute_to_html(:place_of_publication, html_dl: true) %>
+<%= presenter.attribute_to_html(:publisher, html_dl: true) %>
+<%= presenter.attribute_to_html(:related_url, html_dl: true) %>
 <%= presenter.attribute_to_html(:rights_holder, html_dl: true) %>
 <%= presenter.attribute_to_html(:table_of_contents, html_dl: true) %>
 <%= presenter.attribute_to_html(:translator, html_dl: true) %>
