@@ -9,7 +9,7 @@ class DefaultAdminSetsController < ApplicationController
   def index
     add_breadcrumb t(:'hyrax.controls.home'), root_path
     add_breadcrumb t(:'hyrax.dashboard.breadcrumbs.admin'), hyrax.dashboard_path
-    add_breadcrumb 'Default Admin Sets', request.path
+    add_breadcrumb 'Admin Set Worktypes', request.path
     if AdminSet.all.count == 0
       @default_admin_sets = nil
     else
@@ -21,16 +21,16 @@ class DefaultAdminSetsController < ApplicationController
   def new
     add_breadcrumb t(:'hyrax.controls.home'), root_path
     add_breadcrumb t(:'hyrax.dashboard.breadcrumbs.admin'), hyrax.dashboard_path
-    add_breadcrumb 'Default Admin Sets', main_app.default_admin_sets_path
-    add_breadcrumb 'New Default Admin Set', request.path
+    add_breadcrumb 'Admin Set Worktypes', main_app.default_admin_sets_path
+    add_breadcrumb 'New Admin Set Worktype', request.path
     @default_admin_set = DefaultAdminSet.new
   end
 
   def edit
     add_breadcrumb t(:'hyrax.controls.home'), root_path
     add_breadcrumb t(:'hyrax.dashboard.breadcrumbs.admin'), hyrax.dashboard_path
-    add_breadcrumb 'Default Admin Sets', main_app.default_admin_sets_path
-    add_breadcrumb 'Edit Default Admin Set', request.path
+    add_breadcrumb 'Admin Set Worktypes', main_app.default_admin_sets_path
+    add_breadcrumb 'Edit Admin Set Worktype', request.path
   end
 
   def create
@@ -38,7 +38,7 @@ class DefaultAdminSetsController < ApplicationController
 
     respond_to do |format|
       if @default_admin_set.save
-        format.html { redirect_to default_admin_sets_path, notice: 'Default admin set was successfully created.' }
+        format.html { redirect_to default_admin_sets_path, notice: 'Admin set worktype was successfully created.' }
       else
         format.html { render :new }
       end
@@ -48,7 +48,7 @@ class DefaultAdminSetsController < ApplicationController
   def update
     respond_to do |format|
       if @default_admin_set.update(default_admin_set_params)
-        format.html { redirect_to default_admin_sets_path, notice: 'Default admin set was successfully updated.' }
+        format.html { redirect_to default_admin_sets_path, notice: 'Admin set worktype was successfully updated.' }
       else
         format.html { render :edit }
       end
@@ -58,7 +58,7 @@ class DefaultAdminSetsController < ApplicationController
   def destroy
     @default_admin_set.destroy
     respond_to do |format|
-      format.html { redirect_to default_admin_sets_url, notice: 'Default admin set was successfully deleted.' }
+      format.html { redirect_to default_admin_sets_url, notice: 'Admin set worktype set was successfully deleted.' }
     end
   end
 
