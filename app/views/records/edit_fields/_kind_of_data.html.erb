@@ -1,4 +1,4 @@
-<%= f.input :kind_of_data, as: :select,
+<%= f.input :kind_of_data, as: :multi_value_select,
             collection: KindOfDataService.select_all_options,
             include_blank: true,
             item_helper: KindOfDataService.method(:include_current_value),
