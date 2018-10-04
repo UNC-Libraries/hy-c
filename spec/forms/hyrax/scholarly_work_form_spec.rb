@@ -21,9 +21,9 @@ RSpec.describe Hyrax::ScholarlyWorkForm do
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:advisor, :affiliation, :conference_name, :date_created, :dcmi_type, :doi,
-                                     :geographic_subject, :description, :keyword, :language, :license, :orcid,
-                                     :other_affiliation, :resource_type, :rights_statement, :subject] }
+    it { is_expected.to match_array [:advisor, :affiliation, :affiliation_label, :conference_name, :date_created,
+                                     :dcmi_type, :doi, :geographic_subject, :description, :keyword, :language, :license,
+                                     :orcid, :other_affiliation, :resource_type, :rights_statement, :subject] }
   end
   
   describe "#admin_only_terms" do
@@ -52,7 +52,6 @@ RSpec.describe Hyrax::ScholarlyWorkForm do
           abstract: [''],
           advisor: ['an advisor'],
           affiliation: ['Carolina Center for Genome Sciences'],
-          affiliation_label: ['School of Medicine', 'Carolina Center for Genome Sciences'],
           conference_name: ['a conference name'],
           date_issued: 'a date', # single-valued
           dcmi_type: ['type'],
@@ -68,7 +67,7 @@ RSpec.describe Hyrax::ScholarlyWorkForm do
     it 'permits parameters' do
       expect(subject['title']).to eq ['foo']
       expect(subject['creator']).to eq ['someone@example.com']
-      expect(subject['date_created']).to eq ['a date']
+      expect(subject['date_created']).to eq 'a date'
       expect(subject['description']).to eq 'a description'
       expect(subject['doi']).to eq '12345'
       expect(subject['subject']).to eq ['a subject']

@@ -26,7 +26,7 @@ RSpec.describe Hyrax::HonorsThesisForm do
     subject { form.secondary_terms }
 
     it { is_expected.to match_array [:access, :academic_concentration, :alternative_title, :affiliation_label,
-                                     :award, :date_issued, :dcmi_type, :doi, :extent, :geographic_subject, :note,
+                                     :award, :dcmi_type, :doi, :extent, :geographic_subject, :note,
                                      :orcid, :use, :language, :license, :resource_type, :rights_statement, :subject,
                                      :keyword, :related_url, :url] }
   end

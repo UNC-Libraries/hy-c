@@ -5,13 +5,13 @@
 <%= presenter.attribute_to_html(:language, render_as: :faceted, html_dl: true) %>
 <%= presenter.attribute_to_html(:identifier, render_as: :linked, search_field: 'identifier_tesim', html_dl: true) %>
 <%= presenter.attribute_to_html(:keyword, render_as: :faceted, html_dl: true) %>
-<%= presenter.attribute_to_html(:date_created, render_as: :linked, search_field: 'date_created_tesim', html_dl: true) %>
+<%= presenter.attribute_to_html(:date_created, render_as: :date, html_dl: true) %>
 <%= presenter.attribute_to_html(:resource_type, render_as: :faceted, html_dl: true) %>
 <%= presenter.attribute_to_html(:rights_statement, html_dl: true) %>
 <%= presenter.attribute_to_html(:license, html_dl: true) %>
 <%= presenter.attribute_to_html(:abstract, html_dl: true) %>
 <%= presenter.attribute_to_html(:advisor, html_dl: true) %>
-<%= presenter.attribute_to_html(:affiliation, html_dl: true) %>
+<%= presenter.attribute_to_html(:affiliation_label, html_dl: true, label: 'Affiliation') %>
 <%= presenter.attribute_to_html(:conference_name, html_dl: true) %>
 <%= presenter.attribute_to_html(:date_issued, render_as: :date, html_dl: true) %>
 <%= presenter.attribute_to_html(:deposit_record, html_dl: true) %>

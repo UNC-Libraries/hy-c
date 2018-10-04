@@ -11,7 +11,7 @@ module Hyrax
 
     self.required_fields = [:title, :abstract, :creator, :date_created, :resource_type]
 
-    self.single_value_fields = [:title, :license, :rights_statement, :date_created]
+    self.single_value_fields = [:title, :license, :rights_statement]
     
     self.admin_only_terms = [:dcmi_type]
 

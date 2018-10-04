@@ -21,8 +21,8 @@ RSpec.describe Hyrax::DataSetForm do
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:affiliation, :copyright_date, :dcmi_type, :doi, :extent, :funder,
-                                     :geographic_subject, :last_modified_date, :project_director, :researcher,
+    it { is_expected.to match_array [:affiliation, :affiliation_label, :copyright_date, :dcmi_type, :doi, :extent,
+                                     :funder, :geographic_subject, :last_modified_date, :project_director, :researcher,
                                      :rights_holder, :sponsor, :language, :keyword, :related_url, :description,
                                      :license, :contributor, :date_created, :subject, :orcid, :other_affiliation,
                                      :rights_statement] }

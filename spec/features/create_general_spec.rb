@@ -107,6 +107,7 @@ RSpec.feature 'Create a General', js: false do
       fill_in 'Place of publication', with: 'UNC'
       fill_in 'Project director', with: 'a director'
       select 'Yes', from: 'general_peer_review_status'
+      fill_in 'Publisher', with: 'UNC Press'
       fill_in 'Publisher version', with: 'a version'
       select 'Other', from: 'general_resource_type'
       fill_in 'Researcher', with: 'a researcher'
@@ -143,7 +144,6 @@ RSpec.feature 'Create a General', js: false do
       expect(page).to have_content 'Test General work'
 
       first('.document-title', text: 'Test General work').click
-
       expect(page).to have_content 'Abstract an abstract'
       expect(page).to have_content 'Academic concentration Clinical Nutrition'
       expect(page).to have_content 'Access some access'
@@ -193,6 +193,7 @@ RSpec.feature 'Create a General', js: false do
       expect(page).to have_content 'Place of publication UNC'
       expect(page).to have_content 'Project director a director'
       expect(page).to have_content 'Peer review status Yes'
+      expect(page).to have_content 'Publisher UNC Press'
       expect(page).to have_content 'Publisher version a version'
       expect(page).to have_content 'Resource type Other'
       expect(page).to have_content 'Researcher a researcher'
@@ -243,6 +244,7 @@ RSpec.feature 'Create a General', js: false do
       fill_in 'Date Created', with: '2018-10-03'
       fill_in 'Date issued', with: '2018-10-03'
       fill_in 'Date other', with: '2018-10-03'
+      fill_in 'Dcmi type', with: 'http://purl.org/dc/dcmitype/Text'
       select 'Bachelor of Science', from: 'general_degree'
       fill_in 'Degree granting institution', with: 'UNC'
       fill_in 'Description', with: 'a description'
@@ -273,6 +275,7 @@ RSpec.feature 'Create a General', js: false do
       fill_in 'Place of publication', with: 'UNC'
       fill_in 'Project director', with: 'a director'
       select 'Yes', from: 'general_peer_review_status'
+      fill_in 'Publisher', with: 'UNC Press'
       fill_in 'Publisher version', with: 'a version'
       select 'Other', from: 'general_resource_type'
       fill_in 'Researcher', with: 'a researcher'
@@ -359,6 +362,7 @@ RSpec.feature 'Create a General', js: false do
       expect(page).to have_content 'Place of publication UNC'
       expect(page).to have_content 'Project director a director'
       expect(page).to have_content 'Peer review status Yes'
+      expect(page).to have_content 'Publisher UNC Press'
       expect(page).to have_content 'Publisher version a version'
       expect(page).to have_content 'Resource type Other'
       expect(page).to have_content 'Researcher a researcher'
@@ -374,6 +378,7 @@ RSpec.feature 'Create a General', js: false do
       expect(page).to have_content 'Use some use'
       expect(page).to have_content 'Url some url'
 
+      expect(page).to have_content 'Type http://purl.org/dc/dcmitype/Text'
       expect(page).to have_content 'In Administrative Set: general admin set'
       expect(page).to have_selector(:link, 'Delete')
 

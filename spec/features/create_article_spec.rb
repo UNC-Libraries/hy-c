@@ -73,6 +73,7 @@ RSpec.feature 'Create a Article', js: false do
       fill_in 'Identifier', with: 'some id'
       fill_in 'Related Resource URL', with: 'something.com'
       select 'Article', from: 'article_resource_type'
+
       fill_in 'Access', with: 'some access'
       select 'Department of Biology', from: 'article_affiliation'
       fill_in 'Bibliographic citation', with: 'a citation'

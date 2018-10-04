@@ -56,8 +56,19 @@ RSpec.feature 'Create an Art Work', js: false do
       visit new_hyrax_art_work_path
       expect(page).to have_content "Add New Art Work"
 
+      # required fields
       fill_in 'Title', with: 'Test Art Work work'
-      select "In Copyright", :from => "art_work_rights_statement"
+      fill_in 'Date Created', with: '2018-10-03'
+      fill_in 'Description', with: 'a description'
+      fill_in 'Extent', with: 'some extent'
+      fill_in 'Medium', with: 'a medium'
+      select 'Other', from: 'art_work_resource_type'
+
+      # extra fields
+      fill_in 'Doi', with: 'some doi'
+      select 'Attribution 3.0 United States', :from => 'art_work_license'
+      select 'In Copyright', :from => 'art_work_rights_statement'
+
       expect(page).to have_field('art_work_visibility_embargo')
       expect(page).not_to have_field('art_work_visibility_lease')
       choose "art_work_visibility_open"
@@ -77,6 +88,14 @@ RSpec.feature 'Create an Art Work', js: false do
       expect(page).to have_content 'Test Art Work work'
 
       first('.document-title', text: 'Test Art Work work').click
+      expect(page).to have_content 'Date created October 3, 2018'
+      expect(page).to have_content 'a description'
+      expect(page).to have_content 'Doi some doi'
+      expect(page).to have_content 'Extent some extent'
+      expect(page).to have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
+      expect(page).to have_content 'Medium a medium'
+      expect(page).to have_content 'Resource type Other'
+      expect(page).to have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'
 
       expect(page).to_not have_content 'In Administrative Set: art_work admin set'
       expect(page).to_not have_selector(:link, 'Delete')
@@ -92,8 +111,19 @@ RSpec.feature 'Create an Art Work', js: false do
       visit new_hyrax_art_work_path
       expect(page).to have_content "Add New Art Work"
 
+      # required fields
       fill_in 'Title', with: 'Test Art Work work'
-      select "In Copyright", :from => "art_work_rights_statement"
+      fill_in 'Date Created', with: '2018-10-03'
+      fill_in 'Description', with: 'a description'
+      fill_in 'Extent', with: 'some extent'
+      fill_in 'Medium', with: 'a medium'
+      select 'Other', from: 'art_work_resource_type'
+
+      # extra fields
+      fill_in 'Doi', with: 'some doi'
+      select 'Attribution 3.0 United States', :from => 'art_work_license'
+      select 'In Copyright', :from => 'art_work_rights_statement'
+
       expect(page).to have_field('art_work_visibility_embargo')
       expect(page).not_to have_field('art_work_visibility_lease')
       choose "art_work_visibility_open"
@@ -114,6 +144,15 @@ RSpec.feature 'Create an Art Work', js: false do
       expect(page).to have_content 'Test Art Work work'
 
       first('.document-title', text: 'Test Art Work work').click
+      expect(page).to have_content 'Date created October 3, 2018'
+      expect(page).to have_content 'a description'
+      expect(page).to have_content 'Doi some doi'
+      expect(page).to have_content 'Extent some extent'
+      expect(page).to have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
+      expect(page).to have_content 'Medium a medium'
+      expect(page).to have_content 'Resource type Other'
+      expect(page).to have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'
+
       expect(page).to have_content 'In Administrative Set: art work admin set'
       expect(page).to have_selector(:link, 'Delete')
 
