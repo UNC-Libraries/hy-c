@@ -22,7 +22,7 @@ gem 'coffee-rails', '~> 4.2.2'
 gem 'therubyracer', '~> 0.12.3', platforms: :ruby
 gem 'hyrax', '2.1.0'
 gem 'hydra-editor', '4.0.1'
-gem 'hydra-role-management', '~> 0.2.2'
+gem 'hydra-role-management', '~> 1.0'
 gem 'clamav', '~> 0.4.1'
 gem 'sidekiq', '~> 5.0.4'
 gem 'blacklight_oai_provider', '6.0.0.pre1'

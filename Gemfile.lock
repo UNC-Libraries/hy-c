@@ -303,7 +303,7 @@ GEM
     hydra-pcdm (0.11.0)
       active-fedora (>= 10, < 13)
       mime-types (>= 1)
-    hydra-role-management (0.2.2)
+    hydra-role-management (1.0.0)
       blacklight
       bootstrap_form
       cancancan
@@ -787,7 +787,7 @@ DEPENDENCIES
   edtf-humanize (= 0.0.7)
   fcrepo_wrapper (~> 0.8.0)
   hydra-editor (= 4.0.1)
-  hydra-role-management (~> 0.2.2)
+  hydra-role-management (~> 1.0)
   hyrax (= 2.1.0)
   jbuilder (~> 2.7.0)
   jquery-rails (~> 4.3.1)
@@ -813,4 +813,4 @@ DEPENDENCIES
   webmock
 
 BUNDLED WITH
-   1.16.4
+   1.16.5
