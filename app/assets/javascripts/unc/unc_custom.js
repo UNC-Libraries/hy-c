@@ -13,9 +13,15 @@ $(function() {
             }).addClass('hidden');
         });
 
-        // Make sure all forms are visible when non student papers deposits links are clicked
+
+        // Remove any currently hidden student work types
         $('.all-unc-work-types').on('click', function() {
             all_work_types.removeClass('hidden');
+
+            all_work_types.filter(function(index, element) {
+                var work_type = $(this).find('input[type=radio]').attr('value');
+                return /ArtMfa/.test(work_type);
+            }).addClass('hidden');
         });
     }
 
