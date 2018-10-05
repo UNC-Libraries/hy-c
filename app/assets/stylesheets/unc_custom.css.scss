@@ -142,6 +142,10 @@ span.institution_name {
     padding: 10px;
     font-size: 1.2em;
   }
+
+  blockquote {
+    border-left: none;
+  }
 }
 
 #unc-deposit {
@@ -326,6 +330,35 @@ div.unc-citation-modal {
     margin-bottom: 25px;
     text-align: center;
   }
+}
+
+.multi_value .btn.add {
+  text-decoration: none;
+
+  &:hover, &:focus {
+    text-decoration: underline;
+  }
+}
+
+.navbar-default .navbar-nav > li > a {
+  color: #222222;
+
+  &:focus, &:hover {
+    color: #777777;
+  }
+}
+
+a:focus, button:focus {
+  outline-color: #4b9cd3;
+  border: 1.5px dashed #4b9cd3;
+}
+
+.sidebar {
+  background-color: #3f3f3f;
+}
+
+caption {
+  color: #666666;
 }
 
 .fileupload-buttonbar, #fileupload p {
