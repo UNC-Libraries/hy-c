@@ -78,6 +78,10 @@ en:
     relationships_parent_rows:
       empty_text: "This work has no parents."
       label: "Parents:"
+    search:
+      form:
+        q:
+          label: Search the Carolina Digital Repository
     works:
       form:
         tab:

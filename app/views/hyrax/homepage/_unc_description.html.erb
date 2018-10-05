@@ -1,7 +1,7 @@
 <div id="unc-description">
   <div class="row">
     <div class="col-xs-12 describe">
-      <%= image_tag("access.png", :alt => t('hyrax.homepage_images.accessible')) %>
+      <%= image_tag("access.png", alt: t('hyrax.homepage_images.accessible'), aria: {hidden: true}) %>
       <div>
       <h2>Accessible &amp; Discoverable</h2>
       <p>We ensure your work is accessible and searchable on our website and indexed in search engines.</p>
@@ -10,7 +10,7 @@
   </div>
   <div class="row">
     <div class="col-xs-12 describe">
-      <%= image_tag("discover.png", :alt => t('hyrax.homepage_images.access')) %>
+      <%= image_tag("discover.png", alt: t('hyrax.homepage_images.access'), aria: {hidden: true}) %>
       <div>
       <h2>You Decide Who Gets Access</h2>
       <p>We offer a range of access controls including embargoes and granting access to specific groups on campus.</p>
