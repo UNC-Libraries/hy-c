@@ -1,0 +1,29 @@
+# [hyc-override] Pulled in from hydra-role-management gem i18n text overrides
+en:
+  role-management:
+    index:
+      title: 'Groups'
+      create: 'Create a new group'
+    new:
+      field_name: 'Group name'
+      add: 'Add'
+      cancel: 'Cancel'
+    show:
+      title: 'Group:'
+      accounts: 'Accounts:'
+      remove: 'Remove User'
+      add_new_account: 'Add a new account:'
+      user: 'User'
+      add: 'Add'
+      cancel: 'Cancel'
+    edit:
+      title: 'Group:'
+      field_name: 'Group name'
+      update: 'Update'
+      accounts: 'Accounts:'
+      delete: 'Delete'
+      remove: 'Remove User'
+      add_new_account: 'Add a new account:'
+      user: 'User'
+      add: 'Add'
+      cancel: 'Cancel'
