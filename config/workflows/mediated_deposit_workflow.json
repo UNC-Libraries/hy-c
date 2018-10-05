@@ -69,7 +69,7 @@
                         { "names": ["changes_required"], "roles": ["depositing"] }
                     ]
                 }, {
-                    "name": "withdrawn",
+                    "name": "withdraw",
                     "from_states": [{"names": ["deposited"], "roles": ["approving"]}],
                     "transition_to": "withdrawn",
                     "notifications": [
