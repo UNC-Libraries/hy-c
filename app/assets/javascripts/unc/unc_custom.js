@@ -15,12 +15,13 @@ $(function() {
 
 
         // Remove any currently hidden student work types
+        // Make sure art work form hidden from everyone in modal
         $('.all-unc-work-types').on('click', function() {
             all_work_types.removeClass('hidden');
 
             all_work_types.filter(function(index, element) {
                 var work_type = $(this).find('input[type=radio]').attr('value');
-                return /ArtMfa/.test(work_type);
+                return /ArtWork/.test(work_type);
             }).addClass('hidden');
         });
     }

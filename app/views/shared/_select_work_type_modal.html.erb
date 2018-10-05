@@ -8,7 +8,7 @@
       </div>
       <div class="modal-body">
         <% create_unrestricted_work_presenter.each do |row_presenter| %>
-          <% if (row_presenter.concern.to_s != 'Dissertation' && row_presenter.concern.to_s != 'General' && row_presenter.concern.to_s != 'ArtMfa') ||
+          <% if (row_presenter.concern.to_s != 'Dissertation' && row_presenter.concern.to_s != 'General' && row_presenter.concern.to_s != 'ArtWork') ||
               current_user&.admin? %>
             <div class="select-worktype">
               <label>
