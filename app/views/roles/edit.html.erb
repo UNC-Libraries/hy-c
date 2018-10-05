@@ -1,3 +1,4 @@
+<%# [hyc-override] Pulled in from hydra-role-management gem to allow i18n overrides %>
 <h2><%= t('role-management.edit.title') %></h2>
 <%= bootstrap_form_for @role, :url=>role_management.role_path(@role) do |f| %>
   <%= f.text_field :name, :label=> t('role-management.edit.field_name') %>
