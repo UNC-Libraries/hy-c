@@ -9,8 +9,8 @@
     <div class="col-md-4">
       <%= simple_form_for :account, url: accounts_create_path, method: :post do |f| %>
         <div class="form-group">
-          <%= f.label :email %>
-          <%= f.text_field :email, pattern: '^[A-Za-z0-9]+@[A-Za-z0-9]+\.unc.edu$', title: 'UNC email address', class: 'form-control' %>
+          <%= f.label :onyen %>
+          <%= f.text_field :onyen, pattern: '^[A-Za-z0-9]+', title: 'UNC ONYEN', class: 'form-control' %>
         </div>
 
         <div class="actions pull-right">
