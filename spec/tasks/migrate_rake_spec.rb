@@ -51,6 +51,7 @@ describe "rake migrate:works", type: :task do
     expect(new_article['contributor']).to match_array ['Hugo, Victor']
     expect(new_article['publisher']).to match_array ['Project Gutenberg']
     expect(new_article['admin_set_id']).to eq admin_set.id
+    expect(new_article.visibility).to eq 'restricted'
     File.delete('spec/fixtures/migration/mapping.csv')
   end
 end

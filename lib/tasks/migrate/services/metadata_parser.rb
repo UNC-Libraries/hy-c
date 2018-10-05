@@ -1,6 +1,6 @@
 module Migrate
   module Services
-    class ModsParser
+    class MetadataParser
 
       def initialize(metadata_file, object_hash, binary_hash, collection_uuids, collection_name, depositor, admin_set)
         @metadata_file = metadata_file
@@ -22,12 +22,6 @@ module Migrate
         puts "getting metadata for: #{uuid}"
 
         work_attributes = Hash.new
-
-        representative = ''
-        work_attributes['visibility_during_embargo'] = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
-        work_attributes['visibility_after_embargo'] = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
-        work_attributes['embargo_release_date'] = ''
-        visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
 
         work_attributes['contained_files'] = Array.new(0)
 
@@ -180,29 +174,35 @@ module Migrate
 
           # Set access controls for work
           # Set default visibility first
-          work_attributes['visibility'] = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
+          private_visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
+          public_visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
+          work_attributes['embargo_release_date'] = ''
+          work_attributes['visibility'] = public_visibility
+
           if rdf_version.to_s.match(/metadata-patron/)
             patron = rdf_version.xpath("rdf:Description/*[local-name() = 'metadata-patron']", MigrationConstants::NS).text
             if patron == 'public'
               if rdf_version.to_s.match(/contains/)
-                work_attributes['visibility'] = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
+                work_attributes['visibility'] = public_visibility
               else
-                work_attributes['visibility'] = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
+                work_attributes['visibility'] =private_visibility
               end
             end
           elsif rdf_version.to_s.match(/embargo-until/)
             embargo_release_date = Date.parse rdf_version.xpath("rdf:Description/*[local-name() = 'embargo-until']", MigrationConstants::NS).text
             work_attributes['embargo_release_date'] = (Date.try(:edtf, embargo_release_date) || embargo_release_date).to_s
-            work_attributes['visibility'] = work_attributes['visibility_during_embargo']
+            work_attributes['visibility'] = private_visibility
+            work_attributes['visibility_during_embargo'] = private_visibility
+            work_attributes['visibility_after_embargo'] = public_visibility
           elsif rdf_version.to_s.match(/isPublished/)
             published = rdf_version.xpath("rdf:Description/*[local-name() = 'isPublished']", MigrationConstants::NS).text
             if published == 'no'
-              work_attributes['visibility'] = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
+              work_attributes['visibility'] = private_visibility
             end
           elsif rdf_version.to_s.match(/inheritPermissions/)
             inherit = rdf_version.xpath("rdf:Description/*[local-name() = 'inheritPermissions']", MigrationConstants::NS).text
             if inherit == 'false'
-              work_attributes['visibility'] = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
+              work_attributes['visibility'] = private_visibility
             end
           elsif rdf_version.to_s.match(/cdr-role:patron>authenticated/)
             authenticated = rdf_version.xpath("rdf:Description/*[local-name() = 'patron']", MigrationConstants::NS).text

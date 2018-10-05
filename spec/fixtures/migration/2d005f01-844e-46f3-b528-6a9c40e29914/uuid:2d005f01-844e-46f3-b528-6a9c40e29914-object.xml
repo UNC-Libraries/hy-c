@@ -62,6 +62,7 @@
             <ns5:contains rdf:resource="info:fedora/uuid:2f847077-7060-445b-99b3-190e7cff0067"></ns5:contains>
             <ns5:owner rdf:resource="http://example.com/morganem"></ns5:owner>
             <ns5:slug>2008_Pierson</ns5:slug>
+            <isPublished>no</isPublished>
             <ns6:hasModel rdf:resource="info:fedora/cdr-model:AggregateWork"></ns6:hasModel>
             <ns6:hasModel rdf:resource="info:fedora/cdr-model:PreservedObject"></ns6:hasModel>
             <cdr:defaultWebObject xmlns:cdr="http://cdr.unc.edu/definitions/1.0/base-model.xml#" rdf:resource="info:fedora/uuid:2f847077-7060-445b-99b3-190e7cff0067"></cdr:defaultWebObject>

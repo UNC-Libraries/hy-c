@@ -1,7 +1,7 @@
 module Migrate
   module Services
     require 'tasks/migrate/services/id_mapper'
-    require 'tasks/migrate/services/mods_parser'
+    require 'tasks/migrate/services/metadata_parser'
 
     class IngestService
 
@@ -35,7 +35,7 @@ module Migrate
         collection_uuids.each do |uuid|
           start_time = Time.now
           puts "[#{start_time.to_s}] Start migration of #{uuid}"
-          parsed_data = Migrate::Services::ModsParser.new(@object_hash[uuid],
+          parsed_data = Migrate::Services::MetadataParser.new(@object_hash[uuid],
                                                           @object_hash,
                                                           @binary_hash,
                                                           collection_uuids,
@@ -64,7 +64,7 @@ module Migrate
             # attach children as filesets
             work_attributes['contained_files'].each do |file|
               metadata_file = @object_hash[get_uuid_from_path(file)]
-              parsed_file_data = Migrate::Services::ModsParser.new(metadata_file,
+              parsed_file_data = Migrate::Services::MetadataParser.new(metadata_file,
                                                                    @object_hash,
                                                                    @binary_hash,
                                                                    collection_uuids,
