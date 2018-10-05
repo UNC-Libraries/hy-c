@@ -54,40 +54,7 @@ RSpec.feature 'Create a General', js: false do
       login_as user
 
       visit new_hyrax_general_path
-      expect(page).to have_content "Add New General"
-
-      fill_in 'Title', with: 'Test General work'
-      fill_in 'Creator', with: 'Test Default Creator'
-      fill_in 'Keyword', with: 'Test Default Keyword'
-      select "In Copyright", :from => "general_rights_statement"
-      expect(page).to have_field('general_visibility_embargo')
-      expect(page).not_to have_field('general_visibility_lease')
-      choose "general_visibility_open"
-      check 'agreement'
-      
-      expect(page).not_to have_selector('#general_dcmi_type')
-
-      within "//span[@id=addfiles]" do
-        attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'))
-      end
-
-      click_link "Relationships"
-      expect(page).to_not have_content 'Administrative Set'
-
-      click_button 'Save'
-      expect(page).to have_content 'Your files are being processed by Hyrax'
-
-      visit '/dashboard/my/works/'
-      expect(page).to have_content 'Test General work'
-
-      first('.document-title', text: 'Test General work').click
-      expect(page).to have_content 'Test Default Keyword'
-      expect(page).to_not have_content 'In Administrative Set: general admin set'
-      expect(page).to_not have_selector(:link, 'Delete')
-
-      click_link 'Edit'
-
-      expect(page).to have_content 'Edit Work'
+      expect(page).to have_content "You are not authorized to access this page"
     end
 
     scenario 'as an admin' do

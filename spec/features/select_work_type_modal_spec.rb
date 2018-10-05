@@ -34,8 +34,8 @@ RSpec.feature 'Select work type modal', js: false do
     expect(page).to have_selector('input[value="Article"]')
     expect(page).to have_selector('input[value="Journal"]')
     expect(page).to have_selector('input[value="ScholarlyWork"]')
-    expect(page).to have_selector('input[value="General"]')
-    
+
+    expect(page).to_not have_content'input[value="General"]'
     expect(page).to_not have_content 'Dissertations and Theses'
   end
   
@@ -48,8 +48,8 @@ RSpec.feature 'Select work type modal', js: false do
     expect(page).to have_selector('input[value="Article"]')
     expect(page).to have_selector('input[value="Journal"]')
     expect(page).to have_selector('input[value="ScholarlyWork"]')
-    expect(page).to have_selector('input[value="General"]')
-    
+
+    expect(page).to_not have_content'input[value="General"]'
     expect(page).to_not have_content 'Dissertations and Theses'
   end
 end
