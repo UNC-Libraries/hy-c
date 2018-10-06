@@ -23,7 +23,8 @@ RSpec.describe Hyrax::ScholarlyWorkForm do
 
     it { is_expected.to match_array [:advisor, :affiliation, :affiliation_label, :conference_name, :date_created,
                                      :dcmi_type, :doi, :geographic_subject, :description, :keyword, :language, :license,
-                                     :orcid, :other_affiliation, :resource_type, :rights_statement, :subject] }
+                                     :orcid, :other_affiliation, :resource_type, :rights_statement, :subject,
+                                     :language_label, :license_label, :rights_statement_label] }
   end
   
   describe "#admin_only_terms" do
@@ -40,11 +41,11 @@ RSpec.describe Hyrax::ScholarlyWorkForm do
           date_created: 'a date', # single-valued
           description: 'a description', # single-valued
           subject: ['a subject'],
-          language: ['a language'],
+          language: ['http://id.loc.gov/vocabulary/iso639-2/eng'],
           keyword: ['test'],
           resource_type: ['a type'],
           license: 'http://creativecommons.org/licenses/by/3.0/us/', # single-valued
-          rights_statement: 'a statement', # single-valued
+          rights_statement: 'http://rightsstatements.org/vocab/InC/1.0/', # single-valued
           member_of_collection_ids: ['123456', 'abcdef'],
           visibility: 'open',
           representative_id: '456',
@@ -58,7 +59,10 @@ RSpec.describe Hyrax::ScholarlyWorkForm do
           doi: '12345',
           geographic_subject: ['a geographic subject'],
           orcid: ['an orcid'],
-          other_affiliation: ['another affiliation']
+          other_affiliation: ['another affiliation'],
+          language_label: [],
+          license_label: [],
+          rights_statement_label: []
       )
     end
 
@@ -71,11 +75,11 @@ RSpec.describe Hyrax::ScholarlyWorkForm do
       expect(subject['description']).to eq 'a description'
       expect(subject['doi']).to eq '12345'
       expect(subject['subject']).to eq ['a subject']
-      expect(subject['language']).to eq ['a language']
+      expect(subject['language']).to eq ['http://id.loc.gov/vocabulary/iso639-2/eng']
       expect(subject['keyword']).to eq ['test']
       expect(subject['resource_type']).to eq ['a type']
       expect(subject['license']).to eq ['http://creativecommons.org/licenses/by/3.0/us/']
-      expect(subject['rights_statement']).to eq ['a statement']
+      expect(subject['rights_statement']).to eq ['http://rightsstatements.org/vocab/InC/1.0/']
       expect(subject['visibility']).to eq 'open'
       expect(subject['representative_id']).to eq '456'
       expect(subject['thumbnail_id']).to eq '789'
@@ -89,6 +93,9 @@ RSpec.describe Hyrax::ScholarlyWorkForm do
       expect(subject['orcid']).to eq ['an orcid']
       expect(subject['other_affiliation']).to eq ['another affiliation']
       expect(subject['member_of_collection_ids']).to eq ['123456', 'abcdef']
+      expect(subject['language_label']).to eq ['English']
+      expect(subject['license_label']).to eq ['Attribution 3.0 United States']
+      expect(subject['rights_statement_label']).to eq ['In Copyright']
     end
 
     context '.model_attributes' do

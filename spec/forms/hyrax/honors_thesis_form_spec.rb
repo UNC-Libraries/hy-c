@@ -28,7 +28,8 @@ RSpec.describe Hyrax::HonorsThesisForm do
     it { is_expected.to match_array [:access, :academic_concentration, :alternative_title, :affiliation_label,
                                      :award, :dcmi_type, :doi, :extent, :geographic_subject, :note,
                                      :orcid, :use, :language, :license, :resource_type, :rights_statement, :subject,
-                                     :keyword, :related_url, :url] }
+                                     :keyword, :related_url, :url, :language_label, :license_label,
+                                     :rights_statement_label] }
   end
   
   describe "#admin_only_terms" do
@@ -50,10 +51,10 @@ RSpec.describe Hyrax::HonorsThesisForm do
           title: 'foo', # single-valued
           creator: ['a creator'],
           keyword: ['a keyword'],
-          language: ['a language'],
-          license: 'a license', # single-valued
+          language: ['http://id.loc.gov/vocabulary/iso639-2/eng'],
+          license: 'http://creativecommons.org/licenses/by/3.0/us/', # single-valued
           resource_type: ['a type'],
-          rights_statement: 'a statement', # single-valued
+          rights_statement: 'http://rightsstatements.org/vocab/InC/1.0/', # single-valued
           subject: ['a subject'],
           visibility: 'open',
           representative_id: '456',
@@ -77,7 +78,10 @@ RSpec.describe Hyrax::HonorsThesisForm do
           note: [''],
           orcid: ['an orcid'],
           use: ['a use'],
-          url: ['a url']
+          url: ['a url'],
+          language_label: [],
+          license_label: [],
+          rights_statement_label: []
       )
     end
 
@@ -87,10 +91,9 @@ RSpec.describe Hyrax::HonorsThesisForm do
       expect(subject['title']).to eq ['foo']
       expect(subject['creator']).to eq ['a creator']
       expect(subject['keyword']).to eq ['a keyword']
-      expect(subject['language']).to eq ['a language']
-      expect(subject['license']).to eq ['a license']
+      expect(subject['language']).to eq ['http://id.loc.gov/vocabulary/iso639-2/eng']
       expect(subject['resource_type']).to eq ['a type']
-      expect(subject['rights_statement']).to eq ['a statement']
+      expect(subject['rights_statement']).to eq ['http://rightsstatements.org/vocab/InC/1.0/']
       expect(subject['subject']).to eq ['a subject']
       expect(subject['visibility']).to eq 'open'
       expect(subject['representative_id']).to eq '456'
@@ -110,11 +113,15 @@ RSpec.describe Hyrax::HonorsThesisForm do
       expect(subject['extent']).to eq ['an extent']
       expect(subject['dcmi_type']).to eq ['type']
       expect(subject['geographic_subject']).to eq ['a geographic subject']
+      expect(subject['license']).to eq ['http://creativecommons.org/licenses/by/3.0/us/']
       expect(subject['graduation_year']).to eq '2017'
       expect(subject['note']).to be_empty
       expect(subject['orcid']).to eq ['an orcid']
       expect(subject['use']).to eq ['a use']
       expect(subject['url']).to eq ['a url']
+      expect(subject['language_label']).to eq ['English']
+      expect(subject['license_label']).to eq ['Attribution 3.0 United States']
+      expect(subject['rights_statement_label']).to eq ['In Copyright']
     end
 
     context '.model_attributes' do

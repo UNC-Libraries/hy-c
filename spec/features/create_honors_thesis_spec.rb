@@ -87,6 +87,9 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       fill_in 'Use', with: 'some use'
       fill_in 'Url', with: 'some url'
 
+      expect(page).to have_field('honors_thesis_language_label')
+      expect(page).to have_field('honors_thesis_license_label')
+      expect(page).to have_field('honors_thesis_rights_statement_label')
       expect(page).to have_field('honors_thesis_visibility_embargo')
       expect(page).not_to have_field('honors_thesis_visibility_lease')
       expect(page).to have_select('honors_thesis_resource_type', selected: 'Honors Thesis')
@@ -127,16 +130,19 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       expect(page).to have_content 'Geographic subject some geographic subject'
       expect(page).to have_content 'Graduation year 2018'
       expect(page).to have_content 'Keyword Test Default Keyword'
-      expect(page).to have_content 'Language http://id.loc.gov/vocabulary/iso639-2/eng'
-      expect(page).to have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
+      expect(page).to have_content 'Language English'
+      expect(page).to have_content 'License Attribution 3.0 United States'
       expect(page).to have_content 'Note a note'
       expect(page).to have_content 'Orcid an orcid'
       expect(page).to have_content 'Resource type Honors Thesis'
       expect(page).to have_content 'Related url something.com'
-      expect(page).to have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'
+      expect(page).to have_content 'Rights statement In Copyright'
       expect(page).to have_content 'Subject test'
       expect(page).to have_content 'Use some use'
       expect(page).to have_content 'Url some url'
+      expect(page).to_not have_content 'Language http://id.loc.gov/vocabulary/iso639-2/eng'
+      expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
+      expect(page).to_not have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'
 
       expect(page).to_not have_content 'In Administrative Set: honors thesis admin set'
       expect(page).to have_content 'Type http://purl.org/dc/dcmitype/Text'
@@ -183,6 +189,9 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       fill_in 'Use', with: 'some use'
       fill_in 'Url', with: 'some url'
 
+      expect(page).to have_field('honors_thesis_language_label')
+      expect(page).to have_field('honors_thesis_license_label')
+      expect(page).to have_field('honors_thesis_rights_statement_label')
       expect(page).to have_field('honors_thesis_visibility_embargo')
       expect(page).not_to have_field('honors_thesis_visibility_lease')
       expect(page).to have_select('honors_thesis_resource_type', selected: 'Honors Thesis')
@@ -226,16 +235,19 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       expect(page).to have_content 'Geographic subject some geographic subject'
       expect(page).to have_content 'Graduation year 2018'
       expect(page).to have_content 'Keyword Test Default Keyword'
-      expect(page).to have_content 'Language http://id.loc.gov/vocabulary/iso639-2/eng'
-      expect(page).to have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
+      expect(page).to have_content 'Language English'
+      expect(page).to have_content 'License Attribution 3.0 United States'
       expect(page).to have_content 'Note a note'
       expect(page).to have_content 'Orcid an orcid'
       expect(page).to have_content 'Resource type Honors Thesis'
       expect(page).to have_content 'Related url something.com'
-      expect(page).to have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'
+      expect(page).to have_content 'Rights statement In Copyright'
       expect(page).to have_content 'Subject test'
       expect(page).to have_content 'Use some use'
       expect(page).to have_content 'Url some url'
+      expect(page).to_not have_content 'Language http://id.loc.gov/vocabulary/iso639-2/eng'
+      expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
+      expect(page).to_not have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'
 
       expect(page).to have_content 'In Administrative Set: honors thesis admin set'
       expect(page).to have_content 'Type http://purl.org/dc/dcmitype/Image'

@@ -95,6 +95,9 @@ RSpec.feature 'Create a Dissertation', js: false do
       fill_in 'Subject', with: 'test'
       fill_in 'Use', with: 'some use'
 
+      expect(page).to have_field('dissertation_language_label')
+      expect(page).to have_field('dissertation_license_label')
+      expect(page).to have_field('dissertation_rights_statement_label')
       expect(page).to have_field('dissertation_visibility_embargo')
       expect(page).not_to have_field('dissertation_visibility_lease')
       choose 'dissertation_visibility_open'
@@ -140,16 +143,19 @@ RSpec.feature 'Create a Dissertation', js: false do
       expect(page).to have_content 'Graduation year 2018'
       expect(page).to have_content 'Identifier some id'
       expect(page).to have_content 'Keyword Test Default Keyword'
-      expect(page).to have_content 'Language http://id.loc.gov/vocabulary/iso639-2/eng'
-      expect(page).to have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
+      expect(page).to have_content 'Language English'
+      expect(page).to have_content 'License Attribution 3.0 United States'
       expect(page).to have_content 'Note a note'
       expect(page).to have_content 'Orcid an orcid'
       expect(page).to have_content 'Place of publication UNC'
       expect(page).to have_content 'Publisher UNC Press'
       expect(page).to have_content 'Reviewer a reviewer'
-      expect(page).to have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'
+      expect(page).to have_content 'Rights statement In Copyright'
       expect(page).to have_content 'Subject test'
       expect(page).to have_content 'Use some use'
+      expect(page).to_not have_content 'Language http://id.loc.gov/vocabulary/iso639-2/eng'
+      expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
+      expect(page).to_not have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'
       
       
       expect(page).to have_content 'Test Default Keyword'

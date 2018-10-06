@@ -103,6 +103,9 @@ RSpec.feature 'Create a Article', js: false do
       fill_in 'Use', with: 'some use'
 
 
+      expect(page).to have_field('article_language_label')
+      expect(page).to have_field('article_license_label')
+      expect(page).to have_field('article_rights_statement_label')
       expect(page).to have_field('article_visibility_embargo')
       expect(page).not_to have_field('article_visibility_lease')
       expect(page).to have_select('article_resource_type', selected: 'Article')
@@ -130,7 +133,7 @@ RSpec.feature 'Create a Article', js: false do
       expect(page).to have_content 'Abstract some abstract'
       expect(page).to have_content 'Date issued October 3, 2018'
       expect(page).to have_content 'License Attribution 3.0 United States'
-      expect(page).to have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'
+      expect(page).to have_content 'Rights statement In Copyright'
       expect(page).to have_content 'Publisher UNC Press'
       expect(page).to have_content 'Date created October 3, 2018'
       expect(page).to have_content 'Subject test'
@@ -167,6 +170,9 @@ RSpec.feature 'Create a Article', js: false do
       expect(page).to have_content 'Translator none'
       expect(page).to have_content 'Url something.org'
       expect(page).to have_content 'Use some use'
+      expect(page).to_not have_content 'Language http://id.loc.gov/vocabulary/iso639-2/eng'
+      expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
+      expect(page).to_not have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'
 
       expect(page).to_not have_content 'In Administrative Set: article admin set'
       expect(page).to have_content 'Type http://purl.org/dc/dcmitype/Text'
@@ -228,6 +234,9 @@ RSpec.feature 'Create a Article', js: false do
       fill_in 'Link to Publisher Version', with: 'something.org'
       fill_in 'Use', with: 'some use'
 
+      expect(page).to have_field('article_language_label')
+      expect(page).to have_field('article_license_label')
+      expect(page).to have_field('article_rights_statement_label')
       expect(page).to have_field('article_visibility_embargo')
       expect(page).not_to have_field('article_visibility_lease')
       expect(page).to have_select('article_resource_type', selected: 'Article')
@@ -258,7 +267,7 @@ RSpec.feature 'Create a Article', js: false do
       expect(page).to have_content 'Abstract some abstract'
       expect(page).to have_content 'Date issued October 3, 2018'
       expect(page).to have_content 'License Attribution 3.0 United States'
-      expect(page).to have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'
+      expect(page).to have_content 'Rights statement In Copyright'
       expect(page).to have_content 'Publisher UNC Press'
       expect(page).to have_content 'Date created October 3, 2018'
       expect(page).to have_content 'Subject test'
@@ -295,6 +304,9 @@ RSpec.feature 'Create a Article', js: false do
       expect(page).to have_content 'Translator none'
       expect(page).to have_content 'Url something.org'
       expect(page).to have_content 'Use some use'
+      expect(page).to_not have_content 'Language http://id.loc.gov/vocabulary/iso639-2/eng'
+      expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
+      expect(page).to_not have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'
 
       expect(page).to have_content 'In Administrative Set: article admin set'
       expect(page).to have_content 'Type http://purl.org/dc/dcmitype/Image'

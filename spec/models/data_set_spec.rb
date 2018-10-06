@@ -53,6 +53,9 @@ RSpec.describe DataSet do
       expect(subject).to respond_to(:researcher)
       expect(subject).to respond_to(:rights_holder)
       expect(subject).to respond_to(:sponsor)
+      expect(subject).to respond_to(:language_label)
+      expect(subject).to respond_to(:license_label)
+      expect(subject).to respond_to(:rights_statement_label)
     end
   end
 end

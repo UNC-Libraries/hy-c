@@ -88,6 +88,9 @@ RSpec.feature 'Create a DataSet', js: false do
       fill_in 'Sponsor', with: 'a sponsor'
       fill_in 'Subject', with: 'test'
 
+      expect(page).to have_field('data_set_language_label')
+      expect(page).to have_field('data_set_license_label')
+      expect(page).to have_field('data_set_rights_statement_label')
       expect(page).to have_field('data_set_rights_statement')
       expect(page).to have_field('data_set_visibility_embargo')
       expect(page).not_to have_field('data_set_visibility_lease')
@@ -117,7 +120,7 @@ RSpec.feature 'Create a DataSet', js: false do
       expect(page).to have_content 'Date issued October 3, 2018'
       expect(page).to have_content 'Kind of data Text'
       expect(page).to have_content 'License Attribution 3.0 United States'
-      expect(page).to have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'
+      expect(page).to have_content 'Rights statement In Copyright'
       expect(page).to have_content 'Date created October 3, 2018'
       expect(page).to have_content 'Language English'
       expect(page).to have_content 'Related url something.com'
@@ -140,6 +143,9 @@ RSpec.feature 'Create a DataSet', js: false do
       expect(page).to have_content 'Rights holder an author'
       expect(page).to have_content 'Sponsor a sponsor'
       expect(page).to have_content 'Subject test'
+      expect(page).to_not have_content 'Language http://id.loc.gov/vocabulary/iso639-2/eng'
+      expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
+      expect(page).to_not have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'
 
       expect(page).to_not have_content 'In Administrative Set: data set admin set'
       expect(page).to have_content 'Type http://purl.org/dc/dcmitype/Dataset'
@@ -187,6 +193,9 @@ RSpec.feature 'Create a DataSet', js: false do
       fill_in 'Sponsor', with: 'a sponsor'
       fill_in 'Subject', with: 'test'
 
+      expect(page).to have_field('data_set_language_label')
+      expect(page).to have_field('data_set_license_label')
+      expect(page).to have_field('data_set_rights_statement_label')
       expect(page).to have_field('data_set_rights_statement')
       expect(page).to have_field('data_set_visibility_embargo')
       expect(page).not_to have_field('data_set_visibility_lease')
@@ -219,7 +228,7 @@ RSpec.feature 'Create a DataSet', js: false do
       expect(page).to have_content 'Date issued October 3, 2018'
       expect(page).to have_content 'Kind of data Text'
       expect(page).to have_content 'License Attribution 3.0 United States'
-      expect(page).to have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'
+      expect(page).to have_content 'Rights statement In Copyright'
       expect(page).to have_content 'Date created October 3, 2018'
       expect(page).to have_content 'Language English'
       expect(page).to have_content 'Related url something.com'
@@ -242,6 +251,9 @@ RSpec.feature 'Create a DataSet', js: false do
       expect(page).to have_content 'Rights holder an author'
       expect(page).to have_content 'Sponsor a sponsor'
       expect(page).to have_content 'Subject test'
+      expect(page).to_not have_content 'Language http://id.loc.gov/vocabulary/iso639-2/eng'
+      expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
+      expect(page).to_not have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'
 
       expect(page).to have_content 'In Administrative Set: data set admin set'
       expect(page).to have_content 'Type http://purl.org/dc/dcmitype/Image'

@@ -60,6 +60,9 @@ RSpec.describe Dissertation do
       expect(subject).to respond_to(:place_of_publication)
       expect(subject).to respond_to(:reviewer)
       expect(subject).to respond_to(:use)
+      expect(subject).to respond_to(:language_label)
+      expect(subject).to respond_to(:license_label)
+      expect(subject).to respond_to(:rights_statement_label)
     end
   end
 end

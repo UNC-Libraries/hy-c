@@ -51,6 +51,14 @@ class Journal < ActiveFedora::Base
     index.as :stored_searchable
   end
 
+  property :language_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#LanguageLabel') do |index|
+    index.as :stored_searchable
+  end
+
+  property :license_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#LicenseLabel') do |index|
+    index.as :stored_searchable
+  end
+
   property :note, predicate: ::RDF::Vocab::SKOS.note do |index|
     index.as :stored_searchable
   end
@@ -60,6 +68,10 @@ class Journal < ActiveFedora::Base
   end
 
   property :place_of_publication, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/pup') do |index|
+    index.as :stored_searchable
+  end
+
+  property :rights_statement_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#RightsStatementLabel') do |index|
     index.as :stored_searchable
   end
 

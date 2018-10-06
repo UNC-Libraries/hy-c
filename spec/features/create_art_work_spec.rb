@@ -69,6 +69,8 @@ RSpec.feature 'Create an Art Work', js: false do
       select 'Attribution 3.0 United States', :from => 'art_work_license'
       select 'In Copyright', :from => 'art_work_rights_statement'
 
+      expect(page).to have_field('art_work_license_label')
+      expect(page).to have_field('art_work_rights_statement_label')
       expect(page).to have_field('art_work_visibility_embargo')
       expect(page).not_to have_field('art_work_visibility_lease')
       choose "art_work_visibility_open"
@@ -92,10 +94,12 @@ RSpec.feature 'Create an Art Work', js: false do
       expect(page).to have_content 'a description'
       expect(page).to have_content 'Doi some doi'
       expect(page).to have_content 'Extent some extent'
-      expect(page).to have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
+      expect(page).to have_content 'License Attribution 3.0 United States'
       expect(page).to have_content 'Medium a medium'
       expect(page).to have_content 'Resource type Other'
-      expect(page).to have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'
+      expect(page).to have_content 'Rights statement In Copyright'
+      expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
+      expect(page).to_not have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'
 
       expect(page).to_not have_content 'In Administrative Set: art_work admin set'
       expect(page).to_not have_selector(:link, 'Delete')
@@ -124,6 +128,8 @@ RSpec.feature 'Create an Art Work', js: false do
       select 'Attribution 3.0 United States', :from => 'art_work_license'
       select 'In Copyright', :from => 'art_work_rights_statement'
 
+      expect(page).to have_field('art_work_license_label')
+      expect(page).to have_field('art_work_rights_statement_label')
       expect(page).to have_field('art_work_visibility_embargo')
       expect(page).not_to have_field('art_work_visibility_lease')
       choose "art_work_visibility_open"
@@ -148,10 +154,12 @@ RSpec.feature 'Create an Art Work', js: false do
       expect(page).to have_content 'a description'
       expect(page).to have_content 'Doi some doi'
       expect(page).to have_content 'Extent some extent'
-      expect(page).to have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
+      expect(page).to have_content 'License Attribution 3.0 United States'
       expect(page).to have_content 'Medium a medium'
       expect(page).to have_content 'Resource type Other'
-      expect(page).to have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'
+      expect(page).to have_content 'Rights statement In Copyright'
+      expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
+      expect(page).to_not have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'
 
       expect(page).to have_content 'In Administrative Set: art work admin set'
       expect(page).to have_selector(:link, 'Delete')

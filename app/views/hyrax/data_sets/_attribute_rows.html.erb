@@ -1,12 +1,12 @@
 <%= presenter.attribute_to_html(:creator, render_as: :faceted, html_dl: true) %>
 <%= presenter.attribute_to_html(:subject, render_as: :faceted, html_dl: true) %>
 <%= presenter.attribute_to_html(:keyword, render_as: :faceted, html_dl: true) %>
-<%= presenter.attribute_to_html(:rights_statement, html_dl: true) %>
-<%= presenter.attribute_to_html(:language, html_dl: true) %>
+<%= presenter.attribute_to_html(:rights_statement_label, label: 'Rights statement', html_dl: true) %>
+<%= presenter.attribute_to_html(:language_label, label: 'Language', html_dl: true) %>
 <%= presenter.attribute_to_html(:related_url, html_dl: true) %>
 <%= presenter.attribute_to_html(:resource_type, html_dl: true) %>
 <%= presenter.attribute_to_html(:description, html_dl: true) %>
-<%= presenter.attribute_to_html(:license, html_dl: true) %>
+<%= presenter.attribute_to_html(:license_label, label: 'License', html_dl: true) %>
 <%= presenter.attribute_to_html(:contributor, html_dl: true) %>
 <%= presenter.attribute_to_html(:date_published, render_as: :date, html_dl: true) %>
 <%= presenter.attribute_to_html(:date_created, render_as: :date, html_dl: true) %>

@@ -123,6 +123,9 @@ RSpec.feature 'Create a General', js: false do
       fill_in 'Use', with: 'some use'
       fill_in 'Url', with: 'some url'
 
+      expect(page).to have_field('general_language_label')
+      expect(page).to have_field('general_license_label')
+      expect(page).to have_field('general_rights_statement_label')
       expect(page).to have_field('general_visibility_embargo')
       expect(page).not_to have_field('general_visibility_lease')
       choose 'general_visibility_open'
@@ -183,7 +186,7 @@ RSpec.feature 'Create a General', js: false do
       expect(page).to have_content 'Kind of data Text'
       expect(page).to have_content 'Language English'
       expect(page).to have_content 'Last modified date October 3, 2018'
-      expect(page).to have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
+      expect(page).to have_content 'License Attribution 3.0 United States'
       expect(page).to have_content 'Medium a medium'
       expect(page).to have_content 'Note a note'
       expect(page).to have_content 'Orcid an orcid'
@@ -200,7 +203,7 @@ RSpec.feature 'Create a General', js: false do
       expect(page).to have_content 'Reviewer a reviewer'
       expect(page).to have_content 'Related url something.com'
       expect(page).to have_content 'Rights holder an author'
-      expect(page).to have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'
+      expect(page).to have_content 'Rights statement In Copyright'
       expect(page).to have_content 'Series a series'
       expect(page).to have_content 'Sponsor a sponsor'
       expect(page).to have_content 'Subject test'
@@ -208,6 +211,9 @@ RSpec.feature 'Create a General', js: false do
       expect(page).to have_content 'Translator none'
       expect(page).to have_content 'Use some use'
       expect(page).to have_content 'Url some url'
+      expect(page).to_not have_content 'Language http://id.loc.gov/vocabulary/iso639-2/eng'
+      expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
+      expect(page).to_not have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'
 
       expect(page).to_not have_content 'In Administrative Set: general admin set'
       expect(page).to_not have_selector(:link, 'Delete')
@@ -291,6 +297,9 @@ RSpec.feature 'Create a General', js: false do
       fill_in 'Use', with: 'some use'
       fill_in 'Url', with: 'some url'
 
+      expect(page).to have_field('general_language_label')
+      expect(page).to have_field('general_license_label')
+      expect(page).to have_field('general_rights_statement_label')
       expect(page).to have_field('general_visibility_embargo')
       expect(page).not_to have_field('general_visibility_lease')
       choose 'general_visibility_open'
@@ -352,7 +361,7 @@ RSpec.feature 'Create a General', js: false do
       expect(page).to have_content 'Kind of data Text'
       expect(page).to have_content 'Language English'
       expect(page).to have_content 'Last modified date October 3, 2018'
-      expect(page).to have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
+      expect(page).to have_content 'License Attribution 3.0 United States'
       expect(page).to have_content 'Medium a medium'
       expect(page).to have_content 'Note a note'
       expect(page).to have_content 'Orcid an orcid'
@@ -369,7 +378,7 @@ RSpec.feature 'Create a General', js: false do
       expect(page).to have_content 'Reviewer a reviewer'
       expect(page).to have_content 'Related url something.com'
       expect(page).to have_content 'Rights holder an author'
-      expect(page).to have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'
+      expect(page).to have_content 'Rights statement In Copyright'
       expect(page).to have_content 'Series a series'
       expect(page).to have_content 'Sponsor a sponsor'
       expect(page).to have_content 'Subject test'
@@ -377,6 +386,9 @@ RSpec.feature 'Create a General', js: false do
       expect(page).to have_content 'Translator none'
       expect(page).to have_content 'Use some use'
       expect(page).to have_content 'Url some url'
+      expect(page).to_not have_content 'Language http://id.loc.gov/vocabulary/iso639-2/eng'
+      expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
+      expect(page).to_not have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'
 
       expect(page).to have_content 'Type http://purl.org/dc/dcmitype/Text'
       expect(page).to have_content 'In Administrative Set: general admin set'

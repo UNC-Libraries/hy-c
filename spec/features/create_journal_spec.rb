@@ -80,7 +80,10 @@ RSpec.feature 'Create a Journal', js: false do
       select 'In Copyright', :from => 'journal_rights_statement'
       fill_in 'Subject', with: 'test'
       fill_in 'Table of contents', with: 'contents'
-      
+
+      expect(page).to have_field('journal_language_label')
+      expect(page).to have_field('journal_license_label')
+      expect(page).to have_field('journal_rights_statement_label')
       expect(page).to have_field('journal_visibility_embargo')
       expect(page).not_to have_field('journal_visibility_lease')
       choose "journal_visibility_open"
@@ -113,15 +116,18 @@ RSpec.feature 'Create a Journal', js: false do
       expect(page).to have_content 'Issn some issn'
       expect(page).to have_content 'Keyword Test Default Keyword'
       expect(page).to have_content 'Language English'
-      expect(page).to have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
+      expect(page).to have_content 'License Attribution 3.0 United States'
       expect(page).to have_content 'Note a note'
       expect(page).to have_content 'Orcid an orcid'
       expect(page).to have_content 'Place of publication UNC'
       expect(page).to have_content 'Publisher UNC Press'
       expect(page).to have_content 'Resource type Journal'
-      expect(page).to have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'
+      expect(page).to have_content 'Rights statement In Copyright'
       expect(page).to have_content 'Subject test'
       expect(page).to have_content 'Table of contents contents'
+      expect(page).to_not have_content 'Language http://id.loc.gov/vocabulary/iso639-2/eng'
+      expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
+      expect(page).to_not have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'
       
       expect(page).to_not have_content 'In Administrative Set: journal admin set'
       expect(page).to have_content 'Type http://purl.org/dc/dcmitype/Text'
@@ -162,6 +168,9 @@ RSpec.feature 'Create a Journal', js: false do
       fill_in 'Subject', with: 'test'
       fill_in 'Table of contents', with: 'contents'
 
+      expect(page).to have_field('journal_language_label')
+      expect(page).to have_field('journal_license_label')
+      expect(page).to have_field('journal_rights_statement_label')
       expect(page).to have_field('journal_visibility_embargo')
       expect(page).not_to have_field('journal_visibility_lease')
       choose "journal_visibility_open"
@@ -197,15 +206,18 @@ RSpec.feature 'Create a Journal', js: false do
       expect(page).to have_content 'Issn some issn'
       expect(page).to have_content 'Keyword Test Default Keyword'
       expect(page).to have_content 'Language English'
-      expect(page).to have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
+      expect(page).to have_content 'License Attribution 3.0 United States'
       expect(page).to have_content 'Note a note'
       expect(page).to have_content 'Orcid an orcid'
       expect(page).to have_content 'Place of publication UNC'
       expect(page).to have_content 'Publisher UNC Press'
       expect(page).to have_content 'Resource type Journal'
-      expect(page).to have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'
+      expect(page).to have_content 'Rights statement In Copyright'
       expect(page).to have_content 'Subject test'
       expect(page).to have_content 'Table of contents contents'
+      expect(page).to_not have_content 'Language http://id.loc.gov/vocabulary/iso639-2/eng'
+      expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
+      expect(page).to_not have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'
 
       expect(page).to have_content 'In Administrative Set: journal admin set'
       expect(page).to have_content 'Type http://purl.org/dc/dcmitype/Image'

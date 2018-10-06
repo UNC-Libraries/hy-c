@@ -22,7 +22,8 @@ RSpec.describe Hyrax::MultimedForm do
     subject { form.secondary_terms }
 
     it { is_expected.to match_array [:dcmi_type, :doi, :extent, :geographic_subject, :keyword,
-                                     :language, :license, :medium, :note, :orcid, :rights_statement, :subject] }
+                                     :language, :license, :medium, :note, :orcid, :rights_statement, :subject,
+                                     :language_label, :license_label, :rights_statement_label] }
   end
   
   describe "#admin_only_terms" do
@@ -38,19 +39,22 @@ RSpec.describe Hyrax::MultimedForm do
           creator: ['a creator'],
           date_created: '2018-01-09', # single-valued
           subject: ['a subject'],
-          language: ['a language'],
+          language: ['http://id.loc.gov/vocabulary/iso639-2/eng'],
           note: ['a note'],
           orcid: ['an orcid'],
           medium: ['a medium'],
           resource_type: ['a type'],
-          license: 'a license', # single-valued
-          rights_statement: 'a statement', # single-valued
+          license: 'http://creativecommons.org/licenses/by/3.0/us/', # single-valued
+          rights_statement: 'http://rightsstatements.org/vocab/InC/1.0/', # single-valued
           abstract: ['an abstract'],
           dcmi_type: ['type'],
           doi: '12345',
           extent: ['1999'],
           geographic_subject: ['Italy'],
-          keyword: ['multimed']
+          keyword: ['multimed'],
+          language_label: [],
+          license_label: [],
+          rights_statement_label: []
       )
     end
 
@@ -60,10 +64,10 @@ RSpec.describe Hyrax::MultimedForm do
       expect(subject['title']).to eq ['multimed name']
       expect(subject['creator']).to eq ['a creator']
       expect(subject['subject']).to eq ['a subject']
-      expect(subject['language']).to eq ['a language']
+      expect(subject['language']).to eq ['http://id.loc.gov/vocabulary/iso639-2/eng']
       expect(subject['resource_type']).to eq ['a type']
-      expect(subject['license']).to eq ['a license']
-      expect(subject['rights_statement']).to eq ['a statement']
+      expect(subject['license']).to eq ['http://creativecommons.org/licenses/by/3.0/us/']
+      expect(subject['rights_statement']).to eq ['http://rightsstatements.org/vocab/InC/1.0/']
       expect(subject['note']).to eq ['a note']
       expect(subject['orcid']).to eq ['an orcid']
       expect(subject['medium']).to eq ['a medium']
@@ -74,6 +78,9 @@ RSpec.describe Hyrax::MultimedForm do
       expect(subject['extent']).to eq ['1999']
       expect(subject['dcmi_type']).to eq ['type']
       expect(subject['geographic_subject']).to eq ['Italy']
+      expect(subject['language_label']).to eq ['English']
+      expect(subject['license_label']).to eq ['Attribution 3.0 United States']
+      expect(subject['rights_statement_label']).to eq ['In Copyright']
     end
 
     describe "#visibility" do
