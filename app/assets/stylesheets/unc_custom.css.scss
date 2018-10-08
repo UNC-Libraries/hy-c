@@ -348,9 +348,11 @@ div.unc-citation-modal {
   }
 }
 
-a:focus, button:focus {
-  outline-color: #4b9cd3;
-  border: 1.5px dashed #4b9cd3;
+#search-results {
+  a:focus, button:focus {
+    outline-color: #4b9cd3;
+    border: 1.5px dashed #4b9cd3;
+  }
 }
 
 .sidebar {
