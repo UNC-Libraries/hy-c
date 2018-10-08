@@ -62,6 +62,10 @@
                             "name": "Hyrax::Workflow::PendingReviewNotification",
                             "to": ["approving"]
                         }
+                    ],
+                    "methods": [
+                        "Hyrax::Workflow::DeactivateObject",
+                        "Hyrax::Workflow::AssignReviewerByAffiliation"
                     ]
                 }, {
                     "name": "comment_only",
