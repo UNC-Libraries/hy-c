@@ -1,0 +1,17 @@
+<%# [hyc-override] Add header to collections page %>
+<% if params.key?(:f) && params[:f].key?(:human_readable_type_sim) && params[:f][:human_readable_type_sim].length == 1 && params[:f][:human_readable_type_sim][0] == 'Collection' %>
+  <h1 class="collections-browse">Browse Collections | Carolina Digital Repository</h1>
+<% end %>
+
+<% if query_has_constraints? %>
+  <div id="appliedParams" class="clearfix constraints-container">
+    <h2 class="sr-only"><%= t('blacklight.search.search_constraints_header') %></h2>
+
+    <%=link_to t('blacklight.search.start_over'), start_over_path, class: "catalog_startOverLink btn btn-primary" %>
+    <%# [hyc-override] Don't display constraints on "Collections" page %>
+    <% unless params[:f].key?(:human_readable_type_sim) && params[:f][:human_readable_type_sim].length == 1 && params[:f][:human_readable_type_sim][0] == 'Collection'%>
+      <span class="constraints-label sr-only"><%= t('blacklight.search.filters.title') %></span>
+      <%= render_constraints(params) %>
+    <% end %>
+  </div>
+<% end %>
