@@ -9,7 +9,7 @@
 
     <%=link_to t('blacklight.search.start_over'), start_over_path, class: "catalog_startOverLink btn btn-primary" %>
     <%# [hyc-override] Don't display constraints on "Collections" page %>
-    <% unless params[:f].key?(:human_readable_type_sim) && params[:f][:human_readable_type_sim].length == 1 && params[:f][:human_readable_type_sim][0] == 'Collection'%>
+    <% unless params.key?(:f) && params[:f].key?(:human_readable_type_sim) && params[:f][:human_readable_type_sim].length == 1 && params[:f][:human_readable_type_sim][0] == 'Collection' %>
       <span class="constraints-label sr-only"><%= t('blacklight.search.filters.title') %></span>
       <%= render_constraints(params) %>
     <% end %>
