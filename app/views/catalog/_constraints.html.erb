@@ -1,6 +1,10 @@
 <%# [hyc-override] Add header to collections page %>
 <% if params.key?(:f) && params[:f].key?(:human_readable_type_sim) && params[:f][:human_readable_type_sim].length == 1 && params[:f][:human_readable_type_sim][0] == 'Collection' %>
   <h1 class="collections-browse">Browse Collections</h1>
+<% elsif params[:q].nil? %>
+  <h1 class="collections-browse">Showing all Results</h1>
+<% else %>
+  <h1 class="collections-browse">Showing Results for: "<%= params[:q] %>"</h1>
 <% end %>
 
 <% if query_has_constraints? %>
