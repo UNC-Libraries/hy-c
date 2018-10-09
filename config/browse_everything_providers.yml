@@ -4,10 +4,10 @@
 #
 ---
 file_system:
-  :home: "/hyrax"
+  :home: "/"
 dropbox:
-  :app_key: <%= ENV['DROPBOX_APP_KEY'] %>
-  :app_secret: <%= ENV['DROPBOX_APP_SECRET'] %>
+  :client_id: <%= ENV['DROPBOX_APP_KEY'] %>
+  :client_secret: <%= ENV['DROPBOX_APP_SECRET'] %>
 # box:
 #   :client_id: YOUR_BOX_CLIENT_ID
 #   :client_secret: YOUR_BOX_CLIENT_SECRET

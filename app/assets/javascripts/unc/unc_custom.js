@@ -25,11 +25,20 @@ $(function() {
         });
     }
 
+    function browseEverythingUploads() {
+        $('#browse-btn').browseEverything({
+            route: "/browse",
+            target: "#" + $('form').attr('id')
+        });
+    }
+
     visibleForms();
+    browseEverythingUploads();
 
     // Make sure that form visibility and datepicker work with turbolinks
     $(document).on('turbolinks:load', function() {
         visibleForms();
+        browseEverythingUploads();
     });
 
     // Override default workEditor to pick up our local changes
