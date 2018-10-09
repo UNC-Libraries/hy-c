@@ -5,14 +5,15 @@
           <% end %>
         </div>
         <% if f.object.display_additional_fields? %>
+  <%# [hyc-override] Overrididing aria-expaneded, set to "false" if JS is turned on %>
           <%= link_to t('hyrax.works.form.additional_fields'),
                       '#extended-terms',
                       class: 'btn btn-default additional-fields',
                       data: { toggle: 'collapse' },
                       role: "button",
-                      'aria-expanded'=> "false",
+                      'aria-expanded'=> "true",
                       'aria-controls'=> "extended-terms" %>
-          <div id="extended-terms" class='collapse'>
+          <div id="extended-terms" class='collapse in' aria-expanded="true">
             <%= render 'form_media', f: f %>
             <% f.object.secondary_terms.each do |term| %>
               <% if !(f.object.admin_only_terms.include? term) || current_user.admin? %>
