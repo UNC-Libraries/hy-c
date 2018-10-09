@@ -78,6 +78,11 @@ en:
     relationships_parent_rows:
       empty_text: "This work has no parents."
       label: "Parents:"
+    search:
+      form:
+        option:
+          all:
+            label_long: All of the CDR
     works:
       form:
         tab:
