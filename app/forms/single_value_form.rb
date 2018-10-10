@@ -8,6 +8,8 @@ class SingleValueForm < Hyrax::Forms::WorkForm
   class_attribute :default_term_values
   self.default_term_values = Hash.new
 
+  self.terms += [:language_label, :license_label, :rights_statement_label]
+
   def initialize(model, current_ability, controller)
     initialize_default_term_values(model)
     
@@ -61,6 +63,24 @@ class SingleValueForm < Hyrax::Forms::WorkForm
       attrs[:affiliation_label] = split_affiliations(attrs[:affiliation])
     end
 
+    if attrs.key?(:language) && !attrs[:language].blank?
+      Array(attrs[:language]).each do |language|
+        attrs[:language_label] << LanguagesService.label(language)
+      end
+    end
+
+    if attrs.key?(:license) && !attrs[:license].blank?
+      Array(attrs[:license]).each do |license|
+        attrs[:license_label] << CdrLicenseService.label(license)
+      end
+    end
+
+    if attrs.key?(:rights_statement) && !attrs[:rights_statement].blank?
+      Array(attrs[:rights_statement]).each do |rights|
+        attrs[:rights_statement_label] << CdrRightsStatementsService.label(rights)
+      end
+    end
+
     attrs
   end
 
@@ -72,7 +92,7 @@ class SingleValueForm < Hyrax::Forms::WorkForm
       if model.id != nil
         return
       end
-      
+
       default_term_values.each do |field, values|
         Rails.logger.debug "Init field #{field} with default values #{values.inspect} or retain existing #{model[field].inspect}"
         if single_value_fields.include? field.to_sym

@@ -21,11 +21,11 @@ RSpec.describe Hyrax::DataSetForm do
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:affiliation, :copyright_date, :dcmi_type, :doi, :extent, :funder,
-                                     :geographic_subject, :last_modified_date, :project_director, :researcher,
+    it { is_expected.to match_array [:affiliation, :affiliation_label, :copyright_date, :dcmi_type, :doi, :extent,
+                                     :funder, :geographic_subject, :last_modified_date, :project_director, :researcher,
                                      :rights_holder, :sponsor, :language, :keyword, :related_url, :description,
                                      :license, :contributor, :date_created, :subject, :orcid, :other_affiliation,
-                                     :rights_statement] }
+                                     :rights_statement, :language_label, :license_label, :rights_statement_label] }
   end
   
   describe "#admin_only_terms" do
@@ -64,14 +64,19 @@ RSpec.describe Hyrax::DataSetForm do
           geographic_subject: ['California'],
           kind_of_data: ['some data'],
           last_modified_date: '2018-01-23',
+          language: ['http://id.loc.gov/vocabulary/iso639-2/eng'],
+          license: 'http://creativecommons.org/licenses/by/3.0/us/',
           orcid: ['an orcid'],
           other_affiliation: ['another affiliation'],
           project_director: ['dean'],
           researcher: ['carmen'],
           rights_holder: ['dean'],
+          rights_statement: 'http://rightsstatements.org/vocab/InC/1.0/',
           sponsor: ['david'],
-          use: ['a usage']
-
+          use: ['a usage'],
+          language_label: [],
+          license_label: [],
+          rights_statement_label: []
       )
     end
 
@@ -95,12 +100,17 @@ RSpec.describe Hyrax::DataSetForm do
       expect(subject['geographic_subject']).to eq ['California']
       expect(subject['kind_of_data']).to eq ['some data']
       expect(subject['last_modified_date']).to eq '2018-01-23'
+      expect(subject['language']).to eq ['http://id.loc.gov/vocabulary/iso639-2/eng']
+      expect(subject['license']).to eq ['http://creativecommons.org/licenses/by/3.0/us/']
       expect(subject['orcid']).to eq ['an orcid']
       expect(subject['other_affiliation']).to eq ['another affiliation']
       expect(subject['project_director']).to eq ['dean']
       expect(subject['researcher']).to eq ['carmen']
       expect(subject['rights_holder']).to eq ['dean']
       expect(subject['sponsor']).to eq ['david']
+      expect(subject['language_label']).to eq ['English']
+      expect(subject['license_label']).to eq ['Attribution 3.0 United States']
+      expect(subject['rights_statement_label']).to eq ['In Copyright']
     end
 
     describe "#visibility" do

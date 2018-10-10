@@ -52,6 +52,9 @@ RSpec.describe MastersPaper do
       expect(subject).to respond_to(:orcid)
       expect(subject).to respond_to(:reviewer)
       expect(subject).to respond_to(:use)
+      expect(subject).to respond_to(:language_label)
+      expect(subject).to respond_to(:license_label)
+      expect(subject).to respond_to(:rights_statement_label)
     end
   end
 end

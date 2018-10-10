@@ -23,7 +23,8 @@ RSpec.describe Hyrax::JournalForm do
 
     it { is_expected.to match_array [:abstract, :alternative_title, :dcmi_type, :doi, :extent, :geographic_subject,
                                      :isbn, :issn, :note, :orcid, :place_of_publication, :table_of_contents, :creator,
-                                     :subject, :keyword, :language, :resource_type, :license, :rights_statement] }
+                                     :subject, :keyword, :language, :resource_type, :license, :rights_statement,
+                                     :language_label, :license_label, :rights_statement_label] }
   end
   
   describe "#admin_only_terms" do
@@ -46,10 +47,10 @@ RSpec.describe Hyrax::JournalForm do
           creator: ['a creator'],
           subject: ['a subject'],
           keyword: ['a keyword'],
-          language: ['a language'],
+          language: ['http://id.loc.gov/vocabulary/iso639-2/eng'],
           resource_type: ['a type'],
-          license: 'a license', # single-valued
-          rights_statement: 'a statement', # single-valued
+          license: 'http://creativecommons.org/licenses/by/3.0/us/', # single-valued
+          rights_statement: 'http://rightsstatements.org/vocab/InC/1.0/', # single-valued
           publisher: ['a publisher'],
           visibility: 'open',
           representative_id: '456',
@@ -67,7 +68,10 @@ RSpec.describe Hyrax::JournalForm do
           note: [''],
           orcid: ['an orcid'],
           place_of_publication: ['California'],
-          table_of_contents: ['table of contents']
+          table_of_contents: ['table of contents'],
+          language_label: [],
+          license_label: [],
+          rights_statement_label: []
       )
     end
 
@@ -78,10 +82,10 @@ RSpec.describe Hyrax::JournalForm do
       expect(subject['creator']).to eq ['a creator']
       expect(subject['subject']).to eq ['a subject']
       expect(subject['keyword']).to eq ['a keyword']
-      expect(subject['language']).to eq ['a language']
+      expect(subject['language']).to eq ['http://id.loc.gov/vocabulary/iso639-2/eng']
       expect(subject['resource_type']).to eq ['a type']
-      expect(subject['license']).to eq ['a license']
-      expect(subject['rights_statement']).to eq ['a statement']
+      expect(subject['license']).to eq ['http://creativecommons.org/licenses/by/3.0/us/']
+      expect(subject['rights_statement']).to eq ['http://rightsstatements.org/vocab/InC/1.0/']
       expect(subject['publisher']).to eq ['a publisher']
       expect(subject['visibility']).to eq 'open'
       expect(subject['member_of_collection_ids']).to eq ['123456', 'abcdef']
@@ -98,6 +102,9 @@ RSpec.describe Hyrax::JournalForm do
       expect(subject['orcid']).to eq ['an orcid']
       expect(subject['place_of_publication']).to eq ['California']
       expect(subject['table_of_contents']).to eq ['table of contents']
+      expect(subject['language_label']).to eq ['English']
+      expect(subject['license_label']).to eq ['Attribution 3.0 United States']
+      expect(subject['rights_statement_label']).to eq ['In Copyright']
     end
   end
 
