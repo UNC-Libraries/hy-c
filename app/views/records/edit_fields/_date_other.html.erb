@@ -1,2 +1,7 @@
-<%= f.input :date_other, as: :date, html5: true, placeholder: "Date Format YYYY-MM-DD",
-            input_html: {value: f.object.date_other || ''} %>
+<% if f.object.multiple? key %>
+  <%= f.input :date_other, as: :multi_value, html5: true, placeholder: "Date Format YYYY-MM-DD",
+              input_html: { class: 'date-input', value: f.object.date_other || '' } %>
+<% else %>
+  <%= f.input :date_other, as: :date, html5: true, placeholder: "Date Format YYYY-MM-DD",
+              input_html: { class: 'date-input', value: f.object.date_other || '' } %>
+<% end %>

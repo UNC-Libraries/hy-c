@@ -2,8 +2,9 @@
 #  `rails generate hyrax:work MastersPaper`
 module Hyrax
   class MastersPaperPresenter < Hyrax::WorkShowPresenter
-    delegate :abstract, :academic_concentration, :access, :advisor, :affiliation, :affiliation_label, :date_issued, :dcmi_type, :degree,
-             :degree_granting_institution, :deposit_record, :doi, :extent, :geographic_subject, :graduation_year,
-             :note, :orcid, :reviewer, :use, to: :solr_document
+    delegate :abstract, :academic_concentration, :access, :advisor, :affiliation, :affiliation_label, :date_issued,
+             :dcmi_type, :degree, :degree_granting_institution, :deposit_record, :doi, :extent, :geographic_subject,
+             :graduation_year, :language_label, :license_label, :note, :orcid, :reviewer, :rights_statement_label, :use,
+             to: :solr_document
   end
 end

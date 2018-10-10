@@ -18,7 +18,15 @@ class ArtWork < ActiveFedora::Base
     index.as :stored_searchable
   end
 
+  property :license_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#LicenseLabel') do |index|
+    index.as :stored_searchable
+  end
+
   property :medium, predicate: ::RDF::Vocab::DC11.format, multiple: false do  |index|
+    index.as :stored_searchable
+  end
+
+  property :rights_statement_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#RightsStatementLabel') do |index|
     index.as :stored_searchable
   end
 

@@ -184,8 +184,16 @@ class SolrDocument
     self[Solrizer.solr_name('kind_of_data')]
   end
 
+  def language_label
+    self[Solrizer.solr_name('language_label')]
+  end
+
   def last_modified_date
     self[Solrizer.solr_name('last_modified_date')]
+  end
+
+  def license_label
+    self[Solrizer.solr_name('license_label')]
   end
 
   def medium
@@ -238,6 +246,10 @@ class SolrDocument
 
   def rights_holder
     self[Solrizer.solr_name('rights_holder')]
+  end
+
+  def rights_statement_label
+    self[Solrizer.solr_name('rights_statement_label')]
   end
 
   def sets

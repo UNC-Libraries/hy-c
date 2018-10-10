@@ -9,7 +9,7 @@ module Hyrax
     self.model_class = ::ArtWork
     self.terms += [:resource_type, :doi, :extent, :medium]
     self.terms -= [:contributor, :creator, :keyword, :publisher, :subject, :language, :identifier, :based_near,
-                   :related_url, :source]
+                   :related_url, :source, :language_label]
     self.required_fields = [:title, :date_created, :description, :extent, :medium, :resource_type]
 
     # Add overrides for required properties which are becoming single-valued

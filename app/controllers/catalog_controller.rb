@@ -57,6 +57,7 @@ class CatalogController < ApplicationController
     # UNC Custom
     config.add_facet_field solr_name("affiliation_label", :facetable), label: "Departments", limit: 5
     config.add_facet_field solr_name("edition", :facetable), label: "Version", limit: 5
+    config.add_facet_field solr_name("language_label", :facetable), label: "Language", limit: 5
 
 
     # The generic_type isn't displayed on the facet list
@@ -145,7 +146,9 @@ class CatalogController < ApplicationController
     config.add_index_field solr_name("journal_title", :stored_searchable), label: "Journal Title"
     config.add_index_field solr_name("journal_volume", :stored_searchable), label: "Journal Volume"
     config.add_index_field solr_name("kind_of_data", :stored_searchable), label: "Kind of Data"
+    config.add_index_field solr_name("language_label", :stored_searchable), label: "Language Label"
     config.add_index_field solr_name("last_modified_date", :stored_searchable), label: "Last Modified Date"
+    config.add_index_field solr_name("license_label", :stored_searchable), label: "License Label"
     config.add_index_field solr_name("medium", :stored_searchable), label: "Medium"
     config.add_index_field solr_name("note", :stored_searchable), label: "Note"
     config.add_index_field solr_name("orcid", :stored_searchable), label: "ORCID"
@@ -159,6 +162,7 @@ class CatalogController < ApplicationController
     config.add_index_field solr_name("researcher", :stored_searchable), label: "Researcher"
     config.add_index_field solr_name("reviewer", :stored_searchable), label: "Reviewer"
     config.add_index_field solr_name("rights_holder", :stored_searchable), label: "Rights Holder"
+    config.add_index_field solr_name("rights_statement_label", :stored_searchable), label: "Rights Statement Label"
     config.add_index_field solr_name("series", :stored_searchable), label: "Series"
     config.add_index_field solr_name("sponsor", :stored_searchable), label: "Sponsor"
     config.add_index_field solr_name("table_of_contents", :stored_searchable), label: "Table of Contents"
@@ -351,7 +355,7 @@ class CatalogController < ApplicationController
         document: {
             limit: 25,
             set_model: LanguageSet,
-            set_fields: [{ label: 'language', solr_field: 'language_tesim' }]
+            set_fields: [{ label: 'language', solr_field: 'language_label_tesim' }]
         }
     }
   end
