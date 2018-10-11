@@ -8,5 +8,5 @@ en:
         description:        "Dissertations and theses sent to the CDR via ProQuest."
   simple_form:
     labels:
-      data_set:
+      dissertation:
         creator: Author

@@ -60,7 +60,7 @@ RSpec.feature 'Create a Article', js: false do
       fill_in 'Title', with: 'Test Article work'
       fill_in 'Author', with: 'Test Default Creator'
       fill_in 'Abstract', with: 'some abstract'
-      fill_in 'Date of Publication', with: '2018-10-03'
+      fill_in 'Date of publication', with: '2018-10-03'
 
       # extra fields
       fill_in 'Keyword', with: 'Test Default Keyword'
@@ -71,7 +71,7 @@ RSpec.feature 'Create a Article', js: false do
       fill_in 'Subject', with: 'test'
       select 'English', from: 'article_language'
       fill_in 'Identifier', with: 'some id'
-      fill_in 'Related Resource URL', with: 'something.com'
+      fill_in 'Related resource URL', with: 'something.com'
       select 'Article', from: 'article_resource_type'
 
       fill_in 'Access', with: 'some access'
@@ -84,8 +84,8 @@ RSpec.feature 'Create a Article', js: false do
       select 'Preprint', from: 'article_edition'
       fill_in 'Extent', with: 'some extent'
       fill_in 'Funder', with: 'some funder'
-      fill_in 'Geographic subject', with: 'some geographic subject'
-      fill_in 'Issn', with: 'some issn'
+      fill_in 'Location', with: 'some geographic subject'
+      fill_in 'ISSN', with: 'some issn'
       fill_in 'Journal issue', with: '1'
       fill_in 'Journal title', with: 'a journal'
       fill_in 'Journal volume', with: '2'
@@ -99,7 +99,7 @@ RSpec.feature 'Create a Article', js: false do
       fill_in 'Rights holder', with: 'an author'
       fill_in 'Table of contents', with: 'contents'
       fill_in 'Translator', with: 'none'
-      fill_in 'Link to Publisher Version', with: 'something.org'
+      fill_in 'Link to publisher version', with: 'something.org'
       fill_in 'Use', with: 'some use'
 
 
@@ -193,7 +193,7 @@ RSpec.feature 'Create a Article', js: false do
       fill_in 'Title', with: 'Test Article work'
       fill_in 'Author', with: 'Test Default Creator'
       fill_in 'Abstract', with: 'some abstract'
-      fill_in 'Date of Publication', with: '2018-10-03'
+      fill_in 'Date of publication', with: '2018-10-03'
 
       # extra fields
       fill_in 'Keyword', with: 'Test Default Keyword'
@@ -204,7 +204,7 @@ RSpec.feature 'Create a Article', js: false do
       fill_in 'Subject', with: 'test'
       select 'English', from: 'article_language'
       fill_in 'Identifier', with: 'some id'
-      fill_in 'Related Resource URL', with: 'something.com'
+      fill_in 'Related resource URL', with: 'something.com'
       select 'Article', from: 'article_resource_type'
       fill_in 'Access', with: 'some access'
       select 'Department of Biology', from: 'article_affiliation'
@@ -216,8 +216,8 @@ RSpec.feature 'Create a Article', js: false do
       select 'Preprint', from: 'article_edition'
       fill_in 'Extent', with: 'some extent'
       fill_in 'Funder', with: 'some funder'
-      fill_in 'Geographic subject', with: 'some geographic subject'
-      fill_in 'Issn', with: 'some issn'
+      fill_in 'Location', with: 'some geographic subject'
+      fill_in 'ISSN', with: 'some issn'
       fill_in 'Journal issue', with: '1'
       fill_in 'Journal title', with: 'a journal'
       fill_in 'Journal volume', with: '2'
@@ -231,7 +231,7 @@ RSpec.feature 'Create a Article', js: false do
       fill_in 'Rights holder', with: 'an author'
       fill_in 'Table of contents', with: 'contents'
       fill_in 'Translator', with: 'none'
-      fill_in 'Link to Publisher Version', with: 'something.org'
+      fill_in 'Link to publisher version', with: 'something.org'
       fill_in 'Use', with: 'some use'
 
       expect(page).to have_field('article_language_label')

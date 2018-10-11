@@ -58,18 +58,18 @@ RSpec.feature 'Create a Journal', js: false do
       
       # required fields
       fill_in 'Title', with: 'Test Journal work'
-      fill_in 'Date of Publication', with: '2018-10-03'
+      fill_in 'Date of publication', with: '2018-10-03'
       fill_in 'Publisher', with: 'UNC Press'
 
       # extra fields
       fill_in 'Abstract', with: 'an abstract'
-      fill_in 'Alternative title', with: 'another title'
+      fill_in 'Alternate title', with: 'another title'
       fill_in 'Author', with: 'Test Default Creator'
-      fill_in 'Doi', with: 'some doi'
+      fill_in 'DOI', with: 'some doi'
       fill_in 'Extent', with: 'some extent'
-      fill_in 'Geographic subject', with: 'some geographic subject'
-      fill_in 'Isbn', with: 'some isbn'
-      fill_in 'Issn', with: 'some issn'
+      fill_in 'Location', with: 'some geographic subject'
+      fill_in 'ISBN', with: 'some isbn'
+      fill_in 'ISSN', with: 'some issn'
       fill_in 'Keyword', with: 'Test Default Keyword'
       select 'English', from: 'journal_language'
       select 'Attribution 3.0 United States', :from => 'journal_license'
@@ -145,18 +145,18 @@ RSpec.feature 'Create a Journal', js: false do
 
       # required fields
       fill_in 'Title', with: 'Test Journal work'
-      fill_in 'Date of Publication', with: '2018-10-03'
+      fill_in 'Date of publication', with: '2018-10-03'
       fill_in 'Publisher', with: 'UNC Press'
 
       # extra fields
       fill_in 'Abstract', with: 'an abstract'
-      fill_in 'Alternative title', with: 'another title'
+      fill_in 'Alternate title', with: 'another title'
       fill_in 'Author', with: 'Test Default Creator'
-      fill_in 'Doi', with: 'some doi'
+      fill_in 'DOI', with: 'some doi'
       fill_in 'Extent', with: 'some extent'
-      fill_in 'Geographic subject', with: 'some geographic subject'
-      fill_in 'Isbn', with: 'some isbn'
-      fill_in 'Issn', with: 'some issn'
+      fill_in 'Location', with: 'some geographic subject'
+      fill_in 'ISBN', with: 'some isbn'
+      fill_in 'ISSN', with: 'some issn'
       fill_in 'Keyword', with: 'Test Default Keyword'
       select 'English', from: 'journal_language'
       select 'Attribution 3.0 United States', :from => 'journal_license'

@@ -90,53 +90,53 @@ en:
   simple_form:
     hints:
       defaults:
-        abstract: A short paragraph describing your work.
-        advisor: Your advisor's name. Please enter the last name first, e.g. "Smith, John."
-        alternative_title: A unique secondary title for your work if applicable. Enter subtitle in the "Title" field, instead.
-        bibliographic_citation: A citation to a related work, or a different version of this work.
-        copyright_date: The date that the work was copyrighted. This may be different than today's date.
-        date_issued: The date that the work was formally published.
-        doi: The DOI assigned by the CDR.
-        edition: The version of the work. If you have questions about this field, please contact the CDR.
-        extent: The size or duration of the work, e.g. "3 pages", or "10 minutes."
-        funder: A grant, foundation or other entity that funded the research described in your work.
-        geographic_subject: A relevant country, city, geographic area or other place. This could be where your data was collected or where your study took place. Select a value from the drop-down menu.
-        identifier: A unique identifier for your work. This could be a publisher-issued DOI or PubMed ID.
-        journal_issue: The journal issue number.
-        journal_title: The title of the journal.
-        journal_volume: The journal volume number.
-        kind_of_data: The kind of data in your dataset. Choose the best option from the drop-down.
-        language: The primary language of your work.
-        last_modified: The date on which your dataset was last modified.
-        license: The license and distribution statement that you would like to apply to your work. This statement will tell other users how they may reuse your work. For more information on each option, see our <a target="_blank" href="https://blogs.lib.unc.edu/cdr/index.php/frequently-asked-questions">FAQ</a>.
-        license_label: The license and distribution statement that you would like to apply to your work. This statement will tell other users how they may reuse your work. For more information on each option, see our <a target="_blank" href="https://blogs.lib.unc.edu/cdr/index.php/frequently-asked-questions">FAQ</a>.
-        note: Additional information about your work. Please be aware that content in this field will be visible to the public.
-        place_of_publication: The place in which the work was published.
-        project_director: The director or primary investigator of the project.
-        publisher: The publisher of your work. This may be UNC, or an external publisher.
-        publisher_version: A link to the final article on the publisher's website.
-        related_url: A link to a website or other specific content (audio, video, PDF document) related to the work.
-        researcher: A person or organization responsible for performing the research described in your work.
-        resource_type: Select the category which best describes your work.
-        reviewer: The reviewer of your masters paper, thesis or dissertation.
-        rights_holder: The person or entity who holds the rights to your work. This may be you, or an external publisher.
-        rights_statement: A statement which describes the copyright status of the work. For more information on each option, see our <a target="_blank" href="https://blogs.lib.unc.edu/cdr/index.php/frequently-asked-questions">FAQ</a>.
-        series: The title of the series to which your work belongs, if applicable..
-        sponsor: A person or organization which sponsored some aspect of the work. For funder, use the "Funder" field instead.
-        table_of_contents: The table of contents for this issue, proceeding or book.
-        translator: A person or entity who translated your work (if applicable).
-        url: A link to the work on the publisher's website.
-        use: Additional information about the rights held over the work.
+        abstract: "A short paragraph describing your work."
+        advisor: "Your advisor's name. Please enter the last name first, e.g. \"Smith, John.\""
+        alternative_title: "A unique secondary title for your work if applicable. Enter subtitle in the \"Title\" field, instead."
+        bibliographic_citation: "A citation to a related work, or a different version of this work."
+        copyright_date: "The date that the work was copyrighted. This may be different than today's date."
+        date_issued: "The date that the work was formally published."
+        doi: "The DOI assigned by the CDR."
+        edition: "The version of the work. If you have questions about this field, please contact the CDR."
+        extent: "The size or duration of the work, e.g. \"3 pages\", or \"10 minutes.\""
+        funder: "A grant, foundation or other entity that funded the research described in your work."
+        geographic_subject: "A relevant country, city, geographic area or other place. This could be where your data was collected or where your study took place. Select a value from the drop-down menu."
+        identifier: "A unique identifier for your work. This could be a publisher-issued DOI or PubMed ID."
+        journal_issue: "The journal issue number."
+        journal_title: "The title of the journal."
+        journal_volume: "The journal volume number."
+        kind_of_data: "The kind of data in your dataset. Choose the best option from the drop-down."
+        language: "The primary language of your work."
+        last_modified: "The date on which your dataset was last modified."
+        license: "The license and distribution statement that you would like to apply to your work. This statement will tell other users how they may reuse your work. For more information on each option, see our <a target=\"_blank\" href=\"https://blogs.lib.unc.edu/cdr/index.php/frequently-asked-questions\">FAQ</a>."
+        license_label: "The license and distribution statement that you would like to apply to your work. This statement will tell other users how they may reuse your work. For more information on each option, see our <a target=\"_blank\" href=\"https://blogs.lib.unc.edu/cdr/index.php/frequently-asked-questions\">FAQ</a>."
+        note: "Additional information about your work. Please be aware that content in this field will be visible to the public."
+        place_of_publication: "The place in which the work was published."
+        project_director: "The director or primary investigator of the project."
+        publisher: "The publisher of your work. This may be UNC, or an external publisher."
+        publisher_version: "A link to the final article on the publisher's website."
+        related_url: "A link to a website or other specific content (audio, video, PDF document) related to the work."
+        researcher: "A person or organization responsible for performing the research described in your work."
+        resource_type: "Select the category which best describes your work."
+        reviewer: "The reviewer of your masters paper, thesis or dissertation."
+        rights_holder: "The person or entity who holds the rights to your work. This may be you, or an external publisher."
+        rights_statement: "A statement which describes the copyright status of the work. For more information on each option, see our <a target=\"_blank\" href=\"https://blogs.lib.unc.edu/cdr/index.php/frequently-asked-questions\">FAQ</a>."
+        series: "The title of the series to which your work belongs, if applicable."
+        sponsor: "A person or organization which sponsored some aspect of the work. For funder, use the \"Funder\" field instead."
+        table_of_contents: "The table of contents for this issue, proceeding or book."
+        translator: "A person or entity who translated your work (if applicable)."
+        url: "A link to the work on the publisher's website."
+        use: "Additional information about the rights held over the work."
     labels:
       defaults:
-        alternative_title: Alternate Title
-        date_issued: Date of Publication
-        description: Description
-        doi: DOI
-        edition: Version
-        geographic_subject: Location
-        isbn: ISBN
-        issn: ISSN
-        peer_review_status: Is the article or chapter peer-reviewed?
-        related_url: Related Resource URL
-        url: Link to Publisher Version
+        alternative_title: "Alternate title"
+        date_issued: "Date of publication"
+        description: "Description"
+        doi: "DOI"
+        edition: "Version"
+        geographic_subject: "Location"
+        isbn: "ISBN"
+        issn: "ISSN"
+        peer_review_status: "Is the article or chapter peer-reviewed?"
+        related_url: "Related resource URL"
+        url: "Link to publisher version"

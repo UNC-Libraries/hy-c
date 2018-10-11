@@ -15,6 +15,6 @@ en:
     labels:
       journal:
         creator: "Author"
-        date_issued: "Date of Publication"
-        doi: Publisher Issued DOI
-        related_url: "Related Resource URL"
+        date_issued: "Date of publication"
+        doi: "DOI issued by publisher"
+        related_url: "Related resource URL"

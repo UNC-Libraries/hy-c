@@ -60,7 +60,7 @@ RSpec.feature 'Create a ScholarlyWork', js: false do
       fill_in 'Title', with: 'Test ScholarlyWork work'
       fill_in 'Creator', with: 'Test Default Creator'
       fill_in 'Abstract', with: 'an abstract'
-      fill_in 'Date of Publication', with: '2018-10-03'
+      fill_in 'Date of publication', with: '2018-10-03'
 
       # extra fields
       fill_in 'Advisor', with: 'an advisor'
@@ -68,8 +68,8 @@ RSpec.feature 'Create a ScholarlyWork', js: false do
       fill_in 'Conference name', with: 'a composer'
       fill_in 'Date Created', with: '2018-10-03'
       fill_in 'Description', with: 'a description'
-      fill_in 'Doi', with: 'some doi'
-      fill_in 'Geographic subject', with: 'some geographic subject'
+      fill_in 'DOI', with: 'some doi'
+      fill_in 'Location', with: 'some geographic subject'
       fill_in 'Keyword', with: 'Test Default Keyword'
       select 'English', from: 'scholarly_work_language'
       select 'Attribution 3.0 United States', :from => 'scholarly_work_license'
@@ -145,7 +145,7 @@ RSpec.feature 'Create a ScholarlyWork', js: false do
       fill_in 'Title', with: 'Test ScholarlyWork work'
       fill_in 'Creator', with: 'Test Default Creator'
       fill_in 'Abstract', with: 'an abstract'
-      fill_in 'Date of Publication', with: '2018-10-03'
+      fill_in 'Date of publication', with: '2018-10-03'
 
       # extra fields
       fill_in 'Advisor', with: 'an advisor'
@@ -154,8 +154,8 @@ RSpec.feature 'Create a ScholarlyWork', js: false do
       fill_in 'Date Created', with: '2018-10-03'
       fill_in 'Dcmi type', with: 'http://purl.org/dc/dcmitype/Text'
       fill_in 'Description', with: 'a description'
-      fill_in 'Doi', with: 'some doi'
-      fill_in 'Geographic subject', with: 'some geographic subject'
+      fill_in 'DOI', with: 'some doi'
+      fill_in 'Location', with: 'some geographic subject'
       fill_in 'Keyword', with: 'Test Default Keyword'
       select 'English', from: 'scholarly_work_language'
       select 'Attribution 3.0 United States', :from => 'scholarly_work_license'
