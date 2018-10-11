@@ -95,9 +95,9 @@ RSpec.feature 'Create a Dissertation', js: false do
       fill_in 'Subject', with: 'test'
       fill_in 'Use', with: 'some use'
 
-      expect(page).to have_field('dissertation_language_label')
-      expect(page).to have_field('dissertation_license_label')
-      expect(page).to have_field('dissertation_rights_statement_label')
+      expect(page).to_not have_field('dissertation_language_label')
+      expect(page).to_not have_field('dissertation_license_label')
+      expect(page).to_not have_field('dissertation_rights_statement_label')
       expect(page).to have_field('dissertation_visibility_embargo')
       expect(page).not_to have_field('dissertation_visibility_lease')
       choose 'dissertation_visibility_open'

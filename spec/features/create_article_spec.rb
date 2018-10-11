@@ -103,9 +103,9 @@ RSpec.feature 'Create a Article', js: false do
       fill_in 'Use', with: 'some use'
 
 
-      expect(page).to have_field('article_language_label')
-      expect(page).to have_field('article_license_label')
-      expect(page).to have_field('article_rights_statement_label')
+      expect(page).to_not have_field('article_language_label')
+      expect(page).to_not have_field('article_license_label')
+      expect(page).to_not have_field('article_rights_statement_label')
       expect(page).to have_field('article_visibility_embargo')
       expect(page).not_to have_field('article_visibility_lease')
       expect(page).to have_select('article_resource_type', selected: 'Article')
@@ -234,9 +234,9 @@ RSpec.feature 'Create a Article', js: false do
       fill_in 'Link to Publisher Version', with: 'something.org'
       fill_in 'Use', with: 'some use'
 
-      expect(page).to have_field('article_language_label')
-      expect(page).to have_field('article_license_label')
-      expect(page).to have_field('article_rights_statement_label')
+      expect(page).to_not have_field('article_language_label')
+      expect(page).to_not have_field('article_license_label')
+      expect(page).to_not have_field('article_rights_statement_label')
       expect(page).to have_field('article_visibility_embargo')
       expect(page).not_to have_field('article_visibility_lease')
       expect(page).to have_select('article_resource_type', selected: 'Article')

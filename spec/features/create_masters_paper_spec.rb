@@ -112,9 +112,9 @@ RSpec.feature 'Create a MastersPaper', js: false do
       fill_in 'Subject', with: 'test'
       fill_in 'Use', with: 'some use'
 
-      expect(page).to have_field('masters_paper_language_label')
-      expect(page).to have_field('masters_paper_license_label')
-      expect(page).to have_field('masters_paper_rights_statement_label')
+      expect(page).to_not have_field('masters_paper_language_label')
+      expect(page).to_not have_field('masters_paper_license_label')
+      expect(page).to_not have_field('masters_paper_rights_statement_label')
       expect(page).to have_field('masters_paper_visibility_embargo')
       expect(page).not_to have_field('masters_paper_visibility_lease')
       expect(page).to have_select('masters_paper_resource_type', selected: 'Masters Paper')
@@ -213,9 +213,9 @@ RSpec.feature 'Create a MastersPaper', js: false do
       fill_in 'Subject', with: 'test'
       fill_in 'Use', with: 'some use'
 
-      expect(page).to have_field('masters_paper_language_label')
-      expect(page).to have_field('masters_paper_license_label')
-      expect(page).to have_field('masters_paper_rights_statement_label')
+      expect(page).to_not have_field('masters_paper_language_label')
+      expect(page).to_not have_field('masters_paper_license_label')
+      expect(page).to_not have_field('masters_paper_rights_statement_label')
       expect(page).to have_field('masters_paper_visibility_embargo')
       expect(page).not_to have_field('masters_paper_visibility_lease')
       expect(page).to have_select('masters_paper_resource_type', selected: 'Masters Paper')

@@ -81,9 +81,9 @@ RSpec.feature 'Create a Journal', js: false do
       fill_in 'Subject', with: 'test'
       fill_in 'Table of contents', with: 'contents'
 
-      expect(page).to have_field('journal_language_label')
-      expect(page).to have_field('journal_license_label')
-      expect(page).to have_field('journal_rights_statement_label')
+      expect(page).to_not have_field('journal_language_label')
+      expect(page).to_not have_field('journal_license_label')
+      expect(page).to_not have_field('journal_rights_statement_label')
       expect(page).to have_field('journal_visibility_embargo')
       expect(page).not_to have_field('journal_visibility_lease')
       choose "journal_visibility_open"
@@ -168,9 +168,9 @@ RSpec.feature 'Create a Journal', js: false do
       fill_in 'Subject', with: 'test'
       fill_in 'Table of contents', with: 'contents'
 
-      expect(page).to have_field('journal_language_label')
-      expect(page).to have_field('journal_license_label')
-      expect(page).to have_field('journal_rights_statement_label')
+      expect(page).to_not have_field('journal_language_label')
+      expect(page).to_not have_field('journal_license_label')
+      expect(page).to_not have_field('journal_rights_statement_label')
       expect(page).to have_field('journal_visibility_embargo')
       expect(page).not_to have_field('journal_visibility_lease')
       choose "journal_visibility_open"
