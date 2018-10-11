@@ -79,9 +79,9 @@ RSpec.feature 'Create a ScholarlyWork', js: false do
       select 'In Copyright', :from => 'scholarly_work_rights_statement'
       fill_in 'Subject', with: 'test'
 
-      expect(page).to_not have_field('scholarly_work_language_label')
-      expect(page).to_not have_field('scholarly_work_license_label')
-      expect(page).to_not have_field('scholarly_work_rights_statement_label')
+      expect(page).to have_selector('#scholarly_work_language_label', visible: false)
+      expect(page).to have_selector('#scholarly_work_license_label', visible: false)
+      expect(page).to have_selector('#scholarly_work_rights_statement_label', visible: false)
       expect(page).to have_field('scholarly_work_visibility_embargo')
       expect(page).not_to have_field('scholarly_work_visibility_lease')
       choose "scholarly_work_visibility_open"
@@ -165,9 +165,9 @@ RSpec.feature 'Create a ScholarlyWork', js: false do
       select 'In Copyright', :from => 'scholarly_work_rights_statement'
       fill_in 'Subject', with: 'test'
 
-      expect(page).to_not have_field('scholarly_work_language_label')
-      expect(page).to_not have_field('scholarly_work_license_label')
-      expect(page).to_not have_field('scholarly_work_rights_statement_label')
+      expect(page).to have_selector('#scholarly_work_language_label', visible: false)
+      expect(page).to have_selector('#scholarly_work_license_label', visible: false)
+      expect(page).to have_selector('#scholarly_work_rights_statement_label', visible: false)
       expect(page).to have_field('scholarly_work_visibility_embargo')
       expect(page).not_to have_field('scholarly_work_visibility_lease')
       choose "scholarly_work_visibility_open"

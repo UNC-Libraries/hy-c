@@ -131,9 +131,9 @@ RSpec.feature 'Create a General', js: false do
       fill_in 'Use', with: 'some use'
       fill_in 'Url', with: 'some url'
 
-      expect(page).to_not have_field('general_language_label')
-      expect(page).to_not have_field('general_license_label')
-      expect(page).to_not have_field('general_rights_statement_label')
+      expect(page).to have_selector('#general_language_label', visible: false)
+      expect(page).to have_selector('#general_license_label', visible: false)
+      expect(page).to have_selector('#general_rights_statement_label', visible: false)
       expect(page).to have_field('general_visibility_embargo')
       expect(page).not_to have_field('general_visibility_lease')
       choose 'general_visibility_open'

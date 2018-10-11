@@ -76,9 +76,9 @@ RSpec.feature 'Create a Multimed', js: false do
       select 'In Copyright', :from => 'multimed_rights_statement'
       fill_in 'Subject', with: 'test'
 
-      expect(page).to_not have_field('multimed_language_label')
-      expect(page).to_not have_field('multimed_license_label')
-      expect(page).to_not have_field('multimed_rights_statement_label')
+      expect(page).to have_selector('#multimed_language_label', visible: false)
+      expect(page).to have_selector('#multimed_license_label', visible: false)
+      expect(page).to have_selector('#multimed_rights_statement_label', visible: false)
       expect(page).to have_field('multimed_visibility_embargo')
       expect(page).not_to have_field('multimed_visibility_lease')
       choose "multimed_visibility_open"
@@ -154,9 +154,9 @@ RSpec.feature 'Create a Multimed', js: false do
       select 'In Copyright', :from => 'multimed_rights_statement'
       fill_in 'Subject', with: 'test'
 
-      expect(page).to_not have_field('multimed_language_label')
-      expect(page).to_not have_field('multimed_license_label')
-      expect(page).to_not have_field('multimed_rights_statement_label')
+      expect(page).to have_selector('#multimed_language_label', visible: false)
+      expect(page).to have_selector('#multimed_license_label', visible: false)
+      expect(page).to have_selector('#multimed_rights_statement_label', visible: false)
       expect(page).to have_field('multimed_visibility_embargo')
       expect(page).not_to have_field('multimed_visibility_lease')
       choose "multimed_visibility_open"
