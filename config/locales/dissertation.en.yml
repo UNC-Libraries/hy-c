@@ -6,3 +6,7 @@ en:
       dissertation:
         name:               "Dissertations and Theses"
         description:        "Dissertations and theses sent to the CDR via ProQuest."
+  simple_form:
+    labels:
+      data_set:
+        creator: Author

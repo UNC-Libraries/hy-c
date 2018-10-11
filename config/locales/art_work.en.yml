@@ -6,3 +6,7 @@ en:
       art_work:
         description:        "Art work works"
         name:               "Art Work"
+  simple_form:
+    hints:
+      defaults:
+        medium: The material of the work.
