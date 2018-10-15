@@ -50,6 +50,9 @@ RSpec.describe Journal do
       expect(subject).to respond_to(:orcid)
       expect(subject).to respond_to(:place_of_publication)
       expect(subject).to respond_to(:table_of_contents)
+      expect(subject).to respond_to(:language_label)
+      expect(subject).to respond_to(:license_label)
+      expect(subject).to respond_to(:rights_statement_label)
     end
   end
 end

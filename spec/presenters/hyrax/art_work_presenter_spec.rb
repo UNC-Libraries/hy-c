@@ -18,6 +18,8 @@ RSpec.describe Hyrax::ArtWorkPresenter do
       "doi_tesim" => '12345',
       "extent_tesim" => '1993',
       "medium_tesim" => 'wood',
+      "license_label_tesim" => ['license'],
+      "rights_statement_label_tesim" => ['rights']
     }
   end
 
@@ -38,6 +40,8 @@ RSpec.describe Hyrax::ArtWorkPresenter do
   it { is_expected.to delegate_method(:doi).to(:solr_document) }
   it { is_expected.to delegate_method(:extent).to(:solr_document) }
   it { is_expected.to delegate_method(:medium).to(:solr_document) }
+  it { is_expected.to delegate_method(:license_label).to(:solr_document) }
+  it { is_expected.to delegate_method(:rights_statement_label).to(:solr_document) }
 
   describe "#model_name" do
     subject { presenter.model_name }
@@ -89,6 +93,28 @@ RSpec.describe Hyrax::ArtWorkPresenter do
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:medium)
+      end
+    end
+
+    context "with a custom license label field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:license_label, ['license'], {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:license_label)
+      end
+    end
+
+    context "with a custom rights statement label field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:rights_statement_label, ['rights'], {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:rights_statement_label)
       end
     end
 

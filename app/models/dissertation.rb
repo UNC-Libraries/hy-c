@@ -73,6 +73,14 @@ class Dissertation < ActiveFedora::Base
     index.as :stored_searchable
   end
 
+  property :language_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#LanguageLabel') do |index|
+    index.as :stored_searchable
+  end
+
+  property :license_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#LicenseLabel') do |index|
+    index.as :stored_searchable
+  end
+
   property :note, predicate: ::RDF::Vocab::SKOS.note do |index|
     index.as :stored_searchable
   end
@@ -86,6 +94,10 @@ class Dissertation < ActiveFedora::Base
   end
 
   property :reviewer, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/rev') do |index|
+    index.as :stored_searchable
+  end
+
+  property :rights_statement_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#RightsStatementLabel') do |index|
     index.as :stored_searchable
   end
 

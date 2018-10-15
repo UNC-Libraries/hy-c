@@ -49,6 +49,9 @@ RSpec.describe Multimed do
       expect(subject).to respond_to(:medium)
       expect(subject).to respond_to(:note)
       expect(subject).to respond_to(:orcid)
+      expect(subject).to respond_to(:language_label)
+      expect(subject).to respond_to(:license_label)
+      expect(subject).to respond_to(:rights_statement_label)
     end
   end
 end

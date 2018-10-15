@@ -81,11 +81,23 @@ class HonorsThesis < ActiveFedora::Base
     index.as :stored_searchable
   end
 
+  property :language_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#LanguageLabel') do |index|
+    index.as :stored_searchable
+  end
+
+  property :license_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#LicenseLabel') do |index|
+    index.as :stored_searchable
+  end
+
   property :note, predicate: ::RDF::Vocab::SKOS.note do |index|
     index.as :stored_searchable
   end
 
   property :orcid, predicate: ::RDF::Vocab::Identifiers.orcid do |index|
+    index.as :stored_searchable
+  end
+
+  property :rights_statement_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#RightsStatementLabel') do |index|
     index.as :stored_searchable
   end
 

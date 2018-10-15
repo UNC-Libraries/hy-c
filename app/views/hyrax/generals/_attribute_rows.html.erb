@@ -4,9 +4,9 @@
 <%= presenter.attribute_to_html(:contributor, html_dl: true) %>
 <%= presenter.attribute_to_html(:description, html_dl: true) %>
 <%= presenter.attribute_to_html(:identifier, html_dl: true) %>
-<%= presenter.attribute_to_html(:rights_statement, html_dl: true) %>
-<%= presenter.attribute_to_html(:language, html_dl: true) %>
-<%= presenter.attribute_to_html(:license, html_dl: true) %>
+<%= presenter.attribute_to_html(:rights_statement_label, label: 'Rights statement', html_dl: true) %>
+<%= presenter.attribute_to_html(:language_label, label: 'Language', html_dl: true) %>
+<%= presenter.attribute_to_html(:license_label, label: 'License', html_dl: true) %>
 <%= presenter.attribute_to_html(:publisher, html_dl: true) %>
 <%= presenter.attribute_to_html(:related_url, html_dl: true) %>
 <%= presenter.attribute_to_html(:resource_type, html_dl: true) %>
@@ -43,7 +43,7 @@
 <%= presenter.attribute_to_html(:journal_title, html_dl: true) %>
 <%= presenter.attribute_to_html(:journal_volume, html_dl: true) %>
 <%= presenter.attribute_to_html(:kind_of_data, html_dl: true) %>
-<%= presenter.attribute_to_html(:last_modified_date, html_dl: true) %>
+<%= presenter.attribute_to_html(:last_modified_date, render_as: :date, html_dl: true) %>
 <%= presenter.attribute_to_html(:medium, html_dl: true) %>
 <%= presenter.attribute_to_html(:note, html_dl: true) %>
 <%= presenter.attribute_to_html(:orcid, html_dl: true) %>
