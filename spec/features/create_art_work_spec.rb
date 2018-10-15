@@ -73,6 +73,7 @@ RSpec.feature 'Create an Art Work', js: false do
       expect(page).to have_field('art_work_rights_statement_label')
       expect(page).to have_field('art_work_visibility_embargo')
       expect(page).not_to have_field('art_work_visibility_lease')
+      expect(page).to have_select('art_work_resource_type', selected: 'Art')
       choose "art_work_visibility_open"
       check 'agreement'
 
