@@ -63,8 +63,8 @@ RSpec.feature 'Create an Art Work', js: false do
       choose "art_work_visibility_open"
       check 'agreement'
 
-      within "//span[@id=addfiles]" do
-        attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'))
+      find('label[for=addFiles]').click do
+        attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'), make_visible: true)
       end
 
       click_link "Relationships"
@@ -99,8 +99,8 @@ RSpec.feature 'Create an Art Work', js: false do
       choose "art_work_visibility_open"
       check 'agreement'
 
-      within "//span[@id=addfiles]" do
-        attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'))
+      find('label[for=addFiles]').click do
+        attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'), make_visible: true)
       end
 
       click_link "Relationships"

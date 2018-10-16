@@ -68,8 +68,8 @@ RSpec.feature 'Create a ScholarlyWork', js: false do
       # Verify that admin only field is not visible
       expect(page).not_to have_selector('#scholarly_work_dcmi_type')
 
-      within "//span[@id=addfiles]" do
-        attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'))
+      find('label[for=addFiles]').click do
+        attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'), make_visible: true)
       end
 
       click_link "Relationships"
@@ -107,8 +107,8 @@ RSpec.feature 'Create a ScholarlyWork', js: false do
       
       expect(page).to have_selector('#scholarly_work_dcmi_type')
 
-      within "//span[@id=addfiles]" do
-        attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'))
+      find('label[for=addFiles]').click do
+        attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'), make_visible: true)
       end
 
       click_link "Relationships"
