@@ -56,11 +56,40 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       visit new_hyrax_honors_thesis_path
       expect(page).to have_content "Add New Undergraduate Honors Thesis"
 
+      # required fields
       fill_in 'Title', with: 'Test HonorsThesis work'
-      fill_in 'Author', with: 'Test Default Creator'
-      fill_in 'Keyword', with: 'Test Default Keyword'
+      fill_in 'Abstract', with: 'an abstract'
+      fill_in 'Advisor', with: 'an advisor'
       select 'Department of Biology', from: 'honors_thesis_affiliation'
-      select "In Copyright", :from => "honors_thesis_rights_statement"
+      fill_in 'Author', with: 'Test Default Creator'
+      fill_in 'Date Completed', with: '2018-10-03'
+      select 'Bachelor of Science', from: 'honors_thesis_degree'
+      fill_in 'Degree granting institution', with: 'UNC'
+      fill_in 'Graduation year', with: '2018'
+
+      # extra fields
+      select 'Clinical Nutrition', from: 'Academic Concentration'
+      fill_in 'Access', with: 'some access'
+      fill_in 'Alternative title', with: 'another title'
+      fill_in 'Honors Level', with: 'an award'
+      fill_in 'Doi', with: 'some doi'
+      fill_in 'Extent', with: 'some extent'
+      fill_in 'Geographic subject', with: 'some geographic subject'
+      fill_in 'Keyword', with: 'Test Default Keyword'
+      select 'English', from: 'honors_thesis_language'
+      select 'Attribution 3.0 United States', :from => 'honors_thesis_license'
+      fill_in 'Note', with: 'a note'
+      fill_in 'Orcid', with: 'an orcid'
+      select 'Honors Thesis', from: 'honors_thesis_resource_type'
+      fill_in 'Related Resource URL', with: 'something.com'
+      select 'In Copyright', :from => 'honors_thesis_rights_statement'
+      fill_in 'Subject', with: 'test'
+      fill_in 'Use', with: 'some use'
+      fill_in 'Url', with: 'some url'
+
+      expect(page).to have_field('honors_thesis_language_label')
+      expect(page).to have_field('honors_thesis_license_label')
+      expect(page).to have_field('honors_thesis_rights_statement_label')
       expect(page).to have_field('honors_thesis_visibility_embargo')
       expect(page).not_to have_field('honors_thesis_visibility_lease')
       expect(page).to have_select('honors_thesis_resource_type', selected: 'Honors Thesis')
@@ -83,12 +112,40 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       expect(page).to have_content 'Test HonorsThesis work'
 
       first('.document-title', text: 'Test HonorsThesis work').click
-      expect(page).to have_content 'Test Default Keyword'
-      expect(page).to_not have_content 'In Administrative Set: honors thesis admin set'
-      expect(page).to have_content 'Type http://purl.org/dc/dcmitype/Text'
+      expect(page).to have_content 'Abstract an abstract'
+      expect(page).to have_content 'Academic concentration Clinical Nutrition'
+      expect(page).to have_content 'Access some access'
+      expect(page).to have_content 'Advisor an advisor'
       expect(page).to have_content 'Affiliation'
       expect(page).to have_content 'College of Arts and Sciences'
       expect(page).to have_content 'Department of Biology'
+      expect(page).to have_content 'Alternative title another title'
+      expect(page).to have_content 'Award an award'
+      expect(page).to have_content 'Creator Test Default Creator'
+      expect(page).to have_content 'Date created October 3, 2018'
+      expect(page).to have_content 'Degree Bachelor of Science'
+      expect(page).to have_content 'Degree granting institution UNC'
+      expect(page).to have_content 'Doi some doi'
+      expect(page).to have_content 'Extent some extent'
+      expect(page).to have_content 'Geographic subject some geographic subject'
+      expect(page).to have_content 'Graduation year 2018'
+      expect(page).to have_content 'Keyword Test Default Keyword'
+      expect(page).to have_content 'Language English'
+      expect(page).to have_content 'License Attribution 3.0 United States'
+      expect(page).to have_content 'Note a note'
+      expect(page).to have_content 'Orcid an orcid'
+      expect(page).to have_content 'Resource type Honors Thesis'
+      expect(page).to have_content 'Related url something.com'
+      expect(page).to have_content 'Rights statement In Copyright'
+      expect(page).to have_content 'Subject test'
+      expect(page).to have_content 'Use some use'
+      expect(page).to have_content 'Url some url'
+      expect(page).to_not have_content 'Language http://id.loc.gov/vocabulary/iso639-2/eng'
+      expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
+      expect(page).to_not have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'
+
+      expect(page).to_not have_content 'In Administrative Set: honors thesis admin set'
+      expect(page).to have_content 'Type http://purl.org/dc/dcmitype/Text'
 
       click_link 'Edit'
 
@@ -101,11 +158,40 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       visit new_hyrax_honors_thesis_path
       expect(page).to have_content "Add New Undergraduate Honors Thesis"
 
+      # required fields
       fill_in 'Title', with: 'Test HonorsThesis work'
-      fill_in 'Author', with: 'Test Default Creator'
-      fill_in 'Keyword', with: 'Test Default Keyword'
+      fill_in 'Abstract', with: 'an abstract'
+      fill_in 'Advisor', with: 'an advisor'
       select 'Department of Biology', from: 'honors_thesis_affiliation'
-      select "In Copyright", :from => "honors_thesis_rights_statement"
+      fill_in 'Author', with: 'Test Default Creator'
+      fill_in 'Date Completed', with: '2018-10-03'
+      select 'Bachelor of Science', from: 'honors_thesis_degree'
+      fill_in 'Degree granting institution', with: 'UNC'
+      fill_in 'Graduation year', with: '2018'
+
+      # extra fields
+      select 'Clinical Nutrition', from: 'Academic Concentration'
+      fill_in 'Access', with: 'some access'
+      fill_in 'Alternative title', with: 'another title'
+      fill_in 'Honors Level', with: 'an award'
+      fill_in 'Doi', with: 'some doi'
+      fill_in 'Extent', with: 'some extent'
+      fill_in 'Geographic subject', with: 'some geographic subject'
+      fill_in 'Keyword', with: 'Test Default Keyword'
+      select 'English', from: 'honors_thesis_language'
+      select 'Attribution 3.0 United States', :from => 'honors_thesis_license'
+      fill_in 'Note', with: 'a note'
+      fill_in 'Orcid', with: 'an orcid'
+      select 'Honors Thesis', from: 'honors_thesis_resource_type'
+      fill_in 'Related Resource URL', with: 'something.com'
+      select 'In Copyright', :from => 'honors_thesis_rights_statement'
+      fill_in 'Subject', with: 'test'
+      fill_in 'Use', with: 'some use'
+      fill_in 'Url', with: 'some url'
+
+      expect(page).to have_field('honors_thesis_language_label')
+      expect(page).to have_field('honors_thesis_license_label')
+      expect(page).to have_field('honors_thesis_rights_statement_label')
       expect(page).to have_field('honors_thesis_visibility_embargo')
       expect(page).not_to have_field('honors_thesis_visibility_lease')
       expect(page).to have_select('honors_thesis_resource_type', selected: 'Honors Thesis')
@@ -131,12 +217,40 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       expect(page).to have_content 'Test HonorsThesis work'
 
       first('.document-title', text: 'Test HonorsThesis work').click
-      expect(page).to have_content 'Test Default Keyword'
-      expect(page).to have_content 'In Administrative Set: honors thesis admin set'
-      expect(page).to have_content 'Type http://purl.org/dc/dcmitype/Image'
+      expect(page).to have_content 'Abstract an abstract'
+      expect(page).to have_content 'Academic concentration Clinical Nutrition'
+      expect(page).to have_content 'Access some access'
+      expect(page).to have_content 'Advisor an advisor'
       expect(page).to have_content 'Affiliation'
       expect(page).to have_content 'College of Arts and Sciences'
       expect(page).to have_content 'Department of Biology'
+      expect(page).to have_content 'Alternative title another title'
+      expect(page).to have_content 'Award an award'
+      expect(page).to have_content 'Creator Test Default Creator'
+      expect(page).to have_content 'Date created October 3, 2018'
+      expect(page).to have_content 'Degree Bachelor of Science'
+      expect(page).to have_content 'Degree granting institution UNC'
+      expect(page).to have_content 'Doi some doi'
+      expect(page).to have_content 'Extent some extent'
+      expect(page).to have_content 'Geographic subject some geographic subject'
+      expect(page).to have_content 'Graduation year 2018'
+      expect(page).to have_content 'Keyword Test Default Keyword'
+      expect(page).to have_content 'Language English'
+      expect(page).to have_content 'License Attribution 3.0 United States'
+      expect(page).to have_content 'Note a note'
+      expect(page).to have_content 'Orcid an orcid'
+      expect(page).to have_content 'Resource type Honors Thesis'
+      expect(page).to have_content 'Related url something.com'
+      expect(page).to have_content 'Rights statement In Copyright'
+      expect(page).to have_content 'Subject test'
+      expect(page).to have_content 'Use some use'
+      expect(page).to have_content 'Url some url'
+      expect(page).to_not have_content 'Language http://id.loc.gov/vocabulary/iso639-2/eng'
+      expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
+      expect(page).to_not have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'
+
+      expect(page).to have_content 'In Administrative Set: honors thesis admin set'
+      expect(page).to have_content 'Type http://purl.org/dc/dcmitype/Image'
 
       click_link 'Edit'
 

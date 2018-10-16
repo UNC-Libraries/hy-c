@@ -25,7 +25,8 @@ RSpec.describe Hyrax::DissertationForm do
                                      :affiliation_label, :alternative_title, :dcmi_type, :degree, :doi,
                                      :geographic_subject, :graduation_year, :note, :orcid, :place_of_publication,
                                      :reviewer, :use, :contributor, :identifier, :subject, :publisher, :language,
-                                     :keyword, :rights_statement, :license, :resource_type] }
+                                     :keyword, :rights_statement, :license, :resource_type, :language_label,
+                                     :license_label, :rights_statement_label] }
   end
   
   describe "#admin_only_terms" do
@@ -49,11 +50,11 @@ RSpec.describe Hyrax::DissertationForm do
           creator: ['a creator'],
           identifier: ['an id'],
           keyword: ['a keyword'],
-          language: ['a language'],
-          license: 'a license', # single-valued
+          language: ['http://id.loc.gov/vocabulary/iso639-2/eng'],
+          license: 'http://creativecommons.org/licenses/by/3.0/us/', # single-valued
           publisher: ['a publisher'],
           resource_type: ['a type'],
-          rights_statement: 'a statement', # single-valued
+          rights_statement: 'http://rightsstatements.org/vocab/InC/1.0/', # single-valued
           subject: ['a subject'],
           visibility: 'open',
           representative_id: '456',
@@ -77,7 +78,10 @@ RSpec.describe Hyrax::DissertationForm do
           orcid: ['some id'],
           place_of_publication: ['a place'],
           reviewer: ['a reviewer'],
-          use: ['a use']
+          use: ['a use'],
+          language_label: [],
+          license_label: [],
+          rights_statement_label: []
       )
     end
 
@@ -89,11 +93,11 @@ RSpec.describe Hyrax::DissertationForm do
       expect(subject['creator']).to eq ['a creator']
       expect(subject['identifier']).to eq ['an id']
       expect(subject['keyword']).to eq ['a keyword']
-      expect(subject['language']).to eq ['a language']
-      expect(subject['license']).to eq ['a license']
+      expect(subject['language']).to eq ['http://id.loc.gov/vocabulary/iso639-2/eng']
+      expect(subject['license']).to eq ['http://creativecommons.org/licenses/by/3.0/us/']
       expect(subject['publisher']).to eq ['a publisher']
       expect(subject['resource_type']).to eq ['a type']
-      expect(subject['rights_statement']).to eq ['a statement']
+      expect(subject['rights_statement']).to eq ['http://rightsstatements.org/vocab/InC/1.0/']
       expect(subject['subject']).to eq ['a subject']
       expect(subject['visibility']).to eq 'open'
       expect(subject['member_of_collection_ids']).to eq ['123456', 'abcdef']
@@ -116,6 +120,9 @@ RSpec.describe Hyrax::DissertationForm do
       expect(subject['place_of_publication']).to eq ['a place']
       expect(subject['reviewer']).to eq ['a reviewer']
       expect(subject['use']).to eq ['a use']
+      expect(subject['language_label']).to eq ['English']
+      expect(subject['license_label']).to eq ['Attribution 3.0 United States']
+      expect(subject['rights_statement_label']).to eq ['In Copyright']
     end
 
     context '.model_attributes' do

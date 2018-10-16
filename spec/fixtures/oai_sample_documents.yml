@@ -12,7 +12,8 @@
   related_url: 'http://dx.doi.org/10.1186/1753-6561-3-S7-S87'
   publisher: 'Project Gutenberg'
   resource_type: 'Book'
-  language: 'English'
+  language: 'http://id.loc.gov/vocabulary/iso639-2/eng'
+  language_label: 'English'
   rights_statement: 'http://www.europeana.eu/portal/rights/rr-r.html'
   visibility: open
 
@@ -28,7 +29,8 @@
   related_url: 'http://dx.doi.org/10.1186/1753-6561-3-S7-S87'
   publisher: 'Project Gutenberg'
   resource_type: 'Book'
-  language: 'English'
+  language: 'http://id.loc.gov/vocabulary/iso639-2/eng'
+  language_label: 'English'
   rights_statement: 'http://www.europeana.eu/portal/rights/rr-r.html'
   visibility: open
 
@@ -44,7 +46,8 @@
   related_url: 'http://dx.doi.org/10.1186/1753-6561-3-S7-S87'
   publisher: 'Project Gutenberg'
   resource_type: 'Book'
-  language: 'English'
+  language: 'http://id.loc.gov/vocabulary/iso639-2/eng'
+  language_label: 'English'
   rights_statement: 'http://www.europeana.eu/portal/rights/rr-r.html'
   visibility: open
 
@@ -60,15 +63,16 @@
   related_url: 'http://dx.doi.org/10.1186/1753-6561-3-S7-S87'
   publisher: 'Project Gutenberg'
   resource_type: 'Book'
-  language: 'English'
+  language: 'http://id.loc.gov/vocabulary/iso639-2/eng'
+  language_label: 'English'
   rights_statement: 'http://www.europeana.eu/portal/rights/rr-r.html'
   visibility: open
 
 5:
   creator: 'Slater, Gilbert'
   depositor: admin@example.com
-  label: The English Peasantry and the Enclosure of Common Fields
-  title: The English Peasantry and the Enclosure of Common Fields
+  label: The http://id.loc.gov/vocabulary/iso639-2/eng Peasantry and the Enclosure of Common Fields
+  title: The http://id.loc.gov/vocabulary/iso639-2/eng Peasantry and the Enclosure of Common Fields
   date_created: 2017-10-02T17:56:55Z
   date_modified: 2017-10-02T17:56:55Z
   contributor: 'Smith, Jennifer'
@@ -76,7 +80,8 @@
   related_url: 'http://dx.doi.org/10.1186/1753-6561-3-S7-S87'
   publisher: 'Project Gutenberg'
   resource_type: 'Book'
-  language: 'English'
+  language: 'http://id.loc.gov/vocabulary/iso639-2/eng'
+  language_label: 'English'
   rights_statement: 'http://www.europeana.eu/portal/rights/rr-r.html'
   visibility: open
 
@@ -92,7 +97,8 @@
   related_url: 'http://dx.doi.org/10.1186/1753-6561-3-S7-S87'
   publisher: 'Project Gutenberg'
   resource_type: 'Book'
-  language: 'English'
+  language: 'http://id.loc.gov/vocabulary/iso639-2/eng'
+  language_label: 'English'
   rights_statement: 'http://www.europeana.eu/portal/rights/rr-r.html'
   visibility: open
 
@@ -108,7 +114,8 @@
   related_url: 'http://dx.doi.org/10.1186/1753-6561-3-S7-S87'
   publisher: 'Project Gutenberg'
   resource_type: 'Book'
-  language: 'English'
+  language: 'http://id.loc.gov/vocabulary/iso639-2/eng'
+  language_label: 'English'
   rights_statement: 'http://www.europeana.eu/portal/rights/rr-r.html'
   visibility: open
 
@@ -124,7 +131,8 @@
   related_url: 'http://dx.doi.org/10.1186/1753-6561-3-S7-S87'
   publisher: 'Project Gutenberg'
   resource_type: 'Book'
-  language: 'English'
+  language: 'http://id.loc.gov/vocabulary/iso639-2/eng'
+  language_label: 'English'
   rights_statement: 'http://www.europeana.eu/portal/rights/rr-r.html'
   visibility: open
 
@@ -140,7 +148,8 @@
   related_url: 'http://dx.doi.org/10.1186/1753-6561-3-S7-S87'
   publisher: 'Project Gutenberg'
   resource_type: 'Book'
-  language: 'English'
+  language: 'http://id.loc.gov/vocabulary/iso639-2/eng'
+  language_label: 'English'
   rights_statement: 'http://www.europeana.eu/portal/rights/rr-r.html'
   visibility: open
 
@@ -156,7 +165,8 @@
   related_url: 'http://dx.doi.org/10.1186/1753-6561-3-S7-S87'
   publisher: 'Project Gutenberg'
   resource_type: 'Book'
-  language: 'English'
+  language: 'http://id.loc.gov/vocabulary/iso639-2/eng'
+  language_label: 'English'
   rights_statement: 'http://www.europeana.eu/portal/rights/rr-r.html'
   visibility: open
 
@@ -172,7 +182,8 @@
   related_url: 'http://dx.doi.org/10.1186/1753-6561-3-S7-S87'
   publisher: 'Project Gutenberg'
   resource_type: 'Book'
-  language: 'English'
+  language: 'http://id.loc.gov/vocabulary/iso639-2/eng'
+  language_label: 'English'
   rights_statement: 'http://www.europeana.eu/portal/rights/rr-r.html'
   visibility: open
 
@@ -188,7 +199,8 @@
   related_url: 'http://dx.doi.org/10.1186/1753-6561-3-S7-S87'
   publisher: 'Project Gutenberg'
   resource_type: 'Book'
-  language: 'English'
+  language: 'http://id.loc.gov/vocabulary/iso639-2/eng'
+  language_label: 'English'
   rights_statement: 'http://www.europeana.eu/portal/rights/rr-r.html'
   visibility: open
 
@@ -204,7 +216,8 @@
   related_url: 'http://dx.doi.org/10.1186/1753-6561-3-S7-S87'
   publisher: 'Project Gutenberg'
   resource_type: 'Book'
-  language: 'English'
+  language: 'http://id.loc.gov/vocabulary/iso639-2/eng'
+  language_label: 'English'
   rights_statement: 'http://www.europeana.eu/portal/rights/rr-r.html'
   visibility: open
 
@@ -220,7 +233,8 @@
   related_url: 'http://dx.doi.org/10.1186/1753-6561-3-S7-S87'
   publisher: 'Project Gutenberg'
   resource_type: 'Book'
-  language: 'English'
+  language: 'http://id.loc.gov/vocabulary/iso639-2/eng'
+  language_label: 'English'
   rights_statement: 'http://www.europeana.eu/portal/rights/rr-r.html'
   visibility: open
 
@@ -236,7 +250,8 @@
   related_url: 'http://dx.doi.org/10.1186/1753-6561-3-S7-S87'
   publisher: 'Project Gutenberg'
   resource_type: 'Book'
-  language: 'Japanese'
+  language: 'http://id.loc.gov/vocabulary/iso639-2/jpn'
+  language_label: 'Japanese'
   rights_statement: 'http://www.europeana.eu/portal/rights/rr-r.html'
   visibility: open
 
@@ -252,7 +267,8 @@
   related_url: 'http://dx.doi.org/10.1186/1753-6561-3-S7-S87'
   publisher: 'Project Gutenberg'
   resource_type: 'Book'
-  language: 'English'
+  language: 'http://id.loc.gov/vocabulary/iso639-2/eng'
+  language_label: 'English'
   rights_statement: 'http://www.europeana.eu/portal/rights/rr-r.html'
   visibility: open
 
@@ -268,7 +284,8 @@
   related_url: 'http://dx.doi.org/10.1186/1753-6561-3-S7-S87'
   publisher: 'Project Gutenberg'
   resource_type: 'Book'
-  language: 'English'
+  language: 'http://id.loc.gov/vocabulary/iso639-2/eng'
+  language_label: 'English'
   rights_statement: 'http://www.europeana.eu/portal/rights/rr-r.html'
   visibility: open
 
@@ -284,7 +301,8 @@
   related_url: 'http://dx.doi.org/10.1186/1753-6561-3-S7-S87'
   publisher: 'Project Gutenberg'
   resource_type: 'Book'
-  language: 'English'
+  language: 'http://id.loc.gov/vocabulary/iso639-2/eng'
+  language_label: 'English'
   rights_statement: 'http://www.europeana.eu/portal/rights/rr-r.html'
   visibility: open
 
@@ -300,7 +318,8 @@
   related_url: 'http://dx.doi.org/10.1186/1753-6561-3-S7-S87'
   publisher: 'Project Gutenberg'
   resource_type: 'Book'
-  language: 'English'
+  language: 'http://id.loc.gov/vocabulary/iso639-2/eng'
+  language_label: 'English'
   rights_statement: 'http://www.europeana.eu/portal/rights/rr-r.html'
   visibility: open
 
@@ -316,7 +335,8 @@
   related_url: 'http://dx.doi.org/10.1186/1753-6561-3-S7-S87'
   publisher: 'Project Gutenberg'
   resource_type: 'Book'
-  language: 'English'
+  language: 'http://id.loc.gov/vocabulary/iso639-2/eng'
+  language_label: 'English'
   rights_statement: 'http://www.europeana.eu/portal/rights/rr-r.html'
   visibility: open
 
@@ -332,7 +352,8 @@
   related_url: 'http://dx.doi.org/10.1186/1753-6561-3-S7-S87'
   publisher: 'Project Gutenberg'
   resource_type: 'Book'
-  language: 'English'
+  language: 'http://id.loc.gov/vocabulary/iso639-2/eng'
+  language_label: 'English'
   rights_statement: 'http://www.europeana.eu/portal/rights/rr-r.html'
   visibility: open
 
@@ -348,7 +369,8 @@
   related_url: 'http://dx.doi.org/10.1186/1753-6561-3-S7-S87'
   publisher: 'Project Gutenberg'
   resource_type: 'Book'
-  language: 'English'
+  language: 'http://id.loc.gov/vocabulary/iso639-2/eng'
+  language_label: 'English'
   rights_statement: 'http://www.europeana.eu/portal/rights/rr-r.html'
   visibility: open
 
@@ -364,7 +386,8 @@
   related_url: 'http://dx.doi.org/10.1186/1753-6561-3-S7-S87'
   publisher: 'Project Gutenberg'
   resource_type: 'Book'
-  language: 'English'
+  language: 'http://id.loc.gov/vocabulary/iso639-2/eng'
+  language_label: 'English'
   rights_statement: 'http://www.europeana.eu/portal/rights/rr-r.html'
   visibility: open
 
@@ -380,7 +403,8 @@
   related_url: 'http://dx.doi.org/10.1186/1753-6561-3-S7-S87'
   publisher: 'Project Gutenberg'
   resource_type: 'Book'
-  language: 'English'
+  language: 'http://id.loc.gov/vocabulary/iso639-2/eng'
+  language_label: 'English'
   rights_statement: 'http://www.europeana.eu/portal/rights/rr-r.html'
   visibility: open
 
@@ -396,7 +420,8 @@
   related_url: 'http://dx.doi.org/10.1186/1753-6561-3-S7-S87'
   publisher: 'Project Gutenberg'
   resource_type: 'Book'
-  language: 'English'
+  language: 'http://id.loc.gov/vocabulary/iso639-2/eng'
+  language_label: 'English'
   rights_statement: 'http://www.europeana.eu/portal/rights/rr-r.html'
   visibility: open
 
@@ -412,7 +437,8 @@
   related_url: 'http://dx.doi.org/10.1186/1753-6561-3-S7-S87'
   publisher: 'Project Gutenberg'
   resource_type: 'Book'
-  language: 'English'
+  language: 'http://id.loc.gov/vocabulary/iso639-2/eng'
+  language_label: 'English'
   rights_statement: 'http://www.europeana.eu/portal/rights/rr-r.html'
   visibility: open
 
@@ -428,7 +454,8 @@
   related_url: 'http://dx.doi.org/10.1186/1753-6561-3-S7-S87'
   publisher: 'Project Gutenberg'
   resource_type: 'Book'
-  language: 'English'
+  language: 'http://id.loc.gov/vocabulary/iso639-2/eng'
+  language_label: 'English'
   rights_statement: 'http://www.europeana.eu/portal/rights/rr-r.html'
   visibility: open
 
@@ -444,7 +471,8 @@
   related_url: 'http://dx.doi.org/10.1186/1753-6561-3-S7-S87'
   publisher: 'Project Gutenberg'
   resource_type: 'Book'
-  language: 'Japanese'
+  language: 'http://id.loc.gov/vocabulary/iso639-2/jpn'
+  language_label: 'Japanese'
   rights_statement: 'http://www.europeana.eu/portal/rights/rr-r.html'
   visibility: open
 
@@ -460,7 +488,8 @@
   related_url: 'http://dx.doi.org/10.1186/1753-6561-3-S7-S87'
   publisher: 'Project Gutenberg'
   resource_type: 'Book'
-  language: 'English'
+  language: 'http://id.loc.gov/vocabulary/iso639-2/eng'
+  language_label: 'English'
   rights_statement: 'http://www.europeana.eu/portal/rights/rr-r.html'
   visibility: open
 
@@ -476,6 +505,7 @@
   related_url: 'http://dx.doi.org/10.1186/1753-6561-3-S7-S87'
   publisher: 'Project Gutenberg'
   resource_type: 'Book'
-  language: 'English'
+  language: 'http://id.loc.gov/vocabulary/iso639-2/eng'
+  language_label: 'English'
   rights_statement: 'http://www.europeana.eu/portal/rights/rr-r.html'
   visibility: open

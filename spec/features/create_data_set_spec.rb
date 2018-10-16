@@ -3,7 +3,7 @@
 require 'rails_helper'
 include Warden::Test::Helpers
 
-# NOTE: If you generated more than one work, you have to set "js: true"
+# NOTE: If you generated more than one work, you have to set 'js: true'
 RSpec.feature 'Create a DataSet', js: false do
   context 'a logged in user' do
     let(:user) do
@@ -15,8 +15,8 @@ RSpec.feature 'Create a DataSet', js: false do
     end
 
     let(:admin_set) do
-      AdminSet.create(title: ["data set admin set"],
-                      description: ["some description"],
+      AdminSet.create(title: ['data set admin set'],
+                      description: ['some description'],
                       edit_users: [user.user_key])
     end
 
@@ -54,17 +54,48 @@ RSpec.feature 'Create a DataSet', js: false do
       login_as user
 
       visit new_hyrax_data_set_path
-      expect(page).to have_content "Add New Dataset"
+      expect(page).to have_content 'Add New Dataset'
 
+      # required fields
       fill_in 'Title', with: 'Test Data Set'
       fill_in 'Creator', with: 'Test Default Creator'
-      fill_in 'Keyword', with: 'Test Default Keyword'
+      select 'Text', from: 'data_set_kind_of_data'
+      select 'Dataset', from: 'data_set_resource_type'
+      fill_in 'Abstract', with: 'some abstract'
+      fill_in 'Date of Publication', with: '2018-10-03'
 
+      # extra fields
+      select 'Department of Biology', from: 'data_set_affiliation'
+      fill_in 'Contributor', with: 'a contributor'
+      fill_in 'Copyright date', with: '2018-10-03'
+      fill_in 'Date Created', with: '2018-10-03'
+      fill_in 'Methods', with: 'a description'
+      fill_in 'Doi', with: 'some doi'
+      fill_in 'Extent', with: 'some extent'
+      fill_in 'Funder', with: 'some funder'
+      fill_in 'Geographic subject', with: 'some geographic subject'
+      fill_in 'Keyword', with: 'Test Default Keyword'
+      select 'English', from: 'data_set_language'
+      fill_in 'Last modified date', with: '2018-10-03'
+      select 'Attribution 3.0 United States', :from => 'data_set_license'
+      fill_in 'Project director', with: 'a director'
+      fill_in 'Orcid', with: 'an orcid'
+      fill_in 'Other affiliation', with: 'another affiliation'
+      fill_in 'Researcher', with: 'a researcher'
+      fill_in 'Rights holder', with: 'an author'
+      fill_in 'Related Resource URL', with: 'something.com'
+      select 'In Copyright', :from => 'data_set_rights_statement'
+      fill_in 'Sponsor', with: 'a sponsor'
+      fill_in 'Subject', with: 'test'
+
+      expect(page).to have_field('data_set_language_label')
+      expect(page).to have_field('data_set_license_label')
+      expect(page).to have_field('data_set_rights_statement_label')
       expect(page).to have_field('data_set_rights_statement')
       expect(page).to have_field('data_set_visibility_embargo')
       expect(page).not_to have_field('data_set_visibility_lease')
       expect(page).to have_select('data_set_resource_type', selected: 'Dataset')
-      choose "data_set_visibility_open"
+      choose 'data_set_visibility_open'
       check 'agreement'
       
       expect(page).not_to have_selector('#data_set_dcmi_type')
@@ -73,7 +104,7 @@ RSpec.feature 'Create a DataSet', js: false do
         attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'), make_visible: true)
       end
 
-      click_link "Relationships"
+      click_link 'Relationships'
       expect(page).to_not have_content 'Administrative Set'
 
       click_button 'Save'
@@ -84,6 +115,38 @@ RSpec.feature 'Create a DataSet', js: false do
 
       first('.document-title', text: 'Test Data Set').click
       expect(page).to have_content 'Test Default Keyword'
+      expect(page).to have_content 'Creator Test Default Creator'
+      expect(page).to have_content 'Abstract some abstract'
+      expect(page).to have_content 'Date issued October 3, 2018'
+      expect(page).to have_content 'Kind of data Text'
+      expect(page).to have_content 'License Attribution 3.0 United States'
+      expect(page).to have_content 'Rights statement In Copyright'
+      expect(page).to have_content 'Date created October 3, 2018'
+      expect(page).to have_content 'Language English'
+      expect(page).to have_content 'Related url something.com'
+      expect(page).to have_content 'Resource type Dataset'
+      expect(page).to have_content 'Affiliation'
+      expect(page).to have_content 'College of Arts and Sciences'
+      expect(page).to have_content 'Department of Biology'
+      expect(page).to have_content 'Contributors a contributor'
+      expect(page).to have_content 'Copyright date October 3, 2018'
+      expect(page).to have_content 'Description a description'
+      expect(page).to have_content 'Doi some doi'
+      expect(page).to have_content 'Extent some extent'
+      expect(page).to have_content 'Funder some funder'
+      expect(page).to have_content 'Geographic subject some geographic subject'
+      expect(page).to have_content 'Last modified date October 3, 2018'
+      expect(page).to have_content 'Project director a director'
+      expect(page).to have_content 'Orcid an orcid'
+      expect(page).to have_content 'Other affiliation another affiliation'
+      expect(page).to have_content 'Researcher a researcher'
+      expect(page).to have_content 'Rights holder an author'
+      expect(page).to have_content 'Sponsor a sponsor'
+      expect(page).to have_content 'Subject test'
+      expect(page).to_not have_content 'Language http://id.loc.gov/vocabulary/iso639-2/eng'
+      expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
+      expect(page).to_not have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'
+
       expect(page).to_not have_content 'In Administrative Set: data set admin set'
       expect(page).to have_content 'Type http://purl.org/dc/dcmitype/Dataset'
 
@@ -96,17 +159,48 @@ RSpec.feature 'Create a DataSet', js: false do
       login_as admin_user
 
       visit new_hyrax_data_set_path
-      expect(page).to have_content "Add New Dataset"
+      expect(page).to have_content 'Add New Dataset'
 
+      # required fields
       fill_in 'Title', with: 'Test Data Set'
       fill_in 'Creator', with: 'Test Default Creator'
-      fill_in 'Keyword', with: 'Test Default Keyword'
+      select 'Text', from: 'data_set_kind_of_data'
+      select 'Dataset', from: 'data_set_resource_type'
+      fill_in 'Abstract', with: 'some abstract'
+      fill_in 'Date of Publication', with: '2018-10-03'
 
+      # extra fields
+      select 'Department of Biology', from: 'data_set_affiliation'
+      fill_in 'Contributor', with: 'a contributor'
+      fill_in 'Copyright date', with: '2018-10-03'
+      fill_in 'Date Created', with: '2018-10-03'
+      fill_in 'Methods', with: 'a description'
+      fill_in 'Doi', with: 'some doi'
+      fill_in 'Extent', with: 'some extent'
+      fill_in 'Funder', with: 'some funder'
+      fill_in 'Geographic subject', with: 'some geographic subject'
+      fill_in 'Keyword', with: 'Test Default Keyword'
+      select 'English', from: 'data_set_language'
+      fill_in 'Last modified date', with: '2018-10-03'
+      select 'Attribution 3.0 United States', :from => 'data_set_license'
+      fill_in 'Project director', with: 'a director'
+      fill_in 'Orcid', with: 'an orcid'
+      fill_in 'Other affiliation', with: 'another affiliation'
+      fill_in 'Researcher', with: 'a researcher'
+      fill_in 'Rights holder', with: 'an author'
+      fill_in 'Related Resource URL', with: 'something.com'
+      select 'In Copyright', :from => 'data_set_rights_statement'
+      fill_in 'Sponsor', with: 'a sponsor'
+      fill_in 'Subject', with: 'test'
+
+      expect(page).to have_field('data_set_language_label')
+      expect(page).to have_field('data_set_license_label')
+      expect(page).to have_field('data_set_rights_statement_label')
       expect(page).to have_field('data_set_rights_statement')
       expect(page).to have_field('data_set_visibility_embargo')
       expect(page).not_to have_field('data_set_visibility_lease')
       expect(page).to have_select('data_set_resource_type', selected: 'Dataset')
-      choose "data_set_visibility_open"
+      choose 'data_set_visibility_open'
       check 'agreement'
       
       expect(page).to have_selector('#data_set_dcmi_type')
@@ -117,7 +211,7 @@ RSpec.feature 'Create a DataSet', js: false do
         attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'), make_visible: true)
       end
 
-      click_link "Relationships"
+      click_link 'Relationships'
       expect(page).to have_content 'Administrative Set'
       find('#data_set_admin_set_id').text eq 'data set admin set'
 
@@ -129,6 +223,38 @@ RSpec.feature 'Create a DataSet', js: false do
 
       first('.document-title', text: 'Test Data Set').click
       expect(page).to have_content 'Test Default Keyword'
+      expect(page).to have_content 'Creator Test Default Creator'
+      expect(page).to have_content 'Abstract some abstract'
+      expect(page).to have_content 'Date issued October 3, 2018'
+      expect(page).to have_content 'Kind of data Text'
+      expect(page).to have_content 'License Attribution 3.0 United States'
+      expect(page).to have_content 'Rights statement In Copyright'
+      expect(page).to have_content 'Date created October 3, 2018'
+      expect(page).to have_content 'Language English'
+      expect(page).to have_content 'Related url something.com'
+      expect(page).to have_content 'Resource type Dataset'
+      expect(page).to have_content 'Affiliation'
+      expect(page).to have_content 'College of Arts and Sciences'
+      expect(page).to have_content 'Department of Biology'
+      expect(page).to have_content 'Contributors a contributor'
+      expect(page).to have_content 'Copyright date October 3, 2018'
+      expect(page).to have_content 'Description a description'
+      expect(page).to have_content 'Doi some doi'
+      expect(page).to have_content 'Extent some extent'
+      expect(page).to have_content 'Funder some funder'
+      expect(page).to have_content 'Geographic subject some geographic subject'
+      expect(page).to have_content 'Last modified date October 3, 2018'
+      expect(page).to have_content 'Project director a director'
+      expect(page).to have_content 'Orcid an orcid'
+      expect(page).to have_content 'Other affiliation another affiliation'
+      expect(page).to have_content 'Researcher a researcher'
+      expect(page).to have_content 'Rights holder an author'
+      expect(page).to have_content 'Sponsor a sponsor'
+      expect(page).to have_content 'Subject test'
+      expect(page).to_not have_content 'Language http://id.loc.gov/vocabulary/iso639-2/eng'
+      expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
+      expect(page).to_not have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'
+
       expect(page).to have_content 'In Administrative Set: data set admin set'
       expect(page).to have_content 'Type http://purl.org/dc/dcmitype/Image'
 

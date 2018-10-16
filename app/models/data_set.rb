@@ -59,7 +59,15 @@ class DataSet < ActiveFedora::Base
     index.as :stored_searchable
   end
 
+  property :language_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#LanguageLabel') do |index|
+    index.as :stored_searchable
+  end
+
   property :last_modified_date, predicate: ::RDF::Vocab::MODS.dateModified, multiple: false do |index|
+    index.as :stored_searchable
+  end
+
+  property :license_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#LicenseLabel') do |index|
     index.as :stored_searchable
   end
 
@@ -80,6 +88,10 @@ class DataSet < ActiveFedora::Base
   end
 
   property :rights_holder, predicate: ::RDF::Vocab::DC.rightsHolder do |index|
+    index.as :stored_searchable
+  end
+
+  property :rights_statement_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#RightsStatementLabel') do |index|
     index.as :stored_searchable
   end
 

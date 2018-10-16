@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+        mount BrowseEverything::Engine => '/browse'
   get 'accounts/new', to: 'accounts#new'
   post 'accounts/create', to: 'accounts#create'
 

@@ -95,7 +95,7 @@ RSpec.describe 'OAI-PMH catalog endpoint' do
     end
 
     context 'with a set' do
-      let(:document_config) { { set_model: LanguageSet, set_fields: [{ label: 'language', solr_field: 'language_tesim' }] } }
+      let(:document_config) { { set_model: LanguageSet, set_fields: [{ label: 'language', solr_field: 'language_label_tesim' }] } }
 
       scenario 'only records from the set are returned' do
         params = { verb: 'ListRecords', metadataPrefix: format, set: 'language:japanese' }
@@ -188,7 +188,7 @@ RSpec.describe 'OAI-PMH catalog endpoint' do
     end
 
     context 'with set configuration', :vcr do
-      let(:document_config) { { set_model: LanguageSet, set_fields: [{ label: 'language', solr_field: 'language_tesim' }] } }
+      let(:document_config) { { set_model: LanguageSet, set_fields: [{ label: 'language', solr_field: 'language_label_tesim' }] } }
 
       scenario 'shows all sets' do
         get oai_catalog_path(verb: 'ListSets')
@@ -202,7 +202,7 @@ RSpec.describe 'OAI-PMH catalog endpoint' do
       end
 
       context 'where sets include descriptions' do
-        let(:document_config) { { set_model: LanguageSet, set_fields: [{ label: 'language', solr_field: 'language_tesim' }] } }
+        let(:document_config) { { set_model: LanguageSet, set_fields: [{ label: 'language', solr_field: 'language_label_tesim' }] } }
 
         scenario 'shows the set description object' do
           get oai_catalog_path(verb: 'ListSets')

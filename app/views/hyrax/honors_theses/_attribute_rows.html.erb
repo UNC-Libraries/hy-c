@@ -2,12 +2,12 @@
 <%= presenter.attribute_to_html(:date_created, render_as: :date, html_dl: true) %>
 <%= presenter.attribute_to_html(:creator, render_as: :faceted, html_dl: true) %>
 <%= presenter.attribute_to_html(:subject, render_as: :faceted, html_dl: true) %>
-<%= presenter.attribute_to_html(:language, render_as: :faceted, html_dl: true) %>
+<%= presenter.attribute_to_html(:language_label, label: 'Language', html_dl: true) %>
 <%= presenter.attribute_to_html(:keyword, render_as: :faceted, html_dl: true) %>
 <%= presenter.attribute_to_html(:related_url, render_as: :external_link, html_dl: true) %>
 <%= presenter.attribute_to_html(:resource_type, render_as: :faceted, html_dl: true) %>
-<%= presenter.attribute_to_html(:rights_statement, html_dl: true) %>
-<%= presenter.attribute_to_html(:license, html_dl: true) %>
+<%= presenter.attribute_to_html(:rights_statement_label, label: 'Rights statement', html_dl: true) %>
+<%= presenter.attribute_to_html(:license_label, label: 'License', html_dl: true) %>
 <%= presenter.attribute_to_html(:abstract, html_dl: true) %>
 <%= presenter.attribute_to_html(:academic_concentration, html_dl: true) %>
 <%= presenter.attribute_to_html(:access, html_dl: true) %>
@@ -15,7 +15,6 @@
 <%= presenter.attribute_to_html(:affiliation_label, html_dl: true, label: 'Affiliation') %>
 <%= presenter.attribute_to_html(:alternative_title, html_dl: true) %>
 <%= presenter.attribute_to_html(:award, html_dl: true) %>
-<%= presenter.attribute_to_html(:date_issued, html_dl: true) %>
 <%= presenter.attribute_to_html(:degree, html_dl: true) %>
 <%= presenter.attribute_to_html(:degree_granting_institution, html_dl: true) %>
 <%= presenter.attribute_to_html(:deposit_record, html_dl: true) %>
