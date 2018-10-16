@@ -38,7 +38,7 @@ class HonorsThesis < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :award, predicate: ::RDF::Vocab::SCHEMA.award do |index|
+  property :award, predicate: ::RDF::Vocab::SCHEMA.award, multiple: false do |index|
     index.as :stored_searchable
   end
 
