@@ -83,6 +83,8 @@ en:
       label: "Parents:"
     search:
       form:
+        q:
+          label: Search the Carolina Digital Repository
         option:
           all:
             label_long: All of the CDR
