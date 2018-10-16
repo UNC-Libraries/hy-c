@@ -20,6 +20,13 @@ $(function() {
         });
     }
 
+    function browseEverythingUploads() {
+        $('#browse-btn').browseEverything({
+            route: "/browse",
+            target: "#" + $('form').attr('id')
+        });
+    }
+  
     // Make file upload div height larger/smaller based on activity
     function uploadProgress() {
         var progess_bar = $('div.fileupload-progress');
@@ -40,15 +47,17 @@ $(function() {
         $('a.additional-fields').attr('aria-expanded', false);
     }
 
+    visibleForms();
+    browseEverythingUploads();
     uploadProgress();
     hideNonRequiredFormFields();
-    visibleForms();
 
     // Make sure that form visibility and datepicker work with turbolinks
     $(document).on('turbolinks:load', function() {
         visibleForms();
-        hideNonRequiredFormFields();
+        browseEverythingUploads();
         uploadProgress();
+        hideNonRequiredFormFields();
     });
 
     // Override default workEditor to pick up our local changes
