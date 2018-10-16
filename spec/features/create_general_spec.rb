@@ -74,7 +74,7 @@ RSpec.feature 'Create a General', js: false do
       select 'Department of Biology', from: 'general_affiliation'
       fill_in 'Alternative title', with: 'another title'
       fill_in 'Arranger', with: 'an arranger'
-      select 'Honors', from: 'Honors Level'
+      select 'Honors', from: 'Award'
       fill_in 'Bibliographic citation', with: 'a citation'
       fill_in 'Composer', with: 'a conference'
       fill_in 'Conference name', with: 'a composer'
