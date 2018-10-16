@@ -9,7 +9,7 @@
       <div class="modal-body">
         <fieldset>
           <% create_unrestricted_work_presenter.each do |row_presenter| %>
-             <% if row_presenter.concern.to_s != 'ArtWork' &&
+             <% if row_presenter.concern.to_s != 'Artwork' &&
               (current_user&.admin? || (row_presenter.concern.to_s != 'Dissertation' && row_presenter.concern.to_s != 'General')) %>
               <div class="select-worktype">
                 <label>

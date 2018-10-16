@@ -1,15 +1,15 @@
 # Generated via
-#  `rails generate hyrax:work ArtWork`
+#  `rails generate hyrax:work Artwork`
 module Hyrax
-  # Generated controller for ArtWork
-  class ArtWorksController < ApplicationController
+  # Generated controller for Artwork
+  class ArtworksController < ApplicationController
     # Adds Hyrax behaviors to the controller.
     include Hyrax::WorksControllerBehavior
     include Hyrax::BreadcrumbsForWorks
-    self.curation_concern_type = ::ArtWork
+    self.curation_concern_type = ::Artwork
 
     # Use this line if you want to use a custom presenter
-    self.show_presenter = Hyrax::ArtWorkPresenter
+    self.show_presenter = Hyrax::ArtworkPresenter
 
     before_action :ensure_admin!, only: :destroy
     before_action :ensure_admin_set!, only: [:create, :new, :edit, :update]

@@ -1,10 +1,10 @@
 # Generated via
-#  `rails generate hyrax:work Art Work`
+#  `rails generate hyrax:work Artwork`
 require 'rails_helper'
 include Warden::Test::Helpers
 
 # NOTE: If you generated more than one work, you have to set "js: true"
-RSpec.feature 'Create an Art Work', js: false do
+RSpec.feature 'Create an Artwork', js: false do
   context 'a logged in user' do
     let(:user) do
       User.new(email: 'test@example.com', guest: false, uid: 'test@example.com') { |u| u.save!(validate: false)}
@@ -47,17 +47,17 @@ RSpec.feature 'Create an Art Work', js: false do
       Hyrax::Workflow::PermissionGenerator.call(roles: 'approving', workflow: workflow, agents: admin_agent)
       Hyrax::Workflow::PermissionGenerator.call(roles: 'depositing', workflow: workflow, agents: admin_agent)
       permission_template.available_workflows.first.update!(active: true)
-      DefaultAdminSet.create(work_type_name: 'ArtWork', admin_set_id: admin_set.id)
+      DefaultAdminSet.create(work_type_name: 'Artwork', admin_set_id: admin_set.id)
     end
 
     scenario 'as a non-admin' do
       login_as user
 
       visit new_hyrax_art_work_path
-      expect(page).to have_content "Add New Art Work"
+      expect(page).to have_content "Add New Artwork"
 
       # required fields
-      fill_in 'Title', with: 'Test Art Work work'
+      fill_in 'Title', with: 'Test Artwork work'
       fill_in 'Date Created', with: '2018-10-03'
       fill_in 'Description', with: 'a description'
       fill_in 'Extent', with: 'some extent'
@@ -87,9 +87,9 @@ RSpec.feature 'Create an Art Work', js: false do
       expect(page).to have_content 'Your files are being processed by Hyrax'
 
       visit '/dashboard/my/works/'
-      expect(page).to have_content 'Test Art Work work'
+      expect(page).to have_content 'Test Artwork work'
 
-      first('.document-title', text: 'Test Art Work work').click
+      first('.document-title', text: 'Test Artwork work').click
       expect(page).to have_content 'Date created October 3, 2018'
       expect(page).to have_content 'a description'
       expect(page).to have_content 'Doi some doi'
@@ -113,10 +113,10 @@ RSpec.feature 'Create an Art Work', js: false do
       login_as admin_user
 
       visit new_hyrax_art_work_path
-      expect(page).to have_content "Add New Art Work"
+      expect(page).to have_content "Add New Artwork"
 
       # required fields
-      fill_in 'Title', with: 'Test Art Work work'
+      fill_in 'Title', with: 'Test Artwork work'
       fill_in 'Date Created', with: '2018-10-03'
       fill_in 'Description', with: 'a description'
       fill_in 'Extent', with: 'some extent'
@@ -146,9 +146,9 @@ RSpec.feature 'Create an Art Work', js: false do
       expect(page).to have_content 'Your files are being processed by Hyrax'
 
       visit '/dashboard/my/works/'
-      expect(page).to have_content 'Test Art Work work'
+      expect(page).to have_content 'Test Artwork work'
 
-      first('.document-title', text: 'Test Art Work work').click
+      first('.document-title', text: 'Test Artwork work').click
       expect(page).to have_content 'Date created October 3, 2018'
       expect(page).to have_content 'a description'
       expect(page).to have_content 'Doi some doi'
