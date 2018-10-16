@@ -62,7 +62,6 @@ RSpec.feature 'Create an Art Work', js: false do
       fill_in 'Description', with: 'a description'
       fill_in 'Extent', with: 'some extent'
       fill_in 'Medium', with: 'a medium'
-      select 'Other', from: 'art_work_resource_type'
 
       # extra fields
       fill_in 'Doi', with: 'some doi'
@@ -97,7 +96,7 @@ RSpec.feature 'Create an Art Work', js: false do
       expect(page).to have_content 'Extent some extent'
       expect(page).to have_content 'License Attribution 3.0 United States'
       expect(page).to have_content 'Medium a medium'
-      expect(page).to have_content 'Resource type Other'
+      expect(page).to have_content 'Resource type Art'
       expect(page).to have_content 'Rights statement In Copyright'
       expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
       expect(page).to_not have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'
@@ -122,7 +121,6 @@ RSpec.feature 'Create an Art Work', js: false do
       fill_in 'Description', with: 'a description'
       fill_in 'Extent', with: 'some extent'
       fill_in 'Medium', with: 'a medium'
-      select 'Other', from: 'art_work_resource_type'
 
       # extra fields
       fill_in 'Doi', with: 'some doi'
@@ -157,7 +155,7 @@ RSpec.feature 'Create an Art Work', js: false do
       expect(page).to have_content 'Extent some extent'
       expect(page).to have_content 'License Attribution 3.0 United States'
       expect(page).to have_content 'Medium a medium'
-      expect(page).to have_content 'Resource type Other'
+      expect(page).to have_content 'Resource type Art'
       expect(page).to have_content 'Rights statement In Copyright'
       expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
       expect(page).to_not have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'
