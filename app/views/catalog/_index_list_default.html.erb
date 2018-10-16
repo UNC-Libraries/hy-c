@@ -10,8 +10,10 @@
 
           <dt><%= render_index_field_label document, field: field_name %></dt>
           <%# [hyc-override] truncate text abstract and creator %>
-          <% if field_name == 'abstract_tesim' || field_name == 'creator_tesim' %>
+          <% if field_name == 'abstract_tesim' %>
             <dd><%= field_text.truncate_words(50) %></dd>
+          <% elsif field_name == 'creator_tesim' %>
+            <dd><%= document.creator.join(', ').truncate_words(50) %></dd>
           <% else %>
             <dd><%= field_text %></dd>
           <% end %>
@@ -20,7 +22,7 @@
     </dl>
   </div>
 </div>
-<% if(doc_presenter.field_value('has_model_ssim') == 'Collection') %>
+<% if doc_presenter.field_value('has_model_ssim') == 'Collection' %>
   <% collection_presenter = Hyrax::CollectionPresenter.new(document, current_ability) %>
   <div class="col-md-4">
     <div class="collection-counts-wrapper">
