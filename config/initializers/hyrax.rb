@@ -88,6 +88,8 @@ Hyrax.config do |config|
   # where NOID = 10-character string and UUID = 32-character string w/ hyphens
   config.enable_noids = true
 
+  config.iiif_image_server = true
+
   # Template for your repository's NOID IDs
   # config.noid_template = ".reeddeeddk"
 

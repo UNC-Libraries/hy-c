@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
   mount BrowseEverything::Engine => '/browse'
+  mount Riiif::Engine => 'images', as: :riiif if Hyrax.config.iiif_image_server?
+
   get 'accounts/new', to: 'accounts#new'
   post 'accounts/create', to: 'accounts#create'
 

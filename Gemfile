@@ -70,3 +70,5 @@ group :test do
   gem 'rspec-mocks'
   gem 'webmock'
 end
+
+gem 'riiif', '~> 1.1'
