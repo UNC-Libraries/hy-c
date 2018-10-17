@@ -12,6 +12,8 @@ Riiif::Image.info_service = lambda do |id, _file|
   { height: doc['height_is'], width: doc['width_is'] }
 end
 
+Riiif::Image.file_resolver.base_path = '/hyrax/tmp/derivatives/'
+
 Riiif::Image.file_resolver.id_to_uri = lambda do |id|
   ActiveFedora::Base.id_to_uri(CGI.unescape(id)).tap do |url|
     Rails.logger.info "Riiif resolved #{id} to #{url}"
@@ -23,4 +25,5 @@ Riiif::Image.authorization_service = Hyrax::IIIFAuthorizationService
 Riiif.not_found_image = Rails.root.join('app', 'assets', 'images', 'us_404.svg')
 Riiif.unauthorized_image = Rails.root.join('app', 'assets', 'images', 'us_404.svg')
 
-Riiif::Engine.config.cache_duration_in_days = 365
+Riiif::Engine.config.cache_duration_in_days = 30
+Riiif::Engine.config.kakadu_enabled = true
