@@ -74,6 +74,7 @@ class CatalogController < ApplicationController
     config.add_index_field solr_name("title", :stored_searchable), label: "Title", itemprop: 'name', if: false
     config.add_index_field solr_name("creator", :stored_searchable), itemprop: 'creator', link_to_search: solr_name("creator", :facetable)
     config.add_index_field solr_name("date_created", :stored_searchable), itemprop: 'dateCreated'
+    config.add_index_field solr_name("date_issued", :stored_searchable), label: "Date of Publication"
     config.add_index_field solr_name("abstract", :stored_searchable), label: "Abstract"
     config.add_index_field solr_name("resource_type", :stored_searchable), label: "Resource Type", link_to_search: solr_name("resource_type", :facetable)
 
