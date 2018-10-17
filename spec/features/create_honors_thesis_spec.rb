@@ -87,9 +87,9 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       fill_in 'Use', with: 'some use'
       fill_in 'Url', with: 'some url'
 
-      expect(page).to have_field('honors_thesis_language_label')
-      expect(page).to have_field('honors_thesis_license_label')
-      expect(page).to have_field('honors_thesis_rights_statement_label')
+      expect(page).to have_selector('#honors_thesis_language_label', visible: false)
+      expect(page).to have_selector('#honors_thesis_license_label', visible: false)
+      expect(page).to have_selector('#honors_thesis_rights_statement_label', visible: false)
       expect(page).to have_field('honors_thesis_visibility_embargo')
       expect(page).not_to have_field('honors_thesis_visibility_lease')
       expect(page).to have_select('honors_thesis_resource_type', selected: 'Honors Thesis')
@@ -189,9 +189,9 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       fill_in 'Use', with: 'some use'
       fill_in 'Url', with: 'some url'
 
-      expect(page).to have_field('honors_thesis_language_label')
-      expect(page).to have_field('honors_thesis_license_label')
-      expect(page).to have_field('honors_thesis_rights_statement_label')
+      expect(page).to have_selector('#honors_thesis_language_label', visible: false)
+      expect(page).to have_selector('#honors_thesis_license_label', visible: false)
+      expect(page).to have_selector('#honors_thesis_rights_statement_label', visible: false)
       expect(page).to have_field('honors_thesis_visibility_embargo')
       expect(page).not_to have_field('honors_thesis_visibility_lease')
       expect(page).to have_select('honors_thesis_resource_type', selected: 'Honors Thesis')
