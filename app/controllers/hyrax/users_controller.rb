@@ -8,7 +8,6 @@ module Hyrax
     helper Hyrax::TrophyHelper
 
     def index
-      authenticate_user! if Flipflop.hide_users_list?
       @users = search(params[:uq])
     end
 
@@ -20,6 +19,7 @@ module Hyrax
     end
 
     private
+
     # [hyc-override] Check that user is an admin
     def ensure_admin!
       authorize! :read, :admin_dashboard
