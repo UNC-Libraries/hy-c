@@ -53,8 +53,8 @@ RSpec.feature 'Edit embargo', js: false do
       choose 'article_visibility_embargo'
       check 'agreement'
 
-      within '//span[@id=addfiles]' do
-        attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'))
+      find('label[for=addFiles]').click do
+        attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'), make_visible: true)
       end
 
       click_link 'Relationships'
@@ -73,8 +73,8 @@ RSpec.feature 'Edit embargo', js: false do
       check 'agreement'
 
 
-      within '//span[@id=addfiles]' do
-        attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'))
+      find('label[for=addFiles]').click do
+        attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'), make_visible: true)
       end
 
       fill_in 'article_embargo_release_date', with: DateTime.now+5.months
@@ -101,8 +101,8 @@ RSpec.feature 'Edit embargo', js: false do
       choose 'article_visibility_embargo'
       check 'agreement'
 
-      within '//span[@id=addfiles]' do
-        attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'))
+      find('label[for=addFiles]').click do
+        attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'), make_visible: true)
       end
 
       click_link 'Relationships'
