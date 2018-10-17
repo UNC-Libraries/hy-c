@@ -17,7 +17,6 @@ Rails.application.routes.draw do
   authenticate :user, ->(u) { u.admin? } do
     require 'sidekiq/web'
     mount Sidekiq::Web => '/sidekiq'
-    match 'users', to: 'hyrax/users#index', via: :all
   end
   
   mount Blacklight::Engine => '/'
