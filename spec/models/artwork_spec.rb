@@ -11,7 +11,7 @@ RSpec.describe Artwork do
   describe '.model_name' do
     subject { described_class.model_name.singular_route_key }
 
-    it { is_expected.to eq 'hyrax_art_work' }
+    it { is_expected.to eq 'hyrax_artwork' }
   end
 
   describe "metadata" do
