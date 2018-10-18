@@ -15,7 +15,7 @@ RSpec.feature 'Create an Artwork', js: false do
     end
 
     let(:admin_set) do
-      AdminSet.create(title: ["art work admin set"],
+      AdminSet.create(title: ["artwork admin set"],
                       description: ["some description"],
                       edit_users: [user.user_key])
     end
@@ -160,7 +160,7 @@ RSpec.feature 'Create an Artwork', js: false do
       expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
       expect(page).to_not have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'
 
-      expect(page).to have_content 'In Administrative Set: art work admin set'
+      expect(page).to have_content 'In Administrative Set: artwork admin set'
       expect(page).to have_selector(:link, 'Delete')
 
       click_link 'Edit'

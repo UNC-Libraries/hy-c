@@ -18,7 +18,7 @@ Hyrax.config do |config|
   # Injected via `rails g hyrax:work General`
   config.register_curation_concern :general
   # Injected via `rails g hyrax:work Artwork`
-  config.register_curation_concern :art_work
+  config.register_curation_concern :artwork
 
   # Register roles that are expected by your implementation.
   # @see Hyrax::RoleRegistry for additional details.

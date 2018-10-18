@@ -5,6 +5,6 @@ zh:
     select_type:
       art_work:
         # TODO: translate `human_name` into Chinese
-        description:        "Art work 作品"
-        name:               "Art Work"
+        description:        "Artwork 作品"
+        name:               "Artwork"
         # TODO: translate `human_name` into Chinese

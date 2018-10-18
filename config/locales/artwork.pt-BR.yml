@@ -4,5 +4,5 @@ pt-BR:
       art_work:     'fa fa-file-text-o'
     select_type:
       art_work:
-        description:        "Art work trabalhos"
-        name:               "Art Work"
+        description:        "Artwork trabalhos"
+        name:               "Artwork"
