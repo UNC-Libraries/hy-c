@@ -68,8 +68,8 @@ RSpec.feature 'Create an Artwork', js: false do
       select 'Attribution 3.0 United States', :from => 'art_work_license'
       select 'In Copyright', :from => 'art_work_rights_statement'
 
-      expect(page).to have_field('art_work_license_label')
-      expect(page).to have_field('art_work_rights_statement_label')
+      expect(page).to have_selector('#art_work_license_label', visible: false)
+      expect(page).to have_selector('#art_work_rights_statement_label', visible: false)
       expect(page).to have_field('art_work_visibility_embargo')
       expect(page).not_to have_field('art_work_visibility_lease')
       expect(page).to have_select('art_work_resource_type', selected: 'Art')
@@ -127,8 +127,8 @@ RSpec.feature 'Create an Artwork', js: false do
       select 'Attribution 3.0 United States', :from => 'art_work_license'
       select 'In Copyright', :from => 'art_work_rights_statement'
 
-      expect(page).to have_field('art_work_license_label')
-      expect(page).to have_field('art_work_rights_statement_label')
+      expect(page).to have_selector('#art_work_license_label', visible: false)
+      expect(page).to have_selector('#art_work_rights_statement_label', visible: false)
       expect(page).to have_field('art_work_visibility_embargo')
       expect(page).not_to have_field('art_work_visibility_lease')
       choose "art_work_visibility_open"

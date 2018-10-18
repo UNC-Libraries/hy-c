@@ -74,7 +74,7 @@ RSpec.feature 'Create a General', js: false do
       select 'Department of Biology', from: 'general_affiliation'
       fill_in 'Alternative title', with: 'another title'
       fill_in 'Arranger', with: 'an arranger'
-      fill_in 'Award', with: 'an award'
+      select 'Honors', from: 'Award'
       fill_in 'Bibliographic citation', with: 'a citation'
       fill_in 'Composer', with: 'a conference'
       fill_in 'Conference name', with: 'a composer'
@@ -131,9 +131,9 @@ RSpec.feature 'Create a General', js: false do
       fill_in 'Use', with: 'some use'
       fill_in 'Url', with: 'some url'
 
-      expect(page).to have_field('general_language_label')
-      expect(page).to have_field('general_license_label')
-      expect(page).to have_field('general_rights_statement_label')
+      expect(page).to have_selector('#general_language_label', visible: false)
+      expect(page).to have_selector('#general_license_label', visible: false)
+      expect(page).to have_selector('#general_rights_statement_label', visible: false)
       expect(page).to have_field('general_visibility_embargo')
       expect(page).not_to have_field('general_visibility_lease')
       choose 'general_visibility_open'
@@ -165,7 +165,7 @@ RSpec.feature 'Create a General', js: false do
       expect(page).to have_content 'Department of Biology'
       expect(page).to have_content 'Alternative title another title'
       expect(page).to have_content 'Arranger an arranger'
-      expect(page).to have_content 'Award an award'
+      expect(page).to have_content 'Award Honors'
       expect(page).to have_content 'Bibliographic citation a citation'
       expect(page).to have_content 'Composer a conference'
       expect(page).to have_content 'Conference name a composer'

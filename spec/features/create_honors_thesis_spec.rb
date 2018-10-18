@@ -71,7 +71,7 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       select 'Clinical Nutrition', from: 'Academic Concentration'
       fill_in 'Access', with: 'some access'
       fill_in 'Alternative title', with: 'another title'
-      fill_in 'Honors Level', with: 'an award'
+      select 'Honors', from: 'Honors Level'
       fill_in 'Doi', with: 'some doi'
       fill_in 'Extent', with: 'some extent'
       fill_in 'Geographic subject', with: 'some geographic subject'
@@ -87,9 +87,9 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       fill_in 'Use', with: 'some use'
       fill_in 'Url', with: 'some url'
 
-      expect(page).to have_field('honors_thesis_language_label')
-      expect(page).to have_field('honors_thesis_license_label')
-      expect(page).to have_field('honors_thesis_rights_statement_label')
+      expect(page).to have_selector('#honors_thesis_language_label', visible: false)
+      expect(page).to have_selector('#honors_thesis_license_label', visible: false)
+      expect(page).to have_selector('#honors_thesis_rights_statement_label', visible: false)
       expect(page).to have_field('honors_thesis_visibility_embargo')
       expect(page).not_to have_field('honors_thesis_visibility_lease')
       expect(page).to have_select('honors_thesis_resource_type', selected: 'Honors Thesis')
@@ -120,7 +120,7 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       expect(page).to have_content 'College of Arts and Sciences'
       expect(page).to have_content 'Department of Biology'
       expect(page).to have_content 'Alternative title another title'
-      expect(page).to have_content 'Award an award'
+      expect(page).to have_content 'Award Honors'
       expect(page).to have_content 'Creator Test Default Creator'
       expect(page).to have_content 'Date created October 3, 2018'
       expect(page).to have_content 'Degree Bachelor of Science'
@@ -173,7 +173,7 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       select 'Clinical Nutrition', from: 'Academic Concentration'
       fill_in 'Access', with: 'some access'
       fill_in 'Alternative title', with: 'another title'
-      fill_in 'Honors Level', with: 'an award'
+      select 'Highest Honors', from: 'Honors Level'
       fill_in 'Doi', with: 'some doi'
       fill_in 'Extent', with: 'some extent'
       fill_in 'Geographic subject', with: 'some geographic subject'
@@ -189,9 +189,9 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       fill_in 'Use', with: 'some use'
       fill_in 'Url', with: 'some url'
 
-      expect(page).to have_field('honors_thesis_language_label')
-      expect(page).to have_field('honors_thesis_license_label')
-      expect(page).to have_field('honors_thesis_rights_statement_label')
+      expect(page).to have_selector('#honors_thesis_language_label', visible: false)
+      expect(page).to have_selector('#honors_thesis_license_label', visible: false)
+      expect(page).to have_selector('#honors_thesis_rights_statement_label', visible: false)
       expect(page).to have_field('honors_thesis_visibility_embargo')
       expect(page).not_to have_field('honors_thesis_visibility_lease')
       expect(page).to have_select('honors_thesis_resource_type', selected: 'Honors Thesis')
@@ -225,7 +225,7 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       expect(page).to have_content 'College of Arts and Sciences'
       expect(page).to have_content 'Department of Biology'
       expect(page).to have_content 'Alternative title another title'
-      expect(page).to have_content 'Award an award'
+      expect(page).to have_content 'Award Highest Honors'
       expect(page).to have_content 'Creator Test Default Creator'
       expect(page).to have_content 'Date created October 3, 2018'
       expect(page).to have_content 'Degree Bachelor of Science'
