@@ -1,3 +1,4 @@
+# [hyc-override]
 module Hyrax
   module Actors
     # Actions for a file identified by file_set and relation (maps to use predicate)
@@ -29,6 +30,8 @@ module Hyrax
         return false unless file_set.save
         repository_file = related_file
         Hyrax::VersioningService.create(repository_file, user)
+        # [hyc-override] Invoke longleaf registration
+        RegisterToLongleafJob.new.perform(repository_file)
         pathhint = io.uploaded_file.uploader.path if io.uploaded_file # in case next worker is on same filesystem
         CharacterizeJob.perform_later(file_set, repository_file.id, pathhint || io.path)
       end
