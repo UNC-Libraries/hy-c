@@ -88,9 +88,9 @@ RSpec.feature 'Create a DataSet', js: false do
       fill_in 'Sponsor', with: 'a sponsor'
       fill_in 'Subject', with: 'test'
 
-      expect(page).to have_field('data_set_language_label')
-      expect(page).to have_field('data_set_license_label')
-      expect(page).to have_field('data_set_rights_statement_label')
+      expect(page).to have_selector('#data_set_language_label', visible: false)
+      expect(page).to have_selector('#data_set_license_label', visible: false)
+      expect(page).to have_selector('#data_set_rights_statement_label', visible: false)
       expect(page).to have_field('data_set_rights_statement')
       expect(page).to have_field('data_set_visibility_embargo')
       expect(page).not_to have_field('data_set_visibility_lease')
@@ -100,8 +100,8 @@ RSpec.feature 'Create a DataSet', js: false do
       
       expect(page).not_to have_selector('#data_set_dcmi_type')
 
-      within '//span[@id=addfiles]' do
-        attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'))
+      find('label[for=addFiles]').click do
+        attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'), make_visible: true)
       end
 
       click_link 'Relationships'
@@ -193,9 +193,9 @@ RSpec.feature 'Create a DataSet', js: false do
       fill_in 'Sponsor', with: 'a sponsor'
       fill_in 'Subject', with: 'test'
 
-      expect(page).to have_field('data_set_language_label')
-      expect(page).to have_field('data_set_license_label')
-      expect(page).to have_field('data_set_rights_statement_label')
+      expect(page).to have_selector('#data_set_language_label', visible: false)
+      expect(page).to have_selector('#data_set_license_label', visible: false)
+      expect(page).to have_selector('#data_set_rights_statement_label', visible: false)
       expect(page).to have_field('data_set_rights_statement')
       expect(page).to have_field('data_set_visibility_embargo')
       expect(page).not_to have_field('data_set_visibility_lease')
@@ -207,8 +207,8 @@ RSpec.feature 'Create a DataSet', js: false do
       expect(page).to have_selector("input[value='http://purl.org/dc/dcmitype/Dataset']")
       fill_in 'Dcmi type', with: 'http://purl.org/dc/dcmitype/Image'
 
-      within '//span[@id=addfiles]' do
-        attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'))
+      find('label[for=addFiles]').click do
+        attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'), make_visible: true)
       end
 
       click_link 'Relationships'

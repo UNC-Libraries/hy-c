@@ -142,6 +142,10 @@ span.institution_name {
     padding: 10px;
     font-size: 1.2em;
   }
+
+  blockquote {
+    border-left: none;
+  }
 }
 
 #unc-deposit {
@@ -159,7 +163,7 @@ span.institution_name {
     }
 
     div {
-      font-size: 18px;
+      font-size: 21px;
     }
   }
 
@@ -202,7 +206,7 @@ span.institution_name {
 }
 
 #unc-featured {
-  background-color: #e4e4e4;
+  background-color: #f6f6f6;
   -moz-box-shadow: $description-shadow-prefixed;
   -webkit-box-shadow: $description-shadow-prefixed;
   box-shadow: $description-shadow;
@@ -333,6 +337,37 @@ div.unc-citation-modal {
   }
 }
 
+.multi_value .btn.add {
+  text-decoration: none;
+
+  &:hover, &:focus {
+    text-decoration: underline;
+  }
+}
+
+.navbar-default .navbar-nav > li > a {
+  color: #222222;
+
+  &:focus, &:hover {
+    color: #777777;
+  }
+}
+
+#search-results {
+  a:focus, button:focus {
+    outline-color: #4b9cd3;
+    border: 1.5px dashed #4b9cd3;
+  }
+}
+
+.sidebar {
+  background-color: #3f3f3f;
+}
+
+caption {
+  color: #666666;
+}
+
 .fileupload-buttonbar, #fileupload p {
   padding-top: 5px;
   padding-left: 15px;
@@ -352,6 +387,22 @@ div.unc-citation-modal {
 
 div.fileupload-progress {
   height: 0;
+}
+
+.hidden-file-input {
+  position: absolute !important;
+  height: 1px;
+  width: 1px;
+  overflow: hidden;
+  clip: rect(1px, 1px, 1px, 1px);
+}
+
+/* Colors taken from Bootstrap's focus */
+input.hidden-file-input:focus + label {
+  outline: -webkit-focus-ring-color auto 5px;
+  outline: #66afe9 auto 5px;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);
 }
 
 table p.name span {

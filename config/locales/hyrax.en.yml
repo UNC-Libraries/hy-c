@@ -48,6 +48,9 @@ en:
     institution_name:       "Institution"
     institution_name_full:  "The Institution Name"
     account_name:           "My Institution Account Id"
+    base:
+      items:
+        empty_artwork: This Art Work has no files associated with it. Click "Attach Artwork" to add more files.
     directory:
       suffix:               "@example.org"
     footer:
@@ -80,6 +83,8 @@ en:
       label: "Parents:"
     search:
       form:
+        q:
+          label: Search the Carolina Digital Repository
         option:
           all:
             label_long: All of the CDR
