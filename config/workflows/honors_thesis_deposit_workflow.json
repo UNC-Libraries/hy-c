@@ -64,7 +64,6 @@
                         }
                     ],
                     "methods": [
-                        "Hyrax::Workflow::DeactivateObject",
                         "Hyrax::Workflow::AssignReviewerByAffiliation"
                     ]
                 }, {
