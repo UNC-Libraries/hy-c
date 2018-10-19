@@ -98,7 +98,7 @@ RSpec.describe 'OAI-PMH catalog endpoint' do
       let(:document_config) { { set_model: LanguageSet, set_fields: [{ label: 'language', solr_field: 'language_label_tesim' }] } }
 
       scenario 'only records from the set are returned' do
-        params = { verb: 'ListRecords', metadataPrefix: format, set: 'language:jpn' }
+        params = { verb: 'ListRecords', metadataPrefix: format, set: 'language:Japanese' }
 
         get oai_catalog_path(params)
         records = xpath '//xmlns:record'
@@ -213,7 +213,7 @@ RSpec.describe 'OAI-PMH catalog endpoint' do
 
           expect(descriptions.count).to be 2
           expect(descriptions[0].text).to eq('This set includes files in the English language.')
-          expect(descriptions[1].text).to eq('This set includes files in the Jpn language.')
+          expect(descriptions[1].text).to eq('This set includes files in the Japanese language.')
         end
       end
     end
