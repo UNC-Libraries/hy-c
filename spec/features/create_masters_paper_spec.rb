@@ -112,9 +112,9 @@ RSpec.feature 'Create a MastersPaper', js: false do
       fill_in 'Subject', with: 'test'
       fill_in 'Use', with: 'some use'
 
-      expect(page).to have_field('masters_paper_language_label')
-      expect(page).to have_field('masters_paper_license_label')
-      expect(page).to have_field('masters_paper_rights_statement_label')
+      expect(page).to have_selector('#masters_paper_language_label', visible: false)
+      expect(page).to have_selector('#masters_paper_license_label', visible: false)
+      expect(page).to have_selector('#masters_paper_rights_statement_label', visible: false)
       expect(page).to have_field('masters_paper_visibility_embargo')
       expect(page).not_to have_field('masters_paper_visibility_lease')
       expect(page).to have_select('masters_paper_resource_type', selected: 'Masters Paper')
@@ -124,8 +124,8 @@ RSpec.feature 'Create a MastersPaper', js: false do
       # Verify that admin only field is not visible
       expect(page).not_to have_selector('#masters_paper_dcmi_type')
 
-      within "//span[@id=addfiles]" do
-        attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'))
+      find('label[for=addFiles]').click do
+        attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'), make_visible: true)
       end
 
       click_link "Relationships"
@@ -213,9 +213,9 @@ RSpec.feature 'Create a MastersPaper', js: false do
       fill_in 'Subject', with: 'test'
       fill_in 'Use', with: 'some use'
 
-      expect(page).to have_field('masters_paper_language_label')
-      expect(page).to have_field('masters_paper_license_label')
-      expect(page).to have_field('masters_paper_rights_statement_label')
+      expect(page).to have_selector('#masters_paper_language_label', visible: false)
+      expect(page).to have_selector('#masters_paper_license_label', visible: false)
+      expect(page).to have_selector('#masters_paper_rights_statement_label', visible: false)
       expect(page).to have_field('masters_paper_visibility_embargo')
       expect(page).not_to have_field('masters_paper_visibility_lease')
       expect(page).to have_select('masters_paper_resource_type', selected: 'Masters Paper')
@@ -226,8 +226,8 @@ RSpec.feature 'Create a MastersPaper', js: false do
       expect(page).to have_selector("input[value='http://purl.org/dc/dcmitype/Text']")
       fill_in 'Dcmi type', with: 'http://purl.org/dc/dcmitype/Image'
 
-      within "//span[@id=addfiles]" do
-        attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'))
+      find('label[for=addFiles]').click do
+        attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'), make_visible: true)
       end
 
       click_link "Relationships"

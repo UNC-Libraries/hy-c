@@ -87,9 +87,9 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       fill_in 'Use', with: 'some use'
       fill_in 'Link to publisher version', with: 'some url'
 
-      expect(page).to have_field('honors_thesis_language_label')
-      expect(page).to have_field('honors_thesis_license_label')
-      expect(page).to have_field('honors_thesis_rights_statement_label')
+      expect(page).to have_selector('#honors_thesis_language_label', visible: false)
+      expect(page).to have_selector('#honors_thesis_license_label', visible: false)
+      expect(page).to have_selector('#honors_thesis_rights_statement_label', visible: false)
       expect(page).to have_field('honors_thesis_visibility_embargo')
       expect(page).not_to have_field('honors_thesis_visibility_lease')
       expect(page).to have_select('honors_thesis_resource_type', selected: 'Honors Thesis')
@@ -98,8 +98,8 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       
       expect(page).not_to have_selector('#honors_thesis_dcmi_type')
 
-      within "//span[@id=addfiles]" do
-        attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'))
+      find('label[for=addFiles]').click do
+        attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'), make_visible: true)
       end
 
       click_link "Relationships"
@@ -120,7 +120,7 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       expect(page).to have_content 'College of Arts and Sciences'
       expect(page).to have_content 'Department of Biology'
       expect(page).to have_content 'Alternative title another title'
-      expect(page).to have_content 'Award an award'
+      expect(page).to have_content 'Award Honors'
       expect(page).to have_content 'Creator Test Default Creator'
       expect(page).to have_content 'Date created October 3, 2018'
       expect(page).to have_content 'Degree Bachelor of Science'
@@ -189,9 +189,9 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       fill_in 'Use', with: 'some use'
       fill_in 'Link to publisher version', with: 'some url'
 
-      expect(page).to have_field('honors_thesis_language_label')
-      expect(page).to have_field('honors_thesis_license_label')
-      expect(page).to have_field('honors_thesis_rights_statement_label')
+      expect(page).to have_selector('#honors_thesis_language_label', visible: false)
+      expect(page).to have_selector('#honors_thesis_license_label', visible: false)
+      expect(page).to have_selector('#honors_thesis_rights_statement_label', visible: false)
       expect(page).to have_field('honors_thesis_visibility_embargo')
       expect(page).not_to have_field('honors_thesis_visibility_lease')
       expect(page).to have_select('honors_thesis_resource_type', selected: 'Honors Thesis')
@@ -202,8 +202,8 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       expect(page).to have_selector("input[value='http://purl.org/dc/dcmitype/Text']")
       fill_in 'Dcmi type', with: 'http://purl.org/dc/dcmitype/Image'
 
-      within "//span[@id=addfiles]" do
-        attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'))
+      find('label[for=addFiles]').click do
+        attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'), make_visible: true)
       end
 
       click_link "Relationships"
@@ -225,7 +225,7 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       expect(page).to have_content 'College of Arts and Sciences'
       expect(page).to have_content 'Department of Biology'
       expect(page).to have_content 'Alternative title another title'
-      expect(page).to have_content 'Award an award'
+      expect(page).to have_content 'Award Highest Honors'
       expect(page).to have_content 'Creator Test Default Creator'
       expect(page).to have_content 'Date created October 3, 2018'
       expect(page).to have_content 'Degree Bachelor of Science'

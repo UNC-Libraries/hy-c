@@ -73,7 +73,7 @@ RSpec.describe Hyrax::GeneralForm do
           affiliation_label: ['School of Medicine', 'Carolina Center for Genome Sciences'],
           alternative_title: ['some title'],
           arranger: ['an arranger'],
-          award: ['an award'],
+          award: 'an award', # single-valued
           composer: ['a composer'],
           conference_name: ['a conference'],
           copyright_date: ['2017-01-22'],
@@ -150,7 +150,7 @@ RSpec.describe Hyrax::GeneralForm do
       expect(subject['affiliation_label']).to eq ['School of Medicine', 'Carolina Center for Genome Sciences']
       expect(subject['alternative_title']).to eq ['some title']
       expect(subject['arranger']).to eq ['an arranger']
-      expect(subject['award']).to eq ['an award']
+      expect(subject['award']).to eq 'an award'
       expect(subject['composer']).to eq ['a composer']
       expect(subject['conference_name']).to eq ['a conference']
       expect(subject['copyright_date']).to eq ['2017-01-22']
