@@ -67,7 +67,7 @@ RSpec.describe Hyrax::HonorsThesisForm do
           affiliation: ['School of Medicine', 'Carolina Center for Genome Sciences'],
           affiliation_label: ['School of Medicine', 'Carolina Center for Genome Sciences'],
           alternative_title: ['another title'],
-          award: ['an award'],
+          award: 'an award', # single-valued
           dcmi_type: ['type'],
           degree: 'MSIS', # single-valued
           degree_granting_institution: 'UNC', # single-valued
@@ -107,7 +107,7 @@ RSpec.describe Hyrax::HonorsThesisForm do
       expect(subject['affiliation']).to eq ['School of Medicine', 'Carolina Center for Genome Sciences']
       expect(subject['affiliation_label']).to eq ['School of Medicine', 'Carolina Center for Genome Sciences']
       expect(subject['alternative_title']).to eq ['another title']
-      expect(subject['award']).to eq ['an award']
+      expect(subject['award']).to eq 'an award'
       expect(subject['degree']).to eq 'MSIS'
       expect(subject['degree_granting_institution']).to eq 'UNC'
       expect(subject['extent']).to eq ['an extent']
