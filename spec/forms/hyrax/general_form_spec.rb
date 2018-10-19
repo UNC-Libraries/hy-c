@@ -33,7 +33,7 @@ RSpec.describe Hyrax::GeneralForm do
                                      :note, :orcid, :other_affiliation, :page_start, :page_end, :peer_review_status,
                                      :place_of_publication, :project_director, :publisher_version, :researcher,
                                      :reviewer, :rights_holder, :series, :sponsor, :table_of_contents, :translator,
-                                     :url, :use] }
+                                     :url, :use, :language_label, :license_label, :rights_statement_label] }
   end
   
   describe "#admin_only_terms" do
@@ -52,15 +52,15 @@ RSpec.describe Hyrax::GeneralForm do
           date_created: '2017-01-22',
           deposit_record: 'uuid:1234',
           identifier: ['an identifier'],
-          language: ['a language'],
+          language: ['http://id.loc.gov/vocabulary/iso639-2/eng'],
           license: 'http://creativecommons.org/licenses/by/3.0/us/', # single-valued
           keyword: ['derp'],
           publisher: ['a publisher'],
           related_url: ['a url'],
           resource_type: ['a type'],
-          rights_statement: 'a statement', # single-valued
+          rights_statement: 'http://rightsstatements.org/vocab/InC/1.0/', # single-valued
           subject: ['a subject'],
-          description: [''],
+          description: 'a good work', # single-valued
           visibility: 'open',
           representative_id: '456',
           thumbnail_id: '789',
@@ -73,7 +73,7 @@ RSpec.describe Hyrax::GeneralForm do
           affiliation_label: ['School of Medicine', 'Carolina Center for Genome Sciences'],
           alternative_title: ['some title'],
           arranger: ['an arranger'],
-          award: ['an award'],
+          award: 'an award', # single-valued
           composer: ['a composer'],
           conference_name: ['a conference'],
           copyright_date: ['2017-01-22'],
@@ -115,7 +115,10 @@ RSpec.describe Hyrax::GeneralForm do
           table_of_contents: ['cool table'],
           translator: ['dean'],
           url: ['http://unc.edu'],
-          use: ['a use']
+          use: ['a use'],
+          language_label: [],
+          license_label: [],
+          rights_statement_label: []
       )
     end
 
@@ -128,13 +131,13 @@ RSpec.describe Hyrax::GeneralForm do
       expect(subject['date_created']).to eq '2017-01-22'
       expect(subject['deposit_record']).to eq 'uuid:1234'
       expect(subject['identifier']).to eq ['an identifier']
-      expect(subject['language']).to eq ['a language']
+      expect(subject['language']).to eq ['http://id.loc.gov/vocabulary/iso639-2/eng']
       expect(subject['publisher']).to eq ['a publisher']
       expect(subject['related_url']).to eq ['a url']
       expect(subject['resource_type']).to eq ['a type']
-      expect(subject['rights_statement']).to eq ['a statement']
+      expect(subject['rights_statement']).to eq ['http://rightsstatements.org/vocab/InC/1.0/']
       expect(subject['subject']).to eq ['a subject']
-      expect(subject['description']).to be_empty
+      expect(subject['description']).to eq 'a good work'
       expect(subject['visibility']).to eq 'open'
       expect(subject['license']).to eq ['http://creativecommons.org/licenses/by/3.0/us/']
       expect(subject['keyword']).to eq ['derp']
@@ -147,7 +150,7 @@ RSpec.describe Hyrax::GeneralForm do
       expect(subject['affiliation_label']).to eq ['School of Medicine', 'Carolina Center for Genome Sciences']
       expect(subject['alternative_title']).to eq ['some title']
       expect(subject['arranger']).to eq ['an arranger']
-      expect(subject['award']).to eq ['an award']
+      expect(subject['award']).to eq 'an award'
       expect(subject['composer']).to eq ['a composer']
       expect(subject['conference_name']).to eq ['a conference']
       expect(subject['copyright_date']).to eq ['2017-01-22']
@@ -190,13 +193,16 @@ RSpec.describe Hyrax::GeneralForm do
       expect(subject['translator']).to eq ['dean']
       expect(subject['url']).to eq ['http://unc.edu']
       expect(subject['use']).to eq ['a use']
+      expect(subject['language_label']).to eq ['English']
+      expect(subject['license_label']).to eq ['Attribution 3.0 United States']
+      expect(subject['rights_statement_label']).to eq ['In Copyright']
     end
 
     context '.model_attributes' do
       let(:params) do
         ActionController::Parameters.new(
             title: '',
-            description: [''],
+            description: '',
             keyword: [''],
             license: '',
             member_of_collection_ids: [''],
@@ -206,7 +212,7 @@ RSpec.describe Hyrax::GeneralForm do
 
       it 'removes blank parameters' do
         expect(subject['title']).to be_nil
-        expect(subject['description']).to be_empty
+        expect(subject['description']).to be_nil
         expect(subject['license']).to be_nil
         expect(subject['keyword']).to be_empty
         expect(subject['member_of_collection_ids']).to be_empty

@@ -11,7 +11,7 @@
       </tr>
       </thead>
       <tbody>
-      <% messages.each do |msg| %>
+      <% messages.sort_by {|m| m.created_at.to_i }.reverse.each do |msg| %>
         <tr>
           <td>
             <relative-time datetime="<%= msg.last_message.created_at.getutc.iso8601 %>" title="<%= msg.last_message.created_at.to_formatted_s(:standard) %>">

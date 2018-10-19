@@ -2,8 +2,9 @@
 <%= presenter.attribute_to_html(:subject, render_as: :faceted, html_dl: true) %>
 <%= presenter.attribute_to_html(:keyword, render_as: :faceted, html_dl: true) %>
 <%= presenter.attribute_to_html(:source, html_dl: true) %>
-<%= presenter.attribute_to_html(:rights_statement, html_dl: true) %>
-<%= presenter.attribute_to_html(:language, html_dl: true) %>
+<%= presenter.attribute_to_html(:rights_statement_label, label: 'Rights statement', html_dl: true) %>
+<%= presenter.attribute_to_html(:language_label, label: 'Language', html_dl: true) %>
+<%= presenter.attribute_to_html(:license_label, label: 'License', html_dl: true) %>
 <%= presenter.attribute_to_html(:resource_type, html_dl: true) %>
 <%= presenter.attribute_to_html(:abstract, html_dl: true) %>
 <%= presenter.attribute_to_html(:access, html_dl: true) %>
@@ -21,6 +22,7 @@
 <%= presenter.attribute_to_html(:funder, html_dl: true) %>
 <%= presenter.attribute_to_html(:dcmi_type, html_dl: true, label: "Type") %>
 <%= presenter.attribute_to_html(:geographic_subject, html_dl: true) %>
+<%= presenter.attribute_to_html(:identifier, html_dl: true) %>
 <%= presenter.attribute_to_html(:issn, html_dl: true) %>
 <%= presenter.attribute_to_html(:journal_issue, html_dl: true) %>
 <%= presenter.attribute_to_html(:journal_title, html_dl: true) %>
@@ -32,6 +34,8 @@
 <%= presenter.attribute_to_html(:page_start, html_dl: true) %>
 <%= presenter.attribute_to_html(:peer_review_status, html_dl: true) %>
 <%= presenter.attribute_to_html(:place_of_publication, html_dl: true) %>
+<%= presenter.attribute_to_html(:publisher, html_dl: true) %>
+<%= presenter.attribute_to_html(:related_url, html_dl: true) %>
 <%= presenter.attribute_to_html(:rights_holder, html_dl: true) %>
 <%= presenter.attribute_to_html(:table_of_contents, html_dl: true) %>
 <%= presenter.attribute_to_html(:translator, html_dl: true) %>

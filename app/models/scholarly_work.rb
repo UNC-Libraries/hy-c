@@ -22,7 +22,7 @@ class ScholarlyWork < ActiveFedora::Base
     index.as :stored_searchable, :facetable
   end
 
-  property :affiliation, predicate: ::RDF::Vocab::SCHEMA.affiliation do |index|
+  property :affiliation_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#AffiliationLabel') do |index|
     index.as :stored_searchable, :facetable
   end
 
@@ -32,10 +32,6 @@ class ScholarlyWork < ActiveFedora::Base
 
   property :date_issued, predicate: ::RDF::Vocab::DC.issued, multiple: false do |index|
     index.as :stored_searchable, :facetable
-  end
-
-  property :dcmi_type, predicate: ::RDF::Vocab::DC.type do |index|
-    index.as :stored_searchable
   end
 
   property :dcmi_type, predicate: ::RDF::Vocab::DC.type do |index|
@@ -55,11 +51,23 @@ class ScholarlyWork < ActiveFedora::Base
     index.as :stored_searchable
   end
 
+  property :language_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#LanguageLabel') do |index|
+    index.as :stored_searchable
+  end
+
+  property :license_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#LicenseLabel') do |index|
+    index.as :stored_searchable
+  end
+
   property :orcid, predicate: ::RDF::Vocab::Identifiers.orcid do |index|
     index.as :stored_searchable
   end
 
   property :other_affiliation, predicate: ::RDF::Vocab::EBUCore.hasAffiliation do |index|
+    index.as :stored_searchable
+  end
+
+  property :rights_statement_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#RightsStatementLabel') do |index|
     index.as :stored_searchable
   end
 

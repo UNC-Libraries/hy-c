@@ -1,19 +1,24 @@
-<% if f.object.resource_type.empty? && params[:controller] == 'hyrax/articles' %>
+<% if f.object.resource_type[0].blank? && params[:controller] == 'hyrax/articles' %>
   <%= f.input :resource_type, as: :select,
               collection: Hyrax::ResourceTypesService.select_options,
               selected: 'Article',
               input_html: { class: 'form-control', multiple: true } %>
-<% elsif f.object.resource_type.empty? && params[:controller] == 'hyrax/data_sets' %>
+<% elsif f.object.resource_type[0].blank? && params[:controller] == 'hyrax/art_works' %>
+    <%= f.input :resource_type, as: :select,
+                collection: Hyrax::ResourceTypesService.select_options,
+                selected: 'Art',
+                input_html: { class: 'form-control', multiple: true } %>
+<% elsif f.object.resource_type[0].blank? && params[:controller] == 'hyrax/data_sets' %>
   <%= f.input :resource_type, as: :select,
               collection: Hyrax::ResourceTypesService.select_options,
               selected: 'Dataset',
               input_html: { class: 'form-control', multiple: true } %>
-<% elsif f.object.resource_type.empty? && params[:controller] == 'hyrax/honors_theses' %>
+<% elsif f.object.resource_type[0].blank? && params[:controller] == 'hyrax/honors_theses' %>
   <%= f.input :resource_type, as: :select,
               collection: Hyrax::ResourceTypesService.select_options,
               selected: 'Honors Thesis',
               input_html: { class: 'form-control', multiple: true } %>
-<% elsif f.object.resource_type.empty? && params[:controller] == 'hyrax/masters_papers' %>
+<% elsif f.object.resource_type[0].blank? && params[:controller] == 'hyrax/masters_papers' %>
   <%= f.input :resource_type, as: :select,
               collection: Hyrax::ResourceTypesService.select_options,
               selected: 'Masters Paper',

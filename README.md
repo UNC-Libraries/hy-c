@@ -1,24 +1,19 @@
-# README
+# Hy-C
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+#### Hyrax based system underlying the Carolina Digital Repository
 
-Things you may want to cover:
+* Currently using Hyrax version 2.1.0
+* Currently in development
+* Will host institutional repository content at UNC Chapel Hill
 
-* Ruby version
+#### Customizations
 
-* System dependencies
+* Automatically assign AdminSet based on work type
+* Custom workflows:
+    * New withdrawn state for works
+    * Honors thesis workflow automatically assigns departmental group as reviewer for deposited works
+* Updated deposit/edit form with combined files and metadata tabs
+* Import scripts for new ProQuest deposits
 
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+#### Contact Information
+* Email: cdr@unc.edu

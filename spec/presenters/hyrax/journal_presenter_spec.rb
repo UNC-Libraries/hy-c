@@ -28,7 +28,10 @@ RSpec.describe Hyrax::JournalPresenter do
       "orcid_tesim" => ['an orcid'],
       "place_of_publication_tesim" => ['California'],
       "resource_type_tesim" => ['a type'],
-      "table_of_contents_tesim" => ['table of contents']
+      "table_of_contents_tesim" => ['table of contents'],
+      "language_label_tesim" => ['language'],
+      "license_label_tesim" => ['license'],
+      "rights_statement_label_tesim" => ['rights']
     }
   end
 
@@ -62,6 +65,9 @@ RSpec.describe Hyrax::JournalPresenter do
   it { is_expected.to delegate_method(:orcid).to(:solr_document) }
   it { is_expected.to delegate_method(:place_of_publication).to(:solr_document) }
   it { is_expected.to delegate_method(:table_of_contents).to(:solr_document) }
+  it { is_expected.to delegate_method(:language_label).to(:solr_document) }
+  it { is_expected.to delegate_method(:license_label).to(:solr_document) }
+  it { is_expected.to delegate_method(:rights_statement_label).to(:solr_document) }
 
   describe "#model_name" do
     subject { presenter.model_name }
@@ -222,6 +228,49 @@ RSpec.describe Hyrax::JournalPresenter do
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:table_of_contents)
+      end
+    end
+
+    context "with a custom language label field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:language_label, ['language'], {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:language_label)
+      end
+    end
+
+    context "with a custom license label field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:license_label, ['license'], {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:license_label)
+      end
+    end
+
+    context "with a custom rights statement label field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:rights_statement_label, ['rights'], {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:rights_statement_label)
+      end
+    end
+
+    context "with a field that doesn't exist" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:something, 'foo', {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).not_to receive(:render)
       end
     end
   end

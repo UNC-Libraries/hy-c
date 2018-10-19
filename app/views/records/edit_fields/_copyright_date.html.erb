@@ -1,0 +1,7 @@
+<% if f.object.multiple? key %>
+  <%= f.input :copyright_date, as: :multi_value, html5: true, placeholder: "Date Format YYYY-MM-DD",
+              input_html: { class: 'date-input', value: f.object.copyright_date || '' } %>
+<% else %>
+  <%= f.input :copyright_date, as: :date, html5: true, placeholder: "Date Format YYYY-MM-DD",
+              input_html: { class: 'date-input', value: f.object.copyright_date || '' } %>
+<% end %>

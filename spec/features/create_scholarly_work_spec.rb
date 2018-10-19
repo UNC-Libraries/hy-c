@@ -56,10 +56,32 @@ RSpec.feature 'Create a ScholarlyWork', js: false do
       visit new_hyrax_scholarly_work_path
       expect(page).to have_content "Add New Scholarly Work"
 
+      # required fields
       fill_in 'Title', with: 'Test ScholarlyWork work'
       fill_in 'Creator', with: 'Test Default Creator'
+      fill_in 'Abstract', with: 'an abstract'
+      fill_in 'Date of Publication', with: '2018-10-03'
+
+      # extra fields
+      fill_in 'Advisor', with: 'an advisor'
+      select 'Department of Biology', from: 'scholarly_work_affiliation'
+      fill_in 'Conference name', with: 'a composer'
+      fill_in 'Date Created', with: '2018-10-03'
+      fill_in 'Description', with: 'a description'
+      fill_in 'Doi', with: 'some doi'
+      fill_in 'Geographic subject', with: 'some geographic subject'
       fill_in 'Keyword', with: 'Test Default Keyword'
-      select "In Copyright", :from => "scholarly_work_rights_statement"
+      select 'English', from: 'scholarly_work_language'
+      select 'Attribution 3.0 United States', :from => 'scholarly_work_license'
+      fill_in 'Orcid', with: 'an orcid'
+      fill_in 'Other affiliation', with: 'another affiliation'
+      select 'Other', from: 'scholarly_work_resource_type'
+      select 'In Copyright', :from => 'scholarly_work_rights_statement'
+      fill_in 'Subject', with: 'test'
+
+      expect(page).to have_selector('#scholarly_work_language_label', visible: false)
+      expect(page).to have_selector('#scholarly_work_license_label', visible: false)
+      expect(page).to have_selector('#scholarly_work_rights_statement_label', visible: false)
       expect(page).to have_field('scholarly_work_visibility_embargo')
       expect(page).not_to have_field('scholarly_work_visibility_lease')
       choose "scholarly_work_visibility_open"
@@ -68,8 +90,8 @@ RSpec.feature 'Create a ScholarlyWork', js: false do
       # Verify that admin only field is not visible
       expect(page).not_to have_selector('#scholarly_work_dcmi_type')
 
-      within "//span[@id=addfiles]" do
-        attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'))
+      find('label[for=addFiles]').click do
+        attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'), make_visible: true)
       end
 
       click_link "Relationships"
@@ -82,7 +104,30 @@ RSpec.feature 'Create a ScholarlyWork', js: false do
       expect(page).to have_content 'Test ScholarlyWork work'
 
       first('.document-title', text: 'Test ScholarlyWork work').click
-      expect(page).to have_content 'Test Default Keyword'
+      expect(page).to have_content 'Abstract an abstract'
+      expect(page).to have_content 'Advisor an advisor'
+      expect(page).to have_content 'Affiliation'
+      expect(page).to have_content 'College of Arts and Sciences'
+      expect(page).to have_content 'Department of Biology'
+      expect(page).to have_content 'Conference name a composer'
+      expect(page).to have_content 'Creator Test Default Creator'
+      expect(page).to have_content 'Date created October 3, 2018'
+      expect(page).to have_content 'Date issued October 3, 2018'
+      expect(page).to have_content 'a description'
+      expect(page).to have_content 'Doi some doi'
+      expect(page).to have_content 'Geographic subject some geographic subject'
+      expect(page).to have_content 'Keyword Test Default Keyword'
+      expect(page).to have_content 'Language English'
+      expect(page).to have_content 'License Attribution 3.0 United States'
+      expect(page).to have_content 'Orcid an orcid'
+      expect(page).to have_content 'Other affiliation another affiliation'
+      expect(page).to have_content 'Resource type Other'
+      expect(page).to have_content 'Rights statement In Copyright'
+      expect(page).to have_content 'Subject test'
+      expect(page).to_not have_content 'Language http://id.loc.gov/vocabulary/iso639-2/eng'
+      expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
+      expect(page).to_not have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'
+
       expect(page).to_not have_content 'In Administrative Set: scholarly work admin set'
 
       click_link 'Edit'
@@ -96,10 +141,33 @@ RSpec.feature 'Create a ScholarlyWork', js: false do
       visit new_hyrax_scholarly_work_path
       expect(page).to have_content "Add New Scholarly Work"
 
+      # required fields
       fill_in 'Title', with: 'Test ScholarlyWork work'
       fill_in 'Creator', with: 'Test Default Creator'
+      fill_in 'Abstract', with: 'an abstract'
+      fill_in 'Date of Publication', with: '2018-10-03'
+
+      # extra fields
+      fill_in 'Advisor', with: 'an advisor'
+      select 'Department of Biology', from: 'scholarly_work_affiliation'
+      fill_in 'Conference name', with: 'a composer'
+      fill_in 'Date Created', with: '2018-10-03'
+      fill_in 'Dcmi type', with: 'http://purl.org/dc/dcmitype/Text'
+      fill_in 'Description', with: 'a description'
+      fill_in 'Doi', with: 'some doi'
+      fill_in 'Geographic subject', with: 'some geographic subject'
       fill_in 'Keyword', with: 'Test Default Keyword'
-      select "In Copyright", :from => "scholarly_work_rights_statement"
+      select 'English', from: 'scholarly_work_language'
+      select 'Attribution 3.0 United States', :from => 'scholarly_work_license'
+      fill_in 'Orcid', with: 'an orcid'
+      fill_in 'Other affiliation', with: 'another affiliation'
+      select 'Other', from: 'scholarly_work_resource_type'
+      select 'In Copyright', :from => 'scholarly_work_rights_statement'
+      fill_in 'Subject', with: 'test'
+
+      expect(page).to have_selector('#scholarly_work_language_label', visible: false)
+      expect(page).to have_selector('#scholarly_work_license_label', visible: false)
+      expect(page).to have_selector('#scholarly_work_rights_statement_label', visible: false)
       expect(page).to have_field('scholarly_work_visibility_embargo')
       expect(page).not_to have_field('scholarly_work_visibility_lease')
       choose "scholarly_work_visibility_open"
@@ -107,8 +175,8 @@ RSpec.feature 'Create a ScholarlyWork', js: false do
       
       expect(page).to have_selector('#scholarly_work_dcmi_type')
 
-      within "//span[@id=addfiles]" do
-        attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'))
+      find('label[for=addFiles]').click do
+        attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'), make_visible: true)
       end
 
       click_link "Relationships"
@@ -122,7 +190,31 @@ RSpec.feature 'Create a ScholarlyWork', js: false do
       expect(page).to have_content 'Test ScholarlyWork work'
 
       first('.document-title', text: 'Test ScholarlyWork work').click
-      expect(page).to have_content 'Test Default Keyword'
+      expect(page).to have_content 'Abstract an abstract'
+      expect(page).to have_content 'Advisor an advisor'
+      expect(page).to have_content 'Affiliation'
+      expect(page).to have_content 'College of Arts and Sciences'
+      expect(page).to have_content 'Department of Biology'
+      expect(page).to have_content 'Conference name a composer'
+      expect(page).to have_content 'Creator Test Default Creator'
+      expect(page).to have_content 'Date created October 3, 2018'
+      expect(page).to have_content 'Date issued October 3, 2018'
+      expect(page).to have_content 'Type http://purl.org/dc/dcmitype/Text'
+      expect(page).to have_content 'a description'
+      expect(page).to have_content 'Doi some doi'
+      expect(page).to have_content 'Geographic subject some geographic subject'
+      expect(page).to have_content 'Keyword Test Default Keyword'
+      expect(page).to have_content 'Language English'
+      expect(page).to have_content 'License Attribution 3.0 United States'
+      expect(page).to have_content 'Orcid an orcid'
+      expect(page).to have_content 'Other affiliation another affiliation'
+      expect(page).to have_content 'Resource type Other'
+      expect(page).to have_content 'Rights statement In Copyright'
+      expect(page).to have_content 'Subject test'
+      expect(page).to_not have_content 'Language http://id.loc.gov/vocabulary/iso639-2/eng'
+      expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
+      expect(page).to_not have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'
+
       expect(page).to have_content 'In Administrative Set: scholarly work admin set'
 
       click_link 'Edit'

@@ -17,6 +17,8 @@ Hyrax.config do |config|
   config.register_curation_concern :scholarly_work
   # Injected via `rails g hyrax:work General`
   config.register_curation_concern :general
+  # Injected via `rails g hyrax:work ArtWork`
+  config.register_curation_concern :art_work
 
   # Register roles that are expected by your implementation.
   # @see Hyrax::RoleRegistry for additional details.
@@ -117,7 +119,7 @@ Hyrax.config do |config|
 
   # Location autocomplete uses geonames to search for named regions
   # Username for connecting to geonames
-  # config.geonames_username = ''
+  config.geonames_username = ENV['GEONAMES_USER']
 
   # Should the acceptance of the licence agreement be active (checkbox), or
   # implied when the save button is pressed? Set to true for active

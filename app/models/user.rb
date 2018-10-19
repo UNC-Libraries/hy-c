@@ -29,7 +29,7 @@ class User < ApplicationRecord
   def self.from_omniauth(auth)
     # Rails.logger.debug "auth = #{auth.inspect}"
     # Uncomment the debugger above to capture what a shib auth object looks like for testing
-    user = where(provider: auth.provider, uid: auth.info.uid, email: auth.info.mail).first_or_create
+    user = where(uid: auth.info.uid).first_or_create(provider: auth.provider, email: auth.info.mail)
     user.display_name = auth.info.uid
     user.save
     user
@@ -57,7 +57,7 @@ module Hyrax::User
     def find_or_create_system_user(user_key)
       user = ::User.find_or_create_by(uid: user_key)
       user.display_name = user_key
-      user.email = "#{user_key}@email.unc.edu"
+      user.email = "#{user_key}@ad.unc.edu"
       user.password = ('a'..'z').to_a.shuffle(random: Random.new).join if AuthConfig.use_database_auth?
       user.save
       user

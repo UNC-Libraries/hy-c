@@ -9,25 +9,25 @@ RSpec.describe Hyrax::ArticleForm do
   describe "#required_fields" do
     subject { form.required_fields }
 
-    it { is_expected.to eq [:title, :creator, :abstract, :date_issued] }
+    it { is_expected.to match_array [:title, :creator, :abstract, :date_issued] }
   end
 
   describe "#primary_terms" do
     subject { form.primary_terms }
 
-    it { is_expected.to eq [:title, :creator, :abstract, :date_issued] }
+    it { is_expected.to match_array [:title, :creator, :abstract, :date_issued] }
   end
 
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to eq [:keyword, :license, :rights_statement, :publisher, :date_created, :subject, :language,
+    it { is_expected.to match_array [:keyword, :license, :rights_statement, :publisher, :date_created, :subject, :language,
                             :identifier, :related_url, :resource_type, :access, :affiliation, :affiliation_label,
                             :bibliographic_citation, :copyright_date, :date_captured, :date_other, :dcmi_type, :doi,
                             :edition, :extent, :funder, :geographic_subject, :issn, :journal_issue, :journal_title,
                             :journal_volume, :note, :orcid, :other_affiliation, :page_end, :page_start,
                             :peer_review_status, :place_of_publication, :rights_holder, :table_of_contents, :translator,
-                            :url, :use] }
+                            :url, :use, :language_label, :license_label, :rights_statement_label] }
   end
   
   describe "#admin_only_terms" do
@@ -50,11 +50,11 @@ RSpec.describe Hyrax::ArticleForm do
           bibliographic_citation: ['a citation'],
           creator: ['a creator'],
           date_created: '2017-01-22', # single-valued
-          language: ['a language'],
+          language: ['http://id.loc.gov/vocabulary/iso639-2/eng'],
           publisher: ['a publisher'],
           related_url: ['a url'],
           resource_type: ['a type'],
-          rights_statement: 'a statement', # single-valued
+          rights_statement: 'http://rightsstatements.org/vocab/InC/1.0/', # single-valued
           subject: ['a subject'],
           visibility: 'open',
           representative_id: '456',
@@ -90,7 +90,10 @@ RSpec.describe Hyrax::ArticleForm do
           table_of_contents: ['cool table'],
           translator: ['dean'],
           url: ['http://unc.edu'],
-          use: ['a use']
+          use: ['a use'],
+          language_label: [],
+          license_label: [],
+          rights_statement_label: []
       )
     end
 
@@ -101,11 +104,12 @@ RSpec.describe Hyrax::ArticleForm do
       expect(subject['bibliographic_citation']).to eq ['a citation']
       expect(subject['creator']).to eq ['a creator']
       expect(subject['date_created']).to eq '2017-01-22'
-      expect(subject['language']).to eq ['a language']
+      expect(subject['language']).to eq ['http://id.loc.gov/vocabulary/iso639-2/eng']
+      expect(subject['license']).to eq ['http://creativecommons.org/licenses/by/3.0/us/']
       expect(subject['publisher']).to eq ['a publisher']
       expect(subject['related_url']).to eq ['a url']
       expect(subject['resource_type']).to eq ['a type']
-      expect(subject['rights_statement']).to eq ['a statement']
+      expect(subject['rights_statement']).to eq ['http://rightsstatements.org/vocab/InC/1.0/']
       expect(subject['subject']).to eq ['a subject']
       expect(subject['visibility']).to eq 'open'
       expect(subject['license']).to eq ['http://creativecommons.org/licenses/by/3.0/us/']
@@ -141,6 +145,9 @@ RSpec.describe Hyrax::ArticleForm do
       expect(subject['translator']).to eq ['dean']
       expect(subject['url']).to eq ['http://unc.edu']
       expect(subject['use']).to eq ['a use']
+      expect(subject['language_label']).to eq ['English']
+      expect(subject['license_label']).to eq ['Attribution 3.0 United States']
+      expect(subject['rights_statement_label']).to eq ['In Copyright']
     end
 
     context '.model_attributes' do

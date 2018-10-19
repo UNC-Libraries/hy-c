@@ -32,7 +32,10 @@ RSpec.describe Hyrax::MastersPaperPresenter do
       "note_tesim" => ['a note', 'another note'],
       "orcid_tesim" => ['an orcid'],
       "reviewer_tesim" => ['a reviewer'],
-      "use_tesim" => ['a use']
+      "use_tesim" => ['a use'],
+      "language_label_tesim" => ['language'],
+      "license_label_tesim" => ['license'],
+      "rights_statement_label_tesim" => ['rights']
     }
   end
   let(:ability) { nil }
@@ -72,6 +75,9 @@ RSpec.describe Hyrax::MastersPaperPresenter do
   it { is_expected.to delegate_method(:orcid).to(:solr_document) }
   it { is_expected.to delegate_method(:reviewer).to(:solr_document) }
   it { is_expected.to delegate_method(:use).to(:solr_document) }
+  it { is_expected.to delegate_method(:language_label).to(:solr_document) }
+  it { is_expected.to delegate_method(:license_label).to(:solr_document) }
+  it { is_expected.to delegate_method(:rights_statement_label).to(:solr_document) }
 
   describe "#model_name" do
     subject { presenter.model_name }
@@ -298,6 +304,39 @@ RSpec.describe Hyrax::MastersPaperPresenter do
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:use)
+      end
+    end
+
+    context "with a custom language label field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:language_label, ['language'], {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:language_label)
+      end
+    end
+
+    context "with a custom license label field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:license_label, ['license'], {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:license_label)
+      end
+    end
+
+    context "with a custom rights statement label field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:rights_statement_label, ['rights'], {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:rights_statement_label)
       end
     end
 
