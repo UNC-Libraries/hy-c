@@ -78,6 +78,15 @@ class CatalogController < ApplicationController
     config.add_index_field solr_name("abstract", :stored_searchable), label: "Abstract"
     config.add_index_field solr_name("resource_type", :stored_searchable), label: "Resource Type", link_to_search: solr_name("resource_type", :facetable)
 
+    # solr fields to be displayed in the show (single result) view
+    #   The ordering of the field names is the order of the display
+    config.add_show_field solr_name("title", :stored_searchable)
+    config.add_show_field solr_name("creator", :stored_searchable)
+    config.add_show_field solr_name("date_created", :stored_searchable), label: "Date Created"
+    config.add_show_field solr_name("date_issued", :stored_searchable), label: "Date of Publication"
+    config.add_show_field solr_name("abstract", :stored_searchable)
+    config.add_show_field solr_name("resource_type", :stored_searchable), label: "Resource Type"
+
     # "fielded" search configuration. Used by pulldown among other places.
     # For supported keys in hash, see rdoc for Blacklight::SearchFields
     #
