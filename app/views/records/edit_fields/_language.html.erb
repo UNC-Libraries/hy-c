@@ -1,7 +1,17 @@
-<%= f.input :language, as: :multi_value_select,
-            collection: LanguagesService.select_all_options,
-            include_blank: true,
-            item_helper: LanguagesService.method(:include_current_value),
-            label: 'Language',
-            input_html: { class: 'form-control' }
-%>
+<% if f.object.language[0].blank? && params[:controller] == 'hyrax/articles' %>
+  <%= f.input :language, as: :multi_value_select,
+              collection: LanguagesService.select_all_options,
+              include_blank: true,
+              selected: 'http://id.loc.gov/vocabulary/iso639-2/eng',
+              label: 'Language',
+              input_html: { class: 'form-control' }
+  %>
+<% else %>
+  <%= f.input :language, as: :multi_value_select,
+              collection: LanguagesService.select_all_options,
+              include_blank: true,
+              item_helper: LanguagesService.method(:include_current_value),
+              label: 'Language',
+              input_html: { class: 'form-control' }
+  %>
+<% end %>
