@@ -63,6 +63,7 @@
                         }
                     ],
                     "methods": [
+                        "Hyrax::Workflow::ActivateObject",
                         "Hyrax::Workflow::AssignReviewerByAffiliation"
                     ]
                 }, {
