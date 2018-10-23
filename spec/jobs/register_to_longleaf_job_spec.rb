@@ -61,7 +61,7 @@ RSpec.describe RegisterToLongleafJob, type: :job do
     
     before(:each) do
       ENV["FEDORA_BINARY_STORAGE"] = binary_dir
-      ENV["LONGLEAF_BASE_COMMAND"] = 'longleaf'
+      ENV["LONGLEAF_BASE_COMMAND"] = 'longleaf %{cmd}'
       ENV["LONGLEAF_CONFIG"] = config_path
       ENV["LONGLEAF_LOG"] = '&1'
     end
