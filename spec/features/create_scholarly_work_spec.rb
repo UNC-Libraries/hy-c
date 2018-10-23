@@ -66,7 +66,6 @@ RSpec.feature 'Create a ScholarlyWork', js: false do
       fill_in 'Advisor', with: 'an advisor'
       select 'Department of Biology', from: 'scholarly_work_affiliation'
       fill_in 'Conference name', with: 'a composer'
-      fill_in 'Date Created', with: '2018-10-03'
       fill_in 'Description', with: 'a description'
       fill_in 'DOI', with: 'some doi'
       fill_in 'Location', with: 'some geographic subject'
@@ -77,11 +76,13 @@ RSpec.feature 'Create a ScholarlyWork', js: false do
       fill_in 'Other affiliation', with: 'another affiliation'
       select 'Other', from: 'scholarly_work_resource_type'
       select 'In Copyright', :from => 'scholarly_work_rights_statement'
-      fill_in 'Subject', with: 'test'
 
+      expect(page).not_to have_field('scholarly_work_date_created')
       expect(page).to have_selector('#scholarly_work_language_label', visible: false)
       expect(page).to have_selector('#scholarly_work_license_label', visible: false)
       expect(page).to have_selector('#scholarly_work_rights_statement_label', visible: false)
+      expect(page).not_to have_field('scholarly_work_subject')
+      expect(page).not_to have_field('scholarly_work_visibility_use')
       expect(page).to have_field('scholarly_work_visibility_embargo')
       expect(page).not_to have_field('scholarly_work_visibility_lease')
       choose "scholarly_work_visibility_open"
@@ -111,7 +112,6 @@ RSpec.feature 'Create a ScholarlyWork', js: false do
       expect(page).to have_content 'Department of Biology'
       expect(page).to have_content 'Conference name a composer'
       expect(page).to have_content 'Creator Test Default Creator'
-      expect(page).to have_content 'Date created October 3, 2018'
       expect(page).to have_content 'Date issued October 3, 2018'
       expect(page).to have_content 'a description'
       expect(page).to have_content 'Doi some doi'
@@ -123,7 +123,6 @@ RSpec.feature 'Create a ScholarlyWork', js: false do
       expect(page).to have_content 'Other affiliation another affiliation'
       expect(page).to have_content 'Resource type Other'
       expect(page).to have_content 'Rights statement In Copyright'
-      expect(page).to have_content 'Subject test'
       expect(page).to_not have_content 'Language http://id.loc.gov/vocabulary/iso639-2/eng'
       expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
       expect(page).to_not have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'

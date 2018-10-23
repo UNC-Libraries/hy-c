@@ -67,14 +67,9 @@ RSpec.feature 'Create a Article', js: false do
       select 'Attribution 3.0 United States', :from => 'article_license'
       select 'In Copyright', :from => 'article_rights_statement'
       fill_in 'Publisher', with: 'UNC Press'
-      fill_in 'Date Created', with: '2018-10-03'
-      fill_in 'Subject', with: 'test'
       select 'English', from: 'article_language'
-      fill_in 'Identifier', with: 'some id'
-      fill_in 'Related resource URL', with: 'something.com'
+      fill_in 'Related Resource URL', with: 'something.com'
       select 'Article', from: 'article_resource_type'
-
-      fill_in 'Access', with: 'some access'
       select 'Department of Biology', from: 'article_affiliation'
       fill_in 'Bibliographic citation', with: 'a citation'
       fill_in 'Copyright date', with: '2018-10-03'
@@ -99,12 +94,16 @@ RSpec.feature 'Create a Article', js: false do
       fill_in 'Rights holder', with: 'an author'
       fill_in 'Table of contents', with: 'contents'
       fill_in 'Translator', with: 'none'
-      fill_in 'Link to publisher version', with: 'something.org'
-      fill_in 'Use', with: 'some use'
+      fill_in 'Link to Publisher Version', with: 'something.org'
 
+      expect(page).not_to have_field('article_access')
+      expect(page).not_to have_field('article_date_created')
+      expect(page).not_to have_field('article_identifier')
       expect(page).to have_selector('#article_language_label', visible: false)
       expect(page).to have_selector('#article_license_label', visible: false)
       expect(page).to have_selector('#article_rights_statement_label', visible: false)
+      expect(page).not_to have_field('article_subject')
+      expect(page).not_to have_field('article_use')
       expect(page).to have_field('article_visibility_embargo')
       expect(page).not_to have_field('article_visibility_lease')
       expect(page).to have_select('article_resource_type', selected: 'Article')
@@ -134,13 +133,9 @@ RSpec.feature 'Create a Article', js: false do
       expect(page).to have_content 'License Attribution 3.0 United States'
       expect(page).to have_content 'Rights statement In Copyright'
       expect(page).to have_content 'Publisher UNC Press'
-      expect(page).to have_content 'Date created October 3, 2018'
-      expect(page).to have_content 'Subject test'
       expect(page).to have_content 'Language English'
-      expect(page).to have_content 'Identifier some id'
       expect(page).to have_content 'Related url something.com'
       expect(page).to have_content 'Resource type Article'
-      expect(page).to have_content 'Access some access'
       expect(page).to have_content 'Affiliation'
       expect(page).to have_content 'College of Arts and Sciences'
       expect(page).to have_content 'Department of Biology'
@@ -168,7 +163,6 @@ RSpec.feature 'Create a Article', js: false do
       expect(page).to have_content 'Table of contents contents'
       expect(page).to have_content 'Translator none'
       expect(page).to have_content 'Url something.org'
-      expect(page).to have_content 'Use some use'
       expect(page).to_not have_content 'Language http://id.loc.gov/vocabulary/iso639-2/eng'
       expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
       expect(page).to_not have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'

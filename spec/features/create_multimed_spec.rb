@@ -64,7 +64,6 @@ RSpec.feature 'Create a Multimed', js: false do
       select 'Video', from: 'multimed_resource_type'
 
       # extra fields
-      fill_in 'DOI', with: 'some doi'
       fill_in 'Extent', with: 'some extent'
       fill_in 'Location', with: 'some geographic subject'
       fill_in 'Keyword', with: 'Test Default Keyword'
@@ -74,11 +73,13 @@ RSpec.feature 'Create a Multimed', js: false do
       fill_in 'Note', with: 'a note'
       fill_in 'Orcid', with: 'an orcid'
       select 'In Copyright', :from => 'multimed_rights_statement'
-      fill_in 'Subject', with: 'test'
 
+      expect(page).not_to have_field('multimed_access')
+      expect(page).not_to have_field('multimed_doi')
       expect(page).to have_selector('#multimed_language_label', visible: false)
       expect(page).to have_selector('#multimed_license_label', visible: false)
       expect(page).to have_selector('#multimed_rights_statement_label', visible: false)
+      expect(page).not_to have_field('multimed_subject')
       expect(page).to have_field('multimed_visibility_embargo')
       expect(page).not_to have_field('multimed_visibility_lease')
       choose "multimed_visibility_open"
@@ -103,7 +104,6 @@ RSpec.feature 'Create a Multimed', js: false do
       expect(page).to have_content 'Abstract an abstract'
       expect(page).to have_content 'Creator Test Default Creator'
       expect(page).to have_content 'Date created October 3, 2018'
-      expect(page).to have_content 'Doi some doi'
       expect(page).to have_content 'Extent some extent'
       expect(page).to have_content 'Geographic subject some geographic subject'
       expect(page).to have_content 'Keyword Test Default Keyword'
@@ -114,7 +114,6 @@ RSpec.feature 'Create a Multimed', js: false do
       expect(page).to have_content 'Orcid an orcid'
       expect(page).to have_content 'Resource type Video'
       expect(page).to have_content 'Rights statement In Copyright'
-      expect(page).to have_content 'Subject test'
       expect(page).to_not have_content 'Language http://id.loc.gov/vocabulary/iso639-2/eng'
       expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
       expect(page).to_not have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'
