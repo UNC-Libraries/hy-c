@@ -20,7 +20,11 @@ Rails.application.routes.draw do
   end
 
   # [hyc-override] Remove blacklight routes, e.g. suggest, saved_searches, search_history
-  # mount Blacklight::Engine => '/'
+  match 'search_history', to: 'errors#not_found', via: :all
+  match 'saved_searches', to: 'errors#not_found', via: :all
+  get 'suggest', to: 'errors#not_found'
+
+  mount Blacklight::Engine => '/'
   
   concern :searchable, Blacklight::Routes::Searchable.new
 
