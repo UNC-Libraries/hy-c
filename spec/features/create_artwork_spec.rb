@@ -64,6 +64,7 @@ RSpec.feature 'Create an Artwork', js: false do
       fill_in 'Medium', with: 'a medium'
 
       # extra fields
+
       fill_in 'Doi', with: 'some doi'
       select 'Attribution 3.0 United States', :from => 'artwork_license'
       select 'In Copyright', :from => 'artwork_rights_statement'
@@ -74,6 +75,7 @@ RSpec.feature 'Create an Artwork', js: false do
       expect(page).not_to have_field('artwork_visibility_lease')
       expect(page).to have_select('artwork_resource_type', selected: 'Art')
       choose "artwork_visibility_open"
+
       check 'agreement'
 
       find('label[for=addFiles]').click do
@@ -132,6 +134,7 @@ RSpec.feature 'Create an Artwork', js: false do
       expect(page).to have_field('artwork_visibility_embargo')
       expect(page).not_to have_field('artwork_visibility_lease')
       choose "artwork_visibility_open"
+
       check 'agreement'
 
       find('label[for=addFiles]').click do

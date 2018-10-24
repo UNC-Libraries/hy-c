@@ -17,7 +17,6 @@ Rails.application.routes.draw do
   authenticate :user, ->(u) { u.admin? } do
     require 'sidekiq/web'
     mount Sidekiq::Web => '/sidekiq'
-    match 'users', to: 'hyrax/users#index', via: :all
   end
   
   mount Blacklight::Engine => '/'
@@ -61,6 +60,9 @@ Rails.application.routes.draw do
       delete 'clear'
     end
   end
+ 
+  # Catch all route for any routes that don't exist. Always have this as the last route
+  match "*path", to: "errors#not_found", via: :all
 
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end
