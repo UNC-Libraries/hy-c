@@ -19,11 +19,11 @@ export default class UncVisibilityComponent extends VisibilityComponent {
 
         // Restrictions require either a visibility requirement or a date requirement (or both)
         if (is_admin) {
-            this.enableAllOptions();
+            this.enableAllOptions(false);
         } else if (visibility || release_no_delay || release_date) {
             this.applyRestrictions(visibility, release_no_delay, release_date, release_before);
         } else {
-            this.enableAllOptions();
+            this.enableAllOptions(false);
         }
     }
 
@@ -45,26 +45,26 @@ export default class UncVisibilityComponent extends VisibilityComponent {
     }
 
     leastRestrictiveStatus(options) {
-        if (options.indexOf('open') !== -1) {
+        if (options.includes('open')) {
             return ['open'];
-        } else if (options.indexOf('authenticated') !== -1) {
+        } else if (options.includes('authenticated')) {
             return ['authenticated'];
-        } else if (options.indexOf('embargo') !== -1) {
+        } else if (options.includes('embargo')) {
             return ['embargo'];
-        } else if (options.indexOf('restricted') !== -1) {
+        } else if (options.includes('restricted')) {
             return ['restricted'];
         } else {
             return ['open'];
         }
     }
 
-    enableAllOptions() {
+    enableAllOptions(isSubmitting = true) {
         this.element.find("[type='radio']").prop("disabled", false);
         this.getEmbargoDateInput().prop("disabled", false);
         this.getVisibilityAfterEmbargoInput().prop("disabled", false);
 
         // [hyc-override] Override to select "Public" if no restrictions are in place
-        if (this.isNewFile()) {
+        if (this.isNewFile() && !isSubmitting) {
             this.element.find("[type='radio'][value='open']").prop('checked', true);
         }
     }
