@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-        mount BrowseEverything::Engine => '/browse'
+  mount BrowseEverything::Engine => '/browse'
   get 'accounts/new', to: 'accounts#new'
   post 'accounts/create', to: 'accounts#create'
 
@@ -18,8 +18,9 @@ Rails.application.routes.draw do
     require 'sidekiq/web'
     mount Sidekiq::Web => '/sidekiq'
   end
-  
-  mount Blacklight::Engine => '/'
+
+  # [hyc-override] Remove blacklight routes, e.g. suggest, saved_searches, search_history
+  # mount Blacklight::Engine => '/'
   
   concern :searchable, Blacklight::Routes::Searchable.new
 
@@ -49,18 +50,20 @@ Rails.application.routes.draw do
   curation_concerns_basic_routes
   concern :exportable, Blacklight::Routes::Exportable.new
 
-  resources :solr_documents, only: [:show], path: '/catalog', controller: 'catalog' do
-    concerns :exportable
-  end
 
-  resources :bookmarks do
-    concerns :exportable
+  # [hyc-override] Remove routes we don't use e.g. catalog email and sms routes
+  # resources :solr_documents, only: [:show], path: '/catalog', controller: 'catalog' do
+  #   concerns :exportable
+  # end
 
-    collection do
-      delete 'clear'
-    end
-  end
- 
+  # resources :bookmarks do
+  #   concerns :exportable
+  #
+  #   collection do
+  #     delete 'clear'
+  #   end
+  # end
+
   # Catch all route for any routes that don't exist. Always have this as the last route
   match "*path", to: "errors#not_found", via: :all
 
