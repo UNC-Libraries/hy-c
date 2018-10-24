@@ -4,9 +4,6 @@ import VisibilityComponent from 'hyrax/save_work/visibility_component'
 export default class UncVisibilityComponent extends VisibilityComponent {
     constructor(element, adminWidget) {
         super(element, adminWidget);
-        // [hyc-override] Overriding default submit action by removing hyrax original action and adding ours
-        this.form.unbind('submit');
-        this.form.on('submit', () => { this.enableAllOptions(true) });
     }
 
     restrictToVisibility(data) {
@@ -61,7 +58,7 @@ export default class UncVisibilityComponent extends VisibilityComponent {
         }
     }
 
-    enableAllOptions(isSubmitting = false) {
+    enableAllOptions(isSubmitting = true) {
         this.element.find("[type='radio']").prop("disabled", false);
         this.getEmbargoDateInput().prop("disabled", false);
         this.getVisibilityAfterEmbargoInput().prop("disabled", false);
