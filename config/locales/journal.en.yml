@@ -9,8 +9,12 @@ en:
                             deposit an article or book chapter, use the “Scholarly Articles and Book Chapters” deposit
                             option."
   simple_form:
+    hints:
+      journal:
+        doi: The DOI assigned by the publisher. CDR-issued DOIs should be entered into the "Identifier" field.
     labels:
       journal:
         creator: "Author"
-        date_issued: "Date of Publication"
-        related_url: "Related Resource URL"
+        date_issued: "Date of publication"
+        doi: "DOI issued by publisher"
+        related_url: "Related resource URL"

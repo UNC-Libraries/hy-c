@@ -65,8 +65,8 @@ RSpec.feature 'Create a Dissertation', js: false do
 
       # required fields
       fill_in 'Title', with: 'Test Dissertation work'
-      fill_in 'Creator', with: 'Test Default Creator'
-      fill_in 'Date issued', with: '2018-10-03'
+      fill_in 'Author', with: 'Test Default Creator'
+      fill_in 'Date of publication', with: '2018-10-03'
       fill_in 'Degree granting institution', with: 'UNC'
 
       # extra fields
@@ -74,13 +74,13 @@ RSpec.feature 'Create a Dissertation', js: false do
       select 'Clinical Nutrition', from: 'Academic Concentration'
       fill_in 'Advisor', with: 'an advisor'
       select 'Department of Biology', from: 'dissertation_affiliation'
-      fill_in 'Alternative title', with: 'another title'
+      fill_in 'Alternate title', with: 'another title'
       fill_in 'Contributor', with: 'a contributor'
       select 'Bachelor of Science', from: 'dissertation_degree'
-      fill_in 'Doi', with: 'some doi'
+      fill_in 'DOI', with: 'some doi'
       select 'Dissertation', from: 'dissertation_resource_type'
       fill_in 'Access', with: 'some access'
-      fill_in 'Geographic subject', with: 'some geographic subject'
+      fill_in 'Location', with: 'some geographic subject'
       fill_in 'Graduation year', with: '2018'
       fill_in 'Identifier', with: 'some id'
       fill_in 'Keyword', with: 'Test Default Keyword'

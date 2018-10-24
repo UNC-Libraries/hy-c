@@ -11,5 +11,3 @@ en:
     labels:
       masters_paper:
         creator: "Author"
-        date_issued: "Date of Publication"
-        related_url: "Related Resource URL"

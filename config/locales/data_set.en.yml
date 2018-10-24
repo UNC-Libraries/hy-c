@@ -7,8 +7,9 @@ en:
         name:               "Datasets"
         description:        "Deposit your dataset.  Datasets may be associated with an article or deposited separately."
   simple_form:
+    hints:
+      data_set:
+        description: A description of the methodology used to generate the dataset.
     labels:
       data_set:
-        date_issued: "Date of Publication"
         description: "Methods"
-        related_url: "Related Resource URL"

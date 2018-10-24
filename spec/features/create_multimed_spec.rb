@@ -64,9 +64,9 @@ RSpec.feature 'Create a Multimed', js: false do
       select 'Video', from: 'multimed_resource_type'
 
       # extra fields
-      fill_in 'Doi', with: 'some doi'
+      fill_in 'DOI', with: 'some doi'
       fill_in 'Extent', with: 'some extent'
-      fill_in 'Geographic subject', with: 'some geographic subject'
+      fill_in 'Location', with: 'some geographic subject'
       fill_in 'Keyword', with: 'Test Default Keyword'
       select 'English', from: 'multimed_language'
       select 'Attribution 3.0 United States', :from => 'multimed_license'
@@ -142,9 +142,9 @@ RSpec.feature 'Create a Multimed', js: false do
 
       # extra fields
       fill_in 'Dcmi type', with: 'http://purl.org/dc/dcmitype/Text'
-      fill_in 'Doi', with: 'some doi'
+      fill_in 'DOI', with: 'some doi'
       fill_in 'Extent', with: 'some extent'
-      fill_in 'Geographic subject', with: 'some geographic subject'
+      fill_in 'Location', with: 'some geographic subject'
       fill_in 'Keyword', with: 'Test Default Keyword'
       select 'English', from: 'multimed_language'
       select 'Attribution 3.0 United States', :from => 'multimed_license'

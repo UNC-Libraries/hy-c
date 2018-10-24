@@ -16,9 +16,4 @@ en:
     labels:
       article:
         creator: "Author"
-        date_issued: "Date of Publication"
         doi: "Publisher-issued DOI"
-        edition: "Version"
-        peer_review_status: "Is the article or chapter peer-reviewed?"
-        related_url: "Related Resource URL"
-        url: "Link to Publisher Version"

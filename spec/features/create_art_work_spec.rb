@@ -64,7 +64,7 @@ RSpec.feature 'Create an Art Work', js: false do
       fill_in 'Medium', with: 'a medium'
 
       # extra fields
-      fill_in 'Doi', with: 'some doi'
+      fill_in 'DOI', with: 'some doi'
       select 'Attribution 3.0 United States', :from => 'art_work_license'
       select 'In Copyright', :from => 'art_work_rights_statement'
 
@@ -123,7 +123,7 @@ RSpec.feature 'Create an Art Work', js: false do
       fill_in 'Medium', with: 'a medium'
 
       # extra fields
-      fill_in 'Doi', with: 'some doi'
+      fill_in 'DOI', with: 'some doi'
       select 'Attribution 3.0 United States', :from => 'art_work_license'
       select 'In Copyright', :from => 'art_work_rights_statement'
 
