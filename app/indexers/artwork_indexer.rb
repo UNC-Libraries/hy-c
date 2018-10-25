@@ -1,6 +1,6 @@
 # Generated via
-#  `rails generate hyrax:work ArtWork`
-class ArtWorkIndexer < Hyrax::WorkIndexer
+#  `rails generate hyrax:work Artwork`
+class ArtworkIndexer < Hyrax::WorkIndexer
   # This indexes the default metadata. You can remove it if you want to
   # provide your own metadata and indexing.
   include Hyrax::IndexesBasicMetadata

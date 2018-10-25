@@ -1,14 +1,14 @@
 # Generated via
-#  `rails generate hyrax:work ArtWork`
-class ArtWork < ActiveFedora::Base
+#  `rails generate hyrax:work Artwork`
+class Artwork < ActiveFedora::Base
   include ::Hyrax::WorkBehavior
 
-  self.indexer = ArtWorkIndexer
+  self.indexer = ArtworkIndexer
   # Change this to restrict which works can be added as a child.
   # self.valid_child_concerns = []
   validates :title, presence: { message: 'Your work must have a title.' }
 
-  self.human_readable_type = 'Art Work'
+  self.human_readable_type = 'Artwork'
 
   property :doi, predicate: ::RDF::Vocab::Identifiers.doi, multiple: false do |index|
     index.as :stored_searchable

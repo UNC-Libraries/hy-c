@@ -1,0 +1,8 @@
+it:
+  hyrax:
+    icons:
+      artwork:     'fa fa-file-text-o'
+    select_type:
+      artwork:
+        description:        "Artwork opere"
+        name:               "Artwork"

@@ -1,8 +1,8 @@
 # Generated via
-#  `rails generate hyrax:work ArtWork`
+#  `rails generate hyrax:work Artwork`
 require 'rails_helper'
 
-RSpec.describe ArtWork do
+RSpec.describe Artwork do
   it 'has a title' do
     subject.title = ['foo']
     expect(subject.title).to eq ['foo']
@@ -11,7 +11,7 @@ RSpec.describe ArtWork do
   describe '.model_name' do
     subject { described_class.model_name.singular_route_key }
 
-    it { is_expected.to eq 'hyrax_art_work' }
+    it { is_expected.to eq 'hyrax_artwork' }
   end
 
   describe "metadata" do

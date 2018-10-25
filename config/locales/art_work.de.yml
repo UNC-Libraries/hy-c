@@ -1,8 +1,0 @@
-de:
-  hyrax:
-    icons:
-      art_work:     'fa fa-file-text-o'
-    select_type:
-      art_work:
-        description:        "Art work Werke"
-        name:               "Art Work"

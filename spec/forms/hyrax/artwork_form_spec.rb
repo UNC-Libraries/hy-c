@@ -1,9 +1,9 @@
 # Generated via
-#  `rails generate hyrax:work ArtWork`
+#  `rails generate hyrax:work Artwork`
 require 'rails_helper'
 
-RSpec.describe Hyrax::ArtWorkForm do
-  let(:work) { ArtWork.new }
+RSpec.describe Hyrax::ArtworkForm do
+  let(:work) { Artwork.new }
   let(:form) { described_class.new(work, nil, nil) }
 
   describe "#required_fields" do

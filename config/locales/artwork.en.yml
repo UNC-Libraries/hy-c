@@ -1,0 +1,12 @@
+en:
+  hyrax:
+    icons:
+      artwork:     'fa fa-file-text-o'
+    select_type:
+      artwork:
+        description:        "Artwork works"
+        name:               "Artwork"
+  simple_form:
+    hints:
+      defaults:
+        medium: The material of the work.

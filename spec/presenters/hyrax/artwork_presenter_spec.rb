@@ -1,8 +1,8 @@
 # Generated via
-#  `rails generate hyrax:work ArtWork`
+#  `rails generate hyrax:work Artwork`
 require 'rails_helper'
 
-RSpec.describe Hyrax::ArtWorkPresenter do
+RSpec.describe Hyrax::ArtworkPresenter do
   let(:solr_document) { SolrDocument.new(attributes) }
   let(:request) { double(host: 'example.org') }
   let(:user_key) { 'a_user_key' }
@@ -10,8 +10,8 @@ RSpec.describe Hyrax::ArtWorkPresenter do
   let(:attributes) do
     { "id" => '888888',
       "title_tesim" => ['foo'],
-      "human_readable_type_tesim" => ["Art Work"],
-      "has_model_ssim" => ["ArtWork"],
+      "human_readable_type_tesim" => ["Artwork"],
+      "has_model_ssim" => ["Artwork"],
       "access_tesim" => 'public',
       "date_created_tesim" => '2017-01-22',
       "deposit_record_tesim" => 'a deposit record',

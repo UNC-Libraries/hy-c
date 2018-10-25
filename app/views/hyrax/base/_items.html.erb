@@ -26,7 +26,7 @@
       <% end %>
     </div>
     <%# [hyc-override] Overriding to show different warning for art works %>
-  <% elsif params.key?('controller') && params[:controller] == 'hyrax/art_works' && (can? :edit, presenter.id) %>
+  <% elsif params.key?('controller') && params[:controller] == 'hyrax/artworks' && (can? :edit, presenter.id) %>
     <div class="alert alert-warning" role="alert"><%= t('.empty_artwork', type: presenter.human_readable_type) %></div>
   <% elsif can? :edit, presenter.id %>
     <div class="alert alert-warning" role="alert"><%= t('.empty', type: presenter.human_readable_type) %></div>

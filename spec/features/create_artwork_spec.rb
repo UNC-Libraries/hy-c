@@ -1,10 +1,10 @@
 # Generated via
-#  `rails generate hyrax:work Art Work`
+#  `rails generate hyrax:work Artwork`
 require 'rails_helper'
 include Warden::Test::Helpers
 
 # NOTE: If you generated more than one work, you have to set "js: true"
-RSpec.feature 'Create an Art Work', js: false do
+RSpec.feature 'Create an Artwork', js: false do
   context 'a logged in user' do
     let(:user) do
       User.new(email: 'test@example.com', guest: false, uid: 'test@example.com') { |u| u.save!(validate: false)}
@@ -15,7 +15,7 @@ RSpec.feature 'Create an Art Work', js: false do
     end
 
     let(:admin_set) do
-      AdminSet.create(title: ["art work admin set"],
+      AdminSet.create(title: ["artwork admin set"],
                       description: ["some description"],
                       edit_users: [user.user_key])
     end
@@ -47,33 +47,35 @@ RSpec.feature 'Create an Art Work', js: false do
       Hyrax::Workflow::PermissionGenerator.call(roles: 'approving', workflow: workflow, agents: admin_agent)
       Hyrax::Workflow::PermissionGenerator.call(roles: 'depositing', workflow: workflow, agents: admin_agent)
       permission_template.available_workflows.first.update!(active: true)
-      DefaultAdminSet.create(work_type_name: 'ArtWork', admin_set_id: admin_set.id)
+      DefaultAdminSet.create(work_type_name: 'Artwork', admin_set_id: admin_set.id)
     end
 
     scenario 'as a non-admin' do
       login_as user
 
-      visit new_hyrax_art_work_path
-      expect(page).to have_content "Add New Art Work"
+      visit new_hyrax_artwork_path
+      expect(page).to have_content "Add New Artwork"
 
       # required fields
-      fill_in 'Title', with: 'Test Art Work work'
+      fill_in 'Title', with: 'Test Artwork work'
       fill_in 'Date Created', with: '2018-10-03'
       fill_in 'Description', with: 'a description'
       fill_in 'Extent', with: 'some extent'
       fill_in 'Medium', with: 'a medium'
 
       # extra fields
-      fill_in 'DOI', with: 'some doi'
-      select 'Attribution 3.0 United States', :from => 'art_work_license'
-      select 'In Copyright', :from => 'art_work_rights_statement'
 
-      expect(page).to have_selector('#art_work_license_label', visible: false)
-      expect(page).to have_selector('#art_work_rights_statement_label', visible: false)
-      expect(page).to have_field('art_work_visibility_embargo')
-      expect(page).not_to have_field('art_work_visibility_lease')
-      expect(page).to have_select('art_work_resource_type', selected: 'Art')
-      choose "art_work_visibility_open"
+      fill_in 'DOI', with: 'some doi'
+      select 'Attribution 3.0 United States', :from => 'artwork_license'
+      select 'In Copyright', :from => 'artwork_rights_statement'
+
+      expect(page).to have_selector('#artwork_license_label', visible: false)
+      expect(page).to have_selector('#artwork_rights_statement_label', visible: false)
+      expect(page).to have_field('artwork_visibility_embargo')
+      expect(page).not_to have_field('artwork_visibility_lease')
+      expect(page).to have_select('artwork_resource_type', selected: 'Art')
+      choose "artwork_visibility_open"
+
       check 'agreement'
 
       find('label[for=addFiles]').click do
@@ -87,9 +89,9 @@ RSpec.feature 'Create an Art Work', js: false do
       expect(page).to have_content 'Your files are being processed by Hyrax'
 
       visit '/dashboard/my/works/'
-      expect(page).to have_content 'Test Art Work work'
+      expect(page).to have_content 'Test Artwork work'
 
-      first('.document-title', text: 'Test Art Work work').click
+      first('.document-title', text: 'Test Artwork work').click
       expect(page).to have_content 'Date created October 3, 2018'
       expect(page).to have_content 'a description'
       expect(page).to have_content 'Doi some doi'
@@ -101,7 +103,7 @@ RSpec.feature 'Create an Art Work', js: false do
       expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
       expect(page).to_not have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'
 
-      expect(page).to_not have_content 'In Administrative Set: art_work admin set'
+      expect(page).to_not have_content 'In Administrative Set: artwork admin set'
       expect(page).to_not have_selector(:link, 'Delete')
 
       click_link 'Edit'
@@ -112,11 +114,11 @@ RSpec.feature 'Create an Art Work', js: false do
     scenario 'as an admin' do
       login_as admin_user
 
-      visit new_hyrax_art_work_path
-      expect(page).to have_content "Add New Art Work"
+      visit new_hyrax_artwork_path
+      expect(page).to have_content "Add New Artwork"
 
       # required fields
-      fill_in 'Title', with: 'Test Art Work work'
+      fill_in 'Title', with: 'Test Artwork work'
       fill_in 'Date Created', with: '2018-10-03'
       fill_in 'Description', with: 'a description'
       fill_in 'Extent', with: 'some extent'
@@ -124,14 +126,15 @@ RSpec.feature 'Create an Art Work', js: false do
 
       # extra fields
       fill_in 'DOI', with: 'some doi'
-      select 'Attribution 3.0 United States', :from => 'art_work_license'
-      select 'In Copyright', :from => 'art_work_rights_statement'
+      select 'Attribution 3.0 United States', :from => 'artwork_license'
+      select 'In Copyright', :from => 'artwork_rights_statement'
 
-      expect(page).to have_selector('#art_work_license_label', visible: false)
-      expect(page).to have_selector('#art_work_rights_statement_label', visible: false)
-      expect(page).to have_field('art_work_visibility_embargo')
-      expect(page).not_to have_field('art_work_visibility_lease')
-      choose "art_work_visibility_open"
+      expect(page).to have_selector('#artwork_license_label', visible: false)
+      expect(page).to have_selector('#artwork_rights_statement_label', visible: false)
+      expect(page).to have_field('artwork_visibility_embargo')
+      expect(page).not_to have_field('artwork_visibility_lease')
+      choose "artwork_visibility_open"
+
       check 'agreement'
 
       find('label[for=addFiles]').click do
@@ -140,15 +143,15 @@ RSpec.feature 'Create an Art Work', js: false do
 
       click_link "Relationships"
       expect(page).to have_content 'Administrative Set'
-      find('#art_work_admin_set_id').text eq 'art_work admin set'
+      find('#artwork_admin_set_id').text eq 'artwork admin set'
 
       click_button 'Save'
       expect(page).to have_content 'Your files are being processed by Hyrax'
 
       visit '/dashboard/my/works/'
-      expect(page).to have_content 'Test Art Work work'
+      expect(page).to have_content 'Test Artwork work'
 
-      first('.document-title', text: 'Test Art Work work').click
+      first('.document-title', text: 'Test Artwork work').click
       expect(page).to have_content 'Date created October 3, 2018'
       expect(page).to have_content 'a description'
       expect(page).to have_content 'Doi some doi'
@@ -160,7 +163,7 @@ RSpec.feature 'Create an Art Work', js: false do
       expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
       expect(page).to_not have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'
 
-      expect(page).to have_content 'In Administrative Set: art work admin set'
+      expect(page).to have_content 'In Administrative Set: artwork admin set'
       expect(page).to have_selector(:link, 'Delete')
 
       click_link 'Edit'
