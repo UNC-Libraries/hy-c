@@ -25,3 +25,4 @@
 //= require unc/unc_save_work_control
 //= require unc/unc_editor
 //= require unc/unc_custom
+//= require person_objects

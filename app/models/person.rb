@@ -1,42 +1,29 @@
-# frozen_string_literal: true
-require 'active_triples'
-
 class Person < ActiveTriples::Resource
-  include ActiveTriples::RDFSource
-  configure type: RDF::Vocab::FOAF.Person
 
-  property :name, predicate: RDF::Vocab::FOAF.name
-  property :affiliation, predicate: "http://vivoweb.org/ontology/core#School"
-  property :netid, predicate: "http://open.vocab.org/terms/accountIdentifier"
+  property :index, predicate: ::RDF::Vocab::DC.identifier
+  property :name, predicate: ::RDF::Vocab::MODS.name
+  property :orcid, predicate: ::RDF::Vocab::Identifiers.orcid
+  property :affiliation, predicate: ::RDF::Vocab::SCHEMA.affiliation
+  property :other_affiliation, predicate: ::RDF::Vocab::EBUCore.hasAffiliation
 
-  def to_s
-    "#{name.first}, #{affiliation.first} (#{netid.first})"
-  end
-
-  # We need to convert the URI on initialize so that
-  # ActiveTriples can create a 'hash URI' for this
-  # resource.  This is necessary so that we can edit
-  # nested people within the ETD edit form.
-  # (Without the hash URI, we wouldn't be able to edit
-  # the person in the same sparql query as the
-  # ETD.)
-  # This code was taken from an example spec in the
-  # active-fedora gem:
-  # spec/integration/nested_hash_resources_spec.rb
-  def initialize(uri, parent)
+  def initialize(uri=RDF::Node.new, parent=nil)
     if uri.try(:node?)
-      uri = RDF::URI("#nested_#{uri.to_s.gsub('_:', '')}")
+      uri = RDF::URI("#nested_person#{uri.to_s.gsub('_:', '')}")
     elsif uri.start_with?("#")
       uri = RDF::URI(uri)
     end
     super
   end
 
-  def last_name
-    name.first.split(", ").first
+  def final_parent
+    parent
   end
 
-  def first_name
-    name.first.split(", ").last
+  def new_record?
+    id.start_with?("#")
+  end
+
+  def _destroy
+    false
   end
 end
