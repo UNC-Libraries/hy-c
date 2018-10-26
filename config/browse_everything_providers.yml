@@ -3,8 +3,8 @@
 # The file_system provider can be a path to any directory on the server where your application is running.
 #
 ---
-file_system:
-  :home: "/"
+# file_system:
+#  :home: "/"
 dropbox:
   :client_id: <%= ENV['DROPBOX_APP_KEY'] %>
   :client_secret: <%= ENV['DROPBOX_APP_SECRET'] %>
