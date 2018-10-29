@@ -87,7 +87,7 @@ RSpec.feature 'Create a Dissertation', js: false do
       select 'English', from: 'dissertation_language'
       select 'Attribution 3.0 United States', :from => 'dissertation_license'
       fill_in 'Note', with: 'a note'
-      fill_in 'Orcid', with: 'an orcid'
+      fill_in 'ORCID', with: 'an orcid'
       fill_in 'Place of publication', with: 'UNC'
       fill_in 'Publisher', with: 'UNC Press'
       fill_in 'Reviewer', with: 'a reviewer'

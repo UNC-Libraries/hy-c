@@ -72,7 +72,7 @@ RSpec.feature 'Create a Multimed', js: false do
       select 'Attribution 3.0 United States', :from => 'multimed_license'
       fill_in 'Medium', with: 'a medium'
       fill_in 'Note', with: 'a note'
-      fill_in 'Orcid', with: 'an orcid'
+      fill_in 'ORCID', with: 'an orcid'
       select 'In Copyright', :from => 'multimed_rights_statement'
       fill_in 'Subject', with: 'test'
 
@@ -150,7 +150,7 @@ RSpec.feature 'Create a Multimed', js: false do
       select 'Attribution 3.0 United States', :from => 'multimed_license'
       fill_in 'Medium', with: 'a medium'
       fill_in 'Note', with: 'a note'
-      fill_in 'Orcid', with: 'an orcid'
+      fill_in 'ORCID', with: 'an orcid'
       select 'In Copyright', :from => 'multimed_rights_statement'
       fill_in 'Subject', with: 'test'
 
