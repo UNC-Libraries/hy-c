@@ -1,0 +1,7 @@
+terms:
+  - id: /authorities/search/loc/names
+    term: LOC Names
+    active: true
+  - id: /authorities/search/assign_fast/all
+    term: FAST
+    active: true
