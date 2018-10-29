@@ -21,12 +21,12 @@ RSpec.describe Hyrax::GeneralForm do
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:contributor, :creator, :date_created, :description, :deposit_record,
+    it { is_expected.to match_array [:contributor, :creator, :date_created, :description,
                                      :keyword, :identifier, :language, :license, :publisher, :related_url,
                                      :resource_type, :rights_statement, :subject, :bibliographic_citation, :abstract,
                                      :academic_concentration, :access, :advisor, :affiliation, :affiliation_label,
                                      :alternative_title, :arranger, :award, :composer, :conference_name,
-                                     :copyright_date, :date_captured, :date_issued, :date_other, :dcmi_type, :degree,
+                                     :copyright_date, :date_issued, :date_other, :dcmi_type, :degree,
                                      :degree_granting_institution, :doi, :edition, :extent, :funder,
                                      :geographic_subject, :graduation_year, :isbn, :issn, :journal_issue,
                                      :journal_title, :journal_volume, :kind_of_data, :last_modified_date, :medium,
@@ -50,7 +50,6 @@ RSpec.describe Hyrax::GeneralForm do
           contributor: ['a contributor'],
           creator: ['a creator'],
           date_created: '2017-01-22',
-          deposit_record: 'uuid:1234',
           identifier: ['an identifier'],
           language: ['http://id.loc.gov/vocabulary/iso639-2/eng'],
           license: 'http://creativecommons.org/licenses/by/3.0/us/', # single-valued
@@ -77,7 +76,6 @@ RSpec.describe Hyrax::GeneralForm do
           composer: ['a composer'],
           conference_name: ['a conference'],
           copyright_date: ['2017-01-22'],
-          date_captured: '2017-01-22', # single-valued
           date_issued: ['2017-01-22'],
           date_other: ['2017-01-22'],
           dcmi_type: ['type'],
@@ -129,7 +127,6 @@ RSpec.describe Hyrax::GeneralForm do
       expect(subject['bibliographic_citation']).to eq ['a citation']
       expect(subject['contributor']).to eq ['a contributor']
       expect(subject['date_created']).to eq '2017-01-22'
-      expect(subject['deposit_record']).to eq 'uuid:1234'
       expect(subject['identifier']).to eq ['an identifier']
       expect(subject['language']).to eq ['http://id.loc.gov/vocabulary/iso639-2/eng']
       expect(subject['publisher']).to eq ['a publisher']
@@ -154,7 +151,6 @@ RSpec.describe Hyrax::GeneralForm do
       expect(subject['composer']).to eq ['a composer']
       expect(subject['conference_name']).to eq ['a conference']
       expect(subject['copyright_date']).to eq ['2017-01-22']
-      expect(subject['date_captured']).to eq '2017-01-22'
       expect(subject['date_issued']).to eq ['2017-01-22']
       expect(subject['date_other']).to eq ['2017-01-22']
       expect(subject['degree']).to eq 'something'
