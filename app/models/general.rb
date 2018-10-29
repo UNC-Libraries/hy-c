@@ -10,9 +10,6 @@ class General < ActiveFedora::Base
 
   self.human_readable_type = 'General'
 
-  before_save :index_advisor_names
-
-
   property :abstract, predicate: ::RDF::Vocab::DC.abstract do |index|
     index.as :stored_searchable
   end
@@ -26,6 +23,14 @@ class General < ActiveFedora::Base
   end
 
   property :advisors, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/ths'), class_name: 'Person' do |index|
+    index.as :stored_searchable
+  end
+
+  property :advisor_display, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#AdvisorDisplay') do |index|
+    index.as :stored_searchable
+  end
+
+  property :advisor_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#AdvisorLabel') do |index|
     index.as :stored_searchable
   end
 
@@ -169,7 +174,11 @@ class General < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :other_affiliation, predicate: ::RDF::Vocab::EBUCore.hasAffiliation do |index|
+  property :orcid_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#OrcidLabel') do |index|
+    index.as :stored_searchable
+  end
+
+  property :other_affiliation_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#OtherAffiliationLabel') do |index|
     index.as :stored_searchable
   end
 
@@ -240,13 +249,6 @@ class General < ActiveFedora::Base
 
   property :advisor_names, predicate: ::RDF::URI('http://www.example.com/advisor_names') do |index|
     index.as :stored_searchable
-  end
-
-
-  def index_advisor_names
-    return unless advisors && advisors.first
-    advisor_names << advisors.map { |e| e.name.first }
-    self.advisor_names = advisors.map { |e| e.name.first }
   end
 
   # This must be included at the end, because it finalizes the metadata

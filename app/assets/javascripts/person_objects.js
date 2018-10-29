@@ -9,16 +9,10 @@ function attach_add_committee_listeners(selector){
     var remove_selector = '.remove-'+selector;
     var cloning_row = '#'+selector+'-cloning_row';
 
-    $(row_selector).first().on('click', function(){
-        // get current_index again and store it in local variable, decrement it and store it
-        var current_index = $('#index-'+selector).val();
-        current_index--;
-
-        $('#index-'+selector).val(current_index);
-        $(this).parents(this).remove();
-    });
-
     $(add_selector).on('click', function(event){
+        // stop page from reloading
+        event.preventDefault();
+
         $('.remove-'+selector).removeClass('hidden');
 
         var current_index = $('#index-'+selector).val();
@@ -27,13 +21,13 @@ function attach_add_committee_listeners(selector){
 
         var $name_input = $new_row.find('div.'+selector+'-name input');
         var $orcid_input = $new_row.find('div.'+selector+'-orcid input');
-        var $affiliation_input = $new_row.find('div.'+selector+'-affiliation input');
+        var $affiliation_input = $new_row.find('div.'+selector+'-affiliation select');
         var $other_affiliation_input = $new_row.find('div.'+selector+'-other-affiliation input');
 
         var old_name = $name_input.prop('name');
-        var old_orcid = $name_input.prop('name');
-        var old_affiliation = $name_input.prop('name');
-        var old_other_affiliation = $name_input.prop('name');
+        var old_orcid = $orcid_input.prop('name');
+        var old_affiliation = $affiliation_input.prop('name');
+        var old_other_affiliation = $other_affiliation_input.prop('name');
 
         var new_name = old_name.replace(/\d/, current_index);
         var new_orcid = old_orcid.replace(/\d/, current_index);

@@ -63,6 +63,14 @@ class SingleValueForm < Hyrax::Forms::WorkForm
       attrs[:affiliation_label] = split_affiliations(attrs[:affiliation])
     end
 
+    if attrs.key?(:advisors_attributes) && !attrs[:advisors_attributes].blank?
+      attrs[:advisor_label] = attrs[:advisors_attributes].map{ |k, v| v['name'] }
+      attrs[:orcid_label] = attrs[:advisors_attributes].map{ |k, v| v['orcid'] }
+      attrs[:affiliation_label] = split_affiliations(attrs[:advisors_attributes].map{ |k, v| v['affiliation'] })
+      attrs[:other_affiliation_label] = attrs[:advisors_attributes].map{ |k, v| v['other_affiliation'] }
+      attrs[:advisor_display] = attrs[:advisors_attributes].map{ |k, v| build_person_display(v) }
+    end
+
     if attrs.key?(:language) && !attrs[:language].blank?
       Array(attrs[:language]).each do |language|
         attrs[:language_label] << LanguagesService.label(language)
@@ -118,5 +126,14 @@ class SingleValueForm < Hyrax::Forms::WorkForm
       end
 
       affiliations_list.uniq
+    end
+
+    def self.build_person_display(person_attrs)
+      display_text = []
+      display_text << person_attrs['name'] if !person_attrs['name'].blank?
+      display_text << "ORCID: #{person_attrs['orcid']}" if !person_attrs['orcid'].blank?
+      display_text << "Affiliation: #{split_affiliations(person_attrs['affiliation']).join(', ')}" if !person_attrs['affiliation'].blank?
+      display_text << "Other Affiliation: #{person_attrs['other_affiliation']}" if !person_attrs['other_affiliation'].blank?
+      display_text.join(';')
     end
 end

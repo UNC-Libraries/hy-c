@@ -6,11 +6,13 @@
         <%= advisor.input :name, label: "Advisor",
                           input_html: { placeholder: 'Last Name, First Name',
                                         class: 'form-control advisor advisor-name',
-                                        value: (advisor.object.name.first || nil) } %>
+                                        value: (advisor.object.name || '') } %>
       </div>
 
       <div class="col-sm-6 advisor-orcid">
-        <%= advisor.input :orcid, label: 'ORCID', input_html: { placeholder: '', class: 'form-control' } %>
+        <%= advisor.input :orcid, label: 'ORCID', input_html: { placeholder: '',
+                                                                class: 'form-control',
+                                                                value: (advisor.object.orcid || '') } %>
       </div>
 
       <div class="col-sm-6 advisor-affiliation">
@@ -24,7 +26,9 @@
       </div>
 
       <div class="col-sm-6 advisor-other-affiliation">
-        <%= advisor.input :other_affiliation, input_html: { placeholder: '', class: 'form-control' } %>
+        <%= advisor.input :other_affiliation, input_html: { placeholder: '',
+                                                            class: 'form-control',
+                                                            value: (advisor.object.other_affiliation || '') } %>
       </div>
 
       <% if advisor.index > 0 %>
@@ -46,11 +50,13 @@
           <%= advisor.input :name, label: "Advisor",
                             input_html: { placeholder: 'Last Name, First Name',
                                           class: 'form-control advisor advisor-name',
-                                          value: (advisor.object.name.first || nil) } %>
+                                          value: '' } %>
         </div>
 
         <div class="col-sm-6 advisor-orcid">
-          <%= advisor.input :orcid, label: 'ORCID', input_html: { placeholder: '', class: 'form-control' } %>
+          <%= advisor.input :orcid, label: 'ORCID', input_html: { placeholder: '',
+                                                                  class: 'form-control',
+                                                                  value: '' } %>
         </div>
 
         <div class="col-sm-6 advisor-affiliation">
@@ -64,7 +70,9 @@
         </div>
 
         <div class="col-sm-6 advisor-other-affiliation">
-          <%= advisor.input :other_affiliation, input_html: { placeholder: '', class: 'form-control' } %>
+          <%= advisor.input :other_affiliation, input_html: { placeholder: '',
+                                                              class: 'form-control',
+                                                              value: '' } %>
         </div>
 
         <button type="button" class="btn btn-link remove remove-advisor">

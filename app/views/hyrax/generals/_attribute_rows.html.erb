@@ -13,8 +13,7 @@
 <%= presenter.attribute_to_html(:abstract, html_dl: true) %>
 <%= presenter.attribute_to_html(:academic_concentration, html_dl: true) %>
 <%= presenter.attribute_to_html(:access, html_dl: true) %>
-<%= presenter.attribute_to_html(:advisor_names, html_dl: true) %>
-<%= presenter.attribute_to_html(:affiliation_label, html_dl: true, label: 'Affiliation') %>
+<%= presenter.attribute_to_html(:advisor_display, label: 'Advisor', render_as: :person, html_dl: true) %>
 <%= presenter.attribute_to_html(:alternative_title, html_dl: true) %>
 <%= presenter.attribute_to_html(:arranger, html_dl: true) %>
 <%= presenter.attribute_to_html(:award, html_dl: true) %>
@@ -46,8 +45,6 @@
 <%= presenter.attribute_to_html(:last_modified_date, render_as: :date, html_dl: true) %>
 <%= presenter.attribute_to_html(:medium, html_dl: true) %>
 <%= presenter.attribute_to_html(:note, html_dl: true) %>
-<%= presenter.attribute_to_html(:orcid, html_dl: true) %>
-<%= presenter.attribute_to_html(:other_affiliation, html_dl: true) %>
 <%= presenter.attribute_to_html(:page_end, html_dl: true) %>
 <%= presenter.attribute_to_html(:page_start, html_dl: true) %>
 <%= presenter.attribute_to_html(:peer_review_status, html_dl: true) %>

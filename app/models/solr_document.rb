@@ -64,8 +64,12 @@ class SolrDocument
     self[Solrizer.solr_name('advisor')]
   end
 
-  def advisor_names
-    self[Solrizer.solr_name('advisor_names')]
+  def advisor_display
+    self[Solrizer.solr_name('advisor_display')]
+  end
+
+  def advisor_label
+    self[Solrizer.solr_name('advisor_label')]
   end
 
   def affiliation
@@ -212,8 +216,16 @@ class SolrDocument
     self[Solrizer.solr_name('orcid')]
   end
 
+  def orcid_label
+    self[Solrizer.solr_name('orcid_label')]
+  end
+
   def other_affiliation
     self[Solrizer.solr_name('other_affiliation')]
+  end
+
+  def other_affiliation_label
+    self[Solrizer.solr_name('other_affiliation_label')]
   end
 
   def page_end
