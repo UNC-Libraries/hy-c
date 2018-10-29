@@ -83,6 +83,7 @@ RSpec.feature 'Create a DataSet', js: false do
       fill_in 'Related resource URL', with: 'something.com'
       select 'In Copyright', :from => 'data_set_rights_statement'
       fill_in 'Sponsor', with: 'a sponsor'
+      fill_in 'Subject', with: 'test'
 
       expect(page).not_to have_field('data_set_date_access')
       expect(page).not_to have_field('data_set_date_created')
@@ -91,7 +92,6 @@ RSpec.feature 'Create a DataSet', js: false do
       expect(page).to have_selector('#data_set_language_label', visible: false)
       expect(page).to have_selector('#data_set_license_label', visible: false)
       expect(page).to have_selector('#data_set_rights_statement_label', visible: false)
-      expect(page).not_to have_field('data_set_subject')
       expect(page).to have_field('data_set_rights_statement')
       expect(page).to have_field('data_set_visibility_embargo')
       expect(page).not_to have_field('data_set_visibility_lease')
@@ -140,6 +140,7 @@ RSpec.feature 'Create a DataSet', js: false do
       expect(page).to have_content 'Researcher a researcher'
       expect(page).to have_content 'Rights holder an author'
       expect(page).to have_content 'Sponsor a sponsor'
+      expect(page).to have_content 'Subject test'
       expect(page).to_not have_content 'Language http://id.loc.gov/vocabulary/iso639-2/eng'
       expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
       expect(page).to_not have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'

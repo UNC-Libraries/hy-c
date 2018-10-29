@@ -8,5 +8,5 @@ en:
         name:               "Artwork"
   simple_form:
     hints:
-      defaults:
+      artwork:
         medium: The material of the work.

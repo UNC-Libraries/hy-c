@@ -73,13 +73,13 @@ RSpec.feature 'Create a Multimed', js: false do
       fill_in 'Note', with: 'a note'
       fill_in 'Orcid', with: 'an orcid'
       select 'In Copyright', :from => 'multimed_rights_statement'
+      fill_in 'Subject', with: 'test'
 
       expect(page).not_to have_field('multimed_access')
       expect(page).not_to have_field('multimed_doi')
       expect(page).to have_selector('#multimed_language_label', visible: false)
       expect(page).to have_selector('#multimed_license_label', visible: false)
       expect(page).to have_selector('#multimed_rights_statement_label', visible: false)
-      expect(page).not_to have_field('multimed_subject')
       expect(page).to have_field('multimed_visibility_embargo')
       expect(page).not_to have_field('multimed_visibility_lease')
       choose "multimed_visibility_open"
@@ -114,10 +114,10 @@ RSpec.feature 'Create a Multimed', js: false do
       expect(page).to have_content 'Orcid an orcid'
       expect(page).to have_content 'Resource type Video'
       expect(page).to have_content 'Rights statement In Copyright'
+      expect(page).to have_content 'Subject test'
       expect(page).to_not have_content 'Language http://id.loc.gov/vocabulary/iso639-2/eng'
       expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
       expect(page).to_not have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'
-
       expect(page).to_not have_content 'In Administrative Set: general admin set'
       expect(page).to_not have_selector(:link, 'Delete')
 

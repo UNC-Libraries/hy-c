@@ -15,7 +15,7 @@ module Hyrax
 
     self.single_value_fields = [:title, :license, :rights_statement]
     
-    self.admin_only_terms = [:dcmi_type, :date_created, :access, :subject, :use]
+    self.admin_only_terms = [:dcmi_type, :date_created, :access, :use]
 
     # Add overrides for required properties which are becoming single-valued
 

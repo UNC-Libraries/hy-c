@@ -98,7 +98,7 @@ RSpec.feature 'Create a MastersPaper', js: false do
 
       # extra fields
       select 'Clinical Nutrition', from: 'Academic Concentration'
-      fill_in 'Geographic subject', with: 'some geographic subject'
+      fill_in 'Location', with: 'some geographic subject'
       fill_in 'Keyword', with: 'Test Default Keyword'
       select 'English', from: 'masters_paper_language'
       select 'Attribution 3.0 United States', :from => 'masters_paper_license'
@@ -106,6 +106,7 @@ RSpec.feature 'Create a MastersPaper', js: false do
       fill_in 'Orcid', with: 'an orcid'
       fill_in 'Reviewer', with: 'a reviewer'
       select 'In Copyright', :from => 'masters_paper_rights_statement'
+      fill_in 'Subject', with: 'test'
 
       expect(page).not_to have_field('masters_paper_access')
       expect(page).not_to have_field('masters_paper_doi')
@@ -113,7 +114,6 @@ RSpec.feature 'Create a MastersPaper', js: false do
       expect(page).to have_selector('#masters_paper_language_label', visible: false)
       expect(page).to have_selector('#masters_paper_license_label', visible: false)
       expect(page).to have_selector('#masters_paper_rights_statement_label', visible: false)
-      expect(page).not_to have_field('masters_paper_subject')
       expect(page).to have_field('masters_paper_visibility_embargo')
       expect(page).not_to have_field('masters_paper_visibility_lease')
       expect(page).to have_select('masters_paper_resource_type', selected: 'Masters Paper')
@@ -158,6 +158,7 @@ RSpec.feature 'Create a MastersPaper', js: false do
       expect(page).to have_content 'Resource type Masters Paper'
       expect(page).to have_content 'Reviewer a reviewer'
       expect(page).to have_content 'Rights statement In Copyright'
+      expect(page).to have_content 'Subject test'
       expect(page).to_not have_content 'Language http://id.loc.gov/vocabulary/iso639-2/eng'
       expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
       expect(page).to_not have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'
