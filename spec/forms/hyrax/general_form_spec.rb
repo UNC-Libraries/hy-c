@@ -84,7 +84,7 @@ RSpec.describe Hyrax::GeneralForm do
           degree_granting_institution: 'unc', # single-valued
           digital_collection: ['a collection'],
           doi: '12345', # single-valued
-          edition: ['an edition'],
+          edition: 'an edition', # single-valued
           extent: ['1993'],
           funder: ['dean'],
           geographic_subject: ['California'],
@@ -159,7 +159,7 @@ RSpec.describe Hyrax::GeneralForm do
       expect(subject['degree_granting_institution']).to eq 'unc'
       expect(subject['digital_collection']).to be_nil
       expect(subject['doi']).to eq '12345'
-      expect(subject['edition']).to eq ['an edition']
+      expect(subject['edition']).to eq 'an edition'
       expect(subject['extent']).to eq ['1993']
       expect(subject['funder']).to eq ['dean']
       expect(subject['dcmi_type']).to eq ['type']

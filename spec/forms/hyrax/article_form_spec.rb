@@ -70,7 +70,7 @@ RSpec.describe Hyrax::ArticleForm do
           date_other: [''],
           dcmi_type: ['type'],
           doi: '12345', # single-valued
-          edition: ['an edition'],
+          edition: 'an edition', # single-valued
           extent: ['1993'],
           funder: ['dean'],
           geographic_subject: ['California'],
@@ -121,7 +121,7 @@ RSpec.describe Hyrax::ArticleForm do
       expect(subject['date_issued']).to eq '2017-01-22'
       expect(subject['date_other']).to be_empty
       expect(subject['doi']).to eq '12345'
-      expect(subject['edition']).to eq ['an edition']
+      expect(subject['edition']).to eq 'an edition'
       expect(subject['extent']).to eq ['1993']
       expect(subject['funder']).to eq ['dean']
       expect(subject['dcmi_type']).to eq ['type']
