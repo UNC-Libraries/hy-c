@@ -52,7 +52,6 @@ RSpec.describe General do
       expect(subject).to respond_to(:composer)
       expect(subject).to respond_to(:conference_name)
       expect(subject).to respond_to(:copyright_date)
-      expect(subject).to respond_to(:date_captured)
       expect(subject).to respond_to(:date_issued)
       expect(subject).to respond_to(:date_other)
       expect(subject).to respond_to(:degree)

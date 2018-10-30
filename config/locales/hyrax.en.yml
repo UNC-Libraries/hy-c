@@ -154,7 +154,7 @@ en:
         isbn: "ISBN"
         issn: "ISSN"
         orcid: "ORCID"
-        other_affilation: "Additional affiliation"
+        other_affiliation: "Additional affiliation"
         peer_review_status: "Is the article or chapter peer-reviewed?"
         related_url: "Related resource URL"
         url: "Link to publisher version"
