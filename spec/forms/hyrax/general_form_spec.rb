@@ -26,7 +26,7 @@ RSpec.describe Hyrax::GeneralForm do
                                      :resource_type, :rights_statement, :subject, :bibliographic_citation, :abstract,
                                      :academic_concentration, :access, :advisor, :affiliation, :affiliation_label,
                                      :alternative_title, :arranger, :award, :composer, :conference_name,
-                                     :copyright_date, :date_captured, :date_issued, :date_other, :dcmi_type, :degree,
+                                     :copyright_date, :date_issued, :date_other, :dcmi_type, :degree,
                                      :degree_granting_institution, :doi, :edition, :extent, :funder,
                                      :geographic_subject, :graduation_year, :isbn, :issn, :journal_issue,
                                      :journal_title, :journal_volume, :kind_of_data, :last_modified_date, :medium,
@@ -77,7 +77,6 @@ RSpec.describe Hyrax::GeneralForm do
           composer: ['a composer'],
           conference_name: ['a conference'],
           copyright_date: ['2017-01-22'],
-          date_captured: '2017-01-22', # single-valued
           date_issued: ['2017-01-22'],
           date_other: ['2017-01-22'],
           dcmi_type: ['type'],
@@ -154,7 +153,6 @@ RSpec.describe Hyrax::GeneralForm do
       expect(subject['composer']).to eq ['a composer']
       expect(subject['conference_name']).to eq ['a conference']
       expect(subject['copyright_date']).to eq ['2017-01-22']
-      expect(subject['date_captured']).to eq '2017-01-22'
       expect(subject['date_issued']).to eq ['2017-01-22']
       expect(subject['date_other']).to eq ['2017-01-22']
       expect(subject['degree']).to eq 'something'

@@ -100,10 +100,6 @@ class SolrDocument
     self[Solrizer.solr_name('copyright_date')]
   end
 
-  def date_captured
-    self[Solrizer.solr_name('date_captured')]
-  end
-
   def date_issued
     self[Solrizer.solr_name('date_issued')]
   end

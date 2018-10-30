@@ -13,6 +13,8 @@ en:
          may be viewed as publishing which could impact your ability to: </p> <ul> <li>Patent your work</li> <li>Publish your work in a journal</li> </ul>
           <p> Check out <a target="_blank" href="http://www.sherpa.ac.uk/romeo/">SHERPA/RoMEO</a> for more information about publisher copyright policies. </p>'
   simple_form:
+    hints:
+      article:
     labels:
       article:
         creator: "Author"

@@ -109,7 +109,7 @@ RSpec.feature 'Create a General', js: false do
       fill_in 'Medium', with: 'a medium'
       fill_in 'Note', with: 'a note'
       fill_in 'ORCID', with: 'an orcid'
-      fill_in 'Other affiliation', with: 'another affiliation'
+      fill_in 'Additional affiliation', with: 'another affiliation'
       fill_in 'Page end', with: '32'
       fill_in 'Page start', with: '30'
       fill_in 'Place of publication', with: 'UNC'
