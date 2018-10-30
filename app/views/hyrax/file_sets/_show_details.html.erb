@@ -2,7 +2,7 @@
 <h2>File Details</h2>
 <dl class="dl-horizontal file-show-term file-show-details">
   <dt>Depositor</dt>
-  <dd itemprop="accountablePerson" itemscope itemtype="http://schema.org/Person"><span itemprop="name"><%= link_to @presenter.depositor, main_app.search_catalog_path(f: { depositor_sim: [@presenter.depositor]}) %></span></dd>
+  <dd itemprop="accountablePerson" itemscope itemtype="http://schema.org/Person"><span itemprop="name"><%= link_to @presenter.depositor, main_app.search_catalog_path(f: { depositor_tesim: [@presenter.depositor]}) %></span></dd>
   <dt>Date Uploaded</dt>
   <dd itemprop="datePublished"><%= @presenter.date_uploaded %></dd>
   <dt>Date Modified</dt>

@@ -8,7 +8,7 @@ class FileSetAttachedEventJob < ContentEventJob
   end
 
   def action
-    "User #{link_to depositor, main_app.search_catalog_path(f: { depositor_sim: [depositor]})} has attached #{file_link} to #{work_link}"
+    "User #{link_to depositor, main_app.search_catalog_path(f: { depositor_tesim: [depositor]})} has attached #{file_link} to #{work_link}"
   end
 
   private

@@ -10,6 +10,6 @@ class ContentRestoredVersionEventJob < ContentEventJob
 
   # [hyc-override] Overriding to make depositor a facet search and not link to user profile
   def action
-    "User #{link_to depositor, main_app.search_catalog_path(f: { depositor_sim: [depositor]})} has restored a version '#{revision_id}' of #{link_to repo_object.title.first, Rails.application.routes.url_helpers.hyrax_file_set_path(repo_object)}"
+    "User #{link_to depositor, main_app.search_catalog_path(f: { depositor_tesim: [depositor]})} has restored a version '#{revision_id}' of #{link_to repo_object.title.first, Rails.application.routes.url_helpers.hyrax_file_set_path(repo_object)}"
   end
 end
