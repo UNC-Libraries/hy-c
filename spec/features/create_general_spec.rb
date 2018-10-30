@@ -70,8 +70,8 @@ RSpec.feature 'Create a General', js: false do
       fill_in 'Abstract', with: 'an abstract'
       select 'Clinical Nutrition', from: 'Academic Concentration'
       fill_in 'Access', with: 'some access'
-      fill_in 'Advisor', with: 'an advisor'
-      select 'Department of Biology', from: 'general_affiliation'
+      fill_in 'Advisor', { with: 'an advisor', id: 'general_advisors_attributes_0_name' }
+      select 'Department of Biology', from: 'general_advisors_attributes_0_affiliation'
       fill_in 'Alternative title', with: 'another title'
       fill_in 'Arranger', with: 'an arranger'
       fill_in 'Award', with: 'an award'
@@ -108,8 +108,8 @@ RSpec.feature 'Create a General', js: false do
       select 'Attribution 3.0 United States', :from => 'general_license'
       fill_in 'Medium', with: 'a medium'
       fill_in 'Note', with: 'a note'
-      fill_in 'Orcid', with: 'an orcid'
-      fill_in 'Other affiliation', with: 'another affiliation'
+      fill_in 'ORCID', { with: 'an orcid' , id: 'general_advisors_attributes_0_orcid'}
+      fill_in 'Other affiliation', { with: 'another affiliation', id: 'general_advisors_attributes_0_other_affiliation' }
       fill_in 'Page end', with: '32'
       fill_in 'Page start', with: '30'
       fill_in 'Place of publication', with: 'UNC'
@@ -198,8 +198,8 @@ RSpec.feature 'Create a General', js: false do
       expect(page).to have_content 'License Attribution 3.0 United States'
       expect(page).to have_content 'Medium a medium'
       expect(page).to have_content 'Note a note'
-      expect(page).to have_content 'Orcid an orcid'
-      expect(page).to have_content 'Other affiliation another affiliation'
+      expect(page).to have_content 'ORCID: an orcid'
+      expect(page).to have_content 'Other Affiliation: another affiliation'
       expect(page).to have_content 'Page end 32'
       expect(page).to have_content 'Page start 30'
       expect(page).to have_content 'Place of publication UNC'
