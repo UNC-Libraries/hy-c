@@ -39,6 +39,21 @@ function attach_add_committee_listeners(selector){
         $affiliation_input.prop('name', new_affiliation);
         $other_affiliation_input.prop('name', new_other_affiliation);
 
+        var old_name_id = $name_input.attr('id');
+        var old_orcid_id = $orcid_input.attr('id');
+        var old_affiliation_id = $affiliation_input.attr('id');
+        var old_other_affiliation_id = $other_affiliation_input.attr('id');
+
+        var new_name_id = old_name_id.replace(/\d/, current_index);
+        var new_orcid_id = old_orcid_id.replace(/\d/, current_index);
+        var new_affiliation_id = old_affiliation_id.replace(/\d/, current_index);
+        var new_other_affiliation_id = old_other_affiliation_id.replace(/\d/, current_index);
+
+        $name_input.attr('id', new_name_id);
+        $orcid_input.attr('id', new_orcid_id);
+        $affiliation_input.attr('id', new_affiliation_id);
+        $other_affiliation_input.attr('id', new_other_affiliation_id);
+        
         //change $new_row's id so we don't find it again when looking for blank row to clone
         $new_row.prop('id', 'cloned_'+selector+'_row');
 

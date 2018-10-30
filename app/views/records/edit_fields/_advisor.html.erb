@@ -6,29 +6,28 @@
         <%= advisor.input :name, label: "Advisor",
                           input_html: { placeholder: 'Last Name, First Name',
                                         class: 'form-control advisor advisor-name',
-                                        value: (advisor.object.name || '') } %>
+                                        value: (advisor.object.name.first || '') } %>
       </div>
 
       <div class="col-sm-6 advisor-orcid">
-        <%= advisor.input :orcid, label: 'ORCID', input_html: { placeholder: '',
+        <%= advisor.input :orcid, label: 'ORCID', input_html: { placeholder: 'https://orcid.org/xxxx-xxxx-xxxx-xxxx',
                                                                 class: 'form-control',
-                                                                value: (advisor.object.orcid || '') } %>
+                                                                value: (advisor.object.orcid.first || '') } %>
       </div>
 
       <div class="col-sm-6 advisor-affiliation">
         <%= advisor.input :affiliation, as: :select,
                           collection: DepartmentsService.select_all_options.sort,
                           include_blank: true,
-                          selected: advisor.object.affiliation,
+                          selected: advisor.object.affiliation.first,
                           item_helper: DepartmentsService.method(:include_current_value),
                           input_html: { class: 'form-control' }
         -%>
       </div>
 
       <div class="col-sm-6 advisor-other-affiliation">
-        <%= advisor.input :other_affiliation, input_html: { placeholder: '',
-                                                            class: 'form-control',
-                                                            value: (advisor.object.other_affiliation || '') } %>
+        <%= advisor.input :other_affiliation, input_html: { class: 'form-control',
+                                                            value: (advisor.object.other_affiliation.first || '') } %>
       </div>
 
       <% if advisor.index > 0 %>
@@ -39,9 +38,7 @@
     </div>
   <% end %>
 
-  <% person_index = @form.advisors.count %>
-  <!-- this hidden element keeps track of the advisor count for an about_me_and_my_program.es6 function -->
-  <input type='hidden' name='index-advisor' id='index-advisor' value="<%= person_index %>" />
+  <input type='hidden' name='index-advisor' id='index-advisor' value="<%= @form.advisors.count %>" />
 
   <div class="advisor row cloning hidden" id='advisor-cloning_row'>
     <%= f.fields_for :advisors do |advisor| %>
@@ -54,7 +51,7 @@
         </div>
 
         <div class="col-sm-6 advisor-orcid">
-          <%= advisor.input :orcid, label: 'ORCID', input_html: { placeholder: '',
+          <%= advisor.input :orcid, label: 'ORCID', input_html: { placeholder: 'https://orcid.org/xxxx-xxxx-xxxx-xxxx',
                                                                   class: 'form-control',
                                                                   value: '' } %>
         </div>
@@ -70,17 +67,23 @@
         </div>
 
         <div class="col-sm-6 advisor-other-affiliation">
-          <%= advisor.input :other_affiliation, input_html: { placeholder: '',
-                                                              class: 'form-control',
+          <%= advisor.input :other_affiliation, input_html: { class: 'form-control',
                                                               value: '' } %>
         </div>
 
-        <button type="button" class="btn btn-link remove remove-advisor">
-          <span class="glyphicon glyphicon-remove"></span> <span class="controls-remove-text">Remove Advisor</span>
-        </button>
+        <span class="input-group-btn field-controls multi_value">
+          <button type="button" class="btn btn-link remove remove-advisor">
+            <span class="glyphicon glyphicon-remove"></span> <span class="controls-remove-text">Remove Advisor</span>
+          </button>
+        </span>
       </div>
     <% end %>
   </div>
 </div>
-<button id="add-another-advisor">Add another Advisor</button>
+<div class="row">
+  <button id="add-another-advisor" class="btn btn-link add">
+    <span class="glyphicon glyphicon-plus"></span>
+    <span>Add another Advisor</span>
+  </button>
+</div>
 <hr>
