@@ -1,8 +1,8 @@
-<%# [hyc-override] Overriding to not make depositor a clickable link %>
+<%# [hyc-override] Overriding to make depositor a facet search and not link to user profile %>
 <h2>File Details</h2>
 <dl class="dl-horizontal file-show-term file-show-details">
   <dt>Depositor</dt>
-  <dd itemprop="accountablePerson" itemscope itemtype="http://schema.org/Person"><span itemprop="name"><%= @presenter.depositor %></span></dd>
+  <dd itemprop="accountablePerson" itemscope itemtype="http://schema.org/Person"><span itemprop="name"><%= link_to @presenter.depositor, main_app.search_catalog_path(f: { depositor_sim: [@presenter.depositor]}) %></span></dd>
   <dt>Date Uploaded</dt>
   <dd itemprop="datePublished"><%= @presenter.date_uploaded %></dd>
   <dt>Date Modified</dt>
