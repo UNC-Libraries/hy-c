@@ -49,6 +49,10 @@ en:
     institution_name_full:  "The Institution Name"
     account_name:           "My Institution Account Id"
     base:
+      form_files:
+        local_upload_browse_everything_html: "<p>Fill out the form below to deposit your work.</p>
+        <p>If you do not know what to put in a field, please leave it blank.
+        If you have questions, feel free to <a target=\"_blank\" href=\"https://blogs.lib.unc.edu/cdr/index.php/contact-us\">contact us</a> for help.</p>"
       items:
         empty_artwork: This Artwork has no files associated with it. Click "Attach Artwork" to add more files.
     directory:
