@@ -87,7 +87,7 @@ RSpec.feature 'Create a MastersPaper', js: false do
       
       # required fields
       fill_in 'Title', with: 'Test MastersPaper work'
-      fill_in 'Author', with: 'Test Default Creator'
+      fill_in 'Creator', with: 'Test Default Creator'
       fill_in 'Abstract', with: 'an abstract'
       fill_in 'Advisor', with: 'an advisor'
       fill_in 'Date of publication', with: '2018-10-03'
@@ -106,7 +106,7 @@ RSpec.feature 'Create a MastersPaper', js: false do
       select 'English', from: 'masters_paper_language'
       select 'Attribution 3.0 United States', :from => 'masters_paper_license'
       fill_in 'Note', with: 'a note'
-      fill_in 'Orcid', with: 'an orcid'
+      fill_in 'ORCID', with: 'an orcid'
       fill_in 'Reviewer', with: 'a reviewer'
       select 'In Copyright', :from => 'masters_paper_rights_statement'
       fill_in 'Subject', with: 'test'
@@ -188,7 +188,7 @@ RSpec.feature 'Create a MastersPaper', js: false do
 
       # required fields
       fill_in 'Title', with: 'Test MastersPaper work'
-      fill_in 'Author', with: 'Test Default Creator'
+      fill_in 'Creator', with: 'Test Default Creator'
       fill_in 'Abstract', with: 'an abstract'
       fill_in 'Advisor', with: 'an advisor'
       fill_in 'Date of publication', with: '2018-10-03'
@@ -207,7 +207,7 @@ RSpec.feature 'Create a MastersPaper', js: false do
       select 'English', from: 'masters_paper_language'
       select 'Attribution 3.0 United States', :from => 'masters_paper_license'
       fill_in 'Note', with: 'a note'
-      fill_in 'Orcid', with: 'an orcid'
+      fill_in 'ORCID', with: 'an orcid'
       fill_in 'Reviewer', with: 'a reviewer'
       select 'In Copyright', :from => 'masters_paper_rights_statement'
       fill_in 'Subject', with: 'test'

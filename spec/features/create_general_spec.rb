@@ -108,7 +108,7 @@ RSpec.feature 'Create a General', js: false do
       select 'Attribution 3.0 United States', :from => 'general_license'
       fill_in 'Medium', with: 'a medium'
       fill_in 'Note', with: 'a note'
-      fill_in 'Orcid', with: 'an orcid'
+      fill_in 'ORCID', with: 'an orcid'
       fill_in 'Other affiliation', with: 'another affiliation'
       fill_in 'Page end', with: '32'
       fill_in 'Page start', with: '30'
