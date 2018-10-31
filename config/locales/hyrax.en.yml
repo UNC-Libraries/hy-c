@@ -141,7 +141,7 @@ en:
         table_of_contents: "The table of contents for this issue, proceeding or book."
         title: "The name of the work"
         translator: "If your work that you are depositing is translated, enter the name of the person who translated it."
-        url: "A link to the work on the publisher's website."
+        url: "A link to the final version of your article on the publisher's website."
         use: "Additional information about the rights held over the work."
     labels:
       defaults:
