@@ -21,7 +21,7 @@ RSpec.describe Hyrax::GeneralForm do
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:contributor, :creator, :date_created, :description, :deposit_record,
+    it { is_expected.to match_array [:contributor, :creator, :date_created, :description,
                                      :keyword, :identifier, :language, :license, :publisher, :related_url,
                                      :resource_type, :rights_statement, :subject, :bibliographic_citation, :abstract,
                                      :academic_concentration, :access, :advisor, :affiliation, :affiliation_label,
@@ -50,7 +50,6 @@ RSpec.describe Hyrax::GeneralForm do
           contributor: ['a contributor'],
           creator: ['a creator'],
           date_created: '2017-01-22',
-          deposit_record: 'uuid:1234',
           identifier: ['an identifier'],
           language: ['http://id.loc.gov/vocabulary/iso639-2/eng'],
           license: 'http://creativecommons.org/licenses/by/3.0/us/', # single-valued
@@ -128,7 +127,6 @@ RSpec.describe Hyrax::GeneralForm do
       expect(subject['bibliographic_citation']).to eq ['a citation']
       expect(subject['contributor']).to eq ['a contributor']
       expect(subject['date_created']).to eq '2017-01-22'
-      expect(subject['deposit_record']).to eq 'uuid:1234'
       expect(subject['identifier']).to eq ['an identifier']
       expect(subject['language']).to eq ['http://id.loc.gov/vocabulary/iso639-2/eng']
       expect(subject['publisher']).to eq ['a publisher']

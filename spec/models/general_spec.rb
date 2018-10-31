@@ -56,7 +56,6 @@ RSpec.describe General do
       expect(subject).to respond_to(:date_other)
       expect(subject).to respond_to(:degree)
       expect(subject).to respond_to(:degree_granting_institution)
-      expect(subject).to respond_to(:deposit_record)
       expect(subject).to respond_to(:digital_collection)
       expect(subject).to respond_to(:doi)
       expect(subject).to respond_to(:edition)

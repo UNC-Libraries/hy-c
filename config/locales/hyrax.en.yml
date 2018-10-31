@@ -146,6 +146,7 @@ en:
     labels:
       defaults:
         alternative_title: "Alternate title"
+        award: "Honors level"
         date_issued: "Date of publication"
         description: "Description"
         doi: "DOI"
@@ -156,5 +157,6 @@ en:
         orcid: "ORCID"
         other_affiliation: "Additional affiliation"
         peer_review_status: "Is the article or chapter peer-reviewed?"
+        publisher_version: "Link to Publisher Version"
         related_url: "Related resource URL"
         url: "Link to publisher version"
