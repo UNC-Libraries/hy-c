@@ -6,3 +6,7 @@ en:
       general:
         name:               "General"
         description:        "General works"
+  simple_form:
+    labels:
+      general:
+        url: URL

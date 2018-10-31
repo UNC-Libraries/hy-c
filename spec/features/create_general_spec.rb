@@ -74,7 +74,7 @@ RSpec.feature 'Create a General', js: false do
       select 'Department of Biology', from: 'general_affiliation'
       fill_in 'Alternate title', with: 'another title'
       fill_in 'Arranger', with: 'an arranger'
-      select 'Honors', from: 'Award'
+      select 'Honors', from: 'Honors level'
       fill_in 'Bibliographic citation', with: 'a citation'
       fill_in 'Composer', with: 'a conference'
       fill_in 'Conference name', with: 'a composer'
@@ -88,7 +88,6 @@ RSpec.feature 'Create a General', js: false do
       select 'Bachelor of Science', from: 'general_degree'
       fill_in 'Degree granting institution', with: 'UNC'
       fill_in 'Description', with: 'a description'
-      fill_in 'Deposit record', with: 'a deposit record'
       fill_in 'DOI', with: 'some doi'
       select 'Preprint', from: 'general_edition'
       fill_in 'Extent', with: 'some extent'
@@ -116,7 +115,7 @@ RSpec.feature 'Create a General', js: false do
       fill_in 'Project director', with: 'a director'
       select 'Yes', from: 'general_peer_review_status'
       fill_in 'Publisher', with: 'UNC Press'
-      fill_in 'Publisher version', with: 'a version'
+      fill_in 'Link to Publisher Version', with: 'a version'
       select 'Other', from: 'general_resource_type'
       fill_in 'Researcher', with: 'a researcher'
       fill_in 'Reviewer', with: 'a reviewer'
@@ -129,7 +128,7 @@ RSpec.feature 'Create a General', js: false do
       fill_in 'Table of contents', with: 'contents'
       fill_in 'Translator', with: 'none'
       fill_in 'Use', with: 'some use'
-      fill_in 'Link to publisher version', with: 'some url'
+      fill_in 'URL', with: 'some url'
 
       expect(page).to have_selector('#general_language_label', visible: false)
       expect(page).to have_selector('#general_license_label', visible: false)
@@ -178,7 +177,6 @@ RSpec.feature 'Create a General', js: false do
       expect(page).to have_content 'Degree Bachelor of Science'
       expect(page).to have_content 'Degree granting institution UNC'
       expect(page).to have_content 'Description a description'
-      expect(page).to have_content 'Deposit record a deposit record'
       expect(page).to have_content 'Doi some doi'
       expect(page).to have_content 'Edition Preprint'
       expect(page).to have_content 'Extent some extent'

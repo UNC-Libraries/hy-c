@@ -58,10 +58,6 @@ class General < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :date_captured, predicate: ::RDF::Vocab::MODS.dateCaptured, multiple: false do |index|
-    index.as :stored_searchable
-  end
-
   property :date_issued, predicate: ::RDF::Vocab::DC.issued do |index|
     index.as :stored_searchable, :facetable
   end
@@ -80,11 +76,6 @@ class General < ActiveFedora::Base
 
   property :degree_granting_institution, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/dgg'),
            multiple: false do |index|
-    index.as :stored_searchable
-  end
-
-  # link to previous deposit record
-  property :deposit_record, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#DepositRecord'), multiple: false do |index|
     index.as :stored_searchable
   end
 
