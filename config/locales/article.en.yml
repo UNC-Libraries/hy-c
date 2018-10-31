@@ -17,5 +17,5 @@ en:
       article:
     labels:
       article:
-        creator: "Author"
         doi: "Publisher-issued DOI"
+        edition: "Version"

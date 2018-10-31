@@ -58,7 +58,7 @@ RSpec.feature 'Create a Article', js: false do
 
       # required fields
       fill_in 'Title', with: 'Test Article work'
-      fill_in 'Author', with: 'Test Default Creator'
+      fill_in 'Creator', with: 'Test Default Creator'
       fill_in 'Abstract', with: 'some abstract'
       fill_in 'Date of publication', with: '2018-10-03'
 
@@ -185,7 +185,7 @@ RSpec.feature 'Create a Article', js: false do
 
       # required fields
       fill_in 'Title', with: 'Test Article work'
-      fill_in 'Author', with: 'Test Default Creator'
+      fill_in 'Creator', with: 'Test Default Creator'
       fill_in 'Abstract', with: 'some abstract'
       fill_in 'Date of publication', with: '2018-10-03'
 
