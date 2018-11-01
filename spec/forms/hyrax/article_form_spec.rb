@@ -158,6 +158,7 @@ RSpec.describe Hyrax::ArticleForm do
         ActionController::Parameters.new(
             title: '',
             keyword: [''],
+            language_label: [],
             license: '',
             member_of_collection_ids: [''],
             on_behalf_of: 'Melissa'
