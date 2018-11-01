@@ -9,19 +9,19 @@ RSpec.describe Hyrax::MultimedForm do
   describe "#required_fields" do
     subject { form.required_fields }
 
-    it { is_expected.to match_array [:title, :creator, :abstract, :resource_type, :date_created] }
+    it { is_expected.to match_array [:title, :creator, :abstract, :date_issued, :resource_type] }
   end
 
   describe "#primary_terms" do
     subject { form.primary_terms }
 
-    it { is_expected.to match_array [:title, :creator, :abstract, :resource_type, :date_created] }
+    it { is_expected.to match_array [:title, :creator, :abstract, :date_issued, :resource_type] }
   end
 
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:dcmi_type, :doi, :extent, :geographic_subject, :keyword,
+    it { is_expected.to match_array [:dcmi_type, :date_created, :doi, :extent, :geographic_subject, :keyword,
                                      :language, :license, :medium, :note, :orcid, :rights_statement, :subject,
                                      :language_label, :license_label, :rights_statement_label] }
   end
@@ -29,7 +29,7 @@ RSpec.describe Hyrax::MultimedForm do
   describe "#admin_only_terms" do
     subject { form.admin_only_terms }
 
-    it { is_expected.to match_array [:dcmi_type, :access, :doi] }
+    it { is_expected.to match_array [:dcmi_type, :access, :date_created, :doi] }
   end
 
   describe ".model_attributes" do
@@ -38,6 +38,7 @@ RSpec.describe Hyrax::MultimedForm do
           title: 'multimed name', # single-valued
           creator: ['a creator'],
           date_created: '2018-01-09', # single-valued
+          date_issued: '2018-01-09', # single-valued
           subject: ['a subject'],
           language: ['http://id.loc.gov/vocabulary/iso639-2/eng'],
           note: ['a note'],
@@ -74,6 +75,7 @@ RSpec.describe Hyrax::MultimedForm do
       expect(subject['keyword']).to eq ['multimed']
       expect(subject['abstract']).to eq ['an abstract']
       expect(subject['date_created']).to eq '2018-01-09'
+      expect(subject['date_issued']).to eq '2018-01-09'
       expect(subject['doi']).to eq '12345'
       expect(subject['extent']).to eq ['1999']
       expect(subject['dcmi_type']).to eq ['type']

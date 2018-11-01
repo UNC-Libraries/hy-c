@@ -15,7 +15,7 @@ module Hyrax
     self.single_value_fields = [:title, :license, :rights_statement]
     
     self.admin_only_terms = [:dcmi_type]
-    self.default_term_values = { :dcmi_type => ["http://purl.org/dc/dcmitype/Text"] }
+    self.default_term_values = { :dcmi_type => ["http://purl.org/dc/dcmitype/Text"], :degree_granting_institution => ["University of North Carolina at Chapel Hill"] }
 
     # Add overrides for required properties which are becoming single-valued
 

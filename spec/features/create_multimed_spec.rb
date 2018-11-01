@@ -60,7 +60,7 @@ RSpec.feature 'Create a Multimed', js: false do
       fill_in 'Title', with: 'Test Multimed'
       fill_in 'Creator', with: 'Test Default Creator'
       fill_in 'Abstract', with: 'an abstract'
-      fill_in 'Date Created', with: '2018-10-03'
+      fill_in 'Date of publication', with: '2018-10-03'
       select 'Video', from: 'multimed_resource_type'
 
       # extra fields
@@ -76,6 +76,7 @@ RSpec.feature 'Create a Multimed', js: false do
       fill_in 'Subject', with: 'test'
 
       expect(page).not_to have_field('multimed_access')
+      expect(page).not_to have_field('multimed_date_created')
       expect(page).not_to have_field('multimed_doi')
       expect(page).to have_selector('#multimed_language_label', visible: false)
       expect(page).to have_selector('#multimed_license_label', visible: false)
@@ -103,7 +104,7 @@ RSpec.feature 'Create a Multimed', js: false do
       first('.document-title', text: 'Test Multimed').click
       expect(page).to have_content 'Abstract an abstract'
       expect(page).to have_content 'Creator Test Default Creator'
-      expect(page).to have_content 'Date created October 3, 2018'
+      expect(page).to have_content 'Date issued October 3, 2018'
       expect(page).to have_content 'Extent some extent'
       expect(page).to have_content 'Geographic subject some geographic subject'
       expect(page).to have_content 'Keyword Test Default Keyword'
@@ -136,10 +137,11 @@ RSpec.feature 'Create a Multimed', js: false do
       fill_in 'Title', with: 'Test Multimed'
       fill_in 'Creator', with: 'Test Default Creator'
       fill_in 'Abstract', with: 'an abstract'
-      fill_in 'Date Created', with: '2018-10-03'
+      fill_in 'Date of publication', with: '2018-10-03'
       select 'Video', from: 'multimed_resource_type'
 
       # extra fields
+      fill_in 'Date Created', with: '2018-10-03'
       fill_in 'Dcmi type', with: 'http://purl.org/dc/dcmitype/Text'
       fill_in 'DOI', with: 'some doi'
       fill_in 'Extent', with: 'some extent'
@@ -181,6 +183,7 @@ RSpec.feature 'Create a Multimed', js: false do
       expect(page).to have_content 'Abstract an abstract'
       expect(page).to have_content 'Creator Test Default Creator'
       expect(page).to have_content 'Date created October 3, 2018'
+      expect(page).to have_content 'Date issued October 3, 2018'
       expect(page).to have_content 'Type http://purl.org/dc/dcmitype/Text'
       expect(page).to have_content 'Doi some doi'
       expect(page).to have_content 'Extent some extent'
