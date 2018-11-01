@@ -118,13 +118,12 @@ en:
         kind_of_data: "The kind of data in your dataset. Choose the best option from the drop-down."
         language: "The primary language of your work."
         last_modified: "The date on which your dataset was last modified."
-        license: "The license and distribution statement that you would like to apply to your work. This statement will tell other users how they may reuse your work. For more information on each option, see our <a target=\"_blank\" href=\"https://blogs.lib.unc.edu/cdr/index.php/frequently-asked-questions\">FAQ</a>."
+        license: "The license and distribution statement that you would like to apply to your work. This statement will tell other users how they may reuse your work. For more information on each option, <a target=\"_blank\" href=\"https://blogs.lib.unc.edu/cdr/index.php/frequently-asked-questions\">see our FAQ</a>."
         license_label: "The license and distribution statement that you would like to apply to your work. This statement will tell other users how they may reuse your work. For more information on each option, see our <a target=\"_blank\" href=\"https://blogs.lib.unc.edu/cdr/index.php/frequently-asked-questions\">FAQ</a>."
+        medium: "The material of the original work."
         note: "Additional information about your work. Please be aware that content in this field will be visible to the public."
         orcid: "If you have an ORCID, enter it below. To learn more about ORCID and sign up,
-                visit <a target=\"_blank\" href=\"https://guides.lib.unc.edu/orcid\">
-                If you have an ORCID, enter it below. To learn more about ORCID and sign up,
-                visit https://guides.lib.unc.edu/orcid</a>"
+                visit <a target=\"_blank\" href=\"https://guides.lib.unc.edu/orcid\">"
         place_of_publication: "The place in which the work was published."
         project_director: "The director or primary investigator of the project."
         publisher: "The publisher of your work. This may be UNC, or an external publisher."
@@ -134,7 +133,7 @@ en:
         resource_type: "Select the category which best describes your work."
         reviewer: "The reviewer of your masters paper, thesis or dissertation."
         rights_holder: "The person or entity who holds the rights to your work. This may be you, or an external publisher."
-        rights_statement: "A statement which describes the copyright status of the work. For more information on each option, see our <a target=\"_blank\" href=\"https://blogs.lib.unc.edu/cdr/index.php/frequently-asked-questions\">FAQ</a>."
+        rights_statement: "A statement which describes the copyright status of the work. For more information on each option, <a target=\"_blank\" href=\"https://blogs.lib.unc.edu/cdr/index.php/frequently-asked-questions\">see our FAQ</a>."
         series: "The title of the series to which your work belongs, if applicable."
         sponsor: "A person or organization which sponsored some aspect of the work. For funder, use the \"Funder\" field instead."
         table_of_contents: "The table of contents for this issue, proceeding or book."
