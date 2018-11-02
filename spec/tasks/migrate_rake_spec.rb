@@ -1,9 +1,9 @@
 require "rails_helper"
 require "rake"
 
-describe "rake cdr:migration:items", type: :task do
+describe "rake migrate:works", type: :task do
   let(:user) do
-    User.new(email: 'test@example.com', guest: false, uid: 'test@example.com') { |u| u.save!(validate: false)}
+    User.find_by_user_key('admin@example.com')
   end
 
   let(:admin_set) do
@@ -32,11 +32,12 @@ describe "rake cdr:migration:items", type: :task do
   end
 
   it "preloads the Rails environment" do
-    expect(Rake::Task['cdr:migration:items'].prerequisites).to include "environment"
+    expect(Rake::Task['migrate:works'].prerequisites).to include "environment"
   end
 
   it "creates a new work" do
-    expect { Rake::Task['cdr:migration:items'].invoke('collection1',
+    expect { Rake::Task['migrate:works'].invoke('collection1',
+                                                      'spec/fixtures/migration/migration_config.yml',
                                                       'spec/fixtures/migration/mapping.csv',
                                                       'RAILS_ENV=test') }
         .to change{ Article.count }.by(1)
@@ -50,6 +51,7 @@ describe "rake cdr:migration:items", type: :task do
     expect(new_article['contributor']).to match_array ['Hugo, Victor']
     expect(new_article['publisher']).to match_array ['Project Gutenberg']
     expect(new_article['admin_set_id']).to eq admin_set.id
+    expect(new_article.visibility).to eq 'restricted'
     File.delete('spec/fixtures/migration/mapping.csv')
   end
 end
