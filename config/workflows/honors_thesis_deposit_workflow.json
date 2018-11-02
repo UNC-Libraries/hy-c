@@ -33,7 +33,6 @@
                         }
                     ],
                     "methods": [
-                        "Hyrax::Workflow::DeactivateObject",
                         "Hyrax::Workflow::GrantEditToDepositor"
                     ]
                 }, {
@@ -62,6 +61,10 @@
                             "name": "Hyrax::Workflow::PendingReviewNotification",
                             "to": ["approving"]
                         }
+                    ],
+                    "methods": [
+                        "Hyrax::Workflow::ActivateObject",
+                        "Hyrax::Workflow::AssignReviewerByAffiliation"
                     ]
                 }, {
                     "name": "comment_only",
