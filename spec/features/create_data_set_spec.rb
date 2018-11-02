@@ -67,10 +67,7 @@ RSpec.feature 'Create a DataSet', js: false do
       # extra fields
       select 'Department of Biology', from: 'data_set_affiliation'
       fill_in 'Contributor', with: 'a contributor'
-      fill_in 'Date Created', with: '2018-10-03'
       fill_in 'Description', with: 'a description'
-      fill_in 'DOI', with: 'some doi'
-      fill_in 'Extent', with: 'some extent'
       fill_in 'Funder', with: 'some funder'
       fill_in 'Location', with: 'some geographic subject'
       fill_in 'Keyword', with: 'Test Default Keyword'
@@ -87,6 +84,10 @@ RSpec.feature 'Create a DataSet', js: false do
       fill_in 'Sponsor', with: 'a sponsor'
       fill_in 'Subject', with: 'test'
 
+      expect(page).not_to have_field('data_set_date_access')
+      expect(page).not_to have_field('data_set_date_created')
+      expect(page).not_to have_field('data_set_doi')
+      expect(page).not_to have_field('data_set_extent')
       expect(page).to have_selector('#data_set_language_label', visible: false)
       expect(page).to have_selector('#data_set_license_label', visible: false)
       expect(page).to have_selector('#data_set_rights_statement_label', visible: false)
@@ -120,7 +121,6 @@ RSpec.feature 'Create a DataSet', js: false do
       expect(page).to have_content 'Kind of data Text'
       expect(page).to have_content 'License Attribution 3.0 United States'
       expect(page).to have_content 'Rights statement In Copyright'
-      expect(page).to have_content 'Date created October 3, 2018'
       expect(page).to have_content 'Language English'
       expect(page).to have_content 'Related url something.com'
       expect(page).to have_content 'Resource type Dataset'
@@ -129,8 +129,6 @@ RSpec.feature 'Create a DataSet', js: false do
       expect(page).to have_content 'Department of Biology'
       expect(page).to have_content 'Contributors a contributor'
       expect(page).to have_content 'Description a description'
-      expect(page).to have_content 'Doi some doi'
-      expect(page).to have_content 'Extent some extent'
       expect(page).to have_content 'Funder some funder'
       expect(page).to have_content 'Geographic subject some geographic subject'
       expect(page).to have_content 'Last modified date October 3, 2018'

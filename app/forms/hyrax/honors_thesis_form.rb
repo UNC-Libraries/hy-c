@@ -16,7 +16,7 @@ module Hyrax
                             :degree_granting_institution, :graduation_year]
     self.single_value_fields = [:title, :license, :rights_statement]
     
-    self.admin_only_terms = [:dcmi_type]
+    self.admin_only_terms = [:dcmi_type, :access, :doi, :use]
 
     self.default_term_values = { :dcmi_type => ["http://purl.org/dc/dcmitype/Text"] }
 
