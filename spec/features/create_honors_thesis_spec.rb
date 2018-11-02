@@ -70,7 +70,7 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       # extra fields
       select 'Clinical Nutrition', from: 'Academic Concentration'
       fill_in 'Alternate title', with: 'another title'
-      select 'Honors', from: 'Honors Level'
+      select 'Honors', from: 'Honors level'
       fill_in 'Extent', with: 'some extent'
       fill_in 'Location', with: 'some geographic subject'
       fill_in 'Keyword', with: 'Test Default Keyword'
