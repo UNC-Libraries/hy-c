@@ -106,7 +106,7 @@ en:
         creator: "The person or group responsible for creating the work. If you are depositing a paper, article or book chapter, enter the author's name"
         date_issued: "The date that the work was formally published."
         degree: "The degree that you are pursing"
-        description: "Notes about your work, if needed. To summarize your work, use the Abstract field instead. If you are depositing a dataset, enter your methodology here"
+        description: "Notes about your work, if needed. To summarize your work, use the Abstract field instead. If you are depositing a dataset, enter your methodology here."
         doi: "The DOI assigned by the CDR."
         edition: "The version of the work. If you have questions about this field, please contact the CDR."
         extent: "The size or duration of the work, e.g. \"3 pages\", or \"10 minutes.\""
