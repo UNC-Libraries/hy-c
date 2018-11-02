@@ -82,14 +82,13 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       fill_in 'Related resource URL', with: 'something.com'
       select 'In Copyright', :from => 'honors_thesis_rights_statement'
       fill_in 'Subject', with: 'test'
-      fill_in 'Url', with: 'some url'
+      fill_in 'Link to publisher version', with: 'some url'
 
       expect(page).not_to have_field('honors_thesis_access')
       expect(page).not_to have_field('honors_thesis_doi')
       expect(page).to have_selector('#honors_thesis_language_label', visible: false)
       expect(page).to have_selector('#honors_thesis_license_label', visible: false)
       expect(page).to have_selector('#honors_thesis_rights_statement_label', visible: false)
-      expect(page).not_to have_field('honors_thesis_subject')
       expect(page).not_to have_field('honors_thesis_use')
       expect(page).to have_field('honors_thesis_visibility_embargo')
       expect(page).not_to have_field('honors_thesis_visibility_lease')
