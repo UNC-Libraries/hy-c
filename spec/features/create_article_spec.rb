@@ -71,7 +71,6 @@ RSpec.feature 'Create a Article', js: false do
       fill_in 'Related resource URL', with: 'something.com'
       select 'Article', from: 'article_resource_type'
       select 'Department of Biology', from: 'article_affiliation'
-      fill_in 'Bibliographic citation', with: 'a citation'
       fill_in 'Copyright date', with: '2018-10-03'
       fill_in 'Date captured', with: '2018-10-03'
       fill_in 'Date other', with: '2018-10-03'
@@ -100,7 +99,7 @@ RSpec.feature 'Create a Article', js: false do
       expect(page).to have_selector('#article_license_label', visible: false)
       expect(page).to have_selector('#article_rights_statement_label', visible: false)
       expect(page).not_to have_field('article_access')
-      expect(page).not_to have_field('article_citation')
+      expect(page).not_to have_field('article_bibliographic_citation')
       expect(page).not_to have_field('article_date_created')
       expect(page).to have_field('article_visibility_embargo')
       expect(page).not_to have_field('article_visibility_lease')
@@ -140,7 +139,6 @@ RSpec.feature 'Create a Article', js: false do
       expect(page).to have_content 'Affiliation'
       expect(page).to have_content 'College of Arts and Sciences'
       expect(page).to have_content 'Department of Biology'
-      expect(page).to have_content 'Bibliographic citation a citation'
       expect(page).to have_content 'Copyright date October 3, 2018'
       expect(page).to have_content 'Date captured October 3, 2018'
       expect(page).to have_content 'Date other October 3, 2018'
