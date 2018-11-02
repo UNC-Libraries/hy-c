@@ -174,7 +174,6 @@ module Migrate
           # Only keep attributes which apply to the given work type
           resource.attributes = work_attributes.reject{|k,v| !resource.attributes.keys.member?(k.to_s)}
 
-          resource.rights_statement = ['http://rightsstatements.org/vocab/InC-EDU/1.0/']
           resource.visibility = work_attributes['visibility']
           unless work_attributes['embargo_release_date'].blank?
             resource.embargo_release_date = work_attributes['embargo_release_date']

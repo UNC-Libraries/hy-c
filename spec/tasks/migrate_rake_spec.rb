@@ -50,6 +50,12 @@ describe "rake migrate:works", type: :task do
     expect(new_article['creator']).to match_array ['Hugo, Victor']
     expect(new_article['contributor']).to match_array ['Hugo, Victor']
     expect(new_article['publisher']).to match_array ['Project Gutenberg']
+    expect(new_article['language']).to match_array ['http://id.loc.gov/vocabulary/iso639-2/eng']
+    expect(new_article['language_label']).to match_array ['English']
+    expect(new_article['license']).to match_array ['http://creativecommons.org/licenses/by/3.0/us/']
+    expect(new_article['license_label']).to match_array ['Attribution 3.0 United States']
+    expect(new_article['rights_statement']).to match_array ['http://rightsstatements.org/vocab/InC/1.0/']
+    expect(new_article['rights_statement_label']).to match_array ['In Copyright']
     expect(new_article['admin_set_id']).to eq admin_set.id
     expect(new_article.visibility).to eq 'restricted'
     File.delete('spec/fixtures/migration/mapping.csv')

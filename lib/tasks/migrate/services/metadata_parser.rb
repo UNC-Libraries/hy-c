@@ -104,11 +104,14 @@ module Migrate
           end
           languages = descriptive_mods.xpath('mods:language/mods:languageTerm',MigrationConstants::NS).map(&:text)
           work_attributes['language'] = get_language_uri(languages) if !languages.blank?
+          work_attributes['language_label'] = work_attributes['language'].map{|l| LanguagesService.label(l) }
           work_attributes['resource_type'] = descriptive_mods.xpath('mods:genre',MigrationConstants::NS).map(&:text)
           work_attributes['dcmi_type'] = descriptive_mods.xpath('mods:typeOfResource/@valueURI',MigrationConstants::NS).map(&:text)
           work_attributes['use'] = descriptive_mods.xpath('mods:accessCondition[@type="use and reproduction" and ((@displayLabel!="License" and @displayLabel!="Rights Statement") or not(@displayLabel))]/@*[name()="xlink:href"]',MigrationConstants::NS).map(&:text)
           work_attributes['license'] = descriptive_mods.xpath('mods:accessCondition[@displayLabel="License" and @type="use and reproduction"]/@*[name()="xlink:href"]',MigrationConstants::NS).map(&:text)
+          work_attributes['license_label'] = work_attributes['license'].map{ |l| CdrLicenseService.label(l) }
           work_attributes['rights_statement'] = descriptive_mods.xpath('mods:accessCondition[@displayLabel="Rights Statement" and @type="use and reproduction"]/@*[name()="xlink:href"]',MigrationConstants::NS).map(&:text)
+          work_attributes['rights_statement_label'] = work_attributes['rights_statement'].map{ |r| CdrRightsStatementsService.label(r) }
           work_attributes['rights_holder'] = descriptive_mods.xpath('mods:accessCondition/rights:copyright/rights:rights.holder/rights:name',MigrationConstants::NS).map(&:text)
           work_attributes['access'] = descriptive_mods.xpath('mods:accessCondition[@type="restriction on access"]',MigrationConstants::NS).map(&:text)
           work_attributes['doi'] = descriptive_mods.xpath('mods:identifier[@type="doi"]',MigrationConstants::NS).map(&:text)
