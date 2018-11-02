@@ -23,7 +23,7 @@
             <mods:namePart>Masamune, Hakucho</mods:namePart>
           </mods:name>
           <mods:language>
-            <mods:languageTerm authority="iso639-2b" type="code">Japanese</mods:languageTerm>
+            <mods:languageTerm authority="iso639-2b" type="code">jpn</mods:languageTerm>
           </mods:language>
           <mods:typeOfResource>text</mods:typeOfResource>
           <mods:genre authorityURI="http://purl.org/eprint/type/" valueURI="http://purl.org/eprint/type/Book" type="work type">Book</mods:genre>
@@ -49,7 +49,6 @@
             <ns5:contains rdf:resource="info:fedora/uuid:b2ec09b8-b1ca-4811-9a0a-623c9e8d92be"></ns5:contains>
             <ns5:owner rdf:resource="http://example.com/morganem"></ns5:owner>
             <ns5:slug>2008_Pierson</ns5:slug>
-            <ns6:hasModel rdf:resource="info:fedora/cdr-model:AggregateWork"></ns6:hasModel>
             <ns6:hasModel rdf:resource="info:fedora/cdr-model:Container"></ns6:hasModel>
             <ns6:hasModel rdf:resource="info:fedora/cdr-model:PreservedObject"></ns6:hasModel>
             <cdr:defaultWebObject xmlns:cdr="http://cdr.unc.edu/definitions/1.0/base-model.xml#" rdf:resource="info:fedora/uuid:b2ec09b8-b1ca-4811-9a0a-623c9e8d92be"></cdr:defaultWebObject>

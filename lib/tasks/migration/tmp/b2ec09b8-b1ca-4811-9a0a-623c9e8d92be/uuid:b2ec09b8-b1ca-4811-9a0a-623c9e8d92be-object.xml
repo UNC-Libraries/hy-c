@@ -23,7 +23,7 @@ xsi:schemaLocation="info:fedora/fedora-system:def/foxml# http://www.fedora.info/
             <mods:namePart>Masamune, Hakucho</mods:namePart>
           </mods:name>
           <mods:language>
-            <mods:languageTerm authority="iso639-2b" type="code">Japanese</mods:languageTerm>
+            <mods:languageTerm authority="iso639-2b" type="code">jpn</mods:languageTerm>
           </mods:language>
           <mods:typeOfResource>text</mods:typeOfResource>
           <mods:genre authorityURI="http://purl.org/eprint/type/" valueURI="http://purl.org/eprint/type/Book" type="work type">Book</mods:genre>

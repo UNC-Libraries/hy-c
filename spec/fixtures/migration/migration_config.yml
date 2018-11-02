@@ -5,9 +5,5 @@ collection1:
   binaries: spec/fixtures/migration/binaries.txt
   work_type: Article
   admin_set: default
-collection2:
-  collection_list: spec/fixtures/migration/collection.csv
-  objects: spec/fixtures/migration/objects.txt
-  binaries: spec/fixtures/migration/binaries.txt
-  work_type: General
-  admin_set: default2d005f01-844e-46f3-b528-6a9c40e29914
+  depositor_email: admin@example.com
+  tmp_file_location: spec/fixtures/migration/files

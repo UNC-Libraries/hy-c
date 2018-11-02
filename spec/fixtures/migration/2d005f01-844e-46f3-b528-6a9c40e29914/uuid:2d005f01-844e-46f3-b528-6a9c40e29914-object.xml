@@ -19,8 +19,21 @@
             <mods:title>Les Miserables</mods:title>
           </mods:titleInfo>
           <mods:abstract>Abstract</mods:abstract>
-          <mods:name>
-            <mods:namePart>Hugo, Victor</mods:namePart>
+          <mods:accessCondition displayLabel="Rights Statement" type="use and reproduction" xlink:href="http://rightsstatements.org/vocab/InC/1.0/"/>
+          <mods:accessCondition displayLabel="License" type="use and reproduction" xlink:href="http://creativecommons.org/licenses/by/3.0/us/"/>
+          <mods:name type="personal">
+            <mods:role>
+              <mods:roleTerm authority="marcrelator" type="text">Creator</mods:roleTerm>
+            </mods:role>
+            <mods:namePart type="given">Victor</mods:namePart>
+            <mods:namePart type="family">Hugo</mods:namePart>
+          </mods:name>
+          <mods:name type="personal">
+            <mods:role>
+              <mods:roleTerm authority="marcrelator" type="text">Contributor</mods:roleTerm>
+            </mods:role>
+            <mods:namePart type="given">Victor</mods:namePart>
+            <mods:namePart type="family">Hugo</mods:namePart>
           </mods:name>
           <mods:language>
             <mods:languageTerm authority="iso639-2b" type="code">eng</mods:languageTerm>
@@ -49,8 +62,8 @@
             <ns5:contains rdf:resource="info:fedora/uuid:2f847077-7060-445b-99b3-190e7cff0067"></ns5:contains>
             <ns5:owner rdf:resource="http://example.com/morganem"></ns5:owner>
             <ns5:slug>2008_Pierson</ns5:slug>
+            <isPublished>no</isPublished>
             <ns6:hasModel rdf:resource="info:fedora/cdr-model:AggregateWork"></ns6:hasModel>
-            <ns6:hasModel rdf:resource="info:fedora/cdr-model:Container"></ns6:hasModel>
             <ns6:hasModel rdf:resource="info:fedora/cdr-model:PreservedObject"></ns6:hasModel>
             <cdr:defaultWebObject xmlns:cdr="http://cdr.unc.edu/definitions/1.0/base-model.xml#" rdf:resource="info:fedora/uuid:2f847077-7060-445b-99b3-190e7cff0067"></cdr:defaultWebObject>
           </rdf:Description>
