@@ -26,10 +26,6 @@ class Journal < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :dcmi_type, predicate: ::RDF::Vocab::DC.type do |index|
-    index.as :stored_searchable
-  end
-
   # link to previous deposit record
   property :deposit_record, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#DepositRecord'), multiple: false do |index|
     index.as :stored_searchable
