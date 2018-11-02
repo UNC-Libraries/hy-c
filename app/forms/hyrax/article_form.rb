@@ -7,10 +7,10 @@ module Hyrax
 
     self.model_class = ::Article
     self.terms += [:resource_type, :abstract, :access, :affiliation, :affiliation_label, :bibliographic_citation,
-                   :copyright_date, :date_captured, :date_issued, :date_other, :dcmi_type, :doi, :edition, :extent,
-                   :funder, :geographic_subject, :issn, :journal_issue, :journal_title, :journal_volume, :note, :orcid,
+                   :copyright_date, :date_issued, :date_other, :dcmi_type, :doi, :edition, :extent,
+                   :funder, :geographic_subject, :issn, :journal_title, :journal_volume, :journal_issue, :note, :orcid,
                    :other_affiliation, :page_end, :page_start, :peer_review_status, :place_of_publication,
-                   :rights_holder, :table_of_contents, :translator, :url, :use]
+                   :rights_holder, :translator, :url, :use]
 
     self.required_fields = [:title, :creator, :abstract, :date_issued]
 

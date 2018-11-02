@@ -1,7 +1,9 @@
+<% date_value =  f.object.date_created.blank? ? Date.today.strftime("%Y-%m-%d") : f.object.date_created %>
+
 <% if f.object.multiple? key %>
   <%= f.input :date_created, as: :multi_value, html5: true, placeholder: "Date Format YYYY-MM-DD",
-              input_html: { class: 'date-input', value: f.object.date_created || '' } %>
+              input_html: { class: 'date-input', value: date_value } %>
 <% else %>
   <%= f.input :date_created, as: :date, html5: true, placeholder: "Date Format YYYY-MM-DD",
-              input_html: { class: 'date-input', value: f.object.date_created || '' } %>
+              input_html: { class: 'date-input', value: date_value } %>
 <% end %>
