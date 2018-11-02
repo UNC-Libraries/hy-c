@@ -49,6 +49,11 @@ en:
     institution_name_full:  "The Institution Name"
     account_name:           "My Institution Account Id"
     base:
+      form_files:
+        dropzone: "Drag and drop your files here."
+        local_upload_browse_everything_html: "<p>Fill out the form below to deposit your work.</p>
+        <p>If you do not know what to put in a field, please leave it blank.
+        If you have questions, feel free to <a target=\"_blank\" href=\"https://blogs.lib.unc.edu/cdr/index.php/contact-us\">contact us</a> for help.</p>"
       items:
         empty_artwork: This Artwork has no files associated with it. Click "Attach Artwork" to add more files.
     directory:
@@ -58,6 +63,9 @@ en:
       service_html: A service of <a href="http://samvera.org/" class="navbar-link" target="_blank">Samvera</a>.
     citations:
       citation: Citation
+    collection:
+      form:
+        additional_fields: Optional fields
     links:
       help: Help
       accessibility: Accessibility
@@ -90,6 +98,7 @@ en:
             label_long: All of the CDR
     works:
       form:
+        additional_fields: Optional fields
         tab:
           metadata: Work
   simple_form:
