@@ -38,6 +38,12 @@ $(function() {
         }
     }
 
+    function hideNonRequiredFieldsBtn() {
+        $('#metadata a.additional-fields').on('click', function () {
+            $(this).addClass('hidden');
+        });
+    }
+
     function hideNonRequiredFormFields() {
         // Remove class to hide non-required fields
         // Isn't there by default so fields still show if JS is turned off
@@ -50,6 +56,7 @@ $(function() {
     visibleForms();
     browseEverythingUploads();
     uploadProgress();
+    hideNonRequiredFieldsBtn();
     hideNonRequiredFormFields();
 
     // Make sure that form visibility and datepicker work with turbolinks
@@ -57,6 +64,7 @@ $(function() {
         visibleForms();
         browseEverythingUploads();
         uploadProgress();
+        hideNonRequiredFieldsBtn();
         hideNonRequiredFormFields();
     });
 
