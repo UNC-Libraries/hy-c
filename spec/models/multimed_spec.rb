@@ -29,6 +29,7 @@ RSpec.describe Multimed do
       expect(subject).to respond_to(:description)
       expect(subject).to respond_to(:publisher)
       expect(subject).to respond_to(:date_created)
+      expect(subject).to respond_to(:date_issued)
       expect(subject).to respond_to(:date_uploaded)
       expect(subject).to respond_to(:date_modified)
       expect(subject).to respond_to(:subject)

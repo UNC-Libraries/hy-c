@@ -33,13 +33,16 @@ RSpec.describe Hyrax::ArticleForm do
   describe "#admin_only_terms" do
     subject { form.admin_only_terms }
 
-    it { is_expected.to match_array [:dcmi_type] }
+    it { is_expected.to match_array [:dcmi_type, :date_created, :access, :bibliographic_citation, :identifier, :use] }
   end
   
   describe 'default value set' do
     subject { form }
     it "dcmi type must have default values" do
       expect(form.model['dcmi_type']).to eq ['http://purl.org/dc/dcmitype/Text'] 
+    end
+    it "language must have default values" do
+      expect(form.model['language']).to eq ['http://id.loc.gov/vocabulary/iso639-2/eng'] 
     end
   end
 
@@ -151,6 +154,7 @@ RSpec.describe Hyrax::ArticleForm do
         ActionController::Parameters.new(
             title: '',
             keyword: [''],
+            language_label: [],
             license: '',
             member_of_collection_ids: [''],
             on_behalf_of: 'Melissa'
