@@ -62,17 +62,15 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       fill_in 'Advisor', with: 'an advisor'
       select 'Department of Biology', from: 'honors_thesis_affiliation'
       fill_in 'Author', with: 'Test Default Creator'
-      fill_in 'Date Completed', with: '2018-10-03'
+      fill_in 'Date completed', with: '2018-10-03'
       select 'Bachelor of Science', from: 'honors_thesis_degree'
       fill_in 'Degree granting institution', with: 'UNC'
       fill_in 'Graduation year', with: '2018'
 
       # extra fields
       select 'Clinical Nutrition', from: 'Academic Concentration'
-      fill_in 'Access', with: 'some access'
       fill_in 'Alternate title', with: 'another title'
-      select 'Honors', :from => 'honors_thesis_award'
-      fill_in 'DOI', with: 'some doi'
+      select 'Honors', from: 'Honors level'
       fill_in 'Extent', with: 'some extent'
       fill_in 'Location', with: 'some geographic subject'
       fill_in 'Keyword', with: 'Test Default Keyword'
@@ -84,12 +82,14 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       fill_in 'Related resource URL', with: 'something.com'
       select 'In Copyright', :from => 'honors_thesis_rights_statement'
       fill_in 'Subject', with: 'test'
-      fill_in 'Use', with: 'some use'
       fill_in 'Link to publisher version', with: 'some url'
 
+      expect(page).not_to have_field('honors_thesis_access')
+      expect(page).not_to have_field('honors_thesis_doi')
       expect(page).to have_selector('#honors_thesis_language_label', visible: false)
       expect(page).to have_selector('#honors_thesis_license_label', visible: false)
       expect(page).to have_selector('#honors_thesis_rights_statement_label', visible: false)
+      expect(page).not_to have_field('honors_thesis_use')
       expect(page).to have_field('honors_thesis_visibility_embargo')
       expect(page).not_to have_field('honors_thesis_visibility_lease')
       expect(page).to have_select('honors_thesis_resource_type', selected: 'Honors Thesis')
@@ -114,7 +114,6 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       first('.document-title', text: 'Test HonorsThesis work').click
       expect(page).to have_content 'Abstract an abstract'
       expect(page).to have_content 'Academic concentration Clinical Nutrition'
-      expect(page).to have_content 'Access some access'
       expect(page).to have_content 'Advisor an advisor'
       expect(page).to have_content 'Affiliation'
       expect(page).to have_content 'College of Arts and Sciences'
@@ -125,7 +124,6 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       expect(page).to have_content 'Date created October 3, 2018'
       expect(page).to have_content 'Degree Bachelor of Science'
       expect(page).to have_content 'Degree granting institution UNC'
-      expect(page).to have_content 'Doi some doi'
       expect(page).to have_content 'Extent some extent'
       expect(page).to have_content 'Geographic subject some geographic subject'
       expect(page).to have_content 'Graduation year 2018'
@@ -138,7 +136,6 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       expect(page).to have_content 'Related url something.com'
       expect(page).to have_content 'Rights statement In Copyright'
       expect(page).to have_content 'Subject test'
-      expect(page).to have_content 'Use some use'
       expect(page).to have_content 'Url some url'
       expect(page).to_not have_content 'Language http://id.loc.gov/vocabulary/iso639-2/eng'
       expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
@@ -164,7 +161,7 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       fill_in 'Advisor', with: 'an advisor'
       select 'Department of Biology', from: 'honors_thesis_affiliation'
       fill_in 'Author', with: 'Test Default Creator'
-      fill_in 'Date Completed', with: '2018-10-03'
+      fill_in 'Date completed', with: '2018-10-03'
       select 'Bachelor of Science', from: 'honors_thesis_degree'
       fill_in 'Degree granting institution', with: 'UNC'
       fill_in 'Graduation year', with: '2018'
