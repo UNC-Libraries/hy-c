@@ -75,7 +75,7 @@
     <td>
       <%= label_tag :owner_access, class: "control-label" do %>
         <%# [hyc-override] Overriding to make depositor a facet search and not link to user profile %>
-        <%= t('.depositor') %> (<span id="file_owner" data-depositor="<%= depositor %>"><%= link_to depositor, main_app.search_catalog_path(f: { depositor_tesim: [depositor]}) %></span>)
+        <%= t('.depositor') %> (<span id="file_owner" data-depositor="<%= depositor %>"><%= link_to depositor, main_app.search_catalog_path(f: { depositor_ssim: [depositor]}) %></span>)
       <% end %>
     </td>
     <td>
