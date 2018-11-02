@@ -130,7 +130,7 @@ en:
         kind_of_data: "The type of data that you are depositing. Choose the best option from the drop-down menu."
         language: "The primary language of your work."
         last_modified: "The date on which your dataset was last modified."
-        license: "The license and distribution statement that you would like to apply to your work. This statement will tell other users how they may reuse your work. For more information on each option, see our <a target=\"_blank\" href=\"https://blogs.lib.unc.edu/cdr/index.php/frequently-asked-questions\">FAQ</a>."
+        license: "The license and distribution statement that you would like to apply to your work. This statement will tell other users how they may reuse your work. For more information on each option, <a target=\"_blank\" href=\"https://blogs.lib.unc.edu/cdr/index.php/frequently-asked-questions\">see our FAQ</a>."
         license_label: "The license and distribution statement that you would like to apply to your work. This statement will tell other users how they may reuse your work. For more information on each option, see our <a target=\"_blank\" href=\"https://blogs.lib.unc.edu/cdr/index.php/frequently-asked-questions\">FAQ</a>."
         note: "Additional information about your work. Please be aware that content in this field will be visible to the public."
         orcid: "If you have an ORCID, enter it below. To learn more about ORCID and sign up,
@@ -145,7 +145,7 @@ en:
         resource_type: "Select the category which best describes your work."
         reviewer: "The reviewer of your masters paper, thesis or dissertation."
         rights_holder: "The person or entity who holds the rights to your work. This may be you, or an external publisher."
-        rights_statement: "A statement which describes the copyright status of the work. For more information on each option, see our <a target=\"_blank\" href=\"https://blogs.lib.unc.edu/cdr/index.php/frequently-asked-questions\">FAQ</a>."
+        rights_statement: "A statement which describes the copyright status of the work. For more information on each option, <a target=\"_blank\" href=\"https://blogs.lib.unc.edu/cdr/index.php/frequently-asked-questions\">see our FAQ</a>."
         series: "The title of the series to which your work belongs, if applicable."
         sponsor: "A person or organization which sponsored some aspect of the work. For funder, use the \"Funder\" field instead. If your work was not sponsored, leave this field blank."
         subject: "Terms describing what the work is about. Type a term into the search box and select from the choices provided."

@@ -22,6 +22,10 @@ class Multimed < ActiveFedora::Base
     index.as :stored_searchable
   end
 
+  property :date_issued, predicate: ::RDF::Vocab::DC.issued, multiple: false do |index|
+    index.as :stored_searchable, :facetable
+  end
+
   # link to previous deposit record
   property :deposit_record, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#DepositRecord'), multiple: false do |index|
     index.as :stored_searchable
