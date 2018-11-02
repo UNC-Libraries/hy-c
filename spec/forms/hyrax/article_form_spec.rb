@@ -23,10 +23,10 @@ RSpec.describe Hyrax::ArticleForm do
 
     it { is_expected.to match_array [:keyword, :license, :rights_statement, :publisher, :date_created, :subject, :language,
                             :identifier, :related_url, :resource_type, :access, :affiliation, :affiliation_label,
-                            :bibliographic_citation, :copyright_date, :date_captured, :date_other, :dcmi_type, :doi,
-                            :edition, :extent, :funder, :geographic_subject, :issn, :journal_issue, :journal_title,
-                            :journal_volume, :note, :orcid, :other_affiliation, :page_end, :page_start,
-                            :peer_review_status, :place_of_publication, :rights_holder, :table_of_contents, :translator,
+                            :bibliographic_citation, :copyright_date, :date_other, :dcmi_type, :doi,
+                            :edition, :extent, :funder, :geographic_subject, :issn, :journal_title,
+                            :journal_volume, :journal_issue, :note, :orcid, :other_affiliation, :page_end, :page_start,
+                            :peer_review_status, :place_of_publication, :rights_holder, :translator,
                             :url, :use, :language_label, :license_label, :rights_statement_label] }
   end
   
@@ -69,12 +69,11 @@ RSpec.describe Hyrax::ArticleForm do
           access: 'public', # single-valued
           affiliation: ['School of Medicine', 'Carolina Center for Genome Sciences'],
           copyright_date: '2017-01-22', # single-valued
-          date_captured: '2017-01-22', # single-valued
           date_issued: '2017-01-22', # single-valued
           date_other: [''],
           dcmi_type: ['type'],
           doi: '12345', # single-valued
-          edition: ['an edition'],
+          edition: 'an edition', # single-valued
           extent: ['1993'],
           funder: ['dean'],
           geographic_subject: ['California'],
@@ -90,7 +89,6 @@ RSpec.describe Hyrax::ArticleForm do
           peer_review_status: 'in review', # single-valued
           place_of_publication: ['durham'],
           rights_holder: ['dean'],
-          table_of_contents: ['cool table'],
           translator: ['dean'],
           url: ['http://unc.edu'],
           use: ['a use'],
@@ -123,11 +121,10 @@ RSpec.describe Hyrax::ArticleForm do
       expect(subject['affiliation']).to eq ['School of Medicine', 'Carolina Center for Genome Sciences']
       expect(subject['affiliation_label']).to eq ['School of Medicine', 'Carolina Center for Genome Sciences']
       expect(subject['copyright_date']).to eq '2017-01-22'
-      expect(subject['date_captured']).to eq '2017-01-22'
       expect(subject['date_issued']).to eq '2017-01-22'
       expect(subject['date_other']).to be_empty
       expect(subject['doi']).to eq '12345'
-      expect(subject['edition']).to eq ['an edition']
+      expect(subject['edition']).to eq 'an edition'
       expect(subject['extent']).to eq ['1993']
       expect(subject['funder']).to eq ['dean']
       expect(subject['dcmi_type']).to eq ['type']
@@ -144,7 +141,6 @@ RSpec.describe Hyrax::ArticleForm do
       expect(subject['peer_review_status']).to eq 'in review'
       expect(subject['place_of_publication']).to eq ['durham']
       expect(subject['rights_holder']).to eq ['dean']
-      expect(subject['table_of_contents']).to eq ['cool table']
       expect(subject['translator']).to eq ['dean']
       expect(subject['url']).to eq ['http://unc.edu']
       expect(subject['use']).to eq ['a use']
