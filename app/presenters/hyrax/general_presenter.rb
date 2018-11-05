@@ -4,7 +4,7 @@ module Hyrax
   class GeneralPresenter < Hyrax::WorkShowPresenter
     delegate :abstract, :academic_concentration, :access, :advisor, :affiliation, :affiliation_label,
              :alternative_title, :arranger, :award, :bibliographic_citation, :composer, :conference_name,
-             :copyright_date, :date_captured, :date_issued, :date_other, :dcmi_type, :degree,
+             :copyright_date, :date_issued, :date_other, :dcmi_type, :degree,
              :degree_granting_institution, :deposit_record, :digital_collection, :doi, :edition, :extent, :funder,
              :geographic_subject, :graduation_year, :isbn, :issn, :journal_issue, :journal_title, :journal_volume,
              :kind_of_data, :last_modified_date, :language_label, :license_label, :medium, :note, :orcid,
