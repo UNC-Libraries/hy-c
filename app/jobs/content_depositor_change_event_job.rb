@@ -18,7 +18,7 @@ class ContentDepositorChangeEventJob < ContentEventJob
 
   # [hyc-override] Overriding to make depositor a facet search and not link to user profile
   def action
-    "User #{link_to work.proxy_depositor, search_catalog_path(f: { depositor_ssim: [work.proxy_depositor]})} has transferred #{link_to_work work.title.first} to user #{link_to_profile depositor}"
+    "User #{link_to work.proxy_depositor, search_catalog_path(f: { depositor_ssim: [work.proxy_depositor.to_s.sub("-dot-", ".")]})} has transferred #{link_to_work work.title.first} to user #{link_to_profile depositor}"
   end
 
   def link_to_work(text)
