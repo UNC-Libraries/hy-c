@@ -38,7 +38,7 @@
       <dd class="col-xs-9 col-lg-4"><%= document.creator.to_a.to_sentence %></dd>
       <dt class="col-xs-3 col-lg-2">Depositor:</dt>
       <%# [hyc-override] Overriding to make depositor a facet search and not link to user profile %>
-      <dd class="col-xs-9 col-lg-4"><%= link_to document.depositor, main_app.search_catalog_path(f: { depositor_tesim: [document.depositor]}) %></dd>
+      <dd class="col-xs-9 col-lg-4"><%= link_to document.depositor, main_app.search_catalog_path(f: { depositor_ssim: [document.depositor]}) %></dd>
       <dt class="col-xs-3 col-lg-2">Edit Access:</dt>
       <dd class="col-xs-9 col-lg-10">
         <% if document.edit_groups.present? %>

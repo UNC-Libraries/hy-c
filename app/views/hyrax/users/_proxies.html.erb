@@ -4,7 +4,7 @@
   <ul>
     <% @user.can_receive_deposits_from.each do |depositor| %>
       <%# [hyc-override] Overriding to make depositor a facet search and not link to user profile %>
-      <li><%= link_to depositor.user_key, main_app.search_catalog_path(f: { depositor_tesim: [depositor.user_key]}) %></li>
+      <li><%= link_to depositor.user_key, main_app.search_catalog_path(f: { depositor_ssim: [depositor.user_key]}) %></li>
     <% end %>
   </ul>
 
