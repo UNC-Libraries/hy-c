@@ -2,6 +2,8 @@
 <%= presenter.attribute_to_html(:license_label, label: 'License', html_dl: true) %>
 <%= presenter.attribute_to_html(:resource_type, html_dl: true) %>
 <%= presenter.attribute_to_html(:date_created, render_as: :date, html_dl: true) %>
+<%= presenter.attribute_to_html(:date_issued, render_as: :date, html_dl: true) %>
+<%= presenter.attribute_to_html(:abstract, html_dl: true) %>
 <%= presenter.attribute_to_html(:doi, html_dl: true) %>
 <%= presenter.attribute_to_html(:extent, html_dl: true) %>
 <%= presenter.attribute_to_html(:medium, html_dl: true) %>

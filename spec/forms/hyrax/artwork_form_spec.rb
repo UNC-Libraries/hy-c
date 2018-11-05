@@ -9,19 +9,19 @@ RSpec.describe Hyrax::ArtworkForm do
   describe "#required_fields" do
     subject { form.required_fields }
 
-    it { is_expected.to match_array [:title, :date_created, :description, :extent, :medium, :resource_type] }
+    it { is_expected.to match_array [:title, :date_issued, :abstract, :extent, :medium, :resource_type] }
   end
 
   describe "#primary_terms" do
     subject { form.primary_terms }
 
-    it { is_expected.to match_array [:title, :date_created, :description, :extent, :medium, :resource_type] }
+    it { is_expected.to match_array [:title, :date_issued, :abstract, :extent, :medium, :resource_type] }
   end
 
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:license, :rights_statement, :doi, :license_label, :rights_statement_label] }
+    it { is_expected.to match_array [:date_created, :description, :license, :rights_statement, :doi, :license_label, :rights_statement_label] }
   end
 
   describe '.model_attributes' do
@@ -29,6 +29,7 @@ RSpec.describe Hyrax::ArtworkForm do
       ActionController::Parameters.new(
           title: 'foo', # single-valued
           date_created: '2017-01-22', # single-valued
+          date_issued: '2017-01-22', # single-valued
           resource_type: ['a type'],
           rights_statement: 'http://rightsstatements.org/vocab/InC/1.0/', # single-valued
           subject: ['a subject'],
@@ -37,6 +38,7 @@ RSpec.describe Hyrax::ArtworkForm do
           thumbnail_id: '789',
           license: 'http://creativecommons.org/licenses/by/3.0/us/', # single-valued
           member_of_collection_ids: ['123456', 'abcdef'],
+          abstract: ['my abstract'],
           doi: '12345', # single-valued
           extent: '1993',
           medium: 'wood',
@@ -50,11 +52,13 @@ RSpec.describe Hyrax::ArtworkForm do
     it 'permits parameters' do
       expect(subject['title']).to eq ['foo']
       expect(subject['date_created']).to eq '2017-01-22'
+      expect(subject['date_issued']).to eq '2017-01-22'
       expect(subject['resource_type']).to eq ['a type']
       expect(subject['rights_statement']).to eq ['http://rightsstatements.org/vocab/InC/1.0/']
       expect(subject['visibility']).to eq 'open'
       expect(subject['license']).to eq ['http://creativecommons.org/licenses/by/3.0/us/']
       expect(subject['member_of_collection_ids']).to eq ['123456', 'abcdef']
+      expect(subject['abstract']).to eq ['my abstract']
       expect(subject['doi']).to eq '12345'
       expect(subject['extent']).to eq '1993'
       expect(subject['medium']).to eq 'wood'
