@@ -9,7 +9,7 @@ en:
   simple_form:
     hints:
       data_set:
-        description: A description of the methodology used to generate the dataset.
+        last_modified_date: "The date on which your dataset was last modified"
     labels:
       data_set:
-        description: "Methods"
+        other_affiliation: "Additional affiliation"

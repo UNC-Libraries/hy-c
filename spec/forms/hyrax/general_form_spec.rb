@@ -93,7 +93,7 @@ RSpec.describe Hyrax::GeneralForm do
           journal_issue: '27', # single-valued
           journal_title: 'Journal Title', # single-valued
           journal_volume: '4', # single-valued
-          kind_of_data: ['a data type'],
+          kind_of_data: 'a data type',
           last_modified_date: 'hi', # single-valued
           medium: ['a medium'],
           note: ['a note'],
@@ -168,7 +168,7 @@ RSpec.describe Hyrax::GeneralForm do
       expect(subject['journal_issue']).to eq '27'
       expect(subject['journal_title']).to eq 'Journal Title'
       expect(subject['journal_volume']).to eq '4'
-      expect(subject['kind_of_data']).to eq ['a data type']
+      expect(subject['kind_of_data']).to eq 'a data type'
       expect(subject['last_modified_date']).to eq 'hi'
       expect(subject['medium']).to eq ['a medium']
       expect(subject['note']).to eq ['a note']
