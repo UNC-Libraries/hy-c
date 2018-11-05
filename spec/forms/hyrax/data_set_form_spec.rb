@@ -9,13 +9,13 @@ RSpec.describe Hyrax::DataSetForm do
   describe "#required_fields" do
     subject { form.required_fields }
 
-    it { is_expected.to match_array [:title, :creator, :date_issued, :abstract, :kind_of_data, :resource_type] }
+    it { is_expected.to match_array [:title, :creator, :date_issued, :abstract, :description, :kind_of_data, :resource_type] }
   end
 
   describe "#primary_terms" do
     subject { form.primary_terms }
 
-    it { is_expected.to match_array [:title, :creator, :date_issued, :abstract, :kind_of_data, :resource_type] }
+    it { is_expected.to match_array [:title, :creator, :date_issued, :abstract, :description, :kind_of_data, :resource_type] }
   end
 
   describe "#secondary_terms" do
@@ -23,7 +23,7 @@ RSpec.describe Hyrax::DataSetForm do
 
     it { is_expected.to match_array [:affiliation, :affiliation_label, :dcmi_type, :doi, :extent,
                                      :funder, :geographic_subject, :last_modified_date, :project_director, :researcher,
-                                     :rights_holder, :sponsor, :language, :keyword, :related_url, :description,
+                                     :rights_holder, :sponsor, :language, :keyword, :related_url,
                                      :license, :contributor, :date_created, :subject, :orcid, :other_affiliation,
                                      :rights_statement, :language_label, :license_label, :rights_statement_label] }
   end
