@@ -168,7 +168,7 @@ RSpec.feature 'Create a DataSet', js: false do
       # extra fields
       select 'Department of Biology', from: 'data_set_affiliation'
       fill_in 'Contributor', with: 'a contributor'
-      fill_in 'Date Created', with: '2018-10-03'
+      fill_in 'Date created', with: '2018-10-03'
       fill_in 'Description', with: 'a description'
       fill_in 'DOI', with: 'some doi'
       fill_in 'Extent', with: 'some extent'

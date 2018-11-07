@@ -141,7 +141,7 @@ RSpec.feature 'Create a Multimed', js: false do
       select 'Video', from: 'multimed_resource_type'
 
       # extra fields
-      fill_in 'Date Created', with: '2018-10-03'
+      fill_in 'Date created', with: '2018-10-03'
       fill_in 'Dcmi type', with: 'http://purl.org/dc/dcmitype/Text'
       fill_in 'DOI', with: 'some doi'
       fill_in 'Extent', with: 'some extent'

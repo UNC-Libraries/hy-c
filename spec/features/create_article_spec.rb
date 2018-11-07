@@ -91,7 +91,6 @@ RSpec.feature 'Create a Article', js: false do
       fill_in 'Place of publication', with: 'UNC'
       fill_in 'Rights holder', with: 'an author'
       fill_in 'Translator', with: 'none'
-      fill_in 'Link to publisher version', with: 'something.org'
 
       expect(page).to have_selector('#article_language_label', visible: false)
       expect(page).to have_selector('#article_license_label', visible: false)
@@ -157,7 +156,6 @@ RSpec.feature 'Create a Article', js: false do
       expect(page).to have_content 'Place of publication UNC'
       expect(page).to have_content 'Rights holder an author'
       expect(page).to have_content 'Translator none'
-      expect(page).to have_content 'Url something.org'
       expect(page).to_not have_content 'Language http://id.loc.gov/vocabulary/iso639-2/eng'
       expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
       expect(page).to_not have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'
@@ -193,7 +191,7 @@ RSpec.feature 'Create a Article', js: false do
       fill_in 'Related resource URL', with: 'something.com'
       select 'Article', from: 'article_resource_type'
       fill_in 'Access', with: 'some access'
-      fill_in 'Date Created', with: '2018-10-03'
+      fill_in 'Date created', with: '2018-10-03'
       select 'Department of Biology', from: 'article_affiliation'
       fill_in 'Bibliographic citation', with: 'a citation'
       fill_in 'Copyright date', with: '2018-10-03'
@@ -216,7 +214,6 @@ RSpec.feature 'Create a Article', js: false do
       fill_in 'Place of publication', with: 'UNC'
       fill_in 'Rights holder', with: 'an author'
       fill_in 'Translator', with: 'none'
-      fill_in 'Link to publisher version', with: 'something.org'
       fill_in 'Use', with: 'some use'
 
 
@@ -286,7 +283,6 @@ RSpec.feature 'Create a Article', js: false do
       expect(page).to have_content 'Place of publication UNC'
       expect(page).to have_content 'Rights holder an author'
       expect(page).to have_content 'Translator none'
-      expect(page).to have_content 'Url something.org'
       expect(page).to have_content 'Use some use'
       expect(page).to_not have_content 'Language http://id.loc.gov/vocabulary/iso639-2/eng'
       expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/3.0/us/'

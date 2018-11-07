@@ -120,7 +120,7 @@ RSpec.feature 'Create an Artwork', js: false do
 
       # required fields
       fill_in 'Title', with: 'Test Artwork work'
-      fill_in 'Date Created', with: '2018-10-03'
+      fill_in 'Date created', with: '2018-10-03'
       fill_in 'Date of publication', with: '2018-10-03'
       fill_in 'Abstract', with: 'a description'
       fill_in 'Extent', with: 'some extent'

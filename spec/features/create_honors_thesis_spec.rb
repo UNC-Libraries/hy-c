@@ -69,7 +69,7 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       fill_in 'Graduation year', with: '2018'
 
       # extra fields
-      fill_in 'Date Created', with: '2018-10-03'
+      fill_in 'Date created', with: '2018-10-03'
       select 'Clinical Nutrition', from: 'Academic Concentration'
       fill_in 'Extent', with: 'some extent'
       fill_in 'Location', with: 'some geographic subject'
@@ -166,7 +166,7 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       fill_in 'Graduation year', with: '2018'
 
       # extra fields
-      fill_in 'Date Created', with: '2018-10-03'
+      fill_in 'Date created', with: '2018-10-03'
       select 'Clinical Nutrition', from: 'Academic Concentration'
       fill_in 'Access', with: 'some access'
       fill_in 'DOI', with: 'some doi'

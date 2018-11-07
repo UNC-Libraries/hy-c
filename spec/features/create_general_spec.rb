@@ -81,7 +81,7 @@ RSpec.feature 'Create a General', js: false do
       fill_in 'Contributor', with: 'a contributor'
       fill_in 'Copyright date', with: '2018-10-03'
       fill_in 'Creator', with: 'Test Default Creator'
-      fill_in 'Date Created', with: '2018-10-03'
+      fill_in 'Date created', with: '2018-10-03'
       fill_in 'Date of publication', with: '2018-10-03'
       fill_in 'Date other', with: '2018-10-03'
       fill_in 'Dcmi type', with: 'http://purl.org/dc/dcmitype/Text'
@@ -115,7 +115,7 @@ RSpec.feature 'Create a General', js: false do
       fill_in 'Project director', with: 'a director'
       select 'Yes', from: 'general_peer_review_status'
       fill_in 'Publisher', with: 'UNC Press'
-      fill_in 'Link to Publisher Version', with: 'a version'
+      fill_in 'Link to Publisher version', with: 'a version'
       select 'Other', from: 'general_resource_type'
       fill_in 'Researcher', with: 'a researcher'
       fill_in 'Reviewer', with: 'a reviewer'
@@ -128,7 +128,6 @@ RSpec.feature 'Create a General', js: false do
       fill_in 'Table of contents', with: 'contents'
       fill_in 'Translator', with: 'none'
       fill_in 'Use', with: 'some use'
-      fill_in 'URL', with: 'some url'
 
       expect(page).to have_selector('#general_language_label', visible: false)
       expect(page).to have_selector('#general_license_label', visible: false)
@@ -217,7 +216,6 @@ RSpec.feature 'Create a General', js: false do
       expect(page).to have_content 'Table of contents contents'
       expect(page).to have_content 'Translator none'
       expect(page).to have_content 'Use some use'
-      expect(page).to have_content 'Url some url'
       expect(page).to_not have_content 'Language http://id.loc.gov/vocabulary/iso639-2/eng'
       expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
       expect(page).to_not have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'

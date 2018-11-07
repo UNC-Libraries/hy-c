@@ -151,7 +151,7 @@ RSpec.feature 'Create a ScholarlyWork', js: false do
       fill_in 'Advisor', with: 'an advisor'
       select 'Department of Biology', from: 'scholarly_work_affiliation'
       fill_in 'Conference name', with: 'a composer'
-      fill_in 'Date Created', with: '2018-10-03'
+      fill_in 'Date created', with: '2018-10-03'
       fill_in 'Dcmi type', with: 'http://purl.org/dc/dcmitype/Text'
       fill_in 'Description', with: 'a description'
       fill_in 'DOI', with: 'some doi'

@@ -14,7 +14,7 @@ module Hyrax
                    :graduation_year, :isbn, :issn, :journal_issue, :journal_title, :journal_volume, :kind_of_data,
                    :last_modified_date, :medium, :note, :orcid, :other_affiliation, :page_start, :page_end,
                    :peer_review_status, :place_of_publication, :project_director, :publisher_version, :researcher,
-                   :reviewer, :rights_holder, :series, :sponsor, :table_of_contents, :translator, :url, :use]
+                   :reviewer, :rights_holder, :series, :sponsor, :table_of_contents, :translator, :use]
 
     self.required_fields = [:title]
 

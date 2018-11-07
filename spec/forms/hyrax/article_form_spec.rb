@@ -27,7 +27,7 @@ RSpec.describe Hyrax::ArticleForm do
                             :edition, :extent, :funder, :geographic_subject, :issn, :journal_title,
                             :journal_volume, :journal_issue, :note, :orcid, :other_affiliation, :page_end, :page_start,
                             :peer_review_status, :place_of_publication, :rights_holder, :translator,
-                            :url, :use, :language_label, :license_label, :rights_statement_label] }
+                            :use, :language_label, :license_label, :rights_statement_label] }
   end
   
   describe "#admin_only_terms" do
@@ -90,7 +90,6 @@ RSpec.describe Hyrax::ArticleForm do
           place_of_publication: ['durham'],
           rights_holder: ['dean'],
           translator: ['dean'],
-          url: ['http://unc.edu'],
           use: ['a use'],
           language_label: [],
           license_label: [],
@@ -142,7 +141,6 @@ RSpec.describe Hyrax::ArticleForm do
       expect(subject['place_of_publication']).to eq ['durham']
       expect(subject['rights_holder']).to eq ['dean']
       expect(subject['translator']).to eq ['dean']
-      expect(subject['url']).to eq ['http://unc.edu']
       expect(subject['use']).to eq ['a use']
       expect(subject['language_label']).to eq ['English']
       expect(subject['license_label']).to eq ['Attribution 3.0 United States']

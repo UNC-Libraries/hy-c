@@ -11,6 +11,5 @@ en:
   simple_form:
     hints:
       journal:
-        doi: The DOI assigned by the publisher. CDR-issued DOIs should be entered into the "Identifier" field.
     labels:
       journal:

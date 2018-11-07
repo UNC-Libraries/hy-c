@@ -132,10 +132,6 @@ class Article < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :url, predicate: ::RDF::Vocab::SCHEMA.url do |index|
-    index.as :stored_searchable
-  end
-
   property :use, predicate: ::RDF::Vocab::DC11.rights do |index|
     index.as :stored_searchable
   end

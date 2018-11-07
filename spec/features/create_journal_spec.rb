@@ -64,7 +64,7 @@ RSpec.feature 'Create a Journal', js: false do
       # extra fields
       fill_in 'Abstract', with: 'an abstract'
       fill_in 'Alternate title', with: 'another title'
-      fill_in 'Author', with: 'Test Default Creator'
+      fill_in 'Creator', with: 'Test Default Creator'
       fill_in 'DOI', with: 'some doi'
       fill_in 'Extent', with: 'some extent'
       fill_in 'Location', with: 'some geographic subject'
@@ -151,7 +151,7 @@ RSpec.feature 'Create a Journal', js: false do
       # extra fields
       fill_in 'Abstract', with: 'an abstract'
       fill_in 'Alternate title', with: 'another title'
-      fill_in 'Author', with: 'Test Default Creator'
+      fill_in 'Creator', with: 'Test Default Creator'
       fill_in 'DOI', with: 'some doi'
       fill_in 'Extent', with: 'some extent'
       fill_in 'Location', with: 'some geographic subject'
