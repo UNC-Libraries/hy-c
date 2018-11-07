@@ -10,6 +10,14 @@ class Artwork < ActiveFedora::Base
 
   self.human_readable_type = 'Artwork'
 
+  property :abstract, predicate: ::RDF::Vocab::DC.abstract do |index|
+    index.as :stored_searchable
+  end
+
+  property :date_issued, predicate: ::RDF::Vocab::DC.issued, multiple: false do |index|
+    index.as :stored_searchable, :facetable
+  end
+
   property :doi, predicate: ::RDF::Vocab::Identifiers.doi, multiple: false do |index|
     index.as :stored_searchable
   end

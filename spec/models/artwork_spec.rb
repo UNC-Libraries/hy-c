@@ -30,6 +30,8 @@ RSpec.describe Artwork do
       expect(subject).to respond_to(:resource_type)
 
       # Additional metadata
+      expect(subject).to respond_to(:abstract)
+      expect(subject).to respond_to(:date_issued)
       expect(subject).to respond_to(:doi)
       expect(subject).to respond_to(:extent)
       expect(subject).to respond_to(:medium)
