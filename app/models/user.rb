@@ -1,4 +1,5 @@
 # [hyc-override] Overriding user model to allow shibboleth integration
+# [hyc-override]Overriding hyrax default rewriting email addresses
 class User < ApplicationRecord
   # Connects this user object to Hydra behaviors.
   include Hydra::User
@@ -33,6 +34,11 @@ class User < ApplicationRecord
     user.display_name = auth.info.uid
     user.save
     user
+  end
+
+  # [hyc-override] Overriding hyrax default of changing email "." characters to "-dot-"
+  def to_param
+    user_key
   end
 
   # Method added by Blacklight; Blacklight uses #to_s on your
