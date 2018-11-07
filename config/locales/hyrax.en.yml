@@ -109,6 +109,7 @@ en:
         advisor: "Your advisor's name. Please enter the last name first, e.g. \"Smith, John.\""
         affiliation: "Your primary departmental affiliation at UNC"
         alternative_title: "A unique secondary title for your work if applicable. Enter subtitle in the \"Title\" field, instead."
+        award: "Honors level"
         bibliographic_citation: "A citation to a related work, or a different version of this work."
         contributor: "A person or group who had a role in creating the work."
         copyright_date: "The date that the work was copyrighted. This may be different than today's date. If you aren't sure, leave this blank."
@@ -132,6 +133,7 @@ en:
         last_modified: "The date on which your dataset was last modified."
         license: "The license and distribution statement that you would like to apply to your work. This statement will tell other users how they may reuse your work. For more information on each option, <a target=\"_blank\" href=\"https://blogs.lib.unc.edu/cdr/index.php/frequently-asked-questions\">see our FAQ</a>."
         license_label: "The license and distribution statement that you would like to apply to your work. This statement will tell other users how they may reuse your work. For more information on each option, see our <a target=\"_blank\" href=\"https://blogs.lib.unc.edu/cdr/index.php/frequently-asked-questions\">FAQ</a>."
+        medium: "The material of the original work."
         note: "Additional information about your work. Please be aware that content in this field will be visible to the public."
         orcid: "If you have an ORCID, enter it below. To learn more about ORCID and sign up,
                 visit <a target=\"_blank\" href=\"https://guides.lib.unc.edu/orcid\">https://guides.lib.unc.edu/orcid</a>"
