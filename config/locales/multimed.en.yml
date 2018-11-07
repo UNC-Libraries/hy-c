@@ -6,3 +6,7 @@ en:
       multimed:
         name:               "Multimedia"
         description:        "Deposit your 3D objects, audio, images or video."
+  simple_form:
+    hints:
+      multimed:
+        medium: "The material of the original work."
