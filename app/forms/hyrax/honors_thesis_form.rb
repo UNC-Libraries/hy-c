@@ -7,13 +7,13 @@ module Hyrax
     class_attribute :single_value_fields
 
     self.terms += [:abstract, :academic_concentration, :access, :advisor, :affiliation, :affiliation_label,
-                   :alternative_title, :award, :dcmi_type, :degree, :degree_granting_institution, :doi,
-                   :extent, :geographic_subject, :graduation_year, :note, :orcid, :url, :use, :resource_type]
+                   :award, :date_issued, :dcmi_type, :degree, :degree_granting_institution, :doi,
+                   :extent, :geographic_subject, :graduation_year, :note, :orcid, :use, :resource_type]
 
     self.terms -= [:based_near, :contributor, :description, :identifier, :publisher, :source]
 
-    self.required_fields = [:title, :abstract, :advisor, :affiliation, :creator, :date_created, :degree,
-                            :degree_granting_institution, :graduation_year]
+    self.required_fields = [:title, :creator, :abstract, :advisor, :affiliation, :degree, :award,
+                            :date_issued, :degree_granting_institution, :graduation_year]
     self.single_value_fields = [:title, :license, :rights_statement]
     
     self.admin_only_terms = [:dcmi_type, :access, :doi, :use]
