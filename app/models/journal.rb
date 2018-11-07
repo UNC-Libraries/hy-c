@@ -63,10 +63,6 @@ class Journal < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :orcid, predicate: ::RDF::Vocab::Identifiers.orcid do |index|
-    index.as :stored_searchable
-  end
-
   property :place_of_publication, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/pup') do |index|
     index.as :stored_searchable
   end
@@ -75,7 +71,7 @@ class Journal < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :table_of_contents, predicate: ::RDF::Vocab::DC.tableOfContents do |index|
+  property :table_of_contents, predicate: ::RDF::Vocab::DC.tableOfContents, multiple: false do |index|
     index.as :stored_searchable
   end
 

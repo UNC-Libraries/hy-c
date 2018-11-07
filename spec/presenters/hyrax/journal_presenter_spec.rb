@@ -25,10 +25,9 @@ RSpec.describe Hyrax::JournalPresenter do
       "isbn_tesim" => ['123456'],
       "issn_tesim" => ['12345'],
       "note_tesim" => ['a note'],
-      "orcid_tesim" => ['an orcid'],
       "place_of_publication_tesim" => ['California'],
       "resource_type_tesim" => ['a type'],
-      "table_of_contents_tesim" => ['table of contents'],
+      "table_of_contents_tesim" => 'table of contents',
       "language_label_tesim" => ['language'],
       "license_label_tesim" => ['license'],
       "rights_statement_label_tesim" => ['rights']
@@ -62,7 +61,6 @@ RSpec.describe Hyrax::JournalPresenter do
   it { is_expected.to delegate_method(:isbn).to(:solr_document) }
   it { is_expected.to delegate_method(:issn).to(:solr_document) }
   it { is_expected.to delegate_method(:note).to(:solr_document) }
-  it { is_expected.to delegate_method(:orcid).to(:solr_document) }
   it { is_expected.to delegate_method(:place_of_publication).to(:solr_document) }
   it { is_expected.to delegate_method(:table_of_contents).to(:solr_document) }
   it { is_expected.to delegate_method(:language_label).to(:solr_document) }
@@ -198,17 +196,6 @@ RSpec.describe Hyrax::JournalPresenter do
       end
     end
 
-    context "with a custom orcid field" do
-      before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:orcid, ['an orcid'], {}).and_return(renderer)
-      end
-
-      it "calls the AttributeRenderer" do
-        expect(renderer).to receive(:render)
-        presenter.attribute_to_html(:orcid)
-      end
-    end
-
     context "with a custom place_of_publication field" do
       before do
         allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:place_of_publication, ['California'], {}).and_return(renderer)
@@ -222,7 +209,7 @@ RSpec.describe Hyrax::JournalPresenter do
 
     context "with a custom table of contents field" do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:table_of_contents, ['table of contents'], {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:table_of_contents, 'table of contents', {}).and_return(renderer)
       end
 
       it "calls the AttributeRenderer" do
