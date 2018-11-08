@@ -5,7 +5,7 @@
 <%= presenter.attribute_to_html(:subject, render_as: :faceted, html_dl: true) %>
 <%= presenter.attribute_to_html(:language_label, label: 'Language', html_dl: true) %>
 <%= presenter.attribute_to_html(:keyword, render_as: :faceted, html_dl: true) %>
-<%= presenter.attribute_to_html(:related_url, render_as: :external_link, html_dl: true) %>
+<%= presenter.attribute_to_html(:related_url, render_as: :external_link, html_dl: true, label: "Related resource URL") %>
 <%= presenter.attribute_to_html(:resource_type, render_as: :faceted, html_dl: true) %>
 <%= presenter.attribute_to_html(:rights_statement_label, label: 'Rights statement', html_dl: true) %>
 <%= presenter.attribute_to_html(:license_label, label: 'License', html_dl: true) %>

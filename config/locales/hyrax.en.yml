@@ -161,6 +161,7 @@ en:
         award: "Honors level"
         date_created: "Date created"
         date_issued: "Date of publication"
+        description: "Description"
         doi: "DOI"
         edition: "Version"
         geographic_subject: "Location"

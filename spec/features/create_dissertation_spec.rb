@@ -123,7 +123,7 @@ RSpec.feature 'Create a Dissertation', js: false do
 
       first('.document-title', text: 'Test Dissertation work').click
       expect(page).to have_content 'Creator Test Default Creator'
-      expect(page).to have_content 'Date issued October 3, 2018'
+      expect(page).to have_content 'Date of publication October 3, 2018'
       expect(page).to have_content 'Degree granting institution UNC'
 
       # extra fields
@@ -133,20 +133,20 @@ RSpec.feature 'Create a Dissertation', js: false do
       expect(page).to have_content 'Affiliation'
       expect(page).to have_content 'College of Arts and Sciences'
       expect(page).to have_content 'Department of Biology'
-      expect(page).to have_content 'Alternative title another title'
+      expect(page).to have_content 'Alternate title another title'
       expect(page).to have_content 'Contributors a contributor'
       expect(page).to have_content 'Degree Bachelor of Science'
-      expect(page).to have_content 'Doi some doi'
+      expect(page).to have_content 'DOI some doi'
       expect(page).to have_content 'Resource type Dissertation'
       expect(page).to have_content 'Access some access'
-      expect(page).to have_content 'Geographic subject some geographic subject'
+      expect(page).to have_content 'Location some geographic subject'
       expect(page).to have_content 'Graduation year 2018'
       expect(page).to have_content 'Identifier some id'
       expect(page).to have_content 'Keyword Test Default Keyword'
       expect(page).to have_content 'Language English'
       expect(page).to have_content 'License Attribution 3.0 United States'
       expect(page).to have_content 'Note a note'
-      expect(page).to have_content 'Orcid an orcid'
+      expect(page).to have_content 'ORCID an orcid'
       expect(page).to have_content 'Place of publication UNC'
       expect(page).to have_content 'Publisher UNC Press'
       expect(page).to have_content 'Reviewer a reviewer'
