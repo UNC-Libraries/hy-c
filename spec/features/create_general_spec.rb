@@ -115,7 +115,7 @@ RSpec.feature 'Create a General', js: false do
       fill_in 'Project director', with: 'a director'
       select 'Yes', from: 'general_peer_review_status'
       fill_in 'Publisher', with: 'UNC Press'
-      fill_in 'Link to Publisher version', with: 'a version'
+      fill_in 'Link to publisher version', with: 'a version'
       select 'Other', from: 'general_resource_type'
       fill_in 'Researcher', with: 'a researcher'
       fill_in 'Reviewer', with: 'a reviewer'
