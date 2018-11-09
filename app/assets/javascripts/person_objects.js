@@ -1,19 +1,26 @@
-$(document).ready(function () {
-    attach_add_committee_listeners('advisor');
+$(document).on('turbolinks:load', function () {
+    attach_add_person_listeners('advisor');
 });
 
 
-function attach_add_committee_listeners(selector){
+function attach_add_person_listeners(selector){
     var add_selector = '#add-another-'+selector;
-    var row_selector = '.'+selector+'.row';
     var remove_selector = '.remove-'+selector;
     var cloning_row = '#'+selector+'-cloning_row';
+
+    $(cloning_row).find('input').each(function() {
+        if ($(this).prop('id').match('_id')) {
+            $(this).remove();
+        }
+    });
+
+    remove_row(selector);
 
     $(add_selector).on('click', function(event){
         // stop page from reloading
         event.preventDefault();
 
-        $('.remove-'+selector).removeClass('hidden');
+        $(remove_selector).removeClass('hidden');
 
         var current_index = $('#index-'+selector).val();
 
@@ -58,6 +65,7 @@ function attach_add_committee_listeners(selector){
         $new_row.prop('id', 'cloned_'+selector+'_row');
 
         var $removeMember = $new_row.find(remove_selector);
+        $($removeMember).data('index', current_index);
 
         $new_row.removeClass('hidden');
         $('div#'+selector).append($new_row);
@@ -65,13 +73,40 @@ function attach_add_committee_listeners(selector){
         current_index++;
         $('#index-'+selector).val(current_index);
 
-        $removeMember.on('click', function(){
-            // get current_index again and store it in local variable, decrement it and store it
-            var current_index = $('#index-'+selector).val();
-            current_index--;
-
-            $('#index-'+selector).val(current_index);
-            $(this).parents(row_selector).remove();
-        });
+        remove_row(selector);
     });
+}
+
+function remove_row(selector) {
+    var row_selector = '.'+selector+'.row';
+    var remove_selector = '.remove-'+selector;
+    var cloning_row = '#'+selector+'-cloning_row';
+
+    $(remove_selector).on('click', function (event) {
+        // get current_index again and store it in local variable, decrement it and store it
+        var current_index = $('#index-'+selector).val();
+        current_index--;
+
+        if (current_index == 1) {
+            $('.remove-'+selector).addClass('hidden');
+        } else {
+            $('.remove-'+selector).removeClass('hidden');
+        }
+
+        var name_input = $(cloning_row+' > .row').find('div.'+selector+'-name input').prop('name');
+        var model = name_input.split('[')[0];
+        var index = $(this).data('index');
+
+        $('#index-'+selector).val(current_index);
+        $(this).parents(row_selector).remove();
+        if ($('#'+model+ '_'+selector+'s_attributes_'+index+'_id').length) {
+            delete_record(selector, model, index);
+        }
+    });
+}
+
+function delete_record(selector, model, index) {
+    var $new_row = '<input type="hidden" name="'+model+'['+selector+'s_attributes]['+index+'][_destroy]" id="'+model+
+        '_'+selector+'s_attributes_'+index+'__destroy" value="1">';
+    $('div#'+selector).append($new_row);
 }

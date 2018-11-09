@@ -30,10 +30,12 @@
                                                             value: (advisor.object.other_affiliation.first || '') } %>
       </div>
 
-      <% if advisor.index > 0 %>
-      <button type="button" class="btn btn-link remove remove-advisor">
-        <span class="glyphicon glyphicon-remove"></span> <span class="controls-remove-text">Remove Advisor</span>
-      </button>
+      <% if @form.advisors.count > 1 %>
+      <span class="input-group-btn field-controls multi_value">
+        <button type="button" class="btn btn-link remove remove-advisor" data-index="<%= advisor.index %>">
+          <span class="glyphicon glyphicon-remove"></span> <span class="controls-remove-text">Remove Advisor</span>
+        </button>
+      </span>
       <% end %>
     </div>
   <% end %>
@@ -42,6 +44,7 @@
 
   <div class="advisor row cloning hidden" id='advisor-cloning_row'>
     <%= f.fields_for :advisors do |advisor| %>
+      <% if advisor.index <= @form.advisors.count %>
       <div class="advisor row">
         <div class="col-sm-6 advisor-name">
           <%= advisor.input :name, label: "Advisor",
@@ -60,7 +63,7 @@
           <%= advisor.input :affiliation, as: :select,
                             collection: DepartmentsService.select_all_options.sort,
                             include_blank: true,
-                            selected: advisor.object.affiliation,
+                            selected: '',
                             item_helper: DepartmentsService.method(:include_current_value),
                             input_html: { class: 'form-control' }
           -%>
@@ -72,11 +75,12 @@
         </div>
 
         <span class="input-group-btn field-controls multi_value">
-          <button type="button" class="btn btn-link remove remove-advisor">
+          <button type="button" class="btn btn-link remove remove-advisor" data-index="1">
             <span class="glyphicon glyphicon-remove"></span> <span class="controls-remove-text">Remove Advisor</span>
           </button>
         </span>
       </div>
+      <% end %>
     <% end %>
   </div>
 </div>

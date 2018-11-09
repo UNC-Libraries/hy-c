@@ -119,8 +119,8 @@ class SingleValueForm < Hyrax::Forms::WorkForm
     def self.split_affiliations(affiliations)
       affiliations_list = []
 
-      Array(affiliations).reject { |a| a.empty? }.each do |aff|
-        DepartmentsService.label(aff).split(';').each do |value|
+      Array(affiliations).reject { |a| a.blank? }.each do |aff|
+        Array(DepartmentsService.label(aff)).join(';').split(';').each do |value|
           affiliations_list.push(value.squish!)
         end
       end
