@@ -88,6 +88,12 @@ Hyrax.config do |config|
   # where NOID = 10-character string and UUID = 32-character string w/ hyphens
   config.enable_noids = true
 
+  config.iiif_image_server = true
+  config.iiif_info_url_builder = lambda do |file_id, base_url|
+    uri = Riiif::Engine.routes.url_helpers.info_url(file_id, host: base_url)
+    uri.sub(%r{/info\.json\Z}, '')
+  end
+
   # Template for your repository's NOID IDs
   # config.noid_template = ".reeddeeddk"
 
