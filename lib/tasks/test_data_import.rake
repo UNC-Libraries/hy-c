@@ -16,7 +16,7 @@ task :test_data_import => :environment do
     work.resource_type = [doc['resource_type']]
     work.language = [doc['language']]
     work.language_label = [doc['language_label']]
-    work.rights_statement = [doc['rights_statement']]
+    work.rights_statement = doc['rights_statement']
     work.visibility = doc['visibility']
     work.save
     sleep 1
