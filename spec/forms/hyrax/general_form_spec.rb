@@ -115,7 +115,7 @@ RSpec.describe Hyrax::GeneralForm do
           use: ['a use'],
           language_label: [],
           license_label: [],
-          rights_statement_label: []
+          rights_statement_label: ''
       )
     end
 
@@ -131,7 +131,7 @@ RSpec.describe Hyrax::GeneralForm do
       expect(subject['publisher']).to eq ['a publisher']
       expect(subject['related_url']).to eq ['a url']
       expect(subject['resource_type']).to eq ['a type']
-      expect(subject['rights_statement']).to eq ['http://rightsstatements.org/vocab/InC/1.0/']
+      expect(subject['rights_statement']).to eq 'http://rightsstatements.org/vocab/InC/1.0/'
       expect(subject['subject']).to eq ['a subject']
       expect(subject['description']).to eq 'a good work'
       expect(subject['visibility']).to eq 'open'
@@ -189,7 +189,7 @@ RSpec.describe Hyrax::GeneralForm do
       expect(subject['use']).to eq ['a use']
       expect(subject['language_label']).to eq ['English']
       expect(subject['license_label']).to eq ['Attribution 3.0 United States']
-      expect(subject['rights_statement_label']).to eq ['In Copyright']
+      expect(subject['rights_statement_label']).to eq 'In Copyright'
     end
 
     context '.model_attributes' do

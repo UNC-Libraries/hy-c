@@ -12,7 +12,7 @@ module Hyrax
 
     self.terms -= [:based_near, :bibliographic_citation, :date_created, :description, :source, :related_url]
     self.required_fields = [:title, :creator, :degree_granting_institution, :date_issued]
-    self.single_value_fields = [:title, :license, :rights_statement]
+    self.single_value_fields = [:title, :license]
     
     self.admin_only_terms = [:dcmi_type]
     self.default_term_values = { :dcmi_type => ["http://purl.org/dc/dcmitype/Text"] }
@@ -24,10 +24,6 @@ module Hyrax
     end
 
     def license
-      super.first || ""
-    end
-
-    def rights_statement
       super.first || ""
     end
   end

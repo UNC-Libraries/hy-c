@@ -75,7 +75,7 @@ RSpec.describe Hyrax::DataSetForm do
           use: ['a usage'],
           language_label: [],
           license_label: [],
-          rights_statement_label: []
+          rights_statement_label: ''
       )
     end
 
@@ -108,7 +108,7 @@ RSpec.describe Hyrax::DataSetForm do
       expect(subject['sponsor']).to eq ['david']
       expect(subject['language_label']).to eq ['English']
       expect(subject['license_label']).to eq ['Attribution 3.0 United States']
-      expect(subject['rights_statement_label']).to eq ['In Copyright']
+      expect(subject['rights_statement_label']).to eq 'In Copyright'
     end
 
     describe "#visibility" do

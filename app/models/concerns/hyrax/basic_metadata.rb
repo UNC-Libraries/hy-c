@@ -24,7 +24,7 @@ module Hyrax
       property :license, predicate: ::RDF::Vocab::DC.rights
 
       # This is for the rights statement
-      property :rights_statement, predicate: ::RDF::Vocab::EDM.rights
+      property :rights_statement, predicate: ::RDF::Vocab::EDM.rights, multiple: false
       property :publisher, predicate: ::RDF::Vocab::DC11.publisher
       property :date_created, predicate: ::RDF::Vocab::DC.created, multiple: false
       # predicate changed

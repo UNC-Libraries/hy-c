@@ -55,7 +55,7 @@ RSpec.describe Hyrax::MultimedForm do
           keyword: ['multimed'],
           language_label: [],
           license_label: [],
-          rights_statement_label: []
+          rights_statement_label: ''
       )
     end
 
@@ -68,7 +68,7 @@ RSpec.describe Hyrax::MultimedForm do
       expect(subject['language']).to eq ['http://id.loc.gov/vocabulary/iso639-2/eng']
       expect(subject['resource_type']).to eq ['a type']
       expect(subject['license']).to eq ['http://creativecommons.org/licenses/by/3.0/us/']
-      expect(subject['rights_statement']).to eq ['http://rightsstatements.org/vocab/InC/1.0/']
+      expect(subject['rights_statement']).to eq 'http://rightsstatements.org/vocab/InC/1.0/'
       expect(subject['note']).to eq ['a note']
       expect(subject['orcid']).to eq ['an orcid']
       expect(subject['medium']).to eq ['a medium']
@@ -82,7 +82,7 @@ RSpec.describe Hyrax::MultimedForm do
       expect(subject['geographic_subject']).to eq ['Italy']
       expect(subject['language_label']).to eq ['English']
       expect(subject['license_label']).to eq ['Attribution 3.0 United States']
-      expect(subject['rights_statement_label']).to eq ['In Copyright']
+      expect(subject['rights_statement_label']).to eq 'In Copyright'
     end
 
     describe "#visibility" do

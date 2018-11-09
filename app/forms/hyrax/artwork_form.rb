@@ -13,7 +13,7 @@ module Hyrax
     self.required_fields = [:title, :date_issued, :abstract, :extent, :medium, :resource_type]
 
     # Add overrides for required properties which are becoming single-valued
-    self.single_value_fields = [:title, :license, :rights_statement]
+    self.single_value_fields = [:title, :license]
     self.admin_only_terms = [:date_created]
 
     def title
@@ -21,10 +21,6 @@ module Hyrax
     end
 
     def license
-      super.first || ""
-    end
-
-    def rights_statement
       super.first || ""
     end
   end
