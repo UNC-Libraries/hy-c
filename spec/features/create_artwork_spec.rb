@@ -93,9 +93,9 @@ RSpec.feature 'Create an Artwork', js: false do
       expect(page).to have_content 'Test Artwork work'
 
       first('.document-title', text: 'Test Artwork work').click
-      expect(page).to have_content 'Date issued October 3, 2018'
+      expect(page).to have_content 'Date of publication October 3, 2018'
       expect(page).to have_content 'Abstract a description'
-      expect(page).to have_content 'Doi some doi'
+      expect(page).to have_content 'DOI some doi'
       expect(page).to have_content 'Extent some extent'
       expect(page).to have_content 'License Attribution 3.0 United States'
       expect(page).to have_content 'Medium a medium'
@@ -120,7 +120,7 @@ RSpec.feature 'Create an Artwork', js: false do
 
       # required fields
       fill_in 'Title', with: 'Test Artwork work'
-      fill_in 'Date Created', with: '2018-10-03'
+      fill_in 'Date created', with: '2018-10-03'
       fill_in 'Date of publication', with: '2018-10-03'
       fill_in 'Abstract', with: 'a description'
       fill_in 'Extent', with: 'some extent'
@@ -155,9 +155,9 @@ RSpec.feature 'Create an Artwork', js: false do
 
       first('.document-title', text: 'Test Artwork work').click
       expect(page).to have_content 'Date created October 3, 2018'
-      expect(page).to have_content 'Date issued October 3, 2018'
+      expect(page).to have_content 'Date of publication October 3, 2018'
       expect(page).to have_content 'Abstract a description'
-      expect(page).to have_content 'Doi some doi'
+      expect(page).to have_content 'DOI some doi'
       expect(page).to have_content 'Extent some extent'
       expect(page).to have_content 'License Attribution 3.0 United States'
       expect(page).to have_content 'Medium a medium'

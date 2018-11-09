@@ -69,7 +69,6 @@ RSpec.describe Article do
       expect(subject).to respond_to(:place_of_publication)
       expect(subject).to respond_to(:rights_holder)
       expect(subject).to respond_to(:translator)
-      expect(subject).to respond_to(:url)
       expect(subject).to respond_to(:use)
       expect(subject).to respond_to(:language_label)
       expect(subject).to respond_to(:license_label)

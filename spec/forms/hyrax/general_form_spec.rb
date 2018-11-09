@@ -33,7 +33,7 @@ RSpec.describe Hyrax::GeneralForm do
                                      :note, :orcid, :other_affiliation, :page_start, :page_end, :peer_review_status,
                                      :place_of_publication, :project_director, :publisher_version, :researcher,
                                      :reviewer, :rights_holder, :series, :sponsor, :table_of_contents, :translator,
-                                     :url, :use, :language_label, :license_label, :rights_statement_label] }
+                                     :use, :language_label, :license_label, :rights_statement_label] }
   end
   
   describe "#admin_only_terms" do
@@ -112,7 +112,6 @@ RSpec.describe Hyrax::GeneralForm do
           sponsor: ['a sponsor'],
           table_of_contents: ['cool table'],
           translator: ['dean'],
-          url: ['http://unc.edu'],
           use: ['a use'],
           language_label: [],
           license_label: [],
@@ -187,7 +186,6 @@ RSpec.describe Hyrax::GeneralForm do
       expect(subject['sponsor']).to eq ['a sponsor']
       expect(subject['table_of_contents']).to eq ['cool table']
       expect(subject['translator']).to eq ['dean']
-      expect(subject['url']).to eq ['http://unc.edu']
       expect(subject['use']).to eq ['a use']
       expect(subject['language_label']).to eq ['English']
       expect(subject['license_label']).to eq ['Attribution 3.0 United States']

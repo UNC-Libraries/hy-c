@@ -41,7 +41,6 @@ RSpec.describe Hyrax::ArticlePresenter do
       "place_of_publication_tesim" => ['durham'],
       "rights_holder_tesim" => ['rights holder'],
       "translator_tesim" => ['dean'],
-      "url_tesim" => ['http://unc.edu'],
       "use_tesim" => ['a use'],
       "language_label_tesim" => ['language'],
       "license_label_tesim" => ['license'],
@@ -95,7 +94,6 @@ RSpec.describe Hyrax::ArticlePresenter do
   it { is_expected.to delegate_method(:place_of_publication).to(:solr_document) }
   it { is_expected.to delegate_method(:rights_holder).to(:solr_document) }
   it { is_expected.to delegate_method(:translator).to(:solr_document) }
-  it { is_expected.to delegate_method(:url).to(:solr_document) }
   it { is_expected.to delegate_method(:use).to(:solr_document) }
   it { is_expected.to delegate_method(:language_label).to(:solr_document) }
   it { is_expected.to delegate_method(:license_label).to(:solr_document) }
@@ -414,17 +412,6 @@ RSpec.describe Hyrax::ArticlePresenter do
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:translator)
-      end
-    end
-
-    context "with a custom url field" do
-      before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:url, ['http://unc.edu'], {}).and_return(renderer)
-      end
-
-      it "calls the AttributeRenderer" do
-        expect(renderer).to receive(:render)
-        presenter.attribute_to_html(:url)
       end
     end
 

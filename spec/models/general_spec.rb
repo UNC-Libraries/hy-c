@@ -88,7 +88,6 @@ RSpec.describe General do
       expect(subject).to respond_to(:sponsor)
       expect(subject).to respond_to(:table_of_contents)
       expect(subject).to respond_to(:translator)
-      expect(subject).to respond_to(:url)
       expect(subject).to respond_to(:use)
       expect(subject).to respond_to(:language_label)
       expect(subject).to respond_to(:license_label)

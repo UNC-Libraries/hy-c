@@ -9,4 +9,3 @@ en:
   simple_form:
     hints:
       artwork:
-        medium: "The material of the original work."
