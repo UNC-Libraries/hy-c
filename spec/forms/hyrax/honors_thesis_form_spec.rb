@@ -41,7 +41,11 @@ RSpec.describe Hyrax::HonorsThesisForm do
   describe 'default value set' do
     subject { form }
     it "dcmi type must have default values" do
-      expect(form.model['dcmi_type']).to eq ['http://purl.org/dc/dcmitype/Text'] 
+      expect(form.model['dcmi_type']).to eq ['http://purl.org/dc/dcmitype/Text']
+    end
+
+    it "rights statement must have a default value" do
+      expect(form.model['rights_statement']).to eq 'http://rightsstatements.org/vocab/InC/1.0/'
     end
   end
 

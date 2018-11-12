@@ -46,7 +46,7 @@ class SingleValueForm < Hyrax::Forms::WorkForm
         if !attrs.key?(field)
           values = default_term_values[field]
           
-          if multiple? field.to_sym
+          if multiple? field.to_sym || !attrs[field].kind_of?(Array)
             if attrs[field].blank?
               attrs[field] = values
             end
@@ -96,6 +96,10 @@ class SingleValueForm < Hyrax::Forms::WorkForm
         if single_value_fields.include? field.to_sym
           if model[field].blank?
             model[field].set(values.first)
+          end
+        elsif !model[field].kind_of?(Array)
+          if model[field].blank?
+            model[field] = values
           end
         else
           if model[field].blank?

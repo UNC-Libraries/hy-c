@@ -15,6 +15,7 @@ module Hyrax
     # Add overrides for required properties which are becoming single-valued
     self.single_value_fields = [:title, :license]
     self.admin_only_terms = [:date_created]
+    self.default_term_values = { :rights_statement => "http://rightsstatements.org/vocab/InC/1.0/" }
 
     def title
       super.first || ""

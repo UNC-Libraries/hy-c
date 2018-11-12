@@ -32,6 +32,13 @@ RSpec.describe Hyrax::MultimedForm do
     it { is_expected.to match_array [:dcmi_type, :access, :date_created, :doi] }
   end
 
+  describe 'default value set' do
+    subject { form }
+    it "rights statement must have a default value" do
+      expect(form.model['rights_statement']).to eq 'http://rightsstatements.org/vocab/InC/1.0/'
+    end
+  end
+
   describe ".model_attributes" do
     let(:params) do
       ActionController::Parameters.new(
