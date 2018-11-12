@@ -113,6 +113,7 @@ RSpec.describe Hyrax::ScholarlyWorkForm do
             keyword: [''],
             license: '',
             member_of_collection_ids: [''],
+            rights_statement: 'http://rightsstatements.org/vocab/InC/1.0/',
             on_behalf_of: 'Melissa'
         )
       end
