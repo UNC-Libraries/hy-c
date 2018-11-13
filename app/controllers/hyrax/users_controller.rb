@@ -1,9 +1,11 @@
 # [hyc-override] Overriding users controller to restrict user profiles to admins
+# [hyc-override] Overriding to restrict index to authenticated users. Needed to search for users for sharing
 module Hyrax
   class UsersController < ApplicationController
     include Blacklight::SearchContext
     prepend_before_action :find_user, only: [:show]
-    before_action :ensure_admin! # [hyc-override] Overriding to restrict user profiles to admins
+    before_action :ensure_admin!, except: [:index] # [hyc-override] Overriding to restrict user profiles to admins
+    before_action :authenticate_user! # [hyc-override] Overriding to restrict index to authenticated users. Needed to search for users
 
     helper Hyrax::TrophyHelper
 

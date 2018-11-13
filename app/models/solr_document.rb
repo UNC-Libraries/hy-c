@@ -268,10 +268,6 @@ class SolrDocument
     self[Solrizer.solr_name('translator')]
   end
 
-  def url
-    self[Solrizer.solr_name('url')]
-  end
-
   def use
     self[Solrizer.solr_name('use')]
   end
