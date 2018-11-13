@@ -1,11 +1,12 @@
 <%# [hyc-override] Overriding partial from gem to allow for suppressed fields only visible to admins %>
+<%# [hyc-override] Overriding display of file img/video metadata. Move to bottom of page %>
         <div class="base-terms">
           <% f.object.primary_terms.each do |term| %>
             <%= render_edit_field_partial(term, f: f) %>
           <% end %>
         </div>
         <% if f.object.display_additional_fields? %>
-  <%# [hyc-override] Overrididing aria-expaneded, set to "false" if JS is turned on %>
+  <%# [hyc-override] Overriding aria-expaneded, set to "false" if JS is turned on %>
           <%= link_to t('hyrax.works.form.additional_fields'),
                       '#extended-terms',
                       class: 'btn btn-default additional-fields',
@@ -14,11 +15,12 @@
                       'aria-expanded'=> "true",
                       'aria-controls'=> "extended-terms" %>
           <div id="extended-terms" class='collapse in' aria-expanded="true">
-            <%= render 'form_media', f: f %>
             <% f.object.secondary_terms.each do |term| %>
               <% if !(f.object.admin_only_terms.include? term) || current_user.admin? %>
                 <%= render_edit_field_partial(term, f: f) %>
               <% end %>
             <% end %>
+            <%# [hyc-override] Overriding display of file img/video metadata. Move to bottom of page %>
+            <%= render 'form_media', f: f %>
           </div>
         <% end %>
