@@ -46,7 +46,7 @@ class SingleValueForm < Hyrax::Forms::WorkForm
         if !attrs.key?(field)
           values = default_term_values[field]
           
-          if multiple? field.to_sym || !attrs[field].kind_of?(Array)
+          if multiple? field.to_sym
             if attrs[field].blank?
               attrs[field] = values
             end
@@ -93,16 +93,13 @@ class SingleValueForm < Hyrax::Forms::WorkForm
 
       default_term_values.each do |field, values|
         Rails.logger.debug "Init field #{field} with default values #{values.inspect} or retain existing #{model[field].inspect}"
-        if single_value_fields.include? field.to_sym
-          if model[field].blank?
+
+        if model[field].blank?
+          if single_value_fields.include? field.to_sym
             model[field].set(values.first)
-          end
-        elsif !model[field].kind_of?(Array)
-          if model[field].blank?
+          elsif !model[field].kind_of?(Array)
             model[field] = values
-          end
-        else
-          if model[field].blank?
+          else
             model[field].set(values)
           end
         end
