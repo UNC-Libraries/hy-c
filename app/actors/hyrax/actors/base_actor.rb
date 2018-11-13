@@ -80,7 +80,6 @@ module Hyrax
       def clean_attributes(attributes)
         attributes[:license] = Array(attributes[:license]) if attributes.key? :license
         # [hyc-override] Overriding actor to cast rights statements as single valued
-        attributes[:rights_statement] = attributes[:rights_statement] if attributes.key? :rights_statement
         remove_blank_attributes!(attributes)
       end
 
