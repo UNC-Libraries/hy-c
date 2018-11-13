@@ -14,7 +14,7 @@ module Hyrax
 
     self.required_fields = [:title, :creator, :abstract, :advisor, :affiliation, :degree, :award,
                             :date_issued, :degree_granting_institution, :graduation_year]
-    self.single_value_fields = [:title, :license, :rights_statement]
+    self.single_value_fields = [:title, :license]
     
     self.admin_only_terms = [:dcmi_type, :access, :doi, :use]
 
@@ -27,10 +27,6 @@ module Hyrax
     end
 
     def license
-      super.first || ""
-    end
-
-    def rights_statement
       super.first || ""
     end
   end

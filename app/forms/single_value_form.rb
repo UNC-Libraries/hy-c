@@ -76,9 +76,7 @@ class SingleValueForm < Hyrax::Forms::WorkForm
     end
 
     if attrs.key?(:rights_statement) && !attrs[:rights_statement].blank?
-      Array(attrs[:rights_statement]).each do |rights|
-        attrs[:rights_statement_label] << CdrRightsStatementsService.label(rights)
-      end
+      attrs[:rights_statement_label] = CdrRightsStatementsService.label(attrs[:rights_statement])
     end
 
     attrs

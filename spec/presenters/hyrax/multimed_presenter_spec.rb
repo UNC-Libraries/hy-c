@@ -27,7 +27,7 @@ RSpec.describe Hyrax::MultimedPresenter do
       "resource_type_tesim" => ['a type'],
       "language_label_tesim" => ['language'],
       "license_label_tesim" => ['license'],
-      "rights_statement_label_tesim" => ['rights']
+      "rights_statement_label_tesim" => 'rights'
     }
   end
 
@@ -211,7 +211,7 @@ RSpec.describe Hyrax::MultimedPresenter do
 
     context "with a custom rights statement label field" do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:rights_statement_label, ['rights'], {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:rights_statement_label, 'rights', {}).and_return(renderer)
       end
 
       it "calls the AttributeRenderer" do
