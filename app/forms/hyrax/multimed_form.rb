@@ -15,6 +15,8 @@ module Hyrax
     
     self.admin_only_terms = [:dcmi_type, :access, :date_created, :doi]
 
+    self.default_term_values = { :rights_statement => "http://rightsstatements.org/vocab/InC/1.0/" }
+
     # Add overrides for required properties which are becoming single-valued
 
     def title

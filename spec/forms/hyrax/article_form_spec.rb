@@ -44,6 +44,9 @@ RSpec.describe Hyrax::ArticleForm do
     it "language must have default values" do
       expect(form.model['language']).to eq ['http://id.loc.gov/vocabulary/iso639-2/eng'] 
     end
+    it "rights statement must have a default value" do
+      expect(form.model['rights_statement']).to eq 'http://rightsstatements.org/vocab/InC/1.0/'
+    end
   end
 
   describe '.model_attributes' do
@@ -155,6 +158,7 @@ RSpec.describe Hyrax::ArticleForm do
             language_label: [],
             license: '',
             member_of_collection_ids: [''],
+            rights_statement: 'http://rightsstatements.org/vocab/InC/1.0/',
             on_behalf_of: 'Melissa'
         )
       end

@@ -24,6 +24,13 @@ RSpec.describe Hyrax::ArtworkForm do
     it { is_expected.to match_array [:date_created, :description, :license, :rights_statement, :doi, :license_label, :rights_statement_label] }
   end
 
+  describe 'default value set' do
+    subject { form }
+    it "rights statement must have a default value" do
+      expect(form.model['rights_statement']).to eq 'http://rightsstatements.org/vocab/InC/1.0/'
+    end
+  end
+
   describe '.model_attributes' do
     let(:params) do
       ActionController::Parameters.new(
@@ -72,6 +79,7 @@ RSpec.describe Hyrax::ArtworkForm do
             title: '',
             license: '',
             member_of_collection_ids: [''],
+            rights_statement: 'http://rightsstatements.org/vocab/InC/1.0/',
             on_behalf_of: 'Melissa'
         )
       end
