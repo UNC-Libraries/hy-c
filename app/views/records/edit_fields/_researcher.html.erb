@@ -1,0 +1,93 @@
+<hr>
+<div id="researcher">
+  <%= f.fields_for :researchers do |researcher| %>
+    <div class="researcher row">
+      <div class="col-sm-6 researcher-name">
+        <%= researcher.input :name, label: "Researcher",
+                          input_html: { placeholder: 'Last Name, First Name',
+                                        class: 'form-control researcher researcher-name',
+                                        value: (researcher.object.name.first || '') } %>
+      </div>
+
+      <div class="col-sm-6 researcher-orcid">
+        <%= researcher.input :orcid, label: 'ORCID', input_html: { placeholder: 'https://orcid.org/xxxx-xxxx-xxxx-xxxx',
+                                                                class: 'form-control',
+                                                                value: (researcher.object.orcid.first || '') } %>
+      </div>
+
+      <div class="col-sm-6 researcher-affiliation">
+        <%= researcher.input :affiliation, as: :select,
+                          collection: DepartmentsService.select_all_options.sort,
+                          include_blank: true,
+                          selected: researcher.object.affiliation.first,
+                          item_helper: DepartmentsService.method(:include_current_value),
+                          input_html: { class: 'form-control' }
+        -%>
+      </div>
+
+      <div class="col-sm-6 researcher-other-affiliation">
+        <%= researcher.input :other_affiliation, input_html: { class: 'form-control',
+                                                            value: (researcher.object.other_affiliation.first || '') } %>
+      </div>
+
+      <% if @form.researchers.count > 1 %>
+      <span class="input-group-btn field-controls multi_value">
+        <button type="button" class="btn btn-link remove remove-researcher" data-index="<%= researcher.index %>">
+          <span class="glyphicon glyphicon-remove"></span> <span class="controls-remove-text">Remove Researcher</span>
+        </button>
+      </span>
+      <% end %>
+    </div>
+  <% end %>
+
+  <input type='hidden' name='index-researcher' id='index-researcher' value="<%= @form.researchers.count %>" />
+
+  <div class="researcher row cloning hidden" id='researcher-cloning_row'>
+    <%= f.fields_for :researchers do |researcher| %>
+      <% if researcher.index <= @form.researchers.count %>
+        <div class="researcher row">
+          <div class="col-sm-6 researcher-name">
+            <%= researcher.input :name, label: "Researcher",
+                              input_html: { placeholder: 'Last Name, First Name',
+                                            class: 'form-control researcher researcher-name',
+                                            value: '' } %>
+          </div>
+
+          <div class="col-sm-6 researcher-orcid">
+            <%= researcher.input :orcid, label: 'ORCID', input_html: { placeholder: 'https://orcid.org/xxxx-xxxx-xxxx-xxxx',
+                                                                    class: 'form-control',
+                                                                    value: '' } %>
+          </div>
+
+          <div class="col-sm-6 researcher-affiliation">
+            <%= researcher.input :affiliation, as: :select,
+                              collection: DepartmentsService.select_all_options.sort,
+                              include_blank: true,
+                              selected: '',
+                              item_helper: DepartmentsService.method(:include_current_value),
+                              input_html: { class: 'form-control' }
+            -%>
+          </div>
+
+          <div class="col-sm-6 researcher-other-affiliation">
+            <%= researcher.input :other_affiliation, input_html: { class: 'form-control',
+                                                                value: '' } %>
+          </div>
+
+          <span class="input-group-btn field-controls multi_value">
+          <button type="button" class="btn btn-link remove remove-researcher" data-index="1">
+            <span class="glyphicon glyphicon-remove"></span> <span class="controls-remove-text">Remove Researcher</span>
+          </button>
+        </span>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+</div>
+<div class="row">
+  <button id="add-another-researcher" class="btn btn-link add">
+    <span class="glyphicon glyphicon-plus"></span>
+    <span>Add another Researcher</span>
+  </button>
+</div>
+<hr>

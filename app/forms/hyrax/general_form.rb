@@ -38,26 +38,87 @@ module Hyrax
       super.first || ""
     end
 
-
-    # In the view we have "fields_for :advisors".
-    # This method is needed to make fields_for behave as an
-    # association and populate the form with the correct
-    # committee member data.
+    
     delegate :advisors_attributes=, to: :model
-
-    # We need to call '.to_a' on advisors to force it
-    # to resolve.  Otherwise in the form, the fields don't
-    # display the committee member's name and affiliation.
-    # Instead they display something like:
-    # '#<ActiveTriples::Relation:0x007fb564969c88>'
+    delegate :arrangers_attributes=, to: :model
+    delegate :creators_attributes=, to: :model
+    delegate :composers_attributes=, to: :model
+    delegate :contributors_attributes=, to: :model
+    delegate :funders_attributes=, to: :model
+    delegate :project_directors_attributes=, to: :model
+    delegate :researchers_attributes=, to: :model
+    delegate :reviewers_attributes=, to: :model
+    delegate :sponsors_attributes=, to: :model
+    delegate :translators_attributes=, to: :model
+    
     def advisors
       model.advisors.build if model.advisors.blank?
       model.advisors.to_a
     end
 
+    def arrangers
+      model.arrangers.build if model.arrangers.blank?
+      model.arrangers.to_a
+    end
+
+    def creators
+      model.creators.build if model.creators.blank?
+      model.creators.to_a
+    end
+
+    def composers
+      model.composers.build if model.composers.blank?
+      model.composers.to_a
+    end
+
+    def contributors
+      model.contributors.build if model.contributors.blank?
+      model.contributors.to_a
+    end
+
+    def funders
+      model.funders.build if model.funders.blank?
+      model.funders.to_a
+    end
+
+    def project_directors
+      model.project_directors.build if model.project_directors.blank?
+      model.project_directors.to_a
+    end
+
+    def researchers
+      model.researchers.build if model.researchers.blank?
+      model.researchers.to_a
+    end
+
+    def reviewers
+      model.reviewers.build if model.reviewers.blank?
+      model.reviewers.to_a
+    end
+
+    def sponsors
+      model.sponsors.build if model.sponsors.blank?
+      model.sponsors.to_a
+    end
+
+    def translators
+      model.translators.build if model.translators.blank?
+      model.translators.to_a
+    end
+
     def self.build_permitted_params
       permitted = super
       permitted << { advisors_attributes: [:id, :name, :affiliation, :orcid, :other_affiliation, :_destroy] }
+      permitted << { arrangers_attributes: [:id, :name, :affiliation, :orcid, :other_affiliation, :_destroy] }
+      permitted << { creators_attributes: [:id, :name, :affiliation, :orcid, :other_affiliation, :_destroy] }
+      permitted << { composers_attributes: [:id, :name, :affiliation, :orcid, :other_affiliation, :_destroy] }
+      permitted << { contributors_attributes: [:id, :name, :affiliation, :orcid, :other_affiliation, :_destroy] }
+      permitted << { funders_attributes: [:id, :name, :affiliation, :orcid, :other_affiliation, :_destroy] }
+      permitted << { project_directors_attributes: [:id, :name, :affiliation, :orcid, :other_affiliation, :_destroy] }
+      permitted << { researchers_attributes: [:id, :name, :affiliation, :orcid, :other_affiliation, :_destroy] }
+      permitted << { reviewers_attributes: [:id, :name, :affiliation, :orcid, :other_affiliation, :_destroy] }
+      permitted << { sponsors_attributes: [:id, :name, :affiliation, :orcid, :other_affiliation, :_destroy] }
+      permitted << { translators_attributes: [:id, :name, :affiliation, :orcid, :other_affiliation, :_destroy] }
       permitted
     end
   end

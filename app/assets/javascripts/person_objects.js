@@ -1,5 +1,13 @@
 $(document).on('turbolinks:load', function () {
     attach_add_person_listeners('advisor');
+    attach_add_person_listeners('arranger');
+    attach_add_person_listeners('composer');
+    attach_add_person_listeners('funder');
+    attach_add_person_listeners('project_director');
+    attach_add_person_listeners('researcher');
+    attach_add_person_listeners('reviewer');
+    attach_add_person_listeners('sponsor');
+    attach_add_person_listeners('translator');
 });
 
 

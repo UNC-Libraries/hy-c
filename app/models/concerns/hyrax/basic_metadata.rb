@@ -14,9 +14,21 @@ module Hyrax
       property :import_url, predicate: ::RDF::URI.new('http://scholarsphere.psu.edu/ns#importUrl'), multiple: false
       property :resource_type, predicate: ::RDF::Vocab::EDM.hasType
       # predicate changed
-      property :creator, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/cre')
+      property :creators, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/cre'), class_name: 'Person'
+      property :creator, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#Creator') do |index|
+        index.as :stored_searchable
+      end
+      property :creator_display, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#CreatorDisplay') do |index|
+        index.as :stored_searchable
+      end
       # predicate changed
-      property :contributor, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/ctb')
+      property :contributors, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/ctb'), class_name: 'Person'
+      property :contributor, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#Contributor') do |index|
+        index.as :stored_searchable
+      end
+      property :contributor_display, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#ContributorDisplay') do |index|
+        index.as :stored_searchable
+      end
       property :description, predicate: ::RDF::Vocab::DC11.description, multiple: false
       # predicate changed
       property :keyword, predicate: ::RDF::Vocab::SCHEMA.keywords

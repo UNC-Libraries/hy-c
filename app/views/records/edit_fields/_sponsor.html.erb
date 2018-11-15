@@ -1,0 +1,93 @@
+<hr>
+<div id="sponsor">
+  <%= f.fields_for :sponsors do |sponsor| %>
+    <div class="sponsor row">
+      <div class="col-sm-6 sponsor-name">
+        <%= sponsor.input :name, label: "Sponsor",
+                          input_html: { placeholder: 'Last Name, First Name',
+                                        class: 'form-control sponsor sponsor-name',
+                                        value: (sponsor.object.name.first || '') } %>
+      </div>
+
+      <div class="col-sm-6 sponsor-orcid">
+        <%= sponsor.input :orcid, label: 'ORCID', input_html: { placeholder: 'https://orcid.org/xxxx-xxxx-xxxx-xxxx',
+                                                                class: 'form-control',
+                                                                value: (sponsor.object.orcid.first || '') } %>
+      </div>
+
+      <div class="col-sm-6 sponsor-affiliation">
+        <%= sponsor.input :affiliation, as: :select,
+                          collection: DepartmentsService.select_all_options.sort,
+                          include_blank: true,
+                          selected: sponsor.object.affiliation.first,
+                          item_helper: DepartmentsService.method(:include_current_value),
+                          input_html: { class: 'form-control' }
+        -%>
+      </div>
+
+      <div class="col-sm-6 sponsor-other-affiliation">
+        <%= sponsor.input :other_affiliation, input_html: { class: 'form-control',
+                                                            value: (sponsor.object.other_affiliation.first || '') } %>
+      </div>
+
+      <% if @form.sponsors.count > 1 %>
+      <span class="input-group-btn field-controls multi_value">
+        <button type="button" class="btn btn-link remove remove-sponsor" data-index="<%= sponsor.index %>">
+          <span class="glyphicon glyphicon-remove"></span> <span class="controls-remove-text">Remove Sponsor</span>
+        </button>
+      </span>
+      <% end %>
+    </div>
+  <% end %>
+
+  <input type='hidden' name='index-sponsor' id='index-sponsor' value="<%= @form.sponsors.count %>" />
+
+  <div class="sponsor row cloning hidden" id='sponsor-cloning_row'>
+    <%= f.fields_for :sponsors do |sponsor| %>
+      <% if sponsor.index <= @form.sponsors.count %>
+        <div class="sponsor row">
+          <div class="col-sm-6 sponsor-name">
+            <%= sponsor.input :name, label: "Sponsor",
+                              input_html: { placeholder: 'Last Name, First Name',
+                                            class: 'form-control sponsor sponsor-name',
+                                            value: '' } %>
+          </div>
+
+          <div class="col-sm-6 sponsor-orcid">
+            <%= sponsor.input :orcid, label: 'ORCID', input_html: { placeholder: 'https://orcid.org/xxxx-xxxx-xxxx-xxxx',
+                                                                    class: 'form-control',
+                                                                    value: '' } %>
+          </div>
+
+          <div class="col-sm-6 sponsor-affiliation">
+            <%= sponsor.input :affiliation, as: :select,
+                              collection: DepartmentsService.select_all_options.sort,
+                              include_blank: true,
+                              selected: '',
+                              item_helper: DepartmentsService.method(:include_current_value),
+                              input_html: { class: 'form-control' }
+            -%>
+          </div>
+
+          <div class="col-sm-6 sponsor-other-affiliation">
+            <%= sponsor.input :other_affiliation, input_html: { class: 'form-control',
+                                                                value: '' } %>
+          </div>
+
+          <span class="input-group-btn field-controls multi_value">
+          <button type="button" class="btn btn-link remove remove-sponsor" data-index="1">
+            <span class="glyphicon glyphicon-remove"></span> <span class="controls-remove-text">Remove Sponsor</span>
+          </button>
+        </span>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+</div>
+<div class="row">
+  <button id="add-another-sponsor" class="btn btn-link add">
+    <span class="glyphicon glyphicon-plus"></span>
+    <span>Add another Sponsor</span>
+  </button>
+</div>
+<hr>
