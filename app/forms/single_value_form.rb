@@ -65,57 +65,57 @@ class SingleValueForm < Hyrax::Forms::WorkForm
     @other_affiliation_label = []
 
     if attrs.key?(:advisors_attributes) && !attrs[:advisors_attributes].blank?
-      person_label_fields(attrs[:advisors_attributes])
+      attrs[:advisors_attributes].map{ |k, v| person_label_fields(v) }
       attrs[:advisor_display] = attrs[:advisors_attributes].map{ |k, v| build_person_display(v) }
     end
 
     if attrs.key?(:arrangers_attributes) && !attrs[:arrangers_attributes].blank?
-      person_label_fields(attrs[:arrangers_attributes])
+      attrs[:arrangers_attributes].map{ |k, v| person_label_fields(v) }
       attrs[:arranger_display] = attrs[:arrangers_attributes].map{ |k, v| build_person_display(v) }
     end
 
     if attrs.key?(:creators_attributes) && !attrs[:creators_attributes].blank?
-      person_label_fields(attrs[:creators_attributes])
+      attrs[:creators_attributes].map{ |k, v| person_label_fields(v) }
       attrs[:creator_display] = attrs[:creators_attributes].map{ |k, v| build_person_display(v) }
     end
 
     if attrs.key?(:composers_attributes) && !attrs[:composers_attributes].blank?
-      person_label_fields(attrs[:composers_attributes])
+      attrs[:composers_attributes].map{ |k, v| person_label_fields(v) }
       attrs[:composer_display] = attrs[:composers_attributes].map{ |k, v| build_person_display(v) }
     end
 
     if attrs.key?(:contributors_attributes) && !attrs[:contributors_attributes].blank?
-      person_label_fields(attrs[:contributors_attributes])
+      attrs[:contributors_attributes].map{ |k, v| person_label_fields(v) }
       attrs[:contributor_display] = attrs[:contributors_attributes].map{ |k, v| build_person_display(v) }
     end
 
     if attrs.key?(:funders_attributes) && !attrs[:funders_attributes].blank?
-      person_label_fields(attrs[:funders_attributes])
+      attrs[:funders_attributes].map{ |k, v| person_label_fields(v) }
       attrs[:funder_display] = attrs[:funders_attributes].map{ |k, v| build_person_display(v) }
     end
 
     if attrs.key?(:project_directors_attributes) && !attrs[:project_directors_attributes].blank?
-      person_label_fields(attrs[:project_directors_attributes])
+      attrs[:project_directors_attributes].map{ |k, v| person_label_fields(v) }
       attrs[:project_director_display] = attrs[:project_directors_attributes].map{ |k, v| build_person_display(v) }
     end
 
     if attrs.key?(:researchers_attributes) && !attrs[:researchers_attributes].blank?
-      person_label_fields(attrs[:researchers_attributes])
+      attrs[:researchers_attributes].map{ |k, v| person_label_fields(v) }
       attrs[:researcher_display] = attrs[:researchers_attributes].map{ |k, v| build_person_display(v) }
     end
 
     if attrs.key?(:reviewers_attributes) && !attrs[:reviewers_attributes].blank?
-      person_label_fields(attrs[:reviewers_attributes])
+      attrs[:reviewers_attributes].map{ |k, v| person_label_fields(v) }
       attrs[:reviewer_display] = attrs[:reviewers_attributes].map{ |k, v| build_person_display(v) }
     end
 
     if attrs.key?(:sponsors_attributes) && !attrs[:sponsors_attributes].blank?
-      person_label_fields(attrs[:sponsors_attributes])
+      attrs[:sponsors_attributes].map{ |k, v| person_label_fields(v) }
       attrs[:sponsor_display] = attrs[:sponsors_attributes].map{ |k, v| build_person_display(v) }
     end
 
     if attrs.key?(:translators_attributes) && !attrs[:translators_attributes].blank?
-      person_label_fields(attrs[:translators_attributes])
+      attrs[:translators_attributes].map{ |k, v| person_label_fields(v) }
       attrs[:translator_display] = attrs[:translators_attributes].map{ |k, v| build_person_display(v) }
     end
 
@@ -137,10 +137,10 @@ class SingleValueForm < Hyrax::Forms::WorkForm
       end
     end
 
-    attrs[:person_label] = @person_label.flatten!
-    attrs[:orcid_label] = @orcid_label.flatten!
-    attrs[:affiliation_label] = @affiliation_label.flatten!
-    attrs[:other_affiliation_label] = @other_affiliation_label.flatten!
+    attrs[:person_label] = @person_label.flatten
+    attrs[:orcid_label] = @orcid_label.flatten
+    attrs[:affiliation_label] = @affiliation_label.flatten
+    attrs[:other_affiliation_label] = @other_affiliation_label.flatten
 
     attrs
   end
@@ -192,10 +192,10 @@ class SingleValueForm < Hyrax::Forms::WorkForm
 
     def self.person_label_fields(person_attrs)
       if !person_attrs['name'].blank?
-        @person_label << person_attrs.map{ |k, v| v['name'] }
-        @orcid_label << person_attrs.map{ |k, v| v['orcid'] } if !person_attrs['orcid'].blank?
-        @affiliation_label << split_affiliations(person_attrs.map{ |k, v| v['affiliation'] }) if !person_attrs['affiliation'].blank?
-        @other_affiliation_label << person_attrs.map{ |k, v| v['other_affiliation'] } if !person_attrs['other_affiliation'].blank?
+        @person_label.push(person_attrs['name'])
+        @orcid_label.push(person_attrs['orcid']) if !person_attrs['orcid'].blank?
+        @affiliation_label.push(split_affiliations(person_attrs['affiliation'])) if !person_attrs['affiliation'].blank?
+        @other_affiliation_label.push(person_attrs['other_affiliation']) if !person_attrs['other_affiliation'].blank?
       end
     end
 end
