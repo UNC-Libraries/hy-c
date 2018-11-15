@@ -31,7 +31,7 @@
 
     <div class="field">
       <%= f.label 'Department (only available for Masters Papers)' %>
-      <%= f.select :department, options_for_select(DepartmentsService.select_all_options.sort,
+      <%= f.select :department, options_for_select(MastersPapersDeptsService.select_all_options.sort,
                                                    @default_admin_set.department),
                    {include_blank: true}, class: 'form-control' %>
     </div>
