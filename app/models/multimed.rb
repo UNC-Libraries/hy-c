@@ -14,6 +14,10 @@ class Multimed < ActiveFedora::Base
     index.as :stored_searchable
   end
 
+  property :affiliation_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#AffiliationLabel') do |index|
+    index.as :stored_searchable, :facetable
+  end
+
   property :dcmi_type, predicate: ::RDF::Vocab::DC.type do |index|
     index.as :stored_searchable
   end
@@ -51,7 +55,11 @@ class Multimed < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :orcid, predicate: ::RDF::Vocab::Identifiers.orcid do |index|
+  property :orcid_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#OrcidLabel') do |index|
+    index.as :stored_searchable
+  end
+
+  property :other_affiliation_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#OtherAffiliationLabel') do |index|
     index.as :stored_searchable
   end
 
@@ -62,4 +70,10 @@ class Multimed < ActiveFedora::Base
   # This must be included at the end, because it finalizes the metadata
   # schema (by adding accepts_nested_attributes)
   include ::Hyrax::BasicMetadata
+
+  # accepts_nested_attributes_for can not be called until all
+  # the properties are declared because it calls resource_class,
+  # which finalizes the property declarations.
+  # See https://github.com/projecthydra/active_fedora/issues/847
+  accepts_nested_attributes_for :creators, allow_destroy: true, reject_if: :all_blank
 end
