@@ -267,7 +267,7 @@ namespace :proquest do
     resource.resource_type = [work_attributes['resource_type']]
     resource.date_modified = DateTime.now()
     resource.date_uploaded = DateTime.now()
-    resource.rights_statement = ['http://rightsstatements.org/vocab/InC-EDU/1.0/']
+    resource.rights_statement = 'http://rightsstatements.org/vocab/InC-EDU/1.0/'
     resource.admin_set_id = work_attributes['admin_set_id']
     resource.visibility = work_attributes['visibility']
     unless work_attributes['embargo_release_date'].blank?

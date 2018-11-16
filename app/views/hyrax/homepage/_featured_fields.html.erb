@@ -1,7 +1,7 @@
 <%#  [hyc-override] Overriding hyrax default %>
 <div class="featured-item-title">
   <span class="sr-only"><%= t('hyrax.homepage.featured_works.document.title_label') %></span>
-  <%= link_to featured.title.first.truncate(100, separator: ' '), [main_app, featured] %>
+  <%= link_to featured.title.first.truncate(100, separator: ' '), [main_app, featured], aria: {hidden: true} %>
   <% if featured.creator.length > 0 %>
     <p class="featured-author"><strong>Author:</strong> <%= featured.creator.first %></p>
   <% end %>

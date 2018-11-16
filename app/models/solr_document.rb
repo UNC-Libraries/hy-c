@@ -120,10 +120,6 @@ class SolrDocument
     self[Solrizer.solr_name('creator_display')]
   end
 
-  def date_captured
-    self[Solrizer.solr_name('date_captured')]
-  end
-
   def date_issued
     self[Solrizer.solr_name('date_issued')]
   end
@@ -327,11 +323,6 @@ class SolrDocument
   def translator_display
     self[Solrizer.solr_name('translator_display')]
   end
-
-  def url
-    self[Solrizer.solr_name('url')]
-  end
-
   def use
     self[Solrizer.solr_name('use')]
   end

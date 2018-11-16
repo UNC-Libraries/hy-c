@@ -47,14 +47,14 @@ RSpec.feature 'Edit embargo', js: false do
       expect(page).to have_content 'Add New Scholarly Article or Book Chapter'
 
       fill_in 'Title', with: 'Test Article work'
-      fill_in 'Author', with: 'Test Default Creator'
+      fill_in 'Creator', with: 'Test Default Creator'
       fill_in 'Keyword', with: 'Test Default Keyword'
       select 'In Copyright', :from => 'article_rights_statement'
       choose 'article_visibility_embargo'
       check 'agreement'
 
-      within '//span[@id=addfiles]' do
-        attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'))
+      find('label[for=addFiles]').click do
+        attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'), make_visible: true)
       end
 
       click_link 'Relationships'
@@ -66,15 +66,15 @@ RSpec.feature 'Edit embargo', js: false do
 
       # Hyrax empties the form
       fill_in 'Title', with: 'Test Article work'
-      fill_in 'Author', with: 'Test Default Creator'
+      fill_in 'Creator', with: 'Test Default Creator'
       fill_in 'Keyword', with: 'Test Default Keyword'
       select 'In Copyright', :from => 'article_rights_statement'
       choose 'article_visibility_embargo'
       check 'agreement'
 
 
-      within '//span[@id=addfiles]' do
-        attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'))
+      find('label[for=addFiles]').click do
+        attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'), make_visible: true)
       end
 
       fill_in 'article_embargo_release_date', with: DateTime.now+5.months
@@ -95,14 +95,14 @@ RSpec.feature 'Edit embargo', js: false do
       expect(page).to have_content 'Add New Scholarly Article or Book Chapter'
 
       fill_in 'Title', with: 'Test Article work'
-      fill_in 'Author', with: 'Test Default Creator'
+      fill_in 'Creator', with: 'Test Default Creator'
       fill_in 'Keyword', with: 'Test Default Keyword'
       select 'In Copyright', :from => 'article_rights_statement'
       choose 'article_visibility_embargo'
       check 'agreement'
 
-      within '//span[@id=addfiles]' do
-        attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'))
+      find('label[for=addFiles]').click do
+        attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'), make_visible: true)
       end
 
       click_link 'Relationships'

@@ -9,21 +9,21 @@ RSpec.describe Hyrax::DataSetForm do
   describe "#required_fields" do
     subject { form.required_fields }
 
-    it { is_expected.to match_array [:title, :creator, :date_issued, :abstract, :kind_of_data, :resource_type] }
+    it { is_expected.to match_array [:title, :creator, :date_issued, :abstract, :description, :kind_of_data, :resource_type] }
   end
 
   describe "#primary_terms" do
     subject { form.primary_terms }
 
-    it { is_expected.to match_array [:title, :creator, :date_issued, :abstract, :kind_of_data, :resource_type] }
+    it { is_expected.to match_array [:title, :creator, :date_issued, :abstract, :description, :kind_of_data, :resource_type] }
   end
 
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:affiliation, :affiliation_label, :copyright_date, :dcmi_type, :doi, :extent,
+    it { is_expected.to match_array [:affiliation, :affiliation_label, :dcmi_type, :doi, :extent,
                                      :funder, :geographic_subject, :last_modified_date, :project_director, :researcher,
-                                     :rights_holder, :sponsor, :language, :keyword, :related_url, :description,
+                                     :rights_holder, :sponsor, :language, :keyword, :related_url,
                                      :license, :contributor, :date_created, :subject, :orcid, :other_affiliation,
                                      :rights_statement, :language_label, :license_label, :rights_statement_label] }
   end
@@ -31,13 +31,17 @@ RSpec.describe Hyrax::DataSetForm do
   describe "#admin_only_terms" do
     subject { form.admin_only_terms }
 
-    it { is_expected.to match_array [:dcmi_type] }
+    it { is_expected.to match_array [:dcmi_type, :access, :date_created, :doi, :extent] }
   end
   
   describe 'default value set' do
     subject { form }
     it "dcmi type must have default values" do
       expect(form.model['dcmi_type']).to eq ['http://purl.org/dc/dcmitype/Dataset'] 
+    end
+
+    it "rights statement must have a default value" do
+      expect(form.model['rights_statement']).to eq 'http://rightsstatements.org/vocab/InC/1.0/'
     end
   end
 
@@ -54,7 +58,6 @@ RSpec.describe Hyrax::DataSetForm do
           access: 'public',
           affiliation: ['School of Medicine', 'Carolina Center for Genome Sciences'],
           contributor: ['dean'],
-          copyright_date: '2017-12-25',
           date_created: '2017-04-02', # single-valued
           date_issued: '2018-01-08',
           dcmi_type: ['type'],
@@ -62,7 +65,7 @@ RSpec.describe Hyrax::DataSetForm do
           extent: ['1993'],
           funder: ['dean'],
           geographic_subject: ['California'],
-          kind_of_data: ['some data'],
+          kind_of_data: 'some data',
           last_modified_date: '2018-01-23',
           language: ['http://id.loc.gov/vocabulary/iso639-2/eng'],
           license: 'http://creativecommons.org/licenses/by/3.0/us/',
@@ -76,7 +79,7 @@ RSpec.describe Hyrax::DataSetForm do
           use: ['a usage'],
           language_label: [],
           license_label: [],
-          rights_statement_label: []
+          rights_statement_label: ''
       )
     end
 
@@ -90,7 +93,6 @@ RSpec.describe Hyrax::DataSetForm do
       expect(subject['abstract']).to eq ['an abstract']
       expect(subject['affiliation']).to eq ['School of Medicine', 'Carolina Center for Genome Sciences']
       expect(subject['affiliation_label']).to eq ['School of Medicine', 'Carolina Center for Genome Sciences']
-      expect(subject['copyright_date']).to eq '2017-12-25'
       expect(subject['date_created']).to eq '2017-04-02'
       expect(subject['date_issued']).to eq '2018-01-08'
       expect(subject['doi']).to eq '12345'
@@ -98,7 +100,7 @@ RSpec.describe Hyrax::DataSetForm do
       expect(subject['funder']).to eq ['dean']
       expect(subject['dcmi_type']).to eq ['type']
       expect(subject['geographic_subject']).to eq ['California']
-      expect(subject['kind_of_data']).to eq ['some data']
+      expect(subject['kind_of_data']).to eq 'some data'
       expect(subject['last_modified_date']).to eq '2018-01-23'
       expect(subject['language']).to eq ['http://id.loc.gov/vocabulary/iso639-2/eng']
       expect(subject['license']).to eq ['http://creativecommons.org/licenses/by/3.0/us/']
@@ -110,7 +112,7 @@ RSpec.describe Hyrax::DataSetForm do
       expect(subject['sponsor']).to eq ['david']
       expect(subject['language_label']).to eq ['English']
       expect(subject['license_label']).to eq ['Attribution 3.0 United States']
-      expect(subject['rights_statement_label']).to eq ['In Copyright']
+      expect(subject['rights_statement_label']).to eq 'In Copyright'
     end
 
     describe "#visibility" do

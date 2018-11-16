@@ -1,4 +1,4 @@
-sudo: false
+sudo: required
 dist: trusty
 language: ruby
 addons:
@@ -10,12 +10,12 @@ addons:
       - imagemagick
       - ghostscript
 cache:
-  - bundler: true
+  - bundler
 services:
   - redis-server
   - postgresql
 rvm:
-  - 2.4
+  - 2.4.1
 before_script:
   - curl -o /home/travis/fits-1.0.5.zip https://projects.iq.harvard.edu/files/fits/files/fits-1.0.5.zip | cat
   - unzip /home/travis/fits-1.0.5.zip -d /home/travis
@@ -23,7 +23,7 @@ before_script:
   - psql -c "create role hyrax with createdb nosuperuser login password 'password';" -U postgres
   - psql -c 'create database hyrax_test with owner hyrax;' -U postgres
   - bundle exec rake hydra:test_server &
-  - sleep 75
+  - sleep 150
   - bundle exec rake test_setup RAILS_ENV=test
 before_install:
   - gem update --system

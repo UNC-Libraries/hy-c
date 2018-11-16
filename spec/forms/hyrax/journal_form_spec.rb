@@ -22,7 +22,7 @@ RSpec.describe Hyrax::JournalForm do
     subject { form.secondary_terms }
 
     it { is_expected.to match_array [:abstract, :alternative_title, :dcmi_type, :doi, :extent, :geographic_subject,
-                                     :isbn, :issn, :note, :orcid, :place_of_publication, :table_of_contents, :creator,
+                                     :isbn, :issn, :note, :place_of_publication, :table_of_contents, :creator,
                                      :subject, :keyword, :language, :resource_type, :license, :rights_statement,
                                      :language_label, :license_label, :rights_statement_label] }
   end
@@ -30,14 +30,19 @@ RSpec.describe Hyrax::JournalForm do
   describe "#admin_only_terms" do
     subject { form.admin_only_terms }
 
-    it { is_expected.to match_array [:dcmi_type] }
+    it { is_expected.to match_array [:dcmi_type, :access, :date_created, :use] }
   end
   
   describe 'default value set' do
     subject { form }
     it "dcmi type must have default values" do
-      expect(form.model['dcmi_type']).to eq ['http://purl.org/dc/dcmitype/Text'] 
+      expect(form.model['dcmi_type']).to eq ['http://purl.org/dc/dcmitype/Text']
     end
+
+    it "rights statement must have a default value" do
+      expect(form.model['rights_statement']).to eq 'http://rightsstatements.org/vocab/InC/1.0/'
+    end
+
   end
 
   describe ".model_attributes" do
@@ -66,12 +71,11 @@ RSpec.describe Hyrax::JournalForm do
           isbn: ['123456'],
           issn: ['12345'],
           note: [''],
-          orcid: ['an orcid'],
           place_of_publication: ['California'],
-          table_of_contents: ['table of contents'],
+          table_of_contents: 'table of contents',
           language_label: [],
           license_label: [],
-          rights_statement_label: []
+          rights_statement_label: ''
       )
     end
 
@@ -85,7 +89,7 @@ RSpec.describe Hyrax::JournalForm do
       expect(subject['language']).to eq ['http://id.loc.gov/vocabulary/iso639-2/eng']
       expect(subject['resource_type']).to eq ['a type']
       expect(subject['license']).to eq ['http://creativecommons.org/licenses/by/3.0/us/']
-      expect(subject['rights_statement']).to eq ['http://rightsstatements.org/vocab/InC/1.0/']
+      expect(subject['rights_statement']).to eq 'http://rightsstatements.org/vocab/InC/1.0/'
       expect(subject['publisher']).to eq ['a publisher']
       expect(subject['visibility']).to eq 'open'
       expect(subject['member_of_collection_ids']).to eq ['123456', 'abcdef']
@@ -99,12 +103,11 @@ RSpec.describe Hyrax::JournalForm do
       expect(subject['isbn']).to eq ['123456']
       expect(subject['issn']).to eq ['12345']
       expect(subject['note']).to be_empty
-      expect(subject['orcid']).to eq ['an orcid']
       expect(subject['place_of_publication']).to eq ['California']
-      expect(subject['table_of_contents']).to eq ['table of contents']
+      expect(subject['table_of_contents']).to eq 'table of contents'
       expect(subject['language_label']).to eq ['English']
       expect(subject['license_label']).to eq ['Attribution 3.0 United States']
-      expect(subject['rights_statement_label']).to eq ['In Copyright']
+      expect(subject['rights_statement_label']).to eq 'In Copyright'
     end
   end
 

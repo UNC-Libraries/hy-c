@@ -132,9 +132,7 @@ class SingleValueForm < Hyrax::Forms::WorkForm
     end
 
     if attrs.key?(:rights_statement) && !attrs[:rights_statement].blank?
-      Array(attrs[:rights_statement]).each do |rights|
-        attrs[:rights_statement_label] << CdrRightsStatementsService.label(rights)
-      end
+      attrs[:rights_statement_label] = CdrRightsStatementsService.label(attrs[:rights_statement])
     end
 
     attrs[:person_label] = @person_label.flatten
@@ -156,12 +154,13 @@ class SingleValueForm < Hyrax::Forms::WorkForm
 
       default_term_values.each do |field, values|
         Rails.logger.debug "Init field #{field} with default values #{values.inspect} or retain existing #{model[field].inspect}"
-        if single_value_fields.include? field.to_sym
-          if model[field].blank?
+
+        if model[field].blank?
+          if single_value_fields.include? field.to_sym
             model[field].set(values.first)
-          end
-        else
-          if model[field].blank?
+          elsif !model[field].kind_of?(Array)
+            model[field] = values
+          else
             model[field].set(values)
           end
         end

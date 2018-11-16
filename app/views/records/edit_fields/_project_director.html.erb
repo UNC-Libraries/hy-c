@@ -4,7 +4,7 @@
     <div class="project_director row">
       <div class="col-sm-6 project_director-name">
         <%= project_director.input :name, label: "Project Director",
-                          input_html: { placeholder: 'Last Name, First Name',
+                          input_html: { placeholder: 'Smith, John',
                                         class: 'form-control project_director project_director-name',
                                         value: (project_director.object.name.first || '') } %>
       </div>
@@ -48,7 +48,7 @@
         <div class="project_director row">
           <div class="col-sm-6 project_director-name">
             <%= project_director.input :name, label: "Project Director",
-                              input_html: { placeholder: 'Last Name, First Name',
+                              input_html: { placeholder: 'Smith, John',
                                             class: 'form-control project_director project_director-name',
                                             value: '' } %>
           </div>

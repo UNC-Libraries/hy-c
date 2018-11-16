@@ -9,7 +9,7 @@ RSpec.describe Hyrax::HonorsThesisForm do
   describe "#required_fields" do
     subject { form.required_fields }
 
-    it do  is_expected.to match_array [:title, :abstract, :advisor, :creator, :degree, :date_created,
+    it do  is_expected.to match_array [:title, :abstract, :advisor, :award, :creator, :date_issued, :degree,
                                        :graduation_year, :affiliation, :degree_granting_institution]
     end
   end
@@ -17,7 +17,7 @@ RSpec.describe Hyrax::HonorsThesisForm do
   describe "#primary_terms" do
     subject { form.primary_terms }
 
-    it do  is_expected.to match_array [:title, :abstract, :advisor, :creator, :degree, :date_created,
+    it do  is_expected.to match_array [:title, :abstract, :advisor, :award, :creator, :date_issued, :degree,
                                        :graduation_year, :affiliation, :degree_granting_institution]
     end
   end
@@ -25,23 +25,27 @@ RSpec.describe Hyrax::HonorsThesisForm do
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:access, :academic_concentration, :alternative_title, :affiliation_label,
-                                     :award, :dcmi_type, :doi, :extent, :geographic_subject, :note,
+    it { is_expected.to match_array [:access, :academic_concentration, :affiliation_label,
+                                     :date_created, :dcmi_type, :doi, :extent, :geographic_subject, :note,
                                      :orcid, :use, :language, :license, :resource_type, :rights_statement, :subject,
-                                     :keyword, :related_url, :url, :language_label, :license_label,
+                                     :keyword, :related_url, :language_label, :license_label,
                                      :rights_statement_label] }
   end
   
   describe "#admin_only_terms" do
     subject { form.admin_only_terms }
 
-    it { is_expected.to match_array [:dcmi_type] }
+    it { is_expected.to match_array [:dcmi_type, :access, :doi, :use] }
   end
   
   describe 'default value set' do
     subject { form }
     it "dcmi type must have default values" do
-      expect(form.model['dcmi_type']).to eq ['http://purl.org/dc/dcmitype/Text'] 
+      expect(form.model['dcmi_type']).to eq ['http://purl.org/dc/dcmitype/Text']
+    end
+
+    it "rights statement must have a default value" do
+      expect(form.model['rights_statement']).to eq 'http://rightsstatements.org/vocab/InC/1.0/'
     end
   end
 
@@ -66,8 +70,7 @@ RSpec.describe Hyrax::HonorsThesisForm do
           advisor: ['an advisor'],
           affiliation: ['School of Medicine', 'Carolina Center for Genome Sciences'],
           affiliation_label: ['School of Medicine', 'Carolina Center for Genome Sciences'],
-          alternative_title: ['another title'],
-          award: ['an award'],
+          award: 'Honors', # single-valued
           dcmi_type: ['type'],
           degree: 'MSIS', # single-valued
           degree_granting_institution: 'UNC', # single-valued
@@ -78,10 +81,9 @@ RSpec.describe Hyrax::HonorsThesisForm do
           note: [''],
           orcid: ['an orcid'],
           use: ['a use'],
-          url: ['a url'],
           language_label: [],
           license_label: [],
-          rights_statement_label: []
+          rights_statement_label: ''
       )
     end
 
@@ -93,7 +95,7 @@ RSpec.describe Hyrax::HonorsThesisForm do
       expect(subject['keyword']).to eq ['a keyword']
       expect(subject['language']).to eq ['http://id.loc.gov/vocabulary/iso639-2/eng']
       expect(subject['resource_type']).to eq ['a type']
-      expect(subject['rights_statement']).to eq ['http://rightsstatements.org/vocab/InC/1.0/']
+      expect(subject['rights_statement']).to eq 'http://rightsstatements.org/vocab/InC/1.0/'
       expect(subject['subject']).to eq ['a subject']
       expect(subject['visibility']).to eq 'open'
       expect(subject['representative_id']).to eq '456'
@@ -106,8 +108,7 @@ RSpec.describe Hyrax::HonorsThesisForm do
       expect(subject['advisor']).to eq ['an advisor']
       expect(subject['affiliation']).to eq ['School of Medicine', 'Carolina Center for Genome Sciences']
       expect(subject['affiliation_label']).to eq ['School of Medicine', 'Carolina Center for Genome Sciences']
-      expect(subject['alternative_title']).to eq ['another title']
-      expect(subject['award']).to eq ['an award']
+      expect(subject['award']).to eq 'Honors'
       expect(subject['degree']).to eq 'MSIS'
       expect(subject['degree_granting_institution']).to eq 'UNC'
       expect(subject['extent']).to eq ['an extent']
@@ -118,10 +119,9 @@ RSpec.describe Hyrax::HonorsThesisForm do
       expect(subject['note']).to be_empty
       expect(subject['orcid']).to eq ['an orcid']
       expect(subject['use']).to eq ['a use']
-      expect(subject['url']).to eq ['a url']
       expect(subject['language_label']).to eq ['English']
       expect(subject['license_label']).to eq ['Attribution 3.0 United States']
-      expect(subject['rights_statement_label']).to eq ['In Copyright']
+      expect(subject['rights_statement_label']).to eq 'In Copyright'
     end
 
     context '.model_attributes' do
@@ -132,6 +132,7 @@ RSpec.describe Hyrax::HonorsThesisForm do
             keyword: [''],
             license: '',
             member_of_collection_ids: [''],
+            rights_statement: 'http://rightsstatements.org/vocab/InC/1.0/',
             on_behalf_of: 'Melissa'
         )
       end

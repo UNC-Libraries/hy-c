@@ -3,6 +3,12 @@ require 'rails_helper'
 RSpec.describe User, type: :model do
   let(:user) { User.new(email: 'test@example.com', guest: false, uid: 'someid') { |u| u.save!(validate: false)} }
 
+  describe "override hyrax info notice id transformation" do
+    it "does not change users ids from test@example.com to test@example-dot-com" do
+      expect(user.email).to eq 'test@example.com'
+    end
+  end
+
   describe 'omniauthable user' do
     it "has a uid field" do
       expect(user.uid).not_to be_empty

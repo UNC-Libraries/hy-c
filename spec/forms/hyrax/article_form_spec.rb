@@ -23,23 +23,29 @@ RSpec.describe Hyrax::ArticleForm do
 
     it { is_expected.to match_array [:keyword, :license, :rights_statement, :publisher, :date_created, :subject, :language,
                             :identifier, :related_url, :resource_type, :access, :affiliation, :affiliation_label,
-                            :bibliographic_citation, :copyright_date, :date_captured, :date_other, :dcmi_type, :doi,
-                            :edition, :extent, :funder, :geographic_subject, :issn, :journal_issue, :journal_title,
-                            :journal_volume, :note, :orcid, :other_affiliation, :page_end, :page_start,
-                            :peer_review_status, :place_of_publication, :rights_holder, :table_of_contents, :translator,
-                            :url, :use, :language_label, :license_label, :rights_statement_label] }
+                            :bibliographic_citation, :copyright_date, :date_other, :dcmi_type, :doi,
+                            :edition, :extent, :funder, :geographic_subject, :issn, :journal_title,
+                            :journal_volume, :journal_issue, :note, :orcid, :other_affiliation, :page_end, :page_start,
+                            :peer_review_status, :place_of_publication, :rights_holder, :translator,
+                            :use, :language_label, :license_label, :rights_statement_label] }
   end
   
   describe "#admin_only_terms" do
     subject { form.admin_only_terms }
 
-    it { is_expected.to match_array [:dcmi_type] }
+    it { is_expected.to match_array [:dcmi_type, :date_created, :access, :bibliographic_citation, :identifier, :use] }
   end
   
   describe 'default value set' do
     subject { form }
     it "dcmi type must have default values" do
       expect(form.model['dcmi_type']).to eq ['http://purl.org/dc/dcmitype/Text'] 
+    end
+    it "language must have default values" do
+      expect(form.model['language']).to eq ['http://id.loc.gov/vocabulary/iso639-2/eng'] 
+    end
+    it "rights statement must have a default value" do
+      expect(form.model['rights_statement']).to eq 'http://rightsstatements.org/vocab/InC/1.0/'
     end
   end
 
@@ -66,12 +72,11 @@ RSpec.describe Hyrax::ArticleForm do
           access: 'public', # single-valued
           affiliation: ['School of Medicine', 'Carolina Center for Genome Sciences'],
           copyright_date: '2017-01-22', # single-valued
-          date_captured: '2017-01-22', # single-valued
           date_issued: '2017-01-22', # single-valued
           date_other: [''],
           dcmi_type: ['type'],
           doi: '12345', # single-valued
-          edition: ['an edition'],
+          edition: 'an edition', # single-valued
           extent: ['1993'],
           funder: ['dean'],
           geographic_subject: ['California'],
@@ -87,13 +92,11 @@ RSpec.describe Hyrax::ArticleForm do
           peer_review_status: 'in review', # single-valued
           place_of_publication: ['durham'],
           rights_holder: ['dean'],
-          table_of_contents: ['cool table'],
           translator: ['dean'],
-          url: ['http://unc.edu'],
           use: ['a use'],
           language_label: [],
           license_label: [],
-          rights_statement_label: []
+          rights_statement_label: ''
       )
     end
 
@@ -109,7 +112,7 @@ RSpec.describe Hyrax::ArticleForm do
       expect(subject['publisher']).to eq ['a publisher']
       expect(subject['related_url']).to eq ['a url']
       expect(subject['resource_type']).to eq ['a type']
-      expect(subject['rights_statement']).to eq ['http://rightsstatements.org/vocab/InC/1.0/']
+      expect(subject['rights_statement']).to eq 'http://rightsstatements.org/vocab/InC/1.0/'
       expect(subject['subject']).to eq ['a subject']
       expect(subject['visibility']).to eq 'open'
       expect(subject['license']).to eq ['http://creativecommons.org/licenses/by/3.0/us/']
@@ -120,11 +123,10 @@ RSpec.describe Hyrax::ArticleForm do
       expect(subject['affiliation']).to eq ['School of Medicine', 'Carolina Center for Genome Sciences']
       expect(subject['affiliation_label']).to eq ['School of Medicine', 'Carolina Center for Genome Sciences']
       expect(subject['copyright_date']).to eq '2017-01-22'
-      expect(subject['date_captured']).to eq '2017-01-22'
       expect(subject['date_issued']).to eq '2017-01-22'
       expect(subject['date_other']).to be_empty
       expect(subject['doi']).to eq '12345'
-      expect(subject['edition']).to eq ['an edition']
+      expect(subject['edition']).to eq 'an edition'
       expect(subject['extent']).to eq ['1993']
       expect(subject['funder']).to eq ['dean']
       expect(subject['dcmi_type']).to eq ['type']
@@ -141,13 +143,11 @@ RSpec.describe Hyrax::ArticleForm do
       expect(subject['peer_review_status']).to eq 'in review'
       expect(subject['place_of_publication']).to eq ['durham']
       expect(subject['rights_holder']).to eq ['dean']
-      expect(subject['table_of_contents']).to eq ['cool table']
       expect(subject['translator']).to eq ['dean']
-      expect(subject['url']).to eq ['http://unc.edu']
       expect(subject['use']).to eq ['a use']
       expect(subject['language_label']).to eq ['English']
       expect(subject['license_label']).to eq ['Attribution 3.0 United States']
-      expect(subject['rights_statement_label']).to eq ['In Copyright']
+      expect(subject['rights_statement_label']).to eq 'In Copyright'
     end
 
     context '.model_attributes' do
@@ -155,8 +155,10 @@ RSpec.describe Hyrax::ArticleForm do
         ActionController::Parameters.new(
             title: '',
             keyword: [''],
+            language_label: [],
             license: '',
             member_of_collection_ids: [''],
+            rights_statement: 'http://rightsstatements.org/vocab/InC/1.0/',
             on_behalf_of: 'Melissa'
         )
       end

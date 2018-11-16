@@ -13,6 +13,7 @@ RSpec.describe Hyrax::MultimedPresenter do
       "human_readable_type_tesim" => ["Multimed"],
       "has_model_ssim" => ["Multimed"],
       "date_created_tesim" => ['an unformatted date'],
+      "date_issued_tesim" => '2017-01-22',
       "depositor_tesim" => user_key,
       "abstract_tesim" => ['an abstract'],
       "dcmi_type_tesim" => ['science fiction'],
@@ -26,7 +27,7 @@ RSpec.describe Hyrax::MultimedPresenter do
       "resource_type_tesim" => ['a type'],
       "language_label_tesim" => ['language'],
       "license_label_tesim" => ['license'],
-      "rights_statement_label_tesim" => ['rights']
+      "rights_statement_label_tesim" => 'rights'
     }
   end
 
@@ -44,6 +45,7 @@ RSpec.describe Hyrax::MultimedPresenter do
   it { is_expected.to delegate_method(:keyword).to(:solr_document) }
 
   it { is_expected.to delegate_method(:abstract).to(:solr_document) }
+  it { is_expected.to delegate_method(:date_issued).to(:solr_document) }
   it { is_expected.to delegate_method(:deposit_record).to(:solr_document) }
   it { is_expected.to delegate_method(:extent).to(:solr_document) }
   it { is_expected.to delegate_method(:dcmi_type).to(:solr_document) }
@@ -84,6 +86,17 @@ RSpec.describe Hyrax::MultimedPresenter do
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:abstract)
+      end
+    end
+
+    context "with a custom date issued field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:date_issued, '2017-01-22', {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:date_issued)
       end
     end
 
@@ -198,7 +211,7 @@ RSpec.describe Hyrax::MultimedPresenter do
 
     context "with a custom rights statement label field" do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:rights_statement_label, ['rights'], {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:rights_statement_label, 'rights', {}).and_return(renderer)
       end
 
       it "calls the AttributeRenderer" do

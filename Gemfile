@@ -28,7 +28,8 @@ gem 'sidekiq', '~> 5.0.4'
 gem 'blacklight_oai_provider', '6.0.0.pre1'
 gem 'edtf-humanize', '0.0.7'
 gem 'passenger', '~> 5.3.4', require: 'phusion_passenger/rack_handler'
-gem 'staccato'
+gem 'staccato', '~>0.5.1'
+gem 'loofah', '~>2.2.3'
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails', '~> 4.3.1'
@@ -38,6 +39,8 @@ gem 'turbolinks', '~> 5.0.1'
 gem 'jbuilder', '~> 2.7.0'
 # Use Redis adapter to run Action Cable in production
 gem 'redis', '~> 3.3.0'
+
+gem 'longleaf', '0.1.0.pre.3'
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 # gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
@@ -67,3 +70,5 @@ group :test do
   gem 'rspec-mocks'
   gem 'webmock'
 end
+
+gem 'riiif', '~> 1.1'

@@ -6,18 +6,17 @@ module Hyrax
 
     self.model_class = ::DataSet
 
-    self.terms += [:resource_type, :abstract, :copyright_date, :date_issued, :dcmi_type, :doi, :extent, :funder,
-                   :geographic_subject, :kind_of_data, :last_modified_date, :project_director, :researcher,
-                   :rights_holder, :sponsor]
+    self.terms += [:resource_type, :abstract, :date_issued, :dcmi_type, :doi, :extent, :funder, :geographic_subject,
+                   :kind_of_data, :last_modified_date, :project_director, :researcher, :rights_holder, :sponsor]
 
     self.terms -= [:based_near, :bibliographic_citation, :publisher, :source, :identifier]
 
-    self.required_fields = [:title, :creator, :date_issued, :abstract, :kind_of_data, :resource_type]
+    self.required_fields = [:title, :creator, :date_issued, :abstract, :description, :kind_of_data, :resource_type]
 
     self.single_value_fields = [:title, :license]
     
-    self.admin_only_terms = [:dcmi_type]
-    self.default_term_values = { :dcmi_type => ["http://purl.org/dc/dcmitype/Dataset"] }
+    self.admin_only_terms = [:dcmi_type, :access, :date_created, :doi, :extent]
+    self.default_term_values = { :dcmi_type => ["http://purl.org/dc/dcmitype/Dataset"], :rights_statement => "http://rightsstatements.org/vocab/InC/1.0/" }
 
     # Add overrides for required properties which are becoming single-valued
 

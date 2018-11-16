@@ -18,10 +18,6 @@ class DataSet < ActiveFedora::Base
     index.as :stored_searchable, :facetable
   end
 
-  property :copyright_date, predicate: ::RDF::Vocab::DC.dateCopyrighted, multiple: false do |index|
-    index.as :stored_searchable
-  end
-
   property :date_issued, predicate: ::RDF::Vocab::DC.issued, multiple: false do |index|
     index.as :stored_searchable, :facetable
   end
@@ -55,7 +51,7 @@ class DataSet < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :kind_of_data, predicate: ::RDF::Vocab::DISCO.kindOfData do |index|
+  property :kind_of_data, predicate: ::RDF::Vocab::DISCO.kindOfData, multiple: false do |index|
     index.as :stored_searchable
   end
 
@@ -99,7 +95,7 @@ class DataSet < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :rights_statement_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#RightsStatementLabel') do |index|
+  property :rights_statement_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#RightsStatementLabel'), multiple: false do |index|
     index.as :stored_searchable
   end
 

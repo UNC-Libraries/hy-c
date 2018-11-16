@@ -20,7 +20,7 @@ module Hyrax
 
     self.terms -= [:based_near, :source]
 
-    self.single_value_fields = [:title, :license, :rights_statement]
+    self.single_value_fields = [:title, :license]
     
     self.admin_only_terms = [:dcmi_type]
 
@@ -38,7 +38,7 @@ module Hyrax
       super.first || ""
     end
 
-    
+
     delegate :advisors_attributes=, to: :model
     delegate :arrangers_attributes=, to: :model
     delegate :composers_attributes=, to: :model
@@ -50,7 +50,7 @@ module Hyrax
     delegate :reviewers_attributes=, to: :model
     delegate :sponsors_attributes=, to: :model
     delegate :translators_attributes=, to: :model
-    
+
     def advisors
       model.advisors.build if model.advisors.blank?
       model.advisors.to_a

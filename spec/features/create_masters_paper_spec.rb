@@ -87,10 +87,10 @@ RSpec.feature 'Create a MastersPaper', js: false do
       
       # required fields
       fill_in 'Title', with: 'Test MastersPaper work'
-      fill_in 'Author', with: 'Test Default Creator'
+      fill_in 'Creator', with: 'Test Default Creator'
       fill_in 'Abstract', with: 'an abstract'
       fill_in 'Advisor', with: 'an advisor'
-      fill_in 'Date of Publication', with: '2018-10-03'
+      fill_in 'Date of publication', with: '2018-10-03'
       select 'Master of Science', from: 'masters_paper_degree'
       fill_in 'Degree granting institution', with: 'UNC'
       fill_in 'Graduation year', with: '2018'
@@ -98,34 +98,34 @@ RSpec.feature 'Create a MastersPaper', js: false do
 
       # extra fields
       select 'Clinical Nutrition', from: 'Academic Concentration'
-      fill_in 'Access', with: 'some access'
-      fill_in 'Doi', with: 'some doi'
-      fill_in 'Extent', with: 'some extent'
-      fill_in 'Geographic subject', with: 'some geographic subject'
+      fill_in 'Location', with: 'some geographic subject'
       fill_in 'Keyword', with: 'Test Default Keyword'
       select 'English', from: 'masters_paper_language'
       select 'Attribution 3.0 United States', :from => 'masters_paper_license'
       fill_in 'Note', with: 'a note'
-      fill_in 'Orcid', with: 'an orcid'
+      fill_in 'ORCID', with: 'an orcid'
       fill_in 'Reviewer', with: 'a reviewer'
       select 'In Copyright', :from => 'masters_paper_rights_statement'
       fill_in 'Subject', with: 'test'
-      fill_in 'Use', with: 'some use'
 
-      expect(page).to have_field('masters_paper_language_label')
-      expect(page).to have_field('masters_paper_license_label')
-      expect(page).to have_field('masters_paper_rights_statement_label')
+      expect(page).not_to have_field('masters_paper_access')
+      expect(page).not_to have_field('masters_paper_doi')
+      expect(page).not_to have_field('masters_paper_extent')
+      expect(page).to have_selector('#masters_paper_language_label', visible: false)
+      expect(page).to have_selector('#masters_paper_license_label', visible: false)
+      expect(page).to have_selector('#masters_paper_rights_statement_label', visible: false)
       expect(page).to have_field('masters_paper_visibility_embargo')
       expect(page).not_to have_field('masters_paper_visibility_lease')
       expect(page).to have_select('masters_paper_resource_type', selected: 'Masters Paper')
+      expect(page).not_to have_field('masters_paper_use')
       choose "masters_paper_visibility_open"
       check 'agreement'
       
       # Verify that admin only field is not visible
       expect(page).not_to have_selector('#masters_paper_dcmi_type')
 
-      within "//span[@id=addfiles]" do
-        attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'))
+      find('label[for=addFiles]').click do
+        attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'), make_visible: true)
       end
 
       click_link "Relationships"
@@ -140,29 +140,25 @@ RSpec.feature 'Create a MastersPaper', js: false do
       first('.document-title', text: 'Test MastersPaper work').click
       expect(page).to have_content 'Abstract an abstract'
       expect(page).to have_content 'Academic concentration Clinical Nutrition'
-      expect(page).to have_content 'Access some access'
       expect(page).to have_content 'Advisor an advisor'
       expect(page).to have_content 'Affiliation'
       expect(page).to have_content 'College of Arts and Sciences'
       expect(page).to have_content 'Department of City and Regional Planning'
       expect(page).to have_content 'Creator Test Default Creator'
-      expect(page).to have_content 'Date issued October 3, 2018'
+      expect(page).to have_content 'Date of publication October 3, 2018'
       expect(page).to have_content 'Degree Master of Science'
       expect(page).to have_content 'Degree granting institution UNC'
-      expect(page).to have_content 'Doi some doi'
-      expect(page).to have_content 'Extent some extent'
-      expect(page).to have_content 'Geographic subject some geographic subject'
+      expect(page).to have_content 'Location some geographic subject'
       expect(page).to have_content 'Graduation year 2018'
       expect(page).to have_content 'Keyword Test Default Keyword'
       expect(page).to have_content 'Language English'
       expect(page).to have_content 'License Attribution 3.0 United States'
       expect(page).to have_content 'Note a note'
-      expect(page).to have_content 'Orcid an orcid'
+      expect(page).to have_content 'ORCID an orcid'
       expect(page).to have_content 'Resource type Masters Paper'
       expect(page).to have_content 'Reviewer a reviewer'
       expect(page).to have_content 'Rights statement In Copyright'
       expect(page).to have_content 'Subject test'
-      expect(page).to have_content 'Use some use'
       expect(page).to_not have_content 'Language http://id.loc.gov/vocabulary/iso639-2/eng'
       expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
       expect(page).to_not have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'
@@ -188,10 +184,10 @@ RSpec.feature 'Create a MastersPaper', js: false do
 
       # required fields
       fill_in 'Title', with: 'Test MastersPaper work'
-      fill_in 'Author', with: 'Test Default Creator'
+      fill_in 'Creator', with: 'Test Default Creator'
       fill_in 'Abstract', with: 'an abstract'
       fill_in 'Advisor', with: 'an advisor'
-      fill_in 'Date of Publication', with: '2018-10-03'
+      fill_in 'Date of publication', with: '2018-10-03'
       select 'Master of Science', from: 'masters_paper_degree'
       fill_in 'Degree granting institution', with: 'UNC'
       fill_in 'Graduation year', with: '2018'
@@ -200,22 +196,22 @@ RSpec.feature 'Create a MastersPaper', js: false do
       # extra fields
       select 'Clinical Nutrition', from: 'Academic Concentration'
       fill_in 'Access', with: 'some access'
-      fill_in 'Doi', with: 'some doi'
+      fill_in 'DOI', with: 'some doi'
       fill_in 'Extent', with: 'some extent'
-      fill_in 'Geographic subject', with: 'some geographic subject'
+      fill_in 'Location', with: 'some geographic subject'
       fill_in 'Keyword', with: 'Test Default Keyword'
       select 'English', from: 'masters_paper_language'
       select 'Attribution 3.0 United States', :from => 'masters_paper_license'
       fill_in 'Note', with: 'a note'
-      fill_in 'Orcid', with: 'an orcid'
+      fill_in 'ORCID', with: 'an orcid'
       fill_in 'Reviewer', with: 'a reviewer'
       select 'In Copyright', :from => 'masters_paper_rights_statement'
       fill_in 'Subject', with: 'test'
       fill_in 'Use', with: 'some use'
 
-      expect(page).to have_field('masters_paper_language_label')
-      expect(page).to have_field('masters_paper_license_label')
-      expect(page).to have_field('masters_paper_rights_statement_label')
+      expect(page).to have_selector('#masters_paper_language_label', visible: false)
+      expect(page).to have_selector('#masters_paper_license_label', visible: false)
+      expect(page).to have_selector('#masters_paper_rights_statement_label', visible: false)
       expect(page).to have_field('masters_paper_visibility_embargo')
       expect(page).not_to have_field('masters_paper_visibility_lease')
       expect(page).to have_select('masters_paper_resource_type', selected: 'Masters Paper')
@@ -226,8 +222,8 @@ RSpec.feature 'Create a MastersPaper', js: false do
       expect(page).to have_selector("input[value='http://purl.org/dc/dcmitype/Text']")
       fill_in 'Dcmi type', with: 'http://purl.org/dc/dcmitype/Image'
 
-      within "//span[@id=addfiles]" do
-        attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'))
+      find('label[for=addFiles]').click do
+        attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'), make_visible: true)
       end
 
       click_link "Relationships"
@@ -250,18 +246,18 @@ RSpec.feature 'Create a MastersPaper', js: false do
       expect(page).to have_content 'Department of Art'
       expect(page).to have_content 'Studio Art Program'
       expect(page).to have_content 'Creator Test Default Creator'
-      expect(page).to have_content 'Date issued October 3, 2018'
+      expect(page).to have_content 'Date of publication October 3, 2018'
       expect(page).to have_content 'Degree Master of Science'
       expect(page).to have_content 'Degree granting institution UNC'
-      expect(page).to have_content 'Doi some doi'
+      expect(page).to have_content 'DOI some doi'
       expect(page).to have_content 'Extent some extent'
-      expect(page).to have_content 'Geographic subject some geographic subject'
+      expect(page).to have_content 'Location some geographic subject'
       expect(page).to have_content 'Graduation year 2018'
       expect(page).to have_content 'Keyword Test Default Keyword'
       expect(page).to have_content 'Language English'
       expect(page).to have_content 'License Attribution 3.0 United States'
       expect(page).to have_content 'Note a note'
-      expect(page).to have_content 'Orcid an orcid'
+      expect(page).to have_content 'ORCID an orcid'
       expect(page).to have_content 'Resource type Masters Paper'
       expect(page).to have_content 'Reviewer a reviewer'
       expect(page).to have_content 'Rights statement In Copyright'

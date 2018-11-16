@@ -4,7 +4,7 @@
     <div class="translator row">
       <div class="col-sm-6 translator-name">
         <%= translator.input :name, label: "Translator",
-                          input_html: { placeholder: 'Last Name, First Name',
+                          input_html: { placeholder: 'Smith, John',
                                         class: 'form-control translator translator-name',
                                         value: (translator.object.name.first || '') } %>
       </div>
@@ -48,7 +48,7 @@
         <div class="translator row">
           <div class="col-sm-6 translator-name">
             <%= translator.input :name, label: "Translator",
-                              input_html: { placeholder: 'Last Name, First Name',
+                              input_html: { placeholder: 'Smith, John',
                                             class: 'form-control translator translator-name',
                                             value: '' } %>
           </div>

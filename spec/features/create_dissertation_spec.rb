@@ -65,8 +65,8 @@ RSpec.feature 'Create a Dissertation', js: false do
 
       # required fields
       fill_in 'Title', with: 'Test Dissertation work'
-      fill_in 'Creator', with: 'Test Default Creator'
-      fill_in 'Date issued', with: '2018-10-03'
+      fill_in 'Author', with: 'Test Default Creator'
+      fill_in 'Date of publication', with: '2018-10-03'
       fill_in 'Degree granting institution', with: 'UNC'
 
       # extra fields
@@ -74,20 +74,20 @@ RSpec.feature 'Create a Dissertation', js: false do
       select 'Clinical Nutrition', from: 'Academic Concentration'
       fill_in 'Advisor', with: 'an advisor'
       select 'Department of Biology', from: 'dissertation_affiliation'
-      fill_in 'Alternative title', with: 'another title'
+      fill_in 'Alternate title', with: 'another title'
       fill_in 'Contributor', with: 'a contributor'
       select 'Bachelor of Science', from: 'dissertation_degree'
-      fill_in 'Doi', with: 'some doi'
+      fill_in 'DOI', with: 'some doi'
       select 'Dissertation', from: 'dissertation_resource_type'
       fill_in 'Access', with: 'some access'
-      fill_in 'Geographic subject', with: 'some geographic subject'
+      fill_in 'Location', with: 'some geographic subject'
       fill_in 'Graduation year', with: '2018'
       fill_in 'Identifier', with: 'some id'
       fill_in 'Keyword', with: 'Test Default Keyword'
       select 'English', from: 'dissertation_language'
       select 'Attribution 3.0 United States', :from => 'dissertation_license'
       fill_in 'Note', with: 'a note'
-      fill_in 'Orcid', with: 'an orcid'
+      fill_in 'ORCID', with: 'an orcid'
       fill_in 'Place of publication', with: 'UNC'
       fill_in 'Publisher', with: 'UNC Press'
       fill_in 'Reviewer', with: 'a reviewer'
@@ -95,9 +95,9 @@ RSpec.feature 'Create a Dissertation', js: false do
       fill_in 'Subject', with: 'test'
       fill_in 'Use', with: 'some use'
 
-      expect(page).to have_field('dissertation_language_label')
-      expect(page).to have_field('dissertation_license_label')
-      expect(page).to have_field('dissertation_rights_statement_label')
+      expect(page).to have_selector('#dissertation_language_label', visible: false)
+      expect(page).to have_selector('#dissertation_license_label', visible: false)
+      expect(page).to have_selector('#dissertation_rights_statement_label', visible: false)
       expect(page).to have_field('dissertation_visibility_embargo')
       expect(page).not_to have_field('dissertation_visibility_lease')
       choose 'dissertation_visibility_open'
@@ -107,8 +107,8 @@ RSpec.feature 'Create a Dissertation', js: false do
       expect(page).to have_selector("input[value='http://purl.org/dc/dcmitype/Text']")
       fill_in 'Dcmi type', with: 'http://purl.org/dc/dcmitype/Image'
 
-      within '//span[@id=addfiles]' do
-        attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'))
+      find('label[for=addFiles]').click do
+        attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'), make_visible: true)
       end
 
       click_link 'Relationships'
@@ -123,7 +123,7 @@ RSpec.feature 'Create a Dissertation', js: false do
 
       first('.document-title', text: 'Test Dissertation work').click
       expect(page).to have_content 'Creator Test Default Creator'
-      expect(page).to have_content 'Date issued October 3, 2018'
+      expect(page).to have_content 'Date of publication October 3, 2018'
       expect(page).to have_content 'Degree granting institution UNC'
 
       # extra fields
@@ -133,20 +133,20 @@ RSpec.feature 'Create a Dissertation', js: false do
       expect(page).to have_content 'Affiliation'
       expect(page).to have_content 'College of Arts and Sciences'
       expect(page).to have_content 'Department of Biology'
-      expect(page).to have_content 'Alternative title another title'
+      expect(page).to have_content 'Alternate title another title'
       expect(page).to have_content 'Contributors a contributor'
       expect(page).to have_content 'Degree Bachelor of Science'
-      expect(page).to have_content 'Doi some doi'
+      expect(page).to have_content 'DOI some doi'
       expect(page).to have_content 'Resource type Dissertation'
       expect(page).to have_content 'Access some access'
-      expect(page).to have_content 'Geographic subject some geographic subject'
+      expect(page).to have_content 'Location some geographic subject'
       expect(page).to have_content 'Graduation year 2018'
       expect(page).to have_content 'Identifier some id'
       expect(page).to have_content 'Keyword Test Default Keyword'
       expect(page).to have_content 'Language English'
       expect(page).to have_content 'License Attribution 3.0 United States'
       expect(page).to have_content 'Note a note'
-      expect(page).to have_content 'Orcid an orcid'
+      expect(page).to have_content 'ORCID an orcid'
       expect(page).to have_content 'Place of publication UNC'
       expect(page).to have_content 'Publisher UNC Press'
       expect(page).to have_content 'Reviewer a reviewer'

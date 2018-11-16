@@ -17,8 +17,8 @@ Hyrax.config do |config|
   config.register_curation_concern :scholarly_work
   # Injected via `rails g hyrax:work General`
   config.register_curation_concern :general
-  # Injected via `rails g hyrax:work ArtWork`
-  config.register_curation_concern :art_work
+  # Injected via `rails g hyrax:work Artwork`
+  config.register_curation_concern :artwork
 
   # Register roles that are expected by your implementation.
   # @see Hyrax::RoleRegistry for additional details.
@@ -88,6 +88,12 @@ Hyrax.config do |config|
   # where NOID = 10-character string and UUID = 32-character string w/ hyphens
   config.enable_noids = true
 
+  config.iiif_image_server = true
+  config.iiif_info_url_builder = lambda do |file_id, base_url|
+    uri = Riiif::Engine.routes.url_helpers.info_url(file_id, host: base_url)
+    uri.sub(%r{/info\.json\Z}, '')
+  end
+
   # Template for your repository's NOID IDs
   # config.noid_template = ".reeddeeddk"
 
@@ -119,7 +125,7 @@ Hyrax.config do |config|
 
   # Location autocomplete uses geonames to search for named regions
   # Username for connecting to geonames
-  # config.geonames_username = ''
+  config.geonames_username = ENV['GEONAMES_USER']
 
   # Should the acceptance of the licence agreement be active (checkbox), or
   # implied when the save button is pressed? Set to true for active

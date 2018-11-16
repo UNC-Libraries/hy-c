@@ -4,7 +4,7 @@
     <div class="reviewer row">
       <div class="col-sm-6 reviewer-name">
         <%= reviewer.input :name, label: "Reviewer",
-                          input_html: { placeholder: 'Last Name, First Name',
+                          input_html: { placeholder: 'Smith, John',
                                         class: 'form-control reviewer reviewer-name',
                                         value: (reviewer.object.name.first || '') } %>
       </div>
@@ -48,7 +48,7 @@
         <div class="reviewer row">
           <div class="col-sm-6 reviewer-name">
             <%= reviewer.input :name, label: "Reviewer",
-                              input_html: { placeholder: 'Last Name, First Name',
+                              input_html: { placeholder: 'Smith, John',
                                             class: 'form-control reviewer reviewer-name',
                                             value: '' } %>
           </div>

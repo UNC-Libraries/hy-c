@@ -21,18 +21,18 @@ RSpec.describe Hyrax::GeneralForm do
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:contributor, :creator, :date_created, :description, :deposit_record,
+    it { is_expected.to match_array [:contributor, :creator, :date_created, :description,
                                      :keyword, :identifier, :language, :license, :publisher, :related_url,
                                      :resource_type, :rights_statement, :subject, :bibliographic_citation, :abstract,
                                      :academic_concentration, :access, :advisor, :alternative_title, :arranger, :award,
-                                     :composer, :conference_name, :copyright_date, :date_captured, :date_issued,
+                                     :composer, :conference_name, :copyright_date, :date_issued,
                                      :date_other, :dcmi_type, :degree, :degree_granting_institution, :doi, :edition,
                                      :extent, :funder, :geographic_subject, :graduation_year, :isbn, :issn,
                                      :journal_issue, :journal_title, :journal_volume, :kind_of_data,
                                      :last_modified_date, :medium, :note, :page_start, :page_end, :peer_review_status,
                                      :place_of_publication, :project_director, :publisher_version, :researcher,
                                      :reviewer, :rights_holder, :series, :sponsor, :table_of_contents, :translator,
-                                     :url, :use, :language_label, :license_label, :rights_statement_label] }
+                                     :use, :language_label, :license_label, :rights_statement_label] }
   end
   
   describe "#admin_only_terms" do
@@ -49,7 +49,6 @@ RSpec.describe Hyrax::GeneralForm do
           contributor: ['a contributor'],
           creator: ['a creator'],
           date_created: '2017-01-22',
-          deposit_record: 'uuid:1234',
           identifier: ['an identifier'],
           language: ['http://id.loc.gov/vocabulary/iso639-2/eng'],
           license: 'http://creativecommons.org/licenses/by/3.0/us/', # single-valued
@@ -73,11 +72,10 @@ RSpec.describe Hyrax::GeneralForm do
                                           other_affiliation: 'another affiliation'} },
           alternative_title: ['some title'],
           arranger: ['an arranger'],
-          award: 'an award',
+          award: 'an award', # single-valued
           composer: ['a composer'],
           conference_name: ['a conference'],
           copyright_date: ['2017-01-22'],
-          date_captured: '2017-01-22', # single-valued
           date_issued: ['2017-01-22'],
           date_other: ['2017-01-22'],
           dcmi_type: ['type'],
@@ -85,7 +83,7 @@ RSpec.describe Hyrax::GeneralForm do
           degree_granting_institution: 'unc', # single-valued
           digital_collection: ['a collection'],
           doi: '12345', # single-valued
-          edition: ['an edition'],
+          edition: 'an edition', # single-valued
           extent: ['1993'],
           funder: ['dean'],
           geographic_subject: ['California'],
@@ -95,7 +93,7 @@ RSpec.describe Hyrax::GeneralForm do
           journal_issue: '27', # single-valued
           journal_title: 'Journal Title', # single-valued
           journal_volume: '4', # single-valued
-          kind_of_data: ['a data type'],
+          kind_of_data: 'a data type',
           last_modified_date: 'hi', # single-valued
           medium: ['a medium'],
           note: ['a note'],
@@ -112,11 +110,10 @@ RSpec.describe Hyrax::GeneralForm do
           sponsor: ['a sponsor'],
           table_of_contents: ['cool table'],
           translator: ['dean'],
-          url: ['http://unc.edu'],
           use: ['a use'],
           language_label: [],
           license_label: [],
-          rights_statement_label: []
+          rights_statement_label: ''
       )
     end
 
@@ -127,13 +124,12 @@ RSpec.describe Hyrax::GeneralForm do
       expect(subject['bibliographic_citation']).to eq ['a citation']
       expect(subject['contributor']).to eq ['a contributor']
       expect(subject['date_created']).to eq '2017-01-22'
-      expect(subject['deposit_record']).to eq 'uuid:1234'
       expect(subject['identifier']).to eq ['an identifier']
       expect(subject['language']).to eq ['http://id.loc.gov/vocabulary/iso639-2/eng']
       expect(subject['publisher']).to eq ['a publisher']
       expect(subject['related_url']).to eq ['a url']
       expect(subject['resource_type']).to eq ['a type']
-      expect(subject['rights_statement']).to eq ['http://rightsstatements.org/vocab/InC/1.0/']
+      expect(subject['rights_statement']).to eq 'http://rightsstatements.org/vocab/InC/1.0/'
       expect(subject['subject']).to eq ['a subject']
       expect(subject['description']).to eq 'a good work'
       expect(subject['visibility']).to eq 'open'
@@ -152,14 +148,13 @@ RSpec.describe Hyrax::GeneralForm do
       expect(subject['composer']).to eq ['a composer']
       expect(subject['conference_name']).to eq ['a conference']
       expect(subject['copyright_date']).to eq ['2017-01-22']
-      expect(subject['date_captured']).to eq '2017-01-22'
       expect(subject['date_issued']).to eq ['2017-01-22']
       expect(subject['date_other']).to eq ['2017-01-22']
       expect(subject['degree']).to eq 'something'
       expect(subject['degree_granting_institution']).to eq 'unc'
       expect(subject['digital_collection']).to be_nil
       expect(subject['doi']).to eq '12345'
-      expect(subject['edition']).to eq ['an edition']
+      expect(subject['edition']).to eq 'an edition'
       expect(subject['extent']).to eq ['1993']
       expect(subject['funder']).to eq ['dean']
       expect(subject['dcmi_type']).to eq ['type']
@@ -170,7 +165,7 @@ RSpec.describe Hyrax::GeneralForm do
       expect(subject['journal_issue']).to eq '27'
       expect(subject['journal_title']).to eq 'Journal Title'
       expect(subject['journal_volume']).to eq '4'
-      expect(subject['kind_of_data']).to eq ['a data type']
+      expect(subject['kind_of_data']).to eq 'a data type'
       expect(subject['last_modified_date']).to eq 'hi'
       expect(subject['medium']).to eq ['a medium']
       expect(subject['note']).to eq ['a note']
@@ -189,11 +184,10 @@ RSpec.describe Hyrax::GeneralForm do
       expect(subject['sponsor']).to eq ['a sponsor']
       expect(subject['table_of_contents']).to eq ['cool table']
       expect(subject['translator']).to eq ['dean']
-      expect(subject['url']).to eq ['http://unc.edu']
       expect(subject['use']).to eq ['a use']
       expect(subject['language_label']).to eq ['English']
       expect(subject['license_label']).to eq ['Attribution 3.0 United States']
-      expect(subject['rights_statement_label']).to eq ['In Copyright']
+      expect(subject['rights_statement_label']).to eq 'In Copyright'
     end
 
     context '.model_attributes' do

@@ -10,7 +10,7 @@ module Hyrax::Workflow::AssignReviewerByAffiliation
         # This assigns database permissions, but does not grant permissions on the Fedora object.
         Hyrax::Workflow::PermissionGenerator.call(entity: target,
                                                   agents: [reviewer],
-                                                  roles: ['approving'],
+                                                  roles: ['approving', 'depositing'],
                                                   workflow: Sipity::Workflow.where(permission_template_id: permission_template_id,
                                                                                    active: true).first)
 

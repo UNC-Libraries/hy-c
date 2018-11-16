@@ -9,7 +9,3 @@ en:
   simple_form:
     labels:
       honors_thesis:
-        award: "Honors Level"
-        creator: "Author"
-        date_created: "Date Completed"
-        related_url: "Related Resource URL"

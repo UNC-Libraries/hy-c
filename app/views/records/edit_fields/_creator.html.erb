@@ -4,7 +4,7 @@
     <div class="creator row">
       <div class="col-sm-6 creator-name">
         <%= creator.input :name, label: "Creator",
-                           input_html: { placeholder: 'Last Name, First Name',
+                           input_html: { placeholder: 'Smith, John',
                                          class: 'form-control creator creator-name',
                                          value: (creator.object.name.first || '') } %>
       </div>
@@ -48,7 +48,7 @@
         <div class="creator row">
           <div class="col-sm-6 creator-name">
             <%= creator.input :name, label: "Creator",
-                               input_html: { placeholder: 'Last Name, First Name',
+                               input_html: { placeholder: 'Smith, John',
                                              class: 'form-control creator creator-name',
                                              value: '' } %>
           </div>

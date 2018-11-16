@@ -20,6 +20,13 @@ $(function() {
         });
     }
 
+    function browseEverythingUploads() {
+        $('#browse-btn').browseEverything({
+            route: "/browse",
+            target: "#" + $('form').attr('id')
+        });
+    }
+  
     // Make file upload div height larger/smaller based on activity
     function uploadProgress() {
         var progess_bar = $('div.fileupload-progress');
@@ -31,6 +38,12 @@ $(function() {
         }
     }
 
+    function hideNonRequiredFieldsBtn() {
+        $('#metadata a.additional-fields').on('click', function () {
+            $(this).addClass('hidden');
+        });
+    }
+
     function hideNonRequiredFormFields() {
         // Remove class to hide non-required fields
         // Isn't there by default so fields still show if JS is turned off
@@ -40,15 +53,19 @@ $(function() {
         $('a.additional-fields').attr('aria-expanded', false);
     }
 
-    uploadProgress();
-    hideNonRequiredFormFields();
     visibleForms();
+    browseEverythingUploads();
+    uploadProgress();
+    hideNonRequiredFieldsBtn();
+    hideNonRequiredFormFields();
 
     // Make sure that form visibility and datepicker work with turbolinks
     $(document).on('turbolinks:load', function() {
         visibleForms();
-        hideNonRequiredFormFields();
+        browseEverythingUploads();
         uploadProgress();
+        hideNonRequiredFieldsBtn();
+        hideNonRequiredFormFields();
     });
 
     // Override default workEditor to pick up our local changes

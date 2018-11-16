@@ -5,15 +5,18 @@ module Hyrax
     class_attribute :single_value_fields
 
     self.model_class = ::Multimed
-    self.terms += [:abstract, :dcmi_type, :doi, :extent, :geographic_subject, :medium, :note, :resource_type]
+    self.terms += [:abstract, :date_issued, :dcmi_type, :doi, :extent, :geographic_subject, :medium, :note,
+                   :resource_type]
 
     self.terms -= [:based_near, :contributor, :description, :identifier, :publisher, :related_url, :source]
 
-    self.required_fields = [:title, :abstract, :creator, :date_created, :resource_type]
+    self.required_fields = [:title, :creator, :abstract, :date_issued, :resource_type]
 
-    self.single_value_fields = [:title, :license, :rights_statement]
+    self.single_value_fields = [:title, :license]
     
-    self.admin_only_terms = [:dcmi_type]
+    self.admin_only_terms = [:dcmi_type, :access, :date_created, :doi]
+
+    self.default_term_values = { :rights_statement => "http://rightsstatements.org/vocab/InC/1.0/" }
 
     # Add overrides for required properties which are becoming single-valued
 
@@ -22,10 +25,6 @@ module Hyrax
     end
 
     def license
-      super.first || ""
-    end
-
-    def rights_statement
       super.first || ""
     end
 

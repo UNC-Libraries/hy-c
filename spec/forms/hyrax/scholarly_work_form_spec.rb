@@ -30,7 +30,14 @@ RSpec.describe Hyrax::ScholarlyWorkForm do
   describe "#admin_only_terms" do
     subject { form.admin_only_terms }
 
-    it { is_expected.to match_array [:dcmi_type] }
+    it { is_expected.to match_array [:dcmi_type, :date_created, :access, :use] }
+  end
+
+  describe 'default value set' do
+    subject { form }
+    it "rights statement must have a default value" do
+      expect(form.model['rights_statement']).to eq 'http://rightsstatements.org/vocab/InC/1.0/'
+    end
   end
 
   describe '.model_attributes' do
@@ -62,7 +69,7 @@ RSpec.describe Hyrax::ScholarlyWorkForm do
           other_affiliation: ['another affiliation'],
           language_label: [],
           license_label: [],
-          rights_statement_label: []
+          rights_statement_label: ''
       )
     end
 
@@ -79,7 +86,7 @@ RSpec.describe Hyrax::ScholarlyWorkForm do
       expect(subject['keyword']).to eq ['test']
       expect(subject['resource_type']).to eq ['a type']
       expect(subject['license']).to eq ['http://creativecommons.org/licenses/by/3.0/us/']
-      expect(subject['rights_statement']).to eq ['http://rightsstatements.org/vocab/InC/1.0/']
+      expect(subject['rights_statement']).to eq 'http://rightsstatements.org/vocab/InC/1.0/'
       expect(subject['visibility']).to eq 'open'
       expect(subject['representative_id']).to eq '456'
       expect(subject['thumbnail_id']).to eq '789'
@@ -95,7 +102,7 @@ RSpec.describe Hyrax::ScholarlyWorkForm do
       expect(subject['member_of_collection_ids']).to eq ['123456', 'abcdef']
       expect(subject['language_label']).to eq ['English']
       expect(subject['license_label']).to eq ['Attribution 3.0 United States']
-      expect(subject['rights_statement_label']).to eq ['In Copyright']
+      expect(subject['rights_statement_label']).to eq 'In Copyright'
     end
 
     context '.model_attributes' do
@@ -106,6 +113,7 @@ RSpec.describe Hyrax::ScholarlyWorkForm do
             keyword: [''],
             license: '',
             member_of_collection_ids: [''],
+            rights_statement: 'http://rightsstatements.org/vocab/InC/1.0/',
             on_behalf_of: 'Melissa'
         )
       end

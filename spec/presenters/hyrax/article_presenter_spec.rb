@@ -18,7 +18,6 @@ RSpec.describe Hyrax::ArticlePresenter do
       "affiliation_tesim" => ['SILS'],
       "bibliographic_citation_tesim" => ['a citation'],
       "copyright_date_tesim" => '2017-01-22',
-      "date_captured_tesim" => '2017-01-22',
       "date_created_tesim" => '2017-01-22',
       "date_issued_tesim" => '2017-01-22',
       "date_other_tesim" => ['2017-01-22'],
@@ -41,13 +40,11 @@ RSpec.describe Hyrax::ArticlePresenter do
       "peer_review_status_tesim" => 'in review',
       "place_of_publication_tesim" => ['durham'],
       "rights_holder_tesim" => ['rights holder'],
-      "table_of_contents_tesim" => ['contents of yon table'],
       "translator_tesim" => ['dean'],
-      "url_tesim" => ['http://unc.edu'],
       "use_tesim" => ['a use'],
       "language_label_tesim" => ['language'],
       "license_label_tesim" => ['license'],
-      "rights_statement_label_tesim" => ['rights']
+      "rights_statement_label_tesim" => 'rights'
     }
   end
 
@@ -75,7 +72,6 @@ RSpec.describe Hyrax::ArticlePresenter do
   it { is_expected.to delegate_method(:affiliation).to(:solr_document) }
   it { is_expected.to delegate_method(:bibliographic_citation).to(:solr_document) }
   it { is_expected.to delegate_method(:copyright_date).to(:solr_document) }
-  it { is_expected.to delegate_method(:date_captured).to(:solr_document) }
   it { is_expected.to delegate_method(:date_issued).to(:solr_document) }
   it { is_expected.to delegate_method(:date_other).to(:solr_document) }
   it { is_expected.to delegate_method(:dcmi_type).to(:solr_document) }
@@ -97,9 +93,7 @@ RSpec.describe Hyrax::ArticlePresenter do
   it { is_expected.to delegate_method(:peer_review_status).to(:solr_document) }
   it { is_expected.to delegate_method(:place_of_publication).to(:solr_document) }
   it { is_expected.to delegate_method(:rights_holder).to(:solr_document) }
-  it { is_expected.to delegate_method(:table_of_contents).to(:solr_document) }
   it { is_expected.to delegate_method(:translator).to(:solr_document) }
-  it { is_expected.to delegate_method(:url).to(:solr_document) }
   it { is_expected.to delegate_method(:use).to(:solr_document) }
   it { is_expected.to delegate_method(:language_label).to(:solr_document) }
   it { is_expected.to delegate_method(:license_label).to(:solr_document) }
@@ -177,17 +171,6 @@ RSpec.describe Hyrax::ArticlePresenter do
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:copyright_date)
-      end
-    end
-
-    context "with a custom date captured field" do
-      before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:date_captured, '2017-01-22', {}).and_return(renderer)
-      end
-
-      it "calls the AttributeRenderer" do
-        expect(renderer).to receive(:render)
-        presenter.attribute_to_html(:date_captured)
       end
     end
 
@@ -421,17 +404,6 @@ RSpec.describe Hyrax::ArticlePresenter do
       end
     end
 
-    context "with a custom table of contents field" do
-      before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:table_of_contents, ['contents of yon table'], {}).and_return(renderer)
-      end
-
-      it "calls the AttributeRenderer" do
-        expect(renderer).to receive(:render)
-        presenter.attribute_to_html(:table_of_contents)
-      end
-    end
-
     context "with a custom translator field" do
       before do
         allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:translator, ['dean'], {}).and_return(renderer)
@@ -440,17 +412,6 @@ RSpec.describe Hyrax::ArticlePresenter do
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:translator)
-      end
-    end
-
-    context "with a custom url field" do
-      before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:url, ['http://unc.edu'], {}).and_return(renderer)
-      end
-
-      it "calls the AttributeRenderer" do
-        expect(renderer).to receive(:render)
-        presenter.attribute_to_html(:url)
       end
     end
 
@@ -489,7 +450,7 @@ RSpec.describe Hyrax::ArticlePresenter do
 
     context "with a custom rights statement label field" do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:rights_statement_label, ['rights'], {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:rights_statement_label, 'rights', {}).and_return(renderer)
       end
 
       it "calls the AttributeRenderer" do

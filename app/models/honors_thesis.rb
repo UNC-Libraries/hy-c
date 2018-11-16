@@ -34,11 +34,7 @@ class HonorsThesis < ActiveFedora::Base
     index.as :stored_searchable, :facetable
   end
 
-  property :alternative_title, predicate: ::RDF::Vocab::DC.alternative do |index|
-    index.as :stored_searchable
-  end
-
-  property :award, predicate: ::RDF::Vocab::SCHEMA.award do |index|
+  property :award, predicate: ::RDF::Vocab::SCHEMA.award, multiple: false do |index|
     index.as :stored_searchable
   end
 
@@ -101,11 +97,7 @@ class HonorsThesis < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :rights_statement_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#RightsStatementLabel') do |index|
-    index.as :stored_searchable
-  end
-
-  property :url, predicate: ::RDF::Vocab::SCHEMA.url do |index|
+  property :rights_statement_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#RightsStatementLabel'), multiple: false do |index|
     index.as :stored_searchable
   end
 

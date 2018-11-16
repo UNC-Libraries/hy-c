@@ -4,7 +4,7 @@
     <div class="advisor row">
       <div class="col-sm-6 advisor-name">
         <%= advisor.input :name, label: "Advisor",
-                          input_html: { placeholder: 'Last Name, First Name',
+                          input_html: { placeholder: 'Smith, John',
                                         class: 'form-control advisor advisor-name',
                                         value: (advisor.object.name.first || '') } %>
       </div>
@@ -48,7 +48,7 @@
       <div class="advisor row">
         <div class="col-sm-6 advisor-name">
           <%= advisor.input :name, label: "Advisor",
-                            input_html: { placeholder: 'Last Name, First Name',
+                            input_html: { placeholder: 'Smith, John',
                                           class: 'form-control advisor advisor-name',
                                           value: '' } %>
         </div>

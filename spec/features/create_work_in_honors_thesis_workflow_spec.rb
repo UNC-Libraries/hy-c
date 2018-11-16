@@ -92,7 +92,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       expect(page).to have_content "Add New Undergraduate Honors Thesis"
 
       fill_in 'Title', with: 'Honors workflow test'
-      fill_in 'Author', with: 'Test Default Creator'
+      fill_in 'Creator', with: 'Test Default Creator'
       fill_in 'Keyword', with: 'Test Default Keyword'
       select 'Department of Biology', from: 'honors_thesis_affiliation'
       select "In Copyright", from: "honors_thesis_rights_statement"
@@ -103,8 +103,8 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
 
       expect(page).not_to have_selector('#honors_thesis_dcmi_type')
 
-      within "//span[@id=addfiles]" do
-        attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'))
+      find('label[for=addFiles]').click do
+        attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'), make_visible: true)
       end
 
       click_link "Relationships"

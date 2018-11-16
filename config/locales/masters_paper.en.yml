@@ -4,12 +4,13 @@ en:
       masters_paper:     'fa fa-file-text-o'
     select_type:
       masters_paper:
+        abstract: "A short paragraph describing your work"
+        advisor: "Your advisor’s name"
         name:               "Master's Papers"
         description:        "Deposit your masters paper, project or other capstone work.  Theses will be sent to the
                             CDR automatically via ProQuest and do not need to be deposited."
   simple_form:
+    hints:
+      masters_paper:
     labels:
       masters_paper:
-        creator: "Author"
-        date_issued: "Date of Publication"
-        related_url: "Related Resource URL"

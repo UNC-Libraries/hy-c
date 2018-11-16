@@ -58,32 +58,30 @@ RSpec.feature 'Create a Journal', js: false do
       
       # required fields
       fill_in 'Title', with: 'Test Journal work'
-      fill_in 'Date of Publication', with: '2018-10-03'
+      fill_in 'Date of publication', with: '2018-10-03'
       fill_in 'Publisher', with: 'UNC Press'
 
       # extra fields
       fill_in 'Abstract', with: 'an abstract'
-      fill_in 'Alternative title', with: 'another title'
-      fill_in 'Author', with: 'Test Default Creator'
-      fill_in 'Doi', with: 'some doi'
+      fill_in 'Alternate title', with: 'another title'
+      fill_in 'Creator', with: 'Test Default Creator'
+      fill_in 'DOI', with: 'some doi'
       fill_in 'Extent', with: 'some extent'
-      fill_in 'Geographic subject', with: 'some geographic subject'
-      fill_in 'Isbn', with: 'some isbn'
-      fill_in 'Issn', with: 'some issn'
+      fill_in 'Location', with: 'some geographic subject'
+      fill_in 'ISBN', with: 'some isbn'
+      fill_in 'ISSN', with: 'some issn'
       fill_in 'Keyword', with: 'Test Default Keyword'
-      select 'English', from: 'journal_language'
       select 'Attribution 3.0 United States', :from => 'journal_license'
       fill_in 'Note', with: 'a note'
-      fill_in 'Orcid', with: 'an orcid'
       fill_in 'Place of publication', with: 'UNC'
       select 'Journal', from: 'journal_resource_type'
       select 'In Copyright', :from => 'journal_rights_statement'
       fill_in 'Subject', with: 'test'
       fill_in 'Table of contents', with: 'contents'
 
-      expect(page).to have_field('journal_language_label')
-      expect(page).to have_field('journal_license_label')
-      expect(page).to have_field('journal_rights_statement_label')
+      expect(page).to have_selector('#journal_language_label', visible: false)
+      expect(page).to have_selector('#journal_license_label', visible: false)
+      expect(page).to have_selector('#journal_rights_statement_label', visible: false)
       expect(page).to have_field('journal_visibility_embargo')
       expect(page).not_to have_field('journal_visibility_lease')
       choose "journal_visibility_open"
@@ -91,8 +89,8 @@ RSpec.feature 'Create a Journal', js: false do
       
       expect(page).not_to have_selector('#journal_dcmi_type')
 
-      within "//span[@id=addfiles]" do
-        attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'))
+      find('label[for=addFiles]').click do
+        attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'), make_visible: true)
       end
 
       click_link "Relationships"
@@ -106,19 +104,18 @@ RSpec.feature 'Create a Journal', js: false do
 
       first('.document-title', text: 'Test Journal').click
       expect(page).to have_content 'Abstract an abstract'
-      expect(page).to have_content 'Alternative title another title'
+      expect(page).to have_content 'Alternate title another title'
       expect(page).to have_content 'Creator Test Default Creator'
-      expect(page).to have_content 'Date issued October 3, 2018'
-      expect(page).to have_content 'Doi some doi'
+      expect(page).to have_content 'Date of publication October 3, 2018'
+      expect(page).to have_content 'DOI some doi'
       expect(page).to have_content 'Extent some extent'
-      expect(page).to have_content 'Geographic subject some geographic subject'
-      expect(page).to have_content 'Isbn some isbn'
-      expect(page).to have_content 'Issn some issn'
+      expect(page).to have_content 'Location some geographic subject'
+      expect(page).to have_content 'ISBN some isbn'
+      expect(page).to have_content 'ISSN some issn'
       expect(page).to have_content 'Keyword Test Default Keyword'
       expect(page).to have_content 'Language English'
       expect(page).to have_content 'License Attribution 3.0 United States'
       expect(page).to have_content 'Note a note'
-      expect(page).to have_content 'Orcid an orcid'
       expect(page).to have_content 'Place of publication UNC'
       expect(page).to have_content 'Publisher UNC Press'
       expect(page).to have_content 'Resource type Journal'
@@ -145,32 +142,30 @@ RSpec.feature 'Create a Journal', js: false do
 
       # required fields
       fill_in 'Title', with: 'Test Journal work'
-      fill_in 'Date of Publication', with: '2018-10-03'
+      fill_in 'Date of publication', with: '2018-10-03'
       fill_in 'Publisher', with: 'UNC Press'
 
       # extra fields
       fill_in 'Abstract', with: 'an abstract'
-      fill_in 'Alternative title', with: 'another title'
-      fill_in 'Author', with: 'Test Default Creator'
-      fill_in 'Doi', with: 'some doi'
+      fill_in 'Alternate title', with: 'another title'
+      fill_in 'Creator', with: 'Test Default Creator'
+      fill_in 'DOI', with: 'some doi'
       fill_in 'Extent', with: 'some extent'
-      fill_in 'Geographic subject', with: 'some geographic subject'
-      fill_in 'Isbn', with: 'some isbn'
-      fill_in 'Issn', with: 'some issn'
+      fill_in 'Location', with: 'some geographic subject'
+      fill_in 'ISBN', with: 'some isbn'
+      fill_in 'ISSN', with: 'some issn'
       fill_in 'Keyword', with: 'Test Default Keyword'
-      select 'English', from: 'journal_language'
       select 'Attribution 3.0 United States', :from => 'journal_license'
       fill_in 'Note', with: 'a note'
-      fill_in 'Orcid', with: 'an orcid'
       fill_in 'Place of publication', with: 'UNC'
       select 'Journal', from: 'journal_resource_type'
       select 'In Copyright', :from => 'journal_rights_statement'
       fill_in 'Subject', with: 'test'
       fill_in 'Table of contents', with: 'contents'
 
-      expect(page).to have_field('journal_language_label')
-      expect(page).to have_field('journal_license_label')
-      expect(page).to have_field('journal_rights_statement_label')
+      expect(page).to have_selector('#journal_language_label', visible: false)
+      expect(page).to have_selector('#journal_license_label', visible: false)
+      expect(page).to have_selector('#journal_rights_statement_label', visible: false)
       expect(page).to have_field('journal_visibility_embargo')
       expect(page).not_to have_field('journal_visibility_lease')
       choose "journal_visibility_open"
@@ -180,8 +175,8 @@ RSpec.feature 'Create a Journal', js: false do
       expect(page).to have_selector("input[value='http://purl.org/dc/dcmitype/Text']")
       fill_in 'Dcmi type', with: 'http://purl.org/dc/dcmitype/Image'
 
-      within "//span[@id=addfiles]" do
-        attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'))
+      find('label[for=addFiles]').click do
+        attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'), make_visible: true)
       end
 
       click_link "Relationships"
@@ -196,19 +191,18 @@ RSpec.feature 'Create a Journal', js: false do
 
       first('.document-title', text: 'Test Journal').click
       expect(page).to have_content 'Abstract an abstract'
-      expect(page).to have_content 'Alternative title another title'
+      expect(page).to have_content 'Alternate title another title'
       expect(page).to have_content 'Creator Test Default Creator'
-      expect(page).to have_content 'Date issued October 3, 2018'
-      expect(page).to have_content 'Doi some doi'
+      expect(page).to have_content 'Date of publication October 3, 2018'
+      expect(page).to have_content 'DOI some doi'
       expect(page).to have_content 'Extent some extent'
-      expect(page).to have_content 'Geographic subject some geographic subject'
-      expect(page).to have_content 'Isbn some isbn'
-      expect(page).to have_content 'Issn some issn'
+      expect(page).to have_content 'Location some geographic subject'
+      expect(page).to have_content 'ISBN some isbn'
+      expect(page).to have_content 'ISSN some issn'
       expect(page).to have_content 'Keyword Test Default Keyword'
       expect(page).to have_content 'Language English'
       expect(page).to have_content 'License Attribution 3.0 United States'
       expect(page).to have_content 'Note a note'
-      expect(page).to have_content 'Orcid an orcid'
       expect(page).to have_content 'Place of publication UNC'
       expect(page).to have_content 'Publisher UNC Press'
       expect(page).to have_content 'Resource type Journal'

@@ -1,4 +1,7 @@
 Rails.application.routes.draw do
+  mount Riiif::Engine => 'images', as: :riiif if Hyrax.config.iiif_image_server?
+  mount BrowseEverything::Engine => '/browse'
+
   get 'accounts/new', to: 'accounts#new'
   post 'accounts/create', to: 'accounts#create'
 
@@ -16,9 +19,13 @@ Rails.application.routes.draw do
   authenticate :user, ->(u) { u.admin? } do
     require 'sidekiq/web'
     mount Sidekiq::Web => '/sidekiq'
-    match 'users', to: 'hyrax/users#index', via: :all
   end
-  
+
+  # [hyc-override] Remove blacklight routes, e.g. suggest, saved_searches, search_history
+  match 'search_history', to: 'errors#not_found', via: :all
+  match 'saved_searches', to: 'errors#not_found', via: :all
+  get 'suggest', to: 'errors#not_found'
+
   mount Blacklight::Engine => '/'
   
   concern :searchable, Blacklight::Routes::Searchable.new
@@ -49,17 +56,22 @@ Rails.application.routes.draw do
   curation_concerns_basic_routes
   concern :exportable, Blacklight::Routes::Exportable.new
 
-  resources :solr_documents, only: [:show], path: '/catalog', controller: 'catalog' do
-    concerns :exportable
-  end
 
-  resources :bookmarks do
-    concerns :exportable
+  # [hyc-override] Remove routes we don't use e.g. catalog email and sms routes
+  # resources :solr_documents, only: [:show], path: '/catalog', controller: 'catalog' do
+  #   concerns :exportable
+  # end
 
-    collection do
-      delete 'clear'
-    end
-  end
+  # resources :bookmarks do
+  #   concerns :exportable
+  #
+  #   collection do
+  #     delete 'clear'
+  #   end
+  # end
+
+  # Catch all route for any routes that don't exist. Always have this as the last route
+  match "*path", to: "errors#not_found", via: :all
 
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end

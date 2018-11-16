@@ -19,7 +19,6 @@ RSpec.describe Hyrax::HonorsThesisPresenter do
       "access_tesim" => ['an access right'],
       "advisor_tesim" => ['an advisor'],
       "affiliation_tesim" => ['SILS'],
-      "alternative_title_tesim" => ['another title'],
       "award_tesim" => ['an award'],
       "date_issued_tesim" => ['a date'],
       "dcmi_type_tesim" => ['science fiction'],
@@ -32,11 +31,10 @@ RSpec.describe Hyrax::HonorsThesisPresenter do
       "graduation_year_tesim" => ['a graduation year'],
       "note_tesim" => ['a note'],
       "orcid_tesim" => ['an orcid'],
-      "url_tesim" => ['a url'],
       "use_tesim" => ['a use'],
       "language_label_tesim" => ['language'],
       "license_label_tesim" => ['license'],
-      "rights_statement_label_tesim" => ['rights']
+      "rights_statement_label_tesim" => 'rights'
     }
   end
   let(:ability) { nil }
@@ -63,7 +61,6 @@ RSpec.describe Hyrax::HonorsThesisPresenter do
   it { is_expected.to delegate_method(:academic_concentration).to(:solr_document) }
   it { is_expected.to delegate_method(:advisor).to(:solr_document) }
   it { is_expected.to delegate_method(:affiliation).to(:solr_document) }
-  it { is_expected.to delegate_method(:alternative_title).to(:solr_document) }
   it { is_expected.to delegate_method(:award).to(:solr_document) }
   it { is_expected.to delegate_method(:date_issued).to(:solr_document) }
   it { is_expected.to delegate_method(:dcmi_type).to(:solr_document) }
@@ -76,7 +73,6 @@ RSpec.describe Hyrax::HonorsThesisPresenter do
   it { is_expected.to delegate_method(:graduation_year).to(:solr_document) }
   it { is_expected.to delegate_method(:note).to(:solr_document) }
   it { is_expected.to delegate_method(:orcid).to(:solr_document) }
-  it { is_expected.to delegate_method(:url).to(:solr_document) }
   it { is_expected.to delegate_method(:use).to(:solr_document) }
   it { is_expected.to delegate_method(:language_label).to(:solr_document) }
   it { is_expected.to delegate_method(:license_label).to(:solr_document) }
@@ -154,17 +150,6 @@ RSpec.describe Hyrax::HonorsThesisPresenter do
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:affiliation)
-      end
-    end
-
-    context "with a custom alternative_title field" do
-      before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:alternative_title, ['another title'], {}).and_return(renderer)
-      end
-
-      it "calls the AttributeRenderer" do
-        expect(renderer).to receive(:render)
-        presenter.attribute_to_html(:alternative_title)
       end
     end
 
@@ -299,17 +284,6 @@ RSpec.describe Hyrax::HonorsThesisPresenter do
       end
     end
 
-    context "with a custom url field" do
-      before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:url, ['a url'], {}).and_return(renderer)
-      end
-
-      it "calls the AttributeRenderer" do
-        expect(renderer).to receive(:render)
-        presenter.attribute_to_html(:url)
-      end
-    end
-
     context "with a custom use field" do
       before do
         allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:use, ['a use'], {}).and_return(renderer)
@@ -345,7 +319,7 @@ RSpec.describe Hyrax::HonorsThesisPresenter do
 
     context "with a custom rights statement label field" do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:rights_statement_label, ['rights'], {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:rights_statement_label, 'rights', {}).and_return(renderer)
       end
 
       it "calls the AttributeRenderer" do

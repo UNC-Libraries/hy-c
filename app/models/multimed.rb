@@ -18,6 +18,10 @@ class Multimed < ActiveFedora::Base
     index.as :stored_searchable, :facetable
   end
 
+  property :date_issued, predicate: ::RDF::Vocab::DC.issued, multiple: false do |index|
+    index.as :stored_searchable, :facetable
+  end
+
   property :dcmi_type, predicate: ::RDF::Vocab::DC.type do |index|
     index.as :stored_searchable
   end
@@ -63,7 +67,7 @@ class Multimed < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :rights_statement_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#RightsStatementLabel') do |index|
+  property :rights_statement_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#RightsStatementLabel'), multiple: false do |index|
     index.as :stored_searchable
   end
 

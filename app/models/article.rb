@@ -26,10 +26,6 @@ class Article < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :date_captured, predicate: ::RDF::Vocab::MODS.dateCaptured, multiple: false do |index|
-    index.as :stored_searchable
-  end
-
   property :date_issued, predicate: ::RDF::Vocab::DC.issued, multiple: false do |index|
     index.as :stored_searchable, :facetable
   end
@@ -51,7 +47,7 @@ class Article < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :edition, predicate: ::RDF::Vocab::BF2.editionStatement do |index|
+  property :edition, predicate: ::RDF::Vocab::BF2.editionStatement, multiple: false do |index|
     index.as :stored_searchable, :facetable
   end
 
@@ -128,11 +124,7 @@ class Article < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :rights_statement_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#RightsStatementLabel') do |index|
-    index.as :stored_searchable
-  end
-
-  property :table_of_contents, predicate: ::RDF::Vocab::DC.tableOfContents do |index|
+  property :rights_statement_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#RightsStatementLabel'), multiple: false do |index|
     index.as :stored_searchable
   end
 
@@ -141,10 +133,6 @@ class Article < ActiveFedora::Base
   end
 
   property :translator_display, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#TranslatorDisplay') do |index|
-    index.as :stored_searchable
-  end
-
-  property :url, predicate: ::RDF::Vocab::SCHEMA.url do |index|
     index.as :stored_searchable
   end
 
