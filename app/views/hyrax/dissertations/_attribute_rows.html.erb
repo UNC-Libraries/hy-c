@@ -1,6 +1,6 @@
 <%= presenter.attribute_to_html(:date_modified, label: 'Last Modified', render_as: :date, html_dl: true) %>
-<%= presenter.attribute_to_html(:creator, render_as: :faceted, html_dl: true) %>
-<%= presenter.attribute_to_html(:contributor, render_as: :faceted, html_dl: true) %>
+<%= presenter.attribute_to_html(:creator_display, label: 'Creator', render_as: :person, html_dl: true) %>
+<%= presenter.attribute_to_html(:contributor_display, label: 'Contributor', render_as: :person, html_dl: true) %>
 <%= presenter.attribute_to_html(:subject, render_as: :faceted, html_dl: true) %>
 <%= presenter.attribute_to_html(:publisher, render_as: :faceted, html_dl: true) %>
 <%= presenter.attribute_to_html(:language_label, label: 'Language', render_as: :faceted, html_dl: true) %>
@@ -12,8 +12,7 @@
 <%= presenter.attribute_to_html(:abstract, html_dl: true) %>
 <%= presenter.attribute_to_html(:academic_concentration, html_dl: true) %>
 <%= presenter.attribute_to_html(:access, html_dl: true) %>
-<%= presenter.attribute_to_html(:advisor, html_dl: true) %>
-<%= presenter.attribute_to_html(:affiliation_label, html_dl: true, label: 'Affiliation') %>
+<%= presenter.attribute_to_html(:advisor_display, label: 'Advisor', render_as: :person, html_dl: true) %>
 <%= presenter.attribute_to_html(:alternative_title, html_dl: true) %>
 <%= presenter.attribute_to_html(:date_issued, render_as: :date, html_dl: true) %>
 <%= presenter.attribute_to_html(:degree, html_dl: true) %>
@@ -24,7 +23,6 @@
 <%= presenter.attribute_to_html(:geographic_subject, html_dl: true) %>
 <%= presenter.attribute_to_html(:graduation_year, render_as: :date, html_dl: true) %>
 <%= presenter.attribute_to_html(:note, html_dl: true) %>
-<%= presenter.attribute_to_html(:orcid, html_dl: true) %>
 <%= presenter.attribute_to_html(:place_of_publication, html_dl: true) %>
-<%= presenter.attribute_to_html(:reviewer, html_dl: true) %>
+<%= presenter.attribute_to_html(:reviewer_display, label: 'Reviewer', render_as: :person, html_dl: true) %>
 <%= presenter.attribute_to_html(:use, html_dl: true) %>

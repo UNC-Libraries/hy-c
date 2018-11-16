@@ -22,11 +22,11 @@ class Dissertation < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :advisor, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/ths') do |index|
-    index.as :stored_searchable, :facetable
+  property :advisors, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/ths'), class_name: 'Person' do |index|
+    index.as :stored_searchable
   end
 
-  property :affiliation, predicate: ::RDF::Vocab::SCHEMA.affiliation do |index|
+  property :advisor_display, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#AdvisorDisplay') do |index|
     index.as :stored_searchable
   end
 
@@ -85,7 +85,11 @@ class Dissertation < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :orcid, predicate: ::RDF::Vocab::Identifiers.orcid do |index|
+  property :orcid_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#OrcidLabel') do |index|
+    index.as :stored_searchable
+  end
+
+  property :other_affiliation_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#OtherAffiliationLabel') do |index|
     index.as :stored_searchable
   end
 
@@ -93,7 +97,11 @@ class Dissertation < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :reviewer, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/rev') do |index|
+  property :reviewers, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/rev'), class_name: 'Person' do |index|
+    index.as :stored_searchable
+  end
+
+  property :reviewer_display, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#ReviewerDisplay') do |index|
     index.as :stored_searchable
   end
 
@@ -108,4 +116,13 @@ class Dissertation < ActiveFedora::Base
   # This must be included at the end, because it finalizes the metadata
   # schema (by adding accepts_nested_attributes)
   include ::Hyrax::BasicMetadata
+
+  # accepts_nested_attributes_for can not be called until all
+  # the properties are declared because it calls resource_class,
+  # which finalizes the property declarations.
+  # See https://github.com/projecthydra/active_fedora/issues/847
+  accepts_nested_attributes_for :advisors, allow_destroy: true, reject_if: :all_blank
+  accepts_nested_attributes_for :contributors, allow_destroy: true, reject_if: :all_blank
+  accepts_nested_attributes_for :creators, allow_destroy: true, reject_if: :all_blank
+  accepts_nested_attributes_for :reviewers, allow_destroy: true, reject_if: :all_blank
 end

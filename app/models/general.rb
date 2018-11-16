@@ -195,10 +195,6 @@ class General < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :person_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#PersonLabel') do |index|
-    index.as :stored_searchable
-  end
-
   property :place_of_publication, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/pup') do |index|
     index.as :stored_searchable
   end
