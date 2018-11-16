@@ -60,7 +60,7 @@ RSpec.feature 'Create and edit default admin set', js: false do
 
       select 'Journal', from: 'Work type name'
       select 'default', from: 'Admin set'
-      select 'Art History Program', from: 'default_admin_set[department]'
+      select 'Studio Art Program', from: 'default_admin_set[department]'
 
       find('input[name="commit"]').click
 
@@ -79,7 +79,7 @@ RSpec.feature 'Create and edit default admin set', js: false do
       expect(page).to have_selector 'tr>td', text: 'ScholarlyWork', count: 1
       expect(page).to have_selector 'tr>td', text: 'General', count: 1
       expect(page).to have_selector 'tr>td', text: 'Artwork', count: 1
-      expect(page).to have_selector 'tr>td', text: 'Art History Program', count: 1
+      expect(page).to have_selector 'tr>td', text: 'Studio Art Program', count: 1
       expect(page).to have_selector 'tr>td', text: 'default', count: 11
 
       first(:link, 'Edit').click
@@ -91,7 +91,7 @@ RSpec.feature 'Create and edit default admin set', js: false do
       expect(page).to have_content 'Admin set'
       expect(page).to have_selector '#default_admin_set_admin_set_id', text: 'default'
       expect(page).to have_content 'Department (only available for masters papers)'
-      expect(page).to have_selector '#default_admin_set_department', text: 'Art History Program'
+      expect(page).to have_selector '#default_admin_set_department', text: 'Studio Art Program'
       expect(page).to have_content 'Cancel'
 
       select 'other admin set', from: 'Admin set'
