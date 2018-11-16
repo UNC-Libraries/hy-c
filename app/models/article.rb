@@ -18,10 +18,6 @@ class Article < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :affiliation, predicate: ::RDF::Vocab::SCHEMA.affiliation do |index|
-    index.as :stored_searchable
-  end
-
   property :affiliation_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#AffiliationLabel') do |index|
     index.as :stored_searchable, :facetable
   end
@@ -63,7 +59,11 @@ class Article < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :funder, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/fnd') do |index|
+  property :funders, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/fnd'), class_name: 'Person' do |index|
+    index.as :stored_searchable
+  end
+
+  property :funder_display, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#FunderDisplay') do |index|
     index.as :stored_searchable
   end
 
@@ -99,11 +99,11 @@ class Article < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :orcid, predicate: ::RDF::Vocab::Identifiers.orcid do |index|
+  property :orcid_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#OrcidLabel') do |index|
     index.as :stored_searchable
   end
 
-  property :other_affiliation, predicate: ::RDF::Vocab::EBUCore.hasAffiliation do |index|
+  property :other_affiliation_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#OtherAffiliationLabel') do |index|
     index.as :stored_searchable
   end
 
@@ -136,7 +136,11 @@ class Article < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :translator, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/trl') do |index|
+  property :translators, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/trl'), class_name: 'Person' do |index|
+    index.as :stored_searchable
+  end
+
+  property :translator_display, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#TranslatorDisplay') do |index|
     index.as :stored_searchable
   end
 
@@ -152,4 +156,11 @@ class Article < ActiveFedora::Base
   # schema (by adding accepts_nested_attributes)
   include ::Hyrax::BasicMetadata
 
+  # accepts_nested_attributes_for can not be called until all
+  # the properties are declared because it calls resource_class,
+  # which finalizes the property declarations.
+  # See https://github.com/projecthydra/active_fedora/issues/847
+  accepts_nested_attributes_for :creators, allow_destroy: true, reject_if: :all_blank
+  accepts_nested_attributes_for :funders, allow_destroy: true, reject_if: :all_blank
+  accepts_nested_attributes_for :translators, allow_destroy: true, reject_if: :all_blank
 end

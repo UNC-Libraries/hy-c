@@ -48,6 +48,10 @@ module Hyrax
       property :related_url, predicate: ::RDF::RDFS.seeAlso
       property :bibliographic_citation, predicate: ::RDF::Vocab::DC.bibliographicCitation
       property :source, predicate: ::RDF::Vocab::DC.source
+      property :person_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#PersonLabel') do |index|
+        index.as :stored_searchable
+      end
+
 
       id_blank = proc { |attributes| attributes[:id].blank? }
 
