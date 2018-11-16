@@ -7,7 +7,7 @@ module Hyrax
     self.model_class = ::Journal
 
     self.terms += [:abstract, :alternative_title, :date_issued, :dcmi_type, :doi, :extent, :geographic_subject, :isbn,
-                   :issn, :note, :orcid, :place_of_publication, :publisher, :table_of_contents, :resource_type]
+                   :issn, :note, :place_of_publication, :publisher, :table_of_contents, :resource_type]
 
     self.terms -= [:description, :based_near, :related_url, :identifier, :contributor, :source, :date_created]
 
@@ -30,6 +30,20 @@ module Hyrax
 
     def rights_statement
       super.first || ""
+    end
+
+
+    delegate :creators_attributes=, to: :model
+
+    def creators
+      model.creators.build if model.creators.blank?
+      model.creators.to_a
+    end
+
+    def self.build_permitted_params
+      permitted = super
+      permitted << { creators_attributes: [:id, :name, :affiliation, :orcid, :other_affiliation, :_destroy] }
+      permitted
     end
   end
 end
