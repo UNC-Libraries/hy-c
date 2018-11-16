@@ -41,9 +41,9 @@ module Hyrax
     
     delegate :advisors_attributes=, to: :model
     delegate :arrangers_attributes=, to: :model
-    delegate :creators_attributes=, to: :model
     delegate :composers_attributes=, to: :model
     delegate :contributors_attributes=, to: :model
+    delegate :creators_attributes=, to: :model
     delegate :funders_attributes=, to: :model
     delegate :project_directors_attributes=, to: :model
     delegate :researchers_attributes=, to: :model
@@ -61,11 +61,6 @@ module Hyrax
       model.arrangers.to_a
     end
 
-    def creators
-      model.creators.build if model.creators.blank?
-      model.creators.to_a
-    end
-
     def composers
       model.composers.build if model.composers.blank?
       model.composers.to_a
@@ -74,6 +69,11 @@ module Hyrax
     def contributors
       model.contributors.build if model.contributors.blank?
       model.contributors.to_a
+    end
+
+    def creators
+      model.creators.build if model.creators.blank?
+      model.creators.to_a
     end
 
     def funders
@@ -110,9 +110,9 @@ module Hyrax
       permitted = super
       permitted << { advisors_attributes: [:id, :name, :affiliation, :orcid, :other_affiliation, :_destroy] }
       permitted << { arrangers_attributes: [:id, :name, :affiliation, :orcid, :other_affiliation, :_destroy] }
-      permitted << { creators_attributes: [:id, :name, :affiliation, :orcid, :other_affiliation, :_destroy] }
       permitted << { composers_attributes: [:id, :name, :affiliation, :orcid, :other_affiliation, :_destroy] }
       permitted << { contributors_attributes: [:id, :name, :affiliation, :orcid, :other_affiliation, :_destroy] }
+      permitted << { creators_attributes: [:id, :name, :affiliation, :orcid, :other_affiliation, :_destroy] }
       permitted << { funders_attributes: [:id, :name, :affiliation, :orcid, :other_affiliation, :_destroy] }
       permitted << { project_directors_attributes: [:id, :name, :affiliation, :orcid, :other_affiliation, :_destroy] }
       permitted << { researchers_attributes: [:id, :name, :affiliation, :orcid, :other_affiliation, :_destroy] }

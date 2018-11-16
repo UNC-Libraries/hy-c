@@ -14,10 +14,6 @@ class DataSet < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :affiliation, predicate: ::RDF::Vocab::SCHEMA.affiliation do |index|
-    index.as :stored_searchable
-  end
-
   property :affiliation_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#AffiliationLabel') do |index|
     index.as :stored_searchable, :facetable
   end
@@ -47,7 +43,11 @@ class DataSet < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :funder, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/fnd') do |index|
+  property :funders, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/fnd'), class_name: 'Person' do |index|
+    index.as :stored_searchable
+  end
+
+  property :funder_display, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#FunderDisplay') do |index|
     index.as :stored_searchable
   end
 
@@ -71,19 +71,27 @@ class DataSet < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :orcid, predicate: ::RDF::Vocab::Identifiers.orcid do |index|
+  property :orcid_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#OrcidLabel') do |index|
     index.as :stored_searchable
   end
 
-  property :other_affiliation, predicate: ::RDF::Vocab::EBUCore.hasAffiliation do |index|
+  property :other_affiliation_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#OtherAffiliationLabel') do |index|
     index.as :stored_searchable
   end
 
-  property :project_director, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/pdr') do |index|
+  property :project_directors, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/pdr'), class_name: 'Person' do |index|
     index.as :stored_searchable
   end
 
-  property :researcher, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/res') do |index|
+  property :project_director_display, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#ProjectDirectorDisplay') do |index|
+    index.as :stored_searchable
+  end
+
+  property :researchers, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/res'), class_name: 'Person' do |index|
+    index.as :stored_searchable
+  end
+
+  property :researcher_display, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#ResearcherDisplay') do |index|
     index.as :stored_searchable
   end
 
@@ -95,11 +103,26 @@ class DataSet < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :sponsor, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/spn') do |index|
+  property :sponsors, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/spn'), class_name: 'Person' do |index|
+    index.as :stored_searchable
+  end
+
+  property :sponsor_display, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#SponsorDisplay') do |index|
     index.as :stored_searchable
   end
 
   # This must be included at the end, because it finalizes the metadata
   # schema (by adding accepts_nested_attributes)
   include ::Hyrax::BasicMetadata
+
+  # accepts_nested_attributes_for can not be called until all
+  # the properties are declared because it calls resource_class,
+  # which finalizes the property declarations.
+  # See https://github.com/projecthydra/active_fedora/issues/847
+  accepts_nested_attributes_for :contributors, allow_destroy: true, reject_if: :all_blank
+  accepts_nested_attributes_for :creators, allow_destroy: true, reject_if: :all_blank
+  accepts_nested_attributes_for :funders, allow_destroy: true, reject_if: :all_blank
+  accepts_nested_attributes_for :project_directors, allow_destroy: true, reject_if: :all_blank
+  accepts_nested_attributes_for :researchers, allow_destroy: true, reject_if: :all_blank
+  accepts_nested_attributes_for :sponsors, allow_destroy: true, reject_if: :all_blank
 end

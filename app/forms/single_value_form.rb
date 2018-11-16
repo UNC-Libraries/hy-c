@@ -74,11 +74,6 @@ class SingleValueForm < Hyrax::Forms::WorkForm
       attrs[:arranger_display] = attrs[:arrangers_attributes].map{ |k, v| build_person_display(v) }
     end
 
-    if attrs.key?(:creators_attributes) && !attrs[:creators_attributes].blank?
-      attrs[:creators_attributes].map{ |k, v| person_label_fields(v) }
-      attrs[:creator_display] = attrs[:creators_attributes].map{ |k, v| build_person_display(v) }
-    end
-
     if attrs.key?(:composers_attributes) && !attrs[:composers_attributes].blank?
       attrs[:composers_attributes].map{ |k, v| person_label_fields(v) }
       attrs[:composer_display] = attrs[:composers_attributes].map{ |k, v| build_person_display(v) }
@@ -87,6 +82,11 @@ class SingleValueForm < Hyrax::Forms::WorkForm
     if attrs.key?(:contributors_attributes) && !attrs[:contributors_attributes].blank?
       attrs[:contributors_attributes].map{ |k, v| person_label_fields(v) }
       attrs[:contributor_display] = attrs[:contributors_attributes].map{ |k, v| build_person_display(v) }
+    end
+
+    if attrs.key?(:creators_attributes) && !attrs[:creators_attributes].blank?
+      attrs[:creators_attributes].map{ |k, v| person_label_fields(v) }
+      attrs[:creator_display] = attrs[:creators_attributes].map{ |k, v| build_person_display(v) }
     end
 
     if attrs.key?(:funders_attributes) && !attrs[:funders_attributes].blank?

@@ -281,9 +281,9 @@ class General < ActiveFedora::Base
   # See https://github.com/projecthydra/active_fedora/issues/847
   accepts_nested_attributes_for :advisors, allow_destroy: true, reject_if: :all_blank
   accepts_nested_attributes_for :arrangers, allow_destroy: true, reject_if: :all_blank
-  accepts_nested_attributes_for :creators, allow_destroy: true, reject_if: :all_blank
   accepts_nested_attributes_for :composers, allow_destroy: true, reject_if: :all_blank
   accepts_nested_attributes_for :contributors, allow_destroy: true, reject_if: :all_blank
+  accepts_nested_attributes_for :creators, allow_destroy: true, reject_if: :all_blank
   accepts_nested_attributes_for :funders, allow_destroy: true, reject_if: :all_blank
   accepts_nested_attributes_for :project_directors, allow_destroy: true, reject_if: :all_blank
   accepts_nested_attributes_for :researchers, allow_destroy: true, reject_if: :all_blank
