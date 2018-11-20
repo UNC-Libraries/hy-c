@@ -26,6 +26,7 @@ module Hyrax
       # @return [Boolean] true if update was successful
       def update(env)
         apply_update_data_to_curation_concern(env)
+        log_deleted_people_objects(env.attributes, env.curation_concern.id)
         apply_save_data_to_curation_concern(env)
         next_actor.update(env) && save(env) && run_callbacks(:after_update_metadata, env)
       end
@@ -98,6 +99,20 @@ module Hyrax
       # Return the hash of attributes that are multivalued and not uploaded files
       def multivalued_form_attributes(attributes)
         attributes.select { |_, v| v.respond_to?(:select) && !v.respond_to?(:read) }
+      end
+
+      def log_deleted_people_objects(attributes, work_id)
+        attributes.each do |attr, set|
+          if attr.match(/_attributes/)
+            set.each do |k,v|
+              if v['_destroy']
+                File.open(ENV['DELETED_PEOPLE_FILE'], 'a+') do |file|
+                  file.puts work_id
+                end
+              end
+            end
+          end
+        end
       end
     end
   end
