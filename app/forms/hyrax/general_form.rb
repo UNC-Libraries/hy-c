@@ -8,13 +8,12 @@ module Hyrax
     self.model_class = ::General
 
     self.terms += [:resource_type, :bibliographic_citation, :abstract, :academic_concentration, :access, :advisor,
-                   :alternative_title, :arranger, :award, :composer, :conference_name, :copyright_date, :date_captured,
-                   :date_issued, :date_other, :dcmi_type, :degree, :degree_granting_institution, :deposit_record, :doi,
-                   :edition, :extent, :funder, :geographic_subject, :graduation_year, :isbn, :issn, :journal_issue,
-                   :journal_title, :journal_volume, :kind_of_data, :last_modified_date, :medium, :note, :page_start,
-                   :page_end, :peer_review_status, :place_of_publication, :project_director, :publisher_version,
-                   :researcher, :reviewer, :rights_holder, :series, :sponsor, :table_of_contents, :translator, :url,
-                   :use]
+                   :alternative_title, :arranger, :award, :composer, :conference_name, :copyright_date, :date_issued,
+                   :date_other, :dcmi_type, :degree, :degree_granting_institution, :doi, :edition, :extent, :funder,
+                   :geographic_subject, :graduation_year, :isbn, :issn, :journal_issue, :journal_title, :journal_volume,
+                   :kind_of_data, :last_modified_date, :medium, :note, :page_start, :page_end, :peer_review_status,
+                   :place_of_publication, :project_director, :publisher_version, :researcher, :reviewer, :rights_holder,
+                   :series, :sponsor, :table_of_contents, :translator, :use]
 
     self.required_fields = [:title]
 
@@ -34,21 +33,15 @@ module Hyrax
       super.first || ""
     end
 
-    def rights_statement
-      super.first || ""
-    end
-
 
     delegate :advisors_attributes=, to: :model
     delegate :arrangers_attributes=, to: :model
     delegate :composers_attributes=, to: :model
     delegate :contributors_attributes=, to: :model
     delegate :creators_attributes=, to: :model
-    delegate :funders_attributes=, to: :model
     delegate :project_directors_attributes=, to: :model
     delegate :researchers_attributes=, to: :model
     delegate :reviewers_attributes=, to: :model
-    delegate :sponsors_attributes=, to: :model
     delegate :translators_attributes=, to: :model
 
     def advisors
@@ -76,11 +69,6 @@ module Hyrax
       model.creators.to_a
     end
 
-    def funders
-      model.funders.build if model.funders.blank?
-      model.funders.to_a
-    end
-
     def project_directors
       model.project_directors.build if model.project_directors.blank?
       model.project_directors.to_a
@@ -96,11 +84,6 @@ module Hyrax
       model.reviewers.to_a
     end
 
-    def sponsors
-      model.sponsors.build if model.sponsors.blank?
-      model.sponsors.to_a
-    end
-
     def translators
       model.translators.build if model.translators.blank?
       model.translators.to_a
@@ -113,11 +96,9 @@ module Hyrax
       permitted << { composers_attributes: [:id, :name, :affiliation, :orcid, :other_affiliation, :_destroy] }
       permitted << { contributors_attributes: [:id, :name, :affiliation, :orcid, :other_affiliation, :_destroy] }
       permitted << { creators_attributes: [:id, :name, :affiliation, :orcid, :other_affiliation, :_destroy] }
-      permitted << { funders_attributes: [:id, :name, :affiliation, :orcid, :other_affiliation, :_destroy] }
       permitted << { project_directors_attributes: [:id, :name, :affiliation, :orcid, :other_affiliation, :_destroy] }
       permitted << { researchers_attributes: [:id, :name, :affiliation, :orcid, :other_affiliation, :_destroy] }
       permitted << { reviewers_attributes: [:id, :name, :affiliation, :orcid, :other_affiliation, :_destroy] }
-      permitted << { sponsors_attributes: [:id, :name, :affiliation, :orcid, :other_affiliation, :_destroy] }
       permitted << { translators_attributes: [:id, :name, :affiliation, :orcid, :other_affiliation, :_destroy] }
       permitted
     end

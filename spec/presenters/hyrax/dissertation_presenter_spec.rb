@@ -14,13 +14,15 @@ RSpec.describe Hyrax::DissertationPresenter do
       "resource_type_tesim" => ['a type'],
       "human_readable_type_tesim" => ["Dissertation"],
       "has_model_ssim" => ["Dissertation"],
+      "creator_display_tesim" => ['a creator'],
+      "contributor_display_tesim" => ['a contributor'],
       "date_created_tesim" => ['an unformatted date'],
       "depositor_tesim" => user_key,
+      "creator_display_tesim" => ['a creator'],
       "abstract_tesim" => ['an abstract'],
       "academic_concentration_tesim" => ['a concentration'],
       "access_tesim" => ['an access state'],
-      "advisor_tesim" => ['an advisor'],
-      "affiliation_tesim" => ['SILS'],
+      "advisor_display_tesim" => ['an advisor'],
       "alternative_title_tesim" => ['another title'],
       "date_issued_tesim" => ['2018-01-08'],
       "dcmi_type_tesim" => ['science fiction'],
@@ -31,9 +33,8 @@ RSpec.describe Hyrax::DissertationPresenter do
       "geographic_subject_tesim" => ['a geographic subject'],
       "graduation_year_tesim" => ['a year'],
       "note_tesim" => ['a note'],
-      "orcid_tesim" => ['an orcid'],
       "place_of_publication_tesim" => ['a place'],
-      "reviewer_tesim" => ['a reviewer'],
+      "reviewer_display_tesim" => ['a reviewer'],
       "use_tesim" => ['a use'],
       "language_label_tesim" => ['language'],
       "license_label_tesim" => ['license'],
@@ -49,6 +50,8 @@ RSpec.describe Hyrax::DissertationPresenter do
   it { is_expected.to delegate_method(:title).to(:solr_document) }
   it { is_expected.to delegate_method(:license).to(:solr_document) }
   it { is_expected.to delegate_method(:human_readable_type).to(:solr_document) }
+  it { is_expected.to delegate_method(:creator_display).to(:solr_document) }
+  it { is_expected.to delegate_method(:contributor_display).to(:solr_document) }
   it { is_expected.to delegate_method(:date_created).to(:solr_document) }
   it { is_expected.to delegate_method(:date_modified).to(:solr_document) }
   it { is_expected.to delegate_method(:date_uploaded).to(:solr_document) }
@@ -64,8 +67,7 @@ RSpec.describe Hyrax::DissertationPresenter do
   it { is_expected.to delegate_method(:abstract).to(:solr_document) }
   it { is_expected.to delegate_method(:academic_concentration).to(:solr_document) }
   it { is_expected.to delegate_method(:access).to(:solr_document) }
-  it { is_expected.to delegate_method(:advisor).to(:solr_document) }
-  it { is_expected.to delegate_method(:affiliation).to(:solr_document) }
+  it { is_expected.to delegate_method(:advisor_display).to(:solr_document) }
   it { is_expected.to delegate_method(:alternative_title).to(:solr_document) }
   it { is_expected.to delegate_method(:date_issued).to(:solr_document) }
   it { is_expected.to delegate_method(:dcmi_type).to(:solr_document) }
@@ -76,9 +78,8 @@ RSpec.describe Hyrax::DissertationPresenter do
   it { is_expected.to delegate_method(:geographic_subject).to(:solr_document) }
   it { is_expected.to delegate_method(:graduation_year).to(:solr_document) }
   it { is_expected.to delegate_method(:note).to(:solr_document) }
-  it { is_expected.to delegate_method(:orcid).to(:solr_document) }
   it { is_expected.to delegate_method(:place_of_publication).to(:solr_document) }
-  it { is_expected.to delegate_method(:reviewer).to(:solr_document) }
+  it { is_expected.to delegate_method(:reviewer_display).to(:solr_document) }
   it { is_expected.to delegate_method(:use).to(:solr_document) }
   it { is_expected.to delegate_method(:language_label).to(:solr_document) }
   it { is_expected.to delegate_method(:license_label).to(:solr_document) }
@@ -148,25 +149,14 @@ RSpec.describe Hyrax::DissertationPresenter do
       end
     end
 
-    context "with a custom advisor field" do
+    context "with a custom advisor_display field" do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:advisor, ['an advisor'], {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:advisor_display, ['an advisor'], {}).and_return(renderer)
       end
 
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
-        presenter.attribute_to_html(:advisor)
-      end
-    end
-
-    context "with a custom affiliation field" do
-      before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:affiliation, ['SILS'], {}).and_return(renderer)
-      end
-
-      it "calls the AttributeRenderer" do
-        expect(renderer).to receive(:render)
-        presenter.attribute_to_html(:affiliation)
+        presenter.attribute_to_html(:advisor_display)
       end
     end
 
@@ -178,6 +168,28 @@ RSpec.describe Hyrax::DissertationPresenter do
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:alternative_title)
+      end
+    end
+
+    context "with a custom creator_display field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:creator_display, ['a creator'], {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:creator_display)
+      end
+    end
+
+    context "with a custom contributor_display field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:contributor_display, ['a contributor'], {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:contributor_display)
       end
     end
 
@@ -279,17 +291,6 @@ RSpec.describe Hyrax::DissertationPresenter do
       end
     end
 
-    context "with a custom orcid field" do
-      before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:orcid, ['an orcid'], {}).and_return(renderer)
-      end
-
-      it "calls the AttributeRenderer" do
-        expect(renderer).to receive(:render)
-        presenter.attribute_to_html(:orcid)
-      end
-    end
-
     context "with a custom place_of_publication field" do
       before do
         allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:place_of_publication, ['a place'], {}).and_return(renderer)
@@ -312,14 +313,14 @@ RSpec.describe Hyrax::DissertationPresenter do
       end
     end
 
-    context "with a custom reviewer field" do
+    context "with a custom reviewer_display field" do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:reviewer, ['a reviewer'], {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:reviewer_display, ['a reviewer'], {}).and_return(renderer)
       end
 
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
-        presenter.attribute_to_html(:reviewer)
+        presenter.attribute_to_html(:reviewer_display)
       end
     end
 

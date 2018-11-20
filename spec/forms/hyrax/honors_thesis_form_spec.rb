@@ -10,7 +10,7 @@ RSpec.describe Hyrax::HonorsThesisForm do
     subject { form.required_fields }
 
     it do  is_expected.to match_array [:title, :abstract, :advisor, :award, :creator, :date_issued, :degree,
-                                       :graduation_year, :affiliation, :degree_granting_institution]
+                                       :graduation_year, :degree_granting_institution]
     end
   end
 
@@ -18,18 +18,17 @@ RSpec.describe Hyrax::HonorsThesisForm do
     subject { form.primary_terms }
 
     it do  is_expected.to match_array [:title, :abstract, :advisor, :award, :creator, :date_issued, :degree,
-                                       :graduation_year, :affiliation, :degree_granting_institution]
+                                       :graduation_year, :degree_granting_institution]
     end
   end
 
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:access, :academic_concentration, :affiliation_label,
-                                     :date_created, :dcmi_type, :doi, :extent, :geographic_subject, :note,
-                                     :orcid, :use, :language, :license, :resource_type, :rights_statement, :subject,
-                                     :keyword, :related_url, :language_label, :license_label,
-                                     :rights_statement_label] }
+    it { is_expected.to match_array [:access, :academic_concentration, :date_created, :dcmi_type, :doi, :extent,
+                                     :geographic_subject, :note, :use, :language, :license, :resource_type,
+                                     :rights_statement, :subject, :keyword, :related_url, :language_label,
+                                     :license_label, :rights_statement_label] }
   end
   
   describe "#admin_only_terms" do
@@ -53,7 +52,10 @@ RSpec.describe Hyrax::HonorsThesisForm do
     let(:params) do
       ActionController::Parameters.new(
           title: 'foo', # single-valued
-          creator: ['a creator'],
+          creators_attributes: { '0' => { name: 'creator',
+                                          orcid: 'creator orcid',
+                                          affiliation: 'Carolina Center for Genome Sciences',
+                                          other_affiliation: 'another affiliation'} },
           keyword: ['a keyword'],
           language: ['http://id.loc.gov/vocabulary/iso639-2/eng'],
           license: 'http://creativecommons.org/licenses/by/3.0/us/', # single-valued
@@ -67,9 +69,10 @@ RSpec.describe Hyrax::HonorsThesisForm do
           abstract: [''],
           academic_concentration: ['a concentration'],
           access: 'public', # single-valued
-          advisor: ['an advisor'],
-          affiliation: ['School of Medicine', 'Carolina Center for Genome Sciences'],
-          affiliation_label: ['School of Medicine', 'Carolina Center for Genome Sciences'],
+          advisors_attributes: { '0' => { name: 'advisor',
+                                          orcid: 'advisor orcid',
+                                          affiliation: 'Carolina Center for Genome Sciences',
+                                          other_affiliation: 'another affiliation'} },
           award: 'Honors', # single-valued
           dcmi_type: ['type'],
           degree: 'MSIS', # single-valued
@@ -79,7 +82,6 @@ RSpec.describe Hyrax::HonorsThesisForm do
           geographic_subject: ['a geographic subject'],
           graduation_year: '2017',
           note: [''],
-          orcid: ['an orcid'],
           use: ['a use'],
           language_label: [],
           license_label: [],
@@ -91,7 +93,7 @@ RSpec.describe Hyrax::HonorsThesisForm do
 
     it 'permits parameters' do
       expect(subject['title']).to eq ['foo']
-      expect(subject['creator']).to eq ['a creator']
+      expect(subject['creator_display']).to eq ['creator;ORCID: creator orcid;Affiliation: School of Medicine, Carolina Center for Genome Sciences;Other Affiliation: another affiliation']
       expect(subject['keyword']).to eq ['a keyword']
       expect(subject['language']).to eq ['http://id.loc.gov/vocabulary/iso639-2/eng']
       expect(subject['resource_type']).to eq ['a type']
@@ -105,9 +107,8 @@ RSpec.describe Hyrax::HonorsThesisForm do
       expect(subject['abstract']).to be_empty
       expect(subject['academic_concentration']).to eq ['a concentration']
       expect(subject['access']).to eq 'public'
-      expect(subject['advisor']).to eq ['an advisor']
-      expect(subject['affiliation']).to eq ['School of Medicine', 'Carolina Center for Genome Sciences']
-      expect(subject['affiliation_label']).to eq ['School of Medicine', 'Carolina Center for Genome Sciences']
+      expect(subject['advisor_display']).to eq ['advisor;ORCID: advisor orcid;Affiliation: School of Medicine, Carolina Center for Genome Sciences;Other Affiliation: another affiliation']
+      expect(subject['affiliation_label']).to match ['School of Medicine', 'Carolina Center for Genome Sciences']
       expect(subject['award']).to eq 'Honors'
       expect(subject['degree']).to eq 'MSIS'
       expect(subject['degree_granting_institution']).to eq 'UNC'
@@ -117,7 +118,9 @@ RSpec.describe Hyrax::HonorsThesisForm do
       expect(subject['license']).to eq ['http://creativecommons.org/licenses/by/3.0/us/']
       expect(subject['graduation_year']).to eq '2017'
       expect(subject['note']).to be_empty
-      expect(subject['orcid']).to eq ['an orcid']
+      expect(subject['orcid_label']).to match_array ['creator orcid', 'advisor orcid']
+      expect(subject['other_affiliation_label']).to match_array ['another affiliation']
+      expect(subject['person_label']).to match_array ['creator', 'advisor']
       expect(subject['use']).to eq ['a use']
       expect(subject['language_label']).to eq ['English']
       expect(subject['license_label']).to eq ['Attribution 3.0 United States']

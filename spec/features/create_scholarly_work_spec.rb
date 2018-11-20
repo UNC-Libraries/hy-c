@@ -58,22 +58,25 @@ RSpec.feature 'Create a ScholarlyWork', js: false do
 
       # required fields
       fill_in 'Title', with: 'Test ScholarlyWork work'
-      fill_in 'Creator', with: 'Test Default Creator'
+      fill_in 'Creator', { with: 'Test Default Creator', id: 'scholarly_work_creators_attributes_0_name' }
+      fill_in 'ORCID', { with: 'creator orcid', id: 'scholarly_work_creators_attributes_0_orcid' }
+      select 'Department of Biology', from: 'scholarly_work_creators_attributes_0_affiliation'
+      fill_in 'Additional affiliation', { with: 'UNC', id: 'scholarly_work_creators_attributes_0_other_affiliation' }
       fill_in 'Abstract', with: 'an abstract'
       fill_in 'Date of publication', with: '2018-10-03'
 
       # extra fields
-      fill_in 'Advisor', with: 'an advisor'
-      select 'Department of Biology', from: 'scholarly_work_affiliation'
-      fill_in 'Conference name', with: 'a composer'
+      fill_in 'Advisor', { with: 'advisor', id: 'scholarly_work_advisors_attributes_0_name' }
+      fill_in 'ORCID', { with: 'advisor orcid', id: 'scholarly_work_advisors_attributes_0_orcid' }
+      select 'Department of Biology', from: 'scholarly_work_advisors_attributes_0_affiliation'
+      fill_in 'Additional affiliation', { with: 'UNC', id: 'scholarly_work_advisors_attributes_0_other_affiliation' }
+      fill_in 'Conference name', with: 'a conference'
       fill_in 'Description', with: 'a description'
       fill_in 'DOI', with: 'some doi'
       fill_in 'Location', with: 'some geographic subject'
       fill_in 'Keyword', with: 'Test Default Keyword'
       select 'English', from: 'scholarly_work_language'
       select 'Attribution 3.0 United States', :from => 'scholarly_work_license'
-      fill_in 'ORCID', with: 'an orcid'
-      fill_in 'Additional affiliation', with: 'another affiliation'
       select 'Other', from: 'scholarly_work_resource_type'
       select 'In Copyright', :from => 'scholarly_work_rights_statement'
       fill_in 'Subject', with: 'test'
@@ -106,12 +109,9 @@ RSpec.feature 'Create a ScholarlyWork', js: false do
 
       first('.document-title', text: 'Test ScholarlyWork work').click
       expect(page).to have_content 'Abstract an abstract'
-      expect(page).to have_content 'Advisor an advisor'
-      expect(page).to have_content 'Affiliation'
-      expect(page).to have_content 'College of Arts and Sciences'
-      expect(page).to have_content 'Department of Biology'
-      expect(page).to have_content 'Conference name a composer'
-      expect(page).to have_content 'Creator Test Default Creator'
+      expect(page).to have_content 'Advisor advisor ORCID: advisor orcid Affiliation: College of Arts and Sciences, Department of Biology Other Affiliation: UNC'
+      expect(page).to have_content 'Conference name a conference'
+      expect(page).to have_content 'Creator Test Default Creator ORCID: creator orcid Affiliation: College of Arts and Sciences, Department of Biology Other Affiliation: UNC'
       expect(page).to have_content 'Date of publication October 3, 2018'
       expect(page).to have_content 'a description'
       expect(page).to have_content 'DOI some doi'
@@ -119,8 +119,6 @@ RSpec.feature 'Create a ScholarlyWork', js: false do
       expect(page).to have_content 'Keyword Test Default Keyword'
       expect(page).to have_content 'Language English'
       expect(page).to have_content 'License Attribution 3.0 United States'
-      expect(page).to have_content 'ORCID an orcid'
-      expect(page).to have_content 'Additional affiliation another affiliation'
       expect(page).to have_content 'Resource type Other'
       expect(page).to have_content 'Rights statement In Copyright'
       expect(page).to have_content 'Subject test'
@@ -143,14 +141,19 @@ RSpec.feature 'Create a ScholarlyWork', js: false do
 
       # required fields
       fill_in 'Title', with: 'Test ScholarlyWork work'
-      fill_in 'Creator', with: 'Test Default Creator'
+      fill_in 'Creator', { with: 'Test Default Creator', id: 'scholarly_work_creators_attributes_0_name' }
+      fill_in 'ORCID', { with: 'creator orcid', id: 'scholarly_work_creators_attributes_0_orcid' }
+      select 'Department of Biology', from: 'scholarly_work_creators_attributes_0_affiliation'
+      fill_in 'Additional affiliation', { with: 'UNC', id: 'scholarly_work_creators_attributes_0_other_affiliation' }
       fill_in 'Abstract', with: 'an abstract'
       fill_in 'Date of publication', with: '2018-10-03'
 
       # extra fields
-      fill_in 'Advisor', with: 'an advisor'
-      select 'Department of Biology', from: 'scholarly_work_affiliation'
-      fill_in 'Conference name', with: 'a composer'
+      fill_in 'Advisor', { with: 'advisor', id: 'scholarly_work_advisors_attributes_0_name' }
+      fill_in 'ORCID', { with: 'advisor orcid', id: 'scholarly_work_advisors_attributes_0_orcid' }
+      select 'Department of Biology', from: 'scholarly_work_advisors_attributes_0_affiliation'
+      fill_in 'Additional affiliation', { with: 'UNC', id: 'scholarly_work_advisors_attributes_0_other_affiliation' }
+      fill_in 'Conference name', with: 'a conference'
       fill_in 'Date created', with: '2018-10-03'
       fill_in 'Dcmi type', with: 'http://purl.org/dc/dcmitype/Text'
       fill_in 'Description', with: 'a description'
@@ -159,8 +162,6 @@ RSpec.feature 'Create a ScholarlyWork', js: false do
       fill_in 'Keyword', with: 'Test Default Keyword'
       select 'English', from: 'scholarly_work_language'
       select 'Attribution 3.0 United States', :from => 'scholarly_work_license'
-      fill_in 'ORCID', with: 'an orcid'
-      fill_in 'Additional affiliation', with: 'another affiliation'
       select 'Other', from: 'scholarly_work_resource_type'
       select 'In Copyright', :from => 'scholarly_work_rights_statement'
       fill_in 'Subject', with: 'test'
@@ -191,12 +192,9 @@ RSpec.feature 'Create a ScholarlyWork', js: false do
 
       first('.document-title', text: 'Test ScholarlyWork work').click
       expect(page).to have_content 'Abstract an abstract'
-      expect(page).to have_content 'Advisor an advisor'
-      expect(page).to have_content 'Affiliation'
-      expect(page).to have_content 'College of Arts and Sciences'
-      expect(page).to have_content 'Department of Biology'
-      expect(page).to have_content 'Conference name a composer'
-      expect(page).to have_content 'Creator Test Default Creator'
+      expect(page).to have_content 'Advisor advisor ORCID: advisor orcid Affiliation: College of Arts and Sciences, Department of Biology Other Affiliation: UNC'
+      expect(page).to have_content 'Conference name a conference'
+      expect(page).to have_content 'Creator Test Default Creator ORCID: creator orcid Affiliation: College of Arts and Sciences, Department of Biology Other Affiliation: UNC'
       expect(page).to have_content 'Date created October 3, 2018'
       expect(page).to have_content 'Date of publication October 3, 2018'
       expect(page).to have_content 'Type http://purl.org/dc/dcmitype/Text'
@@ -206,8 +204,6 @@ RSpec.feature 'Create a ScholarlyWork', js: false do
       expect(page).to have_content 'Keyword Test Default Keyword'
       expect(page).to have_content 'Language English'
       expect(page).to have_content 'License Attribution 3.0 United States'
-      expect(page).to have_content 'ORCID an orcid'
-      expect(page).to have_content 'Additional affiliation another affiliation'
       expect(page).to have_content 'Resource type Other'
       expect(page).to have_content 'Rights statement In Copyright'
       expect(page).to have_content 'Subject test'

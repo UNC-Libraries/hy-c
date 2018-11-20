@@ -70,17 +70,31 @@ RSpec.feature 'Create a General', js: false do
       fill_in 'Abstract', with: 'an abstract'
       select 'Clinical Nutrition', from: 'Academic Concentration'
       fill_in 'Access', with: 'some access'
-      fill_in 'Advisor', { with: 'an advisor', id: 'general_advisors_attributes_0_name' }
+      fill_in 'Advisor', { with: 'advisor', id: 'general_advisors_attributes_0_name' }
+      fill_in 'ORCID', { with: 'advisor orcid', id: 'general_advisors_attributes_0_orcid' }
       select 'Department of Biology', from: 'general_advisors_attributes_0_affiliation'
+      fill_in 'Additional affiliation', { with: 'UNC', id: 'general_advisors_attributes_0_other_affiliation' }
       fill_in 'Alternate title', with: 'another title'
-      fill_in 'Arranger', with: 'an arranger'
+      fill_in 'Arranger', { with: 'arranger', id: 'general_arrangers_attributes_0_name' }
+      fill_in 'ORCID', { with: 'arranger orcid', id: 'general_arrangers_attributes_0_orcid' }
+      select 'Department of Biology', from: 'general_arrangers_attributes_0_affiliation'
+      fill_in 'Additional affiliation', { with: 'UNC', id: 'general_arrangers_attributes_0_other_affiliation' }
       select 'Honors', from: 'Honors level'
       fill_in 'Bibliographic citation', with: 'a citation'
-      fill_in 'Composer', with: 'a conference'
-      fill_in 'Conference name', with: 'a composer'
-      fill_in 'Contributor', with: 'a contributor'
+      fill_in 'Creator', { with: 'Test Default Creator', id: 'general_creators_attributes_0_name' }
+      fill_in 'ORCID', { with: 'creator orcid', id: 'general_creators_attributes_0_orcid' }
+      select 'Department of Biology', from: 'general_creators_attributes_0_affiliation'
+      fill_in 'Additional affiliation', { with: 'UNC', id: 'general_creators_attributes_0_other_affiliation' }
+      fill_in 'Conference name', with: 'a conference'
+      fill_in 'Contributor', { with: 'contributor', id: 'general_contributors_attributes_0_name' }
+      fill_in 'ORCID', { with: 'contributor orcid', id: 'general_contributors_attributes_0_orcid' }
+      select 'Department of Biology', from: 'general_contributors_attributes_0_affiliation'
+      fill_in 'Additional affiliation', { with: 'UNC', id: 'general_contributors_attributes_0_other_affiliation' }
       fill_in 'Copyright date', with: '2018-10-03'
-      fill_in 'Creator', with: 'Test Default Creator'
+      fill_in 'Composer', { with: 'composer', id: 'general_composers_attributes_0_name' }
+      fill_in 'ORCID', { with: 'composer orcid', id: 'general_composers_attributes_0_orcid' }
+      select 'Department of Biology', from: 'general_composers_attributes_0_affiliation'
+      fill_in 'Additional affiliation', { with: 'UNC', id: 'general_composers_attributes_0_other_affiliation' }
       fill_in 'Date created', with: '2018-10-03'
       fill_in 'Date of publication', with: '2018-10-03'
       fill_in 'Date other', with: '2018-10-03'
@@ -107,18 +121,25 @@ RSpec.feature 'Create a General', js: false do
       select 'Attribution 3.0 United States', :from => 'general_license'
       fill_in 'Medium', with: 'a medium'
       fill_in 'Note', with: 'a note'
-      fill_in 'ORCID', { with: 'an orcid' , id: 'general_advisors_attributes_0_orcid'}
-      fill_in 'Additional affiliation', { with: 'another affiliation', id: 'general_advisors_attributes_0_other_affiliation' }
       fill_in 'Page end', with: '32'
       fill_in 'Page start', with: '30'
       fill_in 'Place of publication', with: 'UNC'
-      fill_in 'Project director', with: 'a director'
+      fill_in 'Project Director', { with: 'project director', id: 'general_project_directors_attributes_0_name' }
+      fill_in 'ORCID', { with: 'project director orcid', id: 'general_project_directors_attributes_0_orcid' }
+      select 'Department of Biology', from: 'general_project_directors_attributes_0_affiliation'
+      fill_in 'Additional affiliation', { with: 'UNC', id: 'general_project_directors_attributes_0_other_affiliation' }
       select 'Yes', from: 'general_peer_review_status'
       fill_in 'Publisher', with: 'UNC Press'
       fill_in 'Link to publisher version', with: 'a version'
       select 'Other', from: 'general_resource_type'
-      fill_in 'Researcher', with: 'a researcher'
-      fill_in 'Reviewer', with: 'a reviewer'
+      fill_in 'Researcher', { with: 'researcher', id: 'general_researchers_attributes_0_name' }
+      fill_in 'ORCID', { with: 'researcher orcid', id: 'general_researchers_attributes_0_orcid' }
+      select 'Department of Biology', from: 'general_researchers_attributes_0_affiliation'
+      fill_in 'Additional affiliation', { with: 'UNC', id: 'general_researchers_attributes_0_other_affiliation' }
+      fill_in 'Reviewer', { with: 'reviewer', id: 'general_reviewers_attributes_0_name' }
+      fill_in 'ORCID', { with: 'reviewer orcid', id: 'general_reviewers_attributes_0_orcid' }
+      select 'Department of Biology', from: 'general_reviewers_attributes_0_affiliation'
+      fill_in 'Additional affiliation', { with: 'UNC', id: 'general_reviewers_attributes_0_other_affiliation' }
       fill_in 'Related resource URL', with: 'something.com'
       fill_in 'Rights holder', with: 'an author'
       select 'In Copyright', :from => 'general_rights_statement'
@@ -126,7 +147,10 @@ RSpec.feature 'Create a General', js: false do
       fill_in 'Sponsor', with: 'a sponsor'
       fill_in 'Subject', with: 'test'
       fill_in 'Table of contents', with: 'contents'
-      fill_in 'Translator', with: 'none'
+      fill_in 'Translator', { with: 'translator', id: 'general_translators_attributes_0_name' }
+      fill_in 'ORCID', { with: 'translator orcid', id: 'general_translators_attributes_0_orcid' }
+      select 'Department of Biology', from: 'general_translators_attributes_0_affiliation'
+      fill_in 'Additional affiliation', { with: 'UNC', id: 'general_translators_attributes_0_other_affiliation' }
       fill_in 'Use', with: 'some use'
 
       expect(page).to have_selector('#general_language_label', visible: false)
@@ -157,19 +181,16 @@ RSpec.feature 'Create a General', js: false do
       expect(page).to have_content 'Abstract an abstract'
       expect(page).to have_content 'Academic concentration Clinical Nutrition'
       expect(page).to have_content 'Access some access'
-      expect(page).to have_content 'Advisor an advisor'
-      expect(page).to have_content 'Affiliation'
-      expect(page).to have_content 'College of Arts and Sciences'
-      expect(page).to have_content 'Department of Biology'
+      expect(page).to have_content 'Advisor advisor ORCID: advisor orcid Affiliation: College of Arts and Sciences, Department of Biology Other Affiliation: UNC'
       expect(page).to have_content 'Alternate title another title'
-      expect(page).to have_content 'Arranger an arranger'
+      expect(page).to have_content 'Arranger arranger ORCID: arranger orcid Affiliation: College of Arts and Sciences, Department of Biology Other Affiliation: UNC'
       expect(page).to have_content 'Honors level Honors'
       expect(page).to have_content 'Bibliographic citation a citation'
-      expect(page).to have_content 'Composer a conference'
-      expect(page).to have_content 'Conference name a composer'
-      expect(page).to have_content 'Contributors a contributor'
+      expect(page).to have_content 'Composer composer ORCID: composer orcid Affiliation: College of Arts and Sciences, Department of Biology Other Affiliation: UNC'
+      expect(page).to have_content 'Conference name a conference'
+      expect(page).to have_content 'Contributor contributor ORCID: contributor orcid Affiliation: College of Arts and Sciences, Department of Biology Other Affiliation: UNC'
       expect(page).to have_content 'Copyright date October 3, 2018'
-      expect(page).to have_content 'Creator Test Default Creator'
+      expect(page).to have_content 'Creator Test Default Creator ORCID: creator orcid Affiliation: College of Arts and Sciences, Department of Biology Other Affiliation: UNC'
       expect(page).to have_content 'Date created October 3, 2018'
       expect(page).to have_content 'Date of publication October 3, 2018'
       expect(page).to have_content 'Date other October 3, 2018'
@@ -195,18 +216,16 @@ RSpec.feature 'Create a General', js: false do
       expect(page).to have_content 'License Attribution 3.0 United States'
       expect(page).to have_content 'Medium a medium'
       expect(page).to have_content 'Note a note'
-      expect(page).to have_content 'ORCID an orcid'
-      expect(page).to have_content 'Additional affiliation another affiliation'
       expect(page).to have_content 'Page end 32'
       expect(page).to have_content 'Page start 30'
       expect(page).to have_content 'Place of publication UNC'
-      expect(page).to have_content 'Project director a director'
+      expect(page).to have_content 'Project director project director ORCID: project director orcid Affiliation: College of Arts and Sciences, Department of Biology Other Affiliation: UNC'
       expect(page).to have_content 'Is the article or chapter peer-reviewed? Yes'
       expect(page).to have_content 'Publisher UNC Press'
       expect(page).to have_content 'Link to publisher version a version'
       expect(page).to have_content 'Resource type Other'
-      expect(page).to have_content 'Researcher a researcher'
-      expect(page).to have_content 'Reviewer a reviewer'
+      expect(page).to have_content 'Researcher researcher ORCID: researcher orcid Affiliation: College of Arts and Sciences, Department of Biology Other Affiliation: UNC'
+      expect(page).to have_content 'Reviewer reviewer ORCID: reviewer orcid Affiliation: College of Arts and Sciences, Department of Biology Other Affiliation: UNC'
       expect(page).to have_content 'Related resource URL something.com'
       expect(page).to have_content 'Rights holder an author'
       expect(page).to have_content 'Rights statement In Copyright'
@@ -214,7 +233,7 @@ RSpec.feature 'Create a General', js: false do
       expect(page).to have_content 'Sponsor a sponsor'
       expect(page).to have_content 'Subject test'
       expect(page).to have_content 'Table of contents contents'
-      expect(page).to have_content 'Translator none'
+      expect(page).to have_content 'Translator translator ORCID: translator orcid Affiliation: College of Arts and Sciences, Department of Biology Other Affiliation: UNC'
       expect(page).to have_content 'Use some use'
       expect(page).to_not have_content 'Language http://id.loc.gov/vocabulary/iso639-2/eng'
       expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/3.0/us/'

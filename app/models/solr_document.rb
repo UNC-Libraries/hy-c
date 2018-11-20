@@ -164,10 +164,6 @@ class SolrDocument
     self[Solrizer.solr_name('funder')]
   end
 
-  def funder_display
-    self[Solrizer.solr_name('funder_display')]
-  end
-
   def dcmi_type
     self[Solrizer.solr_name('dcmi_type')]
   end
@@ -306,10 +302,6 @@ class SolrDocument
 
   def sponsor
     self[Solrizer.solr_name('sponsor')]
-  end
-
-  def sponsor_display
-    self[Solrizer.solr_name('sponsor_display')]
   end
 
   def table_of_contents

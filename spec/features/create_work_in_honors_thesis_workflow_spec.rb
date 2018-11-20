@@ -92,9 +92,11 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       expect(page).to have_content "Add New Undergraduate Honors Thesis"
 
       fill_in 'Title', with: 'Honors workflow test'
-      fill_in 'Creator', with: 'Test Default Creator'
+      fill_in 'Creator', { with: 'Test Default Creator', id: 'honors_thesis_creators_attributes_0_name' }
+      fill_in 'ORCID', { with: 'creator orcid', id: 'honors_thesis_creators_attributes_0_orcid' }
+      select 'Department of Biology', from: 'honors_thesis_creators_attributes_0_affiliation'
+      fill_in 'Additional affiliation', { with: 'UNC', id: 'honors_thesis_creators_attributes_0_other_affiliation' }
       fill_in 'Keyword', with: 'Test Default Keyword'
-      select 'Department of Biology', from: 'honors_thesis_affiliation'
       select "In Copyright", from: "honors_thesis_rights_statement"
       expect(page).to have_field('honors_thesis_visibility_embargo')
       expect(page).not_to have_field('honors_thesis_visibility_lease')
@@ -114,9 +116,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       expect(page).to have_content 'Your files are being processed by Hyrax'
       expect(page).to have_content 'Pending review'
       expect(page).to have_content 'Test Default Keyword'
-      expect(page).to have_content 'Affiliation'
-      expect(page).to have_content 'College of Arts and Sciences'
-      expect(page).to have_content 'Department of Biology'
+      expect(page).to have_content 'Creator Test Default Creator ORCID: creator orcid Affiliation: College of Arts and Sciences, Department of Biology Other Affiliation: UNC'
       expect(page).to have_content 'Type http://purl.org/dc/dcmitype/Text'
 
       logout user
@@ -173,9 +173,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       expect(page).to have_content 'Deposited'
       expect(page).to have_content 'Honors workflow test'
       expect(page).to have_content 'Test Default Keyword'
-      expect(page).to have_content 'Affiliation'
-      expect(page).to have_content 'College of Arts and Sciences'
-      expect(page).to have_content 'Department of Biology'
+      expect(page).to have_content 'Creator Test Default Creator ORCID: creator orcid Affiliation: College of Arts and Sciences, Department of Biology Other Affiliation: UNC'
       expect(page).to have_content 'Type http://purl.org/dc/dcmitype/Text'
 
 

@@ -117,7 +117,7 @@ class MastersPaper < ActiveFedora::Base
   # the properties are declared because it calls resource_class,
   # which finalizes the property declarations.
   # See https://github.com/projecthydra/active_fedora/issues/847
-  accepts_nested_attributes_for :advisors, allow_destroy: true, reject_if: :all_blank
-  accepts_nested_attributes_for :creators, allow_destroy: true, reject_if: :all_blank
-  accepts_nested_attributes_for :reviewers, allow_destroy: true, reject_if: :all_blank
+  accepts_nested_attributes_for :advisors, allow_destroy: true, reject_if: proc { |attributes| attributes['name'].blank? }
+  accepts_nested_attributes_for :creators, allow_destroy: true, reject_if: proc { |attributes| attributes['name'].blank? }
+  accepts_nested_attributes_for :reviewers, allow_destroy: true, reject_if: proc { |attributes| attributes['name'].blank? }
 end

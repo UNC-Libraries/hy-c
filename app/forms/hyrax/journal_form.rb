@@ -28,10 +28,6 @@ module Hyrax
       super.first || ""
     end
 
-    def rights_statement
-      super.first || ""
-    end
-
 
     delegate :creators_attributes=, to: :model
 

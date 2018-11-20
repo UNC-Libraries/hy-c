@@ -224,11 +224,11 @@ namespace :proquest do
 
     work_attributes = {
         'title'=>[title],
-        'creator'=>creators,
+        'creators_attributes'=>{ '0' => { name: creators } },
         'degree_granting_institution'=> degree_granting_institution,
         'keyword'=>keywords,
         'abstract'=>abstract.gsub(/\n/, "").strip,
-        'advisor'=>advisor,
+        'advisors_attributes'=>{ '0' => { name: advisor } },
         'degree'=>degree,
         'academic_concentration'=>academic_concentration,
         'graduation_year'=>graduation_year,
@@ -249,7 +249,7 @@ namespace :proquest do
 
   def proquest_record(work_attributes)
     resource = Dissertation.new
-    resource.creator = work_attributes['creator']
+    resource.creators = work_attributes['creators_attributes'].map{ |k,v| resource.creators.build(v) }
     resource.depositor = @depositor_email
 
     resource.label = work_attributes['title'][0]
@@ -257,7 +257,7 @@ namespace :proquest do
     resource.keyword =  work_attributes['keyword']
     resource.degree_granting_institution = work_attributes['degree_granting_institution']
     resource.abstract = [work_attributes['abstract']]
-    resource.advisor = work_attributes['advisor']
+    resource.advisors = work_attributes['advisors_attributes'].map{ |k,v| resource.advisors.build(v) }
     resource.degree = work_attributes['degree']
     resource.academic_concentration = [work_attributes['academic_concentration']]
     resource.graduation_year = work_attributes['graduation_year']

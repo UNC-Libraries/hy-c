@@ -49,7 +49,10 @@ RSpec.describe Hyrax::JournalForm do
     let(:params) do
       ActionController::Parameters.new(
           title: 'journal name', # single-valued
-          creator: ['a creator'],
+          creators_attributes: { '0' => { name: 'creator',
+                                          orcid: 'creator orcid',
+                                          affiliation: 'Carolina Center for Genome Sciences',
+                                          other_affiliation: 'another affiliation'} },
           subject: ['a subject'],
           keyword: ['a keyword'],
           language: ['http://id.loc.gov/vocabulary/iso639-2/eng'],
@@ -83,7 +86,7 @@ RSpec.describe Hyrax::JournalForm do
 
     it "permits parameters" do
       expect(subject['title']).to eq ['journal name']
-      expect(subject['creator']).to eq ['a creator']
+      expect(subject['creator_display']).to eq ['creator;ORCID: creator orcid;Affiliation: School of Medicine, Carolina Center for Genome Sciences;Other Affiliation: another affiliation']
       expect(subject['subject']).to eq ['a subject']
       expect(subject['keyword']).to eq ['a keyword']
       expect(subject['language']).to eq ['http://id.loc.gov/vocabulary/iso639-2/eng']
@@ -94,6 +97,7 @@ RSpec.describe Hyrax::JournalForm do
       expect(subject['visibility']).to eq 'open'
       expect(subject['member_of_collection_ids']).to eq ['123456', 'abcdef']
       expect(subject['abstract']).to eq ['an abstract']
+      expect(subject['affiliation_label']).to match_array ['School of Medicine', 'Carolina Center for Genome Sciences']
       expect(subject['alternative_title']).to eq ['alt title']
       expect(subject['date_issued']).to eq '2018-01-08'
       expect(subject['doi']).to eq '12345'
@@ -103,6 +107,9 @@ RSpec.describe Hyrax::JournalForm do
       expect(subject['isbn']).to eq ['123456']
       expect(subject['issn']).to eq ['12345']
       expect(subject['note']).to be_empty
+      expect(subject['orcid_label']).to match_array ['creator orcid']
+      expect(subject['other_affiliation_label']).to match_array ['another affiliation']
+      expect(subject['person_label']).to match_array ['creator']
       expect(subject['place_of_publication']).to eq ['California']
       expect(subject['table_of_contents']).to eq 'table of contents'
       expect(subject['language_label']).to eq ['English']

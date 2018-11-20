@@ -22,8 +22,8 @@ RSpec.describe Hyrax::MultimedForm do
     subject { form.secondary_terms }
 
     it { is_expected.to match_array [:dcmi_type, :date_created, :doi, :extent, :geographic_subject, :keyword,
-                                     :language, :license, :medium, :note, :orcid, :rights_statement, :subject,
-                                     :language_label, :license_label, :rights_statement_label] }
+                                     :language, :license, :medium, :note, :rights_statement, :subject, :language_label,
+                                     :license_label, :rights_statement_label] }
   end
   
   describe "#admin_only_terms" do
@@ -43,7 +43,10 @@ RSpec.describe Hyrax::MultimedForm do
     let(:params) do
       ActionController::Parameters.new(
           title: 'multimed name', # single-valued
-          creator: ['a creator'],
+          creators_attributes: { '0' => { name: 'creator',
+                                          orcid: 'creator orcid',
+                                          affiliation: 'Carolina Center for Genome Sciences',
+                                          other_affiliation: 'another affiliation'} },
           date_created: '2018-01-09', # single-valued
           date_issued: '2018-01-09', # single-valued
           subject: ['a subject'],
@@ -70,14 +73,14 @@ RSpec.describe Hyrax::MultimedForm do
 
     it "permits parameters" do
       expect(subject['title']).to eq ['multimed name']
-      expect(subject['creator']).to eq ['a creator']
+      expect(subject['creator_display']).to eq ['creator;ORCID: creator orcid;Affiliation: School of Medicine, Carolina Center for Genome Sciences;Other Affiliation: another affiliation']
       expect(subject['subject']).to eq ['a subject']
       expect(subject['language']).to eq ['http://id.loc.gov/vocabulary/iso639-2/eng']
       expect(subject['resource_type']).to eq ['a type']
       expect(subject['license']).to eq ['http://creativecommons.org/licenses/by/3.0/us/']
       expect(subject['rights_statement']).to eq 'http://rightsstatements.org/vocab/InC/1.0/'
       expect(subject['note']).to eq ['a note']
-      expect(subject['orcid']).to eq ['an orcid']
+      expect(subject['person_label']).to match_array ['creator']
       expect(subject['medium']).to eq ['a medium']
       expect(subject['keyword']).to eq ['multimed']
       expect(subject['abstract']).to eq ['an abstract']
@@ -89,6 +92,9 @@ RSpec.describe Hyrax::MultimedForm do
       expect(subject['geographic_subject']).to eq ['Italy']
       expect(subject['language_label']).to eq ['English']
       expect(subject['license_label']).to eq ['Attribution 3.0 United States']
+      expect(subject['orcid_label']).to match_array ['creator orcid']
+      expect(subject['affiliation_label']).to match_array ['School of Medicine', 'Carolina Center for Genome Sciences']
+      expect(subject['other_affiliation_label']).to match_array ['another affiliation']
       expect(subject['rights_statement_label']).to eq 'In Copyright'
     end
 

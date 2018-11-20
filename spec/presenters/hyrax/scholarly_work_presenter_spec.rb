@@ -11,19 +11,18 @@ RSpec.describe Hyrax::ScholarlyWorkPresenter do
     { "id" => '888888',
       "title_tesim" => ['foo'],
       "human_readable_type_tesim" => ["Article"],
+      "creator_display_tesim" => ['a creator'],
       "has_model_ssim" => ["Article"],
       "date_created_tesim" => ['an unformatted date'],
       "depositor_tesim" => user_key,
       "abstract_tesim" => ['an abstract'],
-      "advisor_tesim" => ['an advisor'],
+      "advisor_display_tesim" => ['an advisor'],
       "conference_name_tesim" => ['a conference'],
       "date_issued_tesim" => ['a date'],
       "dcmi_type_tesim" => ['science fiction'],
       "deposit_record_tesim" => 'a deposit record',
       "doi_tesim" => '12345',
       "geographic_subject_tesim" => ['a geographic subject'],
-      "orcid_tesim" => ['an orcid'],
-      "other_affiliation_tesim" => ['another affiliation'],
       "language_label_tesim" => ['language'],
       "license_label_tesim" => ['license'],
       "rights_statement_label_tesim" => 'rights'
@@ -36,6 +35,7 @@ RSpec.describe Hyrax::ScholarlyWorkPresenter do
 
   it { is_expected.to delegate_method(:to_s).to(:solr_document) }
   it { is_expected.to delegate_method(:human_readable_type).to(:solr_document) }
+  it { is_expected.to delegate_method(:creator_display).to(:solr_document) }
   it { is_expected.to delegate_method(:date_created).to(:solr_document) }
   it { is_expected.to delegate_method(:date_modified).to(:solr_document) }
   it { is_expected.to delegate_method(:date_uploaded).to(:solr_document) }
@@ -49,15 +49,13 @@ RSpec.describe Hyrax::ScholarlyWorkPresenter do
   it { is_expected.to delegate_method(:itemtype).to(:solr_document) }
 
   it { is_expected.to delegate_method(:abstract).to(:solr_document) }
-  it { is_expected.to delegate_method(:advisor).to(:solr_document) }
+  it { is_expected.to delegate_method(:advisor_display).to(:solr_document) }
   it { is_expected.to delegate_method(:conference_name).to(:solr_document) }
   it { is_expected.to delegate_method(:date_issued).to(:solr_document) }
   it { is_expected.to delegate_method(:dcmi_type).to(:solr_document) }
   it { is_expected.to delegate_method(:deposit_record).to(:solr_document) }
   it { is_expected.to delegate_method(:doi).to(:solr_document) }
   it { is_expected.to delegate_method(:geographic_subject).to(:solr_document) }
-  it { is_expected.to delegate_method(:orcid).to(:solr_document) }
-  it { is_expected.to delegate_method(:other_affiliation).to(:solr_document) }
   it { is_expected.to delegate_method(:language_label).to(:solr_document) }
   it { is_expected.to delegate_method(:license_label).to(:solr_document) }
   it { is_expected.to delegate_method(:rights_statement_label).to(:solr_document) }
@@ -93,14 +91,25 @@ RSpec.describe Hyrax::ScholarlyWorkPresenter do
       end
     end
 
-    context "with a custom advisor field" do
+    context "with a custom advisor_display field" do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:advisor, ['an advisor'], {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:advisor_display, ['an advisor'], {}).and_return(renderer)
       end
 
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
-        presenter.attribute_to_html(:advisor)
+        presenter.attribute_to_html(:advisor_display)
+      end
+    end
+
+    context "with a custom creator_display field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:creator_display, ['a creator'], {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:creator_display)
       end
     end
 
@@ -166,28 +175,6 @@ RSpec.describe Hyrax::ScholarlyWorkPresenter do
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:geographic_subject)
-      end
-    end
-
-    context "with a custom orcid field" do
-      before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:orcid, ['an orcid'], {}).and_return(renderer)
-      end
-
-      it "calls the AttributeRenderer" do
-        expect(renderer).to receive(:render)
-        presenter.attribute_to_html(:orcid)
-      end
-    end
-
-    context "with a custom other_affiliation field" do
-      before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:other_affiliation, ['another affiliation'], {}).and_return(renderer)
-      end
-
-      it "calls the AttributeRenderer" do
-        expect(renderer).to receive(:render)
-        presenter.attribute_to_html(:other_affiliation)
       end
     end
 

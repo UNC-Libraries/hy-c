@@ -12,8 +12,9 @@ module Hyrax
 
     self.terms -= [:based_near, :contributor, :description, :identifier, :publisher, :source]
 
-    self.required_fields = [:title, :creator, :abstract, :advisor, :affiliation, :degree, :award,
-                            :date_issued, :degree_granting_institution, :graduation_year]
+    self.required_fields = [:title, :creator, :abstract, :advisor, :degree, :award, :date_issued,
+                            :degree_granting_institution, :graduation_year]
+
     self.single_value_fields = [:title, :license]
     
     self.admin_only_terms = [:dcmi_type, :access, :doi, :use]

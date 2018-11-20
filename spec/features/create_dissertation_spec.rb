@@ -65,17 +65,25 @@ RSpec.feature 'Create a Dissertation', js: false do
 
       # required fields
       fill_in 'Title', with: 'Test Dissertation work'
-      fill_in 'Author', with: 'Test Default Creator'
+      fill_in 'Creator', { with: 'Test Default Creator', id: 'dissertation_creators_attributes_0_name' }
+      fill_in 'ORCID', { with: 'creator orcid', id: 'dissertation_creators_attributes_0_orcid' }
+      select 'Department of Biology', from: 'dissertation_creators_attributes_0_affiliation'
+      fill_in 'Additional affiliation', { with: 'UNC', id: 'dissertation_creators_attributes_0_other_affiliation' }
       fill_in 'Date of publication', with: '2018-10-03'
       fill_in 'Degree granting institution', with: 'UNC'
 
       # extra fields
       fill_in 'Abstract', with: 'some abstract'
       select 'Clinical Nutrition', from: 'Academic Concentration'
-      fill_in 'Advisor', with: 'an advisor'
-      select 'Department of Biology', from: 'dissertation_affiliation'
+      fill_in 'Advisor', { with: 'advisor', id: 'dissertation_advisors_attributes_0_name' }
+      fill_in 'ORCID', { with: 'advisor orcid', id: 'dissertation_advisors_attributes_0_orcid' }
+      select 'Department of Biology', from: 'dissertation_advisors_attributes_0_affiliation'
+      fill_in 'Additional affiliation', { with: 'UNC', id: 'dissertation_advisors_attributes_0_other_affiliation' }
       fill_in 'Alternate title', with: 'another title'
-      fill_in 'Contributor', with: 'a contributor'
+      fill_in 'Contributor', { with: 'contributor', id: 'dissertation_contributors_attributes_0_name' }
+      fill_in 'ORCID', { with: 'contributor orcid', id: 'dissertation_contributors_attributes_0_orcid' }
+      select 'Department of Biology', from: 'dissertation_contributors_attributes_0_affiliation'
+      fill_in 'Additional affiliation', { with: 'UNC', id: 'dissertation_contributors_attributes_0_other_affiliation' }
       select 'Bachelor of Science', from: 'dissertation_degree'
       fill_in 'DOI', with: 'some doi'
       select 'Dissertation', from: 'dissertation_resource_type'
@@ -87,10 +95,12 @@ RSpec.feature 'Create a Dissertation', js: false do
       select 'English', from: 'dissertation_language'
       select 'Attribution 3.0 United States', :from => 'dissertation_license'
       fill_in 'Note', with: 'a note'
-      fill_in 'ORCID', with: 'an orcid'
       fill_in 'Place of publication', with: 'UNC'
       fill_in 'Publisher', with: 'UNC Press'
-      fill_in 'Reviewer', with: 'a reviewer'
+      fill_in 'Reviewer', { with: 'reviewer', id: 'dissertation_reviewers_attributes_0_name' }
+      fill_in 'ORCID', { with: 'reviewer orcid', id: 'dissertation_reviewers_attributes_0_orcid' }
+      select 'Department of Biology', from: 'dissertation_reviewers_attributes_0_affiliation'
+      fill_in 'Additional affiliation', { with: 'UNC', id: 'dissertation_reviewers_attributes_0_other_affiliation' }
       select 'In Copyright', :from => 'dissertation_rights_statement'
       fill_in 'Subject', with: 'test'
       fill_in 'Use', with: 'some use'
@@ -122,19 +132,16 @@ RSpec.feature 'Create a Dissertation', js: false do
       expect(page).to have_content 'Test Dissertation work'
 
       first('.document-title', text: 'Test Dissertation work').click
-      expect(page).to have_content 'Creator Test Default Creator'
+      expect(page).to have_content 'Creator Test Default Creator ORCID: creator orcid Affiliation: College of Arts and Sciences, Department of Biology Other Affiliation: UNC'
       expect(page).to have_content 'Date of publication October 3, 2018'
       expect(page).to have_content 'Degree granting institution UNC'
 
       # extra fields
       expect(page).to have_content 'Abstract some abstract'
       expect(page).to have_content 'Academic concentration Clinical Nutrition'
-      expect(page).to have_content 'Advisor an advisor'
-      expect(page).to have_content 'Affiliation'
-      expect(page).to have_content 'College of Arts and Sciences'
-      expect(page).to have_content 'Department of Biology'
+      expect(page).to have_content 'Advisor advisor ORCID: advisor orcid Affiliation: College of Arts and Sciences, Department of Biology Other Affiliation: UNC'
       expect(page).to have_content 'Alternate title another title'
-      expect(page).to have_content 'Contributors a contributor'
+      expect(page).to have_content 'Contributor contributor ORCID: contributor orcid Affiliation: College of Arts and Sciences, Department of Biology Other Affiliation: UNC'
       expect(page).to have_content 'Degree Bachelor of Science'
       expect(page).to have_content 'DOI some doi'
       expect(page).to have_content 'Resource type Dissertation'
@@ -146,10 +153,9 @@ RSpec.feature 'Create a Dissertation', js: false do
       expect(page).to have_content 'Language English'
       expect(page).to have_content 'License Attribution 3.0 United States'
       expect(page).to have_content 'Note a note'
-      expect(page).to have_content 'ORCID an orcid'
       expect(page).to have_content 'Place of publication UNC'
       expect(page).to have_content 'Publisher UNC Press'
-      expect(page).to have_content 'Reviewer a reviewer'
+      expect(page).to have_content 'Reviewer reviewer ORCID: reviewer orcid Affiliation: College of Arts and Sciences, Department of Biology Other Affiliation: UNC'
       expect(page).to have_content 'Rights statement In Copyright'
       expect(page).to have_content 'Subject test'
       expect(page).to have_content 'Use some use'

@@ -89,11 +89,6 @@ class SingleValueForm < Hyrax::Forms::WorkForm
       attrs[:creator_display] = attrs[:creators_attributes].map{ |k, v| build_person_display(v) }
     end
 
-    if attrs.key?(:funders_attributes) && !attrs[:funders_attributes].blank?
-      attrs[:funders_attributes].map{ |k, v| person_label_fields(v) }
-      attrs[:funder_display] = attrs[:funders_attributes].map{ |k, v| build_person_display(v) }
-    end
-
     if attrs.key?(:project_directors_attributes) && !attrs[:project_directors_attributes].blank?
       attrs[:project_directors_attributes].map{ |k, v| person_label_fields(v) }
       attrs[:project_director_display] = attrs[:project_directors_attributes].map{ |k, v| build_person_display(v) }
@@ -107,11 +102,6 @@ class SingleValueForm < Hyrax::Forms::WorkForm
     if attrs.key?(:reviewers_attributes) && !attrs[:reviewers_attributes].blank?
       attrs[:reviewers_attributes].map{ |k, v| person_label_fields(v) }
       attrs[:reviewer_display] = attrs[:reviewers_attributes].map{ |k, v| build_person_display(v) }
-    end
-
-    if attrs.key?(:sponsors_attributes) && !attrs[:sponsors_attributes].blank?
-      attrs[:sponsors_attributes].map{ |k, v| person_label_fields(v) }
-      attrs[:sponsor_display] = attrs[:sponsors_attributes].map{ |k, v| build_person_display(v) }
     end
 
     if attrs.key?(:translators_attributes) && !attrs[:translators_attributes].blank?
@@ -135,10 +125,10 @@ class SingleValueForm < Hyrax::Forms::WorkForm
       attrs[:rights_statement_label] = CdrRightsStatementsService.label(attrs[:rights_statement])
     end
 
-    attrs[:person_label] = @person_label.flatten
-    attrs[:orcid_label] = @orcid_label.flatten
-    attrs[:affiliation_label] = @affiliation_label.flatten
-    attrs[:other_affiliation_label] = @other_affiliation_label.flatten
+    attrs[:person_label] = @person_label.flatten.uniq if !@person_label.blank?
+    attrs[:orcid_label] = @orcid_label.flatten.uniq if !@orcid_label.blank?
+    attrs[:affiliation_label] = @affiliation_label.flatten.uniq if !@affiliation_label.blank?
+    attrs[:other_affiliation_label] = @other_affiliation_label.flatten.uniq if !@other_affiliation_label.blank?
 
     attrs
   end

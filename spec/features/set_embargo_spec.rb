@@ -47,7 +47,10 @@ RSpec.feature 'Edit embargo', js: false do
       expect(page).to have_content 'Add New Scholarly Article or Book Chapter'
 
       fill_in 'Title', with: 'Test Article work'
-      fill_in 'Creator', with: 'Test Default Creator'
+      fill_in 'Creator', { with: 'Test Default Creator', id: 'article_creators_attributes_0_name' }
+      fill_in 'ORCID', { with: 'creator orcid', id: 'article_creators_attributes_0_orcid' }
+      select 'Department of Biology', from: 'article_creators_attributes_0_affiliation'
+      fill_in 'Additional affiliation', { with: 'UNC', id: 'article_creators_attributes_0_other_affiliation' }
       fill_in 'Keyword', with: 'Test Default Keyword'
       select 'In Copyright', :from => 'article_rights_statement'
       choose 'article_visibility_embargo'
@@ -66,7 +69,10 @@ RSpec.feature 'Edit embargo', js: false do
 
       # Hyrax empties the form
       fill_in 'Title', with: 'Test Article work'
-      fill_in 'Creator', with: 'Test Default Creator'
+      fill_in 'Creator', { with: 'Test Default Creator', id: 'article_creators_attributes_0_name' }
+      fill_in 'ORCID', { with: 'creator orcid', id: 'article_creators_attributes_0_orcid' }
+      select 'Department of Biology', from: 'article_creators_attributes_0_affiliation'
+      fill_in 'Additional affiliation', { with: 'UNC', id: 'article_creators_attributes_0_other_affiliation' }
       fill_in 'Keyword', with: 'Test Default Keyword'
       select 'In Copyright', :from => 'article_rights_statement'
       choose 'article_visibility_embargo'
@@ -95,7 +101,10 @@ RSpec.feature 'Edit embargo', js: false do
       expect(page).to have_content 'Add New Scholarly Article or Book Chapter'
 
       fill_in 'Title', with: 'Test Article work'
-      fill_in 'Creator', with: 'Test Default Creator'
+      fill_in 'Creator', { with: 'Test Default Creator', id: 'article_creators_attributes_0_name' }
+      fill_in 'ORCID', { with: 'creator orcid', id: 'article_creators_attributes_0_orcid' }
+      select 'Department of Biology', from: 'article_creators_attributes_0_affiliation'
+      fill_in 'Additional affiliation', { with: 'UNC', id: 'article_creators_attributes_0_other_affiliation' }
       fill_in 'Keyword', with: 'Test Default Keyword'
       select 'In Copyright', :from => 'article_rights_statement'
       choose 'article_visibility_embargo'

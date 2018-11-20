@@ -21,11 +21,10 @@ RSpec.describe Hyrax::DataSetForm do
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:affiliation, :affiliation_label, :dcmi_type, :doi, :extent,
-                                     :funder, :geographic_subject, :last_modified_date, :project_director, :researcher,
-                                     :rights_holder, :sponsor, :language, :keyword, :related_url,
-                                     :license, :contributor, :date_created, :subject, :orcid, :other_affiliation,
-                                     :rights_statement, :language_label, :license_label, :rights_statement_label] }
+    it { is_expected.to match_array [:dcmi_type, :doi, :extent, :funder, :geographic_subject, :last_modified_date,
+                                     :project_director, :researcher, :rights_holder, :sponsor, :language, :keyword,
+                                     :related_url, :license, :contributor, :date_created, :subject, :rights_statement,
+                                     :language_label, :license_label, :rights_statement_label] }
   end
   
   describe "#admin_only_terms" do
@@ -56,8 +55,14 @@ RSpec.describe Hyrax::DataSetForm do
           member_of_collection_ids: ['123456', 'abcdef'],
           abstract: ['an abstract'],
           access: 'public',
-          affiliation: ['School of Medicine', 'Carolina Center for Genome Sciences'],
-          contributor: ['dean'],
+          contributors_attributes: { '0' => { name: 'contributor',
+                                          orcid: 'contributor orcid',
+                                          affiliation: 'Carolina Center for Genome Sciences',
+                                          other_affiliation: 'another affiliation'} },
+          creators_attributes: { '0' => { name: 'creator',
+                                          orcid: 'creator orcid',
+                                          affiliation: 'Carolina Center for Genome Sciences',
+                                          other_affiliation: 'another affiliation'} },
           date_created: '2017-04-02', # single-valued
           date_issued: '2018-01-08',
           dcmi_type: ['type'],
@@ -69,10 +74,14 @@ RSpec.describe Hyrax::DataSetForm do
           last_modified_date: '2018-01-23',
           language: ['http://id.loc.gov/vocabulary/iso639-2/eng'],
           license: 'http://creativecommons.org/licenses/by/3.0/us/',
-          orcid: ['an orcid'],
-          other_affiliation: ['another affiliation'],
-          project_director: ['dean'],
-          researcher: ['carmen'],
+          project_directors_attributes: { '0' => { name: 'project director',
+                                          orcid: 'project director orcid',
+                                          affiliation: 'Carolina Center for Genome Sciences',
+                                          other_affiliation: 'another affiliation'} },
+          researchers_attributes: { '0' => { name: 'researcher',
+                                          orcid: 'researcher orcid',
+                                          affiliation: 'Carolina Center for Genome Sciences',
+                                          other_affiliation: 'another affiliation'} },
           rights_holder: ['dean'],
           rights_statement: 'http://rightsstatements.org/vocab/InC/1.0/',
           sponsor: ['david'],
@@ -87,12 +96,13 @@ RSpec.describe Hyrax::DataSetForm do
 
     it "permits parameters" do
       expect(subject['title']).to eq ['data set name']
+      expect(subject['creator_display']).to eq ['creator;ORCID: creator orcid;Affiliation: School of Medicine, Carolina Center for Genome Sciences;Other Affiliation: another affiliation']
+      expect(subject['contributor_display']).to eq ['contributor;ORCID: contributor orcid;Affiliation: School of Medicine, Carolina Center for Genome Sciences;Other Affiliation: another affiliation']
       expect(subject['visibility']).to eq 'open'
       expect(subject['keyword']).to eq ['data set']
       expect(subject['member_of_collection_ids']).to eq ['123456', 'abcdef']
       expect(subject['abstract']).to eq ['an abstract']
-      expect(subject['affiliation']).to eq ['School of Medicine', 'Carolina Center for Genome Sciences']
-      expect(subject['affiliation_label']).to eq ['School of Medicine', 'Carolina Center for Genome Sciences']
+      expect(subject['affiliation_label']).to match_array ['School of Medicine', 'Carolina Center for Genome Sciences']
       expect(subject['date_created']).to eq '2017-04-02'
       expect(subject['date_issued']).to eq '2018-01-08'
       expect(subject['doi']).to eq '12345'
@@ -104,10 +114,12 @@ RSpec.describe Hyrax::DataSetForm do
       expect(subject['last_modified_date']).to eq '2018-01-23'
       expect(subject['language']).to eq ['http://id.loc.gov/vocabulary/iso639-2/eng']
       expect(subject['license']).to eq ['http://creativecommons.org/licenses/by/3.0/us/']
-      expect(subject['orcid']).to eq ['an orcid']
-      expect(subject['other_affiliation']).to eq ['another affiliation']
-      expect(subject['project_director']).to eq ['dean']
-      expect(subject['researcher']).to eq ['carmen']
+      expect(subject['orcid_label']).to match_array ['creator orcid', 'contributor orcid', 'project director orcid',
+                                                     'researcher orcid']
+      expect(subject['other_affiliation_label']).to eq ['another affiliation']
+      expect(subject['person_label']).to match_array ['creator', 'contributor', 'project director', 'researcher']
+      expect(subject['project_director_display']).to eq ['project director;ORCID: project director orcid;Affiliation: School of Medicine, Carolina Center for Genome Sciences;Other Affiliation: another affiliation']
+      expect(subject['researcher_display']).to eq ['researcher;ORCID: researcher orcid;Affiliation: School of Medicine, Carolina Center for Genome Sciences;Other Affiliation: another affiliation']
       expect(subject['rights_holder']).to eq ['dean']
       expect(subject['sponsor']).to eq ['david']
       expect(subject['language_label']).to eq ['English']

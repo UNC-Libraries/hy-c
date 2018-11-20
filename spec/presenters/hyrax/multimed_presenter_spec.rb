@@ -12,6 +12,7 @@ RSpec.describe Hyrax::MultimedPresenter do
       "title_tesim" => ['foo'],
       "human_readable_type_tesim" => ["Multimed"],
       "has_model_ssim" => ["Multimed"],
+      "creator_display_tesim" => ['a creator'],
       "date_created_tesim" => ['an unformatted date'],
       "date_issued_tesim" => '2017-01-22',
       "depositor_tesim" => user_key,
@@ -23,7 +24,6 @@ RSpec.describe Hyrax::MultimedPresenter do
       "geographic_subject_tesim" => ['Italy'],
       "medium_tesim" => ['a medium'],
       "note_tesim" => ['a note'],
-      "orcid_tesim" => ['an orcid'],
       "resource_type_tesim" => ['a type'],
       "language_label_tesim" => ['language'],
       "license_label_tesim" => ['license'],
@@ -39,6 +39,7 @@ RSpec.describe Hyrax::MultimedPresenter do
   it { is_expected.to delegate_method(:to_s).to(:solr_document) }
   it { is_expected.to delegate_method(:human_readable_type).to(:solr_document) }
   it { is_expected.to delegate_method(:date_created).to(:solr_document) }
+  it { is_expected.to delegate_method(:creator_display).to(:solr_document) }
   it { is_expected.to delegate_method(:rights_statement).to(:solr_document) }
   it { is_expected.to delegate_method(:depositor).to(:solr_document) }
   it { is_expected.to delegate_method(:resource_type).to(:solr_document) }
@@ -53,7 +54,6 @@ RSpec.describe Hyrax::MultimedPresenter do
   it { is_expected.to delegate_method(:geographic_subject).to(:solr_document) }
   it { is_expected.to delegate_method(:medium).to(:solr_document) }
   it { is_expected.to delegate_method(:note).to(:solr_document) }
-  it { is_expected.to delegate_method(:orcid).to(:solr_document) }
   it { is_expected.to delegate_method(:language_label).to(:solr_document) }
   it { is_expected.to delegate_method(:license_label).to(:solr_document) }
   it { is_expected.to delegate_method(:rights_statement_label).to(:solr_document) }
@@ -86,6 +86,17 @@ RSpec.describe Hyrax::MultimedPresenter do
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:abstract)
+      end
+    end
+
+    context "with a custom creator_display field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:creator_display, ['a creator'], {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:creator_display)
       end
     end
 
@@ -173,17 +184,6 @@ RSpec.describe Hyrax::MultimedPresenter do
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:note)
-      end
-    end
-
-    context "with a custom orcid field" do
-      before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:orcid, ['an orcid'], {}).and_return(renderer)
-      end
-
-      it "calls the AttributeRenderer" do
-        expect(renderer).to receive(:render)
-        presenter.attribute_to_html(:orcid)
       end
     end
 

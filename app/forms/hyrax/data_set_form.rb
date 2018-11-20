@@ -31,10 +31,8 @@ module Hyrax
 
     delegate :contributors_attributes=, to: :model
     delegate :creators_attributes=, to: :model
-    delegate :funders_attributes=, to: :model
     delegate :project_directors_attributes=, to: :model
     delegate :researchers_attributes=, to: :model
-    delegate :sponsors_attributes=, to: :model
 
     def contributors
       model.contributors.build if model.contributors.blank?
@@ -44,11 +42,6 @@ module Hyrax
     def creators
       model.creators.build if model.creators.blank?
       model.creators.to_a
-    end
-
-    def funders
-      model.funders.build if model.funders.blank?
-      model.funders.to_a
     end
 
     def project_directors
@@ -61,19 +54,12 @@ module Hyrax
       model.researchers.to_a
     end
 
-    def sponsors
-      model.sponsors.build if model.sponsors.blank?
-      model.sponsors.to_a
-    end
-
     def self.build_permitted_params
       permitted = super
       permitted << { contributors_attributes: [:id, :name, :affiliation, :orcid, :other_affiliation, :_destroy] }
       permitted << { creators_attributes: [:id, :name, :affiliation, :orcid, :other_affiliation, :_destroy] }
-      permitted << { funders_attributes: [:id, :name, :affiliation, :orcid, :other_affiliation, :_destroy] }
       permitted << { project_directors_attributes: [:id, :name, :affiliation, :orcid, :other_affiliation, :_destroy] }
       permitted << { researchers_attributes: [:id, :name, :affiliation, :orcid, :other_affiliation, :_destroy] }
-      permitted << { sponsors_attributes: [:id, :name, :affiliation, :orcid, :other_affiliation, :_destroy] }
       permitted
     end
   end

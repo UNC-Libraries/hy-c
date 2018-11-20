@@ -21,13 +21,13 @@ RSpec.describe Hyrax::ArticleForm do
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:keyword, :license, :rights_statement, :publisher, :date_created, :subject, :language,
-                            :identifier, :related_url, :resource_type, :access, :affiliation, :affiliation_label,
-                            :bibliographic_citation, :copyright_date, :date_other, :dcmi_type, :doi,
-                            :edition, :extent, :funder, :geographic_subject, :issn, :journal_title,
-                            :journal_volume, :journal_issue, :note, :orcid, :other_affiliation, :page_end, :page_start,
-                            :peer_review_status, :place_of_publication, :rights_holder, :translator,
-                            :use, :language_label, :license_label, :rights_statement_label] }
+    it { is_expected.to match_array [:keyword, :license, :rights_statement, :publisher, :date_created, :subject,
+                                     :language, :identifier, :related_url, :resource_type, :access,
+                                     :bibliographic_citation, :copyright_date, :date_other, :dcmi_type, :doi, :edition,
+                                     :extent, :funder, :geographic_subject, :issn, :journal_title, :journal_volume,
+                                     :journal_issue, :note, :page_end, :page_start, :peer_review_status,
+                                     :place_of_publication, :rights_holder, :translator, :use, :language_label,
+                                     :license_label, :rights_statement_label] }
   end
   
   describe "#admin_only_terms" do
@@ -54,7 +54,10 @@ RSpec.describe Hyrax::ArticleForm do
       ActionController::Parameters.new(
           title: 'foo', # single-valued
           bibliographic_citation: ['a citation'],
-          creator: ['a creator'],
+          creators_attributes: { '0' => { name: 'creator',
+                                          orcid: 'creator orcid',
+                                          affiliation: 'Carolina Center for Genome Sciences',
+                                          other_affiliation: 'another affiliation'} },
           date_created: '2017-01-22', # single-valued
           language: ['http://id.loc.gov/vocabulary/iso639-2/eng'],
           publisher: ['a publisher'],
@@ -70,7 +73,6 @@ RSpec.describe Hyrax::ArticleForm do
           member_of_collection_ids: ['123456', 'abcdef'],
           abstract: ['an abstract'],
           access: 'public', # single-valued
-          affiliation: ['School of Medicine', 'Carolina Center for Genome Sciences'],
           copyright_date: '2017-01-22', # single-valued
           date_issued: '2017-01-22', # single-valued
           date_other: [''],
@@ -85,14 +87,15 @@ RSpec.describe Hyrax::ArticleForm do
           journal_title: 'Journal Title', # single-valued
           journal_volume: '4', # single-valued
           note: ['a note'],
-          orcid: ['an orcid'],
-          other_affiliation: ['another affiliation'],
           page_end: '11', # single-valued
           page_start: '8', # single-valued
           peer_review_status: 'in review', # single-valued
           place_of_publication: ['durham'],
           rights_holder: ['dean'],
-          translator: ['dean'],
+          translators_attributes: { '0' => { name: 'translator',
+                                          orcid: 'translator orcid',
+                                          affiliation: 'Carolina Center for Genome Sciences',
+                                          other_affiliation: 'another affiliation'} },
           use: ['a use'],
           language_label: [],
           license_label: [],
@@ -104,8 +107,8 @@ RSpec.describe Hyrax::ArticleForm do
 
     it 'permits parameters' do
       expect(subject['title']).to eq ['foo']
+      expect(subject['creator_display']).to eq ['creator;ORCID: creator orcid;Affiliation: School of Medicine, Carolina Center for Genome Sciences;Other Affiliation: another affiliation']
       expect(subject['bibliographic_citation']).to eq ['a citation']
-      expect(subject['creator']).to eq ['a creator']
       expect(subject['date_created']).to eq '2017-01-22'
       expect(subject['language']).to eq ['http://id.loc.gov/vocabulary/iso639-2/eng']
       expect(subject['license']).to eq ['http://creativecommons.org/licenses/by/3.0/us/']
@@ -120,8 +123,7 @@ RSpec.describe Hyrax::ArticleForm do
       expect(subject['member_of_collection_ids']).to eq ['123456', 'abcdef']
       expect(subject['abstract']).to eq ['an abstract']
       expect(subject['access']).to eq 'public'
-      expect(subject['affiliation']).to eq ['School of Medicine', 'Carolina Center for Genome Sciences']
-      expect(subject['affiliation_label']).to eq ['School of Medicine', 'Carolina Center for Genome Sciences']
+      expect(subject['affiliation_label']).to match_array ['School of Medicine', 'Carolina Center for Genome Sciences']
       expect(subject['copyright_date']).to eq '2017-01-22'
       expect(subject['date_issued']).to eq '2017-01-22'
       expect(subject['date_other']).to be_empty
@@ -136,14 +138,15 @@ RSpec.describe Hyrax::ArticleForm do
       expect(subject['journal_title']).to eq 'Journal Title'
       expect(subject['journal_volume']).to eq '4'
       expect(subject['note']).to eq ['a note']
-      expect(subject['orcid']).to eq ['an orcid']
-      expect(subject['other_affiliation']).to eq ['another affiliation']
+      expect(subject['orcid_label']).to eq ['creator orcid', 'translator orcid']
+      expect(subject['other_affiliation_label']).to eq ['another affiliation']
       expect(subject['page_end']).to eq '11'
       expect(subject['page_start']).to eq '8'
       expect(subject['peer_review_status']).to eq 'in review'
+      expect(subject['person_label']).to eq ['creator', 'translator']
       expect(subject['place_of_publication']).to eq ['durham']
       expect(subject['rights_holder']).to eq ['dean']
-      expect(subject['translator']).to eq ['dean']
+      expect(subject['translator_display']).to eq ['translator;ORCID: translator orcid;Affiliation: School of Medicine, Carolina Center for Genome Sciences;Other Affiliation: another affiliation']
       expect(subject['use']).to eq ['a use']
       expect(subject['language_label']).to eq ['English']
       expect(subject['license_label']).to eq ['Attribution 3.0 United States']

@@ -18,12 +18,14 @@ RSpec.describe Hyrax::GeneralPresenter do
       "access_tesim" => 'public',
       "advisor_display_tesim" => ['an advisor'],
       "alternative_title_tesim" => ['some title'],
-      "arranger_tesim" => ['an arranger'],
+      "arranger_display_tesim" => ['an arranger'],
       "award_tesim" => ['an award'],
       "bibliographic_citation_tesim" => ['a citation'],
-      "composer_tesim" => ['a composer'],
+      "composer_display_tesim" => ['a composer'],
       "conference_name_tesim" => ['a conference'],
       "copyright_date_tesim" => '2017-01-22',
+      "creator_display_tesim" => ['a creator'],
+      "contributor_display_tesim" => ['a contributor'],
       "date_issued_tesim" => '2017-01-22',
       "date_other_tesim" => ['2017-01-22'],
       "dcmi_type_tesim" => ['science fiction'],
@@ -49,15 +51,15 @@ RSpec.describe Hyrax::GeneralPresenter do
       "page_start_tesim" => '8',
       "peer_review_status_tesim" => 'in review',
       "place_of_publication_tesim" => ['durham'],
-      "project_director_tesim" => ['a director'],
+      "project_director_display_tesim" => ['a director'],
       "publisher_version_tesim" => ['a version'],
-      "researcher_tesim" => ['a researcher'],
-      "reviewer_tesim" => ['a reviewer'],
+      "researcher_display_tesim" => ['a researcher'],
+      "reviewer_display_tesim" => ['a reviewer'],
       "rights_holder_tesim" => ['rights holder'],
       "series_tesim" => ['a series'],
       "sponsor_tesim" => ['a sponsor'],
       "table_of_contents_tesim" => ['contents of yon table'],
-      "translator_tesim" => ['dean'],
+      "translator_display_tesim" => ['dean'],
       "use_tesim" => ['a use'],
       "language_label_tesim" => ['language'],
       "license_label_tesim" => ['license'],
@@ -72,11 +74,12 @@ RSpec.describe Hyrax::GeneralPresenter do
 
   it { is_expected.to delegate_method(:to_s).to(:solr_document) }
   it { is_expected.to delegate_method(:human_readable_type).to(:solr_document) }
+  it { is_expected.to delegate_method(:creator_display).to(:solr_document) }
+  it { is_expected.to delegate_method(:contributor_display).to(:solr_document) }
   it { is_expected.to delegate_method(:date_created).to(:solr_document) }
   it { is_expected.to delegate_method(:date_modified).to(:solr_document) }
   it { is_expected.to delegate_method(:date_uploaded).to(:solr_document) }
   it { is_expected.to delegate_method(:rights_statement).to(:solr_document) }
-
   it { is_expected.to delegate_method(:based_near_label).to(:solr_document) }
   it { is_expected.to delegate_method(:related_url).to(:solr_document) }
   it { is_expected.to delegate_method(:depositor).to(:solr_document) }
@@ -90,10 +93,10 @@ RSpec.describe Hyrax::GeneralPresenter do
   it { is_expected.to delegate_method(:access).to(:solr_document) }
   it { is_expected.to delegate_method(:advisor_display).to(:solr_document) }
   it { is_expected.to delegate_method(:alternative_title).to(:solr_document) }
-  it { is_expected.to delegate_method(:arranger).to(:solr_document) }
+  it { is_expected.to delegate_method(:arranger_display).to(:solr_document) }
   it { is_expected.to delegate_method(:award).to(:solr_document) }
   it { is_expected.to delegate_method(:bibliographic_citation).to(:solr_document) }
-  it { is_expected.to delegate_method(:composer).to(:solr_document) }
+  it { is_expected.to delegate_method(:composer_display).to(:solr_document) }
   it { is_expected.to delegate_method(:copyright_date).to(:solr_document) }
   it { is_expected.to delegate_method(:conference_name).to(:solr_document) }
   it { is_expected.to delegate_method(:date_issued).to(:solr_document) }
@@ -121,15 +124,15 @@ RSpec.describe Hyrax::GeneralPresenter do
   it { is_expected.to delegate_method(:page_start).to(:solr_document) }
   it { is_expected.to delegate_method(:peer_review_status).to(:solr_document) }
   it { is_expected.to delegate_method(:place_of_publication).to(:solr_document) }
-  it { is_expected.to delegate_method(:project_director).to(:solr_document) }
+  it { is_expected.to delegate_method(:project_director_display).to(:solr_document) }
   it { is_expected.to delegate_method(:publisher_version).to(:solr_document) }
   it { is_expected.to delegate_method(:rights_holder).to(:solr_document) }
-  it { is_expected.to delegate_method(:researcher).to(:solr_document) }
-  it { is_expected.to delegate_method(:reviewer).to(:solr_document) }
+  it { is_expected.to delegate_method(:researcher_display).to(:solr_document) }
+  it { is_expected.to delegate_method(:reviewer_display).to(:solr_document) }
   it { is_expected.to delegate_method(:series).to(:solr_document) }
   it { is_expected.to delegate_method(:sponsor).to(:solr_document) }
   it { is_expected.to delegate_method(:table_of_contents).to(:solr_document) }
-  it { is_expected.to delegate_method(:translator).to(:solr_document) }
+  it { is_expected.to delegate_method(:translator_display).to(:solr_document) }
   it { is_expected.to delegate_method(:use).to(:solr_document) }
   it { is_expected.to delegate_method(:language_label).to(:solr_document) }
   it { is_expected.to delegate_method(:license_label).to(:solr_document) }
@@ -210,14 +213,14 @@ RSpec.describe Hyrax::GeneralPresenter do
       end
     end
 
-    context "with a custom arranger field" do
+    context "with a custom arranger_display field" do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:arranger, ['an arranger'], {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:arranger_display, ['an arranger'], {}).and_return(renderer)
       end
 
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
-        presenter.attribute_to_html(:arranger)
+        presenter.attribute_to_html(:arranger_display)
       end
     end
 
@@ -243,14 +246,14 @@ RSpec.describe Hyrax::GeneralPresenter do
       end
     end
 
-    context "with a custom composer field" do
+    context "with a custom composer_display field" do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:composer, ['a composer'], {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:composer_display, ['a composer'], {}).and_return(renderer)
       end
 
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
-        presenter.attribute_to_html(:composer)
+        presenter.attribute_to_html(:composer_display)
       end
     end
 
@@ -273,6 +276,28 @@ RSpec.describe Hyrax::GeneralPresenter do
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:copyright_date)
+      end
+    end
+
+    context "with a custom creator_display field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:creator_display, ['a creator'], {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:creator_display)
+      end
+    end
+
+    context "with a custom contributor_display field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:contributor_display, ['a contributor'], {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:contributor_display)
       end
     end
 
@@ -550,14 +575,14 @@ RSpec.describe Hyrax::GeneralPresenter do
       end
     end
 
-    context "with a custom project_director field" do
+    context "with a custom project_director_display field" do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:project_director, ['a director'], {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:project_director_display, ['a director'], {}).and_return(renderer)
       end
 
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
-        presenter.attribute_to_html(:project_director)
+        presenter.attribute_to_html(:project_director_display)
       end
     end
 
@@ -572,25 +597,25 @@ RSpec.describe Hyrax::GeneralPresenter do
       end
     end
 
-    context "with a custom researcher field" do
+    context "with a custom researcher_display field" do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:researcher, ['a researcher'], {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:researcher_display, ['a researcher'], {}).and_return(renderer)
       end
 
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
-        presenter.attribute_to_html(:researcher)
+        presenter.attribute_to_html(:researcher_display)
       end
     end
 
-    context "with a custom reviewer field" do
+    context "with a custom reviewer_display field" do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:reviewer, ['a reviewer'], {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:reviewer_display, ['a reviewer'], {}).and_return(renderer)
       end
 
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
-        presenter.attribute_to_html(:reviewer)
+        presenter.attribute_to_html(:reviewer_display)
       end
     end
 
@@ -638,14 +663,14 @@ RSpec.describe Hyrax::GeneralPresenter do
       end
     end
 
-    context "with a custom translator field" do
+    context "with a custom translator_display field" do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:translator, ['dean'], {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:translator_display, ['dean'], {}).and_return(renderer)
       end
 
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
-        presenter.attribute_to_html(:translator)
+        presenter.attribute_to_html(:translator_display)
       end
     end
 

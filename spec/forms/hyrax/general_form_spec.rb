@@ -46,8 +46,14 @@ RSpec.describe Hyrax::GeneralForm do
       ActionController::Parameters.new(
           title: 'foo', # single-valued
           bibliographic_citation: ['a citation'],
-          contributor: ['a contributor'],
-          creator: ['a creator'],
+          contributors_attributes: { '0' => { name: 'contributor',
+                                          orcid: 'contributor orcid',
+                                          affiliation: 'Carolina Center for Genome Sciences',
+                                          other_affiliation: 'another affiliation'} },
+          creators_attributes: { '0' => { name: 'creator',
+                                          orcid: 'creator orcid',
+                                          affiliation: 'Carolina Center for Genome Sciences',
+                                          other_affiliation: 'another affiliation'} },
           date_created: '2017-01-22',
           identifier: ['an identifier'],
           language: ['http://id.loc.gov/vocabulary/iso639-2/eng'],
@@ -66,14 +72,20 @@ RSpec.describe Hyrax::GeneralForm do
           abstract: ['an abstract'],
           academic_concentration: ['a concentration'],
           access: 'public', # single-valued
-          advisors_attributes: { '0' => { name: 'someone',
-                                          orcid: 'an orcid',
+          advisors_attributes: { '0' => { name: 'advisor',
+                                          orcid: 'advisor orcid',
                                           affiliation: 'Carolina Center for Genome Sciences',
                                           other_affiliation: 'another affiliation'} },
           alternative_title: ['some title'],
-          arranger: ['an arranger'],
+          arrangers_attributes: { '0' => { name: 'arranger',
+                                          orcid: 'arranger orcid',
+                                          affiliation: 'Carolina Center for Genome Sciences',
+                                          other_affiliation: 'another affiliation'} },
           award: 'an award', # single-valued
-          composer: ['a composer'],
+          composers_attributes: { '0' => { name: 'composer',
+                                          orcid: 'composer orcid',
+                                          affiliation: 'Carolina Center for Genome Sciences',
+                                          other_affiliation: 'another affiliation'} },
           conference_name: ['a conference'],
           copyright_date: ['2017-01-22'],
           date_issued: ['2017-01-22'],
@@ -101,15 +113,27 @@ RSpec.describe Hyrax::GeneralForm do
           page_start: '8', # single-valued
           peer_review_status: 'in review', # single-valued
           place_of_publication: ['durham'],
-          project_director: ['someone'],
+          project_directors_attributes: { '0' => { name: 'project director',
+                                          orcid: 'project director orcid',
+                                          affiliation: 'Carolina Center for Genome Sciences',
+                                          other_affiliation: 'another affiliation'} },
           publisher_version: ['a version'],
-          researcher: ['a researcher'],
-          reviewer: ['a reviewer'],
+          researchers_attributes: { '0' => { name: 'researcher',
+                                          orcid: 'researcher orcid',
+                                          affiliation: 'Carolina Center for Genome Sciences',
+                                          other_affiliation: 'another affiliation'} },
+          reviewers_attributes: { '0' => { name: 'reviewer',
+                                          orcid: 'reviewer orcid',
+                                          affiliation: 'Carolina Center for Genome Sciences',
+                                          other_affiliation: 'another affiliation'} },
           rights_holder: ['dean'],
           series: ['series'],
           sponsor: ['a sponsor'],
           table_of_contents: ['cool table'],
-          translator: ['dean'],
+          translators_attributes: { '0' => { name: 'translator',
+                                          orcid: 'translator orcid',
+                                          affiliation: 'Carolina Center for Genome Sciences',
+                                          other_affiliation: 'another affiliation'} },
           use: ['a use'],
           language_label: [],
           license_label: [],
@@ -121,8 +145,9 @@ RSpec.describe Hyrax::GeneralForm do
 
     it 'permits parameters' do
       expect(subject['title']).to eq ['foo']
+      expect(subject['creator_display']).to eq ['creator;ORCID: creator orcid;Affiliation: School of Medicine, Carolina Center for Genome Sciences;Other Affiliation: another affiliation']
+      expect(subject['contributor_display']).to eq ['contributor;ORCID: contributor orcid;Affiliation: School of Medicine, Carolina Center for Genome Sciences;Other Affiliation: another affiliation']
       expect(subject['bibliographic_citation']).to eq ['a citation']
-      expect(subject['contributor']).to eq ['a contributor']
       expect(subject['date_created']).to eq '2017-01-22'
       expect(subject['identifier']).to eq ['an identifier']
       expect(subject['language']).to eq ['http://id.loc.gov/vocabulary/iso639-2/eng']
@@ -139,13 +164,12 @@ RSpec.describe Hyrax::GeneralForm do
       expect(subject['abstract']).to eq ['an abstract']
       expect(subject['academic_concentration']).to eq ['a concentration']
       expect(subject['access']).to eq 'public'
-      expect(subject['advisor_label']).to eq ['someone']
-      expect(subject['advisor_display']).to eq ['someone;ORCID: an orcid;Affiliation: School of Medicine, Carolina Center for Genome Sciences;Other Affiliation: another affiliation']
-      expect(subject['affiliation_label']).to eq ['School of Medicine', 'Carolina Center for Genome Sciences']
+      expect(subject['advisor_display']).to eq ['advisor;ORCID: advisor orcid;Affiliation: School of Medicine, Carolina Center for Genome Sciences;Other Affiliation: another affiliation']
+      expect(subject['affiliation_label']).to match_array ['School of Medicine', 'Carolina Center for Genome Sciences']
       expect(subject['alternative_title']).to eq ['some title']
-      expect(subject['arranger']).to eq ['an arranger']
+      expect(subject['arranger_display']).to eq ['arranger;ORCID: arranger orcid;Affiliation: School of Medicine, Carolina Center for Genome Sciences;Other Affiliation: another affiliation']
       expect(subject['award']).to eq 'an award'
-      expect(subject['composer']).to eq ['a composer']
+      expect(subject['composer_display']).to eq ['composer;ORCID: composer orcid;Affiliation: School of Medicine, Carolina Center for Genome Sciences;Other Affiliation: another affiliation']
       expect(subject['conference_name']).to eq ['a conference']
       expect(subject['copyright_date']).to eq ['2017-01-22']
       expect(subject['date_issued']).to eq ['2017-01-22']
@@ -169,21 +193,25 @@ RSpec.describe Hyrax::GeneralForm do
       expect(subject['last_modified_date']).to eq 'hi'
       expect(subject['medium']).to eq ['a medium']
       expect(subject['note']).to eq ['a note']
-      expect(subject['orcid_label']).to eq ['an orcid']
-      expect(subject['other_affiliation_label']).to eq ['another affiliation']
+      expect(subject['orcid_label']).to match_array ['creator orcid', 'contributor orcid', 'advisor orcid',
+                                                     'arranger orcid', 'composer orcid', 'project director orcid',
+                                                     'researcher orcid', 'reviewer orcid', 'translator orcid']
+      expect(subject['other_affiliation_label']).to match_array ['another affiliation']
       expect(subject['page_end']).to eq '11'
       expect(subject['page_start']).to eq '8'
       expect(subject['peer_review_status']).to eq 'in review'
+      expect(subject['person_label']).to match_array ['creator', 'contributor', 'advisor', 'arranger', 'composer',
+                                                      'project director', 'researcher', 'reviewer', 'translator']
       expect(subject['place_of_publication']).to eq ['durham']
-      expect(subject['project_director']).to eq ['someone']
+      expect(subject['project_director_display']).to eq ['project director;ORCID: project director orcid;Affiliation: School of Medicine, Carolina Center for Genome Sciences;Other Affiliation: another affiliation']
       expect(subject['publisher_version']).to eq ['a version']
-      expect(subject['researcher']).to eq ['a researcher']
-      expect(subject['reviewer']).to eq ['a reviewer']
+      expect(subject['researcher_display']).to eq ['researcher;ORCID: researcher orcid;Affiliation: School of Medicine, Carolina Center for Genome Sciences;Other Affiliation: another affiliation']
+      expect(subject['reviewer_display']).to eq ['reviewer;ORCID: reviewer orcid;Affiliation: School of Medicine, Carolina Center for Genome Sciences;Other Affiliation: another affiliation']
       expect(subject['rights_holder']).to eq ['dean']
       expect(subject['series']).to eq ['series']
       expect(subject['sponsor']).to eq ['a sponsor']
       expect(subject['table_of_contents']).to eq ['cool table']
-      expect(subject['translator']).to eq ['dean']
+      expect(subject['translator_display']).to eq ['translator;ORCID: translator orcid;Affiliation: School of Medicine, Carolina Center for Genome Sciences;Other Affiliation: another affiliation']
       expect(subject['use']).to eq ['a use']
       expect(subject['language_label']).to eq ['English']
       expect(subject['license_label']).to eq ['Attribution 3.0 United States']

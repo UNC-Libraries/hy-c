@@ -26,10 +26,6 @@ module Hyrax
       super.first || ""
     end
 
-    def rights_statement
-      super.first || ""
-    end
-
 
     delegate :advisors_attributes=, to: :model
     delegate :contributors_attributes=, to: :model

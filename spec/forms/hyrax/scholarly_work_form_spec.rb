@@ -21,10 +21,10 @@ RSpec.describe Hyrax::ScholarlyWorkForm do
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:advisor, :affiliation, :affiliation_label, :conference_name, :date_created,
-                                     :dcmi_type, :doi, :geographic_subject, :description, :keyword, :language, :license,
-                                     :orcid, :other_affiliation, :resource_type, :rights_statement, :subject,
-                                     :language_label, :license_label, :rights_statement_label] }
+    it { is_expected.to match_array [:advisor, :conference_name, :date_created, :dcmi_type, :doi, 
+                                     :geographic_subject, :description, :keyword, :language, :license, :resource_type, 
+                                     :rights_statement, :subject, :language_label, :license_label, 
+                                     :rights_statement_label] }
   end
   
   describe "#admin_only_terms" do
@@ -45,6 +45,10 @@ RSpec.describe Hyrax::ScholarlyWorkForm do
       ActionController::Parameters.new(
           title: 'foo', # single-valued
           creator: ['someone@example.com'],
+          creators_attributes: { '0' => { name: 'creator',
+                                          orcid: 'creator orcid',
+                                          affiliation: 'Carolina Center for Genome Sciences',
+                                          other_affiliation: 'another affiliation'} },
           date_created: 'a date', # single-valued
           description: 'a description', # single-valued
           subject: ['a subject'],
@@ -58,15 +62,15 @@ RSpec.describe Hyrax::ScholarlyWorkForm do
           representative_id: '456',
           thumbnail_id: '789',
           abstract: [''],
-          advisor: ['an advisor'],
-          affiliation: ['Carolina Center for Genome Sciences'],
+          advisors_attributes: { '0' => { name: 'advisor',
+                                          orcid: 'advisor orcid',
+                                          affiliation: 'Carolina Center for Genome Sciences',
+                                          other_affiliation: 'another affiliation'} },
           conference_name: ['a conference name'],
           date_issued: 'a date', # single-valued
           dcmi_type: ['type'],
           doi: '12345',
           geographic_subject: ['a geographic subject'],
-          orcid: ['an orcid'],
-          other_affiliation: ['another affiliation'],
           language_label: [],
           license_label: [],
           rights_statement_label: ''
@@ -77,7 +81,7 @@ RSpec.describe Hyrax::ScholarlyWorkForm do
 
     it 'permits parameters' do
       expect(subject['title']).to eq ['foo']
-      expect(subject['creator']).to eq ['someone@example.com']
+      expect(subject['creator_display']).to eq ['creator;ORCID: creator orcid;Affiliation: School of Medicine, Carolina Center for Genome Sciences;Other Affiliation: another affiliation']
       expect(subject['date_created']).to eq 'a date'
       expect(subject['description']).to eq 'a description'
       expect(subject['doi']).to eq '12345'
@@ -91,14 +95,15 @@ RSpec.describe Hyrax::ScholarlyWorkForm do
       expect(subject['representative_id']).to eq '456'
       expect(subject['thumbnail_id']).to eq '789'
       expect(subject['abstract']).to be_empty
-      expect(subject['affiliation']).to eq ['Carolina Center for Genome Sciences']
-      expect(subject['affiliation_label']).to eq ['School of Medicine', 'Carolina Center for Genome Sciences']
+      expect(subject['advisor_display']).to eq ['advisor;ORCID: advisor orcid;Affiliation: School of Medicine, Carolina Center for Genome Sciences;Other Affiliation: another affiliation']
+      expect(subject['affiliation_label']).to match_array ['School of Medicine', 'Carolina Center for Genome Sciences']
       expect(subject['conference_name']).to eq ['a conference name']
       expect(subject['date_issued']).to eq 'a date'
       expect(subject['dcmi_type']).to eq ['type']
       expect(subject['geographic_subject']).to eq ['a geographic subject']
-      expect(subject['orcid']).to eq ['an orcid']
-      expect(subject['other_affiliation']).to eq ['another affiliation']
+      expect(subject['orcid_label']).to match_array ['creator orcid', 'advisor orcid']
+      expect(subject['other_affiliation_label']).to match_array ['another affiliation']
+      expect(subject['person_label']).to match_array ['creator', 'advisor']
       expect(subject['member_of_collection_ids']).to eq ['123456', 'abcdef']
       expect(subject['language_label']).to eq ['English']
       expect(subject['license_label']).to eq ['Attribution 3.0 United States']

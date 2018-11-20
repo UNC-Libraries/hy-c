@@ -39,11 +39,7 @@ class DataSet < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :funders, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/fnd'), class_name: 'Person' do |index|
-    index.as :stored_searchable
-  end
-
-  property :funder_display, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#FunderDisplay') do |index|
+  property :funder, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/fnd') do |index|
     index.as :stored_searchable
   end
 
@@ -99,11 +95,7 @@ class DataSet < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :sponsors, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/spn'), class_name: 'Person' do |index|
-    index.as :stored_searchable
-  end
-
-  property :sponsor_display, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#SponsorDisplay') do |index|
+  property :sponsor, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/spn') do |index|
     index.as :stored_searchable
   end
 
@@ -115,10 +107,8 @@ class DataSet < ActiveFedora::Base
   # the properties are declared because it calls resource_class,
   # which finalizes the property declarations.
   # See https://github.com/projecthydra/active_fedora/issues/847
-  accepts_nested_attributes_for :contributors, allow_destroy: true, reject_if: :all_blank
-  accepts_nested_attributes_for :creators, allow_destroy: true, reject_if: :all_blank
-  accepts_nested_attributes_for :funders, allow_destroy: true, reject_if: :all_blank
-  accepts_nested_attributes_for :project_directors, allow_destroy: true, reject_if: :all_blank
-  accepts_nested_attributes_for :researchers, allow_destroy: true, reject_if: :all_blank
-  accepts_nested_attributes_for :sponsors, allow_destroy: true, reject_if: :all_blank
+  accepts_nested_attributes_for :contributors, allow_destroy: true, reject_if: proc { |attributes| attributes['name'].blank? }
+  accepts_nested_attributes_for :creators, allow_destroy: true, reject_if: proc { |attributes| attributes['name'].blank? }
+  accepts_nested_attributes_for :project_directors, allow_destroy: true, reject_if: proc { |attributes| attributes['name'].blank? }
+  accepts_nested_attributes_for :researchers, allow_destroy: true, reject_if: proc { |attributes| attributes['name'].blank? }
 end

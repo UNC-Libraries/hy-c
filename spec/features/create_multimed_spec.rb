@@ -58,7 +58,10 @@ RSpec.feature 'Create a Multimed', js: false do
 
       # required fields
       fill_in 'Title', with: 'Test Multimed'
-      fill_in 'Creator', with: 'Test Default Creator'
+      fill_in 'Creator', { with: 'Test Default Creator', id: 'multimed_creators_attributes_0_name' }
+      fill_in 'ORCID', { with: 'creator orcid', id: 'multimed_creators_attributes_0_orcid' }
+      select 'Department of Biology', from: 'multimed_creators_attributes_0_affiliation'
+      fill_in 'Additional affiliation', { with: 'UNC', id: 'multimed_creators_attributes_0_other_affiliation' }
       fill_in 'Abstract', with: 'an abstract'
       fill_in 'Date of publication', with: '2018-10-03'
       select 'Video', from: 'multimed_resource_type'
@@ -71,7 +74,6 @@ RSpec.feature 'Create a Multimed', js: false do
       select 'Attribution 3.0 United States', :from => 'multimed_license'
       fill_in 'Medium', with: 'a medium'
       fill_in 'Note', with: 'a note'
-      fill_in 'ORCID', with: 'an orcid'
       select 'In Copyright', :from => 'multimed_rights_statement'
       fill_in 'Subject', with: 'test'
 
@@ -103,7 +105,7 @@ RSpec.feature 'Create a Multimed', js: false do
 
       first('.document-title', text: 'Test Multimed').click
       expect(page).to have_content 'Abstract an abstract'
-      expect(page).to have_content 'Creator Test Default Creator'
+      expect(page).to have_content 'Creator Test Default Creator ORCID: creator orcid Affiliation: College of Arts and Sciences, Department of Biology Other Affiliation: UNC'
       expect(page).to have_content 'Date of publication October 3, 2018'
       expect(page).to have_content 'Extent some extent'
       expect(page).to have_content 'Location some geographic subject'
@@ -112,14 +114,13 @@ RSpec.feature 'Create a Multimed', js: false do
       expect(page).to have_content 'License Attribution 3.0 United States'
       expect(page).to have_content 'Medium a medium'
       expect(page).to have_content 'Note a note'
-      expect(page).to have_content 'ORCID an orcid'
       expect(page).to have_content 'Resource type Video'
       expect(page).to have_content 'Rights statement In Copyright'
       expect(page).to have_content 'Subject test'
       expect(page).to_not have_content 'Language http://id.loc.gov/vocabulary/iso639-2/eng'
       expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
       expect(page).to_not have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'
-      expect(page).to_not have_content 'In Administrative Set: general admin set'
+      expect(page).to_not have_content 'In Administrative Set: multimed admin set'
       expect(page).to_not have_selector(:link, 'Delete')
 
       click_link 'Edit'
@@ -135,7 +136,10 @@ RSpec.feature 'Create a Multimed', js: false do
 
       # required fields
       fill_in 'Title', with: 'Test Multimed'
-      fill_in 'Creator', with: 'Test Default Creator'
+      fill_in 'Creator', { with: 'Test Default Creator', id: 'multimed_creators_attributes_0_name' }
+      fill_in 'ORCID', { with: 'creator orcid', id: 'multimed_creators_attributes_0_orcid' }
+      select 'Department of Biology', from: 'multimed_creators_attributes_0_affiliation'
+      fill_in 'Additional affiliation', { with: 'UNC', id: 'multimed_creators_attributes_0_other_affiliation' }
       fill_in 'Abstract', with: 'an abstract'
       fill_in 'Date of publication', with: '2018-10-03'
       select 'Video', from: 'multimed_resource_type'
@@ -151,7 +155,6 @@ RSpec.feature 'Create a Multimed', js: false do
       select 'Attribution 3.0 United States', :from => 'multimed_license'
       fill_in 'Medium', with: 'a medium'
       fill_in 'Note', with: 'a note'
-      fill_in 'ORCID', with: 'an orcid'
       select 'In Copyright', :from => 'multimed_rights_statement'
       fill_in 'Subject', with: 'test'
 
@@ -181,7 +184,7 @@ RSpec.feature 'Create a Multimed', js: false do
 
       first('.document-title', text: 'Test Multimed').click
       expect(page).to have_content 'Abstract an abstract'
-      expect(page).to have_content 'Creator Test Default Creator'
+      expect(page).to have_content 'Creator Test Default Creator ORCID: creator orcid Affiliation: College of Arts and Sciences, Department of Biology Other Affiliation: UNC'
       expect(page).to have_content 'Date created October 3, 2018'
       expect(page).to have_content 'Date of publication October 3, 2018'
       expect(page).to have_content 'Type http://purl.org/dc/dcmitype/Text'
@@ -193,7 +196,6 @@ RSpec.feature 'Create a Multimed', js: false do
       expect(page).to have_content 'License Attribution 3.0 United States'
       expect(page).to have_content 'Medium a medium'
       expect(page).to have_content 'Note a note'
-      expect(page).to have_content 'ORCID an orcid'
       expect(page).to have_content 'Resource type Video'
       expect(page).to have_content 'Rights statement In Copyright'
       expect(page).to have_content 'Subject test'

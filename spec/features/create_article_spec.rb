@@ -58,7 +58,10 @@ RSpec.feature 'Create a Article', js: false do
 
       # required fields
       fill_in 'Title', with: 'Test Article work'
-      fill_in 'Creator', with: 'Test Default Creator'
+      fill_in 'Creator', { with: 'Test Default Creator', id: 'article_creators_attributes_0_name' }
+      fill_in 'ORCID', { with: 'creator orcid', id: 'article_creators_attributes_0_orcid' }
+      select 'Department of Biology', from: 'article_creators_attributes_0_affiliation'
+      fill_in 'Additional affiliation', { with: 'UNC', id: 'article_creators_attributes_0_other_affiliation' }
       fill_in 'Abstract', with: 'some abstract'
       fill_in 'Date of publication', with: '2018-10-03'
 
@@ -70,7 +73,6 @@ RSpec.feature 'Create a Article', js: false do
       fill_in 'Subject', with: 'test'
       fill_in 'Related resource URL', with: 'something.com'
       select 'Article', from: 'article_resource_type'
-      select 'Department of Biology', from: 'article_affiliation'
       fill_in 'Copyright date', with: '2018-10-03'
       fill_in 'Date other', with: '2018-10-03'
       fill_in 'DOI', with: 'some doi'
@@ -83,14 +85,15 @@ RSpec.feature 'Create a Article', js: false do
       fill_in 'Journal title', with: 'a journal'
       fill_in 'Journal volume', with: '2'
       fill_in 'Note', with: 'a note'
-      fill_in 'ORCID', with: 'an orcid'
-      fill_in 'Additional affiliation', with: 'another affiliation'
       fill_in 'Page end', with: '32'
       fill_in 'Page start', with: '30'
       select 'Yes', from: 'article_peer_review_status'
       fill_in 'Place of publication', with: 'UNC'
       fill_in 'Rights holder', with: 'an author'
-      fill_in 'Translator', with: 'none'
+      fill_in 'Translator', { with: 'translator', id: 'article_translators_attributes_0_name' }
+      fill_in 'ORCID', { with: 'translator orcid', id: 'article_translators_attributes_0_orcid' }
+      select 'Department of Biology', from: 'article_translators_attributes_0_affiliation'
+      fill_in 'Additional affiliation', { with: 'UNC', id: 'article_translators_attributes_0_other_affiliation' }
 
       expect(page).to have_selector('#article_language_label', visible: false)
       expect(page).to have_selector('#article_license_label', visible: false)
@@ -123,7 +126,7 @@ RSpec.feature 'Create a Article', js: false do
 
       first('.document-title', text: 'Test Article work').click
       expect(page).to have_content 'Keyword Test Default Keyword'
-      expect(page).to have_content 'Creator Test Default Creator'
+      expect(page).to have_content 'Creator Test Default Creator ORCID: creator orcid Affiliation: College of Arts and Sciences, Department of Biology Other Affiliation: UNC'
       expect(page).to have_content 'Abstract some abstract'
       expect(page).to have_content 'Date of publication October 3, 2018'
       expect(page).to have_content 'License Attribution 3.0 United States'
@@ -133,9 +136,6 @@ RSpec.feature 'Create a Article', js: false do
       expect(page).to have_content 'Language English'
       expect(page).to have_content 'Related resource URL something.com'
       expect(page).to have_content 'Resource type Article'
-      expect(page).to have_content 'Affiliation'
-      expect(page).to have_content 'College of Arts and Sciences'
-      expect(page).to have_content 'Department of Biology'
       expect(page).to have_content 'Copyright date October 3, 2018'
       expect(page).to have_content 'Date other October 3, 2018'
       expect(page).to have_content 'DOI some doi'
@@ -148,14 +148,12 @@ RSpec.feature 'Create a Article', js: false do
       expect(page).to have_content 'Journal title a journal'
       expect(page).to have_content 'Journal volume 2'
       expect(page).to have_content 'Note a note'
-      expect(page).to have_content 'ORCID an orcid'
-      expect(page).to have_content 'Additional affiliation another affiliation'
       expect(page).to have_content 'Page end 32'
       expect(page).to have_content 'Page start 30'
       expect(page).to have_content 'Is the article or chapter peer-reviewed? Yes'
       expect(page).to have_content 'Place of publication UNC'
       expect(page).to have_content 'Rights holder an author'
-      expect(page).to have_content 'Translator none'
+      expect(page).to have_content 'Translator translator ORCID: translator orcid Affiliation: College of Arts and Sciences, Department of Biology Other Affiliation: UNC'
       expect(page).to_not have_content 'Language http://id.loc.gov/vocabulary/iso639-2/eng'
       expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
       expect(page).to_not have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'
@@ -177,7 +175,10 @@ RSpec.feature 'Create a Article', js: false do
 
       # required fields
       fill_in 'Title', with: 'Test Article work'
-      fill_in 'Creator', with: 'Test Default Creator'
+      fill_in 'Creator', { with: 'Test Default Creator', id: 'article_creators_attributes_0_name' }
+      fill_in 'ORCID', { with: 'creator orcid', id: 'article_creators_attributes_0_orcid' }
+      select 'Department of Biology', from: 'article_creators_attributes_0_affiliation'
+      fill_in 'Additional affiliation', { with: 'UNC', id: 'article_creators_attributes_0_other_affiliation' }
       fill_in 'Abstract', with: 'some abstract'
       fill_in 'Date of publication', with: '2018-10-03'
 
@@ -192,7 +193,6 @@ RSpec.feature 'Create a Article', js: false do
       select 'Article', from: 'article_resource_type'
       fill_in 'Access', with: 'some access'
       fill_in 'Date created', with: '2018-10-03'
-      select 'Department of Biology', from: 'article_affiliation'
       fill_in 'Bibliographic citation', with: 'a citation'
       fill_in 'Copyright date', with: '2018-10-03'
       fill_in 'Date other', with: '2018-10-03'
@@ -206,14 +206,15 @@ RSpec.feature 'Create a Article', js: false do
       fill_in 'Journal title', with: 'a journal'
       fill_in 'Journal volume', with: '2'
       fill_in 'Note', with: 'a note'
-      fill_in 'ORCID', with: 'an orcid'
-      fill_in 'Additional affiliation', with: 'another affiliation'
       fill_in 'Page end', with: '32'
       fill_in 'Page start', with: '30'
       select 'Yes', from: 'article_peer_review_status'
       fill_in 'Place of publication', with: 'UNC'
       fill_in 'Rights holder', with: 'an author'
-      fill_in 'Translator', with: 'none'
+      fill_in 'Translator', { with: 'translator', id: 'article_translators_attributes_0_name' }
+      fill_in 'ORCID', { with: 'translator orcid', id: 'article_translators_attributes_0_orcid' }
+      select 'Department of Biology', from: 'article_translators_attributes_0_affiliation'
+      fill_in 'Additional affiliation', { with: 'UNC', id: 'article_translators_attributes_0_other_affiliation' }
       fill_in 'Use', with: 'some use'
 
 
@@ -246,7 +247,7 @@ RSpec.feature 'Create a Article', js: false do
 
       first('.document-title', text: 'Test Article work').click
       expect(page).to have_content 'Test Default Keyword'
-      expect(page).to have_content 'Creator Test Default Creator'
+      expect(page).to have_content 'Creator Test Default Creator ORCID: creator orcid Affiliation: College of Arts and Sciences, Department of Biology Other Affiliation: UNC'
       expect(page).to have_content 'Abstract some abstract'
       expect(page).to have_content 'Date of publication October 3, 2018'
       expect(page).to have_content 'License Attribution 3.0 United States'
@@ -259,9 +260,6 @@ RSpec.feature 'Create a Article', js: false do
       expect(page).to have_content 'Related resource URL something.com'
       expect(page).to have_content 'Resource type Article'
       expect(page).to have_content 'Access some access'
-      expect(page).to have_content 'Affiliation'
-      expect(page).to have_content 'College of Arts and Sciences'
-      expect(page).to have_content 'Department of Biology'
       expect(page).to have_content 'Bibliographic citation a citation'
       expect(page).to have_content 'Copyright date October 3, 2018'
       expect(page).to have_content 'Date other October 3, 2018'
@@ -275,14 +273,12 @@ RSpec.feature 'Create a Article', js: false do
       expect(page).to have_content 'Journal title a journal'
       expect(page).to have_content 'Journal volume 2'
       expect(page).to have_content 'Note a note'
-      expect(page).to have_content 'ORCID an orcid'
-      expect(page).to have_content 'Additional affiliation another affiliation'
       expect(page).to have_content 'Page end 32'
       expect(page).to have_content 'Page start 30'
       expect(page).to have_content 'Is the article or chapter peer-reviewed? Yes'
       expect(page).to have_content 'Place of publication UNC'
       expect(page).to have_content 'Rights holder an author'
-      expect(page).to have_content 'Translator none'
+      expect(page).to have_content 'Translator translator ORCID: translator orcid Affiliation: College of Arts and Sciences, Department of Biology Other Affiliation: UNC'
       expect(page).to have_content 'Use some use'
       expect(page).to_not have_content 'Language http://id.loc.gov/vocabulary/iso639-2/eng'
       expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/3.0/us/'

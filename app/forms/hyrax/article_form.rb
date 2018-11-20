@@ -31,23 +31,13 @@ module Hyrax
       super.first || ""
     end
 
-    def rights_statement
-      super.first || ""
-    end
-
 
     delegate :creators_attributes=, to: :model
-    delegate :funders_attributes=, to: :model
     delegate :translators_attributes=, to: :model
 
     def creators
       model.creators.build if model.creators.blank?
       model.creators.to_a
-    end
-
-    def funders
-      model.funders.build if model.funders.blank?
-      model.funders.to_a
     end
 
     def translators
@@ -58,7 +48,6 @@ module Hyrax
     def self.build_permitted_params
       permitted = super
       permitted << { creators_attributes: [:id, :name, :affiliation, :orcid, :other_affiliation, :_destroy] }
-      permitted << { funders_attributes: [:id, :name, :affiliation, :orcid, :other_affiliation, :_destroy] }
       permitted << { translators_attributes: [:id, :name, :affiliation, :orcid, :other_affiliation, :_destroy] }
       permitted
     end
