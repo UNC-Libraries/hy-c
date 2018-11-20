@@ -8,8 +8,8 @@ module Hyrax
     self.model_class = ::Article
     self.terms += [:resource_type, :abstract, :access, :bibliographic_citation, :copyright_date, :date_issued,
                    :date_other, :dcmi_type, :doi, :edition, :extent, :funder, :geographic_subject, :issn,
-                   :journal_title, :journal_volume, :journal_issue, :note, :orcid, :page_end, :page_start,
-                   :peer_review_status, :place_of_publication, :rights_holder, :translator, :use]
+                   :journal_title, :journal_volume, :journal_issue, :note, :page_end, :page_start, :peer_review_status,
+                   :place_of_publication, :rights_holder, :translator, :use]
 
     self.required_fields = [:title, :creator, :abstract, :date_issued]
 
