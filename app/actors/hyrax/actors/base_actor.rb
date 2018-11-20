@@ -67,6 +67,13 @@ module Hyrax
       end
 
       def save(env)
+        # [hyc-override] Save updated nested objects individually; they will not be updated with the rest of the attributes
+        env.attributes.each do |k,v|
+          next unless (k.ends_with? '_attributes') && (!env.curation_concern.attributes[k.gsub('_attributes', '')].nil?)
+          env.curation_concern.attributes[k.gsub('_attributes', '')].each do |person|
+            person.persist!
+          end
+        end
         env.curation_concern.save
       end
 
