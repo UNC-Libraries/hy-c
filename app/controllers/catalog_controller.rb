@@ -7,7 +7,7 @@ class CatalogController < ApplicationController
   before_action :enforce_show_permissions, only: :show
 
   # Allow all search options when in read-only mode
-  skip_before_action :check_read_only, except: [:show, :index]
+  skip_before_action :check_read_only
 
   def self.uploaded_field
     solr_name('system_create', :stored_sortable, type: :date)
