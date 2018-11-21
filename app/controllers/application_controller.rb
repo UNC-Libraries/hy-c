@@ -9,7 +9,7 @@ class ApplicationController < ActionController::Base
   include Hyrax::ThemedLayoutController
   with_themed_layout '1_column'
 
-  before_action :check_read_only, except: [:show, :index]
+  before_action :check_read_only, only: [:new, :create, :edit, :update, :destroy]
 
   # Redirect all deposit and edit requests with warning message when in read only mode
   def check_read_only
