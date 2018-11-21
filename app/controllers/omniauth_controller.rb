@@ -1,7 +1,7 @@
 require 'cgi'
 # [hyc-override] Overriding sessions controller in devise gem to trigger shibboleth logout
 class OmniauthController < Devise::SessionsController
-  # Allow all search options when in read-only mode
+  # Allow users to login when in read-only mode
   skip_before_action :check_read_only
 
   def new

@@ -1,6 +1,6 @@
 # [hyc-override] Overriding omniauth callbacks in devise gem for shibboleth integration
 class OmniauthCallbacksController < Devise::OmniauthCallbacksController
-  # Allow all search options when in read-only mode
+  # Allow users to login when in read-only mode
   skip_before_action :check_read_only
 
   def shibboleth
