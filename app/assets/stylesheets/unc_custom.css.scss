@@ -268,6 +268,15 @@ span.institution_name {
   }
 }
 
+.read-only {
+  opacity: .4;
+}
+
+.read-only-note {
+  margin-top: 25px;
+  font-size: 2rem;
+}
+
 .site-footer, .social {
   height: 30px;
 }
