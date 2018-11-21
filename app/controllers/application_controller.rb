@@ -9,7 +9,8 @@ class ApplicationController < ActionController::Base
   include Hyrax::ThemedLayoutController
   with_themed_layout '1_column'
 
-  before_action :check_read_only, except: [:show, :index]
+  # Exempt non-standard Rails action, :info, so UV can get manifest from RIIIF gem
+  before_action :check_read_only, except: [:show, :index, :info]
 
   # Redirect all deposit and edit requests with warning message when in read only mode
   def check_read_only
