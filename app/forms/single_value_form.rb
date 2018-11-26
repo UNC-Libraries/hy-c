@@ -7,6 +7,10 @@ class SingleValueForm < Hyrax::Forms::WorkForm
   # Map of fields to default values
   class_attribute :default_term_values
   self.default_term_values = Hash.new
+  # Fields in person class
+  class_attribute :person_fields
+  self.person_fields = [:advisor, :arranger, :composer, :contributor, :creator, :project_director, :researcher,
+                        :reviewer, :translator]
 
   self.terms += [:language_label, :license_label, :rights_statement_label]
 

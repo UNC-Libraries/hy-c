@@ -1,0 +1,94 @@
+<hr>
+<div id="person">
+  <%= f.fields_for person_key do |person| %>
+    <div class="person row">
+      <div class="col-sm-6 person-name">
+        <%= person.input :name, label: person_key.to_s[0...-1].split('_').map(&:capitalize).join(' '),
+                          input_html: { placeholder: 'Smith, John',
+                                        class: 'form-control person person-name',
+                                        value: (person.object.name.first || '') },
+                          required: f.object.required?(person) %>
+      </div>
+
+      <div class="col-sm-6 person-orcid">
+        <%= person.input :orcid, label: 'ORCID', input_html: { placeholder: 'https://orcid.org/xxxx-xxxx-xxxx-xxxx',
+                                                                class: 'form-control',
+                                                                value: (person.object.orcid.first || '') } %>
+      </div>
+
+      <div class="col-sm-6 person-affiliation">
+        <%= person.input :affiliation, as: :select,
+                          collection: DepartmentsService.select_all_options.sort,
+                          include_blank: true,
+                          selected: person.object.affiliation.first,
+                          item_helper: DepartmentsService.method(:include_current_value),
+                          input_html: { class: 'form-control' }
+        -%>
+      </div>
+
+      <div class="col-sm-6 person-other-affiliation">
+        <%= person.input :other_affiliation, input_html: { class: 'form-control',
+                                                            value: (person.object.other_affiliation.first || '') } %>
+      </div>
+
+      <% if @form.instance_eval(person_key.to_s).count > 1 %>
+      <span class="input-group-btn field-controls multi_value">
+        <button type="button" class="btn btn-link remove remove-person" data-index="<%= person.index %>">
+          <span class="glyphicon glyphicon-remove"></span> <span class="controls-remove-text">Remove Creator</span>
+        </button>
+      </span>
+      <% end %>
+    </div>
+  <% end %>
+
+  <input type='hidden' name='index-person' id='index-person' value="<%= @form.instance_eval(person_key.to_s).count %>" />
+
+  <div class="person row cloning hidden" id='person-cloning_row'>
+    <%= f.fields_for person_key do |person| %>
+      <% if person.index <= @form.instance_eval(person_key.to_s).count %>
+        <div class="person row">
+          <div class="col-sm-6 person-name">
+            <%= person.input :name, label: person_key.to_s[0...-1].split('_').map(&:capitalize).join(' '),
+                              input_html: { placeholder: 'Smith, John',
+                                            class: 'form-control person person-name',
+                                            value: '' } %>
+          </div>
+
+          <div class="col-sm-6 person-orcid">
+            <%= person.input :orcid, label: 'ORCID', input_html: { placeholder: 'https://orcid.org/xxxx-xxxx-xxxx-xxxx',
+                                                                    class: 'form-control',
+                                                                    value: '' } %>
+          </div>
+
+          <div class="col-sm-6 person-affiliation">
+            <%= person.input :affiliation, as: :select,
+                              collection: DepartmentsService.select_all_options.sort,
+                              include_blank: true,
+                              selected: '',
+                              item_helper: DepartmentsService.method(:include_current_value),
+                              input_html: { class: 'form-control' }
+            -%>
+          </div>
+
+          <div class="col-sm-6 person-other-affiliation">
+            <%= person.input :other_affiliation, input_html: { class: 'form-control',
+                                                                value: '' } %>
+          </div>
+
+          <span class="input-group-btn field-controls multi_value">
+          <button type="button" class="btn btn-link remove remove-person" data-index="1">
+            <span class="glyphicon glyphicon-remove"></span> <span class="controls-remove-text">Remove Creator</span>
+          </button>
+        </span>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+</div>
+<div class="row">
+  <button id="add-another-person" class="btn btn-link add">
+    <span class="glyphicon glyphicon-plus"></span>
+    <span>Add another Creator</span>
+  </button>
+</div>
+<hr>
