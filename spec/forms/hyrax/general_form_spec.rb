@@ -145,8 +145,8 @@ RSpec.describe Hyrax::GeneralForm do
 
     it 'permits parameters' do
       expect(subject['title']).to eq ['foo']
-      expect(subject['creator_display']).to eq ['creator;ORCID: creator orcid;Affiliation: School of Medicine, Carolina Center for Genome Sciences;Other Affiliation: another affiliation']
-      expect(subject['contributor_display']).to eq ['contributor;ORCID: contributor orcid;Affiliation: School of Medicine, Carolina Center for Genome Sciences;Other Affiliation: another affiliation']
+      expect(subject['creator_display']).to eq ['creator||ORCID: creator orcid||Affiliation: School of Medicine, Carolina Center for Genome Sciences||Other Affiliation: another affiliation']
+      expect(subject['contributor_display']).to eq ['contributor||ORCID: contributor orcid||Affiliation: School of Medicine, Carolina Center for Genome Sciences||Other Affiliation: another affiliation']
       expect(subject['bibliographic_citation']).to eq ['a citation']
       expect(subject['date_created']).to eq '2017-01-22'
       expect(subject['identifier']).to eq ['an identifier']
@@ -164,12 +164,12 @@ RSpec.describe Hyrax::GeneralForm do
       expect(subject['abstract']).to eq ['an abstract']
       expect(subject['academic_concentration']).to eq ['a concentration']
       expect(subject['access']).to eq 'public'
-      expect(subject['advisor_display']).to eq ['advisor;ORCID: advisor orcid;Affiliation: School of Medicine, Carolina Center for Genome Sciences;Other Affiliation: another affiliation']
+      expect(subject['advisor_display']).to eq ['advisor||ORCID: advisor orcid||Affiliation: School of Medicine, Carolina Center for Genome Sciences||Other Affiliation: another affiliation']
       expect(subject['affiliation_label']).to match_array ['School of Medicine', 'Carolina Center for Genome Sciences']
       expect(subject['alternative_title']).to eq ['some title']
-      expect(subject['arranger_display']).to eq ['arranger;ORCID: arranger orcid;Affiliation: School of Medicine, Carolina Center for Genome Sciences;Other Affiliation: another affiliation']
+      expect(subject['arranger_display']).to eq ['arranger||ORCID: arranger orcid||Affiliation: School of Medicine, Carolina Center for Genome Sciences||Other Affiliation: another affiliation']
       expect(subject['award']).to eq 'an award'
-      expect(subject['composer_display']).to eq ['composer;ORCID: composer orcid;Affiliation: School of Medicine, Carolina Center for Genome Sciences;Other Affiliation: another affiliation']
+      expect(subject['composer_display']).to eq ['composer||ORCID: composer orcid||Affiliation: School of Medicine, Carolina Center for Genome Sciences||Other Affiliation: another affiliation']
       expect(subject['conference_name']).to eq ['a conference']
       expect(subject['copyright_date']).to eq ['2017-01-22']
       expect(subject['date_issued']).to eq ['2017-01-22']
@@ -203,15 +203,15 @@ RSpec.describe Hyrax::GeneralForm do
       expect(subject['person_label']).to match_array ['creator', 'contributor', 'advisor', 'arranger', 'composer',
                                                       'project director', 'researcher', 'reviewer', 'translator']
       expect(subject['place_of_publication']).to eq ['durham']
-      expect(subject['project_director_display']).to eq ['project director;ORCID: project director orcid;Affiliation: School of Medicine, Carolina Center for Genome Sciences;Other Affiliation: another affiliation']
+      expect(subject['project_director_display']).to eq ['project director||ORCID: project director orcid||Affiliation: School of Medicine, Carolina Center for Genome Sciences||Other Affiliation: another affiliation']
       expect(subject['publisher_version']).to eq ['a version']
-      expect(subject['researcher_display']).to eq ['researcher;ORCID: researcher orcid;Affiliation: School of Medicine, Carolina Center for Genome Sciences;Other Affiliation: another affiliation']
-      expect(subject['reviewer_display']).to eq ['reviewer;ORCID: reviewer orcid;Affiliation: School of Medicine, Carolina Center for Genome Sciences;Other Affiliation: another affiliation']
+      expect(subject['researcher_display']).to eq ['researcher||ORCID: researcher orcid||Affiliation: School of Medicine, Carolina Center for Genome Sciences||Other Affiliation: another affiliation']
+      expect(subject['reviewer_display']).to eq ['reviewer||ORCID: reviewer orcid||Affiliation: School of Medicine, Carolina Center for Genome Sciences||Other Affiliation: another affiliation']
       expect(subject['rights_holder']).to eq ['dean']
       expect(subject['series']).to eq ['series']
       expect(subject['sponsor']).to eq ['a sponsor']
       expect(subject['table_of_contents']).to eq ['cool table']
-      expect(subject['translator_display']).to eq ['translator;ORCID: translator orcid;Affiliation: School of Medicine, Carolina Center for Genome Sciences;Other Affiliation: another affiliation']
+      expect(subject['translator_display']).to eq ['translator||ORCID: translator orcid||Affiliation: School of Medicine, Carolina Center for Genome Sciences||Other Affiliation: another affiliation']
       expect(subject['use']).to eq ['a use']
       expect(subject['language_label']).to eq ['English']
       expect(subject['license_label']).to eq ['Attribution 3.0 United States']

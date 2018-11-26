@@ -5,7 +5,7 @@ module Hyrax
 
       def attribute_value_to_html(value)
         begin
-          person = value.split(';')
+          person = value.split('||')
           display_text = ''
           display_text << "<li>#{person[0]}"
           if person.length > 1

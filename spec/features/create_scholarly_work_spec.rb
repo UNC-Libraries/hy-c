@@ -58,7 +58,7 @@ RSpec.feature 'Create a ScholarlyWork', js: false do
 
       # required fields
       fill_in 'Title', with: 'Test ScholarlyWork work'
-      fill_in 'Creator', { with: 'Test Default Creator', id: 'scholarly_work_creators_attributes_0_name' }
+      fill_in 'Name', { with: 'Test Default Creator', id: 'scholarly_work_creators_attributes_0_name' }
       fill_in 'ORCID', { with: 'creator orcid', id: 'scholarly_work_creators_attributes_0_orcid' }
       select 'Department of Biology', from: 'scholarly_work_creators_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'scholarly_work_creators_attributes_0_other_affiliation' }
@@ -66,7 +66,7 @@ RSpec.feature 'Create a ScholarlyWork', js: false do
       fill_in 'Date of publication', with: '2018-10-03'
 
       # extra fields
-      fill_in 'Advisor', { with: 'advisor', id: 'scholarly_work_advisors_attributes_0_name' }
+      fill_in 'Name', { with: 'advisor', id: 'scholarly_work_advisors_attributes_0_name' }
       fill_in 'ORCID', { with: 'advisor orcid', id: 'scholarly_work_advisors_attributes_0_orcid' }
       select 'Department of Biology', from: 'scholarly_work_advisors_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'scholarly_work_advisors_attributes_0_other_affiliation' }
@@ -141,7 +141,7 @@ RSpec.feature 'Create a ScholarlyWork', js: false do
 
       # required fields
       fill_in 'Title', with: 'Test ScholarlyWork work'
-      fill_in 'Creator', { with: 'Test Default Creator', id: 'scholarly_work_creators_attributes_0_name' }
+      fill_in 'Name', { with: 'Test Default Creator', id: 'scholarly_work_creators_attributes_0_name' }
       fill_in 'ORCID', { with: 'creator orcid', id: 'scholarly_work_creators_attributes_0_orcid' }
       select 'Department of Biology', from: 'scholarly_work_creators_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'scholarly_work_creators_attributes_0_other_affiliation' }
@@ -149,7 +149,7 @@ RSpec.feature 'Create a ScholarlyWork', js: false do
       fill_in 'Date of publication', with: '2018-10-03'
 
       # extra fields
-      fill_in 'Advisor', { with: 'advisor', id: 'scholarly_work_advisors_attributes_0_name' }
+      fill_in 'Name', { with: 'advisor', id: 'scholarly_work_advisors_attributes_0_name' }
       fill_in 'ORCID', { with: 'advisor orcid', id: 'scholarly_work_advisors_attributes_0_orcid' }
       select 'Department of Biology', from: 'scholarly_work_advisors_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'scholarly_work_advisors_attributes_0_other_affiliation' }

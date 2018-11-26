@@ -96,8 +96,8 @@ RSpec.describe Hyrax::DataSetForm do
 
     it "permits parameters" do
       expect(subject['title']).to eq ['data set name']
-      expect(subject['creator_display']).to eq ['creator;ORCID: creator orcid;Affiliation: School of Medicine, Carolina Center for Genome Sciences;Other Affiliation: another affiliation']
-      expect(subject['contributor_display']).to eq ['contributor;ORCID: contributor orcid;Affiliation: School of Medicine, Carolina Center for Genome Sciences;Other Affiliation: another affiliation']
+      expect(subject['creator_display']).to eq ['creator||ORCID: creator orcid||Affiliation: School of Medicine, Carolina Center for Genome Sciences||Other Affiliation: another affiliation']
+      expect(subject['contributor_display']).to eq ['contributor||ORCID: contributor orcid||Affiliation: School of Medicine, Carolina Center for Genome Sciences||Other Affiliation: another affiliation']
       expect(subject['visibility']).to eq 'open'
       expect(subject['keyword']).to eq ['data set']
       expect(subject['member_of_collection_ids']).to eq ['123456', 'abcdef']
@@ -118,8 +118,8 @@ RSpec.describe Hyrax::DataSetForm do
                                                      'researcher orcid']
       expect(subject['other_affiliation_label']).to eq ['another affiliation']
       expect(subject['person_label']).to match_array ['creator', 'contributor', 'project director', 'researcher']
-      expect(subject['project_director_display']).to eq ['project director;ORCID: project director orcid;Affiliation: School of Medicine, Carolina Center for Genome Sciences;Other Affiliation: another affiliation']
-      expect(subject['researcher_display']).to eq ['researcher;ORCID: researcher orcid;Affiliation: School of Medicine, Carolina Center for Genome Sciences;Other Affiliation: another affiliation']
+      expect(subject['project_director_display']).to eq ['project director||ORCID: project director orcid||Affiliation: School of Medicine, Carolina Center for Genome Sciences||Other Affiliation: another affiliation']
+      expect(subject['researcher_display']).to eq ['researcher||ORCID: researcher orcid||Affiliation: School of Medicine, Carolina Center for Genome Sciences||Other Affiliation: another affiliation']
       expect(subject['rights_holder']).to eq ['dean']
       expect(subject['sponsor']).to eq ['david']
       expect(subject['language_label']).to eq ['English']

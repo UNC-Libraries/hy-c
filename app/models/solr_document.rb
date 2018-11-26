@@ -68,6 +68,10 @@ class SolrDocument
     self[Solrizer.solr_name('advisor_display')]
   end
 
+  def advisor_label
+    self[Solrizer.solr_name('advisor_label')]
+  end
+
   def affiliation
     self[Solrizer.solr_name('affiliation')]
   end
@@ -118,6 +122,10 @@ class SolrDocument
 
   def creator_display
     self[Solrizer.solr_name('creator_display')]
+  end
+
+  def creator_label
+    self[Solrizer.solr_name('creator_label')]
   end
 
   def date_issued

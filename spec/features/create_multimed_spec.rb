@@ -58,7 +58,7 @@ RSpec.feature 'Create a Multimed', js: false do
 
       # required fields
       fill_in 'Title', with: 'Test Multimed'
-      fill_in 'Creator', { with: 'Test Default Creator', id: 'multimed_creators_attributes_0_name' }
+      fill_in 'Name', { with: 'Test Default Creator', id: 'multimed_creators_attributes_0_name' }
       fill_in 'ORCID', { with: 'creator orcid', id: 'multimed_creators_attributes_0_orcid' }
       select 'Department of Biology', from: 'multimed_creators_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'multimed_creators_attributes_0_other_affiliation' }
@@ -136,7 +136,7 @@ RSpec.feature 'Create a Multimed', js: false do
 
       # required fields
       fill_in 'Title', with: 'Test Multimed'
-      fill_in 'Creator', { with: 'Test Default Creator', id: 'multimed_creators_attributes_0_name' }
+      fill_in 'Name', { with: 'Test Default Creator', id: 'multimed_creators_attributes_0_name' }
       fill_in 'ORCID', { with: 'creator orcid', id: 'multimed_creators_attributes_0_orcid' }
       select 'Department of Biology', from: 'multimed_creators_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'multimed_creators_attributes_0_other_affiliation' }

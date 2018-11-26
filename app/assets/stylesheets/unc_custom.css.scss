@@ -415,6 +415,13 @@ table p.name span {
   overflow: auto
 }
 
+.person-divider {
+  height: 2px;
+  border: none;
+  color: #c0c0c0;
+  background-color: #c0c0c0;
+}
+
 @media only screen and (max-width: 1600px) {
   #masthead {
     .navbar-header {

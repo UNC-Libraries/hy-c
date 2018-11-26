@@ -64,13 +64,17 @@ class SingleValueForm < Hyrax::Forms::WorkForm
     end
 
     @person_label = []
+    @creator_label = []
+    @advisor_label = []
     @orcid_label = []
     @affiliation_label = []
     @other_affiliation_label = []
 
     if attrs.key?(:advisors_attributes) && !attrs[:advisors_attributes].blank?
       attrs[:advisors_attributes].map{ |k, v| person_label_fields(v) }
+      attrs[:advisors_attributes].map{ |k, v| facet_field(v, 'advisor') }
       attrs[:advisor_display] = attrs[:advisors_attributes].map{ |k, v| build_person_display(v) }
+      attrs['advisor_label'] = @advisor_label
     end
 
     if attrs.key?(:arrangers_attributes) && !attrs[:arrangers_attributes].blank?
@@ -90,7 +94,9 @@ class SingleValueForm < Hyrax::Forms::WorkForm
 
     if attrs.key?(:creators_attributes) && !attrs[:creators_attributes].blank?
       attrs[:creators_attributes].map{ |k, v| person_label_fields(v) }
+      attrs[:creators_attributes].map{ |k, v| facet_field(v, 'creator') }
       attrs[:creator_display] = attrs[:creators_attributes].map{ |k, v| build_person_display(v) }
+      attrs['creator_label'] = @creator_label
     end
 
     if attrs.key?(:project_directors_attributes) && !attrs[:project_directors_attributes].blank?
@@ -180,7 +186,7 @@ class SingleValueForm < Hyrax::Forms::WorkForm
       display_text << "ORCID: #{person_attrs['orcid']}" if !person_attrs['orcid'].blank?
       display_text << "Affiliation: #{split_affiliations(person_attrs['affiliation']).join(', ')}" if !person_attrs['affiliation'].blank?
       display_text << "Other Affiliation: #{person_attrs['other_affiliation']}" if !person_attrs['other_affiliation'].blank?
-      display_text.join(';')
+      display_text.join('||')
     end
 
     def self.person_label_fields(person_attrs)
@@ -189,6 +195,14 @@ class SingleValueForm < Hyrax::Forms::WorkForm
         @orcid_label.push(person_attrs['orcid']) if !person_attrs['orcid'].blank?
         @affiliation_label.push(split_affiliations(person_attrs['affiliation'])) if !person_attrs['affiliation'].blank?
         @other_affiliation_label.push(person_attrs['other_affiliation']) if !person_attrs['other_affiliation'].blank?
+      end
+    end
+
+    def self.facet_field(person_attrs, person_type)
+      if person_type == 'creator'
+        @creator_label.push(person_attrs['name']) if !person_attrs['name'].blank?
+      elsif person_type == 'advisor'
+        @advisor_label.push(person_attrs['name']) if !person_attrs['name'].blank?
       end
     end
 end

@@ -58,7 +58,7 @@ RSpec.feature 'Create a Article', js: false do
 
       # required fields
       fill_in 'Title', with: 'Test Article work'
-      fill_in 'Creator', { with: 'Test Default Creator', id: 'article_creators_attributes_0_name' }
+      fill_in 'Name', { with: 'Test Default Creator', id: 'article_creators_attributes_0_name' }
       fill_in 'ORCID', { with: 'creator orcid', id: 'article_creators_attributes_0_orcid' }
       select 'Department of Biology', from: 'article_creators_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'article_creators_attributes_0_other_affiliation' }
@@ -90,7 +90,7 @@ RSpec.feature 'Create a Article', js: false do
       select 'Yes', from: 'article_peer_review_status'
       fill_in 'Place of publication', with: 'UNC'
       fill_in 'Rights holder', with: 'an author'
-      fill_in 'Translator', { with: 'translator', id: 'article_translators_attributes_0_name' }
+      fill_in 'Name', { with: 'translator', id: 'article_translators_attributes_0_name' }
       fill_in 'ORCID', { with: 'translator orcid', id: 'article_translators_attributes_0_orcid' }
       select 'Department of Biology', from: 'article_translators_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'article_translators_attributes_0_other_affiliation' }
@@ -175,7 +175,7 @@ RSpec.feature 'Create a Article', js: false do
 
       # required fields
       fill_in 'Title', with: 'Test Article work'
-      fill_in 'Creator', { with: 'Test Default Creator', id: 'article_creators_attributes_0_name' }
+      fill_in 'Name', { with: 'Test Default Creator', id: 'article_creators_attributes_0_name' }
       fill_in 'ORCID', { with: 'creator orcid', id: 'article_creators_attributes_0_orcid' }
       select 'Department of Biology', from: 'article_creators_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'article_creators_attributes_0_other_affiliation' }
@@ -211,7 +211,7 @@ RSpec.feature 'Create a Article', js: false do
       select 'Yes', from: 'article_peer_review_status'
       fill_in 'Place of publication', with: 'UNC'
       fill_in 'Rights holder', with: 'an author'
-      fill_in 'Translator', { with: 'translator', id: 'article_translators_attributes_0_name' }
+      fill_in 'Name', { with: 'translator', id: 'article_translators_attributes_0_name' }
       fill_in 'ORCID', { with: 'translator orcid', id: 'article_translators_attributes_0_orcid' }
       select 'Department of Biology', from: 'article_translators_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'article_translators_attributes_0_other_affiliation' }

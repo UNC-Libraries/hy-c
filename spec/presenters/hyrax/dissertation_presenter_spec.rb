@@ -18,7 +18,6 @@ RSpec.describe Hyrax::DissertationPresenter do
       "contributor_display_tesim" => ['a contributor'],
       "date_created_tesim" => ['an unformatted date'],
       "depositor_tesim" => user_key,
-      "creator_display_tesim" => ['a creator'],
       "abstract_tesim" => ['an abstract'],
       "academic_concentration_tesim" => ['a concentration'],
       "access_tesim" => ['an access state'],

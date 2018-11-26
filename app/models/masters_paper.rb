@@ -30,6 +30,10 @@ class MastersPaper < ActiveFedora::Base
     index.as :stored_searchable
   end
 
+  property :advisor_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#AdvisorLabel') do |index|
+    index.as :stored_searchable, :facetable
+  end
+
   property :affiliation_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#AffiliationLabel') do |index|
     index.as :stored_searchable, :facetable
   end

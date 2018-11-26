@@ -59,11 +59,11 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       # required fields
       fill_in 'Title', with: 'Test HonorsThesis work'
       fill_in 'Abstract', with: 'an abstract'
-      fill_in 'Advisor', { with: 'advisor', id: 'honors_thesis_advisors_attributes_0_name' }
+      fill_in 'Name', { with: 'advisor', id: 'honors_thesis_advisors_attributes_0_name' }
       fill_in 'ORCID', { with: 'advisor orcid', id: 'honors_thesis_advisors_attributes_0_orcid' }
       select 'Department of Biology', from: 'honors_thesis_advisors_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'honors_thesis_advisors_attributes_0_other_affiliation' }
-      fill_in 'Creator', { with: 'Test Default Creator', id: 'honors_thesis_creators_attributes_0_name' }
+      fill_in 'Name', { with: 'Test Default Creator', id: 'honors_thesis_creators_attributes_0_name' }
       fill_in 'ORCID', { with: 'creator orcid', id: 'honors_thesis_creators_attributes_0_orcid' }
       select 'Department of Biology', from: 'honors_thesis_creators_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'honors_thesis_creators_attributes_0_other_affiliation' }
@@ -156,11 +156,11 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       # required fields
       fill_in 'Title', with: 'Test HonorsThesis work'
       fill_in 'Abstract', with: 'an abstract'
-      fill_in 'Advisor', { with: 'advisor', id: 'honors_thesis_advisors_attributes_0_name' }
+      fill_in 'Name', { with: 'advisor', id: 'honors_thesis_advisors_attributes_0_name' }
       fill_in 'ORCID', { with: 'advisor orcid', id: 'honors_thesis_advisors_attributes_0_orcid' }
       select 'Department of Biology', from: 'honors_thesis_advisors_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'honors_thesis_advisors_attributes_0_other_affiliation' }
-      fill_in 'Creator', { with: 'Test Default Creator', id: 'honors_thesis_creators_attributes_0_name' }
+      fill_in 'Name', { with: 'Test Default Creator', id: 'honors_thesis_creators_attributes_0_name' }
       fill_in 'ORCID', { with: 'creator orcid', id: 'honors_thesis_creators_attributes_0_orcid' }
       select 'Department of Biology', from: 'honors_thesis_creators_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'honors_thesis_creators_attributes_0_other_affiliation' }

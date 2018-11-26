@@ -58,6 +58,8 @@ function remove_row(selector) {
     var cloning_row = '#'+selector+'-cloning_row';
 
     $(remove_selector).on('click', function (event) {
+        event.preventDefault();
+
         var $self = $(this);
 
         // get current count and store it in local variable
@@ -88,6 +90,8 @@ function delete_record(selector, model, index) {
 }
 
 function updateNewRow(new_row, selector, attr, index) {
+    console.log(selector);
+    console.log(attr);
     var $input = $(new_row).find('div.'+selector+'-'+attr+' input,select');
     $input.prop('name', $input.prop('name').replace(/\d/, index));
     $input.attr('id', $input.attr('id').replace(/\d/, index));

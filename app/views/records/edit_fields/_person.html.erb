@@ -1,22 +1,23 @@
-<hr>
-<div id="person">
+<hr class="person-divider">
+<div id="<%= person_key.to_s[0...-1].to_s %>">
+  <h3 align="center"><%= person_key.to_s[0...-1].split('_').map(&:capitalize).join(' ') %></h3>
   <%= f.fields_for person_key do |person| %>
-    <div class="person row">
-      <div class="col-sm-6 person-name">
-        <%= person.input :name, label: person_key.to_s[0...-1].split('_').map(&:capitalize).join(' '),
+    <div class="<%= person_key.to_s[0...-1].to_s %> row">
+      <div class="col-sm-6 <%= person_key.to_s[0...-1].to_s %>-name">
+        <%= person.input :name,
                           input_html: { placeholder: 'Smith, John',
-                                        class: 'form-control person person-name',
+                                        class: "form-control #{person_key.to_s[0...-1].to_s} #{person_key.to_s[0...-1].to_s}-name",
                                         value: (person.object.name.first || '') },
                           required: f.object.required?(person) %>
       </div>
 
-      <div class="col-sm-6 person-orcid">
+      <div class="col-sm-6 <%= person_key.to_s[0...-1].to_s %>-orcid">
         <%= person.input :orcid, label: 'ORCID', input_html: { placeholder: 'https://orcid.org/xxxx-xxxx-xxxx-xxxx',
                                                                 class: 'form-control',
                                                                 value: (person.object.orcid.first || '') } %>
       </div>
 
-      <div class="col-sm-6 person-affiliation">
+      <div class="col-sm-6 <%= person_key.to_s[0...-1].to_s %>-affiliation">
         <%= person.input :affiliation, as: :select,
                           collection: DepartmentsService.select_all_options.sort,
                           include_blank: true,
@@ -26,41 +27,41 @@
         -%>
       </div>
 
-      <div class="col-sm-6 person-other-affiliation">
+      <div class="col-sm-6 <%= person_key.to_s[0...-1].to_s %>-other-affiliation">
         <%= person.input :other_affiliation, input_html: { class: 'form-control',
                                                             value: (person.object.other_affiliation.first || '') } %>
       </div>
 
       <% if @form.instance_eval(person_key.to_s).count > 1 %>
       <span class="input-group-btn field-controls multi_value">
-        <button type="button" class="btn btn-link remove remove-person" data-index="<%= person.index %>">
-          <span class="glyphicon glyphicon-remove"></span> <span class="controls-remove-text">Remove Creator</span>
+        <button type="button" class="btn btn-link remove remove-<%= person_key.to_s[0...-1].to_s %>" data-index="<%= person.index %>">
+          <span class="glyphicon glyphicon-remove"></span> <span class="controls-remove-text">Remove <%= person_key.to_s[0...-1].split('_').map(&:capitalize).join(' ') %></span>
         </button>
       </span>
       <% end %>
     </div>
   <% end %>
 
-  <input type='hidden' name='index-person' id='index-person' value="<%= @form.instance_eval(person_key.to_s).count %>" />
+  <input type='hidden' name='index-<%= person_key.to_s[0...-1].to_s %>' id='index-<%= person_key.to_s[0...-1].to_s %>' value="<%= @form.instance_eval(person_key.to_s).count %>" />
 
-  <div class="person row cloning hidden" id='person-cloning_row'>
+  <div class="<%= person_key.to_s[0...-1].to_s %> row cloning hidden" id='<%= person_key.to_s[0...-1].to_s %>-cloning_row'>
     <%= f.fields_for person_key do |person| %>
       <% if person.index <= @form.instance_eval(person_key.to_s).count %>
-        <div class="person row">
-          <div class="col-sm-6 person-name">
-            <%= person.input :name, label: person_key.to_s[0...-1].split('_').map(&:capitalize).join(' '),
+        <div class="<%= person_key.to_s[0...-1].to_s %> row">
+          <div class="col-sm-6 <%= person_key.to_s[0...-1].to_s %>-name">
+            <%= person.input :name,
                               input_html: { placeholder: 'Smith, John',
-                                            class: 'form-control person person-name',
+                                            class: 'form-control #{person_key.to_s[0...-1].to_s} #{person_key.to_s[0...-1].to_s}-name',
                                             value: '' } %>
           </div>
 
-          <div class="col-sm-6 person-orcid">
+          <div class="col-sm-6 <%= person_key.to_s[0...-1].to_s %>-orcid">
             <%= person.input :orcid, label: 'ORCID', input_html: { placeholder: 'https://orcid.org/xxxx-xxxx-xxxx-xxxx',
                                                                     class: 'form-control',
                                                                     value: '' } %>
           </div>
 
-          <div class="col-sm-6 person-affiliation">
+          <div class="col-sm-6 <%= person_key.to_s[0...-1].to_s %>-affiliation">
             <%= person.input :affiliation, as: :select,
                               collection: DepartmentsService.select_all_options.sort,
                               include_blank: true,
@@ -70,14 +71,14 @@
             -%>
           </div>
 
-          <div class="col-sm-6 person-other-affiliation">
+          <div class="col-sm-6 <%= person_key.to_s[0...-1].to_s %>-other-affiliation">
             <%= person.input :other_affiliation, input_html: { class: 'form-control',
                                                                 value: '' } %>
           </div>
 
           <span class="input-group-btn field-controls multi_value">
-          <button type="button" class="btn btn-link remove remove-person" data-index="1">
-            <span class="glyphicon glyphicon-remove"></span> <span class="controls-remove-text">Remove Creator</span>
+          <button type="button" class="btn btn-link remove remove-<%= person_key.to_s[0...-1].to_s %>" data-index="1">
+            <span class="glyphicon glyphicon-remove"></span> <span class="controls-remove-text">Remove <%= person_key.to_s[0...-1].split('_').map(&:capitalize).join(' ') %></span>
           </button>
         </span>
         </div>
@@ -86,9 +87,9 @@
   </div>
 </div>
 <div class="row">
-  <button id="add-another-person" class="btn btn-link add">
+  <button id="add-another-<%= person_key.to_s[0...-1].to_s %>" class="btn btn-link add">
     <span class="glyphicon glyphicon-plus"></span>
-    <span>Add another Creator</span>
+    <span>Add another <%= person_key.to_s[0...-1].split('_').map(&:capitalize).join(' ') %></span>
   </button>
 </div>
-<hr>
+<hr class="person-divider">

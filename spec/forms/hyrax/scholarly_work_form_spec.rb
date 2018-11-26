@@ -81,7 +81,7 @@ RSpec.describe Hyrax::ScholarlyWorkForm do
 
     it 'permits parameters' do
       expect(subject['title']).to eq ['foo']
-      expect(subject['creator_display']).to eq ['creator;ORCID: creator orcid;Affiliation: School of Medicine, Carolina Center for Genome Sciences;Other Affiliation: another affiliation']
+      expect(subject['creator_display']).to eq ['creator||ORCID: creator orcid||Affiliation: School of Medicine, Carolina Center for Genome Sciences||Other Affiliation: another affiliation']
       expect(subject['date_created']).to eq 'a date'
       expect(subject['description']).to eq 'a description'
       expect(subject['doi']).to eq '12345'
@@ -95,7 +95,7 @@ RSpec.describe Hyrax::ScholarlyWorkForm do
       expect(subject['representative_id']).to eq '456'
       expect(subject['thumbnail_id']).to eq '789'
       expect(subject['abstract']).to be_empty
-      expect(subject['advisor_display']).to eq ['advisor;ORCID: advisor orcid;Affiliation: School of Medicine, Carolina Center for Genome Sciences;Other Affiliation: another affiliation']
+      expect(subject['advisor_display']).to eq ['advisor||ORCID: advisor orcid||Affiliation: School of Medicine, Carolina Center for Genome Sciences||Other Affiliation: another affiliation']
       expect(subject['affiliation_label']).to match_array ['School of Medicine', 'Carolina Center for Genome Sciences']
       expect(subject['conference_name']).to eq ['a conference name']
       expect(subject['date_issued']).to eq 'a date'

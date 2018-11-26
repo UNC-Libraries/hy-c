@@ -92,7 +92,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       expect(page).to have_content "Add New Undergraduate Honors Thesis"
 
       fill_in 'Title', with: 'Honors workflow test'
-      fill_in 'Creator', { with: 'Test Default Creator', id: 'honors_thesis_creators_attributes_0_name' }
+      fill_in 'Name', { with: 'Test Default Creator', id: 'honors_thesis_creators_attributes_0_name' }
       fill_in 'ORCID', { with: 'creator orcid', id: 'honors_thesis_creators_attributes_0_orcid' }
       select 'Department of Biology', from: 'honors_thesis_creators_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'honors_thesis_creators_attributes_0_other_affiliation' }

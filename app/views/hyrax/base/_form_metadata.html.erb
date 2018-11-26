@@ -2,6 +2,7 @@
 <%# [hyc-override] Overriding display of file img/video metadata. Move to bottom of page %>
         <div class="base-terms">
           <% f.object.primary_terms.each do |term| %>
+            <%# [hyc-override] adding partial selector for people objects %>
             <% if f.object.person_fields.include? term %>
               <%= render_edit_field_partial('person', f: f, person_key: (term.to_s+'s').to_sym) %>
             <% else %>
@@ -21,6 +22,7 @@
           <div id="extended-terms" class='collapse in' aria-expanded="true">
             <% f.object.secondary_terms.each do |term| %>
               <% if !(f.object.admin_only_terms.include? term) || current_user.admin? %>
+                <%# [hyc-override] adding partial selector for people objects %>
                 <% if f.object.person_fields.include? term %>
                   <%= render_edit_field_partial('person', f: f, person_key: (term.to_s+'s').to_sym) %>
                 <% else %>

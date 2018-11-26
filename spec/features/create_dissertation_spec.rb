@@ -65,7 +65,7 @@ RSpec.feature 'Create a Dissertation', js: false do
 
       # required fields
       fill_in 'Title', with: 'Test Dissertation work'
-      fill_in 'Creator', { with: 'Test Default Creator', id: 'dissertation_creators_attributes_0_name' }
+      fill_in 'Name', { with: 'Test Default Creator', id: 'dissertation_creators_attributes_0_name' }
       fill_in 'ORCID', { with: 'creator orcid', id: 'dissertation_creators_attributes_0_orcid' }
       select 'Department of Biology', from: 'dissertation_creators_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'dissertation_creators_attributes_0_other_affiliation' }
@@ -75,12 +75,12 @@ RSpec.feature 'Create a Dissertation', js: false do
       # extra fields
       fill_in 'Abstract', with: 'some abstract'
       select 'Clinical Nutrition', from: 'Academic Concentration'
-      fill_in 'Advisor', { with: 'advisor', id: 'dissertation_advisors_attributes_0_name' }
+      fill_in 'Name', { with: 'advisor', id: 'dissertation_advisors_attributes_0_name' }
       fill_in 'ORCID', { with: 'advisor orcid', id: 'dissertation_advisors_attributes_0_orcid' }
       select 'Department of Biology', from: 'dissertation_advisors_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'dissertation_advisors_attributes_0_other_affiliation' }
       fill_in 'Alternate title', with: 'another title'
-      fill_in 'Contributor', { with: 'contributor', id: 'dissertation_contributors_attributes_0_name' }
+      fill_in 'Name', { with: 'contributor', id: 'dissertation_contributors_attributes_0_name' }
       fill_in 'ORCID', { with: 'contributor orcid', id: 'dissertation_contributors_attributes_0_orcid' }
       select 'Department of Biology', from: 'dissertation_contributors_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'dissertation_contributors_attributes_0_other_affiliation' }
@@ -97,7 +97,7 @@ RSpec.feature 'Create a Dissertation', js: false do
       fill_in 'Note', with: 'a note'
       fill_in 'Place of publication', with: 'UNC'
       fill_in 'Publisher', with: 'UNC Press'
-      fill_in 'Reviewer', { with: 'reviewer', id: 'dissertation_reviewers_attributes_0_name' }
+      fill_in 'Name', { with: 'reviewer', id: 'dissertation_reviewers_attributes_0_name' }
       fill_in 'ORCID', { with: 'reviewer orcid', id: 'dissertation_reviewers_attributes_0_orcid' }
       select 'Department of Biology', from: 'dissertation_reviewers_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'dissertation_reviewers_attributes_0_other_affiliation' }

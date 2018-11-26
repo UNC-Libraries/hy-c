@@ -21,6 +21,9 @@ module Hyrax
       property :creator_display, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#CreatorDisplay') do |index|
         index.as :stored_searchable
       end
+      property :creator_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#CreatorLabel') do |index|
+        index.as :stored_searchable, :facetable
+      end
       # predicate changed
       property :contributors, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/ctb'), class_name: 'Person'
       property :contributor, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#Contributor') do |index|

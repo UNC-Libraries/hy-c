@@ -58,7 +58,7 @@ RSpec.feature 'Create a DataSet', js: false do
 
       # required fields
       fill_in 'Title', with: 'Test Data Set'
-      fill_in 'Creator', { with: 'Test Default Creator', id: 'data_set_creators_attributes_0_name' }
+      fill_in 'Name', { with: 'Test Default Creator', id: 'data_set_creators_attributes_0_name' }
       fill_in 'ORCID', { with: 'creator orcid', id: 'data_set_creators_attributes_0_orcid' }
       select 'Department of Biology', from: 'data_set_creators_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'data_set_creators_attributes_0_other_affiliation' }
@@ -68,7 +68,7 @@ RSpec.feature 'Create a DataSet', js: false do
       fill_in 'Date of publication', with: '2018-10-03'
 
       # extra fields
-      fill_in 'Contributor', { with: 'contributor', id: 'data_set_contributors_attributes_0_name' }
+      fill_in 'Name', { with: 'contributor', id: 'data_set_contributors_attributes_0_name' }
       fill_in 'ORCID', { with: 'contributor orcid', id: 'data_set_contributors_attributes_0_orcid' }
       select 'Department of Biology', from: 'data_set_contributors_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'data_set_contributors_attributes_0_other_affiliation' }
@@ -79,11 +79,11 @@ RSpec.feature 'Create a DataSet', js: false do
       select 'English', from: 'data_set_language'
       fill_in 'Last modified date', with: '2018-10-03'
       select 'Attribution 3.0 United States', :from => 'data_set_license'
-      fill_in 'Project Director', { with: 'project director', id: 'data_set_project_directors_attributes_0_name' }
+      fill_in 'Name', { with: 'project director', id: 'data_set_project_directors_attributes_0_name' }
       fill_in 'ORCID', { with: 'project director orcid', id: 'data_set_project_directors_attributes_0_orcid' }
       select 'Department of Biology', from: 'data_set_project_directors_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'data_set_project_directors_attributes_0_other_affiliation' }
-      fill_in 'Researcher', { with: 'researcher', id: 'data_set_researchers_attributes_0_name' }
+      fill_in 'Name', { with: 'researcher', id: 'data_set_researchers_attributes_0_name' }
       fill_in 'ORCID', { with: 'researcher orcid', id: 'data_set_researchers_attributes_0_orcid' }
       select 'Department of Biology', from: 'data_set_researchers_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'data_set_researchers_attributes_0_other_affiliation' }
@@ -163,7 +163,7 @@ RSpec.feature 'Create a DataSet', js: false do
 
       # required fields
       fill_in 'Title', with: 'Test Data Set'
-      fill_in 'Creator', { with: 'Test Default Creator', id: 'data_set_creators_attributes_0_name' }
+      fill_in 'Name', { with: 'Test Default Creator', id: 'data_set_creators_attributes_0_name' }
       fill_in 'ORCID', { with: 'creator orcid', id: 'data_set_creators_attributes_0_orcid' }
       select 'Department of Biology', from: 'data_set_creators_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'data_set_creators_attributes_0_other_affiliation' }
@@ -173,7 +173,7 @@ RSpec.feature 'Create a DataSet', js: false do
       fill_in 'Date of publication', with: '2018-10-03'
 
       # extra fields
-      fill_in 'Contributor', { with: 'contributor', id: 'data_set_contributors_attributes_0_name' }
+      fill_in 'Name', { with: 'contributor', id: 'data_set_contributors_attributes_0_name' }
       fill_in 'ORCID', { with: 'contributor orcid', id: 'data_set_contributors_attributes_0_orcid' }
       select 'Department of Biology', from: 'data_set_contributors_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'data_set_contributors_attributes_0_other_affiliation' }
@@ -186,11 +186,11 @@ RSpec.feature 'Create a DataSet', js: false do
       select 'English', from: 'data_set_language'
       fill_in 'Last modified date', with: '2018-10-03'
       select 'Attribution 3.0 United States', :from => 'data_set_license'
-      fill_in 'Project Director', { with: 'project director', id: 'data_set_project_directors_attributes_0_name' }
+      fill_in 'Name', { with: 'project director', id: 'data_set_project_directors_attributes_0_name' }
       fill_in 'ORCID', { with: 'project director orcid', id: 'data_set_project_directors_attributes_0_orcid' }
       select 'Department of Biology', from: 'data_set_project_directors_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'data_set_project_directors_attributes_0_other_affiliation' }
-      fill_in 'Researcher', { with: 'researcher', id: 'data_set_researchers_attributes_0_name' }
+      fill_in 'Name', { with: 'researcher', id: 'data_set_researchers_attributes_0_name' }
       fill_in 'ORCID', { with: 'researcher orcid', id: 'data_set_researchers_attributes_0_orcid' }
       select 'Department of Biology', from: 'data_set_researchers_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'data_set_researchers_attributes_0_other_affiliation' }
