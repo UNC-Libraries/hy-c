@@ -4,7 +4,7 @@
           <% f.object.primary_terms.each do |term| %>
             <%# [hyc-override] adding partial selector for people objects %>
             <% if f.object.person_fields.include? term %>
-              <%= render_edit_field_partial('person', f: f, person_key: (term.to_s+'s').to_sym) %>
+              <%= render_edit_field_partial('person', f: f, person_key: (term.to_s+'s').to_sym, person_term: term.to_s) %>
             <% else %>
               <%= render_edit_field_partial(term, f: f) %>
             <% end %>
@@ -24,7 +24,7 @@
               <% if !(f.object.admin_only_terms.include? term) || current_user.admin? %>
                 <%# [hyc-override] adding partial selector for people objects %>
                 <% if f.object.person_fields.include? term %>
-                  <%= render_edit_field_partial('person', f: f, person_key: (term.to_s+'s').to_sym) %>
+                  <%= render_edit_field_partial('person', f: f, person_key: (term.to_s+'s').to_sym, person_term: term.to_s) %>
                 <% else %>
                   <%= render_edit_field_partial(term, f: f) %>
                 <% end %>
