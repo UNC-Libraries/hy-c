@@ -20,7 +20,7 @@ gem 'uglifier', '~> 3.2.0'
 gem 'coffee-rails', '~> 4.2.2'
 # See https://github.com/rails/execjs#readme for more supported runtimes
 gem 'therubyracer', '~> 0.12.3', platforms: :ruby
-gem 'hyrax', '2.1.0'
+gem 'hyrax', '2.4.1'
 gem 'hydra-editor', '4.0.1'
 gem 'hydra-role-management', '~> 1.0'
 gem 'clamav', '~> 0.4.1'
