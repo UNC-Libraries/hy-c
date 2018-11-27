@@ -151,6 +151,16 @@ en:
           If you have questions about the review process, email <a href=\"mailto:cdr@unc.edu\">cdr@unc.edu</a>.
           Questions about the reviewer comments should be directed to your reviewer.\n\n
           '%{comment}'"
+        deletion_approved:
+          subject: "Requested deletion has been approved"
+          message: "The deletion request for %{title} (<a href=\"%{document_path}\">%{work_id}</a>) was approved by %{user.user_key}. %{comment}"
+        deletion_pending:
+          subject: "Deletion request needs review"
+          message: "A deletion request for %{title} (<a href=\"%{document_path}\">%{work_id}</a>) was made by %{user.user_key} and is
+          awaiting approval with the following comments: %{comment}"
+        deletion_rejected:
+          subject: "Requested deletion was not approved"
+          message: "The deletion request for %{title} (<a href=\"%{document_path}\">%{work_id}</a>) was rejected by %{user.user_key}. %{comment}"
         deposited:
           subject: CDR deposit has been approved
           message: "Hello,\n\n
@@ -167,6 +177,9 @@ en:
            <a href=\"https://blogs.lib.unc.edu/cdr/index.php/frequently-asked-questions\">CDR FAQ</a>.\n\n
 
            %{comment}"
+        review_advanced:
+          message: "%{title} (<a href=\"%{document_path}\">%{work_id}</a>) was advanced in the workflow by
+          %{user.user_key} and is awaiting approval %{comment}"
   simple_form:
     hints:
       defaults:

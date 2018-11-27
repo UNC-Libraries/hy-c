@@ -4,12 +4,12 @@ module Hyrax
       private
 
       def subject
-        'Deletion request needs review'
+        I18n.t('hyrax.notifications.workflow.deletion_pending.subject')
       end
 
       def message
-        "A deletion request for #{title} (#{link_to work_id, document_path}) was made by #{user.user_key} and is "+
-            "awaiting approval with the following comments: #{comment}"
+        I18n.t('hyrax.notifications.workflow.deletion_pending.message', title: title, work_id: work_id,
+               document_path: document_path, user: user, comment: comment)
       end
 
       def users_to_notify
