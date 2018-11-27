@@ -64,6 +64,14 @@ class SolrDocument
     self[Solrizer.solr_name('advisor')]
   end
 
+  def advisor_display
+    self[Solrizer.solr_name('advisor_display')]
+  end
+
+  def advisor_label
+    self[Solrizer.solr_name('advisor_label')]
+  end
+
   def affiliation
     self[Solrizer.solr_name('affiliation')]
   end
@@ -80,6 +88,10 @@ class SolrDocument
     self[Solrizer.solr_name('arranger')]
   end
 
+  def arranger_display
+    self[Solrizer.solr_name('arranger_display')]
+  end
+
   def award
     self[Solrizer.solr_name('award')]
   end
@@ -92,12 +104,28 @@ class SolrDocument
     self[Solrizer.solr_name('composer')]
   end
 
+  def composer_display
+    self[Solrizer.solr_name('composer_display')]
+  end
+
+  def contributor_display
+    self[Solrizer.solr_name('contributor_display')]
+  end
+
   def conference_name
     self[Solrizer.solr_name('conference_name')]
   end
 
   def copyright_date
     self[Solrizer.solr_name('copyright_date')]
+  end
+
+  def creator_display
+    self[Solrizer.solr_name('creator_display')]
+  end
+
+  def creator_label
+    self[Solrizer.solr_name('creator_label')]
   end
 
   def date_issued
@@ -204,8 +232,16 @@ class SolrDocument
     self[Solrizer.solr_name('orcid')]
   end
 
+  def orcid_label
+    self[Solrizer.solr_name('orcid_label')]
+  end
+
   def other_affiliation
     self[Solrizer.solr_name('other_affiliation')]
+  end
+
+  def other_affiliation_label
+    self[Solrizer.solr_name('other_affiliation_label')]
   end
 
   def page_end
@@ -220,12 +256,20 @@ class SolrDocument
     self[Solrizer.solr_name('peer_review_status')]
   end
 
+  def person_label
+    self[Solrizer.solr_name('person_label')]
+  end
+
   def place_of_publication
     self[Solrizer.solr_name('place_of_publication')]
   end
 
   def project_director
     self[Solrizer.solr_name('project_director')]
+  end
+
+  def project_director_display
+    self[Solrizer.solr_name('project_director_display')]
   end
 
   def publisher_version
@@ -236,8 +280,16 @@ class SolrDocument
     self[Solrizer.solr_name('researcher')]
   end
 
+  def researcher_display
+    self[Solrizer.solr_name('researcher_display')]
+  end
+
   def reviewer
     self[Solrizer.solr_name('reviewer')]
+  end
+
+  def reviewer_display
+    self[Solrizer.solr_name('reviewer_display')]
   end
 
   def rights_holder
@@ -268,6 +320,9 @@ class SolrDocument
     self[Solrizer.solr_name('translator')]
   end
 
+  def translator_display
+    self[Solrizer.solr_name('translator_display')]
+  end
   def use
     self[Solrizer.solr_name('use')]
   end

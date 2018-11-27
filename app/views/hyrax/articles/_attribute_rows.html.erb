@@ -1,4 +1,4 @@
-<%= presenter.attribute_to_html(:creator, render_as: :faceted, html_dl: true) %>
+<%= presenter.attribute_to_html(:creator_display, label: 'Creator', render_as: :person, html_dl: true) %>
 <%= presenter.attribute_to_html(:subject, render_as: :faceted, html_dl: true) %>
 <%= presenter.attribute_to_html(:keyword, render_as: :faceted, html_dl: true) %>
 <%= presenter.attribute_to_html(:source, html_dl: true) %>
@@ -8,7 +8,6 @@
 <%= presenter.attribute_to_html(:resource_type, html_dl: true) %>
 <%= presenter.attribute_to_html(:abstract, html_dl: true) %>
 <%= presenter.attribute_to_html(:access, html_dl: true) %>
-<%= presenter.attribute_to_html(:affiliation_label, html_dl: true, label: 'Affiliation') %>
 <%= presenter.attribute_to_html(:bibliographic_citation, html_dl: true) %>
 <%= presenter.attribute_to_html(:copyright_date, render_as: :date, html_dl: true) %>
 <%= presenter.attribute_to_html(:date_created, render_as: :date, html_dl: true, label: "Date created") %>
@@ -27,8 +26,6 @@
 <%= presenter.attribute_to_html(:journal_volume, html_dl: true) %>
 <%= presenter.attribute_to_html(:journal_issue, html_dl: true) %>
 <%= presenter.attribute_to_html(:note, html_dl: true) %>
-<%= presenter.attribute_to_html(:orcid, html_dl: true, label: "ORCID") %>
-<%= presenter.attribute_to_html(:other_affiliation, html_dl: true, label: "Additional affiliation") %>
 <%= presenter.attribute_to_html(:page_end, html_dl: true) %>
 <%= presenter.attribute_to_html(:page_start, html_dl: true) %>
 <%= presenter.attribute_to_html(:peer_review_status, html_dl: true, label: "Is the article or chapter peer-reviewed?") %>
@@ -37,5 +34,5 @@
 <%= presenter.attribute_to_html(:related_url, html_dl: true, label: "Related resource URL") %>
 <%= presenter.attribute_to_html(:rights_holder, html_dl: true) %>
 <%= presenter.attribute_to_html(:table_of_contents, html_dl: true) %>
-<%= presenter.attribute_to_html(:translator, html_dl: true) %>
+<%= presenter.attribute_to_html(:translator_display, label: 'Translator', render_as: :person, html_dl: true) %>
 <%= presenter.attribute_to_html(:use, html_dl: true) %>

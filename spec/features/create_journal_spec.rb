@@ -64,7 +64,10 @@ RSpec.feature 'Create a Journal', js: false do
       # extra fields
       fill_in 'Abstract', with: 'an abstract'
       fill_in 'Alternate title', with: 'another title'
-      fill_in 'Creator', with: 'Test Default Creator'
+      fill_in 'Name', { with: 'Test Default Creator', id: 'journal_creators_attributes_0_name' }
+      fill_in 'ORCID', { with: 'creator orcid', id: 'journal_creators_attributes_0_orcid' }
+      select 'Department of Biology', from: 'journal_creators_attributes_0_affiliation'
+      fill_in 'Additional affiliation', { with: 'UNC', id: 'journal_creators_attributes_0_other_affiliation' }
       fill_in 'DOI', with: 'some doi'
       fill_in 'Extent', with: 'some extent'
       fill_in 'Location', with: 'some geographic subject'
@@ -105,7 +108,7 @@ RSpec.feature 'Create a Journal', js: false do
       first('.document-title', text: 'Test Journal').click
       expect(page).to have_content 'Abstract an abstract'
       expect(page).to have_content 'Alternate title another title'
-      expect(page).to have_content 'Creator Test Default Creator'
+      expect(page).to have_content 'Creator Test Default Creator ORCID: creator orcid Affiliation: College of Arts and Sciences, Department of Biology Other Affiliation: UNC'
       expect(page).to have_content 'Date of publication October 3, 2018'
       expect(page).to have_content 'DOI some doi'
       expect(page).to have_content 'Extent some extent'
@@ -148,7 +151,10 @@ RSpec.feature 'Create a Journal', js: false do
       # extra fields
       fill_in 'Abstract', with: 'an abstract'
       fill_in 'Alternate title', with: 'another title'
-      fill_in 'Creator', with: 'Test Default Creator'
+      fill_in 'Name', { with: 'Test Default Creator', id: 'journal_creators_attributes_0_name' }
+      fill_in 'ORCID', { with: 'creator orcid', id: 'journal_creators_attributes_0_orcid' }
+      select 'Department of Biology', from: 'journal_creators_attributes_0_affiliation'
+      fill_in 'Additional affiliation', { with: 'UNC', id: 'journal_creators_attributes_0_other_affiliation' }
       fill_in 'DOI', with: 'some doi'
       fill_in 'Extent', with: 'some extent'
       fill_in 'Location', with: 'some geographic subject'
@@ -192,7 +198,7 @@ RSpec.feature 'Create a Journal', js: false do
       first('.document-title', text: 'Test Journal').click
       expect(page).to have_content 'Abstract an abstract'
       expect(page).to have_content 'Alternate title another title'
-      expect(page).to have_content 'Creator Test Default Creator'
+      expect(page).to have_content 'Creator Test Default Creator ORCID: creator orcid Affiliation: College of Arts and Sciences, Department of Biology Other Affiliation: UNC'
       expect(page).to have_content 'Date of publication October 3, 2018'
       expect(page).to have_content 'DOI some doi'
       expect(page).to have_content 'Extent some extent'

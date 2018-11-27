@@ -59,9 +59,14 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       # required fields
       fill_in 'Title', with: 'Test HonorsThesis work'
       fill_in 'Abstract', with: 'an abstract'
-      fill_in 'Advisor', with: 'an advisor'
-      select 'Department of Biology', from: 'honors_thesis_affiliation'
-      fill_in 'Creator', with: 'Test Default Creator'
+      fill_in 'Name', { with: 'advisor', id: 'honors_thesis_advisors_attributes_0_name' }
+      fill_in 'ORCID', { with: 'advisor orcid', id: 'honors_thesis_advisors_attributes_0_orcid' }
+      select 'Department of Biology', from: 'honors_thesis_advisors_attributes_0_affiliation'
+      fill_in 'Additional affiliation', { with: 'UNC', id: 'honors_thesis_advisors_attributes_0_other_affiliation' }
+      fill_in 'Name', { with: 'Test Default Creator', id: 'honors_thesis_creators_attributes_0_name' }
+      fill_in 'ORCID', { with: 'creator orcid', id: 'honors_thesis_creators_attributes_0_orcid' }
+      select 'Department of Biology', from: 'honors_thesis_creators_attributes_0_affiliation'
+      fill_in 'Additional affiliation', { with: 'UNC', id: 'honors_thesis_creators_attributes_0_other_affiliation' }
       fill_in 'Date of publication', with: '2018-10-03'
       select 'Honors', from: 'Honors level'
       select 'Bachelor of Science', from: 'honors_thesis_degree'
@@ -77,7 +82,6 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       select 'English', from: 'honors_thesis_language'
       select 'Attribution 3.0 United States', :from => 'honors_thesis_license'
       fill_in 'Note', with: 'a note'
-      fill_in 'ORCID', with: 'an orcid'
       select 'Honors Thesis', from: 'honors_thesis_resource_type'
       fill_in 'Related resource URL', with: 'something.com'
       select 'In Copyright', :from => 'honors_thesis_rights_statement'
@@ -113,12 +117,9 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       first('.document-title', text: 'Test HonorsThesis work').click
       expect(page).to have_content 'Abstract an abstract'
       expect(page).to have_content 'Academic concentration Clinical Nutrition'
-      expect(page).to have_content 'Advisor an advisor'
-      expect(page).to have_content 'Affiliation'
-      expect(page).to have_content 'College of Arts and Sciences'
-      expect(page).to have_content 'Department of Biology'
+      expect(page).to have_content 'Advisor advisor ORCID: advisor orcid Affiliation: College of Arts and Sciences, Department of Biology Other Affiliation: UNC'
       expect(page).to have_content 'Honors level Honors'
-      expect(page).to have_content 'Creator Test Default Creator'
+      expect(page).to have_content 'Creator Test Default Creator ORCID: creator orcid Affiliation: College of Arts and Sciences, Department of Biology Other Affiliation: UNC'
       expect(page).to have_content 'Date of publication October 3, 2018'
       expect(page).to have_content 'Date created October 3, 2018'
       expect(page).to have_content 'Degree Bachelor of Science'
@@ -130,7 +131,6 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       expect(page).to have_content 'Language English'
       expect(page).to have_content 'License Attribution 3.0 United States'
       expect(page).to have_content 'Note a note'
-      expect(page).to have_content 'ORCID an orcid'
       expect(page).to have_content 'Resource type Honors Thesis'
       expect(page).to have_content 'Related resource URL something.com'
       expect(page).to have_content 'Rights statement In Copyright'
@@ -156,11 +156,16 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       # required fields
       fill_in 'Title', with: 'Test HonorsThesis work'
       fill_in 'Abstract', with: 'an abstract'
-      fill_in 'Advisor', with: 'an advisor'
-      select 'Department of Biology', from: 'honors_thesis_affiliation'
-      fill_in 'Creator', with: 'Test Default Creator'
+      fill_in 'Name', { with: 'advisor', id: 'honors_thesis_advisors_attributes_0_name' }
+      fill_in 'ORCID', { with: 'advisor orcid', id: 'honors_thesis_advisors_attributes_0_orcid' }
+      select 'Department of Biology', from: 'honors_thesis_advisors_attributes_0_affiliation'
+      fill_in 'Additional affiliation', { with: 'UNC', id: 'honors_thesis_advisors_attributes_0_other_affiliation' }
+      fill_in 'Name', { with: 'Test Default Creator', id: 'honors_thesis_creators_attributes_0_name' }
+      fill_in 'ORCID', { with: 'creator orcid', id: 'honors_thesis_creators_attributes_0_orcid' }
+      select 'Department of Biology', from: 'honors_thesis_creators_attributes_0_affiliation'
+      fill_in 'Additional affiliation', { with: 'UNC', id: 'honors_thesis_creators_attributes_0_other_affiliation' }
       fill_in 'Date of publication', with: '2018-10-03'
-      select 'Highest Honors', :from => 'honors_thesis_award'
+      select 'Honors', from: 'Honors level'
       select 'Bachelor of Science', from: 'honors_thesis_degree'
       fill_in 'Degree granting institution', with: 'UNC'
       fill_in 'Graduation year', with: '2018'
@@ -176,7 +181,6 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       select 'English', from: 'honors_thesis_language'
       select 'Attribution 3.0 United States', :from => 'honors_thesis_license'
       fill_in 'Note', with: 'a note'
-      fill_in 'ORCID', with: 'an orcid'
       select 'Honors Thesis', from: 'honors_thesis_resource_type'
       fill_in 'Related resource URL', with: 'something.com'
       select 'In Copyright', :from => 'honors_thesis_rights_statement'
@@ -213,18 +217,13 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       first('.document-title', text: 'Test HonorsThesis work').click
       expect(page).to have_content 'Abstract an abstract'
       expect(page).to have_content 'Academic concentration Clinical Nutrition'
-      expect(page).to have_content 'Access some access'
-      expect(page).to have_content 'Advisor an advisor'
-      expect(page).to have_content 'Affiliation'
-      expect(page).to have_content 'College of Arts and Sciences'
-      expect(page).to have_content 'Department of Biology'
-      expect(page).to have_content 'Honors level Highest Honors'
-      expect(page).to have_content 'Creator Test Default Creator'
+      expect(page).to have_content 'Advisor advisor ORCID: advisor orcid Affiliation: College of Arts and Sciences, Department of Biology Other Affiliation: UNC'
+      expect(page).to have_content 'Honors level Honors'
+      expect(page).to have_content 'Creator Test Default Creator ORCID: creator orcid Affiliation: College of Arts and Sciences, Department of Biology Other Affiliation: UNC'
       expect(page).to have_content 'Date of publication October 3, 2018'
       expect(page).to have_content 'Date created October 3, 2018'
       expect(page).to have_content 'Degree Bachelor of Science'
       expect(page).to have_content 'Degree granting institution UNC'
-      expect(page).to have_content 'DOI some doi'
       expect(page).to have_content 'Extent some extent'
       expect(page).to have_content 'Location some geographic subject'
       expect(page).to have_content 'Graduation year 2018'
@@ -232,7 +231,6 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       expect(page).to have_content 'Language English'
       expect(page).to have_content 'License Attribution 3.0 United States'
       expect(page).to have_content 'Note a note'
-      expect(page).to have_content 'ORCID an orcid'
       expect(page).to have_content 'Resource type Honors Thesis'
       expect(page).to have_content 'Related resource URL something.com'
       expect(page).to have_content 'Rights statement In Copyright'

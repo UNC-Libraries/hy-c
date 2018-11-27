@@ -23,10 +23,10 @@ RSpec.describe Hyrax::MastersPaperForm do
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:academic_concentration, :access, :affiliation, :affiliation_label,
-                                     :dcmi_type, :doi, :extent, :geographic_subject, :note, :orcid, :reviewer, :use,
-                                     :keyword, :subject, :language, :rights_statement, :license, :language_label,
-                                     :license_label, :rights_statement_label] }
+    it { is_expected.to match_array [:academic_concentration, :access, :dcmi_type, :doi, :extent, 
+                                     :geographic_subject, :note, :reviewer, :use, :keyword, :subject, :language, 
+                                     :rights_statement, :license, :language_label, :license_label, 
+                                     :rights_statement_label] }
   end
   
   describe "#admin_only_terms" do
@@ -50,7 +50,10 @@ RSpec.describe Hyrax::MastersPaperForm do
     let(:params) do
       ActionController::Parameters.new(
           title: 'foo', # single-valued
-          creator: ['a creator'],
+          creators_attributes: { '0' => { name: 'creator',
+                                          orcid: 'creator orcid',
+                                          affiliation: 'Carolina Center for Genome Sciences',
+                                          other_affiliation: 'another affiliation'} },
           subject: ['a subject'],
           language: ['http://id.loc.gov/vocabulary/iso639-2/eng'],
           license: 'http://creativecommons.org/licenses/by/3.0/us/', # single-valued
@@ -65,9 +68,10 @@ RSpec.describe Hyrax::MastersPaperForm do
           abstract: [''],
           academic_concentration: ['a concentration'],
           access: 'public', # single-valued
-          advisor: ['an advisor'],
-          affiliation: ['Carolina Center for Genome Sciences', ''],
-          affiliation_label: ['School of Medicine', 'Carolina Center for Genome Sciences'],
+          advisors_attributes: { '0' => { name: 'advisor',
+                                          orcid: 'advisor orcid',
+                                          affiliation: 'Carolina Center for Genome Sciences',
+                                          other_affiliation: 'another affiliation'} },
           date_issued: 'a date', # single-valued
           dcmi_type: ['type'],
           degree: 'MS', # single-valued
@@ -77,8 +81,10 @@ RSpec.describe Hyrax::MastersPaperForm do
           geographic_subject: ['a geographic subject'],
           graduation_year: '2017',
           note: ['a note'],
-          orcid: ['an orcid'],
-          reviewer: ['a reviewer'],
+          reviewers_attributes: { '0' => { name: 'reviewer',
+                                          orcid: 'reviewer orcid',
+                                          affiliation: 'Carolina Center for Genome Sciences',
+                                          other_affiliation: 'another affiliation'} },
           use: ['a use'],
           language_label: [],
           license_label: [],
@@ -90,7 +96,7 @@ RSpec.describe Hyrax::MastersPaperForm do
 
     it 'permits parameters' do
       expect(subject['title']).to eq ['foo']
-      expect(subject['creator']).to eq ['a creator']
+      expect(subject['creator_display']).to eq ['creator||ORCID: creator orcid||Affiliation: School of Medicine, Carolina Center for Genome Sciences||Other Affiliation: another affiliation']
       expect(subject['subject']).to eq ['a subject']
       expect(subject['language']).to eq ['http://id.loc.gov/vocabulary/iso639-2/eng']
       expect(subject['license']).to eq ['http://creativecommons.org/licenses/by/3.0/us/']
@@ -103,8 +109,7 @@ RSpec.describe Hyrax::MastersPaperForm do
       expect(subject['abstract']).to be_empty
       expect(subject['academic_concentration']).to eq ['a concentration']
       expect(subject['access']).to eq 'public'
-      expect(subject['advisor']).to eq ['an advisor']
-      expect(subject['affiliation']).to eq ['Carolina Center for Genome Sciences']
+      expect(subject['advisor_display']).to eq ['advisor||ORCID: advisor orcid||Affiliation: School of Medicine, Carolina Center for Genome Sciences||Other Affiliation: another affiliation']
       expect(subject['affiliation_label']).to eq ['School of Medicine', 'Carolina Center for Genome Sciences']
       expect(subject['date_issued']).to eq 'a date'
       expect(subject['degree']).to eq 'MS'
@@ -115,8 +120,10 @@ RSpec.describe Hyrax::MastersPaperForm do
       expect(subject['geographic_subject']).to eq ['a geographic subject']
       expect(subject['graduation_year']).to eq '2017'
       expect(subject['note']).to eq ['a note']
-      expect(subject['orcid']).to eq ['an orcid']
-      expect(subject['reviewer']).to eq ['a reviewer']
+      expect(subject['orcid_label']).to match_array ['creator orcid', 'advisor orcid', 'reviewer orcid']
+      expect(subject['other_affiliation_label']).to match_array ['another affiliation']
+      expect(subject['person_label']).to match_array ['creator', 'advisor', 'reviewer']
+      expect(subject['reviewer_display']).to eq ['reviewer||ORCID: reviewer orcid||Affiliation: School of Medicine, Carolina Center for Genome Sciences||Other Affiliation: another affiliation']
       expect(subject['use']).to eq ['a use']
       expect(subject['language_label']).to eq ['English']
       expect(subject['license_label']).to eq ['Attribution 3.0 United States']

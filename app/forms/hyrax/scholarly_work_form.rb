@@ -6,8 +6,8 @@ module Hyrax
 
     self.model_class = ::ScholarlyWork
 
-    self.terms += [:resource_type, :abstract, :advisor, :affiliation, :affiliation_label, :conference_name,
-                   :date_issued, :dcmi_type, :doi, :geographic_subject, :orcid, :other_affiliation]
+    self.terms += [:resource_type, :abstract, :advisor, :conference_name, :date_issued, :dcmi_type, :doi,
+                   :geographic_subject]
 
     self.terms -= [:contributor, :publisher, :identifier, :based_near, :related_url, :source]
 
@@ -27,6 +27,27 @@ module Hyrax
 
     def license
       super.first || ""
+    end
+
+
+    delegate :advisors_attributes=, to: :model
+    delegate :creators_attributes=, to: :model
+
+    def advisors
+      model.advisors.build if model.advisors.blank?
+      model.advisors.to_a
+    end
+
+    def creators
+      model.creators.build if model.creators.blank?
+      model.creators.to_a
+    end
+
+    def self.build_permitted_params
+      permitted = super
+      permitted << { advisors_attributes: [:id, :name, :affiliation, :orcid, :other_affiliation, :_destroy] }
+      permitted << { creators_attributes: [:id, :name, :affiliation, :orcid, :other_affiliation, :_destroy] }
+      permitted
     end
   end
 end

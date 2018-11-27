@@ -2,7 +2,12 @@
 <%# [hyc-override] Overriding display of file img/video metadata. Move to bottom of page %>
         <div class="base-terms">
           <% f.object.primary_terms.each do |term| %>
-            <%= render_edit_field_partial(term, f: f) %>
+            <%# [hyc-override] adding partial selector for people objects %>
+            <% if f.object.person_fields.include? term %>
+              <%= render_edit_field_partial('person', f: f, person_key: (term.to_s+'s').to_sym, person_term: term.to_s) %>
+            <% else %>
+              <%= render_edit_field_partial(term, f: f) %>
+            <% end %>
           <% end %>
         </div>
         <% if f.object.display_additional_fields? %>
@@ -17,7 +22,12 @@
           <div id="extended-terms" class='collapse in' aria-expanded="true">
             <% f.object.secondary_terms.each do |term| %>
               <% if !(f.object.admin_only_terms.include? term) || current_user.admin? %>
-                <%= render_edit_field_partial(term, f: f) %>
+                <%# [hyc-override] adding partial selector for people objects %>
+                <% if f.object.person_fields.include? term %>
+                  <%= render_edit_field_partial('person', f: f, person_key: (term.to_s+'s').to_sym, person_term: term.to_s) %>
+                <% else %>
+                  <%= render_edit_field_partial(term, f: f) %>
+                <% end %>
               <% end %>
             <% end %>
             <%# [hyc-override] Overriding display of file img/video metadata. Move to bottom of page %>

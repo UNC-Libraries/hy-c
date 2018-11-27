@@ -87,9 +87,15 @@ RSpec.feature 'Create a MastersPaper', js: false do
       
       # required fields
       fill_in 'Title', with: 'Test MastersPaper work'
-      fill_in 'Creator', with: 'Test Default Creator'
+      fill_in 'Name', { with: 'Test Default Creator', id: 'masters_paper_creators_attributes_0_name' }
+      fill_in 'ORCID', { with: 'creator orcid', id: 'masters_paper_creators_attributes_0_orcid' }
+      select 'Department of Biology', from: 'masters_paper_creators_attributes_0_affiliation'
+      fill_in 'Additional affiliation', { with: 'UNC', id: 'masters_paper_creators_attributes_0_other_affiliation' }
       fill_in 'Abstract', with: 'an abstract'
-      fill_in 'Advisor', with: 'an advisor'
+      fill_in 'Name', { with: 'advisor', id: 'masters_paper_advisors_attributes_0_name' }
+      fill_in 'ORCID', { with: 'advisor orcid', id: 'masters_paper_advisors_attributes_0_orcid' }
+      select 'Department of Biology', from: 'masters_paper_advisors_attributes_0_affiliation'
+      fill_in 'Additional affiliation', { with: 'UNC', id: 'masters_paper_advisors_attributes_0_other_affiliation' }
       fill_in 'Date of publication', with: '2018-10-03'
       select 'Master of Science', from: 'masters_paper_degree'
       fill_in 'Degree granting institution', with: 'UNC'
@@ -103,8 +109,10 @@ RSpec.feature 'Create a MastersPaper', js: false do
       select 'English', from: 'masters_paper_language'
       select 'Attribution 3.0 United States', :from => 'masters_paper_license'
       fill_in 'Note', with: 'a note'
-      fill_in 'ORCID', with: 'an orcid'
-      fill_in 'Reviewer', with: 'a reviewer'
+      fill_in 'Name', { with: 'reviewer', id: 'masters_paper_reviewers_attributes_0_name' }
+      fill_in 'ORCID', { with: 'reviewer orcid', id: 'masters_paper_reviewers_attributes_0_orcid' }
+      select 'Department of Biology', from: 'masters_paper_reviewers_attributes_0_affiliation'
+      fill_in 'Additional affiliation', { with: 'UNC', id: 'masters_paper_reviewers_attributes_0_other_affiliation' }
       select 'In Copyright', :from => 'masters_paper_rights_statement'
       fill_in 'Subject', with: 'test'
 
@@ -140,11 +148,8 @@ RSpec.feature 'Create a MastersPaper', js: false do
       first('.document-title', text: 'Test MastersPaper work').click
       expect(page).to have_content 'Abstract an abstract'
       expect(page).to have_content 'Academic concentration Clinical Nutrition'
-      expect(page).to have_content 'Advisor an advisor'
-      expect(page).to have_content 'Affiliation'
-      expect(page).to have_content 'College of Arts and Sciences'
-      expect(page).to have_content 'Department of City and Regional Planning'
-      expect(page).to have_content 'Creator Test Default Creator'
+      expect(page).to have_content 'Advisor advisor ORCID: advisor orcid Affiliation: College of Arts and Sciences, Department of Biology Other Affiliation: UNC'
+      expect(page).to have_content 'Creator Test Default Creator ORCID: creator orcid Affiliation: College of Arts and Sciences, Department of Biology Other Affiliation: UNC'
       expect(page).to have_content 'Date of publication October 3, 2018'
       expect(page).to have_content 'Degree Master of Science'
       expect(page).to have_content 'Degree granting institution UNC'
@@ -154,9 +159,8 @@ RSpec.feature 'Create a MastersPaper', js: false do
       expect(page).to have_content 'Language English'
       expect(page).to have_content 'License Attribution 3.0 United States'
       expect(page).to have_content 'Note a note'
-      expect(page).to have_content 'ORCID an orcid'
       expect(page).to have_content 'Resource type Masters Paper'
-      expect(page).to have_content 'Reviewer a reviewer'
+      expect(page).to have_content 'Reviewer reviewer ORCID: reviewer orcid Affiliation: College of Arts and Sciences, Department of Biology Other Affiliation: UNC'
       expect(page).to have_content 'Rights statement In Copyright'
       expect(page).to have_content 'Subject test'
       expect(page).to_not have_content 'Language http://id.loc.gov/vocabulary/iso639-2/eng'
@@ -184,9 +188,15 @@ RSpec.feature 'Create a MastersPaper', js: false do
 
       # required fields
       fill_in 'Title', with: 'Test MastersPaper work'
-      fill_in 'Creator', with: 'Test Default Creator'
+      fill_in 'Name', { with: 'Test Default Creator', id: 'masters_paper_creators_attributes_0_name' }
+      fill_in 'ORCID', { with: 'creator orcid', id: 'masters_paper_creators_attributes_0_orcid' }
+      select 'Department of Biology', from: 'masters_paper_creators_attributes_0_affiliation'
+      fill_in 'Additional affiliation', { with: 'UNC', id: 'masters_paper_creators_attributes_0_other_affiliation' }
       fill_in 'Abstract', with: 'an abstract'
-      fill_in 'Advisor', with: 'an advisor'
+      fill_in 'Name', { with: 'advisor', id: 'masters_paper_advisors_attributes_0_name' }
+      fill_in 'ORCID', { with: 'advisor orcid', id: 'masters_paper_advisors_attributes_0_orcid' }
+      select 'Department of Biology', from: 'masters_paper_advisors_attributes_0_affiliation'
+      fill_in 'Additional affiliation', { with: 'UNC', id: 'masters_paper_advisors_attributes_0_other_affiliation' }
       fill_in 'Date of publication', with: '2018-10-03'
       select 'Master of Science', from: 'masters_paper_degree'
       fill_in 'Degree granting institution', with: 'UNC'
@@ -203,8 +213,10 @@ RSpec.feature 'Create a MastersPaper', js: false do
       select 'English', from: 'masters_paper_language'
       select 'Attribution 3.0 United States', :from => 'masters_paper_license'
       fill_in 'Note', with: 'a note'
-      fill_in 'ORCID', with: 'an orcid'
-      fill_in 'Reviewer', with: 'a reviewer'
+      fill_in 'Name', { with: 'reviewer', id: 'masters_paper_reviewers_attributes_0_name' }
+      fill_in 'ORCID', { with: 'reviewer orcid', id: 'masters_paper_reviewers_attributes_0_orcid' }
+      select 'Department of Biology', from: 'masters_paper_reviewers_attributes_0_affiliation'
+      fill_in 'Additional affiliation', { with: 'UNC', id: 'masters_paper_reviewers_attributes_0_other_affiliation' }
       select 'In Copyright', :from => 'masters_paper_rights_statement'
       fill_in 'Subject', with: 'test'
       fill_in 'Use', with: 'some use'
@@ -240,12 +252,8 @@ RSpec.feature 'Create a MastersPaper', js: false do
       expect(page).to have_content 'Abstract an abstract'
       expect(page).to have_content 'Academic concentration Clinical Nutrition'
       expect(page).to have_content 'Access some access'
-      expect(page).to have_content 'Advisor an advisor'
-      expect(page).to have_content 'Affiliation'
-      expect(page).to have_content 'College of Arts and Sciences'
-      expect(page).to have_content 'Department of Art'
-      expect(page).to have_content 'Studio Art Program'
-      expect(page).to have_content 'Creator Test Default Creator'
+      expect(page).to have_content 'Advisor advisor ORCID: advisor orcid Affiliation: College of Arts and Sciences, Department of Biology Other Affiliation: UNC'
+      expect(page).to have_content 'Creator Test Default Creator ORCID: creator orcid Affiliation: College of Arts and Sciences, Department of Biology Other Affiliation: UNC'
       expect(page).to have_content 'Date of publication October 3, 2018'
       expect(page).to have_content 'Degree Master of Science'
       expect(page).to have_content 'Degree granting institution UNC'
@@ -257,9 +265,8 @@ RSpec.feature 'Create a MastersPaper', js: false do
       expect(page).to have_content 'Language English'
       expect(page).to have_content 'License Attribution 3.0 United States'
       expect(page).to have_content 'Note a note'
-      expect(page).to have_content 'ORCID an orcid'
       expect(page).to have_content 'Resource type Masters Paper'
-      expect(page).to have_content 'Reviewer a reviewer'
+      expect(page).to have_content 'Reviewer reviewer ORCID: reviewer orcid Affiliation: College of Arts and Sciences, Department of Biology Other Affiliation: UNC'
       expect(page).to have_content 'Rights statement In Copyright'
       expect(page).to have_content 'Subject test'
       expect(page).to have_content 'Use some use'

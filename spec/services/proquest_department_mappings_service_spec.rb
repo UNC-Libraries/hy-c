@@ -18,4 +18,3 @@ RSpec.describe Hyrax::ProquestDepartmentMappingsService do
     end
   end
 end
-

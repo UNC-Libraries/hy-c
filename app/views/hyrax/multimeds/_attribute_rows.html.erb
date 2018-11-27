@@ -1,5 +1,5 @@
 <%= presenter.attribute_to_html(:date_modified, label: 'Last Modified', render_as: :date, html_dl: true) %>
-<%= presenter.attribute_to_html(:creator, render_as: :faceted, html_dl: true) %>
+<%= presenter.attribute_to_html(:creator_display, label: 'Creator', render_as: :person, html_dl: true) %>
 <%= presenter.attribute_to_html(:subject, render_as: :faceted, html_dl: true) %>
 <%= presenter.attribute_to_html(:language_label, label: 'Language', render_as: :faceted, html_dl: true) %>
 <%= presenter.attribute_to_html(:keyword, render_as: :faceted, html_dl: true) %>
@@ -16,4 +16,3 @@
 <%= presenter.attribute_to_html(:geographic_subject, html_dl: true, label: "Location") %>
 <%= presenter.attribute_to_html(:medium, html_dl: true) %>
 <%= presenter.attribute_to_html(:note, html_dl: true) %>
-<%= presenter.attribute_to_html(:orcid, html_dl: true, label: "ORCID") %>

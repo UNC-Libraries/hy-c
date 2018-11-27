@@ -18,6 +18,10 @@ class Journal < ActiveFedora::Base
     index.as :stored_searchable
   end
 
+  property :affiliation_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#AffiliationLabel') do |index|
+    index.as :stored_searchable, :facetable
+  end
+
   property :date_issued, predicate: ::RDF::Vocab::DC.issued, multiple: false do |index|
     index.as :stored_searchable, :facetable
   end
@@ -63,6 +67,14 @@ class Journal < ActiveFedora::Base
     index.as :stored_searchable
   end
 
+  property :orcid_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#OrcidLabel') do |index|
+    index.as :stored_searchable
+  end
+
+  property :other_affiliation_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#OtherAffiliationLabel') do |index|
+    index.as :stored_searchable
+  end
+
   property :place_of_publication, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/pup') do |index|
     index.as :stored_searchable
   end
@@ -79,4 +91,9 @@ class Journal < ActiveFedora::Base
   # schema (by adding accepts_nested_attributes)
   include ::Hyrax::BasicMetadata
 
+  # accepts_nested_attributes_for can not be called until all
+  # the properties are declared because it calls resource_class,
+  # which finalizes the property declarations.
+  # See https://github.com/projecthydra/active_fedora/issues/847
+  accepts_nested_attributes_for :creators, allow_destroy: true, reject_if: proc { |attributes| attributes['name'].blank? }
 end

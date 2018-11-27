@@ -58,15 +58,20 @@ RSpec.feature 'Create a DataSet', js: false do
 
       # required fields
       fill_in 'Title', with: 'Test Data Set'
-      fill_in 'Creator', with: 'Test Default Creator'
+      fill_in 'Name', { with: 'Test Default Creator', id: 'data_set_creators_attributes_0_name' }
+      fill_in 'ORCID', { with: 'creator orcid', id: 'data_set_creators_attributes_0_orcid' }
+      select 'Department of Biology', from: 'data_set_creators_attributes_0_affiliation'
+      fill_in 'Additional affiliation', { with: 'UNC', id: 'data_set_creators_attributes_0_other_affiliation' }
       select 'Text', from: 'data_set_kind_of_data'
       select 'Dataset', from: 'data_set_resource_type'
       fill_in 'Abstract', with: 'some abstract'
       fill_in 'Date of publication', with: '2018-10-03'
 
       # extra fields
-      select 'Department of Biology', from: 'data_set_affiliation'
-      fill_in 'Contributor', with: 'a contributor'
+      fill_in 'Name', { with: 'contributor', id: 'data_set_contributors_attributes_0_name' }
+      fill_in 'ORCID', { with: 'contributor orcid', id: 'data_set_contributors_attributes_0_orcid' }
+      select 'Department of Biology', from: 'data_set_contributors_attributes_0_affiliation'
+      fill_in 'Additional affiliation', { with: 'UNC', id: 'data_set_contributors_attributes_0_other_affiliation' }
       fill_in 'Description', with: 'a description'
       fill_in 'Funder', with: 'some funder'
       fill_in 'Location', with: 'some geographic subject'
@@ -74,10 +79,14 @@ RSpec.feature 'Create a DataSet', js: false do
       select 'English', from: 'data_set_language'
       fill_in 'Last modified date', with: '2018-10-03'
       select 'Attribution 3.0 United States', :from => 'data_set_license'
-      fill_in 'Project director', with: 'a director'
-      fill_in 'ORCID', with: 'an orcid'
-      fill_in 'Additional affiliation', with: 'another affiliation'
-      fill_in 'Researcher', with: 'a researcher'
+      fill_in 'Name', { with: 'project director', id: 'data_set_project_directors_attributes_0_name' }
+      fill_in 'ORCID', { with: 'project director orcid', id: 'data_set_project_directors_attributes_0_orcid' }
+      select 'Department of Biology', from: 'data_set_project_directors_attributes_0_affiliation'
+      fill_in 'Additional affiliation', { with: 'UNC', id: 'data_set_project_directors_attributes_0_other_affiliation' }
+      fill_in 'Name', { with: 'researcher', id: 'data_set_researchers_attributes_0_name' }
+      fill_in 'ORCID', { with: 'researcher orcid', id: 'data_set_researchers_attributes_0_orcid' }
+      select 'Department of Biology', from: 'data_set_researchers_attributes_0_affiliation'
+      fill_in 'Additional affiliation', { with: 'UNC', id: 'data_set_researchers_attributes_0_other_affiliation' }
       fill_in 'Rights holder', with: 'an author'
       fill_in 'Related resource URL', with: 'something.com'
       select 'In Copyright', :from => 'data_set_rights_statement'
@@ -115,7 +124,7 @@ RSpec.feature 'Create a DataSet', js: false do
 
       first('.document-title', text: 'Test Data Set').click
       expect(page).to have_content 'Test Default Keyword'
-      expect(page).to have_content 'Creator Test Default Creator'
+      expect(page).to have_content 'Creator Test Default Creator ORCID: creator orcid Affiliation: College of Arts and Sciences, Department of Biology Other Affiliation: UNC'
       expect(page).to have_content 'Abstract some abstract'
       expect(page).to have_content 'Date of publication October 3, 2018'
       expect(page).to have_content 'Kind of data Text'
@@ -124,18 +133,13 @@ RSpec.feature 'Create a DataSet', js: false do
       expect(page).to have_content 'Language English'
       expect(page).to have_content 'Related resource URL something.com'
       expect(page).to have_content 'Resource type Dataset'
-      expect(page).to have_content 'Affiliation'
-      expect(page).to have_content 'College of Arts and Sciences'
-      expect(page).to have_content 'Department of Biology'
-      expect(page).to have_content 'Contributors a contributor'
+      expect(page).to have_content 'Contributor contributor ORCID: contributor orcid Affiliation: College of Arts and Sciences, Department of Biology Other Affiliation: UNC'
       expect(page).to have_content 'Description a description'
       expect(page).to have_content 'Funder some funder'
       expect(page).to have_content 'Location some geographic subject'
       expect(page).to have_content 'Last modified date October 3, 2018'
-      expect(page).to have_content 'Project director a director'
-      expect(page).to have_content 'ORCID an orcid'
-      expect(page).to have_content 'Additional affiliation another affiliation'
-      expect(page).to have_content 'Researcher a researcher'
+      expect(page).to have_content 'Project director project director ORCID: project director orcid Affiliation: College of Arts and Sciences, Department of Biology Other Affiliation: UNC'
+      expect(page).to have_content 'Researcher researcher ORCID: researcher orcid Affiliation: College of Arts and Sciences, Department of Biology Other Affiliation: UNC'
       expect(page).to have_content 'Rights holder an author'
       expect(page).to have_content 'Sponsor a sponsor'
       expect(page).to have_content 'Subject test'
@@ -159,16 +163,20 @@ RSpec.feature 'Create a DataSet', js: false do
 
       # required fields
       fill_in 'Title', with: 'Test Data Set'
-      fill_in 'Creator', with: 'Test Default Creator'
+      fill_in 'Name', { with: 'Test Default Creator', id: 'data_set_creators_attributes_0_name' }
+      fill_in 'ORCID', { with: 'creator orcid', id: 'data_set_creators_attributes_0_orcid' }
+      select 'Department of Biology', from: 'data_set_creators_attributes_0_affiliation'
+      fill_in 'Additional affiliation', { with: 'UNC', id: 'data_set_creators_attributes_0_other_affiliation' }
       select 'Text', from: 'data_set_kind_of_data'
       select 'Dataset', from: 'data_set_resource_type'
       fill_in 'Abstract', with: 'some abstract'
       fill_in 'Date of publication', with: '2018-10-03'
 
       # extra fields
-      select 'Department of Biology', from: 'data_set_affiliation'
-      fill_in 'Contributor', with: 'a contributor'
-      fill_in 'Date created', with: '2018-10-03'
+      fill_in 'Name', { with: 'contributor', id: 'data_set_contributors_attributes_0_name' }
+      fill_in 'ORCID', { with: 'contributor orcid', id: 'data_set_contributors_attributes_0_orcid' }
+      select 'Department of Biology', from: 'data_set_contributors_attributes_0_affiliation'
+      fill_in 'Additional affiliation', { with: 'UNC', id: 'data_set_contributors_attributes_0_other_affiliation' }
       fill_in 'Description', with: 'a description'
       fill_in 'DOI', with: 'some doi'
       fill_in 'Extent', with: 'some extent'
@@ -178,10 +186,14 @@ RSpec.feature 'Create a DataSet', js: false do
       select 'English', from: 'data_set_language'
       fill_in 'Last modified date', with: '2018-10-03'
       select 'Attribution 3.0 United States', :from => 'data_set_license'
-      fill_in 'Project director', with: 'a director'
-      fill_in 'ORCID', with: 'an orcid'
-      fill_in 'Additional affiliation', with: 'another affiliation'
-      fill_in 'Researcher', with: 'a researcher'
+      fill_in 'Name', { with: 'project director', id: 'data_set_project_directors_attributes_0_name' }
+      fill_in 'ORCID', { with: 'project director orcid', id: 'data_set_project_directors_attributes_0_orcid' }
+      select 'Department of Biology', from: 'data_set_project_directors_attributes_0_affiliation'
+      fill_in 'Additional affiliation', { with: 'UNC', id: 'data_set_project_directors_attributes_0_other_affiliation' }
+      fill_in 'Name', { with: 'researcher', id: 'data_set_researchers_attributes_0_name' }
+      fill_in 'ORCID', { with: 'researcher orcid', id: 'data_set_researchers_attributes_0_orcid' }
+      select 'Department of Biology', from: 'data_set_researchers_attributes_0_affiliation'
+      fill_in 'Additional affiliation', { with: 'UNC', id: 'data_set_researchers_attributes_0_other_affiliation' }
       fill_in 'Rights holder', with: 'an author'
       fill_in 'Related resource URL', with: 'something.com'
       select 'In Copyright', :from => 'data_set_rights_statement'
@@ -218,30 +230,24 @@ RSpec.feature 'Create a DataSet', js: false do
 
       first('.document-title', text: 'Test Data Set').click
       expect(page).to have_content 'Test Default Keyword'
-      expect(page).to have_content 'Creator Test Default Creator'
+      expect(page).to have_content 'Creator Test Default Creator ORCID: creator orcid Affiliation: College of Arts and Sciences, Department of Biology Other Affiliation: UNC'
       expect(page).to have_content 'Abstract some abstract'
       expect(page).to have_content 'Date of publication October 3, 2018'
       expect(page).to have_content 'Kind of data Text'
       expect(page).to have_content 'License Attribution 3.0 United States'
       expect(page).to have_content 'Rights statement In Copyright'
-      expect(page).to have_content 'Date created October 3, 2018'
       expect(page).to have_content 'Language English'
       expect(page).to have_content 'Related resource URL something.com'
       expect(page).to have_content 'Resource type Dataset'
-      expect(page).to have_content 'Affiliation'
-      expect(page).to have_content 'College of Arts and Sciences'
-      expect(page).to have_content 'Department of Biology'
-      expect(page).to have_content 'Contributors a contributor'
+      expect(page).to have_content 'Contributor contributor ORCID: contributor orcid Affiliation: College of Arts and Sciences, Department of Biology Other Affiliation: UNC'
       expect(page).to have_content 'Description a description'
       expect(page).to have_content 'DOI some doi'
       expect(page).to have_content 'Extent some extent'
       expect(page).to have_content 'Funder some funder'
       expect(page).to have_content 'Location some geographic subject'
       expect(page).to have_content 'Last modified date October 3, 2018'
-      expect(page).to have_content 'Project director a director'
-      expect(page).to have_content 'ORCID an orcid'
-      expect(page).to have_content 'Additional affiliation another affiliation'
-      expect(page).to have_content 'Researcher a researcher'
+      expect(page).to have_content 'Project director project director ORCID: project director orcid Affiliation: College of Arts and Sciences, Department of Biology Other Affiliation: UNC'
+      expect(page).to have_content 'Researcher researcher ORCID: researcher orcid Affiliation: College of Arts and Sciences, Department of Biology Other Affiliation: UNC'
       expect(page).to have_content 'Rights holder an author'
       expect(page).to have_content 'Sponsor a sponsor'
       expect(page).to have_content 'Subject test'

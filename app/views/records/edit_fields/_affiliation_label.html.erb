@@ -1,7 +1,0 @@
-<div class="hidden">
-  <%= f.input :affiliation_label, as: :multi_value_select,
-              collection: DepartmentsService.select_all_options.sort,
-              include_blank: true,
-              item_helper: DepartmentsService.method(:include_current_value)
-  -%>
-</div>
