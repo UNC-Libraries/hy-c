@@ -1,27 +1,51 @@
-<div id="unc-deposit" class="row text-center">
-  <h2><%= t('hyrax.deposit.header') %></h2>
-  <div class="col-sm-3 col-xs-6 unc-block">
-    <%= link_to main_app.new_hyrax_article_path do %>
+<% if Flipflop.read_only? %>
+  <div id="unc-deposit" class="row text-center">
+    <p class="read-only-note">The Carolina Digital Repository is in read-only mode for maintenance.
+      No submissions or edits can be made at this time.</p>
+    <h2 class="read-only"><%= t('hyrax.deposit.header') %></h2>
+    <div class="col-sm-3 col-xs-6 unc-block read-only">
       <i class="fa fa-file-text-o fa-5x" aria-hidden="true"></i>
       <div><%= t('hyrax.deposit.article') %></div>
-    <% end %>
-  </div>
-  <div class="col-sm-3 col-xs-6 unc-block" data-turbolinks="false">
-    <%= link_to '#', id: 'student-papers-work-types',  data: { behavior: 'select-work', target: '#worktypes-to-create', 'create-type' => 'single' } do %>
+    </div>
+    <div class="col-sm-3 col-xs-6 unc-block read-only">
       <i class="fa fa-graduation-cap fa-5x" aria-hidden="true"></i>
       <div><%= t('hyrax.deposit.student_paper') %></div>
-    <% end %>
-  </div>
-  <div class="col-sm-3 col-xs-6 unc-block">
-    <%= link_to main_app.new_hyrax_data_set_path do %>
+    </div>
+    <div class="col-sm-3 col-xs-6 unc-block read-only">
       <i class="fa fa-table fa-5x" aria-hidden="true"></i>
       <div><%= t('hyrax.deposit.dataset') %></div>
-    <% end %>
-  </div>
-  <div class="col-sm-3 col-xs-6 unc-block" data-turbolinks="false">
-    <%= link_to  '#', class: 'all-unc-work-types', data: { behavior: 'select-work', target: '#worktypes-to-create', 'create-type' => 'single' } do %>
+    </div>
+    <div class="col-sm-3 col-xs-6 unc-block read-only">
       <i class="fa fa-upload fa-5x" aria-hidden="true"></i>
       <div><%= t('hyrax.deposit.other') %></div>
-    <% end %>
+    </div>
   </div>
-</div>
+<% else %>
+  <div id="unc-deposit" class="row text-center">
+    <h2><%= t('hyrax.deposit.header') %></h2>
+    <div class="col-sm-3 col-xs-6 unc-block">
+      <%= link_to main_app.new_hyrax_article_path do %>
+        <i class="fa fa-file-text-o fa-5x" aria-hidden="true"></i>
+        <div><%= t('hyrax.deposit.article') %></div>
+      <% end %>
+    </div>
+    <div class="col-sm-3 col-xs-6 unc-block" data-turbolinks="false">
+      <%= link_to '#', id: 'student-papers-work-types',  data: { behavior: 'select-work', target: '#worktypes-to-create', 'create-type' => 'single' } do %>
+        <i class="fa fa-graduation-cap fa-5x" aria-hidden="true"></i>
+        <div><%= t('hyrax.deposit.student_paper') %></div>
+      <% end %>
+    </div>
+    <div class="col-sm-3 col-xs-6 unc-block">
+      <%= link_to main_app.new_hyrax_data_set_path do %>
+        <i class="fa fa-table fa-5x" aria-hidden="true"></i>
+        <div><%= t('hyrax.deposit.dataset') %></div>
+      <% end %>
+    </div>
+    <div class="col-sm-3 col-xs-6 unc-block" data-turbolinks="false">
+      <%= link_to  '#', class: 'all-unc-work-types', data: { behavior: 'select-work', target: '#worktypes-to-create', 'create-type' => 'single' } do %>
+        <i class="fa fa-upload fa-5x" aria-hidden="true"></i>
+        <div><%= t('hyrax.deposit.other') %></div>
+      <% end %>
+    </div>
+  </div>
+<% end %>

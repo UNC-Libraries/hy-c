@@ -9,7 +9,20 @@ class ApplicationController < ActionController::Base
   include Hyrax::ThemedLayoutController
   with_themed_layout '1_column'
 
-  # [hyc-override] Overriding default after_sign_in_path_for which only forwared to the dashboard
+  before_action :check_read_only, only: [:new, :create, :edit, :update, :destroy]
+
+  # Redirect all deposit and edit requests with warning message when in read only mode
+  def check_read_only
+    return unless Flipflop.read_only?
+    # Allows feature to be turned off
+    return if self.class.to_s == Hyrax::Admin::StrategiesController.to_s
+    redirect_back(
+        fallback_location: root_path,
+        alert: "The Carolina Digital Repository is in read-only mode for maintenance. No submissions or edits can be made at this time."
+    )
+  end
+
+  # [hyc-override] Overriding default after_sign_in_path_for which only forward to the dashboard
   protected
     def after_sign_in_path_for(resource)
       direct_to = stored_location_for(resource) || request.env['omniauth.origin'] || root_path
