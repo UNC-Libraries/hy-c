@@ -72,3 +72,4 @@ group :test do
 end
 
 gem 'riiif', '~> 1.1'
+gem 'browse-everything', '1.0.0.rc1'
