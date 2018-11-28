@@ -27,7 +27,7 @@ gem 'clamav', '~> 0.4.1'
 gem 'sidekiq', '~> 5.0.4'
 gem 'blacklight_oai_provider', '6.0.0.pre1'
 gem 'edtf-humanize', '0.0.7'
-gem 'passenger', '5.3.5', require: 'phusion_passenger/rack_handler'
+gem 'passenger', '5.3.7', require: 'phusion_passenger/rack_handler'
 gem 'staccato', '~>0.5.1'
 gem 'loofah', '~>2.2.3'
 
