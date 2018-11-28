@@ -57,13 +57,33 @@ module Hyrax
       Hyrax::Engine.routes.url_helpers.download_url(representative_presenter, host: request.host)
     end
 
-    # @return [Boolean] render the UniversalViewer
-    def universal_viewer?
+    # @return [Boolean] render a IIIF viewer
+    def iiif_viewer?
       representative_id.present? &&
           representative_presenter.present? &&
           representative_presenter.image? &&
           Hyrax.config.iiif_image_server? &&
           members_include_viewable_image?
+    end
+
+    alias universal_viewer? iiif_viewer?
+    deprecation_deprecate universal_viewer?: "use iiif_viewer? instead"
+
+    # @return [Symbol] the name of the IIIF viewer partial to render
+    # @example A work presenter with a custom iiif viewer
+    #   module Hyrax
+    #     class GenericWorkPresenter < Hyrax::WorkShowPresenter
+    #       def iiif_viewer
+    #         :my_iiif_viewer
+    #       end
+    #     end
+    #   end
+    #
+    #   Custom iiif viewer partial at app/views/hyrax/base/iiif_viewers/_my_iiif_viewer.html.erb
+    #   <h3>My IIIF Viewer!</h3>
+    #   <a href=<%= main_app.polymorphic_url([main_app, :manifest, presenter], { locale: nil }) %>>Manifest</a>
+    def iiif_viewer
+      :universal_viewer
     end
 
     # @return FileSetPresenter presenter for the representative FileSets
@@ -204,6 +224,13 @@ module Hyrax
         }
       end
       metadata
+    end
+
+    # determine if the user can add this work to a collection
+    # @param collections <Collections> list of collections to which this user can deposit
+    # @return true if the user can deposit to at least one collection OR if the user can create a collection; otherwise, false
+    def show_deposit_for?(collections:)
+      collections.present? || current_ability.can?(:create_any, Collection)
     end
 
     private
