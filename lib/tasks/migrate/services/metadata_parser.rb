@@ -10,6 +10,12 @@ module Migrate
         @collection_name = collection_name
         @depositor = depositor
         @admin_set = admin_set
+        @person_label = []
+        @creator_label = []
+        @advisor_label = []
+        @orcid_label = []
+        @affiliation_label = []
+        @other_affiliation_label = []
       end
 
       def parse
@@ -25,10 +31,10 @@ module Migrate
 
         work_attributes['contained_files'] = Array.new(0)
 
-        # get the date_created
-        date_created_string = metadata.xpath("//foxml:objectProperties/foxml:property[contains(@NAME, 'model#createdDate')]/@VALUE", MigrationConstants::NS).to_s
-        date_created = DateTime.strptime(date_created_string, '%Y-%m-%dT%H:%M:%S.%N%Z').strftime('%Y-%m-%d') unless date_created_string.nil?
-        work_attributes['date_created'] = (Date.try(:edtf, date_created) || date_created).to_s
+        # get the date_uploaded
+        date_uploaded_string = metadata.xpath("//foxml:objectProperties/foxml:property[contains(@NAME, 'model#createdDate')]/@VALUE", MigrationConstants::NS).to_s
+        date_uploaded = DateTime.strptime(date_uploaded_string, '%Y-%m-%dT%H:%M:%S.%N%Z').strftime('%Y-%m-%d') unless date_uploaded_string.nil?
+        work_attributes['date_uploaded'] = (Date.try(:edtf, date_uploaded) || date_uploaded).to_s
         # get the modifiedDate
         date_modified_string = metadata.xpath("//foxml:objectProperties/foxml:property[contains(@NAME, 'view#lastModifiedDate')]/@VALUE", MigrationConstants::NS).to_s
         date_modified = DateTime.strptime(date_modified_string, '%Y-%m-%dT%H:%M:%S.%N%Z').strftime('%Y-%m-%d') unless date_modified_string.nil?
@@ -46,25 +52,34 @@ module Migrate
           work_attributes['title'] = descriptive_mods.xpath('mods:titleInfo[not(@*)]/mods:title', MigrationConstants::NS).map(&:text)
           work_attributes['label'] = work_attributes['title']
           work_attributes['alternative_title'] = descriptive_mods.xpath("mods:titleInfo[@type='alternative' or @type='translated']/mods:title", MigrationConstants::NS).map(&:text)
-          work_attributes['creator'] = parse_names_from_mods(descriptive_mods, 'Creator')
-          work_attributes['contributor'] = parse_names_from_mods(descriptive_mods, 'Contributor')
-          work_attributes['advisor'] = parse_names_from_mods(descriptive_mods, 'Thesis advisor')
+          work_attributes['creators_attributes'] = parse_people_from_mods(descriptive_mods, 'Creator')
+          work_attributes['creator_display'] = build_person_display(work_attributes['creators_attributes']) if !work_attributes['creators_attributes'].blank?
+          work_attributes['creator_label'] = @creator_label
+          work_attributes['contributors_attributes'] = parse_people_from_mods(descriptive_mods, 'Contributor')
+          work_attributes['contributor_display'] = build_person_display(work_attributes['contributors_attributes']) if !work_attributes['contributors_attributes'].blank?
+          work_attributes['advisors_attributes'] = parse_people_from_mods(descriptive_mods, 'Thesis advisor')
+          work_attributes['advisor_display'] = build_person_display(work_attributes['advisors_attributes']) if !work_attributes['advisors_attributes'].blank?
+          work_attributes['advisor_label'] = @advisor_label
           work_attributes['funder'] = parse_names_from_mods(descriptive_mods, 'Funder')
-          work_attributes['project_director'] = parse_names_from_mods(descriptive_mods, 'Project director')
-          work_attributes['researcher'] = parse_names_from_mods(descriptive_mods, 'Researcher')
+          work_attributes['project_directors_attributes'] = parse_people_from_mods(descriptive_mods, 'Project director')
+          work_attributes['project_director_display'] = build_person_display(work_attributes['project_directors_attributes']) if !work_attributes['project_directors_attributes'].blank?
+          work_attributes['researchers_attributes'] = parse_people_from_mods(descriptive_mods, 'Researcher')
+          work_attributes['researcher_display'] = build_person_display(work_attributes['researchers_attributes']) if !work_attributes['researchers_attributes'].blank?
           work_attributes['sponsor'] = parse_names_from_mods(descriptive_mods, 'Sponsor')
-          work_attributes['translator'] = parse_names_from_mods(descriptive_mods, 'Translator')
-          work_attributes['reviewer'] = parse_names_from_mods(descriptive_mods, 'Reviewer')
-          work_attributes['composer'] = parse_names_from_mods(descriptive_mods, 'Composer')
-          work_attributes['arranger'] = parse_names_from_mods(descriptive_mods, 'Arranger')
+          work_attributes['translators_attributes'] = parse_people_from_mods(descriptive_mods, 'Translator')
+          work_attributes['translator_display'] = build_person_display(work_attributes['translators_attributes']) if !work_attributes['translators_attributes'].blank?
+          work_attributes['reviewers_attributes'] = parse_people_from_mods(descriptive_mods, 'Reviewer')
+          work_attributes['reviewer_display'] = build_person_display(work_attributes['reviewers_attributes']) if !work_attributes['reviewers_attributes'].blank?
+          work_attributes['composers_attributes'] = parse_people_from_mods(descriptive_mods, 'Composer')
+          work_attributes['composer_display'] = build_person_display(work_attributes['composers_attributes']) if !work_attributes['composers_attributes'].blank?
+          work_attributes['arrangers_attributes'] = parse_people_from_mods(descriptive_mods, 'Arranger')
+          work_attributes['arranger_display'] = build_person_display(work_attributes['arrangers_attributes']) if !work_attributes['arrangers_attributes'].blank?
           work_attributes['degree_granting_institution'] = parse_names_from_mods(descriptive_mods, 'Degree granting institution')
           work_attributes['conference_name'] = descriptive_mods.xpath('mods:name[@displayLabel="Conference" and @type="conference"]/mods:namePart', MigrationConstants::NS).map(&:text)
-          work_attributes['orcid'] = descriptive_mods.xpath('mods:name/mods:nameIdentifier[@type="orcid"]', MigrationConstants::NS).map(&:text)
-          work_attributes['affiliation'] = descriptive_mods.xpath('mods:name/mods:affiliation', MigrationConstants::NS).map(&:text)
-          work_attributes['affiliation_label'] = work_attributes['affiliation']
-          work_attributes['other_affiliation'] = descriptive_mods.xpath('mods:name/mods:description', MigrationConstants::NS).map(&:text)
+          date_created = descriptive_mods.xpath('mods:originInfo/mods:dateCreated', MigrationConstants::NS).map(&:text)
+          work_attributes['date_created'] = date_created.map{|date| (Date.try(:edtf, date) || date).to_s}
           date_issued = descriptive_mods.xpath('mods:originInfo/mods:dateIssued', MigrationConstants::NS).map(&:text)
-          work_attributes['date_issued'] = date_issued.map{|date| (Date.try(:edtf, date) || date).to_s}
+          work_attributes['date_issued'] = date_issued.map{|date| date.to_s}
           copyright_date = descriptive_mods.xpath('mods:originInfo/mods:copyrightDate', MigrationConstants::NS).map(&:text)
           work_attributes['copyright_date'] = copyright_date.map{|date| (Date.try(:edtf, date) || date).to_s}
           work_attributes['last_modified_date'] = descriptive_mods.xpath('mods:originInfo[@displayLabel="Last Date Modified"]/mods:dateModified', MigrationConstants::NS).map(&:text)
@@ -74,13 +89,13 @@ module Migrate
           work_attributes['date_captured'] = date_captured.map{|date| (Date.try(:edtf, date) || date).to_s}
           work_attributes['graduation_year'] = descriptive_mods.xpath('mods:originInfo[@displayLabel="Date Graduated"]/mods:dateOther', MigrationConstants::NS).map(&:text)
           work_attributes['abstract'] = descriptive_mods.xpath('mods:abstract', MigrationConstants::NS).map(&:text)
-          work_attributes['note'] = descriptive_mods.xpath('mods:note', MigrationConstants::NS).map(&:text)
+          work_attributes['note'] = descriptive_mods.xpath('mods:note[not(@displayLabel="Description" or @displayLabel="Methods" or @type="citation/reference" or @displayLabel="Degree" or @displayLabel="Academic concentration" or @displayLabel="Keywords" or @displayLabel="Honors Level")]', MigrationConstants::NS).map(&:text)
           work_attributes['description'] = descriptive_mods.xpath('mods:note[@displayLabel="Description" or @displayLabel="Methods"]', MigrationConstants::NS).map(&:text)
           work_attributes['extent'] = descriptive_mods.xpath('mods:physicalDescription/mods:extent', MigrationConstants::NS).map(&:text)
           work_attributes['table_of_contents'] = descriptive_mods.xpath('mods:tableOfContents', MigrationConstants::NS).map(&:text)
           work_attributes['bibliographic_citation'] = descriptive_mods.xpath('mods:note[@type="citation/reference"]', MigrationConstants::NS).map(&:text)
           work_attributes['edition'] = descriptive_mods.xpath('mods:originInfo/mods:edition', MigrationConstants::NS).map(&:text)
-          work_attributes['peer_review_status'] = descriptive_mods.xpath('mods:genre[@authority="local"]', MigrationConstants::NS).map(&:text)
+          work_attributes['peer_review_status'] = descriptive_mods.xpath('mods:genre[@displayLabel="Peer Reviewed"] ', MigrationConstants::NS).map(&:text)
           work_attributes['degree'] = descriptive_mods.xpath('mods:note[@displayLabel="Degree"]', MigrationConstants::NS).map(&:text)
           work_attributes['academic_concentration'] = descriptive_mods.xpath('mods:note[@displayLabel="Academic concentration"]', MigrationConstants::NS).map(&:text)
           work_attributes['award'] = descriptive_mods.xpath('mods:note[@displayLabel="Honors Level"]', MigrationConstants::NS).map(&:text)
@@ -104,10 +119,10 @@ module Migrate
           end
           languages = descriptive_mods.xpath('mods:language/mods:languageTerm',MigrationConstants::NS).map(&:text)
           work_attributes['language'] = get_language_uri(languages) if !languages.blank?
-          work_attributes['language_label'] = work_attributes['language'].map{|l| LanguagesService.label(l) }
-          work_attributes['resource_type'] = descriptive_mods.xpath('mods:genre',MigrationConstants::NS).map(&:text)
+          work_attributes['language_label'] = work_attributes['language'].map{|l| LanguagesService.label(l) } if !languages.blank?
+          work_attributes['resource_type'] = descriptive_mods.xpath('mods:genre[not(@*)]',MigrationConstants::NS).map(&:text)
           work_attributes['dcmi_type'] = descriptive_mods.xpath('mods:typeOfResource/@valueURI',MigrationConstants::NS).map(&:text)
-          work_attributes['use'] = descriptive_mods.xpath('mods:accessCondition[@type="use and reproduction" and ((@displayLabel!="License" and @displayLabel!="Rights Statement") or not(@displayLabel))]/@*[name()="xlink:href"]',MigrationConstants::NS).map(&:text)
+          work_attributes['use'] = descriptive_mods.xpath('mods:accessCondition[@type="use and reproduction" and not(@displayLabel)]',MigrationConstants::NS).map(&:text)
           work_attributes['license'] = descriptive_mods.xpath('mods:accessCondition[@displayLabel="License" and @type="use and reproduction"]/@*[name()="xlink:href"]',MigrationConstants::NS).map(&:text)
           work_attributes['license_label'] = work_attributes['license'].map{ |l| CdrLicenseService.label(l) }
           work_attributes['rights_statement'] = descriptive_mods.xpath('mods:accessCondition[@displayLabel="Rights Statement" and @type="use and reproduction"]/@*[name()="xlink:href"]',MigrationConstants::NS).map(&:text)
@@ -115,12 +130,12 @@ module Migrate
           work_attributes['rights_holder'] = descriptive_mods.xpath('mods:accessCondition/rights:copyright/rights:rights.holder/rights:name',MigrationConstants::NS).map(&:text)
           work_attributes['access'] = descriptive_mods.xpath('mods:accessCondition[@type="restriction on access"]',MigrationConstants::NS).map(&:text)
           work_attributes['doi'] = descriptive_mods.xpath('mods:identifier[@type="doi"]',MigrationConstants::NS).map(&:text)
-          work_attributes['identifier'] = descriptive_mods.xpath('mods:identifier[@type="pdf"]/identifier[@type="pmpid"]',MigrationConstants::NS).map(&:text)
+          work_attributes['identifier'] = descriptive_mods.xpath('mods:identifier[@type="pdf" or @type="pmpid"]',MigrationConstants::NS).map(&:text)
           work_attributes['isbn'] = descriptive_mods.xpath('mods:identifier[@type="isbn"]',MigrationConstants::NS).map(&:text)
           work_attributes['issn'] = descriptive_mods.xpath('mods:relatedItem/mods:identifier[@type="issn"]',MigrationConstants::NS).map(&:text)
           work_attributes['publisher'] = descriptive_mods.xpath('mods:originInfo/mods:publisher',MigrationConstants::NS).map(&:text)
           work_attributes['place_of_publication'] = descriptive_mods.xpath('mods:originInfo/mods:place/mods:placeTerm',MigrationConstants::NS).map(&:text)
-          work_attributes['journal_title'] = descriptive_mods.xpath('mods:relatedItem[@type="host"]/mods:titleInfo/mods:title',MigrationConstants::NS).map(&:text)
+          work_attributes['journal_title'] = descriptive_mods.xpath('mods:relatedItem[@type="host" and not(@displayLabel="Collection")]/mods:titleInfo/mods:title',MigrationConstants::NS).map(&:text)
           work_attributes['journal_volume'] = descriptive_mods.xpath('mods:relatedItem[@type="host"]/mods:part/mods:detail[@type="volume"]/mods:number',MigrationConstants::NS).map(&:text)
           work_attributes['journal_issue'] = descriptive_mods.xpath('mods:relatedItem[@type="host"]/mods:part/mods:detail[@type="issue"]/mods:number',MigrationConstants::NS).map(&:text)
           work_attributes['page_start'] = descriptive_mods.xpath('mods:relatedItem[@type="host"]/mods:part/mods:extent[@unit="page"]/mods:start',MigrationConstants::NS).map(&:text)
@@ -228,6 +243,11 @@ module Migrate
 
         work_attributes['admin_set_id'] = (AdminSet.where(title: @admin_set).first || AdminSet.where(title: ENV['DEFAULT_ADMIN_SET']).first).id
 
+        work_attributes['person_label'] = @person_label.flatten.uniq if !@person_label.blank?
+        work_attributes['orcid_label'] = @orcid_label.flatten.uniq if !@orcid_label.blank?
+        work_attributes['affiliation_label'] = @affiliation_label.flatten.uniq if !@affiliation_label.blank?
+        work_attributes['other_affiliation_label'] = @other_affiliation_label.flatten.uniq if !@other_affiliation_label.blank?
+
         { work_attributes: work_attributes.reject!{|k,v| v.blank?}, child_works: child_works }
       end
 
@@ -237,8 +257,8 @@ module Migrate
           path.slice(/\w{8}-\w{4}-\w{4}-\w{4}-\w{12}/)
         end
 
-        def parse_names_from_mods(mods, name)
-          names = mods.xpath('mods:name[mods:role/mods:roleTerm/text()="'+name+'"]', MigrationConstants::NS)
+        def parse_names_from_mods(mods, type)
+          names = mods.xpath('mods:name[mods:role/mods:roleTerm/text()="'+type+'"]', MigrationConstants::NS)
           name_array = []
           names.each do |name|
             if !name.xpath('mods:namePart[@type="family"]', MigrationConstants::NS).text.blank?
@@ -249,6 +269,53 @@ module Migrate
           end
 
           name_array
+        end
+
+        def parse_people_from_mods(mods, type)
+          people = mods.xpath('mods:name[mods:role/mods:roleTerm/text()="'+type+'"]', MigrationConstants::NS)
+
+          person_hash = Hash.new
+          people.each_with_index do |person, index|
+            name = ''
+            if !person.xpath('mods:namePart[@type="family"]', MigrationConstants::NS).text.blank?
+              name = person.xpath('concat(mods:namePart[@type="family"], ", ", mods:namePart[@type="given"])', MigrationConstants::NS)
+            else
+              name = person.xpath('mods:namePart', MigrationConstants::NS).text
+            end
+            orcid = person.xpath('mods:nameIdentifier[@type="orcid"]', MigrationConstants::NS).text
+            affiliation = person.xpath('mods:affiliation', MigrationConstants::NS).map(&:text)
+            other_affiliation = person.xpath('mods:description', MigrationConstants::NS).text
+
+            if type == 'Creator'
+              @creator_label.push(name)
+            elsif type == 'Thesis advisor'
+              @advisor_label.push(name)
+            end
+            @person_label.push(name)
+            @orcid_label.push(orcid) if !orcid.blank?
+            @affiliation_label.push(affiliation) if !affiliation.blank?
+            @other_affiliation_label.push(other_affiliation) if !other_affiliation.blank?
+
+            person_hash[index.to_s] = { 'name' => name,
+                                        'orcid' => orcid,
+                                        'affiliation' => affiliation.join(', '),
+                                        'other_affiliation' => other_affiliation }
+          end
+
+          person_hash.blank? ? nil : person_hash
+        end
+
+        def build_person_display(people)
+          displays = []
+          people.each do |k, v|
+            display_text = []
+            display_text << v['name'] if !v['name'].blank?
+            display_text << "ORCID: #{v['orcid']}" if !v['orcid'].blank?
+            display_text << "Affiliation: #{v['affiliation']}" if !v['affiliation'].blank?
+            display_text << "Other Affiliation: #{v['other_affiliation']}" if !v['other_affiliation'].blank?
+            displays << display_text.join('||')
+          end
+          displays.flatten
         end
 
         # Use language code to get iso639-2 uri from service

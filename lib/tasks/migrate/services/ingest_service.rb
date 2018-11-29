@@ -158,7 +158,6 @@ module Migrate
           else
             resource = @work_type.singularize.classify.constantize.new
           end
-          resource.creator = work_attributes['creator']
           resource.depositor = @depositor.uid
           resource.save
 
@@ -172,7 +171,7 @@ module Migrate
           end
 
           # Only keep attributes which apply to the given work type
-          resource.attributes = work_attributes.reject{|k,v| !resource.attributes.keys.member?(k.to_s)}
+          resource.attributes = work_attributes.reject{|k,v| !resource.attributes.keys.member?(k.to_s) unless k.ends_with? '_attributes'}
 
           resource.visibility = work_attributes['visibility']
           unless work_attributes['embargo_release_date'].blank?

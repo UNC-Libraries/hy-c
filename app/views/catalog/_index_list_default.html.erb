@@ -12,8 +12,8 @@
           <%# [hyc-override] truncate text abstract and creator %>
           <% if field_name == 'abstract_tesim' %>
             <dd><%= field_text.truncate_words(50) %></dd>
-          <% elsif field_name == 'creator_tesim' %>
-            <dd><%= document.creator.join(', ').truncate_words(50) %></dd>
+          <% elsif field_name == 'creator_label_tesim' %>
+            <dd><%= document.creator_label.join('; ').truncate_words(50) %></dd>
           <% else %>
             <dd><%= field_text %></dd>
           <% end %>
