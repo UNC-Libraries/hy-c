@@ -45,10 +45,9 @@ describe "rake migrate:works", type: :task do
     expect(new_article['depositor']).to eq 'admin@example.com'
     expect(new_article['title']).to match_array ['Les Miserables']
     expect(new_article['label']).to eq 'Les Miserables'
-    expect(new_article['date_created']).to eq '2017-10-02'
     expect(new_article['date_modified']).to eq '2017-10-02'
-    expect(new_article['creator']).to match_array ['Hugo, Victor']
-    expect(new_article['contributor']).to match_array ['Hugo, Victor']
+    expect(new_article['creator_label']).to match_array ['Hugo, Victor']
+    expect(new_article['creator_display']).to match_array ['Hugo, Victor']
     expect(new_article['publisher']).to match_array ['Project Gutenberg']
     expect(new_article['language']).to match_array ['http://id.loc.gov/vocabulary/iso639-2/eng']
     expect(new_article['language_label']).to match_array ['English']
