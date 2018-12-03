@@ -14,11 +14,10 @@
                         {
                             "notification_type": "email",
                             "name": "Hyrax::Workflow::PendingReviewNotification",
-                            "to": ["approving"]
+                            "to": ["managing"]
                         }
                     ],
                     "methods": [
-                        "Hyrax::Workflow::DeactivateObject",
                         "Hyrax::Workflow::AssignReviewerByAffiliation"
                     ]
                 }, {
@@ -59,7 +58,7 @@
                         {
                             "notification_type": "email",
                             "name": "Hyrax::Workflow::PendingReviewNotification",
-                            "to": ["approving"]
+                            "to": ["managing"]
                         }
                     ],
                     "methods": [
@@ -97,7 +96,7 @@
                         {
                             "notification_type": "email",
                             "name": "Hyrax::Workflow::PendingDeletionNotification",
-                            "to": ["approving"]
+                            "to": ["managing"]
                         }
                     ],
                     "methods": [
