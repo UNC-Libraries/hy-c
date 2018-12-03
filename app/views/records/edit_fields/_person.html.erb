@@ -8,7 +8,7 @@
                           input_html: { placeholder: 'Smith, John',
                                         class: "form-control #{person_term} #{person_term}-name",
                                         value: (person.object.name.first || '') },
-                          required: f.object.required?(person) %>
+                         required: (f.object.required?(person_term.to_sym)) %>
       </div>
 
       <div class="col-sm-6 <%= person_term %>-orcid">
