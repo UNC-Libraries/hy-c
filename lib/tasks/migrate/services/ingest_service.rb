@@ -5,10 +5,11 @@ module Migrate
 
     class IngestService
 
-      def initialize(config, object_hash, binary_hash, mapping_file, depositor)
+      def initialize(config, object_hash, binary_hash, premis_hash, mapping_file, depositor)
         @collection_ids_file = config['collection_list']
         @object_hash = object_hash
         @binary_hash = binary_hash
+        @premis_hash = premis_hash
         @work_type = config['work_type']
         @admin_set = config['admin_set']
         @child_work_type = config['child_work_type']
@@ -57,6 +58,20 @@ module Migrate
 
           # Save list of child filesets
           ordered_members = Array.new
+
+          # Attach premis files
+          if !work_attributes['premis_files'].blank?
+            work_attributes['premis_files'].each do |file|
+              premis_file = @premis_hash[get_uuid_from_path(file)]
+              work_attributes['title'] = work_attributes['dc_title']
+              work_attributes['label'] = work_attributes['dc_title']
+              fileset_attrs = { 'title' => ['PREMIS_Events_Metadata.txt'],
+                                'visibility' => Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE }
+              fileset = create_fileset(parent: new_work, resource: fileset_attrs, file: premis_file)
+
+              ordered_members << fileset
+            end
+          end
 
           # Create children
           if !work_attributes['cdr_model_type'].blank? &&

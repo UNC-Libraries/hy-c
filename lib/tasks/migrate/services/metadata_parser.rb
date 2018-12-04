@@ -179,6 +179,15 @@ module Migrate
             @work_attributes['contained_files'].uniq!
           end
 
+          # Find premis file
+          @work_attributes['premis_files'] = []
+          premis_mods = metadata.xpath("//foxml:datastream[contains(@ID, 'MD_EVENTS')]", MigrationConstants::NS).last
+          if !premis_mods.blank?
+            premis_reference = premis_mods.xpath("foxml:datastreamVersion/foxml:contentLocation/@REF", MigrationConstants::NS).map(&:text)
+            premis_reference.each do |reference|
+              @work_attributes['premis_files'] << get_uuid_from_path(reference)
+            end
+          end
 
           # Set access controls for work
           # Set default visibility first
