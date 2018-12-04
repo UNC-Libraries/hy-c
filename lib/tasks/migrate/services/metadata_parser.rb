@@ -16,6 +16,7 @@ module Migrate
         @orcid_label = []
         @affiliation_label = []
         @other_affiliation_label = []
+        @work_attributes = Hash.new
       end
 
       def parse
@@ -27,138 +28,127 @@ module Migrate
         uuid = get_uuid_from_path(metadata.at_xpath('foxml:digitalObject/@PID', MigrationConstants::NS).value)
         puts "getting metadata for: #{uuid}"
 
-        work_attributes = Hash.new
-
-        work_attributes['contained_files'] = Array.new(0)
+        @work_attributes['contained_files'] = Array.new(0)
 
         # get the date_uploaded
         date_uploaded_string = metadata.xpath("//foxml:objectProperties/foxml:property[contains(@NAME, 'model#createdDate')]/@VALUE", MigrationConstants::NS).to_s
         date_uploaded = DateTime.strptime(date_uploaded_string, '%Y-%m-%dT%H:%M:%S.%N%Z').strftime('%Y-%m-%d') unless date_uploaded_string.nil?
-        work_attributes['date_uploaded'] = (Date.try(:edtf, date_uploaded) || date_uploaded).to_s
+        @work_attributes['date_uploaded'] = (Date.try(:edtf, date_uploaded) || date_uploaded).to_s
         # get the modifiedDate
         date_modified_string = metadata.xpath("//foxml:objectProperties/foxml:property[contains(@NAME, 'view#lastModifiedDate')]/@VALUE", MigrationConstants::NS).to_s
         date_modified = DateTime.strptime(date_modified_string, '%Y-%m-%dT%H:%M:%S.%N%Z').strftime('%Y-%m-%d') unless date_modified_string.nil?
-        work_attributes['date_modified'] = (Date.try(:edtf, date_modified) || date_modified).to_s
+        @work_attributes['date_modified'] = (Date.try(:edtf, date_modified) || date_modified).to_s
 
         descriptive_mods = metadata.xpath("//foxml:datastream[contains(@ID, 'MD_DESCRIPTIVE')]//foxml:xmlContent//mods:mods", MigrationConstants::NS).last
         dc_metadata = metadata.xpath("//foxml:datastream[@ID='DC']//oai_dc:dc", MigrationConstants::NS)
-        work_attributes['dc_title'] = dc_metadata.xpath('dc:title', MigrationConstants::NS).map(&:text)
+        @work_attributes['dc_title'] = dc_metadata.xpath('dc:title', MigrationConstants::NS).map(&:text)
 
         if !descriptive_mods
           puts 'No MODS datastream available'
-          work_attributes['title'] = work_attributes['dc_title']
-          work_attributes['label'] = work_attributes['dc_title']
+          @work_attributes['title'] = @work_attributes['dc_title']
+          @work_attributes['label'] = @work_attributes['dc_title']
         else
-          work_attributes['title'] = descriptive_mods.xpath('mods:titleInfo[not(@*)]/mods:title', MigrationConstants::NS).map(&:text)
-          work_attributes['label'] = work_attributes['title']
-          work_attributes['alternative_title'] = descriptive_mods.xpath("mods:titleInfo[@type='alternative' or @type='translated']/mods:title", MigrationConstants::NS).map(&:text)
-          work_attributes['creators_attributes'] = parse_people_from_mods(descriptive_mods, 'Creator')
-          work_attributes['creator_display'] = build_person_display(work_attributes['creators_attributes']) if !work_attributes['creators_attributes'].blank?
-          work_attributes['creator_label'] = @creator_label
-          work_attributes['contributors_attributes'] = parse_people_from_mods(descriptive_mods, 'Contributor')
-          work_attributes['contributor_display'] = build_person_display(work_attributes['contributors_attributes']) if !work_attributes['contributors_attributes'].blank?
-          work_attributes['advisors_attributes'] = parse_people_from_mods(descriptive_mods, 'Thesis advisor')
-          work_attributes['advisor_display'] = build_person_display(work_attributes['advisors_attributes']) if !work_attributes['advisors_attributes'].blank?
-          work_attributes['advisor_label'] = @advisor_label
-          work_attributes['funder'] = parse_names_from_mods(descriptive_mods, 'Funder')
-          work_attributes['project_directors_attributes'] = parse_people_from_mods(descriptive_mods, 'Project director')
-          work_attributes['project_director_display'] = build_person_display(work_attributes['project_directors_attributes']) if !work_attributes['project_directors_attributes'].blank?
-          work_attributes['researchers_attributes'] = parse_people_from_mods(descriptive_mods, 'Researcher')
-          work_attributes['researcher_display'] = build_person_display(work_attributes['researchers_attributes']) if !work_attributes['researchers_attributes'].blank?
-          work_attributes['sponsor'] = parse_names_from_mods(descriptive_mods, 'Sponsor')
-          work_attributes['translators_attributes'] = parse_people_from_mods(descriptive_mods, 'Translator')
-          work_attributes['translator_display'] = build_person_display(work_attributes['translators_attributes']) if !work_attributes['translators_attributes'].blank?
-          work_attributes['reviewers_attributes'] = parse_people_from_mods(descriptive_mods, 'Reviewer')
-          work_attributes['reviewer_display'] = build_person_display(work_attributes['reviewers_attributes']) if !work_attributes['reviewers_attributes'].blank?
-          work_attributes['composers_attributes'] = parse_people_from_mods(descriptive_mods, 'Composer')
-          work_attributes['composer_display'] = build_person_display(work_attributes['composers_attributes']) if !work_attributes['composers_attributes'].blank?
-          work_attributes['arrangers_attributes'] = parse_people_from_mods(descriptive_mods, 'Arranger')
-          work_attributes['arranger_display'] = build_person_display(work_attributes['arrangers_attributes']) if !work_attributes['arrangers_attributes'].blank?
-          work_attributes['degree_granting_institution'] = parse_names_from_mods(descriptive_mods, 'Degree granting institution')
-          work_attributes['conference_name'] = descriptive_mods.xpath('mods:name[@displayLabel="Conference" and @type="conference"]/mods:namePart', MigrationConstants::NS).map(&:text)
+          @work_attributes['title'] = descriptive_mods.xpath('mods:titleInfo[not(@*)]/mods:title', MigrationConstants::NS).map(&:text)
+          @work_attributes['label'] = @work_attributes['title']
+          @work_attributes['alternative_title'] = descriptive_mods.xpath("mods:titleInfo[@type='alternative' or @type='translated']/mods:title", MigrationConstants::NS).map(&:text)
+          @work_attributes['creator_label'] = []
+          get_person_info(descriptive_mods, 'creator')
+          get_person_info(descriptive_mods, 'contributor')
+          @work_attributes['advisor_label'] = []
+          get_person_info(descriptive_mods, 'advisor')
+          get_person_info(descriptive_mods, 'arranger')
+          get_person_info(descriptive_mods, 'composer')
+          get_person_info(descriptive_mods, 'funder')
+          get_person_info(descriptive_mods, 'project_director')
+          get_person_info(descriptive_mods, 'researcher')
+          get_person_info(descriptive_mods, 'reviewer')
+          get_person_info(descriptive_mods, 'translator')
+          @work_attributes['sponsor'] = parse_names_from_mods(descriptive_mods, 'Sponsor')
+          @work_attributes['degree_granting_institution'] = parse_names_from_mods(descriptive_mods, 'Degree granting institution')
+          @work_attributes['conference_name'] = descriptive_mods.xpath('mods:name[@displayLabel="Conference" and @type="conference"]/mods:namePart', MigrationConstants::NS).map(&:text)
           date_created = descriptive_mods.xpath('mods:originInfo/mods:dateCreated', MigrationConstants::NS).map(&:text)
-          work_attributes['date_created'] = date_created.map{|date| (Date.try(:edtf, date) || date).to_s}
+          @work_attributes['date_created'] = date_created.map{|date| (Date.try(:edtf, date) || date).to_s}
           date_issued = descriptive_mods.xpath('mods:originInfo/mods:dateIssued', MigrationConstants::NS).map(&:text)
-          work_attributes['date_issued'] = date_issued.map{|date| date.to_s}
+          @work_attributes['date_issued'] = date_issued.map{|date| date.to_s}
           copyright_date = descriptive_mods.xpath('mods:originInfo/mods:copyrightDate', MigrationConstants::NS).map(&:text)
-          work_attributes['copyright_date'] = copyright_date.map{|date| (Date.try(:edtf, date) || date).to_s}
-          work_attributes['last_modified_date'] = descriptive_mods.xpath('mods:originInfo[@displayLabel="Last Date Modified"]/mods:dateModified', MigrationConstants::NS).map(&:text)
+          @work_attributes['copyright_date'] = copyright_date.map{|date| (Date.try(:edtf, date) || date).to_s}
+          @work_attributes['last_modified_date'] = descriptive_mods.xpath('mods:originInfo[@displayLabel="Last Date Modified"]/mods:dateModified', MigrationConstants::NS).map(&:text)
           date_other = descriptive_mods.xpath('mods:originInfo/mods:dateOther', MigrationConstants::NS).map(&:text)
-          work_attributes['date_other'] = date_other.map{|date| (Date.try(:edtf, date) || date).to_s}
+          @work_attributes['date_other'] = date_other.map{|date| (Date.try(:edtf, date) || date).to_s}
           date_captured = descriptive_mods.xpath('mods:originInfo/mods:dateCaptured', MigrationConstants::NS).map(&:text)
-          work_attributes['date_captured'] = date_captured.map{|date| (Date.try(:edtf, date) || date).to_s}
-          work_attributes['graduation_year'] = descriptive_mods.xpath('mods:originInfo[@displayLabel="Date Graduated"]/mods:dateOther', MigrationConstants::NS).map(&:text)
-          work_attributes['abstract'] = descriptive_mods.xpath('mods:abstract', MigrationConstants::NS).map(&:text)
-          work_attributes['note'] = descriptive_mods.xpath('mods:note[not(@displayLabel="Description" or @displayLabel="Methods" or @type="citation/reference" or @displayLabel="Degree" or @displayLabel="Academic concentration" or @displayLabel="Keywords" or @displayLabel="Honors Level")]', MigrationConstants::NS).map(&:text)
-          work_attributes['description'] = descriptive_mods.xpath('mods:note[@displayLabel="Description" or @displayLabel="Methods"]', MigrationConstants::NS).map(&:text)
-          work_attributes['extent'] = descriptive_mods.xpath('mods:physicalDescription/mods:extent', MigrationConstants::NS).map(&:text)
-          work_attributes['table_of_contents'] = descriptive_mods.xpath('mods:tableOfContents', MigrationConstants::NS).map(&:text)
-          work_attributes['bibliographic_citation'] = descriptive_mods.xpath('mods:note[@type="citation/reference"]', MigrationConstants::NS).map(&:text)
-          work_attributes['edition'] = descriptive_mods.xpath('mods:originInfo/mods:edition', MigrationConstants::NS).map(&:text)
-          work_attributes['peer_review_status'] = descriptive_mods.xpath('mods:genre[@displayLabel="Peer Reviewed"] ', MigrationConstants::NS).map(&:text)
-          work_attributes['degree'] = descriptive_mods.xpath('mods:note[@displayLabel="Degree"]', MigrationConstants::NS).map(&:text)
-          work_attributes['academic_concentration'] = descriptive_mods.xpath('mods:note[@displayLabel="Academic concentration"]', MigrationConstants::NS).map(&:text)
-          work_attributes['award'] = descriptive_mods.xpath('mods:note[@displayLabel="Honors Level"]', MigrationConstants::NS).map(&:text)
-          work_attributes['medium'] = descriptive_mods.xpath('mods:physicalDescription/mods:form', MigrationConstants::NS).map(&:text)
-          work_attributes['kind_of_data'] = descriptive_mods.xpath('mods:genre[@authority="ddi"]', MigrationConstants::NS).map(&:text)
-          work_attributes['series'] = descriptive_mods.xpath('mods:relatedItem[@type="series"]', MigrationConstants::NS).map(&:text)
-          work_attributes['subject'] = descriptive_mods.xpath('mods:subject/mods:topic', MigrationConstants::NS).map(&:text)
-          work_attributes['geographic_subject'] = descriptive_mods.xpath('mods:subject/mods:geographic/@valueURI', MigrationConstants::NS).map(&:text)
+          @work_attributes['date_captured'] = date_captured.map{|date| (Date.try(:edtf, date) || date).to_s}
+          @work_attributes['graduation_year'] = descriptive_mods.xpath('mods:originInfo[@displayLabel="Date Graduated"]/mods:dateOther', MigrationConstants::NS).map(&:text)
+          @work_attributes['abstract'] = descriptive_mods.xpath('mods:abstract', MigrationConstants::NS).map(&:text)
+          @work_attributes['note'] = descriptive_mods.xpath('mods:note[not(@displayLabel="Description" or @displayLabel="Methods" or @type="citation/reference" or @displayLabel="Degree" or @displayLabel="Academic concentration" or @displayLabel="Keywords" or @displayLabel="Honors Level")]', MigrationConstants::NS).map(&:text)
+          @work_attributes['description'] = descriptive_mods.xpath('mods:note[@displayLabel="Description" or @displayLabel="Methods"]', MigrationConstants::NS).map(&:text)
+          @work_attributes['extent'] = descriptive_mods.xpath('mods:physicalDescription/mods:extent', MigrationConstants::NS).map(&:text)
+          @work_attributes['table_of_contents'] = descriptive_mods.xpath('mods:tableOfContents', MigrationConstants::NS).map(&:text)
+          @work_attributes['bibliographic_citation'] = descriptive_mods.xpath('mods:note[@type="citation/reference"]', MigrationConstants::NS).map(&:text)
+          @work_attributes['edition'] = descriptive_mods.xpath('mods:originInfo/mods:edition', MigrationConstants::NS).map(&:text)
+          @work_attributes['peer_review_status'] = descriptive_mods.xpath('mods:genre[@displayLabel="Peer Reviewed"] ', MigrationConstants::NS).map(&:text)
+          @work_attributes['degree'] = descriptive_mods.xpath('mods:note[@displayLabel="Degree"]', MigrationConstants::NS).map(&:text)
+          @work_attributes['academic_concentration'] = descriptive_mods.xpath('mods:note[@displayLabel="Academic concentration"]', MigrationConstants::NS).map(&:text)
+          @work_attributes['award'] = descriptive_mods.xpath('mods:note[@displayLabel="Honors Level"]', MigrationConstants::NS).map(&:text)
+          @work_attributes['medium'] = descriptive_mods.xpath('mods:physicalDescription/mods:form', MigrationConstants::NS).map(&:text)
+          @work_attributes['kind_of_data'] = descriptive_mods.xpath('mods:genre[@authority="ddi"]', MigrationConstants::NS).map(&:text)
+          @work_attributes['series'] = descriptive_mods.xpath('mods:relatedItem[@type="series"]', MigrationConstants::NS).map(&:text)
+          @work_attributes['subject'] = descriptive_mods.xpath('mods:subject/mods:topic', MigrationConstants::NS).map(&:text)
+          @work_attributes['geographic_subject'] = descriptive_mods.xpath('mods:subject/mods:geographic/@valueURI', MigrationConstants::NS).map(&:text)
           keyword_string = descriptive_mods.xpath('mods:note[@displayLabel="Keywords"]', MigrationConstants::NS).map(&:text)
-          work_attributes['keyword'] = []
+          @work_attributes['keyword'] = []
           keyword_string.each do |keyword|
             if keyword.match(/\n/)
-              work_attributes['keyword'].concat keyword.split(/\n/).collect(&:strip)
+              @work_attributes['keyword'].concat keyword.split(/\n/).collect(&:strip)
             elsif keyword.match(';')
-              work_attributes['keyword'].concat keyword.split(';').collect(&:strip)
+              @work_attributes['keyword'].concat keyword.split(';').collect(&:strip)
             elsif keyword.match(',')
-              work_attributes['keyword'].concat keyword.split(',').collect(&:strip)
+              @work_attributes['keyword'].concat keyword.split(',').collect(&:strip)
             else
-              work_attributes['keyword'].concat keyword.split(' ').collect(&:strip)
+              @work_attributes['keyword'].concat keyword.split(' ').collect(&:strip)
             end
           end
           languages = descriptive_mods.xpath('mods:language/mods:languageTerm',MigrationConstants::NS).map(&:text)
-          work_attributes['language'] = get_language_uri(languages) if !languages.blank?
-          work_attributes['language_label'] = work_attributes['language'].map{|l| LanguagesService.label(l) } if !languages.blank?
-          work_attributes['resource_type'] = descriptive_mods.xpath('mods:genre[not(@*)]',MigrationConstants::NS).map(&:text)
-          work_attributes['dcmi_type'] = descriptive_mods.xpath('mods:typeOfResource/@valueURI',MigrationConstants::NS).map(&:text)
-          work_attributes['use'] = descriptive_mods.xpath('mods:accessCondition[@type="use and reproduction" and not(@displayLabel)]',MigrationConstants::NS).map(&:text)
-          work_attributes['license'] = descriptive_mods.xpath('mods:accessCondition[@displayLabel="License" and @type="use and reproduction"]/@*[name()="xlink:href"]',MigrationConstants::NS).map(&:text)
-          work_attributes['license_label'] = work_attributes['license'].map{ |l| CdrLicenseService.label(l) }
-          work_attributes['rights_statement'] = descriptive_mods.xpath('mods:accessCondition[@displayLabel="Rights Statement" and @type="use and reproduction"]/@*[name()="xlink:href"]',MigrationConstants::NS).map(&:text)
-          work_attributes['rights_statement_label'] = work_attributes['rights_statement'].map{ |r| CdrRightsStatementsService.label(r) }
-          work_attributes['rights_holder'] = descriptive_mods.xpath('mods:accessCondition/rights:copyright/rights:rights.holder/rights:name',MigrationConstants::NS).map(&:text)
-          work_attributes['access'] = descriptive_mods.xpath('mods:accessCondition[@type="restriction on access"]',MigrationConstants::NS).map(&:text)
-          work_attributes['doi'] = descriptive_mods.xpath('mods:identifier[@type="doi"]',MigrationConstants::NS).map(&:text)
-          work_attributes['identifier'] = descriptive_mods.xpath('mods:identifier[@type="pdf" or @type="pmpid"]',MigrationConstants::NS).map(&:text)
-          work_attributes['isbn'] = descriptive_mods.xpath('mods:identifier[@type="isbn"]',MigrationConstants::NS).map(&:text)
-          work_attributes['issn'] = descriptive_mods.xpath('mods:relatedItem/mods:identifier[@type="issn"]',MigrationConstants::NS).map(&:text)
-          work_attributes['publisher'] = descriptive_mods.xpath('mods:originInfo/mods:publisher',MigrationConstants::NS).map(&:text)
-          work_attributes['place_of_publication'] = descriptive_mods.xpath('mods:originInfo/mods:place/mods:placeTerm',MigrationConstants::NS).map(&:text)
-          work_attributes['journal_title'] = descriptive_mods.xpath('mods:relatedItem[@type="host" and not(@displayLabel="Collection")]/mods:titleInfo/mods:title',MigrationConstants::NS).map(&:text)
-          work_attributes['journal_volume'] = descriptive_mods.xpath('mods:relatedItem[@type="host"]/mods:part/mods:detail[@type="volume"]/mods:number',MigrationConstants::NS).map(&:text)
-          work_attributes['journal_issue'] = descriptive_mods.xpath('mods:relatedItem[@type="host"]/mods:part/mods:detail[@type="issue"]/mods:number',MigrationConstants::NS).map(&:text)
-          work_attributes['page_start'] = descriptive_mods.xpath('mods:relatedItem[@type="host"]/mods:part/mods:extent[@unit="page"]/mods:start',MigrationConstants::NS).map(&:text)
-          work_attributes['page_end'] = descriptive_mods.xpath('mods:relatedItem[@type="host"]/mods:part/mods:extent[@unit="page"]/mods:end',MigrationConstants::NS).map(&:text)
-          work_attributes['related_url'] = descriptive_mods.xpath('mods:relatedItem/mods:location/mods:url',MigrationConstants::NS).map(&:text)
-          work_attributes['url'] = descriptive_mods.xpath('mods:location/mods:url',MigrationConstants::NS).map(&:text)
-          work_attributes['publisher_version'] = descriptive_mods.xpath('mods:location/mods:url[@displayLabel="Publisher Version"] | mods:relatedItem[@type="otherVersion"]/mods:location',MigrationConstants::NS).map(&:text)
-          work_attributes['digital_collection'] = descriptive_mods.xpath('mods:relatedItem[@displayLabel="Collection" and @type="host"]/mods:titleInfo/mods:title',MigrationConstants::NS).map(&:text)
+          @work_attributes['language'] = get_language_uri(languages) if !languages.blank?
+          @work_attributes['language_label'] = @work_attributes['language'].map{|l| LanguagesService.label(l) } if !languages.blank?
+          @work_attributes['resource_type'] = descriptive_mods.xpath('mods:genre[not(@*)]',MigrationConstants::NS).map(&:text)
+          @work_attributes['dcmi_type'] = descriptive_mods.xpath('mods:typeOfResource/@valueURI',MigrationConstants::NS).map(&:text)
+          @work_attributes['use'] = descriptive_mods.xpath('mods:accessCondition[@type="use and reproduction" and not(@displayLabel)]',MigrationConstants::NS).map(&:text)
+          @work_attributes['license'] = descriptive_mods.xpath('mods:accessCondition[@displayLabel="License" and @type="use and reproduction"]/@*[name()="xlink:href"]',MigrationConstants::NS).map(&:text)
+          @work_attributes['license_label'] = @work_attributes['license'].map{ |l| CdrLicenseService.label(l) }
+          @work_attributes['rights_statement'] = descriptive_mods.xpath('mods:accessCondition[@displayLabel="Rights Statement" and @type="use and reproduction"]/@*[name()="xlink:href"]',MigrationConstants::NS).map(&:text)
+          @work_attributes['rights_statement_label'] = @work_attributes['rights_statement'].map{ |r| CdrRightsStatementsService.label(r) }
+          @work_attributes['rights_holder'] = descriptive_mods.xpath('mods:accessCondition/rights:copyright/rights:rights.holder/rights:name',MigrationConstants::NS).map(&:text)
+          @work_attributes['access'] = descriptive_mods.xpath('mods:accessCondition[@type="restriction on access"]',MigrationConstants::NS).map(&:text)
+          @work_attributes['doi'] = descriptive_mods.xpath('mods:identifier[@type="doi"]',MigrationConstants::NS).map(&:text)
+          @work_attributes['identifier'] = descriptive_mods.xpath('mods:identifier[@type="pdf" or @type="pmpid"]',MigrationConstants::NS).map(&:text)
+          @work_attributes['isbn'] = descriptive_mods.xpath('mods:identifier[@type="isbn"]',MigrationConstants::NS).map(&:text)
+          @work_attributes['issn'] = descriptive_mods.xpath('mods:relatedItem/mods:identifier[@type="issn"]',MigrationConstants::NS).map(&:text)
+          @work_attributes['publisher'] = descriptive_mods.xpath('mods:originInfo/mods:publisher',MigrationConstants::NS).map(&:text)
+          @work_attributes['place_of_publication'] = descriptive_mods.xpath('mods:originInfo/mods:place/mods:placeTerm',MigrationConstants::NS).map(&:text)
+          @work_attributes['journal_title'] = descriptive_mods.xpath('mods:relatedItem[@type="host" and not(@displayLabel="Collection")]/mods:titleInfo/mods:title',MigrationConstants::NS).map(&:text)
+          @work_attributes['journal_volume'] = descriptive_mods.xpath('mods:relatedItem[@type="host"]/mods:part/mods:detail[@type="volume"]/mods:number',MigrationConstants::NS).map(&:text)
+          @work_attributes['journal_issue'] = descriptive_mods.xpath('mods:relatedItem[@type="host"]/mods:part/mods:detail[@type="issue"]/mods:number',MigrationConstants::NS).map(&:text)
+          @work_attributes['page_start'] = descriptive_mods.xpath('mods:relatedItem[@type="host"]/mods:part/mods:extent[@unit="page"]/mods:start',MigrationConstants::NS).map(&:text)
+          @work_attributes['page_end'] = descriptive_mods.xpath('mods:relatedItem[@type="host"]/mods:part/mods:extent[@unit="page"]/mods:end',MigrationConstants::NS).map(&:text)
+          @work_attributes['related_url'] = descriptive_mods.xpath('mods:relatedItem/mods:location/mods:url',MigrationConstants::NS).map(&:text)
+          @work_attributes['url'] = descriptive_mods.xpath('mods:location/mods:url',MigrationConstants::NS).map(&:text)
+          @work_attributes['publisher_version'] = descriptive_mods.xpath('mods:location/mods:url[@displayLabel="Publisher Version"] | mods:relatedItem[@type="otherVersion"]/mods:location',MigrationConstants::NS).map(&:text)
+          @work_attributes['digital_collection'] = descriptive_mods.xpath('mods:relatedItem[@displayLabel="Collection" and @type="host"]/mods:titleInfo/mods:title',MigrationConstants::NS).map(&:text)
         end
 
         # RDF information
-        work_attributes['deposit_record'] = ''
-        work_attributes['cdr_model_type'] = ''
+        @work_attributes['deposit_record'] = ''
+        @work_attributes['cdr_model_type'] = ''
         rdf_version = metadata.xpath("//rdf:RDF", MigrationConstants::NS).last
         if rdf_version
           # Check for deposit record
           if rdf_version.to_s.match(/originalDeposit/)
-            work_attributes['deposit_record'] = rdf_version.xpath('rdf:Description/*[local-name() = "originalDeposit"]/@rdf:resource', MigrationConstants::NS).map(&:text)
+            @work_attributes['deposit_record'] = rdf_version.xpath('rdf:Description/*[local-name() = "originalDeposit"]/@rdf:resource', MigrationConstants::NS).map(&:text)
           end
 
           # Check if aggregate work
           if rdf_version.to_s.match(/hasModel/)
-            work_attributes['cdr_model_type'] = rdf_version.xpath('rdf:Description/*[local-name() = "hasModel"]/@rdf:resource', MigrationConstants::NS).map(&:text)
+            @work_attributes['cdr_model_type'] = rdf_version.xpath('rdf:Description/*[local-name() = "hasModel"]/@rdf:resource', MigrationConstants::NS).map(&:text)
           end
 
           # Create lists of attached files and children
@@ -166,27 +156,27 @@ module Migrate
             contained_files = rdf_version.xpath("rdf:Description/*[not(local-name()='originalDeposit') and not(local-name() = 'defaultWebObject') and contains(@rdf:resource, 'uuid')]", MigrationConstants::NS)
             contained_files.each do |contained_file|
               tmp_uuid = get_uuid_from_path(contained_file.to_s)
-              if work_attributes['cdr_model_type'].include? 'info:fedora/cdr-model:AggregateWork'
+              if @work_attributes['cdr_model_type'].include? 'info:fedora/cdr-model:AggregateWork'
                 if !@binary_hash[tmp_uuid].blank? && !(@collection_uuids.include? tmp_uuid)
-                  work_attributes['contained_files'] << tmp_uuid
+                  @work_attributes['contained_files'] << tmp_uuid
                 elsif !@object_hash[tmp_uuid].blank? && tmp_uuid != uuid
                   child_works << tmp_uuid
                 end
               else
                 if !@binary_hash[tmp_uuid].blank?
-                  work_attributes['contained_files'] << tmp_uuid
+                  @work_attributes['contained_files'] << tmp_uuid
                 end
               end
             end
 
-            if work_attributes['contained_files'].count > 1
+            if @work_attributes['contained_files'].count > 1
               representative = rdf_version.xpath('rdf:Description/*[local-name() = "defaultWebObject"]/@rdf:resource', MigrationConstants::NS).to_s.split('/')[1]
               if representative
-                work_attributes['contained_files'] -= [get_uuid_from_path(representative)]
-                work_attributes['contained_files'] = [get_uuid_from_path(representative)] + work_attributes['contained_files']
+                @work_attributes['contained_files'] -= [get_uuid_from_path(representative)]
+                @work_attributes['contained_files'] = [get_uuid_from_path(representative)] + @work_attributes['contained_files']
               end
             end
-            work_attributes['contained_files'].uniq!
+            @work_attributes['contained_files'].uniq!
           end
 
 
@@ -194,61 +184,61 @@ module Migrate
           # Set default visibility first
           private_visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
           public_visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
-          work_attributes['embargo_release_date'] = ''
-          work_attributes['visibility'] = public_visibility
+          @work_attributes['embargo_release_date'] = ''
+          @work_attributes['visibility'] = public_visibility
 
           if rdf_version.to_s.match(/metadata-patron/)
             patron = rdf_version.xpath("rdf:Description/*[local-name() = 'metadata-patron']", MigrationConstants::NS).text
             if patron == 'public'
               if rdf_version.to_s.match(/contains/)
-                work_attributes['visibility'] = public_visibility
+                @work_attributes['visibility'] = public_visibility
               else
-                work_attributes['visibility'] =private_visibility
+                @work_attributes['visibility'] =private_visibility
               end
             end
           elsif rdf_version.to_s.match(/embargo-until/)
             embargo_release_date = Date.parse rdf_version.xpath("rdf:Description/*[local-name() = 'embargo-until']", MigrationConstants::NS).text
-            work_attributes['embargo_release_date'] = (Date.try(:edtf, embargo_release_date) || embargo_release_date).to_s
-            work_attributes['visibility'] = private_visibility
-            work_attributes['visibility_during_embargo'] = private_visibility
-            work_attributes['visibility_after_embargo'] = public_visibility
+            @work_attributes['embargo_release_date'] = (Date.try(:edtf, embargo_release_date) || embargo_release_date).to_s
+            @work_attributes['visibility'] = private_visibility
+            @work_attributes['visibility_during_embargo'] = private_visibility
+            @work_attributes['visibility_after_embargo'] = public_visibility
           elsif rdf_version.to_s.match(/isPublished/)
             published = rdf_version.xpath("rdf:Description/*[local-name() = 'isPublished']", MigrationConstants::NS).text
             if published == 'no'
-              work_attributes['visibility'] = private_visibility
+              @work_attributes['visibility'] = private_visibility
             end
           elsif rdf_version.to_s.match(/inheritPermissions/)
             inherit = rdf_version.xpath("rdf:Description/*[local-name() = 'inheritPermissions']", MigrationConstants::NS).text
             if inherit == 'false'
-              work_attributes['visibility'] = private_visibility
+              @work_attributes['visibility'] = private_visibility
             end
           elsif rdf_version.to_s.match(/cdr-role:patron>authenticated/)
             authenticated = rdf_version.xpath("rdf:Description/*[local-name() = 'patron']", MigrationConstants::NS).text
             if authenticated == 'authenticated'
-              work_attributes['visibility'] = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_AUTHENTICATED
+              @work_attributes['visibility'] = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_AUTHENTICATED
             end
           end
         end
 
 
         # Add work to specified collection
-        work_attributes['member_of_collections'] = Array(Collection.where(title: @collection_name).first)
+        @work_attributes['member_of_collections'] = Array(Collection.where(title: @collection_name).first)
         # Create collection if it does not yet exist
-        if !@collection_name.blank? && work_attributes['member_of_collections'].first.blank?
+        if !@collection_name.blank? && @work_attributes['member_of_collections'].first.blank?
           user_collection_type = Hyrax::CollectionType.where(title: 'User Collection').first.gid
-          work_attributes['member_of_collections'] = Array(Collection.create(title: [@collection_name],
+          @work_attributes['member_of_collections'] = Array(Collection.create(title: [@collection_name],
                                          depositor: @depositor.uid,
                                          collection_type_gid: user_collection_type))
         end
 
-        work_attributes['admin_set_id'] = (AdminSet.where(title: @admin_set).first || AdminSet.where(title: ENV['DEFAULT_ADMIN_SET']).first).id
+        @work_attributes['admin_set_id'] = (AdminSet.where(title: @admin_set).first || AdminSet.where(title: ENV['DEFAULT_ADMIN_SET']).first).id
 
-        work_attributes['person_label'] = @person_label.flatten.uniq if !@person_label.blank?
-        work_attributes['orcid_label'] = @orcid_label.flatten.uniq if !@orcid_label.blank?
-        work_attributes['affiliation_label'] = @affiliation_label.flatten.uniq if !@affiliation_label.blank?
-        work_attributes['other_affiliation_label'] = @other_affiliation_label.flatten.uniq if !@other_affiliation_label.blank?
+        @work_attributes['person_label'] = @person_label.flatten.uniq if !@person_label.blank?
+        @work_attributes['orcid_label'] = @orcid_label.flatten.uniq if !@orcid_label.blank?
+        @work_attributes['affiliation_label'] = @affiliation_label.flatten.uniq if !@affiliation_label.blank?
+        @work_attributes['other_affiliation_label'] = @other_affiliation_label.flatten.uniq if !@other_affiliation_label.blank?
 
-        { work_attributes: work_attributes.reject!{|k,v| v.blank?}, child_works: child_works }
+        { work_attributes: @work_attributes.reject!{|k,v| v.blank?}, child_works: child_works }
       end
 
       private
@@ -271,6 +261,15 @@ module Migrate
           name_array
         end
 
+        def get_person_info(mods, type)
+          if type == 'advisor'
+            @work_attributes[type+'s_attributes'] = parse_people_from_mods(mods, 'Thesis advisor')
+          else
+            @work_attributes[type+'s_attributes'] = parse_people_from_mods(mods, type.capitalize)
+          end
+          @work_attributes[type+'_display'] = build_person_display(@work_attributes[type+'s_attributes']) if !@work_attributes[type+'s_attributes'].blank?
+        end
+
         def parse_people_from_mods(mods, type)
           people = mods.xpath('mods:name[mods:role/mods:roleTerm/text()="'+type+'"]', MigrationConstants::NS)
 
@@ -287,9 +286,9 @@ module Migrate
             other_affiliation = person.xpath('mods:description', MigrationConstants::NS).text
 
             if type == 'Creator'
-              @creator_label.push(name)
+              @work_attributes['creator_label'].push(name)
             elsif type == 'Thesis advisor'
-              @advisor_label.push(name)
+              @work_attributes['advisor_label'].push(name)
             end
             @person_label.push(name)
             @orcid_label.push(orcid) if !orcid.blank?
