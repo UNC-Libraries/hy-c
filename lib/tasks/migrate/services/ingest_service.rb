@@ -61,11 +61,9 @@ module Migrate
 
           # Attach premis files
           if !work_attributes['premis_files'].blank?
-            work_attributes['premis_files'].each do |file|
+            work_attributes['premis_files'].each_with_index do |file, index|
               premis_file = @premis_hash[get_uuid_from_path(file)]
-              work_attributes['title'] = work_attributes['dc_title']
-              work_attributes['label'] = work_attributes['dc_title']
-              fileset_attrs = { 'title' => ['PREMIS_Events_Metadata.txt'],
+              fileset_attrs = { 'title' => ["PREMIS_Events_Metadata_#{index}.txt"],
                                 'visibility' => Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE }
               fileset = create_fileset(parent: new_work, resource: fileset_attrs, file: premis_file)
 
