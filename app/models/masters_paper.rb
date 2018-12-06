@@ -26,18 +26,6 @@ class MastersPaper < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :advisor_display, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#AdvisorDisplay') do |index|
-    index.as :stored_searchable
-  end
-
-  property :advisor_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#AdvisorLabel') do |index|
-    index.as :stored_searchable, :facetable
-  end
-
-  property :affiliation_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#AffiliationLabel') do |index|
-    index.as :stored_searchable, :facetable
-  end
-
   property :date_issued, predicate: ::RDF::Vocab::DC.issued, multiple: false do |index|
     index.as :stored_searchable, :facetable
   end
@@ -89,19 +77,7 @@ class MastersPaper < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :orcid_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#OrcidLabel') do |index|
-    index.as :stored_searchable
-  end
-
-  property :other_affiliation_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#OtherAffiliationLabel') do |index|
-    index.as :stored_searchable
-  end
-
   property :reviewers, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/rev'), class_name: 'Person' do |index|
-    index.as :stored_searchable
-  end
-
-  property :reviewer_display, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#ReviewerDisplay') do |index|
     index.as :stored_searchable
   end
 

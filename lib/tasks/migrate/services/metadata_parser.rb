@@ -10,12 +10,6 @@ module Migrate
         @collection_name = collection_name
         @depositor = depositor
         @admin_set = admin_set
-        @person_label = []
-        @creator_label = []
-        @advisor_label = []
-        @orcid_label = []
-        @affiliation_label = []
-        @other_affiliation_label = []
       end
 
       def parse
@@ -52,18 +46,16 @@ module Migrate
           work_attributes['title'] = descriptive_mods.xpath('mods:titleInfo[not(@*)]/mods:title', MigrationConstants::NS).map(&:text)
           work_attributes['label'] = work_attributes['title']
           work_attributes['alternative_title'] = descriptive_mods.xpath("mods:titleInfo[@type='alternative' or @type='translated']/mods:title", MigrationConstants::NS).map(&:text)
-          get_person_info(work_attributes, descriptive_mods, 'creator')
-          work_attributes['creator_label'] = @creator_label
-          get_person_info(work_attributes, descriptive_mods, 'contributor')
-          get_person_info(work_attributes, descriptive_mods, 'advisor')
-          work_attributes['advisor_label'] = @advisor_label
-          get_person_info(work_attributes, descriptive_mods, 'arranger')
-          get_person_info(work_attributes, descriptive_mods, 'composer')
-          get_person_info(work_attributes, descriptive_mods, 'funder')
-          get_person_info(work_attributes, descriptive_mods, 'project_director')
-          get_person_info(work_attributes, descriptive_mods, 'researcher')
-          get_person_info(work_attributes, descriptive_mods, 'reviewer')
-          get_person_info(work_attributes, descriptive_mods, 'translator')
+          work_attributes['creators_attributes'] = parse_people_from_mods(descriptive_mods, 'Creator')
+          work_attributes['contributors_attributes'] = parse_people_from_mods(descriptive_mods, 'Contributor')
+          work_attributes['advisors_attributes'] = parse_people_from_mods(descriptive_mods, 'Thesis advisor')
+          work_attributes['arrangers_attributes'] = parse_people_from_mods(descriptive_mods, 'Arranger')
+          work_attributes['composers_attributes'] = parse_people_from_mods(descriptive_mods, 'Composer')
+          work_attributes['funders_attributes'] = parse_people_from_mods(descriptive_mods, 'Funder')
+          work_attributes['project_directors_attributes'] = parse_people_from_mods(descriptive_mods, 'Project_director')
+          work_attributes['researchers_attributes'] = parse_people_from_mods(descriptive_mods, 'Researcher')
+          work_attributes['reviewers_attributes'] = parse_people_from_mods(descriptive_mods, 'Reviewer')
+          work_attributes['translators_attributes'] = parse_people_from_mods(descriptive_mods, 'Translator')
           work_attributes['sponsor'] = parse_names_from_mods(descriptive_mods, 'Sponsor')
           work_attributes['degree_granting_institution'] = parse_names_from_mods(descriptive_mods, 'Degree granting institution')
           work_attributes['conference_name'] = descriptive_mods.xpath('mods:name[@displayLabel="Conference" and @type="conference"]/mods:namePart', MigrationConstants::NS).map(&:text)
@@ -262,17 +254,6 @@ module Migrate
           name_array
         end
 
-        def get_person_info(work_attributes, mods, type)
-          if type == 'advisor'
-            work_attributes[type+'s_attributes'] = parse_people_from_mods(mods, 'Thesis advisor')
-          else
-            work_attributes[type+'s_attributes'] = parse_people_from_mods(mods, type.capitalize)
-          end
-          work_attributes[type+'_display'] = build_person_display(work_attributes[type+'s_attributes']) if !work_attributes[type+'s_attributes'].blank?
-
-          work_attributes
-        end
-
         def parse_people_from_mods(mods, type)
           people = mods.xpath('mods:name[mods:role/mods:roleTerm/text()="'+type+'"]', MigrationConstants::NS)
 
@@ -288,16 +269,6 @@ module Migrate
             affiliation = person.xpath('mods:affiliation', MigrationConstants::NS).map(&:text)
             other_affiliation = person.xpath('mods:description', MigrationConstants::NS).text
 
-            if type == 'Creator'
-              @creator_label.push(name)
-            elsif type == 'Thesis advisor'
-              @advisor_label.push(name)
-            end
-            @person_label.push(name)
-            @orcid_label.push(orcid) if !orcid.blank?
-            @affiliation_label.push(affiliation) if !affiliation.blank?
-            @other_affiliation_label.push(other_affiliation) if !other_affiliation.blank?
-
             person_hash[index.to_s] = { 'name' => name,
                                         'orcid' => orcid,
                                         'affiliation' => affiliation.join(', '),
@@ -305,19 +276,6 @@ module Migrate
           end
 
           person_hash.blank? ? nil : person_hash
-        end
-
-        def build_person_display(people)
-          displays = []
-          people.each do |k, v|
-            display_text = []
-            display_text << v['name'] if !v['name'].blank?
-            display_text << "ORCID: #{v['orcid']}" if !v['orcid'].blank?
-            display_text << "Affiliation: #{v['affiliation']}" if !v['affiliation'].blank?
-            display_text << "Other Affiliation: #{v['other_affiliation']}" if !v['other_affiliation'].blank?
-            displays << display_text.join('||')
-          end
-          displays.flatten
         end
 
         # Use language code to get iso639-2 uri from service

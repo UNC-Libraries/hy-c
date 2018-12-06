@@ -20,10 +20,8 @@ RSpec.describe Journal do
       expect(subject).to respond_to(:depositor)
       expect(subject).to respond_to(:contributor)
       expect(subject).to respond_to(:contributors)
-      expect(subject).to respond_to(:contributor_display)
       expect(subject).to respond_to(:creator)
       expect(subject).to respond_to(:creators)
-      expect(subject).to respond_to(:creator_display)
       expect(subject).to respond_to(:title)
       expect(subject).to respond_to(:label)
       expect(subject).to respond_to(:keyword)
@@ -41,7 +39,6 @@ RSpec.describe Journal do
 
       # Custom fields
       expect(subject).to respond_to(:abstract)
-      expect(subject).to respond_to(:affiliation_label)
       expect(subject).to respond_to(:alternative_title)
       expect(subject).to respond_to(:date_issued)
       expect(subject).to respond_to(:deposit_record)
@@ -52,9 +49,6 @@ RSpec.describe Journal do
       expect(subject).to respond_to(:isbn)
       expect(subject).to respond_to(:issn)
       expect(subject).to respond_to(:note)
-      expect(subject).to respond_to(:orcid_label)
-      expect(subject).to respond_to(:other_affiliation_label)
-      expect(subject).to respond_to(:person_label)
       expect(subject).to respond_to(:place_of_publication)
       expect(subject).to respond_to(:table_of_contents)
       expect(subject).to respond_to(:language_label)

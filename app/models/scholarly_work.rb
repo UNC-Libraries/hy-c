@@ -18,18 +18,6 @@ class ScholarlyWork < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :advisor_display, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#AdvisorDisplay') do |index|
-    index.as :stored_searchable
-  end
-
-  property :advisor_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#AdvisorLabel') do |index|
-    index.as :stored_searchable, :facetable
-  end
-
-  property :affiliation_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#AffiliationLabel') do |index|
-    index.as :stored_searchable, :facetable
-  end
-
   property :conference_name, predicate: ::RDF::Vocab::EBUCore.eventName do |index|
     index.as :stored_searchable
   end
@@ -60,14 +48,6 @@ class ScholarlyWork < ActiveFedora::Base
   end
 
   property :license_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#LicenseLabel') do |index|
-    index.as :stored_searchable
-  end
-
-  property :orcid_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#OrcidLabel') do |index|
-    index.as :stored_searchable
-  end
-
-  property :other_affiliation_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#OtherAffiliationLabel') do |index|
     index.as :stored_searchable
   end
 
