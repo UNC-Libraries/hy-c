@@ -18,10 +18,6 @@ class Article < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :affiliation_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#AffiliationLabel') do |index|
-    index.as :stored_searchable, :facetable
-  end
-
   property :copyright_date, predicate: ::RDF::Vocab::DC.dateCopyrighted, multiple: false do |index|
     index.as :stored_searchable
   end
@@ -91,14 +87,6 @@ class Article < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :orcid_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#OrcidLabel') do |index|
-    index.as :stored_searchable
-  end
-
-  property :other_affiliation_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#OtherAffiliationLabel') do |index|
-    index.as :stored_searchable
-  end
-
   property :page_end, predicate: ::RDF::Vocab::SCHEMA.pageEnd, multiple: false do |index|
     index.as :stored_searchable
   end
@@ -125,10 +113,6 @@ class Article < ActiveFedora::Base
   end
 
   property :translators, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/trl'), class_name: 'Person' do |index|
-    index.as :stored_searchable
-  end
-
-  property :translator_display, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#TranslatorDisplay') do |index|
     index.as :stored_searchable
   end
 

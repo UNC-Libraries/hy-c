@@ -14,10 +14,6 @@ class Multimed < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :affiliation_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#AffiliationLabel') do |index|
-    index.as :stored_searchable, :facetable
-  end
-
   property :date_issued, predicate: ::RDF::Vocab::DC.issued, multiple: false do |index|
     index.as :stored_searchable, :facetable
   end
@@ -56,14 +52,6 @@ class Multimed < ActiveFedora::Base
   end
 
   property :note, predicate: ::RDF::Vocab::SKOS.note do |index|
-    index.as :stored_searchable
-  end
-
-  property :orcid_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#OrcidLabel') do |index|
-    index.as :stored_searchable
-  end
-
-  property :other_affiliation_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#OtherAffiliationLabel') do |index|
     index.as :stored_searchable
   end
 

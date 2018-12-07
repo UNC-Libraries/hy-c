@@ -73,14 +73,12 @@ RSpec.describe Hyrax::MultimedForm do
 
     it "permits parameters" do
       expect(subject['title']).to eq ['multimed name']
-      expect(subject['creator_display']).to eq ['creator||ORCID: creator orcid||Affiliation: School of Medicine, Carolina Center for Genome Sciences||Other Affiliation: another affiliation']
       expect(subject['subject']).to eq ['a subject']
       expect(subject['language']).to eq ['http://id.loc.gov/vocabulary/iso639-2/eng']
       expect(subject['resource_type']).to eq ['a type']
       expect(subject['license']).to eq ['http://creativecommons.org/licenses/by/3.0/us/']
       expect(subject['rights_statement']).to eq 'http://rightsstatements.org/vocab/InC/1.0/'
       expect(subject['note']).to eq ['a note']
-      expect(subject['person_label']).to match_array ['creator']
       expect(subject['medium']).to eq ['a medium']
       expect(subject['keyword']).to eq ['multimed']
       expect(subject['abstract']).to eq ['an abstract']
@@ -92,9 +90,6 @@ RSpec.describe Hyrax::MultimedForm do
       expect(subject['geographic_subject']).to eq ['Italy']
       expect(subject['language_label']).to eq ['English']
       expect(subject['license_label']).to eq ['Attribution 3.0 United States']
-      expect(subject['orcid_label']).to match_array ['creator orcid']
-      expect(subject['affiliation_label']).to match_array ['School of Medicine', 'Carolina Center for Genome Sciences']
-      expect(subject['other_affiliation_label']).to match_array ['another affiliation']
       expect(subject['rights_statement_label']).to eq 'In Copyright'
     end
 

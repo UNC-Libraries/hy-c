@@ -96,7 +96,6 @@ RSpec.describe Hyrax::MastersPaperForm do
 
     it 'permits parameters' do
       expect(subject['title']).to eq ['foo']
-      expect(subject['creator_display']).to eq ['creator||ORCID: creator orcid||Affiliation: School of Medicine, Carolina Center for Genome Sciences||Other Affiliation: another affiliation']
       expect(subject['subject']).to eq ['a subject']
       expect(subject['language']).to eq ['http://id.loc.gov/vocabulary/iso639-2/eng']
       expect(subject['license']).to eq ['http://creativecommons.org/licenses/by/3.0/us/']
@@ -109,8 +108,6 @@ RSpec.describe Hyrax::MastersPaperForm do
       expect(subject['abstract']).to be_empty
       expect(subject['academic_concentration']).to eq ['a concentration']
       expect(subject['access']).to eq 'public'
-      expect(subject['advisor_display']).to eq ['advisor||ORCID: advisor orcid||Affiliation: School of Medicine, Carolina Center for Genome Sciences||Other Affiliation: another affiliation']
-      expect(subject['affiliation_label']).to eq ['School of Medicine', 'Carolina Center for Genome Sciences']
       expect(subject['date_issued']).to eq 'a date'
       expect(subject['degree']).to eq 'MS'
       expect(subject['degree_granting_institution']).to eq 'UNC'
@@ -120,10 +117,6 @@ RSpec.describe Hyrax::MastersPaperForm do
       expect(subject['geographic_subject']).to eq ['a geographic subject']
       expect(subject['graduation_year']).to eq '2017'
       expect(subject['note']).to eq ['a note']
-      expect(subject['orcid_label']).to match_array ['creator orcid', 'advisor orcid', 'reviewer orcid']
-      expect(subject['other_affiliation_label']).to match_array ['another affiliation']
-      expect(subject['person_label']).to match_array ['creator', 'advisor', 'reviewer']
-      expect(subject['reviewer_display']).to eq ['reviewer||ORCID: reviewer orcid||Affiliation: School of Medicine, Carolina Center for Genome Sciences||Other Affiliation: another affiliation']
       expect(subject['use']).to eq ['a use']
       expect(subject['language_label']).to eq ['English']
       expect(subject['license_label']).to eq ['Attribution 3.0 United States']

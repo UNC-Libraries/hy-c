@@ -25,8 +25,8 @@ RSpec.describe Hyrax::Workflow::DeletionRequestRejectionNotification do
     it 'sends a message to all users' do
       expect(approver).to receive(:send_message)
                               .with(anything,
-                                    "The deletion request for #{work.title[0]} (<a href=\"#{ENV['HYRAX_HOST']}/concern/articles/#{work.id}\">#{work.id}</a>) "\
-      "was rejected by #{approver.user_key}. #{comment.comment}",
+                                    I18n.t('hyrax.notifications.workflow.deletion_rejected.message', title: work.title[0], work_id: work.id,
+                                           document_path: "#{ENV['HYRAX_HOST']}/concern/articles/#{work.id}", user: approver, comment: comment.comment),
                                     anything).exactly(3).times.and_call_original
 
       expect { described_class.send_notification(entity: entity, user: approver, comment: comment, recipients: recipients) }
