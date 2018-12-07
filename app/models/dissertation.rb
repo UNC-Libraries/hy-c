@@ -26,18 +26,6 @@ class Dissertation < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :advisor_display, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#AdvisorDisplay') do |index|
-    index.as :stored_searchable
-  end
-
-  property :advisor_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#AdvisorLabel') do |index|
-    index.as :stored_searchable, :facetable
-  end
-
-  property :affiliation_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#AffiliationLabel') do |index|
-    index.as :stored_searchable, :facetable
-  end
-
   property :alternative_title, predicate: ::RDF::Vocab::DC.alternative do |index|
     index.as :stored_searchable
   end
@@ -89,23 +77,11 @@ class Dissertation < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :orcid_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#OrcidLabel') do |index|
-    index.as :stored_searchable
-  end
-
-  property :other_affiliation_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#OtherAffiliationLabel') do |index|
-    index.as :stored_searchable
-  end
-
   property :place_of_publication, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/pup') do |index|
     index.as :stored_searchable
   end
 
   property :reviewers, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/rev'), class_name: 'Person' do |index|
-    index.as :stored_searchable
-  end
-
-  property :reviewer_display, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#ReviewerDisplay') do |index|
     index.as :stored_searchable
   end
 

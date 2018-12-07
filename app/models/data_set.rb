@@ -14,10 +14,6 @@ class DataSet < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :affiliation_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#AffiliationLabel') do |index|
-    index.as :stored_searchable, :facetable
-  end
-
   property :date_issued, predicate: ::RDF::Vocab::DC.issued, multiple: false do |index|
     index.as :stored_searchable, :facetable
   end
@@ -63,27 +59,11 @@ class DataSet < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :orcid_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#OrcidLabel') do |index|
-    index.as :stored_searchable
-  end
-
-  property :other_affiliation_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#OtherAffiliationLabel') do |index|
-    index.as :stored_searchable
-  end
-
   property :project_directors, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/pdr'), class_name: 'Person' do |index|
     index.as :stored_searchable
   end
 
-  property :project_director_display, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#ProjectDirectorDisplay') do |index|
-    index.as :stored_searchable
-  end
-
   property :researchers, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/res'), class_name: 'Person' do |index|
-    index.as :stored_searchable
-  end
-
-  property :researcher_display, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#ResearcherDisplay') do |index|
     index.as :stored_searchable
   end
 

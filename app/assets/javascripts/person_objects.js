@@ -90,7 +90,8 @@ function delete_record(selector, model, index) {
 }
 
 function updateNewRow(new_row, selector, attr, index) {
-    var $input = $(new_row).find('div.'+selector+'-'+attr+' input,select');
+    var model = $(new_row).find('div.'+selector+'-name input').prop('name').split('[')[0];
+    var $input = $(new_row).find('div.'+selector+'-'+attr+' > '+model+'_'+selector+'s_'+attr+' > input,select');
     $input.prop('name', $input.prop('name').replace(/\d/, index));
     $input.attr('id', $input.attr('id').replace(/\d/, index));
 }

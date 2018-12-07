@@ -23,10 +23,8 @@ RSpec.describe Multimed do
       expect(subject).to respond_to(:based_near)
       expect(subject).to respond_to(:contributor)
       expect(subject).to respond_to(:contributors)
-      expect(subject).to respond_to(:contributor_display)
       expect(subject).to respond_to(:creator)
       expect(subject).to respond_to(:creators)
-      expect(subject).to respond_to(:creator_display)
       expect(subject).to respond_to(:title)
       expect(subject).to respond_to(:label)
       expect(subject).to respond_to(:keyword)
@@ -46,7 +44,6 @@ RSpec.describe Multimed do
 
       # Additional metadata
       expect(subject).to respond_to(:abstract)
-      expect(subject).to respond_to(:affiliation_label)
       expect(subject).to respond_to(:deposit_record)
       expect(subject).to respond_to(:doi)
       expect(subject).to respond_to(:extent)
@@ -54,9 +51,6 @@ RSpec.describe Multimed do
       expect(subject).to respond_to(:geographic_subject)
       expect(subject).to respond_to(:medium)
       expect(subject).to respond_to(:note)
-      expect(subject).to respond_to(:orcid_label)
-      expect(subject).to respond_to(:other_affiliation_label)
-      expect(subject).to respond_to(:person_label)
       expect(subject).to respond_to(:language_label)
       expect(subject).to respond_to(:license_label)
       expect(subject).to respond_to(:rights_statement_label)

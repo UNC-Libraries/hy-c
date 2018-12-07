@@ -196,7 +196,7 @@ RSpec.feature 'Create a General', js: false do
       expect(page).to have_content 'Date other October 3, 2018'
       expect(page).to have_content 'Degree Bachelor of Science'
       expect(page).to have_content 'Degree granting institution UNC'
-      expect(page).to have_content 'Description a description'
+      expect(page).to have_content 'a description'
       expect(page).to have_content 'DOI some doi'
       expect(page).to have_content 'Version Preprint'
       expect(page).to have_content 'Extent some extent'

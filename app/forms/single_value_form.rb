@@ -63,62 +63,6 @@ class SingleValueForm < Hyrax::Forms::WorkForm
       end
     end
 
-    @person_label = []
-    @creator_label = []
-    @advisor_label = []
-    @orcid_label = []
-    @affiliation_label = []
-    @other_affiliation_label = []
-
-    if attrs.key?(:advisors_attributes) && !attrs[:advisors_attributes].blank?
-      attrs[:advisors_attributes].map{ |k, v| person_label_fields(v) }
-      attrs[:advisors_attributes].map{ |k, v| facet_field(v, 'advisor') }
-      attrs[:advisor_display] = attrs[:advisors_attributes].map{ |k, v| build_person_display(v) }
-      attrs['advisor_label'] = @advisor_label
-    end
-
-    if attrs.key?(:arrangers_attributes) && !attrs[:arrangers_attributes].blank?
-      attrs[:arrangers_attributes].map{ |k, v| person_label_fields(v) }
-      attrs[:arranger_display] = attrs[:arrangers_attributes].map{ |k, v| build_person_display(v) }
-    end
-
-    if attrs.key?(:composers_attributes) && !attrs[:composers_attributes].blank?
-      attrs[:composers_attributes].map{ |k, v| person_label_fields(v) }
-      attrs[:composer_display] = attrs[:composers_attributes].map{ |k, v| build_person_display(v) }
-    end
-
-    if attrs.key?(:contributors_attributes) && !attrs[:contributors_attributes].blank?
-      attrs[:contributors_attributes].map{ |k, v| person_label_fields(v) }
-      attrs[:contributor_display] = attrs[:contributors_attributes].map{ |k, v| build_person_display(v) }
-    end
-
-    if attrs.key?(:creators_attributes) && !attrs[:creators_attributes].blank?
-      attrs[:creators_attributes].map{ |k, v| person_label_fields(v) }
-      attrs[:creators_attributes].map{ |k, v| facet_field(v, 'creator') }
-      attrs[:creator_display] = attrs[:creators_attributes].map{ |k, v| build_person_display(v) }
-      attrs['creator_label'] = @creator_label
-    end
-
-    if attrs.key?(:project_directors_attributes) && !attrs[:project_directors_attributes].blank?
-      attrs[:project_directors_attributes].map{ |k, v| person_label_fields(v) }
-      attrs[:project_director_display] = attrs[:project_directors_attributes].map{ |k, v| build_person_display(v) }
-    end
-
-    if attrs.key?(:researchers_attributes) && !attrs[:researchers_attributes].blank?
-      attrs[:researchers_attributes].map{ |k, v| person_label_fields(v) }
-      attrs[:researcher_display] = attrs[:researchers_attributes].map{ |k, v| build_person_display(v) }
-    end
-
-    if attrs.key?(:reviewers_attributes) && !attrs[:reviewers_attributes].blank?
-      attrs[:reviewers_attributes].map{ |k, v| person_label_fields(v) }
-      attrs[:reviewer_display] = attrs[:reviewers_attributes].map{ |k, v| build_person_display(v) }
-    end
-
-    if attrs.key?(:translators_attributes) && !attrs[:translators_attributes].blank?
-      attrs[:translators_attributes].map{ |k, v| person_label_fields(v) }
-      attrs[:translator_display] = attrs[:translators_attributes].map{ |k, v| build_person_display(v) }
-    end
-
     if attrs.key?(:language) && !attrs[:language].blank?
       Array(attrs[:language]).each do |language|
         attrs[:language_label] << LanguagesService.label(language)
@@ -135,10 +79,15 @@ class SingleValueForm < Hyrax::Forms::WorkForm
       attrs[:rights_statement_label] = CdrRightsStatementsService.label(attrs[:rights_statement])
     end
 
-    attrs[:person_label] = @person_label.flatten.uniq if !@person_label.blank?
-    attrs[:orcid_label] = @orcid_label.flatten.uniq if !@orcid_label.blank?
-    attrs[:affiliation_label] = @affiliation_label.flatten.uniq if !@affiliation_label.blank?
-    attrs[:other_affiliation_label] = @other_affiliation_label.flatten.uniq if !@other_affiliation_label.blank?
+    attrs.each do |person_key, person_value|
+      if person_key.to_s.match('_attributes')
+        person_value.each do |k,v|
+          if !v['affiliation'].blank?
+            v['affiliation'] = split_affiliations(v['affiliation'])
+          end
+        end
+      end
+    end
 
     attrs
   end
@@ -178,31 +127,5 @@ class SingleValueForm < Hyrax::Forms::WorkForm
       end
 
       affiliations_list.uniq
-    end
-
-    def self.build_person_display(person_attrs)
-      display_text = []
-      display_text << person_attrs['name'] if !person_attrs['name'].blank?
-      display_text << "ORCID: #{person_attrs['orcid']}" if !person_attrs['orcid'].blank?
-      display_text << "Affiliation: #{split_affiliations(person_attrs['affiliation']).join(', ')}" if !person_attrs['affiliation'].blank?
-      display_text << "Other Affiliation: #{person_attrs['other_affiliation']}" if !person_attrs['other_affiliation'].blank?
-      display_text.join('||')
-    end
-
-    def self.person_label_fields(person_attrs)
-      if !person_attrs['name'].blank?
-        @person_label.push(person_attrs['name'])
-        @orcid_label.push(person_attrs['orcid']) if !person_attrs['orcid'].blank?
-        @affiliation_label.push(split_affiliations(person_attrs['affiliation'])) if !person_attrs['affiliation'].blank?
-        @other_affiliation_label.push(person_attrs['other_affiliation']) if !person_attrs['other_affiliation'].blank?
-      end
-    end
-
-    def self.facet_field(person_attrs, person_type)
-      if person_type == 'creator'
-        @creator_label.push(person_attrs['name']) if !person_attrs['name'].blank?
-      elsif person_type == 'advisor'
-        @advisor_label.push(person_attrs['name']) if !person_attrs['name'].blank?
-      end
     end
 end

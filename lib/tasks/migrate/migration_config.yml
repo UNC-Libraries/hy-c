@@ -7,13 +7,12 @@ collection1:
   admin_set: default
   depositor_email: admin@example.com
 collection2:
-  collection_list: spec/fixtures/migration/collection.csv
-  objects: spec/fixtures/migration/objects.txt
-  binaries: spec/fixtures/migration/binaries.txt
+  collection_list: lib/tasks/migration/bxc_test_collection.csv
+  objects: lib/tasks/migration/test_objects.txt
+  binaries: lib/tasks/migration/binaries.txt
   work_type: General
   admin_set: default
   depositor_email: admin@example.com
-  collection_name: New Collection
 collection3:
   collection_list: spec/fixtures/migration/collection.csv
   objects: spec/fixtures/migration/objects.txt

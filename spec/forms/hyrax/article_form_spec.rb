@@ -107,7 +107,6 @@ RSpec.describe Hyrax::ArticleForm do
 
     it 'permits parameters' do
       expect(subject['title']).to eq ['foo']
-      expect(subject['creator_display']).to eq ['creator||ORCID: creator orcid||Affiliation: School of Medicine, Carolina Center for Genome Sciences||Other Affiliation: another affiliation']
       expect(subject['bibliographic_citation']).to eq ['a citation']
       expect(subject['date_created']).to eq '2017-01-22'
       expect(subject['language']).to eq ['http://id.loc.gov/vocabulary/iso639-2/eng']
@@ -123,7 +122,6 @@ RSpec.describe Hyrax::ArticleForm do
       expect(subject['member_of_collection_ids']).to eq ['123456', 'abcdef']
       expect(subject['abstract']).to eq ['an abstract']
       expect(subject['access']).to eq 'public'
-      expect(subject['affiliation_label']).to match_array ['School of Medicine', 'Carolina Center for Genome Sciences']
       expect(subject['copyright_date']).to eq '2017-01-22'
       expect(subject['date_issued']).to eq '2017-01-22'
       expect(subject['date_other']).to be_empty
@@ -138,15 +136,11 @@ RSpec.describe Hyrax::ArticleForm do
       expect(subject['journal_title']).to eq 'Journal Title'
       expect(subject['journal_volume']).to eq '4'
       expect(subject['note']).to eq ['a note']
-      expect(subject['orcid_label']).to eq ['creator orcid', 'translator orcid']
-      expect(subject['other_affiliation_label']).to eq ['another affiliation']
       expect(subject['page_end']).to eq '11'
       expect(subject['page_start']).to eq '8'
       expect(subject['peer_review_status']).to eq 'in review'
-      expect(subject['person_label']).to eq ['creator', 'translator']
       expect(subject['place_of_publication']).to eq ['durham']
       expect(subject['rights_holder']).to eq ['dean']
-      expect(subject['translator_display']).to eq ['translator||ORCID: translator orcid||Affiliation: School of Medicine, Carolina Center for Genome Sciences||Other Affiliation: another affiliation']
       expect(subject['use']).to eq ['a use']
       expect(subject['language_label']).to eq ['English']
       expect(subject['license_label']).to eq ['Attribution 3.0 United States']
