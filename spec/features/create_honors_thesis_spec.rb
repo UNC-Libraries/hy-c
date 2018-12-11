@@ -105,7 +105,7 @@ RSpec.feature 'Create a HonorsThesis', js: false do
         attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'), make_visible: true)
       end
 
-      click_link "Relationships"
+      click_link "Add to Collection"
       expect(page).to_not have_content 'Administrative Set'
 
       click_button 'Save'
@@ -204,7 +204,7 @@ RSpec.feature 'Create a HonorsThesis', js: false do
         attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'), make_visible: true)
       end
 
-      click_link "Relationships"
+      click_link "Add to Collection"
       expect(page).to have_content 'Administrative Set'
       find('#honors_thesis_admin_set_id').text eq 'honors thesis admin set'
 

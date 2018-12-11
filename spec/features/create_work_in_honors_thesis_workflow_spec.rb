@@ -109,7 +109,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
         attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'), make_visible: true)
       end
 
-      click_link "Relationships"
+      click_link "Add to Collection"
       expect(page).to_not have_content 'Administrative Set'
 
       click_button 'Save'
