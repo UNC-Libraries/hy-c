@@ -4,9 +4,11 @@
 
   <div class="batch-toggle">
     <% session[:batch_edit_state] = "on" %>
-    <div class="button_to-inline">
-      <%= button_to t('hyrax.dashboard.my.action.edit_selected'), hyrax.edit_batch_edits_path, method: :get, class: "btn btn-update btn-primary hidden submits-batches", data: { behavior: 'batch-edit' }, id: 'batch-edit' %>
-    </div>
+    <% if Flipflop.batch_upload? %>
+      <div class="button_to-inline">
+        <%= button_to t('hyrax.dashboard.my.action.edit_selected'), hyrax.edit_batch_edits_path, method: :get, class: "btn btn-update btn-primary hidden submits-batches", data: { behavior: 'batch-edit' }, id: 'batch-edit' %>
+      </div>
+    <% end %>
     <%= button_tag t('hyrax.dashboard.my.action.add_to_collection'),
                    class: 'btn btn-primary submits-batches submits-batches-add',
                    data: { toggle: "modal", target: "#collection-list-container" } %>
