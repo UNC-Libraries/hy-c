@@ -29,6 +29,7 @@ module Hyrax
     end
 
     def no_batch_deletion
+      return if current_user.admin?
       redirect_back(
           fallback_location: root_path,
           alert: "Batch deletion is not allowed."
