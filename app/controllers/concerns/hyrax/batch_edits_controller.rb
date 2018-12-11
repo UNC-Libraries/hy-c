@@ -1,3 +1,4 @@
+# [hyc-override] Overriding partial in hyrax gem to not allow batch deletion from anyone, including admins
 module Hyrax
   class BatchEditsController < ApplicationController
     include FileSetHelper
@@ -5,6 +6,7 @@ module Hyrax
     include Hyrax::Collections::AcceptsBatches
 
     before_action :build_breadcrumbs, only: :edit
+    before_action :no_batch_deletion, only: [:destroy_collection]
     before_action :filter_docs_with_access!, only: [:edit, :update, :destroy_collection]
     before_action :check_for_empty!, only: [:edit, :update, :destroy_collection]
 
@@ -24,6 +26,13 @@ module Hyrax
         format.json { head :no_content }
         format.html { redirect_to_return_controller }
       end
+    end
+
+    def no_batch_deletion
+      redirect_back(
+          fallback_location: root_path,
+          alert: "Batch deletion is not allowed."
+      )
     end
 
     def after_destroy_collection
