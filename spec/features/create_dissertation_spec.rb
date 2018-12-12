@@ -132,16 +132,20 @@ RSpec.feature 'Create a Dissertation', js: false do
       expect(page).to have_content 'Test Dissertation work'
 
       first('.document-title', text: 'Test Dissertation work').click
-      expect(page).to have_content 'Creator Test Default Creator ORCID: creator orcid Affiliation: College of Arts and Sciences, Department of Biology Other Affiliation: UNC'
+      expect(page).to have_content 'Creator Test Default Creator ORCID: creator orcid'
+      expect(page).to have_content 'Affiliation:'
+      expect(page).to have_content 'College of Arts and Sciences'
+      expect(page).to have_content 'Department of Biology'
+      expect(page).to have_content 'Other Affiliation: UNC'
       expect(page).to have_content 'Date of publication October 3, 2018'
       expect(page).to have_content 'Degree granting institution UNC'
 
       # extra fields
       expect(page).to have_content 'Abstract some abstract'
       expect(page).to have_content 'Academic concentration Clinical Nutrition'
-      expect(page).to have_content 'Advisor advisor ORCID: advisor orcid Affiliation: College of Arts and Sciences, Department of Biology Other Affiliation: UNC'
+      expect(page).to have_content 'Advisor advisor ORCID: advisor orcid'
       expect(page).to have_content 'Alternate title another title'
-      expect(page).to have_content 'Contributor contributor ORCID: contributor orcid Affiliation: College of Arts and Sciences, Department of Biology Other Affiliation: UNC'
+      expect(page).to have_content 'Contributor contributor ORCID: contributor orcid'
       expect(page).to have_content 'Degree Bachelor of Science'
       expect(page).to have_content 'DOI some doi'
       expect(page).to have_content 'Resource type Dissertation'
@@ -155,7 +159,7 @@ RSpec.feature 'Create a Dissertation', js: false do
       expect(page).to have_content 'Note a note'
       expect(page).to have_content 'Place of publication UNC'
       expect(page).to have_content 'Publisher UNC Press'
-      expect(page).to have_content 'Reviewer reviewer ORCID: reviewer orcid Affiliation: College of Arts and Sciences, Department of Biology Other Affiliation: UNC'
+      expect(page).to have_content 'Reviewer reviewer ORCID: reviewer orcid'
       expect(page).to have_content 'Rights statement In Copyright'
       expect(page).to have_content 'Subject test'
       expect(page).to have_content 'Use some use'

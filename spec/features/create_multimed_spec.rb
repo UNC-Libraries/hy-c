@@ -105,7 +105,11 @@ RSpec.feature 'Create a Multimed', js: false do
 
       first('.document-title', text: 'Test Multimed').click
       expect(page).to have_content 'Abstract an abstract'
-      expect(page).to have_content 'Creator Test Default Creator ORCID: creator orcid Affiliation: College of Arts and Sciences, Department of Biology Other Affiliation: UNC'
+      expect(page).to have_content 'Creator Test Default Creator ORCID: creator orcid'
+      expect(page).to have_content 'Affiliation:'
+      expect(page).to have_content 'College of Arts and Sciences'
+      expect(page).to have_content 'Department of Biology'
+      expect(page).to have_content 'Other Affiliation: UNC'
       expect(page).to have_content 'Date of publication October 3, 2018'
       expect(page).to have_content 'Extent some extent'
       expect(page).to have_content 'Location some geographic subject'
@@ -184,7 +188,11 @@ RSpec.feature 'Create a Multimed', js: false do
 
       first('.document-title', text: 'Test Multimed').click
       expect(page).to have_content 'Abstract an abstract'
-      expect(page).to have_content 'Creator Test Default Creator ORCID: creator orcid Affiliation: College of Arts and Sciences, Department of Biology Other Affiliation: UNC'
+      expect(page).to have_content 'Creator Test Default Creator ORCID: creator orcid'
+      expect(page).to have_content 'Affiliation:'
+      expect(page).to have_content 'College of Arts and Sciences'
+      expect(page).to have_content 'Department of Biology'
+      expect(page).to have_content 'Other Affiliation: UNC'
       expect(page).to have_content 'Date created October 3, 2018'
       expect(page).to have_content 'Date of publication October 3, 2018'
       expect(page).to have_content 'Type http://purl.org/dc/dcmitype/Text'
