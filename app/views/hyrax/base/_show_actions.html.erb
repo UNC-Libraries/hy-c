@@ -57,6 +57,7 @@
     <% end %>
 
   <% end %>
+
   <% if @presenter.workflow.actions.present? &&
       !@presenter.workflow.actions.select{|action| action[0] == 'request_deletion'}.blank? %>
     <button class="btn btn-danger" data-toggle="modal" data-target="#deletion-request-modal">Request Deletion</button>
