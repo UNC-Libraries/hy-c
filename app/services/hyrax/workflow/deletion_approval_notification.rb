@@ -4,11 +4,12 @@ module Hyrax
       private
 
       def subject
-        'Requested deletion has been approved'
+        I18n.t('hyrax.notifications.workflow.deletion_approved.subject')
       end
 
       def message
-        "The deletion request for #{title} (#{link_to work_id, document_path}) was approved by #{user.user_key}. #{comment}"
+        I18n.t('hyrax.notifications.workflow.deletion_approved.message', title: title, work_id: work_id,
+               document_path: document_path, user: user, comment: comment)
       end
 
       def users_to_notify

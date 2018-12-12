@@ -2,7 +2,7 @@
 <nav class="navbar navbar-default navbar-static-top" role="navigation">
   <div class="container-fluid">
     <div class="row">
-      <ul class="nav navbar-nav col-sm-5 col-md-6">
+      <ul class="nav navbar-nav col-sm-5">
         <li <%= 'class=active' if current_page?(hyrax.root_path) %>>
           <%= link_to t(:'hyrax.links.collections'), main_app.search_catalog_path(f: { human_readable_type_sim: ["Collection"]}) %></li>
         <li <%= 'class=active' if current_page?(hyrax.root_path) %>>
@@ -17,7 +17,7 @@
           </li>
         <% end %>
       </ul><!-- /.nav -->
-      <div class="searchbar-right navbar-right col-sm-7 col-md-6">
+      <div class="searchbar-right navbar-right col-sm-7">
         <%= render partial: 'catalog/search_form' %>
       </div>
     </div>

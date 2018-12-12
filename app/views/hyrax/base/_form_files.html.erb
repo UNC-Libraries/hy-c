@@ -17,12 +17,12 @@
 
         <%# [hyc-override] Overriding partial in hyrax gem to allow for tab focusable file upload %>
         <!-- The fileinput-button span is used to style the file input field as button -->
-        <input type="file" id="addFiles" name="files[]" class="hidden-file-input" multiple>
+        <input type="file" id="addFiles" name="files[]" aria-hidden="true" class="hidden-file-input" multiple>
         <label for="addFiles" class="btn btn-success fileinput-button"><span class="glyphicon glyphicon-plus"></span> Add files...</label>
 
         <%# [hyc-override] Overriding partial in hyrax gem to allow for tab focusable folder upload %>
         <!-- The fileinput-button span is used to style the file input field as button -->
-        <input type="file" id="addFolder" name="files[]" class="hidden-file-input" multiple directory webkitdirectory>
+        <input type="file" id="addFolder" name="files[]" aria-hidden="true" class="hidden-file-input" multiple directory webkitdirectory>
         <label for="addFolder" class="btn btn-success fileinput-button"><span class="glyphicon glyphicon-plus"></span> Add folder...</label>
 
         <% if Hyrax.config.browse_everything? %>

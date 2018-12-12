@@ -5,10 +5,11 @@ module Migrate
 
     class IngestService
 
-      def initialize(config, object_hash, binary_hash, mapping_file, depositor)
+      def initialize(config, object_hash, binary_hash, premis_hash, mapping_file, depositor)
         @collection_ids_file = config['collection_list']
         @object_hash = object_hash
         @binary_hash = binary_hash
+        @premis_hash = premis_hash
         @work_type = config['work_type']
         @admin_set = config['admin_set']
         @child_work_type = config['child_work_type']
@@ -57,6 +58,18 @@ module Migrate
 
           # Save list of child filesets
           ordered_members = Array.new
+
+          # Attach premis files
+          if !work_attributes['premis_files'].blank?
+            work_attributes['premis_files'].each_with_index do |file, index|
+              premis_file = @premis_hash[get_uuid_from_path(file)]
+              fileset_attrs = { 'title' => ["PREMIS_Events_Metadata_#{index}.txt"],
+                                'visibility' => Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE }
+              fileset = create_fileset(parent: new_work, resource: fileset_attrs, file: premis_file)
+
+              ordered_members << fileset
+            end
+          end
 
           # Create children
           if !work_attributes['cdr_model_type'].blank? &&
@@ -158,7 +171,6 @@ module Migrate
           else
             resource = @work_type.singularize.classify.constantize.new
           end
-          resource.creator = work_attributes['creator']
           resource.depositor = @depositor.uid
           resource.save
 
@@ -172,7 +184,13 @@ module Migrate
           end
 
           # Only keep attributes which apply to the given work type
-          resource.attributes = work_attributes.reject{|k,v| !resource.attributes.keys.member?(k.to_s)}
+          work_attributes.select {|k,v| k.ends_with? '_attributes'}.each do |k,v|
+            if !resource.respond_to?(k.to_s+'=')
+              work_attributes.delete(k.split('s_')[0]+'_display')
+              work_attributes.delete(k)
+            end
+          end
+          resource.attributes = work_attributes.reject{|k,v| !resource.attributes.keys.member?(k.to_s) unless k.ends_with? '_attributes'}
 
           resource.visibility = work_attributes['visibility']
           unless work_attributes['embargo_release_date'].blank?

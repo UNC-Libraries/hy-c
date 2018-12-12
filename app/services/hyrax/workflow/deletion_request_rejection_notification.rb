@@ -4,11 +4,12 @@ module Hyrax
       private
 
       def subject
-        'Requested deletion was not approved'
+        I18n.t('hyrax.notifications.workflow.deletion_rejected.subject')
       end
 
       def message
-        "The deletion request for #{title} (#{link_to work_id, document_path}) was rejected by #{user.user_key}. #{comment}"
+        I18n.t('hyrax.notifications.workflow.deletion_rejected.message', title: title, work_id: work_id,
+               document_path: document_path, user: user, comment: comment)
       end
 
       def users_to_notify
