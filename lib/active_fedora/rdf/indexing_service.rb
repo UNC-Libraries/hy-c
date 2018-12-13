@@ -5,9 +5,9 @@ module ActiveFedora::RDF
   #
   # @see ActiveFedora::Indexing
   # @see ActiveFedora::IndexingService
-  require 'active_fedora/indexing/inserter'
 
   class IndexingService
+    include Solrizer::Common
     attr_reader :object, :index_config
 
     # [hyc-override] fields in person class
@@ -101,7 +101,7 @@ module ActiveFedora::RDF
     #     end
     # [hyc-override] replaced field_info with behaviors in params
     def append_to_solr_doc(solr_doc, solr_field_key, behaviors, val)
-      ActiveFedora::Indexing::Inserter.create_and_insert_terms(solr_field_key,
+      self.class.create_and_insert_terms(solr_field_key,
                                                                solr_document_field_value(val),
                                                                behaviors,
                                                                solr_doc)
