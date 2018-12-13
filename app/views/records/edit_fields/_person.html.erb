@@ -21,6 +21,7 @@
         <%= person.input :affiliation, as: :select,
                           collection: DepartmentsService.select_all_options.sort,
                           include_blank: true,
+                          required: f.object.required?(:affiliation),
                           selected: person.object.affiliation.first,
                           item_helper: DepartmentsService.method(:include_current_value),
                           input_html: { class: 'form-control' }
