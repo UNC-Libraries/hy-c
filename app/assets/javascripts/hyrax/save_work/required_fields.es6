@@ -1,4 +1,4 @@
-// [hyc-override] Override to allow form to be submitted with hidden, empty, cloning people object fields
+// [hyc-override] Override to allow form to be submitted with hidden, empty, cloning fields
 export class RequiredFields {
     // Monitors the form and runs the callback if any of the required fields change
     constructor(form, callback) {
@@ -16,7 +16,7 @@ export class RequiredFields {
         let selector = $(elem);
         let parentHidden = selector.parent().closest('div.cloning');
 
-        if ((parentHidden.hasClass('hidden') && parentHidden.hasClass('cloning'))) {
+        if (parentHidden.hasClass('hidden') && parentHidden.hasClass('cloning')) {
             return false;
         }
 
