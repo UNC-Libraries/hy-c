@@ -172,6 +172,15 @@ module Migrate
             work_attributes['contained_files'].uniq!
           end
 
+          # Find premis file
+          work_attributes['premis_files'] = []
+          premis_mods = metadata.xpath("//foxml:datastream[contains(@ID, 'MD_EVENTS')]", MigrationConstants::NS).last
+          if !premis_mods.blank?
+            premis_reference = premis_mods.xpath("foxml:datastreamVersion/foxml:contentLocation/@REF", MigrationConstants::NS).map(&:text)
+            premis_reference.each do |reference|
+              work_attributes['premis_files'] << get_uuid_from_path(reference)
+            end
+          end
 
           # Set access controls for work
           # Set default visibility first
@@ -225,11 +234,6 @@ module Migrate
         end
 
         work_attributes['admin_set_id'] = (AdminSet.where(title: @admin_set).first || AdminSet.where(title: ENV['DEFAULT_ADMIN_SET']).first).id
-
-        work_attributes['person_label'] = @person_label.flatten.uniq if !@person_label.blank?
-        work_attributes['orcid_label'] = @orcid_label.flatten.uniq if !@orcid_label.blank?
-        work_attributes['affiliation_label'] = @affiliation_label.flatten.uniq if !@affiliation_label.blank?
-        work_attributes['other_affiliation_label'] = @other_affiliation_label.flatten.uniq if !@other_affiliation_label.blank?
 
         { work_attributes: work_attributes.reject!{|k,v| v.blank?}, child_works: child_works }
       end

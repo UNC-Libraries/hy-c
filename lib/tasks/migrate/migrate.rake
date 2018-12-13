@@ -25,29 +25,20 @@ namespace :migrate do
 
       # Hash of all binaries in storage directory
       @binary_hash = Hash.new
-      File.open(collection_config['binaries']) do |file|
-        file.each do |line|
-          value = line.strip
-          key = get_uuid_from_path(value)
-          @binary_hash[key] = value
-        end
-      end
+      create_filepath_hash(collection_config['binaries'], @binary_hash)
 
       # Hash of all .xml objects in storage directory
       @object_hash = Hash.new
-      File.open(collection_config['objects']) do |file|
-        file.each do |line|
-          value = line.strip
-          key = get_uuid_from_path(value)
-          if !key.blank?
-            @object_hash[key] = value
-          end
-        end
-      end
+      create_filepath_hash(collection_config['objects'], @object_hash)
+
+      # Hash of all premis files in storage directory
+      @premis_hash = Hash.new
+      create_filepath_hash(collection_config['premis'], @premis_hash)
 
       Migrate::Services::IngestService.new(collection_config,
                                            @object_hash,
                                            @binary_hash,
+                                           @premis_hash,
                                            args[:mapping_file],
                                            @depositor).ingest_records
     else
@@ -62,5 +53,17 @@ namespace :migrate do
 
     def get_uuid_from_path(path)
       path.slice(/\w{8}-\w{4}-\w{4}-\w{4}-\w{12}/)
+    end
+
+    def create_filepath_hash(filename, hash)
+      File.open(filename) do |file|
+        file.each do |line|
+          value = line.strip
+          key = get_uuid_from_path(value)
+          if !key.blank?
+            hash[key] = value
+          end
+        end
+      end
     end
 end
