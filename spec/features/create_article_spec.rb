@@ -126,7 +126,11 @@ RSpec.feature 'Create a Article', js: false do
 
       first('.document-title', text: 'Test Article work').click
       expect(page).to have_content 'Keyword Test Default Keyword'
-      expect(page).to have_content 'Creator Test Default Creator ORCID: creator orcid Affiliation: College of Arts and Sciences, Department of Biology Other Affiliation: UNC'
+      expect(page).to have_content 'Creator Test Default Creator ORCID: creator orcid'
+      expect(page).to have_content 'Affiliation:'
+      expect(page).to have_content 'College of Arts and Sciences'
+      expect(page).to have_content 'Department of Biology'
+      expect(page).to have_content 'Other Affiliation: UNC'
       expect(page).to have_content 'Abstract some abstract'
       expect(page).to have_content 'Date of publication October 3, 2018'
       expect(page).to have_content 'License Attribution 3.0 United States'
@@ -153,7 +157,7 @@ RSpec.feature 'Create a Article', js: false do
       expect(page).to have_content 'Is the article or chapter peer-reviewed? Yes'
       expect(page).to have_content 'Place of publication UNC'
       expect(page).to have_content 'Rights holder an author'
-      expect(page).to have_content 'Translator translator ORCID: translator orcid Affiliation: College of Arts and Sciences, Department of Biology Other Affiliation: UNC'
+      expect(page).to have_content 'Translator translator ORCID: translator orcid'
       expect(page).to_not have_content 'Language http://id.loc.gov/vocabulary/iso639-2/eng'
       expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
       expect(page).to_not have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'
@@ -247,7 +251,11 @@ RSpec.feature 'Create a Article', js: false do
 
       first('.document-title', text: 'Test Article work').click
       expect(page).to have_content 'Test Default Keyword'
-      expect(page).to have_content 'Creator Test Default Creator ORCID: creator orcid Affiliation: College of Arts and Sciences, Department of Biology Other Affiliation: UNC'
+      expect(page).to have_content 'Creator Test Default Creator ORCID: creator orcid'
+      expect(page).to have_content 'Affiliation:'
+      expect(page).to have_content 'College of Arts and Sciences'
+      expect(page).to have_content 'Department of Biology'
+      expect(page).to have_content 'Other Affiliation: UNC'
       expect(page).to have_content 'Abstract some abstract'
       expect(page).to have_content 'Date of publication October 3, 2018'
       expect(page).to have_content 'License Attribution 3.0 United States'
@@ -278,7 +286,7 @@ RSpec.feature 'Create a Article', js: false do
       expect(page).to have_content 'Is the article or chapter peer-reviewed? Yes'
       expect(page).to have_content 'Place of publication UNC'
       expect(page).to have_content 'Rights holder an author'
-      expect(page).to have_content 'Translator translator ORCID: translator orcid Affiliation: College of Arts and Sciences, Department of Biology Other Affiliation: UNC'
+      expect(page).to have_content 'Translator translator ORCID: translator orcid'
       expect(page).to have_content 'Use some use'
       expect(page).to_not have_content 'Language http://id.loc.gov/vocabulary/iso639-2/eng'
       expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/3.0/us/'

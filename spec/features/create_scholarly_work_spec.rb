@@ -109,9 +109,13 @@ RSpec.feature 'Create a ScholarlyWork', js: false do
 
       first('.document-title', text: 'Test ScholarlyWork work').click
       expect(page).to have_content 'Abstract an abstract'
-      expect(page).to have_content 'Advisor advisor ORCID: advisor orcid Affiliation: College of Arts and Sciences, Department of Biology Other Affiliation: UNC'
+      expect(page).to have_content 'Advisor advisor ORCID: advisor orcid'
+      expect(page).to have_content 'Affiliation:'
+      expect(page).to have_content 'College of Arts and Sciences'
+      expect(page).to have_content 'Department of Biology'
+      expect(page).to have_content 'Other Affiliation: UNC'
       expect(page).to have_content 'Conference name a conference'
-      expect(page).to have_content 'Creator Test Default Creator ORCID: creator orcid Affiliation: College of Arts and Sciences, Department of Biology Other Affiliation: UNC'
+      expect(page).to have_content 'Creator Test Default Creator ORCID: creator orcid'
       expect(page).to have_content 'Date of publication October 3, 2018'
       expect(page).to have_content 'a description'
       expect(page).to have_content 'DOI some doi'
@@ -192,9 +196,13 @@ RSpec.feature 'Create a ScholarlyWork', js: false do
 
       first('.document-title', text: 'Test ScholarlyWork work').click
       expect(page).to have_content 'Abstract an abstract'
-      expect(page).to have_content 'Advisor advisor ORCID: advisor orcid Affiliation: College of Arts and Sciences, Department of Biology Other Affiliation: UNC'
+      expect(page).to have_content 'Advisor advisor ORCID: advisor orcid'
+      expect(page).to have_content 'Affiliation:'
+      expect(page).to have_content 'College of Arts and Sciences'
+      expect(page).to have_content 'Department of Biology'
+      expect(page).to have_content 'Other Affiliation: UNC'
       expect(page).to have_content 'Conference name a conference'
-      expect(page).to have_content 'Creator Test Default Creator ORCID: creator orcid Affiliation: College of Arts and Sciences, Department of Biology Other Affiliation: UNC'
+      expect(page).to have_content 'Creator Test Default Creator ORCID: creator orcid'
       expect(page).to have_content 'Date created October 3, 2018'
       expect(page).to have_content 'Date of publication October 3, 2018'
       expect(page).to have_content 'Type http://purl.org/dc/dcmitype/Text'

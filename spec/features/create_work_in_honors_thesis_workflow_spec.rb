@@ -116,7 +116,11 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       expect(page).to have_content 'Your files are being processed by Hyrax'
       expect(page).to have_content 'Pending review'
       expect(page).to have_content 'Test Default Keyword'
-      expect(page).to have_content 'Creator Test Default Creator ORCID: creator orcid Affiliation: College of Arts and Sciences, Department of Biology Other Affiliation: UNC'
+      expect(page).to have_content 'Creator Test Default Creator ORCID: creator orcid'
+      expect(page).to have_content 'Affiliation:'
+      expect(page).to have_content 'College of Arts and Sciences'
+      expect(page).to have_content 'Department of Biology'
+      expect(page).to have_content 'Other Affiliation: UNC'
       expect(page).to have_content 'Type http://purl.org/dc/dcmitype/Text'
 
       logout user
@@ -173,7 +177,11 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       expect(page).to have_content 'Deposited'
       expect(page).to have_content 'Honors workflow test'
       expect(page).to have_content 'Test Default Keyword'
-      expect(page).to have_content 'Creator Test Default Creator ORCID: creator orcid Affiliation: College of Arts and Sciences, Department of Biology Other Affiliation: UNC'
+      expect(page).to have_content 'Creator Test Default Creator ORCID: creator orcid'
+      expect(page).to have_content 'Affiliation:'
+      expect(page).to have_content 'College of Arts and Sciences'
+      expect(page).to have_content 'Department of Biology'
+      expect(page).to have_content 'Other Affiliation: UNC'
       expect(page).to have_content 'Type http://purl.org/dc/dcmitype/Text'
 
 
