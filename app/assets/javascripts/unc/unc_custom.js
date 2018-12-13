@@ -53,11 +53,19 @@ $(function() {
         $('a.additional-fields').attr('aria-expanded', false);
     }
 
+    // Remove hidden, cloning people elements. They prevent forms from submitting as they have required fields
+    function removeCloning() {
+        $('#with_files_submit').on('click touchstart', function() {
+            $('div.cloning').remove();
+        });
+    }
+
     visibleForms();
     browseEverythingUploads();
     uploadProgress();
     hideNonRequiredFieldsBtn();
     hideNonRequiredFormFields();
+    removeCloning();
 
     // Make sure that form visibility and datepicker work with turbolinks
     $(document).on('turbolinks:load', function() {
@@ -66,6 +74,7 @@ $(function() {
         uploadProgress();
         hideNonRequiredFieldsBtn();
         hideNonRequiredFormFields();
+        removeCloning();
     });
 
     // Override default workEditor to pick up our local changes
