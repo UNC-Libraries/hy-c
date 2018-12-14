@@ -99,8 +99,11 @@ en:
     works:
       form:
         additional_fields: Optional fields
+        in_collections: "Add or Remove From Collections"
         tab:
-          metadata: Work
+          metadata: "Work Deposit Form"
+          relationships: "Add to Collection"
+          share: "Sharing Settings"
     notifications:
       batch_create_failure:
         subject: CDR batch deposit failed

@@ -60,7 +60,7 @@ RSpec.feature 'Edit embargo', js: false do
         attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'), make_visible: true)
       end
 
-      click_link 'Relationships'
+      click_link 'Add to Collection'
       expect(page).to_not have_content 'Add as member of administrative set'
 
       fill_in 'article_embargo_release_date', with: DateTime.now+7.months
@@ -114,7 +114,7 @@ RSpec.feature 'Edit embargo', js: false do
         attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'), make_visible: true)
       end
 
-      click_link 'Relationships'
+      click_link 'Add to Collection'
       expect(page).to have_content 'Administrative Set'
       find('#article_admin_set_id').text eq 'article admin set'
 
