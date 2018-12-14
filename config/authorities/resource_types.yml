@@ -17,6 +17,8 @@ terms:
     term: Dataset
   - id: Dissertation
     term: Dissertation
+  - id: Educational Resource
+    term: Educational Resource
   - id: Honors Thesis
     term: Honors Thesis
   - id: Image
