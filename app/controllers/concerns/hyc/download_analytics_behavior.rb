@@ -13,6 +13,7 @@ module Hyc
           tracker = Staccato.tracker(Hyrax.config.google_analytics_id)
           tracker.event(category: "#{@admin_set_name} Admin Set",
                         action: 'Download',
+                        hostname: request.server_name,
                         label: params[:id],
                         linkid: request.url,
                         user_agent: request.headers['User-Agent'],
