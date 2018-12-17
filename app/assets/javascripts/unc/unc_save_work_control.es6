@@ -27,6 +27,7 @@ export default class UncSaveWorkControl extends SaveWorkControl {
         this.preventSubmit();
         this.watchMultivaluedFields();
         this.formChanged();
+        this.requiredPeopleFields();
         this.addFileUploadEventListeners();
     }
 
@@ -42,5 +43,52 @@ export default class UncSaveWorkControl extends SaveWorkControl {
         $uploadsEl.bind('fileuploadstop', () => {
             $cancelBtn.addClass('hidden');
         });
+    }
+
+    // If new people fields added/removed check that required fields are filled out
+    requiredPeopleFields() {
+        let self = this;
+        $("#metadata").on('click', function() {
+            self.validateMetadata();
+        });
+    }
+
+    // sets the metadata indicator to complete/incomplete
+    validateMetadata() {
+        let isValid = false;
+
+        // This checks standard required hyrax fields
+        // Doesn't catch cloned object errors
+        if (this.requiredFields.areComplete) {
+            this.requiredMetadata.check()
+            isValid = true;
+        } else {
+            this.requiredMetadata.uncheck()
+        }
+
+        // Loop through people objects for invalid field values
+        // Catches cloned people object errors.
+        $("[id*='attributes']").not(':hidden').each(function() {
+            let selector = $(this);
+
+            if(selector.prop('required') && selector.val() === '') {
+                isValid = false;
+                return false
+            }
+        });
+
+        let showSubmit = $('#with_files_submit');
+
+        // Make sure set the disabled button as well
+        // Shouldn't interfere with this.saveButton() method from hyrax
+        // Setting this.saveButton() here results in "too much recursion" error
+        if (!isValid) {
+            this.requiredMetadata.uncheck();
+            showSubmit.prop("disabled", true);
+        } else if (!this.uploads.inProgress) {
+            showSubmit.prop("disabled", false);
+        }
+
+        return isValid
     }
 }
