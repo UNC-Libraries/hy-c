@@ -47,17 +47,11 @@ class SingleValueForm < Hyrax::Forms::WorkForm
     is_new_model = !form_params.has_key?(:permissions_attributes)
     if is_new_model
       default_term_values.each do |field, values|
-        if !attrs.key?(field)
+        unless attrs.key?(field)
           values = default_term_values[field]
-          
-          if multiple? field.to_sym
-            if attrs[field].blank?
-              attrs[field] = values
-            end
-          else
-            if attrs[field].blank?
-              attrs[field] = values.first
-            end
+
+          if attrs[field].blank?
+            attrs[field] = values
           end
         end
       end
@@ -76,7 +70,13 @@ class SingleValueForm < Hyrax::Forms::WorkForm
     end
 
     if attrs.key?(:rights_statement) && !attrs[:rights_statement].blank?
-      attrs[:rights_statement_label] = CdrRightsStatementsService.label(attrs[:rights_statement])
+      begin
+        Rails.logger.info "Boogie: #{attrs[:rights_statement]}"
+        attrs[:rights_statement_label] = CdrRightsStatementsService.label(attrs[:rights_statement])
+      rescue KeyError
+        Rails.logger.info "Doogie: #{attrs[:rights_statement]}"
+        attrs[:rights_statement_label] = CdrRightsStatementsService.label(attrs[:rights_statement])
+      end
     end
 
     attrs.each do |person_key, person_value|
