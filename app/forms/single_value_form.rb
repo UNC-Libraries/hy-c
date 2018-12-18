@@ -83,7 +83,7 @@ class SingleValueForm < Hyrax::Forms::WorkForm
       if person_key.to_s.match('_attributes')
         person_value.each do |k,v|
           if !v['affiliation'].blank?
-            v['affiliation'] = split_affiliations(v['affiliation'])
+            v['affiliation'] = v['affiliation']
           end
         end
       end
@@ -114,18 +114,5 @@ class SingleValueForm < Hyrax::Forms::WorkForm
           end
         end
       end
-    end
-
-    # split affiliations out
-    def self.split_affiliations(affiliations)
-      affiliations_list = []
-
-      Array(affiliations).reject { |a| a.blank? }.each do |aff|
-        Array(DepartmentsService.label(aff)).join(';').split(';').each do |value|
-          affiliations_list.push(value.squish!)
-        end
-      end
-
-      affiliations_list.uniq
     end
 end
