@@ -1,7 +1,7 @@
 $(document).on('turbolinks:load', function () {
     var people = ['advisor', 'arranger', 'composer', 'contributor', 'creator', 'project_director', 'researcher',
         'reviewer', 'translator'];
-    $(people).each(function(index, person) {
+    people.forEach(function(person) {
         attach_add_person_listeners(person);
     });
 });
@@ -62,21 +62,14 @@ function remove_row(selector) {
 
         var $self = $(this);
 
-        // get current count and store it in local variable
-        var count = $(row_selector+':visible').length;
-        count--;
-
-        if (count == 1) {
-            $(remove_selector).addClass('hidden');
-        } else {
-            $(remove_selector).removeClass('hidden');
-        }
-
         var name_input = $(cloning_row+' > .row').find('div.'+selector+'-name input').prop('name');
         var model = name_input.split('[')[0];
         var index = $self.data('index');
 
         $self.parents(row_selector).remove();
+        // Trigger a removal event for the overall person object field since the specific instance clicked no longer exists.
+        $('#'+selector).trigger("managed_field:remove");
+        
         if ($('#'+model+ '_'+selector+'s_attributes_'+index+'_id').length) {
             delete_record(selector, model, index);
         }
