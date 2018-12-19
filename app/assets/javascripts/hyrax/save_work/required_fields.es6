@@ -16,7 +16,7 @@ export class RequiredFields {
         let selector = $(elem);
         let parentHidden = selector.parent().closest('div.cloning');
 
-        if (parentHidden.hasClass('hidden') && parentHidden.hasClass('cloning')) {
+        if (parentHidden.hasClass('hidden')) {
             return false;
         }
 
@@ -27,7 +27,7 @@ export class RequiredFields {
     // Reassign requiredFields because fields may have been added or removed.
     reload() {
         // ":input" matches all input, select or textarea fields.
-        this.requiredFields = this.form.find(':input[required]').not(':hidden');
+        this.requiredFields = this.form.find(':input[required]');
         this.requiredFields.change(this.callback)
     }
 }
