@@ -18,6 +18,10 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       User.new(email: 'admin2@example.com', guest: false, uid: 'admin2@example.com') { |u| u.save!(validate: false)}
     end
 
+    let(:contact) do
+      User.new(email: 'contact@example.com', guest: false, uid: 'contact@example.com') { |u| u.save!(validate: false)}
+    end
+
     let(:reviewer) do
       User.new(email: 'reviewer@example.com', guest: false, uid: 'reviewer@example.com') { |u| u.save!(validate: false)}
     end
@@ -40,6 +44,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
     let(:workflow) { Sipity::Workflow.find_by!(name: 'honors_thesis_one_step_mediated_deposit', permission_template: permission_template) }
     let(:admin_agent) { Sipity::Agent.where(proxy_for_id: 'admin', proxy_for_type: 'Hyrax::Group').first_or_create }
     let(:admin_user_agent) { Sipity::Agent.where(proxy_for_id: admin_user.id, proxy_for_type: 'User').first_or_create }
+    let(:contact_user_agent) { Sipity::Agent.where(proxy_for_id: contact.id, proxy_for_type: 'User').first_or_create }
 
     before do
       Hyrax::PermissionTemplateAccess.create(permission_template: permission_template,
@@ -62,6 +67,8 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       Hyrax::Workflow::PermissionGenerator.call(roles: 'depositing', workflow: workflow, agents: admin_user_agent)
       Hyrax::Workflow::PermissionGenerator.call(roles: 'approving', workflow: workflow, agents: admin_agent)
       Hyrax::Workflow::PermissionGenerator.call(roles: 'depositing', workflow: workflow, agents: admin_agent)
+      Hyrax::Workflow::PermissionGenerator.call(roles: 'managing', workflow: workflow, agents: contact_user_agent)
+
       permission_template.available_workflows.first.update!(active: true)
       DefaultAdminSet.create(work_type_name: 'HonorsThesis', admin_set_id: admin_set.id)
       role = Role.where(name: 'admin').first
@@ -125,10 +132,11 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
 
       logout user
 
-      # Admins and user get notification for 'approving' role
+      # Dept contact and user get notification for 'managing' role
       # Reviewer is not yet in reviewing group and does not get a notification
-      expect(admin_user.mailbox.inbox.count).to eq 1
-      expect(admin_user2.mailbox.inbox.count).to eq 1
+      expect(admin_user.mailbox.inbox.count).to eq 0
+      expect(admin_user2.mailbox.inbox.count).to eq 0
+      expect(contact.mailbox.inbox.count).to eq 1
       expect(user.mailbox.inbox.count).to eq 1
       expect(reviewer.mailbox.inbox.count).to eq 0
       expect(nonreviewer.mailbox.inbox.count).to eq 0
@@ -186,8 +194,9 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
 
 
       # User and admin set owner get notification for 'depositing' role
-      expect(admin_user.mailbox.inbox.count).to eq 2
-      expect(admin_user2.mailbox.inbox.count).to eq 1
+      expect(admin_user.mailbox.inbox.count).to eq 1
+      expect(admin_user2.mailbox.inbox.count).to eq 0
+      expect(contact.mailbox.inbox.count).to eq 1
       expect(user.mailbox.inbox.count).to eq 2
       expect(reviewer.mailbox.inbox.count).to eq 0
       expect(nonreviewer.mailbox.inbox.count).to eq 0
@@ -207,11 +216,12 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
 
       expect(page).to have_content 'Pending deletion'
 
-      # User, admins, and reviewer get notification for 'approving' role
-      expect(admin_user.mailbox.inbox.count).to eq 3
-      expect(admin_user2.mailbox.inbox.count).to eq 2
+      # User, dept contact get notification for 'managing' role
+      expect(admin_user.mailbox.inbox.count).to eq 1
+      expect(admin_user2.mailbox.inbox.count).to eq 0
+      expect(contact.mailbox.inbox.count).to eq 2
       expect(user.mailbox.inbox.count).to eq 3
-      expect(reviewer.mailbox.inbox.count).to eq 1
+      expect(reviewer.mailbox.inbox.count).to eq 0
       expect(nonreviewer.mailbox.inbox.count).to eq 0
     end
   end
