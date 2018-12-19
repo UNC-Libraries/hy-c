@@ -70,13 +70,7 @@ class SingleValueForm < Hyrax::Forms::WorkForm
     end
 
     if attrs.key?(:rights_statement) && !attrs[:rights_statement].blank?
-      begin
-        Rails.logger.info "Boogie: #{attrs[:rights_statement]}"
-        attrs[:rights_statement_label] = CdrRightsStatementsService.label(attrs[:rights_statement])
-      rescue KeyError
-        Rails.logger.info "Doogie: #{attrs[:rights_statement]}"
-        attrs[:rights_statement_label] = CdrRightsStatementsService.label(attrs[:rights_statement])
-      end
+      attrs[:rights_statement_label] = CdrRightsStatementsService.label(attrs[:rights_statement])
     end
 
     attrs.each do |person_key, person_value|
