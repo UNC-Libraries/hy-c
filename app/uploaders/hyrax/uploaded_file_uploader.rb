@@ -1,3 +1,4 @@
+# [hyc-override] Overriding to allow files to be moved, rather than copied multiple times
 module Hyrax
   class UploadedFileUploader < CarrierWave::Uploader::Base
     # Override the directory where uploaded files will be stored.
@@ -8,6 +9,14 @@ module Hyrax
 
     def cache_dir
       configured_cache_path + "#{model.class.to_s.underscore}/#{mounted_as}/#{model.id}"
+    end
+
+    def move_to_cache
+      true
+    end
+
+    def move_to_store
+      true
     end
 
     private
