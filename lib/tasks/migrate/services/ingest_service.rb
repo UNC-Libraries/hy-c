@@ -139,7 +139,7 @@ module Migrate
         actor.create_content(Hyrax::UploadedFile.create(file: File.open(renamed_file), user: @depositor))
         actor.attach_to_work(parent, resource)
 
-        File.delete(renamed_file)
+        File.delete(renamed_file) if File.exist?(renamed_file)
 
         file_set
       end
