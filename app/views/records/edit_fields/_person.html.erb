@@ -1,5 +1,6 @@
 <hr class="person-divider">
-<div id="<%= person_term %>">
+<div class="form-group multi_value">
+  <div id="<%= person_term %>">
   <h3 align="center"><%= person_term.split('_').map(&:capitalize).join(' ') %></h3>
   <%= f.fields_for person_key do |person| %>
     <div class="<%= person_term %> row well">
@@ -88,11 +89,12 @@
       <% end %>
     <% end %>
   </div>
-</div>
-<div class="row">
+  </div>
+
   <button id="add-another-<%= person_term %>" class="btn btn-link add">
     <span class="glyphicon glyphicon-plus"></span>
     <span>Add another <%= person_term.split('_').map(&:capitalize).join(' ') %></span>
   </button>
 </div>
+
 <hr class="person-divider">
