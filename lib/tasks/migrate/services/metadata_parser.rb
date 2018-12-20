@@ -112,8 +112,8 @@ module Migrate
           work_attributes['rights_statement_label'] = work_attributes['rights_statement'].map{ |r| CdrRightsStatementsService.label(r) }
           work_attributes['rights_holder'] = descriptive_mods.xpath('mods:accessCondition/rights:copyright/rights:rights.holder/rights:name',MigrationConstants::NS).map(&:text)
           work_attributes['access'] = descriptive_mods.xpath('mods:accessCondition[@type="restriction on access"]',MigrationConstants::NS).map(&:text)
-          work_attributes['doi'] = descriptive_mods.xpath('mods:identifier[@type="doi"]',MigrationConstants::NS).map(&:text)
-          work_attributes['identifier'] = descriptive_mods.xpath('mods:identifier[@type="pdf" or @type="pmpid"]',MigrationConstants::NS).map(&:text)
+          work_attributes['doi'] = descriptive_mods.xpath('mods:identifier[@type="doi" and @displayLabel="CDR DOI"]',MigrationConstants::NS).map(&:text)
+          work_attributes['identifier'] = descriptive_mods.xpath('mods:identifier[@type="pdf" or @type="pmpid" or @type="eid" or @displayLabel="DOI"]',MigrationConstants::NS).map(&:text)
           work_attributes['isbn'] = descriptive_mods.xpath('mods:identifier[@type="isbn"]',MigrationConstants::NS).map(&:text)
           work_attributes['issn'] = descriptive_mods.xpath('mods:relatedItem/mods:identifier[@type="issn"]',MigrationConstants::NS).map(&:text)
           work_attributes['publisher'] = descriptive_mods.xpath('mods:originInfo/mods:publisher',MigrationConstants::NS).map(&:text)
