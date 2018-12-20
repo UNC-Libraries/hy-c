@@ -8,6 +8,7 @@ namespace :migrate do
 
   # Maybe switch to auto-loading lib/tasks/migrate in environment.rb
   require 'tasks/migrate/services/ingest_service'
+  require 'tasks/migration_helper'
 
   desc 'batch migrate records from FOXML file'
   task :works, [:collection, :configuration_file, :mapping_file] => :environment do |t, args|
@@ -25,15 +26,15 @@ namespace :migrate do
 
       # Hash of all binaries in storage directory
       @binary_hash = Hash.new
-      create_filepath_hash(collection_config['binaries'], @binary_hash)
+      MigrationHelper.create_filepath_hash(collection_config['binaries'], @binary_hash)
 
       # Hash of all .xml objects in storage directory
       @object_hash = Hash.new
-      create_filepath_hash(collection_config['objects'], @object_hash)
+      MigrationHelper.create_filepath_hash(collection_config['objects'], @object_hash)
 
       # Hash of all premis files in storage directory
       @premis_hash = Hash.new
-      create_filepath_hash(collection_config['premis'], @premis_hash)
+      MigrationHelper.create_filepath_hash(collection_config['premis'], @premis_hash)
 
       Migrate::Services::IngestService.new(collection_config,
                                            @object_hash,
@@ -48,22 +49,4 @@ namespace :migrate do
     end_time = Time.now
     puts "[#{end_time.to_s}] Completed migration of #{args[:collection]} in #{end_time-start_time} seconds"
   end
-
-  private
-
-    def get_uuid_from_path(path)
-      path.slice(/\w{8}-\w{4}-\w{4}-\w{4}-\w{12}/)
-    end
-
-    def create_filepath_hash(filename, hash)
-      File.open(filename) do |file|
-        file.each do |line|
-          value = line.strip
-          key = get_uuid_from_path(value)
-          if !key.blank?
-            hash[key] = value
-          end
-        end
-      end
-    end
 end

@@ -2,6 +2,7 @@ module Migrate
   module Services
     require 'tasks/migrate/services/id_mapper'
     require 'tasks/migrate/services/metadata_parser'
+    require 'tasks/migration_helper'
 
     class IngestService
 
@@ -28,7 +29,7 @@ module Migrate
         @parent_hash = Hash.new
 
         # get array of record uuids
-        collection_uuids = get_collection_uuids
+        collection_uuids = MigrationHelper.get_collection_uuids(@collection_ids_file)
 
         puts "Object count:  #{collection_uuids.count.to_s}"
 
@@ -62,7 +63,7 @@ module Migrate
           # Attach premis files
           if !work_attributes['premis_files'].blank?
             work_attributes['premis_files'].each_with_index do |file, index|
-              premis_file = @premis_hash[get_uuid_from_path(file)]
+              premis_file = @premis_hash[MigrationHelper.get_uuid_from_path(file)]
               fileset_attrs = { 'title' => ["PREMIS_Events_Metadata_#{index}.txt"],
                                 'visibility' => Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE }
               fileset = create_fileset(parent: new_work, resource: fileset_attrs, file: premis_file)
@@ -76,7 +77,7 @@ module Migrate
               (work_attributes['cdr_model_type'].include? 'info:fedora/cdr-model:AggregateWork')
             # attach children as filesets
             work_attributes['contained_files'].each do |file|
-              metadata_file = @object_hash[get_uuid_from_path(file)]
+              metadata_file = @object_hash[MigrationHelper.get_uuid_from_path(file)]
               parsed_file_data = Migrate::Services::MetadataParser.new(metadata_file,
                                                                    @object_hash,
                                                                    @binary_hash,
@@ -88,10 +89,10 @@ module Migrate
               file_work_attributes = (parsed_file_data[:work_attributes].blank? ? {} : parsed_file_data[:work_attributes])
               fileset_attrs = file_record(work_attributes.merge(file_work_attributes))
 
-              fileset = create_fileset(parent: new_work, resource: fileset_attrs, file: @binary_hash[get_uuid_from_path(file)])
+              fileset = create_fileset(parent: new_work, resource: fileset_attrs, file: @binary_hash[MigrationHelper.get_uuid_from_path(file)])
 
               # Record old and new ids for works
-              id_mapper.add_row([get_uuid_from_path(file), fileset.id])
+              id_mapper.add_row([MigrationHelper.get_uuid_from_path(file), fileset.id])
 
               ordered_members << fileset
             end
@@ -99,14 +100,14 @@ module Migrate
             # use same metadata for work and fileset
             if !work_attributes['contained_files'].blank?
               work_attributes['contained_files'].each do |file|
-                binary_file = @binary_hash[get_uuid_from_path(file)]
+                binary_file = @binary_hash[MigrationHelper.get_uuid_from_path(file)]
                 work_attributes['title'] = work_attributes['dc_title']
                 work_attributes['label'] = work_attributes['dc_title']
                 fileset_attrs = file_record(work_attributes)
                 fileset = create_fileset(parent: new_work, resource: fileset_attrs, file: binary_file)
 
                 # Record old and new ids for works
-                id_mapper.add_row([get_uuid_from_path(file), fileset.id])
+                id_mapper.add_row([MigrationHelper.get_uuid_from_path(file), fileset.id])
 
                 ordered_members << fileset
               end
@@ -146,23 +147,6 @@ module Migrate
 
 
       private
-
-        def get_collection_uuids
-          collection_uuids = Array.new
-          CSV.open(@collection_ids_file) do |file|
-            file.each do |line|
-              if !line.blank? && !get_uuid_from_path(line[0].strip).blank?
-                collection_uuids.append(get_uuid_from_path(line[0].strip))
-              end
-            end
-          end
-
-          collection_uuids
-        end
-
-        def get_uuid_from_path(path)
-          path.slice(/\w{8}-\w{4}-\w{4}-\w{4}-\w{12}/) || ''
-        end
 
         def work_record(work_attributes)
           if !@child_work_type.blank? && !work_attributes['cdr_model_type'].blank? &&

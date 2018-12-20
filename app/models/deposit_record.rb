@@ -16,4 +16,7 @@ class DepositRecord < ActiveFedora::Base
   property :deposit_package_subtype, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#depositPackageSubtype'), multiple: false
   property :deposit_package_type, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#depositPackageType'), multiple: false
   property :deposited_by, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#depositedBy'), multiple: false
+  # files
+  property :manifest, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#depositManifest')
+  property :premis, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#premis')
 end

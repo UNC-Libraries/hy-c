@@ -20,7 +20,7 @@ module Migrate
         child_works = Array.new
 
         # get the uuid of the object
-        uuid = get_uuid_from_path(metadata.at_xpath('foxml:digitalObject/@PID', MigrationConstants::NS).value)
+        uuid = MigrationHelper.get_uuid_from_path(metadata.at_xpath('foxml:digitalObject/@PID', MigrationConstants::NS).value)
         puts "getting metadata for: #{uuid}"
 
         work_attributes['contained_files'] = Array.new(0)
@@ -148,7 +148,7 @@ module Migrate
           if rdf_version.to_s.match(/resource/)
             contained_files = rdf_version.xpath("rdf:Description/*[not(local-name()='originalDeposit') and not(local-name() = 'defaultWebObject') and contains(@rdf:resource, 'uuid')]", MigrationConstants::NS)
             contained_files.each do |contained_file|
-              tmp_uuid = get_uuid_from_path(contained_file.to_s)
+              tmp_uuid = MigrationHelper.get_uuid_from_path(contained_file.to_s)
               if work_attributes['cdr_model_type'].include? 'info:fedora/cdr-model:AggregateWork'
                 if !@binary_hash[tmp_uuid].blank? && !(@collection_uuids.include? tmp_uuid)
                   work_attributes['contained_files'] << tmp_uuid
@@ -165,8 +165,8 @@ module Migrate
             if work_attributes['contained_files'].count > 1
               representative = rdf_version.xpath('rdf:Description/*[local-name() = "defaultWebObject"]/@rdf:resource', MigrationConstants::NS).to_s.split('/')[1]
               if representative
-                work_attributes['contained_files'] -= [get_uuid_from_path(representative)]
-                work_attributes['contained_files'] = [get_uuid_from_path(representative)] + work_attributes['contained_files']
+                work_attributes['contained_files'] -= [MigrationHelper.get_uuid_from_path(representative)]
+                work_attributes['contained_files'] = [MigrationHelper.get_uuid_from_path(representative)] + work_attributes['contained_files']
               end
             end
             work_attributes['contained_files'].uniq!
@@ -178,7 +178,7 @@ module Migrate
           if !premis_mods.blank?
             premis_reference = premis_mods.xpath("foxml:datastreamVersion/foxml:contentLocation/@REF", MigrationConstants::NS).map(&:text)
             premis_reference.each do |reference|
-              work_attributes['premis_files'] << get_uuid_from_path(reference)
+              work_attributes['premis_files'] << MigrationHelper.get_uuid_from_path(reference)
             end
           end
 
@@ -239,10 +239,6 @@ module Migrate
       end
 
       private
-
-        def get_uuid_from_path(path)
-          path.slice(/\w{8}-\w{4}-\w{4}-\w{4}-\w{12}/)
-        end
 
         def parse_names_from_mods(mods, type)
           names = mods.xpath('mods:name[mods:role/mods:roleTerm/text()="'+type+'"]', MigrationConstants::NS)

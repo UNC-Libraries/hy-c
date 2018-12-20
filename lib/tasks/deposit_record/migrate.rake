@@ -2,6 +2,7 @@ namespace :deposit_record do
   require 'fileutils'
   require 'csv'
   require 'yaml'
+  require 'tasks/migration_helper'
 
   desc 'batch migrate deposit records'
   task :migrate, [:configuration_file, :mapping_file] => :environment do |t, args|
@@ -15,71 +16,40 @@ namespace :deposit_record do
 
     # Hash of all binaries in storage directory
     @binary_hash = Hash.new
-    create_filepath_hash(collection_config['binaries'], @binary_hash)
+    MigrationHelper.create_filepath_hash(collection_config['binaries'], @binary_hash)
 
     # Hash of all .xml objects in storage directory
     @object_hash = Hash.new
-    create_filepath_hash(collection_config['objects'], @object_hash)
+    MigrationHelper.create_filepath_hash(collection_config['objects'], @object_hash)
 
     # Hash of all premis files in storage directory
     @premis_hash = Hash.new
-    create_filepath_hash(collection_config['premis'], @premis_hash)
+    MigrationHelper.create_filepath_hash(collection_config['premis'], @premis_hash)
 
     id_mapper = Migrate::Services::IdMapper.new(args[:mapping_file])
 
-    collection_uuids = get_collection_uuids(collection_config['collection_list'])
+    collection_uuids = MigrationHelper.get_collection_uuids(collection_config['collection_list'])
 
     puts "Object count:  #{collection_uuids.count.to_s}"
 
     collection_uuids.each do |uuid|
       puts "[#{start_time.to_s}] Start migration of #{uuid}"
 
-      record_attributes = record_metadata(@object_hash[uuid])
+      record_attributes = deposit_record_metadata(@object_hash[uuid])
       deposit_record = DepositRecord.new(id: ::Noid::Rails::Service.new.minter.mint)
       deposit_record.attributes = record_attributes[:resource]
-      deposit_record.save
 
-      id_mapper.add_row([get_uuid_from_path(record_attributes[:resource][:identifier]), deposit_record.id])
+      id_mapper.add_row([MigrationHelper.get_uuid_from_path(record_attributes[:resource][:identifier]), deposit_record.id])
 
-      # add files
-      record_attributes[:manifests].each do |manifest_mods|
-        manifest_attrs = Hash.new
-        manifest_id = manifest_mods.xpath("foxml:datastreamVersion/foxml:contentLocation/@REF", MigrationConstants::NS).text
-        manifest_attrs['title'] = manifest_mods.xpath("foxml:datastreamVersion/@ID", MigrationConstants::NS).text
-        manifest_attrs['date_created'] = manifest_mods.xpath("foxml:datastreamVersion/@CREATED", MigrationConstants::NS).text
-        manifest_attrs['mime_type'] = manifest_mods.xpath("foxml:datastreamVersion/@MIMETYPE", MigrationConstants::NS).text
-
-        binary_file = @binary_hash[get_uuid_from_path(manifest_id)]
-
-        manifest = FedoraOnlyFile.new(manifest_attrs)
-        manifest.deposit_record = deposit_record
-
-        manifest.file.content = File.open(binary_file)
-        manifest.file.mime_type = manifest_attrs['mime_type']
-        manifest.file.original_name = manifest_attrs['title']
-
-        manifest.save
-      end
+      # add manifest files
+      puts "manifest count: #{record_attributes[:manifests].count}"
+      deposit_record[:manifest] = create_fedora_file_record(record_attributes[:manifests], @binary_hash, deposit_record)
 
       # add premis files
-      record_attributes[:premis].each do |premis_mods|
-        premis_attrs = Hash.new
-        premis_id = premis_mods.xpath("foxml:datastreamVersion/foxml:contentLocation/@REF", MigrationConstants::NS).text
-        premis_attrs['title'] = premis_mods.xpath("foxml:datastreamVersion/@ID", MigrationConstants::NS).text
-        premis_attrs['date_created'] = premis_mods.xpath("foxml:datastreamVersion/@CREATED", MigrationConstants::NS).text
-        premis_attrs['mime_type'] = premis_mods.xpath("foxml:datastreamVersion/@MIMETYPE", MigrationConstants::NS).text
+      puts "premis count: #{record_attributes[:premis].count}"
+      deposit_record[:premis] = create_fedora_file_record(record_attributes[:premis], @premis_hash, deposit_record)
 
-        binary_file = @binary_hash[get_uuid_from_path(premis_id)]
-
-        premis = FedoraOnlyFile.new(premis_attrs)
-        premis.deposit_record = deposit_record
-
-        premis.file.content = File.open(binary_file)
-        premis.file.mime_type = premis_attrs['mime_type']
-        premis.file.original_name = premis_attrs['title']
-
-        premis.save
-      end
+      deposit_record.save
 
       puts "[#{Time.now.to_s}] Completed migration of #{uuid} in #{Time.now-start_time} seconds"
     end
@@ -90,7 +60,7 @@ namespace :deposit_record do
 
 
   # parse metadata
-  def record_metadata(metadata_file)
+  def deposit_record_metadata(metadata_file)
     record_attributes = Hash.new
 
     file = File.open(metadata_file)
@@ -122,32 +92,30 @@ namespace :deposit_record do
 
   private
 
-    def get_uuid_from_path(path)
-      path.slice(/\w{8}-\w{4}-\w{4}-\w{4}-\w{12}/)
-    end
+    def create_fedora_file_record(files, binary_hash, parent)
+      uris = Array.new
 
-    def create_filepath_hash(filename, hash)
-      File.open(filename) do |file|
-        file.each do |line|
-          value = line.strip
-          key = get_uuid_from_path(value)
-          if !key.blank?
-            hash[key] = value
-          end
-        end
-      end
-    end
+      files.each do |mods|
+        attrs = Hash.new
+        id = mods.xpath("foxml:datastreamVersion/foxml:contentLocation/@REF", MigrationConstants::NS).text
+        attrs['title'] = mods.xpath("foxml:datastreamVersion/@ID", MigrationConstants::NS).text
+        attrs['date_created'] = mods.xpath("foxml:datastreamVersion/@CREATED", MigrationConstants::NS).text
+        attrs['mime_type'] = mods.xpath("foxml:datastreamVersion/@MIMETYPE", MigrationConstants::NS).text
 
-    def get_collection_uuids(collection_ids_file)
-      collection_uuids = Array.new
-      File.open(collection_ids_file) do |file|
-        file.each do |line|
-          if !line.blank? && !get_uuid_from_path(line.strip).blank?
-            collection_uuids.append(get_uuid_from_path(line.strip))
-          end
-        end
+        binary_file = binary_hash[MigrationHelper.get_uuid_from_path(id)]
+
+        file = FedoraOnlyFile.new(attrs)
+        file.deposit_record = parent
+
+        file.file.content = File.open(binary_file)
+        file.file.mime_type = attrs['mime_type']
+        file.file.original_name = attrs['title']
+
+        file.save
+
+        uris << file.uri
       end
 
-      collection_uuids
+      uris
     end
 end
