@@ -58,12 +58,14 @@ class SingleValueForm < Hyrax::Forms::WorkForm
     end
 
     if attrs.key?(:language) && !attrs[:language].blank?
+      attrs[:language_label] ||= []
       Array(attrs[:language]).each do |language|
         attrs[:language_label] << LanguagesService.label(language)
       end
     end
 
     if attrs.key?(:license) && !attrs[:license].blank?
+      attrs[:license_label] ||= []
       Array(attrs[:license]).each do |license|
         attrs[:license_label] << CdrLicenseService.label(license)
       end
