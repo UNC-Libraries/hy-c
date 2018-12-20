@@ -36,10 +36,7 @@ namespace :deposit_record do
       puts "[#{start_time.to_s}] Start migration of #{uuid}"
 
       record_attributes = deposit_record_metadata(@object_hash[uuid])
-      deposit_record = DepositRecord.new(id: ::Noid::Rails::Service.new.minter.mint)
-      deposit_record.attributes = record_attributes[:resource]
-
-      id_mapper.add_row([MigrationHelper.get_uuid_from_path(record_attributes[:resource][:identifier]), deposit_record.id])
+      deposit_record = DepositRecord.new(record_attributes[:resource])
 
       # add manifest files
       puts "manifest count: #{record_attributes[:manifests].count}"
@@ -50,6 +47,8 @@ namespace :deposit_record do
       deposit_record[:premis] = create_fedora_file_record(record_attributes[:premis], @premis_hash, deposit_record)
 
       deposit_record.save
+
+      id_mapper.add_row([MigrationHelper.get_uuid_from_path(record_attributes[:resource][:identifier]), deposit_record.id])
 
       puts "[#{Time.now.to_s}] Completed migration of #{uuid} in #{Time.now-start_time} seconds"
     end
