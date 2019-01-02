@@ -72,12 +72,6 @@ namespace :deposit_record do
     record_attributes[:deposit_package_subtype] = metadata.xpath("//rdf:RDF/rdf:Description/*[local-name() = 'depositPackageSubType']", MigrationConstants::NS).text
     record_attributes[:deposit_package_type] = metadata.xpath("//rdf:RDF/rdf:Description/*[local-name() = 'depositPackageType']", MigrationConstants::NS).text
     record_attributes[:deposited_by] = metadata.xpath("//rdf:RDF/rdf:Description/*[local-name() = 'depositedBy']", MigrationConstants::NS).text
-    record_attributes[:audit_process] = metadata.xpath("//audit:auditTrail/audit:record/audit:process", MigrationConstants::NS).text
-    record_attributes[:audit_action] = metadata.xpath("//audit:auditTrail/audit:record/audit:action", MigrationConstants::NS).text
-    record_attributes[:audit_component_id] = metadata.xpath("//audit:auditTrail/audit:record/audit:componentID", MigrationConstants::NS).text
-    record_attributes[:audit_responsibility] = metadata.xpath("//audit:auditTrail/audit:record/audit:responsibility", MigrationConstants::NS).text
-    record_attributes[:audit_date] = metadata.xpath("//audit:auditTrail/audit:record/audit:date", MigrationConstants::NS).text
-    record_attributes[:audit_justification] = metadata.xpath("//audit:auditTrail/audit:record/audit:justification", MigrationConstants::NS).text
 
     # Find manifest files
     manifests = metadata.xpath("//foxml:datastream[contains(@ID, 'DATA_MANIFEST')]", MigrationConstants::NS)

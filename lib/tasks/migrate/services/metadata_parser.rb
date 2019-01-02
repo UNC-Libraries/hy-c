@@ -2,14 +2,15 @@ module Migrate
   module Services
     class MetadataParser
 
-      def initialize(metadata_file, object_hash, binary_hash, collection_uuids, collection_name, depositor, admin_set)
+      def initialize(metadata_file, object_hash, binary_hash, deposit_record_hash, collection_uuids, depositor, config)
         @metadata_file = metadata_file
         @object_hash = object_hash
         @binary_hash = binary_hash
+        @deposit_record_hash = deposit_record_hash
         @collection_uuids = collection_uuids
-        @collection_name = collection_name
+        @collection_name = config['collection_name']
         @depositor = depositor
-        @admin_set = admin_set
+        @admin_set = config['admin_set']
       end
 
       def parse
@@ -136,7 +137,8 @@ module Migrate
         if rdf_version
           # Check for deposit record
           if rdf_version.to_s.match(/originalDeposit/)
-            work_attributes['deposit_record'] = rdf_version.xpath('rdf:Description/*[local-name() = "originalDeposit"]/@rdf:resource', MigrationConstants::NS).map(&:text)
+            old_deposit_record_ids = rdf_version.xpath('rdf:Description/*[local-name() = "originalDeposit"]/@rdf:resource', MigrationConstants::NS).map(&:text)
+            work_attributes['deposit_record'] = old_deposit_record_ids.map{ |id| @deposit_record_hash[MigrationHelper.get_uuid_from_path(id)] || MigrationHelper.get_uuid_from_path(id) }
           end
 
           # Check if aggregate work

@@ -36,10 +36,17 @@ namespace :migrate do
       @premis_hash = Hash.new
       MigrationHelper.create_filepath_hash(collection_config['premis'], @premis_hash)
 
+      # Hash of all deposit record ids
+      @deposit_record_hash = Hash.new
+      CSV.foreach(collection_config['deposit_records']) do |row|
+        @deposit_record_hash[row[0]] = row[1]
+      end
+
       Migrate::Services::IngestService.new(collection_config,
                                            @object_hash,
                                            @binary_hash,
                                            @premis_hash,
+                                           @deposit_record_hash,
                                            args[:mapping_file],
                                            @depositor).ingest_records
     else

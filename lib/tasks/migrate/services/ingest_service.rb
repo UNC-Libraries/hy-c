@@ -6,18 +6,18 @@ module Migrate
 
     class IngestService
 
-      def initialize(config, object_hash, binary_hash, premis_hash, mapping_file, depositor)
+      def initialize(config, object_hash, binary_hash, premis_hash, deposit_record_hash, mapping_file, depositor)
         @collection_ids_file = config['collection_list']
         @object_hash = object_hash
         @binary_hash = binary_hash
         @premis_hash = premis_hash
+        @deposit_record_hash = deposit_record_hash
         @work_type = config['work_type']
-        @admin_set = config['admin_set']
         @child_work_type = config['child_work_type']
         @mapping_file = mapping_file
-        @collection_name = config['collection_name']
         @depositor = depositor
         @tmp_file_location = config['tmp_file_location']
+        @config = config
       end
 
       def ingest_records
@@ -38,12 +38,12 @@ module Migrate
           start_time = Time.now
           puts "[#{start_time.to_s}] Start migration of #{uuid}"
           parsed_data = Migrate::Services::MetadataParser.new(@object_hash[uuid],
-                                                          @object_hash,
-                                                          @binary_hash,
-                                                          collection_uuids,
-                                                          @collection_name,
-                                                          @depositor,
-                                                          @admin_set).parse
+                                                              @object_hash,
+                                                              @binary_hash,
+                                                              @deposit_record_hash,
+                                                              collection_uuids,
+                                                              @depositor,
+                                                              @config).parse
           work_attributes = parsed_data[:work_attributes]
           @parent_hash[uuid] = parsed_data[:child_works] if !parsed_data[:child_works].blank?
 
@@ -79,12 +79,12 @@ module Migrate
             work_attributes['contained_files'].each do |file|
               metadata_file = @object_hash[MigrationHelper.get_uuid_from_path(file)]
               parsed_file_data = Migrate::Services::MetadataParser.new(metadata_file,
-                                                                   @object_hash,
-                                                                   @binary_hash,
-                                                                   collection_uuids,
-                                                                   @collection_name,
-                                                                   @depositor,
-                                                                   @admin_set).parse
+                                                                       @object_hash,
+                                                                       @binary_hash,
+                                                                       @deposit_record_hash,
+                                                                       collection_uuids,
+                                                                       @depositor,
+                                                                       @config).parse
 
               file_work_attributes = (parsed_file_data[:work_attributes].blank? ? {} : parsed_file_data[:work_attributes])
               fileset_attrs = file_record(work_attributes.merge(file_work_attributes))
