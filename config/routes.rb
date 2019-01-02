@@ -58,9 +58,8 @@ Rails.application.routes.draw do
 
 
   # [hyc-override] Remove routes we don't use e.g. catalog email and sms routes
-  # resources :solr_documents, only: [:show], path: '/catalog', controller: 'catalog' do
-  #   concerns :exportable
-  # end
+  # we need this for accessing ttl files
+  resources :solr_documents, only: [:show], path: '/catalog', controller: 'catalog'
 
   # resources :bookmarks do
   #   concerns :exportable
