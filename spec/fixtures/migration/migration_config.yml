@@ -8,3 +8,4 @@ collection1:
   admin_set: default
   depositor_email: admin@example.com
   tmp_file_location: spec/fixtures/migration/files
+  deposit_records: spec/fixtures/migration/deposit_records.csv
