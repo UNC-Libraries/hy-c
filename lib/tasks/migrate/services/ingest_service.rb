@@ -52,7 +52,7 @@ module Migrate
           new_work.save!
 
           # Record old and new ids for works
-          id_mapper.add_row([uuid, new_work.id])
+          id_mapper.add_row([uuid, new_work.class.to_s.underscore+'s/'+new_work.id])
           @mappings[uuid] = new_work.id
 
           puts "Number of files: #{work_attributes['contained_files'].count.to_s if !work_attributes['contained_files'].blank?}"
@@ -92,7 +92,7 @@ module Migrate
               fileset = create_fileset(parent: new_work, resource: fileset_attrs, file: @binary_hash[MigrationHelper.get_uuid_from_path(file)])
 
               # Record old and new ids for works
-              id_mapper.add_row([MigrationHelper.get_uuid_from_path(file), fileset.id])
+              id_mapper.add_row([MigrationHelper.get_uuid_from_path(file), 'parent/'+new_work.id+'/file_sets/'+fileset.id])
 
               ordered_members << fileset
             end
@@ -107,7 +107,7 @@ module Migrate
                 fileset = create_fileset(parent: new_work, resource: fileset_attrs, file: binary_file)
 
                 # Record old and new ids for works
-                id_mapper.add_row([MigrationHelper.get_uuid_from_path(file), fileset.id])
+                id_mapper.add_row([MigrationHelper.get_uuid_from_path(file), 'parent/'+new_work.id+'/file_sets/'+fileset.id])
 
                 ordered_members << fileset
               end
