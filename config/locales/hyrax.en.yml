@@ -142,7 +142,7 @@ en:
         transfer_on_update:
           subject: CDR work transfer request %{status}
           message: "Hello,\n\n
-          Your request to transfer request ownership of %{title} (%{link}) has been %{status} by %{receiving_user}."
+          Your request to transfer request ownership of %{title} has been %{status} by %{receiving_user}."
           comments: "Comments: %{receiver_comment}"
       workflow:
         changes_required:

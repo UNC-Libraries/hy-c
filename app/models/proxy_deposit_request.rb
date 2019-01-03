@@ -91,7 +91,7 @@ class ProxyDepositRequest < ActiveRecord::Base
 
   def send_request_transfer_message_as_part_of_create
     # [hyc-override] Override to use translation file for email text
-    user_link = link_to(sending_user.name, Hyrax::Engine.routes.url_helpers.user_path(sending_user))
+    user_link = sending_user.name
     transfer_link = link_to('transfer requests', Hyrax::Engine.routes.url_helpers.transfers_path)
     message = I18n.t('hyrax.notifications.proxy_deposit_request.transfer_on_create.message', user_link: user_link,
                      transfer_link: transfer_link)
@@ -101,7 +101,8 @@ class ProxyDepositRequest < ActiveRecord::Base
 
   def send_request_transfer_message_as_part_of_update
     # [hyc-override] Override to use translation file for email text
-    message = I18n.t('hyrax.notifications.proxy_deposit_request.transfer_on_update.message', status: status)
+    message = I18n.t('hyrax.notifications.proxy_deposit_request.transfer_on_update.message', status: status,
+                     title: work.title.first, receiving_user: receiving_user)
 
     if receiver_comment.present?
       message += " " + I18n.t('hyrax.notifications.proxy_deposit_request.transfer_on_update.comments',
