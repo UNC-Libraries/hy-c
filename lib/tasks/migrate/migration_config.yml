@@ -7,14 +7,16 @@ collection1:
   admin_set: default
   depositor_email: admin@example.com
 collection2:
-  collection_list: lib/tasks/migration/bxc_test_collection.csv
-  objects: lib/tasks/migration/test_objects.txt
-  binaries: lib/tasks/migration/binaries.txt
-  premis: lib/tasks/migration/binaries.txt
+  collection_list: spec/fixtures/migration/collection.csv
+  objects: spec/fixtures/migration/objects.txt
+  binaries: spec/fixtures/migration/binaries.txt
+  premis: spec/fixtures/migration/binaries.txt
   work_type: General
   admin_set: default
   depositor_email: admin@example.com
   tmp_file_location: /tmp/migration
+  work_uri: generals
+  deposit_records: lib/tasks/migration/dr.csv
 collection3:
   collection_list: spec/fixtures/migration/collection.csv
   objects: spec/fixtures/migration/objects.txt
@@ -22,6 +24,8 @@ collection3:
   work_type: DataSet
   admin_set: default
   depositor_email: admin@example.com
+  tmp_file_location: /tmp/migration
+  work_uri: data_sets
 collection4:
   collection_list: spec/fixtures/migration/collection.csv
   objects: spec/fixtures/migration/objects.txt
@@ -64,4 +68,11 @@ collection9:
   binaries: spec/fixtures/migration/binaries.txt
   work_type: ScholarlyWork
   admin_set: default
+  depositor_email: admin@example.com
+# Example configuration for deposit record migration script
+deposit_record:
+  collection_list: test_deposit_records.txt
+  objects: test_dr_objects.txt
+  binaries: test_manifests.txt
+  premis: test_premis.txt
   depositor_email: admin@example.com
