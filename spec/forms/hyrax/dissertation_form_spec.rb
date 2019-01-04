@@ -31,7 +31,7 @@ RSpec.describe Hyrax::DissertationForm do
   describe "#admin_only_terms" do
     subject { form.admin_only_terms }
 
-    it { is_expected.to match_array [:dcmi_type] }
+    it { is_expected.to match_array [:dcmi_type, :doi] }
   end
   
   describe 'default value set' do
