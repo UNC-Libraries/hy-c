@@ -60,5 +60,38 @@ RSpec.describe User, type: :model do
         end
       end
     end
+
+    context "no email from shibboleth" do
+      let(:auth_hash) do
+        OmniAuth::AuthHash.new(
+            provider: 'shibboleth',
+            uid: "boxy",
+            info: {
+                display_name: "boxy",
+                uid: 'boxy',
+                mail: nil
+            }
+        )
+      end
+      let(:user) { described_class.from_omniauth(auth_hash) }
+
+      before do
+        described_class.delete_all
+      end
+
+      context "shibboleth" do
+        it "has a shibboleth provided name" do
+          expect(user.display_name).to eq auth_hash.info.display_name
+        end
+        it "has a shibboleth provided uid which is not nil" do
+          expect(user.uid).to eq auth_hash.info.uid
+          expect(user.uid).not_to eq nil
+        end
+        it "has a shibboleth provided email which is not nil" do
+          expect(user.email).to eq auth_hash.info.uid.to_s+"@ad.unc.edu"
+          expect(user.email).not_to eq nil
+        end
+      end
+    end
   end
 end
