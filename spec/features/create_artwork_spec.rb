@@ -65,13 +65,13 @@ RSpec.feature 'Create an Artwork', js: false do
 
       # extra fields
 
-      fill_in 'DOI', with: 'some doi'
       select 'Attribution 3.0 United States', :from => 'artwork_license'
       select 'In Copyright', :from => 'artwork_rights_statement'
 
       expect(page).to have_selector('#artwork_license_label', visible: false)
       expect(page).to have_selector('#artwork_rights_statement_label', visible: false)
       expect(page).to have_field('artwork_visibility_embargo')
+      expect(page).not_to have_field('artwork_doi')
       expect(page).not_to have_field('artwork_date_created')
       expect(page).not_to have_field('artwork_visibility_lease')
       expect(page).to have_select('artwork_resource_type', selected: 'Art')
@@ -95,7 +95,6 @@ RSpec.feature 'Create an Artwork', js: false do
       first('.document-title', text: 'Test Artwork work').click
       expect(page).to have_content 'Date of publication October 3, 2018'
       expect(page).to have_content 'Abstract a description'
-      expect(page).to have_content 'DOI some doi'
       expect(page).to have_content 'Extent some extent'
       expect(page).to have_content 'License Attribution 3.0 United States'
       expect(page).to have_content 'Medium a medium'

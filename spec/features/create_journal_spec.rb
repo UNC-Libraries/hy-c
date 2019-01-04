@@ -68,7 +68,6 @@ RSpec.feature 'Create a Journal', js: false do
       fill_in 'ORCID', { with: 'creator orcid', id: 'journal_creators_attributes_0_orcid' }
       select 'Department of Biology', from: 'journal_creators_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'journal_creators_attributes_0_other_affiliation' }
-      fill_in 'DOI', with: 'some doi'
       fill_in 'Extent', with: 'some extent'
       fill_in 'Location', with: 'some geographic subject'
       fill_in 'ISBN', with: 'some isbn'
@@ -85,6 +84,7 @@ RSpec.feature 'Create a Journal', js: false do
       expect(page).to have_selector('#journal_language_label', visible: false)
       expect(page).to have_selector('#journal_license_label', visible: false)
       expect(page).to have_selector('#journal_rights_statement_label', visible: false)
+      expect(page).not_to have_field('journal_doi')
       expect(page).to have_field('journal_visibility_embargo')
       expect(page).not_to have_field('journal_visibility_lease')
       choose "journal_visibility_open"
@@ -114,7 +114,6 @@ RSpec.feature 'Create a Journal', js: false do
       expect(page).to have_content 'Department of Biology'
       expect(page).to have_content 'Other Affiliation: UNC'
       expect(page).to have_content 'Date of publication October 3, 2018'
-      expect(page).to have_content 'DOI some doi'
       expect(page).to have_content 'Extent some extent'
       expect(page).to have_content 'Location some geographic subject'
       expect(page).to have_content 'ISBN some isbn'
