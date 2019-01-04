@@ -48,7 +48,7 @@ namespace :deposit_record do
 
       deposit_record.save
 
-      id_mapper.add_row([MigrationHelper.get_uuid_from_path(record_attributes[:resource][:identifier]), deposit_record.id])
+      id_mapper.add_row([uuid, deposit_record.id])
 
       puts "[#{Time.now.to_s}] Completed migration of #{uuid} in #{Time.now-start_time} seconds"
     end
@@ -67,7 +67,6 @@ namespace :deposit_record do
     file.close
 
     record_attributes[:title] = metadata.xpath("//foxml:datastream[@ID='DC']//oai_dc:dc/dc:title", MigrationConstants::NS).text
-    record_attributes[:identifier] = metadata.xpath("//foxml:datastream[@ID='DC']//oai_dc:dc/dc:identifier", MigrationConstants::NS).text
     record_attributes[:deposit_method] = metadata.xpath("//rdf:RDF/rdf:Description/*[local-name() = 'depositMethod']", MigrationConstants::NS).text
     record_attributes[:deposit_package_subtype] = metadata.xpath("//rdf:RDF/rdf:Description/*[local-name() = 'depositPackageSubType']", MigrationConstants::NS).text
     record_attributes[:deposit_package_type] = metadata.xpath("//rdf:RDF/rdf:Description/*[local-name() = 'depositPackageType']", MigrationConstants::NS).text
