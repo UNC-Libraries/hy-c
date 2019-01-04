@@ -11,8 +11,8 @@ module Hyc
           # https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters
           # Staccato on Github: https://github.com/tpitale/staccato
           tracker = Staccato.tracker(Hyrax.config.google_analytics_id)
-          tracker.event(category: "#{@admin_set_name} Admin Set",
-                        action: 'Download',
+          tracker.event(category: @admin_set_name,
+                        action: 'DownloadIR',
                         hostname: request.server_name,
                         label: params[:id],
                         linkid: request.url,
