@@ -167,23 +167,23 @@ module Migrate
             end
           end
 
-          puts "Lost data:"
-
           # Only keep attributes which apply to the given work type
           work_attributes.select {|k,v| k.ends_with? '_attributes'}.each do |k,v|
             if !resource.respond_to?(k.to_s+'=')
-              puts "#{k}=>#{v}"
+              # Log non-blank person data which is not saved
+              puts "missing: #{k}=>#{v}"
               work_attributes.delete(k.split('s_')[0]+'_display')
               work_attributes.delete(k)
             end
           end
           resource.attributes = work_attributes.reject{|k,v| !resource.attributes.keys.member?(k.to_s) unless k.ends_with? '_attributes'}
 
-          puts work_attributes.except(*resource.attributes.keys, 'contained_files', 'cdr_model_type',
+          # Log other non-blank data which is not saved
+          puts "missing: #{work_attributes.except(*resource.attributes.keys, 'contained_files', 'cdr_model_type',
                                                     'visibility', 'creators_attributes', 'contributors_attributes',
                                                     'advisors_attributes', 'arrangers_attributes', 'composers_attributes',
                                                     'funders_attributes', 'project_directors_attributes',
-                                                    'researchers_attributes', 'reviewers_attributes', 'translators_attributes')
+                                                    'researchers_attributes', 'reviewers_attributes', 'translators_attributes')}"
 
           resource.visibility = work_attributes['visibility']
           unless work_attributes['embargo_release_date'].blank?
