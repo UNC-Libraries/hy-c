@@ -18,6 +18,9 @@ $(function() {
             var negated = false;
             var regex;
 
+            // Clear all hidden forms before hiding current clicked options
+            all_work_types.removeClass('hidden');
+
             if (clicked_link === 'student-papers-work-types') {
                 regex = /MastersPaper|HonorsThesis/;
                 negated = true;
