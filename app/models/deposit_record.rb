@@ -3,7 +3,6 @@ class DepositRecord < ActiveFedora::Base
 
   # OAI_DC info
   property :title, predicate: ::RDF::Vocab::DC.title, multiple: false
-  property :identifier, predicate: ::RDF::Vocab::DC.identifier, multiple: false
   # RDF description
   property :deposit_method, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#depositMethod'), multiple: false
   property :deposit_package_subtype, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#depositPackageSubtype'), multiple: false
