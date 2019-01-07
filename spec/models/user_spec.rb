@@ -55,7 +55,7 @@ RSpec.describe User, type: :model do
           expect(user.uid).not_to eq nil
         end
         it "has a shibboleth provided email which is not nil" do
-          expect(user.email).to eq auth_hash.info.mail
+          expect(user.email).to eq auth_hash.info.uid.to_s+"@ad.unc.edu"
           expect(user.email).not_to eq nil
         end
       end

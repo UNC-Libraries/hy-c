@@ -30,8 +30,8 @@ class User < ApplicationRecord
   def self.from_omniauth(auth)
     # Rails.logger.debug "auth = #{auth.inspect}"
     # Uncomment the debugger above to capture what a shib auth object looks like for testing
-    # default to onyen@ad.unc.edu if no email address in shibboleth response
-    email = auth.info.mail || auth.info.uid+"@ad.unc.edu"
+    # default to onyen@ad.unc.edu
+    email = "#{auth.info.uid}@ad.unc.edu"
     user = where(uid: auth.info.uid).first_or_create(provider: auth.provider, email: email)
     user.display_name = auth.info.uid
     user.save
