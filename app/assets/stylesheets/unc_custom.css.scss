@@ -340,6 +340,11 @@ div.unc-citation-modal {
   width: 100%;
 }
 
+select[multiple],
+select[size] {
+  min-height: 115px;
+}
+
 /* Hyrax override */
 #content_block_page {
   margin: 0 15px;
