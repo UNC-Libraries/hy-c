@@ -54,7 +54,7 @@ RSpec.feature 'Create a ScholarlyWork', js: false do
       login_as user
 
       visit new_hyrax_scholarly_work_path
-      expect(page).to have_content "Add New Posters, Presentations and Papers"
+      expect(page).to have_content "Add New Poster, Presentation or Paper"
 
       # required fields
       fill_in 'Title', with: 'Test ScholarlyWork work'
@@ -141,7 +141,7 @@ RSpec.feature 'Create a ScholarlyWork', js: false do
       login_as admin_user
 
       visit new_hyrax_scholarly_work_path
-      expect(page).to have_content "Add New Posters, Presentations and Papers"
+      expect(page).to have_content "Add New Poster, Presentation or Paper"
 
       # required fields
       fill_in 'Title', with: 'Test ScholarlyWork work'
