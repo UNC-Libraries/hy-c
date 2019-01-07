@@ -1,30 +1,18 @@
 <% if f.object.resource_type[0].blank? && params[:controller] == 'hyrax/articles' %>
-  <%= f.input :resource_type, as: :select,
-              collection: Hyrax::ResourceTypesService.select_options,
-              selected: 'Article',
-              input_html: { class: 'form-control', multiple: true } %>
+  <% value = 'Article' %>
 <% elsif f.object.resource_type[0].blank? && params[:controller] == 'hyrax/artworks' %>
-    <%= f.input :resource_type, as: :select,
-                collection: Hyrax::ResourceTypesService.select_options,
-                selected: 'Art',
-                input_html: { class: 'form-control', multiple: true } %>
+  <% value = 'Art' %>
 <% elsif f.object.resource_type[0].blank? && params[:controller] == 'hyrax/data_sets' %>
-  <%= f.input :resource_type, as: :select,
-              collection: Hyrax::ResourceTypesService.select_options,
-              selected: 'Dataset',
-              input_html: { class: 'form-control', multiple: true } %>
+  <% value = 'Dataset' %>
 <% elsif f.object.resource_type[0].blank? && params[:controller] == 'hyrax/honors_theses' %>
-  <%= f.input :resource_type, as: :select,
-              collection: Hyrax::ResourceTypesService.select_options,
-              selected: 'Honors Thesis',
-              input_html: { class: 'form-control', multiple: true } %>
+  <% value = 'Honors Thesis' %>
 <% elsif f.object.resource_type[0].blank? && params[:controller] == 'hyrax/masters_papers' %>
-  <%= f.input :resource_type, as: :select,
-              collection: Hyrax::ResourceTypesService.select_options,
-              selected: 'Masters Paper',
-              input_html: { class: 'form-control', multiple: true } %>
+  <% value = 'Masters Paper' %>
 <% else %>
-  <%= f.input :resource_type, as: :select,
-              collection: Hyrax::ResourceTypesService.select_options,
-              input_html: { class: 'form-control', multiple: true } %>
+  <% value = '' %>
 <% end %>
+
+<%= f.input :resource_type, as: :select,
+            collection: Hyrax::ResourceTypesService.select_options,
+            selected: value,
+            input_html: { class: 'form-control', multiple: true, size: 6 } %>
