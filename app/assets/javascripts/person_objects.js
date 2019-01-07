@@ -82,6 +82,7 @@ function updateNewRow(new_row, attr, index) {
 
     $label.each(function() {
         var self = $(this);
-        self.attr('for', self.attr('for').replace(regex, index));
+        self.attr('for', self.attr('for').replace(regex, index))
+            .text(self.text().replace(regex, parseInt(index) + 1));
     });
 }
