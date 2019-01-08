@@ -1,11 +1,17 @@
+<%# [hyc-override] Add uid field to devise sign up form %>
 <h2>Sign up</h2>
 
 <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
-  <%= render "devise/shared/error_messages", resource: resource %>
+
+  <%# [hyc-override] add uid field %>
+  <div class="field">
+    <%= f.label :uid %><br />
+    <%= f.text_field :uid, autofocus: true, autocomplete: "onyen" %>
+  </div>
 
   <div class="field">
     <%= f.label :email %><br />
-    <%= f.email_field :email, autofocus: true, autocomplete: "email" %>
+    <%= f.email_field :email, autocomplete: "email" %>
   </div>
 
   <div class="field">

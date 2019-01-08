@@ -1,3 +1,4 @@
+# [hyc-pverride] Allow extra params to be submitted when creating users
 # frozen_string_literal: true
 
 module Devise
@@ -37,7 +38,8 @@ module Devise
   class ParameterSanitizer
     DEFAULT_PERMITTED_ATTRIBUTES = {
         sign_in: [:password, :remember_me],
-        sign_up: [:password, :password_confirmation],
+        # [hyc-override] Adding email and uid to list of permitted params
+        sign_up: [:password, :password_confirmation, :email, :uid],
         account_update: [:password, :password_confirmation, :current_password]
     }
 
