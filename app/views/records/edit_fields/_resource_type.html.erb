@@ -1,16 +1,23 @@
-<% if f.object.resource_type[0].blank? && params[:controller] == 'hyrax/articles' %>
-  <% value = 'Article' %>
-<% elsif f.object.resource_type[0].blank? && params[:controller] == 'hyrax/artworks' %>
-  <% value = 'Art' %>
-<% elsif f.object.resource_type[0].blank? && params[:controller] == 'hyrax/data_sets' %>
-  <% value = 'Dataset' %>
-<% elsif f.object.resource_type[0].blank? && params[:controller] == 'hyrax/honors_theses' %>
-  <% value = 'Honors Thesis' %>
-<% elsif f.object.resource_type[0].blank? && params[:controller] == 'hyrax/masters_papers' %>
-  <% value = 'Masters Paper' %>
-<% else %>
-  <% value = '' %>
-<% end %>
+<% 
+if f.object.resource_type[0].blank?
+  case params[:controller]
+  when 'hyrax/articles'
+    value = 'Article'
+  when 'hyrax/artworks'
+    value = 'Art'
+  when 'hyrax/data_sets'
+    value = 'Dataset'
+  when 'hyrax/honors_theses'
+    value = 'Honors Thesis'
+  when 'hyrax/masters_papers'
+    value = 'Masters Paper'
+  else
+    value = ''
+  end
+else
+  value = f.object.resource_type[0]
+end
+%>
 
 <%= f.input :resource_type, as: :select,
             collection: Hyrax::ResourceTypesService.select_options,
