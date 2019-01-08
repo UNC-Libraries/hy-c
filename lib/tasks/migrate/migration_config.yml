@@ -15,7 +15,6 @@ collection2:
   admin_set: default
   depositor_email: admin@example.com
   tmp_file_location: /tmp/migration
-  work_uri: generals
   deposit_records: lib/tasks/migration/dr.csv
 collection3:
   collection_list: spec/fixtures/migration/collection.csv
@@ -25,7 +24,6 @@ collection3:
   admin_set: default
   depositor_email: admin@example.com
   tmp_file_location: /tmp/migration
-  work_uri: data_sets
 collection4:
   collection_list: spec/fixtures/migration/collection.csv
   objects: spec/fixtures/migration/objects.txt
