@@ -1,4 +1,4 @@
-# [hyc-pverride] Allow extra params to be submitted when creating users
+# [hyc-override] Allow extra params to be submitted when creating users
 # frozen_string_literal: true
 
 module Devise
