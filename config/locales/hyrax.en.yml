@@ -133,10 +133,9 @@ en:
       proxy_deposit_request:
         transfer_on_create:
           subject: CDR work transfer request
-          message: "%{user_link} wants to transfer ownership of %{transfer_link} to you. To accept this transfer
-          request, go to the Carolina Digital Repository (CDR) <a href=\"%{transfer_link}\">transfer ownership page</a>
-          and click \"Accept\" next to the title of the work. You may need to sign into the CDR by clicking on
-          the \"Login\" link in the upper right.\n\n
+          message: "%{user_link} wants to transfer ownership of %{work_link} to you. To accept this transfer
+          request, go to the Carolina Digital Repository (CDR) %{transfer_link} and click \"Accept\" next to the title
+          of the work. You may need to sign into the CDR by clicking on the \"Login\" link in the upper right.\n\n
           If you have questions about transferring ownership of a work, please see the
           <a href=\"https://blogs.lib.unc.edu/cdr/index.php/frequently-asked-questions\">CDR FAQ</a>."
         transfer_on_update:
