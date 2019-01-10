@@ -18,20 +18,19 @@ function attach_add_person_listeners(selector){
         }
     });
 
-    remove_row(selector);
-
     $(add_selector).on('click', function(event){
         // stop page from reloading
         event.preventDefault();
 
         $(remove_selector).removeClass('hidden');
 
-        var current_index = $('#index-'+selector).val();
+        var index_selector = $('#index-'+selector);
+        var current_index = index_selector.val();
         var $new_row = $(cloning_row+' > .row').clone();
 
         // Update inputs and labels for new row fields
         ['name', 'orcid', 'affiliation', 'other_affiliation'].forEach(function(field) {
-            updateNewRow($new_row, field, current_index);
+            updateRow($new_row, field, current_index);
         });
 
         //change $new_row's id so we don't find it again when looking for blank row to clone
@@ -44,13 +43,13 @@ function attach_add_person_listeners(selector){
         $('div#'+selector).append($new_row);
 
         current_index++;
-        $('#index-'+selector).val(current_index);
+        index_selector.val(current_index);
 
-        remove_row(selector);
+        remove_row(selector, parseInt(current_index));
     });
 }
 
-function remove_row(selector) {
+function remove_row(selector, current_index) {
     var row_selector = '.'+selector+'.row';
     var remove_selector = '.remove-'+selector;
 
@@ -62,10 +61,21 @@ function remove_row(selector) {
 
         // Trigger a removal event for the overall person object field since the specific instance clicked no longer exists.
         $('#'+selector).trigger("managed_field:remove");
+
+        current_index--;
+        $('#index-'+selector).val(current_index);
+
+        $(row_selector).not(':hidden').each(function(row_index) {
+            var self = $(this);
+
+            ['name', 'orcid', 'affiliation', 'other_affiliation'].forEach(function(field) {
+                updateRow(self, field, row_index)
+            });
+        });
     });
 }
 
-function updateNewRow(new_row, attr, index) {
+function updateRow(new_row, attr, index) {
     var regex = /\d+/;
 
     // Update input
@@ -83,6 +93,6 @@ function updateNewRow(new_row, attr, index) {
     $label.each(function() {
         var self = $(this);
         self.attr('for', self.attr('for').replace(regex, index))
-            .text(self.text().replace(regex, parseInt(index) + 1));
+            .html(self.html().replace(regex, parseInt(index) + 1));
     });
 }
