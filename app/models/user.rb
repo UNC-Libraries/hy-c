@@ -21,7 +21,7 @@ class User < ApplicationRecord
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise_modules = [:omniauthable, :rememberable, :trackable, omniauth_providers: [:shibboleth], authentication_keys: [:uid]]
-  devise_modules.prepend(:database_authenticatable) if AuthConfig.use_database_auth?
+  devise_modules.prepend(:database_authenticatable, :registerable) if AuthConfig.use_database_auth?
   devise(*devise_modules)
 
   # When a user authenticates via shibboleth, find their User object or make
