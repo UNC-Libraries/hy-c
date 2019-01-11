@@ -29,9 +29,7 @@ function attach_add_person_listeners(selector){
         var $new_row = $(cloning_row+' > .row').clone();
 
         // Update inputs and labels for new row fields
-        ['name', 'orcid', 'affiliation', 'other_affiliation'].forEach(function(field) {
-            updateRow($new_row, field, current_index);
-        });
+        updateFields($new_row , current_index);
 
         //change $new_row's id so we don't find it again when looking for blank row to clone
         $new_row.prop('id', 'cloned_'+selector+'_row');
@@ -65,13 +63,17 @@ function remove_row(selector, current_index) {
         current_index--;
         $('#index-'+selector).val(current_index);
 
+        // Update row ordering
         $(row_selector).not(':hidden').each(function(row_index) {
             var self = $(this);
-
-            ['name', 'orcid', 'affiliation', 'other_affiliation'].forEach(function(field) {
-                updateRow(self, field, row_index)
-            });
+            updateFields(self, row_index);
         });
+    });
+}
+
+function updateFields(row, current_index) {
+    ['name', 'orcid', 'affiliation', 'other_affiliation'].forEach(function(field) {
+        updateRow(row, field, current_index);
     });
 }
 
