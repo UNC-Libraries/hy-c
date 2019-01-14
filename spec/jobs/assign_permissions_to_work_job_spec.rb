@@ -1,6 +1,12 @@
 require 'rails_helper'
 
 RSpec.describe AssignPermissionsToWorkJob, type: :job do
+  before do
+    # Configure QA to use fixtures
+    qa_fixtures = { local_path: File.expand_path('spec/fixtures/authorities') }
+    allow(Qa::Authorities::Local).to receive(:config).and_return(qa_fixtures)
+  end
+
   let(:reviewer1) { User.create(email: 'reviewer1@example.com', uid: 'reviewer1@example.com', password: 'password', password_confirmation: 'password') }
   let(:reviewer2) { User.create(email: 'reviewer2@example.com', uid: 'reviewer2@example.com', password: 'password', password_confirmation: 'password') }
   let(:role) { Role.new(name: 'biology_reviewer') }

@@ -75,7 +75,6 @@ RSpec.feature 'Create a Article', js: false do
       select 'Article', from: 'article_resource_type'
       fill_in 'Copyright date', with: '2018-10-03'
       fill_in 'Date other', with: '2018-10-03'
-      fill_in 'DOI', with: 'some doi'
       select 'Preprint', from: 'article_edition'
       fill_in 'Extent', with: 'some extent'
       fill_in 'Funder', with: 'some funder'
@@ -101,6 +100,7 @@ RSpec.feature 'Create a Article', js: false do
       expect(page).not_to have_field('article_access')
       expect(page).not_to have_field('article_bibliographic_citation')
       expect(page).not_to have_field('article_date_created')
+      expect(page).not_to have_field('article_doi')
       expect(page).to have_field('article_visibility_embargo')
       expect(page).not_to have_field('article_visibility_lease')
       expect(page).not_to have_field('article_identifier')
@@ -142,7 +142,6 @@ RSpec.feature 'Create a Article', js: false do
       expect(page).to have_content 'Resource type Article'
       expect(page).to have_content 'Copyright date October 3, 2018'
       expect(page).to have_content 'Date other October 3, 2018'
-      expect(page).to have_content 'DOI some doi'
       expect(page).to have_content 'Version Preprint'
       expect(page).to have_content 'Extent some extent'
       expect(page).to have_content 'Funder some funder'

@@ -54,7 +54,7 @@ RSpec.feature 'Create a ScholarlyWork', js: false do
       login_as user
 
       visit new_hyrax_scholarly_work_path
-      expect(page).to have_content "Add New Scholarly Work"
+      expect(page).to have_content "Add New Poster, Presentation or Paper"
 
       # required fields
       fill_in 'Title', with: 'Test ScholarlyWork work'
@@ -72,7 +72,6 @@ RSpec.feature 'Create a ScholarlyWork', js: false do
       fill_in 'Additional affiliation', { with: 'UNC', id: 'scholarly_work_advisors_attributes_0_other_affiliation' }
       fill_in 'Conference name', with: 'a conference'
       fill_in 'Description', with: 'a description'
-      fill_in 'DOI', with: 'some doi'
       fill_in 'Location', with: 'some geographic subject'
       fill_in 'Keyword', with: 'Test Default Keyword'
       select 'English', from: 'scholarly_work_language'
@@ -85,6 +84,7 @@ RSpec.feature 'Create a ScholarlyWork', js: false do
       expect(page).to have_selector('#scholarly_work_language_label', visible: false)
       expect(page).to have_selector('#scholarly_work_license_label', visible: false)
       expect(page).to have_selector('#scholarly_work_rights_statement_label', visible: false)
+      expect(page).not_to have_field('scholarly_work_doi')
       expect(page).not_to have_field('scholarly_work_visibility_use')
       expect(page).to have_field('scholarly_work_visibility_embargo')
       expect(page).not_to have_field('scholarly_work_visibility_lease')
@@ -118,7 +118,6 @@ RSpec.feature 'Create a ScholarlyWork', js: false do
       expect(page).to have_content 'Creator Test Default Creator ORCID: creator orcid'
       expect(page).to have_content 'Date of publication October 3, 2018'
       expect(page).to have_content 'a description'
-      expect(page).to have_content 'DOI some doi'
       expect(page).to have_content 'Location some geographic subject'
       expect(page).to have_content 'Keyword Test Default Keyword'
       expect(page).to have_content 'Language English'
@@ -141,7 +140,7 @@ RSpec.feature 'Create a ScholarlyWork', js: false do
       login_as admin_user
 
       visit new_hyrax_scholarly_work_path
-      expect(page).to have_content "Add New Scholarly Work"
+      expect(page).to have_content "Add New Poster, Presentation or Paper"
 
       # required fields
       fill_in 'Title', with: 'Test ScholarlyWork work'

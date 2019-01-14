@@ -45,8 +45,8 @@ en:
   hyrax:
     product_name:           "Hyrax"
     product_twitter_handle: "@SamveraRepo"
-    institution_name:       "Institution"
-    institution_name_full:  "The Institution Name"
+    institution_name:       "UNC-Chapel Hill"
+    institution_name_full:  "The University of North Carolina at Chapel Hill"
     account_name:           "My Institution Account Id"
     base:
       form_files:
@@ -96,6 +96,9 @@ en:
         option:
           all:
             label_long: All of the CDR
+    visibility:
+      authenticated:
+        note_html: "Restrict access to Onyen login"
     works:
       form:
         additional_fields: Optional fields
@@ -209,7 +212,7 @@ en:
         journal_issue: "The journal issue number."
         journal_title: "The title of the journal in which your work was published."
         journal_volume: "The journal volume number."
-        keyword: "Words or phrases that describe your work. These will be used to help others find your work."
+        keyword: "Add a word or phrase of your own that describes your work."
         kind_of_data: "The type of data that you are depositing. Choose the best option from the drop-down menu."
         language: "The primary language of your work."
         last_modified: "The date on which your dataset was last modified."
@@ -232,7 +235,7 @@ en:
         rights_statement: "A statement which describes the copyright status of the work. For more information on each option, <a target=\"_blank\" href=\"https://blogs.lib.unc.edu/cdr/index.php/frequently-asked-questions\">see our FAQ</a>."
         series: "The title of the series to which your work belongs, if applicable."
         sponsor: "A person or organization which sponsored some aspect of the work. For funder, use the \"Funder\" field instead. If your work was not sponsored, leave this field blank."
-        subject: "Terms describing what the work is about. Type a term into the search box and select from the choices provided."
+        subject: "Type a descriptive term into the search box and choose from the list provided."
         table_of_contents: "The table of contents for this issue, proceeding or book."
         title: "The name of the work"
         translator: "If your work that you are depositing is translated, enter the name of the person who translated it."

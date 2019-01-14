@@ -47,29 +47,25 @@ class SingleValueForm < Hyrax::Forms::WorkForm
     is_new_model = !form_params.has_key?(:permissions_attributes)
     if is_new_model
       default_term_values.each do |field, values|
-        if !attrs.key?(field)
+        unless attrs.key?(field)
           values = default_term_values[field]
-          
-          if multiple? field.to_sym
-            if attrs[field].blank?
-              attrs[field] = values
-            end
-          else
-            if attrs[field].blank?
-              attrs[field] = values.first
-            end
+
+          if attrs[field].blank?
+            attrs[field] = values
           end
         end
       end
     end
 
     if attrs.key?(:language) && !attrs[:language].blank?
+      attrs[:language_label] ||= []
       Array(attrs[:language]).each do |language|
         attrs[:language_label] << LanguagesService.label(language)
       end
     end
 
     if attrs.key?(:license) && !attrs[:license].blank?
+      attrs[:license_label] ||= []
       Array(attrs[:license]).each do |license|
         attrs[:license_label] << CdrLicenseService.label(license)
       end
@@ -83,7 +79,7 @@ class SingleValueForm < Hyrax::Forms::WorkForm
       if person_key.to_s.match('_attributes')
         person_value.each do |k,v|
           if !v['affiliation'].blank?
-            v['affiliation'] = split_affiliations(v['affiliation'])
+            v['affiliation'] = v['affiliation']
           end
         end
       end
@@ -114,18 +110,5 @@ class SingleValueForm < Hyrax::Forms::WorkForm
           end
         end
       end
-    end
-
-    # split affiliations out
-    def self.split_affiliations(affiliations)
-      affiliations_list = []
-
-      Array(affiliations).reject { |a| a.blank? }.each do |aff|
-        Array(DepartmentsService.label(aff)).join(';').split(';').each do |value|
-          affiliations_list.push(value.squish!)
-        end
-      end
-
-      affiliations_list.uniq
     end
 end

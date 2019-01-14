@@ -21,7 +21,7 @@ class User < ApplicationRecord
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise_modules = [:omniauthable, :rememberable, :trackable, omniauth_providers: [:shibboleth], authentication_keys: [:uid]]
-  devise_modules.prepend(:database_authenticatable) if AuthConfig.use_database_auth?
+  devise_modules.prepend(:database_authenticatable, :registerable) if AuthConfig.use_database_auth?
   devise(*devise_modules)
 
   # When a user authenticates via shibboleth, find their User object or make
@@ -30,7 +30,9 @@ class User < ApplicationRecord
   def self.from_omniauth(auth)
     # Rails.logger.debug "auth = #{auth.inspect}"
     # Uncomment the debugger above to capture what a shib auth object looks like for testing
-    user = where(uid: auth.info.uid).first_or_create(provider: auth.provider, email: auth.info.mail)
+    # default to onyen@ad.unc.edu
+    email = "#{auth.info.uid}@ad.unc.edu"
+    user = where(uid: auth.info.uid).first_or_create(provider: auth.provider, email: email)
     user.display_name = auth.info.uid
     user.save
     user
