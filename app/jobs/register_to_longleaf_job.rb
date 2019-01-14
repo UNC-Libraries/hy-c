@@ -12,7 +12,7 @@ class RegisterToLongleafJob < Hyrax::ApplicationJob
     
     checksum = repository_file.checksum.value
     # Calculate the path to the file in fedora, assuming modeshape behavior of hashing based on sha1
-    binary_path = File.join(ENV["FEDORA_BINARY_STORAGE"], checksum.scan(/.{2}/)[0..2].join('/'), checksum)
+    binary_path = File.join(ENV["LONGLEAF_STORAGE_PATH"], checksum.scan(/.{2}/)[0..2].join('/'), checksum)
     
     register_cmd = "#{ENV["LONGLEAF_BASE_COMMAND"]} register -f #{binary_path} --force"
     
