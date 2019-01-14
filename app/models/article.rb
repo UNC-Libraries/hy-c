@@ -18,6 +18,10 @@ class Article < ActiveFedora::Base
     index.as :stored_searchable
   end
 
+  property :alternative_title, predicate: ::RDF::Vocab::DC.alternative do |index|
+    index.as :stored_searchable
+  end
+
   property :copyright_date, predicate: ::RDF::Vocab::DC.dateCopyrighted, multiple: false do |index|
     index.as :stored_searchable
   end
