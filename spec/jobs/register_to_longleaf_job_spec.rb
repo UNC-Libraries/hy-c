@@ -32,8 +32,6 @@ RSpec.describe RegisterToLongleafJob, type: :job do
   context 'Without longleaf configured' do
     before(:each) do
       ENV.delete("LONGLEAF_BASE_COMMAND")
-      ENV.delete("LONGLEAF_CONFIG")
-      ENV.delete("LONGLEAF_LOG")
     end
     
     it 'logs notification' do
@@ -59,15 +57,23 @@ RSpec.describe RegisterToLongleafJob, type: :job do
       file.path
     end
     
+    let(:longleaf_script) do
+      file = Tempfile.new('llcommand')
+      File.write(file.path, "#!/usr/bin/env bash\n" +
+          "longleaf \"$@\" -c #{config_path} 2>&1")
+      file.close
+      file.path
+    end
+    
     before(:each) do
+      FileUtils.chmod("u+x", longleaf_script)
       ENV["FEDORA_BINARY_STORAGE"] = binary_dir
-      ENV["LONGLEAF_BASE_COMMAND"] = 'longleaf %{cmd}'
-      ENV["LONGLEAF_CONFIG"] = config_path
-      ENV["LONGLEAF_LOG"] = '&1'
+      ENV["LONGLEAF_BASE_COMMAND"] = longleaf_script
     end
     
     after do
       FileUtils.rmdir(binary_dir)
+      ENV.delete("LONGLEAF_BASE_COMMAND")
     end
     
     it 'registers file' do

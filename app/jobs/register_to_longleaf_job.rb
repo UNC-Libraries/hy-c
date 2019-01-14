@@ -14,7 +14,7 @@ class RegisterToLongleafJob < Hyrax::ApplicationJob
     # Calculate the path to the file in fedora, assuming modeshape behavior of hashing based on sha1
     binary_path = File.join(ENV["FEDORA_BINARY_STORAGE"], checksum.scan(/.{2}/)[0..2].join('/'), checksum)
     
-    register_cmd = ENV["LONGLEAF_BASE_COMMAND"] % { :cmd => "register -c \"#{ENV["LONGLEAF_CONFIG"]}\" -f #{binary_path} --force 2>#{ENV["LONGLEAF_LOG"]}" }
+    register_cmd = "#{ENV["LONGLEAF_BASE_COMMAND"]} register -f #{binary_path} --force"
     
     Rails.logger.debug("Registering with longleaf: #{register_cmd}")
 
