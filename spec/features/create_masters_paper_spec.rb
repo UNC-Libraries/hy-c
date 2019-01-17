@@ -87,12 +87,12 @@ RSpec.feature 'Create a MastersPaper', js: false do
       
       # required fields
       fill_in 'Title', with: 'Test MastersPaper work'
-      fill_in 'Name', { with: 'Test Default Creator', id: 'masters_paper_creators_attributes_0_name' }
+      fill_in 'Creator', { with: 'Test Default Creator', id: 'masters_paper_creators_attributes_0_name' }
       fill_in 'ORCID', { with: 'creator orcid', id: 'masters_paper_creators_attributes_0_orcid' }
       select 'Department of Biology', from: 'masters_paper_creators_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'masters_paper_creators_attributes_0_other_affiliation' }
       fill_in 'Abstract', with: 'an abstract'
-      fill_in 'Name', { with: 'advisor', id: 'masters_paper_advisors_attributes_0_name' }
+      fill_in 'Advisor', { with: 'advisor', id: 'masters_paper_advisors_attributes_0_name' }
       fill_in 'ORCID', { with: 'advisor orcid', id: 'masters_paper_advisors_attributes_0_orcid' }
       select 'Department of Biology', from: 'masters_paper_advisors_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'masters_paper_advisors_attributes_0_other_affiliation' }
@@ -109,7 +109,7 @@ RSpec.feature 'Create a MastersPaper', js: false do
       select 'English', from: 'masters_paper_language'
       select 'Attribution 3.0 United States', :from => 'masters_paper_license'
       fill_in 'Note', with: 'a note'
-      fill_in 'Name', { with: 'reviewer', id: 'masters_paper_reviewers_attributes_0_name' }
+      fill_in 'Reviewer', { with: 'reviewer', id: 'masters_paper_reviewers_attributes_0_name' }
       fill_in 'ORCID', { with: 'reviewer orcid', id: 'masters_paper_reviewers_attributes_0_orcid' }
       select 'Department of Biology', from: 'masters_paper_reviewers_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'masters_paper_reviewers_attributes_0_other_affiliation' }
@@ -192,12 +192,12 @@ RSpec.feature 'Create a MastersPaper', js: false do
 
       # required fields
       fill_in 'Title', with: 'Test MastersPaper work'
-      fill_in 'Name', { with: 'Test Default Creator', id: 'masters_paper_creators_attributes_0_name' }
+      fill_in 'Creator', { with: 'Test Default Creator', id: 'masters_paper_creators_attributes_0_name' }
       fill_in 'ORCID', { with: 'creator orcid', id: 'masters_paper_creators_attributes_0_orcid' }
       select 'Department of Biology', from: 'masters_paper_creators_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'masters_paper_creators_attributes_0_other_affiliation' }
       fill_in 'Abstract', with: 'an abstract'
-      fill_in 'Name', { with: 'advisor', id: 'masters_paper_advisors_attributes_0_name' }
+      fill_in 'Advisor', { with: 'advisor', id: 'masters_paper_advisors_attributes_0_name' }
       fill_in 'ORCID', { with: 'advisor orcid', id: 'masters_paper_advisors_attributes_0_orcid' }
       select 'Department of Biology', from: 'masters_paper_advisors_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'masters_paper_advisors_attributes_0_other_affiliation' }
@@ -217,7 +217,7 @@ RSpec.feature 'Create a MastersPaper', js: false do
       select 'English', from: 'masters_paper_language'
       select 'Attribution 3.0 United States', :from => 'masters_paper_license'
       fill_in 'Note', with: 'a note'
-      fill_in 'Name', { with: 'reviewer', id: 'masters_paper_reviewers_attributes_0_name' }
+      fill_in 'Reviewer', { with: 'reviewer', id: 'masters_paper_reviewers_attributes_0_name' }
       fill_in 'ORCID', { with: 'reviewer orcid', id: 'masters_paper_reviewers_attributes_0_orcid' }
       select 'Department of Biology', from: 'masters_paper_reviewers_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'masters_paper_reviewers_attributes_0_other_affiliation' }
