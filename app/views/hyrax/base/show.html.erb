@@ -18,7 +18,7 @@
           <%= render 'workflow_actions_widget', presenter: @presenter %>
           <%# [hyc-override] Show message to attach child works for art mfa deposits %>
           <%if @presenter.workflow.is_mfa_in_review? %>
-            <p class="bg-success mfa-child-works">If you haven't already done so; please add your child works now.
+            <p class="bg-success mfa-child-works">If you haven't already done so, please add your artworks now.
             </p>
           <% end %>
           <% if @presenter.iiif_viewer? %>
