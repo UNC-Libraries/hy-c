@@ -22,7 +22,7 @@ RSpec.describe Hyrax::ArticleForm do
     subject { form.secondary_terms }
 
     it { is_expected.to match_array [:keyword, :license, :rights_statement, :publisher, :date_created, :subject,
-                                     :language, :identifier, :related_url, :resource_type, :access,
+                                     :language, :identifier, :related_url, :resource_type, :access, :alternative_title,
                                      :bibliographic_citation, :copyright_date, :date_other, :dcmi_type, :doi, :edition,
                                      :extent, :funder, :geographic_subject, :issn, :journal_title, :journal_volume,
                                      :journal_issue, :note, :page_end, :page_start, :peer_review_status,
@@ -73,6 +73,7 @@ RSpec.describe Hyrax::ArticleForm do
           member_of_collection_ids: ['123456', 'abcdef'],
           abstract: ['an abstract'],
           access: 'public', # single-valued
+          alternative_title: ['my other title'],
           copyright_date: '2017-01-22', # single-valued
           date_issued: '2017-01-22', # single-valued
           date_other: [''],
@@ -122,6 +123,7 @@ RSpec.describe Hyrax::ArticleForm do
       expect(subject['member_of_collection_ids']).to eq ['123456', 'abcdef']
       expect(subject['abstract']).to eq ['an abstract']
       expect(subject['access']).to eq 'public'
+      expect(subject['alternative_title']).to eq ['my other title']
       expect(subject['copyright_date']).to eq '2017-01-22'
       expect(subject['date_issued']).to eq '2017-01-22'
       expect(subject['date_other']).to be_empty
