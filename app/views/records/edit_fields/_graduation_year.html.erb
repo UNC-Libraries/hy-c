@@ -1,0 +1,3 @@
+<% date_value =  f.object.graduation_year.blank? ? Date.today.strftime("%Y") : f.object.graduation_year %>
+<%= f.input :graduation_year, as: :integer, html5: true, placeholder: "Date Format YYYY",
+            input_html: { class: 'date-input', min: 1900, max: 2500, value: date_value } %>
