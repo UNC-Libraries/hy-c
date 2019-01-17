@@ -63,7 +63,6 @@ RSpec.feature 'Create a Journal', js: false do
 
       # extra fields
       fill_in 'Abstract', with: 'an abstract'
-      fill_in 'Alternate title', with: 'another title'
       fill_in 'Creator', { with: 'Test Default Creator', id: 'journal_creators_attributes_0_name' }
       fill_in 'ORCID', { with: 'creator orcid', id: 'journal_creators_attributes_0_orcid' }
       select 'Department of Biology', from: 'journal_creators_attributes_0_affiliation'
@@ -84,6 +83,7 @@ RSpec.feature 'Create a Journal', js: false do
       expect(page).to have_selector('#journal_language_label', visible: false)
       expect(page).to have_selector('#journal_license_label', visible: false)
       expect(page).to have_selector('#journal_rights_statement_label', visible: false)
+      expect(page).not_to have_field('journal_alternative_title')
       expect(page).not_to have_field('journal_doi')
       expect(page).to have_field('journal_visibility_embargo')
       expect(page).not_to have_field('journal_visibility_lease')
@@ -107,7 +107,6 @@ RSpec.feature 'Create a Journal', js: false do
 
       first('.document-title', text: 'Test Journal').click
       expect(page).to have_content 'Abstract an abstract'
-      expect(page).to have_content 'Alternate title another title'
       expect(page).to have_content 'Creator Test Default Creator ORCID: creator orcid'
       expect(page).to have_content 'Affiliation:'
       expect(page).to have_content 'College of Arts and Sciences'
