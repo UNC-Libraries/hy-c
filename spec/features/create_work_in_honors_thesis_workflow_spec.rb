@@ -90,7 +90,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       expect(page).to have_content 'Admin'
       expect(page).not_to have_content 'department_of_biology_reviewer'
 
-      logout admin_user
+      click_on 'Logout'
 
       # Create work
       login_as user
@@ -141,6 +141,15 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       expect(reviewer.mailbox.inbox.count).to eq 0
       expect(nonreviewer.mailbox.inbox.count).to eq 0
 
+      click_on 'Logout'
+
+      # Check that work is not yet visible to general public
+      visit '/concern/honors_theses/'+HonorsThesis.all[-1].id
+      expect(page).to have_content 'Login'
+      expect(page).to have_content 'Honors workflow test'
+      expect(page).not_to have_content 'Review and Approval'
+      expect(page).to have_content 'The work is not currently available because it has not yet completed the approval process'
+
       # Check that new role has been created
       login_as admin_user
 
@@ -154,7 +163,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       click_button 'Add'
       expect(page).to have_content "Accounts: reviewer@example.com"
 
-      logout admin_user
+      click_on 'Logout'
 
       # Check that non-reviewer cannot review work
       login_as nonreviewer
@@ -166,6 +175,8 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       visit '/concern/honors_theses/'+HonorsThesis.all[-1].id
       expect(page).to have_content 'Honors workflow test'
       expect(page).not_to have_content 'Review and Approval'
+
+      click_on 'Logout'
 
       # Check that reviewer can review work
       login_as reviewer
@@ -201,7 +212,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       expect(reviewer.mailbox.inbox.count).to eq 0
       expect(nonreviewer.mailbox.inbox.count).to eq 0
 
-      logout nonreviewer
+      click_on 'Logout'
 
       # Check notifications for tombstone requests
       login_as user

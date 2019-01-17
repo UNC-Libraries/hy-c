@@ -18,7 +18,8 @@
                         }
                     ],
                     "methods": [
-                        "Hyrax::Workflow::AssignReviewerByAffiliation"
+                        "Hyrax::Workflow::AssignReviewerByAffiliation",
+                        "Hyrax::Workflow::DeactivateObject"
                     ]
                 }, {
                     "name": "request_changes",
@@ -62,7 +63,6 @@
                         }
                     ],
                     "methods": [
-                        "Hyrax::Workflow::ActivateObject",
                         "Hyrax::Workflow::AssignReviewerByAffiliation"
                     ]
                 }, {
