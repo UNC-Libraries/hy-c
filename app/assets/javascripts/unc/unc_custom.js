@@ -6,17 +6,39 @@ $(function() {
     function visibleForms() {
         var all_work_types = $('form.new-work-select .select-worktype');
 
-        $('#student-papers-work-types').on('click', function() {
-            all_work_types.filter(function(index, element) {
-                var work_type = $(this).find('input[type=radio]').attr('value');
-                return !/MastersPaper|HonorsThesis/.test(work_type);
-            }).addClass('hidden');
-        });
-
-
         // Remove any currently hidden student work types
         $('.all-unc-work-types').on('click', function() {
             all_work_types.removeClass('hidden');
+        });
+
+        // Filter form options based on which button is clicked
+        // Filters "Student Papers" and "Other Deposits" options
+        $('#unc-deposit').on('click', function(e) {
+            var clicked_link = e.target.parentNode.id;
+            var negated = false;
+            var regex;
+
+            // Clear all hidden forms before hiding current clicked options
+            all_work_types.removeClass('hidden');
+
+            if (clicked_link === 'student-papers-work-types') {
+                regex = /MastersPaper|HonorsThesis/;
+                negated = true;
+            } else if (clicked_link === 'other-deposit-work-types') {
+                regex = /MastersPaper|HonorsThesis|Article|DataSet/;
+            } else {
+                return;
+            }
+
+            all_work_types.filter(function(index, element) {
+                var work_type = $(this).find('input[type=radio]').attr('value');
+
+                if (negated) {
+                    return !regex.test(work_type);
+                } else {
+                    return regex.test(work_type);
+                }
+            }).addClass('hidden');
         });
     }
 
