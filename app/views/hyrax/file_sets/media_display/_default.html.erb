@@ -1,6 +1,7 @@
 <%# [hyc-override] Overriding to hide withdrawn files %>
-<% if current_user&.admin? ||
-    (@presenter.respond_to?('workflow') && !@presenter.workflow.in_workflow_state?(['withdrawn', 'pending deletion'])  && Hyrax.config.display_media_download_link?) %>
+<% if current_user&.admin? || !@presenter.respond_to?('workflow') || 
+    (!@presenter.workflow.in_workflow_state?(['withdrawn', 'pending deletion']) &&
+    Hyrax.config.display_media_download_link?) %>
   <div class="no-preview">
     <%= t('hyrax.works.show.no_preview') %>
       <p /><%= link_to t('hyrax.file_set.show.download'),
