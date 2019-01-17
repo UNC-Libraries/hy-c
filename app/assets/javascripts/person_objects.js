@@ -3,6 +3,7 @@ $(document).on('turbolinks:load', function () {
         'reviewer', 'translator'];
     people.forEach(function(person) {
         attach_add_person_listeners(person);
+        updateAllRows('.'+ person + '.row');
     });
 });
 
@@ -64,10 +65,14 @@ function remove_row(selector, current_index) {
         $('#index-'+selector).val(current_index);
 
         // Update row ordering
-        $(row_selector).not(':hidden').each(function(row_index) {
-            var self = $(this);
-            updateFields(self, row_index);
-        });
+        updateAllRows(row_selector)
+    });
+}
+
+function updateAllRows(row_selector) {
+    $(row_selector).not(':hidden').each(function(row_index) {
+        var self = $(this);
+        updateFields(self, row_index);
     });
 }
 
