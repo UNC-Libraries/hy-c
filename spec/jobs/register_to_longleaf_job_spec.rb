@@ -67,12 +67,13 @@ RSpec.describe RegisterToLongleafJob, type: :job do
     
     before(:each) do
       FileUtils.chmod("u+x", longleaf_script)
-      ENV["FEDORA_BINARY_STORAGE"] = binary_dir
+      ENV["LONGLEAF_STORAGE_PATH"] = binary_dir
       ENV["LONGLEAF_BASE_COMMAND"] = longleaf_script
     end
     
     after do
       FileUtils.rmdir(binary_dir)
+      ENV.delete("LONGLEAF_STORAGE_PATH")
       ENV.delete("LONGLEAF_BASE_COMMAND")
     end
     
