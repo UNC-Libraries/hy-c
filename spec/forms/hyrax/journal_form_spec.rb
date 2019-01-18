@@ -43,6 +43,9 @@ RSpec.describe Hyrax::JournalForm do
       expect(form.model['rights_statement']).to eq 'http://rightsstatements.org/vocab/InC/1.0/'
     end
 
+    it "language must have default values" do
+      expect(form.model['language']).to eq ['http://id.loc.gov/vocabulary/iso639-2/eng']
+    end
   end
 
   describe ".model_attributes" do

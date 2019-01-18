@@ -105,7 +105,6 @@ RSpec.feature 'Create a MastersPaper', js: false do
       select 'Clinical Nutrition', from: 'Academic Concentration'
       fill_in 'Location', with: 'some geographic subject'
       fill_in 'Keyword', with: 'Test Default Keyword'
-      select 'English', from: 'masters_paper_language'
       select 'Attribution 3.0 United States', :from => 'masters_paper_license'
       fill_in 'Note', with: 'a note'
       fill_in 'Reviewer', { with: 'reviewer', id: 'masters_paper_reviewers_attributes_0_name' }
@@ -213,7 +212,6 @@ RSpec.feature 'Create a MastersPaper', js: false do
       fill_in 'Extent', with: 'some extent'
       fill_in 'Location', with: 'some geographic subject'
       fill_in 'Keyword', with: 'Test Default Keyword'
-      select 'English', from: 'masters_paper_language'
       select 'Attribution 3.0 United States', :from => 'masters_paper_license'
       fill_in 'Note', with: 'a note'
       fill_in 'Reviewer', { with: 'reviewer', id: 'masters_paper_reviewers_attributes_0_name' }

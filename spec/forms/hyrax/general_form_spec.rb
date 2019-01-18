@@ -41,6 +41,13 @@ RSpec.describe Hyrax::GeneralForm do
     it { is_expected.to match_array [:date_created, :dcmi_type, :doi, :degree_granting_institution] }
   end
 
+  describe 'default value set' do
+    subject { form }
+    it "language must have default values" do
+      expect(form.model['language']).to eq ['http://id.loc.gov/vocabulary/iso639-2/eng']
+    end
+  end
+
   describe '.model_attributes' do
     let(:params) do
       ActionController::Parameters.new(
