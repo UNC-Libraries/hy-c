@@ -74,10 +74,7 @@ RSpec.feature 'Create a Article', js: false do
       fill_in 'Related resource URL', with: 'something.com'
       fill_in 'Alternate title', with: 'my other title'
       select 'Article', from: 'article_resource_type'
-      fill_in 'Copyright date', with: '2018-10-03'
-      fill_in 'Date other', with: '2018-10-03'
       select 'Preprint', from: 'article_edition'
-      fill_in 'Extent', with: 'some extent'
       fill_in 'Funder', with: 'some funder'
       fill_in 'Location', with: 'some geographic subject'
       fill_in 'ISSN', with: 'some issn'
@@ -89,19 +86,19 @@ RSpec.feature 'Create a Article', js: false do
       fill_in 'Page start', with: '30'
       select 'Yes', from: 'article_peer_review_status'
       fill_in 'Place of publication', with: 'UNC'
-      fill_in 'Rights holder', with: 'an author'
-      fill_in 'Translator', { with: 'translator', id: 'article_translators_attributes_0_name' }
-      fill_in 'ORCID', { with: 'translator orcid', id: 'article_translators_attributes_0_orcid' }
-      select 'Department of Biology', from: 'article_translators_attributes_0_affiliation'
-      fill_in 'Additional affiliation', { with: 'UNC', id: 'article_translators_attributes_0_other_affiliation' }
 
       expect(page).to have_selector('#article_language_label', visible: false)
       expect(page).to have_selector('#article_license_label', visible: false)
       expect(page).to have_selector('#article_rights_statement_label', visible: false)
       expect(page).not_to have_field('article_access')
       expect(page).not_to have_field('article_bibliographic_citation')
+      expect(page).not_to have_field('article_copyright_date')
       expect(page).not_to have_field('article_date_created')
+      expect(page).not_to have_field('article_date_other')
       expect(page).not_to have_field('article_doi')
+      expect(page).not_to have_field('article_extent')
+      expect(page).not_to have_field('article_rights_holder')
+      expect(page).not_to have_field('article_translator')
       expect(page).to have_field('article_visibility_embargo')
       expect(page).not_to have_field('article_visibility_lease')
       expect(page).not_to have_field('article_identifier')
@@ -142,10 +139,7 @@ RSpec.feature 'Create a Article', js: false do
       expect(page).to have_content 'Language English'
       expect(page).to have_content 'Related resource URL something.com'
       expect(page).to have_content 'Resource type Article'
-      expect(page).to have_content 'Copyright date October 3, 2018'
-      expect(page).to have_content 'Date other October 3, 2018'
       expect(page).to have_content 'Version Preprint'
-      expect(page).to have_content 'Extent some extent'
       expect(page).to have_content 'Funder some funder'
       expect(page).to have_content 'Location some geographic subject'
       expect(page).to have_content 'ISSN some issn'
@@ -157,8 +151,6 @@ RSpec.feature 'Create a Article', js: false do
       expect(page).to have_content 'Page start 30'
       expect(page).to have_content 'Is the article or chapter peer-reviewed? Yes'
       expect(page).to have_content 'Place of publication UNC'
-      expect(page).to have_content 'Rights holder an author'
-      expect(page).to have_content 'Translator translator ORCID: translator orcid'
       expect(page).to_not have_content 'Language http://id.loc.gov/vocabulary/iso639-2/eng'
       expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
       expect(page).to_not have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'

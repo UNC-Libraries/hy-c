@@ -33,7 +33,8 @@ RSpec.describe Hyrax::ArticleForm do
   describe "#admin_only_terms" do
     subject { form.admin_only_terms }
 
-    it { is_expected.to match_array [:dcmi_type, :date_created, :access, :bibliographic_citation, :doi, :identifier, :use] }
+    it { is_expected.to match_array [:dcmi_type, :date_created, :access, :bibliographic_citation, :copyright_date,
+                                     :date_other, :doi, :extent, :rights_holder, :translator, :identifier, :use] }
   end
   
   describe 'default value set' do
