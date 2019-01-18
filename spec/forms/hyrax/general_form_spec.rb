@@ -38,7 +38,7 @@ RSpec.describe Hyrax::GeneralForm do
   describe "#admin_only_terms" do
     subject { form.admin_only_terms }
 
-    it { is_expected.to match_array [:dcmi_type, :doi] }
+    it { is_expected.to match_array [:date_created, :dcmi_type, :doi, :degree_granting_institution] }
   end
 
   describe '.model_attributes' do

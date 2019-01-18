@@ -70,11 +70,9 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       fill_in 'Date of publication', with: '2018-10-03'
       select 'Honors', from: 'Honors level'
       select 'Bachelor of Science', from: 'honors_thesis_degree'
-      fill_in 'Degree granting institution', with: 'UNC'
       fill_in 'Graduation year', with: '2018'
 
       # extra fields
-      fill_in 'Date created', with: '2018-10-03'
       select 'Clinical Nutrition', from: 'Academic Concentration'
       fill_in 'Extent', with: 'some extent'
       fill_in 'Location', with: 'some geographic subject'
@@ -88,6 +86,8 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       fill_in 'Subject', with: 'test'
 
       expect(page).not_to have_field('honors_thesis_access')
+      expect(page).not_to have_field('honors_thesis_date_created')
+      expect(page).not_to have_field('honors_thesis_degree_granting_institution')
       expect(page).not_to have_field('honors_thesis_doi')
       expect(page).to have_selector('#honors_thesis_language_label', visible: false)
       expect(page).to have_selector('#honors_thesis_license_label', visible: false)
@@ -125,9 +125,7 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       expect(page).to have_content 'Honors level Honors'
       expect(page).to have_content 'Creator Test Default Creator ORCID: creator'
       expect(page).to have_content 'Date of publication October 3, 2018'
-      expect(page).to have_content 'Date created October 3, 2018'
       expect(page).to have_content 'Degree Bachelor of Science'
-      expect(page).to have_content 'Degree granting institution UNC'
       expect(page).to have_content 'Extent some extent'
       expect(page).to have_content 'Location some geographic subject'
       expect(page).to have_content 'Graduation year 2018'

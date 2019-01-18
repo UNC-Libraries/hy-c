@@ -13,11 +13,11 @@ module Hyrax
     self.terms -= [:based_near, :contributor, :description, :identifier, :publisher, :source]
 
     self.required_fields = [:title, :creator, :abstract, :advisor, :affiliation, :degree, :award, :date_issued,
-                            :degree_granting_institution, :graduation_year]
+                            :graduation_year]
 
     self.single_value_fields = [:title, :license]
     
-    self.admin_only_terms = [:dcmi_type, :access, :doi, :use]
+    self.admin_only_terms = [:date_created, :dcmi_type, :access, :degree_granting_institution, :doi, :use]
 
     self.default_term_values = { :dcmi_type => ["http://purl.org/dc/dcmitype/Text"], :rights_statement => "http://rightsstatements.org/vocab/InC/1.0/" }
 
