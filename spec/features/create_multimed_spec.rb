@@ -72,7 +72,6 @@ RSpec.feature 'Create a Multimed', js: false do
       fill_in 'Keyword', with: 'Test Default Keyword'
       select 'English', from: 'multimed_language'
       select 'Attribution 3.0 United States', :from => 'multimed_license'
-      fill_in 'Medium', with: 'a medium'
       fill_in 'Note', with: 'a note'
       select 'In Copyright', :from => 'multimed_rights_statement'
       fill_in 'Subject', with: 'test'
@@ -80,6 +79,7 @@ RSpec.feature 'Create a Multimed', js: false do
       expect(page).not_to have_field('multimed_access')
       expect(page).not_to have_field('multimed_date_created')
       expect(page).not_to have_field('multimed_doi')
+      expect(page).not_to have_field('multimed_medium')
       expect(page).to have_selector('#multimed_language_label', visible: false)
       expect(page).to have_selector('#multimed_license_label', visible: false)
       expect(page).to have_selector('#multimed_rights_statement_label', visible: false)
@@ -116,7 +116,6 @@ RSpec.feature 'Create a Multimed', js: false do
       expect(page).to have_content 'Keyword Test Default Keyword'
       expect(page).to have_content 'Language English'
       expect(page).to have_content 'License Attribution 3.0 United States'
-      expect(page).to have_content 'Medium a medium'
       expect(page).to have_content 'Note a note'
       expect(page).to have_content 'Resource type Video'
       expect(page).to have_content 'Rights statement In Copyright'
