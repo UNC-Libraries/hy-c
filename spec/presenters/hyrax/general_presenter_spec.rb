@@ -46,6 +46,7 @@ RSpec.describe Hyrax::GeneralPresenter do
       "kind_of_data_tesim" => ['data type'],
       "last_modified_date_tesim" => 'hi',
       "medium_tesim" => ['a medium'],
+      "methodology_tesim" => 'My methodology',
       "note_tesim" => ['a note'],
       "page_end_tesim" => '11',
       "page_start_tesim" => '8',
@@ -119,6 +120,7 @@ RSpec.describe Hyrax::GeneralPresenter do
   it { is_expected.to delegate_method(:kind_of_data).to(:solr_document) }
   it { is_expected.to delegate_method(:last_modified_date).to(:solr_document) }
   it { is_expected.to delegate_method(:medium).to(:solr_document) }
+  it { is_expected.to delegate_method(:methodology).to(:solr_document) }
   it { is_expected.to delegate_method(:note).to(:solr_document) }
   it { is_expected.to delegate_method(:page_end).to(:solr_document) }
   it { is_expected.to delegate_method(:page_start).to(:solr_document) }
@@ -517,6 +519,17 @@ RSpec.describe Hyrax::GeneralPresenter do
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:medium)
+      end
+    end
+
+    context "with a custom methodology field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:methodology, 'My methodology', {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:methodology)
       end
     end
 

@@ -74,6 +74,7 @@ RSpec.describe General do
       expect(subject).to respond_to(:kind_of_data)
       expect(subject).to respond_to(:last_modified_date)
       expect(subject).to respond_to(:medium)
+      expect(subject).to respond_to(:methodology)
       expect(subject).to respond_to(:note)
       expect(subject).to respond_to(:page_end)
       expect(subject).to respond_to(:page_start)

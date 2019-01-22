@@ -11,7 +11,7 @@ module Hyrax
                    :alternative_title, :arranger, :award, :composer, :conference_name, :copyright_date, :date_issued,
                    :date_other, :dcmi_type, :degree, :degree_granting_institution, :doi, :edition, :extent, :funder,
                    :geographic_subject, :graduation_year, :isbn, :issn, :journal_issue, :journal_title, :journal_volume,
-                   :kind_of_data, :last_modified_date, :medium, :note, :page_start, :page_end, :peer_review_status,
+                   :kind_of_data, :last_modified_date, :medium, :methodology, :note, :page_start, :page_end, :peer_review_status,
                    :place_of_publication, :project_director, :publisher_version, :researcher, :reviewer, :rights_holder,
                    :series, :sponsor, :table_of_contents, :translator, :use]
 

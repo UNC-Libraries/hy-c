@@ -219,6 +219,7 @@ en:
         license: "The license and distribution statement that you would like to apply to your work. This statement will tell other users how they may reuse your work. For more information on each option, <a target=\"_blank\" href=\"https://blogs.lib.unc.edu/cdr/index.php/frequently-asked-questions\">see our FAQ</a>."
         license_label: "The license and distribution statement that you would like to apply to your work. This statement will tell other users how they may reuse your work. For more information on each option, see our <a target=\"_blank\" href=\"https://blogs.lib.unc.edu/cdr/index.php/frequently-asked-questions\">FAQ</a>."
         medium: "The material of the original work."
+        methodology: "Describe the methods used to generate the dataset, or how the dataset may be properly reused."
         note: "Additional information about your work. Please be aware that content in this field will be visible to the public."
         orcid: "If you have an ORCID, enter it below. To learn more about ORCID and sign up,
                 visit <a target=\"_blank\" href=\"https://guides.lib.unc.edu/orcid\">https://guides.lib.unc.edu/orcid</a>"
@@ -252,6 +253,7 @@ en:
         geographic_subject: "Location"
         isbn: "ISBN"
         issn: "ISSN"
+        methodology: "Methods"
         orcid: "ORCID"
         other_affiliation: "Additional affiliation"
         peer_review_status: "Is the article or chapter peer-reviewed?"

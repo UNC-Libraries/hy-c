@@ -7,8 +7,8 @@ module Hyrax
              :copyright_date, :creator_display, :date_issued, :date_other, :dcmi_type, :degree,
              :degree_granting_institution, :deposit_record, :digital_collection, :doi, :edition, :extent,
              :funder, :geographic_subject, :graduation_year, :isbn, :issn, :journal_issue, :journal_title,
-             :journal_volume, :kind_of_data, :last_modified_date, :language_label, :license_label, :medium, :note,
-             :page_start, :page_end, :peer_review_status, :place_of_publication, :publisher_version,
+             :journal_volume, :kind_of_data, :last_modified_date, :language_label, :license_label, :medium, :methodology,
+             :note, :page_start, :page_end, :peer_review_status, :place_of_publication, :publisher_version,
              :project_director_display, :researcher_display, :reviewer_display, :rights_holder, :rights_statement_label,
              :series, :sponsor, :table_of_contents, :translator_display, :url, :use, to: :solr_document
   end

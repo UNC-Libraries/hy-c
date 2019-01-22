@@ -146,6 +146,10 @@ class General < ActiveFedora::Base
     index.as :stored_searchable
   end
 
+  property :methodology, predicate: ::RDF::Vocab::DataCite.methods, multiple: false do |index|
+    index.as :stored_searchable
+  end
+
   property :note, predicate: ::RDF::Vocab::SKOS.note do |index|
     index.as :stored_searchable
   end
