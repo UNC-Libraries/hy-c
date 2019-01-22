@@ -59,6 +59,10 @@ class DataSet < ActiveFedora::Base
     index.as :stored_searchable
   end
 
+  property :methodology, predicate: ::RDF::Vocab::DataCite.methods, multiple: false do |index|
+    index.as :stored_searchable
+  end
+
   property :project_directors, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/pdr'), class_name: 'Person' do |index|
     index.as :stored_searchable
   end

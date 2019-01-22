@@ -47,6 +47,7 @@ RSpec.describe DataSet do
       expect(subject).to respond_to(:geographic_subject)
       expect(subject).to respond_to(:kind_of_data)
       expect(subject).to respond_to(:last_modified_date)
+      expect(subject).to respond_to(:methodology)
       expect(subject).to respond_to(:project_directors)
       expect(subject).to respond_to(:researchers)
       expect(subject).to respond_to(:rights_holder)

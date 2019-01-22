@@ -27,6 +27,7 @@ RSpec.describe Hyrax::DataSetPresenter do
       "geographic_subject_tesim" => ['California'],
       "kind_of_data_tesim" => ['some data'],
       "last_modified_date_tesim" => '2018-01-29',
+      "methodology_tesim" => 'my methods',
       "project_director_display_tesim" => ['ben'],
       "researcher_display_tesim" => ['jennifer'],
       "rights_holder_tesim" => ['julie'],
@@ -65,6 +66,7 @@ RSpec.describe Hyrax::DataSetPresenter do
   it { is_expected.to delegate_method(:geographic_subject).to(:solr_document) }
   it { is_expected.to delegate_method(:kind_of_data).to(:solr_document) }
   it { is_expected.to delegate_method(:last_modified_date).to(:solr_document) }
+  it { is_expected.to delegate_method(:methodology).to(:solr_document) }
   it { is_expected.to delegate_method(:project_director_display).to(:solr_document) }
   it { is_expected.to delegate_method(:researcher_display).to(:solr_document) }
   it { is_expected.to delegate_method(:rights_holder).to(:solr_document) }
@@ -199,6 +201,17 @@ RSpec.describe Hyrax::DataSetPresenter do
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:last_modified_date)
+      end
+    end
+
+    context "with a custom methodology field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:methodology, 'my methods', {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:methodology)
       end
     end
 

@@ -20,6 +20,7 @@
 <%= presenter.attribute_to_html(:geographic_subject, html_dl: true, label: "Location") %>
 <%= presenter.attribute_to_html(:kind_of_data, html_dl: true) %>
 <%= presenter.attribute_to_html(:last_modified_date, render_as: :date, html_dl: true) %>
+<%= presenter.attribute_to_html(:methodology, html_dl: true) %>
 <%= presenter.attribute_to_html(:project_director_display, label: 'Project director', render_as: :person, html_dl: true) %>
 <%= presenter.attribute_to_html(:researcher_display, label: 'Researcher', render_as: :person, html_dl: true) %>
 <%= presenter.attribute_to_html(:rights_holder, html_dl: true) %>

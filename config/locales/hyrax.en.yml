@@ -251,6 +251,7 @@ en:
         geographic_subject: "Location"
         isbn: "ISBN"
         issn: "ISSN"
+        methodology: "Methods"
         orcid: "ORCID"
         other_affiliation: "Additional affiliation"
         peer_review_status: "Is the article or chapter peer-reviewed?"

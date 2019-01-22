@@ -224,6 +224,10 @@ class SolrDocument
     self[Solrizer.solr_name('medium')]
   end
 
+  def methodology
+    self[Solrizer.solr_name('methodology')]
+  end
+
   def note
     self[Solrizer.solr_name('note')]
   end
