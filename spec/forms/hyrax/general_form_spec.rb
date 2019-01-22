@@ -28,8 +28,8 @@ RSpec.describe Hyrax::GeneralForm do
                                      :composer, :conference_name, :copyright_date, :date_issued,
                                      :date_other, :dcmi_type, :degree, :degree_granting_institution, :doi, :edition,
                                      :extent, :funder, :geographic_subject, :graduation_year, :isbn, :issn,
-                                     :journal_issue, :journal_title, :journal_volume, :kind_of_data,
-                                     :last_modified_date, :medium, :note, :page_start, :page_end, :peer_review_status,
+                                     :journal_issue, :journal_title, :journal_volume, :kind_of_data, :last_modified_date,
+                                     :medium, :methodology, :note, :page_start, :page_end, :peer_review_status,
                                      :place_of_publication, :project_director, :publisher_version, :researcher,
                                      :reviewer, :rights_holder, :series, :sponsor, :table_of_contents, :translator,
                                      :use, :language_label, :license_label, :rights_statement_label] }
@@ -115,6 +115,7 @@ RSpec.describe Hyrax::GeneralForm do
           kind_of_data: 'a data type',
           last_modified_date: 'hi', # single-valued
           medium: ['a medium'],
+          methodology: 'My methodology',
           note: ['a note'],
           page_end: '11', # single-valued
           page_start: '8', # single-valued
@@ -193,6 +194,7 @@ RSpec.describe Hyrax::GeneralForm do
       expect(subject['kind_of_data']).to eq 'a data type'
       expect(subject['last_modified_date']).to eq 'hi'
       expect(subject['medium']).to eq ['a medium']
+      expect(subject['methodology']).to eq 'My methodology'
       expect(subject['note']).to eq ['a note']
       expect(subject['page_end']).to eq '11'
       expect(subject['page_start']).to eq '8'

@@ -65,6 +65,7 @@ RSpec.feature 'Create a DataSet', js: false do
       select 'Text', from: 'data_set_kind_of_data'
       select 'Dataset', from: 'data_set_resource_type'
       fill_in 'Abstract', with: 'some abstract'
+      fill_in 'Methods', with: 'My methodology'
       fill_in 'Date of publication', with: '2018-10-03'
 
       # extra fields
@@ -72,7 +73,6 @@ RSpec.feature 'Create a DataSet', js: false do
       fill_in 'ORCID', { with: 'contributor orcid', id: 'data_set_contributors_attributes_0_orcid' }
       select 'Department of Biology', from: 'data_set_contributors_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'data_set_contributors_attributes_0_other_affiliation' }
-      fill_in 'Description', with: 'a description'
       fill_in 'Funder', with: 'some funder'
       fill_in 'Location', with: 'some geographic subject'
       fill_in 'Keyword', with: 'Test Default Keyword'
@@ -135,7 +135,7 @@ RSpec.feature 'Create a DataSet', js: false do
       expect(page).to have_content 'Related resource URL something.com'
       expect(page).to have_content 'Resource type Dataset'
       expect(page).to have_content 'Contributor contributor ORCID: contributor orcid'
-      expect(page).to have_content 'a description'
+      expect(page).to have_content 'Methodology My methodology'
       expect(page).to have_content 'Funder some funder'
       expect(page).to have_content 'Location some geographic subject'
       expect(page).to have_content 'Last modified date October 3, 2018'
@@ -168,7 +168,7 @@ RSpec.feature 'Create a DataSet', js: false do
       fill_in 'Additional affiliation', { with: 'UNC', id: 'data_set_creators_attributes_0_other_affiliation' }
       select 'Text', from: 'data_set_kind_of_data'
       select 'Dataset', from: 'data_set_resource_type'
-      fill_in 'Abstract', with: 'some abstract'
+      fill_in 'Methods', with: 'My methodology'
       fill_in 'Date of publication', with: '2018-10-03'
 
       # extra fields
@@ -176,7 +176,6 @@ RSpec.feature 'Create a DataSet', js: false do
       fill_in 'ORCID', { with: 'contributor orcid', id: 'data_set_contributors_attributes_0_orcid' }
       select 'Department of Biology', from: 'data_set_contributors_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'data_set_contributors_attributes_0_other_affiliation' }
-      fill_in 'Description', with: 'a description'
       fill_in 'DOI', with: 'some doi'
       fill_in 'Extent', with: 'some extent'
       fill_in 'Funder', with: 'some funder'
@@ -233,7 +232,7 @@ RSpec.feature 'Create a DataSet', js: false do
       expect(page).to have_content 'College of Arts and Sciences'
       expect(page).to have_content 'Department of Biology'
       expect(page).to have_content 'Other Affiliation: UNC'
-      expect(page).to have_content 'Abstract some abstract'
+      expect(page).to have_content 'Methodology My methodology'
       expect(page).to have_content 'Date of publication October 3, 2018'
       expect(page).to have_content 'Kind of data Text'
       expect(page).to have_content 'License Attribution 3.0 United States'
@@ -242,7 +241,6 @@ RSpec.feature 'Create a DataSet', js: false do
       expect(page).to have_content 'Related resource URL something.com'
       expect(page).to have_content 'Resource type Dataset'
       expect(page).to have_content 'Contributor contributor ORCID: contributor orcid'
-      expect(page).to have_content 'a description'
       expect(page).to have_content 'DOI some doi'
       expect(page).to have_content 'Extent some extent'
       expect(page).to have_content 'Funder some funder'

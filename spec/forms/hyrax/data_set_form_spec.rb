@@ -9,13 +9,13 @@ RSpec.describe Hyrax::DataSetForm do
   describe "#required_fields" do
     subject { form.required_fields }
 
-    it { is_expected.to match_array [:title, :creator, :date_issued, :abstract, :description, :kind_of_data, :resource_type] }
+    it { is_expected.to match_array [:title, :creator, :date_issued, :abstract, :methodology, :kind_of_data, :resource_type] }
   end
 
   describe "#primary_terms" do
     subject { form.primary_terms }
 
-    it { is_expected.to match_array [:title, :creator, :date_issued, :abstract, :description, :kind_of_data, :resource_type] }
+    it { is_expected.to match_array [:title, :creator, :date_issued, :abstract, :methodology, :kind_of_data, :resource_type] }
   end
 
   describe "#secondary_terms" do
@@ -78,6 +78,7 @@ RSpec.describe Hyrax::DataSetForm do
           last_modified_date: '2018-01-23',
           language: ['http://id.loc.gov/vocabulary/iso639-2/eng'],
           license: 'http://creativecommons.org/licenses/by/3.0/us/',
+          methodology: 'My methods',
           project_directors_attributes: { '0' => { name: 'project director',
                                           orcid: 'project director orcid',
                                           affiliation: 'Carolina Center for Genome Sciences',
@@ -115,6 +116,7 @@ RSpec.describe Hyrax::DataSetForm do
       expect(subject['last_modified_date']).to eq '2018-01-23'
       expect(subject['language']).to eq ['http://id.loc.gov/vocabulary/iso639-2/eng']
       expect(subject['license']).to eq ['http://creativecommons.org/licenses/by/3.0/us/']
+      expect(subject['methodology']).to eq 'My methods'
       expect(subject['rights_holder']).to eq ['dean']
       expect(subject['sponsor']).to eq ['david']
       expect(subject['language_label']).to eq ['English']
