@@ -26,6 +26,3 @@ terms:
     - id: http://www.europeana.eu/portal/rights/rr-r.html
       term: All rights reserved
       active: all
-    - id: https://creativecommons.org/publicdomain/zero/1.0/
-      term: CC0 1.0 Universal
-      active: data
