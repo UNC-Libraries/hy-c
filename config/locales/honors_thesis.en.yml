@@ -7,5 +7,6 @@ en:
         name:               "Undergraduate Honors Theses"
         description:        "Deposit your senior honors thesis."
   simple_form:
-    labels:
+    hints:
       honors_thesis:
+        date_issued: "The date that the work was published and/or finished. If you are depositing a thesis, enter the date that it was completed"

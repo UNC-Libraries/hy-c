@@ -21,7 +21,7 @@ module Hyrax
 
     self.single_value_fields = [:title, :license]
     
-    self.admin_only_terms = [:dcmi_type, :doi]
+    self.admin_only_terms = [:date_created, :dcmi_type, :degree_granting_institution, :doi]
 
     # Add overrides for required properties which are becoming single-valued
 

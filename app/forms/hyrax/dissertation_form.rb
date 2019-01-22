@@ -10,10 +10,10 @@ module Hyrax
                    :place_of_publication, :resource_type, :reviewer, :use]
 
     self.terms -= [:based_near, :bibliographic_citation, :date_created, :description, :source, :related_url]
-    self.required_fields = [:title, :creator, :degree_granting_institution, :date_issued]
+    self.required_fields = [:title, :creator, :date_issued]
     self.single_value_fields = [:title, :license]
     
-    self.admin_only_terms = [:dcmi_type, :doi]
+    self.admin_only_terms = [:dcmi_type, :degree_granting_institution, :doi]
     self.default_term_values = { :dcmi_type => ["http://purl.org/dc/dcmitype/Text"] }
 
     # Add overrides for required properties which are becoming single-valued
