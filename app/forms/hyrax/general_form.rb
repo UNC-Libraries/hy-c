@@ -8,12 +8,13 @@ module Hyrax
     self.model_class = ::General
 
     self.terms += [:resource_type, :bibliographic_citation, :abstract, :academic_concentration, :access, :advisor,
-                   :alternative_title, :arranger, :award, :composer, :conference_name, :copyright_date, :date_issued,
+                   :alternative_title, :arranger, :composer, :project_director, :researcher, :reviewer, :translator,
+                   :award, :conference_name, :copyright_date, :date_issued,
                    :date_other, :dcmi_type, :degree, :degree_granting_institution, :doi, :edition, :extent, :funder,
                    :geographic_subject, :graduation_year, :isbn, :issn, :journal_issue, :journal_title, :journal_volume,
                    :kind_of_data, :last_modified_date, :medium, :methodology, :note, :page_start, :page_end, :peer_review_status,
-                   :place_of_publication, :project_director, :publisher_version, :researcher, :reviewer, :rights_holder,
-                   :series, :sponsor, :table_of_contents, :translator, :use]
+                   :place_of_publication, :publisher_version, :rights_holder,
+                   :series, :sponsor, :table_of_contents, :use]
 
     self.required_fields = [:title]
 

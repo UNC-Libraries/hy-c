@@ -192,7 +192,7 @@ en:
         academic_concentration: "Fill out this field only if it is relevant to your program."
         access: "Access restrictions placed on the work"
         advisor: "Your advisor's name. Please enter the last name first, e.g. \"Smith, John.\""
-        affiliation: "Your primary departmental affiliation at UNC"
+        affiliation: "Primary departmental affiliation"
         alternative_title: "A unique secondary title for your work if applicable. Enter subtitle in the \"Title\" field, instead."
         award: "Honors level"
         bibliographic_citation: "A citation to a related work, or a different version of this work."
@@ -243,6 +243,7 @@ en:
         use: "Additional information about the rights held over the work."
     labels:
       defaults:
+        affiliation: "UNC affiliation"
         alternative_title: "Alternate title"
         award: "Honors level"
         date_created: "Date created"
