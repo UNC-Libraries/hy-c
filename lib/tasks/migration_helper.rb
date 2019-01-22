@@ -3,13 +3,15 @@ class MigrationHelper
     path.slice(/\w{8}-\w{4}-\w{4}-\w{4}-\w{12}/)
   end
 
-  def self.create_filepath_hash(filename, hash)
+  def self.create_filepath_hash(filename, hash, type)
     File.open(filename) do |file|
       file.each do |line|
         value = line.strip
-        key = get_uuid_from_path(value)
-        if !key.blank?
-          hash[key] = value
+        if value.match(type)
+          key = get_uuid_from_path(value)
+          if !key.blank?
+            hash[key] = value
+          end
         end
       end
     end

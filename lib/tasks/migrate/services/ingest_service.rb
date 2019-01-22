@@ -31,12 +31,12 @@ module Migrate
         # get array of record uuids
         collection_uuids = MigrationHelper.get_collection_uuids(@collection_ids_file)
 
-        puts "Object count:  #{collection_uuids.count.to_s}"
+        puts "[#{Time.now.to_s}] Object count:  #{collection_uuids.count.to_s}"
 
         # get metadata for each record
         collection_uuids.each do |uuid|
           start_time = Time.now
-          puts "[#{start_time.to_s}] Start migration of #{uuid}"
+          puts "[#{start_time.to_s}] #{uuid} Start migration"
           parsed_data = Migrate::Services::MetadataParser.new(@object_hash[uuid],
                                                               @object_hash,
                                                               @binary_hash,
@@ -48,14 +48,14 @@ module Migrate
           @parent_hash[uuid] = parsed_data[:child_works] if !parsed_data[:child_works].blank?
 
           # Create new work record and save
-          new_work = work_record(work_attributes)
+          new_work = work_record(work_attributes, uuid)
           new_work.save!
 
           # Record old and new ids for works
           id_mapper.add_row([uuid, new_work.class.to_s.underscore+'s/'+new_work.id])
           @mappings[uuid] = new_work.id
 
-          puts "Number of files: #{work_attributes['contained_files'].count.to_s if !work_attributes['contained_files'].blank?}"
+          puts "[#{Time.now.to_s}] #{uuid},#{new_work.id} Number of files: #{work_attributes['contained_files'].count.to_s if !work_attributes['contained_files'].blank?}"
 
           # Save list of child filesets
           ordered_members = Array.new
@@ -63,38 +63,48 @@ module Migrate
           # Attach premis files
           if !work_attributes['premis_files'].blank?
             work_attributes['premis_files'].each_with_index do |file, index|
-              premis_file = @premis_hash[MigrationHelper.get_uuid_from_path(file)]
-              fileset_attrs = { 'title' => ["PREMIS_Events_Metadata_#{index}.txt"],
-                                'visibility' => Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE }
-              fileset = create_fileset(parent: new_work, resource: fileset_attrs, file: premis_file)
+              premis_file = @premis_hash[MigrationHelper.get_uuid_from_path(file)] || ''
+              if File.file?(premis_file)
+                fileset_attrs = { 'title' => ["PREMIS_Events_Metadata_#{index}.txt"],
+                                  'visibility' => Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE }
+                fileset = create_fileset(parent: new_work, resource: fileset_attrs, file: premis_file)
 
-              ordered_members << fileset
+                ordered_members << fileset
+              else
+                puts "[#{Time.now.to_s}] #{uuid},#{new_work.id} missing premis file: #{file}"
+              end
             end
           end
 
           # Create children
           if !work_attributes['cdr_model_type'].blank? &&
               (work_attributes['cdr_model_type'].include? 'info:fedora/cdr-model:AggregateWork')
-            # attach children as filesets
-            work_attributes['contained_files'].each do |file|
-              metadata_file = @object_hash[MigrationHelper.get_uuid_from_path(file)]
-              parsed_file_data = Migrate::Services::MetadataParser.new(metadata_file,
-                                                                       @object_hash,
-                                                                       @binary_hash,
-                                                                       @deposit_record_hash,
-                                                                       collection_uuids,
-                                                                       @depositor,
-                                                                       @config).parse
+            if !work_attributes['contained_files'].blank?
+              # attach children as filesets
+              work_attributes['contained_files'].each do |file|
+                metadata_file = @object_hash[MigrationHelper.get_uuid_from_path(file)] || ''
+                if File.file?(metadata_file)
+                  parsed_file_data = Migrate::Services::MetadataParser.new(metadata_file,
+                                                                           @object_hash,
+                                                                           @binary_hash,
+                                                                           @deposit_record_hash,
+                                                                           collection_uuids,
+                                                                           @depositor,
+                                                                           @config).parse
 
-              file_work_attributes = (parsed_file_data[:work_attributes].blank? ? {} : parsed_file_data[:work_attributes])
-              fileset_attrs = file_record(work_attributes.merge(file_work_attributes))
+                  file_work_attributes = (parsed_file_data[:work_attributes].blank? ? {} : parsed_file_data[:work_attributes])
+                  fileset_attrs = file_record(work_attributes.merge(file_work_attributes))
 
-              fileset = create_fileset(parent: new_work, resource: fileset_attrs, file: @binary_hash[MigrationHelper.get_uuid_from_path(file)])
+                  fileset = create_fileset(parent: new_work, resource: fileset_attrs, file: @binary_hash[MigrationHelper.get_uuid_from_path(file)])
 
-              # Record old and new ids for works
-              id_mapper.add_row([MigrationHelper.get_uuid_from_path(file), 'parent/'+new_work.id+'/file_sets/'+fileset.id])
+                  # Record old and new ids for works
+                  id_mapper.add_row([MigrationHelper.get_uuid_from_path(file), 'parent/'+new_work.id+'/file_sets/'+fileset.id])
 
-              ordered_members << fileset
+                  ordered_members << fileset
+                else
+                  puts "[#{Time.now.to_s}] #{uuid},#{new_work.id} missing file: #{file}"
+                end
+              end
             end
           else
             # use same metadata for work and fileset
@@ -116,7 +126,7 @@ module Migrate
 
           new_work.ordered_members = ordered_members
           end_time = Time.now
-          puts "[#{end_time.to_s}] Completed migration of #{uuid} in #{end_time-start_time} seconds"
+          puts "[#{end_time.to_s}] #{uuid},#{new_work.id} Completed migration in #{end_time-start_time} seconds"
         end
 
         if !@child_work_type.blank?
@@ -129,13 +139,9 @@ module Migrate
         actor = Hyrax::Actors::FileSetActor.new(file_set, @depositor)
         actor.create_metadata(resource)
 
-        if file.match('DATA_FILE')
-          renamed_file = "#{@tmp_file_location}/#{parent.id}/#{Array(resource['title']).first}"
-          FileUtils.mkpath("#{@tmp_file_location}/#{parent.id}")
-          FileUtils.cp(file, renamed_file)
-        else
-          renamed_file = file
-        end
+        renamed_file = "#{@tmp_file_location}/#{parent.id}/#{Array(resource['title']).first}"
+        FileUtils.mkpath("#{@tmp_file_location}/#{parent.id}")
+        FileUtils.cp(file, renamed_file)
 
         actor.create_content(Hyrax::UploadedFile.create(file: File.open(renamed_file), user: @depositor))
         actor.attach_to_work(parent, resource)
@@ -148,7 +154,7 @@ module Migrate
 
       private
 
-        def work_record(work_attributes)
+        def work_record(work_attributes, uuid)
           if !@child_work_type.blank? && !work_attributes['cdr_model_type'].blank? &&
               !(work_attributes['cdr_model_type'].include? 'info:fedora/cdr-model:AggregateWork')
             resource = @child_work_type.singularize.classify.constantize.new
@@ -171,7 +177,7 @@ module Migrate
           work_attributes.select {|k,v| k.ends_with? '_attributes'}.each do |k,v|
             if !resource.respond_to?(k.to_s+'=')
               # Log non-blank person data which is not saved
-              puts "missing: #{k}=>#{v}"
+              puts "[#{Time.now.to_s}] #{uuid} missing: #{k}=>#{v}"
               work_attributes.delete(k.split('s_')[0]+'_display')
               work_attributes.delete(k)
             end
@@ -179,11 +185,15 @@ module Migrate
           resource.attributes = work_attributes.reject{|k,v| !resource.attributes.keys.member?(k.to_s) unless k.ends_with? '_attributes'}
 
           # Log other non-blank data which is not saved
-          puts "missing: #{work_attributes.except(*resource.attributes.keys, 'contained_files', 'cdr_model_type',
-                                                    'visibility', 'creators_attributes', 'contributors_attributes',
-                                                    'advisors_attributes', 'arrangers_attributes', 'composers_attributes',
-                                                    'funders_attributes', 'project_directors_attributes',
-                                                    'researchers_attributes', 'reviewers_attributes', 'translators_attributes')}"
+          missing = work_attributes.except(*resource.attributes.keys, 'contained_files', 'cdr_model_type', 'visibility',
+                                           'creators_attributes', 'contributors_attributes', 'advisors_attributes',
+                                           'arrangers_attributes', 'composers_attributes', 'funders_attributes',
+                                           'project_directors_attributes', 'researchers_attributes', 'reviewers_attributes',
+                                           'translators_attributes', 'dc_title', 'premis_files', 'embargo_release_date',
+                                           'visibility_during_embargo', 'visibility_after_embargo', 'visibility')
+          if !missing.blank?
+            puts "[#{Time.now.to_s}] #{uuid} missing: #{missing}"
+          end
 
           resource.visibility = work_attributes['visibility']
           unless work_attributes['embargo_release_date'].blank?

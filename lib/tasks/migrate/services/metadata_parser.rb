@@ -22,7 +22,7 @@ module Migrate
 
         # get the uuid of the object
         uuid = MigrationHelper.get_uuid_from_path(metadata.at_xpath('foxml:digitalObject/@PID', MigrationConstants::NS).value)
-        puts "getting metadata for: #{uuid}"
+        puts "[#{Time.now.to_s}] getting metadata for: #{uuid}"
 
         work_attributes['contained_files'] = Array.new(0)
 
@@ -40,7 +40,7 @@ module Migrate
         work_attributes['dc_title'] = dc_metadata.xpath('dc:title', MigrationConstants::NS).map(&:text)
 
         if !descriptive_mods
-          puts 'No MODS datastream available'
+          puts "[#{Time.now.to_s}] #{uuid} No MODS datastream available"
           work_attributes['title'] = work_attributes['dc_title']
           work_attributes['label'] = work_attributes['dc_title']
         else
@@ -52,7 +52,7 @@ module Migrate
           work_attributes['advisors_attributes'] = parse_people_from_mods(descriptive_mods, 'Thesis advisor')
           work_attributes['arrangers_attributes'] = parse_people_from_mods(descriptive_mods, 'Arranger')
           work_attributes['composers_attributes'] = parse_people_from_mods(descriptive_mods, 'Composer')
-          work_attributes['funders_attributes'] = parse_people_from_mods(descriptive_mods, 'Funder')
+          work_attributes['funder'] = parse_names_from_mods(descriptive_mods, 'Funder')
           work_attributes['project_directors_attributes'] = parse_people_from_mods(descriptive_mods, 'Project_director')
           work_attributes['researchers_attributes'] = parse_people_from_mods(descriptive_mods, 'Researcher')
           work_attributes['reviewers_attributes'] = parse_people_from_mods(descriptive_mods, 'Reviewer')
@@ -273,7 +273,7 @@ module Migrate
 
             person_hash[index.to_s] = { 'name' => name,
                                         'orcid' => orcid,
-                                        'affiliation' => affiliation.join(', '),
+                                        'affiliation' => department_lookup(affiliation),
                                         'other_affiliation' => other_affiliation }
           end
 
@@ -284,6 +284,20 @@ module Migrate
         def get_language_uri(language_codes)
           language_codes.map{|e| LanguagesService.label("http://id.loc.gov/vocabulary/iso639-2/#{e.downcase}") ?
                                 "http://id.loc.gov/vocabulary/iso639-2/#{e.downcase}" : e}
+        end
+
+        def department_lookup(affiliations)
+          affiliations -= ['University of North Carolina at Chapel Hill']
+          merged_affiliations = []
+          if !affiliations.blank?
+            affiliations.each do |affiliation|
+              merged_affiliations << (DepartmentsService.label(affiliation) || affiliation).split('; ')
+            end
+            merged_affiliations.flatten!
+            merged_affiliations.compact - merged_affiliations.select{ |e| merged_affiliations.count(e) > 1 }.uniq
+          else
+            []
+          end
         end
     end
   end

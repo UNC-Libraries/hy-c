@@ -26,15 +26,15 @@ namespace :migrate do
 
       # Hash of all binaries in storage directory
       @binary_hash = Hash.new
-      MigrationHelper.create_filepath_hash(collection_config['binaries'], @binary_hash)
+      MigrationHelper.create_filepath_hash(collection_config['binaries'], @binary_hash, 'DATA_FILE')
 
       # Hash of all .xml objects in storage directory
       @object_hash = Hash.new
-      MigrationHelper.create_filepath_hash(collection_config['objects'], @object_hash)
+      MigrationHelper.create_filepath_hash(collection_config['objects'], @object_hash, '')
 
       # Hash of all premis files in storage directory
       @premis_hash = Hash.new
-      MigrationHelper.create_filepath_hash(collection_config['premis'], @premis_hash)
+      MigrationHelper.create_filepath_hash(collection_config['premis'], @premis_hash, 'MD_EVENTS')
 
       # Hash of all deposit record ids
       @deposit_record_hash = Hash.new
