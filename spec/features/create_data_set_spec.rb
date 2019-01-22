@@ -87,9 +87,7 @@ RSpec.feature 'Create a DataSet', js: false do
       fill_in 'ORCID', { with: 'researcher orcid', id: 'data_set_researchers_attributes_0_orcid' }
       select 'Department of Biology', from: 'data_set_researchers_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'data_set_researchers_attributes_0_other_affiliation' }
-      fill_in 'Rights holder', with: 'an author'
       fill_in 'Related resource URL', with: 'something.com'
-      select 'In Copyright', :from => 'data_set_rights_statement'
       fill_in 'Sponsor', with: 'a sponsor'
       fill_in 'Subject', with: 'test'
 
@@ -97,10 +95,11 @@ RSpec.feature 'Create a DataSet', js: false do
       expect(page).not_to have_field('data_set_date_created')
       expect(page).not_to have_field('data_set_doi')
       expect(page).not_to have_field('data_set_extent')
+      expect(page).not_to have_field('data_set_rights_holder')
       expect(page).to have_selector('#data_set_language_label', visible: false)
       expect(page).to have_selector('#data_set_license_label', visible: false)
       expect(page).to have_selector('#data_set_rights_statement_label', visible: false)
-      expect(page).to have_field('data_set_rights_statement')
+      expect(page).not_to have_field('data_set_rights_statement')
       expect(page).to have_field('data_set_visibility_embargo')
       expect(page).not_to have_field('data_set_visibility_lease')
       expect(page).to have_select('data_set_resource_type', selected: 'Dataset')
@@ -133,7 +132,6 @@ RSpec.feature 'Create a DataSet', js: false do
       expect(page).to have_content 'Date of publication October 3, 2018'
       expect(page).to have_content 'Kind of data Text'
       expect(page).to have_content 'License Attribution 3.0 United States'
-      expect(page).to have_content 'Rights statement In Copyright'
       expect(page).to have_content 'Language English'
       expect(page).to have_content 'Related resource URL something.com'
       expect(page).to have_content 'Resource type Dataset'
@@ -144,12 +142,10 @@ RSpec.feature 'Create a DataSet', js: false do
       expect(page).to have_content 'Last modified date October 3, 2018'
       expect(page).to have_content 'Project director project director ORCID: project director orcid'
       expect(page).to have_content 'Researcher researcher ORCID: researcher orcid'
-      expect(page).to have_content 'Rights holder an author'
       expect(page).to have_content 'Sponsor a sponsor'
       expect(page).to have_content 'Subject test'
       expect(page).to_not have_content 'Language http://id.loc.gov/vocabulary/iso639-2/eng'
       expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
-      expect(page).to_not have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'
 
       expect(page).to_not have_content 'In Administrative Set: data set admin set'
       expect(page).to have_content 'Type http://purl.org/dc/dcmitype/Dataset'

@@ -30,7 +30,7 @@ RSpec.describe Hyrax::DataSetForm do
   describe "#admin_only_terms" do
     subject { form.admin_only_terms }
 
-    it { is_expected.to match_array [:dcmi_type, :access, :date_created, :doi, :extent] }
+    it { is_expected.to match_array [:dcmi_type, :access, :date_created, :doi, :extent, :rights_holder, :rights_statement] }
   end
   
   describe 'default value set' do
