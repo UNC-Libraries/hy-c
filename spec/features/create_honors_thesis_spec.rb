@@ -68,13 +68,10 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       select 'Department of Biology', from: 'honors_thesis_creators_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'honors_thesis_creators_attributes_0_other_affiliation' }
       fill_in 'Date of publication', with: '2018-10-03'
-      select 'Honors', from: 'Honors level'
       select 'Bachelor of Science', from: 'honors_thesis_degree'
       fill_in 'Graduation year', with: '2018'
 
       # extra fields
-      select 'Clinical Nutrition', from: 'Academic Concentration'
-      fill_in 'Extent', with: 'some extent'
       fill_in 'Location', with: 'some geographic subject'
       fill_in 'Keyword', with: 'Test Default Keyword'
       select 'Attribution 3.0 United States', :from => 'honors_thesis_license'
@@ -91,6 +88,9 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       expect(page).to have_selector('#honors_thesis_language_label', visible: false)
       expect(page).to have_selector('#honors_thesis_license_label', visible: false)
       expect(page).to have_selector('#honors_thesis_rights_statement_label', visible: false)
+      expect(page).not_to have_field('honors_thesis_academic_concentration')
+      expect(page).not_to have_field('honors_thesis_award')
+      expect(page).not_to have_field('honors_thesis_extent')
       expect(page).not_to have_field('honors_thesis_use')
       expect(page).to have_field('honors_thesis_visibility_embargo')
       expect(page).not_to have_field('honors_thesis_visibility_lease')
@@ -115,17 +115,14 @@ RSpec.feature 'Create a HonorsThesis', js: false do
 
       first('.document-title', text: 'Test HonorsThesis work').click
       expect(page).to have_content 'Abstract an abstract'
-      expect(page).to have_content 'Academic concentration Clinical Nutrition'
       expect(page).to have_content 'Advisor advisor ORCID: advisor orcid'
       expect(page).to have_content 'Affiliation:'
       expect(page).to have_content 'College of Arts and Sciences'
       expect(page).to have_content 'Department of Biology'
       expect(page).to have_content 'Other Affiliation: UNC'
-      expect(page).to have_content 'Honors level Honors'
       expect(page).to have_content 'Creator Test Default Creator ORCID: creator'
       expect(page).to have_content 'Date of publication October 3, 2018'
       expect(page).to have_content 'Degree Bachelor of Science'
-      expect(page).to have_content 'Extent some extent'
       expect(page).to have_content 'Location some geographic subject'
       expect(page).to have_content 'Graduation year 2018'
       expect(page).to have_content 'Keyword Test Default Keyword'

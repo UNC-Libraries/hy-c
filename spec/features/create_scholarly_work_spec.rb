@@ -71,7 +71,6 @@ RSpec.feature 'Create a ScholarlyWork', js: false do
       select 'Department of Biology', from: 'scholarly_work_advisors_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'scholarly_work_advisors_attributes_0_other_affiliation' }
       fill_in 'Conference name', with: 'a conference'
-      fill_in 'Description', with: 'a description'
       fill_in 'Location', with: 'some geographic subject'
       fill_in 'Keyword', with: 'Test Default Keyword'
       select 'Attribution 3.0 United States', :from => 'scholarly_work_license'
@@ -83,6 +82,7 @@ RSpec.feature 'Create a ScholarlyWork', js: false do
       expect(page).to have_selector('#scholarly_work_language_label', visible: false)
       expect(page).to have_selector('#scholarly_work_license_label', visible: false)
       expect(page).to have_selector('#scholarly_work_rights_statement_label', visible: false)
+      expect(page).not_to have_field('scholarly_work_description')
       expect(page).not_to have_field('scholarly_work_doi')
       expect(page).not_to have_field('scholarly_work_visibility_use')
       expect(page).to have_field('scholarly_work_visibility_embargo')
@@ -116,7 +116,6 @@ RSpec.feature 'Create a ScholarlyWork', js: false do
       expect(page).to have_content 'Conference name a conference'
       expect(page).to have_content 'Creator Test Default Creator ORCID: creator orcid'
       expect(page).to have_content 'Date of publication October 3, 2018'
-      expect(page).to have_content 'a description'
       expect(page).to have_content 'Location some geographic subject'
       expect(page).to have_content 'Keyword Test Default Keyword'
       expect(page).to have_content 'Language English'

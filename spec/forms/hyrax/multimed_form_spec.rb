@@ -29,7 +29,7 @@ RSpec.describe Hyrax::MultimedForm do
   describe "#admin_only_terms" do
     subject { form.admin_only_terms }
 
-    it { is_expected.to match_array [:dcmi_type, :access, :date_created, :doi] }
+    it { is_expected.to match_array [:dcmi_type, :access, :date_created, :doi, :medium] }
   end
 
   describe 'default value set' do

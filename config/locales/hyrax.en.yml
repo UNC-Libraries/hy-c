@@ -189,6 +189,7 @@ en:
     hints:
       defaults:
         abstract: "A short paragraph describing your work."
+        academic_concentration: "Fill out this field only if it is relevant to your program."
         access: "Access restrictions placed on the work"
         advisor: "Your advisor's name. Please enter the last name first, e.g. \"Smith, John.\""
         affiliation: "Primary departmental affiliation"

@@ -25,7 +25,7 @@ RSpec.describe Hyrax::HonorsThesisForm do
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:access, :academic_concentration, :date_created, :dcmi_type, :doi, :extent,
+    it { is_expected.to match_array [:access, :academic_concentration, :award, :date_created, :dcmi_type, :doi, :extent,
                                      :geographic_subject, :note, :use, :language, :license, :resource_type,
                                      :rights_statement, :subject, :keyword, :related_url, :language_label,
                                      :license_label, :rights_statement_label, :degree_granting_institution] }
@@ -33,8 +33,7 @@ RSpec.describe Hyrax::HonorsThesisForm do
   
   describe "#admin_only_terms" do
     subject { form.admin_only_terms }
-
-    it { is_expected.to match_array [:dcmi_type, :date_created, :access, :degree_granting_institution, :doi, :use] }
+    it { is_expected.to match_array [:dcmi_type, :date_created, :access, :academic_concentration, :award, :degree_granting_institution, :doi, :extent, :use] }
   end
   
   describe 'default value set' do
