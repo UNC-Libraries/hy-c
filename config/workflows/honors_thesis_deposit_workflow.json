@@ -4,7 +4,7 @@
             "name": "honors_thesis_one_step_mediated_deposit",
             "label": "One-step mediated deposit workflow for Honors Theses",
             "description": "A single-step workflow for honors thesis mediated deposit in which all deposits must be approved by an assigned reviewer. Reviewer may also send deposits back to the depositor.",
-            "allows_access_grant": false,
+            "allows_access_grant": true,
             "actions": [
                 {
                     "name": "deposit",
