@@ -74,7 +74,6 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       # extra fields
       fill_in 'Location', with: 'some geographic subject'
       fill_in 'Keyword', with: 'Test Default Keyword'
-      select 'English', from: 'honors_thesis_language'
       select 'Attribution 3.0 United States', :from => 'honors_thesis_license'
       fill_in 'Note', with: 'a note'
       select 'Honors Thesis', from: 'honors_thesis_resource_type'
@@ -177,7 +176,6 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       fill_in 'Extent', with: 'some extent'
       fill_in 'Location', with: 'some geographic subject'
       fill_in 'Keyword', with: 'Test Default Keyword'
-      select 'English', from: 'honors_thesis_language'
       select 'Attribution 3.0 United States', :from => 'honors_thesis_license'
       fill_in 'Note', with: 'a note'
       select 'Honors Thesis', from: 'honors_thesis_resource_type'

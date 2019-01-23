@@ -21,8 +21,10 @@ module Hyrax
     self.terms -= [:based_near, :source]
 
     self.single_value_fields = [:title, :license]
-    
+
     self.admin_only_terms = [:date_created, :dcmi_type, :degree_granting_institution, :doi]
+
+    self.default_term_values = { :language => ["http://id.loc.gov/vocabulary/iso639-2/eng"] }
 
     # Add overrides for required properties which are becoming single-valued
 
