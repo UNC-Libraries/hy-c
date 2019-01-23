@@ -9,4 +9,5 @@ en:
   simple_form:
     hints:
       honors_thesis:
+        date_created: "The date on which the work was created. If you are depositing a thesis, enter the date that it was completed."
         date_issued: "The date that the work was published and/or finished. If you are depositing a thesis, enter the date that it was completed"

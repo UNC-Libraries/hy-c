@@ -199,7 +199,7 @@ en:
         contributor: "A person or group who had a role in creating the work."
         copyright_date: "The date that the work was copyrighted. This may be different than today's date. If you aren't sure, leave this blank."
         creator: "The person or group responsible for creating the work. If you are depositing a paper, article or book chapter, enter the author's name"
-        date_created: "The date on which the work was created. If you are depositing a thesis, enter the date that it was completed."
+        date_created: "The date on which the work was created."
         date_issued: "The date that the work was published and/or finished."
         degree: "The degree that you are pursing"
         description: "Notes about your work, if needed. To summarize your work, use the Abstract field instead. If you are depositing a dataset, enter your methodology here."
