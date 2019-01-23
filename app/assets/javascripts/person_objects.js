@@ -19,6 +19,8 @@ function attach_add_person_listeners(selector){
         }
     });
 
+    remove_row(selector, parseInt($('#index-'+selector).val()));
+
     $(add_selector).on('click', function(event){
         // stop page from reloading
         event.preventDefault();
@@ -51,11 +53,16 @@ function attach_add_person_listeners(selector){
 function remove_row(selector, current_index) {
     var row_selector = '.'+selector+'.row';
     var remove_selector = '.remove-'+selector;
+    var cloning_row = '#'+selector+'-cloning_row';
 
     $(remove_selector).on('click', function (event) {
         event.preventDefault();
 
         var $self = $(this);
+        var name_input = $(cloning_row+' > .row').find('div.'+selector+'-name input').prop('name');
+        var model = name_input.split('[')[0];
+        var index = $self.data('index');
+
         $self.parents(row_selector).remove();
 
         // Trigger a removal event for the overall person object field since the specific instance clicked no longer exists.
@@ -64,9 +71,20 @@ function remove_row(selector, current_index) {
         current_index--;
         $('#index-'+selector).val(current_index);
 
+
         // Update row ordering
-        updateAllRows(row_selector)
+        updateAllRows(row_selector);
+
+        if ($('#'+model+ '_'+selector+'s_attributes_'+index+'_id').length) {
+            delete_record(selector, model, index);
+        }
     });
+}
+
+function delete_record(selector, model, index) {
+    var $new_row = '<input type="hidden" name="'+model+'['+selector+'s_attributes]['+index+'][_destroy]" id="'+model+
+        '_'+selector+'s_attributes_'+index+'__destroy" value="1">';
+    $('div#'+selector).append($new_row);
 }
 
 function updateAllRows(row_selector) {

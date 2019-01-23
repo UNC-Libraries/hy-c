@@ -40,7 +40,7 @@
                                                             value: (person.object.other_affiliation.first || '') } %>
       </div>
 
-      <% if @form.instance_eval(person_key.to_s).count > 1 %>
+      <% if @form.instance_eval(person_key.to_s).count > 1 && person.index > 0 %>
       <span class="people-remove field-controls multi_value">
         <button type="button" class="btn btn-link remove remove-<%= person_term %>" data-index="<%= person.index %>">
           <span class="glyphicon glyphicon-remove"></span> <span class="controls-remove-text">Remove <%= person_term.split('_').map(&:capitalize).join(' ') %></span>
