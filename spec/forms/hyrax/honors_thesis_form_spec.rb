@@ -34,7 +34,7 @@ RSpec.describe Hyrax::HonorsThesisForm do
   describe "#admin_only_terms" do
     subject { form.admin_only_terms }
 
-    it { is_expected.to match_array [:dcmi_type, :access, :academic_concentration, :award, :degree_granting_institution,
+    it { is_expected.to match_array [:dcmi_type, :access, :academic_concentration, :award, :date_created, :degree_granting_institution,
                                      :doi, :extent, :use] }
   end
   
