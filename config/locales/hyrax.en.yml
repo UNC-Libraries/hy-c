@@ -223,7 +223,6 @@ en:
         note: "Additional information about your work. Please be aware that content in this field will be visible to the public."
         orcid: "If you have an ORCID, enter it below. To learn more about ORCID and sign up,
                 visit <a target=\"_blank\" href=\"https://guides.lib.unc.edu/orcid\">https://guides.lib.unc.edu/orcid</a>"
-        other_affiliation: "If your co-authors are not affiliated with UNC, enter their affiliations here."
         place_of_publication: "The place in which the work was published."
         project_director: "The director or primary investigator of the project. Fill out this field if this person is not the creator."
         publisher: "The publisher of your work. This may be UNC, or an external publisher."
