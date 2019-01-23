@@ -190,7 +190,8 @@ module Migrate
                                            'arrangers_attributes', 'composers_attributes', 'funders_attributes',
                                            'project_directors_attributes', 'researchers_attributes', 'reviewers_attributes',
                                            'translators_attributes', 'dc_title', 'premis_files', 'embargo_release_date',
-                                           'visibility_during_embargo', 'visibility_after_embargo', 'visibility')
+                                           'visibility_during_embargo', 'visibility_after_embargo', 'visibility',
+                                           'member_of_collections')
           if !missing.blank?
             puts "[#{Time.now.to_s}] #{uuid} missing: #{missing}"
           end
@@ -202,7 +203,7 @@ module Migrate
             resource.visibility_after_embargo = work_attributes['visibility_after_embargo']
           end
           resource.admin_set_id = work_attributes['admin_set_id']
-          if !@collection_name.blank? && !work_attributes['member_of_collections'].first.blank?
+          if !@config['collection_name'].blank? && !work_attributes['member_of_collections'].first.blank?
             resource.member_of_collections = work_attributes['member_of_collections']
           end
 
