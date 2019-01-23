@@ -325,6 +325,16 @@ div.unc-citation-modal {
   display: inline-block;
 }
 
+.people-remove.multi_value.field-controls {
+  margin-left: 0;
+}
+
+.people-remove {
+  .remove {
+    width: auto;
+  }
+}
+
 .highlight-disabled {
   opacity: .65;
 }
