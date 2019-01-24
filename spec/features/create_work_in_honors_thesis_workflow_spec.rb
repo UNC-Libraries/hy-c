@@ -68,6 +68,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       Hyrax::Workflow::PermissionGenerator.call(roles: 'approving', workflow: workflow, agents: admin_agent)
       Hyrax::Workflow::PermissionGenerator.call(roles: 'depositing', workflow: workflow, agents: admin_agent)
       Hyrax::Workflow::PermissionGenerator.call(roles: 'managing', workflow: workflow, agents: contact_user_agent)
+      Hyrax::Workflow::PermissionGenerator.call(roles: 'deleting', workflow: workflow, agents: admin_agent)
 
       permission_template.available_workflows.first.update!(active: true)
       DefaultAdminSet.create(work_type_name: 'HonorsThesis', admin_set_id: admin_set.id)
