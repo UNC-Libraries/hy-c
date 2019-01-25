@@ -1,9 +1,8 @@
 $(document).on('turbolinks:load', function () {
-    var people = ['advisor', 'arranger', 'composer', 'contributor', 'creator', 'project_director', 'researcher',
-        'reviewer', 'translator'];
-    people.forEach(function(person) {
+    ['advisor', 'arranger', 'composer', 'contributor', 'creator', 'project_director', 'researcher',
+        'reviewer', 'translator'].forEach(function(person) {
         attach_add_person_listeners(person);
-        updateAllRows('.'+ person + '.row', $('#index-label-' + person).val());
+        updateAllRows('.'+ person + '.row', getLabelNumber(person));
     });
 });
 
@@ -28,9 +27,7 @@ function attach_add_person_listeners(selector) {
         $(remove_selector).removeClass('hidden');
 
         var index_selector = $('#index-'+selector);
-        var label_index_selector = $('#index-label-'+selector);
         var current_index = index_selector.val();
-        var current_label_index = label_index_selector.val();
         var $new_row = $(cloning_row+' > .row').clone();
 
         // Update inputs and labels for new row fields
@@ -46,7 +43,7 @@ function attach_add_person_listeners(selector) {
             });
         });
 
-        updateFields($new_row , current_index, parseInt(current_label_index));
+        updateFields($new_row , current_index, getLabelNumber(selector));
 
         //change $new_row's id so we don't find it again when looking for blank row to clone
         $new_row.prop('id', 'cloned_'+selector+'_row');
@@ -58,9 +55,7 @@ function attach_add_person_listeners(selector) {
         $('div#'+selector).append($new_row);
 
         current_index++;
-        current_label_index++;
         index_selector.val(current_index);
-        label_index_selector.val(current_label_index);
 
         remove_row(selector);
     });
@@ -78,24 +73,23 @@ function remove_row(selector) {
         var name_input = $(cloning_row+' > .row').find('div.'+selector+'-name input').prop('name');
         var model = name_input.split('[')[0];
         var index = $self.data('index');
-        var label_index = $('#index-label-'+selector);
-        var label_index_val = label_index.val();
 
         $self.parents(row_selector).remove();
 
         // Trigger a removal event for the overall person object field since the specific instance clicked no longer exists.
         $('#'+selector).trigger("managed_field:remove");
 
-        label_index_val--;
-        label_index.val(label_index_val);
-
         // Update row ordering
-        updateAllRows(row_selector, label_index_val);
+        updateAllRows(row_selector, getLabelNumber(selector));
 
         if ($('#'+model+ '_'+selector+'s_attributes_'+index+'_id').length) {
             delete_record(selector, model, index);
         }
     });
+}
+
+function getLabelNumber(selector) {
+    return $('#' + selector + ' div.' + selector).not(':hidden').length;
 }
 
 function delete_record(selector, model, index) {

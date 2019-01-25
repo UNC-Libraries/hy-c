@@ -51,7 +51,6 @@
   <% end %>
 
   <input type='hidden' name='index-<%= person_term %>' id='index-<%= person_term %>' value="<%= @form.instance_eval(person_key.to_s).count %>" />
-  <input type='hidden' name='index-label-<%= person_term %>' id='index-label-<%= person_term %>' value="<%= @form.instance_eval(person_key.to_s).count %>" />
 
   <div class="<%= person_term %> row cloning hidden field-wrapper" id='<%= person_term %>-cloning_row'>
     <%= f.fields_for person_key do |person| %>
