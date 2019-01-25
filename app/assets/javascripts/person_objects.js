@@ -1,12 +1,12 @@
 $(document).on('turbolinks:load', function () {
     ['advisor', 'arranger', 'composer', 'contributor', 'creator', 'project_director', 'researcher',
         'reviewer', 'translator'].forEach(function(person) {
-        attach_add_person_listeners(person);
+        attachAddPersonListeners(person);
         updateAllRows('.'+ person + '.row', getLabelNumber(person));
     });
 });
 
-function attach_add_person_listeners(selector) {
+function attachAddPersonListeners(selector) {
     var add_selector = '#add-another-'+selector;
     var remove_selector = '.remove-'+selector;
     var cloning_row = '#'+selector+'-cloning_row';
@@ -18,7 +18,7 @@ function attach_add_person_listeners(selector) {
         }
     });
 
-    remove_row(selector);
+    removeRow(selector);
 
     $(add_selector).on('click', function(event) {
         // stop page from reloading
@@ -43,7 +43,7 @@ function attach_add_person_listeners(selector) {
             });
         });
 
-        updateFields($new_row , current_index, getLabelNumber(selector));
+        updateLabels($new_row , current_index, getLabelNumber(selector));
 
         //change $new_row's id so we don't find it again when looking for blank row to clone
         $new_row.prop('id', 'cloned_'+selector+'_row');
@@ -57,11 +57,11 @@ function attach_add_person_listeners(selector) {
         current_index++;
         index_selector.val(current_index);
 
-        remove_row(selector);
+        removeRow(selector);
     });
 }
 
-function remove_row(selector) {
+function removeRow(selector) {
     var row_selector = '.'+selector+'.row';
     var remove_selector = '.remove-'+selector;
     var cloning_row = '#'+selector+'-cloning_row';
@@ -83,7 +83,7 @@ function remove_row(selector) {
         updateAllRows(row_selector, getLabelNumber(selector));
 
         if ($('#'+model+ '_'+selector+'s_attributes_'+index+'_id').length) {
-            delete_record(selector, model, index);
+            deleteRecord(selector, model, index);
         }
     });
 }
@@ -92,7 +92,7 @@ function getLabelNumber(selector) {
     return $('#' + selector + ' div.' + selector).not(':hidden').length;
 }
 
-function delete_record(selector, model, index) {
+function deleteRecord(selector, model, index) {
     if ($('#' + model+'_'+selector+'s_attributes_'+index+'__destroy').length === 0) {
         var $new_row = '<input type="hidden" name="'+model+'['+selector+'s_attributes]['+index+'][_destroy]" id="'+model+
             '_'+selector+'s_attributes_'+index+'__destroy" value="1">';
@@ -104,11 +104,11 @@ function updateAllRows(row_selector, label_index) {
     $(row_selector).not(':hidden').each(function(row_index) {
         var self = $(this);
         var offset = label_index - row_index;
-        updateFields(self, row_index, label_index - offset);
+        updateLabels(self, row_index, label_index - offset);
     });
 }
 
-function updateFields(row, index, label_index) {
+function updateLabels(row, index, label_index) {
     var regex = /\d+/;
 
     ['name', 'orcid', 'affiliation', 'other_affiliation'].forEach(function(attr) {
