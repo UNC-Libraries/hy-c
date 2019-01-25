@@ -1,4 +1,16 @@
 en:
+  activefedora:
+    models:
+      article: 'Scholarly Article or Book Chapter'
+      artwork: 'Artwork'
+      data_set: 'Dataset'
+      dissertation: 'Dissertation or Thesis'
+      general: 'General'
+      honors_thesis: 'Undergraduate Honors Thesis'
+      journal: 'Scholarly Journal, Newsletter or Book'
+      masters_paper: "Master's Paper"
+      multimed: 'Multimedia'
+      scholarly_work: 'Poster, Presentation or Paper'
   blacklight:
     search:
       fields:
