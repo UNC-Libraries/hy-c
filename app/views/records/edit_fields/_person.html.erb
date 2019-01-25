@@ -1,7 +1,7 @@
 <% person_term_display = "#{person_term.split('_').map(&:capitalize).join(' ')} #1" %>
 <hr class="person-divider">
 <div class="form-group multi_value">
-  <div id="<%= person_term %>">
+  <div id="<%= person_term %>" data-<%= person_term %>="0">
   <%= f.fields_for person_key do |person| %>
     <div class="<%= person_term %> row well field-wrapper person-object">
       <div class="person col-sm-12 <%= person_term %>-name">
@@ -49,8 +49,6 @@
       <% end %>
     </div>
   <% end %>
-
-  <input type='hidden' name='index-<%= person_term %>' id='index-<%= person_term %>' value="<%= @form.instance_eval(person_key.to_s).count %>" />
 
   <div class="<%= person_term %> row cloning hidden field-wrapper" id='<%= person_term %>-cloning_row'>
     <%= f.fields_for person_key do |person| %>
