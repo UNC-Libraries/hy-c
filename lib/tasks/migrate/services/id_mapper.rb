@@ -18,6 +18,9 @@ module Migrate
         def create_csv
           if !File.exist?(@filename)
             @filename = File.new(@filename, 'w')
+            CSV.open(@filename, 'a+') do |csv|
+              csv << ['old', 'new']
+            end
           end
         end
     end
