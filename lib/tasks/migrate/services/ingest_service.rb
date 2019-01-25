@@ -60,22 +60,6 @@ module Migrate
           # Save list of child filesets
           ordered_members = Array.new
 
-          # Attach premis files
-          if !work_attributes['premis_files'].blank?
-            work_attributes['premis_files'].each_with_index do |file, index|
-              premis_file = @premis_hash[MigrationHelper.get_uuid_from_path(file)] || ''
-              if File.file?(premis_file)
-                fileset_attrs = { 'title' => ["PREMIS_Events_Metadata_#{index}.txt"],
-                                  'visibility' => Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE }
-                fileset = create_fileset(parent: new_work, resource: fileset_attrs, file: premis_file)
-
-                ordered_members << fileset
-              else
-                puts "[#{Time.now.to_s}] #{uuid},#{new_work.id} missing premis file: #{file}"
-              end
-            end
-          end
-
           # Create children
           if !work_attributes['cdr_model_type'].blank? &&
               (work_attributes['cdr_model_type'].include? 'info:fedora/cdr-model:AggregateWork')
@@ -120,6 +104,22 @@ module Migrate
                 id_mapper.add_row([MigrationHelper.get_uuid_from_path(file), 'parent/'+new_work.id+'/file_sets/'+fileset.id])
 
                 ordered_members << fileset
+              end
+            end
+          end
+
+          # Attach premis files
+          if !work_attributes['premis_files'].blank?
+            work_attributes['premis_files'].each_with_index do |file, index|
+              premis_file = @premis_hash[MigrationHelper.get_uuid_from_path(file)] || ''
+              if File.file?(premis_file)
+                fileset_attrs = { 'title' => ["PREMIS_Events_Metadata_#{index}.txt"],
+                                  'visibility' => Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE }
+                fileset = create_fileset(parent: new_work, resource: fileset_attrs, file: premis_file)
+
+                ordered_members << fileset
+              else
+                puts "[#{Time.now.to_s}] #{uuid},#{new_work.id} missing premis file: #{file}"
               end
             end
           end

@@ -166,7 +166,7 @@ module Migrate
 
             if work_attributes['contained_files'].count > 1
               representative = rdf_version.xpath('rdf:Description/*[local-name() = "defaultWebObject"]/@rdf:resource', MigrationConstants::NS).to_s.split('/')[1]
-              if representative
+              if representative && !child_works.include?(MigrationHelper.get_uuid_from_path(representative))
                 work_attributes['contained_files'] -= [MigrationHelper.get_uuid_from_path(representative)]
                 work_attributes['contained_files'] = [MigrationHelper.get_uuid_from_path(representative)] + work_attributes['contained_files']
               end
