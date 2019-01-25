@@ -3,7 +3,7 @@ $(document).on('turbolinks:load', function () {
         'reviewer', 'translator'];
     people.forEach(function(person) {
         attach_add_person_listeners(person);
-        updateAllRows('.'+ person + '.row', false, $('#index-label-' + person).val());
+        updateAllRows('.'+ person + '.row', $('#index-label-' + person).val());
     });
 });
 
@@ -34,7 +34,19 @@ function attach_add_person_listeners(selector) {
         var $new_row = $(cloning_row+' > .row').clone();
 
         // Update inputs and labels for new row fields
-        updateFields($new_row , false, current_index, parseInt(current_label_index));
+        var regex = /\d+/;
+
+        ['name', 'orcid', 'affiliation', 'other_affiliation'].forEach(function(attr) {
+            var $input = $new_row.find("[id$='" + attr + "']");
+
+            $input.each(function() {
+                var self = $(this);
+                self.prop('name', self.prop('name').replace(regex, current_index))
+                    .attr('id', self.attr('id').replace(regex, current_index));
+            });
+        });
+
+        updateFields($new_row , current_index, parseInt(current_label_index));
 
         //change $new_row's id so we don't find it again when looking for blank row to clone
         $new_row.prop('id', 'cloned_'+selector+'_row');
@@ -78,7 +90,7 @@ function remove_row(selector) {
         label_index.val(label_index_val);
 
         // Update row ordering
-        updateAllRows(row_selector, true, label_index_val);
+        updateAllRows(row_selector, label_index_val);
 
         if ($('#'+model+ '_'+selector+'s_attributes_'+index+'_id').length) {
             delete_record(selector, model, index);
@@ -94,35 +106,24 @@ function delete_record(selector, model, index) {
     }
 }
 
-function updateAllRows(row_selector, is_deletion, label_index) {
+function updateAllRows(row_selector, label_index) {
     $(row_selector).not(':hidden').each(function(row_index) {
         var self = $(this);
         var offset = label_index - row_index;
-        updateFields(self, is_deletion, row_index, label_index - offset);
+        updateFields(self, row_index, label_index - offset);
     });
 }
 
-function updateFields(row, is_deletion, index, label_index) {
+function updateFields(row, index, label_index) {
     var regex = /\d+/;
 
     ['name', 'orcid', 'affiliation', 'other_affiliation'].forEach(function(attr) {
-        // Update input
-        if (!is_deletion) {
-            var $input = row.find("[id$='" + attr + "']");
-
-            $input.each(function() {
-                var self = $(this);
-                self.prop('name', self.prop('name').replace(regex, index))
-                    .attr('id', self.attr('id').replace(regex, index));
-            });
-        }
-
         // Update label
         var $label = row.find("label[for$='" + attr + "']");
 
         $label.each(function() {
             var self = $(this);
-            self.attr('for', self.attr('for').replace(regex, label_index))
+            self.attr('for', self.attr('for').replace(regex, index))
                 .html(self.html().replace(regex, label_index + 1));
         });
     });
