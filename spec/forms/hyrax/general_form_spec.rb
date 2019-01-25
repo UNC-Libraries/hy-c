@@ -34,11 +34,18 @@ RSpec.describe Hyrax::GeneralForm do
                                      :reviewer, :rights_holder, :series, :sponsor, :table_of_contents, :translator,
                                      :use, :language_label, :license_label, :rights_statement_label] }
   end
-  
+
   describe "#admin_only_terms" do
     subject { form.admin_only_terms }
 
-    it { is_expected.to match_array [:dcmi_type, :doi] }
+    it { is_expected.to match_array [:date_created, :dcmi_type, :degree_granting_institution, :doi] }
+  end
+
+  describe 'default value set' do
+    subject { form }
+    it "language must have default values" do
+      expect(form.model['language']).to eq ['http://id.loc.gov/vocabulary/iso639-2/eng']
+    end
   end
 
   describe '.model_attributes' do
