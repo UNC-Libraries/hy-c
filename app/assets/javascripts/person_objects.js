@@ -3,7 +3,7 @@ $(document).on('turbolinks:load', function () {
         'reviewer', 'translator'].forEach(function(person) {
         setPersonIndex(person);
         attachAddPersonListeners(person);
-        updateAllRows('.'+ person + '.row', getLabelNumber(person));
+        updateAllRows('.'+ person + '.row');
     });
 });
 
@@ -80,7 +80,7 @@ function removeRow(selector) {
         $('#' + selector).trigger("managed_field:remove");
 
         // Update row ordering
-        updateAllRows(row_selector, getLabelNumber(selector));
+        updateAllRows(row_selector);
 
         if ($('#' + model + '_' + selector + 's_attributes_' + index + '_id').length) {
             deleteRecord(selector, model, index);
@@ -111,11 +111,10 @@ function deleteRecord(selector, model, index) {
     }
 }
 
-function updateAllRows(row_selector, label_index) {
+function updateAllRows(row_selector) {
     $(row_selector).not(':hidden').each(function(row_index) {
         var self = $(this);
-        var offset = label_index - row_index;
-        updateLabels(self, row_index, label_index - offset);
+        updateLabels(self, row_index, row_index);
     });
 }
 
