@@ -74,7 +74,6 @@ RSpec.feature 'Create a ScholarlyWork', js: false do
       fill_in 'Conference name', with: 'a conference'
       fill_in 'Location', with: 'some geographic subject'
       fill_in 'Keyword', with: 'Test Default Keyword'
-      select 'English', from: 'scholarly_work_language'
       select 'Attribution 3.0 United States', :from => 'scholarly_work_license'
       select 'Other', from: 'scholarly_work_resource_type'
       select 'In Copyright', :from => 'scholarly_work_rights_statement'
@@ -91,7 +90,7 @@ RSpec.feature 'Create a ScholarlyWork', js: false do
       expect(page).not_to have_field('scholarly_work_visibility_lease')
       choose "scholarly_work_visibility_open"
       check 'agreement'
-      
+
       # Verify that admin only field is not visible
       expect(page).not_to have_selector('#scholarly_work_dcmi_type')
 
@@ -163,7 +162,6 @@ RSpec.feature 'Create a ScholarlyWork', js: false do
       fill_in 'DOI', with: 'some doi'
       fill_in 'Location', with: 'some geographic subject'
       fill_in 'Keyword', with: 'Test Default Keyword'
-      select 'English', from: 'scholarly_work_language'
       select 'Attribution 3.0 United States', :from => 'scholarly_work_license'
       select 'Other', from: 'scholarly_work_resource_type'
       select 'In Copyright', :from => 'scholarly_work_rights_statement'

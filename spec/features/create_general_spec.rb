@@ -117,7 +117,6 @@ RSpec.feature 'Create a General', js: false do
       fill_in 'Journal volume', with: '2'
       fill_in 'Keyword', with: 'Test Default Keyword'
       select 'Text', from: 'general_kind_of_data'
-      select 'English', from: 'general_language'
       fill_in 'Last modified date', with: '2018-10-03'
       select 'Attribution 3.0 United States', :from => 'general_license'
       fill_in 'Medium', with: 'a medium'

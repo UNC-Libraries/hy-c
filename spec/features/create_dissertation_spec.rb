@@ -93,7 +93,6 @@ RSpec.feature 'Create a Dissertation', js: false do
       fill_in 'Graduation year', with: '2018'
       fill_in 'Identifier', with: 'some id'
       fill_in 'Keyword', with: 'Test Default Keyword'
-      select 'English', from: 'dissertation_language'
       select 'Attribution 3.0 United States', :from => 'dissertation_license'
       fill_in 'Note', with: 'a note'
       fill_in 'Place of publication', with: 'UNC'

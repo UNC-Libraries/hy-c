@@ -30,7 +30,7 @@ namespace :deposit_record do
 
     collection_uuids = MigrationHelper.get_collection_uuids(collection_config['collection_list'])
 
-    puts "Object count:  #{collection_uuids.count.to_s}"
+    puts "[#{Time.now.to_s}] Object count:  #{collection_uuids.count.to_s}"
 
     collection_uuids.each do |uuid|
       puts "[#{start_time.to_s}] Start migration of #{uuid}"
@@ -39,11 +39,11 @@ namespace :deposit_record do
       deposit_record = DepositRecord.new(record_attributes[:resource])
 
       # add manifest files
-      puts "manifest count: #{record_attributes[:manifests].count}"
+      puts "[#{Time.now.to_s}] manifest count: #{record_attributes[:manifests].count}"
       deposit_record[:manifest] = create_fedora_file_record(record_attributes[:manifests], @binary_hash, deposit_record)
 
       # add premis files
-      puts "premis count: #{record_attributes[:premis].count}"
+      puts "[#{Time.now.to_s}] premis count: #{record_attributes[:premis].count}"
       deposit_record[:premis] = create_fedora_file_record(record_attributes[:premis], @premis_hash, deposit_record)
 
       deposit_record.save
