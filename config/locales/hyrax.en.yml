@@ -176,6 +176,10 @@ en:
           Carolina Digital Repository (CDR). Please note that the information about your work will still be available
           publicly, but the files have been removed.\r\n\r\n
           Please contact the CDR at <a href=\"mailto:cdr@unc.edu\">cdr@unc.edu</a> if you have questions."
+        deletion_pending:
+          subject: "CDR deletion request"
+          message: "A deletion request for %{title} (<a href=\"%{document_path}\">%{work_id}</a>) was made by %{user} and is
+                  awaiting approval with the following comments: %{comment}"
         deletion_rejected:
           subject: "CDR deletion request was not approved"
           message: "The deletion request for %{title} (<a href=\"%{document_path}\">%{work_id}</a>) was rejected by %{user}. %{comment}"
