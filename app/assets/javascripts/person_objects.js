@@ -104,11 +104,9 @@ function setPersonIndex(selector) {
 }
 
 function deleteRecord(selector, model, index) {
-    var select_string = model + '_' + selector + 's_attributes_'+ index +'__destroy';
-
-    if ($('#' + select_string).length === 0) {
-        var $new_row = '<input type="hidden" name="' + model + '[' + selector + 's_attributes][' + index +' ' +
-            '][_destroy]" id="' + select_string + '" value="1">';
+    if ($('#' + model + '_'+selector + 's_attributes_' + index + '__destroy').length === 0) {
+        var $new_row = '<input type="hidden" name="' + model + '[' + selector + 's_attributes][' + index + '][_destroy]" id="' + model +
+            '_' + selector + 's_attributes_' + index + '__destroy" value="1">';
         $('div#' + selector).append($new_row);
     }
 }
