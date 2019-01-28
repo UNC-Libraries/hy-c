@@ -177,7 +177,7 @@ en:
           publicly, but the files have been removed.\r\n\r\n
           Please contact the CDR at <a href=\"mailto:cdr@unc.edu\">cdr@unc.edu</a> if you have questions."
         deletion_pending:
-          subject: "CDR deletion request request"
+          subject: "CDR deletion request"
           message: "A deletion request for %{title} (<a href=\"%{document_path}\">%{work_id}</a>) was made by %{user.user_key} and is
           awaiting approval with the following comments: %{comment}"
         deletion_rejected:
