@@ -10,7 +10,7 @@ RSpec.describe Hyrax::HonorsThesisForm do
     subject { form.required_fields }
 
     it do  is_expected.to match_array [:title, :abstract, :advisor, :affiliation, :creator, :date_issued, :degree,
-                                       :graduation_year, :degree_granting_institution]
+                                       :graduation_year]
     end
   end
 
@@ -18,7 +18,7 @@ RSpec.describe Hyrax::HonorsThesisForm do
     subject { form.primary_terms }
 
     it do  is_expected.to match_array [:title, :abstract, :advisor, :creator, :date_issued, :degree,
-                                       :graduation_year, :degree_granting_institution]
+                                       :graduation_year]
     end
   end
 
@@ -28,13 +28,14 @@ RSpec.describe Hyrax::HonorsThesisForm do
     it { is_expected.to match_array [:access, :academic_concentration, :award, :date_created, :dcmi_type, :doi, :extent,
                                      :geographic_subject, :note, :use, :language, :license, :resource_type,
                                      :rights_statement, :subject, :keyword, :related_url, :language_label,
-                                     :license_label, :rights_statement_label] }
+                                     :license_label, :rights_statement_label, :degree_granting_institution] }
   end
   
   describe "#admin_only_terms" do
     subject { form.admin_only_terms }
 
-    it { is_expected.to match_array [:dcmi_type, :access, :academic_concentration, :award, :doi, :extent, :use] }
+    it { is_expected.to match_array [:dcmi_type, :access, :academic_concentration, :award, :date_created, :degree_granting_institution,
+                                     :doi, :extent, :use] }
   end
   
   describe 'default value set' do
@@ -45,6 +46,10 @@ RSpec.describe Hyrax::HonorsThesisForm do
 
     it "rights statement must have a default value" do
       expect(form.model['rights_statement']).to eq 'http://rightsstatements.org/vocab/InC/1.0/'
+    end
+
+    it "language must have default values" do
+      expect(form.model['language']).to eq ['http://id.loc.gov/vocabulary/iso639-2/eng']
     end
   end
 

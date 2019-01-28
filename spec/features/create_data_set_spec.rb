@@ -76,7 +76,6 @@ RSpec.feature 'Create a DataSet', js: false do
       fill_in 'Funder', with: 'some funder'
       fill_in 'Location', with: 'some geographic subject'
       fill_in 'Keyword', with: 'Test Default Keyword'
-      select 'English', from: 'data_set_language'
       fill_in 'Last modified date', with: '2018-10-03'
       select 'Attribution 3.0 United States', :from => 'data_set_license'
       fill_in 'Project Director', { with: 'project director', id: 'data_set_project_directors_attributes_0_name' }
@@ -182,7 +181,6 @@ RSpec.feature 'Create a DataSet', js: false do
       fill_in 'Funder', with: 'some funder'
       fill_in 'Location', with: 'some geographic subject'
       fill_in 'Keyword', with: 'Test Default Keyword'
-      select 'English', from: 'data_set_language'
       fill_in 'Last modified date', with: '2018-10-03'
       select 'Attribution 3.0 United States', :from => 'data_set_license'
       fill_in 'Project Director', { with: 'project director', id: 'data_set_project_directors_attributes_0_name' }
