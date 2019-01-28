@@ -98,7 +98,6 @@ RSpec.feature 'Create a MastersPaper', js: false do
       fill_in 'Additional affiliation', { with: 'UNC', id: 'masters_paper_advisors_attributes_0_other_affiliation' }
       fill_in 'Date of publication', with: '2018-10-03'
       select 'Master of Science', from: 'masters_paper_degree'
-      fill_in 'Degree granting institution', with: 'UNC'
       fill_in 'Graduation year', with: '2018'
       select 'Masters Paper', from: 'masters_paper_resource_type'
 
@@ -106,7 +105,6 @@ RSpec.feature 'Create a MastersPaper', js: false do
       select 'Clinical Nutrition', from: 'Academic Concentration'
       fill_in 'Location', with: 'some geographic subject'
       fill_in 'Keyword', with: 'Test Default Keyword'
-      select 'English', from: 'masters_paper_language'
       select 'Attribution 3.0 United States', :from => 'masters_paper_license'
       fill_in 'Note', with: 'a note'
       fill_in 'Reviewer', { with: 'reviewer', id: 'masters_paper_reviewers_attributes_0_name' }
@@ -117,6 +115,7 @@ RSpec.feature 'Create a MastersPaper', js: false do
       fill_in 'Subject', with: 'test'
 
       expect(page).not_to have_field('masters_paper_access')
+      expect(page).not_to have_field('honors_thesis_degree_granting_institution')
       expect(page).not_to have_field('masters_paper_doi')
       expect(page).not_to have_field('masters_paper_extent')
       expect(page).to have_selector('#masters_paper_language_label', visible: false)
@@ -156,7 +155,6 @@ RSpec.feature 'Create a MastersPaper', js: false do
       expect(page).to have_content 'Creator Test Default Creator ORCID: creator orcid'
       expect(page).to have_content 'Date of publication October 3, 2018'
       expect(page).to have_content 'Degree Master of Science'
-      expect(page).to have_content 'Degree granting institution UNC'
       expect(page).to have_content 'Location some geographic subject'
       expect(page).to have_content 'Graduation year 2018'
       expect(page).to have_content 'Keyword Test Default Keyword'
@@ -214,7 +212,6 @@ RSpec.feature 'Create a MastersPaper', js: false do
       fill_in 'Extent', with: 'some extent'
       fill_in 'Location', with: 'some geographic subject'
       fill_in 'Keyword', with: 'Test Default Keyword'
-      select 'English', from: 'masters_paper_language'
       select 'Attribution 3.0 United States', :from => 'masters_paper_license'
       fill_in 'Note', with: 'a note'
       fill_in 'Reviewer', { with: 'reviewer', id: 'masters_paper_reviewers_attributes_0_name' }

@@ -13,17 +13,9 @@
                          required: (f.object.required?(person_term.to_sym)) %>
       </div>
 
-      <div class="person col-sm-12 <%= person_term %>-orcid">
-        <%= person.input :orcid,
-                         label: "ORCID (#{person_term_display})",
-                         input_html: { placeholder: 'https://orcid.org/xxxx-xxxx-xxxx-xxxx',
-                                                                class: 'form-control',
-                                                                value: (person.object.orcid.first || '') } %>
-      </div>
-
       <div class="person col-sm-12 <%= person_term %>-affiliation">
         <%= person.input :affiliation, as: :select,
-                         label: "Affiliation (#{person_term_display})",
+                         label: "UNC affiliation (#{person_term_display})",
                          collection: DepartmentsService.select_all_options.sort,
                          include_blank: true,
                          required: f.object.required?(:affiliation),
@@ -38,6 +30,14 @@
                          label: "Additional affiliation (#{person_term_display})",
                          input_html: { class: 'form-control',
                                                             value: (person.object.other_affiliation.first || '') } %>
+      </div>
+
+      <div class="person col-sm-12 <%= person_term %>-orcid">
+        <%= person.input :orcid,
+                         label: "ORCID (#{person_term_display})",
+                         input_html: { placeholder: 'https://orcid.org/xxxx-xxxx-xxxx-xxxx',
+                                       class: 'form-control',
+                                       value: (person.object.orcid.first || '') } %>
       </div>
 
       <% if @form.instance_eval(person_key.to_s).count > 1 && person.index > 0 %>
@@ -63,17 +63,9 @@
                              required: (f.object.required?(person_term.to_sym)) %>
           </div>
 
-          <div class="col-sm-12 <%= person_term %>-orcid">
-            <%= person.input :orcid,
-                             label: "ORCID (#{person_term_display})",
-                             input_html: { placeholder: 'https://orcid.org/xxxx-xxxx-xxxx-xxxx',
-                                                                    class: 'form-control',
-                                                                    value: '' } %>
-          </div>
-
           <div class="col-sm-12 <%= person_term %>-affiliation">
             <%= person.input :affiliation, as: :select,
-                             label: "Affiliation (#{person_term_display})",
+                             label: "UNC affiliation (#{person_term_display})",
                              collection: DepartmentsService.select_all_options.sort,
                              include_blank: true,
                              required: f.object.required?(:affiliation),
@@ -90,7 +82,16 @@
                                                                 value: '' } %>
           </div>
 
+          <div class="col-sm-12 <%= person_term %>-orcid">
+            <%= person.input :orcid,
+                             label: "ORCID (#{person_term_display})",
+                             input_html: { placeholder: 'https://orcid.org/xxxx-xxxx-xxxx-xxxx',
+                                           class: 'form-control',
+                                           value: '' } %>
+          </div>
+
           <span class="people-remove field-controls multi_value">
+
           <button type="button" class="btn btn-link remove remove-<%= person_term %>" data-index="1">
             <span class="glyphicon glyphicon-remove"></span> <span class="controls-remove-text">Remove <%= person_term.split('_').map(&:capitalize).join(' ') %></span>
           </button>

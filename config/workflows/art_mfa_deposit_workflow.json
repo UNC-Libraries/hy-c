@@ -4,7 +4,7 @@
       "name": "art_mfa_deposit",
       "label": "Art MFA mediated deposit workflow",
       "description": "A single-step workflow for art MFA deposit in which all deposits must be approved by a reviewer. Reviewer may also send deposits back to the depositor.",
-      "allows_access_grant": false,
+      "allows_access_grant": true,
       "actions": [
         {
           "name": "deposit",

@@ -20,4 +20,9 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
-  hello: "Hello world"
+  mailboxer:
+    message_mailer:
+      subject_new: "%{subject}"
+      subject_reply: "%{subject}"
+    notification_mailer:
+      subject: "%{subject}"

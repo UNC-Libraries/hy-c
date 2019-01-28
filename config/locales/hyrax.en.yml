@@ -1,4 +1,16 @@
 en:
+  activefedora:
+    models:
+      article: 'Scholarly Article or Book Chapter'
+      artwork: 'Artwork'
+      data_set: 'Dataset'
+      dissertation: 'Dissertation or Thesis'
+      general: 'General'
+      honors_thesis: 'Undergraduate Honors Thesis'
+      journal: 'Scholarly Journal, Newsletter or Book'
+      masters_paper: "Master's Paper"
+      multimed: 'Multimedia'
+      scholarly_work: 'Poster, Presentation or Paper'
   blacklight:
     search:
       fields:
@@ -113,14 +125,14 @@ en:
         message: "The batch create for %{user} failed: %{messages}"
       batch_create_success:
         subject: CDR batch deposit successful
-        message: "Hello,\n\n
+        message: "Hello,\r\n\r\n
         Your batch of works has been successfully deposited to the Carolina Digital Repository (CDR).
         To edit the batch, go to your <a href=\"https://cdr.lib.unc.edu/dashboard/my/works?locale=en\">Works Dashboard</a> in the CDR."
       deposit:
         subject: "CDR deposit successful"
-        message: "Hello,\n\n
+        message: "Hello,\r\n\r\n
         %{title} (%{link}) has been successfully deposited in the CDR and is now available in accordance with
-        the visibility settings that you selected.\n\n
+        the visibility settings that you selected.\r\n\r\n
         If you have questions, please feel free to <a href=\"https://blogs.lib.unc.edu/cdr/index.php/contact-us/\">contact us</a>!"
       fixity_check_failure:
         subject: Failing Fixity Check
@@ -129,62 +141,67 @@ en:
         subject: File Import Error
       proxy_depositor_added:
         subject: CDR Proxy Depositor
-        grantee_message: "Hello,\n\n%{grantor} has assigned you as a proxy depositor in the Carolina Digital Repository (CDR).
+        grantee_message: "Hello,\r\n\r\n%{grantor} has assigned you as a proxy depositor in the Carolina Digital Repository (CDR).
         You may now deposit works into the Carolina Digital Repository on behalf of %{grantor}. For more information
         about depositing in the CDR as a proxy, please see the <a href=\"https://blogs.lib.unc.edu/cdr/index.php/frequently-asked-questions\">CDR FAQ</a>."
         grantor_message: You have assigned %{grantee} as a proxy depositor
       proxy_deposit_request:
         transfer_on_create:
           subject: CDR work transfer request
-          message: "%{user_link} wants to transfer ownership of %{work_link} to you. To accept this transfer
+          message: "Hello,\r\n\r\n%{user_link} wants to transfer ownership of %{work_link} to you. To accept this transfer
           request, go to the Carolina Digital Repository (CDR) %{transfer_link} and click \"Accept\" next to the title
-          of the work. You may need to sign into the CDR by clicking on the \"Login\" link in the upper right.\n\n
+          of the work. You may need to sign into the CDR by clicking on the \"Login\" link in the upper right.\r\n\r\n
           If you have questions about transferring ownership of a work, please see the
           <a href=\"https://blogs.lib.unc.edu/cdr/index.php/frequently-asked-questions\">CDR FAQ</a>."
         transfer_on_update:
           subject: CDR work transfer request %{status}
-          message: "Hello,\n\n
+          message: "Hello,\r\n\r\n
           Your request to transfer request ownership of %{title} has been %{status} by %{receiving_user}."
           comments: "Comments: %{receiver_comment}"
       workflow:
         changes_required:
           subject: CDR deposit requires changes
-          message: "%{title} (%{link}) requires the following changes before approval.\n\n
+          message: "Hello,\r\n\r\n
+          %{title} (%{link}) requires the following changes before approval.\r\n\r\n
           Click on the link above to view and edit the work. You may need to sign into the CDR by clicking on the \"Login\" 
           link in the upper right. When you are finished, click on the \"Review and Approval\" banner, select 
-          \"Request Review\" and click the \"Submit\" button to resubmit your paper to your designated reviewer.\n\n
+          \"Request Review\" and click the \"Submit\" button to resubmit your paper to your designated reviewer.\r\n\r\n
           If you have questions about the review process, email <a href=\"mailto:cdr@unc.edu\">cdr@unc.edu</a>.
-          Questions about the reviewer comments should be directed to your reviewer.\n\n
+          Questions about the reviewer comments should be directed to your reviewer.\r\n\r\n
           '%{comment}'"
         deletion_approved:
-          subject: "Requested deletion has been approved"
-          message: "The deletion request for %{title} (<a href=\"%{document_path}\">%{work_id}</a>) was approved by %{user.user_key}. %{comment}"
+          subject: "CDR deletion request has been approved"
+          message: "Hello,\r\n\r\n
+          Your request to delete %{title} (<a href=\"%{document_path}\">%{work_id}</a>) has been approved by the
+          Carolina Digital Repository (CDR). Please note that the information about your work will still be available
+          publicly, but the files have been removed.\r\n\r\n
+          Please contact the CDR at <a href=\"mailto:cdr@unc.edu\">cdr@unc.edu</a> if you have questions."
         deletion_pending:
-          subject: "Deletion request needs review"
+          subject: "CDR deletion request"
           message: "A deletion request for %{title} (<a href=\"%{document_path}\">%{work_id}</a>) was made by %{user.user_key} and is
           awaiting approval with the following comments: %{comment}"
         deletion_rejected:
-          subject: "Requested deletion was not approved"
+          subject: "CDR deletion request was not approved"
           message: "The deletion request for %{title} (<a href=\"%{document_path}\">%{work_id}</a>) was rejected by %{user.user_key}. %{comment}"
         deposited:
           subject: CDR deposit has been approved
-          message: "Hello,\n\n
+          message: "Hello,\r\n\r\n
           %{title} (%{link}) has been approved by %{user}. Your work will now be available in the
-          CDR in accordance with the visibility settings that you selected.\n\n
+          CDR in accordance with the visibility settings that you selected.\r\n\r\n
           %{comment}"
         pending_review:
           subject: CDR deposit needs review
-          message: "%{title} (%{link}) was deposited by %{user} in the Carolina Digital Repository (CDR) and is awaiting your review.\n\n
+          message: "%{title} (%{link}) was deposited by %{user} in the Carolina Digital Repository (CDR) and is awaiting your review.\r\n\r\n
            To review the work, click on the link above. You may need to sign into the CDR by clicking on the \"Login\"
            link in the upper right. Once you have decided to review or request changes, click the \"Review and Approval\"
-           banner. Select an Action on the left, enter a comment if applicable, and click \"Submit\".\n\n
+           banner. Select an Action on the left, enter a comment if applicable, and click \"Submit\".\r\n\r\n
            For more information about the CDR's review process, please see the
-           <a href=\"https://blogs.lib.unc.edu/cdr/index.php/frequently-asked-questions\">CDR FAQ</a>.\n\n
+           <a href=\"https://blogs.lib.unc.edu/cdr/index.php/frequently-asked-questions\">CDR FAQ</a>.\r\n\r\n
 
            %{comment}"
         review_advanced:
           message: "%{title} (<a href=\"%{document_path}\">%{work_id}</a>) was advanced in the workflow by
-          %{user.user_key} and is awaiting approval %{comment}"
+          %{user} and is awaiting approval %{comment}"
   simple_form:
     hints:
       defaults:
@@ -192,15 +209,15 @@ en:
         academic_concentration: "Fill out this field only if it is relevant to your program."
         access: "Access restrictions placed on the work"
         advisor: "Your advisor's name. Please enter the last name first, e.g. \"Smith, John.\""
-        affiliation: "Your primary departmental affiliation at UNC"
+        affiliation: "Primary departmental affiliation"
         alternative_title: "A unique secondary title for your work if applicable. Enter subtitle in the \"Title\" field, instead."
         award: "Honors level"
         bibliographic_citation: "A citation to a related work, or a different version of this work."
         contributor: "A person or group who had a role in creating the work."
         copyright_date: "The date that the work was copyrighted. This may be different than today's date. If you aren't sure, leave this blank."
         creator: "The person or group responsible for creating the work. If you are depositing a paper, article or book chapter, enter the author's name"
-        date_created: "The date on which the work was created. If you are depositing a thesis, enter the date that it was completed."
-        date_issued: "The date that the work was published and/or finished. If you are depositing a thesis, enter the date that it was completed"
+        date_created: "The date on which the work was created."
+        date_issued: "The date that the work was published and/or finished."
         degree: "The degree that you are pursing"
         description: "Notes about your work, if needed. To summarize your work, use the Abstract field instead. If you are depositing a dataset, enter your methodology here."
         doi: "The DOI assigned by the CDR."
@@ -223,7 +240,6 @@ en:
         note: "Additional information about your work. Please be aware that content in this field will be visible to the public."
         orcid: "If you have an ORCID, enter it below. To learn more about ORCID and sign up,
                 visit <a target=\"_blank\" href=\"https://guides.lib.unc.edu/orcid\">https://guides.lib.unc.edu/orcid</a>"
-        other_affiliation: "If your co-authors are not affiliated with UNC, enter their affiliations here."
         place_of_publication: "The place in which the work was published."
         project_director: "The director or primary investigator of the project. Fill out this field if this person is not the creator."
         publisher: "The publisher of your work. This may be UNC, or an external publisher."
@@ -243,6 +259,7 @@ en:
         use: "Additional information about the rights held over the work."
     labels:
       defaults:
+        affiliation: "UNC affiliation"
         alternative_title: "Alternate title"
         award: "Honors level"
         date_created: "Date created"
