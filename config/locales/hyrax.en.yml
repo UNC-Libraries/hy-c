@@ -158,14 +158,14 @@ en:
           '%{comment}'"
         deletion_approved:
           subject: "Requested deletion has been approved"
-          message: "The deletion request for %{title} (<a href=\"%{document_path}\">%{work_id}</a>) was approved by %{user.user_key}. %{comment}"
+          message: "The deletion request for %{title} (<a href=\"%{document_path}\">%{work_id}</a>) was approved by %{user}. %{comment}"
         deletion_pending:
           subject: "Deletion request needs review"
-          message: "A deletion request for %{title} (<a href=\"%{document_path}\">%{work_id}</a>) was made by %{user.user_key} and is
+          message: "A deletion request for %{title} (<a href=\"%{document_path}\">%{work_id}</a>) was made by %{user} and is
           awaiting approval with the following comments: %{comment}"
         deletion_rejected:
           subject: "Requested deletion was not approved"
-          message: "The deletion request for %{title} (<a href=\"%{document_path}\">%{work_id}</a>) was rejected by %{user.user_key}. %{comment}"
+          message: "The deletion request for %{title} (<a href=\"%{document_path}\">%{work_id}</a>) was rejected by %{user}. %{comment}"
         deposited:
           subject: CDR deposit has been approved
           message: "Hello,\n\n
@@ -184,7 +184,7 @@ en:
            %{comment}"
         review_advanced:
           message: "%{title} (<a href=\"%{document_path}\">%{work_id}</a>) was advanced in the workflow by
-          %{user.user_key} and is awaiting approval %{comment}"
+          %{user} and is awaiting approval %{comment}"
   simple_form:
     hints:
       defaults:
