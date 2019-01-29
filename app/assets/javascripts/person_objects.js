@@ -1,134 +1,182 @@
 $(document).on('turbolinks:load', function () {
-    ['advisor', 'arranger', 'composer', 'contributor', 'creator', 'project_director', 'researcher',
-        'reviewer', 'translator'].forEach(function(person) {
-        setPersonIndex(person);
-        attachAddPersonListeners(person);
-        updateAllRows('.'+ person + '.row');
-    });
-});
-
-function attachAddPersonListeners(selector) {
-    var add_selector = '#add-another-'+selector;
-    var remove_selector = '.remove-'+selector;
-    var cloning_row = '#'+selector+'-cloning_row';
-
-    $(cloning_row).find('input').each(function() {
-        var $self = $(this);
-        if ($self.prop('id').match('_id')) {
-            $self.remove();
+    var PEOPLE_TYPES = ['advisor', 'arranger', 'composer', 'contributor', 'creator',
+        'project_director', 'researcher', 'reviewer', 'translator'];
+    var PEOPLE_SUBFIELDS = ['name', 'orcid', 'affiliation', 'other_affiliation'];
+    
+    PEOPLE_TYPES.forEach(function(person) {
+        // For each person type present in the form, initialize
+        if ($('#' + person).length > 0) {
+            // Calculate and store the total number of people of this type
+            setPersonTypeIndex(person);
+            // Assign indexes to each person row
+            assignPersonIndexes(person);
+            // Get the cloning row ready for usage
+            tidyPersonCloningRow(person);
+            // Attach listeners for person modification events
+            attachPersonListeners(person);
+            // Refresh labels of person entries
+            updateAllRows(person);
         }
     });
 
-    removeRow(selector);
+    function tidyPersonCloningRow(selector) {
+        var cloning_row = '#' + selector + '-cloning_row';
 
-    $(add_selector).on('click', function(event) {
-        // stop page from reloading
-        event.preventDefault();
+        $(cloning_row).find('input').each(function() {
+            var $self = $(this);
+            if ($self.prop('id').match('_id')) {
+                $self.remove();
+            }
+        });
+    }
+    
+    function attachPersonListeners(person_type) {
+        attachAddPersonListener(person_type);
+        getPersonRows(person_type).each(function() {
+            attachRemovePersonListener(person_type, $(this));
+        })
+    }
 
-        $(remove_selector).removeClass('hidden');
+    function attachRemovePersonListener(person_type, $person_row) {
+        var remove_selector = '.remove-' + person_type;
+        var cloning_row = '#' + person_type + '-cloning_row';
 
-        var index_selector = $('#' + selector);
-        var current_index = index_selector.attr('data-' + selector);
-        var $new_row = $(cloning_row + ' > .row').clone();
+        $person_row.find(remove_selector).on('click', function (event) {
+            event.preventDefault();
+        
+            var $self = $(this);
 
-        // Update inputs and labels for new row fields
+            // Retrieve the name of the model for this work type
+            var name_input = $(cloning_row + ' > .row').find('div.' + person_type + '-name input').prop('name');
+            var model = name_input.split('[')[0];
+        
+            var index = $person_row.data('index');
+
+            $person_row.remove();
+
+            // Trigger a removal event for the overall person object field since the specific instance clicked no longer exists.
+            $('#' + person_type).trigger("managed_field:remove");
+
+            // Update row ordering
+            updateAllRows(person_type);
+
+            // Record that the person object was removed
+            deleteRecord(person_type, model, index);
+        });
+    }
+
+    function attachAddPersonListener(person_type) {
+        var add_selector = '#add-another-' + person_type;
+        var remove_selector = '.remove-' + person_type;
+        var cloning_row = '#' + person_type + '-cloning_row';
+    
+        $(add_selector).on('click', function(event) {
+            // stop page from reloading
+            event.preventDefault();
+
+            $(remove_selector).removeClass('hidden');
+
+            // Retrieve an index for the new person
+            var current_index = getNextPersonIndex(person_type);
+        
+            // Create the new row and assign its index
+            var $cloning_row = $(cloning_row + ' > .row');
+            var $new_row = $cloning_row.clone();
+            $new_row.data('index', current_index);
+
+            // Update inputs and labels for new row fields
+            updateLabels($new_row, getLabelNumber(person_type));
+
+            // remove $new_row's id so we don't find it again when looking for blank row to clone
+            $new_row.removeAttr('id');
+            $new_row.removeClass('hidden');
+            $('div#' + person_type).append($new_row);
+
+            attachRemovePersonListener(person_type);
+            
+            // Move the cloning row to the next index
+            updateCloningRow($cloning_row, current_index);
+        });
+    }
+    
+    function updateCloningRow($cloning_row, current_index) {
         var regex = /\d+/;
+        var next_index = current_index + 1;
 
-        ['name', 'orcid', 'affiliation', 'other_affiliation'].forEach(function(attr) {
-            var $input = $new_row.find("[id$='" + attr + "']");
+        PEOPLE_SUBFIELDS.forEach(function(attr) {
+            var $input = $cloning_row.find("[id$='" + attr + "']");
 
             $input.each(function() {
                 var self = $(this);
-                self.prop('name', self.prop('name').replace(regex, current_index))
-                    .attr('id', self.attr('id').replace(regex, current_index));
+                self.prop('name', self.prop('name').replace(regex, next_index))
+                    .attr('id', self.attr('id').replace(regex, next_index));
             });
         });
-
-        updateLabels($new_row , current_index, getLabelNumber(selector));
-
-        //change $new_row's id so we don't find it again when looking for blank row to clone
-        $new_row.prop('id', 'cloned_' + selector + '_row');
-
-        var $removeMember = $new_row.find(remove_selector);
-        $($removeMember).data('index', current_index);
-
-        $new_row.removeClass('hidden');
-        $('div#' + selector).append($new_row);
-
-        setPersonIndex(selector);
-
-        removeRow(selector);
-    });
-}
-
-function removeRow(selector) {
-    var row_selector = '.' + selector + '.row';
-    var remove_selector = '.remove-' + selector;
-    var cloning_row = '#' + selector + '-cloning_row';
-
-    $(remove_selector).on('click', function (event) {
-        event.preventDefault();
-
-        var $self = $(this);
-        var name_input = $(cloning_row + ' > .row').find('div.' + selector + '-name input').prop('name');
-        var model = name_input.split('[')[0];
-        var index = $self.data('index');
-
-        $self.parents(row_selector).remove();
-
-        // Trigger a removal event for the overall person object field since the specific instance clicked no longer exists.
-        $('#' + selector).trigger("managed_field:remove");
-
-        // Update row ordering
-        updateAllRows(row_selector);
-
-        if ($('#' + model + '_' + selector + 's_attributes_' + index + '_id').length) {
-            deleteRecord(selector, model, index);
-        }
-    });
-}
-
-function getLabelNumber(selector) {
-    return $('#' + selector + ' div.' + selector).not(':hidden').length;
-}
-
-function setPersonIndex(selector) {
-    var data_index = $('#' + selector);
-
-    if (data_index.length > 0) {
-        var current_index = data_index.data(selector);
-        var set_value = (current_index > 0) ? current_index : getLabelNumber(selector);
-
-        data_index.attr('data-' + selector, set_value);
     }
-}
 
-function deleteRecord(selector, model, index) {
-    if ($('#' + model + '_'+selector + 's_attributes_' + index + '__destroy').length === 0) {
-        var $new_row = '<input type="hidden" name="' + model + '[' + selector + 's_attributes][' + index + '][_destroy]" id="' + model +
-            '_' + selector + 's_attributes_' + index + '__destroy" value="1">';
-        $('div#' + selector).append($new_row);
+    function getNextPersonIndex(personType) {
+        var $index_selector = $('#' + personType);
+        var current_index = $index_selector.data('current-index');
+        // Increment the index for future calls
+        $index_selector.data('current-index', current_index + 1);
+        return current_index;
     }
-}
 
-function updateAllRows(row_selector) {
-    $(row_selector).not(':hidden').each(function(row_index) {
-        var self = $(this);
-        updateLabels(self, row_index, row_index);
-    });
-}
+    function getPersonRows(selector) {
+        return $('#' + selector + ' div.' + selector).not(':hidden');
+    }
 
-function updateLabels(row, index, label_index) {
-    var regex = /\d+/;
+    function getLabelNumber(selector) {
+        return getPersonRows(selector).length;
+    }
 
-    ['name', 'orcid', 'affiliation', 'other_affiliation'].forEach(function(attr) {
-        // Update label
-        var $label = row.find("label[for$='" + attr + "']");
+    function setPersonTypeIndex(selector) {
+        var set_value = getLabelNumber(selector);
+        $('#' + selector).data('current-index', set_value);
+    }
 
-        $label.each(function() {
-            var self = $(this);
-            self.attr('for', self.attr('for').replace(regex, index))
-                .html(self.html().replace(regex, label_index + 1));
+    function assignPersonIndexes(selector) {
+        getPersonRows(selector).each(function(index) {
+            $(this).data('index', index);
         });
-    });
-}
+    }
+
+    function deleteRecord(selector, model, index) {
+        var delete_id_base = model + '_' + selector + 's_attributes_' + index;
+        // Don't need to add a delete record if person entry did not previously exist
+        if ($('#' + delete_id_base + '_id').length == 0) {
+            return;
+        }
+        
+        // Add delete record to inform server that person removed, unless already present
+        var delete_id = delete_id_base + '__destroy';
+        if ($('#' + delete_id).length === 0) {
+            var delete_input_name = model + '[' + selector + 's_attributes][' + index + '][_destroy]';
+            var $new_row = '<input type="hidden" name="' + delete_input_name + '" id="' + delete_id + '" value="1">';
+            $('#' + selector).append($new_row);
+        }
+    }
+
+    function updateAllRows(selector) {
+        getPersonRows(selector).each(function(row_index) {
+            var self = $(this);
+            updateLabels(self, row_index);
+        });
+    }
+
+    function updateLabels(row, label_index) {
+        var regex = /\d+/;
+        var index = row.data('index');
+
+        PEOPLE_SUBFIELDS.forEach(function(attr) {
+            // Update label
+            var $label = row.find("label[for$='" + attr + "']");
+
+            $label.each(function() {
+                var self = $(this);
+                self.attr('for', self.attr('for').replace(regex, index))
+                    .html(self.html().replace(regex, label_index + 1));
+            });
+        });
+    }
+});
