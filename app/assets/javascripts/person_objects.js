@@ -43,8 +43,6 @@ $(document).on('turbolinks:load', function () {
 
         $person_row.find(remove_selector).on('click', function (event) {
             event.preventDefault();
-        
-            var $self = $(this);
 
             // Retrieve the name of the model for this work type
             var name_input = $(cloning_row + ' > .row').find('div.' + person_type + '-name input').prop('name');
@@ -92,7 +90,7 @@ $(document).on('turbolinks:load', function () {
             $new_row.removeClass('hidden');
             $('div#' + person_type).append($new_row);
 
-            attachRemovePersonListener(person_type);
+            attachRemovePersonListener(person_type, $new_row);
             
             // Move the cloning row to the next index
             updateCloningRow($cloning_row, current_index);
