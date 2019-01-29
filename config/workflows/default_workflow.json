@@ -22,7 +22,7 @@
                         {
                             "notification_type": "email",
                             "name": "Hyrax::Workflow::DeletionApprovalNotification",
-                            "to": ["depositing", "managing"]
+                            "to": ["depositing", "deleting"]
                         }
                     ],
                     "_comment" : "MetadataOnlyRecord must be called before RevokeEditFromDepositor",
