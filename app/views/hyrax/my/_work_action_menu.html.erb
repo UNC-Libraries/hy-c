@@ -1,3 +1,4 @@
+<%# [hyc-override] Remove the option to feature on profile page, as we don't use profiles %>
 <% ul_id = 'admin-set-action-dropdown-ul-' + document.id %>
 
 <div class="btn-group">
@@ -28,12 +29,6 @@
         <% end %>
       </li>
     <% end %>
-
-    <li role="menuitem" tabindex="-1">
-      <%= display_trophy_link(current_user, document.id) do |text| %>
-        <i class="glyphicon glyphicon-star" aria-hidden="true"></i> <%= text %>
-      <% end %>
-    </li>
 
     <% if can? :transfer, document.id %>
       <li role="menuitem" tabindex="-1">
