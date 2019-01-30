@@ -14,7 +14,10 @@ module Migrate
       end
 
       def parse
+        file_open_time = Time.now
+        puts "[#{file_open_time.to_s}] opening xml file"
         metadata = Nokogiri::XML(File.open(@metadata_file))
+        puts "[#{Time.now.to_s}] finished opening metadata file  in #{Time.now-file_open_time} seconds"
 
         work_attributes = Hash.new
 

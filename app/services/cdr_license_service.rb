@@ -15,7 +15,11 @@ module CdrLicenseService
   end
 
   def self.label(id)
-    authority.find(id).fetch('term')
+    begin
+      authority.find(id).fetch('term')
+    rescue
+      id
+    end
   end
 
   def self.include_current_value(value, _index, render_options, html_options)

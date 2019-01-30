@@ -44,12 +44,16 @@ module Migrate
                                                               collection_uuids,
                                                               @depositor,
                                                               @config).parse
+          puts "[#{Time.now.to_s}] #{uuid} metadata parsed in #{Time.now-start_time} seconds"
           work_attributes = parsed_data[:work_attributes]
           @parent_hash[uuid] = parsed_data[:child_works] if !parsed_data[:child_works].blank?
 
           # Create new work record and save
           new_work = work_record(work_attributes, uuid)
+          save_time = Time.now
+          puts "[#{save_time.to_s}] #{uuid} saving work"
           new_work.save!
+          puts "[#{Time.now.to_s}] #{uuid},#{new_work.id} saved new work in #{Time.now-save_time} seconds"
 
           # Record old and new ids for works
           id_mapper.add_row([uuid, new_work.class.to_s.underscore+'s/'+new_work.id])
@@ -132,6 +136,7 @@ module Migrate
         if !@child_work_type.blank?
           attach_children
         end
+        STDOUT.flush
       end
 
       def create_fileset(parent: nil, resource: nil, file: nil)
@@ -182,6 +187,7 @@ module Migrate
               work_attributes.delete(k)
             end
           end
+
           resource.attributes = work_attributes.reject{|k,v| !resource.attributes.keys.member?(k.to_s) unless k.ends_with? '_attributes'}
 
           # Log other non-blank data which is not saved
@@ -236,6 +242,8 @@ module Migrate
 
 
         def attach_children
+          attach_time = Time.now
+          puts "[#{attach_time.to_s}] attaching children to parents"
           @parent_hash.each do |parent_id, children|
             hyrax_id = @mappings[parent_id]
             parent = @work_type.singularize.classify.constantize.find(hyrax_id)
@@ -247,6 +255,7 @@ module Migrate
             end
             parent.save!
           end
+          puts "[#{Time.now.to_s}] finished attaching children in #{Time.now-attach_time} seconds"
         end
     end
   end
