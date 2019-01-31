@@ -52,7 +52,17 @@ module Migrate
           new_work = work_record(work_attributes, uuid)
           save_time = Time.now
           puts "[#{save_time.to_s}] #{uuid} saving work"
-          new_work.save!
+          begin
+            retries ||= 0
+            new_work.save!
+          rescue Exception => e
+            puts "[#{Time.now.to_s}] #{e}"
+            puts e.backtrace.map{ |x| x.match(/^\/net\/deploy\/ir\/test\/releases.*/)}.compact
+            sleep(10)
+            retry if (retries += 1) < 5
+            abort("[#{Time.now}] could not recover; aborting migration")
+          end
+#          new_work.save!
           puts "[#{Time.now.to_s}] #{uuid},#{new_work.id} saved new work in #{Time.now-save_time} seconds"
 
           # Record old and new ids for works
@@ -136,11 +146,23 @@ module Migrate
         if !@child_work_type.blank?
           attach_children
         end
+        STDOUT.sync = true
         STDOUT.flush
       end
 
       def create_fileset(parent: nil, resource: nil, file: nil)
-        file_set = FileSet.create(resource)
+        begin
+          retries ||= 0
+          file_set = FileSet.create(resource)
+        rescue Exception => e
+          puts "[#{Time.now.to_s}] #{e}"
+          puts e.backtrace.map{ |x| x.match(/^\/net\/deploy\/ir\/test\/releases.*/)}.compact
+          puts 'creating fileset'
+          sleep(10)
+          retry if (retries += 1) < 5
+          abort("[#{Time.now}] could not recover; aborting migration")
+        end
+#        file_set = FileSet.create(resource)
         actor = Hyrax::Actors::FileSetActor.new(file_set, @depositor)
         actor.create_metadata(resource)
 
@@ -148,8 +170,30 @@ module Migrate
         FileUtils.mkpath("#{@tmp_file_location}/#{parent.id}")
         FileUtils.cp(file, renamed_file)
 
-        actor.create_content(Hyrax::UploadedFile.create(file: File.open(renamed_file), user: @depositor))
-        actor.attach_to_work(parent, resource)
+        begin
+          retries ||= 0
+          actor.create_content(Hyrax::UploadedFile.create(file: File.open(renamed_file), user: @depositor))
+        rescue Exception => e
+          puts "[#{Time.now.to_s}] #{e}"
+          puts e.backtrace.map{ |x| x.match(/^\/net\/deploy\/ir\/test\/releases.*/)}.compact
+          puts 'creating fileset'
+          sleep(10)
+          retry if (retries += 1) < 5
+          abort("[#{Time.now}] could not recover; aborting migration")
+        end
+#        actor.create_content(Hyrax::UploadedFile.create(file: File.open(renamed_file), user: @depositor))
+        begin
+          retries ||= 0
+          actor.attach_to_work(parent, resource)
+        rescue Exception => e
+          puts "[#{Time.now.to_s}] #{e}"
+          puts e.backtrace.map{ |x| x.match(/^\/net\/deploy\/ir\/test\/releases.*/)}.compact
+          puts 'creating fileset'
+          sleep(10)
+          retry if (retries += 1) < 5
+          abort("[#{Time.now}] could not recover; aborting migration")
+        end
+#        actor.attach_to_work(parent, resource)
 
         File.delete(renamed_file) if File.exist?(renamed_file)
 
@@ -167,7 +211,18 @@ module Migrate
             resource = @work_type.singularize.classify.constantize.new
           end
           resource.depositor = @depositor.uid
-          resource.save
+          begin
+            retries ||= 0
+            resource.save
+          rescue Exception => e
+            puts "[#{Time.now.to_s}] #{e}"
+            puts e.backtrace.map{ |x| x.match(/^\/net\/deploy\/ir\/test\/releases.*/)}.compact
+            puts 'creating child work'
+            sleep(10)
+            retry if (retries += 1) < 5
+            abort("[#{Time.now}] could not recover; aborting migration")
+          end
+#          resource.save
 
           # Singularize non-enumerable attributes
           work_attributes.each do |k,v|
@@ -253,7 +308,18 @@ module Migrate
                 parent.members << ActiveFedora::Base.find(@mappings[child])
               end
             end
-            parent.save!
+            begin
+              retries ||= 0
+              parent.save!
+            rescue Exception => e
+              puts "[#{Time.now.to_s}] #{e}"
+              puts e.backtrace.map{ |x| x.match(/^\/net\/deploy\/ir\/test\/releases.*/)}.compact
+              puts 'attaching children'
+              sleep(10)
+              retry if (retries += 1) < 5
+              abort("[#{Time.now}] could not recover; aborting migration")
+            end
+#            parent.save!
           end
           puts "[#{Time.now.to_s}] finished attaching children in #{Time.now-attach_time} seconds"
         end
