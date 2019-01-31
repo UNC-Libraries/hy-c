@@ -12,7 +12,7 @@ namespace :migrate do
 
   desc 'batch migrate records from FOXML file'
   task :works, [:collection, :configuration_file, :mapping_file] => :environment do |t, args|
-    14.upto(350) do |index|
+    21.upto(350) do |index|
       puts "round: #{index}"
 
       start_time = Time.now
