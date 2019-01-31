@@ -271,8 +271,8 @@ module Migrate
             abort("[#{Time.now}] could not recover; aborting migration")
           end
 #          work_attributes['member_of_collections'] = Array(Collection.create(title: [@collection_name],
-                                         depositor: @depositor.uid,
-                                         collection_type_gid: user_collection_type))
+#                                         depositor: @depositor.uid,
+#                                         collection_type_gid: user_collection_type))
         end
 
         begin
