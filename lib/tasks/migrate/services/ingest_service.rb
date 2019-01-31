@@ -211,17 +211,6 @@ module Migrate
             resource = @work_type.singularize.classify.constantize.new
           end
           resource.depositor = @depositor.uid
-          begin
-            retries ||= 0
-            resource.save
-          rescue Exception => e
-            puts "[#{Time.now.to_s}] #{e}"
-            puts e.backtrace.map{ |x| x.match(/^\/net\/deploy\/ir\/test\/releases.*/)}.compact
-            puts 'creating child work'
-            sleep(10)
-            retry if (retries += 1) < 5
-            abort("[#{Time.now}] could not recover; aborting migration")
-          end
 #          resource.save
 
           # Singularize non-enumerable attributes
@@ -266,6 +255,18 @@ module Migrate
           resource.admin_set_id = work_attributes['admin_set_id']
           if !@config['collection_name'].blank? && !work_attributes['member_of_collections'].first.blank?
             resource.member_of_collections = work_attributes['member_of_collections']
+          end
+
+          begin
+            retries ||= 0
+            resource.save!
+          rescue Exception => e
+            puts "[#{Time.now.to_s}] #{e}"
+            puts e.backtrace.map{ |x| x.match(/^\/net\/deploy\/ir\/test\/releases.*/)}.compact
+            puts 'creating child work'
+            sleep(10)
+            retry if (retries += 1) < 5
+            abort("[#{Time.now}] could not recover; aborting migration")
           end
 
           resource
