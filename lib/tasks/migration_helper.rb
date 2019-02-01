@@ -27,4 +27,18 @@ class MigrationHelper
 
     collection_uuids
   end
+  
+  def self.retry_operation(message = nil)
+    begin
+      retries ||= 0
+      yield
+    rescue Exception => e
+      puts "[#{Time.now.to_s}] #{e}"
+      puts e.backtrace.map{ |x| x.match(/^\/net\/deploy\/ir\/test\/releases.*/)}.compact
+      puts message unless message.nil?
+      sleep(10)
+      retry if (retries += 1) < 5
+      abort("[#{Time.now}] could not recover; aborting migration")
+    end
+  end
 end
