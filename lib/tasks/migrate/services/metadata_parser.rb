@@ -229,62 +229,27 @@ module Migrate
 
 
         # Add work to specified collection
-        begin
-          retries ||= 0
+        MigrationHelper.retry_operation('adding collection') do
           work_attributes['member_of_collections'] = Array(Collection.where(title: @collection_name).first)
-        rescue Exception => e
-          puts "[#{Time.now.to_s}] #{e}"
-          puts e.backtrace.map{ |x| x.match(/^\/net\/deploy\/ir\/test\/releases.*/)}.compact
-          puts 'adding collection'
-          sleep(10)
-          retry if (retries += 1) < 5
-          abort("[#{Time.now}] could not recover; aborting migration")
         end
-#        work_attributes['member_of_collections'] = Array(Collection.where(title: @collection_name).first)
         # Create collection if it does not yet exist
         if !@collection_name.blank? && work_attributes['member_of_collections'].first.blank?
-          begin
-            retries ||= 0
+          user_collection_type = nil
+          MigrationHelper.retry_operation('adding collection') do
             user_collection_type = Hyrax::CollectionType.where(title: 'User Collection').first.gid
-          rescue Exception => e
-            puts "[#{Time.now.to_s}] #{e}"
-            puts e.backtrace.map{ |x| x.match(/^\/net\/deploy\/ir\/test\/releases.*/)}.compact
-            puts 'adding collection'
-            sleep(10)
-            retry if (retries += 1) < 5
-            abort("[#{Time.now}] could not recover; aborting migration")
           end
-#          user_collection_type = Hyrax::CollectionType.where(title: 'User Collection').first.gid
-          begin
-            retries ||= 0
-            work_attributes['member_of_collections'] = Array(Collection.create(title: [@collection_name],
-                                                                               depositor: @depositor.uid,
-                                                                               collection_type_gid: user_collection_type))
-          rescue Exception => e
-            puts "[#{Time.now.to_s}] #{e}"
-            puts e.backtrace.map{ |x| x.match(/^\/net\/deploy\/ir\/test\/releases.*/)}.compact
-            puts 'adding collection'
-            sleep(10)
-            retry if (retries += 1) < 5
-            abort("[#{Time.now}] could not recover; aborting migration")
+          
+          MigrationHelper.retry_operation('adding collection') do
+            work_attributes['member_of_collections'] = Array(Collection.create(
+                title: [@collection_name],
+                depositor: @depositor.uid,
+                collection_type_gid: user_collection_type))
           end
-#          work_attributes['member_of_collections'] = Array(Collection.create(title: [@collection_name],
-#                                         depositor: @depositor.uid,
-#                                         collection_type_gid: user_collection_type))
         end
 
-        begin
-          retries ||= 0
+        MigrationHelper.retry_operation('adding admin set') do
           work_attributes['admin_set_id'] = (AdminSet.where(title: @admin_set).first || AdminSet.where(title: ENV['DEFAULT_ADMIN_SET']).first).id
-        rescue Exception => e
-          puts "[#{Time.now.to_s}] #{e}"
-          puts e.backtrace.map{ |x| x.match(/^\/net\/deploy\/ir\/test\/releases.*/)}.compact
-          puts 'adding admin set'
-          sleep(10)
-          retry if (retries += 1) < 5
-          abort("[#{Time.now}] could not recover; aborting migration")
         end
-#        work_attributes['admin_set_id'] = (AdminSet.where(title: @admin_set).first || AdminSet.where(title: ENV['DEFAULT_ADMIN_SET']).first).id
 
         { work_attributes: work_attributes.reject!{|k,v| v.blank?}, child_works: child_works }
       end

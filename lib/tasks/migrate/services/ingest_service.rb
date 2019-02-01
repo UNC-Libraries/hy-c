@@ -52,17 +52,10 @@ module Migrate
           new_work = work_record(work_attributes, uuid)
           save_time = Time.now
           puts "[#{save_time.to_s}] #{uuid} saving work"
-          begin
-            retries ||= 0
+          MigrationHelper.retry_operation do
             new_work.save!
-          rescue Exception => e
-            puts "[#{Time.now.to_s}] #{e}"
-            puts e.backtrace.map{ |x| x.match(/^\/net\/deploy\/ir\/test\/releases.*/)}.compact
-            sleep(10)
-            retry if (retries += 1) < 5
-            abort("[#{Time.now}] could not recover; aborting migration")
           end
-#          new_work.save!
+
           puts "[#{Time.now.to_s}] #{uuid},#{new_work.id} saved new work in #{Time.now-save_time} seconds"
 
           # Record old and new ids for works
@@ -151,18 +144,11 @@ module Migrate
       end
 
       def create_fileset(parent: nil, resource: nil, file: nil)
-        begin
-          retries ||= 0
+        file_set = nil
+        MigrationHelper.retry_operation('creating fileset') do
           file_set = FileSet.create(resource)
-        rescue Exception => e
-          puts "[#{Time.now.to_s}] #{e}"
-          puts e.backtrace.map{ |x| x.match(/^\/net\/deploy\/ir\/test\/releases.*/)}.compact
-          puts 'creating fileset'
-          sleep(10)
-          retry if (retries += 1) < 5
-          abort("[#{Time.now}] could not recover; aborting migration")
         end
-#        file_set = FileSet.create(resource)
+
         actor = Hyrax::Actors::FileSetActor.new(file_set, @depositor)
         actor.create_metadata(resource)
 
@@ -170,30 +156,13 @@ module Migrate
         FileUtils.mkpath("#{@tmp_file_location}/#{parent.id}")
         FileUtils.cp(file, renamed_file)
 
-        begin
-          retries ||= 0
+        MigrationHelper.retry_operation('creating fileset') do
           actor.create_content(Hyrax::UploadedFile.create(file: File.open(renamed_file), user: @depositor))
-        rescue Exception => e
-          puts "[#{Time.now.to_s}] #{e}"
-          puts e.backtrace.map{ |x| x.match(/^\/net\/deploy\/ir\/test\/releases.*/)}.compact
-          puts 'creating fileset'
-          sleep(10)
-          retry if (retries += 1) < 5
-          abort("[#{Time.now}] could not recover; aborting migration")
         end
-#        actor.create_content(Hyrax::UploadedFile.create(file: File.open(renamed_file), user: @depositor))
-        begin
-          retries ||= 0
+        
+        MigrationHelper.retry_operation('creating fileset') do
           actor.attach_to_work(parent, resource)
-        rescue Exception => e
-          puts "[#{Time.now.to_s}] #{e}"
-          puts e.backtrace.map{ |x| x.match(/^\/net\/deploy\/ir\/test\/releases.*/)}.compact
-          puts 'creating fileset'
-          sleep(10)
-          retry if (retries += 1) < 5
-          abort("[#{Time.now}] could not recover; aborting migration")
         end
-#        actor.attach_to_work(parent, resource)
 
         File.delete(renamed_file) if File.exist?(renamed_file)
 
@@ -202,7 +171,6 @@ module Migrate
 
 
       private
-
         def work_record(work_attributes, uuid)
           if !@child_work_type.blank? && !work_attributes['cdr_model_type'].blank? &&
               !(work_attributes['cdr_model_type'].include? 'info:fedora/cdr-model:AggregateWork')
@@ -257,16 +225,8 @@ module Migrate
             resource.member_of_collections = work_attributes['member_of_collections']
           end
 
-          begin
-            retries ||= 0
+          MigrationHelper.retry_operation('creating child work') do
             resource.save!
-          rescue Exception => e
-            puts "[#{Time.now.to_s}] #{e}"
-            puts e.backtrace.map{ |x| x.match(/^\/net\/deploy\/ir\/test\/releases.*/)}.compact
-            puts 'creating child work'
-            sleep(10)
-            retry if (retries += 1) < 5
-            abort("[#{Time.now}] could not recover; aborting migration")
           end
 
           resource
@@ -309,18 +269,9 @@ module Migrate
                 parent.members << ActiveFedora::Base.find(@mappings[child])
               end
             end
-            begin
-              retries ||= 0
+            MigrationHelper.retry_operation('attaching children') do
               parent.save!
-            rescue Exception => e
-              puts "[#{Time.now.to_s}] #{e}"
-              puts e.backtrace.map{ |x| x.match(/^\/net\/deploy\/ir\/test\/releases.*/)}.compact
-              puts 'attaching children'
-              sleep(10)
-              retry if (retries += 1) < 5
-              abort("[#{Time.now}] could not recover; aborting migration")
             end
-#            parent.save!
           end
           puts "[#{Time.now.to_s}] finished attaching children in #{Time.now-attach_time} seconds"
         end
