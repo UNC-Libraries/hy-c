@@ -1,3 +1,5 @@
+# [hyc-override] Overriding hydra editor custom input to allow for multivalue HTML5 dates
+# https://github.com/samvera/hydra-editor/blob/master/app/inputs/multi_value_input.rb
 class MultiValueInput < SimpleForm::Inputs::CollectionInput
   def input(wrapper_options)
     @rendered_first_element = false
@@ -60,6 +62,8 @@ class MultiValueInput < SimpleForm::Inputs::CollectionInput
     options = build_field_options(value, index)
     if options.delete(:type) == 'textarea'.freeze
       @builder.text_area(attribute_name, options)
+    elsif options[:class].include? 'date-input' #[hyc-override] multivalue dates
+      @builder.date_field(attribute_name, options)
     else
       @builder.text_field(attribute_name, options)
     end
