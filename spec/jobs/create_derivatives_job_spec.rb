@@ -1,3 +1,6 @@
+# [hyc-override] updated to work in hyc and to verify uploaded file cleanup
+require 'rails_helper'
+
 RSpec.describe CreateDerivativesJob do
   around do |example|
     ffmpeg_enabled = Hyrax.config.enable_ffmpeg
@@ -23,6 +26,8 @@ RSpec.describe CreateDerivativesJob do
       allow(file_set).to receive(:id).and_return(id)
       allow(file_set).to receive(:mime_type).and_return('audio/x-wav')
     end
+    
+    let!(:upload_file) { Hyrax::WorkingDirectory.find_or_retrieve(file.id, file_set.id) }
 
     context "with a file name" do
       it 'calls create_derivatives and save on a file set' do
@@ -30,6 +35,10 @@ RSpec.describe CreateDerivativesJob do
         expect(file_set).to receive(:reload)
         expect(file_set).to receive(:update_index)
         described_class.perform_now(file_set, file.id)
+        
+        # Verify that the uploaded file was deleted
+        expect(File.exist?(upload_file)).to be false
+        expect(File.exist?(File.dirname(upload_file))).to be false
       end
     end
 
@@ -41,29 +50,40 @@ RSpec.describe CreateDerivativesJob do
       end
 
       context 'when the file_set is the thumbnail of the parent' do
-        let(:parent) { GenericWork.new(thumbnail_id: id) }
+        let(:parent) { General.new(thumbnail_id: id) }
 
         it 'updates the index of the parent object' do
           expect(file_set).to receive(:reload)
           expect(parent).to receive(:update_index)
           described_class.perform_now(file_set, file.id)
+          
+          # Verify that the uploaded file was deleted
+          expect(File.exist?(upload_file)).to be false
+          expect(File.exist?(File.dirname(upload_file))).to be false
         end
       end
 
       context "when the file_set isn't the parent's thumbnail" do
-        let(:parent) { GenericWork.new }
+        let(:parent) { General.new }
 
         it "doesn't update the parent's index" do
           expect(file_set).to receive(:reload)
           expect(parent).not_to receive(:update_index)
           described_class.perform_now(file_set, file.id)
+          
+          # Verify that the uploaded file was deleted
+          expect(File.exist?(upload_file)).to be false
+          expect(File.exist?(File.dirname(upload_file))).to be false
         end
       end
     end
   end
 
   context "with a pdf file" do
-    let(:file_set) { create(:file_set) }
+    let!(:user) do
+      User.new(email: 'test@example.com', guest: false, uid: 'test@example.com') { |u| u.save!(validate: false)}
+    end
+    let(:file_set) { FileSet.new }
 
     let(:file) do
       Hydra::PCDM::File.new do |f|
@@ -74,9 +94,13 @@ RSpec.describe CreateDerivativesJob do
     end
 
     before do
+      file_set.apply_depositor_metadata user.user_key
+      file_set.save!
       file_set.original_file = file
       file_set.save!
     end
+    
+    let!(:upload_file) { Hyrax::WorkingDirectory.find_or_retrieve(file.id, file_set.id) }
 
     it "runs a full text extract" do
       expect(Hydra::Derivatives::PdfDerivatives).to receive(:create)
@@ -88,6 +112,10 @@ RSpec.describe CreateDerivativesJob do
       expect(Hydra::Derivatives::FullTextExtract).to receive(:create)
         .with(/test\.pdf/, outputs: [{ url: RDF::URI, container: "extracted_text" }])
       described_class.perform_now(file_set, file.id)
+      
+      # Verify that the uploaded file was deleted
+      expect(File.exist?(upload_file)).to be false
+      expect(File.exist?(File.dirname(upload_file))).to be false
     end
   end
 end
