@@ -73,18 +73,26 @@ module Hyrax
 
        # [hyc-override] new method for finding recipients based on users and groups
        def find_recipients(entity, role)
+         Rails.logger.info "\n\n##############\n#{entity}\n##############\n\n"
+         Rails.logger.info "\n\n##############\n#{role}\n##############\n\n"
          users = []
          users += PermissionQuery.scope_users_for_entity_and_roles(entity: entity, roles: role)
          agents = PermissionQuery.scope_agents_associated_with_entity_and_role(entity: entity, role: role)
          agents.each do |agent|
            # Notifications for all workflow state changes will still go to the admin set owner, but not to all admins
            if (agent.proxy_for_type == 'Hyrax::Group' || agent.proxy_for_type == 'Role') && role.name != 'depositing' &&
-               agent.proxy_for_id != 'registered'
-             users += Role.where(name: agent.proxy_for_id).first.users
+               agent.proxy_for_id != 'registered' && agent.proxy_for_id != 'admin'
+             Rails.logger.info "\n\n##############\n#{agent.inspect}\n##############\n\n"
+             more_users = Role.where(name: agent.proxy_for_id).first.users
+             Rails.logger.info "\n\n##############\n#{more_users.inspect}\n##############\n\n"
+             users += more_users
            elsif agent.proxy_for_type == 'User'
+             Rails.logger.info "\n\n##############\n#{agent.inspect}\n##############\n\n"
              users << ::User.find(agent.proxy_for_id)
            end
          end
+         Rails.logger.info "\n\n##############\nuniq: #{users.uniq}\n##############\n\n"
+
          users.uniq
        end
     end
