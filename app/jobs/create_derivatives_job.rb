@@ -29,7 +29,7 @@ class CreateDerivativesJob < Hyrax::ApplicationJob
     # Expand path prior to delete in case it contains modifiers
     filename = Pathname.new(original_path).expand_path.to_s
     
-    upload_path = Hyrax.config.upload_path.call.to_s
+    upload_path = Hyrax.config.upload_path.call.expand_path.to_s
     # Ensure the referenced file is from the uploaded files directory
     if filename.start_with?(upload_path)
       file_dir = File.dirname(filename)
