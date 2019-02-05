@@ -50,10 +50,13 @@ class ApplicationController < ActionController::Base
         updated_path = "#{request_host}/concern/404"
         Rails.logger.info "Is box-c search with uuid: #{updated_path}"
         redirect_to updated_path, status: :moved_permanently
-      else # Redirect to Box-C
+      elsif full_path =~ /work|record|indexablecontent/ # Redirect to Box-C
         path_rewrite = full_path.gsub(/cdr\./, 'dcr.')
         Rails.logger.info "Still in box-c: #{path_rewrite}"
         redirect_to path_rewrite, status: :moved_permanently
+      else # Redirect to Hy-C homepage
+        Rails.logger.info "box-c fall through to hy-c homepage: #{request_host}"
+        redirect_to request_host, status: :moved_permanently
       end
     end
 
