@@ -159,6 +159,12 @@ en:
           Your request to transfer request ownership of %{title} has been %{status} by %{receiving_user}."
           comments: "Comments: %{receiver_comment}"
       workflow:
+        deposit_approved:
+          subject: CDR deposit has been approved
+          message: "Hello,\r\n\r\n
+          %{title} (%{link}) has been approved by %{user}. Your work will now be available in the
+          CDR in accordance with the visibility settings that you selected.\r\n\r\n
+          %{comment}"
         changes_required:
           subject: CDR deposit requires changes
           message: "Hello,\r\n\r\n
@@ -184,11 +190,15 @@ en:
           subject: "CDR deletion request was not approved"
           message: "The deletion request for %{title} (<a href=\"%{document_path}\">%{work_id}</a>) was rejected by %{user}. %{comment}"
         deposited:
-          subject: CDR deposit has been approved
+          subject: CDR deposit successful
           message: "Hello,\r\n\r\n
-          %{title} (%{link}) has been approved by %{user}. Your work will now be available in the
-          CDR in accordance with the visibility settings that you selected.\r\n\r\n
-          %{comment}"
+          %{title} (%{link}) has been successfully deposited in the CDR and is now available in accordance with the visibility
+          settings that you selected.\r\n\r\n
+          If you have questions, please feel free to <a href=\"https://blogs.lib.unc.edu/cdr/index.php/contact-us/\">contact us</a>!"
+        mediated_deposit:
+          subject: CDR deposit sent for review
+          message: "%{title} (%{link}) has been deposited in the Carolina Digital Repository (CDR) and has been sent to your department for review.  \r\n\r\n
+          Once your submission has been approved by your reviewer, it will be available in accordance with the visibility settings that you selected upon submission."
         pending_review:
           subject: CDR deposit needs review
           message: "%{title} (%{link}) was deposited by %{user} in the Carolina Digital Repository (CDR) and is awaiting your review.\r\n\r\n

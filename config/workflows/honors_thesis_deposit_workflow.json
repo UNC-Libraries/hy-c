@@ -13,8 +13,8 @@
                     "notifications": [
                         {
                             "notification_type": "email",
-                            "name": "Hyrax::Workflow::PendingReviewNotification",
-                            "to": ["approving"]
+                            "name": "Hyrax::Workflow::MediatedDepositNotification",
+                            "to": ["depositing"]
                         }
                     ],
                     "methods": [
@@ -42,7 +42,7 @@
                     "notifications": [
                         {
                             "notification_type": "email",
-                            "name": "Hyrax::Workflow::DepositedNotification",
+                            "name": "Hyrax::Workflow::DepositApprovedNotification",
                             "to": ["depositing"]
                         }
                     ],
@@ -68,7 +68,7 @@
                 }, {
                     "name": "comment_only",
                     "from_states": [
-                        { "names": ["pending_review", "deposited"], "roles": ["approving"] },
+                        { "names": ["pending_review", "deposited"], "roles": ["approving", "viewing"] },
                         { "names": ["changes_required"], "roles": ["depositing"] }
                     ]
                 }, {
