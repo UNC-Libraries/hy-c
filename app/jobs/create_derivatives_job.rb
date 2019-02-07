@@ -1,5 +1,5 @@
 class CreateDerivativesJob < Hyrax::ApplicationJob
-  queue_as Hyrax.config.ingest_queue_name
+  queue_as :derivatives
 
   # @param [FileSet] file_set
   # @param [String] file_id identifier for a Hydra::PCDM::File
