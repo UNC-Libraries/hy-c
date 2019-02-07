@@ -176,6 +176,7 @@ RSpec.feature 'Create a DataSet', js: false do
       fill_in 'ORCID', { with: 'contributor orcid', id: 'data_set_contributors_attributes_0_orcid' }
       select 'Department of Biology', from: 'data_set_contributors_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'data_set_contributors_attributes_0_other_affiliation' }
+      fill_in 'Copyright date', with: '2018'
       fill_in 'DOI', with: 'some doi'
       fill_in 'Extent', with: 'some extent'
       fill_in 'Funder', with: 'some funder'
@@ -232,6 +233,7 @@ RSpec.feature 'Create a DataSet', js: false do
       expect(page).to have_content 'College of Arts and Sciences'
       expect(page).to have_content 'Department of Biology'
       expect(page).to have_content 'Other Affiliation: UNC'
+      expect(page).to have_content 'Copyright date 2018'
       expect(page).to have_content 'Methodology My methodology'
       expect(page).to have_content 'Date of publication October 3, 2018'
       expect(page).to have_content 'Kind of data Text'

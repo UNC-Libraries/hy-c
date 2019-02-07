@@ -75,7 +75,7 @@ RSpec.describe Hyrax::ArticleForm do
           abstract: ['an abstract'],
           access: 'public', # single-valued
           alternative_title: ['my other title'],
-          copyright_date: '2017-01-22', # single-valued
+          copyright_date: '2017', # single-valued
           date_issued: '2017-01-22', # single-valued
           date_other: [''],
           dcmi_type: ['type'],
@@ -125,7 +125,7 @@ RSpec.describe Hyrax::ArticleForm do
       expect(subject['abstract']).to eq ['an abstract']
       expect(subject['access']).to eq 'public'
       expect(subject['alternative_title']).to eq ['my other title']
-      expect(subject['copyright_date']).to eq '2017-01-22'
+      expect(subject['copyright_date']).to eq '2017'
       expect(subject['date_issued']).to eq '2017-01-22'
       expect(subject['date_other']).to be_empty
       expect(subject['doi']).to eq '12345'

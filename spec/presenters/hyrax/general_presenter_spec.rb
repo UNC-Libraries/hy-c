@@ -23,7 +23,7 @@ RSpec.describe Hyrax::GeneralPresenter do
       "bibliographic_citation_tesim" => ['a citation'],
       "composer_display_tesim" => ['a composer'],
       "conference_name_tesim" => ['a conference'],
-      "copyright_date_tesim" => '2017-01-22',
+      "copyright_date_tesim" => '2017',
       "creator_display_tesim" => ['a creator'],
       "contributor_display_tesim" => ['a contributor'],
       "date_issued_tesim" => '2017-01-22',
@@ -272,7 +272,7 @@ RSpec.describe Hyrax::GeneralPresenter do
 
     context "with a custom copyright date field" do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:copyright_date, '2017-01-22', {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:copyright_date, '2017', {}).and_return(renderer)
       end
 
       it "calls the AttributeRenderer" do

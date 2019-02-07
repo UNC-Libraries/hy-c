@@ -62,6 +62,8 @@ class MultiValueInput < SimpleForm::Inputs::CollectionInput
     options = build_field_options(value, index)
     if options.delete(:type) == 'textarea'.freeze
       @builder.text_area(attribute_name, options)
+    elsif options[:class].include? 'integer-input' #[hyc-override] multivalue integers
+      @builder.number_field(attribute_name, options)
     elsif options[:class].include? 'date-input' #[hyc-override] multivalue dates
       @builder.date_field(attribute_name, options)
     else

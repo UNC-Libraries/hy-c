@@ -65,7 +65,7 @@ module Migrate
           date_issued = descriptive_mods.xpath('mods:originInfo/mods:dateIssued', MigrationConstants::NS).map(&:text)
           work_attributes['date_issued'] = date_issued.map{|date| date.to_s}
           copyright_date = descriptive_mods.xpath('mods:originInfo/mods:copyrightDate', MigrationConstants::NS).map(&:text)
-          work_attributes['copyright_date'] = copyright_date.map{|date| (Date.try(:edtf, date) || date).to_s}
+          work_attributes['copyright_date'] = copyright_date.map{|date| date.to_s}
           work_attributes['last_modified_date'] = descriptive_mods.xpath('mods:originInfo[@displayLabel="Last Date Modified"]/mods:dateModified', MigrationConstants::NS).map(&:text)
           date_other = descriptive_mods.xpath('mods:originInfo/mods:dateOther', MigrationConstants::NS).map(&:text)
           work_attributes['date_other'] = date_other.map{|date| (Date.try(:edtf, date) || date).to_s}
