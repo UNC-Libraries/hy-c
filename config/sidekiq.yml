@@ -1,5 +1,8 @@
 ---
-:concurrency: 5
-:queue:
+:concurrency: 25
+:queues:
   - default
+  - derivatives
 :logfile: ./log/sidekiq.log
+:limits:
+  derivatives: 1
