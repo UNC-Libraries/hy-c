@@ -52,6 +52,7 @@ RSpec.describe Article do
       expect(subject).to respond_to(:date_issued)
       expect(subject).to respond_to(:date_other)
       expect(subject).to respond_to(:deposit_record)
+      expect(subject).to respond_to(:digital_collection)
       expect(subject).to respond_to(:doi)
       expect(subject).to respond_to(:edition)
       expect(subject).to respond_to(:extent)
