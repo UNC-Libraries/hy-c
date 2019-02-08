@@ -189,6 +189,10 @@ en:
           %{title} (%{link}) has been approved by %{user}. Your work will now be available in the
           CDR in accordance with the visibility settings that you selected.\r\n\r\n
           %{comment}"
+        deposited_for_review:
+          subject: CDR deposit has been submitted for review
+          message: "Hello,\r\n\r\n
+          Your work %{title} (%{link}) has been submitted for review."
         pending_review:
           subject: CDR deposit needs review
           message: "%{title} (%{link}) was deposited by %{user} in the Carolina Digital Repository (CDR) and is awaiting your review.\r\n\r\n

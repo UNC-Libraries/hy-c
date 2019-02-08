@@ -137,7 +137,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       expect(admin_user.mailbox.inbox.count).to eq 0
       expect(admin_user2.mailbox.inbox.count).to eq 0
       expect(contact.mailbox.inbox.count).to eq 1
-      expect(user.mailbox.inbox.count).to eq 1
+      expect(user.mailbox.inbox.count).to eq 2
       expect(reviewer.mailbox.inbox.count).to eq 0
       expect(nonreviewer.mailbox.inbox.count).to eq 0
 
@@ -208,7 +208,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       expect(admin_user.mailbox.inbox.count).to eq 1
       expect(admin_user2.mailbox.inbox.count).to eq 0
       expect(contact.mailbox.inbox.count).to eq 1
-      expect(user.mailbox.inbox.count).to eq 2
+      expect(user.mailbox.inbox.count).to eq 3
       expect(reviewer.mailbox.inbox.count).to eq 0
       expect(nonreviewer.mailbox.inbox.count).to eq 0
 
@@ -231,7 +231,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       expect(admin_user.mailbox.inbox.count).to eq 1
       expect(admin_user2.mailbox.inbox.count).to eq 0
       expect(contact.mailbox.inbox.count).to eq 2
-      expect(user.mailbox.inbox.count).to eq 3
+      expect(user.mailbox.inbox.count).to eq 4
       expect(reviewer.mailbox.inbox.count).to eq 0
       expect(nonreviewer.mailbox.inbox.count).to eq 0
     end
