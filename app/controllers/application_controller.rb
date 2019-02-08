@@ -51,9 +51,9 @@ class ApplicationController < ActionController::Base
         updated_path = "#{request_host}/concern/#{redirect_path['new_path']}"
         Rails.logger.info "In hy-c uuid redirect match: #{updated_path}"
         redirect_to updated_path, status: :moved_permanently
-      elsif full_path.starts_with?('/search') # All Box-C searches with uuids should go to the 404 page
+      elsif full_path.starts_with?('/search', '/list', '/listContent') # All Box-C searches with uuids should go to the 404 page
         updated_path = "#{request_host}/concern/404"
-        Rails.logger.info "Box-c search with uuid: #{request_host}/concern/404"
+        Rails.logger.info "Forwarding Box-c search to 404, user requested #{full_path}"
         redirect_to updated_path, status: :moved_permanently
       elsif full_path.starts_with?('/content', '/record', '/indexablecontent') # Redirect to Box-C
         path_rewrite = request.url.gsub(/cdr\./, 'dcr.')
