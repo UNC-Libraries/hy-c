@@ -37,8 +37,8 @@ class ApplicationController < ActionController::Base
 
     # Base redirect for Hy-C uuid links
     unless uuid.nil?
-      if ENV.has_key?('REDIRECTS_FILE_PATH') && File.exist?(ENV['REDIRECTS_FILE_PATH'])
-        redirect_uuids = File.read(ENV['REDIRECTS_FILE_PATH'])
+      if ENV.has_key?('REDIRECT_FILE_PATH') && File.exist?(ENV['REDIRECT_FILE_PATH'])
+        redirect_uuids = File.read(ENV['REDIRECT_FILE_PATH'])
       else
         redirect_uuids = File.read(Rails.root.join('lib', 'redirects', 'redirect_uuids.csv'))
       end
