@@ -731,13 +731,13 @@ terms:
     active: true
   - id: Department of Biomedical Engineering
     term:
-      - School of Medicine; Joint Department of Biomedical Engineering
-      - North Carolina State University; Joint Department of Biomedical Engineering
+    - School of Medicine; Joint Department of Biomedical Engineering
+    - North Carolina State University; Joint Department of Biomedical Engineering
     active: false
   - id: Joint Department of Biomedical Engineering
     term:
-      - School of Medicine; Joint Department of Biomedical Engineering
-      - North Carolina State University; Joint Department of Biomedical Engineering
+    - School of Medicine; Joint Department of Biomedical Engineering
+    - North Carolina State University; Joint Department of Biomedical Engineering
     active: true
   - id: Kenan Center for the Utilization of Carbon Dioxide
     term: Kenan Center for the Utilization of Carbon Dioxide
@@ -771,13 +771,13 @@ terms:
     active: true
   - id: Curriculum in Neurobiology
     term:
-      - School of Medicine; Neurobiology Curriculum
-      - Neuroscience Center; Neurobiology Curriculum
+    - School of Medicine; Neurobiology Curriculum
+    - Neuroscience Center; Neurobiology Curriculum
     active: false
   - id: Neurobiology Curriculum
     term:
-      - School of Medicine; Neurobiology Curriculum
-      - Neuroscience Center; Neurobiology Curriculum
+    - School of Medicine; Neurobiology Curriculum
+    - Neuroscience Center; Neurobiology Curriculum
     active: true
   - id: Neuroscience Center
     term: School of Medicine; Neuroscience Center
@@ -905,8 +905,8 @@ terms:
   - id: Thurston Arthritis Research Center
     term: School of Medicine; Thurston Arthritis Research Center
     active: true
-  - id: Thurston Arthritis Research Center
-    term: Thurston Arthritis Research Center;Division of Rheumatology, Allergy and Immunology;Department of Medicine;School of Medicine
+  - id: The Water Institute
+    term: The Water Institute;Gillings School of Global Public Health
     active: true
   - id: UNC Center for AIDS Research
     term: UNC Center for AIDS Research;School of Medicine
