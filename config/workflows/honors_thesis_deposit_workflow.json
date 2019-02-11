@@ -19,7 +19,7 @@
                         },
                         {
                             "notification_type": "email",
-                            "name": "Hyrax::Workflow::DepositSubmittedNotification",
+                            "name": "Hyrax::Workflow::MediatedDepositNotification",
                             "to": []
                         }
                     ],

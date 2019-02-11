@@ -17,7 +17,7 @@
                     "notifications": [
                         {
                             "notification_type": "email",
-                            "name": "Hyrax::Workflow::DepositedNotification",
+                            "name": "Hyrax::Workflow::MediatedDepositNotification",
                             "to": []
                         }
                     ]
