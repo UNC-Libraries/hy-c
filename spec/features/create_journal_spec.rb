@@ -78,6 +78,7 @@ RSpec.feature 'Create a Journal', js: false do
       fill_in 'Place of publication', with: 'UNC'
       select 'Journal', from: 'journal_resource_type'
       select 'In Copyright', :from => 'journal_rights_statement'
+      fill_in 'Series', with: 'series1'
       fill_in 'Subject', with: 'test'
       fill_in 'Table of contents', with: 'contents'
 
@@ -126,6 +127,7 @@ RSpec.feature 'Create a Journal', js: false do
       expect(page).to have_content 'Publisher UNC Press'
       expect(page).to have_content 'Resource type Journal'
       expect(page).to have_content 'Rights statement In Copyright'
+      expect(page).to have_content 'Series series1'
       expect(page).to have_content 'Subject test'
       expect(page).to have_content 'Table of contents contents'
       expect(page).to_not have_content 'Language http://id.loc.gov/vocabulary/iso639-2/eng'
@@ -169,6 +171,7 @@ RSpec.feature 'Create a Journal', js: false do
       fill_in 'Place of publication', with: 'UNC'
       select 'Journal', from: 'journal_resource_type'
       select 'In Copyright', :from => 'journal_rights_statement'
+      fill_in 'Series', with: 'series1'
       fill_in 'Subject', with: 'test'
       fill_in 'Table of contents', with: 'contents'
 
@@ -179,7 +182,7 @@ RSpec.feature 'Create a Journal', js: false do
       expect(page).not_to have_field('journal_visibility_lease')
       choose "journal_visibility_open"
       check 'agreement'
-      
+
       expect(page).to have_selector('#journal_dcmi_type')
       expect(page).to have_selector("input[value='http://purl.org/dc/dcmitype/Text']")
       fill_in 'Dcmi type', with: 'http://purl.org/dc/dcmitype/Image'
@@ -220,6 +223,7 @@ RSpec.feature 'Create a Journal', js: false do
       expect(page).to have_content 'Publisher UNC Press'
       expect(page).to have_content 'Resource type Journal'
       expect(page).to have_content 'Rights statement In Copyright'
+      expect(page).to have_content 'Series series1'
       expect(page).to have_content 'Subject test'
       expect(page).to have_content 'Table of contents contents'
       expect(page).to_not have_content 'Language http://id.loc.gov/vocabulary/iso639-2/eng'

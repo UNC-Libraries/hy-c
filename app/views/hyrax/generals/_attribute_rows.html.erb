@@ -19,7 +19,7 @@
 <%= presenter.attribute_to_html(:bibliographic_citation, html_dl: true) %>
 <%= presenter.attribute_to_html(:composer_display, label: 'Composer', render_as: :person, html_dl: true) %>
 <%= presenter.attribute_to_html(:conference_name, html_dl: true) %>
-<%= presenter.attribute_to_html(:copyright_date, render_as: :date, html_dl: true) %>
+<%= presenter.attribute_to_html(:copyright_date, html_dl: true) %>
 <%= presenter.attribute_to_html(:date_created, render_as: :date, html_dl: true, label: "Date created") %>
 <%= presenter.attribute_to_html(:date_issued, render_as: :date, html_dl: true, label: "Date of publication") %>
 <%= presenter.attribute_to_html(:date_other, render_as: :date, html_dl: true) %>

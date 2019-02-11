@@ -21,7 +21,7 @@ module Hyrax
 
     # Returns an array of tuples (key, label) appropriate for a radio group
     def actions
-      return [] unless sipity_entity && current_ability
+      return [] unless sipity_entity && current_ability && (current_ability.current_user.admin? || state != 'pending_deletion')
       actions = Hyrax::Workflow::PermissionQuery.scope_permitted_workflow_actions_available_for_current_state(entity: sipity_entity, user: current_ability.current_user)
       actions.map { |action| [action.name, action_label(action)] }
     end
