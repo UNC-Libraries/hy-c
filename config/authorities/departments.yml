@@ -1,5 +1,8 @@
 ## config/authorities/departments.yml
 terms:
+  - id: American Indian and Indigenous Studies Program
+    term: American Indian and Indigenous Studies Program;Department of American Studies;College of Arts and Sciences
+    active: true
   - id: Art History Program
     term: College of Arts and Sciences; Department of Art; Art History Program
     active: true
@@ -42,6 +45,9 @@ terms:
   - id: CIDD
     term: School of Medicine; Neurodevelopment Disorders Research Center; Carolina Institute for Developmental Disabilities
     active: false
+  - id: Carolina-Duke Graduate Program in German Studies
+    term: Carolina-Duke Graduate Program in German Studies;Department of Germanic and Slavic Languages and Literatures;College of Arts and Sciences
+    active: true
   - id: Carolina Institute for Developmental Disabilities
     term: School of Medicine; Neurodevelopment Disorders Research Center; Carolina Institute for Developmental Disabilities
     active: true
@@ -102,11 +108,26 @@ terms:
   - id: Center for Heart and Vascular Care
     term: School of Medicine; Center for Heart and Vascular Care
     active: true
+  - id: Center for Integrative Chemical Biology and Drug Discovery
+    term: Center for Integrative Chemical Biology and Drug Discovery;Eshelman School of Pharmacy
+    active: true
   - id: Center for Maternal and Infant Health
     term: School of Medicine; Center for Maternal and Infant Health
     active: true
+  - id: Center for Medication Optimization through Practice and Policy
+    term: Center for Medication Optimization through Practice and Policy;Eshelman School of Pharmacy
+    active: true
+  - id: Center for Nanotechnology in Drug Delivery
+    term: Center for Nanotechnology in Drug Delivery;Eshelman School of Pharmacy
+    active: true
+  - id: Center of Pharmacogenomics and Individualized Therapy
+    term: Center of Pharmacogenomics and Individualized Therapy;Eshelman School of Pharmacy
+    active: true
   - id: Center for Slavic, Eurasian, and East European Studies
     term: College of Arts and Sciences; Center for Slavic, Eurasian, and East European Studies
+    active: true
+  - id: Center for the Study of the American South
+    term: Center for the Study of the American South;College of Arts and Sciences
     active: true
   - id: Center for Urban and Regional Studies
     term: College of Arts and Sciences; Center for Urban and Regional Studies
@@ -125,6 +146,9 @@ terms:
     active: true
   - id: College of Arts and Sciences
     term: College of Arts and Sciences
+    active: true
+  - id: Comparative Literature Program
+    term: Comparative Literature Program;Department of English and Comparative Literature;College of Arts and Sciences
     active: true
   - id: Creative Writing Program
     term: College of Arts and Sciences; Department of English and Comparative Literature; Creative Writing Program
@@ -152,6 +176,9 @@ terms:
     active: true
   - id: Curriculum in Contemporary European Studies
     term: College of Arts and Sciences; Curriculum in Contemporary European Studies
+    active: true
+  - id: Curriculum in Global Studies
+    term: Curriculum in Global Studies;College of Arts and Sciences
     active: true
   - id: GMB
     term: School of Medicine; Curriculum in Genetics and Molecular Biology
@@ -504,14 +531,41 @@ terms:
   - id: DICE Center
     term: DICE Center
     active: true
+  - id: Digital American Studies Program
+    term: Digital American Studies Program;Department of American Studies;College of Arts and Sciences
+    active: true
   - id: Division of Allied Dental Education
     term: School of Dentistry; Division of Allied Dental Education
     active: true
   - id: Division of Chemical Biology and Medicinal Chemistry
     term: Eshelman School of Pharmacy; Division of Chemical Biology and Medicinal Chemistry
     active: true
+  - id: Division of Clinical Laboratory Science
+    term: Division of Clinical Laboratory Science;Department of Allied Health Sciences;School of Medicine
+    active: true
+  - id: Division of Clinical Rehabilitation and Mental Health Counseling
+    term: Division of Clinical Rehabilitation and Mental Health Counseling;Department of Allied Health Sciences;School of Medicine
+    active: true
+  - id: Division of Comparative Medicine
+    term: Division of Comparative Medicine;Department of Medicine;School of Medicine
+    active: true
+  - id: Division of Endocrinology and Metabolism
+    term: Division of Endocrinology and Metabolism;Department of Medicine;School of Medicine
+    active: true
+  - id: Division of Gastroenterology and Hepatology
+    term: Division of Gastroenterology and Hepatology;Department of Medicine;School of Medicine
+    active: true
+  - id: Division of General Medicine and Clinical Epidemiology
+    term: Division of General Medicine and Clinical Epidemiology;Department of Medicine;School of Medicine
+    active: true
   - id: Division of Hematology/Oncology
     term: School of Medicine; Division of Hematology/Oncology
+    active: true
+  - id: Division of Hospital Medicine
+    term: Division of Hospital Medicine;Department of Medicine;School of Medicine
+    active: true
+  - id: Division of Infectious Diseases
+    term: Division of Infectious Diseases;Department of Medicine;School of Medicine
     active: true
   - id: DLAM
     term: Division of Laboratory Animal Medicine
@@ -521,6 +575,9 @@ terms:
     active: true
   - id: Division of Molecular Pharmaceutics
     term: Eshelman School of Pharmacy; Division of Molecular Pharmaceutics
+    active: true
+  - id: Division of Nephrology and Hypertension
+    term: Division of Nephrology and Hypertension;Department of Medicine;School of Medicine
     active: true
   - id: Division of Occupational Science
     term: School of Medicine; Department of Allied Health Sciences; Division of Occupational Science and Occupational Therapy
@@ -533,6 +590,18 @@ terms:
     active: true
   - id: Division of Pharmacotherapy and Experimental Therapeutics
     term: Eshelman School of Pharmacy; Division of Pharmacotherapy and Experimental Therapeutics
+    active: true
+  - id: Division of Physical Therapy
+    term: Division of Physical Therapy;Department of Allied Health Sciences;School of Medicine
+    active: true
+  - id: Division of Pulmonary Diseases and Critical Care Medicine
+    term: Division of Pulmonary Diseases and Critical Care Medicine;Department of Medicine;School of Medicine
+    active: true
+  - id: Division of Radiologic Science
+    term: Division of Radiologic Science;Department of Allied Health Sciences;School of Medicine
+    active: true
+  - id: Division of Rheumatology, Allergy and Immunology
+    term: Division of Rheumatology, Allergy and Immunology;Department of Medicine;School of Medicine
     active: true
   - id: Division of Speech and Hearing Sciences
     term: School of Medicine; Department of Allied Health Sciences; Division of Speech and Hearing Sciences
@@ -570,6 +639,9 @@ terms:
   - id: Eshelman School of Pharmacy
     term: Eshelman School of Pharmacy
     active: true
+  - id: Experienced Teachers Graduate Program
+    term: Experienced Teachers Graduate Program;School of Education
+    active: true
   - id: Fitness Professional Concentration
     term: College of Arts and Sciences; Department of Exercise and Sport Science; Fitness Professional Concentration
     active: true
@@ -590,6 +662,9 @@ terms:
     active: false
   - id: Gillings School of Global Public Health
     term: Gillings School of Global Public Health
+    active: true
+  - id: Global American Studies Program
+    term: Global American Studies Program;Department of American Studies;College of Arts and Sciences
     active: true
   - id: Highway Safety Research Center
     term: Highway Safety Research Center
@@ -656,13 +731,13 @@ terms:
     active: true
   - id: Department of Biomedical Engineering
     term:
-    - School of Medicine; Joint Department of Biomedical Engineering
-    - North Carolina State University; Joint Department of Biomedical Engineering
+      - School of Medicine; Joint Department of Biomedical Engineering
+      - North Carolina State University; Joint Department of Biomedical Engineering
     active: false
   - id: Joint Department of Biomedical Engineering
     term:
-    - School of Medicine; Joint Department of Biomedical Engineering
-    - North Carolina State University; Joint Department of Biomedical Engineering
+      - School of Medicine; Joint Department of Biomedical Engineering
+      - North Carolina State University; Joint Department of Biomedical Engineering
     active: true
   - id: Kenan Center for the Utilization of Carbon Dioxide
     term: Kenan Center for the Utilization of Carbon Dioxide
@@ -675,6 +750,9 @@ terms:
     active: false
   - id: Kenan-Flagler Business School
     term: Kenan-Flagler Business School
+    active: true
+  - id: Literature, Medicine, and Culture Concentration
+    term: Literature, Medicine, and Culture Concentration;Department of English and Comparative Literature;College of Arts and Sciences
     active: true
   - id: Mass Communication Graduate Program
     term: School of Media and Journalism; Mass Communication Graduate Program
@@ -693,13 +771,13 @@ terms:
     active: true
   - id: Curriculum in Neurobiology
     term:
-    - School of Medicine; Neurobiology Curriculum
-    - Neuroscience Center; Neurobiology Curriculum
+      - School of Medicine; Neurobiology Curriculum
+      - Neuroscience Center; Neurobiology Curriculum
     active: false
   - id: Neurobiology Curriculum
     term:
-    - School of Medicine; Neurobiology Curriculum
-    - Neuroscience Center; Neurobiology Curriculum
+      - School of Medicine; Neurobiology Curriculum
+      - Neuroscience Center; Neurobiology Curriculum
     active: true
   - id: Neuroscience Center
     term: School of Medicine; Neuroscience Center
@@ -710,6 +788,9 @@ terms:
   - id: Nutrition Research Institute
     term: Nutrition Research Institute
     active: true
+  - id: Oral and Craniofacial Biomedicine PhD Program
+    term: Oral and Craniofacial Biomedicine PhD Program;School of Dentistry
+    active: true
   - id: Oral and Maxillofacial Pathology Graduate Program
     term: School of Dentistry; Oral Pathology Section; Oral and Maxillofacial Pathology Graduate Program
     active: true
@@ -719,17 +800,32 @@ terms:
   - id: Oral Biology PhD Program
     term: School of Dentistry; Oral Biology PhD Program
     active: true
+  - id: Oral Epidemiology PhD Program
+    term: Oral Epidemiology PhD Program;Department of Dental Ecology;School of Dentistry
+    active: true
   - id: Oral Pathology Section
     term: School of Dentistry; Oral Pathology Section
     active: true
   - id: Organic Chemistry Program
     term: College of Arts and Sciences; Department of Chemistry; Organic Chemistry Program
     active: true
+  - id: Pathobiology and Translational Science Graduate Program
+    term: Pathobiology and Translational Science Graduate Program;Department of Pathology and Laboratory Medicine;School of Medicine
+    active: true
   - id: Pharmaceutical Sciences Program
     term: Eshelman School of Pharmacy; Pharmaceutical Sciences Program
     active: true
   - id: Physician Assistant Program
     term: School of Medicine; Department of Allied Health Sciences; Physician Assistant Program
+    active: true
+  - id: Professional Science Master's in Biomedical and Health Informatics
+    term: Professional Science Master's in Biomedical and Health Informatics;University of North Carolina at Chapel Hill. Graduate School
+    active: true
+  - id: Professional Science Master's in Digital Curation
+    term: Professional Science Master's in Digital Curation;University of North Carolina at Chapel Hill. Graduate School
+    active: true
+  - id: Professional Science Master's in Toxicology
+    term: Professional Science Master's in Toxicology;University of North Carolina at Chapel Hill. Graduate School
     active: true
   - id: Program in Comparative Literature
     term: College of Arts and Sciences; Department of English and Comparative Literature; Program in Comparative Literature
@@ -751,6 +847,9 @@ terms:
     active: false
   - id: Renaissance Computing Institute
     term: Renaissance Computing Institute
+    active: true
+  - id: Russian, Eurasian and East European Concentration
+    term: Russian, Eurasian and East European Concentration;Center for Slavic, Eurasian, and East European Studies;College of Arts and Sciences
     active: true
   - id: School Administration
     term: School of Education; School Administration
@@ -806,8 +905,26 @@ terms:
   - id: Thurston Arthritis Research Center
     term: School of Medicine; Thurston Arthritis Research Center
     active: true
+  - id: Thurston Arthritis Research Center
+    term: Thurston Arthritis Research Center;Division of Rheumatology, Allergy and Immunology;Department of Medicine;School of Medicine
+    active: true
+  - id: UNC Center for AIDS Research
+    term: UNC Center for AIDS Research;School of Medicine
+    active: true
+  - id: UNC Center for Bioethics
+    term: UNC Center for Bioethics;School of Medicine
+    active: true
+  - id: UNC Center for Functional GI and Motility Disorders
+    term: UNC Center for Functional GI and Motility Disorders;Division of Gastroenterology and Hepatology;Department of Medicine;School of Medicine
+    active: true
+  - id: UNC Center for Health Equity Research
+    term: UNC Center for Health Equity Research;School of Medicine
+    active: true
   - id: UNC Center for Health Promotion and Disease Prevention
     term: UNC Center for Health Promotion and Disease Prevention
+    active: true
+  - id: UNC Diabetes Care Center
+    term: UNC Diabetes Care Center;Division of Endocrinology and Metabolism;School of Medicine
     active: true
   - id: UNC Institute for the Environment
     term: UNC Institute for the Environment
