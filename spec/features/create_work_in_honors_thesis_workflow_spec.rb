@@ -134,8 +134,8 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
 
       # Dept contact and user get notification for 'managing' role
       # Reviewer is not yet in reviewing group and does not get a notification
-      expect(admin_user.mailbox.inbox.count).to eq 0
-      expect(admin_user2.mailbox.inbox.count).to eq 0
+      expect(admin_user.mailbox.inbox.count).to eq 1
+      expect(admin_user2.mailbox.inbox.count).to eq 1
       expect(contact.mailbox.inbox.count).to eq 1
       expect(user.mailbox.inbox.count).to eq 1
       expect(reviewer.mailbox.inbox.count).to eq 0
@@ -205,8 +205,8 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
 
 
       # User and admin set owner get notification for 'depositing' role
-      expect(admin_user.mailbox.inbox.count).to eq 1
-      expect(admin_user2.mailbox.inbox.count).to eq 0
+      expect(admin_user.mailbox.inbox.count).to eq 2
+      expect(admin_user2.mailbox.inbox.count).to eq 1
       expect(contact.mailbox.inbox.count).to eq 1
       expect(user.mailbox.inbox.count).to eq 2
       expect(reviewer.mailbox.inbox.count).to eq 0
@@ -228,8 +228,8 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       expect(page).to have_content 'Pending deletion'
 
       # User, dept contact get notification for 'managing' role
-      expect(admin_user.mailbox.inbox.count).to eq 1
-      expect(admin_user2.mailbox.inbox.count).to eq 0
+      expect(admin_user.mailbox.inbox.count).to eq 2
+      expect(admin_user2.mailbox.inbox.count).to eq 1
       expect(contact.mailbox.inbox.count).to eq 2
       expect(user.mailbox.inbox.count).to eq 3
       expect(reviewer.mailbox.inbox.count).to eq 0

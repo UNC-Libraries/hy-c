@@ -59,7 +59,7 @@
                         {
                             "notification_type": "email",
                             "name": "Hyrax::Workflow::PendingReviewNotification",
-                            "to": ["managing"]
+                            "to": ["approving"]
                         }
                     ],
                     "methods": [
