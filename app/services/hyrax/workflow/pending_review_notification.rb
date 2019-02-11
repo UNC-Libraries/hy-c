@@ -16,7 +16,7 @@ module Hyrax
       end
 
       def users_to_notify
-        super << user
+        super
       end
     end
   end

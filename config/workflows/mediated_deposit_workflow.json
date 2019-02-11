@@ -75,13 +75,13 @@
                     ]
                 }, {
                     "name": "withdraw",
-                    "from_states": [{"names": ["deposited"], "roles": ["approving"]}],
+                    "from_states": [{"names": ["deposited"], "roles": ["deleting"]}],
                     "transition_to": "withdrawn",
                     "notifications": [
                         {
                             "notification_type": "email",
                             "name": "Hyrax::Workflow::DeletionApprovalNotification",
-                            "to": ["depositing", "managing"]
+                            "to": ["depositing", "deleting"]
                         }
                     ],
                     "_comment" : "MetadataOnlyRecord must be called before RevokeEditFromDepositor",
@@ -92,13 +92,13 @@
                 }, {
                     "name": "request_deletion",
                     "_comment" : "This action is suppressed from normal rendering with other review/approval actions",
-                    "from_states": [{"names": ["deposited"], "roles": ["approving", "depositing"]}],
+                    "from_states": [{"names": ["deposited"], "roles": ["deleting", "depositing"]}],
                     "transition_to": "pending_deletion",
                     "notifications": [
                         {
                             "notification_type": "email",
                             "name": "Hyrax::Workflow::PendingDeletionNotification",
-                            "to": ["approving"]
+                            "to": ["deleting"]
                         }
                     ],
                     "methods": [
@@ -107,7 +107,7 @@
                     ]
                 }, {
                     "name": "approve_deletion",
-                    "from_states": [{"names": ["deposited", "pending_deletion"], "roles": ["approving"]}],
+                    "from_states": [{"names": ["deposited", "pending_deletion"], "roles": ["deleting"]}],
                     "transition_to": "withdrawn",
                     "notifications": [
                         {
@@ -122,7 +122,7 @@
                     ]
                 }, {
                     "name": "republish",
-                    "from_states": [{"names": ["pending_deletion"], "roles": ["approving"]}],
+                    "from_states": [{"names": ["pending_deletion"], "roles": ["deleting"]}],
                     "transition_to": "deposited",
                     "notifications": [
                         {
