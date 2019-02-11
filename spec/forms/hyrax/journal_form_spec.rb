@@ -21,7 +21,7 @@ RSpec.describe Hyrax::JournalForm do
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:abstract, :alternative_title, :dcmi_type, :doi, :extent, :geographic_subject,
+    it { is_expected.to match_array [:abstract, :alternative_title, :dcmi_type, :digital_collection, :doi, :extent, :geographic_subject,
                                      :isbn, :issn, :note, :place_of_publication, :series, :table_of_contents, :creator,
                                      :subject, :keyword, :language, :resource_type, :license, :rights_statement,
                                      :language_label, :license_label, :rights_statement_label] }
@@ -30,7 +30,7 @@ RSpec.describe Hyrax::JournalForm do
   describe "#admin_only_terms" do
     subject { form.admin_only_terms }
 
-    it { is_expected.to match_array [:dcmi_type, :access, :alternative_title, :date_created, :doi, :use] }
+    it { is_expected.to match_array [:dcmi_type, :access, :alternative_title, :date_created, :digital_collection, :doi, :use] }
   end
   
   describe 'default value set' do
@@ -71,6 +71,7 @@ RSpec.describe Hyrax::JournalForm do
           alternative_title: ['alt title'],
           date_issued: '2018-01-08', # single-valued
           dcmi_type: ['type'],
+          digital_collection: ['my collection'],
           doi: '12345',
           extent: ['1993'],
           geographic_subject: ['California'],
@@ -102,6 +103,7 @@ RSpec.describe Hyrax::JournalForm do
       expect(subject['abstract']).to eq ['an abstract']
       expect(subject['alternative_title']).to eq ['alt title']
       expect(subject['date_issued']).to eq '2018-01-08'
+      expect(subject['digital_collection']).to eq ['my collection']
       expect(subject['doi']).to eq '12345'
       expect(subject['extent']).to eq ['1993']
       expect(subject['dcmi_type']).to eq ['type']
