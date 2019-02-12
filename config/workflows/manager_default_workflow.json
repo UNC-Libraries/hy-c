@@ -1,9 +1,9 @@
 {
   "workflows": [
     {
-      "name": "default",
-      "label": "Default workflow",
-      "description": "A single submission step, default workflow",
+      "name": "default_email_manager",
+      "label": "Default workflow - manager emails",
+      "description": "A single submission step, default workflow with manager emails",
       "allows_access_grant": true,
       "actions": [
         {
@@ -17,7 +17,7 @@
           "notifications": [
             {
               "notification_type": "email",
-              "name": "Hyrax::Workflow::PendingReviewNotification",
+              "name": "Hyrax::Workflow::DepositedNotification",
               "to": ["managing"]
             }
           ]
