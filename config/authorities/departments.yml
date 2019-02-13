@@ -161,7 +161,7 @@ terms:
     active: false
   - id: Cultural Studies Program
     term: College of Arts and Sciences; Cultural Studies Program
-    active: true
+    active: false
   - id: Curriculum and Instruction
     term: School of Education; Curriculum and Instruction
     active: false
@@ -240,6 +240,12 @@ terms:
   - id: Department of American Studies
     term: College of Arts and Sciences; Department of American Studies
     active: true
+  - id: Department of American Studies - American Studies
+    term: College of Arts and Sciences; Department of American Studies - American Studies
+    active: true
+  - id: Department of American Studies - Folklore
+    term: College of Arts and Sciences; Department of American Studies - Folklore
+    active: true
   - id: Department of Anesthesiology
     term: School of Medicine; Department of Anesthesiology
     active: true
@@ -255,6 +261,12 @@ terms:
   - id: Department of Art and Art History
     term: College of Arts and Sciences; Department of Art and Art History
     active: true
+  - id: Department of Art and Art History – Art History
+    term: College of Arts and Sciences; Department of Art and Art History – Art History
+    active: true
+  - id: Department of Art and Art History – Studio Art
+    term: College of Arts and Sciences; Department of Art and Art History – Studio Art
+    active: true
   - id: Department of Asian Studies
     term: College of Arts and Sciences; Department of Asian Studies
     active: true
@@ -263,6 +275,12 @@ terms:
     active: true
   - id: Department of Biology
     term: College of Arts and Sciences; Department of Biology
+    active: true
+  - id: Department of Biomedical Engineering - Applied Science
+    term: School of Medicine; UNC/NCSU Joint Department of Biomedical Engineering - Applied Science
+    active: true
+  - id: Department of Biomedical Engineering - Biomedical Engineering
+    term: School of Medicine; UNC/NCSU Joint Department of Biomedical Engineering - Biomedical Engineering
     active: true
   - id: Department of Biostatistics
     term: Gillings School of Global Public Health; Department of Biostatistics
@@ -294,6 +312,12 @@ terms:
   - id: Department of Communication
     term: College of Arts and Sciences; Department of Communication
     active: true
+  - id: Department of Communication - Communication Studies
+    term: College of Arts and Sciences; Department of Communication - Communication Studies
+    active: true
+  - id: Department of Communication - Cultural Studies
+    term: College of Arts and Sciences; Department of Communication - Cultural Studies
+    active: true
   - id: Department of Computer Science
     term: College of Arts and Sciences; Department of Computer Science
     active: true
@@ -323,6 +347,15 @@ terms:
     active: true
   - id: Department of English and Comparative Literature
     term: College of Arts and Sciences; Department of English and Comparative Literature
+    active: true
+  - id: Department of English and Comparative Literature - Comparative Literature
+    term: College of Arts and Sciences; Department of English and Comparative Literature - Comparative Literature
+    active: true
+  - id: Department of English and Comparative Literature - Creative Writing
+    term: College of Arts and Sciences; Department of English and Comparative Literature – Creative Writing
+    active: true
+  - id: Department of English and Comparative Literature - English
+    term: College of Arts and Sciences; Department of English and Comparative Literature – English
     active: true
   - id: Department of Environmental Sciences and Engineering
     term: Gillings School of Global Public Health; Department of Environmental Sciences and Engineering
@@ -644,6 +677,12 @@ terms:
     active: true
   - id: English
     term: College of Arts and Sciences; Department of English and Comparative Literature; English
+    active: false
+  - id: Environment, Ecology, and Energy Program - Environmental Science
+    term: College of Arts and Sciences; Environment, Ecology, and Energy Program - Environmental Science
+    active: true
+  - id: Environment, Ecology, and Energy Program - Environmental Studies
+    term: College of Arts and Sciences; Environment, Ecology, and Energy Program - Environmental Studies
     active: true
   - id: Environmental Health Sciences
     term: Gillings School of Global Public Health; Department of Environmental Sciences and Engineering; Environmental Health Sciences
@@ -653,7 +692,7 @@ terms:
     active: false
   - id: Environmental Science
     term: College of Arts and Sciences; Curriculum in Environment and Ecology; Environmental Science
-    active: true
+    active: false
   - id: Environmental Studies
     term: College of Arts and Sciences; Curriculum in Environment and Ecology; Environmental Studies
     active: false
@@ -860,9 +899,6 @@ terms:
   - id: Professional Science Master's in Toxicology
     term: University of North Carolina at Chapel Hill. Graduate School; Professional Science Master's in Toxicology
     active: true
-  - id: Program in Comparative Literature
-    term: College of Arts and Sciences; Department of English and Comparative Literature; Program in Comparative Literature
-    active: true
   - id: Public Administration Program
     term: School of Government; Public Administration Program
     active: true
@@ -948,6 +984,9 @@ terms:
     active: true
   - id: Studio Art Program
     term: College of Arts and Sciences; Department of Art; Studio Art Program
+    active: true
+  - id: The Office of Undergraduate Curricula - Interdisciplinary Studies
+    term: College of Arts and Sciences; The Office of Undergraduate Curricula – Interdisciplinary Studies
     active: true
   - id: Thurston Arthritis Research Center
     term: School of Medicine; Thurston Arthritis Research Center
