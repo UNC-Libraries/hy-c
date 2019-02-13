@@ -308,10 +308,9 @@ module Migrate
             locations.each do |location|
               merged_locations << parse_geo_request(location)
             end
-            merged_locations.flatten!
-          else
-            []
           end
+
+          merged_locations
         end
 
         def parse_geo_request(location)
