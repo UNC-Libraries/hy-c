@@ -88,7 +88,7 @@ module Migrate
           work_attributes['kind_of_data'] = descriptive_mods.xpath('mods:genre[@authority="ddi"]', MigrationConstants::NS).map(&:text)
           work_attributes['series'] = descriptive_mods.xpath('mods:relatedItem[@type="series"]', MigrationConstants::NS).map(&:text)
           work_attributes['subject'] = descriptive_mods.xpath('mods:subject/mods:topic', MigrationConstants::NS).map(&:text)
-          work_attributes['geographic_subject'] = descriptive_mods.xpath('mods:subject/mods:geographic/@valueURI', MigrationConstants::NS).map(&:text)
+          work_attributes['geographic_subject'] = geographic_lookup(descriptive_mods.xpath('mods:subject/mods:geographic/@valueURI', MigrationConstants::NS).map(&:text))
           keyword_string = descriptive_mods.xpath('mods:note[@displayLabel="Keywords"]', MigrationConstants::NS).map(&:text)
           work_attributes['keyword'] = []
           keyword_string.each do |keyword|
@@ -299,6 +299,26 @@ module Migrate
           else
             []
           end
+        end
+
+        def geographic_lookup(locations)
+          merged_locations = []
+
+          if !locations.blank?
+            locations.each do |location|
+              merged_locations << parse_geo_request(location)
+            end
+            merged_locations.flatten!
+          else
+            []
+          end
+        end
+
+        def parse_geo_request(location)
+          geo_id = location.match(/\d+/)[0]
+          request = HTTParty.get("http://api.geonames.org/getJSON?geonameId=#{geo_id}&username=#{ENV['GEONAMES_USER']}")
+          response = JSON.parse(request.body)
+          "#{response["asciiName"]}, #{response["adminName1"]}, #{response["countryName"]}"
         end
     end
   end

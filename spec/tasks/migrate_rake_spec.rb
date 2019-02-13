@@ -29,6 +29,16 @@ describe "rake migrate:works", type: :task do
                                            agent_id: user.user_key,
                                            access: 'deposit')
     Sipity::WorkflowAction.create(id: 4, name: 'show', workflow_id: workflow.id)
+
+    stub_request(:any, "http://api.geonames.org/getJSON?geonameId=4466900&username=#{ENV['GEONAMES_USER']}").
+        with(headers: {
+            'Accept' => '*/*',
+            'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+            'User-Agent' => 'Ruby'
+        }).to_return(status: 200, body: { asciiName: 'Forsyth County',
+                                          countryName: 'United States',
+                                          adminName1: 'North Carolina' }.to_json,
+                     headers: { 'Content-Type' => 'application/json' })
   end
 
   it "preloads the Rails environment" do
@@ -41,12 +51,14 @@ describe "rake migrate:works", type: :task do
                                                       'spec/fixtures/migration/mapping.csv',
                                                       'RAILS_ENV=test') }
         .to change{ Article.count }.by(1)
+    
     new_article = Article.all[-1]
     expect(new_article['depositor']).to eq 'admin@example.com'
     expect(new_article['title']).to match_array ['Les Miserables']
     expect(new_article['label']).to eq 'Les Miserables'
     expect(new_article['date_modified']).to eq '2017-10-02'
     expect(new_article['publisher']).to match_array ['Project Gutenberg']
+    expect(new_article['geographic_subject']).to match_array ['Forsyth County, North Carolina, United States']
     expect(new_article['language']).to match_array ['http://id.loc.gov/vocabulary/iso639-2/eng']
     expect(new_article['language_label']).to match_array ['English']
     expect(new_article['license']).to match_array ['http://creativecommons.org/licenses/by/3.0/us/']
