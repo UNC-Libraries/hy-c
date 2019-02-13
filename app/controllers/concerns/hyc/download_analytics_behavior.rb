@@ -13,7 +13,7 @@ module Hyc
           tracker = Staccato.tracker(Hyrax.config.google_analytics_id)
           tracker.event(category: @admin_set_name,
                         action: 'DownloadIR',
-                        hostname: request.server_name,
+                        hostname: request.host,
                         label: params[:id],
                         linkid: request.url,
                         user_agent: request.headers['User-Agent'],
@@ -21,7 +21,7 @@ module Hyc
           # Setting the title to be the download id provides an easy way to group
           # and count on GA
           tracker.pageview(path: request.url,
-                           hostname: request.server_name,
+                           hostname: request.host,
                            title: params[:id],
                            user_agent: request.headers['User-Agent'],
                            user_ip: request.remote_ip)
