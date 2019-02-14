@@ -103,7 +103,7 @@ RSpec.feature 'Create a Journal', js: false do
       expect(page).to_not have_content 'Administrative Set'
 
       click_button 'Save'
-      expect(page).to have_content 'Your files are being processed by Hyrax'
+      expect(page).to have_content 'Your files are being processed by the Carolina Digital Repository'
 
       visit '/dashboard/my/works/'
       expect(page).to have_content 'Test Journal'
@@ -198,7 +198,7 @@ RSpec.feature 'Create a Journal', js: false do
       find('#journal_admin_set_id').text eq 'journal admin set'
 
       click_button 'Save'
-      expect(page).to have_content 'Your files are being processed by Hyrax'
+      expect(page).to have_content 'Your files are being processed by the Carolina Digital Repository'
 
       visit '/dashboard/my/works/'
       expect(page).to have_content 'Test Journal'

@@ -145,7 +145,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       expect(page).to_not have_content 'Administrative Set'
 
       click_button 'Save'
-      expect(page).to have_content 'Your files are being processed by Hyrax'
+      expect(page).to have_content 'Your files are being processed by the Carolina Digital Repository'
       expect(page).to have_content 'Pending review'
       expect(page).to have_content 'Test Default Keyword'
       expect(page).to have_content 'Creator Test Default Creator ORCID: creator orcid'
@@ -338,7 +338,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       expect(page).to_not have_content 'Administrative Set'
 
       click_button 'Save'
-      expect(page).to have_content 'Your files are being processed by Hyrax'
+      expect(page).to have_content 'Your files are being processed by the Carolina Digital Repository'
       expect(page).to have_content 'Pending review'
       expect(page).to have_content 'Test Default Keyword'
       expect(page).to have_content 'Creator Test Default Creator ORCID: creator orcid'
