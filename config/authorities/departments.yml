@@ -5,7 +5,7 @@ terms:
     active: true
   - id: Art History Program
     term: College of Arts and Sciences; Department of Art; Art History Program
-    active: true
+    active: false
   - id: Athletic Training Education Program
     term: College of Arts and Sciences; Department of Exercise and Sport Science; Athletic Training Education Program
     active: true
@@ -152,10 +152,10 @@ terms:
     active: true
   - id: Comparative Literature Program
     term: College of Arts and Sciences; Department of English and Comparative Literature; Comparative Literature Program
-    active: true
+    active: false
   - id: Creative Writing Program
     term: College of Arts and Sciences; Department of English and Comparative Literature; Creative Writing Program
-    active: true
+    active: false
   - id: Cultural Studies
     term: College of Arts and Sciences; Cultural Studies
     active: false
@@ -710,7 +710,7 @@ terms:
     active: true
   - id: Folklore Program
     term: College of Arts and Sciences; Department of American Studies; Folklore Program
-    active: true
+    active: false
   - id: FPG Child Development Institute
     term: Frank Porter Graham Child Development Institute
     active: false
@@ -782,7 +782,7 @@ terms:
     active: true
   - id: Interdisciplinary Studies Program
     term: College of Arts and Sciences; Interdisciplinary Studies Program
-    active: true
+    active: false
   - id: International and Comparative American Studies
     term: College of Arts and Sciences; Department of American Studies; International and Comparative American Studies
     active: true
@@ -822,7 +822,7 @@ terms:
     active: true
   - id: Mathematical Decision Sciences Program
     term: College of Arts and Sciences; Department of Statistics and Operations Research; Mathematical Decision Sciences Program
-    active: true
+    active: false
   - id: Molecular and Cellular Pathology Graduate Program
     term: School of Medicine; Department of Pathology and Laboratory Medicine; Molecular and Cellular Pathology Graduate Program
     active: true
@@ -984,7 +984,7 @@ terms:
     active: true
   - id: Studio Art Program
     term: College of Arts and Sciences; Department of Art; Studio Art Program
-    active: true
+    active: false
   - id: The Office of Undergraduate Curricula - Interdisciplinary Studies
     term: College of Arts and Sciences; The Office of Undergraduate Curricula – Interdisciplinary Studies
     active: true
