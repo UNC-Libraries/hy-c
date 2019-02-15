@@ -103,6 +103,7 @@ RSpec.feature 'Create a General', js: false do
       select 'Bachelor of Science', from: 'general_degree'
       fill_in 'Degree granting institution', with: 'UNC'
       fill_in 'Description', with: 'a description'
+      fill_in 'Digital collection', with: 'my collection'
       fill_in 'DOI', with: 'some doi'
       select 'Preprint', from: 'general_edition'
       fill_in 'Extent', with: 'some extent'
@@ -173,7 +174,7 @@ RSpec.feature 'Create a General', js: false do
       find('#general_admin_set_id').text eq 'general admin set'
 
       click_button 'Save'
-      expect(page).to have_content 'Your files are being processed by Hyrax'
+      expect(page).to have_content 'Your files are being processed by the Carolina Digital Repository'
 
       visit '/dashboard/my/works/'
       expect(page).to have_content 'Test General work'
@@ -202,6 +203,7 @@ RSpec.feature 'Create a General', js: false do
       expect(page).to have_content 'Degree Bachelor of Science'
       expect(page).to have_content 'Degree granting institution UNC'
       expect(page).to have_content 'a description'
+      expect(page).to have_content 'Digital collection my collection'
       expect(page).to have_content 'DOI some doi'
       expect(page).to have_content 'Version Preprint'
       expect(page).to have_content 'Extent some extent'

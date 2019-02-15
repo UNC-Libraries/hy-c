@@ -116,7 +116,7 @@ RSpec.feature 'Create a DataSet', js: false do
       expect(page).to_not have_content 'Administrative Set'
 
       click_button 'Save'
-      expect(page).to have_content 'Your files are being processed by Hyrax'
+      expect(page).to have_content 'Your files are being processed by the Carolina Digital Repository'
 
       visit '/dashboard/my/works/'
       expect(page).to have_content 'Test Data Set'
@@ -222,7 +222,7 @@ RSpec.feature 'Create a DataSet', js: false do
       find('#data_set_admin_set_id').text eq 'data set admin set'
 
       click_button 'Save'
-      expect(page).to have_content 'Your files are being processed by Hyrax'
+      expect(page).to have_content 'Your files are being processed by the Carolina Digital Repository'
 
       visit '/dashboard/my/works/'
       expect(page).to have_content 'Test Data Set'

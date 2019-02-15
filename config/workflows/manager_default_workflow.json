@@ -1,79 +1,25 @@
 {
   "workflows": [
     {
-      "name": "art_mfa_deposit",
-      "label": "Art MFA mediated deposit workflow",
-      "description": "A single-step workflow for art MFA deposit in which all deposits must be approved by a reviewer. Reviewer may also send deposits back to the depositor.",
+      "name": "default_email_manager",
+      "label": "Default workflow - manager emails",
+      "description": "A single submission step, default workflow with manager emails",
       "allows_access_grant": true,
       "actions": [
         {
           "name": "deposit",
           "from_states": [],
-          "transition_to": "pending_review",
-          "notifications": [
-            {
-              "notification_type": "email",
-              "name": "Hyrax::Workflow::PendingReviewNotification",
-              "to": ["approving"]
-            },
-            {
-              "notification_type": "email",
-              "name": "Hyrax::Workflow::MediatedDepositNotification",
-              "to": []
-            }
-          ],
-          "_comment" : "Please add your child works now",
-          "methods": [
-            "Hyrax::Workflow::DeactivateObject",
-            "Hyrax::Workflow::GrantEditToDepositor"
-          ]
-        }, {
-          "name": "request_changes",
-          "from_states": [{"names": ["deposited", "pending_review"], "roles": ["approving"]}],
-          "transition_to": "changes_required",
-          "notifications": [
-            {
-              "notification_type": "email",
-              "name": "Hyrax::Workflow::ChangesRequiredNotification",
-              "to": ["depositing"]
-            }
-          ],
-          "methods": [
-            "Hyrax::Workflow::DeactivateObject",
-            "Hyrax::Workflow::GrantEditToDepositor"
-          ]
-        }, {
-          "name": "approve",
-          "from_states": [{"names": ["pending_review"], "roles": ["approving"]}],
           "transition_to": "deposited",
+          "methods": [
+            "Hyrax::Workflow::GrantEditToDepositor",
+            "Hyrax::Workflow::ActivateObject"
+          ],
           "notifications": [
             {
               "notification_type": "email",
               "name": "Hyrax::Workflow::DepositedNotification",
-              "to": ["depositing"]
+              "to": ["managing"]
             }
-          ],
-          "methods": [
-            "Hyrax::Workflow::GrantReadToDepositor",
-            "Hyrax::Workflow::RevokeEditFromDepositor",
-            "Hyrax::Workflow::ActivateObject"
-          ]
-        }, {
-          "name": "request_review",
-          "from_states": [{"names": ["changes_required"], "roles": ["depositing"]}],
-          "transition_to": "pending_review",
-          "notifications": [
-            {
-              "notification_type": "email",
-              "name": "Hyrax::Workflow::PendingReviewNotification",
-              "to": ["approving"]
-            }
-          ]
-        }, {
-          "name": "comment_only",
-          "from_states": [
-            { "names": ["pending_review", "deposited"], "roles": ["approving"] },
-            { "names": ["changes_required"], "roles": ["depositing"] }
           ]
         }, {
           "name": "withdraw",

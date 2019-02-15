@@ -21,7 +21,7 @@ RSpec.describe Hyrax::MultimedForm do
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:dcmi_type, :date_created, :doi, :extent, :geographic_subject, :keyword,
+    it { is_expected.to match_array [:dcmi_type, :date_created, :digital_collection, :doi, :extent, :geographic_subject, :keyword,
                                      :language, :license, :medium, :note, :rights_statement, :subject, :language_label,
                                      :license_label, :rights_statement_label] }
   end
@@ -29,7 +29,7 @@ RSpec.describe Hyrax::MultimedForm do
   describe "#admin_only_terms" do
     subject { form.admin_only_terms }
 
-    it { is_expected.to match_array [:dcmi_type, :access, :date_created, :doi, :medium] }
+    it { is_expected.to match_array [:dcmi_type, :access, :date_created, :digital_collection, :doi, :medium] }
   end
 
   describe 'default value set' do
@@ -63,6 +63,7 @@ RSpec.describe Hyrax::MultimedForm do
           rights_statement: 'http://rightsstatements.org/vocab/InC/1.0/', # single-valued
           abstract: ['an abstract'],
           dcmi_type: ['type'],
+          digital_collection: ['my collection'],
           doi: '12345',
           extent: ['1999'],
           geographic_subject: ['Italy'],
@@ -91,6 +92,7 @@ RSpec.describe Hyrax::MultimedForm do
       expect(subject['doi']).to eq '12345'
       expect(subject['extent']).to eq ['1999']
       expect(subject['dcmi_type']).to eq ['type']
+      expect(subject['digital_collection']).to eq ['my collection']
       expect(subject['geographic_subject']).to eq ['Italy']
       expect(subject['language_label']).to eq ['English']
       expect(subject['license_label']).to eq ['Attribution 3.0 United States']
