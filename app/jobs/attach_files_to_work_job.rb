@@ -60,7 +60,7 @@ class AttachFilesToWorkJob < Hyrax::ApplicationJob
   def virus_check!(uploaded_file)
     return unless Hyc::VirusScanner.infected?(uploaded_file.file.to_s)
     carrierwave_file = uploaded_file.file.file
-    carrierwave_file.delete
+    FileUtils.rm_rf(File.dirname(uploaded_file.file.to_s))
     raise(VirusDetectedError, carrierwave_file.filename)
   end
 end
