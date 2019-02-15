@@ -23,18 +23,18 @@ RSpec.describe Hyrax::ArticleForm do
 
     it { is_expected.to match_array [:keyword, :license, :rights_statement, :publisher, :date_created, :subject,
                                      :language, :identifier, :related_url, :resource_type, :access, :alternative_title,
-                                     :bibliographic_citation, :copyright_date, :date_other, :dcmi_type, :doi, :edition,
-                                     :extent, :funder, :geographic_subject, :issn, :journal_title, :journal_volume,
-                                     :journal_issue, :note, :page_end, :page_start, :peer_review_status,
-                                     :place_of_publication, :rights_holder, :translator, :use, :language_label,
-                                     :license_label, :rights_statement_label] }
+                                     :bibliographic_citation, :copyright_date, :date_other, :dcmi_type, :doi,
+                                     :digital_collection, :edition, :extent, :funder, :geographic_subject, :issn,
+                                     :journal_title, :journal_volume, :journal_issue, :note, :page_end, :page_start,
+                                     :peer_review_status, :place_of_publication, :rights_holder, :translator, :use,
+                                     :language_label, :license_label, :rights_statement_label] }
   end
   
   describe "#admin_only_terms" do
     subject { form.admin_only_terms }
 
     it { is_expected.to match_array [:dcmi_type, :date_created, :access, :bibliographic_citation, :copyright_date,
-                                     :date_other, :doi, :extent, :rights_holder, :translator, :identifier, :use] }
+                                     :date_other, :digital_collection, :doi, :extent, :rights_holder, :translator, :identifier, :use] }
   end
   
   describe 'default value set' do
@@ -79,6 +79,7 @@ RSpec.describe Hyrax::ArticleForm do
           date_issued: '2017-01-22', # single-valued
           date_other: [''],
           dcmi_type: ['type'],
+          digital_collection: ['my collection'],
           doi: '12345', # single-valued
           edition: 'an edition', # single-valued
           extent: ['1993'],
@@ -128,6 +129,7 @@ RSpec.describe Hyrax::ArticleForm do
       expect(subject['copyright_date']).to eq '2017'
       expect(subject['date_issued']).to eq '2017-01-22'
       expect(subject['date_other']).to be_empty
+      expect(subject['digital_collection']).to eq ['my collection']
       expect(subject['doi']).to eq '12345'
       expect(subject['edition']).to eq 'an edition'
       expect(subject['extent']).to eq ['1993']

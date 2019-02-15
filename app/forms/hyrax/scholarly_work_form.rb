@@ -6,8 +6,8 @@ module Hyrax
 
     self.model_class = ::ScholarlyWork
 
-    self.terms += [:resource_type, :abstract, :advisor, :conference_name, :date_issued, :dcmi_type, :doi,
-                   :geographic_subject]
+    self.terms += [:resource_type, :abstract, :advisor, :conference_name, :date_issued, :dcmi_type,
+                   :digital_collection, :doi, :geographic_subject]
 
     self.terms -= [:contributor, :publisher, :identifier, :based_near, :related_url, :source]
 
@@ -15,7 +15,7 @@ module Hyrax
 
     self.single_value_fields = [:title, :license]
     
-    self.admin_only_terms = [:dcmi_type, :date_created, :access, :description, :doi, :use]
+    self.admin_only_terms = [:dcmi_type, :date_created, :access, :description, :digital_collection, :doi, :use]
 
     self.default_term_values = { :rights_statement => "http://rightsstatements.org/vocab/InC/1.0/", :language => ["http://id.loc.gov/vocabulary/iso639-2/eng"] }
 

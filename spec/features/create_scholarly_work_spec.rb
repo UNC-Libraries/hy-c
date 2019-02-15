@@ -84,6 +84,7 @@ RSpec.feature 'Create a ScholarlyWork', js: false do
       expect(page).to have_selector('#scholarly_work_license_label', visible: false)
       expect(page).to have_selector('#scholarly_work_rights_statement_label', visible: false)
       expect(page).not_to have_field('scholarly_work_description')
+      expect(page).not_to have_field('scholarly_work_digital_collection')
       expect(page).not_to have_field('scholarly_work_doi')
       expect(page).not_to have_field('scholarly_work_visibility_use')
       expect(page).to have_field('scholarly_work_visibility_embargo')
@@ -102,7 +103,7 @@ RSpec.feature 'Create a ScholarlyWork', js: false do
       expect(page).to_not have_content 'Administrative Set'
 
       click_button 'Save'
-      expect(page).to have_content 'Your files are being processed by Hyrax'
+      expect(page).to have_content 'Your files are being processed by the Carolina Digital Repository'
 
       visit '/dashboard/my/works/'
       expect(page).to have_content 'Test ScholarlyWork work'
@@ -159,6 +160,7 @@ RSpec.feature 'Create a ScholarlyWork', js: false do
       fill_in 'Date created', with: '2018-10-03'
       fill_in 'Dcmi type', with: 'http://purl.org/dc/dcmitype/Text'
       fill_in 'Description', with: 'a description'
+      fill_in 'Digital collection', with: 'my collection'
       fill_in 'DOI', with: 'some doi'
       fill_in 'Location', with: 'some geographic subject'
       fill_in 'Keyword', with: 'Test Default Keyword'
@@ -186,7 +188,7 @@ RSpec.feature 'Create a ScholarlyWork', js: false do
       find('#scholarly_work_admin_set_id').text eq 'scholarly work admin set'
 
       click_button 'Save'
-      expect(page).to have_content 'Your files are being processed by Hyrax'
+      expect(page).to have_content 'Your files are being processed by the Carolina Digital Repository'
 
       visit '/dashboard/my/works/'
       expect(page).to have_content 'Test ScholarlyWork work'
@@ -204,6 +206,7 @@ RSpec.feature 'Create a ScholarlyWork', js: false do
       expect(page).to have_content 'Date of publication October 3, 2018'
       expect(page).to have_content 'Type http://purl.org/dc/dcmitype/Text'
       expect(page).to have_content 'a description'
+      expect(page).to have_content 'Digital collection my collection'
       expect(page).to have_content 'DOI some doi'
       expect(page).to have_content 'Location some geographic subject'
       expect(page).to have_content 'Keyword Test Default Keyword'
