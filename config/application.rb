@@ -12,11 +12,15 @@ module Hyrax
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
     config.before_configuration do
-      env_file = ENV['LOCAL_ENV_PATH'].to_s
+      if ENV.has_key?('LOCAL_ENV_PATH')
+        env_file = ENV['LOCAL_ENV_PATH'].to_s
+      else
+        env_file = File.join(Rails.root, 'config', 'local_env.yml')
+      end
 
       YAML.load(File.open(env_file)).each do |key, value|
         ENV[key.to_s] = value
-      end if File.exists?(env_file)
+      end
     end
 
     Rails.application.routes.default_url_options[:host] = ENV['HYRAX_HOST']
