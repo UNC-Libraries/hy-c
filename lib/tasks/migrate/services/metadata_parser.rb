@@ -53,7 +53,7 @@ module Migrate
           work_attributes['arrangers_attributes'] = parse_people_from_mods(descriptive_mods, 'Arranger')
           work_attributes['composers_attributes'] = parse_people_from_mods(descriptive_mods, 'Composer')
           work_attributes['funder'] = parse_names_from_mods(descriptive_mods, 'Funder')
-          work_attributes['project_directors_attributes'] = parse_people_from_mods(descriptive_mods, 'Project_director')
+          work_attributes['project_directors_attributes'] = parse_people_from_mods(descriptive_mods, 'Project director')
           work_attributes['researchers_attributes'] = parse_people_from_mods(descriptive_mods, 'Researcher')
           work_attributes['reviewers_attributes'] = parse_people_from_mods(descriptive_mods, 'Reviewer')
           work_attributes['translators_attributes'] = parse_people_from_mods(descriptive_mods, 'Translator')
