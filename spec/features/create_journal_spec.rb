@@ -136,7 +136,7 @@ RSpec.feature 'Create a Journal', js: false do
       expect(page).to_not have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'
       
       expect(page).to_not have_content 'In Administrative Set: journal admin set'
-      expect(page).to have_content 'Type http://purl.org/dc/dcmitype/Text'
+      expect(page).to_not have_content 'Type http://purl.org/dc/dcmitype/Text'
 
       click_link 'Edit'
 
@@ -234,7 +234,7 @@ RSpec.feature 'Create a Journal', js: false do
       expect(page).to_not have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'
 
       expect(page).to have_content 'In Administrative Set: journal admin set'
-      expect(page).to have_content 'Type http://purl.org/dc/dcmitype/Image'
+      expect(page).to_not have_content 'Type http://purl.org/dc/dcmitype/Image'
 
       click_link 'Edit'
 

@@ -153,7 +153,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       expect(page).to have_content 'College of Arts and Sciences'
       expect(page).to have_content 'Department of Biology'
       expect(page).to have_content 'Other Affiliation: UNC'
-      expect(page).to have_content 'Type http://purl.org/dc/dcmitype/Text'
+      expect(page).to_not have_content 'Type http://purl.org/dc/dcmitype/Text'
 
       # Dept contact and user get notification for 'approving' role
       # Reviewer is not yet in reviewing group and does not get a notification
@@ -224,7 +224,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       expect(page).to have_content 'College of Arts and Sciences'
       expect(page).to have_content 'Department of Biology'
       expect(page).to have_content 'Other Affiliation: UNC'
-      expect(page).to have_content 'Type http://purl.org/dc/dcmitype/Text'
+      expect(page).to_not have_content 'Type http://purl.org/dc/dcmitype/Text'
 
       click_on 'Logout'
 
@@ -249,7 +249,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       expect(page).to have_content 'College of Arts and Sciences'
       expect(page).to have_content 'Department of Biology'
       expect(page).to have_content 'Other Affiliation: UNC'
-      expect(page).to have_content 'Type http://purl.org/dc/dcmitype/Text'
+      expect(page).to_not have_content 'Type http://purl.org/dc/dcmitype/Text'
 
       click_on 'Logout'
 
@@ -276,7 +276,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       expect(page).to have_content 'College of Arts and Sciences'
       expect(page).to have_content 'Department of Biology'
       expect(page).to have_content 'Other Affiliation: UNC'
-      expect(page).to have_content 'Type http://purl.org/dc/dcmitype/Text'
+      expect(page).to_not have_content 'Type http://purl.org/dc/dcmitype/Text'
 
 
       # User and admin set owner get notification for 'depositing' role
@@ -346,7 +346,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       expect(page).to have_content 'College of Arts and Sciences'
       expect(page).to have_content 'Department of Biology'
       expect(page).to have_content 'Other Affiliation: UNC'
-      expect(page).to have_content 'Type http://purl.org/dc/dcmitype/Text'
+      expect(page).to_not have_content 'Type http://purl.org/dc/dcmitype/Text'
 
       # Dept contact and user get notification for 'approving' role
       # Reviewer is not yet in reviewing group and does not get a notification
