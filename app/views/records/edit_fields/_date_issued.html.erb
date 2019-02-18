@@ -1,9 +1,9 @@
 <% date_value = params[:action] == 'new' ? Date.today.strftime("%Y-%m-%d") : f.object.date_issued %>
 
 <% if f.object.multiple? key %>
-  <%= f.input :date_issued, as: :multi_value, html5: true, placeholder: "Date Format YYYY-MM-DD",
+  <%= f.input :date_issued, as: :multi_value, placeholder: "Date Format YYYY-MM-DD",
               input_html: { class: 'date-input', value: date_value } %>
 <% else %>
-  <%= f.input :date_issued, as: :date, html5: true, placeholder: "Date Format YYYY-MM-DD",
+  <%= f.input :date_issued, placeholder: "Date Format YYYY-MM-DD",
               input_html: { class: 'date-input', value: date_value } %>
 <% end %>
