@@ -116,7 +116,7 @@ RSpec.feature 'Create a DataSet', js: false do
       expect(page).to_not have_content 'Administrative Set'
 
       click_button 'Save'
-      expect(page).to have_content 'Your files are being processed by Hyrax'
+      expect(page).to have_content 'Your files are being processed by the Carolina Digital Repository'
 
       visit '/dashboard/my/works/'
       expect(page).to have_content 'Test Data Set'
@@ -148,7 +148,7 @@ RSpec.feature 'Create a DataSet', js: false do
       expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
 
       expect(page).to_not have_content 'In Administrative Set: data set admin set'
-      expect(page).to have_content 'Type http://purl.org/dc/dcmitype/Dataset'
+      expect(page).to_not have_content 'Type http://purl.org/dc/dcmitype/Dataset'
 
       click_link 'Edit'
 
@@ -222,7 +222,7 @@ RSpec.feature 'Create a DataSet', js: false do
       find('#data_set_admin_set_id').text eq 'data set admin set'
 
       click_button 'Save'
-      expect(page).to have_content 'Your files are being processed by Hyrax'
+      expect(page).to have_content 'Your files are being processed by the Carolina Digital Repository'
 
       visit '/dashboard/my/works/'
       expect(page).to have_content 'Test Data Set'
@@ -259,7 +259,6 @@ RSpec.feature 'Create a DataSet', js: false do
       expect(page).to_not have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'
 
       expect(page).to have_content 'In Administrative Set: data set admin set'
-      expect(page).to have_content 'Type http://purl.org/dc/dcmitype/Image'
 
       click_link 'Edit'
 

@@ -145,7 +145,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       expect(page).to_not have_content 'Administrative Set'
 
       click_button 'Save'
-      expect(page).to have_content 'Your files are being processed by Hyrax'
+      expect(page).to have_content 'Your files are being processed by the Carolina Digital Repository'
       expect(page).to have_content 'Pending review'
       expect(page).to have_content 'Test Default Keyword'
       expect(page).to have_content 'Creator Test Default Creator ORCID: creator orcid'
@@ -153,7 +153,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       expect(page).to have_content 'College of Arts and Sciences'
       expect(page).to have_content 'Department of Biology'
       expect(page).to have_content 'Other Affiliation: UNC'
-      expect(page).to have_content 'Type http://purl.org/dc/dcmitype/Text'
+      expect(page).to_not have_content 'Type http://purl.org/dc/dcmitype/Text'
 
       # Dept contact and user get notification for 'approving' role
       # Reviewer is not yet in reviewing group and does not get a notification
@@ -163,7 +163,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       expect(user.mailbox.inbox.count).to eq 1
       expect(reviewer.mailbox.inbox.count).to eq 1
       expect(nonreviewer.mailbox.inbox.count).to eq 0
-      expect(manager.mailbox.inbox.count).to eq 0
+      expect(manager.mailbox.inbox.count).to eq 1
 
       click_on 'Logout'
 
@@ -224,7 +224,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       expect(page).to have_content 'College of Arts and Sciences'
       expect(page).to have_content 'Department of Biology'
       expect(page).to have_content 'Other Affiliation: UNC'
-      expect(page).to have_content 'Type http://purl.org/dc/dcmitype/Text'
+      expect(page).to_not have_content 'Type http://purl.org/dc/dcmitype/Text'
 
       click_on 'Logout'
 
@@ -249,7 +249,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       expect(page).to have_content 'College of Arts and Sciences'
       expect(page).to have_content 'Department of Biology'
       expect(page).to have_content 'Other Affiliation: UNC'
-      expect(page).to have_content 'Type http://purl.org/dc/dcmitype/Text'
+      expect(page).to_not have_content 'Type http://purl.org/dc/dcmitype/Text'
 
       click_on 'Logout'
 
@@ -276,7 +276,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       expect(page).to have_content 'College of Arts and Sciences'
       expect(page).to have_content 'Department of Biology'
       expect(page).to have_content 'Other Affiliation: UNC'
-      expect(page).to have_content 'Type http://purl.org/dc/dcmitype/Text'
+      expect(page).to_not have_content 'Type http://purl.org/dc/dcmitype/Text'
 
 
       # User and admin set owner get notification for 'depositing' role
@@ -286,7 +286,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       expect(user.mailbox.inbox.count).to eq 2
       expect(reviewer.mailbox.inbox.count).to eq 2
       expect(nonreviewer.mailbox.inbox.count).to eq 0
-      expect(manager.mailbox.inbox.count).to eq 0
+      expect(manager.mailbox.inbox.count).to eq 1
 
       click_on 'Logout'
 
@@ -310,7 +310,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       expect(user.mailbox.inbox.count).to eq 3
       expect(reviewer.mailbox.inbox.count).to eq 2
       expect(nonreviewer.mailbox.inbox.count).to eq 0
-      expect(manager.mailbox.inbox.count).to eq 0
+      expect(manager.mailbox.inbox.count).to eq 1
 
       # create a second honors thesis work to test viewer notification
       visit new_hyrax_honors_thesis_path
@@ -338,7 +338,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       expect(page).to_not have_content 'Administrative Set'
 
       click_button 'Save'
-      expect(page).to have_content 'Your files are being processed by Hyrax'
+      expect(page).to have_content 'Your files are being processed by the Carolina Digital Repository'
       expect(page).to have_content 'Pending review'
       expect(page).to have_content 'Test Default Keyword'
       expect(page).to have_content 'Creator Test Default Creator ORCID: creator orcid'
@@ -346,7 +346,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       expect(page).to have_content 'College of Arts and Sciences'
       expect(page).to have_content 'Department of Biology'
       expect(page).to have_content 'Other Affiliation: UNC'
-      expect(page).to have_content 'Type http://purl.org/dc/dcmitype/Text'
+      expect(page).to_not have_content 'Type http://purl.org/dc/dcmitype/Text'
 
       # Dept contact and user get notification for 'approving' role
       # Reviewer is not yet in reviewing group and does not get a notification
@@ -356,7 +356,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       expect(user.mailbox.inbox.count).to eq 4
       expect(reviewer.mailbox.inbox.count).to eq 3
       expect(nonreviewer.mailbox.inbox.count).to eq 0
-      expect(manager.mailbox.inbox.count).to eq 0
+      expect(manager.mailbox.inbox.count).to eq 2
 
       click_on 'Logout'
 
