@@ -214,6 +214,9 @@ en:
         review_advanced:
           message: "%{title} (<a href=\"%{document_path}\">%{work_id}</a>) was advanced in the workflow by
           %{user} and is awaiting approval %{comment}"
+        virus_found:
+          subject: 'Virus found in uploaded file'
+          message: "A virus was found in file %{comment} submitted with %{title} (%{link}) and has been deleted."
   simple_form:
     hints:
       defaults:

@@ -112,7 +112,7 @@ RSpec.feature 'Create a Dissertation', js: false do
       expect(page).not_to have_field('dissertation_visibility_lease')
       choose 'dissertation_visibility_open'
       check 'agreement'
-      
+
       expect(page).to have_selector('#dissertation_dcmi_type')
       expect(page).to have_selector("input[value='http://purl.org/dc/dcmitype/Text']")
       fill_in 'Dcmi type', with: 'http://purl.org/dc/dcmitype/Image'
@@ -170,7 +170,7 @@ RSpec.feature 'Create a Dissertation', js: false do
       
       expect(page).to have_content 'Test Default Keyword'
       expect(page).to have_content 'In Administrative Set: dissertation admin set'
-      expect(page).to have_content 'Type http://purl.org/dc/dcmitype/Image'
+      expect(page).to_not have_content 'Type http://purl.org/dc/dcmitype/Image'
       expect(page).to have_content "Last Modified #{Date.edtf(DateTime.now.to_s).humanize}"
 
       click_link 'Edit'

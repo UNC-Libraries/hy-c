@@ -171,7 +171,7 @@ RSpec.feature 'Create a MastersPaper', js: false do
       expect(page).to_not have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'
       
       expect(page).to_not have_content 'In Administrative Set: dept admin set'
-      expect(page).to have_content 'Type http://purl.org/dc/dcmitype/Text'
+      expect(page).to_not have_content 'Type http://purl.org/dc/dcmitype/Text'
 
       expect(page).to have_content 'Edit'
       click_link 'Edit'
@@ -279,7 +279,7 @@ RSpec.feature 'Create a MastersPaper', js: false do
       expect(page).to_not have_content 'Language http://id.loc.gov/vocabulary/iso639-2/eng'
       expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
       expect(page).to_not have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'
-      expect(page).to have_content 'Type http://purl.org/dc/dcmitype/Image'
+      expect(page).to_not have_content 'Type http://purl.org/dc/dcmitype/Image'
 
       click_link 'Edit'
 
