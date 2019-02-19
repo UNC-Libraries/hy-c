@@ -25,8 +25,8 @@ class AttachFilesToWorkJob < Hyrax::ApplicationJob
     end
   # [hyc-override] Log viruses
   rescue VirusDetectedError => error
-    Rails.logger.error "Virus encountered while processing work #{work.id}.\n" \
-                       "\t#{error.message}"
+    send_email_about_virus(work, error.message, user) && (Rails.logger.error "Virus encountered while processing work #{work.id}.\n" \
+                       "\t#{error.message}")
   end
 
   # [hyc-override] Add virus detection error class
@@ -62,5 +62,18 @@ class AttachFilesToWorkJob < Hyrax::ApplicationJob
     carrierwave_file = uploaded_file.file.file
     FileUtils.rm_rf(File.dirname(uploaded_file.file.to_s))
     raise(VirusDetectedError, carrierwave_file.filename)
+  end
+
+  # [hyc-override] Send notification to depositors and repo admins
+  def send_email_about_virus(work, file, depositor)
+    entity = Sipity::Entity.where(proxy_for_global_id: work.to_global_id.to_s).first
+    recipients = Hash.new
+    recipients[:to] = Role.where(name: 'admin').first.users
+    agent = Sipity::Agent.where(proxy_for_id: depositor.id, proxy_for_type: 'User').first_or_create
+    comment = Sipity::Comment.create(entity_id: entity.id, agent_id: agent.id, comment: file)
+    Hyrax::Workflow::VirusFoundNotification.send_notification(entity: entity,
+                                                              comment: comment,
+                                                              user: depositor,
+                                                              recipients: recipients)
   end
 end
