@@ -13,6 +13,8 @@ module Hydra::Derivatives::Processors
       convert_to_format
     ensure
       FileUtils.rm_f(converted_file)
+      # [hyc-override] clean up the parent temp dir
+      FileUtils.rmdir(File.dirname(converted_file))
     end
 
     private
@@ -36,8 +38,12 @@ module Hydra::Derivatives::Processors
       end
 
       def convert_to(format)
-        self.class.encode(source_path, format, Hydra::Derivatives.temp_file_base)
-        File.join(Hydra::Derivatives.temp_file_base, [File.basename(source_path, ".*"), format].join('.'))
+        # [hyc-override] create temp subdir for output to avoid repeat filename conflicts
+        temp_dir = File.join(Hydra::Derivatives.temp_file_base, Time.now.nsec.to_s)
+        FileUtils.mkdir(temp_dir)
+        self.class.encode(source_path, format, temp_dir)
+        
+        File.join(temp_dir, [File.basename(source_path, ".*"), format].join('.'))
       end
   end
 end
