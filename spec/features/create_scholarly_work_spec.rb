@@ -103,7 +103,7 @@ RSpec.feature 'Create a ScholarlyWork', js: false do
       expect(page).to_not have_content 'Administrative Set'
 
       click_button 'Save'
-      expect(page).to have_content 'Your files are being processed by Hyrax'
+      expect(page).to have_content 'Your files are being processed by the Carolina Digital Repository'
 
       visit '/dashboard/my/works/'
       expect(page).to have_content 'Test ScholarlyWork work'
@@ -117,6 +117,7 @@ RSpec.feature 'Create a ScholarlyWork', js: false do
       expect(page).to have_content 'Other Affiliation: UNC'
       expect(page).to have_content 'Conference name a conference'
       expect(page).to have_content 'Creator Test Default Creator ORCID: creator orcid'
+      expect(page).to_not have_content 'Type http://purl.org/dc/dcmitype/Text'
       expect(page).to have_content 'Date of publication October 3, 2018'
       expect(page).to have_content 'Location some geographic subject'
       expect(page).to have_content 'Keyword Test Default Keyword'
@@ -188,7 +189,7 @@ RSpec.feature 'Create a ScholarlyWork', js: false do
       find('#scholarly_work_admin_set_id').text eq 'scholarly work admin set'
 
       click_button 'Save'
-      expect(page).to have_content 'Your files are being processed by Hyrax'
+      expect(page).to have_content 'Your files are being processed by the Carolina Digital Repository'
 
       visit '/dashboard/my/works/'
       expect(page).to have_content 'Test ScholarlyWork work'
@@ -204,7 +205,7 @@ RSpec.feature 'Create a ScholarlyWork', js: false do
       expect(page).to have_content 'Creator Test Default Creator ORCID: creator orcid'
       expect(page).to have_content 'Date created October 3, 2018'
       expect(page).to have_content 'Date of publication October 3, 2018'
-      expect(page).to have_content 'Type http://purl.org/dc/dcmitype/Text'
+      expect(page).to_not have_content 'Type http://purl.org/dc/dcmitype/Text'
       expect(page).to have_content 'a description'
       expect(page).to have_content 'Digital collection my collection'
       expect(page).to have_content 'DOI some doi'

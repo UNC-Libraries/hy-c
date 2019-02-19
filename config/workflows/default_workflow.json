@@ -13,6 +13,13 @@
                     "methods": [
                         "Hyrax::Workflow::GrantEditToDepositor",
                         "Hyrax::Workflow::ActivateObject"
+                    ],
+                    "notifications": [
+                        {
+                            "notification_type": "email",
+                            "name": "Hyrax::Workflow::DepositedNotification",
+                            "to": []
+                        }
                     ]
                 }, {
                     "name": "withdraw",

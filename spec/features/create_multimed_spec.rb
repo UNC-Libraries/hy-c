@@ -99,7 +99,7 @@ RSpec.feature 'Create a Multimed', js: false do
       expect(page).to_not have_content 'Administrative Set'
 
       click_button 'Save'
-      expect(page).to have_content 'Your files are being processed by Hyrax'
+      expect(page).to have_content 'Your files are being processed by the Carolina Digital Repository'
 
       visit '/dashboard/my/works/'
       expect(page).to have_content 'Test Multimed'
@@ -181,7 +181,7 @@ RSpec.feature 'Create a Multimed', js: false do
       find('#multimed_admin_set_id').text eq 'default admin set'
 
       click_button 'Save'
-      expect(page).to have_content 'Your files are being processed by Hyrax'
+      expect(page).to have_content 'Your files are being processed by the Carolina Digital Repository'
 
       visit '/dashboard/my/works/'
       expect(page).to have_content 'Test Multimed'
@@ -195,7 +195,7 @@ RSpec.feature 'Create a Multimed', js: false do
       expect(page).to have_content 'Other Affiliation: UNC'
       expect(page).to have_content 'Date created October 3, 2018'
       expect(page).to have_content 'Date of publication October 3, 2018'
-      expect(page).to have_content 'Type http://purl.org/dc/dcmitype/Text'
+      expect(page).to_not have_content 'Type http://purl.org/dc/dcmitype/Text'
       expect(page).to have_content 'Digital collection my collection'
       expect(page).to have_content 'DOI some doi'
       expect(page).to have_content 'Extent some extent'

@@ -68,7 +68,7 @@ class ApplicationController < ActionController::Base
     end
 
     # All Box-C searches not caught above should go to the 404 page
-    if full_path.starts_with?('/search?', '/collections')
+    if full_path.starts_with?('/search?')
       Rails.logger.info "Is box-c search: #{request_host}/concern/404"
       redirect_to "#{request_host}/concern/404", status: :moved_permanently
 
