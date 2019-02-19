@@ -184,6 +184,10 @@ class SolrDocument
     self[Solrizer.solr_name('graduation_year')]
   end
 
+  def honors_concentration
+    self[Solrizer.solr_name('honors_concentration')]
+  end
+
   def isbn
     self[Solrizer.solr_name('isbn')]
   end

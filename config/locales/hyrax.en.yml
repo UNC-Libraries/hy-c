@@ -237,6 +237,7 @@ en:
         extent: "The size or duration of the work, e.g. \"3 pages\", or \"10 minutes.\""
         funder: "A grant, foundation or other entity that funded the research described in your work."
         geographic_subject: "A country, city, geographic area or other place. This could be where your data was collected or where your study took place. Select a value from the drop-down menu."
+        honors_concentration: "Fill out this field only if it is relevant to your program."
         identifier: "A unique identifier for your work. This could be a publisher-issued DOI or PubMed ID."
         journal_issue: "The journal issue number."
         journal_title: "The title of the journal in which your work was published."

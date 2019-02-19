@@ -25,8 +25,8 @@ RSpec.describe Hyrax::HonorsThesisForm do
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:access, :academic_concentration, :award, :date_created, :dcmi_type, :doi, :extent,
-                                     :geographic_subject, :note, :use, :language, :license, :resource_type,
+    it { is_expected.to match_array [:access, :award, :date_created, :dcmi_type, :doi, :extent,
+                                     :geographic_subject, :honors_concentration, :note, :use, :language, :license, :resource_type,
                                      :rights_statement, :subject, :keyword, :related_url, :language_label,
                                      :license_label, :rights_statement_label, :degree_granting_institution] }
   end
@@ -34,8 +34,8 @@ RSpec.describe Hyrax::HonorsThesisForm do
   describe "#admin_only_terms" do
     subject { form.admin_only_terms }
 
-    it { is_expected.to match_array [:dcmi_type, :access, :academic_concentration, :award, :date_created, :degree_granting_institution,
-                                     :doi, :extent, :use] }
+    it { is_expected.to match_array [:dcmi_type, :access, :award, :date_created, :degree_granting_institution,
+                                     :doi, :extent, :honors_concentration, :use] }
   end
   
   describe 'default value set' do
@@ -72,7 +72,6 @@ RSpec.describe Hyrax::HonorsThesisForm do
           thumbnail_id: '789',
           member_of_collection_ids: ['123456', 'abcdef'],
           abstract: [''],
-          academic_concentration: ['a concentration'],
           access: 'public', # single-valued
           advisors_attributes: { '0' => { name: 'advisor',
                                           orcid: 'advisor orcid',
@@ -86,6 +85,7 @@ RSpec.describe Hyrax::HonorsThesisForm do
           extent: ['an extent'],
           geographic_subject: ['a geographic subject'],
           graduation_year: '2017',
+          honors_concentration: ['a concentration'],
           note: [''],
           use: ['a use'],
           language_label: [],
@@ -109,7 +109,6 @@ RSpec.describe Hyrax::HonorsThesisForm do
       expect(subject['member_of_collection_ids']).to eq ['123456', 'abcdef']
       expect(subject['doi']).to eq '12345'
       expect(subject['abstract']).to be_empty
-      expect(subject['academic_concentration']).to eq ['a concentration']
       expect(subject['access']).to eq 'public'
       expect(subject['award']).to eq 'Honors'
       expect(subject['degree']).to eq 'MSIS'
@@ -119,6 +118,7 @@ RSpec.describe Hyrax::HonorsThesisForm do
       expect(subject['geographic_subject']).to eq ['a geographic subject']
       expect(subject['license']).to eq ['http://creativecommons.org/licenses/by/3.0/us/']
       expect(subject['graduation_year']).to eq '2017'
+      expect(subject['honors_concentration']).to eq ['a concentration']
       expect(subject['note']).to be_empty
       expect(subject['use']).to eq ['a use']
       expect(subject['language_label']).to eq ['English']
