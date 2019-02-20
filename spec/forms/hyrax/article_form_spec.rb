@@ -23,7 +23,7 @@ RSpec.describe Hyrax::ArticleForm do
 
     it { is_expected.to match_array [:keyword, :license, :rights_statement, :publisher, :date_created, :subject,
                                      :language, :identifier, :related_url, :resource_type, :access, :alternative_title,
-                                     :bibliographic_citation, :copyright_date, :date_other, :dcmi_type, :doi,
+                                     :bibliographic_citation, :copyright_date, :date_captured, :date_other, :dcmi_type, :doi,
                                      :digital_collection, :edition, :extent, :funder, :geographic_subject, :issn,
                                      :journal_title, :journal_volume, :journal_issue, :note, :page_end, :page_start,
                                      :peer_review_status, :place_of_publication, :rights_holder, :translator, :use,

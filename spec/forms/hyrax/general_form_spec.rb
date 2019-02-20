@@ -95,7 +95,7 @@ RSpec.describe Hyrax::GeneralForm do
                                           other_affiliation: 'another affiliation'} },
           conference_name: ['a conference'],
           copyright_date: ['2017'],
-          date_captured: ['2017-01-20'],
+          date_captured: '2017-01-20',
           date_issued: ['2017-01-22'],
           date_other: ['2017-01-22'],
           dcmi_type: ['type'],
@@ -175,7 +175,7 @@ RSpec.describe Hyrax::GeneralForm do
       expect(subject['award']).to eq 'an award'
       expect(subject['conference_name']).to eq ['a conference']
       expect(subject['copyright_date']).to eq ['2017']
-      expect(subject['date_captured']).to eq ['2017-01-20']
+      expect(subject['date_captured']).to eq '2017-01-20'
       expect(subject['date_issued']).to eq ['2017-01-22']
       expect(subject['date_other']).to eq ['2017-01-22']
       expect(subject['degree']).to eq 'something'
