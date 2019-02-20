@@ -24,6 +24,9 @@ terms:
   - id: Bowles Center for Alcohol Studies
     term: School of Medicine; Bowles Center for Alcohol Studies
     active: true
+  - id: Brain and Development Research Center
+    term: School of Medicine; Neuroscience Center
+    active: false
   - id: CCGS
     term: School of Medicine; Carolina Center for Genome Sciences
     active: false
@@ -56,6 +59,12 @@ terms:
     active: false
   - id: Carolina Population Center
     term: Carolina Population Center
+    active: true
+  - id: Survey Research Unit
+    term: Gillings School of Global Public Health; Department of Biostatistics; Carolina Survey Research Laboratory
+    active: false
+  - id: Carolina Survey Research Laboratory
+    term: Gillings School of Global Public Health; Department of Biostatistics; Carolina Survey Research Laboratory
     active: true
   - id: Carolina Vaccine Institute
     term: School of Medicine; Carolina Vaccine Institute
@@ -105,6 +114,9 @@ terms:
   - id: Heart and Vascular Center
     term: School of Medicine; Center for Heart and Vascular Care
     active: false
+  - id: Center for Genomics and Society
+    term: School of Medicine; Department of Social Medicine; Center for Genomics and Society
+    active: true
   - id: Center for Heart and Vascular Care
     term: School of Medicine; Center for Heart and Vascular Care
     active: true
@@ -152,6 +164,9 @@ terms:
     active: true
   - id: Comparative Literature Program
     term: College of Arts and Sciences; Department of English and Comparative Literature; Comparative Literature Program
+    active: false
+  - id: Comprehensive Center for Inflammatory Disorders
+    term: Comprehensive Center for Inflammatory Disorders
     active: false
   - id: Creative Writing Program
     term: College of Arts and Sciences; Department of English and Comparative Literature; Creative Writing Program
@@ -612,6 +627,9 @@ terms:
   - id: Division of Hospital Medicine
     term: School of Medicine; Division of Hospital Medicine; Department of Medicine
     active: true
+  - id: Division of Geriatric Medicine
+    term: School of Medicine; Division of Geriatric Medicine
+    active: true
   - id: Division of Infectious Diseases
     term: School of Medicine; Division of Infectious Diseases
     active: true
@@ -656,6 +674,9 @@ terms:
     active: true
   - id: Division of Speech and Hearing Sciences
     term: School of Medicine; Department of Allied Health Sciences; Division of Speech and Hearing Sciences
+    active: true
+  - id: Division of Surgical Oncology
+    term: School of Medicine; Department of Surgery; Division of Surgical Oncology
     active: true
   - id: MEDX
     term: School of Education; Education for Experienced Teachers
@@ -808,6 +829,9 @@ terms:
   - id: Kenan-Flagler Business School
     term: Kenan-Flagler Business School
     active: true
+  - id: Kenan Institute of Private Enterprise
+    term: Kenan-Flagler Business School; Kenan Institute of Private Enterprise
+    active: true
   - id: Literature, Medicine, and Culture Concentration
     term: College of Arts and Sciences; Department of English and Comparative Literature; Literature, Medicine, and Culture Concentration
     active: true
@@ -823,6 +847,9 @@ terms:
   - id: Mathematical Decision Sciences Program
     term: College of Arts and Sciences; Department of Statistics and Operations Research; Mathematical Decision Sciences Program
     active: false
+  - id: Michael Hooker Microscopy Facility
+    term: School of Medicine; Michael Hooker Microscopy Facility
+    active: true
   - id: Molecular and Cellular Pathology Graduate Program
     term: School of Medicine; Department of Pathology and Laboratory Medicine; Molecular and Cellular Pathology Graduate Program
     active: true
@@ -845,6 +872,12 @@ terms:
   - id: Neuroscience Curriculum
     term: School of Medicine; UNC Neuroscience Center; Neuroscience Curriculum
     active: true
+  - id: North Carolina Institute for Public Health
+    term: Gillings School of Global Public Health; North Carolina Institute for Public Health
+    active: true
+  - id: North Carolina Translational and Clinical Sciences Institute
+    term: School of Medicine; North Carolina Translational and Clinical Sciences Institute
+    active: true
   - id: NRI
     term: Nutrition Research Institute
     active: false
@@ -859,6 +892,12 @@ terms:
     active: false
   - id: Odum Institute for Research in Social Science
     term: Odum Institute for Research in Social Science
+    active: true
+  - id: Office for Interprofessional Education and Practice
+    term: Office for Interprofessional Education and Practice
+    active: true
+  - id: Office of Research Communications
+    term: Office of Research Communications
     active: true
   - id: Oral and Craniofacial Biomedicine PhD Program
     term: School of Dentistry; Oral and Craniofacial Biomedicine PhD Program;
@@ -916,6 +955,9 @@ terms:
     active: false
   - id: Renaissance Computing Institute
     term: Renaissance Computing Institute
+    active: true
+  - id: Robert Wood Johnson Clinical Scholars Program
+    term: Robert Wood Johnson Clinical Scholars Program
     active: true
   - id: Russian, Eurasian and East European Concentration
     term: College of Arts and Sciences; Center for Slavic, Eurasian, and East European Studies; Russian, Eurasian and East European Concentration
@@ -994,11 +1036,17 @@ terms:
   - id: The Water Institute
     term: The Water Institute; Gillings School of Global Public Health
     active: true
+  - id: Translational Pathology Laboratory
+    term: School of Medicine; Department of Pathology and Laboratory Medicine; Translational Pathology Laboratory
+    active: true
   - id: UNC Center for AIDS Research
     term: School of Medicine; UNC Center for AIDS Research
     active: true
   - id: UNC Center for Bioethics
     term: School of Medicine; UNC Center for Bioethics
+    active: true
+  - id: UNC Center for Community Capital
+    term: College of Arts and Sciences; UNC Center for Community Capital
     active: true
   - id: UNC Center for Functional GI and Motility Disorders
     term: School of Medicine; Department of Medicine; Division of Gastroenterology and Hepatology; UNC Center for Functional GI and Motility Disorders
