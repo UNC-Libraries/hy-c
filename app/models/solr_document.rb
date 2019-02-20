@@ -331,6 +331,11 @@ class SolrDocument
   def translator_display
     self[Solrizer.solr_name('translator_display')]
   end
+
+  def url
+    self[Solrizer.solr_name('url')]
+  end
+
   def use
     self[Solrizer.solr_name('use')]
   end
