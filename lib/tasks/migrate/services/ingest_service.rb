@@ -131,6 +131,8 @@ module Migrate
 
           end_time = Time.now
           puts "[#{end_time.to_s}] #{uuid},#{new_work.id} Completed migration in #{end_time-start_time} seconds"
+          
+          
         end
 
         if !@child_work_type.blank?
@@ -256,23 +258,44 @@ module Migrate
 
         def attach_children
           # Load mapping of old uuids to new hyrax ids
-          uuid_to_id = @id_mapper.load.map { |key, value| [key, value.split('/')[-1]] }
+          uuid_to_id = Hash[@id_mapper.load.map { |key, value| [key, value.split('/')[-1]] }]
           # Load mapping of parents to children
-          parent_hash = @parent_child_mapper.load.map {|key, value| [key, value.split('|')] }
+          parent_hash = Hash[@parent_child_mapper.load.map {|key, value| [key, value.split('|')] }]
+          # Create or resume log of children attached
+          attached_mapper = Migrate::Services::ProgressTracker.new(File.join(output_dir, 'attached_progress.log'))
+          # Load the mapping of children to parent that have been attached, in case we are resuming
+          already_attached = attached_mapper.load_completed
           
           attach_time = Time.now
           puts "[#{attach_time.to_s}] attaching children to parents"
           parent_hash.each do |parent_id, children|
             hyrax_id = uuid_to_id[parent_id]
             parent = @work_type.singularize.classify.constantize.find(hyrax_id)
+            parent_changed = false
+            
             children.each do |child|
-              if uuid_to_id[child]
-                parent.ordered_members << ActiveFedora::Base.find(uuid_to_id[child])
-                parent.members << ActiveFedora::Base.find(uuid_to_id[child])
+              # If the child is in the uuid_to_id mapping, it is a child work and must be attached to the parent
+              child_id = uuid_to_id[child]
+              if child_id && !already_attached.include?(child_id)
+                child_id = uuid_to_id[child]
+                child = ActiveFedora::Base.find(child_id)
+                parent.ordered_members << child
+                parent.members << child
+                parent_changed = true
               end
             end
-            MigrationHelper.retry_operation('attaching children') do
-              parent.save!
+            # Persist the parent with its updated list of children if any were added
+            if parent_changed
+              MigrationHelper.retry_operation('attaching children') do
+                parent.save!
+              end
+              # Log that the children were attached
+              children.each do |child|
+                attached_mapper.add_entry(child)
+                puts "Attached child #{child_id} to parent #{hyrax_id}"
+              end
+            else
+              puts "No additional children attached to parent #{hyrax_id}"
             end
           end
           puts "[#{Time.now.to_s}] finished attaching children in #{Time.now-attach_time} seconds"
