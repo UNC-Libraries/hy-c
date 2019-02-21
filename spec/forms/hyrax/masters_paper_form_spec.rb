@@ -23,8 +23,8 @@ RSpec.describe Hyrax::MastersPaperForm do
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:academic_concentration, :access, :dcmi_type, :degree_granting_institution, :doi, :extent,
-                                     :geographic_subject, :note, :reviewer, :use, :keyword, :subject, :language, 
+    it { is_expected.to match_array [:academic_concentration, :access, :based_near, :dcmi_type, :degree_granting_institution, :doi, :extent,
+                                     :reviewer, :use, :keyword, :subject, :language, :note,
                                      :rights_statement, :license, :language_label, :license_label, 
                                      :rights_statement_label] }
   end
@@ -60,6 +60,7 @@ RSpec.describe Hyrax::MastersPaperForm do
                                           other_affiliation: 'another affiliation'} },
           subject: ['a subject'],
           language: ['http://id.loc.gov/vocabulary/iso639-2/eng'],
+          based_near: ['a geographic subject'],
           license: 'http://creativecommons.org/licenses/by/3.0/us/', # single-valued
           rights_statement: 'http://rightsstatements.org/vocab/InC/1.0/', # single-valued
           resource_type: ['a type'],
@@ -82,7 +83,6 @@ RSpec.describe Hyrax::MastersPaperForm do
           degree_granting_institution: 'UNC', # single-valued
           doi: '12345',
           extent: ['an extent'],
-          geographic_subject: ['a geographic subject'],
           graduation_year: '2017',
           note: ['a note'],
           reviewers_attributes: { '0' => { name: 'reviewer',
@@ -103,6 +103,7 @@ RSpec.describe Hyrax::MastersPaperForm do
       expect(subject['subject']).to eq ['a subject']
       expect(subject['language']).to eq ['http://id.loc.gov/vocabulary/iso639-2/eng']
       expect(subject['license']).to eq ['http://creativecommons.org/licenses/by/3.0/us/']
+      expect(subject['based_near']).to eq ['a geographic subject']
       expect(subject['rights_statement']).to eq 'http://rightsstatements.org/vocab/InC/1.0/'
       expect(subject['resource_type']).to eq ['a type']
       expect(subject['keyword']).to eq ['derp']
@@ -118,7 +119,6 @@ RSpec.describe Hyrax::MastersPaperForm do
       expect(subject['doi']).to eq '12345'
       expect(subject['extent']).to eq ['an extent']
       expect(subject['dcmi_type']).to eq ['type']
-      expect(subject['geographic_subject']).to eq ['a geographic subject']
       expect(subject['graduation_year']).to eq '2017'
       expect(subject['note']).to eq ['a note']
       expect(subject['use']).to eq ['a use']

@@ -41,10 +41,6 @@ class DataSet < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :geographic_subject, predicate: ::RDF::Vocab::DC.spatial do |index|
-    index.as :stored_searchable
-  end
-
   property :kind_of_data, predicate: ::RDF::Vocab::DISCO.kindOfData, multiple: false do |index|
     index.as :stored_searchable
   end

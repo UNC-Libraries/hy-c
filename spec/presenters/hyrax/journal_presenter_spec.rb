@@ -23,7 +23,7 @@ RSpec.describe Hyrax::JournalPresenter do
       "digital_collection_tesim" => ['my collection'],
       "doi_tesim" => '12345',
       "extent_tesim" => ['1993'],
-      "geographic_subject_tesim" => ['California'],
+      "based_near_tesim" => ['California'],
       "isbn_tesim" => ['123456'],
       "issn_tesim" => ['12345'],
       "note_tesim" => ['a note'],
@@ -48,6 +48,7 @@ RSpec.describe Hyrax::JournalPresenter do
   it { is_expected.to delegate_method(:date_created).to(:solr_document) }
   it { is_expected.to delegate_method(:date_modified).to(:solr_document) }
   it { is_expected.to delegate_method(:date_uploaded).to(:solr_document) }
+  it { is_expected.to delegate_method(:based_near_label).to(:solr_document) }
   it { is_expected.to delegate_method(:rights_statement).to(:solr_document) }
   it { is_expected.to delegate_method(:depositor).to(:solr_document) }
   it { is_expected.to delegate_method(:identifier).to(:solr_document) }
@@ -62,7 +63,6 @@ RSpec.describe Hyrax::JournalPresenter do
   it { is_expected.to delegate_method(:digital_collection).to(:solr_document) }
   it { is_expected.to delegate_method(:doi).to(:solr_document) }
   it { is_expected.to delegate_method(:extent).to(:solr_document) }
-  it { is_expected.to delegate_method(:geographic_subject).to(:solr_document) }
   it { is_expected.to delegate_method(:isbn).to(:solr_document) }
   it { is_expected.to delegate_method(:issn).to(:solr_document) }
   it { is_expected.to delegate_method(:note).to(:solr_document) }
@@ -177,17 +177,6 @@ RSpec.describe Hyrax::JournalPresenter do
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:dcmi_type)
-      end
-    end
-
-    context "with a custom geographic subject field" do
-      before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:geographic_subject, ['California'], {}).and_return(renderer)
-      end
-
-      it "calls the AttributeRenderer" do
-        expect(renderer).to receive(:render)
-        presenter.attribute_to_html(:geographic_subject)
       end
     end
 

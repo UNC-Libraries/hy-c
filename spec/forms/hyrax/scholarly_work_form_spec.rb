@@ -21,8 +21,8 @@ RSpec.describe Hyrax::ScholarlyWorkForm do
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:advisor, :conference_name, :date_created, :dcmi_type, :digital_collection, :doi,
-                                     :geographic_subject, :description, :keyword, :language, :license, :resource_type, 
+    it { is_expected.to match_array [:advisor, :based_near, :conference_name, :date_created, :dcmi_type, :digital_collection,
+                                     :doi, :description, :keyword, :language, :license, :resource_type,
                                      :rights_statement, :subject, :language_label, :license_label, 
                                      :rights_statement_label] }
   end
@@ -58,6 +58,7 @@ RSpec.describe Hyrax::ScholarlyWorkForm do
           subject: ['a subject'],
           language: ['http://id.loc.gov/vocabulary/iso639-2/eng'],
           keyword: ['test'],
+          based_near: ['a geographic subject'],
           resource_type: ['a type'],
           license: 'http://creativecommons.org/licenses/by/3.0/us/', # single-valued
           rights_statement: 'http://rightsstatements.org/vocab/InC/1.0/', # single-valued
@@ -75,7 +76,6 @@ RSpec.describe Hyrax::ScholarlyWorkForm do
           dcmi_type: ['type'],
           digital_collection: ['my collection'],
           doi: '12345',
-          geographic_subject: ['a geographic subject'],
           language_label: [],
           license_label: [],
           rights_statement_label: ''
@@ -93,6 +93,7 @@ RSpec.describe Hyrax::ScholarlyWorkForm do
       expect(subject['subject']).to eq ['a subject']
       expect(subject['language']).to eq ['http://id.loc.gov/vocabulary/iso639-2/eng']
       expect(subject['keyword']).to eq ['test']
+      expect(subject['based_near']).to eq ['a geographic subject']
       expect(subject['resource_type']).to eq ['a type']
       expect(subject['license']).to eq ['http://creativecommons.org/licenses/by/3.0/us/']
       expect(subject['rights_statement']).to eq 'http://rightsstatements.org/vocab/InC/1.0/'
@@ -103,7 +104,6 @@ RSpec.describe Hyrax::ScholarlyWorkForm do
       expect(subject['conference_name']).to eq ['a conference name']
       expect(subject['date_issued']).to eq 'a date'
       expect(subject['dcmi_type']).to eq ['type']
-      expect(subject['geographic_subject']).to eq ['a geographic subject']
       expect(subject['member_of_collection_ids']).to eq ['123456', 'abcdef']
       expect(subject['language_label']).to eq ['English']
       expect(subject['license_label']).to eq ['Attribution 3.0 United States']

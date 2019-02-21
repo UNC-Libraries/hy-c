@@ -21,10 +21,10 @@ RSpec.describe Hyrax::ArticleForm do
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:keyword, :license, :rights_statement, :publisher, :date_created, :subject,
+    it { is_expected.to match_array [:based_near, :keyword, :license, :rights_statement, :publisher, :date_created, :subject,
                                      :language, :identifier, :related_url, :resource_type, :access, :alternative_title,
                                      :bibliographic_citation, :copyright_date, :date_other, :dcmi_type, :doi,
-                                     :digital_collection, :edition, :extent, :funder, :geographic_subject, :issn,
+                                     :digital_collection, :edition, :extent, :funder, :issn,
                                      :journal_title, :journal_volume, :journal_issue, :note, :page_end, :page_start,
                                      :peer_review_status, :place_of_publication, :rights_holder, :translator, :use,
                                      :language_label, :license_label, :rights_statement_label] }
@@ -61,6 +61,7 @@ RSpec.describe Hyrax::ArticleForm do
                                           other_affiliation: 'another affiliation'} },
           date_created: '2017-01-22', # single-valued
           language: ['http://id.loc.gov/vocabulary/iso639-2/eng'],
+          based_near: ['California'],
           publisher: ['a publisher'],
           related_url: ['a url'],
           resource_type: ['a type'],
@@ -84,7 +85,6 @@ RSpec.describe Hyrax::ArticleForm do
           edition: 'an edition', # single-valued
           extent: ['1993'],
           funder: ['dean'],
-          geographic_subject: ['California'],
           issn: ['12345'],
           journal_issue: '27', # single-valued
           journal_title: 'Journal Title', # single-valued
@@ -113,6 +113,7 @@ RSpec.describe Hyrax::ArticleForm do
       expect(subject['bibliographic_citation']).to eq ['a citation']
       expect(subject['date_created']).to eq '2017-01-22'
       expect(subject['language']).to eq ['http://id.loc.gov/vocabulary/iso639-2/eng']
+      expect(subject['based_near']).to eq ['California']
       expect(subject['license']).to eq ['http://creativecommons.org/licenses/by/3.0/us/']
       expect(subject['publisher']).to eq ['a publisher']
       expect(subject['related_url']).to eq ['a url']
@@ -135,7 +136,6 @@ RSpec.describe Hyrax::ArticleForm do
       expect(subject['extent']).to eq ['1993']
       expect(subject['funder']).to eq ['dean']
       expect(subject['dcmi_type']).to eq ['type']
-      expect(subject['geographic_subject']).to eq ['California']
       expect(subject['issn']).to eq ['12345']
       expect(subject['journal_issue']).to eq '27'
       expect(subject['journal_title']).to eq 'Journal Title'

@@ -6,10 +6,10 @@ module Hyrax
 
     self.model_class = ::Dissertation
     self.terms += [:abstract, :academic_concentration, :access, :advisor, :reviewer, :alternative_title, :date_issued, :dcmi_type,
-                   :degree, :degree_granting_institution, :doi, :geographic_subject, :graduation_year, :note,
+                   :degree, :degree_granting_institution, :doi, :graduation_year, :note,
                    :place_of_publication, :resource_type, :use]
 
-    self.terms -= [:based_near, :bibliographic_citation, :date_created, :description, :source, :related_url]
+    self.terms -= [:bibliographic_citation, :date_created, :description, :source, :related_url]
     self.required_fields = [:title, :creator, :date_issued]
     self.single_value_fields = [:title, :license]
     

@@ -25,7 +25,7 @@ RSpec.describe Hyrax::DataSetPresenter do
       "doi_tesim" => '12345',
       "extent_tesim" => ['1993'],
       "funder_tesim" => ['unc'],
-      "geographic_subject_tesim" => ['California'],
+      "based_near_tesim" => ['California'],
       "kind_of_data_tesim" => ['some data'],
       "last_modified_date_tesim" => '2018-01-29',
       "methodology_tesim" => 'my methods',
@@ -51,6 +51,7 @@ RSpec.describe Hyrax::DataSetPresenter do
   it { is_expected.to delegate_method(:date_created).to(:solr_document) }
   it { is_expected.to delegate_method(:date_modified).to(:solr_document) }
   it { is_expected.to delegate_method(:date_uploaded).to(:solr_document) }
+  it { is_expected.to delegate_method(:based_near_label).to(:solr_document) }
   it { is_expected.to delegate_method(:rights_statement).to(:solr_document) }
   it { is_expected.to delegate_method(:depositor).to(:solr_document) }
   it { is_expected.to delegate_method(:identifier).to(:solr_document) }
@@ -65,7 +66,6 @@ RSpec.describe Hyrax::DataSetPresenter do
   it { is_expected.to delegate_method(:doi).to(:solr_document) }
   it { is_expected.to delegate_method(:extent).to(:solr_document) }
   it { is_expected.to delegate_method(:funder).to(:solr_document) }
-  it { is_expected.to delegate_method(:geographic_subject).to(:solr_document) }
   it { is_expected.to delegate_method(:kind_of_data).to(:solr_document) }
   it { is_expected.to delegate_method(:last_modified_date).to(:solr_document) }
   it { is_expected.to delegate_method(:methodology).to(:solr_document) }
@@ -181,17 +181,6 @@ RSpec.describe Hyrax::DataSetPresenter do
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:dcmi_type)
-      end
-    end
-
-    context "with a custom geographic subject field" do
-      before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:geographic_subject, ['California'], {}).and_return(renderer)
-      end
-
-      it "calls the AttributeRenderer" do
-        expect(renderer).to receive(:render)
-        presenter.attribute_to_html(:geographic_subject)
       end
     end
 

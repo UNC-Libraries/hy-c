@@ -21,7 +21,7 @@ RSpec.describe Hyrax::DataSetForm do
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:dcmi_type, :copyright_date, :doi, :extent, :funder, :geographic_subject, :last_modified_date,
+    it { is_expected.to match_array [:based_near, :dcmi_type, :copyright_date, :doi, :extent, :funder, :last_modified_date,
                                      :project_director, :researcher, :rights_holder, :sponsor, :language, :keyword,
                                      :related_url, :license, :contributor, :date_created, :subject, :rights_statement,
                                      :language_label, :license_label, :rights_statement_label] }
@@ -74,7 +74,7 @@ RSpec.describe Hyrax::DataSetForm do
           doi: '12345',
           extent: ['1993'],
           funder: ['dean'],
-          geographic_subject: ['California'],
+          based_near: ['California'],
           kind_of_data: 'some data',
           last_modified_date: '2018-01-23',
           language: ['http://id.loc.gov/vocabulary/iso639-2/eng'],
@@ -113,7 +113,7 @@ RSpec.describe Hyrax::DataSetForm do
       expect(subject['extent']).to eq ['1993']
       expect(subject['funder']).to eq ['dean']
       expect(subject['dcmi_type']).to eq ['type']
-      expect(subject['geographic_subject']).to eq ['California']
+      expect(subject['based_near']).to eq ['California']
       expect(subject['kind_of_data']).to eq 'some data'
       expect(subject['last_modified_date']).to eq '2018-01-23'
       expect(subject['language']).to eq ['http://id.loc.gov/vocabulary/iso639-2/eng']

@@ -25,8 +25,8 @@ RSpec.describe Hyrax::HonorsThesisForm do
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:access, :academic_concentration, :award, :date_created, :dcmi_type, :doi, :extent,
-                                     :geographic_subject, :note, :use, :language, :license, :resource_type,
+    it { is_expected.to match_array [:access, :academic_concentration, :award, :based_near, :date_created, :dcmi_type, :doi, :extent,
+                                     :note, :use, :language, :license, :resource_type,
                                      :rights_statement, :subject, :keyword, :related_url, :language_label,
                                      :license_label, :rights_statement_label, :degree_granting_institution] }
   end
@@ -63,6 +63,7 @@ RSpec.describe Hyrax::HonorsThesisForm do
                                           other_affiliation: 'another affiliation'} },
           keyword: ['a keyword'],
           language: ['http://id.loc.gov/vocabulary/iso639-2/eng'],
+          based_near: ['California'],
           license: 'http://creativecommons.org/licenses/by/3.0/us/', # single-valued
           resource_type: ['a type'],
           rights_statement: 'http://rightsstatements.org/vocab/InC/1.0/', # single-valued
@@ -84,7 +85,6 @@ RSpec.describe Hyrax::HonorsThesisForm do
           degree_granting_institution: 'UNC', # single-valued
           doi: '12345',
           extent: ['an extent'],
-          geographic_subject: ['a geographic subject'],
           graduation_year: '2017',
           note: [''],
           use: ['a use'],
@@ -100,6 +100,7 @@ RSpec.describe Hyrax::HonorsThesisForm do
       expect(subject['title']).to eq ['foo']
       expect(subject['keyword']).to eq ['a keyword']
       expect(subject['language']).to eq ['http://id.loc.gov/vocabulary/iso639-2/eng']
+      expect(subject['based_near']).to eq ['California']
       expect(subject['resource_type']).to eq ['a type']
       expect(subject['rights_statement']).to eq 'http://rightsstatements.org/vocab/InC/1.0/'
       expect(subject['subject']).to eq ['a subject']
@@ -116,7 +117,6 @@ RSpec.describe Hyrax::HonorsThesisForm do
       expect(subject['degree_granting_institution']).to eq 'UNC'
       expect(subject['extent']).to eq ['an extent']
       expect(subject['dcmi_type']).to eq ['type']
-      expect(subject['geographic_subject']).to eq ['a geographic subject']
       expect(subject['license']).to eq ['http://creativecommons.org/licenses/by/3.0/us/']
       expect(subject['graduation_year']).to eq '2017'
       expect(subject['note']).to be_empty

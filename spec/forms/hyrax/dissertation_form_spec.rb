@@ -21,8 +21,8 @@ RSpec.describe Hyrax::DissertationForm do
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:abstract, :academic_concentration, :access, :advisor, :alternative_title,
-                                     :dcmi_type, :degree, :degree_granting_institution, :doi, :geographic_subject, :graduation_year, :note,
+    it { is_expected.to match_array [:abstract, :academic_concentration, :access, :advisor, :alternative_title, :based_near,
+                                     :dcmi_type, :degree, :degree_granting_institution, :doi, :graduation_year, :note,
                                      :place_of_publication, :reviewer, :use, :contributor, :identifier, :subject,
                                      :publisher, :language, :keyword, :rights_statement, :license, :resource_type,
                                      :language_label, :license_label, :rights_statement_label] }
@@ -60,6 +60,7 @@ RSpec.describe Hyrax::DissertationForm do
           identifier: ['an id'],
           keyword: ['a keyword'],
           language: ['http://id.loc.gov/vocabulary/iso639-2/eng'],
+          based_near: ['a geographic subject'],
           license: 'http://creativecommons.org/licenses/by/3.0/us/', # single-valued
           publisher: ['a publisher'],
           resource_type: ['a type'],
@@ -82,7 +83,6 @@ RSpec.describe Hyrax::DissertationForm do
           degree: 'MSIS', # single-valued
           degree_granting_institution: 'UNC', # single-valued
           doi: 'hi.org', # single-valued
-          geographic_subject: ['a geographic subject'],
           graduation_year: '2017',
           note: [''],
           place_of_publication: ['a place'],
@@ -104,6 +104,7 @@ RSpec.describe Hyrax::DissertationForm do
       expect(subject['identifier']).to eq ['an id']
       expect(subject['keyword']).to eq ['a keyword']
       expect(subject['language']).to eq ['http://id.loc.gov/vocabulary/iso639-2/eng']
+      expect(subject['based_near']).to eq ['a geographic subject']
       expect(subject['license']).to eq ['http://creativecommons.org/licenses/by/3.0/us/']
       expect(subject['publisher']).to eq ['a publisher']
       expect(subject['resource_type']).to eq ['a type']
@@ -120,7 +121,6 @@ RSpec.describe Hyrax::DissertationForm do
       expect(subject['degree_granting_institution']).to eq 'UNC'
       expect(subject['doi']).to eq 'hi.org'
       expect(subject['dcmi_type']).to eq ['type']
-      expect(subject['geographic_subject']).to eq ['a geographic subject']
       expect(subject['graduation_year']).to eq '2017'
       expect(subject['note']).to be_empty
       expect(subject['place_of_publication']).to eq ['a place']

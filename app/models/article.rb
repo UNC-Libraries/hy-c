@@ -61,10 +61,6 @@ class Article < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :geographic_subject, predicate: ::RDF::Vocab::DC.spatial do |index|
-    index.as :stored_searchable
-  end
-
   property :issn, predicate: ::RDF::Vocab::Identifiers.issn do |index|
     index.as :stored_searchable
   end

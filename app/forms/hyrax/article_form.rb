@@ -7,13 +7,13 @@ module Hyrax
 
     self.model_class = ::Article
     self.terms += [:resource_type, :abstract, :access, :alternative_title, :bibliographic_citation, :copyright_date, :date_issued,
-                   :date_other, :dcmi_type, :digital_collection, :doi, :edition, :extent, :funder, :geographic_subject, :issn,
+                   :date_other, :dcmi_type, :digital_collection, :doi, :edition, :extent, :funder, :issn,
                    :journal_title, :journal_volume, :journal_issue, :note, :page_start, :page_end, :peer_review_status,
                    :place_of_publication, :rights_holder, :translator, :use]
 
     self.required_fields = [:title, :creator, :abstract, :date_issued]
 
-    self.terms -= [:contributor, :based_near, :source, :description]
+    self.terms -= [:contributor, :source, :description]
     
     self.single_value_fields = [:title, :license]
     
