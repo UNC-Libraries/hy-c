@@ -15,8 +15,8 @@ module Migrate
         end
       end
 
-      def load_completed
-        IO.readlines(@filename).to_set
+      def completed_set
+        IO.readlines(@filename).map { |entry| entry.chomp }.to_set
       end
 
       private

@@ -13,7 +13,7 @@ module Migrate
         end
       end
 
-      def load
+      def mappings
         CSV.read(@filename, { headers: true })
       end
 

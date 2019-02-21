@@ -2,6 +2,7 @@ module Migrate
   module Services
     require 'tasks/migrate/services/id_mapper'
     require 'tasks/migrate/services/metadata_parser'
+    require 'tasks/migrate/services/progress_tracker'
     require 'tasks/migration_helper'
 
     class IngestService
@@ -17,21 +18,37 @@ module Migrate
         @depositor = depositor
         @tmp_file_location = config['tmp_file_location']
         @config = config
+        @output_dir = output_dir
+        
+        # Create the output directory if it does not yet exist
+        FileUtils.mkdir(output_dir) unless File.exist?(@output_dir)
         
         # Create file and hash mapping new and old ids
-        @id_mapper = Migrate::Services::IdMapper.new(File.join(output_dir, 'old_to_new.csv'), 'old', 'new')
+        @id_mapper = Migrate::Services::IdMapper.new(File.join(@output_dir, 'old_to_new.csv'), 'old', 'new')
         # Store parent-child relationships
-        @parent_child_mapper = Migrate::Services::IdMapper.new(File.join(output_dir, 'parent_child.csv'), 'parent', 'children')
+        @parent_child_mapper = Migrate::Services::IdMapper.new(File.join(@output_dir, 'parent_child.csv'), 'parent', 'children')
+        # Progress tracker for objects migrated
+        @object_progress = Migrate::Services::ProgressTracker.new(File.join(@output_dir, 'object_progress.log'))
       end
 
       def ingest_records
+        STDOUT.sync = true
         # get array of record uuids
         collection_uuids = MigrationHelper.get_collection_uuids(@collection_ids_file)
+        
+        already_migrated = @object_progress.completed_set
+        puts "Skipping #{already_migrated.length} previously migrated works"
 
         puts "[#{Time.now.to_s}] Object count:  #{collection_uuids.count.to_s}"
 
         # get metadata for each record
         collection_uuids.each do |uuid|
+          # Skip this item if it has been migrated before
+          if already_migrated.include?(uuid)
+            puts "Skipping previously ingested #{uuid}"
+            next
+          end
+          
           start_time = Time.now
           puts "[#{start_time.to_s}] #{uuid} Start migration"
           parsed_data = Migrate::Services::MetadataParser.new(@object_hash[uuid],
@@ -129,16 +146,15 @@ module Migrate
             end
           end
 
+          # Record that this object was migrated
+          @object_progress.add_entry(uuid)
           end_time = Time.now
           puts "[#{end_time.to_s}] #{uuid},#{new_work.id} Completed migration in #{end_time-start_time} seconds"
-          
-          
         end
 
         if !@child_work_type.blank?
           attach_children
         end
-        STDOUT.sync = true
         STDOUT.flush
       end
 
@@ -258,29 +274,30 @@ module Migrate
 
         def attach_children
           # Load mapping of old uuids to new hyrax ids
-          uuid_to_id = Hash[@id_mapper.load.map { |key, value| [key, value.split('/')[-1]] }]
+          uuid_to_id = Hash[@id_mapper.mappings.map { |row| [row[0], row[1].split('/')[-1]] }]
           # Load mapping of parents to children
-          parent_hash = Hash[@parent_child_mapper.load.map {|key, value| [key, value.split('|')] }]
+          parent_hash = Hash[@parent_child_mapper.mappings.map { |row| [row[0], row[1].split('|')] }]
           # Create or resume log of children attached
-          attached_mapper = Migrate::Services::ProgressTracker.new(File.join(output_dir, 'attached_progress.log'))
+          attached_mapper = Migrate::Services::ProgressTracker.new(File.join(@output_dir, 'attached_progress.log'))
           # Load the mapping of children to parent that have been attached, in case we are resuming
-          already_attached = attached_mapper.load_completed
+          already_attached = attached_mapper.completed_set
           
           attach_time = Time.now
           puts "[#{attach_time.to_s}] attaching children to parents"
           parent_hash.each do |parent_id, children|
+            attach_to_parent_time = Time.now
+            
             hyrax_id = uuid_to_id[parent_id]
             parent = @work_type.singularize.classify.constantize.find(hyrax_id)
             parent_changed = false
             
             children.each do |child|
+              next if already_attached.include?(child)
               # If the child is in the uuid_to_id mapping, it is a child work and must be attached to the parent
               child_id = uuid_to_id[child]
-              if child_id && !already_attached.include?(child_id)
-                child_id = uuid_to_id[child]
-                child = ActiveFedora::Base.find(child_id)
-                parent.ordered_members << child
-                parent.members << child
+              if child_id
+                parent.ordered_members << ActiveFedora::Base.find(child_id)
+                parent.members << ActiveFedora::Base.find(child_id)
                 parent_changed = true
               end
             end
@@ -289,10 +306,10 @@ module Migrate
               MigrationHelper.retry_operation('attaching children') do
                 parent.save!
               end
+              puts "Attached children to parent #{hyrax_id} in #{Time.now-attach_to_parent_time} seconds"
               # Log that the children were attached
               children.each do |child|
                 attached_mapper.add_entry(child)
-                puts "Attached child #{child_id} to parent #{hyrax_id}"
               end
             else
               puts "No additional children attached to parent #{hyrax_id}"
