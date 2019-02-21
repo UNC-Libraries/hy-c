@@ -7,9 +7,9 @@ module Migrate
         create_csv
       end
 
-      def add_row(data)
+      def add_row(key, value)
         CSV.open(@filename, 'a+') do |csv|
-          csv << [data[0], data[1]]
+          csv << [key, value]
         end
       end
 

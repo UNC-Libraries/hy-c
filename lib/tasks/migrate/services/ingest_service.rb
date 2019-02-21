@@ -18,16 +18,15 @@ module Migrate
         @depositor = depositor
         @tmp_file_location = config['tmp_file_location']
         @config = config
+        
+        # Create file and hash mapping new and old ids
+        @id_mapper = Migrate::Services::IdMapper.new(@mapping_file)
+        @mappings = Hash.new
+        # Store parent-child relationships
+        @parent_hash = Hash.new
       end
 
       def ingest_records
-        # Create file and hash mapping new and old ids
-        id_mapper = Migrate::Services::IdMapper.new(@mapping_file)
-        @mappings = Hash.new
-
-        # Store parent-child relationships
-        @parent_hash = Hash.new
-
         # get array of record uuids
         collection_uuids = MigrationHelper.get_collection_uuids(@collection_ids_file)
 
@@ -59,13 +58,12 @@ module Migrate
           puts "[#{Time.now.to_s}] #{uuid},#{new_work.id} saved new work in #{Time.now-save_time} seconds"
 
           # Record old and new ids for works
-          id_mapper.add_row([uuid, new_work.class.to_s.underscore+'s/'+new_work.id])
-          @mappings[uuid] = new_work.id
+          add_id_mapping(uuid, new_work)
 
           puts "[#{Time.now.to_s}] #{uuid},#{new_work.id} Number of files: #{work_attributes['contained_files'].count.to_s if !work_attributes['contained_files'].blank?}"
 
           # Save list of child filesets
-          ordered_members = Array.new
+          new_work.ordered_members = Array.new
 
           # Create children
           if !work_attributes['cdr_model_type'].blank? &&
@@ -88,10 +86,10 @@ module Migrate
 
                   fileset = create_fileset(parent: new_work, resource: fileset_attrs, file: @binary_hash[MigrationHelper.get_uuid_from_path(file)])
 
-                  # Record old and new ids for works
-                  id_mapper.add_row([MigrationHelper.get_uuid_from_path(file), 'parent/'+new_work.id+'/file_sets/'+fileset.id])
+                  new_work.ordered_members << fileset
 
-                  ordered_members << fileset
+                  # Record old and new ids for works
+                  add_file_id_mapping(file, new_work, fileset)
                 else
                   puts "[#{Time.now.to_s}] #{uuid},#{new_work.id} missing file: #{file}"
                 end
@@ -107,10 +105,10 @@ module Migrate
                 fileset_attrs = file_record(work_attributes)
                 fileset = create_fileset(parent: new_work, resource: fileset_attrs, file: binary_file)
 
-                # Record old and new ids for works
-                id_mapper.add_row([MigrationHelper.get_uuid_from_path(file), 'parent/'+new_work.id+'/file_sets/'+fileset.id])
+                new_work.ordered_members << fileset
 
-                ordered_members << fileset
+                # Record old and new ids for works
+                add_file_id_mapping(file, new_work, fileset)
               end
             end
           end
@@ -124,14 +122,13 @@ module Migrate
                                   'visibility' => Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE }
                 fileset = create_fileset(parent: new_work, resource: fileset_attrs, file: premis_file)
 
-                ordered_members << fileset
+                new_work.ordered_members << fileset
               else
                 puts "[#{Time.now.to_s}] #{uuid},#{new_work.id} missing premis file: #{file}"
               end
             end
           end
 
-          new_work.ordered_members = ordered_members
           end_time = Time.now
           puts "[#{end_time.to_s}] #{uuid},#{new_work.id} Completed migration in #{end_time-start_time} seconds"
         end
@@ -274,6 +271,25 @@ module Migrate
             end
           end
           puts "[#{Time.now.to_s}] finished attaching children in #{Time.now-attach_time} seconds"
+        end
+        
+        def add_id_mapping(uuid, new_work)
+          # Pluralize the worktype
+          work_type = new_work.class.to_s.underscore
+          if work_type == 'honors_thesis'
+            work_type = 'honors_theses'
+          else
+            work_type = work_type + 's'
+          end
+          new_path = "#{work_type}/#{new_work.id}"
+          
+          @id_mapper.add_row(uuid, new_path)
+          @mappings[uuid] = new_work.id
+        end
+        
+        def add_file_id_mapping(file, new_work, fileset)
+          new_id = 'parent/'+new_work.id+'/file_sets/'+fileset.id
+          @id_mapper.add_row(MigrationHelper.get_uuid_from_path(file), new_id)
         end
     end
   end
