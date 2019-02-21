@@ -11,7 +11,7 @@ namespace :migrate do
   require 'tasks/migration_helper'
 
   desc 'batch migrate records from FOXML file'
-  task :works, [:collection, :configuration_file, :mapping_file] => :environment do |t, args|
+  task :works, [:collection, :configuration_file, :output_dir] => :environment do |t, args|
     1.upto(1) do |index|
       puts "round: #{index}"
 
@@ -54,7 +54,7 @@ namespace :migrate do
                                            @binary_hash,
                                            @premis_hash,
                                            @deposit_record_hash,
-                                           args[:mapping_file],
+                                           args[:output_dir],
                                            @depositor).ingest_records
       else
         puts 'The default admin set or specified depositor does not exist'

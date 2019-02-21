@@ -6,7 +6,7 @@ module Migrate
 
     class IngestService
 
-      def initialize(config, object_hash, binary_hash, premis_hash, deposit_record_hash, mapping_file, depositor)
+      def initialize(config, object_hash, binary_hash, premis_hash, deposit_record_hash, output_dir, depositor)
         @collection_ids_file = config['collection_list']
         @object_hash = object_hash
         @binary_hash = binary_hash
@@ -14,13 +14,12 @@ module Migrate
         @deposit_record_hash = deposit_record_hash
         @work_type = config['work_type']
         @child_work_type = config['child_work_type']
-        @mapping_file = mapping_file
         @depositor = depositor
         @tmp_file_location = config['tmp_file_location']
         @config = config
         
         # Create file and hash mapping new and old ids
-        @id_mapper = Migrate::Services::IdMapper.new(@mapping_file)
+        @id_mapper = Migrate::Services::IdMapper.new(File.join(output_dir, 'mapping.csv'), 'old', 'new')
         @mappings = Hash.new
         # Store parent-child relationships
         @parent_hash = Hash.new
