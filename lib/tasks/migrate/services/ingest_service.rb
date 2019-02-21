@@ -19,10 +19,9 @@ module Migrate
         @config = config
         
         # Create file and hash mapping new and old ids
-        @id_mapper = Migrate::Services::IdMapper.new(File.join(output_dir, 'mapping.csv'), 'old', 'new')
-        @mappings = Hash.new
+        @id_mapper = Migrate::Services::IdMapper.new(File.join(output_dir, 'old_to_new.csv'), 'old', 'new')
         # Store parent-child relationships
-        @parent_hash = Hash.new
+        @parent_child_mapper = Migrate::Services::IdMapper.new(File.join(output_dir, 'parent_child.csv'), 'parent', 'children')
       end
 
       def ingest_records
@@ -44,7 +43,9 @@ module Migrate
                                                               @config).parse
           puts "[#{Time.now.to_s}] #{uuid} metadata parsed in #{Time.now-start_time} seconds"
           work_attributes = parsed_data[:work_attributes]
-          @parent_hash[uuid] = parsed_data[:child_works] if !parsed_data[:child_works].blank?
+
+          # store mapping of parent to children
+          store_children(uuid, parsed_data)
 
           # Create new work record and save
           new_work = work_record(work_attributes, uuid)
@@ -254,15 +255,20 @@ module Migrate
 
 
         def attach_children
+          # Load mapping of old uuids to new hyrax ids
+          uuid_to_id = @id_mapper.load.map { |key, value| [key, value.split('/')[-1]] }
+          # Load mapping of parents to children
+          parent_hash = @parent_child_mapper.load.map {|key, value| [key, value.split('|')] }
+          
           attach_time = Time.now
           puts "[#{attach_time.to_s}] attaching children to parents"
-          @parent_hash.each do |parent_id, children|
-            hyrax_id = @mappings[parent_id]
+          parent_hash.each do |parent_id, children|
+            hyrax_id = uuid_to_id[parent_id]
             parent = @work_type.singularize.classify.constantize.find(hyrax_id)
             children.each do |child|
-              if @mappings[child]
-                parent.ordered_members << ActiveFedora::Base.find(@mappings[child])
-                parent.members << ActiveFedora::Base.find(@mappings[child])
+              if uuid_to_id[child]
+                parent.ordered_members << ActiveFedora::Base.find(uuid_to_id[child])
+                parent.members << ActiveFedora::Base.find(uuid_to_id[child])
               end
             end
             MigrationHelper.retry_operation('attaching children') do
@@ -271,7 +277,8 @@ module Migrate
           end
           puts "[#{Time.now.to_s}] finished attaching children in #{Time.now-attach_time} seconds"
         end
-        
+
+        # Add a mapping from old uuid to the new work
         def add_id_mapping(uuid, new_work)
           # Pluralize the worktype
           work_type = new_work.class.to_s.underscore
@@ -283,12 +290,20 @@ module Migrate
           new_path = "#{work_type}/#{new_work.id}"
           
           @id_mapper.add_row(uuid, new_path)
-          @mappings[uuid] = new_work.id
         end
         
+        # Add a mapping from old uuid for a file, to its new path within a fileset
         def add_file_id_mapping(file, new_work, fileset)
           new_id = 'parent/'+new_work.id+'/file_sets/'+fileset.id
           @id_mapper.add_row(MigrationHelper.get_uuid_from_path(file), new_id)
+        end
+
+        # Store the parent to children mapping for a work
+        def store_children(uuid, parsed_data)
+          if parsed_data[:child_works].blank?
+            return
+          end
+          @parent_child_mapper.add_row(uuid, parsed_data[:child_works].join('|'))
         end
     end
   end

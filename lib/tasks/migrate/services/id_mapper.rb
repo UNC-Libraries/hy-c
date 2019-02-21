@@ -13,6 +13,10 @@ module Migrate
         end
       end
 
+      def load
+        CSV.read(@filename, { headers: true })
+      end
+
       private
 
         def create_csv(col_1_name, col_2_name)
