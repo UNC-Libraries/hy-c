@@ -85,7 +85,7 @@ RSpec.feature 'Edit embargo', js: false do
 
       fill_in 'article_embargo_release_date', with: DateTime.now+5.months
       click_button 'Save'
-      expect(page).to have_content 'Your files are being processed by Hyrax'
+      expect(page).to have_content 'Your files are being processed by the Carolina Digital Repository'
 
       visit '/dashboard/my/works/'
       expect(page).to have_content 'Test Article work'
@@ -119,7 +119,7 @@ RSpec.feature 'Edit embargo', js: false do
       find('#article_admin_set_id').text eq 'article admin set'
 
       click_button 'Save'
-      expect(page).to have_content 'Your files are being processed by Hyrax'
+      expect(page).to have_content 'Your files are being processed by the Carolina Digital Repository'
 
       visit '/dashboard/my/works/'
       expect(page).to have_content 'Test Article work'

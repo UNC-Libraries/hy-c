@@ -14,7 +14,12 @@
                         {
                             "notification_type": "email",
                             "name": "Hyrax::Workflow::PendingReviewNotification",
-                            "to": ["managing"]
+                            "to": ["approving"]
+                        },
+                        {
+                            "notification_type": "email",
+                            "name": "Hyrax::Workflow::MediatedDepositNotification",
+                            "to": []
                         }
                     ],
                     "methods": [
@@ -42,7 +47,7 @@
                     "notifications": [
                         {
                             "notification_type": "email",
-                            "name": "Hyrax::Workflow::DepositedNotification",
+                            "name": "Hyrax::Workflow::DepositApprovedNotification",
                             "to": ["depositing"]
                         }
                     ],
@@ -59,7 +64,7 @@
                         {
                             "notification_type": "email",
                             "name": "Hyrax::Workflow::PendingReviewNotification",
-                            "to": ["managing"]
+                            "to": ["approving"]
                         }
                     ],
                     "methods": [
@@ -68,18 +73,18 @@
                 }, {
                     "name": "comment_only",
                     "from_states": [
-                        { "names": ["pending_review", "deposited"], "roles": ["approving"] },
+                        { "names": ["pending_review", "deposited"], "roles": ["approving", "viewing"] },
                         { "names": ["changes_required"], "roles": ["depositing"] }
                     ]
                 }, {
                     "name": "withdraw",
-                    "from_states": [{"names": ["deposited"], "roles": ["approving"]}],
+                    "from_states": [{"names": ["deposited"], "roles": ["deleting"]}],
                     "transition_to": "withdrawn",
                     "notifications": [
                         {
                             "notification_type": "email",
                             "name": "Hyrax::Workflow::DeletionApprovalNotification",
-                            "to": ["depositing", "managing"]
+                            "to": ["depositing", "deleting"]
                         }
                     ],
                     "_comment" : "MetadataOnlyRecord must be called before RevokeEditFromDepositor",
@@ -90,13 +95,13 @@
                 }, {
                     "name": "request_deletion",
                     "_comment" : "This action is suppressed from default rendering with other review/approval actions",
-                    "from_states": [{"names": ["deposited"], "roles": ["approving", "depositing"]}],
+                    "from_states": [{"names": ["deposited"], "roles": ["deleting", "depositing"]}],
                     "transition_to": "pending_deletion",
                     "notifications": [
                         {
                             "notification_type": "email",
                             "name": "Hyrax::Workflow::PendingDeletionNotification",
-                            "to": ["managing"]
+                            "to": ["deleting"]
                         }
                     ],
                     "methods": [
@@ -105,7 +110,7 @@
                     ]
                 }, {
                     "name": "approve_deletion",
-                    "from_states": [{"names": ["deposited", "pending_deletion"], "roles": ["approving"]}],
+                    "from_states": [{"names": ["deposited", "pending_deletion"], "roles": ["deleting"]}],
                     "transition_to": "withdrawn",
                     "notifications": [
                         {
@@ -120,7 +125,7 @@
                     ]
                 }, {
                     "name": "republish",
-                    "from_states": [{"names": ["pending_deletion"], "roles": ["approving"]}],
+                    "from_states": [{"names": ["pending_deletion"], "roles": ["deleting"]}],
                     "transition_to": "deposited",
                     "notifications": [
                         {

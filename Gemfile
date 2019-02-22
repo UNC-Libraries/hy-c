@@ -23,7 +23,7 @@ gem 'therubyracer', '~> 0.12.3', platforms: :ruby
 gem 'hyrax', '2.4.1'
 gem 'hydra-editor', '4.0.1'
 gem 'hydra-role-management', '~> 1.0'
-gem 'clamav', '~> 0.4.1'
+gem 'clamby', '~> 1.5.1'
 gem 'sidekiq', '~> 5.0.4'
 gem 'sidekiq-status', '~> 1.1.1'
 gem 'blacklight_oai_provider', '6.0.0.pre1'

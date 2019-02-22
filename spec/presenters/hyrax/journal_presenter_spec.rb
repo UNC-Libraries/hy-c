@@ -20,6 +20,7 @@ RSpec.describe Hyrax::JournalPresenter do
       "date_issued_tesim" => ['2018-01-08'],
       "dcmi_type_tesim" => ['science fiction'],
       "deposit_record_tesim" => 'a deposit record',
+      "digital_collection_tesim" => ['my collection'],
       "doi_tesim" => '12345',
       "extent_tesim" => ['1993'],
       "geographic_subject_tesim" => ['California'],
@@ -28,6 +29,7 @@ RSpec.describe Hyrax::JournalPresenter do
       "note_tesim" => ['a note'],
       "place_of_publication_tesim" => ['California'],
       "resource_type_tesim" => ['a type'],
+      "series_tesim" => ['series1'],
       "table_of_contents_tesim" => 'table of contents',
       "language_label_tesim" => ['language'],
       "license_label_tesim" => ['license'],
@@ -57,6 +59,7 @@ RSpec.describe Hyrax::JournalPresenter do
   it { is_expected.to delegate_method(:date_issued).to(:solr_document) }
   it { is_expected.to delegate_method(:dcmi_type).to(:solr_document) }
   it { is_expected.to delegate_method(:deposit_record).to(:solr_document) }
+  it { is_expected.to delegate_method(:digital_collection).to(:solr_document) }
   it { is_expected.to delegate_method(:doi).to(:solr_document) }
   it { is_expected.to delegate_method(:extent).to(:solr_document) }
   it { is_expected.to delegate_method(:geographic_subject).to(:solr_document) }
@@ -64,6 +67,7 @@ RSpec.describe Hyrax::JournalPresenter do
   it { is_expected.to delegate_method(:issn).to(:solr_document) }
   it { is_expected.to delegate_method(:note).to(:solr_document) }
   it { is_expected.to delegate_method(:place_of_publication).to(:solr_document) }
+  it { is_expected.to delegate_method(:series).to(:solr_document) }
   it { is_expected.to delegate_method(:table_of_contents).to(:solr_document) }
   it { is_expected.to delegate_method(:language_label).to(:solr_document) }
   it { is_expected.to delegate_method(:license_label).to(:solr_document) }
@@ -130,6 +134,17 @@ RSpec.describe Hyrax::JournalPresenter do
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:deposit_record)
+      end
+    end
+
+    context "with a custom digital collection field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:digital_collection, ['my collection'], {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:digital_collection)
       end
     end
 
@@ -217,6 +232,17 @@ RSpec.describe Hyrax::JournalPresenter do
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:place_of_publication)
+      end
+    end
+
+    context "with a custom series field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:series, ['series1'], {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:series)
       end
     end
 

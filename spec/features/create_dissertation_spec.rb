@@ -46,6 +46,7 @@ RSpec.feature 'Create a Dissertation', js: false do
       Hyrax::Workflow::PermissionGenerator.call(roles: 'depositing', workflow: workflow, agents: user_agent)
       Hyrax::Workflow::PermissionGenerator.call(roles: 'approving', workflow: workflow, agents: admin_agent)
       Hyrax::Workflow::PermissionGenerator.call(roles: 'depositing', workflow: workflow, agents: admin_agent)
+      Hyrax::Workflow::PermissionGenerator.call(roles: 'deleting', workflow: workflow, agents: admin_agent)
       permission_template.available_workflows.first.update!(active: true)
       DefaultAdminSet.create(work_type_name: 'Dissertation', admin_set_id: admin_set.id)
     end
@@ -111,7 +112,7 @@ RSpec.feature 'Create a Dissertation', js: false do
       expect(page).not_to have_field('dissertation_visibility_lease')
       choose 'dissertation_visibility_open'
       check 'agreement'
-      
+
       expect(page).to have_selector('#dissertation_dcmi_type')
       expect(page).to have_selector("input[value='http://purl.org/dc/dcmitype/Text']")
       fill_in 'Dcmi type', with: 'http://purl.org/dc/dcmitype/Image'
@@ -125,7 +126,7 @@ RSpec.feature 'Create a Dissertation', js: false do
       find('#dissertation_admin_set_id').text eq 'dissertation admin set'
 
       click_button 'Save'
-      expect(page).to have_content 'Your files are being processed by Hyrax'
+      expect(page).to have_content 'Your files are being processed by the Carolina Digital Repository'
 
       visit '/dashboard/my/works/'
       expect(page).to have_content 'Test Dissertation work'
@@ -169,7 +170,7 @@ RSpec.feature 'Create a Dissertation', js: false do
       
       expect(page).to have_content 'Test Default Keyword'
       expect(page).to have_content 'In Administrative Set: dissertation admin set'
-      expect(page).to have_content 'Type http://purl.org/dc/dcmitype/Image'
+      expect(page).to_not have_content 'Type http://purl.org/dc/dcmitype/Image'
       expect(page).to have_content "Last Modified #{Date.edtf(DateTime.now.to_s).humanize}"
 
       click_link 'Edit'

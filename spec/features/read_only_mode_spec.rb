@@ -45,6 +45,7 @@ RSpec.feature 'Read Only Mode' do
       Hyrax::Workflow::PermissionGenerator.call(roles: 'depositing', workflow: workflow, agents: user_agent)
       Hyrax::Workflow::PermissionGenerator.call(roles: 'approving', workflow: workflow, agents: admin_agent)
       Hyrax::Workflow::PermissionGenerator.call(roles: 'depositing', workflow: workflow, agents: admin_agent)
+      Hyrax::Workflow::PermissionGenerator.call(roles: 'deleting', workflow: workflow, agents: admin_agent)
       permission_template.available_workflows.first.update!(active: true)
       DefaultAdminSet.create(work_type_name: 'HonorsThesis', admin_set_id: admin_set.id)
     end

@@ -20,6 +20,7 @@ RSpec.describe Hyrax::DataSetPresenter do
       "abstract_tesim" => ['an abstract'],
       "date_issued_tesim" => '2018-01-08',
       "dcmi_type_tesim" => ['science fiction'],
+      "copyright_date_tesim" => '2018',
       "deposit_record_tesim" => 'a deposit record',
       "doi_tesim" => '12345',
       "extent_tesim" => ['1993'],
@@ -57,6 +58,7 @@ RSpec.describe Hyrax::DataSetPresenter do
   it { is_expected.to delegate_method(:itemtype).to(:solr_document) }
 
   it { is_expected.to delegate_method(:abstract).to(:solr_document) }
+  it { is_expected.to delegate_method(:copyright_date).to(:solr_document) }
   it { is_expected.to delegate_method(:date_issued).to(:solr_document) }
   it { is_expected.to delegate_method(:dcmi_type).to(:solr_document) }
   it { is_expected.to delegate_method(:deposit_record).to(:solr_document) }
@@ -92,6 +94,17 @@ RSpec.describe Hyrax::DataSetPresenter do
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:abstract)
+      end
+    end
+
+    context "with a custom copyright date field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:copyright_date, '2018', {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:copyright_date)
       end
     end
 

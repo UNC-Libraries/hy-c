@@ -46,6 +46,7 @@ RSpec.feature 'Create a DataSet', js: false do
       Hyrax::Workflow::PermissionGenerator.call(roles: 'depositing', workflow: workflow, agents: user_agent)
       Hyrax::Workflow::PermissionGenerator.call(roles: 'approving', workflow: workflow, agents: admin_agent)
       Hyrax::Workflow::PermissionGenerator.call(roles: 'depositing', workflow: workflow, agents: admin_agent)
+      Hyrax::Workflow::PermissionGenerator.call(roles: 'deleting', workflow: workflow, agents: admin_agent)
       permission_template.available_workflows.first.update!(active: true)
       DefaultAdminSet.create(work_type_name: 'DataSet', admin_set_id: admin_set.id)
     end
@@ -115,7 +116,7 @@ RSpec.feature 'Create a DataSet', js: false do
       expect(page).to_not have_content 'Administrative Set'
 
       click_button 'Save'
-      expect(page).to have_content 'Your files are being processed by Hyrax'
+      expect(page).to have_content 'Your files are being processed by the Carolina Digital Repository'
 
       visit '/dashboard/my/works/'
       expect(page).to have_content 'Test Data Set'
@@ -147,7 +148,7 @@ RSpec.feature 'Create a DataSet', js: false do
       expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
 
       expect(page).to_not have_content 'In Administrative Set: data set admin set'
-      expect(page).to have_content 'Type http://purl.org/dc/dcmitype/Dataset'
+      expect(page).to_not have_content 'Type http://purl.org/dc/dcmitype/Dataset'
 
       click_link 'Edit'
 
@@ -176,6 +177,7 @@ RSpec.feature 'Create a DataSet', js: false do
       fill_in 'ORCID', { with: 'contributor orcid', id: 'data_set_contributors_attributes_0_orcid' }
       select 'Department of Biology', from: 'data_set_contributors_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'data_set_contributors_attributes_0_other_affiliation' }
+      fill_in 'Copyright date', with: '2018'
       fill_in 'DOI', with: 'some doi'
       fill_in 'Extent', with: 'some extent'
       fill_in 'Funder', with: 'some funder'
@@ -220,7 +222,7 @@ RSpec.feature 'Create a DataSet', js: false do
       find('#data_set_admin_set_id').text eq 'data set admin set'
 
       click_button 'Save'
-      expect(page).to have_content 'Your files are being processed by Hyrax'
+      expect(page).to have_content 'Your files are being processed by the Carolina Digital Repository'
 
       visit '/dashboard/my/works/'
       expect(page).to have_content 'Test Data Set'
@@ -232,6 +234,7 @@ RSpec.feature 'Create a DataSet', js: false do
       expect(page).to have_content 'College of Arts and Sciences'
       expect(page).to have_content 'Department of Biology'
       expect(page).to have_content 'Other Affiliation: UNC'
+      expect(page).to have_content 'Copyright date 2018'
       expect(page).to have_content 'Methodology My methodology'
       expect(page).to have_content 'Date of publication October 3, 2018'
       expect(page).to have_content 'Kind of data Text'
@@ -256,7 +259,6 @@ RSpec.feature 'Create a DataSet', js: false do
       expect(page).to_not have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'
 
       expect(page).to have_content 'In Administrative Set: data set admin set'
-      expect(page).to have_content 'Type http://purl.org/dc/dcmitype/Image'
 
       click_link 'Edit'
 

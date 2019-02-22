@@ -1,8 +1,11 @@
 ## config/authorities/departments.yml
 terms:
+  - id: American Indian and Indigenous Studies Program
+    term: College of Arts and Sciences; Department of American Studies; American Indian and Indigenous Studies Program
+    active: true
   - id: Art History Program
     term: College of Arts and Sciences; Department of Art; Art History Program
-    active: true
+    active: false
   - id: Athletic Training Education Program
     term: College of Arts and Sciences; Department of Exercise and Sport Science; Athletic Training Education Program
     active: true
@@ -21,6 +24,9 @@ terms:
   - id: Bowles Center for Alcohol Studies
     term: School of Medicine; Bowles Center for Alcohol Studies
     active: true
+  - id: Brain and Development Research Center
+    term: School of Medicine; Neuroscience Center
+    active: false
   - id: CCGS
     term: School of Medicine; Carolina Center for Genome Sciences
     active: false
@@ -42,6 +48,9 @@ terms:
   - id: CIDD
     term: School of Medicine; Neurodevelopment Disorders Research Center; Carolina Institute for Developmental Disabilities
     active: false
+  - id: Carolina-Duke Graduate Program in German Studies
+    term: College of Arts and Sciences; Department of Germanic and Slavic Languages and Literatures; Carolina-Duke Graduate Program in German Studies
+    active: true
   - id: Carolina Institute for Developmental Disabilities
     term: School of Medicine; Neurodevelopment Disorders Research Center; Carolina Institute for Developmental Disabilities
     active: true
@@ -50,6 +59,12 @@ terms:
     active: false
   - id: Carolina Population Center
     term: Carolina Population Center
+    active: true
+  - id: Survey Research Unit
+    term: Gillings School of Global Public Health; Department of Biostatistics; Carolina Survey Research Laboratory
+    active: false
+  - id: Carolina Survey Research Laboratory
+    term: Gillings School of Global Public Health; Department of Biostatistics; Carolina Survey Research Laboratory
     active: true
   - id: Carolina Vaccine Institute
     term: School of Medicine; Carolina Vaccine Institute
@@ -99,14 +114,32 @@ terms:
   - id: Heart and Vascular Center
     term: School of Medicine; Center for Heart and Vascular Care
     active: false
+  - id: Center for Genomics and Society
+    term: School of Medicine; Department of Social Medicine; Center for Genomics and Society
+    active: true
   - id: Center for Heart and Vascular Care
     term: School of Medicine; Center for Heart and Vascular Care
+    active: true
+  - id: Center for Integrative Chemical Biology and Drug Discovery
+    term: Eshelman School of Pharmacy; Center for Integrative Chemical Biology and Drug Discovery
     active: true
   - id: Center for Maternal and Infant Health
     term: School of Medicine; Center for Maternal and Infant Health
     active: true
+  - id: Center for Medication Optimization through Practice and Policy
+    term: Eshelman School of Pharmacy; Center for Medication Optimization through Practice and Policy
+    active: true
+  - id: Center for Nanotechnology in Drug Delivery
+    term: Eshelman School of Pharmacy; Center for Nanotechnology in Drug Delivery
+    active: true
+  - id: Center of Pharmacogenomics and Individualized Therapy
+    term: Eshelman School of Pharmacy; Center of Pharmacogenomics and Individualized Therapy
+    active: true
   - id: Center for Slavic, Eurasian, and East European Studies
     term: College of Arts and Sciences; Center for Slavic, Eurasian, and East European Studies
+    active: true
+  - id: Center for the Study of the American South
+    term: College of Arts and Sciences; Center for the Study of the American South
     active: true
   - id: Center for Urban and Regional Studies
     term: College of Arts and Sciences; Center for Urban and Regional Studies
@@ -122,18 +155,33 @@ terms:
     active: false
   - id: Coastal Hazards Center of Excellence
     term: Coastal Hazards Center of Excellence
+    active: false
+  - id: Coastal Resilience Center of Excellence
+    term: Coastal Resilience Center of Excellence
     active: true
   - id: College of Arts and Sciences
     term: College of Arts and Sciences
     active: true
+  - id: Comparative Literature Program
+    term: College of Arts and Sciences; Department of English and Comparative Literature; Comparative Literature Program
+    active: false
+  - id: Comprehensive Center for Inflammatory Disorders
+    term: Comprehensive Center for Inflammatory Disorders
+    active: false
   - id: Creative Writing Program
     term: College of Arts and Sciences; Department of English and Comparative Literature; Creative Writing Program
-    active: true
+    active: false
   - id: Cultural Studies
     term: College of Arts and Sciences; Cultural Studies
-    active: true
+    active: false
+  - id: Cultural Studies Program
+    term: College of Arts and Sciences; Cultural Studies Program
+    active: false
   - id: Curriculum and Instruction
     term: School of Education; Curriculum and Instruction
+    active: false
+  - id: Curriculum and Instruction Graduate Program
+    term: School of Education; Curriculum and Instruction Graduate Program
     active: true
   - id: Curriculum for Ecology
     term: College of Arts and Sciences; Curriculum in Environment and Ecology
@@ -152,6 +200,9 @@ terms:
     active: true
   - id: Curriculum in Contemporary European Studies
     term: College of Arts and Sciences; Curriculum in Contemporary European Studies
+    active: true
+  - id: Curriculum in Global Studies
+    term: College of Arts and Sciences; Curriculum in Global Studies
     active: true
   - id: GMB
     term: School of Medicine; Curriculum in Genetics and Molecular Biology
@@ -204,6 +255,12 @@ terms:
   - id: Department of American Studies
     term: College of Arts and Sciences; Department of American Studies
     active: true
+  - id: Department of American Studies - American Studies
+    term: College of Arts and Sciences; Department of American Studies - American Studies
+    active: true
+  - id: Department of American Studies - Folklore
+    term: College of Arts and Sciences; Department of American Studies - Folklore
+    active: true
   - id: Department of Anesthesiology
     term: School of Medicine; Department of Anesthesiology
     active: true
@@ -215,6 +272,15 @@ terms:
     active: true
   - id: Department of Art
     term: College of Arts and Sciences; Department of Art
+    active: false
+  - id: Department of Art and Art History
+    term: College of Arts and Sciences; Department of Art and Art History
+    active: true
+  - id: Department of Art and Art History – Art History
+    term: College of Arts and Sciences; Department of Art and Art History – Art History
+    active: true
+  - id: Department of Art and Art History – Studio Art
+    term: College of Arts and Sciences; Department of Art and Art History – Studio Art
     active: true
   - id: Department of Asian Studies
     term: College of Arts and Sciences; Department of Asian Studies
@@ -224,6 +290,12 @@ terms:
     active: true
   - id: Department of Biology
     term: College of Arts and Sciences; Department of Biology
+    active: true
+  - id: Department of Biomedical Engineering - Applied Science
+    term: School of Medicine; UNC/NCSU Joint Department of Biomedical Engineering - Applied Science
+    active: true
+  - id: Department of Biomedical Engineering - Biomedical Engineering
+    term: School of Medicine; UNC/NCSU Joint Department of Biomedical Engineering - Biomedical Engineering
     active: true
   - id: Department of Biostatistics
     term: Gillings School of Global Public Health; Department of Biostatistics
@@ -255,6 +327,12 @@ terms:
   - id: Department of Communication
     term: College of Arts and Sciences; Department of Communication
     active: true
+  - id: Department of Communication - Communication Studies
+    term: College of Arts and Sciences; Department of Communication - Communication Studies
+    active: true
+  - id: Department of Communication - Cultural Studies
+    term: College of Arts and Sciences; Department of Communication - Cultural Studies
+    active: true
   - id: Department of Computer Science
     term: College of Arts and Sciences; Department of Computer Science
     active: true
@@ -284,6 +362,15 @@ terms:
     active: true
   - id: Department of English and Comparative Literature
     term: College of Arts and Sciences; Department of English and Comparative Literature
+    active: true
+  - id: Department of English and Comparative Literature - Comparative Literature
+    term: College of Arts and Sciences; Department of English and Comparative Literature - Comparative Literature
+    active: true
+  - id: Department of English and Comparative Literature - Creative Writing
+    term: College of Arts and Sciences; Department of English and Comparative Literature – Creative Writing
+    active: true
+  - id: Department of English and Comparative Literature - English
+    term: College of Arts and Sciences; Department of English and Comparative Literature – English
     active: true
   - id: Department of Environmental Sciences and Engineering
     term: Gillings School of Global Public Health; Department of Environmental Sciences and Engineering
@@ -504,14 +591,47 @@ terms:
   - id: DICE Center
     term: DICE Center
     active: true
+  - id: Digital American Studies Program
+    term: College of Arts and Sciences; Department of American Studies; Digital American Studies Program
+    active: true
   - id: Division of Allied Dental Education
     term: School of Dentistry; Division of Allied Dental Education
+    active: true
+  - id: Division of Cardiology
+    term: School of Medicine; Division of Cardiology; Department of Medicine
     active: true
   - id: Division of Chemical Biology and Medicinal Chemistry
     term: Eshelman School of Pharmacy; Division of Chemical Biology and Medicinal Chemistry
     active: true
+  - id: Division of Clinical Laboratory Science
+    term: School of Medicine; Department of Allied Health Sciences; Division of Clinical Laboratory Science
+    active: true
+  - id: Division of Clinical Rehabilitation and Mental Health Counseling
+    term: School of Medicine; Department of Allied Health Sciences; Division of Clinical Rehabilitation and Mental Health Counseling
+    active: true
+  - id: Division of Comparative Medicine
+    term: School of Medicine; Department of Medicine; Division of Comparative Medicine
+    active: true
+  - id: Division of Endocrinology and Metabolism
+    term: School of Medicine; Department of Medicine; Division of Endocrinology and Metabolism
+    active: true
+  - id: Division of Gastroenterology and Hepatology
+    term: School of Medicine; Department of Medicine; Division of Gastroenterology and Hepatology
+    active: true
+  - id: Division of General Medicine and Clinical Epidemiology
+    term: School of Medicine; Department of Medicine; Division of General Medicine and Clinical Epidemiology
+    active: true
   - id: Division of Hematology/Oncology
     term: School of Medicine; Division of Hematology/Oncology
+    active: true
+  - id: Division of Hospital Medicine
+    term: School of Medicine; Division of Hospital Medicine; Department of Medicine
+    active: true
+  - id: Division of Geriatric Medicine
+    term: School of Medicine; Division of Geriatric Medicine
+    active: true
+  - id: Division of Infectious Diseases
+    term: School of Medicine; Division of Infectious Diseases
     active: true
   - id: DLAM
     term: Division of Laboratory Animal Medicine
@@ -522,6 +642,9 @@ terms:
   - id: Division of Molecular Pharmaceutics
     term: Eshelman School of Pharmacy; Division of Molecular Pharmaceutics
     active: true
+  - id: Division of Nephrology and Hypertension
+    term: School of Medicine; Department of Medicine; Division of Nephrology and Hypertension
+    active: true
   - id: Division of Occupational Science
     term: School of Medicine; Department of Allied Health Sciences; Division of Occupational Science and Occupational Therapy
     active: false
@@ -531,11 +654,29 @@ terms:
   - id: Division of Pharmaceutical Outcomes and Policy
     term: Eshelman School of Pharmacy; Division of Pharmaceutical Outcomes and Policy
     active: true
+  - id: Division of Pharmacoengineering and Molecular Pharmaceutics
+    term: Eshelman School of Pharmacy; Division of Pharmacoengineering and Molecular Pharmaceutics
+    active: true
   - id: Division of Pharmacotherapy and Experimental Therapeutics
     term: Eshelman School of Pharmacy; Division of Pharmacotherapy and Experimental Therapeutics
     active: true
+  - id: Division of Physical Therapy
+    term: School of Medicine; Department of Allied Health Sciences; Division of Physical Therapy
+    active: true
+  - id: Division of Pulmonary Diseases and Critical Care Medicine
+    term: School of Medicine; Department of Medicine; Division of Pulmonary Diseases and Critical Care Medicine
+    active: true
+  - id: Division of Radiologic Science
+    term: School of Medicine; Department of Allied Health Sciences; Division of Radiologic Science
+    active: true
+  - id: Division of Rheumatology, Allergy and Immunology
+    term: School of Medicine; Division of Rheumatology, Allergy and Immunology
+    active: true
   - id: Division of Speech and Hearing Sciences
     term: School of Medicine; Department of Allied Health Sciences; Division of Speech and Hearing Sciences
+    active: true
+  - id: Division of Surgical Oncology
+    term: School of Medicine; Department of Surgery; Division of Surgical Oncology
     active: true
   - id: MEDX
     term: School of Education; Education for Experienced Teachers
@@ -545,6 +686,9 @@ terms:
     active: true
   - id: Educational Leadership
     term: School of Education; Educational Leadership
+    active: false
+  - id: Educational Leadership Graduate Program
+    term: School of Education; Educational Leadership Graduate Program
     active: true
   - id: Educational Psychology
     term: School of Education; Educational Psychology; Measurement; and Evaluation
@@ -554,6 +698,12 @@ terms:
     active: true
   - id: English
     term: College of Arts and Sciences; Department of English and Comparative Literature; English
+    active: false
+  - id: Environment, Ecology, and Energy Program - Environmental Science
+    term: College of Arts and Sciences; Environment, Ecology, and Energy Program - Environmental Science
+    active: true
+  - id: Environment, Ecology, and Energy Program - Environmental Studies
+    term: College of Arts and Sciences; Environment, Ecology, and Energy Program - Environmental Studies
     active: true
   - id: Environmental Health Sciences
     term: Gillings School of Global Public Health; Department of Environmental Sciences and Engineering; Environmental Health Sciences
@@ -561,21 +711,27 @@ terms:
   - id: Curriculum in Ecology
     term: College of Arts and Sciences; Curriculum in Environment and Ecology; Environmental Studies
     active: false
+  - id: Environmental Science
+    term: College of Arts and Sciences; Curriculum in Environment and Ecology; Environmental Science
+    active: false
   - id: Environmental Studies
     term: College of Arts and Sciences; Curriculum in Environment and Ecology; Environmental Studies
-    active: true
+    active: false
   - id: School of Pharmacy
     term: Eshelman School of Pharmacy
     active: false
   - id: Eshelman School of Pharmacy
     term: Eshelman School of Pharmacy
     active: true
+  - id: Experienced Teachers Graduate Program
+    term: School of Education; Experienced Teachers Graduate Program
+    active: true
   - id: Fitness Professional Concentration
     term: College of Arts and Sciences; Department of Exercise and Sport Science; Fitness Professional Concentration
     active: true
   - id: Folklore Program
     term: College of Arts and Sciences; Department of American Studies; Folklore Program
-    active: true
+    active: false
   - id: FPG Child Development Institute
     term: Frank Porter Graham Child Development Institute
     active: false
@@ -591,17 +747,14 @@ terms:
   - id: Gillings School of Global Public Health
     term: Gillings School of Global Public Health
     active: true
+  - id: Global American Studies Program
+    term: College of Arts and Sciences; Department of American Studies; Global American Studies Program
+    active: true
   - id: Highway Safety Research Center
     term: Highway Safety Research Center
     active: true
   - id: Honors Carolina
     term: Honors Carolina
-    active: true
-  - id: Odum Institute
-    term: Howard W. Odum Institute for Research in Social Science
-    active: false
-  - id: Howard W. Odum Institute for Research in Social Science
-    term: Howard W. Odum Institute for Research in Social Science
     active: true
   - id: IMS
     term: Institute of Marine Sciences
@@ -615,8 +768,8 @@ terms:
   - id: IAM
     term: Institute for Advanced Materials; Nanoscience and Technology
     active: false
-  - id: Institute for Advanced Materials; Nanoscience and Technology
-    term: Institute for Advanced Materials; Nanoscience and Technology
+  - id: Institute for Advanced Materials, Nanoscience and Technology
+    term: Institute for Advanced Materials, Nanoscience and Technology
     active: true
   - id: Center for Drug Safety Sciences
     term: School of Medicine; Institute for Drug Safety Sciences
@@ -650,7 +803,7 @@ terms:
     active: true
   - id: Interdisciplinary Studies Program
     term: College of Arts and Sciences; Interdisciplinary Studies Program
-    active: true
+    active: false
   - id: International and Comparative American Studies
     term: College of Arts and Sciences; Department of American Studies; International and Comparative American Studies
     active: true
@@ -676,14 +829,26 @@ terms:
   - id: Kenan-Flagler Business School
     term: Kenan-Flagler Business School
     active: true
+  - id: Kenan Institute of Private Enterprise
+    term: Kenan-Flagler Business School; Kenan Institute of Private Enterprise
+    active: true
+  - id: Literature, Medicine, and Culture Concentration
+    term: College of Arts and Sciences; Department of English and Comparative Literature; Literature, Medicine, and Culture Concentration
+    active: true
   - id: Mass Communication Graduate Program
     term: School of Media and Journalism; Mass Communication Graduate Program
     active: true
   - id: Materials Science Program
     term: College of Arts and Sciences; Department of Applied Physical Sciences; Materials Science Program
+    active: false
+  - id: Materials Science Graduate Program
+    term: College of Arts and Sciences; Department of Applied Physical Sciences; Materials Science Graduate Program
     active: true
   - id: Mathematical Decision Sciences Program
     term: College of Arts and Sciences; Department of Statistics and Operations Research; Mathematical Decision Sciences Program
+    active: false
+  - id: Michael Hooker Microscopy Facility
+    term: School of Medicine; Michael Hooker Microscopy Facility
     active: true
   - id: Molecular and Cellular Pathology Graduate Program
     term: School of Medicine; Department of Pathology and Laboratory Medicine; Molecular and Cellular Pathology Graduate Program
@@ -700,15 +865,42 @@ terms:
     term:
     - School of Medicine; Neurobiology Curriculum
     - Neuroscience Center; Neurobiology Curriculum
-    active: true
+    active: false
   - id: Neuroscience Center
     term: School of Medicine; Neuroscience Center
+    active: false
+  - id: Neuroscience Curriculum
+    term: School of Medicine; UNC Neuroscience Center; Neuroscience Curriculum
+    active: true
+  - id: North Carolina Institute for Public Health
+    term: Gillings School of Global Public Health; North Carolina Institute for Public Health
+    active: true
+  - id: North Carolina Translational and Clinical Sciences Institute
+    term: School of Medicine; North Carolina Translational and Clinical Sciences Institute
     active: true
   - id: NRI
     term: Nutrition Research Institute
     active: false
   - id: Nutrition Research Institute
     term: Nutrition Research Institute
+    active: true
+  - id: Odum Institute
+    term: Howard W. Odum Institute for Research in Social Science
+    active: false
+  - id: Howard W. Odum Institute for Research in Social Science
+    term: Howard W. Odum Institute for Research in Social Science
+    active: false
+  - id: Odum Institute for Research in Social Science
+    term: Odum Institute for Research in Social Science
+    active: true
+  - id: Office for Interprofessional Education and Practice
+    term: Office for Interprofessional Education and Practice
+    active: true
+  - id: Office of Research Communications
+    term: Office of Research Communications
+    active: true
+  - id: Oral and Craniofacial Biomedicine PhD Program
+    term: School of Dentistry; Oral and Craniofacial Biomedicine PhD Program;
     active: true
   - id: Oral and Maxillofacial Pathology Graduate Program
     term: School of Dentistry; Oral Pathology Section; Oral and Maxillofacial Pathology Graduate Program
@@ -719,11 +911,17 @@ terms:
   - id: Oral Biology PhD Program
     term: School of Dentistry; Oral Biology PhD Program
     active: true
+  - id: Oral Epidemiology PhD Program
+    term: School of Dentistry; Department of Dental Ecology; Oral Epidemiology PhD Program
+    active: true
   - id: Oral Pathology Section
     term: School of Dentistry; Oral Pathology Section
     active: true
   - id: Organic Chemistry Program
     term: College of Arts and Sciences; Department of Chemistry; Organic Chemistry Program
+    active: true
+  - id: Pathobiology and Translational Science Graduate Program
+    term: School of Medicine; Department of Pathology and Laboratory Medicine; Pathobiology and Translational Science Graduate Program
     active: true
   - id: Pharmaceutical Sciences Program
     term: Eshelman School of Pharmacy; Pharmaceutical Sciences Program
@@ -731,8 +929,14 @@ terms:
   - id: Physician Assistant Program
     term: School of Medicine; Department of Allied Health Sciences; Physician Assistant Program
     active: true
-  - id: Program in Comparative Literature
-    term: College of Arts and Sciences; Department of English and Comparative Literature; Program in Comparative Literature
+  - id: Professional Science Master's in Biomedical and Health Informatics
+    term: University of North Carolina at Chapel Hill. Graduate School; Professional Science Master's in Biomedical and Health Informatics
+    active: true
+  - id: Professional Science Master's in Digital Curation
+    term: University of North Carolina at Chapel Hill. Graduate School; Professional Science Master's in Digital Curation
+    active: true
+  - id: Professional Science Master's in Toxicology
+    term: University of North Carolina at Chapel Hill. Graduate School; Professional Science Master's in Toxicology
     active: true
   - id: Public Administration Program
     term: School of Government; Public Administration Program
@@ -752,12 +956,23 @@ terms:
   - id: Renaissance Computing Institute
     term: Renaissance Computing Institute
     active: true
+  - id: Robert Wood Johnson Clinical Scholars Program
+    term: Robert Wood Johnson Clinical Scholars Program
+    active: true
+  - id: Russian, Eurasian and East European Concentration
+    term: College of Arts and Sciences; Center for Slavic, Eurasian, and East European Studies; Russian, Eurasian and East European Concentration
+    active: true
   - id: School Administration
-    term: School of Education; School Administration
+    term: School Administration; School of Education
+    active: false
+  - id: School Administration Graduate Program
+    term: School of Education; School Administration Graduate Program
     active: true
   - id: School Counseling
     term: School of Education; School Counseling
-    active: true
+    active: false
+  - id: School Counseling Graduate Program
+    term: School of Education; School Counseling Graduate Program
   - id: School of Dentistry
     term: School of Dentistry
     active: true
@@ -793,21 +1008,57 @@ terms:
     active: true
   - id: School Psychology
     term: School of Education; School Psychology
+    active: false
+  - id: School Psychology Graduate Program
+    term: School of Education; School Psychology Graduate Program
     active: true
   - id: Southern Studies Concentration
     term: College of Arts and Sciences; Department of American Studies; Southern Studies Concentration
+    active: false
+  - id: Southern Studies Curriculum
+    term: College of Arts and Sciences; Department of American Studies; Southern Studies Curriculum
+    active: true
+  - id: Specialization in Exercise Physiology
+    term: College of Arts and Sciences; Department of Exercise and Sport Science; Specialization in Exercise Physiology
     active: true
   - id: Sport Administration Program
     term: College of Arts and Sciences; Department of Exercise and Sport Science; Sport Administration Program
     active: true
   - id: Studio Art Program
     term: College of Arts and Sciences; Department of Art; Studio Art Program
+    active: false
+  - id: The Office of Undergraduate Curricula - Interdisciplinary Studies
+    term: College of Arts and Sciences; The Office of Undergraduate Curricula – Interdisciplinary Studies
     active: true
   - id: Thurston Arthritis Research Center
     term: School of Medicine; Thurston Arthritis Research Center
     active: true
+  - id: The Water Institute
+    term: The Water Institute; Gillings School of Global Public Health
+    active: true
+  - id: Translational Pathology Laboratory
+    term: School of Medicine; Department of Pathology and Laboratory Medicine; Translational Pathology Laboratory
+    active: true
+  - id: UNC Center for AIDS Research
+    term: School of Medicine; UNC Center for AIDS Research
+    active: true
+  - id: UNC Center for Bioethics
+    term: School of Medicine; UNC Center for Bioethics
+    active: true
+  - id: UNC Center for Community Capital
+    term: College of Arts and Sciences; UNC Center for Community Capital
+    active: true
+  - id: UNC Center for Functional GI and Motility Disorders
+    term: School of Medicine; Department of Medicine; Division of Gastroenterology and Hepatology; UNC Center for Functional GI and Motility Disorders
+    active: true
+  - id: UNC Center for Health Equity Research
+    term: School of Medicine; UNC Center for Health Equity Research
+    active: true
   - id: UNC Center for Health Promotion and Disease Prevention
     term: UNC Center for Health Promotion and Disease Prevention
+    active: true
+  - id: UNC Diabetes Care Center
+    term: School of Medicine; Division of Endocrinology and Metabolism; UNC Diabetes Care Center
     active: true
   - id: UNC Institute for the Environment
     term: UNC Institute for the Environment
@@ -827,6 +1078,12 @@ terms:
   - id: UNC Lineberger Comprehensive Cancer Center
     term: N.C. Cancer Hospital; UNC Lineberger Comprehensive Cancer Center
     active: true
+  - id: Neuroscience Center
+    term: School of Medicine; Neuroscience Center
+    active: false
+  - id: UNC Neuroscience Center
+    term: School of Medicine; Neuroscience Center
+    active: true
   - id: McAllister Heart Institute
     term: School of Medicine; UNC McAllister Heart Institute
     active: false
@@ -835,6 +1092,12 @@ terms:
     active: false
   - id: UNC McAllister Heart Institute
     term: School of Medicine; UNC McAllister Heart Institute
+    active: true
+  - id: UNC/NCSU Joint Department of Biomedical Engineering
+    term: School of Medicine; UNC/NCSU Joint Department of Biomedical Engineering
+    active: true
+  - id: University of North Carolina at Chapel Hill. Graduate School
+    term: University of North Carolina at Chapel Hill. Graduate School
     active: true
   - id: Health Sciences Library
     term: University of North Carolina at Chapel Hill. Health Sciences Library

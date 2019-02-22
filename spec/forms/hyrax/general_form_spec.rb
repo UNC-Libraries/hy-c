@@ -25,8 +25,8 @@ RSpec.describe Hyrax::GeneralForm do
                                      :keyword, :identifier, :language, :license, :publisher, :related_url,
                                      :resource_type, :rights_statement, :subject, :bibliographic_citation, :abstract,
                                      :academic_concentration, :access, :advisor, :alternative_title, :arranger, :award,
-                                     :composer, :conference_name, :copyright_date, :date_issued,
-                                     :date_other, :dcmi_type, :degree, :degree_granting_institution, :doi, :edition,
+                                     :composer, :conference_name, :copyright_date, :date_captured, :date_issued,
+                                     :date_other, :dcmi_type, :degree, :degree_granting_institution, :digital_collection, :doi, :edition,
                                      :extent, :funder, :geographic_subject, :graduation_year, :isbn, :issn,
                                      :journal_issue, :journal_title, :journal_volume, :kind_of_data, :last_modified_date,
                                      :medium, :methodology, :note, :page_start, :page_end, :peer_review_status,
@@ -38,7 +38,7 @@ RSpec.describe Hyrax::GeneralForm do
   describe "#admin_only_terms" do
     subject { form.admin_only_terms }
 
-    it { is_expected.to match_array [:date_created, :dcmi_type, :degree_granting_institution, :doi] }
+    it { is_expected.to match_array [:date_created, :dcmi_type, :degree_granting_institution, :digital_collection, :doi] }
   end
 
   describe 'default value set' do
@@ -94,13 +94,14 @@ RSpec.describe Hyrax::GeneralForm do
                                           affiliation: 'Carolina Center for Genome Sciences',
                                           other_affiliation: 'another affiliation'} },
           conference_name: ['a conference'],
-          copyright_date: ['2017-01-22'],
+          copyright_date: ['2017'],
+          date_captured: '2017-01-20',
           date_issued: ['2017-01-22'],
           date_other: ['2017-01-22'],
           dcmi_type: ['type'],
           degree: 'something', # single-valued
           degree_granting_institution: 'unc', # single-valued
-          digital_collection: ['a collection'],
+          digital_collection: ['my collection'],
           doi: '12345', # single-valued
           edition: 'an edition', # single-valued
           extent: ['1993'],
@@ -173,12 +174,13 @@ RSpec.describe Hyrax::GeneralForm do
       expect(subject['alternative_title']).to eq ['some title']
       expect(subject['award']).to eq 'an award'
       expect(subject['conference_name']).to eq ['a conference']
-      expect(subject['copyright_date']).to eq ['2017-01-22']
+      expect(subject['copyright_date']).to eq ['2017']
+      expect(subject['date_captured']).to eq '2017-01-20'
       expect(subject['date_issued']).to eq ['2017-01-22']
       expect(subject['date_other']).to eq ['2017-01-22']
       expect(subject['degree']).to eq 'something'
       expect(subject['degree_granting_institution']).to eq 'unc'
-      expect(subject['digital_collection']).to be_nil
+      expect(subject['digital_collection']).to eq ['my collection']
       expect(subject['doi']).to eq '12345'
       expect(subject['edition']).to eq 'an edition'
       expect(subject['extent']).to eq ['1993']

@@ -79,12 +79,13 @@ module Hyrax
          agents.each do |agent|
            # Notifications for all workflow state changes will still go to the admin set owner, but not to all admins
            if (agent.proxy_for_type == 'Hyrax::Group' || agent.proxy_for_type == 'Role') && role.name != 'depositing' &&
-               agent.proxy_for_id != 'registered'
+               agent.proxy_for_id != 'registered' && agent.proxy_for_id != 'admin'
              users += Role.where(name: agent.proxy_for_id).first.users
            elsif agent.proxy_for_type == 'User'
              users << ::User.find(agent.proxy_for_id)
            end
          end
+
          users.uniq
        end
     end

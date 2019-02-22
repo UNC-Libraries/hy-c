@@ -1,3 +1,2 @@
-<%= f.input :degree_granting_institution, input_html: {
-    value: (f.object.degree_granting_institution.empty?) ?
-               'University of North Carolina at Chapel Hill' : f.object.degree_granting_institution } %>
+<% institution = params[:action] == 'new' ? 'University of North Carolina at Chapel Hill' : f.object.degree_granting_institution %>
+<%= f.input :degree_granting_institution, input_html: { value: institution } %>

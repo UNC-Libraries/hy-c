@@ -25,6 +25,10 @@ class Multimed < ActiveFedora::Base
     index.as :stored_searchable
   end
 
+  property :digital_collection, predicate: ::RDF::URI('http://dbpedia.org/ontology/collection') do |index|
+    index.as :stored_searchable
+  end
+
   property :doi, predicate: ::RDF::Vocab::Identifiers.doi, multiple: false do |index|
     index.as :stored_searchable
   end

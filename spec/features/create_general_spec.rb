@@ -46,6 +46,7 @@ RSpec.feature 'Create a General', js: false do
       Hyrax::Workflow::PermissionGenerator.call(roles: 'depositing', workflow: workflow, agents: user_agent)
       Hyrax::Workflow::PermissionGenerator.call(roles: 'approving', workflow: workflow, agents: admin_agent)
       Hyrax::Workflow::PermissionGenerator.call(roles: 'depositing', workflow: workflow, agents: admin_agent)
+      Hyrax::Workflow::PermissionGenerator.call(roles: 'deleting', workflow: workflow, agents: admin_agent)
       permission_template.available_workflows.first.update!(active: true)
       DefaultAdminSet.create(work_type_name: 'General', admin_set_id: admin_set.id)
     end
@@ -90,7 +91,7 @@ RSpec.feature 'Create a General', js: false do
       fill_in 'ORCID', { with: 'contributor orcid', id: 'general_contributors_attributes_0_orcid' }
       select 'Department of Biology', from: 'general_contributors_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'general_contributors_attributes_0_other_affiliation' }
-      fill_in 'Copyright date', with: '2018-10-03'
+      fill_in 'Copyright date', with: '2018'
       fill_in 'Composer', { with: 'composer', id: 'general_composers_attributes_0_name' }
       fill_in 'ORCID', { with: 'composer orcid', id: 'general_composers_attributes_0_orcid' }
       select 'Department of Biology', from: 'general_composers_attributes_0_affiliation'
@@ -102,6 +103,7 @@ RSpec.feature 'Create a General', js: false do
       select 'Bachelor of Science', from: 'general_degree'
       fill_in 'Degree granting institution', with: 'UNC'
       fill_in 'Description', with: 'a description'
+      fill_in 'Digital collection', with: 'my collection'
       fill_in 'DOI', with: 'some doi'
       select 'Preprint', from: 'general_edition'
       fill_in 'Extent', with: 'some extent'
@@ -160,7 +162,7 @@ RSpec.feature 'Create a General', js: false do
       expect(page).not_to have_field('general_visibility_lease')
       choose 'general_visibility_open'
       check 'agreement'
-      
+
       expect(page).to have_selector('#general_dcmi_type')
 
       find('label[for=addFiles]').click do
@@ -172,7 +174,7 @@ RSpec.feature 'Create a General', js: false do
       find('#general_admin_set_id').text eq 'general admin set'
 
       click_button 'Save'
-      expect(page).to have_content 'Your files are being processed by Hyrax'
+      expect(page).to have_content 'Your files are being processed by the Carolina Digital Repository'
 
       visit '/dashboard/my/works/'
       expect(page).to have_content 'Test General work'
@@ -193,7 +195,7 @@ RSpec.feature 'Create a General', js: false do
       expect(page).to have_content 'Composer composer ORCID: composer orcid'
       expect(page).to have_content 'Conference name a conference'
       expect(page).to have_content 'Contributor contributor ORCID: contributor orcid'
-      expect(page).to have_content 'Copyright date October 3, 2018'
+      expect(page).to have_content 'Copyright date 2018'
       expect(page).to have_content 'Creator Test Default Creator ORCID: creator orcid'
       expect(page).to have_content 'Date created October 3, 2018'
       expect(page).to have_content 'Date of publication October 3, 2018'
@@ -201,6 +203,7 @@ RSpec.feature 'Create a General', js: false do
       expect(page).to have_content 'Degree Bachelor of Science'
       expect(page).to have_content 'Degree granting institution UNC'
       expect(page).to have_content 'a description'
+      expect(page).to have_content 'Digital collection my collection'
       expect(page).to have_content 'DOI some doi'
       expect(page).to have_content 'Version Preprint'
       expect(page).to have_content 'Extent some extent'
@@ -244,7 +247,7 @@ RSpec.feature 'Create a General', js: false do
       expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
       expect(page).to_not have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'
 
-      expect(page).to have_content 'Type http://purl.org/dc/dcmitype/Text'
+      expect(page).to_not have_content 'Type http://purl.org/dc/dcmitype/Text'
       expect(page).to have_content 'In Administrative Set: general admin set'
       expect(page).to have_selector(:link, 'Delete')
 

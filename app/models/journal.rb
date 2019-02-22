@@ -29,6 +29,10 @@ class Journal < ActiveFedora::Base
     index.as :stored_searchable
   end
 
+  property :digital_collection, predicate: ::RDF::URI('http://dbpedia.org/ontology/collection') do |index|
+    index.as :stored_searchable
+  end
+
   property :doi, predicate: ::RDF::Vocab::Identifiers.doi, multiple: false do |index|
     index.as :stored_searchable
   end
@@ -66,6 +70,10 @@ class Journal < ActiveFedora::Base
   end
 
   property :rights_statement_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#RightsStatementLabel'), multiple: false do |index|
+    index.as :stored_searchable
+  end
+
+  property :series, predicate: ::RDF::Vocab::BF2::seriesStatement do |index|
     index.as :stored_searchable
   end
 

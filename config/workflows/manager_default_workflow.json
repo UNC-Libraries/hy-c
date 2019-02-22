@@ -1,0 +1,90 @@
+{
+  "workflows": [
+    {
+      "name": "default_email_manager",
+      "label": "Default workflow - manager emails",
+      "description": "A single submission step, default workflow with manager emails",
+      "allows_access_grant": true,
+      "actions": [
+        {
+          "name": "deposit",
+          "from_states": [],
+          "transition_to": "deposited",
+          "methods": [
+            "Hyrax::Workflow::GrantEditToDepositor",
+            "Hyrax::Workflow::ActivateObject"
+          ],
+          "notifications": [
+            {
+              "notification_type": "email",
+              "name": "Hyrax::Workflow::DepositedNotification",
+              "to": ["managing"]
+            }
+          ]
+        }, {
+          "name": "withdraw",
+          "from_states": [{"names": ["deposited"], "roles": ["deleting"]}],
+          "transition_to": "withdrawn",
+          "notifications": [
+            {
+              "notification_type": "email",
+              "name": "Hyrax::Workflow::DeletionApprovalNotification",
+              "to": ["depositing", "deleting"]
+            }
+          ],
+          "_comment" : "MetadataOnlyRecord must be called before RevokeEditFromDepositor",
+          "methods": [
+            "Hyrax::Workflow::MetadataOnlyRecord",
+            "Hyrax::Workflow::RevokeEditFromDepositor"
+          ]
+        }, {
+          "name": "request_deletion",
+          "_comment" : "This action is suppressed from normal rendering with other review/approval actions",
+          "from_states": [{"names": ["deposited"], "roles": ["deleting", "depositing"]}],
+          "transition_to": "pending_deletion",
+          "notifications": [
+            {
+              "notification_type": "email",
+              "name": "Hyrax::Workflow::PendingDeletionNotification",
+              "to": ["deleting"]
+            }
+          ],
+          "methods": [
+            "Hyrax::Workflow::MetadataOnlyRecord",
+            "Hyrax::Workflow::RevokeEditFromDepositor"
+          ]
+        }, {
+          "name": "approve_deletion",
+          "from_states": [{"names": ["deposited", "pending_deletion"], "roles": ["deleting"]}],
+          "transition_to": "withdrawn",
+          "notifications": [
+            {
+              "notification_type": "email",
+              "name": "Hyrax::Workflow::DeletionApprovalNotification",
+              "to": ["depositing"]
+            }
+          ],
+          "methods": [
+            "Hyrax::Workflow::MetadataOnlyRecord",
+            "Hyrax::Workflow::RevokeEditFromDepositor"
+          ]
+        }, {
+          "name": "republish",
+          "from_states": [{"names": ["pending_deletion"], "roles": ["deleting"]}],
+          "transition_to": "deposited",
+          "notifications": [
+            {
+              "notification_type": "email",
+              "name": "Hyrax::Workflow::DeletionRequestRejectionNotification",
+              "to": ["depositing"]
+            }
+          ],
+          "methods": [
+            "Hyrax::Workflow::GrantEditToDepositor",
+            "Hyrax::Workflow::ActivateObject"
+          ]
+        }
+      ]
+    }
+  ]
+}

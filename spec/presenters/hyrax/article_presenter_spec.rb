@@ -18,11 +18,12 @@ RSpec.describe Hyrax::ArticlePresenter do
       "alternative_title_tesim" => ['my other title'],
       "bibliographic_citation_tesim" => ['a citation'],
       "creator_display_tesim" => ['a creator'],
-      "copyright_date_tesim" => '2017-01-22',
+      "copyright_date_tesim" => '2017',
       "date_created_tesim" => '2017-01-22',
       "date_issued_tesim" => '2017-01-22',
       "date_other_tesim" => ['2017-01-22'],
       "dcmi_type_tesim" => ['science fiction'],
+      "digital_collection_tesim" => ['my collection'],
       "deposit_record_tesim" => 'a deposit record',
       "doi_tesim" => '12345',
       "edition_tesim" => 'new edition',
@@ -76,6 +77,7 @@ RSpec.describe Hyrax::ArticlePresenter do
   it { is_expected.to delegate_method(:date_other).to(:solr_document) }
   it { is_expected.to delegate_method(:dcmi_type).to(:solr_document) }
   it { is_expected.to delegate_method(:deposit_record).to(:solr_document) }
+  it { is_expected.to delegate_method(:digital_collection).to(:solr_document) }
   it { is_expected.to delegate_method(:doi).to(:solr_document) }
   it { is_expected.to delegate_method(:edition).to(:solr_document) }
   it { is_expected.to delegate_method(:extent).to(:solr_document) }
@@ -174,7 +176,7 @@ RSpec.describe Hyrax::ArticlePresenter do
 
     context "with a custom copyright date field" do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:copyright_date, '2017-01-22', {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:copyright_date, '2017', {}).and_return(renderer)
       end
 
       it "calls the AttributeRenderer" do
@@ -213,6 +215,17 @@ RSpec.describe Hyrax::ArticlePresenter do
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:deposit_record)
+      end
+    end
+
+    context "with a custom digital collection field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:digital_collection, ['my collection'], {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:digital_collection)
       end
     end
 

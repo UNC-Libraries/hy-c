@@ -6,8 +6,8 @@ module Hyrax
     
     self.model_class = ::Journal
 
-    self.terms += [:abstract, :alternative_title, :date_issued, :dcmi_type, :doi, :extent, :geographic_subject, :isbn,
-                   :issn, :note, :place_of_publication, :publisher, :table_of_contents, :resource_type]
+    self.terms += [:abstract, :alternative_title, :date_issued, :dcmi_type, :digital_collection, :doi, :extent, :geographic_subject, :isbn,
+                   :issn, :note, :place_of_publication, :publisher, :series, :table_of_contents, :resource_type]
 
     self.terms -= [:description, :based_near, :related_url, :identifier, :contributor, :source, :date_created]
 
@@ -15,7 +15,7 @@ module Hyrax
 
     self.single_value_fields = [:title, :license]
     
-    self.admin_only_terms = [:dcmi_type, :access, :alternative_title, :date_created, :doi, :use]
+    self.admin_only_terms = [:dcmi_type, :access, :alternative_title, :date_created, :digital_collection, :doi, :use]
     self.default_term_values = { :dcmi_type => ["http://purl.org/dc/dcmitype/Text"], :language => ["http://id.loc.gov/vocabulary/iso639-2/eng"],
                                  :rights_statement => "http://rightsstatements.org/vocab/InC/1.0/" }
 

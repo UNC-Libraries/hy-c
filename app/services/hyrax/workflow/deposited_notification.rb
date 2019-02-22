@@ -10,8 +10,7 @@ module Hyrax
       end
 
       def message
-        I18n.t('hyrax.notifications.workflow.deposited.message', title: title, link: (link_to work_id, document_path),
-               user: user.user_key, comment: comment)
+        I18n.t('hyrax.notifications.workflow.deposited.message', title: title, link: (link_to work_id, document_path))
       end
 
       def users_to_notify
