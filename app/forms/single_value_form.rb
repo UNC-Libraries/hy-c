@@ -86,24 +86,30 @@ class SingleValueForm < Hyrax::Forms::WorkForm
       end
     end
 
-    # Convert dates from strings to EDTF format
+    # Convert dates from human readable strings to EDTF format
     if attrs.key?(:date_created) && !attrs[:date_created].blank?
-      if attrs[:date_created].is_a?(Array)
-        attrs[:date_created] = []
+      if attrs[:date_created].kind_of?(Array)
+        date_created_convert = []
+
         Array(attrs[:date_created]).each do |date_created|
-          attrs[:date_created] << convertToEdtf(date_created)
+          date_created_convert << convertToEdtf(date_created)
         end
+
+        attrs[:date_created] = date_created_convert
       else
         attrs[:date_created] = convertToEdtf(attrs[:date_created])
       end
     end
 
     if attrs.key?(:date_issued) && !attrs[:date_issued].blank?
-      if attrs[:date_issued].is_a?(Array)
-        attrs[:date_issued] = []
+      if attrs[:date_issued].kind_of?(Array)
+        date_issued_convert = []
+
         Array(attrs[:date_issued]).each do |date_issued|
-          attrs[:date_issued] << convertToEdtf(date_issued)
+          date_issued_convert << convertToEdtf(date_issued)
         end
+
+        attrs[:date_issued] = date_issued_convert
       else
         attrs[:date_issued] = convertToEdtf(attrs[:date_issued])
       end

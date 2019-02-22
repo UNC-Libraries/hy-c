@@ -76,7 +76,7 @@ RSpec.describe Hyrax::MastersPaperForm do
                                           orcid: 'advisor orcid',
                                           affiliation: 'Carolina Center for Genome Sciences',
                                           other_affiliation: 'another affiliation'} },
-          date_issued: 'a date', # single-valued
+          date_issued: 'Summer 1999', # single-valued
           dcmi_type: ['type'],
           degree: 'MS', # single-valued
           degree_granting_institution: 'UNC', # single-valued
@@ -112,7 +112,7 @@ RSpec.describe Hyrax::MastersPaperForm do
       expect(subject['abstract']).to be_empty
       expect(subject['academic_concentration']).to eq ['a concentration']
       expect(subject['access']).to eq 'public'
-      expect(subject['date_issued']).to eq 'a date'
+      expect(subject['date_issued']).to eq '1999-22'
       expect(subject['degree']).to eq 'MS'
       expect(subject['degree_granting_institution']).to eq 'UNC'
       expect(subject['doi']).to eq '12345'
