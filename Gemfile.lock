@@ -145,6 +145,8 @@ GEM
       activemodel (>= 4.0.0)
       activesupport (>= 4.0.0)
       mime-types (>= 1.16)
+    chronic_duration (0.10.6)
+      numerizer (~> 0.1.1)
     clamby (1.5.1)
     clipboard-rails (1.7.1)
     coffee-rails (4.2.2)
