@@ -50,9 +50,9 @@ class CatalogController < ApplicationController
     config.add_facet_field solr_name("language", :facetable), helper_method: :language_links_facets, limit: 5
     config.add_facet_field solr_name("resource_type", :facetable), label: "Resource Type", limit: 5
     config.add_facet_field solr_name("subject", :facetable), limit: 5
-    config.add_facet_field solr_name("based_near_label", :facetable), limit: 5
     config.add_facet_field solr_name("file_format", :facetable), limit: 5
     config.add_facet_field solr_name("depositor", :facetable), limit: 5
+    config.add_facet_field solr_name("based_near_label", :facetable), limit: 5
 
     # UNC Custom
     config.add_facet_field solr_name("affiliation_label", :facetable), label: "Departments", limit: 5
@@ -77,6 +77,7 @@ class CatalogController < ApplicationController
     config.add_index_field solr_name("date_issued", :stored_searchable), label: "Date of publication"
     config.add_index_field solr_name("abstract", :stored_searchable), label: "Abstract"
     config.add_index_field solr_name("resource_type", :stored_searchable), label: "Resource type", link_to_search: solr_name("resource_type", :facetable)
+    config.add_index_field solr_name("based_near_label", :stored_searchable), itemprop: 'contentLocation', link_to_search: solr_name("based_near_label", :facetable)
 
     # solr fields to be displayed in the show (single result) view
     #   The ordering of the field names is the order of the display
@@ -86,6 +87,7 @@ class CatalogController < ApplicationController
     config.add_show_field solr_name("date_issued", :stored_searchable), label: "Date of publication"
     config.add_show_field solr_name("abstract", :stored_searchable)
     config.add_show_field solr_name("resource_type", :stored_searchable), label: "Resource type"
+    config.add_show_field solr_name("based_near_label", :stored_searchable), label: "Location"
 
     # Search fields
     # include all fields available to allow searching across all attributes
@@ -109,7 +111,6 @@ class CatalogController < ApplicationController
     config.add_show_field solr_name("doi", :stored_searchable), label: "DOI"
     config.add_show_field solr_name("edition", :stored_searchable), label: "Edition"
     config.add_show_field solr_name("extent", :stored_searchable), label: "Extent"
-    config.add_show_field solr_name("geographic_subject", :stored_searchable), label: "Geographic Subject"
     config.add_show_field solr_name("graduation_year", :stored_searchable), label: "Graduation Year"
     config.add_show_field solr_name("identifier", :stored_searchable), label: "Identifier"
     config.add_show_field solr_name("isbn", :stored_searchable), label: "ISBN"
