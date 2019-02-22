@@ -1,6 +1,7 @@
 # [hyc-override] Overriding work form in hyrax gem to allow default fields to be singular
 class SingleValueForm < Hyrax::Forms::WorkForm
-  
+  extend Hyc::EdtfConvert
+
   # Field which will not be rendered to the work form
   class_attribute :admin_only_terms
   self.admin_only_terms = Array.new
@@ -85,12 +86,34 @@ class SingleValueForm < Hyrax::Forms::WorkForm
       end
     end
 
+    # Convert dates from strings to EDTF format
+    if attrs.key?(:date_created) && !attrs[:date_created].blank?
+      if attrs[:date_created].is_a?(Array)
+        attrs[:date_created] = []
+        Array(attrs[:date_created]).each do |date_created|
+          attrs[:date_created] << convertToEdtf(date_created)
+        end
+      else
+        attrs[:date_created] = convertToEdtf(attrs[:date_created])
+      end
+    end
+
+    if attrs.key?(:date_issued) && !attrs[:date_issued].blank?
+      if attrs[:date_issued].is_a?(Array)
+        attrs[:date_issued] = []
+        Array(attrs[:date_issued]).each do |date_issued|
+          attrs[:date_issued] << convertToEdtf(date_issued)
+        end
+      else
+        attrs[:date_issued] = convertToEdtf(attrs[:date_issued])
+      end
+    end
+
     attrs
   end
 
-
-
   private
+
     def initialize_default_term_values(model)
       # Do not set default values for existing works
       if model.id != nil
