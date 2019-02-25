@@ -1,6 +1,26 @@
 module Hyc
   module EdtfConvert
-    def convertToEdtf(field)
+    def edtf_form_update(attrs, field)
+      if attrs.key?(field) && !attrs[field].blank?
+        if attrs[field].kind_of?(Array)
+          date_issued_convert = []
+
+          Array(attrs[field]).each do |field_date|
+            date_issued_convert << convert_to_edtf(field_date)
+          end
+
+          attrs[field] = date_issued_convert
+        else
+          attrs[field] = convert_to_edtf(attrs[field])
+        end
+      end
+
+      attrs
+    end
+
+    private
+
+    def convert_to_edtf(field)
       case field
       when /^\d{4}s$/ # 1900s, 1980s
         normalized_string = (field[2].to_i == 0 && field[3].to_i == 0) ? "#{field[0...-3]}xx" : "#{field[0...-2]}x"
@@ -28,8 +48,6 @@ module Hyc
 
       normalized_string
     end
-
-    private
 
     def month_season(field)
       month_season_list[field.downcase.to_sym]
