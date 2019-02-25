@@ -26,8 +26,8 @@ module Hyc
         normalized_string = (field[2].to_i == 0 && field[3].to_i == 0) ? "#{field[0...-3]}xx" : "#{field[0...-2]}x"
       when /^(\d{4}-\d{2}-\d{2}|\d{4})$/ # 2000-01-01 or 2000
         normalized_string = field
-      when /^(\d{2})-(\d{2})-(\d{4})$/ # 01-01-2000
-        normalized_string = "#{$3}-#{$1}-#{$2}"
+      when /^(\d{2})(-|\/)(\d{2})(-|\/)(\d{4})$/ # 01-01-2000, 01/01/2000
+        normalized_string = "#{$5}-#{$1}-#{$3}"
       when /^(\d{4})(\s+to\s+|-)(\d{4})$/i # 1990 to 1995
         normalized_string = "#{$1}/#{$3}"
       when month_season_list_regex(true) # Spring 2000, Aug 2000, July 2000
