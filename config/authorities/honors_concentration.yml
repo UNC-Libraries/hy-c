@@ -1,14 +1,32 @@
-terms:  
+terms:
+  - id: African, African American & Diaspora Studies
+    term: African, African American & Diaspora Studies
+  - id: American Studies
+    term: American Studies
   - id: Anthropology
     term: Anthropology
-  - id: Chemistry
-    term: Chemistry
-  - id: Biostatistics
-    term: Biostatistics
   - id: Applied Science
     term: Applied Science
+  - id: Archaeology
+    term: Archaeology
+  - id: Art
+    term: Art
+  - id: Art History
+    term: Art History
+  - id: Asian Studies
+    term: Asian Studies
+  - id: Biology
+    term: Biology
+  - id: Biomedical Engineering
+    term: Biomedical Engineering
+  - id: Biostatistics
+    term: Biostatistics
   - id: Business Administration
     term: Business Administration
+  - id: Chemistry
+    term: Chemistry
+  - id: Classics
+    term: Classics
   - id: Communication Studies
     term: Communication Studies
   - id: Comparative Literature
