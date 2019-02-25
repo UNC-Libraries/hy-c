@@ -263,7 +263,7 @@ module Migrate
           name_array = []
           names.each do |name|
             if !name.xpath('mods:namePart[@type="family"]', MigrationConstants::NS).text.blank?
-              name_array << name.xpath('concat(mods:namePart[@type="family"], ", ", mods:namePart[@type="given"])', MigrationConstants::NS)
+              name_array << build_name(name)
             else
               name_array << name.xpath('mods:namePart', MigrationConstants::NS).text
             end
@@ -279,7 +279,7 @@ module Migrate
           people.each_with_index do |person, index|
             name = ''
             if !person.xpath('mods:namePart[@type="family"]', MigrationConstants::NS).text.blank?
-              name = person.xpath('concat(mods:namePart[@type="family"], ", ", mods:namePart[@type="given"])', MigrationConstants::NS)
+              name = build_name(person)
             else
               name = person.xpath('mods:namePart', MigrationConstants::NS).text
             end
@@ -314,6 +314,15 @@ module Migrate
           else
             []
           end
+        end
+
+        def build_name(name_mods)
+          name_parts = []
+          name_parts << name_mods.xpath('mods:namePart[@type="family"]', MigrationConstants::NS)
+          name_parts << name_mods.xpath('mods:namePart[@type="given"]', MigrationConstants::NS)
+          name_parts << name_mods.xpath('mods:namePart[@type="termsOfAddress"]', MigrationConstants::NS)
+          name_parts << name_mods.xpath('mods:namePart[@type="date"]', MigrationConstants::NS)
+          name_parts.reject{ |name| name.blank? }.join(', ')
         end
     end
   end
