@@ -95,24 +95,24 @@ class SingleValueForm < Hyrax::Forms::WorkForm
 
   private
 
-  def initialize_default_term_values(model)
-    # Do not set default values for existing works
-    if model.id != nil
-      return
-    end
+    def initialize_default_term_values(model)
+      # Do not set default values for existing works
+      if model.id != nil
+        return
+      end
 
-    default_term_values.each do |field, values|
-      Rails.logger.debug "Init field #{field} with default values #{values.inspect} or retain existing #{model[field].inspect}"
+      default_term_values.each do |field, values|
+        Rails.logger.debug "Init field #{field} with default values #{values.inspect} or retain existing #{model[field].inspect}"
 
-      if model[field].blank?
-        if single_value_fields.include? field.to_sym
-          model[field].set(values.first)
-        elsif !model[field].kind_of?(Array)
-          model[field] = values
-        else
-          model[field].set(values)
+        if model[field].blank?
+          if single_value_fields.include? field.to_sym
+            model[field].set(values.first)
+          elsif !model[field].kind_of?(Array)
+            model[field] = values
+          else
+            model[field].set(values)
+          end
         end
       end
     end
-  end
 end
