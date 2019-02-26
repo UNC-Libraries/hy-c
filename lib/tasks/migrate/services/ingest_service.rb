@@ -2,11 +2,12 @@ module Migrate
   module Services
     require 'tasks/migrate/services/id_mapper'
     require 'tasks/migrate/services/metadata_parser'
+    require 'tasks/migrate/services/progress_tracker'
     require 'tasks/migration_helper'
 
     class IngestService
 
-      def initialize(config, object_hash, binary_hash, premis_hash, deposit_record_hash, mapping_file, depositor)
+      def initialize(config, object_hash, binary_hash, premis_hash, deposit_record_hash, output_dir, depositor)
         @collection_ids_file = config['collection_list']
         @object_hash = object_hash
         @binary_hash = binary_hash
@@ -14,27 +15,40 @@ module Migrate
         @deposit_record_hash = deposit_record_hash
         @work_type = config['work_type']
         @child_work_type = config['child_work_type']
-        @mapping_file = mapping_file
         @depositor = depositor
         @tmp_file_location = config['tmp_file_location']
         @config = config
+        @output_dir = output_dir
+        
+        # Create the output directory if it does not yet exist
+        FileUtils.mkdir(output_dir) unless File.exist?(@output_dir)
+        
+        # Create file and hash mapping new and old ids
+        @id_mapper = Migrate::Services::IdMapper.new(File.join(@output_dir, 'old_to_new.csv'), 'old', 'new')
+        # Store parent-child relationships
+        @parent_child_mapper = Migrate::Services::IdMapper.new(File.join(@output_dir, 'parent_child.csv'), 'parent', 'children')
+        # Progress tracker for objects migrated
+        @object_progress = Migrate::Services::ProgressTracker.new(File.join(@output_dir, 'object_progress.log'))
       end
 
       def ingest_records
-        # Create file and hash mapping new and old ids
-        id_mapper = Migrate::Services::IdMapper.new(@mapping_file)
-        @mappings = Hash.new
-
-        # Store parent-child relationships
-        @parent_hash = Hash.new
-
+        STDOUT.sync = true
         # get array of record uuids
         collection_uuids = MigrationHelper.get_collection_uuids(@collection_ids_file)
+        
+        already_migrated = @object_progress.completed_set
+        puts "Skipping #{already_migrated.length} previously migrated works"
 
         puts "[#{Time.now.to_s}] Object count:  #{collection_uuids.count.to_s}"
 
         # get metadata for each record
         collection_uuids.each do |uuid|
+          # Skip this item if it has been migrated before
+          if already_migrated.include?(uuid)
+            puts "Skipping previously ingested #{uuid}"
+            next
+          end
+          
           start_time = Time.now
           puts "[#{start_time.to_s}] #{uuid} Start migration"
           parsed_data = Migrate::Services::MetadataParser.new(@object_hash[uuid],
@@ -46,7 +60,9 @@ module Migrate
                                                               @config).parse
           puts "[#{Time.now.to_s}] #{uuid} metadata parsed in #{Time.now-start_time} seconds"
           work_attributes = parsed_data[:work_attributes]
-          @parent_hash[uuid] = parsed_data[:child_works] if !parsed_data[:child_works].blank?
+
+          # store mapping of parent to children
+          store_children(uuid, parsed_data)
 
           # Create new work record and save
           new_work = work_record(work_attributes, uuid)
@@ -59,13 +75,12 @@ module Migrate
           puts "[#{Time.now.to_s}] #{uuid},#{new_work.id} saved new work in #{Time.now-save_time} seconds"
 
           # Record old and new ids for works
-          id_mapper.add_row([uuid, new_work.class.to_s.underscore+'s/'+new_work.id])
-          @mappings[uuid] = new_work.id
+          add_id_mapping(uuid, new_work)
 
           puts "[#{Time.now.to_s}] #{uuid},#{new_work.id} Number of files: #{work_attributes['contained_files'].count.to_s if !work_attributes['contained_files'].blank?}"
 
           # Save list of child filesets
-          ordered_members = Array.new
+          new_work.ordered_members = Array.new
 
           # Create children
           if !work_attributes['cdr_model_type'].blank? &&
@@ -88,10 +103,10 @@ module Migrate
 
                   fileset = create_fileset(parent: new_work, resource: fileset_attrs, file: @binary_hash[MigrationHelper.get_uuid_from_path(file)])
 
-                  # Record old and new ids for works
-                  id_mapper.add_row([MigrationHelper.get_uuid_from_path(file), 'parent/'+new_work.id+'/file_sets/'+fileset.id])
+                  new_work.ordered_members << fileset
 
-                  ordered_members << fileset
+                  # Record old and new ids for works
+                  add_file_id_mapping(file, new_work, fileset)
                 else
                   puts "[#{Time.now.to_s}] #{uuid},#{new_work.id} missing file: #{file}"
                 end
@@ -107,10 +122,10 @@ module Migrate
                 fileset_attrs = file_record(work_attributes)
                 fileset = create_fileset(parent: new_work, resource: fileset_attrs, file: binary_file)
 
-                # Record old and new ids for works
-                id_mapper.add_row([MigrationHelper.get_uuid_from_path(file), 'parent/'+new_work.id+'/file_sets/'+fileset.id])
+                new_work.ordered_members << fileset
 
-                ordered_members << fileset
+                # Record old and new ids for works
+                add_file_id_mapping(file, new_work, fileset)
               end
             end
           end
@@ -124,14 +139,15 @@ module Migrate
                                   'visibility' => Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE }
                 fileset = create_fileset(parent: new_work, resource: fileset_attrs, file: premis_file)
 
-                ordered_members << fileset
+                new_work.ordered_members << fileset
               else
                 puts "[#{Time.now.to_s}] #{uuid},#{new_work.id} missing premis file: #{file}"
               end
             end
           end
 
-          new_work.ordered_members = ordered_members
+          # Record that this object was migrated
+          @object_progress.add_entry(uuid)
           end_time = Time.now
           puts "[#{end_time.to_s}] #{uuid},#{new_work.id} Completed migration in #{end_time-start_time} seconds"
         end
@@ -139,7 +155,6 @@ module Migrate
         if !@child_work_type.blank?
           attach_children
         end
-        STDOUT.sync = true
         STDOUT.flush
       end
 
@@ -258,22 +273,77 @@ module Migrate
 
 
         def attach_children
+          # Load mapping of old uuids to new hyrax ids
+          uuid_to_id = Hash[@id_mapper.mappings.map { |row| [row[0], row[1].split('/')[-1]] }]
+          # Load mapping of parents to children
+          parent_hash = Hash[@parent_child_mapper.mappings.map { |row| [row[0], row[1].split('|')] }]
+          # Create or resume log of children attached
+          attached_mapper = Migrate::Services::ProgressTracker.new(File.join(@output_dir, 'attached_progress.log'))
+          # Load the mapping of children to parent that have been attached, in case we are resuming
+          already_attached = attached_mapper.completed_set
+          
           attach_time = Time.now
           puts "[#{attach_time.to_s}] attaching children to parents"
-          @parent_hash.each do |parent_id, children|
-            hyrax_id = @mappings[parent_id]
+          parent_hash.each do |parent_id, children|
+            attach_to_parent_time = Time.now
+            
+            hyrax_id = uuid_to_id[parent_id]
             parent = @work_type.singularize.classify.constantize.find(hyrax_id)
+            parent_changed = false
+            
             children.each do |child|
-              if @mappings[child]
-                parent.ordered_members << ActiveFedora::Base.find(@mappings[child])
-                parent.members << ActiveFedora::Base.find(@mappings[child])
+              next if already_attached.include?(child)
+              # If the child is in the uuid_to_id mapping, it is a child work and must be attached to the parent
+              child_id = uuid_to_id[child]
+              if child_id
+                parent.ordered_members << ActiveFedora::Base.find(child_id)
+                parent.members << ActiveFedora::Base.find(child_id)
+                parent_changed = true
               end
             end
-            MigrationHelper.retry_operation('attaching children') do
-              parent.save!
+            # Persist the parent with its updated list of children if any were added
+            if parent_changed
+              MigrationHelper.retry_operation('attaching children') do
+                parent.save!
+              end
+              puts "Attached children to parent #{hyrax_id} in #{Time.now-attach_to_parent_time} seconds"
+              # Log that the children were attached
+              children.each do |child|
+                attached_mapper.add_entry(child)
+              end
+            else
+              puts "No additional children attached to parent #{hyrax_id}"
             end
           end
           puts "[#{Time.now.to_s}] finished attaching children in #{Time.now-attach_time} seconds"
+        end
+
+        # Add a mapping from old uuid to the new work
+        def add_id_mapping(uuid, new_work)
+          # Pluralize the worktype
+          work_type = new_work.class.to_s.underscore
+          if work_type == 'honors_thesis'
+            work_type = 'honors_theses'
+          else
+            work_type = work_type + 's'
+          end
+          new_path = "#{work_type}/#{new_work.id}"
+          
+          @id_mapper.add_row(uuid, new_path)
+        end
+        
+        # Add a mapping from old uuid for a file, to its new path within a fileset
+        def add_file_id_mapping(file, new_work, fileset)
+          new_id = 'parent/'+new_work.id+'/file_sets/'+fileset.id
+          @id_mapper.add_row(MigrationHelper.get_uuid_from_path(file), new_id)
+        end
+
+        # Store the parent to children mapping for a work
+        def store_children(uuid, parsed_data)
+          if parsed_data[:child_works].blank?
+            return
+          end
+          @parent_child_mapper.add_row(uuid, parsed_data[:child_works].join('|'))
         end
     end
   end
