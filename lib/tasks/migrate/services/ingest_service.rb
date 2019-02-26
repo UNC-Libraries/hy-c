@@ -135,7 +135,7 @@ module Migrate
             work_attributes['premis_files'].each_with_index do |file, index|
               premis_file = @premis_hash[MigrationHelper.get_uuid_from_path(file)] || ''
               if File.file?(premis_file)
-                fileset_attrs = { 'title' => ["PREMIS_Events_Metadata_#{index}.txt"],
+                fileset_attrs = { 'title' => ["PREMIS_Events_Metadata_#{index}_#{uuid}.txt"],
                                   'visibility' => Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE }
                 fileset = create_fileset(parent: new_work, resource: fileset_attrs, file: premis_file)
 
@@ -148,7 +148,7 @@ module Migrate
 
           # Attach metadata files
           if File.file?(@object_hash[uuid])
-            fileset_attrs = { 'title' => ["uuid_#{uuid}.xml"],
+            fileset_attrs = { 'title' => ["original_metadata_file_#{uuid}.xml"],
                               'visibility' => Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE }
             fileset = create_fileset(parent: new_work, resource: fileset_attrs, file: @object_hash[uuid])
 
