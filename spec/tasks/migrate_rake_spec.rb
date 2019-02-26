@@ -55,6 +55,7 @@ describe "rake migrate:works", type: :task do
     expect(new_article['rights_statement_label']).to eq 'In Copyright'
     expect(new_article['admin_set_id']).to eq admin_set.id
     expect(new_article.visibility).to eq 'restricted'
+    expect(new_article.file_sets.count).to eq 2
     File.delete('spec/fixtures/migration/mapping.csv')
   end
 end

@@ -124,6 +124,17 @@ module Migrate
             end
           end
 
+          # Attach metadata files
+          if File.file?(@object_hash[uuid])
+            fileset_attrs = { 'title' => ["uuid_#{uuid}.xml"],
+                              'visibility' => Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE }
+            fileset = create_fileset(parent: new_work, resource: fileset_attrs, file: @object_hash[uuid])
+
+            ordered_members << fileset
+          else # This should never happen
+            puts "[#{Time.now.to_s}] #{uuid},#{new_work.id} missing metadata file: #{@object_hash[uuid]}"
+          end
+
           new_work.ordered_members = ordered_members
           end_time = Time.now
           puts "[#{end_time.to_s}] #{uuid},#{new_work.id} Completed migration in #{end_time-start_time} seconds"

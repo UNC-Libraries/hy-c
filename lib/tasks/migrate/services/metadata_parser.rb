@@ -75,7 +75,7 @@ module Migrate
           work_attributes['abstract'] = descriptive_mods.xpath('mods:abstract', MigrationConstants::NS).map(&:text)
           work_attributes['note'] = descriptive_mods.xpath('mods:note[not(@displayLabel="Description" or @displayLabel="Methods" or @type="citation/reference" or @displayLabel="Degree" or @displayLabel="Academic concentration" or @displayLabel="Keywords" or @displayLabel="Honors Level")]', MigrationConstants::NS).map(&:text)
           work_attributes['description'] = descriptive_mods.xpath('mods:note[@displayLabel="Description"]', MigrationConstants::NS).map(&:text)
-          work_attributes['methods'] = descriptive_mods.xpath('mods:note[@displayLabel="Methods"]', MigrationConstants::NS).map(&:text)
+          work_attributes['methodology'] = descriptive_mods.xpath('mods:note[@displayLabel="Methods"]', MigrationConstants::NS).map(&:text)
           work_attributes['extent'] = descriptive_mods.xpath('mods:physicalDescription/mods:extent', MigrationConstants::NS).map(&:text)
           work_attributes['table_of_contents'] = descriptive_mods.xpath('mods:tableOfContents', MigrationConstants::NS).map(&:text)
           work_attributes['bibliographic_citation'] = descriptive_mods.xpath('mods:note[@type="citation/reference"]', MigrationConstants::NS).map(&:text)
