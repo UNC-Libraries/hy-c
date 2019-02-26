@@ -32,8 +32,8 @@ export class RequiredFields {
                 '^((jan(uary)?|feb(ruary)?|mar(ch)?|apr(il)?|may|june|july|aug(ust)?|sept(ember)?|oct(ober)?|nov(ember)?|dec(ember)?|circa|spring|summer|fall|winter|autumn)?\\s*\\d{4}s?',
                 // matches 2000-01-01
                 '\\d{4}-\\d{2}-\\d{2}',
-                // matches 01-01-2000
-                '\\d{2}-\\d{2}-\\d{4}',
+                // matches 01-01-2000, 01/01/2000
+                '\\d{2}(\/|-)\\d{2}(\/|-)\\d{4}',
                 // matches 2000 to 2010, 2000-2010
                 '\\d{4}(\\s*to\\s*|-)\\d{4}',
                 // matches July 1st 2000, July 1st, 2000, July 1 2000, July 1, 2000
