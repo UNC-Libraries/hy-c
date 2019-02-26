@@ -12,15 +12,15 @@ class HonorsThesis < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :academic_concentration, predicate: ::RDF::URI('http://vivoweb.org/ontology/core#majorField') do |index|
-    index.as :stored_searchable
-  end
-
   property :access, predicate: ::RDF::Vocab::DC.accessRights, multiple: false do |index|
     index.as :stored_searchable
   end
 
   property :advisors, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/ths'), class_name: 'Person' do |index|
+    index.as :stored_searchable
+  end
+
+  property :alternative_title, predicate: ::RDF::Vocab::DC.alternative do |index|
     index.as :stored_searchable
   end
 
@@ -63,6 +63,10 @@ class HonorsThesis < ActiveFedora::Base
     index.as :stored_searchable
   end
 
+  property :honors_concentration, predicate: ::RDF::URI('http://vivoweb.org/ontology/core#majorField') do |index|
+    index.as :stored_searchable
+  end
+
   property :language_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#LanguageLabel') do |index|
     index.as :stored_searchable
   end
@@ -79,6 +83,10 @@ class HonorsThesis < ActiveFedora::Base
     index.as :stored_searchable
   end
 
+  property :url, predicate: ::RDF::Vocab::SCHEMA.url do |index|
+    index.as :stored_searchable
+  end
+
   property :use, predicate: ::RDF::Vocab::DC11.rights do |index|
     index.as :stored_searchable
   end
@@ -91,6 +99,6 @@ class HonorsThesis < ActiveFedora::Base
   # the properties are declared because it calls resource_class,
   # which finalizes the property declarations.
   # See https://github.com/projecthydra/active_fedora/issues/847
-  accepts_nested_attributes_for :advisors, allow_destroy: true, reject_if: proc { |attributes| attributes['name'].blank? || attributes['affiliation'].blank? }
-  accepts_nested_attributes_for :creators, allow_destroy: true, reject_if: proc { |attributes| attributes['name'].blank? || attributes['affiliation'].blank? }
+  accepts_nested_attributes_for :advisors, allow_destroy: true, reject_if: proc { |attributes| attributes['name'].blank? }
+  accepts_nested_attributes_for :creators, allow_destroy: true, reject_if: proc { |attributes| attributes['name'].blank? }
 end

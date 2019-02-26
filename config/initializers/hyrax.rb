@@ -76,7 +76,7 @@ Hyrax.config do |config|
 
   # Where to store tempfiles, leave blank for the system temp directory (e.g. /tmp)
   # config.temp_file_base = '/home/developer1'
-  config.temp_file_base = ENV['DATA_STORAGE']
+  config.temp_file_base = ENV['TEMP_STORAGE']
 
   # Hostpath to be used in Endnote exports
   # config.persistent_hostpath = 'http://localhost/files/'

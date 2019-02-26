@@ -53,7 +53,7 @@ module Migrate
           work_attributes['arrangers_attributes'] = parse_people_from_mods(descriptive_mods, 'Arranger')
           work_attributes['composers_attributes'] = parse_people_from_mods(descriptive_mods, 'Composer')
           work_attributes['funder'] = parse_names_from_mods(descriptive_mods, 'Funder')
-          work_attributes['project_directors_attributes'] = parse_people_from_mods(descriptive_mods, 'Project_director')
+          work_attributes['project_directors_attributes'] = parse_people_from_mods(descriptive_mods, 'Project director')
           work_attributes['researchers_attributes'] = parse_people_from_mods(descriptive_mods, 'Researcher')
           work_attributes['reviewers_attributes'] = parse_people_from_mods(descriptive_mods, 'Reviewer')
           work_attributes['translators_attributes'] = parse_people_from_mods(descriptive_mods, 'Translator')
@@ -108,7 +108,8 @@ module Migrate
           work_attributes['resource_type'] = descriptive_mods.xpath('mods:genre[not(@*)]',MigrationConstants::NS).map(&:text)
           work_attributes['dcmi_type'] = descriptive_mods.xpath('mods:typeOfResource/@valueURI',MigrationConstants::NS).map(&:text)
           work_attributes['use'] = descriptive_mods.xpath('mods:accessCondition[@type="use and reproduction" and not(@displayLabel)]',MigrationConstants::NS).map(&:text)
-          work_attributes['license'] = descriptive_mods.xpath('mods:accessCondition[@displayLabel="License" and @type="use and reproduction"]/@*[name()="xlink:href"]',MigrationConstants::NS).map(&:text)
+          license = descriptive_mods.xpath('mods:accessCondition[@displayLabel="License" and @type="use and reproduction"]/@*[name()="xlink:href"]',MigrationConstants::NS).map(&:text)
+          work_attributes['license'] = license&.map{|uri| uri.sub(/^https/, 'http')}
           work_attributes['license_label'] = work_attributes['license'].map{ |l| CdrLicenseService.label(l) }
           work_attributes['rights_statement'] = descriptive_mods.xpath('mods:accessCondition[@displayLabel="Rights Statement" and @type="use and reproduction"]/@*[name()="xlink:href"]',MigrationConstants::NS).map(&:text)
           work_attributes['rights_statement_label'] = work_attributes['rights_statement'].map{ |r| CdrRightsStatementsService.label(r) }

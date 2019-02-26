@@ -89,7 +89,7 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       expect(page).to have_selector('#honors_thesis_language_label', visible: false)
       expect(page).to have_selector('#honors_thesis_license_label', visible: false)
       expect(page).to have_selector('#honors_thesis_rights_statement_label', visible: false)
-      expect(page).not_to have_field('honors_thesis_academic_concentration')
+      expect(page).not_to have_field('honors_thesis_honors_concentration')
       expect(page).not_to have_field('honors_thesis_award')
       expect(page).not_to have_field('honors_thesis_extent')
       expect(page).not_to have_field('honors_thesis_use')
@@ -171,7 +171,7 @@ RSpec.feature 'Create a HonorsThesis', js: false do
 
       # extra fields
       fill_in 'Date created', with: '2018-10-03'
-      select 'Clinical Nutrition', from: 'Academic Concentration'
+      select 'Biostatistics', from: 'Honors concentration'
       fill_in 'Access', with: 'some access'
       fill_in 'DOI', with: 'some doi'
       fill_in 'Extent', with: 'some extent'
@@ -193,7 +193,7 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       expect(page).to have_select('honors_thesis_resource_type', selected: 'Honors Thesis')
       choose "honors_thesis_visibility_open"
       check 'agreement'
-      
+
       expect(page).to have_selector('#honors_thesis_dcmi_type')
       expect(page).to have_selector("input[value='http://purl.org/dc/dcmitype/Text']")
       fill_in 'Dcmi type', with: 'http://purl.org/dc/dcmitype/Image'
@@ -214,7 +214,6 @@ RSpec.feature 'Create a HonorsThesis', js: false do
 
       first('.document-title', text: 'Test HonorsThesis work').click
       expect(page).to have_content 'Abstract an abstract'
-      expect(page).to have_content 'Academic concentration Clinical Nutrition'
       expect(page).to have_content 'Advisor advisor ORCID: advisor orcid'
       expect(page).to have_content 'Affiliation:'
       expect(page).to have_content 'College of Arts and Sciences'
@@ -229,6 +228,7 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       expect(page).to have_content 'Extent some extent'
       expect(page).to have_content 'Location some geographic subject'
       expect(page).to have_content 'Graduation year 2018'
+      expect(page).to have_content 'Honors concentration Biostatistics'
       expect(page).to have_content 'Keyword Test Default Keyword'
       expect(page).to have_content 'Language English'
       expect(page).to have_content 'License Attribution 3.0 United States'

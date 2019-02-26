@@ -240,6 +240,7 @@ en:
         edition: "The version of the work. If you have questions about this field, please <a target=\"_blank\" href=\"https://blogs.lib.unc.edu/cdr/index.php/contact-us\">contact the CDR</a>."
         extent: "The size or duration of the work, e.g. \"3 pages\", or \"10 minutes.\""
         funder: "A grant, foundation or other entity that funded the research described in your work."
+        honors_concentration: "Fill out this field only if it is relevant to your program."
         identifier: "A unique identifier for your work. This could be a publisher-issued DOI or PubMed ID."
         journal_issue: "The journal issue number."
         journal_title: "The title of the journal in which your work was published."

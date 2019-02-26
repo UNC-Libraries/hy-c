@@ -40,4 +40,5 @@ env:
     - EMAIL_FROM_ADDRESS='hyraxapp@example.com'
     - DATABASE_AUTH=true
     - DATA_STORAGE=./public
+    - TEMP_STORAGE=./public
     - DELETED_PEOPLE_FILE=./tmp/deleted_people.txt

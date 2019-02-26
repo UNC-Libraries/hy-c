@@ -8,6 +8,8 @@ terms:
     term: Bachelor of Science in Public Health
   - id: Doctor of Education
     term: Doctor of Education
+  - id: Doctor of Nursing Practice
+    term: Doctor of Nursing Practice
   - id: Doctor of Philosophy
     term: Doctor of Philosophy
   - id: Doctor of Public Health
@@ -22,6 +24,8 @@ terms:
     term: Master of Fine Arts
   - id: Master of Healthcare Administration
     term: Master of Healthcare Administration
+  - id: Master of Health Science
+    term: Master of Health Science
   - id: Master of Public Health
     term: Master of Public Health
   - id: Master of Science

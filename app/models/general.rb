@@ -48,6 +48,10 @@ class General < ActiveFedora::Base
     index.as :stored_searchable
   end
 
+  property :date_captured, predicate: ::RDF::Vocab::MODS.dateCaptured, multiple: false do |index|
+    index.as :stored_searchable
+  end
+
   property :date_issued, predicate: ::RDF::Vocab::DC.issued do |index|
     index.as :stored_searchable, :facetable
   end
