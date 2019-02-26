@@ -49,6 +49,17 @@ RSpec.feature 'Create a Article', js: false do
       Hyrax::Workflow::PermissionGenerator.call(roles: 'deleting', workflow: workflow, agents: admin_agent)
       permission_template.available_workflows.first.update!(active: true)
       DefaultAdminSet.create(work_type_name: 'Article', admin_set_id: admin_set.id)
+
+      chapel_hill = <<RDFXML.strip_heredoc
+      <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+          <rdf:RDF xmlns:foaf="http://xmlns.com/foaf/0.1/" xmlns:gn="http://www.geonames.org/ontology#" xmlns:owl="http://www.w3.org/2002/07/owl#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
+          <gn:Feature rdf:about="http://sws.geonames.org/4460162/">
+          <gn:name>Chapel Hill</gn:name>
+          </gn:Feature>
+          </rdf:RDF>
+RDFXML
+      stub_request(:get, "http://sws.geonames.org/4460162/").
+          to_return(status: 200, body: chapel_hill, headers: {'Content-Type' => 'application/rdf+xml;charset=UTF-8'})
     end
 
     scenario 'as a non-admin' do
@@ -68,8 +79,8 @@ RSpec.feature 'Create a Article', js: false do
 
       # extra fields
       fill_in 'Keyword', with: 'Test Default Keyword'
-      select 'Attribution 3.0 United States', :from => 'article_license'
-      select 'In Copyright', :from => 'article_rights_statement'
+      select 'Attribution 3.0 United States', from: 'article_license'
+      select 'In Copyright', from: 'article_rights_statement'
       fill_in 'Publisher', with: 'UNC Press'
       fill_in 'Subject', with: 'test'
       fill_in 'Related resource URL', with: 'something.com'
@@ -77,7 +88,7 @@ RSpec.feature 'Create a Article', js: false do
       select 'Article', from: 'article_resource_type'
       select 'Preprint', from: 'article_edition'
       fill_in 'Funder', with: 'some funder'
-      fill_in 'Location', with: 'some geographic subject'
+      find("#article_based_near_attributes_0_id", visible: false).set('http://sws.geonames.org/4460162/')
       fill_in 'ISSN', with: 'some issn'
       fill_in 'Journal issue', with: '1'
       fill_in 'Journal title', with: 'a journal'
@@ -143,7 +154,7 @@ RSpec.feature 'Create a Article', js: false do
       expect(page).to have_content 'Resource type Article'
       expect(page).to have_content 'Version Preprint'
       expect(page).to have_content 'Funder some funder'
-      expect(page).to have_content 'Location some geographic subject'
+      expect(page).to have_content 'Location Chapel Hill'
       expect(page).to have_content 'ISSN some issn'
       expect(page).to have_content 'Journal issue 1'
       expect(page).to have_content 'Journal title a journal'
@@ -201,7 +212,7 @@ RSpec.feature 'Create a Article', js: false do
       select 'Preprint', from: 'article_edition'
       fill_in 'Extent', with: 'some extent'
       fill_in 'Funder', with: 'some funder'
-      fill_in 'Location', with: 'some geographic subject'
+      find("#article_based_near_attributes_0_id", visible: false).set('http://sws.geonames.org/4460162/')
       fill_in 'ISSN', with: 'some issn'
       fill_in 'Journal issue', with: '1'
       fill_in 'Journal title', with: 'a journal'
@@ -274,7 +285,7 @@ RSpec.feature 'Create a Article', js: false do
       expect(page).to have_content 'Version Preprint'
       expect(page).to have_content 'Extent some extent'
       expect(page).to have_content 'Funder some funder'
-      expect(page).to have_content 'Location some geographic subject'
+      expect(page).to have_content 'Location Chapel Hill'
       expect(page).to have_content 'ISSN some issn'
       expect(page).to have_content 'Journal issue 1'
       expect(page).to have_content 'Journal title a journal'
@@ -301,3 +312,6 @@ RSpec.feature 'Create a Article', js: false do
     end
   end
 end
+
+
+# "Skip to Content Toggle navigation Carolina Digital Repository Help Contact Us 1 View admin@example.com profile Dashboard Logout Collections Departments Deposit Go All of the CDR All All of the CDR My Works My Collections HomeDashboardWorksTest Article work Test Article work Public Deposited Analytics Edit Delete Attach Child Add to collection Attach Master's Paper Attach Scholarly Article or Book Chapter Attach Dissertation or Thesis Attach Undergraduate Honors Thesis Attach Scholarly Journal, Newsletter or Book Attach Dataset Attach Multimedia Attach Poster, Presentation or Paper Attach General Attach Artwork Request Deletion Feature Unfeature × Add to collection You do not have access to any existing collections. You may create a new collection. Close Request Deletion Comment: Previous Comments Cancel Citation × Citation MLA Test Article Work. : UNC Press, 2018. some doi APA (2018). Test Article work. : UNC Press. some doi Chicago 2018. Test Article Work. : UNC Press. some doi EndNote Creator Test Default Creator ORCID: creator orcid Affiliation: College of Arts and Sciences, Department of Biology Other Affiliation: UNC Subject test Keyword Test Default Keyword Rights statement In Copyright Language English License Attribution 3.0 United States Resource type Article Abstract some abstract Access some access Alternate title my other title Bibliographic citation a citation Copyright date 2018 Date created October 3, 2018 Date of publication October 3, 2018 Date other October 3, 2018 Digital collection my collection DOI some doi Version Preprint Extent some extent Funder some funder Identifier some id ISSN some issn Journal title a journal Journal volume 2 Journal issue 1 Note a note Page start 30 Page end 32 Is the article or chapter peer-reviewed? Yes Place of publication UNC Publisher UNC Press Related resource URL something.com Rights holder an author Translator translator ORCID: translator orcid Affiliation: College of Arts and Sciences, Department of Biology Other Affiliation: UNC Use some use Parents: This work has no parents. In Administrative Set: article admin set Items This Scholarly Article or Book Chapter has no files associated with it. Click \"edit\" to add more files. Tweet Share Home Browse Collections Help Contact Us Library Home Privacy Policy Accessibility × Select type of work Master's Papers Deposit your masters paper, project or other capstone work. Theses will be sent to the CDR automatically via ProQuest and do not need to be deposited. Scholarly Articles and Book Chapters Deposit a peer-reviewed article or book chapter. If you would like to deposit a poster, presentation, conference paper or white paper, use the “Scholarly Works” deposit form. Dissertations and Theses Dissertations and theses sent to the CDR via ProQuest. Undergraduate Honors Theses Deposit your senior honors thesis. Scholarly Journals, Newsletter or Book Deposit a complete issue of a scholarly journal, newsletter or book. If you would like to deposit an article or book chapter, use the “Scholarly Articles and Book Chapters” deposit option. Datasets Deposit your dataset. Datasets may be associated with an article or deposited separately. Multimedia Deposit your 3D objects, audio, images or video. Poster, Presentation or Paper Deposit scholarly works such as posters, presentations, conference papers or white papers. If you would like to deposit a peer-reviewed article or book chapter, use the “Scholarly Articles and Book Chapters” deposit option. General General works Close"

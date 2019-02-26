@@ -74,6 +74,17 @@ RSpec.feature 'Create a MastersPaper', js: false do
       DefaultAdminSet.create(work_type_name: 'MastersPaper',
                              department: 'Department of City and Regional Planning',
                              admin_set_id: dept_admin_set.id)
+
+      chapel_hill = <<RDFXML.strip_heredoc
+      <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+          <rdf:RDF xmlns:foaf="http://xmlns.com/foaf/0.1/" xmlns:gn="http://www.geonames.org/ontology#" xmlns:owl="http://www.w3.org/2002/07/owl#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
+          <gn:Feature rdf:about="http://sws.geonames.org/4460162/">
+          <gn:name>Chapel Hill</gn:name>
+          </gn:Feature>
+          </rdf:RDF>
+RDFXML
+      stub_request(:get, "http://sws.geonames.org/4460162/").
+          to_return(status: 200, body: chapel_hill, headers: {'Content-Type' => 'application/rdf+xml;charset=UTF-8'})
     end
 
     scenario 'as a non-admin' do
@@ -104,7 +115,7 @@ RSpec.feature 'Create a MastersPaper', js: false do
 
       # extra fields
       select 'Clinical Nutrition', from: 'Academic Concentration'
-      fill_in 'Location', with: 'some geographic subject'
+      find("#masters_paper_based_near_attributes_0_id", visible: false).set('http://sws.geonames.org/4460162/')
       fill_in 'Keyword', with: 'Test Default Keyword'
       select 'Attribution 3.0 United States', :from => 'masters_paper_license'
       fill_in 'Note', with: 'a note'
@@ -156,7 +167,7 @@ RSpec.feature 'Create a MastersPaper', js: false do
       expect(page).to have_content 'Creator Test Default Creator ORCID: creator orcid'
       expect(page).to have_content 'Date of publication October 3, 2018'
       expect(page).to have_content 'Degree Master of Science'
-      expect(page).to have_content 'Location some geographic subject'
+      expect(page).to have_content 'Location Chapel Hill'
       expect(page).to have_content 'Graduation year 2018'
       expect(page).to have_content 'Keyword Test Default Keyword'
       expect(page).to have_content 'Language English'
@@ -211,7 +222,7 @@ RSpec.feature 'Create a MastersPaper', js: false do
       fill_in 'Access', with: 'some access'
       fill_in 'DOI', with: 'some doi'
       fill_in 'Extent', with: 'some extent'
-      fill_in 'Location', with: 'some geographic subject'
+      find("#masters_paper_based_near_attributes_0_id", visible: false).set('http://sws.geonames.org/4460162/')
       fill_in 'Keyword', with: 'Test Default Keyword'
       select 'Attribution 3.0 United States', :from => 'masters_paper_license'
       fill_in 'Note', with: 'a note'
@@ -265,7 +276,7 @@ RSpec.feature 'Create a MastersPaper', js: false do
       expect(page).to have_content 'Degree granting institution UNC'
       expect(page).to have_content 'DOI some doi'
       expect(page).to have_content 'Extent some extent'
-      expect(page).to have_content 'Location some geographic subject'
+      expect(page).to have_content 'Location Chapel Hill'
       expect(page).to have_content 'Graduation year 2018'
       expect(page).to have_content 'Keyword Test Default Keyword'
       expect(page).to have_content 'Language English'
