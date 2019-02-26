@@ -46,19 +46,22 @@ module ActiveFedora::RDF
     protected
 
     # [hyc-override] store display and label fields in solr
+    # Built in based_near attributes requires full field info
     def add_assertions(prefix_method, solr_doc = {})
       fields.each do |field_key, field_info|
         if person_fields.include? field_key.to_s
           if !field_info.values.blank?
+            field_to_use = field_key == 'based_near' ? field_info : field_info.behaviors
             append_to_solr_doc(solr_doc,
                                solr_document_field_name((field_key.to_s[0...-1]+'_display').to_sym, prefix_method),
-                               field_info.behaviors,
+                               field_to_use,
                                build_person_display(field_key, field_info.values))
           end
         end
         solr_field_key = solr_document_field_name(field_key, prefix_method)
         field_info.values.each do |val|
-          append_to_solr_doc(solr_doc, solr_field_key, field_info.behaviors, val)
+          field_to_use = solr_field_key == 'based_near' ? field_info : field_info.behaviors
+          append_to_solr_doc(solr_doc, solr_field_key, field_to_use, val)
         end
 
       end
