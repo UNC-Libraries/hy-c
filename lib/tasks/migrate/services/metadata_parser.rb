@@ -42,6 +42,12 @@ module Migrate
         dc_metadata = metadata.xpath("//foxml:datastream[@ID='DC']//oai_dc:dc", MigrationConstants::NS)
         work_attributes['dc_title'] = dc_metadata.xpath('dc:title', MigrationConstants::NS).map(&:text)
 
+        data_file = metadata.xpath("//foxml:datastream[contains(@ID, 'DATA_FILE')]", MigrationConstants::NS).last
+        work_attributes['mime_type'] = ''
+        if data_file
+          work_attributes['mime_type'] = data_file.xpath("foxml:datastreamVersion/@MIMETYPE", MigrationConstants::NS).text
+        end
+
         if !descriptive_mods
           puts "[#{Time.now.to_s}] #{uuid} No MODS datastream available"
           work_attributes['title'] = work_attributes['dc_title']

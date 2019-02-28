@@ -16,7 +16,7 @@ collection2:
   depositor_email: admin@example.com
   tmp_file_location: /tmp/migration
   deposit_records: lib/tasks/migration/dr.csv
-  collection_name: 'New Collection 1'
+  mime_types: lib/tasks/migration/mime_types.csv
 collection3:
   collection_list: spec/fixtures/migration/collection.csv
   objects: spec/fixtures/migration/objects.txt

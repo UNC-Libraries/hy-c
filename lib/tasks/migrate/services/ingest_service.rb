@@ -29,6 +29,17 @@ module Migrate
         @parent_child_mapper = Migrate::Services::IdMapper.new(File.join(@output_dir, 'parent_child.csv'), 'parent', 'children')
         # Progress tracker for objects migrated
         @object_progress = Migrate::Services::ProgressTracker.new(File.join(@output_dir, 'object_progress.log'))
+        # Mime type to extension mapping
+        @mime_types = Hash.new
+        File.open(config['mime_types']) do |file|
+          file.each do |line|
+            value = line.strip.split(',')[1]
+            key = line.strip.split(',')[0]
+            if !key.blank?
+              @mime_types[key] = value
+            end
+          end
+        end
       end
 
       def ingest_records
@@ -160,14 +171,18 @@ module Migrate
 
       def create_fileset(parent: nil, resource: nil, file: nil)
         file_set = nil
+        extension = ".#{@mime_types[resource[:mime_type]]}"
         MigrationHelper.retry_operation('creating fileset') do
-          file_set = FileSet.create(resource)
+          file_set = FileSet.create(resource.except(:mime_type))
         end
 
         actor = Hyrax::Actors::FileSetActor.new(file_set, @depositor)
         actor.create_metadata(resource)
 
-        renamed_file = "#{@tmp_file_location}/#{parent.id}/#{Array(resource['title']).first}"
+        if resource['title'].first.match?(/.*#{extension}\z/)
+          extension = ''
+        end
+        renamed_file = "#{@tmp_file_location}/#{parent.id}/#{Array(resource['title']).first}#{extension}"
         FileUtils.mkpath("#{@tmp_file_location}/#{parent.id}")
         FileUtils.cp(file, renamed_file)
 
@@ -194,7 +209,6 @@ module Migrate
             resource = @work_type.singularize.classify.constantize.new
           end
           resource.depositor = @depositor.uid
-#          resource.save
 
           # Singularize non-enumerable attributes
           work_attributes.each do |k,v|
@@ -260,6 +274,9 @@ module Migrate
                 file_attributes[k] = v
               end
             end
+          end
+          if work_attributes['mime_type']
+            file_attributes[:mime_type] = work_attributes['mime_type']
           end
           file_attributes[:visibility] = work_attributes['visibility']
           unless work_attributes['embargo_release_date'].blank?
