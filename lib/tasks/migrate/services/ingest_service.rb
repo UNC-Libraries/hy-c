@@ -152,18 +152,16 @@ module Migrate
                               'visibility' => Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE }
             fileset = create_fileset(parent: new_work, resource: fileset_attrs, file: @object_hash[uuid])
 
-            ordered_members << fileset
+            new_work.ordered_members << fileset
           else # This should never happen
             puts "[#{Time.now.to_s}] #{uuid},#{new_work.id} missing metadata file: #{@object_hash[uuid]}"
           end
 
-          new_work.ordered_members = ordered_members
+          # Record that this object was migrated
+          @object_progress.add_entry(uuid)
           end_time = Time.now
           puts "[#{end_time.to_s}] #{uuid},#{new_work.id} Completed migration in #{end_time-start_time} seconds"
         end
-
-        # Record that this object was migrated
-        @object_progress.add_entry(uuid)
 
         if !@child_work_type.blank?
           attach_children
