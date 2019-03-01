@@ -110,6 +110,7 @@ module Migrate
                                                                            @config).parse
 
                   file_work_attributes = (parsed_file_data[:work_attributes].blank? ? {} : parsed_file_data[:work_attributes])
+                  file_work_attributes['title'] = file_work_attributes['dc_title'] if file_work_attributes['title'].blank?
                   fileset_attrs = file_record(work_attributes.merge(file_work_attributes))
 
                   fileset = create_fileset(parent: new_work, resource: fileset_attrs, file: @binary_hash[MigrationHelper.get_uuid_from_path(file)])
@@ -171,18 +172,27 @@ module Migrate
 
       def create_fileset(parent: nil, resource: nil, file: nil)
         file_set = nil
-        extension = ".#{@mime_types[resource[:mime_type]]}"
+        # Find appropriate extension for given mime type
+        if resource[:mime_type] && @mime_types[resource[:mime_type]]
+          extension = ".#{@mime_types[resource[:mime_type]]}"
+        else
+          extension = nil
+          puts "[#{Time.now.to_s}] #{parent.id} expected mime_type: #{resource[:mime_type]}"
+        end
+
+        # Update file title
+        if resource['title'].first.match?(/.*#{extension}\z/)
+          extension = ''
+        end
+        resource['title'] = resource['title'].map{|title| title.split(' ').join('_')+extension}
+
         MigrationHelper.retry_operation('creating fileset') do
           file_set = FileSet.create(resource.except(:mime_type))
         end
 
         actor = Hyrax::Actors::FileSetActor.new(file_set, @depositor)
         actor.create_metadata(resource)
-
-        if resource['title'].first.match?(/.*#{extension}\z/)
-          extension = ''
-        end
-        renamed_file = "#{@tmp_file_location}/#{parent.id}/#{Array(resource['title']).first}#{extension}"
+        renamed_file = "#{@tmp_file_location}/#{parent.id}/#{Array(resource['title']).first}"
         FileUtils.mkpath("#{@tmp_file_location}/#{parent.id}")
         FileUtils.cp(file, renamed_file)
 
