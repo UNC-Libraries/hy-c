@@ -19,10 +19,10 @@ module Migrate
         @tmp_file_location = config['tmp_file_location']
         @config = config
         @output_dir = output_dir
-        
+
         # Create the output directory if it does not yet exist
         FileUtils.mkdir(output_dir) unless File.exist?(@output_dir)
-        
+
         # Create file and hash mapping new and old ids
         @id_mapper = Migrate::Services::IdMapper.new(File.join(@output_dir, 'old_to_new.csv'), 'old', 'new')
         # Store parent-child relationships
@@ -35,7 +35,7 @@ module Migrate
         STDOUT.sync = true
         # get array of record uuids
         collection_uuids = MigrationHelper.get_collection_uuids(@collection_ids_file)
-        
+
         already_migrated = @object_progress.completed_set
         puts "Skipping #{already_migrated.length} previously migrated works"
 
@@ -48,7 +48,7 @@ module Migrate
             puts "Skipping previously ingested #{uuid}"
             next
           end
-          
+
           start_time = Time.now
           puts "[#{start_time.to_s}] #{uuid} Start migration"
           parsed_data = Migrate::Services::MetadataParser.new(@object_hash[uuid],
@@ -135,7 +135,7 @@ module Migrate
             work_attributes['premis_files'].each_with_index do |file, index|
               premis_file = @premis_hash[MigrationHelper.get_uuid_from_path(file)] || ''
               if File.file?(premis_file)
-                fileset_attrs = { 'title' => ["PREMIS_Events_Metadata_#{index}.txt"],
+                fileset_attrs = { 'title' => ["PREMIS_Events_Metadata_#{index}_#{uuid}.txt"],
                                   'visibility' => Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE }
                 fileset = create_fileset(parent: new_work, resource: fileset_attrs, file: premis_file)
 
@@ -144,6 +144,17 @@ module Migrate
                 puts "[#{Time.now.to_s}] #{uuid},#{new_work.id} missing premis file: #{file}"
               end
             end
+          end
+
+          # Attach metadata files
+          if File.file?(@object_hash[uuid])
+            fileset_attrs = { 'title' => ["original_metadata_file_#{uuid}.xml"],
+                              'visibility' => Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE }
+            fileset = create_fileset(parent: new_work, resource: fileset_attrs, file: @object_hash[uuid])
+
+            new_work.ordered_members << fileset
+          else # This should never happen
+            puts "[#{Time.now.to_s}] #{uuid},#{new_work.id} missing metadata file: #{@object_hash[uuid]}"
           end
 
           # Record that this object was migrated
@@ -174,7 +185,7 @@ module Migrate
         MigrationHelper.retry_operation('creating fileset') do
           actor.create_content(Hyrax::UploadedFile.create(file: File.open(renamed_file), user: @depositor))
         end
-        
+
         MigrationHelper.retry_operation('creating fileset') do
           actor.attach_to_work(parent, resource)
         end
@@ -281,16 +292,16 @@ module Migrate
           attached_mapper = Migrate::Services::ProgressTracker.new(File.join(@output_dir, 'attached_progress.log'))
           # Load the mapping of children to parent that have been attached, in case we are resuming
           already_attached = attached_mapper.completed_set
-          
+
           attach_time = Time.now
           puts "[#{attach_time.to_s}] attaching children to parents"
           parent_hash.each do |parent_id, children|
             attach_to_parent_time = Time.now
-            
+
             hyrax_id = uuid_to_id[parent_id]
             parent = @work_type.singularize.classify.constantize.find(hyrax_id)
             parent_changed = false
-            
+
             children.each do |child|
               next if already_attached.include?(child)
               # If the child is in the uuid_to_id mapping, it is a child work and must be attached to the parent
@@ -328,10 +339,10 @@ module Migrate
             work_type = work_type + 's'
           end
           new_path = "#{work_type}/#{new_work.id}"
-          
+
           @id_mapper.add_row(uuid, new_path)
         end
-        
+
         # Add a mapping from old uuid for a file, to its new path within a fileset
         def add_file_id_mapping(file, new_work, fileset)
           new_id = 'parent/'+new_work.id+'/file_sets/'+fileset.id

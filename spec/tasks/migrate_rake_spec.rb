@@ -20,7 +20,7 @@ describe "rake migrate:works", type: :task do
     Sipity::Workflow.create(name: 'test', allows_access_grant: true, active: true,
                             permission_template_id: permission_template.id)
   end
-  
+
   let(:output_dir) { Dir.mktmpdir }
 
   before do
@@ -32,7 +32,7 @@ describe "rake migrate:works", type: :task do
                                            access: 'deposit')
     Sipity::WorkflowAction.create(id: 4, name: 'show', workflow_id: workflow.id)
   end
-  
+
   after do
     FileUtils.remove_entry_secure output_dir
   end
@@ -61,5 +61,6 @@ describe "rake migrate:works", type: :task do
     expect(new_article['rights_statement_label']).to eq 'In Copyright'
     expect(new_article['admin_set_id']).to eq admin_set.id
     expect(new_article.visibility).to eq 'restricted'
+    expect(new_article.file_sets.count).to eq 2
   end
 end
