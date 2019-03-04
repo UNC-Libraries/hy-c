@@ -29,17 +29,6 @@ module Migrate
         @parent_child_mapper = Migrate::Services::IdMapper.new(File.join(@output_dir, 'parent_child.csv'), 'parent', 'children')
         # Progress tracker for objects migrated
         @object_progress = Migrate::Services::ProgressTracker.new(File.join(@output_dir, 'object_progress.log'))
-        # Mime type to extension mapping
-        @mime_types = Hash.new
-        File.open(config['mime_types']) do |file|
-          file.each do |line|
-            value = line.strip.split(',')[1]
-            key = line.strip.split(',')[0]
-            if !key.blank?
-              @mime_types[key] = value
-            end
-          end
-        end
       end
 
       def ingest_records
@@ -172,22 +161,9 @@ module Migrate
 
       def create_fileset(parent: nil, resource: nil, file: nil)
         file_set = nil
-        # Find appropriate extension for given mime type
-        if resource[:mime_type] && @mime_types[resource[:mime_type]]
-          extension = ".#{@mime_types[resource[:mime_type]]}"
-        else
-          extension = nil
-          puts "[#{Time.now.to_s}] #{parent.id} expected mime_type: #{resource[:mime_type]}"
-        end
-
-        # Update file title
-        if resource['title'].first.match?(/.*#{extension}\z/)
-          extension = ''
-        end
-        resource['title'] = resource['title'].map{|title| title.split(' ').join('_')+extension}
 
         MigrationHelper.retry_operation('creating fileset') do
-          file_set = FileSet.create(resource.except(:mime_type))
+          file_set = FileSet.create(resource)
         end
 
         actor = Hyrax::Actors::FileSetActor.new(file_set, @depositor)
@@ -284,9 +260,6 @@ module Migrate
                 file_attributes[k] = v
               end
             end
-          end
-          if work_attributes['mime_type']
-            file_attributes[:mime_type] = work_attributes['mime_type']
           end
           file_attributes[:visibility] = work_attributes['visibility']
           unless work_attributes['embargo_release_date'].blank?

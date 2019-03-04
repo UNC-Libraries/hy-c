@@ -1,3 +1,4 @@
+# [hyc-override] Add file extension on download
 module Hydra
   module Controller
     module DownloadBehavior
@@ -77,10 +78,17 @@ module Hydra
         { disposition: 'inline', type: file.mime_type, filename: file_name }
       end
 
+      # [hyc-override] Add extension to files on download
       # Override this if you'd like a different filename
       # @return [String] the filename
       def file_name
-        params[:filename] || file.original_name || (asset.respond_to?(:label) && asset.label) || file.id
+        filename = params[:filename] || file.original_name || (asset.respond_to?(:label) && asset.label) || file.id
+        extension = MimeTypeService.label(file.mime_type)
+        if !filename.match?(/.*#{extension}\z/)
+          "#{filename}.#{extension}"
+        else
+          filename
+        end
       end
 
 
