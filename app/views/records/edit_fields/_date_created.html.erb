@@ -1,4 +1,4 @@
-<% date_value = params[:action] == 'new' ? Date.today.strftime("%Y-%m-%d") : f.object.date_created %>
+<% date_value = params[:action] == 'new' ? Date.today.strftime("%Y-%m-%d") : Hyc::EdtfConvert.convert_from_edtf(f.object.date_created) %>
 
 <% if f.object.multiple? key %>
   <%= f.input :date_created, as: :multi_value, placeholder: "Date Format YYYY-MM-DD",
