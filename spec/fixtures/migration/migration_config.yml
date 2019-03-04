@@ -9,3 +9,4 @@ collection1:
   depositor_email: admin@example.com
   tmp_file_location: spec/fixtures/migration/files
   deposit_records: spec/fixtures/migration/deposit_records.csv
+  mime_types: lib/tasks/migration/mime_types.csv
