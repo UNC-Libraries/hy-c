@@ -13,19 +13,29 @@ terms:
     term: Environmental Health Sciences
   - id: Environmental Management and Policy
     term: Environmental Management and Policy
+  - id: Environmental Sciences and Engineering
+    term: Environmental Sciences and Engineering
+  - id: Health Policy Management
+    term: Health Policy Management
   - id: Housing and Community Development
     term: Housing and Community Development
   - id: Industrial Hygiene
     term: Industrial Hygiene
   - id: Land Use and Environmental Planning
     term: Land Use and Environmental Planning
+  - id: Library and Information Science
+    term: Library and Information Science
+  - id: Maternal and Child Health
+    term: Maternal and Child Health
+  - id: Public Health
+    term: Public Health
   - id: Public Health Nutrition
     term: Public Health Nutrition
+  - id: Studio Art
+    term: Studio Art
   - id: Sustainable Water Resources
     term: Sustainable Water Resources
   - id: Transportation Planning
     term: Transportation Planning
   - id: Water Resources Engineering
     term: Water Resources Engineering
-
-
