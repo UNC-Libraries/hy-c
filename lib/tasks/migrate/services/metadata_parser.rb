@@ -14,7 +14,10 @@ module Migrate
       end
 
       def parse
+        file_open_time = Time.now
+        puts "[#{file_open_time.to_s}] opening xml file"
         metadata = Nokogiri::XML(File.open(@metadata_file))
+        puts "[#{Time.now.to_s}] finished opening metadata file  in #{Time.now-file_open_time} seconds"
 
         work_attributes = Hash.new
 
@@ -75,7 +78,7 @@ module Migrate
           work_attributes['abstract'] = descriptive_mods.xpath('mods:abstract', MigrationConstants::NS).map(&:text)
           work_attributes['note'] = descriptive_mods.xpath('mods:note[not(@displayLabel="Description" or @displayLabel="Methods" or @type="citation/reference" or @displayLabel="Degree" or @displayLabel="Academic concentration" or @displayLabel="Keywords" or @displayLabel="Honors Level")]', MigrationConstants::NS).map(&:text)
           work_attributes['description'] = descriptive_mods.xpath('mods:note[@displayLabel="Description"]', MigrationConstants::NS).map(&:text)
-          work_attributes['methods'] = descriptive_mods.xpath('mods:note[@displayLabel="Methods"]', MigrationConstants::NS).map(&:text)
+          work_attributes['methodology'] = descriptive_mods.xpath('mods:note[@displayLabel="Methods"]', MigrationConstants::NS).map(&:text)
           work_attributes['extent'] = descriptive_mods.xpath('mods:physicalDescription/mods:extent', MigrationConstants::NS).map(&:text)
           work_attributes['table_of_contents'] = descriptive_mods.xpath('mods:tableOfContents', MigrationConstants::NS).map(&:text)
           work_attributes['bibliographic_citation'] = descriptive_mods.xpath('mods:note[@type="citation/reference"]', MigrationConstants::NS).map(&:text)
@@ -228,16 +231,27 @@ module Migrate
 
 
         # Add work to specified collection
-        work_attributes['member_of_collections'] = Array(Collection.where(title: @collection_name).first)
+        MigrationHelper.retry_operation('adding collection') do
+          work_attributes['member_of_collections'] = Array(Collection.where(title: @collection_name).first)
+        end
         # Create collection if it does not yet exist
         if !@collection_name.blank? && work_attributes['member_of_collections'].first.blank?
-          user_collection_type = Hyrax::CollectionType.where(title: 'User Collection').first.gid
-          work_attributes['member_of_collections'] = Array(Collection.create(title: [@collection_name],
-                                         depositor: @depositor.uid,
-                                         collection_type_gid: user_collection_type))
+          user_collection_type = nil
+          MigrationHelper.retry_operation('adding collection') do
+            user_collection_type = Hyrax::CollectionType.where(title: 'User Collection').first.gid
+          end
+          
+          MigrationHelper.retry_operation('adding collection') do
+            work_attributes['member_of_collections'] = Array(Collection.create(
+                title: [@collection_name],
+                depositor: @depositor.uid,
+                collection_type_gid: user_collection_type))
+          end
         end
 
-        work_attributes['admin_set_id'] = (AdminSet.where(title: @admin_set).first || AdminSet.where(title: ENV['DEFAULT_ADMIN_SET']).first).id
+        MigrationHelper.retry_operation('adding admin set') do
+          work_attributes['admin_set_id'] = (AdminSet.where(title: @admin_set).first || AdminSet.where(title: ENV['DEFAULT_ADMIN_SET']).first).id
+        end
 
         { work_attributes: work_attributes.reject!{|k,v| v.blank?}, child_works: child_works }
       end
@@ -249,7 +263,7 @@ module Migrate
           name_array = []
           names.each do |name|
             if !name.xpath('mods:namePart[@type="family"]', MigrationConstants::NS).text.blank?
-              name_array << name.xpath('concat(mods:namePart[@type="family"], ", ", mods:namePart[@type="given"])', MigrationConstants::NS)
+              name_array << build_name(name)
             else
               name_array << name.xpath('mods:namePart', MigrationConstants::NS).text
             end
@@ -265,7 +279,7 @@ module Migrate
           people.each_with_index do |person, index|
             name = ''
             if !person.xpath('mods:namePart[@type="family"]', MigrationConstants::NS).text.blank?
-              name = person.xpath('concat(mods:namePart[@type="family"], ", ", mods:namePart[@type="given"])', MigrationConstants::NS)
+              name = build_name(person)
             else
               name = person.xpath('mods:namePart', MigrationConstants::NS).text
             end
@@ -300,6 +314,15 @@ module Migrate
           else
             []
           end
+        end
+
+        def build_name(name_mods)
+          name_parts = []
+          name_parts << name_mods.xpath('mods:namePart[@type="family"]', MigrationConstants::NS)
+          name_parts << name_mods.xpath('mods:namePart[@type="given"]', MigrationConstants::NS)
+          name_parts << name_mods.xpath('mods:namePart[@type="termsOfAddress"]', MigrationConstants::NS)
+          name_parts << name_mods.xpath('mods:namePart[@type="date"]', MigrationConstants::NS)
+          name_parts.reject{ |name| name.blank? }.join(', ')
         end
     end
   end

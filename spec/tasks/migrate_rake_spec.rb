@@ -21,6 +21,8 @@ describe "rake migrate:works", type: :task do
                             permission_template_id: permission_template.id)
   end
 
+  let(:output_dir) { Dir.mktmpdir }
+
   before do
     Hyrax::Application.load_tasks if Rake::Task.tasks.empty?
     AdminSet.delete_all
@@ -31,6 +33,10 @@ describe "rake migrate:works", type: :task do
     Sipity::WorkflowAction.create(id: 4, name: 'show', workflow_id: workflow.id)
   end
 
+  after do
+    FileUtils.remove_entry_secure output_dir
+  end
+
   it "preloads the Rails environment" do
     expect(Rake::Task['migrate:works'].prerequisites).to include "environment"
   end
@@ -38,7 +44,7 @@ describe "rake migrate:works", type: :task do
   it "creates a new work" do
     expect { Rake::Task['migrate:works'].invoke('collection1',
                                                       'spec/fixtures/migration/migration_config.yml',
-                                                      'spec/fixtures/migration/mapping.csv',
+                                                      output_dir.to_s,
                                                       'RAILS_ENV=test') }
         .to change{ Article.count }.by(1)
     new_article = Article.all[-1]
@@ -55,6 +61,6 @@ describe "rake migrate:works", type: :task do
     expect(new_article['rights_statement_label']).to eq 'In Copyright'
     expect(new_article['admin_set_id']).to eq admin_set.id
     expect(new_article.visibility).to eq 'restricted'
-    File.delete('spec/fixtures/migration/mapping.csv')
+    expect(new_article.file_sets.count).to eq 2
   end
 end

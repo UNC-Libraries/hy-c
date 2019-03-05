@@ -1,5 +1,5 @@
 class CreateDerivativesJob < Hyrax::ApplicationJob
-  queue_as Hyrax.config.ingest_queue_name
+  queue_as :derivatives
 
   # @param [FileSet] file_set
   # @param [String] file_id identifier for a Hydra::PCDM::File
@@ -13,12 +13,16 @@ class CreateDerivativesJob < Hyrax::ApplicationJob
     return if file_set.video? && !Hyrax.config.enable_ffmpeg
     filename = Hyrax::WorkingDirectory.find_or_retrieve(file_id, file_set.id, filepath)
 
-    file_set.create_derivatives(filename)
+    begin
+      file_set.create_derivatives(filename)
 
-    # Reload from Fedora and reindex for thumbnail and extracted text
-    file_set.reload
-    file_set.update_index
-    file_set.parent.update_index if parent_needs_reindex?(file_set)
+      # Reload from Fedora and reindex for thumbnail and extracted text
+      file_set.reload
+      file_set.update_index
+      file_set.parent.update_index if parent_needs_reindex?(file_set)
+    rescue MiniMagick::Invalid => err
+      Rails.logger.warn("Failed to produce derivative for #{filepath}: #{err.message}")
+    end
     
     # [hyc-override] this is the last job, so cleanup the uploaded file
     cleanup_uploaded_file(filename)
