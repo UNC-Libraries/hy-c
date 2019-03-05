@@ -205,7 +205,6 @@ module Migrate
             resource = @work_type.singularize.classify.constantize.new
           end
           resource.depositor = @depositor.uid
-#          resource.save
 
           # Singularize non-enumerable attributes
           work_attributes.each do |k,v|
