@@ -2,5 +2,10 @@
 terms:
   - id: Master of Science in Information Science
     term: Master of Science in Information Science
+    active: true
   - id: Master of Science in Library Science
     term: Master of Science in Library Science
+    active: true
+  - id: MSIS
+    term: Master of Science in Information Science
+    active: false

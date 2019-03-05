@@ -1,5 +1,13 @@
 terms:
   - id: Honors
     term: Honors
+    active: true
   - id: Highest Honors
     term: Highest Honors
+    active: true
+  - id: With Honors
+    term: Honors
+    active: false
+  - id: With Highest Honors
+    term: Highest Honors
+    active: false
