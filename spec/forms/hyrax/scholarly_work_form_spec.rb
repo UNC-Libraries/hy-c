@@ -53,7 +53,7 @@ RSpec.describe Hyrax::ScholarlyWorkForm do
                                           orcid: 'creator orcid',
                                           affiliation: 'Carolina Center for Genome Sciences',
                                           other_affiliation: 'another affiliation'} },
-          date_created: 'a date', # single-valued
+          date_created: 'circa 1980', # single-valued
           description: 'a description', # single-valued
           subject: ['a subject'],
           language: ['http://id.loc.gov/vocabulary/iso639-2/eng'],
@@ -71,7 +71,7 @@ RSpec.describe Hyrax::ScholarlyWorkForm do
                                           affiliation: 'Carolina Center for Genome Sciences',
                                           other_affiliation: 'another affiliation'} },
           conference_name: ['a conference name'],
-          date_issued: 'a date', # single-valued
+          date_issued: '1980s', # single-valued
           dcmi_type: ['type'],
           digital_collection: ['my collection'],
           doi: '12345',
@@ -86,7 +86,7 @@ RSpec.describe Hyrax::ScholarlyWorkForm do
 
     it 'permits parameters' do
       expect(subject['title']).to eq ['foo']
-      expect(subject['date_created']).to eq 'a date'
+      expect(subject['date_created']).to eq '1980~'
       expect(subject['description']).to eq 'a description'
       expect(subject['digital_collection']).to eq ['my collection']
       expect(subject['doi']).to eq '12345'
@@ -101,7 +101,7 @@ RSpec.describe Hyrax::ScholarlyWorkForm do
       expect(subject['thumbnail_id']).to eq '789'
       expect(subject['abstract']).to be_empty
       expect(subject['conference_name']).to eq ['a conference name']
-      expect(subject['date_issued']).to eq 'a date'
+      expect(subject['date_issued']).to eq '198x'
       expect(subject['dcmi_type']).to eq ['type']
       expect(subject['geographic_subject']).to eq ['a geographic subject']
       expect(subject['member_of_collection_ids']).to eq ['123456', 'abcdef']
