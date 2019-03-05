@@ -25,7 +25,7 @@ module Hyc
 
       if edtf.nil?
         Rails.logger.warn "Unable to convert date from EDTF for '#{value}'"
-        return ''
+        return value
       end
 
       edtf.humanize
