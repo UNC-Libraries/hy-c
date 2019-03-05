@@ -88,7 +88,7 @@ module Migrate
           work_attributes['kind_of_data'] = descriptive_mods.xpath('mods:genre[@authority="ddi"]', MigrationConstants::NS).map(&:text)
           work_attributes['series'] = descriptive_mods.xpath('mods:relatedItem[@type="series"]', MigrationConstants::NS).map(&:text)
           work_attributes['subject'] = descriptive_mods.xpath('mods:subject/mods:topic', MigrationConstants::NS).map(&:text)
-          work_attributes['based_near'] = descriptive_mods.xpath('mods:subject/mods:geographic/@valueURI', MigrationConstants::NS).map(&:text)
+          work_attributes['based_near_attributes'] = parse_locations_from_mods(descriptive_mods)
           keyword_string = descriptive_mods.xpath('mods:note[@displayLabel="Keywords"]', MigrationConstants::NS).map(&:text)
           work_attributes['keyword'] = []
           keyword_string.each do |keyword|
@@ -280,6 +280,17 @@ module Migrate
           end
 
           person_hash.blank? ? nil : person_hash
+        end
+
+        def parse_locations_from_mods(mods)
+          location_hash = Hash.new
+
+          locations = mods.xpath('mods:subject/mods:geographic/@valueURI', MigrationConstants::NS).map(&:text)
+          locations.each_with_index do |location, index|
+            location_hash[index.to_s] = { id: location }
+          end
+
+          location_hash.blank? ? nil : location_hash
         end
 
         # Use language code to get iso639-2 uri from service
