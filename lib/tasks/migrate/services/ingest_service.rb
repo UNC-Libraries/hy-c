@@ -99,6 +99,7 @@ module Migrate
                                                                            @config).parse
 
                   file_work_attributes = (parsed_file_data[:work_attributes].blank? ? {} : parsed_file_data[:work_attributes])
+                  file_work_attributes['title'] = file_work_attributes['dc_title'] if file_work_attributes['title'].blank?
                   fileset_attrs = file_record(work_attributes.merge(file_work_attributes))
 
                   fileset = create_fileset(parent: new_work, resource: fileset_attrs, file: @binary_hash[MigrationHelper.get_uuid_from_path(file)])
@@ -171,13 +172,13 @@ module Migrate
 
       def create_fileset(parent: nil, resource: nil, file: nil)
         file_set = nil
+
         MigrationHelper.retry_operation('creating fileset') do
           file_set = FileSet.create(resource)
         end
 
         actor = Hyrax::Actors::FileSetActor.new(file_set, @depositor)
         actor.create_metadata(resource)
-
         renamed_file = "#{@tmp_file_location}/#{parent.id}/#{Array(resource['title']).first}"
         FileUtils.mkpath("#{@tmp_file_location}/#{parent.id}")
         FileUtils.cp(file, renamed_file)
