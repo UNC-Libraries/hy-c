@@ -6,10 +6,10 @@ module Hyrax
 
     self.model_class = ::DataSet
 
-    self.terms += [:resource_type, :abstract, :copyright_date, :date_issued, :dcmi_type, :doi, :extent, :funder, :geographic_subject,
+    self.terms += [:resource_type, :abstract, :copyright_date, :date_issued, :dcmi_type, :doi, :extent, :funder,
                    :kind_of_data, :last_modified_date, :methodology, :project_director, :researcher, :rights_holder, :sponsor]
 
-    self.terms -= [:based_near, :bibliographic_citation, :description, :publisher, :source, :identifier]
+    self.terms -= [:bibliographic_citation, :description, :publisher, :source, :identifier]
 
     self.required_fields = [:title, :creator, :date_issued, :abstract, :methodology, :kind_of_data, :resource_type]
 

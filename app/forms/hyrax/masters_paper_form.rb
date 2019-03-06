@@ -6,10 +6,10 @@ module Hyrax
     
     self.model_class = ::MastersPaper
     self.terms += [:abstract, :academic_concentration, :access, :advisor, :reviewer, :date_issued, :dcmi_type, :degree,
-                   :degree_granting_institution, :doi, :extent, :geographic_subject, :graduation_year, :note,
+                   :degree_granting_institution, :doi, :extent, :graduation_year, :note,
                    :use, :resource_type]
 
-    self.terms -= [:contributor, :publisher, :identifier, :based_near, :related_url, :source, :description, :date_created]
+    self.terms -= [:contributor, :publisher, :identifier, :related_url, :source, :description, :date_created]
 
     self.required_fields = [:title, :creator, :abstract, :advisor, :date_issued, :degree,
                             :graduation_year, :resource_type]

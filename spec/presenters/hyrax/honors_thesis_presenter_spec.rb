@@ -26,7 +26,7 @@ RSpec.describe Hyrax::HonorsThesisPresenter do
       "deposit_record_tesim" => 'a deposit record',
       "doi_tesim" => '12345',
       "extent_tesim" => ['an extent'],
-      "geographic_subject_tesim" => ['a geographic subject'],
+      "based_near_tesim" => ['a geographic subject'],
       "graduation_year_tesim" => ['a graduation year'],
       "honors_concentration_tesim" => ['a concentration'],
       "note_tesim" => ['a note'],
@@ -66,7 +66,6 @@ RSpec.describe Hyrax::HonorsThesisPresenter do
   it { is_expected.to delegate_method(:deposit_record).to(:solr_document) }
   it { is_expected.to delegate_method(:doi).to(:solr_document) }
   it { is_expected.to delegate_method(:extent).to(:solr_document) }
-  it { is_expected.to delegate_method(:geographic_subject).to(:solr_document) }
   it { is_expected.to delegate_method(:graduation_year).to(:solr_document) }
   it { is_expected.to delegate_method(:honors_concentration).to(:solr_document) }
   it { is_expected.to delegate_method(:note).to(:solr_document) }
@@ -223,17 +222,6 @@ RSpec.describe Hyrax::HonorsThesisPresenter do
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:dcmi_type)
-      end
-    end
-
-    context "with a custom geographic_subject field" do
-      before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:geographic_subject, ['a geographic subject'], {}).and_return(renderer)
-      end
-
-      it "calls the AttributeRenderer" do
-        expect(renderer).to receive(:render)
-        presenter.attribute_to_html(:geographic_subject)
       end
     end
 

@@ -41,10 +41,6 @@ class Journal < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :geographic_subject, predicate: ::RDF::Vocab::DC.spatial do |index|
-    index.as :stored_searchable
-  end
-
   property :isbn, predicate: ::RDF::Vocab::Identifiers.isbn do |index|
     index.as :stored_searchable
   end

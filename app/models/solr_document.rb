@@ -180,10 +180,6 @@ class SolrDocument
     self[Solrizer.solr_name('dcmi_type')]
   end
 
-  def geographic_subject
-    self[Solrizer.solr_name('geographic_subject')]
-  end
-
   def graduation_year
     self[Solrizer.solr_name('graduation_year')]
   end

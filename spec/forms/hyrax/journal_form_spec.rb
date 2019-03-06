@@ -21,7 +21,7 @@ RSpec.describe Hyrax::JournalForm do
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:abstract, :alternative_title, :dcmi_type, :digital_collection, :doi, :extent, :geographic_subject,
+    it { is_expected.to match_array [:abstract, :alternative_title, :based_near, :dcmi_type, :digital_collection, :doi, :extent,
                                      :isbn, :issn, :note, :place_of_publication, :series, :table_of_contents, :creator,
                                      :subject, :keyword, :language, :resource_type, :license, :rights_statement,
                                      :language_label, :license_label, :rights_statement_label] }
@@ -59,6 +59,7 @@ RSpec.describe Hyrax::JournalForm do
           subject: ['a subject'],
           keyword: ['a keyword'],
           language: ['http://id.loc.gov/vocabulary/iso639-2/eng'],
+          based_near: ['California'],
           resource_type: ['a type'],
           license: 'http://creativecommons.org/licenses/by/3.0/us/', # single-valued
           rights_statement: 'http://rightsstatements.org/vocab/InC/1.0/', # single-valued
@@ -74,7 +75,6 @@ RSpec.describe Hyrax::JournalForm do
           digital_collection: ['my collection'],
           doi: '12345',
           extent: ['1993'],
-          geographic_subject: ['California'],
           isbn: ['123456'],
           issn: ['12345'],
           note: [''],
@@ -96,6 +96,7 @@ RSpec.describe Hyrax::JournalForm do
       expect(subject['language']).to eq ['http://id.loc.gov/vocabulary/iso639-2/eng']
       expect(subject['resource_type']).to eq ['a type']
       expect(subject['license']).to eq ['http://creativecommons.org/licenses/by/3.0/us/']
+      expect(subject['based_near']).to eq ['California']
       expect(subject['rights_statement']).to eq 'http://rightsstatements.org/vocab/InC/1.0/'
       expect(subject['publisher']).to eq ['a publisher']
       expect(subject['visibility']).to eq 'open'
@@ -107,7 +108,6 @@ RSpec.describe Hyrax::JournalForm do
       expect(subject['doi']).to eq '12345'
       expect(subject['extent']).to eq ['1993']
       expect(subject['dcmi_type']).to eq ['type']
-      expect(subject['geographic_subject']).to eq ['California']
       expect(subject['isbn']).to eq ['123456']
       expect(subject['issn']).to eq ['12345']
       expect(subject['note']).to be_empty

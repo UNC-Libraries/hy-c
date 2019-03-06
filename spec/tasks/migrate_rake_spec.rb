@@ -31,6 +31,17 @@ describe "rake migrate:works", type: :task do
                                            agent_id: user.user_key,
                                            access: 'deposit')
     Sipity::WorkflowAction.create(id: 4, name: 'show', workflow_id: workflow.id)
+
+    watauga_county = <<RDFXML.strip_heredoc
+      <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+          <rdf:RDF xmlns:foaf="http://xmlns.com/foaf/0.1/" xmlns:gn="http://www.geonames.org/ontology#" xmlns:owl="http://www.w3.org/2002/07/owl#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
+          <gn:Feature rdf:about="http://sws.geonames.org/4497707/">
+          <gn:name>Watauga</gn:name>
+          </gn:Feature>
+          </rdf:RDF>
+RDFXML
+    stub_request(:get, "http://sws.geonames.org/4497707/").
+        to_return(status: 200, body: watauga_county, headers: {'Content-Type' => 'application/rdf+xml;charset=UTF-8'})
   end
 
   after do

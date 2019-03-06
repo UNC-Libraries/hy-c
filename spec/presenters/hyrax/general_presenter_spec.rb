@@ -36,7 +36,7 @@ RSpec.describe Hyrax::GeneralPresenter do
       "edition_tesim" => 'new edition',
       "extent_tesim" => ['1993'],
       "funder_tesim" => ['dean'],
-      "geographic_subject_tesim" => ['California'],
+      "based_near_tesim" => ['California'],
       "graduation_year_tesim" => '2018',
       "isbn_tesim" => ['123456'],
       "issn_tesim" => ['12345'],
@@ -110,7 +110,6 @@ RSpec.describe Hyrax::GeneralPresenter do
   it { is_expected.to delegate_method(:edition).to(:solr_document) }
   it { is_expected.to delegate_method(:extent).to(:solr_document) }
   it { is_expected.to delegate_method(:funder).to(:solr_document) }
-  it { is_expected.to delegate_method(:geographic_subject).to(:solr_document) }
   it { is_expected.to delegate_method(:graduation_year).to(:solr_document) }
   it { is_expected.to delegate_method(:isbn).to(:solr_document) }
   it { is_expected.to delegate_method(:issn).to(:solr_document) }
@@ -409,17 +408,6 @@ RSpec.describe Hyrax::GeneralPresenter do
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:dcmi_type)
-      end
-    end
-
-    context "with a custom geographic subject field" do
-      before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:geographic_subject, ['California'], {}).and_return(renderer)
-      end
-
-      it "calls the AttributeRenderer" do
-        expect(renderer).to receive(:render)
-        presenter.attribute_to_html(:geographic_subject)
       end
     end
 

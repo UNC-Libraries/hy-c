@@ -5,10 +5,10 @@ module Hyrax
     class_attribute :single_value_fields
 
     self.model_class = ::Multimed
-    self.terms += [:abstract, :dcmi_type, :date_issued, :digital_collection, :doi, :extent, :geographic_subject, :medium, :note,
+    self.terms += [:abstract, :dcmi_type, :date_issued, :digital_collection, :doi, :extent, :medium, :note,
                    :resource_type]
 
-    self.terms -= [:based_near, :contributor, :description, :identifier, :publisher, :related_url, :source]
+    self.terms -= [:contributor, :description, :identifier, :publisher, :related_url, :source]
 
     self.required_fields = [:title, :creator, :abstract, :date_issued, :resource_type]
 

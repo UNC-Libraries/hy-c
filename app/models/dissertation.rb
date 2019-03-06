@@ -54,10 +54,6 @@ class Dissertation < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :geographic_subject, predicate: ::RDF::Vocab::DC.spatial do |index|
-    index.as :stored_searchable
-  end
-
   property :graduation_year, predicate: ::RDF::URI('http://rdaregistry.info/Elements/u/yearDegreeGranted.en'),
            multiple: false do |index|
     index.as :stored_searchable

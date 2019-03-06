@@ -21,13 +21,13 @@ RSpec.describe Hyrax::GeneralForm do
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:contributor, :creator, :date_created, :description,
+    it { is_expected.to match_array [:based_near, :contributor, :creator, :date_created, :description,
                                      :keyword, :identifier, :language, :license, :publisher, :related_url,
                                      :resource_type, :rights_statement, :subject, :bibliographic_citation, :abstract,
                                      :academic_concentration, :access, :advisor, :alternative_title, :arranger, :award,
                                      :composer, :conference_name, :copyright_date, :date_captured, :date_issued,
                                      :date_other, :dcmi_type, :degree, :degree_granting_institution, :digital_collection, :doi, :edition,
-                                     :extent, :funder, :geographic_subject, :graduation_year, :isbn, :issn,
+                                     :extent, :funder, :graduation_year, :isbn, :issn,
                                      :journal_issue, :journal_title, :journal_volume, :kind_of_data, :last_modified_date,
                                      :medium, :methodology, :note, :page_start, :page_end, :peer_review_status,
                                      :place_of_publication, :project_director, :publisher_version, :researcher,
@@ -64,6 +64,7 @@ RSpec.describe Hyrax::GeneralForm do
           date_created: '2017-01-22',
           identifier: ['an identifier'],
           language: ['http://id.loc.gov/vocabulary/iso639-2/eng'],
+          based_near: ['California'],
           license: 'http://creativecommons.org/licenses/by/3.0/us/', # single-valued
           keyword: ['derp'],
           publisher: ['a publisher'],
@@ -106,7 +107,6 @@ RSpec.describe Hyrax::GeneralForm do
           edition: 'an edition', # single-valued
           extent: ['1993'],
           funder: ['dean'],
-          geographic_subject: ['California'],
           graduation_year: '2018', # single-valued
           isbn: ['123456'],
           issn: ['12345'],
@@ -158,6 +158,7 @@ RSpec.describe Hyrax::GeneralForm do
       expect(subject['date_created']).to eq '2017-01-22'
       expect(subject['identifier']).to eq ['an identifier']
       expect(subject['language']).to eq ['http://id.loc.gov/vocabulary/iso639-2/eng']
+      expect(subject['based_near']).to eq ['California']
       expect(subject['publisher']).to eq ['a publisher']
       expect(subject['related_url']).to eq ['a url']
       expect(subject['resource_type']).to eq ['a type']
@@ -186,7 +187,6 @@ RSpec.describe Hyrax::GeneralForm do
       expect(subject['extent']).to eq ['1993']
       expect(subject['funder']).to eq ['dean']
       expect(subject['dcmi_type']).to eq ['type']
-      expect(subject['geographic_subject']).to eq ['California']
       expect(subject['graduation_year']).to eq '2018'
       expect(subject['isbn']).to eq ['123456']
       expect(subject['issn']).to eq ['12345']

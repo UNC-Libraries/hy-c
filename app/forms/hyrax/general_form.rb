@@ -11,14 +11,14 @@ module Hyrax
                    :arranger, :composer, :project_director, :researcher, :reviewer, :translator,
                    :alternative_title, :award, :conference_name, :copyright_date, :date_captured, :date_issued,
                    :date_other, :dcmi_type, :degree, :degree_granting_institution, :digital_collection, :doi, :edition, :extent, :funder,
-                   :geographic_subject, :graduation_year, :isbn, :issn, :journal_issue, :journal_title, :journal_volume,
+                   :graduation_year, :isbn, :issn, :journal_issue, :journal_title, :journal_volume,
                    :kind_of_data, :last_modified_date, :medium, :methodology, :note, :page_start, :page_end, :peer_review_status,
                    :place_of_publication, :publisher_version, :rights_holder,
                    :series, :sponsor, :table_of_contents, :use]
 
     self.required_fields = [:title]
 
-    self.terms -= [:based_near, :source]
+    self.terms -= [:source]
 
     self.single_value_fields = [:title, :license]
 

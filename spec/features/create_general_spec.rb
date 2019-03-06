@@ -49,6 +49,17 @@ RSpec.feature 'Create a General', js: false do
       Hyrax::Workflow::PermissionGenerator.call(roles: 'deleting', workflow: workflow, agents: admin_agent)
       permission_template.available_workflows.first.update!(active: true)
       DefaultAdminSet.create(work_type_name: 'General', admin_set_id: admin_set.id)
+
+      chapel_hill = <<RDFXML.strip_heredoc
+      <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+          <rdf:RDF xmlns:foaf="http://xmlns.com/foaf/0.1/" xmlns:gn="http://www.geonames.org/ontology#" xmlns:owl="http://www.w3.org/2002/07/owl#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
+          <gn:Feature rdf:about="http://sws.geonames.org/4460162/">
+          <gn:name>Chapel Hill</gn:name>
+          </gn:Feature>
+          </rdf:RDF>
+RDFXML
+      stub_request(:get, "http://sws.geonames.org/4460162/").
+          to_return(status: 200, body: chapel_hill, headers: {'Content-Type' => 'application/rdf+xml;charset=UTF-8'})
     end
 
     scenario 'as a non-admin' do
@@ -108,7 +119,7 @@ RSpec.feature 'Create a General', js: false do
       select 'Preprint', from: 'general_edition'
       fill_in 'Extent', with: 'some extent'
       fill_in 'Funder', with: 'some funder'
-      fill_in 'Location', with: 'some geographic subject'
+      find("#general_based_near_attributes_0_id", visible: false).set('http://sws.geonames.org/4460162/')
       fill_in 'Graduation year', with: '2018'
       fill_in 'Identifier', with: 'an identifier'
       fill_in 'ISBN', with: 'some isbn'
@@ -208,7 +219,7 @@ RSpec.feature 'Create a General', js: false do
       expect(page).to have_content 'Version Preprint'
       expect(page).to have_content 'Extent some extent'
       expect(page).to have_content 'Funder some funder'
-      expect(page).to have_content 'Location some geographic subject'
+      expect(page).to have_content 'Location Chapel Hill'
       expect(page).to have_content 'Graduation year 2018'
       expect(page).to have_content 'Identifier an identifier'
       expect(page).to have_content 'ISBN some isbn'
