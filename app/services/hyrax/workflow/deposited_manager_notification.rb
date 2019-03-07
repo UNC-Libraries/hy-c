@@ -12,8 +12,7 @@ module Hyrax
       end
 
       def users_to_notify
-        user_key = ActiveFedora::Base.find(work_id).depositor
-        super << ::User.find_by(uid: user_key)
+        super
       end
     end
   end
