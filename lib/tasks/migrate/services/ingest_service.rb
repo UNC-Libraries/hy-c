@@ -284,7 +284,7 @@ module Migrate
 
         def attach_children
           # Load mapping of old uuids to new hyrax ids
-          uuid_to_id = Hash[@id_mapper.mappings.map { |row| [row[0], row[1].split('/')[-1]] }]
+          uuid_to_id = Hash[@id_mapper.mappings.map { |row| [row[0], row[1].split('/')[-1]] if !row[1].match?('file_sets') }.compact]
           # Load mapping of parents to children
           parent_hash = Hash[@parent_child_mapper.mappings.map { |row| [row[0], row[1].split('|')] }]
           # Create or resume log of children attached
