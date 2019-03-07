@@ -27,7 +27,7 @@ RSpec.describe Hyrax::Workflow::DeletionRequestRejectionNotification do
                               .with(anything,
                                     I18n.t('hyrax.notifications.workflow.deletion_rejected.message', title: work.title[0], work_id: work.id,
                                            document_path: "#{ENV['HYRAX_HOST']}/concern/articles/#{work.id}", user: approver, comment: comment.comment),
-                                    anything).exactly(3).times.and_call_original
+                                    anything).exactly(2).times.and_call_original
 
       expect { described_class.send_notification(entity: entity, user: approver, comment: comment, recipients: recipients) }
           .to change { depositor.mailbox.inbox.count }.by(1)
@@ -38,7 +38,7 @@ RSpec.describe Hyrax::Workflow::DeletionRequestRejectionNotification do
     context 'without carbon-copied users' do
       it 'sends a message to the to user(s)' do
         recipients = { 'to' => [depositor], 'cc' => [] }
-        expect(approver).to receive(:send_message).exactly(2).times.and_call_original
+        expect(approver).to receive(:send_message).exactly(1).times.and_call_original
         expect { described_class.send_notification(entity: entity, user: approver, comment: comment, recipients: recipients) }
             .to change { depositor.mailbox.inbox.count }.by(1)
                     .and change { cc_user.mailbox.inbox.count }.by(0)

@@ -27,7 +27,7 @@ RSpec.describe Hyrax::Workflow::DepositedManagerNotification do
                               .with(anything, I18n.t('hyrax.notifications.workflow.deposited_manager.message', title: work.title[0],
                                                      link: "<a href=\"#{ENV['HYRAX_HOST']}/concern/articles/#{work.id}\">#{work.id}</a>",
                                                      user: approver, comment: comment.comment),
-                                    anything).exactly(3).times.and_call_original
+                                    anything).exactly(2).times.and_call_original
 
       expect { described_class.send_notification(entity: entity, user: approver, comment: comment, recipients: recipients) }
           .to change { depositor.mailbox.inbox.count }.by(1)
@@ -40,7 +40,7 @@ RSpec.describe Hyrax::Workflow::DepositedManagerNotification do
 
       it 'sends a message to the to user(s)' do
         recipients = { 'to' => [depositor], 'cc' => [] }
-        expect(approver).to receive(:send_message).exactly(2).times.and_call_original
+        expect(approver).to receive(:send_message).exactly(1).times.and_call_original
         expect { described_class.send_notification(entity: entity, user: approver, comment: comment, recipients: recipients) }
             .to change { depositor.mailbox.inbox.count }.by(1)
                     .and change { cc_user.mailbox.inbox.count }.by(0)
