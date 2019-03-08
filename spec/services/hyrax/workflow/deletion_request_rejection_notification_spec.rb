@@ -19,28 +19,30 @@ RSpec.describe Hyrax::Workflow::DeletionRequestRejectionNotification do
   end
   let(:entity) { Sipity::Entity.create(proxy_for_global_id: work.to_global_id.to_s, workflow_id: workflow.id) }
   let(:comment) { double("comment", comment: 'A pleasant read') }
-  let(:recipients) { { 'to' => [depositor], 'cc' => [cc_user] } }
 
   describe ".send_notification" do
     it 'sends a message to all users' do
+      recipients = { 'to' => [depositor], 'cc' => [cc_user] }
       expect(approver).to receive(:send_message)
                               .with(anything,
                                     I18n.t('hyrax.notifications.workflow.deletion_rejected.message', title: work.title[0], work_id: work.id,
                                            document_path: "#{ENV['HYRAX_HOST']}/concern/articles/#{work.id}", user: approver, comment: comment.comment),
-                                    anything).exactly(3).times.and_call_original
+                                    anything).exactly(2).times.and_call_original
 
       expect { described_class.send_notification(entity: entity, user: approver, comment: comment, recipients: recipients) }
           .to change { depositor.mailbox.inbox.count }.by(1)
                   .and change { cc_user.mailbox.inbox.count }.by(1)
+                           .and change { approver.mailbox.inbox.count }.by(0)
     end
 
     context 'without carbon-copied users' do
-      let(:recipients) { { 'to' => [depositor] } }
-
       it 'sends a message to the to user(s)' do
-        expect(approver).to receive(:send_message).exactly(2).times.and_call_original
+        recipients = { 'to' => [depositor], 'cc' => [] }
+        expect(approver).to receive(:send_message).exactly(1).times.and_call_original
         expect { described_class.send_notification(entity: entity, user: approver, comment: comment, recipients: recipients) }
             .to change { depositor.mailbox.inbox.count }.by(1)
+                    .and change { cc_user.mailbox.inbox.count }.by(0)
+                             .and change { approver.mailbox.inbox.count }.by(0)
       end
     end
   end

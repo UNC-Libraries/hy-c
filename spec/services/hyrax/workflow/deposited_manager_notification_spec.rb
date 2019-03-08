@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Hyrax::Workflow::DeletionApprovalNotification do
+RSpec.describe Hyrax::Workflow::DepositedManagerNotification do
   let(:approver) { User.find_by_user_key('admin@example.com') }
   let(:depositor) { User.create(email: 'test@example.com', password: 'password', password_confirmation: 'password') }
   let(:cc_user) { User.create(email: 'test2@example.com', password: 'password', password_confirmation: 'password') }
@@ -24,8 +24,9 @@ RSpec.describe Hyrax::Workflow::DeletionApprovalNotification do
     it 'sends a message to all users' do
       recipients = { 'to' => [depositor], 'cc' => [cc_user] }
       expect(approver).to receive(:send_message)
-                              .with(anything, I18n.t('hyrax.notifications.workflow.deletion_approved.message', title: work.title[0], work_id: work.id,
-                                                     document_path: "#{ENV['HYRAX_HOST']}/concern/articles/#{work.id}", user: approver, comment: comment.comment),
+                              .with(anything, I18n.t('hyrax.notifications.workflow.deposited_manager.message', title: work.title[0],
+                                                     link: "<a href=\"#{ENV['HYRAX_HOST']}/concern/articles/#{work.id}\">#{work.id}</a>",
+                                                     user: approver, comment: comment.comment),
                                     anything).exactly(2).times.and_call_original
 
       expect { described_class.send_notification(entity: entity, user: approver, comment: comment, recipients: recipients) }
@@ -35,6 +36,7 @@ RSpec.describe Hyrax::Workflow::DeletionApprovalNotification do
     end
 
     context 'without carbon-copied users' do
+      let(:recipients) { { 'to' => [depositor] } }
 
       it 'sends a message to the to user(s)' do
         recipients = { 'to' => [depositor], 'cc' => [] }
