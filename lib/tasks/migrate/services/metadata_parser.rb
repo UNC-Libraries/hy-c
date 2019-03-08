@@ -17,11 +17,9 @@ module Migrate
         file_open_time = Time.now
         puts "[#{file_open_time.to_s}] opening xml file"
         metadata = Nokogiri::XML(File.open(@metadata_file))
-        puts "[#{Time.now.to_s}] finished opening metadata file  in #{Time.now-file_open_time} seconds"
+        puts "[#{Time.now.to_s}] finished opening metadata file in #{Time.now-file_open_time} seconds"
 
         work_attributes = Hash.new
-
-        child_works = Array.new
 
         # get the uuid of the object
         uuid = MigrationHelper.get_uuid_from_path(metadata.at_xpath('foxml:digitalObject/@PID', MigrationConstants::NS).value)
@@ -159,7 +157,7 @@ module Migrate
             work_attributes['cdr_model_type'] = rdf_version.xpath('rdf:Description/*[local-name() = "hasModel"]/@rdf:resource', MigrationConstants::NS).map(&:text)
           end
 
-          # Create lists of attached files and children
+          # Create lists of attached files
           if rdf_version.to_s.match(/resource/)
             contained_files = rdf_version.xpath("rdf:Description/*[not(local-name()='originalDeposit') and not(local-name() = 'defaultWebObject') and contains(@rdf:resource, 'uuid')]", MigrationConstants::NS)
             contained_files.each do |contained_file|
@@ -167,8 +165,6 @@ module Migrate
               if work_attributes['cdr_model_type'].include? 'info:fedora/cdr-model:AggregateWork'
                 if !@binary_hash[tmp_uuid].blank? && !(@collection_uuids.include? tmp_uuid)
                   work_attributes['contained_files'] << tmp_uuid
-                elsif !@object_hash[tmp_uuid].blank? && tmp_uuid != uuid
-                  child_works << tmp_uuid
                 end
               else
                 if !@binary_hash[tmp_uuid].blank?
@@ -177,12 +173,10 @@ module Migrate
               end
             end
 
-            if work_attributes['contained_files'].count > 1
-              representative = rdf_version.xpath('rdf:Description/*[local-name() = "defaultWebObject"]/@rdf:resource', MigrationConstants::NS).to_s.split('/')[1]
-              if representative && !child_works.include?(MigrationHelper.get_uuid_from_path(representative))
-                work_attributes['contained_files'] -= [MigrationHelper.get_uuid_from_path(representative)]
-                work_attributes['contained_files'] = [MigrationHelper.get_uuid_from_path(representative)] + work_attributes['contained_files']
-              end
+            representative = rdf_version.xpath('rdf:Description/*[local-name() = "defaultWebObject"]/@rdf:resource', MigrationConstants::NS).to_s.split('/')[1]
+            if representative
+              work_attributes['contained_files'] -= [MigrationHelper.get_uuid_from_path(representative)]
+              work_attributes['contained_files'] = [MigrationHelper.get_uuid_from_path(representative)] + work_attributes['contained_files']
             end
             work_attributes['contained_files'].uniq!
           end
@@ -261,7 +255,7 @@ module Migrate
           work_attributes['admin_set_id'] = (AdminSet.where(title: @admin_set).first || AdminSet.where(title: ENV['DEFAULT_ADMIN_SET']).first).id
         end
 
-        { work_attributes: work_attributes.reject!{|k,v| v.blank?}, child_works: child_works }
+        work_attributes.reject!{|k,v| v.blank?}
       end
 
       private
