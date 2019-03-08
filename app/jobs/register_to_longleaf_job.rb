@@ -22,7 +22,7 @@ class RegisterToLongleafJob < Hyrax::ApplicationJob
     stdout,stderr,status = Open3.capture3(register_cmd)
     
     if status.success?
-      Rails.logger.error("Successfully registered #{binary_path}")
+      Rails.logger.info("Successfully registered #{binary_path}")
     else
       Rails.logger.error("Failed to register #{binary_path} to Longleaf: #{stdout} #{stderr}")
     end
