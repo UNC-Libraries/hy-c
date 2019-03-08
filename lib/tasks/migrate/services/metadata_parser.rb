@@ -2,15 +2,15 @@ module Migrate
   module Services
     class MetadataParser
 
-      def initialize(metadata_file, object_hash, binary_hash, deposit_record_hash, collection_uuids, depositor, config)
+      def initialize(metadata_file, object_hash, binary_hash, deposit_record_hash, collection_uuids, depositor, collection_name, admin_set)
         @metadata_file = metadata_file
         @object_hash = object_hash
         @binary_hash = binary_hash
         @deposit_record_hash = deposit_record_hash
         @collection_uuids = collection_uuids
-        @collection_name = config['collection_name']
+        @collection_name = collection_name
         @depositor = depositor
-        @admin_set = config['admin_set']
+        @admin_set = admin_set
       end
 
       def parse
@@ -257,9 +257,7 @@ module Migrate
           end
         end
 
-        MigrationHelper.retry_operation('adding admin set') do
-          work_attributes['admin_set_id'] = (AdminSet.where(title: @admin_set).first || AdminSet.where(title: ENV['DEFAULT_ADMIN_SET']).first).id
-        end
+        work_attributes['admin_set_id'] = @admin_set
 
         { work_attributes: work_attributes.reject!{|k,v| v.blank?}, child_works: child_works }
       end
