@@ -37,7 +37,7 @@ module Migrate
               contained_objects = rdf_version.xpath("rdf:Description/*[not(local-name()='originalDeposit') and not(local-name() = 'defaultWebObject') and contains(@rdf:resource, 'uuid')]", MigrationConstants::NS)
               contained_objects.each do |contained_file|
                 tmp_uuid = MigrationHelper.get_uuid_from_path(contained_file.to_s)
-                if cdr_model_type.include? 'info:fedora/cdr-model:AggregateWork' && !@object_hash[tmp_uuid].blank? && tmp_uuid != uuid
+                if (cdr_model_type.include? 'info:fedora/cdr-model:AggregateWork') && (!@object_hash[tmp_uuid].blank?) && (tmp_uuid != uuid)
                   child_works << tmp_uuid
                 end
               end
