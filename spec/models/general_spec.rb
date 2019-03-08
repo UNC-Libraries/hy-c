@@ -81,7 +81,6 @@ RSpec.describe General do
       expect(subject).to respond_to(:peer_review_status)
       expect(subject).to respond_to(:place_of_publication)
       expect(subject).to respond_to(:project_directors)
-      expect(subject).to respond_to(:publisher_version)
       expect(subject).to respond_to(:researchers)
       expect(subject).to respond_to(:reviewers)
       expect(subject).to respond_to(:rights_holder)

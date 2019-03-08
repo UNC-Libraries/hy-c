@@ -30,7 +30,7 @@ RSpec.describe Hyrax::GeneralForm do
                                      :extent, :funder, :graduation_year, :isbn, :issn,
                                      :journal_issue, :journal_title, :journal_volume, :kind_of_data, :last_modified_date,
                                      :medium, :methodology, :note, :page_start, :page_end, :peer_review_status,
-                                     :place_of_publication, :project_director, :publisher_version, :researcher,
+                                     :place_of_publication, :project_director, :researcher,
                                      :reviewer, :rights_holder, :series, :sponsor, :table_of_contents, :translator,
                                      :use, :language_label, :license_label, :rights_statement_label] }
   end
@@ -126,7 +126,6 @@ RSpec.describe Hyrax::GeneralForm do
                                           orcid: 'project director orcid',
                                           affiliation: 'Carolina Center for Genome Sciences',
                                           other_affiliation: 'another affiliation'} },
-          publisher_version: ['a version'],
           researchers_attributes: { '0' => { name: 'researcher',
                                           orcid: 'researcher orcid',
                                           affiliation: 'Carolina Center for Genome Sciences',
@@ -202,7 +201,6 @@ RSpec.describe Hyrax::GeneralForm do
       expect(subject['page_start']).to eq '8'
       expect(subject['peer_review_status']).to eq 'in review'
       expect(subject['place_of_publication']).to eq ['durham']
-      expect(subject['publisher_version']).to eq ['a version']
       expect(subject['rights_holder']).to eq ['dean']
       expect(subject['series']).to eq ['series']
       expect(subject['sponsor']).to eq ['a sponsor']

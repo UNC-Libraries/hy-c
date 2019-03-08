@@ -135,7 +135,6 @@ class CatalogController < ApplicationController
     config.add_show_field solr_name("person_label", :stored_searchable), label: "Person"
     config.add_show_field solr_name("place_of_publication", :stored_searchable), label: "Place of Publication"
     config.add_show_field solr_name("publisher", :stored_searchable), label: "Publisher"
-    config.add_show_field solr_name("publisher_version", :stored_searchable), label: "Publisher Version"
     config.add_show_field solr_name("rights_holder", :stored_searchable), label: "Rights Holder"
     config.add_show_field solr_name("rights_statement_label", :stored_searchable), label: "Rights Statement Label"
     config.add_show_field solr_name("series", :stored_searchable), label: "Series"

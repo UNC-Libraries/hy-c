@@ -280,10 +280,6 @@ class SolrDocument
     self[Solrizer.solr_name('project_director_display')]
   end
 
-  def publisher_version
-    self[Solrizer.solr_name('publisher_version')]
-  end
-
   def researcher
     self[Solrizer.solr_name('researcher')]
   end
