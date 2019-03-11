@@ -118,10 +118,6 @@ class Article < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :table_of_contents, predicate: ::RDF::Vocab::DC.tableOfContents do |index|
-    index.as :stored_searchable
-  end
-
   property :translators, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/trl'), class_name: 'Person' do |index|
     index.as :stored_searchable
   end

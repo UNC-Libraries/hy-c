@@ -173,10 +173,6 @@ class General < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :publisher_version, predicate: ::RDF::Vocab::DC.hasVersion do |index|
-    index.as :stored_searchable
-  end
-
   property :researchers, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/res'), class_name: 'Person' do |index|
     index.as :stored_searchable
   end

@@ -73,10 +73,6 @@ class Journal < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :table_of_contents, predicate: ::RDF::Vocab::DC.tableOfContents, multiple: false do |index|
-    index.as :stored_searchable
-  end
-
   # This must be included at the end, because it finalizes the metadata
   # schema (by adding accepts_nested_attributes)
   include ::Hyrax::BasicMetadata

@@ -30,7 +30,6 @@ RSpec.describe Hyrax::JournalPresenter do
       "place_of_publication_tesim" => ['California'],
       "resource_type_tesim" => ['a type'],
       "series_tesim" => ['series1'],
-      "table_of_contents_tesim" => 'table of contents',
       "language_label_tesim" => ['language'],
       "license_label_tesim" => ['license'],
       "rights_statement_label_tesim" => 'rights'
@@ -68,7 +67,6 @@ RSpec.describe Hyrax::JournalPresenter do
   it { is_expected.to delegate_method(:note).to(:solr_document) }
   it { is_expected.to delegate_method(:place_of_publication).to(:solr_document) }
   it { is_expected.to delegate_method(:series).to(:solr_document) }
-  it { is_expected.to delegate_method(:table_of_contents).to(:solr_document) }
   it { is_expected.to delegate_method(:language_label).to(:solr_document) }
   it { is_expected.to delegate_method(:license_label).to(:solr_document) }
   it { is_expected.to delegate_method(:rights_statement_label).to(:solr_document) }
@@ -232,17 +230,6 @@ RSpec.describe Hyrax::JournalPresenter do
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:series)
-      end
-    end
-
-    context "with a custom table of contents field" do
-      before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:table_of_contents, 'table of contents', {}).and_return(renderer)
-      end
-
-      it "calls the AttributeRenderer" do
-        expect(renderer).to receive(:render)
-        presenter.attribute_to_html(:table_of_contents)
       end
     end
 

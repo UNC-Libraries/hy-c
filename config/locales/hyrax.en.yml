@@ -265,7 +265,6 @@ en:
         place_of_publication: "The place in which the work was published."
         project_director: "The director or primary investigator of the project. Fill out this field if this person is not the creator."
         publisher: "The publisher of your work. This may be UNC, or an external publisher."
-        publisher_version: "A link to the final version of your article on the publisher's website."
         related_url: "A link to a website or other specific content (audio, video, PDF document) related to the work."
         researcher: "A person or organization responsible for performing the research described in your work. Fill out this field if this person is not the creator."
         resource_type: "Select the category which best describes your work."
@@ -296,5 +295,4 @@ en:
         orcid: "ORCID"
         other_affiliation: "Additional affiliation"
         peer_review_status: "Is the article or chapter peer-reviewed?"
-        publisher_version: "Link to publisher version"
         related_url: "Related resource URL"
