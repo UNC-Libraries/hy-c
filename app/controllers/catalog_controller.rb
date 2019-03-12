@@ -77,7 +77,7 @@ class CatalogController < ApplicationController
     config.add_index_field solr_name("date_issued", :stored_searchable), label: "Date of publication"
     config.add_index_field solr_name("abstract", :stored_searchable), label: "Abstract"
     config.add_index_field solr_name("resource_type", :stored_searchable), label: "Resource type", link_to_search: solr_name("resource_type", :facetable)
-    config.add_index_field solr_name("based_near_label", :stored_searchable), itemprop: 'contentLocation', link_to_search: solr_name("based_near_label", :facetable)
+    config.add_index_field solr_name("based_near_label", :stored_searchable), itemprop: 'contentLocation', label: "Location", link_to_search: solr_name("based_near_label", :facetable)
 
     # solr fields to be displayed in the show (single result) view
     #   The ordering of the field names is the order of the display
