@@ -24,7 +24,7 @@ RSpec.describe Hyrax::ScholarlyWorkForm do
     it { is_expected.to match_array [:advisor, :based_near, :conference_name, :date_created, :dcmi_type, :digital_collection,
                                      :doi, :description, :keyword, :language, :license, :resource_type,
                                      :rights_statement, :subject, :language_label, :license_label, 
-                                     :rights_statement_label] }
+                                     :rights_statement_label, :deposit_agreement, :agreement] }
   end
   
   describe "#admin_only_terms" do

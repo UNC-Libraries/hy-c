@@ -100,6 +100,7 @@ RDFXML
       expect(page).not_to have_field('scholarly_work_visibility_use')
       expect(page).to have_field('scholarly_work_visibility_embargo')
       expect(page).not_to have_field('scholarly_work_visibility_lease')
+      expect(page).not_to have_field('scholarly_work_deposit_agreement')
       choose "scholarly_work_visibility_open"
       check 'agreement'
 
@@ -186,6 +187,7 @@ RDFXML
       expect(page).to have_selector('#scholarly_work_rights_statement_label', visible: false)
       expect(page).to have_field('scholarly_work_visibility_embargo')
       expect(page).not_to have_field('scholarly_work_visibility_lease')
+      expect(page).not_to have_field('scholarly_work_deposit_agreement')
       choose "scholarly_work_visibility_open"
       check 'agreement'
       

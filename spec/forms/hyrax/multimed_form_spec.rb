@@ -23,7 +23,7 @@ RSpec.describe Hyrax::MultimedForm do
 
     it { is_expected.to match_array [:based_near, :dcmi_type, :date_created, :digital_collection, :doi, :extent, :keyword,
                                      :language, :license, :medium, :note, :rights_statement, :subject, :language_label,
-                                     :license_label, :rights_statement_label] }
+                                     :license_label, :rights_statement_label, :deposit_agreement, :agreement] }
   end
   
   describe "#admin_only_terms" do

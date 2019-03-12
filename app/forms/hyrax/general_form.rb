@@ -13,8 +13,7 @@ module Hyrax
                    :date_other, :dcmi_type, :degree, :degree_granting_institution, :digital_collection, :doi, :edition, :extent, :funder,
                    :graduation_year, :isbn, :issn, :journal_issue, :journal_title, :journal_volume,
                    :kind_of_data, :last_modified_date, :medium, :methodology, :note, :page_start, :page_end, :peer_review_status,
-                   :place_of_publication, :rights_holder,
-                   :series, :sponsor, :table_of_contents, :use]
+                   :place_of_publication, :rights_holder, :series, :sponsor, :table_of_contents, :use, :deposit_agreement, :agreement]
 
     self.required_fields = [:title]
 

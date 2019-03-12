@@ -121,6 +121,7 @@ RDFXML
       expect(page).to have_selector('#dissertation_rights_statement_label', visible: false)
       expect(page).to have_field('dissertation_visibility_embargo')
       expect(page).not_to have_field('dissertation_visibility_lease')
+      expect(page).not_to have_field('dissertation_deposit_agreement')
       choose 'dissertation_visibility_open'
       check 'agreement'
 

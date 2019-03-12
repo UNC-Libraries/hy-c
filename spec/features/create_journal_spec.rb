@@ -100,6 +100,7 @@ RDFXML
       expect(page).not_to have_field('journal_doi')
       expect(page).to have_field('journal_visibility_embargo')
       expect(page).not_to have_field('journal_visibility_lease')
+      expect(page).not_to have_field('journal_deposit_agreement')
       choose "journal_visibility_open"
       check 'agreement'
       
@@ -190,6 +191,7 @@ RDFXML
       expect(page).to have_selector('#journal_rights_statement_label', visible: false)
       expect(page).to have_field('journal_visibility_embargo')
       expect(page).not_to have_field('journal_visibility_lease')
+      expect(page).not_to have_field('journal_deposit_agreement')
       choose "journal_visibility_open"
       check 'agreement'
 

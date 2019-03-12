@@ -170,6 +170,7 @@ RDFXML
       expect(page).to have_selector('#general_rights_statement_label', visible: false)
       expect(page).to have_field('general_visibility_embargo')
       expect(page).not_to have_field('general_visibility_lease')
+      expect(page).not_to have_field('general_deposit_agreement')
       choose 'general_visibility_open'
       check 'agreement'
 

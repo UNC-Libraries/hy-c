@@ -31,6 +31,7 @@ class SingleValueForm < Hyrax::Forms::WorkForm
 
   # cast single value fields back to multivalued so they will actually deposit
   def self.model_attributes(form_params)
+    agreement = form_params['agreement']
     attrs = super
 
     single_value_fields.each do |field|
@@ -90,7 +91,13 @@ class SingleValueForm < Hyrax::Forms::WorkForm
     edtf_form_update(attrs, :date_created)
     edtf_form_update(attrs, :date_issued)
 
-    attrs
+    # Log deposit agreement acceptance
+    if agreement != '0'
+      (attrs[:deposit_agreement] ||= []) << "#{agreement} accepted the deposit agreement on #{Time.now}"
+    end
+    attrs[:deposit_agreement] = attrs[:deposit_agreement].join(',').split(',')
+
+    attrs.except(:agreement)
   end
 
   private

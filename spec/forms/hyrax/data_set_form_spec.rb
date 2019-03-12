@@ -24,7 +24,7 @@ RSpec.describe Hyrax::DataSetForm do
     it { is_expected.to match_array [:based_near, :dcmi_type, :copyright_date, :doi, :extent, :funder, :last_modified_date,
                                      :project_director, :researcher, :rights_holder, :sponsor, :language, :keyword,
                                      :related_url, :license, :contributor, :date_created, :subject, :rights_statement,
-                                     :language_label, :license_label, :rights_statement_label] }
+                                     :language_label, :license_label, :rights_statement_label, :deposit_agreement, :agreement] }
   end
   
   describe "#admin_only_terms" do

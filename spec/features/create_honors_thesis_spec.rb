@@ -106,6 +106,7 @@ RDFXML
       expect(page).not_to have_field('honors_thesis_use')
       expect(page).to have_field('honors_thesis_visibility_embargo')
       expect(page).not_to have_field('honors_thesis_visibility_lease')
+      expect(page).not_to have_field('honors_thesis_deposit_agreement')
       expect(page).to have_select('honors_thesis_resource_type', selected: 'Honors Thesis')
       choose "honors_thesis_visibility_open"
       check 'agreement'
@@ -201,6 +202,7 @@ RDFXML
       expect(page).to have_selector('#honors_thesis_rights_statement_label', visible: false)
       expect(page).to have_field('honors_thesis_visibility_embargo')
       expect(page).not_to have_field('honors_thesis_visibility_lease')
+      expect(page).not_to have_field('honors_thesis_deposit_agreement')
       expect(page).to have_select('honors_thesis_resource_type', selected: 'Honors Thesis')
       choose "honors_thesis_visibility_open"
       check 'agreement'
