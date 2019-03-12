@@ -42,6 +42,16 @@ describe "rake migrate:works", type: :task do
 RDFXML
     stub_request(:get, "http://sws.geonames.org/4497707/").
         to_return(status: 200, body: watauga_county, headers: {'Content-Type' => 'application/rdf+xml;charset=UTF-8'})
+
+    stub_request(:any, "http://api.geonames.org/getJSON?geonameId=4497707&username=#{ENV['GEONAMES_USER']}").
+        with(headers: {
+            'Accept' => '*/*',
+            'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+            'User-Agent' => 'Ruby'
+        }).to_return(status: 200, body: { asciiName: 'Watauga County',
+                                          countryName: 'United States',
+                                          adminName1: 'North Carolina' }.to_json,
+                     headers: { 'Content-Type' => 'application/json' })
   end
 
   after do
