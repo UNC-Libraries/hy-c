@@ -101,7 +101,6 @@ RDFXML
       select 'In Copyright', :from => 'journal_rights_statement'
       fill_in 'Series', with: 'series1'
       fill_in 'Subject', with: 'test'
-      fill_in 'Table of contents', with: 'contents'
 
       expect(page).to have_selector('#journal_language_label', visible: false)
       expect(page).to have_selector('#journal_license_label', visible: false)
@@ -151,7 +150,6 @@ RDFXML
       expect(page).to have_content 'Rights statement In Copyright'
       expect(page).to have_content 'Series series1'
       expect(page).to have_content 'Subject test'
-      expect(page).to have_content 'Table of contents contents'
       expect(page).to_not have_content 'Language http://id.loc.gov/vocabulary/iso639-2/eng'
       expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
       expect(page).to_not have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'
@@ -196,7 +194,6 @@ RDFXML
       select 'In Copyright', :from => 'journal_rights_statement'
       fill_in 'Series', with: 'series1'
       fill_in 'Subject', with: 'test'
-      fill_in 'Table of contents', with: 'contents'
 
       expect(page).to have_selector('#journal_language_label', visible: false)
       expect(page).to have_selector('#journal_license_label', visible: false)
@@ -249,7 +246,6 @@ RDFXML
       expect(page).to have_content 'Rights statement In Copyright'
       expect(page).to have_content 'Series series1'
       expect(page).to have_content 'Subject test'
-      expect(page).to have_content 'Table of contents contents'
       expect(page).to_not have_content 'Language http://id.loc.gov/vocabulary/iso639-2/eng'
       expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
       expect(page).to_not have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'

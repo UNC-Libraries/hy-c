@@ -19,6 +19,21 @@ module Migrate
         @tmp_file_location = config['tmp_file_location']
         @config = config
         @output_dir = output_dir
+        @collection_name = config['collection_name']
+
+        admin_set = config['admin_set']
+        if admin_set.blank?
+          @admin_set_id = (AdminSet.where(title: ENV['DEFAULT_ADMIN_SET']).first).id
+        else
+          @admin_set_id = (AdminSet.where(title: config['admin_set']).first).id
+          raise "Unable to find admin set #{admin_set}" if @admin_set_id.blank?
+        end
+
+        child_admin_set = config['child_admin_set']
+        unless child_admin_set.blank?
+          @child_admin_set_id = (AdminSet.where(title: child_admin_set).first).id
+          raise "Unable to find child admin set #{child_admin_set}" if @child_admin_set_id.blank?
+        end
 
         # Create the output directory if it does not yet exist
         FileUtils.mkdir(output_dir) unless File.exist?(@output_dir)
@@ -57,7 +72,8 @@ module Migrate
                                                               @deposit_record_hash,
                                                               collection_uuids,
                                                               @depositor,
-                                                              @config).parse
+                                                              @collection_name,
+                                                              @admin_set_id).parse
           puts "[#{Time.now.to_s}] #{uuid} metadata parsed in #{Time.now-start_time} seconds"
           work_attributes = parsed_data[:work_attributes]
 
@@ -96,7 +112,8 @@ module Migrate
                                                                            @deposit_record_hash,
                                                                            collection_uuids,
                                                                            @depositor,
-                                                                           @config).parse
+                                                                           @collection_name,
+                                                                           @admin_set_id).parse
 
                   file_work_attributes = (parsed_file_data[:work_attributes].blank? ? {} : parsed_file_data[:work_attributes])
                   fileset_attrs = file_record(work_attributes.merge(file_work_attributes))
@@ -198,8 +215,10 @@ module Migrate
 
       private
         def work_record(work_attributes, uuid)
-          if !@child_work_type.blank? && !work_attributes['cdr_model_type'].blank? &&
+          is_child_work = !@child_work_type.blank? && !work_attributes['cdr_model_type'].blank? &&
               !(work_attributes['cdr_model_type'].include? 'info:fedora/cdr-model:AggregateWork')
+          
+          if is_child_work
             resource = @child_work_type.singularize.classify.constantize.new
           else
             resource = @work_type.singularize.classify.constantize.new
@@ -248,6 +267,11 @@ module Migrate
           resource.admin_set_id = work_attributes['admin_set_id']
           if !@config['collection_name'].blank? && !work_attributes['member_of_collections'].first.blank?
             resource.member_of_collections = work_attributes['member_of_collections']
+          end
+
+          # Override the admin set id for child works
+          if is_child_work && !@child_admin_set_id.blank?
+            work_attributes['admin_set_id'] = @child_admin_set_id
           end
 
           MigrationHelper.retry_operation('creating child work') do

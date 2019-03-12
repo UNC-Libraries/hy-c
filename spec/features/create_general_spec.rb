@@ -153,7 +153,6 @@ RDFXML
       fill_in 'Additional affiliation', { with: 'UNC', id: 'general_project_directors_attributes_0_other_affiliation' }
       select 'Yes', from: 'general_peer_review_status'
       fill_in 'Publisher', with: 'UNC Press'
-      fill_in 'Link to publisher version', with: 'a version'
       select 'Other', from: 'general_resource_type'
       fill_in 'Researcher', { with: 'researcher', id: 'general_researchers_attributes_0_name' }
       fill_in 'ORCID', { with: 'researcher orcid', id: 'general_researchers_attributes_0_orcid' }
@@ -251,7 +250,6 @@ RDFXML
       expect(page).to have_content 'Project director project director ORCID: project director orcid'
       expect(page).to have_content 'Is the article or chapter peer-reviewed? Yes'
       expect(page).to have_content 'Publisher UNC Press'
-      expect(page).to have_content 'Link to publisher version a version'
       expect(page).to have_content 'Resource type Other'
       expect(page).to have_content 'Researcher researcher ORCID: researcher orcid'
       expect(page).to have_content 'Reviewer reviewer ORCID: reviewer orcid'

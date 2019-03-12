@@ -197,6 +197,12 @@ en:
           %{title} (%{link}) has been successfully deposited in the CDR and is now available in accordance with the visibility
           settings that you selected.\r\n\r\n
           If you have questions, please feel free to <a href=\"https://blogs.lib.unc.edu/cdr/index.php/contact-us/\">contact us</a>!"
+        deposited_manager:
+          subject: CDR deposit successful
+          message: "Hello,\r\n\r\n
+          %{title} (%{link}) has been successfully deposited in the CDR and is now available in accordance with the visibility
+          settings that were selected by the depositor.\r\n\r\n
+          If you have questions, please feel free to <a href=\"https://blogs.lib.unc.edu/cdr/index.php/contact-us/\">contact us</a>!"
         mediated_deposit:
           subject: CDR deposit sent for review
           message: "%{title} (%{link}) has been deposited in the Carolina Digital Repository (CDR) and has been sent to your department for review.  \r\n\r\n
@@ -259,7 +265,6 @@ en:
         place_of_publication: "The place in which the work was published."
         project_director: "The director or primary investigator of the project. Fill out this field if this person is not the creator."
         publisher: "The publisher of your work. This may be UNC, or an external publisher."
-        publisher_version: "A link to the final version of your article on the publisher's website."
         related_url: "A link to a website or other specific content (audio, video, PDF document) related to the work."
         researcher: "A person or organization responsible for performing the research described in your work. Fill out this field if this person is not the creator."
         resource_type: "Select the category which best describes your work."
@@ -290,5 +295,4 @@ en:
         orcid: "ORCID"
         other_affiliation: "Additional affiliation"
         peer_review_status: "Is the article or chapter peer-reviewed?"
-        publisher_version: "Link to publisher version"
         related_url: "Related resource URL"
