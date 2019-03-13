@@ -320,7 +320,7 @@ module Migrate
               merged_affiliations << (DepartmentsService.label(affiliation) || affiliation).split('; ')
             end
             merged_affiliations.flatten!
-            merged_affiliations.compact - merged_affiliations.select{ |e| merged_affiliations.count(e) > 1 }.uniq
+            merged_affiliations.compact.uniq
           else
             []
           end
