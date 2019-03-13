@@ -7,6 +7,7 @@ namespace :migrate do
   require 'yaml'
 
   # Maybe switch to auto-loading lib/tasks/migrate in environment.rb
+  require 'tasks/migrate/services/child_work_parser'
   require 'tasks/migrate/services/ingest_service'
   require 'tasks/migration_helper'
 
@@ -45,6 +46,12 @@ namespace :migrate do
         @deposit_record_hash[row[0]] = row[1]
       end
       puts "[#{Time.now.to_s}] completed creation of hashes"
+
+      if !collection_config['child_work_type'].blank?
+        Migrate::Services::ChildWorkParser.new(@object_hash,
+                                               collection_config,
+                                               args[:output_dir]).find_children
+      end
 
       Migrate::Services::IngestService.new(collection_config,
                                          @object_hash,

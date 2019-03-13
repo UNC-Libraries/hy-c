@@ -66,7 +66,7 @@ module Migrate
 
           start_time = Time.now
           puts "[#{start_time.to_s}] #{uuid} Start migration"
-          parsed_data = Migrate::Services::MetadataParser.new(@object_hash[uuid],
+          work_attributes = Migrate::Services::MetadataParser.new(@object_hash[uuid],
                                                               @object_hash,
                                                               @binary_hash,
                                                               @deposit_record_hash,
@@ -75,10 +75,6 @@ module Migrate
                                                               @collection_name,
                                                               @admin_set_id).parse
           puts "[#{Time.now.to_s}] #{uuid} metadata parsed in #{Time.now-start_time} seconds"
-          work_attributes = parsed_data[:work_attributes]
-
-          # store mapping of parent to children
-          store_children(uuid, parsed_data)
 
           # Create new work record and save
           new_work = work_record(work_attributes, uuid)
@@ -106,7 +102,7 @@ module Migrate
               work_attributes['contained_files'].each do |file|
                 metadata_file = @object_hash[MigrationHelper.get_uuid_from_path(file)] || ''
                 if File.file?(metadata_file)
-                  parsed_file_data = Migrate::Services::MetadataParser.new(metadata_file,
+                  file_work_attributes = Migrate::Services::MetadataParser.new(metadata_file,
                                                                            @object_hash,
                                                                            @binary_hash,
                                                                            @deposit_record_hash,
@@ -115,7 +111,6 @@ module Migrate
                                                                            @collection_name,
                                                                            @admin_set_id).parse
 
-                  file_work_attributes = (parsed_file_data[:work_attributes].blank? ? {} : parsed_file_data[:work_attributes])
                   fileset_attrs = file_record(work_attributes.merge(file_work_attributes))
 
                   fileset = create_fileset(parent: new_work, resource: fileset_attrs, file: @binary_hash[MigrationHelper.get_uuid_from_path(file)])
@@ -235,16 +230,16 @@ module Migrate
           end
 
           # Only keep attributes which apply to the given work type
-          work_attributes.select {|k,v| k.ends_with? '_attributes'}.each do |k,v|
+          work_attributes.select {|k,v| k.to_s.ends_with? '_attributes'}.each do |k,v|
             if !resource.respond_to?(k.to_s+'=')
               # Log non-blank person data which is not saved
               puts "[#{Time.now.to_s}] #{uuid} missing: #{k}=>#{v}"
-              work_attributes.delete(k.split('s_')[0]+'_display')
+              work_attributes.delete(k.to_s.split('s_')[0]+'_display')
               work_attributes.delete(k)
             end
           end
 
-          resource.attributes = work_attributes.reject{|k,v| !resource.attributes.keys.member?(k.to_s) unless k.ends_with? '_attributes'}
+          resource.attributes = work_attributes.reject{|k,v| !resource.attributes.keys.member?(k.to_s) unless k.to_s.ends_with? '_attributes'}
 
           # Log other non-blank data which is not saved
           missing = work_attributes.except(*resource.attributes.keys, 'contained_files', 'cdr_model_type', 'visibility',
@@ -370,14 +365,6 @@ module Migrate
         def add_file_id_mapping(file, new_work, fileset)
           new_id = 'parent/'+new_work.id+'/file_sets/'+fileset.id
           @id_mapper.add_row(MigrationHelper.get_uuid_from_path(file), new_id)
-        end
-
-        # Store the parent to children mapping for a work
-        def store_children(uuid, parsed_data)
-          if parsed_data[:child_works].blank?
-            return
-          end
-          @parent_child_mapper.add_row(uuid, parsed_data[:child_works].join('|'))
         end
     end
   end
