@@ -95,6 +95,8 @@ class SingleValueForm < Hyrax::Forms::WorkForm
     if agreement != '0'
       (attrs[:deposit_agreement] ||= []) << "#{agreement} accepted the deposit agreement on #{Time.now}"
     end
+    # Previous deposit agreement statements are passed to the forms as a single, comma-separated string
+    # To add the new statement, join with the current string, and then split into an array of all statements
     attrs[:deposit_agreement] = attrs[:deposit_agreement].join(',').split(',')
 
     attrs.except(:agreement)
