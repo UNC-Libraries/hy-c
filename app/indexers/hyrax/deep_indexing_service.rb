@@ -31,10 +31,18 @@ module Hyrax
 
     # [hyc-override] Method to return custom label
     def parse_geo_request(location)
-      geo_id = location.match(/\d+/)[0]
-      request = HTTParty.get("http://api.geonames.org/getJSON?geonameId=#{geo_id}&username=#{ENV['GEONAMES_USER']}")
-      response = JSON.parse(request.body)
-      "#{response["asciiName"]}, #{response["adminName1"]}, #{response["countryName"]}"
+      begin
+        geo_id = location.match(/\d+/)[0]
+        request = HTTParty.get("http://api.geonames.org/getJSON?geonameId=#{geo_id}&username=#{ENV['GEONAMES_USER']}")
+        response = JSON.parse(request.body)
+        "#{response["asciiName"]}, #{response["adminName1"]}, #{response["countryName"]}"
+      rescue => e
+        Rails.logger.warn "Unable to index location for #{location} from geonames service"
+        mail(to: @user.email, subject: 'Unable to index geonames uri to human readable text') do |format|
+          format.text { render plain: e.message }
+        end
+        return ''
+      end
     end
 
     # Grab the labels for controlled properties from the remote sources
