@@ -38,7 +38,7 @@ module Hyrax
         "#{response["asciiName"]}, #{response["adminName1"]}, #{response["countryName"]}"
       rescue => e
         Rails.logger.warn "Unable to index location for #{location} from geonames service"
-        mail(to: @user.email, subject: 'Unable to index geonames uri to human readable text') do |format|
+        mail(to: ENV['EMAIL_GEONAMES_ERRORS_ADDRESS'], subject: 'Unable to index geonames uri to human readable text') do |format|
           format.text { render plain: e.message }
         end
         return ''
