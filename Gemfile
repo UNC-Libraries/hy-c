@@ -32,6 +32,7 @@ gem 'edtf-humanize', '0.0.7'
 gem 'passenger', '5.3.7', require: 'phusion_passenger/rack_handler'
 gem 'staccato', '~>0.5.1'
 gem 'loofah', '~>2.2.3'
+gem "bootstrap-sass", "~> 3.4.1"
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails', '~> 4.3.1'
