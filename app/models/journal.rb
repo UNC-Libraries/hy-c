@@ -37,6 +37,10 @@ class Journal < ActiveFedora::Base
     index.as :stored_searchable
   end
 
+  property :edition, predicate: ::RDF::Vocab::BF2.editionStatement, multiple: false do |index|
+    index.as :stored_searchable, :facetable
+  end
+
   property :extent, predicate: ::RDF::URI('http://rdaregistry.info/Elements/u/extent.en') do |index|
     index.as :stored_searchable
   end
