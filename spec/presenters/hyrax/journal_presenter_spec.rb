@@ -22,6 +22,7 @@ RSpec.describe Hyrax::JournalPresenter do
       "deposit_record_tesim" => 'a deposit record',
       "digital_collection_tesim" => ['my collection'],
       "doi_tesim" => '12345',
+      "edition_tesim" => 'First Edition',
       "extent_tesim" => ['1993'],
       "based_near_tesim" => ['California'],
       "isbn_tesim" => ['123456'],
@@ -32,7 +33,8 @@ RSpec.describe Hyrax::JournalPresenter do
       "series_tesim" => ['series1'],
       "language_label_tesim" => ['language'],
       "license_label_tesim" => ['license'],
-      "rights_statement_label_tesim" => 'rights'
+      "rights_statement_label_tesim" => 'rights',
+      "related_url_tesim" => 'a url'
     }
   end
 
@@ -61,6 +63,7 @@ RSpec.describe Hyrax::JournalPresenter do
   it { is_expected.to delegate_method(:deposit_record).to(:solr_document) }
   it { is_expected.to delegate_method(:digital_collection).to(:solr_document) }
   it { is_expected.to delegate_method(:doi).to(:solr_document) }
+  it { is_expected.to delegate_method(:edition).to(:solr_document) }
   it { is_expected.to delegate_method(:extent).to(:solr_document) }
   it { is_expected.to delegate_method(:isbn).to(:solr_document) }
   it { is_expected.to delegate_method(:issn).to(:solr_document) }
@@ -154,6 +157,17 @@ RSpec.describe Hyrax::JournalPresenter do
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:doi)
+      end
+    end
+
+    context "with a custom edition field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:edition, 'First Edition', {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:edition)
       end
     end
 
