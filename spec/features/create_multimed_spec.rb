@@ -107,6 +107,7 @@ RDFXML
       expect(page).to have_selector('#multimed_rights_statement_label', visible: false)
       expect(page).to have_field('multimed_visibility_embargo')
       expect(page).not_to have_field('multimed_visibility_lease')
+      expect(page).not_to have_field('multimed_deposit_agreement')
       choose "multimed_visibility_open"
       check 'agreement'
 
@@ -188,6 +189,7 @@ RDFXML
       expect(page).to have_selector('#multimed_rights_statement_label', visible: false)
       expect(page).to have_field('multimed_visibility_embargo')
       expect(page).not_to have_field('multimed_visibility_lease')
+      expect(page).not_to have_field('multimed_deposit_agreement')
       choose "multimed_visibility_open"
       check 'agreement'
 

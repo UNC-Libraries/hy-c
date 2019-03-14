@@ -52,6 +52,7 @@ RSpec.describe Dissertation do
       expect(subject).to respond_to(:date_issued)
       expect(subject).to respond_to(:degree)
       expect(subject).to respond_to(:degree_granting_institution)
+      expect(subject).to respond_to(:deposit_agreement)
       expect(subject).to respond_to(:deposit_record)
       expect(subject).to respond_to(:doi)
       expect(subject).to respond_to(:dcmi_type)

@@ -79,6 +79,7 @@ RSpec.feature 'Create an Artwork', js: false do
       expect(page).not_to have_field('artwork_doi')
       expect(page).not_to have_field('artwork_date_created')
       expect(page).not_to have_field('artwork_visibility_lease')
+      expect(page).not_to have_field('artwork_deposit_agreement')
       expect(page).to have_select('artwork_resource_type', selected: 'Art')
       choose "artwork_visibility_open"
 
@@ -148,6 +149,7 @@ RSpec.feature 'Create an Artwork', js: false do
       expect(page).to have_selector('#artwork_rights_statement_label', visible: false)
       expect(page).to have_field('artwork_visibility_embargo')
       expect(page).not_to have_field('artwork_visibility_lease')
+      expect(page).not_to have_field('artwork_deposit_agreement')
       choose "artwork_visibility_open"
 
       check 'agreement'

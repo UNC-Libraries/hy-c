@@ -43,6 +43,9 @@ module Hyrax
       property :bibliographic_citation, predicate: ::RDF::Vocab::DC.bibliographicCitation
       property :source, predicate: ::RDF::Vocab::DC.source
 
+      # Store deposit agreement details
+      property :deposit_agreement, predicate: ::RDF::URI('http://www.loc.gov/premis/rdf/v3/note')
+
       id_blank = proc { |attributes| attributes[:id].blank? }
 
       class_attribute :controlled_properties

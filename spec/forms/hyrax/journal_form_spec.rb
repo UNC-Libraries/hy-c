@@ -24,7 +24,7 @@ RSpec.describe Hyrax::JournalForm do
     it { is_expected.to match_array [:abstract, :alternative_title, :based_near, :dcmi_type, :digital_collection, :doi,
                                      :edition, :extent, :isbn, :issn, :note, :place_of_publication, :series, :creator,
                                      :subject, :keyword, :language, :resource_type, :license, :rights_statement,
-                                     :language_label, :license_label, :related_url, :rights_statement_label] }
+                                     :language_label, :license_label, :related_url, :rights_statement_label, :deposit_agreement, :agreement] }
   end
   
   describe "#admin_only_terms" do

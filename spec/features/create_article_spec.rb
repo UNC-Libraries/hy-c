@@ -126,6 +126,7 @@ RDFXML
       expect(page).not_to have_field('article_visibility_lease')
       expect(page).not_to have_field('article_identifier')
       expect(page).not_to have_field('article_use')
+      expect(page).not_to have_field('article_deposit_agreement')
       expect(page).to have_select('article_resource_type', selected: 'Article')
       choose 'article_visibility_open'
       check 'agreement'
@@ -245,6 +246,7 @@ RDFXML
       expect(page).to have_selector('#article_rights_statement_label', visible: false)
       expect(page).to have_field('article_visibility_embargo')
       expect(page).not_to have_field('article_visibility_lease')
+      expect(page).not_to have_field('article_deposit_agreement')
       expect(page).to have_select('article_resource_type', selected: 'Article')
       choose 'article_visibility_open'
       check 'agreement'
