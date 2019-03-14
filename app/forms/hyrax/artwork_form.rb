@@ -8,7 +8,7 @@ module Hyrax
 
     self.model_class = ::Artwork
     self.terms += [:resource_type, :abstract, :date_issued, :doi, :extent, :medium, :deposit_agreement, :agreement]
-    self.terms -= [:contributor, :creator, :keyword, :publisher, :subject, :language, :identifier, :based_near,
+    self.terms -= [:contributor, :keyword, :publisher, :subject, :language, :identifier, :based_near,
                    :related_url, :source, :language_label]
     self.required_fields = [:title, :date_issued, :abstract, :extent, :medium, :resource_type]
 
@@ -23,6 +23,19 @@ module Hyrax
 
     def license
       super.first || ""
+    end
+
+    delegate :creators_attributes=, to: :model
+
+    def creators
+      model.creators.build if model.creators.blank?
+      model.creators.to_a
+    end
+
+    def self.build_permitted_params
+      permitted = super
+      permitted << { creators_attributes: [:id, :name, :affiliation, :orcid, :other_affiliation, :_destroy] }
+      permitted
     end
   end
 end
