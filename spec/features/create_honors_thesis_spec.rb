@@ -60,6 +60,16 @@ RSpec.feature 'Create a HonorsThesis', js: false do
 RDFXML
       stub_request(:get, "http://sws.geonames.org/4460162/").
           to_return(status: 200, body: chapel_hill, headers: {'Content-Type' => 'application/rdf+xml;charset=UTF-8'})
+
+      stub_request(:any, "http://api.geonames.org/getJSON?geonameId=4460162&username=#{ENV['GEONAMES_USER']}").
+          with(headers: {
+              'Accept' => '*/*',
+              'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+              'User-Agent' => 'Ruby'
+          }).to_return(status: 200, body: { asciiName: 'Chapel Hill',
+                                            countryName: 'United States',
+                                            adminName1: 'North Carolina' }.to_json,
+                       headers: { 'Content-Type' => 'application/json' })
     end
 
     scenario 'as a non-admin' do
@@ -135,7 +145,7 @@ RDFXML
       expect(page).to have_content 'Creator Test Default Creator ORCID: creator'
       expect(page).to have_content 'Date of publication October 3, 2018'
       expect(page).to have_content 'Degree Bachelor of Science'
-      expect(page).to have_content 'Location Chapel Hill'
+      expect(page).to have_content 'Location Chapel Hill, North Carolina, United States'
       expect(page).to have_content 'Graduation year 2018'
       expect(page).to have_content 'Keyword Test Default Keyword'
       expect(page).to have_content 'Language English'
@@ -237,7 +247,7 @@ RDFXML
       expect(page).to have_content 'Degree Bachelor of Science'
       expect(page).to have_content 'Degree granting institution UNC'
       expect(page).to have_content 'Extent some extent'
-      expect(page).to have_content 'Location Chapel Hill'
+      expect(page).to have_content 'Location Chapel Hill, North Carolina, United States'
       expect(page).to have_content 'Graduation year 2018'
       expect(page).to have_content 'Honors concentration Biostatistics'
       expect(page).to have_content 'Keyword Test Default Keyword'
