@@ -1,3 +1,4 @@
+# [hyc-override] Adding in before_destroy hook to deregister from longleaf
 module Hydra::Works
   # This module provides all of the Behaviors of a Hydra::Works::GenericFile
   #
@@ -23,7 +24,7 @@ module Hydra::Works
       include Hydra::Works::Derivatives
       include Hydra::Works::MimeTypes
       include Hydra::Works::VersionedContent
-      before_destroy :remove_from_works
+      before_destroy :remove_from_works, :deregister_longleaf
 
       type [Hydra::PCDM::Vocab::PCDMTerms.Object, Vocab::WorksTerms.FileSet]
     end
@@ -75,6 +76,11 @@ module Hydra::Works
           parent.members.delete(self) # Delete the indirect container Proxy
           parent.save! # record the changes to the ordered members
         end
+      end
+      
+      def deregister_longleaf
+        Rails.logger.info("Calling deregistration from longleaf after delete of #{original_file}")
+        DeregisterLongleafJob.perform_later(self)
       end
   end
 end
