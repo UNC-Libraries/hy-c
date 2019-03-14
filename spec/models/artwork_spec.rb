@@ -19,6 +19,8 @@ RSpec.describe Artwork do
       # Basic hyrax metadata
       expect(subject).to respond_to(:relative_path)
       expect(subject).to respond_to(:title)
+      expect(subject).to respond_to(:creator)
+      expect(subject).to respond_to(:creators)
       expect(subject).to respond_to(:label)
       expect(subject).to respond_to(:description)
       expect(subject).to respond_to(:publisher)

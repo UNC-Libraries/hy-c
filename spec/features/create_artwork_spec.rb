@@ -59,6 +59,10 @@ RSpec.feature 'Create an Artwork', js: false do
 
       # required fields
       fill_in 'Title', with: 'Test Artwork work'
+      fill_in 'Creator', { with: 'Test Default Creator', id: 'artwork_creators_attributes_0_name' }
+      fill_in 'ORCID', { with: 'creator orcid', id: 'artwork_creators_attributes_0_orcid' }
+      select 'Department of Biology', from: 'artwork_creators_attributes_0_affiliation'
+      fill_in 'Additional affiliation', { with: 'UNC', id: 'artwork_creators_attributes_0_other_affiliation' }
       fill_in 'Date of publication', with: '2018-10-03'
       fill_in 'Abstract', with: 'a description'
       fill_in 'Extent', with: 'some extent'
@@ -95,6 +99,11 @@ RSpec.feature 'Create an Artwork', js: false do
 
       first('.document-title', text: 'Test Artwork work').click
       expect(page).to have_content 'Date of publication October 3, 2018'
+      expect(page).to have_content 'Creator Test Default Creator ORCID: creator orcid'
+      expect(page).to have_content 'Affiliation:'
+      expect(page).to have_content 'College of Arts and Sciences'
+      expect(page).to have_content 'Department of Biology'
+      expect(page).to have_content 'Other Affiliation: UNC'
       expect(page).to have_content 'Abstract a description'
       expect(page).to have_content 'Extent some extent'
       expect(page).to have_content 'License Attribution 3.0 United States'
@@ -130,6 +139,10 @@ RSpec.feature 'Create an Artwork', js: false do
       fill_in 'DOI', with: 'some doi'
       select 'Attribution 3.0 United States', :from => 'artwork_license'
       select 'In Copyright', :from => 'artwork_rights_statement'
+      fill_in 'Creator', { with: 'Test Default Creator', id: 'artwork_creators_attributes_0_name' }
+      fill_in 'ORCID', { with: 'creator orcid', id: 'artwork_creators_attributes_0_orcid' }
+      select 'Department of Biology', from: 'artwork_creators_attributes_0_affiliation'
+      fill_in 'Additional affiliation', { with: 'UNC', id: 'artwork_creators_attributes_0_other_affiliation' }
 
       expect(page).to have_selector('#artwork_license_label', visible: false)
       expect(page).to have_selector('#artwork_rights_statement_label', visible: false)
@@ -155,6 +168,11 @@ RSpec.feature 'Create an Artwork', js: false do
 
       first('.document-title', text: 'Test Artwork work').click
       expect(page).to have_content 'Date created October 3, 2018'
+      expect(page).to have_content 'Creator Test Default Creator ORCID: creator orcid'
+      expect(page).to have_content 'Affiliation:'
+      expect(page).to have_content 'College of Arts and Sciences'
+      expect(page).to have_content 'Department of Biology'
+      expect(page).to have_content 'Other Affiliation: UNC'
       expect(page).to have_content 'Date of publication October 3, 2018'
       expect(page).to have_content 'Abstract a description'
       expect(page).to have_content 'DOI some doi'

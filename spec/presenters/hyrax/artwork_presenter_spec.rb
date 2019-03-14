@@ -15,6 +15,7 @@ RSpec.describe Hyrax::ArtworkPresenter do
       "access_tesim" => 'public',
       "date_created_tesim" => '2017-01-22',
       "date_issued_tesim" => '2017-01-22',
+      "creator_display_tesim" => ['a creator'],
       "deposit_record_tesim" => 'a deposit record',
       "abstract_tesim" => ['an abstract'],
       "doi_tesim" => '12345',
@@ -34,6 +35,7 @@ RSpec.describe Hyrax::ArtworkPresenter do
   it { is_expected.to delegate_method(:human_readable_type).to(:solr_document) }
   it { is_expected.to delegate_method(:date_created).to(:solr_document) }
   it { is_expected.to delegate_method(:date_issued).to(:solr_document) }
+  it { is_expected.to delegate_method(:creator_display).to(:solr_document) }
   it { is_expected.to delegate_method(:date_modified).to(:solr_document) }
   it { is_expected.to delegate_method(:date_uploaded).to(:solr_document) }
   it { is_expected.to delegate_method(:rights_statement).to(:solr_document) }
@@ -75,6 +77,17 @@ RSpec.describe Hyrax::ArtworkPresenter do
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:abstract)
+      end
+    end
+
+    context "with a custom creator_display field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:creator_display, ['a creator'], {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:creator_display)
       end
     end
 
