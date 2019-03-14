@@ -289,9 +289,14 @@ div.person {
 #unc-footer {
   background-color: $carolina-blue-dark;
 
-  ul {
-    text-align: center;
+  .navbar-text {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+  }
 
+  ul {
     li {
       display: inline-block;
       margin: -10px 0 0 15px;
