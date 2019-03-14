@@ -21,7 +21,7 @@ RSpec.describe Hyrax::ArtworkForm do
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:date_created, :description, :license, :rights_statement, :doi, :license_label, :rights_statement_label] }
+    it { is_expected.to match_array [:creator, :date_created, :description, :license, :rights_statement, :doi, :license_label, :rights_statement_label] }
   end
 
   describe 'default value set' do
@@ -35,6 +35,10 @@ RSpec.describe Hyrax::ArtworkForm do
     let(:params) do
       ActionController::Parameters.new(
           title: 'foo', # single-valued
+          creators_attributes: { '0' => { name: 'creator',
+                                          orcid: 'creator orcid',
+                                          affiliation: 'Department of Art',
+                                          other_affiliation: 'another affiliation'} },
           date_created: '2017-01-22', # single-valued
           date_issued: '2017-01-22', # single-valued
           resource_type: ['a type'],
