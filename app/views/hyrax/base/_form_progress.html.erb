@@ -35,7 +35,6 @@
         <label>
           <%= f.input :agreement,
                       as: :boolean,
-                      required: true,
                       label: t('hyrax.active_consent_to_agreement'),
                       checked: f.object.agreement_accepted,
                       input_html: { id: 'agreement' },

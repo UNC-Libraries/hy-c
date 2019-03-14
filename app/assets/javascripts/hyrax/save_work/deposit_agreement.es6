@@ -1,7 +1,11 @@
+// [hyc-override] adding required attribute to the agreement checkbox
 export class DepositAgreement {
     // Monitors the form and runs the callback if any files are added
     constructor(form, callback) {
         this.agreementCheckbox = form.find('input#agreement')
+
+        // [hyc-override] add required attribute
+        this.agreementCheckbox[0].setAttribute('required', 'required')
 
         // If true, require the accept checkbox to be checked.
         // Tracks whether the user needs to accept again to the depositor
