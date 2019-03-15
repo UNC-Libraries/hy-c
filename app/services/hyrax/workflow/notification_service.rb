@@ -83,6 +83,8 @@ module Hyrax
              users += Role.where(name: agent.proxy_for_id).first.users
            elsif agent.proxy_for_type == 'User'
              users << ::User.find(agent.proxy_for_id)
+           elsif role.name == 'deleting' && agent.proxy_for_type == 'Hyrax::Group' && agent.proxy_for_id = 'admin'
+             users += Role.where(name: agent.proxy_for_id).first.users
            end
          end
 
