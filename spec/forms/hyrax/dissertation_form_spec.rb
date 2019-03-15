@@ -21,7 +21,7 @@ RSpec.describe Hyrax::DissertationForm do
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:abstract, :academic_concentration, :access, :advisor, :alternative_title, :based_near,
+    it { is_expected.to match_array [:abstract, :access, :advisor, :alternative_title, :based_near,
                                      :dcmi_type, :degree, :degree_granting_institution, :doi, :graduation_year, :note,
                                      :place_of_publication, :reviewer, :use, :contributor, :identifier, :subject,
                                      :publisher, :language, :keyword, :rights_statement, :license, :resource_type,
@@ -71,7 +71,6 @@ RSpec.describe Hyrax::DissertationForm do
           thumbnail_id: '789',
           member_of_collection_ids: ['123456', 'abcdef'],
           abstract: ['an abstract'],
-          academic_concentration: ['a concentration'],
           access: 'public', # single-valued
           advisors_attributes: { '0' => { name: 'advisor',
                                           orcid: 'advisor orcid',
@@ -113,7 +112,6 @@ RSpec.describe Hyrax::DissertationForm do
       expect(subject['visibility']).to eq 'open'
       expect(subject['member_of_collection_ids']).to eq ['123456', 'abcdef']
       expect(subject['abstract']).to eq ['an abstract']
-      expect(subject['academic_concentration']).to eq ['a concentration']
       expect(subject['access']).to eq 'public'
       expect(subject['alternative_title']).to eq ['another title']
       expect(subject['date_issued']).to eq '2018-01-08'

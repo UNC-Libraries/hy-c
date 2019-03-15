@@ -195,8 +195,6 @@ namespace :proquest do
       resource_type = 'Masters Thesis'
     end
 
-    academic_concentration = metadata.xpath('//DISS_description/DISS_institution/DISS_inst_contact').text
-
     department = metadata.xpath('//DISS_description/DISS_institution/DISS_inst_contact').text.strip
 
     date_issued = metadata.xpath('//DISS_description/DISS_dates/DISS_accept_date').text
@@ -230,7 +228,6 @@ namespace :proquest do
         'abstract'=>abstract.gsub(/\n/, "").strip,
         'advisors_attributes'=>{ '0' => { name: advisor } },
         'degree'=>degree,
-        'academic_concentration'=>academic_concentration,
         'graduation_year'=>graduation_year,
         'date_issued'=>(Date.try(:edtf, date_issued) || date_issued).to_s,
         'dcmi_type'=>dcmi_type,
@@ -259,7 +256,6 @@ namespace :proquest do
     resource.abstract = [work_attributes['abstract']]
     resource.advisors = work_attributes['advisors_attributes'].map{ |k,v| resource.advisors.build(v) }
     resource.degree = work_attributes['degree']
-    resource.academic_concentration = [work_attributes['academic_concentration']]
     resource.graduation_year = work_attributes['graduation_year']
     resource.language = [work_attributes['language']]
     resource.date_issued = work_attributes['date_issued']

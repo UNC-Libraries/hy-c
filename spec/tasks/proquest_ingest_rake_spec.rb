@@ -51,7 +51,6 @@ describe "rake proquest:ingest", type: :task do
     expect(new_dissertation['keyword']).to match_array ['Philosophy', 'attachments', 'aesthetics']
     expect(new_dissertation['resource_type']).to match_array ['Dissertation']
     expect(new_dissertation['abstract']).to match_array ['The purpose of this study is to test ingest of a proquest deposit object without any attachments']
-    expect(new_dissertation['academic_concentration']).to match_array ['Philosophy']
     expect(new_dissertation['advisors'][0]['name']).to match_array ['Advisor, John T']
     expect(new_dissertation['degree']).to eq 'Ph.D.'
     expect(new_dissertation['degree_granting_institution']).to eq 'University of North Carolina at Chapel Hill Graduate School'
