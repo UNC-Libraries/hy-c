@@ -1,6 +1,6 @@
 <%# app/views/records/edit_fields/_degree.html.erb %>
 <%= f.input :degree, as: :select,
-            collection: DegreesService.select_all_options,
+            collection: DegreesService.select_active_options,
             include_blank: true,
             item_helper: DegreesService.method(:include_current_value),
             label: 'Degree',

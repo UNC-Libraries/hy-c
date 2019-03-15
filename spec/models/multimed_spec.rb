@@ -34,6 +34,7 @@ RSpec.describe Multimed do
       expect(subject).to respond_to(:date_issued)
       expect(subject).to respond_to(:date_uploaded)
       expect(subject).to respond_to(:date_modified)
+      expect(subject).to respond_to(:based_near)
       expect(subject).to respond_to(:subject)
       expect(subject).to respond_to(:language)
       expect(subject).to respond_to(:license)
@@ -44,12 +45,12 @@ RSpec.describe Multimed do
 
       # Additional metadata
       expect(subject).to respond_to(:abstract)
+      expect(subject).to respond_to(:deposit_agreement)
       expect(subject).to respond_to(:deposit_record)
       expect(subject).to respond_to(:doi)
       expect(subject).to respond_to(:extent)
       expect(subject).to respond_to(:dcmi_type)
       expect(subject).to respond_to(:digital_collection)
-      expect(subject).to respond_to(:geographic_subject)
       expect(subject).to respond_to(:medium)
       expect(subject).to respond_to(:note)
       expect(subject).to respond_to(:language_label)

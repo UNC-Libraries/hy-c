@@ -2,26 +2,24 @@ module Migrate
   module Services
     class MetadataParser
 
-      def initialize(metadata_file, object_hash, binary_hash, deposit_record_hash, collection_uuids, depositor, config)
+      def initialize(metadata_file, object_hash, binary_hash, deposit_record_hash, collection_uuids, depositor, collection_name, admin_set)
         @metadata_file = metadata_file
         @object_hash = object_hash
         @binary_hash = binary_hash
         @deposit_record_hash = deposit_record_hash
         @collection_uuids = collection_uuids
-        @collection_name = config['collection_name']
+        @collection_name = collection_name
         @depositor = depositor
-        @admin_set = config['admin_set']
+        @admin_set = admin_set
       end
 
       def parse
         file_open_time = Time.now
         puts "[#{file_open_time.to_s}] opening xml file"
         metadata = Nokogiri::XML(File.open(@metadata_file))
-        puts "[#{Time.now.to_s}] finished opening metadata file  in #{Time.now-file_open_time} seconds"
+        puts "[#{Time.now.to_s}] finished opening metadata file in #{Time.now-file_open_time} seconds"
 
         work_attributes = Hash.new
-
-        child_works = Array.new
 
         # get the uuid of the object
         uuid = MigrationHelper.get_uuid_from_path(metadata.at_xpath('foxml:digitalObject/@PID', MigrationConstants::NS).value)
@@ -80,20 +78,28 @@ module Migrate
           work_attributes['abstract'] = descriptive_mods.xpath('mods:abstract', MigrationConstants::NS).map(&:text)
           work_attributes['note'] = descriptive_mods.xpath('mods:note[not(@displayLabel="Description" or @displayLabel="Methods" or @type="citation/reference" or @displayLabel="Degree" or @displayLabel="Academic concentration" or @displayLabel="Keywords" or @displayLabel="Honors Level")]', MigrationConstants::NS).map(&:text)
           work_attributes['description'] = descriptive_mods.xpath('mods:note[@displayLabel="Description"]', MigrationConstants::NS).map(&:text)
-          work_attributes['methods'] = descriptive_mods.xpath('mods:note[@displayLabel="Methods"]', MigrationConstants::NS).map(&:text)
+          work_attributes['methodology'] = descriptive_mods.xpath('mods:note[@displayLabel="Methods"]', MigrationConstants::NS).map(&:text)
           work_attributes['extent'] = descriptive_mods.xpath('mods:physicalDescription/mods:extent', MigrationConstants::NS).map(&:text)
           work_attributes['table_of_contents'] = descriptive_mods.xpath('mods:tableOfContents', MigrationConstants::NS).map(&:text)
           work_attributes['bibliographic_citation'] = descriptive_mods.xpath('mods:note[@type="citation/reference"]', MigrationConstants::NS).map(&:text)
           work_attributes['edition'] = descriptive_mods.xpath('mods:originInfo/mods:edition', MigrationConstants::NS).map(&:text)
           work_attributes['peer_review_status'] = descriptive_mods.xpath('mods:genre[@displayLabel="Peer Reviewed"] ', MigrationConstants::NS).map(&:text)
-          work_attributes['degree'] = descriptive_mods.xpath('mods:note[@displayLabel="Degree"]', MigrationConstants::NS).map(&:text)
+
+          degrees = descriptive_mods.xpath('mods:note[@displayLabel="Degree"]', MigrationConstants::NS).map(&:text)
+          degrees = degrees.map{ |degree| DegreesService.label(degree) } unless degrees.blank?
+          work_attributes['degree'] = degrees
+
           work_attributes['academic_concentration'] = descriptive_mods.xpath('mods:note[@displayLabel="Academic concentration"]', MigrationConstants::NS).map(&:text)
-          work_attributes['award'] = descriptive_mods.xpath('mods:note[@displayLabel="Honors Level"]', MigrationConstants::NS).map(&:text)
+
+          honors_levels = descriptive_mods.xpath('mods:note[@displayLabel="Honors Level"]', MigrationConstants::NS).map(&:text)
+          honors_levels = honors_levels.map{ |level| AwardsService.label(level) } unless honors_levels.blank?
+          work_attributes['award'] = honors_levels
+
           work_attributes['medium'] = descriptive_mods.xpath('mods:physicalDescription/mods:form', MigrationConstants::NS).map(&:text)
           work_attributes['kind_of_data'] = descriptive_mods.xpath('mods:genre[@authority="ddi"]', MigrationConstants::NS).map(&:text)
           work_attributes['series'] = descriptive_mods.xpath('mods:relatedItem[@type="series"]', MigrationConstants::NS).map(&:text)
           work_attributes['subject'] = descriptive_mods.xpath('mods:subject/mods:topic', MigrationConstants::NS).map(&:text)
-          work_attributes['geographic_subject'] = descriptive_mods.xpath('mods:subject/mods:geographic/@valueURI', MigrationConstants::NS).map(&:text)
+          work_attributes['based_near_attributes'] = parse_locations_from_mods(descriptive_mods)
           keyword_string = descriptive_mods.xpath('mods:note[@displayLabel="Keywords"]', MigrationConstants::NS).map(&:text)
           work_attributes['keyword'] = []
           keyword_string.each do |keyword|
@@ -133,7 +139,6 @@ module Migrate
           work_attributes['page_end'] = descriptive_mods.xpath('mods:relatedItem[@type="host"]/mods:part/mods:extent[@unit="page"]/mods:end',MigrationConstants::NS).map(&:text)
           work_attributes['related_url'] = descriptive_mods.xpath('mods:relatedItem/mods:location/mods:url',MigrationConstants::NS).map(&:text)
           work_attributes['url'] = descriptive_mods.xpath('mods:location/mods:url',MigrationConstants::NS).map(&:text)
-          work_attributes['publisher_version'] = descriptive_mods.xpath('mods:location/mods:url[@displayLabel="Publisher Version"] | mods:relatedItem[@type="otherVersion"]/mods:location',MigrationConstants::NS).map(&:text)
           work_attributes['digital_collection'] = descriptive_mods.xpath('mods:relatedItem[@displayLabel="Collection" and @type="host"]/mods:titleInfo/mods:title',MigrationConstants::NS).map(&:text)
         end
 
@@ -153,7 +158,7 @@ module Migrate
             work_attributes['cdr_model_type'] = rdf_version.xpath('rdf:Description/*[local-name() = "hasModel"]/@rdf:resource', MigrationConstants::NS).map(&:text)
           end
 
-          # Create lists of attached files and children
+          # Create lists of attached files
           if rdf_version.to_s.match(/resource/)
             contained_files = rdf_version.xpath("rdf:Description/*[not(local-name()='originalDeposit') and not(local-name() = 'defaultWebObject') and contains(@rdf:resource, 'uuid')]", MigrationConstants::NS)
             contained_files.each do |contained_file|
@@ -161,8 +166,6 @@ module Migrate
               if work_attributes['cdr_model_type'].include? 'info:fedora/cdr-model:AggregateWork'
                 if !@binary_hash[tmp_uuid].blank? && !(@collection_uuids.include? tmp_uuid)
                   work_attributes['contained_files'] << tmp_uuid
-                elsif !@object_hash[tmp_uuid].blank? && tmp_uuid != uuid
-                  child_works << tmp_uuid
                 end
               else
                 if !@binary_hash[tmp_uuid].blank?
@@ -171,12 +174,10 @@ module Migrate
               end
             end
 
-            if work_attributes['contained_files'].count > 1
-              representative = rdf_version.xpath('rdf:Description/*[local-name() = "defaultWebObject"]/@rdf:resource', MigrationConstants::NS).to_s.split('/')[1]
-              if representative && !child_works.include?(MigrationHelper.get_uuid_from_path(representative))
-                work_attributes['contained_files'] -= [MigrationHelper.get_uuid_from_path(representative)]
-                work_attributes['contained_files'] = [MigrationHelper.get_uuid_from_path(representative)] + work_attributes['contained_files']
-              end
+            representative = rdf_version.xpath('rdf:Description/*[local-name() = "defaultWebObject"]/@rdf:resource', MigrationConstants::NS).to_s.split('/')[1]
+            if representative
+              work_attributes['contained_files'] -= [MigrationHelper.get_uuid_from_path(representative)]
+              work_attributes['contained_files'] = [MigrationHelper.get_uuid_from_path(representative)] + work_attributes['contained_files']
             end
             work_attributes['contained_files'].uniq!
           end
@@ -251,11 +252,9 @@ module Migrate
           end
         end
 
-        MigrationHelper.retry_operation('adding admin set') do
-          work_attributes['admin_set_id'] = (AdminSet.where(title: @admin_set).first || AdminSet.where(title: ENV['DEFAULT_ADMIN_SET']).first).id
-        end
+        work_attributes['admin_set_id'] = @admin_set
 
-        { work_attributes: work_attributes.reject!{|k,v| v.blank?}, child_works: child_works }
+        work_attributes.reject!{|k,v| v.blank?}
       end
 
       private
@@ -265,7 +264,7 @@ module Migrate
           name_array = []
           names.each do |name|
             if !name.xpath('mods:namePart[@type="family"]', MigrationConstants::NS).text.blank?
-              name_array << name.xpath('concat(mods:namePart[@type="family"], ", ", mods:namePart[@type="given"])', MigrationConstants::NS)
+              name_array << build_name(name)
             else
               name_array << name.xpath('mods:namePart', MigrationConstants::NS).text
             end
@@ -281,7 +280,7 @@ module Migrate
           people.each_with_index do |person, index|
             name = ''
             if !person.xpath('mods:namePart[@type="family"]', MigrationConstants::NS).text.blank?
-              name = person.xpath('concat(mods:namePart[@type="family"], ", ", mods:namePart[@type="given"])', MigrationConstants::NS)
+              name = build_name(person)
             else
               name = person.xpath('mods:namePart', MigrationConstants::NS).text
             end
@@ -298,6 +297,17 @@ module Migrate
           person_hash.blank? ? nil : person_hash
         end
 
+        def parse_locations_from_mods(mods)
+          location_hash = Hash.new
+
+          locations = mods.xpath('mods:subject/mods:geographic/@valueURI', MigrationConstants::NS).map(&:text)
+          locations.each_with_index do |location, index|
+            location_hash[index.to_s] = { id: location }
+          end
+
+          location_hash.blank? ? nil : location_hash
+        end
+
         # Use language code to get iso639-2 uri from service
         def get_language_uri(language_codes)
           language_codes.map{|e| LanguagesService.label("http://id.loc.gov/vocabulary/iso639-2/#{e.downcase}") ?
@@ -312,10 +322,19 @@ module Migrate
               merged_affiliations << (DepartmentsService.label(affiliation) || affiliation).split('; ')
             end
             merged_affiliations.flatten!
-            merged_affiliations.compact - merged_affiliations.select{ |e| merged_affiliations.count(e) > 1 }.uniq
+            merged_affiliations.compact.uniq
           else
             []
           end
+        end
+
+        def build_name(name_mods)
+          name_parts = []
+          name_parts << name_mods.xpath('mods:namePart[@type="family"]', MigrationConstants::NS)
+          name_parts << name_mods.xpath('mods:namePart[@type="given"]', MigrationConstants::NS)
+          name_parts << name_mods.xpath('mods:namePart[@type="termsOfAddress"]', MigrationConstants::NS)
+          name_parts << name_mods.xpath('mods:namePart[@type="date"]', MigrationConstants::NS)
+          name_parts.reject{ |name| name.blank? }.join(', ')
         end
     end
   end

@@ -49,6 +49,27 @@ RSpec.feature 'Create a Article', js: false do
       Hyrax::Workflow::PermissionGenerator.call(roles: 'deleting', workflow: workflow, agents: admin_agent)
       permission_template.available_workflows.first.update!(active: true)
       DefaultAdminSet.create(work_type_name: 'Article', admin_set_id: admin_set.id)
+
+      chapel_hill = <<RDFXML.strip_heredoc
+      <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+          <rdf:RDF xmlns:foaf="http://xmlns.com/foaf/0.1/" xmlns:gn="http://www.geonames.org/ontology#" xmlns:owl="http://www.w3.org/2002/07/owl#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
+          <gn:Feature rdf:about="http://sws.geonames.org/4460162/">
+          <gn:name>Chapel Hill</gn:name>
+          </gn:Feature>
+          </rdf:RDF>
+RDFXML
+      stub_request(:get, "http://sws.geonames.org/4460162/").
+          to_return(status: 200, body: chapel_hill, headers: {'Content-Type' => 'application/rdf+xml;charset=UTF-8'})
+
+      stub_request(:any, "http://api.geonames.org/getJSON?geonameId=4460162&username=#{ENV['GEONAMES_USER']}").
+          with(headers: {
+              'Accept' => '*/*',
+              'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+              'User-Agent' => 'Ruby'
+          }).to_return(status: 200, body: { asciiName: 'Chapel Hill',
+                                            countryName: 'United States',
+                                            adminName1: 'North Carolina' }.to_json,
+                       headers: { 'Content-Type' => 'application/json' })
     end
 
     scenario 'as a non-admin' do
@@ -68,8 +89,8 @@ RSpec.feature 'Create a Article', js: false do
 
       # extra fields
       fill_in 'Keyword', with: 'Test Default Keyword'
-      select 'Attribution 3.0 United States', :from => 'article_license'
-      select 'In Copyright', :from => 'article_rights_statement'
+      select 'Attribution 3.0 United States', from: 'article_license'
+      select 'In Copyright', from: 'article_rights_statement'
       fill_in 'Publisher', with: 'UNC Press'
       fill_in 'Subject', with: 'test'
       fill_in 'Related resource URL', with: 'something.com'
@@ -77,7 +98,7 @@ RSpec.feature 'Create a Article', js: false do
       select 'Article', from: 'article_resource_type'
       select 'Preprint', from: 'article_edition'
       fill_in 'Funder', with: 'some funder'
-      fill_in 'Location', with: 'some geographic subject'
+      find("#article_based_near_attributes_0_id", visible: false).set('http://sws.geonames.org/4460162/')
       fill_in 'ISSN', with: 'some issn'
       fill_in 'Journal issue', with: '1'
       fill_in 'Journal title', with: 'a journal'
@@ -105,6 +126,7 @@ RSpec.feature 'Create a Article', js: false do
       expect(page).not_to have_field('article_visibility_lease')
       expect(page).not_to have_field('article_identifier')
       expect(page).not_to have_field('article_use')
+      expect(page).not_to have_field('article_deposit_agreement')
       expect(page).to have_select('article_resource_type', selected: 'Article')
       choose 'article_visibility_open'
       check 'agreement'
@@ -143,7 +165,7 @@ RSpec.feature 'Create a Article', js: false do
       expect(page).to have_content 'Resource type Article'
       expect(page).to have_content 'Version Preprint'
       expect(page).to have_content 'Funder some funder'
-      expect(page).to have_content 'Location some geographic subject'
+      expect(page).to have_content 'Location Chapel Hill, North Carolina, United States'
       expect(page).to have_content 'ISSN some issn'
       expect(page).to have_content 'Journal issue 1'
       expect(page).to have_content 'Journal title a journal'
@@ -201,7 +223,7 @@ RSpec.feature 'Create a Article', js: false do
       select 'Preprint', from: 'article_edition'
       fill_in 'Extent', with: 'some extent'
       fill_in 'Funder', with: 'some funder'
-      fill_in 'Location', with: 'some geographic subject'
+      find("#article_based_near_attributes_0_id", visible: false).set('http://sws.geonames.org/4460162/')
       fill_in 'ISSN', with: 'some issn'
       fill_in 'Journal issue', with: '1'
       fill_in 'Journal title', with: 'a journal'
@@ -224,6 +246,7 @@ RSpec.feature 'Create a Article', js: false do
       expect(page).to have_selector('#article_rights_statement_label', visible: false)
       expect(page).to have_field('article_visibility_embargo')
       expect(page).not_to have_field('article_visibility_lease')
+      expect(page).not_to have_field('article_deposit_agreement')
       expect(page).to have_select('article_resource_type', selected: 'Article')
       choose 'article_visibility_open'
       check 'agreement'
@@ -274,7 +297,7 @@ RSpec.feature 'Create a Article', js: false do
       expect(page).to have_content 'Version Preprint'
       expect(page).to have_content 'Extent some extent'
       expect(page).to have_content 'Funder some funder'
-      expect(page).to have_content 'Location some geographic subject'
+      expect(page).to have_content 'Location Chapel Hill, North Carolina, United States'
       expect(page).to have_content 'ISSN some issn'
       expect(page).to have_content 'Journal issue 1'
       expect(page).to have_content 'Journal title a journal'

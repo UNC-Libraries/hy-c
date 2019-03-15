@@ -23,10 +23,10 @@ RSpec.describe Hyrax::MastersPaperForm do
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:academic_concentration, :access, :dcmi_type, :degree_granting_institution, :doi, :extent,
-                                     :geographic_subject, :note, :reviewer, :use, :keyword, :subject, :language, 
+    it { is_expected.to match_array [:academic_concentration, :access, :based_near, :dcmi_type, :degree_granting_institution, :doi, :extent,
+                                     :reviewer, :use, :keyword, :subject, :language, :note,
                                      :rights_statement, :license, :language_label, :license_label, 
-                                     :rights_statement_label] }
+                                     :rights_statement_label, :deposit_agreement, :agreement] }
   end
   
   describe "#admin_only_terms" do
@@ -60,6 +60,7 @@ RSpec.describe Hyrax::MastersPaperForm do
                                           other_affiliation: 'another affiliation'} },
           subject: ['a subject'],
           language: ['http://id.loc.gov/vocabulary/iso639-2/eng'],
+          based_near: ['a geographic subject'],
           license: 'http://creativecommons.org/licenses/by/3.0/us/', # single-valued
           rights_statement: 'http://rightsstatements.org/vocab/InC/1.0/', # single-valued
           resource_type: ['a type'],
@@ -76,13 +77,12 @@ RSpec.describe Hyrax::MastersPaperForm do
                                           orcid: 'advisor orcid',
                                           affiliation: 'Carolina Center for Genome Sciences',
                                           other_affiliation: 'another affiliation'} },
-          date_issued: 'a date', # single-valued
+          date_issued: 'Summer 1999', # single-valued
           dcmi_type: ['type'],
           degree: 'MS', # single-valued
           degree_granting_institution: 'UNC', # single-valued
           doi: '12345',
           extent: ['an extent'],
-          geographic_subject: ['a geographic subject'],
           graduation_year: '2017',
           note: ['a note'],
           reviewers_attributes: { '0' => { name: 'reviewer',
@@ -103,6 +103,7 @@ RSpec.describe Hyrax::MastersPaperForm do
       expect(subject['subject']).to eq ['a subject']
       expect(subject['language']).to eq ['http://id.loc.gov/vocabulary/iso639-2/eng']
       expect(subject['license']).to eq ['http://creativecommons.org/licenses/by/3.0/us/']
+      expect(subject['based_near']).to eq ['a geographic subject']
       expect(subject['rights_statement']).to eq 'http://rightsstatements.org/vocab/InC/1.0/'
       expect(subject['resource_type']).to eq ['a type']
       expect(subject['keyword']).to eq ['derp']
@@ -112,13 +113,12 @@ RSpec.describe Hyrax::MastersPaperForm do
       expect(subject['abstract']).to be_empty
       expect(subject['academic_concentration']).to eq ['a concentration']
       expect(subject['access']).to eq 'public'
-      expect(subject['date_issued']).to eq 'a date'
+      expect(subject['date_issued']).to eq '1999-22'
       expect(subject['degree']).to eq 'MS'
       expect(subject['degree_granting_institution']).to eq 'UNC'
       expect(subject['doi']).to eq '12345'
       expect(subject['extent']).to eq ['an extent']
       expect(subject['dcmi_type']).to eq ['type']
-      expect(subject['geographic_subject']).to eq ['a geographic subject']
       expect(subject['graduation_year']).to eq '2017'
       expect(subject['note']).to eq ['a note']
       expect(subject['use']).to eq ['a use']

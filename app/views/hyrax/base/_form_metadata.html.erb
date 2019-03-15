@@ -21,7 +21,7 @@
                       'aria-controls'=> "extended-terms" %>
           <div id="extended-terms" class='collapse in' aria-expanded="true">
             <% f.object.secondary_terms.each do |term| %>
-              <% if !(f.object.admin_only_terms.include? term) || current_user.admin? %>
+              <% if (!(f.object.admin_only_terms.include? term) || current_user.admin?) && (term.to_s != 'agreement') %>
                 <%# [hyc-override] adding partial selector for people objects %>
                 <% if f.object.person_fields.include? term %>
                   <%= render_edit_field_partial('person', f: f, person_key: (term.to_s+'s').to_sym, person_term: term.to_s) %>

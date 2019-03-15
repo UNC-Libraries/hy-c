@@ -1,87 +1,65 @@
 require 'rails_helper'
 require 'fileutils'
 require 'tmpdir'
-require 'securerandom'
 
 RSpec.describe RegisterToLongleafJob, type: :job do
   
-  let(:md_dir) { Dir.mktmpdir('metadata') }
-  let(:file_path) do
-    file = Tempfile.new('ingest_me')
-    # Generate a 6kb file so that fedora won't put it in the database
-    six_kb = 6 * 1024
-    File.write(file.path, SecureRandom.random_bytes( six_kb ).force_encoding('UTF-8'))
-    file.path
+  let(:admin_user) do
+    User.find_by_user_key('admin@example.com')
   end
+  
+  let(:binary_dir) { File.join(Rails.root, "tmp/fcrepo4-test-data/fcrepo.binary.directory/") }
+  
+  let(:ll_home_dir) { Dir.mktmpdir('ll_home') }
+  
   let(:repository_file) do
     Hydra::PCDM::File.new.tap do |f|
-      f.content = File.open(file_path).read
-      f.original_name = "ingest_me"
+      f.content = File.open(File.join(fixture_path, "hyrax/hyrax_test4.pdf"))
+      f.original_name = 'test.pdf'
+      f.mime_type = 'application/pdf'
       f.save!
     end
   end
+  
   let(:job) { RegisterToLongleafJob.new }
   
-  
   after do
-    File.delete(file_path)
-    FileUtils.rmdir(md_dir)
-  end
-  
-  # Without longleaf configured
-  context 'Without longleaf configured' do
-    before(:each) do
-      ENV.delete("LONGLEAF_BASE_COMMAND")
-    end
-    
-    it 'logs notification' do
-      job.perform(repository_file)
-      
-      # Verify that metadata dir is empty, meaning nothing was registered
-      expect(Dir.empty?(md_dir)).to be true
-    end
+    FileUtils.rm_rf([ll_home_dir, binary_dir])
   end
   
   context 'With minimal config' do
-    let(:binary_dir) { File.join(Rails.root, "tmp/fcrepo4-test-data/fcrepo.binary.directory/") }
-    
-    let(:config_path) do
-      file = Tempfile.new('config')
-      File.write(file.path,
-          "locations:\n" +
-          "  test_loc:\n" +
-          "    path: #{binary_dir}\n" +
-          "    metadata_path: #{md_dir}\n" +
-          "services: {}\n" +
-          "service_mappings: {}\n")
-      file.path
-    end
+    let(:output_path) { File.join(ll_home_dir, "output.txt")}
     
     let(:longleaf_script) do
-      file = Tempfile.new('llcommand')
-      File.write(file.path, "#!/usr/bin/env bash\n" +
-          "longleaf \"$@\" -c #{config_path} 2>&1")
-      file.close
-      file.path
+      path = File.join(ll_home_dir, "llcommand.sh")
+      File.write(path, "#!/usr/bin/env bash\n" +
+          "echo $@ > #{output_path.to_s}")
+      path
     end
     
-    before(:each) do
+    before do
       FileUtils.chmod("u+x", longleaf_script)
       ENV["LONGLEAF_STORAGE_PATH"] = binary_dir
       ENV["LONGLEAF_BASE_COMMAND"] = longleaf_script
     end
     
     after do
-      FileUtils.rmdir(binary_dir)
       ENV.delete("LONGLEAF_STORAGE_PATH")
       ENV.delete("LONGLEAF_BASE_COMMAND")
     end
     
-    it 'registers file' do
+    it 'calls registration script with the expected parameters' do
       job.perform(repository_file)
       
-      # Verify that the metadata directory is no longer empty, meaning a file was registered to it
-      expect(Dir.empty?(md_dir)).to be false
+      arguments = File.read(output_path)
+      
+      sha1 = "12e5f2da18960dc085ca27bec1ae9e3245389cb1"
+      binary_path = File.join(binary_dir, "12/e5/f2", sha1)
+      
+      expect(arguments).to match("^register")
+      expect(arguments).to include("-f #{binary_path}")
+      expect(arguments).to include("--checksums sha1:#{sha1}")
+      expect(arguments).to include("--force")
     end
   end
 end

@@ -48,6 +48,9 @@
           <mods:location>
             <mods:url>http://dx.doi.org/10.1186/1753-6561-3-S7-S87</mods:url>
           </mods:location>
+          <mods:subject>
+            <mods:geographic authority="geonames" authorityURI="http://sws.geonames.org" valueURI="http://sws.geonames.org/4497707/">Watauga County (N.C.)</mods:geographic>
+          </mods:subject>
         </mods:mods>
       </foxml:xmlContent>
     </foxml:datastreamVersion>

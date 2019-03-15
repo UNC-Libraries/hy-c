@@ -1,5 +1,5 @@
 <%= f.input :award, as: :select,
-            collection: AwardsService.select_all_options,
+            collection: AwardsService.select_active_options,
             include_blank: true,
             item_helper: AwardsService.method(:include_current_value),
             input_html: { class: 'form-control' }

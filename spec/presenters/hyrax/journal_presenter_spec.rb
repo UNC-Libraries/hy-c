@@ -22,18 +22,19 @@ RSpec.describe Hyrax::JournalPresenter do
       "deposit_record_tesim" => 'a deposit record',
       "digital_collection_tesim" => ['my collection'],
       "doi_tesim" => '12345',
+      "edition_tesim" => 'First Edition',
       "extent_tesim" => ['1993'],
-      "geographic_subject_tesim" => ['California'],
+      "based_near_tesim" => ['California'],
       "isbn_tesim" => ['123456'],
       "issn_tesim" => ['12345'],
       "note_tesim" => ['a note'],
       "place_of_publication_tesim" => ['California'],
       "resource_type_tesim" => ['a type'],
       "series_tesim" => ['series1'],
-      "table_of_contents_tesim" => 'table of contents',
       "language_label_tesim" => ['language'],
       "license_label_tesim" => ['license'],
-      "rights_statement_label_tesim" => 'rights'
+      "rights_statement_label_tesim" => 'rights',
+      "related_url_tesim" => 'a url'
     }
   end
 
@@ -48,6 +49,7 @@ RSpec.describe Hyrax::JournalPresenter do
   it { is_expected.to delegate_method(:date_created).to(:solr_document) }
   it { is_expected.to delegate_method(:date_modified).to(:solr_document) }
   it { is_expected.to delegate_method(:date_uploaded).to(:solr_document) }
+  it { is_expected.to delegate_method(:based_near_label).to(:solr_document) }
   it { is_expected.to delegate_method(:rights_statement).to(:solr_document) }
   it { is_expected.to delegate_method(:depositor).to(:solr_document) }
   it { is_expected.to delegate_method(:identifier).to(:solr_document) }
@@ -61,14 +63,13 @@ RSpec.describe Hyrax::JournalPresenter do
   it { is_expected.to delegate_method(:deposit_record).to(:solr_document) }
   it { is_expected.to delegate_method(:digital_collection).to(:solr_document) }
   it { is_expected.to delegate_method(:doi).to(:solr_document) }
+  it { is_expected.to delegate_method(:edition).to(:solr_document) }
   it { is_expected.to delegate_method(:extent).to(:solr_document) }
-  it { is_expected.to delegate_method(:geographic_subject).to(:solr_document) }
   it { is_expected.to delegate_method(:isbn).to(:solr_document) }
   it { is_expected.to delegate_method(:issn).to(:solr_document) }
   it { is_expected.to delegate_method(:note).to(:solr_document) }
   it { is_expected.to delegate_method(:place_of_publication).to(:solr_document) }
   it { is_expected.to delegate_method(:series).to(:solr_document) }
-  it { is_expected.to delegate_method(:table_of_contents).to(:solr_document) }
   it { is_expected.to delegate_method(:language_label).to(:solr_document) }
   it { is_expected.to delegate_method(:license_label).to(:solr_document) }
   it { is_expected.to delegate_method(:rights_statement_label).to(:solr_document) }
@@ -159,6 +160,17 @@ RSpec.describe Hyrax::JournalPresenter do
       end
     end
 
+    context "with a custom edition field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:edition, 'First Edition', {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:edition)
+      end
+    end
+
     context "with a custom extent field" do
       before do
         allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:extent, ['1993'], {}).and_return(renderer)
@@ -177,17 +189,6 @@ RSpec.describe Hyrax::JournalPresenter do
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:dcmi_type)
-      end
-    end
-
-    context "with a custom geographic subject field" do
-      before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:geographic_subject, ['California'], {}).and_return(renderer)
-      end
-
-      it "calls the AttributeRenderer" do
-        expect(renderer).to receive(:render)
-        presenter.attribute_to_html(:geographic_subject)
       end
     end
 
@@ -243,17 +244,6 @@ RSpec.describe Hyrax::JournalPresenter do
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:series)
-      end
-    end
-
-    context "with a custom table of contents field" do
-      before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:table_of_contents, 'table of contents', {}).and_return(renderer)
-      end
-
-      it "calls the AttributeRenderer" do
-        expect(renderer).to receive(:render)
-        presenter.attribute_to_html(:table_of_contents)
       end
     end
 

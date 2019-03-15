@@ -98,10 +98,6 @@ class General < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :geographic_subject, predicate: ::RDF::Vocab::DC.spatial do |index|
-    index.as :stored_searchable
-  end
-
   property :graduation_year, predicate: ::RDF::URI('http://rdaregistry.info/Elements/w/yearDegreeGranted.en'),
            multiple: false do |index|
     index.as :stored_searchable
@@ -177,10 +173,6 @@ class General < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :publisher_version, predicate: ::RDF::Vocab::DC.hasVersion do |index|
-    index.as :stored_searchable
-  end
-
   property :researchers, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/res'), class_name: 'Person' do |index|
     index.as :stored_searchable
   end
@@ -210,6 +202,10 @@ class General < ActiveFedora::Base
   end
 
   property :translators, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/trl'), class_name: 'Person' do |index|
+    index.as :stored_searchable
+  end
+
+  property :url, predicate: ::RDF::Vocab::SCHEMA.url do |index|
     index.as :stored_searchable
   end
 

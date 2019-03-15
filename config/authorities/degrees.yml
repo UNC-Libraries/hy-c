@@ -2,39 +2,91 @@
 terms:
   - id: Bachelor of Arts
     term: Bachelor of Arts
+    active: true
   - id: Bachelor of Science
     term: Bachelor of Science
+    active: true
   - id: Bachelor of Science in Public Health
     term: Bachelor of Science in Public Health
+    active: true
   - id: Doctor of Education
     term: Doctor of Education
+    active: true
   - id: Doctor of Nursing Practice
     term: Doctor of Nursing Practice
+    active: true
   - id: Doctor of Philosophy
     term: Doctor of Philosophy
+    active: true
   - id: Doctor of Public Health
     term: Doctor of Public Health
+    active: true
   - id: Doctor of Pharmacy
     term: Doctor of Pharmacy
+    active: true
   - id: Master of Arts
     term: Master of Arts
+    active: true
   - id: Master of City and Regional Planning
     term: Master of City and Regional Planning
+    active: true
   - id: Master of Fine Arts
     term: Master of Fine Arts
+    active: true
   - id: Master of Healthcare Administration
     term: Master of Healthcare Administration
+    active: true
   - id: Master of Health Science
     term: Master of Health Science
+    active: true
   - id: Master of Public Health
     term: Master of Public Health
+    active: true
   - id: Master of Science
     term: Master of Science
+    active: true
   - id: Master of Science in Environmental Engineering
     term: Master of Science in Environmental Engineering
+    active: true
   - id: Master of Science in Information Science
     term: Master of Science in Information Science
+    active: true
   - id: Master of Science in Library Science
     term: Master of Science in Library Science
+    active: true
   - id: Master of Science in Public Health
     term: Master of Science in Public Health
+    active: true
+  - id: MSPH
+    term: Master of Science in Public Health
+    active: false
+  - id: MFA
+    term: Master of Fine Arts
+    active: false
+  - id: MCRP
+    term: Master of City and Regional Planning
+    active: false
+  - id: MSIS
+    term: Master of Science in Information Science
+    active: false
+  - id: MSLS
+    term: Master of Science in Library Science
+    active: false
+  - id: MPH
+    term: Master of Public Health
+    active: false
+  - id: MSEE
+    term: Master of Science in Environmental Engineering
+    active: false
+  - id: MSENV
+    term: Master of Science in Environmental Engineering
+    active: false
+  - id: BSPH
+    term: Bachelor of Science in Public Health
+    active: false
+  - id: MHA
+    term: Master of Healthcare Administration
+    active: false
+  - id: MS
+    term: Master of Science
+    active: false

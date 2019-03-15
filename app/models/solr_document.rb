@@ -180,12 +180,12 @@ class SolrDocument
     self[Solrizer.solr_name('dcmi_type')]
   end
 
-  def geographic_subject
-    self[Solrizer.solr_name('geographic_subject')]
-  end
-
   def graduation_year
     self[Solrizer.solr_name('graduation_year')]
+  end
+
+  def honors_concentration
+    self[Solrizer.solr_name('honors_concentration')]
   end
 
   def isbn
@@ -278,10 +278,6 @@ class SolrDocument
 
   def project_director_display
     self[Solrizer.solr_name('project_director_display')]
-  end
-
-  def publisher_version
-    self[Solrizer.solr_name('publisher_version')]
   end
 
   def researcher

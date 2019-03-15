@@ -36,7 +36,7 @@ RSpec.describe Hyrax::GeneralPresenter do
       "edition_tesim" => 'new edition',
       "extent_tesim" => ['1993'],
       "funder_tesim" => ['dean'],
-      "geographic_subject_tesim" => ['California'],
+      "based_near_tesim" => ['California'],
       "graduation_year_tesim" => '2018',
       "isbn_tesim" => ['123456'],
       "issn_tesim" => ['12345'],
@@ -53,7 +53,6 @@ RSpec.describe Hyrax::GeneralPresenter do
       "peer_review_status_tesim" => 'in review',
       "place_of_publication_tesim" => ['durham'],
       "project_director_display_tesim" => ['a director'],
-      "publisher_version_tesim" => ['a version'],
       "researcher_display_tesim" => ['a researcher'],
       "reviewer_display_tesim" => ['a reviewer'],
       "rights_holder_tesim" => ['rights holder'],
@@ -110,7 +109,6 @@ RSpec.describe Hyrax::GeneralPresenter do
   it { is_expected.to delegate_method(:edition).to(:solr_document) }
   it { is_expected.to delegate_method(:extent).to(:solr_document) }
   it { is_expected.to delegate_method(:funder).to(:solr_document) }
-  it { is_expected.to delegate_method(:geographic_subject).to(:solr_document) }
   it { is_expected.to delegate_method(:graduation_year).to(:solr_document) }
   it { is_expected.to delegate_method(:isbn).to(:solr_document) }
   it { is_expected.to delegate_method(:issn).to(:solr_document) }
@@ -127,7 +125,6 @@ RSpec.describe Hyrax::GeneralPresenter do
   it { is_expected.to delegate_method(:peer_review_status).to(:solr_document) }
   it { is_expected.to delegate_method(:place_of_publication).to(:solr_document) }
   it { is_expected.to delegate_method(:project_director_display).to(:solr_document) }
-  it { is_expected.to delegate_method(:publisher_version).to(:solr_document) }
   it { is_expected.to delegate_method(:rights_holder).to(:solr_document) }
   it { is_expected.to delegate_method(:researcher_display).to(:solr_document) }
   it { is_expected.to delegate_method(:reviewer_display).to(:solr_document) }
@@ -412,17 +409,6 @@ RSpec.describe Hyrax::GeneralPresenter do
       end
     end
 
-    context "with a custom geographic subject field" do
-      before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:geographic_subject, ['California'], {}).and_return(renderer)
-      end
-
-      it "calls the AttributeRenderer" do
-        expect(renderer).to receive(:render)
-        presenter.attribute_to_html(:geographic_subject)
-      end
-    end
-
     context "with a custom graduation_year field" do
       before do
         allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:graduation_year, '2018', {}).and_return(renderer)
@@ -596,17 +582,6 @@ RSpec.describe Hyrax::GeneralPresenter do
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:project_director_display)
-      end
-    end
-
-    context "with a custom publisher_version field" do
-      before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:publisher_version, ['a version'], {}).and_return(renderer)
-      end
-
-      it "calls the AttributeRenderer" do
-        expect(renderer).to receive(:render)
-        presenter.attribute_to_html(:publisher_version)
       end
     end
 

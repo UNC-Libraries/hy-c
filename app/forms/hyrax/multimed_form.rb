@@ -5,10 +5,10 @@ module Hyrax
     class_attribute :single_value_fields
 
     self.model_class = ::Multimed
-    self.terms += [:abstract, :dcmi_type, :date_issued, :digital_collection, :doi, :extent, :geographic_subject, :medium, :note,
-                   :resource_type]
+    self.terms += [:abstract, :dcmi_type, :date_issued, :digital_collection, :doi, :extent, :medium, :note,
+                   :resource_type, :deposit_agreement, :agreement]
 
-    self.terms -= [:based_near, :contributor, :description, :identifier, :publisher, :related_url, :source]
+    self.terms -= [:contributor, :description, :identifier, :publisher, :related_url, :source]
 
     self.required_fields = [:title, :creator, :abstract, :date_issued, :resource_type]
 
@@ -16,7 +16,8 @@ module Hyrax
     
     self.admin_only_terms = [:dcmi_type, :access, :date_created, :digital_collection, :doi, :medium]
 
-    self.default_term_values = { :rights_statement => "http://rightsstatements.org/vocab/InC/1.0/", :language => ["http://id.loc.gov/vocabulary/iso639-2/eng"] }
+    self.default_term_values = { :rights_statement => "http://rightsstatements.org/vocab/InC/1.0/",
+                                 :language => ["http://id.loc.gov/vocabulary/iso639-2/eng"] }
 
     # Add overrides for required properties which are becoming single-valued
 

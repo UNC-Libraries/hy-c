@@ -7,9 +7,9 @@ module Hyrax
     self.model_class = ::ScholarlyWork
 
     self.terms += [:resource_type, :abstract, :advisor, :conference_name, :date_issued, :dcmi_type,
-                   :digital_collection, :doi, :geographic_subject]
+                   :digital_collection, :doi, :deposit_agreement, :agreement]
 
-    self.terms -= [:contributor, :publisher, :identifier, :based_near, :related_url, :source]
+    self.terms -= [:contributor, :publisher, :identifier,:related_url, :source]
 
     self.required_fields = [:title, :creator, :abstract, :date_issued]
 
@@ -17,7 +17,8 @@ module Hyrax
     
     self.admin_only_terms = [:dcmi_type, :date_created, :access, :description, :digital_collection, :doi, :use]
 
-    self.default_term_values = { :rights_statement => "http://rightsstatements.org/vocab/InC/1.0/", :language => ["http://id.loc.gov/vocabulary/iso639-2/eng"] }
+    self.default_term_values = { :rights_statement => "http://rightsstatements.org/vocab/InC/1.0/",
+                                 :language => ["http://id.loc.gov/vocabulary/iso639-2/eng"] }
 
     # Add overrides for required properties which are becoming single-valued
 

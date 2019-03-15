@@ -19,10 +19,25 @@ module Migrate
         @tmp_file_location = config['tmp_file_location']
         @config = config
         @output_dir = output_dir
-        
+        @collection_name = config['collection_name']
+
+        admin_set = config['admin_set']
+        if admin_set.blank?
+          @admin_set_id = (AdminSet.where(title: ENV['DEFAULT_ADMIN_SET']).first).id
+        else
+          @admin_set_id = (AdminSet.where(title: config['admin_set']).first).id
+          raise "Unable to find admin set #{admin_set}" if @admin_set_id.blank?
+        end
+
+        child_admin_set = config['child_admin_set']
+        unless child_admin_set.blank?
+          @child_admin_set_id = (AdminSet.where(title: child_admin_set).first).id
+          raise "Unable to find child admin set #{child_admin_set}" if @child_admin_set_id.blank?
+        end
+
         # Create the output directory if it does not yet exist
         FileUtils.mkdir(output_dir) unless File.exist?(@output_dir)
-        
+
         # Create file and hash mapping new and old ids
         @id_mapper = Migrate::Services::IdMapper.new(File.join(@output_dir, 'old_to_new.csv'), 'old', 'new')
         # Store parent-child relationships
@@ -35,7 +50,7 @@ module Migrate
         STDOUT.sync = true
         # get array of record uuids
         collection_uuids = MigrationHelper.get_collection_uuids(@collection_ids_file)
-        
+
         already_migrated = @object_progress.completed_set
         puts "Skipping #{already_migrated.length} previously migrated works"
 
@@ -48,21 +63,18 @@ module Migrate
             puts "Skipping previously ingested #{uuid}"
             next
           end
-          
+
           start_time = Time.now
           puts "[#{start_time.to_s}] #{uuid} Start migration"
-          parsed_data = Migrate::Services::MetadataParser.new(@object_hash[uuid],
+          work_attributes = Migrate::Services::MetadataParser.new(@object_hash[uuid],
                                                               @object_hash,
                                                               @binary_hash,
                                                               @deposit_record_hash,
                                                               collection_uuids,
                                                               @depositor,
-                                                              @config).parse
+                                                              @collection_name,
+                                                              @admin_set_id).parse
           puts "[#{Time.now.to_s}] #{uuid} metadata parsed in #{Time.now-start_time} seconds"
-          work_attributes = parsed_data[:work_attributes]
-
-          # store mapping of parent to children
-          store_children(uuid, parsed_data)
 
           # Create new work record and save
           new_work = work_record(work_attributes, uuid)
@@ -90,13 +102,14 @@ module Migrate
               work_attributes['contained_files'].each do |file|
                 metadata_file = @object_hash[MigrationHelper.get_uuid_from_path(file)] || ''
                 if File.file?(metadata_file)
-                  parsed_file_data = Migrate::Services::MetadataParser.new(metadata_file,
+                  file_work_attributes = Migrate::Services::MetadataParser.new(metadata_file,
                                                                            @object_hash,
                                                                            @binary_hash,
                                                                            @deposit_record_hash,
                                                                            collection_uuids,
                                                                            @depositor,
-                                                                           @config).parse
+                                                                           @collection_name,
+                                                                           @admin_set_id).parse
 
                   file_work_attributes = (parsed_file_data[:work_attributes].blank? ? {} : parsed_file_data[:work_attributes])
                   file_work_attributes['title'] = file_work_attributes['dc_title'] if file_work_attributes['title'].blank?
@@ -136,7 +149,7 @@ module Migrate
             work_attributes['premis_files'].each_with_index do |file, index|
               premis_file = @premis_hash[MigrationHelper.get_uuid_from_path(file)] || ''
               if File.file?(premis_file)
-                fileset_attrs = { 'title' => ["PREMIS_Events_Metadata_#{index}.txt"],
+                fileset_attrs = { 'title' => ["PREMIS_Events_Metadata_#{index}_#{uuid}.txt"],
                                   'visibility' => Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE }
                 fileset = create_fileset(parent: new_work, resource: fileset_attrs, file: premis_file)
 
@@ -145,6 +158,17 @@ module Migrate
                 puts "[#{Time.now.to_s}] #{uuid},#{new_work.id} missing premis file: #{file}"
               end
             end
+          end
+
+          # Attach metadata files
+          if File.file?(@object_hash[uuid])
+            fileset_attrs = { 'title' => ["original_metadata_file_#{uuid}.xml"],
+                              'visibility' => Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE }
+            fileset = create_fileset(parent: new_work, resource: fileset_attrs, file: @object_hash[uuid])
+
+            new_work.ordered_members << fileset
+          else # This should never happen
+            puts "[#{Time.now.to_s}] #{uuid},#{new_work.id} missing metadata file: #{@object_hash[uuid]}"
           end
 
           # Record that this object was migrated
@@ -161,13 +185,13 @@ module Migrate
 
       def create_fileset(parent: nil, resource: nil, file: nil)
         file_set = nil
-
         MigrationHelper.retry_operation('creating fileset') do
           file_set = FileSet.create(resource)
         end
 
         actor = Hyrax::Actors::FileSetActor.new(file_set, @depositor)
         actor.create_metadata(resource)
+
         renamed_file = "#{@tmp_file_location}/#{parent.id}/#{Array(resource['title']).first}"
         FileUtils.mkpath("#{@tmp_file_location}/#{parent.id}")
         FileUtils.cp(file, renamed_file)
@@ -175,7 +199,7 @@ module Migrate
         MigrationHelper.retry_operation('creating fileset') do
           actor.create_content(Hyrax::UploadedFile.create(file: File.open(renamed_file), user: @depositor))
         end
-        
+
         MigrationHelper.retry_operation('creating fileset') do
           actor.attach_to_work(parent, resource)
         end
@@ -188,8 +212,10 @@ module Migrate
 
       private
         def work_record(work_attributes, uuid)
-          if !@child_work_type.blank? && !work_attributes['cdr_model_type'].blank? &&
+          is_child_work = !@child_work_type.blank? && !work_attributes['cdr_model_type'].blank? &&
               !(work_attributes['cdr_model_type'].include? 'info:fedora/cdr-model:AggregateWork')
+
+          if is_child_work
             resource = @child_work_type.singularize.classify.constantize.new
           else
             resource = @work_type.singularize.classify.constantize.new
@@ -206,16 +232,16 @@ module Migrate
           end
 
           # Only keep attributes which apply to the given work type
-          work_attributes.select {|k,v| k.ends_with? '_attributes'}.each do |k,v|
+          work_attributes.select {|k,v| k.to_s.ends_with? '_attributes'}.each do |k,v|
             if !resource.respond_to?(k.to_s+'=')
               # Log non-blank person data which is not saved
               puts "[#{Time.now.to_s}] #{uuid} missing: #{k}=>#{v}"
-              work_attributes.delete(k.split('s_')[0]+'_display')
+              work_attributes.delete(k.to_s.split('s_')[0]+'_display')
               work_attributes.delete(k)
             end
           end
 
-          resource.attributes = work_attributes.reject{|k,v| !resource.attributes.keys.member?(k.to_s) unless k.ends_with? '_attributes'}
+          resource.attributes = work_attributes.reject{|k,v| !resource.attributes.keys.member?(k.to_s) unless k.to_s.ends_with? '_attributes'}
 
           # Log other non-blank data which is not saved
           missing = work_attributes.except(*resource.attributes.keys, 'contained_files', 'cdr_model_type', 'visibility',
@@ -238,6 +264,11 @@ module Migrate
           resource.admin_set_id = work_attributes['admin_set_id']
           if !@config['collection_name'].blank? && !work_attributes['member_of_collections'].first.blank?
             resource.member_of_collections = work_attributes['member_of_collections']
+          end
+
+          # Override the admin set id for child works
+          if is_child_work && !@child_admin_set_id.blank?
+            work_attributes['admin_set_id'] = @child_admin_set_id
           end
 
           MigrationHelper.retry_operation('creating child work') do
@@ -274,23 +305,23 @@ module Migrate
 
         def attach_children
           # Load mapping of old uuids to new hyrax ids
-          uuid_to_id = Hash[@id_mapper.mappings.map { |row| [row[0], row[1].split('/')[-1]] }]
+          uuid_to_id = Hash[@id_mapper.mappings.map { |row| [row[0], row[1].split('/')[-1]] if !row[1].match?('file_sets') }.compact]
           # Load mapping of parents to children
           parent_hash = Hash[@parent_child_mapper.mappings.map { |row| [row[0], row[1].split('|')] }]
           # Create or resume log of children attached
           attached_mapper = Migrate::Services::ProgressTracker.new(File.join(@output_dir, 'attached_progress.log'))
           # Load the mapping of children to parent that have been attached, in case we are resuming
           already_attached = attached_mapper.completed_set
-          
+
           attach_time = Time.now
           puts "[#{attach_time.to_s}] attaching children to parents"
           parent_hash.each do |parent_id, children|
             attach_to_parent_time = Time.now
-            
+
             hyrax_id = uuid_to_id[parent_id]
             parent = @work_type.singularize.classify.constantize.find(hyrax_id)
             parent_changed = false
-            
+
             children.each do |child|
               next if already_attached.include?(child)
               # If the child is in the uuid_to_id mapping, it is a child work and must be attached to the parent
@@ -328,22 +359,14 @@ module Migrate
             work_type = work_type + 's'
           end
           new_path = "#{work_type}/#{new_work.id}"
-          
+
           @id_mapper.add_row(uuid, new_path)
         end
-        
+
         # Add a mapping from old uuid for a file, to its new path within a fileset
         def add_file_id_mapping(file, new_work, fileset)
           new_id = 'parent/'+new_work.id+'/file_sets/'+fileset.id
           @id_mapper.add_row(MigrationHelper.get_uuid_from_path(file), new_id)
-        end
-
-        # Store the parent to children mapping for a work
-        def store_children(uuid, parsed_data)
-          if parsed_data[:child_works].blank?
-            return
-          end
-          @parent_child_mapper.add_row(uuid, parsed_data[:child_works].join('|'))
         end
     end
   end

@@ -18,6 +18,11 @@
             {
               "notification_type": "email",
               "name": "Hyrax::Workflow::DepositedNotification",
+              "to": []
+            },
+            {
+              "notification_type": "email",
+              "name": "Hyrax::Workflow::DepositedManagerNotification",
               "to": ["managing"]
             }
           ]

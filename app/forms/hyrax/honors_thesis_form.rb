@@ -6,21 +6,22 @@ module Hyrax
 
     class_attribute :single_value_fields
 
-    self.terms += [:abstract, :academic_concentration, :access, :advisor, :award, :date_issued, :dcmi_type, :degree,
-                   :degree_granting_institution, :doi, :extent, :geographic_subject, :graduation_year, :note, :use,
-                   :resource_type]
+    self.terms += [:abstract, :access, :advisor, :award, :date_issued, :dcmi_type, :degree, :degree_granting_institution,
+                   :doi, :extent, :graduation_year, :honors_concentration, :note, :use, :resource_type, :deposit_agreement,
+                   :agreement]
 
-    self.terms -= [:based_near, :contributor, :description, :identifier, :publisher, :source]
+    self.terms -= [:contributor, :description, :identifier, :publisher, :source]
 
     self.required_fields = [:title, :creator, :abstract, :advisor, :affiliation, :degree, :date_issued,
                             :graduation_year]
 
     self.single_value_fields = [:title, :license]
     
-    self.admin_only_terms = [:date_created, :dcmi_type, :access, :academic_concentration, :award,
-                             :degree_granting_institution, :doi, :extent, :use]
+    self.admin_only_terms = [:date_created, :dcmi_type, :access, :award, :degree_granting_institution, :doi, :extent,
+                             :honors_concentration, :use]
 
-    self.default_term_values = { :dcmi_type => ["http://purl.org/dc/dcmitype/Text"], :rights_statement => "http://rightsstatements.org/vocab/InC/1.0/",
+    self.default_term_values = { :dcmi_type => ["http://purl.org/dc/dcmitype/Text"],
+                                 :rights_statement => "http://rightsstatements.org/vocab/InC/1.0/",
                                  :language => ["http://id.loc.gov/vocabulary/iso639-2/eng"] }
 
     # Add overrides for required properties which are becoming single-valued

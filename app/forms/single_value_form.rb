@@ -1,6 +1,7 @@
 # [hyc-override] Overriding work form in hyrax gem to allow default fields to be singular
 class SingleValueForm < Hyrax::Forms::WorkForm
-  
+  extend Hyc::EdtfConvert
+
   # Field which will not be rendered to the work form
   class_attribute :admin_only_terms
   self.admin_only_terms = Array.new
@@ -30,6 +31,7 @@ class SingleValueForm < Hyrax::Forms::WorkForm
 
   # cast single value fields back to multivalued so they will actually deposit
   def self.model_attributes(form_params)
+    agreement = form_params['agreement']
     attrs = super
 
     single_value_fields.each do |field|
@@ -85,12 +87,23 @@ class SingleValueForm < Hyrax::Forms::WorkForm
       end
     end
 
-    attrs
+    # Convert dates from human readable strings to EDTF format
+    edtf_form_update(attrs, :date_created)
+    edtf_form_update(attrs, :date_issued)
+
+    # Log deposit agreement acceptance
+    if agreement != '0'
+      (attrs[:deposit_agreement] ||= []) << "#{agreement} accepted the deposit agreement on #{Time.now}"
+    end
+    # Previous deposit agreement statements are passed to the forms as a single, comma-separated string
+    # To add the new statement, join with the current string, and then split into an array of all statements
+    attrs[:deposit_agreement] = attrs[:deposit_agreement].join(',').split(',')
+
+    attrs.except(:agreement)
   end
 
-
-
   private
+
     def initialize_default_term_values(model)
       # Do not set default values for existing works
       if model.id != nil

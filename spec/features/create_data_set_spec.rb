@@ -49,6 +49,27 @@ RSpec.feature 'Create a DataSet', js: false do
       Hyrax::Workflow::PermissionGenerator.call(roles: 'deleting', workflow: workflow, agents: admin_agent)
       permission_template.available_workflows.first.update!(active: true)
       DefaultAdminSet.create(work_type_name: 'DataSet', admin_set_id: admin_set.id)
+
+      chapel_hill = <<RDFXML.strip_heredoc
+      <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+          <rdf:RDF xmlns:foaf="http://xmlns.com/foaf/0.1/" xmlns:gn="http://www.geonames.org/ontology#" xmlns:owl="http://www.w3.org/2002/07/owl#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
+          <gn:Feature rdf:about="http://sws.geonames.org/4460162/">
+          <gn:name>Chapel Hill</gn:name>
+          </gn:Feature>
+          </rdf:RDF>
+RDFXML
+      stub_request(:get, "http://sws.geonames.org/4460162/").
+          to_return(status: 200, body: chapel_hill, headers: {'Content-Type' => 'application/rdf+xml;charset=UTF-8'})
+
+      stub_request(:any, "http://api.geonames.org/getJSON?geonameId=4460162&username=#{ENV['GEONAMES_USER']}").
+          with(headers: {
+              'Accept' => '*/*',
+              'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+              'User-Agent' => 'Ruby'
+          }).to_return(status: 200, body: { asciiName: 'Chapel Hill',
+                                            countryName: 'United States',
+                                            adminName1: 'North Carolina' }.to_json,
+                       headers: { 'Content-Type' => 'application/json' })
     end
 
     scenario 'as a non-admin' do
@@ -75,7 +96,7 @@ RSpec.feature 'Create a DataSet', js: false do
       select 'Department of Biology', from: 'data_set_contributors_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'data_set_contributors_attributes_0_other_affiliation' }
       fill_in 'Funder', with: 'some funder'
-      fill_in 'Location', with: 'some geographic subject'
+      find("#data_set_based_near_attributes_0_id", visible: false).set('http://sws.geonames.org/4460162/')
       fill_in 'Keyword', with: 'Test Default Keyword'
       fill_in 'Last modified date', with: '2018-10-03'
       select 'Attribution 3.0 United States', :from => 'data_set_license'
@@ -102,6 +123,7 @@ RSpec.feature 'Create a DataSet', js: false do
       expect(page).not_to have_field('data_set_rights_statement')
       expect(page).to have_field('data_set_visibility_embargo')
       expect(page).not_to have_field('data_set_visibility_lease')
+      expect(page).not_to have_field('data_set_deposit_agreement')
       expect(page).to have_select('data_set_resource_type', selected: 'Dataset')
       choose 'data_set_visibility_open'
       check 'agreement'
@@ -138,7 +160,7 @@ RSpec.feature 'Create a DataSet', js: false do
       expect(page).to have_content 'Contributor contributor ORCID: contributor orcid'
       expect(page).to have_content 'Methodology My methodology'
       expect(page).to have_content 'Funder some funder'
-      expect(page).to have_content 'Location some geographic subject'
+      expect(page).to have_content 'Location Chapel Hill, North Carolina, United States'
       expect(page).to have_content 'Last modified date October 3, 2018'
       expect(page).to have_content 'Project director project director ORCID: project director orcid'
       expect(page).to have_content 'Researcher researcher ORCID: researcher orcid'
@@ -181,7 +203,7 @@ RSpec.feature 'Create a DataSet', js: false do
       fill_in 'DOI', with: 'some doi'
       fill_in 'Extent', with: 'some extent'
       fill_in 'Funder', with: 'some funder'
-      fill_in 'Location', with: 'some geographic subject'
+      find("#data_set_based_near_attributes_0_id", visible: false).set('http://sws.geonames.org/4460162/')
       fill_in 'Keyword', with: 'Test Default Keyword'
       fill_in 'Last modified date', with: '2018-10-03'
       select 'Attribution 3.0 United States', :from => 'data_set_license'
@@ -205,6 +227,7 @@ RSpec.feature 'Create a DataSet', js: false do
       expect(page).to have_field('data_set_rights_statement')
       expect(page).to have_field('data_set_visibility_embargo')
       expect(page).not_to have_field('data_set_visibility_lease')
+      expect(page).not_to have_field('data_set_deposit_agreement')
       expect(page).to have_select('data_set_resource_type', selected: 'Dataset')
       choose 'data_set_visibility_open'
       check 'agreement'
@@ -247,7 +270,7 @@ RSpec.feature 'Create a DataSet', js: false do
       expect(page).to have_content 'DOI some doi'
       expect(page).to have_content 'Extent some extent'
       expect(page).to have_content 'Funder some funder'
-      expect(page).to have_content 'Location some geographic subject'
+      expect(page).to have_content 'Location Chapel Hill, North Carolina, United States'
       expect(page).to have_content 'Last modified date October 3, 2018'
       expect(page).to have_content 'Project director project director ORCID: project director orcid'
       expect(page).to have_content 'Researcher researcher ORCID: researcher orcid'

@@ -12,10 +12,6 @@ class HonorsThesis < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :academic_concentration, predicate: ::RDF::URI('http://vivoweb.org/ontology/core#majorField') do |index|
-    index.as :stored_searchable
-  end
-
   property :access, predicate: ::RDF::Vocab::DC.accessRights, multiple: false do |index|
     index.as :stored_searchable
   end
@@ -62,12 +58,12 @@ class HonorsThesis < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :geographic_subject, predicate: ::RDF::Vocab::DC.spatial do |index|
+  property :graduation_year, predicate: ::RDF::URI('http://rdaregistry.info/Elements/u/yearDegreeGranted.en'),
+           multiple: false do |index|
     index.as :stored_searchable
   end
 
-  property :graduation_year, predicate: ::RDF::URI('http://rdaregistry.info/Elements/u/yearDegreeGranted.en'),
-           multiple: false do |index|
+  property :honors_concentration, predicate: ::RDF::URI('http://vivoweb.org/ontology/core#majorField') do |index|
     index.as :stored_searchable
   end
 

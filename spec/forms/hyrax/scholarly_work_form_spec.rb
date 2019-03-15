@@ -21,10 +21,10 @@ RSpec.describe Hyrax::ScholarlyWorkForm do
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:advisor, :conference_name, :date_created, :dcmi_type, :digital_collection, :doi,
-                                     :geographic_subject, :description, :keyword, :language, :license, :resource_type, 
+    it { is_expected.to match_array [:advisor, :based_near, :conference_name, :date_created, :dcmi_type, :digital_collection,
+                                     :doi, :description, :keyword, :language, :license, :resource_type,
                                      :rights_statement, :subject, :language_label, :license_label, 
-                                     :rights_statement_label] }
+                                     :rights_statement_label, :deposit_agreement, :agreement] }
   end
   
   describe "#admin_only_terms" do
@@ -53,11 +53,12 @@ RSpec.describe Hyrax::ScholarlyWorkForm do
                                           orcid: 'creator orcid',
                                           affiliation: 'Carolina Center for Genome Sciences',
                                           other_affiliation: 'another affiliation'} },
-          date_created: 'a date', # single-valued
+          date_created: 'circa 1980', # single-valued
           description: 'a description', # single-valued
           subject: ['a subject'],
           language: ['http://id.loc.gov/vocabulary/iso639-2/eng'],
           keyword: ['test'],
+          based_near: ['a geographic subject'],
           resource_type: ['a type'],
           license: 'http://creativecommons.org/licenses/by/3.0/us/', # single-valued
           rights_statement: 'http://rightsstatements.org/vocab/InC/1.0/', # single-valued
@@ -71,11 +72,10 @@ RSpec.describe Hyrax::ScholarlyWorkForm do
                                           affiliation: 'Carolina Center for Genome Sciences',
                                           other_affiliation: 'another affiliation'} },
           conference_name: ['a conference name'],
-          date_issued: 'a date', # single-valued
+          date_issued: '1980s', # single-valued
           dcmi_type: ['type'],
           digital_collection: ['my collection'],
           doi: '12345',
-          geographic_subject: ['a geographic subject'],
           language_label: [],
           license_label: [],
           rights_statement_label: ''
@@ -86,13 +86,14 @@ RSpec.describe Hyrax::ScholarlyWorkForm do
 
     it 'permits parameters' do
       expect(subject['title']).to eq ['foo']
-      expect(subject['date_created']).to eq 'a date'
+      expect(subject['date_created']).to eq '1980~'
       expect(subject['description']).to eq 'a description'
       expect(subject['digital_collection']).to eq ['my collection']
       expect(subject['doi']).to eq '12345'
       expect(subject['subject']).to eq ['a subject']
       expect(subject['language']).to eq ['http://id.loc.gov/vocabulary/iso639-2/eng']
       expect(subject['keyword']).to eq ['test']
+      expect(subject['based_near']).to eq ['a geographic subject']
       expect(subject['resource_type']).to eq ['a type']
       expect(subject['license']).to eq ['http://creativecommons.org/licenses/by/3.0/us/']
       expect(subject['rights_statement']).to eq 'http://rightsstatements.org/vocab/InC/1.0/'
@@ -101,9 +102,8 @@ RSpec.describe Hyrax::ScholarlyWorkForm do
       expect(subject['thumbnail_id']).to eq '789'
       expect(subject['abstract']).to be_empty
       expect(subject['conference_name']).to eq ['a conference name']
-      expect(subject['date_issued']).to eq 'a date'
+      expect(subject['date_issued']).to eq '198x'
       expect(subject['dcmi_type']).to eq ['type']
-      expect(subject['geographic_subject']).to eq ['a geographic subject']
       expect(subject['member_of_collection_ids']).to eq ['123456', 'abcdef']
       expect(subject['language_label']).to eq ['English']
       expect(subject['license_label']).to eq ['Attribution 3.0 United States']

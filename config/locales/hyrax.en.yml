@@ -197,6 +197,12 @@ en:
           %{title} (%{link}) has been successfully deposited in the CDR and is now available in accordance with the visibility
           settings that you selected.\r\n\r\n
           If you have questions, please feel free to <a href=\"https://blogs.lib.unc.edu/cdr/index.php/contact-us/\">contact us</a>!"
+        deposited_manager:
+          subject: CDR deposit successful
+          message: "Hello,\r\n\r\n
+          %{title} (%{link}) has been successfully deposited in the CDR and is now available in accordance with the visibility
+          settings that were selected by the depositor.\r\n\r\n
+          If you have questions, please feel free to <a href=\"https://blogs.lib.unc.edu/cdr/index.php/contact-us/\">contact us</a>!"
         mediated_deposit:
           subject: CDR deposit sent for review
           message: "%{title} (%{link}) has been deposited in the Carolina Digital Repository (CDR) and has been sent to your department for review.  \r\n\r\n
@@ -227,6 +233,7 @@ en:
         affiliation: "Primary departmental affiliation"
         alternative_title: "A unique secondary title for your work if applicable. Enter subtitle in the \"Title\" field, instead."
         award: "Honors level"
+        based_near: "A country, city, geographic area or other place. This could be where your data was collected or where your study took place. Select a value from the drop-down menu."
         bibliographic_citation: "A citation to a related work, or a different version of this work."
         contributor: "A person or group who had a role in creating the work."
         copyright_date: "The date that the work was copyrighted. This may be different than today's date. If you aren't sure, leave this blank."
@@ -239,7 +246,7 @@ en:
         edition: "The version of the work. If you have questions about this field, please <a target=\"_blank\" href=\"https://blogs.lib.unc.edu/cdr/index.php/contact-us\">contact the CDR</a>."
         extent: "The size or duration of the work, e.g. \"3 pages\", or \"10 minutes.\""
         funder: "A grant, foundation or other entity that funded the research described in your work."
-        geographic_subject: "A country, city, geographic area or other place. This could be where your data was collected or where your study took place. Select a value from the drop-down menu."
+        honors_concentration: "Fill out this field only if it is relevant to your program."
         identifier: "A unique identifier for your work. This could be a publisher-issued DOI or PubMed ID."
         journal_issue: "The journal issue number."
         journal_title: "The title of the journal in which your work was published."
@@ -258,7 +265,6 @@ en:
         place_of_publication: "The place in which the work was published."
         project_director: "The director or primary investigator of the project. Fill out this field if this person is not the creator."
         publisher: "The publisher of your work. This may be UNC, or an external publisher."
-        publisher_version: "A link to the final version of your article on the publisher's website."
         related_url: "A link to a website or other specific content (audio, video, PDF document) related to the work."
         researcher: "A person or organization responsible for performing the research described in your work. Fill out this field if this person is not the creator."
         resource_type: "Select the category which best describes your work."
@@ -277,17 +283,16 @@ en:
         affiliation: "UNC affiliation"
         alternative_title: "Alternate title"
         award: "Honors level"
+        based_near: "Location"
         date_created: "Date created"
         date_issued: "Date of publication"
         description: "Description"
         doi: "DOI"
         edition: "Version"
-        geographic_subject: "Location"
         isbn: "ISBN"
         issn: "ISSN"
         methodology: "Methods"
         orcid: "ORCID"
         other_affiliation: "Additional affiliation"
         peer_review_status: "Is the article or chapter peer-reviewed?"
-        publisher_version: "Link to publisher version"
         related_url: "Related resource URL"

@@ -21,10 +21,10 @@ RSpec.describe Hyrax::JournalForm do
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:abstract, :alternative_title, :dcmi_type, :digital_collection, :doi, :extent, :geographic_subject,
-                                     :isbn, :issn, :note, :place_of_publication, :series, :table_of_contents, :creator,
+    it { is_expected.to match_array [:abstract, :alternative_title, :based_near, :dcmi_type, :digital_collection, :doi,
+                                     :edition, :extent, :isbn, :issn, :note, :place_of_publication, :series, :creator,
                                      :subject, :keyword, :language, :resource_type, :license, :rights_statement,
-                                     :language_label, :license_label, :rights_statement_label] }
+                                     :language_label, :license_label, :related_url, :rights_statement_label, :deposit_agreement, :agreement] }
   end
   
   describe "#admin_only_terms" do
@@ -59,6 +59,7 @@ RSpec.describe Hyrax::JournalForm do
           subject: ['a subject'],
           keyword: ['a keyword'],
           language: ['http://id.loc.gov/vocabulary/iso639-2/eng'],
+          based_near: ['California'],
           resource_type: ['a type'],
           license: 'http://creativecommons.org/licenses/by/3.0/us/', # single-valued
           rights_statement: 'http://rightsstatements.org/vocab/InC/1.0/', # single-valued
@@ -73,16 +74,16 @@ RSpec.describe Hyrax::JournalForm do
           dcmi_type: ['type'],
           digital_collection: ['my collection'],
           doi: '12345',
+          edition: 'First Edition',
           extent: ['1993'],
-          geographic_subject: ['California'],
           isbn: ['123456'],
           issn: ['12345'],
           note: [''],
           place_of_publication: ['California'],
           series: ['series 1'],
-          table_of_contents: 'table of contents',
           language_label: [],
           license_label: [],
+          related_url: ['a url'],
           rights_statement_label: ''
       )
     end
@@ -96,6 +97,7 @@ RSpec.describe Hyrax::JournalForm do
       expect(subject['language']).to eq ['http://id.loc.gov/vocabulary/iso639-2/eng']
       expect(subject['resource_type']).to eq ['a type']
       expect(subject['license']).to eq ['http://creativecommons.org/licenses/by/3.0/us/']
+      expect(subject['based_near']).to eq ['California']
       expect(subject['rights_statement']).to eq 'http://rightsstatements.org/vocab/InC/1.0/'
       expect(subject['publisher']).to eq ['a publisher']
       expect(subject['visibility']).to eq 'open'
@@ -105,17 +107,17 @@ RSpec.describe Hyrax::JournalForm do
       expect(subject['date_issued']).to eq '2018-01-08'
       expect(subject['digital_collection']).to eq ['my collection']
       expect(subject['doi']).to eq '12345'
+      expect(subject['edition']).to eq 'First Edition'
       expect(subject['extent']).to eq ['1993']
       expect(subject['dcmi_type']).to eq ['type']
-      expect(subject['geographic_subject']).to eq ['California']
       expect(subject['isbn']).to eq ['123456']
       expect(subject['issn']).to eq ['12345']
       expect(subject['note']).to be_empty
       expect(subject['place_of_publication']).to eq ['California']
       expect(subject['series']).to eq ['series 1']
-      expect(subject['table_of_contents']).to eq 'table of contents'
       expect(subject['language_label']).to eq ['English']
       expect(subject['license_label']).to eq ['Attribution 3.0 United States']
+      expect(subject['related_url']).to eq ['a url']
       expect(subject['rights_statement_label']).to eq 'In Copyright'
     end
   end

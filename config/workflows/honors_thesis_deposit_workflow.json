@@ -13,11 +13,6 @@
                     "notifications": [
                         {
                             "notification_type": "email",
-                            "name": "Hyrax::Workflow::PendingReviewNotification",
-                            "to": ["approving"]
-                        },
-                        {
-                            "notification_type": "email",
                             "name": "Hyrax::Workflow::MediatedDepositNotification",
                             "to": []
                         }
