@@ -2,7 +2,7 @@ require 'rails_helper'
 require 'fileutils'
 require 'tmpdir'
 
-RSpec.describe RegisterToLongleafJob, type: :job do
+RSpec.describe DeregisterLongleafJob, type: :job do
   
   let(:admin_user) do
     User.find_by_user_key('admin@example.com')
@@ -13,15 +13,16 @@ RSpec.describe RegisterToLongleafJob, type: :job do
   let(:ll_home_dir) { Dir.mktmpdir('ll_home') }
   
   let(:repository_file) do
-    Hydra::PCDM::File.new.tap do |f|
+    Hydra::PCDM::File.new do |f|
       f.content = File.open(File.join(fixture_path, "hyrax/hyrax_test4.pdf"))
       f.original_name = 'test.pdf'
       f.mime_type = 'application/pdf'
-      f.save!
     end
   end
   
-  let(:job) { RegisterToLongleafJob.new }
+  let(:file_set) { FileSet.new }
+  
+  let(:job) { DeregisterLongleafJob.new }
   
   after do
     FileUtils.rm_rf([ll_home_dir, binary_dir])
@@ -41,6 +42,11 @@ RSpec.describe RegisterToLongleafJob, type: :job do
       FileUtils.chmod("u+x", longleaf_script)
       ENV["LONGLEAF_STORAGE_PATH"] = binary_dir
       ENV["LONGLEAF_BASE_COMMAND"] = longleaf_script
+      
+      file_set.apply_depositor_metadata admin_user.user_key
+      file_set.save!
+      file_set.original_file = repository_file
+      file_set.save!
     end
     
     after do
@@ -48,18 +54,14 @@ RSpec.describe RegisterToLongleafJob, type: :job do
       ENV.delete("LONGLEAF_BASE_COMMAND")
     end
     
-    it 'calls registration script with the expected parameters' do
-      job.perform(repository_file)
+    it 'calls deregistration script with the expected parameters' do
+      job.perform(file_set)
       
       arguments = File.read(output_path)
       
-      sha1 = "12e5f2da18960dc085ca27bec1ae9e3245389cb1"
-      binary_path = File.join(binary_dir, "12/e5/f2", sha1)
+      binary_path = File.join(binary_dir, "12/e5/f2/12e5f2da18960dc085ca27bec1ae9e3245389cb1")
       
-      expect(arguments).to match("^register")
-      expect(arguments).to include("-f #{binary_path}")
-      expect(arguments).to include("--checksums sha1:#{sha1}")
-      expect(arguments).to include("--force")
+      expect(arguments).to match(Regexp.new(".*deregister -f #{binary_path}"))
     end
   end
 end
