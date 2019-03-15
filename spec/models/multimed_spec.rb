@@ -45,6 +45,7 @@ RSpec.describe Multimed do
 
       # Additional metadata
       expect(subject).to respond_to(:abstract)
+      expect(subject).to respond_to(:deposit_agreement)
       expect(subject).to respond_to(:deposit_record)
       expect(subject).to respond_to(:doi)
       expect(subject).to respond_to(:extent)

@@ -6,7 +6,7 @@ module Hyrax
 
     self.model_class = ::Multimed
     self.terms += [:abstract, :dcmi_type, :date_issued, :digital_collection, :doi, :extent, :medium, :note,
-                   :resource_type]
+                   :resource_type, :deposit_agreement, :agreement]
 
     self.terms -= [:contributor, :description, :identifier, :publisher, :related_url, :source]
 
@@ -16,7 +16,8 @@ module Hyrax
     
     self.admin_only_terms = [:dcmi_type, :access, :date_created, :digital_collection, :doi, :medium]
 
-    self.default_term_values = { :rights_statement => "http://rightsstatements.org/vocab/InC/1.0/", :language => ["http://id.loc.gov/vocabulary/iso639-2/eng"] }
+    self.default_term_values = { :rights_statement => "http://rightsstatements.org/vocab/InC/1.0/",
+                                 :language => ["http://id.loc.gov/vocabulary/iso639-2/eng"] }
 
     # Add overrides for required properties which are becoming single-valued
 

@@ -147,6 +147,7 @@ RDFXML
       expect(page).not_to have_field('masters_paper_visibility_lease')
       expect(page).to have_select('masters_paper_resource_type', selected: 'Masters Paper')
       expect(page).not_to have_field('masters_paper_use')
+      expect(page).not_to have_field('masters_paper_deposit_agreement')
       choose "masters_paper_visibility_open"
       check 'agreement'
       
@@ -249,6 +250,7 @@ RDFXML
       expect(page).to have_selector('#masters_paper_rights_statement_label', visible: false)
       expect(page).to have_field('masters_paper_visibility_embargo')
       expect(page).not_to have_field('masters_paper_visibility_lease')
+      expect(page).not_to have_field('masters_paper_deposit_agreement')
       expect(page).to have_select('masters_paper_resource_type', selected: 'Masters Paper')
       choose "masters_paper_visibility_open"
       check 'agreement'

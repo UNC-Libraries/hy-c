@@ -7,7 +7,7 @@ module Hyrax
     class_attribute :single_value_fields
 
     self.model_class = ::Artwork
-    self.terms += [:resource_type, :abstract, :date_issued, :doi, :extent, :medium]
+    self.terms += [:resource_type, :abstract, :date_issued, :doi, :extent, :medium, :deposit_agreement, :agreement]
     self.terms -= [:contributor, :keyword, :publisher, :subject, :language, :identifier, :based_near,
                    :related_url, :source, :language_label]
     self.required_fields = [:title, :date_issued, :abstract, :extent, :medium, :resource_type]

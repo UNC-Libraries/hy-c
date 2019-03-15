@@ -32,7 +32,7 @@ RSpec.describe Hyrax::GeneralForm do
                                      :medium, :methodology, :note, :page_start, :page_end, :peer_review_status,
                                      :place_of_publication, :project_director, :researcher,
                                      :reviewer, :rights_holder, :series, :sponsor, :table_of_contents, :translator,
-                                     :use, :language_label, :license_label, :rights_statement_label] }
+                                     :use, :language_label, :license_label, :rights_statement_label, :deposit_agreement, :agreement] }
   end
 
   describe "#admin_only_terms" do

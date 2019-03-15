@@ -37,13 +37,16 @@ RSpec.describe Journal do
       expect(subject).to respond_to(:identifier)
       expect(subject).to respond_to(:source)
       expect(subject).to respond_to(:resource_type)
+      expect(subject).to respond_to(:related_url)
 
       # Custom fields
       expect(subject).to respond_to(:abstract)
       expect(subject).to respond_to(:alternative_title)
       expect(subject).to respond_to(:date_issued)
+      expect(subject).to respond_to(:deposit_agreement)
       expect(subject).to respond_to(:deposit_record)
       expect(subject).to respond_to(:doi)
+      expect(subject).to respond_to(:edition)
       expect(subject).to respond_to(:extent)
       expect(subject).to respond_to(:dcmi_type)
       expect(subject).to respond_to(:digital_collection)

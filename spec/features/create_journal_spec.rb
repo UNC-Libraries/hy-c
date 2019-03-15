@@ -93,6 +93,8 @@ RDFXML
       find("#journal_based_near_attributes_0_id", visible: false).set('http://sws.geonames.org/4460162/')
       fill_in 'ISBN', with: 'some isbn'
       fill_in 'ISSN', with: 'some issn'
+      select 'Preprint', from: 'Version'
+      fill_in 'Related resource URL', with: 'a url'
       fill_in 'Keyword', with: 'Test Default Keyword'
       select 'Attribution 3.0 United States', :from => 'journal_license'
       fill_in 'Note', with: 'a note'
@@ -110,6 +112,7 @@ RDFXML
       expect(page).not_to have_field('journal_doi')
       expect(page).to have_field('journal_visibility_embargo')
       expect(page).not_to have_field('journal_visibility_lease')
+      expect(page).not_to have_field('journal_deposit_agreement')
       choose "journal_visibility_open"
       check 'agreement'
       
@@ -140,6 +143,8 @@ RDFXML
       expect(page).to have_content 'Location Chapel Hill, North Carolina, United States'
       expect(page).to have_content 'ISBN some isbn'
       expect(page).to have_content 'ISSN some issn'
+      expect(page).to have_content 'Version Preprint'
+      expect(page).to have_content 'Related resource URL a url'
       expect(page).to have_content 'Keyword Test Default Keyword'
       expect(page).to have_content 'Language English'
       expect(page).to have_content 'License Attribution 3.0 United States'
@@ -186,6 +191,8 @@ RDFXML
       find("#journal_based_near_attributes_0_id", visible: false).set('http://sws.geonames.org/4460162/')
       fill_in 'ISBN', with: 'some isbn'
       fill_in 'ISSN', with: 'some issn'
+      select 'Preprint', from: 'Version'
+      fill_in 'Related resource URL', with: 'a url'
       fill_in 'Keyword', with: 'Test Default Keyword'
       select 'Attribution 3.0 United States', :from => 'journal_license'
       fill_in 'Note', with: 'a note'
@@ -200,6 +207,7 @@ RDFXML
       expect(page).to have_selector('#journal_rights_statement_label', visible: false)
       expect(page).to have_field('journal_visibility_embargo')
       expect(page).not_to have_field('journal_visibility_lease')
+      expect(page).not_to have_field('journal_deposit_agreement')
       choose "journal_visibility_open"
       check 'agreement'
 
@@ -236,6 +244,8 @@ RDFXML
       expect(page).to have_content 'Location Chapel Hill, North Carolina, United States'
       expect(page).to have_content 'ISBN some isbn'
       expect(page).to have_content 'ISSN some issn'
+      expect(page).to have_content 'Version Preprint'
+      expect(page).to have_content 'Related resource URL a url'
       expect(page).to have_content 'Keyword Test Default Keyword'
       expect(page).to have_content 'Language English'
       expect(page).to have_content 'License Attribution 3.0 United States'

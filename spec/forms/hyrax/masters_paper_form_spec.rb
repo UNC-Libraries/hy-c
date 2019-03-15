@@ -26,7 +26,7 @@ RSpec.describe Hyrax::MastersPaperForm do
     it { is_expected.to match_array [:academic_concentration, :access, :based_near, :dcmi_type, :degree_granting_institution, :doi, :extent,
                                      :reviewer, :use, :keyword, :subject, :language, :note,
                                      :rights_statement, :license, :language_label, :license_label, 
-                                     :rights_statement_label] }
+                                     :rights_statement_label, :deposit_agreement, :agreement] }
   end
   
   describe "#admin_only_terms" do

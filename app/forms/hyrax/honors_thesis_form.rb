@@ -7,7 +7,8 @@ module Hyrax
     class_attribute :single_value_fields
 
     self.terms += [:abstract, :access, :advisor, :award, :date_issued, :dcmi_type, :degree, :degree_granting_institution,
-                   :doi, :extent, :graduation_year, :honors_concentration, :note, :use, :resource_type]
+                   :doi, :extent, :graduation_year, :honors_concentration, :note, :use, :resource_type, :deposit_agreement,
+                   :agreement]
 
     self.terms -= [:contributor, :description, :identifier, :publisher, :source]
 
@@ -16,10 +17,11 @@ module Hyrax
 
     self.single_value_fields = [:title, :license]
     
-    self.admin_only_terms = [:date_created, :dcmi_type, :access, :award,
-                             :degree_granting_institution, :doi, :extent, :honors_concentration, :use]
+    self.admin_only_terms = [:date_created, :dcmi_type, :access, :award, :degree_granting_institution, :doi, :extent,
+                             :honors_concentration, :use]
 
-    self.default_term_values = { :dcmi_type => ["http://purl.org/dc/dcmitype/Text"], :rights_statement => "http://rightsstatements.org/vocab/InC/1.0/",
+    self.default_term_values = { :dcmi_type => ["http://purl.org/dc/dcmitype/Text"],
+                                 :rights_statement => "http://rightsstatements.org/vocab/InC/1.0/",
                                  :language => ["http://id.loc.gov/vocabulary/iso639-2/eng"] }
 
     # Add overrides for required properties which are becoming single-valued
