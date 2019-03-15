@@ -102,7 +102,7 @@ module Migrate
               work_attributes['contained_files'].each do |file|
                 metadata_file = @object_hash[MigrationHelper.get_uuid_from_path(file)] || ''
                 if File.file?(metadata_file)
-                  file_work_attributes = Migrate::Services::MetadataParser.new(metadata_file,
+                  parsed_file_data = Migrate::Services::MetadataParser.new(metadata_file,
                                                                            @object_hash,
                                                                            @binary_hash,
                                                                            @deposit_record_hash,
