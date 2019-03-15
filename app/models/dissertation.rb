@@ -12,10 +12,6 @@ class Dissertation < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :academic_concentration, predicate: ::RDF::URI('http://vivoweb.org/ontology/core#majorField') do |index|
-    index.as :stored_searchable
-  end
-
   property :access, predicate: ::RDF::Vocab::DC.accessRights, multiple: false do |index|
     index.as :stored_searchable
   end

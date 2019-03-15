@@ -19,7 +19,6 @@ RSpec.describe Hyrax::DissertationPresenter do
       "date_created_tesim" => ['an unformatted date'],
       "depositor_tesim" => user_key,
       "abstract_tesim" => ['an abstract'],
-      "academic_concentration_tesim" => ['a concentration'],
       "access_tesim" => ['an access state'],
       "advisor_display_tesim" => ['an advisor'],
       "alternative_title_tesim" => ['another title'],
@@ -64,7 +63,6 @@ RSpec.describe Hyrax::DissertationPresenter do
   it { is_expected.to delegate_method(:itemtype).to(:solr_document) }
 
   it { is_expected.to delegate_method(:abstract).to(:solr_document) }
-  it { is_expected.to delegate_method(:academic_concentration).to(:solr_document) }
   it { is_expected.to delegate_method(:access).to(:solr_document) }
   it { is_expected.to delegate_method(:advisor_display).to(:solr_document) }
   it { is_expected.to delegate_method(:alternative_title).to(:solr_document) }
@@ -122,17 +120,6 @@ RSpec.describe Hyrax::DissertationPresenter do
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:abstract)
-      end
-    end
-
-    context "with a custom academic_concentration field" do
-      before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:academic_concentration, ['a concentration'], {}).and_return(renderer)
-      end
-
-      it "calls the AttributeRenderer" do
-        expect(renderer).to receive(:render)
-        presenter.attribute_to_html(:academic_concentration)
       end
     end
 

@@ -96,7 +96,6 @@ RDFXML
 
       # extra fields
       fill_in 'Abstract', with: 'some abstract'
-      select 'Clinical Nutrition', from: 'Academic Concentration'
       fill_in 'Advisor', { with: 'advisor', id: 'dissertation_advisors_attributes_0_name' }
       fill_in 'ORCID', { with: 'advisor orcid', id: 'dissertation_advisors_attributes_0_orcid' }
       select 'Department of Biology', from: 'dissertation_advisors_attributes_0_affiliation'
@@ -164,7 +163,6 @@ RDFXML
 
       # extra fields
       expect(page).to have_content 'Abstract some abstract'
-      expect(page).to have_content 'Academic concentration Clinical Nutrition'
       expect(page).to have_content 'Advisor advisor ORCID: advisor orcid'
       expect(page).to have_content 'Alternate title another title'
       expect(page).to have_content 'Contributor contributor ORCID: contributor orcid'
