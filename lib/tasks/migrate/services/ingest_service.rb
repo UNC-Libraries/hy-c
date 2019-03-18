@@ -111,7 +111,7 @@ module Migrate
                                                                            @collection_name,
                                                                            @admin_set_id).parse
 
-                  file_work_attributes = (parsed_file_data[:work_attributes].blank? ? {} : parsed_file_data[:work_attributes])
+                  file_work_attributes = (parsed_file_data.blank? ? {} : parsed_file_data)
                   file_work_attributes['title'] = file_work_attributes['dc_title'] if file_work_attributes['title'].blank?
                   fileset_attrs = file_record(work_attributes.merge(file_work_attributes))
 
