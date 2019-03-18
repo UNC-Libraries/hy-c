@@ -77,7 +77,7 @@ module ActiveFedora::RDF
                          @orcid_label.flatten)
       append_to_solr_doc(solr_doc,
                          solr_document_field_name(('affiliation_label').to_sym, prefix_method),
-                         [:stored_searchable],
+                         [:stored_searchable, :facetable],
                          @affiliation_label.flatten)
       append_to_solr_doc(solr_doc,
                          solr_document_field_name(('other_affiliation_label').to_sym, prefix_method),
@@ -85,11 +85,11 @@ module ActiveFedora::RDF
                          @other_affiliation_label.flatten)
       append_to_solr_doc(solr_doc,
                          solr_document_field_name(('creator_label').to_sym, prefix_method),
-                         [:stored_searchable],
+                         [:stored_searchable, :facetable],
                          @creator_label.flatten)
       append_to_solr_doc(solr_doc,
                          solr_document_field_name(('advisor_label').to_sym, prefix_method),
-                         [:stored_searchable],
+                         [:stored_searchable, :facetable],
                          @advisor_label.flatten)
 
 
