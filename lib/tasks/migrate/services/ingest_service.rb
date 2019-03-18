@@ -102,7 +102,7 @@ module Migrate
               work_attributes['contained_files'].each do |file|
                 metadata_file = @object_hash[MigrationHelper.get_uuid_from_path(file)] || ''
                 if File.file?(metadata_file)
-                  file_work_attributes = Migrate::Services::MetadataParser.new(metadata_file,
+                  parsed_file_data = Migrate::Services::MetadataParser.new(metadata_file,
                                                                            @object_hash,
                                                                            @binary_hash,
                                                                            @deposit_record_hash,
@@ -111,6 +111,8 @@ module Migrate
                                                                            @collection_name,
                                                                            @admin_set_id).parse
 
+                  file_work_attributes = (parsed_file_data.blank? ? {} : parsed_file_data)
+                  file_work_attributes['title'] = file_work_attributes['dc_title'] if file_work_attributes['title'].blank?
                   fileset_attrs = file_record(work_attributes.merge(file_work_attributes))
 
                   fileset = create_fileset(parent: new_work, resource: fileset_attrs, file: @binary_hash[MigrationHelper.get_uuid_from_path(file)])
