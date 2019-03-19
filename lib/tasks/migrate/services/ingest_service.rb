@@ -35,9 +35,6 @@ module Migrate
           raise "Unable to find child admin set #{child_admin_set}" if @child_admin_set_id.blank?
         end
 
-        # Create the output directory if it does not yet exist
-        FileUtils.mkdir(output_dir) unless File.exist?(@output_dir)
-
         # Create file and hash mapping new and old ids
         @id_mapper = Migrate::Services::IdMapper.new(File.join(@output_dir, 'old_to_new.csv'), 'old', 'new')
         # Store parent-child relationships
