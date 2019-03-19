@@ -1,6 +1,6 @@
 <%= presenter.attribute_to_html(:date_modified, label: 'Last Modified', render_as: :date, html_dl: true) %>
-<%= presenter.attribute_to_html(:date_created, render_as: :date, html_dl: true, label: "Date created") %>
-<%= presenter.attribute_to_html(:date_issued, render_as: :date, html_dl: true, label: "Date of publication") %>
+<%= presenter.attribute_to_html(:date_created, html_dl: true, label: "Date created") %>
+<%= presenter.attribute_to_html(:date_issued, html_dl: true, label: "Date of publication") %>
 <%= presenter.attribute_to_html(:creator_display, label: 'Creator', render_as: :person, html_dl: true) %>
 <%= presenter.attribute_to_html(:subject, render_as: :faceted, html_dl: true) %>
 <%= presenter.attribute_to_html(:language_label, label: 'Language', html_dl: true) %>
