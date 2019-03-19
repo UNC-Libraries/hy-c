@@ -1,3 +1,4 @@
+# [hyc-override] Overriding to transform date facets from EDTF to human readable strings
 # frozen_string_literal: true
 module Blacklight::FacetsHelperBehavior
   include Blacklight::Facet
@@ -218,6 +219,11 @@ module Blacklight::FacetsHelperBehavior
             else
               facet_value_for_facet_item(item)
             end
+
+    # [hyc-override] Overriding to transform date facets from EDTF to human readable strings
+    if field == 'date_issued_sim' || field == 'date_created_sim'
+      value = Hyc::EdtfConvert.convert_from_edtf(value)
+    end
 
     if facet_config.helper_method
       send facet_config.helper_method, value
