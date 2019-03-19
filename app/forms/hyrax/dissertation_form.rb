@@ -5,7 +5,7 @@ module Hyrax
     class_attribute :single_value_fields
 
     self.model_class = ::Dissertation
-    self.terms += [:abstract, :academic_concentration, :access, :advisor, :reviewer, :alternative_title, :date_issued,
+    self.terms += [:abstract, :access, :advisor, :reviewer, :alternative_title, :date_issued,
                    :dcmi_type, :degree, :degree_granting_institution, :doi, :graduation_year, :note,
                    :place_of_publication, :resource_type, :use, :deposit_agreement, :agreement]
 
