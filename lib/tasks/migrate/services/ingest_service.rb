@@ -258,14 +258,16 @@ module Migrate
             resource.visibility_during_embargo = work_attributes['visibility_during_embargo']
             resource.visibility_after_embargo = work_attributes['visibility_after_embargo']
           end
-          resource.admin_set_id = work_attributes['admin_set_id']
-          if !@config['collection_name'].blank? && !work_attributes['member_of_collections'].first.blank?
-            resource.member_of_collections = work_attributes['member_of_collections']
-          end
 
           # Override the admin set id for child works
           if is_child_work && !@child_admin_set_id.blank?
-            work_attributes['admin_set_id'] = @child_admin_set_id
+            resource.admin_set_id = @child_admin_set_id
+          else
+            resource.admin_set_id = work_attributes['admin_set_id']
+          end
+
+          if !@config['collection_name'].blank? && !work_attributes['member_of_collections'].first.blank?
+            resource.member_of_collections = work_attributes['member_of_collections']
           end
 
           MigrationHelper.retry_operation('creating child work') do
