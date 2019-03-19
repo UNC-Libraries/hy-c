@@ -7,7 +7,7 @@
 <%= presenter.attribute_to_html(:description, html_dl: true) %>
 <%= presenter.attribute_to_html(:table_of_contents, html_dl: true) %>
 <%= presenter.attribute_to_html(:methodology, html_dl: true) %>
-<%= presenter.attribute_to_html(:date_issued, render_as: :date, html_dl: true, label: "Date of publication") %>
+<%= presenter.attribute_to_html(:date_issued, html_dl: true, label: "Date of publication") %>
 <%= presenter.attribute_to_html(:keyword, render_as: :faceted, html_dl: true) %>
 <%= presenter.attribute_to_html(:subject, render_as: :faceted, html_dl: true) %>
 <%= presenter.attribute_to_html(:doi, html_dl: true, label: "DOI") %>
@@ -52,7 +52,7 @@
 <%= presenter.attribute_to_html(:extent, html_dl: true) %>
 <%= presenter.attribute_to_html(:copyright_date, html_dl: true) %>
 <%= presenter.attribute_to_html(:date_captured, render_as: :date, html_dl: true, label: "Date captured") %>
-<%= presenter.attribute_to_html(:date_created, render_as: :date, html_dl: true, label: "Date created") %>
+<%= presenter.attribute_to_html(:date_created, html_dl: true, label: "Date created") %>
 <%= presenter.attribute_to_html(:date_other, render_as: :date, html_dl: true) %>
 <%= presenter.attribute_to_html(:digital_collection, html_dl: true) %>
 <%= presenter.attribute_to_html(:access, html_dl: true) %>
