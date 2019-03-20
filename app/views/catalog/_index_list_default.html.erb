@@ -11,11 +11,11 @@
           <dt><%= render_index_field_label document, field: field_name %></dt>
           <%# [hyc-override] truncate text abstract and creator %>
           <% if field_name == 'abstract_tesim' %>
-            <dd><%= Loofah.fragment(field_text.truncate_words(50)).scrub!(:prune) %></dd>
+            <dd><%= field_text.truncate_words(50).html_safe %></dd>
           <% elsif field_name == 'creator_label_tesim' %>
-            <dd><%= Loofah.fragment(document.creator_label.join('; ').truncate_words(50)).scrub!(:prune) %></dd>
+            <dd><%= document.creator_label.join('; ').truncate_words(50).html_safe %></dd>
           <% else %>
-            <dd><%= Loofah.fragment(field_text).scrub!(:prune) %></dd>
+            <dd><%= field_text.html_safe %></dd>
           <% end %>
         <% end %>
       <% end %>
