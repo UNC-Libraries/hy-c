@@ -48,7 +48,7 @@ namespace :deposit_record do
 
       puts "[#{start_time.to_s}] Start migration of #{uuid}"
 
-      if @object_hash.key?(uuid) && !@object_hash[uuid].is_a?(File)
+      if @object_hash.key?(uuid) && !@object_hash[uuid].blank?
         record_attributes = deposit_record_metadata(@object_hash[uuid])
         deposit_record = DepositRecord.new(record_attributes[:resource])
 
