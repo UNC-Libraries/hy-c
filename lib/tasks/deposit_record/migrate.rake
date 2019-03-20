@@ -5,7 +5,7 @@ namespace :deposit_record do
   require 'tasks/migration_helper'
 
   desc 'batch migrate deposit records'
-  task :migrate, [:configuration_file, :mapping_file] => :environment do |t, args|
+  task :migrate, [:configuration_file, :output_dir, :mapping_file] => :environment do |t, args|
     STDOUT.sync = true
 
     start_time = Time.now
@@ -31,7 +31,7 @@ namespace :deposit_record do
     id_mapper = Migrate::Services::IdMapper.new(args[:mapping_file], 'old', 'new')
 
     # Progress tracker for objects migrated
-    object_progress = Migrate::Services::ProgressTracker.new(File.join('/net/deploy/ir/migration/20190318/output', 'dr_progress.log'))
+    object_progress = Migrate::Services::ProgressTracker.new(File.join(args[:output_dir], 'dr_progress.log'))
     already_migrated = object_progress.completed_set
     puts "Skipping #{already_migrated.length} previously migrated works"
 
