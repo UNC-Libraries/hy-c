@@ -13,7 +13,14 @@ module Hyrax
       end
 
       def users_to_notify
-        super << user
+        users = super
+        users << user # requester
+        users << ::User.find_by(uid: ActiveFedora::Base.find(work_id).depositor) # depositor
+        repo_admins = Role.where(name: 'admin').first.users
+        repo_admins.each do |u|
+          users << u
+        end
+        users.uniq
       end
     end
   end
