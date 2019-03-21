@@ -35,9 +35,6 @@ module Migrate
           raise "Unable to find child admin set #{child_admin_set}" if @child_admin_set_id.blank?
         end
 
-        # Create the output directory if it does not yet exist
-        FileUtils.mkdir(output_dir) unless File.exist?(@output_dir)
-
         # Create file and hash mapping new and old ids
         @id_mapper = Migrate::Services::IdMapper.new(File.join(@output_dir, 'old_to_new.csv'), 'old', 'new')
         # Store parent-child relationships
@@ -261,14 +258,16 @@ module Migrate
             resource.visibility_during_embargo = work_attributes['visibility_during_embargo']
             resource.visibility_after_embargo = work_attributes['visibility_after_embargo']
           end
-          resource.admin_set_id = work_attributes['admin_set_id']
-          if !@config['collection_name'].blank? && !work_attributes['member_of_collections'].first.blank?
-            resource.member_of_collections = work_attributes['member_of_collections']
-          end
 
           # Override the admin set id for child works
           if is_child_work && !@child_admin_set_id.blank?
-            work_attributes['admin_set_id'] = @child_admin_set_id
+            resource.admin_set_id = @child_admin_set_id
+          else
+            resource.admin_set_id = work_attributes['admin_set_id']
+          end
+
+          if !@config['collection_name'].blank? && !work_attributes['member_of_collections'].first.blank?
+            resource.member_of_collections = work_attributes['member_of_collections']
           end
 
           MigrationHelper.retry_operation('creating child work') do

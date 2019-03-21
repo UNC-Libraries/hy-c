@@ -1,4 +1,5 @@
 <%# [hyc-override] %>
+<%# Remove description and display it interleaved in the metadata %>
 <% provide :page_title, @presenter.page_title %>
 
 <%= render 'shared/citations' %>
@@ -32,7 +33,6 @@
             <%= render 'social_media' %>
           </div>
           <div class="col-sm-9">
-            <%= render 'work_description', presenter: @presenter %>
             <%= render 'metadata', presenter: @presenter %>
           </div>
           <div class="col-sm-12">

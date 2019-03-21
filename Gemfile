@@ -43,13 +43,11 @@ gem 'jbuilder', '~> 2.7.0'
 # Use Redis adapter to run Action Cable in production
 gem 'redis', '~> 3.3.0'
 
-gem 'longleaf', '0.2.0.pre.1'
-
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 # gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 gem 'rsolr', '~> 2.0.2'
-gem 'devise', '~> 4.3.0'
+gem 'devise', '~> 4.6.0'
 gem 'devise-guests', '~> 0.6.0'
 gem 'omniauth-shibboleth', '~> 1.3'
 

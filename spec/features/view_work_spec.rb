@@ -16,7 +16,6 @@ RSpec.feature 'View a Work', js: false do
       click_link "Alice's Adventures in Wonderland"
 
       expect(page).to have_content "Alice's Adventures in Wonderland"
-      expect(page).to have_content 'Abstract'
       expect(page).to have_content 'Items'
     end
   end
