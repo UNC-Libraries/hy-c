@@ -245,7 +245,7 @@ RDFXML
       expect(page).to have_content 'Honors level Honors'
       expect(page).to have_content 'Creator Test Default Creator ORCID: creator orcid'
       expect(page).to have_content 'Date of publication October 3, 2018'
-      expect(page).to have_content 'Date created October 3, 2018'
+      expect(page).to have_content 'Date uploaded October 3, 2018'
       expect(page).to have_content 'Degree Bachelor of Science'
       expect(page).to have_content 'Degree granting institution UNC'
       expect(page).to have_content 'Extent some extent'

@@ -226,7 +226,7 @@ RDFXML
       expect(page).to have_content 'Other Affiliation: UNC'
       expect(page).to have_content 'Conference name a conference'
       expect(page).to have_content 'Creator Test Default Creator ORCID: creator orcid'
-      expect(page).to have_content 'Date created October 3, 2018'
+      expect(page).to have_content 'Date uploaded October 3, 2018'
       expect(page).to have_content 'Date of publication October 3, 2018'
       expect(page).to_not have_content 'Type http://purl.org/dc/dcmitype/Text'
       expect(page).to have_content 'a description'

@@ -169,7 +169,7 @@ RSpec.feature 'Create an Artwork', js: false do
       expect(page).to have_content 'Test Artwork work'
 
       first('.document-title', text: 'Test Artwork work').click
-      expect(page).to have_content 'Date created October 3, 2018'
+      expect(page).to have_content 'Date uploaded October 3, 2018'
       expect(page).to have_content 'Creator Test Default Creator ORCID: creator orcid'
       expect(page).to have_content 'Affiliation:'
       expect(page).to have_content 'College of Arts and Sciences'

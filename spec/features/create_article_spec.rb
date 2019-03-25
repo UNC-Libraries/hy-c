@@ -281,7 +281,7 @@ RDFXML
       expect(page).to have_content 'License Attribution 3.0 United States'
       expect(page).to have_content 'Rights statement In Copyright'
       expect(page).to have_content 'Publisher UNC Press'
-      expect(page).to have_content 'Date created October 3, 2018'
+      expect(page).to have_content 'Date uploaded October 3, 2018'
       expect(page).to have_content 'Subject test'
       expect(page).to have_content 'Language English'
       expect(page).to have_content 'Identifier some id'

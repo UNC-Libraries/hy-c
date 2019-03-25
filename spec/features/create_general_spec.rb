@@ -218,7 +218,7 @@ RDFXML
       expect(page).to have_content 'Contributor contributor ORCID: contributor orcid'
       expect(page).to have_content 'Copyright date 2018'
       expect(page).to have_content 'Creator Test Default Creator ORCID: creator orcid'
-      expect(page).to have_content 'Date created October 3, 2018'
+      expect(page).to have_content 'Date uploaded October 3, 2018'
       expect(page).to have_content 'Date of publication October 3, 2018'
       expect(page).to have_content 'Date other October 3, 2018'
       expect(page).to have_content 'Degree Bachelor of Science'
