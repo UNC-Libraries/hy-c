@@ -45,6 +45,7 @@ RSpec.describe HonorsThesis do
 
       # Additional metadata
       expect(subject).to respond_to(:abstract)
+      expect(subject).to respond_to(:academic_concentration)
       expect(subject).to respond_to(:access)
       expect(subject).to respond_to(:advisors)
       expect(subject).to respond_to(:award)
@@ -57,7 +58,6 @@ RSpec.describe HonorsThesis do
       expect(subject).to respond_to(:extent)
       expect(subject).to respond_to(:dcmi_type)
       expect(subject).to respond_to(:graduation_year)
-      expect(subject).to respond_to(:honors_concentration)
       expect(subject).to respond_to(:note)
       expect(subject).to respond_to(:use)
       expect(subject).to respond_to(:language_label)
