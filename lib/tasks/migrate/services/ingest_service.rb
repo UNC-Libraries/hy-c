@@ -291,6 +291,7 @@ module Migrate
               end
             end
           end
+          file_attributes[:date_created] = work_attributes['date_created']
           file_attributes[:visibility] = work_attributes['visibility']
           unless work_attributes['embargo_release_date'].blank?
             file_attributes[:embargo_release_date] = work_attributes['embargo_release_date']

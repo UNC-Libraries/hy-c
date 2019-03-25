@@ -27,10 +27,9 @@ module Migrate
 
         work_attributes['contained_files'] = Array.new(0)
 
-        # get the date_uploaded
+        # get the date_created
         date_uploaded_string = metadata.xpath("//foxml:objectProperties/foxml:property[contains(@NAME, 'model#createdDate')]/@VALUE", MigrationConstants::NS).to_s
-        date_uploaded = DateTime.strptime(date_uploaded_string, '%Y-%m-%dT%H:%M:%S.%N%Z').strftime('%Y-%m-%d') unless date_uploaded_string.nil?
-        work_attributes['date_uploaded'] = (Date.try(:edtf, date_uploaded) || date_uploaded).to_s
+        work_attributes['date_created'] = DateTime.strptime(date_uploaded_string, '%Y-%m-%dT%H:%M:%S.%N%Z').strftime('%Y-%m-%d') unless date_uploaded_string.nil?
         # get the modifiedDate
         date_modified_string = metadata.xpath("//foxml:objectProperties/foxml:property[contains(@NAME, 'view#lastModifiedDate')]/@VALUE", MigrationConstants::NS).to_s
         date_modified = DateTime.strptime(date_modified_string, '%Y-%m-%dT%H:%M:%S.%N%Z').strftime('%Y-%m-%d') unless date_modified_string.nil?
@@ -61,8 +60,6 @@ module Migrate
           work_attributes['sponsor'] = parse_names_from_mods(descriptive_mods, 'Sponsor')
           work_attributes['degree_granting_institution'] = parse_names_from_mods(descriptive_mods, 'Degree granting institution')
           work_attributes['conference_name'] = descriptive_mods.xpath('mods:name[@displayLabel="Conference" and @type="conference"]/mods:namePart', MigrationConstants::NS).map(&:text)
-          date_created = descriptive_mods.xpath('mods:originInfo/mods:dateCreated', MigrationConstants::NS).map(&:text)
-          work_attributes['date_created'] = date_created.map{|date| (Date.try(:edtf, date) || date).to_s}
           date_issued = descriptive_mods.xpath('mods:originInfo/mods:dateIssued', MigrationConstants::NS).map(&:text)
           work_attributes['date_issued'] = date_issued.map{|date| date.to_s}
           copyright_date = descriptive_mods.xpath('mods:originInfo/mods:copyrightDate', MigrationConstants::NS).map(&:text)
