@@ -164,8 +164,11 @@ module ActiveFedora::RDF
             display_text << "ORCID: #{Array(person['orcid']).first}" if !Array(person['orcid']).first.blank?
             @orcid_label.push(Array(person['orcid']))
 
-            display_text << "Affiliation: #{split_affiliations(person['affiliation']).join(', ')}" if !Array(person['affiliation']).first.blank?
-            @affiliation_label.push(Array(person['affiliation']))
+            affiliations = split_affiliations(person['affiliation'])
+            if !affiliations.blank?
+              display_text << "Affiliation: #{affiliations.join(', ')}"
+              @affiliation_label.push(Array(person['affiliation']))
+            end
 
             display_text << "Other Affiliation: #{Array(person['other_affiliation']).first}" if !Array(person['other_affiliation']).first.blank?
             @other_affiliation_label.push(Array(person['other_affiliation']))

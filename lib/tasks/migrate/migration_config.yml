@@ -7,10 +7,10 @@ collection1:
   admin_set: default
   depositor_email: admin@example.com
 collection2:
-  collection_list: spec/fixtures/migration/collection.csv
-  objects: spec/fixtures/migration/objects.txt
-  binaries: spec/fixtures/migration/binaries.txt
-  premis: spec/fixtures/migration/binaries.txt
+  collection_list: lib/tasks/migration/collection.csv
+  objects: lib/tasks/migration/test_objects.txt
+  binaries: test_tree.txt
+  premis: test_premis.txt
   work_type: General
   admin_set: default
   depositor_email: admin@example.com
