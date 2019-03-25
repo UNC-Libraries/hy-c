@@ -52,7 +52,11 @@
 <%= presenter.attribute_to_html(:extent, html_dl: true) %>
 <%= presenter.attribute_to_html(:copyright_date, html_dl: true) %>
 <%= presenter.attribute_to_html(:date_captured, render_as: :date, html_dl: true, label: "Date captured") %>
-<%= presenter.attribute_to_html(:date_created, html_dl: true, label: "Date created") %>
+<% if presenter.date_created %>
+  <%= presenter.attribute_to_html(:date_created, html_dl: true, label: "Date uploaded") %>
+<% else %>
+  <%= presenter.attribute_to_html(:date_uploaded, html_dl: true, label: "Date uploaded") %>
+<% end %>
 <%= presenter.attribute_to_html(:date_other, render_as: :date, html_dl: true) %>
 <%= presenter.attribute_to_html(:digital_collection, html_dl: true) %>
 <%= presenter.attribute_to_html(:access, html_dl: true) %>

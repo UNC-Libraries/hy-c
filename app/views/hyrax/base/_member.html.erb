@@ -1,10 +1,10 @@
-<%# [hyc-override] %>
+<%# [hyc-override] show date_created instead of date_uploaded if present %>
 <tr class="<%= dom_class(member) %> attributes">
   <td class="thumbnail">
     <%= render_thumbnail_tag member %>
   </td>
   <td class="attribute attribute-filename ensure-wrapped"><%= link_to(member.link_name, contextual_path(member, @presenter)) %></td>
-  <td class="attribute attribute-date_uploaded"><%= member.date_created %></td>
+  <td class="attribute attribute-date_uploaded"><%= member.try(:date_created).first || member.try(:date_uploaded) %></td>
   <td class="attribute attribute-permission"><%= member.permission_badge %></td>
   <td>
     <%= render 'actions', member: member %>

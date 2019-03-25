@@ -1,10 +1,10 @@
-<%# [hyc-override] Overriding to make depositor a facet search and not link to user profile %>
+<%# [hyc-override] Overriding to make depositor a facet search and not link to user profile and display date_created instead of date_uplaoded if present %>
 <h2>File Details</h2>
 <dl class="dl-horizontal file-show-term file-show-details">
   <dt>Depositor</dt>
   <dd itemprop="accountablePerson" itemscope itemtype="http://schema.org/Person"><span itemprop="name"><%= link_to @presenter.depositor, main_app.search_catalog_path(f: { depositor_ssim: [@presenter.depositor]}) %></span></dd>
   <dt>Date Uploaded</dt>
-  <dd itemprop="datePublished"><%= @presenter.date_uploaded %></dd>
+  <dd itemprop="datePublished"><%= @presenter.date_created.first || @presenter.date_uploaded %></dd>
   <dt>Date Modified</dt>
   <dd itemprop="dateModified"><%= @presenter.date_modified %></dd>
   <dt>Fixity Check</dt>
