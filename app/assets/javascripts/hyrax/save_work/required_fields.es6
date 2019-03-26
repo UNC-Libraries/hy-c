@@ -26,7 +26,7 @@ export class RequiredFields {
         let isSelected = (selectorValue === null) || (selectorValue.length < 1);
         let dateName = selector.prop('name');
 
-        if (/date_created/.test(dateName) || /date_issued/.test(dateName)) {
+        if (/date_issued/.test(dateName)) {
             let regex = [
                 // matches Spring 2000, Aug 2000, July 2000, 2000, 2000s, circa 2000
                 '^((jan(uary)?|feb(ruary)?|mar(ch)?|apr(il)?|may|june|july|aug(ust)?|sept(ember)?|oct(ober)?|nov(ember)?|dec(ember)?|circa|spring|summer|fall|winter|autumn)?\\s*\\d{4}s?',
@@ -57,7 +57,7 @@ export class RequiredFields {
     // Reassign requiredFields because fields may have been added or removed.
     reload() {
         // ":input" matches all input, select or textarea fields.
-        this.requiredFields = this.form.find(':input[required], input[name*="date_created"], input[name*="date_issued"]');
+        this.requiredFields = this.form.find(':input[required], input[name*="date_issued"]');
         this.requiredFields.change(this.callback)
     }
 }
