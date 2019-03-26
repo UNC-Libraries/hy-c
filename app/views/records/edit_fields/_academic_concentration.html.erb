@@ -2,11 +2,11 @@
 <%
   case params[:controller]
   when 'hyrax/honors_theses'
-    value = 'honors'
+    work_type = 'honors'
   when 'hyrax/masters_papers'
-    value = 'masters'
+    work_type = 'masters'
   else
-    value = 'all'
+    work_type = 'all'
   end
 
   if f.object.academic_concentration[0].blank?
@@ -17,7 +17,7 @@
 %>
 
 <%= f.input :academic_concentration, as: :select,
-            collection: AcademicConcentrationService.select(value),
+            collection: AcademicConcentrationService.select(work_type),
             include_blank: true,
             item_helper: AcademicConcentrationService.method(:include_current_value),
             label: 'Academic Concentration',
