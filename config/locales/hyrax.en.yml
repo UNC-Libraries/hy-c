@@ -81,7 +81,8 @@ en:
     links:
       help: Help
       accessibility: Accessibility
-      browse_collections: Browse Collections
+      browse_all: Browse Everything
+      browse_collections: Collections
       contact: Contact Us
       library_home: Library Home
       privacy_policy: Privacy Policy
