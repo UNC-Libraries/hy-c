@@ -88,7 +88,6 @@ class SingleValueForm < Hyrax::Forms::WorkForm
     end
 
     # Convert dates from human readable strings to EDTF format
-    edtf_form_update(attrs, :date_created)
     edtf_form_update(attrs, :date_issued)
 
     # Log deposit agreement acceptance
