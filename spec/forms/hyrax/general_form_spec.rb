@@ -21,7 +21,7 @@ RSpec.describe Hyrax::GeneralForm do
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:based_near, :contributor, :creator, :date_created, :description,
+    it { is_expected.to match_array [:based_near, :contributor, :creator, :description,
                                      :keyword, :identifier, :language, :license, :publisher, :related_url,
                                      :resource_type, :rights_statement, :subject, :bibliographic_citation, :abstract,
                                      :academic_concentration, :access, :advisor, :alternative_title, :arranger, :award,
@@ -38,7 +38,7 @@ RSpec.describe Hyrax::GeneralForm do
   describe "#admin_only_terms" do
     subject { form.admin_only_terms }
 
-    it { is_expected.to match_array [:date_created, :dcmi_type, :degree_granting_institution, :digital_collection, :doi] }
+    it { is_expected.to match_array [:dcmi_type, :degree_granting_institution, :digital_collection, :doi] }
   end
 
   describe 'default value set' do
@@ -61,7 +61,6 @@ RSpec.describe Hyrax::GeneralForm do
                                           orcid: 'creator orcid',
                                           affiliation: 'Carolina Center for Genome Sciences',
                                           other_affiliation: 'another affiliation'} },
-          date_created: '2017-01-22',
           identifier: ['an identifier'],
           language: ['http://id.loc.gov/vocabulary/iso639-2/eng'],
           based_near: ['California'],
@@ -154,7 +153,6 @@ RSpec.describe Hyrax::GeneralForm do
     it 'permits parameters' do
       expect(subject['title']).to eq ['foo']
       expect(subject['bibliographic_citation']).to eq ['a citation']
-      expect(subject['date_created']).to eq '2017-01-22'
       expect(subject['identifier']).to eq ['an identifier']
       expect(subject['language']).to eq ['http://id.loc.gov/vocabulary/iso639-2/eng']
       expect(subject['based_near']).to eq ['California']

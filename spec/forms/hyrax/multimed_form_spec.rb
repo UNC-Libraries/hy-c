@@ -21,7 +21,7 @@ RSpec.describe Hyrax::MultimedForm do
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:based_near, :dcmi_type, :date_created, :digital_collection, :doi, :extent, :keyword,
+    it { is_expected.to match_array [:based_near, :dcmi_type, :digital_collection, :doi, :extent, :keyword,
                                      :language, :license, :medium, :note, :rights_statement, :subject, :language_label,
                                      :license_label, :rights_statement_label, :deposit_agreement, :agreement] }
   end
@@ -29,7 +29,7 @@ RSpec.describe Hyrax::MultimedForm do
   describe "#admin_only_terms" do
     subject { form.admin_only_terms }
 
-    it { is_expected.to match_array [:dcmi_type, :access, :date_created, :digital_collection, :doi, :medium] }
+    it { is_expected.to match_array [:dcmi_type, :access, :digital_collection, :doi, :medium] }
   end
 
   describe 'default value set' do
@@ -51,7 +51,6 @@ RSpec.describe Hyrax::MultimedForm do
                                           orcid: 'creator orcid',
                                           affiliation: 'Carolina Center for Genome Sciences',
                                           other_affiliation: 'another affiliation'} },
-          date_created: '2018-01-09', # single-valued
           date_issued: '2018-01-09', # single-valued
           subject: ['a subject'],
           language: ['http://id.loc.gov/vocabulary/iso639-2/eng'],
@@ -88,7 +87,6 @@ RSpec.describe Hyrax::MultimedForm do
       expect(subject['medium']).to eq ['a medium']
       expect(subject['keyword']).to eq ['multimed']
       expect(subject['abstract']).to eq ['an abstract']
-      expect(subject['date_created']).to eq '2018-01-09'
       expect(subject['date_issued']).to eq '2018-01-09'
       expect(subject['doi']).to eq '12345'
       expect(subject['extent']).to eq ['1999']

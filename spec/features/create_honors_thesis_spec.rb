@@ -192,7 +192,6 @@ RDFXML
       fill_in 'Graduation year', with: '2018'
 
       # extra fields
-      fill_in 'Date created', with: '2018-10-03'
       select 'Biostatistics', from: 'Honors concentration'
       fill_in 'Access', with: 'some access'
       fill_in 'DOI', with: 'some doi'
@@ -213,6 +212,7 @@ RDFXML
       expect(page).to have_field('honors_thesis_visibility_embargo')
       expect(page).not_to have_field('honors_thesis_visibility_lease')
       expect(page).not_to have_field('honors_thesis_deposit_agreement')
+      expect(page).not_to have_field('honors_thesis_date_created')
       expect(page).to have_select('honors_thesis_resource_type', selected: 'Honors Thesis')
       choose "honors_thesis_visibility_open"
       check 'agreement'
@@ -245,7 +245,6 @@ RDFXML
       expect(page).to have_content 'Honors level Honors'
       expect(page).to have_content 'Creator Test Default Creator ORCID: creator orcid'
       expect(page).to have_content 'Date of publication October 3, 2018'
-      expect(page).to have_content 'Date uploaded October 3, 2018'
       expect(page).to have_content 'Degree Bachelor of Science'
       expect(page).to have_content 'Degree granting institution UNC'
       expect(page).to have_content 'Extent some extent'

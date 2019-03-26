@@ -206,7 +206,6 @@ RDFXML
       find("#data_set_based_near_attributes_0_id", visible: false).set('http://sws.geonames.org/4460162/')
       fill_in 'Keyword', with: 'Test Default Keyword'
       fill_in 'Last modified date', with: '2018-10-03'
-      fill_in 'Date created', with: '2018-10-03'
       select 'Attribution 3.0 United States', :from => 'data_set_license'
       fill_in 'Project Director', { with: 'project director', id: 'data_set_project_directors_attributes_0_name' }
       fill_in 'ORCID', { with: 'project director orcid', id: 'data_set_project_directors_attributes_0_orcid' }
@@ -229,6 +228,7 @@ RDFXML
       expect(page).to have_field('data_set_visibility_embargo')
       expect(page).not_to have_field('data_set_visibility_lease')
       expect(page).not_to have_field('data_set_deposit_agreement')
+      expect(page).not_to have_field('data_set_date_created')
       expect(page).to have_select('data_set_resource_type', selected: 'Dataset')
       choose 'data_set_visibility_open'
       check 'agreement'
@@ -261,7 +261,6 @@ RDFXML
       expect(page).to have_content 'Copyright date 2018'
       expect(page).to have_content 'Methodology My methodology'
       expect(page).to have_content 'Date of publication October 3, 2018'
-      expect(page).to have_content 'Date uploaded October 3, 2018'
       expect(page).to have_content 'Kind of data Text'
       expect(page).to have_content 'License Attribution 3.0 United States'
       expect(page).to have_content 'Rights statement In Copyright'

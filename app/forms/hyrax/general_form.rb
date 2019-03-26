@@ -17,11 +17,11 @@ module Hyrax
 
     self.required_fields = [:title]
 
-    self.terms -= [:source]
+    self.terms -= [:date_created, :source]
 
     self.single_value_fields = [:title, :license]
 
-    self.admin_only_terms = [:date_created, :dcmi_type, :degree_granting_institution, :digital_collection, :doi]
+    self.admin_only_terms = [:dcmi_type, :degree_granting_institution, :digital_collection, :doi]
 
     self.default_term_values = { :language => ["http://id.loc.gov/vocabulary/iso639-2/eng"] }
 

@@ -23,14 +23,14 @@ RSpec.describe Hyrax::DataSetForm do
 
     it { is_expected.to match_array [:based_near, :dcmi_type, :copyright_date, :doi, :extent, :funder, :last_modified_date,
                                      :project_director, :researcher, :rights_holder, :sponsor, :language, :keyword,
-                                     :related_url, :license, :contributor, :date_created, :subject, :rights_statement,
+                                     :related_url, :license, :contributor, :subject, :rights_statement,
                                      :language_label, :license_label, :rights_statement_label, :deposit_agreement, :agreement] }
   end
   
   describe "#admin_only_terms" do
     subject { form.admin_only_terms }
 
-    it { is_expected.to match_array [:dcmi_type, :access, :date_created, :doi, :extent, :rights_holder, :rights_statement, :copyright_date] }
+    it { is_expected.to match_array [:dcmi_type, :access, :doi, :extent, :rights_holder, :rights_statement, :copyright_date] }
   end
   
   describe 'default value set' do
@@ -67,7 +67,6 @@ RSpec.describe Hyrax::DataSetForm do
                                           orcid: 'creator orcid',
                                           affiliation: 'Carolina Center for Genome Sciences',
                                           other_affiliation: 'another affiliation'} },
-          date_created: '2017-04-02', # single-valued
           date_issued: '2018-01-08',
           dcmi_type: ['type'],
           copyright_date: '2018',
@@ -107,7 +106,6 @@ RSpec.describe Hyrax::DataSetForm do
       expect(subject['member_of_collection_ids']).to eq ['123456', 'abcdef']
       expect(subject['abstract']).to eq ['an abstract']
       expect(subject['copyright_date']).to eq '2018'
-      expect(subject['date_created']).to eq '2017-04-02'
       expect(subject['date_issued']).to eq '2018-01-08'
       expect(subject['doi']).to eq '12345'
       expect(subject['extent']).to eq ['1993']

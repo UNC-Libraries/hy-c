@@ -171,7 +171,6 @@ RDFXML
       select 'Video', from: 'multimed_resource_type'
 
       # extra fields
-      fill_in 'Date created', with: '2018-10-03'
       fill_in 'Dcmi type', with: 'http://purl.org/dc/dcmitype/Text'
       fill_in 'Digital collection', with: 'my collection'
       fill_in 'DOI', with: 'some doi'
@@ -190,6 +189,7 @@ RDFXML
       expect(page).to have_field('multimed_visibility_embargo')
       expect(page).not_to have_field('multimed_visibility_lease')
       expect(page).not_to have_field('multimed_deposit_agreement')
+      expect(page).not_to have_field('multimed_date_created')
       choose "multimed_visibility_open"
       check 'agreement'
 
@@ -216,7 +216,6 @@ RDFXML
       expect(page).to have_content 'College of Arts and Sciences'
       expect(page).to have_content 'Department of Biology'
       expect(page).to have_content 'Other Affiliation: UNC'
-      expect(page).to have_content 'Date uploaded October 3, 2018'
       expect(page).to have_content 'Date of publication October 3, 2018'
       expect(page).to_not have_content 'Type http://purl.org/dc/dcmitype/Text'
       expect(page).to have_content 'Digital collection my collection'

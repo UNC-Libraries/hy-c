@@ -21,7 +21,7 @@ RSpec.describe Hyrax::ArticleForm do
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:based_near, :keyword, :license, :rights_statement, :publisher, :date_created, :subject,
+    it { is_expected.to match_array [:based_near, :keyword, :license, :rights_statement, :publisher, :subject,
                                      :language, :identifier, :related_url, :resource_type, :access, :alternative_title,
                                      :bibliographic_citation, :copyright_date, :date_captured, :date_other, :dcmi_type, :doi,
                                      :digital_collection, :edition, :extent, :funder, :issn,
@@ -33,7 +33,7 @@ RSpec.describe Hyrax::ArticleForm do
   describe "#admin_only_terms" do
     subject { form.admin_only_terms }
 
-    it { is_expected.to match_array [:dcmi_type, :date_created, :access, :bibliographic_citation, :copyright_date,
+    it { is_expected.to match_array [:dcmi_type, :access, :bibliographic_citation, :copyright_date,
                                      :date_captured, :date_other, :digital_collection, :doi, :extent, :rights_holder,
                                      :translator, :identifier, :use] }
   end
@@ -60,7 +60,6 @@ RSpec.describe Hyrax::ArticleForm do
                                           orcid: 'creator orcid',
                                           affiliation: 'Carolina Center for Genome Sciences',
                                           other_affiliation: 'another affiliation'} },
-          date_created: '2017-01-22', # single-valued
           language: ['http://id.loc.gov/vocabulary/iso639-2/eng'],
           based_near: ['California'],
           publisher: ['a publisher'],
@@ -113,7 +112,6 @@ RSpec.describe Hyrax::ArticleForm do
     it 'permits parameters' do
       expect(subject['title']).to eq ['foo']
       expect(subject['bibliographic_citation']).to eq ['a citation']
-      expect(subject['date_created']).to eq '2017-01-22'
       expect(subject['language']).to eq ['http://id.loc.gov/vocabulary/iso639-2/eng']
       expect(subject['based_near']).to eq ['California']
       expect(subject['license']).to eq ['http://creativecommons.org/licenses/by/3.0/us/']

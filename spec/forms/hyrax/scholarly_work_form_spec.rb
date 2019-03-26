@@ -21,7 +21,7 @@ RSpec.describe Hyrax::ScholarlyWorkForm do
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:advisor, :based_near, :conference_name, :date_created, :dcmi_type, :digital_collection,
+    it { is_expected.to match_array [:advisor, :based_near, :conference_name, :dcmi_type, :digital_collection,
                                      :doi, :description, :keyword, :language, :license, :resource_type,
                                      :rights_statement, :subject, :language_label, :license_label, 
                                      :rights_statement_label, :deposit_agreement, :agreement] }
@@ -30,7 +30,7 @@ RSpec.describe Hyrax::ScholarlyWorkForm do
   describe "#admin_only_terms" do
     subject { form.admin_only_terms }
 
-    it { is_expected.to match_array [:dcmi_type, :date_created, :access, :description, :digital_collection, :doi, :use] }
+    it { is_expected.to match_array [:dcmi_type, :access, :description, :digital_collection, :doi, :use] }
   end
 
   describe 'default value set' do
@@ -53,7 +53,6 @@ RSpec.describe Hyrax::ScholarlyWorkForm do
                                           orcid: 'creator orcid',
                                           affiliation: 'Carolina Center for Genome Sciences',
                                           other_affiliation: 'another affiliation'} },
-          date_created: 'circa 1980', # single-valued
           description: 'a description', # single-valued
           subject: ['a subject'],
           language: ['http://id.loc.gov/vocabulary/iso639-2/eng'],
@@ -86,7 +85,6 @@ RSpec.describe Hyrax::ScholarlyWorkForm do
 
     it 'permits parameters' do
       expect(subject['title']).to eq ['foo']
-      expect(subject['date_created']).to eq '1980~'
       expect(subject['description']).to eq 'a description'
       expect(subject['digital_collection']).to eq ['my collection']
       expect(subject['doi']).to eq '12345'

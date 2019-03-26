@@ -21,7 +21,7 @@ RSpec.describe Hyrax::ArtworkForm do
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:creator, :date_created, :description, :license, :rights_statement, :doi, :license_label,
+    it { is_expected.to match_array [:creator, :description, :license, :rights_statement, :doi, :license_label,
                                      :rights_statement_label, :deposit_agreement, :agreement] }
   end
 
@@ -40,7 +40,6 @@ RSpec.describe Hyrax::ArtworkForm do
                                           orcid: 'creator orcid',
                                           affiliation: 'Department of Art',
                                           other_affiliation: 'another affiliation'} },
-          date_created: '2017-01-22', # single-valued
           date_issued: '2017-01-22', # single-valued
           resource_type: ['a type'],
           rights_statement: 'http://rightsstatements.org/vocab/InC/1.0/', # single-valued
@@ -63,7 +62,6 @@ RSpec.describe Hyrax::ArtworkForm do
 
     it 'permits parameters' do
       expect(subject['title']).to eq ['foo']
-      expect(subject['date_created']).to eq '2017-01-22'
       expect(subject['date_issued']).to eq '2017-01-22'
       expect(subject['resource_type']).to eq ['a type']
       expect(subject['rights_statement']).to eq 'http://rightsstatements.org/vocab/InC/1.0/'

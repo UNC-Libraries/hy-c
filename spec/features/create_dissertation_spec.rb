@@ -131,6 +131,7 @@ RDFXML
       expect(page).to have_field('dissertation_visibility_embargo')
       expect(page).not_to have_field('dissertation_visibility_lease')
       expect(page).not_to have_field('dissertation_deposit_agreement')
+      expect(page).not_to have_field('dissertation_date_created')
       choose 'dissertation_visibility_open'
       check 'agreement'
 
