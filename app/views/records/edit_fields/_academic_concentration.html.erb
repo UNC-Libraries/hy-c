@@ -1,8 +1,26 @@
 <%# app/views/records/edit_fields/_academic_concentration.html.erb %>
+<%
+  case params[:controller]
+  when 'hyrax/honors_theses'
+    work_type = 'honors'
+  when 'hyrax/masters_papers'
+    work_type = 'masters'
+  else
+    work_type = 'all'
+  end
+
+  if f.object.academic_concentration[0].blank?
+    selected = ''
+  else
+    selected = f.object.academic_concentration[0]
+  end
+%>
+
 <%= f.input :academic_concentration, as: :select,
-            collection: AcademicConcentrationService.select_all_options,
+            collection: AcademicConcentrationService.select(work_type),
             include_blank: true,
             item_helper: AcademicConcentrationService.method(:include_current_value),
             label: 'Academic Concentration',
-            input_html: { class: 'form-control', multiple: true }
+            input_html: { class: 'form-control', multiple: true },
+            selected: selected
 %>
