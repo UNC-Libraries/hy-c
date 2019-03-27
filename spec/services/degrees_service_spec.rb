@@ -11,6 +11,7 @@ RSpec.describe Hyrax::DegreesService do
   describe "#select_all_options" do
     it "returns all terms" do
       expect(service.select_all_options).to include(
+                                                ['Bachelor of Arts', 'Bachelor of Arts'], ['Doctor of Philosophy', 'Doctor of Philosophy'],
                                                 ['Master of Science in Information Science', 'Master of Science in Information Science'],
                                                 ['Master of Science in Library Science', 'Master of Science in Library Science'],
                                                 ['Master of Science in Information Science', 'MSIS'])
@@ -19,13 +20,29 @@ RSpec.describe Hyrax::DegreesService do
 
   describe "#select_active_options" do
     it "returns all active terms" do
-      expect(service.select_active_options).to include(
+      expect(service.select_active_options('all')).to include(
+                                                ['Bachelor of Arts', 'Bachelor of Arts'], ['Doctor of Philosophy', 'Doctor of Philosophy'],
                                                 ['Master of Science in Information Science', 'Master of Science in Information Science'],
                                                 ['Master of Science in Library Science', 'Master of Science in Library Science'])
     end
 
+    it "returns all active dissertation terms" do
+      expect(service.select_active_options('dissertation')).to include(
+                                                   ['Doctor of Philosophy', 'Doctor of Philosophy'])
+    end
+
+    it "returns all active masters terms" do
+      expect(service.select_active_options('masters')).to include(
+                                                   ['Master of Science in Information Science', 'Master of Science in Information Science'],
+                                                   ['Master of Science in Library Science', 'Master of Science in Library Science'])
+    end
+
+    it "returns all active honors terms" do
+      expect(service.select_active_options('honors')).to include(['Bachelor of Arts', 'Bachelor of Arts'])
+    end
+
     it "does not return inactive terms" do
-      expect(service.select_active_options).not_to include(['Master of Science in Information Science', 'MSIS'])
+      expect(service.select_active_options('all')).not_to include(['Master of Science in Information Science', 'MSIS'])
     end
   end
 
