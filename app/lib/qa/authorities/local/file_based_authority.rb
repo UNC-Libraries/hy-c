@@ -1,3 +1,4 @@
+# [hyc-override] Overriding to allow custom keys for Questioning Authority vocabularies
 module Qa::Authorities
   class Local::FileBasedAuthority < Base
     attr_reader :subauthority
@@ -30,6 +31,7 @@ module Qa::Authorities
       normalize_terms(terms)
     end
 
+    # [hyc-override] Overriding to allow custom keys for Questioning Authority vocabularies
     def term_list(field, show_all_fields = true)
       returned_values = {}
       keys = field.keys
