@@ -8,13 +8,13 @@ module Qa::Authorities
     def search(q)
       r = q.blank? ? [] : terms.select { |term| /\b#{q.downcase}/.match(term[:term].downcase) }
       r.map do |res|
-        { id: res[:id], label: res[:term] }.with_indifferent_access
+        term_list(res, false).with_indifferent_access
       end
     end
 
     def all
       terms.map do |res|
-        { id: res[:id], label: res[:term], active: res.fetch(:active, true) }.with_indifferent_access
+        term_list(res).with_indifferent_access
       end
     end
 
@@ -28,6 +28,27 @@ module Qa::Authorities
       subauthority_hash = YAML.load(File.read(subauthority_filename)) # rubocop:disable Security/YAMLLoad # TODO: Explore how to change this to safe_load.  Many tests fail when making this change.
       terms = subauthority_hash.with_indifferent_access.fetch(:terms, [])
       normalize_terms(terms)
+    end
+
+    def term_list(field, show_all_fields = true)
+      returned_values = {}
+      keys = field.keys
+
+      keys.each do |key|
+        key_sym = key.to_sym
+
+        if key_sym == :term
+          returned_values[:label] = field[:term]
+        else
+          returned_values[key_sym] = field[key_sym]
+        end
+      end
+
+      if show_all_fields
+        returned_values[:active] = field.fetch(:active, true)
+      end
+
+      returned_values
     end
 
     def subauthority_filename
