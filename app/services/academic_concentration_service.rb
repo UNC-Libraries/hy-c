@@ -3,9 +3,16 @@ module AcademicConcentrationService
   mattr_accessor :authority
   self.authority = Qa::Authorities::Local.subauthority_for('academic_concentration')
 
-  def self.select_all_options
-    authority.all.reject{ |item| item['active'] == false }.map do |element|
-      [element[:label], element[:id]]
+  def self.select(value)
+    if value == 'all'
+      authority.all.map do |element|
+        [element[:label], element[:id]]
+      end
+    else
+      regex = Regexp.new(value, Regexp::IGNORECASE)
+      authority.all.reject{ |item| !(regex =~ item['active']) }.map do |element|
+        [element[:label], element[:id]]
+      end
     end
   end
 

@@ -1,7 +1,0 @@
-<%= f.input :honors_concentration, as: :select,
-            collection: HonorsConcentrationService.select_all_options,
-            include_blank: true,
-            item_helper: HonorsConcentrationService.method(:include_current_value),
-            label: 'Honors concentration',
-            input_html: { class: 'form-control', multiple: true }
-%>

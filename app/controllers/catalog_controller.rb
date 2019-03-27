@@ -112,7 +112,6 @@ class CatalogController < ApplicationController
     config.add_show_field solr_name("edition", :stored_searchable), label: "Edition"
     config.add_show_field solr_name("extent", :stored_searchable), label: "Extent"
     config.add_show_field solr_name("graduation_year", :stored_searchable), label: "Graduation Year"
-    config.add_show_field solr_name("honors_concentration", :stored_searchable), label: "Honors Concentration"
     config.add_show_field solr_name("identifier", :stored_searchable), label: "Identifier"
     config.add_show_field solr_name("isbn", :stored_searchable), label: "ISBN"
     config.add_show_field solr_name("issn", :stored_searchable), label: "ISSN"

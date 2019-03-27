@@ -6,9 +6,9 @@ module Hyrax
 
     class_attribute :single_value_fields
 
-    self.terms += [:abstract, :access, :advisor, :award, :date_issued, :dcmi_type, :degree, :degree_granting_institution,
-                   :doi, :extent, :graduation_year, :honors_concentration, :note, :use, :resource_type, :deposit_agreement,
-                   :agreement]
+    self.terms += [:abstract, :academic_concentration, :access, :advisor, :award, :date_issued, :dcmi_type, :degree,
+                   :degree_granting_institution, :doi, :extent, :graduation_year, :note, :use, :resource_type,
+                   :deposit_agreement, :agreement]
 
     self.terms -= [:contributor, :description, :identifier, :publisher, :source, :date_created]
 
@@ -17,8 +17,8 @@ module Hyrax
 
     self.single_value_fields = [:title, :license]
     
-    self.admin_only_terms = [:dcmi_type, :access, :award, :degree_granting_institution, :doi, :extent,
-                             :honors_concentration, :use]
+    self.admin_only_terms = [:dcmi_type, :academic_concentration, :access, :award,
+                             :degree_granting_institution, :doi, :extent, :use]
 
     self.default_term_values = { :dcmi_type => ["http://purl.org/dc/dcmitype/Text"],
                                  :rights_statement => "http://rightsstatements.org/vocab/InC/1.0/",

@@ -110,7 +110,7 @@ RDFXML
       expect(page).to have_selector('#honors_thesis_language_label', visible: false)
       expect(page).to have_selector('#honors_thesis_license_label', visible: false)
       expect(page).to have_selector('#honors_thesis_rights_statement_label', visible: false)
-      expect(page).not_to have_field('honors_thesis_honors_concentration')
+      expect(page).not_to have_field('honors_thesis_academic_concentration')
       expect(page).not_to have_field('honors_thesis_award')
       expect(page).not_to have_field('honors_thesis_extent')
       expect(page).not_to have_field('honors_thesis_use')
@@ -192,7 +192,7 @@ RDFXML
       fill_in 'Graduation year', with: '2018'
 
       # extra fields
-      select 'Biostatistics', from: 'Honors concentration'
+      select 'Biostatistics', from: 'Academic Concentration'
       fill_in 'Access', with: 'some access'
       fill_in 'DOI', with: 'some doi'
       fill_in 'Extent', with: 'some extent'
@@ -250,7 +250,7 @@ RDFXML
       expect(page).to have_content 'Extent some extent'
       expect(page).to have_content 'Location Chapel Hill, North Carolina, United States'
       expect(page).to have_content 'Graduation year 2018'
-      expect(page).to have_content 'Honors concentration Biostatistics'
+      expect(page).to have_content 'Academic concentration Biostatistics'
       expect(page).to have_content 'Keyword Test Default Keyword'
       expect(page).to have_content 'Language English'
       expect(page).to have_content 'License Attribution 3.0 United States'
