@@ -20,3 +20,8 @@
 <%= presenter.attribute_to_html(:based_near_label, html_dl: true, label: "Location") %>
 <%= presenter.attribute_to_html(:extent, html_dl: true) %>
 <%= presenter.attribute_to_html(:digital_collection, html_dl: true) %>
+<% if presenter.date_created %>
+  <%= presenter.attribute_to_html(:date_created, html_dl: true, label: "Date uploaded") %>
+<% else %>
+  <%= presenter.attribute_to_html(:date_uploaded, html_dl: true, label: "Date uploaded") %>
+<% end %>
