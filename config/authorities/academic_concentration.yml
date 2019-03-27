@@ -1,226 +1,226 @@
 terms:
   - id: African, African American & Diaspora Studies
     term: African, African American & Diaspora Studies
-    active: honors
+    work_type: honors
   - id: American Studies
     term: American Studies
-    active: honors
+    work_type: honors
   - id: Anthropology
     term: Anthropology
-    active: honors
+    work_type: honors
   - id: Applied Science
     term: Applied Science
-    active: honors
+    work_type: honors
   - id: Aquatic and Atmospheric Sciences
     term: Aquatic and Atmospheric Sciences
-    active: masters
+    work_type: masters
   - id: Archaeology
     term: Archaeology
-    active: honors
+    work_type: honors
   - id: Art
     term: Art
-    active: honors
+    work_type: honors
   - id: Art History
     term: Art History
-    active: honors
+    work_type: honors
   - id: Asian Studies
     term: Asian Studies
-    active: honors
+    work_type: honors
   - id: Biology
     term: Biology
-    active: honors
+    work_type: honors
   - id: Biomedical Engineering
     term: Biomedical Engineering
-    active: honors
+    work_type: honors
   - id: Biostatistics
     term: Biostatistics
-    active: honors
+    work_type: honors
   - id: Business Administration
     term: Business Administration
-    active: honors
+    work_type: honors
   - id: Chemistry
     term: Chemistry
-    active: honors
+    work_type: honors
   - id: Classics
     term: Classics
-    active: honors
+    work_type: honors
   - id: Clinical Nutrition
     term: Clinical Nutrition
-    active: masters
+    work_type: masters
   - id: Communication Studies
     term: Communication Studies
-    active: honors
+    work_type: honors
   - id: Comparative Literature
     term: Comparative Literature
-    active: honors
+    work_type: honors
   - id: Computer Science
     term: Computer Science
-    active: honors
+    work_type: honors
   - id: Creative Writing
     term: Creative Writing
-    active: honors
+    work_type: honors
   - id: Cultural Studies
     term: Cultural Studies
-    active: honors
+    work_type: honors
   - id: Dramatic Art
     term: Dramatic Art
-    active: honors
+    work_type: honors
   - id: Economic Development
     term: Economic Development
-    active: masters
+    work_type: masters
   - id: Economics
     term: Economics
-    active: honors
+    work_type: honors
   - id: Education
     term: Education
-    active: honors
+    work_type: honors
   - id: English
     term: English
-    active: honors
+    work_type: honors
   - id: Environmental Chemistry and Biology
     term: Environmental Chemistry and Biology
-    active: masters
+    work_type: masters
   - id: Environmental Engineering
     term: Environmental Engineering
-    active: masters
+    work_type: masters
   - id: Environmental Health Sciences
     term: Environmental Health Sciences
-    active: honors and masters
+    work_type: honors and masters
   - id: Environmental Management and Policy
     term: Environmental Management and Policy
-    active: masters
+    work_type: masters
   - id: Environmental Science
     term: Environmental Science
-    active: honors
+    work_type: honors
   - id: Environmental Sciences and Engineering
     term: Environmental Sciences and Engineering
-    active: masters
+    work_type: masters
   - id: Environmental Studies
     term: Environmental Studies
-    active: honors
+    work_type: honors
   - id: Exercise & Sport Science
     term: Exercise & Sport Science
-    active: honors
+    work_type: honors
   - id: Folklore
     term: Folklore
-    active: honors
+    work_type: honors
   - id: Geography
     term: Geography
-    active: honors
+    work_type: honors
   - id: Geological Sciences
     term: Geological Sciences
-    active: honors
+    work_type: honors
   - id: Germanic & Slavic Languages & Literatures
     term: Germanic & Slavic Languages & Literatures
-    active: honors
+    work_type: honors
   - id: Global Studies
     term: Global Studies
-    active: honors
+    work_type: honors
   - id: Health Policy Management
     term: Health Policy Management
-    active: masters
+    work_type: masters
   - id: Health Policy & Management
     term: Health Policy & Management
-    active: honors
+    work_type: honors
   - id: History
     term: History
-    active: honors
+    work_type: honors
   - id: Housing and Community Development
     term: Housing and Community Development
-    active: masters
+    work_type: masters
   - id: Industrial Hygiene
     term: Industrial Hygiene
-    active: masters
+    work_type: masters
   - id: Information & Library Science
     term: Information & Library Science
-    active: honors
+    work_type: honors
   - id: Interdisciplinary Health Communication
     term: Interdisciplinary Health Communication
-    active: honors
+    work_type: honors
   - id: Interdisciplinary Studies
     term: Interdisciplinary Studies
-    active: honors
+    work_type: honors
   - id: Journalism & Mass Communication
     term: Journalism & Mass Communication
-    active: honors
+    work_type: honors
   - id: Land Use and Environmental Planning
     term: Land Use and Environmental Planning
-    active: masters
+    work_type: masters
   - id: Latin American Studies
     term: Latin American Studies
-    active: honors
+    work_type: honors
   - id: Library and Information Science
     term: Library and Information Science
-    active: masters
+    work_type: masters
   - id: Linguistics
     term: Linguistics
-    active: honors
+    work_type: honors
   - id: Maternal and Child Health
     term: Maternal and Child Health
-    active: masters
+    work_type: masters
   - id: Mathematical Decision Sciences
     term: Mathematical Decision Sciences
-    active: honors
+    work_type: honors
   - id: Mathematics
     term: Mathematics
-    active: honors
+    work_type: honors
   - id: Music
     term: Music
-    active: honors
+    work_type: honors
   - id: Nursing
     term: Nursing
-    active: honors
+    work_type: honors
   - id: Nutrition
     term: Nutrition
-    active: honors
+    work_type: honors
   - id: Peace, War, & Defense
     term: Peace, War, & Defense
-    active: honors
+    work_type: honors
   - id: Pharmacy
     term: Pharmacy
-    active: honors
+    work_type: honors
   - id: Philosophy
     term: Philosophy
-    active: honors
+    work_type: honors
   - id: Physics & Astronomy
     term: Physics & Astronomy
-    active: honors
+    work_type: honors
   - id: Political Science
     term: Political Science
-    active: honors
+    work_type: honors
   - id: Psychology
     term: Psychology
-    active: honors
+    work_type: honors
   - id: Public Health
     term: Public Health
-    active: honors and masters
+    work_type: honors and masters
   - id: Public Health Nutrition
     term: Public Health Nutrition
-    active: masters
+    work_type: masters
   - id: Public Policy
     term: Public Policy
-    active: honors
+    work_type: honors
   - id: Religious Studies
     term: Religious Studies
-    active: honors
+    work_type: honors
   - id: Romance Languages
     term: Romance Languages
-    active: honors
+    work_type: honors
   - id: Sociology
     term: Sociology
-    active: honors
+    work_type: honors
   - id: Studio Art
     term: Studio Art
-    active: honors and masters
+    work_type: honors and masters
   - id: Sustainable Water Resources
     term: Sustainable Water Resources
-    active: masters
+    work_type: masters
   - id: Transportation Planning
     term: Transportation Planning
-    active: masters
+    work_type: masters
   - id: Water Resources Engineering
     term: Water Resources Engineering
-    active: masters
+    work_type: masters
   - id: Women's & Gender Studies
     term: Women's & Gender Studies
-    active: honors
+    work_type: honors

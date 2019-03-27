@@ -1,64 +1,64 @@
 terms:
     - id: Aquatic and Atmospheric Sciences
       term: Aquatic and Atmospheric Sciences
-      active: masters
+      work_type: masters
     - id: Clinical Nutrition
       term: Clinical Nutrition
-      active: masters
+      work_type: masters
     - id: Economic Development
       term: Economic Development
-      active: masters
+      work_type: masters
     - id: Environmental Chemistry and Biology
       term: Environmental Chemistry and Biology
-      active: masters
+      work_type: masters
     - id: Environmental Engineering
       term: Environmental Engineering
-      active: masters
+      work_type: masters
     - id: Environmental Health Sciences
       term: Environmental Health Sciences
-      active: masters
+      work_type: masters
     - id: Environmental Management and Policy
       term: Environmental Management and Policy
-      active: masters
+      work_type: masters
     - id: Housing and Community Development
       term: Housing and Community Development
-      active: masters
+      work_type: masters
     - id: Industrial Hygiene
       term: Industrial Hygiene
-      active: masters
+      work_type: masters
     - id: Land Use and Environmental Planning
       term: Land Use and Environmental Planning
-      active: masters
+      work_type: masters
     - id: Public Health Nutrition
       term: Public Health Nutrition
-      active: masters
+      work_type: masters
     - id: Sustainable Water Resources
       term: Sustainable Water Resources
-      active: masters
+      work_type: masters
     - id: Transportation Planning
       term: Transportation Planning
-      active: masters
+      work_type: masters
     - id: Water Resources Engineering
       term: Water Resources Engineering
-      active: masters
+      work_type: masters
     - id: Anthropology
       term: Anthropology
-      active: honors
+      work_type: honors
     - id: Chemistry
       term: Chemistry
-      active: honors
+      work_type: honors
     - id: Biostatistics
       term: Biostatistics
-      active: honors
+      work_type: honors
     - id: Applied Science
       term: Applied Science
-      active: honors
+      work_type: honors
     - id: Business Administration
       term: Business Administration
-      active: honors
+      work_type: honors
     - id: Communication Studies
       term: Communication Studies
-      active: honors
+      work_type: honors
     - id: Comparative Literature
       term: Comparative Literature
-      active: honors
+      work_type: honors
