@@ -28,11 +28,11 @@ module Migrate
         work_attributes['contained_files'] = Array.new(0)
 
         # get the date_created
-        date_uploaded_string = metadata.xpath("//foxml:objectProperties/foxml:property[contains(@NAME, 'model#createdDate')]/@VALUE", MigrationConstants::NS).to_s
-        work_attributes['date_created'] = DateTime.strptime(date_uploaded_string, '%Y-%m-%dT%H:%M:%S.%N%Z').strftime('%Y-%m-%d') unless date_uploaded_string.nil?
+        date_created_string = metadata.xpath("//foxml:objectProperties/foxml:property[contains(@NAME, 'model#createdDate')]/@VALUE", MigrationConstants::NS).to_s
+        work_attributes['date_created'] = DateTime.strptime(date_created_string, '%Y-%m-%dT%H:%M:%S.%N%Z') unless date_created_string.nil?
         # get the modifiedDate
         date_modified_string = metadata.xpath("//foxml:objectProperties/foxml:property[contains(@NAME, 'view#lastModifiedDate')]/@VALUE", MigrationConstants::NS).to_s
-        work_attributes['date_modified'] = DateTime.strptime(date_modified_string, '%Y-%m-%dT%H:%M:%S.%N%Z').strftime('%Y-%m-%d') unless date_modified_string.nil?
+        work_attributes['date_modified'] = DateTime.strptime(date_modified_string, '%Y-%m-%dT%H:%M:%S.%N%Z') unless date_modified_string.nil?
 
         descriptive_mods = metadata.xpath("//foxml:datastream[contains(@ID, 'MD_DESCRIPTIVE')]//foxml:xmlContent//mods:mods", MigrationConstants::NS).last
         dc_metadata = metadata.xpath("//foxml:datastream[@ID='DC']//oai_dc:dc", MigrationConstants::NS)

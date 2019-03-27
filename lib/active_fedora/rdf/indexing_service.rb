@@ -57,13 +57,14 @@ module ActiveFedora::RDF
                                field_to_use,
                                build_person_display(field_key, field_info.values))
           end
+        else
+          solr_field_key = solr_document_field_name(field_key, prefix_method)
+          field_info.values.each do |val|
+            field_to_use = solr_field_key == 'based_near' ? field_info : field_info.behaviors
+            value = solr_field_key == 'date_created' ? val.strftime('%Y-%m-%d') : val
+            append_to_solr_doc(solr_doc, solr_field_key, field_to_use, value)
+          end
         end
-        solr_field_key = solr_document_field_name(field_key, prefix_method)
-        field_info.values.each do |val|
-          field_to_use = solr_field_key == 'based_near' ? field_info : field_info.behaviors
-          append_to_solr_doc(solr_doc, solr_field_key, field_to_use, val)
-        end
-
       end
 
       # Add label fields to solr_doc
@@ -91,7 +92,6 @@ module ActiveFedora::RDF
                          solr_document_field_name(('advisor_label').to_sym, prefix_method),
                          [:stored_searchable, :facetable],
                          @advisor_label.flatten)
-
 
       solr_doc
     end
