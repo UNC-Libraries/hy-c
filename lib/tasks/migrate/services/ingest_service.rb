@@ -75,13 +75,16 @@ module Migrate
 
           # Create new work record and save
           new_work = work_record(work_attributes, uuid)
-          save_time = Time.now
-          puts "[#{save_time.to_s}] #{uuid} saving work"
-          MigrationHelper.retry_operation do
-            new_work.save!
-          end
 
-          puts "[#{Time.now.to_s}] #{uuid},#{new_work.id} saved new work in #{Time.now-save_time} seconds"
+          # Create sipity record
+          workflow = Sipity::Workflow.joins(:permission_template)
+                         .where(permission_templates: { source_id: new_work.admin_set_id }, active: true)
+          workflow_state = Sipity::WorkflowState.where(workflow_id: workflow.first.id, name: 'deposited')
+          MigrationHelper.retry_operation('creating sipity entity for work') do
+            Sipity::Entity.create!(proxy_for_global_id: new_work.to_global_id.to_s,
+                                   workflow: workflow.first,
+                                   workflow_state: workflow_state.first)
+          end
 
           # Record old and new ids for works
           add_id_mapping(uuid, new_work)
@@ -270,9 +273,12 @@ module Migrate
             resource.member_of_collections = work_attributes['member_of_collections']
           end
 
-          MigrationHelper.retry_operation('creating child work') do
+          save_time = Time.now
+          puts "[#{save_time.to_s}] #{uuid} saving work"
+          MigrationHelper.retry_operation('creating work') do
             resource.save!
           end
+          puts "[#{Time.now.to_s}] #{uuid},#{resource.id} saved new work in #{Time.now-save_time} seconds"
 
           resource
         end
