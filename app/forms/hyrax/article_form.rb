@@ -15,11 +15,11 @@ module Hyrax
 
     self.required_fields = [:title, :creator, :abstract, :date_issued]
 
-    self.terms -= [:contributor, :source, :description]
+    self.terms -= [:contributor, :source, :description, :date_created]
     
     self.single_value_fields = [:title, :license]
     
-    self.admin_only_terms = [:dcmi_type, :date_created, :access, :bibliographic_citation, :copyright_date, :date_captured, :date_other,
+    self.admin_only_terms = [:dcmi_type, :access, :bibliographic_citation, :copyright_date, :date_captured, :date_other,
                              :digital_collection, :doi, :extent, :identifier, :rights_holder, :translator, :use]
     self.default_term_values = { :dcmi_type => ["http://purl.org/dc/dcmitype/Text"],
                                  :language => ["http://id.loc.gov/vocabulary/iso639-2/eng"],

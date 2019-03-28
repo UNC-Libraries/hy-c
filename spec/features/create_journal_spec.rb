@@ -208,6 +208,7 @@ RDFXML
       expect(page).to have_field('journal_visibility_embargo')
       expect(page).not_to have_field('journal_visibility_lease')
       expect(page).not_to have_field('journal_deposit_agreement')
+      expect(page).not_to have_field('journal_date_created')
       choose "journal_visibility_open"
       check 'agreement'
 

@@ -10,14 +10,14 @@ module Hyrax
                    :degree_granting_institution, :doi, :extent, :graduation_year, :note, :use, :resource_type,
                    :deposit_agreement, :agreement]
 
-    self.terms -= [:contributor, :description, :identifier, :publisher, :source]
+    self.terms -= [:contributor, :description, :identifier, :publisher, :source, :date_created]
 
     self.required_fields = [:title, :creator, :abstract, :advisor, :affiliation, :degree, :date_issued,
                             :graduation_year]
 
     self.single_value_fields = [:title, :license]
     
-    self.admin_only_terms = [:date_created, :dcmi_type, :academic_concentration, :access, :award,
+    self.admin_only_terms = [:dcmi_type, :academic_concentration, :access, :award,
                              :degree_granting_institution, :doi, :extent, :use]
 
     self.default_term_values = { :dcmi_type => ["http://purl.org/dc/dcmitype/Text"],

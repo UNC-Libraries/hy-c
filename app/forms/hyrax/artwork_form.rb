@@ -9,12 +9,12 @@ module Hyrax
     self.model_class = ::Artwork
     self.terms += [:resource_type, :abstract, :date_issued, :doi, :extent, :medium, :deposit_agreement, :agreement]
     self.terms -= [:contributor, :keyword, :publisher, :subject, :language, :identifier, :based_near,
-                   :related_url, :source, :language_label]
+                   :related_url, :source, :language_label, :date_created]
     self.required_fields = [:title, :date_issued, :abstract, :extent, :medium, :resource_type]
 
     # Add overrides for required properties which are becoming single-valued
     self.single_value_fields = [:title, :license]
-    self.admin_only_terms = [:date_created, :doi]
+    self.admin_only_terms = [:doi]
     self.default_term_values = { :rights_statement => "http://rightsstatements.org/vocab/InC/1.0/" }
 
     def title

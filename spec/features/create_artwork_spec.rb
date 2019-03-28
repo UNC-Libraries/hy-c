@@ -130,7 +130,6 @@ RSpec.feature 'Create an Artwork', js: false do
 
       # required fields
       fill_in 'Title', with: 'Test Artwork work'
-      fill_in 'Date created', with: '2018-10-03'
       fill_in 'Date of publication', with: '2018-10-03'
       fill_in 'Abstract', with: 'a description'
       fill_in 'Extent', with: 'some extent'
@@ -150,6 +149,7 @@ RSpec.feature 'Create an Artwork', js: false do
       expect(page).to have_field('artwork_visibility_embargo')
       expect(page).not_to have_field('artwork_visibility_lease')
       expect(page).not_to have_field('artwork_deposit_agreement')
+      expect(page).not_to have_field('artwork_date_created')
       choose "artwork_visibility_open"
 
       check 'agreement'
@@ -169,7 +169,6 @@ RSpec.feature 'Create an Artwork', js: false do
       expect(page).to have_content 'Test Artwork work'
 
       first('.document-title', text: 'Test Artwork work').click
-      expect(page).to have_content 'Date created October 3, 2018'
       expect(page).to have_content 'Creator Test Default Creator ORCID: creator orcid'
       expect(page).to have_content 'Affiliation:'
       expect(page).to have_content 'College of Arts and Sciences'

@@ -214,7 +214,6 @@ RDFXML
       select 'Article', from: 'article_resource_type'
       fill_in 'Access', with: 'some access'
       fill_in 'Alternate title', with: 'my other title'
-      fill_in 'Date created', with: '2018-10-03'
       fill_in 'Bibliographic citation', with: 'a citation'
       fill_in 'Copyright date', with: '2018'
       fill_in 'Date other', with: '2018-10-03'
@@ -247,6 +246,7 @@ RDFXML
       expect(page).to have_field('article_visibility_embargo')
       expect(page).not_to have_field('article_visibility_lease')
       expect(page).not_to have_field('article_deposit_agreement')
+      expect(page).not_to have_field('article_date_created')
       expect(page).to have_select('article_resource_type', selected: 'Article')
       choose 'article_visibility_open'
       check 'agreement'
@@ -281,7 +281,6 @@ RDFXML
       expect(page).to have_content 'License Attribution 3.0 United States'
       expect(page).to have_content 'Rights statement In Copyright'
       expect(page).to have_content 'Publisher UNC Press'
-      expect(page).to have_content 'Date created October 3, 2018'
       expect(page).to have_content 'Subject test'
       expect(page).to have_content 'Language English'
       expect(page).to have_content 'Identifier some id'

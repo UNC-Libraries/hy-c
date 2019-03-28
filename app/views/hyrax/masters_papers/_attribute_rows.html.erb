@@ -21,3 +21,8 @@
 <%= presenter.attribute_to_html(:access, html_dl: true) %>
 <%= presenter.attribute_to_html(:use, html_dl: true) %>
 <%= presenter.attribute_to_html(:deposit_record, html_dl: true) %>
+<% if presenter.date_created %>
+  <%= presenter.attribute_to_html(:date_created, html_dl: true, label: "Date uploaded") %>
+<% else %>
+  <%= presenter.attribute_to_html(:date_uploaded, html_dl: true, label: "Date uploaded") %>
+<% end %>

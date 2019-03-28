@@ -117,7 +117,6 @@ RDFXML
       fill_in 'ORCID', { with: 'composer orcid', id: 'general_composers_attributes_0_orcid' }
       select 'Department of Biology', from: 'general_composers_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'general_composers_attributes_0_other_affiliation' }
-      fill_in 'Date created', with: '2018-10-03'
       fill_in 'Date of publication', with: '2018-10-03'
       fill_in 'Date other', with: '2018-10-03'
       fill_in 'Dcmi type', with: 'http://purl.org/dc/dcmitype/Text'
@@ -181,6 +180,7 @@ RDFXML
       expect(page).to have_field('general_visibility_embargo')
       expect(page).not_to have_field('general_visibility_lease')
       expect(page).not_to have_field('general_deposit_agreement')
+      expect(page).not_to have_field('general_date_created')
       choose 'general_visibility_open'
       check 'agreement'
 
@@ -218,7 +218,6 @@ RDFXML
       expect(page).to have_content 'Contributor contributor ORCID: contributor orcid'
       expect(page).to have_content 'Copyright date 2018'
       expect(page).to have_content 'Creator Test Default Creator ORCID: creator orcid'
-      expect(page).to have_content 'Date created October 3, 2018'
       expect(page).to have_content 'Date of publication October 3, 2018'
       expect(page).to have_content 'Date other October 3, 2018'
       expect(page).to have_content 'Degree Bachelor of Science'

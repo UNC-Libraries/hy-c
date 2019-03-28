@@ -72,7 +72,7 @@ RDFXML
     expect(new_article['depositor']).to eq 'admin@example.com'
     expect(new_article['title']).to match_array ['Les Miserables']
     expect(new_article['label']).to eq 'Les Miserables'
-    expect(new_article['date_modified']).to eq '2017-10-02'
+    expect(new_article['date_modified']).to eq 'Mon, 02 Oct 2017 17:46:28 +0000'
     expect(new_article['publisher']).to match_array ['Project Gutenberg']
     expect(new_article['language']).to match_array ['http://id.loc.gov/vocabulary/iso639-2/eng']
     expect(new_article['language_label']).to match_array ['English']
