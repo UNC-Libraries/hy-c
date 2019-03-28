@@ -96,7 +96,7 @@
                         {
                             "notification_type": "email",
                             "name": "Hyrax::Workflow::PendingDeletionNotification",
-                            "to": ["deleting"]
+                            "to": []
                         }
                     ],
                     "methods": [
