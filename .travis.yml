@@ -42,3 +42,4 @@ env:
     - DATA_STORAGE=./public
     - TEMP_STORAGE=./public
     - DELETED_PEOPLE_FILE=./tmp/deleted_people.txt
+    - ALLOW_NOTIFICATIONS=true
