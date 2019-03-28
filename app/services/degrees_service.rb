@@ -9,12 +9,16 @@ module DegreesService
     end
   end
 
-  def self.select_active_options
-    active_elements.map { |e| [e[:label], e[:id]] }
+  def self.select_active_options(term)
+    active_elements(term).map { |e| [e[:label], e[:id]] }
   end
 
-  def self.active_elements
-    authority.all.select { |e| e.fetch('active') }
+  def self.active_elements(term)
+    if term == 'all'
+      authority.all.select { |e| e.fetch('active') }
+    else
+      authority.all.select { |e| e.fetch('active') && e.fetch('work_type') == term }
+    end
   end
 
   def self.label(id)

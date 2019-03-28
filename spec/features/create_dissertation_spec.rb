@@ -105,7 +105,7 @@ RDFXML
       fill_in 'ORCID', { with: 'contributor orcid', id: 'dissertation_contributors_attributes_0_orcid' }
       select 'Department of Biology', from: 'dissertation_contributors_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'dissertation_contributors_attributes_0_other_affiliation' }
-      select 'Bachelor of Science', from: 'dissertation_degree'
+      select 'Doctor of Philosophy', from: 'dissertation_degree'
       fill_in 'DOI', with: 'some doi'
       select 'Dissertation', from: 'dissertation_resource_type'
       fill_in 'Access', with: 'some access'
@@ -167,7 +167,7 @@ RDFXML
       expect(page).to have_content 'Advisor advisor ORCID: advisor orcid'
       expect(page).to have_content 'Alternate title another title'
       expect(page).to have_content 'Contributor contributor ORCID: contributor orcid'
-      expect(page).to have_content 'Degree Bachelor of Science'
+      expect(page).to have_content 'Degree Doctor of Philosophy'
       expect(page).to have_content 'DOI some doi'
       expect(page).to have_content 'Resource type Dissertation'
       expect(page).to have_content 'Access some access'
