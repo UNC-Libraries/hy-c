@@ -61,7 +61,14 @@ module ActiveFedora::RDF
           solr_field_key = solr_document_field_name(field_key, prefix_method)
           field_info.values.each do |val|
             field_to_use = solr_field_key == 'based_near' ? field_info : field_info.behaviors
-            value = solr_field_key == 'date_created' ? val.strftime('%Y-%m-%d') : val
+            value = val
+            if solr_field_key == 'date_created'
+              if val.is_a? DateTime
+                value =  Hyc::EdtfConvert.convert_from_edtf(val.strftime('%Y-%m-%d'))
+              else
+                value =  Hyc::EdtfConvert.convert_from_edtf(Date.parse(val).strftime('%Y-%m-%d'))
+              end
+            end
             append_to_solr_doc(solr_doc, solr_field_key, field_to_use, value)
           end
         end
