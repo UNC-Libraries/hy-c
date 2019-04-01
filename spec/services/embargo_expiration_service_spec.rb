@@ -31,31 +31,17 @@ describe EmbargoExpirationService, :clean do
   end
 
   context "#expire_embargoes" do
-    sample_data = YAML.load(File.read(File.expand_path('../../../spec/fixtures/embargo_expiration_service.yml', __FILE__)))
+    let(:article) { FactoryBot.create(:tomorrow_expiration) }
+    let(:file_set) { FactoryBot.create(:file_set) }
+    let(:embargo) { FactoryBot.create(:embargo, embargo_release_date: Time.zone.tomorrow) }
+    let(:service) { described_class.new(Time.zone.tomorrow) }
 
-    doc = sample_data[1]
-    work = Article.new
-    work.creator = [doc['creator']]
-    work.depositor = doc['depositor']
-    work.label = doc['label']
-    work.title = [doc['title']]
-    work.date_created = doc['date_created']
-    work.date_modified = doc['date_modified']
-    work.contributor = [doc['contributor']]
-    work.description = doc['description']
-    work.related_url = [doc['related_url']]
-    work.resource_type = [doc['resource_type']]
-    work.language = [doc['language']]
-    work.language_label = [doc['language_label']]
-    work.rights_statement = doc['rights_statement']
-    work.visibility = doc['visibility']
-    work.visibility_after_embargo =  doc['visibility_after_embargo']
-    work.embargo_release_date = Time.zone.tomorrow
-    work.save!
-    sleep 1
-
-    let(:article) { work }
-    let(:service) { described_class.new(Time.zone.tomorrow + 1.days) }
+    before do
+      article.ordered_members << file_set
+      file_set.embargo = embargo
+      file_set.visibility = "restricted"
+      article.embargo_visibility!
+    end
 
     it "removes the embargo for each object whose expiration date has been reached" do
       expect(article.embargo_release_date).to eq(Time.zone.tomorrow)
@@ -75,7 +61,7 @@ describe EmbargoExpirationService, :clean do
     end
 
     context "when the embargo is not expired" do
-      let(:service) { described_class.new(Time.zone.now) }
+      let(:service) { described_class.new(Time.zone.now + 7.days) }
 
       it 'does not deactivate embargo' do
         expect { service.expire_embargoes }
