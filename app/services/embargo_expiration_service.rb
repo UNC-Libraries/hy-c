@@ -57,7 +57,7 @@ class EmbargoExpirationService
     expiration_date = solrize_date(@date)
 
     @work_types.each do |work_type|
-      expired_works = work_type.where("embargo_release_date_dtsi:#{RSolr.solr_escape(expiration_date)}")
+      expired_works = work_type.where("embargo_release_date_dtsi:[* TO #{RSolr.solr_escape(expiration_date)}]")
       expired_embargoes << expired_works
     end
 
