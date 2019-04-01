@@ -72,7 +72,6 @@ class CatalogController < ApplicationController
     #   The ordering of the field names is the order of the display
     config.add_index_field solr_name("title", :stored_searchable), label: "Title", itemprop: 'name', if: false
     config.add_index_field solr_name("creator_label", :stored_searchable), label: "Creator", itemprop: 'creator', link_to_search: solr_name("creator", :facetable)
-    config.add_index_field solr_name("date_created", :stored_searchable), itemprop: 'dateCreated', label: "Date created"
     config.add_index_field solr_name("date_captured", :stored_searchable), itemprop: 'dateCaptured', label: "Date captured"
     config.add_index_field solr_name("date_issued", :stored_searchable), label: "Date of publication"
     config.add_index_field solr_name("abstract", :stored_searchable), label: "Abstract"
