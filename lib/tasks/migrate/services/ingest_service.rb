@@ -222,10 +222,12 @@ module Migrate
           end
           resource.depositor = @depositor.uid
 
-          # Singularize non-enumerable attributes
+          # Singularize non-enumerable attributes and make sure enumerable attributes are arrays
           work_attributes.each do |k,v|
             if resource.attributes.keys.member?(k.to_s) && !resource.attributes[k.to_s].respond_to?(:each) && work_attributes[k].respond_to?(:each)
               work_attributes[k] = v.first
+            elsif resource.attributes.keys.member?(k.to_s) && resource.attributes[k.to_s].respond_to?(:each) && !work_attributes[k].respond_to?(:each)
+              work_attributes[k] = Array(v)
             else
               work_attributes[k] = v
             end
@@ -278,6 +280,14 @@ module Migrate
           MigrationHelper.retry_operation('creating work') do
             resource.save!
           end
+
+          # Logging data that has been deduplicated upon saving
+          deduped = {}
+          resource.attributes.each {|k, v| deduped[k] = work_attributes[k] if (Array(work_attributes[k]).sort != Array(v).sort && !work_attributes[k].blank?) }
+          if !deduped.blank?
+            puts "#{Time.now.to_s}] #{uuid},#{resource.id} deduped data: #{deduped}"
+          end
+
           puts "[#{Time.now.to_s}] #{uuid},#{resource.id} saved new work in #{Time.now-save_time} seconds"
 
           resource
