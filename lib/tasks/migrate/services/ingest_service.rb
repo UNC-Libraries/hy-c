@@ -283,7 +283,10 @@ module Migrate
 
           # Logging data that has been deduplicated upon saving
           deduped = {}
-          resource.attributes.each {|k, v| deduped[k] = work_attributes[k] if (Array(work_attributes[k]).sort != Array(v).sort && !work_attributes[k].blank?) }
+          resource.attributes.except('advisors', 'arrangers', 'composers', 'contributors', 'creators', 'project_directors',
+                                     'researchers', 'reviewers', 'translators').each do |k, v|
+            deduped[k] = work_attributes[k] if (Array(work_attributes[k]).sort != Array(v).sort && !work_attributes[k].blank?)
+          end
           if !deduped.blank?
             puts "#{Time.now.to_s}] #{uuid},#{resource.id} deduped data: #{deduped}"
           end
