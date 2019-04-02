@@ -19,4 +19,8 @@ module MimeTypeService
     end
     [render_options, html_options]
   end
+
+  def self.valid?(term)
+    authority.all.detect{|element| element['label'] == term}
+  end
 end

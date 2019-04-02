@@ -84,7 +84,8 @@ module Hydra
       def file_name
         filename = params[:filename] || file.original_name || (asset.respond_to?(:label) && asset.label) || file.id
         extension = MimeTypeService.label(file.mime_type)
-        if !filename.match?(/.*#{extension}\z/)
+        existing_extension = filename.split('.').last
+        if !filename.match?(/.*#{extension}\z/) && MimeTypeService.valid?(existing_extension).blank?
           "#{filename}.#{extension}"
         else
           filename
