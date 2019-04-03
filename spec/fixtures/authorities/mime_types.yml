@@ -1,0 +1,448 @@
+terms:
+  - id: text/richtext
+    term: rtf
+    active: true
+  - id: application/powerpoint
+    term: ppt
+    active: true
+  - id: application/vnd.openxmlformats-officedocument.wordprocessingml.document
+    term: docx
+    active: true
+  - id: application/vnd.openxmlformats-officedocument.wordprocessingml.template
+    term: dotx
+    active: true
+  - id: application/vnd.openxmlformats-officedocument.presentationml.presentation
+    term: pptx
+    active: true
+  - id: application/vnd.openxmlformats-officedocument.presentationml.slideshow
+    term: ppsx
+    active: true
+  - id: application/vnd.openxmlformats-officedocument.presentationml.template
+    term: potx
+    active: true
+  - id: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+    term: xlsx
+    active: true
+  - id: application/vnd.openxmlformats-officedocument.spreadsheetml.template
+    term: xltx
+    active: true
+  - id: application/x-silverlight-app
+    term: xap
+    active: true
+  - id: application/envoy
+    term: evy
+    active: true
+  - id: application/fractals
+    term: fif
+    active: true
+  - id: application/futuresplash
+    term: spl
+    active: true
+  - id: application/hta
+    term: hta
+    active: true
+  - id: application/internet-property-stream
+    term: acx
+    active: true
+  - id: application/mac-binhex40
+    term: hqx
+    active: true
+  - id: application/msword
+    term: doc
+    active: true
+  - id: application/oda
+    term: oda
+    active: true
+  - id: application/olescript
+    term: axs
+    active: true
+  - id: application/pdf
+    term: pdf
+    active: true
+  - id: application/pics-rules
+    term: prf
+    active: true
+  - id: application/pkcs10
+    term: p10
+    active: true
+  - id: application/pkix-crl
+    term: crl
+    active: true
+  - id: application/postscript
+    term: ps
+    active: true
+  - id: application/rtf
+    term: rtf
+    active: true
+  - id: application/set-payment-initiation
+    term: setpay
+    active: true
+  - id: application/set-registration-initiation
+    term: setreg
+    active: true
+  - id: application/vnd.ms-excel
+    term: xls
+    active: true
+  - id: application/vnd.ms-outlook
+    term: msg
+    active: true
+  - id: application/vnd.ms-pkicertstore
+    term: sst
+    active: true
+  - id: application/vnd.ms-pkiseccat
+    term: cat
+    active: true
+  - id: application/vnd.ms-pkistl
+    term: stl
+    active: true
+  - id: application/vnd.ms-powerpoint
+    term: ppt
+    active: true
+  - id: application/vnd.ms-project
+    term: mpp
+    active: true
+  - id: application/vnd.ms-works
+    term: wcm
+    active: true
+  - id: application/vnd.openxmlformats-officedocument.presentationml.presentation
+    term: pptx
+    active: true
+  - id: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+    term: xlsx
+    active: true
+  - id: application/vnd.openxmlformats-officedocument.wordprocessingml.document
+    term: docx
+    active: true
+  - id: application/winhlp
+    term: hlp
+    active: true
+  - id: application/x-bcpio
+    term: bcpio
+    active: true
+  - id: application/x-cdf
+    term: cdf
+    active: true
+  - id: application/x-compress
+    term: z
+    active: true
+  - id: application/x-compressed
+    term: tgz
+    active: true
+  - id: application/x-cpio
+    term: cpio
+    active: true
+  - id: application/x-csh
+    term: csh
+    active: true
+  - id: application/x-director
+    term: dcr
+    active: true
+  - id: application/x-dvi
+    term: dvi
+    active: true
+  - id: application/x-gtar
+    term: gtar
+    active: true
+  - id: application/x-gzip
+    term: gz
+    active: true
+  - id: application/x-hdf
+    term: hdf
+    active: true
+  - id: application/x-internet-signup
+    term: ins
+    active: true
+  - id: application/x-iphone
+    term: iii
+    active: true
+  - id: application/x-javascript
+    term: js
+    active: true
+  - id: application/x-latex
+    term: latex
+    active: true
+  - id: application/x-msaccess
+    term: mdb
+    active: true
+  - id: application/x-mscardfile
+    term: crd
+    active: true
+  - id: application/x-msclip
+    term: clp
+    active: true
+  - id: application/x-msdownload
+    term: dll
+    active: true
+  - id: application/x-msmediaview
+    term: mvb
+    active: true
+  - id: application/x-msmetafile
+    term: wmf
+    active: true
+  - id: application/x-msmoney
+    term: mny
+    active: true
+  - id: application/x-mspublisher
+    term: pub
+    active: true
+  - id: application/x-msschedule
+    term: scd
+    active: true
+  - id: application/x-msterminal
+    term: trm
+    active: true
+  - id: application/x-mswrite
+    term: wri
+    active: true
+  - id: application/x-netcdf
+    term: cdf
+    active: true
+  - id: application/x-perfmon
+    term: pma
+    active: true
+  - id: application/x-pkcs12
+    term: pfx
+    active: true
+  - id: application/x-pkcs7-certificates
+    term: p7b
+    active: true
+  - id: application/x-pkcs7-certificates
+    term: spc
+    active: true
+  - id: application/x-pkcs7-certreqresp
+    term: p7r
+    active: true
+  - id: application/x-pkcs7-mime
+    term: p7m
+    active: true
+  - id: application/x-pkcs7-signature
+    term: p7s
+    active: true
+  - id: application/x-sh
+    term: sh
+    active: true
+  - id: application/x-shar
+    term: shar
+    active: true
+  - id: application/x-shockwave-flash
+    term: swf
+    active: true
+  - id: application/x-stuffit
+    term: sit
+    active: true
+  - id: application/x-sv4cpio
+    term: sv4cpio
+    active: true
+  - id: application/x-sv4crc
+    term: sv4crc
+    active: true
+  - id: application/x-tar
+    term: tar
+    active: true
+  - id: application/x-tcl
+    term: tcl
+    active: true
+  - id: application/x-tex
+    term: tex
+    active: true
+  - id: application/x-texinfo
+    term: texinfo
+    active: true
+  - id: application/x-troff
+    term: roff
+    active: true
+  - id: application/x-troff-man
+    term: man
+    active: true
+  - id: application/x-troff-me
+    term: me
+    active: true
+  - id: application/x-troff-ms
+    term: ms
+    active: true
+  - id: application/x-ustar
+    term: ustar
+    active: true
+  - id: application/x-wais-source
+    term: src
+    active: true
+  - id: application/x-x509-ca-cert
+    term: crt
+    active: true
+  - id: application/ynd.ms-pkipko
+    term: pko
+    active: true
+  - id: application/zip
+    term: zip
+    active: true
+  - id: application/x-zip-compressed
+    term: zip
+    active: true
+  - id: audio/basic
+    term: au
+    active: true
+  - id: audio/basic
+    term: snd
+    active: true
+  - id: audio/mid
+    term: mid
+    active: true
+  - id: audio/mid
+    term: rmi
+    active: true
+  - id: audio/mpeg
+    term: mp3
+    active: true
+  - id: audio/x-aiff
+    term: aif
+    active: true
+  - id: audio/x-mpegurl
+    term: m
+    active: true
+  - id: audio/x-pn-realaudio
+    term: ram
+    active: true
+  - id: audio/x-wav
+    term: wav
+    active: true
+  - id: image/bmp
+    term: bmp
+    active: true
+  - id: image/cis-cod
+    term: cod
+    active: true
+  - id: image/gif
+    term: gif
+    active: true
+  - id: image/ief
+    term: ief
+    active: true
+  - id: image/jpeg
+    term: jpg
+    active: true
+  - id: image/jp2
+    term: jp2
+    active: true
+  - id: image/pipeg
+    term: jfif
+    active: true
+  - id: image/png
+    term: png
+    active: true
+  - id: image/svg+xml
+    term: svg
+    active: true
+  - id: image/tiff
+    term: tif
+    active: true
+  - id: image/x-cmu-raster
+    term: ras
+    active: true
+  - id: image/x-cmx
+    term: cmx
+    active: true
+  - id: image/x-icon
+    term: ico
+    active: true
+  - id: image/x-portable-anymap
+    term: pnm
+    active: true
+  - id: image/x-portable-bitmap
+    term: pbm
+    active: true
+  - id: image/x-portable-graymap
+    term: pgm
+    active: true
+  - id: image/x-portable-pixmap
+    term: ppm
+    active: true
+  - id: image/x-rgb
+    term: rgb
+    active: true
+  - id: image/x-xbitmap
+    term: xbm
+    active: true
+  - id: image/x-xpixmap
+    term: xpm
+    active: true
+  - id: image/x-xwindowdump
+    term: xwd
+    active: true
+  - id: message/rfc822
+    term: mhtml
+    active: true
+  - id: text/csv
+    term: csv
+    active: true
+  - id: text/css
+    term: css
+    active: true
+  - id: text/html
+    term: html
+    active: true
+  - id: text/iuls
+    term: uls
+    active: true
+  - id: text/javascript
+    term: js
+    active: true
+  - id: text/plain
+    term: txt
+    active: true
+  - id: text/scriptlet
+    term: sct
+    active: true
+  - id: text/tab-separated-values
+    term: tsv
+    active: true
+  - id: text/webviewhtml
+    term: htt
+    active: true
+  - id: text/x-component
+    term: htc
+    active: true
+  - id: text/x-setext
+    term: etx
+    active: true
+  - id: text/x-vcard
+    term: vcf
+    active: true
+  - id: text/xml
+    term: xml
+    active: true
+  - id: application/xml
+    term: xml
+    active: true
+  - id: video/mpeg
+    term: mpeg
+    active: true
+  - id: video/mp4
+    term: mp4
+    active: true
+  - id: video/quicktime
+    term: mov
+    active: true
+  - id: video/x-la-asf
+    term: lsf
+    active: true
+  - id: video/x-la-asf
+    term: lsx
+    active: true
+  - id: video/x-ms-asf
+    term: asf
+    active: true
+  - id: video/msvideo
+    term: avi
+    active: true
+  - id: video/x-msvideo
+    term: avi
+    active: true
+  - id: video/x-sgi-movie
+    term: movie
+    active: true
+  - id: video/xmpg2
+    term: avi
+    active: true
+  - id: x-world/x-vrml
+    term: vrml
+    active: true
