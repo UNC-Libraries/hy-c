@@ -1,15 +1,25 @@
+# [hyc-override] Overriding helper in order to use date_issued, if present, for publication date
 module Hyrax
   module CitationsBehaviors
     module PublicationBehavior
       include Hyrax::CitationsBehaviors::CommonBehavior
       def setup_pub_date(work)
-        first_date = work.date_created.first if work.date_created
+        if work.respond_to?(:date_issued)
+          file_date = work.date_issued
+          first_date = file_date.respond_to?(:first) ? file_date.first : file_date
+        elsif work.respond_to?(:date_created)
+          file_date = work.date_created
+          first_date = file_date.respond_to?(:first) ? file_date.first : file_date
+        else
+          first_date = ''
+        end
+
         if first_date.present?
           first_date = CGI.escapeHTML(first_date)
-          date_value = first_date.gsub(/[^0-9|n\.d\.]/, "")[0, 4]
+          date_value = /\d{4}/.match(first_date)
           return nil if date_value.nil?
         end
-        clean_end_punctuation(date_value) if date_value
+        clean_end_punctuation(date_value[0]) if date_value
       end
 
       # @param [Hyrax::WorkShowPresenter] work_presenter
