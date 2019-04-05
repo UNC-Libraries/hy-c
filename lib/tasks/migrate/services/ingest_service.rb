@@ -254,7 +254,7 @@ module Migrate
                                            'project_directors_attributes', 'researchers_attributes', 'reviewers_attributes',
                                            'translators_attributes', 'dc_title', 'premis_files', 'embargo_release_date',
                                            'visibility_during_embargo', 'visibility_after_embargo', 'visibility',
-                                           'member_of_collections')
+                                           'member_of_collections', 'based_near_attributes')
           if !missing.blank?
             puts "[#{Time.now.to_s}] #{uuid} missing: #{missing}"
           end
@@ -286,7 +286,7 @@ module Migrate
           # Logging data that has been deduplicated upon saving
           deduped = {}
           resource.attributes.except('advisors', 'arrangers', 'composers', 'contributors', 'creators', 'project_directors',
-                                     'researchers', 'reviewers', 'translators').each do |k, v|
+                                     'researchers', 'reviewers', 'translators', 'based_near').each do |k, v|
             deduped[k] = work_attributes[k] if (Array(work_attributes[k]).sort != Array(v).sort && !work_attributes[k].blank?)
           end
           if !deduped.blank?
