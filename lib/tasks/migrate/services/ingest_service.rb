@@ -184,6 +184,7 @@ module Migrate
       end
 
       def create_fileset(parent: nil, resource: nil, file: nil)
+        resource['title'].map!{|title| title.gsub('/', '_')}
         file_set = nil
         MigrationHelper.retry_operation('creating fileset') do
           file_set = FileSet.create(resource)
@@ -205,6 +206,7 @@ module Migrate
         end
 
         File.delete(renamed_file) if File.exist?(renamed_file)
+        FileUtils.rm_rf("#{@tmp_file_location}/#{parent.id}")
 
         file_set
       end
