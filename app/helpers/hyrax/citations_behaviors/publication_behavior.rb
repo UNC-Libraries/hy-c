@@ -7,9 +7,6 @@ module Hyrax
         if work.respond_to?(:date_issued)
           file_date = work.date_issued
           first_date = file_date.respond_to?(:first) ? file_date.first : file_date
-        elsif work.respond_to?(:date_created)
-          file_date = work.date_created
-          first_date = file_date.respond_to?(:first) ? file_date.first : file_date
         else
           first_date = ''
         end
