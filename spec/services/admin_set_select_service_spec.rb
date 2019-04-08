@@ -5,7 +5,7 @@ RSpec.describe Hyrax::AdminSetSelectService do
 
   describe "#select" do
     let(:admin_set) do
-      AdminSet.create(title: ['default'])
+      AdminSet.where(title: ['default']).first || AdminSet.create(title: ['default'])
     end
 
     before do
