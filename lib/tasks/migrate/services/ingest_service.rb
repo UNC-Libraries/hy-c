@@ -239,6 +239,19 @@ module Migrate
           end
           resource.depositor = @depositor.uid
 
+          # escape '\'
+          work_attributes.each do |k,v|
+            if v.is_a? Array
+              work_attributes[k] = v.each do |val|
+                if val.is_a? String
+                  val.gsub!(/\\/, '\\\\\\')
+                end
+              end
+            elsif v.is_a? String
+              work_attributes[k] = v.gsub(/\\/, '\\\\\\')
+            end
+          end
+
           # Singularize non-enumerable attributes and make sure enumerable attributes are arrays
           work_attributes.each do |k,v|
             if resource.attributes.keys.member?(k.to_s) && !resource.attributes[k.to_s].respond_to?(:each) && work_attributes[k].respond_to?(:each)
