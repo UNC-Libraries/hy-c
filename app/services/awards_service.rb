@@ -17,7 +17,13 @@ module AwardsService
   end
 
   def self.label(id)
-    authority.find(id).fetch('term')
+    begin
+      authority.find(id).fetch('term')
+    rescue
+      Rails.logger.warn "AwardsService: cannot find #{id}"
+      puts "AwardsService: cannot find #{id}" # for migration log
+      nil
+    end
   end
 
   def self.include_current_value(value, _index, render_options, html_options)
