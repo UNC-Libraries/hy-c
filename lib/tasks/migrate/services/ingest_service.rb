@@ -242,11 +242,7 @@ module Migrate
           # escape '\'
           work_attributes.each do |k,v|
             if v.is_a? Array
-              work_attributes[k] = v.each do |val|
-                if val.is_a? String
-                  val.gsub!(/\\/, '\\\\\\')
-                end
-              end
+              work_attributes[k] = v.map{|val| val.gsub(/\\/, '\\\\\\') if val.is_a? String}
             elsif v.is_a? String
               work_attributes[k] = v.gsub(/\\/, '\\\\\\')
             end
