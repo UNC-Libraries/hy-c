@@ -21,7 +21,7 @@ module Hyrax
 
       # @param [Hyrax::WorkShowPresenter] work_presenter
       def setup_pub_place(work_presenter)
-        work_presenter.based_near_label&.first
+        work_presenter.place_of_publication&.first
       end
 
       def setup_pub_publisher(work)
@@ -38,7 +38,7 @@ module Hyrax
         end
 
         pub_date = include_date ? setup_pub_date(work) : nil
-        pub_info << ", " << pub_date unless pub_date.nil?
+        pub_info << ", " << pub_date unless pub_date.nil? && (place.blank? || publisher.blank?)
 
         pub_info.strip!
         pub_info.blank? ? nil : pub_info
