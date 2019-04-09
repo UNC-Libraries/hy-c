@@ -21,7 +21,7 @@ module Hyrax
 
       # @param [Hyrax::WorkShowPresenter] work_presenter
       def setup_pub_place(work_presenter)
-        work_presenter.place_of_publication&.first
+        work_presenter.place_of_publication&.first if work_presenter.respond_to?(:place_of_publication)
       end
 
       def setup_pub_publisher(work)

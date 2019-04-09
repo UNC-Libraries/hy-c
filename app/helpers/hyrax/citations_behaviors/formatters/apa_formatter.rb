@@ -37,13 +37,17 @@ module Hyrax
           authors_list = Array.wrap(authors_list).collect { |name| abbreviate_name(surname_first(name)).strip }
           text = ''
           text << authors_list.first if authors_list.first
-          authors_list[1..-1].each do |author|
-            if author == authors_list.last # last
-              text << ", &amp; " << author
-            else # all others
-              text << ", " << author
+
+          unless authors_list[1..-1].blank?
+            authors_list[1..-1].each do |author|
+              if author == authors_list.last # last
+                text << ", &amp; " << author
+              else # all others
+                text << ", " << author
+              end
             end
           end
+
           text << "." unless text =~ /\.$/
           text
         end

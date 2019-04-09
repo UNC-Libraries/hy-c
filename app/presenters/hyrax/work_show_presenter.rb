@@ -38,7 +38,7 @@ module Hyrax
              to: :solr_document
 
     # Metadata Methods
-    delegate :title, :date_created, :date_issued, :description, :doi, :creator,
+    delegate :title, :date_created, :date_issued, :description, :doi, :creator, :place_of_publication,
              :creator_display, :contributor, :subject, :publisher, :language, :embargo_release_date,
              :lease_expiration_date, :license, :source, :rights_statement, :thumbnail_id, :representative_id,
              :rendering_ids, :member_of_collection_ids, to: :solr_document
