@@ -38,9 +38,16 @@ module Hyrax
         end
 
         pub_date = include_date ? setup_pub_date(work) : nil
-        pub_info << ", " << pub_date unless pub_date.nil? && (place.blank? || publisher.blank?)
+        pub_info << ", " unless pub_info.blank?
+        pub_info << pub_date unless pub_date.nil?
 
         pub_info.strip!
+
+        # Remove any trailing commas
+        if pub_info.last == ','
+          pub_info = pub_info[0...-1]
+        end
+
         pub_info.blank? ? nil : pub_info
       end
     end
