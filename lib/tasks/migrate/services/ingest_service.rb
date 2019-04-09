@@ -208,7 +208,11 @@ module Migrate
         actor = Hyrax::Actors::FileSetActor.new(file_set, @depositor)
         actor.create_metadata(resource)
 
-        renamed_file = "#{@tmp_file_location}/#{parent.id}/#{Array(resource['title']).first}"
+        filename = Array(resource['title']).first
+        extension = filename.match(/\./) ? filename.split('.').last : nil
+        omission = extension.blank? ? '' : ".#{extension}"
+
+        renamed_file = "#{@tmp_file_location}/#{parent.id}/#{filename.truncate(240, omission: omission)}"
         FileUtils.mkpath("#{@tmp_file_location}/#{parent.id}")
         FileUtils.cp(file, renamed_file)
 
