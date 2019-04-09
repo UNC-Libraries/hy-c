@@ -9,7 +9,10 @@ module Hyrax
 
       # return all unique authors of a work or nil if none
       def all_authors(work, &block)
-        authors = work.creator.uniq.compact
+        author_vals = work.creator_display.map do |d|
+          d.split('|').first
+        end
+        authors = author_vals.uniq.compact
         block_given? ? authors.map(&block) : authors
       end
 
