@@ -210,7 +210,7 @@ module Migrate
 
         filename = Array(resource['title']).first
         extension = filename.match(/\./) ? filename.split('.').last : nil
-        omission = (extension.blank? || (extension.bytesize > 20)) ? '' : ".#{extension}"
+        omission = (extension.blank? || MimeTypeService.valid?(extension).blank?) ? '' : ".#{extension}"
 
         renamed_file = "#{@tmp_file_location}/#{parent.id}/#{filename.mb_chars.limit(255-omission.bytesize).to_s}#{omission}"
         FileUtils.mkpath("#{@tmp_file_location}/#{parent.id}")
