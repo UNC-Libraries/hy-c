@@ -104,7 +104,7 @@ module Migrate
             elsif keyword.match(',')
               work_attributes['keyword'].concat keyword.split(',').collect(&:strip)
             else
-              work_attributes['keyword'].concat keyword.split(' ').collect(&:strip)
+              work_attributes['keyword'] << keyword.strip
             end
           end
           languages = descriptive_mods.xpath('mods:language/mods:languageTerm',MigrationConstants::NS).map(&:text)
