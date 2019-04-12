@@ -28,7 +28,11 @@ module Hyrax
 
       def call
         users_to_notify.uniq.each do |recipient|
-          Hyrax::MessengerService.deliver(user, recipient, message, subject)
+          if ENV['ALLOW_NOTIFICATIONS']
+            Hyrax::MessengerService.deliver(user, recipient, message, subject)
+          else
+            Rails.logger.info "\nNot sending messages\n"
+          end
         end
       end
 

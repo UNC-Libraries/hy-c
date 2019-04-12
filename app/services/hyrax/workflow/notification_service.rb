@@ -33,7 +33,11 @@ module Hyrax
 
       def call
         action.notifiable_contexts.each do |ctx|
-          send_notification(ctx.notification)
+          if ENV['ALLOW_NOTIFICATIONS']
+            send_notification(ctx.notification)
+          else
+            Rails.logger.info "\nNot sending emails\n" # this should not be logged if emails are turned off in the env configs
+          end
         end
       end
 
