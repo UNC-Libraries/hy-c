@@ -1,3 +1,4 @@
+# [hyc-override] override file from blacklight gem
 # frozen_string_literal: true
 require 'builder'
 
@@ -18,8 +19,10 @@ module Blacklight::Document::DublinCore
     [:contributor, :coverage, :creator, :date, :description, :format, :identifier, :language, :publisher, :relation, :rights, :source, :subject, :title, :type]
   end
 
+  # [hyc-override] format values for display in oai feed
   # dublin core elements are mapped against the #dublin_core_field_names whitelist.
   def export_as_oai_dc_xml
+    creators = []
     xml = Builder::XmlMarkup.new
     xml.tag!("oai_dc:dc",
              'xmlns:oai_dc' => "http://www.openarchives.org/OAI/2.0/oai_dc/",
@@ -27,8 +30,34 @@ module Blacklight::Document::DublinCore
              'xmlns:xsi' => "http://www.w3.org/2001/XMLSchema-instance",
              'xsi:schemaLocation' => %(http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd)) do
       to_semantic_values.select { |field, _values| dublin_core_field_name? field  }.each do |field, values|
+        if field.to_s == 'creator'
+          creators = values
+        end
+        source = []
         Array.wrap(values).each do |v|
-          xml.tag! "dc:#{field}", v
+          if field.to_s == 'creator'
+            xml.tag! "dc:#{field}", v.to_s.split('||').first
+          elsif field.to_s == 'contributor'
+            # Add creator affiliation as contributor
+            if creators.include?(v)
+              if v.to_s.match(/\|\|Affiliation/)
+                affiliation = v.to_s.split('||Affiliation: ')
+                if affiliation.count > 1
+                  xml.tag! "dc:#{field}", affiliation[1].split('||').first
+                end
+              end
+            else
+              xml.tag! "dc:#{field}", v.to_s.split('||').first
+            end
+          # display journal values as comma separated string (journal values come from single-valued fields)
+          elsif field.to_s == 'source'
+            source << v.to_s
+          else
+            xml.tag! "dc:#{field}", v
+          end
+        end
+        if ! source.blank?
+          xml.tag! "dc:source", source.join(', ')
         end
       end
     end
