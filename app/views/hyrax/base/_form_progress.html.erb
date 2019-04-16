@@ -38,7 +38,7 @@
                       label: t('hyrax.active_consent_to_agreement'),
                       checked: f.object.agreement_accepted,
                       input_html: { id: 'agreement' },
-                      checked_value: f.object.model.depositor,
+                      checked_value: current_user.name,
                       unchecked_value: '0' %>
           <%= link_to t('hyrax.pages.tabs.agreement_page'),
                       hyrax.agreement_path,
