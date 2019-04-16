@@ -30,25 +30,31 @@
     <% end %>
   </div>
   <div class="panel-footer text-center">
-    <% if ::Flipflop.show_deposit_agreement? %>
+    <% if ::Flipflop.show_deposit_agreement?  %>
       <% if ::Flipflop.active_deposit_agreement_acceptance? %>
-        <label>
-          <%= f.input :agreement,
-                      as: :boolean,
-                      label: t('hyrax.active_consent_to_agreement'),
-                      checked: f.object.agreement_accepted,
-                      input_html: { id: 'agreement' },
-                      checked_value: f.object.model.depositor,
-                      unchecked_value: '0' %>
-          <%= link_to t('hyrax.pages.tabs.agreement_page'),
-                      hyrax.agreement_path,
-                      target: '_blank' %>
-        </label>
-      <% else %>
-        <%= t('hyrax.passive_consent_to_agreement') %><br />
-        <%= link_to t('hyrax.pages.tabs.agreement_page'),
-                    hyrax.agreement_path,
-                    target: '_blank' %>
+        <% if !current_user.admin? || (current_user.admin? && params[:action] == 'new') %>
+          <label>
+            <%= f.input :agreement,
+                        as: :boolean,
+                        label: t('hyrax.active_consent_to_agreement'),
+                        checked: f.object.agreement_accepted,
+                        input_html: { id: 'agreement' },
+                        checked_value: current_user.name,
+                        unchecked_value: '0' %>
+            <%= link_to t('hyrax.pages.tabs.agreement_page'),
+                        hyrax.agreement_path,
+                        target: '_blank' %>
+          </label>
+        <% else %>
+          <label class="hidden">
+            <%= f.input :agreement,
+                        as: :boolean,
+                        checked: f.object.agreement_accepted,
+                        input_html: { id: 'agreement', checked: true },
+                        checked_value: current_user.name,
+                        unchecked_value: current_user.name %>
+          </label>
+        <% end %>
       <% end %>
     <% end %>
     <br />
