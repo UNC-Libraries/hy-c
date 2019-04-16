@@ -162,7 +162,7 @@ Hyrax.config do |config|
   config.derivatives_path = ENV['DERIVATIVE_STORAGE']
 
   # Should schema.org microdata be displayed?
-  # config.display_microdata = true
+  config.display_microdata = true
 
   # What default microdata type should be used if a more appropriate
   # type can not be found in the locale file?
