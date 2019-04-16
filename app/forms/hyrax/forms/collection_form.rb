@@ -1,3 +1,4 @@
+# [hyc-override] Overriding to remove :based_near (location) from form. Gives error if populated
 module Hyrax
   module Forms
     # rubocop:disable Metrics/ClassLength
@@ -22,7 +23,7 @@ module Hyrax
 
       self.terms = [:resource_type, :title, :creator, :contributor, :description,
                     :keyword, :license, :publisher, :date_created, :subject, :language,
-                    :representative_id, :thumbnail_id, :identifier, :based_near,
+                    :representative_id, :thumbnail_id, :identifier,
                     :related_url, :visibility, :collection_type_gid]
 
       self.required_fields = [:title]
@@ -69,7 +70,6 @@ module Hyrax
          :subject,
          :language,
          :identifier,
-         :based_near,
          :related_url,
          :resource_type]
       end
