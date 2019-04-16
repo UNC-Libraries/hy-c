@@ -1,3 +1,4 @@
+# [hyc-override] Overriding helper in order to use creator_display field for author listings
 module Hyrax
   module CitationsBehaviors
     module NameBehavior
