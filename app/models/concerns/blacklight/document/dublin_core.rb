@@ -30,25 +30,15 @@ module Blacklight::Document::DublinCore
              'xmlns:xsi' => "http://www.w3.org/2001/XMLSchema-instance",
              'xsi:schemaLocation' => %(http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd)) do
       to_semantic_values.select { |field, _values| dublin_core_field_name? field  }.each do |field, values|
-        if field.to_s == 'creator'
-          creators = values
-        end
         source = []
         Array.wrap(values).each do |v|
           if field.to_s == 'creator'
             xml.tag! "dc:#{field}", v.to_s.split('||').first
-          elsif field.to_s == 'contributor'
-            # Add creator affiliation as contributor
-            if creators.include?(v)
-              if v.to_s.match(/\|\|Affiliation/)
-                affiliation = v.to_s.split('||Affiliation: ')
-                if affiliation.count > 1
-                  xml.tag! "dc:#{field}", affiliation[1].split('||').first
-                end
-              end
-            else
-              xml.tag! "dc:#{field}", v.to_s.split('||').first
+            if v.to_s.match(/\|\|Affiliation/)
+              xml.tag! "dc:contributor", v.to_s.split('||Affiliation: ')[1].split('||').first
             end
+          elsif field.to_s == 'contributor'
+            xml.tag! "dc:#{field}", v.to_s.split('||').first
           # display journal values as comma separated string (journal values come from single-valued fields)
           elsif field.to_s == 'source'
             source << v.to_s

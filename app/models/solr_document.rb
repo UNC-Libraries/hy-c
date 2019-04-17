@@ -31,7 +31,7 @@ class SolrDocument
       creator: ['creator_display_tesim', 'composer_display_tesim'],
       contributor: ['contributor_display_tesim', 'advisor_display_tesim', 'arranger_display_tesim',
                     'project_director_display_tesim', 'researcher_display_tesim', 'reviewer_display_tesim',
-                    'translator_display_tesim', 'creator_display_tesim'],
+                    'translator_display_tesim'],
       publisher: ['publisher_tesim', 'degree_granting_institution_tesim'],
       date: ['date_issued_tesim', 'graduation_year_tesim'],
       description: ['abstract_tesim', 'degree_tesim'],
