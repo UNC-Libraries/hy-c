@@ -38,7 +38,10 @@ class MigrationHelper
       puts message unless message.nil?
       sleep(10)
       retry if (retries += 1) < 5
-      abort("[#{Time.now}] could not recover; aborting migration")
+      # log full backtrace if not recovered
+      puts e.backtrace
+      # send abort message and backtrace to terminal
+      abort("[#{Time.now}] could not recover; aborting migration\nbacktrace:\n#{e.backtrace}")
     end
   end
 end
