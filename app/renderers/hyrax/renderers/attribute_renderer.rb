@@ -1,4 +1,4 @@
-# [hyc-override] Overriding default. Show the language term instead of the saved value
+# [hyc-override] Overriding default. Show the language term instead of the saved value. Allow itemprop to be rendered
 require "rails_autolink/helpers"
 
 module Hyrax
@@ -31,7 +31,8 @@ module Hyrax
           markup << "<li#{html_attributes(attributes)}>#{attribute_value_to_html(value.to_s)}</li>"
         end
         markup << %(</ul></td></tr>)
-        markup.html_safe
+        # Add 'itemprop' to default list of allowed attributes
+        sanitize markup, attributes: %w(href src width height alt cite datetime title class name xml:lang abbr itemprop)
       end
 
       # Draw the dl row for the attribute
@@ -45,7 +46,8 @@ module Hyrax
           markup << "<li#{html_attributes(attributes)}>#{attribute_value_to_html(value.to_s)}</li>"
         end
         markup << %(</ul></dd>)
-        sanitize markup
+        # Add 'itemprop' to default list of allowed attributes
+        sanitize markup, attributes: %w(href src width height alt cite datetime title class name xml:lang abbr itemprop)
       end
 
       # @return The human-readable label for this field.
