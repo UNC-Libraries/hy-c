@@ -30,7 +30,7 @@
     <% end %>
   </div>
   <div class="panel-footer text-center">
-    <% if ::Flipflop.show_deposit_agreement?  %>
+    <% if ::Flipflop.show_deposit_agreement? %>
       <% if ::Flipflop.active_deposit_agreement_acceptance? %>
         <% if !current_user.admin? || (current_user.admin? && params[:action] == 'new') %>
           <label>
