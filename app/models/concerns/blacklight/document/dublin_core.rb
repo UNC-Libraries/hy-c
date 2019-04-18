@@ -47,8 +47,13 @@ module Blacklight::Document::DublinCore
             xml.tag! "dc:#{field}", v
           end
         end
-        if ! source.blank?
-          xml.tag! "dc:source", source.join(', ')
+        if !source.blank?
+          # Based on tests in blacklight, the journal information should always be returned in the order listed in app/models/solr_document.rb
+          if source.count == 3
+            xml.tag! "dc:source", "#{source[0]}, #{source[1]}(#{source[2]})"
+          else
+            xml.tag! "dc:source", source.join(', ')
+          end
         end
       end
     end
