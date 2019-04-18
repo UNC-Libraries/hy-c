@@ -310,7 +310,7 @@ div.person {
   }
 }
 
-div.unc-citation-modal {
+div.unc-modal {
   h4 {
     text-align: left;
   }
@@ -453,6 +453,75 @@ table p.name span {
   border: none;
   color: #c0c0c0;
   background-color: #c0c0c0;
+}
+
+/* collections page */
+.hyc-generic .hyc-bugs {
+  margin-top: 10px;
+}
+
+#collection-metadata-modal {
+  div {
+    margin-bottom: 5px;
+  }
+}
+
+.collection-listings {
+  width: 67%;
+}
+
+.coll-select-checkbox {
+  display: none;
+}
+
+.coll-select-label {
+  border: 1px solid $light-gray;
+  border-radius: 5px;
+  display: block;
+  font-size: 1.75rem;
+  padding: 4px;
+}
+
+.coll-select-label:before {
+  content: "\25BE";
+  float: right;
+}
+
+.coll-select-wrap {
+  background-color: #F8F8F8;
+  border: 1px solid gray;
+  display: none;
+  position: absolute;
+  width: 95%;
+  z-index: 10;
+}
+
+.coll-select-checkbox:checked ~ .coll-select-wrap {
+  display: block;
+}
+
+.coll-select {
+  list-style: none;
+  margin: 0;
+  padding: 10px;
+}
+
+.coll-select a {
+  color: inherit;
+  display: block;
+  padding: 10px;
+  text-decoration: none;
+
+
+  &:hover, &:focus {
+    background-color: $carolina-blue;
+    color: white;
+
+  }
+}
+
+label.coll-select-label {
+  font-weight: normal;
 }
 
 @media only screen and (max-width: 1600px) {
@@ -628,6 +697,18 @@ table p.name span {
   .nav {
     padding-left: 15px;
   }
+
+  #collection-description-text-btn {
+    margin-bottom: 15px;
+  }
+
+  .hyc-body {
+    margin: 0 auto;
+  }
+
+  .hyc-metadata {
+    margin-left: 14px;
+  }
 }
 
 @media only screen and (max-width: 480px) {
@@ -638,6 +719,13 @@ table p.name span {
   .link-tabs {
     div {
       margin-top: 5px;
+    }
+  }
+
+  .hyc-title, .hyc-banner .hyc-title, .hyc-generic .hyc-title {
+    h1 {
+      margin-bottom: 15px;
+      width: 100%;
     }
   }
 

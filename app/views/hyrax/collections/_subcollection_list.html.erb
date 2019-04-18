@@ -1,13 +1,16 @@
 <% if @subcollection_docs.nil? || @subcollection_docs.empty? %>
   <div class="alert alert-warning" role="alert"><%= t('hyrax.collections.show.no_visible_subcollections') %></div>
 <% else %>
+  <input type="checkbox" class="coll-select-checkbox" id="sub-colls">
+  <label for="sub-colls" class="coll-select-label">Subcollections (<%= @subcollection_count %>)</label>
+  <div class="coll-select-wrap">
+    <ul class="coll-select">
   <% @subcollection_docs.each do |document| %>
-    <ul>
       <li>
         <% id = document.id %>
-        <strong><%= link_to document.title_or_label, [hyrax, document], id: "src_copy_link_#{id}" %></strong>
+        <%= link_to document.title_or_label, [hyrax, document], id: "src_copy_link_#{id}" %>
       </li>
-    </ul>
   <% end %>
-  <%= render 'hyrax/collections/paginate', solr_response: @subcollection_solr_response, page_param_name: :sub_collection_page %>
+    </ul>
+  </div>
 <% end %>
