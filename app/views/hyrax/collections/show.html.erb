@@ -42,7 +42,7 @@
     </div>
   <% end %>
   <div class="row hyc-body">
-    <div class="col-md-10 hyc-description">
+    <div class="col-md-12 hyc-description">
       <%= render 'collection_description', presenter: @presenter %>
 
       <% if @presenter.collection_type_is_nestable? && @presenter.total_parent_collections > 0 %>
@@ -56,9 +56,6 @@
         </div>
       <% end %>
 
-    </div>
-    <div class="col-md-2 hyc-metadata">
-      <button class="btn btn-default" data-toggle="modal" data-target="#collection-metadata-modal">Collection Details</button>
     </div>
   </div>
 
@@ -77,6 +74,9 @@
   <div class="hyc-blacklight hyc-bl-search hyc-body row">
     <div class="col-sm-8">
       <%= render 'search_form', presenter: @presenter, url: hyrax.collection_path(@presenter.id) %>
+    </div>
+    <div class="col-sm-2 col-sm-offset-2 hyc-metadata">
+      <button class="btn btn-info" data-toggle="modal" data-target="#collection-metadata-modal">View detailed metadata</button>
     </div>
   </div>
 

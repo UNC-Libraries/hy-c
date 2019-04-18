@@ -457,8 +457,32 @@ table p.name span {
 
 /* collections page */
 
-.hyc-generic .hyc-bugs {
-  margin-top: 10px;
+.hyc-generic, .hyc-banner {
+  border: 1px solid $carolina-blue-dark;
+  border-radius: 8px;
+
+  .hyc-bugs {
+    margin-top: 10px;
+  }
+}
+
+.hyc-generic {
+  .hyc-title {
+    h1 {
+      margin-left: 15px;
+      margin-top: 15px;
+    }
+  }
+
+  .hyc-logos {
+    margin-left: 15px;
+  }
+}
+
+.hyc-title {
+  h1 {
+    color: white;
+  }
 }
 
 .hyc-bl-title {
@@ -717,6 +741,10 @@ label.coll-select-label {
 }
 
 @media only screen and (max-width: 480px) {
+  .hyc-metadata {
+    margin-left: 0;
+  }
+
   #unc-description {
     text-align: center;
   }
