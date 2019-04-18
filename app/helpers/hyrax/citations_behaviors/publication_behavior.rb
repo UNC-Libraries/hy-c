@@ -34,7 +34,6 @@ module Hyrax
           pub_info << CGI.escapeHTML(place)
         end
         if (publisher = setup_pub_publisher(work))
-          Rails.logger.info "Pleek: #{place.to_s}"
           unless place.to_s == ''
             pub_info << ": "
           end
