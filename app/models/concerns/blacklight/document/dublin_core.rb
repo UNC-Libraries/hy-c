@@ -34,8 +34,9 @@ module Blacklight::Document::DublinCore
         Array.wrap(values).each do |v|
           if field.to_s == 'creator'
             xml.tag! "dc:#{field}", v.to_s.split('||').first
-            if v.to_s.match(/\|\|Affiliation/)
-              xml.tag! "dc:contributor", v.to_s.split('||Affiliation: ')[1].split('||').first
+            affiliation = v.to_s.split('||Affiliation: ')[1]
+            if !affiliation.blank?
+              xml.tag! "dc:contributor", affiliation.split('||').first
             end
           elsif field.to_s == 'contributor'
             xml.tag! "dc:#{field}", v.to_s.split('||').first
