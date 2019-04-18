@@ -66,6 +66,7 @@ export default class UncVisibilityComponent extends VisibilityComponent {
         // [hyc-override] Override to select "Public" if no restrictions are in place
         if (this.isNewFile() && !isSubmitting) {
             this.element.find("[type='radio'][value='open']").prop('checked', true);
+            this.openSelected();
         }
     }
 
@@ -115,6 +116,7 @@ export default class UncVisibilityComponent extends VisibilityComponent {
 
         if (this.isNewFile()) {
             enabledField.first().prop('checked', true);
+            this.openSelected();
         }
     }
 
@@ -126,6 +128,10 @@ export default class UncVisibilityComponent extends VisibilityComponent {
         // Set to allowed visibility if new file
         if (this.isNewFile()) {
             allowed_fields.prop('checked', true);
+
+            if (visibility === 'open') {
+                this.openSelected();
+            }
         }
 
         let allowed_parent = allowed_fields.parent();
