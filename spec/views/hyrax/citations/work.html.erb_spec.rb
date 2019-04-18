@@ -5,7 +5,7 @@ RSpec.describe 'hyrax/citations/work.html.erb', type: :view do
   context "full work metadata" do
     let(:object_profile) { ["{\"id\":\"999\"}"] }
     let(:contributor) { ['Gandalf Grey'] }
-    let(:creator)     { ['Bilbo Baggins', 'Baggins, Frodo'] }
+    let(:creator_display)     { ['Bilbo Baggins', 'Baggins, Frodo'] }
     let(:solr_document) do
       SolrDocument.new(
           id: '999',
@@ -13,10 +13,10 @@ RSpec.describe 'hyrax/citations/work.html.erb', type: :view do
           has_model_ssim: ['Article'],
           human_readable_type_tesim: ['Article'],
           contributor_tesim: contributor,
-          creator_tesim: creator,
+          creator_display_tesim: creator_display,
           license_tesim: ['http://creativecommons.org/licenses/by/3.0/us/'],
           title_tesim: ['the Roared about the Langs'],
-          based_near_label_tesim: ['London'],
+          place_of_publication_tesim: ['London'],
           date_issued_tesim: ['1969'],
           doi_tesim: ['http://dx.doi.org/10.1186/1753-6561-3-S7-S87']
       )
@@ -95,14 +95,14 @@ RSpec.describe 'hyrax/citations/work.html.erb', type: :view do
 
   context "minimal work metatdata" do
     let(:object_profile) { ["{\"id\":\"999\"}"] }
-    let(:creator) { ['Bilbo Baggins', 'Baggins, Frodo'] }
+    let(:creator_display) { ['Bilbo Baggins', 'Baggins, Frodo'] }
     let(:solr_document) do
       SolrDocument.new(
           id: '999',
           object_profile_ssm: object_profile,
           has_model_ssim: ['Article'],
           human_readable_type_tesim: ['Article'],
-          creator_tesim: creator,
+          creator_display_tesim: creator_display,
           license_tesim: ['http://creativecommons.org/licenses/by/3.0/us/'],
           title_tesim: ['the Roared about the Langs'],
           doi_tesim: ['http://dx.doi.org/10.1186/1753-6561-3-S7-S87']
