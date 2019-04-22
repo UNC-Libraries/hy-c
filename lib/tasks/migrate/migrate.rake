@@ -53,7 +53,8 @@ namespace :migrate do
       if !collection_config['child_work_type'].blank?
         Migrate::Services::ChildWorkParser.new(@object_hash,
                                                collection_config,
-                                               args[:output_dir]).find_children
+                                               args[:output_dir],
+                                               args[:collection]).find_children
       end
 
       Migrate::Services::IngestService.new(collection_config,
@@ -62,7 +63,8 @@ namespace :migrate do
                                          @premis_hash,
                                          @deposit_record_hash,
                                          args[:output_dir],
-                                         @depositor).ingest_records
+                                         @depositor,
+                                         args[:collection]).ingest_records
     else
       puts 'The default admin set or specified depositor does not exist'
     end

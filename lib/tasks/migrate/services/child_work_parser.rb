@@ -2,13 +2,13 @@ module Migrate
   module Services
     class ChildWorkParser
 
-      def initialize(object_hash, config, output_dir)
+      def initialize(object_hash, config, output_dir, collection)
         @object_hash = object_hash
         @collection_uuids = MigrationHelper.get_collection_uuids(config['collection_list'])
 
 
         # Store parent-child relationships
-        @parent_child_mapper = Migrate::Services::IdMapper.new(File.join(output_dir, 'parent_child.csv'), 'parent', 'children')
+        @parent_child_mapper = Migrate::Services::IdMapper.new(File.join(output_dir, "#{collection}_parent_child.csv"), 'parent', 'children')
         # Progress tracker for objects migrated
         @object_progress = Migrate::Services::ProgressTracker.new(File.join(output_dir, 'object_progress.log'))
       end
