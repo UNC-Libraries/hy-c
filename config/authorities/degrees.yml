@@ -4,6 +4,22 @@ terms:
     term: Bachelor of Arts
     active: true
     work_type: honors
+  - id: Bachelor of Arts in Education
+    term: Bachelor of Arts in Education
+    active: true
+    work_type: honors
+  - id: Bachelor of Business Administration
+    term: Bachelor of Business Administration
+    active: true
+    work_type: honors
+  - id: Bachelor of Fine Arts
+    term: Bachelor of Fine Arts
+    active: true
+    work_type: honors
+  - id: Bachelor of Music
+    term: Bachelor of Music
+    active: true
+    work_type: honors
   - id: Bachelor of Science
     term: Bachelor of Science
     active: true
