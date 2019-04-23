@@ -86,18 +86,16 @@ $(function() {
         var full_text = $('.full');
         var less_text = $('.truncated');
 
-        $('#collection-description-text-btn').on('click', function() {
+        $('#collection-description-text-btn').on('click touchstart', function() {
             var show_less_text = less_text.hasClass('hidden');
             var btn_text = (show_less_text) ? 'Show More' : 'Show Less';
-            console.log(show_less_text)
+
             if (show_less_text) {
                 full_text.addClass('hidden');
                 less_text.removeClass('hidden');
-                done = true;
             } else {
                 full_text.removeClass('hidden');
                 less_text.addClass('hidden');
-                done = true;
             }
 
             $(this).text(btn_text);
