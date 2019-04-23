@@ -91,11 +91,6 @@ span.institution_name {
   }
 }
 
-.container {
-  width: 100%;
-  padding-right: 30px;
-}
-
 .link-tabs {
   background-color: $carolina-blue;
 
@@ -460,6 +455,12 @@ table p.name span {
     .navbar-header {
       width: 60%;
     }
+  }
+}
+
+@media only screen and (min-width: 1400px) {
+  .container-fluid {
+    padding: 0 150px;
   }
 }
 

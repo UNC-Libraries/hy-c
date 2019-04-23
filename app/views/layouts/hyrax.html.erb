@@ -13,7 +13,7 @@
 <%= render '/masthead' %>
 <%= content_for(:navbar) %>
 <%= content_for(:precontainer_content) %>
-<div id="content-wrapper" class="container" role="main">
+<div id="content-wrapper" class="container-fluid" role="main">
   <%= render '/flash_msg' %>
   <%= render_breadcrumbs builder: Hyrax::BootstrapBreadcrumbsBuilder %>
   <% if content_for?(:page_header) %>
