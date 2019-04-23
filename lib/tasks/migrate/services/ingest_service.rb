@@ -146,8 +146,8 @@ module Migrate
             if !work_attributes['contained_files'].blank?
               work_attributes['contained_files'].each do |file|
                 binary_file = @binary_hash[MigrationHelper.get_uuid_from_path(file)]
-                work_attributes['title'] = work_attributes['dc_title']
-                work_attributes['label'] = work_attributes['dc_title']
+                work_attributes['title'] = work_attributes['dc_title'] || work_attributes['title']
+                work_attributes['label'] = work_attributes['dc_title'] || work_attributes['title']
                 fileset_attrs = file_record(work_attributes)
                 fileset = create_fileset(parent: new_work, resource: fileset_attrs, file: binary_file)
 
