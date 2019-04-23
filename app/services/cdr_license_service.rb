@@ -18,7 +18,9 @@ module CdrLicenseService
     begin
       authority.find(id).fetch('term')
     rescue
-      id
+      Rails.logger.warn "CdrLicensesService: cannot find '#{id}'"
+      puts "CdrLicensesService: cannot find '#{id}'" # for migration log
+      id # cannot return nil
     end
   end
 

@@ -20,6 +20,7 @@ module Migrate
         @config = config
         @output_dir = output_dir
         @collection_name = config['collection_name']
+        @run_skipped = config['run_skipped'] || false
 
         admin_set = config['admin_set']
         if admin_set.blank?
@@ -41,6 +42,8 @@ module Migrate
         @parent_child_mapper = Migrate::Services::IdMapper.new(File.join(@output_dir, "#{collection}_parent_child.csv"), 'parent', 'children')
         # Progress tracker for objects migrated
         @object_progress = Migrate::Services::ProgressTracker.new(File.join(@output_dir, 'object_progress.log'))
+        # Skipped object tracker
+        @skipped_objects = Migrate::Services::ProgressTracker.new(File.join(@output_dir, 'skipped_objects.log'))
       end
 
       def ingest_records
@@ -50,6 +53,11 @@ module Migrate
 
         already_migrated = @object_progress.completed_set
         puts "Skipping #{already_migrated.length} previously migrated works"
+
+        if !@run_skipped
+          already_migrated += @skipped_objects.completed_set
+          puts "Skipping previously skipped works"
+        end
 
         puts "[#{Time.now.to_s}] Object count:  #{collection_uuids.count.to_s}"
 
@@ -61,9 +69,16 @@ module Migrate
             next
           end
 
+          file_path = @object_hash[uuid]
+          if !File.file?(file_path)
+            @skipped_objects.add_entry(uuid)
+            puts "Skipping #{uuid} with invalid file path, #{file_path}"
+            next
+          end
+
           start_time = Time.now
           puts "[#{start_time.to_s}] #{uuid} Start migration"
-          work_attributes = Migrate::Services::MetadataParser.new(@object_hash[uuid],
+          work_attributes = Migrate::Services::MetadataParser.new(file_path,
                                                               @object_hash,
                                                               @binary_hash,
                                                               @deposit_record_hash,
@@ -161,14 +176,14 @@ module Migrate
           end
 
           # Attach metadata files
-          if File.file?(@object_hash[uuid])
+          if File.file?(file_path)
             fileset_attrs = { 'title' => ["original_metadata_file_#{uuid}.xml"],
                               'visibility' => Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE }
-            fileset = create_fileset(parent: new_work, resource: fileset_attrs, file: @object_hash[uuid])
+            fileset = create_fileset(parent: new_work, resource: fileset_attrs, file: file_path)
 
             new_work.ordered_members << fileset
           else # This should never happen
-            puts "[#{Time.now.to_s}] #{uuid},#{new_work.id} missing metadata file: #{@object_hash[uuid]}"
+            puts "[#{Time.now.to_s}] #{uuid},#{new_work.id} missing metadata file: #{file_path}"
           end
 
           # Record that this object was migrated
@@ -184,6 +199,7 @@ module Migrate
       end
 
       def create_fileset(parent: nil, resource: nil, file: nil)
+        resource['title'].map!{|title| title.gsub('/', '_')}
         file_set = nil
         MigrationHelper.retry_operation('creating fileset') do
           file_set = FileSet.create(resource)
@@ -192,7 +208,15 @@ module Migrate
         actor = Hyrax::Actors::FileSetActor.new(file_set, @depositor)
         actor.create_metadata(resource)
 
-        renamed_file = "#{@tmp_file_location}/#{parent.id}/#{Array(resource['title']).first}"
+        filename = Array(resource['title']).first
+        extension = filename.match(/\./) ? filename.split('.').last : nil
+        omission = (extension.blank? || MimeTypeService.valid?(extension).blank?) ? '' : ".#{extension}"
+
+        if filename.bytesize > 255
+          renamed_file = "#{@tmp_file_location}/#{parent.id}/#{filename.mb_chars.limit(255-omission.bytesize).to_s}#{omission}"
+        else
+          renamed_file = "#{@tmp_file_location}/#{parent.id}/#{filename}"
+        end
         FileUtils.mkpath("#{@tmp_file_location}/#{parent.id}")
         FileUtils.cp(file, renamed_file)
 
@@ -205,6 +229,7 @@ module Migrate
         end
 
         File.delete(renamed_file) if File.exist?(renamed_file)
+        FileUtils.rm_rf("#{@tmp_file_location}/#{parent.id}")
 
         file_set
       end
@@ -221,6 +246,15 @@ module Migrate
             resource = @work_type.singularize.classify.constantize.new
           end
           resource.depositor = @depositor.uid
+
+          # escape '\'
+          work_attributes.each do |k,v|
+            if v.is_a? Array
+              work_attributes[k] = v.map{|val| val.gsub(/\\/, '\\\\\\') if val.is_a? String}
+            elsif v.is_a? String
+              work_attributes[k] = v.gsub(/\\/, '\\\\\\')
+            end
+          end
 
           # Singularize non-enumerable attributes and make sure enumerable attributes are arrays
           work_attributes.each do |k,v|
@@ -252,7 +286,7 @@ module Migrate
                                            'project_directors_attributes', 'researchers_attributes', 'reviewers_attributes',
                                            'translators_attributes', 'dc_title', 'premis_files', 'embargo_release_date',
                                            'visibility_during_embargo', 'visibility_after_embargo', 'visibility',
-                                           'member_of_collections')
+                                           'member_of_collections', 'based_near_attributes')
           if !missing.blank?
             puts "[#{Time.now.to_s}] #{uuid} missing: #{missing}"
           end
@@ -284,7 +318,7 @@ module Migrate
           # Logging data that has been deduplicated upon saving
           deduped = {}
           resource.attributes.except('advisors', 'arrangers', 'composers', 'contributors', 'creators', 'project_directors',
-                                     'researchers', 'reviewers', 'translators').each do |k, v|
+                                     'researchers', 'reviewers', 'translators', 'based_near').each do |k, v|
             deduped[k] = work_attributes[k] if (Array(work_attributes[k]).sort != Array(v).sort && !work_attributes[k].blank?)
           end
           if !deduped.blank?
