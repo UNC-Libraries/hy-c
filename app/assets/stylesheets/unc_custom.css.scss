@@ -458,8 +458,19 @@ table p.name span {
 /* collections page */
 
 .hyc-generic, .hyc-banner {
-  border: 1px solid $light-gray;
+  border: 4px solid white;
   border-radius: 8px;
+
+  .hyc-title {
+    h1 {
+      color: white;
+      display: inline-block;
+      font-size: 2.5em;
+      margin: 0;
+      padding: 0;
+      text-shadow: 1px 2px 3px rgba(0,0,0,.5);
+    }
+  }
 
   .hyc-bugs {
     margin-top: 10px;
