@@ -16,7 +16,7 @@
     "pagingOptionEnabled": true,
     "pessimisticAccessControl": false,
     "preserveViewport": false,
-    "rightPanelEnabled": true,
+    "rightPanelEnabled": false,
     "saveUserSettings": false,
     "clickToZoomEnabled": true,
     "searchWithinEnabled": true,
@@ -139,7 +139,7 @@
     "headerPanel": {
       "options": {
         "localeToggleEnabled": false,
-        "settingsButtonEnabled": true
+        "settingsButtonEnabled": false
       }
     },
     "helpDialogue": {
