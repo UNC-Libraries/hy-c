@@ -102,12 +102,6 @@ $(function() {
         });
     }
 
-    function toggleSubCollectionList() {
-        $('.coll-select-checkbox ~ .coll-select-wrap').on('mouseleave touchend', function() {
-            $('.coll-select-checkbox').prop('checked', false);
-        });
-    }
-
     visibleForms();
     browseEverythingUploads();
     uploadProgress();
@@ -124,7 +118,6 @@ $(function() {
         hideNonRequiredFormFields();
         removeCloning();
         toggleCollectionPageDescription();
-        toggleSubCollectionList();
     });
 
     // Override default workEditor to pick up our local changes

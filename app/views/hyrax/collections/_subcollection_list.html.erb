@@ -1,16 +1,18 @@
 <% if @subcollection_docs.nil? || @subcollection_docs.empty? %>
   <div class="alert alert-warning" role="alert"><%= t('hyrax.collections.show.no_visible_subcollections') %></div>
 <% else %>
-  <input type="checkbox" class="coll-select-checkbox" id="sub-colls">
-  <label for="sub-colls" class="coll-select-label">Subcollections (<%= @subcollection_count %>)</label>
-  <div class="coll-select-wrap">
-    <ul class="coll-select">
-  <% @subcollection_docs.each do |document| %>
-      <li>
-        <% id = document.id %>
-        <%= link_to document.title_or_label, [hyrax, document], id: "src_copy_link_#{id}" %>
-      </li>
-  <% end %>
+  <div class="dropdown">
+    <button class="btn btn-default dropdown-toggle" type="button" id="sub-collection-list" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      Subcollections (<%= @subcollection_count %>)
+      <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu" aria-labelledby="sub-collection-list">
+      <% @subcollection_docs.each do |document| %>
+        <li>
+          <% id = document.id %>
+          <%= link_to document.title_or_label, [hyrax, document], id: "src_copy_link_#{id}" %>
+        </li>
+      <% end %>
     </ul>
   </div>
 <% end %>

@@ -37,7 +37,7 @@
 
   <!-- Subcollections -->
   <% if @presenter.collection_type_is_nestable? && @subcollection_count > 0 %>
-    <div class="hyc-blacklight hyc-bl-results collection-listings col-md-12">
+    <div class="hyc-blacklight hyc-bl-results col-md-12">
       <%= render 'subcollection_list', collection: @subcollection_docs %>
     </div>
   <% end %>
@@ -48,10 +48,10 @@
       <% if @presenter.collection_type_is_nestable? && @presenter.total_parent_collections > 0 %>
         <div class="hyc-blacklight hyc-bl-title">
           <h2>
-            <%= t('.parent_collection_header') %> (<%= @presenter.total_parent_collections %>)
+            <%= t('.parent_collection_header') %>:
           </h2>
         </div>
-        <div class="hyc-blacklight hyc-bl-results">
+        <div class="hyc-blacklight hyc-bl-results sub-collection">
           <%= render 'show_parent_collections', presenter: @presenter %>
         </div>
       <% end %>
@@ -72,30 +72,32 @@
 
   <!-- Search bar -->
   <div class="hyc-blacklight hyc-bl-search hyc-body row">
-    <div class="col-sm-8">
+    <div class="col-md-8 col-sm-8">
       <%= render 'search_form', presenter: @presenter, url: hyrax.collection_path(@presenter.id) %>
     </div>
-    <div class="col-sm-2 col-sm-offset-2 hyc-metadata">
+    <div class="col-md-2 col-md-offset-2 col-sm-2 col-sm-offset-1 hyc-metadata">
       <button class="btn btn-primary" data-toggle="modal" data-target="#collection-metadata-modal">View detailed metadata</button>
     </div>
   </div>
 
   <!-- Works -->
   <% if @members_count > 0 %>
-    <div class="hyc-blacklight hyc-bl-title">
-      <h4><%= t('.works_in_collection') %> (<%= @members_count %>)</h4>
-    </div>
+    <div class="works">
+      <div class="hyc-blacklight hyc-bl-title">
+        <h4><%= t('.works_in_collection') %> (<%= @members_count %>)</h4>
+      </div>
 
-    <div class="hyc-blacklight hyc-bl-sort">
-      <%= render 'sort_and_per_page', collection: @presenter %>
-    </div>
+      <div class="hyc-blacklight hyc-bl-sort">
+        <%= render 'sort_and_per_page', collection: @presenter %>
+      </div>
 
-    <div class="hyc-blacklight hyc-bl-results">
-      <%= render_document_index @member_docs %>
-    </div>
+      <div class="hyc-blacklight hyc-bl-results">
+        <%= render_document_index @member_docs %>
+      </div>
 
-    <div class="hyc-blacklight hyc-bl-pager">
-      <%= render 'paginate' %>
+      <div class="hyc-blacklight hyc-bl-pager">
+        <%= render 'paginate' %>
+      </div>
     </div>
   <% end # if @members_count > 0 %>
 </div>
