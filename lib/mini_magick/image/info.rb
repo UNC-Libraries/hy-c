@@ -44,10 +44,11 @@ module MiniMagick
       # [hyc-override] remove warnings and print errors
       def cheap_info(value)
         @info.fetch(value) do
-          if !self["%m %w %h %b"].blank? && self["%m %w %h %b"].include?('Warning')
-            format, width, height, size = self["%m %w %h %b"].split("\n")[1].split(" ")
+          image_data = self["%m %w %h %b"]
+          if !image_data.blank? && image_data.include?('Warning')
+            format, width, height, size = image_data.split("\n")[1].split(" ")
           else
-            format, width, height, size = self["%m %w %h %b"].split(" ")
+            format, width, height, size = image_data.split(" ")
           end
 
           path = @path
