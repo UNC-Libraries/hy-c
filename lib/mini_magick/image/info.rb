@@ -1,3 +1,4 @@
+# [hyc-override] Remove warnings before parsing image data
 require "json"
 
 module MiniMagick
@@ -40,9 +41,14 @@ module MiniMagick
         @info.clear
       end
 
+      # [hyc-override] remove warnings and print errors
       def cheap_info(value)
         @info.fetch(value) do
-          format, width, height, size = self["%m %w %h %b"].split(" ")
+          if !self["%m %w %h %b"].blank? && self["%m %w %h %b"].include?('Warning')
+            format, width, height, size = self["%m %w %h %b"].split("\n")[1].split(" ")
+          else
+            format, width, height, size = self["%m %w %h %b"].split(" ")
+          end
 
           path = @path
           path = path.match(/\[\d+\]$/).pre_match if path =~ /\[\d+\]$/
@@ -58,8 +64,8 @@ module MiniMagick
 
           @info.fetch(value)
         end
-      rescue ArgumentError, TypeError
-        raise MiniMagick::Invalid, "image data can't be read"
+      rescue ArgumentError, TypeError => err
+        raise MiniMagick::Invalid, "image data can't be read, #{err.inspect}"
       end
 
       def colorspace
