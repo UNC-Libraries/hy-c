@@ -496,6 +496,10 @@ table p.name span {
   }
 }
 
+.hyc-bl-search {
+  padding-right: 0;
+}
+
 .hyc-bl-title {
   margin-left: 0;
   margin-top: 15px;
@@ -519,6 +523,11 @@ table p.name span {
   .hyc-bl-results, .hyc-bl-sort {
     padding-left: 0;
   }
+}
+
+.more-metadata-btn {
+  float: right;
+  margin-right: 30px;
 }
 
 #collection-metadata-modal {
@@ -720,6 +729,12 @@ table p.name span {
 
   .hyc-body {
     margin: 0 auto;
+  }
+
+  .more-metadata-btn {
+    float: left;
+    margin-left: 15px;
+    margin-right: 0;
   }
 
   #sub-collection-list {

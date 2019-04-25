@@ -71,13 +71,12 @@
   <% end %>
 
   <!-- Search bar -->
-  <div class="hyc-blacklight hyc-bl-search hyc-body row">
+  <div class="hyc-blacklight hyc-bl-search hyc-body row" style="padding-right: 0;">
     <div class="col-md-8 col-sm-8">
       <%= render 'search_form', presenter: @presenter, url: hyrax.collection_path(@presenter.id) %>
+
     </div>
-    <div class="col-md-2 col-md-offset-2 col-sm-2 col-sm-offset-1 hyc-metadata">
-      <button class="btn btn-primary" data-toggle="modal" data-target="#collection-metadata-modal">View detailed metadata</button>
-    </div>
+    <button class="btn btn-primary more-metadata-btn" data-toggle="modal" data-target="#collection-metadata-modal">View detailed metadata</button>
   </div>
 
   <!-- Works -->
