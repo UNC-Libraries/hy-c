@@ -50,7 +50,7 @@
             <%= f.input :agreement,
                         as: :boolean,
                         checked: f.object.agreement_accepted,
-                        input_html: { id: 'agreement', checked: true },
+                        input_html: { id: 'agreement', class: 'admin-editor', checked: true },
                         checked_value: current_user.name,
                         unchecked_value: current_user.name %>
           </label>

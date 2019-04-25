@@ -2,6 +2,11 @@
 export class DepositAgreement {
     // Monitors the form and runs the callback if any files are added
     constructor(form, callback) {
+        // [hyc-override] Short circuit agreement check for admins editing a form.
+        if ($('.admin-editor').length > 0) {
+            return;
+        }
+
         this.agreementCheckbox = form.find('input#agreement')
 
         // [hyc-override] add required attribute
