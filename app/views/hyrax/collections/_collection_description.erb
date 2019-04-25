@@ -1,0 +1,13 @@
+<% presenter.description.each do |description| %>
+  <%  if description.split.size > 100 %>
+    <div class="truncated">
+      <%= simple_format(auto_link(description.truncate_words(100))) %>
+    </div>
+    <div class="full hidden">
+      <%= simple_format(auto_link(description)) %>
+    </div>
+    <button id="collection-description-text-btn" class="btn btn-default">Show More</button>
+  <% else %>
+    <%= simple_format(auto_link(description)) %>
+  <% end %>
+<% end %>

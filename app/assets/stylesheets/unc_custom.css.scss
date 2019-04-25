@@ -305,7 +305,7 @@ div.person {
   }
 }
 
-div.unc-citation-modal {
+div.unc-modal {
   h4 {
     text-align: left;
   }
@@ -448,6 +448,100 @@ table p.name span {
   border: none;
   color: #c0c0c0;
   background-color: #c0c0c0;
+}
+
+/* collections page */
+
+.hyc-generic, .hyc-banner {
+  border: 4px solid white;
+  border-radius: 8px;
+
+  .hyc-title {
+    h1 {
+      color: white;
+      display: inline-block;
+      font-size: 2.5em;
+      margin: 0;
+      padding: 0;
+      text-shadow: 1px 2px 3px rgba(0,0,0,.5);
+    }
+  }
+
+  .hyc-bugs {
+    margin-top: 10px;
+  }
+}
+
+.hyc-generic {
+  .hyc-title {
+    h1 {
+      margin-left: 15px;
+      margin-top: 15px;
+    }
+  }
+
+  .hyc-logos {
+    margin-left: 15px;
+  }
+}
+
+.hyc-title {
+  h1 {
+    color: white;
+  }
+}
+
+.hyc-bl-search {
+  padding-right: 0;
+}
+
+.hyc-bl-title {
+  margin-left: 0;
+  margin-top: 15px;
+  padding: 0;
+}
+
+.hyc-bl-results {
+  ul {
+    list-style-type: none;
+    padding-left: 0;
+
+    a {
+      font-size: 16px;
+    }
+  }
+}
+
+.works {
+  margin-left: 15px;
+
+  .hyc-bl-results, .hyc-bl-sort {
+    padding-left: 0;
+  }
+}
+
+.more-metadata-btn {
+  float: right;
+  margin-right: 30px;
+}
+
+#collection-metadata-modal {
+  div {
+    margin-bottom: 10px;
+  }
+
+  dt {
+    font-size: 18px;
+    font-weight: normal;
+  }
+}
+
+.sub-collection {
+  padding-left: 0;
+}
+
+#sub-collection-list {
+  font-size: 18px;
 }
 
 @media only screen and (max-width: 1600px) {
@@ -629,9 +723,31 @@ table p.name span {
   .nav {
     padding-left: 15px;
   }
+
+  #collection-description-text-btn {
+    margin-bottom: 15px;
+  }
+
+  .hyc-body {
+    margin: 0 auto;
+  }
+
+  .more-metadata-btn {
+    float: left;
+    margin-left: 15px;
+    margin-right: 0;
+  }
+
+  #sub-collection-list {
+    margin-left: 14px;
+  }
 }
 
 @media only screen and (max-width: 480px) {
+  .hyc-metadata {
+    margin-left: 0;
+  }
+
   #unc-description {
     text-align: center;
   }
@@ -639,6 +755,13 @@ table p.name span {
   .link-tabs {
     div {
       margin-top: 5px;
+    }
+  }
+
+  .hyc-title, .hyc-banner .hyc-title, .hyc-generic .hyc-title {
+    h1 {
+      margin-bottom: 15px;
+      width: 100%;
     }
   }
 

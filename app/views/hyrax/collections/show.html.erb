@@ -1,0 +1,118 @@
+<% provide :page_title, construct_page_title(@presenter.title) %>
+<div class="hyc-container" itemscope itemtype="http://schema.org/CollectionPage">
+  <div class="row hyc-header">
+    <div class="col-md-12">
+
+      <% unless @presenter.banner_file.blank? %>
+        <header class="hyc-banner" style="background-image:url(<%= @presenter.banner_file %>)">
+      <% else %>
+        <header class="hyc-generic" style="background-image:url(<%= image_path('cdr-banner-bg.png') %>)">
+      <% end %>
+
+      <div class="hyc-title">
+        <h1><%= @presenter.title.first %></h1>
+        <%= @presenter.collection_type_badge %>
+        <%= @presenter.permission_badge %>
+      </div>
+
+
+        <div class="hyc-logos">
+          <% unless @presenter.logo_record.blank? %>
+            <% @presenter.logo_record.each_with_index  do |lr, i| %>
+              <% if lr[:linkurl].blank? %>
+                <img alt="<%= lr[:alttext] %>" src="<%= lr[:file_location] %>" />
+              <% else %>
+                <a href="<%= lr[:linkurl] %>">
+                  <img alt="<%= lr[:alttext] %>" src="<%= lr[:file_location] %>" />
+                </a>
+              <% end %>
+            <% end %>
+          <% else %>
+              <img alt="UNC logo" src="<%= image_path('unc-icon.png') %>" />
+          <% end %>
+        </div>
+      </header>
+    </div>
+  </div>
+
+  <!-- Subcollections -->
+  <% if @presenter.collection_type_is_nestable? && @subcollection_count > 0 %>
+    <div class="hyc-blacklight hyc-bl-results col-md-12">
+      <%= render 'subcollection_list', collection: @subcollection_docs %>
+    </div>
+  <% end %>
+  <div class="row hyc-body">
+    <div class="col-md-12 hyc-description">
+      <%= render 'collection_description', presenter: @presenter %>
+
+      <% if @presenter.collection_type_is_nestable? && @presenter.total_parent_collections > 0 %>
+        <div class="hyc-blacklight hyc-bl-title">
+          <h2>
+            <%= t('.parent_collection_header') %>:
+          </h2>
+        </div>
+        <div class="hyc-blacklight hyc-bl-results sub-collection">
+          <%= render 'show_parent_collections', presenter: @presenter %>
+        </div>
+      <% end %>
+
+    </div>
+  </div>
+
+  <!-- Search results label -->
+  <% if @members_count > 0 || @presenter.subcollection_count > 0 %>
+    <div class="hyc-blacklight hyc-bl-title">
+      <h2>
+        <% if has_collection_search_parameters? %>
+          <%= t('hyrax.dashboard.collections.show.search_results') %>
+        <% end %>
+      </h2>
+    </div>
+  <% end %>
+
+  <!-- Search bar -->
+  <div class="hyc-blacklight hyc-bl-search hyc-body row">
+    <div class="col-md-8 col-sm-8">
+      <%= render 'search_form', presenter: @presenter, url: hyrax.collection_path(@presenter.id) %>
+
+    </div>
+    <button class="btn btn-primary more-metadata-btn" data-toggle="modal" data-target="#collection-metadata-modal">View detailed metadata</button>
+  </div>
+
+  <!-- Works -->
+  <% if @members_count > 0 %>
+    <div class="works">
+      <div class="hyc-blacklight hyc-bl-title">
+        <h4><%= t('.works_in_collection') %> (<%= @members_count %>)</h4>
+      </div>
+
+      <div class="hyc-blacklight hyc-bl-sort">
+        <%= render 'sort_and_per_page', collection: @presenter %>
+      </div>
+
+      <div class="hyc-blacklight hyc-bl-results">
+        <%= render_document_index @member_docs %>
+      </div>
+
+      <div class="hyc-blacklight hyc-bl-pager">
+        <%= render 'paginate' %>
+      </div>
+    </div>
+  <% end # if @members_count > 0 %>
+</div>
+
+<div class="modal fade" id="collection-metadata-modal" tabindex="-1" role="dialog" aria-labelledby="collection-modal-title" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h2 class="modal-title text-center" id="collection-modal-title"><%= t('hyrax.dashboard.collections.show.metadata_header') %></h2>
+      </div>
+      <div class="modal-body unc-modal">
+        <%= render 'show_descriptions' %>
+      </div>
+    </div>
+  </div>
+</div>

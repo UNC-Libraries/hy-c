@@ -82,6 +82,26 @@ $(function() {
         });
     }
 
+    function toggleCollectionPageDescription() {
+        var full_text = $('.full');
+        var less_text = $('.truncated');
+
+        $('#collection-description-text-btn').on('click touchstart', function() {
+            var show_less_text = less_text.hasClass('hidden');
+            var btn_text = (show_less_text) ? 'Show More' : 'Show Less';
+
+            if (show_less_text) {
+                full_text.addClass('hidden');
+                less_text.removeClass('hidden');
+            } else {
+                full_text.removeClass('hidden');
+                less_text.addClass('hidden');
+            }
+
+            $(this).text(btn_text);
+        });
+    }
+
     visibleForms();
     browseEverythingUploads();
     uploadProgress();
@@ -97,6 +117,7 @@ $(function() {
         hideNonRequiredFieldsBtn();
         hideNonRequiredFormFields();
         removeCloning();
+        toggleCollectionPageDescription();
     });
 
     // Override default workEditor to pick up our local changes

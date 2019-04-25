@@ -78,6 +78,9 @@ en:
     collection:
       form:
         additional_fields: Optional fields
+    collections:
+      show:
+        parent_collection_header: Parent Collection
     links:
       help: Help
       accessibility: Accessibility
