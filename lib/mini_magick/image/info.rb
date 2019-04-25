@@ -46,7 +46,9 @@ module MiniMagick
         @info.fetch(value) do
           image_data = self["%m %w %h %b"]
           if !image_data.blank? && image_data.include?('Warning')
-            format, width, height, size = image_data.split("\n")[1].split(" ")
+            warning, image_info = image_data.split("\n")
+            format, width, height, size = image_info.split(" ")
+            Rails.logger.info "Warning logged for image: #{warning}"
           else
             format, width, height, size = image_data.split(" ")
           end
