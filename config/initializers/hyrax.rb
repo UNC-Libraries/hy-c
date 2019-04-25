@@ -172,7 +172,7 @@ Hyrax.config do |config|
   # prior to being ingested into the repository or having derivatives generated.
   # If you use a multi-server architecture, this MUST be a shared volume.
   # config.working_path = Rails.root.join( 'tmp', 'uploads')
-  config.working_path = ENV['DATA_STORAGE']
+  config.working_path = ENV['TEMP_STORAGE']
 
   # Should the media display partial render a download link?
   # config.display_media_download_link = true
