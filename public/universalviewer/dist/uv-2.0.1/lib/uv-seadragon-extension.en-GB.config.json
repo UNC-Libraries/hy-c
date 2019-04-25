@@ -105,7 +105,7 @@
     "footerPanel": {
       "options": {
         "bookmarkEnabled": false,
-        "downloadEnabled": true,
+        "downloadEnabled": false,
         "embedEnabled": false,
         "feedbackEnabled": false,
         "fullscreenEnabled": true,

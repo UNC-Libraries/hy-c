@@ -29,6 +29,15 @@
           <% end %>
           <div class="col-sm-3 text-center">
             <%= render 'representative_media', presenter: @presenter, viewer: false unless @presenter.iiif_viewer? %>
+            <% if @presenter.iiif_viewer? %>
+              <%  array_of_ids = @presenter.list_of_item_ids_to_display %>
+              <%= link_to t('hyrax.file_set.show.download'),
+                          hyrax.download_path(array_of_ids.first),
+                          data: { label: array_of_ids.first },
+                          target: :_blank,
+                          id: 'file_download',
+                          class: 'iiif-download-file-link' %>
+            <% end %>
             <%= render 'citations', presenter: @presenter %>
             <%= render 'social_media' %>
           </div>
