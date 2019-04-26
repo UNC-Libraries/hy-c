@@ -26,6 +26,7 @@ describe "rake proquest:ingest", type: :task do
 
   before do
     AdminSet.delete_all
+    Hyrax::PermissionTemplateAccess.delete_all
     Hyrax::PermissionTemplate.delete_all
     Hyrax::PermissionTemplateAccess.create!(permission_template: permission_template,
                                            agent_type: 'user',
