@@ -28,7 +28,7 @@
             </div>
           <% end %>
           <div class="col-sm-3 text-center">
-            <%= render 'representative_media', presenter: @presenter, viewer: false unless @presenter.iiif_viewer? %>
+            <%= render 'representative_media', presenter: @presenter, viewer: false %>
             <%= render 'citations', presenter: @presenter %>
             <%= render 'social_media' %>
           </div>
