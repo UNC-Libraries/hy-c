@@ -1,5 +1,29 @@
 desc "Adds sample data for oai tests"
 task :test_data_import => :environment do
+  # Set up functional admin set
+  admin_user = User.find_by_user_key('admin@example.com')
+  admin_set = AdminSet.where(title: 'default admin set').first
+  if admin_set.blank?
+    admin_set = AdminSet.create(title: ['default admin set'],
+                               description: ['some description'],
+                               edit_users: [admin_user.user_key])
+  end
+  permission_template = Hyrax::PermissionTemplate.create!(source_id: admin_set.id)
+  Hyrax::PermissionTemplateAccess.where(permission_template: permission_template,
+                                         agent_type: 'user',
+                                         agent_id: admin_user.user_key,
+                                         access: 'deposit').first_or_create
+  Hyrax::Workflow::WorkflowImporter.generate_from_json_file(path: Rails.root.join('config',
+                                                                                  'workflows',
+                                                                                  'default_workflow.json'),
+                                                            permission_template: permission_template)
+  workflow = Sipity::Workflow.find_by!(name: 'default', permission_template: permission_template)
+  admin_agent = Sipity::Agent.where(proxy_for_id: admin_user.id, proxy_for_type: 'User').first_or_create
+  Hyrax::Workflow::PermissionGenerator.call(roles: 'approving', workflow: workflow, agents: admin_agent)
+  Hyrax::Workflow::PermissionGenerator.call(roles: 'depositing', workflow: workflow, agents: admin_agent)
+  Hyrax::Workflow::PermissionGenerator.call(roles: 'deleting', workflow: workflow, agents: admin_agent)
+
+  # Ingest sample data
   sample_data = YAML.load(File.read(File.expand_path('../../../spec/fixtures/oai_sample_documents.yml', __FILE__)))
   sample_data.each do |data|
     doc = data[1]
