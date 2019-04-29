@@ -5,10 +5,8 @@ $text-color: white;
 $light-gray: lightgray;
 $shadow-base-top: 0 10px 10px -10px;
 $shadow-base-bottom: 0 -10px 10px -10px;
-$shadow-prefixed: inset $shadow-base-top #000, inset $shadow-base-bottom #000;
-$shadow: inner $shadow-base-top #000, inner $shadow-base-bottom #000;
-$description-shadow-prefixed: inset $shadow-base-top gray, inset $shadow-base-bottom gray;
-$description-shadow: inner $shadow-base-top gray, inner $shadow-base-bottom gray;
+$shadow: inset $shadow-base-top #000;
+$description-shadow: inset $shadow-base-top gray;
 
 @font-face {
   font-family: LibreBaskerville;
@@ -51,8 +49,6 @@ span.institution_name {
 .image-masthead {
   margin-bottom: 0;
   height: 225px;
-  -moz-box-shadow: $shadow-prefixed;
-  -webkit-box-shadow: $shadow-prefixed;
   box-shadow: $shadow;
   border-bottom: 0;
 
@@ -203,8 +199,6 @@ span.institution_name {
 
 #unc-featured {
   background-color: #f6f6f6;
-  -moz-box-shadow: $description-shadow-prefixed;
-  -webkit-box-shadow: $description-shadow-prefixed;
   box-shadow: $description-shadow;
   padding: 0 10px;
 
@@ -553,8 +547,18 @@ table p.name span {
 }
 
 @media only screen and (min-width: 1400px) {
-  .container-fluid {
-    padding: 0 150px;
+  .container-fluid, #unc-search, #masthead, .image-masthead {
+    margin: 0 150px;
+
+    #unc-deposit {
+      margin: 0;
+    }
+  }
+
+  .image-masthead {
+    .background-container {
+      box-shadow: inset 0 0 9px 1px rgba(0,0,0,0.68);
+    }
   }
 }
 
