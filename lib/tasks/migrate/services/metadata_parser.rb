@@ -199,15 +199,19 @@ module Migrate
               if rdf_version.to_s.match(/contains/)
                 work_attributes['visibility'] = public_visibility
               else
-                work_attributes['visibility'] =private_visibility
+                work_attributes['visibility'] = private_visibility
               end
             end
           elsif rdf_version.to_s.match(/embargo-until/)
             embargo_release_date = Date.parse rdf_version.xpath("rdf:Description/*[local-name() = 'embargo-until']", MigrationConstants::NS).text
-            work_attributes['embargo_release_date'] = (Date.try(:edtf, embargo_release_date) || embargo_release_date).to_s
-            work_attributes['visibility'] = private_visibility
-            work_attributes['visibility_during_embargo'] = private_visibility
-            work_attributes['visibility_after_embargo'] = public_visibility
+            if embargo_release_date.past?
+              work_attributes['visibility'] = public_visibility
+            else
+              work_attributes['embargo_release_date'] = (Date.try(:edtf, embargo_release_date) || embargo_release_date).to_s
+              work_attributes['visibility'] = private_visibility
+              work_attributes['visibility_during_embargo'] = private_visibility
+              work_attributes['visibility_after_embargo'] = public_visibility
+            end
           elsif rdf_version.to_s.match(/isPublished/)
             published = rdf_version.xpath("rdf:Description/*[local-name() = 'isPublished']", MigrationConstants::NS).text
             if published == 'no'
