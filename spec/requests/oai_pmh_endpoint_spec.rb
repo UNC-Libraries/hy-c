@@ -211,7 +211,7 @@ RSpec.describe 'OAI-PMH catalog endpoint' do
                                'dc' => 'http://purl.org/dc/elements/1.1/',
                                'oai_dc' => 'http://www.openarchives.org/OAI/2.0/oai_dc/'
 
-          expect(descriptions.count).to be_in [17, 25] # 17 for the first run; 25 for rerunning
+          expect(descriptions.count).to be > 1
           expect(descriptions.text).to include('This set includes works in the Default Admin Set.')
         end
       end
