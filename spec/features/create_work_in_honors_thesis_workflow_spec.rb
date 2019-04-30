@@ -185,7 +185,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       click_on 'department_of_biology_reviewer'
       fill_in 'User', with: contact.email
       click_button 'Add'
-      expect(page).to have_content "Accounts: contact@example.com"
+      expect(page).to have_content "Accounts: contact"
 
       click_on 'Logout'
 
