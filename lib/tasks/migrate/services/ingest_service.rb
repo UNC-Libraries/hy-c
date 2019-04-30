@@ -62,7 +62,7 @@ module Migrate
         puts "[#{Time.now.to_s}] Object count:  #{collection_uuids.count.to_s}"
 
         # get metadata for each record
-        collection_uuids.each do |uuid|
+        collection_uuids.each_with_index do |uuid, index|
           # Skip this item if it has been migrated before
           if already_migrated.include?(uuid)
             puts "Skipping previously ingested #{uuid}"
@@ -77,7 +77,7 @@ module Migrate
           end
 
           start_time = Time.now
-          puts "[#{start_time.to_s}] #{uuid} Start migration"
+          puts "[#{start_time.to_s}] #{uuid} Start migration, #{index+1} out of #{collection_uuids.count}"
           work_attributes = Migrate::Services::MetadataParser.new(file_path,
                                                               @object_hash,
                                                               @binary_hash,
