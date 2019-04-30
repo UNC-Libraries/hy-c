@@ -7,14 +7,14 @@ RSpec.describe AssignPermissionsToWorkJob, type: :job do
     allow(Qa::Authorities::Local).to receive(:config).and_return(qa_fixtures)
   end
 
-  let(:reviewer1) { User.create(email: 'reviewer1@example.com', uid: 'reviewer1@example.com', password: 'password', password_confirmation: 'password') }
-  let(:reviewer2) { User.create(email: 'reviewer2@example.com', uid: 'reviewer2@example.com', password: 'password', password_confirmation: 'password') }
+  let(:reviewer1) { User.create(email: 'reviewer1@example.com', uid: 'reviewer1', password: 'password', password_confirmation: 'password') }
+  let(:reviewer2) { User.create(email: 'reviewer2@example.com', uid: 'reviewer2', password: 'password', password_confirmation: 'password') }
   let(:role) { Role.new(name: 'biology_reviewer') }
   let(:admin_set) { AdminSet.create(title: ['an admin set']) }
   let(:permission_template) { Hyrax::PermissionTemplate.create(source_id: admin_set.id) }
   let(:workflow) { Sipity::Workflow.create(name: 'a workflow', permission_template_id: permission_template.id, active: true)}
   let(:work) { HonorsThesis.create(title: ['a title'],
-                                   depositor: 'admin@example.com',
+                                   depositor: 'admin',
                                    creators_attributes: { '0' => { name: 'creator',
                                                                    orcid: 'creator orcid',
                                                                    affiliation: 'biology',

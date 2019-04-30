@@ -8,7 +8,7 @@ RSpec.describe Hyrax::WorkflowPresenter do
   end
 
   let(:user) do
-    User.new(email: 'test@example.com', guest: false, uid: 'test@example.com') { |u| u.save!(validate: false)}
+    User.new(email: 'test@example.com', guest: false, uid: 'test') { |u| u.save!(validate: false)}
   end
   let(:ability) { Ability.new(user) }
   let(:presenter) { described_class.new(solr_document, ability) }

@@ -5,7 +5,7 @@ require 'tmpdir'
 RSpec.describe RegisterToLongleafJob, type: :job do
   
   let(:admin_user) do
-    User.find_by_user_key('admin@example.com')
+    User.find_by_user_key('admin')
   end
   
   let(:binary_dir) { File.join(Rails.root, "tmp/fcrepo4-test-data/fcrepo.binary.directory/") }

@@ -7,31 +7,31 @@ include Warden::Test::Helpers
 RSpec.feature 'Create and review a work in the honors thesis workflow', js: false do
   context 'a logged in user' do
     let(:user) do
-      User.new(email: 'test@example.com', guest: false, uid: 'test@example.com') { |u| u.save!(validate: false)}
+      User.new(email: 'test@example.com', guest: false, uid: 'test') { |u| u.save!(validate: false)}
     end
 
     let(:admin_user) do
-      User.find_by_user_key('admin@example.com')
+      User.find_by_user_key('admin')
     end
 
     let(:admin_user2) do
-      User.new(email: 'admin2@example.com', guest: false, uid: 'admin2@example.com') { |u| u.save!(validate: false)}
+      User.new(email: 'admin2@example.com', guest: false, uid: 'admin2') { |u| u.save!(validate: false)}
     end
 
     let(:contact) do
-      User.new(email: 'contact@example.com', guest: false, uid: 'contact@example.com') { |u| u.save!(validate: false)}
+      User.new(email: 'contact@example.com', guest: false, uid: 'contact') { |u| u.save!(validate: false)}
     end
 
     let(:manager) do
-      User.new(email: 'manager@example.com', guest: false, uid: 'manager@example.com') { |u| u.save!(validate: false)}
+      User.new(email: 'manager@example.com', guest: false, uid: 'manager') { |u| u.save!(validate: false)}
     end
 
     let(:reviewer) do
-      User.new(email: 'reviewer@example.com', guest: false, uid: 'reviewer@example.com') { |u| u.save!(validate: false)}
+      User.new(email: 'reviewer@example.com', guest: false, uid: 'reviewer') { |u| u.save!(validate: false)}
     end
 
     let(:nonreviewer) do
-      User.new(email: 'nonreviewer@example.com', guest: false, uid: 'nonreviewer@example.com') { |u| u.save!(validate: false)}
+      User.new(email: 'nonreviewer@example.com', guest: false, uid: 'nonreviewer') { |u| u.save!(validate: false)}
     end
 
     let(:admin_set) do

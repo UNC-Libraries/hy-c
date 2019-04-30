@@ -4,7 +4,7 @@ include Warden::Test::Helpers
 RSpec.feature 'Create and edit default admin set', js: false do
   context 'a logged in user' do
     let(:user) do
-      User.find_by_user_key('admin@example.com')
+      User.find_by_user_key('admin')
     end
 
     before do

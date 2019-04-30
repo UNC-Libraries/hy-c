@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Hyrax::Workflow::PendingDeletionNotification do
-  let(:admin) { User.find_by_user_key('admin@example.com') }
+  let(:admin) { User.find_by_user_key('admin') }
   let(:depositor) { User.create(email: 'test@example.com', password: 'password', password_confirmation: 'password') }
   let(:cc_user) { User.create(email: 'test2@example.com', password: 'password', password_confirmation: 'password') }
   let(:work) { Article.create(title: ['New Article']) }
