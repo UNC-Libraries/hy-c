@@ -206,6 +206,7 @@ module Migrate
             embargo_release_date = Date.parse rdf_version.xpath("rdf:Description/*[local-name() = 'embargo-until']", MigrationConstants::NS).text
             if embargo_release_date.past?
               work_attributes['visibility'] = public_visibility
+              puts "[#{Time.now.to_s}] #{uuid} Invalid embargo date: #{embargo_release_date}"
             else
               work_attributes['embargo_release_date'] = (Date.try(:edtf, embargo_release_date) || embargo_release_date).to_s
               work_attributes['visibility'] = private_visibility
