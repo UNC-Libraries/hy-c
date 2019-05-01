@@ -547,18 +547,29 @@ table p.name span {
 }
 
 @media only screen and (min-width: 1400px) {
-  .container-fluid, #unc-search, #masthead, .image-masthead {
-    margin: 0 150px;
+  #unc-search, #unc-description {
+    padding-left: 150px;
+    padding-right: 150px;
+  }
 
-    #unc-deposit {
-      margin: 0;
+  .large-screen {
+    background-color: $carolina-blue;
+    margin-left: -150px;
+    margin-right: -150px;
+  }
+
+  #masthead {
+    .large-screen {
+      background-color: $carolina-blue-dark;
+    }
+
+    .navbar-right {
+      margin-right: 0;
     }
   }
 
-  .image-masthead {
-    .background-container {
-      box-shadow: inset 0 0 9px 1px rgba(0,0,0,0.68);
-    }
+  .container-fluid, #unc-featured, #unc-deposit {
+    padding: 0 150px;
   }
 }
 
