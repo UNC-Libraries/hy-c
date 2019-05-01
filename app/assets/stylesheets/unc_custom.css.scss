@@ -554,8 +554,8 @@ table p.name span {
 
   .large-screen {
     background-color: $carolina-blue;
-    margin-left: -150px;
-    margin-right: -150px;
+    margin-left: -120px;
+    margin-right: -120px;
   }
 
   #masthead {
@@ -564,12 +564,17 @@ table p.name span {
     }
 
     .navbar-right {
-      margin-right: 0;
+      margin-right: 15px;
     }
   }
 
   .container-fluid, #unc-featured, #unc-deposit {
     padding: 0 150px;
+  }
+
+  .container-fluid.header-bar {
+    padding-left: 0;
+    padding-right: 0;
   }
 }
 
