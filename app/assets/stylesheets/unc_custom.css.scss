@@ -576,6 +576,10 @@ table p.name span {
     padding-left: 0;
     padding-right: 0;
   }
+
+  .navbar > .container .navbar-brand, .navbar > .container-fluid .navbar-brand {
+    margin-left: inherit;
+  }
 }
 
 @media only screen and (max-width: 1375px) {
@@ -587,6 +591,7 @@ table p.name span {
 
   .navbar-brand {
     padding: 10px 15px;
+    margin-left: 0;
   }
 
   #logo {
