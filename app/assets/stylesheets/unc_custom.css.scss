@@ -538,14 +538,6 @@ table p.name span {
   font-size: 18px;
 }
 
-@media only screen and (max-width: 1600px) {
-  #masthead {
-    .navbar-header {
-      width: 60%;
-    }
-  }
-}
-
 @media only screen and (min-width: 1400px) {
   #unc-search, #unc-description {
     padding-left: 150px;
@@ -561,10 +553,6 @@ table p.name span {
   #masthead {
     .large-screen {
       background-color: $carolina-blue-dark;
-    }
-
-    .navbar-right {
-      margin-right: 15px;
     }
   }
 
@@ -583,84 +571,36 @@ table p.name span {
 }
 
 @media only screen and (max-width: 1375px) {
-  #masthead {
-    .navbar-header {
-      width: 55%;
-    }
-  }
-
   .navbar-brand {
     padding: 10px 15px;
     margin-left: 0;
   }
-
-  #logo {
-    img {
-      max-width: 30%;
-      margin-top: 0;
-    }
-  }
 }
 
-@media only screen and (max-width: 1225px) {
-  #masthead {
-    .navbar-header {
-      width: 50%;
-    }
-  }
-}
 
 @media only screen and (max-width: 1100px) {
-  #masthead {
-    .navbar-header {
-      width: 40%;
-    }
-  }
-  .navbar-brand {
-    padding: 10px 15px;
-  }
-
-  span.institution_name {
-    font-size: 12px;
-  }
-
   dl.work-show {
     margin-left: 75px;
   }
-}
 
-@media only screen and (max-width: 950px) {
-  #masthead {
-    .navbar-header {
-      width: 35%;
-    }
+  .col-md-push-3, .col-sm-push-4 {
+    left: inherit;
   }
 
-  #logo {
-    img {
-      max-width: 35%;
-    }
+  .navbar-nav {
+    margin: 0 0 0 -15px;
   }
 }
+
+
 
 @media only screen and (max-width: 865px) {
   #logo {
     min-width: 300px;
   }
 
-  #masthead {
-    .navbar-header {
-      margin-top: -5px;
-      width: 25%;
-    }
-  }
-
   .navbar-brand {
     padding: 15px 15px;
-  }
-
-  span.institution_name {
-    font-size: 10px;
   }
 
   #unc-footer {
@@ -704,6 +644,12 @@ table p.name span {
 }
 
 @media only screen and (max-width: 800px) {
+  .link-tabs {
+    ul {
+      margin-right: 15px;
+    }
+  }
+
   #unc-description {
     .describe {
       display: block;
@@ -732,17 +678,12 @@ table p.name span {
 
   #masthead {
     .navbar-header {
-      text-align: center;
       width: 100%;
     }
   }
 
   #logo {
     max-width: 75%;
-  }
-
-  span.institution_name {
-    font-size: 12px;
   }
 
   .nav {
@@ -769,6 +710,19 @@ table p.name span {
 }
 
 @media only screen and (max-width: 480px) {
+  #logo {
+    min-width: 200px;
+    max-width: 245px;
+
+    img {
+      max-width: 25%;
+    }
+  }
+
+  .navbar-toggle {
+    margin-right: 0;
+  }
+
   .hyc-metadata {
     margin-left: 0;
   }
@@ -788,6 +742,10 @@ table p.name span {
       margin-bottom: 15px;
       width: 100%;
     }
+  }
+
+  span.institution_name {
+    font-size: 12px;
   }
 
   #unc-text {
@@ -830,4 +788,29 @@ table p.name span {
 }
 .form-progress .checkbox label {
   font-weight: bold;
+}
+
+/* Responsive Hyrax override */
+@media only screen and (min-width: 768px) {
+  .navbar-right {
+    margin-right: 15px;
+  }
+
+  .navbar-nav {
+    margin: 0 0 0 -15px;
+  }
+
+  .nav > li > a {
+    padding: 10px;
+  }
+
+  #masthead {
+    .navbar-header {
+      width: 60%;
+    }
+  }
+
+  ul.navbar-nav {
+    padding-left: 20px;
+  }
 }
