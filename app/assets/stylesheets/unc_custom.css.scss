@@ -19,12 +19,10 @@ body {
 
 #logo {
   img {
-    max-width: 20%;
-    margin-top: -10px;
+    max-height: 30px;
+    margin: auto;
   }
 }
-
-
 
 span.institution_name {
   font-family: LibreBaskerville, sans-serif;
@@ -45,6 +43,10 @@ span.institution_name {
 
   .navbar-header {
     width: 65%;
+  }
+
+  .navbar-brand {
+    padding: 10px 15px;
   }
 }
 
@@ -542,7 +544,6 @@ table p.name span {
 
 @media only screen and (max-width: 1375px) {
   .navbar-brand {
-    padding: 10px 15px;
     margin-left: 0;
   }
 }
@@ -561,14 +562,6 @@ table p.name span {
 
 
 @media only screen and (max-width: 865px) {
-  #logo {
-    min-width: 300px;
-  }
-
-  .navbar-brand {
-    padding: 15px 15px;
-  }
-
   #unc-footer {
     height: auto;
     margin-top: 15px;
@@ -648,10 +641,6 @@ table p.name span {
     }
   }
 
-  #logo {
-    max-width: 75%;
-  }
-
   .nav {
     padding-left: 15px;
   }
@@ -675,18 +664,25 @@ table p.name span {
   }
 }
 
-@media only screen and (max-width: 480px) {
-  #logo {
-    min-width: 200px;
-    max-width: 330px;
-
-    img {
-      max-width: 45%;
-    }
+@media only screen and (max-width: 550px) {
+  #masthead .navbar-brand {
+    padding-right: 0;
   }
 
+  .institution_name {
+    font-size: 14px;
+  }
+}
+
+@media only screen and (max-width: 480px) {
   .navbar-toggle {
     margin-right: 0;
+  }
+
+  #logo {
+    img {
+      max-height: 20px;
+    }
   }
 
   .hyc-metadata {
@@ -746,17 +742,14 @@ table p.name span {
 }
 
 @media only screen and (max-width: 400px) {
-  #logo {
-    min-width: 200px;
-    max-width: 245px;
-
-    img {
-      max-width: 35%;
-    }
-  }
-
   span.institution_name {
     font-size: 10px;
+  }
+
+  #logo {
+    img {
+      max-height: 15px;
+    }
   }
 }
 
@@ -771,24 +764,9 @@ table p.name span {
   font-weight: bold;
 }
 
-@media only screen and (width: 768px) {
-  #logo {
-    img {
-      max-width: 40%;
-    }
-  }
-}
 
 /* Responsive Hyrax override */
 @media only screen and (min-width: 768px) {
-  #logo {
-    max-width: 1000px;
-
-    img {
-      max-width: 30%;
-      margin-top: inherit;
-    }
-  }
   .navbar-right {
     margin-right: 15px;
   }
@@ -812,23 +790,8 @@ table p.name span {
   }
 }
 
-@media only screen and (min-width: 1300px) {
-  #logo {
-    img {
-      margin-top: -5px;
-      max-width: 25%;
-    }
-  }
-}
 
 @media only screen and (min-width: 1400px) {
-  #logo {
-    img {
-      margin-top: -10px;
-      max-width: 20%;
-    }
-  }
-
   #unc-search, #unc-description {
     padding-left: 150px;
     padding-right: 150px;
