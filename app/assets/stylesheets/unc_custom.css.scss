@@ -755,8 +755,12 @@ table p.name span {
     max-width: 245px;
 
     img {
-      max-width: 25%;
+      max-width: 35%;
     }
+  }
+
+  span.institution_name {
+    font-size: 10px;
   }
 }
 
