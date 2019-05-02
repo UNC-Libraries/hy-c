@@ -24,6 +24,8 @@ body {
   }
 }
 
+
+
 span.institution_name {
   font-family: LibreBaskerville, sans-serif;
 
@@ -538,38 +540,6 @@ table p.name span {
   font-size: 18px;
 }
 
-@media only screen and (min-width: 1400px) {
-  #unc-search, #unc-description {
-    padding-left: 150px;
-    padding-right: 150px;
-  }
-
-  .large-screen {
-    background-color: $carolina-blue;
-    margin-left: -120px;
-    margin-right: -120px;
-  }
-
-  #masthead {
-    .large-screen {
-      background-color: $carolina-blue-dark;
-    }
-  }
-
-  .container-fluid, #unc-featured, #unc-deposit {
-    padding: 0 150px;
-  }
-
-  .container-fluid.header-bar {
-    padding-left: 0;
-    padding-right: 0;
-  }
-
-  .navbar > .container .navbar-brand, .navbar > .container-fluid .navbar-brand {
-    margin-left: inherit;
-  }
-}
-
 @media only screen and (max-width: 1375px) {
   .navbar-brand {
     padding: 10px 15px;
@@ -712,10 +682,10 @@ table p.name span {
 @media only screen and (max-width: 480px) {
   #logo {
     min-width: 200px;
-    max-width: 245px;
+    max-width: 330px;
 
     img {
-      max-width: 25%;
+      max-width: 45%;
     }
   }
 
@@ -779,6 +749,17 @@ table p.name span {
   }
 }
 
+@media only screen and (max-width: 400px) {
+  #logo {
+    min-width: 200px;
+    max-width: 245px;
+
+    img {
+      max-width: 25%;
+    }
+  }
+}
+
 .form-progress .form-group {
   margin-bottom: 0;
 }
@@ -790,8 +771,24 @@ table p.name span {
   font-weight: bold;
 }
 
+@media only screen and (width: 768px) {
+  #logo {
+    img {
+      max-width: 40%;
+    }
+  }
+}
+
 /* Responsive Hyrax override */
 @media only screen and (min-width: 768px) {
+  #logo {
+    max-width: 1000px;
+
+    img {
+      max-width: 30%;
+      margin-top: inherit;
+    }
+  }
   .navbar-right {
     margin-right: 15px;
   }
@@ -812,5 +809,53 @@ table p.name span {
 
   ul.navbar-nav {
     padding-left: 20px;
+  }
+}
+
+@media only screen and (min-width: 1300px) {
+  #logo {
+    img {
+      margin-top: -5px;
+      max-width: 25%;
+    }
+  }
+}
+
+@media only screen and (min-width: 1400px) {
+  #logo {
+    img {
+      margin-top: -10px;
+      max-width: 20%;
+    }
+  }
+
+  #unc-search, #unc-description {
+    padding-left: 150px;
+    padding-right: 150px;
+  }
+
+  .large-screen {
+    background-color: $carolina-blue;
+    margin-left: -120px;
+    margin-right: -120px;
+  }
+
+  #masthead {
+    .large-screen {
+      background-color: $carolina-blue-dark;
+    }
+  }
+
+  .container-fluid, #unc-featured, #unc-deposit {
+    padding: 0 150px;
+  }
+
+  .container-fluid.header-bar {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .navbar > .container .navbar-brand, .navbar > .container-fluid .navbar-brand {
+    margin-left: inherit;
   }
 }
