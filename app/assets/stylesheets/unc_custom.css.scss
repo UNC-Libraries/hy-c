@@ -24,6 +24,12 @@ body {
   }
 }
 
+#user-util-links {
+  ul.navbar-nav {
+    padding-left: 0;
+  }
+}
+
 span.institution_name {
   font-family: LibreBaskerville, sans-serif;
 
@@ -756,10 +762,12 @@ table p.name span {
 .form-progress .form-group {
   margin-bottom: 0;
 }
+
 .form-progress .checkbox {
   margin-bottom: 0;
   margin-top: 0;
 }
+
 .form-progress .checkbox label {
   font-weight: bold;
 }
