@@ -79,7 +79,7 @@ RSpec.describe 'OAI-PMH catalog endpoint' do
         get oai_catalog_path(params)
         records = xpath '//xmlns:record'
 
-        expect(records.count).to be(timestamps.count % 25)
+        expect(records.count).to eq(timestamps.count % 25)
       end
 
       scenario 'the last page of records provides an empty resumption token' do
@@ -95,7 +95,7 @@ RSpec.describe 'OAI-PMH catalog endpoint' do
     end
 
     context 'with a set' do
-      let(:document_config) { { set_model: LanguageSet, set_fields: [{ label: 'language', solr_field: 'language_label_tesim' }] } }
+      let(:document_config) { {set_model: AdminsetSet, set_fields: [{label: 'language', solr_field: 'language_label_tesim' }] } }
 
       scenario 'only records from the set are returned' do
         params = { verb: 'ListRecords', metadataPrefix: format, set: 'language:Japanese' }
@@ -188,7 +188,7 @@ RSpec.describe 'OAI-PMH catalog endpoint' do
     end
 
     context 'with set configuration', :vcr do
-      let(:document_config) { { set_model: LanguageSet, set_fields: [{ label: 'language', solr_field: 'language_label_tesim' }] } }
+      let(:document_config) { {set_model: AdminsetSet, set_fields: [{label: 'language', solr_field: 'language_label_tesim' }] } }
 
       scenario 'shows all sets' do
         get oai_catalog_path(verb: 'ListSets')
@@ -202,7 +202,7 @@ RSpec.describe 'OAI-PMH catalog endpoint' do
       end
 
       context 'where sets include descriptions' do
-        let(:document_config) { { set_model: LanguageSet, set_fields: [{ label: 'language', solr_field: 'language_label_tesim' }] } }
+        let(:document_config) { {set_model: AdminsetSet, set_fields: [{label: 'admin set', solr_field: 'admin_set_tesim' }] } }
 
         scenario 'shows the set description object' do
           get oai_catalog_path(verb: 'ListSets')
@@ -211,9 +211,8 @@ RSpec.describe 'OAI-PMH catalog endpoint' do
                                'dc' => 'http://purl.org/dc/elements/1.1/',
                                'oai_dc' => 'http://www.openarchives.org/OAI/2.0/oai_dc/'
 
-          expect(descriptions.count).to be 2
-          expect(descriptions[0].text).to eq('This set includes files in the English language.')
-          expect(descriptions[1].text).to eq('This set includes files in the Japanese language.')
+          expect(descriptions.count).to be > 1
+          expect(descriptions.text).to include('This set includes works in the Default Admin Set.')
         end
       end
     end

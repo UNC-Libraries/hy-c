@@ -324,8 +324,8 @@ class CatalogController < ApplicationController
         },
         document: {
             limit: 25,
-            set_model: LanguageSet,
-            set_fields: [{ label: 'language', solr_field: 'language_label_tesim' }]
+            set_model: AdminsetSet,
+            set_fields: [{ label: 'admin set', solr_field: 'admin_set_sim' }]
         }
     }
   end

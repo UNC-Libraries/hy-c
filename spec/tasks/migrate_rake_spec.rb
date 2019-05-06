@@ -30,7 +30,7 @@ describe "rake migrate:works", type: :task do
                                            agent_type: 'user',
                                            agent_id: user.user_key,
                                            access: 'deposit')
-    Sipity::WorkflowAction.create(id: 4, name: 'show', workflow_id: workflow.id)
+    Sipity::WorkflowAction.create(name: 'show', workflow_id: workflow.id)
 
     watauga_county = <<RDFXML.strip_heredoc
       <?xml version="1.0" encoding="UTF-8" standalone="no"?>
