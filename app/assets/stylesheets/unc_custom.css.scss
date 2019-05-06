@@ -5,10 +5,8 @@ $text-color: white;
 $light-gray: lightgray;
 $shadow-base-top: 0 10px 10px -10px;
 $shadow-base-bottom: 0 -10px 10px -10px;
-$shadow-prefixed: inset $shadow-base-top #000, inset $shadow-base-bottom #000;
-$shadow: inner $shadow-base-top #000, inner $shadow-base-bottom #000;
-$description-shadow-prefixed: inset $shadow-base-top gray, inset $shadow-base-bottom gray;
-$description-shadow: inner $shadow-base-top gray, inner $shadow-base-bottom gray;
+$shadow: inset $shadow-base-top #000;
+$description-shadow: inset $shadow-base-top gray;
 
 @font-face {
   font-family: LibreBaskerville;
@@ -21,8 +19,14 @@ body {
 
 #logo {
   img {
-    max-width: 20%;
-    margin-top: -10px;
+    max-height: 30px;
+    margin: auto;
+  }
+}
+
+#user-util-links {
+  ul.navbar-nav {
+    padding-left: 0;
   }
 }
 
@@ -43,16 +47,14 @@ span.institution_name {
     margin-top: 0;
   }
 
-  .navbar-header {
-    width: 65%;
+  .navbar-brand {
+    padding: 10px 15px;
   }
 }
 
 .image-masthead {
   margin-bottom: 0;
   height: 225px;
-  -moz-box-shadow: $shadow-prefixed;
-  -webkit-box-shadow: $shadow-prefixed;
   box-shadow: $shadow;
   border-bottom: 0;
 
@@ -203,8 +205,6 @@ span.institution_name {
 
 #unc-featured {
   background-color: #f6f6f6;
-  -moz-box-shadow: $description-shadow-prefixed;
-  -webkit-box-shadow: $description-shadow-prefixed;
   box-shadow: $description-shadow;
   padding: 0 10px;
 
@@ -254,7 +254,7 @@ span.institution_name {
   width: 100%;
   margin-top: 25px;
 
-  ul {
+  ul.navbar-nav {
     padding: 0 40%;
 
     li {
@@ -544,100 +544,26 @@ table p.name span {
   font-size: 18px;
 }
 
-@media only screen and (max-width: 1600px) {
-  #masthead {
-    .navbar-header {
-      width: 60%;
-    }
-  }
-}
-
-@media only screen and (min-width: 1400px) {
-  .container-fluid {
-    padding: 0 150px;
-  }
-}
-
 @media only screen and (max-width: 1375px) {
-  #masthead {
-    .navbar-header {
-      width: 55%;
-    }
-  }
-
   .navbar-brand {
-    padding: 10px 15px;
-  }
-
-  #logo {
-    img {
-      max-width: 30%;
-      margin-top: 0;
-    }
+    margin-left: 0;
   }
 }
 
-@media only screen and (max-width: 1225px) {
-  #masthead {
-    .navbar-header {
-      width: 50%;
-    }
-  }
-}
 
 @media only screen and (max-width: 1100px) {
-  #masthead {
-    .navbar-header {
-      width: 40%;
-    }
-  }
-  .navbar-brand {
-    padding: 10px 15px;
-  }
-
-  span.institution_name {
-    font-size: 12px;
-  }
-
   dl.work-show {
     margin-left: 75px;
   }
-}
 
-@media only screen and (max-width: 950px) {
-  #masthead {
-    .navbar-header {
-      width: 35%;
-    }
-  }
-
-  #logo {
-    img {
-      max-width: 35%;
-    }
+  .navbar-nav {
+    margin: 0 0 0 -15px;
   }
 }
+
+
 
 @media only screen and (max-width: 865px) {
-  #logo {
-    min-width: 300px;
-  }
-
-  #masthead {
-    .navbar-header {
-      margin-top: -5px;
-      width: 25%;
-    }
-  }
-
-  .navbar-brand {
-    padding: 15px 15px;
-  }
-
-  span.institution_name {
-    font-size: 10px;
-  }
-
   #unc-footer {
     height: auto;
     margin-top: 15px;
@@ -679,6 +605,12 @@ table p.name span {
 }
 
 @media only screen and (max-width: 800px) {
+  .link-tabs {
+    ul {
+      margin-right: 15px;
+    }
+  }
+
   #unc-description {
     .describe {
       display: block;
@@ -705,21 +637,6 @@ table p.name span {
     }
   }
 
-  #masthead {
-    .navbar-header {
-      text-align: center;
-      width: 100%;
-    }
-  }
-
-  #logo {
-    max-width: 75%;
-  }
-
-  span.institution_name {
-    font-size: 12px;
-  }
-
   .nav {
     padding-left: 15px;
   }
@@ -743,7 +660,27 @@ table p.name span {
   }
 }
 
+@media only screen and (max-width: 550px) {
+  #masthead .navbar-brand {
+    padding-right: 0;
+  }
+
+  .institution_name {
+    font-size: 14px;
+  }
+}
+
 @media only screen and (max-width: 480px) {
+  .navbar-toggle {
+    margin-right: 0;
+  }
+
+  #logo {
+    img {
+      max-height: 20px;
+    }
+  }
+
   .hyc-metadata {
     margin-left: 0;
   }
@@ -763,6 +700,10 @@ table p.name span {
       margin-bottom: 15px;
       width: 100%;
     }
+  }
+
+  span.institution_name {
+    font-size: 12px;
   }
 
   #unc-text {
@@ -796,13 +737,132 @@ table p.name span {
   }
 }
 
+@media only screen and (max-width: 400px) {
+  span.institution_name {
+    font-size: 10px;
+  }
+
+  #logo {
+    img {
+      max-height: 15px;
+    }
+  }
+}
+
 .form-progress .form-group {
   margin-bottom: 0;
 }
+
 .form-progress .checkbox {
   margin-bottom: 0;
   margin-top: 0;
 }
+
 .form-progress .checkbox label {
   font-weight: bold;
+}
+
+
+/* Responsive Hyrax override */
+@media only screen and (min-width: 768px) {
+  .navbar-right {
+    margin-right: 15px;
+  }
+
+  .navbar-nav {
+    margin: 0 0 0 -15px;
+  }
+
+  .nav > li > a {
+    padding: 10px;
+  }
+
+  ul.navbar-nav {
+    padding-left: 20px;
+  }
+}
+
+
+@media only screen and (min-width: 1400px) {
+  #unc-search, #unc-description {
+    padding-left: 150px;
+    padding-right: 150px;
+  }
+
+  .large-screen {
+    background-color: $carolina-blue;
+    margin-left: -135px;
+    margin-right: -135px;
+  }
+
+  #masthead {
+    .large-screen {
+      background-color: $carolina-blue-dark;
+    }
+  }
+
+  .container-fluid, #unc-featured, #unc-deposit {
+    padding: 0 150px;
+  }
+
+  .container-fluid.header-bar {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .navbar > .container .navbar-brand, .navbar > .container-fluid .navbar-brand {
+    margin-left: inherit;
+  }
+}
+
+@media (max-width: 1066px) {
+  #masthead {
+    .navbar-header {
+      width: 100%;
+    }
+
+    .navbar-header {
+      float: none;
+    }
+
+    .navbar-left, .navbar-right {
+      float: none !important;
+    }
+
+    .navbar-toggle {
+      display: block;
+    }
+
+    .navbar-collapse {
+      border-top: 1px solid transparent;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+
+    .navbar-fixed-top {
+      top: 0;
+      border-width: 0 0 1px;
+    }
+
+    .navbar-collapse.collapse {
+      display: none !important;
+    }
+
+    .navbar-nav {
+      float: none !important;
+      margin-top: 7.5px;
+    }
+
+    .navbar-nav > li {
+      float: none;
+    }
+
+    .navbar-nav > li > a {
+      padding-top: 10px;
+      padding-bottom: 10px;
+    }
+
+    .collapse.in {
+      display: block !important;
+    }
+  }
 }

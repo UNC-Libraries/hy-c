@@ -1,5 +1,5 @@
 <% if Flipflop.read_only? %>
-  <div id="unc-deposit" class="row text-center">
+  <div id="unc-deposit" class="row text-center large-screen">
     <p class="read-only-note">The Carolina Digital Repository is in read-only mode for maintenance.
       No submissions or edits can be made at this time.</p>
     <h2 class="read-only"><%= t('hyrax.deposit.header') %></h2>
@@ -21,7 +21,7 @@
     </div>
   </div>
 <% else %>
-  <div id="unc-deposit" class="row text-center">
+  <div id="unc-deposit" class="row text-center large-screen">
     <h2><%= t('hyrax.deposit.header') %></h2>
     <div class="col-sm-3 col-xs-6 unc-block">
       <%= link_to main_app.new_hyrax_article_path do %>
