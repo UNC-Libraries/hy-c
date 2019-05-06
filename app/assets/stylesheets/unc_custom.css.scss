@@ -47,10 +47,6 @@ span.institution_name {
     margin-top: 0;
   }
 
-  .navbar-header {
-    width: 65%;
-  }
-
   .navbar-brand {
     padding: 10px 15px;
   }
@@ -641,12 +637,6 @@ table p.name span {
     }
   }
 
-  #masthead {
-    .navbar-header {
-      width: 100%;
-    }
-  }
-
   .nav {
     padding-left: 15px;
   }
@@ -787,12 +777,6 @@ table p.name span {
     padding: 10px;
   }
 
-  #masthead {
-    .navbar-header {
-      width: 60%;
-    }
-  }
-
   ul.navbar-nav {
     padding-left: 20px;
   }
@@ -807,8 +791,8 @@ table p.name span {
 
   .large-screen {
     background-color: $carolina-blue;
-    margin-left: -120px;
-    margin-right: -120px;
+    margin-left: -135px;
+    margin-right: -135px;
   }
 
   #masthead {
