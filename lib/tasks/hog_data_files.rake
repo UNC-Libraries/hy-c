@@ -38,8 +38,11 @@ task :hog_data_files => :environment do
     puts "#{index+1}, #{line}"
     f = FileSet.find(line.strip)
     d.ordered_members << f
-    d.save!
+    if index % 25 == 0
+      d.save!
+    end
   end
+  d.save!
   # verify that number of files/children has changed
   puts d.ordered_members.to_a.length
 end
