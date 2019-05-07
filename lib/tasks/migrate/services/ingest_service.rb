@@ -127,7 +127,7 @@ module Migrate
                                                                            @admin_set_id).parse
 
                   file_work_attributes = (parsed_file_data.blank? ? {} : parsed_file_data)
-                  file_work_attributes['title'] = file_work_attributes['dc_title'] || file_work_attributes['title'] || work_attributes['title'] || "I have no title"
+                  file_work_attributes['title'] = file_work_attributes['dc_title'] || file_work_attributes['title'] || @binary_hash[MigrationHelper.get_uuid_from_path(file)].split('/').last || work_attributes['title']
                   fileset_attrs = file_record(work_attributes.merge(file_work_attributes))
 
                   fileset = create_fileset(parent: new_work, resource: fileset_attrs, file: @binary_hash[MigrationHelper.get_uuid_from_path(file)])
