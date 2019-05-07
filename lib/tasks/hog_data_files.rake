@@ -34,7 +34,7 @@ task :hog_data_files => :environment do
   # list current file/child count
   puts d.ordered_members.to_a.length
   # add missing files to set
-  File.readlines('lib/tasks/missing_hog_data_files.txt').each_with_index do |line, index|
+  File.readlines(missing_files).each_with_index do |line, index|
     puts "#{index+1}, #{line}"
     f = FileSet.find(line.strip)
     d.ordered_members << f
