@@ -94,7 +94,22 @@ module Migrate
           # Create sipity record
           workflow = Sipity::Workflow.joins(:permission_template)
                          .where(permission_templates: { source_id: new_work.admin_set_id }, active: true)
-          workflow_state = Sipity::WorkflowState.where(workflow_id: workflow.first.id, name: 'deposited')
+          # Unpublished honors theses should be migrated into the review state instead of the deposited state
+          if (workflow.first.name == 'honors_thesis_one_step_mediated_deposit') && (new_work.visibility == Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE) && (new_work.embargo_release_date.blank?)
+            # Migrate into the review state
+            workflow_state = Sipity::WorkflowState.where(workflow_id: workflow.first.id, name: 'pending_review')
+            # Change visibility to public for work and files using work permissions
+            work_attributes['visibility'] = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
+            new_work.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
+            # Save visibility changes
+            new_work.save!
+            # Grant permissions to associated department
+            MigrationHelper.retry_operation('calling assign_reviewers_by_affiliation') do
+              Hyrax::Workflow::AssignReviewerByAffiliation.call(target: new_work)
+            end
+          else
+            workflow_state = Sipity::WorkflowState.where(workflow_id: workflow.first.id, name: 'deposited')
+          end
           MigrationHelper.retry_operation('creating sipity entity for work') do
             Sipity::Entity.create!(proxy_for_global_id: new_work.to_global_id.to_s,
                                    workflow: workflow.first,
@@ -128,7 +143,15 @@ module Migrate
 
                   file_work_attributes = (parsed_file_data.blank? ? {} : parsed_file_data)
                   file_work_attributes['title'] = file_work_attributes['dc_title'] || file_work_attributes['title'] || @binary_hash[MigrationHelper.get_uuid_from_path(file)].split('/').last || work_attributes['title']
-                  fileset_attrs = file_record(work_attributes.merge(file_work_attributes))
+
+                  if file_work_attributes['inherit']
+                    fileset_attrs = file_record(work_attributes.merge(file_work_attributes))
+                  elsif (!work_attributes['embargo_release_date'].blank? && file_work_attributes['visibility'] == Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC)
+                    file_work_attributes['visibility'] = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
+                    fileset_attrs = file_record(work_attributes.merge(file_work_attributes))
+                  else
+                    fileset_attrs = file_record(file_work_attributes)
+                  end
 
                   fileset = create_fileset(parent: new_work, resource: fileset_attrs, file: @binary_hash[MigrationHelper.get_uuid_from_path(file)])
 
@@ -331,25 +354,25 @@ module Migrate
         end
 
         # FileSets can include any metadata listed in BasicMetadata file
-        def file_record(work_attributes)
+        def file_record(attrs)
           file_set = FileSet.new
           file_attributes = Hash.new
           # Singularize non-enumerable attributes
-          work_attributes.each do |k,v|
+          attrs.each do |k,v|
             if file_set.attributes.keys.member?(k.to_s)
-              if !file_set.attributes[k.to_s].respond_to?(:each) && work_attributes[k].respond_to?(:each)
+              if !file_set.attributes[k.to_s].respond_to?(:each) && attrs[k].respond_to?(:each)
                 file_attributes[k] = v.first
               else
                 file_attributes[k] = v
               end
             end
           end
-          file_attributes[:date_created] = work_attributes['date_created']
-          file_attributes[:visibility] = work_attributes['visibility']
-          unless work_attributes['embargo_release_date'].blank?
-            file_attributes[:embargo_release_date] = work_attributes['embargo_release_date']
-            file_attributes[:visibility_during_embargo] = work_attributes['visibility_during_embargo']
-            file_attributes[:visibility_after_embargo] = work_attributes['visibility_after_embargo']
+          file_attributes[:date_created] = attrs['date_created']
+          file_attributes[:visibility] = attrs['visibility']
+          unless attrs['embargo_release_date'].blank?
+            file_attributes[:embargo_release_date] = attrs['embargo_release_date']
+            file_attributes[:visibility_during_embargo] = attrs['visibility_during_embargo']
+            file_attributes[:visibility_after_embargo] = attrs['visibility_after_embargo']
           end
 
           file_attributes
