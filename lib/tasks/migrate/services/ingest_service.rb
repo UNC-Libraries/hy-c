@@ -141,9 +141,12 @@ module Migrate
                                                                            @collection_name,
                                                                            @admin_set_id).parse
 
-                  file_work_attributes = (parsed_file_data.blank? ? {} : parsed_file_data)
-                  file_work_attributes['title'] = file_work_attributes['dc_title'] || file_work_attributes['title'] || @binary_hash[MigrationHelper.get_uuid_from_path(file)].split('/').last || work_attributes['title']
-                  fileset_attrs = file_record(work_attributes.merge(file_work_attributes))
+                  fileset_attrs = (parsed_file_data.blank? ? {} : parsed_file_data)
+                  fileset_attrs['title'] = fileset_attrs['dc_title'] || fileset_attrs['title'] || @binary_hash[MigrationHelper.get_uuid_from_path(file)].split('/').last || work_attributes['title']
+
+                  if fileset_attrs['inherit']
+                    fileset_attrs = file_record(work_attributes.merge(fileset_attrs))
+                  end
 
                   fileset = create_fileset(parent: new_work, resource: fileset_attrs, file: @binary_hash[MigrationHelper.get_uuid_from_path(file)])
 
@@ -217,7 +220,19 @@ module Migrate
         resource['title'].map!{|title| title.gsub('/', '_')}
         file_set = nil
         MigrationHelper.retry_operation('creating fileset') do
-          file_set = FileSet.create(resource)
+          file_set = FileSet.new
+          # Singularize non-enumerable attributes and make sure enumerable attributes are arrays
+          resource.each do |k,v|
+            if file_set.attributes.keys.member?(k.to_s) && !file_set.attributes[k.to_s].respond_to?(:each) && resource[k].respond_to?(:each)
+              resource[k] = v.first
+            elsif file_set.attributes.keys.member?(k.to_s) && file_set.attributes[k.to_s].respond_to?(:each) && !resource[k].respond_to?(:each)
+              resource[k] = Array(v)
+            else
+              resource[k] = v
+            end
+          end
+          file_set.attributes = resource.reject{|k,v| !file_set.attributes.keys.member?(k.to_s)}
+          file_set.save!
         end
 
         actor = Hyrax::Actors::FileSetActor.new(file_set, @depositor)
