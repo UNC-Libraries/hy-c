@@ -94,7 +94,22 @@ module Migrate
           # Create sipity record
           workflow = Sipity::Workflow.joins(:permission_template)
                          .where(permission_templates: { source_id: new_work.admin_set_id }, active: true)
-          workflow_state = Sipity::WorkflowState.where(workflow_id: workflow.first.id, name: 'deposited')
+          # Unpublished honors theses should be migrated into the review state instead of the deposited state
+          if (workflow.first.name == 'honors_thesis_one_step_mediated_deposit') && (new_work.visibility == Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE)
+            # Migrate into the review state
+            workflow_state = Sipity::WorkflowState.where(workflow_id: workflow.first.id, name: 'pending_review')
+            # Change visibility to public for work and files using work permissions
+            work_attributes['visibility'] = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
+            new_work.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
+            # Save visibility changes
+            new_work.save!
+            # Grant permissions to associated department
+            MigrationHelper.retry_operation('calling assign_reviewers_by_affiliation') do
+              Hyrax::Workflow::AssignReviewerByAffiliation.call(target: new_work)
+            end
+          else
+            workflow_state = Sipity::WorkflowState.where(workflow_id: workflow.first.id, name: 'deposited')
+          end
           MigrationHelper.retry_operation('creating sipity entity for work') do
             Sipity::Entity.create!(proxy_for_global_id: new_work.to_global_id.to_s,
                                    workflow: workflow.first,
