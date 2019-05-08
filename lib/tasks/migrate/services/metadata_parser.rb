@@ -210,7 +210,7 @@ module Migrate
               puts "[#{Time.now.to_s}] #{uuid} Invalid embargo date: #{embargo_release_date}"
             else
               work_attributes['embargo_release_date'] = (Date.try(:edtf, embargo_release_date) || embargo_release_date).to_s
-              work_attributes['visibility'] = public_visibility
+              work_attributes['visibility'] = private_visibility
               work_attributes['visibility_during_embargo'] = private_visibility
               work_attributes['visibility_after_embargo'] = public_visibility
             end
