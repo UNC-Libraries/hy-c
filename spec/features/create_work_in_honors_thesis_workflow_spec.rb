@@ -183,7 +183,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
 
       # Add reviewer to role
       click_on 'department_of_biology_reviewer'
-      fill_in 'User', with: contact.email
+      fill_in 'User', with: contact.uid
       click_button 'Add'
       expect(page).to have_content "Accounts: contact"
 

@@ -2,7 +2,7 @@
 
 1:
   creator: 'Irving, Washington'
-  depositor: admin@example.com
+  depositor: admin
   label: The Legend of Sleepy Hollow
   title: The Legend of Sleepy Hollow
   date_created: 2017-10-02T17:50:37Z
@@ -19,7 +19,7 @@
 
 2:
   creator: 'Christie, Agatha'
-  depositor: admin@example.com
+  depositor: admin
   label: The Mysterious Affair at Styles
   title: The Mysterious Affair at Styles
   date_created: 2017-10-02T17:51:26Z
@@ -36,7 +36,7 @@
 
 3:
   creator: 'Unknown'
-  depositor: admin@example.com
+  depositor: admin
   label: Beowulf
   title: Beowulf
   date_created: 2017-10-02T17:26:47Z
@@ -53,7 +53,7 @@
 
 4:
   creator: 'Hobbes, Thomas'
-  depositor: admin@example.com
+  depositor: admin
   label: Leviathan
   title: Leviathan
   date_created: 2017-10-02T17:47:12Z
@@ -70,7 +70,7 @@
 
 5:
   creator: 'Slater, Gilbert'
-  depositor: admin@example.com
+  depositor: admin
   label: The http://id.loc.gov/vocabulary/iso639-2/eng Peasantry and the Enclosure of Common Fields
   title: The http://id.loc.gov/vocabulary/iso639-2/eng Peasantry and the Enclosure of Common Fields
   date_created: 2017-10-02T17:56:55Z
@@ -87,7 +87,7 @@
 
 6:
   creator: 'Dickens, Charles'
-  depositor: admin@example.com
+  depositor: admin
   label: Great Expectations
   title: Great Expectations
   date_created: 2017-10-02T17:39:32Z
@@ -104,7 +104,7 @@
 
 7:
   creator: 'Homer'
-  depositor: admin@example.com
+  depositor: admin
   label: The Iliad
   title: The Iliad
   date_created: 2017-10-02T17:17:42Z
@@ -121,7 +121,7 @@
 
 8:
   creator: 'Hugo, Victor'
-  depositor: admin@example.com
+  depositor: admin
   label: Les Miserables
   title: Les Miserables
   date_created: 2017-10-02T17:46:27Z
@@ -138,7 +138,7 @@
 
 9:
   creator: 'Melville, Herman'
-  depositor: admin@example.com
+  depositor: admin
   label: Moby Dick
   title: Moby Dick
   date_created: 2017-10-02T17:47:51Z
@@ -155,7 +155,7 @@
 
 10:
   creator: 'Tolstoy, Leo'
-  depositor: admin@example.com
+  depositor: admin
   label: War and Peace
   title: War and Peace
   date_created: 2017-10-02T17:14:47Z
@@ -172,7 +172,7 @@
 
 11:
   creator: 'Bronte, Charlotte'
-  depositor: admin@example.com
+  depositor: admin
   label: Jane Eyre
   title: Jane Eyre
   date_created: 2017-10-02T17:42:38Z
@@ -189,7 +189,7 @@
 
 12:
   creator: 'Dolye, Sir Arthur Conan'
-  depositor: admin@example.com
+  depositor: admin
   label: The Adventures of Sherlock Holmes
   title: The Adventures of Sherlock Holmes
   date_created: 2017-10-02T17:55:57Z
@@ -206,7 +206,7 @@
 
 13:
   creator: 'Austen, Jane'
-  depositor: admin@example.com
+  depositor: admin
   label: Pride and Prejudice
   title: Pride and Prejudice
   date_created: 2017-10-02T17:14:40Z
@@ -223,7 +223,7 @@
 
 14:
   creator: 'Carroll, Lewis'
-  depositor: admin@example.com
+  depositor: admin
   label: Alice's Adventures in Wonderland
   title: Alice's Adventures in Wonderland
   date_created: 2017-10-02T15:38:56Z
@@ -240,7 +240,7 @@
 
 15:
   creator: 'Nagai, Kafu'
-  depositor: admin@example.com
+  depositor: admin
   label: Udekurabe
   title: Udekurabe
   date_created: 2017-10-02T17:59:37Z
@@ -257,7 +257,7 @@
 
 16:
   creator: 'Brothers Grimm, The'
-  depositor: admin@example.com
+  depositor: admin
   label: Grimms' Fairy Tales
   title: Grimms' Fairy Tales
   date_created: 2017-10-02T17:16:20Z
@@ -274,7 +274,7 @@
 
 17:
   creator: 'Twain, Mark'
-  depositor: admin@example.com
+  depositor: admin
   label: The Adventures of Tom Sawyer
   title: The Adventures of Tom Sawyer
   date_created: 2017-10-02T17:25:48Z
@@ -291,7 +291,7 @@
 
 18:
   creator: 'Franklin, Benjamin'
-  depositor: admin@example.com
+  depositor: admin
   label: Autobiography of Benjamin Franklin
   title: Autobiography of Benjamin Franklin
   date_created: 2017-10-02T17:54:29Z
@@ -308,7 +308,7 @@
 
 19:
   creator: 'Wells, H. G.'
-  depositor: admin@example.com
+  depositor: admin
   label: The Time Machine
   title: The Time Machine
   date_created: 2017-10-02T17:58:46Z
@@ -325,7 +325,7 @@
 
 20:
   creator: 'Twain, Mark'
-  depositor: admin@example.com
+  depositor: admin
   label: Adventures of Huckleberry Finn
   title: Adventures of Huckleberry Finn
   date_created: 2017-10-02T17:41:49Z
@@ -342,7 +342,7 @@
 
 21:
   creator: 'Paine, Thomas'
-  depositor: admin@example.com
+  depositor: admin
   label: Common Sense
   title: Common Sense
   date_created: 2017-10-02T17:53:00Z
@@ -359,7 +359,7 @@
 
 22:
   creator: 'Wilde, Oscar'
-  depositor: admin@example.com
+  depositor: admin
   label: The Importance of Being Earnest
   title: The Importance of Being Earnest
   date_created: 2017-10-02T17:49:22Z
@@ -376,7 +376,7 @@
 
 23:
   creator: 'Hawthorne, Nathaniel'
-  depositor: admin@example.com
+  depositor: admin
   label: The Scarlet Letter
   title: The Scarlet Letter
   date_created: 2017-10-02T17:57:36Z
@@ -393,7 +393,7 @@
 
 24:
   creator: 'Austen, Jane'
-  depositor: admin@example.com
+  depositor: admin
   label: Emma
   title: Emma
   date_created: 2017-10-02T17:13:31Z
@@ -410,7 +410,7 @@
 
 25:
   creator: 'Bronte, Charlotte'
-  depositor: admin@example.com
+  depositor: admin
   label: Wuthering Heights
   title: Wuthering Heights
   date_created: 2017-10-03T14:34:07Z
@@ -427,7 +427,7 @@
 
 26:
   creator: 'Stoker, Bram'
-  depositor: admin@example.com
+  depositor: admin
   label: Dracula
   title: Dracula
   date_created: 2017-10-02T17:55:07Z
@@ -444,7 +444,7 @@
 
 27:
   creator: 'Barrie, J. M.'
-  depositor: admin@example.com
+  depositor: admin
   label: Peter Pan
   title: Peter Pan
   date_created: 2017-10-02T17:48:33Z
@@ -461,7 +461,7 @@
 
 28:
   creator: 'Masamune, Hakucho'
-  depositor: admin@example.com
+  depositor: admin
   label: Doko e
   title: Doko e
   date_created: 2017-10-02T17:51:26Z
@@ -478,7 +478,7 @@
 
 29:
   creator: 'Dickens, Charles'
-  depositor: admin@example.com
+  depositor: admin
   label: A Tale of Two Cities
   title: A Tale of Two Cities
   date_created: 2017-10-02T17:18:31Z
@@ -495,7 +495,7 @@
 
 30:
   creator: 'Shelley, Mary'
-  depositor: admin@example.com
+  depositor: admin
   label: Frankenstein
   title: Frankenstein
   date_created: 2017-10-02T17:53:34Z

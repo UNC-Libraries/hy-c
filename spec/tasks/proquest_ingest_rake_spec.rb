@@ -43,7 +43,7 @@ describe "rake proquest:ingest", type: :task do
     expect { Rake::Task['proquest:ingest'].invoke('spec/fixtures/proquest', 'proquest default '+time.to_s, 'RAILS_ENV=test') }
         .to change{ Dissertation.count }.by(1)
     new_dissertation = Dissertation.all[-1]
-    expect(new_dissertation['depositor']).to eq 'admin'
+    expect(new_dissertation['depositor']).to eq 'admin@example.com'
     expect(new_dissertation['title']).to match_array ['Perspective on Attachments and Ingests']
     expect(new_dissertation['label']).to eq 'Perspective on Attachments and Ingests'
     expect(new_dissertation['date_issued']).to eq '2011-01-01'
