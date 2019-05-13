@@ -192,7 +192,7 @@ module Migrate
           public_visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
           work_attributes['embargo_release_date'] = ''
           work_attributes['visibility'] = public_visibility
-          work_attributes['inherit'] = false
+          work_attributes['inherit'] = true
 
           if rdf_version.to_s.match(/metadata-patron/)
             patron = rdf_version.xpath("rdf:Description/*[local-name() = 'metadata-patron']", MigrationConstants::NS).text

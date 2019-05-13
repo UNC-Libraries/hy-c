@@ -98,9 +98,8 @@ module Migrate
           if (workflow.first.name == 'honors_thesis_one_step_mediated_deposit') && (new_work.visibility == Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE) && (new_work.embargo_release_date.blank?)
             # Migrate into the review state
             workflow_state = Sipity::WorkflowState.where(workflow_id: workflow.first.id, name: 'pending_review')
-            # Change visibility to public for work and files using work permissions
-            work_attributes['visibility'] = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
-            new_work.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
+            # Change visibility to private for work and files using work permissions
+            work_attributes['visibility'] = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
             # Save visibility changes
             new_work.save!
             # Grant permissions to associated department
@@ -151,6 +150,12 @@ module Migrate
                     fileset_attrs = file_record(work_attributes.merge(file_work_attributes))
                   else
                     fileset_attrs = file_record(file_work_attributes)
+                  end
+                  
+                  # If the parent work is not visible, then its children must be private
+                  if work_attributes['visibility'] == Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
+                    file_work_attributes['visibility'] = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
+                    fileset_attrs['visibility'] = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
                   end
 
                   fileset = create_fileset(parent: new_work, resource: fileset_attrs, file: @binary_hash[MigrationHelper.get_uuid_from_path(file)])
