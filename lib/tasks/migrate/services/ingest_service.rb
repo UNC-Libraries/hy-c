@@ -47,6 +47,9 @@ module Migrate
       end
 
       def ingest_records
+        vis_private = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
+        vis_authenticated = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_AUTHENTICATED
+        
         STDOUT.sync = true
         # get array of record uuids
         collection_uuids = MigrationHelper.get_collection_uuids(@collection_ids_file)
@@ -94,21 +97,7 @@ module Migrate
           # Create sipity record
           workflow = Sipity::Workflow.joins(:permission_template)
                          .where(permission_templates: { source_id: new_work.admin_set_id }, active: true)
-          # Unpublished honors theses should be migrated into the review state instead of the deposited state
-          if (workflow.first.name == 'honors_thesis_one_step_mediated_deposit') && (new_work.visibility == Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE) && (new_work.embargo_release_date.blank?)
-            # Migrate into the review state
-            workflow_state = Sipity::WorkflowState.where(workflow_id: workflow.first.id, name: 'pending_review')
-            # Change visibility to private for work and files using work permissions
-            work_attributes['visibility'] = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
-            # Save visibility changes
-            new_work.save!
-            # Grant permissions to associated department
-            MigrationHelper.retry_operation('calling assign_reviewers_by_affiliation') do
-              Hyrax::Workflow::AssignReviewerByAffiliation.call(target: new_work)
-            end
-          else
-            workflow_state = Sipity::WorkflowState.where(workflow_id: workflow.first.id, name: 'deposited')
-          end
+          workflow_state = Sipity::WorkflowState.where(workflow_id: workflow.first.id, name: 'deposited')
           MigrationHelper.retry_operation('creating sipity entity for work') do
             Sipity::Entity.create!(proxy_for_global_id: new_work.to_global_id.to_s,
                                    workflow: workflow.first,
@@ -143,20 +132,24 @@ module Migrate
                   file_work_attributes = (parsed_file_data.blank? ? {} : parsed_file_data)
                   file_work_attributes['title'] = file_work_attributes['dc_title'] || file_work_attributes['title'] || @binary_hash[MigrationHelper.get_uuid_from_path(file)].split('/').last || work_attributes['title']
 
-                  if file_work_attributes['inherit']
-                    fileset_attrs = file_record(work_attributes.merge(file_work_attributes))
-                  elsif (!work_attributes['embargo_release_date'].blank? && file_work_attributes['visibility'] == Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC)
-                    file_work_attributes['visibility'] = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
-                    fileset_attrs = file_record(work_attributes.merge(file_work_attributes))
-                  else
+                  # If a child is explicitly private, then ignore inherited permissions
+                  if file_work_attributes['is_private']
                     fileset_attrs = file_record(file_work_attributes)
+                  else
+                    # Inheriting permissions if not explicitly marked private (inherit=false explicitly marks private)
+                    fileset_attrs = file_record(work_attributes.merge(file_work_attributes))
                   end
                   
                   # If the parent work is not visible, then its children must be private
-                  if work_attributes['visibility'] == Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
-                    file_work_attributes['visibility'] = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
-                    fileset_attrs['visibility'] = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
+                  if work_attributes['visibility'] == vis_private
+                    file_work_attributes['visibility'] = vis_private
+                    fileset_attrs['visibility'] = vis_private
+                  # Inherit authenticated visibility unless a more restrictive policy is present
+                  elsif work_attributes['visibility'] == vis_authenticated && file_work_attributes['visibility'] != vis_private
+                    file_work_attributes['visibility'] = vis_authenticated
+                    fileset_attrs['visibility'] = vis_authenticated
                   end
+                  
 
                   fileset = create_fileset(parent: new_work, resource: fileset_attrs, file: @binary_hash[MigrationHelper.get_uuid_from_path(file)])
 
@@ -193,7 +186,7 @@ module Migrate
               premis_file = @premis_hash[MigrationHelper.get_uuid_from_path(file)] || ''
               if File.file?(premis_file)
                 fileset_attrs = { 'title' => ["PREMIS_Events_Metadata_#{index}_#{uuid}.txt"],
-                                  'visibility' => Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE }
+                                  'visibility' => vis_private }
                 fileset = create_fileset(parent: new_work, resource: fileset_attrs, file: premis_file)
 
                 new_work.ordered_members << fileset
@@ -206,7 +199,7 @@ module Migrate
           # Attach metadata files
           if File.file?(file_path)
             fileset_attrs = { 'title' => ["original_metadata_file_#{uuid}.xml"],
-                              'visibility' => Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE }
+                              'visibility' => vis_private }
             fileset = create_fileset(parent: new_work, resource: fileset_attrs, file: file_path)
 
             new_work.ordered_members << fileset
