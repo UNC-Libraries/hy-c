@@ -277,10 +277,10 @@ terms:
     term: College of Arts and Sciences; Department of Art and Art History
     active: true
   - id: Department of Art and Art History – Art History
-    term: College of Arts and Sciences; Department of Art and Art History – Art History
+    term: College of Arts and Sciences; Department of Art and Art History; Art History
     active: true
   - id: Department of Art and Art History – Studio Art
-    term: College of Arts and Sciences; Department of Art and Art History – Studio Art
+    term: College of Arts and Sciences; Department of Art and Art History; Studio Art
     active: true
   - id: Department of Asian Studies
     term: College of Arts and Sciences; Department of Asian Studies
