@@ -26,7 +26,7 @@ task :update_visibility, [:id_list_path, :visibility_arg] => :environment do |t,
   lines.each_with_index do |line, index|
     start = Time.now
     
-    model, id = line.split(',').collect(&:strip)
+    id = line.strip
     work = ActiveFedora::Base.find(id)
     
     work.visibility = new_visibility

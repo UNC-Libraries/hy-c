@@ -15,7 +15,7 @@ task :inherit_access_and_change_admin_set, [:id_list_path, :admin_set_id] => :en
   lines.each_with_index do |line, index|
     start = Time.now
     
-    model, id = line.split(',').collect(&:strip)
+    id = line.strip
     parent = ActiveFedora::Base.find(id)
     
     puts "Updating parent work #{parent.id}: #{parent.visibility} #{parent.embargo_release_date} #{parent.visibility_during_embargo} #{parent.visibility_after_embargo}"
