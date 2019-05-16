@@ -14,6 +14,10 @@ module Migrate
       end
 
       def parse
+        vis_private = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
+        vis_public = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
+        vis_authenticated = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_AUTHENTICATED
+        
         file_open_time = Time.now
         puts "[#{file_open_time.to_s}] opening xml file"
         metadata = Nokogiri::XML(File.open(@metadata_file))
@@ -135,6 +139,13 @@ module Migrate
           work_attributes['url'] = descriptive_mods.xpath('mods:location/mods:url',MigrationConstants::NS).map(&:text)
           work_attributes['digital_collection'] = descriptive_mods.xpath('mods:relatedItem[@displayLabel="Collection" and @type="host"]/mods:titleInfo/mods:title',MigrationConstants::NS).map(&:text)
         end
+        
+        # ACL settings
+        inherit_roles = true
+        unpublished = false
+        public_patron = false
+        auth_patron = false
+        embargo_until = nil
 
         # RDF information
         work_attributes['deposit_record'] = ''
@@ -187,53 +198,60 @@ module Migrate
           end
 
           # Set access controls for work
-          # Set default visibility first
-          private_visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
-          public_visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
-          work_attributes['embargo_release_date'] = ''
-          work_attributes['visibility'] = public_visibility
-          work_attributes['inherit'] = false
-
-          if rdf_version.to_s.match(/metadata-patron/)
-            patron = rdf_version.xpath("rdf:Description/*[local-name() = 'metadata-patron']", MigrationConstants::NS).text
-            if patron == 'public'
-              if rdf_version.to_s.match(/contains/)
-                work_attributes['visibility'] = public_visibility
-              else
-                work_attributes['visibility'] = private_visibility
-              end
-            end
-          elsif rdf_version.to_s.match(/embargo-until/)
+          if rdf_version.to_s.match(/[:<]patron/)
+            patron = rdf_version.xpath("rdf:Description/*[local-name() = 'patron']", MigrationConstants::NS).text
+            public_patron = public_patron || (patron == 'public')
+            auth_patron = auth_patron || (patron == 'authenticated')
+          end
+          if rdf_version.to_s.match(/embargo-until/)
             embargo_release_date = Date.parse rdf_version.xpath("rdf:Description/*[local-name() = 'embargo-until']", MigrationConstants::NS).text
             if embargo_release_date.past?
-              work_attributes['visibility'] = public_visibility
               puts "[#{Time.now.to_s}] #{uuid} Invalid embargo date: #{embargo_release_date}"
             else
-              work_attributes['embargo_release_date'] = (Date.try(:edtf, embargo_release_date) || embargo_release_date).to_s
-              work_attributes['visibility'] = private_visibility
-              work_attributes['visibility_during_embargo'] = private_visibility
-              work_attributes['visibility_after_embargo'] = public_visibility
-            end
-          elsif rdf_version.to_s.match(/isPublished/)
-            published = rdf_version.xpath("rdf:Description/*[local-name() = 'isPublished']", MigrationConstants::NS).text
-            if published == 'no'
-              work_attributes['visibility'] = private_visibility
-            end
-          elsif rdf_version.to_s.match(/inheritPermissions/)
-            inherit = rdf_version.xpath("rdf:Description/*[local-name() = 'inheritPermissions']", MigrationConstants::NS).text
-            if inherit == 'false'
-              work_attributes['visibility'] = private_visibility
-            else
-              work_attributes['inherit'] = true
-            end
-          elsif rdf_version.to_s.match(/cdr-role:patron>authenticated/)
-            authenticated = rdf_version.xpath("rdf:Description/*[local-name() = 'patron']", MigrationConstants::NS).text
-            if authenticated == 'authenticated'
-              work_attributes['visibility'] = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_AUTHENTICATED
+              embargo_until = embargo_release_date
             end
           end
+          if rdf_version.to_s.match(/isPublished/)
+            published = rdf_version.xpath("rdf:Description/*[local-name() = 'isPublished']", MigrationConstants::NS).text
+            unpublished = unpublished || (published == 'no')
+          end
+          if rdf_version.to_s.match(/inheritPermissions/)
+            inherit = rdf_version.xpath("rdf:Description/*[local-name() = 'inheritPermissions']", MigrationConstants::NS).text
+            inherit_roles = inherit != 'false'
+          end
         end
-
+        
+        work_attributes['inherit'] = inherit_roles
+        
+        if unpublished
+          work_attributes['visibility'] = vis_private
+          work_attributes['is_private'] = true
+        elsif !inherit_roles
+          if auth_patron
+            work_attributes['visibility'] = vis_authenticated
+          elsif public_patron
+            work_attributes['visibility'] = vis_public
+          else
+            work_attributes['visibility'] = vis_private
+            work_attributes['is_private'] = true
+          end
+        else
+          # Default state
+          work_attributes['visibility'] = vis_public
+        end
+          
+        if !embargo_until.nil?
+          work_attributes['embargo_release_date'] = (Date.try(:edtf, embargo_release_date) || embargo_release_date).to_s
+          work_attributes['visibility'] = vis_private
+          work_attributes['visibility_during_embargo'] = vis_private
+          if work_attributes['is_private']
+            work_attributes['visibility_after_embargo'] = vis_private
+          elsif auth_patron
+            work_attributes['visibility_after_embargo'] = vis_authenticated
+          else
+            work_attributes['visibility_after_embargo'] = vis_public
+          end
+        end
 
         # Add work to specified collection
         MigrationHelper.retry_operation('adding collection') do
