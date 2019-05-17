@@ -68,6 +68,10 @@ module Blacklight::Document::DublinCore
   alias_method :export_as_xml, :export_as_oai_dc_xml
   alias_method :export_as_dc_xml, :export_as_oai_dc_xml
 
+  def deleted?
+    fetch('workflow_state_name_ssim', nil)&.include?('withdrawn')
+  end
+
   private
 
   def dublin_core_field_name? field
