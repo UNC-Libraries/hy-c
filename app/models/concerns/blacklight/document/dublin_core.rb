@@ -55,7 +55,13 @@ module Blacklight::Document::DublinCore
           end
         end
       end
+      # Add an identifier linking to the record page in hyc if no DOI is present
+      if doi.blank?
+        record_url = URI.join(ENV['HYRAX_HOST'], "concern/#{first('has_model_ssim').tableize}/#{id()}").to_s
+        xml.tag! "dc:identifier", record_url
+      end
     end
+
     xml.target!
   end
 
