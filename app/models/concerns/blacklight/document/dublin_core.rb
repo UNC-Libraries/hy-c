@@ -68,6 +68,8 @@ module Blacklight::Document::DublinCore
   alias_method :export_as_xml, :export_as_oai_dc_xml
   alias_method :export_as_dc_xml, :export_as_oai_dc_xml
 
+  # Used by ruby-oai gem to determine if a status=deleted header should be added.
+  # See OAI::Provider::Response::RecordResponse
   def deleted?
     fetch('workflow_state_name_ssim', nil)&.include?('withdrawn')
   end
