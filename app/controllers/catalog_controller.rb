@@ -318,12 +318,12 @@ class CatalogController < ApplicationController
     config.oai = {
         provider: {
             repository_name: 'Carolina Digital Repository',
-            repository_url: 'https://localhost:4040',
-            record_prefix: '',
-            admin_email: 'admin@example.com'
+            repository_url: URI.join(ENV['HYRAX_HOST'] || 'https://localhost', 'catalog/oai').to_s,
+            record_prefix: URI.parse(ENV['HYRAX_HOST']).hostname || 'localhost',
+            admin_email: ENV['EMAIL_FROM_ADDRESS']
         },
         document: {
-            limit: 25,
+            limit: 50,
             set_model: AdminsetSet,
             set_fields: [{ label: 'admin set', solr_field: 'admin_set_sim' }]
         }
