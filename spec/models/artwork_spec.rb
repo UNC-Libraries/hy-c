@@ -38,6 +38,7 @@ RSpec.describe Artwork do
       expect(subject).to respond_to(:doi)
       expect(subject).to respond_to(:extent)
       expect(subject).to respond_to(:medium)
+      expect(subject).to respond_to(:note)
       expect(subject).to respond_to(:license_label)
       expect(subject).to respond_to(:rights_statement_label)
     end
