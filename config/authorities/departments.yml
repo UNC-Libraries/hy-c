@@ -3,6 +3,9 @@ terms:
   - id: American Indian and Indigenous Studies Program
     term: College of Arts and Sciences; Department of American Studies; American Indian and Indigenous Studies Program
     active: true
+  - id: Art History
+    term: College of Arts and Sciences; Department of Art and Art History; Art History
+    active: false
   - id: Art History Program
     term: College of Arts and Sciences; Department of Art; Art History Program
     active: false
@@ -1024,6 +1027,9 @@ terms:
   - id: Sport Administration Program
     term: College of Arts and Sciences; Department of Exercise and Sport Science; Sport Administration Program
     active: true
+  - id: Studio Art
+    term: College of Arts and Sciences; Department of Art and Art History; Studio Art
+    active: false
   - id: Studio Art Program
     term: College of Arts and Sciences; Department of Art; Studio Art Program
     active: false
