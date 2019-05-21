@@ -1,4 +1,4 @@
-<%# [hyc-override] Overriding partial in hyrax gem in order to hide lease option %>
+<%# [hyc-override] Overriding partial in hyrax gem in order to hide lease option and display note for public option %>
 <%# # This is used by works and by FileSet and the layout (col-6 vs col-12) is different for both %>
 <% if f.object.embargo_release_date %>
   <%= render 'form_permission_under_embargo', f: f %>
@@ -16,6 +16,9 @@
       <label class="radio">
         <%= f.radio_button :visibility, Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC %>
         <%= visibility_badge(Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC) %>
+        <div class="files-public-note">
+          <%= t('hyrax.visibility.open.warning_html', label: visibility_badge(Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC)) %>
+        </div>
       </label>
       <label class="radio">
         <%= f.radio_button :visibility, Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_AUTHENTICATED %>
