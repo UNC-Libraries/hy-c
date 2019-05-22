@@ -1,3 +1,4 @@
+# [hyc-override] Check for local schema.org file, so our overrides can take effect.
 module Hyrax
   # Responsible for extracting information related to Schema.org microdata.
   #
@@ -9,7 +10,8 @@ module Hyrax
   # @note This was extracted from internationalization because Schema.org keys are not internationalized
   class Microdata
     include Singleton
-    FILENAME = Hyrax::Engine.root + 'config/schema_org.yml'
+    local_schema_file = Rails.root.join('config', 'schema_org.yml')
+    FILENAME = File.file?(local_schema_file) ? local_schema_file : Hyrax::Engine.root + 'config/schema_org.yml'
     TOP_KEY = 'schema_org'.freeze
 
     # @api private (See note regarding specific methods)
