@@ -70,6 +70,7 @@ RSpec.feature 'Create an Artwork', js: false do
 
       # extra fields
 
+      fill_in 'Note', with: 'my note'
       select 'Attribution 3.0 United States', :from => 'artwork_license'
       select 'In Copyright', :from => 'artwork_rights_statement'
 
@@ -109,6 +110,7 @@ RSpec.feature 'Create an Artwork', js: false do
       expect(page).to have_content 'Extent some extent'
       expect(page).to have_content 'License Attribution 3.0 United States'
       expect(page).to have_content 'Medium a medium'
+      expect(page).to have_content 'Note my note'
       expect(page).to have_content 'Resource type Art'
       expect(page).to have_content 'Rights statement In Copyright'
       expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
@@ -136,6 +138,7 @@ RSpec.feature 'Create an Artwork', js: false do
       fill_in 'Medium', with: 'a medium'
 
       # extra fields
+      fill_in 'Note', with: 'my note'
       fill_in 'DOI', with: 'some doi'
       select 'Attribution 3.0 United States', :from => 'artwork_license'
       select 'In Copyright', :from => 'artwork_rights_statement'
@@ -180,6 +183,7 @@ RSpec.feature 'Create an Artwork', js: false do
       expect(page).to have_content 'Extent some extent'
       expect(page).to have_content 'License Attribution 3.0 United States'
       expect(page).to have_content 'Medium a medium'
+      expect(page).to have_content 'Note my note'
       expect(page).to have_content 'Resource type Art'
       expect(page).to have_content 'Rights statement In Copyright'
       expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
