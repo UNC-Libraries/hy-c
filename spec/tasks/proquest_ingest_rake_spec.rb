@@ -3,7 +3,7 @@ require "rake"
 
 describe "rake proquest:ingest", type: :task do
   let(:admin_user) do
-    User.find_by_user_key('admin@example.com')
+    User.find_by_user_key('admin')
   end
 
   let(:time) do

@@ -3,7 +3,7 @@ require "rake"
 
 describe "rake migrate:works", type: :task do
   let(:user) do
-    User.find_by_user_key('admin@example.com')
+    User.find_by_user_key('admin')
   end
 
   let(:admin_set) do
@@ -69,7 +69,7 @@ RDFXML
                                                       'RAILS_ENV=test') }
         .to change{ Article.count }.by(1)
     new_article = Article.all[-1]
-    expect(new_article['depositor']).to eq 'admin@example.com'
+    expect(new_article['depositor']).to eq 'admin'
     expect(new_article['title']).to match_array ['Les Miserables']
     expect(new_article['label']).to eq 'Les Miserables'
     expect(new_article['date_modified']).to eq 'Mon, 02 Oct 2017 17:46:28 +0000'

@@ -81,7 +81,7 @@ RSpec.describe CreateDerivativesJob do
 
   context "with a pdf file" do
     let!(:user) do
-      User.new(email: 'test@example.com', guest: false, uid: 'test@example.com') { |u| u.save!(validate: false)}
+      User.new(email: 'test@example.com', guest: false, uid: 'test') { |u| u.save!(validate: false)}
     end
     let(:file_set) { FileSet.new }
 
