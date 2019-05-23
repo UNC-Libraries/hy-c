@@ -8,6 +8,9 @@ task :replace_affiliation, [:id_list_path, :replace_affil, :replace_with] => :en
   replace_with = args[:replace_with]
   
   start_total = Time.now
+  
+  expanded_replacement = DepartmentsService.label(replace_with)&.split('; ')
+  raise "#{replace_with} is not in the department vocabulary" if expanded_replacement.nil?
 
   # Iterate through each object to replace affiliations
   puts "Replacing affiliation #{replace_affil} with #{replace_with}"
@@ -17,7 +20,7 @@ task :replace_affiliation, [:id_list_path, :replace_affil, :replace_with] => :en
   lines.each_with_index do |line, index|
     id = line.strip
     
-    puts "Updating work #{work.id}, #{index + 1} of #{total}"
+    puts "Updating work #{id}, #{index + 1} of #{total}"
     
     work = ActiveFedora::Base.find(id)
     people.each do |person|
@@ -38,7 +41,7 @@ task :replace_affiliation, [:id_list_path, :replace_affil, :replace_with] => :en
                 p.affiliation.delete(affil_val)
               end
               
-              p.affiliation << replace_with
+              p.affiliation << expanded_replacement
               replaced = true
             end
             

@@ -5,7 +5,7 @@ terms:
     active: true
   - id: Art History
     term: College of Arts and Sciences; Department of Art and Art History; Art History
-    active: false
+    active: true
   - id: Art History Program
     term: College of Arts and Sciences; Department of Art; Art History Program
     active: false
@@ -1029,7 +1029,7 @@ terms:
     active: true
   - id: Studio Art
     term: College of Arts and Sciences; Department of Art and Art History; Studio Art
-    active: false
+    active: true
   - id: Studio Art Program
     term: College of Arts and Sciences; Department of Art; Studio Art Program
     active: false
