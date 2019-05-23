@@ -1,3 +1,4 @@
+# [hyc-override] Using single item search builder when finding object by identifer
 module BlacklightOaiProvider
   class SolrDocumentWrapper < ::OAI::Provider::Model
     attr_reader :document_model, :timestamp_field, :solr_timestamp, :limit
@@ -41,7 +42,10 @@ module BlacklightOaiProvider
         end
         response.documents
       else
-        @controller.fetch(selector).first.documents.first
+        # [hyc-override] using search builder in order to allow for access controls to be applied
+        query = @controller.single_item_search_builder(selector).query
+        Rails.logger.debug("Finding a single result #{selector} #{query}")
+        @controller.repository.search(query).documents.first
       end
     end
 
