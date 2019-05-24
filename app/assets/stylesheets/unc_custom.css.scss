@@ -351,6 +351,12 @@ div.unc-modal {
   width: 100%;
 }
 
+.files-public-note {
+  ul {
+    list-style-type: circle;
+  }
+}
+
 /* Hyrax override */
 #content_block_page {
   margin: 0 15px;
