@@ -16,9 +16,11 @@
 <% end %>
 
 <% content_for(:gscholar_meta) do %>
-  <meta name="citation_title" content="<%= @presenter.title.first %>" />
-  <% @presenter.creator_display.each do |creator| %>
-    <meta name="citation_author" content="<%= creator.split('||').first %>" />
+  <meta name="citation_title" content="<%= Array.wrap(@presenter.title).first %>" />
+  <% if !@presenter.creator_display.blank? %>
+    <% Array.wrap(@presenter.creator_display).each do |creator| %>
+      <meta name="citation_author" content="<%= creator.split('||').first %>" />
+    <% end %>
   <% end %>
   <meta name="citation_publication_date" content="<%= Array.wrap(@presenter.date_issued).first %>" />
   <meta name="citation_pdf_url]" content="<%= @presenter.download_url %>" />

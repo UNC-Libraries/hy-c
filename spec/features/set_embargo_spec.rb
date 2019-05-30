@@ -36,7 +36,7 @@ RSpec.feature 'Edit embargo', js: false do
                                              agent_type: 'user',
                                              agent_id: admin_user.user_key,
                                              access: 'deposit')
-      Sipity::WorkflowAction.create(id: 4, name: 'show', workflow_id: workflow.id)
+      Sipity::WorkflowAction.create(name: 'show', workflow_id: workflow.id)
       DefaultAdminSet.create(work_type_name: 'Article', admin_set_id: admin_set.id)
     end
 

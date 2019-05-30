@@ -26,12 +26,11 @@ describe "rake proquest:ingest", type: :task do
 
   before do
     AdminSet.delete_all
-    Hyrax::PermissionTemplate.delete_all
     Hyrax::PermissionTemplateAccess.create!(permission_template: permission_template,
                                            agent_type: 'user',
                                            agent_id: admin_user.user_key,
                                            access: 'deposit')
-    Sipity::WorkflowAction.create(id: 4, name: 'show', workflow_id: workflow.id)
+    Sipity::WorkflowAction.create(name: 'show', workflow_id: workflow.id)
     Hyrax::Application.load_tasks if Rake::Task.tasks.empty?
   end
 
