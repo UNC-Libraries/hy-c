@@ -1,0 +1,62 @@
+# [hyc-override] Overriding to add Hy-C specific metadata
+schema_org:
+  abstract:
+    property: description
+  based_near:
+    property: contentLocation
+    type: "http://schema.org/Place"
+    value: name
+  contributor:
+    property: contributor
+    # used as the itemprop value for itemscoped attributes
+    type:
+      - "http://schema.org/Person"
+      - "http://schema.org/Organization"
+    value: name
+  creator:
+    property: creator
+    type:
+      - "http://schema.org/Person"
+      - "http://schema.org/Organization"
+    value: name
+  date_issued:
+    property: datePublished
+  doi:
+    property: identifier
+  keyword:
+    property: keywords
+  language_label:
+    property: inLanguage
+  license:
+    property: license
+    type: "http://schema.org/URL"
+  publisher:
+    property: publisher
+    type: "http://schema.org/Organization"
+    value: name
+  resource_type:
+    3D Object: "http://schema.org/3DModel"
+    Artwork: "http://schema.org/VisualArtwork"
+    Scholarly Article or Book Chapter: "http://schema.org/Article"
+    Audio: "http://schema.org/AudioObject"
+    Book: "http://schema.org/Book"
+    Conference Proceeding: "http://schema.org/ScholarlyArticle"
+    Dataset: "http://schema.org/Dataset"
+    Dissertation or Thesis: "http://schema.org/Thesis"
+    Honors Thesis: "http://schema.org/Thesis"
+    Image: "http://schema.org/ImageObject"
+    Map or Cartographic Material: "http://schema.org/Map"
+    Master's Paper: "http://schema.org/Thesis"
+    Master's Thesis: "http://schema.org/Thesis"
+    Part of Book: "http://schema.org/Chapter"
+    Poster: "http://schema.org/Poster"
+    Research Paper: "http://schema.org/ScholarlyArticle"
+    Software or Program Code: "http://schema.org/SoftwareSourceCode"
+    Undergraduate Honors Thesis: "http://schema.org/Thesis"
+    Video: "http://schema.org/VideoObject"
+  subject:
+    property: about
+    type: "http://schema.org/Thing"
+    value: name
+  title:
+    property: name
