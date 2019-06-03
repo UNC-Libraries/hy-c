@@ -11,6 +11,10 @@ task :id_map_cleaner, [:old_mapping_file, :new_mapping_file, :duplicate_log] => 
     file.each do |line|
       key,value = line.strip.split(',')
       if mappings[key]
+        # map work instead of file_sets for simple objects
+        if (mappings[key].split('/')[1] == value.split('/')[1]) && (value.split('/')[0] == 'parent')
+          next
+        end
         File.open(duplicate_log, 'a+') do |dup|
           dup.puts "#{key},#{mappings[key]}"
         end
