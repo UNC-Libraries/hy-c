@@ -1,4 +1,4 @@
-# [hyc-override] Overriding user model to allow shibboleth integration
+# [hyc-override] Overriding user model to allow shibboleth integration. This should be able to be removed when upgrading to Hyrax 3
 # [hyc-override]Overriding hyrax default rewriting email addresses
 class User < ApplicationRecord
   # Connects this user object to Hydra behaviors.
@@ -63,12 +63,11 @@ end
 module Hyrax::User
   module ClassMethods
     def find_or_create_system_user(user_key)
-      user = ::User.find_or_create_by(uid: user_key)
-      user.display_name = user_key
-      user.email = "#{user_key}@ad.unc.edu"
-      user.password = ('a'..'z').to_a.shuffle(random: Random.new).join if AuthConfig.use_database_auth?
-      user.save
-      user
+      ::User.find_or_create_by(uid: user_key) do |user|
+        user.display_name = user_key
+        user.email = "#{user_key}@ad.unc.edu"
+        user.password = ('a'..'z').to_a.shuffle(random: Random.new).join if AuthConfig.use_database_auth?
+      end
     end
   end
 end

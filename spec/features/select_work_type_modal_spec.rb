@@ -3,11 +3,11 @@ include Warden::Test::Helpers
 
 RSpec.feature 'Select work type modal', js: false do
   let(:user) do
-    User.new(email: 'test@example.com', guest: false, uid: 'test@example.com') { |u| u.save!(validate: false)}
+    User.new(email: 'test@example.com', guest: false, uid: 'test') { |u| u.save!(validate: false)}
   end
 
   let(:admin_user) do
-    User.find_by_user_key('admin@example.com')
+    User.find_by_user_key('admin')
   end
 
   # Work type selector modal is auto-loaded on the homepage

@@ -3,6 +3,9 @@ terms:
   - id: American Indian and Indigenous Studies Program
     term: College of Arts and Sciences; Department of American Studies; American Indian and Indigenous Studies Program
     active: true
+  - id: Art History
+    term: College of Arts and Sciences; Department of Art and Art History; Art History
+    active: true
   - id: Art History Program
     term: College of Arts and Sciences; Department of Art; Art History Program
     active: false
@@ -250,7 +253,7 @@ terms:
     term: College of Arts and Sciences; Department of African, African American, and Diaspora Studies
     active: true
   - id: Department of Allied Health Sciences
-    term: College of Arts and Sciences; Department of Allied Health Sciences
+    term: School of Medicine; Department of Allied Health Sciences
     active: true
   - id: Department of American Studies
     term: College of Arts and Sciences; Department of American Studies
@@ -277,10 +280,10 @@ terms:
     term: College of Arts and Sciences; Department of Art and Art History
     active: true
   - id: Department of Art and Art History – Art History
-    term: College of Arts and Sciences; Department of Art and Art History – Art History
+    term: College of Arts and Sciences; Department of Art and Art History; Art History
     active: true
   - id: Department of Art and Art History – Studio Art
-    term: College of Arts and Sciences; Department of Art and Art History – Studio Art
+    term: College of Arts and Sciences; Department of Art and Art History; Studio Art
     active: true
   - id: Department of Asian Studies
     term: College of Arts and Sciences; Department of Asian Studies
@@ -1023,6 +1026,9 @@ terms:
     active: true
   - id: Sport Administration Program
     term: College of Arts and Sciences; Department of Exercise and Sport Science; Sport Administration Program
+    active: true
+  - id: Studio Art
+    term: College of Arts and Sciences; Department of Art and Art History; Studio Art
     active: true
   - id: Studio Art Program
     term: College of Arts and Sciences; Department of Art; Studio Art Program

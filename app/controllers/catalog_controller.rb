@@ -2,6 +2,9 @@ class CatalogController < ApplicationController
   include Hydra::Catalog
   include Hydra::Controller::ControllerBehavior
   include BlacklightOaiProvider::Controller
+  
+  class_attribute :single_item_search_builder_class
+  self.single_item_search_builder_class = RestrictedSingleResultBuilder
 
   # This filter applies the hydra access controls
   before_action :enforce_show_permissions, only: :show
@@ -15,6 +18,10 @@ class CatalogController < ApplicationController
 
   def self.modified_field
     solr_name('system_modified', :stored_sortable, type: :date)
+  end
+  
+  def single_item_search_builder(id)
+    single_item_search_builder_class.new(self, id).with(params.except(:q, :page))
   end
 
   configure_blacklight do |config|
@@ -318,14 +325,14 @@ class CatalogController < ApplicationController
     config.oai = {
         provider: {
             repository_name: 'Carolina Digital Repository',
-            repository_url: 'https://localhost:4040',
-            record_prefix: '',
-            admin_email: 'admin@example.com'
+            repository_url: URI.join(ENV['HYRAX_HOST'] || 'https://localhost', 'catalog/oai').to_s,
+            record_prefix: URI.parse(ENV['HYRAX_HOST']).hostname || 'localhost',
+            admin_email: ENV['EMAIL_FROM_ADDRESS']
         },
         document: {
-            limit: 25,
-            set_model: LanguageSet,
-            set_fields: [{ label: 'language', solr_field: 'language_label_tesim' }]
+            limit: 50,
+            set_model: AdminsetSet,
+            set_fields: [{ label: 'admin set', solr_field: 'admin_set_sim' }]
         }
     }
   end

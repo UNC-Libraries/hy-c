@@ -301,7 +301,7 @@ class SolrDocument
   end
 
   def sets
-    LanguageSet.sets_for(self)
+    AdminsetSet.sets_for(self)
   end
 
   def series

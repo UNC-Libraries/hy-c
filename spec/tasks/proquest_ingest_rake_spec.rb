@@ -3,7 +3,7 @@ require "rake"
 
 describe "rake proquest:ingest", type: :task do
   let(:admin_user) do
-    User.find_by_user_key('admin@example.com')
+    User.find_by_user_key('admin')
   end
 
   let(:time) do
@@ -26,6 +26,8 @@ describe "rake proquest:ingest", type: :task do
 
   before do
     AdminSet.delete_all
+    Hyrax::PermissionTemplateAccess.delete_all
+    Hyrax::PermissionTemplate.delete_all
     Hyrax::PermissionTemplateAccess.create!(permission_template: permission_template,
                                            agent_type: 'user',
                                            agent_id: admin_user.user_key,

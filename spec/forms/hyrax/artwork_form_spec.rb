@@ -21,7 +21,7 @@ RSpec.describe Hyrax::ArtworkForm do
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:creator, :description, :license, :rights_statement, :doi, :license_label,
+    it { is_expected.to match_array [:creator, :description, :license, :note, :rights_statement, :doi, :license_label,
                                      :rights_statement_label, :deposit_agreement, :agreement] }
   end
 
@@ -53,6 +53,7 @@ RSpec.describe Hyrax::ArtworkForm do
           doi: '12345', # single-valued
           extent: '1993',
           medium: 'wood',
+          note: ['My note'],
           license_label: [],
           rights_statement_label: ''
       )
@@ -72,6 +73,7 @@ RSpec.describe Hyrax::ArtworkForm do
       expect(subject['doi']).to eq '12345'
       expect(subject['extent']).to eq '1993'
       expect(subject['medium']).to eq 'wood'
+      expect(subject['note']).to eq ['My note']
       expect(subject['license_label']).to eq ['Attribution 3.0 United States']
       expect(subject['rights_statement_label']).to eq 'In Copyright'
     end

@@ -47,6 +47,9 @@ module Migrate
       end
 
       def ingest_records
+        vis_private = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
+        vis_authenticated = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_AUTHENTICATED
+        
         STDOUT.sync = true
         # get array of record uuids
         collection_uuids = MigrationHelper.get_collection_uuids(@collection_ids_file)
@@ -62,7 +65,7 @@ module Migrate
         puts "[#{Time.now.to_s}] Object count:  #{collection_uuids.count.to_s}"
 
         # get metadata for each record
-        collection_uuids.each do |uuid|
+        collection_uuids.each_with_index do |uuid, index|
           # Skip this item if it has been migrated before
           if already_migrated.include?(uuid)
             puts "Skipping previously ingested #{uuid}"
@@ -77,7 +80,7 @@ module Migrate
           end
 
           start_time = Time.now
-          puts "[#{start_time.to_s}] #{uuid} Start migration"
+          puts "[#{start_time.to_s}] #{uuid} Start migration, #{index+1} out of #{collection_uuids.count}"
           work_attributes = Migrate::Services::MetadataParser.new(file_path,
                                                               @object_hash,
                                                               @binary_hash,
@@ -127,8 +130,26 @@ module Migrate
                                                                            @admin_set_id).parse
 
                   file_work_attributes = (parsed_file_data.blank? ? {} : parsed_file_data)
-                  file_work_attributes['title'] = file_work_attributes['dc_title'] if file_work_attributes['title'].blank?
-                  fileset_attrs = file_record(work_attributes.merge(file_work_attributes))
+                  file_work_attributes['title'] = file_work_attributes['dc_title'] || file_work_attributes['title'] || @binary_hash[MigrationHelper.get_uuid_from_path(file)].split('/').last || work_attributes['title']
+
+                  # If a child is explicitly private, then ignore inherited permissions
+                  if file_work_attributes['is_private']
+                    fileset_attrs = file_record(file_work_attributes)
+                  else
+                    # Inheriting permissions if not explicitly marked private (inherit=false explicitly marks private)
+                    fileset_attrs = file_record(work_attributes.merge(file_work_attributes))
+                  end
+                  
+                  # If the parent work is not visible, then its children must be private
+                  if work_attributes['visibility'] == vis_private
+                    file_work_attributes['visibility'] = vis_private
+                    fileset_attrs['visibility'] = vis_private
+                  # Inherit authenticated visibility unless a more restrictive policy is present
+                  elsif work_attributes['visibility'] == vis_authenticated && file_work_attributes['visibility'] != vis_private
+                    file_work_attributes['visibility'] = vis_authenticated
+                    fileset_attrs['visibility'] = vis_authenticated
+                  end
+                  
 
                   fileset = create_fileset(parent: new_work, resource: fileset_attrs, file: @binary_hash[MigrationHelper.get_uuid_from_path(file)])
 
@@ -165,7 +186,7 @@ module Migrate
               premis_file = @premis_hash[MigrationHelper.get_uuid_from_path(file)] || ''
               if File.file?(premis_file)
                 fileset_attrs = { 'title' => ["PREMIS_Events_Metadata_#{index}_#{uuid}.txt"],
-                                  'visibility' => Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE }
+                                  'visibility' => vis_private }
                 fileset = create_fileset(parent: new_work, resource: fileset_attrs, file: premis_file)
 
                 new_work.ordered_members << fileset
@@ -178,7 +199,7 @@ module Migrate
           # Attach metadata files
           if File.file?(file_path)
             fileset_attrs = { 'title' => ["original_metadata_file_#{uuid}.xml"],
-                              'visibility' => Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE }
+                              'visibility' => vis_private }
             fileset = create_fileset(parent: new_work, resource: fileset_attrs, file: file_path)
 
             new_work.ordered_members << fileset
@@ -331,25 +352,25 @@ module Migrate
         end
 
         # FileSets can include any metadata listed in BasicMetadata file
-        def file_record(work_attributes)
+        def file_record(attrs)
           file_set = FileSet.new
           file_attributes = Hash.new
           # Singularize non-enumerable attributes
-          work_attributes.each do |k,v|
+          attrs.each do |k,v|
             if file_set.attributes.keys.member?(k.to_s)
-              if !file_set.attributes[k.to_s].respond_to?(:each) && work_attributes[k].respond_to?(:each)
+              if !file_set.attributes[k.to_s].respond_to?(:each) && attrs[k].respond_to?(:each)
                 file_attributes[k] = v.first
               else
                 file_attributes[k] = v
               end
             end
           end
-          file_attributes[:date_created] = work_attributes['date_created']
-          file_attributes[:visibility] = work_attributes['visibility']
-          unless work_attributes['embargo_release_date'].blank?
-            file_attributes[:embargo_release_date] = work_attributes['embargo_release_date']
-            file_attributes[:visibility_during_embargo] = work_attributes['visibility_during_embargo']
-            file_attributes[:visibility_after_embargo] = work_attributes['visibility_after_embargo']
+          file_attributes[:date_created] = attrs['date_created']
+          file_attributes[:visibility] = attrs['visibility']
+          unless attrs['embargo_release_date'].blank?
+            file_attributes[:embargo_release_date] = attrs['embargo_release_date']
+            file_attributes[:visibility_during_embargo] = attrs['visibility_during_embargo']
+            file_attributes[:visibility_after_embargo] = attrs['visibility_after_embargo']
           end
 
           file_attributes

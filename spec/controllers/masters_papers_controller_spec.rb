@@ -4,7 +4,7 @@ RSpec.describe MastersPapersController, type: :controller do
 
   describe "GET #department" do
     let(:user) do
-      User.new(email: 'test@example.com', guest: false, uid: 'test@example.com') { |u| u.save!(validate: false)}
+      User.new(email: 'test@example.com', guest: false, uid: 'test') { |u| u.save!(validate: false)}
     end
     
     before do

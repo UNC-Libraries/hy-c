@@ -21,6 +21,7 @@ RSpec.describe Hyrax::ArtworkPresenter do
       "doi_tesim" => '12345',
       "extent_tesim" => '1993',
       "medium_tesim" => 'wood',
+      "note_tesim" => ['My note'],
       "license_label_tesim" => ['license'],
       "rights_statement_label_tesim" => 'rights'
     }
@@ -46,6 +47,7 @@ RSpec.describe Hyrax::ArtworkPresenter do
   it { is_expected.to delegate_method(:doi).to(:solr_document) }
   it { is_expected.to delegate_method(:extent).to(:solr_document) }
   it { is_expected.to delegate_method(:medium).to(:solr_document) }
+  it { is_expected.to delegate_method(:note).to(:solr_document) }
   it { is_expected.to delegate_method(:license_label).to(:solr_document) }
   it { is_expected.to delegate_method(:rights_statement_label).to(:solr_document) }
 
@@ -132,6 +134,17 @@ RSpec.describe Hyrax::ArtworkPresenter do
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:medium)
+      end
+    end
+
+    context "with a custom note field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:note, ['My note'], {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:note)
       end
     end
 

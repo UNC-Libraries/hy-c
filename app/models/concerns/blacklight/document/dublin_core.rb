@@ -55,12 +55,24 @@ module Blacklight::Document::DublinCore
           end
         end
       end
+      # Add an identifier linking to the record page in hyc if no DOI is present
+      if doi.blank?
+        record_url = URI.join(ENV['HYRAX_HOST'], "concern/#{first('has_model_ssim').tableize}/#{id()}").to_s
+        xml.tag! "dc:identifier", record_url
+      end
     end
+
     xml.target!
   end
 
   alias_method :export_as_xml, :export_as_oai_dc_xml
   alias_method :export_as_dc_xml, :export_as_oai_dc_xml
+
+  # Used by ruby-oai gem to determine if a status=deleted header should be added.
+  # See OAI::Provider::Response::RecordResponse
+  def deleted?
+    fetch('workflow_state_name_ssim', nil)&.include?('withdrawn')
+  end
 
   private
 
