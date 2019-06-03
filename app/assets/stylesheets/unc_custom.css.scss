@@ -550,12 +550,23 @@ table p.name span {
   font-size: 18px;
 }
 
+@media only screen and (max-width: 1399px) {
+  .row {
+    margin-right: -7px;
+  }
+}
+
 @media only screen and (max-width: 1375px) {
   .navbar-brand {
     margin-left: 0;
   }
-}
 
+  #unc-text {
+    div {
+      width: auto;
+    }
+  }
+}
 
 @media only screen and (max-width: 1100px) {
   dl.work-show {
@@ -714,7 +725,7 @@ table p.name span {
 
   #unc-text {
     p {
-      font-size: .9em;
+      font-size: .7em;
     }
   }
 
