@@ -332,7 +332,7 @@ class CatalogController < ApplicationController
         document: {
             limit: 50,
             set_model: AdminsetSet,
-            set_fields: [{ label: 'admin set', solr_field: 'admin_set_sim' }]
+            set_fields: [{ label: 'admin_set', solr_field: 'admin_set_sim' }]
         }
     }
   end
