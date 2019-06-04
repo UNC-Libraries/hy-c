@@ -56,7 +56,7 @@ class ApplicationController < ActionController::Base
         Rails.logger.info "Forwarding Box-c search to 404, user requested #{full_path}"
         redirect_to updated_path, status: :moved_permanently
       elsif full_path.starts_with?('/content', '/record', '/indexablecontent') # Redirect to Box-C
-        path_rewrite = request.url.gsub(/cdr\./, 'dcr.')
+        path_rewrite = request.url.gsub(/#{ENV['REDIRECT_OLD_DOMAIN']}\./, "#{ENV['REDIRECT_NEW_DOMAIN']}.")
         Rails.logger.info "Still in box-c: #{path_rewrite}"
         redirect_to path_rewrite, status: :moved_permanently
       else # Redirect to Hy-C homepage
