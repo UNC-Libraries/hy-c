@@ -33,7 +33,7 @@ class SolrDocument
                     'project_director_display_tesim', 'researcher_display_tesim', 'reviewer_display_tesim',
                     'translator_display_tesim'],
       publisher: ['publisher_tesim', 'degree_granting_institution_tesim'],
-      date: ['date_issued_tesim', 'graduation_year_tesim'],
+      date: ['date_issued_edtf_tesim', 'graduation_year_tesim'],
       description: ['abstract_tesim', 'degree_tesim'],
       subject: ['subject_tesim', 'keyword_tesim'],
       coverage: 'based_near_label_tesim',
@@ -134,6 +134,10 @@ class SolrDocument
 
   def date_issued
     self[Solrizer.solr_name('date_issued')]
+  end
+
+  def date_issued_edtf
+    self[Solrizer.solr_name('date_issued_edtf')]
   end
 
   def date_other
