@@ -2,10 +2,4 @@
 <div class="featured-item-title">
   <span class="sr-only"><%= t('hyrax.homepage.featured_works.document.title_label') %></span>
   <%= link_to featured.title.first.truncate(100, separator: ' '), [main_app, featured], aria: {hidden: true} %>
-  <% if featured.creator.length > 0 %>
-    <p class="featured-author"><strong>Author:</strong> <%= featured.creator.first %></p>
-  <% end %>
-  <% if featured.member_of_collection_ids.length > 0 %>
-    <p><strong>Collection:</strong> <%= Collection.find(featured.member_of_collection_ids.first).title.first %></p>
-  <% end %>
 </div>
