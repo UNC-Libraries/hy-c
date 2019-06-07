@@ -11,7 +11,7 @@ class HycIndexer < Hyrax::WorkIndexer
   def generate_solr_document
     super.tap do |solr_doc|
       solr_doc['date_issued_tesim'] = Array(object.date_issued).map {|date| Hyc::EdtfConvert.convert_from_edtf(date)} unless object.date_issued.blank?
-      solr_doc['date_issued_edtf_tesim'] = Array(object.date_issued).map {|date| Date.parse(date).strftime('%Y-%m-%d')} unless object.date_issued.blank?
+      solr_doc['date_issued_edtf_tesim'] = Array(object.date_issued) unless object.date_issued.blank?
     end
   end
 end
