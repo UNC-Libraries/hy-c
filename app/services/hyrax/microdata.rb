@@ -88,7 +88,12 @@ module Hyrax
         if value.instance_of?(Hash)
           value.map do |k, v|
             # We could add recursion here if we ever had more than 2 levels
-            h["#{key}.#{k}"] = v
+            # [hyc-override] Recursion added :)
+            if v.kind_of?(Array)
+              h["#{key}.#{k}"] = v.join(' ')
+            else
+              h["#{key}.#{k}"] = v
+            end
           end
         else
           h[key] = value
