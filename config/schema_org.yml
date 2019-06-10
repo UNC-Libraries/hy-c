@@ -2,18 +2,18 @@
 schema_org:
   abstract:
     property: description
-  based_near:
+  based_near_label:
     property: contentLocation
     type: "http://schema.org/Place"
     value: name
-  contributor:
+  contributor_display:
     property: contributor
     # used as the itemprop value for itemscoped attributes
     type:
       - "http://schema.org/Person"
       - "http://schema.org/Organization"
     value: name
-  creator:
+  creator_display:
     property: creator
     type:
       - "http://schema.org/Person"
