@@ -1,4 +1,3 @@
-# [hyc-override] Overriding default. Show the language term instead of the saved value. Allow itemprop to be rendered
 require "rails_autolink/helpers"
 
 module Hyrax
@@ -31,8 +30,7 @@ module Hyrax
           markup << "<li#{html_attributes(attributes)}>#{attribute_value_to_html(value.to_s)}</li>"
         end
         markup << %(</ul></td></tr>)
-        # Add 'itemprop' to default list of allowed attributes
-        sanitize markup, attributes: %w(href src width height alt cite datetime title class name xml:lang abbr itemprop)
+        markup.html_safe
       end
 
       # Draw the dl row for the attribute
@@ -46,8 +44,7 @@ module Hyrax
           markup << "<li#{html_attributes(attributes)}>#{attribute_value_to_html(value.to_s)}</li>"
         end
         markup << %(</ul></dd>)
-        # Add 'itemprop' to default list of allowed attributes
-        sanitize markup, attributes: %w(href src width height alt cite datetime title class name xml:lang abbr itemprop)
+        markup.html_safe
       end
 
       # @return The human-readable label for this field.
@@ -55,10 +52,10 @@ module Hyrax
       #   name. Can be overridden if more complicated logic is needed.
       def label
         translate(
-          :"blacklight.search.fields.#{work_type_label_key}.show.#{field}",
-          default: [:"blacklight.search.fields.show.#{field}",
-                    :"blacklight.search.fields.#{field}",
-                    options.fetch(:label, field.to_s.humanize)]
+            :"blacklight.search.fields.#{work_type_label_key}.show.#{field}",
+            default: [:"blacklight.search.fields.show.#{field}",
+                      :"blacklight.search.fields.#{field}",
+                      options.fetch(:label, field.to_s.humanize)]
         )
       end
 
@@ -77,32 +74,32 @@ module Hyrax
 
       private
 
-        def attribute_value_to_html(value)
-          if microdata_value_attributes(field).present?
-            "<span#{html_attributes(microdata_value_attributes(field))}>#{li_value(value)}</span>"
-          else
-            li_value(value)
-          end
+      def attribute_value_to_html(value)
+        if microdata_value_attributes(field).present?
+          "<span#{html_attributes(microdata_value_attributes(field))}>#{li_value(value)}</span>"
+        else
+          li_value(value)
         end
+      end
 
-        def html_attributes(attributes)
-          buffer = ""
-          attributes.each do |k, v|
-            buffer << " #{k}"
-            buffer << %(="#{v}") if v.present?
-          end
-          buffer
+      def html_attributes(attributes)
+        buffer = ""
+        attributes.each do |k, v|
+          buffer << " #{k}"
+          buffer << %(="#{v}") if v.present?
         end
+        buffer
+      end
 
-        # [hyc-override] call find_language
-        def li_value(value)
-          field_value = find_language(value) || value
-          auto_link(ERB::Util.h(field_value))
-        end
+      # [hyc-override] call find_language
+      def li_value(value)
+        field_value = find_language(value) || value
+        auto_link(ERB::Util.h(field_value))
+      end
 
-        def work_type_label_key
-          options[:work_type] ? options[:work_type].underscore : nil
-        end
+      def work_type_label_key
+        options[:work_type] ? options[:work_type].underscore : nil
+      end
     end
   end
 end
