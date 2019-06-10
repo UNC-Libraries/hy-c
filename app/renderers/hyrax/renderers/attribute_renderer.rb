@@ -1,3 +1,4 @@
+# [hyc-override] Overriding default. Show the language term instead of the saved value.
 require "rails_autolink/helpers"
 
 module Hyrax
