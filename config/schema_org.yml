@@ -9,15 +9,11 @@ schema_org:
   contributor_display:
     property: contributor
     # used as the itemprop value for itemscoped attributes
-    type:
-      - "http://schema.org/Person"
-      - "http://schema.org/Organization"
+    type: "http://schema.org/Person"
     value: name
   creator_display:
     property: creator
-    type:
-      - "http://schema.org/Person"
-      - "http://schema.org/Organization"
+    type: "http://schema.org/Person"
     value: name
   date_issued:
     property: datePublished
@@ -27,7 +23,7 @@ schema_org:
     property: keywords
   language_label:
     property: inLanguage
-  license:
+  license_label:
     property: license
     type: "http://schema.org/URL"
   publisher:
