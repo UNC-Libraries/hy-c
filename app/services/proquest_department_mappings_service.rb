@@ -7,6 +7,8 @@ module ProquestDepartmentMappingsService
     begin
       [authority.find(proquest_department).fetch('term')].flatten
     rescue
+      Rails.logger.warn "ProquestDepartmentMappingsService: cannot find '#{id}'"
+      puts "ProquestDepartmentMappingsService: cannot find '#{id}'" # for migration log
       nil
     end
   end

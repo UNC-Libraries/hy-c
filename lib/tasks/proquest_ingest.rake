@@ -161,16 +161,14 @@ namespace :proquest do
 
     title = metadata.xpath('//DISS_description/DISS_title').text
 
-    creators = metadata.xpath('//DISS_submission/DISS_authorship/DISS_author/DISS_name').map do |creator|
-      if creator.xpath('DISS_affiliation').text.eql? 'University of North Carolina at Chapel Hill'
-        format_name(creator)
-      end
+    creators = metadata.xpath('//DISS_submission/DISS_authorship/DISS_author[@type="primary"]/DISS_name').map do |creator|
+      format_name(creator)
     end
 
     degree_granting_institution = metadata.xpath('//DISS_description/DISS_institution/DISS_inst_name').text
 
     keywords = metadata.xpath('//DISS_description/DISS_categorization/DISS_keyword').text.split(', ')
-    keywords << metadata.xpath('//DISS_description/DISS_categorization/DISS_category/DISS_cat_desc').text
+    keywords << metadata.xpath('//DISS_description/DISS_categorization/DISS_category/DISS_cat_desc').map(&:text)
 
     abstract = metadata.xpath('//DISS_content/DISS_abstract').text
 
@@ -196,9 +194,10 @@ namespace :proquest do
     end
 
     department = metadata.xpath('//DISS_description/DISS_institution/DISS_inst_contact').text.strip
+    affiliation = ProquestDepartmentMappingsService.standard_department_name(department)
 
-    date_issued = metadata.xpath('//DISS_description/DISS_dates/DISS_accept_date').text
-    date_issued = Date.strptime(date_issued,"%m/%d/%Y").strftime('%Y-%m-%d')
+    date_issued = metadata.xpath('//DISS_description/DISS_dates/DISS_comp_date').text
+    date_issued = Date.strptime(date_issued,"%Y")
 
     graduation_semester = ''
     if @file_last_modified.month >= 2 && @file_last_modified.month <= 6
@@ -212,7 +211,8 @@ namespace :proquest do
 
     language = metadata.xpath('//DISS_description/DISS_categorization/DISS_language').text
     if language == 'en'
-      language = 'English'
+      language = get_language_uri('eng')
+      language_label = LanguagesService.label(language) if !language.blank?
     end
 
     file_full << metadata.xpath('//DISS_content/DISS_binary').text
@@ -222,17 +222,18 @@ namespace :proquest do
 
     work_attributes = {
         'title'=>[title],
-        'creators_attributes'=>{ '0' => { name: creators } },
-        'degree_granting_institution'=> degree_granting_institution,
-        'keyword'=>keywords,
-        'abstract'=>abstract.gsub(/\n/, "").strip,
-        'advisors_attributes'=>{ '0' => { name: advisor } },
-        'degree'=>degree,
-        'graduation_year'=>graduation_year,
+        'creators_attributes'=>build_person_hash(creators, affiliation),
         'date_issued'=>(Date.try(:edtf, date_issued) || date_issued).to_s,
+        'abstract'=>abstract.gsub(/\n/, "").strip,
+        'advisors_attributes'=>build_person_hash(advisor, nil),
         'dcmi_type'=>dcmi_type,
-        'resource_type'=>resource_type,
+        'degree'=>degree,
+        'degree_granting_institution'=> degree_granting_institution,
+        'graduation_year'=>graduation_year,
         'language'=>language,
+        'language_label'=>language_label,
+        'keyword'=>keywords.flatten,
+        'resource_type'=>resource_type,
         'visibility'=>visibility,
         'embargo_release_date'=>(Date.try(:edtf, embargo_release_date)).to_s,
         'visibility_during_embargo'=>visibility_during_embargo,
@@ -275,7 +276,26 @@ namespace :proquest do
     resource
   end
 
+  def build_person_hash(people, affiliation)
+    person_hash = {}
+    people.each_with_index do |person, index|
+      person_hash[index.to_s] = {'name' => person, 'affiliation' => affiliation}
+    end
+
+    person_hash
+  end
+
   def format_name(person)
-    (person.xpath('DISS_surname').text+', '+person.xpath('DISS_fname').text+' '+person.xpath('DISS_middle').text).split.join(' ')
+    name_parts = []
+    name_parts << person.xpath('DISS_surname').text
+    name_parts << (person.xpath('DISS_fname').text+' '+person.xpath('DISS_middle').text).split.join(' ')
+    name_parts << person.xpath('DISS_suffix').text
+    name_parts.reject{ |name| name.blank? }.join(', ')
+  end
+
+  # Use language code to get iso639-2 uri from service
+  def get_language_uri(language_code)
+    LanguagesService.label("http://id.loc.gov/vocabulary/iso639-2/#{language_code.downcase}") ?
+        "http://id.loc.gov/vocabulary/iso639-2/#{language_code.downcase}" : nil
   end
 end
