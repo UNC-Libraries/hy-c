@@ -67,6 +67,17 @@ namespace :proquest do
                          files: metadata_fields[:files],
                          metadata: metadata_fields[:resource],
                          zip_dir_files: metadata_files)
+
+            # Attach metadata file
+            fileset_attrs = { 'title' => [File.basename(file)],
+                              'visibility' => Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE }
+            fileset = ingest_proquest_file(parent: resource, resource: fileset_attrs, f: file)
+
+            # Force visibility to private since it seems to be saving as public
+            fileset.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
+            fileset.save
+
+            resource.ordered_members << fileset
           end
         end
       end
@@ -106,14 +117,14 @@ namespace :proquest do
 
   def ingest_proquest_file(parent: nil, resource: nil, f: nil)
     puts "ingesting... #{f.to_s}"
-    fileset_metadata = resource.slice('visibility', 'embargo_release_date', 'visibility_during_embargo',
-                                      'visibility_after_embargo')
-    if resource['embargo_release_date'].blank?
+    fileset_metadata = file_record(resource)
+
+    if fileset_metadata['embargo_release_date'].blank?
       fileset_metadata.except!('embargo_release_date', 'visibility_during_embargo', 'visibility_after_embargo')
     end
     file_set = FileSet.create(fileset_metadata)
     actor = Hyrax::Actors::FileSetActor.new(file_set, User.find_by_email(@depositor_email))
-    actor.create_metadata(resource)
+    actor.create_metadata(fileset_metadata)
     file = File.open(f)
     actor.create_content(file)
     actor.attach_to_work(parent)
@@ -297,5 +308,34 @@ namespace :proquest do
   def get_language_uri(language_code)
     LanguagesService.label("http://id.loc.gov/vocabulary/iso639-2/#{language_code.downcase}") ?
         "http://id.loc.gov/vocabulary/iso639-2/#{language_code.downcase}" : nil
+  end
+
+  # FileSets can include any metadata listed in BasicMetadata file
+  def file_record(attrs)
+    file_set = FileSet.new
+    file_attributes = Hash.new
+
+    # Singularize non-enumerable attributes and make sure enumerable attributes are arrays
+    attrs.each do |k,v|
+      if file_set.attributes.keys.member?(k.to_s)
+        if !file_set.attributes[k.to_s].respond_to?(:each) && file_attributes[k].respond_to?(:each)
+          file_attributes[k] = v.first
+        elsif file_set.attributes[k.to_s].respond_to?(:each) && !file_attributes[k].respond_to?(:each)
+          file_attributes[k] = Array(v)
+        else
+          file_attributes[k] = v
+        end
+      end
+    end
+    
+    file_attributes[:date_created] = attrs['date_created']
+    file_attributes[:visibility] = attrs['visibility']
+    unless attrs['embargo_release_date'].blank?
+      file_attributes[:embargo_release_date] = attrs['embargo_release_date']
+      file_attributes[:visibility_during_embargo] = attrs['visibility_during_embargo']
+      file_attributes[:visibility_after_embargo] = attrs['visibility_after_embargo']
+    end
+
+    file_attributes
   end
 end
