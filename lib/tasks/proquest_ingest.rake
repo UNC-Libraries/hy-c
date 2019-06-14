@@ -6,43 +6,28 @@ namespace :proquest do
   require 'tasks/migration/migration_constants'
   require 'zip'
 
-  # set fedora access URL. replace with fedora username and password
-  # test environment will not have access to ERA's fedora
-
-  # Must include the email address of a valid user in order to ingest files
-  @depositor_email = 'admin@example.com'
-
-  # temporary location for file download
-  @temp = 'lib/tasks/ingest/tmp'
-  @file_store = 'lib/tasks/migration/files'
-  @temp_foxml = 'lib/tasks/tmp/tmp'
-  FileUtils::mkdir_p @temp
-
-  # report directory
-  @reports = 'lib/tasks/migration/reports/'
-  # Oddities report
-  @oddities = @reports+ 'oddities.txt'
-  # verification error report
-  @verification_error = @reports + 'verification_errors.txt'
-  # item migration list
-  @item_list = @reports + 'item_list.txt'
-  # collection list
-  @collection_list = @reports + 'collection_list.txt'
-  FileUtils::mkdir_p @reports
-  # successful_path
-  @completed_dir = 'lib/tasks/migration/completed'
-  FileUtils::mkdir_p @completed_dir
-
-
   desc 'batch migrate generic files from FOXML file'
-  task :ingest, [:directory, :admin_set] => :environment do |t, args|
+  task :ingest, [:configuration_file] => :environment do |t, args|
+
+    config = YAML.load_file(args[:configuration_file])
+    
+    # Create temp directory for unzipped contents
+    @temp = config['unzip_dir']
+    FileUtils::mkdir_p @temp
 
     # Should deposit works into an admin set
     # Update title parameter to reflect correct admin set
-    @admin_set_id = ::AdminSet.where(title: args[:admin_set]).first.id
+    @admin_set_id = ::AdminSet.where(title: config['admin_set']).first.id
+    @depositor_onyen = config['depositor_onyen']
 
-    metadata_dir = args[:directory]
-    migrate_proquest_packages(metadata_dir)
+    # deposit record info
+    @deposit_record_hash = { title: config['deposit_title'],
+                             deposit_method: config['deposit_method'],
+                             deposit_package_type: config['deposit_type'],
+                             deposit_package_subtype: config['deposit_subtype'],
+                             deposited_by: @depositor_onyen }
+
+    migrate_proquest_packages(config['package_dir'])
   end
 
   def migrate_proquest_packages(metadata_dir)
@@ -60,7 +45,14 @@ namespace :proquest do
 
             puts "Number of files: #{metadata_fields[:files].count.to_s}"
 
+            # create deposit record
+            deposit_record = DepositRecord.new(@deposit_record_hash)
+            deposit_record[:manifest] = nil
+            deposit_record[:premis] = nil
+            deposit_record.save!
+
             resource = proquest_record(metadata_fields[:resource])
+            resource[:deposit_record] = deposit_record.id
             resource.save!
 
             ingest_proquest_files(resource: resource,
@@ -123,7 +115,7 @@ namespace :proquest do
       fileset_metadata.except!('embargo_release_date', 'visibility_during_embargo', 'visibility_after_embargo')
     end
     file_set = FileSet.create(fileset_metadata)
-    actor = Hyrax::Actors::FileSetActor.new(file_set, User.find_by_email(@depositor_email))
+    actor = Hyrax::Actors::FileSetActor.new(file_set, User.where(uid: @depositor_onyen).first)
     actor.create_metadata(fileset_metadata)
     file = File.open(f)
     actor.create_content(file)
@@ -259,7 +251,7 @@ namespace :proquest do
   def proquest_record(work_attributes)
     resource = Dissertation.new
     resource.creators = work_attributes['creators_attributes'].map{ |k,v| resource.creators.build(v) }
-    resource.depositor = @depositor_email
+    resource.depositor = @depositor_onyen
 
     resource.label = work_attributes['title'][0]
     resource.title = work_attributes['title']
