@@ -20,12 +20,9 @@ class FileDownloadStat < Hyrax::Statistic
     # this is called by the parent class
     # [hyc-override] include previous GA data
     def filter(file)
-      { file_id: redirect(file.id) }
-    end
+      filter_id = file.id
 
-    private
-
-    def redirect(id)
+      # check if file was migrated
       if ENV.has_key?('REDIRECT_FILE_PATH') && File.exist?(ENV['REDIRECT_FILE_PATH'])
         redirect_uuids = File.read(ENV['REDIRECT_FILE_PATH'])
       else
@@ -33,13 +30,13 @@ class FileDownloadStat < Hyrax::Statistic
       end
 
       csv = CSV.parse(redirect_uuids, headers: true)
-      redirect_path = csv.find { |row| row['new_path'].match(id) }
+      redirect_path = csv.find { |row| row['new_path'].match(file.id) }
 
       if redirect_path
-        "#{id}|#{redirect_path['uuid']}"
-      else
-        id
+        filter_id = "#{id}|#{redirect_path['uuid']}"
       end
+
+      { file_id: redirect(filter_id) }
     end
   end
 end
