@@ -4,6 +4,6 @@ module Hyrax
 
     metrics :pageviews
     dimensions :date
-    filter :for_path, &->(path) { contains(:pagePath, path) }
+    filter :for_path, &->(paths) { paths.map { |path| contains(:pagePath, path) } }
   end
 end
