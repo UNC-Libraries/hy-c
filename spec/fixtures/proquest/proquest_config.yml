@@ -3,7 +3,6 @@ unzip_dir: spec/fixtures/proquest/tmp
 package_dir: spec/fixtures/proquest
 admin_set: default
 depositor_onyen: admin
-deposit_title: Deposit by ProQuest Depositor via SWORD 1.3
-deposit_method: SWORD 1.3
-deposit_type: sword
-deposit_subtype: ProQuest
+deposit_title: Deposit by ProQuest Depositor via CDR COllector 1.0
+deposit_method: CDR Collector 1.0
+deposit_type: http://proquest.com
