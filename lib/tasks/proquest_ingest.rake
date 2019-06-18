@@ -35,8 +35,8 @@ namespace :proquest do
     proquest_packages.each do |package|
       puts "Unpacking #{package}"
       @file_last_modified = ''
-      extract_proquest_files(package)
-      metadata_files = Dir.glob("#{@temp}/**/*")
+      unzipped_package_dir = extract_proquest_files(package)
+      metadata_files = Dir.glob("#{unzipped_package_dir}/**/*")
 
       metadata_files.sort.each do |file|
         if File.file?(file)
@@ -61,8 +61,7 @@ namespace :proquest do
                          zip_dir_files: metadata_files)
 
             # Attach metadata file
-            fileset_attrs = { 'title' => [File.basename(file)],
-                              'visibility' => Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE }
+            fileset_attrs = { 'title' => [File.basename(file)] }
             fileset = ingest_proquest_file(parent: resource, resource: fileset_attrs, f: file)
 
             # Force visibility to private since it seems to be saving as public
@@ -73,23 +72,24 @@ namespace :proquest do
           end
         end
       end
-      FileUtils.rm_rf(@temp)
     end
   end
 
   def extract_proquest_files(file)
     fname = file.split('.zip')[0].split('/')[-1]
-    FileUtils::mkdir_p @temp+'/'+fname
+    dirname = @temp+'/'+fname
+    FileUtils::mkdir_p dirname
     Zip::File.open(file) do |zip_file|
       zip_file.each do |f|
         if f.name.match(/DATA.xml/)
           @file_last_modified = Date.strptime(zip_file.get_entry(f).as_json['time'].split('T')[0],"%Y-%m-%d")
         end
-        fpath = File.join(@temp+'/'+fname, f.name)
+        fpath = File.join(dirname, f.name)
         puts fpath
         zip_file.extract(f, fpath) unless File.exist?(fpath)
       end
     end
+    dirname
   end
 
   def ingest_proquest_files(resource: nil, files: [], metadata: nil, zip_dir_files: nil)
@@ -291,7 +291,7 @@ namespace :proquest do
   def format_name(person)
     name_parts = []
     name_parts << person.xpath('DISS_surname').text
-    name_parts << (person.xpath('DISS_fname').text+' '+person.xpath('DISS_middle').text).split.join(' ')
+    name_parts << (person.xpath('DISS_fname').text+' '+person.xpath('DISS_middle').text).strip
     name_parts << person.xpath('DISS_suffix').text
     name_parts.reject{ |name| name.blank? }.join(', ')
   end
