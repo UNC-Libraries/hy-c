@@ -36,7 +36,9 @@ class FileDownloadStat < Hyrax::Statistic
         filter_id = [filter_id,"#{redirect_path['uuid']}"]
       end
 
-      { file_id: redirect(Arrap.wrap(filter_id)) }
+      Rails.logger.info "\n\n######\n#{filter_id}\n#######\n\n"
+
+      { file_id: redirect(Array.wrap(filter_id)) }
     end
   end
 end

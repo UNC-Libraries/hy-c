@@ -43,11 +43,13 @@ module Hyrax
         end
 
         csv = CSV.parse(redirect_uuids, headers: true)
-        redirect_path = csv.find { |row| row['new_path'].match(path) }
+        redirect_path = csv.find { |row| row['new_path'].match(path.split('/')[-1]) }
 
         if redirect_path
           path = [path,"/record/uuid:#{redirect_path['uuid']}"]
         end
+
+        Rails.logger.info "\n\n######\n#{path}\n#######\n\n"
 
         profile.hyrax__pageview(sort: 'date', start_date: start_date).for_path(Array.wrap(path))
       end
