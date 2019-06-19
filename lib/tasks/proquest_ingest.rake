@@ -36,41 +36,55 @@ namespace :proquest do
       puts "Unpacking #{package}"
       @file_last_modified = ''
       unzipped_package_dir = extract_proquest_files(package)
-      metadata_files = Dir.glob("#{unzipped_package_dir}/**/*")
 
-      metadata_files.sort.each do |file|
-        if File.file?(file)
-          if file.match('.xml')
-            metadata_fields = proquest_metadata(file, metadata_dir)
+      # get all files in unzipped directory (should be 1 pdf and 1 xml)
+      metadata_file = Dir.glob("#{unzipped_package_dir}/*_DATA.xml")
+      if metadata_file.count == 1
+        metadata_file = metadata_file.first.to_s
+      else
+        puts "#{unzipped_package_dir} has more than 1 xml file"
+        next
+      end
+      pdf_file = Dir.glob("#{unzipped_package_dir}/*.pdf")
+      if pdf_file.count == 1
+        pdf_file = pdf_file.first.to_s
+      else
+        puts "#{unzipped_package_dir} has more than 1 pdf file"
+        next
+      end
 
-            puts "Number of files: #{metadata_fields[:files].count.to_s}"
+      if File.file?(metadata_file)
+        # only use xml file for metadata extraction
+        metadata_fields = proquest_metadata(metadata_file)
 
-            # create deposit record
-            deposit_record = DepositRecord.new(@deposit_record_hash)
-            deposit_record[:manifest] = nil
-            deposit_record[:premis] = nil
-            deposit_record.save!
+        puts "Number of files: #{metadata_fields[:files].count.to_s}"
 
-            resource = proquest_record(metadata_fields[:resource])
-            resource[:deposit_record] = deposit_record.id
-            resource.save!
+        # create deposit record
+        deposit_record = DepositRecord.new(@deposit_record_hash)
+        deposit_record[:manifest] = nil
+        deposit_record[:premis] = nil
+        deposit_record.save!
 
-            ingest_proquest_files(resource: resource,
-                         files: metadata_fields[:files],
-                         metadata: metadata_fields[:resource],
-                         zip_dir_files: metadata_files)
+        # create disseration record
+        resource = proquest_record(metadata_fields[:resource])
+        resource[:deposit_record] = deposit_record.id
+        resource.save!
 
-            # Attach metadata file
-            fileset_attrs = { 'title' => [File.basename(file)] }
-            fileset = ingest_proquest_file(parent: resource, resource: fileset_attrs, f: file)
+        # Attach pdf and metadata files
+        ingest_proquest_files(resource: resource,
+                     files: metadata_fields[:files],
+                     metadata: metadata_fields[:resource],
+                     zip_dir_files: [metadata_file, pdf_file])
 
-            # Force visibility to private since it seems to be saving as public
-            fileset.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
-            fileset.save
+        # Attach metadata file
+        fileset_attrs = { 'title' => [File.basename(metadata_file)] }
+        fileset = ingest_proquest_file(parent: resource, resource: fileset_attrs, f: metadata_file)
 
-            resource.ordered_members << fileset
-          end
-        end
+        # Force visibility to private since it seems to be saving as public
+        fileset.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
+        fileset.save
+
+        resource.ordered_members << fileset
       end
     end
   end
@@ -96,7 +110,7 @@ namespace :proquest do
     ordered_members = []
 
     files.each do |f|
-      file_path = zip_dir_files.find { |e| e.match(f) }
+      file_path = zip_dir_files.find { |e| e.match(f.to_s) }
       puts "trying...#{f.to_s}"
       if !file_path.nil? && File.file?(file_path)
         file_set = ingest_proquest_file(parent: resource, resource: metadata, f: file_path)
@@ -125,7 +139,7 @@ namespace :proquest do
     file_set
   end
 
-  def proquest_metadata(metadata_file, metadata_dir)
+  def proquest_metadata(metadata_file)
     file = File.open(metadata_file)
     metadata = Nokogiri::XML(file)
     file.close
