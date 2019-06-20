@@ -29,7 +29,7 @@ class CatalogController < ApplicationController
   configure_blacklight do |config|
     config.show.tile_source_field = :content_metadata_image_iiif_info_ssm
     config.show.partials.insert(1, :openseadragon)
-    config.search_builder_class = Hyrax::CatalogSearchBuilder
+    config.search_builder_class = RangeLimitCatalogSearchBuilder
 
     # Show gallery view
     # config.view.gallery.partials = [:index_header, :index]
