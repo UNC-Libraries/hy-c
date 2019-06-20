@@ -53,7 +53,7 @@ class General < ActiveFedora::Base
   end
 
   property :date_issued, predicate: ::RDF::Vocab::DC.issued do |index|
-    index.as :stored_searchable, :facetable
+    index.as :stored_searchable
   end
 
   property :date_other, predicate: ::RDF::Vocab::DC.date do |index|

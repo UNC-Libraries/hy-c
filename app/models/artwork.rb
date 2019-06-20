@@ -13,7 +13,7 @@ class Artwork < ActiveFedora::Base
   end
 
   property :date_issued, predicate: ::RDF::Vocab::DC.issued, multiple: false do |index|
-    index.as :stored_searchable, :facetable
+    index.as :stored_searchable
   end
 
   property :doi, predicate: ::RDF::Vocab::Identifiers.doi, multiple: false do |index|
