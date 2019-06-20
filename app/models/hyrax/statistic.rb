@@ -49,9 +49,7 @@ module Hyrax
           path = [path,"/record/uuid:#{redirect_path['uuid']}"]
         end
 
-        Rails.logger.info "\n\n######\n#{path}\n#######\n\n"
-
-        profile.hyrax__pageview(sort: 'date', start_date: start_date).for_path(Array.wrap(path))
+        profile.hyrax__pageview(sort: 'date', start_date: Date.parse('2016-01-01')).for_path(path)
       end
 
       private

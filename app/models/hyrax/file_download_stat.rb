@@ -33,12 +33,10 @@ class FileDownloadStat < Hyrax::Statistic
       redirect_path = csv.find { |row| row['new_path'].match(file.id) }
 
       if redirect_path
-        filter_id = [filter_id,"#{redirect_path['uuid']}"]
+        filter_id = "#{filter_id}|#{redirect_path['uuid']}"
       end
 
-      Rails.logger.info "\n\n######\n#{filter_id}\n#######\n\n"
-
-      { file_id: redirect(Array.wrap(filter_id)) }
+      { file_id: filter_id }
     end
   end
 end
