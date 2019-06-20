@@ -1,0 +1,8 @@
+# Example configuration for proquest ingest
+unzip_dir: spec/fixtures/proquest/tmp
+package_dir: spec/fixtures/proquest
+admin_set: default
+depositor_onyen: admin
+deposit_title: Deposit by ProQuest Depositor via CDR COllector 1.0
+deposit_method: CDR Collector 1.0
+deposit_type: http://proquest.com

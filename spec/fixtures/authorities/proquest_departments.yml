@@ -1,143 +1,137 @@
 ## spec/fixtures/authorities/proquest_departments.yml
 terms:
   - id: American Studies
-    term: College of Arts and Sciences, Department of American Studies
+    term: Department of American Studies
   - id: Anthropology
-    term: College of Arts and Sciences, Department of Anthropology
+    term: Department of Anthropology
   - id: Art (Art History)
-    term: College of Arts and Sciences, Department of Art, Art History Program
+    term: Art History Program
   - id: Art History
-    term: College of Arts and Sciences, Department of Art, Art History Program
+    term: Art History Program
   - id: Biochemistry &amp; Biophysics
-    term: School of Medicine, Department of Biochemistry and Biophysics
+    term: Department of Biochemistry and Biophysics
   - id: Biochemistry and Biophysics
-    term: School of Medicine, Department of Biochemistry and Biophysics
+    term: Department of Biochemistry and Biophysics
   - id: Bioinformatics &amp; Computational Biology
-    term: School of Medicine, Curriculum in Bioinformatics and Computational Biology
+    term: Curriculum in Bioinformatics and Computational Biology
   - id: Bioinformatics and Computational Biology
-    term: School of Medicine, Curriculum in Bioinformatics and Computational Biology
+    term: Curriculum in Bioinformatics and Computational Biology
   - id: Biology
-    term: College of Arts and Sciences, Department of Biology
+    term: Department of Biology
   - id: Biomedical Engineering
-    term:
-      - College of Arts and Sciences, Joint Department of Biomedical Engineering
-      - Joint Department of Biomedical Engineering
+    term: Joint Department of Biomedical Engineering
   - id: Biomedical Engineering (Joint)
-    term:
-      - College of Arts and Sciences, Joint Department of Biomedical Engineering
-      - Joint Department of Biomedical Engineering
+    term: Joint Department of Biomedical Engineering
   - id: Biostatistics
-    term: Gillings School of Global Public Health, Department of Biostatistics
+    term: Department of Biostatistics
   - id: Business
     term: Kenan-Flagler Business School
   - id: Business Administration
     term: Kenan-Flagler Business School
   - id: Cell &amp; Developmental Biology
-    term: School of Medicine, Department of Cell Biology and Physiology
+    term: Department of Cell Biology and Physiology
   - id: Cell &amp; Molecular Physiology
-    term: School of Medicine, Department of Cell and Molecular Physiology
+    term: Department of Cell and Molecular Physiology
   - id: Cell and Developmental Biology
-    term: School of Medicine, Department of Cell Biology and Physiology
+    term: Department of Cell Biology and Physiology
   - id: Cell and Molecular Physiology
-    term: School of Medicine, Department of Cell and Molecular Physiology
+    term: Department of Cell and Molecular Physiology
   - id: Chemistry
-    term: College of Arts and Sciences, Department of Chemistry
+    term: Department of Chemistry
   - id: City &amp; Regional Planning
-    term: College of Arts and Sciences, Department of City and Regional Planning
+    term: Department of City and Regional Planning
   - id: City and Regional Planning
-    term: College of Arts and Sciences, Department of City and Regional Planning
+    term: Department of City and Regional Planning
   - id: Classics
-    term: College of Arts and Sciences, Department of Classics
+    term: Department of Classics
   - id: Communication Studies
-    term: College of Arts and Sciences, Department of Communication Studies
+    term: Department of Communication Studies
   - id: Comparative Literature
-    term: College of Arts and Sciences, Department of English and Comparative Literature, Program in Comparative Literature
+    term: Program in Comparative Literature
   - id: Computer Science
-    term: College of Arts and Sciences, Department of Computer Science
+    term: Department of Computer Science
   - id: Dentistry (Dental Hygiene Education)
-    term: School of Dentistry, Division of Allied Dental Education, Dental Hygiene Master's Program
+    term: Dental Hygiene Master's Program
   - id: Dentistry (Endodontics)
-    term: School of Dentistry, Department of Endodontics
+    term: Department of Endodontics
   - id: Dentistry (Operative Dentistry)
-    term: School of Dentistry, Department of Operative Dentistry
+    term: Department of Operative Dentistry
   - id: Dentistry (Oral Biology)
-    term: School of Dentistry, Oral Biology PhD Program
+    term: Oral Biology PhD Program
   - id: Dentistry (Oral and Maxillofacial Pathology)
-    term: School of Dentistry, Oral Pathology Section, Oral and Maxillofacial Pathology Graduate Program
+    term: Oral and Maxillofacial Pathology Graduate Program
   - id: Dentistry (Oral and Maxillofacial Radiology)
-    term: School of Dentistry, Oral Pathology Section, Oral and Maxillofacial Radiology Graduate Program
+    term: Oral and Maxillofacial Radiology Graduate Program
   - id: Dentistry (Orthodontics)
-    term: School of Dentistry, Department of Orthodontics
+    term: Department of Orthodontics
   - id: Dentistry (Pediatric Dentistry)
-    term: School of Dentistry, Department of Pediatric Dentistry
+    term: Department of Pediatric Dentistry
   - id: Dentistry (Periodontology)
-    term: School of Dentistry, Department of Periodontology
+    term: Department of Periodontology
   - id: Dentistry (Prosthodontics)
-    term: School of Dentistry, Department of Prosthodontics
+    term: Department of Prosthodontics
   - id: 'Dentistry: Dental Hygiene'
-    term: School of Dentistry, Division of Allied Dental Education, Dental Hygiene Master's Program
+    term: Dental Hygiene Master's Program
   - id: 'Dentistry: Endodontics'
-    term: School of Dentistry, Department of Endodontics
+    term: Department of Endodontics
   - id: Ecology
-    term: College of Arts and Sciences, Curriculum for the Environment and Ecology
+    term: Curriculum for the Environment and Ecology
   - id: Economics
-    term: College of Arts and Sciences, Department of Economics
+    term: Department of Economics
   - id: Education
     term: School of Education
   - id: Education (Curriculum and Instruction)
-    term: School of Education, Curriculum and Instruction
+    term: Curriculum and Instruction
   - id: Education (School Psychology)
-    term: School of Education, School Psychology
+    term: School Psychology
   - id: "Education: Doctorate/Master's in Education"
     term: School of Education
   - id: 'Education: School Psychology'
-    term: School of Education, School Psychology
+    term: School Psychology
   - id: Educational Psychology
-    term: School of Education, Educational Psychology, Measurement, and Evaluation
+    term: Educational Psychology, Measurement, and Evaluation
   - id: English
-    term: College of Arts and Sciences, Department of English and Comparative Literature, English
+    term: English
   - id: Environment &amp; Ecology
-    term: College of Arts and Sciences, Curriculum for the Environment and Ecology
+    term: Curriculum for the Environment and Ecology
   - id: Environmental Sciences &amp; Engineering
-    term: Gillings School of Global Public Health, Department of Environmental Sciences and Engineering
+    term: Department of Environmental Sciences and Engineering
   - id: Environmental Sciences and Engineering
-    term: Gillings School of Global Public Health, Department of Environmental Sciences and Engineering
+    term: Department of Environmental Sciences and Engineering
   - id: Epidemiology
-    term: Gillings School of Global Public Health, Department of Epidemiology
+    term: Department of Epidemiology
   - id: Exercise and Sport Science
-    term:
-      - College of Arts and Sciences, Department of Exercise and Sport Science
-      - Graduate School, Department of Exercise and Sport Science
+    term: Department of Exercise and Sport Science
   - id: Folklore
-    term: College of Arts and Sciences, Department of American Studies, Folklore Program
+    term: Folklore Program
   - id: Genetics &amp; Molecular Biology
-    term: School of Medicine, Curriculum in Genetics and Molecular Biology
+    term: Curriculum in Genetics and Molecular Biology
   - id: Genetics and Molecular Biology
-    term: School of Medicine, Curriculum in Genetics and Molecular Biology
+    term: Curriculum in Genetics and Molecular Biology
   - id: Geography
-    term: College of Arts and Sciences, Department of Geography
+    term: Department of Geography
   - id: Geological Sciences
-    term: College of Arts and Sciences, Department of Geological Sciences
+    term: Department of Geological Sciences
   - id: Germanic Languages
-    term: College of Arts and Sciences, Department of Germanic and Slavic Languages and Literatures
+    term: Department of Germanic and Slavic Languages and Literatures
   - id: Health Behavior
-    term: Gillings School of Global Public Health, Department of Health Behavior
+    term: Department of Health Behavior
   - id: Health Behavior &amp; Education
-    term: Gillings School of Global Public Health, Department of Health Behavior
+    term: Department of Health Behavior
   - id: Health Behavior &amp; Health Education
-    term: Gillings School of Global Public Health, Department of Health Behavior
+    term: Department of Health Behavior
   - id: 'Health Policy &amp; Administration: Doctoral (residential)'
-    term: Gillings School of Global Public Health, Department of Health Policy and Management
+    term: Department of Health Policy and Management
   - id: Health Policy And Management
-    term: Gillings School of Global Public Health, Department of Health Policy and Management
+    term: Department of Health Policy and Management
   - id: Health Policy and Management
-    term: Gillings School of Global Public Health, Department of Health Policy and Management
+    term: Department of Health Policy and Management
   - id: History
-    term: College of Arts and Sciences, Department of History
+    term: Department of History
   - id: Human Movement Science
-    term: School of Medicine, Department of Allied Health Sciences, Curriculum in Human Movement Science
+    term: Curriculum in Human Movement Science
   - id: 'Human Movement Science: Doctoral'
-    term: School of Medicine, Department of Allied Health Sciences, Curriculum in Human Movement Science
+    term: Curriculum in Human Movement Science
   - id: Information &amp; Library Science
     term: School of Information and Library Science
   - id: Information and Library Science
@@ -145,108 +139,106 @@ terms:
   - id: Journalism &amp; Mass Communication
     term: School of Journalism and Mass Communication
   - id: Journalism (Mass Communication)
-    term: School of Journalism and Mass Communication, Mass Communication Graduate Program
+    term: Mass Communication Graduate Program
   - id: Linguistics
-    term: College of Arts and Sciences, Department of Linguistics
+    term: Department of Linguistics
   - id: Marine Sciences
-    term: College of Arts and Sciences, Department of Marine Sciences
+    term: Department of Marine Sciences
   - id: Mass Communication
-    term: School of Journalism and Mass Communication, Mass Communication Graduate Program
+    term: Mass Communication Graduate Program
   - id: Materials Science
     term: Materials Science Program
   - id: 'Maternal &amp; Child Health: Doctoral'
-    term: Gillings School of Global Public Health, Department of Maternal and Child Health
+    term: Department of Maternal and Child Health
   - id: Maternal and Child Health
-    term: Gillings School of Global Public Health, Department of Maternal and Child Health
+    term: Department of Maternal and Child Health
   - id: Mathematics
-    term: College of Arts and Sciences, Department of Mathematics
+    term: Department of Mathematics
   - id: Microbiology &amp; Immunology
-    term: School of Medicine, Department of Microbiology and Immunology
+    term: Department of Microbiology and Immunology
   - id: Microbiology and Immunology
-    term: School of Medicine, Department of Microbiology and Immunology
+    term: Department of Microbiology and Immunology
   - id: Music Doctoral
-    term: College of Arts and Sciences, Department of Music
+    term: Department of Music
   - id: Music Masters
-    term: College of Arts and Sciences, Department of Music
+    term: Department of Music
   - id: Musicology
-    term: College of Arts and Sciences, Department of Music, Musicology Graduate Program
+    term: Musicology Graduate Program
   - id: Neurobiology
-    term:
-      - School of Medicine, Neuroscience Center, Neurobiology Curriculum
-      - School of Medicine, Neurobiology Curriculum
+    term: Neurobiology Curriculum
   - id: Nursing
     term: School of Nursing
   - id: Nutrition
-    term: Gillings School of Global Public Health, Department of Nutrition
+    term: Department of Nutrition
   - id: Occupational Science
-    term: School of Medicine, Department of Allied Health Sciences, Division of Occupational Science and Occupational Therapy
+    term: Division of Occupational Science and Occupational Therapy
   - id: Operations Research
-    term: College of Arts and Sciences, Department of Statistics and Operations Research
+    term: Department of Statistics and Operations Research
   - id: Operative Dentistry
-    term: School of Dentistry, Department of Operative Dentistry
+    term: Department of Operative Dentistry
   - id: Oral Biology
-    term: School of Dentistry, Oral Biology PhD Program
+    term: Oral Biology PhD Program
   - id: Orthodontics
-    term: School of Dentistry, Department of Orthodontics
+    term: Department of Orthodontics
   - id: Pathology
-    term: School of Medicine, Department of Pathology and Laboratory Medicine
+    term: Department of Pathology and Laboratory Medicine
   - id: Pediatric Dentistry
-    term: School of Dentistry, Department of Pediatric Dentistry
+    term: Department of Pediatric Dentistry
   - id: Periodontology
-    term: School of Dentistry, Department of Periodontology
+    term: Department of Periodontology
   - id: Pharmaceutical Sciences
-    term: Eshelman School of Pharmacy, Pharmaceutical Sciences Program
+    term: Pharmaceutical Sciences Program
   - id: Pharmacology
-    term: School of Medicine, Department of Pharmacology
+    term: Department of Pharmacology
   - id: Philosophy
-    term: College of Arts and Sciences, Department of Philosophy
+    term: Department of Philosophy
   - id: Physics
-    term: College of Arts and Sciences, Department of Physics and Astronomy
+    term: Department of Physics and Astronomy
   - id: Physics &amp; Astronomy
-    term: College of Arts and Sciences, Department of Physics and Astronomy
+    term: Department of Physics and Astronomy
   - id: Political Science
-    term: College of Arts and Sciences, Department of Political Science
+    term: Department of Political Science
   - id: 'Political Science: Doctoral'
-    term: College of Arts and Sciences, Department of Political Science
+    term: Department of Political Science
   - id: 'Political Science: TransAtlantic Masters (off-campus)'
-    term: College of Arts and Sciences, Department of Political Science
+    term: Department of Political Science
   - id: Prosthodontics
-    term: School of Dentistry, Department of Prosthodontics
+    term: Department of Prosthodontics
   - id: Psychology
-    term: College of Arts and Sciences, Department of Psychology
+    term: Department of Psychology
   - id: Public Health Leadership
-    term: Gillings School of Global Public Health, Public Health Leadership Program
+    term: Public Health Leadership Program
   - id: Public Policy
-    term: College of Arts and Sciences, Department of Public Policy
+    term: Department of Public Policy
   - id: Religious Studies
-    term: College of Arts and Sciences, Department of Religious Studies
+    term: Department of Religious Studies
   - id: Romance Languages
-    term: College of Arts and Sciences, Department of Romance Languages
+    term: Department of Romance Languages
   - id: Romance Languages and Literatures
-    term: College of Arts and Sciences, Department of Romance Languages
+    term: Department of Romance Languages
   - id: Russian &amp; East European Studies
-    term: College of Arts and Sciences, Center for Slavic, Eurasian, and East European Studies, Curriculum in Russian and East European Studies
+    term: Curriculum in Russian and East European Studies
   - id: Russian and East European Studies
-    term: College of Arts and Sciences, Center for Slavic, Eurasian, and East European Studies, Curriculum in Russian and East European Studies
+    term: Curriculum in Russian and East European Studies
   - id: Slavic Languages &amp; Literatures
-    term: College of Arts and Sciences, Department of Germanic and Slavic Languages and Literatures
+    term: Department of Germanic and Slavic Languages and Literatures
   - id: Slavic Languages and Literatures
-    term: College of Arts and Sciences, Department of Germanic and Slavic Languages and Literatures
+    term: Department of Germanic and Slavic Languages and Literatures
   - id: Social Work
     term: School of Social Work
   - id: 'Social Work: Doctoral (residential)'
     term: School of Social Work
   - id: Sociology
-    term: College of Arts and Sciences, Department of Sociology
+    term: Department of Sociology
   - id: 'Speech &amp; Hearing Sciences: Doctoral'
-    term: School of Medicine, Department of Allied Health Sciences, Division of Speech and Hearing Sciences
+    term: Division of Speech and Hearing Sciences
   - id: 'Speech &amp; Hearing Sciences: Masters'
-    term: School of Medicine, Department of Allied Health Sciences, Division of Speech and Hearing Sciences
+    term: Division of Speech and Hearing Sciences
   - id: Speech and Hearing Sciences
-    term: School of Medicine, Department of Allied Health Sciences, Division of Speech and Hearing Sciences
+    term: Division of Speech and Hearing Sciences
   - id: Statistics
-    term: College of Arts and Sciences, Department of Statistics and Operations Research
+    term: Department of Statistics and Operations Research
   - id: Statistics and Operations Research
-    term: College of Arts and Sciences, Department of Statistics and Operations Research
+    term: Department of Statistics and Operations Research
   - id: Toxicology
-    term: School of Medicine, Curriculum in Toxicology
+    term: Curriculum in Toxicology

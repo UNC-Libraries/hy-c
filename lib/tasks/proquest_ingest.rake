@@ -6,43 +6,28 @@ namespace :proquest do
   require 'tasks/migration/migration_constants'
   require 'zip'
 
-  # set fedora access URL. replace with fedora username and password
-  # test environment will not have access to ERA's fedora
-
-  # Must include the email address of a valid user in order to ingest files
-  @depositor_email = 'admin@example.com'
-
-  # temporary location for file download
-  @temp = 'lib/tasks/ingest/tmp'
-  @file_store = 'lib/tasks/migration/files'
-  @temp_foxml = 'lib/tasks/tmp/tmp'
-  FileUtils::mkdir_p @temp
-
-  # report directory
-  @reports = 'lib/tasks/migration/reports/'
-  # Oddities report
-  @oddities = @reports+ 'oddities.txt'
-  # verification error report
-  @verification_error = @reports + 'verification_errors.txt'
-  # item migration list
-  @item_list = @reports + 'item_list.txt'
-  # collection list
-  @collection_list = @reports + 'collection_list.txt'
-  FileUtils::mkdir_p @reports
-  # successful_path
-  @completed_dir = 'lib/tasks/migration/completed'
-  FileUtils::mkdir_p @completed_dir
-
-
   desc 'batch migrate generic files from FOXML file'
-  task :ingest, [:directory, :admin_set] => :environment do |t, args|
+  task :ingest, [:configuration_file] => :environment do |t, args|
+
+    config = YAML.load_file(args[:configuration_file])
+    
+    # Create temp directory for unzipped contents
+    @temp = config['unzip_dir']
+    FileUtils::mkdir_p @temp
 
     # Should deposit works into an admin set
     # Update title parameter to reflect correct admin set
-    @admin_set_id = ::AdminSet.where(title: args[:admin_set]).first.id
+    @admin_set_id = ::AdminSet.where(title: config['admin_set']).first.id
+    @depositor_onyen = config['depositor_onyen']
 
-    metadata_dir = args[:directory]
-    migrate_proquest_packages(metadata_dir)
+    # deposit record info
+    @deposit_record_hash = { title: config['deposit_title'],
+                             deposit_method: config['deposit_method'],
+                             deposit_package_type: config['deposit_type'],
+                             deposit_package_subtype: config['deposit_subtype'],
+                             deposited_by: @depositor_onyen }
+
+    migrate_proquest_packages(config['package_dir'])
   end
 
   def migrate_proquest_packages(metadata_dir)
@@ -50,50 +35,82 @@ namespace :proquest do
     proquest_packages.each do |package|
       puts "Unpacking #{package}"
       @file_last_modified = ''
-      extract_proquest_files(package)
-      metadata_files = Dir.glob("#{@temp}/**/*")
+      unzipped_package_dir = extract_proquest_files(package)
 
-      metadata_files.sort.each do |file|
-        if File.file?(file)
-          if file.match('.xml')
-            metadata_fields = proquest_metadata(file, metadata_dir)
-
-            puts "Number of files: #{metadata_fields[:files].count.to_s}"
-
-            resource = proquest_record(metadata_fields[:resource])
-            resource.save!
-
-            ingest_proquest_files(resource: resource,
-                         files: metadata_fields[:files],
-                         metadata: metadata_fields[:resource],
-                         zip_dir_files: metadata_files)
-          end
-        end
+      # get all files in unzipped directory (should be 1 pdf and 1 xml)
+      metadata_file = Dir.glob("#{unzipped_package_dir}/*_DATA.xml")
+      if metadata_file.count == 1
+        metadata_file = metadata_file.first.to_s
+      else
+        puts "#{unzipped_package_dir} has more than 1 xml file"
+        next
       end
-      FileUtils.rm_rf(@temp)
+      pdf_file = Dir.glob("#{unzipped_package_dir}/*.pdf")
+      if pdf_file.count == 1
+        pdf_file = pdf_file.first.to_s
+      else
+        puts "#{unzipped_package_dir} has more than 1 pdf file"
+        next
+      end
+
+      if File.file?(metadata_file)
+        # only use xml file for metadata extraction
+        metadata_fields = proquest_metadata(metadata_file)
+
+        puts "Number of files: #{metadata_fields[:files].count.to_s}"
+
+        # create deposit record
+        deposit_record = DepositRecord.new(@deposit_record_hash)
+        deposit_record[:manifest] = nil
+        deposit_record[:premis] = nil
+        deposit_record.save!
+
+        # create disseration record
+        resource = proquest_record(metadata_fields[:resource])
+        resource[:deposit_record] = deposit_record.id
+        resource.save!
+
+        # Attach pdf and metadata files
+        ingest_proquest_files(resource: resource,
+                     files: metadata_fields[:files],
+                     metadata: metadata_fields[:resource],
+                     zip_dir_files: [metadata_file, pdf_file])
+
+        # Attach metadata file
+        fileset_attrs = { 'title' => [File.basename(metadata_file)] }
+        fileset = ingest_proquest_file(parent: resource, resource: fileset_attrs, f: metadata_file)
+
+        # Force visibility to private since it seems to be saving as public
+        fileset.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
+        fileset.save
+
+        resource.ordered_members << fileset
+      end
     end
   end
 
   def extract_proquest_files(file)
     fname = file.split('.zip')[0].split('/')[-1]
-    FileUtils::mkdir_p @temp+'/'+fname
+    dirname = @temp+'/'+fname
+    FileUtils::mkdir_p dirname
     Zip::File.open(file) do |zip_file|
       zip_file.each do |f|
         if f.name.match(/DATA.xml/)
           @file_last_modified = Date.strptime(zip_file.get_entry(f).as_json['time'].split('T')[0],"%Y-%m-%d")
         end
-        fpath = File.join(@temp+'/'+fname, f.name)
+        fpath = File.join(dirname, f.name)
         puts fpath
         zip_file.extract(f, fpath) unless File.exist?(fpath)
       end
     end
+    dirname
   end
 
   def ingest_proquest_files(resource: nil, files: [], metadata: nil, zip_dir_files: nil)
     ordered_members = []
 
     files.each do |f|
-      file_path = zip_dir_files.find { |e| e.match(f) }
+      file_path = zip_dir_files.find { |e| e.match(f.to_s) }
       puts "trying...#{f.to_s}"
       if !file_path.nil? && File.file?(file_path)
         file_set = ingest_proquest_file(parent: resource, resource: metadata, f: file_path)
@@ -106,14 +123,14 @@ namespace :proquest do
 
   def ingest_proquest_file(parent: nil, resource: nil, f: nil)
     puts "ingesting... #{f.to_s}"
-    fileset_metadata = resource.slice('visibility', 'embargo_release_date', 'visibility_during_embargo',
-                                      'visibility_after_embargo')
-    if resource['embargo_release_date'].blank?
+    fileset_metadata = file_record(resource)
+
+    if fileset_metadata['embargo_release_date'].blank?
       fileset_metadata.except!('embargo_release_date', 'visibility_during_embargo', 'visibility_after_embargo')
     end
     file_set = FileSet.create(fileset_metadata)
-    actor = Hyrax::Actors::FileSetActor.new(file_set, User.find_by_email(@depositor_email))
-    actor.create_metadata(resource)
+    actor = Hyrax::Actors::FileSetActor.new(file_set, User.where(uid: @depositor_onyen).first)
+    actor.create_metadata(fileset_metadata)
     file = File.open(f)
     actor.create_content(file)
     actor.attach_to_work(parent)
@@ -122,7 +139,7 @@ namespace :proquest do
     file_set
   end
 
-  def proquest_metadata(metadata_file, metadata_dir)
+  def proquest_metadata(metadata_file)
     file = File.open(metadata_file)
     metadata = Nokogiri::XML(file)
     file.close
@@ -161,16 +178,14 @@ namespace :proquest do
 
     title = metadata.xpath('//DISS_description/DISS_title').text
 
-    creators = metadata.xpath('//DISS_submission/DISS_authorship/DISS_author/DISS_name').map do |creator|
-      if creator.xpath('DISS_affiliation').text.eql? 'University of North Carolina at Chapel Hill'
-        format_name(creator)
-      end
+    creators = metadata.xpath('//DISS_submission/DISS_authorship/DISS_author[@type="primary"]/DISS_name').map do |creator|
+      format_name(creator)
     end
 
     degree_granting_institution = metadata.xpath('//DISS_description/DISS_institution/DISS_inst_name').text
 
     keywords = metadata.xpath('//DISS_description/DISS_categorization/DISS_keyword').text.split(', ')
-    keywords << metadata.xpath('//DISS_description/DISS_categorization/DISS_category/DISS_cat_desc').text
+    keywords << metadata.xpath('//DISS_description/DISS_categorization/DISS_category/DISS_cat_desc').map(&:text)
 
     abstract = metadata.xpath('//DISS_content/DISS_abstract').text
 
@@ -196,9 +211,10 @@ namespace :proquest do
     end
 
     department = metadata.xpath('//DISS_description/DISS_institution/DISS_inst_contact').text.strip
+    affiliation = ProquestDepartmentMappingsService.standard_department_name(department)
 
-    date_issued = metadata.xpath('//DISS_description/DISS_dates/DISS_accept_date').text
-    date_issued = Date.strptime(date_issued,"%m/%d/%Y").strftime('%Y-%m-%d')
+    date_issued = metadata.xpath('//DISS_description/DISS_dates/DISS_comp_date').text
+    date_issued = Date.strptime(date_issued,"%Y")
 
     graduation_semester = ''
     if @file_last_modified.month >= 2 && @file_last_modified.month <= 6
@@ -212,7 +228,8 @@ namespace :proquest do
 
     language = metadata.xpath('//DISS_description/DISS_categorization/DISS_language').text
     if language == 'en'
-      language = 'English'
+      language = get_language_uri('eng')
+      language_label = LanguagesService.label(language) if !language.blank?
     end
 
     file_full << metadata.xpath('//DISS_content/DISS_binary').text
@@ -222,17 +239,18 @@ namespace :proquest do
 
     work_attributes = {
         'title'=>[title],
-        'creators_attributes'=>{ '0' => { name: creators } },
-        'degree_granting_institution'=> degree_granting_institution,
-        'keyword'=>keywords,
-        'abstract'=>abstract.gsub(/\n/, "").strip,
-        'advisors_attributes'=>{ '0' => { name: advisor } },
-        'degree'=>degree,
-        'graduation_year'=>graduation_year,
+        'creators_attributes'=>build_person_hash(creators, affiliation),
         'date_issued'=>(Date.try(:edtf, date_issued) || date_issued).to_s,
+        'abstract'=>abstract.gsub(/\n/, "").strip,
+        'advisors_attributes'=>build_person_hash(advisor, nil),
         'dcmi_type'=>dcmi_type,
-        'resource_type'=>resource_type,
+        'degree'=>degree,
+        'degree_granting_institution'=> degree_granting_institution,
+        'graduation_year'=>graduation_year,
         'language'=>language,
+        'language_label'=>language_label,
+        'keyword'=>keywords.flatten,
+        'resource_type'=>resource_type,
         'visibility'=>visibility,
         'embargo_release_date'=>(Date.try(:edtf, embargo_release_date)).to_s,
         'visibility_during_embargo'=>visibility_during_embargo,
@@ -247,7 +265,7 @@ namespace :proquest do
   def proquest_record(work_attributes)
     resource = Dissertation.new
     resource.creators = work_attributes['creators_attributes'].map{ |k,v| resource.creators.build(v) }
-    resource.depositor = @depositor_email
+    resource.depositor = @depositor_onyen
 
     resource.label = work_attributes['title'][0]
     resource.title = work_attributes['title']
@@ -275,7 +293,55 @@ namespace :proquest do
     resource
   end
 
+  def build_person_hash(people, affiliation)
+    person_hash = {}
+    people.each_with_index do |person, index|
+      person_hash[index.to_s] = {'name' => person, 'affiliation' => affiliation}
+    end
+
+    person_hash
+  end
+
   def format_name(person)
-    (person.xpath('DISS_surname').text+', '+person.xpath('DISS_fname').text+' '+person.xpath('DISS_middle').text).split.join(' ')
+    name_parts = []
+    name_parts << person.xpath('DISS_surname').text
+    name_parts << (person.xpath('DISS_fname').text+' '+person.xpath('DISS_middle').text).strip
+    name_parts << person.xpath('DISS_suffix').text
+    name_parts.reject{ |name| name.blank? }.join(', ')
+  end
+
+  # Use language code to get iso639-2 uri from service
+  def get_language_uri(language_code)
+    LanguagesService.label("http://id.loc.gov/vocabulary/iso639-2/#{language_code.downcase}") ?
+        "http://id.loc.gov/vocabulary/iso639-2/#{language_code.downcase}" : nil
+  end
+
+  # FileSets can include any metadata listed in BasicMetadata file
+  def file_record(attrs)
+    file_set = FileSet.new
+    file_attributes = Hash.new
+
+    # Singularize non-enumerable attributes and make sure enumerable attributes are arrays
+    attrs.each do |k,v|
+      if file_set.attributes.keys.member?(k.to_s)
+        if !file_set.attributes[k.to_s].respond_to?(:each) && file_attributes[k].respond_to?(:each)
+          file_attributes[k] = v.first
+        elsif file_set.attributes[k.to_s].respond_to?(:each) && !file_attributes[k].respond_to?(:each)
+          file_attributes[k] = Array(v)
+        else
+          file_attributes[k] = v
+        end
+      end
+    end
+    
+    file_attributes[:date_created] = attrs['date_created']
+    file_attributes[:visibility] = attrs['visibility']
+    unless attrs['embargo_release_date'].blank?
+      file_attributes[:embargo_release_date] = attrs['embargo_release_date']
+      file_attributes[:visibility_during_embargo] = attrs['visibility_during_embargo']
+      file_attributes[:visibility_after_embargo] = attrs['visibility_after_embargo']
+    end
+
+    file_attributes
   end
 end
