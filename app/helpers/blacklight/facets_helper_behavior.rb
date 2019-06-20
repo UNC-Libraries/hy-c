@@ -7,9 +7,10 @@ module Blacklight::FacetsHelperBehavior
   # Check if any of the given fields have values
   #
   # @param [Array<String>] fields
+  # @param [Hash] options
   # @return [Boolean]
-  def has_facet_values? fields = facet_field_names
-    facets_from_request(fields).any? { |display_facet| should_render_facet?(display_facet) }
+  def has_facet_values? fields = facet_field_names, options = {}
+    facets_from_request(fields).any? { |display_facet| !display_facet.items.empty? && should_render_facet?(display_facet) }
   end
 
   ##
@@ -37,15 +38,14 @@ module Blacklight::FacetsHelperBehavior
   # @option options [Hash] :locals locals to pass to the partial
   # @return [String]
   def render_facet_limit(display_facet, options = {})
-    field_config = facet_configuration_for_field(display_facet.name)
-    return unless should_render_facet?(display_facet, field_config)
-
+    return unless should_render_facet?(display_facet)
     options = options.dup
     options[:partial] ||= facet_partial_name(display_facet)
     options[:layout] ||= "facet_layout" unless options.key?(:layout)
     options[:locals] ||= {}
     options[:locals][:field_name] ||= display_facet.name
-    options[:locals][:facet_field] ||= field_config
+    options[:locals][:solr_field] ||= display_facet.name # deprecated
+    options[:locals][:facet_field] ||= facet_configuration_for_field(display_facet.name)
     options[:locals][:display_facet] ||= display_facet
 
     render(options)
@@ -55,14 +55,14 @@ module Blacklight::FacetsHelperBehavior
   # Renders the list of values
   # removes any elements where render_facet_item returns a nil value. This enables an application
   # to filter undesireable facet items so they don't appear in the UI
-  def render_facet_limit_list(paginator, facet_field, wrapping_element = :li)
-    safe_join(paginator.items.map { |item| render_facet_item(facet_field, item) }.compact.map { |item| content_tag(wrapping_element, item) })
+  def render_facet_limit_list(paginator, facet_field, wrapping_element=:li)
+    safe_join(paginator.items.map { |item| render_facet_item(facet_field, item) }.compact.map { |item| content_tag(wrapping_element,item)})
   end
 
   ##
   # Renders a single facet item
   def render_facet_item(facet_field, item)
-    if facet_in_params?(facet_field, item.value)
+    if facet_in_params?(facet_field, item.value )
       render_selected_facet_value(facet_field, item)
     else
       render_facet_value(facet_field, item)
@@ -75,14 +75,12 @@ module Blacklight::FacetsHelperBehavior
   # By default, only render facets with items.
   #
   # @param [Blacklight::Solr::Response::Facets::FacetField] display_facet
-  # @param [Blacklight::Configuration::FacetField] facet_config
   # @return [Boolean]
-  def should_render_facet? display_facet, facet_config = nil
-    return false if display_facet.items.blank?
-
+  def should_render_facet? display_facet
     # display when show is nil or true
-    facet_config ||= facet_configuration_for_field(display_facet.name)
-    should_render_field?(facet_config, display_facet)
+    facet_config = facet_configuration_for_field(display_facet.name)
+    display = should_render_field?(facet_config, display_facet)
+    display && display_facet.items.present?
   end
 
   ##
@@ -108,7 +106,7 @@ module Blacklight::FacetsHelperBehavior
     config = facet_configuration_for_field(display_facet.name)
     name = config.try(:partial)
     name ||= "facet_pivot" if config.pivot
-    name || "facet_limit"
+    name ||= "facet_limit"
   end
 
   ##
@@ -121,13 +119,10 @@ module Blacklight::FacetsHelperBehavior
   # @param [Hash] options
   # @option options [Boolean] :suppress_link display the facet, but don't link to it
   # @return [String]
-  def render_facet_value(facet_field, item, options = {})
+  def render_facet_value(facet_field, item, options ={})
     path = path_for_facet(facet_field, item)
-    content_tag(:span, class: "facet-label") do
-      link_to_unless(options[:suppress_link],
-                     facet_display_value(facet_field, item),
-                     path,
-                     class: "facet-select")
+    content_tag(:span, :class => "facet-label") do
+      link_to_unless(options[:suppress_link], facet_display_value(facet_field, item), path, :class=>"facet_select")
     end + render_facet_count(item.hits)
   end
 
@@ -136,12 +131,12 @@ module Blacklight::FacetsHelperBehavior
   # @param [Blacklight::Solr::Response::Facets::FacetField] facet_field
   # @param [String] item
   # @return [String]
-  def path_for_facet(facet_field, item, path_options = {})
+  def path_for_facet(facet_field, item)
     facet_config = facet_configuration_for_field(facet_field)
     if facet_config.url_method
       send(facet_config.url_method, facet_field, item)
     else
-      search_action_path(search_state.add_facet_params_and_redirect(facet_field, item).merge(path_options))
+      search_action_path(search_state.add_facet_params_and_redirect(facet_field, item))
     end
   end
 
@@ -156,10 +151,10 @@ module Blacklight::FacetsHelperBehavior
       content_tag(:span, facet_display_value(facet_field, item), class: "selected") +
           # remove link
           link_to(remove_href, class: "remove") do
-            content_tag(:span, '✖', class: "remove-icon") +
+            content_tag(:span, '', class: "glyphicon glyphicon-remove") +
                 content_tag(:span, '[remove]', class: 'sr-only')
           end
-    end + render_facet_count(item.hits, classes: ["selected"])
+    end + render_facet_count(item.hits, :classes => ["selected"])
   end
 
   ##
@@ -172,7 +167,7 @@ module Blacklight::FacetsHelperBehavior
   # @return [String]
   def render_facet_count(num, options = {})
     classes = (options[:classes] || []) << "facet-count"
-    content_tag("span", t('blacklight.search.facets.count', number: number_with_delimiter(num)), class: classes)
+    content_tag("span", t('blacklight.search.facets.count', :number => number_with_delimiter(num)), :class => classes)
   end
 
   ##
@@ -181,15 +176,15 @@ module Blacklight::FacetsHelperBehavior
   # @param [String] field
   # @return [Boolean]
   def facet_field_in_params? field
-    facet_params(field).present?
+    !facet_params(field).blank?
   end
 
   ##
   # Check if the query parameters have the given facet field with the
   # given value.
   #
-  # @param [String] field
-  # @param [String] item facet value
+  # @param [Object] field
+  # @param [Object] item facet value
   # @return [Boolean]
   def facet_in_params?(field, item)
     value = facet_value_for_facet_item(item)
@@ -231,7 +226,8 @@ module Blacklight::FacetsHelperBehavior
       facet_config.query[value][:label]
     elsif facet_config.date
       localization_options = facet_config.date == true ? {} : facet_config.date
-      l(Time.zone.parse(value), localization_options)
+
+      l(value.to_datetime, localization_options)
     else
       value
     end
