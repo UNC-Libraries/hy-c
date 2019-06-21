@@ -46,7 +46,7 @@ module Hyrax
         redirect_path = csv.find { |row| row['new_path'].match(path.split('/')[-1]) }
 
         if redirect_path
-          path = [path,"/record/uuid:#{redirect_path['uuid']}"]
+          path = "#{path}|/record/uuid:#{redirect_path['uuid']}"
         end
 
         profile.hyrax__pageview(sort: 'date', start_date: Date.parse('2016-01-01')).for_path(path)
