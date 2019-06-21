@@ -12,7 +12,7 @@ class HycIndexer < Hyrax::WorkIndexer
     super.tap do |solr_doc|
       solr_doc['date_issued_tesim'] = Array(object.date_issued).map {|date| Hyc::EdtfConvert.convert_from_edtf(date)} unless object.date_issued.blank?
       solr_doc['date_issued_edtf_tesim'] = Array(object.date_issued) unless object.date_issued.blank?
-      solr_doc['year_isim'] =  Array(object.date_issued).map {|date| Hyc::EdtfConvert.convert_from_edtf(date).scan(/\d{4}/)} unless object.date_issued.blank?
+      solr_doc['date_issued_isim'] =  Array(object.date_issued).map {|date| Hyc::EdtfConvert.convert_from_edtf(date).scan(/\d{4}/)} unless object.date_issued.blank?
     end
   end
 end
