@@ -1,3 +1,4 @@
+# [hyc-override] filter ga stats by old and new ids
 module Hyrax
   class Statistic < ActiveRecord::Base
     self.abstract_class = true
@@ -5,6 +6,7 @@ module Hyrax
     class_attribute :cache_column, :event_type
 
     class << self
+      include HyraxHelper
       include ActionDispatch::Routing::PolymorphicRoutes
       include Rails.application.routes.url_helpers
 
@@ -24,6 +26,7 @@ module Hyrax
         combined_stats object, start_date, cache_column, event_type, user_id
       end
 
+      # [hyc-override] add old id to filter query if work was migrated
       # Hyrax::Download is sent to Hyrax::Analytics.profile as #hyrax__download
       # see Legato::ProfileMethods.method_name_from_klass
       def ga_statistics(start_date, object)
@@ -33,7 +36,15 @@ module Hyrax
           Rails.logger.error("Google Analytics profile has not been established. Unable to fetch statistics.")
           return []
         end
-        profile.hyrax__pageview(sort: 'date', start_date: start_date).for_path(path)
+
+        # check if work was migrated
+        redirect_path = redirect_lookup('new_path', path.split('/')[-1])
+
+        if redirect_path
+          path = "#{path}|/record/uuid:#{redirect_path['uuid']}"
+        end
+
+        profile.hyrax__pageview(sort: 'date', start_date: Date.parse('2016-01-01')).for_path(path)
       end
 
       private
