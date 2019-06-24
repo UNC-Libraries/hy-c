@@ -1,4 +1,5 @@
 # [hyc-override] Overriding helper in order to add doi to citation, see line 40
+# [hyc-override] Overriding iiif manifest metadata to check that field exists on a presenter, see line 222
 module Hyrax
   class WorkShowPresenter
     include ModelProxy
@@ -211,6 +212,7 @@ module Hyrax
       renderings.flatten
     end
 
+    # [hyc-override] Overriding iiif manifest metadata to check that field exists on a presenter
     # IIIF metadata for inclusion in the manifest
     #  Called by the `iiif_manifest` gem to add metadata
     #
@@ -218,9 +220,17 @@ module Hyrax
     def manifest_metadata
       metadata = []
       Hyrax.config.iiif_metadata_fields.each do |field|
+        next unless (respond_to? field) && !send(field).blank?
+        field_value = send(field)
+
+        # Remove everything but name from people object terms
+        if field.to_s.match(/display$/)
+          field_value = field_value.map { |f| f.gsub(/\|\|.*/, '') }
+        end
+
         metadata << {
             'label' => I18n.t("simple_form.labels.defaults.#{field}"),
-            'value' => Array.wrap(send(field))
+            'value' => Array.wrap(field_value)
         }
       end
       metadata
