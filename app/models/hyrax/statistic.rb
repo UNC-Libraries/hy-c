@@ -1,11 +1,11 @@
 module Hyrax
   class Statistic < ActiveRecord::Base
-    include HyraxHelper
     self.abstract_class = true
 
     class_attribute :cache_column, :event_type
 
     class << self
+      include HyraxHelper
       include ActionDispatch::Routing::PolymorphicRoutes
       include Rails.application.routes.url_helpers
 
