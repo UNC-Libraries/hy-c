@@ -80,7 +80,8 @@ module Blacklight::FacetsHelperBehavior
     # display when show is nil or true
     facet_config = facet_configuration_for_field(display_facet.name)
     display = should_render_field?(facet_config, display_facet)
-    display && display_facet.items.present?
+    # render facet if it has items in it or it is being filtered to results missing any value
+    display && (display_facet.items.present? || selected_missing_for_range_limit?(display_facet.name))
   end
 
   ##
