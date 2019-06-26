@@ -69,7 +69,7 @@ module ActiveFedora::RDF
               elsif val.is_a? DateTime
                 value =  Hyc::EdtfConvert.convert_from_edtf(val.strftime('%Y-%m-%d'))
               else
-                value =  Hyc::EdtfConvert.convert_from_edtf(Date.parse(val).strftime('%Y-%m-%d'))
+                value =  Hyc::EdtfConvert.convert_from_edtf(val)
               end
             end
 
