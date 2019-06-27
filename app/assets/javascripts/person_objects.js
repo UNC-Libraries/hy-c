@@ -121,7 +121,7 @@ $(document).on('turbolinks:load', function () {
     }
 
     function getPersonRows(selector) {
-        return $('#' + selector + ' div.' + selector).not(':hidden');
+        return $('#' + selector + ' div.' + selector).not('.cloning, .cloning div');
     }
 
     function getLabelNumber(selector) {
