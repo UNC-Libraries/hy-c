@@ -99,14 +99,7 @@ $(document).on('turbolinks:load', function () {
     
     function updateCloningRow($cloning_row, current_index) {
         var regex = /\d+/;
-        var next_index;
-
-        // Required people seem to have their index updated on page load, Optional people don't, hence the double increment
-        if ($cloning_row.find("[id$='name']").hasClass('optional')) {
-            next_index = current_index + 2;
-        } else {
-            next_index = current_index + 1;
-        }
+        var next_index = current_index + 1;
 
         PEOPLE_SUBFIELDS.forEach(function(attr) {
             var $input = $cloning_row.find("[id$='" + attr + "']");
@@ -128,7 +121,7 @@ $(document).on('turbolinks:load', function () {
     }
 
     function getPersonRows(selector) {
-        return $('#' + selector + ' div.' + selector).not(':hidden');
+        return $('#' + selector + ' div.' + selector).not('.cloning, .cloning div');
     }
 
     function getLabelNumber(selector) {
