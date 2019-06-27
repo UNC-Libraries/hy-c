@@ -1,6 +1,7 @@
 class ApplicationController < ActionController::Base
   helper Openseadragon::OpenseadragonHelper
   # Adds a few additional behaviors into the application controller
+  include HyraxHelper
   include Blacklight::Controller
   include Hydra::Controller::ControllerBehavior
 
@@ -37,14 +38,7 @@ class ApplicationController < ActionController::Base
 
     # Base redirect for Hy-C uuid links
     unless uuid.nil?
-      if ENV.has_key?('REDIRECT_FILE_PATH') && File.exist?(ENV['REDIRECT_FILE_PATH'])
-        redirect_uuids = File.read(ENV['REDIRECT_FILE_PATH'])
-      else
-        redirect_uuids = File.read(Rails.root.join('lib', 'redirects', 'redirect_uuids.csv'))
-      end
-
-      csv = CSV.parse(redirect_uuids, headers: true)
-      redirect_path = csv.find { |row| row['uuid'] == uuid }
+      redirect_path = redirect_lookup('uuid', uuid)
 
       # Should correctly redirect record, indexablecontent (download) paths
       if redirect_path # Redirect to Hy-C
