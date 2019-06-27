@@ -1,11 +1,12 @@
 module Hyc
   module DoiCreate
     def self.doi_request(data)
-      HTTParty.post(
-          'https://api.datacite.org/dois',
+      HTTParty.post("https://mds.test.datacite.org/metadata/#{ENV['DOI_PREFIX']}",
           headers: {'Content-Type' => 'application/vnd.api+json'},
-          username: ENV.DATACITE_USER,
-          password: ENV.DATACITE_PASSWORD,
+          basic_auth: {
+              username: "#{ENV['DATACITE_USER']}",
+              password: "#{ENV['DATACITE_PASSWORD']}"
+          },
           body: data
       )
     end
@@ -13,28 +14,27 @@ module Hyc
     def self.format_data(record)
       data = {
           data: {
-            id: ENV.DOI_PREFIX,
             type: 'dois',
             attributes: {
-                contributors: parse_people('contributor_display'),
-                creators: parse_people('creator_display'),
-                dates:[{ date: record.date_issued, dateType: 'Issued'}],
-                descriptions: record&.abstract.map { |a| { description: a.abstract }} ||= [],
-                fundingReferences: record&.funder.map { |f| { fundingReference: { name: f }}} ||= [],
-                language: record&.language_label.first ||= '',
-                publisher: record&.publisher ||= '',
-                publicationYear: record.date_issued.match(/\d{4}/)[0],
-                rightsList: record&.rights_statement_label || [],
-                sizes: record&.extent |= [],
-                subjects: record&.subjects ||= [],
-                titles: [{ title: record.title }],
+                doi: "#{ENV['DOI_PREFIX']}/4x327-42",
+                contributors: parse_people(record, 'contributor_display_tesim'),
+                creators: parse_people(record, 'creator_display_tesim'),
+                dates:[{ date: parse_field(record,'date_issued_tesim').first, dateType: 'Issued'}],
+                descriptions: parse_description(record, 'abstract_tesim'),
+                fundingReferences: parse_funding(record, 'funder_tesim'),
+                language: parse_field(record, 'language_label_tesim').first,
+                publisher: parse_field(record, 'publisher_tesim').first,
+                publicationYear: parse_field(record, 'date_issued_tesim').first.match(/\d{4}/)[0],
+                rightsList: parse_field(record, 'rights_statement_tesim'),
+                sizes: parse_field(record, 'extent_tesim'),
+                subjects: parse_field(record, 'subject_tesim'),
+                titles: [{ title: record['title_tesim'].first }],
                 types: {
-                    resourceTypeGeneral: record&.resource_type ||= ''
+                    resourceTypeGeneral: parse_field(record, 'resource_type_tesim').first
                 },
-                doi: ENV.DOI_PREFIX,
+                url: "https://cdr.lib.unc.edu/concern/#{record['has_model_ssim'].first.downcase}s/#{record['id']}?locale=en",
                 event: 'publish',
-                schemaVersion: 'http://datacite.org/schema/kernel-4',
-                url: 'https://schema.datacite.org/meta/kernel-4.0/index.html'
+                schemaVersion: 'http://datacite.org/schema/kernel-4'
             }
           }
       }
@@ -44,14 +44,17 @@ module Hyc
 
     def self.create_doi(record)
       data = format_data(record)
-      response = doi_request(data)
 
-      if response.body
-        work = ActiveFedora::Base.find(record.id)
-        work.doi = response.body.data.attributes.doi
-        work.save!
+      response = doi_request(data)
+      puts "Dean #{response}"
+
+      if response.success?
+        # work = ActiveFedora::Base.find(record.id)
+        # work.doi = response.body.data.attributes.doi
+        # work.save!
+        Rails.logger.info "DOI created for record #{record['id']} via DataCite."
       else
-        Rails.logger.warn "Unable to create DOI for record #{record.id} with DataCite. DOI not added."
+        Rails.logger.warn "Unable to create DOI for record #{record['id']} via DataCite. DOI not added."
       end
     end
 
@@ -76,16 +79,57 @@ module Hyc
       end
     end
 
-    private_class_method def self.parse_people(field)
-      if !record["#{field}"].nil?
-        persons = record["#{field}"].map do |p|
-          { name: p.gsub(/\|\|.*/, '') }
+    def self.parse_field(record, field)
+      record["#{field}"] ? record["#{field}"] : ['']
+    end
+
+    def self.parse_funding(record, field)
+      formatted_values = ->(work) {
+        work.map do |f|
+          { funderName: f }
         end
-      else
-        persons = []
+      }
+      get_values(record["#{field}"], formatted_values)
+    end
+
+    def self.parse_description(record, field)
+      formatted_values = ->(work) { work.map { |d| { description: d, descriptionType: 'Abstract' }}}
+      get_values(record["#{field}"], formatted_values)
+    end
+
+    def self.parse_people(record, field)
+      people = ->(work) {
+        work.map  do |p|
+          person_values = p.split(/\|\|/)
+          person = { name: person_values.first, nameType: 'Personal' }
+
+          person_values.each do |p|
+            p.match(/Affiliation:.*/) do |m|
+              person[:affiliation] = m[0].split(':').last.strip
+            end
+
+            p.match(/ORCID.*/) do |m|
+              orcid_value = m[0].split('ORCID:')
+              person[:nameIdentifiers] = [ nameIdentifier: orcid_value.last.strip, nameIdentifierScheme: 'ORCID']
+            end
+          end
+
+          person
+        end
+      }
+
+      get_values(record["#{field}"], people)
+    end
+
+    private_class_method def self.get_values(record_field, process_method)
+      values = ['']
+
+      unless record_field.blank?
+        values = process_method.call(record_field)
       end
 
-      persons
+      values
     end
   end
 end
+# Hyc::DoiCreate.create_single_doi('8049g504g')
