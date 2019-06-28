@@ -21,6 +21,7 @@
 
 //= require hyrax
 //= require almond
+//= require 'blacklight_range_limit'
 //= require unc/unc_visibility_component
 //= require unc/unc_save_work_control
 //= require unc/unc_editor

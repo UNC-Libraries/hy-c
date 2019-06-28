@@ -12,6 +12,9 @@
  *
  *= require_tree .
  *= require dataTables/bootstrap/3/jquery.dataTables.bootstrap
+ *= require  'blacklight_range_limit'
  *= require unc_custom
  *= require_self
- */
+
+ *
+*/

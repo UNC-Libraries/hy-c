@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  concern :range_searchable, BlacklightRangeLimit::Routes::RangeSearchable.new
   mount Riiif::Engine => 'images', as: :riiif if Hyrax.config.iiif_image_server?
 
   get 'accounts/new', to: 'accounts#new'
@@ -33,6 +34,7 @@ Rails.application.routes.draw do
   resource :catalog, only: [:index], as: 'catalog', path: '/catalog', controller: 'catalog' do
     concerns :oai_provider
     concerns :searchable
+    concerns :range_searchable
   end
 
   devise_for :users, controllers: { sessions: "omniauth", omniauth_callbacks: "omniauth_callbacks" }

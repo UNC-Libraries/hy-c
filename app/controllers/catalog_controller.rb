@@ -1,4 +1,6 @@
 class CatalogController < ApplicationController
+
+  include BlacklightRangeLimit::ControllerOverride
   include Hydra::Catalog
   include Hydra::Controller::ControllerBehavior
   include BlacklightOaiProvider::Controller
@@ -27,7 +29,7 @@ class CatalogController < ApplicationController
   configure_blacklight do |config|
     config.show.tile_source_field = :content_metadata_image_iiif_info_ssm
     config.show.partials.insert(1, :openseadragon)
-    config.search_builder_class = Hyrax::CatalogSearchBuilder
+    config.search_builder_class = RangeLimitCatalogSearchBuilder
 
     # Show gallery view
     # config.view.gallery.partials = [:index_header, :index]
@@ -52,7 +54,7 @@ class CatalogController < ApplicationController
     config.add_facet_field solr_name("advisor_label", :facetable), label: "Advisor", limit: 5
     config.add_facet_field solr_name('member_of_collections', :symbol), limit: 5, label: 'Collection'
     config.add_facet_field solr_name("creator_label", :facetable), label: "Creator", limit: 5
-    config.add_facet_field solr_name("date_issued", :facetable), label: "Date", limit: 5
+    config.add_facet_field "date_issued_isim", label: "Date", limit: 5, range: true
     config.add_facet_field solr_name("keyword", :facetable), limit: 5
     config.add_facet_field solr_name("language", :facetable), helper_method: :language_links_facets, limit: 5
     config.add_facet_field solr_name("resource_type", :facetable), label: "Resource Type", limit: 5

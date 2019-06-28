@@ -114,6 +114,10 @@ GEM
       blacklight (~> 6.0)
       oai (~> 0.4)
       rails (>= 4.2, < 6)
+    blacklight_range_limit (6.3.3)
+      blacklight (>= 6.0.2)
+      jquery-rails
+      rails (>= 3.0)
     bootstrap-sass (3.4.1)
       autoprefixer-rails (>= 5.2.1)
       sassc (>= 2.0.0)
@@ -809,6 +813,7 @@ PLATFORMS
 
 DEPENDENCIES
   blacklight_oai_provider (= 6.0.0.pre1)
+  blacklight_range_limit (= 6.3.3)
   bootstrap-sass (~> 3.4.1)
   byebug (~> 9.1.0)
   capybara (~> 2.17.0)

@@ -33,7 +33,7 @@ class HonorsThesis < ActiveFedora::Base
   end
 
   property :date_issued, predicate: ::RDF::Vocab::DC.issued, multiple: false do |index|
-    index.as :stored_searchable, :facetable
+    index.as :stored_searchable
   end
 
   property :dcmi_type, predicate: ::RDF::Vocab::DC.type do |index|
