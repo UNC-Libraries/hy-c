@@ -1,7 +1,7 @@
 module Hyc
   module DoiCreate
     def self.doi_request(data)
-      HTTParty.post("https://mds.test.datacite.org/metadata/#{ENV['DOI_PREFIX']}",
+      HTTParty.post("https://api.test.datacite.org/dois",
           headers: {'Content-Type' => 'application/vnd.api+json'},
           basic_auth: {
               username: "#{ENV['DATACITE_USER']}",
@@ -25,7 +25,7 @@ module Hyc
                 language: parse_field(record, 'language_label_tesim').first,
                 publisher: parse_field(record, 'publisher_tesim').first,
                 publicationYear: parse_field(record, 'date_issued_tesim').first.match(/\d{4}/)[0],
-                rightsList: parse_field(record, 'rights_statement_tesim'),
+                rightsList: CdrRightsStatementsService.label(parse_field(record, 'rights_statement_tesim').first),
                 sizes: parse_field(record, 'extent_tesim'),
                 subjects: parse_field(record, 'subject_tesim'),
                 titles: [{ title: record['title_tesim'].first }],
@@ -44,17 +44,15 @@ module Hyc
 
     def self.create_doi(record)
       data = format_data(record)
-
       response = doi_request(data)
-      puts "Dean #{response}"
 
       if response.success?
-        # work = ActiveFedora::Base.find(record.id)
-        # work.doi = response.body.data.attributes.doi
-        # work.save!
+        work = ActiveFedora::Base.find(record.id)
+        work.doi = response.body.data.attributes.doi
+        work.save!
         Rails.logger.info "DOI created for record #{record['id']} via DataCite."
       else
-        Rails.logger.warn "Unable to create DOI for record #{record['id']} via DataCite. DOI not added."
+        Rails.logger.warn "Unable to create DOI for record #{record['id']} via DataCite. DOI not added. Reason: \"#{response}\""
       end
     end
 
@@ -132,4 +130,3 @@ module Hyc
     end
   end
 end
-# Hyc::DoiCreate.create_single_doi('8049g504g')
