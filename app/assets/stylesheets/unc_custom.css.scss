@@ -367,6 +367,22 @@ div.unc-modal {
   }
 }
 
+#documents {
+  display: inline-flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 0;
+
+  .document {
+    border-bottom: inherit;
+  }
+  .masonry.document {
+    background-color: white;
+    border: 1px solid $light-gray;
+    margin: 0 10px 10px 0;
+  }
+}
+
 .multi_value .btn.add {
   text-decoration: none;
 
