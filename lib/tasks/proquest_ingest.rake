@@ -70,6 +70,9 @@ namespace :proquest do
         resource[:deposit_record] = deposit_record.id
         resource.save!
 
+        permissions_attributes = get_permissions_attributes
+        resource.update permissions_attributes: permissions_attributes
+
         # Attach pdf and metadata files
         ingest_proquest_files(resource: resource,
                      files: metadata_fields[:files],
@@ -82,6 +85,7 @@ namespace :proquest do
 
         # Force visibility to private since it seems to be saving as public
         fileset.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
+        fileset.permissions_attributes = permissions_attributes
         fileset.save
 
         resource.ordered_members << fileset
@@ -343,5 +347,21 @@ namespace :proquest do
     end
 
     file_attributes
+  end
+
+
+  def get_permissions_attributes
+    # find admin set and manager groups for work
+    manager_groups = Hyrax::PermissionTemplateAccess.joins(:permission_template)
+                         .where(access: 'manage', agent_type: 'group')
+                         .where(permission_templates: {source_id: @admin_set_id})
+
+    # update work permissions to give admin set managers edit rights
+    permissions_array = []
+    manager_groups.each do |manager_group|
+      permissions_array << { "type" => "group", "name" => manager_group.agent_id, "access" => "edit" }
+    end
+
+    permissions_array
   end
 end

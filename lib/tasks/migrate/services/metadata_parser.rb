@@ -2,7 +2,7 @@ module Migrate
   module Services
     class MetadataParser
 
-      def initialize(metadata_file, object_hash, binary_hash, deposit_record_hash, collection_uuids, depositor, collection_name, admin_set)
+      def initialize(metadata_file, object_hash, binary_hash, deposit_record_hash, collection_uuids, depositor, collection_name, admin_set_id)
         @metadata_file = metadata_file
         @object_hash = object_hash
         @binary_hash = binary_hash
@@ -10,7 +10,7 @@ module Migrate
         @collection_uuids = collection_uuids
         @collection_name = collection_name
         @depositor = depositor
-        @admin_set = admin_set
+        @admin_set_id = admin_set_id
       end
 
       def parse
@@ -272,7 +272,8 @@ module Migrate
           end
         end
 
-        work_attributes['admin_set_id'] = @admin_set
+        work_attributes['admin_set_id'] = @admin_set_id
+        work_attributes['permissions_attributes'] = get_permissions_attributes
 
         work_attributes.reject!{|k,v| v.blank?}
       end
@@ -355,6 +356,21 @@ module Migrate
           name_parts << name_mods.xpath('mods:namePart[@type="termsOfAddress"]', MigrationConstants::NS)
           name_parts << name_mods.xpath('mods:namePart[@type="date"]', MigrationConstants::NS)
           name_parts.reject{ |name| name.blank? }.join(', ')
+        end
+
+        def get_permissions_attributes
+          # find admin set and manager groups for work
+          manager_groups = Hyrax::PermissionTemplateAccess.joins(:permission_template)
+                               .where(access: 'manage', agent_type: 'group')
+                               .where(permission_templates: {source_id: @admin_set_id})
+
+          # update work permissions to give admin set managers edit rights
+          permissions_array = []
+          manager_groups.each do |manager_group|
+            permissions_array << { "type" => "group", "name" => manager_group.agent_id, "access" => "edit" }
+          end
+
+          permissions_array
         end
     end
   end
