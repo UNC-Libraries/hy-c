@@ -54,7 +54,9 @@ namespace :proquest do
       end
 
       # delete zip file after files have been extracted successfully
-      File.delete(package)
+      if Rails.env != 'test'
+        File.delete(package)
+      end
 
       if File.file?(metadata_file)
         # only use xml file for metadata extraction
