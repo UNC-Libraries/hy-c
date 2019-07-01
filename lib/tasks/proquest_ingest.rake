@@ -53,6 +53,9 @@ namespace :proquest do
         next
       end
 
+      # delete zip file after files have been extracted successfully
+      File.delete(package)
+
       if File.file?(metadata_file)
         # only use xml file for metadata extraction
         metadata_fields = proquest_metadata(metadata_file)
