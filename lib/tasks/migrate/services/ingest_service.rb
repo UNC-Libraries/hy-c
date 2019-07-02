@@ -91,7 +91,8 @@ module Migrate
                                                               @admin_set_id).parse
           puts "[#{Time.now.to_s}] #{uuid} metadata parsed in #{Time.now-start_time} seconds"
 
-          permissions_attributes = work_attributes['permissions_attributes']
+          # save group permissions info and remove from work attribute hash since it is not a valid work attribute
+          group_permissions = work_attributes['permissions_attributes']
 
           # Create new work record and save
           new_work = work_record(work_attributes, uuid)
@@ -153,7 +154,7 @@ module Migrate
                   end
 
                   # Give same permissions to fileset and work
-                  fileset_attrs['permissions_attributes'] = permissions_attributes
+                  fileset_attrs['permissions_attributes'] = group_permissions
 
                   fileset = create_fileset(parent: new_work, resource: fileset_attrs, file: @binary_hash[MigrationHelper.get_uuid_from_path(file)])
 
@@ -175,7 +176,7 @@ module Migrate
                 work_attributes['label'] = work_attributes['dc_title'] || work_attributes['title']
                 fileset_attrs = file_record(work_attributes)
                 # Give same permissions to fileset and work
-                fileset_attrs['permissions_attributes'] = permissions_attributes
+                fileset_attrs['permissions_attributes'] = group_permissions
                 fileset = create_fileset(parent: new_work, resource: fileset_attrs, file: binary_file)
 
                 new_work.ordered_members << fileset
@@ -193,7 +194,7 @@ module Migrate
               if File.file?(premis_file)
                 fileset_attrs = { 'title' => ["PREMIS_Events_Metadata_#{index}_#{uuid}.txt"],
                                   'visibility' => vis_private,
-                                  'permissions_attributes' => permissions_attributes }
+                                  'permissions_attributes' => group_permissions }
                 fileset = create_fileset(parent: new_work, resource: fileset_attrs, file: premis_file)
 
                 new_work.ordered_members << fileset
@@ -207,7 +208,7 @@ module Migrate
           if File.file?(file_path)
             fileset_attrs = { 'title' => ["original_metadata_file_#{uuid}.xml"],
                               'visibility' => vis_private,
-                              'permissions_attributes' => permissions_attributes }
+                              'permissions_attributes' => group_permissions }
             fileset = create_fileset(parent: new_work, resource: fileset_attrs, file: file_path)
 
             new_work.ordered_members << fileset
@@ -228,8 +229,10 @@ module Migrate
       end
 
       def create_fileset(parent: nil, resource: nil, file: nil)
-        permissions_attributes = resource['permissions_attributes']
+        # save group permissions info and remove from fileset attribute hash since it is not a valid fileset attribute
+        group_permissions = resource['permissions_attributes']
         resource.delete('permissions_attributes')
+
         resource['title'].map!{|title| title.gsub('/', '_')}
         file_set = nil
         MigrationHelper.retry_operation('creating fileset') do
@@ -237,7 +240,7 @@ module Migrate
         end
 
         # Give same permissions to fileset and work
-        file_set.permissions_attributes = permissions_attributes
+        file_set.permissions_attributes = group_permissions
 
         actor = Hyrax::Actors::FileSetActor.new(file_set, @depositor)
         actor.create_metadata(resource)
@@ -271,7 +274,8 @@ module Migrate
 
       private
         def work_record(work_attributes, uuid)
-          permissions_attributes = work_attributes['permissions_attributes']
+          # save group permissions info and remove from work attribute hash since it is not a valid work attribute
+          group_permissions = work_attributes['permissions_attributes']
           work_attributes.delete('permissions_attributes')
 
           is_child_work = !@child_work_type.blank? && !work_attributes['cdr_model_type'].blank? &&
@@ -353,7 +357,7 @@ module Migrate
           end
 
           # Add group permissions
-          resource.update permissions_attributes: permissions_attributes
+          resource.update permissions_attributes: group_permissions
 
           # Logging data that has been deduplicated upon saving
           deduped = {}

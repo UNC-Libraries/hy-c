@@ -70,8 +70,9 @@ namespace :proquest do
         resource[:deposit_record] = deposit_record.id
         resource.save!
 
-        permissions_attributes = get_permissions_attributes
-        resource.update permissions_attributes: permissions_attributes
+        # get group permissions info to use for setting work and fileset permissions
+        group_permissions = get_permissions_attributes
+        resource.update permissions_attributes: group_permissions
 
         # Attach pdf and metadata files
         ingest_proquest_files(resource: resource,
@@ -85,7 +86,7 @@ namespace :proquest do
 
         # Force visibility to private since it seems to be saving as public
         fileset.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
-        fileset.permissions_attributes = permissions_attributes
+        fileset.permissions_attributes = group_permissions
         fileset.save
 
         resource.ordered_members << fileset
