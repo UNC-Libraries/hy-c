@@ -91,6 +91,9 @@ module Migrate
                                                               @admin_set_id).parse
           puts "[#{Time.now.to_s}] #{uuid} metadata parsed in #{Time.now-start_time} seconds"
 
+          # save group permissions info and remove from work attribute hash since it is not a valid work attribute
+          group_permissions = work_attributes['permissions_attributes']
+
           # Create new work record and save
           new_work = work_record(work_attributes, uuid)
 
@@ -149,7 +152,9 @@ module Migrate
                     file_work_attributes['visibility'] = vis_authenticated
                     fileset_attrs['visibility'] = vis_authenticated
                   end
-                  
+
+                  # Give same permissions to fileset and work
+                  fileset_attrs['permissions_attributes'] = group_permissions
 
                   fileset = create_fileset(parent: new_work, resource: fileset_attrs, file: @binary_hash[MigrationHelper.get_uuid_from_path(file)])
 
@@ -170,6 +175,8 @@ module Migrate
                 work_attributes['title'] = work_attributes['dc_title'] || work_attributes['title']
                 work_attributes['label'] = work_attributes['dc_title'] || work_attributes['title']
                 fileset_attrs = file_record(work_attributes)
+                # Give same permissions to fileset and work
+                fileset_attrs['permissions_attributes'] = group_permissions
                 fileset = create_fileset(parent: new_work, resource: fileset_attrs, file: binary_file)
 
                 new_work.ordered_members << fileset
@@ -186,7 +193,8 @@ module Migrate
               premis_file = @premis_hash[MigrationHelper.get_uuid_from_path(file)] || ''
               if File.file?(premis_file)
                 fileset_attrs = { 'title' => ["PREMIS_Events_Metadata_#{index}_#{uuid}.txt"],
-                                  'visibility' => vis_private }
+                                  'visibility' => vis_private,
+                                  'permissions_attributes' => group_permissions }
                 fileset = create_fileset(parent: new_work, resource: fileset_attrs, file: premis_file)
 
                 new_work.ordered_members << fileset
@@ -199,7 +207,8 @@ module Migrate
           # Attach metadata files
           if File.file?(file_path)
             fileset_attrs = { 'title' => ["original_metadata_file_#{uuid}.xml"],
-                              'visibility' => vis_private }
+                              'visibility' => vis_private,
+                              'permissions_attributes' => group_permissions }
             fileset = create_fileset(parent: new_work, resource: fileset_attrs, file: file_path)
 
             new_work.ordered_members << fileset
@@ -220,11 +229,18 @@ module Migrate
       end
 
       def create_fileset(parent: nil, resource: nil, file: nil)
+        # save group permissions info and remove from fileset attribute hash since it is not a valid fileset attribute
+        group_permissions = resource['permissions_attributes']
+        resource.delete('permissions_attributes')
+
         resource['title'].map!{|title| title.gsub('/', '_')}
         file_set = nil
         MigrationHelper.retry_operation('creating fileset') do
           file_set = FileSet.create(resource)
         end
+
+        # Give same permissions to fileset and work
+        file_set.permissions_attributes = group_permissions
 
         actor = Hyrax::Actors::FileSetActor.new(file_set, @depositor)
         actor.create_metadata(resource)
@@ -258,6 +274,10 @@ module Migrate
 
       private
         def work_record(work_attributes, uuid)
+          # save group permissions info and remove from work attribute hash since it is not a valid work attribute
+          group_permissions = work_attributes['permissions_attributes']
+          work_attributes.delete('permissions_attributes')
+
           is_child_work = !@child_work_type.blank? && !work_attributes['cdr_model_type'].blank? &&
               !(work_attributes['cdr_model_type'].include? 'info:fedora/cdr-model:AggregateWork')
           
@@ -282,7 +302,7 @@ module Migrate
             if resource.attributes.keys.member?(k.to_s) && !resource.attributes[k.to_s].respond_to?(:each) && work_attributes[k].respond_to?(:each)
               work_attributes[k] = v.first
             elsif resource.attributes.keys.member?(k.to_s) && resource.attributes[k.to_s].respond_to?(:each) && !work_attributes[k].respond_to?(:each)
-              work_attributes[k] = Array(v)
+              work_attributes[k] = Array.wrap(v)
             else
               work_attributes[k] = v
             end
@@ -335,6 +355,9 @@ module Migrate
           MigrationHelper.retry_operation('creating work') do
             resource.save!
           end
+
+          # Add group permissions
+          resource.update permissions_attributes: group_permissions
 
           # Logging data that has been deduplicated upon saving
           deduped = {}

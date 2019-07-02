@@ -6,6 +6,10 @@ describe "rake migrate:works", type: :task do
     User.find_by_user_key('admin')
   end
 
+  let(:manager_group) do
+    Role.create(name: 'test manager group')
+  end
+
   let(:admin_set) do
     AdminSet.create(title: ['default'],
                     description: ['some description'],
@@ -30,6 +34,10 @@ describe "rake migrate:works", type: :task do
                                            agent_type: 'user',
                                            agent_id: user.user_key,
                                            access: 'deposit')
+    Hyrax::PermissionTemplateAccess.create(permission_template: permission_template,
+                                           agent_type: 'group',
+                                           agent_id: manager_group.name,
+                                           access: 'manage')
     Sipity::WorkflowAction.create(name: 'show', workflow_id: workflow.id)
 
     watauga_county = <<RDFXML.strip_heredoc
