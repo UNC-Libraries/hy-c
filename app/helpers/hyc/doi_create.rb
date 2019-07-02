@@ -1,54 +1,132 @@
 module Hyc
   module DoiCreate
+    @is_test = true
+
     def self.doi_request(data)
-      HTTParty.post("https://api.test.datacite.org/dois",
-          headers: {'Content-Type' => 'application/vnd.api+json'},
-          basic_auth: {
-              username: "#{ENV['DATACITE_USER']}",
-              password: "#{ENV['DATACITE_PASSWORD']}"
-          },
-          body: data
+      if @is_test
+        url = 'https://api.test.datacite.org/dois'
+        user = ENV['DATACITE_TEST_USER']
+        password = ENV['DATACITE_TEST_PASSWORD']
+      else
+        url = 'https://api.datacite.org/dois'
+        user = ENV['DATACITE_USER']
+        password = ENV['DATACITE_PASSWORD']
+      end
+
+      HTTParty.post(url,
+                    headers: {'Content-Type' => 'application/vnd.api+json'},
+                    basic_auth: {
+                        username: user,
+                        password: password
+                    },
+                    body: data
       )
     end
 
     def self.format_data(record)
+      doi_prefix = @is_test ? ENV['DOI_TEST_PREFIX'] : ENV['DOI_PREFIX']
       data = {
           data: {
-            type: 'dois',
-            attributes: {
-                doi: "#{ENV['DOI_PREFIX']}/4x327-42",
-                contributors: parse_people(record, 'contributor_display_tesim'),
-                creators: parse_people(record, 'creator_display_tesim'),
-                dates:[{ date: parse_field(record,'date_issued_tesim').first, dateType: 'Issued'}],
-                descriptions: parse_description(record, 'abstract_tesim'),
-                fundingReferences: parse_funding(record, 'funder_tesim'),
-                language: parse_field(record, 'language_label_tesim').first,
-                publisher: parse_field(record, 'publisher_tesim').first,
-                publicationYear: parse_field(record, 'date_issued_tesim').first.match(/\d{4}/)[0],
-                rightsList: CdrRightsStatementsService.label(parse_field(record, 'rights_statement_tesim').first),
-                sizes: parse_field(record, 'extent_tesim'),
-                subjects: parse_field(record, 'subject_tesim'),
-                titles: [{ title: record['title_tesim'].first }],
-                types: {
-                    resourceTypeGeneral: parse_field(record, 'resource_type_tesim').first
-                },
-                url: "https://cdr.lib.unc.edu/concern/#{record['has_model_ssim'].first.downcase}s/#{record['id']}?locale=en",
-                event: 'publish',
-                schemaVersion: 'http://datacite.org/schema/kernel-4'
-            }
+              type: 'dois',
+              attributes: {
+                  prefix: doi_prefix,
+                  titles: [{ title: record['title_tesim'].first }],
+                  types: {
+                      resourceTypeGeneral: resource_type_parse(record['resource_type_tesim'])
+                  },
+                  url: "https://cdr.lib.unc.edu/concern/#{record['has_model_ssim'].first.downcase}s/#{record['id']}?locale=en",
+                  event: 'publish',
+                  schemaVersion: 'http://datacite.org/schema/kernel-4'
+              }
           }
       }
+
+      #########################
+      #
+      # Required fields
+      #
+      #########################
+      creators = parse_people(record, 'creator_display_tesim')
+      if creators.blank?
+        data[:data][:attributes][:creators] = {
+            name: 'The University of North Carolina at Chapel Hill University Libraries',
+            nameType: 'Organization'
+        }
+      else
+        data[:data][:attributes][:creators] = creators
+      end
+
+      dates = parse_field(record,'date_issued_tesim')
+      if dates.blank?
+        [{ date: Date.today.to_s, dateType: 'Issued'}]
+      else
+        [{ date: dates.first, dateType: 'Issued'}]
+      end
+
+      publisher = parse_field(record, 'publisher_tesim')
+      if publisher.blank?
+        data[:data][:attributes][:publisher] = 'The University of North Carolina at Chapel Hill University Libraries'
+      else
+        data[:data][:attributes][:publisher] = publisher.first
+      end
+
+      publication_year = parse_field(record, 'date_issued_tesim')
+      if publication_year.blank?
+        data[:data][:attributes][:publicationYear] = Date.today.year
+      else
+        data[:data][:attributes][:publicationYear] = publication_year.first.match(/\d{4}/)[0]
+      end
+
+      ############################
+      #
+      # Optional fields
+      #
+      ############################
+      contributors = parse_people(record, 'contributor_display_tesim')
+      unless contributors.blank?
+        data[:data][:attributes][:contributors] = contributors
+      end
+
+      description = parse_description(record, 'abstract_tesim')
+      unless description.blank?
+        data[:data][:attributes][:descriptions] = description
+      end
+
+      funding = parse_funding(record, 'funder_tesim')
+      unless funding.blank?
+        data[:data][:attributes][:fundingReferences] = funding
+      end
+
+      language = parse_field(record, 'language_label_tesim').first
+      unless language.blank?
+        data[:data][:attributes][:language] = language.first
+      end
+
+      rights = parse_field(record, 'rights_statement_tesim')
+      unless rights.blank?
+        data[:data][:attributes][:rightsList] = CdrRightsStatementsService.label(rights.first)
+      end
+
+      sizes = parse_field(record, 'extent_tesim')
+      unless sizes.blank?
+        data[:data][:attributes][:sizes] = sizes
+      end
+
+      subjects = parse_field(record, 'subject_tesim')
+      unless subjects.blank?
+        data[:data][:attributes][:sizes] = subjects
+      end
 
       data.to_json
     end
 
     def self.create_doi(record)
-      data = format_data(record)
-      response = doi_request(data)
+      response = doi_request(format_data(record))
 
       if response.success?
-        work = ActiveFedora::Base.find(record.id)
-        work.doi = response.body.data.attributes.doi
+        doi = JSON.parse(response.body)['data']['id']
+        work = ActiveFedora::Base.find(record['id'])
+        work.doi = "https://doi.org/#{doi}"
         work.save!
         Rails.logger.info "DOI created for record #{record['id']} via DataCite."
       else
@@ -78,7 +156,28 @@ module Hyc
     end
 
     def self.parse_field(record, field)
-      record["#{field}"] ? record["#{field}"] : ['']
+      record.has_key?(field) ? record["#{field}"] : []
+    end
+
+    # Field uses a controlled vocabulary
+    def self.resource_type_parse(resource)
+      resource_type = resource.length > 0 ? resource.first : ''
+      case resource_type
+      when 'Dataset'
+        'Dataset'
+      when 'Image'
+        'Image'
+      when 'Audio'
+        'sound'
+      when 'Software or Program Code'
+        'Software'
+      when 'Video'
+        'Audiovisual'
+      when ''
+        'Other'
+      else
+        'Text'
+      end
     end
 
     def self.parse_funding(record, field)
@@ -103,7 +202,8 @@ module Hyc
 
           person_values.each do |p|
             p.match(/Affiliation:.*/) do |m|
-              person[:affiliation] = m[0].split(':').last.strip
+              person[:affiliation] = m[0].split(':').last
+                                         .split(',').last.strip
             end
 
             p.match(/ORCID.*/) do |m|
@@ -120,13 +220,13 @@ module Hyc
     end
 
     private_class_method def self.get_values(record_field, process_method)
-      values = ['']
+                           values = []
 
-      unless record_field.blank?
-        values = process_method.call(record_field)
-      end
+                           unless record_field.blank?
+                             values = process_method.call(record_field)
+                           end
 
-      values
-    end
+                           values
+                         end
   end
 end
