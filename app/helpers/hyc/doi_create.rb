@@ -50,7 +50,7 @@ module Hyc
       if creators.blank?
         data[:data][:attributes][:creators] = {
             name: 'The University of North Carolina at Chapel Hill University Libraries',
-            nameType: 'Organization'
+            nameType: 'Organizational'
         }
       else
         data[:data][:attributes][:creators] = creators
@@ -161,7 +161,7 @@ module Hyc
 
     # Field uses a controlled vocabulary
     def self.resource_type_parse(resource)
-      resource_type = resource.length > 0 ? resource.first : ''
+      resource_type = (resource.nil?) ? '' : resource.first
       case resource_type
       when 'Dataset'
         'Dataset'
