@@ -661,6 +661,9 @@ GEM
       deprecation (>= 1.0.0)
       iiif-image-api (~> 0.1.0)
       railties (>= 4.2, < 6)
+    roo (2.8.2)
+      nokogiri (~> 1)
+      rubyzip (>= 1.2.1, < 2.0.0)
     rsolr (2.0.2)
       builder (>= 2.1.2)
       faraday
@@ -844,6 +847,7 @@ DEPENDENCIES
   rails (~> 5.0.7.2)
   redis (~> 3.3.0)
   riiif (~> 2.0)
+  roo (~> 2.8.2)
   rsolr (~> 2.0.2)
   rspec-mocks
   rspec-rails (~> 3.6.0)

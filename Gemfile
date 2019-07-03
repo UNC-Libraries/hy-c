@@ -36,6 +36,7 @@ gem "bootstrap-sass", "~> 3.4.1"
 gem 'blacklight_range_limit', '6.3.3'
 gem 'blacklight_advanced_search', '~> 6.4.1'
 gem 'mini_magick', '~>4.9.4'
+gem 'roo', '~>2.8.2'
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails', '~> 4.3.1'
