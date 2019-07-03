@@ -1,9 +1,12 @@
 module Hyc
-  module DoiCreate
-    @is_test = true
+  class DoiCreate
+    def initialize(rows = 1000, use_test_api = true)
+      @rows = rows
+      @use_test_api = use_test_api
+    end
 
-    def self.doi_request(data)
-      if @is_test
+    def doi_request(data)
+      if @use_test_api
         url = 'https://api.test.datacite.org/dois'
         user = ENV['DATACITE_TEST_USER']
         password = ENV['DATACITE_TEST_PASSWORD']
@@ -23,8 +26,8 @@ module Hyc
       )
     end
 
-    def self.format_data(record)
-      doi_prefix = @is_test ? ENV['DOI_TEST_PREFIX'] : ENV['DOI_PREFIX']
+    def format_data(record)
+      doi_prefix = @use_test_api ? ENV['DOI_TEST_PREFIX'] : ENV['DOI_PREFIX']
       data = {
           data: {
               type: 'dois',
@@ -120,7 +123,7 @@ module Hyc
       data.to_json
     end
 
-    def self.create_doi(record)
+    def create_doi(record)
       response = doi_request(format_data(record))
 
       if response.success?
@@ -134,33 +137,37 @@ module Hyc
       end
     end
 
-    def self.create_single_doi(record_id)
+    def create_single_doi(record_id)
       record = ActiveFedora::SolrService.get("id:#{record_id}", :rows => 1)["response"]["docs"]
 
       if record.length > 0
+        puts "Attempting to create DOI for record #{record[0]['id']}."
         create_doi(record[0])
       else
         Rails.logger.warn "Record with id #{record_id} not found. DOI not added."
       end
     end
 
-    def self.create_batch_doi
+    def create_batch_doi
       records = ActiveFedora::SolrService.get("visibility_ssi:open AND -doi_tesim:* AND (workflow_state_name_ssim:deposited OR (*:* -workflow_state_name_ssim:*))",
-                                              :rows => 1000)["response"]["docs"]
+                                              :rows => @rows)["response"]["docs"]
 
       if records.length > 0
-        records.each { |record| create_doi(record) }
+        records.each do |record|
+          puts "Attempting to create DOI for record #{record['id']}."
+          create_doi(record)
+        end
       else
         Rails.logger.info 'There are no records that need to have DOIs added.'
       end
     end
 
-    def self.parse_field(record, field)
+    def parse_field(record, field)
       record.has_key?(field) ? record["#{field}"] : []
     end
 
     # Field uses a controlled vocabulary
-    def self.resource_type_parse(resource)
+    def resource_type_parse(resource)
       resource_type = (resource.nil?) ? '' : resource.first
       case resource_type
       when 'Dataset'
@@ -180,7 +187,7 @@ module Hyc
       end
     end
 
-    def self.parse_funding(record, field)
+    def parse_funding(record, field)
       formatted_values = ->(work) {
         work.map do |f|
           { funderName: f }
@@ -189,12 +196,12 @@ module Hyc
       get_values(record["#{field}"], formatted_values)
     end
 
-    def self.parse_description(record, field)
+    def parse_description(record, field)
       formatted_values = ->(work) { work.map { |d| { description: d, descriptionType: 'Abstract' }}}
       get_values(record["#{field}"], formatted_values)
     end
 
-    def self.parse_people(record, field)
+    def parse_people(record, field)
       people = ->(work) {
         work.map  do |p|
           person_values = p.split(/\|\|/)
@@ -219,14 +226,15 @@ module Hyc
       get_values(record["#{field}"], people)
     end
 
-    private_class_method def self.get_values(record_field, process_method)
-                           values = []
+    private
+    def get_values(record_field, process_method)
+      values = []
 
-                           unless record_field.blank?
-                             values = process_method.call(record_field)
-                           end
+      unless record_field.blank?
+        values = process_method.call(record_field)
+      end
 
-                           values
-                         end
+      values
+    end
   end
 end
