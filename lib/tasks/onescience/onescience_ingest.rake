@@ -6,6 +6,9 @@ namespace :onescience do
     # config file with worktype, adminset, depositor, walnut mount location
     config = YAML.load_file(args[:configuration_file])
 
+    # get list of pdf files
+    pdf_files = Dir.glob("#{config['pdf_dir']}/**/*.pdf")
+
     # read from xlsx in projects folder
     spreadsheet = Roo::Spreadsheet.open(config['metadata_dir']+'/'+config['metadata_file'])
     sheets = spreadsheet.sheets
@@ -17,7 +20,7 @@ namespace :onescience do
 
     # extract needed metadata and create articles
     data.each do |item_data|
-      work_attributes = parse_onescience_metadata(item_data)
+      work_attributes, files = parse_onescience_metadata(item_data)
 
       work = config['work_type'].singularize.classify.constantize.new
 
@@ -34,12 +37,34 @@ namespace :onescience do
 
       # Only keep attributes which apply to the given work type
       work.attributes = work_attributes.reject{|k,v| !work.attributes.keys.member?(k.to_s) unless k.to_s.ends_with? '_attributes'}
+      work.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
 
       work.save!
+
+      # attach pdf from folder on p-drive
+      if !files.blank? # is a full-text file available?
+        # only first file?  or all versions?  citations for files?  source preference?
+        # do they all have files?
+        filename = files.values.first # use first listed pdf
+        pdf_location = pdf_files.select { |path| path.include? filename }.first
+        if !pdf_location.blank? # can we find the file
+          file_attributes = { title: ["#{filename}.pdf"],
+                              date_created: work_attributes['date_issued'],
+                              visibility: Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC }
+          file_set = FileSet.create(file_attributes)
+          actor = Hyrax::Actors::FileSetActor.new(file_set, User.where(uid: config['depositor_onyen']).first)
+          actor.create_metadata(file_attributes)
+          file = File.open(pdf_location)
+          actor.create_content(file)
+          actor.attach_to_work(work)
+          file.close
+
+          work.ordered_members << file_set
+        end
+      end
     end
 
-    # attach pdf from folder on p-drive
-    # do they all have files?
+    # metadata file?
     # deposit record?
     # cleanup?
   end
@@ -68,14 +93,15 @@ namespace :onescience do
     work_attributes['dcmi_type'] = 'http://purl.org/dc/dcmitype/Text'
     # edition?
     # rights statement?
+    files = onescience_data.select { |k,v| k['Files'] && !v.blank? }
 
-    work_attributes
+    [work_attributes, files]
   end
 
   def get_people(metadata)
     people = {}
     (1..32).each do |index|
-      break if metadata['lastname_author'+index.to_s].blank?
+      break if metadata['lastname_author'+index.to_s].blank? && metadata['firstname_author'+index.to_s].blank?
       name = "#{metadata['lastname_author'+index.to_s]}, #{metadata['firstname_author'+index.to_s]}"
       people[index-1] = { 'name' => name,
                           'orcid' => metadata['ORCID_author'+index.to_s],
