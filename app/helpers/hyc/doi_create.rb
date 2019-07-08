@@ -209,23 +209,24 @@ module Hyc
 
           person_values.each do |p|
             p.match(/Affiliation:.*/) do |m|
-              person_affiliation = m[0].split(':').last.strip
+              affiliation = m[0].gsub('Affiliation:', '')
 
-              # Some most specific affiliations have one or more commas in them
-              if DepartmentsService.label(person_affiliation).nil?
-                affiliations = person_affiliation.split(',')
-                person_affiliation = affiliations.last.strip
+              if DepartmentsService.label(affiliation.strip).nil?
+                affiliations = affiliation.split(',')
 
-                if DepartmentsService.label(person_affiliation).nil?
-                  person_affiliation = affiliations.slice(-2, affiliations.length).join(',').strip
+                # Some most specific affiliations have commas in them
+                if DepartmentsService.label(affiliations.last.strip).nil?
+                  affiliation = affiliations.slice(-2, affiliations.length).join(',')
 
-                  if DepartmentsService.label(person_affiliation).nil?
-                    person_affiliation = affiliations.slice(-3, affiliations.length).join(',').strip
+                  if DepartmentsService.label(affiliation.strip).nil?
+                    affiliation = affiliations.slice(-3, affiliations.length).join(',')
                   end
+                else
+                  affiliation = affiliations.last
                 end
               end
 
-              person[:affiliation] = person_affiliation
+              person[:affiliation] = affiliation.strip
             end
 
             p.match(/ORCID.*/) do |m|
