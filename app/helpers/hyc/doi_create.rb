@@ -217,10 +217,10 @@ module Hyc
                 person_affiliation = affiliations.last.strip
 
                 if DepartmentsService.label(person_affiliation).nil?
-                  person_affiliation = affiliations.slice(-2, values.length).join(',').strip
+                  person_affiliation = affiliations.slice(-2, affiliations.length).join(',').strip
 
                   if DepartmentsService.label(person_affiliation).nil?
-                    person_affiliation = affiliations.slice(-3, values.length).join(',').strip
+                    person_affiliation = affiliations.slice(-3, affiliations.length).join(',').strip
                   end
                 end
               end
@@ -253,3 +253,5 @@ module Hyc
     end
   end
 end
+# scl enable rh-ruby24 -- bundle exec rake add_dois[2,true]
+# Hyc::DoiCreate.create_single_doi('jw827b648')
