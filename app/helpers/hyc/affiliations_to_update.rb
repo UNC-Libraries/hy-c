@@ -20,7 +20,9 @@ module Hyc
 
           if record.has_key?(aff_type)
             record[aff_type].each do |data|
-              data.split('||').each do |aff|
+              aff_parts = data.split('||')
+
+              aff_parts.each do |aff|
                 aff.match(/^Affiliation.*/) do |m|
                   value = m[0].gsub('Affiliation:', '')
 
@@ -35,21 +37,23 @@ module Hyc
                         value = values.slice(-3, values.length).join(',')
                       end
                     else
-                      value = values.last.strip
+                      value = values.last
                     end
-                  else
-                    next
                   end
 
-                  data = data.gsub(/Affiliation.*/, "Affiliation: #{value}")
-                  people_by_aff.push(data)
+                  people_by_aff.push({name: aff_parts.first, affiliation: value.strip})
                 end
               end
             end
           end
 
           if people_by_aff.length > 0
-            record[aff_type] = people_by_aff
+            fcrepo_aff_type = aff_type.split('_').first
+            if fcrepo_aff_type == 'project'
+              fcrepo_aff_type = 'project_director'
+            end
+
+            record["#{fcrepo_aff_type}s"] = people_by_aff
             updated = true
           end
         end
