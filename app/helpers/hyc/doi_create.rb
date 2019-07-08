@@ -38,7 +38,7 @@ module Hyc
                       resourceTypeGeneral: resource_type_parse(record['resource_type_tesim'])
                   },
                   url: "https://cdr.lib.unc.edu/concern/#{record['has_model_ssim'].first.downcase}s/#{record['id']}?locale=en",
-                  event: 'publish',
+                  event: 'draft',
                   schemaVersion: 'http://datacite.org/schema/kernel-4'
               }
           }
