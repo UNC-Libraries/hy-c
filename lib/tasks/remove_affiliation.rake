@@ -33,16 +33,16 @@ task :remove_affiliation, [:record_list_path] => :environment do |t, args|
                 if name == u[:name] && affil_val != u[:affiliation]
                   puts "Deleting affiliation: #{affil_val} for record #{work.id} and person: #{name}"
                   p.affiliation.delete(affil_val)
+                  updated = true
                 else
                   puts "Affiliation: #{affil_val} OK for record #{work.id} and person: #{name}"
                 end
               end
             end
-
-            updated = true
           end
 
           if updated
+            work.save!
             puts "++ Updated affiliation for #{person} on #{work.id} in #{Time.now - start}s"
           end
         end
