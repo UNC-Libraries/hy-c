@@ -37,7 +37,7 @@ module Hyc
                   types: {
                       resourceTypeGeneral: resource_type_parse(record['resource_type_tesim'])
                   },
-                  url: "https://cdr.lib.unc.edu/concern/#{record['has_model_ssim'].first.downcase}s/#{record['id']}?locale=en",
+                  url: "#{ENV['HYRAX_HOST']}/concern/#{record['has_model_ssim'].first.downcase}s/#{record['id']}?locale=en",
                   event: 'draft',
                   schemaVersion: 'http://datacite.org/schema/kernel-4'
               }
@@ -102,7 +102,7 @@ module Hyc
 
       language = parse_field(record, 'language_label_tesim').first
       unless language.blank?
-        data[:data][:attributes][:language] = language.first
+        data[:data][:attributes][:language] = language
       end
 
       rights = parse_field(record, 'rights_statement_tesim')
@@ -127,9 +127,10 @@ module Hyc
       response = doi_request(format_data(record))
 
       if response.success?
+        doi_url_base = @use_test_api ? 'https://handle.test.datacite.org' : 'https://doi.org'
         doi = JSON.parse(response.body)['data']['id']
         work = ActiveFedora::Base.find(record['id'])
-        work.doi = "https://doi.org/#{doi}"
+        work.doi = "#{doi_url_base}/#{doi}"
         work.save!
         Rails.logger.info "DOI created for record #{record['id']} via DataCite."
       else
@@ -137,19 +138,8 @@ module Hyc
       end
     end
 
-    def create_single_doi(record_id)
-      record = ActiveFedora::SolrService.get("id:#{record_id}", :rows => 1)["response"]["docs"]
-
-      if record.length > 0
-        puts "Attempting to create DOI for record #{record[0]['id']}."
-        create_doi(record[0])
-      else
-        Rails.logger.warn "Record with id #{record_id} not found. DOI not added."
-      end
-    end
-
     def create_batch_doi
-      records = ActiveFedora::SolrService.get("visibility_ssi:open AND -doi_tesim:* AND (workflow_state_name_ssim:deposited OR (*:* -workflow_state_name_ssim:*))",
+      records = ActiveFedora::SolrService.get("visibility_ssi:open AND -doi_tesim:* AND workflow_state_name_ssim:deposited AND has_model_ssim:(Article Artwork DataSet Dissertation General HonorsThesis Journal MastersPaper Multimed ScholarlyWork)",
                                               :rows => @rows)["response"]["docs"]
 
       if records.length > 0
@@ -175,7 +165,7 @@ module Hyc
       when 'Image'
         'Image'
       when 'Audio'
-        'sound'
+        'Sound'
       when 'Software or Program Code'
         'Software'
       when 'Video'
@@ -210,22 +200,6 @@ module Hyc
           person_values.each do |p|
             p.match(/Affiliation:.*/) do |m|
               affiliation = m[0].gsub('Affiliation:', '')
-
-              if DepartmentsService.label(affiliation.strip).nil?
-                affiliations = affiliation.split(',')
-
-                # Some most specific affiliations have commas in them
-                if DepartmentsService.label(affiliations.last.strip).nil?
-                  affiliation = affiliations.slice(-2, affiliations.length).join(',')
-
-                  if DepartmentsService.label(affiliation.strip).nil?
-                    affiliation = affiliations.slice(-3, affiliations.length).join(',')
-                  end
-                else
-                  affiliation = affiliations.last
-                end
-              end
-
               person[:affiliation] = affiliation.strip
             end
 
@@ -254,5 +228,3 @@ module Hyc
     end
   end
 end
-# scl enable rh-ruby24 -- bundle exec rake add_dois[2,true]
-# Hyc::DoiCreate.create_single_doi('jw827b648')
