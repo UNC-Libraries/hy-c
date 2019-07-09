@@ -38,7 +38,7 @@ module Hyc
                       resourceTypeGeneral: resource_type_parse(record['resource_type_tesim'])
                   },
                   url: "#{ENV['HYRAX_HOST']}/concern/#{record['has_model_ssim'].first.downcase}s/#{record['id']}?locale=en",
-                  event: 'draft',
+                  event: 'publish',
                   schemaVersion: 'http://datacite.org/schema/kernel-4'
               }
           }
@@ -124,6 +124,7 @@ module Hyc
     end
 
     def create_doi(record)
+      puts "Creating DOI for #{record['id']}"
       response = doi_request(format_data(record))
 
       if response.success?
@@ -132,10 +133,13 @@ module Hyc
         work = ActiveFedora::Base.find(record['id'])
         work.doi = "#{doi_url_base}/#{doi}"
         work.save!
+
         Rails.logger.info "DOI created for record #{record['id']} via DataCite."
       else
         Rails.logger.warn "Unable to create DOI for record #{record['id']} via DataCite. DOI not added. Reason: \"#{response}\""
       end
+
+      sleep(2)
     end
 
     def create_batch_doi
@@ -144,7 +148,6 @@ module Hyc
 
       if records.length > 0
         records.each do |record|
-          puts "Attempting to create DOI for record #{record['id']}."
           create_doi(record)
         end
       else
