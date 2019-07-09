@@ -124,7 +124,7 @@ module Hyc
     end
 
     def create_doi(record)
-      puts "Creating DOI for #{record['id']}"
+      Rails.logger.info "Creating DOI for #{record['id']}"
       response = doi_request(format_data(record))
 
       if response.success?
