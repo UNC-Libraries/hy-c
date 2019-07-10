@@ -115,9 +115,9 @@ module Hyc
         data[:data][:attributes][:sizes] = sizes
       end
 
-      subjects = parse_field(record, 'subject_tesim')
+      subjects = parse_subjects(record, 'subject_tesim')
       unless subjects.blank?
-        data[:data][:attributes][:sizes] = subjects
+        data[:data][:attributes][:subjects] = subjects
       end
 
       data.to_json
@@ -184,6 +184,15 @@ module Hyc
       formatted_values = ->(work) {
         work.map do |f|
           { funderName: f }
+        end
+      }
+      get_values(record["#{field}"], formatted_values)
+    end
+
+    def parse_subjects(record, field)
+      formatted_values = ->(work) {
+        work.map do |s|
+          { subject: s }
         end
       }
       get_values(record["#{field}"], formatted_values)
