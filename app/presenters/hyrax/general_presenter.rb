@@ -2,7 +2,7 @@
 #  `rails generate hyrax:work General`
 module Hyrax
   class GeneralPresenter < Hyrax::WorkShowPresenter
-    delegate :abstract, :academic_concentration, :access, :advisor_display, :alternative_title, :arranger_display,
+    delegate :abstract, :academic_concentration, :access, :admin_note, :advisor_display, :alternative_title, :arranger_display,
              :award, :bibliographic_citation, :composer_display, :conference_name, :contributor_display,
              :copyright_date, :creator_display, :date_captured, :date_issued, :date_other, :dcmi_type, :degree,
              :degree_granting_institution, :deposit_record, :digital_collection, :doi, :edition, :extent,

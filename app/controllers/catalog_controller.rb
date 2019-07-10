@@ -110,6 +110,7 @@ class CatalogController < ApplicationController
     # include all fields available to allow searching across all attributes
     config.add_show_field solr_name("academic_concentration", :stored_searchable), label: "Academic Concentration"
     config.add_show_field solr_name("access", :stored_searchable), label: "Access"
+    config.add_show_field solr_name("admin_note", :stored_searchable), label: "Admin Note"
     config.add_show_field solr_name("affiliation", :stored_searchable), label: "Departments", link_to_search: solr_name("affiliation", :facetable)
     config.add_show_field solr_name("affiliation_label", :stored_searchable)
     config.add_show_field solr_name("alternative_title", :stored_searchable), label: "Alternative Title"

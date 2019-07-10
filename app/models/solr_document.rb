@@ -60,6 +60,10 @@ class SolrDocument
     self[Solrizer.solr_name('access')]
   end
 
+  def admin_note
+    self[Solrizer.solr_name('admin_note')]
+  end
+
   def advisor
     self[Solrizer.solr_name('advisor')]
   end
