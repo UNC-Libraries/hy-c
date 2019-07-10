@@ -12,7 +12,7 @@ task :remove_affiliation, [:record_list_path] => :environment do |t, args|
   total = records.length
 
   records.each_with_index do |record, index|
-    puts "Updating affiliations for work #{record['id']}, #{index + 1} of #{total}"
+    # puts "Updating affiliations for work #{record['id']}, #{index + 1} of #{total}"
 
     work = ActiveFedora::Base.find(record['id'])
     people.each do |person|
@@ -35,7 +35,7 @@ task :remove_affiliation, [:record_list_path] => :environment do |t, args|
                   p.affiliation.delete(affil_val)
                   updated = true
                 else
-                  puts "Affiliation: #{affil_val} OK for record #{work.id} and person: #{name}"
+                 # puts "Affiliation: #{affil_val} OK for record #{work.id} and person: #{name}"
                 end
               end
             end
@@ -43,7 +43,7 @@ task :remove_affiliation, [:record_list_path] => :environment do |t, args|
 
           if updated
             work.save!
-            puts "++ Updated affiliation for #{person} on #{work.id} in #{Time.now - start}s"
+           # puts "++ Updated affiliation for #{person} on #{work.id} in #{Time.now - start}s"
           end
         end
       end
