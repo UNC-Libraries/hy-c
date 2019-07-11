@@ -1,3 +1,4 @@
+<%# [hyc-override] Move submit button into the form so it actually submits %>
 <% unless (search_context_str = render_search_to_s( advanced_search_context)).blank? %>
   <div class="constraints well search_history">
     <h4><%= t 'blacklight_advanced_search.form.search_context' %></h4>
@@ -32,12 +33,11 @@
         <% end %>
       </div>
     </div>
+
+    <hr>
+
+    <div class="sort-submit-buttons clearfix">
+      <%= render 'advanced_search_submit_btns' %>
+    </div>
   </div>
-
-  <hr>
-
-  <div class="sort-submit-buttons clearfix">
-    <%= render 'advanced_search_submit_btns' %>
-  </div>
-
 <% end %>
