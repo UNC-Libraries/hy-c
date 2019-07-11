@@ -39,6 +39,15 @@ span.institution_name {
   }
 }
 
+.advanced_search {
+  color: $text-color;
+  float: right;
+  &:hover {
+    color: $light-gray;
+    text-decoration: none;
+  }
+}
+
 #masthead {
   background-color: $carolina-blue-dark;
   margin-bottom: 0;
