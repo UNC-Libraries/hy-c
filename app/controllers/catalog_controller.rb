@@ -33,9 +33,17 @@ class CatalogController < ApplicationController
     config.advanced_search[:url_key] ||= 'advanced'
     config.advanced_search[:query_parser] ||= 'edismax'
     config.advanced_search[:form_solr_parameters] ||= {}
-    config.advanced_search[:form_solr_parameters]['facet.query'] ||= ''
-    config.advanced_search[:form_solr_parameters]['facet.limit'] ||= -1
-    config.advanced_search[:form_solr_parameters]['facet.pivot'] ||= ''
+    config.advanced_search[:form_solr_parameters]['f.creator_label_sim.facet.limit'] ||= -1
+    config.advanced_search[:form_solr_parameters]['f.advisor_label_sim.facet.limit'] ||= -1
+    config.advanced_search[:form_solr_parameters]['f.member_of_collections_ssim.facet.limit'] ||= -1
+    config.advanced_search[:form_solr_parameters]['f.date_issued_isim.facet.limit'] ||= -1
+    config.advanced_search[:form_solr_parameters]['f.keyword_sim.facet.limit'] ||= -1
+    config.advanced_search[:form_solr_parameters]['f.language_label_sim.facet.limit'] ||= -1
+    config.advanced_search[:form_solr_parameters]['f.resource_type_sim.facet.limit'] ||= -1
+    config.advanced_search[:form_solr_parameters]['f.subject_sim.facet.limit'] ||= -1
+    config.advanced_search[:form_solr_parameters]['f.affiliation_label_sim.facet.limit'] ||= -1
+    config.advanced_search[:form_solr_parameters]['f.edition_sim.facet.limit'] ||= -1
+
     config.advanced_search[:form_facet_partial] ||= "advanced_search_facets_as_select"
 
     config.show.tile_source_field = :content_metadata_image_iiif_info_ssm
@@ -66,9 +74,9 @@ class CatalogController < ApplicationController
     config.add_facet_field solr_name('member_of_collections', :symbol), limit: 5, label: 'Collection'
     config.add_facet_field solr_name("creator_label", :facetable), label: "Creator", limit: 5
     config.add_facet_field "date_issued_isim", label: "Date", limit: 5, range: true, include_in_advanced_search: false
-    config.add_facet_field solr_name("keyword", :facetable)
+    config.add_facet_field solr_name("keyword", :facetable), limit: 5
     config.add_facet_field solr_name("language", :facetable), helper_method: :language_links_facets, limit: 5
-    config.add_facet_field solr_name("resource_type", :facetable), label: "Resource Type", limit: 5
+    config.add_facet_field solr_name("resource_type", :facetable), label: "Resource Type"
     config.add_facet_field solr_name("subject", :facetable), limit: 5
 
     # UNC Custom
