@@ -35,7 +35,7 @@ module Hyc
                   prefix: doi_prefix,
                   titles: [{ title: record['title_tesim'].first }],
                   types: {
-                      resourceTypeGeneral: resource_type_parse(record['resource_type_tesim'])
+                      resourceTypeGeneral: resource_type_parse(record['dcmi_type_tesim'], record['resource_type_tesim'])
                   },
                   url: "#{ENV['HYRAX_HOST']}/concern/#{record['has_model_ssim'].first.downcase}s/#{record['id']}?locale=en",
                   event: 'publish',
@@ -160,8 +160,12 @@ module Hyc
     end
 
     # Field uses a controlled vocabulary
-    def resource_type_parse(resource)
-      resource_type = (resource.nil?) ? '' : resource.first
+    def resource_type_parse(dcmi_type, record_type)
+      unless dcmi_type.nil?
+        return dcmi_type.first
+      end
+
+      resource_type = (record_type.nil?) ? '' : record_type.first
       case resource_type
       when 'Dataset'
         'Dataset'
