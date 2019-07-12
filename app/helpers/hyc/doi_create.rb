@@ -162,7 +162,7 @@ module Hyc
     # Field uses a controlled vocabulary
     def resource_type_parse(dcmi_type, record_type)
       unless dcmi_type.nil?
-        return dcmi_type.first
+        return dcmi_type.first.split('/').last
       end
 
       resource_type = (record_type.nil?) ? '' : record_type.first
