@@ -31,7 +31,11 @@ class CatalogController < ApplicationController
     config.advanced_search ||= Blacklight::OpenStructWithHashAccess.new
     # config.advanced_search[:qt] ||= 'advanced'
     config.advanced_search[:url_key] ||= 'advanced'
-    config.advanced_search[:query_parser] ||= 'dismax'
+    config.advanced_search[:query_parser] ||= 'edismax'
+    config.advanced_search[:form_solr_parameters] ||= {}
+    config.advanced_search[:form_solr_parameters]['facet.query'] ||= ''
+    config.advanced_search[:form_solr_parameters]['facet.limit'] ||= -1
+    config.advanced_search[:form_solr_parameters]['facet.pivot'] ||= ''
     config.advanced_search[:form_facet_partial] ||= "advanced_search_facets_as_select"
 
     config.show.tile_source_field = :content_metadata_image_iiif_info_ssm
@@ -62,12 +66,10 @@ class CatalogController < ApplicationController
     config.add_facet_field solr_name('member_of_collections', :symbol), limit: 5, label: 'Collection'
     config.add_facet_field solr_name("creator_label", :facetable), label: "Creator", limit: 5
     config.add_facet_field "date_issued_isim", label: "Date", limit: 5, range: true, include_in_advanced_search: false
-    config.add_facet_field solr_name("keyword", :facetable), limit: 5
+    config.add_facet_field solr_name("keyword", :facetable)
     config.add_facet_field solr_name("language", :facetable), helper_method: :language_links_facets, limit: 5
     config.add_facet_field solr_name("resource_type", :facetable), label: "Resource Type", limit: 5
     config.add_facet_field solr_name("subject", :facetable), limit: 5
-    config.add_facet_field solr_name("file_format", :facetable), limit: 5
-    config.add_facet_field solr_name("depositor", :facetable), limit: 5
 
     # UNC Custom
     config.add_facet_field solr_name("affiliation_label", :facetable), label: "Departments", limit: 5
@@ -280,7 +282,6 @@ class CatalogController < ApplicationController
 
     config.add_search_field('resource_type') do |field|
       solr_name = solr_name("resource_type", :stored_searchable)
-      field.limit = -1
       field.solr_local_parameters = {
         qf: solr_name,
         pf: solr_name
@@ -373,5 +374,25 @@ class CatalogController < ApplicationController
   # this method is not called in that context.
   def render_bookmarks_control?
     false
+  end
+
+  # @see Blacklight::Catalog#facet
+  # @see https://github.com/projectblacklight/blacklight/blob/v6.13.0/app/controllers/concerns/blacklight/catalog.rb#L68
+  # displays values and pagination links for a single facet field
+  def facet
+    @facet = blacklight_config.facet_fields[params[:id]]
+    raise ActionController::RoutingError, 'Not Found' unless @facet
+    @response = get_facet_field_response(@facet.key, params)
+    @display_facet = @response.aggregations[@facet.field]
+    raise ActionController::RoutingError, 'Not Found' unless @display_facet
+    @pagination = facet_paginator(@facet, @display_facet)
+    respond_to do |format|
+      format.html do
+        # Draw the partial for the "more" facet modal window:
+        return render layout: false if request.xhr?
+        # Otherwise draw the facet selector for users who have javascript disabled.
+      end
+      format.json
+    end
   end
 end
