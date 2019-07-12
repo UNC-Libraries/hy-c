@@ -24,6 +24,7 @@
 
 //= require hyrax
 //= require almond
+//= require chosen/chosen.jquery.min
 //= require 'blacklight_range_limit'
 //= require unc/unc_visibility_component
 //= require unc/unc_save_work_control

@@ -32,7 +32,7 @@ class CatalogController < ApplicationController
     # config.advanced_search[:qt] ||= 'advanced'
     config.advanced_search[:url_key] ||= 'advanced'
     config.advanced_search[:query_parser] ||= 'dismax'
-    config.advanced_search[:form_solr_parameters] ||= {}
+    config.advanced_search[:form_facet_partial] ||= "advanced_search_facets_as_select"
 
     config.show.tile_source_field = :content_metadata_image_iiif_info_ssm
     config.show.partials.insert(1, :openseadragon)
@@ -280,6 +280,7 @@ class CatalogController < ApplicationController
 
     config.add_search_field('resource_type') do |field|
       solr_name = solr_name("resource_type", :stored_searchable)
+      field.limit = -1
       field.solr_local_parameters = {
         qf: solr_name,
         pf: solr_name
