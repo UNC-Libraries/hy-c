@@ -33,12 +33,16 @@ class CatalogController < ApplicationController
     config.advanced_search[:url_key] ||= 'advanced'
     config.advanced_search[:query_parser] ||= 'edismax'
     config.advanced_search[:form_solr_parameters] ||= {}
-    config.advanced_search[:form_solr_parameters]['f.creator_label_sim.facet.limit'] ||= -1
-    config.advanced_search[:form_solr_parameters]['f.advisor_label_sim.facet.limit'] ||= -1
+    config.advanced_search[:form_solr_parameters]['facet.field'] ||=
+        %w[member_of_collections_ssim date_issued_isim keyword_sim language_sim resource_type_sim subject_sim affiliation_label_sim edition_sim]
+
     config.advanced_search[:form_solr_parameters]['f.member_of_collections_ssim.facet.limit'] ||= -1
     config.advanced_search[:form_solr_parameters]['f.date_issued_isim.facet.limit'] ||= -1
     config.advanced_search[:form_solr_parameters]['f.keyword_sim.facet.limit'] ||= -1
-    config.advanced_search[:form_solr_parameters]['f.language_label_sim.facet.limit'] ||= -1
+    config.advanced_search[:form_solr_parameters]['f.language_sim.facet'] ||= {
+        limit: -1,
+        helper_method: :language_links_facets
+    }
     config.advanced_search[:form_solr_parameters]['f.resource_type_sim.facet.limit'] ||= -1
     config.advanced_search[:form_solr_parameters]['f.subject_sim.facet.limit'] ||= -1
     config.advanced_search[:form_solr_parameters]['f.affiliation_label_sim.facet.limit'] ||= -1
@@ -70,19 +74,17 @@ class CatalogController < ApplicationController
     # solr fields that will be treated as facets by the blacklight application
     #   The ordering of the field names is the order of the display
 
-    config.add_facet_field solr_name("advisor_label", :facetable), label: "Advisor", limit: 5
-    config.add_facet_field solr_name('member_of_collections', :symbol), limit: 5, label: 'Collection'
+    config.add_facet_field solr_name("resource_type", :facetable), label: "Resource Type", limit: 5
     config.add_facet_field solr_name("creator_label", :facetable), label: "Creator", limit: 5
-    config.add_facet_field "date_issued_isim", label: "Date", limit: 5, range: true, include_in_advanced_search: false
-    config.add_facet_field solr_name("keyword", :facetable), limit: 5
-    config.add_facet_field solr_name("language", :facetable), helper_method: :language_links_facets, limit: 5
-    config.add_facet_field solr_name("resource_type", :facetable), label: "Resource Type"
-    config.add_facet_field solr_name("subject", :facetable), limit: 5
-
-    # UNC Custom
     config.add_facet_field solr_name("affiliation_label", :facetable), label: "Departments", limit: 5
+    config.add_facet_field "date_issued_isim", label: "Date", limit: 5, range: true
+    config.add_facet_field solr_name("keyword", :facetable), limit: 5
+    config.add_facet_field solr_name("subject", :facetable), limit: 5
+    config.add_facet_field solr_name("advisor_label", :facetable), label: "Advisor", limit: 5
     config.add_facet_field solr_name("edition", :facetable), label: "Version", limit: 5
-    config.add_facet_field solr_name("language_label", :facetable), label: "Language", limit: 5
+    config.add_facet_field solr_name("language", :facetable), helper_method: :language_links_facets, limit: 5
+    config.add_facet_field solr_name("language_label", :facetable), limit: 5
+    config.add_facet_field solr_name('member_of_collections', :symbol), limit: 5, label: 'Collection'
 
 
     # The generic_type isn't displayed on the facet list
@@ -382,25 +384,5 @@ class CatalogController < ApplicationController
   # this method is not called in that context.
   def render_bookmarks_control?
     false
-  end
-
-  # @see Blacklight::Catalog#facet
-  # @see https://github.com/projectblacklight/blacklight/blob/v6.13.0/app/controllers/concerns/blacklight/catalog.rb#L68
-  # displays values and pagination links for a single facet field
-  def facet
-    @facet = blacklight_config.facet_fields[params[:id]]
-    raise ActionController::RoutingError, 'Not Found' unless @facet
-    @response = get_facet_field_response(@facet.key, params)
-    @display_facet = @response.aggregations[@facet.field]
-    raise ActionController::RoutingError, 'Not Found' unless @display_facet
-    @pagination = facet_paginator(@facet, @display_facet)
-    respond_to do |format|
-      format.html do
-        # Draw the partial for the "more" facet modal window:
-        return render layout: false if request.xhr?
-        # Otherwise draw the facet selector for users who have javascript disabled.
-      end
-      format.json
-    end
   end
 end
