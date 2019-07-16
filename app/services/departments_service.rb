@@ -27,6 +27,16 @@ module DepartmentsService
     end
   end
 
+  def self.label_matches(id)
+    begin
+      authority.all.reject{ |item| !item[:label].include? id }.map do |element|
+        element[:label].split(';')
+      end
+    rescue
+      nil
+    end
+  end
+
   def self.include_current_value(value, _index, render_options, html_options)
     unless value.blank?
       html_options[:class] << ' force-select'
