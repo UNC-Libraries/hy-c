@@ -34,13 +34,10 @@ class CatalogController < ApplicationController
     config.advanced_search[:query_parser] ||= 'dismax'
     config.advanced_search[:form_solr_parameters] ||= {}
     config.advanced_search[:form_solr_parameters]['facet.field'] ||=
-        %w[member_of_collections_ssim date_issued_isim keyword_sim resource_type_sim subject_sim affiliation_label_sim edition_sim]
-
+        %w[member_of_collections_ssim date_issued_isim resource_type_sim affiliation_label_sim edition_sim]
     config.advanced_search[:form_solr_parameters]['f.member_of_collections_ssim.facet.limit'] ||= -1
     config.advanced_search[:form_solr_parameters]['f.date_issued_isim.facet.limit'] ||= -1
-    config.advanced_search[:form_solr_parameters]['f.keyword_sim.facet.limit'] ||= -1
     config.advanced_search[:form_solr_parameters]['f.resource_type_sim.facet.limit'] ||= -1
-    config.advanced_search[:form_solr_parameters]['f.subject_sim.facet.limit'] ||= -1
     config.advanced_search[:form_solr_parameters]['f.affiliation_label_sim.facet.limit'] ||= -1
     config.advanced_search[:form_solr_parameters]['f.edition_sim.facet.limit'] ||= -1
 
@@ -285,6 +282,7 @@ class CatalogController < ApplicationController
 
     config.add_search_field('resource_type') do |field|
       solr_name = solr_name("resource_type", :stored_searchable)
+      field.include_in_advanced_search = false
       field.solr_local_parameters = {
         qf: solr_name,
         pf: solr_name
@@ -328,6 +326,7 @@ class CatalogController < ApplicationController
 
     config.add_search_field('depositor') do |field|
       solr_name = solr_name("depositor", :symbol)
+      field.include_in_advanced_search = false
       field.solr_local_parameters = {
         qf: solr_name,
         pf: solr_name
