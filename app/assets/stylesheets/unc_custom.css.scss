@@ -382,6 +382,11 @@ div.unc-modal {
   }
 }
 
+#documents.table-responsive {
+  justify-content: left;
+  width: 100%;
+}
+
 #documents {
   display: inline-flex;
   flex-wrap: wrap;
