@@ -22,7 +22,13 @@ RSpec.describe Hyrax::ArtworkForm do
     subject { form.secondary_terms }
 
     it { is_expected.to match_array [:creator, :description, :license, :note, :rights_statement, :doi, :license_label,
-                                     :rights_statement_label, :deposit_agreement, :agreement] }
+                                     :rights_statement_label, :dcmi_type, :deposit_agreement, :agreement] }
+  end
+
+  describe "#admin_only_terms" do
+    subject { form.admin_only_terms }
+
+    it { is_expected.to match_array [:dcmi_type, :doi] }
   end
 
   describe 'default value set' do
@@ -50,6 +56,7 @@ RSpec.describe Hyrax::ArtworkForm do
           license: 'http://creativecommons.org/licenses/by/3.0/us/', # single-valued
           member_of_collection_ids: ['123456', 'abcdef'],
           abstract: ['my abstract'],
+          dcmi_type: ['Image'],
           doi: '12345', # single-valued
           extent: '1993',
           medium: 'wood',
@@ -70,6 +77,7 @@ RSpec.describe Hyrax::ArtworkForm do
       expect(subject['license']).to eq ['http://creativecommons.org/licenses/by/3.0/us/']
       expect(subject['member_of_collection_ids']).to eq ['123456', 'abcdef']
       expect(subject['abstract']).to eq ['my abstract']
+      expect(subject['dcmi_type']).to eq ['Image']
       expect(subject['doi']).to eq '12345'
       expect(subject['extent']).to eq '1993'
       expect(subject['medium']).to eq 'wood'
