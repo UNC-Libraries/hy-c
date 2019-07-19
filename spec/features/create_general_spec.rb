@@ -87,6 +87,7 @@ RDFXML
 
       # required fields
       fill_in 'Title', with: 'Test General work'
+      fill_in 'Dcmi type', with: 'http://purl.org/dc/dcmitype/Text'
 
       # extra fields
       fill_in 'Abstract', with: 'an abstract'
@@ -119,7 +120,6 @@ RDFXML
       fill_in 'Additional affiliation', { with: 'UNC', id: 'general_composers_attributes_0_other_affiliation' }
       fill_in 'Date of publication', with: '2018-10-03'
       fill_in 'Date other', with: '2018-10-03'
-      fill_in 'Dcmi type', with: 'http://purl.org/dc/dcmitype/Text'
       select 'Bachelor of Science', from: 'general_degree'
       fill_in 'Degree granting institution', with: 'UNC'
       fill_in 'Description', with: 'a description'
