@@ -207,16 +207,21 @@ namespace :proquest do
     end
     advisor += committee_members
 
-    degree = metadata.xpath('//DISS_description/DISS_degree').text
+    abbreviated_degree = metadata.xpath('//DISS_description/DISS_degree').text
 
-    dcmi_type = ''
+    dcmi_type = 'http://purl.org/dc/dcmitype/Text'
+    normalized_degree = abbreviated_degree.downcase.gsub('.', '')
+    degree_map = { 'ma' => 'Master of Arts',
+                   'ms' => 'Master of Science',
+                   'edd' => 'Doctor of Education',
+                   'phd' => 'Doctor of Philosophy',
+                   'drph' => 'Doctor of Public Health'}
+    degree = DegreesService.label(degree_map[normalized_degree]) || abbreviated_degree
+
     resource_type = ''
-    normalized_degree = degree.downcase.gsub('.', '')
     if normalized_degree.in? ['edd', 'phd', 'drph']
-      dcmi_type = 'Dissertation'
       resource_type = 'Dissertation'
     else
-      dcmi_type = 'Thesis'
       resource_type = 'Masters Thesis'
     end
 
@@ -226,15 +231,7 @@ namespace :proquest do
     date_issued = metadata.xpath('//DISS_description/DISS_dates/DISS_comp_date').text
     date_issued = Date.strptime(date_issued,"%Y")
 
-    graduation_semester = ''
-    if @file_last_modified.month >= 2 && @file_last_modified.month <= 6
-      graduation_semester = 'Spring'
-    elsif @file_last_modified.month >= 7 && @file_last_modified.month <= 9
-      graduation_semester = 'Summer'
-    else
-      graduation_semester = 'Winter'
-    end
-    graduation_year = graduation_semester+' '+@file_last_modified.year.to_s
+    graduation_year = @file_last_modified.year.to_s
 
     language = metadata.xpath('//DISS_description/DISS_categorization/DISS_language').text
     if language == 'en'
@@ -250,7 +247,7 @@ namespace :proquest do
     work_attributes = {
         'title'=>[title],
         'creators_attributes'=>build_person_hash(creators, affiliation),
-        'date_issued'=>(Date.try(:edtf, date_issued) || date_issued).to_s,
+        'date_issued'=>(Date.try(:edtf, date_issued.year) || date_issued.year).to_s,
         'abstract'=>abstract.gsub(/\n/, "").strip,
         'advisors_attributes'=>build_person_hash(advisor, nil),
         'dcmi_type'=>dcmi_type,
