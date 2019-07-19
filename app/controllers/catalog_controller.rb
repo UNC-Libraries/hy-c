@@ -258,6 +258,7 @@ class CatalogController < ApplicationController
 
     config.add_search_field('date_issued') do |field|
       solr_name = solr_name("date_issued", :stored_searchable)
+      field.label = 'Date of Publication'
       field.solr_local_parameters = {
           qf: solr_name,
           pf: solr_name
