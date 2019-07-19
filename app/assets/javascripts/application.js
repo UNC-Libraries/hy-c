@@ -12,6 +12,9 @@
 //
 //= require turbolinks
 //= require jquery
+//= require 'blacklight_advanced_search'
+
+
 //= require jquery_ujs
 //= require dataTables/jquery.dataTables
 //= require dataTables/bootstrap/3/jquery.dataTables.bootstrap
@@ -21,6 +24,7 @@
 
 //= require hyrax
 //= require almond
+//= require chosen/chosen.jquery.min
 //= require 'blacklight_range_limit'
 //= require unc/unc_visibility_component
 //= require unc/unc_save_work_control

@@ -118,6 +118,9 @@ $(function() {
         hideNonRequiredFormFields();
         removeCloning();
         toggleCollectionPageDescription();
+
+        // Turns advanced search multi-select boxes into typeaheads
+        $(".advanced-search-facet-select").chosen({ placeholder_text: 'Select option(s)'});
     });
 
     // Override default workEditor to pick up our local changes

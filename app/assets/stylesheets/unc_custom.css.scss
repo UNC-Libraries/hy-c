@@ -70,6 +70,13 @@ span.institution_name {
   }
 }
 
+.advanced_search {
+  float: right;
+  &:hover {
+    text-decoration: none;
+  }
+}
+
 #unc-search {
   background-color: $carolina-blue;
   height: 45%;
@@ -90,6 +97,14 @@ span.institution_name {
 
   .fa-arrow-circle-up {
     color: $text-color;
+  }
+
+  .advanced_search {
+    color: $text-color;
+    &:hover {
+      color: $light-gray;
+      text-decoration: none;
+    }
   }
 }
 
