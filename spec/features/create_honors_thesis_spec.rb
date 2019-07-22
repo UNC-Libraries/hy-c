@@ -218,8 +218,7 @@ RDFXML
       check 'agreement'
 
       expect(page).to have_selector('#honors_thesis_dcmi_type')
-      expect(page).to have_selector("input[value='http://purl.org/dc/dcmitype/Text']")
-      fill_in 'Dcmi type', with: 'http://purl.org/dc/dcmitype/Image'
+      expect(find(:css, 'select#honors_thesis_dcmi_type').value).to eq('http://purl.org/dc/dcmitype/Text')
 
       find('label[for=addFiles]').click do
         attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'), make_visible: true)

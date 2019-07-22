@@ -41,7 +41,7 @@ RSpec.describe Hyrax::ArticleForm do
   describe 'default value set' do
     subject { form }
     it "dcmi type must have default values" do
-      expect(form.model['dcmi_type']).to eq ['http://purl.org/dc/dcmitype/Text'] 
+      expect(form.model['dcmi_type']).to eq 'http://purl.org/dc/dcmitype/Text'
     end
     it "language must have default values" do
       expect(form.model['language']).to eq ['http://id.loc.gov/vocabulary/iso639-2/eng'] 
@@ -80,7 +80,7 @@ RSpec.describe Hyrax::ArticleForm do
           date_issued: '2017-01-22', # single-valued
           date_captured: '2017-01-20', # single-valued
           date_other: [''],
-          dcmi_type: ['type'],
+          dcmi_type: 'http://purl.org/dc/dcmitype/Text',
           digital_collection: ['my collection'],
           doi: '12345', # single-valued
           edition: 'an edition', # single-valued
@@ -136,7 +136,7 @@ RSpec.describe Hyrax::ArticleForm do
       expect(subject['edition']).to eq 'an edition'
       expect(subject['extent']).to eq ['1993']
       expect(subject['funder']).to eq ['dean']
-      expect(subject['dcmi_type']).to eq ['type']
+      expect(subject['dcmi_type']).to eq 'http://purl.org/dc/dcmitype/Text'
       expect(subject['issn']).to eq ['12345']
       expect(subject['journal_issue']).to eq '27'
       expect(subject['journal_title']).to eq 'Journal Title'

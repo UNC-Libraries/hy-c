@@ -38,7 +38,7 @@ RSpec.describe Hyrax::MastersPaperForm do
   describe 'default value set' do
     subject { form }
     it "dcmi type must have default values" do
-      expect(form.model['dcmi_type']).to eq ['http://purl.org/dc/dcmitype/Text'] 
+      expect(form.model['dcmi_type']).to eq 'http://purl.org/dc/dcmitype/Text'
     end
 
     it "rights statement must have a default value" do
@@ -78,7 +78,7 @@ RSpec.describe Hyrax::MastersPaperForm do
                                           affiliation: 'Carolina Center for Genome Sciences',
                                           other_affiliation: 'another affiliation'} },
           date_issued: 'Summer 1999', # single-valued
-          dcmi_type: ['type'],
+          dcmi_type: 'http://purl.org/dc/dcmitype/Text',
           degree: 'MS', # single-valued
           degree_granting_institution: 'UNC', # single-valued
           doi: '12345',
@@ -118,7 +118,7 @@ RSpec.describe Hyrax::MastersPaperForm do
       expect(subject['degree_granting_institution']).to eq 'UNC'
       expect(subject['doi']).to eq '12345'
       expect(subject['extent']).to eq ['an extent']
-      expect(subject['dcmi_type']).to eq ['type']
+      expect(subject['dcmi_type']).to eq 'http://purl.org/dc/dcmitype/Text'
       expect(subject['graduation_year']).to eq '2017'
       expect(subject['note']).to eq ['a note']
       expect(subject['use']).to eq ['a use']

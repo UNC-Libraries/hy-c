@@ -62,7 +62,7 @@ RSpec.describe Hyrax::MultimedForm do
           license: 'http://creativecommons.org/licenses/by/3.0/us/', # single-valued
           rights_statement: 'http://rightsstatements.org/vocab/InC/1.0/', # single-valued
           abstract: ['an abstract'],
-          dcmi_type: ['type'],
+          dcmi_type: 'http://purl.org/dc/dcmitype/MovingImage',
           digital_collection: ['my collection'],
           doi: '12345',
           extent: ['1999'],
@@ -90,7 +90,7 @@ RSpec.describe Hyrax::MultimedForm do
       expect(subject['date_issued']).to eq '2018-01-09'
       expect(subject['doi']).to eq '12345'
       expect(subject['extent']).to eq ['1999']
-      expect(subject['dcmi_type']).to eq ['type']
+      expect(subject['dcmi_type']).to eq 'http://purl.org/dc/dcmitype/MovingImage'
       expect(subject['digital_collection']).to eq ['my collection']
       expect(subject['language_label']).to eq ['English']
       expect(subject['license_label']).to eq ['Attribution 3.0 United States']

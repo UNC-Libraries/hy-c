@@ -20,7 +20,7 @@ class DataSet < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :dcmi_type, predicate: ::RDF::Vocab::DC.type do |index|
+  property :dcmi_type, predicate: ::RDF::Vocab::DC.type, multiple: false do |index|
     index.as :stored_searchable
   end
 
