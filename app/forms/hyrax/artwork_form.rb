@@ -7,15 +7,16 @@ module Hyrax
     class_attribute :single_value_fields
 
     self.model_class = ::Artwork
-    self.terms += [:resource_type, :abstract, :date_issued, :note, :doi, :extent, :medium, :deposit_agreement, :agreement]
+    self.terms += [:resource_type, :abstract, :date_issued, :note, :dcmi_type, :doi, :extent, :medium, :deposit_agreement, :agreement]
     self.terms -= [:contributor, :keyword, :publisher, :subject, :language, :identifier, :based_near,
                    :related_url, :source, :language_label, :date_created]
     self.required_fields = [:title, :date_issued, :abstract, :extent, :medium, :resource_type]
 
     # Add overrides for required properties which are becoming single-valued
     self.single_value_fields = [:title, :license]
-    self.admin_only_terms = [:doi]
-    self.default_term_values = { :rights_statement => "http://rightsstatements.org/vocab/InC/1.0/" }
+    self.admin_only_terms = [:dcmi_type, :doi]
+    self.default_term_values = { :dcmi_type => ["http://purl.org/dc/dcmitype/Image"],
+                                 :rights_statement => "http://rightsstatements.org/vocab/InC/1.0/" }
 
     def title
       super.first || ""

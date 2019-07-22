@@ -16,6 +16,10 @@ class Artwork < ActiveFedora::Base
     index.as :stored_searchable
   end
 
+  property :dcmi_type, predicate: ::RDF::Vocab::DC.type do |index|
+    index.as :stored_searchable
+  end
+
   property :doi, predicate: ::RDF::Vocab::Identifiers.doi, multiple: false do |index|
     index.as :stored_searchable
   end

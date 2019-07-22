@@ -92,6 +92,7 @@ RSpec.feature 'Create an Artwork', js: false do
 
       click_link "Add to Collection"
       expect(page).to_not have_content 'Administrative Set'
+      expect(page).not_to have_selector('#artwork_dcmi_type')
 
       click_button 'Save'
       expect(page).to have_content 'Your files are being processed by the Carolina Digital Repository'
@@ -118,6 +119,7 @@ RSpec.feature 'Create an Artwork', js: false do
 
       expect(page).to_not have_content 'In Administrative Set: artwork admin set'
       expect(page).to_not have_selector(:link, 'Delete')
+      expect(page).to_not have_content 'Type http://purl.org/dc/dcmitype/Image'
 
       click_link 'Edit'
 
@@ -157,6 +159,9 @@ RSpec.feature 'Create an Artwork', js: false do
 
       check 'agreement'
 
+      expect(page).to have_selector('#article_dcmi_type')
+      expect(page).to have_selector("input[value='http://purl.org/dc/dcmitype/Image']")
+
       find('label[for=addFiles]').click do
         attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'), make_visible: true)
       end
@@ -189,6 +194,7 @@ RSpec.feature 'Create an Artwork', js: false do
       expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
       expect(page).to_not have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'
 
+      expect(page).to_not have_content 'Type http://purl.org/dc/dcmitype/Image'
       expect(page).to have_content 'In Administrative Set: artwork admin set'
       expect(page).to have_selector(:link, 'Delete')
 
