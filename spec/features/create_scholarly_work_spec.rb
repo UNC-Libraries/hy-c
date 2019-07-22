@@ -180,7 +180,7 @@ RDFXML
       select 'Department of Biology', from: 'scholarly_work_advisors_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'scholarly_work_advisors_attributes_0_other_affiliation' }
       fill_in 'Conference name', with: 'a conference'
-      fill_in 'Dcmi type', with: 'http://purl.org/dc/dcmitype/Text'
+      select 'Text', from: 'Dcmi type'
       fill_in 'Description', with: 'a description'
       fill_in 'Digital collection', with: 'my collection'
       fill_in 'DOI', with: 'some doi'
@@ -202,6 +202,7 @@ RDFXML
       check 'agreement'
       
       expect(page).to have_selector('#scholarly_work_dcmi_type')
+      expect(find(:css, 'select#scholarly_work_dcmi_type').value).to eq('http://purl.org/dc/dcmitype/Text')
 
       find('label[for=addFiles]').click do
         attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'), make_visible: true)

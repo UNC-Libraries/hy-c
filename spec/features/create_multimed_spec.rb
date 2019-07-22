@@ -171,7 +171,7 @@ RDFXML
       select 'Video', from: 'multimed_resource_type'
 
       # extra fields
-      fill_in 'Dcmi type', with: 'http://purl.org/dc/dcmitype/Text'
+      select 'Text', from: 'Dcmi type'
       fill_in 'Digital collection', with: 'my collection'
       fill_in 'DOI', with: 'some doi'
       fill_in 'Extent', with: 'some extent'
@@ -183,7 +183,6 @@ RDFXML
       select 'In Copyright', :from => 'multimed_rights_statement'
       fill_in 'Subject', with: 'test'
 
-      expect(page).to have_selector("select[value='http://purl.org/dc/dcmitype/Text']")
       expect(page).to have_selector('#multimed_language_label', visible: false)
       expect(page).to have_selector('#multimed_license_label', visible: false)
       expect(page).to have_selector('#multimed_rights_statement_label', visible: false)
@@ -195,6 +194,7 @@ RDFXML
       check 'agreement'
 
       expect(page).to have_selector('#multimed_dcmi_type')
+      expect(find(:css, 'select#multimed_dcmi_type').value).to eq('http://purl.org/dc/dcmitype/Text')
 
       find('label[for=addFiles]').click do
         attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'), make_visible: true)
