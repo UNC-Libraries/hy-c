@@ -191,6 +191,7 @@ RDFXML
       select 'In Copyright', :from => 'scholarly_work_rights_statement'
       fill_in 'Subject', with: 'test'
 
+      expect(page).to have_selector("input[value='http://purl.org/dc/dcmitype/Text']")
       expect(page).to have_selector('#scholarly_work_language_label', visible: false)
       expect(page).to have_selector('#scholarly_work_license_label', visible: false)
       expect(page).to have_selector('#scholarly_work_rights_statement_label', visible: false)
@@ -200,8 +201,6 @@ RDFXML
       expect(page).not_to have_field('scholarly_work_date_created')
       choose "scholarly_work_visibility_open"
       check 'agreement'
-      
-      expect(page).to have_selector('#scholarly_work_dcmi_type')
 
       find('label[for=addFiles]').click do
         attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'), make_visible: true)

@@ -15,7 +15,7 @@ module Hyrax
                    :kind_of_data, :last_modified_date, :medium, :methodology, :note, :page_start, :page_end, :peer_review_status,
                    :place_of_publication, :rights_holder, :series, :sponsor, :table_of_contents, :use, :deposit_agreement, :agreement]
 
-    self.required_fields = [:title]
+    self.required_fields = [:title, :dcmi_type]
 
     self.terms -= [:date_created, :source]
 
