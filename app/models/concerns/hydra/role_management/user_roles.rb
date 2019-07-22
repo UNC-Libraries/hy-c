@@ -1,3 +1,4 @@
+# [hyc-override] Add method to check if user has specific manager role
 # frozen_string_literal: true
 module Hydra
   module RoleManagement
@@ -25,6 +26,10 @@ module Hydra
 
       def admin?
         roles.where(name: 'admin').exists?
+      end
+
+      def admin_unit_manager?(group_name)
+        roles.where(name: group_name).exists?
       end
     end
   end
