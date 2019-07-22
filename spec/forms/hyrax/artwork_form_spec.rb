@@ -56,7 +56,7 @@ RSpec.describe Hyrax::ArtworkForm do
           license: 'http://creativecommons.org/licenses/by/3.0/us/', # single-valued
           member_of_collection_ids: ['123456', 'abcdef'],
           abstract: ['my abstract'],
-          dcmi_type: ['Image'],
+          dcmi_type: 'http://purl.org/dc/dcmitype/Image',
           doi: '12345', # single-valued
           extent: '1993',
           medium: 'wood',
@@ -77,7 +77,7 @@ RSpec.describe Hyrax::ArtworkForm do
       expect(subject['license']).to eq ['http://creativecommons.org/licenses/by/3.0/us/']
       expect(subject['member_of_collection_ids']).to eq ['123456', 'abcdef']
       expect(subject['abstract']).to eq ['my abstract']
-      expect(subject['dcmi_type']).to eq ['Image']
+      expect(subject['dcmi_type']).to eq 'http://purl.org/dc/dcmitype/Image'
       expect(subject['doi']).to eq '12345'
       expect(subject['extent']).to eq '1993'
       expect(subject['medium']).to eq 'wood'

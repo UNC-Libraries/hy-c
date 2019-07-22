@@ -55,7 +55,7 @@ describe "rake proquest:ingest", type: :task do
     expect(new_dissertation['advisors'][0]['name']).to match_array ['Advisor, John T']
     expect(new_dissertation['degree']).to eq 'Ph.D.'
     expect(new_dissertation['degree_granting_institution']).to eq 'University of North Carolina at Chapel Hill Graduate School'
-    expect(new_dissertation['dcmi_type']).to match_array ['Dissertation']
+    expect(new_dissertation['dcmi_type']).to eq 'Dissertation'
     expect(new_dissertation['graduation_year']).to eq 'Spring 2014'
   end
 end

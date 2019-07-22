@@ -287,7 +287,7 @@ namespace :proquest do
     resource.graduation_year = work_attributes['graduation_year']
     resource.language = [work_attributes['language']]
     resource.date_issued = work_attributes['date_issued']
-    resource.dcmi_type = [work_attributes['dcmi_type']]
+    resource.dcmi_type = work_attributes['dcmi_type']
     resource.resource_type = [work_attributes['resource_type']]
     resource.date_modified = DateTime.now()
     resource.date_uploaded = DateTime.now()
