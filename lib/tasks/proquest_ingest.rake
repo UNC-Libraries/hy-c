@@ -41,7 +41,7 @@ namespace :proquest do
       unzipped_package_dir = extract_proquest_files(package)
 
       if unzipped_package_dir.blank?
-        puts "[#{Time.now}] skipping zip file"
+        puts "[#{Time.now}] error: skipping zip file"
         next
       end
 
@@ -50,14 +50,14 @@ namespace :proquest do
       if metadata_file.count == 1
         metadata_file = metadata_file.first.to_s
       else
-        puts "[#{Time.now}] #{unzipped_package_dir} has more than 1 xml file"
+        puts "[#{Time.now}] error: #{unzipped_package_dir} has more than 1 xml file"
         next
       end
       pdf_file = Dir.glob("#{unzipped_package_dir}/*.pdf")
       if pdf_file.count == 1
         pdf_file = pdf_file.first.to_s
       else
-        puts "[#{Time.now}] #{unzipped_package_dir} has more than 1 pdf file"
+        puts "[#{Time.now}] error: #{unzipped_package_dir} has more than 1 pdf file"
         next
       end
 
