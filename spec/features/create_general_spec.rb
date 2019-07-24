@@ -87,7 +87,7 @@ RDFXML
 
       # required fields
       fill_in 'Title', with: 'Test General work'
-      fill_in 'Dcmi type', with: 'http://purl.org/dc/dcmitype/Text'
+      select 'Text', from: 'Dcmi type'
 
       # extra fields
       fill_in 'Abstract', with: 'an abstract'

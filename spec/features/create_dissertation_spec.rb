@@ -136,8 +136,6 @@ RDFXML
       check 'agreement'
 
       expect(page).to have_selector('#dissertation_dcmi_type')
-      expect(page).to have_selector("input[value='http://purl.org/dc/dcmitype/Text']")
-      fill_in 'Dcmi type', with: 'http://purl.org/dc/dcmitype/Image'
 
       find('label[for=addFiles]').click do
         attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'), make_visible: true)
@@ -191,7 +189,7 @@ RDFXML
       
       expect(page).to have_content 'Test Default Keyword'
       expect(page).to have_content 'In Administrative Set: dissertation admin set'
-      expect(page).to_not have_content 'Type http://purl.org/dc/dcmitype/Image'
+      expect(page).to_not have_content 'Type http://purl.org/dc/dcmitype/Text'
       expect(page).to have_content "Last Modified #{Date.edtf(DateTime.now.to_s).humanize}"
 
       click_link 'Edit'

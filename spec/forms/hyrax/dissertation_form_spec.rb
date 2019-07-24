@@ -78,7 +78,7 @@ RSpec.describe Hyrax::DissertationForm do
                                           other_affiliation: 'another affiliation'} },
           alternative_title: ['another title'],
           date_issued: '2018-01-08', # single-valued
-          dcmi_type: ['type'],
+          dcmi_type: ['http://purl.org/dc/dcmitype/Text'],
           degree: 'MSIS', # single-valued
           degree_granting_institution: 'UNC', # single-valued
           doi: 'hi.org', # single-valued
@@ -118,7 +118,7 @@ RSpec.describe Hyrax::DissertationForm do
       expect(subject['degree']).to eq 'MSIS'
       expect(subject['degree_granting_institution']).to eq 'UNC'
       expect(subject['doi']).to eq 'hi.org'
-      expect(subject['dcmi_type']).to eq ['type']
+      expect(subject['dcmi_type']).to eq ['http://purl.org/dc/dcmitype/Text']
       expect(subject['graduation_year']).to eq '2017'
       expect(subject['note']).to be_empty
       expect(subject['place_of_publication']).to eq ['a place']

@@ -81,7 +81,7 @@ RSpec.describe Hyrax::HonorsThesisForm do
                                           affiliation: 'Carolina Center for Genome Sciences',
                                           other_affiliation: 'another affiliation'} },
           award: 'Honors', # single-valued
-          dcmi_type: ['type'],
+          dcmi_type: ['http://purl.org/dc/dcmitype/Text'],
           degree: 'MSIS', # single-valued
           degree_granting_institution: 'UNC', # single-valued
           doi: '12345',
@@ -117,7 +117,7 @@ RSpec.describe Hyrax::HonorsThesisForm do
       expect(subject['degree']).to eq 'MSIS'
       expect(subject['degree_granting_institution']).to eq 'UNC'
       expect(subject['extent']).to eq ['an extent']
-      expect(subject['dcmi_type']).to eq ['type']
+      expect(subject['dcmi_type']).to eq ['http://purl.org/dc/dcmitype/Text']
       expect(subject['license']).to eq ['http://creativecommons.org/licenses/by/3.0/us/']
       expect(subject['graduation_year']).to eq '2017'
       expect(subject['note']).to be_empty

@@ -68,7 +68,7 @@ RSpec.describe Hyrax::DataSetForm do
                                           affiliation: 'Carolina Center for Genome Sciences',
                                           other_affiliation: 'another affiliation'} },
           date_issued: '2018-01-08',
-          dcmi_type: ['type'],
+          dcmi_type: ['http://purl.org/dc/dcmitype/Dataset'],
           copyright_date: '2018',
           doi: '12345',
           extent: ['1993'],
@@ -110,7 +110,7 @@ RSpec.describe Hyrax::DataSetForm do
       expect(subject['doi']).to eq '12345'
       expect(subject['extent']).to eq ['1993']
       expect(subject['funder']).to eq ['dean']
-      expect(subject['dcmi_type']).to eq ['type']
+      expect(subject['dcmi_type']).to eq ['http://purl.org/dc/dcmitype/Dataset']
       expect(subject['based_near']).to eq ['California']
       expect(subject['kind_of_data']).to eq 'some data'
       expect(subject['last_modified_date']).to eq '2018-01-23'

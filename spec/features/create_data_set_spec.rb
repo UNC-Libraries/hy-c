@@ -234,8 +234,6 @@ RDFXML
       check 'agreement'
       
       expect(page).to have_selector('#data_set_dcmi_type')
-      expect(page).to have_selector("input[value='http://purl.org/dc/dcmitype/Dataset']")
-      fill_in 'Dcmi type', with: 'http://purl.org/dc/dcmitype/Image'
 
       find('label[for=addFiles]').click do
         attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'), make_visible: true)
@@ -281,6 +279,7 @@ RDFXML
       expect(page).to_not have_content 'Language http://id.loc.gov/vocabulary/iso639-2/eng'
       expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
       expect(page).to_not have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'
+      expect(page).to_not have_content 'Type http://purl.org/dc/dcmitype/Dataset'
 
       expect(page).to have_content 'In Administrative Set: data set admin set'
 

@@ -76,7 +76,7 @@ RSpec.describe Hyrax::ScholarlyWorkForm do
                                           other_affiliation: 'another affiliation'} },
           conference_name: ['a conference name'],
           date_issued: '1980s', # single-valued
-          dcmi_type: ['type'],
+          dcmi_type: ['http://purl.org/dc/dcmitype/Text'],
           digital_collection: ['my collection'],
           doi: '12345',
           language_label: [],
@@ -105,7 +105,7 @@ RSpec.describe Hyrax::ScholarlyWorkForm do
       expect(subject['abstract']).to be_empty
       expect(subject['conference_name']).to eq ['a conference name']
       expect(subject['date_issued']).to eq '198x'
-      expect(subject['dcmi_type']).to eq ['type']
+      expect(subject['dcmi_type']).to eq ['http://purl.org/dc/dcmitype/Text']
       expect(subject['member_of_collection_ids']).to eq ['123456', 'abcdef']
       expect(subject['language_label']).to eq ['English']
       expect(subject['license_label']).to eq ['Attribution 3.0 United States']
