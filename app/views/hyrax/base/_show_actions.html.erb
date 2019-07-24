@@ -31,9 +31,8 @@
     <% end %>
     <% if presenter.valid_child_concerns.length > 0 %>
       <div class="btn-group">
-        <% if @presenter.workflow.present? && @presenter.workflow.is_mfa_in_review? %>
-          <%= link_to "Attach Artwork", polymorphic_path([main_app, :new, :hyrax, :parent, 'artwork'], parent_id: presenter.id, affiliation: 'Studio Art Program'), class: 'btn btn-default' %>
-        <% else %>
+
+        <% if current_user&.admin? || !@presenter.workflow.is_mfa? %>
           <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             Attach Child <span class="caret"></span>
           </button>
@@ -52,10 +51,11 @@
                 </li>
               <% end %>
             </ul>
+        <% elsif @presenter.workflow.is_mfa_in_review? || current_user&.admin_unit_manager?('art_mfa_manager')  %>
+          <%= link_to "Attach Artwork", polymorphic_path([main_app, :new, :hyrax, :parent, 'artwork'], parent_id: presenter.id, affiliation: 'Studio Art Program'), class: 'btn btn-default' %>
         <% end %>
       </div>
     <% end %>
-
   <% end %>
 
   <% if @presenter.workflow.actions.present? &&
