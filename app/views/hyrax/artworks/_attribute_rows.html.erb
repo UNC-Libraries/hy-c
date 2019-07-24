@@ -14,4 +14,6 @@
 <% else %>
   <%= presenter.attribute_to_html(:date_uploaded, html_dl: true, label: "Date uploaded") %>
 <% end %>
-<%= presenter.attribute_to_html(:admin_note, html_dl: true) %>
+<% if current_user&.admin? %>
+  <%= presenter.attribute_to_html(:admin_note, html_dl: true) %>
+<% end %>
