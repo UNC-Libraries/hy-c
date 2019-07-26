@@ -35,8 +35,9 @@ namespace :proquest do
 
   def migrate_proquest_packages(metadata_dir)
     proquest_packages = Dir.glob("#{metadata_dir}/*.zip")
-    proquest_packages.each do |package|
-      puts "[#{Time. now}] Unpacking #{package}"
+    count = proquest_packages.count
+    proquest_packages.each_with_index do |package, index|
+      puts "[#{Time. now}] Unpacking #{package} (#{index+1} of #{count})"
       @file_last_modified = ''
       unzipped_package_dir = extract_proquest_files(package)
 
@@ -82,6 +83,8 @@ namespace :proquest do
         resource = proquest_record(metadata_fields[:resource])
         resource[:deposit_record] = deposit_record.id
         resource.save!
+
+        puts "[#{Time.now}] created dissertation: #{resource.id}"
 
         # get group permissions info to use for setting work and fileset permissions
         group_permissions = get_permissions_attributes
@@ -226,9 +229,16 @@ namespace :proquest do
     degree_map = { 'ma' => 'Master of Arts',
                    'ms' => 'Master of Science',
                    'edd' => 'Doctor of Education',
+                   'de' => 'Doctor of Education',
                    'phd' => 'Doctor of Philosophy',
-                   'drph' => 'Doctor of Public Health'}
-    degree = DegreesService.label(degree_map[normalized_degree]) || abbreviated_degree
+                   'drph' => 'Doctor of Public Health',
+                   'dnp' => 'Doctor of Nursing Practice'}
+    if !degree_map[normalized_degree].blank?
+      degree = DegreesService.label(degree_map[normalized_degree])
+    else
+      puts "[#{Time.now}] unknown degree: #{abbreviated_degree}"
+      degree = abbreviated_degree
+    end
 
     resource_type = ''
     if normalized_degree.in? ['edd', 'phd', 'drph']
@@ -238,7 +248,7 @@ namespace :proquest do
     end
 
     department = metadata.xpath('//DISS_description/DISS_institution/DISS_inst_contact').text.strip
-    affiliation = ProquestDepartmentMappingsService.standard_department_name(department)
+    affiliation = ProquestDepartmentMappingsService.standard_department_name(department) || department
 
     date_issued = metadata.xpath('//DISS_description/DISS_dates/DISS_comp_date').text
     date_issued = Date.strptime(date_issued,"%Y")
