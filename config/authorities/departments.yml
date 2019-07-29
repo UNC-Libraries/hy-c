@@ -1084,6 +1084,9 @@ terms:
   - id: UNC Lineberger Comprehensive Cancer Center
     term: N.C. Cancer Hospital; UNC Lineberger Comprehensive Cancer Center
     active: true
+  - id: N.C. Cancer Hospital
+    term: N.C. Cancer Hospital; UNC Lineberger Comprehensive Cancer Center
+    active: false
   - id: Neuroscience Center
     term: School of Medicine; Neuroscience Center
     active: false
