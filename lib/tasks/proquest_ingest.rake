@@ -8,6 +8,7 @@ namespace :proquest do
 
   desc 'batch migrate generic files from FOXML file'
   task :ingest, [:configuration_file] => :environment do |t, args|
+    puts "[#{Time.now}] starting proquest ingest"
 
     config = YAML.load_file(args[:configuration_file])
     
@@ -28,28 +29,36 @@ namespace :proquest do
                              deposited_by: @depositor_onyen }
 
     migrate_proquest_packages(config['package_dir'])
+
+    puts "[#{Time.now}] completed proquest ingest"
   end
 
   def migrate_proquest_packages(metadata_dir)
     proquest_packages = Dir.glob("#{metadata_dir}/*.zip")
-    proquest_packages.each do |package|
-      puts "Unpacking #{package}"
+    count = proquest_packages.count
+    proquest_packages.each_with_index do |package, index|
+      puts "[#{Time. now}] Unpacking #{package} (#{index+1} of #{count})"
       @file_last_modified = ''
       unzipped_package_dir = extract_proquest_files(package)
+
+      if unzipped_package_dir.blank?
+        puts "[#{Time.now}] error: skipping zip file"
+        next
+      end
 
       # get all files in unzipped directory (should be 1 pdf and 1 xml)
       metadata_file = Dir.glob("#{unzipped_package_dir}/*_DATA.xml")
       if metadata_file.count == 1
         metadata_file = metadata_file.first.to_s
       else
-        puts "#{unzipped_package_dir} has more than 1 xml file"
+        puts "[#{Time.now}] error: #{unzipped_package_dir} has more than 1 xml file"
         next
       end
       pdf_file = Dir.glob("#{unzipped_package_dir}/*.pdf")
       if pdf_file.count == 1
         pdf_file = pdf_file.first.to_s
       else
-        puts "#{unzipped_package_dir} has more than 1 pdf file"
+        puts "[#{Time.now}] error: #{unzipped_package_dir} has more than 1 pdf file"
         next
       end
 
@@ -62,7 +71,7 @@ namespace :proquest do
         # only use xml file for metadata extraction
         metadata_fields = proquest_metadata(metadata_file)
 
-        puts "Number of files: #{metadata_fields[:files].count.to_s}"
+        puts "[#{Time.now}] Number of files: #{metadata_fields[:files].count.to_s}"
 
         # create deposit record
         deposit_record = DepositRecord.new(@deposit_record_hash)
@@ -74,6 +83,8 @@ namespace :proquest do
         resource = proquest_record(metadata_fields[:resource])
         resource[:deposit_record] = deposit_record.id
         resource.save!
+
+        puts "[#{Time.now}] created dissertation: #{resource.id}"
 
         # get group permissions info to use for setting work and fileset permissions
         group_permissions = get_permissions_attributes
@@ -103,17 +114,21 @@ namespace :proquest do
     fname = file.split('.zip')[0].split('/')[-1]
     dirname = @temp+'/'+fname
     FileUtils::mkdir_p dirname
-    Zip::File.open(file) do |zip_file|
-      zip_file.each do |f|
-        if f.name.match(/DATA.xml/)
-          @file_last_modified = Date.strptime(zip_file.get_entry(f).as_json['time'].split('T')[0],"%Y-%m-%d")
+    begin
+      Zip::File.open(file) do |zip_file|
+        zip_file.each do |f|
+          if f.name.match(/DATA.xml/)
+            @file_last_modified = Date.strptime(zip_file.get_entry(f).as_json['time'].split('T')[0],"%Y-%m-%d")
+          end
+          fpath = File.join(dirname, f.name)
+          zip_file.extract(f, fpath) unless File.exist?(fpath)
         end
-        fpath = File.join(dirname, f.name)
-        puts fpath
-        zip_file.extract(f, fpath) unless File.exist?(fpath)
       end
+      dirname
+    rescue => e
+      puts "[#{Time.now}] zip file error: #{e.message}"
+      nil
     end
-    dirname
   end
 
   def ingest_proquest_files(resource: nil, files: [], metadata: nil, zip_dir_files: nil)
@@ -121,7 +136,7 @@ namespace :proquest do
 
     files.each do |f|
       file_path = zip_dir_files.find { |e| e.match(f.to_s) }
-      puts "trying...#{f.to_s}"
+      puts "[#{Time.now}] trying...#{f.to_s}"
       if !file_path.nil? && File.file?(file_path)
         file_set = ingest_proquest_file(parent: resource, resource: metadata, f: file_path)
         ordered_members << file_set if file_set
@@ -132,7 +147,7 @@ namespace :proquest do
   end
 
   def ingest_proquest_file(parent: nil, resource: nil, f: nil)
-    puts "ingesting... #{f.to_s}"
+    puts "[#{Time.now}] ingesting... #{f.to_s}"
     fileset_metadata = file_record(resource)
 
     if fileset_metadata['embargo_release_date'].blank?
@@ -214,9 +229,16 @@ namespace :proquest do
     degree_map = { 'ma' => 'Master of Arts',
                    'ms' => 'Master of Science',
                    'edd' => 'Doctor of Education',
+                   'de' => 'Doctor of Education',
                    'phd' => 'Doctor of Philosophy',
-                   'drph' => 'Doctor of Public Health'}
-    degree = DegreesService.label(degree_map[normalized_degree]) || abbreviated_degree
+                   'drph' => 'Doctor of Public Health',
+                   'dnp' => 'Doctor of Nursing Practice'}
+    if !degree_map[normalized_degree].blank?
+      degree = DegreesService.label(degree_map[normalized_degree])
+    else
+      puts "[#{Time.now}] unknown degree: #{abbreviated_degree}"
+      degree = abbreviated_degree
+    end
 
     resource_type = ''
     if normalized_degree.in? ['edd', 'phd', 'drph']
@@ -226,7 +248,7 @@ namespace :proquest do
     end
 
     department = metadata.xpath('//DISS_description/DISS_institution/DISS_inst_contact').text.strip
-    affiliation = ProquestDepartmentMappingsService.standard_department_name(department)
+    affiliation = ProquestDepartmentMappingsService.standard_department_name(department) || department
 
     date_issued = metadata.xpath('//DISS_description/DISS_dates/DISS_comp_date').text
     date_issued = Date.strptime(date_issued,"%Y")

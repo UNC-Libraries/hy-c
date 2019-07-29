@@ -75,7 +75,7 @@ terms:
   - id: 'Dentistry: Endodontics'
     term: Department of Endodontics
   - id: Ecology
-    term: Curriculum for the Environment and Ecology
+    term: Curriculum in Environment and Ecology
   - id: Economics
     term: Department of Economics
   - id: Education
@@ -93,7 +93,7 @@ terms:
   - id: English
     term: Department of English and Comparative Literature, English
   - id: Environment &amp; Ecology
-    term: Curriculum for the Environment and Ecology
+    term: Curriculum in Environment and Ecology
   - id: Environmental Sciences &amp; Engineering
     term: Department of Environmental Sciences and Engineering
   - id: Environmental Sciences and Engineering
@@ -242,3 +242,13 @@ terms:
     term: Department of Statistics and Operations Research
   - id: Toxicology
     term: Curriculum in Toxicology
+  - id: Clinical Rehabilitation and Mental Health Counseling
+    term: Division of Clinical Rehabilitation and Mental Health Counseling
+  - id: English and Comparative Literature
+    term: Department of English and Comparative Literature
+  - id: Education (Educational Leadership )
+    term: Educational Leadership Graduate Program
+  - id: Dentistry (Oral and Craniofacial Biomedicine)
+    term: Oral and Craniofacial Biomedicine PhD Program
+  - id: Global Studies
+    term: Curriculum in Global Studies
