@@ -42,6 +42,12 @@ module Hyrax
       sipity_entity&.workflow_name == 'art_mfa_deposit' && state == 'pending_review'
     end
 
+    # [hyc-override] Add check to display attach works button to MFA workflow depositor
+    def is_mfa?
+      return false unless sipity_entity
+      sipity_entity&.workflow_name == 'art_mfa_deposit'
+    end
+
     # [hyc-override] Add permission checks to hide withdrawn files
     def in_workflow_state?(test_states = [])
       return false unless state && !test_states.blank?
