@@ -195,6 +195,7 @@ RDFXML
       check 'agreement'
 
       expect(page).to have_selector('#multimed_dcmi_type')
+      expect(find(:css, 'select#multimed_dcmi_type').value).to eq(['http://purl.org/dc/dcmitype/InteractiveResource'])
 
       find('label[for=addFiles]').click do
         attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'), make_visible: true)
