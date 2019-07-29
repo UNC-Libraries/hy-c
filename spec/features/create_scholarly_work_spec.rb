@@ -192,7 +192,8 @@ RDFXML
       fill_in 'Subject', with: 'test'
 
       expect(page).to have_selector('#scholarly_work_dcmi_type')
-      expect(find(:css, 'select#scholarly_work_dcmi_type').value).to eq('http://purl.org/dc/dcmitype/Text')
+      expect(find(:css, 'select#scholarly_work_dcmi_type').value).to eq(['http://purl.org/dc/dcmitype/Text'])
+
       expect(page).to have_selector('#scholarly_work_language_label', visible: false)
       expect(page).to have_selector('#scholarly_work_license_label', visible: false)
       expect(page).to have_selector('#scholarly_work_rights_statement_label', visible: false)
