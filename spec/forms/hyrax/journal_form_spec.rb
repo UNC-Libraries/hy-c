@@ -21,16 +21,18 @@ RSpec.describe Hyrax::JournalForm do
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:abstract, :alternative_title, :based_near, :dcmi_type, :digital_collection, :doi,
-                                     :edition, :extent, :isbn, :issn, :note, :place_of_publication, :series, :creator,
-                                     :subject, :keyword, :language, :resource_type, :license, :rights_statement,
-                                     :language_label, :license_label, :related_url, :rights_statement_label, :deposit_agreement, :agreement] }
+    it { is_expected.to match_array [:abstract, :alternative_title, :based_near, :dcmi_type, :digital_collection,
+                                     :doi, :edition, :extent, :isbn, :issn, :note, :place_of_publication, :series,
+                                     :creator, :subject, :keyword, :language, :resource_type, :license,
+                                     :rights_statement, :language_label, :license_label, :related_url,
+                                     :rights_statement_label, :deposit_agreement, :agreement, :admin_note] }
   end
   
   describe "#admin_only_terms" do
     subject { form.admin_only_terms }
 
-    it { is_expected.to match_array [:dcmi_type, :access, :alternative_title, :digital_collection, :doi, :use] }
+    it { is_expected.to match_array [:dcmi_type, :access, :alternative_title, :digital_collection, :doi, :use,
+                                     :admin_note] }
   end
   
   describe 'default value set' do

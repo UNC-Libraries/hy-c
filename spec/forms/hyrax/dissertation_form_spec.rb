@@ -25,13 +25,14 @@ RSpec.describe Hyrax::DissertationForm do
                                      :dcmi_type, :degree, :degree_granting_institution, :doi, :graduation_year, :note,
                                      :place_of_publication, :reviewer, :use, :contributor, :identifier, :subject,
                                      :publisher, :language, :keyword, :rights_statement, :license, :resource_type,
-                                     :language_label, :license_label, :rights_statement_label, :deposit_agreement, :agreement] }
+                                     :language_label, :license_label, :rights_statement_label, :deposit_agreement,
+                                     :agreement, :admin_note] }
   end
   
   describe "#admin_only_terms" do
     subject { form.admin_only_terms }
 
-    it { is_expected.to match_array [:dcmi_type, :doi, :degree_granting_institution] }
+    it { is_expected.to match_array [:dcmi_type, :doi, :degree_granting_institution, :admin_note] }
   end
   
   describe 'default value set' do

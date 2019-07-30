@@ -24,13 +24,14 @@ RSpec.describe Hyrax::ScholarlyWorkForm do
     it { is_expected.to match_array [:advisor, :based_near, :conference_name, :dcmi_type, :digital_collection,
                                      :doi, :description, :keyword, :language, :license, :resource_type,
                                      :rights_statement, :subject, :language_label, :license_label, 
-                                     :rights_statement_label, :deposit_agreement, :agreement] }
+                                     :rights_statement_label, :deposit_agreement, :agreement, :admin_note] }
   end
   
   describe "#admin_only_terms" do
     subject { form.admin_only_terms }
 
-    it { is_expected.to match_array [:dcmi_type, :access, :description, :digital_collection, :doi, :use] }
+    it { is_expected.to match_array [:dcmi_type, :access, :description, :digital_collection, :doi, :use,
+                                     :admin_note] }
   end
 
   describe 'default value set' do

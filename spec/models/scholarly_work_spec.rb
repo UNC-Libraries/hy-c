@@ -45,6 +45,7 @@ RSpec.describe ScholarlyWork do
 
       # Additional metadata
       expect(subject).to respond_to(:abstract)
+      expect(subject).to respond_to(:admin_note)
       expect(subject).to respond_to(:advisors)
       expect(subject).to respond_to(:conference_name)
       expect(subject).to respond_to(:date_issued)

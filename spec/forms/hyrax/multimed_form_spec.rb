@@ -23,13 +23,14 @@ RSpec.describe Hyrax::MultimedForm do
 
     it { is_expected.to match_array [:based_near, :dcmi_type, :digital_collection, :doi, :extent, :keyword,
                                      :language, :license, :medium, :note, :rights_statement, :subject, :language_label,
-                                     :license_label, :rights_statement_label, :deposit_agreement, :agreement] }
+                                     :license_label, :rights_statement_label, :deposit_agreement, :agreement,
+                                     :admin_note] }
   end
   
   describe "#admin_only_terms" do
     subject { form.admin_only_terms }
 
-    it { is_expected.to match_array [:dcmi_type, :access, :digital_collection, :doi, :medium] }
+    it { is_expected.to match_array [:dcmi_type, :access, :digital_collection, :doi, :medium, :admin_note] }
   end
 
   describe 'default value set' do

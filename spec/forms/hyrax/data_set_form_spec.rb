@@ -21,16 +21,18 @@ RSpec.describe Hyrax::DataSetForm do
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:based_near, :dcmi_type, :copyright_date, :doi, :extent, :funder, :last_modified_date,
-                                     :project_director, :researcher, :rights_holder, :sponsor, :language, :keyword,
-                                     :related_url, :license, :contributor, :subject, :rights_statement,
-                                     :language_label, :license_label, :rights_statement_label, :deposit_agreement, :agreement] }
+    it { is_expected.to match_array [:based_near, :dcmi_type, :copyright_date, :doi, :extent, :funder,
+                                     :last_modified_date, :project_director, :researcher, :rights_holder, :sponsor,
+                                     :language, :keyword, :related_url, :license, :contributor, :subject,
+                                     :rights_statement, :language_label, :license_label, :rights_statement_label,
+                                     :deposit_agreement, :agreement, :admin_note] }
   end
   
   describe "#admin_only_terms" do
     subject { form.admin_only_terms }
 
-    it { is_expected.to match_array [:dcmi_type, :access, :doi, :extent, :rights_holder, :rights_statement, :copyright_date] }
+    it { is_expected.to match_array [:dcmi_type, :access, :doi, :extent, :rights_holder, :rights_statement,
+                                     :copyright_date, :admin_note] }
   end
   
   describe 'default value set' do

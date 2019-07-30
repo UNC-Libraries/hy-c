@@ -23,11 +23,12 @@ RSpec.describe Hyrax::ArticleForm do
 
     it { is_expected.to match_array [:based_near, :keyword, :license, :rights_statement, :publisher, :subject,
                                      :language, :identifier, :related_url, :resource_type, :access, :alternative_title,
-                                     :bibliographic_citation, :copyright_date, :date_captured, :date_other, :dcmi_type, :doi,
-                                     :digital_collection, :edition, :extent, :funder, :issn,
+                                     :bibliographic_citation, :copyright_date, :date_captured, :date_other, :dcmi_type,
+                                     :doi, :digital_collection, :edition, :extent, :funder, :issn,
                                      :journal_title, :journal_volume, :journal_issue, :note, :page_end, :page_start,
                                      :peer_review_status, :place_of_publication, :rights_holder, :translator, :use,
-                                     :language_label, :license_label, :rights_statement_label, :deposit_agreement, :agreement] }
+                                     :language_label, :license_label, :rights_statement_label, :deposit_agreement,
+                                     :agreement, :admin_note] }
   end
   
   describe "#admin_only_terms" do
@@ -35,7 +36,7 @@ RSpec.describe Hyrax::ArticleForm do
 
     it { is_expected.to match_array [:dcmi_type, :access, :bibliographic_citation, :copyright_date,
                                      :date_captured, :date_other, :digital_collection, :doi, :extent, :rights_holder,
-                                     :translator, :identifier, :use] }
+                                     :translator, :identifier, :use, :admin_note] }
   end
   
   describe 'default value set' do

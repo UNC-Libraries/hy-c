@@ -47,6 +47,7 @@ RSpec.describe Article do
       # Additional metadata
       expect(subject).to respond_to(:abstract)
       expect(subject).to respond_to(:access)
+      expect(subject).to respond_to(:admin_note)
       expect(subject).to respond_to(:alternative_title)
       expect(subject).to respond_to(:bibliographic_citation)
       expect(subject).to respond_to(:copyright_date)

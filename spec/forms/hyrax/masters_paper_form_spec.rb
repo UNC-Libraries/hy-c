@@ -23,16 +23,17 @@ RSpec.describe Hyrax::MastersPaperForm do
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:academic_concentration, :access, :based_near, :dcmi_type, :degree_granting_institution, :doi, :extent,
-                                     :reviewer, :use, :keyword, :subject, :language, :note,
-                                     :rights_statement, :license, :language_label, :license_label, 
-                                     :rights_statement_label, :deposit_agreement, :agreement] }
+    it { is_expected.to match_array [:academic_concentration, :access, :based_near, :dcmi_type,
+                                     :degree_granting_institution, :doi, :extent, :reviewer, :use, :keyword, :subject,
+                                     :language, :note, :rights_statement, :license, :language_label, :license_label,
+                                     :rights_statement_label, :deposit_agreement, :agreement, :admin_note] }
   end
   
   describe "#admin_only_terms" do
     subject { form.admin_only_terms }
 
-    it { is_expected.to match_array [:dcmi_type, :access, :degree_granting_institution, :doi, :extent, :use] }
+    it { is_expected.to match_array [:dcmi_type, :access, :degree_granting_institution, :doi, :extent, :use,
+                                     :admin_note] }
   end
   
   describe 'default value set' do
