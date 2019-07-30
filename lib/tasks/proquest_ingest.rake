@@ -50,7 +50,6 @@ namespace :proquest do
       metadata_file = Dir.glob("#{unzipped_package_dir}/*_DATA.xml")
       if metadata_file.count == 1
         metadata_file = metadata_file.first.to_s
-        @file_last_modified = File.mtime(metadata_file).year
       else
         puts "[#{Time.now}] error: #{unzipped_package_dir} has #{metadata_file.count} xml file(s)"
         next
@@ -135,6 +134,9 @@ namespace :proquest do
     begin
       Zip::File.open(file) do |zip_file|
         zip_file.each do |f|
+          if f.name.match(/DATA.xml/)
+            @file_last_modified = Date.strptime(zip_file.get_entry(f).as_json['time'].split('T')[0],"%Y-%m-%d").year
+          end
           fpath = File.join(dirname, f.name)
           zip_file.extract(f, fpath) unless File.exist?(fpath)
         end
@@ -253,7 +255,7 @@ namespace :proquest do
     date_issued = metadata.xpath('//DISS_description/DISS_dates/DISS_comp_date').text
     date_issued = Date.strptime(date_issued,"%Y")
 
-    graduation_year = @file_last_modified.year.to_s
+    graduation_year = @file_last_modified.to_s
 
     language = metadata.xpath('//DISS_description/DISS_categorization/DISS_language').text
     if language == 'en'
