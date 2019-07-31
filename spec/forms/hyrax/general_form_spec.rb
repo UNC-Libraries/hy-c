@@ -98,7 +98,7 @@ RSpec.describe Hyrax::GeneralForm do
           date_captured: '2017-01-20',
           date_issued: ['2017-01-22'],
           date_other: ['2017-01-22'],
-          dcmi_type: ['type'],
+          dcmi_type: [' http://purl.org/dc/dcmitype/Image'],
           degree: 'something', # single-valued
           degree_granting_institution: 'unc', # single-valued
           digital_collection: ['my collection'],
@@ -183,7 +183,7 @@ RSpec.describe Hyrax::GeneralForm do
       expect(subject['edition']).to eq 'an edition'
       expect(subject['extent']).to eq ['1993']
       expect(subject['funder']).to eq ['dean']
-      expect(subject['dcmi_type']).to eq ['type']
+      expect(subject['dcmi_type']).to eq [' http://purl.org/dc/dcmitype/Image']
       expect(subject['graduation_year']).to eq '2018'
       expect(subject['isbn']).to eq ['123456']
       expect(subject['issn']).to eq ['12345']

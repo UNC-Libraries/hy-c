@@ -1,0 +1,9 @@
+terms:
+  - id: http://purl.org/dc/dcmitype/Dataset
+    term: Dataset
+  - id: http://purl.org/dc/dcmitype/Sound
+    term: Sound
+  - id: http://purl.org/dc/dcmitype/StillImage
+    term: Still Image
+  - id: http://purl.org/dc/dcmitype/Text
+    term: Text

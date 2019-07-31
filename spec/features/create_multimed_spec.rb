@@ -147,6 +147,7 @@ RDFXML
       expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
       expect(page).to_not have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'
       expect(page).to_not have_content 'In Administrative Set: multimed admin set'
+      expect(page).to_not have_content 'Type http://purl.org/dc/dcmitype/InteractiveResource'
       expect(page).to_not have_selector(:link, 'Delete')
 
       click_link 'Edit'
@@ -171,7 +172,7 @@ RDFXML
       select 'Video', from: 'multimed_resource_type'
 
       # extra fields
-      fill_in 'Dcmi type', with: 'http://purl.org/dc/dcmitype/Text'
+      select 'Interactive Resource', from: 'Dcmi type'
       fill_in 'Digital collection', with: 'my collection'
       fill_in 'DOI', with: 'some doi'
       fill_in 'Extent', with: 'some extent'
@@ -194,6 +195,7 @@ RDFXML
       check 'agreement'
 
       expect(page).to have_selector('#multimed_dcmi_type')
+      expect(find(:css, 'select#multimed_dcmi_type').value).to eq(['http://purl.org/dc/dcmitype/InteractiveResource'])
 
       find('label[for=addFiles]').click do
         attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'), make_visible: true)
@@ -217,7 +219,6 @@ RDFXML
       expect(page).to have_content 'Department of Biology'
       expect(page).to have_content 'Other Affiliation: UNC'
       expect(page).to have_content 'Date of publication October 3, 2018'
-      expect(page).to_not have_content 'Type http://purl.org/dc/dcmitype/Text'
       expect(page).to have_content 'Digital collection my collection'
       expect(page).to have_content 'DOI some doi'
       expect(page).to have_content 'Extent some extent'
@@ -233,6 +234,7 @@ RDFXML
       expect(page).to_not have_content 'Language http://id.loc.gov/vocabulary/iso639-2/eng'
       expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
       expect(page).to_not have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'
+      expect(page).to_not have_content 'Type http://purl.org/dc/dcmitype/InteractiveResource'
 
       click_link 'Edit'
 

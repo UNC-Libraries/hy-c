@@ -160,7 +160,6 @@ RSpec.feature 'Create an Artwork', js: false do
       check 'agreement'
 
       expect(page).to have_selector('#artwork_dcmi_type')
-      expect(page).to have_selector("input[value='http://purl.org/dc/dcmitype/Image']")
 
       find('label[for=addFiles]').click do
         attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'), make_visible: true)

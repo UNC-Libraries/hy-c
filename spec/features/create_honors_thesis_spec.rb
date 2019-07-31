@@ -218,8 +218,6 @@ RDFXML
       check 'agreement'
 
       expect(page).to have_selector('#honors_thesis_dcmi_type')
-      expect(page).to have_selector("input[value='http://purl.org/dc/dcmitype/Text']")
-      fill_in 'Dcmi type', with: 'http://purl.org/dc/dcmitype/Image'
 
       find('label[for=addFiles]').click do
         attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'), make_visible: true)
@@ -265,7 +263,7 @@ RDFXML
       expect(page).to_not have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'
 
       expect(page).to have_content 'In Administrative Set: honors thesis admin set'
-      expect(page).to_not have_content 'Type http://purl.org/dc/dcmitype/Image'
+      expect(page).to_not have_content 'Type http://purl.org/dc/dcmitype/Text'
 
       click_link 'Edit'
 

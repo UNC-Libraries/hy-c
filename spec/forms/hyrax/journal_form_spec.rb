@@ -71,7 +71,7 @@ RSpec.describe Hyrax::JournalForm do
           abstract: ['an abstract'],
           alternative_title: ['alt title'],
           date_issued: '2018-01-08', # single-valued
-          dcmi_type: ['type'],
+          dcmi_type: ['http://purl.org/dc/dcmitype/Text'],
           digital_collection: ['my collection'],
           doi: '12345',
           edition: 'First Edition',
@@ -109,7 +109,7 @@ RSpec.describe Hyrax::JournalForm do
       expect(subject['doi']).to eq '12345'
       expect(subject['edition']).to eq 'First Edition'
       expect(subject['extent']).to eq ['1993']
-      expect(subject['dcmi_type']).to eq ['type']
+      expect(subject['dcmi_type']).to eq ['http://purl.org/dc/dcmitype/Text']
       expect(subject['isbn']).to eq ['123456']
       expect(subject['issn']).to eq ['12345']
       expect(subject['note']).to be_empty
