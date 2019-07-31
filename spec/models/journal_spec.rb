@@ -41,6 +41,7 @@ RSpec.describe Journal do
 
       # Custom fields
       expect(subject).to respond_to(:abstract)
+      expect(subject).to respond_to(:admin_note)
       expect(subject).to respond_to(:alternative_title)
       expect(subject).to respond_to(:date_issued)
       expect(subject).to respond_to(:deposit_agreement)

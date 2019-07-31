@@ -46,6 +46,7 @@ RSpec.describe Dissertation do
       # Additional metadata
       expect(subject).to respond_to(:abstract)
       expect(subject).to respond_to(:access)
+      expect(subject).to respond_to(:admin_note)
       expect(subject).to respond_to(:advisors)
       expect(subject).to respond_to(:alternative_title)
       expect(subject).to respond_to(:date_issued)

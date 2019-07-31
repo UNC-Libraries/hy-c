@@ -5,7 +5,7 @@ module Hyrax
     class_attribute :single_value_fields
 
     self.model_class = ::Multimed
-    self.terms += [:abstract, :dcmi_type, :date_issued, :digital_collection, :doi, :extent, :medium, :note,
+    self.terms += [:abstract, :dcmi_type, :admin_note, :date_issued, :digital_collection, :doi, :extent, :medium, :note,
                    :resource_type, :deposit_agreement, :agreement]
 
     self.terms -= [:contributor, :description, :identifier, :publisher, :related_url, :source, :date_created]
@@ -14,7 +14,7 @@ module Hyrax
 
     self.single_value_fields = [:title, :license]
     
-    self.admin_only_terms = [:dcmi_type, :access, :digital_collection, :doi, :medium]
+    self.admin_only_terms = [:dcmi_type, :access, :admin_note, :digital_collection, :doi, :medium]
 
     self.default_term_values = { :rights_statement => "http://rightsstatements.org/vocab/InC/1.0/",
                                  :language => ["http://id.loc.gov/vocabulary/iso639-2/eng"] }

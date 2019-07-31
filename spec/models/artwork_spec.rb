@@ -33,6 +33,7 @@ RSpec.describe Artwork do
 
       # Additional metadata
       expect(subject).to respond_to(:abstract)
+      expect(subject).to respond_to(:admin_note)
       expect(subject).to respond_to(:date_issued)
       expect(subject).to respond_to(:dcmi_type)
       expect(subject).to respond_to(:deposit_agreement)

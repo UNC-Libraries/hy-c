@@ -7,7 +7,7 @@ module Hyrax
 
     self.model_class = ::General
 
-    self.terms += [:resource_type, :bibliographic_citation, :abstract, :academic_concentration, :access, :advisor,
+    self.terms += [:resource_type, :admin_note, :bibliographic_citation, :abstract, :academic_concentration, :access, :advisor,
                    :arranger, :composer, :project_director, :researcher, :reviewer, :translator,
                    :alternative_title, :award, :conference_name, :copyright_date, :date_captured, :date_issued,
                    :date_other, :dcmi_type, :degree, :degree_granting_institution, :digital_collection, :doi, :edition, :extent, :funder,
@@ -21,7 +21,7 @@ module Hyrax
 
     self.single_value_fields = [:title, :license]
 
-    self.admin_only_terms = [:dcmi_type, :degree_granting_institution, :digital_collection, :doi]
+    self.admin_only_terms = [:dcmi_type, :admin_note, :degree_granting_institution, :digital_collection, :doi]
 
     self.default_term_values = { :language => ["http://id.loc.gov/vocabulary/iso639-2/eng"] }
 
