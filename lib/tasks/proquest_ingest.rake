@@ -51,7 +51,7 @@ namespace :proquest do
       if metadata_file.count == 1
         metadata_file = metadata_file.first.to_s
       else
-        puts "[#{Time.now}] error: #{unzipped_package_dir} has more than 1 xml file"
+        puts "[#{Time.now}] error: #{unzipped_package_dir} has #{metadata_file.count} xml file(s)"
         next
       end
       pdf_file = Dir.glob("#{unzipped_package_dir}/*.pdf")
@@ -84,17 +84,35 @@ namespace :proquest do
         resource[:deposit_record] = deposit_record.id
         resource.save!
 
-        puts "[#{Time.now}] created dissertation: #{resource.id}"
+        id = resource.id
+
+        puts "[#{Time.now}] created dissertation: #{id}"
 
         # get group permissions info to use for setting work and fileset permissions
         group_permissions = get_permissions_attributes
         resource.update permissions_attributes: group_permissions
 
-        # Attach pdf and metadata files
-        ingest_proquest_files(resource: resource,
-                     files: metadata_fields[:files],
-                     metadata: metadata_fields[:resource],
-                     zip_dir_files: [metadata_file, pdf_file])
+        # get list of all files in unzipped proquest package
+        unzipped_file_list = Dir.glob("#{unzipped_package_dir}/**/*.*")
+
+        ordered_members = []
+        metadata_fields[:files].each do |f|
+          puts "[#{Time.now}] trying...#{f.to_s}"
+
+          file_path = unzipped_file_list.find { |e| e.match(f.to_s) }
+          if file_path.blank?
+            puts "[#{Time.now}][#{id}] cannot find #{f.to_s}"
+            next
+          end
+
+          if File.file?(file_path)
+            file_set = ingest_proquest_file(parent: resource,
+                                            resource: metadata_fields[:resource].merge({title: [f]}),
+                                            f: file_path)
+            ordered_members << file_set if file_set
+          end
+        end
+        resource.ordered_members = ordered_members
 
         # Attach metadata file
         fileset_attrs = { 'title' => [File.basename(metadata_file)] }
@@ -129,21 +147,6 @@ namespace :proquest do
       puts "[#{Time.now}] zip file error: #{e.message}"
       nil
     end
-  end
-
-  def ingest_proquest_files(resource: nil, files: [], metadata: nil, zip_dir_files: nil)
-    ordered_members = []
-
-    files.each do |f|
-      file_path = zip_dir_files.find { |e| e.match(f.to_s) }
-      puts "[#{Time.now}] trying...#{f.to_s}"
-      if !file_path.nil? && File.file?(file_path)
-        file_set = ingest_proquest_file(parent: resource, resource: metadata, f: file_path)
-        ordered_members << file_set if file_set
-      end
-    end
-
-    resource.ordered_members = ordered_members
   end
 
   def ingest_proquest_file(parent: nil, resource: nil, f: nil)
