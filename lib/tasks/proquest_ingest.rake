@@ -102,9 +102,10 @@ namespace :proquest do
           file_path = unzipped_file_list.find { |e| e.match(f.to_s) }
           if file_path.blank?
             puts "[#{Time.now}][#{id}] cannot find #{f.to_s}"
+            next
           end
 
-          if !file_path.nil? && File.file?(file_path)
+          if File.file?(file_path)
             file_set = ingest_proquest_file(parent: resource,
                                             resource: metadata_fields[:resource].merge({title: [f]}),
                                             f: file_path)
@@ -135,7 +136,7 @@ namespace :proquest do
       Zip::File.open(file) do |zip_file|
         zip_file.each do |f|
           if f.name.match(/DATA.xml/)
-            @file_last_modified = Date.strptime(zip_file.get_entry(f).as_json['time'].split('T')[0],"%Y-%m-%d").year
+            @file_last_modified = Date.strptime(zip_file.get_entry(f).as_json['time'].split('T')[0],"%Y-%m-%d")
           end
           fpath = File.join(dirname, f.name)
           zip_file.extract(f, fpath) unless File.exist?(fpath)
@@ -255,7 +256,7 @@ namespace :proquest do
     date_issued = metadata.xpath('//DISS_description/DISS_dates/DISS_comp_date').text
     date_issued = Date.strptime(date_issued,"%Y")
 
-    graduation_year = @file_last_modified.to_s
+    graduation_year = @file_last_modified.year.to_s
 
     language = metadata.xpath('//DISS_description/DISS_categorization/DISS_language').text
     if language == 'en'
