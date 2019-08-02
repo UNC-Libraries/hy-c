@@ -14,20 +14,24 @@
 //= require jquery
 //= require 'blacklight_advanced_search'
 
-
 //= require jquery_ujs
 //= require dataTables/jquery.dataTables
 //= require dataTables/bootstrap/3/jquery.dataTables.bootstrap
-//
+
 // Required by Blacklight
 //= require blacklight/blacklight
 
 //= require hyrax
 //= require almond
 //= require chosen/chosen.jquery.min
-//= require 'blacklight_range_limit'
 //= require unc/unc_visibility_component
 //= require unc/unc_save_work_control
 //= require unc/unc_editor
 //= require unc/unc_custom
 //= require person_objects
+
+// blacklight_range_limit js files
+//= require 'bootstrap-slider'
+//= require 'blacklight_range_limit/range_limit_distro_facets'
+//= require 'blacklight_range_limit/range_limit_shared'
+//= require 'blacklight_range_limit/range_limit_slider'
