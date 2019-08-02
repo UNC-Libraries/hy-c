@@ -5,26 +5,58 @@ namespace :onescience do
   task :ingest, [:configuration_file] => :environment do |t, args|
     # config file with worktype, adminset, depositor, walnut mount location
     config = YAML.load_file(args[:configuration_file])
+    puts "[#{Time.now}] Start ingest of onescience articles in #{config['metadata_file']}"
+
+    # set visibility variables
+    vis_private = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
+    vis_public = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
 
     @admin_set_id = ::AdminSet.where(title: config['admin_set']).first.id
 
     # get list of pdf files
     pdf_files = Dir.glob("#{config['pdf_dir']}/**/*.pdf")
 
-    # read from xlsx in projects folder
-    spreadsheet = Roo::Spreadsheet.open(config['metadata_dir']+'/'+config['metadata_file'])
-    sheets = spreadsheet.sheets
-    puts sheets.count
-    # iterate through sheets if more than 1
-    data = spreadsheet.sheet(0).parse(headers: true)
-    # first hash is of headers
-    data.delete_at(0)
+    # read from affiliation spreadsheet
+    @affiliation_mapping = []
+    config['affiliation_files'].each do |affiliation_file|
+      workbook = Roo::Spreadsheet.open(config['metadata_dir']+'/'+affiliation_file)
+      sheets = workbook.sheets
+      sheets.each do |sheet|
+        data_hash = workbook.sheet(sheet).parse(headers: true)
+        # first hash is of headers
+        data_hash.delete_at(0)
+        @affiliation_mapping << data_hash
+      end
+    end
+    @affiliation_mapping.flatten!
+    puts "[#{Time.now}] loaded affiliation mappings"
 
+    # read from embargo spreadsheet
+    embargo_mapping = CSV.read(config['metadata_dir']+'/'+config['embargo_file'], headers: true)
+    puts "[#{Time.now}] loaded embargo mappings"
+
+    # read from xlsx in projects folder
+    workbook = Roo::Spreadsheet.open(config['metadata_dir']+'/'+config['metadata_file'])
+    sheets = workbook.sheets
+    data = []
+    sheets.each do |sheet|
+      data_hash = workbook.sheet(sheet).parse(headers: true)
+      # first hash is of headers
+      data_hash.delete_at(0)
+      data << data_hash
+    end
+    puts "[#{Time.now}] loaded onescience data"
+
+    count = data.flatten.count
     # extract needed metadata and create articles
-    data.each_with_index do |item_data, index|
+    data.flatten.each_with_index do |item_data, index|
+      puts "[#{Time.now}] ingesting #{item_data['onescience_id']} (#{index+1} of #{count})"
+      # TODO: more logging
+      # TODO: progress logging
+
       # skip if article already exists in the cdr
       if item_data['Is bibliographic data in IR'] != 'No'
-        puts "Article is already in the CDR: #{item_data['onescience_id']}"
+        puts "[#{Time.now}] Article is already in the CDR: #{item_data['onescience_id']}"
         next
       end
       work_attributes, files = parse_onescience_metadata(item_data)
@@ -44,9 +76,29 @@ namespace :onescience do
 
       # Only keep attributes which apply to the given work type
       work.attributes = work_attributes.reject{|k,v| !work.attributes.keys.member?(k.to_s) unless k.to_s.ends_with? '_attributes'}
-      work.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
+
+      # Check for embargo data
+      embargo_term = embargo_mapping.find{ |e| e['onescience_id'] = item_data['onescience_id'] }
+      visibility = vis_public
+      embargo_release_date = nil
+      if !embargo_term.blank?
+        months = embargo_term['Embargo'][/\d+/].to_i
+        if (Date.parse((work_attributes['date_issued'])+'-01-01') + (months).months).future?
+          visibility = vis_private
+          embargo_release_date = (work_attributes['date_issued'] + (months).months)
+        end
+      end
+
+      work.visibility = visibility
+      if !embargo_release_date.blank?
+        work.embargo_release_date = embargo_release_date
+        work.visibility_during_embargo = vis_private
+        work.visibility_after_embargo = vis_public
+      end
 
       work.save!
+      puts "[#{Time.now}] #{item_data['onescience_id']},#{work.id} saved new article"
+
       work.update permissions_attributes: get_group_permissions
 
       # Create sipity record
@@ -59,8 +111,11 @@ namespace :onescience do
 
       # attach pdfs from folder on p-drive
       if !files.blank?
+        puts "[#{Time.now}] #{item_data['onescience_id']},#{work.id} attaching files"
         sources = []
+        file_count = files.count
         files.each_with_index do |(k,v),file_index|
+          puts "[#{Time.now}] #{item_data['onescience_id']},#{work.id} attaching file #{file_index+1} of #{file_count}"
           source_url = item_data[k.chomp('_Files')]
           if sources.include?(v)
             puts "skipping duplicate file: #{v}"
@@ -74,13 +129,13 @@ namespace :onescience do
           if k.include? 'PubMedCentral-Link'
             filename = "PubMedCentral-#{source_url.split('articles/').last.split('/').first}.pdf"
             # set as primary, public file if publisher version is allowed to be shared
-            if item_data['PDF'] == 'ü'
+            if item_data['PDF-label'] == 'yes'
               visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
             end
           elsif k.include? 'EuropePMC-Link'
             filename = "EuropePMC-#{source_url.split('accid=').last.split('&').first}.pdf"
             # set as primary, public file if publisher version is allowed to be shared and pubmed central is not available
-            if item_data['PDF'] == 'ü' && !item_data.key?('PubMedCentral-Link')
+            if item_data['PDF-label'] == 'yes' && !item_data.key?('PubMedCentral-Link')
               visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
             end
           else
@@ -91,7 +146,7 @@ namespace :onescience do
               filename = "#{v}.pdf"
             end
             # set as primary, public file if publisher version is allowed to be shared and no pubmed files are available
-            if item_data['PDF'] == 'ü' && file_index == 0
+            if item_data['PDF-label'] == 'yes' && file_index == 0
               visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
             end
           end
@@ -110,24 +165,30 @@ namespace :onescience do
             file.close
 
             file_set.visibility = visibility
-            file_set.save
+            file_set.save!
+
+            puts "[#{Time.now}] #{item_data['onescience_id']},#{work.id} saved file #{file_index+1} of #{file_count}"
           end
         end
       end
     end
 
     # metadata file?
-    # deposit record?
+    ### maybe just use original xlsx file in deposit record?
+    # TODO: deposit record?
+    ### one for each year spreadsheet?
     # cleanup?
+
+    puts "[#{Time.now}] Completed ingest of onescience articles in #{config['metadata_file']}"
   end
 
   def parse_onescience_metadata(onescience_data)
     work_attributes = {}
     identifiers = []
-    identifiers << onescience_data['onescience_id']
-    identifiers << onescience_data['DOI']
-    identifiers << onescience_data['PMID']
-    identifiers << onescience_data['PMCID']
+    identifiers << "Onescience id: #{onescience_data['onescience_id']}"
+    identifiers << "Publisher DOI: #{onescience_data['DOI']}" if !onescience_data['DOI'].blank?
+    identifiers << "PMID: #{onescience_data['PMID']}" if !onescience_data['PMID'].blank?
+    identifiers << "PMCID: #{onescience_data['PMCID']}" if !onescience_data['PMCID'].blank?
     work_attributes['identifier'] = identifiers.compact
     work_attributes['date_issued'] = (Date.try(:edtf, onescience_data['Year']) || onescience_data['Year']).to_s
     work_attributes['title'] = onescience_data['Title']
@@ -139,7 +200,7 @@ namespace :onescience do
     work_attributes['issn'] = onescience_data['ISSNs'].split('||') if !onescience_data['ISSNs'].blank?
     work_attributes['abstract'] = onescience_data['Abstract']
     work_attributes['keyword'] = onescience_data['Keywords'].split('||') if !onescience_data['Keywords'].blank?
-    work_attributes['creators_attributes'] = get_people(onescience_data)
+    work_attributes['creators_attributes'] = get_people(onescience_data['onescience_id'])
     work_attributes['resource_type'] = 'Article'
     work_attributes['language'] = 'http://id.loc.gov/vocabulary/iso639-2/eng'
     work_attributes['dcmi_type'] = 'http://purl.org/dc/dcmitype/Text'
@@ -151,14 +212,15 @@ namespace :onescience do
     [work_attributes, files]
   end
 
-  def get_people(metadata)
+  def get_people(onescience_id)
     people = {}
+    affiliation_data = @affiliation_mapping.find{ |e| e['onescience_id'] = onescience_id }
     (1..32).each do |index|
-      break if metadata['lastname_author'+index.to_s].blank? && metadata['firstname_author'+index.to_s].blank?
-      name = "#{metadata['lastname_author'+index.to_s]}, #{metadata['firstname_author'+index.to_s]}"
+      break if affiliation_data['lastname_author'+index.to_s].blank? && affiliation_data['firstname_author'+index.to_s].blank?
+      name = "#{affiliation_data['lastname_author'+index.to_s]}, #{affiliation_data['firstname_author'+index.to_s]}"
       people[index-1] = { 'name' => name,
-                          'orcid' => metadata['ORCID_author'+index.to_s],
-                          'other_affiliation' => metadata['affiliation_author'+index.to_s]}
+                          'orcid' => affiliation_data['ORCID_author'+index.to_s],
+                          'affiliation' => affiliation_data['affiliation_author'+index.to_s]}
     end
 
     people
