@@ -124,7 +124,7 @@ module Hyc
     end
 
     def create_doi(record)
-      Rails.logger.info "Creating DOI for #{record['id']}"
+      puts "Creating DOI for #{record['id']}"
       response = doi_request(format_data(record))
 
       if response.success?
@@ -135,9 +135,9 @@ module Hyc
         work.doi = full_doi
         work.save!
 
-        Rails.logger.info "DOI created for record #{record['id']} via DataCite: #{full_doi}"
+        puts "DOI created for record #{record['id']} via DataCite: #{full_doi}"
       else
-        Rails.logger.warn "Unable to create DOI for record #{record['id']} via DataCite. DOI not added. Reason: \"#{response}\""
+        puts "Unable to create DOI for record #{record['id']} via DataCite. DOI not added. Reason: \"#{response}\""
       end
 
       sleep(2)
@@ -150,13 +150,13 @@ module Hyc
 
 
       if records.length > 0
-        Rails.logger.info "Preparing to add DOIs to #{records.length} records"
+        puts "Preparing to add DOIs to #{records.length} records"
         records.each do |record|
           create_doi(record)
         end
-        Rails.logger.info "Added #{records.length} DOIs in #{Time.now - start_time}s"
+        puts "Added #{records.length} DOIs in #{Time.now - start_time}s"
       else
-        Rails.logger.info 'There are no records that need to have DOIs added.'
+        puts 'There are no records that need to have DOIs added.'
       end
     end
 
