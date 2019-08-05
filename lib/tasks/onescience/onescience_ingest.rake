@@ -1,9 +1,10 @@
 namespace :onescience do
   require 'roo'
+  require 'tasks/migrate/services/progress_tracker'
 
   desc 'batch migrate 1science articles from spreadsheet'
   task :ingest, [:configuration_file] => :environment do |t, args|
-    # config file with worktype, adminset, depositor, walnut mount location
+    # config file with worktype, adminset, depositor, mount location
     config = YAML.load_file(args[:configuration_file])
     puts "[#{Time.now}] Start ingest of onescience articles in #{config['metadata_file']}"
 
@@ -45,14 +46,24 @@ namespace :onescience do
       data_hash.delete_at(0)
       data << data_hash
     end
+    data.flatten!
     puts "[#{Time.now}] loaded onescience data"
 
-    count = data.flatten.count
+    # Progress tracker for objects migrated
+    @object_progress = Migrate::Services::ProgressTracker.new(config['progress_log'])
+    already_ingested = @object_progress.completed_set
+    puts "Skipping #{already_ingested.length} previously ingested works"
+
+    count = data.count
     # extract needed metadata and create articles
-    data.flatten.each_with_index do |item_data, index|
+    data.each_with_index do |item_data, index|
       puts "[#{Time.now}] ingesting #{item_data['onescience_id']} (#{index+1} of #{count})"
-      # TODO: more logging
-      # TODO: progress logging
+
+      # Skip this item if it has been ingested before
+      if already_ingested.include?(item_data['onescience_id'])
+        puts "Skipping previously ingested #{item_data['onescience_id']}"
+        next
+      end
 
       # skip if article already exists in the cdr
       if item_data['Is bibliographic data in IR'] != 'No'
@@ -83,9 +94,10 @@ namespace :onescience do
       embargo_release_date = nil
       if !embargo_term.blank?
         months = embargo_term['Embargo'][/\d+/].to_i
-        if (Date.parse((work_attributes['date_issued'])+'-01-01') + (months).months).future?
+        original_embargo_release_date = Date.parse(work_attributes['date_issued']+'-01-01') + (months).months
+        if original_embargo_release_date.future?
           visibility = vis_private
-          embargo_release_date = (work_attributes['date_issued'] + (months).months)
+          embargo_release_date = original_embargo_release_date
         end
       end
 
@@ -118,36 +130,30 @@ namespace :onescience do
           puts "[#{Time.now}] #{item_data['onescience_id']},#{work.id} attaching file #{file_index+1} of #{file_count}"
           source_url = item_data[k.chomp('_Files')]
           if sources.include?(v)
-            puts "skipping duplicate file: #{v}"
+            puts "[#{Time.now}] #{item_data['onescience_id']},#{work.id} skipping duplicate file: #{v}"
             next
           else
             sources << v
           end
 
-          visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
+          file_visibility = vis_private
 
+          # set pubmed central or first listed file as public
+          if (file_index == 0 && !files.key?('PubMedCentral-Link_Files')) || (k.include? 'PubMedCentral-Link')
+            file_visibility = vis_public
+          end
+
+          # parse filename
           if k.include? 'PubMedCentral-Link'
             filename = "PubMedCentral-#{source_url.split('articles/').last.split('/').first}.pdf"
-            # set as primary, public file if publisher version is allowed to be shared
-            if item_data['PDF-label'] == 'yes'
-              visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
-            end
           elsif k.include? 'EuropePMC-Link'
             filename = "EuropePMC-#{source_url.split('accid=').last.split('&').first}.pdf"
-            # set as primary, public file if publisher version is allowed to be shared and pubmed central is not available
-            if item_data['PDF-label'] == 'yes' && !item_data.key?('PubMedCentral-Link')
-              visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
-            end
           else
             if source_url.match(/.*\/[a-zA-Z0-9._-]*\.pdf$/)
               filename = source_url.split('/').last
             else
-              puts "Nonstandard source url: #{source_url}"
+              puts "[#{Time.now}] #{item_data['onescience_id']},#{work.id} nonstandard source url: #{source_url}"
               filename = "#{v}.pdf"
-            end
-            # set as primary, public file if publisher version is allowed to be shared and no pubmed files are available
-            if item_data['PDF-label'] == 'yes' && file_index == 0
-              visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
             end
           end
 
@@ -164,13 +170,19 @@ namespace :onescience do
             actor.attach_to_work(work)
             file.close
 
-            file_set.visibility = visibility
+            file_set.visibility = file_visibility
+            if file_visibility == vis_public && !embargo_release_date.nil?
+              file_set.embargo_release_date = embargo_release_date
+              file_set.visibility_during_embargo = vis_private
+              file_set.visibility_after_embargo = vis_public
+            end
             file_set.save!
 
             puts "[#{Time.now}] #{item_data['onescience_id']},#{work.id} saved file #{file_index+1} of #{file_count}"
           end
         end
       end
+      @object_progress.add_entry(item_data['onescience_id'])
     end
 
     # metadata file?
