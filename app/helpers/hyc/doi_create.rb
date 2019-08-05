@@ -43,13 +43,15 @@ module Hyc
               }
           }
       }
+      
+      work_rec = ActiveFedora::Base.find(record['id'])
 
       #########################
       #
       # Required fields
       #
       #########################
-      creators = parse_people(record, 'creator_display_tesim')
+      creators = parse_people(work_rec, 'creators')
       if creators.blank?
         data[:data][:attributes][:creators] = {
             name: 'The University of North Carolina at Chapel Hill University Libraries',
@@ -85,7 +87,7 @@ module Hyc
       # Optional fields
       #
       ############################
-      contributors = parse_people(record, 'contributor_display_tesim')
+      contributors = parse_people(work_rec, 'contributors')
       unless contributors.blank?
         data[:data][:attributes][:contributors] = contributors
       end
@@ -125,7 +127,9 @@ module Hyc
 
     def create_doi(record)
       puts "Creating DOI for #{record['id']}"
-      response = doi_request(format_data(record))
+      record_data = format_data(record)
+      puts record_data.inspect
+      response = doi_request(record_data)
 
       if response.success?
         doi_url_base = @use_test_api ? 'https://handle.test.datacite.org' : 'https://doi.org'
@@ -135,9 +139,9 @@ module Hyc
         work.doi = full_doi
         work.save!
 
-        puts "DOI created for record #{record['id']} via DataCite: #{full_doi}"
+        puts "DOI created for record #{record['id']}: #{full_doi}"
       else
-        puts "Unable to create DOI for record #{record['id']} via DataCite. DOI not added. Reason: \"#{response}\""
+        puts "ERROR: Unable to create DOI for record #{record['id']}. Reason: \"#{response}\""
       end
 
       sleep(2)
@@ -146,7 +150,8 @@ module Hyc
     def create_batch_doi
       start_time = Time.now
       records = ActiveFedora::SolrService.get("visibility_ssi:open AND -doi_tesim:* AND workflow_state_name_ssim:deposited AND has_model_ssim:(Article Artwork DataSet Dissertation General HonorsThesis Journal MastersPaper Multimed ScholarlyWork)",
-                                              :rows => @rows)["response"]["docs"]
+                                              :rows => @rows,
+                                              :sort => "system_create_dtsi ASC")["response"]["docs"]
 
 
       if records.length > 0
@@ -212,29 +217,36 @@ module Hyc
       get_values(record["#{field}"], formatted_values)
     end
 
-    def parse_people(record, field)
-      people = ->(work) {
-        work.map  do |p|
-          person_values = p.split(/\|\|/)
-          person = { name: person_values.first, nameType: 'Personal' }
-
-          person_values.each do |p|
-            p.match(/Affiliation:.*/) do |m|
-              affiliation = m[0].gsub('Affiliation:', '')
-              person[:affiliation] = affiliation.strip
-            end
-
-            p.match(/ORCID.*/) do |m|
-              orcid_value = m[0].split('ORCID:')
-              person[:nameIdentifiers] = [ nameIdentifier: orcid_value.last.strip, nameIdentifierScheme: 'ORCID']
-            end
-          end
-
-          person
+    def parse_people(work, person_field)
+      if !work.attributes.keys.member?(person_field)
+        return []
+      end
+      
+      people = []
+      
+      work[person_field].each do |p|
+        p_json = JSON.parse(p.to_json)
+        person = { name: p_json['name'].first, nameType: 'Personal' }
+        
+        affil = p_json['affiliation']&.first
+        other_affil = p_json['other_affiliation']&.first
+        
+        if !affil.blank?
+          expanded_affils = DepartmentsService.label(affil)
+          person[:affiliation] = expanded_affils.split('; ') unless expanded_affils.nil?
+        elsif !other_affil.blank?
+          person[:affiliation] = [other_affil]
         end
-      }
-
-      get_values(record["#{field}"], people)
+        
+        orcid = p_json['orcid']&.first
+        if !orcid.blank?
+          person[:nameIdentifiers] = [ nameIdentifier: orcid, nameIdentifierScheme: 'ORCID']
+        end
+        
+        people << person
+      end
+      
+      people
     end
 
     private
