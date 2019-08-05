@@ -130,11 +130,12 @@ module Hyc
       if response.success?
         doi_url_base = @use_test_api ? 'https://handle.test.datacite.org' : 'https://doi.org'
         doi = JSON.parse(response.body)['data']['id']
+        full_doi = "#{doi_url_base}/#{doi}"
         work = ActiveFedora::Base.find(record['id'])
-        work.doi = "#{doi_url_base}/#{doi}"
+        work.doi = full_doi
         work.save!
 
-        Rails.logger.info "DOI created for record #{record['id']} via DataCite."
+        Rails.logger.info "DOI created for record #{record['id']} via DataCite: #{full_doi}"
       else
         Rails.logger.warn "Unable to create DOI for record #{record['id']} via DataCite. DOI not added. Reason: \"#{response}\""
       end
@@ -143,13 +144,17 @@ module Hyc
     end
 
     def create_batch_doi
+      start_time = Time.now
       records = ActiveFedora::SolrService.get("visibility_ssi:open AND -doi_tesim:* AND workflow_state_name_ssim:deposited AND has_model_ssim:(Article Artwork DataSet Dissertation General HonorsThesis Journal MastersPaper Multimed ScholarlyWork)",
                                               :rows => @rows)["response"]["docs"]
 
+
       if records.length > 0
+        Rails.logger.info "Preparing to add DOIs to #{records.length} records"
         records.each do |record|
           create_doi(record)
         end
+        Rails.logger.info "Added #{records.length} DOIs in #{Time.now - start_time}s"
       else
         Rails.logger.info 'There are no records that need to have DOIs added.'
       end
