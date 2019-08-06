@@ -49,6 +49,22 @@ namespace :onescience do
     data.flatten!
     puts "[#{Time.now}] loaded onescience data"
 
+    # create deposit record
+    deposit_record = DepositRecord.new({ title: config['deposit_title'],
+                                         deposit_method: config['deposit_method'],
+                                         deposit_package_type: config['deposit_type'],
+                                         deposit_package_subtype: config['deposit_subtype'],
+                                         deposited_by: @depositor_onyen })
+    # attach metadata file to deposit record
+    original_metadata = FedoraOnlyFile.new({'title' => config['metadata_file'],
+                                            'deposit_record' => deposit_record})
+    original_metadata.file.content = File.open(config['metadata_dir']+'/'+config['metadata_file'])
+    original_metadata.save!
+    deposit_record[:manifest] = [original_metadata.uri]
+    deposit_record.save!
+    deposit_record_id = deposit_record.uri
+    puts "[#{Time.now}] created deposit record for batch"
+
     # Progress tracker for objects migrated
     @object_progress = Migrate::Services::ProgressTracker.new(config['progress_log'])
     already_ingested = @object_progress.completed_set
@@ -87,6 +103,7 @@ namespace :onescience do
 
       # Only keep attributes which apply to the given work type
       work.attributes = work_attributes.reject{|k,v| !work.attributes.keys.member?(k.to_s) unless k.to_s.ends_with? '_attributes'}
+                            .merge({'deposit_record' => deposit_record_id})
 
       # Check for embargo data
       embargo_term = embargo_mapping.find{ |e| e['onescience_id'] = item_data['onescience_id'] }
@@ -190,12 +207,6 @@ namespace :onescience do
       end
       @object_progress.add_entry(item_data['onescience_id'])
     end
-
-    # metadata file?
-    ### maybe just use original xlsx file in deposit record?
-    # TODO: deposit record?
-    ### one for each year spreadsheet?
-    # cleanup?
 
     puts "[#{Time.now}] Completed ingest of onescience articles in #{config['metadata_file']}"
   end
