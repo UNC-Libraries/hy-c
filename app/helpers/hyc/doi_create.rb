@@ -106,7 +106,9 @@ module Hyc
 
       rights = parse_field(record, 'rights_statement_tesim')
       unless rights.blank?
-        data[:data][:attributes][:rightsList] = CdrRightsStatementsService.label(rights.first)
+        rights_uri = rights.first
+        rights_label = CdrRightsStatementsService.label(rights_uri)
+        data[:data][:attributes][:rightsList] = { rights: rights_label, rightsUri: rights_uri }
       end
 
       sizes = parse_field(record, 'extent_tesim')
