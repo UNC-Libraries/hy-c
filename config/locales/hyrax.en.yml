@@ -92,6 +92,7 @@ en:
       departments: Departments
       collections: Collections
       deposit: Deposit
+      sidekiq: Sidekiq
     deposit:
       header: Deposit Your Work
       article: Article
