@@ -1,38 +1,37 @@
 module Hyc
   class DoiCreate
-    def initialize(rows = 1000, use_test_api = true)
+    def initialize(rows = 1000)
       @rows = rows
-      @use_test_api = use_test_api
+      @use_test_api = ENV['DATACITE_USE_TEST_API'].to_s.downcase == "true"
+      @doi_prefix = ENV['DATACITE_PREFIX']
+      if @use_test_api
+        @doi_creation_url = 'https://api.test.datacite.org/dois'
+        @doi_url_base = 'https://handle.test.datacite.org'
+      else
+        @doi_creation_url = 'https://api.datacite.org/dois'
+        @doi_url_base = 'https://doi.org'
+      end
+      @doi_user = ENV['DATACITE_USER']
+      @doi_password = ENV['DATACITE_PASSWORD']
     end
 
     def doi_request(data)
-      if @use_test_api
-        url = 'https://api.test.datacite.org/dois'
-        user = ENV['DATACITE_TEST_USER']
-        password = ENV['DATACITE_TEST_PASSWORD']
-      else
-        url = 'https://api.datacite.org/dois'
-        user = ENV['DATACITE_USER']
-        password = ENV['DATACITE_PASSWORD']
-      end
-
-      HTTParty.post(url,
+      HTTParty.post(@doi_creation_url,
                     headers: {'Content-Type' => 'application/vnd.api+json'},
                     basic_auth: {
-                        username: user,
-                        password: password
+                        username: @doi_user,
+                        password: @doi_password
                     },
                     body: data
       )
     end
 
-    def format_data(record)
-      doi_prefix = @use_test_api ? ENV['DOI_TEST_PREFIX'] : ENV['DOI_PREFIX']
+    def format_data(record, work)
       data = {
           data: {
               type: 'dois',
               attributes: {
-                  prefix: doi_prefix,
+                  prefix: @doi_prefix,
                   titles: [{ title: record['title_tesim'].first }],
                   types: {
                       resourceTypeGeneral: resource_type_parse(record['dcmi_type_tesim'], record['resource_type_tesim'])
@@ -49,7 +48,7 @@ module Hyc
       # Required fields
       #
       #########################
-      creators = parse_people(record, 'creator_display_tesim')
+      creators = parse_people(work, 'creators')
       if creators.blank?
         data[:data][:attributes][:creators] = {
             name: 'The University of North Carolina at Chapel Hill University Libraries',
@@ -85,7 +84,7 @@ module Hyc
       # Optional fields
       #
       ############################
-      contributors = parse_people(record, 'contributor_display_tesim')
+      contributors = parse_people(work, 'contributors')
       unless contributors.blank?
         data[:data][:attributes][:contributors] = contributors
       end
@@ -107,7 +106,9 @@ module Hyc
 
       rights = parse_field(record, 'rights_statement_tesim')
       unless rights.blank?
-        data[:data][:attributes][:rightsList] = CdrRightsStatementsService.label(rights.first)
+        rights_uri = rights.first
+        rights_label = CdrRightsStatementsService.label(rights_uri)
+        data[:data][:attributes][:rightsList] = { rights: rights_label, rightsUri: rights_uri }
       end
 
       sizes = parse_field(record, 'extent_tesim')
@@ -124,34 +125,40 @@ module Hyc
     end
 
     def create_doi(record)
-      Rails.logger.info "Creating DOI for #{record['id']}"
-      response = doi_request(format_data(record))
+      puts "Creating DOI for #{record['id']}"
+      work = ActiveFedora::Base.find(record['id'])
+      record_data = format_data(record, work)
+      response = doi_request(record_data)
 
       if response.success?
-        doi_url_base = @use_test_api ? 'https://handle.test.datacite.org' : 'https://doi.org'
         doi = JSON.parse(response.body)['data']['id']
-        work = ActiveFedora::Base.find(record['id'])
-        work.doi = "#{doi_url_base}/#{doi}"
+        full_doi = "#{@doi_url_base}/#{doi}"
+        work.doi = full_doi
         work.save!
 
-        Rails.logger.info "DOI created for record #{record['id']} via DataCite."
+        puts "DOI created for record #{record['id']}: #{full_doi}"
       else
-        Rails.logger.warn "Unable to create DOI for record #{record['id']} via DataCite. DOI not added. Reason: \"#{response}\""
+        puts "ERROR: Unable to create DOI for record #{record['id']}. Reason: \"#{response}\""
       end
 
       sleep(2)
     end
 
     def create_batch_doi
+      start_time = Time.now
       records = ActiveFedora::SolrService.get("visibility_ssi:open AND -doi_tesim:* AND workflow_state_name_ssim:deposited AND has_model_ssim:(Article Artwork DataSet Dissertation General HonorsThesis Journal MastersPaper Multimed ScholarlyWork)",
-                                              :rows => @rows)["response"]["docs"]
+                                              :rows => @rows,
+                                              :sort => "system_create_dtsi ASC")["response"]["docs"]
+
 
       if records.length > 0
+        puts "Preparing to add DOIs to #{records.length} records"
         records.each do |record|
           create_doi(record)
         end
+        puts "Added #{records.length} DOIs in #{Time.now - start_time}s"
       else
-        Rails.logger.info 'There are no records that need to have DOIs added.'
+        puts 'There are no records that need to have DOIs added.'
       end
     end
 
@@ -207,29 +214,36 @@ module Hyc
       get_values(record["#{field}"], formatted_values)
     end
 
-    def parse_people(record, field)
-      people = ->(work) {
-        work.map  do |p|
-          person_values = p.split(/\|\|/)
-          person = { name: person_values.first, nameType: 'Personal' }
-
-          person_values.each do |p|
-            p.match(/Affiliation:.*/) do |m|
-              affiliation = m[0].gsub('Affiliation:', '')
-              person[:affiliation] = affiliation.strip
-            end
-
-            p.match(/ORCID.*/) do |m|
-              orcid_value = m[0].split('ORCID:')
-              person[:nameIdentifiers] = [ nameIdentifier: orcid_value.last.strip, nameIdentifierScheme: 'ORCID']
-            end
-          end
-
-          person
+    def parse_people(work, person_field)
+      if !work.attributes.keys.member?(person_field)
+        return []
+      end
+      
+      people = []
+      
+      work[person_field].each do |p|
+        p_json = JSON.parse(p.to_json)
+        person = { name: p_json['name'].first, nameType: 'Personal' }
+        
+        affil = p_json['affiliation']&.first
+        other_affil = p_json['other_affiliation']&.first
+        
+        if !affil.blank?
+          expanded_affils = DepartmentsService.label(affil)
+          person[:affiliation] = expanded_affils.split('; ') unless expanded_affils.nil?
+        elsif !other_affil.blank?
+          person[:affiliation] = [other_affil]
         end
-      }
-
-      get_values(record["#{field}"], people)
+        
+        orcid = p_json['orcid']&.first
+        if !orcid.blank?
+          person[:nameIdentifiers] = [ nameIdentifier: orcid, nameIdentifierScheme: 'ORCID']
+        end
+        
+        people << person
+      end
+      
+      people
     end
 
     private
