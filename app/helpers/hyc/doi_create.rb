@@ -1,38 +1,37 @@
 module Hyc
   class DoiCreate
-    def initialize(rows = 1000, use_test_api = true)
+    def initialize(rows = 1000)
       @rows = rows
-      @use_test_api = use_test_api
+      @use_test_api = ENV['DATACITE_USE_TEST_API'].to_s.downcase == "true"
+      @doi_prefix = ENV['DATACITE_PREFIX']
+      if @use_test_api
+        @doi_creation_url = 'https://api.test.datacite.org/dois'
+        @doi_url_base = 'https://handle.test.datacite.org'
+      else
+        @doi_creation_url = 'https://api.datacite.org/dois'
+        @doi_url_base = 'https://doi.org'
+      end
+      @doi_user = ENV['DATACITE_USER']
+      @doi_password = ENV['DATACITE_PASSWORD']
     end
 
     def doi_request(data)
-      if @use_test_api
-        url = 'https://api.test.datacite.org/dois'
-        user = ENV['DATACITE_TEST_USER']
-        password = ENV['DATACITE_TEST_PASSWORD']
-      else
-        url = 'https://api.datacite.org/dois'
-        user = ENV['DATACITE_USER']
-        password = ENV['DATACITE_PASSWORD']
-      end
-
-      HTTParty.post(url,
+      HTTParty.post(@doi_creation_url,
                     headers: {'Content-Type' => 'application/vnd.api+json'},
                     basic_auth: {
-                        username: user,
-                        password: password
+                        username: @doi_user,
+                        password: @doi_password
                     },
                     body: data
       )
     end
 
-    def format_data(record)
-      doi_prefix = @use_test_api ? ENV['DOI_TEST_PREFIX'] : ENV['DOI_PREFIX']
+    def format_data(record, work)
       data = {
           data: {
               type: 'dois',
               attributes: {
-                  prefix: doi_prefix,
+                  prefix: @doi_prefix,
                   titles: [{ title: record['title_tesim'].first }],
                   types: {
                       resourceTypeGeneral: resource_type_parse(record['dcmi_type_tesim'], record['resource_type_tesim'])
@@ -43,15 +42,13 @@ module Hyc
               }
           }
       }
-      
-      work_rec = ActiveFedora::Base.find(record['id'])
 
       #########################
       #
       # Required fields
       #
       #########################
-      creators = parse_people(work_rec, 'creators')
+      creators = parse_people(work, 'creators')
       if creators.blank?
         data[:data][:attributes][:creators] = {
             name: 'The University of North Carolina at Chapel Hill University Libraries',
@@ -87,7 +84,7 @@ module Hyc
       # Optional fields
       #
       ############################
-      contributors = parse_people(work_rec, 'contributors')
+      contributors = parse_people(work, 'contributors')
       unless contributors.blank?
         data[:data][:attributes][:contributors] = contributors
       end
@@ -127,15 +124,13 @@ module Hyc
 
     def create_doi(record)
       puts "Creating DOI for #{record['id']}"
-      record_data = format_data(record)
-      puts record_data.inspect
+      work = ActiveFedora::Base.find(record['id'])
+      record_data = format_data(record, work)
       response = doi_request(record_data)
 
       if response.success?
-        doi_url_base = @use_test_api ? 'https://handle.test.datacite.org' : 'https://doi.org'
         doi = JSON.parse(response.body)['data']['id']
-        full_doi = "#{doi_url_base}/#{doi}"
-        work = ActiveFedora::Base.find(record['id'])
+        full_doi = "#{@doi_url_base}/#{doi}"
         work.doi = full_doi
         work.save!
 
