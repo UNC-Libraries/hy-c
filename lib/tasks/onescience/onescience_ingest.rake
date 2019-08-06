@@ -126,6 +126,12 @@ namespace :onescience do
         puts "[#{Time.now}] #{item_data['onescience_id']},#{work.id} attaching files"
         sources = []
         file_count = files.count
+
+        # Move pubmed file to beginning of hash so it will be the primary work
+        if files.key?('PubMedCentral-Link_Files')
+          files = {'PubMedCentral-Link_Files' => files['PubMedCentral-Link_Files']}.merge(files)
+        end
+
         files.each_with_index do |(k,v),file_index|
           puts "[#{Time.now}] #{item_data['onescience_id']},#{work.id} attaching file #{file_index+1} of #{file_count}"
           source_url = item_data[k.chomp('_Files')]
