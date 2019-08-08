@@ -16,14 +16,25 @@ module Hyc
     end
 
     def doi_request(data)
-      HTTParty.post(@doi_creation_url,
-                    headers: {'Content-Type' => 'application/vnd.api+json'},
-                    basic_auth: {
-                        username: @doi_user,
-                        password: @doi_password
-                    },
-                    body: data
-      )
+      retries = 2
+      begin
+        HTTParty.post(@doi_creation_url,
+                      headers: {'Content-Type' => 'application/vnd.api+json'},
+                      basic_auth: {
+                          username: @doi_user,
+                          password: @doi_password
+                      },
+                      body: data
+        )
+      rescue Net::ReadTimeout, Net::OpenTimeout => e
+        if retries > 0
+          retries -= 1
+          puts "Timed out while attempting to create DOI using #{@doi_creation_url}, retrying with #{retries} retries remaining."
+          sleep(30)
+        else
+          raise e
+        end
+      end
     end
 
     def format_data(record, work)
