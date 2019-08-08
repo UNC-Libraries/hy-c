@@ -41,10 +41,13 @@ namespace :onescience do
     sheets = workbook.sheets
     data = []
     sheets.each do |sheet|
-      data_hash = workbook.sheet(sheet).parse(headers: true)
-      # first hash is of headers
-      data_hash.delete_at(0)
-      data << data_hash
+      if sheet.match('1foldr_UNCCH_01_Part')
+        data_hash = workbook.sheet(sheet).parse(headers: true)
+        data_hash.delete_if{|hash| hash['onescience_id'].blank? }
+        # first hash is of headers
+        data_hash.delete_at(0)
+        data << data_hash
+      end
     end
     data.flatten!
     puts "[#{Time.now}] loaded onescience data"
@@ -215,17 +218,17 @@ namespace :onescience do
     work_attributes = {}
     identifiers = []
     identifiers << "Onescience id: #{onescience_data['onescience_id']}"
-    identifiers << "Publisher DOI: #{onescience_data['DOI']}" if !onescience_data['DOI'].blank?
+    identifiers << "Publisher DOI: https://doi.org/#{onescience_data['DOI']}" if !onescience_data['DOI'].blank?
     identifiers << "PMID: #{onescience_data['PMID']}" if !onescience_data['PMID'].blank?
     identifiers << "PMCID: #{onescience_data['PMCID']}" if !onescience_data['PMCID'].blank?
     work_attributes['identifier'] = identifiers.compact
     work_attributes['date_issued'] = (Date.try(:edtf, onescience_data['Year']) || onescience_data['Year']).to_s
-    work_attributes['title'] = onescience_data['Title']
+    work_attributes['title'] = onescience_data['Title'].gsub(/[:\.]\z/,'')
     work_attributes['journal_title'] = onescience_data['Journal Title']
-    work_attributes['journal_volume'] = onescience_data['Volume']
-    work_attributes['journal_issue'] = onescience_data['Issue']
-    work_attributes['page_start'] = onescience_data['First Page']
-    work_attributes['page_end'] = onescience_data['Last Page']
+    work_attributes['journal_volume'] = onescience_data['Volume'].to_s
+    work_attributes['journal_issue'] = onescience_data['Issue'].to_s
+    work_attributes['page_start'] = onescience_data['First Page'].to_s
+    work_attributes['page_end'] = onescience_data['Last Page'].to_s
     work_attributes['issn'] = onescience_data['ISSNs'].split('||') if !onescience_data['ISSNs'].blank?
     work_attributes['abstract'] = onescience_data['Abstract']
     work_attributes['keyword'] = onescience_data['Keywords'].split('||') if !onescience_data['Keywords'].blank?
@@ -243,13 +246,14 @@ namespace :onescience do
 
   def get_people(onescience_id)
     people = {}
-    affiliation_data = @affiliation_mapping.find{ |e| e['onescience_id'] = onescience_id }
+    affiliation_data = @affiliation_mapping.find{ |e| e['onescience_id'] == onescience_id }
     (1..32).each do |index|
-      break if affiliation_data['lastname_author'+index.to_s].blank? && affiliation_data['firstname_author'+index.to_s].blank?
+      break if affiliation_data['lastname_author'+index.to_s].blank? || affiliation_data['firstname_author'+index.to_s].blank?
       name = "#{affiliation_data['lastname_author'+index.to_s]}, #{affiliation_data['firstname_author'+index.to_s]}"
+      affiliations = affiliation_data['affiliation_author'+index.to_s]
       people[index-1] = { 'name' => name,
                           'orcid' => affiliation_data['ORCID_author'+index.to_s],
-                          'affiliation' => affiliation_data['affiliation_author'+index.to_s]}
+                          'affiliation' => (affiliations.split('||') if !affiliations.blank?)}
     end
 
     people
