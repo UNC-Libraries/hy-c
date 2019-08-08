@@ -1,5 +1,21 @@
 module Hyc
   class DoiCreate
+    # From page 38 https://schema.datacite.org/meta/kernel-4.2/doc/DataCite-MetadataKernel_v4.2.pdf
+    DCMI_TO_DATACITE_TYPE = {
+      'MovingImage' => 'Audiovisual',
+      'Collection' => 'Collection',
+      'Dataset' => 'Dataset',
+      'Event' => 'Event',
+      'StillImage' => 'Image',
+      'Image' => 'Image',
+      'InteractiveResource' => 'InteractiveResource',
+      'PhysicalObject' => 'PhysicalObject',
+      'Service' => 'Service',
+      'Software' => 'Software',
+      'Sound' => 'Sound',
+      'Text' => 'Text'
+    }
+    
     def initialize(rows = 1000)
       @rows = rows
       @use_test_api = ENV['DATACITE_USE_TEST_API'].to_s.downcase == "true"
@@ -44,9 +60,7 @@ module Hyc
               attributes: {
                   prefix: @doi_prefix,
                   titles: [{ title: record['title_tesim'].first }],
-                  types: {
-                      resourceTypeGeneral: resource_type_parse(record['dcmi_type_tesim'], record['resource_type_tesim'])
-                  },
+                  types: resource_type_parse(record['dcmi_type_tesim'], record['resource_type_tesim']),
                   url: "#{ENV['HYRAX_HOST']}/concern/#{record['has_model_ssim'].first.downcase}s/#{record['id']}?locale=en",
                   event: 'publish',
                   schemaVersion: 'http://datacite.org/schema/kernel-4'
@@ -179,27 +193,30 @@ module Hyc
 
     # Field uses a controlled vocabulary
     def resource_type_parse(dcmi_type, record_type)
-      unless dcmi_type.nil?
-        return dcmi_type.first.split('/').last
+      result = {}
+      
+      datacite_type = nil
+      if !dcmi_type.nil?
+        # Prioritize the "text" type when multiple are present
+        if dcmi_type.include?('http://purl.org/dc/dcmitype/Text')
+          dcmi_val = 'http://purl.org/dc/dcmitype/Text'
+        else
+          dcmi_val = dcmi_type.first
+        end
+        dcmi_type_term = dcmi_val.split('/').last
+        datacite_type = DCMI_TO_DATACITE_TYPE[dcmi_type_term]
       end
-
-      resource_type = (record_type.nil?) ? '' : record_type.first
-      case resource_type
-      when 'Dataset'
-        'Dataset'
-      when 'Image'
-        'Image'
-      when 'Audio'
-        'Sound'
-      when 'Software or Program Code'
-        'Software'
-      when 'Video'
-        'Audiovisual'
-      when ''
-        'Other'
-      else
-        'Text'
+      if datacite_type.nil?
+        puts "WARNING: Invalid resourceTypeGeneral, DCMI type was '#{dcmi_type}'"
       end
+      # Storing the datacite type. If it is nil or invalid, datacite will reject the creation
+      result[:resourceTypeGeneral] = datacite_type
+      
+      unless record_type.blank?
+        result[:resourceType] = record_type.first
+      end
+      
+      result
     end
 
     def parse_funding(record, field)
