@@ -117,6 +117,12 @@ terms:
   - id: Heart and Vascular Center
     term: School of Medicine; Center for Heart and Vascular Care
     active: false
+  - id: Center for Esophageal Diseases and Swallowing
+    term: School of Medicine, Department of Medicine, Center for Esophageal Diseases and Swallowing
+    active: true
+  - id: Center for Faculty Excellence
+    term: Center for Faculty Excellence
+    active: true
   - id: Center for Genomics and Society
     term: School of Medicine; Department of Social Medicine; Center for Genomics and Society
     active: true
@@ -134,6 +140,9 @@ terms:
     active: true
   - id: Center for Nanotechnology in Drug Delivery
     term: Eshelman School of Pharmacy; Center for Nanotechnology in Drug Delivery
+    active: true
+  - id: Center for Pain Research and Innovation
+    term: School of Dentistry, Center for Pain Research and Innovation
     active: true
   - id: Center of Pharmacogenomics and Individualized Therapy
     term: Eshelman School of Pharmacy; Center of Pharmacogenomics and Individualized Therapy
@@ -549,6 +558,9 @@ terms:
   - id: Department of Religious Studies
     term: College of Arts and Sciences; Department of Religious Studies
     active: true
+  - id: Department of Research Computing
+    term: Information Technology Services, Department of Research Computing
+    active: true
   - id: Department of Romance Languages
     term: College of Arts and Sciences; Department of Romance Studies
     active: false
@@ -602,6 +614,9 @@ terms:
     active: true
   - id: Division of Cardiology
     term: School of Medicine; Division of Cardiology; Department of Medicine
+    active: true
+  - id: Division of Cardiothoracic Surgery
+    term: School of Medicine, Department of Surgery, Division of Cardiothoracic Surgery
     active: true
   - id: Division of Chemical Biology and Medicinal Chemistry
     term: Eshelman School of Pharmacy; Division of Chemical Biology and Medicinal Chemistry
@@ -756,6 +771,9 @@ terms:
   - id: Highway Safety Research Center
     term: Highway Safety Research Center
     active: true
+  - id: HIV Cure Center
+    term: HIV Cure Center
+    active: true
   - id: Honors Carolina
     term: Honors Carolina
     active: true
@@ -788,6 +806,9 @@ terms:
     active: true
   - id: Institute for the Study of the Americas
     term: Institute for the Study of the Americas
+    active: true
+  - id: Institute of African American Research
+    term: Institute of African American Research
     active: true
   - id: Institute of Marine Sciences
     term: Institute of Marine Sciences
@@ -841,6 +862,9 @@ terms:
   - id: Mass Communication Graduate Program
     term: School of Media and Journalism; Mass Communication Graduate Program
     active: true
+  - id: Marsico Lung Institute/UNC Cystic Fibrosis Center
+    term: School of Medicine, Marsico Lung Institute/UNC Cystic Fibrosis Center
+    active: true
   - id: Materials Science Program
     term: College of Arts and Sciences; Department of Applied Physical Sciences; Materials Science Program
     active: false
@@ -850,11 +874,17 @@ terms:
   - id: Mathematical Decision Sciences Program
     term: College of Arts and Sciences; Department of Statistics and Operations Research; Mathematical Decision Sciences Program
     active: false
+  - id: Matthew Gfeller Sport-Related Traumatic Brain Injury Research Center
+    term: College of Arts and Sciences, Department of Exercise and Sports Science, Matthew Gfeller Sport-Related Traumatic Brain Injury Research Center
+    active: true
   - id: Michael Hooker Microscopy Facility
     term: School of Medicine; Michael Hooker Microscopy Facility
     active: true
   - id: Molecular and Cellular Pathology Graduate Program
     term: School of Medicine; Department of Pathology and Laboratory Medicine; Molecular and Cellular Pathology Graduate Program
+    active: true
+  - id: Moore Undergraduate Research Apprenticeship Program (MURAP)
+    term: Institute of African American Research, Moore Undergraduate Research Apprenticeship Program (MURAP)
     active: true
   - id: Musicology Graduate Program
     term: College of Arts and Sciences; Department of Music; Musicology Graduate Program
@@ -874,6 +904,9 @@ terms:
     active: false
   - id: Neuroscience Curriculum
     term: School of Medicine; UNC Neuroscience Center; Neuroscience Curriculum
+    active: true
+  - id: NIMH Psychoactive Drug Screening Program
+    term: School of Medicine, Department of Pharmacology, NIMH Psychoactive Drug Screening Program
     active: true
   - id: North Carolina Institute for Public Health
     term: Gillings School of Global Public Health; North Carolina Institute for Public Health
@@ -922,6 +955,9 @@ terms:
     active: true
   - id: Organic Chemistry Program
     term: College of Arts and Sciences; Department of Chemistry; Organic Chemistry Program
+    active: true
+  - id: Partnerships in Aging Program
+    term: Office of the Provost, Partnerships in Aging Program
     active: true
   - id: Pathobiology and Translational Science Graduate Program
     term: School of Medicine; Department of Pathology and Laboratory Medicine; Pathobiology and Translational Science Graduate Program
@@ -1137,4 +1173,16 @@ terms:
     active: false
   - id: University of North Carolina at Chapel Hill. Library
     term: University of North Carolina at Chapel Hill. Library
+    active: true
+  - id: UNC Global Women's Health
+    term: School of Medicine, Department of Obstetrics and Gynecology, UNC Global Women's Health
+    active: true
+  - id: UNC Medical Center
+    term: UNC Medical Center
+    active: true
+  - id: UNC Project-China
+    term: School of Medicine, UNC Project-China
+    active: true
+  - id: UNC Project-Malawi
+    term: School of Medicine, UNC Project-Malawi
     active: true
