@@ -16,6 +16,38 @@ module Hyc
       'Text' => 'Text'
     }
     
+    RESOURCE_TYPE_TO_DATACITE = {
+      '3D Object' => 'InteractiveResource',
+      'Art' => 'Other',
+      'Article' => 'Text',
+      'Audio' => 'Sound',
+      'Book' => 'Text',
+      'Capstone Project' => 'Other',
+      'Conference Proceeding' => 'Text',
+      'Dataset' => 'Dataset',
+      'Dissertation' => 'Text',
+      'Educational Resource' => 'Other',
+      'Honors Thesis' => 'Text',
+      'Image' => 'Image',
+      'Journal' => 'Text',
+      'Journal Item' => 'Text',
+      'Map or Cartographic Material' => 'Image',
+      'Masters Paper' => 'Text',
+      'Masters Thesis' => 'Text',
+      'Newsletter' => 'Text',
+      'Other' => 'Other',
+      'Part of Book' => 'Text',
+      'Poster' => 'Text',
+      'Presentation' => 'Text',
+      'Project' => 'Other',
+      'Report' => 'Text',
+      'Research Paper' => 'Text',
+      'Software or Program Code' => 'Software',
+      'Undergraduate Thesis' => 'Text',
+      'Video' => 'Audiovisual',
+      'Working Paper' => 'Text'
+    }
+    
     def initialize(rows = 1000)
       @rows = rows
       @use_test_api = ENV['DATACITE_USE_TEST_API'].to_s.downcase == "true"
@@ -196,7 +228,7 @@ module Hyc
       result = {}
       
       datacite_type = nil
-      if !dcmi_type.nil?
+      if !dcmi_type.blank?
         # Prioritize the "text" type when multiple are present
         if dcmi_type.include?('http://purl.org/dc/dcmitype/Text')
           dcmi_val = 'http://purl.org/dc/dcmitype/Text'
@@ -205,9 +237,13 @@ module Hyc
         end
         dcmi_type_term = dcmi_val.split('/').last
         datacite_type = DCMI_TO_DATACITE_TYPE[dcmi_type_term]
+      else
+        # Fall back to resource type mapping
+        resource_type = record_type&.first
+        datacite_type = RESOURCE_TYPE_TO_DATACITE[resource_type]
       end
       if datacite_type.nil?
-        puts "WARNING: Invalid resourceTypeGeneral, DCMI type was '#{dcmi_type}'"
+        puts "WARNING: Unable to determine resourceTypeGeneral for record"
       end
       # Storing the datacite type. If it is nil or invalid, datacite will reject the creation
       result[:resourceTypeGeneral] = datacite_type
