@@ -63,10 +63,9 @@ module Hyc
       @doi_password = ENV['DATACITE_PASSWORD']
     end
 
-    def doi_request(data)
-      retries = 2
+    def doi_request(data, retries = 2)
       begin
-        HTTParty.post(@doi_creation_url,
+        return HTTParty.post(@doi_creation_url,
                       headers: {'Content-Type' => 'application/vnd.api+json'},
                       basic_auth: {
                           username: @doi_user,
@@ -79,6 +78,7 @@ module Hyc
           retries -= 1
           puts "Timed out while attempting to create DOI using #{@doi_creation_url}, retrying with #{retries} retries remaining."
           sleep(30)
+          return doi_request(data, retries)
         else
           raise e
         end
