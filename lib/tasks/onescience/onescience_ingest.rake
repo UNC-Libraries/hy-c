@@ -13,6 +13,7 @@ namespace :onescience do
     vis_public = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
 
     @admin_set_id = ::AdminSet.where(title: config['admin_set']).first.id
+    @depositor_onyen = config['depositor_onyen']
 
     # get list of pdf files
     pdf_files = Dir.glob("#{config['pdf_dir']}/**/*.pdf")
@@ -53,20 +54,28 @@ namespace :onescience do
     puts "[#{Time.now}] loaded onescience data"
 
     # create deposit record
-    deposit_record = DepositRecord.new({ title: config['deposit_title'],
-                                         deposit_method: config['deposit_method'],
-                                         deposit_package_type: config['deposit_type'],
-                                         deposit_package_subtype: config['deposit_subtype'],
-                                         deposited_by: @depositor_onyen })
-    # attach metadata file to deposit record
-    original_metadata = FedoraOnlyFile.new({'title' => config['metadata_file'],
-                                            'deposit_record' => deposit_record})
-    original_metadata.file.content = File.open(config['metadata_dir']+'/'+config['metadata_file'])
-    original_metadata.save!
-    deposit_record[:manifest] = [original_metadata.uri]
-    deposit_record.save!
-    deposit_record_id = deposit_record.uri
-    puts "[#{Time.now}] created deposit record for batch"
+    if File.exist?(config['deposit_record_id_log']) && !(File.open(config['deposit_record_id_log']) {|f| f.readline}).blank?
+      deposit_record_id = File.open(config['deposit_record_id_log']) {|f| f.readline}
+      puts "[#{Time.now}] loaded deposit record id for batch"
+    else
+      deposit_record = DepositRecord.new({ title: config['deposit_title'],
+                                           deposit_method: config['deposit_method'],
+                                           deposit_package_type: config['deposit_type'],
+                                           deposit_package_subtype: config['deposit_subtype'],
+                                           deposited_by: @depositor_onyen })
+      # attach metadata file to deposit record
+      original_metadata = FedoraOnlyFile.new({'title' => config['metadata_file'],
+                                              'deposit_record' => deposit_record})
+      original_metadata.file.content = File.open(config['metadata_dir']+'/'+config['metadata_file'])
+      original_metadata.save!
+      deposit_record[:manifest] = [original_metadata.uri]
+      deposit_record.save!
+      deposit_record_id = deposit_record.uri
+      File.open(config['deposit_record_id_log'], 'a+') do |f|
+        f.puts deposit_record_id
+      end
+      puts "[#{Time.now}] created deposit record for batch"
+    end
 
     # Progress tracker for objects migrated
     @object_progress = Migrate::Services::ProgressTracker.new(config['progress_log'])
@@ -92,6 +101,7 @@ namespace :onescience do
       work_attributes, files = parse_onescience_metadata(item_data)
 
       work = config['work_type'].singularize.classify.constantize.new
+      work.depositor = @depositor_onyen
 
       # Singularize non-enumerable attributes and make sure enumerable attributes are arrays
       work_attributes.each do |k,v|
@@ -107,6 +117,19 @@ namespace :onescience do
       # Only keep attributes which apply to the given work type
       work.attributes = work_attributes.reject{|k,v| !work.attributes.keys.member?(k.to_s) unless k.to_s.ends_with? '_attributes'}
                             .merge({'deposit_record' => deposit_record_id})
+
+      # Log other non-blank data which is not saved
+      missing = work_attributes.except(*work.attributes.keys, 'contained_files', 'cdr_model_type', 'visibility',
+                                       'creators_attributes', 'contributors_attributes', 'advisors_attributes',
+                                       'arrangers_attributes', 'composers_attributes', 'funders_attributes',
+                                       'project_directors_attributes', 'researchers_attributes', 'reviewers_attributes',
+                                       'translators_attributes', 'dc_title', 'premis_files', 'embargo_release_date',
+                                       'visibility_during_embargo', 'visibility_after_embargo', 'visibility',
+                                       'member_of_collections', 'based_near_attributes')
+
+      if !missing.blank?
+        puts "[#{Time.now.to_s}] #{uuid} missing: #{missing}"
+      end
 
       # Check for embargo data
       embargo_term = embargo_mapping.find{ |e| e['onescience_id'] = item_data['onescience_id'] }
@@ -152,38 +175,38 @@ namespace :onescience do
           files = {'PubMedCentral-Link_Files' => files['PubMedCentral-Link_Files']}.merge(files)
         end
 
-        files.each_with_index do |(k,v),file_index|
+        files.each_with_index do |(source_name,file_id),file_index|
           puts "[#{Time.now}] #{item_data['onescience_id']},#{work.id} attaching file #{file_index+1} of #{file_count}"
-          source_url = item_data[k.chomp('_Files')]
-          if sources.include?(v)
-            puts "[#{Time.now}] #{item_data['onescience_id']},#{work.id} skipping duplicate file: #{v}"
+          source_url = item_data[source_name.chomp('_Files')]
+          if sources.include?(file_id)
+            puts "[#{Time.now}] #{item_data['onescience_id']},#{work.id} skipping duplicate file: #{file_id}"
             next
           else
-            sources << v
+            sources << file_id
           end
 
           file_visibility = vis_private
 
           # set pubmed central or first listed file as public
-          if (file_index == 0 && !files.key?('PubMedCentral-Link_Files')) || (k.include? 'PubMedCentral-Link')
+          if (file_index == 0 && !files.key?('PubMedCentral-Link_Files')) || (source_name.include? 'PubMedCentral-Link')
             file_visibility = vis_public
           end
 
           # parse filename
-          if k.include? 'PubMedCentral-Link'
+          if source_name.include? 'PubMedCentral-Link'
             filename = "PubMedCentral-#{source_url.split('articles/').last.split('/').first}.pdf"
-          elsif k.include? 'EuropePMC-Link'
+          elsif source_name.include? 'EuropePMC-Link'
             filename = "EuropePMC-#{source_url.split('accid=').last.split('&').first}.pdf"
           else
             if source_url.match(/.*\/[a-zA-Z0-9._-]*\.pdf$/)
               filename = source_url.split('/').last
             else
               puts "[#{Time.now}] #{item_data['onescience_id']},#{work.id} nonstandard source url: #{source_url}"
-              filename = "#{v}.pdf"
+              filename = "#{file_id}.pdf"
             end
           end
 
-          pdf_location = pdf_files.select { |path| path.include? v }.first
+          pdf_location = pdf_files.select { |path| path.include? file_id }.first
           if !pdf_location.blank? # can we find the file
             file_attributes = { title: [filename],
                                 date_created: work_attributes['date_issued'],
@@ -224,6 +247,7 @@ namespace :onescience do
     work_attributes['identifier'] = identifiers.compact
     work_attributes['date_issued'] = (Date.try(:edtf, onescience_data['Year']) || onescience_data['Year']).to_s
     work_attributes['title'] = onescience_data['Title'].gsub(/[:\.]\z/,'')
+    work_attributes['label'] = work_attributes['title']
     work_attributes['journal_title'] = onescience_data['Journal Title']
     work_attributes['journal_volume'] = onescience_data['Volume'].to_s
     work_attributes['journal_issue'] = onescience_data['Issue'].to_s
