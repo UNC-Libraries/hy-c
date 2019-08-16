@@ -261,8 +261,7 @@ namespace :onescience do
     work_attributes['language'] = 'http://id.loc.gov/vocabulary/iso639-2/eng'
     work_attributes['dcmi_type'] = 'http://purl.org/dc/dcmitype/Text'
     work_attributes['admin_set_id'] = @admin_set_id
-    # edition?
-    # rights statement?
+    work_attributes['rights_statement'] = 'http://rightsstatements.org/vocab/InC/1.0/'
     files = onescience_data.select { |k,v| k['Files'] && !v.blank? }
 
     [work_attributes, files]

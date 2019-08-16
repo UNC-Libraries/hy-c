@@ -61,6 +61,7 @@ describe "rake onescience:ingest", type: :task do
       expect(new_article['resource_type']).to match_array ['Article']
       expect(new_article['abstract']).to match_array ['The authors describe the first 11 academic years (2005–2006 through 2016–2017) of a longitudinal, small-group faculty development program for strengthening humanistic teaching and role modeling at 30 U.S. and Canadian medical schools that continues today. During the yearlong program, small groups of participating faculty met twice monthly with a local facilitator for exercises in humanistic teaching, role modeling, and related topics that combined narrative reflection with skills training using experiential learning techniques. The program focused on the professional development of its participants. Thirty schools participated; 993 faculty, including some residents, completed the program.']
       expect(new_article['dcmi_type']).to match_array ['http://purl.org/dc/dcmitype/Text']
+      expect(new_article['rights_statement']).to eq 'http://rightsstatements.org/vocab/InC/1.0/'
     end
   end
 end
