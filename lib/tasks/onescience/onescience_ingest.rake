@@ -4,6 +4,7 @@ namespace :onescience do
 
   desc 'batch migrate 1science articles from spreadsheet'
   task :ingest, [:configuration_file] => :environment do |t, args|
+    STDOUT.sync = true
     # config file with worktype, adminset, depositor, mount location
     config = YAML.load_file(args[:configuration_file])
     puts "[#{Time.now}] Start ingest of onescience articles in #{config['metadata_file']}"
@@ -169,6 +170,7 @@ namespace :onescience do
         puts "[#{Time.now}] #{item_data['onescience_id']},#{work.id} attaching files"
         sources = []
         file_count = files.count
+        attached_file_count = 0
 
         # Move pubmed file to beginning of hash so it will be the primary work
         if files.key?('PubMedCentral-Link_Files')
@@ -227,9 +229,18 @@ namespace :onescience do
             end
             file_set.save!
 
+            attached_file_count += 1
+
             puts "[#{Time.now}] #{item_data['onescience_id']},#{work.id} saved file #{file_index+1} of #{file_count}"
+          else
+            puts "[#{Time.now}] #{item_data['onescience_id']},#{work.id} error: could not find file #{file_id}"
           end
         end
+        if attached_file_count == 0
+          puts "[#{Time.now}] #{item_data['onescience_id']},#{work.id} work has no files"
+        end
+      else
+        puts "[#{Time.now}] #{item_data['onescience_id']},#{work.id} work has no files"
       end
       @object_progress.add_entry(item_data['onescience_id'])
     end
