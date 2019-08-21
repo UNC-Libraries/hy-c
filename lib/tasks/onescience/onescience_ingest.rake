@@ -282,9 +282,11 @@ namespace :onescience do
     work_attributes['creators_attributes'] = get_people(onescience_data['onescience_id'])
     work_attributes['resource_type'] = 'Article'
     work_attributes['language'] = 'http://id.loc.gov/vocabulary/iso639-2/eng'
+    work_attributes['language_label'] = 'English'
     work_attributes['dcmi_type'] = 'http://purl.org/dc/dcmitype/Text'
     work_attributes['admin_set_id'] = @admin_set_id
     work_attributes['rights_statement'] = 'http://rightsstatements.org/vocab/InC/1.0/'
+    work_attributes['rights_statement_label'] = 'In Copyright'
     files = onescience_data.select { |k,v| k['Files'] && !v.blank? }
 
     [work_attributes, files]
