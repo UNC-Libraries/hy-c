@@ -4,6 +4,7 @@ namespace :onescience do
 
   desc 'batch migrate 1science articles from spreadsheet'
   task :ingest, [:configuration_file] => :environment do |t, args|
+    STDOUT.sync = true
     # config file with worktype, adminset, depositor, mount location
     config = YAML.load_file(args[:configuration_file])
     puts "[#{Time.now}] Start ingest of onescience articles in #{config['metadata_file']}"
@@ -79,13 +80,14 @@ namespace :onescience do
 
     # Progress tracker for objects migrated
     @object_progress = Migrate::Services::ProgressTracker.new(config['progress_log'])
-    already_ingested = @object_progress.completed_set
-    puts "Skipping #{already_ingested.length} previously ingested works"
+    @skipped_objects = Migrate::Services::ProgressTracker.new(config['skipped_log'])
+    already_ingested = @object_progress.completed_set + @skipped_objects.completed_set
+    puts "Skipping #{already_ingested.length} previously ingested and skipped works"
 
     count = data.count
     # extract needed metadata and create articles
     data.each_with_index do |item_data, index|
-      puts "[#{Time.now}] ingesting #{item_data['onescience_id']} (#{index+1} of #{count})"
+      puts '',"[#{Time.now}] ingesting #{item_data['onescience_id']} (#{index+1} of #{count})"
 
       # Skip this item if it has been ingested before
       if already_ingested.include?(item_data['onescience_id'])
@@ -151,24 +153,15 @@ namespace :onescience do
         work.visibility_after_embargo = vis_public
       end
 
-      work.save!
-      puts "[#{Time.now}] #{item_data['onescience_id']},#{work.id} saved new article"
-
-      work.update permissions_attributes: get_group_permissions
-
-      # Create sipity record
-      workflow = Sipity::Workflow.joins(:permission_template)
-                     .where(permission_templates: { source_id: work.admin_set_id }, active: true)
-      workflow_state = Sipity::WorkflowState.where(workflow_id: workflow.first.id, name: 'deposited')
-      Sipity::Entity.create!(proxy_for_global_id: work.to_global_id.to_s,
-                             workflow: workflow.first,
-                             workflow_state: workflow_state.first)
+      # only save works with files
+      work_saved = false
 
       # attach pdfs from folder on p-drive
       if !files.blank?
-        puts "[#{Time.now}] #{item_data['onescience_id']},#{work.id} attaching files"
+        puts "[#{Time.now}] #{item_data['onescience_id']} attaching files"
         sources = []
         file_count = files.count
+        attached_file_count = 0
 
         # Move pubmed file to beginning of hash so it will be the primary work
         if files.key?('PubMedCentral-Link_Files')
@@ -176,10 +169,10 @@ namespace :onescience do
         end
 
         files.each_with_index do |(source_name,file_id),file_index|
-          puts "[#{Time.now}] #{item_data['onescience_id']},#{work.id} attaching file #{file_index+1} of #{file_count}"
+          puts "[#{Time.now}] #{item_data['onescience_id']} attaching file #{file_index+1} of #{file_count}"
           source_url = item_data[source_name.chomp('_Files')]
           if sources.include?(file_id)
-            puts "[#{Time.now}] #{item_data['onescience_id']},#{work.id} skipping duplicate file: #{file_id}"
+            puts "[#{Time.now}] #{item_data['onescience_id']} skipping duplicate file: #{file_id}"
             next
           else
             sources << file_id
@@ -201,13 +194,31 @@ namespace :onescience do
             if source_url.match(/.*\/[a-zA-Z0-9._-]*\.pdf$/)
               filename = source_url.split('/').last
             else
-              puts "[#{Time.now}] #{item_data['onescience_id']},#{work.id} nonstandard source url: #{source_url}"
+              puts "[#{Time.now}] #{item_data['onescience_id']} nonstandard source url: #{source_url}"
               filename = "#{file_id}.pdf"
             end
           end
 
           pdf_location = pdf_files.select { |path| path.include? file_id }.first
           if !pdf_location.blank? # can we find the file
+            # save work if it has at least one file
+            if !work_saved
+              work.save!
+              puts "[#{Time.now}] #{item_data['onescience_id']},#{work.id} saved new article"
+
+              work.update permissions_attributes: get_group_permissions
+
+              # Create sipity record
+              workflow = Sipity::Workflow.joins(:permission_template)
+                             .where(permission_templates: { source_id: work.admin_set_id }, active: true)
+              workflow_state = Sipity::WorkflowState.where(workflow_id: workflow.first.id, name: 'deposited')
+              Sipity::Entity.create!(proxy_for_global_id: work.to_global_id.to_s,
+                                     workflow: workflow.first,
+                                     workflow_state: workflow_state.first)
+              work_saved = true
+            end
+
+            # create and save file
             file_attributes = { title: [filename],
                                 date_created: work_attributes['date_issued'],
                                 related_url: [source_url] }
@@ -227,11 +238,23 @@ namespace :onescience do
             end
             file_set.save!
 
+            attached_file_count += 1
+
             puts "[#{Time.now}] #{item_data['onescience_id']},#{work.id} saved file #{file_index+1} of #{file_count}"
+          else
+            puts "[#{Time.now}] #{item_data['onescience_id']} error: could not find file #{file_id}"
           end
         end
+        if attached_file_count == 0
+          puts "[#{Time.now}] #{item_data['onescience_id']} work has no files and will not be saved"
+          @skipped_objects.add_entry(item_data['onescience_id'])
+        else
+          @object_progress.add_entry(item_data['onescience_id'])
+        end
+      else
+        puts "[#{Time.now}] #{item_data['onescience_id']} work has no files and will not be saved"
+        @skipped_objects.add_entry(item_data['onescience_id'])
       end
-      @object_progress.add_entry(item_data['onescience_id'])
     end
 
     puts "[#{Time.now}] Completed ingest of onescience articles in #{config['metadata_file']}"
@@ -259,9 +282,11 @@ namespace :onescience do
     work_attributes['creators_attributes'] = get_people(onescience_data['onescience_id'])
     work_attributes['resource_type'] = 'Article'
     work_attributes['language'] = 'http://id.loc.gov/vocabulary/iso639-2/eng'
+    work_attributes['language_label'] = 'English'
     work_attributes['dcmi_type'] = 'http://purl.org/dc/dcmitype/Text'
     work_attributes['admin_set_id'] = @admin_set_id
     work_attributes['rights_statement'] = 'http://rightsstatements.org/vocab/InC/1.0/'
+    work_attributes['rights_statement_label'] = 'In Copyright'
     files = onescience_data.select { |k,v| k['Files'] && !v.blank? }
 
     [work_attributes, files]
