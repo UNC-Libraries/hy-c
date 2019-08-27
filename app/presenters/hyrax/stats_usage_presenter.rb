@@ -1,3 +1,4 @@
+# [hyc-override] use date_created instead of date_updated for analytics start date
 module Hyrax
   # Methods used by both WorkUsage and FileUsage
   class StatsUsagePresenter
@@ -26,10 +27,13 @@ module Hyrax
     # model.create_date reflects the date the file was added to Fedora. On data
     # migrated from one repository to another the created_date can be later
     # than the date the file was uploaded.
+    #
+    # switch to using date_created as primary date and the system create date as backup
+    # all migrated works will have a date_created value
     def date_for_analytics
       earliest = Hyrax.config.analytic_start_date
-      date_uploaded = string_to_date(model.date_uploaded)
-      date_analytics = date_uploaded ? date_uploaded : model.create_date
+      date_created = string_to_date(model.date_created)
+      date_analytics = date_created ? date_created : model.create_date
       return date_analytics if earliest.blank?
       earliest > date_analytics ? earliest : date_analytics
     end

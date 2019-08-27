@@ -27,7 +27,7 @@ class FileDownloadStat < Hyrax::Statistic
       profile.hyrax__download(sort: 'date',
                               start_date: start_date,
                               end_date: Date.yesterday,
-                              limit: 10000).for_file(filter_id)
+                              limit: 10_000).for_file(filter_id)
     end
 
     # [hyc-override] add old id to filter query if work was migrated

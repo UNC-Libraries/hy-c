@@ -45,9 +45,9 @@ module Hyrax
         end
 
         profile.hyrax__pageview(sort: 'date',
-                                start_date: Date.parse('2016-01-01'),
+                                start_date: start_date,
                                 end_date: Date.yesterday,
-                                limit: 10000).for_path(path)
+                                limit: 10_000).for_path(path)
       end
 
       private
