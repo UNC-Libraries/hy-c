@@ -11,6 +11,7 @@ affiliation_files:
 embargo_file: 1science_2016-2018_embargoes.csv
 pdf_dir: spec/fixtures/onescience
 progress_log: spec/fixtures/onescience/1science_completed.log
+skipped_log: spec/fixtures/onescience/1science_skipped.log
 # deposit record info
 deposit_title: OneScience deposit 2016-2018
 deposit_method: rake task
