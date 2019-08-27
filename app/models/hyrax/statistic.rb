@@ -44,7 +44,10 @@ module Hyrax
           path = "#{path}|/record/uuid:#{redirect_path['uuid']}"
         end
 
-        profile.hyrax__pageview(sort: 'date', start_date: Date.parse('2016-01-01')).for_path(path)
+        profile.hyrax__pageview(sort: 'date',
+                                start_date: Date.parse('2016-01-01'),
+                                end_date: Date.yesterday,
+                                limit: 10000).for_path(path)
       end
 
       private

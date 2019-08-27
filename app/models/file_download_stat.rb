@@ -24,7 +24,10 @@ class FileDownloadStat < Hyrax::Statistic
         filter_id = "#{filter_id}|#{redirect_path['uuid']}"
       end
 
-      profile.hyrax__download(sort: 'date', start_date: start_date, end_date: Date.yesterday).for_file(filter_id)
+      profile.hyrax__download(sort: 'date',
+                              start_date: start_date,
+                              end_date: Date.yesterday,
+                              limit: 10000).for_file(filter_id)
     end
 
     # [hyc-override] add old id to filter query if work was migrated
