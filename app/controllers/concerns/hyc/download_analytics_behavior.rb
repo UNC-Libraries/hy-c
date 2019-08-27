@@ -19,13 +19,6 @@ module Hyc
                           linkid: request.url,
                           user_agent: request.headers['User-Agent'],
                           user_ip: request.remote_ip)
-            # Setting the title to be the download id provides an easy way to group
-            # and count on GA
-            tracker.pageview(path: request.url,
-                             hostname: request.host,
-                             title: params[:id],
-                             user_agent: request.headers['User-Agent'],
-                             user_ip: request.remote_ip)
             tracker.track
           end
         end
