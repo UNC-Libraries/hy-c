@@ -2,9 +2,9 @@ require 'rails_helper'
 
 RSpec.describe Hyrax::Workflow::DepositedManagerNotification do
   let(:approver) { User.find_by_user_key('admin') }
-  let(:depositor) { User.create(email: 'test@example.com', password: 'password', password_confirmation: 'password') }
-  let(:cc_user) { User.create(email: 'test2@example.com', password: 'password', password_confirmation: 'password') }
-  let(:work) { Article.create(title: ['New Article']) }
+  let(:depositor) { User.create(email: 'test@example.com', uid: 'test@example.com', password: 'password', password_confirmation: 'password') }
+  let(:cc_user) { User.create(email: 'test2@example.com', uid: 'test2@example.com', password: 'password', password_confirmation: 'password') }
+  let(:work) { Article.create(title: ['New Article'], depositor: depositor.email) }
   let(:admin_set) do
     AdminSet.create(title: ["article admin set"],
                     description: ["some description"],
@@ -36,8 +36,6 @@ RSpec.describe Hyrax::Workflow::DepositedManagerNotification do
     end
 
     context 'without carbon-copied users' do
-      let(:recipients) { { 'to' => [depositor] } }
-
       it 'sends a message to the to user(s)' do
         recipients = { 'to' => [depositor], 'cc' => [] }
         expect(approver).to receive(:send_message).exactly(1).times.and_call_original
