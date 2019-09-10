@@ -3,20 +3,28 @@ terms:
   - id: Bachelor of Arts
     term: Bachelor of Arts
     active: true
-    work_type: honors
+    work_type:
+      - honors
   - id: Doctor of Philosophy
     term: Doctor of Philosophy
     active: true
-    work_type: dissertation
+    work_type:
+      - dissertation
   - id: Master of Science in Information Science
     term: Master of Science in Information Science
     active: true
-    work_type: masters
+    work_type:
+      - masters
+      - dissertation
   - id: Master of Science in Library Science
     term: Master of Science in Library Science
     active: true
-    work_type: masters
+    work_type:
+      - masters
+      - dissertation
   - id: MSIS
     term: Master of Science in Information Science
     active: false
-    work_type: masters
+    work_type:
+      - masters
+      - dissertation

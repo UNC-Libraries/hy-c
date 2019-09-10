@@ -17,7 +17,7 @@ module DegreesService
     if term == 'all'
       authority.all.select { |e| e.fetch('active') }
     else
-      authority.all.select { |e| e.fetch('active') && e.fetch('work_type') == term }
+      authority.all.select { |e| e.fetch('active') && e.fetch('work_type').include?(term) }
     end
   end
 

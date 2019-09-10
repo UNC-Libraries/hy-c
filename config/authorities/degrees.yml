@@ -3,136 +3,191 @@ terms:
   - id: Bachelor of Arts
     term: Bachelor of Arts
     active: true
-    work_type: honors
+    work_type: 
+      - honors
   - id: Bachelor of Arts in Education
     term: Bachelor of Arts in Education
     active: true
-    work_type: honors
+    work_type: 
+      - honors
   - id: Bachelor of Business Administration
     term: Bachelor of Business Administration
     active: true
-    work_type: honors
+    work_type: 
+      - honors
   - id: Bachelor of Fine Arts
     term: Bachelor of Fine Arts
     active: true
-    work_type: honors
+    work_type: 
+      - honors
   - id: Bachelor of Music
     term: Bachelor of Music
     active: true
-    work_type: honors
+    work_type: 
+      - honors
   - id: Bachelor of Science
     term: Bachelor of Science
     active: true
-    work_type: honors
+    work_type: 
+      - honors
   - id: Bachelor of Science in Public Health
     term: Bachelor of Science in Public Health
     active: true
-    work_type: honors
+    work_type: 
+      - honors
   - id: Doctor of Education
     term: Doctor of Education
     active: true
-    work_type: dissertation
+    work_type: 
+      - dissertation
   - id: Doctor of Nursing Practice
     term: Doctor of Nursing Practice
     active: true
-    work_type: dissertation
+    work_type: 
+      - dissertation
   - id: Doctor of Philosophy
     term: Doctor of Philosophy
     active: true
-    work_type: dissertation
+    work_type: 
+      - dissertation
   - id: Doctor of Public Health
     term: Doctor of Public Health
     active: true
-    work_type: dissertation
+    work_type: 
+      - dissertation
   - id: Doctor of Pharmacy
     term: Doctor of Pharmacy
     active: true
-    work_type: dissertation
+    work_type: 
+      - dissertation
   - id: Master of Arts
     term: Master of Arts
     active: true
-    work_type: masters
+    work_type: 
+      - masters
+      - dissertation
   - id: Master of City and Regional Planning
     term: Master of City and Regional Planning
     active: true
-    work_type: masters
+    work_type: 
+      - masters
+      - dissertation
   - id: Master of Fine Arts
     term: Master of Fine Arts
     active: true
-    work_type: masters
+    work_type: 
+      - masters
+      - dissertation
   - id: Master of Healthcare Administration
     term: Master of Healthcare Administration
     active: true
-    work_type: masters
+    work_type: 
+      - masters
+      - dissertation
   - id: Master of Health Science
     term: Master of Health Science
     active: true
-    work_type: masters
+    work_type: 
+      - masters
+      - dissertation
   - id: Master of Public Health
     term: Master of Public Health
     active: true
-    work_type: masters
+    work_type: 
+      - masters
+      - dissertation
   - id: Master of Science
     term: Master of Science
     active: true
-    work_type: masters
+    work_type: 
+      - masters
+      - dissertation
   - id: Master of Science in Environmental Engineering
     term: Master of Science in Environmental Engineering
     active: true
-    work_type: masters
+    work_type: 
+      - masters
+      - dissertation
   - id: Master of Science in Information Science
     term: Master of Science in Information Science
     active: true
-    work_type: masters
+    work_type: 
+      - masters
+      - dissertation
   - id: Master of Science in Library Science
     term: Master of Science in Library Science
     active: true
-    work_type: masters
+    work_type: 
+      - masters
+      - dissertation
   - id: Master of Science in Public Health
     term: Master of Science in Public Health
     active: true
-    work_type: masters
+    work_type: 
+      - masters
+      - dissertation
   - id: MSPH
     term: Master of Science in Public Health
     active: false
-    work_type: masters
+    work_type: 
+      - masters
+      - dissertation
   - id: MFA
     term: Master of Fine Arts
     active: false
-    work_type: masters
+    work_type: 
+      - masters
+      - dissertation
   - id: MCRP
     term: Master of City and Regional Planning
     active: false
-    work_type: masters
+    work_type: 
+      - masters
+      - dissertation
   - id: MSIS
     term: Master of Science in Information Science
     active: false
-    work_type: masters
+    work_type: 
+      - masters
+      - dissertation
   - id: MSLS
     term: Master of Science in Library Science
     active: false
-    work_type: masters
+    work_type: 
+      - masters
+      - dissertation
   - id: MPH
     term: Master of Public Health
     active: false
-    work_type: masters
+    work_type: 
+      - masters
+      - dissertation
   - id: MSEE
     term: Master of Science in Environmental Engineering
     active: false
-    work_type: masters
+    work_type: 
+      - masters
+      - dissertation
   - id: MSENV
     term: Master of Science in Environmental Engineering
     active: false
-    work_type: masters
+    work_type: 
+      - masters
+      - dissertation
   - id: BSPH
     term: Bachelor of Science in Public Health
     active: false
-    work_type: honors
+    work_type: 
+      - honors
   - id: MHA
     term: Master of Healthcare Administration
     active: false
-    work_type: masters
+    work_type: 
+      - masters
+      - dissertation
   - id: MS
     term: Master of Science
     active: false
-    work_type: masters
+    work_type: 
+      - masters
+      - dissertation
