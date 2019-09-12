@@ -5,6 +5,7 @@ namespace :proquest do
   require 'htmlentities'
   require 'tasks/migration/migration_constants'
   require 'zip'
+  require 'tasks/migration_helper'
 
   desc 'batch migrate generic files from FOXML file'
   task :ingest, [:configuration_file] => :environment do |t, args|
@@ -34,6 +35,7 @@ namespace :proquest do
   end
 
   def migrate_proquest_packages(metadata_dir)
+    # sort zip files for tests
     proquest_packages = Dir.glob("#{metadata_dir}/*.zip").sort
     count = proquest_packages.count
     proquest_packages.each_with_index do |package, index|
@@ -69,9 +71,9 @@ namespace :proquest do
 
       if File.file?(metadata_file)
         # only use xml file for metadata extraction
-        metadata_fields = proquest_metadata(metadata_file)
+        metadata, listed_files = proquest_metadata(metadata_file)
 
-        puts "[#{Time.now}] #{metadata_file}, Number of files: #{metadata_fields[:files].count.to_s}"
+        puts "[#{Time.now}] #{metadata_file}, Number of files: #{listed_files.count.to_s}"
 
         # create deposit record
         deposit_record = DepositRecord.new(@deposit_record_hash)
@@ -80,42 +82,15 @@ namespace :proquest do
         deposit_record.save!
 
         # create disseration record
-        resource = proquest_record(metadata_fields[:resource])
-        resource.visibility = metadata_fields[:resource]['visibility']
-        unless metadata_fields[:resource]['embargo_release_date'].blank?
-          resource.visibility_during_embargo = metadata_fields[:resource]['visibility_during_embargo']
-          resource.visibility_after_embargo = metadata_fields[:resource]['visibility_after_embargo']
-          resource.embargo_release_date = metadata_fields[:resource]['embargo_release_date']
+        resource = MigrationHelper.check_enumeration(metadata, Dissertation.new, metadata_file)
+        resource.visibility = metadata['visibility']
+        unless metadata['embargo_release_date'].blank?
+          resource.visibility_during_embargo = metadata['visibility_during_embargo']
+          resource.visibility_after_embargo = metadata['visibility_after_embargo']
+          resource.embargo_release_date = metadata['embargo_release_date']
         end
         resource[:deposit_record] = deposit_record.id
 
-        # Singularize non-enumerable attributes and make sure enumerable attributes are arrays
-        metadata_fields[:resource].each do |k,v|
-          if resource.attributes.keys.member?(k.to_s) && !resource.attributes[k.to_s].respond_to?(:each) && metadata_fields[:resource][k].respond_to?(:each)
-            metadata_fields[:resource][k] = v.first
-          elsif resource.attributes.keys.member?(k.to_s) && resource.attributes[k.to_s].respond_to?(:each) && !metadata_fields[:resource][k].respond_to?(:each)
-            metadata_fields[:resource][k] = Array(v)
-          else
-            metadata_fields[:resource][k] = v
-          end
-        end
-
-        # Only keep attributes which apply to the given work type
-        resource.attributes = metadata_fields[:resource].reject{|k,v| !resource.attributes.keys.member?(k.to_s) unless k.to_s.ends_with? '_attributes'}
-
-        # Log other non-blank data which is not saved
-        missing = metadata_fields[:resource].except(*resource.attributes.keys, 'contained_files', 'cdr_model_type', 'visibility',
-                                         'creators_attributes', 'contributors_attributes', 'advisors_attributes',
-                                         'arrangers_attributes', 'composers_attributes', 'funders_attributes',
-                                         'project_directors_attributes', 'researchers_attributes', 'reviewers_attributes',
-                                         'translators_attributes', 'dc_title', 'premis_files', 'embargo_release_date',
-                                         'visibility_during_embargo', 'visibility_after_embargo', 'visibility',
-                                         'member_of_collections', 'based_near_attributes')
-
-        if !missing.blank?
-          puts "[#{Time.now.to_s}][#{metadata_file}] missing: #{missing}"
-        end
-        
         resource.save!
 
         id = resource.id
@@ -123,14 +98,14 @@ namespace :proquest do
         puts "[#{Time.now}][#{metadata_file}] created dissertation: #{id}"
 
         # get group permissions info to use for setting work and fileset permissions
-        group_permissions = get_permissions_attributes
+        group_permissions = MigrationHelper.get_permissions_attributes(@admin_set_id)
         resource.update permissions_attributes: group_permissions
 
         # get list of all files in unzipped proquest package
         unzipped_file_list = Dir.glob("#{unzipped_package_dir}/**/*.*")
 
         ordered_members = []
-        metadata_fields[:files].each do |f|
+        listed_files.each do |f|
           puts "[#{Time.now}][#{id}] trying...#{f.to_s}"
 
           file_path = unzipped_file_list.find { |e| e.match(f.to_s) }
@@ -141,7 +116,7 @@ namespace :proquest do
 
           if File.file?(file_path)
             file_set = ingest_proquest_file(parent: resource,
-                                            resource: metadata_fields[:resource].merge({title: [f]}),
+                                            resource: metadata.merge({title: [f]}),
                                             f: file_path)
             ordered_members << file_set if file_set
           end
@@ -294,7 +269,7 @@ namespace :proquest do
 
     language = metadata.xpath('//DISS_description/DISS_categorization/DISS_language').text
     if language == 'en'
-      language = get_language_uri('eng')
+      language = MigrationHelper.get_language_uri(['eng'])
       language_label = LanguagesService.label(language) if !language.blank?
     end
 
@@ -305,6 +280,8 @@ namespace :proquest do
 
     work_attributes = {
         'title'=>[title],
+        'label' => title,
+        'depositor' => @depositor_onyen,
         'creators_attributes'=>build_person_hash(creators, affiliation),
         'date_issued'=>(Date.try(:edtf, date_issued.year) || date_issued.year).to_s,
         'abstract'=>abstract.gsub(/\n/, "").strip,
@@ -315,6 +292,7 @@ namespace :proquest do
         'graduation_year'=>graduation_year,
         'language'=>language,
         'language_label'=>language_label,
+        'rights_statement' => 'http://rightsstatements.org/vocab/InC-EDU/1.0/',
         'keyword'=>keywords.flatten,
         'resource_type'=>resource_type,
         'visibility'=>visibility,
@@ -324,39 +302,9 @@ namespace :proquest do
         'admin_set_id'=>@admin_set_id
     }
 
-    { resource: work_attributes, files: file_full }
+    work_attributes.reject!{|k,v| v.blank?}
 
-  end
-
-  def proquest_record(work_attributes)
-    resource = Dissertation.new
-    resource.creators = work_attributes['creators_attributes'].map{ |k,v| resource.creators.build(v) }
-    resource.depositor = @depositor_onyen
-
-    resource.label = work_attributes['title'][0]
-    resource.title = work_attributes['title']
-    resource.keyword =  work_attributes['keyword']
-    resource.degree_granting_institution = work_attributes['degree_granting_institution']
-    resource.abstract = [work_attributes['abstract']]
-    resource.advisors = work_attributes['advisors_attributes'].map{ |k,v| resource.advisors.build(v) }
-    resource.degree = work_attributes['degree']
-    resource.graduation_year = work_attributes['graduation_year']
-    resource.language = [work_attributes['language']]
-    resource.date_issued = work_attributes['date_issued']
-    resource.dcmi_type = [work_attributes['dcmi_type']]
-    resource.resource_type = [work_attributes['resource_type']]
-    resource.date_modified = DateTime.now()
-    resource.date_uploaded = DateTime.now()
-    resource.rights_statement = 'http://rightsstatements.org/vocab/InC-EDU/1.0/'
-    resource.admin_set_id = work_attributes['admin_set_id']
-    resource.visibility = work_attributes['visibility']
-    unless work_attributes['embargo_release_date'].blank?
-    resource.embargo_release_date = work_attributes['embargo_release_date']
-    resource.visibility_during_embargo = work_attributes['visibility_during_embargo']
-    resource.visibility_after_embargo = work_attributes['visibility_after_embargo']
-    end
-
-    resource
+    [work_attributes, file_full]
   end
 
   def build_person_hash(people, affiliation)
@@ -374,12 +322,6 @@ namespace :proquest do
     name_parts << (person.xpath('DISS_fname').text+' '+person.xpath('DISS_middle').text).strip
     name_parts << person.xpath('DISS_suffix').text
     name_parts.reject{ |name| name.blank? }.join(', ')
-  end
-
-  # Use language code to get iso639-2 uri from service
-  def get_language_uri(language_code)
-    LanguagesService.label("http://id.loc.gov/vocabulary/iso639-2/#{language_code.downcase}") ?
-        "http://id.loc.gov/vocabulary/iso639-2/#{language_code.downcase}" : nil
   end
 
   # FileSets can include any metadata listed in BasicMetadata file
@@ -409,21 +351,5 @@ namespace :proquest do
     end
 
     file_attributes
-  end
-
-
-  def get_permissions_attributes
-    # find admin set and manager groups for work
-    manager_groups = Hyrax::PermissionTemplateAccess.joins(:permission_template)
-                         .where(access: 'manage', agent_type: 'group')
-                         .where(permission_templates: {source_id: @admin_set_id})
-
-    # update work permissions to give admin set managers edit rights
-    permissions_array = []
-    manager_groups.each do |manager_group|
-      permissions_array << { "type" => "group", "name" => manager_group.agent_id, "access" => "edit" }
-    end
-
-    permissions_array
   end
 end
