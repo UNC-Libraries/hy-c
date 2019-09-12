@@ -34,7 +34,7 @@ namespace :proquest do
   end
 
   def migrate_proquest_packages(metadata_dir)
-    proquest_packages = Dir.glob("#{metadata_dir}/*.zip")
+    proquest_packages = Dir.glob("#{metadata_dir}/*.zip").sort
     count = proquest_packages.count
     proquest_packages.each_with_index do |package, index|
       puts "[#{Time. now}] Unpacking #{package} (#{index+1} of #{count})"
@@ -42,7 +42,7 @@ namespace :proquest do
       unzipped_package_dir = extract_proquest_files(package)
 
       if unzipped_package_dir.blank?
-        puts "[#{Time.now}] error: skipping zip file"
+        puts "[#{Time.now}] error extracting #{package}: skipping zip file"
         next
       end
 
@@ -71,7 +71,7 @@ namespace :proquest do
         # only use xml file for metadata extraction
         metadata_fields = proquest_metadata(metadata_file)
 
-        puts "[#{Time.now}] Number of files: #{metadata_fields[:files].count.to_s}"
+        puts "[#{Time.now}] #{metadata_file}, Number of files: #{metadata_fields[:files].count.to_s}"
 
         # create deposit record
         deposit_record = DepositRecord.new(@deposit_record_hash)
@@ -81,12 +81,46 @@ namespace :proquest do
 
         # create disseration record
         resource = proquest_record(metadata_fields[:resource])
+        resource.visibility = metadata_fields[:resource]['visibility']
+        unless metadata_fields[:resource]['embargo_release_date'].blank?
+          resource.visibility_during_embargo = metadata_fields[:resource]['visibility_during_embargo']
+          resource.visibility_after_embargo = metadata_fields[:resource]['visibility_after_embargo']
+          resource.embargo_release_date = metadata_fields[:resource]['embargo_release_date']
+        end
         resource[:deposit_record] = deposit_record.id
+
+        # Singularize non-enumerable attributes and make sure enumerable attributes are arrays
+        metadata_fields[:resource].each do |k,v|
+          if resource.attributes.keys.member?(k.to_s) && !resource.attributes[k.to_s].respond_to?(:each) && metadata_fields[:resource][k].respond_to?(:each)
+            metadata_fields[:resource][k] = v.first
+          elsif resource.attributes.keys.member?(k.to_s) && resource.attributes[k.to_s].respond_to?(:each) && !metadata_fields[:resource][k].respond_to?(:each)
+            metadata_fields[:resource][k] = Array(v)
+          else
+            metadata_fields[:resource][k] = v
+          end
+        end
+
+        # Only keep attributes which apply to the given work type
+        resource.attributes = metadata_fields[:resource].reject{|k,v| !resource.attributes.keys.member?(k.to_s) unless k.to_s.ends_with? '_attributes'}
+
+        # Log other non-blank data which is not saved
+        missing = metadata_fields[:resource].except(*resource.attributes.keys, 'contained_files', 'cdr_model_type', 'visibility',
+                                         'creators_attributes', 'contributors_attributes', 'advisors_attributes',
+                                         'arrangers_attributes', 'composers_attributes', 'funders_attributes',
+                                         'project_directors_attributes', 'researchers_attributes', 'reviewers_attributes',
+                                         'translators_attributes', 'dc_title', 'premis_files', 'embargo_release_date',
+                                         'visibility_during_embargo', 'visibility_after_embargo', 'visibility',
+                                         'member_of_collections', 'based_near_attributes')
+
+        if !missing.blank?
+          puts "[#{Time.now.to_s}][#{metadata_file}] missing: #{missing}"
+        end
+        
         resource.save!
 
         id = resource.id
 
-        puts "[#{Time.now}] created dissertation: #{id}"
+        puts "[#{Time.now}][#{metadata_file}] created dissertation: #{id}"
 
         # get group permissions info to use for setting work and fileset permissions
         group_permissions = get_permissions_attributes
@@ -97,7 +131,7 @@ namespace :proquest do
 
         ordered_members = []
         metadata_fields[:files].each do |f|
-          puts "[#{Time.now}] trying...#{f.to_s}"
+          puts "[#{Time.now}][#{id}] trying...#{f.to_s}"
 
           file_path = unzipped_file_list.find { |e| e.match(f.to_s) }
           if file_path.blank?
@@ -144,13 +178,13 @@ namespace :proquest do
       end
       dirname
     rescue => e
-      puts "[#{Time.now}] zip file error: #{e.message}"
+      puts "[#{Time.now}] #{file}, zip file error: #{e.message}"
       nil
     end
   end
 
   def ingest_proquest_file(parent: nil, resource: nil, f: nil)
-    puts "[#{Time.now}] ingesting... #{f.to_s}"
+    puts "[#{Time.now}][#{parent.id}] ingesting... #{f.to_s}"
     fileset_metadata = file_record(resource)
 
     if fileset_metadata['embargo_release_date'].blank?
@@ -182,14 +216,14 @@ namespace :proquest do
     embargo_code = metadata.xpath('//DISS_submission/@embargo_code').text
 
     unless embargo_code.blank?
-      current_date = DateTime.now
+      current_date = Date.today
       comp_date_string = metadata.xpath('//DISS_description/DISS_dates/DISS_comp_date').text
-      comp_date = DateTime.new(comp_date_string.to_i, 12, 31)
+      comp_date = Date.new(comp_date_string.to_i, 12, 31)
       embargo_release_date = current_date < comp_date ? current_date : comp_date
 
       if embargo_code == '2'
         embargo_release_date += 1.year
-      elsif ['3', '4'].include? embargo_release_date
+      elsif ['3', '4'].include? embargo_code
         embargo_release_date += 2.years
       else
         embargo_release_date = ''
@@ -239,7 +273,7 @@ namespace :proquest do
     if !degree_map[normalized_degree].blank?
       degree = DegreesService.label(degree_map[normalized_degree])
     else
-      puts "[#{Time.now}] unknown degree: #{abbreviated_degree}"
+      puts "[#{Time.now}][#{metadata_file}] unknown degree: #{abbreviated_degree}"
       degree = abbreviated_degree
     end
 
@@ -284,7 +318,7 @@ namespace :proquest do
         'keyword'=>keywords.flatten,
         'resource_type'=>resource_type,
         'visibility'=>visibility,
-        'embargo_release_date'=>(Date.try(:edtf, embargo_release_date)).to_s,
+        'embargo_release_date'=>(Date.try(:edtf, embargo_release_date.to_s)).to_s,
         'visibility_during_embargo'=>visibility_during_embargo,
         'visibility_after_embargo'=>visibility_after_embargo,
         'admin_set_id'=>@admin_set_id
