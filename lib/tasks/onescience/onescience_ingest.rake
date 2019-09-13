@@ -1,6 +1,7 @@
 namespace :onescience do
   require 'roo'
   require 'tasks/migrate/services/progress_tracker'
+  require 'tasks/migration_helper'
 
   desc 'batch migrate 1science articles from spreadsheet'
   task :ingest, [:configuration_file] => :environment do |t, args|
@@ -105,33 +106,7 @@ namespace :onescience do
       work = config['work_type'].singularize.classify.constantize.new
       work.depositor = @depositor_onyen
 
-      # Singularize non-enumerable attributes and make sure enumerable attributes are arrays
-      work_attributes.each do |k,v|
-        if work.attributes.keys.member?(k.to_s) && !work.attributes[k.to_s].respond_to?(:each) && work_attributes[k].respond_to?(:each)
-          work_attributes[k] = v.first
-        elsif work.attributes.keys.member?(k.to_s) && work.attributes[k.to_s].respond_to?(:each) && !work_attributes[k].respond_to?(:each)
-          work_attributes[k] = Array(v)
-        else
-          work_attributes[k] = v
-        end
-      end
-
-      # Only keep attributes which apply to the given work type
-      work.attributes = work_attributes.reject{|k,v| !work.attributes.keys.member?(k.to_s) unless k.to_s.ends_with? '_attributes'}
-                            .merge({'deposit_record' => deposit_record_id})
-
-      # Log other non-blank data which is not saved
-      missing = work_attributes.except(*work.attributes.keys, 'contained_files', 'cdr_model_type', 'visibility',
-                                       'creators_attributes', 'contributors_attributes', 'advisors_attributes',
-                                       'arrangers_attributes', 'composers_attributes', 'funders_attributes',
-                                       'project_directors_attributes', 'researchers_attributes', 'reviewers_attributes',
-                                       'translators_attributes', 'dc_title', 'premis_files', 'embargo_release_date',
-                                       'visibility_during_embargo', 'visibility_after_embargo', 'visibility',
-                                       'member_of_collections', 'based_near_attributes')
-
-      if !missing.blank?
-        puts "[#{Time.now.to_s}] #{uuid} missing: #{missing}"
-      end
+      work = MigrationHelper.check_enumeration(work_attributes, work, item_data['onescience_id'])
 
       # Check for embargo data
       embargo_term = embargo_mapping.find{ |e| e['onescience_id'] = item_data['onescience_id'] }
@@ -206,7 +181,7 @@ namespace :onescience do
               work.save!
               puts "[#{Time.now}] #{item_data['onescience_id']},#{work.id} saved new article"
 
-              work.update permissions_attributes: get_group_permissions
+              work.update permissions_attributes: MigrationHelper.get_permissions_attributes(@admin_set_id)
 
               # Create sipity record
               workflow = Sipity::Workflow.joins(:permission_template)
@@ -305,21 +280,5 @@ namespace :onescience do
     end
 
     people
-  end
-
-
-  def get_group_permissions
-    # find admin set and manager groups for work
-    manager_groups = Hyrax::PermissionTemplateAccess.joins(:permission_template)
-                         .where(access: 'manage', agent_type: 'group')
-                         .where(permission_templates: {source_id: @admin_set_id})
-
-    # update work permissions to give admin set managers edit rights
-    permissions_array = []
-    manager_groups.each do |manager_group|
-      permissions_array << { "type" => "group", "name" => manager_group.agent_id, "access" => "edit" }
-    end
-
-    permissions_array
   end
 end

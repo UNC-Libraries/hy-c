@@ -112,7 +112,7 @@ module Migrate
             end
           end
           languages = descriptive_mods.xpath('mods:language/mods:languageTerm',MigrationConstants::NS).map(&:text)
-          work_attributes['language'] = get_language_uri(languages) if !languages.blank?
+          work_attributes['language'] = MigrationHelper.get_language_uri(languages) if !languages.blank?
           work_attributes['language_label'] = work_attributes['language'].map{|l| LanguagesService.label(l) } if !languages.blank?
           work_attributes['resource_type'] = descriptive_mods.xpath('mods:genre[not(@*)]',MigrationConstants::NS).map(&:text)
           work_attributes['dcmi_type'] = descriptive_mods.xpath('mods:typeOfResource/@valueURI',MigrationConstants::NS).map(&:text)
@@ -273,7 +273,7 @@ module Migrate
         end
 
         work_attributes['admin_set_id'] = @admin_set_id
-        work_attributes['permissions_attributes'] = get_permissions_attributes
+        work_attributes['permissions_attributes'] = MigrationHelper.get_permissions_attributes(@admin_set_id)
 
         work_attributes.reject!{|k,v| v.blank?}
       end
@@ -329,12 +329,6 @@ module Migrate
           location_hash.blank? ? nil : location_hash
         end
 
-        # Use language code to get iso639-2 uri from service
-        def get_language_uri(language_codes)
-          language_codes.map{|e| LanguagesService.label("http://id.loc.gov/vocabulary/iso639-2/#{e.downcase}") ?
-                                "http://id.loc.gov/vocabulary/iso639-2/#{e.downcase}" : e}
-        end
-
         def department_lookup(affiliations)
           affiliations -= ['University of North Carolina at Chapel Hill']
           merged_affiliations = []
@@ -356,21 +350,6 @@ module Migrate
           name_parts << name_mods.xpath('mods:namePart[@type="termsOfAddress"]', MigrationConstants::NS)
           name_parts << name_mods.xpath('mods:namePart[@type="date"]', MigrationConstants::NS)
           name_parts.reject{ |name| name.blank? }.join(', ')
-        end
-
-        def get_permissions_attributes
-          # find admin set and manager groups for work
-          manager_groups = Hyrax::PermissionTemplateAccess.joins(:permission_template)
-                               .where(access: 'manage', agent_type: 'group')
-                               .where(permission_templates: {source_id: @admin_set_id})
-
-          # update work permissions to give admin set managers edit rights
-          permissions_array = []
-          manager_groups.each do |manager_group|
-            permissions_array << { "type" => "group", "name" => manager_group.agent_id, "access" => "edit" }
-          end
-
-          permissions_array
         end
     end
   end

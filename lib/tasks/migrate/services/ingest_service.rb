@@ -297,40 +297,7 @@ module Migrate
             end
           end
 
-          # Singularize non-enumerable attributes and make sure enumerable attributes are arrays
-          work_attributes.each do |k,v|
-            if resource.attributes.keys.member?(k.to_s) && !resource.attributes[k.to_s].respond_to?(:each) && work_attributes[k].respond_to?(:each)
-              work_attributes[k] = v.first
-            elsif resource.attributes.keys.member?(k.to_s) && resource.attributes[k.to_s].respond_to?(:each) && !work_attributes[k].respond_to?(:each)
-              work_attributes[k] = Array.wrap(v)
-            else
-              work_attributes[k] = v
-            end
-          end
-
-          # Only keep attributes which apply to the given work type
-          work_attributes.select {|k,v| k.to_s.ends_with? '_attributes'}.each do |k,v|
-            if !resource.respond_to?(k.to_s+'=')
-              # Log non-blank person data which is not saved
-              puts "[#{Time.now.to_s}] #{uuid} missing: #{k}=>#{v}"
-              work_attributes.delete(k.to_s.split('s_')[0]+'_display')
-              work_attributes.delete(k)
-            end
-          end
-
-          resource.attributes = work_attributes.reject{|k,v| !resource.attributes.keys.member?(k.to_s) unless k.to_s.ends_with? '_attributes'}
-
-          # Log other non-blank data which is not saved
-          missing = work_attributes.except(*resource.attributes.keys, 'contained_files', 'cdr_model_type', 'visibility',
-                                           'creators_attributes', 'contributors_attributes', 'advisors_attributes',
-                                           'arrangers_attributes', 'composers_attributes', 'funders_attributes',
-                                           'project_directors_attributes', 'researchers_attributes', 'reviewers_attributes',
-                                           'translators_attributes', 'dc_title', 'premis_files', 'embargo_release_date',
-                                           'visibility_during_embargo', 'visibility_after_embargo', 'visibility',
-                                           'member_of_collections', 'based_near_attributes')
-          if !missing.blank?
-            puts "[#{Time.now.to_s}] #{uuid} missing: #{missing}"
-          end
+          resource = MigrationHelper.check_enumeration(work_attributes, resource, uuid)
 
           resource.visibility = work_attributes['visibility']
           unless work_attributes['embargo_release_date'].blank?
