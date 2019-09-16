@@ -92,8 +92,8 @@ module Hyc
               attributes: {
                   prefix: @doi_prefix,
                   titles: [{ title: record['title_tesim'].first }],
-                  types: resource_type_parse(record['dcmi_type_tesim'], record['resource_type_tesim']),
-                  url: "#{ENV['HYRAX_HOST']}/concern/#{record['has_model_ssim'].first.downcase}s/#{record['id']}?locale=en",
+                  types: parse_resource_type(record['dcmi_type_tesim'], record['resource_type_tesim']),
+                  url: get_work_url(record['has_model_ssim'], record['id']),
                   event: 'publish',
                   schemaVersion: 'http://datacite.org/schema/kernel-4'
               }
@@ -224,7 +224,7 @@ module Hyc
     end
 
     # Field uses a controlled vocabulary
-    def resource_type_parse(dcmi_type, record_type)
+    def parse_resource_type(dcmi_type, record_type)
       result = {}
       
       datacite_type = nil
@@ -319,6 +319,10 @@ module Hyc
       end
 
       values
+    end
+
+    def get_work_url(model, id)
+      Rails.application.routes.url_helpers.send(Hyrax::Name.new(model.classify.constantize).singular_route_key + "_url", id)
     end
   end
 end
