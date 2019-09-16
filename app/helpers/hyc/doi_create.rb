@@ -50,9 +50,9 @@ module Hyc
     
     def initialize(rows = 1000)
       @rows = rows
-      @use_test_api = ENV['DATACITE_USE_TEST_API'].to_s.downcase == "true"
+      use_test_api = ENV['DATACITE_USE_TEST_API'].to_s.downcase == "true"
       @doi_prefix = ENV['DATACITE_PREFIX']
-      if @use_test_api
+      if use_test_api
         @doi_creation_url = 'https://api.test.datacite.org/dois'
         @doi_url_base = 'https://handle.test.datacite.org'
       else
@@ -85,15 +85,15 @@ module Hyc
       end
     end
 
-    def format_data(record, work)
+    def format_data(work)
       data = {
           data: {
               type: 'dois',
               attributes: {
                   prefix: @doi_prefix,
-                  titles: [{ title: record['title_tesim'].first }],
-                  types: parse_resource_type(record['dcmi_type_tesim'], record['resource_type_tesim']),
-                  url: get_work_url(record['has_model_ssim'], record['id']),
+                  titles: [{ title: work[:title].first }],
+                  types: parse_resource_type(work[:dcmi_type], work[:resource_type]),
+                  url: get_work_url(work.class, work.id),
                   event: 'publish',
                   schemaVersion: 'http://datacite.org/schema/kernel-4'
               }
@@ -115,25 +115,18 @@ module Hyc
         data[:data][:attributes][:creators] = creators
       end
 
-      dates = parse_field(record,'date_issued_tesim')
-      if dates.blank?
-        [{ date: Date.today.to_s, dateType: 'Issued'}]
-      else
-        [{ date: dates.first, dateType: 'Issued'}]
-      end
-
-      publisher = parse_field(record, 'publisher_tesim')
+      publisher = parse_field(work, 'publisher')
       if publisher.blank?
         data[:data][:attributes][:publisher] = 'The University of North Carolina at Chapel Hill University Libraries'
       else
         data[:data][:attributes][:publisher] = publisher.first
       end
 
-      publication_year = parse_field(record, 'date_issued_tesim')
+      publication_year = parse_field(work, 'date_issued')
       if publication_year.blank?
         data[:data][:attributes][:publicationYear] = Date.today.year
       else
-        data[:data][:attributes][:publicationYear] = publication_year.first.match(/\d{4}/)[0]
+        data[:data][:attributes][:publicationYear] = Array.wrap(publication_year).first.to_s.match(/\d{4}/)[0]
       end
 
       ############################
@@ -146,34 +139,34 @@ module Hyc
         data[:data][:attributes][:contributors] = contributors
       end
 
-      description = parse_description(record, 'abstract_tesim')
+      description = parse_description(work, 'abstract')
       unless description.blank?
         data[:data][:attributes][:descriptions] = description
       end
 
-      funding = parse_funding(record, 'funder_tesim')
+      funding = parse_funding(work, 'funder')
       unless funding.blank?
         data[:data][:attributes][:fundingReferences] = funding
       end
 
-      language = parse_field(record, 'language_label_tesim').first
+      language = parse_field(work, 'language_label').first
       unless language.blank?
         data[:data][:attributes][:language] = language
       end
 
-      rights = parse_field(record, 'rights_statement_tesim')
+      rights = parse_field(work, 'rights_statement')
       unless rights.blank?
-        rights_uri = rights.first
+        rights_uri = Array.wrap(rights).first
         rights_label = CdrRightsStatementsService.label(rights_uri)
         data[:data][:attributes][:rightsList] = { rights: rights_label, rightsUri: rights_uri }
       end
 
-      sizes = parse_field(record, 'extent_tesim')
+      sizes = parse_field(work, 'extent')
       unless sizes.blank?
         data[:data][:attributes][:sizes] = sizes
       end
 
-      subjects = parse_subjects(record, 'subject_tesim')
+      subjects = parse_subjects(work, 'subject')
       unless subjects.blank?
         data[:data][:attributes][:subjects] = subjects
       end
@@ -184,14 +177,13 @@ module Hyc
     def create_doi(record)
       puts "Creating DOI for #{record['id']}"
       work = ActiveFedora::Base.find(record['id'])
-      record_data = format_data(record, work)
+      record_data = format_data(work)
       response = doi_request(record_data)
 
       if response.success?
         doi = JSON.parse(response.body)['data']['id']
         full_doi = "#{@doi_url_base}/#{doi}"
-        work.doi = full_doi
-        work.save!
+        work.update!(doi: full_doi)
 
         puts "DOI created for record #{record['id']}: #{full_doi}"
       else
@@ -202,127 +194,141 @@ module Hyc
     end
 
     def create_batch_doi
-      start_time = Time.now
-      records = ActiveFedora::SolrService.get("visibility_ssi:open AND -doi_tesim:* AND workflow_state_name_ssim:deposited AND has_model_ssim:(Article Artwork DataSet Dissertation General HonorsThesis Journal MastersPaper Multimed ScholarlyWork)",
-                                              :rows => @rows,
-                                              :sort => "system_create_dtsi ASC")["response"]["docs"]
+      begin
+        start_time = Time.now
+        records = ActiveFedora::SolrService.get("visibility_ssi:open AND -doi_tesim:* AND workflow_state_name_ssim:deposited AND has_model_ssim:(Article Artwork DataSet Dissertation General HonorsThesis Journal MastersPaper Multimed ScholarlyWork)",
+                                                :rows => @rows,
+                                                :sort => "system_create_dtsi ASC",
+                                                :fl => "id")["response"]["docs"]
 
-
-      if records.length > 0
-        puts "Preparing to add DOIs to #{records.length} records"
-        records.each do |record|
-          create_doi(record)
-        end
-        puts "Added #{records.length} DOIs in #{Time.now - start_time}s"
-      else
-        puts 'There are no records that need to have DOIs added.'
-      end
-    end
-
-    def parse_field(record, field)
-      record.has_key?(field) ? record["#{field}"] : []
-    end
-
-    # Field uses a controlled vocabulary
-    def parse_resource_type(dcmi_type, record_type)
-      result = {}
-      
-      datacite_type = nil
-      if !dcmi_type.blank?
-        # Prioritize the "text" type when multiple are present
-        if dcmi_type.include?('http://purl.org/dc/dcmitype/Text')
-          dcmi_val = 'http://purl.org/dc/dcmitype/Text'
+        if records.length > 0
+          puts "Preparing to add DOIs to #{records.length} records"
+          records.each do |record|
+            create_doi(record)
+          end
+          puts "Added #{records.length} DOIs in #{Time.now - start_time}s"
         else
-          dcmi_val = dcmi_type.first
+          puts 'There are no records that need to have DOIs added.'
         end
-        dcmi_type_term = dcmi_val.split('/').last
-        datacite_type = DCMI_TO_DATACITE_TYPE[dcmi_type_term]
-      else
-        # Fall back to resource type mapping
-        resource_type = record_type&.first
-        datacite_type = RESOURCE_TYPE_TO_DATACITE[resource_type]
+        exit 0
+      rescue => e
+        puts "There was an error creating dois: #{e.message}"
+        exit 1
       end
-      if datacite_type.nil?
-        puts "WARNING: Unable to determine resourceTypeGeneral for record"
-      end
-      # Storing the datacite type. If it is nil or invalid, datacite will reject the creation
-      result[:resourceTypeGeneral] = datacite_type
-      
-      unless record_type.blank?
-        result[:resourceType] = record_type.first
-      end
-      
-      result
     end
 
-    def parse_funding(record, field)
-      formatted_values = ->(work) {
-        work.map do |f|
-          { funderName: f }
-        end
-      }
-      get_values(record["#{field}"], formatted_values)
-    end
-
-    def parse_subjects(record, field)
-      formatted_values = ->(work) {
-        work.map do |s|
-          { subject: s }
-        end
-      }
-      get_values(record["#{field}"], formatted_values)
-    end
-
-    def parse_description(record, field)
-      formatted_values = ->(work) { work.map { |d| { description: d, descriptionType: 'Abstract' }}}
-      get_values(record["#{field}"], formatted_values)
-    end
-
-    def parse_people(work, person_field)
-      if !work.attributes.keys.member?(person_field)
-        return []
-      end
-      
-      people = []
-      
-      work[person_field].each do |p|
-        p_json = JSON.parse(p.to_json)
-        person = { name: p_json['name'].first, nameType: 'Personal' }
-        
-        affil = p_json['affiliation']&.first
-        other_affil = p_json['other_affiliation']&.first
-        
-        if !affil.blank?
-          expanded_affils = DepartmentsService.label(affil)
-          person[:affiliation] = expanded_affils.split('; ') unless expanded_affils.nil?
-        elsif !other_affil.blank?
-          person[:affiliation] = [other_affil]
-        end
-        
-        orcid = p_json['orcid']&.first
-        if !orcid.blank?
-          person[:nameIdentifiers] = [ nameIdentifier: orcid, nameIdentifierScheme: 'ORCID']
-        end
-        
-        people << person
-      end
-      
-      people
-    end
 
     private
-    def get_values(record_field, process_method)
-      values = []
 
-      unless record_field.blank?
-        values = process_method.call(record_field)
+      def get_values(record_field, process_method)
+        values = []
+
+        unless record_field.blank?
+          values = process_method.call(record_field)
+        end
+
+        values
       end
 
-      values
-    end
+      def get_work_url(model, id)
+        Rails.application.routes.url_helpers.send(Hyrax::Name.new(model).singular_route_key + "_url", id)
+      end
 
-    def get_work_url(model, id)
-      Rails.application.routes.url_helpers.send(Hyrax::Name.new(model.classify.constantize).singular_route_key + "_url", id)
-    end
+      def parse_field(record, field)
+        record.attributes.keys.member?(field) ? record[field.to_sym] : []
+      end
+
+      # Field uses a controlled vocabulary
+      def parse_resource_type(dcmi_type, record_type)
+        result = {}
+
+        datacite_type = nil
+        if !dcmi_type.blank?
+          # Prioritize the "text" type when multiple are present
+          if dcmi_type.include?('http://purl.org/dc/dcmitype/Text')
+            dcmi_val = 'http://purl.org/dc/dcmitype/Text'
+          else
+            dcmi_val = dcmi_type.first
+          end
+          dcmi_type_term = dcmi_val.split('/').last
+          datacite_type = DCMI_TO_DATACITE_TYPE[dcmi_type_term]
+        else
+          # Fall back to resource type mapping
+          resource_type = record_type&.first
+          datacite_type = RESOURCE_TYPE_TO_DATACITE[resource_type]
+        end
+        if datacite_type.nil?
+          puts "WARNING: Unable to determine resourceTypeGeneral for record"
+        end
+        # Storing the datacite type. If it is nil or invalid, datacite will reject the creation
+        result[:resourceTypeGeneral] = datacite_type
+
+        unless record_type.blank?
+          result[:resourceType] = record_type.first
+        end
+
+        result
+      end
+
+      def parse_funding(record, field)
+        if record.attributes.keys.member?(field)
+          formatted_values = ->(work) {
+            work.map do |f|
+              { funderName: f }
+            end
+          }
+          get_values(record["#{field}"], formatted_values)
+        end
+      end
+
+      def parse_subjects(record, field)
+        if record.attributes.keys.member?(field)
+          formatted_values = ->(work) {
+            work.map do |s|
+              { subject: s }
+            end
+          }
+          get_values(record["#{field}"], formatted_values)
+        end
+      end
+
+      def parse_description(record, field)
+        if record.attributes.keys.member?(field)
+          formatted_values = ->(work) { work.map { |d| { description: d, descriptionType: 'Abstract' }}}
+          get_values(record["#{field}"], formatted_values)
+        end
+      end
+
+      def parse_people(work, person_field)
+        if !work.attributes.keys.member?(person_field)
+          return []
+        end
+
+        people = []
+
+        work[person_field].each do |p|
+          p_json = JSON.parse(p.to_json)
+          person = { name: p_json['name'].first, nameType: 'Personal' }
+
+          affil = p_json['affiliation']&.first
+          other_affil = p_json['other_affiliation']&.first
+
+          if !affil.blank?
+            expanded_affils = DepartmentsService.label(affil)
+            person[:affiliation] = expanded_affils.split('; ') unless expanded_affils.nil?
+          elsif !other_affil.blank?
+            person[:affiliation] = [other_affil]
+          end
+
+          orcid = p_json['orcid']&.first
+          if !orcid.blank?
+            person[:nameIdentifiers] = [ nameIdentifier: orcid, nameIdentifierScheme: 'ORCID']
+          end
+
+          people << person
+        end
+
+        people
+      end
   end
 end

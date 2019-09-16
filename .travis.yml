@@ -43,3 +43,8 @@ env:
     - TEMP_STORAGE=./public
     - DELETED_PEOPLE_FILE=./tmp/deleted_people.txt
     - ALLOW_NOTIFICATIONS=true
+    - DOI_PREFIX='10.17615'
+    - DATACITE_USER='test-datacite-user'
+    - DATACITE_PASSWORD='datacitepass'
+    - DATACITE_PREFIX='10.5077'
+    - DATACITE_USE_TEST_API='true'
