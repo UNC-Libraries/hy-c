@@ -135,6 +135,7 @@ RSpec.describe Hyc::DoiCreate do
 
   describe '#create_batch_doi' do
     it 'calls create_doi' do
+      stub_request(:any, /datacite/)
       expect(Hyc::DoiCreate.new(1).create_batch_doi).to exit(0)
     end
   end
