@@ -55,12 +55,14 @@ module Hyc
       if use_test_api
         @doi_creation_url = 'https://api.test.datacite.org/dois'
         @doi_url_base = 'https://handle.test.datacite.org'
+        @doi_user = ENV['DATACITE_TEST_USER']
+        @doi_password = ENV['DATACITE_TEST_PASSWORD']
       else
         @doi_creation_url = 'https://api.datacite.org/dois'
         @doi_url_base = 'https://doi.org'
+        @doi_user = ENV['DATACITE_USER']
+        @doi_password = ENV['DATACITE_PASSWORD']
       end
-      @doi_user = ENV['DATACITE_USER']
-      @doi_password = ENV['DATACITE_PASSWORD']
     end
 
     def doi_request(data, retries = 2)
