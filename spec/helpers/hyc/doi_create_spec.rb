@@ -141,7 +141,7 @@ RSpec.describe Hyc::DoiCreate do
       stub_request(:any, /geonames/).to_return(body: {asciiName: 'Chapel Hill, North Carolina',
                                                       adminName: '',
                                                       countryName: 'United States'}.to_json.to_s)
-      expect(Hyc::DoiCreate.new(1).create_batch_doi).to exit(0)
+      expect(Hyc::DoiCreate.new(1).create_batch_doi).to eq 1
     end
   end
 end

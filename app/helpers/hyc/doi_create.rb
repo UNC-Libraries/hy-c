@@ -207,13 +207,14 @@ module Hyc
             create_doi(record)
           end
           puts "Added #{records.length} DOIs in #{Time.now - start_time}s"
+          return records.length
         else
           puts 'There are no records that need to have DOIs added.'
+          return 0
         end
-        exit 0
       rescue => e
         puts "There was an error creating dois: #{e.message}"
-        exit 1
+        return -1
       end
     end
 
