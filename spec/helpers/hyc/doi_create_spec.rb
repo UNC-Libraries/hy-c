@@ -135,7 +135,12 @@ RSpec.describe Hyc::DoiCreate do
 
   describe '#create_batch_doi' do
     it 'calls create_doi' do
-      stub_request(:any, /datacite/)
+      stub_request(:any, /datacite/).to_return(body: {data: {id: '10.5077/0001',
+                                                             type: 'dois',
+                                                             attributes: { doi: '10.5077/0001'}}}.to_json.to_s)
+      stub_request(:any, /geonames/).to_return(body: {asciiName: 'Chapel Hill, North Carolina',
+                                                      adminName: '',
+                                                      countryName: 'United States'}.to_json.to_s)
       expect(Hyc::DoiCreate.new(1).create_batch_doi).to exit(0)
     end
   end
