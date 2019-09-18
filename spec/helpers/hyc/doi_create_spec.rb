@@ -2,8 +2,8 @@ require 'rails_helper'
 
 RSpec.describe Hyc::DoiCreate do
   describe '#initialize' do
-    context'when no row value is specified'do
-      it'sets class variables'do
+    context 'when no row value is specified' do
+      it 'sets class variables' do
         doi_create = Hyc::DoiCreate.new
 
         expect(doi_create.as_json['rows']).to eq 1000
@@ -15,8 +15,8 @@ RSpec.describe Hyc::DoiCreate do
       end
     end
 
-    context'when a row value is specified'do
-      it'sets class variables'do
+    context 'when a row value is specified' do
+      it 'sets class variables' do
         doi_create = Hyc::DoiCreate.new(10)
 
         expect(doi_create.as_json['rows']).to eq 10
@@ -50,33 +50,21 @@ RSpec.describe Hyc::DoiCreate do
   end
 
   describe '#format_data' do
-    let(:article) do
-      Article.new(title: ['new article'],
-                  date_issued: DateTime.now,
-                  id: 'd7f59f11-a35b-41cd-a7d9-77f36738b728',
-                  resource_type: ['Article'],
-                  funder: ['a funder'],
-                  subject: ['subject1', 'subject2'],
-                  abstract: ['a description'],
-                  extent: ['some extent'],
-                  language_label: ['English'],
-                  rights_statement: 'http://rightsstatements.org/vocab/InC/1.0/')
-    end
-    let(:honors_thesis) do
-      HonorsThesis.new(title: ['new thesis'],
-                       date_issued: DateTime.now,
-                       id: 'd7f59f11-a35b-41cd-a7d9-77f36738b728',
-                       resource_type: ['Video', 'Honors Thesis', 'Journal'],
-                       creators_attributes: [{name: 'Person, Test',
-                                              affiliation: 'Department of Biology',
-                                              orcid: 'some orcid'},
-                                             {name: 'Person, Non-UNC',
-                                              other_affiliation: 'NCSU'}],
-                       publisher: ['Some Publisher'])
-    end
-
     context 'for an article' do
-      it 'includes a correct url' do
+      let(:article) do
+        Article.new(title: ['new article'],
+                    date_issued: DateTime.now,
+                    id: 'd7f59f11-a35b-41cd-a7d9-77f36738b728',
+                    resource_type: ['Article'],
+                    funder: ['a funder'],
+                    subject: ['subject1', 'subject2'],
+                    abstract: ['a description'],
+                    extent: ['some extent'],
+                    language_label: ['English'],
+                    rights_statement: 'http://rightsstatements.org/vocab/InC/1.0/')
+      end
+
+      it 'includes a correct url for a one-word work type' do
         result = described_class.new.format_data(article)
         expect(JSON.parse(result)['data']['attributes']['url']).to eq "#{ENV['HYRAX_HOST']}/concern/articles/d7f59f11-a35b-41cd-a7d9-77f36738b728"
         expect(JSON.parse(result)['data']['attributes']['titles']).to match_array [{'title' => 'new article'}]
@@ -96,7 +84,20 @@ RSpec.describe Hyc::DoiCreate do
     end
 
     context 'for an honors thesis' do
-      it 'includes a correct url' do
+      let(:honors_thesis) do
+        HonorsThesis.new(title: ['new thesis'],
+                         date_issued: DateTime.now,
+                         id: 'd7f59f11-a35b-41cd-a7d9-77f36738b728',
+                         resource_type: ['Video', 'Honors Thesis', 'Journal'],
+                         creators_attributes: [{name: 'Person, Test',
+                                                affiliation: 'Department of Biology',
+                                                orcid: 'some orcid'},
+                                               {name: 'Person, Non-UNC',
+                                                other_affiliation: 'NCSU'}],
+                         publisher: ['Some Publisher'])
+      end
+
+      it 'includes a correct url for a two-word work type with special pluralization' do
         result = described_class.new.format_data(honors_thesis)
         expect(JSON.parse(result)['data']['attributes']['url']).to eq "#{ENV['HYRAX_HOST']}/concern/honors_theses/d7f59f11-a35b-41cd-a7d9-77f36738b728"
         expect(JSON.parse(result)['data']['attributes']['titles']).to match_array [{'title' => 'new thesis'}]
@@ -112,6 +113,34 @@ RSpec.describe Hyc::DoiCreate do
                                                                                       {'name' => 'Person, Non-UNC',
                                                                                        'nameType' => 'Personal',
                                                                                        'affiliation' => ['NCSU']}]
+        expect(JSON.parse(result)['data']['attributes']['publisher']).to eq 'Some Publisher'
+      end
+    end
+
+    context 'for a scholarly work' do
+      let(:scholarly_work) do
+        ScholarlyWork.new(title: ['new scholarly work'],
+                          date_issued: DateTime.now,
+                          id: 'd7f59f11-a35b-41cd-a7d9-77f36738b728',
+                          resource_type: ['Poster'],
+                          creators_attributes: [{name: 'Person, Test',
+                                                 affiliation: 'Department of Biology',
+                                                 orcid: 'some orcid'}],
+                          publisher: ['Some Publisher'])
+      end
+
+      it 'includes a correct url for a two-word work type with simple pluralization' do
+        result = described_class.new.format_data(scholarly_work)
+        expect(JSON.parse(result)['data']['attributes']['url']).to eq "#{ENV['HYRAX_HOST']}/concern/scholarly_works/d7f59f11-a35b-41cd-a7d9-77f36738b728"
+        expect(JSON.parse(result)['data']['attributes']['titles']).to match_array [{'title' => 'new scholarly work'}]
+        expect(JSON.parse(result)['data']['attributes']['publicationYear']).to eq Date.today.year.to_s
+        expect(JSON.parse(result)['data']['attributes']['types']['resourceType']).to eq 'Poster'
+        expect(JSON.parse(result)['data']['attributes']['types']['resourceTypeGeneral']).to eq 'Text'
+        expect(JSON.parse(result)['data']['attributes']['creators']).to match_array [{'name' => 'Person, Test',
+                                                                                     'nameType' => 'Personal',
+                                                                                     'affiliation' => ['College of Arts and Sciences', 'Department of Biology'],
+                                                                                     'nameIdentifiers' => [{'nameIdentifier' => 'some orcid',
+                                                                                                            'nameIdentifierScheme' => 'ORCID'}]}]
         expect(JSON.parse(result)['data']['attributes']['publisher']).to eq 'Some Publisher'
       end
     end
@@ -134,7 +163,39 @@ RSpec.describe Hyc::DoiCreate do
   end
 
   describe '#create_batch_doi' do
+    # make sure there is at least one work without a doi
+    let(:approver) { User.find_by_user_key('admin') }
+    let(:depositor) { User.create(email: 'test@example.com',
+                                  uid: 'test@example.com',
+                                  password: 'password',
+                                  password_confirmation: 'password') }
+    let(:admin_set) do
+      AdminSet.create(title: ["article admin set"],
+                      description: ["some description"],
+                      edit_users: [depositor.user_key])
+    end
+    let(:work) { Article.create(title: ['new article for testing doi creation'],
+                                depositor: depositor.email,
+                                visibility: 'open',
+                                admin_set_id: admin_set.id) }
+    let(:permission_template) do
+      Hyrax::PermissionTemplate.create!(source_id: admin_set.id)
+    end
+    let(:workflow) do
+      Sipity::Workflow.create(name: 'test', allows_access_grant: true, active: true,
+                              permission_template_id: permission_template.id)
+    end
+    let(:workflow_state) do
+      Sipity::WorkflowState.create(name: 'deposited', workflow_id: workflow.id)
+    end
+
     it 'calls create_doi' do
+      # create work with a deposited workflow state
+      Sipity::Entity.create(proxy_for_global_id: work.to_global_id.to_s,
+                            workflow_id: workflow.id,
+                            workflow_state: workflow_state)
+      work.save!
+
       stub_request(:any, /datacite/).to_return(body: {data: {id: '10.5077/0001',
                                                              type: 'dois',
                                                              attributes: { doi: '10.5077/0001'}}}.to_json.to_s)
