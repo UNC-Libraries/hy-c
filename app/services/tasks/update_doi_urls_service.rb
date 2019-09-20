@@ -53,9 +53,7 @@ AND has_model_ssim:(DataSet HonorsThesis MastersPaper ScholarlyWork) AND system_
         work = ActiveFedora::Base.find(record['id'])
         data = Hyc::DoiCreate.new.format_data(work)
 
-        puts work.inspect
-
-        doi_update_request(record['doi_tesim'].first, data, retries, doi_update_url, datacite_user, datacite_password)
+        doi_update_request(record['doi_tesim'].first.gsub('https://doi.org/', ''), data, retries, doi_update_url, datacite_user, datacite_password)
 
         # log success
         completed_log.add_entry(record['id'])

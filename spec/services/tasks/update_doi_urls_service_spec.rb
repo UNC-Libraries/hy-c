@@ -38,7 +38,7 @@ RSpec.describe Tasks::UpdateDoiUrlsService do
                                      depositor: depositor.email,
                                      visibility: 'open',
                                      admin_set_id: admin_set.id,
-                                     doi: 'test-doi') }
+                                     doi: 'https://doi.org/10.5077/test-doi') }
     let(:permission_template) do
       Hyrax::PermissionTemplate.create!(source_id: admin_set.id)
     end
@@ -61,7 +61,7 @@ RSpec.describe Tasks::UpdateDoiUrlsService do
 
       stub_request(:any, /datacite/).to_return(body: {data: {id: '10.5077/0001',
                                                               type: 'dois',
-                                                              attributes: { doi: '10.5077/0001'}}}.to_json.to_s)
+                                                              attributes: { doi: 'https://doi.org/10.5077/test-doi'}}}.to_json.to_s)
       expect(service.update_dois).to eql 1
     end
   end
