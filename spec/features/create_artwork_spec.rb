@@ -141,7 +141,7 @@ RSpec.feature 'Create an Artwork', js: false do
 
       # extra fields
       fill_in 'Note', with: 'my note'
-      fill_in 'DOI', with: 'some doi'
+      fill_in 'DOI', with: 'some-doi'
       select 'Attribution 3.0 United States', :from => 'artwork_license'
       select 'In Copyright', :from => 'artwork_rights_statement'
       fill_in 'Creator', { with: 'Test Default Creator', id: 'artwork_creators_attributes_0_name' }
@@ -183,7 +183,7 @@ RSpec.feature 'Create an Artwork', js: false do
       expect(page).to have_content 'Other Affiliation: UNC'
       expect(page).to have_content 'Date of publication October 3, 2018'
       expect(page).to have_content 'Abstract a description'
-      expect(page).to have_content 'DOI some doi'
+      expect(page).to have_content 'DOI some-doi'
       expect(page).to have_content 'Extent some extent'
       expect(page).to have_content 'License Attribution 3.0 United States'
       expect(page).to have_content 'Medium a medium'

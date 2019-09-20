@@ -231,7 +231,7 @@ RDFXML
       # extra fields
       select 'Clinical Nutrition', from: 'Academic Concentration'
       fill_in 'Access', with: 'some access'
-      fill_in 'DOI', with: 'some doi'
+      fill_in 'DOI', with: 'some-doi'
       fill_in 'Extent', with: 'some extent'
       find("#masters_paper_based_near_attributes_0_id", visible: false).set('http://sws.geonames.org/4460162/')
       fill_in 'Keyword', with: 'Test Default Keyword'
@@ -285,7 +285,7 @@ RDFXML
       expect(page).to have_content 'Date of publication October 3, 2018'
       expect(page).to have_content 'Degree Master of Science'
       expect(page).to have_content 'Degree granting institution UNC'
-      expect(page).to have_content 'DOI some doi'
+      expect(page).to have_content 'DOI some-doi'
       expect(page).to have_content 'Extent some extent'
       expect(page).to have_content 'Location Chapel Hill, North Carolina, United States'
       expect(page).to have_content 'Graduation year 2018'
