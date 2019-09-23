@@ -3,11 +3,11 @@ require 'rails_helper'
 RSpec.describe AccountsController, type: :controller do
 
   let(:valid_attributes) {
-    {email: 'new_test_person1'}
+    {onyen: 'new_test_person1'}
   }
 
   let(:invalid_attributes) {
-    {email: 'admin'}
+    {onyen: 'admin'}
   }
 
   describe "GET #new as admin" do
@@ -39,6 +39,7 @@ RSpec.describe AccountsController, type: :controller do
         expect {
           post :create, params: {account: valid_attributes}
         }.to change(User, :count).by(1)
+        expect(flash[:notice]).to eq "A user account for #{valid_attributes[:onyen]}@ad.unc.edu has been created."
       end
 
       it "redirects to admin_users_path" do
@@ -51,6 +52,7 @@ RSpec.describe AccountsController, type: :controller do
       it "redirects to admin_users_path" do
         post :create, params: {account: invalid_attributes}
         expect(response).to redirect_to('/admin/users?locale=en')
+        expect(flash[:notice]).to eq "A user account for #{invalid_attributes[:onyen]}@ad.unc.edu already exists."
       end
     end
   end
