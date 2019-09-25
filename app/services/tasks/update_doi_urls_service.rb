@@ -20,13 +20,12 @@ module Tasks
       # set datacite variables
       if state == 'test'
         doi_update_url = 'https://api.test.datacite.org/dois'
-        datacite_user = ENV['DATACITE_TEST_USER']
-        datacite_password = ENV['DATACITE_TEST_PASSWORD']
       else
         doi_update_url = 'https://api.datacite.org/dois'
-        datacite_user = ENV['DATACITE_USER']
-        datacite_password = ENV['DATACITE_PASSWORD']
       end
+
+      datacite_user = ENV['DATACITE_USER']
+      datacite_password = ENV['DATACITE_PASSWORD']
 
       updated = completed_log.completed_set
 
@@ -51,7 +50,7 @@ AND has_model_ssim:(DataSet HonorsThesis MastersPaper ScholarlyWork) AND system_
         log.info "[#{Time.now}] Updating doi for #{record['id']} (#{index+1} of #{records.count})"
 
         work = ActiveFedora::Base.find(record['id'])
-        data = Hyc::DoiCreate.new.format_data(work)
+        data = format_update_data(work)
 
         doi_update_request(record['doi_tesim'].first.gsub('https://doi.org/', ''), data, retries, doi_update_url, datacite_user, datacite_password)
 
@@ -96,6 +95,23 @@ AND has_model_ssim:(DataSet HonorsThesis MastersPaper ScholarlyWork) AND system_
             raise e
           end
         end
+      end
+
+      def format_update_data(work)
+        data = {
+            data: {
+                type: 'dois',
+                attributes: {
+                    url: get_work_url(work.class, work.id)
+                }
+            }
+        }
+
+        data.to_json
+      end
+
+      def get_work_url(model, id)
+        Rails.application.routes.url_helpers.send(Hyrax::Name.new(model).singular_route_key + "_url", id)
       end
   end
 end
