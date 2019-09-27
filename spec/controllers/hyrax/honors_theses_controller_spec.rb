@@ -1,9 +1,9 @@
 # Generated via
-#  `rails generate hyrax:work Artwork`
+#  `rails generate hyrax:work HonorsThesis`
 require 'rails_helper'
 
 # test admin set and admin restrictions
-RSpec.describe Hyrax::ArtworksController do
+RSpec.describe Hyrax::HonorsThesesController do
   let(:user) do
     User.new(email: "test#{Date.today.to_time.to_i}@example.com", guest: false, uid: "test#{Date.today.to_time.to_i}") { |u| u.save!(validate: false)}
   end
@@ -13,7 +13,7 @@ RSpec.describe Hyrax::ArtworksController do
   end
 
   let(:admin_set) do
-    AdminSet.new(title: ['artwork admin set'],
+    AdminSet.new(title: ['honors_thesis admin set'],
                  description: ['some description'],
                  edit_users: [user.user_key])
   end
@@ -23,14 +23,14 @@ RSpec.describe Hyrax::ArtworksController do
 
     context 'with existing admin set' do
       it 'is successful' do
-        artwork = Artwork.create(title: ['new artwork to be created'])
+        honors_thesis = HonorsThesis.create(title: ['new honors_thesis to be created'])
         allow(Hyrax::CurationConcern).to receive(:actor).and_return(actor)
-        allow(controller).to receive(:curation_concern).and_return(artwork)
+        allow(controller).to receive(:curation_concern).and_return(honors_thesis)
         admin_set.save!
         sign_in user
 
-        post :create, params: {artwork: {title: "a new artwork #{Date.today.to_time.to_i}"}}
-        expect(response).to redirect_to "/concern/artworks/#{artwork.id}?locale=en"
+        post :create, params: {honors_thesis: {title: "a new honors_thesis #{Date.today.to_time.to_i}"}}
+        expect(response).to redirect_to "/concern/honors_theses/#{honors_thesis.id}?locale=en"
         expect(flash[:notice]).to eq 'Your files are being processed by the Carolina Digital Repository in the background. The metadata and access controls you specified are being applied. You may need to refresh this page to see these updates.'
       end
     end
@@ -39,10 +39,10 @@ RSpec.describe Hyrax::ArtworksController do
       it 'is not successful' do
         AdminSet.delete_all
         sign_in user
-        artwork_count = Artwork.all.count
+        honors_thesis_count = HonorsThesis.all.count
 
-        post :create, params: {artwork: {title: "a new artwork #{Date.today.to_time.to_i}"}}
-        expect(artwork_count).to eq Artwork.all.count
+        post :create, params: {honors_thesis: {title: "a new honors_thesis #{Date.today.to_time.to_i}"}}
+        expect(honors_thesis_count).to eq HonorsThesis.all.count
         expect(response).to redirect_to root_path
         expect(flash[:alert]).to eq 'No Admin Sets have been created.'
       end
@@ -76,21 +76,21 @@ RSpec.describe Hyrax::ArtworksController do
     context 'with existing admin set' do
       it 'is successful' do
         admin_set.save!
-        artwork = Artwork.create(title: ['work to be updated'])
+        honors_thesis = HonorsThesis.create(title: ['work to be updated'])
         sign_in admin_user # bypass need for permission template
 
-        get :edit, params: { id: artwork.id }
+        get :edit, params: { id: honors_thesis.id }
         expect(response).to be_successful
       end
     end
 
     context 'without existing admin set' do
       it 'is not successful' do
-        artwork = Artwork.create(title: ['work to be updated'])
+        honors_thesis = HonorsThesis.create(title: ['work to be updated'])
         AdminSet.delete_all
         sign_in admin_user # bypass need for permission template
 
-        get :edit, params: { id: artwork.id }
+        get :edit, params: { id: honors_thesis.id }
         expect(response).to redirect_to root_path
         expect(flash[:alert]).to eq 'No Admin Sets have been created.'
       end
@@ -103,26 +103,26 @@ RSpec.describe Hyrax::ArtworksController do
     context 'with existing admin set' do
       it 'is successful' do
         admin_set.save!
-        artwork = Artwork.create(title: ['work to be updated'])
+        honors_thesis = HonorsThesis.create(title: ['work to be updated'])
         allow(Hyrax::CurationConcern).to receive(:actor).and_return(actor)
-        allow(controller).to receive(:curation_concern).and_return(artwork)
-        allow(controller).to receive(:authorize!).with(:update, artwork).and_return(true) # give non-admin permission to update
+        allow(controller).to receive(:curation_concern).and_return(honors_thesis)
+        allow(controller).to receive(:authorize!).with(:update, honors_thesis).and_return(true) # give non-admin permission to update
         sign_in user
 
-        patch :update, params: { id: artwork.id, artwork: {abstract: 'an abstract'} }
-        expect(response).to redirect_to "/concern/artworks/#{artwork.id}?locale=en"
-        expect(flash[:notice]).to eq "Work \"#{artwork}\" successfully updated."
+        patch :update, params: { id: honors_thesis.id, honors_thesis: {abstract: 'an abstract'} }
+        expect(response).to redirect_to "/concern/honors_theses/#{honors_thesis.id}?locale=en"
+        expect(flash[:notice]).to eq "Work \"#{honors_thesis}\" successfully updated."
       end
     end
 
     context 'without existing admin set' do
       it 'is not successful' do
-        artwork = Artwork.create(title: ['work to be updated'])
+        honors_thesis = HonorsThesis.create(title: ['work to be updated'])
         AdminSet.delete_all
-        allow(controller).to receive(:authorize!).with(:update, artwork).and_return(true) # give non-admin permission to update
+        allow(controller).to receive(:authorize!).with(:update, honors_thesis).and_return(true) # give non-admin permission to update
         sign_in user
 
-        patch :update, params: { id: artwork.id, art_work: {abstract: ['an abstract']} }
+        patch :update, params: { id: honors_thesis.id, art_work: {abstract: ['an abstract']} }
         expect(response).to redirect_to root_path
         expect(flash[:alert]).to eq 'No Admin Sets have been created.'
       end
@@ -132,26 +132,26 @@ RSpec.describe Hyrax::ArtworksController do
   describe '#destroy' do
     context 'as a non-admin' do
       it 'is not successful' do
-        artwork = Artwork.create(title: ['work to be deleted'])
-        artwork_count = Artwork.all.count
+        honors_thesis = HonorsThesis.create(title: ['work to be deleted'])
+        honors_thesis_count = HonorsThesis.all.count
         sign_in user
 
-        delete :destroy, params: { id: artwork.id }
+        delete :destroy, params: { id: honors_thesis.id }
         expect(response.status).to eq 401
-        expect(Artwork.all.count).to eq artwork_count
+        expect(HonorsThesis.all.count).to eq honors_thesis_count
       end
     end
 
     context 'as an admin' do
       it 'is successful' do
-        artwork = Artwork.create(title: ['work to be deleted'])
-        artwork_count = Artwork.all.count
+        honors_thesis = HonorsThesis.create(title: ['work to be deleted'])
+        honors_thesis_count = HonorsThesis.all.count
         sign_in admin_user
 
-        delete :destroy, params: { id: artwork.id }
+        delete :destroy, params: { id: honors_thesis.id }
         expect(response).to redirect_to '/dashboard/my/works?locale=en'
-        expect(Artwork.all.count).to eq (artwork_count-1)
-        expect(flash[:notice]).to eq "Deleted #{artwork.title.first}"
+        expect(HonorsThesis.all.count).to eq (honors_thesis_count-1)
+        expect(flash[:notice]).to eq "Deleted #{honors_thesis.title.first}"
       end
     end
   end
