@@ -106,7 +106,7 @@ RDFXML
       select 'Department of Biology', from: 'dissertation_contributors_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'dissertation_contributors_attributes_0_other_affiliation' }
       select 'Doctor of Philosophy', from: 'dissertation_degree'
-      fill_in 'DOI', with: 'some doi'
+      fill_in 'DOI', with: 'some-doi'
       select 'Dissertation', from: 'dissertation_resource_type'
       fill_in 'Access', with: 'some access'
       find("#dissertation_based_near_attributes_0_id", visible: false).set('http://sws.geonames.org/4460162/')
@@ -166,7 +166,7 @@ RDFXML
       expect(page).to have_content 'Alternate title another title'
       expect(page).to have_content 'Contributor contributor ORCID: contributor orcid'
       expect(page).to have_content 'Degree Doctor of Philosophy'
-      expect(page).to have_content 'DOI some doi'
+      expect(page).to have_content 'DOI some-doi'
       expect(page).to have_content 'Resource type Dissertation'
       expect(page).to have_content 'Access some access'
       expect(page).to have_content 'Location Chapel Hill, North Carolina, United States'

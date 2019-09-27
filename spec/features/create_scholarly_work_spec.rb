@@ -183,7 +183,7 @@ RDFXML
       select 'Text', from: 'Dcmi type'
       fill_in 'Description', with: 'a description'
       fill_in 'Digital collection', with: 'my collection'
-      fill_in 'DOI', with: 'some doi'
+      fill_in 'DOI', with: 'some-doi'
       find("#scholarly_work_based_near_attributes_0_id", visible: false).set('http://sws.geonames.org/4460162/')
       fill_in 'Keyword', with: 'Test Default Keyword'
       select 'Attribution 3.0 United States', :from => 'scholarly_work_license'
@@ -231,7 +231,7 @@ RDFXML
       expect(page).to_not have_content 'Type http://purl.org/dc/dcmitype/Text'
       expect(page).to have_content 'a description'
       expect(page).to have_content 'Digital collection my collection'
-      expect(page).to have_content 'DOI some doi'
+      expect(page).to have_content 'DOI some-doi'
       expect(page).to have_content 'Location Chapel Hill, North Carolina, United States'
       expect(page).to have_content 'Keyword Test Default Keyword'
       expect(page).to have_content 'Language English'

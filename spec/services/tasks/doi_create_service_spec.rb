@@ -1,10 +1,10 @@
 require 'rails_helper'
 
-RSpec.describe Hyc::DoiCreate do
+RSpec.describe Tasks::DoiCreateService do
   describe '#initialize' do
     context 'when no row value is specified' do
       it 'sets class variables' do
-        doi_create = Hyc::DoiCreate.new
+        doi_create = Tasks::DoiCreateService.new
 
         expect(doi_create.as_json['rows']).to eq 1000
         expect(doi_create.as_json['doi_prefix']).to eq'10.5077'
@@ -17,7 +17,7 @@ RSpec.describe Hyc::DoiCreate do
 
     context 'when a row value is specified' do
       it 'sets class variables' do
-        doi_create = Hyc::DoiCreate.new(10)
+        doi_create = Tasks::DoiCreateService.new(10)
 
         expect(doi_create.as_json['rows']).to eq 10
         expect(doi_create.as_json['doi_prefix']).to eq'10.5077'
@@ -202,7 +202,7 @@ RSpec.describe Hyc::DoiCreate do
       stub_request(:any, /geonames/).to_return(body: {asciiName: 'Chapel Hill, North Carolina',
                                                       adminName: '',
                                                       countryName: 'United States'}.to_json.to_s)
-      expect(Hyc::DoiCreate.new(1).create_batch_doi).to eq 1
+      expect(Tasks::DoiCreateService.new(1).create_batch_doi).to eq 1
     end
   end
 end

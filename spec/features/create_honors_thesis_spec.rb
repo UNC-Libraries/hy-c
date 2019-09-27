@@ -194,7 +194,7 @@ RDFXML
       # extra fields
       select 'Biostatistics', from: 'Academic Concentration'
       fill_in 'Access', with: 'some access'
-      fill_in 'DOI', with: 'some doi'
+      fill_in 'DOI', with: 'some-doi'
       fill_in 'Extent', with: 'some extent'
       find("#honors_thesis_based_near_attributes_0_id", visible: false).set('http://sws.geonames.org/4460162/')
       fill_in 'Keyword', with: 'Test Default Keyword'
@@ -240,6 +240,7 @@ RDFXML
       expect(page).to have_content 'College of Arts and Sciences'
       expect(page).to have_content 'Department of Biology'
       expect(page).to have_content 'Other Affiliation: UNC'
+      expect(page).to have_content 'DOI some-doi'
       expect(page).to have_content 'Honors level Honors'
       expect(page).to have_content 'Creator Test Default Creator ORCID: creator orcid'
       expect(page).to have_content 'Date of publication October 3, 2018'

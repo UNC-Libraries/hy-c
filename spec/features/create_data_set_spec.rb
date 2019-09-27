@@ -200,7 +200,7 @@ RDFXML
       select 'Department of Biology', from: 'data_set_contributors_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'data_set_contributors_attributes_0_other_affiliation' }
       fill_in 'Copyright date', with: '2018'
-      fill_in 'DOI', with: 'some doi'
+      fill_in 'DOI', with: 'some-doi'
       fill_in 'Extent', with: 'some extent'
       fill_in 'Funder', with: 'some funder'
       find("#data_set_based_near_attributes_0_id", visible: false).set('http://sws.geonames.org/4460162/')
@@ -266,7 +266,7 @@ RDFXML
       expect(page).to have_content 'Related resource URL something.com'
       expect(page).to have_content 'Resource type Dataset'
       expect(page).to have_content 'Contributor contributor ORCID: contributor orcid'
-      expect(page).to have_content 'DOI some doi'
+      expect(page).to have_content 'DOI some-doi'
       expect(page).to have_content 'Extent some extent'
       expect(page).to have_content 'Funder some funder'
       expect(page).to have_content 'Location Chapel Hill, North Carolina, United States'

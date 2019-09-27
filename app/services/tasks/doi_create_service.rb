@@ -1,5 +1,5 @@
-module Hyc
-  class DoiCreate
+module Tasks
+  class DoiCreateService
     # From page 38 https://schema.datacite.org/meta/kernel-4.2/doc/DataCite-MetadataKernel_v4.2.pdf
     DCMI_TO_DATACITE_TYPE = {
       'MovingImage' => 'Audiovisual',
