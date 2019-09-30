@@ -37,7 +37,7 @@ RSpec.describe Hyrax::DepositorsController, type: :request do
 
         it 'is successful' do
           expect { request_to_grant_proxy }.to change { ProxyDepositRights.count }.by(1)
-          expect(response).to be_successful
+          expect(response).to be_success
         end
 
         it 'sends a message to the grantor' do
@@ -61,7 +61,7 @@ RSpec.describe Hyrax::DepositorsController, type: :request do
 
         it 'does not add the user, and returns a 200, with empty response body' do
           expect { redundant_request_to_grant_proxy }.to change { ProxyDepositRights.count }.by(0)
-          expect(response).to be_successful
+          expect(response).to be_success
           expect(response.body).to be_blank
         end
 

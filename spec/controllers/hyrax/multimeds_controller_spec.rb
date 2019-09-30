@@ -56,7 +56,7 @@ RSpec.describe Hyrax::MultimedsController do
         sign_in user
 
         get :new
-        expect(response).to be_successful
+        expect(response).to be_success
       end
     end
 
@@ -80,7 +80,7 @@ RSpec.describe Hyrax::MultimedsController do
         sign_in admin_user # bypass need for permission template
 
         get :edit, params: { id: multimed.id }
-        expect(response).to be_successful
+        expect(response).to be_success
       end
     end
 

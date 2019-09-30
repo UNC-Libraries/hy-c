@@ -22,7 +22,7 @@ RSpec.context Hyrax::UsersController, type: :request do
       it 'shows a list of users' do
         sign_in user
         get hyrax.users_path
-        expect(response).to be_successful
+        expect(response).to be_success
         expect(response.body).to match 'Carolina Digital Repository Users'
       end
     end
@@ -31,7 +31,7 @@ RSpec.context Hyrax::UsersController, type: :request do
       it 'shows a list of users' do
         sign_in admin_user
         get hyrax.users_path
-        expect(response).to be_successful
+        expect(response).to be_success
         expect(response.body).to match 'Carolina Digital Repository Users'
       end
     end
@@ -58,7 +58,7 @@ RSpec.context Hyrax::UsersController, type: :request do
       it 'shows a user profile' do
         sign_in admin_user
         get hyrax.user_path(id: user.uid)
-        expect(response).to be_successful
+        expect(response).to be_success
         expect(response.body).to match "#{user.uid} has no highlighted works"
       end
     end

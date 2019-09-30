@@ -56,7 +56,7 @@ RSpec.describe Hyrax::HonorsThesesController do
         sign_in user
 
         get :new
-        expect(response).to be_successful
+        expect(response).to be_success
       end
     end
 
@@ -80,7 +80,7 @@ RSpec.describe Hyrax::HonorsThesesController do
         sign_in admin_user # bypass need for permission template
 
         get :edit, params: { id: honors_thesis.id }
-        expect(response).to be_successful
+        expect(response).to be_success
       end
     end
 
