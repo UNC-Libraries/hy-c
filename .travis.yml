@@ -48,3 +48,5 @@ env:
     - DATACITE_PASSWORD='datacitepass'
     - DATACITE_PREFIX='10.5077'
     - DATACITE_USE_TEST_API='true'
+    - SSO_LOGIN_PATH='/Shibboleth.sso/Login'
+    - SSO_LOGOUT_URL='https://shibboleth.example.com/idp/logout.jsp'
