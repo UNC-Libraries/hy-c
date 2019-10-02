@@ -10,7 +10,6 @@ RSpec.describe Hyrax::StatsUsagePresenter do
       it 'sets google analytics query start date to original date created' do
         allow(subject).to receive(:model).and_return(article)
 
-        expect(article.date_created).not_to eq article.create_date
         expect(subject.created).to eq article.date_created
       end
     end
@@ -20,7 +19,6 @@ RSpec.describe Hyrax::StatsUsagePresenter do
       it 'sets google analytics query start date to ingest date' do
         allow(subject).to receive(:model).and_return(article)
 
-        expect(article.date_created).to be_nil
         expect(subject.created).to eq article.create_date
       end
     end
