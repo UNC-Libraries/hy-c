@@ -6,7 +6,7 @@ RSpec.describe Hyrax::StatsUsagePresenter do
     let(:subject) {described_class.new}
 
     context 'for a migrated work' do
-      article = Article.new(title: ['new article'], date_created: DateTime.yesterday)
+      article = Article.create(title: ['new article'], date_created: DateTime.yesterday)
       it 'sets google analytics query start date to original date created' do
         allow(subject).to receive(:model).and_return(article)
 
@@ -16,7 +16,7 @@ RSpec.describe Hyrax::StatsUsagePresenter do
     end
 
     context 'for a non-migrated work' do
-      article = Article.new(title: ['new article'])
+      article = Article.create(title: ['new article'])
       it 'sets google analytics query start date to ingest date' do
         allow(subject).to receive(:model).and_return(article)
 
