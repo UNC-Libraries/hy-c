@@ -32,14 +32,14 @@ module Hyrax
     # all migrated works will have a date_created value
     def date_for_analytics
       earliest = Hyrax.config.analytic_start_date
-      date_created = string_to_date(model.date_created)
-      date_analytics = date_created ? date_created : model.create_date
+      date_created = string_to_date(model.date_created.to_s)
+      date_analytics = date_created ? date_created : string_to_date(model.create_date.to_s)
       return date_analytics if earliest.blank?
       earliest > date_analytics ? earliest : date_analytics
     end
 
     def string_to_date(date_str)
-      Time.zone.parse(date_str)
+      DateTime.parse(date_str)
     rescue ArgumentError, TypeError
       nil
     end
