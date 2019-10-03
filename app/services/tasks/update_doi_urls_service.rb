@@ -8,7 +8,7 @@ module Tasks
     def initialize(params, log)
       @state = params[:state]
       @rows = params[:rows]
-      @retries = params[:retries]
+      @retries = params[:retries].to_i
       @end_date = params[:end_date]
       @log = log
       @completed_log = Migrate::Services::ProgressTracker.new("#{params[:log_dir]}/completed_doi_updates.log")
