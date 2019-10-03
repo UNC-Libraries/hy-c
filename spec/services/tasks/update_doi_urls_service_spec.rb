@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Tasks::UpdateDoiUrlsService do
   let(:logger) { ActiveSupport::Logger.new('spec/fixtures/files/doi_test.log') }
-  let(:params) { {state: 'test', rows: 1, retries: 2, end_date: Date.tomorrow.to_s, log_dir: 'spec/fixtures/files'} }
+  let(:params) { {state: 'test', rows: '1', retries: '2', end_date: Date.tomorrow.to_s, log_dir: 'spec/fixtures/files'} }
 
   after(:all) do
     FileUtils.remove('spec/fixtures/files/doi_test.log')
@@ -14,7 +14,7 @@ RSpec.describe Tasks::UpdateDoiUrlsService do
       service = Tasks::UpdateDoiUrlsService.new(params, logger)
 
       expect(service.state).to eq 'test'
-      expect(service.rows).to eq 1
+      expect(service.rows).to eq '1'
       expect(service.retries).to eq 2
       expect(service.end_date).to eq Date.tomorrow.to_s
       expect(service.completed_log.as_json['filename']).to eq 'spec/fixtures/files/completed_doi_updates.log'
