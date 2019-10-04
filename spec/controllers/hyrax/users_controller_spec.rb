@@ -28,8 +28,11 @@ RSpec.context Hyrax::UsersController, type: :request do
     end
 
     context 'when admin is logged in' do
-      it 'shows a list of users' do
+      before do
         sign_in admin_user
+      end
+
+      it 'shows a list of users' do
         get hyrax.users_path
         expect(response).to be_success
         expect(response.body).to match 'Carolina Digital Repository Users'
@@ -46,8 +49,11 @@ RSpec.context Hyrax::UsersController, type: :request do
     end
 
     context 'when non-admin is logged in' do
-      it 'redirects to the home page' do
+      before do
         sign_in user
+      end
+
+      it 'redirects to the home page' do
         get hyrax.user_path(id: user.uid)
         expect(response).to redirect_to root_path
         expect(flash[:alert]).to eq "You are not authorized to access this page."
@@ -55,8 +61,11 @@ RSpec.context Hyrax::UsersController, type: :request do
     end
 
     context 'when admin is logged in' do
-      it 'shows a user profile' do
+      before do
         sign_in admin_user
+      end
+
+      it 'shows a user profile' do
         get hyrax.user_path(id: user.uid)
         expect(response).to be_success
         expect(response.body).to match "#{user.uid} has no highlighted works"

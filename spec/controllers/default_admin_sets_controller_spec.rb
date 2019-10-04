@@ -22,18 +22,21 @@ RSpec.describe DefaultAdminSetsController, type: :controller do
     context 'as an admin' do
       before do
         allow(controller).to receive(:authorize!).with(:read, :admin_dashboard).and_return(true)
+        DefaultAdminSet.create! valid_attributes
       end
 
       it "returns a success response" do
-        DefaultAdminSet.create! valid_attributes
         get :index, params: {}, session: valid_session
         expect(response).to be_success
       end
     end
 
     context 'as a non-admin' do
-      it "returns an unauthorized response" do
+      before do
         DefaultAdminSet.create! valid_attributes
+      end
+
+      it "returns an unauthorized response" do
         get :index, params: {}, session: valid_session
         expect(response).to redirect_to new_user_session_path
       end
@@ -61,13 +64,14 @@ RSpec.describe DefaultAdminSetsController, type: :controller do
   end
 
   describe "GET #edit" do
+    let(:default_admin_set) { DefaultAdminSet.create! valid_attributes }
+
     context 'as an admin' do
       before do
         allow(controller).to receive(:authorize!).with(:read, :admin_dashboard).and_return(true)
       end
 
       it "returns a success response" do
-        default_admin_set = DefaultAdminSet.create! valid_attributes
         get :edit, params: {id: default_admin_set.to_param}, session: valid_session
         expect(response).to be_success
       end
@@ -75,7 +79,6 @@ RSpec.describe DefaultAdminSetsController, type: :controller do
 
     context 'as a non-admin' do
       it "returns an unauthorized response" do
-        default_admin_set = DefaultAdminSet.create! valid_attributes
         get :edit, params: {id: default_admin_set.to_param}, session: valid_session
         expect(response).to redirect_to new_user_session_path
       end
@@ -142,9 +145,9 @@ RSpec.describe DefaultAdminSetsController, type: :controller do
         let(:new_attributes) {
           {work_type_name: 'another work type', admin_set_id: 'id98237498'}
         }
+        let(:default_admin_set) { DefaultAdminSet.create! valid_attributes }
 
         it "updates the requested default_admin_set" do
-          default_admin_set = DefaultAdminSet.create! valid_attributes
           expect(default_admin_set.work_type_name).to eq 'a work type'
           expect(default_admin_set.admin_set_id).to eq 'id123456'
           put :update, params: {id: default_admin_set.to_param, default_admin_set: new_attributes},
@@ -155,7 +158,6 @@ RSpec.describe DefaultAdminSetsController, type: :controller do
         end
 
         it "redirects to the default_admin_set" do
-          default_admin_set = DefaultAdminSet.create! valid_attributes
           put :update, params: {id: default_admin_set.to_param, default_admin_set: valid_attributes},
               session: valid_session
           expect(response).to redirect_to default_admin_sets_path
@@ -164,8 +166,9 @@ RSpec.describe DefaultAdminSetsController, type: :controller do
       end
 
       context "with invalid params" do
+        let(:default_admin_set) { DefaultAdminSet.create! valid_attributes }
+
         it "returns a redirect response" do
-          default_admin_set = DefaultAdminSet.create! valid_attributes
           put :update, params: {id: default_admin_set.to_param, default_admin_set: invalid_attributes},
               session: valid_session
           expect(response).to redirect_to default_admin_sets_path
@@ -178,9 +181,9 @@ RSpec.describe DefaultAdminSetsController, type: :controller do
         let(:new_attributes) {
           {work_type_name: 'another work type', admin_set_id: 'id98237498'}
         }
+        let(:default_admin_set) { DefaultAdminSet.create! valid_attributes }
 
         it "does not update the requested default_admin_set" do
-          default_admin_set = DefaultAdminSet.create! valid_attributes
           expect(default_admin_set.work_type_name).to eq 'a work type'
           expect(default_admin_set.admin_set_id).to eq 'id123456'
           put :update, params: {id: default_admin_set.to_param, default_admin_set: new_attributes},
@@ -191,7 +194,6 @@ RSpec.describe DefaultAdminSetsController, type: :controller do
         end
 
         it "redirects to the login page" do
-          default_admin_set = DefaultAdminSet.create! valid_attributes
           put :update, params: {id: default_admin_set.to_param, default_admin_set: valid_attributes},
               session: valid_session
           expect(response).to redirect_to new_user_session_path
@@ -199,8 +201,9 @@ RSpec.describe DefaultAdminSetsController, type: :controller do
       end
 
       context "with invalid params" do
+        let(:default_admin_set) { DefaultAdminSet.create! valid_attributes }
+
         it "redirects to the login page" do
-          default_admin_set = DefaultAdminSet.create! valid_attributes
           put :update, params: {id: default_admin_set.to_param, default_admin_set: invalid_attributes},
               session: valid_session
           expect(response).to redirect_to new_user_session_path
@@ -210,36 +213,36 @@ RSpec.describe DefaultAdminSetsController, type: :controller do
   end
 
   describe "DELETE #destroy" do
+    before(:each) do
+      @default_admin_set = DefaultAdminSet.create! valid_attributes
+    end
+
     context 'as an admin' do
       before do
         allow(controller).to receive(:authorize!).with(:read, :admin_dashboard).and_return(true)
       end
 
       it "destroys the requested default_admin_set" do
-        default_admin_set = DefaultAdminSet.create! valid_attributes
         expect {
-          delete :destroy, params: {id: default_admin_set.to_param}, session: valid_session
+          delete :destroy, params: {id: @default_admin_set.to_param}, session: valid_session
         }.to change(DefaultAdminSet, :count).by(-1)
       end
 
       it "redirects to the default_admin_sets list" do
-        default_admin_set = DefaultAdminSet.create! valid_attributes
-        delete :destroy, params: {id: default_admin_set.to_param}, session: valid_session
+        delete :destroy, params: {id: @default_admin_set.to_param}, session: valid_session
         expect(response).to redirect_to default_admin_sets_url
       end
     end
 
     context 'as a non-admin' do
       it "does not destroy the requested default_admin_set" do
-        default_admin_set = DefaultAdminSet.create! valid_attributes
         expect {
-          delete :destroy, params: {id: default_admin_set.to_param}, session: valid_session
+          delete :destroy, params: {id: @default_admin_set.to_param}, session: valid_session
         }.to change(DefaultAdminSet, :count).by(0)
       end
 
       it "redirects to the login page" do
-        default_admin_set = DefaultAdminSet.create! valid_attributes
-        delete :destroy, params: {id: default_admin_set.to_param}, session: valid_session
+        delete :destroy, params: {id: @default_admin_set.to_param}, session: valid_session
         expect(response).to redirect_to new_user_session_path
       end
     end

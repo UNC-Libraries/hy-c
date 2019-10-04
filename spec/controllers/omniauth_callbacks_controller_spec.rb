@@ -18,12 +18,12 @@ RSpec.describe OmniauthCallbacksController, type: :request do
       b.run lambda{|env| [200, {}, ['Not Found']]}
     end.to_app }
     let(:strategy) { OmniAuth::Strategies::Shibboleth.new(app, {}) }
+    let(:dummy_id) { 'abcdefg' }
+    let(:eppn) { 'test@example.com' }
+    let(:display_name) { 'Test User' }
+    let(:env) { make_env('/users/auth/shibboleth/callback', 'Shib-Session-ID' => dummy_id, 'eppn' => eppn, 'displayName' => display_name) }
 
     it 'is expected to set default omniauth.auth fields' do
-      dummy_id = 'abcdefg'
-      eppn = 'test@example.com'
-      display_name = 'Test User'
-      env = make_env('/users/auth/shibboleth/callback', 'Shib-Session-ID' => dummy_id, 'eppn' => eppn, 'displayName' => display_name)
       strategy.call!(env)
       expect(strategy.env['omniauth.auth']['uid']).to eq(eppn)
       expect(strategy.env['omniauth.auth']['info']['name']).to eq(display_name)

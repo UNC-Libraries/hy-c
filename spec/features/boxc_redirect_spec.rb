@@ -6,13 +6,19 @@ RSpec.feature 'boxc redirects' do
   cached_redirect_old_domain = ENV['REDIRECT_OLD_DOMAIN']
   cached_redirect_new_domain = ENV['REDIRECT_NEW_DOMAIN']
 
-  before(:each) do
+  before(:all) do
+    @tempfile = Tempfile.new('redirect_uuids.csv', 'spec/fixtures/')
     ENV['REDIRECT_FILE_PATH'] = 'spec/fixtures/redirect_uuids.csv'
-    ENV['REDIRECT_OLD_DOMAIN'] = 'localhost:4040/regex'
+    File.open(ENV['REDIRECT_FILE_PATH'], 'w') do |f|
+      f.puts 'uuid,new_path'
+    end
+    ENV['REDIRECT_OLD_DOMAIN'] = 'localhost:4040'
     ENV['REDIRECT_NEW_DOMAIN'] = 'dcr-test.lib.unc.edu'
+    stub_request(:any, 'https://dcr-test.lib.unc.edu/list/uuid:02fc897a-12b6-4b81-91e4-b5e29cb683a6').to_return(status: 200)
   end
 
-  after(:each) do
+  after(:all) do
+    @tempfile.unlink
     ENV['REDIRECT_FILE_PATH'] = cached_redirect_file_path
     ENV['REDIRECT_OLD_DOMAIN'] = cached_redirect_old_domain
     ENV['REDIRECT_NEW_DOMAIN'] = cached_redirect_new_domain
@@ -22,20 +28,20 @@ RSpec.feature 'boxc redirects' do
     scenario 'non-boxc url' do
       article = Article.create(title: ['test article'], visibility: 'open')
 
-      visit "#{ENV['HYRAX_HOST']}/concern/#{Array.wrap(article.class.to_s).first.downcase}s/#{article.id}"
-      expect(current_path).to eq "/concern/#{Array.wrap(article.class.to_s).first.downcase}s/#{article.id}"
+      visit "#{ENV['HYRAX_HOST']}/concern/articles/#{article.id}"
+      expect(current_path).to eq "/concern/articles/#{article.id}"
     end
 
     scenario 'migrated work url' do
       article = Article.create(title: ['new article'], visibility: 'open')
-      File.open('spec/fixtures/redirect_uuids.csv', 'a+') do |f|
+      File.open(ENV['REDIRECT_FILE_PATH'], 'a+') do |f|
         f.puts "02fc897a-12b6-4b81-91e4-b5e29cb683a6,articles/#{article.id}"
       end
 
       visit "#{ENV['HYRAX_HOST']}/record/uuid:02fc897a-12b6-4b81-91e4-b5e29cb683a6"
-      expect(current_path).to eq "/concern/#{Array.wrap(article.class.to_s).first.downcase}s/#{article.id}"
+      expect(current_path).to eq "/concern/articles/#{article.id}"
 
-      File.open('spec/fixtures/redirect_uuids.csv', 'w') do |f|
+      File.open(ENV['REDIRECT_FILE_PATH'], 'w') do |f|
         f.puts 'uuid,new_path'
       end
     end
@@ -51,10 +57,8 @@ RSpec.feature 'boxc redirects' do
     end
 
     scenario 'boxc record not in hyc' do
-      # redirected to dcr-test, then to hy-c home page since testing env cannot check outside links
-      # regex for sending people to dcr expects a domain+'.', so '/regex.' was added to gsub localhost:4040
-      visit "#{ENV['HYRAX_HOST']}/regex./record/uuid:02fc897a-12b6-4b81-91e4-b5e29cb683a6"
-      expect(current_path).to eq '/'
+      visit "#{ENV['HYRAX_HOST']}/record/uuid:02fc897a-12b6-4b81-91e4-b5e29cb683a6"
+      expect(current_url).to eq "https://#{ENV['REDIRECT_NEW_DOMAIN']}/record/uuid:02fc897a-12b6-4b81-91e4-b5e29cb683a6"
     end
 
     scenario 'boxc other url' do
@@ -62,8 +66,8 @@ RSpec.feature 'boxc redirects' do
       expect(current_path).to eq '/concern/404'
 
       # redirected to dcr-test, then to hy-c home page since testing env cannot check outside links
-      visit "#{ENV['HYRAX_HOST']}/regex./list/uuid:02fc897a-12b6-4b81-91e4-b5e29cb683a6"
-      expect(current_path).to eq '/'
+      visit "#{ENV['HYRAX_HOST']}/list/uuid:02fc897a-12b6-4b81-91e4-b5e29cb683a6"
+      expect(current_url).to eq "https://#{ENV['REDIRECT_NEW_DOMAIN']}/list/uuid:02fc897a-12b6-4b81-91e4-b5e29cb683a6"
     end
   end
 
@@ -71,14 +75,14 @@ RSpec.feature 'boxc redirects' do
     scenario 'visiting a private work page' do
       private_article = Article.create(title: ['test article'])
 
-      visit "#{ENV['HYRAX_HOST']}/concern/#{Array.wrap(private_article.class.to_s).first.downcase}s/#{private_article.id}"
+      visit "#{ENV['HYRAX_HOST']}/concern/articles/#{private_article.id}"
       expect(current_path).to eq '/users/sign_in'
 
       fill_in 'Onyen', with: 'admin'
       fill_in 'Password', with: 'password'
       click_button 'Log in'
 
-      expect(current_path).to eq "/concern/#{Array.wrap(private_article.class.to_s).first.downcase}s/#{private_article.id}"
+      expect(current_path).to eq "/concern/articles/#{private_article.id}"
     end
   end
 end
