@@ -3,16 +3,17 @@ require 'tasks/migration_helper'
 
 RSpec.describe MigrationHelper do
   describe '#get_uuid_from_path' do
-    let(:valid_path) { 'lib/tasks/migration/tmp/02002b92-aa8e-4eea-b196-ee951fe7511b/02002b92-aa8e-4eea-b196-ee951fe7511b-DATA_FILE.pdf' }
-    let(:invalid_path) { 'lib/tasks/migration/tmp/some_file.txt' }
-
     context 'when a valid path is given' do
+      let(:valid_path) { 'lib/tasks/migration/tmp/02002b92-aa8e-4eea-b196-ee951fe7511b/02002b92-aa8e-4eea-b196-ee951fe7511b-DATA_FILE.pdf' }
+
       it 'returns the uuid' do
         expect(described_class.get_uuid_from_path(valid_path)).to eq '02002b92-aa8e-4eea-b196-ee951fe7511b'
       end
     end
 
     context 'when an invalid path is given' do
+      let(:invalid_path) { 'lib/tasks/migration/tmp/some_file.txt' }
+
       it 'returns nil' do
         expect(described_class.get_uuid_from_path(invalid_path)).to be_nil
       end
@@ -49,7 +50,6 @@ RSpec.describe MigrationHelper do
         retry_result = begin
           described_class.retry_operation('failed') { described_class.get_language_uri('eng') }
         rescue RuntimeError => e
-          puts e.message
           e.message
         end
 
