@@ -113,7 +113,10 @@ AND has_model_ssim:(DataSet HonorsThesis MastersPaper ScholarlyWork) AND system_
             raise e
           end
         rescue => e # other failure
-          puts e.body
+          # log failure
+          log.info "[#{Time.now}] failed to update doi for #{id}: #{e.message}"
+          log.info e.backtrace
+          raise e
         end
       end
 
