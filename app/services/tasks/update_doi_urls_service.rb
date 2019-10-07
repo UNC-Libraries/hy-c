@@ -3,7 +3,7 @@ module Tasks
 
   class UpdateDoiUrlsService
 
-    attr_reader :state, :rows, :retries, :end_date, :log, :completed_log
+    attr_reader :state, :rows, :retries, :end_date, :log, :completed_log, :failed_log
 
     def initialize(params, log)
       @state = params[:state]
@@ -12,6 +12,7 @@ module Tasks
       @end_date = params[:end_date]
       @log = log
       @completed_log = Migrate::Services::ProgressTracker.new("#{params[:log_dir]}/completed_doi_updates.log")
+      @failed_log = Migrate::Services::ProgressTracker.new("#{params[:log_dir]}/failed_doi_updates.log")
     end
 
     def update_dois
@@ -27,7 +28,7 @@ module Tasks
       datacite_user = ENV['DATACITE_USER']
       datacite_password = ENV['DATACITE_PASSWORD']
 
-      updated = completed_log.completed_set
+      updated = completed_log.completed_set + failed_log.completed_set
 
       start_time = Time.now
       records = ActiveFedora::SolrService.get("visibility_ssi:open AND doi_tesim:* AND workflow_state_name_ssim:deposited \
@@ -47,17 +48,34 @@ AND has_model_ssim:(DataSet HonorsThesis MastersPaper ScholarlyWork) AND system_
         if updated.include? record['id']
           next
         end
+
+        # check existing url
+        get_response = fetch_doi_record(record['doi_tesim'].first.gsub('https://doi.org/', ''), doi_update_url, 2)
+
+        if JSON.parse(get_response.parsed_response)['data']['url'].match(/data_sets|honors_theses|masters_papers|scholarly_works/)
+          log.info "[#{Time.now}] doi for #{record['id']} is up-to-date"
+          completed_log.add_entry(record['id'])
+          next
+        end
+
         log.info "[#{Time.now}] Updating doi for #{record['id']} (#{index+1} of #{records.count})"
 
         work = ActiveFedora::Base.find(record['id'])
         data = format_update_data(work)
 
-        doi_update_request(record['doi_tesim'].first.gsub('https://doi.org/', ''), data, retries, doi_update_url, datacite_user, datacite_password)
+        update_response = doi_update_request(record['doi_tesim'].first.gsub('https://doi.org/', ''), data, retries, doi_update_url, datacite_user, datacite_password)
 
-        # log success
-        completed_log.add_entry(record['id'])
-        print '.'
-        count += 1
+        if update_response.response.code.to_i == 200 && JSON.parse(update_response.parsed_response)['data']['url'].match(/data_sets|honors_theses|masters_papers|scholarly_works/)
+          # log success
+          completed_log.add_entry(record['id'])
+          print '.'
+          count += 1
+        else
+          # log failure
+          failed_log.add_entry(record['id'])
+          log.info "[#{Time.now}] failed to update doi for #{record['id']}: #{update_response.body}"
+          print 'F'
+        end
       end
       puts "[#{Time.now}] finished updating dois"
       log.info "[#{Time.now}] Finished updating #{count} doi(s) in #{Time.now - start_time}s"
@@ -91,6 +109,28 @@ AND has_model_ssim:(DataSet HonorsThesis MastersPaper ScholarlyWork) AND system_
           else
             # log failure
             log.info "[#{Time.now}] failed to update doi for #{id}: #{e.message}"
+            log.info e.backtrace
+            raise e
+          end
+        rescue => e # other failure
+          puts e.body
+        end
+      end
+
+      def fetch_doi_record(id, doi_get_url, retries)
+        begin
+          return HTTParty.get("#{doi_get_url}/#{id}",
+                              headers: {'Content-Type' => 'application/vnd.api+json'}
+          )
+        rescue Net::ReadTimeout, Net::OpenTimeout => e
+          if retries > 0
+            retries -= 1
+            log.info "[#{Time.now}] Timed out while attempting to fetch DOI record using #{doi_get_url}/#{id}, retrying with #{retries} retries remaining."
+            sleep(30)
+            return fetch_doi_record(id, doi_get_url, retries)
+          else
+            # log failure
+            log.info "[#{Time.now}] failed to get doi record for #{id}: #{e.message}"
             log.info e.backtrace
             raise e
           end
