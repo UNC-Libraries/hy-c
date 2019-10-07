@@ -12,7 +12,7 @@ RSpec.feature 'boxc redirects' do
     File.open(ENV['REDIRECT_FILE_PATH'], 'w') do |f|
       f.puts 'uuid,new_path'
     end
-    ENV['REDIRECT_OLD_DOMAIN'] = 'localhost:4040'
+    ENV['REDIRECT_OLD_DOMAIN'] = ENV['HYRAX_HOST'].gsub('https://','')
     ENV['REDIRECT_NEW_DOMAIN'] = 'dcr-test.lib.unc.edu'
     stub_request(:any, 'https://dcr-test.lib.unc.edu/list/uuid:02fc897a-12b6-4b81-91e4-b5e29cb683a6').to_return(status: 200)
   end
