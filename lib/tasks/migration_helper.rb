@@ -41,7 +41,7 @@ class MigrationHelper
       # log full backtrace if not recovered
       puts e.backtrace
       # send abort message and backtrace to terminal
-      abort("[#{Time.now}] could not recover; aborting migration\nbacktrace:\n#{e.backtrace}")
+      raise("[#{Time.now}] could not recover; aborting migration\nbacktrace:\n#{e.backtrace}")
     end
   end
 
@@ -92,10 +92,18 @@ class MigrationHelper
                          .where(access: 'manage', agent_type: 'group')
                          .where(permission_templates: {source_id: admin_set_id})
 
-    # update work permissions to give admin set managers edit rights
+    # find admin set and viewer groups for work
+    viewer_groups = Hyrax::PermissionTemplateAccess.joins(:permission_template)
+                        .where(access: 'view', agent_type: 'group')
+                        .where(permission_templates: {source_id: admin_set_id})
+
+    # update work permissions to give admin set managers edit access and viewer groups read access
     permissions_array = []
     manager_groups.each do |manager_group|
       permissions_array << { "type" => "group", "name" => manager_group.agent_id, "access" => "edit" }
+    end
+    viewer_groups.each do |viewer_group|
+      permissions_array << { "type" => "group", "name" => viewer_group.agent_id, "access" => "read" }
     end
 
     permissions_array
