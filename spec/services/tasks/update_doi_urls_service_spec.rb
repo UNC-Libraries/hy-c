@@ -7,6 +7,7 @@ RSpec.describe Tasks::UpdateDoiUrlsService do
   after(:all) do
     FileUtils.remove('spec/fixtures/files/doi_test.log')
     FileUtils.remove('spec/fixtures/files/completed_doi_updates.log')
+    FileUtils.remove('spec/fixtures/files/failed_doi_updates.log')
   end
 
   describe "#initialize" do
@@ -18,6 +19,7 @@ RSpec.describe Tasks::UpdateDoiUrlsService do
       expect(service.retries).to eq 2
       expect(service.end_date).to eq Date.tomorrow.to_s
       expect(service.completed_log.as_json['filename']).to eq 'spec/fixtures/files/completed_doi_updates.log'
+      expect(service.failed_log.as_json['filename']).to eq 'spec/fixtures/files/failed_doi_updates.log'
       expect(service.log).to eq logger
     end
   end
@@ -50,19 +52,24 @@ RSpec.describe Tasks::UpdateDoiUrlsService do
       Sipity::WorkflowState.create(name: 'deposited', workflow_id: workflow.id)
     end
 
-    it "finds and updates dois" do
+    before do
       # create work with a deposited workflow state
       Sipity::Entity.create(proxy_for_global_id: work.to_global_id.to_s,
                             workflow_id: workflow.id,
                             workflow_state: workflow_state)
       work.save!
+      stub_request(:put, /datacite/).to_return(body: {data: {id: '10.5077/0001',
+                                                             type: 'dois',
+                                                             doi: 'https://doi.org/10.5077/test-doi',
+                                                             url: "#{ENV['HYRAX_HOST']}/concerns/honors_theses/#{work.id}"}}.to_json.to_s)
+    stub_request(:get, /datacite/).to_return(body: {data: {id: '10.5077/0001',
+                                                             type: 'dois',
+                                                             doi: 'https://doi.org/10.5077/test-doi',
+                                                             url: "#{ENV['HYRAX_HOST']}/concerns/honors_thesiss/#{work.id}"}}.to_json.to_s)
+    end
 
-      service = Tasks::UpdateDoiUrlsService.new(params, logger)
-
-      stub_request(:any, /datacite/).to_return(body: {data: {id: '10.5077/0001',
-                                                              type: 'dois',
-                                                              attributes: { doi: 'https://doi.org/10.5077/test-doi'}}}.to_json.to_s)
-      expect(service.update_dois).to eql 1
+    it "finds and updates dois" do
+      expect(Tasks::UpdateDoiUrlsService.new(params, logger).update_dois).to eql 1
     end
   end
 end
