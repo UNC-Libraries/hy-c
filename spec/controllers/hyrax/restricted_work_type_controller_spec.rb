@@ -18,10 +18,7 @@ RSpec.shared_examples 'a restricted work type' do |model, pluralized_model|
   describe '#create' do
     let(:actor) { double(create: true) }
     let(:work) { model.create(title: ['new work to be created']) }
-
-    before(:each) do
-      @work_count = model.all.count # needs to be set before comparison
-    end
+    let!(:work_count) { model.all.count }
 
     context 'with existing admin set as non-admin' do
       before do
@@ -33,7 +30,7 @@ RSpec.shared_examples 'a restricted work type' do |model, pluralized_model|
         post :create, params: {(model.to_s.downcase.to_sym) => {title: "a new work #{Date.today.to_time.to_i}"}}
         expect(response).to redirect_to root_path
         expect(flash[:alert]).to eq 'You are not authorized to access this page.'
-        expect(model.all.count).to eq @work_count
+        expect(model.all.count).to eq work_count
       end
     end
 
@@ -49,7 +46,7 @@ RSpec.shared_examples 'a restricted work type' do |model, pluralized_model|
         post :create, params: {(model.to_s.downcase.to_sym) => {title: "a new work #{Date.today.to_time.to_i}"}}
         expect(response).to redirect_to "/concern/#{pluralized_model}/#{work.id}?locale=en"
         expect(flash[:notice]).to eq 'Your files are being processed by the Carolina Digital Repository in the background. The metadata and access controls you specified are being applied. You may need to refresh this page to see these updates.'
-        expect(model.all.count).to eq @work_count+1
+        expect(model.all.count).to eq work_count+1
       end
     end
 
@@ -61,7 +58,7 @@ RSpec.shared_examples 'a restricted work type' do |model, pluralized_model|
 
       it 'is not successful' do
         post :create, params: {(model.to_s.downcase.to_sym) => {title: "a new work #{Date.today.to_time.to_i}"}}
-        expect(model.all.count).to eq @work_count
+        expect(model.all.count).to eq work_count
         expect(response).to redirect_to root_path
         expect(flash[:alert]).to eq 'No Admin Sets have been created.'
       end
@@ -76,7 +73,7 @@ RSpec.shared_examples 'a restricted work type' do |model, pluralized_model|
         post :create, params: {(model.to_s.downcase.to_sym) => {title: "a new work #{Date.today.to_time.to_i}"}}
         expect(response).to redirect_to '/users/sign_in?locale=en'
         expect(flash[:alert]).to eq 'You are not authorized to access this page.'
-        expect(model.all.count).to eq @work_count
+        expect(model.all.count).to eq work_count
       end
     end
   end
@@ -248,30 +245,29 @@ RSpec.shared_examples 'a restricted work type' do |model, pluralized_model|
 
   describe '#destroy' do
     let(:work) { model.last }
+    let!(:work_count) { model.all.count }
 
     context 'as a non-admin' do
       before do
         sign_in user
-        @work_count = model.all.count # needs to be set before comparison
       end
 
       it 'is not successful' do
         delete :destroy, params: { id: work.id }
         expect(response.status).to eq 401
-        expect(model.all.count).to eq @work_count
+        expect(model.all.count).to eq work_count
       end
     end
 
     context 'as an admin' do
       before do
         sign_in admin_user
-        @work_count = model.all.count # needs to be set before comparison
       end
 
       it 'is successful' do
         delete :destroy, params: { id: work.id }
         expect(response).to redirect_to '/dashboard/my/works?locale=en'
-        expect(model.all.count).to eq (@work_count-1)
+        expect(model.all.count).to eq (work_count-1)
         expect(flash[:notice]).to eq "Deleted #{work.title.first}"
       end
     end

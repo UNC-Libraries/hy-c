@@ -5,9 +5,9 @@ RSpec.feature 'boxc redirects' do
   cached_redirect_file_path = ENV['REDIRECT_FILE_PATH']
   cached_redirect_old_domain = ENV['REDIRECT_OLD_DOMAIN']
   cached_redirect_new_domain = ENV['REDIRECT_NEW_DOMAIN']
+  tempfile = Tempfile.new('redirect_uuids.csv', 'spec/fixtures/')
 
   before(:all) do
-    @tempfile = Tempfile.new('redirect_uuids.csv', 'spec/fixtures/')
     ENV['REDIRECT_FILE_PATH'] = 'spec/fixtures/redirect_uuids.csv'
     File.open(ENV['REDIRECT_FILE_PATH'], 'w') do |f|
       f.puts 'uuid,new_path'
@@ -18,7 +18,7 @@ RSpec.feature 'boxc redirects' do
   end
 
   after(:all) do
-    @tempfile.unlink
+    tempfile.unlink
     ENV['REDIRECT_FILE_PATH'] = cached_redirect_file_path
     ENV['REDIRECT_OLD_DOMAIN'] = cached_redirect_old_domain
     ENV['REDIRECT_NEW_DOMAIN'] = cached_redirect_new_domain

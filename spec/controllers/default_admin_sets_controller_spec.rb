@@ -213,9 +213,7 @@ RSpec.describe DefaultAdminSetsController, type: :controller do
   end
 
   describe "DELETE #destroy" do
-    before(:each) do
-      @default_admin_set = DefaultAdminSet.create! valid_attributes
-    end
+    let!(:default_admin_set) { DefaultAdminSet.create! valid_attributes }
 
     context 'as an admin' do
       before do
@@ -224,12 +222,12 @@ RSpec.describe DefaultAdminSetsController, type: :controller do
 
       it "destroys the requested default_admin_set" do
         expect {
-          delete :destroy, params: {id: @default_admin_set.to_param}, session: valid_session
+          delete :destroy, params: {id: default_admin_set.to_param}, session: valid_session
         }.to change(DefaultAdminSet, :count).by(-1)
       end
 
       it "redirects to the default_admin_sets list" do
-        delete :destroy, params: {id: @default_admin_set.to_param}, session: valid_session
+        delete :destroy, params: {id: default_admin_set.to_param}, session: valid_session
         expect(response).to redirect_to default_admin_sets_url
       end
     end
@@ -237,12 +235,12 @@ RSpec.describe DefaultAdminSetsController, type: :controller do
     context 'as a non-admin' do
       it "does not destroy the requested default_admin_set" do
         expect {
-          delete :destroy, params: {id: @default_admin_set.to_param}, session: valid_session
+          delete :destroy, params: {id: default_admin_set.to_param}, session: valid_session
         }.to change(DefaultAdminSet, :count).by(0)
       end
 
       it "redirects to the login page" do
-        delete :destroy, params: {id: @default_admin_set.to_param}, session: valid_session
+        delete :destroy, params: {id: default_admin_set.to_param}, session: valid_session
         expect(response).to redirect_to new_user_session_path
       end
     end

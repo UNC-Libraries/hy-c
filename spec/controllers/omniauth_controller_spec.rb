@@ -10,14 +10,15 @@ RSpec.describe OmniauthController, type: :request do
     end
 
     context 'not using database auth' do
+      cached_database_auth = ENV['DATABASE_AUTH']
+
       before do
-        @cached_database_auth = ENV['DATABASE_AUTH']
         ENV['DATABASE_AUTH'] = 'false'
         allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new("production"))
       end
 
       after do
-        ENV['DATABASE_AUTH'] = @cached_database_auth
+        ENV['DATABASE_AUTH'] = cached_database_auth
       end
 
       it 'is successful' do

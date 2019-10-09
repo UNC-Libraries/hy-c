@@ -19,8 +19,11 @@ RSpec.context Hyrax::UsersController, type: :request do
     end
 
     context 'when non-admin is logged in' do
-      it 'shows a list of users' do
+      before do
         sign_in user
+      end
+
+      it 'shows a list of users' do
         get hyrax.users_path
         expect(response).to be_success
         expect(response.body).to match 'Carolina Digital Repository Users'
