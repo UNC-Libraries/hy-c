@@ -36,7 +36,7 @@ env:
     - DEFAULT_ADMIN_SET='default'
     - HYRAX_DATABASE_PASSWORD='password'
     - FITS_LOCATION='/home/travis/fits-1.0.5/fits.sh'
-    - HYRAX_HOST='http://example.com'
+    - HYRAX_HOST='https://example.com'
     - EMAIL_FROM_ADDRESS='hyraxapp@example.com'
     - DATABASE_AUTH=true
     - DATA_STORAGE=./public
@@ -48,3 +48,5 @@ env:
     - DATACITE_PASSWORD='datacitepass'
     - DATACITE_PREFIX='10.5077'
     - DATACITE_USE_TEST_API='true'
+    - SSO_LOGIN_PATH='/Shibboleth.sso/Login'
+    - SSO_LOGOUT_URL='https://shibboleth.example.com/idp/logout.jsp'

@@ -21,6 +21,31 @@ module Hyrax
       @form = form_class.new(work, current_user, batch)
     end
 
+    def destroy_collection
+      batch.each do |doc_id|
+        obj = ActiveFedora::Base.find(doc_id, cast: true)
+        obj.destroy
+      end
+      flash[:notice] = "Batch delete complete"
+      after_destroy_collection
+    end
+
+    def update
+      case params["update_type"]
+      when "update"
+        batch.each do |doc_id|
+          update_document(ActiveFedora::Base.find(doc_id))
+        end
+        flash[:notice] = "Batch update complete"
+        after_update
+      when "delete_all"
+        destroy_batch
+      end
+    end
+
+    private
+
+
     def after_update
       respond_to do |format|
         format.json { head :no_content }
@@ -47,15 +72,6 @@ module Hyrax
       false
     end
 
-    def destroy_collection
-      batch.each do |doc_id|
-        obj = ActiveFedora::Base.find(doc_id, cast: true)
-        obj.destroy
-      end
-      flash[:notice] = "Batch delete complete"
-      after_destroy_collection
-    end
-
     def update_document(obj)
       interpret_visiblity_params(obj)
       obj.attributes = work_params(admin_set_id: obj.admin_set_id).except(*visibility_params)
@@ -73,21 +89,6 @@ module Hyrax
 
       obj.save
     end
-
-    def update
-      case params["update_type"]
-      when "update"
-        batch.each do |doc_id|
-          update_document(ActiveFedora::Base.find(doc_id))
-        end
-        flash[:notice] = "Batch update complete"
-        after_update
-      when "delete_all"
-        destroy_batch
-      end
-    end
-
-    private
 
     def add_breadcrumb_for_controller
       add_breadcrumb I18n.t('hyrax.dashboard.my.works'), hyrax.my_works_path

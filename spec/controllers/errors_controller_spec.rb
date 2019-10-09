@@ -15,5 +15,4 @@ RSpec.describe ErrorsController, type: :controller do
       expect(response).to have_http_status(:error)
     end
   end
-
 end
