@@ -3,6 +3,7 @@ Hyrax::Workflow::StatusListService.class_eval do
 
   private
 
+    # update query params to find individual works that a user can access
     def query(actionable_roles)
       actionable_roles.reject!(&:blank?)
       entities = entities_for_user
@@ -24,6 +25,7 @@ Hyrax::Workflow::StatusListService.class_eval do
     end
 
 
+    # skip depositing role
     def roles_for_user
       Sipity::Workflow.all.flat_map do |wf|
         workflow_roles_for_user_and_workflow(wf).map do |wf_role|
@@ -35,6 +37,7 @@ Hyrax::Workflow::StatusListService.class_eval do
     end
 
 
+    # add method for finding entities where user has approving access
     def entities_for_user
       entity_array = []
       approving_role = Sipity::Role.find_by(name: Hyrax::RoleRegistry::APPROVING)
