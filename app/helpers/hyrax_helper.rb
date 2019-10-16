@@ -4,17 +4,25 @@ module HyraxHelper
   include Hyrax::HyraxHelperBehavior
 
   def language_links(options)
-    begin
-      to_sentence(options[:value].map { |lang| link_to LanguagesService.label(lang), main_app.search_catalog_path(f: { language_sim: [lang] })})
-    rescue KeyError
+    language_link_array = options[:value].map do |lang|
+      lang_label = LanguagesService.label(lang)
+      if !lang_label.nil?
+        link_to lang_label, main_app.search_catalog_path(f: { language_sim: [lang] })
+      end
+    end
+
+    if language_link_array.compact.blank?
       nil
+    else
+      to_sentence(language_link_array)
     end
   end
 
   def language_links_facets(options)
-    begin
-      link_to LanguagesService.label(options), main_app.search_catalog_path(f: { language_sim: [options] })
-    rescue KeyError
+    lang_label = LanguagesService.label(options)
+    if !lang_label.nil?
+      link_to lang_label, main_app.search_catalog_path(f: { language_sim: [options] })
+    else
       options
     end
   end
