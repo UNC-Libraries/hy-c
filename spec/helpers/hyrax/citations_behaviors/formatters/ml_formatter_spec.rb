@@ -18,10 +18,10 @@ RSpec.describe Hyrax::CitationsBehaviors::Formatters::MlaFormatter do
   end
 
   describe '#format_authors' do
-    let(:author_list) { ['Doe, Jane', 'Doe, John'] }
+    let(:author_list) { ['Jane Doe', 'Henry Miller'] }
 
-    it 'returns authors formatted for citation' do
-      expect(formatter.format_authors(author_list)).to eq 'Doe, Jane, and John Doe. '
+    it 'returns authors' do
+      expect(formatter.format_authors(author_list)).to eq 'Doe, Jane, and Henry Miller. '
     end
   end
 

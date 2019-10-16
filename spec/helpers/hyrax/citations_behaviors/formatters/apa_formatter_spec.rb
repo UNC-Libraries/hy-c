@@ -17,10 +17,10 @@ RSpec.describe Hyrax::CitationsBehaviors::Formatters::ApaFormatter do
   end
 
   describe '#format_authors' do
-    let(:author_list) { ['Jane Doe', 'John Doe'] }
+    let(:author_list) { ['Jane Doe', 'Henry Miller'] }
 
     it 'returns authors' do
-      expect(formatter.format_authors(author_list)).to eq 'Doe, J., &amp; Doe, J.'
+      expect(formatter.format_authors(author_list)).to eq 'Doe, J., &amp; Miller, H.'
     end
   end
 
@@ -32,7 +32,7 @@ RSpec.describe Hyrax::CitationsBehaviors::Formatters::ApaFormatter do
 
   describe '#format_title' do
     it 'returns a title formatted for citation' do
-      expect(formatter.format_title(presenter.title)).to eq '<i class="citation-title">["new article title"]</i> '
+      expect(formatter.format_title(presenter.title.first)).to eq '<i class="citation-title">new article title</i> '
     end
   end
 

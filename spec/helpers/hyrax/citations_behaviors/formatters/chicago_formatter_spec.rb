@@ -17,10 +17,10 @@ RSpec.describe Hyrax::CitationsBehaviors::Formatters::ChicagoFormatter do
   end
 
   describe '#format_authors' do
-    let(:author_list) { ['Jane Doe', 'John Doe'] }
+    let(:author_list) { ['Jane Doe', 'Henry Miller'] }
 
     it 'returns authors' do
-      expect(formatter.format_authors(author_list)).to eq 'Doe, Jane, and John Doe.'
+      expect(formatter.format_authors(author_list)).to eq 'Doe, Jane, and Henry Miller.'
     end
   end
 
