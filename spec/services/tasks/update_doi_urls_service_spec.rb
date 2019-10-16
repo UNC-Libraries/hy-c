@@ -58,14 +58,18 @@ RSpec.describe Tasks::UpdateDoiUrlsService do
                             workflow_id: workflow.id,
                             workflow_state: workflow_state)
       work.save!
-      stub_request(:put, /datacite/).to_return(body: {data: {id: '10.5077/0001',
-                                                             type: 'dois',
-                                                             doi: 'https://doi.org/10.5077/test-doi',
-                                                             url: "#{ENV['HYRAX_HOST']}/concerns/honors_theses/#{work.id}"}}.to_json.to_s)
-    stub_request(:get, /datacite/).to_return(body: {data: {id: '10.5077/0001',
-                                                             type: 'dois',
-                                                             doi: 'https://doi.org/10.5077/test-doi',
-                                                             url: "#{ENV['HYRAX_HOST']}/concerns/honors_thesiss/#{work.id}"}}.to_json.to_s)
+      stub_request(:put, /datacite/).to_return(body: {id: '10.5077/0001',
+                                                      type: 'dois',
+                                                      data: {
+                                                          attributes: {
+                                                              doi: 'https://doi.org/10.5077/test-doi',
+                                                              url: "#{ENV['HYRAX_HOST']}/concerns/honors_theses/#{work.id}"}}}.to_json.to_s)
+    stub_request(:get, /datacite/).to_return(body: {id: '10.5077/0001',
+                                                    type: 'dois',
+                                                    data: {
+                                                        attributes: {
+                                                            doi: 'https://doi.org/10.5077/test-doi',
+                                                            url: "#{ENV['HYRAX_HOST']}/concerns/honors_thesiss/#{work.id}"}}}.to_json.to_s)
     end
 
     it "finds and updates dois" do

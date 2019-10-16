@@ -52,7 +52,7 @@ AND has_model_ssim:(DataSet HonorsThesis MastersPaper ScholarlyWork) AND system_
         # check existing url
         get_response = fetch_doi_record(record['doi_tesim'].first.gsub('https://doi.org/', ''), doi_update_url, 2)
 
-        if JSON.parse(get_response.parsed_response)['data']['url'].match(/data_sets|honors_theses|masters_papers|scholarly_works/)
+        if JSON.parse(get_response.to_s)['data']['attributes']['url'].match(/data_sets|honors_theses|masters_papers|scholarly_works/)
           log.info "[#{Time.now}] doi for #{record['id']} is up-to-date"
           completed_log.add_entry(record['id'])
           next
@@ -65,7 +65,7 @@ AND has_model_ssim:(DataSet HonorsThesis MastersPaper ScholarlyWork) AND system_
 
         update_response = doi_update_request(record['doi_tesim'].first.gsub('https://doi.org/', ''), data, retries, doi_update_url, datacite_user, datacite_password)
 
-        if update_response.response.code.to_i == 200 && JSON.parse(update_response.parsed_response)['data']['url'].match(/data_sets|honors_theses|masters_papers|scholarly_works/)
+        if update_response.response.code.to_i == 200 && JSON.parse(update_response.body.to_s)['data']['attributes']['url'].match(/data_sets|honors_theses|masters_papers|scholarly_works/)
           # log success
           completed_log.add_entry(record['id'])
           print '.'
