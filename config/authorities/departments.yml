@@ -860,7 +860,7 @@ terms:
     term: College of Arts and Sciences; Department of English and Comparative Literature; Literature, Medicine, and Culture Concentration
     active: true
   - id: Mass Communication Graduate Program
-    term: School of Media and Journalism; Mass Communication Graduate Program
+    term: Hussman School of Journalism and Media; Mass Communication Graduate Program
     active: true
   - id: Marsico Lung Institute/UNC Cystic Fibrosis Center
     term: School of Medicine, Marsico Lung Institute/UNC Cystic Fibrosis Center
@@ -1034,7 +1034,10 @@ terms:
     term: School of Media and Journalism
     active: false
   - id: School of Media and Journalism
-    term: School of Media and Journalism
+    term: Hussman School of Journalism and Media
+    active: false
+  - id: Hussman School of Journalism and Media
+    term: Hussman School of Journalism and Media
     active: true
   - id: School of Medicine
     term: School of Medicine
