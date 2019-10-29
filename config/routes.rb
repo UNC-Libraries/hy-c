@@ -73,12 +73,6 @@ Rails.application.routes.draw do
   #   end
   # end
 
-  # temporary redirects for dois
-  get '/concern/honorsthesiss/:id', to: redirect('/concern/honors_theses/%{id}')
-  get '/concern/scholarlyworks/:id', to: redirect('/concern/scholarly_works/%{id}')
-  get '/concern/datasets/:id', to: redirect('/concern/data_sets/%{id}')
-  get '/concern/masterspapers/:id', to: redirect('/concern/masters_papers/%{id}')
-
   # Catch all route for any routes that don't exist. Always have this as the last route
   match "*path", to: "errors#not_found", via: :all
 
