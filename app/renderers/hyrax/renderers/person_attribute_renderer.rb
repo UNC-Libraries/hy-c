@@ -5,7 +5,7 @@ module Hyrax
         if text =~ /ORCID:.*?http/
           text_pieces = text.split(' ')
           url = text_pieces[1].strip
-          text = "#{text_pieces[0]} <a href='#{url}'>#{url}</a>"
+          text = "#{text_pieces[0]} <a href='#{url}' target='_blank'>#{url}</a>"
         end
 
         text
