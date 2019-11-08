@@ -76,6 +76,7 @@ group :test do
   gem 'rspec-mocks'
   gem 'webmock'
   gem 'factory_bot_rails', '~> 5.0.1'
+  gem 'simplecov', '~> 0.17.0'
 end
 
 gem 'riiif', '~> 2.0'

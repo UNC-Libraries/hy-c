@@ -13,6 +13,9 @@
 # it.
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
+require 'simplecov'
+SimpleCov.start 'rails'
+
 require 'capybara/rspec'
 require 'webmock/rspec'
 require 'shoulda/matchers'
