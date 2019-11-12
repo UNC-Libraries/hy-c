@@ -8,3 +8,10 @@ Crawl-delay: 8
 Disallow: /catalog
 Disallow: /files/*/stats
 Disallow: /works/*/stats
+
+# allow google scholar to crawl the site as per https://scholar.google.com/intl/en/scholar/inclusion.html#crawl
+User-agent: Googlebot
+Allow: /
+
+# resource sync sitemap
+Sitemap: https://cdr.lib.unc.edu/resourcelist.xml
