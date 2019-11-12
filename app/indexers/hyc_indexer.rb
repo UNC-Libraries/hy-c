@@ -13,6 +13,8 @@ class HycIndexer < Hyrax::WorkIndexer
       solr_doc['date_issued_tesim'] = Array(object.date_issued).map {|date| Hyc::EdtfConvert.convert_from_edtf(date)} unless object.date_issued.blank?
       solr_doc['date_issued_edtf_tesim'] = Array(object.date_issued) unless object.date_issued.blank?
       solr_doc['date_issued_isim'] =  Array(object.date_issued).map {|date| Hyc::EdtfYearIndexer.index_dates(date)} unless object.date_issued.blank?
+      solr_doc['date_issued_sort_ssi'] = Array(object.date_issued).first unless object.date_issued.blank?
+      solr_doc['title_sort_ssi'] = Array(object.title).first unless object.title.blank?
     end
   end
 end

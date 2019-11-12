@@ -14,6 +14,14 @@ class CatalogController < ApplicationController
   # Allow all search options when in read-only mode
   skip_before_action :check_read_only
 
+  def self.title_field
+    solr_name('title_sort', :stored_sortable)
+  end
+
+  def self.date_issued_field
+    solr_name('date_issued_sort', :stored_sortable, type: :date)
+  end
+
   def self.uploaded_field
     solr_name('system_create', :stored_sortable, type: :date)
   end
@@ -25,6 +33,7 @@ class CatalogController < ApplicationController
   def single_item_search_builder(id)
     single_item_search_builder_class.new(self, id).with(params.except(:q, :page))
   end
+
 
   configure_blacklight do |config|
     # default advanced config values
@@ -349,6 +358,10 @@ class CatalogController < ApplicationController
     # except in the relevancy case).
     # label is key, solr field is value
     config.add_sort_field "score desc, #{uploaded_field} desc", label: "relevance"
+    config.add_sort_field "#{title_field} asc", label: 'Title [A-Z]'
+    config.add_sort_field "#{title_field} desc", label: 'Title [Z-A]'
+    config.add_sort_field "#{date_issued_field} desc", label: "date issued \u25BC"
+    config.add_sort_field "#{date_issued_field} asc", label: "date issued \u25B2"
     config.add_sort_field "#{uploaded_field} desc", label: "date uploaded \u25BC"
     config.add_sort_field "#{uploaded_field} asc", label: "date uploaded \u25B2"
     config.add_sort_field "#{modified_field} desc", label: "date modified \u25BC"
