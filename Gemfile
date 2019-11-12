@@ -20,7 +20,7 @@ gem 'uglifier', '~> 3.2.0'
 gem 'coffee-rails', '~> 4.2.2'
 # See https://github.com/rails/execjs#readme for more supported runtimes
 gem 'therubyracer', '~> 0.12.3', platforms: :ruby
-gem 'hyrax', '2.5.1'
+gem 'hyrax', '2.6.0'
 gem 'hydra-editor', '4.0.1'
 gem 'hydra-role-management', '~> 1.0'
 gem 'clamby', '~> 1.5.1'
@@ -38,6 +38,7 @@ gem 'blacklight_advanced_search', '~> 6.4.1'
 gem 'mini_magick', '~>4.9.4'
 gem 'roo', '~>2.8.2'
 gem 'nokogiri', '~>1.10.4'
+gem 'httparty', '~>0.17.1'
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails', '~> 4.3.1'
