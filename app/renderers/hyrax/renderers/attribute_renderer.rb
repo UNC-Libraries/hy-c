@@ -32,7 +32,7 @@ module Hyrax
         end
         markup << %(</ul></td></tr>)
         # Add 'itemprop' to default list of allowed attributes
-        sanitize markup, attributes: %w(href src width height alt cite datetime title class name xml:lang abbr itemprop itemtype)
+        sanitize markup, attributes: %w(href src width height alt cite datetime title class name xml:lang abbr itemprop itemtype target)
       end
 
       # Draw the dl row for the attribute
@@ -47,7 +47,7 @@ module Hyrax
         end
         markup << %(</ul></dd>)
         # Add 'itemprop' to default list of allowed attributes
-        sanitize markup, attributes: %w(href src width height alt cite datetime title class name xml:lang abbr itemprop itemtype)
+        sanitize markup, attributes: %w(href src width height alt cite datetime title class name xml:lang abbr itemprop itemtype target)
       end
 
       # @return The human-readable label for this field.
