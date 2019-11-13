@@ -1,3 +1,5 @@
+# this rake task is not being moved to a service module
+
 namespace :deposit_record do
   require 'fileutils'
   require 'csv'
@@ -13,8 +15,6 @@ namespace :deposit_record do
 
     config = YAML.load_file(args[:configuration_file])
     collection_config = config['deposit_record']
-
-    @depositor = User.where(email: collection_config['depositor_email']).first
 
     # Hash of all binaries in storage directory
     @binary_hash = Hash.new

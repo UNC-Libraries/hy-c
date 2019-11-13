@@ -1,0 +1,6 @@
+deposit_record:
+  collection_list: spec/fixtures/deposit_record/collection.csv
+  objects: spec/fixtures/deposit_record/object.txt
+  binaries: spec/fixtures/deposit_record/manifest.txt
+  premis: spec/fixtures/deposit_record/premis.txt
+  depositor_email: admin@example.com
