@@ -110,7 +110,7 @@ RDFXML
       # required fields
       fill_in 'Title', with: 'Test MastersPaper work'
       fill_in 'Creator', { with: 'Test Default Creator', id: 'masters_paper_creators_attributes_0_name' }
-      fill_in 'ORCID', { with: 'creator orcid', id: 'masters_paper_creators_attributes_0_orcid' }
+      fill_in 'ORCID', { with: 'http://orcid.org/creator', id: 'masters_paper_creators_attributes_0_orcid' }
       select 'Department of Biology', from: 'masters_paper_creators_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'masters_paper_creators_attributes_0_other_affiliation' }
       fill_in 'Abstract', with: 'an abstract'
@@ -175,7 +175,8 @@ RDFXML
       expect(page).to have_content 'College of Arts and Sciences'
       expect(page).to have_content 'Department of Biology'
       expect(page).to have_content 'Other Affiliation: UNC'
-      expect(page).to have_content 'Creator Test Default Creator ORCID: creator orcid'
+      expect(page).to have_content 'Creator Test Default Creator ORCID: http://orcid.org/creator'
+      expect(page.find_link('http://orcid.org/creator')[:target]).to eq('_blank')
       expect(page).to have_content 'Date of publication October 3, 2018'
       expect(page).to have_content 'Degree Master of Science'
       expect(page).to have_content 'Location Chapel Hill, North Carolina, United States'
@@ -214,7 +215,7 @@ RDFXML
       # required fields
       fill_in 'Title', with: 'Test MastersPaper work'
       fill_in 'Creator', { with: 'Test Default Creator', id: 'masters_paper_creators_attributes_0_name' }
-      fill_in 'ORCID', { with: 'creator orcid', id: 'masters_paper_creators_attributes_0_orcid' }
+      fill_in 'ORCID', { with: 'http://orcid.org/creator', id: 'masters_paper_creators_attributes_0_orcid' }
       select 'Department of Biology', from: 'masters_paper_creators_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'masters_paper_creators_attributes_0_other_affiliation' }
       fill_in 'Abstract', with: 'an abstract'
@@ -281,7 +282,8 @@ RDFXML
       expect(page).to have_content 'College of Arts and Sciences'
       expect(page).to have_content 'Department of Biology'
       expect(page).to have_content 'Other Affiliation: UNC'
-      expect(page).to have_content 'Creator Test Default Creator ORCID: creator orcid'
+      expect(page).to have_content 'Creator Test Default Creator ORCID: http://orcid.org/creator'
+      expect(page.find_link('http://orcid.org/creator')[:target]).to eq('_blank')
       expect(page).to have_content 'Date of publication October 3, 2018'
       expect(page).to have_content 'Degree Master of Science'
       expect(page).to have_content 'Degree granting institution UNC'

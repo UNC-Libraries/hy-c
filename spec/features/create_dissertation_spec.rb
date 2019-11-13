@@ -88,7 +88,7 @@ RDFXML
       # required fields
       fill_in 'Title', with: 'Test Dissertation work'
       fill_in 'Creator', { with: 'Test Default Creator', id: 'dissertation_creators_attributes_0_name' }
-      fill_in 'ORCID', { with: 'creator orcid', id: 'dissertation_creators_attributes_0_orcid' }
+      fill_in 'ORCID', { with: 'http://orcid.org/creator', id: 'dissertation_creators_attributes_0_orcid' }
       select 'Department of Biology', from: 'dissertation_creators_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'dissertation_creators_attributes_0_other_affiliation' }
       fill_in 'Date of publication', with: '2018-10-03'
@@ -152,7 +152,8 @@ RDFXML
       expect(page).to have_content 'Test Dissertation work'
 
       first('.document-title', text: 'Test Dissertation work').click
-      expect(page).to have_content 'Creator Test Default Creator ORCID: creator orcid'
+      expect(page).to have_content 'Creator Test Default Creator ORCID: http://orcid.org/creator'
+      expect(page.find_link('http://orcid.org/creator')[:target]).to eq('_blank')
       expect(page).to have_content 'Affiliation:'
       expect(page).to have_content 'College of Arts and Sciences'
       expect(page).to have_content 'Department of Biology'

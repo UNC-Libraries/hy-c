@@ -81,7 +81,7 @@ RDFXML
       # required fields
       fill_in 'Title', with: 'Test Article work'
       fill_in 'Creator', { with: 'Test Default Creator', id: 'article_creators_attributes_0_name' }
-      fill_in 'ORCID', { with: 'creator orcid', id: 'article_creators_attributes_0_orcid' }
+      fill_in 'ORCID', { with: 'http://orcid.org/creator', id: 'article_creators_attributes_0_orcid' }
       select 'Department of Biology', from: 'article_creators_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'article_creators_attributes_0_other_affiliation' }
       fill_in 'Abstract', with: 'some abstract'
@@ -148,7 +148,8 @@ RDFXML
 
       first('.document-title', text: 'Test Article work').click
       expect(page).to have_content 'Keyword Test Default Keyword'
-      expect(page).to have_content 'Creator Test Default Creator ORCID: creator orcid'
+      expect(page).to have_content 'Creator Test Default Creator ORCID: http://orcid.org/creator'
+      expect(page.find_link('http://orcid.org/creator')[:target]).to eq('_blank')
       expect(page).to have_content 'Affiliation:'
       expect(page).to have_content 'College of Arts and Sciences'
       expect(page).to have_content 'Department of Biology'
@@ -197,7 +198,7 @@ RDFXML
       # required fields
       fill_in 'Title', with: 'Test Article work'
       fill_in 'Creator', { with: 'Test Default Creator', id: 'article_creators_attributes_0_name' }
-      fill_in 'ORCID', { with: 'creator orcid', id: 'article_creators_attributes_0_orcid' }
+      fill_in 'ORCID', { with: 'http://orcid.org/creator', id: 'article_creators_attributes_0_orcid' }
       select 'Department of Biology', from: 'article_creators_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'article_creators_attributes_0_other_affiliation' }
       fill_in 'Abstract', with: 'some abstract'
@@ -269,7 +270,8 @@ RDFXML
 
       first('.document-title', text: 'Test Article work').click
       expect(page).to have_content 'Test Default Keyword'
-      expect(page).to have_content 'Creator Test Default Creator ORCID: creator orcid'
+      expect(page).to have_content 'Creator Test Default Creator ORCID: http://orcid.org/creator'
+      expect(page.find_link('http://orcid.org/creator')[:target]).to eq('_blank')
       expect(page).to have_content 'Affiliation:'
       expect(page).to have_content 'College of Arts and Sciences'
       expect(page).to have_content 'Department of Biology'

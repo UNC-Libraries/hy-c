@@ -81,7 +81,7 @@ RDFXML
       # required fields
       fill_in 'Title', with: 'Test ScholarlyWork work'
       fill_in 'Creator', { with: 'Test Default Creator', id: 'scholarly_work_creators_attributes_0_name' }
-      fill_in 'ORCID', { with: 'creator orcid', id: 'scholarly_work_creators_attributes_0_orcid' }
+      fill_in 'ORCID', { with: 'http://orcid.org/creator', id: 'scholarly_work_creators_attributes_0_orcid' }
       select 'Department of Biology', from: 'scholarly_work_creators_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'scholarly_work_creators_attributes_0_other_affiliation' }
       fill_in 'Abstract', with: 'an abstract'
@@ -138,7 +138,8 @@ RDFXML
       expect(page).to have_content 'Department of Biology'
       expect(page).to have_content 'Other Affiliation: UNC'
       expect(page).to have_content 'Conference name a conference'
-      expect(page).to have_content 'Creator Test Default Creator ORCID: creator orcid'
+      expect(page).to have_content 'Creator Test Default Creator ORCID: http://orcid.org/creator'
+      expect(page.find_link('http://orcid.org/creator')[:target]).to eq('_blank')
       expect(page).to_not have_content 'Type http://purl.org/dc/dcmitype/Text'
       expect(page).to have_content 'Date of publication October 3, 2018'
       expect(page).to have_content 'Location Chapel Hill, North Carolina, United States'
@@ -168,7 +169,7 @@ RDFXML
       # required fields
       fill_in 'Title', with: 'Test ScholarlyWork work'
       fill_in 'Creator', { with: 'Test Default Creator', id: 'scholarly_work_creators_attributes_0_name' }
-      fill_in 'ORCID', { with: 'creator orcid', id: 'scholarly_work_creators_attributes_0_orcid' }
+      fill_in 'ORCID', { with: 'http://orcid.org/creator', id: 'scholarly_work_creators_attributes_0_orcid' }
       select 'Department of Biology', from: 'scholarly_work_creators_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'scholarly_work_creators_attributes_0_other_affiliation' }
       fill_in 'Abstract', with: 'an abstract'
@@ -226,7 +227,8 @@ RDFXML
       expect(page).to have_content 'Department of Biology'
       expect(page).to have_content 'Other Affiliation: UNC'
       expect(page).to have_content 'Conference name a conference'
-      expect(page).to have_content 'Creator Test Default Creator ORCID: creator orcid'
+      expect(page).to have_content 'Creator Test Default Creator ORCID: http://orcid.org/creator'
+      expect(page.find_link('http://orcid.org/creator')[:target]).to eq('_blank')
       expect(page).to have_content 'Date of publication October 3, 2018'
       expect(page).to_not have_content 'Type http://purl.org/dc/dcmitype/Text'
       expect(page).to have_content 'a description'
