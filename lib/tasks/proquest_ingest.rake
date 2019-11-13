@@ -1,6 +1,4 @@
 namespace :proquest do
-
-
   desc 'batch migrate generic files from FOXML file'
   task :ingest, [:configuration_file] => :environment do |t, args|
     puts "[#{Time.now}] starting proquest ingest"
