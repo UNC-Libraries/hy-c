@@ -2,6 +2,7 @@ module Tasks
   require 'tasks/migrate/services/progress_tracker'
 
   class UpdateDoiUrlsService
+    include HyraxHelper
 
     attr_reader :state, :rows, :retries, :end_date, :log, :completed_log, :failed_log
 
@@ -151,10 +152,6 @@ AND has_model_ssim:(DataSet HonorsThesis MastersPaper ScholarlyWork) AND system_
         }
 
         data.to_json
-      end
-
-      def get_work_url(model, id)
-        Rails.application.routes.url_helpers.send(Hyrax::Name.new(model).singular_route_key + "_url", id)
       end
   end
 end

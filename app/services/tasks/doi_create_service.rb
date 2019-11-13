@@ -1,5 +1,7 @@
 module Tasks
   class DoiCreateService
+    include HyraxHelper
+
     # From page 38 https://schema.datacite.org/meta/kernel-4.2/doc/DataCite-MetadataKernel_v4.2.pdf
     DCMI_TO_DATACITE_TYPE = {
       'MovingImage' => 'Audiovisual',
@@ -229,10 +231,6 @@ module Tasks
         end
 
         values
-      end
-
-      def get_work_url(model, id)
-        Rails.application.routes.url_helpers.send(Hyrax::Name.new(model).singular_route_key + "_url", id)
       end
 
       def parse_field(record, field)
