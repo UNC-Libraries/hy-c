@@ -4,8 +4,6 @@ task :test_setup => :environment do
   puts 'ran migrations'
   Rake::Task['setup:admin_role'].invoke
   puts 'created admin user and role'
-  Rake::Task['setup:default_admin_set'].invoke
-  puts 'created default admin set'
   Rake::Task['setup:test_data_import'].invoke
   puts 'created test data'
 end
