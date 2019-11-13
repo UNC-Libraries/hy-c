@@ -19,7 +19,7 @@ module Tasks
             Time.zone.today
           end
       Rails.logger.info "Running embargo expiration service for #{rundate}"
-      EmbargoExpirationService.new(rundate).expire_embargoes
+      EmbargoExpirationService.new(rundate).run
     end
 
     # Format a Date object such that it can be used in a solr query
@@ -32,6 +32,10 @@ module Tasks
     def initialize(date)
       @date = date
       @work_types = [Article, Artwork, DataSet, Dissertation, General, HonorsThesis, Journal, MastersPaper, Multimed, ScholarlyWork]
+    end
+
+    def run
+      expire_embargoes
     end
 
     def expire_embargoes
