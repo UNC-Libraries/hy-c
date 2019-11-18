@@ -3,6 +3,10 @@ require 'rails_helper'
 RSpec.describe Tasks::ProquestIngestService do
   let(:args) { {configuration_file: 'spec/fixtures/proquest/proquest_config.yml'} }
 
+  before do
+    allow(Date).to receive(:today).and_return(Date.parse('2019-09-12'))
+  end
+
   after do
     FileUtils.rm_rf(Dir.glob('spec/fixtures/proquest/tmp/*'))
   end
@@ -105,7 +109,7 @@ RSpec.describe Tasks::ProquestIngestService do
   describe '#ingest_proquest_file' do
     let(:dissertation) { Dissertation.create(title: ['new dissertation']) }
     let(:metadata) { {title: ['new dissertation file']} }
-    let(:file) { 'spec/fixtures/proquest/attach_unc_1.pdf' }
+    let(:file) { 'spec/fixtures/files/test.txt' }
 
     it 'saves a fileset' do
       expect{Tasks::ProquestIngestService.new(args).ingest_proquest_file(parent: dissertation, resource: metadata, f: file)}
@@ -118,7 +122,7 @@ RSpec.describe Tasks::ProquestIngestService do
 
     it 'parses metadata from proquest xml' do
       service = Tasks::ProquestIngestService.new(args)
-      service.instance_variable_set(:@file_last_modified, Date.yesterday)
+      service.instance_variable_set(:@file_last_modified, Date.parse('2019-11-13'))
       attributes, files = service.proquest_metadata(metadata_file)
       expect(attributes).to include({'title'=>['Perspective on Attachments and Ingests'],
                                      'label'=>'Perspective on Attachments and Ingests',
@@ -136,9 +140,10 @@ RSpec.describe Tasks::ProquestIngestService do
                                      'keyword'=>['aesthetics', 'attachments', 'Philosophy'],
                                      'resource_type'=>'Dissertation',
                                      'visibility'=>'restricted',
-                                     'embargo_release_date'=>'2021-11-13',
+                                     'embargo_release_date'=>'2021-09-12',
                                      'visibility_during_embargo'=>'restricted',
-                                     'visibility_after_embargo'=>'open'})
+                                     'visibility_after_embargo'=>'open',
+                                     'admin_set_id'=>AdminSet.where(title: 'default').first.id})
       expect(files).to match_array ['noattach_unc_1.pdf', 'attached1.pdf', 'attached2.txt']
     end
   end
