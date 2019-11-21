@@ -42,12 +42,12 @@ $(function() {
         });
     }
 
-    function browseEverythingUploads() {
+    /*function browseEverythingUploads() {
         $('#browse-btn').browseEverything({
             route: "/browse",
             target: "#" + $('form').attr('id')
         });
-    }
+    }*/
   
     // Make file upload div height larger/smaller based on activity
     function uploadProgress() {
@@ -103,7 +103,7 @@ $(function() {
     }
 
     visibleForms();
-    browseEverythingUploads();
+   // browseEverythingUploads();
     uploadProgress();
     hideNonRequiredFieldsBtn();
     hideNonRequiredFormFields();
@@ -112,7 +112,7 @@ $(function() {
     // Make sure that form visibility and datepicker work with turbolinks
     $(document).on('turbolinks:load', function() {
         visibleForms();
-        browseEverythingUploads();
+     //   browseEverythingUploads();
         uploadProgress();
         hideNonRequiredFieldsBtn();
         hideNonRequiredFormFields();
