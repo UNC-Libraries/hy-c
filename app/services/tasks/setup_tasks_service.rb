@@ -1,3 +1,4 @@
+# these tasks are used during vm and test env setup
 module Tasks
   class SetupTasksService
     def self.admin_role
