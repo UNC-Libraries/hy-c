@@ -28,6 +28,10 @@ RSpec.describe Tasks::ProquestIngestService do
   end
 
   describe '#migrate_proquest_packages' do
+    before do
+      Dissertation.delete_all
+    end
+
     it 'ingests proquest records' do
       allow(Date).to receive(:today).and_return(Date.parse('2019-09-12'))
 
