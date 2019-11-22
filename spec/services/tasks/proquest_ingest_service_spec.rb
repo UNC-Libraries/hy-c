@@ -31,71 +31,29 @@ RSpec.describe Tasks::ProquestIngestService do
     it 'ingests proquest records' do
       allow(Date).to receive(:today).and_return(Date.parse('2019-09-12'))
 
-      expect{Tasks::ProquestIngestService.new(args).migrate_proquest_packages}.to change{ Dissertation.count }.by(7).and change{ DepositRecord.count }.by(7)
+      expect{Tasks::ProquestIngestService.new(args).migrate_proquest_packages}.to change{ Dissertation.count }.by(1).and change{ DepositRecord.count }.by(1)
 
       # check embargo information
-      dissertations = Dissertation.all
-      dissertation1 = dissertations[-7]
-      dissertation2 = dissertations[-6]
-      dissertation3 = dissertations[-5]
-      dissertation4 = dissertations[-4]
-      dissertation5 = dissertations[-3]
-      dissertation6 = dissertations[-2]
-      dissertation7 = dissertations[-1]
+      dissertation = Dissertation.first
 
       # first dissertation - embargo code: 3, publication year: 2019
-      expect(dissertation1['depositor']).to eq 'admin'
-      expect(dissertation1['title']).to match_array ['Perspective on Attachments and Ingests']
-      expect(dissertation1['label']).to eq 'Perspective on Attachments and Ingests'
-      expect(dissertation1['date_issued']).to eq '2019'
-      expect(dissertation1['creators'][0]['name']).to match_array ['Smith, Blandy']
-      expect(dissertation1['keyword']).to match_array ['Philosophy', 'attachments', 'aesthetics']
-      expect(dissertation1['resource_type']).to match_array ['Dissertation']
-      expect(dissertation1['abstract']).to match_array ['The purpose of this study is to test ingest of a proquest deposit object without any attachments']
-      expect(dissertation1['advisors'][0]['name']).to match_array ['Advisor, John T']
-      expect(dissertation1['degree']).to eq 'Doctor of Philosophy'
-      expect(dissertation1['degree_granting_institution']).to eq 'University of North Carolina at Chapel Hill Graduate School'
-      expect(dissertation1['dcmi_type']).to match_array ['http://purl.org/dc/dcmitype/Text']
-      expect(dissertation1['graduation_year']).to eq '2019'
-      expect(dissertation1.visibility).to eq 'restricted'
-      expect(dissertation1.embargo_release_date).to eq (Date.today.to_datetime + 2.years)
+      expect(dissertation['depositor']).to eq 'admin'
+      expect(dissertation['title']).to match_array ['Perspective on Attachments and Ingests']
+      expect(dissertation['label']).to eq 'Perspective on Attachments and Ingests'
+      expect(dissertation['date_issued']).to eq '2019'
+      expect(dissertation['creators'][0]['name']).to match_array ['Smith, Blandy']
+      expect(dissertation['keyword']).to match_array ['Philosophy', 'attachments', 'aesthetics']
+      expect(dissertation['resource_type']).to match_array ['Dissertation']
+      expect(dissertation['abstract']).to match_array ['The purpose of this study is to test ingest of a proquest deposit object without any attachments']
+      expect(dissertation['advisors'][0]['name']).to match_array ['Advisor, John T']
+      expect(dissertation['degree']).to eq 'Doctor of Philosophy'
+      expect(dissertation['degree_granting_institution']).to eq 'University of North Carolina at Chapel Hill Graduate School'
+      expect(dissertation['dcmi_type']).to match_array ['http://purl.org/dc/dcmitype/Text']
+      expect(dissertation['graduation_year']).to eq '2019'
+      expect(dissertation.visibility).to eq 'restricted'
+      expect(dissertation.embargo_release_date).to eq (Date.today.to_datetime + 2.years)
 
-      # second dissertation - embargo code: 2, publication year: 2019
-      expect(dissertation2['date_issued']).to eq '2019'
-      expect(dissertation2['graduation_year']).to eq '2019'
-      expect(dissertation2['resource_type']).to match_array ['Masters Thesis']
-      expect(dissertation2.visibility).to eq 'restricted'
-      expect(dissertation2.embargo_release_date).to eq (Date.today.to_datetime + 1.year)
 
-      # third dissertation - embargo code: 3, publication year: 2017
-      expect(dissertation3['date_issued']).to eq '2017'
-      expect(dissertation3['graduation_year']).to eq '2019'
-      expect(dissertation3.visibility).to eq 'restricted'
-      expect(dissertation3.embargo_release_date).to eq Date.parse('2019-12-31').to_datetime
-
-      # fourth dissertation - embargo code: 4, publication year: 2019
-      expect(dissertation4['date_issued']).to eq '2019'
-      expect(dissertation4['graduation_year']).to eq '2019'
-      expect(dissertation4.visibility).to eq 'restricted'
-      expect(dissertation4.embargo_release_date).to eq (Date.today.to_datetime + 2.years)
-
-      # fifth dissertation - embargo code: 0, publication year: 2018
-      expect(dissertation5['date_issued']).to eq '2018'
-      expect(dissertation5['graduation_year']).to eq '2019'
-      expect(dissertation5.visibility).to eq 'open'
-      expect(dissertation5.embargo_release_date).to be_nil
-
-      # sixth dissertation - embargo code: 4, publication year: 2018
-      expect(dissertation6['date_issued']).to eq '2018'
-      expect(dissertation6['graduation_year']).to eq '2019'
-      expect(dissertation6.visibility).to eq 'restricted'
-      expect(dissertation6.embargo_release_date).to eq Date.parse('2020-12-31').to_datetime
-
-      # seventh dissertation - embargo code: 2, publication year: 2018
-      expect(dissertation7['date_issued']).to eq '2018'
-      expect(dissertation7['graduation_year']).to eq '2019'
-      expect(dissertation7.visibility).to eq 'restricted'
-      expect(dissertation7.embargo_release_date).to eq Date.parse('2019-12-31').to_datetime
     end
   end
 
@@ -118,33 +76,221 @@ RSpec.describe Tasks::ProquestIngestService do
   end
 
   describe '#proquest_metadata' do
-    let(:metadata_file) { 'spec/fixtures/proquest/attach_unc_1_DATA.xml' }
+    context 'with embargo code 3 and publication year 2019' do
+      let(:metadata_file) { 'spec/fixtures/proquest/attach_unc_1_DATA.xml' }
 
-    it 'parses metadata from proquest xml' do
-      service = Tasks::ProquestIngestService.new(args)
-      service.instance_variable_set(:@file_last_modified, Date.parse('2019-11-13'))
-      attributes, files = service.proquest_metadata(metadata_file)
-      expect(attributes).to include({'title'=>['Perspective on Attachments and Ingests'],
-                                     'label'=>'Perspective on Attachments and Ingests',
-                                     'depositor'=>'admin',
-                                     'creators_attributes'=>{'0'=> {'name'=>'Smith, Blandy', 'affiliation'=>['Department of Philosophy']}},
-                                     'date_issued'=>'2019',
-                                     'abstract'=>'The purpose of this study is to test ingest of a proquest deposit object without any attachments',
-                                     'advisors_attributes'=>{'0'=>{'name'=>'Advisor, John T', 'affiliation'=>nil}},
-                                     'dcmi_type'=>'http://purl.org/dc/dcmitype/Text',
-                                     'degree'=>'Doctor of Philosophy',
-                                     'degree_granting_institution'=>'University of North Carolina at Chapel Hill Graduate School',
-                                     'graduation_year'=>'2019',
-                                     'language'=>['http://id.loc.gov/vocabulary/iso639-2/eng'],
-                                     'rights_statement'=>'http://rightsstatements.org/vocab/InC-EDU/1.0/',
-                                     'keyword'=>['aesthetics', 'attachments', 'Philosophy'],
-                                     'resource_type'=>'Dissertation',
-                                     'visibility'=>'restricted',
-                                     'embargo_release_date'=>'2021-09-12',
-                                     'visibility_during_embargo'=>'restricted',
-                                     'visibility_after_embargo'=>'open',
-                                     'admin_set_id'=>AdminSet.where(title: 'default').first.id})
-      expect(files).to match_array ['noattach_unc_1.pdf', 'attached1.pdf', 'attached2.txt']
+      it 'parses metadata from proquest xml' do
+        service = Tasks::ProquestIngestService.new(args)
+        service.instance_variable_set(:@file_last_modified, Date.parse('2019-11-13'))
+        attributes, files = service.proquest_metadata(metadata_file)
+        expect(attributes).to include({'title'=>['Perspective on Attachments and Ingests'],
+                                       'label'=>'Perspective on Attachments and Ingests',
+                                       'depositor'=>'admin',
+                                       'creators_attributes'=>{'0'=> {'name'=>'Smith, Blandy', 'affiliation'=>['Department of Philosophy']}},
+                                       'date_issued'=>'2019',
+                                       'abstract'=>'The purpose of this study is to test ingest of a proquest deposit object without any attachments',
+                                       'advisors_attributes'=>{'0'=>{'name'=>'Advisor, John T', 'affiliation'=>nil}},
+                                       'dcmi_type'=>'http://purl.org/dc/dcmitype/Text',
+                                       'degree'=>'Doctor of Philosophy',
+                                       'degree_granting_institution'=>'University of North Carolina at Chapel Hill Graduate School',
+                                       'graduation_year'=>'2019',
+                                       'language'=>['http://id.loc.gov/vocabulary/iso639-2/eng'],
+                                       'rights_statement'=>'http://rightsstatements.org/vocab/InC-EDU/1.0/',
+                                       'keyword'=>['aesthetics', 'attachments', 'Philosophy'],
+                                       'resource_type'=>'Dissertation',
+                                       'visibility'=>'restricted',
+                                       'embargo_release_date'=>'2021-09-12',
+                                       'visibility_during_embargo'=>'restricted',
+                                       'visibility_after_embargo'=>'open',
+                                       'admin_set_id'=>AdminSet.where(title: 'default').first.id})
+        expect(files).to match_array ['noattach_unc_1.pdf', 'attached1.pdf', 'attached2.txt']
+      end
+    end
+
+    context 'with embargo code 2 and publication year 2019' do
+      let(:metadata_file) { 'spec/fixtures/proquest/proquest-attach1/attach_unc_1_DATA.xml' }
+
+      it 'parses metadata from proquest xml' do
+        service = Tasks::ProquestIngestService.new(args)
+        service.instance_variable_set(:@file_last_modified, Date.parse('2019-11-13'))
+        attributes, files = service.proquest_metadata(metadata_file)
+        expect(attributes).to include({'title'=>['Perspective on Attachments and Ingests'],
+                                       'label'=>'Perspective on Attachments and Ingests',
+                                       'depositor'=>'admin',
+                                       'creators_attributes'=>{'0'=> {'name'=>'Smith, Blandy', 'affiliation'=>['Department of Philosophy']}},
+                                       'date_issued'=>'2019',
+                                       'abstract'=>'The purpose of this study is to test ingest of a proquest deposit object without any attachments',
+                                       'advisors_attributes'=>{'0'=>{'name'=>'Advisor, John T', 'affiliation'=>nil}},
+                                       'dcmi_type'=>'http://purl.org/dc/dcmitype/Text',
+                                       'degree'=>'Master of Arts',
+                                       'degree_granting_institution'=>'University of North Carolina at Chapel Hill Graduate School',
+                                       'graduation_year'=>'2019',
+                                       'language'=>['http://id.loc.gov/vocabulary/iso639-2/eng'],
+                                       'rights_statement'=>'http://rightsstatements.org/vocab/InC-EDU/1.0/',
+                                       'keyword'=>['aesthetics', 'attachments', 'Philosophy'],
+                                       'resource_type'=>'Masters Thesis',
+                                       'visibility'=>'restricted',
+                                       'embargo_release_date'=>'2020-09-12',
+                                       'visibility_during_embargo'=>'restricted',
+                                       'visibility_after_embargo'=>'open',
+                                       'admin_set_id'=>AdminSet.where(title: 'default').first.id})
+        expect(files).to match_array ['noattach_unc_1.pdf', 'attached1.pdf', 'attached2.txt']
+      end
+    end
+
+    context 'with embargo code 3 and publication year 2017' do
+      let(:metadata_file) { 'spec/fixtures/proquest/proquest-attach2/attach_unc_1_DATA.xml' }
+
+      it 'parses metadata from proquest xml' do
+        service = Tasks::ProquestIngestService.new(args)
+        service.instance_variable_set(:@file_last_modified, Date.parse('2019-11-13'))
+        attributes, files = service.proquest_metadata(metadata_file)
+        expect(attributes).to include({'title'=>['Perspective on Attachments and Ingests'],
+                                       'label'=>'Perspective on Attachments and Ingests',
+                                       'depositor'=>'admin',
+                                       'creators_attributes'=>{'0'=> {'name'=>'Smith, Blandy', 'affiliation'=>['Department of Philosophy']}},
+                                       'date_issued'=>'2017',
+                                       'abstract'=>'The purpose of this study is to test ingest of a proquest deposit object without any attachments',
+                                       'advisors_attributes'=>{'0'=>{'name'=>'Advisor, John T', 'affiliation'=>nil}},
+                                       'dcmi_type'=>'http://purl.org/dc/dcmitype/Text',
+                                       'degree'=>'Doctor of Philosophy',
+                                       'degree_granting_institution'=>'University of North Carolina at Chapel Hill Graduate School',
+                                       'graduation_year'=>'2019',
+                                       'language'=>['http://id.loc.gov/vocabulary/iso639-2/eng'],
+                                       'rights_statement'=>'http://rightsstatements.org/vocab/InC-EDU/1.0/',
+                                       'keyword'=>['aesthetics', 'attachments', 'Philosophy'],
+                                       'resource_type'=>'Dissertation',
+                                       'visibility'=>'restricted',
+                                       'embargo_release_date'=>'2019-12-31',
+                                       'visibility_during_embargo'=>'restricted',
+                                       'visibility_after_embargo'=>'open',
+                                       'admin_set_id'=>AdminSet.where(title: 'default').first.id})
+        expect(files).to match_array ['noattach_unc_1.pdf', 'attached1.pdf', 'attached2.txt']
+      end
+    end
+
+    context 'with embargo code 4 and publication year 2019' do
+      let(:metadata_file) { 'spec/fixtures/proquest/proquest-attach3/attach_unc_1_DATA.xml' }
+
+      it 'parses metadata from proquest xml' do
+        service = Tasks::ProquestIngestService.new(args)
+        service.instance_variable_set(:@file_last_modified, Date.parse('2019-11-13'))
+        attributes, files = service.proquest_metadata(metadata_file)
+        expect(attributes).to include({'title'=>['Perspective on Attachments and Ingests'],
+                                       'label'=>'Perspective on Attachments and Ingests',
+                                       'depositor'=>'admin',
+                                       'creators_attributes'=>{'0'=> {'name'=>'Smith, Blandy', 'affiliation'=>['Department of Philosophy']}},
+                                       'date_issued'=>'2019',
+                                       'abstract'=>'The purpose of this study is to test ingest of a proquest deposit object without any attachments',
+                                       'advisors_attributes'=>{'0'=>{'name'=>'Advisor, John T', 'affiliation'=>nil}},
+                                       'dcmi_type'=>'http://purl.org/dc/dcmitype/Text',
+                                       'degree'=>'Doctor of Philosophy',
+                                       'degree_granting_institution'=>'University of North Carolina at Chapel Hill Graduate School',
+                                       'graduation_year'=>'2019',
+                                       'language'=>['http://id.loc.gov/vocabulary/iso639-2/eng'],
+                                       'rights_statement'=>'http://rightsstatements.org/vocab/InC-EDU/1.0/',
+                                       'keyword'=>['aesthetics', 'attachments', 'Philosophy'],
+                                       'resource_type'=>'Dissertation',
+                                       'visibility'=>'restricted',
+                                       'embargo_release_date'=>'2021-09-12',
+                                       'visibility_during_embargo'=>'restricted',
+                                       'visibility_after_embargo'=>'open',
+                                       'admin_set_id'=>AdminSet.where(title: 'default').first.id})
+        expect(files).to match_array ['noattach_unc_1.pdf', 'attached1.pdf', 'attached2.txt']
+      end
+    end
+
+    context 'with embargo code 0 and publication year 2018' do
+      let(:metadata_file) { 'spec/fixtures/proquest/proquest-attach4/attach_unc_1_DATA.xml' }
+
+      it 'parses metadata from proquest xml' do
+        service = Tasks::ProquestIngestService.new(args)
+        service.instance_variable_set(:@file_last_modified, Date.parse('2019-11-13'))
+        attributes, files = service.proquest_metadata(metadata_file)
+        expect(attributes).to include({'title'=>['Perspective on Attachments and Ingests'],
+                                       'label'=>'Perspective on Attachments and Ingests',
+                                       'depositor'=>'admin',
+                                       'creators_attributes'=>{'0'=> {'name'=>'Smith, Blandy', 'affiliation'=>['Department of Philosophy']}},
+                                       'date_issued'=>'2018',
+                                       'abstract'=>'The purpose of this study is to test ingest of a proquest deposit object without any attachments',
+                                       'advisors_attributes'=>{'0'=>{'name'=>'Advisor, John T', 'affiliation'=>nil}},
+                                       'dcmi_type'=>'http://purl.org/dc/dcmitype/Text',
+                                       'degree'=>'Doctor of Philosophy',
+                                       'degree_granting_institution'=>'University of North Carolina at Chapel Hill Graduate School',
+                                       'graduation_year'=>'2019',
+                                       'language'=>['http://id.loc.gov/vocabulary/iso639-2/eng'],
+                                       'rights_statement'=>'http://rightsstatements.org/vocab/InC-EDU/1.0/',
+                                       'keyword'=>['aesthetics', 'attachments', 'Philosophy'],
+                                       'resource_type'=>'Dissertation',
+                                       'visibility'=>'open',
+                                       'visibility_during_embargo'=>'restricted',
+                                       'visibility_after_embargo'=>'open',
+                                       'admin_set_id'=>AdminSet.where(title: 'default').first.id})
+        expect(attributes['embargo_release_date']).to be_nil
+        expect(files).to match_array ['noattach_unc_1.pdf', 'attached1.pdf', 'attached2.txt']
+      end
+    end
+
+    context 'with embargo code 4 and publication year 2018' do
+      let(:metadata_file) { 'spec/fixtures/proquest/proquest-attach5/attach_unc_1_DATA.xml' }
+
+      it 'parses metadata from proquest xml' do
+        service = Tasks::ProquestIngestService.new(args)
+        service.instance_variable_set(:@file_last_modified, Date.parse('2019-11-13'))
+        attributes, files = service.proquest_metadata(metadata_file)
+        expect(attributes).to include({'title'=>['Perspective on Attachments and Ingests'],
+                                       'label'=>'Perspective on Attachments and Ingests',
+                                       'depositor'=>'admin',
+                                       'creators_attributes'=>{'0'=> {'name'=>'Smith, Blandy', 'affiliation'=>['Department of Philosophy']}},
+                                       'date_issued'=>'2018',
+                                       'abstract'=>'The purpose of this study is to test ingest of a proquest deposit object without any attachments',
+                                       'advisors_attributes'=>{'0'=>{'name'=>'Advisor, John T', 'affiliation'=>nil}},
+                                       'dcmi_type'=>'http://purl.org/dc/dcmitype/Text',
+                                       'degree'=>'Doctor of Philosophy',
+                                       'degree_granting_institution'=>'University of North Carolina at Chapel Hill Graduate School',
+                                       'graduation_year'=>'2019',
+                                       'language'=>['http://id.loc.gov/vocabulary/iso639-2/eng'],
+                                       'rights_statement'=>'http://rightsstatements.org/vocab/InC-EDU/1.0/',
+                                       'keyword'=>['aesthetics', 'attachments', 'Philosophy'],
+                                       'resource_type'=>'Dissertation',
+                                       'visibility'=>'restricted',
+                                       'embargo_release_date'=>'2020-12-31',
+                                       'visibility_during_embargo'=>'restricted',
+                                       'visibility_after_embargo'=>'open',
+                                       'admin_set_id'=>AdminSet.where(title: 'default').first.id})
+        expect(files).to match_array ['noattach_unc_1.pdf', 'attached1.pdf', 'attached2.txt']
+      end
+    end
+
+    context 'with embargo code 2 and publication year 2018' do
+      let(:metadata_file) { 'spec/fixtures/proquest/proquest-attach6/attach_unc_1_DATA.xml' }
+
+      it 'parses metadata from proquest xml' do
+        service = Tasks::ProquestIngestService.new(args)
+        service.instance_variable_set(:@file_last_modified, Date.parse('2019-11-13'))
+        attributes, files = service.proquest_metadata(metadata_file)
+        expect(attributes).to include({'title'=>['Perspective on Attachments and Ingests'],
+                                       'label'=>'Perspective on Attachments and Ingests',
+                                       'depositor'=>'admin',
+                                       'creators_attributes'=>{'0'=> {'name'=>'Smith, Blandy', 'affiliation'=>['Department of Philosophy']}},
+                                       'date_issued'=>'2018',
+                                       'abstract'=>'The purpose of this study is to test ingest of a proquest deposit object without any attachments',
+                                       'advisors_attributes'=>{'0'=>{'name'=>'Advisor, John T', 'affiliation'=>nil}},
+                                       'dcmi_type'=>'http://purl.org/dc/dcmitype/Text',
+                                       'degree'=>'Doctor of Philosophy',
+                                       'degree_granting_institution'=>'University of North Carolina at Chapel Hill Graduate School',
+                                       'graduation_year'=>'2019',
+                                       'language'=>['http://id.loc.gov/vocabulary/iso639-2/eng'],
+                                       'rights_statement'=>'http://rightsstatements.org/vocab/InC-EDU/1.0/',
+                                       'keyword'=>['aesthetics', 'attachments', 'Philosophy'],
+                                       'resource_type'=>'Dissertation',
+                                       'visibility'=>'restricted',
+                                       'embargo_release_date'=>'2019-12-31',
+                                       'visibility_during_embargo'=>'restricted',
+                                       'visibility_after_embargo'=>'open',
+                                       'admin_set_id'=>AdminSet.where(title: 'default').first.id})
+        expect(files).to match_array ['noattach_unc_1.pdf', 'attached1.pdf', 'attached2.txt']
+      end
     end
   end
 
