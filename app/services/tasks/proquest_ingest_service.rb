@@ -187,6 +187,8 @@ module Tasks
 
       embargo_code = metadata.xpath('//DISS_submission/@embargo_code').text
 
+      puts "[#{Time.now}][#{metadata_file}] embargo code: #{embargo_code}"
+
       unless embargo_code.blank?
         current_date = Date.today
         comp_date_string = metadata.xpath('//DISS_description/DISS_dates/DISS_comp_date').text
@@ -209,6 +211,8 @@ module Tasks
           visibility = visibility_during_embargo
         end
       end
+
+      puts "[#{Time.now}][#{metadata_file}] embargo release date: #{embargo_release_date}"
 
       title = metadata.xpath('//DISS_description/DISS_title').text
 
