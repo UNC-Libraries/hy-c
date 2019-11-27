@@ -102,7 +102,7 @@ RDFXML
 
       visit masters_papers_department_path
       expect(page).to have_content "Add New Master's Paper"
-      select 'Department of City and Regional Planning', from: 'masters_paper_affiliation'
+      select 'Department of City and Regional Planning', from: 'masters-department-select'
       click_on 'Select'
 
       expect(page).to have_content "Add New Master's Paper"
@@ -206,7 +206,7 @@ RDFXML
 
       visit masters_papers_department_path
       expect(page).to have_content "Add New Master's Paper"
-      select 'Studio Art Program', from: 'masters_paper_affiliation'
+      select 'Studio Art Program', from: 'masters-department-select'
       click_on 'Select'
 
       expect(page).to have_content "Add New Master's Paper"
