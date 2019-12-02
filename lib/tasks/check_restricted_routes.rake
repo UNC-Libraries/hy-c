@@ -41,12 +41,11 @@ task :check_restricted_routes, [:start, :rows, :log_dir] => :environment do |t, 
     end
 
     # generate record link for each
-    puts restricted_item['has_model_ssim']
     show_page_url = Rails.application.routes.url_helpers.send("hyrax_#{model_map[restricted_item['has_model_ssim'].first]}_url", restricted_item['id'])
     puts show_page_url
 
     page_response = HTTParty.get(show_page_url)
-    if page_response.response.code.to_i == 200
+    if !page_response.response.body.match('You are not authorized to access this page.')
       puts "#{restricted_item['id']} show page is open"
       restricted_item_error_progress.add_entry(restricted_item['id'])
       next
@@ -58,7 +57,7 @@ task :check_restricted_routes, [:start, :rows, :log_dir] => :environment do |t, 
       puts download_url
 
       page_response = HTTParty.get(download_url)
-      if page_response.response.code.to_i == 200
+      if page_response.response.code.to_i == 200 && !page_response.response.body.match('You are not authorized to access this page.')
         puts "#{restricted_item['id']} download link is open"
         restricted_item_error_progress.add_entry(restricted_item['id'])
         next
