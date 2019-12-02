@@ -22,7 +22,7 @@ task :check_restricted_routes, [:start, :rows, :log_dir] => :environment do |t, 
   restricted_item_error_progress = Migrate::Services::ProgressTracker.new("#{args[:log_dir]}/restricted_item_error_progress.log")
   checked = restricted_item_progress.completed_set + restricted_item_error_progress.completed_set
 
-  restricted_item_query = ActiveFedora::SolrService.get("(visibility_ssi:authenticated OR visibility_ssi:restricted) AND has_model_ssim:(Article Artwork DataSet Dissertation General HonorsThesis Journal MastersPaper Multimed ScholarlyWork FileSet Collection)",
+  restricted_item_query = ActiveFedora::SolrService.get("(visibility_ssi:authenticated OR visibility_ssi:restricted) AND has_model_ssim:(Article Artwork DataSet Dissertation General HonorsThesis Journal MastersPaper Multimed ScholarlyWork FileSet)",
                                                         :sort => "system_create_dtsi ASC",
                                                         :start => args[:start],
                                                         :rows => args[:rows],

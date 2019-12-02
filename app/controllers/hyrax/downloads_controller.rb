@@ -5,7 +5,6 @@ module Hyrax
     include Hyrax::LocalFileDownloadsControllerBehavior
     include Hyc::DownloadAnalyticsBehavior
 
-    skip_before_action :check_read_only
     before_action :set_record_admin_set
 
     def self.default_content_path
