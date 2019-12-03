@@ -278,15 +278,18 @@ Hyrax.config do |config|
   # config.bagit_dir = "tmp/descriptions"
 
   # If browse-everything has been configured, load the configs.  Otherwise, set to nil.
-  begin
-    if defined? BrowseEverything
-      config.browse_everything = BrowseEverything.config
-    else
-      Rails.logger.warn "BrowseEverything is not installed"
-    end
-  rescue Errno::ENOENT
-    config.browse_everything = nil
-  end
+  # We can uncomment this block if we ever get around to using BrowseEverything
+  # begin
+  #   if defined? BrowseEverything
+  #     config.browse_everything = BrowseEverything.config
+  #   else
+  #     Rails.logger.warn "BrowseEverything is not installed"
+  #   end
+  # rescue Errno::ENOENT
+  #   config.browse_everything = nil
+  # end
+
+  config.browse_everything = nil
 end
 
 Date::DATE_FORMATS[:standard] = "%Y-%m-%d"
