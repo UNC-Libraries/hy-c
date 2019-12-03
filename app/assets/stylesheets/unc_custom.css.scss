@@ -39,6 +39,20 @@ span.institution_name {
   }
 }
 
+.skip-to-content {
+  background-color: white;
+
+  a {
+    color: $carolina-blue-dark;
+  }
+}
+
+.notify-number {
+  span.label {
+    font-size: 100%;
+  }
+}
+
 #masthead {
   background-color: $carolina-blue-dark;
   margin-bottom: 0;
@@ -585,6 +599,29 @@ table p.name span {
 
 #sub-collection-list {
   font-size: 18px;
+}
+
+.social-media {
+  .sr-only {
+    color: $carolina-blue;
+  }
+}
+
+.person {
+  p.help-block {
+    color: darkslategray;
+  }
+}
+
+.radio.embargoed {
+  min-height: 20px;
+  padding-left: 20px;
+  font-weight: 400;
+  cursor: pointer;
+}
+
+input#check_all {
+  margin-right: 5px;
 }
 
 @media only screen and (max-width: 1399px) {

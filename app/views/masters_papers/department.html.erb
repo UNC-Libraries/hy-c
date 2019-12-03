@@ -7,9 +7,9 @@
   <%= form_for :masters_paper, url: main_app.masters_papers_select_department_path do |f| %>
     <div class="row">
       <div class="form-group col-xs-12">
-        <%= f.label 'Choose a department:' %>
+        <%= f.label 'Choose a department:', for: 'masters-department-select' %>
         <%= f.select :affiliation, options_for_select(MastersPapersDeptsService.select_all_options), {multiple: true},
-                     class: 'form-control' %>
+                     class: 'form-control', id: 'masters-department-select'  %>
         <%= f.hidden_field :add_works_to_collection, value: params[:add_works_to_collection] %>
       </div>
     </div>

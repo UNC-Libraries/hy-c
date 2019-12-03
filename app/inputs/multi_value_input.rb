@@ -1,4 +1,5 @@
 # [hyc-override] Overriding hydra editor custom input to allow for multivalue HTML5 dates
+# [hyc-override] Overriding hydra editor custom input to allow for accessibility validation
 # https://github.com/samvera/hydra-editor/blob/master/app/inputs/multi_value_input.rb
 class MultiValueInput < SimpleForm::Inputs::CollectionInput
   def input(wrapper_options)
@@ -71,8 +72,9 @@ class MultiValueInput < SimpleForm::Inputs::CollectionInput
     end
   end
 
+  # [hyc-override] Overriding hydra editor custom input to allow for correct label to input linking
   def label_id
-    input_dom_id + '_label'
+    input_dom_id
   end
 
   def input_dom_id

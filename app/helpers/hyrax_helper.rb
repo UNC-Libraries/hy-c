@@ -20,11 +20,10 @@ module HyraxHelper
 
   def language_links_facets(options)
     lang_label = LanguagesService.label(options)
-    if !lang_label.nil?
-      link_to lang_label, main_app.search_catalog_path(f: { language_sim: [options] })
-    else
-      options
+    unless lang_label.nil?
+      options = lang_label
     end
+    options
   end
 
   def redirect_lookup(column, id)
