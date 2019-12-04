@@ -26,8 +26,6 @@ module Hyrax
       end
     end
 
-    private
-
     def set_record_admin_set
       record = ActiveFedora::SolrService.get("file_set_ids_ssim:#{params[:id]}", :rows => 1)["response"]["docs"]
 
@@ -37,6 +35,9 @@ module Hyrax
         @admin_set_name = 'Unknown'
       end
     end
+
+
+    private
 
     # Override the Hydra::Controller::DownloadBehavior#content_options so that
     # we have an attachement rather than 'inline'
