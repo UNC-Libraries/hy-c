@@ -1,7 +1,7 @@
 require 'rails_helper'
 
-RSpec.describe Hyc::DownloadsController, type: :controller do
-  # app/controllers/concerns/hyc/download_analytics_behavior.rb:8
+RSpec.describe Hyrax::DownloadsController, type: :controller do
+  # app/controllers/concerns/hyrax/download_analytics_behavior.rb:8
   describe '#track_download' do
     before do
       Hyrax.config.google_analytics_id = 'blah'
@@ -14,7 +14,7 @@ RSpec.describe Hyc::DownloadsController, type: :controller do
     end
   end
 
-  # app/controllers/hyc/downloads_controller.rb:6
+  # app/controllers/hyrax/downloads_controller.rb:6
   describe '#set_record_admin_set' do
     let(:solr_response) { {response: {docs: [{admin_set_tesim: ['admin set for download controller']}]}}.to_json }
     let(:empty_solr_response) { {response: {docs: []}}.to_json }
