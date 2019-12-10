@@ -624,6 +624,10 @@ input#check_all {
   margin-right: 5px;
 }
 
+.controlled_vocabulary .input-append {
+  width: 100%;
+}
+
 @media only screen and (max-width: 1399px) {
   .row {
     margin-right: -7px;
