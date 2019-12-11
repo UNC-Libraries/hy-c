@@ -86,7 +86,7 @@ RDFXML
       # extra fields
       fill_in 'Abstract', with: 'an abstract'
       fill_in 'Creator', { with: 'Test Default Creator', id: 'journal_creators_attributes_0_name' }
-      fill_in 'ORCID', { with: 'creator orcid', id: 'journal_creators_attributes_0_orcid' }
+      fill_in 'ORCID', { with: 'http://orcid.org/creator', id: 'journal_creators_attributes_0_orcid' }
       select 'Department of Biology', from: 'journal_creators_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'journal_creators_attributes_0_other_affiliation' }
       fill_in 'Extent', with: 'some extent'
@@ -133,7 +133,8 @@ RDFXML
 
       first('.document-title', text: 'Test Journal').click
       expect(page).to have_content 'Abstract an abstract'
-      expect(page).to have_content 'Creator Test Default Creator ORCID: creator orcid'
+      expect(page).to have_content 'Creator Test Default Creator ORCID: http://orcid.org/creator'
+      expect(page.find_link('http://orcid.org/creator')[:target]).to eq('_blank')
       expect(page).to have_content 'Affiliation:'
       expect(page).to have_content 'College of Arts and Sciences'
       expect(page).to have_content 'Department of Biology'
@@ -182,7 +183,7 @@ RDFXML
       fill_in 'Abstract', with: 'an abstract'
       fill_in 'Alternate title', with: 'another title'
       fill_in 'Creator', { with: 'Test Default Creator', id: 'journal_creators_attributes_0_name' }
-      fill_in 'ORCID', { with: 'creator orcid', id: 'journal_creators_attributes_0_orcid' }
+      fill_in 'ORCID', { with: 'http://orcid.org/creator', id: 'journal_creators_attributes_0_orcid' }
       select 'Department of Biology', from: 'journal_creators_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'journal_creators_attributes_0_other_affiliation' }
       fill_in 'Digital collection', with: 'my collection'
@@ -231,7 +232,8 @@ RDFXML
       first('.document-title', text: 'Test Journal').click
       expect(page).to have_content 'Abstract an abstract'
       expect(page).to have_content 'Alternate title another title'
-      expect(page).to have_content 'Creator Test Default Creator ORCID: creator orcid'
+      expect(page).to have_content 'Creator Test Default Creator ORCID: http://orcid.org/creator'
+      expect(page.find_link('http://orcid.org/creator')[:target]).to eq('_blank')
       expect(page).to have_content 'Affiliation:'
       expect(page).to have_content 'College of Arts and Sciences'
       expect(page).to have_content 'Department of Biology'

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<foxml:digitalObject VERSION="1.1" PID="uuid:8390f797-fc01-4229-9636-a43be21d7353"
+xmlns:foxml="info:fedora/fedora-system:def/foxml#"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="info:fedora/fedora-system:def/foxml# http://www.fedora.info/definitions/1/0/foxml1-1.xsd">
+<foxml:objectProperties>
+<foxml:property NAME="info:fedora/fedora-system:def/model#state" VALUE="Active"/>
+<foxml:property NAME="info:fedora/fedora-system:def/model#label" VALUE="Deposit by Biomed Central Depositor via SWORD 1.3"/>
+<foxml:property NAME="info:fedora/fedora-system:def/model#ownerId" VALUE="fedoraAdmin"/>
+<foxml:property NAME="info:fedora/fedora-system:def/model#createdDate" VALUE="2013-02-20T00:20:29.825Z"/>
+<foxml:property NAME="info:fedora/fedora-system:def/view#lastModifiedDate" VALUE="2013-02-20T00:20:29.825Z"/>
+</foxml:objectProperties>
+<foxml:datastream ID="AUDIT" STATE="A" CONTROL_GROUP="X" VERSIONABLE="false">
+<foxml:datastreamVersion ID="AUDIT.0" LABEL="Audit Trail for this object" CREATED="2013-02-20T00:20:29.825Z" MIMETYPE="text/xml" FORMAT_URI="info:fedora/fedora-system:format/xml.fedora.audit">
+<foxml:xmlContent>
+<audit:auditTrail xmlns:audit="info:fedora/fedora-system:def/audit#">
+<audit:record ID="AUDREC1">
+<audit:process type="Fedora API-M"/>
+<audit:action>ingest</audit:action>
+<audit:componentID></audit:componentID>
+<audit:responsibility>fedoraAdmin</audit:responsibility>
+<audit:date>2013-02-20T00:20:29.825Z</audit:date>
+<audit:justification>uuid:8390f797-fc01-4229-9636-a43be21d7353</audit:justification>
+</audit:record>
+</audit:auditTrail>
+</foxml:xmlContent>
+</foxml:datastreamVersion>
+</foxml:datastream>
+<foxml:datastream ID="DATA_MANIFEST" STATE="A" CONTROL_GROUP="M" VERSIONABLE="false">
+<foxml:datastreamVersion ID="DATA_MANIFEST.0" LABEL="Deposit Manifest" CREATED="2013-02-20T00:20:29.839Z" MIMETYPE="text/xml" SIZE="9660">
+<foxml:contentDigest TYPE="MD5" DIGEST="cd1c6f666ac6867aa656660b6bca9502"/>
+<foxml:contentLocation TYPE="INTERNAL_ID" REF="uuid:8390f797-fc01-4229-9636-a43be21d7353+DATA_MANIFEST+DATA_MANIFEST.0"/>
+</foxml:datastreamVersion>
+</foxml:datastream>
+<foxml:datastream ID="RELS-EXT" STATE="A" CONTROL_GROUP="X" VERSIONABLE="false">
+<foxml:datastreamVersion ID="RELS-EXT1.0" LABEL="Relationship Metadata" CREATED="2013-02-20T00:20:29.839Z" MIMETYPE="text/xml" SIZE="1146">
+<foxml:contentDigest TYPE="MD5" DIGEST="1d804075216be71b40d36ee868211b52"/>
+<foxml:xmlContent>
+<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:owl="http://www.w3.org/2002/07/owl#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:ns5="http://cdr.unc.edu/definitions/1.0/base-model.xml#" xmlns:ns6="info:fedora/fedora-system:def/model#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
+                    <rdf:Description rdf:about="info:fedora/uuid:8390f797-fc01-4229-9636-a43be21d7353">
+                        <ns5:depositMethod>SWORD 1.3</ns5:depositMethod>
+                        <ns5:depositPackageSubType>BiomedCentral</ns5:depositPackageSubType>
+                        <ns5:depositPackageType rdf:resource="http://purl.org/net/sword-types/METSDSpaceSIP"></ns5:depositPackageType>
+                        <ns5:depositedBy rdf:resource="info:fedora/uuid:ca7e3178-e603-4e71-b49b-21f15ddd3887">CDR Admin</ns5:depositedBy>
+                        <ns6:hasModel rdf:resource="info:fedora/cdr-model:DepositRecord"></ns6:hasModel>
+                    </rdf:Description>
+                </rdf:RDF>
+</foxml:xmlContent>
+</foxml:datastreamVersion>
+</foxml:datastream>
+<foxml:datastream ID="MD_EVENTS" STATE="A" CONTROL_GROUP="M" VERSIONABLE="false">
+<foxml:datastreamVersion ID="MD_EVENTS.0" LABEL="PREMIS Events Metadata" CREATED="2013-02-20T00:20:29.839Z" MIMETYPE="text/xml" SIZE="1632">
+<foxml:contentDigest TYPE="MD5" DIGEST="c25b35957b4a9cb1b73bf562eba611a8"/>
+<foxml:contentLocation TYPE="INTERNAL_ID" REF="uuid:8390f797-fc01-4229-9636-a43be21d7353+MD_EVENTS+MD_EVENTS.0"/>
+</foxml:datastreamVersion>
+</foxml:datastream>
+<foxml:datastream ID="DC" STATE="A" CONTROL_GROUP="X" VERSIONABLE="true">
+<foxml:datastreamVersion ID="DC1.0" LABEL="Dublin Core Record for this object" CREATED="2013-02-20T00:20:29.825Z" MIMETYPE="text/xml" FORMAT_URI="http://www.openarchives.org/OAI/2.0/oai_dc/">
+<foxml:contentDigest TYPE="MD5" DIGEST="8cf0e264cc14999e83b99f7b0dfa0c37"/>
+<foxml:xmlContent>
+<oai_dc:dc xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/"
+xmlns:dc="http://purl.org/dc/elements/1.1/"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd">
+  <dc:title>Deposit by Biomed Central Depositor via SWORD 1.3</dc:title>
+  <dc:identifier>uuid:8390f797-fc01-4229-9636-a43be21d7353</dc:identifier>
+</oai_dc:dc>
+</foxml:xmlContent>
+</foxml:datastreamVersion>
+</foxml:datastream>
+</foxml:digitalObject>

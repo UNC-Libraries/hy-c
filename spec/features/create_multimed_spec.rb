@@ -81,7 +81,7 @@ RDFXML
       # required fields
       fill_in 'Title', with: 'Test Multimed'
       fill_in 'Creator', { with: 'Test Default Creator', id: 'multimed_creators_attributes_0_name' }
-      fill_in 'ORCID', { with: 'creator orcid', id: 'multimed_creators_attributes_0_orcid' }
+      fill_in 'ORCID', { with: 'http://orcid.org/creator', id: 'multimed_creators_attributes_0_orcid' }
       select 'Department of Biology', from: 'multimed_creators_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'multimed_creators_attributes_0_other_affiliation' }
       fill_in 'Abstract', with: 'an abstract'
@@ -128,7 +128,8 @@ RDFXML
 
       first('.document-title', text: 'Test Multimed').click
       expect(page).to have_content 'Abstract an abstract'
-      expect(page).to have_content 'Creator Test Default Creator ORCID: creator orcid'
+      expect(page).to have_content 'Creator Test Default Creator ORCID: http://orcid.org/creator'
+      expect(page.find_link('http://orcid.org/creator')[:target]).to eq('_blank')
       expect(page).to have_content 'Affiliation:'
       expect(page).to have_content 'College of Arts and Sciences'
       expect(page).to have_content 'Department of Biology'
@@ -164,7 +165,7 @@ RDFXML
       # required fields
       fill_in 'Title', with: 'Test Multimed'
       fill_in 'Creator', { with: 'Test Default Creator', id: 'multimed_creators_attributes_0_name' }
-      fill_in 'ORCID', { with: 'creator orcid', id: 'multimed_creators_attributes_0_orcid' }
+      fill_in 'ORCID', { with: 'http://orcid.org/creator', id: 'multimed_creators_attributes_0_orcid' }
       select 'Department of Biology', from: 'multimed_creators_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'multimed_creators_attributes_0_other_affiliation' }
       fill_in 'Abstract', with: 'an abstract'
@@ -213,7 +214,8 @@ RDFXML
 
       first('.document-title', text: 'Test Multimed').click
       expect(page).to have_content 'Abstract an abstract'
-      expect(page).to have_content 'Creator Test Default Creator ORCID: creator orcid'
+      expect(page).to have_content 'Creator Test Default Creator ORCID: http://orcid.org/creator'
+      expect(page.find_link('http://orcid.org/creator')[:target]).to eq('_blank')
       expect(page).to have_content 'Affiliation:'
       expect(page).to have_content 'College of Arts and Sciences'
       expect(page).to have_content 'Department of Biology'

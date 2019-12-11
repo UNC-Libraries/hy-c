@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<DISS_submission publishing_option="0" embargo_code="4" third_party_search="Y">
+  <DISS_authorship>
+    <DISS_author type="primary">
+      <DISS_name>
+        <DISS_surname>Smith</DISS_surname>
+        <DISS_fname>Blandy</DISS_fname>
+        <DISS_middle/>
+        <DISS_suffix/>
+        <DISS_affiliation>University of North Carolina at Chapel Hill</DISS_affiliation>
+      </DISS_name>
+      <DISS_contact type="current">
+        <DISS_contact_effdt>04/06/2011</DISS_contact_effdt>
+        <DISS_phone_fax type="P">
+          <DISS_cntry_cd>1</DISS_cntry_cd>
+          <DISS_area_code>555</DISS_area_code>
+          <DISS_phone_num>5555555</DISS_phone_num>
+          <DISS_phone_ext/>
+        </DISS_phone_fax>
+        <DISS_address>
+          <DISS_addrline>A street</DISS_addrline>
+          <DISS_city>chapel hill</DISS_city>
+          <DISS_st>NC</DISS_st>
+          <DISS_pcode>2751x</DISS_pcode>
+          <DISS_country>US</DISS_country>
+        </DISS_address>
+        <DISS_email>andysmith@example.com</DISS_email>
+      </DISS_contact>
+      <DISS_contact type="future">
+        <DISS_contact_effdt>06/30/2011</DISS_contact_effdt>
+        <DISS_phone_fax type="P">
+          <DISS_cntry_cd>1</DISS_cntry_cd>
+          <DISS_area_code>555</DISS_area_code>
+          <DISS_phone_num>5555555</DISS_phone_num>
+          <DISS_phone_ext/>
+        </DISS_phone_fax>
+        <DISS_email>blandysmith@example.com</DISS_email>
+      </DISS_contact>
+      <DISS_citizenship>US</DISS_citizenship>
+    </DISS_author>
+  </DISS_authorship>
+  <DISS_description page_count="805" type="doctoral" external_id="http://dissertations.umi.com/unc:test" apply_for_copyright="yes">
+    <DISS_title>Perspective on Attachments and Ingests</DISS_title>
+    <DISS_dates>
+      <DISS_comp_date>2018</DISS_comp_date>
+      <DISS_accept_date>01/01/2018</DISS_accept_date>
+    </DISS_dates>
+    <DISS_degree>Ph.D.</DISS_degree>
+    <DISS_institution>
+      <DISS_inst_code>0153</DISS_inst_code>
+      <DISS_inst_name>University of North Carolina at Chapel Hill Graduate School</DISS_inst_name>
+      <DISS_inst_contact>Philosophy</DISS_inst_contact>
+      <DISS_processing_code>D</DISS_processing_code>
+    </DISS_institution>
+    <DISS_advisor>
+      <DISS_name>
+        <DISS_surname>Advisor</DISS_surname>
+        <DISS_fname>John</DISS_fname>
+        <DISS_middle>T</DISS_middle>
+      </DISS_name>
+    </DISS_advisor>
+    <DISS_categorization>
+      <DISS_category>
+        <DISS_cat_code>0567</DISS_cat_code>
+        <DISS_cat_desc>Philosophy</DISS_cat_desc>
+      </DISS_category>
+      <DISS_keyword>aesthetics, attachments</DISS_keyword>
+      <DISS_language>en</DISS_language>
+    </DISS_categorization>
+  </DISS_description>
+  <DISS_content>
+    <DISS_abstract>
+      <DISS_para>The purpose of this study is to test ingest of a proquest deposit object without any attachments</DISS_para>
+    </DISS_abstract>
+    <DISS_binary type="PDF">noattach_unc_1.pdf</DISS_binary>
+    <DISS_attachment>
+      <DISS_file_name>attached1.pdf</DISS_file_name>
+      <DISS_file_category>text</DISS_file_category>
+      <DISS_file_descr>Attached pdf</DISS_file_descr>
+    </DISS_attachment>
+    <DISS_attachment>
+      <DISS_file_name>attached2.txt</DISS_file_name>
+      <DISS_file_category>text</DISS_file_category>
+      <DISS_file_descr/>
+    </DISS_attachment>
+  </DISS_content>
+  <DISS_restriction/>
+  <DISS_repository>
+    <DISS_version/>
+    <DISS_agreement_decision_date/>
+    <DISS_acceptance/>
+    <DISS_delayed_release/>
+  </DISS_repository>
+</DISS_submission>

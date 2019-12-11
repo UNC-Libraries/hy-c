@@ -36,4 +36,8 @@ module HyraxHelper
     csv = CSV.parse(redirect_uuids, headers: true)
     csv.find { |row| row[column].match(id) }
   end
+
+  def get_work_url(model, id)
+    Rails.application.routes.url_helpers.send(Hyrax::Name.new(model).singular_route_key + "_url", id)
+  end
 end

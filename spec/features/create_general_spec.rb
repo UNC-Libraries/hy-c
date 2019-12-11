@@ -105,7 +105,7 @@ RDFXML
       select 'Honors', from: 'Honors level'
       fill_in 'Bibliographic citation', with: 'a citation'
       fill_in 'Creator', { with: 'Test Default Creator', id: 'general_creators_attributes_0_name' }
-      fill_in 'ORCID', { with: 'creator orcid', id: 'general_creators_attributes_0_orcid' }
+      fill_in 'ORCID', { with: 'http://orcid.org/creator', id: 'general_creators_attributes_0_orcid' }
       select 'Department of Biology', from: 'general_creators_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'general_creators_attributes_0_other_affiliation' }
       fill_in 'Conference name', with: 'a conference'
@@ -217,7 +217,8 @@ RDFXML
       expect(page).to have_content 'Conference name a conference'
       expect(page).to have_content 'Contributor contributor ORCID: contributor orcid'
       expect(page).to have_content 'Copyright date 2018'
-      expect(page).to have_content 'Creator Test Default Creator ORCID: creator orcid'
+      expect(page).to have_content 'Creator Test Default Creator ORCID: http://orcid.org/creator'
+      expect(page.find_link('http://orcid.org/creator')[:target]).to eq('_blank')
       expect(page).to have_content 'Date of publication October 3, 2018'
       expect(page).to have_content 'Date other October 3, 2018'
       expect(page).to have_content 'Degree Bachelor of Science'

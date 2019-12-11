@@ -86,7 +86,7 @@ RDFXML
       select 'Department of Biology', from: 'honors_thesis_advisors_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'honors_thesis_advisors_attributes_0_other_affiliation' }
       fill_in 'Creator', { with: 'Test Default Creator', id: 'honors_thesis_creators_attributes_0_name' }
-      fill_in 'ORCID', { with: 'creator orcid', id: 'honors_thesis_creators_attributes_0_orcid' }
+      fill_in 'ORCID', { with: 'http://orcid.org/creator', id: 'honors_thesis_creators_attributes_0_orcid' }
       select 'Department of Biology', from: 'honors_thesis_creators_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'honors_thesis_creators_attributes_0_other_affiliation' }
       fill_in 'Date of publication', with: '2018-10-03'
@@ -143,7 +143,8 @@ RDFXML
       expect(page).to have_content 'College of Arts and Sciences'
       expect(page).to have_content 'Department of Biology'
       expect(page).to have_content 'Other Affiliation: UNC'
-      expect(page).to have_content 'Creator Test Default Creator ORCID: creator'
+      expect(page).to have_content 'Creator Test Default Creator ORCID: http://orcid.org/creator'
+      expect(page.find_link('http://orcid.org/creator')[:target]).to eq('_blank')
       expect(page).to have_content 'Date of publication October 3, 2018'
       expect(page).to have_content 'Degree Bachelor of Science'
       expect(page).to have_content 'Location Chapel Hill, North Carolina, United States'
@@ -182,7 +183,7 @@ RDFXML
       select 'Department of Biology', from: 'honors_thesis_advisors_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'honors_thesis_advisors_attributes_0_other_affiliation' }
       fill_in 'Creator', { with: 'Test Default Creator', id: 'honors_thesis_creators_attributes_0_name' }
-      fill_in 'ORCID', { with: 'creator orcid', id: 'honors_thesis_creators_attributes_0_orcid' }
+      fill_in 'ORCID', { with: 'http://orcid.org/creator', id: 'honors_thesis_creators_attributes_0_orcid' }
       select 'Department of Biology', from: 'honors_thesis_creators_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'honors_thesis_creators_attributes_0_other_affiliation' }
       fill_in 'Date of publication', with: '2018-10-03'
@@ -242,7 +243,8 @@ RDFXML
       expect(page).to have_content 'Other Affiliation: UNC'
       expect(page).to have_content 'DOI some-doi'
       expect(page).to have_content 'Honors level Honors'
-      expect(page).to have_content 'Creator Test Default Creator ORCID: creator orcid'
+      expect(page).to have_content 'Creator Test Default Creator ORCID: http://orcid.org/creator'
+      expect(page.find_link('http://orcid.org/creator')[:target]).to eq('_blank')
       expect(page).to have_content 'Date of publication October 3, 2018'
       expect(page).to have_content 'Degree Bachelor of Science'
       expect(page).to have_content 'Degree granting institution UNC'

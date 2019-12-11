@@ -1,3 +1,5 @@
+# this rake task is not being moved to a service module
+
 namespace :migrate do
   require 'fileutils'
   require 'tasks/migration/migration_logging'

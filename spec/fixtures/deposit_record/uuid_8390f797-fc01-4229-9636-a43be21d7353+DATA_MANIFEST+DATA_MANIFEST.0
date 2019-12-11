@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<mets ID="sort-mets_mets" OBJID="sword-mets" LABEL="DSpace SWORD Item" PROFILE="DSpace METS SIP Profile 1.0" xmlns="http://www.loc.gov/METS/"
+ xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/mets.xsd">
+
+ <metsHdr CREATEDATE="2013-02-20T00:19:34">
+  <agent ROLE="CUSTODIAN" TYPE="ORGANIZATION">
+   <name>BioMed Central</name>
+  </agent>
+ </metsHdr>
+ <dmdSec ID="sword-mets-dmd-1" GROUPID="sword-mets-dmd-1_group-1">
+  <mdWrap LABEL="SWAP Metadata" MDTYPE="OTHER" OTHERMDTYPE="EPDCX" MIMETYPE="text/xml">
+   <xmlData>
+    <epdcx:descriptionSet xmlns:epdcx="http://purl.org/eprint/epdcx/2006-11-16/" xmlns:MIOJAVI="http://purl.org/eprint/epdcx/2006-11-16/"
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://purl.org/eprint/epdcx/2006-11-16/ http://purl.org/eprint/epdcx/xsd/2006-11-16/epdcx.xsd">
+
+     <epdcx:description epdcx:resourceId="sword-mets-epdcx-1">
+      <epdcx:statement epdcx:propertyURI="http://purl.org/dc/elements/1.1/type" epdcx:valueURI="http://purl.org/eprint/entityType/ScholarlyWork" />
+
+      <epdcx:statement epdcx:propertyURI="http://purl.org/dc/elements/1.1/title">
+       <epdcx:valueString>Lifestyle change in Kerala, India: needs assessment and planning for a community-based diabetes prevention trial</epdcx:valueString>
+      </epdcx:statement>
+
+      <epdcx:statement epdcx:propertyURI="http://purl.org/dc/terms/abstract">
+       <epdcx:valueString>Abstract
+				
+				
+					
+						Background
+					Type 2 Diabetes Mellitus (T2DM) has become a major public health challenge in India. Factors relevant to the development and implementation of diabetes prevention programmes in resource-constrained countries, such as India, have been under-studied. The purpose of this study is to describe the findings from research aimed at informing the development and evaluation of a Diabetes Prevention Programme in Kerala, India (K-DPP).
+				
+				
+					
+						Methods
+					Data were collected from three main sources: (1) a systematic review of key research literature; (2) a review of relevant policy documents; and (3) focus groups conducted among individuals with a high risk of progressing to diabetes. The key findings were then triangulated and synthesised.
+				
+				
+					
+						Results
+					Prevalence of risk factors for diabetes is very high and increasing in Kerala. This situation is largely attributable to rapid changes in the lifestyle of people living in this state of India. The findings from the systematic review and focus groups identified many environmental and personal determinants of these unhealthy lifestyle changes, including: less than ideal accessibility to and availability of health services; cultural values and norms; optimistic bias and other misconceptions related to risk; and low expectations regarding one&amp;#8217;s ability to make lifestyle changes in order to influence health and disease outcomes. On the other hand, there are existing intervention trials conducted in India which suggests that risk reduction is possible. These programmes utilize multi-level strategies including mass media, as well as strategies to enhance community and individual empowerment. India&amp;#8217;s national programme for the prevention and control of major non-communicable diseases (NCD) also provide a supportive environment for further community-based efforts to prevent diabetes.
+				
+				
+					
+						Conclusion
+					These findings provide strong support for undertaking more research into the conduct of community-based diabetes prevention in the rural areas of Kerala. We aim to develop, implement and evaluate a group-based peer support programme that will address cultural and family determinants of lifestyle risks, including family decision-making regarding adoption of healthy dietary and physical activity patterns. Furthermore, we believe that this approach will be feasible, acceptable and effective in these communities; with the potential for scale-up in other parts of India.</epdcx:valueString>
+      </epdcx:statement>
+
+            <epdcx:statement epdcx:propertyURI="http://purl.org/dc/elements/1.1/creator">
+     <epdcx:valueString>Daivadanam, Meena</epdcx:valueString>
+    </epdcx:statement>
+                <epdcx:statement epdcx:propertyURI="http://purl.org/dc/elements/1.1/creator">
+     <epdcx:valueString>Absetz, Pilvikki</epdcx:valueString>
+    </epdcx:statement>
+                <epdcx:statement epdcx:propertyURI="http://purl.org/dc/elements/1.1/creator">
+     <epdcx:valueString>Sathish, Thirunavukkarasu</epdcx:valueString>
+    </epdcx:statement>
+                <epdcx:statement epdcx:propertyURI="http://purl.org/dc/elements/1.1/creator">
+     <epdcx:valueString>Thankappan, K R</epdcx:valueString>
+    </epdcx:statement>
+                <epdcx:statement epdcx:propertyURI="http://purl.org/dc/elements/1.1/creator">
+     <epdcx:valueString>Fisher, Edwin B</epdcx:valueString>
+    </epdcx:statement>
+                <epdcx:statement epdcx:propertyURI="http://purl.org/dc/elements/1.1/creator">
+     <epdcx:valueString>Philip, Neena Elezebeth</epdcx:valueString>
+    </epdcx:statement>
+                <epdcx:statement epdcx:propertyURI="http://purl.org/dc/elements/1.1/creator">
+     <epdcx:valueString>Mathews, Elezebeth</epdcx:valueString>
+    </epdcx:statement>
+                <epdcx:statement epdcx:propertyURI="http://purl.org/dc/elements/1.1/creator">
+     <epdcx:valueString>Oldenburg, Brian</epdcx:valueString>
+    </epdcx:statement>
+        
+      <epdcx:statement epdcx:propertyURI="http://purl.org/eprint/terms/isExpressedAs" epdcx:valueRef="sword-mets-expr-1" />
+     </epdcx:description>
+
+     <epdcx:description epdcx:resourceId="sword-mets-expr-1">
+      <epdcx:statement epdcx:propertyURI="http://purl.org/dc/elements/1.1/type" epdcx:valueURI="http://purl.org/eprint/entityType/Expression" />
+
+      <epdcx:statement epdcx:propertyURI="http://purl.org/dc/elements/1.1/language" epdcx:vesURI="http://purl.org/dc/terms/RFC3066">
+       <epdcx:valueString>en</epdcx:valueString>
+      </epdcx:statement>
+
+      <epdcx:statement epdcx:propertyURI="http://purl.org/dc/elements/1.1/type" epdcx:vesURI="http://purl.org/eprint/terms/Type"
+       epdcx:valueURI="http://purl.org/eprint/type/JournalArticle" />
+
+      <epdcx:statement epdcx:propertyURI="http://purl.org/dc/terms/available">
+       <epdcx:valueString epdcx:sesURI="http://purl.org/dc/terms/W3CDTF">2013-02-01</epdcx:valueString>
+      </epdcx:statement>
+
+      <epdcx:statement epdcx:propertyURI="http://purl.org/dc/elements/1.1/publisher">
+       <epdcx:valueString>BioMed Central Ltd</epdcx:valueString>
+      </epdcx:statement>
+
+            <epdcx:statement epdcx:propertyURI="http://purl.org/eprint/terms/status" epdcx:vesURI="http://purl.org/eprint/terms/Status"
+       epdcx:valueURI="http://purl.org/eprint/status/PeerReviewed" />
+      
+      <epdcx:statement epdcx:propertyURI="http://purl.org/eprint/terms/copyrightHolder">
+       <epdcx:valueString>Meena Daivadanam et al.; licensee BioMed Central Ltd.</epdcx:valueString>
+      </epdcx:statement>
+
+          <epdcx:statement epdcx:propertyURI="http://purl.org/dc/terms/license">
+       <epdcx:valueString>http://creativecommons.org/licenses/by/2.0</epdcx:valueString>
+      </epdcx:statement>
+    
+            <epdcx:statement epdcx:propertyURI="http://purl.org/dc/terms/accessRights/" epdcx:vesURI="http://purl.org/eprint/terms/AccessRights"
+       epdcx:valueURI="http://purl.org/eprint/accessRights/OpenAccess" />
+      
+            <epdcx:statement epdcx:propertyURI="http://purl.org/eprint/terms/bibliographicCitation">
+        <epdcx:valueString>BMC Public Health. 2013 Feb 01;13(1):95</epdcx:valueString>
+      </epdcx:statement>
+
+      <epdcx:statement epdcx:propertyURI="http://purl.org/dc/elements/1.1/identifier">
+                <epdcx:valueString epdcx:sesURI="http://purl.org/dc/terms/URI">http://dx.doi.org/10.1186/1471-2458-13-95</epdcx:valueString>
+            </epdcx:statement>
+      
+     </epdcx:description>
+    </epdcx:descriptionSet>
+   </xmlData>
+  </mdWrap>
+ </dmdSec>
+
+ <fileSec>
+  <fileGrp ID="sword-mets-fgrp-1" USE="CONTENT">
+   <file GROUPID="sword-mets-fgid-0" ID="sword-mets-file-1" MIMETYPE="text/xml">
+    <FLocat LOCTYPE="URL" xlink:href="1471-2458-13-95.xml" />
+   </file>
+   <file GROUPID="sword-mets-fgid-1" ID="sword-mets-file-2" MIMETYPE="application/pdf">
+    <FLocat LOCTYPE="URL" xlink:href="1471-2458-13-95.pdf" />
+   </file>
+   <file GROUPID="sword-mets-fgid-3" ID="sword-mets-file-3" MIMETYPE="application/pdf">
+    <FLocat LOCTYPE="URL" xlink:href="1471-2458-13-95-S1.PDF" />
+   </file>
+   <file GROUPID="sword-mets-fgid-4" ID="sword-mets-file-4" MIMETYPE="application/pdf">
+    <FLocat LOCTYPE="URL" xlink:href="1471-2458-13-95-S2.PDF" />
+   </file>
+
+  </fileGrp>
+ </fileSec>
+
+ <structMap ID="sword-mets-struct-1" LABEL="structure" TYPE="LOGICAL">
+  <div ID="sword-mets-div-1" DMDID="sword-mets-dmd-1" TYPE="SWORD Object">
+         <div ID="sword-mets-div-2" TYPE="File">
+    <fptr FILEID="sword-mets-file-1" />
+   </div>
+      <div ID="sword-mets-div-3" TYPE="File">
+    <fptr FILEID="sword-mets-file-2" />
+   </div>
+      <div ID="sword-mets-div-4" TYPE="File">
+    <fptr FILEID="sword-mets-file-3" />
+   </div>
+      <div ID="sword-mets-div-5" TYPE="File">
+    <fptr FILEID="sword-mets-file-4" />
+   </div>
+     </div>
+ </structMap>
+</mets>

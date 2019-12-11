@@ -60,7 +60,7 @@ RSpec.feature 'Create an Artwork', js: false do
       # required fields
       fill_in 'Title', with: 'Test Artwork work'
       fill_in 'Creator', { with: 'Test Default Creator', id: 'artwork_creators_attributes_0_name' }
-      fill_in 'ORCID', { with: 'creator orcid', id: 'artwork_creators_attributes_0_orcid' }
+      fill_in 'ORCID', { with: 'http://orcid.org/creator', id: 'artwork_creators_attributes_0_orcid' }
       select 'Department of Biology', from: 'artwork_creators_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'artwork_creators_attributes_0_other_affiliation' }
       fill_in 'Date of publication', with: '2018-10-03'
@@ -102,7 +102,8 @@ RSpec.feature 'Create an Artwork', js: false do
 
       first('.document-title', text: 'Test Artwork work').click
       expect(page).to have_content 'Date of publication October 3, 2018'
-      expect(page).to have_content 'Creator Test Default Creator ORCID: creator orcid'
+      expect(page).to have_content 'Creator Test Default Creator ORCID: http://orcid.org/creator'
+      expect(page.find_link('http://orcid.org/creator')[:target]).to eq('_blank')
       expect(page).to have_content 'Affiliation:'
       expect(page).to have_content 'College of Arts and Sciences'
       expect(page).to have_content 'Department of Biology'
@@ -145,7 +146,7 @@ RSpec.feature 'Create an Artwork', js: false do
       select 'Attribution 3.0 United States', :from => 'artwork_license'
       select 'In Copyright', :from => 'artwork_rights_statement'
       fill_in 'Creator', { with: 'Test Default Creator', id: 'artwork_creators_attributes_0_name' }
-      fill_in 'ORCID', { with: 'creator orcid', id: 'artwork_creators_attributes_0_orcid' }
+      fill_in 'ORCID', { with: 'http://orcid.org/creator', id: 'artwork_creators_attributes_0_orcid' }
       select 'Department of Biology', from: 'artwork_creators_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'artwork_creators_attributes_0_other_affiliation' }
 
@@ -176,7 +177,8 @@ RSpec.feature 'Create an Artwork', js: false do
       expect(page).to have_content 'Test Artwork work'
 
       first('.document-title', text: 'Test Artwork work').click
-      expect(page).to have_content 'Creator Test Default Creator ORCID: creator orcid'
+      expect(page).to have_content 'Creator Test Default Creator ORCID: http://orcid.org/creator'
+      expect(page.find_link('http://orcid.org/creator')[:target]).to eq('_blank')
       expect(page).to have_content 'Affiliation:'
       expect(page).to have_content 'College of Arts and Sciences'
       expect(page).to have_content 'Department of Biology'

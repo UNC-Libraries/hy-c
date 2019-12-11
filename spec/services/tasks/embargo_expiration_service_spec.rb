@@ -1,7 +1,7 @@
 require 'rails_helper'
 include Warden::Test::Helpers
 
-describe EmbargoExpirationService, :clean do
+describe Tasks::EmbargoExpirationService, :clean do
   context "rake task" do
     let(:expiration_service_instance) { instance_double(described_class) }
     it "sets the default date to today if no value is passed" do
