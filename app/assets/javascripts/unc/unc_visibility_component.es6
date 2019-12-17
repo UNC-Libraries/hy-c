@@ -89,11 +89,11 @@ export default class UncVisibilityComponent extends VisibilityComponent {
                 this.openSelected();
             }
 
-            allowed_fields.parent().removeClass('highlight-disabled')
+            allowed_fields.parent().removeClass('hide')
         }
         let disallowed_fields = this.element.find(matchDisabled);
         disallowed_fields.prop("disabled", true);
-        disallowed_fields.parent().addClass('highlight-disabled');
+        disallowed_fields.parent().addClass('hide');
     }
 
     // Disable one or more visibility option (based on array of passed in options),
@@ -108,11 +108,11 @@ export default class UncVisibilityComponent extends VisibilityComponent {
         if(matchDisabled) {
             let disabledField = this.element.find(matchDisabled);
             disabledField.prop("disabled", true);
-            disabledField.parent().addClass('highlight-disabled');
+            disabledField.parent().addClass('hide');
         }
         let enabledField = this.element.find(matchEnabled);
         enabledField.prop("disabled", false);
-        enabledField.parent().removeClass('highlight-disabled');
+        enabledField.parent().removeClass('hide');
 
         if (this.isNewFile()) {
             enabledField.first().prop('checked', true);
@@ -137,13 +137,13 @@ export default class UncVisibilityComponent extends VisibilityComponent {
         let allowed_parent = allowed_fields.parent();
 
         allowed_fields.prop("disabled", false);
-        allowed_parent.removeClass('highlight-disabled');
+        allowed_parent.removeClass('hide');
 
         let disallowed_fields = this.element.find("[type='radio'][value!='" + visibility + "']");
         let disallowed_parent = disallowed_fields.parent();
 
         disallowed_fields.prop("disabled", true);
-        disallowed_parent.addClass('highlight-disabled');
+        disallowed_parent.addClass('hide');
 
         // Ensure required option is opened in form
         this.showForm()
