@@ -102,12 +102,45 @@ $(function() {
         });
     }
 
+    // based_near is the only controlled field we use
+    // If we add more this function will need to be revised
+    function showRemoveOption() {
+        var base_selector = 'div.controlled_vocabulary';
+        var based_near_remove = $(base_selector +' span.field-controls');
+
+        // Hide on new record page load
+        based_near_remove.each(function() {
+            var self = $(this);
+            if (!self.parent().children().first().hasClass('select2-container-disabled')) {
+                self.addClass('hide');
+            }
+        });
+
+        // Show/hide otherwise
+        $(base_selector).on('click', function () {
+            // Get new set of fields since there have been additions/deletions
+            var controlled_fields = $(base_selector + ' span.field-controls');
+
+            if ($(base_selector + ' .listing li.input-append').filter(':visible').length > 1) {
+                controlled_fields.addClass('hide');
+            }
+
+            $(base_selector + ' .listing li.input-append input').each(function() {
+                var self = $(this);
+                if (self.prop('readonly')) {
+                    self.parent().children().removeClass('hide');
+                }
+            });
+        });
+    }
+
     visibleForms();
    // browseEverythingUploads();
     uploadProgress();
     hideNonRequiredFieldsBtn();
     hideNonRequiredFormFields();
     removeCloning();
+    showRemoveOption();
 
     // Make sure that form visibility and datepicker work with turbolinks
     $(document).on('turbolinks:load', function() {
@@ -118,6 +151,7 @@ $(function() {
         hideNonRequiredFormFields();
         removeCloning();
         toggleCollectionPageDescription();
+        showRemoveOption();
 
         // Turns advanced search multi-select boxes into typeaheads
         $(".advanced-search-facet-select").chosen({ placeholder_text: 'Select option(s)'});
