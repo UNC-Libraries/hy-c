@@ -3,8 +3,24 @@ require 'rails_helper'
 RSpec.describe Tasks::ProquestIngestService do
   let(:args) { {configuration_file: 'spec/fixtures/proquest/proquest_config.yml'} }
 
+  let(:admin_set) do
+    AdminSet.create(title: ['proquest admin set'],
+                    description: ['some description'])
+  end
+
+  let(:permission_template) do
+    Hyrax::PermissionTemplate.create!(source_id: admin_set.id)
+  end
+
+  let(:workflow) do
+    Sipity::Workflow.create(name: 'test', allows_access_grant: true, active: true,
+                            permission_template_id: permission_template.id)
+  end
+
   before do
     allow(Date).to receive(:today).and_return(Date.parse('2019-09-12'))
+    AdminSet.delete_all
+    Sipity::WorkflowState.create(workflow_id: workflow.id, name: "deposited")
   end
 
   after do
@@ -16,9 +32,9 @@ RSpec.describe Tasks::ProquestIngestService do
       service = Tasks::ProquestIngestService.new(args)
 
       expect(service.temp).to eq 'spec/fixtures/proquest/tmp'
-      expect(service.admin_set_id).to eq AdminSet.where(title: 'default').first.id
+      expect(service.admin_set_id).to eq AdminSet.where(title: 'proquest admin set').first.id
       expect(service.depositor_onyen).to eq 'admin'
-      expect(service.deposit_record_hash).to include({ title: 'Deposit by ProQuest Depositor via CDR COllector 1.0',
+      expect(service.deposit_record_hash).to include({ title: 'Deposit by ProQuest Depositor via CDR Collector 1.0',
                                                        deposit_method: 'CDR Collector 1.0',
                                                        deposit_package_type: 'http://proquest.com',
                                                        deposit_package_subtype: nil,
@@ -33,7 +49,7 @@ RSpec.describe Tasks::ProquestIngestService do
     end
 
     it 'ingests proquest records' do
-      allow(Date).to receive(:today).and_return(Date.parse('2019-09-12'))
+      puts Sipity::Workflow.first.inspect
 
       expect{Tasks::ProquestIngestService.new(args).migrate_proquest_packages}.to change{ Dissertation.count }.by(1).and change{ DepositRecord.count }.by(1)
 
@@ -106,7 +122,7 @@ RSpec.describe Tasks::ProquestIngestService do
                                        'embargo_release_date'=>'2021-09-12',
                                        'visibility_during_embargo'=>'restricted',
                                        'visibility_after_embargo'=>'open',
-                                       'admin_set_id'=>AdminSet.where(title: 'default').first.id})
+                                       'admin_set_id'=>AdminSet.where(title: 'proquest admin set').first.id})
         expect(files).to match_array ['noattach_unc_1.pdf', 'attached1.pdf', 'attached2.txt']
       end
     end
@@ -137,7 +153,7 @@ RSpec.describe Tasks::ProquestIngestService do
                                        'embargo_release_date'=>'2020-09-12',
                                        'visibility_during_embargo'=>'restricted',
                                        'visibility_after_embargo'=>'open',
-                                       'admin_set_id'=>AdminSet.where(title: 'default').first.id})
+                                       'admin_set_id'=>AdminSet.where(title: 'proquest admin set').first.id})
         expect(files).to match_array ['noattach_unc_1.pdf', 'attached1.pdf', 'attached2.txt']
       end
     end
@@ -168,7 +184,7 @@ RSpec.describe Tasks::ProquestIngestService do
                                        'embargo_release_date'=>'2019-12-31',
                                        'visibility_during_embargo'=>'restricted',
                                        'visibility_after_embargo'=>'open',
-                                       'admin_set_id'=>AdminSet.where(title: 'default').first.id})
+                                       'admin_set_id'=>AdminSet.where(title: 'proquest admin set').first.id})
         expect(files).to match_array ['noattach_unc_1.pdf', 'attached1.pdf', 'attached2.txt']
       end
     end
@@ -199,7 +215,7 @@ RSpec.describe Tasks::ProquestIngestService do
                                        'embargo_release_date'=>'2021-09-12',
                                        'visibility_during_embargo'=>'restricted',
                                        'visibility_after_embargo'=>'open',
-                                       'admin_set_id'=>AdminSet.where(title: 'default').first.id})
+                                       'admin_set_id'=>AdminSet.where(title: 'proquest admin set').first.id})
         expect(files).to match_array ['noattach_unc_1.pdf', 'attached1.pdf', 'attached2.txt']
       end
     end
@@ -229,7 +245,7 @@ RSpec.describe Tasks::ProquestIngestService do
                                        'visibility'=>'open',
                                        'visibility_during_embargo'=>'restricted',
                                        'visibility_after_embargo'=>'open',
-                                       'admin_set_id'=>AdminSet.where(title: 'default').first.id})
+                                       'admin_set_id'=>AdminSet.where(title: 'proquest admin set').first.id})
         expect(attributes['embargo_release_date']).to be_nil
         expect(files).to match_array ['noattach_unc_1.pdf', 'attached1.pdf', 'attached2.txt']
       end
@@ -261,7 +277,7 @@ RSpec.describe Tasks::ProquestIngestService do
                                        'embargo_release_date'=>'2020-12-31',
                                        'visibility_during_embargo'=>'restricted',
                                        'visibility_after_embargo'=>'open',
-                                       'admin_set_id'=>AdminSet.where(title: 'default').first.id})
+                                       'admin_set_id'=>AdminSet.where(title: 'proquest admin set').first.id})
         expect(files).to match_array ['noattach_unc_1.pdf', 'attached1.pdf', 'attached2.txt']
       end
     end
@@ -292,7 +308,7 @@ RSpec.describe Tasks::ProquestIngestService do
                                        'embargo_release_date'=>'2019-12-31',
                                        'visibility_during_embargo'=>'restricted',
                                        'visibility_after_embargo'=>'open',
-                                       'admin_set_id'=>AdminSet.where(title: 'default').first.id})
+                                       'admin_set_id'=>AdminSet.where(title: 'proquest admin set').first.id})
         expect(files).to match_array ['noattach_unc_1.pdf', 'attached1.pdf', 'attached2.txt']
       end
     end
