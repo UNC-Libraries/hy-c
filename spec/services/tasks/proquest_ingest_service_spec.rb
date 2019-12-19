@@ -49,8 +49,6 @@ RSpec.describe Tasks::ProquestIngestService do
     end
 
     it 'ingests proquest records' do
-      puts Sipity::Workflow.first.inspect
-
       expect{Tasks::ProquestIngestService.new(args).migrate_proquest_packages}.to change{ Dissertation.count }.by(1).and change{ DepositRecord.count }.by(1)
 
       # check embargo information
@@ -72,8 +70,6 @@ RSpec.describe Tasks::ProquestIngestService do
       expect(dissertation['graduation_year']).to eq '2019'
       expect(dissertation.visibility).to eq 'restricted'
       expect(dissertation.embargo_release_date).to eq (Date.today.to_datetime + 2.years)
-
-
     end
   end
 
