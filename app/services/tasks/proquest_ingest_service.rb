@@ -98,6 +98,14 @@ module Tasks
           group_permissions = MigrationHelper.get_permissions_attributes(@admin_set_id)
           resource.update permissions_attributes: group_permissions
 
+          # Create sipity record
+          workflow = Sipity::Workflow.joins(:permission_template)
+                         .where(permission_templates: { source_id: resource.admin_set_id }, active: true)
+          workflow_state = Sipity::WorkflowState.where(workflow_id: workflow.first.id, name: 'deposited')
+          Sipity::Entity.create!(proxy_for_global_id: resource.to_global_id.to_s,
+                                 workflow: workflow.first,
+                                 workflow_state: workflow_state.first)
+
           # get list of all files in unzipped proquest package
           unzipped_file_list = Dir.glob("#{unzipped_package_dir}/**/*.*")
 

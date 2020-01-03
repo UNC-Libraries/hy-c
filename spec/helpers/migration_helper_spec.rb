@@ -48,7 +48,7 @@ RSpec.describe MigrationHelper do
     context 'for a failing example' do
       it 'allows method to be retried' do
         retry_result = begin
-          described_class.retry_operation('failed') { described_class.get_language_uri('eng') }
+          described_class.retry_operation('failed') { some_undefined_method_that_will_fail }
         rescue RuntimeError => e
           e.message
         end
