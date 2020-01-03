@@ -25,7 +25,6 @@ RDFXML
                                             countryName: 'United States',
                                             adminName1: 'North Carolina' }.to_json,
                        headers: { 'Content-Type' => 'application/json' })
-      # allow(service).to receive(:rdf_service).and_return(Hyrax::DeepIndexingService)
       work.based_near_attributes = [{ id: 'http://sws.geonames.org/4460162/' }]
       stub_request(:get, 'http://sws.geonames.org/4460162/')
           .to_return(status: 200, body: chapel_hill,
