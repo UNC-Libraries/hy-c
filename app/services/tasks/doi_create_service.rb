@@ -78,7 +78,7 @@ module Tasks
       rescue Net::ReadTimeout, Net::OpenTimeout => e
         if retries > 0
           retries -= 1
-          puts "Timed out while attempting to create DOI using #{@doi_creation_url}, retrying with #{retries} retries remaining."
+          puts "#{get_time} Timed out while attempting to create DOI using #{@doi_creation_url}, retrying with #{retries} retries remaining."
           sleep(30)
           return doi_request(data, retries)
         else
@@ -177,7 +177,7 @@ module Tasks
     end
 
     def create_doi(record)
-      puts "Creating DOI for #{record['id']}"
+      puts "#{get_time} Creating DOI for #{record['id']}"
       work = ActiveFedora::Base.find(record['id'])
       record_data = format_data(work)
       response = doi_request(record_data)
@@ -187,9 +187,9 @@ module Tasks
         full_doi = "#{@doi_url_base}/#{doi}"
         work.update!(doi: full_doi)
 
-        puts "DOI created for record #{record['id']}: #{full_doi}"
+        puts "#{get_time} DOI created for record #{record['id']}: #{full_doi}"
       else
-        puts "ERROR: Unable to create DOI for record #{record['id']}. Reason: \"#{response}\""
+        puts "#{get_time} ERROR: Unable to create DOI for record #{record['id']}. Reason: \"#{response}\""
       end
 
       sleep(2)
@@ -204,24 +204,28 @@ module Tasks
                                                 :fl => "id")["response"]["docs"]
 
         if records.length > 0
-          puts "Preparing to add DOIs to #{records.length} records"
+          puts "#{get_time} Preparing to add DOIs to #{records.length} records"
           records.each do |record|
             create_doi(record)
           end
-          puts "Added #{records.length} DOIs in #{Time.now - start_time}s"
+          puts "#{get_time} Added #{records.length} DOIs in #{Time.now - start_time}s"
           return records.length
         else
-          puts 'There are no records that need to have DOIs added.'
+          puts "#{get_time} There are no records that need to have DOIs added."
           return 0
         end
       rescue => e
-        puts "There was an error creating dois: #{e.message}"
+        puts "#{get_time} There was an error creating dois: #{e.message}"
         return -1
       end
     end
 
 
     private
+
+      def get_time
+        Time.new.to_s
+      end
 
       def get_values(record_field, process_method)
         values = []
@@ -257,7 +261,7 @@ module Tasks
           datacite_type = RESOURCE_TYPE_TO_DATACITE[resource_type]
         end
         if datacite_type.nil?
-          puts "WARNING: Unable to determine resourceTypeGeneral for record"
+          puts "#{get_time} WARNING: Unable to determine resourceTypeGeneral for record"
         end
         # Storing the datacite type. If it is nil or invalid, datacite will reject the creation
         result[:resourceTypeGeneral] = datacite_type
