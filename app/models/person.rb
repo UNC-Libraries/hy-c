@@ -1,5 +1,6 @@
 class Person < ActiveTriples::Resource
 
+  property :index, predicate: ::RDF::Vocab::DC.identifier
   property :name, predicate: ::RDF::Vocab::MODS.name
   property :orcid, predicate: ::RDF::Vocab::Identifiers.orcid
   property :affiliation, predicate: ::RDF::Vocab::SCHEMA.affiliation

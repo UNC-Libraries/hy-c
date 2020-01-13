@@ -18,8 +18,15 @@
 <% content_for(:gscholar_meta) do %>
   <meta name="citation_title" content="<%= Array.wrap(@presenter.title).first %>" />
   <% if !@presenter.creator_display.blank? %>
-    <% Array.wrap(@presenter.creator_display).each do |creator| %>
-      <meta name="citation_author" content="<%= creator.split('||').first %>" />
+    <%# conditional can be removed once all people objects have indexes %>
+    <% if @presenter.creator_display.first.match('index:') %>
+      <% Array.wrap(@presenter.creator_display.sort_by{|creator| creator.split('||').first.split(':').last}).each do |creator| %>
+        <meta name="citation_author" content="<%= creator.split('||').second %>" />
+      <% end %>
+    <% else %>
+      <% Array.wrap(@presenter.creator_display).each do |creator| %>
+        <meta name="citation_author" content="<%= creator.split('||').first %>" />
+      <% end %>
     <% end %>
   <% end %>
   <meta name="citation_publication_date" content="<%= Array.wrap(@presenter.date_issued).first %>" />
