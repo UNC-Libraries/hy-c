@@ -55,10 +55,10 @@ module Hyrax
 
     def self.build_permitted_params
       permitted = super
-      permitted << { advisors_attributes: [:id, :name, :affiliation, :orcid, :other_affiliation, :_destroy] }
-      permitted << { contributors_attributes: [:id, :name, :affiliation, :orcid, :other_affiliation, :_destroy] }
-      permitted << { creators_attributes: [:id, :name, :affiliation, :orcid, :other_affiliation, :_destroy] }
-      permitted << { reviewers_attributes: [:id, :name, :affiliation, :orcid, :other_affiliation, :_destroy] }
+      permitted << { advisors_attributes: [:id, :index, :name, :affiliation, :orcid, :other_affiliation, :_destroy] }
+      permitted << { contributors_attributes: [:id, :index, :name, :affiliation, :orcid, :other_affiliation, :_destroy] }
+      permitted << { creators_attributes: [:id, :index, :name, :affiliation, :orcid, :other_affiliation, :_destroy] }
+      permitted << { reviewers_attributes: [:id, :index, :name, :affiliation, :orcid, :other_affiliation, :_destroy] }
       permitted
     end
   end
