@@ -81,7 +81,7 @@ class SingleValueForm < Hyrax::Forms::WorkForm
       if person_key.to_s.match('_attributes')
         person_value.each do |k,v|
           if v['index'].blank?
-            v['index'] = k
+            v['index'] = k.to_i + 1
           end
           if !v['affiliation'].blank?
             v['affiliation'] = v['affiliation']
