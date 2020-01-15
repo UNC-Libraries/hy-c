@@ -24,12 +24,19 @@
   <% end %>
   <meta name="citation_publication_date" content="<%= Array.wrap(@presenter.date_issued).first %>" />
   <meta name="citation_pdf_url" content="<%= @presenter.download_url %>" />
-  <!-- Hyrax does not yet support these metadata -->
-  <!--
-    <meta name="citation_journal_title" content=""/>
-    <meta name="citation_volume" content=""/>
-    <meta name="citation_issue" content=""/>
-    <meta name="citation_firstpage" content=""/>
-    <meta name="citation_lastpage" content=""/>
-  -->
+  <% if @presenter.respond_to?(:journal_title) %>
+  <meta name="citation_journal_title" content="<%= Array.wrap(@presenter.journal_title).first %>"/>
+  <% end %>
+  <% if @presenter.respond_to?(:journal_volume) %>
+  <meta name="citation_volume" content="<%= Array.wrap(@presenter.journal_volume).first %>"/>
+  <% end %>
+  <% if @presenter.respond_to?(:journal_issue) %>
+  <meta name="citation_issue" content="<%= Array.wrap(@presenter.journal_issue).first %>"/>
+  <% end %>
+  <% if @presenter.respond_to?(:page_start) %>
+  <meta name="citation_firstpage" content="<%= Array.wrap(@presenter.page_start).first %>"/>
+  <% end %>
+  <% if @presenter.respond_to?(:page_end) %>
+  <meta name="citation_lastpage" content="<%= Array.wrap(@presenter.page_end).first %>"/>
+  <% end %>
 <% end %>
