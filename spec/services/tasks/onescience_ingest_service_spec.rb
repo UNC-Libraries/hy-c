@@ -75,7 +75,6 @@ RSpec.describe Tasks::OnescienceIngestService do
       expect(new_article['title']).to match_array ['A Multi-Institutional Longitudinal Faculty Development Program in Humanism Supports the Professional Development of Faculty Teachers:']
       expect(new_article['label']).to eq 'A Multi-Institutional Longitudinal Faculty Development Program in Humanism Supports the Professional Development of Faculty Teachers:'
       expect(new_article['date_issued']).to eq '2017'
-      creators = new_article['creators'].map{|creator| creator['name'].inspect }.flatten
       expect(["Osterberg, Lars G.", "Frankel, Richard M.", "Branch, William T.", "Gilligan, MaryAnn C.",
               "Plews-Ogan, Margaret", "Dunne, Dana", "Hafler, Janet P.", "Litzelman, Debra K.", "Rider, Elizabeth A.",
               "Weil, Amy B.", "Derse, Arthur R.", "May, Natalie B."]).to include (new_article['creators'][0]['name'].first)
@@ -116,7 +115,7 @@ RSpec.describe Tasks::OnescienceIngestService do
                                        "page_start"=>"",
                                        "page_end"=>"",
                                        "abstract"=>nil,
-                                       "creators_attributes"=>{0=>{"name"=>"Smith, John", "orcid"=>nil, "affiliation"=>nil}},
+                                       "creators_attributes"=>{0=>{"name"=>"Smith, John", "orcid"=>nil, "affiliation"=>nil, "index" => 1}},
                                        "resource_type"=>"Article",
                                        "language"=>"http://id.loc.gov/vocabulary/iso639-2/eng",
                                        "language_label"=>"English",

@@ -288,7 +288,8 @@ module Tasks
         affiliations = affiliation_data['affiliation_author'+index.to_s]
         people[index-1] = { 'name' => name,
                             'orcid' => affiliation_data['ORCID_author'+index.to_s],
-                            'affiliation' => (affiliations.split('||') if !affiliations.blank?)}
+                            'affiliation' => (affiliations.split('||') if !affiliations.blank?),
+                            'index' => index}
       end
 
       people
