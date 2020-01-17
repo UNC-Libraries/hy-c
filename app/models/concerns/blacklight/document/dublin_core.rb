@@ -4,6 +4,8 @@ require 'builder'
 
 # This module provide Dublin Core export based on the document's semantic values
 module Blacklight::Document::DublinCore
+  include HycHelper
+
   def self.extended(document)
     # Register our exportable formats
     Blacklight::Document::DublinCore.register_export_formats(document)
@@ -30,7 +32,15 @@ module Blacklight::Document::DublinCore
              'xsi:schemaLocation' => %(http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd)) do
       to_semantic_values.select { |field, _values| dublin_core_field_name? field  }.each do |field, values|
         source = []
-        Array.wrap(values).each do |v|
+        # sort people by index value
+        array_of_values = []
+        if Array.wrap(values).first.match('index:')
+          array_of_values = sort_people_by_index(values)
+          array_of_values.map!{|value| value.gsub(/\Aindex:\d+\|\|/, '')}
+        else
+          array_of_values = Array.wrap(values)
+        end
+        array_of_values.each do |v|
           if field.to_s == 'creator'
             xml.tag! "dc:#{field}", v.to_s.split('||').first
             affiliation = v.to_s.split('||Affiliation: ')[1]
