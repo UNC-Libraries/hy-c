@@ -73,11 +73,12 @@
           </div>
 
           <div class="col-sm-12 <%= person_term %>-affiliation">
+            <% is_required = (person_term == 'advisor' && f.object_name == 'honors_thesis') ? false : f.object.required?(:affiliation) %>
             <%= person.input :affiliation, as: :select,
                              label: "UNC affiliation (#{person_term_display})",
                              collection: DepartmentsService.select_all_options.sort,
                              include_blank: true,
-                             required: f.object.required?(:affiliation),
+                             required: is_required,
                              selected: '',
                              item_helper: DepartmentsService.method(:include_current_value),
                              input_html: { class: 'form-control' }
