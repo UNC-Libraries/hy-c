@@ -20,7 +20,7 @@
   <% if !@presenter.creator_display.blank? %>
     <%# conditional can be removed once all people objects have indexes %>
     <% if @presenter.creator_display.first.match('index:') %>
-      <% Array.wrap(@presenter.creator_display.sort_by{|creator| creator.split('||').first.split(':').last}).each do |creator| %>
+      <% sort_people_by_index(@presenter.creator_display).each do |creator| %>
         <meta name="citation_author" content="<%= creator.split('||').second %>" />
       <% end %>
     <% else %>

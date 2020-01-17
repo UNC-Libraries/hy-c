@@ -4,7 +4,7 @@ class FileDownloadStat < Hyrax::Statistic
   self.event_type = :totalEvents
 
   class << self
-    include HyraxHelper
+    include HycHelper
     # Hyrax::Download is sent to Hyrax::Analytics.profile as #hyrax__download
     # see Legato::ProfileMethods.method_name_from_klass
     def ga_statistics(start_date, file)

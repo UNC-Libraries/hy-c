@@ -3,6 +3,8 @@ module Hyrax
   module CitationsBehaviors
     module NameBehavior
       include Hyrax::CitationsBehaviors::CommonBehavior
+      include HycHelper
+
       # return all unique authors with end punctuation removed
       def author_list(work)
         all_authors(work) { |author| clean_end_punctuation(CGI.escapeHTML(author)) }
@@ -14,7 +16,7 @@ module Hyrax
           author_vals = []
         else
           if work.creator_display.first.match('index:')
-            author_vals = work.creator_display.sort_by {|creator| creator.split('||').first.split(':').last}.map {|d| d.split('||').second.titleize}
+            author_vals = sort_people_by_index(work.creator_display).map {|d| d.split('||').second.titleize}
           else
             author_vals = work.creator_display.map { |d| d.split('|').first.titleize }
           end

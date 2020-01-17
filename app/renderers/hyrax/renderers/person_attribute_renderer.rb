@@ -1,6 +1,8 @@
 module Hyrax
   module Renderers
     class PersonAttributeRenderer < AttributeRenderer
+      include HycHelper
+
       def render_dl_row
         markup = ''
 
@@ -9,7 +11,7 @@ module Hyrax
         attributes = microdata_object_attributes(field).merge(class: "attribute attribute-#{field}")
         # conditional can be removed once all people objects have indexes
         if values.first.match('index:')
-          Array(values.sort_by{|person| person.split('||').first.split(':').last}).each do |value|
+          sort_people_by_index(values).each do |value|
             markup << "<li#{html_attributes(attributes)}>#{attribute_value_to_html(value.to_s)}</li>"
           end
         else

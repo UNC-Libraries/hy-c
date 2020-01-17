@@ -2,7 +2,7 @@ module Tasks
   require 'tasks/migrate/services/progress_tracker'
 
   class UpdateDoiUrlsService
-    include HyraxHelper
+    include HycHelper
 
     attr_reader :state, :rows, :retries, :end_date, :log, :completed_log, :failed_log
 

@@ -13,7 +13,7 @@ class CreateDerivativesJob < Hyrax::ApplicationJob
     return if file_set.video? && !Hyrax.config.enable_ffmpeg
     filename = Hyrax::WorkingDirectory.find_or_retrieve(file_id, file_set.id, filepath)
 
-    file_set.create_derivatives(filename)
+    # file_set.create_derivatives(filename)
 
     # Reload from Fedora and reindex for thumbnail and extracted text
     file_set.reload

@@ -164,7 +164,9 @@ module ActiveFedora::RDF
         people.each do |person|
           display_text = []
           if !Array(person['name']).first.blank?
-            display_text << "index:#{Array(person['index']).first}"
+            if person['index']
+              display_text << "index:#{Array(person['index']).first}"
+            end
             display_text << Array(person['name']).first
             @person_label.push(Array(person['name']))
             if field_key.to_s == 'creators'

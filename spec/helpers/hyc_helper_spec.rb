@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe HyraxHelper do
+RSpec.describe HycHelper do
   describe '#language_links' do
     context 'with valid options' do
       let(:options) { {value: ['http://id.loc.gov/vocabulary/iso639-2/eng']} }
