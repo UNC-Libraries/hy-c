@@ -60,6 +60,7 @@ terms:
     active: true
     work_type: 
       - dissertation
+      - honors
   - id: Master of Arts
     term: Master of Arts
     active: true
