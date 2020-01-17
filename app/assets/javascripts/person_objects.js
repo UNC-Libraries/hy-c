@@ -1,7 +1,7 @@
 $(document).on('turbolinks:load', function () {
     var PEOPLE_TYPES = ['advisor', 'arranger', 'composer', 'contributor', 'creator',
         'project_director', 'researcher', 'reviewer', 'translator'];
-    var PEOPLE_SUBFIELDS = ['name', 'orcid', 'affiliation', 'other_affiliation'];
+    var PEOPLE_SUBFIELDS = ['name', 'orcid', 'affiliation', 'other_affiliation', 'index'];
     
     PEOPLE_TYPES.forEach(function(person) {
         // For each person type present in the form, initialize
