@@ -39,6 +39,6 @@ module HycHelper
   end
 
   def sort_people_by_index(values)
-    Array(values.sort_by{|person| person.split('||').first.split(':').last})
+    Array(values.sort_by{|person| person.split('||').first.split(':').last.to_i})
   end
 end
