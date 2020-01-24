@@ -3,6 +3,10 @@
 :queues:
   - default
   - derivatives
+  - import
+  - export
 :logfile: ./log/sidekiq.log
 :limits:
   derivatives: 1
+  import: 1
+  export: 1

@@ -35,3 +35,5 @@
 //= require 'blacklight_range_limit/range_limit_distro_facets'
 //= require 'blacklight_range_limit/range_limit_shared'
 //= require 'blacklight_range_limit/range_limit_slider'
+
+//= require bulkrax/application
