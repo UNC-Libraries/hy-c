@@ -3,7 +3,13 @@
 <hr class="person-divider">
 <div class="form-group multi_value">
   <div id="<%= person_term %>">
-  <%= f.fields_for person_key do |person| %>
+    <%# sort people by index; can remove index portion of conditional when all people have index values %>
+    <% sorted_values = curation_concern[person_key] %>
+    <% if !curation_concern[person_key].blank? && !curation_concern[person_key].first.index.blank? %>
+       <% sorted_values = curation_concern[person_key].sort_by{|person| person.index.first.to_i} %>
+    <% end %>
+
+    <%= f.fields_for person_key, sorted_values do |person| %>
     <div class="<%= person_term %> row well field-wrapper person-object">
       <div class="person col-sm-12 <%= person_term %>-name">
         <%= person.input :name,
