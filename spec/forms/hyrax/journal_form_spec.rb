@@ -57,7 +57,13 @@ RSpec.describe Hyrax::JournalForm do
           creators_attributes: { '0' => { name: 'creator',
                                           orcid: 'creator orcid',
                                           affiliation: 'Carolina Center for Genome Sciences',
-                                          other_affiliation: 'another affiliation'} },
+                                          other_affiliation: 'another affiliation',
+                                          index: 1},
+                                 '1' => {name: 'creator2',
+                                         orcid: 'creator2 orcid',
+                                         affiliation: 'Department of Chemistry',
+                                         other_affiliation: 'another affiliation',
+                                         index: 2} },
           subject: ['a subject'],
           keyword: ['a keyword'],
           language: ['http://id.loc.gov/vocabulary/iso639-2/eng'],
@@ -121,6 +127,77 @@ RSpec.describe Hyrax::JournalForm do
       expect(subject['license_label']).to eq ['Attribution 3.0 United States']
       expect(subject['related_url']).to eq ['a url']
       expect(subject['rights_statement_label']).to eq 'In Copyright'
+      expect(subject['creators_attributes']['0']['name']).to eq 'creator'
+      expect(subject['creators_attributes']['0']['orcid']).to eq 'creator orcid'
+      expect(subject['creators_attributes']['0']['affiliation']).to eq 'Carolina Center for Genome Sciences'
+      expect(subject['creators_attributes']['0']['other_affiliation']).to eq 'another affiliation'
+      expect(subject['creators_attributes']['0']['index']).to eq 1
+      expect(subject['creators_attributes']['1']['name']).to eq 'creator2'
+      expect(subject['creators_attributes']['1']['orcid']).to eq 'creator2 orcid'
+      expect(subject['creators_attributes']['1']['affiliation']).to eq 'Department of Chemistry'
+      expect(subject['creators_attributes']['1']['other_affiliation']).to eq 'another affiliation'
+      expect(subject['creators_attributes']['1']['index']).to eq 2
+    end
+
+    context '.model_attributes' do
+      let(:params) do
+        ActionController::Parameters.new(
+            title: '',
+            keyword: [''],
+            language_label: [],
+            license: '',
+            member_of_collection_ids: [''],
+            rights_statement: 'http://rightsstatements.org/vocab/InC/1.0/',
+            on_behalf_of: 'Melissa'
+        )
+      end
+
+      it 'removes blank parameters' do
+        expect(subject['title']).to be_nil
+        expect(subject['license']).to be_nil
+        expect(subject['keyword']).to be_empty
+        expect(subject['member_of_collection_ids']).to be_empty
+        expect(subject['on_behalf_of']).to eq 'Melissa'
+      end
+    end
+
+    context 'with people parameters' do
+      let(:params) do
+        ActionController::Parameters.new(
+            creators_attributes: { '0' => {name: 'creator',
+                                           orcid: 'creator orcid',
+                                           affiliation: 'Carolina Center for Genome Sciences',
+                                           other_affiliation: 'another affiliation',
+                                           index: 2},
+                                   '1' => {name: 'creator2',
+                                           orcid: 'creator2 orcid',
+                                           affiliation: 'Department of Chemistry',
+                                           other_affiliation: 'another affiliation',
+                                           index: 1},
+                                   '2' => {name: 'creator3',
+                                           orcid: 'creator3 orcid',
+                                           affiliation: 'Department of Chemistry',
+                                           other_affiliation: 'another affiliation'}}
+        )
+      end
+
+      it 'retains existing index values and adds missing index values' do
+        expect(subject['creators_attributes'].as_json).to include({'0' => {'name' => 'creator',
+                                                                           'orcid' => 'creator orcid',
+                                                                           'affiliation' => 'Carolina Center for Genome Sciences',
+                                                                           'other_affiliation' => 'another affiliation',
+                                                                           'index' => 2},
+                                                                   '1' => {'name' => 'creator2',
+                                                                           'orcid' => 'creator2 orcid',
+                                                                           'affiliation' => 'Department of Chemistry',
+                                                                           'other_affiliation' => 'another affiliation',
+                                                                           'index' => 1},
+                                                                   '2' => {'name' => 'creator3',
+                                                                           'orcid' => 'creator3 orcid',
+                                                                           'affiliation' => 'Department of Chemistry',
+                                                                           'other_affiliation' => 'another affiliation',
+                                                                           'index' => 3}})
+      end
     end
   end
 

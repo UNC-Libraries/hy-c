@@ -312,7 +312,8 @@ module Migrate
             person_hash[index.to_s] = { 'name' => name,
                                         'orcid' => orcid,
                                         'affiliation' => department_lookup(affiliation),
-                                        'other_affiliation' => other_affiliation }
+                                        'other_affiliation' => other_affiliation,
+                                        'index' => index+1 }
           end
 
           person_hash.blank? ? nil : person_hash

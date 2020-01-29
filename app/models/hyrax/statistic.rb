@@ -6,7 +6,7 @@ module Hyrax
     class_attribute :cache_column, :event_type
 
     class << self
-      include HyraxHelper
+      include HycHelper
       include ActionDispatch::Routing::PolymorphicRoutes
       include Rails.application.routes.url_helpers
 

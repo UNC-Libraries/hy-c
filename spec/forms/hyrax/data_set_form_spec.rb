@@ -68,7 +68,13 @@ RSpec.describe Hyrax::DataSetForm do
           creators_attributes: { '0' => { name: 'creator',
                                           orcid: 'creator orcid',
                                           affiliation: 'Carolina Center for Genome Sciences',
-                                          other_affiliation: 'another affiliation'} },
+                                          other_affiliation: 'another affiliation',
+                                          index: 1},
+                                 '1' => {name: 'creator2',
+                                         orcid: 'creator2 orcid',
+                                         affiliation: 'Department of Chemistry',
+                                         other_affiliation: 'another affiliation',
+                                         index: 2} },
           date_issued: '2018-01-08',
           dcmi_type: ['http://purl.org/dc/dcmitype/Dataset'],
           copyright_date: '2018',
@@ -124,25 +130,129 @@ RSpec.describe Hyrax::DataSetForm do
       expect(subject['language_label']).to eq ['English']
       expect(subject['license_label']).to eq ['Attribution 3.0 United States']
       expect(subject['rights_statement_label']).to eq 'In Copyright'
+      expect(subject['creators_attributes']['0']['name']).to eq 'creator'
+      expect(subject['creators_attributes']['0']['orcid']).to eq 'creator orcid'
+      expect(subject['creators_attributes']['0']['affiliation']).to eq 'Carolina Center for Genome Sciences'
+      expect(subject['creators_attributes']['0']['other_affiliation']).to eq 'another affiliation'
+      expect(subject['creators_attributes']['0']['index']).to eq 1
+      expect(subject['creators_attributes']['1']['name']).to eq 'creator2'
+      expect(subject['creators_attributes']['1']['orcid']).to eq 'creator2 orcid'
+      expect(subject['creators_attributes']['1']['affiliation']).to eq 'Department of Chemistry'
+      expect(subject['creators_attributes']['1']['other_affiliation']).to eq 'another affiliation'
+      expect(subject['creators_attributes']['1']['index']).to eq 2
+      expect(subject['contributors_attributes']['0']['name']).to eq 'contributor'
+      expect(subject['contributors_attributes']['0']['orcid']).to eq 'contributor orcid'
+      expect(subject['contributors_attributes']['0']['affiliation']).to eq 'Carolina Center for Genome Sciences'
+      expect(subject['contributors_attributes']['0']['other_affiliation']).to eq 'another affiliation'
+      expect(subject['contributors_attributes']['0']['index']).to eq 1
+      expect(subject['project_directors_attributes']['0']['name']).to eq 'project director'
+      expect(subject['project_directors_attributes']['0']['orcid']).to eq 'project director orcid'
+      expect(subject['project_directors_attributes']['0']['affiliation']).to eq 'Carolina Center for Genome Sciences'
+      expect(subject['project_directors_attributes']['0']['other_affiliation']).to eq 'another affiliation'
+      expect(subject['project_directors_attributes']['0']['index']).to eq 1
+      expect(subject['researchers_attributes']['0']['name']).to eq 'researcher'
+      expect(subject['researchers_attributes']['0']['orcid']).to eq 'researcher orcid'
+      expect(subject['researchers_attributes']['0']['affiliation']).to eq 'Carolina Center for Genome Sciences'
+      expect(subject['researchers_attributes']['0']['other_affiliation']).to eq 'another affiliation'
+      expect(subject['researchers_attributes']['0']['index']).to eq 1
     end
 
-    describe "#visibility" do
-      subject { form.visibility }
-
-      it { is_expected.to eq 'restricted' }
-    end
-
-    describe "#agreement_accepted" do
-      subject { form.agreement_accepted }
-
-      it { is_expected.to eq false }
-    end
-
-    context "on a work already saved" do
-      before { allow(work).to receive(:new_record?).and_return(false) }
-      it "defaults deposit agreement to true" do
-        expect(form.agreement_accepted).to eq(true)
+    context '.model_attributes' do
+      let(:params) do
+        ActionController::Parameters.new(
+            title: '',
+            keyword: [''],
+            language_label: [],
+            license: '',
+            member_of_collection_ids: [''],
+            rights_statement: 'http://rightsstatements.org/vocab/InC/1.0/',
+            on_behalf_of: 'Melissa'
+        )
       end
+
+      it 'removes blank parameters' do
+        expect(subject['title']).to be_nil
+        expect(subject['license']).to be_nil
+        expect(subject['keyword']).to be_empty
+        expect(subject['member_of_collection_ids']).to be_empty
+        expect(subject['on_behalf_of']).to eq 'Melissa'
+      end
+    end
+
+    context 'with people parameters' do
+      let(:params) do
+        ActionController::Parameters.new(
+            creators_attributes: { '0' => {name: 'creator',
+                                           orcid: 'creator orcid',
+                                           affiliation: 'Carolina Center for Genome Sciences',
+                                           other_affiliation: 'another affiliation',
+                                           index: 2},
+                                   '1' => {name: 'creator2',
+                                           orcid: 'creator2 orcid',
+                                           affiliation: 'Department of Chemistry',
+                                           other_affiliation: 'another affiliation',
+                                           index: 1},
+                                   '2' => {name: 'creator3',
+                                           orcid: 'creator3 orcid',
+                                           affiliation: 'Department of Chemistry',
+                                           other_affiliation: 'another affiliation'}},
+            contributors_attributes: {'0' => {name: 'contributor',
+                                             orcid: 'contributor orcid',
+                                             affiliation: 'Carolina Center for Genome Sciences',
+                                             other_affiliation: 'another affiliation'},
+                                     '1' => {name: 'contributor2',
+                                             orcid: 'contributor2 orcid',
+                                             affiliation: 'Department of Chemistry',
+                                             other_affiliation: 'another affiliation'}}
+        )
+      end
+
+      it 'retains existing index values and adds missing index values' do
+        expect(subject['creators_attributes'].as_json).to include({'0' => {'name' => 'creator',
+                                                                           'orcid' => 'creator orcid',
+                                                                           'affiliation' => 'Carolina Center for Genome Sciences',
+                                                                           'other_affiliation' => 'another affiliation',
+                                                                           'index' => 2},
+                                                                   '1' => {'name' => 'creator2',
+                                                                           'orcid' => 'creator2 orcid',
+                                                                           'affiliation' => 'Department of Chemistry',
+                                                                           'other_affiliation' => 'another affiliation',
+                                                                           'index' => 1},
+                                                                   '2' => {'name' => 'creator3',
+                                                                           'orcid' => 'creator3 orcid',
+                                                                           'affiliation' => 'Department of Chemistry',
+                                                                           'other_affiliation' => 'another affiliation',
+                                                                           'index' => 3}})
+        expect(subject['contributors_attributes'].as_json).to include({'0' => {'name' => 'contributor',
+                                                                              'orcid' => 'contributor orcid',
+                                                                              'affiliation' => 'Carolina Center for Genome Sciences',
+                                                                              'other_affiliation' => 'another affiliation',
+                                                                              'index' => 1},
+                                                                      '1' => {'name' => 'contributor2',
+                                                                              'orcid' => 'contributor2 orcid',
+                                                                              'affiliation' => 'Department of Chemistry',
+                                                                              'other_affiliation' => 'another affiliation',
+                                                                              'index' => 2}})
+      end
+    end
+  end
+
+  describe "#visibility" do
+    subject { form.visibility }
+
+    it { is_expected.to eq 'restricted' }
+  end
+
+  describe "#agreement_accepted" do
+    subject { form.agreement_accepted }
+
+    it { is_expected.to eq false }
+  end
+
+  context "on a work already saved" do
+    before { allow(work).to receive(:new_record?).and_return(false) }
+    it "defaults deposit agreement to true" do
+      expect(form.agreement_accepted).to eq(true)
     end
   end
 end

@@ -1,8 +1,15 @@
 <% person_term_display = "#{person_term.split('_').map(&:capitalize).join(' ')} #1" %>
+<% hidden_index = current_user&.admin? ? '' : 'hidden' %>
 <hr class="person-divider">
 <div class="form-group multi_value">
   <div id="<%= person_term %>">
-  <%= f.fields_for person_key do |person| %>
+    <%# sort people by index; can remove index portion of conditional when all people have index values %>
+    <% sorted_values = curation_concern[person_key] %>
+    <% if !curation_concern[person_key].blank? && !curation_concern[person_key].first.index.blank? %>
+       <% sorted_values = curation_concern[person_key].sort_by{|person| person.index.first.to_i} %>
+    <% end %>
+
+    <%= f.fields_for person_key, sorted_values do |person| %>
     <div class="<%= person_term %> row well field-wrapper person-object">
       <div class="person col-sm-12 <%= person_term %>-name">
         <%= person.input :name,
@@ -41,6 +48,13 @@
                                        value: (person.object.orcid.first || '') } %>
       </div>
 
+      <div class="person col-sm-12 <%= person_term %>-index <%= hidden_index %>">
+        <%= person.input :index,
+                         label: "Index (#{person_term_display})",
+                         input_html: { class: 'form-control',
+                                       value: (person.object.index.first || '')} %>
+      </div>
+
       <% if @form.instance_eval(person_key.to_s).count > 1 && person.index > 0 %>
       <span class="people-remove field-controls multi_value">
         <button type="button" class="btn btn-link remove remove-<%= person_term %>">
@@ -65,11 +79,12 @@
           </div>
 
           <div class="col-sm-12 <%= person_term %>-affiliation">
+            <% is_required = (person_term == 'advisor' && f.object_name == 'honors_thesis') ? false : f.object.required?(:affiliation) %>
             <%= person.input :affiliation, as: :select,
                              label: "UNC affiliation (#{person_term_display})",
                              collection: DepartmentsService.select_all_options.sort,
                              include_blank: true,
-                             required: f.object.required?(:affiliation),
+                             required: is_required,
                              selected: '',
                              item_helper: DepartmentsService.method(:include_current_value),
                              input_html: { class: 'form-control' }
@@ -79,8 +94,7 @@
           <div class="col-sm-12 <%= person_term %>-other-affiliation">
             <%= person.input :other_affiliation,
                              label: "Additional affiliation (#{person_term_display})",
-                             input_html: { class: 'form-control',
-                                                                value: '' } %>
+                             input_html: { class: 'form-control', value: '' } %>
           </div>
 
           <div class="col-sm-12 <%= person_term %>-orcid">
@@ -89,6 +103,12 @@
                              input_html: { placeholder: 'https://orcid.org/xxxx-xxxx-xxxx-xxxx',
                                            class: 'form-control',
                                            value: '' } %>
+          </div>
+
+          <div class="person col-sm-12 <%= person_term %>-index <%= hidden_index %>">
+            <%= person.input :index,
+                             label: "Index (#{person_term_display})",
+                             input_html: { class: 'form-control', value: ''} %>
           </div>
 
           <span class="people-remove field-controls multi_value">

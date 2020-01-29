@@ -59,6 +59,13 @@
         <DISS_middle>T</DISS_middle>
       </DISS_name>
     </DISS_advisor>
+    <DISS_advisor>
+      <DISS_name>
+        <DISS_surname>Advisor</DISS_surname>
+        <DISS_fname>Jane</DISS_fname>
+        <DISS_middle>N</DISS_middle>
+      </DISS_name>
+    </DISS_advisor>
     <DISS_categorization>
       <DISS_category>
         <DISS_cat_code>0567</DISS_cat_code>

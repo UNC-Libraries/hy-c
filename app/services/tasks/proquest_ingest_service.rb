@@ -61,11 +61,6 @@ module Tasks
           next
         end
 
-        # delete zip file after files have been extracted successfully
-        if Rails.env != 'test'
-          File.delete(package)
-        end
-
         if File.file?(metadata_file)
           # only use xml file for metadata extraction
           metadata, listed_files = proquest_metadata(metadata_file)
@@ -138,6 +133,11 @@ module Tasks
           fileset.save
 
           resource.ordered_members << fileset
+
+          # delete zip file after files have been extracted and ingested successfully
+          if Rails.env != 'test'
+            File.delete(package)
+          end
         end
       end
     end
@@ -320,7 +320,7 @@ module Tasks
     def build_person_hash(people, affiliation)
       person_hash = {}
       people.each_with_index do |person, index|
-        person_hash[index.to_s] = {'name' => person, 'affiliation' => affiliation}
+        person_hash[index.to_s] = {'name' => person, 'affiliation' => affiliation, 'index' => index+1}
       end
 
       person_hash

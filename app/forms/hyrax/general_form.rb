@@ -93,15 +93,15 @@ module Hyrax
 
     def self.build_permitted_params
       permitted = super
-      permitted << { advisors_attributes: [:id, :name, :affiliation, :orcid, :other_affiliation, :_destroy] }
-      permitted << { arrangers_attributes: [:id, :name, :affiliation, :orcid, :other_affiliation, :_destroy] }
-      permitted << { composers_attributes: [:id, :name, :affiliation, :orcid, :other_affiliation, :_destroy] }
-      permitted << { contributors_attributes: [:id, :name, :affiliation, :orcid, :other_affiliation, :_destroy] }
-      permitted << { creators_attributes: [:id, :name, :affiliation, :orcid, :other_affiliation, :_destroy] }
-      permitted << { project_directors_attributes: [:id, :name, :affiliation, :orcid, :other_affiliation, :_destroy] }
-      permitted << { researchers_attributes: [:id, :name, :affiliation, :orcid, :other_affiliation, :_destroy] }
-      permitted << { reviewers_attributes: [:id, :name, :affiliation, :orcid, :other_affiliation, :_destroy] }
-      permitted << { translators_attributes: [:id, :name, :affiliation, :orcid, :other_affiliation, :_destroy] }
+      permitted << { advisors_attributes: [:id, :index, :name, :affiliation, :orcid, :other_affiliation, :_destroy] }
+      permitted << { arrangers_attributes: [:id, :index, :name, :affiliation, :orcid, :other_affiliation, :_destroy] }
+      permitted << { composers_attributes: [:id, :index, :name, :affiliation, :orcid, :other_affiliation, :_destroy] }
+      permitted << { contributors_attributes: [:id, :index, :name, :affiliation, :orcid, :other_affiliation, :_destroy] }
+      permitted << { creators_attributes: [:id, :name, :index, :affiliation, :orcid, :other_affiliation, :_destroy] }
+      permitted << { project_directors_attributes: [:id, :index, :name, :affiliation, :orcid, :other_affiliation, :_destroy] }
+      permitted << { researchers_attributes: [:id, :index, :name, :affiliation, :orcid, :other_affiliation, :_destroy] }
+      permitted << { reviewers_attributes: [:id, :index, :name, :affiliation, :orcid, :other_affiliation, :_destroy] }
+      permitted << { translators_attributes: [:id, :index, :name, :affiliation, :orcid, :other_affiliation, :_destroy] }
       permitted
     end
   end

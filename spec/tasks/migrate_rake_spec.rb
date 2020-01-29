@@ -74,9 +74,9 @@ RDFXML
 
   it "creates a new work" do
     expect { Rake::Task['migrate:works'].invoke('collection1',
-                                                      'spec/fixtures/migration/migration_config.yml',
-                                                      output_dir.to_s,
-                                                      'RAILS_ENV=test') }
+                                                'spec/fixtures/migration/migration_config.yml',
+                                                output_dir.to_s,
+                                                'RAILS_ENV=test') }
         .to change{ Article.count }.by(1)
     new_article = Article.all[-1]
     expect(new_article['depositor']).to eq 'admin'
@@ -91,6 +91,7 @@ RDFXML
     expect(new_article['rights_statement']).to eq 'http://rightsstatements.org/vocab/InC/1.0/'
     expect(new_article['rights_statement_label']).to eq 'In Copyright'
     expect(new_article['admin_set_id']).to eq admin_set.id
+    expect(new_article['creators'][0]['index'].first).to eq 1
     expect(new_article.visibility).to eq 'restricted'
     expect(new_article.file_sets.count).to eq 2
   end
