@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+# [hyc-override] overriding `write_files` and `export_headers` methods and adding `people_types` method
 
 require 'csv'
 module Bulkrax
@@ -138,20 +139,45 @@ module Bulkrax
 
     # export methods
 
+    # overriding to correctly export people attributes
     def write_files
       file = setup_export_file
       file.puts(export_headers)
       importerexporter.entries.each do |e|
-        file.puts(e.parsed_metadata.values.to_csv)
+        metadata = e.parsed_metadata
+        # get people metadata
+        work_record = ActiveFedora::Base.find(metadata['source_identifier'])
+        # create hash of people attributes
+        people_types.each do |person_type|
+          metadata[person_type] = nil
+          metadata["#{person_type}_attributes"] = nil
+          if work_record.has_attribute?(person_type)
+            person_hash = Hash.new
+            work_record[person_type].each_with_index do |person_object, index|
+              person_hash[index.to_s] = person_object.as_json
+            end
+            if person_hash.blank?
+              metadata["#{person_type}_attributes"] = nil
+            else
+              metadata["#{person_type}_attributes"] = person_hash
+            end
+          end
+        end
+
+        file.puts(metadata.values.to_csv)
       end
       file.close
     end
 
+    # overriding to add columns for people attributes and rename source column
+    # if reimporting, there needs to be a source_identifier column
     def export_headers
       headers = ['id']
-      headers << ['model']
+      headers << 'model'
       importerexporter.mapping.keys.each { |key| headers << key unless Bulkrax.reserved_properties.include?(key) && !field_supported?(key) }.sort
+      headers.map!{|key| key == 'source' ? 'source_identifier' : key}
       headers << 'file'
+      people_types.each { |key| headers << "#{key}_attributes" }
       headers.to_csv
     end
 
@@ -179,6 +205,12 @@ module Bulkrax
       # remove the metadata filename from the end of the import path
       path.pop
       File.join(path.join('/'), 'files')
+    end
+
+    # overriding to add array of people types
+    def people_types
+      ['advisors', 'arrangers', 'composers', 'contributors', 'creators', 'project_directors', 'researchers',
+       'reviewers', 'translators']
     end
   end
 end

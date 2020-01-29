@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+# [hyc-override] overriding build_export_metadata method
 
 require 'csv'
 
@@ -65,18 +66,23 @@ module Bulkrax
       self.parsed_metadata
     end
 
+    # overriding to include all `mapping` keys in parsed metadata even when not supported by work type model
+    # this fixes data mismatches in exports
     def build_export_metadata
       self.parsed_metadata = {}
       self.parsed_metadata['source_identifier'] = work.id
       self.parsed_metadata['model'] = work.has_model.first
       mapping.each do |key, value|
         next if Bulkrax.reserved_properties.include?(key) && !field_supported?(key)
-        next unless work.respond_to?(key)
-        data = work.send(key)
-        if data.is_a?(ActiveTriples::Relation)
-          self.parsed_metadata[key] = data.join('; ').to_s unless value[:excluded]
+        unless work.respond_to?(key)
+          self.parsed_metadata[key] = nil
         else
-          self.parsed_metadata[key] = data
+          data = work.send(key)
+          if data.is_a?(ActiveTriples::Relation)
+            self.parsed_metadata[key] = data.join('; ').to_s unless value[:excluded]
+          else
+            self.parsed_metadata[key] = data
+          end
         end
       end
       unless work.is_a?(Collection)
