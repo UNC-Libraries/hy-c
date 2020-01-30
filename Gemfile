@@ -59,9 +59,9 @@ gem 'devise', '~> 4.7.1'
 gem 'devise-guests', '~> 0.6.0'
 gem 'omniauth-shibboleth', '~> 1.3'
 
-gem 'bulkrax', git: 'https://github.com/samvera-labs/bulkrax.git'
+gem 'bulkrax'
 # required by bulkrax_override - rails engine for SWORDv2
-gem 'willow_sword', github: 'notch8/willow_sword'
+gem 'willow_sword'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
