@@ -14,8 +14,7 @@ gem 'pg', '~> 0.21.0'
 gem 'puma', '~> 3.12.2'
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0.6'
-# Use Uglifier as compressor for JavaScript assets
-gem 'uglifier', '~> 3.2.0'
+
 # Use CoffeeScript for .coffee assets and views
 gem 'coffee-rails', '~> 4.2.2'
 # See https://github.com/rails/execjs#readme for more supported runtimes
@@ -59,9 +58,14 @@ gem 'devise', '~> 4.7.1'
 gem 'devise-guests', '~> 0.6.0'
 gem 'omniauth-shibboleth', '~> 1.3'
 
-gem 'bulkrax'
+gem 'bulkrax', git: 'https://github.com/samvera-labs/bulkrax.git'
 # required by bulkrax_override - rails engine for SWORDv2
-gem 'willow_sword'
+gem 'willow_sword', github: 'notch8/willow_sword'
+
+group :assets do
+  # Use Uglifier as compressor for JavaScript assets
+  gem 'uglifier', '~> 3.2.0'
+end
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
