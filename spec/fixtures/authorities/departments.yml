@@ -15,3 +15,9 @@ terms:
   - id: Example Department
     active: true
     term: Some College; Example Department
+  - id: inactive example
+    active: false
+    term: an active term
+  - id: an active term
+    active: true
+    term: Active Example
