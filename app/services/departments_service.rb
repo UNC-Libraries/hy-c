@@ -19,7 +19,17 @@ module DepartmentsService
 
   def self.label(id)
     begin
-      authority.find(id).fetch('term')
+      active = authority.find(id).fetch('active')
+      label = authority.find(id).fetch('term')
+      new_label = ''
+      while !active && new_label != label
+        if !new_label.blank?
+          label = new_label
+        end
+        active = authority.find(label).fetch('active')
+        new_label = authority.find(label).fetch('term')
+      end
+      label
     rescue
       Rails.logger.warn "DepartmentsService: cannot find '#{id}'"
       puts "DepartmentsService: cannot find '#{id}'" # for migration log
