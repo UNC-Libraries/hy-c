@@ -1028,10 +1028,10 @@ terms:
     term: School of Law
     active: true
   - id: UNC School of Media and Journalism
-    term: School of Media and Journalism
+    term: Hussman School of Journalism and Media
     active: false
   - id: School of Journalism and Mass Communication
-    term: School of Media and Journalism
+    term: Hussman School of Journalism and Media
     active: false
   - id: School of Media and Journalism
     term: Hussman School of Journalism and Media
