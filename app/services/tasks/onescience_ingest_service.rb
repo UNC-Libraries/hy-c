@@ -23,6 +23,7 @@ module Tasks
       @depositor_onyen = @config['depositor_onyen']
 
       load_data
+      scopus_data
       puts "[#{Time.now}] loaded onescience data"
       create_deposit_record
       puts "[#{Time.now}] created deposit record for batch"
@@ -33,7 +34,6 @@ module Tasks
       already_ingested = @object_progress.completed_set + @skipped_objects.completed_set
       puts "Skipping #{already_ingested.length} previously ingested and skipped works"
 
-      count = @data.count
       # extract needed metadata and create articles
       @data.each_with_index do |item_data, index|
         puts '',"[#{Time.now}] ingesting #{item_data['onescience_id']} (#{index+1} of #{count})"
@@ -220,6 +220,9 @@ module Tasks
         end
       end
       @data.flatten!
+
+      # load scopus xml data
+      scopus_data
     end
 
     def create_deposit_record
@@ -293,6 +296,97 @@ module Tasks
       end
 
       people
+    end
+
+    # make hash of data with doi as key
+    # authors, author order, author affiliations
+    def scopus_data
+      scopus_hash = Hash.new
+
+      scopus_file = File.read(@config['metadata_dir']+'/'+@config['scopus_xml_file'])
+      mapped_affiliations = CSV.read(@config['metadata_dir']+'/'+@config['mapped_scopus_affiliations'], headers: true)
+      puts "[#{Time.now}] loaded scopus files"
+      responses = scopus_file.split(/\<htt-party-response\>/)
+      responses.delete_at(0)
+
+      responses.each do |response|
+        scopus_xml = Nokogiri::XML(response)
+
+        author_groups = scopus_xml.xpath('//abstracts-retrieval-response//author-group[not(@*)]')
+        record_doi = scopus_xml.xpath('//coredata/doi').text
+        begin
+          record_affiliation_hash = Hash.new
+          author_groups.each do |author_group|
+            author_group.xpath('.//author[not(@*)]/auid').map(&:text).each do |author_id|
+              record_affiliation_hash[author_id] = record_affiliation_hash[author_id] || []
+            end
+
+            organization = author_group.xpath('affiliation/organization').map(&:text).first
+            affiliation_id = author_group.xpath('affiliation/afid').text
+            department_id = author_group.xpath('affiliation/dptid').text
+
+            if !organization.blank? && (!affiliation_id.blank? || !department_id.blank?)
+              author_group.xpath('.//author[not(@*)]/auid').map(&:text).each do |author_id|
+                record_affiliation_hash[author_id] << {'afid' => affiliation_id,
+                                                       'dptid' => department_id,
+                                                       'organization' => organization.strip.split("\n").map(&:strip).join("; ")}
+              end
+            end
+          end
+
+          record_authors = Hash.new
+          first_author = scopus_xml.xpath('//coredata/creator/author/author-url').text
+          scopus_xml.xpath('//abstracts-retrieval-response/authors/author/author').each_with_index do |author, index|
+            surname = author.xpath('surname').text
+            given_name = author.xpath('given-name').text
+            author_id = author.xpath('auid').text
+
+            affiliations = record_affiliation_hash[author_id]
+
+            unc_organizations = []
+            other_organizations = []
+            affiliations.each do |affiliation|
+              if affiliation['afid'].match('60025111') ||
+                  affiliation['afid'].match('60020469') ||
+                  affiliation['afid'].match('60072681') ||
+                  affiliation['afid'].match('113885172')
+                mapped_affiliation = mapped_affiliations.find{|mapped_dept| (mapped_dept['affiliation_id'] == affiliation['afid'] && mapped_dept['department_id'] == affiliation['dptid'])}
+                if mapped_affiliation
+                  unc_organizations << mapped_affiliation['mapped_affiliation']
+                else
+                  unc_organizations << affiliation['organization']
+                end
+              else
+                if affiliation['organization'].match('UNC')
+                  puts author_id, affiliations
+                end
+                other_organizations << affiliation['organization']
+              end
+            end
+            record_authors[index] = {'name' => surname+', '+given_name,
+                                     'affiliation' => unc_organizations,
+                                     'other_affiliation' => other_organizations}
+
+            if index == 0
+              # verify that first author is first in list
+              author_url = author.xpath('author-url').text
+              if author_url != first_author
+                puts 'authors not in correct order '+first_author
+              end
+            end
+          end
+
+          scopus_hash[record_doi] = record_authors
+        rescue => e
+          puts e.message, e.backtrace
+          puts author_groups
+        end
+      end
+
+      # random_key = scopus_hash.keys.sample
+      # puts random_key
+      # puts scopus_hash[random_key]
+      puts "[#{Time.now}] parsed scopus files"
     end
   end
 end
