@@ -23,7 +23,6 @@ module Tasks
       @depositor_onyen = @config['depositor_onyen']
 
       load_data
-      scopus_data
       puts "[#{Time.now}] loaded onescience data"
       create_deposit_record
       puts "[#{Time.now}] created deposit record for batch"
@@ -34,8 +33,11 @@ module Tasks
       already_ingested = @object_progress.completed_set + @skipped_objects.completed_set
       puts "Skipping #{already_ingested.length} previously ingested and skipped works"
 
+      count = @data.count
       # extract needed metadata and create articles
       @data.each_with_index do |item_data, index|
+        next if index < 101
+        break if index > 203
         puts '',"[#{Time.now}] ingesting #{item_data['onescience_id']} (#{index+1} of #{count})"
 
         # Skip this item if it has been ingested before
@@ -268,7 +270,7 @@ module Tasks
       work_attributes['issn'] = onescience_data['ISSNs'].split('||') if !onescience_data['ISSNs'].blank?
       work_attributes['abstract'] = onescience_data['Abstract']
       work_attributes['keyword'] = onescience_data['Keywords'].split('||') if !onescience_data['Keywords'].blank?
-      work_attributes['creators_attributes'] = get_people(onescience_data['onescience_id'])
+      work_attributes['creators_attributes'] = get_people(onescience_data['onescience_id'], onescience_data['DOI'])
       work_attributes['resource_type'] = 'Article'
       work_attributes['language'] = 'http://id.loc.gov/vocabulary/iso639-2/eng'
       work_attributes['language_label'] = 'English'
@@ -276,23 +278,27 @@ module Tasks
       work_attributes['admin_set_id'] = @admin_set_id
       work_attributes['rights_statement'] = 'http://rightsstatements.org/vocab/InC/1.0/'
       work_attributes['rights_statement_label'] = 'In Copyright'
-      work_attributes['deposit_record'] = @deposit_record_id
+      work_attributes['deposit_record'] = @deposit_record_id.strip
       files = onescience_data.select { |k,v| k['Files'] && !v.blank? }
 
       [work_attributes, files]
     end
 
-    def get_people(onescience_id)
+    def get_people(onescience_id, doi)
       people = {}
-      affiliation_data = @affiliation_mapping.find{ |e| e['onescience_id'] == onescience_id }
-      (1..32).each do |index|
-        break if affiliation_data['lastname_author'+index.to_s].blank? || affiliation_data['firstname_author'+index.to_s].blank?
-        name = "#{affiliation_data['lastname_author'+index.to_s]}, #{affiliation_data['firstname_author'+index.to_s]}"
-        affiliations = affiliation_data['affiliation_author'+index.to_s]
-        people[index-1] = { 'name' => name,
-                            'orcid' => affiliation_data['ORCID_author'+index.to_s],
-                            'affiliation' => (affiliations.split('||') if !affiliations.blank?),
-                            'index' => index}
+      if !@scopus_hash[doi].blank?
+        people = @scopus_hash[doi]
+      else
+        affiliation_data = @affiliation_mapping.find{ |e| e['onescience_id'] == onescience_id }
+        (1..32).each do |index|
+          break if affiliation_data['lastname_author'+index.to_s].blank? || affiliation_data['firstname_author'+index.to_s].blank?
+          name = "#{affiliation_data['lastname_author'+index.to_s]}, #{affiliation_data['firstname_author'+index.to_s]}"
+          affiliations = affiliation_data['affiliation_author'+index.to_s]
+          people[index-1] = { 'name' => name,
+                              'orcid' => affiliation_data['ORCID_author'+index.to_s],
+                              'affiliation' => (affiliations.split('||') if !affiliations.blank?),
+                              'index' => index}
+        end
       end
 
       people
@@ -301,7 +307,7 @@ module Tasks
     # make hash of data with doi as key
     # authors, author order, author affiliations
     def scopus_data
-      scopus_hash = Hash.new
+      @scopus_hash = Hash.new
 
       scopus_file = File.read(@config['metadata_dir']+'/'+@config['scopus_xml_file'])
       mapped_affiliations = CSV.read(@config['metadata_dir']+'/'+@config['mapped_scopus_affiliations'], headers: true)
@@ -310,21 +316,26 @@ module Tasks
       responses.delete_at(0)
 
       responses.each do |response|
+        # parse xml
         scopus_xml = Nokogiri::XML(response)
 
+        # find author-affiliation groupings
         author_groups = scopus_xml.xpath('//abstracts-retrieval-response//author-group[not(@*)]')
         record_doi = scopus_xml.xpath('//coredata/doi').text
         begin
           record_affiliation_hash = Hash.new
+          # create array for each person for current record
           author_groups.each do |author_group|
             author_group.xpath('.//author[not(@*)]/auid').map(&:text).each do |author_id|
               record_affiliation_hash[author_id] = record_affiliation_hash[author_id] || []
             end
 
+            # get affiliation info
             organization = author_group.xpath('affiliation/organization').map(&:text).first
             affiliation_id = author_group.xpath('affiliation/afid').text
             department_id = author_group.xpath('affiliation/dptid').text
 
+            # add affiliation info to each person in group
             if !organization.blank? && (!affiliation_id.blank? || !department_id.blank?)
               author_group.xpath('.//author[not(@*)]/auid').map(&:text).each do |author_id|
                 record_affiliation_hash[author_id] << {'afid' => affiliation_id,
@@ -334,15 +345,18 @@ module Tasks
             end
           end
 
+          # create hash of people for record
           record_authors = Hash.new
           first_author = scopus_xml.xpath('//coredata/creator/author/author-url').text
           scopus_xml.xpath('//abstracts-retrieval-response/authors/author/author').each_with_index do |author, index|
+            # get person info
             surname = author.xpath('surname').text
             given_name = author.xpath('given-name').text
             author_id = author.xpath('auid').text
-
+            orcid = author.xpath('orcid').text
             affiliations = record_affiliation_hash[author_id]
 
+            # split unc from external affiliations
             unc_organizations = []
             other_organizations = []
             affiliations.each do |affiliation|
@@ -363,12 +377,16 @@ module Tasks
                 other_organizations << affiliation['organization']
               end
             end
-            record_authors[index] = {'name' => surname+', '+given_name,
-                                     'affiliation' => unc_organizations,
-                                     'other_affiliation' => other_organizations}
 
+            # create hash for person with index value
+            record_authors[index] = {'name' => surname+', '+given_name,
+                                     'orcid' => orcid,
+                                     'affiliation' => unc_organizations,
+                                     'other_affiliation' => other_organizations,
+                                     'index' => index+1}
+
+            # verify that first author is first in list
             if index == 0
-              # verify that first author is first in list
               author_url = author.xpath('author-url').text
               if author_url != first_author
                 puts 'authors not in correct order '+first_author
@@ -376,17 +394,15 @@ module Tasks
             end
           end
 
-          scopus_hash[record_doi] = record_authors
+          @scopus_hash[record_doi] = record_authors
         rescue => e
           puts e.message, e.backtrace
           puts author_groups
         end
       end
 
-      # random_key = scopus_hash.keys.sample
-      # puts random_key
-      # puts scopus_hash[random_key]
       puts "[#{Time.now}] parsed scopus files"
+      @scopus_hash
     end
   end
 end
