@@ -280,6 +280,8 @@ module Tasks
       work_attributes['deposit_record'] = @deposit_record_id
       files = onescience_data.select { |k,v| k['Files'] && !v.blank? }
 
+      work_attributes.reject!{|k,v| v.blank?}
+
       [work_attributes, files]
     end
 

@@ -112,21 +112,13 @@ RSpec.describe Tasks::OnescienceIngestService do
       service.instance_variable_set(:@deposit_record_id, 'some deposit record id')
       work_attributes, files = service.parse_onescience_metadata(data)
       expect(work_attributes).to include({"identifier"=>["Onescience id: 12345"],
-                                       "date_issued"=>"",
                                        "title"=>"An article title",
                                        "label"=>"An article title",
-                                       "journal_title"=>nil,
-                                       "journal_volume"=>"",
-                                       "journal_issue"=>"",
-                                       "page_start"=>"",
-                                       "page_end"=>"",
-                                       "abstract"=>nil,
                                        "creators_attributes"=>{0=>{"name"=>"Smith, John", "orcid"=>nil, "affiliation"=>nil, "index" => 1}},
                                        "resource_type"=>"Article",
                                        "language"=>"http://id.loc.gov/vocabulary/iso639-2/eng",
                                        "language_label"=>"English",
                                        "dcmi_type"=>"http://purl.org/dc/dcmitype/Text",
-                                       "admin_set_id"=>nil,
                                        "rights_statement"=>"http://rightsstatements.org/vocab/InC/1.0/",
                                        "rights_statement_label"=>"In Copyright",
                                        "deposit_record"=>'some deposit record id'})
