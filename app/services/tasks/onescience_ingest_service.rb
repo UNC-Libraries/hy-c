@@ -36,8 +36,6 @@ module Tasks
       count = @data.count
       # extract needed metadata and create articles
       @data.each_with_index do |item_data, index|
-        next if index < 101
-        break if index > 203
         puts '',"[#{Time.now}] ingesting #{item_data['onescience_id']} (#{index+1} of #{count})"
 
         # Skip this item if it has been ingested before
@@ -186,6 +184,9 @@ module Tasks
     end
 
     def load_data
+      # load scopus xml data
+      scopus_data
+
       # get list of pdf files
       @pdf_files = Dir.glob("#{@pdf_dir}/**/*.pdf")
 
@@ -222,9 +223,6 @@ module Tasks
         end
       end
       @data.flatten!
-
-      # load scopus xml data
-      scopus_data
     end
 
     def create_deposit_record

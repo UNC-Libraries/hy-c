@@ -18,3 +18,5 @@ deposit_method: rake task
 deposit_type: a type
 deposit_subtype: a subtype
 deposit_record_id_log: spec/fixtures/onescience/1science_deposit_record_id.log
+scopus_xml_file: scopus-1-science-abstract.xml
+mapped_scopus_affiliations: scoups_departments-mapped.csv
