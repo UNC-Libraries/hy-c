@@ -314,6 +314,11 @@ module Tasks
       responses = scopus_file.split(/\<htt-party-response\>/)
       responses.delete_at(0)
 
+      # add headers to file documenting people info for each record
+      File.open(@config['multiple_unc_affiliations'], 'a+') do |f|
+        f.puts "doi\tmultiple?\tauthor_id\tname\torcid\taffiliation\tother affiliation\tindex"
+      end
+
       responses.each do |response|
         # parse xml
         scopus_xml = Nokogiri::XML(response)
@@ -336,10 +341,13 @@ module Tasks
 
             # add affiliation info to each person in group
             if !organization.blank? && (!affiliation_id.blank? || !department_id.blank?)
-              author_group.xpath('.//author[not(@*)]/auid').map(&:text).each do |author_id|
+              author_group.xpath('.//author[not(@*)]').each do |author|
+                author_id = author.xpath('auid').text
+                orcid = author.xpath('orcid').text
                 record_affiliation_hash[author_id] << {'afid' => affiliation_id,
                                                        'dptid' => department_id,
-                                                       'organization' => organization.strip.split("\n").map(&:strip).join("; ")}
+                                                       'organization' => organization.strip.split("\n").map(&:strip).join("; "),
+                                                       'orcid' => orcid}
               end
             end
           end
@@ -352,13 +360,14 @@ module Tasks
             surname = author.xpath('surname').text
             given_name = author.xpath('given-name').text
             author_id = author.xpath('auid').text
-            orcid = author.xpath('orcid').text
             affiliations = record_affiliation_hash[author_id]
 
             # split unc from external affiliations
             unc_organizations = []
             other_organizations = []
+            orcid = nil
             affiliations.each do |affiliation|
+              orcid = affiliation['orcid']
               if affiliation['afid'].match('60025111') ||
                   affiliation['afid'].match('60020469') ||
                   affiliation['afid'].match('60072681') ||
@@ -378,7 +387,13 @@ module Tasks
             end
 
             if unc_organizations.count > 1
-              puts "#{author_id} has more than one unc affiliation: #{unc_organizations}"
+              File.open(@config['multiple_unc_affiliations'], 'a+')  do |f|
+                f.puts "#{record_doi}\ttrue\t#{author_id}\t#{surname}, #{given_name}\t#{orcid}\t#{unc_organizations.join('||')}\t#{other_organizations.join('||')}\t#{index+1}"
+              end
+            else
+              File.open(@config['multiple_unc_affiliations'], 'a+')  do |f|
+                f.puts "#{record_doi}\tfalse\t#{author_id}\t#{surname}, #{given_name}\t#{orcid}\t#{unc_organizations.join('||')}\t#{other_organizations.join('||')}\t#{index+1}"
+              end
             end
 
             # create hash for person with index value
