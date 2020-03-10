@@ -67,6 +67,7 @@ RSpec.describe Tasks::OnescienceIngestService do
     after do
       File.delete('spec/fixtures/onescience/1science_completed.log')
       File.delete('spec/fixtures/onescience/1science_deposit_record_id.log')
+      File.delete('spec/fixtures/onescience/multiple_unc_affiliations4.tsv')
     end
 
     it "creates a new work" do
