@@ -25,7 +25,8 @@ RSpec.describe Tasks::OnescienceIngestService do
                                          'deposit_subtype' => 'a subtype',
                                          'deposit_record_id_log' => 'spec/fixtures/onescience/1science_deposit_record_id.log',
                                          'scopus_xml_file' => 'scopus-1-science-abstract.xml',
-                                         'mapped_scopus_affiliations' => 'scoups_departments-mapped.csv'
+                                         'mapped_scopus_affiliations' => 'scoups_departments-mapped.csv',
+                                         'multiple_unc_affiliations' => 'spec/fixtures/onescience/multiple_unc_affiliations.tsv'
                                 )
     end
   end
@@ -67,7 +68,7 @@ RSpec.describe Tasks::OnescienceIngestService do
     after do
       File.delete('spec/fixtures/onescience/1science_completed.log')
       File.delete('spec/fixtures/onescience/1science_deposit_record_id.log')
-      File.delete('spec/fixtures/onescience/multiple_unc_affiliations4.tsv')
+      File.delete('spec/fixtures/onescience/multiple_unc_affiliations.tsv')
     end
 
     it "creates a new work" do
