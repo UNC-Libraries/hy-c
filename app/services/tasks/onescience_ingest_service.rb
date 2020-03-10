@@ -227,7 +227,7 @@ module Tasks
 
     def create_deposit_record
       if File.exist?(@config['deposit_record_id_log']) && !(File.open(@config['deposit_record_id_log']) {|f| f.readline}).blank?
-        @deposit_record_id = File.open(@config['deposit_record_id_log']) {|f| f.readline}
+        @deposit_record_id = (File.open(@config['deposit_record_id_log']) {|f| f.readline}).strip
         puts "[#{Time.now}] loaded deposit record id for batch"
       else
         deposit_record = DepositRecord.new({ title: @config['deposit_title'],
@@ -276,7 +276,7 @@ module Tasks
       work_attributes['admin_set_id'] = @admin_set_id
       work_attributes['rights_statement'] = 'http://rightsstatements.org/vocab/InC/1.0/'
       work_attributes['rights_statement_label'] = 'In Copyright'
-      work_attributes['deposit_record'] = @deposit_record_id.strip
+      work_attributes['deposit_record'] = @deposit_record_id
       files = onescience_data.select { |k,v| k['Files'] && !v.blank? }
 
       [work_attributes, files]
