@@ -377,13 +377,15 @@ module Tasks
               end
             end
 
-            puts "#{author_id} has more than one unc affiliation: #{unc_organizations}"
+            if unc_organizations.count > 1
+              puts "#{author_id} has more than one unc affiliation: #{unc_organizations}"
+            end
 
             # create hash for person with index value
             record_authors[index] = {'name' => surname+', '+given_name,
                                      'orcid' => orcid,
-                                     'affiliation' => unc_organizations,
-                                     'other_affiliation' => other_organizations,
+                                     'affiliation' => unc_organizations.first,
+                                     'other_affiliation' => other_organizations + unc_organizations.drop(1),
                                      'index' => index+1}
 
             # verify that first author is first in list
