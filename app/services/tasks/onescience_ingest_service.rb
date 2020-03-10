@@ -188,7 +188,8 @@ module Tasks
       scopus_data
 
       # get list of pdf files
-      @pdf_files = Dir.glob("#{@pdf_dir}/**/*.pdf")
+      @pdf_files = Dir.glob("#{@config['pdf_dir']}/**/*.pdf")
+      puts "[#{Time.now}] found #{@pdf_files.count} files"
 
       # read from affiliation spreadsheet
       @affiliation_mapping = []
@@ -376,6 +377,8 @@ module Tasks
               end
             end
 
+            puts "#{author_id} has more than one unc affiliation: #{unc_organizations}"
+
             # create hash for person with index value
             record_authors[index] = {'name' => surname+', '+given_name,
                                      'orcid' => orcid,
@@ -400,7 +403,6 @@ module Tasks
       end
 
       puts "[#{Time.now}] parsed scopus files"
-      @scopus_hash
     end
   end
 end
