@@ -383,20 +383,22 @@ module Tasks
               orcid = affiliation['orcid']
 
               # find all unc affiliations by scopus afid
-              if UNC_SCOPUS_AFIDS.include?(affiliation['afid'])
-                mapped_affiliation = mapped_affiliations.find{|mapped_dept| (mapped_dept['affiliation_id'] == affiliation['afid'] && mapped_dept['department_id'] == affiliation['dptid'])}
-                # if affiliation/department combination matches any unc affiliation, then store it as a unc affiliation
-                if mapped_affiliation
-                  unc_organizations << mapped_affiliation['mapped_affiliation']
-                else # if the afid matches a known unc afid, but was not mapped, log it and still store it as a unc affiliation
-                  puts "non-mapped affiliation: #{affiliation}"
-                  unc_organizations << affiliation['organization']
+              if !affiliation['organization'].blank?
+                if UNC_SCOPUS_AFIDS.include?(affiliation['afid'])
+                  mapped_affiliation = mapped_affiliations.find{|mapped_dept| (mapped_dept['affiliation_id'] == affiliation['afid'] && mapped_dept['department_id'] == affiliation['dptid'])}
+                  # if affiliation/department combination matches any unc affiliation, then store it as a unc affiliation
+                  if mapped_affiliation
+                    unc_organizations << mapped_affiliation['mapped_affiliation']
+                  else # if the afid matches a known unc afid, but was not mapped, log it and still store it as a unc affiliation
+                    puts "non-mapped affiliation: #{affiliation}"
+                    unc_organizations << affiliation['organization']
+                  end
+                else
+                  if affiliation['organization'].match('UNC')
+                    puts "affiliation which contains 'UNC' but is not in the list of UNC afids: #{author_id}, #{affiliations}"
+                  end
+                  other_organizations << affiliation['organization']
                 end
-              else
-                if affiliation['organization'].match('UNC')
-                  puts "affiliation which contains 'UNC' but is not in the list of UNC afids: #{author_id}, #{affiliations}"
-                end
-                other_organizations << affiliation['organization']
               end
             end
 
@@ -414,7 +416,7 @@ module Tasks
                                      'orcid' => orcid,
                                      'affiliation' => unc_organizations.first,
                                      'other_affiliation' => other_organizations + unc_organizations.drop(1),
-                                     'index' => index+1}.reject{|k,v| v.empty?}
+                                     'index' => index+1}.reject{|k,v| v.blank?}
 
             # verify that first author is first in list
             if index == 0
