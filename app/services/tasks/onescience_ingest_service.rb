@@ -7,6 +7,15 @@ module Tasks
 
     attr_reader :config
 
+    # scopus afid 60025111 = The University of North Carolina at Chapel Hill
+    # scopus afid 60020469 = UNC School of Medicine
+    # scopus afid 60072681 = UNC Project-Malawi
+    # scopus afid 113885172 = UNC Project-China
+    # scopus afid 60013450 = UNC school of dentistry
+    # scopus afid 60005053 = Carolina Population Center
+    # scopus afid 60122501 = UNC business school
+    UNC_SCOPUS_AFIDS = (%w'60025111 60020469 60072681 113885172 60013450 60005053 60122501')
+
     def initialize(args)
       @config = YAML.load_file(args[:configuration_file])
     end
@@ -340,18 +349,18 @@ module Tasks
             department_id = author_group.xpath('affiliation/dptid').text
 
             # add affiliation info to each person in group
-              author_group.xpath('.//author[not(@*)]').each do |author|
-                author_id = author.xpath('auid').text
-                orcid = author.xpath('orcid').text
-                if !organizations.blank? && (!affiliation_id.blank? || !department_id.blank?)
-                  organizations.each do |organization|
-                  record_affiliation_hash[author_id] << {'afid' => affiliation_id,
-                                                         'dptid' => department_id.blank? ? nil : department_id,
-                                                         'organization' => organization.strip.split("\n").map(&:strip).join("; "),
-                                                         'orcid' => orcid}
-                  end
-                else
-                  record_affiliation_hash[author_id] << {'orcid' => orcid}
+            author_group.xpath('.//author[not(@*)]').each do |author|
+              author_id = author.xpath('auid').text
+              orcid = author.xpath('orcid').text
+              if !organizations.blank? && (!affiliation_id.blank? || !department_id.blank?)
+                organizations.each do |organization|
+                record_affiliation_hash[author_id] << {'afid' => affiliation_id,
+                                                       'dptid' => department_id.blank? ? nil : department_id,
+                                                       'organization' => organization.strip.split("\n").map(&:strip).join("; "),
+                                                       'orcid' => orcid}
+                end
+              else
+                record_affiliation_hash[author_id] << {'orcid' => orcid}
               end
             end
           end
@@ -372,15 +381,9 @@ module Tasks
             orcid = nil
             affiliations.each do |affiliation|
               orcid = affiliation['orcid']
+
               # find all unc affiliations by scopus afid
-              # scopus afid 60025111 = The University of North Carolina at Chapel Hill
-              # scopus afid 60020469 = UNC School of Medicine
-              # scopus afid 60072681 = UNC Project-Malawi
-              # scopus afid 113885172 = UNC Project-China
-              # scopus afid 60013450 = UNC school of dentistry
-              # scopus afid 60005053 = Carolina Population Center
-              # scopus afid 60122501 = UNC business school
-              if (%w'60025111 60020469 60072681 113885172 60013450 60005053 60122501').include?(affiliation['afid'])
+              if UNC_SCOPUS_AFIDS.include?(affiliation['afid'])
                 mapped_affiliation = mapped_affiliations.find{|mapped_dept| (mapped_dept['affiliation_id'] == affiliation['afid'] && mapped_dept['department_id'] == affiliation['dptid'])}
                 # if affiliation/department combination matches any unc affiliation, then store it as a unc affiliation
                 if mapped_affiliation
