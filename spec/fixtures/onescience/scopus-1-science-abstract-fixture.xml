@@ -1,0 +1,646 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<htt-party-responses type="array">
+  <htt-party-response>
+    <abstracts-retrieval-response>
+      <coredata>
+        <url>https://api.elsevier.com/content/abstract/scopus_id/85016552577</url>
+        <identifier>SCOPUS_ID:85016552577</identifier>
+        <eid>2-s2.0-85016552577</eid>
+        <pubmed-id>28273043</pubmed-id>
+        <doi>10.18632/aging.101162</doi>
+        <title>Frailty and inflammatory markers in older adults with cancer</title>
+        <aggregationType>Journal</aggregationType>
+        <srctype>j</srctype>
+        <subtype>ar</subtype>
+        <subtypeDescription>Article</subtypeDescription>
+        <citedby-count>13</citedby-count>
+        <publicationName>Aging</publicationName>
+        <publisher>Impact Journals LLCeditors@impactaging.com</publisher>
+        <source-id>71628</source-id>
+        <issn>19454589</issn>
+        <volume>9</volume>
+        <issueIdentifier>3</issueIdentifier>
+        <startingPage>650</startingPage>
+        <endingPage>664</endingPage>
+        <pageRange>650-664</pageRange>
+        <coverDate>2017-01-01</coverDate>
+        <openaccess>2</openaccess>
+        <openaccessFlag nil="true"/>
+        <creator>
+          <author>
+            <initials>T.F.</initials>
+            <indexed-name>Nishijima T.F.</indexed-name>
+            <surname>Nishijima</surname>
+            <given-name>Tomohiro F.</given-name>
+            <preferred-name>
+              <initials>T.F.</initials>
+              <indexed-name>Nishijima T.</indexed-name>
+              <surname>Nishijima</surname>
+              <given-name>Tomohiro F.</given-name>
+            </preferred-name>
+            <author-url>https://api.elsevier.com/content/author/author_id/56921604800</author-url>
+            <affiliation>
+              <id>60025111</id>
+              <href>https://api.elsevier.com/content/affiliation/affiliation_id/60025111</href>
+            </affiliation>
+            <seq>1</seq>
+            <auid>56921604800</auid>
+          </author>
+        </creator>
+        <description>
+          <abstract>
+            <para>We examined the associations between frailty and inflammatory markers, in particular neutrophil lymphocyte ratio (NLR), in elderly cancer patients. We conducted cross-sectional analyses of data derived from the Carolina Seniors Registry (CSR), a database of geriatric assessments (GA) in older adults (≧65 years) with cancer. We included patients in the CSR who had a GA and complete blood count test before initiation of therapy. The primary outcome was frailty, determined using the 36-item Carolina Frailty Index (CFI). In our sample of 133 patients, the median age was 74, and 54% were robust, 22% were pre-frail, and 24% were frail. There was a significant positive correlation between CFI and NLR (r = 0.22, p = 0.025). In multivariable analysis, patients in the top tertile of NLR had an odds ratio of 3.8 (95% CI = 1.1-12.8) for frail/pre-frail status, adjusting for age, sex, race, education level, marital status, cancer type and stage. In bivariable analyses, higher NLR was associated with lower instrumental activity of daily living (IADL) score (p = 0.040) and prolonged timed up and go (p = 0.016). This study suggests an association between frailty and inflammation in older adults with cancer.</para>
+            <original>y</original>
+            <lang>eng</lang>
+          </abstract>
+        </description>
+        <link type="array">
+          <link>
+            <href>https://api.elsevier.com/content/abstract/scopus_id/85016552577</href>
+            <rel>self</rel>
+          </link>
+          <link>
+            <href>https://www.scopus.com/inward/record.uri?partnerID=HzOxMe3b&amp;scp=85016552577&amp;origin=inward</href>
+            <rel>scopus</rel>
+          </link>
+          <link>
+            <href>https://www.scopus.com/inward/citedby.uri?partnerID=HzOxMe3b&amp;scp=85016552577&amp;origin=inward</href>
+            <rel>scopus-citedby</rel>
+          </link>
+        </link>
+      </coredata>
+      <affiliation type="array">
+        <affiliation>
+          <affilname>University of Wisconsin-Madison</affilname>
+          <affiliation-city>Madison</affiliation-city>
+          <affiliation-country>United States</affiliation-country>
+          <id>60032179</id>
+          <href>https://api.elsevier.com/content/affiliation/affiliation_id/60032179</href>
+        </affiliation>
+        <affiliation>
+          <affilname>The University of Alabama at Birmingham</affilname>
+          <affiliation-city>Birmingham</affiliation-city>
+          <affiliation-country>United States</affiliation-country>
+          <id>60027086</id>
+          <href>https://api.elsevier.com/content/affiliation/affiliation_id/60027086</href>
+        </affiliation>
+        <affiliation>
+          <affilname>The University of North Carolina at Chapel Hill</affilname>
+          <affiliation-city>Chapel Hill</affiliation-city>
+          <affiliation-country>United States</affiliation-country>
+          <id>60025111</id>
+          <href>https://api.elsevier.com/content/affiliation/affiliation_id/60025111</href>
+        </affiliation>
+      </affiliation>
+      <authors>
+        <author type="array">
+          <author>
+            <initials>T.F.</initials>
+            <indexed-name>Nishijima T.F.</indexed-name>
+            <surname>Nishijima</surname>
+            <given-name>Tomohiro F.</given-name>
+            <preferred-name>
+              <initials>T.F.</initials>
+              <indexed-name>Nishijima T.</indexed-name>
+              <surname>Nishijima</surname>
+              <given-name>Tomohiro F.</given-name>
+            </preferred-name>
+            <author-url>https://api.elsevier.com/content/author/author_id/56921604800</author-url>
+            <affiliation>
+              <id>60025111</id>
+              <href>https://api.elsevier.com/content/affiliation/affiliation_id/60025111</href>
+            </affiliation>
+            <seq>1</seq>
+            <auid>56921604800</auid>
+          </author>
+          <author>
+            <initials>A.M.</initials>
+            <indexed-name>Deal A.M.</indexed-name>
+            <surname>Deal</surname>
+            <given-name>Allison M.</given-name>
+            <preferred-name>
+              <initials>A.M.</initials>
+              <indexed-name>Deal A.</indexed-name>
+              <surname>Deal</surname>
+              <given-name>Allison M.</given-name>
+            </preferred-name>
+            <author-url>https://api.elsevier.com/content/author/author_id/25924883500</author-url>
+            <affiliation>
+              <id>60025111</id>
+              <href>https://api.elsevier.com/content/affiliation/affiliation_id/60025111</href>
+            </affiliation>
+            <seq>2</seq>
+            <auid>25924883500</auid>
+          </author>
+          <author>
+            <initials>G.R.</initials>
+            <indexed-name>Williams G.R.</indexed-name>
+            <surname>Williams</surname>
+            <given-name>Grant R.</given-name>
+            <preferred-name>
+              <initials>G.R.</initials>
+              <indexed-name>Williams G.</indexed-name>
+              <surname>Williams</surname>
+              <given-name>Grant R.</given-name>
+            </preferred-name>
+            <author-url>https://api.elsevier.com/content/author/author_id/55303790200</author-url>
+            <affiliation type="array">
+              <affiliation>
+                <id>60025111</id>
+                <href>https://api.elsevier.com/content/affiliation/affiliation_id/60025111</href>
+              </affiliation>
+              <affiliation>
+                <id>60027086</id>
+                <href>https://api.elsevier.com/content/affiliation/affiliation_id/60027086</href>
+              </affiliation>
+            </affiliation>
+            <seq>3</seq>
+            <auid>55303790200</auid>
+          </author>
+          <author>
+            <initials>E.J.</initials>
+            <indexed-name>Guerard E.J.</indexed-name>
+            <surname>Guerard</surname>
+            <given-name>Emily J.</given-name>
+            <preferred-name>
+              <initials>E.J.</initials>
+              <indexed-name>Guerard E.</indexed-name>
+              <surname>Guerard</surname>
+              <given-name>Emily J.</given-name>
+            </preferred-name>
+            <author-url>https://api.elsevier.com/content/author/author_id/56698375700</author-url>
+            <affiliation type="array">
+              <affiliation>
+                <id>60025111</id>
+                <href>https://api.elsevier.com/content/affiliation/affiliation_id/60025111</href>
+              </affiliation>
+              <affiliation>
+                <id>60032179</id>
+                <href>https://api.elsevier.com/content/affiliation/affiliation_id/60032179</href>
+              </affiliation>
+            </affiliation>
+            <seq>4</seq>
+            <auid>56698375700</auid>
+          </author>
+          <author>
+            <initials>K.A.</initials>
+            <indexed-name>Nyrop K.A.</indexed-name>
+            <surname>Nyrop</surname>
+            <given-name>Kirsten A.</given-name>
+            <preferred-name>
+              <initials>K.A.</initials>
+              <indexed-name>Nyrop K.</indexed-name>
+              <surname>Nyrop</surname>
+              <given-name>Kirsten A.</given-name>
+            </preferred-name>
+            <author-url>https://api.elsevier.com/content/author/author_id/16646444100</author-url>
+            <affiliation>
+              <id>60025111</id>
+              <href>https://api.elsevier.com/content/affiliation/affiliation_id/60025111</href>
+            </affiliation>
+            <seq>5</seq>
+            <auid>16646444100</auid>
+          </author>
+          <author>
+            <initials>H.B.</initials>
+            <indexed-name>Muss H.B.</indexed-name>
+            <surname>Muss</surname>
+            <given-name>Hyman B.</given-name>
+            <preferred-name>
+              <initials>H.B.</initials>
+              <indexed-name>Muss H.</indexed-name>
+              <surname>Muss</surname>
+              <given-name>Hyman B.</given-name>
+            </preferred-name>
+            <author-url>https://api.elsevier.com/content/author/author_id/7101963710</author-url>
+            <affiliation>
+              <id>60025111</id>
+              <href>https://api.elsevier.com/content/affiliation/affiliation_id/60025111</href>
+            </affiliation>
+            <seq>6</seq>
+            <auid>7101963710</auid>
+          </author>
+        </author>
+      </authors>
+      <language>
+        <lang>eng</lang>
+      </language>
+      <authkeywords>
+        <author-keyword type="array">
+          <author-keyword>Frailty</author-keyword>
+          <author-keyword>Inflammatory markers</author-keyword>
+          <author-keyword>Lymphocyte monocyte ratio (LMR)</author-keyword>
+          <author-keyword>Neutrophil lymphocyte ratio (NLR)</author-keyword>
+          <author-keyword>Older adults with cancer</author-keyword>
+        </author-keyword>
+      </authkeywords>
+      <idxterms>
+        <mainterm type="array">
+          <mainterm>
+            <__content__>Aged</__content__>
+            <weight>b</weight>
+            <candidate>n</candidate>
+          </mainterm>
+          <mainterm>
+            <__content__>Aged, 80 and over</__content__>
+            <weight>b</weight>
+            <candidate>n</candidate>
+          </mainterm>
+          <mainterm>
+            <__content__>Biomarkers, Tumor</__content__>
+            <weight>b</weight>
+            <candidate>n</candidate>
+          </mainterm>
+          <mainterm>
+            <__content__>Cross-Sectional Studies</__content__>
+            <weight>b</weight>
+            <candidate>n</candidate>
+          </mainterm>
+          <mainterm>
+            <__content__>Female</__content__>
+            <weight>b</weight>
+            <candidate>n</candidate>
+          </mainterm>
+          <mainterm>
+            <__content__>Frail Elderly</__content__>
+            <weight>a</weight>
+            <candidate>n</candidate>
+          </mainterm>
+          <mainterm>
+            <__content__>Geriatric Assessment</__content__>
+            <weight>b</weight>
+            <candidate>n</candidate>
+          </mainterm>
+          <mainterm>
+            <__content__>Humans</__content__>
+            <weight>b</weight>
+            <candidate>n</candidate>
+          </mainterm>
+          <mainterm>
+            <__content__>Inflammation</__content__>
+            <weight>a</weight>
+            <candidate>n</candidate>
+          </mainterm>
+          <mainterm>
+            <__content__>Lymphocyte Count</__content__>
+            <weight>b</weight>
+            <candidate>n</candidate>
+          </mainterm>
+          <mainterm>
+            <__content__>Male</__content__>
+            <weight>b</weight>
+            <candidate>n</candidate>
+          </mainterm>
+          <mainterm>
+            <__content__>Neoplasms</__content__>
+            <weight>a</weight>
+            <candidate>n</candidate>
+          </mainterm>
+          <mainterm>
+            <__content__>Neutrophils</__content__>
+            <weight>b</weight>
+            <candidate>n</candidate>
+          </mainterm>
+        </mainterm>
+      </idxterms>
+      <subject-areas>
+        <subject-area type="array">
+          <subject-area>
+            <__content__>Aging</__content__>
+            <code>1302</code>
+            <abbrev>BIOC</abbrev>
+          </subject-area>
+          <subject-area>
+            <__content__>Cell Biology</__content__>
+            <code>1307</code>
+            <abbrev>BIOC</abbrev>
+          </subject-area>
+        </subject-area>
+      </subject-areas>
+      <item>
+        <meta>
+          <funding-list>
+            <funding-addon-generated-timestamp>2017-11-17T00:35:16.246Z</funding-addon-generated-timestamp>
+            <funding-addon-type>http://vtw.elsevier.com/data/voc/AddOnTypes/50.7/nlp</funding-addon-type>
+            <has-funding-info>1</has-funding-info>
+            <pui-match>primary</pui-match>
+          </funding-list>
+        </meta>
+        <process-info>
+          <date-delivered>
+            <year>2020</year>
+            <month>01</month>
+            <day>24</day>
+            <timestamp>2020-01-24T23:31:18.000018-05:00</timestamp>
+          </date-delivered>
+          <date-sort>
+            <year>2017</year>
+            <month>01</month>
+            <day>01</day>
+          </date-sort>
+          <status>
+            <type>core</type>
+            <state>update</state>
+            <stage>S300</stage>
+          </status>
+        </process-info>
+        <bibrecord>
+          <item-info>
+            <copyright>
+              <__content__>Copyright 2017 Elsevier B.V., All rights reserved.</__content__>
+              <type>Elsevier</type>
+            </copyright>
+            <itemidlist>
+              <doi>10.18632/aging.101162</doi>
+              <itemid type="array">
+                <itemid>
+                  <__content__>615144085</__content__>
+                  <idtype>PUI</idtype>
+                </itemid>
+                <itemid>
+                  <__content__>662827830</__content__>
+                  <idtype>CAR-ID</idtype>
+                </itemid>
+                <itemid>
+                  <__content__>2017118973</__content__>
+                  <idtype>NURSNG</idtype>
+                </itemid>
+                <itemid>
+                  <__content__>20170606205</__content__>
+                  <idtype>REAXYSCAR</idtype>
+                </itemid>
+                <itemid>
+                  <__content__>2017047697</__content__>
+                  <idtype>SNEMB</idtype>
+                </itemid>
+                <itemid>
+                  <__content__>85016552577</__content__>
+                  <idtype>SCP</idtype>
+                </itemid>
+                <itemid>
+                  <__content__>85016552577</__content__>
+                  <idtype>SGR</idtype>
+                </itemid>
+                <itemid>
+                  <__content__>619236602</__content__>
+                  <idtype>PUIsecondary</idtype>
+                </itemid>
+                <itemid>
+                  <__content__>28273043</__content__>
+                  <idtype>MEDL</idtype>
+                </itemid>
+              </itemid>
+            </itemidlist>
+            <history>
+              <date-created>
+                <year>2017</year>
+                <month>04</month>
+                <day>06</day>
+                <timestamp>BST 10:08:22</timestamp>
+              </date-created>
+            </history>
+            <dbcollection type="array">
+              <dbcollection>NURSNG</dbcollection>
+              <dbcollection>REAXYSCAR</dbcollection>
+              <dbcollection>SNEMB</dbcollection>
+              <dbcollection>SCOPUS</dbcollection>
+              <dbcollection>Scopusbase</dbcollection>
+              <dbcollection>MEDL</dbcollection>
+            </dbcollection>
+          </item-info>
+          <head>
+            <citation-info>
+              <citation-type>
+                <code>ar</code>
+              </citation-type>
+              <citation-language>
+                <lang>eng</lang>
+                <language>English</language>
+              </citation-language>
+              <abstract-language>
+                <lang>eng</lang>
+                <language>English</language>
+              </abstract-language>
+              <author-keywords>
+                <author-keyword type="array">
+                  <author-keyword>
+                    <__content__>Frailty</__content__>
+                    <lang>eng</lang>
+                  </author-keyword>
+                  <author-keyword>
+                    <__content__>Inflammatory markers</__content__>
+                    <lang>eng</lang>
+                  </author-keyword>
+                  <author-keyword>
+                    <__content__>Lymphocyte monocyte ratio (LMR)</__content__>
+                    <lang>eng</lang>
+                  </author-keyword>
+                  <author-keyword>
+                    <__content__>Neutrophil lymphocyte ratio (NLR)</__content__>
+                    <lang>eng</lang>
+                  </author-keyword>
+                  <author-keyword>
+                    <__content__>Older adults with cancer</__content__>
+                    <lang>eng</lang>
+                  </author-keyword>
+                </author-keyword>
+              </author-keywords>
+            </citation-info>
+            <citation-title>
+              <titletext>
+                <__content__>Frailty and inflammatory markers in older adults with cancer</__content__>
+                <lang>eng</lang>
+                <original>y</original>
+                <language>English</language>
+              </titletext>
+            </citation-title>
+            <author-group type="array">
+              <author-group>
+                <author type="array">
+                  <author>
+                    <initials>T.F.</initials>
+                    <indexed-name>Nishijima T.F.</indexed-name>
+                    <surname>Nishijima</surname>
+                    <given-name>Tomohiro F.</given-name>
+                    <preferred-name>
+                      <initials>T.F.</initials>
+                      <indexed-name>Nishijima T.</indexed-name>
+                      <surname>Nishijima</surname>
+                      <given-name>Tomohiro F.</given-name>
+                    </preferred-name>
+                    <auid>56921604800</auid>
+                    <seq>1</seq>
+                    <type>auth</type>
+                  </author>
+                  <author>
+                    <initials>A.M.</initials>
+                    <indexed-name>Deal A.M.</indexed-name>
+                    <surname>Deal</surname>
+                    <given-name>Allison M.</given-name>
+                    <preferred-name>
+                      <initials>A.M.</initials>
+                      <indexed-name>Deal A.</indexed-name>
+                      <surname>Deal</surname>
+                      <given-name>Allison M.</given-name>
+                    </preferred-name>
+                    <auid>25924883500</auid>
+                    <seq>2</seq>
+                    <type>auth</type>
+                  </author>
+                  <author>
+                    <initials>G.R.</initials>
+                    <indexed-name>Williams G.R.</indexed-name>
+                    <surname>Williams</surname>
+                    <given-name>Grant R.</given-name>
+                    <preferred-name>
+                      <initials>G.R.</initials>
+                      <indexed-name>Williams G.</indexed-name>
+                      <surname>Williams</surname>
+                      <given-name>Grant R.</given-name>
+                    </preferred-name>
+                    <auid>55303790200</auid>
+                    <seq>3</seq>
+                    <type>auth</type>
+                    <date-locked>2018-04-30T16:33:14.155</date-locked>
+                  </author>
+                  <author>
+                    <initials>E.J.</initials>
+                    <indexed-name>Guerard E.J.</indexed-name>
+                    <surname>Guerard</surname>
+                    <given-name>Emily J.</given-name>
+                    <preferred-name>
+                      <initials>E.J.</initials>
+                      <indexed-name>Guerard E.</indexed-name>
+                      <surname>Guerard</surname>
+                      <given-name>Emily J.</given-name>
+                    </preferred-name>
+                    <auid>56698375700</auid>
+                    <seq>4</seq>
+                    <type>auth</type>
+                  </author>
+                  <author>
+                    <initials>K.A.</initials>
+                    <indexed-name>Nyrop K.A.</indexed-name>
+                    <surname>Nyrop</surname>
+                    <given-name>Kirsten A.</given-name>
+                    <preferred-name>
+                      <initials>K.A.</initials>
+                      <indexed-name>Nyrop K.</indexed-name>
+                      <surname>Nyrop</surname>
+                      <given-name>Kirsten A.</given-name>
+                    </preferred-name>
+                    <auid>16646444100</auid>
+                    <seq>5</seq>
+                    <type>auth</type>
+                  </author>
+                  <author>
+                    <initials>H.B.</initials>
+                    <indexed-name>Muss H.B.</indexed-name>
+                    <surname>Muss</surname>
+                    <given-name>Hyman B.</given-name>
+                    <preferred-name>
+                      <initials>H.B.</initials>
+                      <indexed-name>Muss H.</indexed-name>
+                      <surname>Muss</surname>
+                      <given-name>Hyman B.</given-name>
+                    </preferred-name>
+                    <auid>7101963710</auid>
+                    <seq>6</seq>
+                    <type>auth</type>
+                  </author>
+                </author>
+                <affiliation>
+                  <organization>UNC Lineberger Comprehensive Cancer Center</organization>
+                  <city>Chapel Hill</city>
+                  <state>NC</state>
+                  <postal-code>27599</postal-code>
+                  <affiliation-id>
+                    <afid>60025111</afid>
+                  </affiliation-id>
+                  <country type="array">
+                    <country>usa</country>
+                    <country>United States</country>
+                  </country>
+                  <afid>60025111</afid>
+                </affiliation>
+              </author-group>
+              <author-group>
+                <author>
+                  <initials>G.R.</initials>
+                  <indexed-name>Williams G.R.</indexed-name>
+                  <surname>Williams</surname>
+                  <given-name>Grant R.</given-name>
+                  <preferred-name>
+                    <initials>G.R.</initials>
+                    <indexed-name>Williams G.</indexed-name>
+                    <surname>Williams</surname>
+                    <given-name>Grant R.</given-name>
+                  </preferred-name>
+                  <auid>55303790200</auid>
+                  <seq>3</seq>
+                  <type>auth</type>
+                  <date-locked>2018-04-30T16:33:14.155</date-locked>
+                </author>
+                <affiliation>
+                  <organization type="array">
+                    <organization>University of Alabama at Birmingham</organization>
+                    <organization>Division of Hematology and Oncology</organization>
+                  </organization>
+                  <city>Birmingham</city>
+                  <state>AL</state>
+                  <postal-code>35294</postal-code>
+                  <affiliation-id>
+                    <afid>60027086</afid>
+                    <dptid>110180311</dptid>
+                  </affiliation-id>
+                  <country type="array">
+                    <country>usa</country>
+                    <country>United States</country>
+                  </country>
+                  <afid>60027086</afid>
+                  <dptid>110180311</dptid>
+                </affiliation>
+              </author-group>
+              <author-group>
+                <author>
+                  <initials>E.J.</initials>
+                  <indexed-name>Guerard E.J.</indexed-name>
+                  <surname>Guerard</surname>
+                  <given-name>Emily J.</given-name>
+                  <preferred-name>
+                    <initials>E.J.</initials>
+                    <indexed-name>Guerard E.</indexed-name>
+                    <surname>Guerard</surname>
+                    <given-name>Emily J.</given-name>
+                  </preferred-name>
+                  <auid>56698375700</auid>
+                  <seq>4</seq>
+                  <type>auth</type>
+                </author>
+                <affiliation>
+                  <organization type="array">
+                    <organization>University of Wisconsin</organization>
+                    <organization>Division of Hematology and Oncology</organization>
+                  </organization>
+                  <city>Madison</city>
+                  <state>WI</state>
+                  <postal-code>53792-5669</postal-code>
+                  <affiliation-id>
+                    <afid>60032179</afid>
+                    <dptid>112667118</dptid>
+                  </affiliation-id>
+                  <country type="array">
+                    <country>usa</country>
+                    <country>United States</country>
+                  </country>
+                  <afid>60032179</afid>
+                  <dptid>112667118</dptid>
+                </affiliation>
+              </author-group>
+            </author-group>
+          </head>
+        </bibrecord>
+      </item>
+    </abstracts-retrieval-response>
+  </htt-party-response>
+</htt-party-responses>

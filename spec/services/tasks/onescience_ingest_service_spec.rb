@@ -23,7 +23,10 @@ RSpec.describe Tasks::OnescienceIngestService do
                                          'deposit_method' => 'rake task',
                                          'deposit_type' => 'a type',
                                          'deposit_subtype' => 'a subtype',
-                                         'deposit_record_id_log' => 'spec/fixtures/onescience/1science_deposit_record_id.log'
+                                         'deposit_record_id_log' => 'spec/fixtures/onescience/1science_deposit_record_id.log',
+                                         'scopus_xml_file' => 'scopus-1-science-abstract-fixture.xml',
+                                         'mapped_scopus_affiliations' => 'scoups_departments-mapped.csv',
+                                         'multiple_unc_affiliations' => 'spec/fixtures/onescience/multiple_unc_affiliations.tsv'
                                 )
     end
   end
@@ -65,6 +68,7 @@ RSpec.describe Tasks::OnescienceIngestService do
     after do
       File.delete('spec/fixtures/onescience/1science_completed.log')
       File.delete('spec/fixtures/onescience/1science_deposit_record_id.log')
+      File.delete('spec/fixtures/onescience/multiple_unc_affiliations.tsv')
     end
 
     it "creates a new work" do
@@ -104,26 +108,20 @@ RSpec.describe Tasks::OnescienceIngestService do
     it 'parses data for onescience record' do
       service = Tasks::OnescienceIngestService.new(args)
       service.instance_variable_set(:@affiliation_mapping, [{'onescience_id' => '12345', 'lastname_author1' => 'Smith', 'firstname_author1' => 'John'}])
+      service.instance_variable_set(:@scopus_hash, {'a doi' =>{'0' => {'name' => 'Smith, John', 'index' => '1'}}})
+      service.instance_variable_set(:@deposit_record_id, 'some deposit record id')
       work_attributes, files = service.parse_onescience_metadata(data)
       expect(work_attributes).to include({"identifier"=>["Onescience id: 12345"],
-                                       "date_issued"=>"",
                                        "title"=>"An article title",
                                        "label"=>"An article title",
-                                       "journal_title"=>nil,
-                                       "journal_volume"=>"",
-                                       "journal_issue"=>"",
-                                       "page_start"=>"",
-                                       "page_end"=>"",
-                                       "abstract"=>nil,
                                        "creators_attributes"=>{0=>{"name"=>"Smith, John", "orcid"=>nil, "affiliation"=>nil, "index" => 1}},
                                        "resource_type"=>"Article",
                                        "language"=>"http://id.loc.gov/vocabulary/iso639-2/eng",
                                        "language_label"=>"English",
                                        "dcmi_type"=>"http://purl.org/dc/dcmitype/Text",
-                                       "admin_set_id"=>nil,
                                        "rights_statement"=>"http://rightsstatements.org/vocab/InC/1.0/",
                                        "rights_statement_label"=>"In Copyright",
-                                       "deposit_record"=>nil})
+                                       "deposit_record"=>'some deposit record id'})
       expect(files).to be {}
     end
   end
@@ -132,8 +130,9 @@ RSpec.describe Tasks::OnescienceIngestService do
     it 'creates attribute hashes for people obejcts' do
       service = Tasks::OnescienceIngestService.new(args)
       service.instance_variable_set(:@affiliation_mapping, [{'onescience_id' => '12345', 'lastname_author1' => 'Smith', 'firstname_author1' => 'John'}])
-      people = service.get_people('12345')
-      expect(people).to include()
+      service.instance_variable_set(:@scopus_hash, {'a doi' => {'0' => {'name' => 'Smith, John', 'index' => '1'}}})
+      people = service.get_people('12345', 'a doi')
+      expect(people).to include({'0' => {'name' => 'Smith, John', 'index' => '1'}})
     end
   end
 end

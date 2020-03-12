@@ -7,6 +7,15 @@ module Tasks
 
     attr_reader :config
 
+    # scopus afid 60025111 = The University of North Carolina at Chapel Hill
+    # scopus afid 60020469 = UNC School of Medicine
+    # scopus afid 60072681 = UNC Project-Malawi
+    # scopus afid 113885172 = UNC Project-China
+    # scopus afid 60013450 = UNC school of dentistry
+    # scopus afid 60005053 = Carolina Population Center
+    # scopus afid 60122501 = UNC business school
+    UNC_SCOPUS_AFIDS = (%w'60025111 60020469 60072681 113885172 60013450 60005053 60122501')
+
     def initialize(args)
       @config = YAML.load_file(args[:configuration_file])
     end
@@ -184,13 +193,17 @@ module Tasks
     end
 
     def load_data
+      # load scopus xml data
+      load_scopus_data
+
       # get list of pdf files
-      @pdf_files = Dir.glob("#{@pdf_dir}/**/*.pdf")
+      @pdf_files = Dir.glob("#{@config['pdf_dir']}/**/*.pdf")
+      puts "[#{Time.now}] found #{@pdf_files.count} files"
 
       # read from affiliation spreadsheet
       @affiliation_mapping = []
       @config['affiliation_files'].each do |affiliation_file|
-        workbook = Roo::Spreadsheet.open(@config['metadata_dir']+'/'+affiliation_file)
+        workbook = Roo::Spreadsheet.open(File.join(@config['metadata_dir'], affiliation_file))
         sheets = workbook.sheets
         sheets.each do |sheet|
           data_hash = workbook.sheet(sheet).parse(headers: true)
@@ -203,11 +216,11 @@ module Tasks
       puts "[#{Time.now}] loaded affiliation mappings"
 
       # read from embargo spreadsheet
-      @embargo_mapping = CSV.read(@config['metadata_dir']+'/'+@config['embargo_file'], headers: true)
+      @embargo_mapping = CSV.read(File.join(@config['metadata_dir'], @config['embargo_file']), headers: true)
       puts "[#{Time.now}] loaded embargo mappings"
 
       # read from xlsx in projects folder
-      workbook = Roo::Spreadsheet.open(@config['metadata_dir']+'/'+@config['metadata_file'])
+      workbook = Roo::Spreadsheet.open(File.join(@config['metadata_dir'], @config['metadata_file']))
       sheets = workbook.sheets
       @data = []
       sheets.each do |sheet|
@@ -224,7 +237,7 @@ module Tasks
 
     def create_deposit_record
       if File.exist?(@config['deposit_record_id_log']) && !(File.open(@config['deposit_record_id_log']) {|f| f.readline}).blank?
-        @deposit_record_id = File.open(@config['deposit_record_id_log']) {|f| f.readline}
+        @deposit_record_id = (File.open(@config['deposit_record_id_log']) {|f| f.readline}).strip
         puts "[#{Time.now}] loaded deposit record id for batch"
       else
         deposit_record = DepositRecord.new({ title: @config['deposit_title'],
@@ -235,7 +248,7 @@ module Tasks
         # attach metadata file to deposit record
         original_metadata = FedoraOnlyFile.new({'title' => @config['metadata_file'],
                                                 'deposit_record' => deposit_record})
-        original_metadata.file.content = File.open(@config['metadata_dir']+'/'+@config['metadata_file'])
+        original_metadata.file.content = File.open(File.join(@config['metadata_dir'], @config['metadata_file']))
         original_metadata.save!
         deposit_record[:manifest] = [original_metadata.uri]
         deposit_record.save!
@@ -265,7 +278,7 @@ module Tasks
       work_attributes['issn'] = onescience_data['ISSNs'].split('||') if !onescience_data['ISSNs'].blank?
       work_attributes['abstract'] = onescience_data['Abstract']
       work_attributes['keyword'] = onescience_data['Keywords'].split('||') if !onescience_data['Keywords'].blank?
-      work_attributes['creators_attributes'] = get_people(onescience_data['onescience_id'])
+      work_attributes['creators_attributes'] = get_people(onescience_data['onescience_id'], onescience_data['DOI'])
       work_attributes['resource_type'] = 'Article'
       work_attributes['language'] = 'http://id.loc.gov/vocabulary/iso639-2/eng'
       work_attributes['language_label'] = 'English'
@@ -276,23 +289,152 @@ module Tasks
       work_attributes['deposit_record'] = @deposit_record_id
       files = onescience_data.select { |k,v| k['Files'] && !v.blank? }
 
+      work_attributes.reject!{|k,v| v.blank?}
+
       [work_attributes, files]
     end
 
-    def get_people(onescience_id)
+    def get_people(onescience_id, doi)
       people = {}
-      affiliation_data = @affiliation_mapping.find{ |e| e['onescience_id'] == onescience_id }
-      (1..32).each do |index|
-        break if affiliation_data['lastname_author'+index.to_s].blank? || affiliation_data['firstname_author'+index.to_s].blank?
-        name = "#{affiliation_data['lastname_author'+index.to_s]}, #{affiliation_data['firstname_author'+index.to_s]}"
-        affiliations = affiliation_data['affiliation_author'+index.to_s]
-        people[index-1] = { 'name' => name,
-                            'orcid' => affiliation_data['ORCID_author'+index.to_s],
-                            'affiliation' => (affiliations.split('||') if !affiliations.blank?),
-                            'index' => index}
+      if !@scopus_hash[doi].blank?
+        people = @scopus_hash[doi]
+      else
+        affiliation_data = @affiliation_mapping.find{ |e| e['onescience_id'] == onescience_id }
+        # check all author-related columns in 1science spreadsheets with data
+        (1..32).each do |index|
+          break if affiliation_data['lastname_author'+index.to_s].blank? || affiliation_data['firstname_author'+index.to_s].blank?
+          name = "#{affiliation_data['lastname_author'+index.to_s]}, #{affiliation_data['firstname_author'+index.to_s]}"
+          affiliations = affiliation_data['affiliation_author'+index.to_s]
+          people[index-1] = { 'name' => name,
+                              'orcid' => affiliation_data['ORCID_author'+index.to_s],
+                              'affiliation' => (affiliations.split('||') if !affiliations.blank?),
+                              'index' => index}
+        end
       end
 
       people
+    end
+
+    # make hash of data with doi as key
+    # authors, author order, author affiliations
+    def load_scopus_data
+      @scopus_hash = Hash.new
+
+      scopus_file = File.read(File.join(@config['metadata_dir'], @config['scopus_xml_file']))
+      mapped_affiliations = CSV.read(File.join(@config['metadata_dir'], @config['mapped_scopus_affiliations']), headers: true)
+      puts "[#{Time.now}] loaded scopus files"
+      responses = scopus_file.split(/\<htt-party-response\>/)
+      responses.delete_at(0)
+
+      # add headers to file documenting people info for each record
+      File.open(@config['multiple_unc_affiliations'], 'w') do |f|
+        f.puts "doi\tmultiple?\tauthor_id\tname\torcid\taffiliation\tother affiliation\tindex"
+      end
+
+      responses.each do |response|
+        # parse xml
+        scopus_xml = Nokogiri::XML(response)
+
+        # find author-affiliation groupings
+        author_groups = scopus_xml.xpath('//abstracts-retrieval-response//author-group[not(@*)]')
+        record_doi = scopus_xml.xpath('//coredata/doi').text
+
+        record_affiliation_hash = Hash.new { |h, k| h[k] = [] }
+        begin
+          # create array for each person for current record
+          author_groups.each do |author_group|
+            # get affiliation info
+            organizations = author_group.xpath('affiliation/organization').map(&:text)
+            affiliation_id = author_group.xpath('affiliation/afid').text
+            department_id = author_group.xpath('affiliation/dptid').text
+
+            # add affiliation info to each person in group
+            author_group.xpath('.//author[not(@*)]').each do |author|
+              author_id = author.xpath('auid').text
+              orcid = author.xpath('orcid').text
+              if !organizations.blank? && (!affiliation_id.blank? || !department_id.blank?)
+                organizations.each do |organization|
+                record_affiliation_hash[author_id] << {'afid' => affiliation_id,
+                                                       'dptid' => department_id.blank? ? nil : department_id,
+                                                       'organization' => organization.strip.split("\n").map(&:strip).join("; "),
+                                                       'orcid' => orcid}
+                end
+              else
+                record_affiliation_hash[author_id] << {'orcid' => orcid}
+              end
+            end
+          end
+
+          # create hash of people for record
+          record_authors = Hash.new
+          first_author = scopus_xml.xpath('//coredata/creator/author/author-url').text
+          scopus_xml.xpath('//abstracts-retrieval-response/authors/author/author').each_with_index do |author, index|
+            # get person info
+            surname = author.xpath('surname').text
+            given_name = author.xpath('given-name').text
+            author_id = author.xpath('auid').text
+            affiliations = record_affiliation_hash[author_id]
+
+            # split unc from external affiliations
+            unc_organizations = []
+            other_organizations = []
+            orcid = nil
+            affiliations.each do |affiliation|
+              orcid = affiliation['orcid']
+
+              # find all unc affiliations by scopus afid
+              if !affiliation['organization'].blank?
+                if UNC_SCOPUS_AFIDS.include?(affiliation['afid'])
+                  mapped_affiliation = mapped_affiliations.find{|mapped_dept| (mapped_dept['affiliation_id'] == affiliation['afid'] && mapped_dept['department_id'] == affiliation['dptid'])}
+                  # if affiliation/department combination matches any unc affiliation, then store it as a unc affiliation
+                  if mapped_affiliation
+                    unc_organizations << mapped_affiliation['mapped_affiliation']
+                  else # if the afid matches a known unc afid, but was not mapped, log it and still store it as a unc affiliation
+                    puts "non-mapped affiliation: #{affiliation}"
+                    unc_organizations << affiliation['organization']
+                  end
+                else
+                  if affiliation['organization'].match('UNC')
+                    puts "affiliation which contains 'UNC' but is not in the list of UNC afids: #{author_id}, #{affiliations}"
+                  end
+                  other_organizations << affiliation['organization']
+                end
+              end
+            end
+
+            # log record-person-affiliation data for restoring multiple affiliations later
+            multiple = 'false'
+            if unc_organizations.count > 1
+              multiple = 'true'
+            end
+            File.open(@config['multiple_unc_affiliations'], 'a+')  do |f|
+              f.puts "#{record_doi}\t#{multiple}\t#{author_id}\t#{surname}, #{given_name}\t#{orcid}\t#{unc_organizations.join('||')}\t#{other_organizations.join('||')}\t#{index+1}"
+            end
+
+            # create hash for person with index value
+            record_authors[index] = {'name' => surname+', '+given_name,
+                                     'orcid' => orcid,
+                                     'affiliation' => unc_organizations.first,
+                                     'other_affiliation' => other_organizations + unc_organizations.drop(1),
+                                     'index' => index+1}.reject{|k,v| v.blank?}
+
+            # verify that first author is first in list
+            if index == 0
+              author_url = author.xpath('author-url').text
+              if author_url != first_author
+                puts 'authors not in correct order '+first_author
+              end
+            end
+          end
+
+          @scopus_hash[record_doi] = record_authors
+        rescue => e
+          puts e.message, e.backtrace
+          puts author_groups
+        end
+      end
+
+      puts "[#{Time.now}] parsed scopus files"
     end
   end
 end
