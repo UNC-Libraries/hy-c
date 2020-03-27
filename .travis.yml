@@ -15,7 +15,7 @@ services:
   - redis-server
   - postgresql
 rvm:
-  - 2.4.1
+  - 2.6.2
 before_script:
   - curl -o /home/travis/fits-1.0.5.zip https://projects.iq.harvard.edu/files/fits/files/fits-1.0.5.zip | cat
   - unzip /home/travis/fits-1.0.5.zip -d /home/travis
