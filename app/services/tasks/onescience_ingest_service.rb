@@ -320,11 +320,15 @@ module Tasks
     def load_scopus_data
       @scopus_hash = Hash.new
 
-      scopus_file = File.read(File.join(@config['metadata_dir'], @config['scopus_xml_file']))
-      mapped_affiliations = CSV.read(File.join(@config['metadata_dir'], @config['mapped_scopus_affiliations']), headers: true)
-      puts "[#{Time.now}] loaded scopus files"
-      responses = scopus_file.split(/\<htt-party-response\>/)
-      responses.delete_at(0)
+      responses=[]
+      Array.wrap(@config['scopus_xml_file']).each do|xml_file|
+        scopus_file = File.read(File.join(@config['metadata_dir'] , xml_file))
+        query_responses = scopus_file.split(/\<htt-party-response\>/)
+        query_responses.delete_at(0)
+        responses = responses + query_responses
+      end
+      mapped_affiliations = CSV.read(File.join(@config['metadata_dir'],@config['mapped_scopus_affiliations']),headers:true)
+      puts"[#{Time.now}] loaded scopus files"
 
       # add headers to file documenting people info for each record
       File.open(@config['multiple_unc_affiliations'], 'w') do |f|
@@ -415,13 +419,13 @@ module Tasks
             record_authors[index] = {'name' => surname+', '+given_name,
                                      'orcid' => orcid,
                                      'affiliation' => unc_organizations.first,
-                                     'other_affiliation' => other_organizations + unc_organizations.drop(1),
-                                     'index' => index+1}.reject{|k,v| v.blank?}
+                                     'other_affiliation' => (other_organizations + unc_organizations.drop(1)).reject{|i| i.blank?},
+                                     'index' => index+1}.reject{|i| i.blank?}
 
             # verify that first author is first in list
             if index == 0
               author_url = author.xpath('author-url').text
-              if author_url != first_author
+              if author_url != first_author && !author_url.blank? && !first_author.blank?
                 puts 'authors not in correct order '+first_author
               end
             end
