@@ -272,9 +272,24 @@ module Tasks
       work_attributes['label'] = work_attributes['title']
       work_attributes['journal_title'] = onescience_data['Journal Title']
       work_attributes['journal_volume'] = onescience_data['Volume'].to_s
-      work_attributes['journal_issue'] = onescience_data['Issue'].to_s
-      work_attributes['page_start'] = onescience_data['First Page'].to_s
-      work_attributes['page_end'] = onescience_data['Last Page'].to_s
+      journal_issue = onescience_data['Issue'].to_s
+      if journal_issue != 'C'
+        work_attributes['journal_issue'] = journal_issue
+      else
+        puts "[#{Time.now}] #{onescience_data['onescience_id']} error: journal issue value is 'C'"
+      end
+      page_start = onescience_data['First Page'].to_s
+      if !page_start.blank? && page_start.to_i > 1000
+        puts "[#{Time.now}] #{onescience_data['onescience_id']} error: journal start page is #{page_start}"
+      else
+        work_attributes['page_start'] = page_start
+      end
+      page_end = onescience_data['Last Page'].to_s
+      if !page_end.blank? && page_end.to_i > 1000
+        puts "[#{Time.now}] #{onescience_data['onescience_id']} error: journal end page is #{page_end}"
+      else
+        work_attributes['page_end'] = page_end
+      end
       work_attributes['issn'] = onescience_data['ISSNs'].split('||') if !onescience_data['ISSNs'].blank?
       work_attributes['abstract'] = onescience_data['Abstract']
       work_attributes['keyword'] = onescience_data['Keywords'].split('||') if !onescience_data['Keywords'].blank?
@@ -299,6 +314,7 @@ module Tasks
       if !@scopus_hash[doi].blank?
         people = @scopus_hash[doi]
       else
+        puts "[#{Time.now}] #{onescience_id} error: no scopus information available"
         affiliation_data = @affiliation_mapping.find{ |e| e['onescience_id'] == onescience_id }
         # check all author-related columns in 1science spreadsheets with data
         (1..32).each do |index|
