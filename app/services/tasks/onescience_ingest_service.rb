@@ -311,8 +311,8 @@ module Tasks
 
     def get_people(onescience_id, doi)
       people = {}
-      if !@scopus_hash[doi].blank?
-        people = @scopus_hash[doi]
+      if !doi.blank? && !@scopus_hash[doi.downcase].blank?
+        people = @scopus_hash[doi.downcase]
       else
         puts "[#{Time.now}] #{onescience_id} error: no scopus information available"
         affiliation_data = @affiliation_mapping.find{ |e| e['onescience_id'] == onescience_id }
@@ -357,7 +357,7 @@ module Tasks
 
         # find author-affiliation groupings
         author_groups = scopus_xml.xpath('//abstracts-retrieval-response//author-group[not(@*)]')
-        record_doi = scopus_xml.xpath('//coredata/doi').text
+        record_doi = scopus_xml.xpath('//coredata/doi').text.downcase
 
         record_affiliation_hash = Hash.new { |h, k| h[k] = [] }
         begin
@@ -374,10 +374,10 @@ module Tasks
               orcid = author.xpath('orcid').text
               if !organizations.blank? && (!affiliation_id.blank? || !department_id.blank?)
                 organizations.each do |organization|
-                record_affiliation_hash[author_id] << {'afid' => affiliation_id,
-                                                       'dptid' => department_id.blank? ? nil : department_id,
-                                                       'organization' => organization.strip.split("\n").map(&:strip).join("; "),
-                                                       'orcid' => orcid}
+                  record_affiliation_hash[author_id] << {'afid' => affiliation_id,
+                                                         'dptid' => department_id.blank? ? nil : department_id,
+                                                         'organization' => organization.strip.split("\n").map(&:strip).join("; "),
+                                                         'orcid' => orcid}
                 end
               else
                 record_affiliation_hash[author_id] << {'orcid' => orcid}
@@ -388,61 +388,63 @@ module Tasks
           # create hash of people for record
           record_authors = Hash.new
           first_author = scopus_xml.xpath('//coredata/creator/author/author-url').text
-          scopus_xml.xpath('//abstracts-retrieval-response/authors/author/author').each_with_index do |author, index|
+          scopus_xml.xpath('//abstracts-retrieval-response/authors//author').each_with_index do |author, index|
             # get person info
             surname = author.xpath('surname').text
-            given_name = author.xpath('given-name').text
-            author_id = author.xpath('auid').text
-            affiliations = record_affiliation_hash[author_id]
+            if !surname.blank?
+              given_name = author.xpath('given-name').text
+              author_id = author.xpath('auid').text
+              affiliations = record_affiliation_hash[author_id]
 
-            # split unc from external affiliations
-            unc_organizations = []
-            other_organizations = []
-            orcid = nil
-            affiliations.each do |affiliation|
-              orcid = affiliation['orcid']
+              # split unc from external affiliations
+              unc_organizations = []
+              other_organizations = []
+              orcid = nil
+              affiliations.each do |affiliation|
+                orcid = affiliation['orcid']
 
-              # find all unc affiliations by scopus afid
-              if !affiliation['organization'].blank?
-                if UNC_SCOPUS_AFIDS.include?(affiliation['afid'])
-                  mapped_affiliation = mapped_affiliations.find{|mapped_dept| (mapped_dept['affiliation_id'] == affiliation['afid'] && mapped_dept['department_id'] == affiliation['dptid'])}
-                  # if affiliation/department combination matches any unc affiliation, then store it as a unc affiliation
-                  if mapped_affiliation
-                    unc_organizations << mapped_affiliation['mapped_affiliation']
-                  else # if the afid matches a known unc afid, but was not mapped, log it and still store it as a unc affiliation
-                    puts "non-mapped affiliation: #{affiliation}"
-                    unc_organizations << affiliation['organization']
+                # find all unc affiliations by scopus afid
+                if !affiliation['organization'].blank?
+                  if UNC_SCOPUS_AFIDS.include?(affiliation['afid'])
+                    mapped_affiliation = mapped_affiliations.find{|mapped_dept| (mapped_dept['affiliation_id'] == affiliation['afid'] && mapped_dept['department_id'] == affiliation['dptid'])}
+                    # if affiliation/department combination matches any unc affiliation, then store it as a unc affiliation
+                    if mapped_affiliation
+                      unc_organizations << mapped_affiliation['mapped_affiliation']
+                    else # if the afid matches a known unc afid, but was not mapped, log it and still store it as a unc affiliation
+                      puts "non-mapped affiliation: #{affiliation}"
+                      unc_organizations << affiliation['organization']
+                    end
+                  else
+                    if affiliation['organization'].match('UNC')
+                      puts "affiliation which contains 'UNC' but is not in the list of UNC afids: #{author_id}, #{affiliations}"
+                    end
+                    other_organizations << affiliation['organization']
                   end
-                else
-                  if affiliation['organization'].match('UNC')
-                    puts "affiliation which contains 'UNC' but is not in the list of UNC afids: #{author_id}, #{affiliations}"
-                  end
-                  other_organizations << affiliation['organization']
                 end
               end
-            end
 
-            # log record-person-affiliation data for restoring multiple affiliations later
-            multiple = 'false'
-            if unc_organizations.count > 1
-              multiple = 'true'
-            end
-            File.open(@config['multiple_unc_affiliations'], 'a+')  do |f|
-              f.puts "#{record_doi}\t#{multiple}\t#{author_id}\t#{surname}, #{given_name}\t#{orcid}\t#{unc_organizations.join('||')}\t#{other_organizations.join('||')}\t#{index+1}"
-            end
+              # log record-person-affiliation data for restoring multiple affiliations later
+              multiple = 'false'
+              if unc_organizations.count > 1
+                multiple = 'true'
+              end
+              File.open(@config['multiple_unc_affiliations'], 'a+')  do |f|
+                f.puts "#{record_doi}\t#{multiple}\t#{author_id}\t#{surname}, #{given_name}\t#{orcid}\t#{unc_organizations.join('||')}\t#{other_organizations.join('||')}\t#{index+1}"
+              end
 
-            # create hash for person with index value
-            record_authors[index] = {'name' => surname+', '+given_name,
-                                     'orcid' => orcid,
-                                     'affiliation' => unc_organizations.first,
-                                     'other_affiliation' => (other_organizations + unc_organizations.drop(1)).reject{|i| i.blank?},
-                                     'index' => index+1}.reject{|i| i.blank?}
+              # create hash for person with index value
+              record_authors[index] = {'name' => surname+', '+given_name,
+                                       'orcid' => orcid,
+                                       'affiliation' => unc_organizations.first,
+                                       'other_affiliation' => (other_organizations + unc_organizations.drop(1)).reject{|i| i.blank?},
+                                       'index' => index+1}.reject{|i| i.blank?}
 
-            # verify that first author is first in list
-            if index == 0
-              author_url = author.xpath('author-url').text
-              if author_url != first_author && !author_url.blank? && !first_author.blank?
-                puts 'authors not in correct order '+first_author
+              # verify that first author is first in list
+              if index == 0
+                author_url = author.xpath('author-url').text
+                if author_url != first_author && !author_url.blank? && !first_author.blank?
+                  puts 'authors not in correct order '+first_author
+                end
               end
             end
           end
