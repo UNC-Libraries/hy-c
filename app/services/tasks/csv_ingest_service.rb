@@ -4,6 +4,9 @@ module Tasks
   require 'tasks/migration_helper'
 
   class CsvIngestService
+
+    attr_reader :config
+
     def initialize(args)
       @config = YAML.load_file(args[:configuration_file])
     end
@@ -47,6 +50,9 @@ module Tasks
           end
           work_attributes['subject'] = work_attributes['subject'].split('; ')
           work_attributes['deposit_record'] = @deposit_record_id
+          work_attributes['label'] = Array.wrap(work_attributes['title']).first
+          work_attributes['rights_statement_label'] = CdrRightsStatementsService.label(work_attributes['rights_statement'])
+          work_attributes['license_label'] = CdrLicenseService.label(work_attributes['license'])
 
           # create work with metadata in workflow
           work = @config['work_type'].singularize.classify.constantize.new
@@ -92,23 +98,28 @@ module Tasks
                 next
               end
 
-              # create and save file
-              file_attributes = { title: [filename],
-                                  date_created: Array.wrap(work_attributes['date_issued']).first }
-              file_set = FileSet.create(file_attributes)
-              actor = Hyrax::Actors::FileSetActor.new(file_set, User.where(uid: @config['depositor_onyen']).first)
-              actor.create_metadata(file_attributes)
-              file = File.open(File.join(@config['metadata_dir'], filename_with_extension))
-              actor.create_content(file)
-              actor.attach_to_work(work)
-              file.close
+              file_path = File.join(@config['metadata_dir'], filename_with_extension)
+              if File.exist?(file_path)
+                # create and save file
+                file_attributes = { title: [filename],
+                                    date_created: Array.wrap(work_attributes['date_issued']).first }
+                file_set = FileSet.create(file_attributes)
+                actor = Hyrax::Actors::FileSetActor.new(file_set, User.where(uid: @config['depositor_onyen']).first)
+                actor.create_metadata(file_attributes)
+                file = File.open(file_path)
+                actor.create_content(file)
+                actor.attach_to_work(work)
+                file.close
 
-              file_set.visibility = file_visibility
-              file_set.save!
+                file_set.visibility = file_visibility
+                file_set.save!
 
-              attached_file_count += 1
+                attached_file_count += 1
 
-              puts "[#{Time.now}] #{row['source_identifier']},#{work.id} saved file #{file_index+1} of #{file_count}"
+                puts "[#{Time.now}] #{row['source_identifier']},#{work.id} saved file #{file_index+1} of #{file_count}"
+              else
+                puts "[#{Time.now}] #{row['source_identifier']},#{work.id} could not find file #{file_path}"
+              end
             end
           end
         rescue => e
