@@ -38,8 +38,6 @@ module Tasks
           next
         end
 
-        break if index > 0
-
         begin
           puts '',"[#{Time.now}] ingesting #{row['source_identifier']} (#{index+1} of #{data.count})"
 
