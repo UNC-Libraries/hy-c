@@ -81,6 +81,11 @@ module Tasks
             file_count = files.count
             attached_file_count = 0
 
+            # make pdf file first file attached for thumbnail purposes
+            pdf_file = files.select{ |filename| filename.include? 'WEB' }
+            files.delete(pdf_file.first)
+            files = pdf_file + files
+
             files.each_with_index do |filename,file_index|
               puts "[#{Time.now}] #{row['source_identifier']} attaching file #{file_index+1} of #{file_count}"
 
@@ -99,8 +104,7 @@ module Tasks
               file_path = File.join(@config['metadata_dir'], filename_with_extension)
               if File.exist?(file_path)
                 # create and save file
-                file_attributes = { title: [filename],
-                                    date_created: Array.wrap(work_attributes['date_issued']).first }
+                file_attributes = { title: [filename] }
                 file_set = FileSet.create(file_attributes)
                 actor = Hyrax::Actors::FileSetActor.new(file_set, User.where(uid: @config['depositor_onyen']).first)
                 actor.create_metadata(file_attributes)
@@ -120,11 +124,11 @@ module Tasks
               end
             end
           end
+          @object_progress.add_entry(row['source_identifier'])
         rescue => e
           puts "[#{Time.now}] there was an error processing #{row['source_identifier']}: #{e.message}"
           @skipped_objects.add_entry(row['source_identifier'])
         end
-        @object_progress.add_entry(row['source_identifier'])
       end
 
       puts "[#{Time.now}] Completed ingest of #{@config['batch_name']} in #{@config['metadata_file']}"
