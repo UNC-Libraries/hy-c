@@ -23,7 +23,6 @@ module Tasks
 
       # create deposit record
       create_deposit_record
-      puts "[#{Time.now}] created deposit record for #{@config['batch_name']} batch"
 
       # Progress tracker for objects migrated
       @object_progress = Migrate::Services::ProgressTracker.new(@config['progress_log'])
@@ -138,7 +137,7 @@ module Tasks
     private
 
       def create_deposit_record
-        if File.exist?(@config['deposit_record_id_log']) && !(File.open(@config['deposit_record_id_log']) {|f| f.readline}).blank?
+        if File.exist?(@config['deposit_record_id_log']) && !File.zero?(@config['deposit_record_id_log'])
           @deposit_record_id = (File.open(@config['deposit_record_id_log']) {|f| f.readline}).strip
           puts "[#{Time.now}] loaded deposit record id for batch"
         else
@@ -158,6 +157,8 @@ module Tasks
           File.open(@config['deposit_record_id_log'], 'a+') do |f|
             f.puts @deposit_record_id
           end
+
+          puts "[#{Time.now}] created deposit record for #{@config['batch_name']} batch"
         end
       end
   end
