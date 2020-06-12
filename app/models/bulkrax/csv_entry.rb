@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+# [hyc-override] overriding build_export_metadata method
 
 require 'csv'
 
@@ -77,6 +78,8 @@ module Bulkrax
       self.parsed_metadata['file'] = self.parsed_metadata['file'].map { |f| path_to_file(f.tr(' ', '_')) }
     end
 
+    # overriding to include all `mapping` keys in parsed metadata even when not supported by work type model
+    # this fixes data mismatches in exports
     def build_export_metadata
       make_round_trippable
       self.parsed_metadata = {}
@@ -85,12 +88,15 @@ module Bulkrax
       self.parsed_metadata['model'] = hyrax_record.has_model.first
       mapping.each do |key, value|
         next if Bulkrax.reserved_properties.include?(key) && !field_supported?(key)
-        next unless hyrax_record.respond_to?(key)
-        data = hyrax_record.send(key)
-        if data.is_a?(ActiveTriples::Relation)
-          self.parsed_metadata[key] = data.join('; ').to_s unless value[:excluded]
+        unless hyrax_record.respond_to?(key)
+          self.parsed_metadata[key] = nil
         else
-          self.parsed_metadata[key] = data
+          data = hyrax_record.send(key)
+          if data.is_a?(ActiveTriples::Relation)
+            self.parsed_metadata[key] = data.join('; ').to_s unless value[:excluded]
+          else
+            self.parsed_metadata[key] = data
+          end
         end
       end
       unless hyrax_record.is_a?(Collection)
