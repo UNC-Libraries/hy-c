@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  mount Bulkrax::Engine, at: '/'
        # mount BrowseEverything::Engine => '/browse'
   concern :range_searchable, BlacklightRangeLimit::Routes::RangeSearchable.new
   mount Riiif::Engine => 'images', as: :riiif if Hyrax.config.iiif_image_server?
