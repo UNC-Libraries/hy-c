@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+# overriding import_file method
 
 module Bulkrax
   module FileFactory
@@ -88,12 +89,16 @@ module Bulkrax
       file_paths.map { |path| import_file(path) }
     end
 
+    # Add file sets to works
     def import_file(path)
-      u = Hyrax::UploadedFile.new
-      u.user_id = @user.id
-      u.file = CarrierWave::SanitizedFile.new(path)
-      u.save
-      u.id
+      file_attributes = { title: [File.basename(path)] }
+      file_set = FileSet.create(file_attributes)
+      actor = Hyrax::Actors::FileSetActor.new(file_set, User.where(uid: @user.uid).first)
+      actor.create_metadata(file_attributes)
+      file = File.open(path)
+      actor.create_content(file)
+      actor.attach_to_work(object)
+      file.close
     end
   end
 end
