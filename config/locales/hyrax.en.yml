@@ -93,6 +93,8 @@ en:
       collections: Collections
       deposit: Deposit
       sidekiq: Sidekiq
+      importers: Import
+      exporters: Export
     deposit:
       header: Deposit Your Work
       article: Article
