@@ -1,4 +1,4 @@
-# Override to allow bulkrax jobs to be available in sidekiq status ui
+# [hyc-override] Override to allow bulkrax jobs to be available in sidekiq status ui
 # frozen_string_literal: true
 
 module Bulkrax

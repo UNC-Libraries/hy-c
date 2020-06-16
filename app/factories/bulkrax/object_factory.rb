@@ -228,15 +228,19 @@ module Bulkrax
       attrs = attributes.slice(*permitted_attributes)
       resource = @klass.new
       attrs.each do |k,v|
+        # check if attribute is single-valued but is currently an array
         if resource.attributes.keys.member?(k.to_s) && !resource.attributes[k.to_s].respond_to?(:each) && attrs[k].respond_to?(:each)
           attrs[k] = v.first
+        # check if attribute is multi-valued but is currently not an array
         elsif resource.attributes.keys.member?(k.to_s) && resource.attributes[k.to_s].respond_to?(:each) && !attrs[k].respond_to?(:each)
           attrs[k] = Array(v)
+        # otherwise, the attribute does not need to be transformed
         else
           attrs[k] = v
         end
       end
 
+      # convert people objects from hash notation to valid json
       attrs.each do |k,v|
         if k.ends_with? '_attributes'
           attrs[k] = JSON.parse(v.gsub('=>',':').gsub("'",'"'))
@@ -247,7 +251,8 @@ module Bulkrax
     end
 
     # Regardless of what the Parser gives us, these are the properties we are prepared to accept.
-    # override to allow '_attributes' properties for people obejcts
+    # override to allow '_attributes' properties for people objects
+    # override to add admin_set_id and dcmi_type to the list of permitted parameters
     def permitted_attributes
       people_types = [:advisors, :arrangers, :composers, :contributors, :creators, :project_directors, :researchers,
                       :reviewers, :translators]

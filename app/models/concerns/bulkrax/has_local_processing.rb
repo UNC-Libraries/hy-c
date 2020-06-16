@@ -1,3 +1,4 @@
+# [hyc-override] making local changes to teample from bulkrax gem
 # frozen_string_literal: true
 
 module Bulkrax::HasLocalProcessing

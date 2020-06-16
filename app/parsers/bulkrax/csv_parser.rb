@@ -21,14 +21,13 @@ module Bulkrax
           file.path,
           path
       )
-      FileUtils.chmod(0644, path)
+      FileUtils.chmod(owner_write_and_global_read_file_permissions, path)
 
       if MIME::Types.type_for(path).include?('application/zip')
         unzip(path, path_for_import)
 
         Dir.glob("#{path_for_import}/files/*").each do |attached_file|
-          FileUtils.chmod(0644, attached_file)
-          # FileUtils.chown 'apache', 'hycgroup', attached_file
+          FileUtils.chmod(owner_write_and_global_read_file_permissions, attached_file)
         end
 
         Dir["#{path_for_import}/*.csv"].first
@@ -333,6 +332,10 @@ module Bulkrax
     def people_types
       ['advisors', 'arrangers', 'composers', 'contributors', 'creators', 'project_directors', 'researchers',
        'reviewers', 'translators']
+    end
+
+    def owner_write_and_global_read_file_permissions
+      0644
     end
   end
 end

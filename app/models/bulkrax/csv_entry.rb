@@ -90,13 +90,13 @@ module Bulkrax
         next if Bulkrax.reserved_properties.include?(key) && !field_supported?(key)
         unless hyrax_record.respond_to?(key)
           self.parsed_metadata[key] = nil
+          next
+        end
+        data = hyrax_record.send(key)
+        if data.is_a?(ActiveTriples::Relation)
+          self.parsed_metadata[key] = data.join('; ').to_s unless value[:excluded]
         else
-          data = hyrax_record.send(key)
-          if data.is_a?(ActiveTriples::Relation)
-            self.parsed_metadata[key] = data.join('; ').to_s unless value[:excluded]
-          else
-            self.parsed_metadata[key] = data
-          end
+          self.parsed_metadata[key] = data
         end
       end
       unless hyrax_record.is_a?(Collection)
