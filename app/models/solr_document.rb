@@ -309,7 +309,7 @@ class SolrDocument
   end
 
   def sets
-    AdminsetSet.sets_for(self)
+    CdrListSet.sets_for(self)
   end
 
   def series

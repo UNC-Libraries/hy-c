@@ -95,7 +95,7 @@ RSpec.describe 'OAI-PMH catalog endpoint' do
     end
 
     context 'with a set' do
-      let(:document_config) { {set_model: AdminsetSet, set_fields: [{label: 'language', solr_field: 'language_label_tesim' }] } }
+      let(:document_config) { {set_model: CdrListSet, set_fields: [{label: 'language', solr_field: 'language_label_tesim' }] } }
 
       scenario 'only records from the set are returned' do
         params = { verb: 'ListRecords', metadataPrefix: format, set: 'language:Japanese' }
@@ -188,7 +188,7 @@ RSpec.describe 'OAI-PMH catalog endpoint' do
     end
 
     context 'with set configuration', :vcr do
-      let(:document_config) { {set_model: AdminsetSet, set_fields: [{label: 'language', solr_field: 'language_label_tesim' }] } }
+      let(:document_config) { {set_model: CdrListSet, set_fields: [{label: 'language', solr_field: 'language_label_tesim' }] } }
 
       scenario 'shows all sets' do
         get oai_catalog_path(verb: 'ListSets')
@@ -202,7 +202,7 @@ RSpec.describe 'OAI-PMH catalog endpoint' do
       end
 
       context 'where sets include descriptions' do
-        let(:document_config) { {set_model: AdminsetSet, set_fields: [{label: 'admin set', solr_field: 'admin_set_tesim' }] } }
+        let(:document_config) { {set_model: CdrListSet, set_fields: [{label: 'admin set', solr_field: 'admin_set_tesim' }] } }
 
         scenario 'shows the set description object' do
           get oai_catalog_path(verb: 'ListSets')
@@ -212,7 +212,7 @@ RSpec.describe 'OAI-PMH catalog endpoint' do
                                'oai_dc' => 'http://www.openarchives.org/OAI/2.0/oai_dc/'
 
           expect(descriptions.count).to be > 1
-          expect(descriptions.text).to include('This set includes works in the Default Admin Set.')
+          expect(descriptions.text).to include('This set includes works in the default admin set.')
         end
       end
     end
