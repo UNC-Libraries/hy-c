@@ -7,7 +7,7 @@ end
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 5.0.7.2'
+gem 'rails', '~> 5.1.7'
 # Use postgresql as the database for Active Record
 gem 'pg', '~> 0.21.0'
 # Use Puma as the app server
@@ -58,6 +58,10 @@ gem 'rsolr', '~> 2.0.2'
 gem 'devise', '~> 4.7.1'
 gem 'devise-guests', '~> 0.6.0'
 gem 'omniauth-shibboleth', '~> 1.3'
+
+gem 'bulkrax', git: 'https://github.com/samvera-labs/bulkrax.git', ref: '752b4dd'
+# required by bulkrax_override - rails engine for SWORDv2
+gem 'willow_sword', github: 'notch8/willow_sword', ref: '0a669d7'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
