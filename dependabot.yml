@@ -1,0 +1,15 @@
+# config file for dependabot
+
+version: 2
+updates:
+  - package-ecosystem: "bundler"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    allow:
+      # Allow both direct and indirect updates for all packages
+      - dependency-type: "all"
+    ignore:
+      - dependency-name: "hyrax"
+        # For hyrax, ignore all updates for version 3
+        versions: ["3.x"]
