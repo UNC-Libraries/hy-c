@@ -67,6 +67,10 @@ terms:
     work_type: 
       - masters
       - dissertation
+  - id: Master of Arts in Digital Communication
+    term: Master of Arts in Digital Communication
+    work_type:
+      - masters
   - id: Master of City and Regional Planning
     term: Master of City and Regional Planning
     active: true
