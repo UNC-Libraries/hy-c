@@ -1,3 +1,4 @@
+# [hyc-override] use entry error information to determine if job has succeeded instead of build result
 # frozen_string_literal: true
 
 module Bulkrax
@@ -7,8 +8,10 @@ module Bulkrax
     # rubocop:disable Rails/SkipsModelValidations
     def perform(*args)
       entry = Entry.find(args[0])
-      build_result = entry.build
-      if build_result.present?
+      puts entry.inspect
+      entry.build
+      puts entry.inspect
+      if entry['error'].nil? && entry['last_error_at'].nil? && !entry['last_succeeded_at'].nil?
         ImporterRun.find(args[1]).increment!(:processed_records)
         ImporterRun.find(args[1]).decrement!(:enqueued_records) # rubocop:disable Style/IdenticalConditionalBranches
       else
