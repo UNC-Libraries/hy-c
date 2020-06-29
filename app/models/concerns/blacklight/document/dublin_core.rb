@@ -18,7 +18,8 @@ module Blacklight::Document::DublinCore
   end
 
   def dublin_core_field_names
-    [:contributor, :coverage, :creator, :date, :description, :format, :identifier, :language, :publisher, :relation, :rights, :source, :subject, :title, :type]
+    [:contributor, :coverage, :creator, :date, :description, :format, :identifier, :language, :publisher, :relation,
+     :rights, :source, :subject, :title, :type, :thumbnail]
   end
 
   # [hyc-override] format values for display in oai feed
@@ -28,6 +29,7 @@ module Blacklight::Document::DublinCore
     xml.tag!("oai_dc:dc",
              'xmlns:oai_dc' => "http://www.openarchives.org/OAI/2.0/oai_dc/",
              'xmlns:dc' => "http://purl.org/dc/elements/1.1/",
+             'xmlns:ebucore' => "http://www.ebu.ch/metadata/ontologies/ebucore/ebucore#",
              'xmlns:xsi' => "http://www.w3.org/2001/XMLSchema-instance",
              'xsi:schemaLocation' => %(http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd)) do
       to_semantic_values.select { |field, _values| dublin_core_field_name? field  }.each do |field, values|
@@ -52,6 +54,8 @@ module Blacklight::Document::DublinCore
           # display journal values as comma separated string (journal values come from single-valued fields)
           elsif field.to_s == 'source'
             source << v.to_s
+          elsif field.to_s == 'thumbnail'
+            xml.tag! 'ebucore:hasRelatedImage', "#{ENV['HYRAX_HOST']}#{(values.first)}"
           else
             xml.tag! "dc:#{field}", v
           end

@@ -631,6 +631,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
   <xsl:template match="dc:rights" xmlns:dc="http://purl.org/dc/elements/1.1/">
     <tr><td class="key">Rights Management</td><td class="value"><xsl:value-of select="."/></td></tr></xsl:template>
 
+  <!-- Non-dc terms -->
+
+  <xsl:template match="ebucore:hasRelatedImage" xmlns:ebucore="http://www.ebu.ch/metadata/ontologies/ebucore/ebucore#">
+    <tr><td class="key">Thumbnail</td><td class="value"><xsl:value-of select="."/></td></tr></xsl:template>
+
   <!-- XML Pretty Maker -->
 
   <xsl:template match="node()" mode='xmlMarkup'>
