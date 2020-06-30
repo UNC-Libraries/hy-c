@@ -8,9 +8,7 @@ module Bulkrax
     # rubocop:disable Rails/SkipsModelValidations
     def perform(*args)
       entry = Entry.find(args[0])
-      puts entry.inspect
       entry.build
-      puts entry.inspect
       if entry['error'].nil? && entry['last_error_at'].nil? && !entry['last_succeeded_at'].nil?
         ImporterRun.find(args[1]).increment!(:processed_records)
         ImporterRun.find(args[1]).decrement!(:enqueued_records) # rubocop:disable Style/IdenticalConditionalBranches
