@@ -1,3 +1,4 @@
+# [hyc-override] create and clean up temp files
 module Hydra::Derivatives::Processors
   class Document < Processor
     include ShellBasedProcessor

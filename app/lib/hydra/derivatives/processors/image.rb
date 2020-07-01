@@ -1,3 +1,4 @@
+# [hyc-override] negate images with black backgrounds
 require 'mini_magick'
 
 module Hydra::Derivatives::Processors
@@ -27,11 +28,17 @@ module Hydra::Derivatives::Processors
       end
     end
 
+    # negating image if background is black
     def create_image
       xfrm = selected_layers(load_image_transformer)
       yield(xfrm) if block_given?
       xfrm.format(directives.fetch(:format))
       xfrm.quality(quality.to_s) if quality
+      image_data = xfrm.data
+      Rails.logger.info "\n\n######\nimage data: #{image_data.inspect}\n######\n\n"
+      if image_data['backgroundColor'] == '#000000'
+        xfrm.negate
+      end
       write_image(xfrm)
     end
 
