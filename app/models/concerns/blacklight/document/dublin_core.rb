@@ -2,7 +2,7 @@
 # frozen_string_literal: true
 require 'builder'
 
-# This module provide Dublin Core export based on the document's semantic values
+# This module provides Dublin Core export based on the document's semantic values
 module Blacklight::Document::DublinCore
   include HycHelper
 
@@ -17,8 +17,10 @@ module Blacklight::Document::DublinCore
     document.will_export_as(:oai_dc_xml, "text/xml")
   end
 
+  # added thumbnail as separate field to help with ordering
   def dublin_core_field_names
-    [:contributor, :coverage, :creator, :date, :description, :format, :identifier, :language, :publisher, :relation, :rights, :source, :subject, :title, :type]
+    [:contributor, :coverage, :creator, :date, :description, :format, :identifier, :language, :publisher, :relation,
+     :rights, :source, :subject, :title, :type, :thumbnail]
   end
 
   # [hyc-override] format values for display in oai feed
@@ -52,6 +54,12 @@ module Blacklight::Document::DublinCore
           # display journal values as comma separated string (journal values come from single-valued fields)
           elsif field.to_s == 'source'
             source << v.to_s
+          elsif field.to_s == 'thumbnail'
+            if doi.blank?
+              record_url = URI.join(ENV['HYRAX_HOST'], "concern/#{first('has_model_ssim').tableize}/#{id()}").to_s
+              xml.tag! "dc:identifier", record_url
+            end
+            xml.tag! 'dc:identifier', "#{ENV['HYRAX_HOST']}#{(values.first)}"
           else
             xml.tag! "dc:#{field}", v
           end
@@ -64,11 +72,6 @@ module Blacklight::Document::DublinCore
             xml.tag! "dc:source", source.join(', ')
           end
         end
-      end
-      # Add an identifier linking to the record page in hyc if no DOI is present
-      if doi.blank?
-        record_url = URI.join(ENV['HYRAX_HOST'], "concern/#{first('has_model_ssim').tableize}/#{id()}").to_s
-        xml.tag! "dc:identifier", record_url
       end
     end
 
