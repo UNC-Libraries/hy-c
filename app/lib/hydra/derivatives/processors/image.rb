@@ -34,11 +34,14 @@ module Hydra::Derivatives::Processors
       yield(xfrm) if block_given?
       xfrm.format(directives.fetch(:format))
       xfrm.quality(quality.to_s) if quality
-      image_data = xfrm.data
-      Rails.logger.info "\n\n######\nimage data: #{image_data.inspect}\n######\n\n"
-      if image_data['backgroundColor'] == '#000000'
+
+      # check image profile of original file
+      source_data = MiniMagick::Image.open(source_path).data
+      if source_data['backgroundColor'] == '#FFFFFFFFFFFF0000'
+        Rails.logger.info "\n\n######\nbackground color is black\n######\n\n"
         xfrm.negate
       end
+
       write_image(xfrm)
     end
 
