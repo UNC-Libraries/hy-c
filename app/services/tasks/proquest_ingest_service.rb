@@ -263,10 +263,10 @@ module Tasks
       end
 
       resource_type = ''
-      if normalized_degree.in? ['edd', 'phd', 'drph']
-        resource_type = 'Dissertation'
-      else
+      if normalized_degree.in? ['ma', 'ms']
         resource_type = 'Masters Thesis'
+      else
+        resource_type = 'Dissertation'
       end
 
       department = metadata.xpath('//DISS_description/DISS_institution/DISS_inst_contact').text.strip
