@@ -14,6 +14,10 @@ signed in %>
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <link rel="resourcesync" href="<%= hyrax.capability_list_url %>" />
 
+<% if @presenter && ENV['NOINDEX'] && @presenter.is_a?(Hyrax::WorkShowPresenter) && ENV['NOINDEX'].split('|').include?(@presenter.id) %>
+<meta name="robots" content="noindex" />
+<% end %>
+
 <!-- Twitter card metadata -->
 <%= yield :twitter_meta %>
 <!-- Google Scholar metadata -->
