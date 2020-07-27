@@ -849,7 +849,7 @@ GEM
     tzinfo (1.2.7)
       thread_safe (~> 0.1)
     uber (0.1.0)
-    uglifier (3.2.0)
+    uglifier (4.2.0)
       execjs (>= 0.3.0, < 3)
     validatable (1.6.7)
     warden (1.2.8)
@@ -920,7 +920,7 @@ DEPENDENCIES
   staccato (~> 0.5.1)
   therubyracer (~> 0.12.3)
   turbolinks (~> 5.0.1)
-  uglifier (~> 3.2.0)
+  uglifier (~> 4.2.0)
   web-console (~> 3.5.1)
   webmock (~> 3.5.0)
   willow_sword!
