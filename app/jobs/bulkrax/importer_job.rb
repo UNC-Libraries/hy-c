@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+# [hyc-override] set only_updates before validating uploaded file
 
 module Bulkrax
   class ImporterJob < ApplicationJob
@@ -11,7 +12,9 @@ module Bulkrax
       schedule(importer) if importer.schedulable?
     end
 
+    # set only_updates before validating
     def import(importer, only_updates_since_last_import)
+      importer.only_updates = only_updates_since_last_import || false
       return unless importer.valid_import?
       importer.import_collections
       importer.import_works(only_updates_since_last_import)
