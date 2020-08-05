@@ -120,7 +120,7 @@ GEM
     bcp47 (0.3.3)
       i18n
     bcrypt (3.1.15)
-    bindex (0.5.0)
+    bindex (0.8.1)
     blacklight (6.15.0)
       bootstrap-sass (~> 3.2)
       deprecation
