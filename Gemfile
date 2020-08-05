@@ -82,7 +82,7 @@ group :test do
   gem 'capybara', '~> 2.17.0'
   gem 'rspec-mocks'
   gem 'webmock', '~> 3.5.0'
-  gem 'factory_bot_rails', '~> 5.0.1'
+  gem 'factory_bot_rails', '~> 6.1.0'
   gem 'simplecov', '~> 0.17.0'
 end
 
