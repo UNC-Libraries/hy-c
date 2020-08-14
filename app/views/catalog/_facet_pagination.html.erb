@@ -1,5 +1,6 @@
 <!--[hyc-override] adding partial file from blacklight 7.10.0 to override version from 6.15.0 with visible span tags-->
-<div class="prev_next_links btn-group">
+<!--[hyc-override] adding pull-left and pull-right classes to paging and sorting divs-->
+<div class="prev_next_links btn-group pull-left">
   <%= link_to_previous_page @pagination, raw(t('views.pagination.previous')), params: search_state.to_h, param_name: blacklight_config.facet_paginator_class.request_keys[:page], class: 'btn btn-link', data: { blacklight_modal: "preserve" } do %>
     <%= content_tag :span, raw(t('views.pagination.previous')), class: 'disabled btn' %>
   <% end %>
@@ -9,7 +10,7 @@
   <% end %>
 </div>
 
-<div class="sort-options btn-group">
+<div class="sort-options btn-group pull-right">
   <% if @pagination.sort == 'index' -%>
     <span class="active az btn btn-outline-secondary"><%= t('blacklight.search.facets.sort.index') %></span>
     <%= link_to(t('blacklight.search.facets.sort.count'), @pagination.params_for_resort_url('count', search_state.to_h), class: "sort_change numeric btn btn-outline-secondary", data: { blacklight_modal: "preserve" }) %>
