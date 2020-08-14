@@ -38,7 +38,7 @@ module Blacklight::Document::DublinCore
         array_of_values = []
         if Array.wrap(values).first.match('index:')
           array_of_values = sort_people_by_index(values)
-          array_of_values.map!{|value| value.gsub(/\Aindex:\d+\|\|/, '')}
+          array_of_values.map!{|value| value.gsub(/\Aindex:\d+\|\|/, '').gsub(/\Aindex:\|\|/, '')}
         else
           array_of_values = Array.wrap(values)
         end
