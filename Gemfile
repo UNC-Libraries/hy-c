@@ -55,7 +55,7 @@ gem 'redis', '~> 3.3.0'
 # gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 gem 'rsolr', '~> 2.0.2'
-gem 'devise', '~> 4.7.1'
+gem 'devise', '~> 4.7.2'
 gem 'devise-guests', '~> 0.6.0'
 gem 'omniauth-shibboleth', '~> 1.3'
 
