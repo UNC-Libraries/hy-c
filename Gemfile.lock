@@ -603,7 +603,7 @@ GEM
       rails (~> 5.0)
       rdf
     rack (2.2.3)
-    rack-protection (2.0.0)
+    rack-protection (2.0.8.1)
       rack
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
