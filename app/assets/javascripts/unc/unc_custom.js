@@ -48,6 +48,15 @@ $(function() {
             target: "#" + $('form').attr('id')
         });
     }*/
+
+    // Set page link for accessible version request
+    function accessUrl() {
+        // current page without # or ? parameters
+        var current_page = encodeURI(location.protocol + '//' + location.host + location.pathname);
+        var access_link = $('.access-request');
+        var current_link = access_link.attr('href');
+        access_link.attr('href', current_link + '?current_page=' + current_page);
+    }
   
     // Make file upload div height larger/smaller based on activity
     function uploadProgress() {
@@ -136,6 +145,7 @@ $(function() {
 
     visibleForms();
    // browseEverythingUploads();
+    accessUrl()
     uploadProgress();
     hideNonRequiredFieldsBtn();
     hideNonRequiredFormFields();
