@@ -603,7 +603,7 @@ GEM
       rails (~> 5.0)
       rdf
     rack (2.2.3)
-    rack-protection (2.0.8.1)
+    rack-protection (2.1.0)
       rack
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
@@ -777,7 +777,7 @@ GEM
       redis (~> 3.3, >= 3.3.3)
     sidekiq-limit_fetch (3.4.0)
       sidekiq (>= 4)
-    sidekiq-status (1.1.1)
+    sidekiq-status (1.1.4)
       chronic_duration
       sidekiq (>= 3.0)
     signet (0.12.0)
@@ -914,7 +914,7 @@ DEPENDENCIES
   shoulda-matchers (~> 3.1.2)
   sidekiq (~> 5.0.4)
   sidekiq-limit_fetch (~> 3.4.0)
-  sidekiq-status (~> 1.1.1)
+  sidekiq-status (~> 1.1.4)
   simplecov (~> 0.17.0)
   solr_wrapper (~> 1.1.0)
   staccato (~> 0.5.1)
