@@ -30,8 +30,10 @@ module Bulkrax
     def add_metadata(node_name, node_content)
       field_to(node_name).each do |name|
         next unless field_supported?(name)
-        matcher = self.class.matcher(name, mapping[name].symbolize_keys) if mapping[name]
         multiple = multiple?(name)
+        field_mapping = mapping[name].symbolize_keys if mapping[name]
+        field_mapping[:split] = multiple
+        matcher = self.class.matcher(name, field_mapping) if mapping[name]
         if matcher
           result = matcher.result(self, node_content)
           if result
@@ -47,7 +49,7 @@ module Bulkrax
           Rails.logger.info("Bulkrax Column automatically matched #{node_name}, #{node_content}")
           node_content = node_content.content if node_content.is_a?(Nokogiri::XML::NodeSet)
           parsed_metadata[name] ||= []
-          parsed_metadata[name] += node_content.is_a?(Array) ? node_content : Array.wrap(node_content.strip)
+          parsed_metadata[name] += node_content.is_a?(Array) ? node_content : Array.wrap(node_content.strip.split(/\s*[;|]\s*/))
         else
           Rails.logger.info("Bulkrax Column automatically matched #{node_name}, #{node_content}")
           node_content = node_content.content if node_content.is_a?(Nokogiri::XML::NodeSet)
