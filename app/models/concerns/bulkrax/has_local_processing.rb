@@ -12,6 +12,18 @@ module Bulkrax::HasLocalProcessing
       self.parsed_metadata['rights_statement_label'] = CdrRightsStatementsService.label(self.parsed_metadata['rights_statement'].first)
     end
 
+    # add language label
+    if self.parsed_metadata.key?('language') && !self.parsed_metadata['language'].blank? &&
+        !self.parsed_metadata.key?('language_label')
+      self.parsed_metadata['language_label'] = LanguagesService.label(self.parsed_metadata['language'].first)
+    end
+
+    # add license label
+    if self.parsed_metadata.key?('license') && !self.parsed_metadata['license'].blank? &&
+        !self.parsed_metadata.key?('license_label')
+      self.parsed_metadata['license_label'] = CdrLicenseService.label(self.parsed_metadata['license'].first)
+    end
+
     # use admin set chosen in form if not already set
     self.parsed_metadata['admin_set_id'] ||= importerexporter.admin_set_id
   end
