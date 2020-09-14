@@ -119,7 +119,7 @@ GEM
       validatable (~> 1.6)
     bcp47 (0.3.3)
       i18n
-    bcrypt (3.1.15)
+    bcrypt (3.1.16)
     bindex (0.8.1)
     blacklight (6.23.0)
       bootstrap-sass (~> 3.2)
@@ -210,7 +210,7 @@ GEM
       railties (>= 4.1.0)
       responders
       warden (~> 1.2.3)
-    devise-guests (0.6.0)
+    devise-guests (0.7.0)
       devise
     diff-lcs (1.3)
     docile (1.3.2)
@@ -853,8 +853,8 @@ GEM
     uglifier (4.2.0)
       execjs (>= 0.3.0, < 3)
     validatable (1.6.7)
-    warden (1.2.8)
-      rack (>= 2.0.6)
+    warden (1.2.9)
+      rack (>= 2.0.9)
     web-console (3.5.1)
       actionview (>= 5.0)
       activemodel (>= 5.0)
@@ -885,7 +885,7 @@ DEPENDENCIES
   clamby (~> 1.5.1)
   coffee-rails (~> 4.2.2)
   devise (~> 4.7.2)
-  devise-guests (~> 0.6.0)
+  devise-guests (~> 0.7.0)
   edtf-humanize (= 0.0.7)
   factory_bot_rails (~> 6.1.0)
   fcrepo_wrapper (~> 0.8.0)
