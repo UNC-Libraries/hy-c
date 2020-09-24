@@ -49,7 +49,7 @@ RSpec.describe RegisterToLongleafJob, type: :job do
     end
     
     it 'calls registration script with the expected parameters' do
-      job.perform(repository_file)
+      job.perform(repository_file.checksum.value)
       
       arguments = File.read(output_path)
       
