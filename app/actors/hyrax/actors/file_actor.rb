@@ -31,7 +31,7 @@ module Hyrax
         repository_file = related_file
         Hyrax::VersioningService.create(repository_file, user)
         # [hyc-override] Invoke longleaf registration
-        RegisterToLongleafJob.new.perform(repository_file)
+        RegisterToLongleafJob.perform_later(repository_file.checksum.value)
         pathhint = io.uploaded_file.uploader.path if io.uploaded_file # in case next worker is on same filesystem
         CharacterizeJob.perform_later(file_set, repository_file.id, pathhint || io.path)
       end
