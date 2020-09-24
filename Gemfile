@@ -56,7 +56,7 @@ gem 'redis', '~> 3.3.0'
 
 gem 'rsolr', '~> 2.0.2'
 gem 'devise', '~> 4.7.2'
-gem 'devise-guests', '~> 0.6.0'
+gem 'devise-guests', '~> 0.7.0'
 gem 'omniauth-shibboleth', '~> 1.3'
 
 gem 'bulkrax', git: 'https://github.com/samvera-labs/bulkrax.git', ref: '752b4dd'
