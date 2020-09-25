@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 # [hyc-override] overriding `write_files`,`export_headers`, `write_partial_import`,
 # and `real_import_file_path` methods and adding `people_types` method
-# [hyc-override] overriding application_parser `write_import_files` and 'unzip' methods
+# [hyc-override] overriding application_parser `write_import_files` and `unzip` methods
+# [hyc-override] raise errors in `valid_import?` method
 
 require 'csv'
 module Bulkrax
@@ -72,6 +73,13 @@ module Bulkrax
     end
 
     def valid_import?
+      required_fields = required_elements?(import_fields)
+      file_path_array = file_paths.is_a?(Array)
+      if !required_fields
+        raise StandardError.new "missing required column: #{required_elements.join(' or ')}"
+      elsif !file_path_array
+        raise StandardError.new 'file paths are invalid'
+      end
       required_elements?(import_fields) && file_paths.is_a?(Array)
     rescue StandardError => e
       status_info(e)

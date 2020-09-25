@@ -1,10 +1,12 @@
 # frozen_string_literal: true
 # [hyc-override] overriding build_export_metadata method
+# [hyc-override] check model name before building entry
 
 require 'csv'
 
 module Bulkrax
   class CsvEntry < Entry
+    include HycHelper
     serialize :raw_metadata, JSON
 
     def self.fields_from_data(data)
@@ -49,6 +51,10 @@ module Bulkrax
         raise StandardError(
                   "Missing required elements, required elements are: #{importerexporter.parser.required_elements.join(', ')}"
               )
+      end
+
+      unless work_types.map(&:to_s).include? record['model']
+        raise StandardError.new "uninitialized constant #{record['model']} (NameError)"
       end
 
       self.parsed_metadata = {}
