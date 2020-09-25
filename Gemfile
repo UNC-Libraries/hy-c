@@ -59,7 +59,7 @@ gem 'devise', '~> 4.7.2'
 gem 'devise-guests', '~> 0.6.0'
 gem 'omniauth-shibboleth', '~> 1.3'
 
-gem 'bulkrax', git: 'https://github.com/samvera-labs/bulkrax.git', ref: '752b4dd'
+gem 'bulkrax', git: 'https://github.com/samvera-labs/bulkrax.git', ref: '7791267'
 # required by bulkrax_override - rails engine for SWORDv2
 gem 'willow_sword', github: 'notch8/willow_sword', ref: '0a669d7'
 
