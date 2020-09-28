@@ -6,7 +6,6 @@ require 'csv'
 
 module Bulkrax
   class CsvEntry < Entry
-    include HycHelper
     serialize :raw_metadata, JSON
 
     def self.fields_from_data(data)
@@ -53,7 +52,7 @@ module Bulkrax
               )
       end
 
-      unless work_types.map(&:to_s).include? record['model']
+      unless work_types.include? record['model']
         raise StandardError.new "uninitialized constant #{record['model']} (NameError)"
       end
 
@@ -162,6 +161,10 @@ module Bulkrax
       f = File.join(path, file)
       return f if File.exist?(f)
       raise "File #{f} does not exist"
+    end
+
+    def work_types
+      ['Article', 'Artwork', 'DataSet', 'Dissertation', 'General', 'HonorsThesis', 'Journal', 'MastersPaper', 'Multimed', 'ScholarlyWork']
     end
   end
 end
