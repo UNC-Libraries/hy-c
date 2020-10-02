@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 # [hyc-override] overriding build_export_metadata method
+# [hyc-override] check model name before building entry
 
 require 'csv'
 
@@ -49,6 +50,10 @@ module Bulkrax
         raise StandardError(
                   "Missing required elements, required elements are: #{importerexporter.parser.required_elements.join(', ')}"
               )
+      end
+
+      unless work_types.include? record['model']
+        raise StandardError.new "uninitialized constant #{record['model']} (NameError)"
       end
 
       self.parsed_metadata = {}
@@ -156,6 +161,10 @@ module Bulkrax
       f = File.join(path, file)
       return f if File.exist?(f)
       raise "File #{f} does not exist"
+    end
+
+    def work_types
+      ['Article', 'Artwork', 'DataSet', 'Dissertation', 'General', 'HonorsThesis', 'Journal', 'MastersPaper', 'Multimed', 'ScholarlyWork']
     end
   end
 end
