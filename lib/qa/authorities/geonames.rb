@@ -1,3 +1,5 @@
+# [hyc-override] Bumping up the max results returned, as geonames doesn't deal well with multi-word states
+# Overridden file found here: https://github.com/samvera/questioning_authority/blob/f772e790622984c888388cc433c069b26d968921/lib/qa/authorities/geonames.rb
 module Qa::Authorities
   class Geonames < Base
     include WebServiceBase
@@ -44,7 +46,7 @@ module Qa::Authorities
 
     def build_query_url(q)
       query = ERB::Util.url_encode(untaint(q))
-      File.join(query_url_host, "searchJSON?q=#{query}&username=#{username}&maxRows=10")
+      File.join(query_url_host, "searchJSON?q=#{query}&username=#{username}&maxRows=25")
     end
 
     def untaint(q)
