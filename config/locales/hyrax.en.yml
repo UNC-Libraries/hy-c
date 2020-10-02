@@ -210,6 +210,12 @@ en:
           %{title} (%{link}) has been successfully deposited in the CDR and is now available in accordance with the visibility
           settings that were selected by the depositor.\r\n\r\n
           If you have questions, please feel free to <a href=\"https://blogs.lib.unc.edu/cdr/index.php/contact-us/\">contact us</a>!"
+        honors_mediated_deposit:
+          subject: CDR deposit successful
+          message: "%{title_link} has been deposited in the Carolina Digital Repository (CDR), and has been sent to Honors Carolina for review. Your entry will remain private until after your official graduation date, at which time, Honors Carolina will approve and publish your thesis. Please contact honorscarolina@unc.edu with any questions or concerns."
+        honors_department_reviewer_deposit:
+          subject: CDR deposit needs review
+          message: "%{title_link} has been deposited in the Carolina Digital Repository (CDR), and has been sent to Honors Carolina for review. Please email Honors Carolina with the confirmation of completion and designations awarded. Please contact honorscarolina@unc.edu with any questions or concerns."
         mediated_deposit:
           subject: CDR deposit sent for review
           message: "%{title} (%{link}) has been deposited in the Carolina Digital Repository (CDR) and has been sent to your department for review.  \r\n\r\n

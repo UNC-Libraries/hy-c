@@ -18,8 +18,14 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       User.new(email: 'admin2@example.com', guest: false, uid: 'admin2') { |u| u.save!(validate: false)}
     end
 
-    let(:contact) do
-      User.new(email: 'contact@example.com', guest: false, uid: 'contact') { |u| u.save!(validate: false)}
+    # department contact with view permissions
+    let(:department_contact1) do
+      User.new(email: 'department_contact1@example.com', guest: false, uid: 'department_contact1') { |u| u.save!(validate: false)}
+    end
+
+    # department contact with no permissions
+    let(:department_contact2) do
+      User.new(email: 'department_contact2@example.com', guest: false, uid: 'department_contact2') { |u| u.save!(validate: false)}
     end
 
     let(:manager) do
@@ -48,7 +54,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
     let(:workflow) { Sipity::Workflow.find_by!(name: 'honors_thesis_one_step_mediated_deposit', permission_template: permission_template) }
     let(:admin_agent) { Sipity::Agent.where(proxy_for_id: 'admin', proxy_for_type: 'Hyrax::Group').first_or_create }
     let(:admin_user_agent) { Sipity::Agent.where(proxy_for_id: admin_user.id, proxy_for_type: 'User').first_or_create }
-    let(:contact_user_agent) { Sipity::Agent.where(proxy_for_id: contact.id, proxy_for_type: 'User').first_or_create }
+    let(:department_contact_user_agent) { Sipity::Agent.where(proxy_for_id: department_contact1.id, proxy_for_type: 'User').first_or_create }
     let(:manager_agent) { Sipity::Agent.where(proxy_for_id: 'honors_manager', proxy_for_type: 'Hyrax::Group').first_or_create }
     let(:reviewer_agent) { Sipity::Agent.where(proxy_for_id: reviewer.id, proxy_for_type: 'User').first_or_create }
 
@@ -82,7 +88,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       Hyrax::Workflow::PermissionGenerator.call(roles: 'deleting', workflow: workflow, agents: admin_user_agent)
       Hyrax::Workflow::PermissionGenerator.call(roles: 'approving', workflow: workflow, agents: admin_agent)
       Hyrax::Workflow::PermissionGenerator.call(roles: 'depositing', workflow: workflow, agents: admin_agent)
-      Hyrax::Workflow::PermissionGenerator.call(roles: 'viewing', workflow: workflow, agents: contact_user_agent)
+      Hyrax::Workflow::PermissionGenerator.call(roles: 'viewing', workflow: workflow, agents: department_contact_user_agent)
       Hyrax::Workflow::PermissionGenerator.call(roles: 'managing', workflow: workflow, agents: reviewer_agent)
       Hyrax::Workflow::PermissionGenerator.call(roles: 'approving', workflow: workflow, agents: reviewer_agent)
       Hyrax::Workflow::PermissionGenerator.call(roles: 'depositing', workflow: workflow, agents: reviewer_agent)
@@ -104,6 +110,8 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       expect(admin_user.mailbox.inbox.count).to eq 0
       expect(admin_user2.mailbox.inbox.count).to eq 0
       expect(user.mailbox.inbox.count).to eq 0
+      expect(department_contact1.mailbox.inbox.count).to eq 0
+      expect(department_contact2.mailbox.inbox.count).to eq 0
       expect(reviewer.mailbox.inbox.count).to eq 0
       expect(nonreviewer.mailbox.inbox.count).to eq 0
       expect(manager.mailbox.inbox.count).to eq 0
@@ -123,7 +131,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       visit new_hyrax_honors_thesis_path
       expect(page).to have_content "Add New Undergraduate Honors Thesis"
 
-      fill_in 'Title', with: 'Honors workflow test'
+      fill_in 'Title', with: 'Honors workflow test 1'
       fill_in 'Creator', { with: 'Test Default Creator', id: 'honors_thesis_creators_attributes_0_name' }
       fill_in 'ORCID', { with: 'creator orcid', id: 'honors_thesis_creators_attributes_0_orcid' }
       select 'Department of Biology', from: 'honors_thesis_creators_attributes_0_affiliation'
@@ -159,7 +167,8 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       # Reviewer is not yet in reviewing group and does not get a notification
       expect(admin_user.mailbox.inbox.count).to eq 0
       expect(admin_user2.mailbox.inbox.count).to eq 0
-      expect(contact.mailbox.inbox.count).to eq 0
+      expect(department_contact1.mailbox.inbox.count).to eq 1
+      expect(department_contact2.mailbox.inbox.count).to eq 0
       expect(user.mailbox.inbox.count).to eq 1
       expect(reviewer.mailbox.inbox.count).to eq 0
       expect(nonreviewer.mailbox.inbox.count).to eq 0
@@ -170,7 +179,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       # Check that work is not yet visible to general public
       visit '/concern/honors_theses/'+HonorsThesis.all[-1].id
       expect(page).to have_content 'Login'
-      expect(page).to have_content 'Honors workflow test'
+      expect(page).to have_content 'Honors workflow test 1'
       expect(page).not_to have_content 'Review and Approval'
       expect(page).to have_content 'The work is not currently available because it has not yet completed the approval process'
 
@@ -183,9 +192,9 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
 
       # Add reviewer to role
       click_on 'department_of_biology_reviewer'
-      fill_in 'User', with: contact.uid
+      fill_in 'User', with: department_contact2.uid
       click_button 'Add'
-      expect(page).to have_content "Accounts: contact"
+      expect(page).to have_content "Accounts: department_contact2"
 
       click_on 'Logout'
 
@@ -203,7 +212,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       click_on 'Logout'
 
       # Check that department contact can review work
-      login_as contact
+      login_as department_contact2
 
       visit '/dashboard'
       # current functionality only allows approving role to see 'Review Submissions'
@@ -217,7 +226,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
 
       expect(page).to have_content 'Public'
       expect(page).to have_content 'Pending review'
-      expect(page).to have_content 'Honors workflow test'
+      expect(page).to have_content 'Honors workflow test 1'
       expect(page).to have_content 'Test Default Keyword'
       expect(page).to have_content 'Creator Test Default Creator ORCID: creator orcid'
       expect(page).to have_content 'Affiliation:'
@@ -242,7 +251,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
 
       expect(page).to have_content 'Public'
       expect(page).to have_content 'Pending review'
-      expect(page).to have_content 'Honors workflow test'
+      expect(page).to have_content 'Honors workflow test 1'
       expect(page).to have_content 'Test Default Keyword'
       expect(page).to have_content 'Creator Test Default Creator ORCID: creator orcid'
       expect(page).to have_content 'Affiliation:'
@@ -269,7 +278,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       expect(page).to have_content 'Public'
       expect(page).not_to have_content 'Pending review'
       expect(page).to have_content 'Deposited'
-      expect(page).to have_content 'Honors workflow test'
+      expect(page).to have_content 'Honors workflow test 1'
       expect(page).to have_content 'Test Default Keyword'
       expect(page).to have_content 'Creator Test Default Creator ORCID: creator orcid'
       expect(page).to have_content 'Affiliation:'
@@ -282,7 +291,8 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       # User and admin set owner get notification for 'depositing' role
       expect(admin_user.mailbox.inbox.count).to eq 1
       expect(admin_user2.mailbox.inbox.count).to eq 0
-      expect(contact.mailbox.inbox.count).to eq 0
+      expect(department_contact1.mailbox.inbox.count).to eq 1
+      expect(department_contact2.mailbox.inbox.count).to eq 0
       expect(user.mailbox.inbox.count).to eq 2
       expect(reviewer.mailbox.inbox.count).to eq 1
       expect(nonreviewer.mailbox.inbox.count).to eq 0
@@ -306,7 +316,8 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       # User gets notification for deletion requests
       expect(admin_user.mailbox.inbox.count).to eq 2
       expect(admin_user2.mailbox.inbox.count).to eq 1
-      expect(contact.mailbox.inbox.count).to eq 0
+      expect(department_contact1.mailbox.inbox.count).to eq 1
+      expect(department_contact2.mailbox.inbox.count).to eq 0
       expect(user.mailbox.inbox.count).to eq 3
       expect(reviewer.mailbox.inbox.count).to eq 1
       expect(nonreviewer.mailbox.inbox.count).to eq 0
@@ -316,7 +327,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       visit new_hyrax_honors_thesis_path
       expect(page).to have_content "Add New Undergraduate Honors Thesis"
 
-      fill_in 'Title', with: 'Honors workflow test'
+      fill_in 'Title', with: 'Honors workflow test 2'
       fill_in 'Creator', { with: 'Test Default Creator', id: 'honors_thesis_creators_attributes_0_name' }
       fill_in 'ORCID', { with: 'creator orcid', id: 'honors_thesis_creators_attributes_0_orcid' }
       select 'Department of Biology', from: 'honors_thesis_creators_attributes_0_affiliation'
@@ -351,7 +362,8 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       # User gets deposit notification
       expect(admin_user.mailbox.inbox.count).to eq 2
       expect(admin_user2.mailbox.inbox.count).to eq 1
-      expect(contact.mailbox.inbox.count).to eq 1
+      expect(department_contact1.mailbox.inbox.count).to eq 2
+      expect(department_contact2.mailbox.inbox.count).to eq 1
       expect(user.mailbox.inbox.count).to eq 4
       expect(reviewer.mailbox.inbox.count).to eq 1
       expect(nonreviewer.mailbox.inbox.count).to eq 0
@@ -362,7 +374,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       # Check that work is not yet visible to general public
       visit '/concern/honors_theses/'+HonorsThesis.all[-1].id
       expect(page).to have_content 'Login'
-      expect(page).to have_content 'Honors workflow test'
+      expect(page).to have_content 'Honors workflow test 2'
       expect(page).not_to have_content 'Review and Approval'
       expect(page).to have_content 'The work is not currently available because it has not yet completed the approval process'
 
