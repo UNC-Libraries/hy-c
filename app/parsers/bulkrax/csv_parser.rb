@@ -240,7 +240,7 @@ module Bulkrax
       end
     end
 
-    # overriding to add columns for people attributes and rename source column
+    # overriding to add columns for people attributes
     # if reimporting, there needs to be a source_identifier column
     def export_headers
       headers = ['id']
