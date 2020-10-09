@@ -1,8 +1,6 @@
 <%# [hyc-override] Overriding partial in hyrax to merge description and file tabs %>
 
 <% # we will yield to content_for for each tab, e.g. :files_tab %>
-<%# [hyc-override] Don't create "Files" tab %>
-<% tabs ||= %w[metadata relationships] # default tab order %>
 <%# Not passing tabs local param to this partial is deprecated and the tabs param will be required in Hyrax 3.0 %>
 <% unless defined?(tabs) %>
   <% Deprecation.warn(self, "Passing the tabs local param to the _guts4form partial will be required in Hyrax 3.0.  " \
