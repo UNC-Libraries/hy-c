@@ -384,10 +384,6 @@ div.unc-modal {
   }
 }
 
-.access-request {
-  margin-top: 10px;
-}
-
 /* Hyrax override */
 #content_block_page {
   margin: 0 15px;
@@ -627,6 +623,12 @@ input#check_all {
 
 .controlled_vocabulary .input-append {
   width: 100%;
+}
+
+@media only screen and (max-width: 1765px) {
+  .access-request {
+    margin-top: 10px;
+  }
 }
 
 @media only screen and (max-width: 1399px) {
