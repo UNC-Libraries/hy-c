@@ -1,3 +1,4 @@
+# [hyc-override] Don't create "Files" tab. We merge it into the description tab
 # frozen_string_literal: true
 module Hyrax
   module WorkFormHelper
@@ -20,9 +21,9 @@ module Hyrax
     # @return [Array<String>] the list of names of tabs to be rendered in the form
     def form_tabs_for(form:)
       if form.instance_of? Hyrax::Forms::BatchUploadForm
-        %w[files metadata relationships]
+        %w[metadata relationships]
       else
-        %w[metadata files relationships]
+        %w[metadata relationships]
       end
     end
 
