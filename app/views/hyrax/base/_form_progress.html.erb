@@ -29,6 +29,11 @@
       </div>
     <% end %>
   </div>
+
+  <% form_progress_sections_for(form: f.object).each do |section| %>
+    <%= render "form_progress_#{section}", f: f %>
+  <% end %>
+
   <div class="panel-footer text-center">
     <% if ::Flipflop.show_deposit_agreement? %>
       <% if ::Flipflop.active_deposit_agreement_acceptance? %>

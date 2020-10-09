@@ -89,11 +89,11 @@ module Hyrax
     def append_label_and_uri(solr_doc, solr_field_key, field_info, val)
       full_label = parse_geo_request(val.to_uri.to_s)
       val = val.solrize(full_label)
-      self.class.create_and_insert_terms(solr_field_key,
+      create_and_insert_terms_handler.create_and_insert_terms(solr_field_key,
                                          val.first,
                                          field_info.behaviors, solr_doc)
       return unless val.last.is_a? Hash
-      self.class.create_and_insert_terms("#{solr_field_key}_label",
+      create_and_insert_terms_handler.create_and_insert_terms("#{solr_field_key}_label",
                                          label(val),
                                          field_info.behaviors, solr_doc)
     end
@@ -107,10 +107,10 @@ module Hyrax
     def append_label(solr_doc, solr_field_key, field_info, val)
       full_label = parse_geo_request(val.to_uri.to_s)
 
-      self.class.create_and_insert_terms(solr_field_key,
+      create_and_insert_terms_handler.create_and_insert_terms(solr_field_key,
                                          full_label,
                                          field_info.behaviors, solr_doc)
-      self.class.create_and_insert_terms("#{solr_field_key}_label",
+      create_and_insert_terms_handler.create_and_insert_terms("#{solr_field_key}_label",
                                          full_label,
                                          field_info.behaviors, solr_doc)
     end
@@ -121,6 +121,15 @@ module Hyrax
     #   => 'Hotels'
     def label(val)
       val.last[:label].split('$').first
+    end
+
+    # create_and_insert_terms was moved to ActiveFedora::Indexing::Inserter
+    # in ActiveFedora 12. broker calls to it through here to ensure an
+    # implementation is available
+    def create_and_insert_terms_handler
+      return self.class if self.class.respond_to?(:create_and_insert_terms)
+
+      'ActiveFedora::Indexing::Inserter'.constantize
     end
   end
 end
