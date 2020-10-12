@@ -19,7 +19,7 @@ class CatalogController < ApplicationController
   end
 
   def self.date_issued_field
-    solr_name('date_issued_sort', :stored_sortable, type: :date)
+    solr_name('date_issued_sort', :stored_sortable)
   end
 
   def self.uploaded_field
