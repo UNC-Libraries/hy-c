@@ -41,7 +41,7 @@ gem 'nokogiri', '~>1.10.10'
 gem 'httparty', '~>0.17.1'
 gem 'riiif', '~> 2.3.0'
 # linkeddata gem is released with rdf gems and should be the same version as rdf
-gem 'linkeddata', '~>3.1.0'
+gem 'linkeddata', '~>3.1.2'
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails', '~> 4.3.1'
