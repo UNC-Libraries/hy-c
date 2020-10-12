@@ -39,6 +39,7 @@ gem 'mini_magick', '~>4.9.4'
 gem 'roo', '~>2.8.2'
 gem 'nokogiri', '~>1.10.10'
 gem 'httparty', '~>0.17.1'
+gem 'riiif', '~> 2.3.0'
 # linkeddata gem is released with rdf gems and should be the same version as rdf
 gem 'linkeddata', '~>3.1.0'
 
@@ -85,5 +86,3 @@ group :test do
   gem 'factory_bot_rails', '~> 6.1.0'
   gem 'simplecov', '~> 0.17.0'
 end
-
-gem 'riiif', '~> 2.0'
