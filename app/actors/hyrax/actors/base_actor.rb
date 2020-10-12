@@ -1,4 +1,5 @@
 # [hyc-override] Overriding actor to cast rights statements as single valued
+# [hyc-override] Overriding actor to add work-specific workflow permissions
 module Hyrax
   module Actors
     ##
@@ -19,7 +20,9 @@ module Hyrax
       def create(env)
         apply_creation_data_to_curation_concern(env)
         apply_save_data_to_curation_concern(env)
-        save(env) && next_actor.create(env) && run_callbacks(:after_create_concern, env)
+        save(env)
+        apply_work_specific_permissions(env)
+        next_actor.create(env) && run_callbacks(:after_create_concern, env)
       end
 
       # @param [Hyrax::Actors::Environment] env
@@ -28,6 +31,7 @@ module Hyrax
         apply_update_data_to_curation_concern(env)
         log_deleted_people_objects(env.attributes, env.curation_concern.id)
         apply_save_data_to_curation_concern(env)
+        apply_work_specific_permissions(env)
         next_actor.update(env) && save(env) && run_callbacks(:after_update_metadata, env)
       end
 
@@ -87,6 +91,18 @@ module Hyrax
       # TODO this method could move to the work form.
       def clean_attributes(attributes)
         attributes[:license] = Array(attributes[:license]) if attributes.key? :license
+        # [hyc-override] remove index field if for some reason is added to permissions_attributes hashes
+        if !attributes['permissions_attributes'].blank?
+          permission_attrs = {}
+          attributes['permissions_attributes'].each do |k,v|
+            if !v['index'].blank?
+              permission_attrs[k] = v.except('index')
+            else
+              permission_attrs[k] = v
+            end
+          end
+          attributes['permissions_attributes'] = permission_attrs
+        end
         # [hyc-override] Overriding actor to cast rights statements as single valued
         remove_blank_attributes!(attributes)
       end
@@ -120,6 +136,44 @@ module Hyrax
             end
           end
         end
+      end
+
+      # added this method to allow work-specific permissions to work
+      def apply_work_specific_permissions(env)
+        permissions_attributes = env.attributes['permissions_attributes']
+        return if permissions_attributes.blank?
+        workflow = Sipity::Workflow.where(permission_template_id: env.curation_concern.admin_set.permission_template.id,
+                                          active: true).first
+        entity = Sipity::Entity.where(proxy_for_global_id: env.curation_concern.to_global_id.to_s).first
+        permissions_attributes.each do |k,permission|
+          if !permission['id'].blank?
+            next
+          end
+          if permission['type'] == 'person'
+            agent_type = 'User'
+            agent_id = ::User.find_by(uid: permission['name'])
+          else
+            agent_type = 'Hyrax::Group'
+            agent_id = permission['name']
+          end
+          agents = [Sipity::Agent.where(proxy_for_id: agent_id, proxy_for_type: agent_type).first_or_create]
+
+          if permission['access'] == 'edit'
+            roles = 'approving'
+          else
+            roles = 'viewing'
+          end
+
+          create_workflow_permissions(entity, agents, roles, workflow)
+        end
+      end
+
+      # added this method to allow work-specific permissions to work
+      def create_workflow_permissions(entity, agents, roles, workflow)
+        Hyrax::Workflow::PermissionGenerator.call(entity: entity,
+                                                  agents: agents,
+                                                  roles: roles,
+                                                  workflow: workflow)
       end
     end
   end
