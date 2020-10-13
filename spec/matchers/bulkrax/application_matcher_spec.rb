@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+# [hyc-override] updating expected results for default splitting
 
 require 'rails_helper'
 
@@ -8,7 +9,7 @@ module Bulkrax
       it 'default split' do
         matcher = ApplicationMatcher.new(split: true)
         result = matcher.result(nil, " hey ; how : are | you")
-        expect(result).to eq(["hey", "how", "are", "you"])
+        expect(result).to eq(["hey", "how : are", "you"])
       end
 
       it 'custom regex split' do
