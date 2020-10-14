@@ -200,21 +200,6 @@ module Tasks
       @pdf_files = Dir.glob("#{@config['pdf_dir']}/**/*.pdf")
       puts "[#{Time.now}] found #{@pdf_files.count} files"
 
-      # read from affiliation spreadsheet
-      @affiliation_mapping = []
-      @config['affiliation_files'].each do |affiliation_file|
-        workbook = Roo::Spreadsheet.open(File.join(@config['metadata_dir'], affiliation_file))
-        sheets = workbook.sheets
-        sheets.each do |sheet|
-          data_hash = workbook.sheet(sheet).parse(headers: true)
-          # first hash is of headers
-          data_hash.delete_at(0)
-          @affiliation_mapping << data_hash
-        end
-      end
-      @affiliation_mapping.flatten!
-      puts "[#{Time.now}] loaded affiliation mappings"
-
       # read from embargo spreadsheet
       @embargo_mapping = CSV.read(File.join(@config['metadata_dir'], @config['embargo_file']), headers: true)
       puts "[#{Time.now}] loaded embargo mappings"
@@ -271,20 +256,28 @@ module Tasks
       work_attributes['title'] = onescience_data['Title']
       work_attributes['label'] = work_attributes['title']
       work_attributes['journal_title'] = onescience_data['Journal Title']
-      work_attributes['journal_volume'] = onescience_data['Volume'].to_s
-      journal_issue = onescience_data['Issue'].to_s
+      if !@scopus_hash[onescience_data['DOI'].downcase].blank?
+        volume = @scopus_hash[onescience_data['DOI'].downcase]['volume']
+        issue = @scopus_hash[onescience_data['DOI'].downcase]['issue']
+        scopus_page_start = @scopus_hash[onescience_data['DOI'].downcase]['page_start']
+        scopus_page_end = @scopus_hash[onescience_data['DOI'].downcase]['page_end']
+      else
+        volume, issue, scopus_page_start, scopus_page_end = nil
+      end
+      work_attributes['journal_volume'] = volume.blank? ? onescience_data['Volume'].to_s : volume
+      journal_issue = issue.blank? ? onescience_data['Issue'].to_s : issue
       if journal_issue != 'C'
         work_attributes['journal_issue'] = journal_issue
       else
         puts "[#{Time.now}] #{onescience_data['onescience_id']} error: journal issue value is 'C'"
       end
-      page_start = onescience_data['First Page'].to_s
+      page_start = scopus_page_start.blank? ? onescience_data['First Page'].to_s : scopus_page_start
       if !page_start.blank? && page_start.to_i > 1000
         puts "[#{Time.now}] #{onescience_data['onescience_id']} error: journal start page is #{page_start}"
       else
         work_attributes['page_start'] = page_start
       end
-      page_end = onescience_data['Last Page'].to_s
+      page_end = scopus_page_end.blank? ? onescience_data['Last Page'].to_s : scopus_page_end
       if !page_end.blank? && page_end.to_i > 1000
         puts "[#{Time.now}] #{onescience_data['onescience_id']} error: journal end page is #{page_end}"
       else
@@ -311,21 +304,10 @@ module Tasks
 
     def get_people(onescience_id, doi)
       people = {}
-      if !doi.blank? && !@scopus_hash[doi.downcase].blank?
-        people = @scopus_hash[doi.downcase]
+      if !doi.blank? && !@scopus_hash[doi.downcase]['authors'].blank?
+        people = @scopus_hash[doi.downcase]['authors']
       else
-        puts "[#{Time.now}] #{onescience_id} error: no scopus information available"
-        affiliation_data = @affiliation_mapping.find{ |e| e['onescience_id'] == onescience_id }
-        # check all author-related columns in 1science spreadsheets with data
-        (1..32).each do |index|
-          break if affiliation_data['lastname_author'+index.to_s].blank? || affiliation_data['firstname_author'+index.to_s].blank?
-          name = "#{affiliation_data['lastname_author'+index.to_s]}, #{affiliation_data['firstname_author'+index.to_s]}"
-          affiliations = affiliation_data['affiliation_author'+index.to_s]
-          people[index-1] = { 'name' => name,
-                              'orcid' => affiliation_data['ORCID_author'+index.to_s],
-                              'affiliation' => (affiliations.split('||') if !affiliations.blank?),
-                              'index' => index}
-        end
+        puts "[#{Time.now}] #{onescience_id} error: no scopus author information available"
       end
 
       people
@@ -339,7 +321,7 @@ module Tasks
       responses=[]
       Array.wrap(@config['scopus_xml_file']).each do|xml_file|
         scopus_file = File.read(File.join(@config['metadata_dir'] , xml_file))
-        query_responses = scopus_file.split(/\<htt-party-response\>/)
+        query_responses = scopus_file.split(/\<object\>/)
         query_responses.delete_at(0)
         responses = responses + query_responses
       end
@@ -356,43 +338,58 @@ module Tasks
         scopus_xml = Nokogiri::XML(response)
 
         # find author-affiliation groupings
-        author_groups = scopus_xml.xpath('//abstracts-retrieval-response//author-group[not(@*)]')
-        record_doi = scopus_xml.xpath('//coredata/doi').text.downcase
+        authors = scopus_xml.xpath('abstracts-retrieval-response/authors//author[not(@*)]')
+        affiliation = scopus_xml.xpath('abstracts-retrieval-response/affiliation')
+        record_doi = scopus_xml.xpath('abstracts-retrieval-response/coredata/doi').text.downcase
+        volume = scopus_xml.xpath('abstracts-retrieval-response/coredata/volume').text.downcase
+        issue = scopus_xml.xpath('abstracts-retrieval-response/coredata/issueIdentifier').text.downcase
+        page_start = scopus_xml.xpath('abstracts-retrieval-response/coredata/startingPage').text.downcase
+        page_end = scopus_xml.xpath('abstracts-retrieval-response/coredata/endingPage').text.downcase
+
+        # make hash of affiliation(s) since author info only has id now
+        affiliation_hash = Hash.new()
+        affiliations = affiliation.xpath('affiliation')
+        if affiliations.blank?
+          affiliation_id = affiliation.xpath('id').text
+          affiliation_name = affiliation.xpath('affilname').text
+          affiliation_hash[affiliation_id] = affiliation_name
+        else
+          affiliations.each do |affiliation|
+            affiliation_id = affiliation.xpath('id').text
+            affiliation_name = affiliation.xpath('affilname').text
+            affiliation_hash[affiliation_id] = affiliation_name
+          end
+        end
 
         record_affiliation_hash = Hash.new { |h, k| h[k] = [] }
         begin
           # create array for each person for current record
-          author_groups.each do |author_group|
+          authors.each do |author|
             # get affiliation info
-            organizations = author_group.xpath('affiliation/organization').map(&:text)
-            affiliation_id = author_group.xpath('affiliation/afid').text
-            department_id = author_group.xpath('affiliation/dptid').text
-
-            # add affiliation info to each person in group
-            author_group.xpath('.//author[not(@*)]').each do |author|
-              author_id = author.xpath('auid').text
-              orcid = author.xpath('orcid').text
-              if !organizations.blank? && (!affiliation_id.blank? || !department_id.blank?)
-                organizations.each do |organization|
-                  record_affiliation_hash[author_id] << {'afid' => affiliation_id,
-                                                         'dptid' => department_id.blank? ? nil : department_id,
-                                                         'organization' => organization.strip.split("\n").map(&:strip).join("; "),
-                                                         'orcid' => orcid}
-                end
-              else
-                record_affiliation_hash[author_id] << {'orcid' => orcid}
+            affiliation_ids = author.xpath('affiliation/affiliation[not(@*)]')
+            affiliation_ids = author.xpath('affiliation[not(@*)]') if affiliation_ids.blank?
+            author_id = author.xpath('auid').text
+            orcid = author.xpath('orcid').text
+            if !affiliation_ids.blank?
+              affiliation_ids.each do |affiliation|
+                affiliation_id = affiliation.xpath('id').text
+                record_affiliation_hash[author_id] << {'afid' => affiliation_id,
+                                                       'organization' => affiliation_hash[affiliation_id],
+                                                       'orcid' => orcid}
               end
+            else
+              record_affiliation_hash[author_id] << {'orcid' => orcid}
             end
           end
 
           # create hash of people for record
           record_authors = Hash.new
           first_author = scopus_xml.xpath('//coredata/creator/author/author-url').text
-          scopus_xml.xpath('//abstracts-retrieval-response/authors//author').each_with_index do |author, index|
+          scopus_xml.xpath('//abstracts-retrieval-response/authors//author[not(@*)]').each_with_index do |author, index|
             # get person info
             surname = author.xpath('surname').text
             if !surname.blank?
-              given_name = author.xpath('given-name').text
+              given_name = author.xpath('preferred-name/given-name').text
               author_id = author.xpath('auid').text
               affiliations = record_affiliation_hash[author_id]
 
@@ -406,7 +403,7 @@ module Tasks
                 # find all unc affiliations by scopus afid
                 if !affiliation['organization'].blank?
                   if UNC_SCOPUS_AFIDS.include?(affiliation['afid'])
-                    mapped_affiliation = mapped_affiliations.find{|mapped_dept| (mapped_dept['affiliation_id'] == affiliation['afid'] && mapped_dept['department_id'] == affiliation['dptid'])}
+                    mapped_affiliation = mapped_affiliations.find{|mapped_affil| (mapped_affil['affiliation_id'] == affiliation['afid'] && mapped_affil['department_id'].blank?)}
                     # if affiliation/department combination matches any unc affiliation, then store it as a unc affiliation
                     if mapped_affiliation
                       unc_organizations << mapped_affiliation['mapped_affiliation']
@@ -432,11 +429,13 @@ module Tasks
                 f.puts "#{record_doi}\t#{multiple}\t#{author_id}\t#{surname}, #{given_name}\t#{orcid}\t#{unc_organizations.join('||')}\t#{other_organizations.join('||')}\t#{index+1}"
               end
 
+              other_affiliation = (other_organizations + unc_organizations.drop(1)).reject{|i| i.blank?}
+              other_affiliation = nil if other_affiliation.blank?
               # create hash for person with index value
               record_authors[index] = {'name' => surname+', '+given_name,
                                        'orcid' => orcid,
                                        'affiliation' => unc_organizations.first,
-                                       'other_affiliation' => (other_organizations + unc_organizations.drop(1)).reject{|i| i.blank?},
+                                       'other_affiliation' => other_affiliation,
                                        'index' => index+1}.reject{|i| i.blank?}
 
               # verify that first author is first in list
@@ -449,7 +448,8 @@ module Tasks
             end
           end
 
-          @scopus_hash[record_doi] = record_authors
+          @scopus_hash[record_doi] = {'authors' => record_authors, 'volume' => volume, 'issue' => issue,
+                                      'page_start' => page_start, 'page_end' => page_end}
         rescue => e
           puts e.message, e.backtrace
           puts author_groups
