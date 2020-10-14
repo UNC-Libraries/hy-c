@@ -4,7 +4,6 @@
 <dl class="dl-horizontal metadata-collections">
   <% present_terms(@presenter, @presenter.terms_with_values) do |r, term| %>
     <dt><%= r.label(term) %></dt>
-    <dd><%= r.value(term) %></dd>
     <% if term.to_s == 'language' %>
       <dd><%= language_links({ value: @presenter.language }) %></dd>
     <% else %>
