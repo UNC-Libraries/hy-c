@@ -18,6 +18,7 @@ module Tasks
 
     def initialize(args)
       @config = YAML.load_file(args[:configuration_file])
+      @rows = args[:rows].to_i || 0
     end
 
     def ingest
@@ -43,6 +44,7 @@ module Tasks
       puts "Skipping #{already_ingested.length} previously ingested and skipped works"
 
       count = @data.count
+      ingest_count = 0
       # extract needed metadata and create articles
       @data.each_with_index do |item_data, index|
         puts '',"[#{Time.now}] ingesting #{item_data['onescience_id']} (#{index+1} of #{count})"
@@ -182,6 +184,8 @@ module Tasks
             @skipped_objects.add_entry(item_data['onescience_id'])
           else
             @object_progress.add_entry(item_data['onescience_id'])
+            ingest_count += 1
+            abort("finished ingesting batch of #{@rows}") if ingest_count == @rows
           end
         else
           puts "[#{Time.now}] #{item_data['onescience_id']} work has no files and will not be saved"
@@ -414,10 +418,10 @@ module Tasks
                 # find all unc affiliations by scopus afid
                 if !affiliation['organization'].blank?
                   if UNC_SCOPUS_AFIDS.include?(affiliation['afid'])
-                    mapped_affiliation = mapped_affiliations.find{|mapped_affil| (mapped_affil['affiliation_id'] == affiliation['afid'] && mapped_affil['department_id'].blank?)}
+                    mapped_affiliation = mapped_affiliations.find{|mapped_affil| (mapped_affil['ID'] == affiliation['afid'])}
                     # if affiliation/department combination matches any unc affiliation, then store it as a unc affiliation
                     if mapped_affiliation
-                      unc_organizations << mapped_affiliation['mapped_affiliation']
+                      unc_organizations << mapped_affiliation['reconciled_unc_institution']
                     else # if the afid matches a known unc afid, but was not mapped, log it and still store it as a unc affiliation
                       puts "non-mapped affiliation: #{affiliation}"
                       unc_organizations << affiliation['organization']
