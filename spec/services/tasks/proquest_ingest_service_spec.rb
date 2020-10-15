@@ -49,6 +49,7 @@ RSpec.describe Tasks::ProquestIngestService do
     end
 
     it 'ingests proquest records' do
+      allow(RegisterToLongleafJob).to receive(:perform_later).and_return(nil)
       expect{Tasks::ProquestIngestService.new(args).migrate_proquest_packages}.to change{ Dissertation.count }.by(1).and change{ DepositRecord.count }.by(1)
 
       # check embargo information
@@ -68,6 +69,7 @@ RSpec.describe Tasks::ProquestIngestService do
       expect(dissertation['degree_granting_institution']).to eq 'University of North Carolina at Chapel Hill Graduate School'
       expect(dissertation['dcmi_type']).to match_array ['http://purl.org/dc/dcmitype/Text']
       expect(dissertation['graduation_year']).to eq '2019'
+      expect(dissertation['rights_statement_label']).to eq 'In Copyright - Educational Use Permitted'
       expect(dissertation.visibility).to eq 'restricted'
       expect(dissertation.embargo_release_date).to eq (Date.today.to_datetime + 2.years)
     end
@@ -86,6 +88,7 @@ RSpec.describe Tasks::ProquestIngestService do
     let(:file) { 'spec/fixtures/files/test.txt' }
 
     it 'saves a fileset' do
+      allow(RegisterToLongleafJob).to receive(:perform_later).and_return(nil)
       expect{Tasks::ProquestIngestService.new(args).ingest_proquest_file(parent: dissertation, resource: metadata, f: file)}
           .to change{ FileSet.count }.by(1)
     end
@@ -112,6 +115,7 @@ RSpec.describe Tasks::ProquestIngestService do
                                        'graduation_year'=>'2019',
                                        'language'=>['http://id.loc.gov/vocabulary/iso639-2/eng'],
                                        'rights_statement'=>'http://rightsstatements.org/vocab/InC-EDU/1.0/',
+                                       'rights_statement_label'=>'In Copyright - Educational Use Permitted',
                                        'keyword'=>['aesthetics', 'attachments', 'Philosophy'],
                                        'resource_type'=>'Dissertation',
                                        'visibility'=>'restricted',
@@ -144,6 +148,7 @@ RSpec.describe Tasks::ProquestIngestService do
                                        'graduation_year'=>'2019',
                                        'language'=>['http://id.loc.gov/vocabulary/iso639-2/eng'],
                                        'rights_statement'=>'http://rightsstatements.org/vocab/InC-EDU/1.0/',
+                                       'rights_statement_label'=>'In Copyright - Educational Use Permitted',
                                        'keyword'=>['aesthetics', 'attachments', 'Philosophy'],
                                        'resource_type'=>'Masters Thesis',
                                        'visibility'=>'restricted',
@@ -175,6 +180,7 @@ RSpec.describe Tasks::ProquestIngestService do
                                        'graduation_year'=>'2019',
                                        'language'=>['http://id.loc.gov/vocabulary/iso639-2/eng'],
                                        'rights_statement'=>'http://rightsstatements.org/vocab/InC-EDU/1.0/',
+                                       'rights_statement_label'=>'In Copyright - Educational Use Permitted',
                                        'keyword'=>['aesthetics', 'attachments', 'Philosophy'],
                                        'resource_type'=>'Dissertation',
                                        'visibility'=>'restricted',
@@ -206,6 +212,7 @@ RSpec.describe Tasks::ProquestIngestService do
                                        'graduation_year'=>'2019',
                                        'language'=>['http://id.loc.gov/vocabulary/iso639-2/eng'],
                                        'rights_statement'=>'http://rightsstatements.org/vocab/InC-EDU/1.0/',
+                                       'rights_statement_label'=>'In Copyright - Educational Use Permitted',
                                        'keyword'=>['aesthetics', 'attachments', 'Philosophy'],
                                        'resource_type'=>'Dissertation',
                                        'visibility'=>'restricted',
@@ -237,6 +244,7 @@ RSpec.describe Tasks::ProquestIngestService do
                                        'graduation_year'=>'2019',
                                        'language'=>['http://id.loc.gov/vocabulary/iso639-2/eng'],
                                        'rights_statement'=>'http://rightsstatements.org/vocab/InC-EDU/1.0/',
+                                       'rights_statement_label'=>'In Copyright - Educational Use Permitted',
                                        'keyword'=>['aesthetics', 'attachments', 'Philosophy'],
                                        'resource_type'=>'Dissertation',
                                        'visibility'=>'open',
@@ -268,6 +276,7 @@ RSpec.describe Tasks::ProquestIngestService do
                                        'graduation_year'=>'2019',
                                        'language'=>['http://id.loc.gov/vocabulary/iso639-2/eng'],
                                        'rights_statement'=>'http://rightsstatements.org/vocab/InC-EDU/1.0/',
+                                       'rights_statement_label'=>'In Copyright - Educational Use Permitted',
                                        'keyword'=>['aesthetics', 'attachments', 'Philosophy'],
                                        'resource_type'=>'Dissertation',
                                        'visibility'=>'restricted',
@@ -299,6 +308,7 @@ RSpec.describe Tasks::ProquestIngestService do
                                        'graduation_year'=>'2019',
                                        'language'=>['http://id.loc.gov/vocabulary/iso639-2/eng'],
                                        'rights_statement'=>'http://rightsstatements.org/vocab/InC-EDU/1.0/',
+                                       'rights_statement_label'=>'In Copyright - Educational Use Permitted',
                                        'keyword'=>['aesthetics', 'attachments', 'Philosophy'],
                                        'resource_type'=>'Dissertation',
                                        'visibility'=>'restricted',
@@ -343,6 +353,7 @@ RSpec.describe Tasks::ProquestIngestService do
                       'graduation_year'=>'2019',
                       'language'=>['http://id.loc.gov/vocabulary/iso639-2/eng'],
                       'rights_statement'=>'http://rightsstatements.org/vocab/InC-EDU/1.0/',
+                      'rights_statement_label'=>'In Copyright - Educational Use Permitted',
                       'keyword'=>['aesthetics', 'attachments', 'Philosophy'],
                       'resource_type'=>'Dissertation',
                       'visibility'=>'restricted',
