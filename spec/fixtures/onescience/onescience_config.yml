@@ -4,10 +4,6 @@ admin_set: onescience default
 depositor_onyen: admin
 metadata_dir: spec/fixtures/onescience
 metadata_file: 1science_test_data.xlsx
-affiliation_files:
- - 1science_sheet1_2016-2018_processed.xlsx
- - 1science_sheet2_2016-2018_processed.xlsx
- - 1science_sheets3-6_2016_2018only_processed.xlsx
 embargo_file: 1science_2016-2018_embargoes.csv
 pdf_dir: spec/fixtures/onescience
 progress_log: spec/fixtures/onescience/1science_completed.log
@@ -18,6 +14,7 @@ deposit_method: rake task
 deposit_type: a type
 deposit_subtype: a subtype
 deposit_record_id_log: spec/fixtures/onescience/1science_deposit_record_id.log
-scopus_xml_file: scopus-1-science-abstract-fixture.xml
+scopus_xml_file:
+ - scopus-1-science-abstract-fixture.xml
 mapped_scopus_affiliations: scoups_departments-mapped.csv
 multiple_unc_affiliations: spec/fixtures/onescience/multiple_unc_affiliations.tsv
