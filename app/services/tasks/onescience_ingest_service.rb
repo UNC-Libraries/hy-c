@@ -286,7 +286,7 @@ module Tasks
       work_attributes['issn'] = onescience_data['ISSNs'].split('||') if !onescience_data['ISSNs'].blank?
       work_attributes['abstract'] = onescience_data['Abstract']
       work_attributes['keyword'] = onescience_data['Keywords'].split('||') if !onescience_data['Keywords'].blank?
-      work_attributes['creators_attributes'] = get_people(onescience_data['onescience_id'], onescience_data['DOI'])
+      work_attributes['creators_attributes'] = get_people(onescience_data)
       work_attributes['resource_type'] = 'Article'
       work_attributes['language'] = 'http://id.loc.gov/vocabulary/iso639-2/eng'
       work_attributes['language_label'] = 'English'
@@ -302,12 +302,23 @@ module Tasks
       [work_attributes, files]
     end
 
-    def get_people(onescience_id, doi)
+    def get_people(onescience_data)
       people = {}
-      if !doi.blank? && !@scopus_hash[doi.downcase]['authors'].blank?
+      doi = onescience_data['DOI']
+      if !doi.blank? && !@scopus_hash[doi.downcase].blank? && !@scopus_hash[doi.downcase]['authors'].blank?
         people = @scopus_hash[doi.downcase]['authors']
       else
-        puts "[#{Time.now}] #{onescience_id} error: no scopus author information available"
+        puts "[#{Time.now}] #{onescience_data['onescience_id']} error: no scopus author information available"
+        # check all author-related columns in 1science spreadsheets with data
+        (1..32).each do |index|
+          break if onescience_data['lastname_author'+index.to_s].blank? || onescience_data['firstname_author'+index.to_s].blank?
+          name = "#{onescience_data['lastname_author'+index.to_s]}, #{onescience_data['firstname_author'+index.to_s]}"
+          affiliations = onescience_data['affiliation_author'+index.to_s]
+          people[index-1] = { 'name' => name,
+                              'orcid' => onescience_data['ORCID_author'+index.to_s],
+                              'affiliation' => (affiliations.split('||') if !affiliations.blank?),
+                              'index' => index}
+        end
       end
 
       people
