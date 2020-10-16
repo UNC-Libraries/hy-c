@@ -140,7 +140,7 @@ module Hyrax
       # [hyc-override] added this method to allow work-specific permissions to work
       def apply_work_specific_permissions(env)
         permissions_attributes = env.attributes['permissions_attributes']
-        return if permissions_attributes.blank?
+        return true if permissions_attributes.blank?
         workflow = Sipity::Workflow.where(permission_template_id: env.curation_concern.admin_set.permission_template.id,
                                           active: true).first
         entity = Sipity::Entity.where(proxy_for_global_id: env.curation_concern.to_global_id.to_s, workflow_id: workflow.id).first_or_create!
