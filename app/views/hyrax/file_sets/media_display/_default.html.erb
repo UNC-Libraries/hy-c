@@ -1,4 +1,5 @@
 <%# [hyc-override] Overriding to hide withdrawn files %>
+<%# [hyc-override] Style download link %>
 <% if current_user&.admin? || !@presenter.respond_to?('workflow') || 
     (!@presenter.workflow.in_workflow_state?(['withdrawn', 'pending deletion']) &&
     Hyrax.config.display_media_download_link?) %>
@@ -8,6 +9,7 @@
         hyrax.download_path(file_set),
         id: "file_download",
         data: { label: file_set.id },
+        class: "btn btn-info",
         target: "_new" %>
   </div>
 <% end %>

@@ -624,6 +624,11 @@ input#check_all {
   margin-right: 5px;
 }
 
+#file_download {
+  background-color: $carolina-blue-dark;
+  border-color: $carolina-blue-dark;
+}
+
 .controlled_vocabulary .input-append {
   width: 100%;
 }
