@@ -758,6 +758,12 @@ input#check_all {
   }
 }
 
+@media only screen and (max-width: 767px) {
+  .access-request {
+    margin-top: 0;
+  }
+}
+
 @media only screen and (max-width: 550px) {
   #masthead .navbar-brand {
     padding-right: 0;
