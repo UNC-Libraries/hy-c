@@ -86,6 +86,7 @@ span.institution_name {
 
 .advanced_search {
   float: right;
+  margin: -11px 0 2px 0;
   &:hover {
     text-decoration: none;
   }
@@ -383,10 +384,6 @@ div.unc-modal {
   }
 }
 
-.access-request {
-  margin-top: 10px;
-}
-
 /* Hyrax override */
 #content_block_page {
   margin: 0 15px;
@@ -628,6 +625,12 @@ input#check_all {
   width: 100%;
 }
 
+@media only screen and (max-width: 1765px) {
+  .access-request {
+    margin-top: 10px;
+  }
+}
+
 @media only screen and (max-width: 1399px) {
   .row {
     margin-right: -7px;
@@ -755,6 +758,12 @@ input#check_all {
   }
 }
 
+@media only screen and (max-width: 767px) {
+  .access-request {
+    margin-top: 0;
+  }
+}
+
 @media only screen and (max-width: 550px) {
   #masthead .navbar-brand {
     padding-right: 0;
@@ -873,6 +882,7 @@ input#check_all {
   }
 
   ul.navbar-nav {
+    margin-top: 8px;
     padding-left: 20px;
   }
 }
