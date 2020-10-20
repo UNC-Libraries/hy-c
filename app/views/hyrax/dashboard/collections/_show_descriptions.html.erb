@@ -1,0 +1,13 @@
+<%# [hyc-override] Partial to display language term instead of link %>
+<%# @TODO This file changes significantly in Hyrax 3.0 %>
+<h2 class="sr-only">Descriptions</h2>
+<dl class="dl-horizontal metadata-collections">
+  <% present_terms(@presenter, @presenter.terms_with_values) do |r, term| %>
+    <dt><%= r.label(term) %></dt>
+    <% if term.to_s == 'language' %>
+      <dd><%= language_links({ value: @presenter.language }) %></dd>
+    <% else %>
+      <dd><%= r.value(term) %></dd>
+    <% end %>
+  <% end %>
+</dl>
