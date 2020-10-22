@@ -11,6 +11,7 @@ class User < ApplicationRecord
   include Hyrax::User
   include Hyrax::UserUsageStats
 
+  validates :uid, presence: true, uniqueness: true
 
 
   if Blacklight::Utils.needs_attr_accessible?
