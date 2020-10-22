@@ -182,15 +182,16 @@ module Tasks
           if attached_file_count == 0
             puts "[#{Time.now}] #{item_data['onescience_id']} work has no files and will not be saved"
             @skipped_objects.add_entry(item_data['onescience_id'])
-          else
-            @object_progress.add_entry(item_data['onescience_id'])
-            ingest_count += 1
-            abort("finished ingesting batch of #{@rows}") if ingest_count == @rows
           end
         else
           puts "[#{Time.now}] #{item_data['onescience_id']} work has no files and will not be saved"
           @skipped_objects.add_entry(item_data['onescience_id'])
+          ingest_count += 1
+          abort("finished ingesting batch of #{@rows}") if ingest_count == @rows
         end
+        @object_progress.add_entry(item_data['onescience_id'])
+        ingest_count += 1
+        abort("finished ingesting batch of #{@rows}") if ingest_count == @rows
       end
 
       puts "[#{Time.now}] Completed ingest of onescience articles in #{@config['metadata_file']}"
@@ -299,7 +300,7 @@ module Tasks
       work_attributes['rights_statement'] = 'http://rightsstatements.org/vocab/InC/1.0/'
       work_attributes['rights_statement_label'] = 'In Copyright'
       work_attributes['deposit_record'] = @deposit_record_id
-      files = onescience_data.select { |k,v| k['Files'] && !v.blank? }
+      files = onescience_data.select { |k,v| k['Files'] && !v.blank? } # find columns with 'Files' in the name
 
       work_attributes.reject!{|k,v| v.blank?}
 
@@ -444,7 +445,7 @@ module Tasks
                 f.puts "#{record_doi}\t#{multiple}\t#{author_id}\t#{surname}, #{given_name}\t#{orcid}\t#{unc_organizations.join('||')}\t#{other_organizations.join('||')}\t#{index+1}"
               end
 
-              other_affiliation = (other_organizations + unc_organizations.drop(1)).reject{|i| i.blank?}
+              other_affiliation = (other_organizations).reject{|i| i.blank?}
               other_affiliation = nil if other_affiliation.blank?
               # create hash for person with index value
               record_authors[index] = {'name' => surname+', '+given_name,
