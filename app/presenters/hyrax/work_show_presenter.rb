@@ -225,7 +225,8 @@ module Hyrax
 
         # Remove everything but name from people object terms
         if field.to_s.match(/display$/)
-          field_value = field_value.map { |f| f.gsub(/\|\|.*/, '') }
+          # Name should always be the second value of the split string
+          field_value = field_value.map { |f| f.split("||")[1] }
         end
 
         metadata << {
