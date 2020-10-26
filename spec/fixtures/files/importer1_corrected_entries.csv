@@ -1,0 +1,2 @@
+source_identifier,title,model,creators_attributes
+test_work1,new test work 1,Article,{'0':{'name':'Person, Test', 'affiliation':'Department of Biology', 'index':'1'}}
