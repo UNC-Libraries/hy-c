@@ -303,6 +303,7 @@ module Tasks
           'language'=>language,
           'language_label'=>language_label,
           'rights_statement' => 'http://rightsstatements.org/vocab/InC-EDU/1.0/',
+          'rights_statement_label' => 'In Copyright - Educational Use Permitted',
           'keyword'=>keywords.flatten,
           'resource_type'=>resource_type,
           'visibility'=>visibility,
