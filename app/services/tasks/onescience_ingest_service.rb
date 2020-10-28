@@ -188,6 +188,7 @@ module Tasks
           @skipped_objects.add_entry(item_data['onescience_id'])
           ingest_count += 1
           abort("finished ingesting batch of #{@rows}") if ingest_count == @rows
+          next
         end
         @object_progress.add_entry(item_data['onescience_id'])
         ingest_count += 1
