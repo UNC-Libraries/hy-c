@@ -89,11 +89,7 @@ Hyrax.config do |config|
   config.enable_noids = true
 
   config.iiif_image_server = true
-  # Hyrax seems to have changed how it sets the base url in 2.9
-  # It defaults to 'localhost', if none is found.
-  # Instead of overriding yet another file update the url here
   config.iiif_info_url_builder = lambda do |file_id, base_url|
-    base_url = ENV['HYRAX_HOST'] if base_url != ENV['HYRAX_HOST']
     uri = Riiif::Engine.routes.url_helpers.info_url(file_id, host: base_url)
     uri.sub(%r{/info\.json\Z}, '')
   end
