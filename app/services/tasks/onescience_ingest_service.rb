@@ -262,11 +262,13 @@ module Tasks
       work_attributes['title'] = onescience_data['Title']
       work_attributes['label'] = work_attributes['title']
       work_attributes['journal_title'] = onescience_data['Journal Title']
-      if !@scopus_hash[onescience_data['DOI'].downcase].blank?
-        volume = @scopus_hash[onescience_data['DOI'].downcase]['volume']
-        issue = @scopus_hash[onescience_data['DOI'].downcase]['issue']
-        scopus_page_start = @scopus_hash[onescience_data['DOI'].downcase]['page_start']
-        scopus_page_end = @scopus_hash[onescience_data['DOI'].downcase]['page_end']
+      dc_doi = onescience_data['DOI']&.downcase
+      if !dc_doi.blank? && !@scopus_hash[dc_doi].blank?
+        scopus_rec = @scopus_hash[dc_doi]
+        volume = scopus_rec['volume']
+        issue = scopus_rec['issue']
+        scopus_page_start = scopus_rec['page_start']
+        scopus_page_end = scopus_rec['page_end']
       else
         volume, issue, scopus_page_start, scopus_page_end = nil
       end
@@ -310,9 +312,9 @@ module Tasks
 
     def get_people(onescience_data)
       people = {}
-      doi = onescience_data['DOI']
-      if !doi.blank? && !@scopus_hash[doi.downcase].blank? && !@scopus_hash[doi.downcase]['authors'].blank?
-        people = @scopus_hash[doi.downcase]['authors']
+      doi = onescience_data['DOI']&.downcase
+      if !doi.blank? && !@scopus_hash[doi].blank? && !@scopus_hash[doi]['authors'].blank?
+        people = @scopus_hash[doi]['authors']
       else
         puts "[#{Time.now}] #{onescience_data['onescience_id']} error: no scopus author information available"
         # check all author-related columns in 1science spreadsheets with data
