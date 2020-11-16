@@ -44,7 +44,7 @@ gem 'riiif', '~> 2.3.0'
 gem 'linkeddata', '~>3.1.0'
 
 # Use jquery as the JavaScript library
-gem 'jquery-rails', '~> 4.3.1'
+gem 'jquery-rails', '~> 4.4.0'
 # Turbolinks makes navigating your web application faster. Read more: https://github.com/turbolinks/turbolinks
 gem 'turbolinks', '~> 5.0.1'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
