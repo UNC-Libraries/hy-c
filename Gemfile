@@ -69,7 +69,7 @@ group :development, :test do
   gem 'byebug', '~> 9.1.0', platform: :mri
   gem 'solr_wrapper', '~> 1.1.0'
   gem 'fcrepo_wrapper', '~> 0.8.0'
-  gem 'rspec-rails', '~> 3.6.0'
+  gem 'rspec-rails', '~> 3.6.1'
 end
 
 group :development do
