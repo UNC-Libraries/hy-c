@@ -37,7 +37,7 @@ gem 'blacklight_range_limit', '6.3.3'
 gem 'blacklight_advanced_search', '~> 6.4.1'
 gem 'mini_magick', '~>4.9.4'
 gem 'roo', '~>2.8.2'
-gem 'nokogiri', '~>1.10.10'
+gem 'nokogiri', '~>1.11.1'
 gem 'httparty', '~>0.17.1'
 gem 'riiif', '~> 2.3.0'
 # linkeddata gem is released with rdf gems and should be the same version as rdf
