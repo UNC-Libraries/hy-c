@@ -648,6 +648,22 @@ li {
   width: 100%;
 }
 
+.catalog {
+  img {
+    max-height: 180px;
+  }
+}
+
+.representative-media {
+  max-height: 300px;
+}
+
+td.thumbnail {
+  img {
+    max-height: 180px;
+  }
+}
+
 @media only screen and (max-width: 1765px) {
   .access-request {
     margin-top: 10px;
