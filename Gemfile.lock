@@ -203,7 +203,7 @@ GEM
     crass (1.0.6)
     declarative (0.0.10)
     declarative-option (0.1.0)
-    deprecation (1.0.0)
+    deprecation (1.1.0)
       activesupport
     devise (4.7.2)
       bcrypt (~> 3.0)
@@ -432,7 +432,7 @@ GEM
       select2-rails (~> 3.5)
       signet
       tinymce-rails (~> 4.1)
-    i18n (1.8.8)
+    i18n (1.8.9)
       concurrent-ruby (~> 1.0)
     ice_nine (0.11.2)
     iiif-image-api (0.2.0)
