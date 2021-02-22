@@ -694,8 +694,9 @@ GEM
       rdf (~> 3.1)
     rdf-vocab (3.1.4)
       rdf (~> 3.1)
-    rdf-xsd (3.1.0)
+    rdf-xsd (3.1.1)
       rdf (~> 3.1)
+      rexml (~> 3.2)
     redic (1.5.3)
       hiredis
     redis (3.3.5)
@@ -712,6 +713,7 @@ GEM
       actionpack (>= 5.0)
       railties (>= 5.0)
     retriable (3.1.2)
+    rexml (3.2.4)
     riiif (2.3.0)
       deprecation (>= 1.0.0)
       iiif-image-api (>= 0.1.0)
