@@ -1,5 +1,7 @@
 # Hy-C
 
+![Build](https://github.com/UNC-Libraries/hy-c/workflows/Build/badge.svg)
+
 #### Hyrax based system underlying the Carolina Digital Repository
 
 * Currently using Hyrax version 2.5.1
