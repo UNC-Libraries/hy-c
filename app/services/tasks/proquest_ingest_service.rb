@@ -275,7 +275,7 @@ module Tasks
       date_issued = metadata.xpath('//DISS_description/DISS_dates/DISS_comp_date').text
       date_issued = Date.strptime(date_issued,"%Y")
 
-      graduation_year = @file_last_modified.year.to_s
+      graduation_year = (date_issued.year || @file_last_modified.year).to_s
 
       language = metadata.xpath('//DISS_description/DISS_categorization/DISS_language').text
       if language == 'en'
