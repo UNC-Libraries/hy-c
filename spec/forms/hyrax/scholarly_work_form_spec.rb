@@ -22,7 +22,7 @@ RSpec.describe Hyrax::ScholarlyWorkForm do
     subject { form.secondary_terms }
 
     it { is_expected.to match_array [:advisor, :based_near, :conference_name, :dcmi_type, :digital_collection,
-                                     :doi, :description, :keyword, :language, :license, :resource_type,
+                                     :doi, :description, :identifier, :keyword, :language, :license, :resource_type,
                                      :rights_statement, :subject, :language_label, :license_label, 
                                      :rights_statement_label, :deposit_agreement, :agreement, :admin_note] }
   end
@@ -85,6 +85,7 @@ RSpec.describe Hyrax::ScholarlyWorkForm do
           date_issued: '1980s', # single-valued
           dcmi_type: ['http://purl.org/dc/dcmitype/Text'],
           digital_collection: ['my collection'],
+          identifier: ['1234'],
           doi: '12345',
           language_label: [],
           license_label: [],
@@ -98,6 +99,7 @@ RSpec.describe Hyrax::ScholarlyWorkForm do
       expect(subject['title']).to eq ['foo']
       expect(subject['description']).to eq 'a description'
       expect(subject['digital_collection']).to eq ['my collection']
+      expect(subject['identifier']).to eq ['1234']
       expect(subject['doi']).to eq '12345'
       expect(subject['subject']).to eq ['a subject']
       expect(subject['language']).to eq ['http://id.loc.gov/vocabulary/iso639-2/eng']
