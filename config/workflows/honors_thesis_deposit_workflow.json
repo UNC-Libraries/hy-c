@@ -15,11 +15,6 @@
                             "notification_type": "email",
                             "name": "Hyrax::Workflow::HonorsMediatedDepositNotification",
                             "to": []
-                        },
-                        {
-                            "notification_type": "email",
-                            "name": "Hyrax::Workflow::HonorsDepartmentReviewerDepositNotification",
-                            "to": ["viewing"]
                         }
                     ],
                     "methods": [

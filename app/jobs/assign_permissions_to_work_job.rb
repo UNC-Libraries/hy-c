@@ -14,7 +14,7 @@ class AssignPermissionsToWorkJob < Hyrax::ApplicationJob
 
     if recipients[:to].count > 0
       depositor = User.find_by_user_key(work.depositor)
-      Hyrax::Workflow::PendingReviewNotification.send_notification(entity: entity,
+      Hyrax::Workflow::HonorsDepartmentReviewerDepositNotification.send_notification(entity: entity,
                                                                    comment: '',
                                                                    user: depositor,
                                                                    recipients: recipients)
