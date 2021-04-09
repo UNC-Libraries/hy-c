@@ -167,7 +167,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       # Reviewer is not yet in reviewing group and does not get a notification
       expect(admin_user.mailbox.inbox.count).to eq 0
       expect(admin_user2.mailbox.inbox.count).to eq 0
-      expect(department_contact1.mailbox.inbox.count).to eq 1
+      expect(department_contact1.mailbox.inbox.count).to eq 0
       expect(department_contact2.mailbox.inbox.count).to eq 0
       expect(user.mailbox.inbox.count).to eq 1
       expect(reviewer.mailbox.inbox.count).to eq 0
@@ -291,7 +291,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       # User and admin set owner get notification for 'depositing' role
       expect(admin_user.mailbox.inbox.count).to eq 1
       expect(admin_user2.mailbox.inbox.count).to eq 0
-      expect(department_contact1.mailbox.inbox.count).to eq 1
+      expect(department_contact1.mailbox.inbox.count).to eq 0
       expect(department_contact2.mailbox.inbox.count).to eq 0
       expect(user.mailbox.inbox.count).to eq 2
       expect(reviewer.mailbox.inbox.count).to eq 1
@@ -316,7 +316,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       # User gets notification for deletion requests
       expect(admin_user.mailbox.inbox.count).to eq 2
       expect(admin_user2.mailbox.inbox.count).to eq 1
-      expect(department_contact1.mailbox.inbox.count).to eq 1
+      expect(department_contact1.mailbox.inbox.count).to eq 0
       expect(department_contact2.mailbox.inbox.count).to eq 0
       expect(user.mailbox.inbox.count).to eq 3
       expect(reviewer.mailbox.inbox.count).to eq 1
@@ -362,7 +362,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       # User gets deposit notification
       expect(admin_user.mailbox.inbox.count).to eq 2
       expect(admin_user2.mailbox.inbox.count).to eq 1
-      expect(department_contact1.mailbox.inbox.count).to eq 2
+      expect(department_contact1.mailbox.inbox.count).to eq 0
       expect(department_contact2.mailbox.inbox.count).to eq 1
       expect(user.mailbox.inbox.count).to eq 4
       expect(reviewer.mailbox.inbox.count).to eq 1
