@@ -255,6 +255,9 @@ terms:
   - id: Dental Hygiene Master's Program
     term: School of Dentistry; Division of Allied Dental Education; Dental Hygiene Master's Program
     active: true
+  - id: Dental Hygiene Undergraduate Program
+    term: School of Dentistry; Division of Allied Dental Education; Dental Hygiene Undergraduate Program
+    active: true
   - id: Department of Aerospace Studies
     term: College of Arts and Sciences; Department of Aerospace Studies
     active: true
