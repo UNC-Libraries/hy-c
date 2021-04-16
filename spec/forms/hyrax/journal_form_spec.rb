@@ -92,7 +92,8 @@ RSpec.describe Hyrax::JournalForm do
           language_label: [],
           license_label: [],
           related_url: ['a url'],
-          rights_statement_label: ''
+          rights_statement_label: '',
+          admin_note: 'My admin note'
       )
     end
 
@@ -137,6 +138,7 @@ RSpec.describe Hyrax::JournalForm do
       expect(subject['creators_attributes']['1']['affiliation']).to eq 'Department of Chemistry'
       expect(subject['creators_attributes']['1']['other_affiliation']).to eq 'another affiliation'
       expect(subject['creators_attributes']['1']['index']).to eq 2
+      expect(subject['admin_note']).to eq 'My admin note'
     end
 
     context '.model_attributes' do
