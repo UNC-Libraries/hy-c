@@ -1,4 +1,7 @@
 terms:
+  - id: Curriculum in Global Studies
+    term: College of Arts and Sciences; Curriculum in Global Studies
+    active: true
   - id: Department of City and Regional Planning
     term: College of Arts and Sciences; Department of City and Regional Planning
     active: true
@@ -19,6 +22,12 @@ terms:
     active: true
   - id: Hussman School of Journalism and Media
     term: Hussman School of Journalism and Media
+    active: true
+  - id: Masters of Public Health Program
+    term: Gillings School of Global Public Health; Masters of Public Health Program
+    active: true
+  - id: MPH@UNC
+    term: Gillings School of Global Public Health; MPH@UNC
     active: true
   - id: Physician Assistant Program
     term: School of Medicine; Department of Allied Health Sciences; Physician Assistant Program
