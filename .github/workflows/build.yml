@@ -75,7 +75,9 @@ jobs:
         java-version: 1.8
 
     - name: Install OS packages
-      run: sudo apt-get install unzip imagemagick ghostscript libpq-dev
+      run: |
+        sudo apt-get update
+        sudo apt-get install unzip imagemagick ghostscript libpq-dev
 
     - name: Install FITS
       run: |
