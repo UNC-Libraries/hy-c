@@ -59,7 +59,10 @@ module Blacklight::Document::DublinCore
               record_url = URI.join(ENV['HYRAX_HOST'], "concern/#{first('has_model_ssim').tableize}/#{id()}").to_s
               xml.tag! "dc:identifier", record_url
             end
-            xml.tag! 'dc:identifier', "#{ENV['HYRAX_HOST']}#{(values.first)}"
+            thumb_download = (values.first)
+            xml.tag! 'dc:identifier', "#{ENV['HYRAX_HOST']}#{thumb_download}"
+            file_download = thumb_download.split('?').first
+            xml.tag! 'dc:identifier', "#{ENV['HYRAX_HOST']}#{file_download}"
           else
             xml.tag! "dc:#{field}", v
           end
