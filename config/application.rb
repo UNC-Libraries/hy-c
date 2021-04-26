@@ -25,6 +25,9 @@ module Hyrax
 
     Rails.application.routes.default_url_options[:host] = ENV['HYRAX_HOST']
 
+    # Explicitly set default locale
+    config.i18n.default_locale = :en
+
     # Add custom error pages
     config.exceptions_app = self.routes
   end

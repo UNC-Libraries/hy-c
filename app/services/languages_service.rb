@@ -12,7 +12,7 @@ module LanguagesService
     begin
       authority.find(Array.wrap(id).first).fetch('term')
     rescue
-      Rails.logger.warn "LanguagesService: cannot find '#{id}'"
+      Rails.logger.debug "LanguagesService: cannot find '#{id}'"
       puts "LanguagesService: cannot find '#{id}'" # for migration log
       nil
     end
