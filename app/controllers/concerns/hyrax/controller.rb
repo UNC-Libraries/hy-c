@@ -1,4 +1,5 @@
 # [hyc-override] added create_unrestricted_work_presenter as a replacement for deprecated create_work_presenter
+# [hyc-override] Add begin/rescue for locale setting
 module Hyrax::Controller
   extend ActiveSupport::Concern
 
@@ -45,7 +46,11 @@ module Hyrax::Controller
   private
 
     def set_locale
-      I18n.locale = params[:locale] || I18n.default_locale
+      begin
+        I18n.locale = params[:locale] || I18n.default_locale
+      rescue I18n::InvalidLocale
+        I18n.locale = I18n.default_locale
+      end
     end
 
     # render a json response for +response_type+
