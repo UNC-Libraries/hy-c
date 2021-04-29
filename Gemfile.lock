@@ -572,7 +572,7 @@ GEM
       builder (>= 3.1.0)
       faraday
       faraday_middleware
-    oauth (0.5.4)
+    oauth (0.5.6)
     oauth2 (1.4.4)
       faraday (>= 0.8, < 2.0)
       jwt (>= 1.0, < 3.0)
