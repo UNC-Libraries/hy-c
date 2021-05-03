@@ -9,7 +9,8 @@ RSpec.describe Hyrax::HonorsThesisForm do
   describe "#required_fields" do
     subject { form.required_fields }
 
-    it do  is_expected.to match_array [:title, :abstract, :advisor, :affiliation, :creator, :date_issued, :degree,
+    # :affiliation requirement enforced in partial
+    it do  is_expected.to match_array [:title, :abstract, :advisor, :creator, :date_issued, :degree,
                                        :graduation_year]
     end
   end

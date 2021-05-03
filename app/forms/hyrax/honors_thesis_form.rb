@@ -12,7 +12,7 @@ module Hyrax
 
     self.terms -= [:contributor, :description, :identifier, :publisher, :source, :date_created]
 
-    self.required_fields = [:title, :creator, :abstract, :advisor, :affiliation, :degree, :date_issued,
+    self.required_fields = [:title, :creator, :abstract, :advisor, :degree, :date_issued,
                             :graduation_year]
 
     self.single_value_fields = [:title, :license]
@@ -33,7 +33,6 @@ module Hyrax
     def license
       super.first || ""
     end
-
 
     delegate :advisors_attributes=, to: :model
     delegate :creators_attributes=, to: :model
