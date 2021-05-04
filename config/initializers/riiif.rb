@@ -14,7 +14,7 @@ ActiveSupport::Reloader.to_prepare do
 
     # Capture everything before the first slash
     fs_id = id.sub(/\A([^\/]*)\/.*/, '\1')
-    resp = ActiveFedora::SolrService.get("id:#{fs_id}")
+    resp = ActiveFedora::SolrService.get("id:#{fs_id}", rows: 1)
     doc = resp['response']['docs'].first
     raise "Unable to find solr document with id:#{fs_id}" unless doc
     {
