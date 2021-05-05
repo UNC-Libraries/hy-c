@@ -61,14 +61,20 @@ module Hyrax
       def combined_stats(object, start_date, object_method, ga_key, user_id = nil)
         stat_cache_info = cached_stats(object, start_date, object_method)
         stats = stat_cache_info[:cached_stats]
+
         if stat_cache_info[:ga_start_date] < Time.zone.today
-          ga_stats = ga_statistics(stat_cache_info[:ga_start_date], object)
-          ga_stats.each do |stat|
-            lstat = build_for(object, date: stat[:date], object_method => stat[ga_key], user_id: user_id)
-            lstat.save unless Date.parse(stat[:date]) == Time.zone.today
-            stats << lstat
+          begin
+            ga_stats = ga_statistics(stat_cache_info[:ga_start_date], object)
+            ga_stats.each do |stat|
+              lstat = build_for(object, date: stat[:date], object_method => stat[ga_key], user_id: user_id)
+              lstat.save unless Date.parse(stat[:date]) == Time.zone.today
+              stats << lstat
+            end
+          rescue Net::ReadTimeout
+            Rails.logger.warn "Unable to retrieve GA stats for #{object.id}. Request timed out. Using cached stats for object."
           end
         end
+
         stats
       end
     end
