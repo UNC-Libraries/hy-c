@@ -292,7 +292,7 @@ module Tasks
         work_attributes['page_end'] = page_end
       end
       work_attributes['issn'] = onescience_data['ISSNs'].split('||') if !onescience_data['ISSNs'].blank?
-      work_attributes['abstract'] = onescience_data['Abstract']
+      work_attributes['abstract'] = onescience_data['Abstract'].to_s
       work_attributes['keyword'] = onescience_data['Keywords'].split('||') if !onescience_data['Keywords'].blank?
       work_attributes['creators_attributes'] = get_people(onescience_data)
       work_attributes['resource_type'] = 'Article'

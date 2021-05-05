@@ -44,7 +44,9 @@ class MultiValueInput < SimpleForm::Inputs::CollectionInput
   def build_field_options(value, index)
     options = input_html_options.dup
 
-    options[:value] = format_value(value)
+    should_format = options[:type] != 'textarea' && !options[:class].include?('date-input') &&
+      !options[:class].include?('integer-input')
+    options[:value] = format_value(value, should_format)
     if @rendered_first_element
       options[:id] = nil
       options[:required] = nil
@@ -82,8 +84,8 @@ class MultiValueInput < SimpleForm::Inputs::CollectionInput
   end
 
   #[hyc-override] convert from EDTF for multivalue dates
-  def format_value(value)
-    if value.strip =~ /^(\d{4}|\d{3}(u|x)|\d{2}xx|[u]{4})/
+  def format_value(value, should_format)
+    if should_format && value.to_s.strip =~ /^(\d{4}|\d{3}(u|x)|\d{2}xx|[u]{4})/
       return Hyc::EdtfConvert.convert_from_edtf(value)
     end
 
