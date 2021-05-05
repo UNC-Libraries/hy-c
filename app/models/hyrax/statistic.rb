@@ -71,7 +71,7 @@ module Hyrax
               stats << lstat
             end
           rescue Net::ReadTimeout
-            Rails.logger.warn "[#{Time.now}] Unable to retrieve GA stats for #{object.id}. Request timed out. Using cached stats for object."
+            Rails.logger.warn "Unable to retrieve GA stats for #{object.id}. Request timed out. Using cached stats for object."
           end
         end
 
