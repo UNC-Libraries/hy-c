@@ -11,10 +11,10 @@ class AssignPermissionsToWorkJob < Hyrax::ApplicationJob
     entity = Sipity::Entity.where(proxy_for_global_id: work.to_global_id.to_s).first
     recipients = Hash.new
     selected_role = Role.where(name: group_name).first
-    if selected_role.respond_to?(:users)
+    if !selected_role.nil?
       recipients[:to] = selected_role.users
     else
-      Rails.logger.warn "No users found for role: #{selected_role} on work: #{work_id} for group: #{group_name}"
+      Rails.logger.warn "No users found for role: #{group_name} on work: #{work_id}"
       return
     end
 
