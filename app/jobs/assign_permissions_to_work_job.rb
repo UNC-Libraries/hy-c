@@ -10,7 +10,13 @@ class AssignPermissionsToWorkJob < Hyrax::ApplicationJob
     # Send notification to reviewer group
     entity = Sipity::Entity.where(proxy_for_global_id: work.to_global_id.to_s).first
     recipients = Hash.new
-    recipients[:to] = Role.where(name: group_name).first.users
+    selected_role = Role.where(name: group_name).first
+    if !selected_role.nil?
+      recipients[:to] = selected_role.users
+    else
+      Rails.logger.warn "No users found for role: #{group_name} on work: #{work_id}"
+      return
+    end
 
     if recipients[:to].count > 0
       depositor = User.find_by_user_key(work.depositor)
