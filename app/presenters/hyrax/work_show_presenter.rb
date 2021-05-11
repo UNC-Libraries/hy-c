@@ -219,6 +219,7 @@ module Hyrax
     # @return [Array] array of metadata hashes
     def manifest_metadata
       metadata = []
+
       Hyrax.config.iiif_metadata_fields.each do |field|
         next unless (respond_to? field) && !send(field).blank?
         field_value = send(field)
