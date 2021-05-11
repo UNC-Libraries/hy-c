@@ -31,6 +31,8 @@ Rails.application.configure do
     "#{time} - #{severity}: #{msg}\n"
   end
 
+  config.log_level = :warn
+
   # Don't care if the mailer can't send.
   config.action_mailer.raise_delivery_errors = false
 

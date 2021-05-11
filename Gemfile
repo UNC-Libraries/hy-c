@@ -20,7 +20,7 @@ gem 'uglifier', '~> 4.2.0'
 gem 'coffee-rails', '~> 4.2.2'
 # See https://github.com/rails/execjs#readme for more supported runtimes
 gem 'therubyracer', '~> 0.12.3', platforms: :ruby
-gem 'hyrax', '2.6.0'
+gem 'hyrax', '2.9.4'
 gem 'hydra-editor', '5.0.1'
 gem 'hydra-role-management', '~> 1.0'
 gem 'clamby', '~> 1.5.1'
@@ -36,9 +36,9 @@ gem "bootstrap-sass", "~> 3.4.1"
 gem 'blacklight_range_limit', '6.3.3'
 gem 'blacklight_advanced_search', '~> 6.4.1'
 gem 'mini_magick', '~>4.9.4'
-gem 'roo', '~>2.8.2'
+gem 'roo', '~>2.8.3'
 gem 'nokogiri', '~>1.11.1'
-gem 'httparty', '~>0.17.1'
+gem 'httparty', '~>0.17.3'
 gem 'riiif', '~> 2.3.0'
 # linkeddata gem is released with rdf gems and should be the same version as rdf
 gem 'linkeddata', '~>3.1.0'
