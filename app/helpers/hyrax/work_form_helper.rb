@@ -22,7 +22,7 @@ module Hyrax
       if form.instance_of? Hyrax::Forms::BatchUploadForm
         %w[files metadata relationships]
       else
-        %w[metadata files relationships]
+        %w[metadata relationships]
       end
     end
 

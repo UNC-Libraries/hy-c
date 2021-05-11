@@ -95,7 +95,7 @@ Hyrax.config do |config|
     uri.sub(%r{/info\.json\Z}, '')
   end
 
-  config.iiif_metadata_fields =  [
+  config.iiif_metadata_fields = [
       :title,
       :creator_display,
       :abstract,
