@@ -90,11 +90,12 @@ Hyrax.config do |config|
 
   config.iiif_image_server = true
   config.iiif_info_url_builder = lambda do |file_id, base_url|
+    base_url = ENV['HYRAX_HOST'] if base_url != ENV['HYRAX_HOST']
     uri = Riiif::Engine.routes.url_helpers.info_url(file_id, host: base_url)
     uri.sub(%r{/info\.json\Z}, '')
   end
 
-  config.iiif_metadata_fields =  [
+  config.iiif_metadata_fields = [
       :title,
       :creator_display,
       :abstract,

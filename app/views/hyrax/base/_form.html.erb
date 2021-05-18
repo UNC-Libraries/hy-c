@@ -16,7 +16,7 @@
     </div>
   <% end %>
 <%# [hyc-override] Removed batch uploads link %>
-  <%= render 'hyrax/base/guts4form', f: f %>
+  <%= render 'hyrax/base/guts4form', f: f, tabs: form_tabs_for(form: f.object) %>
 <% end %>
 
 <script type="text/javascript">
