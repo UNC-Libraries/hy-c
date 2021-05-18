@@ -17,6 +17,10 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
   skip_after_action :discard_flash_if_xhr
 
+  # Catch error if a Blacklight record isn't found
+  rescue_from Blacklight::Exceptions::RecordNotFound do
+    render 'errors/not_found', status: 404
+  end
 
   protected
 

@@ -1,4 +1,5 @@
 # [hyc-override] adding downloads controller and merging hyc:downloadscontroller
+# [hyc-override] Catch not found errors and return 404
 module Hyrax
   class DownloadsController < ApplicationController
     include Hydra::Controller::DownloadBehavior
@@ -54,9 +55,10 @@ module Hyrax
     # Customize the :read ability in your Ability class, or override this method.
     # Hydra::Ability#download_permissions can't be used in this case because it assumes
     # that files are in a LDP basic container, and thus, included in the asset's uri.
+    # [hyc-override] Catch not found errors and return 404
     def authorize_download!
       authorize! :download, params[asset_param_key]
-    rescue CanCan::AccessDenied
+    rescue CanCan::AccessDenied, Blacklight::Exceptions::RecordNotFound
       render_404
     end
 
