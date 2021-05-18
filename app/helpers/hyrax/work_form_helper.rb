@@ -1,4 +1,6 @@
 # frozen_string_literal: true
+# [hyc-override]  To remove files tab from form display Line 27.
+
 module Hyrax
   module WorkFormHelper
     ##
