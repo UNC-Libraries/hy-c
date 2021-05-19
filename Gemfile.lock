@@ -587,7 +587,7 @@ GEM
     nokogiri (1.11.4)
       mini_portile2 (~> 2.5.0)
       racc (~> 1.4)
-    nokogumbo (2.0.2)
+    nokogumbo (2.0.5)
       nokogiri (~> 1.8, >= 1.8.4)
     numerizer (0.1.1)
     oai (0.4.0)
