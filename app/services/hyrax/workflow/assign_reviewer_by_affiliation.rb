@@ -3,7 +3,9 @@ module Hyrax::Workflow::AssignReviewerByAffiliation
   def self.call(target:, **)
     target.creators.each do |creator|
       creator['affiliation'].each do |affiliation|
-        department = affiliation.strip.to_s.downcase.gsub(' ', '_')
+        # Some depts have space dash space. Trim the spaces around the dash
+        # Add underscore to any remaining spaces
+        department = affiliation.strip.to_s.downcase.gsub.(' - ', '-').gsub(' ', '_')
         reviewer = find_reviewer_for(department: department)
         permission_template_id = Hyrax::PermissionTemplate.find_by_source_id(target.admin_set_id).id
 
