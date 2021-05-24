@@ -10,7 +10,7 @@ class AssignPermissionsToWorkJob < Hyrax::ApplicationJob
     # Send notification to reviewer group
     entity = Sipity::Entity.where(proxy_for_global_id: work.to_global_id.to_s).first
     recipients = Hash.new
-    selected_role = Role.where(name: group_name).first
+    selected_role = Role.where(name: "#{group_name}").first
     if !selected_role.nil?
       recipients[:to] = selected_role.users
     else
