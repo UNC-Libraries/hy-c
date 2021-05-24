@@ -610,7 +610,7 @@ GEM
       rails (> 3.2.0)
     orm_adapter (0.5.0)
     os (1.1.1)
-    parslet (1.8.2)
+    parslet (2.0.0)
     passenger (5.3.7)
       rack
       rake (>= 0.8.1)
