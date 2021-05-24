@@ -12,6 +12,7 @@ class AssignPermissionsToWorkJob < Hyrax::ApplicationJob
     recipients = Hash.new
 
     escaped_group_name = "\"#{group_name}\""
+    Rails.logger.warn "DEAN #{escaped_group_name}"
     selected_role = Role.where(name: escaped_group_name).first
     if !selected_role.nil?
       recipients[:to] = selected_role.users
