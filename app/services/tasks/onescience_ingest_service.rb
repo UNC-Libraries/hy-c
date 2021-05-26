@@ -211,16 +211,19 @@ module Tasks
       puts "[#{Time.now}] loaded embargo mappings"
 
       # read from xlsx in projects folder
-      workbook = Roo::Spreadsheet.open(File.join(@config['metadata_dir'], @config['metadata_file']))
-      sheets = workbook.sheets
       @data = []
-      sheets.each do |sheet|
-        if sheet.match('1foldr_UNCCH_01_Part')
-          data_hash = workbook.sheet(sheet).parse(headers: true)
-          data_hash.delete_if{|hash| hash['onescience_id'].blank? }
-          # first hash is of headers
-          data_hash.delete_at(0)
-          @data << data_hash
+      Array.wrap(@config['metadata_file']).each do|metadata_file|
+        workbook = Roo::Spreadsheet.open(File.join(@config['metadata_dir'], metadata_file))
+        sheets = workbook.sheets
+
+        sheets.each do |sheet|
+          if sheet.match('1foldr_UNCCH_01_Part')
+            data_hash = workbook.sheet(sheet).parse(headers: true)
+            data_hash.delete_if{|hash| hash['onescience_id'].blank? }
+            # first hash is of headers
+            data_hash.delete_at(0)
+            @data << data_hash
+          end
         end
       end
       @data.flatten!
