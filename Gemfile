@@ -23,7 +23,7 @@ gem 'therubyracer', '~> 0.12.3', platforms: :ruby
 gem 'hyrax', '2.9.5'
 gem 'hydra-editor', '5.0.1'
 gem 'hydra-role-management', '~> 1.0'
-gem 'clamby', '~> 1.5.1'
+gem 'clamav-client', require: 'clamav/client'
 gem 'sidekiq', '~> 5.0.4'
 gem 'sidekiq-limit_fetch', '~> 3.4.0'
 gem 'sidekiq-status', '~> 1.1.4'

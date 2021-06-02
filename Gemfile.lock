@@ -191,7 +191,7 @@ GEM
       ssrf_filter (~> 1.0)
     chronic_duration (0.10.6)
       numerizer (~> 0.1.1)
-    clamby (1.5.1)
+    clamav-client (3.2.0)
     clipboard-rails (1.7.1)
     coffee-rails (4.2.2)
       coffee-script (>= 2.2.0)
@@ -913,7 +913,7 @@ DEPENDENCIES
   bulkrax!
   byebug (~> 9.1.0)
   capybara (~> 2.17.0)
-  clamby (~> 1.5.1)
+  clamav-client
   coffee-rails (~> 4.2.2)
   devise (~> 4.7.2)
   devise-guests (~> 0.7.0)

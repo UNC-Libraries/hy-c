@@ -25,12 +25,19 @@ class AttachFilesToWorkJob < Hyrax::ApplicationJob
     end
   # [hyc-override] Log viruses
   rescue VirusDetectedError => error
-    send_email_about_virus(work, error.message, user) && (Rails.logger.error "Virus encountered while processing work #{work.id}.\n" \
-                       "\t#{error.message}")
+    message = "Virus encountered while processing file #{error.filename} for work #{work.id}. Virus signature: #{error.scan_results.virus_name}"
+    send_email_about_virus(work, message, user) && (Rails.logger.error message)
   end
 
   # [hyc-override] Add virus detection error class
-  class VirusDetectedError < RuntimeError; end
+  class VirusDetectedError < RuntimeError
+    attr_reader :scan_results, :filename
+
+    def initialize(scan_results, filename)
+      @scan_results = scan_results
+      @filename = filename
+    end
+  end
 
   private
 
@@ -58,10 +65,13 @@ class AttachFilesToWorkJob < Hyrax::ApplicationJob
 
   # [hyc-override] add virus checking method
   def virus_check!(uploaded_file)
-    return unless Hyc::VirusScanner.infected?(uploaded_file.file.to_s)
-    carrierwave_file = uploaded_file.file.file
-    FileUtils.rm_rf(File.dirname(uploaded_file.file.to_s))
-    raise(VirusDetectedError, carrierwave_file.filename)
+    file_path = uploaded_file.file.to_s
+    scan_results = Hyc::VirusScanner.infected?(file_path)
+    return if scan_results.instance_of? ClamAV::SuccessResponse
+    if scan_results.instance_of? ClamAV::VirusResponse
+      FileUtils.rm_rf(File.dirname(file_path))
+      raise VirusDetectedError.new(scan_results, file_path)
+    end
   end
 
   # [hyc-override] Send notification to depositors and repo admins
