@@ -239,12 +239,18 @@ module Tasks
                                              deposit_package_type: @config['deposit_type'],
                                              deposit_package_subtype: @config['deposit_subtype'],
                                              deposited_by: @depositor_onyen })
+
         # attach metadata file to deposit record
-        original_metadata = FedoraOnlyFile.new({'title' => @config['metadata_file'],
-                                                'deposit_record' => deposit_record})
-        original_metadata.file.content = File.open(File.join(@config['metadata_dir'], @config['metadata_file']))
-        original_metadata.save!
-        deposit_record[:manifest] = [original_metadata.uri]
+        manifest_urls = []
+        Array.wrap(@config['metadata_file']).each do |metadata_filename|
+          original_metadata = FedoraOnlyFile.new({'title' => metadata_filename,
+                                                  'deposit_record' => deposit_record})
+          original_metadata.file.content = File.open(File.join(@config['metadata_dir'], metadata_filename))
+          original_metadata.save!
+          manifest_urls << original_metadata.uri
+        end
+
+        deposit_record[:manifest] = manifest_urls
         deposit_record.save!
         @deposit_record_id = deposit_record.uri
         File.open(@config['deposit_record_id_log'], 'a+') do |f|
