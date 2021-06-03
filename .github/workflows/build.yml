@@ -52,6 +52,12 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
         ports: ["5432:5432"]
+      clamavd:
+        image: lokori/clamav-java
+        ports:
+          - 3310:3310
+        volumes:
+          - /tmp:/tmp
 
     strategy:
       matrix:
@@ -79,7 +85,7 @@ jobs:
     - name: Install OS packages
       run: |
         sudo apt-get update
-        sudo apt-get install libclamav-dev clamav unzip imagemagick ghostscript libpq-dev
+        sudo apt-get install unzip imagemagick ghostscript libpq-dev
 
     - name: Install FITS
       run: |
@@ -103,6 +109,9 @@ jobs:
         bundle exec rake hydra:test_server &
         sleep 150
         bundle exec rake test_setup RAILS_ENV=test
+
+    - name: Copy fixtures to tmp
+      run: cp -R spec/fixtures /tmp
 
     - name: Run tests
       run: bundle exec rspec

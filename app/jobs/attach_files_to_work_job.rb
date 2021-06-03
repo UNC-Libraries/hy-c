@@ -66,7 +66,7 @@ class AttachFilesToWorkJob < Hyrax::ApplicationJob
   # [hyc-override] add virus checking method
   def virus_check!(uploaded_file)
     file_path = uploaded_file.file.to_s
-    scan_results = Hyc::VirusScanner.infected?(file_path)
+    scan_results = Hyc::VirusScanner.hyc_infected?(file_path)
     return if scan_results.instance_of? ClamAV::SuccessResponse
     if scan_results.instance_of? ClamAV::VirusResponse
       FileUtils.rm_rf(File.dirname(file_path))
