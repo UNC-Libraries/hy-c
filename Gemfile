@@ -31,7 +31,7 @@ gem 'blacklight_oai_provider', '6.0.0.pre1'
 gem 'edtf-humanize', '0.0.7'
 gem 'passenger', '5.3.7', require: 'phusion_passenger/rack_handler'
 gem 'staccato', '~>0.5.3'
-gem 'loofah', '~>2.3.1'
+gem 'loofah', '~>2.10.0'
 gem "bootstrap-sass", "~> 3.4.1"
 gem 'blacklight_range_limit', '6.3.3'
 gem 'blacklight_advanced_search', '~> 6.4.1'
