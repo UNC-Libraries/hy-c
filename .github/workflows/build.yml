@@ -98,6 +98,9 @@ jobs:
         repository: ${{ github.repository }}
         submodules: 'recursive'
 
+    - name: Install project
+      run: bundle update
+
     - name: Setup test database
       env:
         RAILS_ENV: test
