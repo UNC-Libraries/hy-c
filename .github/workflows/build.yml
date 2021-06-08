@@ -93,14 +93,6 @@ jobs:
         unzip $HOME/fits-1.0.5.zip -d $HOME
         chmod u=u+x $HOME/fits-1.0.5/fits.sh
 
-    - uses: actions/checkout@v2
-      with:
-        repository: ${{ github.repository }}
-        submodules: 'recursive'
-
-    - name: Install project
-      run: bundle update
-
     - name: Setup test database
       env:
         RAILS_ENV: test
@@ -117,6 +109,14 @@ jobs:
         bundle exec rake hydra:test_server &
         sleep 150
         bundle exec rake test_setup RAILS_ENV=test
+
+    - uses: actions/checkout@v2
+      with:
+        repository: ${{ github.repository }}
+        submodules: 'recursive'
+
+    - name: Install project
+      run: bundle update
 
     - name: Run tests
       run: bundle exec rspec
