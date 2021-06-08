@@ -4,7 +4,7 @@ RSpec.describe Hyc::VirusScanner do
   subject(:scanner) { described_class.new(file) }
 
   context 'when a file is not infected' do
-    test_file_path = Pathname.new('spec/fixtures/files/test.txt').realpath.to_s
+    test_file_path = Pathname.new("#{Rails.root}/spec/fixtures/files/test.txt").realpath.to_s
     let(:file) { test_file_path }
 
     it 'does not have a virus hy-c custom scan' do
@@ -17,7 +17,7 @@ RSpec.describe Hyc::VirusScanner do
   end
 
   context 'when a file is infected' do
-    test_file_path = Pathname.new('spec/fixtures/files/virus.txt').realpath.to_s
+    test_file_path = Pathname.new("#{Rails.root}/spec/fixtures/files/virus.txt").realpath.to_s
     let(:file) { test_file_path }
 
     it 'has a virus hy-c custom scan' do

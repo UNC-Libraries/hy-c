@@ -110,9 +110,6 @@ jobs:
         sleep 150
         bundle exec rake test_setup RAILS_ENV=test
 
-    - name: Copy fixtures to tmp
-      run: cp -R spec/fixtures /tmp
-
     - name: Run tests
       run: bundle exec rspec
       env:
