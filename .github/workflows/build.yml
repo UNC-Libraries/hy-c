@@ -93,6 +93,11 @@ jobs:
         unzip $HOME/fits-1.0.5.zip -d $HOME
         chmod u=u+x $HOME/fits-1.0.5/fits.sh
 
+    - uses: actions/checkout@v2
+      with:
+        repository: ${{ github.repository }}
+        submodules: 'recursive'
+
     - name: Setup test database
       env:
         RAILS_ENV: test
