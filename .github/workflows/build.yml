@@ -109,6 +109,8 @@ jobs:
         bundle exec rake hydra:test_server &
         sleep 150
         bundle exec rake test_setup RAILS_ENV=test
+    - name symlink test fixtures to /tmp
+      run: ln -s $HOME/spec/fixtures /tmp/fixtures
 
     - name: Run tests
       run: bundle exec rspec
