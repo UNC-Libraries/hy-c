@@ -110,14 +110,6 @@ jobs:
         sleep 150
         bundle exec rake test_setup RAILS_ENV=test
 
-    - uses: actions/checkout@v2
-      with:
-        repository: ${{ github.repository }}
-        submodules: 'recursive'
-
-    - name: Install project
-      run: bundle update
-
     - name: Run tests
       run: bundle exec rspec
       env:
