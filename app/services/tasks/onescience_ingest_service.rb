@@ -144,7 +144,7 @@ module Tasks
 
                 # Create sipity record
                 workflow = Sipity::Workflow.joins(:permission_template)
-                               .where(permission_templates: { source_id: work.admin_set_id }, active: true)
+                                           .where(permission_templates: { source_id: work.admin_set_id }, active: true)
                 workflow_state = Sipity::WorkflowState.where(workflow_id: workflow.first.id, name: 'deposited')
                 Sipity::Entity.create!(proxy_for_global_id: work.to_global_id.to_s,
                                        workflow: workflow.first,
@@ -211,19 +211,16 @@ module Tasks
       puts "[#{Time.now}] loaded embargo mappings"
 
       # read from xlsx in projects folder
+      workbook = Roo::Spreadsheet.open(File.join(@config['metadata_dir'], @config['metadata_file']))
+      sheets = workbook.sheets
       @data = []
-      Array.wrap(@config['metadata_file']).each do|metadata_file|
-        workbook = Roo::Spreadsheet.open(File.join(@config['metadata_dir'], metadata_file))
-        sheets = workbook.sheets
-
-        sheets.each do |sheet|
-          if sheet.match('1foldr_UNCCH_01_Part')
-            data_hash = workbook.sheet(sheet).parse(headers: true)
-            data_hash.delete_if{|hash| hash['onescience_id'].blank? }
-            # first hash is of headers
-            data_hash.delete_at(0)
-            @data << data_hash
-          end
+      sheets.each do |sheet|
+        if sheet.match('1foldr_UNCCH_01_Part')
+          data_hash = workbook.sheet(sheet).parse(headers: true)
+          data_hash.delete_if{|hash| hash['onescience_id'].blank? }
+          # first hash is of headers
+          data_hash.delete_at(0)
+          @data << data_hash
         end
       end
       @data.flatten!
@@ -239,18 +236,12 @@ module Tasks
                                              deposit_package_type: @config['deposit_type'],
                                              deposit_package_subtype: @config['deposit_subtype'],
                                              deposited_by: @depositor_onyen })
-
         # attach metadata file to deposit record
-        manifest_urls = []
-        Array.wrap(@config['metadata_file']).each do |metadata_filename|
-          original_metadata = FedoraOnlyFile.new({'title' => metadata_filename,
-                                                  'deposit_record' => deposit_record})
-          original_metadata.file.content = File.open(File.join(@config['metadata_dir'], metadata_filename))
-          original_metadata.save!
-          manifest_urls << original_metadata.uri
-        end
-
-        deposit_record[:manifest] = manifest_urls
+        original_metadata = FedoraOnlyFile.new({'title' => @config['metadata_file'],
+                                                'deposit_record' => deposit_record})
+        original_metadata.file.content = File.open(File.join(@config['metadata_dir'], @config['metadata_file']))
+        original_metadata.save!
+        deposit_record[:manifest] = [original_metadata.uri]
         deposit_record.save!
         @deposit_record_id = deposit_record.uri
         File.open(@config['deposit_record_id_log'], 'a+') do |f|
@@ -300,9 +291,9 @@ module Tasks
       else
         work_attributes['page_end'] = page_end
       end
-      work_attributes['issn'] = onescience_data['ISSNs'].split('||') if !onescience_data['ISSNs'].blank?
+      work_attributes['issn'] = onescience_data['ISSNs'].to_s.split('||') if !onescience_data['ISSNs'].blank?
       work_attributes['abstract'] = onescience_data['Abstract'].to_s
-      work_attributes['keyword'] = onescience_data['Keywords'].split('||') if !onescience_data['Keywords'].blank?
+      work_attributes['keyword'] = onescience_data['Keywords'].to_s.split('||') if !onescience_data['Keywords'].blank?
       work_attributes['creators_attributes'] = get_people(onescience_data)
       work_attributes['resource_type'] = 'Article'
       work_attributes['language'] = 'http://id.loc.gov/vocabulary/iso639-2/eng'
