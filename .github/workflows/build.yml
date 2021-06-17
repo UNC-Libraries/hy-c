@@ -111,7 +111,7 @@ jobs:
         bundle exec rake test_setup RAILS_ENV=test
 
     - name: symlink Rails root to server root
-      run: ln -s $HOME/hyc /hyc
+      run: sudo ln -s $HOME/hyc /hyc
 
     - name: Run tests
       run: bundle exec rspec
