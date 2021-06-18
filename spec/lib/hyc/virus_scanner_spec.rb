@@ -4,7 +4,7 @@ RSpec.describe Hyc::VirusScanner do
   subject(:scanner) { described_class.new(file) }
 
   context 'when a file is not infected' do
-    let(:file) { "#{Rails.root}/spec/fixtures/files/test.txt" }
+    let(:file) { "/tmp/fixtures/files/test.txt" }
 
     it 'does not have a virus hy-c custom scan' do
       expect(scanner.hyc_infected?).to be_a ClamAV::SuccessResponse
@@ -16,7 +16,7 @@ RSpec.describe Hyc::VirusScanner do
   end
 
   context 'when a file is infected' do
-    let(:file) { "#{Rails.root}/spec/fixtures/files/virus.txt"  }
+    let(:file) { "/tmp/fixtures/files/virus.txt"  }
 
     it 'has a virus hy-c custom scan' do
       expect(scanner.hyc_infected?).to be_a ClamAV::VirusResponse
