@@ -53,6 +53,10 @@ class ScholarlyWork < ActiveFedora::Base
     index.as :stored_searchable
   end
 
+  property :note, predicate: ::RDF::Vocab::SKOS.note do |index|
+    index.as :stored_searchable
+  end
+
   property :rights_statement_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#RightsStatementLabel'), multiple: false do |index|
     index.as :stored_searchable
   end

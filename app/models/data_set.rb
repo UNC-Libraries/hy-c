@@ -65,6 +65,10 @@ class DataSet < ActiveFedora::Base
     index.as :stored_searchable
   end
 
+  property :note, predicate: ::RDF::Vocab::SKOS.note do |index|
+    index.as :stored_searchable
+  end
+
   property :project_directors, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/pdr'), class_name: 'Person' do |index|
     index.as :stored_searchable
   end
