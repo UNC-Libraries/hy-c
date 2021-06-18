@@ -110,8 +110,8 @@ jobs:
         sleep 150
         bundle exec rake test_setup RAILS_ENV=test
 
-    - name: symlink Rails root to server root
-      run: sudo ln -s $HOME/hyc /hyc
+    - name: Copy fixtures to /tmp
+      run: cp spec/fixtures /tmp
 
     - name: Run tests
       run: bundle exec rspec
@@ -120,3 +120,4 @@ jobs:
         REDIS_URL: redis://redis
         POSTGRES_USER: hyrax
         POSTGRES_PASSWORD: password
+        TMPDIR: /tmp
