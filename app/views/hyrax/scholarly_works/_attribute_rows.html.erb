@@ -15,6 +15,7 @@
 <%= presenter.attribute_to_html(:language_label, label: 'Language', render_as: :faceted, html_dl: true) %>
 <%= presenter.attribute_to_html(:based_near_label, html_dl: true, label: 'Location') %>
 <%= presenter.attribute_to_html(:digital_collection, html_dl: true) %>
+<%= presenter.attribute_to_html(:note, html_dl: true) %>
 <% if presenter.date_created %>
   <%= presenter.attribute_to_html(:date_created, html_dl: true, label: "Date uploaded") %>
 <% else %>

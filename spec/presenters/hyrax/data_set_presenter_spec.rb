@@ -25,6 +25,7 @@ RSpec.describe Hyrax::DataSetPresenter do
       "doi_tesim" => '12345',
       "extent_tesim" => ['1993'],
       "funder_tesim" => ['unc'],
+      "note_tesim" => ['my note'],
       "based_near_tesim" => ['California'],
       "kind_of_data_tesim" => ['some data'],
       "last_modified_date_tesim" => '2018-01-29',
@@ -69,6 +70,7 @@ RSpec.describe Hyrax::DataSetPresenter do
   it { is_expected.to delegate_method(:kind_of_data).to(:solr_document) }
   it { is_expected.to delegate_method(:last_modified_date).to(:solr_document) }
   it { is_expected.to delegate_method(:methodology).to(:solr_document) }
+  it { is_expected.to delegate_method(:note).to(:solr_document) }
   it { is_expected.to delegate_method(:project_director_display).to(:solr_document) }
   it { is_expected.to delegate_method(:researcher_display).to(:solr_document) }
   it { is_expected.to delegate_method(:rights_holder).to(:solr_document) }
@@ -214,6 +216,17 @@ RSpec.describe Hyrax::DataSetPresenter do
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:methodology)
+      end
+    end
+
+    context "with a custom note field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:note, ['my note'], {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:note)
       end
     end
 

@@ -7,7 +7,7 @@ module Hyrax
     self.model_class = ::ScholarlyWork
 
     self.terms += [:resource_type, :abstract, :admin_note, :advisor, :conference_name, :date_issued, :dcmi_type,
-                   :digital_collection, :doi, :deposit_agreement, :agreement]
+                   :digital_collection, :doi, :deposit_agreement, :agreement, :note]
 
     self.terms -= [:contributor, :publisher, :related_url, :source, :date_created]
 

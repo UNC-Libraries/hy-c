@@ -7,7 +7,7 @@ module Hyrax
     self.model_class = ::DataSet
 
     self.terms += [:resource_type, :abstract, :admin_note, :copyright_date, :date_issued, :dcmi_type, :doi, :extent, :funder,
-                   :kind_of_data, :last_modified_date, :methodology, :project_director, :researcher, :rights_holder,
+                   :kind_of_data, :last_modified_date, :methodology, :note, :project_director, :researcher, :rights_holder,
                    :sponsor, :deposit_agreement, :agreement]
 
     self.terms -= [:bibliographic_citation, :description, :publisher, :source, :identifier, :date_created]

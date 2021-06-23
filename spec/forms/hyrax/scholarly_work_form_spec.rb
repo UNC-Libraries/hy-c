@@ -22,7 +22,7 @@ RSpec.describe Hyrax::ScholarlyWorkForm do
     subject { form.secondary_terms }
 
     it { is_expected.to match_array [:advisor, :based_near, :conference_name, :dcmi_type, :digital_collection,
-                                     :doi, :description, :identifier, :keyword, :language, :license, :resource_type,
+                                     :doi, :description, :identifier, :keyword, :language, :license, :note, :resource_type,
                                      :rights_statement, :subject, :language_label, :license_label, 
                                      :rights_statement_label, :deposit_agreement, :agreement, :admin_note] }
   end
@@ -89,6 +89,7 @@ RSpec.describe Hyrax::ScholarlyWorkForm do
           doi: '12345',
           language_label: [],
           license_label: [],
+          note: ['my note'],
           rights_statement_label: ''
       )
     end
@@ -118,6 +119,7 @@ RSpec.describe Hyrax::ScholarlyWorkForm do
       expect(subject['member_of_collection_ids']).to eq ['123456', 'abcdef']
       expect(subject['language_label']).to eq ['English']
       expect(subject['license_label']).to eq ['Attribution 3.0 United States']
+      expect(subject['note']).to eq ['my note']
       expect(subject['rights_statement_label']).to eq 'In Copyright'
       expect(subject['creators_attributes']['0']['name']).to eq 'creator'
       expect(subject['creators_attributes']['0']['orcid']).to eq 'creator orcid'

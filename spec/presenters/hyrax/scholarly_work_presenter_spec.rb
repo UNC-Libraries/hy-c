@@ -26,6 +26,7 @@ RSpec.describe Hyrax::ScholarlyWorkPresenter do
       "based_near_tesim" => ['a geographic subject'],
       "language_label_tesim" => ['language'],
       "license_label_tesim" => ['license'],
+      "note_tesim" => ['my note'],
       "rights_statement_label_tesim" => 'rights'
     }
   end
@@ -59,6 +60,7 @@ RSpec.describe Hyrax::ScholarlyWorkPresenter do
   it { is_expected.to delegate_method(:doi).to(:solr_document) }
   it { is_expected.to delegate_method(:language_label).to(:solr_document) }
   it { is_expected.to delegate_method(:license_label).to(:solr_document) }
+  it { is_expected.to delegate_method(:note).to(:solr_document) }
   it { is_expected.to delegate_method(:rights_statement_label).to(:solr_document) }
 
   describe "#model_name" do
@@ -198,6 +200,17 @@ RSpec.describe Hyrax::ScholarlyWorkPresenter do
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:license_label)
+      end
+    end
+
+    context "with a custom note field" do
+      before do
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:note, ['my note'], {}).and_return(renderer)
+      end
+
+      it "calls the AttributeRenderer" do
+        expect(renderer).to receive(:render)
+        presenter.attribute_to_html(:note)
       end
     end
 
