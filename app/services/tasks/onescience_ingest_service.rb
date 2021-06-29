@@ -154,7 +154,6 @@ module Tasks
 
               # create and save file
               file_attributes = { title: [filename],
-                                  date_created: Time.new.strftime("%Y-%m-%dT%H:%M:%S+00:00"),
                                   related_url: [source_url] }
               file_set = FileSet.create(file_attributes)
               actor = Hyrax::Actors::FileSetActor.new(file_set, User.where(uid: @config['depositor_onyen']).first)
