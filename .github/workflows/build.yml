@@ -110,13 +110,8 @@ jobs:
         sleep 150
         bundle exec rake test_setup RAILS_ENV=test
 
-    - name: Copy app to /hy-c
-      run: cp -R hy-c /tmp
-
     - name: Run tests
-      run: |
-        - cd /tmp/hy-c
-        - bundle exec rspec
+      run: bundle exec rspec
       env:
         RAILS_ENV: test
         REDIS_URL: redis://redis
