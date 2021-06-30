@@ -154,7 +154,6 @@ module Tasks
 
               # create and save file
               file_attributes = { title: [filename],
-                                  date_created: work_attributes['date_issued'],
                                   related_url: [source_url] }
               file_set = FileSet.create(file_attributes)
               actor = Hyrax::Actors::FileSetActor.new(file_set, User.where(uid: @config['depositor_onyen']).first)
@@ -280,15 +279,11 @@ module Tasks
         puts "[#{Time.now}] #{onescience_data['onescience_id']} error: journal issue value is 'C'"
       end
       page_start = scopus_page_start.blank? ? onescience_data['First Page'].to_s : scopus_page_start
-      if !page_start.blank? && page_start.to_i > 1000
-        puts "[#{Time.now}] #{onescience_data['onescience_id']} error: journal start page is #{page_start}"
-      else
+      unless page_start.blank?
         work_attributes['page_start'] = page_start
       end
       page_end = scopus_page_end.blank? ? onescience_data['Last Page'].to_s : scopus_page_end
-      if !page_end.blank? && page_end.to_i > 1000
-        puts "[#{Time.now}] #{onescience_data['onescience_id']} error: journal end page is #{page_end}"
-      else
+      unless page_end.blank?
         work_attributes['page_end'] = page_end
       end
       work_attributes['issn'] = onescience_data['ISSNs'].to_s.split('||') if !onescience_data['ISSNs'].blank?
