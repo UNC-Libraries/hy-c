@@ -65,7 +65,7 @@ class CatalogController < ApplicationController
     config.default_solr_params = {
       qt: "search",
       rows: 10,
-      qf: "title_tesim description_tesim creator_tesim keyword_tesim"
+      qf: "title_tesim description_tesim creator_tesim keyword_tesim all_text_extracted_timv"
     }
 
     # solr field configuration for document/show views
@@ -104,7 +104,7 @@ class CatalogController < ApplicationController
     config.add_index_field solr_name("abstract", :stored_searchable), label: "Abstract"
     config.add_index_field solr_name("resource_type", :stored_searchable), label: "Resource type", link_to_search: solr_name("resource_type", :facetable)
     config.add_index_field solr_name("based_near_label", :stored_searchable), itemprop: 'contentLocation', label: "Location", link_to_search: solr_name("based_near_label", :facetable)
-
+    config.add_index_field 'all_text_extracted_timv', label: 'Full Text'
     # solr fields to be displayed in the show (single result) view
     #   The ordering of the field names is the order of the display
     config.add_show_field solr_name("title", :stored_searchable)
@@ -191,7 +191,7 @@ class CatalogController < ApplicationController
       all_names = config.show_fields.values.map(&:field).join(" ")
       title_name = solr_name("title", :stored_searchable)
       field.solr_parameters = {
-        qf: "#{all_names} file_format_tesim all_text_timv",
+        qf: "all_text_timv all_text_extracted_timv",
         pf: title_name.to_s
       }
     end
