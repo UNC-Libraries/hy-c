@@ -1,5 +1,7 @@
 # [hyc-override] updated to work in hyc and to verify uploaded file cleanup
 require 'rails_helper'
+require 'tempfile'
+require 'fileutils'
 
 RSpec.describe CreateDerivativesJob do
   around do |example|
@@ -87,7 +89,10 @@ RSpec.describe CreateDerivativesJob do
 
     let(:file) do
       Hydra::PCDM::File.new do |f|
-        f.content = File.open(File.join(fixture_path, "hyrax/hyrax_test4.pdf"))
+        tmp_file = Tempfile.new
+        FileUtils.rm(tmp_file.path)
+        FileUtils.cp(File.join(fixture_path, "hyrax/hyrax_test4.pdf"), tmp_file.path)
+        f.content = File.open(tmp_file.path)
         f.original_name = 'test.pdf'
         f.mime_type = 'application/pdf'
       end
