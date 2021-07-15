@@ -1,10 +1,18 @@
 require 'rails_helper'
+require 'fileutils'
+require 'tempfile'
+require 'pathname'
 
 RSpec.describe Hyc::VirusScanner do
   subject(:scanner) { described_class.new(file) }
+  let(:file) { Tempfile.new }
 
   context 'when a file is not infected' do
-    let(:file) { "#{Rails.root.join('spec', 'fixtures', 'files', 'test.txt')}" }
+    before do
+      src_path = Pathname.new('spec/fixtures/files/test.txt').realpath.to_s
+      FileUtils.rm(src_path)
+      FileUtils.cp(src_path, file)
+    end
 
     it 'does not have a virus hy-c custom scan' do
       expect(scanner.hyc_infected?).to be_a ClamAV::SuccessResponse
@@ -16,7 +24,11 @@ RSpec.describe Hyc::VirusScanner do
   end
 
   context 'when a file is infected' do
-    let(:file) { "#{Rails.root.join('spec', 'fixtures', 'files', 'virus.txt')}"  }
+    before do
+      src_path = Pathname.new('spec/fixtures/files/virus.txt').realpath.to_s
+      FileUtils.rm(src_path)
+      FileUtils.cp(src_path, file)
+    end
 
     it 'has a virus hy-c custom scan' do
       expect(scanner.hyc_infected?).to be_a ClamAV::VirusResponse
