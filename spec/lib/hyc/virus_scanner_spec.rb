@@ -10,8 +10,8 @@ RSpec.describe Hyc::VirusScanner do
   context 'when a file is not infected' do
     before do
       src_path = Pathname.new('spec/fixtures/files/test.txt').realpath.to_s
-      FileUtils.rm(file)
-      FileUtils.cp(src_path, file)
+      FileUtils.rm(file.path)
+      FileUtils.cp(src_path, file.path)
     end
 
     it 'does not have a virus hy-c custom scan' do
@@ -26,8 +26,8 @@ RSpec.describe Hyc::VirusScanner do
   context 'when a file is infected' do
     before do
       src_path = Pathname.new('spec/fixtures/files/virus.txt').realpath.to_s
-      FileUtils.rm(file)
-      FileUtils.cp(src_path, file)
+      FileUtils.rm(file.path)
+      FileUtils.cp(src_path, file.path)
     end
 
     it 'has a virus hy-c custom scan' do
