@@ -196,6 +196,7 @@ class CatalogController < ApplicationController
         qf: "#{all_names} file_format_tesim all_text_timv",
         pf: title_name.to_s
       }
+      field.advanced_parse = false
     end
 
     # Now we see how to over-ride Solr request handler defaults, in this
