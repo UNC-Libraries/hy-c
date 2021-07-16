@@ -1,6 +1,8 @@
 require 'rails_helper'
 require 'fileutils'
 require 'tmpdir'
+require 'tempfile'
+require 'fileutils'
 
 RSpec.describe DeregisterLongleafJob, type: :job do
   
@@ -14,7 +16,10 @@ RSpec.describe DeregisterLongleafJob, type: :job do
   
   let(:repository_file) do
     Hydra::PCDM::File.new do |f|
-      f.content = File.open(File.join(fixture_path, "hyrax/hyrax_test4.pdf"))
+      tmp_file = Tempfile.new
+      FileUtils.rm(tmp_file.path)
+      FileUtils.cp(File.join(fixture_path, "hyrax/hyrax_test4.pdf"), tmp_file.path)
+      f.content = File.open(tmp_file.path)
       f.original_name = 'test.pdf'
       f.mime_type = 'application/pdf'
     end
