@@ -14,5 +14,9 @@ module Hyc
       results = client.execute(ClamAV::Commands::ScanCommand.new(file))
       results[0]
     end
+
+    def self.hyc_infected?(file_path)
+      new(file_path).hyc_infected?
+    end
   end
 end
