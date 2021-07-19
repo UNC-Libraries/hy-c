@@ -10,13 +10,14 @@ RSpec.describe Hyc::VirusScanner do
 
   context 'when a file is not infected' do
     src_path = Pathname.new('spec/fixtures/files/test.txt').realpath.to_s
+    let(:file) { src_path }
 
-    if ENV["CI"].nil?
-      let(:file) { src_path}
-    else
-      let(:file) { Tempfile.new.path }
-      FileUtils.rm(file)
-      FileUtils.cp(src_path, file)
+    before do
+      unless ENV["CI"].nil?
+        file = Tempfile.new.path
+        FileUtils.rm(file)
+        FileUtils.cp(src_path, file)
+      end
     end
 
     it 'does not have a virus hy-c custom scan' do
@@ -30,13 +31,14 @@ RSpec.describe Hyc::VirusScanner do
 
   context 'when a file is infected' do
     src_path = Pathname.new('spec/fixtures/files/virus.txt').realpath.to_s
+    let(:file) { src_path }
 
-    if ENV["CI"].nil?
-      let(:file) { src_path}
-    else
-      let(:file) { Tempfile.new.path }
-      FileUtils.rm(file)
-      FileUtils.cp(src_path, file)
+    before do
+      unless ENV["CI"].nil?
+        file = Tempfile.new.path
+        FileUtils.rm(file)
+        FileUtils.cp(src_path, file)
+      end
     end
 
     it 'has a virus hy-c custom scan' do
