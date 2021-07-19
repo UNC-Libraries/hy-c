@@ -13,7 +13,7 @@ RSpec.describe Hyc::VirusScanner do
     let(:file) { src_path }
 
     before do
-      unless ENV["GITHUB_ACTIONS"].nil?
+      unless ENV["TMPDIR"].nil?
         file = Tempfile.new.path
         FileUtils.rm(file)
         FileUtils.cp(src_path, file)
@@ -34,7 +34,7 @@ RSpec.describe Hyc::VirusScanner do
     let(:file) { src_path }
 
     before do
-      unless ENV["GITHUB_ACTIONS"].nil?
+      unless ENV["TMPDIR"].nil?
         file = Tempfile.new.path
         FileUtils.rm(file)
         FileUtils.cp(src_path, file)
