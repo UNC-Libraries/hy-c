@@ -1,3 +1,4 @@
+# [hyc-override] Overriding to add index fields to sort date_issued and title
 module Hyrax
   class CollectionIndexer < Hydra::PCDM::CollectionIndexer
     include Hyrax::IndexesThumbnails
@@ -13,6 +14,8 @@ module Hyrax
         # Makes Collections show under the "Collections" tab
         solr_doc['generic_type_sim'] = ["Collection"]
         solr_doc['visibility_ssi'] = object.visibility
+        solr_doc['date_issued_sort_ssi'] = Array(object.date_created).first unless object.date_created.blank?
+        solr_doc['title_sort_ssi'] = Array(object.title).first.downcase unless object.title.blank?
 
         object.in_collections.each do |col|
           (solr_doc['member_of_collection_ids_ssim'] ||= []) << col.id
