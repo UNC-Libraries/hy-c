@@ -1,4 +1,4 @@
-# [hyc-override] Overriding to add index fields to sort date_issued and title
+# [hyc-override] Overriding to add index fields to sort date_created as date_issued (to match works sorting) and title
 module Hyrax
   class CollectionIndexer < Hydra::PCDM::CollectionIndexer
     include Hyrax::IndexesThumbnails
