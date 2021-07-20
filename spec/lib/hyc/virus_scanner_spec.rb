@@ -11,7 +11,7 @@ RSpec.describe Hyc::VirusScanner do
   context 'when a file is not infected' do
     src_path = Pathname.new('spec/fixtures/files/test.txt').realpath.to_s
 
-    if ENV['CI']
+    if Dir.pwd.include? 'runner'
       let(:file) { Tempfile.new.path }
     else
       let(:file) { src_path }
@@ -19,7 +19,7 @@ RSpec.describe Hyc::VirusScanner do
 
 
     before do
-      if ENV['CI']
+      if Dir.pwd.include? 'runner'
         FileUtils.rm(file)
         FileUtils.cp(src_path, file)
       end
@@ -36,14 +36,14 @@ RSpec.describe Hyc::VirusScanner do
 
   context 'when a file is infected' do
     src_path = Pathname.new('spec/fixtures/files/virus.txt').realpath.to_s
-    if ENV['CI']
+    if Dir.pwd.include? 'runner'
       let(:file) { Tempfile.new.path }
     else
       let(:file) { src_path }
     end
 
     before do
-      if ENV['CI']
+      if Dir.pwd.include? 'runner'
         file = Tempfile.new.path
         FileUtils.rm(file)
         FileUtils.cp(src_path, file)
