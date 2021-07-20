@@ -13,7 +13,7 @@ RSpec.describe Hyc::VirusScanner do
     let(:file) { src_path }
 
     before do
-      unless ENV["TMPDIR"].nil?
+      unless defined?(ENV["CI"]).nil?
         file = Tempfile.new.path
         FileUtils.rm(file)
         FileUtils.cp(src_path, file)
@@ -34,7 +34,7 @@ RSpec.describe Hyc::VirusScanner do
     let(:file) { src_path }
 
     before do
-      unless ENV["TMPDIR"].nil?
+      unless defined?(ENV["CI"]).nil?
         file = Tempfile.new.path
         FileUtils.rm(file)
         FileUtils.cp(src_path, file)
@@ -42,6 +42,7 @@ RSpec.describe Hyc::VirusScanner do
     end
 
     it 'has a virus hy-c custom scan' do
+      expect(scanner.hyc_infected?).to eq ENV['CI']
       expect(scanner.hyc_infected?).to be_a ClamAV::VirusResponse
     end
 
