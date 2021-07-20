@@ -3,15 +3,26 @@ require 'fileutils'
 require 'tempfile'
 require 'pathname'
 
+# Check for github actions runner when setting file path
+# Github actions needs a different path than the local vm
 RSpec.describe Hyc::VirusScanner do
   subject(:scanner) { described_class.new(file) }
-  let(:file) { Tempfile.new.path }
 
   context 'when a file is not infected' do
+    src_path = Pathname.new('spec/fixtures/files/test.txt').realpath.to_s
+
+    if Dir.pwd.include? 'runner'
+      let(:file) { Tempfile.new.path }
+    else
+      let(:file) { src_path }
+    end
+
+
     before do
-      src_path = Pathname.new('spec/fixtures/files/test.txt').realpath.to_s
-      FileUtils.rm(file)
-      FileUtils.cp(src_path, file)
+      if Dir.pwd.include? 'runner'
+        FileUtils.rm(file)
+        FileUtils.cp(src_path, file)
+      end
     end
 
     it 'does not have a virus hy-c custom scan' do
@@ -24,10 +35,18 @@ RSpec.describe Hyc::VirusScanner do
   end
 
   context 'when a file is infected' do
+    src_path = Pathname.new('spec/fixtures/files/virus.txt').realpath.to_s
+    if Dir.pwd.include? 'runner'
+      let(:file) { Tempfile.new.path }
+    else
+      let(:file) { src_path }
+    end
+
     before do
-      src_path = Pathname.new('spec/fixtures/files/virus.txt').realpath.to_s
-      FileUtils.rm(file)
-      FileUtils.cp(src_path, file)
+      if Dir.pwd.include? 'runner'
+        FileUtils.rm(file)
+        FileUtils.cp(src_path, file)
+      end
     end
 
     it 'has a virus hy-c custom scan' do
