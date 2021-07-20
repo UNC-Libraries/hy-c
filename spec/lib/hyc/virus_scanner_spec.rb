@@ -44,7 +44,6 @@ RSpec.describe Hyc::VirusScanner do
 
     before do
       if Dir.pwd.include? 'runner'
-        file = Tempfile.new.path
         FileUtils.rm(file)
         FileUtils.cp(src_path, file)
       end
