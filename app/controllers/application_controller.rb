@@ -17,12 +17,16 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
   skip_after_action :discard_flash_if_xhr
 
-  # Catch error if a Blacklight record isn't found
-  rescue_from Blacklight::Exceptions::RecordNotFound do
-    render 'errors/not_found', status: 404
-  end
+  # Catch various page not found and bad request exceptions
+  rescue_from ActionController::RoutingError, with: :render_404
+  rescue_from ActionController::UnknownController, with: :render_404
+  rescue_from Blacklight::Exceptions::RecordNotFound, with: :render_404
 
   protected
+
+    def render_404
+      render 'errors/not_found', status: 404
+    end
 
     # [hyc-override] Overriding default after_sign_in_path_for which only forward to the dashboard
     def after_sign_in_path_for(resource)
