@@ -57,4 +57,29 @@ RSpec.describe Hyc::VirusScanner do
       expect(scanner).to be_infected
     end
   end
+
+  context 'when a file name has special characters' do
+    src_path = Pathname.new('spec/fixtures/files/odd_chars_+.txt').realpath.to_s
+
+    if Dir.pwd.include? 'runner'
+      let(:file) { Tempfile.new.path }
+    else
+      let(:file) { src_path }
+    end
+
+    before do
+      if Dir.pwd.include? 'runner'
+        FileUtils.rm(file)
+        FileUtils.cp(src_path, file)
+      end
+    end
+
+    it 'can perform a custom virus hy-c custom scan' do
+      expect(scanner.hyc_infected?).to be_a ClamAV::SuccessResponse
+    end
+
+    it 'does not have a virus normal hyrax scan' do
+      expect(scanner).not_to be_infected
+    end
+  end
 end
