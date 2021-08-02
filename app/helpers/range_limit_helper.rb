@@ -1,4 +1,5 @@
 # Additional helper methods used by view templates inside this plugin.
+# # [hyc-override] Change input fields to number fields
 module RangeLimitHelper
 
   # type is 'begin' or 'end'
@@ -9,7 +10,7 @@ module RangeLimitHelper
 
     html = label_tag("range[#{solr_field}][#{type}]", input_label, class: 'sr-only') if input_label.present?
     html ||= ''.html_safe
-    html += text_field_tag("range[#{solr_field}][#{type}]", default, :maxlength=>maxlength, :class => "form-control range_#{type}")
+    html += number_field_tag("range[#{solr_field}][#{type}]", default, :maxlength=>maxlength, :class => "form-control range_#{type}")
   end
 
   # type is 'min' or 'max'
