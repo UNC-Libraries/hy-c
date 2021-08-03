@@ -28,7 +28,7 @@
        that you fully re-index after changing this setting as it can
        affect both how text is indexed and queried.
   -->
-  <luceneMatchVersion>5.0.0</luceneMatchVersion>
+  <luceneMatchVersion>8.9.0</luceneMatchVersion>
   
   <lib dir="${solr.install.dir:../../../..}/contrib/analysis-extras/lib" />
   <lib dir="${solr.install.dir:../../../..}/contrib/analysis-extras/lucene-libs" />
@@ -89,6 +89,7 @@
        <str name="defType">edismax</str>
        <str name="echoParams">explicit</str>
        <str name="q.alt">*:*</str>
+       <str name="q.op">OR</str>
        <str name="mm">2&lt;-1 5&lt;-2 6&lt;90%</str>
        <int name="qs">1</int>
        <int name="ps">2</int>
