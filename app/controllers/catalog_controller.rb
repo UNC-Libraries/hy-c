@@ -14,6 +14,8 @@ class CatalogController < ApplicationController
   # Allow all search options when in read-only mode
   skip_before_action :check_read_only
 
+  rescue_from Blacklight::Exceptions::InvalidRequest, with: :render_rsolr_exceptions
+
   def self.title_field
     solr_name('title_sort', :stored_sortable)
   end

@@ -24,8 +24,28 @@ class ApplicationController < ActionController::Base
 
   protected
 
+    def render_400
+      render 'errors/not_found', status: 400
+    end
+
     def render_404
       render 'errors/not_found', status: 404
+    end
+
+    def render_500
+      render 'errors/internal_server_error', status: 500
+    end
+
+    # Error caught in catalogController
+    def render_rsolr_exceptions(exception)
+      exception_text = exception.to_s
+
+      if exception_text.include?("java.lang.NumberFormatException") ||
+        exception_text.include?("Can't determine a Sort Order")
+        render_400
+      else
+        render_404
+      end
     end
 
     # [hyc-override] Overriding default after_sign_in_path_for which only forward to the dashboard

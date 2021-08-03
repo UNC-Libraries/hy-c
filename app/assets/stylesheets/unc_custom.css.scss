@@ -384,6 +384,14 @@ div.unc-modal {
   }
 }
 
+/* Override width of Blacklight Range Limit date boxes */
+.range_limit input.range_begin, .range_limit input.range_end {
+  width: 5.5em !important;
+}
+
+.form-control.range_begin, .form-control.range_end {
+  padding: 6px;
+}
 /* Hyrax override */
 #content_block_page {
   margin: 0 15px;

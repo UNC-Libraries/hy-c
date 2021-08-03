@@ -33,7 +33,7 @@ gem 'passenger', '5.3.7', require: 'phusion_passenger/rack_handler'
 gem 'staccato', '~>0.5.3'
 gem 'loofah', '~>2.10.0'
 gem "bootstrap-sass", "~> 3.4.1"
-gem 'blacklight_range_limit', '6.3.3'
+gem 'blacklight_range_limit', '6.5.0'
 gem 'blacklight_advanced_search', '~> 6.4.1'
 gem 'mini_magick', '~>4.9.4'
 gem 'roo', '~>2.8.3'
