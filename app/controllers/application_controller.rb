@@ -40,9 +40,8 @@ class ApplicationController < ActionController::Base
     def render_rsolr_exceptions(exception)
       exception_text = exception.to_s
 
-      if exception_text.include?("java.lang.NumberFormatException")
-        render_500
-      elsif exception_text.include?("Can't determine a Sort Order")
+      if exception_text.include?("java.lang.NumberFormatException") ||
+        exception_text.include?("Can't determine a Sort Order")
         render_400
       else
         render_404
