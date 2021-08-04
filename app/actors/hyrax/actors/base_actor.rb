@@ -141,30 +141,34 @@ module Hyrax
       def apply_work_specific_permissions(env)
         permissions_attributes = env.attributes['permissions_attributes']
         return true if permissions_attributes.blank?
-        workflow = Sipity::Workflow.where(permission_template_id: env.curation_concern.admin_set.permission_template.id,
-                                          active: true).first
-        entity = Sipity::Entity.where(proxy_for_global_id: env.curation_concern.to_global_id.to_s, workflow_id: workflow.id).first_or_create!
-        permissions_attributes.each do |k,permission|
-          # skip the pre-existing permissions since they have already been applied
-          if !permission['id'].blank?
-            next
-          end
-          if permission['type'] == 'person'
-            agent_type = 'User'
-            agent_id = ::User.find_by(uid: permission['name'])
-          else
-            agent_type = 'Hyrax::Group'
-            agent_id = permission['name']
-          end
-          agents = [Sipity::Agent.where(proxy_for_id: agent_id, proxy_for_type: agent_type).first_or_create]
 
-          if permission['access'] == 'edit'
-            roles = 'approving'
-          else
-            roles = 'viewing'
-          end
+        # File sets don't have admin sets. So updating them independently of their work should skip this update.
+        if env.curation_concern.respond_to? :admin_set
+          workflow = Sipity::Workflow.where(permission_template_id: env.curation_concern.admin_set.permission_template.id,
+                                            active: true).first
+          entity = Sipity::Entity.where(proxy_for_global_id: env.curation_concern.to_global_id.to_s, workflow_id: workflow.id).first_or_create!
+          permissions_attributes.each do |k,permission|
+            # skip the pre-existing permissions since they have already been applied
+            if !permission['id'].blank?
+              next
+            end
+            if permission['type'] == 'person'
+              agent_type = 'User'
+              agent_id = ::User.find_by(uid: permission['name'])
+            else
+              agent_type = 'Hyrax::Group'
+              agent_id = permission['name']
+            end
+            agents = [Sipity::Agent.where(proxy_for_id: agent_id, proxy_for_type: agent_type).first_or_create]
 
-          create_workflow_permissions(entity, agents, roles, workflow)
+            if permission['access'] == 'edit'
+              roles = 'approving'
+            else
+              roles = 'viewing'
+            end
+
+            create_workflow_permissions(entity, agents, roles, workflow)
+          end
         end
       end
 
