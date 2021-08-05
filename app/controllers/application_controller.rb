@@ -20,12 +20,17 @@ class ApplicationController < ActionController::Base
   # Catch various page not found and bad request exceptions
   rescue_from ActionController::RoutingError, with: :render_404
   rescue_from ActionController::UnknownController, with: :render_404
+  rescue_from Riiif::ImageNotFoundError, with: :render_riiif_404
   rescue_from Blacklight::Exceptions::RecordNotFound, with: :render_404
 
   protected
 
     def render_400
       render 'errors/not_found', status: 400
+    end
+
+    def render_riiif_404
+      render_json_response(response_type: :not_found)
     end
 
     def render_404
