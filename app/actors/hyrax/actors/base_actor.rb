@@ -141,6 +141,9 @@ module Hyrax
       def apply_work_specific_permissions(env)
         permissions_attributes = env.attributes['permissions_attributes']
         return true if permissions_attributes.blank?
+        # File sets don't have admin sets. So updating them independently of their work should skip this update.
+        return true unless env.curation_concern.respond_to? :admin_set
+
         workflow = Sipity::Workflow.where(permission_template_id: env.curation_concern.admin_set.permission_template.id,
                                           active: true).first
         entity = Sipity::Entity.where(proxy_for_global_id: env.curation_concern.to_global_id.to_s, workflow_id: workflow.id).first_or_create!
