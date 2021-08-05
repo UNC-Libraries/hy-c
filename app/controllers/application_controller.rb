@@ -21,11 +21,16 @@ class ApplicationController < ActionController::Base
   rescue_from ActionController::RoutingError, with: :render_404
   rescue_from ActionController::UnknownController, with: :render_404
   rescue_from Blacklight::Exceptions::RecordNotFound, with: :render_404
+  rescue_from ActionController::InvalidAuthenticityToken, with: :render_401
 
   protected
 
     def render_400
       render 'errors/not_found', status: 400
+    end
+
+    def render_401
+      render 'errors/not_found', status: 401
     end
 
     def render_404
