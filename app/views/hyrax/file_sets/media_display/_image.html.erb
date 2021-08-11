@@ -2,7 +2,7 @@
 <%# [hyc-override] Style download link %>
 <% if current_user&.admin? || !@presenter.respond_to?('workflow') || 
     (!@presenter.workflow.in_workflow_state?(['withdrawn', 'pending deletion']) &&
-    Hyrax.config.display_media_download_link?) %>
+      file_set.embargo_release_date.blank? && Hyrax.config.display_media_download_link?) %>
     <div>
       <h2 class="sr-only"><%= t('hyrax.file_set.show.downloadable_content.heading') %></h2>
       <% if !@presenter.respond_to?(:iiif_viewer?) || !@presenter.iiif_viewer? %>
