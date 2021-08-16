@@ -5,7 +5,7 @@ require 'language_list'
 
 module Bulkrax
   class ApplicationMatcher
-    attr_accessor :to, :from, :parsed, :if, :split, :excluded
+    attr_accessor :to, :from, :parsed, :if, :split, :excluded, :nested_type
 
     def initialize(args)
       args.each do |k, v|
@@ -39,13 +39,18 @@ module Bulkrax
     end
 
     def process_parse
-      if @result.is_a?(Array) && self.parsed && self.respond_to?("parse_#{to}")
+      # New parse methods will need to be added here
+      parsed_fields = ['remote_files', 'language', 'subject', 'types', 'model', 'resource_type', 'format_original']
+      # This accounts for prefixed matchers
+      parser = parsed_fields.find { |field| to&.include? field }
+
+      if @result.is_a?(Array) && self.parsed && self.respond_to?("parse_#{parser}")
         @result.each_with_index do |res, index|
-          @result[index] = send("parse_#{to}", res.strip)
+          @result[index] = send("parse_#{parser}", res.strip)
         end
         @result.delete(nil)
-      elsif self.parsed && self.respond_to?("parse_#{to}")
-        @result = send("parse_#{to}", @result)
+      elsif self.parsed && self.respond_to?("parse_#{parser}")
+        @result = send("parse_#{parser}", @result)
       end
     end
 
@@ -60,7 +65,7 @@ module Bulkrax
 
     def parse_subject(src)
       string = src.to_s.strip.downcase
-      return unless string.present?
+      return if string.blank?
 
       string.slice(0, 1).capitalize + string.slice(1..-1)
     end
@@ -74,11 +79,11 @@ module Bulkrax
       model = nil
       if src.is_a?(Array)
         models = src.map { |m| extract_model(m) }.compact
-        model = models.first unless models.blank?
+        model = models.first if models.present?
       else
         model = extract_model(src)
       end
-      return model
+      model
     end
 
     def extract_model(src)
@@ -101,7 +106,7 @@ module Bulkrax
     def parse_format_original(src)
       # drop the case completely then upcase the first letter
       string = src.to_s.strip.downcase
-      return unless string.present?
+      return if string.blank?
 
       string.slice(0, 1).capitalize + string.slice(1..-1)
     end
