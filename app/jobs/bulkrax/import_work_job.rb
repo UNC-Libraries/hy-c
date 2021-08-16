@@ -11,14 +11,16 @@ module Bulkrax
       entry.build
       if entry['error'].nil? && entry['last_error_at'].nil? && !entry['last_succeeded_at'].nil?
         ImporterRun.find(args[1]).increment!(:processed_records)
-        ImporterRun.find(args[1]).decrement!(:enqueued_records) # rubocop:disable Style/IdenticalConditionalBranches
+        ImporterRun.find(args[1]).decrement!(:enqueued_records) unless ImporterRun.find(args[1]).enqueued_records <= 0 # rubocop:disable Style/IdenticalConditionalBranches
       else
         # do not retry here because whatever parse error kept you from creating a work will likely
         # keep preventing you from doing so.
         ImporterRun.find(args[1]).increment!(:failed_records)
-        ImporterRun.find(args[1]).decrement!(:enqueued_records) # rubocop:disable Style/IdenticalConditionalBranches
+        ImporterRun.find(args[1]).decrement!(:enqueued_records)  unless ImporterRun.find(args[1]).enqueued_records <= 0 # rubocop:disable Style/IdenticalConditionalBranches
       end
       entry.save!
+      entry.importer.current_run = ImporterRun.find(args[1])
+      entry.importer.record_status
     rescue Bulkrax::CollectionsCreatedError
       reschedule(args[0], args[1])
     end

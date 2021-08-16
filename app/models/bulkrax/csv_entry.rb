@@ -14,6 +14,7 @@ module Bulkrax
 
     # there's a risk that this reads the whole file into memory and could cause a memory leak
     def self.read_data(path)
+      raise StandardError, 'CSV path empty' if path.blank?
       CSV.read(path,
                headers: true,
                header_converters: :symbol,
@@ -31,10 +32,6 @@ module Bulkrax
       return raw_data
     end
 
-    def self.source_identifier_field
-      Bulkrax.source_identifier_field_mapping[self.to_s] || 'source_identifier'
-    end
-
     def self.collection_field
       Bulkrax.collection_field_mapping[self.class.to_s] || 'collection'
     end
@@ -43,33 +40,33 @@ module Bulkrax
       Bulkrax.parent_child_field_mapping[self.to_s] || 'children'
     end
 
+    def key_without_numbers(key)
+      key.gsub(/_\d+/, '').sub(/^\d+_/, '')
+    end
+
     def build_metadata
       raise StandardError, 'Record not found' if record.nil?
-
-      unless importerexporter.parser.required_elements?(record.keys)
-        raise StandardError(
-                  "Missing required elements, required elements are: #{importerexporter.parser.required_elements.join(', ')}"
-              )
-      end
+      raise StandardError, "Missing required elements, missing element(s) are: #{importerexporter.parser.missing_elements(keys_without_numbers(record.keys)).join(', ')}" unless importerexporter.parser.required_elements?(keys_without_numbers(record.keys))
 
       unless work_types.include? record['model']
         raise StandardError.new "uninitialized constant #{record['model']} (NameError)"
       end
 
       self.parsed_metadata = {}
-      self.parsed_metadata[Bulkrax.system_identifier_field] = [record['source_identifier']]
-
+      self.parsed_metadata[work_identifier] = [record[source_identifier]]
       record.each do |key, value|
         next if key == 'collection'
-        add_metadata(key, value)
+
+        index = key[/\d+/].to_i - 1 if key[/\d+/].to_i != 0
+        add_metadata(key_without_numbers(key), value, index)
       end
 
       add_file
       add_visibility
       add_rights_statement
+      add_admin_set_id
       add_collections
       add_local
-
       self.parsed_metadata
     end
 
@@ -86,28 +83,42 @@ module Bulkrax
     # overriding to include all `mapping` keys in parsed metadata even when not supported by work type model
     # this fixes data mismatches in exports
     def build_export_metadata
-      make_round_trippable
+      # make_round_trippable
       self.parsed_metadata = {}
       self.parsed_metadata['id'] = hyrax_record.id
-      self.parsed_metadata[self.class.source_identifier_field] = hyrax_record.id
+      self.parsed_metadata[source_identifier] = hyrax_record.send(work_identifier)
       self.parsed_metadata['model'] = hyrax_record.has_model.first
-      mapping.each do |key, value|
-        next if Bulkrax.reserved_properties.include?(key) && !field_supported?(key)
-        unless hyrax_record.respond_to?(key)
-          self.parsed_metadata[key] = nil
-          next
-        end
-        data = hyrax_record.send(key)
-        if data.is_a?(ActiveTriples::Relation)
-          self.parsed_metadata[key] = data.join('; ').to_s unless value[:excluded]
-        else
-          self.parsed_metadata[key] = data
-        end
-      end
+      build_mapping_metadata
       unless hyrax_record.is_a?(Collection)
         self.parsed_metadata['file'] = hyrax_record.file_sets.map { |fs| filename(fs).to_s unless filename(fs).blank? }.compact.join('; ')
       end
       self.parsed_metadata
+    end
+
+    def build_mapping_metadata
+      mapping.each do |key, value|
+        next if Bulkrax.reserved_properties.include?(key) && !field_supported?(key)
+        next if key == "model"
+        unless hyrax_record.respond_to?(key)
+          self.parsed_metadata[key] = nil
+          next
+        end
+        next unless hyrax_record.respond_to?(value['from']&.first.to_s)
+        data = hyrax_record.send(value['from'].first)
+        if data.is_a?(ActiveTriples::Relation)
+          self.parsed_metadata[key] = data.map { |d| prepare_export_data(d) }.join('; ').to_s unless value[:excluded]
+        else
+          self.parsed_metadata[key] = prepare_export_data(data)
+        end
+      end
+    end
+
+    def prepare_export_data(datum)
+      if datum.is_a?(ActiveTriples::Resource)
+        datum.to_uri.to_s
+      else
+        datum
+      end
     end
 
     # In order for the existing exported hyrax_record, to be updated by a re-import
@@ -142,15 +153,7 @@ module Bulkrax
           self.collection_ids << c.id unless c.blank? || self.collection_ids.include?(c.id)
         end
       end
-      return self.collection_ids
-    end
-
-    def required_elements?(keys)
-      !required_elements.map { |el| keys.include?(el) }.include?(false)
-    end
-
-    def required_elements
-      %w[title source_identifier]
+      self.collection_ids
     end
 
     # If only filename is given, construct the path (/files/my_file)
