@@ -228,10 +228,10 @@ module Bulkrax
     # overriding to correctly export people attributes
     def write_files
       CSV.open(setup_export_file, "w", headers: export_headers, write_headers: true) do |csv|
-        importerexporter.entries.each do |e|
+        importerexporter.entries.where(identifier: current_work_ids)[0..limit || total].each_with_index do |e, index|
           metadata = e.parsed_metadata
           # get people metadata
-          work_record = ActiveFedora::Base.find(metadata['source_identifier'])
+          work_record = ActiveFedora::Base.find(current_work_ids[index])
           # create hash of people attributes
           people_types.each do |person_type|
             metadata[person_type] = nil
@@ -257,7 +257,6 @@ module Bulkrax
     # if reimporting, there needs to be a source_identifier column
     def export_headers
       headers = ['id']
-      headers << entry_class.source_identifier_field
       headers << 'model'
       importerexporter.mapping.each_key { |key| headers << key unless Bulkrax.reserved_properties.include?(key) && !field_supported?(key) }.sort
       headers << 'file'
