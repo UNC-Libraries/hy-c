@@ -122,12 +122,12 @@ module Bulkrax
     end
 
     # In order for the existing exported hyrax_record, to be updated by a re-import
-    # we need a unique value in Bulkrax.system_identifier_field
-    # add the existing hyrax_record id to Bulkrax.system_identifier_field
+    # we need a unique value in system_identifier
+    # add the existing hyrax_record id to system_identifier
     def make_round_trippable
-      values = hyrax_record.send(Bulkrax.system_identifier_field.to_s).to_a
+      values = hyrax_record.send(work_identifier.to_s).to_a
       values << hyrax_record.id
-      hyrax_record.send("#{Bulkrax.system_identifier_field}=", values)
+      hyrax_record.send("#{work_identifier}=", values)
       hyrax_record.save
     end
 
