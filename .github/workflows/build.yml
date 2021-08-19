@@ -93,6 +93,17 @@ jobs:
         unzip $HOME/fits-1.0.5.zip -d $HOME
         chmod u=u+x $HOME/fits-1.0.5/fits.sh
 
+    - name: Set up nodejs as Rails JS runtime
+      uses: actions/setup-node@v2
+      with:
+        node-version: '12'
+    - name: Cache npm modules
+      uses: actions/cache@v2
+      with:
+        path: ~/.npm
+        key: v1-npm-deps-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: v1-npm-deps-
+
     - name: Setup test database
       env:
         RAILS_ENV: test
