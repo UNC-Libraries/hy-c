@@ -20,8 +20,8 @@ module Bulkrax
     def write_import_file(file)
       path = File.join(path_for_import, file.original_filename)
       FileUtils.mv(
-          file.path,
-          path
+        file.path,
+        path
       )
       FileUtils.chmod(owner_write_and_global_read_file_permissions, path)
 
@@ -47,7 +47,7 @@ module Bulkrax
       # does the CSV contain a collection column?
       return [] unless import_fields.include?(:collection)
       # retrieve a list of unique collections
-      records.map { |r| r[:collection].split(/\s*[;|]\s*/) unless r[:collection].blank? }.flatten.compact.uniq
+      records.map { |r| r[:collection].split(/\s*[;|]\s*/) if r[:collection].present? }.flatten.compact.uniq
     end
 
     def collections_total
@@ -66,8 +66,8 @@ module Bulkrax
     end
 
     def required_elements?(keys)
-      return unless keys.present?
-      !missing_elements(keys).present?
+      return if keys.blank?
+      missing_elements(keys).blank?
     end
 
     def missing_elements(keys)
@@ -92,13 +92,13 @@ module Bulkrax
       collections.each_with_index do |collection, index|
         next if collection.blank?
         metadata = {
-            title: [collection],
-            work_identifier => [collection],
-            visibility: 'open',
-            collection_type_gid: Hyrax::CollectionType.find_or_create_default_collection_type.gid
+          title: [collection],
+          work_identifier => [collection],
+          visibility: 'open',
+          collection_type_gid: Hyrax::CollectionType.find_or_create_default_collection_type.gid
         }
         new_entry = find_or_create_entry(collection_entry_class, collection, 'Bulkrax::Importer', metadata)
-        ImportWorkCollectionJob.perform_now(new_entry.id, current_importer_run.id)
+        ImportWorkCollectionJob.perform_now(new_entry.id, current_run.id)
         increment_counters(index, true)
       end
     end
@@ -129,8 +129,8 @@ module Bulkrax
 
       path = File.join(path_for_import, partial_import_filename)
       FileUtils.mv(
-          file.path,
-          path
+        file.path,
+        path
       )
       FileUtils.chmod(0644, path)
       path
@@ -253,15 +253,22 @@ module Bulkrax
       end
     end
 
+    def key_allowed(key)
+      !Bulkrax.reserved_properties.include?(key) &&
+        new_entry(entry_class, 'Bulkrax::Exporter').field_supported?(key) &&
+        key != source_identifier.to_s
+    end
+
     # overriding to add columns for people attributes
     # if reimporting, there needs to be a source_identifier column
     def export_headers
       headers = ['id']
+      headers << source_identifier.to_s
       headers << 'model'
-      importerexporter.mapping.each_key { |key| headers << key unless Bulkrax.reserved_properties.include?(key) && !field_supported?(key) }.sort
+      importerexporter.mapping.each_key { |key| headers << key if key_allowed(key) }
       headers << 'file'
       people_types.each { |key| headers << "#{key}_attributes" }
-      headers
+      headers.uniq
     end
 
     # in the parser as it is specific to the format
@@ -269,13 +276,13 @@ module Bulkrax
       File.join(importerexporter.exporter_export_path, 'export.csv')
     end
 
-    # Retrieve file paths for [:file] in records
+    # Retrieve file paths for [:file] mapping in records
     #  and check all listed files exist.
     def file_paths
       raise StandardError, 'No records were found' if records.blank?
       @file_paths ||= records.map do |r|
         file_mapping = Bulkrax.field_mappings.dig(self.class.to_s, 'file', :from)&.first&.to_sym || :file
-        next unless r[file_mapping].present?
+        next if r[file_mapping].blank?
 
         r[file_mapping].split(/\s*[:;|]\s*/).map do |f|
           file = File.join(path_to_files, f.tr(' ', '_'))
@@ -291,8 +298,8 @@ module Bulkrax
     # Retrieve the path where we expect to find the files
     def path_to_files
       @path_to_files ||= File.join(
-          File.file?(import_file_path) ? File.dirname(import_file_path) : import_file_path,
-          'files'
+        File.file?(import_file_path) ? File.dirname(import_file_path) : import_file_path,
+        'files'
       )
     end
 

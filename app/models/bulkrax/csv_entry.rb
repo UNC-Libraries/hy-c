@@ -21,10 +21,12 @@ module Bulkrax
                encoding: 'utf-8')
     end
 
-    def self.data_for_entry(data)
+    def self.data_for_entry(data, _source_id)
       # If a multi-line CSV data is passed, grab the first row
       data = data.first if data.is_a?(CSV::Table)
+      # model has to be separated so that it doesn't get mistranslated by to_h
       raw_data = data.to_h
+      raw_data[:model] = data[:model]
       # If the collection field mapping is not 'collection', add 'collection' - the parser needs it
       raw_data[:collection] = raw_data[collection_field.to_sym] if raw_data.keys.include?(collection_field.to_sym) && collection_field != 'collection'
       # If the children field mapping is not 'children', add 'children' - the parser needs it
@@ -40,6 +42,10 @@ module Bulkrax
       Bulkrax.parent_child_field_mapping[self.to_s] || 'children'
     end
 
+    def keys_without_numbers(keys)
+      keys.map { |key| key_without_numbers(key) }
+    end
+
     def key_without_numbers(key)
       key.gsub(/_\d+/, '').sub(/^\d+_/, '')
     end
@@ -48,7 +54,7 @@ module Bulkrax
       raise StandardError, 'Record not found' if record.nil?
       raise StandardError, "Missing required elements, missing element(s) are: #{importerexporter.parser.missing_elements(keys_without_numbers(record.keys)).join(', ')}" unless importerexporter.parser.required_elements?(keys_without_numbers(record.keys))
 
-      unless work_types.include? record['model']
+      unless record['model'].nil? || work_types.include?(record['model'])
         raise StandardError.new "uninitialized constant #{record['model']} (NameError)"
       end
 
@@ -147,7 +153,7 @@ module Bulkrax
     def find_or_create_collection_ids
       return self.collection_ids if collections_created?
       valid_system_id(Collection)
-      unless record[self.class.collection_field].blank?
+      if record[self.class.collection_field].present?
         record[self.class.collection_field].split(/\s*[:;|]\s*/).each do |collection|
           c = find_collection(collection)
           self.collection_ids << c.id unless c.blank? || self.collection_ids.include?(c.id)
@@ -167,7 +173,7 @@ module Bulkrax
     end
 
     def work_types
-      ['Article', 'Artwork', 'DataSet', 'Dissertation', 'General', 'HonorsThesis', 'Journal', 'MastersPaper', 'Multimed', 'ScholarlyWork']
+      %w[Article Artwork DataSet Dissertation General HonorsThesis Journal MastersPaper Multimed ScholarlyWork]
     end
   end
 end

@@ -8,25 +8,6 @@ GIT
       rails (>= 5.1.6)
       rubyzip (>= 1.0.0)
 
-GIT
-  remote: https://github.com/samvera-labs/bulkrax.git
-  revision: d80e6b7beea5126e956b14dc3531d63d5be2a7c0
-  ref: d80e6b7
-  specs:
-    bulkrax (0.1.0)
-      bagit (~> 0.4)
-      coderay
-      iso8601 (~> 0.9.0)
-      kaminari
-      language_list (~> 1.2, >= 1.2.1)
-      libxml-ruby (~> 3.1.0)
-      loofah (>= 2.2.3)
-      oai (>= 0.4, < 2.x)
-      rack (>= 2.0.6)
-      rails (>= 5.1.6)
-      rdf (>= 2.0.2, < 4.0)
-      simple_form
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -177,6 +158,19 @@ GEM
       signet (~> 0.8)
       typhoeus
     builder (3.2.4)
+    bulkrax (1.0.0)
+      bagit (~> 0.4)
+      coderay
+      iso8601 (~> 0.9.0)
+      kaminari
+      language_list (~> 1.2, >= 1.2.1)
+      libxml-ruby (~> 3.1.0)
+      loofah (>= 2.2.3)
+      oai (>= 0.4, < 2.x)
+      rack (>= 2.0.6)
+      rails (>= 5.1.6)
+      rdf (>= 2.0.2, < 4.0)
+      simple_form
     byebug (9.1.0)
     cancancan (1.17.0)
     capybara (2.17.0)
@@ -913,7 +907,7 @@ DEPENDENCIES
   blacklight_oai_provider (= 6.0.0.pre1)
   blacklight_range_limit (= 6.5.0)
   bootstrap-sass (~> 3.4.1)
-  bulkrax!
+  bulkrax (~> 1.0.0)
   byebug (~> 9.1.0)
   capybara (~> 2.17.0)
   clamav-client

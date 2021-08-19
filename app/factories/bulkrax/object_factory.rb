@@ -1,6 +1,5 @@
 # frozen_string_literal: true
-# [hyc-override] attaching files to works in `update` and `create` methods instead of in
-# the work_actor pipeline; also overriding `transform_attributes` and
+# [hyc-override] overriding `transform_attributes` and
 # `permitted_attributes` methods to handle people objects
 
 # TODO: require 'importer/log_subscriber'
@@ -12,7 +11,7 @@ module Bulkrax
     attr_reader :attributes, :object, :source_identifier_value, :klass, :replace_files, :update_files, :work_identifier
 
     # rubocop:disable Metrics/ParameterLists
-    def initialize(attributes, source_identifier_value, work_identifier, replace_files = false, user = nil, klass = nil, update_files = false)
+    def initialize(attributes:, source_identifier_value:, work_identifier:, replace_files: false, user: nil, klass: nil, update_files: false)
       @attributes = ActiveSupport::HashWithIndifferentAccess.new(attributes)
       @replace_files = replace_files
       @update_files = update_files
@@ -46,17 +45,16 @@ module Bulkrax
     def update
       raise "Object doesn't exist" unless object
       destroy_existing_files if @replace_files && klass != Collection
-      attrs = update_attributes
+      attrs = attribute_update
       run_callbacks :save do
         klass == Collection ? update_collection(attrs) : work_actor.update(environment(attrs))
       end
       log_updated(object)
-      import_files if @replace_files
     end
 
     def find
       return find_by_id if attributes[:id]
-      return search_by_identifier if attributes[system_identifier_field].present?
+      search_by_identifier if attributes[work_identifier].present?
     end
 
     def find_by_id
@@ -70,13 +68,13 @@ module Bulkrax
     end
 
     def search_by_identifier
-      query = { system_identifier_field =>
-                    unique_identifier }
+      query = { work_identifier =>
+                  source_identifier_value }
       # Query can return partial matches (something6 matches both something6 and something68)
       # so we need to weed out any that are not the correct full match. But other items might be
       # in the multivalued field, so we have to go through them one at a time.
-      match = klass.where(query).detect { |m| m.send(system_identifier_field).include?(unique_identifier) }
-      return match if match
+      match = klass.where(query).detect { |m| m.send(work_identifier).include?(source_identifier_value) }
+      match if match
     end
 
     # An ActiveFedora bug when there are many habtm <-> has_many associations means they won't all get saved.
@@ -93,22 +91,21 @@ module Bulkrax
         end
       end
       log_created(object)
-      import_files
     end
 
     def log_created(obj)
       msg = "Created #{klass.model_name.human} #{obj.id}"
-      Rails.logger.info("#{msg} (#{Array(attributes[system_identifier_field]).first})")
+      Rails.logger.info("#{msg} (#{Array(attributes[work_identifier]).first})")
     end
 
     def log_updated(obj)
       msg = "Updated #{klass.model_name.human} #{obj.id}"
-      Rails.logger.info("#{msg} (#{Array(attributes[system_identifier_field]).first})")
+      Rails.logger.info("#{msg} (#{Array(attributes[work_identifier]).first})")
     end
 
     def log_deleted_fs(obj)
       msg = "Deleted All Files from #{obj.id}"
-      Rails.logger.info("#{msg} (#{Array(attributes[system_identifier_field]).first})")
+      Rails.logger.info("#{msg} (#{Array(attributes[work_identifier]).first})")
     end
 
     private
@@ -149,11 +146,11 @@ module Bulkrax
     def members
       ms = object.members.to_a
       [:children].each do |atat|
-        next unless attributes[atat].present?
+        next if attributes[atat].blank?
         ms.concat(
-            Array.wrap(
-                find_collection(attributes[atat])
-            )
+          Array.wrap(
+            find_collection(attributes[atat])
+          )
         )
       end
       ms.flatten.compact.uniq
@@ -162,11 +159,11 @@ module Bulkrax
     def member_of_collections
       ms = object.member_of_collection_ids.to_a.map { |id| find_collection(id) }
       [:collection, :collections].each do |atat|
-        next unless attributes[atat].present?
+        next if attributes[atat].blank?
         ms.concat(
-            Array.wrap(
-                find_collection(attributes[atat])
-            )
+          Array.wrap(
+            find_collection(attributes[atat])
+          )
         )
       end
       ms.flatten.compact.uniq
@@ -174,14 +171,14 @@ module Bulkrax
 
     def find_collection(id)
       case id
-        when Hash
-          Collection.find(id[:id])
-        when String
-          Collection.find(id)
-        when Array
-          id.map { |i| find_collection(i) }
-        else
-          []
+      when Hash
+        Collection.find(id[:id])
+      when String
+        Collection.find(id)
+      when Array
+        id.map { |i| find_collection(i) }
+      else
+        []
       end
     end
 
@@ -209,7 +206,7 @@ module Bulkrax
 
     # Strip out the :collection key, and add the member_of_collection_ids,
     # which is used by Hyrax::Actors::AddAsMemberOfCollectionsActor
-    def update_attributes
+    def attribute_update
       return transform_attributes.except(:id) if klass == Collection
       if attributes[:collection].present?
         transform_attributes.except(:id).except(:collection).merge(member_of_collections_attributes: { 0 => { id: collection.id } })
@@ -227,16 +224,16 @@ module Bulkrax
     # a way that is compatible with how the factory needs them.
     # override to fix enumeration and formatting of people objects
     def transform_attributes
-      attrs = attributes.slice(*permitted_attributes)
+      attrs = attributes.slice(*permitted_attributes).merge(file_attributes(update_files))
       resource = @klass.new
       attrs.each do |k,v|
         # check if attribute is single-valued but is currently an array
         if resource.attributes.keys.member?(k.to_s) && !resource.attributes[k.to_s].respond_to?(:each) && attrs[k].respond_to?(:each)
           attrs[k] = v.first
-        # check if attribute is multi-valued but is currently not an array
+          # check if attribute is multi-valued but is currently not an array
         elsif resource.attributes.keys.member?(k.to_s) && resource.attributes[k.to_s].respond_to?(:each) && !attrs[k].respond_to?(:each)
           attrs[k] = Array(v)
-        # otherwise, the attribute does not need to be transformed
+          # otherwise, the attribute does not need to be transformed
         else
           attrs[k] = v
         end
