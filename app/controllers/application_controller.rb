@@ -19,7 +19,7 @@ class ApplicationController < ActionController::Base
 
   # Catch various page not found and bad request exceptions
   rescue_from ActionController::RoutingError, with: :render_404
-  rescue_from ActionController::UnknownController, with: :render_404
+  # rescue_from ActionController::UnknownController, with: :render_404
   rescue_from Riiif::ImageNotFoundError, with: :render_riiif_404
   rescue_from Blacklight::Exceptions::RecordNotFound, with: :render_404
   rescue_from ActiveFedora::ObjectNotFoundError, with: :render_404
