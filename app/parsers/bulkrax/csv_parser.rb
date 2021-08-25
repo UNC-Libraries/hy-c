@@ -3,6 +3,7 @@
 # and `real_import_file_path` methods and adding `people_types` method
 # [hyc-override] overriding application_parser `write_import_files` and `unzip` methods
 # [hyc-override] raise errors in `valid_import?` method
+# [hyc-override] Set source_identifier to string if an Array and set it to work id if empty
 
 require 'csv'
 module Bulkrax
@@ -226,10 +227,20 @@ module Bulkrax
 
     # export methods
     # overriding to correctly export people attributes
+    # overriding to set source_identifier to string if an Array and set it to work id if empty
     def write_files
       CSV.open(setup_export_file, "w", headers: export_headers, write_headers: true) do |csv|
         importerexporter.entries.where(identifier: current_work_ids)[0..limit || total].each_with_index do |e, index|
           metadata = e.parsed_metadata
+
+          if metadata['source_identifier'].blank?
+            metadata['source_identifier'] = metadata['id']
+          end
+
+          if metadata['source_identifier'].is_a?(Array)
+            metadata['source_identifier'] = metadata['source_identifier'].join(', ')
+          end
+
           # get people metadata
           work_record = ActiveFedora::Base.find(current_work_ids[index])
           # create hash of people attributes

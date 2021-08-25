@@ -126,7 +126,7 @@ RSpec.describe Bulkrax::CsvParser do
         subject.write_files
 
         first_row = CSV.read(export_file, headers: true).first
-        expect(first_row['id']).to eq test_work.id
+        expect(first_row['source_identifier']).to eq test_work.id
         expect(first_row['title']).to eq test_work.title.first
         expect(first_row['creators_attributes']).to eq "{\"0\"=>#{test_work.creators.first.as_json}}"
       end
