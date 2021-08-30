@@ -1,14 +1,11 @@
 # frozen_string_literal: true
+# [hyc-override] Comment out Hyrax::DashboardController.sidebar_partials line, line 74. It breaks hyrax 2.x
 
 Bulkrax.setup do |config|
   # Add local parsers
   # config.parsers += [
   #   { name: 'MODS - My Local MODS parser', class_name: 'Bulkrax::ModsXmlParser', partial: 'mods_fields' },
   # ]
-
-  # Field to use during import to identify if the Work or Collection already exists.
-  # Default is 'source'.
-  # config.system_identifier_field = 'source'
 
   # WorkType to use as the default if none is specified in the import
   # Default is the first returned by Hyrax.config.curation_concerns
@@ -22,17 +19,6 @@ Bulkrax.setup do |config|
 
   # Server name for oai request header
   # config.server_name = 'my_server@name.com'
-
-  # Field_mapping for establishing the source_identifier
-  # This value IS NOT used for OAI, so setting the OAI Entries here will have no effect
-  # The mapping is supplied per Entry, provide the full class name as a string, eg. 'Bulkrax::CsvEntry'
-  # Example:
-  #   {
-  #     'Bulkrax::RdfEntry'  => 'http://opaquenamespace.org/ns/identifier',
-  #     'Bulkrax::CsvEntry'  => 'MyIdentifierField'
-  #   }
-  # The default value for CSV is 'source_identifier'
-  # config.source_identifier_field_mapping = { }
 
   # Field_mapping for establishing a parent-child relationship (FROM parent TO child)
   # This can be a Collection to Work, or Work to Work relationship
@@ -62,11 +48,27 @@ Bulkrax.setup do |config|
   # Add to, or change existing mappings as follows
   #   e.g. to exclude date
   #   config.field_mappings["Bulkrax::OaiDcParser"]["date"] = { from: ["date"], excluded: true  }
+  #
+  # #   e.g. to add the required source_identifier field
+  #   #   config.field_mappings["Bulkrax::CsvParser"]["source_id"] = { from: ["old_source_id"], source_identifier: true  }
+  # If you want Bulkrax to fill in source_identifiers for you, see below
 
   # To duplicate a set of mappings from one parser to another
   #   config.field_mappings["Bulkrax::OaiOmekaParser"] = {}
   #   config.field_mappings["Bulkrax::OaiDcParser"].each {|key,value| config.field_mappings["Bulkrax::OaiOmekaParser"][key] = value }
 
+  # Should Bulkrax make up source identifiers for you? This allow round tripping
+  # and download errored entries to still work, but does mean if you upload the
+  # same source record in two different files you WILL get duplicates.
+  # It is given two arguments, self at the time of call and the index of the record
+  #    config.fill_in_blank_source_identifiers = ->(parser, index) { "b-#{parser.importer.id}-#{index}"}
+  # or use a uuid
+  #    config.fill_in_blank_source_identifiers = ->(parser, index) { SecureRandom.uuid }
+
   # Properties that should not be used in imports/exports. They are reserved for use by Hyrax.
   # config.reserved_properties += ['my_field']
 end
+
+# Sidebar for hyrax 3+ support
+# UNC note uncomment this line when moving to hyrax 3.x
+# Hyrax::DashboardController.sidebar_partials[:repository_content] << "hyrax/dashboard/sidebar/bulkrax_sidebar_additions" if Object.const_defined?(:Hyrax) && ::Hyrax::DashboardController&.respond_to?(:sidebar_partials)

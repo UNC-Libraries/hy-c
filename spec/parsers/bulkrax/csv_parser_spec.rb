@@ -26,7 +26,7 @@ RSpec.describe Bulkrax::CsvParser do
       it 'updates the file permissions of an uploaded csv file' do
         importer.parser_fields = { import_file_path: csv_file.path }
         importer.save
-        upload_dir = "#{Bulkrax.import_path}/#{importer.id}"
+        upload_dir = "#{Bulkrax.import_path}/#{importer.id}_#{importer.created_at.strftime('%Y%m%d%H%M%S')}"
 
         # check that csv file was returned
         expect(subject.write_import_file(csv_file)).to eq "#{upload_dir}/importer1.csv"
@@ -39,7 +39,7 @@ RSpec.describe Bulkrax::CsvParser do
       it 'returns the csv file from a zip file and updates file permissions' do
         importer.parser_fields = { import_file_path: zip_file.path }
         importer.save
-        upload_dir = "#{Bulkrax.import_path}/#{importer.id}"
+        upload_dir = "#{Bulkrax.import_path}/#{importer.id}_#{importer.created_at.strftime('%Y%m%d%H%M%S')}"
 
         # check that files were unzipped
         expect(subject.write_import_file(zip_file)).to eq "#{upload_dir}/importer1.csv"
@@ -60,7 +60,7 @@ RSpec.describe Bulkrax::CsvParser do
 
       it 'unzips files to specified directory' do
         importer.save
-        upload_dir = "#{Bulkrax.import_path}/#{importer.id}"
+        upload_dir = "#{Bulkrax.import_path}/#{importer.id}_#{importer.created_at.strftime('%Y%m%d%H%M%S')}"
         described_class.new(importer).unzip(zip_file, upload_dir)
 
         expect(Dir.glob("#{upload_dir}/**/*")).to include("#{upload_dir}/importer1.csv", "#{upload_dir}/files/test.txt")
@@ -73,7 +73,7 @@ RSpec.describe Bulkrax::CsvParser do
       it 'returns corrected_entries file in import directory' do
         importer.parser_fields = { import_file_path: corrected_file.path }
         importer.save
-        upload_dir = "#{Bulkrax.import_path}/#{importer.id}"
+        upload_dir = "#{Bulkrax.import_path}/#{importer.id}_#{importer.created_at.strftime('%Y%m%d%H%M%S')}"
 
         # check that file was moved
         expect(subject.write_import_file(corrected_file)).to eq "#{upload_dir}/importer1_corrected_entries.csv"
@@ -134,6 +134,9 @@ RSpec.describe Bulkrax::CsvParser do
 
     describe '#export_headers' do
       it 'includes columns for people objects' do
+        exporter_run.save
+        exporter.export
+
         expect(subject.export_headers).to include('advisors_attributes', 'arrangers_attributes', 'composers_attributes',
                                                   'contributors_attributes', 'creators_attributes',
                                                   'project_directors_attributes', 'researchers_attributes',
