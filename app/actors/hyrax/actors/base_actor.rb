@@ -146,7 +146,7 @@ module Hyrax
 
         workflow = Sipity::Workflow.where(permission_template_id: env.curation_concern.admin_set.permission_template.id,
                                           active: true).first
-        entity = Sipity::Entity.where(proxy_for_global_id: env.curation_concern.to_global_id.to_s, workflow_id: workflow.id).first_or_create!
+        entity = Sipity::Entity.where(proxy_for_global_id: env.curation_concern.to_global_id.to_s).first_or_create!
         permissions_attributes.each do |k,permission|
           # skip the pre-existing permissions since they have already been applied
           if !permission['id'].blank?
