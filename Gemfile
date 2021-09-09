@@ -60,7 +60,7 @@ gem 'redis', '~> 3.3.0'
 gem 'rsolr', '~> 2.0.2'
 gem 'devise', '~> 4.8.0'
 gem 'devise-guests', '~> 0.7.0'
-gem 'omniauth', '~> 2.0.4'
+gem 'omniauth', '~> 1.9.1'
 gem 'omniauth-shibboleth', '~> 1.3'
 
 gem 'bulkrax', '~> 1.0.0'
