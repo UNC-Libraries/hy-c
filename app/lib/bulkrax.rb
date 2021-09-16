@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+# [hyc-override] Fix hardcoded path for import/exports
 
 require "bulkrax/engine"
 require 'active_support/all'
@@ -28,8 +29,8 @@ module Bulkrax
       { name: "XML", class_name: "Bulkrax::XmlParser", partial: "xml_fields" }
     ]
 
-    self.import_path = 'tmp/imports'
-    self.export_path = 'tmp/exports'
+    self.import_path = ENV['TEMP_STORAGE']+'/hyrax/imports'
+    self.export_path = ENV['TEMP_STORAGE']+'/hyrax/exports'
     self.removed_image_path = Bulkrax::Engine.root.join('spec', 'fixtures', 'removed.png').to_s
     self.server_name = 'bulkrax@example.com'
 
