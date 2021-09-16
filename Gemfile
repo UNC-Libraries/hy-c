@@ -19,8 +19,9 @@ gem 'uglifier', '~> 4.2.0'
 # Use CoffeeScript for .coffee assets and views
 gem 'coffee-rails', '~> 4.2.2'
 # See https://github.com/rails/execjs#readme for more supported runtimes
-gem 'execjs', '2.7.0' # Newer versions don't work with therubyracer
-gem 'therubyracer', '~> 0.12.3', platforms: :ruby
+gem 'execjs', '2.8.1'
+gem 'libv8', '~> 7.3'
+gem 'mini_racer', '~> 0.2.15', platforms: :ruby
 gem 'hyrax', '2.9.5'
 gem 'active-fedora', '~> 12.1.1'
 gem 'hydra-editor', '5.0.1'
