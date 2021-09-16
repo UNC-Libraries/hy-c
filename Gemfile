@@ -84,7 +84,7 @@ end
 
 group :test do
   gem 'shoulda-matchers', '~> 3.1.3'
-  gem 'capybara', '~> 2.17.0'
+  gem 'capybara', '~> 3.35.3'
   gem 'rspec-mocks'
   gem 'webmock', '~> 3.12.2'
   gem 'factory_bot_rails', '~> 6.1.0'
