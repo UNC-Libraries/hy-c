@@ -78,7 +78,7 @@ end
 
 group :development do
   # Access an IRB console on exception pages or by using <%= console %> anywhere in the code.
-  gem 'web-console', '~> 3.5.1'
+  gem 'web-console', '~> 3.7.0'
   gem 'listen', '~> 3.0.5'
 end
 
