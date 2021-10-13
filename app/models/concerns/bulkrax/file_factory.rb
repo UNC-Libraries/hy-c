@@ -113,8 +113,8 @@ module Bulkrax
       paths
     end
 
-    # Overridden so files upload as the correct user with the correct permissions
-    def import_file(path)
+    # Hy-c override custom method
+    def import_file_hyc(path)
       file_attributes = { title: [File.basename(path)] }
       file_set = FileSet.create(file_attributes)
       actor = Hyrax::Actors::FileSetActor.new(file_set, User.where(uid: @user.uid).first)
@@ -125,8 +125,23 @@ module Bulkrax
       file.close
     end
 
-    # Method Ignored locally. Used in non-overridden import_file method
-=begin
+    # Actual Bulkrax 'import_file' method. Currently, only used by the dev vm.
+    def import_file_bulkrax(path)
+      u = Hyrax::UploadedFile.new
+      u.user_id = @user.id
+      u.file = CarrierWave::SanitizedFile.new(path)
+      update_filesets(u)
+    end
+
+    # Overridden so files process as the correct user with the correct permissions
+    def import_file(path)
+      if object.nil?
+        import_file_bulkrax(path)
+      else
+        import_file_hyc(path)
+      end
+    end
+
     def update_filesets(current_file)
       if @update_files && local_file_sets.present?
         fileset = local_file_sets.shift
@@ -147,6 +162,5 @@ module Bulkrax
         current_file.id
       end
     end
-=end
   end
 end
