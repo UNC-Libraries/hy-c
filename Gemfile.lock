@@ -909,7 +909,7 @@ GEM
     uber (0.1.0)
     uglifier (4.2.0)
       execjs (>= 0.3.0, < 3)
-    unicode-types (1.6.0)
+    unicode-types (1.7.0)
     validatable (1.6.7)
     warden (1.2.9)
       rack (>= 2.0.9)
