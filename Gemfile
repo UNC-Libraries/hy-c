@@ -22,7 +22,7 @@ gem 'coffee-rails', '~> 4.2.2'
 gem 'execjs', '2.8.1'
 gem 'libv8', '~> 7.3'
 gem 'mini_racer', '~> 0.2.15', platforms: :ruby
-gem 'hyrax', '2.9.5'
+gem 'hyrax', '2.9.6'
 gem 'active-fedora', '~> 12.1.1'
 gem 'hydra-editor', '5.0.1'
 gem 'hydra-role-management', '~> 1.0'
