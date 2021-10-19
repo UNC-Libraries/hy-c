@@ -1166,9 +1166,6 @@ terms:
     term: University of North Carolina at Chapel Hill. Library
     active: false
   - id: University of North Carolina at Chapel Hill. University Libraries
-    term: University of North Carolina at Chapel Hill. Library
-    active: false
-  - id: University of North Carolina at Chapel Hill. University Libraries
     term: University of North Carolina at Chapel Hill. University Libraries
     active: true
   - id: Walter Royal Davis Library
@@ -1181,9 +1178,6 @@ terms:
     term: University of North Carolina at Chapel Hill. Library
     active: false
   - id: Louis Round Wilson Library
-    term: University of North Carolina at Chapel Hill. Library
-    active: false
-  - id: University of North Carolina at Chapel Hill. Library
     term: University of North Carolina at Chapel Hill. Library
     active: false
   - id: UNC Global Women's Health
