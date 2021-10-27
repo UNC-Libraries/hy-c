@@ -101,7 +101,11 @@ module Bulkrax
         "remote_files" => { from: ["thumbnail_url"], parsed: true }
       },
       # When empty, a default_field_mapping will be generated
-      "Bulkrax::CsvParser" => {},
+      "Bulkrax::CsvParser" => {
+        'identifier' => { from: ['identifier'], split: true },
+        'issn' => { from: ['issn'], split: true },
+        'keyword' => { from: ['keyword'], split: true }
+      },
       'Bulkrax::BagitParser' => {},
       'Bulkrax::XmlParser' => {}
     }
