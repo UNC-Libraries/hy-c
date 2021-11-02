@@ -1,6 +1,6 @@
 # Hy-C
 
-![Build](https://github.com/UNC-Libraries/hy-c/workflows/Build/badge.svg)
+![Build](https://github.com/UNC-Libraries/hy-c/workflows/Build/badge.svg?branch=main)
 
 #### Hyrax based system underlying the Carolina Digital Repository
 
