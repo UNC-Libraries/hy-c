@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+# [hyc-override] Overriding set_removed_files to not hardcode updates as PNG files
 
 module Bulkrax
   module FileFactory
@@ -91,10 +92,10 @@ module Bulkrax
         fileset.files.first.create_version
         opts = {}
         opts[:path] = fileset.files.first.id.split('/', 2).last
-        opts[:original_name] = 'removed.png'
-        opts[:mime_type] = 'image/png'
+        opts[:original_name] = fileset.files.first.original_filename
+        opts[:mime_type] = fileset.files.first.content_type
 
-        fileset.add_file(File.open(Bulkrax.removed_image_path), opts)
+        fileset.add_file(File.open(opts[:path]), opts)
         fileset.save
         ::CreateDerivativesJob.set(wait: 1.minute).perform_later(fileset, fileset.files.first.id)
       end
