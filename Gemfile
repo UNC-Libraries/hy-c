@@ -61,7 +61,7 @@ gem 'redis', '~> 3.3.0'
 gem 'rsolr', '~> 2.0.2'
 gem 'devise', '~> 4.8.0'
 gem 'devise-guests', '~> 0.7.0'
-gem 'omniauth', '~> 1.9.1'
+gem 'omniauth', '~> 2.0.4'
 gem 'omniauth-shibboleth', '~> 1.3'
 
 gem 'bulkrax', '~> 1.0.0'
@@ -83,7 +83,7 @@ group :development do
 end
 
 group :test do
-  gem 'shoulda-matchers', '~> 3.1.3'
+  gem 'shoulda-matchers', '~> 5.0.0'
   gem 'capybara', '~> 2.17.0'
   gem 'rspec-mocks'
   gem 'webmock', '~> 3.12.2'
