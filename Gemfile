@@ -86,7 +86,7 @@ group :test do
   gem 'shoulda-matchers', '~> 5.0.0'
   gem 'capybara', '~> 2.17.0'
   gem 'rspec-mocks'
-  gem 'webmock', '~> 3.12.2'
+  gem 'webmock', '~> 3.14.0'
   gem 'factory_bot_rails', '~> 6.1.0'
   gem 'simplecov', '~> 0.17.0'
 end
