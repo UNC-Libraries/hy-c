@@ -29,3 +29,4 @@ public/branding
 public/tmp
 
 lib/tasks/migration/mapping.csv
+/coverage/*
