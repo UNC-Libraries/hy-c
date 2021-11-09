@@ -79,14 +79,14 @@ end
 group :development do
   # Access an IRB console on exception pages or by using <%= console %> anywhere in the code.
   gem 'web-console', '~> 3.7.0'
-  gem 'listen', '~> 3.0.5'
+  gem 'listen', '~> 3.7.0'
 end
 
 group :test do
   gem 'shoulda-matchers', '~> 5.0.0'
   gem 'capybara', '~> 2.17.0'
   gem 'rspec-mocks'
-  gem 'webmock', '~> 3.12.2'
+  gem 'webmock', '~> 3.14.0'
   gem 'factory_bot_rails', '~> 6.1.0'
   gem 'simplecov', '~> 0.17.0'
 end
