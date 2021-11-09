@@ -54,9 +54,13 @@ RSpec.describe Hyrax::AdminSetSelectService do
     end
 
     context "when no matches found" do
-      before do
-        ENV['DEFAULT_ADMIN_SET']='default'
+      around do |example|
+        cached_default_admin_set = ENV['DEFAULT_ADMIN_SET']
+        ENV['DEFAULT_ADMIN_SET'] = 'default'
+        example.run
+        ENV['DEFAULT_ADMIN_SET'] = cached_default_admin_set
       end
+
       it "returns the default admin set" do
         expect(service.select("HonorsThesis", nil, [['default', admin_set.id], ['mediated', 'mediated-id']]))
             .to eq admin_set.id
