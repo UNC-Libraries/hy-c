@@ -92,10 +92,10 @@ module Bulkrax
         fileset.files.first.create_version
         opts = {}
         opts[:path] = fileset.files.first.id.split('/', 2).last
-        opts[:original_name] = fileset.files.first.original_filename
-        opts[:mime_type] = fileset.files.first.content_type
+        opts[:original_name] = fileset.files.first.original_name
+        opts[:mime_type] = fileset.files.first.mime_type
 
-        fileset.add_file(File.open(opts[:path]), opts)
+        fileset.add_file(File.open(Bulkrax.removed_image_path), opts)
         fileset.save
         ::CreateDerivativesJob.set(wait: 1.minute).perform_later(fileset, fileset.files.first.id)
       end
