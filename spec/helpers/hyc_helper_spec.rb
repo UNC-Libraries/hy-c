@@ -38,21 +38,27 @@ RSpec.describe HycHelper do
   end
 
   describe '#redirect_lookup' do
-    around do |example|
-      cached_redirect_file_path = ENV['REDIRECT_FILE_PATH']
-      tempfile = Tempfile.new('redirect_uuids.csv', 'spec/fixtures/')
-      ENV['REDIRECT_FILE_PATH'] = 'spec/fixtures/redirect_uuids.csv'
+    let(:tempfile) { Tempfile.new('redirect_uuids.csv', 'spec/fixtures/') }
+    let(:article) { Article.create(title: ['new article'], visibility: 'open') }
+
+    before do
       File.open(ENV['REDIRECT_FILE_PATH'], 'w') do |f|
         f.puts 'uuid,new_path'
         f.puts "02fc897a-12b6-4b81-91e4-b5e29cb683a6,articles/#{article.id}"
       end
-      example.run
-      tempfile.unlink
-      File.delete('spec/fixtures/redirect_uuids.csv') if File.exist?('spec/fixtures/redirect_uuids.csv')
-      ENV['REDIRECT_FILE_PATH'] = cached_redirect_file_path
     end
 
-    let(:article) { Article.create(title: ['new article'], visibility: 'open') }
+    after do
+      tempfile.unlink
+      File.delete('spec/fixtures/redirect_uuids.csv') if File.exist?('spec/fixtures/redirect_uuids.csv')
+    end
+
+    around do |example|
+      cached_redirect_file_path = ENV['REDIRECT_FILE_PATH']
+      ENV['REDIRECT_FILE_PATH'] = 'spec/fixtures/redirect_uuids.csv'
+      example.run
+      ENV['REDIRECT_FILE_PATH'] = cached_redirect_file_path
+    end
 
     it 'returns redirect mapping' do
       expect(helper.redirect_lookup('uuid', '02fc897a-12b6-4b81-91e4-b5e29cb683a6').to_h).to include('uuid' => '02fc897a-12b6-4b81-91e4-b5e29cb683a6', 'new_path' => "articles/#{article.id}")
