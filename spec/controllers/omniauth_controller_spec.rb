@@ -10,15 +10,15 @@ RSpec.describe OmniauthController, type: :request do
     end
 
     context 'not using database auth' do
-      cached_database_auth = ENV['DATABASE_AUTH']
-
-      before do
+      around do |example|
+        cached_database_auth = ENV['DATABASE_AUTH']
         ENV['DATABASE_AUTH'] = 'false'
-        allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new("production"))
+        example.run
+        ENV['DATABASE_AUTH'] = cached_database_auth
       end
 
-      after do
-        ENV['DATABASE_AUTH'] = cached_database_auth
+      before do
+        allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new("production"))
       end
 
       it 'is successful' do
@@ -38,17 +38,18 @@ RSpec.describe OmniauthController, type: :request do
     end
 
     context 'not using database auth' do
-      before do
-        @cached_database_auth = ENV['DATABASE_AUTH']
-        @cached_sso_logout_url = ENV['SSO_LOGOUT_URL']
+      around do |example|
+        cached_database_auth = ENV['DATABASE_AUTH']
+        cached_sso_logout_url = ENV['SSO_LOGOUT_URL']
         ENV['DATABASE_AUTH'] = 'false'
         ENV['SSO_LOGOUT_URL'] = 'https://shibboleth.example.com/idp/logout.jsp'
-        allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new("production"))
+        example.run
+        ENV['DATABASE_AUTH'] = cached_database_auth
+        ENV['SSO_LOGOUT_URL'] = cached_sso_logout_url
       end
 
-      after do
-        ENV['DATABASE_AUTH'] = @cached_database_auth
-        ENV['SSO_LOGOUT_URL'] = @cached_sso_logout_url
+      before do
+        allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new("production"))
       end
 
       it 'redirects to shibboleth logout url' do
