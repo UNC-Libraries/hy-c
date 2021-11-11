@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.feature 'logging into the application' do
   context "in production with database auth turned off" do
     let(:escaped_origin) { CGI.escape("http://www.example.com/advanced?locale=en") }
-    let(:escaped_target) { CGI.escape("/users/auth/shibboleth?locale=en") }
+    let(:escaped_target) { CGI.escape("/users/auth/shibboleth/callback?locale=en") }
 
     before do
 
@@ -29,7 +29,7 @@ RSpec.feature 'logging into the application' do
       end
 
       it "can return to the application" do
-        visit "/users/auth/shibboleth?origin=#{escaped_origin}"
+        visit "/users/auth/shibboleth/callback?origin=#{escaped_origin}"
         expect(page).to have_content "Successfully authenticated from Shibboleth account."
         expect(page.current_url).to eq "http://www.example.com/advanced?locale=en"
         expect(page).to have_content "atester"

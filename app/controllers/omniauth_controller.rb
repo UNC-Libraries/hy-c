@@ -7,7 +7,7 @@ class OmniauthController < Devise::SessionsController
   def new
     # Rails.logger.debug "SessionsController#new: request.referer = #{request.referer}"
     if Rails.env.production? && (AuthConfig.use_database_auth? == false)
-      shib_query = { target: user_shibboleth_omniauth_authorize_path, origin: request.referer}.to_query
+      shib_query = { target: user_shibboleth_omniauth_callback_path, origin: request.referer}.to_query
       shib_login_url = ENV['SSO_LOGIN_PATH'] + "?#{shib_query}"
       redirect_to shib_login_url
     else
