@@ -63,4 +63,9 @@ Rails.application.configure do
   # Use an evented file watcher to asynchronously detect changes in source code,
   # routes, locales, etc. This feature depends on the listen gem.
   config.file_watcher = ActiveSupport::EventedFileUpdateChecker
+
+  # Allow Vagrant IP address to display web console in development mode
+  # NOTE: When we upgrade to Web Console 4.x this will change to
+  # config.web_console.permissions = ['10.0.2.2']
+  config.web_console.whitelisted_ips = ['10.0.2.2']
 end
