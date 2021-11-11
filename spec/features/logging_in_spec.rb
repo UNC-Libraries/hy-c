@@ -49,6 +49,7 @@ RSpec.feature 'logging into the application' do
       fill_in 'Password', with: '123456'
       click_button("Log in")
       expect(page).to have_content "Signed in successfully."
+      # The database auth does not return you to the original page
       expect(page.current_url).to eq "http://www.example.com/?locale=en"
     end
   end
