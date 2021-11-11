@@ -2,15 +2,11 @@ require "rails_helper"
 
 RSpec.feature 'logging into the application' do
   context "in production with database auth turned off" do
+    let(:escaped_origin) { CGI.escape("http://www.example.com/advanced?locale=en") }
+    let(:escaped_target) { CGI.escape("/users/auth/shibboleth?locale=en") }
 
     before do
-      OmniAuth.config.test_mode = true
-      OmniAuth.config.mock_auth[:shibboleth] = OmniAuth::AuthHash.new({
-        :provider => 'shibboleth',
-        :info => {
-          :uid => 'atester'
-        }
-      })
+
       allow(AuthConfig).to receive(:use_database_auth?).and_return(false)
       allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new("production"))
     end
@@ -19,14 +15,27 @@ RSpec.feature 'logging into the application' do
       visit "/advanced?locale=en"
       expect(page).to have_link("Login", href: '/users/sign_in?locale=en')
       click_link("Login")
-      expect(page.current_url).to eq "http://www.example.com/Shibboleth.sso/Login?origin=http%3A%2F%2Fwww.example.com%2Fadvanced%3Flocale%3Den&target=%2Fusers%2Fauth%2Fshibboleth%3Flocale%3Den"
+      expect(page.current_url).to eq "http://www.example.com/Shibboleth.sso/Login?origin=#{escaped_origin}&target=#{escaped_target}"
+    end
+    context "with shibboleth mocked" do
+      before do
+        OmniAuth.config.test_mode = true
+        OmniAuth.config.mock_auth[:shibboleth] = OmniAuth::AuthHash.new({
+          :provider => 'shibboleth',
+          :info => {
+            :uid => 'atester'
+          }
+        })
+      end
+
+      it "can return to the application" do
+        visit "/users/auth/shibboleth?origin=#{escaped_origin}"
+        expect(page).to have_content "Successfully authenticated from Shibboleth account."
+        expect(page.current_url).to eq "http://www.example.com/advanced?locale=en"
+        expect(page).to have_content "atester"
+      end
     end
 
-    it "can return to the application" do
-      visit "/users/auth/shibboleth?origin=http%3A%2F%2Fwww.example.com%2Fadvanced%3Flocale%3Den"
-      expect(page).to have_content "Successfully authenticated from Shibboleth account."
-      expect(page.current_url).to eq "http://www.example.com/advanced?locale=en"
-    end
   end
 
   context "in production with database auth turned on" do
