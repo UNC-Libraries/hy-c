@@ -34,6 +34,18 @@ RSpec.feature 'logging into the application' do
         expect(page.current_url).to eq "http://www.example.com/advanced?locale=en"
         expect(page).to have_content "atester"
       end
+
+      it "returns to the root path if the origin is garbage" do
+        visit "/users/auth/shibboleth/callback?locale=en&origin=://sdfgdfg.com"
+        expect(page).to have_content "Successfully authenticated from Shibboleth account."
+        expect(page.current_url).to eq "http://www.example.com/?locale=en"
+      end
+
+      it "returns to the root path if the origin does not match the host" do
+        visit "/users/auth/shibboleth/callback?locale=en&origin=http://fake.example.com"
+        expect(page).to have_content "Successfully authenticated from Shibboleth account."
+        expect(page.current_url).to eq "http://www.example.com/?locale=en"
+      end
     end
 
   end
