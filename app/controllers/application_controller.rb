@@ -68,7 +68,8 @@ class ApplicationController < ActionController::Base
 
   private
     def direct_to(resource)
-      return stored_location_for(resource) if stored_location_for(resource)
+      stored_location = stored_location_for(resource)
+      return stored_location if stored_location.present?
       return root_path if params['origin'].nil?
       return params['origin'] if URI.parse(params['origin']).host == request.env['SERVER_NAME']
       root_path
