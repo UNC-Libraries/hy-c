@@ -61,8 +61,6 @@ class ApplicationController < ActionController::Base
 
     # [hyc-override] Overriding default after_sign_in_path_for which only forward to the dashboard
     def after_sign_in_path_for(resource)
-      # Rails.logger.debug "Origin parameter: #{params['origin']}"
-      # Rails.logger.debug "stored_location_for: #{stored_location_for(resource)}"
       direct_to_path = direct_to(resource)
       Rails.logger.debug "After sign in, direct to: #{direct_to_path}"
       direct_to_path
