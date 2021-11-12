@@ -61,7 +61,9 @@ class ApplicationController < ActionController::Base
 
     # [hyc-override] Overriding default after_sign_in_path_for which only forward to the dashboard
     def after_sign_in_path_for(resource)
-      direct_to = stored_location_for(resource) || request.env['omniauth.origin'] || root_path
+      # Rails.logger.debug "Origin parameter: #{params['origin']}"
+      # Rails.logger.debug "stored_location_for: #{stored_location_for(resource)}"
+      direct_to = stored_location_for(resource) || params['origin'] || root_path
       Rails.logger.debug "After sign in, direct to: #{direct_to}"
       direct_to
     end
