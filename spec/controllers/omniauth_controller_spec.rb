@@ -23,7 +23,7 @@ RSpec.describe OmniauthController, type: :request do
 
       it 'is successful' do
         get new_user_session_path
-        expect(response).to redirect_to "/Shibboleth.sso/Login?origin=&target=#{CGI.escape(user_shibboleth_omniauth_authorize_path)}"
+        expect(response).to redirect_to "/Shibboleth.sso/Login?origin=&target=#{CGI.escape(user_shibboleth_omniauth_callback_path)}"
       end
     end
   end
