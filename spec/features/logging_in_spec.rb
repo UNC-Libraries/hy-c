@@ -15,7 +15,7 @@ RSpec.feature 'logging into the application' do
       visit "/advanced?locale=en"
       expect(page).to have_link("Login", href: '/users/sign_in?locale=en')
       click_link("Login")
-      expect(page.current_url).to eq "http://www.example.com/Shibboleth.sso/Login?origin=#{escaped_origin}&target=#{escaped_target}"
+      expect(page.current_url).to eq "http://www.example.com/Shibboleth.sso/Login?target=/users/auth/shibboleth/callback?locale=en%26origin=#{escaped_origin}"
     end
     context "with shibboleth mocked" do
       before do
@@ -29,7 +29,7 @@ RSpec.feature 'logging into the application' do
       end
 
       it "can return to the application" do
-        visit "/users/auth/shibboleth/callback?origin=#{escaped_origin}"
+        visit "/users/auth/shibboleth/callback?locale=en&origin=http://www.example.com/advanced?locale=en"
         expect(page).to have_content "Successfully authenticated from Shibboleth account."
         expect(page.current_url).to eq "http://www.example.com/advanced?locale=en"
         expect(page).to have_content "atester"
