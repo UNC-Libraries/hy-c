@@ -31,7 +31,7 @@ gem 'libv8', '~> 7.3'
 # linkeddata gem is released with rdf gems and should be the same version as rdf
 gem 'linkeddata', '~>3.1.1'
 gem 'loofah', '~>2.10.0'
-gem 'mini_magick', '~>4.9.4'
+gem 'mini_magick', '~>4.11.0'
 gem 'mini_racer', '~> 0.2.15', platforms: :ruby
 gem 'nokogiri', '~>1.12.5'
 gem 'omniauth', '~> 2.0'
