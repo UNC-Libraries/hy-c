@@ -477,7 +477,7 @@ GEM
       signet
       solrizer (>= 3.4, < 5)
       tinymce-rails (~> 4.1)
-    i18n (1.8.10)
+    i18n (1.8.11)
       concurrent-ruby (~> 1.0)
     ice_nine (0.11.2)
     iiif-image-api (0.2.0)
@@ -667,7 +667,7 @@ GEM
       nokogiri (~> 1.6)
       rails (>= 5.0, < 6.2)
       rdf
-    racc (1.5.2)
+    racc (1.6.0)
     rack (2.2.3)
     rack-protection (2.1.0)
       rack
@@ -839,7 +839,7 @@ GEM
     sass-listen (4.0.0)
       rb-fsevent (~> 0.9, >= 0.9.4)
       rb-inotify (~> 0.9, >= 0.9.7)
-    sass-rails (5.0.8)
+    sass-rails (5.1.0)
       railties (>= 5.2.0)
       sass (~> 3.1)
       sprockets (>= 2.8, < 4.0)
@@ -915,9 +915,9 @@ GEM
       babel-source (>= 5.8.11)
       babel-transpiler
       sprockets (>= 3.0.0)
-    sprockets-rails (3.2.2)
-      actionpack (>= 4.0)
-      activesupport (>= 4.0)
+    sprockets-rails (3.3.0)
+      actionpack (>= 5.2)
+      activesupport (>= 5.2)
       sprockets (>= 3.0.0)
     ssrf_filter (1.0.7)
     staccato (0.5.3)
@@ -1019,7 +1019,7 @@ DEPENDENCIES
   rubocop
   rubocop-rails
   rubocop-rspec
-  sass-rails (~> 5.0.6)
+  sass-rails (~> 5.1.0)
   selenium-webdriver
   shoulda-matchers (~> 5.0.0)
   sidekiq (~> 5.2.9)
@@ -1036,4 +1036,4 @@ DEPENDENCIES
   willow_sword!
 
 BUNDLED WITH
-   2.1.4
+   2.2.33

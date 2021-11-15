@@ -48,7 +48,7 @@ gem 'riiif', '~> 2.3.0'
 gem 'roo', '~>2.8.3'
 gem 'rsolr', '~> 2.0.2'
 # Use SCSS for stylesheets
-gem 'sass-rails', '~> 5.0.6'
+gem 'sass-rails', '~> 5.1.0'
 gem 'sidekiq', '~> 5.2.9'
 gem 'sidekiq-limit_fetch', '~> 3.4.0'
 gem 'sidekiq-status', '~> 2.0.2'
