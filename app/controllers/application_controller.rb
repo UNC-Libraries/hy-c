@@ -61,14 +61,21 @@ class ApplicationController < ActionController::Base
 
     # [hyc-override] Overriding default after_sign_in_path_for which only forward to the dashboard
     def after_sign_in_path_for(resource)
-      direct_to = stored_location_for(resource) || request.env['omniauth.origin'] || root_path
-      Rails.logger.debug "After sign in, direct to: #{direct_to}"
-      direct_to
+      direct_to_path = direct_to(resource)
+      Rails.logger.debug "After sign in, direct to: #{direct_to_path}"
+      direct_to_path
     end
 
-
   private
-
+    def direct_to(resource)
+      stored_location = stored_location_for(resource)
+      return stored_location if stored_location.present?
+      return root_path if params['origin'].nil?
+      return params['origin'] if URI.parse(params['origin']).host == request.env['SERVER_NAME']
+      root_path
+    rescue URI::InvalidURIError
+      root_path
+    end
     # Redirect all deposit and edit requests with warning message when in read only mode
     def check_read_only
       return unless Flipflop.read_only?
