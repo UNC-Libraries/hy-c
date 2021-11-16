@@ -101,14 +101,14 @@ RSpec.feature 'Edit a work', js: false do
     let(:admin_user) do
       User.find_by_user_key('admin')
     end
-    
+
     before do
       AdminSet.delete_all
     end
-    
+
     scenario do
       login_as admin_user
-      
+
       visit '/'
       fill_in "search-field-header", with: 'Alice'
       click_button 'search-submit-header'

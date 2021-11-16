@@ -6,13 +6,11 @@ class User < ApplicationRecord
   # Connects this user object to Role-management behaviors.
   include Hydra::RoleManagement::UserRoles
 
-
   # Connects this user object to Hyrax behaviors.
   include Hyrax::User
   include Hyrax::UserUsageStats
 
   validates :uid, presence: true, uniqueness: true
-
 
   if Blacklight::Utils.needs_attr_accessible?
     attr_accessible :email, :password, :password_confirmation

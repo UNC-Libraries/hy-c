@@ -1,7 +1,6 @@
 module Migrate
   module Services
     class IdMapper
-
       def initialize(filename, col_1_name, col_2_name)
         @filename = filename
         create_csv(col_1_name, col_2_name)
@@ -19,14 +18,14 @@ module Migrate
 
       private
 
-        def create_csv(col_1_name, col_2_name)
-          if !File.exist?(@filename)
-            @filename = File.new(@filename, 'w')
-            CSV.open(@filename, 'a+') do |csv|
-              csv << [col_1_name, col_2_name]
-            end
+      def create_csv(col_1_name, col_2_name)
+        if !File.exist?(@filename)
+          @filename = File.new(@filename, 'w')
+          CSV.open(@filename, 'a+') do |csv|
+            csv << [col_1_name, col_2_name]
           end
         end
+      end
     end
   end
 end

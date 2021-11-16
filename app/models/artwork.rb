@@ -36,7 +36,7 @@ class Artwork < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :medium, predicate: ::RDF::Vocab::DC11.format, multiple: false do  |index|
+  property :medium, predicate: ::RDF::Vocab::DC11.format, multiple: false do |index|
     index.as :stored_searchable
   end
 

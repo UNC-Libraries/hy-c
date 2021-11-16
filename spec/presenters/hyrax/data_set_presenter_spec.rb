@@ -36,8 +36,7 @@ RSpec.describe Hyrax::DataSetPresenter do
       "sponsor_tesim" => ['joe'],
       "language_label_tesim" => ['language'],
       "license_label_tesim" => ['license'],
-      "rights_statement_label_tesim" => 'rights'
-    }
+      "rights_statement_label_tesim" => 'rights' }
   end
 
   let(:ability) { nil }
@@ -90,7 +89,8 @@ RSpec.describe Hyrax::DataSetPresenter do
 
     context "with a custom abstract field" do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:abstract, ['an abstract'], {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new)
+          .with(:abstract, ['an abstract'], {}).and_return(renderer)
       end
 
       it "calls the AttributeRenderer" do
@@ -101,7 +101,8 @@ RSpec.describe Hyrax::DataSetPresenter do
 
     context "with a custom copyright date field" do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:copyright_date, '2018', {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new)
+          .with(:copyright_date, '2018', {}).and_return(renderer)
       end
 
       it "calls the AttributeRenderer" do
@@ -112,7 +113,8 @@ RSpec.describe Hyrax::DataSetPresenter do
 
     context "with a custom creator_display field" do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:creator_display, ['a creator'], {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new)
+          .with(:creator_display, ['a creator'], {}).and_return(renderer)
       end
 
       it "calls the AttributeRenderer" do
@@ -123,7 +125,8 @@ RSpec.describe Hyrax::DataSetPresenter do
 
     context "with a custom contributor_display field" do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:contributor_display, ['a contributor'], {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new)
+          .with(:contributor_display, ['a contributor'], {}).and_return(renderer)
       end
 
       it "calls the AttributeRenderer" do
@@ -134,7 +137,8 @@ RSpec.describe Hyrax::DataSetPresenter do
 
     context "with a custom date issued field" do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:date_issued, '2018-01-08', {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new)
+          .with(:date_issued, '2018-01-08', {}).and_return(renderer)
       end
 
       it "calls the AttributeRenderer" do
@@ -178,7 +182,8 @@ RSpec.describe Hyrax::DataSetPresenter do
 
     context "with a custom dcmi_type field" do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:dcmi_type, ['science fiction'], {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new)
+          .with(:dcmi_type, ['science fiction'], {}).and_return(renderer)
       end
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
@@ -188,7 +193,8 @@ RSpec.describe Hyrax::DataSetPresenter do
 
     context "with a custom kind_of_data field" do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:kind_of_data, ['some data'], {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new)
+          .with(:kind_of_data, ['some data'], {}).and_return(renderer)
       end
 
       it "calls the AttributeRenderer" do
@@ -199,7 +205,8 @@ RSpec.describe Hyrax::DataSetPresenter do
 
     context "with a custom last date modified field" do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:last_modified_date, '2018-01-29', {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new)
+          .with(:last_modified_date, '2018-01-29', {}).and_return(renderer)
       end
 
       it "calls the AttributeRenderer" do
@@ -210,7 +217,8 @@ RSpec.describe Hyrax::DataSetPresenter do
 
     context "with a custom methodology field" do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:methodology, 'my methods', {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new)
+          .with(:methodology, 'my methods', {}).and_return(renderer)
       end
 
       it "calls the AttributeRenderer" do
@@ -221,7 +229,8 @@ RSpec.describe Hyrax::DataSetPresenter do
 
     context "with a custom note field" do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:note, ['my note'], {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new)
+          .with(:note, ['my note'], {}).and_return(renderer)
       end
 
       it "calls the AttributeRenderer" do
@@ -232,7 +241,8 @@ RSpec.describe Hyrax::DataSetPresenter do
 
     context "with a custom project director display field" do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:project_director_display, ['ben'], {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new)
+          .with(:project_director_display, ['ben'], {}).and_return(renderer)
       end
 
       it "calls the AttributeRenderer" do
@@ -243,7 +253,8 @@ RSpec.describe Hyrax::DataSetPresenter do
 
     context "with a custom researcher_display field" do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:researcher_display, ['jennifer'], {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new)
+          .with(:researcher_display, ['jennifer'], {}).and_return(renderer)
       end
 
       it "calls the AttributeRenderer" do
@@ -254,7 +265,8 @@ RSpec.describe Hyrax::DataSetPresenter do
 
     context "with a custom rights holder field" do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:rights_holder, ['julie'], {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new)
+          .with(:rights_holder, ['julie'], {}).and_return(renderer)
       end
 
       it "calls the AttributeRenderer" do
@@ -265,7 +277,8 @@ RSpec.describe Hyrax::DataSetPresenter do
 
     context "with a custom sponsor field" do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:sponsor, ['joe'], {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new)
+          .with(:sponsor, ['joe'], {}).and_return(renderer)
       end
 
       it "calls the AttributeRenderer" do
@@ -276,7 +289,8 @@ RSpec.describe Hyrax::DataSetPresenter do
 
     context "with a custom language label field" do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:language_label, ['language'], {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new)
+          .with(:language_label, ['language'], {}).and_return(renderer)
       end
 
       it "calls the AttributeRenderer" do
@@ -287,7 +301,8 @@ RSpec.describe Hyrax::DataSetPresenter do
 
     context "with a custom license label field" do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:license_label, ['license'], {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new)
+          .with(:license_label, ['license'], {}).and_return(renderer)
       end
 
       it "calls the AttributeRenderer" do
@@ -298,7 +313,8 @@ RSpec.describe Hyrax::DataSetPresenter do
 
     context "with a custom rights statement label field" do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:rights_statement_label, 'rights', {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new)
+          .with(:rights_statement_label, 'rights', {}).and_return(renderer)
       end
 
       it "calls the AttributeRenderer" do

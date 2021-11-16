@@ -3,17 +3,22 @@ require 'rails_helper'
 RSpec.describe Hyrax::CitationsBehaviors::Formatters::MlaFormatter do
   subject(:formatter) { described_class.new(:no_context) }
 
-  let(:article) { Article.new(title: ['new article title'],
-                              creators_attributes: {'0' => {'name' => 'a depositor'}},
-                              date_issued: '2019-10-11',
-                              publisher: ['a publisher'],
-                              place_of_publication: ['NC'],
-                              doi: 'doi.org/some-doi')}
+  let(:article) {
+    Article.new(title: ['new article title'],
+                creators_attributes: { '0' => { 'name' => 'a depositor' } },
+                date_issued: '2019-10-11',
+                publisher: ['a publisher'],
+                place_of_publication: ['NC'],
+                doi: 'doi.org/some-doi')
+  }
   let(:presenter) { Hyrax::WorkShowPresenter.new(SolrDocument.new(article.to_solr), :no_ability) }
 
   describe '#format' do
     it 'returns a citation in apa format with a doi' do
-      expect(formatter.format(presenter)).to eq '<span class="citation-author">Depositor, A. </span><i class="citation-title">New Article Title.</i> NC: a publisher, 2019. doi.org/some-doi'
+      # rubocop:disable Layout/LineLength
+      expect(formatter.format(presenter))
+        .to eq '<span class="citation-author">Depositor, A. </span><i class="citation-title">New Article Title.</i> NC: a publisher, 2019. doi.org/some-doi'
+      # rubocop:enable Layout/LineLength
     end
   end
 

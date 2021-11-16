@@ -16,8 +16,8 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
 
   # app/controllers/hyrax/downloads_controller.rb:6
   describe '#set_record_admin_set' do
-    let(:solr_response) { {response: {docs: [{admin_set_tesim: ['admin set for download controller']}]}}.to_json }
-    let(:empty_solr_response) { {response: {docs: []}}.to_json }
+    let(:solr_response) { { response: { docs: [{ admin_set_tesim: ['admin set for download controller'] }] } }.to_json }
+    let(:empty_solr_response) { { response: { docs: [] } }.to_json }
 
     context 'with a solr response' do
       before do

@@ -28,6 +28,7 @@ module Hyrax
                                             relation,
                                             versioning: false)
         return false unless file_set.save
+
         repository_file = related_file
         Hyrax::VersioningService.create(repository_file, user)
         # [hyc-override] Invoke longleaf registration
@@ -43,6 +44,7 @@ module Hyrax
         repository_file = related_file
         repository_file.restore_version(revision_id)
         return false unless file_set.save
+
         Hyrax::VersioningService.create(repository_file, user)
         CharacterizeJob.perform_later(file_set, repository_file.id)
       end
@@ -51,15 +53,16 @@ module Hyrax
       #   most operations here are on the other side of async retrieval in Jobs (based solely on ID).
       def ==(other)
         return false unless other.is_a?(self.class)
+
         file_set.id == other.file_set.id && relation == other.relation && user == other.user
       end
 
       private
 
-        # @return [Hydra::PCDM::File] the file referenced by relation
-        def related_file
-          file_set.public_send(relation) || raise("No #{relation} returned for FileSet #{file_set.id}")
-        end
+      # @return [Hydra::PCDM::File] the file referenced by relation
+      def related_file
+        file_set.public_send(relation) || raise("No #{relation} returned for FileSet #{file_set.id}")
+      end
     end
   end
 end

@@ -87,7 +87,7 @@ module Hyrax
         attributes = intention.sanitize_params
         new_env = Environment.new(env.curation_concern, env.current_ability, attributes)
         validate(env, intention, attributes) && apply_visibility(new_env, intention) &&
-            next_actor.create(new_env)
+          next_actor.create(new_env)
       end
 
       # @param [Hyrax::Actors::Environment] env
@@ -97,7 +97,7 @@ module Hyrax
         attributes = intention.sanitize_params
         new_env = Environment.new(env.curation_concern, env.current_ability, attributes)
         validate(env, intention, attributes) && apply_visibility(new_env, intention) &&
-            next_actor.update(new_env)
+          next_actor.update(new_env)
       end
 
       private
@@ -110,9 +110,9 @@ module Hyrax
         template = Hyrax::PermissionTemplate.find_by!(source_id: attributes[:admin_set_id]) if attributes[:admin_set_id].present?
 
         validate_lease(env, intention, template) &&
-            validate_release_type(env, intention, template) &&
-            validate_visibility(env, attributes, template) &&
-            validate_embargo(env, intention, attributes, template)
+          validate_release_type(env, intention, template) &&
+          validate_visibility(env, attributes, template) &&
+          validate_embargo(env, intention, attributes, template)
       end
 
       def apply_visibility(env, intention)
@@ -129,6 +129,7 @@ module Hyrax
         # (Note: permission template release/visibility options do not support leases)
         unless template.present? && (template.release_period.present? || template.visibility.present?)
           return true if intention.valid_lease?
+
           env.curation_concern.errors.add(:visibility, 'When setting visibility to "lease" you must also specify lease expiration date.')
           return false
         end
@@ -170,8 +171,8 @@ module Hyrax
 
         # When embargo required, date must be in future AND matches any template requirements
         return true if valid_future_date?(env, embargo_release_date) &&
-            valid_template_embargo_date?(env, embargo_release_date, template) &&
-            valid_template_visibility_after_embargo?(env, attributes, template)
+                       valid_template_embargo_date?(env, embargo_release_date, template) &&
+                       valid_template_visibility_after_embargo?(env, attributes, template)
 
         env.curation_concern.errors.add(:visibility, 'When setting visibility to "embargo" you must also specify embargo release date.') if embargo_release_date.blank?
         false
@@ -219,22 +220,27 @@ module Hyrax
       def parse_date(date_string)
         datetime = Time.zone.parse(date_string) if date_string.present?
         return datetime.to_date unless datetime.nil?
+
         nil
       end
 
       # If they want a lease, we can assume it's valid
       def apply_lease(env, intention)
         return true unless intention.wants_lease?
+
         env.curation_concern.apply_lease(*intention.lease_params)
         return unless env.curation_concern.lease
+
         env.curation_concern.lease.save # see https://github.com/samvera/hydra-head/issues/226
       end
 
       # If they want an embargo, we can assume it's valid
       def apply_embargo(env, intention)
         return true unless intention.wants_embargo?
+
         env.curation_concern.apply_embargo(*intention.embargo_params)
         return unless env.curation_concern.embargo
+
         env.curation_concern.embargo.save # see https://github.com/samvera/hydra-head/issues/226
       end
     end

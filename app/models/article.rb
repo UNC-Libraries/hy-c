@@ -106,7 +106,7 @@ class Article < ActiveFedora::Base
   end
 
   property :peer_review_status, predicate: ::RDF::URI('http://purl.org/ontology/bibo/status/peerReviewed'),
-           multiple: false do |index|
+                                multiple: false do |index|
     index.as :stored_searchable
   end
 

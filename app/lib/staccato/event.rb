@@ -5,11 +5,11 @@ module Staccato
   class Event
     # Event field definitions
     FIELDS = {
-        category: 'ec',
-        action: 'ea',
-        label: 'el',
-        value: 'ev',
-        hostname: 'dh'
+      category: 'ec',
+      action: 'ea',
+      label: 'el',
+      value: 'ev',
+      hostname: 'dh'
     }
 
     include Hit

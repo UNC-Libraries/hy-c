@@ -1,5 +1,6 @@
 # [hyc-override] Add method to check if user has specific manager role
 # frozen_string_literal: true
+
 module Hydra
   module RoleManagement
     # Module offering methods for user behavior managing roles and groups

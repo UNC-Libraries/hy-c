@@ -3,7 +3,7 @@ require 'rails_helper'
 # testing overrides
 RSpec.describe Bulkrax::CsvParser do
   let(:user) do
-    User.new(email: 'test@example.com', guest: false, uid: 'test') { |u| u.save!(validate: false)}
+    User.new(email: 'test@example.com', guest: false, uid: 'test') { |u| u.save!(validate: false) }
   end
 
   context 'importer actions' do
@@ -107,8 +107,12 @@ RSpec.describe Bulkrax::CsvParser do
     end
 
     let(:test_work) do
-      General.new(title: ['new test bulkrax work'],
-                  creators_attributes: {'0' => {'name' => 'Doe, John', 'affiliation' => 'Department of Biology', 'orcid' => 'some orcid'}})
+      General.new(
+        title: ['new test bulkrax work'],
+        creators_attributes: { '0' => { 'name' => 'Doe, John',
+                                        'affiliation' => 'Department of Biology',
+                                        'orcid' => 'some orcid' } }
+      )
     end
 
     before do

@@ -27,14 +27,14 @@ class MigrationHelper
 
     collection_uuids
   end
-  
+
   def self.retry_operation(message = nil)
     begin
       retries ||= 0
       yield
     rescue Exception => e
       puts "[#{Time.now.to_s}] #{e}"
-      puts e.backtrace.map{ |x| x.match(/^\/net\/deploy\/ir\/test\/releases.*/)}.compact
+      puts e.backtrace.map { |x| x.match(/^\/net\/deploy\/ir\/test\/releases.*/) }.compact
       puts message unless message.nil?
       sleep(10)
       retry if (retries += 1) < 5
@@ -47,7 +47,7 @@ class MigrationHelper
 
   def self.check_enumeration(metadata, resource, identifier)
     # Singularize non-enumerable attributes and make sure enumerable attributes are arrays
-    metadata.each do |k,v|
+    metadata.each do |k, v|
       if resource.attributes.keys.member?(k.to_s) && !resource.attributes[k.to_s].respond_to?(:each) && metadata[k].respond_to?(:each)
         metadata[k] = v.first
       elsif resource.attributes.keys.member?(k.to_s) && resource.attributes[k.to_s].respond_to?(:each) && !metadata[k].respond_to?(:each)
@@ -58,26 +58,26 @@ class MigrationHelper
     end
 
     # Only keep attributes which apply to the given work type
-    metadata.select {|k,v| k.to_s.ends_with? '_attributes'}.each do |k,v|
-      if !resource.respond_to?(k.to_s+'=')
+    metadata.select { |k, v| k.to_s.ends_with? '_attributes' }.each do |k, v|
+      if !resource.respond_to?(k.to_s + '=')
         # Log non-blank person data which is not saved
         puts "[#{Time.now.to_s}] #{identifier} missing: #{k}=>#{v}"
-        metadata.delete(k.to_s.split('s_')[0]+'_display')
+        metadata.delete(k.to_s.split('s_')[0] + '_display')
         metadata.delete(k)
       end
     end
 
     # Only keep attributes which apply to the given work type
-    resource.attributes = metadata.reject{|k,v| !resource.attributes.keys.member?(k.to_s) unless k.to_s.ends_with? '_attributes'}
+    resource.attributes = metadata.reject { |k, v| !resource.attributes.keys.member?(k.to_s) unless k.to_s.ends_with? '_attributes' }
 
     # Log other non-blank data which is not saved
     missing = metadata.except(*resource.attributes.keys, 'contained_files', 'cdr_model_type', 'visibility',
-                                                'creators_attributes', 'contributors_attributes', 'advisors_attributes',
-                                                'arrangers_attributes', 'composers_attributes', 'funders_attributes',
-                                                'project_directors_attributes', 'researchers_attributes', 'reviewers_attributes',
-                                                'translators_attributes', 'dc_title', 'premis_files', 'embargo_release_date',
-                                                'visibility_during_embargo', 'visibility_after_embargo', 'visibility',
-                                                'member_of_collections', 'based_near_attributes')
+                              'creators_attributes', 'contributors_attributes', 'advisors_attributes',
+                              'arrangers_attributes', 'composers_attributes', 'funders_attributes',
+                              'project_directors_attributes', 'researchers_attributes', 'reviewers_attributes',
+                              'translators_attributes', 'dc_title', 'premis_files', 'embargo_release_date',
+                              'visibility_during_embargo', 'visibility_after_embargo', 'visibility',
+                              'member_of_collections', 'based_near_attributes')
 
     if !missing.blank?
       puts "[#{Time.now.to_s}][#{identifier}] missing: #{missing}"
@@ -89,13 +89,13 @@ class MigrationHelper
   def self.get_permissions_attributes(admin_set_id)
     # find admin set and manager groups for work
     manager_groups = Hyrax::PermissionTemplateAccess.joins(:permission_template)
-                         .where(access: 'manage', agent_type: 'group')
-                         .where(permission_templates: {source_id: admin_set_id})
+                                                    .where(access: 'manage', agent_type: 'group')
+                                                    .where(permission_templates: { source_id: admin_set_id })
 
     # find admin set and viewer groups for work
     viewer_groups = Hyrax::PermissionTemplateAccess.joins(:permission_template)
-                        .where(access: 'view', agent_type: 'group')
-                        .where(permission_templates: {source_id: admin_set_id})
+                                                   .where(access: 'view', agent_type: 'group')
+                                                   .where(permission_templates: { source_id: admin_set_id })
 
     # update work permissions to give admin set managers edit access and viewer groups read access
     permissions_array = []
@@ -111,7 +111,9 @@ class MigrationHelper
 
   # Use language code to get iso639-2 uri from service
   def self.get_language_uri(language_codes)
-    Array.wrap(language_codes).map{|e| LanguagesService.label("http://id.loc.gov/vocabulary/iso639-2/#{e.downcase}") ?
-                               "http://id.loc.gov/vocabulary/iso639-2/#{e.downcase}" : e}
+    Array.wrap(language_codes).map { |e|
+      LanguagesService.label("http://id.loc.gov/vocabulary/iso639-2/#{e.downcase}") ?
+                               "http://id.loc.gov/vocabulary/iso639-2/#{e.downcase}" : e
+    }
   end
 end

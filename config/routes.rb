@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   mount Bulkrax::Engine, at: '/'
-       # mount BrowseEverything::Engine => '/browse'
+  # mount BrowseEverything::Engine => '/browse'
   concern :range_searchable, BlacklightRangeLimit::Routes::RangeSearchable.new
   mount Riiif::Engine => 'images', as: :riiif if Hyrax.config.iiif_image_server?
 
@@ -30,7 +30,6 @@ Rails.application.routes.draw do
   mount Blacklight::Engine => '/'
   mount BlacklightAdvancedSearch::Engine => '/'
 
-  
   concern :searchable, Blacklight::Routes::Searchable.new
 
   resource :catalog, only: [:index], as: 'catalog', path: '/catalog', controller: 'catalog' do
@@ -60,7 +59,6 @@ Rails.application.routes.draw do
   curation_concerns_basic_routes
   concern :exportable, Blacklight::Routes::Exportable.new
 
-
   # [hyc-override] Remove routes we don't use e.g. catalog email and sms routes
   # we need this for accessing ttl files
   resources :solr_documents, only: [:show], path: '/catalog', controller: 'catalog'
@@ -74,7 +72,7 @@ Rails.application.routes.draw do
   # end
 
   # Catch all route for any routes that don't exist. Always have this as the last route
-  match "*path", to: "errors#not_found", via: :all, format: false, defaults: {format: 'html'}
+  match "*path", to: "errors#not_found", via: :all, format: false, defaults: { format: 'html' }
 
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end

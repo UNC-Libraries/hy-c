@@ -55,9 +55,9 @@ describe Tasks::EmbargoExpirationService, :clean do
 
     it "changes the work's visibility" do
       expect { service.expire_embargoes }
-          .to change { article.reload.visibility }
-                  .from(article.visibility)
-                  .to(article.visibility_after_embargo)
+        .to change { article.reload.visibility }
+        .from(article.visibility)
+        .to(article.visibility_after_embargo)
     end
 
     context "when the embargo is not expired" do
@@ -65,8 +65,8 @@ describe Tasks::EmbargoExpirationService, :clean do
 
       it 'does not deactivate embargo' do
         expect { service.expire_embargoes }
-            .not_to change { article.visibility }
-                        .from(article.visibility)
+          .not_to change { article.visibility }
+          .from(article.visibility)
 
         expect(article.under_embargo?).to be_truthy
       end

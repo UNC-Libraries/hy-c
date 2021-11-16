@@ -4,7 +4,7 @@ class CatalogController < ApplicationController
   include Hydra::Catalog
   include Hydra::Controller::ControllerBehavior
   include BlacklightOaiProvider::Controller
-  
+
   class_attribute :single_item_search_builder_class
   self.single_item_search_builder_class = RestrictedSingleResultBuilder
 
@@ -31,11 +31,10 @@ class CatalogController < ApplicationController
   def self.modified_field
     solr_name('system_modified', :stored_sortable, type: :date)
   end
-  
+
   def single_item_search_builder(id)
     single_item_search_builder_class.new(self, id).with(params.except(:q, :page))
   end
-
 
   configure_blacklight do |config|
     # default advanced config values
@@ -45,7 +44,7 @@ class CatalogController < ApplicationController
     config.advanced_search[:query_parser] ||= 'dismax'
     config.advanced_search[:form_solr_parameters] ||= {}
     config.advanced_search[:form_solr_parameters]['facet.field'] ||=
-        %w[member_of_collections_ssim date_issued_isim resource_type_sim affiliation_label_sim edition_sim]
+      %w[member_of_collections_ssim date_issued_isim resource_type_sim affiliation_label_sim edition_sim]
     config.advanced_search[:form_solr_parameters]['f.member_of_collections_ssim.facet.limit'] ||= -1
     config.advanced_search[:form_solr_parameters]['f.date_issued_isim.facet.limit'] ||= -1
     config.advanced_search[:form_solr_parameters]['f.resource_type_sim.facet.limit'] ||= -1
@@ -222,8 +221,8 @@ class CatalogController < ApplicationController
       solr_name = solr_name("advisor_label", :stored_searchable)
       field.label = "Advisor"
       field.solr_local_parameters = {
-          qf: solr_name,
-          pf: solr_name
+        qf: solr_name,
+        pf: solr_name
       }
     end
 
@@ -231,8 +230,8 @@ class CatalogController < ApplicationController
       solr_name = solr_name("creator_label", :stored_searchable)
       field.label = "Creator"
       field.solr_local_parameters = {
-          qf: solr_name,
-          pf: solr_name
+        qf: solr_name,
+        pf: solr_name
       }
     end
 
@@ -273,8 +272,8 @@ class CatalogController < ApplicationController
       solr_name = solr_name("date_issued", :stored_searchable)
       field.label = 'Date of Publication'
       field.solr_local_parameters = {
-          qf: solr_name,
-          pf: solr_name
+        qf: solr_name,
+        pf: solr_name
       }
     end
 
@@ -375,18 +374,18 @@ class CatalogController < ApplicationController
     config.spell_max = 5
 
     config.oai = {
-        provider: {
-            repository_name: 'Carolina Digital Repository',
-            repository_url: URI.join(ENV['HYRAX_HOST'] || 'https://localhost', 'catalog/oai').to_s,
-            record_prefix: URI.parse(ENV['HYRAX_HOST']).hostname || 'localhost',
-            admin_email: ENV['EMAIL_FROM_ADDRESS']
-        },
-        document: {
-            limit: 50,
-            set_model: CdrListSet,
-            set_fields: [{ label: 'Admin Set', solr_field: 'admin_set_sim' },
-                         {label: 'Collection', solr_field: 'member_of_collections_ssim'}]
-        }
+      provider: {
+        repository_name: 'Carolina Digital Repository',
+        repository_url: URI.join(ENV['HYRAX_HOST'] || 'https://localhost', 'catalog/oai').to_s,
+        record_prefix: URI.parse(ENV['HYRAX_HOST']).hostname || 'localhost',
+        admin_email: ENV['EMAIL_FROM_ADDRESS']
+      },
+      document: {
+        limit: 50,
+        set_model: CdrListSet,
+        set_fields: [{ label: 'Admin Set', solr_field: 'admin_set_sim' },
+                     { label: 'Collection', solr_field: 'member_of_collections_ssim' }]
+      }
     }
   end
 

@@ -9,7 +9,7 @@ module CdrLicenseService
       license_type = ''
     end
 
-    authority.all.reject{ |item| item['active'] == license_type }.map do |element|
+    authority.all.reject { |item| item['active'] == license_type }.map do |element|
       [element[:label], element[:id]]
     end
   end
@@ -35,5 +35,4 @@ module CdrLicenseService
   def self.default_license(work_type)
     work_type == 'hyrax/data_sets' ? 'http://creativecommons.org/publicdomain/zero/1.0/' : ''
   end
-
 end

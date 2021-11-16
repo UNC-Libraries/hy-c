@@ -3,26 +3,27 @@ require 'rails_helper'
 # test overridden action
 RSpec.describe Hyrax::DepositorsController, type: :request do
   let(:user) do
-    User.new(email: "test#{Date.today.to_time.to_i}@example.com", guest: false, uid: "test#{Date.today.to_time.to_i}") { |u| u.save!(validate: false)}
+    User.new(email: "test#{Date.today.to_time.to_i}@example.com",
+             guest: false, uid: "test#{Date.today.to_time.to_i}") { |u| u.save!(validate: false) }
   end
 
   let(:grantee) do
-    User.new(email: 'grantee@example.com', guest: false, uid: 'grantee') { |u| u.save!(validate: false)}
+    User.new(email: 'grantee@example.com', guest: false, uid: 'grantee') { |u| u.save!(validate: false) }
   end
 
   let(:grant_proxy_params) do
     {
-        user_id: user.user_key,
-        grantee_id: grantee.user_key,
-        format: 'json'
+      user_id: user.user_key,
+      grantee_id: grantee.user_key,
+      format: 'json'
     }
   end
 
   let(:revoke_proxy_params) do
     {
-        user_id: user.user_key,
-        id: grantee.user_key,
-        format: 'json'
+      user_id: user.user_key,
+      id: grantee.user_key,
+      format: 'json'
     }
   end
 
@@ -42,14 +43,18 @@ RSpec.describe Hyrax::DepositorsController, type: :request do
 
         it 'sends a message to the grantor' do
           expect { request_to_grant_proxy }.to change { user.mailbox.inbox.count }.by(1)
-          expect(user.mailbox.inbox.last.last_message.subject).to eq I18n.t('hyrax.notifications.proxy_depositor_added.subject')
-          expect(user.mailbox.inbox.last.last_message.body).to eq I18n.t('hyrax.notifications.proxy_depositor_added.grantor_message', grantee: grantee.name)
+          expect(user.mailbox.inbox.last.last_message.subject)
+            .to eq(I18n.t('hyrax.notifications.proxy_depositor_added.subject'))
+          expect(user.mailbox.inbox.last.last_message.body)
+            .to eq(I18n.t('hyrax.notifications.proxy_depositor_added.grantor_message', grantee: grantee.name))
         end
 
         it 'sends a message to the grantee' do
           expect { request_to_grant_proxy }.to change { grantee.mailbox.inbox.count }.by(1)
-          expect(grantee.mailbox.inbox.last.last_message.subject).to eq I18n.t('hyrax.notifications.proxy_depositor_added.subject')
-          expect(grantee.mailbox.inbox.last.last_message.body).to eq I18n.t('hyrax.notifications.proxy_depositor_added.grantee_message', grantor: user.name)
+          expect(grantee.mailbox.inbox.last.last_message.subject)
+            .to eq(I18n.t('hyrax.notifications.proxy_depositor_added.subject'))
+          expect(grantee.mailbox.inbox.last.last_message.body)
+            .to eq(I18n.t('hyrax.notifications.proxy_depositor_added.grantee_message', grantor: user.name))
         end
       end
 

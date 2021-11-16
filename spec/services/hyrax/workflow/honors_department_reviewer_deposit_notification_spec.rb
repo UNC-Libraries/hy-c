@@ -24,25 +24,24 @@ RSpec.describe Hyrax::Workflow::HonorsDepartmentReviewerDepositNotification do
     it 'sends a message to all users' do
       recipients = { 'to' => [department_contact], 'cc' => [cc_user] }
       expect(depositor).to receive(:send_message)
-                              .with(anything, I18n.t('hyrax.notifications.workflow.honors_department_reviewer_deposit.message',
-                                                     title_link: "<a href=\"#{ENV['HYRAX_HOST']}/concern/articles/#{work.id}\">#{work.title.first}</a>"),
-                                    anything).exactly(2).times.and_call_original
+        .with(anything, I18n.t('hyrax.notifications.workflow.honors_department_reviewer_deposit.message',
+                               title_link: "<a href=\"#{ENV['HYRAX_HOST']}/concern/articles/#{work.id}\">#{work.title.first}</a>"),
+              anything).exactly(2).times.and_call_original
 
       expect { described_class.send_notification(entity: entity, user: depositor, comment: comment, recipients: recipients) }
-          .to change { depositor.mailbox.inbox.count }.by(0)
-                  .and change { cc_user.mailbox.inbox.count }.by(1)
-                           .and change { department_contact.mailbox.inbox.count }.by(1)
+        .to change { depositor.mailbox.inbox.count }.by(0)
+                                                    .and change { cc_user.mailbox.inbox.count }.by(1)
+                                                                                               .and change { department_contact.mailbox.inbox.count }.by(1)
     end
 
     context 'without carbon-copied users' do
-
       it 'sends a message to the to user(s)' do
         recipients = { 'to' => [department_contact], 'cc' => [] }
         expect(depositor).to receive(:send_message).exactly(1).times.and_call_original
         expect { described_class.send_notification(entity: entity, user: depositor, comment: comment, recipients: recipients) }
-            .to change { depositor.mailbox.inbox.count }.by(0)
-                    .and change { cc_user.mailbox.inbox.count }.by(0)
-                             .and change { department_contact.mailbox.inbox.count }.by(1)
+          .to change { depositor.mailbox.inbox.count }.by(0)
+                                                      .and change { cc_user.mailbox.inbox.count }.by(0)
+                                                                                                 .and change { department_contact.mailbox.inbox.count }.by(1)
       end
     end
   end

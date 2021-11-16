@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # [hyc-override] overriding `transform_attributes` and
 # `permitted_attributes` methods to handle people objects
 
@@ -44,6 +45,7 @@ module Bulkrax
     # overriding to attach files
     def update
       raise "Object doesn't exist" unless object
+
       destroy_existing_files if @replace_files && klass != Collection
       attrs = attribute_update
       run_callbacks :save do
@@ -54,6 +56,7 @@ module Bulkrax
 
     def find
       return find_by_id if attributes[:id]
+
       search_by_identifier if attributes[work_identifier].present?
     end
 
@@ -64,6 +67,7 @@ module Bulkrax
     def find_or_create
       o = find
       return o if o
+
       run(&:save!)
     end
 
@@ -147,6 +151,7 @@ module Bulkrax
       ms = object.members.to_a
       [:children].each do |atat|
         next if attributes[atat].blank?
+
         ms.concat(
           Array.wrap(
             find_collection(attributes[atat])
@@ -160,6 +165,7 @@ module Bulkrax
       ms = object.member_of_collection_ids.to_a.map { |id| find_collection(id) }
       [:collection, :collections].each do |atat|
         next if attributes[atat].blank?
+
         ms.concat(
           Array.wrap(
             find_collection(attributes[atat])
@@ -184,6 +190,7 @@ module Bulkrax
 
     def collection_type(attrs)
       return attrs if attrs['collection_type_gid'].present?
+
       attrs['collection_type_gid'] = Hyrax::CollectionType.find_or_create_default_collection_type.gid
       attrs
     end
@@ -192,6 +199,7 @@ module Bulkrax
     # which is used by Hyrax::Actors::AddAsMemberOfCollectionsActor
     def create_attributes
       return transform_attributes if klass == Collection
+
       if attributes[:collection].present?
         transform_attributes.except(:collection).merge(member_of_collections_attributes: { 0 => { id: collection.id } })
       elsif attributes[:collections].present?
@@ -208,6 +216,7 @@ module Bulkrax
     # which is used by Hyrax::Actors::AddAsMemberOfCollectionsActor
     def attribute_update
       return transform_attributes.except(:id) if klass == Collection
+
       if attributes[:collection].present?
         transform_attributes.except(:id).except(:collection).merge(member_of_collections_attributes: { 0 => { id: collection.id } })
       elsif attributes[:collections].present?
@@ -226,7 +235,7 @@ module Bulkrax
     def transform_attributes
       attrs = attributes.slice(*permitted_attributes).merge(file_attributes(update_files))
       resource = @klass.new
-      attrs.each do |k,v|
+      attrs.each do |k, v|
         # check if attribute is single-valued but is currently an array
         if resource.attributes.keys.member?(k.to_s) && !resource.attributes[k.to_s].respond_to?(:each) && attrs[k].respond_to?(:each)
           attrs[k] = v.first
@@ -240,9 +249,9 @@ module Bulkrax
       end
 
       # convert people objects from hash notation to valid json
-      attrs.each do |k,v|
+      attrs.each do |k, v|
         if k.ends_with? '_attributes'
-          attrs[k] = JSON.parse(v.gsub('=>',':').gsub("'",'"'))
+          attrs[k] = JSON.parse(v.gsub('=>', ':').gsub("'", '"'))
         end
       end
 
@@ -256,8 +265,8 @@ module Bulkrax
       people_types = [:advisors, :arrangers, :composers, :contributors, :creators, :project_directors, :researchers,
                       :reviewers, :translators]
       properties = klass.properties.keys.map(&:to_sym)
-      people = properties.map{|p| people_types.include?(p) ? p : nil}.compact
-      properties + people.map{|p| "#{p}_attributes".to_sym} + %i[id edit_users edit_groups read_groups visibility work_members_attributes admin_set_id dcmi_type]
+      people = properties.map { |p| people_types.include?(p) ? p : nil }.compact
+      properties + people.map { |p| "#{p}_attributes".to_sym } + %i[id edit_users edit_groups read_groups visibility work_members_attributes admin_set_id dcmi_type]
     end
   end
 end

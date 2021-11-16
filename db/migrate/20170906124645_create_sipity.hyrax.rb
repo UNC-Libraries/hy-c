@@ -85,7 +85,7 @@ class CreateSipity < ActiveRecord::Migration[4.2]
     add_index "sipity_entity_specific_responsibilities", ["workflow_role_id"], name: "sipity_entity_specific_responsibilities_role"
 
     create_table "sipity_workflows" do |t|
-      t.string   "name",                      null: false
+      t.string   "name", null: false
       t.string   "label"
       t.text     "description"
       t.datetime "created_at",                null: false
@@ -95,7 +95,7 @@ class CreateSipity < ActiveRecord::Migration[4.2]
     add_index "sipity_workflows", ["name"], name: "index_sipity_workflows_on_name", unique: true
 
     create_table "sipity_workflow_actions" do |t|
-      t.integer  "workflow_id",                                                  null: false
+      t.integer  "workflow_id", null: false
       t.integer  "resulting_workflow_state_id"
       t.string   "name",                                                         null: false
       t.datetime "created_at",                                                   null: false
@@ -153,7 +153,7 @@ class CreateSipity < ActiveRecord::Migration[4.2]
     add_index "sipity_workflow_states", ["workflow_id", "name"], name: "sipity_type_state_aggregate", unique: true
 
     create_table "sipity_roles" do |t|
-      t.string   "name",                      null: false
+      t.string   "name", null: false
       t.text     "description"
       t.datetime "created_at",                null: false
       t.datetime "updated_at",                null: false

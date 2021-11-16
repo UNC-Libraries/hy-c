@@ -49,7 +49,7 @@ class HonorsThesis < ActiveFedora::Base
   end
 
   property :degree_granting_institution, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/dgg'),
-           multiple: false do |index|
+                                         multiple: false do |index|
     index.as :stored_searchable
   end
 
@@ -67,7 +67,7 @@ class HonorsThesis < ActiveFedora::Base
   end
 
   property :graduation_year, predicate: ::RDF::URI('http://rdaregistry.info/Elements/u/yearDegreeGranted.en'),
-           multiple: false do |index|
+                             multiple: false do |index|
     index.as :stored_searchable
   end
 
@@ -82,7 +82,7 @@ class HonorsThesis < ActiveFedora::Base
   property :note, predicate: ::RDF::Vocab::SKOS.note do |index|
     index.as :stored_searchable
   end
-  
+
   property :rights_statement_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#RightsStatementLabel'), multiple: false do |index|
     index.as :stored_searchable
   end

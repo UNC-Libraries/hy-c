@@ -12,6 +12,7 @@ class RangeLimitCatalogSearchBuilder < Hyrax::CatalogSearchBuilder
   # Adds full text searching for :all_fields
   def join_works_from_files(solr_parameters)
     return unless blacklight_params[:all_fields]
+
     solr_parameters[:q] += " _query_:\"{!join from=#{ActiveFedora.id_field} to=file_set_ids_ssim}{!dismax qf=all_text_timv}#{blacklight_params[:all_fields]}\""
   end
 end

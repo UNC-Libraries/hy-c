@@ -3,7 +3,6 @@ require 'set'
 module Migrate
   module Services
     class ProgressTracker
-
       def initialize(filename)
         @filename = filename
         create_log
@@ -21,11 +20,11 @@ module Migrate
 
       private
 
-        def create_log
-          if !File.exist?(@filename)
-            FileUtils.touch(@filename)
-          end
+      def create_log
+        if !File.exist?(@filename)
+          FileUtils.touch(@filename)
         end
+      end
     end
   end
 end

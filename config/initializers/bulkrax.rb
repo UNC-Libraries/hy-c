@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # [hyc-override] Comment out Hyrax::DashboardController.sidebar_partials line, line 74. It breaks hyrax 2.x
 
 Bulkrax.setup do |config|
@@ -12,10 +13,10 @@ Bulkrax.setup do |config|
   # config.default_work_type = MyWork
 
   # Path to store pending imports
-  config.import_path = ENV['TEMP_STORAGE']+'/hyrax/imports'
+  config.import_path = ENV['TEMP_STORAGE'] + '/hyrax/imports'
 
   # Path to store exports before download
-  config.export_path = ENV['TEMP_STORAGE']+'/hyrax/exports'
+  config.export_path = ENV['TEMP_STORAGE'] + '/hyrax/exports'
 
   # Server name for oai request header
   # config.server_name = 'my_server@name.com'

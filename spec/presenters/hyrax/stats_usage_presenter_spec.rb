@@ -1,9 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe Hyrax::StatsUsagePresenter do
-
   describe '#created' do
-    let(:subject) {described_class.new}
+    let(:subject) { described_class.new }
 
     context 'for a migrated work' do
       article = Article.create(title: ['new article'], date_created: DateTime.yesterday)

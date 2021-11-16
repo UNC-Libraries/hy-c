@@ -4,7 +4,6 @@ class AddDeviseGuestsToUsers < ActiveRecord::Migration[5.0]
       ## Database authenticatable
       t.boolean :guest, :default => false
     end
-
   end
 
   def self.down

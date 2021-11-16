@@ -16,14 +16,14 @@ module Hyrax
     # Otherwise renders the file.
     def show
       case file
-        when ActiveFedora::File
-          # For original files that are stored in fedora
-          super
-        when String
-          # For derivatives stored on the local file system
-          send_local_content
-        else
-          raise ActiveFedora::ObjectNotFoundError
+      when ActiveFedora::File
+        # For original files that are stored in fedora
+        super
+      when String
+        # For derivatives stored on the local file system
+        send_local_content
+      else
+        raise ActiveFedora::ObjectNotFoundError
       end
     end
 
@@ -36,7 +36,6 @@ module Hyrax
         @admin_set_name = 'Unknown'
       end
     end
-
 
     private
 
@@ -92,6 +91,7 @@ module Hyrax
 
     def dereference_file(file_reference)
       return false if file_reference.nil?
+
       association = asset.association(file_reference.to_sym)
       association if association && association.is_a?(ActiveFedora::Associations::SingularAssociation)
     end

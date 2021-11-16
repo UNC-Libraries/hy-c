@@ -10,7 +10,7 @@ module CdrRightsStatementsService
       rights_type = 'general'
     end
 
-    authority.all.reject{ |item| item['active'] == rights_type }.map do |element|
+    authority.all.reject { |item| item['active'] == rights_type }.map do |element|
       [element[:label], element[:id]]
     end
   end

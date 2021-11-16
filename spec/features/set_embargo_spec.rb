@@ -5,7 +5,7 @@ include Warden::Test::Helpers
 RSpec.feature 'Edit embargo', js: false do
   context 'a logged in user' do
     let(:user) do
-      User.new(email: 'test@example.com', guest: false, uid: 'test') { |u| u.save!(validate: false)}
+      User.new(email: 'test@example.com', guest: false, uid: 'test') { |u| u.save!(validate: false) }
     end
 
     let(:admin_user) do
@@ -63,10 +63,13 @@ RSpec.feature 'Edit embargo', js: false do
       click_link 'Add to Collection'
       expect(page).to_not have_content 'Add as member of administrative set'
 
-      fill_in 'article_embargo_release_date', with: DateTime.now+7.months
+      fill_in 'article_embargo_release_date', with: DateTime.now + 7.months
       click_button 'Save'
-      expect(page).to have_content 'Embargo release date Release date specified does not match permission template release requirements for selected AdminSet'
-
+      # rubocop:disable Layout/LineLength
+      expect(page).to have_content(
+        'Embargo release date Release date specified does not match permission template release requirements for selected AdminSet'
+      )
+      # rubocop:enable Layout/LineLength
       # Hyrax empties the form
       fill_in 'Title', with: 'Test Article work'
       fill_in 'Creator', { with: 'Test Default Creator', id: 'article_creators_attributes_0_name' }
@@ -78,12 +81,11 @@ RSpec.feature 'Edit embargo', js: false do
       choose 'article_visibility_embargo'
       check 'agreement'
 
-
       find('label[for=addFiles]').click do
         attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'), make_visible: true)
       end
 
-      fill_in 'article_embargo_release_date', with: DateTime.now+5.months
+      fill_in 'article_embargo_release_date', with: DateTime.now + 5.months
       click_button 'Save'
       expect(page).to have_content 'Your files are being processed by the Carolina Digital Repository'
 
@@ -128,14 +130,14 @@ RSpec.feature 'Edit embargo', js: false do
       expect(page).to have_content 'Test Default Keyword'
       expect(page).to have_content 'In Administrative Set: article admin set'
       expect(page).to have_selector(:link, 'Delete')
-      expect(page).to have_content 'Embargo release date '+(DateTime.now+1.day).humanize
+      expect(page).to have_content 'Embargo release date ' + (DateTime.now + 1.day).humanize
 
       click_link 'Edit'
-      fill_in 'article_embargo_release_date', with: DateTime.now+7.months
+      fill_in 'article_embargo_release_date', with: DateTime.now + 7.months
       click_button 'Save'
       expect(page).to have_content 'Test Default Keyword'
       expect(page).to have_content 'In Administrative Set: article admin set'
-      expect(page).to have_content 'Embargo release date '+(DateTime.now+7.months).humanize
+      expect(page).to have_content 'Embargo release date ' + (DateTime.now + 7.months).humanize
     end
   end
 end

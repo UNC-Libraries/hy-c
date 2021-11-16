@@ -16,7 +16,7 @@ module Hyrax
                             :graduation_year]
 
     self.single_value_fields = [:title, :license]
-    
+
     self.admin_only_terms = [:dcmi_type, :academic_concentration, :access, :admin_note, :award,
                              :degree_granting_institution, :doi, :extent, :use]
 

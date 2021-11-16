@@ -4,7 +4,6 @@ module Tasks
   require 'tasks/migration_helper'
 
   class OnescienceIngestService
-
     attr_reader :config
 
     # scopus afid 60025111 = The University of North Carolina at Chapel Hill
@@ -47,7 +46,7 @@ module Tasks
       ingest_count = 0
       # extract needed metadata and create articles
       @data.each_with_index do |item_data, index|
-        puts '',"[#{Time.now}] ingesting #{item_data['onescience_id']} (#{index+1} of #{count})"
+        puts '', "[#{Time.now}] ingesting #{item_data['onescience_id']} (#{index + 1} of #{count})"
 
         # Skip this item if it has been ingested before
         if already_ingested.include?(item_data['onescience_id'])
@@ -68,12 +67,12 @@ module Tasks
         work = MigrationHelper.check_enumeration(work_attributes, work, item_data['onescience_id'])
 
         # Check for embargo data
-        embargo_term = @embargo_mapping.find{ |e| e['onescience_id'] = item_data['onescience_id'] }
+        embargo_term = @embargo_mapping.find { |e| e['onescience_id'] = item_data['onescience_id'] }
         visibility = vis_public
         embargo_release_date = nil
         if !embargo_term.blank?
           months = embargo_term['Embargo'][/\d+/].to_i
-          original_embargo_release_date = Date.parse(work_attributes['date_issued']+'-01-01') + (months).months
+          original_embargo_release_date = Date.parse(work_attributes['date_issued'] + '-01-01') + (months).months
           if original_embargo_release_date.future?
             visibility = vis_private
             embargo_release_date = original_embargo_release_date
@@ -99,11 +98,11 @@ module Tasks
 
           # Move pubmed file to beginning of hash so it will be the primary work
           if files.key?('PubMedCentral-Link_Files')
-            files = {'PubMedCentral-Link_Files' => files['PubMedCentral-Link_Files']}.merge(files)
+            files = { 'PubMedCentral-Link_Files' => files['PubMedCentral-Link_Files'] }.merge(files)
           end
 
-          files.each_with_index do |(source_name,file_id),file_index|
-            puts "[#{Time.now}] #{item_data['onescience_id']} attaching file #{file_index+1} of #{file_count}"
+          files.each_with_index do |(source_name, file_id), file_index|
+            puts "[#{Time.now}] #{item_data['onescience_id']} attaching file #{file_index + 1} of #{file_count}"
             source_url = item_data[source_name.chomp('_Files')]
             if sources.include?(file_id)
               puts "[#{Time.now}] #{item_data['onescience_id']} skipping duplicate file: #{file_id}"
@@ -173,7 +172,7 @@ module Tasks
 
               attached_file_count += 1
 
-              puts "[#{Time.now}] #{item_data['onescience_id']},#{work.id} saved file #{file_index+1} of #{file_count}"
+              puts "[#{Time.now}] #{item_data['onescience_id']},#{work.id} saved file #{file_index + 1} of #{file_count}"
             else
               puts "[#{Time.now}] #{item_data['onescience_id']} error: could not find file #{file_id}"
             end
@@ -216,7 +215,7 @@ module Tasks
       sheets.each do |sheet|
         if sheet.match('1foldr_UNCCH_01_Part')
           data_hash = workbook.sheet(sheet).parse(headers: true)
-          data_hash.delete_if{|hash| hash['onescience_id'].blank? }
+          data_hash.delete_if { |hash| hash['onescience_id'].blank? }
           # first hash is of headers
           data_hash.delete_at(0)
           @data << data_hash
@@ -226,8 +225,8 @@ module Tasks
     end
 
     def create_deposit_record
-      if File.exist?(@config['deposit_record_id_log']) && !(File.open(@config['deposit_record_id_log']) {|f| f.readline}).blank?
-        @deposit_record_id = (File.open(@config['deposit_record_id_log']) {|f| f.readline}).strip
+      if File.exist?(@config['deposit_record_id_log']) && !(File.open(@config['deposit_record_id_log']) { |f| f.readline }).blank?
+        @deposit_record_id = (File.open(@config['deposit_record_id_log']) { |f| f.readline }).strip
         puts "[#{Time.now}] loaded deposit record id for batch"
       else
         deposit_record = DepositRecord.new({ title: @config['deposit_title'],
@@ -236,8 +235,8 @@ module Tasks
                                              deposit_package_subtype: @config['deposit_subtype'],
                                              deposited_by: @depositor_onyen })
         # attach metadata file to deposit record
-        original_metadata = FedoraOnlyFile.new({'title' => @config['metadata_file'],
-                                                'deposit_record' => deposit_record})
+        original_metadata = FedoraOnlyFile.new({ 'title' => @config['metadata_file'],
+                                                 'deposit_record' => deposit_record })
         original_metadata.file.content = File.open(File.join(@config['metadata_dir'], @config['metadata_file']))
         original_metadata.save!
         deposit_record[:manifest] = [original_metadata.uri]
@@ -298,9 +297,9 @@ module Tasks
       work_attributes['rights_statement'] = 'http://rightsstatements.org/vocab/InC/1.0/'
       work_attributes['rights_statement_label'] = 'In Copyright'
       work_attributes['deposit_record'] = @deposit_record_id
-      files = onescience_data.select { |k,v| k['Files'] && !v.blank? } # find columns with 'Files' in the name
+      files = onescience_data.select { |k, v| k['Files'] && !v.blank? } # find columns with 'Files' in the name
 
-      work_attributes.reject!{|k,v| v.blank?}
+      work_attributes.reject! { |k, v| v.blank? }
 
       [work_attributes, files]
     end
@@ -314,13 +313,14 @@ module Tasks
         puts "[#{Time.now}] #{onescience_data['onescience_id']} error: no scopus author information available"
         # check all author-related columns in 1science spreadsheets with data
         (1..32).each do |index|
-          break if onescience_data['lastname_author'+index.to_s].blank? || onescience_data['firstname_author'+index.to_s].blank?
-          name = "#{onescience_data['lastname_author'+index.to_s]}, #{onescience_data['firstname_author'+index.to_s]}"
-          affiliations = onescience_data['affiliation_author'+index.to_s]
-          people[index-1] = { 'name' => name,
-                              'orcid' => onescience_data['ORCID_author'+index.to_s],
-                              'affiliation' => (affiliations.split('||') if !affiliations.blank?),
-                              'index' => index}
+          break if onescience_data['lastname_author' + index.to_s].blank? || onescience_data['firstname_author' + index.to_s].blank?
+
+          name = "#{onescience_data['lastname_author' + index.to_s]}, #{onescience_data['firstname_author' + index.to_s]}"
+          affiliations = onescience_data['affiliation_author' + index.to_s]
+          people[index - 1] = { 'name' => name,
+                                'orcid' => onescience_data['ORCID_author' + index.to_s],
+                                'affiliation' => (affiliations.split('||') if !affiliations.blank?),
+                                'index' => index }
         end
       end
 
@@ -332,15 +332,15 @@ module Tasks
     def load_scopus_data
       @scopus_hash = Hash.new
 
-      responses=[]
-      Array.wrap(@config['scopus_xml_file']).each do|xml_file|
-        scopus_file = File.read(File.join(@config['metadata_dir'] , xml_file))
+      responses = []
+      Array.wrap(@config['scopus_xml_file']).each do |xml_file|
+        scopus_file = File.read(File.join(@config['metadata_dir'], xml_file))
         query_responses = scopus_file.split(/\<object\>/)
         query_responses.delete_at(0)
         responses = responses + query_responses
       end
-      mapped_affiliations = CSV.read(File.join(@config['metadata_dir'],@config['mapped_scopus_affiliations']),headers:true)
-      puts"[#{Time.now}] loaded scopus files"
+      mapped_affiliations = CSV.read(File.join(@config['metadata_dir'], @config['mapped_scopus_affiliations']), headers: true)
+      puts "[#{Time.now}] loaded scopus files"
 
       # add headers to file documenting people info for each record
       File.open(@config['multiple_unc_affiliations'], 'w') do |f|
@@ -387,12 +387,12 @@ module Tasks
             if !affiliation_ids.blank?
               affiliation_ids.each do |affiliation|
                 affiliation_id = affiliation.xpath('id').text
-                record_affiliation_hash[author_id] << {'afid' => affiliation_id,
-                                                       'organization' => affiliation_hash[affiliation_id],
-                                                       'orcid' => orcid}
+                record_affiliation_hash[author_id] << { 'afid' => affiliation_id,
+                                                        'organization' => affiliation_hash[affiliation_id],
+                                                        'orcid' => orcid }
               end
             else
-              record_affiliation_hash[author_id] << {'orcid' => orcid}
+              record_affiliation_hash[author_id] << { 'orcid' => orcid }
             end
           end
 
@@ -417,7 +417,7 @@ module Tasks
                 # find all unc affiliations by scopus afid
                 if !affiliation['organization'].blank?
                   if UNC_SCOPUS_AFIDS.include?(affiliation['afid'])
-                    mapped_affiliation = mapped_affiliations.find{|mapped_affil| (mapped_affil['ID'] == affiliation['afid'])}
+                    mapped_affiliation = mapped_affiliations.find { |mapped_affil| (mapped_affil['ID'] == affiliation['afid']) }
                     # if affiliation/department combination matches any unc affiliation, then store it as a unc affiliation
                     if mapped_affiliation
                       unc_organizations << mapped_affiliation['reconciled_unc_institution']
@@ -439,31 +439,31 @@ module Tasks
               if unc_organizations.count > 1
                 multiple = 'true'
               end
-              File.open(@config['multiple_unc_affiliations'], 'a+')  do |f|
-                f.puts "#{record_doi}\t#{multiple}\t#{author_id}\t#{surname}, #{given_name}\t#{orcid}\t#{unc_organizations.join('||')}\t#{other_organizations.join('||')}\t#{index+1}"
+              File.open(@config['multiple_unc_affiliations'], 'a+') do |f|
+                f.puts "#{record_doi}\t#{multiple}\t#{author_id}\t#{surname}, #{given_name}\t#{orcid}\t#{unc_organizations.join('||')}\t#{other_organizations.join('||')}\t#{index + 1}"
               end
 
-              other_affiliation = (other_organizations).reject{|i| i.blank?}
+              other_affiliation = (other_organizations).reject { |i| i.blank? }
               other_affiliation = nil if other_affiliation.blank?
               # create hash for person with index value
-              record_authors[index] = {'name' => surname+', '+given_name,
-                                       'orcid' => orcid,
-                                       'affiliation' => unc_organizations.first,
-                                       'other_affiliation' => other_affiliation,
-                                       'index' => index+1}.reject{|i| i.blank?}
+              record_authors[index] = { 'name' => surname + ', ' + given_name,
+                                        'orcid' => orcid,
+                                        'affiliation' => unc_organizations.first,
+                                        'other_affiliation' => other_affiliation,
+                                        'index' => index + 1 }.reject { |i| i.blank? }
 
               # verify that first author is first in list
               if index == 0
                 author_url = author.xpath('author-url').text
                 if author_url != first_author && !author_url.blank? && !first_author.blank?
-                  puts 'authors not in correct order '+first_author
+                  puts 'authors not in correct order ' + first_author
                 end
               end
             end
           end
 
-          @scopus_hash[record_doi] = {'authors' => record_authors, 'volume' => volume, 'issue' => issue,
-                                      'page_start' => page_start, 'page_end' => page_end}
+          @scopus_hash[record_doi] = { 'authors' => record_authors, 'volume' => volume, 'issue' => issue,
+                                       'page_start' => page_start, 'page_end' => page_end }
         rescue => e
           puts e.message, e.backtrace
           puts author_groups

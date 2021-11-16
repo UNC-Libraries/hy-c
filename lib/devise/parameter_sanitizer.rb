@@ -37,10 +37,10 @@ module Devise
   #    end
   class ParameterSanitizer
     DEFAULT_PERMITTED_ATTRIBUTES = {
-        sign_in: [:password, :remember_me],
-        # [hyc-override] Adding email and uid to list of permitted params
-        sign_up: [:password, :password_confirmation, :email, :uid],
-        account_update: [:password, :password_confirmation, :current_password]
+      sign_in: [:password, :remember_me],
+      # [hyc-override] Adding email and uid to list of permitted params
+      sign_up: [:password, :password_confirmation, :email, :uid],
+      account_update: [:password, :password_confirmation, :current_password]
     }
 
     def initialize(resource_class, resource_name, params)

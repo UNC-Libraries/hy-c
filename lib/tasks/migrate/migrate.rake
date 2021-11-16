@@ -23,7 +23,7 @@ namespace :migrate do
 
     # The default admin set and designated depositor must exist before running this script
     if AdminSet.where(title: ENV['DEFAULT_ADMIN_SET']).count != 0 &&
-        User.where(email: collection_config['depositor_email']).count > 0
+       User.where(email: collection_config['depositor_email']).count > 0
       @depositor = User.where(email: collection_config['depositor_email']).first
 
       puts "[#{Time.now.to_s}] create binary hash"
@@ -60,18 +60,18 @@ namespace :migrate do
       end
 
       Migrate::Services::IngestService.new(collection_config,
-                                         @object_hash,
-                                         @binary_hash,
-                                         @premis_hash,
-                                         @deposit_record_hash,
-                                         args[:output_dir],
-                                         @depositor,
-                                         args[:collection]).ingest_records
+                                           @object_hash,
+                                           @binary_hash,
+                                           @premis_hash,
+                                           @deposit_record_hash,
+                                           args[:output_dir],
+                                           @depositor,
+                                           args[:collection]).ingest_records
     else
       puts 'The default admin set or specified depositor does not exist'
     end
 
     end_time = Time.now
-    puts "[#{end_time.to_s}] Completed migration of #{args[:collection]} in #{end_time-start_time} seconds"
+    puts "[#{end_time.to_s}] Completed migration of #{args[:collection]} in #{end_time - start_time} seconds"
   end
 end

@@ -58,6 +58,7 @@ module Bulkrax
 
           node_content = node_content.content if node_content.is_a?(Nokogiri::XML::NodeSet)
           next parsed_metadata[object_name][name] = Array.wrap(node_content.to_s.strip).join('; ') if object_name && node_content
+
           parsed_metadata[name] = Array.wrap(node_content.to_s.strip).join('; ') if node_content
         end
       end
@@ -68,6 +69,7 @@ module Bulkrax
 
       return false if excluded?(field)
       return true if ['collections', 'file', 'remote_files', 'model', 'delete'].include?(field)
+
       return factory_class.method_defined?(field) && factory_class.properties[field].present?
     end
 
@@ -75,6 +77,7 @@ module Bulkrax
       return true if field == 'file' || field == 'remote_files' || field == 'collections'
       return false if field == 'model'
       return false if factory_class.properties[field].blank?
+
       field_supported?(field) && factory_class&.properties&.[](field)&.[]('multiple')
     end
 
@@ -97,12 +100,14 @@ module Bulkrax
       end&.compact
 
       return [field] if fields.blank?
+
       return fields
     end
 
     # Check whether a field is explicitly excluded in the mapping
     def excluded?(field)
       return false if mapping[field].blank?
+
       mapping[field]['excluded'] || false
     end
 

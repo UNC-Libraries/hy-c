@@ -1,16 +1,15 @@
 # Additional helper methods used by view templates inside this plugin.
 # # [hyc-override] Change input fields to number fields
 module RangeLimitHelper
-
   # type is 'begin' or 'end'
-  def render_range_input(solr_field, type, input_label = nil, maxlength=4)
+  def render_range_input(solr_field, type, input_label = nil, maxlength = 4)
     type = type.to_s
 
     default = params["range"][solr_field][type] if params["range"] && params["range"][solr_field] && params["range"][solr_field][type]
 
     html = label_tag("range[#{solr_field}][#{type}]", input_label, class: 'sr-only') if input_label.present?
     html ||= ''.html_safe
-    html += number_field_tag("range[#{solr_field}][#{type}]", default, :maxlength=>maxlength, :class => "form-control range_#{type}")
+    html += number_field_tag("range[#{solr_field}][#{type}]", default, :maxlength => maxlength, :class => "form-control range_#{type}")
   end
 
   # type is 'min' or 'max'
@@ -54,9 +53,9 @@ module RangeLimitHelper
     stats = stats_for_field(solr_field)
 
     (params["range"] && params["range"][solr_field]) ||
-      (  stats &&
+      (stats &&
         stats["max"] > stats["min"]) ||
-      ( !stats  && @response.total > 0 )
+      (!stats && @response.total > 0)
   end
 
   def stats_for_field(solr_field)
@@ -112,5 +111,4 @@ module RangeLimitHelper
   def selected_missing_for_range_limit?(solr_field)
     params["range"] && params["range"][solr_field] && params["range"][solr_field]["missing"]
   end
-
 end

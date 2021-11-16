@@ -4,24 +4,29 @@ RSpec.describe OmniauthCallbacksController, type: :request do
   # method from omniauth-shibboleth spec/omniauth/strategies/shibboleth_spec.rb for building a session
   def make_env(path = '/auth/shibboleth', props = {})
     {
-        'REQUEST_METHOD' => 'GET',
-        'PATH_INFO' => path,
-        'rack.session' => {},
-        'rack.input' => StringIO.new('test=true')
+      'REQUEST_METHOD' => 'GET',
+      'PATH_INFO' => path,
+      'rack.session' => {},
+      'rack.input' => StringIO.new('test=true')
     }.merge(props)
   end
 
   describe '#shibboleth' do
-    let(:app){ Rack::Builder.new do |b|
-      b.use Rack::Session::Cookie, {:secret => "abc123"}
-      b.use OmniAuth::Strategies::Shibboleth
-      b.run lambda{|env| [200, {}, ['Not Found']]}
-    end.to_app }
+    let(:app) {
+      Rack::Builder.new do |b|
+        b.use Rack::Session::Cookie, { :secret => "abc123" }
+        b.use OmniAuth::Strategies::Shibboleth
+        b.run lambda { |env| [200, {}, ['Not Found']] }
+      end.to_app
+    }
     let(:strategy) { OmniAuth::Strategies::Shibboleth.new(app, {}) }
     let(:dummy_id) { 'abcdefg' }
     let(:eppn) { 'test@example.com' }
     let(:display_name) { 'Test User' }
-    let(:env) { make_env('/users/auth/shibboleth/callback', 'Shib-Session-ID' => dummy_id, 'eppn' => eppn, 'displayName' => display_name) }
+    let(:env) do
+      make_env('/users/auth/shibboleth/callback', 'Shib-Session-ID' => dummy_id,
+                                                  'eppn' => eppn, 'displayName' => display_name)
+    end
 
     it 'is expected to set default omniauth.auth fields' do
       strategy.call!(env)

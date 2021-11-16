@@ -55,13 +55,13 @@ Rails.application.configure do
   config.logger = ActiveSupport::TaggedLogging.new(logger)
 
   # Prepend all log lines with the following tags.
-  config.log_tags = [ :request_id ]
+  config.log_tags = [:request_id]
 
   # Use a different cache store in production.
   # config.cache_store = :mem_cache_store
 
   # Use a real queuing backend for Active Job (and separate queues per environment)
-  config.active_job.queue_adapter     = :sidekiq
+  config.active_job.queue_adapter = :sidekiq
   # config.active_job.queue_name_prefix = "hyrax_#{Rails.env}"
   config.action_mailer.perform_caching = false
   config.action_mailer.perform_deliveries = ENV['ALLOW_NOTIFICATIONS']

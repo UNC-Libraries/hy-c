@@ -76,7 +76,7 @@ module Hyrax
 
       def banner_info
         @banner_info ||= begin
-                           # Find Banner filename
+          # Find Banner filename
           banner_info = CollectionBrandingInfo.where(collection_id: id).where(role: "banner")
           banner_file = File.split(banner_info.first.local_path).last unless banner_info.empty?
           file_location = banner_info.first.local_path unless banner_info.empty?
@@ -87,7 +87,7 @@ module Hyrax
 
       def logo_info
         @logo_info ||= begin
-                         # Find Logo filename, alttext, linktext
+          # Find Logo filename, alttext, linktext
           logos_info = CollectionBrandingInfo.where(collection_id: id).where(role: "logo")
           logos_info.map do |logo_info|
             logo_file = File.split(logo_info.local_path).last
@@ -107,6 +107,7 @@ module Hyrax
 
       def thumbnail_title
         return unless model.thumbnail
+
         model.thumbnail.title.first
       end
 
@@ -151,6 +152,6 @@ module Hyrax
                                    presenter_args: [nil])
       end
     end
-    # rubocop:enable ClassLength
+    # rubocop:enable Metrics/ClassLength
   end
 end

@@ -10,7 +10,7 @@ module AcademicConcentrationService
       end
     else
       regex = Regexp.new(value, Regexp::IGNORECASE)
-      authority.all.reject{ |item| !(regex =~ item['work_type']) }.map do |element|
+      authority.all.reject { |item| !(regex =~ item['work_type']) }.map do |element|
         [element[:label], element[:id]]
       end
     end

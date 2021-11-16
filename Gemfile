@@ -5,7 +5,6 @@ git_source(:github) do |repo_name|
   "https://github.com/#{repo_name}.git"
 end
 
-
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.2.6'
 # Use postgresql as the database for Active Record
@@ -70,6 +69,7 @@ gem 'willow_sword', github: 'notch8/willow_sword', ref: '0a669d7'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
+  gem 'bixby', '~> 3.0', require: false
   gem 'byebug', '~> 9.1.0', platform: :mri
   gem 'solr_wrapper', '~> 1.1.0'
   gem 'fcrepo_wrapper', '~> 0.8.0'

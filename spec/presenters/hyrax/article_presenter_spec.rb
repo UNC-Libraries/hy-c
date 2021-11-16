@@ -44,8 +44,7 @@ RSpec.describe Hyrax::ArticlePresenter do
       "use_tesim" => ['a use'],
       "language_label_tesim" => ['language'],
       "license_label_tesim" => ['license'],
-      "rights_statement_label_tesim" => 'rights'
-    }
+      "rights_statement_label_tesim" => 'rights' }
   end
 
   let(:ability) { nil }
@@ -120,7 +119,9 @@ RSpec.describe Hyrax::ArticlePresenter do
 
     context "with a custom abstract field" do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:abstract, ['an abstract'], {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new)
+          .with(:abstract, ['an abstract'], {})
+          .and_return(renderer)
       end
 
       it "calls the AttributeRenderer" do
@@ -142,7 +143,8 @@ RSpec.describe Hyrax::ArticlePresenter do
 
     context "with a custom alternative title field" do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:alternative_title, ['my other title'], {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new)
+          .with(:alternative_title, ['my other title'], {}).and_return(renderer)
       end
 
       it "calls the AttributeRenderer" do
@@ -153,7 +155,8 @@ RSpec.describe Hyrax::ArticlePresenter do
 
     context "with a custom bibliographic_citation field" do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:bibliographic_citation, ['a citation'], {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new)
+          .with(:bibliographic_citation, ['a citation'], {}).and_return(renderer)
       end
 
       it "calls the AttributeRenderer" do
@@ -164,7 +167,8 @@ RSpec.describe Hyrax::ArticlePresenter do
 
     context "with a custom creator_display field" do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:creator_display, ['a creator'], {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new)
+          .with(:creator_display, ['a creator'], {}).and_return(renderer)
       end
 
       it "calls the AttributeRenderer" do
@@ -175,7 +179,8 @@ RSpec.describe Hyrax::ArticlePresenter do
 
     context "with a custom copyright date field" do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:copyright_date, '2017', {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new)
+          .with(:copyright_date, '2017', {}).and_return(renderer)
       end
 
       it "calls the AttributeRenderer" do
@@ -186,7 +191,8 @@ RSpec.describe Hyrax::ArticlePresenter do
 
     context "with a custom date issued field" do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:date_issued, '2017-01-22', {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new)
+          .with(:date_issued, '2017-01-22', {}).and_return(renderer)
       end
 
       it "calls the AttributeRenderer" do
@@ -197,7 +203,8 @@ RSpec.describe Hyrax::ArticlePresenter do
 
     context "with a custom date other field" do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:date_other, ['2017-01-22'], {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new)
+          .with(:date_other, ['2017-01-22'], {}).and_return(renderer)
       end
 
       it "calls the AttributeRenderer" do
@@ -208,7 +215,8 @@ RSpec.describe Hyrax::ArticlePresenter do
 
     context "with a custom deposit_record field" do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:deposit_record, 'a deposit record', {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new)
+          .with(:deposit_record, 'a deposit record', {}).and_return(renderer)
       end
 
       it "calls the AttributeRenderer" do
@@ -219,7 +227,8 @@ RSpec.describe Hyrax::ArticlePresenter do
 
     context "with a custom digital collection field" do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:digital_collection, ['my collection'], {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new)
+          .with(:digital_collection, ['my collection'], {}).and_return(renderer)
       end
 
       it "calls the AttributeRenderer" do
@@ -241,7 +250,8 @@ RSpec.describe Hyrax::ArticlePresenter do
 
     context "with a custom edition field" do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:edition, 'new edition', {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new)
+          .with(:edition, 'new edition', {}).and_return(renderer)
       end
 
       it "calls the AttributeRenderer" do
@@ -274,7 +284,8 @@ RSpec.describe Hyrax::ArticlePresenter do
 
     context "with a custom dcmi_type field" do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:dcmi_type, ['science fiction'], {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new)
+          .with(:dcmi_type, ['science fiction'], {}).and_return(renderer)
       end
       it "calls the AttributeRenderer" do
         expect(renderer).to receive(:render)
@@ -306,7 +317,8 @@ RSpec.describe Hyrax::ArticlePresenter do
 
     context "with a custom journal title field" do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:journal_title, 'Journal Title', {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new)
+          .with(:journal_title, 'Journal Title', {}).and_return(renderer)
       end
 
       it "calls the AttributeRenderer" do
@@ -361,7 +373,8 @@ RSpec.describe Hyrax::ArticlePresenter do
 
     context "with a custom peer review status field" do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:peer_review_status, 'in review', {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new)
+          .with(:peer_review_status, 'in review', {}).and_return(renderer)
       end
 
       it "calls the AttributeRenderer" do
@@ -372,7 +385,8 @@ RSpec.describe Hyrax::ArticlePresenter do
 
     context "with a custom place of publication field" do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:place_of_publication, ['durham'], {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new)
+          .with(:place_of_publication, ['durham'], {}).and_return(renderer)
       end
 
       it "calls the AttributeRenderer" do
@@ -383,7 +397,8 @@ RSpec.describe Hyrax::ArticlePresenter do
 
     context "with a custom rights holder field" do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:rights_holder, ['rights holder'], {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new)
+          .with(:rights_holder, ['rights holder'], {}).and_return(renderer)
       end
 
       it "calls the AttributeRenderer" do
@@ -394,7 +409,8 @@ RSpec.describe Hyrax::ArticlePresenter do
 
     context "with a custom translator_display field" do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:translator_display, ['dean'], {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new)
+          .with(:translator_display, ['dean'], {}).and_return(renderer)
       end
 
       it "calls the AttributeRenderer" do
@@ -416,7 +432,8 @@ RSpec.describe Hyrax::ArticlePresenter do
 
     context "with a custom language label field" do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:language_label, ['language'], {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new)
+          .with(:language_label, ['language'], {}).and_return(renderer)
       end
 
       it "calls the AttributeRenderer" do
@@ -427,7 +444,8 @@ RSpec.describe Hyrax::ArticlePresenter do
 
     context "with a custom license label field" do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:license_label, ['license'], {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new)
+          .with(:license_label, ['license'], {}).and_return(renderer)
       end
 
       it "calls the AttributeRenderer" do
@@ -438,7 +456,8 @@ RSpec.describe Hyrax::ArticlePresenter do
 
     context "with a custom rights statement label field" do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:rights_statement_label, 'rights', {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new)
+          .with(:rights_statement_label, 'rights', {}).and_return(renderer)
       end
 
       it "calls the AttributeRenderer" do

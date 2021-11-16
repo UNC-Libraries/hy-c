@@ -5,7 +5,7 @@ include Warden::Test::Helpers
 RSpec.feature 'Create a batch of works', js: false do
   context 'a logged in user' do
     let(:user) do
-      User.new(email: 'test@example.com', guest: false, uid: 'test') { |u| u.save!(validate: false)}
+      User.new(email: 'test@example.com', guest: false, uid: 'test') { |u| u.save!(validate: false) }
     end
 
     let(:admin_user) do

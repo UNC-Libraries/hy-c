@@ -1,11 +1,9 @@
 module Migrate
   module Services
     class ChildWorkParser
-
       def initialize(object_hash, config, output_dir, collection)
         @object_hash = object_hash
         @collection_uuids = MigrationHelper.get_collection_uuids(config['collection_list'])
-
 
         # Store parent-child relationships
         @parent_child_mapper = Migrate::Services::IdMapper.new(File.join(output_dir, "#{collection}_parent_child.csv"), 'parent', 'children')
@@ -59,19 +57,19 @@ module Migrate
           store_children(uuid, child_works)
         end
 
-        puts "[#{Time.now.to_s}] Completed building parent-child relationships in #{Time.now-start_time} seconds"
+        puts "[#{Time.now.to_s}] Completed building parent-child relationships in #{Time.now - start_time} seconds"
       end
-
 
       private
 
-        # Store the parent to children mapping for a work
-        def store_children(uuid, child_works)
-          if child_works.blank?
-            return
-          end
-          @parent_child_mapper.add_row(uuid, child_works.join('|'))
+      # Store the parent to children mapping for a work
+      def store_children(uuid, child_works)
+        if child_works.blank?
+          return
         end
+
+        @parent_child_mapper.add_row(uuid, child_works.join('|'))
+      end
     end
   end
 end

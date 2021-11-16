@@ -1,5 +1,6 @@
 # [hyc-override] override file from blacklight gem
 # frozen_string_literal: true
+
 require 'builder'
 
 # This module provides Dublin Core export based on the document's semantic values
@@ -32,13 +33,13 @@ module Blacklight::Document::DublinCore
              'xmlns:dc' => "http://purl.org/dc/elements/1.1/",
              'xmlns:xsi' => "http://www.w3.org/2001/XMLSchema-instance",
              'xsi:schemaLocation' => %(http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd)) do
-      to_semantic_values.select { |field, _values| dublin_core_field_name? field  }.each do |field, values|
+      to_semantic_values.select { |field, _values| dublin_core_field_name? field }.each do |field, values|
         source = []
         # sort people by index value
         array_of_values = []
         if Array.wrap(values).first.match('index:')
           array_of_values = sort_people_by_index(values)
-          array_of_values.map!{|value| value.gsub(/\Aindex:\d*\|\|/, '')}
+          array_of_values.map! { |value| value.gsub(/\Aindex:\d*\|\|/, '') }
         else
           array_of_values = Array.wrap(values)
         end

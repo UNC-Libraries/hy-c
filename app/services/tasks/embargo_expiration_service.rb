@@ -5,7 +5,6 @@ module Tasks
   #  # Run yesterday's embargoes
   #  Tasks::EmbargoExpirationService.run(Time.zone.today - 1.day)
   class EmbargoExpirationService
-
     attr_reader :date, :work_types
 
     # Run the service. By default, it will check expirations against today.
@@ -13,11 +12,11 @@ module Tasks
     # @param [Date] date the date by which to measure expirations
     def self.run(date = nil)
       rundate =
-          if date
-            Date.parse(date)
-          else
-            Time.zone.today
-          end
+        if date
+          Date.parse(date)
+        else
+          Time.zone.today
+        end
       Rails.logger.info "Running embargo expiration service for #{rundate}"
       EmbargoExpirationService.new(rundate).run
     end

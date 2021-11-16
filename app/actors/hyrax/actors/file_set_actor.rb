@@ -23,6 +23,7 @@ module Hyrax
         file_set.label ||= label_for(file)
         file_set.title = [file_set.label] if file_set.title.blank?
         return false unless file_set.save # Need to save to get an id
+
         if from_url
           # If ingesting from URL, don't spawn an IngestJob; instead
           # reach into the FileActor and run the ingest with the file instance in
@@ -92,6 +93,7 @@ module Hyrax
       # @return [Boolean] true on success, false otherwise
       def revert_content(revision_id, relation = :original_file)
         return false unless build_file_actor(relation).revert_to(revision_id)
+
         Hyrax.config.callback.run(:after_revert_content, file_set, user, revision_id)
         true
       end
@@ -158,6 +160,7 @@ module Hyrax
       def unlink_from_work
         work = file_set.parent
         return unless work && (work.thumbnail_id == file_set.id || work.representative_id == file_set.id || work.rendering_ids.include?(file_set.id))
+
         work.thumbnail = nil if work.thumbnail_id == file_set.id
         work.representative = nil if work.representative_id == file_set.id
         work.rendering_ids -= [file_set.id]

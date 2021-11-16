@@ -4,17 +4,17 @@ RSpec.describe "default_admin_sets/index", type: :view do
   before(:each) do
     admin_set = AdminSet.create(title: ["index view admin set"])
     assign(:default_admin_sets, [
-      DefaultAdminSet.create!(
-        :work_type_name => "Work Type Name",
-        :admin_set_id => admin_set.id,
-        :department => "Department"
-      ),
-      DefaultAdminSet.create!(
-        :work_type_name => "Work Type Name2",
-        :admin_set_id => admin_set.id,
-        :department => "Department"
-      )
-    ])
+             DefaultAdminSet.create!(
+               :work_type_name => "Work Type Name",
+               :admin_set_id => admin_set.id,
+               :department => "Department"
+             ),
+             DefaultAdminSet.create!(
+               :work_type_name => "Work Type Name2",
+               :admin_set_id => admin_set.id,
+               :department => "Department"
+             )
+           ])
   end
 
   it "renders a list of default_admin_sets" do

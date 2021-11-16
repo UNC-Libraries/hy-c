@@ -17,10 +17,11 @@ ActiveSupport::Reloader.to_prepare do
     resp = ActiveFedora::SolrService.get("id:#{fs_id}", rows: 1)
     doc = resp['response']['docs'].first
     raise "Unable to find solr document with id:#{fs_id}" unless doc
+
     {
-        height: doc["height_is"] || 100,
-        width: doc["width_is"] || 100,
-        format: doc["mime_type_ssi"]
+      height: doc["height_is"] || 100,
+      width: doc["width_is"] || 100,
+      format: doc["mime_type_ssi"]
     }
   end
 

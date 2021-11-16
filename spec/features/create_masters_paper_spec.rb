@@ -7,7 +7,7 @@ include Warden::Test::Helpers
 RSpec.feature 'Create a MastersPaper', js: false do
   context 'a logged in user' do
     let(:user) do
-      User.new(email: 'test@example.com', guest: false, uid: 'test') { |u| u.save!(validate: false)}
+      User.new(email: 'test@example.com', guest: false, uid: 'test') { |u| u.save!(validate: false) }
     end
 
     let(:admin_user) do
@@ -39,7 +39,6 @@ RSpec.feature 'Create a MastersPaper', js: false do
     let(:admin_agent) { Sipity::Agent.where(proxy_for_id: admin_user.id, proxy_for_type: 'User').first_or_create }
     let(:user_agent) { Sipity::Agent.where(proxy_for_id: user.id, proxy_for_type: 'User').first_or_create }
 
-
     before do
       Hyrax::PermissionTemplateAccess.create(permission_template: dept_permission_template,
                                              agent_type: 'user',
@@ -67,7 +66,6 @@ RSpec.feature 'Create a MastersPaper', js: false do
       permission_template.available_workflows.first.update!(active: true)
       dept_permission_template.available_workflows.first.update!(active: true)
 
-
       # Sipity::WorkflowAction.create(id: 4, name: 'show', workflow_id: workflow.id)
       # Sipity::WorkflowAction.create(id: 5, name: 'show', workflow_id: dept_workflow.id)
       DefaultAdminSet.create(work_type_name: 'MastersPaper', admin_set_id: admin_set.id)
@@ -83,18 +81,18 @@ RSpec.feature 'Create a MastersPaper', js: false do
           </gn:Feature>
           </rdf:RDF>
 RDFXML
-      stub_request(:get, "http://sws.geonames.org/4460162/").
-          to_return(status: 200, body: chapel_hill, headers: {'Content-Type' => 'application/rdf+xml;charset=UTF-8'})
+      stub_request(:get, "http://sws.geonames.org/4460162/")
+        .to_return(status: 200, body: chapel_hill, headers: { 'Content-Type' => 'application/rdf+xml;charset=UTF-8' })
 
-      stub_request(:any, "http://api.geonames.org/getJSON?geonameId=4460162&username=#{ENV['GEONAMES_USER']}").
-          with(headers: {
-              'Accept' => '*/*',
-              'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-              'User-Agent' => 'Ruby'
-          }).to_return(status: 200, body: { asciiName: 'Chapel Hill',
-                                            countryName: 'United States',
-                                            adminName1: 'North Carolina' }.to_json,
-                       headers: { 'Content-Type' => 'application/json' })
+      stub_request(:any, "http://api.geonames.org/getJSON?geonameId=4460162&username=#{ENV['GEONAMES_USER']}")
+        .with(headers: {
+                'Accept' => '*/*',
+                'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+                'User-Agent' => 'Ruby'
+              }).to_return(status: 200, body: { asciiName: 'Chapel Hill',
+                                                countryName: 'United States',
+                                                adminName1: 'North Carolina' }.to_json,
+                           headers: { 'Content-Type' => 'application/json' })
     end
 
     scenario 'as a non-admin' do
@@ -106,7 +104,7 @@ RDFXML
       click_on 'Select'
 
       expect(page).to have_content "Add New Master's Paper"
-      
+
       # required fields
       fill_in 'Title', with: 'Test MastersPaper work'
       fill_in 'Creator', { with: 'Test Default Creator', id: 'masters_paper_creators_attributes_0_name' }
@@ -150,7 +148,7 @@ RDFXML
       expect(page).not_to have_field('masters_paper_deposit_agreement')
       choose "masters_paper_visibility_open"
       check 'agreement'
-      
+
       # Verify that admin only field is not visible
       expect(page).not_to have_selector('#masters_paper_dcmi_type')
 
@@ -166,7 +164,7 @@ RDFXML
 
       visit '/dashboard/my/works/'
       expect(page).to have_content 'Test MastersPaper work'
-      
+
       first('.document-title', text: 'Test MastersPaper work').click
       expect(page).to have_content 'Abstract an abstract'
       expect(page).to have_content 'Academic concentration Clinical Nutrition'
@@ -192,7 +190,7 @@ RDFXML
       expect(page).to_not have_content 'Language http://id.loc.gov/vocabulary/iso639-2/eng'
       expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
       expect(page).to_not have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'
-      
+
       expect(page).to_not have_content 'In Administrative Set: dept admin set'
       expect(page).to_not have_content 'Type http://purl.org/dc/dcmitype/Text'
 
@@ -256,7 +254,7 @@ RDFXML
       expect(page).to have_select('masters_paper_resource_type', selected: 'Masters Paper')
       choose "masters_paper_visibility_open"
       check 'agreement'
-      
+
       expect(page).to have_selector('#masters_paper_dcmi_type')
 
       find('label[for=addFiles]').click do

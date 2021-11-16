@@ -52,6 +52,7 @@ class AttachFilesToWorkJob < Hyrax::ApplicationJob
   def validate_files!(uploaded_files)
     uploaded_files.each do |uploaded_file|
       next if uploaded_file.is_a? Hyrax::UploadedFile
+
       raise ArgumentError, "Hyrax::UploadedFile required, but #{uploaded_file.class} received: #{uploaded_file.inspect}"
     end
   end
@@ -68,6 +69,7 @@ class AttachFilesToWorkJob < Hyrax::ApplicationJob
     file_path = URI.unescape(uploaded_file.file.to_s)
     scan_results = Hyc::VirusScanner.hyc_infected?(file_path)
     return if scan_results.instance_of? ClamAV::SuccessResponse
+
     if scan_results.instance_of? ClamAV::VirusResponse
       FileUtils.rm_rf(File.dirname(file_path))
       raise VirusDetectedError.new(scan_results, file_path)

@@ -27,9 +27,10 @@ RSpec.describe Hyrax::AdminSetSelectService do
       it "returns the right admin set" do
         expect(service.select("HonorsThesis", nil,
                               [['default', 'default-id'], [
-                                  'mediated', 'mediated-id'],
+                                'mediated', 'mediated-id'
+                              ],
                                ['honors thesis', 'honors-thesis-id']]))
-            .to eq 'honors-thesis-id'
+          .to eq 'honors-thesis-id'
       end
     end
 
@@ -39,7 +40,7 @@ RSpec.describe Hyrax::AdminSetSelectService do
                               [['default', 'default-id'],
                                ['mediated', 'mediated-id'],
                                ['masters papers', 'masters-papers-id']]))
-            .to eq 'masters-papers-id'
+          .to eq 'masters-papers-id'
       end
     end
 
@@ -49,7 +50,7 @@ RSpec.describe Hyrax::AdminSetSelectService do
                               [['default', 'default-id'],
                                ['mediated', 'mediated-id'],
                                ['masters papers', 'masters-papers-id']]))
-            .to eq 'mediated-id'
+          .to eq 'mediated-id'
       end
     end
 
@@ -63,7 +64,7 @@ RSpec.describe Hyrax::AdminSetSelectService do
 
       it "returns the default admin set" do
         expect(service.select("HonorsThesis", nil, [['default', admin_set.id], ['mediated', 'mediated-id']]))
-            .to eq admin_set.id
+          .to eq admin_set.id
       end
     end
   end

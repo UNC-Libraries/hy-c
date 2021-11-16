@@ -14,26 +14,26 @@ module MiniMagick
 
       def [](value, *args)
         case value
-          when "format", "width", "height", "dimensions", "size", "human_size"
-            cheap_info(value)
-          when "colorspace"
-            colorspace
-          when "mime_type"
-            mime_type
-          when "resolution"
-            resolution(*args)
-          when "signature"
-            signature
-          when /^EXIF\:/i
-            raw_exif(value)
-          when "exif"
-            exif
-          when "details"
-            details
-          when "data"
-            data
-          else
-            raw(value)
+        when "format", "width", "height", "dimensions", "size", "human_size"
+          cheap_info(value)
+        when "colorspace"
+          colorspace
+        when "mime_type"
+          mime_type
+        when "resolution"
+          resolution(*args)
+        when "signature"
+          signature
+        when /^EXIF\:/i
+          raw_exif(value)
+        when "exif"
+          exif
+        when "details"
+          details
+        when "data"
+          data
+        else
+          raw(value)
         end
       end
 
@@ -57,13 +57,13 @@ module MiniMagick
           path = path.match(/\[\d+\]$/).pre_match if path =~ /\[\d+\]$/
 
           @info.update(
-              "format"     => format,
-              "width"      => Integer(width),
-              "height"     => Integer(height),
-              "dimensions" => [Integer(width), Integer(height)],
-              "size"       => File.size(path),
-              "human_size" => size,
-              )
+            "format" => format,
+            "width" => Integer(width),
+            "height" => Integer(height),
+            "dimensions" => [Integer(width), Integer(height)],
+            "size" => File.size(path),
+            "human_size" => size,
+          )
 
           @info.fetch(value)
         end
@@ -100,24 +100,25 @@ module MiniMagick
           line = line.chomp("\n")
 
           case MiniMagick.cli
-            when :imagemagick, :imagemagick7
-              if match = line.match(/^exif:/)
-                key, value = match.post_match.split("=", 2)
-                value = decode_comma_separated_ascii_characters(value) if ASCII_ENCODED_EXIF_KEYS.include?(key)
-                hash[key] = value
-              else
-                hash[hash.keys.last] << "\n#{line}"
-              end
-            when :graphicsmagick
-              next if line == "unknown"
-              key, value = line.split("=", 2)
-              value.gsub!("\\012", "\n") # convert "\012" characters to newlines
+          when :imagemagick, :imagemagick7
+            if match = line.match(/^exif:/)
+              key, value = match.post_match.split("=", 2)
+              value = decode_comma_separated_ascii_characters(value) if ASCII_ENCODED_EXIF_KEYS.include?(key)
               hash[key] = value
+            else
+              hash[hash.keys.last] << "\n#{line}"
+            end
+          when :graphicsmagick
+            next if line == "unknown"
+
+            key, value = line.split("=", 2)
+            value.gsub!("\\012", "\n") # convert "\012" characters to newlines
+            hash[key] = value
           end
         end
 
         hash
-        )
+      )
       end
 
       def raw(value)
@@ -158,7 +159,7 @@ module MiniMagick
             hash[key] = value
           end
         end
-        )
+      )
       end
 
       def data
@@ -173,7 +174,7 @@ module MiniMagick
         data = JSON.parse(json)
         data = data.fetch(0) if data.is_a?(Array)
         data.fetch("image")
-        )
+      )
       end
 
       def identify
@@ -187,6 +188,7 @@ module MiniMagick
 
       def decode_comma_separated_ascii_characters(encoded_value)
         return encoded_value unless encoded_value.include?(',')
+
         encoded_value.scan(/\d+/).map(&:to_i).map(&:chr).join
       end
 
@@ -195,7 +197,6 @@ module MiniMagick
         value += "[0]" unless value =~ /\[\d+\]$/
         value
       end
-
     end
   end
 end

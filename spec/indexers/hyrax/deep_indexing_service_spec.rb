@@ -16,19 +16,19 @@ RSpec.describe Hyrax::DeepIndexingService, type: :indexer do
 RDFXML
 
     before do
-      stub_request(:any, "http://api.geonames.org/getJSON?geonameId=4460162&username=#{ENV['GEONAMES_USER']}").
-          with(headers: {
-              'Accept' => '*/*',
-              'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-              'User-Agent' => 'Ruby'
-          }).to_return(status: 200, body: { asciiName: 'Chapel Hill',
-                                            countryName: 'United States',
-                                            adminName1: 'North Carolina' }.to_json,
-                       headers: { 'Content-Type' => 'application/json' })
+      stub_request(:any, "http://api.geonames.org/getJSON?geonameId=4460162&username=#{ENV['GEONAMES_USER']}")
+        .with(headers: {
+                'Accept' => '*/*',
+                'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+                'User-Agent' => 'Ruby'
+              }).to_return(status: 200, body: { asciiName: 'Chapel Hill',
+                                                countryName: 'United States',
+                                                adminName1: 'North Carolina' }.to_json,
+                           headers: { 'Content-Type' => 'application/json' })
       work.based_near_attributes = [{ id: 'http://sws.geonames.org/4460162/' }]
       stub_request(:get, 'http://sws.geonames.org/4460162/')
-          .to_return(status: 200, body: chapel_hill,
-                     headers: { 'Content-Type' => 'application/rdf+xml;charset=UTF-8' })
+        .to_return(status: 200, body: chapel_hill,
+                   headers: { 'Content-Type' => 'application/rdf+xml;charset=UTF-8' })
     end
 
     it 'indexes id and label' do

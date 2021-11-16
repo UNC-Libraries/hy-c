@@ -14,7 +14,7 @@ module Hyrax
     self.required_fields = [:title, :creator, :abstract, :date_issued]
 
     self.single_value_fields = [:title, :license]
-    
+
     self.admin_only_terms = [:dcmi_type, :access, :admin_note, :description, :digital_collection, :doi, :use]
 
     self.default_term_values = { :dcmi_type => ["http://purl.org/dc/dcmitype/Text"],
@@ -30,7 +30,6 @@ module Hyrax
     def license
       super.first || ""
     end
-
 
     delegate :advisors_attributes=, to: :model
     delegate :creators_attributes=, to: :model

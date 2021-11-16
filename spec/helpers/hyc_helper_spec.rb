@@ -3,15 +3,18 @@ require 'rails_helper'
 RSpec.describe HycHelper do
   describe '#language_links' do
     context 'with valid options' do
-      let(:options) { {value: ['http://id.loc.gov/vocabulary/iso639-2/eng']} }
+      let(:options) { { value: ['http://id.loc.gov/vocabulary/iso639-2/eng'] } }
 
       it 'returns a link to a language search' do
-        expect(helper.language_links(options)).to eq '<a href="/catalog?f%5Blanguage_sim%5D%5B%5D=http%3A%2F%2Fid.loc.gov%2Fvocabulary%2Fiso639-2%2Feng">English</a>'
+        # rubocop:disable Layout/LineLength
+        expect(helper.language_links(options))
+          .to eq('<a href="/catalog?f%5Blanguage_sim%5D%5B%5D=http%3A%2F%2Fid.loc.gov%2Fvocabulary%2Fiso639-2%2Feng">English</a>')
+        # rubocop:enable Layout/LineLength
       end
     end
 
     context 'with invalid options' do
-      let(:invalid_options) { {value: ['invalid']} }
+      let(:invalid_options) { { value: ['invalid'] } }
 
       it 'returns nil if language key is not found' do
         expect(helper.language_links(invalid_options)).to eq nil
@@ -61,8 +64,10 @@ RSpec.describe HycHelper do
     end
 
     it 'returns redirect mapping' do
-      expect(helper.redirect_lookup('uuid', '02fc897a-12b6-4b81-91e4-b5e29cb683a6').to_h).to include('uuid' => '02fc897a-12b6-4b81-91e4-b5e29cb683a6', 'new_path' => "articles/#{article.id}")
-      expect(helper.redirect_lookup('new_path', "articles/#{article.id}").to_h).to include('uuid' => '02fc897a-12b6-4b81-91e4-b5e29cb683a6', 'new_path' => "articles/#{article.id}")
+      expect(helper.redirect_lookup('uuid', '02fc897a-12b6-4b81-91e4-b5e29cb683a6').to_h)
+        .to include('uuid' => '02fc897a-12b6-4b81-91e4-b5e29cb683a6', 'new_path' => "articles/#{article.id}")
+      expect(helper.redirect_lookup('new_path', "articles/#{article.id}").to_h)
+        .to include('uuid' => '02fc897a-12b6-4b81-91e4-b5e29cb683a6', 'new_path' => "articles/#{article.id}")
     end
   end
 end

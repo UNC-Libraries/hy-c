@@ -16,6 +16,7 @@ class AddPermissionTemplateToSipityWorkflow < ActiveRecord::Migration[4.2]
         Hyrax::PermissionTemplate.each do |permission_template|
           workflow_id = permission_template.workflow_id
           next unless workflow_id
+
           Sipity::Workflow.find(workflow_id).update(active: true)
         end
         remove_column :permission_templates, :workflow_id

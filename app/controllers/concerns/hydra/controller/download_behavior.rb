@@ -56,12 +56,12 @@ module Hydra
         f = asset.attached_files[file_path] if file_path
         f ||= default_file
         raise "Unable to find a file for #{asset}" if f.nil?
+
         f
       end
 
       # Handle the HTTP show request
       def send_content
-
         response.headers['Accept-Ranges'] = 'bytes'
 
         if request.head?

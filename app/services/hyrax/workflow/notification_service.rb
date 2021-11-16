@@ -44,6 +44,7 @@ module Hyrax
       def send_notification(notification)
         notifier = notifier(notification)
         return unless notifier
+
         notifier.send_notification(entity: entity,
                                    comment: comment,
                                    user: user,
@@ -64,34 +65,35 @@ module Hyrax
         class_name = notification.name.classify
         klass = begin
           class_name.constantize
-        rescue NameError
-          Rails.logger.error "Unable to find '#{class_name}', so not sending notification"
-          return nil
+                rescue NameError
+                  Rails.logger.error "Unable to find '#{class_name}', so not sending notification"
+                  return nil
         end
         return klass if klass.respond_to?(:send_notification)
+
         Rails.logger.error "Expected '#{class_name}' to respond to 'send_notification', but it didn't, so not sending notification"
         nil
       end
 
       private
 
-       # [hyc-override] new method for finding recipients based on users and groups
-       def find_recipients(entity, role)
-         users = []
-         users += PermissionQuery.scope_users_for_entity_and_roles(entity: entity, roles: role)
-         agents = PermissionQuery.scope_agents_associated_with_entity_and_role(entity: entity, role: role)
-         agents.each do |agent|
-           # Notifications for all workflow state changes will still go to the admin set owner, but not to all admins
-           if (agent.proxy_for_type == 'Hyrax::Group' || agent.proxy_for_type == 'Role') && role.name != 'depositing' &&
-               agent.proxy_for_id != 'registered' && agent.proxy_for_id != 'admin'
-             users += Role.where(name: agent.proxy_for_id).first.users
-           elsif agent.proxy_for_type == 'User'
-             users << ::User.find(agent.proxy_for_id)
-           end
-         end
+      # [hyc-override] new method for finding recipients based on users and groups
+      def find_recipients(entity, role)
+        users = []
+        users += PermissionQuery.scope_users_for_entity_and_roles(entity: entity, roles: role)
+        agents = PermissionQuery.scope_agents_associated_with_entity_and_role(entity: entity, role: role)
+        agents.each do |agent|
+          # Notifications for all workflow state changes will still go to the admin set owner, but not to all admins
+          if (agent.proxy_for_type == 'Hyrax::Group' || agent.proxy_for_type == 'Role') && role.name != 'depositing' &&
+             agent.proxy_for_id != 'registered' && agent.proxy_for_id != 'admin'
+            users += Role.where(name: agent.proxy_for_id).first.users
+          elsif agent.proxy_for_type == 'User'
+            users << ::User.find(agent.proxy_for_id)
+          end
+        end
 
-         users.uniq
-       end
+        users.uniq
+      end
     end
   end
 end

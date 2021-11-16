@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class SolrDocument
   include Blacklight::Solr::Document
   include BlacklightOaiProvider::SolrDocument
@@ -9,7 +10,6 @@ class SolrDocument
 
   # Adds Hyrax behaviors to the SolrDocument.
   include Hyrax::SolrDocumentBehavior
-
 
   # self.unique_key = 'id'
 
@@ -27,27 +27,27 @@ class SolrDocument
   use_extension(Blacklight::Document::DublinCore)
 
   field_semantics.merge!(
-      title: 'title_tesim',
-      creator: ['creator_display_tesim', 'composer_display_tesim'],
-      contributor: ['contributor_display_tesim', 'advisor_display_tesim', 'arranger_display_tesim',
-                    'project_director_display_tesim', 'researcher_display_tesim', 'reviewer_display_tesim',
-                    'translator_display_tesim'],
-      publisher: ['publisher_tesim', 'degree_granting_institution_tesim'],
-      date: ['date_issued_edtf_tesim', 'graduation_year_tesim'],
-      description: ['abstract_tesim', 'degree_tesim'],
-      subject: ['subject_tesim', 'keyword_tesim'],
-      coverage: 'based_near_label_tesim',
-      language: 'language_label_tesim',
-      type: 'resource_type_tesim',
-      rights: ['rights_statement_tesim', 'license_tesim'],
-      identifier: 'doi_tesim',
-      source: ['journal_title_tesim', 'journal_volume_tesim', 'journal_issue_tesim'],
-      thumbnail: 'thumbnail_path_ss')
+    title: 'title_tesim',
+    creator: ['creator_display_tesim', 'composer_display_tesim'],
+    contributor: ['contributor_display_tesim', 'advisor_display_tesim', 'arranger_display_tesim',
+                  'project_director_display_tesim', 'researcher_display_tesim', 'reviewer_display_tesim',
+                  'translator_display_tesim'],
+    publisher: ['publisher_tesim', 'degree_granting_institution_tesim'],
+    date: ['date_issued_edtf_tesim', 'graduation_year_tesim'],
+    description: ['abstract_tesim', 'degree_tesim'],
+    subject: ['subject_tesim', 'keyword_tesim'],
+    coverage: 'based_near_label_tesim',
+    language: 'language_label_tesim',
+    type: 'resource_type_tesim',
+    rights: ['rights_statement_tesim', 'license_tesim'],
+    identifier: 'doi_tesim',
+    source: ['journal_title_tesim', 'journal_volume_tesim', 'journal_issue_tesim'],
+    thumbnail: 'thumbnail_path_ss'
+  )
 
+  # Do content negotiation for AF models.
 
-  # Do content negotiation for AF models. 
-
-  use_extension( Hydra::ContentNegotiation )
+  use_extension(Hydra::ContentNegotiation)
 
   def abstract
     self[Solrizer.solr_name('abstract')]

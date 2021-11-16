@@ -25,6 +25,7 @@ module Hyrax
         markup = ''
 
         return markup if values.blank? && !options[:include_empty]
+
         markup << %(<tr><th>#{label}</th>\n<td><ul class='tabular'>)
         attributes = microdata_object_attributes(field).merge(class: "attribute attribute-#{field}")
         Array(values).each do |value|
@@ -40,6 +41,7 @@ module Hyrax
         markup = ''
 
         return markup if values.blank? && !options[:include_empty]
+
         markup << %(<dt>#{label}</dt>\n<dd><ul class='tabular'>)
         attributes = microdata_object_attributes(field).merge(class: "attribute attribute-#{field}")
         Array(values).each do |value|
@@ -77,32 +79,32 @@ module Hyrax
 
       private
 
-        def attribute_value_to_html(value)
-          if microdata_value_attributes(field).present?
-            "<span#{html_attributes(microdata_value_attributes(field))}>#{li_value(value)}</span>"
-          else
-            li_value(value)
-          end
+      def attribute_value_to_html(value)
+        if microdata_value_attributes(field).present?
+          "<span#{html_attributes(microdata_value_attributes(field))}>#{li_value(value)}</span>"
+        else
+          li_value(value)
         end
+      end
 
-        def html_attributes(attributes)
-          buffer = ""
-          attributes.each do |k, v|
-            buffer << " #{k}"
-            buffer << %(="#{v}") if v.present?
-          end
-          buffer
+      def html_attributes(attributes)
+        buffer = ""
+        attributes.each do |k, v|
+          buffer << " #{k}"
+          buffer << %(="#{v}") if v.present?
         end
+        buffer
+      end
 
-        # [hyc-override] call find_language
-        def li_value(value)
-          field_value = find_language(value) || value
-          auto_link(ERB::Util.h(field_value))
-        end
+      # [hyc-override] call find_language
+      def li_value(value)
+        field_value = find_language(value) || value
+        auto_link(ERB::Util.h(field_value))
+      end
 
-        def work_type_label_key
-          options[:work_type] ? options[:work_type].underscore : nil
-        end
+      def work_type_label_key
+        options[:work_type] ? options[:work_type].underscore : nil
+      end
     end
   end
 end

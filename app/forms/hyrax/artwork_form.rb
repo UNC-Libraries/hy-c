@@ -3,7 +3,6 @@
 module Hyrax
   # Generated form for Artwork
   class ArtworkForm < ::SingleValueForm
-
     class_attribute :single_value_fields
 
     self.model_class = ::Artwork

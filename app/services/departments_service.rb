@@ -4,14 +4,14 @@ module DepartmentsService
   self.authority = Qa::Authorities::Local.subauthority_for('departments')
 
   def self.select_all_options
-    authority.all.reject{ |item| item['active'] == false }.map do |element|
+    authority.all.reject { |item| item['active'] == false }.map do |element|
       [element[:id], element[:id]]
     end
   end
 
   def self.identifier(term)
     begin
-      authority.all.reject{ |item| item['active'] == false }.select { |department| department['label'] == term }.first['id']
+      authority.all.reject { |item| item['active'] == false }.select { |department| department['label'] == term }.first['id']
     rescue
       nil
     end

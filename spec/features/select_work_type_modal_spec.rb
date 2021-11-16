@@ -3,7 +3,7 @@ include Warden::Test::Helpers
 
 RSpec.feature 'Select work type modal', js: false do
   let(:user) do
-    User.new(email: 'test@example.com', guest: false, uid: 'test') { |u| u.save!(validate: false)}
+    User.new(email: 'test@example.com', guest: false, uid: 'test') { |u| u.save!(validate: false) }
   end
 
   let(:admin_user) do
@@ -24,10 +24,10 @@ RSpec.feature 'Select work type modal', js: false do
     visit hyrax.dashboard_works_path
     expect(page).to have_content 'Dissertations and Theses'
   end
-  
+
   scenario 'as a unauthenticated on homepage' do
     visit '/'
-    
+
     expect(page).to have_selector('input[value="MastersPaper"]')
     expect(page).to have_selector('input[value="HonorsThesis"]')
     expect(page).to have_selector('input[value="DataSet"]')
@@ -35,13 +35,13 @@ RSpec.feature 'Select work type modal', js: false do
     expect(page).to have_selector('input[value="Journal"]')
     expect(page).to have_selector('input[value="ScholarlyWork"]')
 
-    expect(page).to_not have_content'input[value="General"]'
+    expect(page).to_not have_content 'input[value="General"]'
     expect(page).to_not have_content 'Dissertations and Theses'
   end
-  
+
   scenario 'as a unauthenticated on search result' do
     visit '/catalog'
-    
+
     expect(page).to have_selector('input[value="MastersPaper"]')
     expect(page).to have_selector('input[value="HonorsThesis"]')
     expect(page).to have_selector('input[value="DataSet"]')
@@ -49,7 +49,7 @@ RSpec.feature 'Select work type modal', js: false do
     expect(page).to have_selector('input[value="Journal"]')
     expect(page).to have_selector('input[value="ScholarlyWork"]')
 
-    expect(page).to_not have_content'input[value="General"]'
+    expect(page).to_not have_content 'input[value="General"]'
     expect(page).to_not have_content 'Dissertations and Theses'
   end
 end

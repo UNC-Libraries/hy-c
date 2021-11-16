@@ -5,7 +5,6 @@ module Hyrax
     include ModelProxy
     include PresentsAttributes
 
-
     attr_accessor :solr_document, :current_ability, :request
 
     class_attribute :collection_presenter_class
@@ -55,16 +54,17 @@ module Hyrax
     # @return [String] a download URL, if work has representative media, or a blank string
     def download_url
       return '' if representative_presenter.nil?
+
       Hyrax::Engine.routes.url_helpers.download_url(representative_presenter, host: request.host)
     end
 
     # @return [Boolean] render a IIIF viewer
     def iiif_viewer?
       representative_id.present? &&
-          representative_presenter.present? &&
-          representative_presenter.image? &&
-          Hyrax.config.iiif_image_server? &&
-          members_include_viewable_image?
+        representative_presenter.present? &&
+        representative_presenter.image? &&
+        Hyrax.config.iiif_image_server? &&
+        members_include_viewable_image?
     end
 
     alias universal_viewer? iiif_viewer?
@@ -90,16 +90,18 @@ module Hyrax
     # @return FileSetPresenter presenter for the representative FileSets
     def representative_presenter
       return nil if representative_id.blank?
+
       @representative_presenter ||=
-          begin
-            result = member_presenters_for([representative_id]).first
-            return nil if result.try(:id) == id
-            if result.respond_to?(:representative_presenter)
-              result.representative_presenter
-            else
-              result
-            end
+        begin
+          result = member_presenters_for([representative_id]).first
+          return nil if result.try(:id) == id
+
+          if result.respond_to?(:representative_presenter)
+            result.representative_presenter
+          else
+            result
           end
+        end
     end
 
     # Get presenters for the collections this work is a member of via the member_of_collections association.
@@ -221,6 +223,7 @@ module Hyrax
       metadata = []
       Hyrax.config.iiif_metadata_fields.each do |field|
         next unless (respond_to? field) && !send(field).blank?
+
         field_value = send(field)
 
         # Remove everything but name from people object terms
@@ -230,8 +233,8 @@ module Hyrax
         end
 
         metadata << {
-            'label' => I18n.t("simple_form.labels.defaults.#{field}"),
-            'value' => Array.wrap(field_value)
+          'label' => I18n.t("simple_form.labels.defaults.#{field}"),
+          'value' => Array.wrap(field_value)
         }
       end
       metadata

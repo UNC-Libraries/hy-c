@@ -8,15 +8,16 @@ RSpec.describe 'OAI-PMH catalog endpoint' do
   let(:document_config) { { limit: limit } }
   let(:oai_config) { { provider: provider_config, document: document_config } }
   let(:timestamps) { Array.new(0) }
-
+  let(:start_time) { Time.parse(timestamps.first).utc.iso8601 }
+  let(:end_time) { Time.parse(timestamps.last).utc.iso8601 }
 
   before do
     CatalogController.configure_blacklight do |config|
       config.oai = oai_config
     end
 
-    solrRecords = ActiveFedora::SolrService.get('has_model_ssim:(Dissertation OR Article OR MastersPaper OR '+
-                                                    'HonorsThesis OR Journal OR DataSet OR Multimed OR ScholarlyWork '+
+    solrRecords = ActiveFedora::SolrService.get('has_model_ssim:(Dissertation OR Article OR MastersPaper OR ' +
+                                                    'HonorsThesis OR Journal OR DataSet OR Multimed OR ScholarlyWork ' +
                                                     'OR General OR Artwork) AND visibility_ssi:open', rows: 100)
     solrRecords['response']['docs'].each do |doc|
       timestamps << doc['timestamp']
@@ -57,9 +58,11 @@ RSpec.describe 'OAI-PMH catalog endpoint' do
       let(:document_config) { { limit: 25 } }
 
       scenario 'a resumption token is provided' do
-        params = { verb: 'ListRecords', metadataPrefix: format }
-        expected_token = 'oai_dc.f('+Time.parse(timestamps.first).utc.iso8601+').u('+
-            (Time.parse(timestamps.last)).utc.iso8601+').t('+timestamps.count.to_s+'):25'
+        start_time =
+          end_time =
+            params = { verb: 'ListRecords', metadataPrefix: format }
+        expected_token = 'oai_dc.f(' + start_time + ').u(' +
+                         end_time + ').t(' + timestamps.count.to_s + '):25'
 
         get oai_catalog_path(params)
         token = xpath '//xmlns:resumptionToken'
@@ -71,10 +74,10 @@ RSpec.describe 'OAI-PMH catalog endpoint' do
 
       scenario 'a resumption token displays the next page of records' do
         # This test checks the last page of records instead of the second
-        page = (timestamps.count/25).floor * 25
+        page = (timestamps.count / 25).floor * 25
         params = { verb: 'ListRecords',
-                   resumptionToken: 'oai_dc.f('+Time.parse(timestamps.first).utc.iso8601+').u('+
-                       (Time.parse(timestamps.last)).utc.iso8601+').t('+timestamps.count.to_s+'):'+page.to_s }
+                   resumptionToken: 'oai_dc.f(' + start_time + ').u(' +
+                                    end_time + ').t(' + timestamps.count.to_s + '):' + page.to_s }
 
         get oai_catalog_path(params)
         records = xpath '//xmlns:record'
@@ -83,8 +86,8 @@ RSpec.describe 'OAI-PMH catalog endpoint' do
       end
 
       scenario 'the last page of records provides an empty resumption token' do
-        params = { verb: 'ListRecords', resumptionToken: 'oai_dc.f('+Time.parse(timestamps.first).utc.iso8601+').u('+
-            Time.parse(timestamps.last).utc.iso8601+').t(30):25' }
+        params = { verb: 'ListRecords', resumptionToken: 'oai_dc.f(' + start_time + ').u(' +
+                                                         end_time + ').t(30):25' }
 
         get oai_catalog_path(params)
         token = xpath '//xmlns:resumptionToken'
@@ -95,7 +98,10 @@ RSpec.describe 'OAI-PMH catalog endpoint' do
     end
 
     context 'with a set' do
-      let(:document_config) { {set_model: CdrListSet, set_fields: [{label: 'language', solr_field: 'language_label_tesim' }] } }
+      let(:document_config) do
+        { set_model: CdrListSet,
+          set_fields: [{ label: 'language', solr_field: 'language_label_tesim' }] }
+      end
 
       scenario 'only records from the set are returned' do
         params = { verb: 'ListRecords', metadataPrefix: format, set: 'language:Japanese' }
@@ -110,15 +116,15 @@ RSpec.describe 'OAI-PMH catalog endpoint' do
     context 'with a from date' do
       scenario 'only records with a timestamp after the date are shown' do
         params = { verb: 'ListRecords', metadataPrefix: format,
-                   from: Time.parse(timestamps[timestamps.count-2]).utc.iso8601 }
+                   from: Time.parse(timestamps[timestamps.count - 2]).utc.iso8601 }
 
         get oai_catalog_path(params)
         records = xpath '//xmlns:record'
 
         expect(records.count).to be 2
-        expect(response.body).to include(Time.parse(timestamps[timestamps.count-1]).utc.iso8601)
-        expect(response.body).to include(Time.parse(timestamps[timestamps.count-2]).utc.iso8601)
-        expect(response.body).not_to include(Time.parse(timestamps[timestamps.count-3]).utc.iso8601)
+        expect(response.body).to include(Time.parse(timestamps[timestamps.count - 1]).utc.iso8601)
+        expect(response.body).to include(Time.parse(timestamps[timestamps.count - 2]).utc.iso8601)
+        expect(response.body).not_to include(Time.parse(timestamps[timestamps.count - 3]).utc.iso8601)
       end
 
       context 'and an until date' do
@@ -155,10 +161,10 @@ RSpec.describe 'OAI-PMH catalog endpoint' do
 
   describe 'GetRecord verb', :vcr do
     solrRecords = ActiveFedora::SolrService.get('has_model_ssim:Article', rows: 50)
-    oai_identifier =  solrRecords['response']['docs'][0]['id']
+    oai_identifier = solrRecords['response']['docs'][0]['id']
 
     let(:params) { { verb: 'GetRecord', metadataPrefix: format, identifier: identifier } }
-    let(:identifier) { 'oai:localhost:'+oai_identifier }
+    let(:identifier) { 'oai:localhost:' + oai_identifier }
 
     scenario 'displays a single record' do
       get oai_catalog_path(params)
@@ -188,7 +194,10 @@ RSpec.describe 'OAI-PMH catalog endpoint' do
     end
 
     context 'with set configuration', :vcr do
-      let(:document_config) { {set_model: CdrListSet, set_fields: [{label: 'language', solr_field: 'language_label_tesim' }] } }
+      let(:document_config) do
+        { set_model: CdrListSet,
+          set_fields: [{ label: 'language', solr_field: 'language_label_tesim' }] }
+      end
 
       scenario 'shows all sets' do
         get oai_catalog_path(verb: 'ListSets')
@@ -202,7 +211,10 @@ RSpec.describe 'OAI-PMH catalog endpoint' do
       end
 
       context 'where sets include descriptions' do
-        let(:document_config) { {set_model: CdrListSet, set_fields: [{label: 'admin set', solr_field: 'admin_set_tesim' }] } }
+        let(:document_config) do
+          { set_model: CdrListSet,
+            set_fields: [{ label: 'admin set', solr_field: 'admin_set_tesim' }] }
+        end
 
         scenario 'shows the set description object' do
           get oai_catalog_path(verb: 'ListSets')
@@ -221,7 +233,7 @@ RSpec.describe 'OAI-PMH catalog endpoint' do
   describe 'ListMetadataFormats verb' do
     scenario 'lists the oai_dc format' do
       get oai_catalog_path(verb: 'ListMetadataFormats')
-      expect(response.body).to include('<metadataPrefix>'+format+'</metadataPrefix>')
+      expect(response.body).to include('<metadataPrefix>' + format + '</metadataPrefix>')
     end
   end
 

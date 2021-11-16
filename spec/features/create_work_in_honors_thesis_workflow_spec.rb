@@ -7,7 +7,7 @@ include Warden::Test::Helpers
 RSpec.feature 'Create and review a work in the honors thesis workflow', js: false do
   context 'a logged in user' do
     let(:user) do
-      User.new(email: 'test@example.com', guest: false, uid: 'test') { |u| u.save!(validate: false)}
+      User.new(email: 'test@example.com', guest: false, uid: 'test') { |u| u.save!(validate: false) }
     end
 
     let(:admin_user) do
@@ -15,29 +15,31 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
     end
 
     let(:admin_user2) do
-      User.new(email: 'admin2@example.com', guest: false, uid: 'admin2') { |u| u.save!(validate: false)}
+      User.new(email: 'admin2@example.com', guest: false, uid: 'admin2') { |u| u.save!(validate: false) }
     end
 
     # department contact with view permissions
     let(:department_contact1) do
-      User.new(email: 'department_contact1@example.com', guest: false, uid: 'department_contact1') { |u| u.save!(validate: false)}
+      User.new(email: 'department_contact1@example.com', guest: false,
+               uid: 'department_contact1') { |u| u.save!(validate: false) }
     end
 
     # department contact with no permissions
     let(:department_contact2) do
-      User.new(email: 'department_contact2@example.com', guest: false, uid: 'department_contact2') { |u| u.save!(validate: false)}
+      User.new(email: 'department_contact2@example.com', guest: false,
+               uid: 'department_contact2') { |u| u.save!(validate: false) }
     end
 
     let(:manager) do
-      User.new(email: 'manager@example.com', guest: false, uid: 'manager') { |u| u.save!(validate: false)}
+      User.new(email: 'manager@example.com', guest: false, uid: 'manager') { |u| u.save!(validate: false) }
     end
 
     let(:reviewer) do
-      User.new(email: 'reviewer@example.com', guest: false, uid: 'reviewer') { |u| u.save!(validate: false)}
+      User.new(email: 'reviewer@example.com', guest: false, uid: 'reviewer') { |u| u.save!(validate: false) }
     end
 
     let(:nonreviewer) do
-      User.new(email: 'nonreviewer@example.com', guest: false, uid: 'nonreviewer') { |u| u.save!(validate: false)}
+      User.new(email: 'nonreviewer@example.com', guest: false, uid: 'nonreviewer') { |u| u.save!(validate: false) }
     end
 
     let(:admin_set) do
@@ -51,11 +53,20 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       Hyrax::PermissionTemplate.create!(source_id: admin_set.id)
     end
 
-    let(:workflow) { Sipity::Workflow.find_by!(name: 'honors_thesis_one_step_mediated_deposit', permission_template: permission_template) }
+    let(:workflow) {
+      Sipity::Workflow.find_by!(name: 'honors_thesis_one_step_mediated_deposit',
+                                permission_template: permission_template)
+    }
     let(:admin_agent) { Sipity::Agent.where(proxy_for_id: 'admin', proxy_for_type: 'Hyrax::Group').first_or_create }
     let(:admin_user_agent) { Sipity::Agent.where(proxy_for_id: admin_user.id, proxy_for_type: 'User').first_or_create }
-    let(:department_contact_user_agent) { Sipity::Agent.where(proxy_for_id: department_contact1.id, proxy_for_type: 'User').first_or_create }
-    let(:manager_agent) { Sipity::Agent.where(proxy_for_id: 'honors_manager', proxy_for_type: 'Hyrax::Group').first_or_create }
+    let(:department_contact_user_agent) {
+      Sipity::Agent.where(proxy_for_id: department_contact1.id,
+                          proxy_for_type: 'User').first_or_create
+    }
+    let(:manager_agent) {
+      Sipity::Agent.where(proxy_for_id: 'honors_manager',
+                          proxy_for_type: 'Hyrax::Group').first_or_create
+    }
     let(:reviewer_agent) { Sipity::Agent.where(proxy_for_id: reviewer.id, proxy_for_type: 'User').first_or_create }
 
     before do
@@ -79,16 +90,19 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
                                              agent_type: 'group',
                                              agent_id: 'honors_manager',
                                              access: 'manage')
-      Hyrax::Workflow::WorkflowImporter.generate_from_json_file(path: Rails.root.join('config',
-                                                                                      'workflows',
-                                                                                      'honors_thesis_deposit_workflow.json'),
-                                                                permission_template: permission_template)
+      Hyrax::Workflow::WorkflowImporter.generate_from_json_file(
+        path: Rails.root.join('config',
+                              'workflows',
+                              'honors_thesis_deposit_workflow.json'),
+        permission_template: permission_template
+      )
       Hyrax::Workflow::PermissionGenerator.call(roles: 'approving', workflow: workflow, agents: admin_user_agent)
       Hyrax::Workflow::PermissionGenerator.call(roles: 'depositing', workflow: workflow, agents: admin_user_agent)
       Hyrax::Workflow::PermissionGenerator.call(roles: 'deleting', workflow: workflow, agents: admin_user_agent)
       Hyrax::Workflow::PermissionGenerator.call(roles: 'approving', workflow: workflow, agents: admin_agent)
       Hyrax::Workflow::PermissionGenerator.call(roles: 'depositing', workflow: workflow, agents: admin_agent)
-      Hyrax::Workflow::PermissionGenerator.call(roles: 'viewing', workflow: workflow, agents: department_contact_user_agent)
+      Hyrax::Workflow::PermissionGenerator.call(roles: 'viewing', workflow: workflow,
+                                                agents: department_contact_user_agent)
       Hyrax::Workflow::PermissionGenerator.call(roles: 'managing', workflow: workflow, agents: reviewer_agent)
       Hyrax::Workflow::PermissionGenerator.call(roles: 'approving', workflow: workflow, agents: reviewer_agent)
       Hyrax::Workflow::PermissionGenerator.call(roles: 'depositing', workflow: workflow, agents: reviewer_agent)
@@ -177,12 +191,13 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       click_on 'Logout'
 
       # Check that work is not yet visible to general public
-      visit '/concern/honors_theses/'+HonorsThesis.all[-1].id
+      visit '/concern/honors_theses/' + HonorsThesis.all[-1].id
       expect(page).to have_content 'Login'
       expect(page).to have_content 'Honors workflow test 1'
       expect(page).not_to have_content 'Review and Approval'
-      expect(page).to have_content 'The work is not currently available because it has not yet completed the approval process'
-
+      expect(page).to have_content(
+        'The work is not currently available because it has not yet completed the approval process'
+      )
       # Check that new role has been created
       login_as admin_user
 
@@ -205,7 +220,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       expect(page).to have_content 'Your activity'
       expect(page).not_to have_content 'Review Submissions'
 
-      visit '/concern/honors_theses/'+HonorsThesis.all[-1].id
+      visit '/concern/honors_theses/' + HonorsThesis.all[-1].id
       expect(page).to have_content 'Honors workflow test'
       expect(page).not_to have_content 'Review and Approval'
 
@@ -218,7 +233,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       # current functionality only allows approving role to see 'Review Submissions'
       # expect(page).to have_content 'Review Submissions'
 
-      visit '/concern/honors_theses/'+HonorsThesis.all[-1].id
+      visit '/concern/honors_theses/' + HonorsThesis.all[-1].id
       expect(page).to have_content 'Review and Approval'
       expect(page).not_to have_content 'Approve'
       expect(page).not_to have_content 'Request Changes'
@@ -243,7 +258,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       visit '/dashboard'
       expect(page).to have_content 'Review Submissions'
 
-      visit '/concern/honors_theses/'+HonorsThesis.all[-1].id
+      visit '/concern/honors_theses/' + HonorsThesis.all[-1].id
       expect(page).to have_content 'Review and Approval'
       expect(page).to have_content 'Approve'
       expect(page).to have_content 'Request Changes'
@@ -268,7 +283,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       visit '/dashboard'
       expect(page).to have_content 'Review Submissions'
 
-      visit '/concern/honors_theses/'+HonorsThesis.all[-1].id
+      visit '/concern/honors_theses/' + HonorsThesis.all[-1].id
       expect(page).to have_content 'Review and Approval'
       within '#workflow_controls' do
         choose 'Approve'
@@ -287,7 +302,6 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       expect(page).to have_content 'Other Affiliation: UNC'
       expect(page).to_not have_content 'Type http://purl.org/dc/dcmitype/Text'
 
-
       # User and admin set owner get notification for 'depositing' role
       expect(admin_user.mailbox.inbox.count).to eq 1
       expect(admin_user2.mailbox.inbox.count).to eq 0
@@ -303,7 +317,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       # Check notifications for tombstone requests
       login_as user
 
-      visit '/concern/honors_theses/'+HonorsThesis.all[-1].id
+      visit '/concern/honors_theses/' + HonorsThesis.all[-1].id
       click_on 'Request Deletion'
 
       within '#deletion-request-modal' do
@@ -372,11 +386,13 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       click_on 'Logout'
 
       # Check that work is not yet visible to general public
-      visit '/concern/honors_theses/'+HonorsThesis.all[-1].id
+      visit '/concern/honors_theses/' + HonorsThesis.all[-1].id
       expect(page).to have_content 'Login'
       expect(page).to have_content 'Honors workflow test 2'
       expect(page).not_to have_content 'Review and Approval'
-      expect(page).to have_content 'The work is not currently available because it has not yet completed the approval process'
+      expect(page).to have_content(
+        'The work is not currently available because it has not yet completed the approval process'
+      )
 
       # Check that reviewer can review work
       login_as reviewer
@@ -384,7 +400,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       visit '/dashboard'
       expect(page).to have_content 'Review Submissions'
 
-      visit '/concern/honors_theses/'+HonorsThesis.all[-1].id
+      visit '/concern/honors_theses/' + HonorsThesis.all[-1].id
       expect(page).to have_content 'Review and Approval'
       within '#workflow_controls' do
         choose 'Approve'

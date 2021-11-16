@@ -15,6 +15,7 @@ module Hyrax
     before_action :ensure_admin_set!, only: [:create, :new, :edit, :update]
 
     private
+
     def ensure_admin!
       authorize! :read, :admin_dashboard
     end

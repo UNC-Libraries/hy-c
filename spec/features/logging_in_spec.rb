@@ -3,10 +3,9 @@ require "rails_helper"
 RSpec.feature 'logging into the application' do
   context "in production with database auth turned off" do
     let(:escaped_origin) { CGI.escape("http://www.example.com/advanced?locale=en") }
-    let(:escaped_target) { CGI.escape("/users/auth/shibboleth/callback?locale=en") }
+    let(:target) { "/users/auth/shibboleth/callback?locale=en" }
 
     before do
-
       allow(AuthConfig).to receive(:use_database_auth?).and_return(false)
       allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new("production"))
     end
@@ -15,17 +14,19 @@ RSpec.feature 'logging into the application' do
       visit "/advanced?locale=en"
       expect(page).to have_link("Login", href: '/users/sign_in?locale=en')
       click_link("Login")
-      expect(page.current_url).to eq "http://www.example.com/Shibboleth.sso/Login?target=/users/auth/shibboleth/callback?locale=en%26origin=#{escaped_origin}"
+      expect(page.current_url).to eq(
+        "http://www.example.com/Shibboleth.sso/Login?target=#{target}%26origin=#{escaped_origin}"
+      )
     end
     context "with shibboleth mocked" do
       before do
         OmniAuth.config.test_mode = true
         OmniAuth.config.mock_auth[:shibboleth] = OmniAuth::AuthHash.new({
-          :provider => 'shibboleth',
-          :info => {
-            :uid => 'atester'
-          }
-        })
+                                                                          :provider => 'shibboleth',
+                                                                          :info => {
+                                                                            :uid => 'atester'
+                                                                          }
+                                                                        })
       end
 
       it "can return to the application" do
@@ -47,7 +48,6 @@ RSpec.feature 'logging into the application' do
         expect(page.current_url).to eq "http://www.example.com/?locale=en"
       end
     end
-
   end
 
   context "in production with database auth turned on" do

@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
-  let(:user) { User.new(email: 'test@example.com', guest: false, uid: 'someid') { |u| u.save!(validate: false)} }
+  let(:user) { User.new(email: 'test@example.com', guest: false, uid: 'someid') { |u| u.save!(validate: false) } }
 
   describe "override hyrax info notice id transformation" do
     it "does not change users ids from test@example.com to test@example-dot-com" do
@@ -31,13 +31,13 @@ RSpec.describe User, type: :model do
     context "shibboleth integration" do
       let(:auth_hash) do
         OmniAuth::AuthHash.new(
-            provider: 'shibboleth',
-            uid: "boxy",
-            info: {
-                display_name: "boxy",
-                uid: 'boxy',
-                mail: 'boxy@example.com'
-            }
+          provider: 'shibboleth',
+          uid: "boxy",
+          info: {
+            display_name: "boxy",
+            uid: 'boxy',
+            mail: 'boxy@example.com'
+          }
         )
       end
       let(:user) { described_class.from_omniauth(auth_hash) }
@@ -55,7 +55,7 @@ RSpec.describe User, type: :model do
           expect(user.uid).not_to eq nil
         end
         it "has a shibboleth provided email which is not nil" do
-          expect(user.email).to eq auth_hash.info.uid.to_s+"@ad.unc.edu"
+          expect(user.email).to eq auth_hash.info.uid.to_s + "@ad.unc.edu"
           expect(user.email).not_to eq nil
         end
       end
@@ -64,13 +64,13 @@ RSpec.describe User, type: :model do
     context "no email from shibboleth" do
       let(:auth_hash) do
         OmniAuth::AuthHash.new(
-            provider: 'shibboleth',
-            uid: "boxy",
-            info: {
-                display_name: "boxy",
-                uid: 'boxy',
-                mail: nil
-            }
+          provider: 'shibboleth',
+          uid: "boxy",
+          info: {
+            display_name: "boxy",
+            uid: 'boxy',
+            mail: nil
+          }
         )
       end
       let(:user) { described_class.from_omniauth(auth_hash) }
@@ -88,7 +88,7 @@ RSpec.describe User, type: :model do
           expect(user.uid).not_to eq nil
         end
         it "has a shibboleth provided email which is not nil" do
-          expect(user.email).to eq auth_hash.info.uid.to_s+"@ad.unc.edu"
+          expect(user.email).to eq auth_hash.info.uid.to_s + "@ad.unc.edu"
           expect(user.email).not_to eq nil
         end
       end

@@ -2,7 +2,6 @@
 #  `rails generate hyrax:work General`
 module Hyrax
   class GeneralForm < ::SingleValueForm
-
     class_attribute :single_value_fields
 
     self.model_class = ::General
@@ -34,7 +33,6 @@ module Hyrax
     def license
       super.first || ""
     end
-
 
     delegate :advisors_attributes=, to: :model
     delegate :arrangers_attributes=, to: :model

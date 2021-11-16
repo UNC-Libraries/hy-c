@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Tasks::UpdateDoiUrlsService do
   let(:logger) { ActiveSupport::Logger.new('spec/fixtures/files/doi_test.log') }
-  let(:params) { {state: 'test', rows: '1', retries: '2', end_date: Date.tomorrow.to_s, log_dir: 'spec/fixtures/files'} }
+  let(:params) { { state: 'test', rows: '1', retries: '2', end_date: Date.tomorrow.to_s, log_dir: 'spec/fixtures/files' } }
 
   after(:all) do
     FileUtils.remove('spec/fixtures/files/doi_test.log')
@@ -27,20 +27,24 @@ RSpec.describe Tasks::UpdateDoiUrlsService do
   describe "#update_dois" do
     # make sure there is at least one work with a doi
     let(:approver) { User.find_by_user_key('admin') }
-    let(:depositor) { User.create(email: 'test@example.com',
-                                  uid: 'test@example.com',
-                                  password: 'password',
-                                  password_confirmation: 'password') }
+    let(:depositor) {
+      User.create(email: 'test@example.com',
+                  uid: 'test@example.com',
+                  password: 'password',
+                  password_confirmation: 'password')
+    }
     let(:admin_set) do
       AdminSet.create(title: ["article admin set"],
                       description: ["some description"],
                       edit_users: [depositor.user_key])
     end
-    let(:work) { HonorsThesis.create(title: ['new article for testing doi updates'],
-                                     depositor: depositor.email,
-                                     visibility: 'open',
-                                     admin_set_id: admin_set.id,
-                                     doi: 'https://doi.org/10.5077/test-doi') }
+    let(:work) {
+      HonorsThesis.create(title: ['new article for testing doi updates'],
+                          depositor: depositor.email,
+                          visibility: 'open',
+                          admin_set_id: admin_set.id,
+                          doi: 'https://doi.org/10.5077/test-doi')
+    }
     let(:permission_template) do
       Hyrax::PermissionTemplate.create!(source_id: admin_set.id)
     end
@@ -58,14 +62,14 @@ RSpec.describe Tasks::UpdateDoiUrlsService do
                             workflow_id: workflow.id,
                             workflow_state: workflow_state)
       work.save!
-      stub_request(:put, /datacite/).to_return(body: {data: {id: '10.5077/0001',
-                                                             type: 'dois',
-                                                             doi: 'https://doi.org/10.5077/test-doi',
-                                                             url: "#{ENV['HYRAX_HOST']}/concerns/honors_theses/#{work.id}"}}.to_json.to_s)
-    stub_request(:get, /datacite/).to_return(body: {data: {id: '10.5077/0001',
-                                                             type: 'dois',
-                                                             doi: 'https://doi.org/10.5077/test-doi',
-                                                             url: "#{ENV['HYRAX_HOST']}/concerns/honors_thesiss/#{work.id}"}}.to_json.to_s)
+      stub_request(:put, /datacite/).to_return(body: { data: { id: '10.5077/0001',
+                                                               type: 'dois',
+                                                               doi: 'https://doi.org/10.5077/test-doi',
+                                                               url: "#{ENV['HYRAX_HOST']}/concerns/honors_theses/#{work.id}" } }.to_json.to_s)
+      stub_request(:get, /datacite/).to_return(body: { data: { id: '10.5077/0001',
+                                                               type: 'dois',
+                                                               doi: 'https://doi.org/10.5077/test-doi',
+                                                               url: "#{ENV['HYRAX_HOST']}/concerns/honors_thesiss/#{work.id}" } }.to_json.to_s)
     end
 
     it "finds and updates dois" do

@@ -21,4 +21,3 @@ RSpec.describe Hyrax::AuthorStatusService do
     end
   end
 end
-
