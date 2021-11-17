@@ -66,10 +66,14 @@ RSpec.describe Tasks::CsvIngestService do
     end
 
     it "creates a new work" do
-      expect { Tasks::CsvIngestService.new(args).ingest }.to change { General.count }.by(1)
-                                                                                     .and change { DepositRecord.count }.by(1)
+      # rubocop:disable Layout/MultilineMethodCallIndentation
+      expect { Tasks::CsvIngestService.new(args).ingest }
+        .to change { General.count }.by(1)
+        .and change { DepositRecord.count }.by(1)
+      # rubocop:enable Layout/MultilineMethodCallIndentation
       new_general = General.all[-1]
       expect(new_general['depositor']).to eq 'admin'
+      # rubocop:disable Layout/LineLength
       expect(new_general['title']).to match_array ['The Elusiveness of Tolerance: The “Jewish Question” From Lessing to the Napoleonic Wars']
       expect(new_general['label']).to eq 'The Elusiveness of Tolerance: The “Jewish Question” From Lessing to the Napoleonic Wars'
       expect(new_general['date_issued']).to eq ['1997']
@@ -84,6 +88,7 @@ RSpec.describe Tasks::CsvIngestService do
       expect(new_general['abstract']).to match_array ["Peter Erspamer explores the 'Jewish question' in German literature from Lessing's \"Nathan der Weise\" in 1779 to Sessa's \"Unser Verkehr\" in 1815. He analyzes the transition from an enlightened emancipatory literature advocating tolerance in the late eighteenth century to an anti-Semitic literature with nationalistic overtones in the early nineteenth century.
 
 Erspamer examines \"Nathan\" in light of Lessing's attempts to distance himself from the excesses of his own Christian in-group through pariah identification, using an idealized member of an out-group religion as a vehicle to attack the dominant religion. He also focuses on other leading advocates of tolerance and explores changes in Jewish identity, particularly the division of German Jewry into orthodox Jews, adherents of the Haskalah, and converted Jews."]
+      # rubocop:disable Layout/LineLength
       expect(new_general['rights_statement']).to eq 'http://rightsstatements.org/vocab/InC/1.0/'
       expect(new_general['rights_statement_label']).to eq 'In Copyright'
       expect(new_general['subject']).to eq ['German Literature', 'Jewish Studies']

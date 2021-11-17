@@ -52,6 +52,7 @@ module Tasks
 
     def initialize(rows = 1000)
       @rows = rows
+      byebug
       use_test_api = ENV['DATACITE_USE_TEST_API'].to_s.downcase == "true"
       @doi_prefix = ENV['DATACITE_PREFIX']
       if use_test_api

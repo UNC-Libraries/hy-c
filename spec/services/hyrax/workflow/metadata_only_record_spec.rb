@@ -2,7 +2,10 @@ require 'rails_helper'
 
 RSpec.describe Hyrax::Workflow::MetadataOnlyRecord do
   let(:user) { User.find_by_user_key('admin') }
-  let(:work) { Article.create(title: ['New Article'], visibility: Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC) }
+  let(:work) {
+    Article.create(title: ['New Article'],
+                   visibility: Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC)
+  }
   let(:file_set) { FileSet.new }
   let(:file_set_actor) { Hyrax::Actors::FileSetActor.new(file_set, user) }
   let(:admin_set) do

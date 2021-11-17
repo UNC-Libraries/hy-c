@@ -30,6 +30,7 @@ RSpec.describe Tasks::DoiCreateService do
   end
 
   describe '#doi_request' do
+    let(:article_url) { "#{ENV['HYRAX_HOST']}/concern/articles/d7f59f11-a35b-41cd-a7d9-77f36738b728" }
     it 'returns datacite record information' do
       # return minted doi in response
       stub_request(:any, /datacite/).to_return(body: { data: { id: '10.5077/0001',
@@ -40,7 +41,7 @@ RSpec.describe Tasks::DoiCreateService do
                          "attributes": { "prefix": "10.5077",
                                          titles: [{ title: 'new work' }],
                                          types: { resourceType: 'Article', resourceTypeGeneral: 'Text' },
-                                         url: "#{ENV['HYRAX_HOST']}/concern/articles/d7f59f11-a35b-41cd-a7d9-77f36738b728",
+                                         url: article_url,
                                          event: 'publish',
                                          schemaVersion: 'http://datacite.org/schema/kernel-4' } } }
 
@@ -63,10 +64,11 @@ RSpec.describe Tasks::DoiCreateService do
                     language_label: ['English'],
                     rights_statement: 'http://rightsstatements.org/vocab/InC/1.0/')
       end
+      let(:article_url) { "#{ENV['HYRAX_HOST']}/concern/articles/d7f59f11-a35b-41cd-a7d9-77f36738b728" }
 
       it 'includes a correct url for a one-word work type' do
         result = described_class.new.format_data(article)
-        expect(JSON.parse(result)['data']['attributes']['url']).to eq "#{ENV['HYRAX_HOST']}/concern/articles/d7f59f11-a35b-41cd-a7d9-77f36738b728"
+        expect(JSON.parse(result)['data']['attributes']['url']).to eq article_url
         expect(JSON.parse(result)['data']['attributes']['titles']).to match_array [{ 'title' => 'new article' }]
         expect(JSON.parse(result)['data']['attributes']['publicationYear']).to eq Date.today.year.to_s
         expect(JSON.parse(result)['data']['attributes']['types']['resourceType']).to eq 'Article'
