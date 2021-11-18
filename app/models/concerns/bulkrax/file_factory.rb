@@ -1,5 +1,6 @@
 # frozen_string_literal: true
-# [hyc-override] Overriding set_removed_files to not hardcode updates as PNG files
+# [hyc-override] Overriding set_removed_files to not hardcode updates as PNG files and set file set
+# to private if the file set is being replaced.
 
 module Bulkrax
   module FileFactory
@@ -96,6 +97,9 @@ module Bulkrax
         opts[:mime_type] = fileset.files.first.mime_type
 
         fileset.add_file(File.open(Bulkrax.removed_image_path), opts)
+        unless @update_files
+          fileset.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
+        end
         fileset.save
         ::CreateDerivativesJob.set(wait: 1.minute).perform_later(fileset, fileset.files.first.id)
       end
