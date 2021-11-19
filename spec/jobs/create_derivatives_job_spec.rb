@@ -28,7 +28,7 @@ RSpec.describe CreateDerivativesJob do
       allow(file_set).to receive(:id).and_return(id)
       allow(file_set).to receive(:mime_type).and_return('audio/x-wav')
     end
-    
+
     let!(:upload_file) { Hyrax::WorkingDirectory.find_or_retrieve(file.id, file_set.id) }
 
     context "with a file name" do
@@ -37,7 +37,7 @@ RSpec.describe CreateDerivativesJob do
         expect(file_set).to receive(:reload)
         expect(file_set).to receive(:update_index)
         described_class.perform_now(file_set, file.id)
-        
+
         # Verify that the uploaded file was deleted
         expect(File.exist?(upload_file)).to be false
         expect(File.exist?(File.dirname(upload_file))).to be false
@@ -58,7 +58,7 @@ RSpec.describe CreateDerivativesJob do
           expect(file_set).to receive(:reload)
           expect(parent).to receive(:update_index)
           described_class.perform_now(file_set, file.id)
-          
+
           # Verify that the uploaded file was deleted
           expect(File.exist?(upload_file)).to be false
           expect(File.exist?(File.dirname(upload_file))).to be false
@@ -72,7 +72,7 @@ RSpec.describe CreateDerivativesJob do
           expect(file_set).to receive(:reload)
           expect(parent).not_to receive(:update_index)
           described_class.perform_now(file_set, file.id)
-          
+
           # Verify that the uploaded file was deleted
           expect(File.exist?(upload_file)).to be false
           expect(File.exist?(File.dirname(upload_file))).to be false
@@ -99,12 +99,13 @@ RSpec.describe CreateDerivativesJob do
     end
 
     before do
+      allow(Hydra::Works::VirusCheckerService).to receive(:file_has_virus?) { false }
       file_set.apply_depositor_metadata user.user_key
       file_set.save!
       file_set.original_file = file
       file_set.save!
     end
-    
+
     let!(:upload_file) { Hyrax::WorkingDirectory.find_or_retrieve(file.id, file_set.id) }
 
     it "runs a full text extract" do
@@ -117,7 +118,7 @@ RSpec.describe CreateDerivativesJob do
       expect(Hydra::Derivatives::FullTextExtract).to receive(:create)
         .with(/test\.pdf/, outputs: [{ url: RDF::URI, container: "extracted_text" }])
       described_class.perform_now(file_set, file.id)
-      
+
       # Verify that the uploaded file was deleted
       expect(File.exist?(upload_file)).to be false
       expect(File.exist?(File.dirname(upload_file))).to be false
