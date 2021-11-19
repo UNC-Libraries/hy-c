@@ -9,16 +9,25 @@ RSpec.describe CreateDerivativesJob do
     # There seems to be some confusion in the code and tests between the upload_path and the working_path and their
     # connected environment variables.
     cached_temp_storage = ENV['TEMP_STORAGE']
-    ENV['TEMP_STORAGE'] = "/hyrax/tmp/uploads/"
+    ENV['TEMP_STORAGE'] = temp_storage_path
     cached_data_storage = ENV['DATA_STORAGE']
-    ENV['DATA_STORAGE'] = "/hyrax/tmp/uploads/"
-    ffmpeg_enabled = Hyrax.config.enable_ffmpeg
-    Hyrax.config.enable_ffmpeg = true
+    ENV['DATA_STORAGE'] = data_storage_path
     example.run
-    Hyrax.config.enable_ffmpeg = ffmpeg_enabled
     ENV['TEMP_STORAGE'] = cached_temp_storage
     ENV['DATA_STORAGE'] = cached_data_storage
   end
+
+  before do
+    allow(Hyrax.config).to receive(:working_path).and_return(temp_storage_path)
+    allow(Hyrax.config).to receive(:upload_path).and_return(->() { Pathname.new data_storage_path })
+  end
+  # Quoth the Hyrax config:
+  # Location on local file system where uploaded files will be staged
+  # prior to being ingested into the repository or having derivatives generated.
+  let(:temp_storage_path) { File.join(fixture_path, "tmp") }
+
+  # Quoth the Hyrax config: "Temporary paths to hold uploads before they are ingested into FCrepo"
+  let(:data_storage_path) { File.join(fixture_path, "data") }
 
   context "with an audio file" do
     let(:id)       { '123' }
@@ -33,14 +42,12 @@ RSpec.describe CreateDerivativesJob do
     end
 
     before do
-      Rails.logger.debug "Hyrax config upload_path: #{Hyrax.config.upload_path.call.to_s}"
-      Rails.logger.debug "Hyrax config working directory: #{Hyrax.config.working_path}"
       allow(FileSet).to receive(:find).with(id).and_return(file_set)
       allow(file_set).to receive(:id).and_return(id)
       allow(file_set).to receive(:mime_type).and_return('audio/x-wav')
     end
 
-    let!(:upload_file) { File.join(Hyrax.config.upload_path.call.to_s, "uploads", "12", "3", "123", "picture.png") }
+    let!(:working_file) { Hyrax::WorkingDirectory.find_or_retrieve(test_file.id, file_set.id) }
 
     context "with a file name" do
       it 'calls create_derivatives and save on a file set' do
@@ -49,8 +56,8 @@ RSpec.describe CreateDerivativesJob do
         expect(file_set).to receive(:update_index)
         described_class.perform_now(file_set, test_file.id)
         # Verify that the uploaded file was deleted
-        expect(File.exist?(upload_file)).to be false
-        expect(File.exist?(File.dirname(upload_file))).to be false
+        expect(File.exist?(working_file)).to be false
+        expect(File.exist?(File.dirname(working_file))).to be false
       end
     end
 
@@ -69,9 +76,9 @@ RSpec.describe CreateDerivativesJob do
           expect(parent).to receive(:update_index)
           described_class.perform_now(file_set, test_file.id)
 
-          # Verify that the uploaded file was deleted
-          expect(File.exist?(upload_file)).to be false
-          expect(File.exist?(File.dirname(upload_file))).to be false
+          # Verify that the working file was deleted
+          expect(File.exist?(working_file)).to be false
+          expect(File.exist?(File.dirname(working_file))).to be false
         end
       end
 
@@ -83,9 +90,9 @@ RSpec.describe CreateDerivativesJob do
           expect(parent).not_to receive(:update_index)
           described_class.perform_now(file_set, test_file.id)
 
-          # Verify that the uploaded file was deleted
-          expect(File.exist?(upload_file)).to be false
-          expect(File.exist?(File.dirname(upload_file))).to be false
+          # Verify that the working file was deleted
+          expect(File.exist?(working_file)).to be false
+          expect(File.exist?(File.dirname(working_file))).to be false
         end
       end
     end
@@ -119,7 +126,7 @@ RSpec.describe CreateDerivativesJob do
       File.delete(temp_file_path) if File.exist?(temp_file_path)
     end
 
-    let!(:upload_file) { Hyrax::WorkingDirectory.find_or_retrieve(pdf_test_file.id, file_set.id) }
+    let!(:working_file) { Hyrax::WorkingDirectory.find_or_retrieve(pdf_test_file.id, file_set.id) }
 
     it "runs a full text extract" do
       expect(Hydra::Derivatives::PdfDerivatives).to receive(:create)
@@ -132,9 +139,9 @@ RSpec.describe CreateDerivativesJob do
         .with(/test\.pdf/, outputs: [{ url: RDF::URI, container: "extracted_text" }])
       described_class.perform_now(file_set, pdf_test_file.id)
 
-      # Verify that the uploaded file was deleted
-      expect(File.exist?(upload_file)).to be false
-      expect(File.exist?(File.dirname(upload_file))).to be false
+      # Verify that the working file was deleted
+      expect(File.exist?(working_file)).to be false
+      expect(File.exist?(File.dirname(working_file))).to be false
     end
   end
 end

@@ -7,33 +7,31 @@ class CreateDerivativesJob < Hyrax::ApplicationJob
   def perform(file_set, file_id, filepath = nil)
     # [hyc-override] cleanup video file even if ffmpeg is disabled
     if file_set.video? && !Hyrax.config.enable_ffmpeg
-      cleanup_uploaded_file(filepath)
+      cleanup_working_file(filepath)
       return
     end
     return if file_set.video? && !Hyrax.config.enable_ffmpeg
-    filename = Hyrax::WorkingDirectory.find_or_retrieve(file_id, file_set.id, filepath)
-
-    file_set.create_derivatives(filename)
+    working_file = Hyrax::WorkingDirectory.find_or_retrieve(file_id, file_set.id, filepath)
+    file_set.create_derivatives(working_file)
 
     # Reload from Fedora and reindex for thumbnail and extracted text
     file_set.reload
     file_set.update_index
     file_set.parent.update_index if parent_needs_reindex?(file_set)
-    
-    # [hyc-override] this is the last job, so cleanup the uploaded file
-    cleanup_uploaded_file(filename)
+
+    # [hyc-override] this is the last job, so cleanup the working file
+    cleanup_working_file(working_file)
   end
-  
-  # [hyc-override] Deletes the uploaded file if it is in the uploaded_files dir
-  def cleanup_uploaded_file(original_path)
+
+  # [hyc-override] Deletes the working file if it is in the working_files directory
+  def cleanup_working_file(file_path)
     # Expand path prior to delete in case it contains modifiers
-    filename = Pathname.new(original_path).expand_path.to_s
-    
-    upload_path = Hyrax.config.upload_path.call.expand_path.to_s
-    # Ensure the referenced file is from the uploaded files directory
-    if filename.start_with?(upload_path)
-      file_dir = File.dirname(filename)
-      Rails.logger.info("Finished with derivatives, cleaning up #{file_dir}")
+    working_file = Pathname.new(file_path).expand_path.to_s
+    working_path = Hyrax.config.working_path
+    # Ensure the referenced file is from the working files directory
+    if working_file.start_with?(working_path)
+      file_dir = File.dirname(working_file)
+      Rails.logger.info("Finished with derivatives, cleaning up working file: #{file_dir}")
       FileUtils.rm_rf(file_dir)
     end
   end
