@@ -5,11 +5,28 @@ require 'fileutils'
 
 RSpec.describe CreateDerivativesJob do
   around do |example|
+    cached_temp_storage = ENV['TEMP_STORAGE']
+    ENV['TEMP_STORAGE'] = temp_storage_path
+    cached_data_storage = ENV['DATA_STORAGE']
+    ENV['DATA_STORAGE'] = data_storage_path
     ffmpeg_enabled = Hyrax.config.enable_ffmpeg
     Hyrax.config.enable_ffmpeg = true
     example.run
     Hyrax.config.enable_ffmpeg = ffmpeg_enabled
+    ENV['TEMP_STORAGE'] = cached_temp_storage
+    ENV['DATA_STORAGE'] = cached_data_storage
   end
+
+  before do
+    allow(Hyrax.config).to receive(:working_path).and_return(temp_storage_path)
+    allow(Hyrax.config).to receive(:upload_path).and_return(->() { Pathname.new data_storage_path })
+  end
+
+  # TODO: Get tests passing when these are set to different values
+  # These tests currently assume that the upload_file is in the same place as the WorkingFile
+  # And as of 11/22/2021 they were in different places in production
+  let(:temp_storage_path) { File.join(fixture_path, "tmp") }
+  let(:data_storage_path) { File.join(fixture_path, "tmp") }
 
   context "with an audio file" do
     let(:id)       { '123' }
@@ -28,7 +45,7 @@ RSpec.describe CreateDerivativesJob do
       allow(file_set).to receive(:id).and_return(id)
       allow(file_set).to receive(:mime_type).and_return('audio/x-wav')
     end
-    
+
     let!(:upload_file) { Hyrax::WorkingDirectory.find_or_retrieve(file.id, file_set.id) }
 
     context "with a file name" do
@@ -37,7 +54,7 @@ RSpec.describe CreateDerivativesJob do
         expect(file_set).to receive(:reload)
         expect(file_set).to receive(:update_index)
         described_class.perform_now(file_set, file.id)
-        
+
         # Verify that the uploaded file was deleted
         expect(File.exist?(upload_file)).to be false
         expect(File.exist?(File.dirname(upload_file))).to be false
@@ -58,7 +75,7 @@ RSpec.describe CreateDerivativesJob do
           expect(file_set).to receive(:reload)
           expect(parent).to receive(:update_index)
           described_class.perform_now(file_set, file.id)
-          
+
           # Verify that the uploaded file was deleted
           expect(File.exist?(upload_file)).to be false
           expect(File.exist?(File.dirname(upload_file))).to be false
@@ -72,7 +89,7 @@ RSpec.describe CreateDerivativesJob do
           expect(file_set).to receive(:reload)
           expect(parent).not_to receive(:update_index)
           described_class.perform_now(file_set, file.id)
-          
+
           # Verify that the uploaded file was deleted
           expect(File.exist?(upload_file)).to be false
           expect(File.exist?(File.dirname(upload_file))).to be false
@@ -120,7 +137,7 @@ RSpec.describe CreateDerivativesJob do
       expect(Hydra::Derivatives::FullTextExtract).to receive(:create)
         .with(/test\.pdf/, outputs: [{ url: RDF::URI, container: "extracted_text" }])
       described_class.perform_now(file_set, file.id)
-      
+
       # Verify that the uploaded file was deleted
       expect(File.exist?(upload_file)).to be false
       expect(File.exist?(File.dirname(upload_file))).to be false
