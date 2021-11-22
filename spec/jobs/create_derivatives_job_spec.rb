@@ -86,6 +86,7 @@ RSpec.describe CreateDerivativesJob do
         let(:parent) { General.new }
 
         it "doesn't update the parent's index" do
+          expect(Rails.root.to_s).to eq "/hyrax"
           expect(file_set).to receive(:reload)
           expect(parent).not_to receive(:update_index)
           described_class.perform_now(file_set, file.id)
