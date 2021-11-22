@@ -86,7 +86,6 @@ RSpec.describe CreateDerivativesJob do
         let(:parent) { General.new }
 
         it "doesn't update the parent's index" do
-          expect(Rails.root.to_s).to eq "/hyrax"
           expect(file_set).to receive(:reload)
           expect(parent).not_to receive(:update_index)
           described_class.perform_now(file_set, file.id)
@@ -115,6 +114,7 @@ RSpec.describe CreateDerivativesJob do
     end
 
     before do
+      allow(Hydra::Works::VirusCheckerService).to receive(:file_has_virus?) { false }
       FileUtils.cp(File.join(fixture_path, "hyrax/hyrax_test4.pdf"), temp_pdf_path)
       file_set.apply_depositor_metadata user.user_key
       file_set.save!
