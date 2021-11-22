@@ -86,25 +86,28 @@ RSpec.describe CreateDerivativesJob do
       User.new(email: 'test@example.com', guest: false, uid: 'test') { |u| u.save!(validate: false)}
     end
     let(:file_set) { FileSet.new }
+    let(:temp_pdf_path) { File.join(fixture_path, "tmp", "hyrax_test4.pdf") }
 
     let(:file) do
       Hydra::PCDM::File.new do |f|
-        tmp_file = Tempfile.new
-        FileUtils.rm(tmp_file.path)
-        FileUtils.cp(File.join(fixture_path, "hyrax/hyrax_test4.pdf"), tmp_file.path)
-        f.content = File.open(tmp_file.path)
+        f.content = File.open(temp_pdf_path)
         f.original_name = 'test.pdf'
         f.mime_type = 'application/pdf'
       end
     end
 
     before do
+      FileUtils.cp(File.join(fixture_path, "hyrax/hyrax_test4.pdf"), temp_pdf_path)
       file_set.apply_depositor_metadata user.user_key
       file_set.save!
       file_set.original_file = file
       file_set.save!
     end
-    
+
+    after do
+      File.delete(temp_pdf_path) if File.exist?(temp_pdf_path)
+    end
+
     let!(:upload_file) { Hyrax::WorkingDirectory.find_or_retrieve(file.id, file_set.id) }
 
     it "runs a full text extract" do
