@@ -66,12 +66,14 @@ RSpec.describe Tasks::OnescienceIngestService do
       File.delete('spec/fixtures/onescience/1science_completed.log')
       File.delete('spec/fixtures/onescience/1science_deposit_record_id.log')
       File.delete('spec/fixtures/onescience/multiple_unc_affiliations.tsv')
+      File.delete('spec/fixtures/onescience/1science_skipped.log')
     end
 
     it "creates a new work" do
       allow(RegisterToLongleafJob).to receive(:perform_later).and_return(nil)
-      expect { Tasks::OnescienceIngestService.new(args).ingest }.to change{ Article.count }.by(1)
-                                                                        .and change{ DepositRecord.count }.by(1)
+      expect { Tasks::OnescienceIngestService.new(args).ingest }
+        .to change{ Article.count }.by(1)
+        .and change{ DepositRecord.count }.by(1)
       new_article = Article.all[-1]
       expect(new_article['depositor']).to eq 'admin'
       expect(new_article['title']).to match_array ['A Multi-Institutional Longitudinal Faculty Development Program in Humanism Supports the Professional Development of Faculty Teachers:']
@@ -89,6 +91,9 @@ RSpec.describe Tasks::OnescienceIngestService do
   end
 
   describe '#load_data' do
+    after do
+      File.delete('spec/fixtures/onescience/multiple_unc_affiliations.tsv')
+    end
     it 'loads onescience data' do
       service = Tasks::OnescienceIngestService.new(args).load_data
       expect(service[0]['Title']).to eq 'A Multi-Institutional Longitudinal Faculty Development Program in Humanism Supports the Professional Development of Faculty Teachers:'
@@ -96,6 +101,9 @@ RSpec.describe Tasks::OnescienceIngestService do
   end
 
   describe '#create_deposit_record' do
+    after do
+      File.delete('spec/fixtures/onescience/1science_deposit_record_id.log')
+    end
     it 'creates a deposit record for the onescience ingest batch' do
       expect { Tasks::OnescienceIngestService.new(args).create_deposit_record }.to change{ DepositRecord.count }.by(1)
     end
