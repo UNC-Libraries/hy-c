@@ -1,8 +1,12 @@
 require 'rails_helper'
 include Warden::Test::Helpers
+require 'active_fedora/cleaner'
 
 # NOTE: If you generated more than one work, you have to set 'js: true'
 RSpec.feature 'Edit a work', js: false do
+  before(:all) do
+    ActiveFedora::Cleaner.clean!
+  end
   context 'a logged in user with an admin set' do
     let(:admin_user) do
       User.find_by_user_key('admin')
@@ -104,6 +108,23 @@ RSpec.feature 'Edit a work', js: false do
     
     before do
       AdminSet.delete_all
+      Article.create!(
+        creator: ['Carroll, Lewis'],
+        depositor: "admin",
+        label: "Alice's Adventures in Wonderland",
+        title: ["Alice's Adventures in Wonderland"],
+        date_created: "2017-10-02T15:38:56Z",
+        date_modified:" 2017-10-02T15:38:56Z",
+        contributor: ['Smith, Jennifer'],
+        description: 'Abstract',
+        related_url: ['http://dx.doi.org/10.1186/1753-6561-3-S7-S87'],
+        publisher: ['Project Gutenberg'],
+        resource_type: ['Book'],
+        language: ['http://id.loc.gov/vocabulary/iso639-2/eng'],
+        language_label: ['English'],
+        rights_statement: 'http://www.europeana.eu/portal/rights/rr-r.html',
+        visibility: "open"
+      )
     end
     
     scenario do
