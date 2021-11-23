@@ -1,6 +1,15 @@
 require 'rails_helper'
 
 RSpec.describe Tasks::DoiCreateService do
+  around(:all) do |tests|
+    cached_use_test_api = ENV["DATACITE_USE_TEST_API"]
+    ENV["DATACITE_USE_TEST_API"] = "true"
+    cached_datacite_prefix = ENV['DATACITE_PREFIX']
+    ENV['DATACITE_PREFIX'] = "10.5077"
+    tests.run
+    ENV["DATACITE_USE_TEST_API"] = cached_use_test_api
+    ENV['DATACITE_PREFIX'] = cached_datacite_prefix
+  end
   describe '#initialize' do
     context 'when no row value is specified' do
       it 'sets class variables' do

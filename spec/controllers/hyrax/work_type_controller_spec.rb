@@ -1,4 +1,5 @@
 require 'rails_helper'
+require 'active_fedora/cleaner'
 
 RSpec.shared_examples 'a work type' do |model, pluralized_model|
   let(:user) do
@@ -13,6 +14,10 @@ RSpec.shared_examples 'a work type' do |model, pluralized_model|
     AdminSet.new(title: ['an admin set'],
                  description: ['some description'],
                  edit_users: [user.user_key])
+  end
+
+  before(:all) do
+    ActiveFedora::Cleaner.clean!
   end
 
   describe '#create' do
