@@ -24,7 +24,7 @@
   ```
   bundle exec rake test_setup RAILS_ENV=development
   ```
-  * Search in your development environment front end to find the ID for the object you you want to update (if using the UNC-CH VM this will be at localhost:4040, if you are running it locally on the default rails server, it will be at localhost:3000)
+  * Search in your development environment front end to find the ID for the object you want to update (if using the UNC-CH VM this will be at localhost:4040, if you are running it locally on the default rails server, it will be at localhost:3000)
   * Go into a rails console to retrieve objects
   ```
   bundle exec rails console RAILS_ENV=development
@@ -40,7 +40,7 @@
     work = YourModel.find("YourIdAsAString")
     work.to_solr.deep_symbolize_keys!
     ```
-    * Copy the output of this to the sample_solr_documents file. You may need to add a `:timestamp` in order for the `spec/requests/oai_pmh_endpoint_spec.rb` test to continue to pass.
+    * Copy the output of this to the sample_solr_documents file. Add a unique `:timestamp` value to the hash (e.g. `:timestamp => "2021-11-23T16:05:33.033Z"`) so that the `spec/requests/oai_pmh_endpoint_spec.rb` tests to continue to pass.
 
 #### Contact Information
 * Email: cdr@unc.edu
