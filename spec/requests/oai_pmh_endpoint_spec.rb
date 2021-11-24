@@ -1,4 +1,6 @@
 require "rails_helper"
+require Rails.root.join('spec/support/oai_sample_solr_documents.rb')
+
 
 RSpec.describe 'OAI-PMH catalog endpoint' do
   let(:repo_name) { 'Carolina Digital Repository' }
@@ -7,21 +9,29 @@ RSpec.describe 'OAI-PMH catalog endpoint' do
   let(:provider_config) { { repository_name: repo_name } }
   let(:document_config) { { limit: limit } }
   let(:oai_config) { { provider: provider_config, document: document_config } }
-  let(:timestamps) { Array.new(0) }
-
+  let(:timestamps) do
+    solrRecords['response']['docs'].map do |doc|
+      Time.parse(doc["timestamp"]).utc.iso8601
+    end.sort!
+  end
+  let(:solrRecords) do
+    ActiveFedora::SolrService.get('has_model_ssim:(Dissertation OR Article OR MastersPaper OR '+ 'HonorsThesis OR Journal OR DataSet OR Multimed OR ScholarlyWork ' + 'OR General OR Artwork) AND visibility_ssi:open', rows: 100)
+  end
+  before(:all) do
+    solr = Blacklight.default_index.connection
+    solr.delete_by_query('*:*')
+    solr.commit
+    solr.add([SLEEPY_HOLLOW, MYSTERIOUS_AFFAIR, BEOWULF, LEVIATHAN, PEASANTRY, GREAT_EXPECTATIONS, ILIAD, MISERABLES,
+      MOBY_DICK, WAR_AND_PEACE, JANE_EYRE, SHERLOCK_HOLMES, PRIDE_AND_PREJUDICE, ALICE_IN_WONDERLAND, UDEKURABE, GRIMM_FAIRY_TALES,
+      TOM_SAWYER, BEN_FRANKLIN, TIME_MACHINE, HUCK_FINN, COMMON_SENSE, BEING_EARNEST, SCARLET_LETTER, EMMA,
+      WUTHERING_HEIGHTS, DRACULA, PETER_PAN, DOKO_E, TALE_OF_TWO_CITIES, FRANKENSTEIN])
+    solr.commit
+  end
 
   before do
     CatalogController.configure_blacklight do |config|
       config.oai = oai_config
     end
-
-    solrRecords = ActiveFedora::SolrService.get('has_model_ssim:(Dissertation OR Article OR MastersPaper OR '+
-                                                    'HonorsThesis OR Journal OR DataSet OR Multimed OR ScholarlyWork '+
-                                                    'OR General OR Artwork) AND visibility_ssi:open', rows: 100)
-    solrRecords['response']['docs'].each do |doc|
-      timestamps << doc['timestamp']
-    end
-    timestamps.sort!
   end
 
   describe 'root page' do
@@ -58,9 +68,7 @@ RSpec.describe 'OAI-PMH catalog endpoint' do
 
       scenario 'a resumption token is provided' do
         params = { verb: 'ListRecords', metadataPrefix: format }
-        expected_token = 'oai_dc.f('+Time.parse(timestamps.first).utc.iso8601+').u('+
-            (Time.parse(timestamps.last)).utc.iso8601+').t('+timestamps.count.to_s+'):25'
-
+        expected_token = "oai_dc.f(#{timestamps.first}).u(#{timestamps.last}).t(#{timestamps.count}):25"
         get oai_catalog_path(params)
         token = xpath '//xmlns:resumptionToken'
         records = xpath '//xmlns:record'
@@ -73,8 +81,7 @@ RSpec.describe 'OAI-PMH catalog endpoint' do
         # This test checks the last page of records instead of the second
         page = (timestamps.count/25).floor * 25
         params = { verb: 'ListRecords',
-                   resumptionToken: 'oai_dc.f('+Time.parse(timestamps.first).utc.iso8601+').u('+
-                       (Time.parse(timestamps.last)).utc.iso8601+').t('+timestamps.count.to_s+'):'+page.to_s }
+                   resumptionToken: "oai_dc.f(#{timestamps.first}).u(#{timestamps.last}).t(#{timestamps.count}):#{page}" }
 
         get oai_catalog_path(params)
         records = xpath '//xmlns:record'
@@ -83,8 +90,8 @@ RSpec.describe 'OAI-PMH catalog endpoint' do
       end
 
       scenario 'the last page of records provides an empty resumption token' do
-        params = { verb: 'ListRecords', resumptionToken: 'oai_dc.f('+Time.parse(timestamps.first).utc.iso8601+').u('+
-            Time.parse(timestamps.last).utc.iso8601+').t(30):25' }
+        params = { verb: 'ListRecords',
+                   resumptionToken: "oai_dc.f(#{timestamps.first}).u(#{timestamps.last}).t(#{timestamps.count}):25" }
 
         get oai_catalog_path(params)
         token = xpath '//xmlns:resumptionToken'
@@ -110,52 +117,51 @@ RSpec.describe 'OAI-PMH catalog endpoint' do
     context 'with a from date' do
       scenario 'only records with a timestamp after the date are shown' do
         params = { verb: 'ListRecords', metadataPrefix: format,
-                   from: Time.parse(timestamps[timestamps.count-2]).utc.iso8601 }
+                   from: timestamps[timestamps.count-2] }
 
         get oai_catalog_path(params)
         records = xpath '//xmlns:record'
-
         expect(records.count).to be 2
-        expect(response.body).to include(Time.parse(timestamps[timestamps.count-1]).utc.iso8601)
-        expect(response.body).to include(Time.parse(timestamps[timestamps.count-2]).utc.iso8601)
-        expect(response.body).not_to include(Time.parse(timestamps[timestamps.count-3]).utc.iso8601)
+        expect(response.body).to include(timestamps[timestamps.count-1])
+        expect(response.body).to include(timestamps[timestamps.count-2])
+        expect(response.body).not_to include(timestamps[timestamps.count-3])
       end
 
       context 'and an until date' do
         scenario 'shows records between the dates' do
           params = { verb: 'ListRecords', metadataPrefix: format,
-                     from: Time.parse(timestamps[3]).utc.iso8601,
-                     until: Time.parse(timestamps[8]).utc.iso8601 }
+                     from: timestamps[3],
+                     until: timestamps[8] }
 
           get oai_catalog_path(params)
           records = xpath '//xmlns:record'
 
           expect(records.count).to be 6
-          expect(response.body).to include(Time.parse(timestamps[5]).utc.iso8601)
+          expect(response.body).to include(timestamps[5])
           # Should only include the first 10 items as per the limit
-          expect(response.body).not_to include(Time.parse(timestamps[10]).utc.iso8601)
-          expect(response.body).not_to include(Time.parse(timestamps[15]).utc.iso8601)
+          expect(response.body).not_to include(timestamps[10])
+          expect(response.body).not_to include(timestamps[15])
         end
       end
     end
 
     context 'with an until date' do
       scenario 'only records with a timestamp before the date are shown' do
-        params = { verb: 'ListRecords', metadataPrefix: format, until: Time.parse(timestamps[0]).utc.iso8601 }
+        params = { verb: 'ListRecords', metadataPrefix: format, until: timestamps[0] }
 
         get oai_catalog_path(params)
         records = xpath '//xmlns:record'
 
         expect(records.count).to be 1
-        expect(response.body).to include(Time.parse(timestamps[0]).utc.iso8601)
-        expect(response.body).not_to include(Time.parse(timestamps[1]).utc.iso8601)
+        expect(response.body).to include(timestamps[0])
+        expect(response.body).not_to include(timestamps[1])
       end
     end
   end
 
   describe 'GetRecord verb', :vcr do
-    solrRecords = ActiveFedora::SolrService.get('has_model_ssim:Article', rows: 50)
-    oai_identifier =  solrRecords['response']['docs'][0]['id']
+    let(:solrRecords) { ActiveFedora::SolrService.get('has_model_ssim:Article', rows: 50) }
+    let(:oai_identifier) { solrRecords['response']['docs'][0]['id'] }
 
     let(:params) { { verb: 'GetRecord', metadataPrefix: format, identifier: identifier } }
     let(:identifier) { 'oai:localhost:'+oai_identifier }
@@ -210,7 +216,6 @@ RSpec.describe 'OAI-PMH catalog endpoint' do
                                'xmlns' => 'http://www.openarchives.org/OAI/2.0/',
                                'dc' => 'http://purl.org/dc/elements/1.1/',
                                'oai_dc' => 'http://www.openarchives.org/OAI/2.0/oai_dc/'
-
           expect(descriptions.count).to be > 1
           expect(descriptions.text).to include('This set includes works in the default admin set.')
         end
@@ -226,10 +231,10 @@ RSpec.describe 'OAI-PMH catalog endpoint' do
   end
 
   describe 'ListIdentifiers verb' do
-    solrRecords = ActiveFedora::SolrService.get('has_model_ssim:Article', rows: 50, sort: 'timestamp asc')
+    let(:solrRecords) { ActiveFedora::SolrService.get('has_model_ssim:Article', rows: 50, sort: 'timestamp asc') }
     # The limit is currently 10, so we should expect to get the first 10 items
-    oai_identifier1 =  solrRecords['response']['docs'][0]['id']
-    oai_identifier2 =  solrRecords['response']['docs'][9]['id']
+    let(:oai_identifier1) { solrRecords['response']['docs'][0]['id'] }
+    let(:oai_identifier2) { solrRecords['response']['docs'][9]['id'] }
 
     let(:expected_ids) { %W(oai:localhost:#{oai_identifier1} oai:localhost:#{oai_identifier2}) }
 
