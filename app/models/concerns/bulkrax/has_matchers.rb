@@ -1,11 +1,6 @@
 # [hyc-override] updating the `multiple?` method to skip attributes without properties
 # frozen_string_literal: true
 
-# TODO(alishaevn): see if these rules can be adhered to, instead of disabled
-# rubocop:disable Metrics/AbcSize
-# rubocop:disable Metrics/ParameterLists
-# rubocop:disable Metrics/CyclomaticComplexity
-
 module Bulkrax
   module HasMatchers
     extend ActiveSupport::Concern
@@ -148,7 +143,3 @@ module Bulkrax
     end
   end
 end
-
-# rubocop:enable Metrics/AbcSize
-# rubocop:enable Metrics/ParameterLists
-# rubocop:enable Metrics/CyclomaticComplexity

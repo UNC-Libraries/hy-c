@@ -297,7 +297,7 @@ module Bulkrax
 
         r[file_mapping].split(/\s*[:;|]\s*/).map do |f|
           file = File.join(path_to_files, f.tr(' ', '_'))
-          if File.exist?(file) # rubocop:disable Style/GuardClause
+          if File.exist?(file)
             file
           else
             raise "File #{file} does not exist"

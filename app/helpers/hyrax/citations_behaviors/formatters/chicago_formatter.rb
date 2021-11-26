@@ -41,7 +41,6 @@ module Hyrax
           text << "." unless text =~ /\.$/
           whitewash(text)
         end
-        # rubocop:enable Metrics/MethodLength
 
         def format_date(pub_date); end
 

@@ -10,7 +10,6 @@ module Bulkrax
     define_model_callbacks :save, :create
     attr_reader :attributes, :object, :source_identifier_value, :klass, :replace_files, :update_files, :work_identifier
 
-    # rubocop:disable Metrics/ParameterLists
     def initialize(attributes:, source_identifier_value:, work_identifier:, replace_files: false, user: nil, klass: nil, update_files: false)
       @attributes = ActiveSupport::HashWithIndifferentAccess.new(attributes)
       @replace_files = replace_files
@@ -20,7 +19,6 @@ module Bulkrax
       @source_identifier_value = source_identifier_value
       @klass = klass || Bulkrax.default_work_type.constantize
     end
-    # rubocop:enable Metrics/ParameterLists
 
     def run
       arg_hash = { id: attributes[:id], name: 'UPDATE', klass: klass }
