@@ -78,6 +78,7 @@ group :development, :test do
 end
 
 group :development do
+  gem 'lefthook'
   # Access an IRB console on exception pages or by using <%= console %> anywhere in the code.
   gem 'web-console', '~> 3.7.0'
   gem 'listen', '~> 3.7.0'
