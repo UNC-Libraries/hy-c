@@ -69,6 +69,7 @@ gem 'bulkrax', '~> 1.0.0'
 gem 'willow_sword', github: 'notch8/willow_sword', ref: '0a669d7'
 
 group :development, :test do
+  gem 'bixby'
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', '~> 9.1.0', platform: :mri
   gem 'solr_wrapper', '~> 1.1.0'
