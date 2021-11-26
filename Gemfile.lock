@@ -551,7 +551,6 @@ GEM
       nokogiri (~> 1.8)
       parslet
       rdf (~> 3.0)
-    lefthook (0.7.7)
     legato (0.7.0)
       multi_json
     libv8 (7.3.492.27.1)
@@ -994,7 +993,6 @@ DEPENDENCIES
   hyrax (= 2.9.6)
   jbuilder (~> 2.11.2)
   jquery-rails (~> 4.4.0)
-  lefthook
   libv8 (~> 7.3)
   linkeddata (~> 3.1.1)
   listen (~> 3.7.0)
