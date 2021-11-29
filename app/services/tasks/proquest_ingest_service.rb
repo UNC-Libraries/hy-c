@@ -55,7 +55,7 @@ module Tasks
         end
         pdf_file = Dir.glob("#{unzipped_package_dir}/*.pdf")
         if pdf_file.count == 1
-          pdf_file = pdf_file.first.to_s
+          pdf_file.first.to_s
         else
           puts "[#{Time.now}] error: #{unzipped_package_dir} has more than 1 pdf file"
           next
@@ -187,7 +187,6 @@ module Tasks
       file.close
 
       file_full = Array.new(0)
-      representative = ''
       visibility_during_embargo = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
       visibility_after_embargo = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
       embargo_release_date = ''
@@ -235,12 +234,12 @@ module Tasks
 
       abstract = metadata.xpath('//DISS_content/DISS_abstract').text
 
-      advisor = metadata.xpath('//DISS_description/DISS_advisor/DISS_name').map do |advisor|
-        advisor.xpath('DISS_surname').text+', '+advisor.xpath('DISS_fname').text+' '+advisor.xpath('DISS_middle').text
+      advisor = metadata.xpath('//DISS_description/DISS_advisor/DISS_name').map do |advise|
+        advise.xpath('DISS_surname').text+', '+advise.xpath('DISS_fname').text+' '+advise.xpath('DISS_middle').text
       end
 
-      committee_members = metadata.xpath('//DISS_description/DISS_cmte_member/DISS_name').map do |advisor|
-        format_name(advisor)
+      committee_members = metadata.xpath('//DISS_description/DISS_cmte_member/DISS_name').map do |advise|
+        format_name(advise)
       end
       advisor += committee_members
 

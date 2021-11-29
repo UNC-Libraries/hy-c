@@ -1,7 +1,7 @@
 inherit_from: .rubocop_todo.yml
 
 AllCops:
-  TargetRubyVersion: 2.6
+  TargetRubyVersion: 2.6.7
 
 # This section consists of cops added since the last upgrade. Once the larger portion of the "todo" list is completed,
 # we can evaluate these for implementation.

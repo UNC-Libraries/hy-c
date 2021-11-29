@@ -39,7 +39,7 @@ class FileDownloadStat < Hyrax::Statistic
       redirect_path = redirect_lookup('new_path', filter_id)
 
       if redirect_path
-        filter_id = "#{filter_id}|#{redirect_path['uuid']}"
+        "#{filter_id}|#{redirect_path['uuid']}"
       end
 
       { file_id: file.id }
