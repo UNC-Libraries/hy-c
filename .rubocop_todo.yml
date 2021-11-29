@@ -1242,3 +1242,5 @@ Style/ZeroLengthPredicate:
 # URISchemes: http, https
 Layout/LineLength:
   Max: 754
+  Exclude:
+    - 'spec/support/oai_sample_solr_documents.rb'
