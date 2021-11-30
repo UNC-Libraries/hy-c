@@ -27,7 +27,7 @@
   * Search in your development environment front end to find the ID for the object you want to update (if using the UNC-CH VM this will be at localhost:4040, if you are running it locally on the default rails server, it will be at localhost:3000)
   * Go into a rails console to retrieve objects
   ```
-  bundle exec rails console RAILS_ENV=development
+  bundle exec rails console RAILS_ENV=development 
   ```
   * On the rails console, find the object.
     * If the url is https://localhost:4040/concern/articles/5x21tf41f?locale=en then the model is `Article` and the id is `5x21tf41f`.
