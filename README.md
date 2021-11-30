@@ -19,6 +19,18 @@
 * Import scripts for new ProQuest deposits
 * Merges old and new analytics data from Google Analytics
 
+##### Sage ingest rake task
+* From the command line, run
+```bash
+bundle exec rake sage:ingest[PATH_TO_CONFIG]
+```
+ e.g.
+```bash
+bundle exec rake sage:ingest[/hyrax/spec/fixtures/sage/sage_config.yml]
+```
+* See [example config file](spec/fixtures/sage/sage_config.yml).
+* The beginning and ending of the rake task will be output to the console, the remaining events will be logged to the rails log and tagged with "Sage ingest".
+
 #### Testing
 ##### RSpec Testing
 * Creating Solr fixture objects (see `spec/support/oai_sample_solr_documents.rb` )
