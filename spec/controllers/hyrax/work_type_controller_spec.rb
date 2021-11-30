@@ -1,4 +1,5 @@
 require 'rails_helper'
+require 'active_fedora/cleaner'
 
 RSpec.shared_examples 'a work type' do |model, pluralized_model|
   let(:user) do
@@ -15,6 +16,10 @@ RSpec.shared_examples 'a work type' do |model, pluralized_model|
                  edit_users: [user.user_key])
   end
 
+  before(:all) do
+    ActiveFedora::Cleaner.clean!
+  end
+  
   describe '#create' do
     let(:actor) { double(create: true) }
     let(:work) { model.create(title: ['new work to be created']) }
@@ -213,7 +218,7 @@ RSpec.shared_examples 'a work type' do |model, pluralized_model|
       before do
         sign_in admin_user
       end
-      
+
       it 'is successful' do
         work_count # needs to be set before work is deleted
         delete :destroy, params: { id: work.id }
