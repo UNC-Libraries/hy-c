@@ -54,9 +54,7 @@ module Tasks
           next
         end
         pdf_file = Dir.glob("#{unzipped_package_dir}/*.pdf")
-        if pdf_file.count == 1
-          pdf_file.first.to_s
-        else
+        unless pdf_file.count == 1
           puts "[#{Time.now}] error: #{unzipped_package_dir} has more than 1 pdf file"
           next
         end
