@@ -1,3 +1,4 @@
+# # TODO: Add tests for this model
 # [hyc-override] filter ga stats by old and new ids
 class FileDownloadStat < Hyrax::Statistic
   self.cache_column = :downloads
@@ -16,13 +17,13 @@ class FileDownloadStat < Hyrax::Statistic
 
       # [hyc-override] add old id to filter query if work was migrated
       # check if file was migrated
-      filter_id = file.id
+      redirect_path = redirect_lookup('new_path', file.id)
 
-      redirect_path = redirect_lookup('new_path', filter_id)
-
-      if redirect_path
-        filter_id = "#{filter_id}|#{redirect_path['uuid']}"
-      end
+      filter_id = if redirect_path
+                    "#{file.id}|#{redirect_path['uuid']}"
+                  else
+                    file.id
+                  end
 
       profile.hyrax__download(sort: 'date',
                               start_date: start_date,
@@ -33,14 +34,13 @@ class FileDownloadStat < Hyrax::Statistic
     # [hyc-override] add old id to filter query if work was migrated
     # this is called by the parent class
     def filter(file)
-      filter_id = file.id
+      redirect_path = redirect_lookup('new_path', file.id)
 
-      # check if file was migrated
-      redirect_path = redirect_lookup('new_path', filter_id)
-
-      if redirect_path
-        filter_id = "#{filter_id}|#{redirect_path['uuid']}"
-      end
+      _filter_id = if redirect_path
+                     "#{file.id}|#{redirect_path['uuid']}"
+                   else
+                     file.id
+                   end
 
       { file_id: file.id }
     end
