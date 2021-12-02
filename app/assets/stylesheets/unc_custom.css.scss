@@ -312,6 +312,14 @@ div.person {
   height: 30px;
 }
 
+#unc-version-footer {
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  width: 100%;
+  margin-top: 10px;
+}
+
 #unc-footer {
   background-color: $carolina-blue-dark;
 

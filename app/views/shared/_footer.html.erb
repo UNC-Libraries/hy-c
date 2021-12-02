@@ -2,15 +2,28 @@
 <footer id="unc-footer" class="navbar navbar-inverse navbar-fixed-bottom">
   <div class="container-fluid">
     <div class="navbar-text">
-      <ul class="navbar-nav list-unstyled">
-        <li><%= link_to t('hyrax.links.home'), '/' %></li>
-        <li><%= link_to t('hyrax.links.browse_collections'), main_app.search_catalog_path(f: { human_readable_type_sim: ["Collection"]}) %></li>
-        <li><%= link_to t('hyrax.links.help'), "https://blogs.lib.unc.edu/cdr" %></li>
-        <li><%= link_to t('hyrax.links.contact'), "https://blogs.lib.unc.edu/cdr/index.php/contact-us" %></li>
-        <li><%= link_to t('hyrax.links.library_home'), "https://library.unc.edu" %></li>
-        <li><%= link_to t('hyrax.links.privacy_policy'), "https://library.unc.edu/privacy-policy" %></li>
-        <li><%= link_to t('hyrax.links.accessibility'), "https://digitalaccess.unc.edu/report" %></li>
-      </ul>
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <ul class="navbar-nav list-unstyled">
+              <li><%= link_to t('hyrax.links.home'), '/' %></li>
+              <li><%= link_to t('hyrax.links.browse_collections'), main_app.search_catalog_path(f: { human_readable_type_sim: ["Collection"]}) %></li>
+              <li><%= link_to t('hyrax.links.help'), "https://blogs.lib.unc.edu/cdr" %></li>
+              <li><%= link_to t('hyrax.links.contact'), "https://blogs.lib.unc.edu/cdr/index.php/contact-us" %></li>
+              <li><%= link_to t('hyrax.links.library_home'), "https://library.unc.edu" %></li>
+              <li><%= link_to t('hyrax.links.privacy_policy'), "https://library.unc.edu/privacy-policy" %></li>
+              <li><%= link_to t('hyrax.links.accessibility'), "https://digitalaccess.unc.edu/report" %></li>
+            </ul>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <div id="unc-version-footer">
+              <span title="<%= GIT_SHA %>">Version <%= BRANCH %>, <%= LAST_DEPLOYED %></span>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </footer>
