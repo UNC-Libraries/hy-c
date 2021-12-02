@@ -611,6 +611,7 @@ Metrics/ModuleLength:
     - 'app/helpers/blacklight/facets_helper_behavior.rb'
     - 'app/lib/bulkrax.rb'
     - 'app/models/concerns/bulkrax/has_matchers.rb'
+    - 'app/models/concerns/bulkrax/file_factory.rb'
 
 # Offense count: 3
 # Configuration parameters: Max, CountKeywordArgs.

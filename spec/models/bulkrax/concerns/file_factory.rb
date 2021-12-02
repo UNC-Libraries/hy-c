@@ -40,7 +40,7 @@ RSpec.describe Bulkrax::FileFactory do
     file_set.destroy!
   end
 
-  let(:local_file_sets)  { [file_set] }
+  let(:local_file_sets) { [file_set] }
 
   it 'leaves updated files with their current access level' do
     file_attributes(true)
