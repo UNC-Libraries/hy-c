@@ -19,7 +19,14 @@
         <div class="row">
           <div class="col-12">
             <div id="unc-version-footer">
-              <span title="<%= GIT_SHA %>">Version <%= BRANCH %>, <%= LAST_DEPLOYED %></span>
+              <span title="<%= GIT_SHA %>"><%= link_to("Hy-C version #{BRANCH}, #{LAST_DEPLOYED}", "https://github.com/UNC-Libraries/hy-c") %></span>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <div id="unc-version-footer">
+              <span><%= link_to("Hyrax version #{HYRAX_VERSION}", "https://hyrax.samvera.org/") %></span>
             </div>
           </div>
         </div>

@@ -9,7 +9,32 @@ RSpec.feature 'custom shared footer' do
     expect(page).to have_css("#unc-version-footer")
   end
 
-  it "displays that it's not in a deployed environment" do
-    expect(page).to have_content("not in deployed environment")
+  it "has the Hyrax version from the gemfile" do
+    expect(page).to have_link("Hyrax version", href: "https://hyrax.samvera.org/")
+    expect(page).to have_link("Hy-C version")
+  end
+
+  context "in the development environment" do
+    before do
+      allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new("development"))
+    end
+
+    it "displays that it's not in a deployed environment" do
+      expect(page).to have_content("not in deployed environment")
+    end
+  end
+
+  context "in a deployed environment" do
+    before do
+      Rails.logger.debug("in test 'before' block, before 'allow': #{Rails.env}")
+      allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new("production"))
+      Rails.logger.debug("in test 'before' block, after 'allow': #{Rails.env}")
+    end
+
+    it "displays data based on the directory it's in" do
+      pending("Cannot mock production environment in initializer")
+      Rails.logger.debug("in test 'it' block: #{Rails.env}")
+      expect(page).to have_content("deployed some_date")
+    end
   end
 end

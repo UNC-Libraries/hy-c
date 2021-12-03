@@ -317,7 +317,11 @@ div.person {
   align-items: center;
   display: flex;
   width: 100%;
-  margin-top: 10px;
+  margin-top: 10px
+}
+
+#unc-version-footer > span > a {
+  color: inherit;
 }
 
 #unc-footer {
