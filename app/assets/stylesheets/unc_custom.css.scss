@@ -312,17 +312,7 @@ div.person {
   height: 30px;
 }
 
-#unc-version-footer {
-  justify-content: center;
-  align-items: center;
-  display: flex;
-  width: 100%;
-  margin-top: 10px
-}
 
-#unc-version-footer > span > a {
-  color: inherit;
-}
 
 #unc-footer {
   background-color: $carolina-blue-dark;
@@ -925,7 +915,7 @@ li {
   }
 
   ul.navbar-nav {
-    margin-top: 8px;
+    margin: 8px auto;
     padding-left: 20px;
   }
 }
