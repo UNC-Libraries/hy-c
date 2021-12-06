@@ -324,12 +324,23 @@ div.person {
     width: 100%;
   }
 
+  a {
+    color: $text-color;
+  }
+
   ul {
+    margin: auto;
+
     li {
+      color: $text-color;
       display: inline-block;
       margin: -10px 0 0 15px;
       padding-right: 15px;
       border-right: 1px solid $text-color;
+
+      &:first-child {
+        margin-left: 0;
+      }
 
       &:last-child {
         border-right: none;
@@ -916,7 +927,6 @@ li {
 
   ul.navbar-nav {
     margin: 8px auto;
-    padding-left: 20px;
   }
 }
 
