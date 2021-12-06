@@ -7,12 +7,12 @@ LAST_DEPLOYED = if Rails.env.production?
                   directory_name = `pwd -P`.chomp
                   deploy_date = directory_name.match(/\d+/).try(:[], 0)
                   begin
-                    Date.parse(deploy_date).strftime("deployed on %B %-d, %Y")
+                    Date.parse(deploy_date).strftime("Deployed on %B %-d, %Y")
                   rescue ArgumentError, TypeError
-                    "cannot determine deploy date"
+                    "Cannot determine deploy date"
                   end
                 else
-                  "not in deployed environment"
+                  "Not in deployed environment"
                 end
 
 HYRAX_VERSION = Gem.loaded_specs["hyrax"].version.to_s

@@ -11,7 +11,7 @@ RSpec.feature 'custom shared footer' do
 
   it "has the Hyrax version from the gemfile" do
     expect(page).to have_link("Hyrax version", href: "https://hyrax.samvera.org/")
-    expect(page).to have_link("Hy-C version")
+    expect(page).to have_link("Hy-C")
   end
 
   context "in the development environment" do
@@ -20,7 +20,7 @@ RSpec.feature 'custom shared footer' do
     end
 
     it "displays that it's not in a deployed environment" do
-      expect(page).to have_content("not in deployed environment")
+      expect(page).to have_content("Not in deployed environment")
     end
   end
 
@@ -34,7 +34,7 @@ RSpec.feature 'custom shared footer' do
     it "displays data based on the directory it's in" do
       pending("Cannot mock production environment in initializer")
       Rails.logger.debug("in test 'it' block: #{Rails.env}")
-      expect(page).to have_content("deployed some_date")
+      expect(page).to have_content("Deployed some_date")
     end
   end
 end

@@ -1,5 +1,5 @@
 <%# [hyc-override] Overriding partial in hyrax gem to update homepage %>
-<footer id="unc-footer" class="navbar navbar-inverse navbar-fixed-bottom">
+<footer id="unc-footer" class="navbar navbar-inverse site-footer">
   <div class="container-fluid">
     <div class="navbar-text">
       <div class="container-fluid">
@@ -18,8 +18,9 @@
         </div>
         <div class="row">
           <div class="col-12">
-              <ul id="unc-version-footer" class="navbar-nav list-unstyled">
-                <li title="<%= GIT_SHA %>"><%= link_to("Hy-C version #{BRANCH}, #{LAST_DEPLOYED}", "https://github.com/UNC-Libraries/hy-c") %></li>
+              <ul class="navbar-nav list-unstyled">
+                <li title="<%= GIT_SHA %>"><%= link_to("Hy-C #{BRANCH}", "https://github.com/UNC-Libraries/hy-c") %></li>
+                <li><%= LAST_DEPLOYED %></li>
                 <li><%= link_to("Hyrax version #{HYRAX_VERSION}", "https://hyrax.samvera.org/") %></li>
               </ul>
           </div>
