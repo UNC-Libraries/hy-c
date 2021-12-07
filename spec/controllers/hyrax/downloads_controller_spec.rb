@@ -3,14 +3,19 @@ require 'rails_helper'
 RSpec.describe Hyrax::DownloadsController, type: :controller do
   # app/controllers/concerns/hyrax/download_analytics_behavior.rb:8
   describe '#track_download' do
-    before do
-      Hyrax.config.google_analytics_id = 'blah'
-      stub_request(:post, "http://www.google-analytics.com/collect").to_return(status: 200, body: "", headers: {})
+    WebMock.after_request do |request_signature, response|
+      Rails.logger.debug("Request #{request_signature} was made and #{response} was returned")
     end
 
     it "has the method for tracking analytics for download" do
+      allow(Hyrax.config).to receive(:google_analytics_id).and_return('blah')
+      allow(controller.request).to receive(:referrer).and_return('http://example.com')
+      stub = stub_request(:post, "http://www.google-analytics.com/collect")
+               .with(body: /dr=http%3A%2F%2Fexample.com/)
+               .to_return(status: 200, body: "", headers: {})
       expect(controller).to respond_to(:track_download)
       expect(controller.track_download).to be_a_kind_of Net::HTTPOK
+      expect(stub).to have_been_requested.times(1) # must be after the method call that creates request
     end
   end
 
