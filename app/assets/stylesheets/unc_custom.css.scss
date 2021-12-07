@@ -347,6 +347,10 @@ div.person {
       }
     }
   }
+
+  #unc-version-footer {
+    margin-top: 15px;
+  }
 }
 
 div.unc-modal {
@@ -713,6 +717,10 @@ li {
     ul li {
       padding-top: 10px;
       border-right: none;
+    }
+
+    #unc-version-footer {
+      margin-top: auto;
     }
   }
 
