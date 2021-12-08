@@ -309,8 +309,10 @@ div.person {
 }
 
 .site-footer, .social {
-  height: 30px;
+  height: auto;
 }
+
+
 
 #unc-footer {
   background-color: $carolina-blue-dark;
@@ -322,17 +324,32 @@ div.person {
     width: 100%;
   }
 
+  a {
+    color: $text-color;
+  }
+
   ul {
+    margin: auto;
+
     li {
+      color: $text-color;
       display: inline-block;
       margin: -10px 0 0 15px;
       padding-right: 15px;
       border-right: 1px solid $text-color;
 
+      &:first-child {
+        margin-left: 0;
+      }
+
       &:last-child {
         border-right: none;
       }
     }
+  }
+
+  #unc-version-footer {
+    margin-top: 15px;
   }
 }
 
@@ -701,6 +718,10 @@ li {
       padding-top: 10px;
       border-right: none;
     }
+
+    #unc-version-footer {
+      margin-top: auto;
+    }
   }
 
   #unc-featured {
@@ -863,6 +884,7 @@ li {
   #unc-footer {
     ul li {
       display: block;
+      margin-left: 0;
       margin-top: 5px;
     }
   }
@@ -913,8 +935,7 @@ li {
   }
 
   ul.navbar-nav {
-    margin-top: 8px;
-    padding-left: 20px;
+    margin: 8px auto;
   }
 }
 
