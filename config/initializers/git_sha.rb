@@ -1,5 +1,11 @@
 GIT_SHA = `git rev-parse HEAD`.chomp
-BRANCH = `git rev-parse --abbrev-ref HEAD`.chomp
+branch_name = `git rev-parse --abbrev-ref HEAD`.chomp
+git_tag_name = `git describe --tags`.chomp
+BRANCH = if branch_name == 'HEAD'
+           git_tag_name
+         else
+           branch_name
+         end
 Rails.logger.debug("in initializer: #{Rails.env}")
 LAST_DEPLOYED = if Rails.env.production?
                   # on cdr-test this returns /net/deploy/ir/test/releases/DEPLOY_DATE
