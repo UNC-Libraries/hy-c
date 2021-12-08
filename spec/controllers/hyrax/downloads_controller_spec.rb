@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Hyrax::DownloadsController, type: :controller do
+  routes { Hyrax::Engine.routes }
   # app/controllers/concerns/hyrax/download_analytics_behavior.rb:8
   describe '#track_download' do
     WebMock.after_request do |request_signature, response|
@@ -17,8 +18,9 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
     end
 
     context "with a created work" do
+      let(:user) { FactoryBot.create(:user) }
       before { sign_in user }
-      routes { Hyrax::Engine.routes }
+      let(:file_set) do
         FactoryBot.create(:file_with_work, user: user, content: File.open(fixture_path + '/files/image.png'))
       end
       let(:default_image) { ActionController::Base.helpers.image_path 'default.png' }
