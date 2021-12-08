@@ -19,7 +19,7 @@ RSpec.shared_examples 'a work type' do |model, pluralized_model|
   before(:all) do
     ActiveFedora::Cleaner.clean!
   end
-  
+
   describe '#create' do
     let(:actor) { double(create: true) }
     let(:work) { model.create(title: ['new work to be created']) }
@@ -199,38 +199,46 @@ RSpec.shared_examples 'a work type' do |model, pluralized_model|
   end
 
   describe '#destroy' do
-    let(:work) { model.last }
-    let!(:work_count) { model.all.count }
-
     context 'as a non-admin' do
+      let(:undeleted_work) { model.create(title: ['work that won\'t be deleted']) }
+      let(:work_count) { model.all.count }
+
       before do
         sign_in user
       end
 
       it 'is not successful' do
-        delete :destroy, params: { id: work.id }
+        undeleted_work
+        work_count
+        delete :destroy, params: { id: undeleted_work.id }
         expect(response.status).to eq 401
         expect(model.all.count).to eq work_count
       end
     end
 
     context 'as an admin' do
+      let(:work_to_be_deleted) { model.create(title: ['work that will be deleted']) }
+      let(:work_count) { model.all.count }
       before do
         sign_in admin_user
       end
 
       it 'is successful' do
+        work_to_be_deleted
         work_count # needs to be set before work is deleted
-        delete :destroy, params: { id: work.id }
+        delete :destroy, params: { id: work_to_be_deleted.id }
         expect(response).to redirect_to '/dashboard/my/works?locale=en'
         expect(model.all.count).to eq (work_count-1)
-        expect(flash[:notice]).to eq "Deleted #{work.title.first}"
+        expect(flash[:notice]).to eq "Deleted #{work_to_be_deleted.title.first}"
       end
     end
 
     context 'as an unauthenticated user' do
+      let(:undeleted_work) { model.create(title: ['work that won\'t be deleted']) }
+      let(:work_count) { model.all.count }
+
       it 'is not successful' do
-        delete :destroy, params: { id: work.id }
+        delete :destroy, params: { id: undeleted_work.id }
         expect(response.status).to redirect_to '/users/sign_in?locale=en'
         expect(flash[:alert]).to eq 'You are not authorized to access this page.'
       end

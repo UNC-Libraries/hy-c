@@ -33,7 +33,13 @@ bundle exec rake sage:ingest[/hyrax/spec/fixtures/sage/sage_config.yml]
 
 #### Testing
 ##### RSpec Testing
-* Creating Solr fixture objects (see `spec/support/oai_sample_solr_documents.rb` )
+###### Running the tests
+  * On the command line, run `bundle exec rspec`.
+  * In order to run an individual file, run the command with the path to the spec file, e.g. `bundle exec rspec spec/models/article_spec.rb`
+    * In order to run a single test within that file, include the line number the test starts on, e.g. `bundle exec rspec spec/models/article_spec.rb:35`
+  * If you have a test that sometimes passes and sometimes fails (aka a "flaky test"), it's possible there is an order dependency in the tests. RSpec should output a "seed" number after each run, which determines the test order. You can re-run with the same order by running `bundle exec rspec --seed FAILING_SEED_NUMBER`. You can narrow down which order is creating the failure by using the `--bisect` flag, e.g. `bundle exec rspec --seed FAILING_SEED_NUMBER --bisect`. For more information, see https://relishapp.com/rspec/rspec-core/docs/command-line/bisect.
+
+###### Creating Solr fixture objects (see `spec/support/oai_sample_solr_documents.rb` )
   * Run the test_setup rake task in order to get all the fixtures in the development environment
   ```
   bundle exec rake test_setup RAILS_ENV=development
