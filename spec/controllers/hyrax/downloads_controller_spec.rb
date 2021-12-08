@@ -26,6 +26,7 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
       let(:default_image) { ActionController::Base.helpers.image_path 'default.png' }
 
       it "can use a fake request" do
+        allow(Hydra::Works::VirusCheckerService).to receive(:file_has_virus?) { false }
         allow(SecureRandom).to receive(:uuid).and_return('555')
         allow(Hyrax.config).to receive(:google_analytics_id).and_return('blah')
         request.env['HTTP_REFERER'] = 'http://example.com'
