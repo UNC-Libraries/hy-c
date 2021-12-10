@@ -69,10 +69,12 @@ gem 'bulkrax', '~> 1.0.0'
 gem 'willow_sword', github: 'notch8/willow_sword', ref: '0a669d7'
 
 group :development, :test do
-  # Samvera flavor of Rubocop for style and error checking (linter)
-  gem 'bixby'
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', '~> 9.1.0', platform: :mri
+  # Rubocop for style and error checking (linter)
+  gem 'rubocop'
+  gem 'rubocop-rails'
+  gem 'rubocop-rspec'
   gem 'solr_wrapper', '~> 1.1.0'
   gem 'fcrepo_wrapper', '~> 0.8.0'
   gem 'rspec-rails', '~> 3.6.1'

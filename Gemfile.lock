@@ -115,12 +115,6 @@ GEM
       i18n
     bcrypt (3.1.16)
     bindex (0.8.1)
-    bixby (3.0.2)
-      rubocop (= 0.85.1)
-      rubocop-ast (~> 0.3.0)
-      rubocop-performance
-      rubocop-rails
-      rubocop-rspec
     blacklight (6.24.0)
       bootstrap-sass (~> 3.2)
       deprecation
@@ -648,7 +642,7 @@ GEM
     orm_adapter (0.5.0)
     os (1.1.1)
     parallel (1.21.0)
-    parser (3.0.3.1)
+    parser (3.0.3.2)
       ast (~> 2.4.1)
     parslet (2.0.0)
     passenger (5.3.7)
@@ -771,7 +765,7 @@ GEM
       redis (>= 3.0.4)
     redlock (1.2.2)
       redis (>= 3.0.0, < 5.0)
-    regexp_parser (2.1.1)
+    regexp_parser (2.2.0)
     representable (3.1.1)
       declarative (< 0.1.0)
       trailblazer-option (>= 0.1.1, < 0.2.0)
@@ -810,25 +804,23 @@ GEM
       rspec-mocks (~> 3.6.0)
       rspec-support (~> 3.6.0)
     rspec-support (3.6.0)
-    rubocop (0.85.1)
+    rubocop (1.23.0)
       parallel (~> 1.10)
-      parser (>= 2.7.0.1)
+      parser (>= 3.0.0.0)
       rainbow (>= 2.2.2, < 4.0)
-      regexp_parser (>= 1.7)
+      regexp_parser (>= 1.8, < 3.0)
       rexml
-      rubocop-ast (>= 0.0.3)
+      rubocop-ast (>= 1.12.0, < 2.0)
       ruby-progressbar (~> 1.7)
-      unicode-display_width (>= 1.4.0, < 2.0)
-    rubocop-ast (0.3.0)
-      parser (>= 2.7.1.4)
-    rubocop-performance (1.7.1)
-      rubocop (>= 0.82.0)
-    rubocop-rails (2.6.0)
+      unicode-display_width (>= 1.4.0, < 3.0)
+    rubocop-ast (1.14.0)
+      parser (>= 3.0.1.1)
+    rubocop-rails (2.12.4)
       activesupport (>= 4.2.0)
       rack (>= 1.1)
-      rubocop (>= 0.82.0)
-    rubocop-rspec (1.41.0)
-      rubocop (>= 0.68.1)
+      rubocop (>= 1.7.0, < 2.0)
+    rubocop-rspec (2.6.0)
+      rubocop (~> 1.19)
     ruby-box (1.15.0)
       addressable
       json
@@ -944,7 +936,7 @@ GEM
     uber (0.1.0)
     uglifier (4.2.0)
       execjs (>= 0.3.0, < 3)
-    unicode-display_width (1.8.0)
+    unicode-display_width (2.1.0)
     unicode-types (1.6.0)
     validatable (1.6.7)
     warden (1.2.9)
@@ -971,7 +963,6 @@ PLATFORMS
 
 DEPENDENCIES
   active-fedora (~> 12.1.1)
-  bixby
   blacklight_advanced_search (~> 6.4.1)
   blacklight_oai_provider (= 6.0.0.pre1)
   blacklight_range_limit (= 6.5.0)
@@ -1013,6 +1004,9 @@ DEPENDENCIES
   rsolr (~> 2.0.2)
   rspec-mocks
   rspec-rails (~> 3.6.1)
+  rubocop
+  rubocop-rails
+  rubocop-rspec
   sass-rails (~> 5.0.6)
   shoulda-matchers (~> 5.0.0)
   sidekiq (~> 5.2.9)
