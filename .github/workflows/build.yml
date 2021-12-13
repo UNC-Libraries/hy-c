@@ -114,6 +114,7 @@ jobs:
       run: |
         bundle exec rake hydra:test_server &
         sleep 150
+        curl -v http://127.0.0.1:8986/rest &
         bundle exec rake test_setup RAILS_ENV=test
 
     - name: Run rspec tests
