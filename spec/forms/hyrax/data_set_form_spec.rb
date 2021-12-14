@@ -26,7 +26,7 @@ RSpec.describe Hyrax::DataSetForm do
                                      :language, :keyword, :related_url, :license, :note, :contributor, :subject,
                                      :rights_statement, :language_label, :license_label, :rights_statement_label,
                                      :deposit_agreement, :agreement, :admin_note]
-}    
+    }    
   end
   
   describe "#admin_only_terms" do
@@ -34,7 +34,7 @@ RSpec.describe Hyrax::DataSetForm do
 
     it { is_expected.to match_array [:dcmi_type, :access, :doi, :extent, :rights_holder, :rights_statement,
                                      :copyright_date, :admin_note]
-}    
+    }    
   end
   
   describe 'default value set' do
@@ -55,56 +55,56 @@ RSpec.describe Hyrax::DataSetForm do
   describe ".model_attributes" do
     let(:params) do
       ActionController::Parameters.new(
-          title: 'data set name', # single-valued
-          visibility: 'open',
-          representative_id: '456',
-          thumbnail_id: '789',
-          keyword: ['data set'],
-          member_of_collection_ids: ['123456', 'abcdef'],
-          abstract: ['an abstract'],
-          access: 'public',
-          contributors_attributes: { '0' => { name: 'contributor',
-                                          orcid: 'contributor orcid',
-                                          affiliation: 'Carolina Center for Genome Sciences',
-                                          other_affiliation: 'another affiliation'} },
-          creators_attributes: { '0' => { name: 'creator',
-                                          orcid: 'creator orcid',
-                                          affiliation: 'Carolina Center for Genome Sciences',
-                                          other_affiliation: 'another affiliation',
-                                          index: 1},
-                                 '1' => {name: 'creator2',
-                                         orcid: 'creator2 orcid',
-                                         affiliation: 'Department of Chemistry',
-                                         other_affiliation: 'another affiliation',
-                                         index: 2} },
-          date_issued: '2018-01-08',
-          dcmi_type: ['http://purl.org/dc/dcmitype/Dataset'],
-          copyright_date: '2018',
-          doi: '12345',
-          extent: ['1993'],
-          funder: ['dean'],
-          based_near: ['California'],
-          kind_of_data: 'some data',
-          last_modified_date: '2018-01-23',
-          language: ['http://id.loc.gov/vocabulary/iso639-2/eng'],
-          license: 'http://creativecommons.org/licenses/by/3.0/us/',
-          methodology: 'My methods',
-          note: ['my note'],
-          project_directors_attributes: { '0' => { name: 'project director',
-                                          orcid: 'project director orcid',
-                                          affiliation: 'Carolina Center for Genome Sciences',
-                                          other_affiliation: 'another affiliation'} },
-          researchers_attributes: { '0' => { name: 'researcher',
-                                          orcid: 'researcher orcid',
-                                          affiliation: 'Carolina Center for Genome Sciences',
-                                          other_affiliation: 'another affiliation'} },
-          rights_holder: ['dean'],
-          rights_statement: 'http://rightsstatements.org/vocab/InC/1.0/',
-          sponsor: ['david'],
-          use: ['a usage'],
-          language_label: [],
-          license_label: [],
-          rights_statement_label: ''
+        title: 'data set name', # single-valued
+        visibility: 'open',
+        representative_id: '456',
+        thumbnail_id: '789',
+        keyword: ['data set'],
+        member_of_collection_ids: ['123456', 'abcdef'],
+        abstract: ['an abstract'],
+        access: 'public',
+        contributors_attributes: { '0' => { name: 'contributor',
+                                        orcid: 'contributor orcid',
+                                        affiliation: 'Carolina Center for Genome Sciences',
+                                        other_affiliation: 'another affiliation'} },
+        creators_attributes: { '0' => { name: 'creator',
+                                        orcid: 'creator orcid',
+                                        affiliation: 'Carolina Center for Genome Sciences',
+                                        other_affiliation: 'another affiliation',
+                                        index: 1},
+                               '1' => {name: 'creator2',
+                                       orcid: 'creator2 orcid',
+                                       affiliation: 'Department of Chemistry',
+                                       other_affiliation: 'another affiliation',
+                                       index: 2} },
+        date_issued: '2018-01-08',
+        dcmi_type: ['http://purl.org/dc/dcmitype/Dataset'],
+        copyright_date: '2018',
+        doi: '12345',
+        extent: ['1993'],
+        funder: ['dean'],
+        based_near: ['California'],
+        kind_of_data: 'some data',
+        last_modified_date: '2018-01-23',
+        language: ['http://id.loc.gov/vocabulary/iso639-2/eng'],
+        license: 'http://creativecommons.org/licenses/by/3.0/us/',
+        methodology: 'My methods',
+        note: ['my note'],
+        project_directors_attributes: { '0' => { name: 'project director',
+                                        orcid: 'project director orcid',
+                                        affiliation: 'Carolina Center for Genome Sciences',
+                                        other_affiliation: 'another affiliation'} },
+        researchers_attributes: { '0' => { name: 'researcher',
+                                        orcid: 'researcher orcid',
+                                        affiliation: 'Carolina Center for Genome Sciences',
+                                        other_affiliation: 'another affiliation'} },
+        rights_holder: ['dean'],
+        rights_statement: 'http://rightsstatements.org/vocab/InC/1.0/',
+        sponsor: ['david'],
+        use: ['a usage'],
+        language_label: [],
+        license_label: [],
+        rights_statement_label: ''
       )
     end
 
@@ -164,13 +164,13 @@ RSpec.describe Hyrax::DataSetForm do
     context '.model_attributes' do
       let(:params) do
         ActionController::Parameters.new(
-            title: '',
-            keyword: [''],
-            language_label: [],
-            license: '',
-            member_of_collection_ids: [''],
-            rights_statement: 'http://rightsstatements.org/vocab/InC/1.0/',
-            on_behalf_of: 'Melissa'
+          title: '',
+          keyword: [''],
+          language_label: [],
+          license: '',
+          member_of_collection_ids: [''],
+          rights_statement: 'http://rightsstatements.org/vocab/InC/1.0/',
+          on_behalf_of: 'Melissa'
         )
       end
 
@@ -186,28 +186,28 @@ RSpec.describe Hyrax::DataSetForm do
     context 'with people parameters' do
       let(:params) do
         ActionController::Parameters.new(
-            creators_attributes: { '0' => {name: 'creator',
-                                           orcid: 'creator orcid',
+          creators_attributes: { '0' => {name: 'creator',
+                                         orcid: 'creator orcid',
+                                         affiliation: 'Carolina Center for Genome Sciences',
+                                         other_affiliation: 'another affiliation',
+                                         index: 2},
+                                 '1' => {name: 'creator2',
+                                         orcid: 'creator2 orcid',
+                                         affiliation: 'Department of Chemistry',
+                                         other_affiliation: 'another affiliation',
+                                         index: 1},
+                                 '2' => {name: 'creator3',
+                                         orcid: 'creator3 orcid',
+                                         affiliation: 'Department of Chemistry',
+                                         other_affiliation: 'another affiliation'}},
+          contributors_attributes: {'0' => {name: 'contributor',
+                                           orcid: 'contributor orcid',
                                            affiliation: 'Carolina Center for Genome Sciences',
-                                           other_affiliation: 'another affiliation',
-                                           index: 2},
-                                   '1' => {name: 'creator2',
-                                           orcid: 'creator2 orcid',
+                                           other_affiliation: 'another affiliation'},
+                                   '1' => {name: 'contributor2',
+                                           orcid: 'contributor2 orcid',
                                            affiliation: 'Department of Chemistry',
-                                           other_affiliation: 'another affiliation',
-                                           index: 1},
-                                   '2' => {name: 'creator3',
-                                           orcid: 'creator3 orcid',
-                                           affiliation: 'Department of Chemistry',
-                                           other_affiliation: 'another affiliation'}},
-            contributors_attributes: {'0' => {name: 'contributor',
-                                             orcid: 'contributor orcid',
-                                             affiliation: 'Carolina Center for Genome Sciences',
-                                             other_affiliation: 'another affiliation'},
-                                     '1' => {name: 'contributor2',
-                                             orcid: 'contributor2 orcid',
-                                             affiliation: 'Department of Chemistry',
-                                             other_affiliation: 'another affiliation'}}
+                                           other_affiliation: 'another affiliation'}}
         )
       end
 

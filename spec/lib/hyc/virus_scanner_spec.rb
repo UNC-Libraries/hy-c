@@ -17,7 +17,6 @@ RSpec.describe Hyc::VirusScanner do
       let(:file) { src_path }
     end
 
-
     before do
       if Dir.pwd.include? 'runner'
         FileUtils.rm(file)

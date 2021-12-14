@@ -129,6 +129,7 @@ module Hyrax
         # (Note: permission template release/visibility options do not support leases)
         unless template.present? && (template.release_period.present? || template.visibility.present?)
           return true if intention.valid_lease?
+
           env.curation_concern.errors.add(:visibility, 'When setting visibility to "lease" you must also specify lease expiration date.')
           return false
         end
@@ -219,22 +220,27 @@ module Hyrax
       def parse_date(date_string)
         datetime = Time.zone.parse(date_string) if date_string.present?
         return datetime.to_date unless datetime.nil?
+
         nil
       end
 
       # If they want a lease, we can assume it's valid
       def apply_lease(env, intention)
         return true unless intention.wants_lease?
+
         env.curation_concern.apply_lease(*intention.lease_params)
         return unless env.curation_concern.lease
+
         env.curation_concern.lease.save # see https://github.com/samvera/hydra-head/issues/226
       end
 
       # If they want an embargo, we can assume it's valid
       def apply_embargo(env, intention)
         return true unless intention.wants_embargo?
+
         env.curation_concern.apply_embargo(*intention.embargo_params)
         return unless env.curation_concern.embargo
+
         env.curation_concern.embargo.save # see https://github.com/samvera/hydra-head/issues/226
       end
     end

@@ -30,7 +30,6 @@ module Hyrax
       super.first || ""
     end
 
-
     delegate :creators_attributes=, to: :model
 
     def creators

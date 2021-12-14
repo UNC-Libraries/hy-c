@@ -37,7 +37,6 @@ module Hyrax
       end
     end
 
-
     private
 
     # Override the Hydra::Controller::DownloadBehavior#content_options so that
@@ -92,6 +91,7 @@ module Hyrax
 
     def dereference_file(file_reference)
       return false if file_reference.nil?
+
       association = asset.association(file_reference.to_sym)
       association if association && association.is_a?(ActiveFedora::Associations::SingularAssociation)
     end

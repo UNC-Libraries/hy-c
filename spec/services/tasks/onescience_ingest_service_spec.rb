@@ -24,7 +24,7 @@ RSpec.describe Tasks::OnescienceIngestService do
                                         'scopus_xml_file' => ['scopus-1-science-abstract-fixture.xml'],
                                         'mapped_scopus_affiliations' => 'scoups_departments-mapped.csv',
                                         'multiple_unc_affiliations' => 'spec/fixtures/onescience/multiple_unc_affiliations.tsv'
-                                )
+                                       )
     end
   end
 

@@ -113,6 +113,6 @@ class MigrationHelper
   def self.get_language_uri(language_codes)
     Array.wrap(language_codes).map{|e| LanguagesService.label("http://id.loc.gov/vocabulary/iso639-2/#{e.downcase}") ?
                                "http://id.loc.gov/vocabulary/iso639-2/#{e.downcase}" : e
-}    
+    }    
   end
 end

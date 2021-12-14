@@ -25,7 +25,7 @@ RSpec.describe Hyrax::MultimedForm do
                                      :language, :license, :medium, :note, :rights_statement, :subject, :language_label,
                                      :license_label, :rights_statement_label, :deposit_agreement, :agreement,
                                      :admin_note]
-}    
+    }    
   end
   
   describe "#admin_only_terms" do
@@ -48,36 +48,36 @@ RSpec.describe Hyrax::MultimedForm do
   describe ".model_attributes" do
     let(:params) do
       ActionController::Parameters.new(
-          title: 'multimed name', # single-valued
-          creators_attributes: { '0' => { name: 'creator',
-                                          orcid: 'creator orcid',
-                                          affiliation: 'Carolina Center for Genome Sciences',
-                                          other_affiliation: 'another affiliation',
-                                          index: 1},
-                                 '1' => {name: 'creator2',
-                                         orcid: 'creator2 orcid',
-                                         affiliation: 'Department of Chemistry',
-                                         other_affiliation: 'another affiliation',
-                                         index: 2} },
-          date_issued: '2018-01-09', # single-valued
-          subject: ['a subject'],
-          language: ['http://id.loc.gov/vocabulary/iso639-2/eng'],
-          based_near: ['Italy'],
-          note: ['a note'],
-          orcid: ['an orcid'],
-          medium: ['a medium'],
-          resource_type: ['a type'],
-          license: 'http://creativecommons.org/licenses/by/3.0/us/', # single-valued
-          rights_statement: 'http://rightsstatements.org/vocab/InC/1.0/', # single-valued
-          abstract: ['an abstract'],
-          dcmi_type: ['http://purl.org/dc/dcmitype/InteractiveResource'],
-          digital_collection: ['my collection'],
-          doi: '12345',
-          extent: ['1999'],
-          keyword: ['multimed'],
-          language_label: [],
-          license_label: [],
-          rights_statement_label: ''
+        title: 'multimed name', # single-valued
+        creators_attributes: { '0' => { name: 'creator',
+                                        orcid: 'creator orcid',
+                                        affiliation: 'Carolina Center for Genome Sciences',
+                                        other_affiliation: 'another affiliation',
+                                        index: 1},
+                               '1' => {name: 'creator2',
+                                       orcid: 'creator2 orcid',
+                                       affiliation: 'Department of Chemistry',
+                                       other_affiliation: 'another affiliation',
+                                       index: 2} },
+        date_issued: '2018-01-09', # single-valued
+        subject: ['a subject'],
+        language: ['http://id.loc.gov/vocabulary/iso639-2/eng'],
+        based_near: ['Italy'],
+        note: ['a note'],
+        orcid: ['an orcid'],
+        medium: ['a medium'],
+        resource_type: ['a type'],
+        license: 'http://creativecommons.org/licenses/by/3.0/us/', # single-valued
+        rights_statement: 'http://rightsstatements.org/vocab/InC/1.0/', # single-valued
+        abstract: ['an abstract'],
+        dcmi_type: ['http://purl.org/dc/dcmitype/InteractiveResource'],
+        digital_collection: ['my collection'],
+        doi: '12345',
+        extent: ['1999'],
+        keyword: ['multimed'],
+        language_label: [],
+        license_label: [],
+        rights_statement_label: ''
       )
     end
 
@@ -118,13 +118,13 @@ RSpec.describe Hyrax::MultimedForm do
     context '.model_attributes' do
       let(:params) do
         ActionController::Parameters.new(
-            title: '',
-            keyword: [''],
-            language_label: [],
-            license: '',
-            member_of_collection_ids: [''],
-            rights_statement: 'http://rightsstatements.org/vocab/InC/1.0/',
-            on_behalf_of: 'Melissa'
+          title: '',
+          keyword: [''],
+          language_label: [],
+          license: '',
+          member_of_collection_ids: [''],
+          rights_statement: 'http://rightsstatements.org/vocab/InC/1.0/',
+          on_behalf_of: 'Melissa'
         )
       end
 
@@ -140,20 +140,20 @@ RSpec.describe Hyrax::MultimedForm do
     context 'with people parameters' do
       let(:params) do
         ActionController::Parameters.new(
-            creators_attributes: { '0' => {name: 'creator',
-                                           orcid: 'creator orcid',
-                                           affiliation: 'Carolina Center for Genome Sciences',
-                                           other_affiliation: 'another affiliation',
-                                           index: 2},
-                                   '1' => {name: 'creator2',
-                                           orcid: 'creator2 orcid',
-                                           affiliation: 'Department of Chemistry',
-                                           other_affiliation: 'another affiliation',
-                                           index: 1},
-                                   '2' => {name: 'creator3',
-                                           orcid: 'creator3 orcid',
-                                           affiliation: 'Department of Chemistry',
-                                           other_affiliation: 'another affiliation'}}
+          creators_attributes: { '0' => {name: 'creator',
+                                         orcid: 'creator orcid',
+                                         affiliation: 'Carolina Center for Genome Sciences',
+                                         other_affiliation: 'another affiliation',
+                                         index: 2},
+                                 '1' => {name: 'creator2',
+                                         orcid: 'creator2 orcid',
+                                         affiliation: 'Department of Chemistry',
+                                         other_affiliation: 'another affiliation',
+                                         index: 1},
+                                 '2' => {name: 'creator3',
+                                         orcid: 'creator3 orcid',
+                                         affiliation: 'Department of Chemistry',
+                                         other_affiliation: 'another affiliation'}}
         )
       end
 

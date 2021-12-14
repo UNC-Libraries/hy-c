@@ -271,7 +271,6 @@ module Migrate
         file_set
       end
 
-
       private
         def work_record(work_attributes, uuid)
           # save group permissions info and remove from work attribute hash since it is not a valid work attribute
@@ -387,6 +386,7 @@ module Migrate
 
             children.each do |child|
               next if already_attached.include?(child)
+
               # If the child is in the uuid_to_id mapping, it is a child work and must be attached to the parent
               child_id = uuid_to_id[child]
               if child_id

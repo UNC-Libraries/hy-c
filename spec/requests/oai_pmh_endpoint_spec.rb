@@ -1,7 +1,6 @@
 require "rails_helper"
 require Rails.root.join('spec/support/oai_sample_solr_documents.rb')
 
-
 RSpec.describe 'OAI-PMH catalog endpoint' do
   let(:repo_name) { 'Carolina Digital Repository' }
   let(:format) { 'oai_dc' }

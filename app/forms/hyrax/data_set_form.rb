@@ -31,7 +31,6 @@ module Hyrax
       super.first || ""
     end
 
-
     delegate :contributors_attributes=, to: :model
     delegate :creators_attributes=, to: :model
     delegate :project_directors_attributes=, to: :model

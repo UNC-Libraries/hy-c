@@ -1,5 +1,6 @@
 # [hyc-override] Overriding to transform date facets from EDTF to human readable strings
 # frozen_string_literal: true
+
 module Blacklight::FacetsHelperBehavior
   include Blacklight::Facet
 
@@ -39,6 +40,7 @@ module Blacklight::FacetsHelperBehavior
   # @return [String]
   def render_facet_limit(display_facet, options = {})
     return unless should_render_facet?(display_facet)
+
     options = options.dup
     options[:partial] ||= facet_partial_name(display_facet)
     options[:layout] ||= "facet_layout" unless options.key?(:layout)

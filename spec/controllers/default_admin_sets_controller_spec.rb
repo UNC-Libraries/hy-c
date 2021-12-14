@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe DefaultAdminSetsController, type: :controller do
-
   # This should return the minimal set of attributes required to create a valid
   # DefaultAdminSet. As you add validations to DefaultAdminSet, be sure to
   # adjust the attributes here as well.

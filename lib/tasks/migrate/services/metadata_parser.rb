@@ -266,9 +266,9 @@ module Migrate
           
           MigrationHelper.retry_operation('adding collection') do
             work_attributes['member_of_collections'] = Array(Collection.create(
-                title: [@collection_name],
-                depositor: @depositor.uid,
-                collection_type_gid: user_collection_type))
+                                                               title: [@collection_name],
+                                                               depositor: @depositor.uid,
+                                                               collection_type_gid: user_collection_type))
           end
         end
 

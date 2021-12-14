@@ -85,7 +85,6 @@ AND has_model_ssim:(DataSet HonorsThesis MastersPaper ScholarlyWork) AND system_
       count
     end
 
-
     private
 
       def doi_update_request(id, data, retries, doi_update_url, datacite_user, datacite_password)
@@ -97,7 +96,7 @@ AND has_model_ssim:(DataSet HonorsThesis MastersPaper ScholarlyWork) AND system_
                                   password: datacite_password
                               },
                               body: data
-          )
+                             )
         rescue Net::ReadTimeout, Net::OpenTimeout => e
           if retries > 0
             # log retry
@@ -125,7 +124,7 @@ AND has_model_ssim:(DataSet HonorsThesis MastersPaper ScholarlyWork) AND system_
         begin
           return HTTParty.get("#{doi_get_url}/#{id}",
                               headers: {'Content-Type' => 'application/vnd.api+json'}
-          )
+                             )
         rescue Net::ReadTimeout, Net::OpenTimeout => e
           if retries > 0
             retries -= 1

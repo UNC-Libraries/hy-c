@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # [hyc-override] Overriding iiif manifest metadata to check that field exists on a presenter
 module Hyrax
   ##
@@ -73,6 +74,7 @@ module Hyrax
 
       metadata_fields.each do |field|
         next unless (respond_to? field) && !send(field).blank?
+
         field_value = send(field)
 
         # Remove everything but name from people object terms

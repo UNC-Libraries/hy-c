@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # [hyc-override] overriding build_export_metadata method
 # [hyc-override] check model name before building entry
 
@@ -15,6 +16,7 @@ module Bulkrax
     # there's a risk that this reads the whole file into memory and could cause a memory leak
     def self.read_data(path)
       raise StandardError, 'CSV path empty' if path.blank?
+
       CSV.read(path,
                headers: true,
                header_converters: :symbol,
@@ -105,11 +107,13 @@ module Bulkrax
       mapping.each do |key, value|
         next if Bulkrax.reserved_properties.include?(key) && !field_supported?(key)
         next if key == "model"
+
         unless hyrax_record.respond_to?(key)
           self.parsed_metadata[key] = nil
           next
         end
         next unless hyrax_record.respond_to?(value['from']&.first.to_s)
+
         data = hyrax_record.send(value['from'].first)
         if data.is_a?(ActiveTriples::Relation)
           self.parsed_metadata[key] = data.map { |d| prepare_export_data(d) }.join('; ').to_s unless value[:excluded]
@@ -147,11 +151,13 @@ module Bulkrax
 
     def collections_created?
       return true if record[self.class.collection_field].blank?
+
       record[self.class.collection_field].split(/\s*[:;|]\s*/).length == self.collection_ids.length
     end
 
     def find_or_create_collection_ids
       return self.collection_ids if collections_created?
+
       valid_system_id(Collection)
       if record[self.class.collection_field].present?
         record[self.class.collection_field].split(/\s*[:;|]\s*/).each do |collection|
@@ -166,9 +172,11 @@ module Bulkrax
     def path_to_file(file)
       # return if we already have the full file path
       return file if File.exist?(file)
+
       path = importerexporter.parser.path_to_files
       f = File.join(path, file)
       return f if File.exist?(f)
+
       raise "File #{f} does not exist"
     end
 

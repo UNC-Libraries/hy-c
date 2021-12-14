@@ -27,6 +27,7 @@ module Hyrax
 
         def format_authors(authors_list = [])
           return "" if authors_list.blank?
+
           authors_list = Array.wrap(authors_list)
           text = concatenate_authors_from(authors_list)
           if text.present?

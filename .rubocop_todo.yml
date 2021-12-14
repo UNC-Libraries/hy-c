@@ -25,11 +25,6 @@ Layout/CaseIndentation:
     - 'app/lib/mini_magick/image/info.rb'
     - 'lib/active_fedora/rdf/indexing_service.rb'
 
-# Offense count: 46
-# Cop supports --auto-correct.
-Layout/ClosingParenthesisIndentation:
-  Enabled: false
-
 # Offense count: 11
 # Cop supports --auto-correct.
 Layout/CommentIndentation:
@@ -58,21 +53,6 @@ Layout/DotPosition:
     - 'spec/indexers/hyrax/deep_indexing_service_test.rb'
     - 'spec/tasks/migrate_rake_spec.rb'
 
-# Offense count: 103
-# Cop supports --auto-correct.
-Layout/EmptyLineAfterGuardClause:
-  Enabled: false
-
-# Offense count: 22
-# Cop supports --auto-correct.
-Layout/EmptyLineAfterMagicComment:
-  Enabled: false
-
-# Offense count: 40
-# Cop supports --auto-correct.
-Layout/EmptyLines:
-  Enabled: false
-
 # Offense count: 14
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle.
@@ -93,13 +73,6 @@ Layout/EmptyLinesAroundAccessModifier:
     - 'app/controllers/hyrax/scholarly_works_controller.rb'
     - 'app/controllers/masters_papers_controller.rb'
     - 'lib/tasks/migrate/services/ingest_service.rb'
-
-# Offense count: 21
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: empty_lines, no_empty_lines
-Layout/EmptyLinesAroundBlockBody:
-  Enabled: false
 
 # Offense count: 14
 # Cop supports --auto-correct.
@@ -541,6 +514,8 @@ Metrics/AbcSize:
 # IgnoredMethods: refine
 Metrics/BlockLength:
   Max: 613
+  Exclude:
+    - 'db/schema.rb'
 
 # Offense count: 7
 # Configuration parameters: CountBlocks, Max.

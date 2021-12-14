@@ -179,7 +179,7 @@ RSpec.describe Tasks::DoiCreateService do
                                   uid: 'test@example.com',
                                   password: 'password',
                                   password_confirmation: 'password')
-}    
+    }    
     let(:admin_set) do
       AdminSet.create(title: ["article admin set"],
                       description: ["some description"],
@@ -189,7 +189,7 @@ RSpec.describe Tasks::DoiCreateService do
                                 depositor: depositor.email,
                                 visibility: 'open',
                                 admin_set_id: admin_set.id)
-}    
+    }    
     let(:permission_template) do
       Hyrax::PermissionTemplate.create!(source_id: admin_set.id)
     end

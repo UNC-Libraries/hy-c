@@ -79,7 +79,7 @@ RDFXML
                                                 'spec/fixtures/migration/migration_config.yml',
                                                 output_dir.to_s,
                                                 'RAILS_ENV=test')
-}    
+    }    
         .to change{ Article.count }.by(1)
     new_article = Article.all[-1]
     expect(new_article['depositor']).to eq 'admin'

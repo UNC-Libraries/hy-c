@@ -74,7 +74,7 @@ module Tasks
                                  password: @doi_password
                              },
                              body: data
-        )
+                            )
       rescue Net::ReadTimeout, Net::OpenTimeout => e
         if retries > 0
           retries -= 1
@@ -219,7 +219,6 @@ module Tasks
         return -1
       end
     end
-
 
     private
 

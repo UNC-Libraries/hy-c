@@ -8,7 +8,7 @@ RSpec.describe Hyrax::CitationsBehaviors::Formatters::ApaFormatter do
                               publisher: ['a publisher'],
                               place_of_publication: ['NC'],
                               doi: 'doi.org/some-doi')
-}  
+  }  
   let(:presenter) { Hyrax::WorkShowPresenter.new(SolrDocument.new(article.to_solr), :no_ability) }
 
   describe '#format' do

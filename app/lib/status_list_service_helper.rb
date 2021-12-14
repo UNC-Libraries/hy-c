@@ -1,6 +1,5 @@
 # [hyc-override] Overriding workflow permissions methods
 Hyrax::Workflow::StatusListService.class_eval do
-
   private
 
     # update query params to find individual works that a user can access
