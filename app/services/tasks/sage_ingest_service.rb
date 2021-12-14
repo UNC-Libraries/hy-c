@@ -15,7 +15,7 @@ module Tasks
       Rails.logger.tagged('Sage ingest') { Rails.logger.info("Beginning ingest of #{count} Sage packages") }
       sage_package_paths.each.with_index(1) do |package_path, index|
         Rails.logger.tagged('Sage ingest') { Rails.logger.info("Begin processing #{package_path} (#{index} of #{count})") }
-        orig_file_name = package_path.split('.zip')[0].split('/')[-1]
+        orig_file_name = File.basename(package_path, '.zip')
         unzipped_package_dir = File.join(@unzip_dir, orig_file_name)
         file_names = extract_files(package_path).keys
         unless file_names.count == 2
@@ -27,14 +27,20 @@ module Tasks
         # parse xml
         # create object with xml and pdf
         # save object
-        mark_pdf_done(unzipped_package_dir) if pdf_complete?(unzipped_package_dir, pdf_file_name)
-        mark_xml_done(unzipped_package_dir) if xml_complete?(unzipped_package_dir, xml_file_name)
+        mark_done(unzipped_package_dir, "pdf") if pdf_complete?(unzipped_package_dir, pdf_file_name)
+        mark_done(unzipped_package_dir, "xml") if xml_complete?(unzipped_package_dir, xml_file_name)
       end
     end
 
-    def mark_pdf_done(unzipped_package_dir)
-      FileUtils.touch(File.join(unzipped_package_dir, ".done.pdf"))
-      Rails.logger.tagged('Sage ingest') { Rails.logger.info("Marked PDF complete #{unzipped_package_dir}") }
+    def mark_done(unzipped_package_dir, file_type)
+      done_path = File.join(unzipped_package_dir, ".done.#{file_type}")
+      if File.exist?(done_path)
+        modification_time = File.mtime(done_path)
+        Rails.logger.tagged('Sage ingest') { Rails.logger.info("#{unzipped_package_dir} .done.#{file_type} already present. File last modified #{modification_time}.") }
+      else
+        FileUtils.touch(done_path)
+        Rails.logger.tagged('Sage ingest') { Rails.logger.info("Marked #{file_type} complete #{unzipped_package_dir}") }
+      end
     end
 
     # TODO: Make more assertions about what a completed PDF ingest looks like and test here
@@ -46,11 +52,6 @@ module Tasks
         Rails.logger.tagged('Sage ingest') { Rails.logger.error("PDF processing not complete: #{path_to_directory}") }
         false
       end
-    end
-
-    def mark_xml_done(path_to_directory)
-      FileUtils.touch(File.join(path_to_directory, ".done.xml"))
-      Rails.logger.tagged('Sage ingest') { Rails.logger.info("Marked XML complete #{path_to_directory}") }
     end
 
     # TODO: Make more assertions about what a completed XML ingest looks like and test here
@@ -65,7 +66,7 @@ module Tasks
     end
 
     def extract_files(package_path)
-      orig_file_name = package_path.split('.zip')[0].split('/')[-1]
+      orig_file_name = File.basename(package_path, '.zip')
       dir_name = File.join(@unzip_dir, orig_file_name)
       FileUtils.mkdir_p(dir_name)
       begin

@@ -1,4 +1,5 @@
 require 'rails_helper'
+include ActiveSupport::Testing::TimeHelpers
 
 RSpec.describe Tasks::SageIngestService do
   let(:path_to_config) { File.join(fixture_path, "sage", "sage_config.yml") }
@@ -38,16 +39,18 @@ RSpec.describe Tasks::SageIngestService do
         expect(Dir.exist?(first_dir_path)).to be true
         expect(Dir.glob("#{first_dir_path}/*").count).to eq 2
         expect do
-          service.mark_pdf_done(first_dir_path)
+          service.mark_done(first_dir_path, 'pdf')
         end.to change { Dir.entries(first_dir_path).count }.from(4).to(5)
+        expect(File.exist?(first_done_file_path)).to be true
         expect do
-          service.mark_xml_done(first_dir_path)
+          service.mark_done(first_dir_path, 'xml')
         end.to change { Dir.entries(first_dir_path).count }.from(5).to(6)
+        expect(File.exist?(first_done_xml_path)).to be true
       end
     end
 
 
-    context "with a give file already present" do
+    context "with an unzipped file already present" do
       before do
         Dir.mkdir(first_dir_path)
         FileUtils.touch(first_pdf_path)
@@ -57,6 +60,19 @@ RSpec.describe Tasks::SageIngestService do
         allow(Rails.logger).to receive(:info)
         service.extract_files(first_zip_path)
         expect(Rails.logger).to have_received(:info).with("#{first_zip_path}, zip file error: Destination '#{first_pdf_path}' already exists")
+      end
+    end
+
+    context "with the 'done' file already present" do
+      before do
+        freeze_time
+        Dir.mkdir(first_dir_path)
+        FileUtils.touch(first_done_file_path)
+      end
+      it "logs that the file is already complete" do
+        allow(Rails.logger).to receive(:info)
+        service.process_packages
+        expect(Rails.logger).to have_received(:info).with("#{first_dir_path} .done.pdf already present. File last modified #{Time.now}.")
       end
     end
 
