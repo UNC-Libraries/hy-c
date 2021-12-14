@@ -47,15 +47,6 @@ Rails.application.configure do
   # Use the lowest log level to ensure availability of diagnostic information
   # when problems arise.
   config.log_level = :warn
-  config.log_formatter = proc do |severity, time, progname, msg|
-    "#{time} - #{severity}: #{msg}\n"
-  end
-  logger = ActiveSupport::Logger.new(ENV["LOGS_PATH"])
-  logger.formatter = config.log_formatter
-  config.logger = ActiveSupport::TaggedLogging.new(logger)
-
-  # Prepend all log lines with the following tags.
-  config.log_tags = [ :request_id ]
 
   # Use a different cache store in production.
   # config.cache_store = :mem_cache_store

@@ -68,4 +68,6 @@ Rails.application.configure do
   # NOTE: When we upgrade to Web Console 4.x this will change to
   # config.web_console.permissions = ['10.0.2.2']
   config.web_console.whitelisted_ips = ['10.0.2.2']
+  
+  config.log_level = :debug
 end
