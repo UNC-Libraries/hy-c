@@ -30,7 +30,6 @@ class ApplicationController < ActionController::Base
       render 'errors/not_found', status: 400
     end
 
-
     def render_401
       render 'errors/not_found', status: 401
     end
@@ -76,6 +75,7 @@ class ApplicationController < ActionController::Base
     rescue URI::InvalidURIError
       root_path
     end
+
     # Redirect all deposit and edit requests with warning message when in read only mode
     def check_read_only
       return unless Flipflop.read_only?

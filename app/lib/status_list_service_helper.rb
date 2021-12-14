@@ -24,7 +24,6 @@ Hyrax::Workflow::StatusListService.class_eval do
       query_params
     end
 
-
     # skip depositing role
     def roles_for_user
       Sipity::Workflow.all.flat_map do |wf|
@@ -35,7 +34,6 @@ Hyrax::Workflow::StatusListService.class_eval do
         end
       end
     end
-
 
     # add method for finding entities where user has approving access
     def entities_for_user

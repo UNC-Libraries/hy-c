@@ -90,12 +90,12 @@ module Hyrax
       full_label = parse_geo_request(val.to_uri.to_s)
       val = val.solrize(full_label)
       create_and_insert_terms_handler.create_and_insert_terms(solr_field_key,
-                                         val.first,
-                                         field_info.behaviors, solr_doc)
+                                                              val.first,
+                                                              field_info.behaviors, solr_doc)
       return unless val.last.is_a? Hash
       create_and_insert_terms_handler.create_and_insert_terms("#{solr_field_key}_label",
-                                         label(val),
-                                         field_info.behaviors, solr_doc)
+                                                              label(val),
+                                                              field_info.behaviors, solr_doc)
     end
 
     # Use this method to append a string value from a controlled vocabulary field
@@ -108,11 +108,11 @@ module Hyrax
       full_label = parse_geo_request(val.to_uri.to_s)
 
       create_and_insert_terms_handler.create_and_insert_terms(solr_field_key,
-                                         full_label,
-                                         field_info.behaviors, solr_doc)
+                                                              full_label,
+                                                              field_info.behaviors, solr_doc)
       create_and_insert_terms_handler.create_and_insert_terms("#{solr_field_key}_label",
-                                         full_label,
-                                         field_info.behaviors, solr_doc)
+                                                              full_label,
+                                                              field_info.behaviors, solr_doc)
     end
 
     # Return a label for the solrized term:

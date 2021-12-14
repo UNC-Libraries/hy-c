@@ -68,12 +68,12 @@ module Tasks
     def doi_request(data, retries = 2)
       begin
         return HTTParty.post(@doi_creation_url,
-                      headers: {'Content-Type' => 'application/vnd.api+json'},
-                      basic_auth: {
-                          username: @doi_user,
-                          password: @doi_password
-                      },
-                      body: data
+                             headers: {'Content-Type' => 'application/vnd.api+json'},
+                             basic_auth: {
+                                 username: @doi_user,
+                                 password: @doi_password
+                             },
+                             body: data
         )
       rescue Net::ReadTimeout, Net::OpenTimeout => e
         if retries > 0

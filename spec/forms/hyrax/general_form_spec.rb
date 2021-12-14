@@ -33,14 +33,16 @@ RSpec.describe Hyrax::GeneralForm do
                                      :place_of_publication, :project_director, :researcher,
                                      :reviewer, :rights_holder, :series, :sponsor, :table_of_contents, :translator,
                                      :use, :language_label, :license_label, :rights_statement_label, :deposit_agreement,
-                                     :agreement, :admin_note] }
+                                     :agreement, :admin_note]
+}    
   end
 
   describe "#admin_only_terms" do
     subject { form.admin_only_terms }
 
     it { is_expected.to match_array [:dcmi_type, :degree_granting_institution, :digital_collection, :doi,
-                                     :admin_note] }
+                                     :admin_note]
+}    
   end
 
   describe 'default value set' do

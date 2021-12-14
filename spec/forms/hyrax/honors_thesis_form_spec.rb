@@ -30,14 +30,16 @@ RSpec.describe Hyrax::HonorsThesisForm do
                                      :extent, :note, :use, :language, :license, :resource_type,
                                      :rights_statement, :subject, :keyword, :related_url, :language_label,
                                      :license_label, :rights_statement_label, :degree_granting_institution,
-                                     :deposit_agreement, :agreement, :admin_note] }
+                                     :deposit_agreement, :agreement, :admin_note]
+}    
   end
   
   describe "#admin_only_terms" do
     subject { form.admin_only_terms }
 
     it { is_expected.to match_array [:dcmi_type, :academic_concentration, :access, :award,
-                                     :degree_granting_institution, :doi, :extent, :use, :admin_note] }
+                                     :degree_granting_institution, :doi, :extent, :use, :admin_note]
+}    
   end
   
   describe 'default value set' do

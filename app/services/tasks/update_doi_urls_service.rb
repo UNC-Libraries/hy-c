@@ -91,12 +91,12 @@ AND has_model_ssim:(DataSet HonorsThesis MastersPaper ScholarlyWork) AND system_
       def doi_update_request(id, data, retries, doi_update_url, datacite_user, datacite_password)
         begin
           return HTTParty.put("#{doi_update_url}/#{id}",
-                               headers: {'Content-Type' => 'application/vnd.api+json'},
-                               basic_auth: {
-                                   username: datacite_user,
-                                   password: datacite_password
-                               },
-                               body: data
+                              headers: {'Content-Type' => 'application/vnd.api+json'},
+                              basic_auth: {
+                                  username: datacite_user,
+                                  password: datacite_password
+                              },
+                              body: data
           )
         rescue Net::ReadTimeout, Net::OpenTimeout => e
           if retries > 0

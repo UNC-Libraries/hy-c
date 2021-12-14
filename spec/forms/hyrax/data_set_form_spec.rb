@@ -25,14 +25,16 @@ RSpec.describe Hyrax::DataSetForm do
                                      :last_modified_date, :project_director, :researcher, :rights_holder, :sponsor,
                                      :language, :keyword, :related_url, :license, :note, :contributor, :subject,
                                      :rights_statement, :language_label, :license_label, :rights_statement_label,
-                                     :deposit_agreement, :agreement, :admin_note] }
+                                     :deposit_agreement, :agreement, :admin_note]
+}    
   end
   
   describe "#admin_only_terms" do
     subject { form.admin_only_terms }
 
     it { is_expected.to match_array [:dcmi_type, :access, :doi, :extent, :rights_holder, :rights_statement,
-                                     :copyright_date, :admin_note] }
+                                     :copyright_date, :admin_note]
+}    
   end
   
   describe 'default value set' do

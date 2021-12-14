@@ -82,13 +82,13 @@ module Migrate
           start_time = Time.now
           puts "[#{start_time.to_s}] #{uuid} Start migration, #{index+1} out of #{collection_uuids.count}"
           work_attributes = Migrate::Services::MetadataParser.new(file_path,
-                                                              @object_hash,
-                                                              @binary_hash,
-                                                              @deposit_record_hash,
-                                                              collection_uuids,
-                                                              @depositor,
-                                                              @collection_name,
-                                                              @admin_set_id).parse
+                                                                  @object_hash,
+                                                                  @binary_hash,
+                                                                  @deposit_record_hash,
+                                                                  collection_uuids,
+                                                                  @depositor,
+                                                                  @collection_name,
+                                                                  @admin_set_id).parse
           puts "[#{Time.now.to_s}] #{uuid} metadata parsed in #{Time.now-start_time} seconds"
 
           # save group permissions info and remove from work attribute hash since it is not a valid work attribute
@@ -365,7 +365,6 @@ module Migrate
 
           file_attributes
         end
-
 
         def attach_children
           # Load mapping of old uuids to new hyrax ids

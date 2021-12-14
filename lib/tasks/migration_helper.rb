@@ -72,12 +72,12 @@ class MigrationHelper
 
     # Log other non-blank data which is not saved
     missing = metadata.except(*resource.attributes.keys, 'contained_files', 'cdr_model_type', 'visibility',
-                                                'creators_attributes', 'contributors_attributes', 'advisors_attributes',
-                                                'arrangers_attributes', 'composers_attributes', 'funders_attributes',
-                                                'project_directors_attributes', 'researchers_attributes', 'reviewers_attributes',
-                                                'translators_attributes', 'dc_title', 'premis_files', 'embargo_release_date',
-                                                'visibility_during_embargo', 'visibility_after_embargo', 'visibility',
-                                                'member_of_collections', 'based_near_attributes')
+                              'creators_attributes', 'contributors_attributes', 'advisors_attributes',
+                              'arrangers_attributes', 'composers_attributes', 'funders_attributes',
+                              'project_directors_attributes', 'researchers_attributes', 'reviewers_attributes',
+                              'translators_attributes', 'dc_title', 'premis_files', 'embargo_release_date',
+                              'visibility_during_embargo', 'visibility_after_embargo', 'visibility',
+                              'member_of_collections', 'based_near_attributes')
 
     if !missing.blank?
       puts "[#{Time.now.to_s}][#{identifier}] missing: #{missing}"
@@ -112,6 +112,7 @@ class MigrationHelper
   # Use language code to get iso639-2 uri from service
   def self.get_language_uri(language_codes)
     Array.wrap(language_codes).map{|e| LanguagesService.label("http://id.loc.gov/vocabulary/iso639-2/#{e.downcase}") ?
-                               "http://id.loc.gov/vocabulary/iso639-2/#{e.downcase}" : e}
+                               "http://id.loc.gov/vocabulary/iso639-2/#{e.downcase}" : e
+}    
   end
 end
