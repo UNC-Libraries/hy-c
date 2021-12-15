@@ -1,6 +1,7 @@
 # Example configuration for Sage ingest
 unzip_dir: spec/fixtures/sage/tmp
 package_dir: spec/fixtures/sage
+ingest_progress_log: spec/fixtures/sage/ingest_progress.log
 # admin_set: sage admin set
 # depositor_onyen: admin
 # deposit_title: Deposit by Sage Depositor via CDR Collector 1.0
