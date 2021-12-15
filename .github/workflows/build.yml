@@ -12,28 +12,37 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      NOKOGIRI_USE_SYSTEM_LIBRARIES: true
-      DEFAULT_ADMIN_SET: 'default'
-      HYRAX_DATABASE_PASSWORD: 'password'
-      FITS_LOCATION: '/home/travis/fits-1.0.5/fits.sh'
-      HYRAX_HOST: 'https://example.com'
-      EMAIL_FROM_ADDRESS: 'hyraxapp@example.com'
-      DATABASE_AUTH: true
-      DATA_STORAGE: ./public
-      TEMP_STORAGE: ./public
-      DELETED_PEOPLE_FILE: ./tmp/deleted_people.txt
       ALLOW_NOTIFICATIONS: true
-      DOI_PREFIX: '10.17615'
-      DATACITE_USER: 'test-datacite-user'
-      DATACITE_PASSWORD: 'datacitepass'
-      DATACITE_PREFIX: '10.5077'
-      DATACITE_USE_TEST_API: 'true'
-      SSO_LOGIN_PATH: '/Shibboleth.sso/Login'
-      SSO_LOGOUT_URL: 'https://shibboleth.example.com/idp/logout.jsp'
       CLAMD_TCP_HOST: 'localhost'
       CLAMD_TCP_PORT: '3310'
-
+      DATABASE_AUTH: true
+      DATACITE_PASSWORD: 'datacitepass'
+      DATACITE_PREFIX: '10.5077'
+      DATACITE_USER: 'test-datacite-user'
+      DATACITE_USE_TEST_API: 'true'
+      DATA_STORAGE: ./public
+      DEFAULT_ADMIN_SET: 'default'
+      DELETED_PEOPLE_FILE: ./tmp/deleted_people.txt
+      DOI_PREFIX: '10.17615'
+      EMAIL_FROM_ADDRESS: 'hyraxapp@example.com'
+      FCREPO_TEST_PORT: 8080
+      FITS_LOCATION: '/home/travis/fits-1.0.5/fits.sh'
+      HYRAX_DATABASE_PASSWORD: 'password'
+      HYRAX_HOST: 'https://example.com'
+      NOKOGIRI_USE_SYSTEM_LIBRARIES: true
+      RACK_ENV: test
+      RAILS_ENV: test
+      SOLR_TEST_PORT: 8983
+      SSO_LOGIN_PATH: '/Shibboleth.sso/Login'
+      SSO_LOGOUT_URL: 'https://shibboleth.example.com/idp/logout.jsp'
+      TEMP_STORAGE: ./public
     services:
+      fedora:
+        image: samvera/fcrepo4:4.7.5
+        ports:
+          - 8080:8080
+        env:
+          CATALINA_OPTS: "-Djava.awt.headless=true -Dfile.encoding=UTF-8 -server -Xms512m -Xmx1024m -XX:NewSize=256m -XX:MaxNewSize=256m -XX:PermSize=256m -XX:MaxPermSize=256m -XX:+DisableExplicitGC"
       redis:
         image: redis
         options: >-
@@ -54,6 +63,12 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
         ports: ["5432:5432"]
+      solr:
+        image: solr:6.6
+        ports:
+          - 8983:8983
+        options: >-
+          --name solr_container
       clamavd:
         image: lokori/clamav-java
         ports:
@@ -110,16 +125,19 @@ jobs:
       run: |
         psql -c 'create database hyrax_test with owner hyrax;'
 
+    - name: Copy solr config into docker container
+      run: docker cp solr/config solr_container:/tmp/solr_config
+
+    - name: Create Solr core
+      run: docker exec solr_container solr create -c hydra-test -d /tmp/solr_config
+
     - name: Setup hyrax test environment
       run: |
-        bundle exec rake hydra:test_server &
-        sleep 150
         bundle exec rake test_setup RAILS_ENV=test
 
     - name: Run rspec tests
       run: bundle exec rspec
       env:
-        RAILS_ENV: test
         REDIS_URL: redis://redis
         POSTGRES_USER: hyrax
         POSTGRES_PASSWORD: password
