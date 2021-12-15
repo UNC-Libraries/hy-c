@@ -20,7 +20,6 @@ RSpec.describe Tasks::SageIngestService do
   describe '#initialize' do
     it "sets parameters from the configuration file" do
       expect(service.package_dir).to eq "spec/fixtures/sage"
-      expect(service.unzip_dir).to eq "spec/fixtures/sage/tmp"
     end
 
     it 'creates a progress log for the ingest' do

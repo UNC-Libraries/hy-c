@@ -1,5 +1,4 @@
 # Example configuration for Sage ingest
-unzip_dir: spec/fixtures/sage/tmp
 package_dir: spec/fixtures/sage
 ingest_progress_log: spec/fixtures/sage/ingest_progress.log
 # admin_set: sage admin set

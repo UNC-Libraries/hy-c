@@ -1,13 +1,12 @@
 module Tasks
   require 'tasks/migrate/services/progress_tracker'
   class SageIngestService
-    attr_reader :package_dir, :unzip_dir, :ingest_progress_log
+    attr_reader :package_dir, :ingest_progress_log
 
     def initialize(args)
       config = YAML.load_file(args[:configuration_file])
 
       @package_dir = config['package_dir']
-      @unzip_dir = config['unzip_dir']
       @ingest_progress_log = Migrate::Services::ProgressTracker.new(config['ingest_progress_log'])
     end
 
