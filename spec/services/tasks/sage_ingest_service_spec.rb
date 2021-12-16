@@ -53,7 +53,7 @@ RSpec.describe Tasks::SageIngestService do
       allow(service).to receive(:package_ingest_complete?).and_return(true)
       expect(File.size(ingest_progress_log_path)).to eq 0
       service.mark_done(first_package_identifier)
-      expect(File.size(ingest_progress_log_path)).to eq 37
+      expect(File.read(ingest_progress_log_path).chomp).to eq "CCX_2021_28_10.1177_1073274820985792"
     end
   end
 
