@@ -1,0 +1,1772 @@
+<?xml version="1.0" encoding="UTF-8"?><article article-type="research-article" dtd-version="1.1d1" xml:lang="EN" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">
+<front>
+<journal-meta>
+<journal-id journal-id-type="publisher-id">CCX</journal-id>
+<journal-id journal-id-type="hwp">spccx</journal-id>
+<journal-title-group>
+<journal-title>Cancer Control</journal-title>
+</journal-title-group>
+<issn pub-type="epub">1073-2748</issn>
+<publisher>
+<publisher-name>SAGE Publications</publisher-name>
+<publisher-loc>Sage CA: Los Angeles, CA</publisher-loc>
+</publisher>
+</journal-meta>
+<article-meta>
+<article-id pub-id-type="doi">10.1177/1073274820985792</article-id>
+<article-id pub-id-type="publisher-id">10.1177_1073274820985792</article-id>
+<article-categories>
+<subj-group subj-group-type="heading">
+<subject>Research Article</subject>
+</subj-group>
+</article-categories>
+<title-group>
+<article-title>Inequalities in Cervical Cancer Screening Uptake Between Chinese Migrant Women and Local Women: A Cross-Sectional Study</article-title>
+</title-group>
+<contrib-group>
+<contrib contrib-type="author">
+<contrib-id contrib-id-type="orcid">https://orcid.org/0000-0001-6833-8372</contrib-id>
+<name>
+<surname>Holt</surname>
+<given-names>Hunter K.</given-names>
+</name>
+<degrees>MD</degrees>
+<xref ref-type="aff" rid="aff1-1073274820985792">1</xref>
+<xref ref-type="fn" rid="fn6-1073274820985792">*</xref>
+</contrib>
+<contrib contrib-type="author">
+<contrib-id contrib-id-type="orcid">https://orcid.org/0000-0001-7402-6981</contrib-id>
+<name>
+<surname>Zhang</surname>
+<given-names>Xi</given-names>
+</name>
+<degrees>MD, PhD</degrees>
+<xref ref-type="aff" rid="aff2-1073274820985792">2</xref>
+<xref ref-type="aff" rid="aff3-1073274820985792">3</xref>
+<xref ref-type="fn" rid="fn6-1073274820985792">*</xref>
+</contrib>
+<contrib contrib-type="author" corresp="yes">
+<name>
+<surname>Hu</surname>
+<given-names>Shang-Ying</given-names>
+</name>
+<degrees>MD, PhD</degrees>
+<xref ref-type="aff" rid="aff3-1073274820985792">3</xref>
+<xref ref-type="corresp" rid="corresp1-1073274820985792"/>
+</contrib>
+<contrib contrib-type="author">
+<name>
+<surname>Zhao</surname>
+<given-names>Fang-Hui</given-names>
+</name>
+<degrees>MD, PhD</degrees>
+<xref ref-type="aff" rid="aff3-1073274820985792">3</xref>
+</contrib>
+<contrib contrib-type="author">
+<name>
+<surname>Smith</surname>
+<given-names>Jennifer S.</given-names>
+</name>
+<degrees>PhD, MPH</degrees>
+<xref ref-type="aff" rid="aff4-1073274820985792">4</xref>
+<xref ref-type="aff" rid="aff5-1073274820985792">5</xref>
+</contrib>
+<contrib contrib-type="author">
+<name>
+<surname>Qiao</surname>
+<given-names>You-Lin</given-names>
+</name>
+<degrees>MD, PhD</degrees>
+<xref ref-type="aff" rid="aff3-1073274820985792">3</xref>
+</contrib>
+</contrib-group>
+<aff id="aff1-1073274820985792">
+<label>1</label>Department of Family and Community Medicine, <institution-wrap><institution-id institution-id-type="Ringgold">8785</institution-id><institution>University of California</institution></institution-wrap>, San Francisco, CA, USA</aff>
+<aff id="aff2-1073274820985792">
+<label>2</label>Beijing Office for Cancer Prevention and Control, Key Laboratory of Carcinogenesis and Translational Research (Ministry of Education/Beijing), <institution-wrap><institution-id institution-id-type="Ringgold">12519</institution-id><institution>Peking University Cancer Hospital &amp; Institute</institution></institution-wrap>, Beijing, China</aff>
+<aff id="aff3-1073274820985792">
+<label>3</label>Department of Cancer Epidemiology, National Cancer Center/National Clinical Research Center for Cancer/ Cancer Hospital, <institution-wrap><institution-id institution-id-type="Ringgold">12501</institution-id><institution>Chinese Academy of Medical Sciences and Peking Union Medical College</institution></institution-wrap>, Beijing, China</aff>
+<aff id="aff4-1073274820985792">
+<label>4</label>Department of Epidemiology, UNC Gillings School of Global Public Health, Chapel Hill, NC, USA</aff>
+<aff id="aff5-1073274820985792">
+<label>5</label>Lineberger Comprehensive Cancer Center, <institution-wrap><institution-id institution-id-type="Ringgold">2331</institution-id><institution>University of North Carolina</institution></institution-wrap>, Chapel Hill, NC, USA</aff>
+<author-notes>
+<corresp id="corresp1-1073274820985792">Shang-Ying Hu, Department of Cancer Epidemiology, National Cancer Center/National Clinical Research Center for Cancer/ Cancer Hospital, Chinese Academy of Medical Sciences and Peking Union Medical College, 17 South Panjiayuan Lane, P.O. Box 2258, Beijing 100021, China. Email: <email>shangyinghu@cicams.ac.cn</email>
+</corresp>
+<fn fn-type="other" id="fn6-1073274820985792">
+<p>* Equal contribution</p>
+</fn>
+</author-notes>
+<pub-date pub-type="epub"><day>1</day><month>2</month><year>2021</year></pub-date>
+<pub-date pub-type="collection">
+<month>1</month>
+<year>2021</year>
+</pub-date>
+<volume>28</volume>
+<elocation-id>1073274820985792</elocation-id>
+<history>
+<date date-type="received">
+<day>18</day>
+<month>8</month>
+<year>2020</year>
+</date>
+<date date-type="rev-recd">
+<day>23</day>
+<month>11</month>
+<year>2020</year>
+</date>
+<date date-type="accepted">
+<day>10</day>
+<month>12</month>
+<year>2020</year>
+</date>
+</history>
+<permissions>
+<copyright-statement>© The Author(s) 2021</copyright-statement>
+<copyright-year>2021</copyright-year>
+<copyright-holder content-type="sage">SAGE Publications Inc, unless otherwise noted. Manuscript content on this site is licensed under Creative Common Licences</copyright-holder>
+<license license-type="creative-commons" xlink:href="https://creativecommons.org/licenses/by-nc/4.0/" xlink:type="simple">
+<license-p>This article is distributed under the terms of the Creative Commons Attribution-NonCommercial 4.0 License (<ext-link ext-link-type="uri" xlink:href="https://creativecommons.org/licenses/by-nc/4.0/">https://creativecommons.org/licenses/by-nc/4.0/</ext-link>) which permits non-commercial use, reproduction and distribution of the work without further permission provided the original work is attributed as specified on the SAGE and Open Access pages (<ext-link ext-link-type="uri" xlink:href="https://us.sagepub.com/en-us/nam/open-access-at-sage">https://us.sagepub.com/en-us/nam/open-access-at-sage</ext-link>).</license-p>
+</license>
+</permissions>
+<abstract>
+<sec>
+<title>Introduction:</title>
+<p>Uptake of cervical cancer screening services in Chinese migrant workers is unknown and may be lower than non-migrant workers in China.</p>
+</sec>
+<sec>
+<title>Methods:</title>
+<p>We conducted a cross-sectional study among migrant and non-migrant women aged 21-65 at 7 provinces across China and administered a questionnaire investigating knowledge and attitudes regarding cervical cancer, human papillomavirus (HPV), and HPV vaccine. We used multivariable logistic regression to evaluate odds of previous cervical cancer screening in migrant workers.</p>
+</sec>
+<sec>
+<title>Results:</title>
+<p>737 women participated in the study. Mean age was 41.9 ± 7.2 years. 50.2% of the participants were migrant workers. 27.6% of the migrant workers reported previous cervical cancer screening compared to 33.2% of local participants. 36.6% migrant workers reported awareness of HPV compared to 40.2% of local participants. In adjusted analysis migrant status was not associated with increased odds of previous cervical cancer screening (aOR = 1.11 95%CI: 0.76-1.60). High school or higher education compared to less than high school education and employer-sponsored insurance compared to uninsured were associated with increased odds of previous cervical cancer screening (aOR = 2.15 95%CI: 1.41-3.27 and aOR = 1.67 95% CI: 1.14-2.45, respectively). Having heard of HPV compared to no awareness of HPV was associated with increased odds of cervical cancer screening (aOR = 2.02 95%CI: 1.41-2.91). Awareness of HPV among migrant workers was associated with increased odds of cervical cancer screening compared to migrant and local participants without awareness (aOR = 2.82 95% CI: 1.70-4.69 and 2.97 95%CI: 1.51-5.83, respectively).</p>
+</sec>
+<sec>
+<title>Conclusions:</title>
+<p>Efforts to increase education opportunities, provide insurance, and promote HPV awareness could increase cervical cancer screening uptake in migrant women in China.</p>
+</sec>
+</abstract>
+<kwd-group>
+<kwd>HPV</kwd>
+<kwd>HPV knowledge and awareness</kwd>
+<kwd>cervical cancer screening</kwd>
+<kwd>migrant women</kwd>
+<kwd>China</kwd>
+</kwd-group>
+<funding-group specific-use="FundRef">
+<award-group id="award1-1073274820985792">
+<funding-source id="funding1-1073274820985792">
+<institution-wrap>
+<institution>Fogarty International Center</institution>
+<institution-id>https://doi.org/10.13039/100000061</institution-id>
+</institution-wrap>
+</funding-source>
+<award-id rid="funding1-1073274820985792">5R25TW009340</award-id>
+</award-group>
+</funding-group>
+<custom-meta-group>
+<custom-meta>
+<meta-name>cover-date</meta-name>
+<meta-value>January-December 2021</meta-value>
+</custom-meta>
+<custom-meta>
+<meta-name>typesetter</meta-name>
+<meta-value>ts3</meta-value>
+</custom-meta>
+</custom-meta-group>
+</article-meta>
+</front>
+<body>
+<sec id="section1-1073274820985792" sec-type="intro">
+<title>Introduction</title>
+<p>The rapid urbanization and development of China has led to massive amounts of internal migration. In 2018 there were an estimated 288 million rural migrant workers in China.<sup>
+<xref ref-type="bibr" rid="bibr1-1073274820985792">1</xref>
+</sup> These migrant workers are defined by the China Labor Bulletin as workers that hold a rural household registration (Hukou) and are employed by an urban workplace and reside in an urban area. These people serve as important economic pillars, providing a cheap, young, and replaceable workforce in a rapidly developing country.<sup>
+<xref ref-type="bibr" rid="bibr2-1073274820985792">2</xref>
+</sup> Despite their economic role, migrant workers have unequal access to education, healthcare, and childcare support in their transplanted homes.<sup>
+<xref ref-type="bibr" rid="bibr3-1073274820985792">3</xref>
+<xref ref-type="bibr" rid="bibr4-1073274820985792"/>-<xref ref-type="bibr" rid="bibr5-1073274820985792">5</xref>
+</sup> This is due to the Chinese Hukou system which grants Chinese citizens access to education, healthcare, and other social services when they live in the rural area they or their parents were born in, but not in the transplanted urban centers where migrant workers actually live and work.<sup>
+<xref ref-type="bibr" rid="bibr6-1073274820985792">6</xref>
+</sup>
+</p>
+<p>Cervical cancer continues to be a major issue in developing countries like China. Currently, cervical cancer is the fourth most frequently detected cancer among females worldwide, with an estimated 570,000 new cases and 311,000 deaths in 2018.<sup>
+<xref ref-type="bibr" rid="bibr7-1073274820985792">7</xref>
+</sup> In 2018, there were an estimated 106,430 new cases of cervical cancer and 47,739 deaths related to cervical cancer in China.<sup>
+<xref ref-type="bibr" rid="bibr7-1073274820985792">7</xref>
+</sup> China has invested substantial amounts of resources into population-wide cervical cancer screening programs since 2009 so that local townships are able to provide pap tests, Human Papillomavirus (HPV) DNA testing, or visual inspection with acetic acid/Lugo’s iodine (VIA).<sup>
+<xref ref-type="bibr" rid="bibr8-1073274820985792">8</xref>,<xref ref-type="bibr" rid="bibr9-1073274820985792">9</xref>
+</sup> With these efforts, proportion of Chinese women aged 20-64 reporting ever receiving screening ranges from 25.7% of all women, 33.7% in eastern urban centers compared to 24.4% in eastern rural regions, 26.9% in middle urban areas compared to 20.3% in middle rural regions, and 25% in western urban regions compared to 23.6% in western rural regions.<sup>
+<xref ref-type="bibr" rid="bibr10-1073274820985792">10</xref>
+</sup> Despite these efforts, it is unknown how effective these programs have been for migrant workers. It is thought that due to the lack of national health insurance, lower rates of employer-sponsored insurance, and high out-of-pocket expenses, over half of migrant workers do not have access to a health care provider when they need it.<sup>
+<xref ref-type="bibr" rid="bibr11-1073274820985792">11</xref>
+<xref ref-type="bibr" rid="bibr12-1073274820985792"/>-<xref ref-type="bibr" rid="bibr13-1073274820985792">13</xref>
+</sup> Furthermore, previous studies have found that migrant workers in other countries have impaired access to cancer screening and other preventative services, including cervical cancer screening.<sup>
+<xref ref-type="bibr" rid="bibr14-1073274820985792">14</xref>
+<xref ref-type="bibr" rid="bibr15-1073274820985792"/>
+<xref ref-type="bibr" rid="bibr16-1073274820985792"/>-<xref ref-type="bibr" rid="bibr17-1073274820985792">17</xref>
+</sup>
+</p>
+<p>Thus, the objective of our study was focused on evaluating uptake of cervical cancer screening services in migrant workers compared to non-migrant workers in major metropolitan areas of China. We hypothesized that migrant workers would have less uptake of cervical cancer screening as compared to non-migrants.</p>
+</sec>
+<sec id="section2-1073274820985792" sec-type="methods">
+<title>Methods</title>
+<p>This study was a multi-center, cross-sectional study conducted in 7 different provinces across China on March 8, 2015, using stratified multi-stage non-randomized cluster sampling. Cities and provinces included: Changzhi, Shanxi; Urumqi, Xinjiang; Dalian, Liaoning; Wuhan, Hubei; Guangzhou, Guangdong; Chengdu, Sichuan; and Jinan, Shandong. These cities were chosen due to high migrant population and to recruit a diverse sample of migrant women. Women were recruited for 2 weeks prior to the study day through convenience sampling via posted flyers in the surrounding neighborhoods around the hospital at each city. Migrant women were defined as women who held a rural household registration (Hukou) and who have worked in an urban destination for at least 3 months and no more than 5 years. Local participants were defined as those who held a Hukou registration at the research site’s location. Further eligibility requirements included: 21 to 65 years of age, able to consent to participate in the study, not currently pregnant, and no history of previous high-grade cervical lesions, treatment for cervical disease, or hysterectomy. Written informed consent was acquired from each participant. If participant was unable to speak or read Mandarin, local study staff read and explained the questionnaire and informed consent form to the participant in the necessary local dialect. The study was approved by the Ethical Review Committee of the Cancer Institute, Chinese Academy of Medical Sciences in Beijing, China.</p>
+<p>Questionnaire in Mandarin Chinese was self-administered to evaluate socio-demographic information as well as knowledge and attitudes toward cervical cancer, HPV, and HPV vaccine. The outcome of interest for this study was prior history of cervical cancer screening, as evaluated by the following question: “Have you ever had cervical cancer screening?” (yes/no). Primary independent variable of interest for this study was migrant status. In addition, we assessed interaction between migrant status and education, insurance status, and awareness of HPV. For purposes of multivariate and interaction analysis, education was dichotomized to less than high school education and high school and higher education. Education was considered as a possible interaction variable as migrant workers often receive inferior education, lack access to education, and the high mobility can cause fragmented education.<sup>
+<xref ref-type="bibr" rid="bibr18-1073274820985792">18</xref>
+</sup> Furthermore, it was hypothesized that education would affect migrant women’s understanding of the importance of cervical cancer screening. Insurance status was dichotomized for purpose of interaction analysis to yes/no (no/do not know). Migrant workers are not offered state-sponsored insurance in their transplanted homes, but some migrant workers possess employer-sponsored insurance.<sup>
+<xref ref-type="bibr" rid="bibr3-1073274820985792">3</xref>
+</sup> We hypothesized there was an interaction effect with migrant status and insurance status on odds of prior cervical cancer screening. Finally, having heard of HPV was evaluated for interaction as migrant workers often do not seek preventative services but are known to have high health information seeking behaviors.<sup>
+<xref ref-type="bibr" rid="bibr19-1073274820985792">19</xref>,<xref ref-type="bibr" rid="bibr20-1073274820985792">20</xref>
+</sup>
+</p>
+<p>Two data input clerks in each research site were recruited to double-enter data from the questionnaire to the computer-based database independently. All finished double-entry databases were sent to Beijing research center for validation by running EpiData (EpiData Association, Odense, Denmark). In case of any inconsistencies found by the Beijing research center between the 2 databases, the 2 local data entry clerks were required for adjudication until all database discrepancies were addressed.</p>
+<p>Statistical analysis was performed utilizing STATA 16 (College Station, TX). Frequency and percentages were calculated to describe the characteristics of participants, knowledge of cervical cancer and HPV, as well as previous cervical cancer screening. The Chi-squared test, proportional z-test and Mann-Whitney test was used when comparing quantitative variables between migrant workers and local workers. Univariate logistic regression model among participants with complete information was employed to analyze the associations of potential factors with previous cervical cancer screening and then multivariable logistic regression among participants with complete information to examine the associations of migrant status with the outcome variable. Confounders were isolated using direct acyclic graphs to identify relationships between the predictor variable and outcome variables.<sup>
+<xref ref-type="bibr" rid="bibr21-1073274820985792">21</xref>
+</sup> Age, marital status, and ethnicity were covariates thought to possibly have a confounding effect and were selected a priori. Age was chosen because older women are less likely to be migrant workers and to have been screened for cervical cancer.<sup>
+<xref ref-type="bibr" rid="bibr19-1073274820985792">19</xref>,<xref ref-type="bibr" rid="bibr22-1073274820985792">22</xref>,<xref ref-type="bibr" rid="bibr23-1073274820985792">23</xref>
+</sup> Marital status was controlled for because unmarried Chinese are less likely to be screened for cervical cancer and more likely to be migrant workers.<sup>
+<xref ref-type="bibr" rid="bibr23-1073274820985792">23</xref>,<xref ref-type="bibr" rid="bibr24-1073274820985792">24</xref>
+</sup> Finally, ethnicity was adjusted for as Chinese ethnic minorities are more likely to be migrant workers and are much less likely to be screened for cervical cancer.<sup>
+<xref ref-type="bibr" rid="bibr23-1073274820985792">23</xref>,<xref ref-type="bibr" rid="bibr25-1073274820985792">25</xref>
+</sup> Odds ratios (ORs) with corresponding 95% confidence intervals (CIs) were calculated and reported. In addition, interaction analysis was done with prespecified variables. We tested for multiplicative by including the product term in multivariate logistic regression models. Additive interactions (relative excess risk due to interaction, RERI) were evaluated by ORs derived from multivariate logistic regression models. This study applied a 2-tail test with α = 0.05 and β = 0.20. Statistical power was originally calculated based on the hypothesized absolute difference of 10% in screening between migrant women and non-migrant women. This absolute difference was based on previous differences found between rural and urban screening rates.<sup>
+<xref ref-type="bibr" rid="bibr23-1073274820985792">23</xref>
+</sup> The number of participants needed in each group was 356 as calculated using a sample size calculator.<sup>
+<xref ref-type="bibr" rid="bibr26-1073274820985792">26</xref>
+</sup> Considering that China has 7 geographic regions, this study planned to include approximately 100 women (50 migrant and 50 non-migrant women) from each region.</p>
+<p>Finally, in an effort to improve assessment of our study’s strengths and weaknesses we followed the Strengthening the Reporting of Observational Studies in Epidemiology (STROBE) cross-sectional reporting guidelines when presenting our study.<sup>
+<xref ref-type="bibr" rid="bibr27-1073274820985792">27</xref>
+</sup>
+</p>
+</sec>
+<sec id="section3-1073274820985792" sec-type="results">
+<title>Results</title>
+<sec id="section4-1073274820985792">
+<title>Participants Characteristics</title>
+<p>Of the 739 participants enrolled in the study, 2 were excluded for final analysis as they were over the inclusion criteria for age. For the included participants in initial analysis (n = 737), 50.2% (n = 370) were migrant worker participants and 49.8% (n = 367) were local participants. Average age of participants was 41.9 ± 7.2 years. 93.9% were married, and 94.6% had at least one child. 89.6% of participants identified as Han Chinese, of which 13.0% of migrant workers were non-Han Chinese compared to 7.9% of local participants (P = 0.02). At least 40% of participants had completed high school, of which 27.6% of migrant workers had completed high school compared to 53.4% of local participants (P &lt; 0.001). 47.5% lacked employer-sponsored insurance, of which 55.6% of migrant workers lacked insurance compared to 39.4% of local participants (p &lt; 0.001). Median household income per year was 41,000 with interquartile range of 40,000 (in RMB as of March 2015 1 USD = 6.14 RMB). Finally, 38.4% of the participants had heard of HPV before, with 36.6% of migrant workers stating that have heard of HPV and 40.2% of non-migrant workers (<xref ref-type="table" rid="table1-1073274820985792">Table 1</xref>).</p>
+<table-wrap id="table1-1073274820985792" position="float">
+<label>Table 1.</label>
+<caption>
+<p>Demographics of Study Participants (n = 737).</p>
+</caption>
+<alternatives>
+<graphic xlink:href="10.1177_1073274820985792-table1.tif"/>
+<table>
+<thead>
+<tr>
+<th>Characteristics</th>
+<th>Total (n = 737)</th>
+<th>Migrant worker participant (n = 370)</th>
+<th>Local participant (n = 367)</th>
+<th>P-value<sup>*</sup>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Age (years, mean ± SD)</td>
+<td>41.9 ± 7.2</td>
+<td>41.5 ± 7.3</td>
+<td>42.2 ± 7.2</td>
+<td>0.23</td>
+</tr>
+<tr>
+<td>Married (n, %)</td>
+<td>692 (93.9)</td>
+<td>350 (94.6)</td>
+<td>342 (93.2)</td>
+<td>0.43</td>
+</tr>
+<tr>
+<td>Race/Ethnicity (n, %)</td>
+<td/>
+<td/>
+<td/>
+<td>0.02</td>
+</tr>
+<tr>
+<td> Non-Han Chinese Minority</td>
+<td>77 (10.4)</td>
+<td>48 (13.0)</td>
+<td>29 (7.9)</td>
+<td/>
+</tr>
+<tr>
+<td> Han Chinese</td>
+<td>660 (89.6)</td>
+<td>322 (87.0)</td>
+<td>338 (92.1)</td>
+<td/>
+</tr>
+<tr>
+<td>Parity (n, %)</td>
+<td/>
+<td/>
+<td/>
+<td>0.87</td>
+</tr>
+<tr>
+<td> Nulliparous</td>
+<td>39 (5.4)</td>
+<td>19 (5.2)</td>
+<td>20 (5.5)</td>
+<td/>
+</tr>
+<tr>
+<td> 1 Child or more child</td>
+<td>689 (94.6)</td>
+<td>345 (94.8)</td>
+<td>344 (94.5)</td>
+<td/>
+</tr>
+<tr>
+<td>Education (n, %)</td>
+<td/>
+<td/>
+<td/>
+<td>&lt;0.001</td>
+</tr>
+<tr>
+<td> No Schooling</td>
+<td>16 (2.2)</td>
+<td>11 (3.0)</td>
+<td>5 (1.4)</td>
+<td/>
+</tr>
+<tr>
+<td> Primary School</td>
+<td>123 (16.6)</td>
+<td>85 (23.0)</td>
+<td>38 (10.4)</td>
+<td/>
+</tr>
+<tr>
+<td> Junior High</td>
+<td>300 (40.7)</td>
+<td>172 (46.5)</td>
+<td>128 (34.9)</td>
+<td/>
+</tr>
+<tr>
+<td> High School</td>
+<td>154 (20.9)</td>
+<td>64 (17.3)</td>
+<td>90 (24.5)</td>
+<td/>
+</tr>
+<tr>
+<td> Undergraduate or Higher</td>
+<td>144 (19.5)</td>
+<td>38 (10.3)</td>
+<td>106 (28.9)</td>
+<td/>
+</tr>
+<tr>
+<td>Employer-Sponsored Insurance Status (n, %)<sup>&amp;</sup>
+</td>
+<td/>
+<td/>
+<td/>
+<td>&lt;0.001</td>
+</tr>
+<tr>
+<td> Insured</td>
+<td>349 (47.7)</td>
+<td>141 (38.6)</td>
+<td>208 (56.8)</td>
+<td/>
+</tr>
+<tr>
+<td> No Insurance</td>
+<td>347(47.5)</td>
+<td>203 (55.6)</td>
+<td>144 (39.4)</td>
+<td/>
+</tr>
+<tr>
+<td> Do not know</td>
+<td>35 (4.8)</td>
+<td>21 (5.8)</td>
+<td>14 (3.8)</td>
+<td/>
+</tr>
+<tr>
+<td>Research Center Site (n, %)</td>
+<td/>
+<td/>
+<td/>
+<td>0.03</td>
+</tr>
+<tr>
+<td> Shanxi</td>
+<td>109 (14.8)</td>
+<td>52 (14.1)</td>
+<td>57 (15.5)</td>
+<td/>
+</tr>
+<tr>
+<td> Shandong</td>
+<td>120 (16.3)</td>
+<td>60 (16.2)</td>
+<td>60 (16.3)</td>
+<td/>
+</tr>
+<tr>
+<td> Hubei</td>
+<td>96 (13.0)</td>
+<td>35 (9.5)</td>
+<td>61 (16.6)</td>
+<td/>
+</tr>
+<tr>
+<td> Guangdong</td>
+<td>101 (13.7)</td>
+<td>50 (13.5)</td>
+<td>51 (13.9)</td>
+<td/>
+</tr>
+<tr>
+<td> Xinjiang</td>
+<td>93 (12.6)</td>
+<td>52 (14.1)</td>
+<td>41 (11.2)</td>
+<td/>
+</tr>
+<tr>
+<td> Sichuan</td>
+<td>117 (15.9)</td>
+<td>71 (19.2)</td>
+<td>46 (12.5)</td>
+<td/>
+</tr>
+<tr>
+<td> Liaoning</td>
+<td>101 (13.7)</td>
+<td>50 (13.5)</td>
+<td>51 (13.8)</td>
+<td/>
+</tr>
+<tr>
+<td>Yearly Total Income (RMB, median; IQR)<sup>&amp;</sup>
+</td>
+<td>41,000; 40,000</td>
+<td>40,000; 30,000</td>
+<td>50,000; 50,000</td>
+<td>0.17<sup>@</sup>
+</td>
+</tr>
+<tr>
+<td>Previous Cervical Cancer Screening (n, %)</td>
+<td>224 (30.4)</td>
+<td>102 (27.6)</td>
+<td>122 (33.2)</td>
+<td>0.09<sup>#</sup>
+</td>
+</tr>
+<tr>
+<td>Have Heard of HPV (n, %)<sup>&amp;</sup>
+</td>
+<td>282 (38.4)</td>
+<td>135 (36.6)</td>
+<td>147 (40.2)</td>
+<td>0.32</td>
+</tr>
+</tbody>
+</table>
+</alternatives>
+<table-wrap-foot>
+<fn id="table-fn1-1073274820985792">
+<p>Data presented as mean (Standard Deviation, SD) for Age and median (interquartile range) for Total Income variables and n(%) for categorical measures.</p>
+</fn>
+<fn id="table-fn2-1073274820985792">
+<p>* Pearson’s chi-squared test; <sup>#</sup> Proportional z-test; <sup>@</sup>Man-Whitney Test.</p>
+</fn>
+<fn id="table-fn3-1073274820985792">
+<p>
+<sup>&amp;</sup>For Insurance Status there were 731 responses; Total Income 690 responses; Heard of HPV 735 responses.</p>
+</fn>
+<fn id="table-fn31-1073274820985792">
+<p>HPV = Human papillomavirus.</p>
+</fn>
+</table-wrap-foot>
+</table-wrap>
+</sec>
+<sec id="section5-1073274820985792">
+<title>Relationship Between Migrant Status and Reporting Previous Cervical Cancer Screening</title>
+<p>Overall, 30.4% of the participants reported previous cervical cancer screening. Of those, 27.6% (95%CI: 23.0-32.1) of migrant workers had been previously screened compared to 33.2% of local participants (95%CI: 28.4-38.1), though they were not statistically different (P = 0.09). In bivariate analyses, migrant status as compared to local participants was associated with decreased odds of previous cervical cancer screening (OR = 0.76 95%CI: 0.56-1.05), but not statistically significance. Those with high school or higher education as compared to those with less than high school education and those with employee-sponsored insurance compared to uninsured had increased odds of previous cervical cancer screening (OR = 2.62 95%CI: 1.89-3.61 and OR = 2.31 95%CI: 1.68-3.21, respectively). Having heard of HPV was associated with increased odds of cervical cancer screening (OR = 2.70 95%CI: 1.95-3.72) (<xref ref-type="table" rid="table2-1073274820985792">Table 2</xref>).</p>
+<table-wrap id="table2-1073274820985792" position="float">
+<label>Table 2.</label>
+<caption>
+<p>Reporting Previous Cervical Cancer Screening (N = 729<sup>@</sup>).</p>
+</caption>
+<alternatives>
+<graphic xlink:href="10.1177_1073274820985792-table2.tif"/>
+<table>
+<thead>
+<tr>
+<th/>
+<th colspan="4">Previous cervical cancer screening</th>
+</tr>
+<tr>
+<th>Predictor</th>
+<th>OR (95%CI)</th>
+<th>P-value</th>
+<th>aOR (95% CI)<sup>*</sup>
+</th>
+<th>P-value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Participant Status</td>
+<td/>
+<td/>
+<td/>
+<td/>
+</tr>
+<tr>
+<td> Local participant</td>
+<td>1.00</td>
+<td>REF</td>
+<td>1.00</td>
+<td>REF</td>
+</tr>
+<tr>
+<td> Migrant worker participant</td>
+<td>0.76 (0.56-1.05)</td>
+<td>0.09</td>
+<td>1.11 (0.76-1.60)</td>
+<td>0.57</td>
+</tr>
+<tr>
+<td>Age</td>
+<td>0.99 (0.97-1.01)</td>
+<td>0.53</td>
+<td>1.02 (1.00-1.05)</td>
+<td>0.11</td>
+</tr>
+<tr>
+<td>Marriage Status</td>
+<td/>
+<td/>
+<td/>
+<td/>
+</tr>
+<tr>
+<td> Single</td>
+<td>1.00</td>
+<td>REF</td>
+<td>1.00</td>
+<td>REF</td>
+</tr>
+<tr>
+<td> Married</td>
+<td>2.09 (0.96-4.58)</td>
+<td>0.06</td>
+<td>2.26 (0.97-5.25)</td>
+<td>0.06</td>
+</tr>
+<tr>
+<td>Race/Ethnicity</td>
+<td/>
+<td/>
+<td/>
+<td/>
+</tr>
+<tr>
+<td> Han Chinese</td>
+<td>1.00</td>
+<td>REF</td>
+<td>1.00</td>
+<td>REF</td>
+</tr>
+<tr>
+<td> Non-Han Chinese Minority</td>
+<td>0.48 (0.26-0.87)</td>
+<td>0.02</td>
+<td>1.07 (0.43-2.67)</td>
+<td>0.88</td>
+</tr>
+<tr>
+<td>Education</td>
+<td/>
+<td/>
+<td/>
+<td/>
+</tr>
+<tr>
+<td> Less than high school education</td>
+<td>1.00</td>
+<td>REF</td>
+<td>1.00</td>
+<td>REF</td>
+</tr>
+<tr>
+<td> High school or higher education</td>
+<td>2.62 (1.89-3.61)</td>
+<td>&lt;0.005</td>
+<td>2.15 (1.41-3.27)</td>
+<td>&lt;0.005</td>
+</tr>
+<tr>
+<td colspan="2">Employer-Sponsored Insurance Status</td>
+<td/>
+<td/>
+<td/>
+</tr>
+<tr>
+<td> Uninsured</td>
+<td>1.00</td>
+<td>REF</td>
+<td>1.00</td>
+<td>REF</td>
+</tr>
+<tr>
+<td> Insured</td>
+<td>2.31 (1.68-3.21)</td>
+<td>&lt;0.005</td>
+<td>1.67 (1.14-2.45)</td>
+<td>0.01</td>
+</tr>
+<tr>
+<td>Have Heard of HPV</td>
+<td/>
+<td/>
+<td/>
+<td/>
+</tr>
+<tr>
+<td> No</td>
+<td>1.00</td>
+<td>REF</td>
+<td>1.00</td>
+<td>REF</td>
+</tr>
+<tr>
+<td> Yes</td>
+<td>2.70 (1.95-3.72)</td>
+<td>&lt;0.005</td>
+<td>2.02 (1.41-2.91)</td>
+<td>&lt;0.005</td>
+</tr>
+<tr>
+<td>Research Center Site</td>
+<td/>
+<td/>
+<td/>
+<td/>
+</tr>
+<tr>
+<td> Shanxi</td>
+<td>1.00</td>
+<td>REF</td>
+<td>1.00</td>
+<td>REF</td>
+</tr>
+<tr>
+<td> Shandong</td>
+<td>0.73 (0.39-1.34)</td>
+<td>0.31</td>
+<td>0.45 (0.23-0.87)</td>
+<td>0.02</td>
+</tr>
+<tr>
+<td> Hubei</td>
+<td>1.66 (0.92-2.99)</td>
+<td>0.10</td>
+<td>1.13 (059-2.13)</td>
+<td>0.72</td>
+</tr>
+<tr>
+<td> Guangdong</td>
+<td>1.11 (0.61-2.04)</td>
+<td>0.73</td>
+<td>0.87 (0.46-1.65)</td>
+<td>0.68</td>
+</tr>
+<tr>
+<td> Xinjiang</td>
+<td>0.66 (0.34-1.29)</td>
+<td>0.23</td>
+<td>0.69 (0.28-1.71)</td>
+<td>0.42</td>
+</tr>
+<tr>
+<td> Sichuan</td>
+<td>1.99 (1.13-3.49)</td>
+<td>0.02</td>
+<td>1.03 (0.54-1.97)</td>
+<td>0.92</td>
+</tr>
+<tr>
+<td> Liaoning</td>
+<td>1.66 (0.93-2.99)</td>
+<td>0.09</td>
+<td>0.85 (0.44-1.61)</td>
+<td>0.61</td>
+</tr>
+</tbody>
+</table>
+</alternatives>
+<table-wrap-foot>
+<fn id="table-fn4-1073274820985792">
+<p>aOR = adjusted Odds Ratio; CI = Confidence Interval; HPV = Human papillomavirus.</p>
+</fn>
+<fn id="table-fn5-1073274820985792">
+<p>*=adjusted for all variables included in table.</p>
+</fn>
+<fn id="table-fn6-1073274820985792">
+<p>
+<bold>
+<sup>@</sup>
+</bold>=Complete data available for 729 participants.</p>
+</fn>
+</table-wrap-foot>
+</table-wrap>
+<p>In our adjusted model (n = 729 with complete records for variables of interest) without interaction analysis, odds of previous cervical cancer screening was not significantly different among migrant workers compared to local participants (aOR = 1.11 95%CI: 0.76-1.60). High school or higher education compared to less than high school education and insured versus uninsured retained their association with increased odds of previous cervical cancer screening (aOR = 2.15 95% CI: 1.41-3.27 and aOR = 1.67 95%CI: 1.14-2.45, respectively). Finally, having heard of HPV compared to not was still associated with increased odds of cervical cancer screening (aOR = 2.02 95%CI: 1.41-2.91) (<xref ref-type="table" rid="table2-1073274820985792">Table 2</xref>).</p>
+</sec>
+<sec id="section6-1073274820985792">
+<title>Interaction Between Migrant Status and Awareness of HPV</title>
+<p>Interaction analysis (n = 729 with complete records) of migrant status and having heard of HPV provided possible measure of interaction on the multiplicative scale (OR = 1.99 95% CI: 0.99-4.04, P = 0.06) and additive scale (RERI = 1.50 95% CI: −0.16-3.16, P = 0.08). Given this possible multiplicative and additive interaction, further interaction was analyzed. Migrant workers that have heard of HPV as compared to local participants who have not heard of HPV demonstrated strong evidence for increased odds of previous cervical cancer screening (aOR = 2.97 95%CI: 1.51-5.83). Furthermore, local participants that have heard of HPV as compared to local participants that have not heard of HPV also demonstrated increased odds of having previous cervical cancer screening, though was not significant (aOR = 1.41 95%CI: 0.85-2.35). Migrant workers who have heard of HPV as compared to migrant workers who have not heard of HPV also demonstrated strong evidence for increased odds of previously being screened for cervical cancer (aOR = 2.82 95%CI: 1.70-4.69). When comparing interaction between migrant workers that have heard of HPV compared to local participants who have heard of HPV there were estimates of increased odds of previous cervical cancer screening but was not statistically significant (aOR = 2.10 95%CI: 0.98-4.49) (<xref ref-type="table" rid="table3-1073274820985792">Table 3</xref>).</p>
+<table-wrap id="table3-1073274820985792" position="float">
+<label>Table 3.</label>
+<caption>
+<p>Interaction Between Migrant Status and Having Heard of HPV on Odds of Reporting Being Screened for Cervical Cancer (n = 729<sup>†</sup>).</p>
+</caption>
+<alternatives>
+<graphic xlink:href="10.1177_1073274820985792-table3.tif"/>
+<table>
+<thead>
+<tr>
+<th/>
+<th colspan="2">Local participant</th>
+<th colspan="2">Migrant worker participant</th>
+<th/>
+</tr>
+<tr>
+<th/>
+<th>N with/w/o cervical cancer screening</th>
+<th>aOR (95%CI)</th>
+<th>N with/w/o cervical cancer screening</th>
+<th>aOR (95%CI)</th>
+<th>OR (95%CI) for migrant worker within stratum of heard of HPV</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Have not heard of HPV</td>
+<td>56/163</td>
+<td>1.00, REF</td>
+<td>45/189</td>
+<td>1.05 (0.57-1.94); P = 0.87*</td>
+<td>1.00; REF</td>
+</tr>
+<tr>
+<td>Have heard of HPV</td>
+<td>66/81</td>
+<td>1.41 (0.85-2.35); P = 0.18*</td>
+<td>57/78</td>
+<td>2.97 (1.51-5.83); P = 0.002*</td>
+<td>2.82 (1.70-4.69); P &lt; 0.005<sup>#</sup>
+</td>
+</tr>
+<tr>
+<td>OR (95%CI) for having heard of HPV within strata of participant type</td>
+<td/>
+<td>1.00 REF</td>
+<td/>
+<td>2.10 (0.98-4.49); P = 0.06<sup>@</sup>
+</td>
+<td/>
+</tr>
+</tbody>
+</table>
+</alternatives>
+<table-wrap-foot>
+<fn id="table-fn7-1073274820985792">
+<p>Measure of Interaction on Multiplicative Scale: Ratio of ORs (95%CI) = 1.99 (0.99-4.04); P-value = 0.06.</p>
+</fn>
+<fn id="table-fn8-1073274820985792">
+<p>Measure of Interaction on Additive Scale: RERI (95%CI) = 1.50 (-0.16-3.16); P-value = 0.08.</p>
+</fn>
+<fn id="table-fn9-1073274820985792">
+<p>aOR are odds ratios of being screened for cervical cancer of non-migrant worker versus migrant worker participants adjusted for age, marriage status, research center, ethnicity, insurance status, insurance interaction, education, and education interaction.</p>
+</fn>
+<fn id="table-fn10-1073274820985792">
+<p>
+<sup>†</sup>=Complete data available for 729 participants.</p>
+</fn>
+<fn id="table-fn11-1073274820985792">
+<p>*= Reference group is the local participant who has not heard of HPV.</p>
+</fn>
+<fn id="table-fn12-1073274820985792">
+<p>
+<sup>@</sup>=Reference group is the local participant who has heard of HPV.</p>
+</fn>
+<fn id="table-fn13-1073274820985792">
+<p>
+<sup>#</sup>=Reference group is the migrant worker who has not heard of HPV.</p>
+</fn>
+<fn id="table-fn14-1073274820985792">
+<p>aOR = adjusted odds ratios; HPV = Human papillomavirus; with/w/o = with and without; RERI = Relative excess risk due to interaction.</p>
+</fn>
+</table-wrap-foot>
+</table-wrap>
+</sec>
+<sec id="section7-1073274820985792">
+<title>Interaction Between Migrant Status and Education Level/Insurance Status</title>
+<p>Interaction between migrant status and education and migrant status and insurance status yielded minimal evidence of multiplicative or additive interaction. For interaction between migrant status and education, there was no evidence of multiplicative interaction (aOR = 0.69 95%CI: 0.21-1.51, P = 0.36) nor additive interaction (RERI = −0.76 95%CI: −2.45-0.92, P = 0.38) (Supplemental Table 1). Interaction between migrant status and insurance was not present on the multiplicative scale (aOR = 0.86 95%CI: 0.41-1.80. P = 0.69) or additive scale (RERI = −0.22 95%CI: −1.40-0.95, P = 0.71) (Supplemental Table 2).</p>
+</sec>
+</sec>
+<sec id="section8-1073274820985792" sec-type="discussion">
+<title>Discussion</title>
+<p>China has made major and impressive improvements in their cervical cancer screening coverage despite the challenges of such a massive, mobile, and rural population. Our study found that 30.4% of all our participants reported previous cervical cancer screening, corroborating current estimated screening rates.<sup>
+<xref ref-type="bibr" rid="bibr10-1073274820985792">10</xref>
+</sup> However, migrant women reported a lower cervical cancer screening rate as compared to local participants in an urban setting, though not statistically significant. Our study also demonstrates that migrant women, which are from rural provinces in China, have a higher rate of screening when compared to women who primarily live in rural areas of China.<sup>
+<xref ref-type="bibr" rid="bibr10-1073274820985792">10</xref>,<xref ref-type="bibr" rid="bibr11-1073274820985792">11</xref>
+</sup> This could be due to the effects of awareness of HPV on migrant workers. Our study found that migrant workers have higher odds of previous screening if they have heard of HPV as compared to non-migrants who have heard of HPV and migrants without awareness of HPV.</p>
+<p>Overall, awareness of HPV in our study cohort was low (∼38%) which is in line with other studies investigating HPV awareness in China.<sup>
+<xref ref-type="bibr" rid="bibr28-1073274820985792">28</xref>
+<xref ref-type="bibr" rid="bibr29-1073274820985792"/>-<xref ref-type="bibr" rid="bibr30-1073274820985792">30</xref>
+</sup> Our study also corroborated another study investigating awareness of HPV in migrant workers specifically, which found that about 30-36% of migrant populations had heard of HPV.<sup>
+<xref ref-type="bibr" rid="bibr31-1073274820985792">31</xref>
+</sup> Though this study did find much higher awareness of HPV in local participants compared to our study (approximately 60%), this could be due to the large number of college graduates in their cohort. The odds of reporting previous screening increased if participants had heard of HPV before, similar to previous a study in China.<sup>
+<xref ref-type="bibr" rid="bibr32-1073274820985792">32</xref>
+</sup> Our study is novel in that we also found that migrant status has an important interaction with awareness of HPV, as migrants are much more likely to have been screened for cervical cancer if they have heard of HPV as compared to either a migrant worker or local participants who have not heard of HPV. This could be due to migrant women’s increased use of health education materials prompting increased utilization of preventative healthcare in their transplanted homes or when they are in their home province and are able to access state-covered care.<sup>
+<xref ref-type="bibr" rid="bibr20-1073274820985792">20</xref>
+</sup> Our study also suggests an important benefit of having heard of HPV in local participants for increased likelihood of previous cervical cancer screening, but this did not reach statistical significance.</p>
+<p>Our findings are important in context as it adds to the mounting evidence that education campaigns regarding HPV, HPV vaccine, and cervical cancer increase cervical cancer screening uptake in women in China.<sup>
+<xref ref-type="bibr" rid="bibr33-1073274820985792">33</xref>
+<xref ref-type="bibr" rid="bibr34-1073274820985792"/>
+<xref ref-type="bibr" rid="bibr35-1073274820985792"/>-<xref ref-type="bibr" rid="bibr36-1073274820985792">36</xref>
+</sup> Our findings suggest that these campaigns may be even more effective at increasing cervical cancer uptake in migrant populations in particular.</p>
+<p>In addition to the association with awareness of HPV and cervical cancer screening uptake our study also found that women with higher education levels and employer-sponsored insurance are more likely to report previous cervical cancer screening. This is in line with previous studies that suggest migrant women in China are more likely to be screened if they have had higher education and employer-sponsored insurance, as employer-sponsored insurance will help overcome the cost of screening services.<sup>
+<xref ref-type="bibr" rid="bibr23-1073274820985792">23</xref>
+</sup> Our study found no interaction with migrant status and education or insurance status. This suggests that increased efforts need to be made to provide these women insurance, education opportunities, and/or no-cost cervical cancer screenings services in their transplanted homes which will likely increase cervical cancer screening and other preventative health behaviors. Furthermore, these findings are in line with research investigating migrant workers in the United States and Europe. In general, low income, less education, and migratory status are all social determinants of health that limit migrant workers abilities to access cancer screening and general preventative services and lead to poor health outcomes globally.<sup>
+<xref ref-type="bibr" rid="bibr17-1073274820985792">17</xref>,<xref ref-type="bibr" rid="bibr37-1073274820985792">37</xref>
+<xref ref-type="bibr" rid="bibr38-1073274820985792"/>
+<xref ref-type="bibr" rid="bibr39-1073274820985792"/>
+<xref ref-type="bibr" rid="bibr40-1073274820985792"/>-<xref ref-type="bibr" rid="bibr41-1073274820985792">41</xref>
+</sup>
+</p>
+<sec id="section9-1073274820985792">
+<title>Strengths and Limitations</title>
+<p>Our study has several limitations. First, our sample size is relatively small when considering the massive and diverse population of China. Despite this, our study enrolled participants from 7 distinct regions of the country, mirroring the diverse nature of migrant workers, which could improve generalizability. Next, given the subject matter regarding cervical cancer screening, volunteer bias is possible in this study, especially given its small sample size. Thus, our population volunteering to participate may have more interest in their health as compared to non-volunteers, though our study findings are consistent with other studies in terms of participant demographics such as education and income. Also, our study question specifically mentioned cervical cancer screening, it did not detail the different methods of screening (pap, HPV DNA testing, or VIA) and thus the question may be misinterpreted. Though, we do not believe this to be the case as previous studies have demonstrated high awareness regarding cervical cancer and need to be screened to prevent cancer.<sup>
+<xref ref-type="bibr" rid="bibr42-1073274820985792">42</xref>
+</sup> In addition, our study only addresses the question of ever being screened for cervical cancer, we do not know how many of these women are actually adhering to screening every 3 years as recommended by the Chinese government. Though, if every eligible women was screened in China just once in their lifetime, cervical cancer cases could be reduced by up to 50%.<sup>
+<xref ref-type="bibr" rid="bibr43-1073274820985792">43</xref>
+</sup> Future studies should investigate the adherence to the screening schedule in Chinese women, both migrant and non-migrant. Finally, this is a cross-sectional study, so we are unable to establish temporality and causality.</p>
+</sec>
+</sec>
+<sec id="section10-1073274820985792" sec-type="conclusions">
+<title>Conclusion</title>
+<p>It has been estimated that without widespread HPV vaccination and screening the incidence of cervical cancer in China will triple by 2100.<sup>
+<xref ref-type="bibr" rid="bibr44-1073274820985792">44</xref>
+</sup> As China continues to invest in its cervical cancer screening program, our results provide a window into current cervical cancer screening uptake in migrant populations and non-migrant workers in urban settings. Cervical cancer uptake is still low and has a lot of room for improvement. Given the interaction of prior awareness of HPV and increased association with cervical cancer screening, future studies could investigate if targeted HPV and cervical cancer related education campaigns could potentially increase cervical cancer screening uptake in both migrant workers living in urban settings as well other urban dwellers.</p>
+</sec>
+<sec id="section11-1073274820985792" sec-type="supplementary-material" specific-use="figshare">
+<title>Supplemental Material</title>
+<supplementary-material id="suppl1-1073274820985792" mimetype="application/pdf" xlink:href="sj-pdf-1-ccx-10.1177_1073274820985792.pdf">
+<caption>
+<title>Supplemental Material, sj-pdf-1-ccx-10.1177_1073274820985792 - Inequalities in Cervical Cancer Screening Uptake Between Chinese Migrant Women and Local Women: A Cross-Sectional Study</title>
+</caption>
+<p>Supplemental Material, sj-pdf-1-ccx-10.1177_1073274820985792 for Inequalities in Cervical Cancer Screening Uptake Between Chinese Migrant Women and Local Women: A Cross-Sectional Study by Hunter K. Holt, Xi Zhang, Shang-Ying Hu, Fang-Hui Zhao, Jennifer S. Smith and You-Lin Qiao in Cancer Control</p>
+</supplementary-material>
+</sec>
+<sec id="section12-1073274820985792" sec-type="supplementary-material" specific-use="figshare">
+<title>Supplemental Material</title>
+<supplementary-material id="suppl2-1073274820985792" mimetype="application/pdf" xlink:href="sj-pdf-2-ccx-10.1177_1073274820985792.pdf">
+<caption>
+<title>Supplemental Material, sj-pdf-2-ccx-10.1177_1073274820985792 - Inequalities in Cervical Cancer Screening Uptake Between Chinese Migrant Women and Local Women: A Cross-Sectional Study</title>
+</caption>
+<p>Supplemental Material, sj-pdf-2-ccx-10.1177_1073274820985792 for Inequalities in Cervical Cancer Screening Uptake Between Chinese Migrant Women and Local Women: A Cross-Sectional Study by Hunter K. Holt, Xi Zhang, Shang-Ying Hu, Fang-Hui Zhao, Jennifer S. Smith and You-Lin Qiao in Cancer Control</p>
+</supplementary-material>
+</sec>
+</body>
+<back>
+<glossary content-type="abbr">
+<title>Abbreviations</title>
+<def-list>
+<def-item>
+<term id="term1-1073274820985792">HPV</term>
+<def>
+<p>Human papillomavirus</p>
+</def>
+</def-item>
+<def-item>
+<term id="term2-1073274820985792">VIA</term>
+<def>
+<p>visual inspection with acetic acid/Lugo’s iodine</p>
+</def>
+</def-item>
+<def-item>
+<term id="term3-1073274820985792">Cis</term>
+<def>
+<p>Confidence intervals</p>
+</def>
+</def-item>
+<def-item>
+<term id="term4-1073274820985792">Ors</term>
+<def>
+<p>Odds ratios</p>
+</def>
+</def-item>
+<def-item>
+<term id="term5-1073274820985792">RERI</term>
+<def>
+<p>Relative excess risk due to interaction</p>
+</def>
+</def-item>
+<def-item>
+<term id="term6-1073274820985792">SD</term>
+<def>
+<p>Standard deviation</p>
+</def>
+</def-item>
+</def-list>
+</glossary>
+<fn-group>
+<fn fn-type="other" id="fn1-1073274820985792">
+<label>Authors’ Note</label>
+<p>Hunter K. Holt, MD, and Xi Zhang, MD, PhD, contributed equally to this work. This was a nationwide study conducted by YLQ, FHZ, SYH, and JSS. HKH performed the statistical analysis and drafted the manuscript. XZ participated in the data collection and revised the manuscript. All authors read and approved the final manuscript. The dataset supporting the conclusions of this article are available from the corresponding author on reasonable request. The study was approved by the Ethical Review Committee of the Cancer Institute, Chinese Academy of Medical Sciences in Beijing, China (No.14-110/900) prior to implementation. Written informed consent was obtained from each participant prior to the study.</p>
+</fn>
+</fn-group>
+<ack>
+<title>Acknowledgments</title>
+<p>We thank the collaborative hospitals involved in this study, including Heping Hospital affiliated to Changzhi Medical College, The Tumor Hospital affiliated to Xinjiang Medical University, Dalian Municipal Women and Children’s Medical Center, Women and Children’s Hospital of Hubei province, Guangzhou Women and Children’s Medical Center, Sichuan Cancer Hospital and Institute and Qilu Hospital of Shandong University. The authors also acknowledge the women who participated in this study from the 7 cities.</p>
+</ack>
+<fn-group>
+<fn fn-type="conflict" id="fn2-1073274820985792">
+<label>Declaration of Conflicting Interests</label>
+<p>The author(s) declared no potential conflicts of interest with respect to the research, authorship, and/or publication of this article.</p>
+</fn>
+<fn fn-type="financial-disclosure" id="fn3-1073274820985792">
+<label>Funding</label>
+<p>The author(s) disclosed receipt of the following financial support for the research, authorship, and/or publication of this article: This study was funded by the Fogarty International Clinical Research Scholars Program (Fogarty International Center, US National Institutes of Health) (5R25TW009340) and CAMS Innovation Fund for Medical Sciences (2017-I2M-1-002, 2017-I2M-3-005).</p>
+</fn>
+<fn fn-type="other" id="fn4-1073274820985792">
+<label>ORCID iDs</label>
+<p>Hunter K. Holt, MD <inline-graphic xlink:href="10.1177_1073274820985792-img1.tif"/> <ext-link ext-link-type="uri" xlink:href="https://orcid.org/0000-0001-6833-8372">https://orcid.org/0000-0001-6833-8372</ext-link>
+</p>
+<p>Xi Zhang, MD, PhD <inline-graphic xlink:href="10.1177_1073274820985792-img1.tif"/> <ext-link ext-link-type="uri" xlink:href="https://orcid.org/0000-0001-7402-6981">https://orcid.org/0000-0001-7402-6981</ext-link>
+</p>
+</fn>
+<fn fn-type="supplementary-material" id="fn5-1073274820985792">
+<label>Supplemental Material</label>
+<p>Supplemental material for this article is available online.</p>
+</fn>
+</fn-group>
+<ref-list>
+<title>References</title>
+<ref id="bibr1-1073274820985792">
+<label>1</label>
+<mixed-citation publication-type="web">
+<collab collab-type="author">2018 Migrant Worker Monitoring Survey Report</collab>. <comment>Published 2019. Updated April 29, 2019. Accessed May 8, 2020</comment>. <ext-link ext-link-type="uri" xlink:href="http://www.stats.gov.cn/tjsj/zxfb/201904/t20190429_1662268.html">http://www.stats.gov.cn/tjsj/zxfb/201904/t20190429_1662268.html</ext-link>
+</mixed-citation>
+</ref>
+<ref id="bibr2-1073274820985792">
+<label>2</label>
+<mixed-citation publication-type="journal">
+<person-group person-group-type="author">
+<name>
+<surname>Shao</surname>
+<given-names>C</given-names>
+</name>
+<name>
+<surname>Meng</surname>
+<given-names>X</given-names>
+</name>
+<name>
+<surname>Cui</surname>
+<given-names>S</given-names>
+</name>
+<name>
+<surname>Wang</surname>
+<given-names>J</given-names>
+</name>
+<name>
+<surname>Li</surname>
+<given-names>C.</given-names>
+</name>
+</person-group> <article-title>Income-related health inequality of migrant workers in China and its decomposition: an analysis based on the 2012 China labor-force dynamics survey data</article-title>. <source>J Chin Med Assoc</source>. <year>2016</year>;<volume>79</volume>(<issue>10</issue>):<fpage>531</fpage>–<lpage>537</lpage>.</mixed-citation>
+</ref>
+<ref id="bibr3-1073274820985792">
+<label>3</label>
+<mixed-citation publication-type="journal">
+<person-group person-group-type="author">
+<name>
+<surname>Chen</surname>
+<given-names>S</given-names>
+</name>
+<name>
+<surname>Chen</surname>
+<given-names>Y</given-names>
+</name>
+<name>
+<surname>Feng</surname>
+<given-names>Z</given-names>
+</name>
+</person-group>, <etal>et al.</etal> <article-title>Barriers of effective health insurance coverage for rural-to-urban migrant workers in China: a systematic review and policy gap analysis</article-title>. <source>BMC Public Health</source>. <year>2020</year>;<volume>20</volume>(<issue>1</issue>):<fpage>1</fpage>–<lpage>6</lpage>.</mixed-citation>
+</ref>
+<ref id="bibr4-1073274820985792">
+<label>4</label>
+<mixed-citation publication-type="journal">
+<person-group person-group-type="author">
+<name>
+<surname>Dang</surname>
+<given-names>Y</given-names>
+</name>
+<name>
+<surname>Zou</surname>
+<given-names>G</given-names>
+</name>
+<name>
+<surname>Peng</surname>
+<given-names>B</given-names>
+</name>
+<name>
+<surname>Ling</surname>
+<given-names>L.</given-names>
+</name>
+</person-group> <article-title>Health service seeking behavior among migrant workers in small and medium-sized enterprises in Guangdong, China: does family migration matter?</article-title> <source>BioMed Research International</source>. <year>2018</year>;<volume>2018</volume>:<fpage>1</fpage>–<lpage>10</lpage>.</mixed-citation>
+</ref>
+<ref id="bibr5-1073274820985792">
+<label>5</label>
+<mixed-citation publication-type="journal">
+<person-group person-group-type="author">
+<name>
+<surname>Hesketh</surname>
+<given-names>T</given-names>
+</name>
+<name>
+<surname>Jun</surname>
+<given-names>YX</given-names>
+</name>
+<name>
+<surname>Lu</surname>
+<given-names>L</given-names>
+</name>
+<name>
+<surname>Mei</surname>
+<given-names>WH</given-names>
+</name>
+</person-group>. <article-title>Health status and access to health care of migrant workers in China</article-title>. <source>Public Health Rep</source>. <year>2008</year>;<volume>123</volume>(<issue>2</issue>):<fpage>189</fpage>–<lpage>197</lpage>.</mixed-citation>
+</ref>
+<ref id="bibr6-1073274820985792">
+<label>6</label>
+<mixed-citation publication-type="book">
+<person-group person-group-type="author">
+<name>
+<surname>Solinger</surname>
+<given-names>DJ</given-names>
+</name>
+</person-group>. <source>Contesting Citizenship in Urban China: Peasant Migrants, the State, and the Logic of the Market</source>. <publisher-name>University of California Press</publisher-name>; <year>1999</year>.</mixed-citation>
+</ref>
+<ref id="bibr7-1073274820985792">
+<label>7</label>
+<mixed-citation publication-type="journal">
+<person-group person-group-type="author">
+<name>
+<surname>Bray</surname>
+<given-names>F</given-names>
+</name>
+<name>
+<surname>Ferlay</surname>
+<given-names>J</given-names>
+</name>
+<name>
+<surname>Soerjomataram</surname>
+<given-names>I</given-names>
+</name>
+<name>
+<surname>Siegel</surname>
+<given-names>RL</given-names>
+</name>
+<name>
+<surname>Torre</surname>
+<given-names>LA</given-names>
+</name>
+<name>
+<surname>Jemal</surname>
+<given-names>A.</given-names>
+</name>
+</person-group>
+<article-title>Global cancer statistics 2018: GLOBOCAN estimates of incidence and mortality worldwide for 36 cancers in 185 countries</article-title>. <source>CA Cancer J Clin</source>. <year>2018</year>;<volume>68</volume>(<issue>6</issue>):<fpage>394</fpage>–<lpage>424</lpage>.</mixed-citation>
+</ref>
+<ref id="bibr8-1073274820985792">
+<label>8</label>
+<mixed-citation publication-type="journal">
+<person-group person-group-type="author">
+<name>
+<surname>Di</surname>
+<given-names>J</given-names>
+</name>
+<name>
+<surname>Rutherford</surname>
+<given-names>S</given-names>
+</name>
+<name>
+<surname>Chu</surname>
+<given-names>C</given-names>
+</name>
+</person-group>. <article-title>Review of the cervical cancer burden and population-based cervical cancer screening in China</article-title>. <source>Asian Pac J Cancer Prev</source>. <year>2015</year>;<volume>16</volume>(<issue>17</issue>):<fpage>7401</fpage>–<lpage>7407</lpage>.</mixed-citation>
+</ref>
+<ref id="bibr9-1073274820985792">
+<label>9</label>
+<mixed-citation publication-type="journal">
+<person-group person-group-type="author">
+<name>
+<surname>Zhao</surname>
+<given-names>F</given-names>
+</name>
+<name>
+<surname>Qiao</surname>
+<given-names>Y</given-names>
+</name>
+</person-group>. <article-title>Cervical cancer prevention in China: a key to cancer control</article-title>. <source>Lancet</source>. <year>2019</year>;<volume>393</volume>(<issue>10175</issue>):<fpage>969</fpage>–<lpage>970</lpage>.</mixed-citation>
+</ref>
+<ref id="bibr10-1073274820985792">
+<label>10</label>
+<mixed-citation publication-type="journal">
+<person-group person-group-type="author">
+<name>
+<surname>Zhang</surname>
+<given-names>M</given-names>
+</name>
+<name>
+<surname>Zhong</surname>
+<given-names>Y</given-names>
+</name>
+<name>
+<surname>Zhao</surname>
+<given-names>Z</given-names>
+</name>
+</person-group>, <etal>et al.</etal> <article-title>Cervical cancer screening rates among Chinese women—China, 2015</article-title>. <source>China CDC Weekly</source>. <year>2020</year>;<volume>2</volume>(<issue>26</issue>):<fpage>481</fpage>–<lpage>486</lpage>.</mixed-citation>
+</ref>
+<ref id="bibr11-1073274820985792">
+<label>11</label>
+<mixed-citation publication-type="journal">
+<person-group person-group-type="author">
+<name>
+<surname>Bao</surname>
+<given-names>H</given-names>
+</name>
+<name>
+<surname>Zhang</surname>
+<given-names>L</given-names>
+</name>
+<name>
+<surname>Wang</surname>
+<given-names>L</given-names>
+</name>
+</person-group>, <etal>et al.</etal> <article-title>Significant variations in the cervical cancer screening rate in China by individual-level and geographical measures of socioeconomic status: a multilevel model analysis of a nationally representative survey dataset</article-title>. <source>Cancer Med</source>. <year>2018</year>;<volume>7</volume>(<issue>5</issue>):<fpage>2089</fpage>–<lpage>2100</lpage>.</mixed-citation>
+</ref>
+<ref id="bibr12-1073274820985792">
+<label>12</label>
+<mixed-citation publication-type="journal">
+<person-group person-group-type="author">
+<name>
+<surname>Qin</surname>
+<given-names>X</given-names>
+</name>
+<name>
+<surname>Pan</surname>
+<given-names>J</given-names>
+</name>
+<name>
+<surname>Liu</surname>
+<given-names>GG</given-names>
+</name>
+</person-group>. <article-title>Does participating in health insurance benefit the migrant workers in China? An empirical investigation</article-title>. <source>China Econ Rev</source>. <year>2014</year>;<volume>30</volume>:<fpage>263</fpage>–<lpage>278</lpage>.</mixed-citation>
+</ref>
+<ref id="bibr13-1073274820985792">
+<label>13</label>
+<mixed-citation publication-type="journal">
+<person-group person-group-type="author">
+<name>
+<surname>Shao</surname>
+<given-names>S</given-names>
+</name>
+<name>
+<surname>Zhao</surname>
+<given-names>F</given-names>
+</name>
+<name>
+<surname>Wang</surname>
+<given-names>J</given-names>
+</name>
+</person-group>, <etal>et al.</etal> <article-title>The ecology of medical care in Beijing</article-title>. <source>PLoS One</source>. <year>2013</year>;<volume>8</volume>(<issue>12</issue>):<fpage>e82446</fpage>.</mixed-citation>
+</ref>
+<ref id="bibr14-1073274820985792">
+<label>14</label>
+<mixed-citation publication-type="journal">
+<person-group person-group-type="author">
+<name>
+<surname>Brzoska</surname>
+<given-names>P</given-names>
+</name>
+<name>
+<surname>Abdul-Rida</surname>
+<given-names>C.</given-names>
+</name>
+</person-group> <article-title>Participation in cancer screening among female migrants and non-migrants in Germany: a cross-sectional study on the role of demographic and socioeconomic factors</article-title>. <source>Medicine</source>. <year>2016</year>;<volume>95</volume>(<issue>30</issue>):<fpage>e4242</fpage>.</mixed-citation>
+</ref>
+<ref id="bibr15-1073274820985792">
+<label>15</label>
+<mixed-citation publication-type="journal">
+<person-group person-group-type="author">
+<name>
+<surname>Knoff</surname>
+<given-names>JS</given-names>
+</name>
+<name>
+<surname>Harlow</surname>
+<given-names>SD</given-names>
+</name>
+<name>
+<surname>Yassine</surname>
+<given-names>M</given-names>
+</name>
+<name>
+<surname>Soliman</surname>
+<given-names>AS</given-names>
+</name>
+</person-group>. <article-title>Cervical cancer screening practice and knowledge among Hispanic migrant and seasonal farmworkers of Michigan</article-title>. <source>J Prim Care Community Health</source>. <year>2013</year>;<volume>4</volume>(<issue>3</issue>):<fpage>209</fpage>–<lpage>215</lpage>.</mixed-citation>
+</ref>
+<ref id="bibr16-1073274820985792">
+<label>16</label>
+<mixed-citation publication-type="journal">
+<person-group person-group-type="author">
+<name>
+<surname>Coughlin</surname>
+<given-names>SS</given-names>
+</name>
+<name>
+<surname>Wilson</surname>
+<given-names>KM</given-names>
+</name>
+</person-group>. <article-title>Breast and cervical cancer screening among migrant and seasonal farmworkers: a review</article-title>. <source>Cancer Detect Prev</source>. <year>2002</year>;<volume>26</volume>(<issue>3</issue>):<fpage>203</fpage>–<lpage>209</lpage>.</mixed-citation>
+</ref>
+<ref id="bibr17-1073274820985792">
+<label>17</label>
+<mixed-citation publication-type="journal">
+<person-group person-group-type="author">
+<name>
+<surname>Hansen</surname>
+<given-names>E</given-names>
+</name>
+<name>
+<surname>Donohoe</surname>
+<given-names>M</given-names>
+</name>
+</person-group>. <article-title>Health issues of migrant and seasonal farmworkers</article-title>. <source>J Health Care Poor Underserved</source>. <year>2003</year>;<volume>14</volume>(<issue>2</issue>):<fpage>153</fpage>–<lpage>164</lpage>.</mixed-citation>
+</ref>
+<ref id="bibr18-1073274820985792">
+<label>18</label>
+<mixed-citation publication-type="journal">
+<person-group person-group-type="author">
+<name>
+<surname>Wang</surname>
+<given-names>L</given-names>
+</name>
+<name>
+<surname>Holland</surname>
+<given-names>T</given-names>
+</name>
+</person-group>. <article-title>In search of educational equity for the migrant children of Shanghai</article-title>. <source>Comp Educ</source>. <year>2011</year>;<volume>47</volume>(<issue>4</issue>):<fpage>471</fpage>–<lpage>487</lpage>.</mixed-citation>
+</ref>
+<ref id="bibr19-1073274820985792">
+<label>19</label>
+<mixed-citation publication-type="journal">
+<person-group person-group-type="author">
+<name>
+<surname>Yu</surname>
+<given-names>C</given-names>
+</name>
+<name>
+<surname>Lou</surname>
+<given-names>C</given-names>
+</name>
+<name>
+<surname>Cheng</surname>
+<given-names>Y</given-names>
+</name>
+</person-group>, <etal>et al.</etal> <article-title>Young internal migrants’ major health issues and health seeking barriers in Shanghai, China: a qualitative study</article-title>. <source>BMC Public Health</source>. <year>2019</year>;<volume>19</volume>(<issue>1</issue>):<fpage>336</fpage>.</mixed-citation>
+</ref>
+<ref id="bibr20-1073274820985792">
+<label>20</label>
+<mixed-citation publication-type="journal">
+<person-group person-group-type="author">
+<name>
+<surname>Zhang</surname>
+<given-names>J</given-names>
+</name>
+<name>
+<surname>Lin</surname>
+<given-names>S</given-names>
+</name>
+<name>
+<surname>Liang</surname>
+<given-names>D</given-names>
+</name>
+<name>
+<surname>Qian</surname>
+<given-names>Y</given-names>
+</name>
+<name>
+<surname>Zhang</surname>
+<given-names>D</given-names>
+</name>
+<name>
+<surname>Hou</surname>
+<given-names>Z.</given-names>
+</name>
+</person-group>
+<article-title>Public health services utilization and its determinants among internal migrants in China: evidence from a nationally representative survey</article-title>. <source>Int J Environ Res Public Health</source>. <year>2017</year>;<volume>14</volume>(<issue>9</issue>):<fpage>1002</fpage>.</mixed-citation>
+</ref>
+<ref id="bibr21-1073274820985792">
+<label>21</label>
+<mixed-citation publication-type="journal">
+<person-group person-group-type="author">
+<name>
+<surname>Greenland</surname>
+<given-names>S</given-names>
+</name>
+<name>
+<surname>Pearl</surname>
+<given-names>J</given-names>
+</name>
+<name>
+<surname>Robins</surname>
+<given-names>JM</given-names>
+</name>
+</person-group>. <article-title>Causal diagrams for epidemiologic research</article-title>. <source>Epidemiology</source>. <year>1999</year>;<volume>10</volume>(<issue>1</issue>):<fpage>37</fpage>–<lpage>48</lpage>.</mixed-citation>
+</ref>
+<ref id="bibr22-1073274820985792">
+<label>22</label>
+<mixed-citation publication-type="journal">
+<person-group person-group-type="author">
+<name>
+<surname>Mou</surname>
+<given-names>J</given-names>
+</name>
+<name>
+<surname>Griffiths</surname>
+<given-names>SM</given-names>
+</name>
+<name>
+<surname>Fong</surname>
+<given-names>H</given-names>
+</name>
+<name>
+<surname>Dawes</surname>
+<given-names>MG</given-names>
+</name>
+</person-group>. <article-title>Health of China’s rural–urban migrants and their families: a review of literature from 2000 to 2012</article-title>. <source>Br Med Bull</source>. <year>2013</year>;<volume>106</volume>(<issue>1</issue>):<fpage>19</fpage>–<lpage>43</lpage>.</mixed-citation>
+</ref>
+<ref id="bibr23-1073274820985792">
+<label>23</label>
+<mixed-citation publication-type="journal">
+<person-group person-group-type="author">
+<name>
+<surname>Wang</surname>
+<given-names>B</given-names>
+</name>
+<name>
+<surname>He</surname>
+<given-names>M</given-names>
+</name>
+<name>
+<surname>Chao</surname>
+<given-names>A</given-names>
+</name>
+</person-group>, <etal>et al.</etal> <article-title>Cervical cancer screening among adult women in China, 2010</article-title>. <source>Oncologist</source>. <year>2015</year>;<volume>20</volume>(<issue>6</issue>):<fpage>627</fpage>–<lpage>634</lpage>.</mixed-citation>
+</ref>
+<ref id="bibr24-1073274820985792">
+<label>24</label>
+<mixed-citation publication-type="journal">
+<person-group person-group-type="author">
+<name>
+<surname>Chen</surname>
+<given-names>J.</given-names>
+</name>
+</person-group>
+<article-title>Internal migration and health: re-examining the healthy migrant phenomenon in China</article-title>. <source>Soc Sci Med</source>. <year>2011</year>;<volume>72</volume>(<issue>8</issue>):<fpage>1294</fpage>–<lpage>1301</lpage>.</mixed-citation>
+</ref>
+<ref id="bibr25-1073274820985792">
+<label>25</label>
+<mixed-citation publication-type="journal">
+<person-group person-group-type="author">
+<name>
+<surname>Ma</surname>
+<given-names>X.</given-names>
+</name>
+</person-group> <article-title>Ethnic minority empowerment and marginalization: Yi labour migrants outside China’s autonomous regions</article-title>. <source>China Inf</source>. <year>2018</year>;<volume>33</volume>(<issue>2</issue>):<fpage>146</fpage>–<lpage>164</lpage>. <comment>doi:10.1177/0920203X1880019</comment>
+</mixed-citation>
+</ref>
+<ref id="bibr26-1073274820985792">
+<label>26</label>
+<mixed-citation publication-type="web">
+<person-group person-group-type="author">
+<name>
+<surname>Kohn</surname>
+<given-names>MA</given-names>
+</name>
+<name>
+<surname>Senyak</surname>
+<given-names>J</given-names>
+</name>
+</person-group>. <article-title>Sample size calculators. University of California, San Francisco Clinical and Translational Science Institute (CTSI)</article-title>. <comment>Published 2020. Accessed January 14, 2021</comment>. <ext-link ext-link-type="uri" xlink:href="https://www.sample-size.net/">https://www.sample-size.net/</ext-link>
+</mixed-citation>
+</ref>
+<ref id="bibr27-1073274820985792">
+<label>27</label>
+<mixed-citation publication-type="journal">
+<person-group person-group-type="author">
+<name>
+<surname>Von Elm</surname>
+<given-names>E</given-names>
+</name>
+<name>
+<surname>Altman</surname>
+<given-names>DG</given-names>
+</name>
+<name>
+<surname>Egger</surname>
+<given-names>M</given-names>
+</name>
+<name>
+<surname>Pocock</surname>
+<given-names>SJ</given-names>
+</name>
+<name>
+<surname>Gøtzsche</surname>
+<given-names>PC</given-names>
+</name>
+<name>
+<surname>Vandenbroucke</surname>
+<given-names>JP</given-names>
+</name>
+</person-group>. <article-title>The strengthening the reporting of observational studies in epidemiology (STROBE) statement: guidelines for reporting observational studies</article-title>. <source>Ann Intern Med</source>. <year>2007</year>;<volume>147</volume>(<issue>8</issue>):<fpage>573</fpage>–<lpage>577</lpage>.</mixed-citation>
+</ref>
+<ref id="bibr28-1073274820985792">
+<label>28</label>
+<mixed-citation publication-type="journal">
+<person-group person-group-type="author">
+<name>
+<surname>Chen</surname>
+<given-names>L</given-names>
+</name>
+<name>
+<surname>Song</surname>
+<given-names>Y</given-names>
+</name>
+<name>
+<surname>Ruan</surname>
+<given-names>G</given-names>
+</name>
+</person-group>, <etal>et al.</etal> <article-title>Knowledge and attitudes regarding HPV and vaccination among Chinese women aged 20 to 35 years in Fujian province</article-title>. <source>Cancer Control</source>. <year>2018</year>;<volume>25</volume>(<issue>1</issue>). <comment>doi:10.1177/107327481877535</comment>
+</mixed-citation>
+</ref>
+<ref id="bibr29-1073274820985792">
+<label>29</label>
+<mixed-citation publication-type="journal">
+<person-group person-group-type="author">
+<name>
+<surname>Li</surname>
+<given-names>J</given-names>
+</name>
+<name>
+<surname>Li</surname>
+<given-names>L-K</given-names>
+</name>
+<name>
+<surname>Ma</surname>
+<given-names>J-F</given-names>
+</name>
+</person-group>, <etal>et al.</etal> <article-title>Knowledge and attitudes about human papillomavirus (HPV) and HPV vaccines among women living in metropolitan and rural regions of China</article-title>. <source>Vaccine</source>. <year>2009</year>;<volume>27</volume>(<issue>8</issue>):<fpage>1210</fpage>–<lpage>1215</lpage>.</mixed-citation>
+</ref>
+<ref id="bibr30-1073274820985792">
+<label>30</label>
+<mixed-citation publication-type="journal">
+<person-group person-group-type="author">
+<name>
+<surname>Zhao</surname>
+<given-names>F-H</given-names>
+</name>
+<name>
+<surname>Tiggelaar</surname>
+<given-names>SM</given-names>
+</name>
+<name>
+<surname>Hu</surname>
+<given-names>S-Y</given-names>
+</name>
+</person-group>, <etal>et al.</etal> <article-title>A multi-center survey of HPV knowledge and attitudes toward HPV vaccination among women, government officials, and medical personnel in China</article-title>. <source>Asian Pac J Cancer Prev</source>. <year>2012</year>;<volume>13</volume>(<issue>5</issue>):<fpage>2369</fpage>–<lpage>2378</lpage>.</mixed-citation>
+</ref>
+<ref id="bibr31-1073274820985792">
+<label>31</label>
+<mixed-citation publication-type="journal">
+<person-group person-group-type="author">
+<name>
+<surname>Lin</surname>
+<given-names>W</given-names>
+</name>
+<name>
+<surname>Wang</surname>
+<given-names>Y</given-names>
+</name>
+<name>
+<surname>Liu</surname>
+<given-names>Z</given-names>
+</name>
+</person-group>, <etal>et al.</etal> <article-title>Inequalities in awareness and attitude towards HPV and its vaccine between local and migrant residents who participated in cervical cancer screening in Shenzhen, China</article-title>. <source>Cancer Res Treat</source>. <year>2020</year>;<volume>52</volume>(<issue>1</issue>):<fpage>207</fpage>–<lpage>217</lpage>.</mixed-citation>
+</ref>
+<ref id="bibr32-1073274820985792">
+<label>32</label>
+<mixed-citation publication-type="journal">
+<person-group person-group-type="author">
+<name>
+<surname>Ning</surname>
+<given-names>Y-E</given-names>
+</name>
+<name>
+<surname>Liu</surname>
+<given-names>Y</given-names>
+</name>
+<name>
+<surname>Xu</surname>
+<given-names>X-Y</given-names>
+</name>
+<name>
+<surname>Zhang</surname>
+<given-names>X-Y</given-names>
+</name>
+<name>
+<surname>Wang</surname>
+<given-names>N</given-names>
+</name>
+<name>
+<surname>Zheng</surname>
+<given-names>L-Q.</given-names>
+</name>
+</person-group>
+<article-title>Knowledge of cervical cancer, human papilloma virus (HPV) and HPV vaccination among women in northeast China</article-title>. <source>J Cancer Educ</source>. <year>2019</year>;<volume>35</volume>(<issue>6</issue>):<fpage>1197</fpage>–<lpage>1205</lpage>.</mixed-citation>
+</ref>
+<ref id="bibr33-1073274820985792">
+<label>33</label>
+<mixed-citation publication-type="journal">
+<person-group person-group-type="author">
+<name>
+<surname>He</surname>
+<given-names>J</given-names>
+</name>
+<name>
+<surname>He</surname>
+<given-names>L</given-names>
+</name>
+</person-group>. <article-title>Knowledge of HPV and acceptability of HPV vaccine among women in western China: a cross-sectional survey</article-title>. <source>BMC Women’s Health</source>. <year>2018</year>;<volume>18</volume>(<issue>1</issue>):<fpage>130</fpage>.</mixed-citation>
+</ref>
+<ref id="bibr34-1073274820985792">
+<label>34</label>
+<mixed-citation publication-type="journal">
+<person-group person-group-type="author">
+<name>
+<surname>Huang</surname>
+<given-names>Y</given-names>
+</name>
+<name>
+<surname>Xu</surname>
+<given-names>S</given-names>
+</name>
+<name>
+<surname>Xu</surname>
+<given-names>Y</given-names>
+</name>
+</person-group>, <etal>et al.</etal> <article-title>A new strategy for cervical cancer prevention among Chinese women: how much do they know and how do they react toward the HPV immunization?</article-title> <source>J Cancer Educ</source>. <year>2020</year>. <comment>doi:10.1007/s13187-019-01642-y</comment>
+</mixed-citation>
+</ref>
+<ref id="bibr35-1073274820985792">
+<label>35</label>
+<mixed-citation publication-type="journal">
+<person-group person-group-type="author">
+<name>
+<surname>Liu</surname>
+<given-names>C-R</given-names>
+</name>
+<name>
+<surname>Liang</surname>
+<given-names>H</given-names>
+</name>
+<name>
+<surname>Zhang</surname>
+<given-names>X</given-names>
+</name>
+</person-group>, <etal>et al.</etal> <article-title>Effect of an educational intervention on HPV knowledge and attitudes towards HPV and its vaccines among junior middle school students in Chengdu, China</article-title>. <source>BMC Public Health</source>. <year>2019</year>;<volume>19</volume>(<issue>1</issue>):<fpage>488</fpage>.</mixed-citation>
+</ref>
+<ref id="bibr36-1073274820985792">
+<label>36</label>
+<mixed-citation publication-type="journal">
+<person-group person-group-type="author">
+<name>
+<surname>Gu</surname>
+<given-names>C</given-names>
+</name>
+<name>
+<surname>Chan</surname>
+<given-names>CWH</given-names>
+</name>
+<name>
+<surname>Twinn</surname>
+<given-names>S</given-names>
+</name>
+</person-group>. <article-title>How sexual history and knowledge of cervical cancer and screening influence Chinese women’s screening behavior in mainland China</article-title>. <source>Cancer Nurs</source>. <year>2010</year>;<volume>33</volume>(<issue>6</issue>):<fpage>445</fpage>–<lpage>453</lpage>.</mixed-citation>
+</ref>
+<ref id="bibr37-1073274820985792">
+<label>37</label>
+<mixed-citation publication-type="journal">
+<person-group person-group-type="author">
+<name>
+<surname>Rosano</surname>
+<given-names>A</given-names>
+</name>
+<name>
+<surname>Dauvrin</surname>
+<given-names>M</given-names>
+</name>
+<name>
+<surname>Buttigieg</surname>
+<given-names>SC</given-names>
+</name>
+<name>
+<surname>Ronda</surname>
+<given-names>E</given-names>
+</name>
+<name>
+<surname>Tafforeau</surname>
+<given-names>J</given-names>
+</name>
+<name>
+<surname>Dias</surname>
+<given-names>S</given-names>
+</name>
+</person-group>. <article-title>Migrant’s access to preventive health services in five EU countries</article-title>. <source>BMC Health Serv Res</source>. <year>2017</year>;<volume>17</volume>(<issue>1</issue>):<fpage>588</fpage>.</mixed-citation>
+</ref>
+<ref id="bibr38-1073274820985792">
+<label>38</label>
+<mixed-citation publication-type="book">
+<person-group person-group-type="author">
+<name>
+<surname>Rosenbaum</surname>
+<given-names>SJ</given-names>
+</name>
+<name>
+<surname>Shin</surname>
+<given-names>P</given-names>
+</name>
+</person-group>. <source>Migrant and Seasonal Farmworkers: Health Insurance Coverage and Access to Care</source>. <year>2005</year>.</mixed-citation>
+</ref>
+<ref id="bibr39-1073274820985792">
+<label>39</label>
+<mixed-citation publication-type="journal">
+<person-group person-group-type="author">
+<name>
+<surname>Arcury</surname>
+<given-names>TA</given-names>
+</name>
+<name>
+<surname>Quandt</surname>
+<given-names>SA</given-names>
+</name>
+<name>
+<surname>Preisser</surname>
+<given-names>JS</given-names>
+</name>
+</person-group>. <article-title>Predictors of incidence and prevalence of green tobacco sickness among Latino farmworkers in North Carolina, USA</article-title>. <source>J Epidemiol Community Health</source>. <year>2001</year>;<volume>55</volume>(<issue>11</issue>):<fpage>818</fpage>–<lpage>824</lpage>.</mixed-citation>
+</ref>
+<ref id="bibr40-1073274820985792">
+<label>40</label>
+<mixed-citation publication-type="journal">
+<person-group person-group-type="author">
+<name>
+<surname>Goldsmith</surname>
+<given-names>DF</given-names>
+</name>
+<name>
+<surname>Sisneros</surname>
+<given-names>GC</given-names>
+</name>
+</person-group>. <article-title>Cancer prevention strategies among California farmworkers: preliminary findings</article-title>. <source>J Rural Health</source>. <year>1996</year>;<volume>12</volume>:<fpage>343</fpage>–<lpage>348</lpage>.</mixed-citation>
+</ref>
+<ref id="bibr41-1073274820985792">
+<label>41</label>
+<mixed-citation publication-type="journal">
+<person-group person-group-type="author">
+<name>
+<surname>Arcury</surname>
+<given-names>TA</given-names>
+</name>
+<name>
+<surname>Quandt</surname>
+<given-names>SA</given-names>
+</name>
+</person-group>. <article-title>Delivery of health services to migrant and seasonal farmworkers</article-title>. <source>Annu Rev Public Health</source>. <year>2007</year>;<volume>28</volume>(<issue>1</issue>):<fpage>345</fpage>–<lpage>363</lpage>.</mixed-citation>
+</ref>
+<ref id="bibr42-1073274820985792">
+<label>42</label>
+<mixed-citation publication-type="journal">
+<person-group person-group-type="author">
+<name>
+<surname>Di</surname>
+<given-names>J</given-names>
+</name>
+<name>
+<surname>Rutherford</surname>
+<given-names>S</given-names>
+</name>
+<name>
+<surname>Wu</surname>
+<given-names>J</given-names>
+</name>
+</person-group>, <etal>et al.</etal> <article-title>Knowledge of cervical cancer screening among women across different socio-economic regions of China</article-title>. <source>PLoS One</source>. <year>2015</year>;<volume>10</volume>(<issue>12</issue>):<fpage>e0144819</fpage>.</mixed-citation>
+</ref>
+<ref id="bibr43-1073274820985792">
+<label>43</label>
+<mixed-citation publication-type="journal">
+<person-group person-group-type="author">
+<name>
+<surname>Goldie</surname>
+<given-names>SJ</given-names>
+</name>
+<name>
+<surname>Gaffikin</surname>
+<given-names>L</given-names>
+</name>
+<name>
+<surname>Goldhaber-Fiebert</surname>
+<given-names>JD</given-names>
+</name>
+</person-group>, <etal>et al.</etal> <article-title>Cost-effectiveness of cervical-cancer screening in five developing countries</article-title>. <source>N Engl J Med</source>. <year>2005</year>;<volume>353</volume>(<issue>20</issue>):<fpage>2158</fpage>–<lpage>2168</lpage>.</mixed-citation>
+</ref>
+<ref id="bibr44-1073274820985792">
+<label>44</label>
+<mixed-citation publication-type="journal">
+<person-group person-group-type="author">
+<name>
+<surname>Xia</surname>
+<given-names>C</given-names>
+</name>
+<name>
+<surname>Hu</surname>
+<given-names>S</given-names>
+</name>
+<name>
+<surname>Xu</surname>
+<given-names>X</given-names>
+</name>
+</person-group>, <etal>et al.</etal> <article-title>Projections up to 2100 and a budget optimisation strategy towards cervical cancer elimination in China: a modelling study</article-title>. <source>Lancet Public Health</source>. <year>2019</year>;<volume>4</volume>(<issue>9</issue>):<fpage>e462</fpage>–<lpage>e472</lpage>.</mixed-citation>
+</ref>
+</ref-list>
+</back>
+</article>
