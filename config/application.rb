@@ -11,17 +11,6 @@ module Hyrax
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
-
-    config.log_formatter = proc do |severity, time, progname, msg|
-      "#{time} - #{severity}: #{msg}\n"
-    end
-    log_path = ENV["LOGS_PATH"] || "log/#{Rails.env}.log"
-    logger = ActiveSupport::Logger.new(log_path)
-    logger.formatter = config.log_formatter
-    config.logger = ActiveSupport::TaggedLogging.new(logger)
-
-    # Prepend all log lines with the following tags.
-    config.log_tags = [:request_id]
     config.before_configuration do
       if ENV.has_key?('LOCAL_ENV_PATH')
         env_file = ENV['LOCAL_ENV_PATH'].to_s
@@ -41,5 +30,17 @@ module Hyrax
 
     # Add custom error pages
     config.exceptions_app = self.routes
+
+    # Configure logger
+    config.log_formatter = proc do |severity, time, progname, msg|
+      "#{time} - #{severity}: #{msg}\n"
+    end
+    log_path = ENV["LOGS_PATH"] || "log/#{Rails.env}.log"
+    logger = ActiveSupport::Logger.new(log_path)
+    logger.formatter = config.log_formatter
+    config.logger = ActiveSupport::TaggedLogging.new(logger)
+
+    # Prepend all log lines with the following tags.
+    config.log_tags = [:request_id]
   end
 end
