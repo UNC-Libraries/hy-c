@@ -27,7 +27,7 @@ class MigrationHelper
 
     collection_uuids
   end
-  
+
   def self.retry_operation(message = nil)
     begin
       retries ||= 0
@@ -110,9 +110,10 @@ class MigrationHelper
   end
 
   # Use language code to get iso639-2 uri from service
+  # TODO: Use multi-line version for conditional
   def self.get_language_uri(language_codes)
-    Array.wrap(language_codes).map{|e| LanguagesService.label("http://id.loc.gov/vocabulary/iso639-2/#{e.downcase}") ?
-                               "http://id.loc.gov/vocabulary/iso639-2/#{e.downcase}" : e
-    }    
+    Array.wrap(language_codes).map do |e|
+      LanguagesService.label("http://id.loc.gov/vocabulary/iso639-2/#{e.downcase}") ? "http://id.loc.gov/vocabulary/iso639-2/#{e.downcase}" : e
+    end
   end
 end
