@@ -8,23 +8,23 @@ RSpec.describe Tasks::OnescienceIngestService do
       service = Tasks::OnescienceIngestService.new(args)
 
       expect(service.config).to include('work_type' => 'Article',
-                                         'admin_set' => 'onescience default',
-                                         'depositor_onyen' => 'admin',
-                                         'metadata_dir' => 'spec/fixtures/onescience',
-                                         'metadata_file' => '1science_test_data.xlsx',
-                                         'embargo_file' => '1science_2016-2018_embargoes.csv',
-                                         'pdf_dir' => 'spec/fixtures/onescience',
-                                         'progress_log' => 'spec/fixtures/onescience/1science_completed.log',
-                                         'skipped_log' => 'spec/fixtures/onescience/1science_skipped.log',
-                                         'deposit_title' => 'OneScience deposit 2016-2018',
-                                         'deposit_method' => 'rake task',
-                                         'deposit_type' => 'a type',
-                                         'deposit_subtype' => 'a subtype',
-                                         'deposit_record_id_log' => 'spec/fixtures/onescience/1science_deposit_record_id.log',
-                                         'scopus_xml_file' => ['scopus-1-science-abstract-fixture.xml'],
-                                         'mapped_scopus_affiliations' => 'scoups_departments-mapped.csv',
-                                         'multiple_unc_affiliations' => 'spec/fixtures/onescience/multiple_unc_affiliations.tsv'
-                                )
+                                        'admin_set' => 'onescience default',
+                                        'depositor_onyen' => 'admin',
+                                        'metadata_dir' => 'spec/fixtures/onescience',
+                                        'metadata_file' => '1science_test_data.xlsx',
+                                        'embargo_file' => '1science_2016-2018_embargoes.csv',
+                                        'pdf_dir' => 'spec/fixtures/onescience',
+                                        'progress_log' => 'spec/fixtures/onescience/1science_completed.log',
+                                        'skipped_log' => 'spec/fixtures/onescience/1science_skipped.log',
+                                        'deposit_title' => 'OneScience deposit 2016-2018',
+                                        'deposit_method' => 'rake task',
+                                        'deposit_type' => 'a type',
+                                        'deposit_subtype' => 'a subtype',
+                                        'deposit_record_id_log' => 'spec/fixtures/onescience/1science_deposit_record_id.log',
+                                        'scopus_xml_file' => ['scopus-1-science-abstract-fixture.xml'],
+                                        'mapped_scopus_affiliations' => 'scoups_departments-mapped.csv',
+                                        'multiple_unc_affiliations' => 'spec/fixtures/onescience/multiple_unc_affiliations.tsv'
+                                       )
     end
   end
 

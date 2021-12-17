@@ -40,6 +40,7 @@ module BlacklightOaiProvider
         if limit && response.total > limit
           return select_partial(BlacklightOaiProvider::ResumptionToken.new(options.merge(last: 0), nil, response.total))
         end
+
         response.documents
       else
         # [hyc-override] using search builder in order to allow for access controls to be applied

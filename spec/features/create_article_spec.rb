@@ -240,7 +240,6 @@ RDFXML
       fill_in 'Additional affiliation', { with: 'UNC', id: 'article_translators_attributes_0_other_affiliation' }
       fill_in 'Use', with: 'some use'
 
-
       expect(page).to have_selector('#article_language_label', visible: false)
       expect(page).to have_selector('#article_license_label', visible: false)
       expect(page).to have_selector('#article_rights_statement_label', visible: false)

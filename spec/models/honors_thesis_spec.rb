@@ -3,7 +3,6 @@
 require 'rails_helper'
 
 RSpec.describe HonorsThesis do
-
   it 'has a title' do
     subject.title = ['foo']
     expect(subject.title).to eq ['foo']

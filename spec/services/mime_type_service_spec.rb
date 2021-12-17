@@ -11,8 +11,8 @@ RSpec.describe Hyrax::MimeTypeService do
   describe "#select_all_options" do
     it "returns all terms" do
       expect(service.select_all_options).to include(["mp4", "video/mp4"],
-                                                     ["xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"],
-                                                     ["txt", "text/plain"])
+                                                    ["xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"],
+                                                    ["txt", "text/plain"])
     end
   end
 

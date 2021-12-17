@@ -60,13 +60,13 @@ namespace :migrate do
       end
 
       Migrate::Services::IngestService.new(collection_config,
-                                         @object_hash,
-                                         @binary_hash,
-                                         @premis_hash,
-                                         @deposit_record_hash,
-                                         args[:output_dir],
-                                         @depositor,
-                                         args[:collection]).ingest_records
+                                           @object_hash,
+                                           @binary_hash,
+                                           @premis_hash,
+                                           @deposit_record_hash,
+                                           args[:output_dir],
+                                           @depositor,
+                                           args[:collection]).ingest_records
     else
       puts 'The default admin set or specified depositor does not exist'
     end

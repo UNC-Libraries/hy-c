@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # [hyc-override] overriding `transform_attributes` and
 # `permitted_attributes` methods to handle people objects
 
@@ -44,6 +45,7 @@ module Bulkrax
     # overriding to attach files
     def update
       raise "Object doesn't exist" unless object
+
       destroy_existing_files if @replace_files && klass != Collection
       attrs = attribute_update
       run_callbacks :save do
@@ -54,6 +56,7 @@ module Bulkrax
 
     def find
       return find_by_id if attributes[:id]
+
       search_by_identifier if attributes[work_identifier].present?
     end
 
@@ -64,6 +67,7 @@ module Bulkrax
     def find_or_create
       o = find
       return o if o
+
       run(&:save!)
     end
 
@@ -147,6 +151,7 @@ module Bulkrax
       ms = object.members.to_a
       [:children].each do |atat|
         next if attributes[atat].blank?
+
         ms.concat(
           Array.wrap(
             find_collection(attributes[atat])
@@ -160,6 +165,7 @@ module Bulkrax
       ms = object.member_of_collection_ids.to_a.map { |id| find_collection(id) }
       [:collection, :collections].each do |atat|
         next if attributes[atat].blank?
+
         ms.concat(
           Array.wrap(
             find_collection(attributes[atat])
@@ -184,6 +190,7 @@ module Bulkrax
 
     def collection_type(attrs)
       return attrs if attrs['collection_type_gid'].present?
+
       attrs['collection_type_gid'] = Hyrax::CollectionType.find_or_create_default_collection_type.gid
       attrs
     end
@@ -192,6 +199,7 @@ module Bulkrax
     # which is used by Hyrax::Actors::AddAsMemberOfCollectionsActor
     def create_attributes
       return transform_attributes if klass == Collection
+
       if attributes[:collection].present?
         transform_attributes.except(:collection).merge(member_of_collections_attributes: { 0 => { id: collection.id } })
       elsif attributes[:collections].present?
@@ -208,6 +216,7 @@ module Bulkrax
     # which is used by Hyrax::Actors::AddAsMemberOfCollectionsActor
     def attribute_update
       return transform_attributes.except(:id) if klass == Collection
+
       if attributes[:collection].present?
         transform_attributes.except(:id).except(:collection).merge(member_of_collections_attributes: { 0 => { id: collection.id } })
       elsif attributes[:collections].present?

@@ -44,6 +44,7 @@ module Hyrax
       def send_notification(notification)
         notifier = notifier(notification)
         return unless notifier
+
         notifier.send_notification(entity: entity,
                                    comment: comment,
                                    user: user,
@@ -69,6 +70,7 @@ module Hyrax
           return nil
         end
         return klass if klass.respond_to?(:send_notification)
+
         Rails.logger.error "Expected '#{class_name}' to respond to 'send_notification', but it didn't, so not sending notification"
         nil
       end

@@ -5,7 +5,6 @@ require 'tempfile'
 require 'fileutils'
 
 RSpec.describe DeregisterLongleafJob, type: :job do
-
   let(:admin_user) do
     User.find_by_user_key('admin')
   end

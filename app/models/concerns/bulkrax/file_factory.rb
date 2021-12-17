@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # [hyc-override] Overriding set_removed_files to not hardcode updates as PNG files and set file set
 # to private if the file set is being replaced.
 
@@ -14,6 +15,7 @@ module Bulkrax
     # support multiple files; ensure attributes[:file] is an Array
     def upload_ids
       return [] if klass == Collection
+
       attributes[:file] = file_paths
       import_files
     end
@@ -22,6 +24,7 @@ module Bulkrax
       @update_files = update_files
       hash = {}
       return hash if klass == Collection
+
       hash[:uploaded_files] = upload_ids if attributes[:file].present?
       hash[:remote_files] = new_remote_files if new_remote_files.present?
       hash
@@ -30,6 +33,7 @@ module Bulkrax
     # Its possible to get just an array of strings here, so we need to make sure they are all hashes
     def parsed_remote_files
       return @parsed_remote_files if @parsed_remote_files.present?
+
       @parsed_remote_files = attributes[:remote_files] || []
       @parsed_remote_files = @parsed_remote_files.map do |file_value|
         if file_value.is_a?(Hash)
@@ -81,6 +85,7 @@ module Bulkrax
     # Reload the object to ensure the remaining methods have the most up to date object
     def destroy_existing_files
       return unless object.present? && object.file_sets.present?
+
       object.file_sets.each do |fs|
         Hyrax::Actors::FileSetActor.new(fs, @user).destroy
       end

@@ -30,7 +30,6 @@ class ApplicationController < ActionController::Base
       render 'errors/not_found', status: 400
     end
 
-
     def render_401
       render 'errors/not_found', status: 401
     end
@@ -72,18 +71,21 @@ class ApplicationController < ActionController::Base
       return stored_location if stored_location.present?
       return root_path if params['origin'].nil?
       return params['origin'] if URI.parse(params['origin']).host == request.env['SERVER_NAME']
+
       root_path
     rescue URI::InvalidURIError
       root_path
     end
+
     # Redirect all deposit and edit requests with warning message when in read only mode
     def check_read_only
       return unless Flipflop.read_only?
       # Allows feature to be turned off
       return if self.class.to_s == Hyrax::Admin::StrategiesController.to_s
+
       redirect_back(
-          fallback_location: root_path,
-          alert: "The Carolina Digital Repository is in read-only mode for maintenance. No submissions or edits can be made at this time."
+        fallback_location: root_path,
+        alert: "The Carolina Digital Repository is in read-only mode for maintenance. No submissions or edits can be made at this time."
       )
     end
 

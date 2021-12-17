@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # [hyc-override] Comment out Hyrax::DashboardController.sidebar_partials line, line 74. It breaks hyrax 2.x
 
 Bulkrax.setup do |config|

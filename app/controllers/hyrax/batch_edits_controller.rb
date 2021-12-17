@@ -45,7 +45,6 @@ module Hyrax
 
     private
 
-
     def after_update
       respond_to do |format|
         format.json { head :no_content }
@@ -57,8 +56,8 @@ module Hyrax
       # For the moment we'll block all users
       # return if current_user.admin?
       redirect_back(
-          fallback_location: root_path,
-          alert: "Batch operations are not allowed."
+        fallback_location: root_path,
+        alert: "Batch operations are not allowed."
       )
     end
 
@@ -68,6 +67,7 @@ module Hyrax
 
     def check_for_empty!
       return unless check_for_empty_batch?
+
       redirect_back fallback_location: hyrax.batch_edits_path
       false
     end

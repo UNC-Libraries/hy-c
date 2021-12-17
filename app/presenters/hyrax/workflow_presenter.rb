@@ -16,35 +16,41 @@ module Hyrax
 
     def state_label
       return unless state
+
       I18n.t("hyrax.workflow.state.#{state}", default: state.humanize)
     end
 
     # Returns an array of tuples (key, label) appropriate for a radio group
     def actions
       return [] unless sipity_entity && current_ability && (current_ability.current_user.admin? || state != 'pending_deletion')
+
       actions = Hyrax::Workflow::PermissionQuery.scope_permitted_workflow_actions_available_for_current_state(entity: sipity_entity, user: current_ability.current_user)
       actions.map { |action| [action.name, action_label(action)] }
     end
 
     def comments
       return [] unless sipity_entity
+
       sipity_entity.comments
     end
 
     def badge
       return unless state
+
       content_tag(:span, state_label, class: "state state-#{state} label label-primary")
     end
 
     # [hyc-override] Add check to display message to MFA workflow depositor
     def is_mfa_in_review?
       return false unless sipity_entity
+
       sipity_entity&.workflow_name == 'art_mfa_deposit' && state == 'pending_review'
     end
 
     # [hyc-override] Add check to display attach works button to MFA workflow depositor
     def is_mfa?
       return false unless sipity_entity
+
       sipity_entity&.workflow_name == 'art_mfa_deposit'
     end
 

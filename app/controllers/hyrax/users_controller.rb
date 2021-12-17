@@ -18,6 +18,7 @@ module Hyrax
     def show
       user = ::User.from_url_component(params[:id])
       return redirect_to root_path, alert: "User '#{params[:id]}' does not exist" if user.nil?
+
       @presenter = Hyrax::UserProfilePresenter.new(user, current_ability)
     end
 

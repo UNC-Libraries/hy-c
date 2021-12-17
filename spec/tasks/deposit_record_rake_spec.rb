@@ -20,9 +20,10 @@ describe "rake deposit_record:migrate", type: :task do
 
   it "creates a new work" do
     expect { Rake::Task['deposit_record:migrate'].invoke('spec/fixtures/deposit_record/config.yml',
-                                                output_dir.to_s,
-                                                'spec/fixtures/migration/dr_mapping.csv',
-                                                'RAILS_ENV=test') }
+                                                         output_dir.to_s,
+                                                         'spec/fixtures/migration/dr_mapping.csv',
+                                                         'RAILS_ENV=test')
+    }    
         .to change{ DepositRecord.count }.by(1)
     new_record = DepositRecord.all[-1]
     expect(new_record['title']).to eq 'Deposit by Biomed Central Depositor via SWORD 1.3'

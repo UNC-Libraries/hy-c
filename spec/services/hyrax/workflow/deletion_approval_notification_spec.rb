@@ -35,7 +35,6 @@ RSpec.describe Hyrax::Workflow::DeletionApprovalNotification do
     end
 
     context 'without carbon-copied users' do
-
       it 'sends a message to the to user(s)' do
         recipients = { 'to' => [depositor], 'cc' => [] }
         expect(approver).to receive(:send_message).exactly(1).times.and_call_original
