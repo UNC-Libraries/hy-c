@@ -6,43 +6,6 @@
 # Note that changes in the inspected code, or installation of new
 # versions of RuboCop, may require this file to be generated again.
 
-# Offense count: 17
-# Cop supports --auto-correct.
-# Configuration parameters: TreatCommentsAsGroupSeparators, ConsiderPunctuation, Include.
-# Include: **/*.gemfile, **/Gemfile, **/gems.rb
-Bundler/OrderedGems:
-  Exclude:
-    - 'Gemfile'
-
-# Offense count: 98
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, IndentationWidth.
-# SupportedStyles: with_first_argument, with_fixed_indentation
-Layout/ArgumentAlignment:
-  Exclude:
-    - 'app/indexers/hyrax/deep_indexing_service.rb'
-    - 'app/jobs/assign_permissions_to_work_job.rb'
-    - 'app/services/tasks/doi_create_service.rb'
-    - 'app/services/tasks/update_doi_urls_service.rb'
-    - 'db/migrate/20170906124657_add_missing_indices.mailboxer_engine.rb'
-    - 'lib/active_fedora/rdf/indexing_service.rb'
-    - 'lib/tasks/migrate/migrate.rake'
-    - 'lib/tasks/migrate/services/ingest_service.rb'
-    - 'lib/tasks/migration_helper.rb'
-    - 'spec/services/academic_concentration_service_spec.rb'
-    - 'spec/services/mime_type_service_spec.rb'
-    - 'spec/services/tasks/onescience_ingest_service_spec.rb'
-    - 'spec/tasks/deposit_record_rake_spec.rb'
-
-# Offense count: 4
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, IndentationWidth.
-# SupportedStyles: with_first_element, with_fixed_indentation
-Layout/ArrayAlignment:
-  Exclude:
-    - 'spec/requests/oai_pmh_endpoint_spec.rb'
-    - 'spec/services/tasks/doi_create_service_spec.rb'
-
 # Offense count: 3
 # Cop supports --auto-correct.
 # Configuration parameters: IndentationWidth.
@@ -51,11 +14,6 @@ Layout/AssignmentIndentation:
     - 'app/controllers/catalog_controller.rb'
     - 'app/presenters/hyrax/work_show_presenter.rb'
     - 'app/services/tasks/embargo_expiration_service.rb'
-
-# Offense count: 32
-# Cop supports --auto-correct.
-Layout/BlockEndNewline:
-  Enabled: false
 
 # Offense count: 15
 # Cop supports --auto-correct.
@@ -66,11 +24,6 @@ Layout/CaseIndentation:
     - 'app/controllers/hyrax/downloads_controller.rb'
     - 'app/lib/mini_magick/image/info.rb'
     - 'lib/active_fedora/rdf/indexing_service.rb'
-
-# Offense count: 46
-# Cop supports --auto-correct.
-Layout/ClosingParenthesisIndentation:
-  Enabled: false
 
 # Offense count: 11
 # Cop supports --auto-correct.
@@ -100,30 +53,6 @@ Layout/DotPosition:
     - 'spec/indexers/hyrax/deep_indexing_service_test.rb'
     - 'spec/tasks/migrate_rake_spec.rb'
 
-# Offense count: 103
-# Cop supports --auto-correct.
-Layout/EmptyLineAfterGuardClause:
-  Enabled: false
-
-# Offense count: 22
-# Cop supports --auto-correct.
-Layout/EmptyLineAfterMagicComment:
-  Enabled: false
-
-# Offense count: 5
-# Cop supports --auto-correct.
-# Configuration parameters: EmptyLineBetweenMethodDefs, EmptyLineBetweenClassDefs, EmptyLineBetweenModuleDefs, AllowAdjacentOneLineDefs, NumberOfEmptyLines.
-Layout/EmptyLineBetweenDefs:
-  Exclude:
-    - 'app/controllers/application_controller.rb'
-    - 'app/lib/status_list_service_helper.rb'
-    - 'lib/tasks/migrate/services/ingest_service.rb'
-
-# Offense count: 40
-# Cop supports --auto-correct.
-Layout/EmptyLines:
-  Enabled: false
-
 # Offense count: 14
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle.
@@ -144,13 +73,6 @@ Layout/EmptyLinesAroundAccessModifier:
     - 'app/controllers/hyrax/scholarly_works_controller.rb'
     - 'app/controllers/masters_papers_controller.rb'
     - 'lib/tasks/migrate/services/ingest_service.rb'
-
-# Offense count: 21
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: empty_lines, no_empty_lines
-Layout/EmptyLinesAroundBlockBody:
-  Enabled: false
 
 # Offense count: 14
 # Cop supports --auto-correct.
@@ -592,6 +514,8 @@ Metrics/AbcSize:
 # IgnoredMethods: refine
 Metrics/BlockLength:
   Max: 613
+  Exclude:
+    - 'db/schema.rb'
 
 # Offense count: 7
 # Configuration parameters: CountBlocks, Max.

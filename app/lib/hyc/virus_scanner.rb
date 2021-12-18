@@ -5,6 +5,7 @@ module Hyc
     def infected?
       results = hyc_infected?
       return results if results.instance_of? ClamAV::ErrorResponse
+
       results.instance_of? ClamAV::VirusResponse
     end
 

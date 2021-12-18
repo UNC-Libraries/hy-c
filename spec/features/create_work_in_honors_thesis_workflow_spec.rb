@@ -287,7 +287,6 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       expect(page).to have_content 'Other Affiliation: UNC'
       expect(page).to_not have_content 'Type http://purl.org/dc/dcmitype/Text'
 
-
       # User and admin set owner get notification for 'depositing' role
       expect(admin_user.mailbox.inbox.count).to eq 1
       expect(admin_user2.mailbox.inbox.count).to eq 0

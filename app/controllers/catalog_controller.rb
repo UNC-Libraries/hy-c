@@ -36,7 +36,6 @@ class CatalogController < ApplicationController
     single_item_search_builder_class.new(self, id).with(params.except(:q, :page))
   end
 
-
   configure_blacklight do |config|
     # default advanced config values
     config.advanced_search ||= Blacklight::OpenStructWithHashAccess.new

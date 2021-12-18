@@ -120,9 +120,9 @@ RSpec.describe Tasks::DoiCreateService do
                                                                                       'affiliation' => ['College of Arts and Sciences', 'Department of Biology'],
                                                                                       'nameIdentifiers' => [{'nameIdentifier' => 'some orcid',
                                                                                                             'nameIdentifierScheme' => 'ORCID'}]},
-                                                                                      {'name' => 'Person, Non-UNC',
-                                                                                       'nameType' => 'Personal',
-                                                                                       'affiliation' => ['NCSU']}]
+                                                                                     {'name' => 'Person, Non-UNC',
+                                                                                      'nameType' => 'Personal',
+                                                                                      'affiliation' => ['NCSU']}]
         expect(JSON.parse(result)['data']['attributes']['publisher']).to eq 'Some Publisher'
       end
     end
@@ -178,7 +178,8 @@ RSpec.describe Tasks::DoiCreateService do
     let(:depositor) { User.create(email: 'test@example.com',
                                   uid: 'test@example.com',
                                   password: 'password',
-                                  password_confirmation: 'password') }
+                                  password_confirmation: 'password')
+    }    
     let(:admin_set) do
       AdminSet.create(title: ["article admin set"],
                       description: ["some description"],
@@ -187,7 +188,8 @@ RSpec.describe Tasks::DoiCreateService do
     let(:work) { Article.create(title: ['new article for testing doi creation'],
                                 depositor: depositor.email,
                                 visibility: 'open',
-                                admin_set_id: admin_set.id) }
+                                admin_set_id: admin_set.id)
+    }    
     let(:permission_template) do
       Hyrax::PermissionTemplate.create!(source_id: admin_set.id)
     end

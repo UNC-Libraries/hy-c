@@ -20,7 +20,8 @@ RSpec.describe AssignPermissionsToWorkJob, type: :job do
                                                                    affiliation: 'biology',
                                                                    other_affiliation: 'another affiliation'} },
                                    admin_set_id: admin_set.id,
-                                   visibility: Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE) }
+                                   visibility: Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE)
+  }  
   let(:entity) { Sipity::Entity.create(workflow_id: workflow.id,proxy_for_global_id: work.to_global_id.to_s) }
 
   before(:each) do

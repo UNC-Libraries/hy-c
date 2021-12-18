@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # [hyc-override] remove `:` as a split token
 
 require 'language_list'

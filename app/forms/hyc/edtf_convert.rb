@@ -21,6 +21,7 @@ module Hyc
 
     def self.convert_from_edtf(value)
       return '' if value.blank?
+
       edtf = Date.edtf(value)
 
       if edtf.nil?

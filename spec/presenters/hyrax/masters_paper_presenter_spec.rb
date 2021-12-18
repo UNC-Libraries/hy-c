@@ -140,7 +140,6 @@ RSpec.describe Hyrax::MastersPaperPresenter do
       end
     end
 
-
     context "with a custom creator_display field" do
       before do
         allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:creator_display, ['a creator'], {}).and_return(renderer)

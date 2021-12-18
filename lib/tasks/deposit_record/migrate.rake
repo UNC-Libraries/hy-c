@@ -77,7 +77,6 @@ namespace :deposit_record do
     puts "[#{end_time.to_s}] Completed migration of deposit records in #{end_time-start_time} seconds"
   end
 
-
   # parse metadata
   def deposit_record_metadata(metadata_file)
     record_attributes = Hash.new
@@ -100,7 +99,6 @@ namespace :deposit_record do
 
     { resource: record_attributes.reject!{|k,v| v.blank?}, manifests: manifests, premis: premis_files }
   end
-
 
   private
 

@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe Hyrax::StatsUsagePresenter do
-
   describe '#created' do
     let(:subject) {described_class.new}
 

@@ -11,6 +11,7 @@ class CreateDerivativesJob < Hyrax::ApplicationJob
       return
     end
     return if file_set.video? && !Hyrax.config.enable_ffmpeg
+
     filename = Hyrax::WorkingDirectory.find_or_retrieve(file_id, file_set.id, filepath)
 
     file_set.create_derivatives(filename)
@@ -42,6 +43,7 @@ class CreateDerivativesJob < Hyrax::ApplicationJob
   # then the parent also needs to be reindexed.
   def parent_needs_reindex?(file_set)
     return false unless file_set.parent
+
     file_set.parent.thumbnail_id == file_set.id
   end
 end

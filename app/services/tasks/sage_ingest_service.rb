@@ -41,6 +41,7 @@ module Tasks
     # TODO: Make more assertions about what a completed ingest looks like and test here
     def package_ingest_complete?(dir, file_names)
       return true if File.exist?(File.join(dir, file_names.first)) && File.exist?(File.join(dir, file_names.last))
+
       Rails.logger.tagged('Sage ingest') { Rails.logger.error("Package ingest not complete for #{file_names.first} and #{file_names.last}") }
       false
     end

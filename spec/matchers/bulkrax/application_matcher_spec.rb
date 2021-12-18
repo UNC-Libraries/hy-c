@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # [hyc-override] updating expected results for default splitting
 
 require 'rails_helper'

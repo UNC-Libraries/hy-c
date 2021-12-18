@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe ErrorsController, type: :controller do
-
   describe "GET #not_found" do
     it "returns on a 4xx error" do
       get :not_found
