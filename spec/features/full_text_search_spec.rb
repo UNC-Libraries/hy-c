@@ -4,7 +4,6 @@ require 'rails_helper'
 include Warden::Test::Helpers
 
 RSpec.describe 'Search the catalog for full text', type: :feature, js: false do
-
   before do
     solr = Blacklight.default_index.connection
     solr.add(
