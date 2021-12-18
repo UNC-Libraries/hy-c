@@ -4,6 +4,10 @@ AllCops:
   TargetRubyVersion: 2.6.7
   NewCops: disable
 
+Metrics/BlockLength:
+  Exclude:
+    - 'db/schema.rb'
+
 # TODO: Enable this cop - temporarily disabled here because it is not being added to the auto-generated to-do list
 Lint/RedundantCopDisableDirective:
   Enabled: false
