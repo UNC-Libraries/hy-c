@@ -20,5 +20,19 @@ RSpec.describe RangeLimitCatalogSearchBuilder do
         expect(solr_params[:q]).to eq "{!lucene}_query_:\"{!dismax v=$user_query}\" _query_:\"{!join from=id to=file_set_ids_ssim}{!dismax v=$user_query}\""
       end
     end
+
+    context "joining with file_sets" do
+      let(:blacklight_params) do
+        {
+          all_fields: "metalloprotease",
+          search_field: "advanced"
+        }
+      end
+      subject { builder.join_works_from_files(solr_params) }
+      it "includes the file set join query" do
+        subject
+        expect(solr_params[:q]).to eq " _query_:\"{!join from=id to=file_set_ids_ssim}{!dismax qf=all_text_timv q=metalloprotease}\""
+      end
+    end
   end
 end

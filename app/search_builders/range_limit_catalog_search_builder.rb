@@ -13,6 +13,18 @@ class RangeLimitCatalogSearchBuilder < Hyrax::CatalogSearchBuilder
   def join_works_from_files(solr_parameters)
     return unless blacklight_params[:all_fields]
 
-    solr_parameters[:q] += " _query_:\"{!join from=#{ActiveFedora.id_field} to=file_set_ids_ssim}{!dismax qf=all_text_timv}#{blacklight_params[:all_fields]}\""
+    if solr_parameters[:q].present?
+      solr_parameters[:q] += all_fields_query
+    else
+      solr_parameters[:q] = all_fields_query
+    end
+  end
+
+  def all_fields_query
+    " _query_:\"#{join_work_to_file}{!dismax qf=all_text_timv q=#{blacklight_params[:all_fields]}}\""
+  end
+
+  def join_work_to_file
+    "{!join from=#{ActiveFedora.id_field} to=file_set_ids_ssim}"
   end
 end
