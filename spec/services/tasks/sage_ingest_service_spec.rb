@@ -12,14 +12,27 @@ RSpec.describe Tasks::SageIngestService do
   let(:first_pdf_path) { "#{path_to_tmp}/10.1177_1073274820985792.pdf" }
   let(:ingest_progress_log_path) { File.join(fixture_path, "sage", "ingest_progress.log") }
 
-  after do
-    # empty the progress log
+  let(:admin_set) do
+    AdminSet.create(title: ['sage admin set'],
+                    description: ['some description'])
+  end
+
+  before do
+    # instantiate the sage ingest admin_set
+    admin_set
+  end
+
+  # empty the progress log
+  around do |example|
+    File.open(ingest_progress_log_path, 'w') {|file| file.truncate(0) }
+    example.run
     File.open(ingest_progress_log_path, 'w') {|file| file.truncate(0) }
   end
 
   describe '#initialize' do
     it "sets parameters from the configuration file" do
       expect(service.package_dir).to eq "spec/fixtures/sage"
+      expect(service.admin_set_id).to be
     end
 
     it 'creates a progress log for the ingest' do
@@ -29,7 +42,9 @@ RSpec.describe Tasks::SageIngestService do
 
   it 'can run a wrapper method' do
     expect(File.foreach(ingest_progress_log_path).count).to eq 0
-    service.process_packages
+    expect do
+      service.process_packages
+    end.to change { Article.count }.by(4)
     expect(File.foreach(ingest_progress_log_path).count).to eq 4
   end
 
@@ -45,10 +60,6 @@ RSpec.describe Tasks::SageIngestService do
   end
 
   context "with a package already unzipped" do
-    before do
-      # empty the progress log
-      File.open(ingest_progress_log_path, 'w') {|file| file.truncate(0) }
-    end
     it 'can write to the progress log' do
       allow(service).to receive(:package_ingest_complete?).and_return(true)
       expect(File.size(ingest_progress_log_path)).to eq 0
@@ -74,12 +85,13 @@ RSpec.describe Tasks::SageIngestService do
   end
 
   context "with unexpected contents in the package" do
+    let(:temp_dir) { Dir.mktmpdir }
+    let(:package_path) { File.join(fixture_path, "sage", "triple_package.zip") }
+
     it "logs an error" do
       allow(Rails.logger).to receive(:error)
-      allow(service).to receive(:extract_files).and_return({"pdf_name" => "a", "xml_name" => "b"})
-      allow(service).to receive(:extract_files).with(first_zip_path, any_args).and_return({"pdf_name" => "a", "xml_name" => "b", "unexpected_file_name"=> "c"})
-      service.process_packages
-      expect(Rails.logger).to have_received(:error).with("Unexpected package contents - more than two files extracted from #{first_zip_path}")
+      service.extract_files(package_path, temp_dir)
+      expect(Rails.logger).to have_received(:error).with("Unexpected package contents - more than two files extracted from #{package_path}")
     end
   end
 end
