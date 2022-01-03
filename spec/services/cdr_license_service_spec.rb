@@ -46,5 +46,9 @@ RSpec.describe Hyrax::CdrLicenseService do
     it "resolves for ids of active terms" do
       expect(service.label('http://creativecommons.org/licenses/by-sa/3.0/us/')).to eq('Attribution-ShareAlike 3.0 United States')
     end
+
+    it "resolves to the same label for http or https ids" do
+      expect(service.label('https://creativecommons.org/licenses/by-sa/3.0/us/')).to eq('Attribution-ShareAlike 3.0 United States')
+    end
   end
 end
