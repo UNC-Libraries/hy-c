@@ -2,6 +2,9 @@ require 'rails_helper'
 
 RSpec.describe Qa::Authorities::Local::FileBasedAuthority do
   let(:licenses) { Qa::Authorities::Local.subauthority_for("licenses") }
+  # TODO: Add more example file based authorities to make sure this isn't only relevant for licenses.
+  # We can't be quite as agnostic as the original test:
+  # See https://github.com/samvera/questioning_authority/blob/eafe9fe652d1a7efd37e0d7f2737b2d64876c601/spec/lib/authorities/local/file_based_authority_spec.rb
 
   describe "#all" do
     it "returns an array of hashes" do
