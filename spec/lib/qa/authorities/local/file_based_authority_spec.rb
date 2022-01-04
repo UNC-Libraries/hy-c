@@ -11,7 +11,6 @@ RSpec.describe Qa::Authorities::Local::FileBasedAuthority do
       expect(licenses.all).to be_instance_of(Array)
       expect(licenses.all.first).to be_instance_of(HashWithIndifferentAccess)
     end
-
     it "has the expected keys in those hashes" do
       expect(licenses.all.first.keys).to match_array(['id', 'label', 'active'])
     end
@@ -19,13 +18,16 @@ RSpec.describe Qa::Authorities::Local::FileBasedAuthority do
 
   describe "#search" do
     context "with an empty query string" do
+      let(:term) { "" }
       let(:expected) { [] }
       it "returns no results" do
-        expect(licenses.search("")).to eq(expected)
+        results = licenses.search(term)
+        expect(results).to eq(expected)
       end
     end
 
     context "with at least one matching entry" do
+      let(:term) { 'NonCommercial' }
       let(:expected) do
         [{"id"=>"http://creativecommons.org/licenses/by-nc/3.0/us/",
           "label"=>"Attribution-NonCommercial 3.0 United States",
@@ -41,47 +43,62 @@ RSpec.describe Qa::Authorities::Local::FileBasedAuthority do
           "active"=>"all"}]
       end
       it "returns only entries matching the query term" do
-        expect(licenses.search("NonCommercial")).to eq(expected)
+        results = licenses.search(term)
+        expect(results).to eq(expected)
       end
-      it "is case insensitive" do
-        expect(licenses.search("NonCoMMercial")).to eq(expected)
+      context "with mismatched capitalization" do
+        let(:term) { 'NonCoMMercial' }
+        it "is case insensitive" do
+          results = licenses.search(term)
+          expect(results).to eq(expected)
+        end
       end
     end
-
     context "with no matching entries" do
+      let(:term) { 'penguins' }
       let(:expected) { [] }
       it "returns an empty array" do
-        expect(licenses.search("penguins")).to eq(expected)
+        results = licenses.search(term)
+        expect(results).to eq(expected)
       end
     end
   end
 
   describe "#find" do
-    context "with https in an identifier" do
+    context "with results" do
+      let(:https_id) { 'https://creativecommons.org/licenses/by/3.0/us/' }
+      let(:id) { 'http://creativecommons.org/licenses/by/3.0/us/' }
+
+      let(:expected) { { 'id' => id, 'term' => "Attribution 3.0 United States", 'active' => 'data' } }
+
       it "returns the full term record" do
-        record = licenses.find("https://creativecommons.org/licenses/by/3.0/us/")
+        record = licenses.find(id)
         expect(record).to be_a HashWithIndifferentAccess
-        expect(record).to eq('id' => "http://creativecommons.org/licenses/by/3.0/us/", 'term' => "Attribution 3.0 United States", 'active' => 'data')
+        expect(record).to eq(expected)
       end
-    end
-    context "source is a list" do
-      it "has indifferent access" do
-        record = licenses.find("http://creativecommons.org/licenses/by/3.0/us/")
-        expect(record).to be_a HashWithIndifferentAccess
+      context "with https in an identifier" do
+        it "returns the full term record" do
+          record = licenses.find(https_id)
+          expect(record).to be_a HashWithIndifferentAccess
+          expect(record).to eq(expected)
+        end
       end
     end
     context "term does not exist" do
       let(:id) { "NonID" }
       let(:expected) { {} }
+
       it "returns an empty hash" do
-        expect(licenses.find(id)).to eq(expected)
+        record = licenses.find(id)
+        expect(record).to eq(expected)
       end
-    end
-    context "on a sub-authority" do
-      it "returns the full term record" do
-        record = licenses.find("http://creativecommons.org/licenses/by/3.0/us/")
-        expect(record).to be_a HashWithIndifferentAccess
-        expect(record).to eq('id' => "http://creativecommons.org/licenses/by/3.0/us/", 'term' => "Attribution 3.0 United States", 'active' => 'data')
+      context "with mismatched capitalization" do
+        let(:id) { 'http://CreativeCommons.org/licenses/by/3.0/us/' }
+
+        it "is case sensitive" do
+          record = licenses.find(id)
+          expect(record).to eq(expected)
+        end
       end
     end
   end
