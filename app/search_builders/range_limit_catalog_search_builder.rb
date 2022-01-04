@@ -21,7 +21,7 @@ class RangeLimitCatalogSearchBuilder < Hyrax::CatalogSearchBuilder
   end
 
   def all_fields_query
-    " _query_:\"#{join_work_to_file}{!dismax qf=all_text_timv q=#{blacklight_params[:all_fields]}}\""
+    " _query_:\"#{join_work_to_file}{!dismax qf=all_text_timv}#{blacklight_params[:all_fields]}\""
   end
 
   def join_work_to_file
