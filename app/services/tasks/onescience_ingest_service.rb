@@ -315,6 +315,7 @@ module Tasks
         # check all author-related columns in 1science spreadsheets with data
         (1..32).each do |index|
           break if onescience_data['lastname_author'+index.to_s].blank? || onescience_data['firstname_author'+index.to_s].blank?
+
           name = "#{onescience_data['lastname_author'+index.to_s]}, #{onescience_data['firstname_author'+index.to_s]}"
           affiliations = onescience_data['affiliation_author'+index.to_s]
           people[index-1] = { 'name' => name,

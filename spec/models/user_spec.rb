@@ -31,13 +31,13 @@ RSpec.describe User, type: :model do
     context "shibboleth integration" do
       let(:auth_hash) do
         OmniAuth::AuthHash.new(
-            provider: 'shibboleth',
-            uid: "boxy",
-            info: {
-                display_name: "boxy",
-                uid: 'boxy',
-                mail: 'boxy@example.com'
-            }
+          provider: 'shibboleth',
+          uid: "boxy",
+          info: {
+              display_name: "boxy",
+              uid: 'boxy',
+              mail: 'boxy@example.com'
+          }
         )
       end
       let(:user) { described_class.from_omniauth(auth_hash) }
@@ -64,13 +64,13 @@ RSpec.describe User, type: :model do
     context "no email from shibboleth" do
       let(:auth_hash) do
         OmniAuth::AuthHash.new(
-            provider: 'shibboleth',
-            uid: "boxy",
-            info: {
-                display_name: "boxy",
-                uid: 'boxy',
-                mail: nil
-            }
+          provider: 'shibboleth',
+          uid: "boxy",
+          info: {
+              display_name: "boxy",
+              uid: 'boxy',
+              mail: nil
+          }
         )
       end
       let(:user) { described_class.from_omniauth(auth_hash) }

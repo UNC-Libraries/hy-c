@@ -17,7 +17,7 @@ module Migrate
         vis_private = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
         vis_public = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
         vis_authenticated = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_AUTHENTICATED
-        
+
         file_open_time = Time.now
         puts "[#{file_open_time.to_s}] opening xml file"
         metadata = Nokogiri::XML(File.open(@metadata_file))
@@ -139,7 +139,7 @@ module Migrate
           work_attributes['url'] = descriptive_mods.xpath('mods:location/mods:url',MigrationConstants::NS).map(&:text)
           work_attributes['digital_collection'] = descriptive_mods.xpath('mods:relatedItem[@displayLabel="Collection" and @type="host"]/mods:titleInfo/mods:title',MigrationConstants::NS).map(&:text)
         end
-        
+
         # ACL settings
         inherit_roles = true
         unpublished = false
@@ -220,9 +220,9 @@ module Migrate
             inherit_roles = inherit != 'false'
           end
         end
-        
+
         work_attributes['inherit'] = inherit_roles
-        
+
         if unpublished
           work_attributes['visibility'] = vis_private
           work_attributes['is_private'] = true
@@ -239,7 +239,7 @@ module Migrate
           # Default state
           work_attributes['visibility'] = vis_public
         end
-          
+
         if !embargo_until.nil?
           work_attributes['embargo_release_date'] = (Date.try(:edtf, embargo_release_date) || embargo_release_date).to_s
           work_attributes['visibility'] = vis_private
@@ -263,12 +263,11 @@ module Migrate
           MigrationHelper.retry_operation('adding collection') do
             user_collection_type = Hyrax::CollectionType.where(title: 'User Collection').first.gid
           end
-          
+
           MigrationHelper.retry_operation('adding collection') do
-            work_attributes['member_of_collections'] = Array(Collection.create(
-                title: [@collection_name],
-                depositor: @depositor.uid,
-                collection_type_gid: user_collection_type))
+            work_attributes['member_of_collections'] = Array(Collection.create(title: [@collection_name],
+                                                                               depositor: @depositor.uid,
+                                                                               collection_type_gid: user_collection_type))
           end
         end
 

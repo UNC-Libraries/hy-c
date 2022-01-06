@@ -26,6 +26,7 @@ module Hyrax
 
         def format_authors(authors_list = [])
           return '' if authors_list.blank?
+
           text = ''
           text << surname_first(authors_list.first) if authors_list.first
           authors_list[1..6].each_with_index do |author, index|
@@ -47,6 +48,7 @@ module Hyrax
 
         def format_title(title_info)
           return "" if title_info.blank?
+
           title_text = chicago_citation_title(title_info)
           title_text << '.' unless title_text =~ /\.$/
           " <i class=\"citation-title\">#{title_text}</i>"

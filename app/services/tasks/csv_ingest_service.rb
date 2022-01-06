@@ -133,7 +133,6 @@ module Tasks
       puts "[#{Time.now}] Completed ingest of #{@config['batch_name']} in #{@config['metadata_file']}"
     end
 
-
     private
 
       def create_deposit_record

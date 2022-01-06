@@ -39,7 +39,6 @@ RSpec.feature 'Create a MastersPaper', js: false do
     let(:admin_agent) { Sipity::Agent.where(proxy_for_id: admin_user.id, proxy_for_type: 'User').first_or_create }
     let(:user_agent) { Sipity::Agent.where(proxy_for_id: user.id, proxy_for_type: 'User').first_or_create }
 
-
     before do
       Hyrax::PermissionTemplateAccess.create(permission_template: dept_permission_template,
                                              agent_type: 'user',
@@ -66,7 +65,6 @@ RSpec.feature 'Create a MastersPaper', js: false do
       Hyrax::Workflow::PermissionGenerator.call(roles: 'deleting', workflow: workflow, agents: admin_agent)
       permission_template.available_workflows.first.update!(active: true)
       dept_permission_template.available_workflows.first.update!(active: true)
-
 
       # Sipity::WorkflowAction.create(id: 4, name: 'show', workflow_id: workflow.id)
       # Sipity::WorkflowAction.create(id: 5, name: 'show', workflow_id: dept_workflow.id)

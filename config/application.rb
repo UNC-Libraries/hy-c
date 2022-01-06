@@ -30,5 +30,17 @@ module Hyrax
 
     # Add custom error pages
     config.exceptions_app = self.routes
+
+    # Configure logger
+    config.log_formatter = proc do |severity, time, progname, msg|
+      "#{time} - #{severity}: #{msg}\n"
+    end
+    log_path = ENV["LOGS_PATH"] || "log/#{Rails.env}.log"
+    logger = ActiveSupport::Logger.new(log_path)
+    logger.formatter = config.log_formatter
+    config.logger = ActiveSupport::TaggedLogging.new(logger)
+
+    # Prepend all log lines with the following tags.
+    config.log_tags = [:request_id]
   end
 end

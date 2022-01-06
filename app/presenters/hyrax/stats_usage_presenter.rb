@@ -35,6 +35,7 @@ module Hyrax
       date_created = string_to_date(model.date_created.to_s)
       date_analytics = date_created ? date_created : string_to_date(model.create_date.to_s)
       return date_analytics if earliest.blank?
+
       earliest > date_analytics ? earliest : date_analytics
     end
 

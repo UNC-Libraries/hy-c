@@ -22,7 +22,7 @@ RSpec.describe Tasks::CsvIngestService do
                                         'deposit_record_id_log' => 'spec/fixtures/csv/csv_deposit_record_id.log',
                                         'work_visibility' => 'open',
                                         'file_visibility' => 'open'
-                                )
+                                       )
     end
   end
 

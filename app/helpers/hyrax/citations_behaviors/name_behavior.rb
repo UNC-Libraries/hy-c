@@ -29,6 +29,7 @@ module Hyrax
       def given_name_first(name)
         name = clean_end_punctuation(name)
         return name unless name =~ /,/
+
         temp_name = name.split(/,\s*/)
         temp_name.last + " " + temp_name.first
       end
@@ -37,6 +38,7 @@ module Hyrax
         name = name.join('') if name.is_a? Array
         # make sure we handle "Cher" correctly
         return name if name.include?(',')
+
         name_segments = name.split(' ')
         given_name = name_segments.first
         surnames = name_segments[1..-1]
@@ -53,6 +55,7 @@ module Hyrax
 
         # make sure we handle "Cher" correctly
         return name unless name.include?(' ') || name.include?(',')
+
         name = surname_first(name)
         name_segments = name.split(/,\s*/)
         abbreviated_name << name_segments.first

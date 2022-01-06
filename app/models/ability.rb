@@ -36,6 +36,7 @@ class Ability
       # Are there any workflows or entities where this user has the "approving" responsibility
       approving_role = Sipity::Role.find_by(name: Hyrax::RoleRegistry::APPROVING)
       return false unless approving_role
+
       Hyrax::Workflow::PermissionQuery.scope_processing_agents_for(user: current_user).any? do |agent|
         (agent.workflow_responsibilities.joins(:workflow_role)
             .where('sipity_workflow_roles.role_id' => approving_role.id).any? ||

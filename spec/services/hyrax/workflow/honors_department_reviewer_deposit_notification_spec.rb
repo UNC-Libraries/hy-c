@@ -35,7 +35,6 @@ RSpec.describe Hyrax::Workflow::HonorsDepartmentReviewerDepositNotification do
     end
 
     context 'without carbon-copied users' do
-
       it 'sends a message to the to user(s)' do
         recipients = { 'to' => [department_contact], 'cc' => [] }
         expect(depositor).to receive(:send_message).exactly(1).times.and_call_original

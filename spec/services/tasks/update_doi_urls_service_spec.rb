@@ -30,7 +30,8 @@ RSpec.describe Tasks::UpdateDoiUrlsService do
     let(:depositor) { User.create(email: 'test@example.com',
                                   uid: 'test@example.com',
                                   password: 'password',
-                                  password_confirmation: 'password') }
+                                  password_confirmation: 'password')
+    }    
     let(:admin_set) do
       AdminSet.create(title: ["article admin set"],
                       description: ["some description"],
@@ -40,7 +41,8 @@ RSpec.describe Tasks::UpdateDoiUrlsService do
                                      depositor: depositor.email,
                                      visibility: 'open',
                                      admin_set_id: admin_set.id,
-                                     doi: 'https://doi.org/10.5077/test-doi') }
+                                     doi: 'https://doi.org/10.5077/test-doi')
+    }    
     let(:permission_template) do
       Hyrax::PermissionTemplate.create!(source_id: admin_set.id)
     end

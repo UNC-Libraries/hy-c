@@ -82,13 +82,13 @@ module Migrate
           start_time = Time.now
           puts "[#{start_time.to_s}] #{uuid} Start migration, #{index+1} out of #{collection_uuids.count}"
           work_attributes = Migrate::Services::MetadataParser.new(file_path,
-                                                              @object_hash,
-                                                              @binary_hash,
-                                                              @deposit_record_hash,
-                                                              collection_uuids,
-                                                              @depositor,
-                                                              @collection_name,
-                                                              @admin_set_id).parse
+                                                                  @object_hash,
+                                                                  @binary_hash,
+                                                                  @deposit_record_hash,
+                                                                  collection_uuids,
+                                                                  @depositor,
+                                                                  @collection_name,
+                                                                  @admin_set_id).parse
           puts "[#{Time.now.to_s}] #{uuid} metadata parsed in #{Time.now-start_time} seconds"
 
           # save group permissions info and remove from work attribute hash since it is not a valid work attribute
@@ -271,7 +271,6 @@ module Migrate
         file_set
       end
 
-
       private
         def work_record(work_attributes, uuid)
           # save group permissions info and remove from work attribute hash since it is not a valid work attribute
@@ -366,7 +365,6 @@ module Migrate
           file_attributes
         end
 
-
         def attach_children
           # Load mapping of old uuids to new hyrax ids
           uuid_to_id = Hash[@id_mapper.mappings.map { |row| [row[0], row[1].split('/')[-1]] if !row[1].match?('file_sets') }.compact]
@@ -388,6 +386,7 @@ module Migrate
 
             children.each do |child|
               next if already_attached.include?(child)
+
               # If the child is in the uuid_to_id mapping, it is a child work and must be attached to the parent
               child_id = uuid_to_id[child]
               if child_id

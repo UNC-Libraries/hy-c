@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # [hyc-override] overriding `write_files`,`export_headers`, `write_partial_import`,
 # and `real_import_file_path` methods and adding `people_types` method
 # [hyc-override] overriding application_parser `write_import_files` and `unzip` methods
@@ -47,6 +48,7 @@ module Bulkrax
     def collections
       # does the CSV contain a collection column?
       return [] unless import_fields.include?(:collection)
+
       # retrieve a list of unique collections
       records.map { |r| r[:collection].split(/\s*[;|]\s*/) if r[:collection].present? }.flatten.compact.uniq
     end
@@ -68,6 +70,7 @@ module Bulkrax
 
     def required_elements?(keys)
       return if keys.blank?
+
       missing_elements(keys).blank?
     end
 
@@ -83,6 +86,7 @@ module Bulkrax
       elsif !file_path_array
         raise StandardError.new 'file paths are invalid'
       end
+
       required_elements?(import_fields) && file_paths.is_a?(Array)
     rescue StandardError => e
       status_info(e)
@@ -92,6 +96,7 @@ module Bulkrax
     def create_collections
       collections.each_with_index do |collection, index|
         next if collection.blank?
+
         metadata = {
           title: [collection],
           work_identifier => [collection],
@@ -173,6 +178,7 @@ module Bulkrax
     def create_new_entries
       current_work_ids.each_with_index do |wid, index|
         break if limit_reached?(limit, index)
+
         new_entry = find_or_create_entry(entry_class, wid, 'Bulkrax::Exporter')
         Bulkrax::ExportWorkJob.perform_now(new_entry.id, current_run.id)
       end
@@ -291,6 +297,7 @@ module Bulkrax
     #  and check all listed files exist.
     def file_paths
       raise StandardError, 'No records were found' if records.blank?
+
       @file_paths ||= records.map do |r|
         file_mapping = Bulkrax.field_mappings.dig(self.class.to_s, 'file', :from)&.first&.to_sym || :file
         next if r[file_mapping].blank?

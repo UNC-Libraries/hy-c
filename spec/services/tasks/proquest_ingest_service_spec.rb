@@ -359,7 +359,8 @@ RSpec.describe Tasks::ProquestIngestService do
                       'visibility'=>'restricted',
                       'embargo_release_date'=>'2021-11-13',
                       'visibility_during_embargo'=>'restricted',
-                      'visibility_after_embargo'=>'open'} }
+                      'visibility_after_embargo'=>'open'}
+    }    
 
     it 'returns fileset metadata' do
       expect(Tasks::ProquestIngestService.new(args).file_record(metadata)).to include({"date_created" => nil,

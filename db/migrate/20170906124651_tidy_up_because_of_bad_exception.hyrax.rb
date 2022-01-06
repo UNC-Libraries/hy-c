@@ -5,6 +5,7 @@ class TidyUpBecauseOfBadException < ActiveRecord::Migration[4.2]
       Hyrax::PermissionTemplate.all.each do |permission_template|
         workflow_id = permission_template.workflow_id
         next unless workflow_id
+
         Sipity::Workflow.find(workflow_id).update(active: true)
       end
 

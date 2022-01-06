@@ -54,6 +54,7 @@ module Hyrax
           resource = value.respond_to?(:resource) ? value.resource : value
           next unless resource.is_a?(ActiveTriples::Resource)
           next if value.is_a?(ActiveFedora::Base)
+
           fetch_with_persistence(resource)
         end
       end
@@ -62,8 +63,10 @@ module Hyrax
     def fetch_with_persistence(resource)
       old_label = resource.rdf_label.first
       return unless old_label == resource.rdf_subject.to_s || old_label.nil?
+
       fetch_value(resource)
       return if old_label == resource.rdf_label.first || resource.rdf_label.first == resource.rdf_subject.to_s
+
       resource.persist! # Stores the fetched values into our marmotta triplestore
     end
 
@@ -90,12 +93,13 @@ module Hyrax
       full_label = parse_geo_request(val.to_uri.to_s)
       val = val.solrize(full_label)
       create_and_insert_terms_handler.create_and_insert_terms(solr_field_key,
-                                         val.first,
-                                         field_info.behaviors, solr_doc)
+                                                              val.first,
+                                                              field_info.behaviors, solr_doc)
       return unless val.last.is_a? Hash
+
       create_and_insert_terms_handler.create_and_insert_terms("#{solr_field_key}_label",
-                                         label(val),
-                                         field_info.behaviors, solr_doc)
+                                                              label(val),
+                                                              field_info.behaviors, solr_doc)
     end
 
     # Use this method to append a string value from a controlled vocabulary field
@@ -108,11 +112,11 @@ module Hyrax
       full_label = parse_geo_request(val.to_uri.to_s)
 
       create_and_insert_terms_handler.create_and_insert_terms(solr_field_key,
-                                         full_label,
-                                         field_info.behaviors, solr_doc)
+                                                              full_label,
+                                                              field_info.behaviors, solr_doc)
       create_and_insert_terms_handler.create_and_insert_terms("#{solr_field_key}_label",
-                                         full_label,
-                                         field_info.behaviors, solr_doc)
+                                                              full_label,
+                                                              field_info.behaviors, solr_doc)
     end
 
     # Return a label for the solrized term:

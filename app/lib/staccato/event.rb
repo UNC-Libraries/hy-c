@@ -2,6 +2,7 @@
 module Staccato
   # Event Hit type field definitions
   # @author Tony Pitale
+  # See https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters
   class Event
     # Event field definitions
     FIELDS = {
@@ -9,7 +10,9 @@ module Staccato
         action: 'ea',
         label: 'el',
         value: 'ev',
-        hostname: 'dh'
+        hostname: 'dh',
+        referrer: 'dr',
+        data_source: 'ds'
     }
 
     include Hit

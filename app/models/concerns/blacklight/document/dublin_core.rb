@@ -1,5 +1,6 @@
 # [hyc-override] override file from blacklight gem
 # frozen_string_literal: true
+
 require 'builder'
 
 # This module provides Dublin Core export based on the document's semantic values

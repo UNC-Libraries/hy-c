@@ -6,7 +6,6 @@ RSpec.feature 'logging into the application' do
     let(:escaped_target) { CGI.escape("/users/auth/shibboleth/callback?locale=en") }
 
     before do
-
       allow(AuthConfig).to receive(:use_database_auth?).and_return(false)
       allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new("production"))
     end
@@ -47,7 +46,6 @@ RSpec.feature 'logging into the application' do
         expect(page.current_url).to eq "http://www.example.com/?locale=en"
       end
     end
-
   end
 
   context "in production with database auth turned on" do

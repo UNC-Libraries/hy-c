@@ -6,7 +6,6 @@ module Migrate
         @object_hash = object_hash
         @collection_uuids = MigrationHelper.get_collection_uuids(config['collection_list'])
 
-
         # Store parent-child relationships
         @parent_child_mapper = Migrate::Services::IdMapper.new(File.join(output_dir, "#{collection}_parent_child.csv"), 'parent', 'children')
         # Progress tracker for objects migrated
@@ -62,7 +61,6 @@ module Migrate
         puts "[#{Time.now.to_s}] Completed building parent-child relationships in #{Time.now-start_time} seconds"
       end
 
-
       private
 
         # Store the parent to children mapping for a work
@@ -70,6 +68,7 @@ module Migrate
           if child_works.blank?
             return
           end
+
           @parent_child_mapper.add_row(uuid, child_works.join('|'))
         end
     end

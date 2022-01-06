@@ -10,14 +10,16 @@ RSpec.describe Hyrax::MastersPaperForm do
     subject { form.required_fields }
 
     it { is_expected.to match_array [:title, :creator, :abstract, :advisor, :date_issued, :degree, :resource_type,
-                                     :graduation_year] }
+                                     :graduation_year]
+    }    
   end
 
   describe "#primary_terms" do
     subject { form.primary_terms }
 
     it { is_expected.to match_array [:title, :creator, :abstract, :advisor, :date_issued, :degree, :resource_type,
-                                     :graduation_year] }
+                                     :graduation_year]
+    }    
   end
 
   describe "#secondary_terms" do
@@ -26,14 +28,16 @@ RSpec.describe Hyrax::MastersPaperForm do
     it { is_expected.to match_array [:academic_concentration, :access, :based_near, :dcmi_type,
                                      :degree_granting_institution, :doi, :extent, :reviewer, :use, :keyword, :subject,
                                      :language, :note, :rights_statement, :license, :language_label, :license_label,
-                                     :rights_statement_label, :deposit_agreement, :agreement, :admin_note] }
+                                     :rights_statement_label, :deposit_agreement, :agreement, :admin_note]
+    }    
   end
   
   describe "#admin_only_terms" do
     subject { form.admin_only_terms }
 
     it { is_expected.to match_array [:dcmi_type, :access, :degree_granting_institution, :doi, :extent, :use,
-                                     :admin_note] }
+                                     :admin_note]
+    }    
   end
   
   describe 'default value set' do
@@ -54,51 +58,51 @@ RSpec.describe Hyrax::MastersPaperForm do
   describe '.model_attributes' do
     let(:params) do
       ActionController::Parameters.new(
-          title: 'foo', # single-valued
-          creators_attributes: { '0' => { name: 'creator',
-                                          orcid: 'creator orcid',
-                                          affiliation: 'Carolina Center for Genome Sciences',
-                                          other_affiliation: 'another affiliation',
-                                          index: 1},
-                                 '1' => {name: 'creator2',
-                                         orcid: 'creator2 orcid',
-                                         affiliation: 'Department of Chemistry',
-                                         other_affiliation: 'another affiliation',
-                                         index: 2} },
-          subject: ['a subject'],
-          language: ['http://id.loc.gov/vocabulary/iso639-2/eng'],
-          based_near: ['a geographic subject'],
-          license: 'http://creativecommons.org/licenses/by/3.0/us/', # single-valued
-          rights_statement: 'http://rightsstatements.org/vocab/InC/1.0/', # single-valued
-          resource_type: ['a type'],
-          visibility: 'open',
-          representative_id: '456',
-          thumbnail_id: '789',
-          keyword: ['derp'],
-          member_of_collection_ids: ['123456', 'abcdef'],
-          abstract: [''],
-          academic_concentration: ['a concentration'],
-          access: 'public', # single-valued
-          advisors_attributes: { '0' => { name: 'advisor',
-                                          orcid: 'advisor orcid',
-                                          affiliation: 'Carolina Center for Genome Sciences',
-                                          other_affiliation: 'another affiliation'} },
-          date_issued: 'Summer 1999', # single-valued
-          dcmi_type: ['http://purl.org/dc/dcmitype/Text'],
-          degree: 'MS', # single-valued
-          degree_granting_institution: 'UNC', # single-valued
-          doi: '12345',
-          extent: ['an extent'],
-          graduation_year: '2017',
-          note: ['a note'],
-          reviewers_attributes: { '0' => { name: 'reviewer',
-                                          orcid: 'reviewer orcid',
-                                          affiliation: 'Carolina Center for Genome Sciences',
-                                          other_affiliation: 'another affiliation'} },
-          use: ['a use'],
-          language_label: [],
-          license_label: [],
-          rights_statement_label: ''
+        title: 'foo', # single-valued
+        creators_attributes: { '0' => { name: 'creator',
+                                        orcid: 'creator orcid',
+                                        affiliation: 'Carolina Center for Genome Sciences',
+                                        other_affiliation: 'another affiliation',
+                                        index: 1},
+                               '1' => {name: 'creator2',
+                                       orcid: 'creator2 orcid',
+                                       affiliation: 'Department of Chemistry',
+                                       other_affiliation: 'another affiliation',
+                                       index: 2} },
+        subject: ['a subject'],
+        language: ['http://id.loc.gov/vocabulary/iso639-2/eng'],
+        based_near: ['a geographic subject'],
+        license: 'http://creativecommons.org/licenses/by/3.0/us/', # single-valued
+        rights_statement: 'http://rightsstatements.org/vocab/InC/1.0/', # single-valued
+        resource_type: ['a type'],
+        visibility: 'open',
+        representative_id: '456',
+        thumbnail_id: '789',
+        keyword: ['derp'],
+        member_of_collection_ids: ['123456', 'abcdef'],
+        abstract: [''],
+        academic_concentration: ['a concentration'],
+        access: 'public', # single-valued
+        advisors_attributes: { '0' => { name: 'advisor',
+                                        orcid: 'advisor orcid',
+                                        affiliation: 'Carolina Center for Genome Sciences',
+                                        other_affiliation: 'another affiliation'} },
+        date_issued: 'Summer 1999', # single-valued
+        dcmi_type: ['http://purl.org/dc/dcmitype/Text'],
+        degree: 'MS', # single-valued
+        degree_granting_institution: 'UNC', # single-valued
+        doi: '12345',
+        extent: ['an extent'],
+        graduation_year: '2017',
+        note: ['a note'],
+        reviewers_attributes: { '0' => { name: 'reviewer',
+                                        orcid: 'reviewer orcid',
+                                        affiliation: 'Carolina Center for Genome Sciences',
+                                        other_affiliation: 'another affiliation'} },
+        use: ['a use'],
+        language_label: [],
+        license_label: [],
+        rights_statement_label: ''
       )
     end
 
@@ -156,13 +160,13 @@ RSpec.describe Hyrax::MastersPaperForm do
     context '.model_attributes' do
       let(:params) do
         ActionController::Parameters.new(
-            title: '',
-            abstract: [''],
-            keyword: [''],
-            license: '',
-            member_of_collection_ids: [''],
-            rights_statement: 'http://rightsstatements.org/vocab/InC/1.0/',
-            on_behalf_of: 'Melissa'
+          title: '',
+          abstract: [''],
+          keyword: [''],
+          license: '',
+          member_of_collection_ids: [''],
+          rights_statement: 'http://rightsstatements.org/vocab/InC/1.0/',
+          on_behalf_of: 'Melissa'
         )
       end
 
@@ -179,28 +183,28 @@ RSpec.describe Hyrax::MastersPaperForm do
     context 'with people parameters' do
       let(:params) do
         ActionController::Parameters.new(
-            creators_attributes: { '0' => {name: 'creator',
-                                           orcid: 'creator orcid',
+          creators_attributes: { '0' => {name: 'creator',
+                                         orcid: 'creator orcid',
+                                         affiliation: 'Carolina Center for Genome Sciences',
+                                         other_affiliation: 'another affiliation',
+                                         index: 2},
+                                 '1' => {name: 'creator2',
+                                         orcid: 'creator2 orcid',
+                                         affiliation: 'Department of Chemistry',
+                                         other_affiliation: 'another affiliation',
+                                         index: 1},
+                                 '2' => {name: 'creator3',
+                                         orcid: 'creator3 orcid',
+                                         affiliation: 'Department of Chemistry',
+                                         other_affiliation: 'another affiliation'}},
+          advisors_attributes: {'0' => {name: 'advisor',
+                                           orcid: 'advisor orcid',
                                            affiliation: 'Carolina Center for Genome Sciences',
-                                           other_affiliation: 'another affiliation',
-                                           index: 2},
-                                   '1' => {name: 'creator2',
-                                           orcid: 'creator2 orcid',
+                                           other_affiliation: 'another affiliation'},
+                                   '1' => {name: 'advisor2',
+                                           orcid: 'advisor2 orcid',
                                            affiliation: 'Department of Chemistry',
-                                           other_affiliation: 'another affiliation',
-                                           index: 1},
-                                   '2' => {name: 'creator3',
-                                           orcid: 'creator3 orcid',
-                                           affiliation: 'Department of Chemistry',
-                                           other_affiliation: 'another affiliation'}},
-            advisors_attributes: {'0' => {name: 'advisor',
-                                             orcid: 'advisor orcid',
-                                             affiliation: 'Carolina Center for Genome Sciences',
-                                             other_affiliation: 'another affiliation'},
-                                     '1' => {name: 'advisor2',
-                                             orcid: 'advisor2 orcid',
-                                             affiliation: 'Department of Chemistry',
-                                             other_affiliation: 'another affiliation'}}
+                                           other_affiliation: 'another affiliation'}}
         )
       end
 

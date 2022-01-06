@@ -1,7 +1,6 @@
 # [hyc-override] Overriding to remove :based_near (location) from form. Gives error if populated
 module Hyrax
   module Forms
-    # rubocop:disable Metrics/ClassLength
     class CollectionForm
       include HydraEditor::Form
       include HydraEditor::Form::Permissions
@@ -107,6 +106,7 @@ module Hyrax
 
       def thumbnail_title
         return unless model.thumbnail
+
         model.thumbnail.title.first
       end
 
@@ -151,6 +151,5 @@ module Hyrax
                                    presenter_args: [nil])
       end
     end
-    # rubocop:enable ClassLength
   end
 end

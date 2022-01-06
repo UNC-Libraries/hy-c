@@ -21,7 +21,6 @@ config/local_env.yml
 /.idea/*
 /public/assets/*
 fits.log
-db/schema.rb
 
 /**/.DS_Store
 
@@ -30,3 +29,4 @@ public/tmp
 
 lib/tasks/migration/mapping.csv
 /coverage/*
+rspec_examples.txt
