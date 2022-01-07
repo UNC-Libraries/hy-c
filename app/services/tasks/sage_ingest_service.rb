@@ -49,6 +49,7 @@ module Tasks
       art.identifier = ingest_work.identifier
       art.issn = ingest_work.issn
       art.journal_title = ingest_work.journal_title
+      art.keyword = ingest_work.keyword
       art.license = ingest_work.license
       art.rights_statement = ingest_work.rights_statement # if we save the rights statement, do we get the label for free?
       # fields not normally edited via UI
