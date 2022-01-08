@@ -46,12 +46,19 @@ module Tasks
       # additional fields
       art.copyright_date = ingest_work.copyright_date
       art.dcmi_type = ingest_work.dcmi_type
+      art.funder = ingest_work.funder
       art.identifier = ingest_work.identifier
       art.issn = ingest_work.issn
+      art.journal_issue = ingest_work.journal_issue
       art.journal_title = ingest_work.journal_title
+      art.journal_volume = ingest_work.journal_volume
       art.keyword = ingest_work.keyword
       art.license = ingest_work.license
-      art.rights_statement = ingest_work.rights_statement # if we save the rights statement, do we get the label for free?
+      art.page_end = ingest_work.page_end
+      art.page_start = ingest_work.page_start
+      art.publisher = ingest_work.publisher
+      art.rights_holder = ingest_work.rights_holder
+      art.rights_statement = ingest_work.rights_statement
       # fields not normally edited via UI
       art.date_uploaded = DateTime.current
       art.date_modified = DateTime.current
