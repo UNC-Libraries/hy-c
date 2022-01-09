@@ -27,8 +27,9 @@ module Tasks
           xml_file_name = file_names.find { |name| name.match(/^(\S*).xml/) }
           # parse xml
           ingest_work = JatsIngestWork.new(xml_path: File.join(dir, xml_file_name))
-          _article = build_article(ingest_work)
-          # create Article object with xml and pdf
+          # Create Article with metadata and save
+          build_article(ingest_work)
+          # Add PDF file to Article (including FileSets)
           # save object
           # set off background jobs for object?
           mark_done(orig_file_name) if package_ingest_complete?(dir, file_names)
@@ -45,7 +46,7 @@ module Tasks
       art.date_issued = ingest_work.date_of_publication
       # additional fields
       art.copyright_date = ingest_work.copyright_date
-      art.dcmi_type = ingest_work.dcmi_type
+      art.dcmi_type = ['http://purl.org/dc/dcmitype/Text']
       art.funder = ingest_work.funder
       art.identifier = ingest_work.identifier
       art.issn = ingest_work.issn
@@ -57,13 +58,16 @@ module Tasks
       art.page_end = ingest_work.page_end
       art.page_start = ingest_work.page_start
       art.publisher = ingest_work.publisher
+      art.resource_type = ['Article']
       art.rights_holder = ingest_work.rights_holder
-      art.rights_statement = ingest_work.rights_statement
+      art.rights_statement = 'http://rightsstatements.org/vocab/InC/1.0/'
       # fields not normally edited via UI
       art.date_uploaded = DateTime.current
       art.date_modified = DateTime.current
 
       art.save!
+      # return the Article object
+      art
     end
 
     def mark_done(orig_file_name)

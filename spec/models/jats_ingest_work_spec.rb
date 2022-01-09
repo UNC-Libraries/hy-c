@@ -40,7 +40,6 @@ RSpec.describe JatsIngestWork, type: :model do
     expect(work.abstract).to be_instance_of Array
     expect(work.copyright_date).to be_instance_of String
     expect(work.date_of_publication).to be_instance_of String
-    expect(work.dcmi_type).to be_instance_of Array
     expect(work.funder).to be_instance_of Array
     expect(work.identifier).to be_instance_of Array
     expect(work.issn).to be_instance_of Array
@@ -53,9 +52,7 @@ RSpec.describe JatsIngestWork, type: :model do
     expect(work.page_end).to be nil
     expect(work.page_start).to be nil
     expect(work.publisher).to be_instance_of Array
-    expect(work.resource_type).to be_instance_of Array
     expect(work.rights_holder).to be_instance_of Array
-    expect(work.rights_statement).to be_instance_of String
     expect(work.title).to be_instance_of Array
   end
 
@@ -63,7 +60,6 @@ RSpec.describe JatsIngestWork, type: :model do
     expect(work.abstract.first).to include "provinces across China and administered a questionnaire"
     expect(work.copyright_date).to eq '2021'
     expect(work.date_of_publication).to eq '2021-02-01'
-    expect(work.dcmi_type).to eq(['http://purl.org/dc/dcmitype/Text'])
     expect(work.funder).to eq ["Fogarty International Center"]
     expect(work.identifier).to eq ["10.1177/1073274820985792"]
     expect(work.issn).to eq ['1073-2748']
@@ -75,9 +71,8 @@ RSpec.describe JatsIngestWork, type: :model do
     expect(work.page_end).to be nil
     expect(work.page_start).to be nil
     expect(work.publisher).to eq ["SAGE Publications"]
-    expect(work.resource_type).to eq(['Article'])
+    # expect(work.resource_type).to eq(['Article'])
     expect(work.rights_holder).to eq(["SAGE Publications Inc, unless otherwise noted. Manuscript content on this site is licensed under Creative Common Licences"])
-    expect(work.rights_statement).to eq('http://rightsstatements.org/vocab/InC/1.0/')
     expect(work.title).to eq(["Inequalities in Cervical Cancer Screening Uptake Between Chinese Migrant Women and Local Women: A Cross-Sectional Study"])
   end
 
@@ -92,7 +87,6 @@ RSpec.describe JatsIngestWork, type: :model do
       expect(work.abstract.first).to include "patients undergoing elective ACDF were prospectively enrolled"
       expect(work.copyright_date).to eq '2019'
       expect(work.date_of_publication).to eq '2021-01'
-      expect(work.dcmi_type).to eq(['http://purl.org/dc/dcmitype/Text'])
       expect(work.funder).to eq []
       expect(work.identifier).to eq ["10.1177/2192568219888179"]
       expect(work.issn).to eq ['2192-5682', '2192-5690']
@@ -104,10 +98,7 @@ RSpec.describe JatsIngestWork, type: :model do
       expect(work.page_end).to eq '20'
       expect(work.page_start).to eq '13'
       expect(work.publisher).to eq ["SAGE Publications"]
-      expect(work.resource_type).to eq(['Article'])
       expect(work.rights_holder).to eq(["AO Spine, unless otherwise noted. Manuscript content on this site is licensed under Creative Commons Licenses"])
-      expect(work.rights_statement).to eq('http://rightsstatements.org/vocab/InC/1.0/')
-      expect(work.rights_statement_label).to eq('In Copyright')
       expect(work.title).to eq(["The Prevalence of Bacterial Infection in Patients Undergoing Elective ACDF for Degenerative Cervical Spine Conditions: A Prospective Cohort Study With Contaminant Control"])
     end
   end

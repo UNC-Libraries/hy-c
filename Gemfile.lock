@@ -316,6 +316,7 @@ GEM
       faraday (>= 0.7.4, < 1.0)
     fcrepo_wrapper (0.8.0)
       ruby-progressbar
+    ffaker (2.20.0)
     ffi (1.15.4)
     flipflop (2.6.0)
       activesupport (>= 4.0)
@@ -990,6 +991,7 @@ DEPENDENCIES
   execjs (= 2.8.1)
   factory_bot_rails (~> 6.1.0)
   fcrepo_wrapper (~> 0.8.0)
+  ffaker
   httparty (~> 0.20.0)
   hydra-editor (= 5.0.1)
   hydra-role-management (~> 1.0)

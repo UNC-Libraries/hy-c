@@ -83,6 +83,7 @@ end
 group :test do
   gem 'capybara', '~> 3.36'
   gem 'factory_bot_rails', '~> 6.1.0'
+  gem 'ffaker'
   gem 'rspec-mocks'
   gem "selenium-webdriver"
   gem 'shoulda-matchers', '~> 5.0.0'

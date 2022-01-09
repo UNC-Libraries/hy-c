@@ -110,10 +110,6 @@ class JatsIngestWork
     end
   end
 
-  def dcmi_type
-    ['http://purl.org/dc/dcmitype/Text']
-  end
-
   def funder
     article_metadata.xpath('.//funding-source/institution-wrap/institution').map(&:inner_text)
   end
@@ -153,7 +149,6 @@ class JatsIngestWork
     permissions.xpath(".//license/@xlink:href").map do |elem|
       CdrLicenseService.authority.find(elem&.inner_text)[:id]
     end
-    # permissions.xpath(".//license/@xlink:href").map(&:inner_text)
   end
 
   def license_label
@@ -174,20 +169,8 @@ class JatsIngestWork
     journal_metadata.xpath('.//publisher/publisher-name').map(&:inner_text)
   end
 
-  def resource_type
-    ['Article']
-  end
-
   def rights_holder
     permissions.xpath('.//copyright-holder').map(&:inner_text)
-  end
-
-  def rights_statement
-    'http://rightsstatements.org/vocab/InC/1.0/'
-  end
-
-  def rights_statement_label
-    'In Copyright'
   end
 
   def title
