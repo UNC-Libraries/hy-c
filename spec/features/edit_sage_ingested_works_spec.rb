@@ -25,14 +25,14 @@ RSpec.feature 'Edit works created through the Sage ingest', js: false do
 
     @article_count = Article.count
     @articles = Article.all
-    @last_work = @articles[-4]
-    @last_work_id = @last_work.id
+    @first_work = @articles[-4]
+    @first_work_id = @first_work.id
     @second_work_id = @articles[-2].id
   end
 
   it "can open the edit page" do
     login_as @admin_user
-    visit "concern/articles/#{@last_work_id}"
+    visit "concern/articles/#{@first_work_id}"
     expect(page).to have_content("Inequalities in Cervical Cancer Screening Uptake Between")
     expect(page).to have_content('Smith, Jennifer S.')
     click_link('Edit')
@@ -41,12 +41,12 @@ RSpec.feature 'Edit works created through the Sage ingest', js: false do
 
   it "has attached the file_set to the work" do
     pending("Adding file sets to the Article object")
-    expect(@last_work.file_sets.first).to be_instance_of(FileSet)
+    expect(@first_work.file_sets.first).to be_instance_of(FileSet)
   end
 
   it "can render the pre-populated edit page" do
     login_as @admin_user
-    visit "concern/articles/#{@last_work_id}/edit"
+    visit "concern/articles/#{@first_work_id}/edit"
     # These values are also tested in the spec/services/tasks/sage_ingest_service_spec.rb
     # form order
     expect(page).to have_field('Title', with: 'Inequalities in Cervical Cancer Screening Uptake Between Chinese Migrant Women and Local Women: A Cross-Sectional Study')
@@ -81,7 +81,7 @@ RSpec.feature 'Edit works created through the Sage ingest', js: false do
   # creators after the first one need JS to render
   it "can render the javascript-drawn fields", js: true do
     login_as @admin_user
-    visit "concern/articles/#{@last_work_id}/edit"
+    visit "concern/articles/#{@first_work_id}/edit"
     expect(page).to have_field('Creator #2', with: 'Zhang, Xi')
   end
 

@@ -51,21 +51,14 @@ class JatsIngestWork
   def contributor_to_hash(contributor, index)
     affiliation_ids = affiliation_ids(contributor)
     first_affiliation = affiliation_map[affiliation_ids.first]
-    _unc_affiliation = (first_affiliation if unc_affiliation?(first_affiliation))
     {
       'name' => "#{surname(contributor)}, #{given_names(contributor)}",
       'orcid' => orcid(contributor),
       'affiliation' => '',
-      # 'affiliation' => _unc_affiliation, # Do not store affiliation until we can map it to the controlled vocabulary
+      # 'affiliation' => some_method, # Do not store affiliation until we can map it to the controlled vocabulary
       'other_affiliation' => first_affiliation,
       'index' => (index+1).to_s
     }
-  end
-
-  def unc_affiliation?(affiliation)
-    unc_match = affiliation.match("UNC") && affiliation.match("Chapel Hill")
-    univ_match = affiliation.match("University of North Carolina") && affiliation.match("Chapel Hill")
-    unc_match || univ_match
   end
 
   def affiliation_map

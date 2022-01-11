@@ -18,7 +18,10 @@ RSpec.describe JatsIngestWork, type: :model do
     expect(work.creators[0]).to be_instance_of Hash
     expect(work.creators[0]).to include('name' => "Holt, Hunter K.")
     expect(work.creators[0]).to include('orcid' => 'https://orcid.org/0000-0001-6833-8372')
+    expect(work.creators[2]).to include('name' => 'Hu, Shang-Ying')
+    expect(work.creators[2]).to include('index' => '3')
     expect(work.creators[2]).to include('orcid' => '')
+    expect(work.creators[2]).to include('other_affiliation' => /Department of Cancer Epidemiology/)
     expect(work.creators[0]).to include('affiliation' => '')
     expect(work.creators[0]).to include('other_affiliation' => 'Department of Family and Community Medicine, University of California, San Francisco, CA, USA')
     expect(work.creators[4]).to include('name' => 'Smith, Jennifer S.')
@@ -31,7 +34,7 @@ RSpec.describe JatsIngestWork, type: :model do
     expect(work.creators[4]).to include('affiliation'=>'Gillings School of Global Public Health; Department of Epidemiology')
   end
 
-  it "can map affilition ids to institution names" do
+  it "can map affiliation ids to institution names" do
     expect(work.affiliation_map).to be_instance_of Hash
     expect(work.affiliation_map['aff1-1073274820985792']).to eq('Department of Family and Community Medicine, University of California, San Francisco, CA, USA')
   end
