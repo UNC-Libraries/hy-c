@@ -25,9 +25,11 @@ RSpec.feature 'Edit works created through the Sage ingest', js: false do
 
     @article_count = Article.count
     @articles = Article.all
+    # We're not clearing out the database, Fedora, and Solr before this test, so to find the first work created in this
+    # test, we need to count backwards from the last work created.
     @first_work = @articles[-4]
     @first_work_id = @first_work.id
-    @second_work_id = @articles[-2].id
+    @third_work_id = @articles[-2].id
   end
 
   it "can open the edit page" do
@@ -87,7 +89,7 @@ RSpec.feature 'Edit works created through the Sage ingest', js: false do
 
   it "can render values only present on the second work" do
     login_as @admin_user
-    visit "concern/articles/#{@second_work_id}/edit"
+    visit "concern/articles/#{@third_work_id}/edit"
     expect(page).to have_field('Title', with: /The Prevalence of Bacterial Infection in Patients Undergoing/)
     expect(page).to have_field('Journal issue', with: '1')
     expect(page).to have_field('Journal volume', with: '11')
