@@ -5,7 +5,7 @@ git_source(:github) do |repo_name|
   "https://github.com/#{repo_name}.git"
 end
 
-gem 'active-fedora', '~> 12.1.1'
+gem 'active-fedora', '~> 12.1'
 gem 'blacklight_advanced_search', '~> 6.4.1'
 gem 'blacklight_oai_provider', '6.0.0.pre1'
 gem 'blacklight_range_limit', '6.5.0'
@@ -20,6 +20,7 @@ gem 'edtf-humanize', '0.0.7'
 # See https://github.com/rails/execjs#readme for more supported runtimes
 gem 'execjs', '2.8.1'
 gem 'httparty', '~>0.20.0'
+gem 'hydra-derivatives', '~>3.6'
 gem 'hydra-editor', '5.0.1'
 gem 'hydra-role-management', '~> 1.0'
 gem 'hyrax', '2.9.6'
