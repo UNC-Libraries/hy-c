@@ -1,12 +1,12 @@
 module Tasks
   require 'tasks/migrate/services/progress_tracker'
   class SageIngestService
-    attr_reader :package_dir, :ingest_progress_log, :admin_set_id
+    attr_reader :package_dir, :ingest_progress_log, :admin_set
 
     def initialize(args)
       config = YAML.load_file(args[:configuration_file])
 
-      @admin_set_id = ::AdminSet.where(title: config['admin_set']).first.id
+      @admin_set = ::AdminSet.where(title: config['admin_set']).first
 
       @package_dir = config['package_dir']
       @ingest_progress_log = Migrate::Services::ProgressTracker.new(config['ingest_progress_log'])
@@ -39,6 +39,7 @@ module Tasks
 
     def build_article(ingest_work)
       art = Article.new
+      art.admin_set = @admin_set
       # required fields
       art.title = ingest_work.title
       art.creators_attributes = ingest_work.creators

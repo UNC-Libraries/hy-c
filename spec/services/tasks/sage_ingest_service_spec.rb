@@ -35,7 +35,7 @@ RSpec.describe Tasks::SageIngestService do
   describe '#initialize' do
     it "sets parameters from the configuration file" do
       expect(service.package_dir).to eq "spec/fixtures/sage"
-      expect(service.admin_set_id).to be
+      expect(service.admin_set).to be_instance_of(AdminSet)
     end
 
     it 'creates a progress log for the ingest' do
@@ -92,6 +92,11 @@ RSpec.describe Tasks::SageIngestService do
       expect(built_article.resource_type).to match_array(['Article'])
       expect(built_article.rights_holder).to include(/SAGE Publications Inc, unless otherwise noted. Manuscript/)
       expect(built_article.rights_statement).to eq("http://rightsstatements.org/vocab/InC/1.0/")
+    end
+
+    it 'puts the work in an admin_set' do
+      expect(built_article.admin_set).to be_instance_of(AdminSet)
+      expect(built_article.admin_set.title).to eq(admin_set.title)
     end
 
     it 'attaches a file_set to the article' do

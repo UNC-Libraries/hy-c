@@ -37,6 +37,7 @@ RSpec.feature 'Edit works created through the Sage ingest', js: false do
     visit "concern/articles/#{@first_work_id}"
     expect(page).to have_content("Inequalities in Cervical Cancer Screening Uptake Between")
     expect(page).to have_content('Smith, Jennifer S.')
+    expect(page).to have_content('sage admin set')
     click_link('Edit')
     expect(page).to have_link("Work Deposit Form")
   end
