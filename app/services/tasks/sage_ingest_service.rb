@@ -56,6 +56,7 @@ module Tasks
       art.journal_volume = ingest_work.journal_volume
       art.keyword = ingest_work.keyword
       art.license = ingest_work.license
+      art.license_label = ingest_work.license_label
       art.page_end = ingest_work.page_end
       art.page_start = ingest_work.page_start
       art.publisher = ingest_work.publisher

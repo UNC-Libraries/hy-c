@@ -38,6 +38,7 @@ RSpec.feature 'Edit works created through the Sage ingest', js: false do
     expect(page).to have_content("Inequalities in Cervical Cancer Screening Uptake Between")
     expect(page).to have_content('Smith, Jennifer S.')
     expect(page).to have_content('sage admin set')
+    expect(page).to have_content('Attribution-NonCommercial 4.0 International')
     click_link('Edit')
     expect(page).to have_link("Work Deposit Form")
   end
@@ -98,6 +99,7 @@ RSpec.feature 'Edit works created through the Sage ingest', js: false do
     keywords = keyword_fields.map(&:value)
     expect(keyword_fields.count).to eq 8
     expect(keywords).to include('Propionibacterium acnes')
+    expect(page).to have_select('License', with_selected: 'Attribution-NonCommercial-NoDerivatives 4.0 International')
     expect(page).to have_field('Page end', with: '20')
     expect(page).to have_field('Page start', with: '13')
   end

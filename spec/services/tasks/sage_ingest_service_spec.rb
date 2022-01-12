@@ -88,6 +88,7 @@ RSpec.describe Tasks::SageIngestService do
       expect(built_article.journal_volume).to eq('28')
       expect(built_article.keyword).to match_array(['HPV', 'HPV knowledge and awareness', 'cervical cancer screening', 'migrant women', 'China'])
       expect(built_article.license).to match_array(["http://creativecommons.org/licenses/by-nc/4.0/"])
+      expect(built_article.license_label).to match_array(['Attribution-NonCommercial 4.0 International'])
       expect(built_article.publisher).to match_array(['SAGE Publications'])
       expect(built_article.resource_type).to match_array(['Article'])
       expect(built_article.rights_holder).to include(/SAGE Publications Inc, unless otherwise noted. Manuscript/)

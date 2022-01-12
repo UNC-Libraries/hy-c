@@ -80,6 +80,7 @@ RSpec.describe JatsIngestWork, type: :model do
   end
 
   it "can map to the controlled license vocabulary" do
+    expect(work.license).to eq(['http://creativecommons.org/licenses/by-nc/4.0/'])
     expect(work.license_label).to eq ['Attribution-NonCommercial 4.0 International']
   end
 
@@ -98,6 +99,7 @@ RSpec.describe JatsIngestWork, type: :model do
       expect(work.journal_volume).to eq '11'
       expect(work.keyword).to match_array(['degenerative cervical conditions', 'Propionibacterium acnes', 'contaminant control', 'intervertebral disc infection', 'disc cultures', 'anterior cervical discectomy and fusion', 'revision surgery'])
       expect(work.license).to eq(['http://creativecommons.org/licenses/by-nc-nd/4.0/'])
+      expect(work.license_label).to eq(['Attribution-NonCommercial-NoDerivatives 4.0 International'])
       expect(work.page_end).to eq '20'
       expect(work.page_start).to eq '13'
       expect(work.publisher).to eq ["SAGE Publications"]
