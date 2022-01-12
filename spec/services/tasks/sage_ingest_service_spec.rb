@@ -81,7 +81,7 @@ RSpec.describe Tasks::SageIngestService do
       expect(built_article.copyright_date).to eq('2021')
       expect(built_article.dcmi_type).to match_array(["http://purl.org/dc/dcmitype/Text"])
       expect(built_article.funder).to match_array(['Fogarty International Center'])
-      expect(built_article.identifier).to match_array(['10.1177/1073274820985792'])
+      expect(built_article.identifier).to match_array(['https://doi.org/10.1177/1073274820985792'])
       expect(built_article.issn).to match_array(['1073-2748'])
       expect(built_article.journal_issue).to be nil
       expect(built_article.journal_title).to eq('Cancer Control')
@@ -93,6 +93,7 @@ RSpec.describe Tasks::SageIngestService do
       expect(built_article.resource_type).to match_array(['Article'])
       expect(built_article.rights_holder).to include(/SAGE Publications Inc, unless otherwise noted. Manuscript/)
       expect(built_article.rights_statement).to eq("http://rightsstatements.org/vocab/InC/1.0/")
+      expect(built_article.visibility).to eq('open')
     end
 
     it 'puts the work in an admin_set' do
