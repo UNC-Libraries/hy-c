@@ -38,6 +38,9 @@ RSpec.describe Qa::Authorities::Local::FileBasedAuthority do
          {"id"=>"http://creativecommons.org/licenses/by-nc-nd/3.0/us/",
           "label"=>"Attribution-NonCommercial-NoDerivs 3.0 United States",
           "active"=>"all"},
+         {"id"=>"http://creativecommons.org/licenses/by-nc-nd/4.0/",
+          "label"=>"Attribution-NonCommercial-NoDerivatives 4.0 International",
+          "active"=>"all"},
          {"id"=>"http://creativecommons.org/licenses/by-nc-sa/3.0/us/",
           "label"=>"Attribution-NonCommercial-ShareAlike 3.0 United States",
           "active"=>"all"}]

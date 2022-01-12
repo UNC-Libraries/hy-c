@@ -81,10 +81,13 @@ group :development do
 end
 
 group :test do
-  gem 'capybara', '~> 2.17.0'
+  gem 'capybara', '~> 3.36'
   gem 'factory_bot_rails', '~> 6.1.0'
+  gem 'ffaker'
   gem 'rspec-mocks'
+  gem "selenium-webdriver"
   gem 'shoulda-matchers', '~> 5.0.0'
   gem 'simplecov', '~> 0.17.0'
+  gem "webdrivers"
   gem 'webmock', '~> 3.14.0'
 end
