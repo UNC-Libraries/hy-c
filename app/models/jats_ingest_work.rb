@@ -110,7 +110,10 @@ class JatsIngestWork
 
   # The Sage-assigned DOI
   def identifier
-    article_metadata.xpath('.//article-id[@pub-id-type="doi"]').map(&:inner_text)
+    doi = article_metadata.xpath('.//article-id[@pub-id-type="doi"]').inner_text
+    return [doi] if doi.start_with?('http')
+
+    ["https://doi.org/#{doi}"]
   end
 
   def issn

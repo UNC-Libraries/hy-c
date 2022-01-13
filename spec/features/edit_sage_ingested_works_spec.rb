@@ -64,7 +64,7 @@ RSpec.feature 'Edit works created through the Sage ingest', js: false do
     expect(page).to have_field('Date of publication', with: 'February 1, 2021') # aka date_issued
     expect(page).to have_select('Dcmi type', with_selected: 'Text')
     expect(page).to have_field('Funder', with: 'Fogarty International Center')
-    expect(page).to have_field('Identifier', with: '10.1177/1073274820985792')
+    expect(page).to have_field('Identifier', with: 'https://doi.org/10.1177/1073274820985792')
     expect(page).to have_field('ISSN', with: '1073-2748')
     expect(page).to have_field('Journal issue', with: '')
     expect(page).to have_field('Journal title', with: 'Cancer Control')
@@ -80,6 +80,7 @@ RSpec.feature 'Edit works created through the Sage ingest', js: false do
     expect(page).to have_select('Resource type', with_selected: 'Article')
     expect(page).to have_field('Rights holder', with: /SAGE Publications Inc, unless otherwise noted. Manuscript/)
     expect(page).to have_select('Rights statement', with_selected: 'In Copyright')
+    expect(page).to have_checked_field('Public')
   end
 
   # creators after the first one need JS to render

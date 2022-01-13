@@ -64,7 +64,7 @@ RSpec.describe JatsIngestWork, type: :model do
     expect(work.copyright_date).to eq '2021'
     expect(work.date_of_publication).to eq '2021-02-01'
     expect(work.funder).to eq ["Fogarty International Center"]
-    expect(work.identifier).to eq ["10.1177/1073274820985792"]
+    expect(work.identifier).to eq ["https://doi.org/10.1177/1073274820985792"]
     expect(work.issn).to eq ['1073-2748']
     expect(work.journal_issue).to be nil
     expect(work.journal_title).to eq "Cancer Control"
@@ -92,7 +92,7 @@ RSpec.describe JatsIngestWork, type: :model do
       expect(work.copyright_date).to eq '2019'
       expect(work.date_of_publication).to eq '2021-01'
       expect(work.funder).to eq []
-      expect(work.identifier).to eq ["10.1177/2192568219888179"]
+      expect(work.identifier).to eq ["https://doi.org/10.1177/2192568219888179"]
       expect(work.issn).to eq ['2192-5682', '2192-5690']
       expect(work.journal_issue).to eq '1'
       expect(work.journal_title).to eq 'Global Spine Journal'
