@@ -1,0 +1,1715 @@
+<?xml version="1.0" encoding="UTF-8"?><article article-type="research-article" dtd-version="1.1d1" xml:lang="EN" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink">
+<front>
+<journal-meta>
+<journal-id journal-id-type="publisher-id">GSJ</journal-id>
+<journal-id journal-id-type="hwp">spgsj</journal-id>
+<journal-title-group>
+<journal-title>Global Spine Journal</journal-title>
+</journal-title-group>
+<issn pub-type="ppub">2192-5682</issn>
+<issn pub-type="epub">2192-5690</issn>
+<publisher>
+<publisher-name>SAGE Publications</publisher-name>
+<publisher-loc>Sage CA: Los Angeles, CA</publisher-loc>
+</publisher>
+</journal-meta>
+<article-meta>
+<article-id pub-id-type="doi">10.1177/2192568219888179</article-id>
+<article-id pub-id-type="publisher-id">10.1177_2192568219888179</article-id>
+<article-categories>
+<subj-group subj-group-type="heading">
+<subject>Original Articles</subject>
+</subj-group>
+</article-categories>
+<title-group>
+<article-title>The Prevalence of Bacterial Infection in Patients Undergoing Elective ACDF for Degenerative Cervical Spine Conditions: A Prospective Cohort Study With Contaminant Control</article-title>
+</title-group>
+<contrib-group>
+<contrib contrib-type="author">
+<name>
+<surname>Bivona</surname>
+<given-names>Louis J.</given-names>
+</name>
+<degrees>MD</degrees>
+<xref ref-type="aff" rid="aff1-2192568219888179">1</xref>
+</contrib>
+<contrib contrib-type="author">
+<name>
+<surname>Camacho</surname>
+<given-names>Jael E.</given-names>
+</name>
+<degrees>MD</degrees>
+<xref ref-type="aff" rid="aff1-2192568219888179">1</xref>
+</contrib>
+<contrib contrib-type="author">
+<name>
+<surname>Usmani</surname>
+<given-names>Farooq</given-names>
+</name>
+<degrees>MD, MSc</degrees>
+<xref ref-type="aff" rid="aff2-2192568219888179">2</xref>
+</contrib>
+<contrib contrib-type="author">
+<name>
+<surname>Nash</surname>
+<given-names>Alysa</given-names>
+</name>
+<degrees>MD</degrees>
+<xref ref-type="aff" rid="aff3-2192568219888179">3</xref>
+</contrib>
+<contrib contrib-type="author">
+<name>
+<surname>Bruckner</surname>
+<given-names>Jacob J.</given-names>
+</name>
+<degrees>MD</degrees>
+<xref ref-type="aff" rid="aff1-2192568219888179">1</xref>
+</contrib>
+<contrib contrib-type="author">
+<name>
+<surname>Hughes</surname>
+<given-names>Meghan</given-names>
+</name>
+<degrees>MD</degrees>
+<xref ref-type="aff" rid="aff1-2192568219888179">1</xref>
+</contrib>
+<contrib contrib-type="author">
+<name>
+<surname>Bhandutia</surname>
+<given-names>Amit K.</given-names>
+</name>
+<degrees>MD</degrees>
+<xref ref-type="aff" rid="aff1-2192568219888179">1</xref>
+</contrib>
+<contrib contrib-type="author">
+<name>
+<surname>Koh</surname>
+<given-names>Eugene Y.</given-names>
+</name>
+<degrees>MD, PhD</degrees>
+<xref ref-type="aff" rid="aff1-2192568219888179">1</xref>
+</contrib>
+<contrib contrib-type="author">
+<name>
+<surname>Banagan</surname>
+<given-names>Kelley E.</given-names>
+</name>
+<degrees>MD</degrees>
+<xref ref-type="aff" rid="aff1-2192568219888179">1</xref>
+</contrib>
+<contrib contrib-type="author">
+<contrib-id contrib-id-type="orcid">https://orcid.org/0000-0002-7263-6177</contrib-id>
+<name>
+<surname>Gelb</surname>
+<given-names>Daniel E.</given-names>
+</name>
+<degrees>MD</degrees>
+<xref ref-type="aff" rid="aff1-2192568219888179">1</xref>
+</contrib>
+<contrib contrib-type="author" corresp="yes">
+<contrib-id contrib-id-type="orcid">https://orcid.org/0000-0002-3962-5724</contrib-id>
+<name>
+<surname>Ludwig</surname>
+<given-names>Steven C.</given-names>
+</name>
+<degrees>MD</degrees>
+<xref ref-type="aff" rid="aff1-2192568219888179">1</xref>
+<xref ref-type="corresp" rid="corresp1-2192568219888179"/>
+</contrib>
+</contrib-group>
+<aff id="aff1-2192568219888179">
+<label>1</label>Department of Orthopaedics, <institution-wrap><institution-id institution-id-type="Ringgold">12264</institution-id><institution content-type="university">University of Maryland School of Medicine</institution></institution-wrap>, Baltimore, MD, USA</aff>
+<aff id="aff2-2192568219888179">
+<label>2</label>Department of General Surgery, <institution-wrap><institution-id institution-id-type="Ringgold">6040</institution-id><institution>Eastern Virginia Medical School</institution></institution-wrap>, Norfolk, VA, USA</aff>
+<aff id="aff3-2192568219888179">
+<label>3</label>Department of Orthopaedics, <institution-wrap><institution-id institution-id-type="Ringgold">2331</institution-id><institution content-type="university">University of North Carolina at Chapel Hill</institution></institution-wrap>, NC, USA</aff>
+<author-notes>
+<corresp id="corresp1-2192568219888179">Steven C. Ludwig, Department of Orthopaedics, University of Maryland, 110 South Paca Street, 6th Floor, Suite 300, Baltimore, MD 21201, USA. Email: <email>sludwig@som.umaryland.edu</email>
+</corresp>
+</author-notes>
+<pub-date pub-type="epub-ppub">
+<month>1</month>
+<year>2021</year>
+</pub-date>
+<volume>11</volume>
+<issue>1</issue>
+<fpage>13</fpage>
+<lpage>20</lpage>
+<permissions>
+<copyright-statement>© The Author(s) 2019</copyright-statement>
+<copyright-year>2019</copyright-year>
+<copyright-holder content-type="sage">AO Spine, unless otherwise noted. Manuscript content on this site is licensed under Creative Commons Licenses</copyright-holder>
+<license license-type="creative-commons" xlink:href="https://creativecommons.org/licenses/by-nc-nd/4.0/" xlink:type="simple">
+<license-p>This article is distributed under the terms of the Creative Commons Attribution-NonCommercial-NoDerivs 4.0 License (<ext-link ext-link-type="uri" xlink:href="https://creativecommons.org/licenses/by-nc-nd/4.0/">https://creativecommons.org/licenses/by-nc-nd/4.0/</ext-link>) which permits non-commercial use, reproduction and distribution of the work as published without adaptation or alteration, without further permission provided the original work is attributed as specified on the SAGE and Open Access pages (<ext-link ext-link-type="uri" xlink:href="https://us.sagepub.com/en-us/nam/open-access-at-sage">https://us.sagepub.com/en-us/nam/open-access-at-sage</ext-link>).</license-p>
+</license>
+</permissions>
+<abstract>
+<sec>
+<title>Study Design:</title>
+<p>Prospective cohort study.</p>
+</sec>
+<sec>
+<title>Objectives:</title>
+<p>To determine the prevalence of bacterial infection, with the use of a contaminant control, in patients undergoing anterior cervical discectomy and fusion (ACDF).</p>
+</sec>
+<sec>
+<title>Methods:</title>
+<p>After institutional review board approval, patients undergoing elective ACDF were prospectively enrolled. Samples of the longus colli muscle and disc tissue were obtained. The tissue was then homogenized, gram stained, and cultured in both aerobic and anaerobic medium. Patients were classified into 4 groups depending on culture results. Demographic, preoperative, and postoperative factors were evaluated.</p>
+</sec>
+<sec>
+<title>Results:</title>
+<p>Ninety-six patients were enrolled, 41.7% were males with an average age of 54 ± 11 years and a body mass index of 29.7 ± 5.9 kg/m<sup>2</sup>. Seventeen patients (17.7%) were considered true positives, having a negative control and positive disc culture. Otherwise, no significant differences in culture positivity was found between groups of patients. However, our results show that patients were more likely to have both control and disc negative than being a true positive (odds ratio = 6.2, 95% confidence interval = 2.5-14.6). <italic>Propionibacterium acnes</italic> was the most commonly identified bacteria. Two patients with disc positive cultures returned to the operating room secondary to pseudarthrosis; however, age, body mass index, prior spine surgery or injection, postoperative infection, and reoperations were not associated with culture results.</p>
+</sec>
+<sec>
+<title>Conclusion:</title>
+<p>In our cohort, the prevalence of subclinical bacterial infection in patients undergoing ACDF was 17.7%. While our rates exclude patients with positive contaminant control, the possibility of contamination of disc cultures could not be entirely rejected. Overall, culture results did not have any influence on postoperative outcomes.</p>
+</sec>
+</abstract>
+<kwd-group>
+<kwd>degenerative cervical conditions</kwd>
+<kwd>
+<italic>Propionibacterium acnes</italic>
+</kwd>
+<kwd>contaminant control</kwd>
+<kwd>intervertebral disc infection</kwd>
+<kwd>disc cultures</kwd>
+<kwd>anterior cervical discectomy and fusion</kwd>
+<kwd>revision surgery</kwd>
+</kwd-group>
+<custom-meta-group>
+<custom-meta>
+<meta-name>typesetter</meta-name>
+<meta-value>ts3</meta-value>
+</custom-meta>
+</custom-meta-group>
+</article-meta>
+</front>
+<body>
+<sec id="section1-2192568219888179" sec-type="intro">
+<title>Introduction</title>
+<p>Degenerative cervical spine conditions are a major cause of morbidity and disability, as they often lead to neck pain, radicular pain, and mechanical strain on adjacent structures. Common risk factors include age, hereditary and lifestyle factors, smoking, and history of mechanical trauma.<sup>
+<xref ref-type="bibr" rid="bibr1-2192568219888179">1</xref>,<xref ref-type="bibr" rid="bibr2-2192568219888179">2</xref>
+</sup> Recently, there have been multiple studies implicating low-virulence bacterial infection as a possible cause of degenerative spine conditions, particularly disc disease. Stirling et al<sup>
+<xref ref-type="bibr" rid="bibr3-2192568219888179">3</xref>
+</sup> were the first to describe a possible association between patients with sciatica and disc cultures that were positive for <italic>Propionibacterium acnes</italic>. Despite an increasing number of reports supporting this theory, there remains considerable debate as to the validity of these findings.<sup>
+<xref ref-type="bibr" rid="bibr4-2192568219888179">4</xref>
+<xref ref-type="bibr" rid="bibr5-2192568219888179"/>-<xref ref-type="bibr" rid="bibr6-2192568219888179">6</xref>
+</sup>
+</p>
+<p>One concern regarding true subclinical infection in the disc space is the possible risk of contamination during sample collection intraoperatively. Many of the previous studies on <italic>P acnes</italic> infection lacked the use of a control tissue sample to exclude the possibility of contamination, which may ultimately overestimate the prevalence of subclinical infection.<sup>
+<xref ref-type="bibr" rid="bibr7-2192568219888179">7</xref>
+<xref ref-type="bibr" rid="bibr8-2192568219888179"/>-<xref ref-type="bibr" rid="bibr9-2192568219888179">9</xref>
+</sup> Additionally, the majority of studies regarding nonpyogenic subclinical infection are focused in the lumbar spine.<sup>
+<xref ref-type="bibr" rid="bibr3-2192568219888179">3</xref>,<xref ref-type="bibr" rid="bibr5-2192568219888179">5</xref>,<xref ref-type="bibr" rid="bibr7-2192568219888179">7</xref>,<xref ref-type="bibr" rid="bibr8-2192568219888179">8</xref>,<xref ref-type="bibr" rid="bibr10-2192568219888179">10</xref>
+</sup> Here, this study aims to determine the point prevalence of subclinical bacterial infection in cervical spine disc spaces using a contaminant control in patients undergoing anterior cervical discectomy and fusion (ACDF) for cervical spondylosis.</p>
+</sec>
+<sec id="section2-2192568219888179" sec-type="materials|methods">
+<title>Materials and Methods</title>
+<sec id="section3-2192568219888179">
+<title>Study Design</title>
+<p>A prospective cohort study conducted at a single tertiary and academic institution.</p>
+</sec>
+<sec id="section4-2192568219888179">
+<title>Patients and Participation Criteria</title>
+<p>After institutional review board approval, patients were prospectively enrolled between January 2017 and May 2018. All nonpregnant adults, aged 18 to 89 scheduled to undergo elective ACDF for any diagnosis other than infection, trauma, or malignancy were consented and enrolled. Exclusion criteria included patients with an active skin infection at the surgical site, active systemic infection, those on a long-term antibiotic regimen, and patients with a history of spondylodiscitis or vertebral osteomyelitis.</p>
+</sec>
+<sec id="section5-2192568219888179">
+<title>Operative Procedure</title>
+<p>Patients were brought to the operating room and placed in the supine position. All patients received preoperative antibiotics, prior to the start of surgery: 88 patients (92%) received cephazolin 2 g intravenously (IV), 4 patients (4%) were given vancomycin 1 g IV, 3 patients (3%) received vancomycin 1 g plus gentamicin 80 mg IV, and 1 patient (1%) received clindamycin 900 mg IV. The skin overlying the surgical area was prepped in the usual sterile fashion (chlorhexidine gluconate 2% w/v and isopropyl alcohol 70% v/v) followed by a final scrub with Chloraprep. A transverse or a longitudinal incision was made depending on number of segments to be fused and to surgeon’s discretion. During anterior exposure and prior to discectomy, a sample of the longus colli muscle (control) was obtained with an unused, sterile instrument. On exposure of the appropriate level, samples of intervertebral disc tissue were obtained with an unused, sterile instrument. All specimens were immediately sent to the laboratory.</p>
+</sec>
+<sec id="section6-2192568219888179">
+<title>Microbiology</title>
+<p>The samples were sent to the Department of Microbiology for aerobic and anaerobic cultures. A gram stain was performed on each tissue sample received. For aerobic cultures, the tissue was homogenized and plated on 5% Sheep Blood, Chocolate, MacConkey, and PEA agars and held for a maximum of 5 days. Anaerobic cultures were homogenized and plated on prereduced Brucella Blood, Brucella Laked Blood with Kanamycin and Vancomycin, Bacteroides Bile Esculin Agar, and Thioglycollate broth. The agar plates were held for a total of 7 days and the Thioglycollate Broth was held for 20 days at anaerobic atmosphere (anaerobic jars or bags) at 35°C to 37°C. Plates and broth were examined each day for growth. If growth was identified, subcultures and gram staining were made and later microbial identification was done using matrix-assisted laser desorption ionization-time of flight mass spectrometry (MALDI-TOF MS).<sup>
+<xref ref-type="bibr" rid="bibr11-2192568219888179">11</xref>
+</sup>
+</p>
+</sec>
+<sec id="section7-2192568219888179">
+<title>Outcomes Measures and Follow-up</title>
+<p>Patients were classified into 4 groups: control negative (CN)/disc negative (DN), control positive (CP)/DN, CP/disc positive (DP), and CN/DP. The latter being identified as our “true positive” as they had a negative control tissue culture. The prevalence of bacteria identified was calculated for each group. Patient age, sex, body mass index (BMI), preoperative diagnosis, and clinical symptoms were obtained and compared between groups. Prior history of cervical spine surgery, spinal injection, and diabetes was also retrieved from chart and compared statistically between groups. Spinal levels fused and postoperative outcomes were also compared. Postoperative outcomes included postoperative infections, reoperations, and radiographic outcomes (graft subsidence and screw loosening). Graft subsidence was evaluated by measuring distance between the superior endplate of the most cranial vertebrae and the most caudal vertebrae. A difference more than 2 mm was classified as graft subsidence.<sup>
+<xref ref-type="bibr" rid="bibr12-2192568219888179">12</xref>
+</sup> Screw loosening was classified as greater than 2 mm of radiolucency around any screw.<sup>
+<xref ref-type="bibr" rid="bibr13-2192568219888179">13</xref>
+<xref ref-type="bibr" rid="bibr14-2192568219888179"/>-<xref ref-type="bibr" rid="bibr15-2192568219888179">15</xref>
+</sup> Postoperative follow-up rate at 6 weeks, 6 months, and more than 1 year were also evaluated between groups. None of the patients with a positive result were treated with antibiotics postoperatively. This was due to lack of clinical and laboratory signs and symptoms of systemic infection on patient follow-up.</p>
+</sec>
+<sec id="section8-2192568219888179">
+<title>Statistical Analysis</title>
+<p>All data was collected and audited in Microsoft Excel (Microsoft Office Professional Plus 2016, Microsoft Corporation, Redmond, WA). JMP Pro (Version 13.0.0, SAS Institute Inc, Cary, NC, 1987-2007) was used for descriptive statistics. All tests were 2-tailed, and the significance level was .05 unless otherwise stated. Continuous variables were tested for normality with the Shapiro-Wilk test. ANOVA was used for continuous variables that were normally distributed (age and BMI). Chi-square test and Fisher’s exact test were used for all nominal variables. To assess the relationship between control and disc cultures, McNemar’s test was used and odds ratio was reported as well.</p>
+</sec>
+</sec>
+<sec id="section9-2192568219888179" sec-type="results">
+<title>Results</title>
+<p>A total of 110 patients were enrolled for participation in the study. Fourteen patients were excluded because samples were either not obtained intraoperatively or the samples obtained were not adequate for culture. Of the 96 patients remaining in the study, 47 patients (49%) had a positive control tissue culture and 53 patients (55.2%) had a positive disc culture. <xref ref-type="table" rid="table1-2192568219888179">Table 1</xref> describes the distribution of patients by control and disc culture results. There were 17 patients (17.7%) in the CN/DP group. McNemar’s test did not show a statistically significant correlation between groups (<italic>P</italic> = 0.26), although cultures were more likely to turn negative for both control and disc (odds ratio [OR] = 6; 95% confidence interval [CI] = 2.5-14.6).</p>
+<table-wrap id="table1-2192568219888179" position="float">
+<label>Table 1.</label>
+<caption>
+<p>Distribution of Patient Culture Results Between Longus Colli Muscle (Control) and Intervertebral Disc Tissue (Disc).</p>
+</caption>
+<alternatives>
+<graphic xlink:href="10.1177_2192568219888179-table1.tif"/>
+<table>
+<thead>
+<tr>
+<th rowspan="2">Tissue Culture Result</th>
+<th colspan="2">Intervertebral Disc (Disc)</th>
+<th rowspan="2">Total</th>
+</tr>
+<tr>
+<th>Positive</th>
+<th>Negative</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td rowspan="2">Longus Colli Muscle (Control)<break/> Positive<break/> Negative</td>
+<td>
+<break/>36</td>
+<td>
+<break/>11</td>
+<td>
+<break/>47</td>
+</tr>
+<tr>
+<td>17</td>
+<td>32</td>
+<td>49</td>
+</tr>
+<tr>
+<td>Total</td>
+<td>53</td>
+<td>43</td>
+<td>96</td>
+</tr>
+</tbody>
+</table>
+</alternatives>
+</table-wrap>
+<p>In the present study, 41.7% of patients were male with an average age of 54 ± 11 years and a BMI of 29.7 ± 5.9 kg/m<sup>2</sup>. There were more male patients in the CP/DP group (<italic>P</italic> &lt; .0001). The majority of patients had no prior history cervical spine surgery (76%), preoperative spinal injections (60.4%), or diabetes (77.5%), and no association was seen between groups. A majority of patients in the CN/DP group had never smoked (<italic>P</italic> = .0077). There was no difference between preoperative diagnosis and culture results (<italic>P</italic> = .85). Apart from gender and smoking status, there was no other significant association established between patient demographics or clinical characteristics and culture result groups (<xref ref-type="table" rid="table2-2192568219888179">Table 2</xref>). The average length of stay was 1 day, with the exception of 3 patients. One patient had respiratory failure and dysphagia with the need to be intubated that extended their stay to 11 days. One patient stayed 2 days. The last patient had a second planned thoracolumbar decompression and fusion surgery that extended their stay to 7 days.</p>
+<table-wrap id="table2-2192568219888179" position="float">
+<label>Table 2.</label>
+<caption>
+<p>Comparison of Patient Demographic and Clinical Characteristics Between Longus Colli Muscle (Control) and Intervertebral Disc (Disc) Culture Results.</p>
+</caption>
+<alternatives>
+<graphic xlink:href="10.1177_2192568219888179-table2.tif"/>
+<table>
+<thead>
+<tr>
+<th rowspan="2">Characteristics, n (%)</th>
+<th rowspan="2">All</th>
+<th colspan="4">Culture Results, n (%)</th>
+<th rowspan="2">
+<italic>P</italic>
+</th>
+</tr>
+<tr>
+<th>CN/DN</th>
+<th>CP/DN</th>
+<th>CP/DP</th>
+<th>CN/DP</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Number of patients</td>
+<td>96</td>
+<td>32</td>
+<td>11</td>
+<td>36</td>
+<td>17</td>
+<td/>
+</tr>
+<tr>
+<td>Age, years (mean ± SD)</td>
+<td>54 ± 11</td>
+<td>54 ± 8</td>
+<td>58 ± 13</td>
+<td>53 ± 12</td>
+<td>53 ± 10</td>
+<td>.57</td>
+</tr>
+<tr>
+<td>BMI, kg/m<sup>2</sup> (mean ± SD)</td>
+<td>29.7 ± 5.9</td>
+<td>30.7 ± 6.5</td>
+<td>30.1 ± 6.9</td>
+<td>29.8 ± 5.3</td>
+<td>28.1 ± 5.4</td>
+<td>.57</td>
+</tr>
+<tr>
+<td>Sex (male)</td>
+<td>40 (41.7)</td>
+<td>7 (21.9)</td>
+<td>2 (18.2)</td>
+<td>27 (75)</td>
+<td>4 (23.5)</td>
+<td>&lt;.0001*</td>
+</tr>
+<tr>
+<td>Previous C-spine surgery</td>
+<td>23 (24)</td>
+<td>7 (21.9)</td>
+<td>4 (36.4)</td>
+<td>8 (22.2)</td>
+<td>4 (23.5)</td>
+<td>.78</td>
+</tr>
+<tr>
+<td>Preoperative epidural injection</td>
+<td>38 (39.6)</td>
+<td>15 (46.9)</td>
+<td>6 (54.6)</td>
+<td>14 (38.9)</td>
+<td>3 (17.7)</td>
+<td>.16</td>
+</tr>
+<tr>
+<td>Diabetes</td>
+<td>12 (12.5)</td>
+<td>7 (21.9)</td>
+<td>1 (9.1)</td>
+<td>3 (8.3)</td>
+<td>1 (5.9)</td>
+<td>.27</td>
+</tr>
+<tr>
+<td>Diagnosis, n (%)</td>
+<td/>
+<td/>
+<td/>
+<td/>
+<td/>
+<td>.85</td>
+</tr>
+<tr>
+<td> Cervical radiculopathy</td>
+<td>39 (40.6)</td>
+<td>16 (50)</td>
+<td>2 (18.2)</td>
+<td>15 (41.7)</td>
+<td>6 (35.3)</td>
+<td/>
+</tr>
+<tr>
+<td> Cervical stenosis</td>
+<td>17 (17.7)</td>
+<td>4 (12.5)</td>
+<td>4 (36.4)</td>
+<td>6 (16.7)</td>
+<td>3 (17.7)</td>
+<td/>
+</tr>
+<tr>
+<td> Cervical myelopathy</td>
+<td>16 (16.7)</td>
+<td>4 (12.5)</td>
+<td>3 (27.3)</td>
+<td>6 (16.7)</td>
+<td>3 (17.7)</td>
+<td/>
+</tr>
+<tr>
+<td> Disc herniation</td>
+<td>15 (15.6)</td>
+<td>6 (18.8)</td>
+<td>1 (9.1)</td>
+<td>5 (13.9)</td>
+<td>3 (17.7)</td>
+<td/>
+</tr>
+<tr>
+<td> Cervical spondylosis</td>
+<td>9 (9.4)</td>
+<td>2 (6.3)</td>
+<td>1 (9.1)</td>
+<td>4 (11.1)</td>
+<td>2 (11.8)</td>
+<td/>
+</tr>
+<tr>
+<td>Symptoms, n (%)</td>
+<td/>
+<td/>
+<td/>
+<td/>
+<td/>
+<td/>
+</tr>
+<tr>
+<td> Neck pain</td>
+<td>90 (93.8)</td>
+<td>30 (93.8)</td>
+<td>11 (100)</td>
+<td>32 (88.9)</td>
+<td>17 (100)</td>
+<td>.34</td>
+</tr>
+<tr>
+<td> Arm/shoulder pain</td>
+<td>85 (88.5)</td>
+<td>26 (81.3)</td>
+<td>11 (100)</td>
+<td>32 (88.9)</td>
+<td>12 (88.5)</td>
+<td>.3</td>
+</tr>
+<tr>
+<td>Smoking status, n (%)</td>
+<td/>
+<td/>
+<td/>
+<td/>
+<td/>
+<td>.0077*</td>
+</tr>
+<tr>
+<td> Never smoked</td>
+<td>52 (54.2)</td>
+<td>17 (53.1)</td>
+<td>4 (36.4)</td>
+<td>18 (50)</td>
+<td>13 (76.5)</td>
+<td/>
+</tr>
+<tr>
+<td> Current smoker</td>
+<td>21 (21.9)</td>
+<td>12 (37.5)</td>
+<td>1 (9.1)</td>
+<td>6 (16.7)</td>
+<td>2 (11.8)</td>
+<td/>
+</tr>
+<tr>
+<td> Former smoker</td>
+<td>23 (24.0)</td>
+<td>3 (9.4)</td>
+<td>6 (56.6)</td>
+<td>12 (33.3)</td>
+<td>2 (11.8)</td>
+<td/>
+</tr>
+</tbody>
+</table>
+</alternatives>
+<table-wrap-foot>
+<fn id="table-fn1-2192568219888179">
+<p>Abbreviations: CN, control negative; DN, disc negative; CP, control positive; DP, disc positive; SD, standard deviation.</p>
+</fn>
+<fn id="table-fn2-2192568219888179">
+<p>* Indicates statistically significant values with <italic>P</italic> &lt; .05.</p>
+</fn>
+</table-wrap-foot>
+</table-wrap>
+<p>The most common microorganisms identified from positive cultures was <italic>P acnes</italic>, with a positive culture rate of 76.5% in the CN/DP group, followed by coagulase-negative <italic>Staphylococcus</italic> (CNS) with 29.4%, including samples with more than one organism detected in culture (<xref ref-type="table" rid="table3-2192568219888179">Table 3</xref>). Polymicrobial samples were observed in 23.5% of samples in the CN/DP group with <italic>P acnes</italic> being present in all polymicrobial samples. A total of 165 discs were cultured, for an overall disc culture positive rate of 49.7% (n = 82). After excluding patients with positive control, 24 out of 83 discs (28.9%) had a positive culture. The median day to positivity in control and disc cultures was 7 days (range = 2-19 days). There were 34 patients who had 1-level ACDF, 54 had 2-level fusion, and 8 who had 3-level fusion. There were more 2-level fusions (82.4%) in the CN/DP group, although this trend did not reach statistical significance (<italic>P</italic> = .06). Of the 14 two-level fusions, 2 patients had both their cultures turn positive to <italic>P acnes</italic>, 6 patients had different bacteria, and 8 had only one positive disc (<xref ref-type="table" rid="table4-2192568219888179">Table 4</xref>). There was only one patient with 3-level fusion that had 1 of the 3 discs turn positive to <italic>Kocuria rhizophila</italic>, but the patient did not have any complications postoperatively.</p>
+<table-wrap id="table3-2192568219888179" position="float">
+<label>Table 3.</label>
+<caption>
+<p>Distribution of Microorganism Identified in Positive Control and Disc Cultures.</p>
+</caption>
+<alternatives>
+<graphic xlink:href="10.1177_2192568219888179-table3.tif"/>
+<table>
+<thead>
+<tr>
+<th/>
+<th>Control Positive/Disc Negative</th>
+<th>Control Positive/Disc Positive</th>
+<th>Control Negative/Disc Positive</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Number of patients</td>
+<td>11</td>
+<td>36</td>
+<td>17</td>
+</tr>
+<tr>
+<td>Number of discs (positive/total)</td>
+<td>0/16</td>
+<td>58/67</td>
+<td>24/32</td>
+</tr>
+<tr>
+<td>
+<italic>P acnes</italic>, n (%)</td>
+<td>5 (45.5)</td>
+<td>34 (94.4)</td>
+<td>13 (76.5)</td>
+</tr>
+<tr>
+<td> <italic>P acnes</italic> alone</td>
+<td>5</td>
+<td>21 (58.3)</td>
+<td>9 (52.9)</td>
+</tr>
+<tr>
+<td> <italic>P acnes</italic> + <italic>Staphylococcus</italic> sp</td>
+<td>—</td>
+<td>8 (22.2)</td>
+<td>2 (11.8)</td>
+</tr>
+<tr>
+<td> <italic>P acnes</italic> + <italic>Streptococcus</italic> sp</td>
+<td>—</td>
+<td>4 (11.1)</td>
+<td>2 (11.8)</td>
+</tr>
+<tr>
+<td> <italic>P acnes</italic> + mixed anaerobes</td>
+<td>—</td>
+<td>1 (2.8)</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Other, n (%)</td>
+<td/>
+<td/>
+<td/>
+</tr>
+<tr>
+<td> Coagulase-negative <italic>Staphylococcus</italic>
+</td>
+<td>3 (27.3)</td>
+<td>2 (5.6)</td>
+<td>3 (17.6)</td>
+</tr>
+<tr>
+<td> <italic>Pseudomonas luteola</italic>
+</td>
+<td>1 (9.1)</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td> Diphteroids</td>
+<td>1 (9.1)</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td> <italic>Enterococcus faecium</italic>
+</td>
+<td>1 (9.1)</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td> <italic>Kocuria rhizophila</italic>
+</td>
+<td>—</td>
+<td>—</td>
+<td>1 (5.6)</td>
+</tr>
+</tbody>
+</table>
+</alternatives>
+<table-wrap-foot>
+<fn id="table-fn3-2192568219888179">
+<p>Abbreviations: <italic>P acnes</italic>, <italic>Propionibacterium acnes</italic>; sp, species.</p>
+</fn>
+</table-wrap-foot>
+</table-wrap>
+<table-wrap id="table4-2192568219888179" position="float">
+<label>Table 4.</label>
+<caption>
+<p>Disc Culture Results for Control Negative and Disc Positive Patients.</p>
+</caption>
+<alternatives>
+<graphic xlink:href="10.1177_2192568219888179-table4.tif"/>
+<table>
+<thead>
+<tr>
+<th rowspan="2">
+</th>
+<th colspan="2">Disc 1</th>
+<th colspan="2">Disc 2</th>
+<th colspan="2">Disc 3</th>
+</tr>
+<tr>
+<th>Disc</th>
+<th>Result</th>
+<th>Disc</th>
+<th>Result</th>
+<th>Disc</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>C3-4</td>
+<td>
+<italic>P acnes</italic>
+</td>
+<td>C4-5</td>
+<td>
+<italic>P acnes</italic>
+</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>2</td>
+<td>C3-4</td>
+<td>
+<italic>P acnes</italic>
+</td>
+<td>C4-5</td>
+<td>Negative culture</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>3</td>
+<td>C3-4</td>
+<td>CNS</td>
+<td>C4-5</td>
+<td>Negative culture</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>4</td>
+<td>C4-5</td>
+<td>
+<italic>P acnes</italic>
+</td>
+<td>C5-6</td>
+<td>
+<italic>Streptococcus viridans</italic>
+</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>5</td>
+<td>C4-5</td>
+<td>
+<italic>P acnes</italic>
+</td>
+<td>C5-6</td>
+<td>Negative culture</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>6</td>
+<td>C4-5</td>
+<td>
+<italic>P acnes</italic>
+</td>
+<td>C5-6</td>
+<td>Negative culture</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>7</td>
+<td>C4-5</td>
+<td>
+<italic>P acnes</italic>
+</td>
+<td>C5-6</td>
+<td>
+<italic>P acnes</italic>
+</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>8</td>
+<td>C4-5</td>
+<td>Negative culture</td>
+<td>C5-6</td>
+<td>
+<italic>Kocuria rhizophila</italic>
+</td>
+<td>C6-7</td>
+<td>Negative culture</td>
+</tr>
+<tr>
+<td>9</td>
+<td>C4-5</td>
+<td>CNS</td>
+<td>C5-6</td>
+<td>
+<italic>P acnes</italic>
+</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>10</td>
+<td>C4-5</td>
+<td>CNS</td>
+<td>C5-6</td>
+<td>
+<italic>P acnes</italic>
+</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>11</td>
+<td>C5-6</td>
+<td>
+<italic>P acnes</italic>
+</td>
+<td>C6-7</td>
+<td>No sample</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>12</td>
+<td>C5-6</td>
+<td>
+<italic>P acnes</italic> + <italic>Streptococcus</italic> sp</td>
+<td>C6-7</td>
+<td>
+<italic>P acnes</italic>
+</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>13</td>
+<td>C5-6</td>
+<td>
+<italic>P acnes</italic>
+</td>
+<td>C6-7</td>
+<td>Negative culture</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>14</td>
+<td>C5-6</td>
+<td>Negative culture</td>
+<td>C6-7</td>
+<td>CNS</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>15</td>
+<td>C5-6</td>
+<td>Negative culture</td>
+<td>C6-7</td>
+<td>
+<italic>P acnes</italic>
+</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>16</td>
+<td>C5-6</td>
+<td>
+<italic>P acnes</italic>
+</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>17</td>
+<td>C5-6</td>
+<td>CNS</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+</alternatives>
+<table-wrap-foot>
+<fn id="table-fn4-2192568219888179">
+<p>Abbreviations: CNS, coagulase-negative staphylococcus; P. acnes, Propionibacterium acnes; Sp, species.</p>
+</fn>
+</table-wrap-foot>
+</table-wrap>
+<p>In terms of postoperative outcomes, there was one patient from the CN/DN group who had a superficial wound infection treated with antibiotics and local wound care that resolved completely. No other patient had a postoperative infection. There were 2 reoperations: one patient in the CN/DP and the other in the CP/DP group. The patient in the CN/DP group underwent posterior cervical decompression and fusion 9 months after their initial ACDF (<xref ref-type="fig" rid="fig1-2192568219888179">Figure 1A</xref>) due to signs of pseudarthrosis, graft subsidence (<xref ref-type="fig" rid="fig1-2192568219888179">Figure 1B</xref>), and pain. This patient had 1 of 2 discs cultured positive, which was the same level showing radiographic signs of graft subsidence. The organism cultured was CNS and it was sensitive to preoperative antibiotic. After the index surgery, the patient did not show any signs or symptoms of systemic infection. The serological workup was unremarkable and continued to be after the revision surgery. Radiographic evaluation (<xref ref-type="fig" rid="fig1-2192568219888179">Figure 1C</xref>) at 1-year follow-up post-revision surgery demonstrated proper alignment and fusion. The second patient who underwent reoperation after initial ACDF also developed pseudarthrosis, graft subsidence, and postoperative pain. This was a 1-level fusion and both the disc and control were positive. The patient did not show any signs or symptoms of systemic infection prior to his revision as well, and serologic workup was unremarkable throughout follow-up. Graft subsidence and screw loosening were also evaluated at long-term follow-up, but no significant difference was identified (<xref ref-type="table" rid="table5-2192568219888179">Table 5</xref>).</p>
+<fig id="fig1-2192568219888179" position="float">
+<label>Figure 1.</label>
+<caption>
+<p>Postoperative X-rays, showing patient with initial 2-level ACDF (A), who on follow-up started showing radiographic signs of pseudarthrosis and graft subsidence (B), and who, 9 months later, was submitted to revision posterior spinal fusion that demonstrated good proper alignment and fusion at 1-year post-revision surgery (C).</p>
+</caption>
+<graphic xlink:href="10.1177_2192568219888179-fig1.tif"/>
+</fig>
+<table-wrap id="table5-2192568219888179" position="float">
+<label>Table 5.</label>
+<caption>
+<p>Comparison of Patient Surgical Details and Postoperative Outcomes Between Longus Colli Muscle (Control) and Intervertebral Disc (Disc) Culture Results.</p>
+</caption>
+<alternatives>
+<graphic xlink:href="10.1177_2192568219888179-table5.tif"/>
+<table>
+<thead>
+<tr>
+<th rowspan="2">Characteristics, n (%)</th>
+<th rowspan="2">All</th>
+<th colspan="4">Culture Results, n (%)</th>
+<th rowspan="2">
+<italic>P</italic>
+</th>
+</tr>
+<tr>
+<th>CN/DN</th>
+<th>CP/DN</th>
+<th>CP/DP</th>
+<th>CN/DP</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Number of patients</td>
+<td>96</td>
+<td>32</td>
+<td>11</td>
+<td>36</td>
+<td>17</td>
+<td/>
+</tr>
+<tr>
+<td>Presurgical antibiotic (Cephazolin)</td>
+<td>88 (91.7)</td>
+<td>29 (90.6)</td>
+<td>10 (90.9)</td>
+<td>34 (94.5)</td>
+<td>15 (88.2)</td>
+<td>.29</td>
+</tr>
+<tr>
+<td>Cervical levels fused</td>
+<td/>
+<td/>
+<td/>
+<td/>
+<td/>
+<td>.06</td>
+</tr>
+<tr>
+<td> One</td>
+<td>34 (35.4)</td>
+<td>16 (50)</td>
+<td>6 (54.6)</td>
+<td>10 (27.8)</td>
+<td>2 (11.8)</td>
+<td/>
+</tr>
+<tr>
+<td> Two</td>
+<td>54 (56.3)</td>
+<td>14 (43.8)</td>
+<td>5 (45.5)</td>
+<td>21 (58.3)</td>
+<td>14 (82.4)</td>
+<td/>
+</tr>
+<tr>
+<td> Three</td>
+<td>8 (8.3)</td>
+<td>2 (6.3)</td>
+<td>—</td>
+<td>5 (13.9)</td>
+<td>1 (5.9)</td>
+<td/>
+</tr>
+<tr>
+<td>Postsurgical outcomes</td>
+<td/>
+<td/>
+<td/>
+<td/>
+<td/>
+<td/>
+</tr>
+<tr>
+<td> Postoperative infection</td>
+<td>1 (1)</td>
+<td>1 (3.1)</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>.57</td>
+</tr>
+<tr>
+<td> Reoperation</td>
+<td>2 (2.1)</td>
+<td>—</td>
+<td>—</td>
+<td>1 (2.8)</td>
+<td>1 (5.9)</td>
+<td>.54</td>
+</tr>
+<tr>
+<td> Graft subsidence</td>
+<td>5 (5.3)</td>
+<td>—</td>
+<td>—</td>
+<td>4 (11.1)</td>
+<td>1 (5.9)</td>
+<td>.13</td>
+</tr>
+<tr>
+<td> Screw loosening</td>
+<td>4 (4.2)</td>
+<td>2 (6.3)</td>
+<td>—</td>
+<td>2 (5.6)</td>
+<td>—</td>
+<td>.63</td>
+</tr>
+<tr>
+<td>Length of follow-up<sup>a</sup>
+</td>
+<td/>
+<td/>
+<td/>
+<td/>
+<td/>
+<td/>
+</tr>
+<tr>
+<td> 6 weeks</td>
+<td>84 (87.5)</td>
+<td>21 (65.6)</td>
+<td>11 (100)</td>
+<td>35 (97.2)</td>
+<td>17 (100)</td>
+<td>&lt;.0001*</td>
+</tr>
+<tr>
+<td> 3-6 months</td>
+<td>74 (77.1)</td>
+<td>21 (65.6)</td>
+<td>9 (81.2)</td>
+<td>32 (88.9)</td>
+<td>12 (70.6)</td>
+<td>.12</td>
+</tr>
+<tr>
+<td> ≥12 months</td>
+<td>45 (46.9)</td>
+<td>11 (34.4)</td>
+<td>7 (63.6)</td>
+<td>20 (55.6)</td>
+<td>7 (41.2)</td>
+<td>.21</td>
+</tr>
+</tbody>
+</table>
+</alternatives>
+<table-wrap-foot>
+<fn id="table-fn5-2192568219888179">
+<p>Abbreviations: CN, control negative; DN, disc negative; CP, control positive; DP, disc positive; SD, standard deviation.</p>
+</fn>
+<fn id="table-fn6-2192568219888179">
+<p>
+<sup>a</sup> Indicates the number of patients who presented for their follow-up visit.</p>
+</fn>
+<fn id="table-fn7-2192568219888179">
+<p>* Indicates statistically significant values with <italic>P</italic> &lt; .05.</p>
+</fn>
+</table-wrap-foot>
+</table-wrap>
+</sec>
+<sec id="section10-2192568219888179" sec-type="discussion">
+<title>Discussion</title>
+<p>Recently, there have been several studies implicating subclinical infection as a possible cause of symptomatic degenerative spine conditions.<sup>
+<xref ref-type="bibr" rid="bibr6-2192568219888179">6</xref>
+<xref ref-type="bibr" rid="bibr7-2192568219888179"/>-<xref ref-type="bibr" rid="bibr8-2192568219888179">8</xref>
+</sup> This assertion, however, remains under contention.<sup>
+<xref ref-type="bibr" rid="bibr4-2192568219888179">4</xref>,<xref ref-type="bibr" rid="bibr16-2192568219888179">16</xref>
+</sup> In our study, 17.7% of patients had a positive disc culture and a negative control. By excluding patients with a positive control, our disc positive rates decreased from 55.2% to 17.7%, thus obtaining a better estimation of the “true positive” culture rates in our patient cohort.</p>
+<p>The main concern in our study, as well as other studies reporting positives disc cultures in literature, is the risk of contamination while obtaining and handling culture samples in the operating room and the laboratory. By using a contaminant control, we aimed to reduce potential bias and risk of overestimation of our disc positive rates. Given the proximity of the longus colli muscle to the intervertebral disc, we hypothesize that the presence of a positive culture in both control and disc were most likely due to contamination rather than infection.</p>
+<p>When examining literature, our positive culture rates are in accordance with prior studies that have included the use of a contaminant control in their methodology. Chen et al<sup>
+<xref ref-type="bibr" rid="bibr17-2192568219888179">17</xref>
+</sup> obtained disc and sternocleidomastoid muscle cultures from 32 patients with cervical spondylosis or traumatic cervical spine injury. They found 8 patients (25%) and 9 discs (13.6%) had positive cultures, and 4 patients (12.5%) had a positive control, of which three had a negative disc culture. In the lumbar spine, Zhou et al<sup>
+<xref ref-type="bibr" rid="bibr18-2192568219888179">18</xref>
+</sup> utilized muscle tissue as contaminant control in patients having single-level lumbar disc removal as part of their surgical treatment. Of the 46 patients in the study, 9 patients (19.6%) had a positive disc culture and 3 (6.5%) had a positive control. In both studies, the reported disc infection rates excluded patients with a positive control. However, the reported pooled prevalence of disc infection is 36.2% (95% CI = 24.7% to 47.7%) in patients with symptomatic neck or back pain and/or radiculopathy.<sup>
+<xref ref-type="bibr" rid="bibr6-2192568219888179">6</xref>
+</sup> The variability in positive culture rates between studies can be explained by the differences in their methodology. Thus, despite these results, it is challenging to report an overall infection rate without considering risk of contamination and bias.</p>
+<p>Historically. <italic>P acnes</italic> has been the most common bacteria identified in intervertebral disc of patients with degenerative spine conditions, and it is frequently responsible for infection in other areas of the body, particularly the shoulder.<sup>
+<xref ref-type="bibr" rid="bibr19-2192568219888179">19</xref>,<xref ref-type="bibr" rid="bibr20-2192568219888179">20</xref>
+</sup> Its ubiquitous nature challenges the validity of results presented in prior studies. To evaluate the risk of contamination, Carricajo et al<sup>
+<xref ref-type="bibr" rid="bibr4-2192568219888179">4</xref>
+</sup> conducted a study with 54 patients undergoing surgery for lumbar disc herniation. As a control, they obtained samples from surrounding tissue (ligamentum flavum and muscle), air samples, and laminar flow samples. They found only 2 patients with a positive disc culture, for which control samples were also positive. Interestingly, they found cultures were positive from control ligamentum and muscle samples, laminar flow air swabs, and in patients who did not have a positive disc culture. Thus, authors proposed that prior studies’ positive findings may be a result of contamination.</p>
+<p>Despite these findings, there are others who still argue that the methodological differences between studies translates to inconsistencies in reported positive and negative rates.<sup>
+<xref ref-type="bibr" rid="bibr21-2192568219888179">21</xref>
+</sup> Capoor et al<sup>
+<xref ref-type="bibr" rid="bibr21-2192568219888179">21</xref>
+</sup> argued that the possible formation of biofilm by <italic>P acnes</italic> and the lack of quantitative measures to help discriminate between truly infected and contaminated samples may lead to underestimation and overestimation of overall positive rates reported in literature.<sup>
+<xref ref-type="bibr" rid="bibr7-2192568219888179">7</xref>,<xref ref-type="bibr" rid="bibr8-2192568219888179">8</xref>,<xref ref-type="bibr" rid="bibr10-2192568219888179">10</xref>,<xref ref-type="bibr" rid="bibr16-2192568219888179">16</xref>,<xref ref-type="bibr" rid="bibr21-2192568219888179">21</xref>,<xref ref-type="bibr" rid="bibr22-2192568219888179">22</xref>
+</sup> In their study, they homogenized disc tissue samples to reduce risk of biofilm formation, and performed quantitative cultures and real-time polymerase chain reaction (PCR)-based detection of <italic>P acnes</italic> genomes to accurately evaluate the prevalence of <italic>P acnes</italic> in intervertebral discs. They set a threshold for patients with abundant <italic>P acnes</italic> on culture (“true positives”) to 1000 colony forming units (CFU) per milliliter (&gt;75th percentile) to reduce bias and overestimation of prevalence. Of the 115 samples with presence of <italic>P acnes</italic>, 39 (11%) had more than 1000 CFU/mL. The authors concluded that their methods of quantifications allowed them for a better estimation of the true prevalence of infection, and that their findings support the theory that <italic>P acnes</italic> was one of the possible causes of disc degeneration. However, the authors could not exclude the possibility of contamination during sample collection and laboratory handling.</p>
+<p>The argument of contamination is supported by the commensal nature of bacteria identified in cultures, such as <italic>P acnes</italic> and CNS. In our study, these 2 microorganisms were present in all but one of our 17 patients in the CN/DP group. While <italic>P acnes</italic> has increasingly become of interest in the spine surgery, our findings seem to indicate that positive <italic>P</italic> acnes cultures are due to contamination rather than subclinical infection.<sup>
+<xref ref-type="bibr" rid="bibr3-2192568219888179">3</xref>
+<xref ref-type="bibr" rid="bibr4-2192568219888179"/>-<xref ref-type="bibr" rid="bibr5-2192568219888179">5</xref>,<xref ref-type="bibr" rid="bibr7-2192568219888179">7</xref>,<xref ref-type="bibr" rid="bibr9-2192568219888179">9</xref>,<xref ref-type="bibr" rid="bibr10-2192568219888179">10</xref>,<xref ref-type="bibr" rid="bibr19-2192568219888179">19</xref>
+<xref ref-type="bibr" rid="bibr20-2192568219888179"/>-<xref ref-type="bibr" rid="bibr21-2192568219888179">21</xref>,<xref ref-type="bibr" rid="bibr23-2192568219888179">23</xref>,<xref ref-type="bibr" rid="bibr24-2192568219888179">24</xref>
+</sup> Our study also shows that the presence of bacteria in intervertebral disc cultures is not associated with any complications related to infection on follow-up.</p>
+<p>The incidence of postoperative outcomes did not identify any significant association between patient’s postoperative or radiographic outcomes and culture results. There was one superficial postoperative infection in a patient with both cultures negative. There were 2 patients who were taken back to the operating room for pseudarthrosis and both had a positive disc culture. These patients underwent posterior spinal fusion for their revision surgery; however, their anterior hardware was not removed and therefore was not cultured. Though no difference was observed in rates of postoperative outcomes between groups, the possibility of implant-associated infection or “aseptic” pseudarthrosis still exists.<sup>
+<xref ref-type="bibr" rid="bibr9-2192568219888179">9</xref>
+</sup> Studies have shown <italic>P acnes</italic> as one of the most commonly identified organisms in these cases; however, we were not able to confirm that association with our findings.<sup>
+<xref ref-type="bibr" rid="bibr25-2192568219888179">25</xref>
+<xref ref-type="bibr" rid="bibr26-2192568219888179"/>
+<xref ref-type="bibr" rid="bibr27-2192568219888179"/>-<xref ref-type="bibr" rid="bibr28-2192568219888179">28</xref>
+</sup> Additionally, when evaluating radiographic outcomes, no difference was observed either in rates of subsidence or screw loosening. Furthermore, we did not observe a significant association with preoperative spinal injections or previous spine surgery, as well as other demographics and preoperative and postoperative variables evaluated.</p>
+</sec>
+<sec id="section11-2192568219888179">
+<title>Limitations</title>
+<p>This study is limited by the fact that no confirmatory molecular analysis was performed, such as PCR. However, detection through culturing methods or PCR have demonstrated similar rates.<sup>
+<xref ref-type="bibr" rid="bibr6-2192568219888179">6</xref>
+</sup> In using a contaminant control, we aimed to reduce the risk of overestimation of our disc positive rates by considering true positives as only those patients with a disc positive and control negative culture. However, potential risk of contamination in CN/DP patient disc samples is still present. <italic>P acnes</italic> has been shown the need to be cultured in for at least 7 days, and this was confirmed with our study.<sup>
+<xref ref-type="bibr" rid="bibr29-2192568219888179">29</xref>,<xref ref-type="bibr" rid="bibr30-2192568219888179">30</xref>
+</sup> The integration of quantitative measures with the use of PCR may allow us for better interpretation of positive cultures, and with the addition of a contaminant control tissue, correlations studies between control and disc samples could be performed for a better estimation of disc positive rates. However, a validated method that reduces the risk of contamination, and evaluates long-term outcomes, will be ideal to investigate the relationship between presence of bacteria is disc culture and degenerative spine conditions.</p>
+</sec>
+<sec id="section12-2192568219888179" sec-type="conclusions">
+<title>Conclusion</title>
+<p>The prevalence of bacterial infection, with the use of contaminant control, in patients undergoing ACDF for cervical degenerative conditions is 17.7%. <italic>P acnes</italic> was the most commonly identified organism. While our rates exclude patients with positive contaminant control, the possibility of contamination of intervertebral disc cultures could not be entirely rejected. Our findings also show that culture results did not have any influence in postoperative outcomes.</p>
+</sec>
+</body>
+<back>
+<fn-group>
+<fn fn-type="other" id="fn1-2192568219888179">
+<label>Authors’ Note</label>
+<p>The views expressed in the article are our own and not an official position of the institution.</p>
+</fn>
+<fn fn-type="conflict" id="fn2-2192568219888179">
+<label>Declaration of Conflicting Interests</label>
+<p>The author(s) declared the following potential conflicts of interest with respect to the research, authorship, and/or publication of this article: Dr Gelb is a board member and fellowship committee chair for AOSpine NA. He receives payment for lectures and for development of educational presentations from AOSpine NA. He receives royalties from DePuy Synthes Spine and Globus Medical. He has stock in the American Society for Investigative Pathology. Dr Koh receives payment for consultancy from Biomet. His institution receives RO1 grant money from the National Institutes of Health. Dr Ludwig is a board member for Globus Medical, the American Board of Orthopaedic Surgery, the American Orthopaedic Association, the Cervical Spine Research Society, and the Society for Minimally Invasive Spine Surgery. He is a paid consultant for DePuy Synthes, K2M, and Globus Medical. He receives payment for lectures and travel accommodations from DePuy Synthes and K2M. He receives payment for patents and royalties from DePuy Synthes and Globus Medical. He has stock in Innovative Surgical Designs and the American Society for Investigative Pathology. He receives research support from AO Spine North America Spine Fellowship support, Pacira Pharmaceutical, and AOA Omega Grant. He is a board member of Maryland Development Corporation. He receives royalties from Thieme, Quality Medical Publishers. He is on the governing board of <italic>Journal of Spinal Disorders and Techniques</italic>, <italic>The Spine Journal</italic>, and <italic>Contemporary Spine Surgery</italic>. The authors have no further potential conflicts of interest to disclose.</p>
+</fn>
+<fn fn-type="financial-disclosure" id="fn3-2192568219888179">
+<label>Funding</label>
+<p>The author(s) received no financial support for the research, authorship, and/or publication of this article.</p>
+</fn>
+<fn fn-type="other" id="fn4-2192568219888179">
+<label>ORCID iD</label>
+<p>Daniel E. Gelb, MD <inline-graphic xlink:href="10.1177_2192568219888179-img1.tif"/> <ext-link ext-link-type="uri" xlink:href="https://orcid.org/0000-0002-7263-6177">https://orcid.org/0000-0002-7263-6177</ext-link>
+</p>
+<p>Steven C. Ludwig, MD <inline-graphic xlink:href="10.1177_2192568219888179-img1.tif"/> <ext-link ext-link-type="uri" xlink:href="https://orcid.org/0000-0002-3962-5724">https://orcid.org/0000-0002-3962-5724</ext-link>
+</p>
+</fn>
+</fn-group>
+<ref-list>
+<title>References</title>
+<ref id="bibr1-2192568219888179">
+<label>1</label>
+<mixed-citation publication-type="journal">
+<person-group person-group-type="author">
+<name>
+<surname>Choi</surname>
+<given-names>YS</given-names>
+</name>
+</person-group>. <article-title>Pathophysiology of degenerative disc disease</article-title>. <source>Asian Spine J</source>. <year>2009</year>;<volume>3</volume>:<fpage>39</fpage>–<lpage>44</lpage>.</mixed-citation>
+</ref>
+<ref id="bibr2-2192568219888179">
+<label>2</label>
+<mixed-citation publication-type="journal">
+<person-group person-group-type="author">
+<name>
+<surname>Guiot</surname>
+<given-names>BH</given-names>
+</name>
+<name>
+<surname>Fessler</surname>
+<given-names>RG</given-names>
+</name>
+</person-group>. <article-title>Molecular biology of degenerative disc disease</article-title>. <source>Neurosurgery</source>. <year>2000</year>;<volume>47</volume>:<fpage>1034</fpage>–<lpage>1040</lpage>.</mixed-citation>
+</ref>
+<ref id="bibr3-2192568219888179">
+<label>3</label>
+<mixed-citation publication-type="journal">
+<person-group person-group-type="author">
+<name>
+<surname>Stirling</surname>
+<given-names>A</given-names>
+</name>
+<name>
+<surname>Worthington</surname>
+<given-names>T</given-names>
+</name>
+<name>
+<surname>Rafiq</surname>
+<given-names>M</given-names>
+</name>
+<name>
+<surname>Lambert</surname>
+<given-names>PA</given-names>
+</name>
+<name>
+<surname>Elliott</surname>
+<given-names>TS</given-names>
+</name>
+</person-group>. <article-title>Association between sciatica and <italic>Propionibacterium acnes</italic></article-title>. <source>Lancet</source>. <year>2001</year>;<volume>357</volume>:<fpage>2024</fpage>–<lpage>2025</lpage>.</mixed-citation>
+</ref>
+<ref id="bibr4-2192568219888179">
+<label>4</label>
+<mixed-citation publication-type="journal">
+<person-group person-group-type="author">
+<name>
+<surname>Carricajo</surname>
+<given-names>A</given-names>
+</name>
+<name>
+<surname>Nuti</surname>
+<given-names>C</given-names>
+</name>
+<name>
+<surname>Aubert</surname>
+<given-names>E</given-names>
+</name>
+</person-group>, <etal>et al.</etal> <article-title><italic>Propionibacterium acnes</italic> contamination in lumbar disc surgery</article-title>. <source>J Hosp Infect</source>. <year>2007</year>;<volume>66</volume>:<fpage>275</fpage>–<lpage>277</lpage>.</mixed-citation>
+</ref>
+<ref id="bibr5-2192568219888179">
+<label>5</label>
+<mixed-citation publication-type="journal">
+<person-group person-group-type="author">
+<name>
+<surname>Coscia</surname>
+<given-names>MF</given-names>
+</name>
+<name>
+<surname>Denys</surname>
+<given-names>GA</given-names>
+</name>
+<name>
+<surname>Wack</surname>
+<given-names>MF</given-names>
+</name>
+</person-group>. <article-title><italic>Propionibacterium acnes</italic>, coagulase-negative <italic>Staphylococcus</italic>, and the “biofilm-like” intervertebral disc</article-title>. <source>Spine (Phila Pa 1976)</source>. <year>2016</year>;<volume>41</volume>:<fpage>1860</fpage>–<lpage>1865</lpage>.</mixed-citation>
+</ref>
+<ref id="bibr6-2192568219888179">
+<label>6</label>
+<mixed-citation publication-type="journal">
+<person-group person-group-type="author">
+<name>
+<surname>Ganko</surname>
+<given-names>R</given-names>
+</name>
+<name>
+<surname>Rao</surname>
+<given-names>PJ</given-names>
+</name>
+<name>
+<surname>Phan</surname>
+<given-names>K</given-names>
+</name>
+<name>
+<surname>Mobbs</surname>
+<given-names>RJ</given-names>
+</name>
+</person-group>. <article-title>Can bacterial infection by low virulent organisms be a plausible cause for symptomatic disc degeneration? A systematic review</article-title>. <source>Spine (Phila Pa 1976)</source>. <year>2015</year>;<volume>40</volume>:<fpage>E587</fpage>–<lpage>E592</lpage>.</mixed-citation>
+</ref>
+<ref id="bibr7-2192568219888179">
+<label>7</label>
+<mixed-citation publication-type="journal">
+<person-group person-group-type="author">
+<name>
+<surname>Arndt</surname>
+<given-names>J</given-names>
+</name>
+<name>
+<surname>Charles</surname>
+<given-names>YP</given-names>
+</name>
+<name>
+<surname>Koebel</surname>
+<given-names>C</given-names>
+</name>
+<name>
+<surname>Bogorin</surname>
+<given-names>I</given-names>
+</name>
+<name>
+<surname>Steib</surname>
+<given-names>JP</given-names>
+</name>
+</person-group>. <article-title>Bacteriology of degenerated lumbar intervertebral disks</article-title>. <source>J Spinal Disord Tech</source>. <year>2012</year>;<volume>25</volume>:<fpage>E211</fpage>–<lpage>E216</lpage>.</mixed-citation>
+</ref>
+<ref id="bibr8-2192568219888179">
+<label>8</label>
+<mixed-citation publication-type="journal">
+<person-group person-group-type="author">
+<name>
+<surname>Rao</surname>
+<given-names>PJ</given-names>
+</name>
+<name>
+<surname>Phan</surname>
+<given-names>K</given-names>
+</name>
+<name>
+<surname>Reddy</surname>
+<given-names>R</given-names>
+</name>
+<name>
+<surname>Scherman</surname>
+<given-names>DB</given-names>
+</name>
+<name>
+<surname>Taylor</surname>
+<given-names>P</given-names>
+</name>
+<name>
+<surname>Mobbs</surname>
+<given-names>RJ</given-names>
+</name>
+</person-group>. <article-title>DISC (Degenerate-disc Infection Study with Contaminant Control): pilot study of Australian cohort of patients without the contaminant control</article-title>. <source>Spine (Phila Pa 1976)</source>. <year>2016</year>;<volume>41</volume>:<fpage>935</fpage>–<lpage>939</lpage>.</mixed-citation>
+</ref>
+<ref id="bibr9-2192568219888179">
+<label>9</label>
+<mixed-citation publication-type="journal">
+<person-group person-group-type="author">
+<name>
+<surname>Khalil</surname>
+<given-names>JG</given-names>
+</name>
+<name>
+<surname>Gandhi</surname>
+<given-names>SD</given-names>
+</name>
+<name>
+<surname>Park</surname>
+<given-names>DK</given-names>
+</name>
+<name>
+<surname>Fischgrund</surname>
+<given-names>JS</given-names>
+</name>
+</person-group>. <article-title><italic>Cutibacterium</italic> acnes in spine pathology: pathophysiology, diagnosis, and management</article-title>. <source>J Am Acad Orthop Surg</source>. <year>2019</year>;<volume>27</volume>:<fpage>e633</fpage>–<lpage>e640</lpage>.</mixed-citation>
+</ref>
+<ref id="bibr10-2192568219888179">
+<label>10</label>
+<mixed-citation publication-type="journal">
+<person-group person-group-type="author">
+<name>
+<surname>Agarwal</surname>
+<given-names>V</given-names>
+</name>
+<name>
+<surname>Golish</surname>
+<given-names>SR</given-names>
+</name>
+<name>
+<surname>Alamin</surname>
+<given-names>TF</given-names>
+</name>
+</person-group>. <article-title>Bacteriologic culture of excised intervertebral disc from immunocompetent patients undergoing single level primary lumbar microdiscectomy</article-title>. <source>J Spinal Disord Tech</source>. <year>2011</year>;<volume>24</volume>:<fpage>397</fpage>–<lpage>400</lpage>.</mixed-citation>
+</ref>
+<ref id="bibr11-2192568219888179">
+<label>11</label>
+<mixed-citation publication-type="journal">
+<person-group person-group-type="author">
+<name>
+<surname>Singhal</surname>
+<given-names>N</given-names>
+</name>
+<name>
+<surname>Kumar</surname>
+<given-names>M</given-names>
+</name>
+<name>
+<surname>Kanaujia</surname>
+<given-names>PK</given-names>
+</name>
+<name>
+<surname>Virdi</surname>
+<given-names>JS</given-names>
+</name>
+</person-group>. <article-title>MALDI-TOF mass spectrometry: an emerging technology for microbial identification and diagnosis</article-title>. <source>Front Microbiol</source>. <year>2015</year>;<volume>6</volume>:<fpage>791</fpage>.</mixed-citation>
+</ref>
+<ref id="bibr12-2192568219888179">
+<label>12</label>
+<mixed-citation publication-type="journal">
+<person-group person-group-type="author">
+<name>
+<surname>Yang</surname>
+<given-names>JJ</given-names>
+</name>
+<name>
+<surname>Yu</surname>
+<given-names>CH</given-names>
+</name>
+<name>
+<surname>Chang</surname>
+<given-names>BS</given-names>
+</name>
+<name>
+<surname>Yeom</surname>
+<given-names>JS</given-names>
+</name>
+<name>
+<surname>Lee</surname>
+<given-names>JH</given-names>
+</name>
+<name>
+<surname>Lee</surname>
+<given-names>CK</given-names>
+</name>
+</person-group>. <article-title>Subsidence and nonunion after anterior cervical interbody fusion using a stand-alone polyetheretherketone (PEEK) cage</article-title>. <source>Clin Orthop Surg</source>. <year>2011</year>;<volume>3</volume>:<fpage>16</fpage>–<lpage>23</lpage>.</mixed-citation>
+</ref>
+<ref id="bibr13-2192568219888179">
+<label>13</label>
+<mixed-citation publication-type="book">
+<person-group person-group-type="author">
+<name>
+<surname>Berquist</surname>
+<given-names>TH</given-names>
+</name>
+</person-group>. <chapter-title>Spinal instrumentation</chapter-title>. In: <person-group person-group-type="editor">
+<name>
+<surname>Berquist</surname>
+<given-names>TH</given-names>
+</name>
+</person-group>, ed. <source>Imaging of Orthopedic Fixation Devices and Prostheses</source>. <publisher-loc>Philadelphia, PA</publisher-loc>: <publisher-name>Lippincott Williams and Wilkins</publisher-name>; <year>2009</year>:<fpage>75</fpage>–<lpage>152</lpage>.</mixed-citation>
+</ref>
+<ref id="bibr14-2192568219888179">
+<label>14</label>
+<mixed-citation publication-type="book">
+<person-group person-group-type="author">
+<name>
+<surname>Kim</surname>
+<given-names>P</given-names>
+</name>
+<name>
+<surname>Zee</surname>
+<given-names>CS</given-names>
+</name>
+</person-group>. <chapter-title>Imaging of the postoperative spine: cages, prostheses, and instrumentation</chapter-title>. In: <person-group person-group-type="editor">
+<name>
+<surname>Van Goethem</surname>
+<given-names>J</given-names>
+</name>
+<name>
+<surname>Van den Hauwe</surname>
+<given-names>L</given-names>
+</name>
+<name>
+<surname>Brizel</surname>
+<given-names>P</given-names>
+</name>
+</person-group>, eds. <source>Spinal Imaging: Diagnostic Imaging of the Spine and Spinal Cord</source>. <publisher-loc>Berlin, Germany</publisher-loc>: <publisher-name>Springer</publisher-name>; <year>2007</year>:<fpage>397</fpage>–<lpage>413</lpage>.</mixed-citation>
+</ref>
+<ref id="bibr15-2192568219888179">
+<label>15</label>
+<mixed-citation publication-type="journal">
+<person-group person-group-type="author">
+<name>
+<surname>Young</surname>
+<given-names>PM</given-names>
+</name>
+<name>
+<surname>Berquist</surname>
+<given-names>TH</given-names>
+</name>
+<name>
+<surname>Bancroft</surname>
+<given-names>LW</given-names>
+</name>
+<name>
+<surname>Peterson</surname>
+<given-names>JJ</given-names>
+</name>
+</person-group>. <article-title>Complications of spinal instrumentation</article-title>. <source>Radiographics</source>. <year>2007</year>;<volume>27</volume>:<fpage>775</fpage>–<lpage>789</lpage>.</mixed-citation>
+</ref>
+<ref id="bibr16-2192568219888179">
+<label>16</label>
+<mixed-citation publication-type="journal">
+<person-group person-group-type="author">
+<name>
+<surname>Rigal</surname>
+<given-names>J</given-names>
+</name>
+<name>
+<surname>Thelen</surname>
+<given-names>T</given-names>
+</name>
+<name>
+<surname>Byrne</surname>
+<given-names>F</given-names>
+</name>
+</person-group>, <etal>et al.</etal> <article-title>Prospective study using anterior approach did not show association between Modic 1 changes and low grade infection in lumbar spine</article-title>. <source>Eur Spine J</source>. <year>2016</year>;<volume>25</volume>:<fpage>1000</fpage>–<lpage>1005</lpage>.</mixed-citation>
+</ref>
+<ref id="bibr17-2192568219888179">
+<label>17</label>
+<mixed-citation publication-type="journal">
+<person-group person-group-type="author">
+<name>
+<surname>Chen</surname>
+<given-names>Y</given-names>
+</name>
+<name>
+<surname>Wang</surname>
+<given-names>X</given-names>
+</name>
+<name>
+<surname>Zhang</surname>
+<given-names>X</given-names>
+</name>
+</person-group>, <etal>et al.</etal> <article-title>Low virulence bacterial infections in cervical intervertebral discs: a prospective case series</article-title>. <source>Eur Spine J</source>. <year>2018</year>;<volume>27</volume>:<fpage>2496</fpage>–<lpage>2505</lpage>.</mixed-citation>
+</ref>
+<ref id="bibr18-2192568219888179">
+<label>18</label>
+<mixed-citation publication-type="journal">
+<person-group person-group-type="author">
+<name>
+<surname>Zhou</surname>
+<given-names>Z</given-names>
+</name>
+<name>
+<surname>Chen</surname>
+<given-names>Z</given-names>
+</name>
+<name>
+<surname>Zheng</surname>
+<given-names>Y</given-names>
+</name>
+</person-group>, <etal>et al.</etal> <article-title>Relationship between annular tear and presence of <italic>Propionibacterium acnes</italic> in lumbar intervertebral disc</article-title>. <source>Eur Spine J</source>. <year>2015</year>;<volume>24</volume>:<fpage>2496</fpage>–<lpage>2502</lpage>.</mixed-citation>
+</ref>
+<ref id="bibr19-2192568219888179">
+<label>19</label>
+<mixed-citation publication-type="journal">
+<person-group person-group-type="author">
+<name>
+<surname>Dodson</surname>
+<given-names>CC</given-names>
+</name>
+<name>
+<surname>Craig</surname>
+<given-names>EV</given-names>
+</name>
+<name>
+<surname>Cordasco</surname>
+<given-names>FA</given-names>
+</name>
+</person-group>, <etal>et al.</etal> <article-title><italic>Propionibacterium acnes</italic> infection after shoulder arthroplasty: a diagnostic challenge</article-title>. <source>J Shoulder Elbow Surg</source>. <year>2010</year>;<volume>19</volume>:<fpage>303</fpage>–<lpage>307</lpage>.</mixed-citation>
+</ref>
+<ref id="bibr20-2192568219888179">
+<label>20</label>
+<mixed-citation publication-type="journal">
+<person-group person-group-type="author">
+<name>
+<surname>Falconer</surname>
+<given-names>TM</given-names>
+</name>
+<name>
+<surname>Baba</surname>
+<given-names>M</given-names>
+</name>
+<name>
+<surname>Kruse</surname>
+<given-names>LM</given-names>
+</name>
+</person-group>, <etal>et al.</etal> <article-title>Contamination of the surgical field with <italic>Propionibacterium acnes</italic> in primary shoulder arthroplasty</article-title>. <source>J Bone Joint Surg Am</source>. <year>2016</year>;<volume>98</volume>:<fpage>1722</fpage>–<lpage>1728</lpage>.</mixed-citation>
+</ref>
+<ref id="bibr21-2192568219888179">
+<label>21</label>
+<mixed-citation publication-type="journal">
+<person-group person-group-type="author">
+<name>
+<surname>Capoor</surname>
+<given-names>MN</given-names>
+</name>
+<name>
+<surname>Ruzicka</surname>
+<given-names>F</given-names>
+</name>
+<name>
+<surname>Machackova</surname>
+<given-names>T</given-names>
+</name>
+</person-group>, <etal>et al.</etal> <article-title>Prevalence of <italic>Propionibacterium acnes</italic> in intervertebral discs of patients undergoing lumbar microdiscectomy: a prospective cross-sectional study</article-title>. <source>PLoS One</source>. <year>2016</year>;<fpage>11</fpage>:<volume>e0161676</volume>.</mixed-citation>
+</ref>
+<ref id="bibr22-2192568219888179">
+<label>22</label>
+<mixed-citation publication-type="journal">
+<person-group person-group-type="author">
+<name>
+<surname>Ben-Galim</surname>
+<given-names>P</given-names>
+</name>
+<name>
+<surname>Rand</surname>
+<given-names>N</given-names>
+</name>
+<name>
+<surname>Giladi</surname>
+<given-names>M</given-names>
+</name>
+</person-group>, <etal>et al.</etal> <article-title>Association between sciatica and microbial infection: true infection or culture contamination?</article-title> <source>Spine (Phila Pa 1976)</source>. <year>2006</year>;<volume>31</volume>:<fpage>2507</fpage>–<lpage>2509</lpage>.</mixed-citation>
+</ref>
+<ref id="bibr23-2192568219888179">
+<label>23</label>
+<mixed-citation publication-type="journal">
+<person-group person-group-type="author">
+<name>
+<surname>Albert</surname>
+<given-names>HB</given-names>
+</name>
+<name>
+<surname>Sorensen</surname>
+<given-names>JS</given-names>
+</name>
+<name>
+<surname>Christensen</surname>
+<given-names>BS</given-names>
+</name>
+<name>
+<surname>Manniche</surname>
+<given-names>C</given-names>
+</name>
+</person-group>. <article-title>Antibiotic treatment in patients with chronic low back pain and vertebral bone edema (Modic type 1 changes): a double-blind randomized clinical controlled trial of efficacy</article-title>. <source>Eur Spine J</source>. <year>2013</year>;<volume>22</volume>:<fpage>697</fpage>–<lpage>707</lpage>.</mixed-citation>
+</ref>
+<ref id="bibr24-2192568219888179">
+<label>24</label>
+<mixed-citation publication-type="journal">
+<person-group person-group-type="author">
+<name>
+<surname>McLorinan</surname>
+<given-names>GC</given-names>
+</name>
+<name>
+<surname>Glenn</surname>
+<given-names>JV</given-names>
+</name>
+<name>
+<surname>McMullan</surname>
+<given-names>MG</given-names>
+</name>
+<name>
+<surname>Patrick</surname>
+<given-names>S</given-names>
+</name>
+</person-group>. <article-title><italic>Propionibacterium acnes</italic> wound contamination at the time of spinal surgery</article-title>. <source>Clin Orthop Relat Res</source>. <year>2005</year>;(<issue>437</issue>):<fpage>67</fpage>–<lpage>73</lpage>.</mixed-citation>
+</ref>
+<ref id="bibr25-2192568219888179">
+<label>25</label>
+<mixed-citation publication-type="journal">
+<person-group person-group-type="author">
+<name>
+<surname>LaGreca</surname>
+<given-names>J</given-names>
+</name>
+<name>
+<surname>Hotchkiss</surname>
+<given-names>M</given-names>
+</name>
+<name>
+<surname>Carry</surname>
+<given-names>P</given-names>
+</name>
+</person-group>, <etal>et al.</etal> <article-title>Bacteriology and risk factors for development of late (greater than one year) deep infection following spinal fusion with instrumentation</article-title>. <source>Spine Deform</source>. <year>2014</year>;<volume>2</volume>:<fpage>186</fpage>–<lpage>190</lpage>.</mixed-citation>
+</ref>
+<ref id="bibr26-2192568219888179">
+<label>26</label>
+<mixed-citation publication-type="journal">
+<person-group person-group-type="author">
+<name>
+<surname>Farley</surname>
+<given-names>FA</given-names>
+</name>
+<name>
+<surname>Li</surname>
+<given-names>Y</given-names>
+</name>
+<name>
+<surname>Gilsdorf</surname>
+<given-names>JR</given-names>
+</name>
+</person-group>, <etal>et al.</etal> <article-title>Postoperative spine and VEPTR infections in children: a case-control study</article-title>. <source>J Pediatr Orthop</source>. <year>2014</year>;<volume>34</volume>:<fpage>14</fpage>–<lpage>21</lpage>.</mixed-citation>
+</ref>
+<ref id="bibr27-2192568219888179">
+<label>27</label>
+<mixed-citation publication-type="journal">
+<person-group person-group-type="author">
+<name>
+<surname>Hahn</surname>
+<given-names>F</given-names>
+</name>
+<name>
+<surname>Zbinden</surname>
+<given-names>R</given-names>
+</name>
+<name>
+<surname>Min</surname>
+<given-names>K</given-names>
+</name>
+</person-group>. <article-title>Late implant infections caused by <italic>Propionibacterium acnes</italic> in scoliosis surgery</article-title>. <source>Eur Spine J</source>. <year>2005</year>;<volume>14</volume>:<fpage>783</fpage>–<lpage>788</lpage>.</mixed-citation>
+</ref>
+<ref id="bibr28-2192568219888179">
+<label>28</label>
+<mixed-citation publication-type="journal">
+<person-group person-group-type="author">
+<name>
+<surname>Shifflett</surname>
+<given-names>GD</given-names>
+</name>
+<name>
+<surname>Bjerke-Kroll</surname>
+<given-names>BT</given-names>
+</name>
+<name>
+<surname>Nwachukwu</surname>
+<given-names>BU</given-names>
+</name>
+</person-group>, <etal>et al.</etal> <article-title>Microbiologic profile of infections in presumed aseptic revision spine surgery</article-title>. <source>Eur Spine J</source>. <year>2016</year>;<volume>25</volume>:<fpage>3902</fpage>–<lpage>3907</lpage>.</mixed-citation>
+</ref>
+<ref id="bibr29-2192568219888179">
+<label>29</label>
+<mixed-citation publication-type="journal">
+<person-group person-group-type="author">
+<name>
+<surname>Abdulmassih</surname>
+<given-names>R</given-names>
+</name>
+<name>
+<surname>Makadia</surname>
+<given-names>J</given-names>
+</name>
+<name>
+<surname>Como</surname>
+<given-names>J</given-names>
+</name>
+<name>
+<surname>Paulson</surname>
+<given-names>M</given-names>
+</name>
+<name>
+<surname>Min</surname>
+<given-names>Z</given-names>
+</name>
+<name>
+<surname>Bhanot</surname>
+<given-names>N</given-names>
+</name>
+</person-group>. <article-title><italic>Propionibacterium acnes</italic>: time-to-positivity in standard bacterial culture from different anatomical sites</article-title>. <source>J Clin Med Res</source>. <year>2016</year>;<volume>8</volume>:<fpage>916</fpage>–<lpage>918</lpage>.</mixed-citation>
+</ref>
+<ref id="bibr30-2192568219888179">
+<label>30</label>
+<mixed-citation publication-type="journal">
+<person-group person-group-type="author">
+<name>
+<surname>Bossard</surname>
+<given-names>DA</given-names>
+</name>
+<name>
+<surname>Ledergerber</surname>
+<given-names>B</given-names>
+</name>
+<name>
+<surname>Zingg</surname>
+<given-names>PO</given-names>
+</name>
+</person-group>, <etal>et al.</etal> <article-title>Optimal length of cultivation time for isolation of <italic>Propionibacterium acnes</italic> in suspected bone and joint infections is more than 7 days</article-title>. <source>J Clin Microbiol</source>. <year>2016</year>;<volume>54</volume>:<fpage>3043</fpage>–<lpage>3049</lpage>.</mixed-citation>
+</ref>
+</ref-list>
+</back>
+</article>

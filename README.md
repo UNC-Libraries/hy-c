@@ -55,6 +55,13 @@ bundle exec rake sage:ingest[/hyrax/spec/fixtures/sage/sage_config.yml]
     work.to_solr.deep_symbolize_keys!
     ```
     * Copy the output of this to the sample_solr_documents file. Add a unique `:timestamp` value to the hash (e.g. `:timestamp => "2021-11-23T16:05:33.033Z"`) so that the `spec/requests/oai_pmh_endpoint_spec.rb` tests to continue to pass.
+    
+#### Debugging Capybara feature and javascript tests
+* Save a screenshot
+  * Put `page.save_screenshot('screenshot.png')` on the line before the failing test (you can use a different name for the file if that's helpful)
+  * The screenshot will be saved to `tmp/capybara`.
+  * See https://github.com/teamcapybara/capybara#debugging for more info
+
 
 ##### Code Linter - Rubocop
   * Helpful Rubocop documentation - https://docs.rubocop.org/rubocop/usage/basic_usage.html

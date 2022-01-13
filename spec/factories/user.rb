@@ -1,8 +1,8 @@
 FactoryBot.define do
   factory :user do
-    uid { 'test' }
-    display_name { 'test' }
-    email { 'test@test.edu' }
+    uid { FFaker::Internet.user_name }
+    display_name { FFaker::Name.name }
+    email { FFaker::Internet.email }
 
     transient do
       # Allow for custom groups when a user is instantiated.

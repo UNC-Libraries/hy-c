@@ -20,7 +20,7 @@ module Hyrax
         repo_admins.each do |u|
           users << u
         end
-        users.uniq
+        users.compact.uniq
       end
     end
   end
