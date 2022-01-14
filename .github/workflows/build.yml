@@ -26,7 +26,6 @@ jobs:
       DOI_PREFIX: '10.17615'
       EMAIL_FROM_ADDRESS: 'hyraxapp@example.com'
       FCREPO_TEST_PORT: 8080
-      # FITS_LOCATION: '/home/travis/fits-1.0.5/fits.sh'
       HYRAX_DATABASE_PASSWORD: 'password'
       HYRAX_HOST: 'https://example.com'
       NOKOGIRI_USE_SYSTEM_LIBRARIES: true
@@ -107,12 +106,6 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install unzip imagemagick ghostscript libpq-dev
-
-    # - name: Install FITS
-    #   run: |
-    #     curl -o $HOME/fits-1.0.5.zip https://projects.iq.harvard.edu/files/fits/files/fits-1.0.5.zip | cat
-    #     unzip $HOME/fits-1.0.5.zip -d $HOME
-    #     chmod u=u+x $HOME/fits-1.0.5/fits.sh
 
     - name: Setup test database
       env:
