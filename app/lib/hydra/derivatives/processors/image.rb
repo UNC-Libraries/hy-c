@@ -22,8 +22,13 @@ module Hydra::Derivatives::Processors
     def create_resized_image
       create_image do |xfrm|
         if size
-          xfrm.flatten
-          xfrm.resize(size)
+          # remove layers and resize using convert instead of mogrify
+          MiniMagick::Tool::Convert.new do |cmd|
+            cmd << source_path # input
+            cmd.flatten
+            cmd.resize(size)
+            cmd << source_path # output
+          end
         end
       end
     end
@@ -34,10 +39,9 @@ module Hydra::Derivatives::Processors
       yield(xfrm) if block_given?
       xfrm.format(directives.fetch(:format))
       xfrm.quality(quality.to_s) if quality
-
       # check image profile of original file
       if !Rails.env.test? # travis-ci cannot run the minimagick 'data' method
-        source_data = MiniMagick::Image.open(source_path).data
+        source_data = MiniMagick::Image.open(source_path).details
         if source_data['backgroundColor'] == '#FFFFFFFFFFFF0000'
           Rails.logger.info "\n\n######\nbackground color is black\n######\n\n"
           xfrm.negate
