@@ -66,24 +66,22 @@ module Tasks
     end
 
     def doi_request(data, retries = 2)
-      begin
-        return HTTParty.post(@doi_creation_url,
-                             headers: { 'Content-Type' => 'application/vnd.api+json' },
-                             basic_auth: {
-                               username: @doi_user,
-                               password: @doi_password
-                             },
-                             body: data
-                            )
-      rescue Net::ReadTimeout, Net::OpenTimeout => e
-        if retries.positive?
-          retries -= 1
-          puts "#{get_time} Timed out while attempting to create DOI using #{@doi_creation_url}, retrying with #{retries} retries remaining."
-          sleep(30)
-          return doi_request(data, retries)
-        else
-          raise e
-        end
+      return HTTParty.post(@doi_creation_url,
+                           headers: { 'Content-Type' => 'application/vnd.api+json' },
+                           basic_auth: {
+                             username: @doi_user,
+                             password: @doi_password
+                           },
+                           body: data
+                          )
+    rescue Net::ReadTimeout, Net::OpenTimeout => e
+      if retries.positive?
+        retries -= 1
+        puts "#{get_time} Timed out while attempting to create DOI using #{@doi_creation_url}, retrying with #{retries} retries remaining."
+        sleep(30)
+        return doi_request(data, retries)
+      else
+        raise e
       end
     end
 
@@ -184,28 +182,26 @@ module Tasks
     end
 
     def create_batch_doi
-      begin
-        start_time = Time.now
-        records = ActiveFedora::SolrService.get("visibility_ssi:open AND -doi_tesim:* AND workflow_state_name_ssim:deposited AND has_model_ssim:(Article Artwork DataSet Dissertation General HonorsThesis Journal MastersPaper Multimed ScholarlyWork)",
-                                                rows: @rows,
-                                                sort: "system_create_dtsi ASC",
-                                                fl: "id")["response"]["docs"]
+      start_time = Time.now
+      records = ActiveFedora::SolrService.get("visibility_ssi:open AND -doi_tesim:* AND workflow_state_name_ssim:deposited AND has_model_ssim:(Article Artwork DataSet Dissertation General HonorsThesis Journal MastersPaper Multimed ScholarlyWork)",
+                                              rows: @rows,
+                                              sort: "system_create_dtsi ASC",
+                                              fl: "id")["response"]["docs"]
 
-        if records.length.positive?
-          puts "#{get_time} Preparing to add DOIs to #{records.length} records"
-          records.each do |record|
-            create_doi(record)
-          end
-          puts "#{get_time} Added #{records.length} DOIs in #{Time.now - start_time}s"
-          return records.length
-        else
-          puts "#{get_time} There are no records that need to have DOIs added."
-          return 0
+      if records.length.positive?
+        puts "#{get_time} Preparing to add DOIs to #{records.length} records"
+        records.each do |record|
+          create_doi(record)
         end
-      rescue => e
-        puts "#{get_time} There was an error creating dois: #{e.message}"
-        return -1
+        puts "#{get_time} Added #{records.length} DOIs in #{Time.now - start_time}s"
+        return records.length
+      else
+        puts "#{get_time} There are no records that need to have DOIs added."
+        return 0
       end
+    rescue => e
+      puts "#{get_time} There was an error creating dois: #{e.message}"
+      return -1
     end
 
     private

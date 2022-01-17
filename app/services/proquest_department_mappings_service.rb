@@ -4,12 +4,10 @@ module ProquestDepartmentMappingsService
   self.authority = Qa::Authorities::Local.subauthority_for('proquest_departments')
 
   def self.standard_department_name(proquest_department)
-    begin
-      [authority.find(proquest_department).fetch('term')].flatten
-    rescue
-      Rails.logger.warn "ProquestDepartmentMappingsService: cannot find '#{proquest_department}'"
-      puts "ProquestDepartmentMappingsService: cannot find '#{proquest_department}'" # for migration log
-      nil
-    end
+    [authority.find(proquest_department).fetch('term')].flatten
+  rescue
+    Rails.logger.warn "ProquestDepartmentMappingsService: cannot find '#{proquest_department}'"
+    puts "ProquestDepartmentMappingsService: cannot find '#{proquest_department}'" # for migration log
+    nil
   end
 end

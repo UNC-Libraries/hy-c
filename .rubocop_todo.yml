@@ -934,11 +934,6 @@ Style/RaiseArgs:
     - 'app/models/bulkrax/csv_entry.rb'
     - 'app/parsers/bulkrax/csv_parser.rb'
 
-# Offense count: 19
-# Cop supports --auto-correct.
-Style/RedundantBegin:
-  Enabled: false
-
 # Offense count: 2
 # Cop supports --auto-correct.
 Style/RedundantCondition:

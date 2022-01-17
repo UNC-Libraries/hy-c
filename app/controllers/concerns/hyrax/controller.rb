@@ -46,11 +46,9 @@ module Hyrax::Controller
   private
 
   def set_locale
-    begin
-      I18n.locale = params[:locale] || I18n.default_locale
-    rescue I18n::InvalidLocale
-      I18n.locale = I18n.default_locale
-    end
+    I18n.locale = params[:locale] || I18n.default_locale
+  rescue I18n::InvalidLocale
+    I18n.locale = I18n.default_locale
   end
 
     # render a json response for +response_type+

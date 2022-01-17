@@ -10,21 +10,17 @@ module DepartmentsService
   end
 
   def self.identifier(term)
-    begin
-      authority.all.reject { |item| item['active'] == false }.select { |department| department['label'] == term }.first['id']
-    rescue
-      nil
-    end
+    authority.all.reject { |item| item['active'] == false }.select { |department| department['label'] == term }.first['id']
+  rescue
+    nil
   end
 
   def self.label(id)
-    begin
-      authority.find(id).fetch('term')
-    rescue
-      Rails.logger.debug "DepartmentsService: cannot find '#{id}'"
-      puts "DepartmentsService: cannot find '#{id}'" # for migration log
-      nil
-    end
+    authority.find(id).fetch('term')
+  rescue
+    Rails.logger.debug "DepartmentsService: cannot find '#{id}'"
+    puts "DepartmentsService: cannot find '#{id}'" # for migration log
+    nil
   end
 
   def self.include_current_value(value, _index, render_options, html_options)

@@ -15,13 +15,11 @@ module CdrLicenseService
   end
 
   def self.label(id)
-    begin
-      authority.find(id).fetch('term')
-    rescue
-      Rails.logger.warn "CdrLicensesService: cannot find '#{id}'"
-      puts "CdrLicensesService: cannot find '#{id}'" # for migration log
-      id # cannot return nil
-    end
+    authority.find(id).fetch('term')
+  rescue
+    Rails.logger.warn "CdrLicensesService: cannot find '#{id}'"
+    puts "CdrLicensesService: cannot find '#{id}'" # for migration log
+    id # cannot return nil
   end
 
   def self.include_current_value(value, _index, render_options, html_options)

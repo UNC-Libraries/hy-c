@@ -16,13 +16,11 @@ module CdrRightsStatementsService
   end
 
   def self.label(id)
-    begin
-      authority.find(id).fetch('term')
-    rescue
-      Rails.logger.warn "CdrRightsStatementsService: cannot find '#{id}'"
-      puts "CdrRightsStatementsService: cannot find '#{id}'" # for migration log
-      nil
-    end
+    authority.find(id).fetch('term')
+  rescue
+    Rails.logger.warn "CdrRightsStatementsService: cannot find '#{id}'"
+    puts "CdrRightsStatementsService: cannot find '#{id}'" # for migration log
+    nil
   end
 
   def self.include_current_value(value, _index, render_options, html_options)

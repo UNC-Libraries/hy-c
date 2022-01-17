@@ -41,11 +41,9 @@ class JatsIngestWork
   end
 
   def creators
-    @creators ||= begin
-      creators_metadata.xpath('.//contrib').map.with_index do |contributor, index|
-        [index, contributor_to_hash(contributor, index)]
-      end.to_h
-    end
+    @creators ||= creators_metadata.xpath('.//contrib').map.with_index do |contributor, index|
+      [index, contributor_to_hash(contributor, index)]
+    end.to_h
   end
 
   # TODO: Map affiliation to UNC controlled vocabulary
@@ -63,11 +61,9 @@ class JatsIngestWork
   end
 
   def affiliation_map
-    @affiliation_map ||= begin
-      document.xpath('//aff').map do |affil|
-        [affil.attributes["id"].value, affiliation_to_s(affil)]
-      end.to_h
-    end
+    @affiliation_map ||= document.xpath('//aff').map do |affil|
+      [affil.attributes["id"].value, affiliation_to_s(affil)]
+    end.to_h
   end
 
   def affiliation_ids(elem)

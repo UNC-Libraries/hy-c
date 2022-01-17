@@ -84,55 +84,51 @@ AND has_model_ssim:(DataSet HonorsThesis MastersPaper ScholarlyWork) AND system_
     private
 
     def doi_update_request(id, data, retries, doi_update_url, datacite_user, datacite_password)
-      begin
-        return HTTParty.put("#{doi_update_url}/#{id}",
-                            headers: { 'Content-Type' => 'application/vnd.api+json' },
-                            basic_auth: {
-                              username: datacite_user,
-                              password: datacite_password
-                            },
-                            body: data
-                           )
-      rescue Net::ReadTimeout, Net::OpenTimeout => e
-        if retries.positive?
-          # log retry
-          log.info "[#{Time.now}] retrying #{id}: #{e.message}"
-          print 'R'
-          retries -= 1
-          log.info "[#{Time.now}] Timed out while attempting to create DOI using #{doi_update_url}/#{id}, retrying with #{retries} retries remaining."
-          sleep(30)
-          return doi_update_request(id, data, retries, doi_update_url, datacite_user, datacite_password)
-        else
-          # log failure
-          log.info "[#{Time.now}] failed to update doi for #{id}: #{e.message}"
-          log.info e.backtrace
-          raise e
-        end
-      rescue => e # other failure
+      return HTTParty.put("#{doi_update_url}/#{id}",
+                          headers: { 'Content-Type' => 'application/vnd.api+json' },
+                          basic_auth: {
+                            username: datacite_user,
+                            password: datacite_password
+                          },
+                          body: data
+                         )
+    rescue Net::ReadTimeout, Net::OpenTimeout => e
+      if retries.positive?
+        # log retry
+        log.info "[#{Time.now}] retrying #{id}: #{e.message}"
+        print 'R'
+        retries -= 1
+        log.info "[#{Time.now}] Timed out while attempting to create DOI using #{doi_update_url}/#{id}, retrying with #{retries} retries remaining."
+        sleep(30)
+        return doi_update_request(id, data, retries, doi_update_url, datacite_user, datacite_password)
+      else
         # log failure
         log.info "[#{Time.now}] failed to update doi for #{id}: #{e.message}"
         log.info e.backtrace
         raise e
       end
+    rescue => e # other failure
+      # log failure
+      log.info "[#{Time.now}] failed to update doi for #{id}: #{e.message}"
+      log.info e.backtrace
+      raise e
     end
 
     def fetch_doi_record(id, doi_get_url, retries)
-      begin
-        return HTTParty.get("#{doi_get_url}/#{id}",
-                            headers: { 'Content-Type' => 'application/vnd.api+json' }
-                           )
-      rescue Net::ReadTimeout, Net::OpenTimeout => e
-        if retries.positive?
-          retries -= 1
-          log.info "[#{Time.now}] Timed out while attempting to fetch DOI record using #{doi_get_url}/#{id}, retrying with #{retries} retries remaining."
-          sleep(30)
-          return fetch_doi_record(id, doi_get_url, retries)
-        else
-          # log failure
-          log.info "[#{Time.now}] failed to get doi record for #{id}: #{e.message}"
-          log.info e.backtrace
-          raise e
-        end
+      return HTTParty.get("#{doi_get_url}/#{id}",
+                          headers: { 'Content-Type' => 'application/vnd.api+json' }
+                         )
+    rescue Net::ReadTimeout, Net::OpenTimeout => e
+      if retries.positive?
+        retries -= 1
+        log.info "[#{Time.now}] Timed out while attempting to fetch DOI record using #{doi_get_url}/#{id}, retrying with #{retries} retries remaining."
+        sleep(30)
+        return fetch_doi_record(id, doi_get_url, retries)
+      else
+        # log failure
+        log.info "[#{Time.now}] failed to get doi record for #{id}: #{e.message}"
+        log.info e.backtrace
+        raise e
       end
     end
 

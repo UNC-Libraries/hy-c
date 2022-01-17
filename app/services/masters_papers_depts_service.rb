@@ -10,11 +10,9 @@ module MastersPapersDeptsService
   end
 
   def self.identifier(term)
-    begin
-      authority.all.reject { |item| item['active'] == false }.select { |department| department['label'] == term }.first['id']
-    rescue
-      nil
-    end
+    authority.all.reject { |item| item['active'] == false }.select { |department| department['label'] == term }.first['id']
+  rescue
+    nil
   end
 
   def self.label(id)
