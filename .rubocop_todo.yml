@@ -1044,13 +1044,6 @@ Style/StringLiteralsInInterpolation:
     - 'app/jobs/register_to_longleaf_job.rb'
     - 'app/lib/mini_magick/image/info.rb'
 
-# Offense count: 173
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, MinSize.
-# SupportedStyles: percent, brackets
-Style/SymbolArray:
-  Enabled: false
-
 # Offense count: 16
 # Cop supports --auto-correct.
 # Configuration parameters: AllowMethodsWithArguments, IgnoredMethods.
