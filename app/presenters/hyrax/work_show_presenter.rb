@@ -233,8 +233,8 @@ module Hyrax
         end
 
         metadata << {
-            'label' => I18n.t("simple_form.labels.defaults.#{field}"),
-            'value' => Array.wrap(field_value)
+          'label' => I18n.t("simple_form.labels.defaults.#{field}"),
+          'value' => Array.wrap(field_value)
         }
       end
       metadata

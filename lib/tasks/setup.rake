@@ -10,7 +10,7 @@ namespace 'setup' do
   end
 
   desc "Adds generic user to hyrax application"
-  task :new_user, [:email] => :environment do |t, args|
+  task :new_user, [:email] => :environment do |_t, args|
     Tasks::SetupTasksService.new_user(args[:email])
   end
 

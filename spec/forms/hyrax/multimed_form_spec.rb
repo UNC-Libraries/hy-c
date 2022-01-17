@@ -21,13 +21,14 @@ RSpec.describe Hyrax::MultimedForm do
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:based_near, :dcmi_type, :digital_collection, :doi, :extent, :keyword,
-                                     :language, :license, :medium, :note, :rights_statement, :subject, :language_label,
-                                     :license_label, :rights_statement_label, :deposit_agreement, :agreement,
-                                     :admin_note]
-    }    
+    it {
+      is_expected.to match_array [:based_near, :dcmi_type, :digital_collection, :doi, :extent, :keyword,
+                                  :language, :license, :medium, :note, :rights_statement, :subject, :language_label,
+                                  :license_label, :rights_statement_label, :deposit_agreement, :agreement,
+                                  :admin_note]
+    }
   end
-  
+
   describe "#admin_only_terms" do
     subject { form.admin_only_terms }
 
@@ -53,12 +54,12 @@ RSpec.describe Hyrax::MultimedForm do
                                         orcid: 'creator orcid',
                                         affiliation: 'Carolina Center for Genome Sciences',
                                         other_affiliation: 'another affiliation',
-                                        index: 1},
-                               '1' => {name: 'creator2',
-                                       orcid: 'creator2 orcid',
-                                       affiliation: 'Department of Chemistry',
-                                       other_affiliation: 'another affiliation',
-                                       index: 2} },
+                                        index: 1 },
+                               '1' => { name: 'creator2',
+                                        orcid: 'creator2 orcid',
+                                        affiliation: 'Department of Chemistry',
+                                        other_affiliation: 'another affiliation',
+                                        index: 2 } },
         date_issued: '2018-01-09', # single-valued
         subject: ['a subject'],
         language: ['http://id.loc.gov/vocabulary/iso639-2/eng'],
@@ -140,39 +141,39 @@ RSpec.describe Hyrax::MultimedForm do
     context 'with people parameters' do
       let(:params) do
         ActionController::Parameters.new(
-          creators_attributes: { '0' => {name: 'creator',
-                                         orcid: 'creator orcid',
-                                         affiliation: 'Carolina Center for Genome Sciences',
-                                         other_affiliation: 'another affiliation',
-                                         index: 2},
-                                 '1' => {name: 'creator2',
-                                         orcid: 'creator2 orcid',
-                                         affiliation: 'Department of Chemistry',
-                                         other_affiliation: 'another affiliation',
-                                         index: 1},
-                                 '2' => {name: 'creator3',
-                                         orcid: 'creator3 orcid',
-                                         affiliation: 'Department of Chemistry',
-                                         other_affiliation: 'another affiliation'}}
+          creators_attributes: { '0' => { name: 'creator',
+                                          orcid: 'creator orcid',
+                                          affiliation: 'Carolina Center for Genome Sciences',
+                                          other_affiliation: 'another affiliation',
+                                          index: 2 },
+                                 '1' => { name: 'creator2',
+                                          orcid: 'creator2 orcid',
+                                          affiliation: 'Department of Chemistry',
+                                          other_affiliation: 'another affiliation',
+                                          index: 1 },
+                                 '2' => { name: 'creator3',
+                                          orcid: 'creator3 orcid',
+                                          affiliation: 'Department of Chemistry',
+                                          other_affiliation: 'another affiliation' } }
         )
       end
 
       it 'retains existing index values and adds missing index values' do
-        expect(subject['creators_attributes'].as_json).to include({'0' => {'name' => 'creator',
-                                                                           'orcid' => 'creator orcid',
-                                                                           'affiliation' => 'Carolina Center for Genome Sciences',
-                                                                           'other_affiliation' => 'another affiliation',
-                                                                           'index' => 2},
-                                                                   '1' => {'name' => 'creator2',
-                                                                           'orcid' => 'creator2 orcid',
-                                                                           'affiliation' => 'Department of Chemistry',
-                                                                           'other_affiliation' => 'another affiliation',
-                                                                           'index' => 1},
-                                                                   '2' => {'name' => 'creator3',
-                                                                           'orcid' => 'creator3 orcid',
-                                                                           'affiliation' => 'Department of Chemistry',
-                                                                           'other_affiliation' => 'another affiliation',
-                                                                           'index' => 3}})
+        expect(subject['creators_attributes'].as_json).to include({ '0' => { 'name' => 'creator',
+                                                                             'orcid' => 'creator orcid',
+                                                                             'affiliation' => 'Carolina Center for Genome Sciences',
+                                                                             'other_affiliation' => 'another affiliation',
+                                                                             'index' => 2 },
+                                                                    '1' => { 'name' => 'creator2',
+                                                                             'orcid' => 'creator2 orcid',
+                                                                             'affiliation' => 'Department of Chemistry',
+                                                                             'other_affiliation' => 'another affiliation',
+                                                                             'index' => 1 },
+                                                                    '2' => { 'name' => 'creator3',
+                                                                             'orcid' => 'creator3 orcid',
+                                                                             'affiliation' => 'Department of Chemistry',
+                                                                             'other_affiliation' => 'another affiliation',
+                                                                             'index' => 3 } })
       end
     end
   end

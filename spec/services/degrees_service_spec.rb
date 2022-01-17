@@ -58,4 +58,3 @@ RSpec.describe Hyrax::DegreesService do
     end
   end
 end
-

@@ -17,7 +17,7 @@ RSpec.describe Hyrax::MastersPaperPresenter do
       "depositor_tesim" => user_key,
       "resource_type_tesim" => ['a type'],
       "abstract_tesim" => ['an abstract'],
-      "academic_concentration_tesim"=> ['a concentration'],
+      "academic_concentration_tesim" => ['a concentration'],
       "access_tesim" => 'access',
       "advisor_display_tesim" => ['an advisor'],
       "date_issued_tesim" => ['a date'],

@@ -57,11 +57,11 @@ module MiniMagick
           path = path.match(/\[\d+\]$/).pre_match if path =~ /\[\d+\]$/
 
           @info.update(
-            "format"     => format,
-            "width"      => Integer(width),
-            "height"     => Integer(height),
+            "format" => format,
+            "width" => Integer(width),
+            "height" => Integer(height),
             "dimensions" => [Integer(width), Integer(height)],
-            "size"       => File.size(path),
+            "size" => File.size(path),
             "human_size" => size,
           )
 

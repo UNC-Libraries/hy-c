@@ -24,14 +24,14 @@ RSpec.describe Hyrax::Workflow::DeletionApprovalNotification do
     it 'sends a message to all users' do
       recipients = { 'to' => [depositor], 'cc' => [cc_user] }
       expect(approver).to receive(:send_message)
-                              .with(anything, I18n.t('hyrax.notifications.workflow.deletion_approved.message', title: work.title[0], work_id: work.id,
-                                                     document_path: "#{ENV['HYRAX_HOST']}/concern/articles/#{work.id}", user: approver, comment: comment.comment),
-                                    anything).exactly(2).times.and_call_original
+        .with(anything, I18n.t('hyrax.notifications.workflow.deletion_approved.message', title: work.title[0], work_id: work.id,
+                                                                                         document_path: "#{ENV['HYRAX_HOST']}/concern/articles/#{work.id}", user: approver, comment: comment.comment),
+              anything).exactly(2).times.and_call_original
 
       expect { described_class.send_notification(entity: entity, user: approver, comment: comment, recipients: recipients) }
-          .to change { depositor.mailbox.inbox.count }.by(1)
-                  .and change { cc_user.mailbox.inbox.count }.by(1)
-                           .and change { approver.mailbox.inbox.count }.by(0)
+        .to change { depositor.mailbox.inbox.count }.by(1)
+                                                    .and change { cc_user.mailbox.inbox.count }.by(1)
+                                                                                               .and change { approver.mailbox.inbox.count }.by(0)
     end
 
     context 'without carbon-copied users' do
@@ -39,9 +39,9 @@ RSpec.describe Hyrax::Workflow::DeletionApprovalNotification do
         recipients = { 'to' => [depositor], 'cc' => [] }
         expect(approver).to receive(:send_message).exactly(1).times.and_call_original
         expect { described_class.send_notification(entity: entity, user: approver, comment: comment, recipients: recipients) }
-            .to change { depositor.mailbox.inbox.count }.by(1)
-                    .and change { cc_user.mailbox.inbox.count }.by(0)
-                             .and change { approver.mailbox.inbox.count }.by(0)
+          .to change { depositor.mailbox.inbox.count }.by(1)
+                                                      .and change { cc_user.mailbox.inbox.count }.by(0)
+                                                                                                 .and change { approver.mailbox.inbox.count }.by(0)
       end
     end
   end

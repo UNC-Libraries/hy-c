@@ -82,7 +82,7 @@ RSpec.describe Hyrax::JournalPresenter do
 
   describe "#attribute_to_html" do
     let(:renderer) { double('renderer') }
-    
+
     context "with a custom abstract field" do
       before do
         allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:abstract, ['an abstract'], {}).and_return(renderer)

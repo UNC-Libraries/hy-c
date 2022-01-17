@@ -24,16 +24,16 @@ RSpec.describe Hyrax::Workflow::VirusFoundNotification do
     it 'sends a message to all users' do
       recipients = { 'to' => [depositor], 'cc' => [cc_user] }
       expect(depositor).to receive(:send_message)
-                               .with(anything,
-                                     I18n.t('hyrax.notifications.workflow.virus_found.message', title: work.title[0],
-                                            link: "<a href=\"#{ENV['HYRAX_HOST']}/concern/articles/#{work.id}\">#{work.id}</a>",
-                                            comment: comment.comment),
-                                     anything).exactly(2).times.and_call_original
+        .with(anything,
+              I18n.t('hyrax.notifications.workflow.virus_found.message', title: work.title[0],
+                                                                         link: "<a href=\"#{ENV['HYRAX_HOST']}/concern/articles/#{work.id}\">#{work.id}</a>",
+                                                                         comment: comment.comment),
+              anything).exactly(2).times.and_call_original
 
       expect { described_class.send_notification(entity: entity, user: depositor, comment: comment, recipients: recipients) }
-          .to change { depositor.mailbox.inbox.count }.by(1)
-                  .and change { cc_user.mailbox.inbox.count }.by(1)
-                           .and change { approver.mailbox.inbox.count }.by(0)
+        .to change { depositor.mailbox.inbox.count }.by(1)
+                                                    .and change { cc_user.mailbox.inbox.count }.by(1)
+                                                                                               .and change { approver.mailbox.inbox.count }.by(0)
     end
 
     context 'without carbon-copied users' do
@@ -41,9 +41,9 @@ RSpec.describe Hyrax::Workflow::VirusFoundNotification do
         recipients = { 'to' => [approver], 'cc' => [] }
         expect(depositor).to receive(:send_message).exactly(2).times.and_call_original
         expect { described_class.send_notification(entity: entity, user: depositor, comment: comment, recipients: recipients) }
-            .to change { approver.mailbox.inbox.count }.by(1)
-                    .and change { depositor.mailbox.inbox.count }.by(1)
-                            .and change { cc_user.mailbox.inbox.count }.by(0)
+          .to change { approver.mailbox.inbox.count }.by(1)
+                                                     .and change { depositor.mailbox.inbox.count }.by(1)
+                                                                                                  .and change { cc_user.mailbox.inbox.count }.by(0)
       end
     end
   end

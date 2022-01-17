@@ -53,7 +53,7 @@ module ActiveFedora::RDF
           if !field_info.values.blank?
             field_to_use = field_key == 'based_near' ? field_info : field_info.behaviors
             append_to_solr_doc(solr_doc,
-                               solr_document_field_name((field_key.to_s[0...-1]+'_display').to_sym, prefix_method),
+                               solr_document_field_name((field_key.to_s[0...-1] + '_display').to_sym, prefix_method),
                                field_to_use,
                                build_person_display(field_key, field_info.values))
           end
@@ -159,51 +159,51 @@ module ActiveFedora::RDF
     # [hyc-override] add method for serializing display data
     private
 
-      def build_person_display(field_key, people)
-        displays = []
-        people.each do |person|
-          display_text = []
-          if !Array(person['name']).first.blank?
-            if person['index']
-              display_text << "index:#{Array(person['index']).first}"
-            end
-            display_text << Array(person['name']).first
-            @person_label.push(Array(person['name']))
-            if field_key.to_s == 'creators'
-              @creator_label.push(Array(person['name']))
-            elsif field_key.to_s == 'advisors'
-              @advisor_label.push(Array(person['name']))
-            end
-
-            display_text << "ORCID: #{Array(person['orcid']).first}" if !Array(person['orcid']).first.blank?
-            @orcid_label.push(Array(person['orcid']))
-
-            affiliations = split_affiliations(person['affiliation'])
-            if !affiliations.blank?
-              display_text << "Affiliation: #{affiliations.join(', ')}"
-              @affiliation_label.push(Array(person['affiliation']))
-            end
-
-            display_text << "Other Affiliation: #{Array(person['other_affiliation']).first}" if !Array(person['other_affiliation']).first.blank?
-            @other_affiliation_label.push(Array(person['other_affiliation']))
-
-            displays << display_text.join('||')
+    def build_person_display(field_key, people)
+      displays = []
+      people.each do |person|
+        display_text = []
+        if !Array(person['name']).first.blank?
+          if person['index']
+            display_text << "index:#{Array(person['index']).first}"
           end
+          display_text << Array(person['name']).first
+          @person_label.push(Array(person['name']))
+          if field_key.to_s == 'creators'
+            @creator_label.push(Array(person['name']))
+          elsif field_key.to_s == 'advisors'
+            @advisor_label.push(Array(person['name']))
+          end
+
+          display_text << "ORCID: #{Array(person['orcid']).first}" if !Array(person['orcid']).first.blank?
+          @orcid_label.push(Array(person['orcid']))
+
+          affiliations = split_affiliations(person['affiliation'])
+          if !affiliations.blank?
+            display_text << "Affiliation: #{affiliations.join(', ')}"
+            @affiliation_label.push(Array(person['affiliation']))
+          end
+
+          display_text << "Other Affiliation: #{Array(person['other_affiliation']).first}" if !Array(person['other_affiliation']).first.blank?
+          @other_affiliation_label.push(Array(person['other_affiliation']))
+
+          displays << display_text.join('||')
         end
-        displays.flatten
+      end
+      displays.flatten
+    end
+
+    # split affiliations out
+    def split_affiliations(affiliations)
+      affiliations_list = []
+
+      Array(affiliations).reject { |a| a.blank? }.each do |aff|
+        Array(DepartmentsService.label(aff)).join(';').split(';').each do |value|
+          affiliations_list.push(value.squish!)
+        end
       end
 
-      # split affiliations out
-      def split_affiliations(affiliations)
-        affiliations_list = []
-
-        Array(affiliations).reject { |a| a.blank? }.each do |aff|
-          Array(DepartmentsService.label(aff)).join(';').split(';').each do |value|
-            affiliations_list.push(value.squish!)
-          end
-        end
-
-        affiliations_list.uniq
-      end
+      affiliations_list.uniq
+    end
   end
 end

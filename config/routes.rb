@@ -30,7 +30,6 @@ Rails.application.routes.draw do
   mount Blacklight::Engine => '/'
   mount BlacklightAdvancedSearch::Engine => '/'
 
-  
   concern :searchable, Blacklight::Routes::Searchable.new
 
   resource :catalog, only: [:index], as: 'catalog', path: '/catalog', controller: 'catalog' do
@@ -73,7 +72,7 @@ Rails.application.routes.draw do
   # end
 
   # Catch all route for any routes that don't exist. Always have this as the last route
-  match "*path", to: "errors#not_found", via: :all, format: false, defaults: {format: 'html'}
+  match "*path", to: "errors#not_found", via: :all, format: false, defaults: { format: 'html' }
 
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end

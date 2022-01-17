@@ -115,7 +115,7 @@ RSpec.feature 'Edit a work', js: false do
         label: "Alice's Adventures in Wonderland",
         title: ["Alice's Adventures in Wonderland"],
         date_created: "2017-10-02T15:38:56Z",
-        date_modified:" 2017-10-02T15:38:56Z",
+        date_modified: " 2017-10-02T15:38:56Z",
         contributor: ['Smith, Jennifer'],
         description: 'Abstract',
         related_url: ['http://dx.doi.org/10.1186/1753-6561-3-S7-S87'],

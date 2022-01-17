@@ -25,8 +25,8 @@ RSpec.describe MigrationHelper do
     let(:hash) { Hash.new }
     let(:filepath_hash) do
       {
-          '2d005f01-844e-46f3-b528-6a9c40e29914' => 'spec/fixtures/migration/2d005f01-844e-46f3-b528-6a9c40e29914/uuid:2d005f01-844e-46f3-b528-6a9c40e29914-object.xml',
-          '2f847077-7060-445b-99b3-190e7cff0067' => 'spec/fixtures/migration/2f847077-7060-445b-99b3-190e7cff0067/uuid:2f847077-7060-445b-99b3-190e7cff0067-object.xml'
+        '2d005f01-844e-46f3-b528-6a9c40e29914' => 'spec/fixtures/migration/2d005f01-844e-46f3-b528-6a9c40e29914/uuid:2d005f01-844e-46f3-b528-6a9c40e29914-object.xml',
+        '2f847077-7060-445b-99b3-190e7cff0067' => 'spec/fixtures/migration/2f847077-7060-445b-99b3-190e7cff0067/uuid:2f847077-7060-445b-99b3-190e7cff0067-object.xml'
       }
     end
 
@@ -73,34 +73,34 @@ RSpec.describe MigrationHelper do
   describe '#check_enumeration' do
     let(:metadata) do
       {
-          'title' => 'a title for an article', # should be array
-          'date_issued' => '2019-10-02', # should be string
-          'edition' => ['preprint'], # should be string
-          'alternative_title' => ['another title for an article'] # should be array
+        'title' => 'a title for an article', # should be array
+        'date_issued' => '2019-10-02', # should be string
+        'edition' => ['preprint'], # should be string
+        'alternative_title' => ['another title for an article'] # should be array
       }
     end
     let(:resource) { Article.new }
     let(:identifier) { 'my new article' }
     let(:formatted_metadata) do
       {
-          'title' => ['a title for an article'],
-          'date_issued' => '2019-10-02',
-          'edition' => 'preprint',
-          'alternative_title' => ['another title for an article']
+        'title' => ['a title for an article'],
+        'date_issued' => '2019-10-02',
+        'edition' => 'preprint',
+        'alternative_title' => ['another title for an article']
       }
     end
 
     it 'verifies enumeration of work type attributes' do
       article = described_class.check_enumeration(metadata, resource, identifier)
-      article_attributes = article.attributes.delete_if{|k,v| v.blank?} # remove nil values and empty arrays
+      article_attributes = article.attributes.delete_if { |_k, v| v.blank? } # remove nil values and empty arrays
 
       expect(article_attributes).to eq formatted_metadata
     end
   end
 
   describe '#get_permissions_attributes' do
-    let(:admin_set) { AdminSet.new(id: Date.today.to_time.to_i.to_s, title: ['a test admin set'])}
-    let(:permission_template) { Hyrax::PermissionTemplate.new(id: Date.today.to_time.to_i, source_id: admin_set.id)}
+    let(:admin_set) { AdminSet.new(id: Date.today.to_time.to_i.to_s, title: ['a test admin set']) }
+    let(:permission_template) { Hyrax::PermissionTemplate.new(id: Date.today.to_time.to_i, source_id: admin_set.id) }
     let(:manager_group) { Role.new(id: Date.today.to_time.to_i, name: 'manager_group') }
     let(:viewer_group) { Role.new(id: Date.today.to_time.to_i, name: 'viewer_group') }
     let(:manager_agent) { Sipity::Agent.new(id: Date.today.to_time.to_i, proxy_for_id: manager_group.name, proxy_for_type: 'Hyrax::Group') }

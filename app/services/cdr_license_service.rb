@@ -9,7 +9,7 @@ module CdrLicenseService
       license_type = ''
     end
 
-    authority.all.reject{ |item| item['active'] == license_type }.map do |element|
+    authority.all.reject { |item| item['active'] == license_type }.map do |element|
       [element[:label], element[:id]]
     end
   end

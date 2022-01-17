@@ -5,7 +5,7 @@ class AssignPermissionsToWorkJob < Hyrax::ApplicationJob
   def perform(model, work_id, group_name, type, access)
     # Update work permissions
     work = model.constantize.find(work_id)
-    work.update permissions_attributes: [{name: group_name, type: type, access: access}]
+    work.update permissions_attributes: [{ name: group_name, type: type, access: access }]
 
     # Send notification to reviewer group
     entity = Sipity::Entity.where(proxy_for_global_id: work.to_global_id.to_s).first

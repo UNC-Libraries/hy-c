@@ -127,13 +127,6 @@ Layout/ExtraSpacing:
     - 'spec/forms/hyrax/honors_thesis_form_spec.rb'
     - 'spec/views/hyrax/citations/work.html.erb_spec.rb'
 
-# Offense count: 46
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, IndentationWidth.
-# SupportedStyles: consistent, consistent_relative_to_receiver, special_for_inner_method_call, special_for_inner_method_call_in_parentheses
-Layout/FirstArgumentIndentation:
-  Enabled: false
-
 # Offense count: 10
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, IndentationWidth.
@@ -146,35 +139,6 @@ Layout/FirstArrayElementIndentation:
     - 'spec/services/admin_set_select_service_spec.rb'
     - 'spec/services/degrees_service_spec.rb'
     - 'spec/views/default_admin_sets/index.html.erb_spec.rb'
-
-# Offense count: 56
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, IndentationWidth.
-# SupportedStyles: special_inside_parentheses, consistent, align_braces
-Layout/FirstHashElementIndentation:
-  Enabled: false
-
-# Offense count: 370
-# Cop supports --auto-correct.
-# Configuration parameters: AllowMultipleStyles, EnforcedHashRocketStyle, EnforcedColonStyle, EnforcedLastArgumentHashStyle.
-# SupportedHashRocketStyles: key, separator, table
-# SupportedColonStyles: key, separator, table
-# SupportedLastArgumentHashStyles: always_inspect, always_ignore, ignore_implicit, ignore_explicit
-Layout/HashAlignment:
-  Enabled: false
-
-# Offense count: 71
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: normal, indented_internal_methods
-Layout/IndentationConsistency:
-  Enabled: false
-
-# Offense count: 65
-# Cop supports --auto-correct.
-# Configuration parameters: Width, IgnoredPatterns.
-Layout/IndentationWidth:
-  Enabled: false
 
 # Offense count: 24
 # Cop supports --auto-correct.
@@ -194,11 +158,6 @@ Layout/MultilineArrayBraceLayout:
   Exclude:
     - 'spec/services/admin_set_select_service_spec.rb'
     - 'spec/services/degrees_service_spec.rb'
-
-# Offense count: 34
-# Cop supports --auto-correct.
-Layout/MultilineBlockLayout:
-  Enabled: false
 
 # Offense count: 10
 # Cop supports --auto-correct.
@@ -233,13 +192,6 @@ Layout/MultilineMethodCallBraceLayout:
     - 'spec/services/tasks/csv_ingest_service_spec.rb'
     - 'spec/services/tasks/onescience_ingest_service_spec.rb'
 
-# Offense count: 97
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, IndentationWidth.
-# SupportedStyles: aligned, indented, indented_relative_to_receiver
-Layout/MultilineMethodCallIndentation:
-  Enabled: false
-
 # Offense count: 23
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, IndentationWidth.
@@ -265,11 +217,6 @@ Layout/SpaceAfterColon:
     - 'spec/features/edit_work_spec.rb'
     - 'spec/services/parent_query_service_spec.rb'
 
-# Offense count: 69
-# Cop supports --auto-correct.
-Layout/SpaceAfterComma:
-  Enabled: false
-
 # Offense count: 5
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle.
@@ -285,21 +232,6 @@ Layout/SpaceAroundEqualsInParameterDefault:
 Layout/SpaceAroundKeyword:
   Exclude:
     - 'app/services/tasks/onescience_ingest_service.rb'
-
-# Offense count: 1489
-# Cop supports --auto-correct.
-# Configuration parameters: AllowForAlignment, EnforcedStyleForExponentOperator.
-# SupportedStylesForExponentOperator: space, no_space
-Layout/SpaceAroundOperators:
-  Enabled: false
-
-# Offense count: 70
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, EnforcedStyleForEmptyBraces.
-# SupportedStyles: space, no_space
-# SupportedStylesForEmptyBraces: space, no_space
-Layout/SpaceBeforeBlockBraces:
-  Enabled: false
 
 # Offense count: 1
 # Cop supports --auto-correct.
@@ -326,22 +258,6 @@ Layout/SpaceInsideArrayLiteralBrackets:
     - 'app/services/tasks/doi_create_service.rb'
     - 'config/environments/production.rb'
 
-# Offense count: 123
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, EnforcedStyleForEmptyBraces, SpaceBeforeBlockParameters.
-# SupportedStyles: space, no_space
-# SupportedStylesForEmptyBraces: space, no_space
-Layout/SpaceInsideBlockBraces:
-  Enabled: false
-
-# Offense count: 783
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, EnforcedStyleForEmptyBraces.
-# SupportedStyles: space, no_space, compact
-# SupportedStylesForEmptyBraces: space, no_space
-Layout/SpaceInsideHashLiteralBraces:
-  Enabled: false
-
 # Offense count: 6
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle.
@@ -351,19 +267,6 @@ Layout/SpaceInsideParens:
     - 'app/helpers/blacklight/facets_helper_behavior.rb'
     - 'app/helpers/range_limit_helper.rb'
     - 'app/models/solr_document.rb'
-
-# Offense count: 91
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: final_newline, final_blank_line
-Layout/TrailingEmptyLines:
-  Enabled: false
-
-# Offense count: 113
-# Cop supports --auto-correct.
-# Configuration parameters: AllowInHeredoc.
-Layout/TrailingWhitespace:
-  Enabled: false
 
 # Offense count: 2
 # Configuration parameters: IgnoredMethods.
@@ -461,12 +364,6 @@ Lint/ShadowingOuterLocalVariable:
     - 'app/parsers/bulkrax/csv_parser.rb'
     - 'app/services/tasks/onescience_ingest_service.rb'
     - 'lib/tasks/migrate/services/ingest_service.rb'
-
-# Offense count: 24
-# Cop supports --auto-correct.
-# Configuration parameters: IgnoreEmptyBlocks, AllowUnusedKeywordArguments.
-Lint/UnusedBlockArgument:
-  Enabled: false
 
 # Offense count: 4
 # Cop supports --auto-correct.

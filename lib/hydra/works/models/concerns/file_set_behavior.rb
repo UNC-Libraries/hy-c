@@ -70,17 +70,17 @@ module Hydra::Works
 
     private
 
-      def remove_from_works
-        in_works.each do |parent|
-          parent.ordered_members.delete(self) # Delete the list node
-          parent.members.delete(self) # Delete the indirect container Proxy
-          parent.save! # record the changes to the ordered members
-        end
+    def remove_from_works
+      in_works.each do |parent|
+        parent.ordered_members.delete(self) # Delete the list node
+        parent.members.delete(self) # Delete the indirect container Proxy
+        parent.save! # record the changes to the ordered members
       end
-      
-      def deregister_longleaf
-        Rails.logger.info("Calling deregistration from longleaf after delete of #{original_file}")
-        DeregisterLongleafJob.perform_later(self)
-      end
+    end
+
+    def deregister_longleaf
+      Rails.logger.info("Calling deregistration from longleaf after delete of #{original_file}")
+      DeregisterLongleafJob.perform_later(self)
+    end
   end
 end

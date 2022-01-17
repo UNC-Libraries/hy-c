@@ -27,9 +27,9 @@ RSpec.describe Tasks::SageIngestService do
 
   # empty the progress log
   around do |example|
-    File.open(ingest_progress_log_path, 'w') {|file| file.truncate(0) }
+    File.open(ingest_progress_log_path, 'w') { |file| file.truncate(0) }
     example.run
-    File.open(ingest_progress_log_path, 'w') {|file| file.truncate(0) }
+    File.open(ingest_progress_log_path, 'w') { |file| file.truncate(0) }
   end
 
   describe '#initialize' do

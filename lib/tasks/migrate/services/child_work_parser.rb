@@ -58,19 +58,19 @@ module Migrate
           store_children(uuid, child_works)
         end
 
-        puts "[#{Time.now.to_s}] Completed building parent-child relationships in #{Time.now-start_time} seconds"
+        puts "[#{Time.now.to_s}] Completed building parent-child relationships in #{Time.now - start_time} seconds"
       end
 
       private
 
-        # Store the parent to children mapping for a work
-        def store_children(uuid, child_works)
-          if child_works.blank?
-            return
-          end
-
-          @parent_child_mapper.add_row(uuid, child_works.join('|'))
+      # Store the parent to children mapping for a work
+      def store_children(uuid, child_works)
+        if child_works.blank?
+          return
         end
+
+        @parent_child_mapper.add_row(uuid, child_works.join('|'))
+      end
     end
   end
 end

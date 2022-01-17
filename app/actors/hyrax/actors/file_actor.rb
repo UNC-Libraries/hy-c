@@ -59,10 +59,10 @@ module Hyrax
 
       private
 
-        # @return [Hydra::PCDM::File] the file referenced by relation
-        def related_file
-          file_set.public_send(relation) || raise("No #{relation} returned for FileSet #{file_set.id}")
-        end
+      # @return [Hydra::PCDM::File] the file referenced by relation
+      def related_file
+        file_set.public_send(relation) || raise("No #{relation} returned for FileSet #{file_set.id}")
+      end
     end
   end
 end

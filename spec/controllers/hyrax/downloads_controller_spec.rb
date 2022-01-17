@@ -31,10 +31,10 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
         allow(Hyrax.config).to receive(:google_analytics_id).and_return('blah')
         request.env['HTTP_REFERER'] = 'http://example.com'
         stub = stub_request(:post, "http://www.google-analytics.com/collect")
-                     .with(body: { "cid"=>'555', "cm"=>"referral", "dr"=>"http://example.com", "ds"=>"server-side", "ea"=>"DownloadIR",
-                                   "ec"=>"Unknown", "el"=>file_set.id, "t"=>"event", "tid"=>"blah",
-                                   "ua"=>"Rails Testing", "uip"=>"0.0.0.0", "v"=>"1" })
-                 .to_return(status: 200, body: "", headers: {})
+               .with(body: { "cid" => '555', "cm" => "referral", "dr" => "http://example.com", "ds" => "server-side", "ea" => "DownloadIR",
+                             "ec" => "Unknown", "el" => file_set.id, "t" => "event", "tid" => "blah",
+                             "ua" => "Rails Testing", "uip" => "0.0.0.0", "v" => "1" })
+               .to_return(status: 200, body: "", headers: {})
         get :show, params: { id: file_set }
         expect(stub).to have_been_requested.times(1) # must be after the method call that creates request
       end
@@ -45,10 +45,10 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
         allow(Hyrax.config).to receive(:google_analytics_id).and_return('blah')
         request.env['HTTP_REFERER'] = nil
         stub = stub_request(:post, "http://www.google-analytics.com/collect")
-                     .with(body: { "cid"=>'555', "cm"=>"direct", "ds"=>"server-side", "ea"=>"DownloadIR",
-                                   "ec"=>"Unknown", "el"=>file_set.id, "t"=>"event", "tid"=>"blah",
-                                   "ua"=>"Rails Testing", "uip"=>"0.0.0.0", "v"=>"1" })
-                 .to_return(status: 200, body: "", headers: {})
+               .with(body: { "cid" => '555', "cm" => "direct", "ds" => "server-side", "ea" => "DownloadIR",
+                             "ec" => "Unknown", "el" => file_set.id, "t" => "event", "tid" => "blah",
+                             "ua" => "Rails Testing", "uip" => "0.0.0.0", "v" => "1" })
+               .to_return(status: 200, body: "", headers: {})
         get :show, params: { id: file_set }
         expect(stub).to have_been_requested.times(1) # must be after the method call that creates request
       end
@@ -57,8 +57,8 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
 
   # app/controllers/hyrax/downloads_controller.rb:6
   describe '#set_record_admin_set' do
-    let(:solr_response) { {response: {docs: [{admin_set_tesim: ['admin set for download controller']}]}}.to_json }
-    let(:empty_solr_response) { {response: {docs: []}}.to_json }
+    let(:solr_response) { { response: { docs: [{ admin_set_tesim: ['admin set for download controller'] }] } }.to_json }
+    let(:empty_solr_response) { { response: { docs: [] } }.to_json }
 
     context 'with a solr response' do
       before do

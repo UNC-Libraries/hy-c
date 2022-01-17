@@ -3,7 +3,7 @@ require 'rails_helper'
 # test overridden actions
 RSpec.context Hyrax::UsersController, type: :request do
   let(:user) do
-    User.new(email: "test#{Date.today.to_time.to_i}@example.com", guest: false, uid: "test#{Date.today.to_time.to_i}") { |u| u.save!(validate: false)}
+    User.new(email: "test#{Date.today.to_time.to_i}@example.com", guest: false, uid: "test#{Date.today.to_time.to_i}") { |u| u.save!(validate: false) }
   end
 
   let(:admin_user) do

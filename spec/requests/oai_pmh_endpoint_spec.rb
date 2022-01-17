@@ -14,7 +14,7 @@ RSpec.describe 'OAI-PMH catalog endpoint' do
     end.sort!
   end
   let(:solrRecords) do
-    ActiveFedora::SolrService.get('has_model_ssim:(Dissertation OR Article OR MastersPaper OR '+ 'HonorsThesis OR Journal OR DataSet OR Multimed OR ScholarlyWork ' + 'OR General OR Artwork) AND visibility_ssi:open', rows: 100)
+    ActiveFedora::SolrService.get('has_model_ssim:(Dissertation OR Article OR MastersPaper OR ' + 'HonorsThesis OR Journal OR DataSet OR Multimed OR ScholarlyWork ' + 'OR General OR Artwork) AND visibility_ssi:open', rows: 100)
   end
   before(:all) do
     solr = Blacklight.default_index.connection
@@ -78,7 +78,7 @@ RSpec.describe 'OAI-PMH catalog endpoint' do
 
       scenario 'a resumption token displays the next page of records' do
         # This test checks the last page of records instead of the second
-        page = (timestamps.count/25).floor * 25
+        page = (timestamps.count / 25).floor * 25
         params = { verb: 'ListRecords',
                    resumptionToken: "oai_dc.f(#{timestamps.first}).u(#{timestamps.last}).t(#{timestamps.count}):#{page}" }
 
@@ -101,7 +101,7 @@ RSpec.describe 'OAI-PMH catalog endpoint' do
     end
 
     context 'with a set' do
-      let(:document_config) { {set_model: CdrListSet, set_fields: [{label: 'language', solr_field: 'language_label_tesim' }] } }
+      let(:document_config) { { set_model: CdrListSet, set_fields: [{ label: 'language', solr_field: 'language_label_tesim' }] } }
 
       scenario 'only records from the set are returned' do
         params = { verb: 'ListRecords', metadataPrefix: format, set: 'language:Japanese' }
@@ -116,14 +116,14 @@ RSpec.describe 'OAI-PMH catalog endpoint' do
     context 'with a from date' do
       scenario 'only records with a timestamp after the date are shown' do
         params = { verb: 'ListRecords', metadataPrefix: format,
-                   from: timestamps[timestamps.count-2] }
+                   from: timestamps[timestamps.count - 2] }
 
         get oai_catalog_path(params)
         records = xpath '//xmlns:record'
         expect(records.count).to be 2
-        expect(response.body).to include(timestamps[timestamps.count-1])
-        expect(response.body).to include(timestamps[timestamps.count-2])
-        expect(response.body).not_to include(timestamps[timestamps.count-3])
+        expect(response.body).to include(timestamps[timestamps.count - 1])
+        expect(response.body).to include(timestamps[timestamps.count - 2])
+        expect(response.body).not_to include(timestamps[timestamps.count - 3])
       end
 
       context 'and an until date' do
@@ -163,7 +163,7 @@ RSpec.describe 'OAI-PMH catalog endpoint' do
     let(:oai_identifier) { solrRecords['response']['docs'][0]['id'] }
 
     let(:params) { { verb: 'GetRecord', metadataPrefix: format, identifier: identifier } }
-    let(:identifier) { 'oai:localhost:'+oai_identifier }
+    let(:identifier) { 'oai:localhost:' + oai_identifier }
 
     scenario 'displays a single record' do
       get oai_catalog_path(params)
@@ -193,7 +193,7 @@ RSpec.describe 'OAI-PMH catalog endpoint' do
     end
 
     context 'with set configuration', :vcr do
-      let(:document_config) { {set_model: CdrListSet, set_fields: [{label: 'language', solr_field: 'language_label_tesim' }] } }
+      let(:document_config) { { set_model: CdrListSet, set_fields: [{ label: 'language', solr_field: 'language_label_tesim' }] } }
 
       scenario 'shows all sets' do
         get oai_catalog_path(verb: 'ListSets')
@@ -207,7 +207,7 @@ RSpec.describe 'OAI-PMH catalog endpoint' do
       end
 
       context 'where sets include descriptions' do
-        let(:document_config) { {set_model: CdrListSet, set_fields: [{label: 'admin set', solr_field: 'admin_set_tesim' }] } }
+        let(:document_config) { { set_model: CdrListSet, set_fields: [{ label: 'admin set', solr_field: 'admin_set_tesim' }] } }
 
         scenario 'shows the set description object' do
           get oai_catalog_path(verb: 'ListSets')
@@ -225,7 +225,7 @@ RSpec.describe 'OAI-PMH catalog endpoint' do
   describe 'ListMetadataFormats verb' do
     scenario 'lists the oai_dc format' do
       get oai_catalog_path(verb: 'ListMetadataFormats')
-      expect(response.body).to include('<metadataPrefix>'+format+'</metadataPrefix>')
+      expect(response.body).to include('<metadataPrefix>' + format + '</metadataPrefix>')
     end
   end
 

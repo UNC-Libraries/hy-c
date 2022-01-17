@@ -58,7 +58,7 @@ class JatsIngestWork
       'affiliation' => '',
       # 'affiliation' => some_method, # Do not store affiliation until we can map it to the controlled vocabulary
       'other_affiliation' => first_affiliation,
-      'index' => (index+1).to_s
+      'index' => (index + 1).to_s
     }
   end
 
@@ -74,7 +74,7 @@ class JatsIngestWork
     references = elem.xpath('xref')
     references.map do |ref|
       reference_type = ref['ref-type']
-      next unless reference_type=="aff"
+      next unless reference_type == "aff"
 
       ref["rid"]
     end.compact

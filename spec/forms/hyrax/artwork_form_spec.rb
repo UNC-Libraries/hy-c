@@ -21,9 +21,10 @@ RSpec.describe Hyrax::ArtworkForm do
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:creator, :description, :license, :note, :rights_statement, :doi, :license_label,
-                                     :rights_statement_label, :dcmi_type, :deposit_agreement, :agreement, :admin_note]
-    }    
+    it {
+      is_expected.to match_array [:creator, :description, :license, :note, :rights_statement, :doi, :license_label,
+                                  :rights_statement_label, :dcmi_type, :deposit_agreement, :agreement, :admin_note]
+    }
   end
 
   describe "#admin_only_terms" do
@@ -47,12 +48,12 @@ RSpec.describe Hyrax::ArtworkForm do
                                         orcid: 'creator orcid',
                                         affiliation: 'Department of Art',
                                         other_affiliation: 'another affiliation',
-                                        index: 1},
-                               '1' => {name: 'creator2',
-                                       orcid: 'creator2 orcid',
-                                       affiliation: 'Department of Chemistry',
-                                       other_affiliation: 'another affiliation',
-                                       index: 2} },
+                                        index: 1 },
+                               '1' => { name: 'creator2',
+                                        orcid: 'creator2 orcid',
+                                        affiliation: 'Department of Chemistry',
+                                        other_affiliation: 'another affiliation',
+                                        index: 2 } },
         date_issued: '2017-01-22', # single-valued
         resource_type: ['a type'],
         rights_statement: 'http://rightsstatements.org/vocab/InC/1.0/', # single-valued
@@ -125,39 +126,39 @@ RSpec.describe Hyrax::ArtworkForm do
     context 'with people parameters' do
       let(:params) do
         ActionController::Parameters.new(
-          creators_attributes: { '0' => {name: 'creator',
-                                         orcid: 'creator orcid',
-                                         affiliation: 'Carolina Center for Genome Sciences',
-                                         other_affiliation: 'another affiliation',
-                                         index: 2},
-                                 '1' => {name: 'creator2',
-                                         orcid: 'creator2 orcid',
-                                         affiliation: 'Department of Chemistry',
-                                         other_affiliation: 'another affiliation',
-                                         index: 1},
-                                 '2' => {name: 'creator3',
-                                         orcid: 'creator3 orcid',
-                                         affiliation: 'Department of Chemistry',
-                                         other_affiliation: 'another affiliation'}}
+          creators_attributes: { '0' => { name: 'creator',
+                                          orcid: 'creator orcid',
+                                          affiliation: 'Carolina Center for Genome Sciences',
+                                          other_affiliation: 'another affiliation',
+                                          index: 2 },
+                                 '1' => { name: 'creator2',
+                                          orcid: 'creator2 orcid',
+                                          affiliation: 'Department of Chemistry',
+                                          other_affiliation: 'another affiliation',
+                                          index: 1 },
+                                 '2' => { name: 'creator3',
+                                          orcid: 'creator3 orcid',
+                                          affiliation: 'Department of Chemistry',
+                                          other_affiliation: 'another affiliation' } }
         )
       end
 
       it 'retains existing index values and adds missing index values' do
-        expect(subject['creators_attributes'].as_json).to include({'0' => {'name' => 'creator',
-                                                                           'orcid' => 'creator orcid',
-                                                                           'affiliation' => 'Carolina Center for Genome Sciences',
-                                                                           'other_affiliation' => 'another affiliation',
-                                                                           'index' => 2},
-                                                                   '1' => {'name' => 'creator2',
-                                                                           'orcid' => 'creator2 orcid',
-                                                                           'affiliation' => 'Department of Chemistry',
-                                                                           'other_affiliation' => 'another affiliation',
-                                                                           'index' => 1},
-                                                                   '2' => {'name' => 'creator3',
-                                                                           'orcid' => 'creator3 orcid',
-                                                                           'affiliation' => 'Department of Chemistry',
-                                                                           'other_affiliation' => 'another affiliation',
-                                                                           'index' => 3}})
+        expect(subject['creators_attributes'].as_json).to include({ '0' => { 'name' => 'creator',
+                                                                             'orcid' => 'creator orcid',
+                                                                             'affiliation' => 'Carolina Center for Genome Sciences',
+                                                                             'other_affiliation' => 'another affiliation',
+                                                                             'index' => 2 },
+                                                                    '1' => { 'name' => 'creator2',
+                                                                             'orcid' => 'creator2 orcid',
+                                                                             'affiliation' => 'Department of Chemistry',
+                                                                             'other_affiliation' => 'another affiliation',
+                                                                             'index' => 1 },
+                                                                    '2' => { 'name' => 'creator3',
+                                                                             'orcid' => 'creator3 orcid',
+                                                                             'affiliation' => 'Department of Chemistry',
+                                                                             'other_affiliation' => 'another affiliation',
+                                                                             'index' => 3 } })
       end
     end
   end

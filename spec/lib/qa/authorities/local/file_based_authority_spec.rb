@@ -29,21 +29,21 @@ RSpec.describe Qa::Authorities::Local::FileBasedAuthority do
     context "with at least one matching entry" do
       let(:term) { 'NonCommercial' }
       let(:expected) do
-        [{"id"=>"http://creativecommons.org/licenses/by-nc/3.0/us/",
-          "label"=>"Attribution-NonCommercial 3.0 United States",
-          "active"=>"all"},
-         {"id"=>"http://creativecommons.org/licenses/by-nc/4.0/",
-          "label"=>"Attribution-NonCommercial 4.0 International",
-          "active"=>"all"},
-         {"id"=>"http://creativecommons.org/licenses/by-nc-nd/3.0/us/",
-          "label"=>"Attribution-NonCommercial-NoDerivs 3.0 United States",
-          "active"=>"all"},
-         {"id"=>"http://creativecommons.org/licenses/by-nc-nd/4.0/",
-          "label"=>"Attribution-NonCommercial-NoDerivatives 4.0 International",
-          "active"=>"all"},
-         {"id"=>"http://creativecommons.org/licenses/by-nc-sa/3.0/us/",
-          "label"=>"Attribution-NonCommercial-ShareAlike 3.0 United States",
-          "active"=>"all"}]
+        [{ "id" => "http://creativecommons.org/licenses/by-nc/3.0/us/",
+           "label" => "Attribution-NonCommercial 3.0 United States",
+           "active" => "all" },
+         { "id" => "http://creativecommons.org/licenses/by-nc/4.0/",
+           "label" => "Attribution-NonCommercial 4.0 International",
+           "active" => "all" },
+         { "id" => "http://creativecommons.org/licenses/by-nc-nd/3.0/us/",
+           "label" => "Attribution-NonCommercial-NoDerivs 3.0 United States",
+           "active" => "all" },
+         { "id" => "http://creativecommons.org/licenses/by-nc-nd/4.0/",
+           "label" => "Attribution-NonCommercial-NoDerivatives 4.0 International",
+           "active" => "all" },
+         { "id" => "http://creativecommons.org/licenses/by-nc-sa/3.0/us/",
+           "label" => "Attribution-NonCommercial-ShareAlike 3.0 United States",
+           "active" => "all" }]
       end
       it "returns only entries matching the query term" do
         results = licenses.search(term)

@@ -59,7 +59,7 @@ AND has_model_ssim:(DataSet HonorsThesis MastersPaper ScholarlyWork) AND system_
           next
         end
 
-        log.info "[#{Time.now}] Updating doi for #{record['id']} (#{index+1} of #{records.count})"
+        log.info "[#{Time.now}] Updating doi for #{record['id']} (#{index + 1} of #{records.count})"
 
         work = ActiveFedora::Base.find(record['id'])
         data = format_update_data(work)
@@ -87,70 +87,70 @@ AND has_model_ssim:(DataSet HonorsThesis MastersPaper ScholarlyWork) AND system_
 
     private
 
-      def doi_update_request(id, data, retries, doi_update_url, datacite_user, datacite_password)
-        begin
-          return HTTParty.put("#{doi_update_url}/#{id}",
-                              headers: {'Content-Type' => 'application/vnd.api+json'},
-                              basic_auth: {
-                                  username: datacite_user,
-                                  password: datacite_password
-                              },
-                              body: data
-                             )
-        rescue Net::ReadTimeout, Net::OpenTimeout => e
-          if retries > 0
-            # log retry
-            log.info "[#{Time.now}] retrying #{id}: #{e.message}"
-            print 'R'
-            retries -= 1
-            log.info "[#{Time.now}] Timed out while attempting to create DOI using #{doi_update_url}/#{id}, retrying with #{retries} retries remaining."
-            sleep(30)
-            return doi_update_request(id, data, retries, doi_update_url, datacite_user, datacite_password)
-          else
-            # log failure
-            log.info "[#{Time.now}] failed to update doi for #{id}: #{e.message}"
-            log.info e.backtrace
-            raise e
-          end
-        rescue => e # other failure
+    def doi_update_request(id, data, retries, doi_update_url, datacite_user, datacite_password)
+      begin
+        return HTTParty.put("#{doi_update_url}/#{id}",
+                            headers: { 'Content-Type' => 'application/vnd.api+json' },
+                            basic_auth: {
+                              username: datacite_user,
+                              password: datacite_password
+                            },
+                            body: data
+                           )
+      rescue Net::ReadTimeout, Net::OpenTimeout => e
+        if retries > 0
+          # log retry
+          log.info "[#{Time.now}] retrying #{id}: #{e.message}"
+          print 'R'
+          retries -= 1
+          log.info "[#{Time.now}] Timed out while attempting to create DOI using #{doi_update_url}/#{id}, retrying with #{retries} retries remaining."
+          sleep(30)
+          return doi_update_request(id, data, retries, doi_update_url, datacite_user, datacite_password)
+        else
           # log failure
           log.info "[#{Time.now}] failed to update doi for #{id}: #{e.message}"
           log.info e.backtrace
           raise e
         end
+      rescue => e # other failure
+        # log failure
+        log.info "[#{Time.now}] failed to update doi for #{id}: #{e.message}"
+        log.info e.backtrace
+        raise e
       end
+    end
 
-      def fetch_doi_record(id, doi_get_url, retries)
-        begin
-          return HTTParty.get("#{doi_get_url}/#{id}",
-                              headers: {'Content-Type' => 'application/vnd.api+json'}
-                             )
-        rescue Net::ReadTimeout, Net::OpenTimeout => e
-          if retries > 0
-            retries -= 1
-            log.info "[#{Time.now}] Timed out while attempting to fetch DOI record using #{doi_get_url}/#{id}, retrying with #{retries} retries remaining."
-            sleep(30)
-            return fetch_doi_record(id, doi_get_url, retries)
-          else
-            # log failure
-            log.info "[#{Time.now}] failed to get doi record for #{id}: #{e.message}"
-            log.info e.backtrace
-            raise e
-          end
+    def fetch_doi_record(id, doi_get_url, retries)
+      begin
+        return HTTParty.get("#{doi_get_url}/#{id}",
+                            headers: { 'Content-Type' => 'application/vnd.api+json' }
+                           )
+      rescue Net::ReadTimeout, Net::OpenTimeout => e
+        if retries > 0
+          retries -= 1
+          log.info "[#{Time.now}] Timed out while attempting to fetch DOI record using #{doi_get_url}/#{id}, retrying with #{retries} retries remaining."
+          sleep(30)
+          return fetch_doi_record(id, doi_get_url, retries)
+        else
+          # log failure
+          log.info "[#{Time.now}] failed to get doi record for #{id}: #{e.message}"
+          log.info e.backtrace
+          raise e
         end
       end
+    end
 
-      def format_update_data(work)
-        data = {
-            data: {
-                type: 'dois',
-                attributes: {
-                    url: get_work_url(work.class, work.id)
-                }
-            }
+    def format_update_data(work)
+      data = {
+        data: {
+          type: 'dois',
+          attributes: {
+            url: get_work_url(work.class, work.id)
+          }
         }
+      }
 
-        data.to_json
-      end
+      data.to_json
+    end
   end
 end

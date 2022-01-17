@@ -33,7 +33,7 @@ RSpec.describe DeregisterLongleafJob, type: :job do
   end
 
   context 'With minimal config' do
-    let(:output_path) { File.join(ll_home_dir, "output.txt")}
+    let(:output_path) { File.join(ll_home_dir, "output.txt") }
 
     let(:longleaf_script) do
       path = File.join(ll_home_dir, "llcommand.sh")

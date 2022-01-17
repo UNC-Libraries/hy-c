@@ -9,7 +9,7 @@ module Hyrax
 
       def message
         I18n.t('hyrax.notifications.workflow.virus_found.message', title: title, link: (link_to work_id, document_path),
-               comment: comment)
+                                                                   comment: comment)
       end
 
       def users_to_notify

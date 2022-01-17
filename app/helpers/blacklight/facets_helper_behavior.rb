@@ -58,7 +58,7 @@ module Blacklight::FacetsHelperBehavior
   # removes any elements where render_facet_item returns a nil value. This enables an application
   # to filter undesireable facet items so they don't appear in the UI
   def render_facet_limit_list(paginator, facet_field, wrapping_element=:li)
-    safe_join(paginator.items.map { |item| render_facet_item(facet_field, item) }.compact.map { |item| content_tag(wrapping_element,item)})
+    safe_join(paginator.items.map { |item| render_facet_item(facet_field, item) }.compact.map { |item| content_tag(wrapping_element, item) })
   end
 
   ##
@@ -125,7 +125,7 @@ module Blacklight::FacetsHelperBehavior
   def render_facet_value(facet_field, item, options ={})
     path = path_for_facet(facet_field, item)
     content_tag(:span, :class => "facet-label") do
-      link_to_unless(options[:suppress_link], facet_display_value(facet_field, item), path, :class=>"facet_select")
+      link_to_unless(options[:suppress_link], facet_display_value(facet_field, item), path, :class => "facet_select")
     end + render_facet_count(item.hits)
   end
 

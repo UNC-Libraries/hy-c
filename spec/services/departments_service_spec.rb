@@ -31,4 +31,3 @@ RSpec.describe Hyrax::DepartmentsService do
     end
   end
 end
-

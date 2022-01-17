@@ -30,8 +30,8 @@ module Bulkrax
       { name: "XML", class_name: "Bulkrax::XmlParser", partial: "xml_fields" }
     ]
 
-    self.import_path = ENV['TEMP_STORAGE']+'/hyrax/imports'
-    self.export_path = ENV['TEMP_STORAGE']+'/hyrax/exports'
+    self.import_path = ENV['TEMP_STORAGE'] + '/hyrax/imports'
+    self.export_path = ENV['TEMP_STORAGE'] + '/hyrax/exports'
     self.removed_image_path = Bulkrax::Engine.root.join('spec', 'fixtures', 'removed.png').to_s
     self.server_name = 'bulkrax@example.com'
 

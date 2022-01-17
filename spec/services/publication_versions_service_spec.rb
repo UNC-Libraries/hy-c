@@ -25,4 +25,3 @@ RSpec.describe Hyrax::PublicationVersionsService do
     end
   end
 end
-

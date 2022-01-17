@@ -31,7 +31,7 @@ RSpec.describe JatsIngestWork, type: :model do
 
   it "can map UNC affiliations to the controlled vocabulary" do
     pending("Mapping from Sage affiliations to UNC controlled vocabulary")
-    expect(work.creators[4]).to include('affiliation'=>'Gillings School of Global Public Health; Department of Epidemiology')
+    expect(work.creators[4]).to include('affiliation' => 'Gillings School of Global Public Health; Department of Epidemiology')
   end
 
   it "can map affiliation ids to institution names" do

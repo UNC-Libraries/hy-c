@@ -21,11 +21,11 @@ module Migrate
 
       private
 
-        def create_log
-          if !File.exist?(@filename)
-            FileUtils.touch(@filename)
-          end
+      def create_log
+        if !File.exist?(@filename)
+          FileUtils.touch(@filename)
         end
+      end
     end
   end
 end

@@ -14,4 +14,3 @@ RSpec.describe Hyrax::ReviewersService do
     end
   end
 end
-

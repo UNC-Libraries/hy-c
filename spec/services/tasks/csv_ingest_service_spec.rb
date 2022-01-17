@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Tasks::CsvIngestService do
-  let(:args) { {configuration_file: 'spec/fixtures/csv/csv_ingest_config.yml'} }
+  let(:args) { { configuration_file: 'spec/fixtures/csv/csv_ingest_config.yml' } }
 
   describe '#initialize' do
     it 'sets all params' do
@@ -67,8 +67,8 @@ RSpec.describe Tasks::CsvIngestService do
     end
 
     it "creates a new work" do
-      expect { Tasks::CsvIngestService.new(args).ingest }.to change{ General.count }.by(1)
-                                                                        .and change{ DepositRecord.count }.by(1)
+      expect { Tasks::CsvIngestService.new(args).ingest }.to change { General.count }.by(1)
+                                                                                     .and change { DepositRecord.count }.by(1)
       new_general = General.all[-1]
       expect(new_general['depositor']).to eq 'admin'
       expect(new_general['title']).to match_array ['The Elusiveness of Tolerance: The “Jewish Question” From Lessing to the Napoleonic Wars']

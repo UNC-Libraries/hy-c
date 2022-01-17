@@ -16,7 +16,7 @@ module Hyrax
           author_vals = []
         else
           if work.creator_display.first.match('index:')
-            author_vals = sort_people_by_index(work.creator_display).map {|d| d.split('||').second.titleize}
+            author_vals = sort_people_by_index(work.creator_display).map { |d| d.split('||').second.titleize }
           else
             author_vals = work.creator_display.map { |d| d.split('|').first.titleize }
           end

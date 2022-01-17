@@ -21,25 +21,26 @@ RSpec.describe Hyrax::DissertationForm do
   describe "#secondary_terms" do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:abstract, :access, :advisor, :alternative_title, :based_near,
-                                     :dcmi_type, :degree, :degree_granting_institution, :doi, :graduation_year, :note,
-                                     :place_of_publication, :reviewer, :use, :contributor, :identifier, :subject,
-                                     :publisher, :language, :keyword, :rights_statement, :license, :resource_type,
-                                     :language_label, :license_label, :rights_statement_label, :deposit_agreement,
-                                     :agreement, :admin_note]
-    }    
+    it {
+      is_expected.to match_array [:abstract, :access, :advisor, :alternative_title, :based_near,
+                                  :dcmi_type, :degree, :degree_granting_institution, :doi, :graduation_year, :note,
+                                  :place_of_publication, :reviewer, :use, :contributor, :identifier, :subject,
+                                  :publisher, :language, :keyword, :rights_statement, :license, :resource_type,
+                                  :language_label, :license_label, :rights_statement_label, :deposit_agreement,
+                                  :agreement, :admin_note]
+    }
   end
-  
+
   describe "#admin_only_terms" do
     subject { form.admin_only_terms }
 
     it { is_expected.to match_array [:dcmi_type, :doi, :degree_granting_institution, :admin_note] }
   end
-  
+
   describe 'default value set' do
     subject { form }
     it "dcmi type must have default values" do
-      expect(form.model['dcmi_type']).to eq ['http://purl.org/dc/dcmitype/Text'] 
+      expect(form.model['dcmi_type']).to eq ['http://purl.org/dc/dcmitype/Text']
     end
 
     it "language must have default values" do
@@ -52,19 +53,19 @@ RSpec.describe Hyrax::DissertationForm do
       ActionController::Parameters.new(
         title: 'foo', # single-valued]
         contributors_attributes: { '0' => { name: 'contributor',
-                                        orcid: 'contributor orcid',
-                                        affiliation: 'Carolina Center for Genome Sciences',
-                                        other_affiliation: 'another affiliation'} },
+                                            orcid: 'contributor orcid',
+                                            affiliation: 'Carolina Center for Genome Sciences',
+                                            other_affiliation: 'another affiliation' } },
         creators_attributes: { '0' => { name: 'creator',
                                         orcid: 'creator orcid',
                                         affiliation: 'Carolina Center for Genome Sciences',
                                         other_affiliation: 'another affiliation',
-                                        index: 1},
-                               '1' => {name: 'creator2',
-                                       orcid: 'creator2 orcid',
-                                       affiliation: 'Department of Chemistry',
-                                       other_affiliation: 'another affiliation',
-                                       index: 2} },
+                                        index: 1 },
+                               '1' => { name: 'creator2',
+                                        orcid: 'creator2 orcid',
+                                        affiliation: 'Department of Chemistry',
+                                        other_affiliation: 'another affiliation',
+                                        index: 2 } },
         identifier: ['an id'],
         keyword: ['a keyword'],
         language: ['http://id.loc.gov/vocabulary/iso639-2/eng'],
@@ -83,7 +84,7 @@ RSpec.describe Hyrax::DissertationForm do
         advisors_attributes: { '0' => { name: 'advisor',
                                         orcid: 'advisor orcid',
                                         affiliation: 'Carolina Center for Genome Sciences',
-                                        other_affiliation: 'another affiliation'} },
+                                        other_affiliation: 'another affiliation' } },
         alternative_title: ['another title'],
         date_issued: '2018-01-08', # single-valued
         dcmi_type: ['http://purl.org/dc/dcmitype/Text'],
@@ -94,9 +95,9 @@ RSpec.describe Hyrax::DissertationForm do
         note: [''],
         place_of_publication: ['a place'],
         reviewers_attributes: { '0' => { name: 'reviewer',
-                                        orcid: 'reviewer orcid',
-                                        affiliation: 'Carolina Center for Genome Sciences',
-                                        other_affiliation: 'another affiliation'} },
+                                         orcid: 'reviewer orcid',
+                                         affiliation: 'Carolina Center for Genome Sciences',
+                                         other_affiliation: 'another affiliation' } },
         use: ['a use'],
         language_label: [],
         license_label: [],
@@ -188,57 +189,57 @@ RSpec.describe Hyrax::DissertationForm do
     context 'with people parameters' do
       let(:params) do
         ActionController::Parameters.new(
-          creators_attributes: { '0' => {name: 'creator',
-                                         orcid: 'creator orcid',
-                                         affiliation: 'Carolina Center for Genome Sciences',
-                                         other_affiliation: 'another affiliation',
-                                         index: 2},
-                                 '1' => {name: 'creator2',
-                                         orcid: 'creator2 orcid',
-                                         affiliation: 'Department of Chemistry',
-                                         other_affiliation: 'another affiliation',
-                                         index: 1},
-                                 '2' => {name: 'creator3',
-                                         orcid: 'creator3 orcid',
-                                         affiliation: 'Department of Chemistry',
-                                         other_affiliation: 'another affiliation'}},
-          reviewers_attributes: {'0' => {name: 'reviewer',
+          creators_attributes: { '0' => { name: 'creator',
+                                          orcid: 'creator orcid',
+                                          affiliation: 'Carolina Center for Genome Sciences',
+                                          other_affiliation: 'another affiliation',
+                                          index: 2 },
+                                 '1' => { name: 'creator2',
+                                          orcid: 'creator2 orcid',
+                                          affiliation: 'Department of Chemistry',
+                                          other_affiliation: 'another affiliation',
+                                          index: 1 },
+                                 '2' => { name: 'creator3',
+                                          orcid: 'creator3 orcid',
+                                          affiliation: 'Department of Chemistry',
+                                          other_affiliation: 'another affiliation' } },
+          reviewers_attributes: { '0' => { name: 'reviewer',
                                            orcid: 'reviewer orcid',
                                            affiliation: 'Carolina Center for Genome Sciences',
-                                           other_affiliation: 'another affiliation'},
-                                   '1' => {name: 'reviewer2',
+                                           other_affiliation: 'another affiliation' },
+                                  '1' => { name: 'reviewer2',
                                            orcid: 'reviewer2 orcid',
                                            affiliation: 'Department of Chemistry',
-                                           other_affiliation: 'another affiliation'}}
+                                           other_affiliation: 'another affiliation' } }
         )
       end
 
       it 'retains existing index values and adds missing index values' do
-        expect(subject['creators_attributes'].as_json).to include({'0' => {'name' => 'creator',
-                                                                           'orcid' => 'creator orcid',
-                                                                           'affiliation' => 'Carolina Center for Genome Sciences',
-                                                                           'other_affiliation' => 'another affiliation',
-                                                                           'index' => 2},
-                                                                   '1' => {'name' => 'creator2',
-                                                                           'orcid' => 'creator2 orcid',
-                                                                           'affiliation' => 'Department of Chemistry',
-                                                                           'other_affiliation' => 'another affiliation',
-                                                                           'index' => 1},
-                                                                   '2' => {'name' => 'creator3',
-                                                                           'orcid' => 'creator3 orcid',
-                                                                           'affiliation' => 'Department of Chemistry',
-                                                                           'other_affiliation' => 'another affiliation',
-                                                                           'index' => 3}})
-        expect(subject['reviewers_attributes'].as_json).to include({'0' => {'name' => 'reviewer',
+        expect(subject['creators_attributes'].as_json).to include({ '0' => { 'name' => 'creator',
+                                                                             'orcid' => 'creator orcid',
+                                                                             'affiliation' => 'Carolina Center for Genome Sciences',
+                                                                             'other_affiliation' => 'another affiliation',
+                                                                             'index' => 2 },
+                                                                    '1' => { 'name' => 'creator2',
+                                                                             'orcid' => 'creator2 orcid',
+                                                                             'affiliation' => 'Department of Chemistry',
+                                                                             'other_affiliation' => 'another affiliation',
+                                                                             'index' => 1 },
+                                                                    '2' => { 'name' => 'creator3',
+                                                                             'orcid' => 'creator3 orcid',
+                                                                             'affiliation' => 'Department of Chemistry',
+                                                                             'other_affiliation' => 'another affiliation',
+                                                                             'index' => 3 } })
+        expect(subject['reviewers_attributes'].as_json).to include({ '0' => { 'name' => 'reviewer',
                                                                               'orcid' => 'reviewer orcid',
                                                                               'affiliation' => 'Carolina Center for Genome Sciences',
                                                                               'other_affiliation' => 'another affiliation',
-                                                                              'index' => 1},
-                                                                      '1' => {'name' => 'reviewer2',
+                                                                              'index' => 1 },
+                                                                     '1' => { 'name' => 'reviewer2',
                                                                               'orcid' => 'reviewer2 orcid',
                                                                               'affiliation' => 'Department of Chemistry',
                                                                               'other_affiliation' => 'another affiliation',
-                                                                              'index' => 2}})
+                                                                              'index' => 2 } })
       end
     end
   end

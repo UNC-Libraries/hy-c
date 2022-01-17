@@ -14,7 +14,7 @@ namespace :migrate do
   require 'tasks/migration_helper'
 
   desc 'batch migrate records from FOXML file'
-  task :works, [:collection, :configuration_file, :output_dir] => :environment do |t, args|
+  task :works, [:collection, :configuration_file, :output_dir] => :environment do |_t, args|
     start_time = Time.now
     puts "[#{start_time.to_s}] Start migration of #{args[:collection]}"
 
@@ -72,6 +72,6 @@ namespace :migrate do
     end
 
     end_time = Time.now
-    puts "[#{end_time.to_s}] Completed migration of #{args[:collection]} in #{end_time-start_time} seconds"
+    puts "[#{end_time.to_s}] Completed migration of #{args[:collection]} in #{end_time - start_time} seconds"
   end
 end

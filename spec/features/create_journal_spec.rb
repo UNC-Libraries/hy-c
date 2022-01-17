@@ -7,7 +7,7 @@ include Warden::Test::Helpers
 RSpec.feature 'Create a Journal', js: false do
   context 'a logged in user' do
     let(:user) do
-      User.new(email: 'test@example.com', guest: false, uid: 'test') { |u| u.save!(validate: false)}
+      User.new(email: 'test@example.com', guest: false, uid: 'test') { |u| u.save!(validate: false) }
     end
 
     let(:admin_user) do
@@ -19,7 +19,7 @@ RSpec.feature 'Create a Journal', js: false do
                       description: ["some description"],
                       edit_users: [user.user_key])
     end
-    
+
     let(:permission_template) do
       Hyrax::PermissionTemplate.create!(source_id: admin_set.id)
     end
@@ -59,17 +59,17 @@ RSpec.feature 'Create a Journal', js: false do
           </rdf:RDF>
 RDFXML
       stub_request(:get, "http://sws.geonames.org/4460162/").
-          to_return(status: 200, body: chapel_hill, headers: {'Content-Type' => 'application/rdf+xml;charset=UTF-8'})
+        to_return(status: 200, body: chapel_hill, headers: { 'Content-Type' => 'application/rdf+xml;charset=UTF-8' })
 
       stub_request(:any, "http://api.geonames.org/getJSON?geonameId=4460162&username=#{ENV['GEONAMES_USER']}").
-          with(headers: {
-              'Accept' => '*/*',
-              'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-              'User-Agent' => 'Ruby'
-          }).to_return(status: 200, body: { asciiName: 'Chapel Hill',
-                                            countryName: 'United States',
-                                            adminName1: 'North Carolina' }.to_json,
-                       headers: { 'Content-Type' => 'application/json' })
+        with(headers: {
+               'Accept' => '*/*',
+               'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+               'User-Agent' => 'Ruby'
+             }).to_return(status: 200, body: { asciiName: 'Chapel Hill',
+                                               countryName: 'United States',
+                                               adminName1: 'North Carolina' }.to_json,
+                          headers: { 'Content-Type' => 'application/json' })
     end
 
     scenario 'as a non-admin' do
@@ -77,7 +77,7 @@ RDFXML
 
       visit new_hyrax_journal_path
       expect(page).to have_content "Add New Scholarly Journal, Newsletter or Book"
-      
+
       # required fields
       fill_in 'Title', with: 'Test Journal work'
       fill_in 'Date of publication', with: '2018-10-03'
@@ -115,7 +115,7 @@ RDFXML
       expect(page).not_to have_field('journal_deposit_agreement')
       choose "journal_visibility_open"
       check 'agreement'
-      
+
       expect(page).not_to have_selector('#journal_dcmi_type')
 
       find('label[for=addFiles]').click do

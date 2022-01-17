@@ -1,7 +1,7 @@
 require 'tasks/migrate/services/progress_tracker'
 
 desc "Check all record, fileset, and download links for restricted works"
-task :check_restricted_routes, [:start, :rows, :log_dir] => :environment do |t, args|
+task :check_restricted_routes, [:start, :rows, :log_dir] => :environment do |_t, args|
   puts "[#{Time.now}] starting check"
 
   model_map = { 'Article' => 'article',

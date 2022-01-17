@@ -69,21 +69,21 @@ module Hyc
 
     def month_season_list(full_list = true)
       months = {
-          january: '01', jan: '01',
-          february: '02', feb: '02',
-          march: '03', mar: '03',
-          april: '04', apr: '04',
-          may: '05', june: '06', july: '07',
-          august: '08', aug: '08',
-          september: '09', sept: '09',
-          october: '10', oct: '10',
-          november: '11', nov: '11',
-          december: '12', dec: '12'
+        january: '01', jan: '01',
+        february: '02', feb: '02',
+        march: '03', mar: '03',
+        april: '04', apr: '04',
+        may: '05', june: '06', july: '07',
+        august: '08', aug: '08',
+        september: '09', sept: '09',
+        october: '10', oct: '10',
+        november: '11', nov: '11',
+        december: '12', dec: '12'
       }
 
       seasons = {
-          spring: '21', summer: '22',
-          fall: '23', autumn: '23', winter: '24'
+        spring: '21', summer: '22',
+        fall: '23', autumn: '23', winter: '24'
       }
 
       if full_list

@@ -221,8 +221,8 @@ class CatalogController < ApplicationController
       solr_name = solr_name("advisor_label", :stored_searchable)
       field.label = "Advisor"
       field.solr_local_parameters = {
-          qf: solr_name,
-          pf: solr_name
+        qf: solr_name,
+        pf: solr_name
       }
     end
 
@@ -230,8 +230,8 @@ class CatalogController < ApplicationController
       solr_name = solr_name("creator_label", :stored_searchable)
       field.label = "Creator"
       field.solr_local_parameters = {
-          qf: solr_name,
-          pf: solr_name
+        qf: solr_name,
+        pf: solr_name
       }
     end
 
@@ -272,8 +272,8 @@ class CatalogController < ApplicationController
       solr_name = solr_name("date_issued", :stored_searchable)
       field.label = 'Date of Publication'
       field.solr_local_parameters = {
-          qf: solr_name,
-          pf: solr_name
+        qf: solr_name,
+        pf: solr_name
       }
     end
 
@@ -374,18 +374,18 @@ class CatalogController < ApplicationController
     config.spell_max = 5
 
     config.oai = {
-        provider: {
-            repository_name: 'Carolina Digital Repository',
-            repository_url: URI.join(ENV['HYRAX_HOST'] || 'https://localhost', 'catalog/oai').to_s,
-            record_prefix: URI.parse(ENV['HYRAX_HOST']).hostname || 'localhost',
-            admin_email: ENV['EMAIL_FROM_ADDRESS']
-        },
-        document: {
-            limit: 50,
-            set_model: CdrListSet,
-            set_fields: [{ label: 'Admin Set', solr_field: 'admin_set_sim' },
-                         {label: 'Collection', solr_field: 'member_of_collections_ssim'}]
-        }
+      provider: {
+        repository_name: 'Carolina Digital Repository',
+        repository_url: URI.join(ENV['HYRAX_HOST'] || 'https://localhost', 'catalog/oai').to_s,
+        record_prefix: URI.parse(ENV['HYRAX_HOST']).hostname || 'localhost',
+        admin_email: ENV['EMAIL_FROM_ADDRESS']
+      },
+      document: {
+        limit: 50,
+        set_model: CdrListSet,
+        set_fields: [{ label: 'Admin Set', solr_field: 'admin_set_sim' },
+                     { label: 'Collection', solr_field: 'member_of_collections_ssim' }]
+      }
     }
   end
 
