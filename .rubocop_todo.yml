@@ -1017,6 +1017,7 @@ Style/SoleNestedConditional:
 # Offense count: 2
 # Cop supports --auto-correct.
 # Configuration parameters: Mode.
+# using autocorrect for 'config/initializers/sidekiq.rb' raises errors
 Style/StringConcatenation:
   Exclude:
     - 'app/models/proxy_deposit_request.rb'
