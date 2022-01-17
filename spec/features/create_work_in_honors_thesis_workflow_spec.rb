@@ -177,7 +177,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       click_on 'Logout'
 
       # Check that work is not yet visible to general public
-      visit '/concern/honors_theses/' + HonorsThesis.all[-1].id
+      visit "/concern/honors_theses/#{HonorsThesis.all[-1].id}"
       expect(page).to have_content 'Login'
       expect(page).to have_content 'Honors workflow test 1'
       expect(page).not_to have_content 'Review and Approval'
@@ -205,7 +205,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       expect(page).to have_content 'Your activity'
       expect(page).not_to have_content 'Review Submissions'
 
-      visit '/concern/honors_theses/' + HonorsThesis.all[-1].id
+      visit "/concern/honors_theses/#{HonorsThesis.all[-1].id}"
       expect(page).to have_content 'Honors workflow test'
       expect(page).not_to have_content 'Review and Approval'
 
@@ -218,7 +218,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       # current functionality only allows approving role to see 'Review Submissions'
       # expect(page).to have_content 'Review Submissions'
 
-      visit '/concern/honors_theses/' + HonorsThesis.all[-1].id
+      visit "/concern/honors_theses/#{HonorsThesis.all[-1].id}"
       expect(page).to have_content 'Review and Approval'
       expect(page).not_to have_content 'Approve'
       expect(page).not_to have_content 'Request Changes'
@@ -243,7 +243,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       visit '/dashboard'
       expect(page).to have_content 'Review Submissions'
 
-      visit '/concern/honors_theses/' + HonorsThesis.all[-1].id
+      visit "/concern/honors_theses/#{HonorsThesis.all[-1].id}"
       expect(page).to have_content 'Review and Approval'
       expect(page).to have_content 'Approve'
       expect(page).to have_content 'Request Changes'
@@ -268,7 +268,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       visit '/dashboard'
       expect(page).to have_content 'Review Submissions'
 
-      visit '/concern/honors_theses/' + HonorsThesis.all[-1].id
+      visit "/concern/honors_theses/#{HonorsThesis.all[-1].id}"
       expect(page).to have_content 'Review and Approval'
       within '#workflow_controls' do
         choose 'Approve'
@@ -302,7 +302,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       # Check notifications for tombstone requests
       login_as user
 
-      visit '/concern/honors_theses/' + HonorsThesis.all[-1].id
+      visit "/concern/honors_theses/#{HonorsThesis.all[-1].id}"
       click_on 'Request Deletion'
 
       within '#deletion-request-modal' do
@@ -371,7 +371,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       click_on 'Logout'
 
       # Check that work is not yet visible to general public
-      visit '/concern/honors_theses/' + HonorsThesis.all[-1].id
+      visit "/concern/honors_theses/#{HonorsThesis.all[-1].id}"
       expect(page).to have_content 'Login'
       expect(page).to have_content 'Honors workflow test 2'
       expect(page).not_to have_content 'Review and Approval'
@@ -383,7 +383,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       visit '/dashboard'
       expect(page).to have_content 'Review Submissions'
 
-      visit '/concern/honors_theses/' + HonorsThesis.all[-1].id
+      visit "/concern/honors_theses/#{HonorsThesis.all[-1].id}"
       expect(page).to have_content 'Review and Approval'
       within '#workflow_controls' do
         choose 'Approve'

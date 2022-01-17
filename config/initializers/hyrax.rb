@@ -211,7 +211,7 @@ Hyrax.config do |config|
   #  config.upload_path = ->() { Rails.root + 'tmp' + 'uploads' }
   config.upload_path = ->() { Pathname.new ENV['DATA_STORAGE'] }
   #  config.cache_path = ->() { Rails.root + 'tmp' + 'uploads' + 'cache' }
-  config.cache_path = ->() { Pathname.new ENV['DATA_STORAGE'] + '/cache' }
+  config.cache_path = ->() { Pathname.new "#{ENV['DATA_STORAGE']}/cache" }
 
   # Location on local file system where derivatives will be stored
   # If you use a multi-server architecture, this MUST be a shared volume

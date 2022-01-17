@@ -127,14 +127,14 @@ RSpec.feature 'Edit embargo', js: false do
       expect(page).to have_content 'Test Default Keyword'
       expect(page).to have_content 'In Administrative Set: article admin set'
       expect(page).to have_selector(:link, 'Delete')
-      expect(page).to have_content 'Embargo release date ' + (DateTime.now + 1.day).humanize
+      expect(page).to have_content "Embargo release date #{(DateTime.now + 1.day).humanize}"
 
       click_link 'Edit'
       fill_in 'article_embargo_release_date', with: DateTime.now + 7.months
       click_button 'Save'
       expect(page).to have_content 'Test Default Keyword'
       expect(page).to have_content 'In Administrative Set: article admin set'
-      expect(page).to have_content 'Embargo release date ' + (DateTime.now + 7.months).humanize
+      expect(page).to have_content "Embargo release date #{(DateTime.now + 7.months).humanize}"
     end
   end
 end

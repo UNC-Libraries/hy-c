@@ -53,10 +53,10 @@ class MigrationHelper
 
     # Only keep attributes which apply to the given work type
     metadata.select { |k, _v| k.to_s.ends_with? '_attributes' }.each do |k, v|
-      unless resource.respond_to?(k.to_s + '=')
+      unless resource.respond_to?("#{k.to_s}=")
         # Log non-blank person data which is not saved
         puts "[#{Time.now.to_s}] #{identifier} missing: #{k}=>#{v}"
-        metadata.delete(k.to_s.split('s_')[0] + '_display')
+        metadata.delete("#{k.to_s.split('s_')[0]}_display")
         metadata.delete(k)
       end
     end

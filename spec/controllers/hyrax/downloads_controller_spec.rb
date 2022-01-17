@@ -21,7 +21,7 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
       let(:user) { FactoryBot.create(:user) }
       before { sign_in user }
       let(:file_set) do
-        FactoryBot.create(:file_with_work, user: user, content: File.open(fixture_path + '/files/image.png'))
+        FactoryBot.create(:file_with_work, user: user, content: File.open("#{fixture_path}/files/image.png"))
       end
       let(:default_image) { ActionController::Base.helpers.image_path 'default.png' }
 

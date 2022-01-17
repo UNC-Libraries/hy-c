@@ -31,7 +31,7 @@ module Hyrax
         return name unless name =~ /,/
 
         temp_name = name.split(/,\s*/)
-        temp_name.last + ' ' + temp_name.first
+        "#{temp_name.last} #{temp_name.first}"
       end
 
       def surname_first(name)

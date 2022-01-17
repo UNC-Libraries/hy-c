@@ -33,7 +33,7 @@ module Hyrax
     # Returns a list of users excluding the system users and guest_users
     # @param query [String] the query string
     def search(query)
-      clause = query.blank? ? nil : '%' + query.downcase + '%'
+      clause = query.blank? ? nil : "%#{query.downcase}%"
       base = ::User.where(*base_query)
       base = base.where("#{Hydra.config.user_key_field} like lower(?) OR display_name like lower(?)", clause, clause) if clause.present?
       base.registered

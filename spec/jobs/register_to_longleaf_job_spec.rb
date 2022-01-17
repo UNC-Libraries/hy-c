@@ -31,8 +31,7 @@ RSpec.describe RegisterToLongleafJob, type: :job do
 
     let(:longleaf_script) do
       path = File.join(ll_home_dir, 'llcommand.sh')
-      File.write(path, "#!/usr/bin/env bash\n" +
-          "echo $@ > #{output_path.to_s}")
+      File.write(path, "#!/usr/bin/env bash\necho $@ > #{output_path.to_s}")
       path
     end
 

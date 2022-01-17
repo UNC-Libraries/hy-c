@@ -93,7 +93,7 @@ class ProxyDepositRequest < ActiveRecord::Base
     # [hyc-override] Override to use translation file for email text
     user_link = sending_user.name
     transfer_link = link_to('transfer ownership page', ENV['HYRAX_HOST'] + Hyrax::Engine.routes.url_helpers.transfers_path)
-    work_link = link_to work.title.first, ENV['HYRAX_HOST'] + '/concern/' + work.class.to_s.underscore + 's/' + work.id
+    work_link = link_to work.title.first, "#{ENV['HYRAX_HOST']}/concern/#{work.class.to_s.underscore}s/#{work.id}"
     message = I18n.t('hyrax.notifications.proxy_deposit_request.transfer_on_create.message', user_link: user_link,
                                                                                              transfer_link: transfer_link, work_link: work_link)
     Hyrax::MessengerService.deliver(::User.batch_user, receiving_user, message,
@@ -102,7 +102,7 @@ class ProxyDepositRequest < ActiveRecord::Base
 
   def send_request_transfer_message_as_part_of_update
     # [hyc-override] Override to use translation file for email text
-    work_link = link_to work.title.first, ENV['HYRAX_HOST'] + '/concern/' + work.class.to_s.underscore + 's/' + work.id
+    work_link = link_to work.title.first, "#{ENV['HYRAX_HOST']}/concern/#{work.class.to_s.underscore}s/#{work.id}"
     message = I18n.t('hyrax.notifications.proxy_deposit_request.transfer_on_update.message', status: status,
                                                                                              title: work_link, receiving_user: receiving_user)
 

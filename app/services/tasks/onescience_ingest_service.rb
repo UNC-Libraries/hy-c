@@ -73,7 +73,7 @@ module Tasks
         embargo_release_date = nil
         unless embargo_term.blank?
           months = embargo_term['Embargo'][/\d+/].to_i
-          original_embargo_release_date = Date.parse(work_attributes['date_issued'] + '-01-01') + (months).months
+          original_embargo_release_date = Date.parse("#{work_attributes['date_issued']}-01-01") + (months).months
           if original_embargo_release_date.future?
             visibility = vis_private
             embargo_release_date = original_embargo_release_date
@@ -306,12 +306,12 @@ module Tasks
         puts "[#{Time.now}] #{onescience_data['onescience_id']} error: no scopus author information available"
         # check all author-related columns in 1science spreadsheets with data
         (1..32).each do |index|
-          break if onescience_data['lastname_author' + index.to_s].blank? || onescience_data['firstname_author' + index.to_s].blank?
+          break if onescience_data["lastname_author#{index}"].blank? || onescience_data["firstname_author#{index}"].blank?
 
-          name = "#{onescience_data['lastname_author' + index.to_s]}, #{onescience_data['firstname_author' + index.to_s]}"
-          affiliations = onescience_data['affiliation_author' + index.to_s]
+          name = "#{onescience_data["lastname_author#{index}"]}, #{onescience_data["firstname_author#{index}"]}"
+          affiliations = onescience_data["affiliation_author#{index}"]
           people[index - 1] = { 'name' => name,
-                                'orcid' => onescience_data['ORCID_author' + index.to_s],
+                                'orcid' => onescience_data["ORCID_author#{index}"],
                                 'affiliation' => (affiliations.split('||') unless affiliations.blank?),
                                 'index' => index }
         end
@@ -435,7 +435,7 @@ module Tasks
               other_affiliation = (other_organizations).reject { |i| i.blank? }
               other_affiliation = nil if other_affiliation.blank?
               # create hash for person with index value
-              record_authors[index] = { 'name' => surname + ', ' + given_name,
+              record_authors[index] = { 'name' => "#{surname}, #{given_name}",
                                         'orcid' => orcid,
                                         'affiliation' => unc_organizations.first,
                                         'other_affiliation' => other_affiliation,
@@ -444,7 +444,7 @@ module Tasks
               # verify that first author is first in list
               if index.zero?
                 author_url = author.xpath('author-url').text
-                puts 'authors not in correct order ' + first_author if author_url != first_author && !author_url.blank? && !first_author.blank?
+                puts "authors not in correct order #{first_author}" if author_url != first_author && !author_url.blank? && !first_author.blank?
               end
             end
           end

@@ -72,14 +72,14 @@ module Hyrax
           if pub_info.nil?
             ''
           else
-            pub_info + '. '
+            "#{pub_info}. "
           end
         end
 
         public
 
         def format_date(pub_date)
-          pub_date.blank? ? '' : '(' + pub_date + '). '
+          pub_date.blank? ? '' : "(#{pub_date}). "
         end
 
         def format_title(title_info)

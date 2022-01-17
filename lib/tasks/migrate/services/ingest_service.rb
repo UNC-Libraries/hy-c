@@ -413,7 +413,7 @@ module Migrate
         work_type = if work_type == 'honors_thesis'
                       'honors_theses'
                     else
-                      work_type + 's'
+                      "#{work_type}s"
                     end
         new_path = "#{work_type}/#{new_work.id}"
 
@@ -422,7 +422,7 @@ module Migrate
 
       # Add a mapping from old uuid for a file, to its new path within a fileset
       def add_file_id_mapping(file, new_work, fileset)
-        new_id = 'parent/' + new_work.id + '/file_sets/' + fileset.id
+        new_id = "parent/#{new_work.id}/file_sets/#{fileset.id}"
         @id_mapper.add_row(MigrationHelper.get_uuid_from_path(file), new_id)
       end
     end

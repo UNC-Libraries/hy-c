@@ -53,7 +53,7 @@ module ActiveFedora::RDF
           unless field_info.values.blank?
             field_to_use = field_key == 'based_near' ? field_info : field_info.behaviors
             append_to_solr_doc(solr_doc,
-                               solr_document_field_name((field_key.to_s[0...-1] + '_display').to_sym, prefix_method),
+                               solr_document_field_name(("#{field_key.to_s[0...-1]}_display").to_sym, prefix_method),
                                field_to_use,
                                build_person_display(field_key, field_info.values))
           end

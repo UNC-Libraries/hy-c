@@ -140,7 +140,7 @@ module Tasks
 
     def extract_proquest_files(file)
       fname = file.split('.zip')[0].split('/')[-1]
-      dirname = @temp + '/' + fname
+      dirname = "#{@temp}/#{fname}"
       FileUtils::mkdir_p dirname
       begin
         Zip::File.open(file) do |zip_file|
@@ -223,7 +223,7 @@ module Tasks
       abstract = metadata.xpath('//DISS_content/DISS_abstract').text
 
       advisor = metadata.xpath('//DISS_description/DISS_advisor/DISS_name').map do |advise|
-        advise.xpath('DISS_surname').text + ', ' + advise.xpath('DISS_fname').text + ' ' + advise.xpath('DISS_middle').text
+        "#{advise.xpath('DISS_surname').text}, #{advise.xpath('DISS_fname').text} #{advise.xpath('DISS_middle').text}"
       end
 
       committee_members = metadata.xpath('//DISS_description/DISS_cmte_member/DISS_name').map do |advise|
@@ -316,7 +316,7 @@ module Tasks
     def format_name(person)
       name_parts = []
       name_parts << person.xpath('DISS_surname').text
-      name_parts << (person.xpath('DISS_fname').text + ' ' + person.xpath('DISS_middle').text).strip
+      name_parts << ("#{person.xpath('DISS_fname').text} #{person.xpath('DISS_middle').text}").strip
       name_parts << person.xpath('DISS_suffix').text
       name_parts.reject { |name| name.blank? }.join(', ')
     end

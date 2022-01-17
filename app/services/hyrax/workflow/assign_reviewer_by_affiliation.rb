@@ -18,7 +18,7 @@ module Hyrax::Workflow::AssignReviewerByAffiliation
         # This grants read access to the Fedora object.
         ::AssignPermissionsToWorkJob.perform_later(target.class.name,
                                                    target.id,
-                                                   department + '_reviewer',
+                                                   "#{department}_reviewer",
                                                    'group',
                                                    'read')
       end
@@ -26,8 +26,8 @@ module Hyrax::Workflow::AssignReviewerByAffiliation
   end
 
   def self.find_reviewer_for(department:)
-    Role.where(name: department + '_reviewer').first_or_create
-    Sipity::Agent.where(proxy_for_id: department + '_reviewer',
+    Role.where(name: "#{department}_reviewer").first_or_create
+    Sipity::Agent.where(proxy_for_id: "#{department}_reviewer",
                         proxy_for_type: 'Hyrax::Group').first_or_create
   end
 end

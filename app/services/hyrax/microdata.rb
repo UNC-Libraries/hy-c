@@ -11,7 +11,7 @@ module Hyrax
   class Microdata
     include Singleton
     local_schema_file = Rails.root.join('config', 'schema_org.yml')
-    FILENAME = File.file?(local_schema_file) ? local_schema_file : Hyrax::Engine.root + 'config/schema_org.yml'
+    FILENAME = File.file?(local_schema_file) ? local_schema_file : "#{Hyrax::Engine.root}config/schema_org.yml"
     TOP_KEY = 'schema_org'.freeze
 
     # @api private (See note regarding specific methods)

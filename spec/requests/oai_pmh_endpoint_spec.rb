@@ -14,7 +14,7 @@ RSpec.describe 'OAI-PMH catalog endpoint' do
     end.sort!
   end
   let(:solrRecords) do
-    ActiveFedora::SolrService.get('has_model_ssim:(Dissertation OR Article OR MastersPaper OR ' + 'HonorsThesis OR Journal OR DataSet OR Multimed OR ScholarlyWork ' + 'OR General OR Artwork) AND visibility_ssi:open', rows: 100)
+    ActiveFedora::SolrService.get('has_model_ssim:(Dissertation OR Article OR MastersPaper OR HonorsThesis OR Journal OR DataSet OR Multimed OR ScholarlyWork OR General OR Artwork) AND visibility_ssi:open', rows: 100)
   end
   before(:all) do
     solr = Blacklight.default_index.connection
@@ -163,7 +163,7 @@ RSpec.describe 'OAI-PMH catalog endpoint' do
     let(:oai_identifier) { solrRecords['response']['docs'][0]['id'] }
 
     let(:params) { { verb: 'GetRecord', metadataPrefix: format, identifier: identifier } }
-    let(:identifier) { 'oai:localhost:' + oai_identifier }
+    let(:identifier) { "oai:localhost:#{oai_identifier}" }
 
     scenario 'displays a single record' do
       get oai_catalog_path(params)
@@ -225,7 +225,7 @@ RSpec.describe 'OAI-PMH catalog endpoint' do
   describe 'ListMetadataFormats verb' do
     scenario 'lists the oai_dc format' do
       get oai_catalog_path(verb: 'ListMetadataFormats')
-      expect(response.body).to include('<metadataPrefix>' + format + '</metadataPrefix>')
+      expect(response.body).to include("<metadataPrefix>#{format}</metadataPrefix>")
     end
   end
 

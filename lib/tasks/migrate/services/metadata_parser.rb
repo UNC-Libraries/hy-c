@@ -274,7 +274,7 @@ module Migrate
       private
 
       def parse_names_from_mods(mods, type)
-        names = mods.xpath('mods:name[mods:role/mods:roleTerm/text()="' + type + '"]', MigrationConstants::NS)
+        names = mods.xpath("mods:name[mods:role/mods:roleTerm/text()=\"#{type}\"]", MigrationConstants::NS)
         name_array = []
         names.each do |name|
           name_array << if !name.xpath('mods:namePart[@type="family"]', MigrationConstants::NS).text.blank?
@@ -288,7 +288,7 @@ module Migrate
       end
 
       def parse_people_from_mods(mods, type)
-        people = mods.xpath('mods:name[mods:role/mods:roleTerm/text()="' + type + '"]', MigrationConstants::NS)
+        people = mods.xpath("mods:name[mods:role/mods:roleTerm/text()=\"#{type}\"]", MigrationConstants::NS)
 
         person_hash = Hash.new
         people.each_with_index do |person, index|
