@@ -3,7 +3,7 @@ module HycHelper
   def language_links(options)
     language_link_array = options[:value].map do |lang|
       lang_label = LanguagesService.label(lang)
-      link_to lang_label, main_app.search_catalog_path(f: { language_sim: [lang] }) if !lang_label.nil?
+      link_to lang_label, main_app.search_catalog_path(f: { language_sim: [lang] }) unless lang_label.nil?
     end
 
     if language_link_array.compact.blank?

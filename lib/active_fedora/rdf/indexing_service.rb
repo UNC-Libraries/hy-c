@@ -50,7 +50,7 @@ module ActiveFedora::RDF
     def add_assertions(prefix_method, solr_doc = {})
       fields.each do |field_key, field_info|
         if person_fields.include? field_key.to_s
-          if !field_info.values.blank?
+          unless field_info.values.blank?
             field_to_use = field_key == 'based_near' ? field_info : field_info.behaviors
             append_to_solr_doc(solr_doc,
                                solr_document_field_name((field_key.to_s[0...-1] + '_display').to_sym, prefix_method),
@@ -163,7 +163,7 @@ module ActiveFedora::RDF
       displays = []
       people.each do |person|
         display_text = []
-        if !Array(person['name']).first.blank?
+        unless Array(person['name']).first.blank?
           display_text << "index:#{Array(person['index']).first}" if person['index']
           display_text << Array(person['name']).first
           @person_label.push(Array(person['name']))
@@ -173,16 +173,16 @@ module ActiveFedora::RDF
             @advisor_label.push(Array(person['name']))
           end
 
-          display_text << "ORCID: #{Array(person['orcid']).first}" if !Array(person['orcid']).first.blank?
+          display_text << "ORCID: #{Array(person['orcid']).first}" unless Array(person['orcid']).first.blank?
           @orcid_label.push(Array(person['orcid']))
 
           affiliations = split_affiliations(person['affiliation'])
-          if !affiliations.blank?
+          unless affiliations.blank?
             display_text << "Affiliation: #{affiliations.join(', ')}"
             @affiliation_label.push(Array(person['affiliation']))
           end
 
-          display_text << "Other Affiliation: #{Array(person['other_affiliation']).first}" if !Array(person['other_affiliation']).first.blank?
+          display_text << "Other Affiliation: #{Array(person['other_affiliation']).first}" unless Array(person['other_affiliation']).first.blank?
           @other_affiliation_label.push(Array(person['other_affiliation']))
 
           displays << display_text.join('||')

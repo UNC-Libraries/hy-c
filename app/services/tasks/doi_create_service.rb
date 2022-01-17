@@ -284,7 +284,7 @@ module Tasks
     end
 
     def parse_people(work, person_field)
-      return [] if !work.attributes.keys.member?(person_field)
+      return [] unless work.attributes.keys.member?(person_field)
 
       people = []
 
@@ -303,7 +303,7 @@ module Tasks
         end
 
         orcid = p_json['orcid']&.first
-        person[:nameIdentifiers] = [ nameIdentifier: orcid, nameIdentifierScheme: 'ORCID'] if !orcid.blank?
+        person[:nameIdentifiers] = [ nameIdentifier: orcid, nameIdentifierScheme: 'ORCID'] unless orcid.blank?
 
         people << person
       end

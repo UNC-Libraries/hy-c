@@ -71,7 +71,7 @@ module Tasks
         embargo_term = @embargo_mapping.find { |e| e['onescience_id'] = item_data['onescience_id'] }
         visibility = vis_public
         embargo_release_date = nil
-        if !embargo_term.blank?
+        unless embargo_term.blank?
           months = embargo_term['Embargo'][/\d+/].to_i
           original_embargo_release_date = Date.parse(work_attributes['date_issued'] + '-01-01') + (months).months
           if original_embargo_release_date.future?
@@ -81,7 +81,7 @@ module Tasks
         end
 
         work.visibility = visibility
-        if !embargo_release_date.blank?
+        unless embargo_release_date.blank?
           work.embargo_release_date = embargo_release_date
           work.visibility_during_embargo = vis_private
           work.visibility_after_embargo = vis_public
@@ -132,7 +132,7 @@ module Tasks
             pdf_location = @pdf_files.select { |path| path.include? file_id }.first
             if !pdf_location.blank? # can we find the file
               # save work if it has at least one file
-              if !work_saved
+              unless work_saved
                 work.save!
                 puts "[#{Time.now}] #{item_data['onescience_id']},#{work.id} saved new article"
 
@@ -249,9 +249,9 @@ module Tasks
       work_attributes = {}
       identifiers = []
       identifiers << "Onescience id: #{onescience_data['onescience_id']}"
-      identifiers << "Publisher DOI: https://doi.org/#{onescience_data['DOI']}" if !onescience_data['DOI'].blank?
-      identifiers << "PMID: #{onescience_data['PMID']}" if !onescience_data['PMID'].blank?
-      identifiers << "PMCID: #{onescience_data['PMCID']}" if !onescience_data['PMCID'].blank?
+      identifiers << "Publisher DOI: https://doi.org/#{onescience_data['DOI']}" unless onescience_data['DOI'].blank?
+      identifiers << "PMID: #{onescience_data['PMID']}" unless onescience_data['PMID'].blank?
+      identifiers << "PMCID: #{onescience_data['PMCID']}" unless onescience_data['PMCID'].blank?
       work_attributes['identifier'] = identifiers.compact
       work_attributes['date_issued'] = (Date.try(:edtf, onescience_data['Year']) || onescience_data['Year']).to_s
       work_attributes['title'] = onescience_data['Title']
@@ -278,9 +278,9 @@ module Tasks
       work_attributes['page_start'] = page_start unless page_start.blank?
       page_end = scopus_page_end.blank? ? onescience_data['Last Page'].to_s : scopus_page_end
       work_attributes['page_end'] = page_end unless page_end.blank?
-      work_attributes['issn'] = onescience_data['ISSNs'].to_s.split('||') if !onescience_data['ISSNs'].blank?
+      work_attributes['issn'] = onescience_data['ISSNs'].to_s.split('||') unless onescience_data['ISSNs'].blank?
       work_attributes['abstract'] = onescience_data['Abstract'].to_s
-      work_attributes['keyword'] = onescience_data['Keywords'].to_s.split('||') if !onescience_data['Keywords'].blank?
+      work_attributes['keyword'] = onescience_data['Keywords'].to_s.split('||') unless onescience_data['Keywords'].blank?
       work_attributes['creators_attributes'] = get_people(onescience_data)
       work_attributes['resource_type'] = 'Article'
       work_attributes['language'] = 'http://id.loc.gov/vocabulary/iso639-2/eng'
@@ -312,7 +312,7 @@ module Tasks
           affiliations = onescience_data['affiliation_author' + index.to_s]
           people[index - 1] = { 'name' => name,
                                 'orcid' => onescience_data['ORCID_author' + index.to_s],
-                                'affiliation' => (affiliations.split('||') if !affiliations.blank?),
+                                'affiliation' => (affiliations.split('||') unless affiliations.blank?),
                                 'index' => index }
         end
       end
@@ -395,7 +395,7 @@ module Tasks
           scopus_xml.xpath('//abstracts-retrieval-response/authors//author[not(@*)]').each_with_index do |author, index|
             # get person info
             surname = author.xpath('surname').text
-            if !surname.blank?
+            unless surname.blank?
               given_name = author.xpath('preferred-name/given-name').text
               author_id = author.xpath('auid').text
               affiliations = record_affiliation_hash[author_id]
@@ -408,7 +408,7 @@ module Tasks
                 orcid = affiliation['orcid']
 
                 # find all unc affiliations by scopus afid
-                if !affiliation['organization'].blank?
+                unless affiliation['organization'].blank?
                   if UNC_SCOPUS_AFIDS.include?(affiliation['afid'])
                     mapped_affiliation = mapped_affiliations.find { |mapped_affil| (mapped_affil['ID'] == affiliation['afid']) }
                     # if affiliation/department combination matches any unc affiliation, then store it as a unc affiliation

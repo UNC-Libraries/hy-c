@@ -93,7 +93,7 @@ module Hyrax
         # [hyc-override] Overriding actor to cast rights statements as single valued
         # removed rights_statement-specific line of code so that it could be cast in `remove_blank_attributes!`
         # [hyc-override] remove index field if for some reason is added to permissions_attributes hashes
-        if !attributes['permissions_attributes'].blank?
+        unless attributes['permissions_attributes'].blank?
           permission_attrs = {}
           attributes['permissions_attributes'].each do |k, v|
             permission_attrs[k] = if !v['index'].blank?
@@ -150,7 +150,7 @@ module Hyrax
         entity = Sipity::Entity.where(proxy_for_global_id: env.curation_concern.to_global_id.to_s).first_or_create!
         permissions_attributes.each do |_k, permission|
           # skip the pre-existing permissions since they have already been applied
-          next if !permission['id'].blank?
+          next unless permission['id'].blank?
 
           if permission['type'] == 'person'
             agent_type = 'User'

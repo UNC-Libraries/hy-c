@@ -47,7 +47,7 @@ module Blacklight::Document::DublinCore
           if field.to_s == 'creator'
             xml.tag! "dc:#{field}", v.to_s.split('||').first
             affiliation = v.to_s.split('||Affiliation: ')[1]
-            xml.tag! "dc:contributor", affiliation.split('||').first if !affiliation.blank?
+            xml.tag! "dc:contributor", affiliation.split('||').first unless affiliation.blank?
           elsif field.to_s == 'contributor'
             xml.tag! "dc:#{field}", v.to_s.split('||').first
           # display journal values as comma separated string (journal values come from single-valued fields)
@@ -66,7 +66,7 @@ module Blacklight::Document::DublinCore
             xml.tag! "dc:#{field}", v
           end
         end
-        if !source.blank?
+        unless source.blank?
           # Based on tests in blacklight, the journal information should always be returned in the order listed in app/models/solr_document.rb
           if source.count == 3
             xml.tag! "dc:source", "#{source[0]}, #{source[1]}(#{source[2]})"

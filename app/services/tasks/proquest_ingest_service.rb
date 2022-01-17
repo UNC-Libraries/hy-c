@@ -266,7 +266,7 @@ module Tasks
       language = metadata.xpath('//DISS_description/DISS_categorization/DISS_language').text
       if language == 'en'
         language = MigrationHelper.get_language_uri(['eng'])
-        language_label = LanguagesService.label(language) if !language.blank?
+        language_label = LanguagesService.label(language) unless language.blank?
       end
 
       file_full << metadata.xpath('//DISS_content/DISS_binary').text

@@ -74,7 +74,7 @@ module Tasks
                                  workflow_state: workflow_state.first)
 
           # attach files
-          if !row['files'].blank?
+          unless row['files'].blank?
             files = row['files'].split('; ')
             puts "[#{Time.now}] #{row['source_identifier']} attaching files"
             file_count = files.count

@@ -45,7 +45,7 @@ task :check_restricted_routes, [:start, :rows, :log_dir] => :environment do |_t,
     puts show_page_url
 
     page_response = HTTParty.get(show_page_url)
-    if !page_response.response.body.match('Single Sign-On')
+    unless page_response.response.body.match('Single Sign-On')
       puts "#{restricted_item['id']} show page is open"
       restricted_item_error_progress.add_entry(restricted_item['id'])
       next

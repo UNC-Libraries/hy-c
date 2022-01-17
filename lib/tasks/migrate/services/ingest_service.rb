@@ -57,7 +57,7 @@ module Migrate
         already_migrated = @object_progress.completed_set
         puts "Skipping #{already_migrated.length} previously migrated works"
 
-        if !@run_skipped
+        unless @run_skipped
           already_migrated += @skipped_objects.completed_set
           puts "Skipping previously skipped works"
         end
@@ -73,7 +73,7 @@ module Migrate
           end
 
           file_path = @object_hash[uuid]
-          if !File.file?(file_path)
+          unless File.file?(file_path)
             @skipped_objects.add_entry(uuid)
             puts "Skipping #{uuid} with invalid file path, #{file_path}"
             next
@@ -110,7 +110,7 @@ module Migrate
           # Record old and new ids for works
           add_id_mapping(uuid, new_work)
 
-          puts "[#{Time.now.to_s}] #{uuid},#{new_work.id} Number of files: #{work_attributes['contained_files'].count.to_s if !work_attributes['contained_files'].blank?}"
+          puts "[#{Time.now.to_s}] #{uuid},#{new_work.id} Number of files: #{work_attributes['contained_files'].count.to_s unless work_attributes['contained_files'].blank?}"
 
           # Save list of child filesets
           new_work.ordered_members = Array.new
@@ -118,7 +118,7 @@ module Migrate
           # Create children
           if !work_attributes['cdr_model_type'].blank? &&
               (work_attributes['cdr_model_type'].include? 'info:fedora/cdr-model:AggregateWork')
-            if !work_attributes['contained_files'].blank?
+            unless work_attributes['contained_files'].blank?
               # attach children as filesets
               work_attributes['contained_files'].each do |file|
                 metadata_file = @object_hash[MigrationHelper.get_uuid_from_path(file)] || ''
@@ -169,7 +169,7 @@ module Migrate
             end
           else
             # use same metadata for work and fileset
-            if !work_attributes['contained_files'].blank?
+            unless work_attributes['contained_files'].blank?
               work_attributes['contained_files'].each do |file|
                 binary_file = @binary_hash[MigrationHelper.get_uuid_from_path(file)]
                 work_attributes['title'] = work_attributes['dc_title'] || work_attributes['title']
@@ -188,7 +188,7 @@ module Migrate
           end
 
           # Attach premis files
-          if !work_attributes['premis_files'].blank?
+          unless work_attributes['premis_files'].blank?
             work_attributes['premis_files'].each_with_index do |file, index|
               premis_file = @premis_hash[MigrationHelper.get_uuid_from_path(file)] || ''
               if File.file?(premis_file)
@@ -222,7 +222,7 @@ module Migrate
           puts "[#{end_time.to_s}] #{uuid},#{new_work.id} Completed migration in #{end_time - start_time} seconds"
         end
 
-        attach_children if !@child_work_type.blank?
+        attach_children unless @child_work_type.blank?
         STDOUT.flush
       end
 
@@ -327,7 +327,7 @@ module Migrate
                                    'researchers', 'reviewers', 'translators', 'based_near').each do |k, v|
           deduped[k] = work_attributes[k] if (Array(work_attributes[k]).sort != Array(v).sort && !work_attributes[k].blank?)
         end
-        puts "#{Time.now.to_s}] #{uuid},#{resource.id} deduped data: #{deduped}" if !deduped.blank?
+        puts "#{Time.now.to_s}] #{uuid},#{resource.id} deduped data: #{deduped}" unless deduped.blank?
 
         puts "[#{Time.now.to_s}] #{uuid},#{resource.id} saved new work in #{Time.now - save_time} seconds"
 
@@ -361,7 +361,7 @@ module Migrate
 
       def attach_children
         # Load mapping of old uuids to new hyrax ids
-        uuid_to_id = Hash[@id_mapper.mappings.map { |row| [row[0], row[1].split('/')[-1]] if !row[1].match?('file_sets') }.compact]
+        uuid_to_id = Hash[@id_mapper.mappings.map { |row| [row[0], row[1].split('/')[-1]] unless row[1].match?('file_sets') }.compact]
         # Load mapping of parents to children
         parent_hash = Hash[@parent_child_mapper.mappings.map { |row| [row[0], row[1].split('|')] }]
         # Create or resume log of children attached

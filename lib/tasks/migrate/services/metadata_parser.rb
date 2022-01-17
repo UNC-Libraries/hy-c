@@ -112,8 +112,8 @@ module Migrate
             end
           end
           languages = descriptive_mods.xpath('mods:language/mods:languageTerm', MigrationConstants::NS).map(&:text)
-          work_attributes['language'] = MigrationHelper.get_language_uri(languages) if !languages.blank?
-          work_attributes['language_label'] = work_attributes['language'].map { |l| LanguagesService.label(l) } if !languages.blank?
+          work_attributes['language'] = MigrationHelper.get_language_uri(languages) unless languages.blank?
+          work_attributes['language_label'] = work_attributes['language'].map { |l| LanguagesService.label(l) } unless languages.blank?
           work_attributes['resource_type'] = descriptive_mods.xpath('mods:genre[not(@*)]', MigrationConstants::NS).map(&:text)
           work_attributes['dcmi_type'] = descriptive_mods.xpath('mods:typeOfResource/@valueURI', MigrationConstants::NS).map(&:text)
           work_attributes['use'] = descriptive_mods.xpath('mods:accessCondition[@type="use and reproduction" and not(@displayLabel)]', MigrationConstants::NS).map(&:text)
@@ -169,7 +169,7 @@ module Migrate
               if work_attributes['cdr_model_type'].include? 'info:fedora/cdr-model:AggregateWork'
                 work_attributes['contained_files'] << tmp_uuid if !@binary_hash[tmp_uuid].blank? && !(@collection_uuids.include? tmp_uuid)
               else
-                work_attributes['contained_files'] << tmp_uuid if !@binary_hash[tmp_uuid].blank?
+                work_attributes['contained_files'] << tmp_uuid unless @binary_hash[tmp_uuid].blank?
               end
             end
 
@@ -184,7 +184,7 @@ module Migrate
           # Find premis file
           work_attributes['premis_files'] = []
           premis_mods = metadata.xpath("//foxml:datastream[contains(@ID, 'MD_EVENTS')]", MigrationConstants::NS).last
-          if !premis_mods.blank?
+          unless premis_mods.blank?
             premis_reference = premis_mods.xpath("foxml:datastreamVersion/foxml:contentLocation/@REF", MigrationConstants::NS).map(&:text)
             premis_reference.each do |reference|
               work_attributes['premis_files'] << MigrationHelper.get_uuid_from_path(reference)
@@ -234,7 +234,7 @@ module Migrate
           work_attributes['visibility'] = vis_public
         end
 
-        if !embargo_until.nil?
+        unless embargo_until.nil?
           work_attributes['embargo_release_date'] = (Date.try(:edtf, embargo_release_date) || embargo_release_date).to_s
           work_attributes['visibility'] = vis_private
           work_attributes['visibility_during_embargo'] = vis_private

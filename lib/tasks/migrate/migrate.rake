@@ -52,7 +52,7 @@ namespace :migrate do
       # Create the output directory if it does not yet exist
       FileUtils.mkdir(args[:output_dir]) unless File.exist?(args[:output_dir])
 
-      if !collection_config['child_work_type'].blank?
+      unless collection_config['child_work_type'].blank?
         Migrate::Services::ChildWorkParser.new(@object_hash,
                                                collection_config,
                                                args[:output_dir],
