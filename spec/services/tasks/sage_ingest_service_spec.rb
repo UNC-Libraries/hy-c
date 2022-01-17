@@ -166,10 +166,18 @@ RSpec.describe Tasks::SageIngestService, :sage do
       FileUtils.rm_rf(Dir["#{path_to_tmp}/*"])
     end
 
-    it "logs to the rails log" do
-      allow(Rails.logger).to receive(:info)
+    it "logs info to a new log" do
+      logger = spy('logger')
+      allow(Logger).to receive(:new).and_return(logger)
       service.extract_files(first_zip_path, path_to_tmp)
-      expect(Rails.logger).to have_received(:info).with("#{first_zip_path}, zip file error: Destination '#{first_pdf_path}' already exists")
+      expect(logger).to have_received(:info).with("#{first_zip_path}, zip file error: Destination '#{first_pdf_path}' already exists")
+    end
+
+    it "writes to the log" do
+      logger = spy('logger')
+      allow(Logger).to receive(:new).and_return(logger)
+      described_class.new(configuration_file: path_to_config)
+      expect(logger).to have_received(:info).with("Beginning Sage ingest")
     end
   end
 
@@ -178,9 +186,10 @@ RSpec.describe Tasks::SageIngestService, :sage do
     let(:package_path) { File.join(fixture_path, "sage", "triple_package.zip") }
 
     it "logs an error" do
-      allow(Rails.logger).to receive(:error)
+      logger = spy('logger')
+      allow(Logger).to receive(:new).and_return(logger)
       service.extract_files(package_path, temp_dir)
-      expect(Rails.logger).to have_received(:error).with("Unexpected package contents - more than two files extracted from #{package_path}")
+      expect(logger).to have_received(:error).with("Unexpected package contents - more than two files extracted from #{package_path}")
     end
   end
 end
