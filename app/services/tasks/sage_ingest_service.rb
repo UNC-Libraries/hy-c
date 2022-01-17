@@ -87,11 +87,15 @@ module Tasks
     end
 
     def attach_file_set_to_work(work:, dir:, pdf_file_name:, user:)
+      file_set = FileSet.create
+      actor = Hyrax::Actors::FileSetActor.new(file_set, user)
+      # actor.create_metadata(fileset_metadata)
       pdf = File.open(File.join(dir, pdf_file_name))
-      fs = FileSet.create
-      actor = Hyrax::Actors::FileSetActor.new(fs, user)
+      actor.create_content(pdf)
       actor.attach_to_work(work)
       pdf.close
+
+      file_set
     end
 
     def mark_done(orig_file_name)

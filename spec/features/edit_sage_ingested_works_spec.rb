@@ -48,10 +48,6 @@ RSpec.feature 'Edit works created through the Sage ingest', :sage, js: false do
     expect(page).to have_link("Work Deposit Form")
   end
 
-  it "has attached the file_set to the work" do
-    expect(@first_work.file_sets.first).to be_instance_of(FileSet)
-  end
-
   it "can render the pre-populated edit page" do
     login_as @admin_user
     visit "concern/articles/#{@first_work_id}/edit"

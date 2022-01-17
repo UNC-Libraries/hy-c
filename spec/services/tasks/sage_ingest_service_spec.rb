@@ -2,6 +2,8 @@ require 'rails_helper'
 include ActiveSupport::Testing::TimeHelpers
 
 RSpec.describe Tasks::SageIngestService, :sage do
+  include ActiveJob::TestHelper
+
   let(:service) { described_class.new(configuration_file: path_to_config) }
 
   let(:sage_fixture_path) { File.join(fixture_path, "sage") }
@@ -30,7 +32,9 @@ RSpec.describe Tasks::SageIngestService, :sage do
   # empty the progress log
   around do |example|
     File.open(ingest_progress_log_path, 'w') {|file| file.truncate(0) }
-    example.run
+    perform_enqueued_jobs do
+      example.run
+    end
     File.open(ingest_progress_log_path, 'w') {|file| file.truncate(0) }
   end
 
@@ -112,6 +116,15 @@ RSpec.describe Tasks::SageIngestService, :sage do
       end.to change { FileSet.count }.by(1)
       expect(built_article.file_sets).to be_instance_of(Array)
       expect(built_article.file_sets.first).to be_instance_of(FileSet)
+    end
+
+    it 'attaches a file to the file_set' do
+      pending('successfully attaching the file')
+      service.extract_files(first_zip_path, temp_dir)
+      service.attach_file_set_to_work(work: built_article, dir: temp_dir, pdf_file_name: '10.1177_1073274820985792.pdf', user: user)
+      fs = built_article.file_sets.first
+      expect(fs.files).to be_instance_of(Array)
+      expect(file_set.files.first).to be_instance_of(File)
     end
   end
 
