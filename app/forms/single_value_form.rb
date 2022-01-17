@@ -36,11 +36,11 @@ class SingleValueForm < Hyrax::Forms::WorkForm
 
     single_value_fields.each do |field|
       if attrs[field]
-        if attrs[field].blank?
-          attrs[field] = []
-        else
-          attrs[field] = Array(attrs[field])
-        end
+        attrs[field] = if attrs[field].blank?
+                         []
+                       else
+                         Array(attrs[field])
+                       end
       end
     end
 

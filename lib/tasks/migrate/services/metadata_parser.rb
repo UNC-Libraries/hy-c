@@ -244,13 +244,13 @@ module Migrate
           work_attributes['embargo_release_date'] = (Date.try(:edtf, embargo_release_date) || embargo_release_date).to_s
           work_attributes['visibility'] = vis_private
           work_attributes['visibility_during_embargo'] = vis_private
-          if work_attributes['is_private']
-            work_attributes['visibility_after_embargo'] = vis_private
-          elsif auth_patron
-            work_attributes['visibility_after_embargo'] = vis_authenticated
-          else
-            work_attributes['visibility_after_embargo'] = vis_public
-          end
+          work_attributes['visibility_after_embargo'] = if work_attributes['is_private']
+                                                          vis_private
+                                                        elsif auth_patron
+                                                          vis_authenticated
+                                                        else
+                                                          vis_public
+                                                        end
         end
 
         # Add work to specified collection
@@ -283,11 +283,11 @@ module Migrate
         names = mods.xpath('mods:name[mods:role/mods:roleTerm/text()="' + type + '"]', MigrationConstants::NS)
         name_array = []
         names.each do |name|
-          if !name.xpath('mods:namePart[@type="family"]', MigrationConstants::NS).text.blank?
-            name_array << build_name(name)
-          else
-            name_array << name.xpath('mods:namePart', MigrationConstants::NS).text
-          end
+          name_array << if !name.xpath('mods:namePart[@type="family"]', MigrationConstants::NS).text.blank?
+                          build_name(name)
+                        else
+                          name.xpath('mods:namePart', MigrationConstants::NS).text
+                        end
         end
 
         name_array
@@ -298,12 +298,11 @@ module Migrate
 
         person_hash = Hash.new
         people.each_with_index do |person, index|
-          name = ''
-          if !person.xpath('mods:namePart[@type="family"]', MigrationConstants::NS).text.blank?
-            name = build_name(person)
-          else
-            name = person.xpath('mods:namePart', MigrationConstants::NS).text
-          end
+          name = if !person.xpath('mods:namePart[@type="family"]', MigrationConstants::NS).text.blank?
+                   build_name(person)
+                 else
+                   person.xpath('mods:namePart', MigrationConstants::NS).text
+                 end
           orcid = person.xpath('mods:nameIdentifier[@type="orcid"]', MigrationConstants::NS).text
           affiliation = person.xpath('mods:affiliation', MigrationConstants::NS).map(&:text)
           other_affiliation = person.xpath('mods:description', MigrationConstants::NS).text

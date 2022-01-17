@@ -136,12 +136,12 @@ module Migrate
                   file_work_attributes['title'] = file_work_attributes['dc_title'] || file_work_attributes['title'] || @binary_hash[MigrationHelper.get_uuid_from_path(file)].split('/').last || work_attributes['title']
 
                   # If a child is explicitly private, then ignore inherited permissions
-                  if file_work_attributes['is_private']
-                    fileset_attrs = file_record(file_work_attributes)
-                  else
-                    # Inheriting permissions if not explicitly marked private (inherit=false explicitly marks private)
-                    fileset_attrs = file_record(work_attributes.merge(file_work_attributes))
-                  end
+                  fileset_attrs = if file_work_attributes['is_private']
+                                    file_record(file_work_attributes)
+                                  else
+                                    # Inheriting permissions if not explicitly marked private (inherit=false explicitly marks private)
+                                    file_record(work_attributes.merge(file_work_attributes))
+                                  end
 
                   # If the parent work is not visible, then its children must be private
                   if work_attributes['visibility'] == vis_private
@@ -249,11 +249,11 @@ module Migrate
         extension = filename.match(/\./) ? filename.split('.').last : nil
         omission = (extension.blank? || MimeTypeService.valid?(extension).blank?) ? '' : ".#{extension}"
 
-        if filename.bytesize > 255
-          renamed_file = "#{@tmp_file_location}/#{parent.id}/#{filename.mb_chars.limit(255 - omission.bytesize).to_s}#{omission}"
-        else
-          renamed_file = "#{@tmp_file_location}/#{parent.id}/#{filename}"
-        end
+        renamed_file = if filename.bytesize > 255
+                         "#{@tmp_file_location}/#{parent.id}/#{filename.mb_chars.limit(255 - omission.bytesize).to_s}#{omission}"
+                       else
+                         "#{@tmp_file_location}/#{parent.id}/#{filename}"
+                       end
         FileUtils.mkpath("#{@tmp_file_location}/#{parent.id}")
         FileUtils.cp(file, renamed_file)
 
@@ -280,11 +280,11 @@ module Migrate
         is_child_work = !@child_work_type.blank? && !work_attributes['cdr_model_type'].blank? &&
             !(work_attributes['cdr_model_type'].include? 'info:fedora/cdr-model:AggregateWork')
 
-        if is_child_work
-          resource = @child_work_type.singularize.classify.constantize.new
-        else
-          resource = @work_type.singularize.classify.constantize.new
-        end
+        resource = if is_child_work
+                     @child_work_type.singularize.classify.constantize.new
+                   else
+                     @work_type.singularize.classify.constantize.new
+                   end
         resource.depositor = @depositor.uid
 
         # escape '\'
@@ -306,11 +306,11 @@ module Migrate
         end
 
         # Override the admin set id for child works
-        if is_child_work && !@child_admin_set_id.blank?
-          resource.admin_set_id = @child_admin_set_id
-        else
-          resource.admin_set_id = work_attributes['admin_set_id']
-        end
+        resource.admin_set_id = if is_child_work && !@child_admin_set_id.blank?
+                                  @child_admin_set_id
+                                else
+                                  work_attributes['admin_set_id']
+                                end
 
         if !@config['collection_name'].blank? && !work_attributes['member_of_collections'].first.blank?
           resource.member_of_collections = work_attributes['member_of_collections']
@@ -347,11 +347,11 @@ module Migrate
         # Singularize non-enumerable attributes
         attrs.each do |k, v|
           if file_set.attributes.keys.member?(k.to_s)
-            if !file_set.attributes[k.to_s].respond_to?(:each) && attrs[k].respond_to?(:each)
-              file_attributes[k] = v.first
-            else
-              file_attributes[k] = v
-            end
+            file_attributes[k] = if !file_set.attributes[k.to_s].respond_to?(:each) && attrs[k].respond_to?(:each)
+                                   v.first
+                                 else
+                                   v
+                                 end
           end
         end
         file_attributes[:date_created] = attrs['date_created']
@@ -416,11 +416,11 @@ module Migrate
       def add_id_mapping(uuid, new_work)
         # Pluralize the worktype
         work_type = new_work.class.to_s.underscore
-        if work_type == 'honors_thesis'
-          work_type = 'honors_theses'
-        else
-          work_type = work_type + 's'
-        end
+        work_type = if work_type == 'honors_thesis'
+                      'honors_theses'
+                    else
+                      work_type + 's'
+                    end
         new_path = "#{work_type}/#{new_work.id}"
 
         @id_mapper.add_row(uuid, new_path)

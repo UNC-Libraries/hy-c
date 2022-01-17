@@ -259,12 +259,11 @@ module Tasks
         degree = abbreviated_degree
       end
 
-      resource_type = ''
-      if normalized_degree.in? ['ma', 'ms']
-        resource_type = 'Masters Thesis'
-      else
-        resource_type = 'Dissertation'
-      end
+      resource_type = if normalized_degree.in? ['ma', 'ms']
+                        'Masters Thesis'
+                      else
+                        'Dissertation'
+                      end
 
       department = metadata.xpath('//DISS_description/DISS_institution/DISS_inst_contact').text.strip
       affiliation = ProquestDepartmentMappingsService.standard_department_name(department) || department
@@ -340,13 +339,13 @@ module Tasks
       # Singularize non-enumerable attributes and make sure enumerable attributes are arrays
       attrs.each do |k, v|
         if file_set.attributes.keys.member?(k.to_s)
-          if !file_set.attributes[k.to_s].respond_to?(:each) && file_attributes[k].respond_to?(:each)
-            file_attributes[k] = v.first
-          elsif file_set.attributes[k.to_s].respond_to?(:each) && !file_attributes[k].respond_to?(:each)
-            file_attributes[k] = Array(v)
-          else
-            file_attributes[k] = v
-          end
+          file_attributes[k] = if !file_set.attributes[k.to_s].respond_to?(:each) && file_attributes[k].respond_to?(:each)
+                                 v.first
+                               elsif file_set.attributes[k.to_s].respond_to?(:each) && !file_attributes[k].respond_to?(:each)
+                                 Array(v)
+                               else
+                                 v
+                               end
         end
       end
 

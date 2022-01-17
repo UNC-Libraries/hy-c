@@ -411,8 +411,6 @@ Metrics/AbcSize:
 # IgnoredMethods: refine
 Metrics/BlockLength:
   Max: 613
-  Exclude:
-    - 'db/schema.rb'
 
 # Offense count: 7
 # Configuration parameters: CountBlocks, Max.
@@ -630,8 +628,8 @@ Style/CommentedKeyword:
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, SingleLineConditionsOnly, IncludeTernaryExpressions.
 # SupportedStyles: assign_to_condition, assign_inside_condition
-Style/ConditionalAssignment:
-  Enabled: false
+# Style/ConditionalAssignment:
+#   Enabled: false
 
 # Offense count: 149
 # Configuration parameters: AllowedConstants.
@@ -900,7 +898,6 @@ Style/NumericLiteralPrefix:
 Style/NumericLiterals:
   Exclude:
     - 'config/initializers/mailboxer.rb'
-    - 'db/schema.rb'
 
 # Offense count: 27
 # Cop supports --auto-correct.

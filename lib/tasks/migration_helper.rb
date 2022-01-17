@@ -48,13 +48,13 @@ class MigrationHelper
   def self.check_enumeration(metadata, resource, identifier)
     # Singularize non-enumerable attributes and make sure enumerable attributes are arrays
     metadata.each do |k, v|
-      if resource.attributes.keys.member?(k.to_s) && !resource.attributes[k.to_s].respond_to?(:each) && metadata[k].respond_to?(:each)
-        metadata[k] = v.first
-      elsif resource.attributes.keys.member?(k.to_s) && resource.attributes[k.to_s].respond_to?(:each) && !metadata[k].respond_to?(:each)
-        metadata[k] = Array(v)
-      else
-        metadata[k] = v
-      end
+      metadata[k] = if resource.attributes.keys.member?(k.to_s) && !resource.attributes[k.to_s].respond_to?(:each) && metadata[k].respond_to?(:each)
+                      v.first
+                    elsif resource.attributes.keys.member?(k.to_s) && resource.attributes[k.to_s].respond_to?(:each) && !metadata[k].respond_to?(:each)
+                      Array(v)
+                    else
+                      v
+                    end
     end
 
     # Only keep attributes which apply to the given work type

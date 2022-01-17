@@ -258,11 +258,11 @@ module Bulkrax
               work_record[person_type].each_with_index do |person_object, index|
                 person_hash[index.to_s] = person_object.as_json
               end
-              if person_hash.blank?
-                metadata["#{person_type}_attributes"] = nil
-              else
-                metadata["#{person_type}_attributes"] = person_hash
-              end
+              metadata["#{person_type}_attributes"] = if person_hash.blank?
+                                                        nil
+                                                      else
+                                                        person_hash
+                                                      end
             end
           end
           csv << metadata

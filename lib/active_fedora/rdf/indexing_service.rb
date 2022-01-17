@@ -64,13 +64,13 @@ module ActiveFedora::RDF
             value = val
 
             if solr_field_key == 'date_created'
-              if val.is_a? Date
-                value = val
-              elsif val.is_a? DateTime
-                value =  Hyc::EdtfConvert.convert_from_edtf(val.strftime('%Y-%m-%d'))
-              else
-                value =  Hyc::EdtfConvert.convert_from_edtf(val)
-              end
+              value = if val.is_a? Date
+                        val
+                      elsif val.is_a? DateTime
+                        Hyc::EdtfConvert.convert_from_edtf(val.strftime('%Y-%m-%d'))
+                      else
+                        Hyc::EdtfConvert.convert_from_edtf(val)
+                      end
             end
 
             append_to_solr_doc(solr_doc, solr_field_key, field_to_use, value)

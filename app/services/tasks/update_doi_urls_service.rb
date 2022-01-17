@@ -20,11 +20,11 @@ module Tasks
       puts "[#{Time.now}] starting doi updates"
 
       # set datacite variables
-      if state == 'test'
-        doi_update_url = 'https://api.test.datacite.org/dois'
-      else
-        doi_update_url = 'https://api.datacite.org/dois'
-      end
+      doi_update_url = if state == 'test'
+                         'https://api.test.datacite.org/dois'
+                       else
+                         'https://api.datacite.org/dois'
+                       end
 
       datacite_user = ENV['DATACITE_USER']
       datacite_password = ENV['DATACITE_PASSWORD']

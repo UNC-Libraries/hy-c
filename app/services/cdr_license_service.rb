@@ -3,11 +3,11 @@ module CdrLicenseService
   self.authority = Qa::Authorities::Local.subauthority_for('licenses')
 
   def self.select(work_type)
-    if work_type.match?('data_sets')
-      license_type = 'all'
-    else
-      license_type = ''
-    end
+    license_type = if work_type.match?('data_sets')
+                     'all'
+                   else
+                     ''
+                   end
 
     authority.all.reject { |item| item['active'] == license_type }.map do |element|
       [element[:label], element[:id]]

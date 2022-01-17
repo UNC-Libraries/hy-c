@@ -108,28 +108,28 @@ module Tasks
       #
       #########################
       creators = parse_people(work, 'creators')
-      if creators.blank?
-        data[:data][:attributes][:creators] = {
-          name: 'The University of North Carolina at Chapel Hill University Libraries',
-          nameType: 'Organizational'
-        }
-      else
-        data[:data][:attributes][:creators] = creators
-      end
+      data[:data][:attributes][:creators] = if creators.blank?
+                                              {
+                                                name: 'The University of North Carolina at Chapel Hill University Libraries',
+                                                nameType: 'Organizational'
+                                              }
+                                            else
+                                              creators
+                                            end
 
       publisher = parse_field(work, 'publisher')
-      if publisher.blank?
-        data[:data][:attributes][:publisher] = 'The University of North Carolina at Chapel Hill University Libraries'
-      else
-        data[:data][:attributes][:publisher] = publisher.first
-      end
+      data[:data][:attributes][:publisher] = if publisher.blank?
+                                               'The University of North Carolina at Chapel Hill University Libraries'
+                                             else
+                                               publisher.first
+                                             end
 
       publication_year = parse_field(work, 'date_issued')
-      if publication_year.blank?
-        data[:data][:attributes][:publicationYear] = Date.today.year
-      else
-        data[:data][:attributes][:publicationYear] = Array.wrap(publication_year).first.to_s.match(/\d{4}/)[0]
-      end
+      data[:data][:attributes][:publicationYear] = if publication_year.blank?
+                                                     Date.today.year
+                                                   else
+                                                     Array.wrap(publication_year).first.to_s.match(/\d{4}/)[0]
+                                                   end
 
       ############################
       #
@@ -247,11 +247,11 @@ module Tasks
       datacite_type = nil
       if !dcmi_type.blank?
         # Prioritize the "text" type when multiple are present
-        if dcmi_type.include?('http://purl.org/dc/dcmitype/Text')
-          dcmi_val = 'http://purl.org/dc/dcmitype/Text'
-        else
-          dcmi_val = dcmi_type.first
-        end
+        dcmi_val = if dcmi_type.include?('http://purl.org/dc/dcmitype/Text')
+                     'http://purl.org/dc/dcmitype/Text'
+                   else
+                     dcmi_type.first
+                   end
         dcmi_type_term = dcmi_val.split('/').last
         datacite_type = DCMI_TO_DATACITE_TYPE[dcmi_type_term]
       else

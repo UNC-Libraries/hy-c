@@ -237,15 +237,15 @@ module Bulkrax
       resource = @klass.new
       attrs.each do |k, v|
         # check if attribute is single-valued but is currently an array
-        if resource.attributes.keys.member?(k.to_s) && !resource.attributes[k.to_s].respond_to?(:each) && attrs[k].respond_to?(:each)
-          attrs[k] = v.first
-          # check if attribute is multi-valued but is currently not an array
-        elsif resource.attributes.keys.member?(k.to_s) && resource.attributes[k.to_s].respond_to?(:each) && !attrs[k].respond_to?(:each)
-          attrs[k] = Array(v)
-          # otherwise, the attribute does not need to be transformed
-        else
-          attrs[k] = v
-        end
+        attrs[k] = if resource.attributes.keys.member?(k.to_s) && !resource.attributes[k.to_s].respond_to?(:each) && attrs[k].respond_to?(:each)
+                     v.first
+                   # check if attribute is multi-valued but is currently not an array
+                   elsif resource.attributes.keys.member?(k.to_s) && resource.attributes[k.to_s].respond_to?(:each) && !attrs[k].respond_to?(:each)
+                     Array(v)
+                   # otherwise, the attribute does not need to be transformed
+                   else
+                     v
+                   end
       end
 
       # convert people objects from hash notation to valid json

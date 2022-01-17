@@ -96,11 +96,11 @@ module Hyrax
         if !attributes['permissions_attributes'].blank?
           permission_attrs = {}
           attributes['permissions_attributes'].each do |k, v|
-            if !v['index'].blank?
-              permission_attrs[k] = v.except('index')
-            else
-              permission_attrs[k] = v
-            end
+            permission_attrs[k] = if !v['index'].blank?
+                                    v.except('index')
+                                  else
+                                    v
+                                  end
           end
           attributes['permissions_attributes'] = permission_attrs
         end
@@ -163,11 +163,11 @@ module Hyrax
           end
           agents = [Sipity::Agent.where(proxy_for_id: agent_id, proxy_for_type: agent_type).first_or_create]
 
-          if permission['access'] == 'edit'
-            roles = 'approving'
-          else
-            roles = 'viewing'
-          end
+          roles = if permission['access'] == 'edit'
+                    'approving'
+                  else
+                    'viewing'
+                  end
 
           create_workflow_permissions(entity, agents, roles, workflow)
         end
