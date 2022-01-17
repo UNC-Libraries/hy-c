@@ -107,7 +107,7 @@ AND has_model_ssim:(DataSet HonorsThesis MastersPaper ScholarlyWork) AND system_
         log.info e.backtrace
         raise e
       end
-    rescue => e # other failure
+    rescue StandardError => e # other failure
       # log failure
       log.info "[#{Time.now}] failed to update doi for #{id}: #{e.message}"
       log.info e.backtrace

@@ -23,7 +23,7 @@ module DegreesService
 
   def self.label(id)
     authority.find(id).fetch('term')
-  rescue
+  rescue StandardError
     Rails.logger.warn "DegreesService: cannot find '#{id}'"
     puts "DegreesService: cannot find '#{id}'" # for migration log
     nil

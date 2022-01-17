@@ -151,7 +151,7 @@ module Tasks
           end
         end
         dirname
-      rescue => e
+      rescue StandardError => e
         puts "[#{Time.now}] #{file}, zip file error: #{e.message}"
         nil
       end

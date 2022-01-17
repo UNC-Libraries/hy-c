@@ -11,7 +11,7 @@ module MastersPapersDeptsService
 
   def self.identifier(term)
     authority.all.reject { |item| item['active'] == false }.select { |department| department['label'] == term }.first['id']
-  rescue
+  rescue StandardError
     nil
   end
 

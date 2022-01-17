@@ -18,7 +18,7 @@ module AwardsService
 
   def self.label(id)
     authority.find(id).fetch('term')
-  rescue
+  rescue StandardError
     Rails.logger.warn "AwardsService: cannot find #{id}"
     puts "AwardsService: cannot find #{id}" # for migration log
     nil

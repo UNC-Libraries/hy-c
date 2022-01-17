@@ -17,7 +17,7 @@ module CdrRightsStatementsService
 
   def self.label(id)
     authority.find(id).fetch('term')
-  rescue
+  rescue StandardError
     Rails.logger.warn "CdrRightsStatementsService: cannot find '#{id}'"
     puts "CdrRightsStatementsService: cannot find '#{id}'" # for migration log
     nil

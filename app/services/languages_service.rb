@@ -10,7 +10,7 @@ module LanguagesService
 
   def self.label(id)
     authority.find(Array.wrap(id).first).fetch('term')
-  rescue
+  rescue StandardError
     Rails.logger.debug "LanguagesService: cannot find '#{id}'"
     puts "LanguagesService: cannot find '#{id}'" # for migration log
     nil

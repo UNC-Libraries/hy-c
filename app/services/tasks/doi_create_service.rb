@@ -199,7 +199,7 @@ module Tasks
         puts "#{get_time} There are no records that need to have DOIs added."
         0
       end
-    rescue => e
+    rescue StandardError => e
       puts "#{get_time} There was an error creating dois: #{e.message}"
       -1
     end

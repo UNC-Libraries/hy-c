@@ -6,7 +6,7 @@ module BiomedDepartmentMappingsService
   def self.standard_department_name(addresses)
     (addresses.map do |address|
       authority.find(address).fetch('term')
-    rescue
+    rescue StandardError
       nil
     end).flatten.compact
   end

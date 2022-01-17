@@ -124,7 +124,7 @@ module Tasks
             end
           end
           @object_progress.add_entry(row['source_identifier'])
-        rescue => e
+        rescue StandardError => e
           puts "[#{Time.now}] there was an error processing #{row['source_identifier']}: #{e.message}"
           @skipped_objects.add_entry(row['source_identifier'])
         end

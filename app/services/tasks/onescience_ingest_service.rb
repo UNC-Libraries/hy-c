@@ -451,7 +451,7 @@ module Tasks
 
           @scopus_hash[record_doi] = { 'authors' => record_authors, 'volume' => volume, 'issue' => issue,
                                        'page_start' => page_start, 'page_end' => page_end }
-        rescue => e
+        rescue StandardError => e
           puts e.message, e.backtrace
           puts author_groups
         end

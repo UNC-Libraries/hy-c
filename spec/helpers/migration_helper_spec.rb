@@ -61,7 +61,7 @@ RSpec.describe MigrationHelper do
       it 'returns method result' do
         retry_result = begin
           described_class.retry_operation('failed') { described_class.get_language_uri(['eng']) }
-        rescue => e
+        rescue StandardError => e
           e.message
         end
 

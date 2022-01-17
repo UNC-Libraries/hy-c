@@ -5,7 +5,7 @@ module ProquestDepartmentMappingsService
 
   def self.standard_department_name(proquest_department)
     [authority.find(proquest_department).fetch('term')].flatten
-  rescue
+  rescue StandardError
     Rails.logger.warn "ProquestDepartmentMappingsService: cannot find '#{proquest_department}'"
     puts "ProquestDepartmentMappingsService: cannot find '#{proquest_department}'" # for migration log
     nil
