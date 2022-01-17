@@ -115,8 +115,8 @@ module Tasks
             zip_file.extract(file, file_path)
           end
         end
-        unless extracted_files.count == 2
-          logger.error("Unexpected package contents - more than two files extracted from #{package_path}")
+        unless extracted_files.count.between?(2, 3)
+          logger.error("Unexpected package contents - #{extracted_files.count} files extracted from #{package_path}")
         end
         extracted_files
       rescue Zip::DestinationFileExistsError => e

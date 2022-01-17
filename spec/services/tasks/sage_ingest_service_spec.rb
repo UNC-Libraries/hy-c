@@ -183,13 +183,13 @@ RSpec.describe Tasks::SageIngestService, :sage do
 
   context "with unexpected contents in the package" do
     let(:temp_dir) { Dir.mktmpdir }
-    let(:package_path) { File.join(fixture_path, "sage", "triple_package.zip") }
+    let(:package_path) { File.join(fixture_path, "sage", "quadruple_package.zip") }
 
     it "logs an error" do
       logger = spy('logger')
       allow(Logger).to receive(:new).and_return(logger)
       service.extract_files(package_path, temp_dir)
-      expect(logger).to have_received(:error).with("Unexpected package contents - more than two files extracted from #{package_path}")
+      expect(logger).to have_received(:error).with("Unexpected package contents - 4 files extracted from #{package_path}")
     end
   end
 end
