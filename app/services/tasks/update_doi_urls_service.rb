@@ -38,7 +38,7 @@ AND has_model_ssim:(DataSet HonorsThesis MastersPaper ScholarlyWork) AND system_
                                               sort: "system_create_dtsi ASC",
                                               fl: "id,doi_tesim")["response"]["docs"]
 
-      log.info "[#{Time.now}] no works with dois to be updated" if records.count == 0
+      log.info "[#{Time.now}] no works with dois to be updated" if records.count.zero?
 
       count = 0
 
@@ -94,7 +94,7 @@ AND has_model_ssim:(DataSet HonorsThesis MastersPaper ScholarlyWork) AND system_
                             body: data
                            )
       rescue Net::ReadTimeout, Net::OpenTimeout => e
-        if retries > 0
+        if retries.positive?
           # log retry
           log.info "[#{Time.now}] retrying #{id}: #{e.message}"
           print 'R'
@@ -122,7 +122,7 @@ AND has_model_ssim:(DataSet HonorsThesis MastersPaper ScholarlyWork) AND system_
                             headers: { 'Content-Type' => 'application/vnd.api+json' }
                            )
       rescue Net::ReadTimeout, Net::OpenTimeout => e
-        if retries > 0
+        if retries.positive?
           retries -= 1
           log.info "[#{Time.now}] Timed out while attempting to fetch DOI record using #{doi_get_url}/#{id}, retrying with #{retries} retries remaining."
           sleep(30)

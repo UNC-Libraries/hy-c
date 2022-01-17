@@ -21,7 +21,7 @@ module Hyrax
 
           text << pub_info + ". " if pub_info.present?
           # UNC customization. Add DOI
-          text << work.doi[0] if !work.doi.nil? && work.doi.length > 0
+          text << work.doi[0] if !work.doi.nil? && work.doi.length.positive?
           text.html_safe
         end
 

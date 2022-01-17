@@ -820,13 +820,6 @@ Style/MutableConstant:
     - 'lib/tasks/migration/migration_constants.rb'
     - 'spec/support/oai_sample_solr_documents.rb'
 
-# Offense count: 49
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: both, prefix, postfix
-# Style/NegatedIf:
-#   Enabled: false
-
 # Offense count: 13
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, MinBodyLength.
@@ -879,13 +872,6 @@ Style/NumericLiteralPrefix:
 Style/NumericLiterals:
   Exclude:
     - 'config/initializers/mailboxer.rb'
-
-# Offense count: 27
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, IgnoredMethods.
-# SupportedStyles: predicate, comparison
-Style/NumericPredicate:
-  Enabled: false
 
 # Offense count: 6
 # Configuration parameters: AllowedMethods.

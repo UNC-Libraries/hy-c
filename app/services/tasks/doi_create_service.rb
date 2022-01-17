@@ -76,7 +76,7 @@ module Tasks
                              body: data
                             )
       rescue Net::ReadTimeout, Net::OpenTimeout => e
-        if retries > 0
+        if retries.positive?
           retries -= 1
           puts "#{get_time} Timed out while attempting to create DOI using #{@doi_creation_url}, retrying with #{retries} retries remaining."
           sleep(30)
@@ -191,7 +191,7 @@ module Tasks
                                                 sort: "system_create_dtsi ASC",
                                                 fl: "id")["response"]["docs"]
 
-        if records.length > 0
+        if records.length.positive?
           puts "#{get_time} Preparing to add DOIs to #{records.length} records"
           records.each do |record|
             create_doi(record)

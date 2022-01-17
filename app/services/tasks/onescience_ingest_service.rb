@@ -113,7 +113,7 @@ module Tasks
             file_visibility = vis_private
 
             # set pubmed central or first listed file as public
-            file_visibility = vis_public if (file_index == 0 && !files.key?('PubMedCentral-Link_Files')) || (source_name.include? 'PubMedCentral-Link')
+            file_visibility = vis_public if (file_index.zero? && !files.key?('PubMedCentral-Link_Files')) || (source_name.include? 'PubMedCentral-Link')
 
             # parse filename
             if source_name.include? 'PubMedCentral-Link'
@@ -174,7 +174,7 @@ module Tasks
               puts "[#{Time.now}] #{item_data['onescience_id']} error: could not find file #{file_id}"
             end
           end
-          if attached_file_count == 0
+          if attached_file_count.zero?
             puts "[#{Time.now}] #{item_data['onescience_id']} work has no files and will not be saved"
             @skipped_objects.add_entry(item_data['onescience_id'])
           end
@@ -442,7 +442,7 @@ module Tasks
                                         'index' => index + 1 }.reject { |i| i.blank? }
 
               # verify that first author is first in list
-              if index == 0
+              if index.zero?
                 author_url = author.xpath('author-url').text
                 puts 'authors not in correct order ' + first_author if author_url != first_author && !author_url.blank? && !first_author.blank?
               end

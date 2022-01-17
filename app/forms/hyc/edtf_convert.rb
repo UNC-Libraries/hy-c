@@ -37,7 +37,7 @@ module Hyc
     def convert_to_edtf(field)
       case field
       when /^\d{4}s$/ # 1900s, 1980s
-        normalized_string = (field[2].to_i == 0 && field[3].to_i == 0) ? "#{field[0...-3]}xx" : "#{field[0...-2]}x"
+        normalized_string = (field[2].to_i.zero? && field[3].to_i.zero?) ? "#{field[0...-3]}xx" : "#{field[0...-2]}x"
       when /^(\d{4}-\d{2}-\d{2}|\d{4})$/ # 2000-01-01 or 2000
         normalized_string = field
       when /^(\d{2})(-|\/)(\d{2})(-|\/)(\d{4})$/ # 01-01-2000, 01/01/2000

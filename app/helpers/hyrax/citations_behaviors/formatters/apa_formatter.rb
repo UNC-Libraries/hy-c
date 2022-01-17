@@ -13,7 +13,7 @@ module Hyrax
           text << add_title_text_for(work)
           text << add_publisher_text_for(work)
           # UNC customization. Add DOI
-          text << work.doi[0] if !work.doi.nil? && work.doi.length > 0
+          text << work.doi[0] if !work.doi.nil? && work.doi.length.positive?
 
           text.html_safe
         end

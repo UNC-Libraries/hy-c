@@ -10,7 +10,7 @@ class DefaultAdminSetsController < ApplicationController
     add_breadcrumb t(:'hyrax.controls.home'), root_path
     add_breadcrumb t(:'hyrax.dashboard.breadcrumbs.admin'), hyrax.dashboard_path
     add_breadcrumb 'Admin Set Worktypes', request.path
-    if AdminSet.all.count == 0
+    if AdminSet.all.count.zero?
       @default_admin_sets = nil
     else
       create_default_records

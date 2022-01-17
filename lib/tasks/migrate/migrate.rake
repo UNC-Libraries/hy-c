@@ -23,7 +23,7 @@ namespace :migrate do
 
     # The default admin set and designated depositor must exist before running this script
     if AdminSet.where(title: ENV['DEFAULT_ADMIN_SET']).count != 0 &&
-        User.where(email: collection_config['depositor_email']).count > 0
+        User.where(email: collection_config['depositor_email']).count.positive?
       @depositor = User.where(email: collection_config['depositor_email']).first
 
       puts "[#{Time.now.to_s}] create binary hash"
