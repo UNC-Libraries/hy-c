@@ -70,7 +70,7 @@ module Bulkrax
       return false if excluded?(field)
       return true if ['collections', 'file', 'remote_files', 'model', 'delete'].include?(field)
 
-      return factory_class.method_defined?(field) && factory_class.properties[field].present?
+      factory_class.method_defined?(field) && factory_class.properties[field].present?
     end
 
     def multiple?(field)
@@ -101,7 +101,7 @@ module Bulkrax
 
       return [field] if fields.blank?
 
-      return fields
+      fields
     end
 
     # Check whether a field is explicitly excluded in the mapping

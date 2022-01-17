@@ -970,12 +970,6 @@ Style/RedundantParentheses:
     - 'spec/controllers/hyrax/restricted_work_type_controller_spec.rb'
     - 'spec/controllers/hyrax/work_type_controller_spec.rb'
 
-# Offense count: 33
-# Cop supports --auto-correct.
-# Configuration parameters: AllowMultipleReturnValues.
-Style/RedundantReturn:
-  Enabled: false
-
 # Offense count: 48
 # Cop supports --auto-correct.
 Style/RedundantSelf:

@@ -24,7 +24,7 @@ module RangeLimitHelper
     # fact no values
     return nil if @response.total == stats["missing"]
 
-    return stats[type].to_s.gsub(/\.0+/, '')
+    stats[type].to_s.gsub(/\.0+/, '')
   end
 
   def range_display(solr_field, my_params = params)
@@ -42,7 +42,7 @@ module RangeLimitHelper
       end
     end
 
-    return ""
+    ""
   end
 
   # Show the limit area if:
@@ -96,7 +96,7 @@ module RangeLimitHelper
     my_params.delete("range_start")
     my_params.delete("range_end")
 
-    return my_params
+    my_params
   end
 
   def has_selected_range_limit?(solr_field)

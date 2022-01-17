@@ -42,7 +42,7 @@ module Hyrax
       mail(to: ENV['EMAIL_GEONAMES_ERRORS_ADDRESS'], subject: 'Unable to index geonames uri to human readable text') do |format|
         format.text { render plain: e.message }
       end
-      return ''
+      ''
     end
 
     # Grab the labels for controlled properties from the remote sources

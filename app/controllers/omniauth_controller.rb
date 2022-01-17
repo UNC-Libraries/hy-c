@@ -17,7 +17,7 @@ class OmniauthController < Devise::SessionsController
 
   def after_sign_out_path_for(resource_or_scope)
     if Rails.env.production? && (ENV['DATABASE_AUTH'] == 'false')
-      return ENV['SSO_LOGOUT_URL']
+      ENV['SSO_LOGOUT_URL']
     else
       super
     end

@@ -66,20 +66,20 @@ module Tasks
     end
 
     def doi_request(data, retries = 2)
-      return HTTParty.post(@doi_creation_url,
-                           headers: { 'Content-Type' => 'application/vnd.api+json' },
-                           basic_auth: {
-                             username: @doi_user,
-                             password: @doi_password
-                           },
-                           body: data
-                          )
+      HTTParty.post(@doi_creation_url,
+                    headers: { 'Content-Type' => 'application/vnd.api+json' },
+                    basic_auth: {
+                      username: @doi_user,
+                      password: @doi_password
+                    },
+                    body: data
+                   )
     rescue Net::ReadTimeout, Net::OpenTimeout => e
       if retries.positive?
         retries -= 1
         puts "#{get_time} Timed out while attempting to create DOI using #{@doi_creation_url}, retrying with #{retries} retries remaining."
         sleep(30)
-        return doi_request(data, retries)
+        doi_request(data, retries)
       else
         raise e
       end
@@ -194,14 +194,14 @@ module Tasks
           create_doi(record)
         end
         puts "#{get_time} Added #{records.length} DOIs in #{Time.now - start_time}s"
-        return records.length
+        records.length
       else
         puts "#{get_time} There are no records that need to have DOIs added."
-        return 0
+        0
       end
     rescue => e
       puts "#{get_time} There was an error creating dois: #{e.message}"
-      return -1
+      -1
     end
 
     private

@@ -228,7 +228,7 @@ module Bulkrax
         # Problematic for a large upload
         Bulkrax::DownloadCloudFileJob.perform_now(file, target_file)
       end
-      return nil
+      nil
     end
 
     # export methods
@@ -324,7 +324,7 @@ module Bulkrax
     def real_import_file_path
       if file? && zip?
         unzip(parser_fields['import_file_path'], importer_unzip_path)
-        return Dir["#{importer_unzip_path}/*.csv"].first
+        Dir["#{importer_unzip_path}/*.csv"].first
       else
         parser_fields['import_file_path']
       end
