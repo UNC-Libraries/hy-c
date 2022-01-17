@@ -115,6 +115,27 @@ RSpec.describe Tasks::SageIngestService, :sage do
     end
   end
 
+  context 'when it cannot find the depositor' do
+    before do
+      # return nil when searching for the depositor
+      allow(User).to receive(:find_by).with(uid: 'admin').and_return(nil)
+    end
+
+    it 'raises an error' do
+      expect { described_class.new(configuration_file: path_to_config) }.to raise_error(ActiveRecord::RecordNotFound, 'Could not find User with onyen admin')
+    end
+  end
+
+  context 'when it cannot find the admin_set' do
+    before do
+      allow(AdminSet).to receive(:where).with(title: 'sage admin set').and_return(nil)
+    end
+
+    it 'raises an error' do
+      expect { described_class.new(configuration_file: path_to_config) }.to raise_error(ActiveRecord::RecordNotFound, 'Could not find AdminSet with title sage admin set')
+    end
+  end
+
   describe '#extract_files' do
     let(:temp_dir) { Dir.mktmpdir }
 

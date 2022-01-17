@@ -6,8 +6,12 @@ module Tasks
     def initialize(args)
       config = YAML.load_file(args[:configuration_file])
 
-      @admin_set = ::AdminSet.where(title: config['admin_set']).first
+      @admin_set = ::AdminSet.where(title: config['admin_set'])&.first
+      raise(ActiveRecord::RecordNotFound, "Could not find AdminSet with title #{config['admin_set']}") unless @admin_set.present?
+
       @depositor = User.find_by(uid: config['depositor_onyen'])
+      raise(ActiveRecord::RecordNotFound, "Could not find User with onyen #{config['depositor_onyen']}") unless @depositor.present?
+
       @package_dir = config['package_dir']
       @ingest_progress_log = Migrate::Services::ProgressTracker.new(config['ingest_progress_log'])
     end
@@ -30,8 +34,8 @@ module Tasks
           ingest_work = JatsIngestWork.new(xml_path: File.join(dir, xml_file_name))
           # Create Article with metadata and save
           art_with_meta = article_with_metadata(ingest_work)
-          _art_with_fs = attach_file_set_to_work(work: art_with_meta, dir: dir, pdf_file_name: pdf_file_name, user: @depositor)
           # Add PDF file to Article (including FileSets)
+          _art_with_fs = attach_file_set_to_work(work: art_with_meta, dir: dir, pdf_file_name: pdf_file_name, user: @depositor)
           # save object
           # set off background jobs for object?
           mark_done(orig_file_name) if package_ingest_complete?(dir, file_names)
