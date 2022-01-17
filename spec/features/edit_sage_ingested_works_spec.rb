@@ -3,7 +3,7 @@ require Rails.root.join('spec/support/capybara.rb')
 
 include Warden::Test::Helpers
 
-RSpec.feature 'Edit works created through the Sage ingest', js: false do
+RSpec.feature 'Edit works created through the Sage ingest', :sage, js: false do
   let(:ingest_progress_log_path) { File.join(fixture_path, "sage", "ingest_progress.log") }
 
   # empty the progress log
@@ -13,8 +13,12 @@ RSpec.feature 'Edit works created through the Sage ingest', js: false do
     File.open(ingest_progress_log_path, 'w') {|file| file.truncate(0) }
   end
 
+  after(:all) do
+    User.find_by(uid: 'admin').delete
+  end
+
   before(:all) do
-    @admin_user = FactoryBot.create(:admin)
+    @admin_user = FactoryBot.create(:admin, uid: 'admin')
     @admin_set = AdminSet.create(title: ['sage admin set'],
                                  description: ['some description'],
                                  edit_users: [@admin_user.user_key])
@@ -39,12 +43,12 @@ RSpec.feature 'Edit works created through the Sage ingest', js: false do
     expect(page).to have_content('Smith, Jennifer S.')
     expect(page).to have_content('sage admin set')
     expect(page).to have_content('Attribution-NonCommercial 4.0 International')
-    click_link('Edit')
+    expect(page).to have_content('February 1, 2021')
+    click_link('Edit', :match => :first)
     expect(page).to have_link("Work Deposit Form")
   end
 
   it "has attached the file_set to the work" do
-    pending("Adding file sets to the Article object")
     expect(@first_work.file_sets.first).to be_instance_of(FileSet)
   end
 
@@ -88,6 +92,12 @@ RSpec.feature 'Edit works created through the Sage ingest', js: false do
     login_as @admin_user
     visit "concern/articles/#{@first_work_id}/edit"
     expect(page).to have_field('Creator #2', with: 'Zhang, Xi')
+  end
+
+  it "renders a date that includes only month and year on the edit page" do
+    login_as @admin_user
+    visit "concern/articles/#{@third_work_id}/edit"
+    expect(page).to have_field('Date of publication', with: 'January 2021') # aka date_issued
   end
 
   it "can render values only present on the second work" do

@@ -1,13 +1,13 @@
 module Tasks
   require 'tasks/migrate/services/progress_tracker'
   class SageIngestService
-    attr_reader :package_dir, :ingest_progress_log, :admin_set
+    attr_reader :package_dir, :ingest_progress_log, :admin_set, :depositor
 
     def initialize(args)
       config = YAML.load_file(args[:configuration_file])
 
       @admin_set = ::AdminSet.where(title: config['admin_set']).first
-
+      @depositor = User.find_by(uid: config['depositor_onyen'])
       @package_dir = config['package_dir']
       @ingest_progress_log = Migrate::Services::ProgressTracker.new(config['ingest_progress_log'])
     end
@@ -23,12 +23,14 @@ module Tasks
           file_names = extract_files(package_path, dir).keys
           next unless file_names.count == 2
 
-          _pdf_file_name = file_names.find { |name| name.match(/^(\S*).pdf/) }
+          pdf_file_name = file_names.find { |name| name.match(/^(\S*).pdf/) }
           xml_file_name = file_names.find { |name| name.match(/^(\S*).xml/) }
+
           # parse xml
           ingest_work = JatsIngestWork.new(xml_path: File.join(dir, xml_file_name))
           # Create Article with metadata and save
-          build_article(ingest_work)
+          art_with_meta = article_with_metadata(ingest_work)
+          _art_with_fs = attach_file_set_to_work(work: art_with_meta, dir: dir, pdf_file_name: pdf_file_name, user: @depositor)
           # Add PDF file to Article (including FileSets)
           # save object
           # set off background jobs for object?
@@ -37,7 +39,7 @@ module Tasks
       end
     end
 
-    def build_article(ingest_work)
+    def article_with_metadata(ingest_work)
       art = Article.new
       art.admin_set = @admin_set
       # required fields
@@ -71,6 +73,14 @@ module Tasks
       art.save!
       # return the Article object
       art
+    end
+
+    def attach_file_set_to_work(work:, dir:, pdf_file_name:, user:)
+      pdf = File.open(File.join(dir, pdf_file_name))
+      fs = FileSet.create
+      actor = Hyrax::Actors::FileSetActor.new(fs, user)
+      actor.attach_to_work(work)
+      pdf.close
     end
 
     def mark_done(orig_file_name)

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe JatsIngestWork, type: :model do
+RSpec.describe JatsIngestWork, :sage, type: :model do
   let(:xml_file_path) { File.join(fixture_path, 'sage', 'CCX_2021_28_10.1177_1073274820985792', '10.1177_1073274820985792.xml') }
   let(:work) { described_class.new(xml_path: xml_file_path) }
 

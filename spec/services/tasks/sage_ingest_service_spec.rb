@@ -1,7 +1,7 @@
 require 'rails_helper'
 include ActiveSupport::Testing::TimeHelpers
 
-RSpec.describe Tasks::SageIngestService do
+RSpec.describe Tasks::SageIngestService, :sage do
   let(:service) { described_class.new(configuration_file: path_to_config) }
 
   let(:sage_fixture_path) { File.join(fixture_path, "sage") }
@@ -21,6 +21,8 @@ RSpec.describe Tasks::SageIngestService do
   end
 
   before do
+    # return the FactoryBot admin user when searching for uid: admin from config
+    allow(User).to receive(:find_by).with(uid: 'admin').and_return(admin)
     # instantiate the sage ingest admin_set
     admin_set
   end
@@ -36,6 +38,7 @@ RSpec.describe Tasks::SageIngestService do
     it "sets parameters from the configuration file" do
       expect(service.package_dir).to eq "spec/fixtures/sage"
       expect(service.admin_set).to be_instance_of(AdminSet)
+      expect(service.depositor).to be_instance_of(User)
     end
 
     it 'creates a progress log for the ingest' do
@@ -53,8 +56,9 @@ RSpec.describe Tasks::SageIngestService do
 
   context 'with an ingest work object' do
     let(:ingest_work) { JatsIngestWork.new(xml_path: first_xml_path) }
-    let(:built_article) { service.build_article(ingest_work) }
+    let(:built_article) { service.article_with_metadata(ingest_work) }
     let(:temp_dir) { Dir.mktmpdir }
+    let(:user) { FactoryBot.create(:admin) }
 
     after do
       FileUtils.remove_entry(temp_dir)
@@ -62,7 +66,7 @@ RSpec.describe Tasks::SageIngestService do
 
     it 'can create a valid article' do
       expect do
-        service.build_article(ingest_work)
+        service.article_with_metadata(ingest_work)
       end.to change { Article.count }.by(1)
     end
 
@@ -102,7 +106,10 @@ RSpec.describe Tasks::SageIngestService do
     end
 
     it 'attaches a file_set to the article' do
-      pending("Adding file sets to the Article object")
+      service.extract_files(first_zip_path, temp_dir)
+      expect do
+        service.attach_file_set_to_work(work: built_article, dir: temp_dir, pdf_file_name: '10.1177_1073274820985792.pdf', user: user)
+      end.to change { FileSet.count }.by(1)
       expect(built_article.file_sets).to be_instance_of(Array)
       expect(built_article.file_sets.first).to be_instance_of(FileSet)
     end
@@ -110,6 +117,7 @@ RSpec.describe Tasks::SageIngestService do
 
   describe '#extract_files' do
     let(:temp_dir) { Dir.mktmpdir }
+
     after do
       FileUtils.remove_entry(temp_dir)
     end
