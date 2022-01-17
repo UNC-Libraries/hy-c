@@ -31,7 +31,7 @@ RSpec.describe Bulkrax::FileFactory do
     file_set.save!
 
     allow(new_remote_files).to receive(:present?).and_return(false)
-    allow(::CreateDerivativesJob).to receive(:set).with(:wait => 1.minute).and_return(::CreateDerivativesJob)
+    allow(::CreateDerivativesJob).to receive(:set).with(wait: 1.minute).and_return(::CreateDerivativesJob)
     allow(::CreateDerivativesJob).to receive(:perform_later).with(file_set, file.id).and_return(file_set)
   end
 

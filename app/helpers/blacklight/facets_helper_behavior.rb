@@ -124,8 +124,8 @@ module Blacklight::FacetsHelperBehavior
   # @return [String]
   def render_facet_value(facet_field, item, options ={})
     path = path_for_facet(facet_field, item)
-    content_tag(:span, :class => "facet-label") do
-      link_to_unless(options[:suppress_link], facet_display_value(facet_field, item), path, :class => "facet_select")
+    content_tag(:span, class: "facet-label") do
+      link_to_unless(options[:suppress_link], facet_display_value(facet_field, item), path, class: "facet_select")
     end + render_facet_count(item.hits)
   end
 
@@ -157,7 +157,7 @@ module Blacklight::FacetsHelperBehavior
             content_tag(:span, '', class: "glyphicon glyphicon-remove") +
                 content_tag(:span, '[remove]', class: 'sr-only')
           end
-    end + render_facet_count(item.hits, :classes => ["selected"])
+    end + render_facet_count(item.hits, classes: ["selected"])
   end
 
   ##
@@ -170,7 +170,7 @@ module Blacklight::FacetsHelperBehavior
   # @return [String]
   def render_facet_count(num, options = {})
     classes = (options[:classes] || []) << "facet-count"
-    content_tag("span", t('blacklight.search.facets.count', :number => number_with_delimiter(num)), :class => classes)
+    content_tag("span", t('blacklight.search.facets.count', number: number_with_delimiter(num)), class: classes)
   end
 
   ##

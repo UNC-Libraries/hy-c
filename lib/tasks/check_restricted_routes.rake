@@ -23,10 +23,10 @@ task :check_restricted_routes, [:start, :rows, :log_dir] => :environment do |_t,
   checked = restricted_item_progress.completed_set + restricted_item_error_progress.completed_set
 
   restricted_item_query = ActiveFedora::SolrService.get("(visibility_ssi:authenticated OR visibility_ssi:restricted) AND has_model_ssim:(Article Artwork DataSet Dissertation General HonorsThesis Journal MastersPaper Multimed ScholarlyWork FileSet)",
-                                                        :sort => "system_create_dtsi ASC",
-                                                        :start => args[:start],
-                                                        :rows => args[:rows],
-                                                        :fl => "id,has_model_ssim")["response"]
+                                                        sort: "system_create_dtsi ASC",
+                                                        start: args[:start],
+                                                        rows: args[:rows],
+                                                        fl: "id,has_model_ssim")["response"]
   restricted_item_count = restricted_item_query["numFound"]
   puts restricted_item_count
 

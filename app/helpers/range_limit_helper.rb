@@ -10,7 +10,7 @@ module RangeLimitHelper
 
     html = label_tag("range[#{solr_field}][#{type}]", input_label, class: 'sr-only') if input_label.present?
     html ||= ''.html_safe
-    html += number_field_tag("range[#{solr_field}][#{type}]", default, :maxlength => maxlength, :class => "form-control range_#{type}")
+    html += number_field_tag("range[#{solr_field}][#{type}]", default, maxlength: maxlength, class: "form-control range_#{type}")
   end
 
   # type is 'min' or 'max'

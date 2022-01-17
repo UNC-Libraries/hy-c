@@ -206,8 +206,8 @@ RDFXML
 
       # extra fields
       fill_in 'Keyword', with: 'Test Default Keyword'
-      select 'Attribution 3.0 United States', :from => 'article_license'
-      select 'In Copyright', :from => 'article_rights_statement'
+      select 'Attribution 3.0 United States', from: 'article_license'
+      select 'In Copyright', from: 'article_rights_statement'
       fill_in 'Publisher', with: 'UNC Press'
       fill_in 'Subject', with: 'test'
       fill_in 'Identifier', with: 'some id'

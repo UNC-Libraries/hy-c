@@ -7,8 +7,8 @@ Rails.application.routes.draw do
   get 'accounts/new', to: 'accounts#new'
   post 'accounts/create', to: 'accounts#create'
 
-  match "/404", :to => "errors#not_found", :via => :all
-  match "/500", :to => "errors#internal_server_error", :via => :all
+  match "/404", to: "errors#not_found", via: :all
+  match "/500", to: "errors#internal_server_error", via: :all
 
   resources :default_admin_sets, except: :show
   get 'masters_papers/department', to: 'masters_papers#department'

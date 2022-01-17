@@ -125,13 +125,13 @@ RDFXML
       select 'Clinical Nutrition', from: 'Academic Concentration'
       find("#masters_paper_based_near_attributes_0_id", visible: false).set('http://sws.geonames.org/4460162/')
       fill_in 'Keyword', with: 'Test Default Keyword'
-      select 'Attribution 3.0 United States', :from => 'masters_paper_license'
+      select 'Attribution 3.0 United States', from: 'masters_paper_license'
       fill_in 'Note', with: 'a note'
       fill_in 'Reviewer', { with: 'reviewer', id: 'masters_paper_reviewers_attributes_0_name' }
       fill_in 'ORCID', { with: 'reviewer orcid', id: 'masters_paper_reviewers_attributes_0_orcid' }
       select 'Department of Biology', from: 'masters_paper_reviewers_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'masters_paper_reviewers_attributes_0_other_affiliation' }
-      select 'In Copyright', :from => 'masters_paper_rights_statement'
+      select 'In Copyright', from: 'masters_paper_rights_statement'
       fill_in 'Subject', with: 'test'
 
       expect(page).not_to have_field('masters_paper_access')
@@ -234,13 +234,13 @@ RDFXML
       fill_in 'Extent', with: 'some extent'
       find("#masters_paper_based_near_attributes_0_id", visible: false).set('http://sws.geonames.org/4460162/')
       fill_in 'Keyword', with: 'Test Default Keyword'
-      select 'Attribution 3.0 United States', :from => 'masters_paper_license'
+      select 'Attribution 3.0 United States', from: 'masters_paper_license'
       fill_in 'Note', with: 'a note'
       fill_in 'Reviewer', { with: 'reviewer', id: 'masters_paper_reviewers_attributes_0_name' }
       fill_in 'ORCID', { with: 'reviewer orcid', id: 'masters_paper_reviewers_attributes_0_orcid' }
       select 'Department of Biology', from: 'masters_paper_reviewers_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'masters_paper_reviewers_attributes_0_other_affiliation' }
-      select 'In Copyright', :from => 'masters_paper_rights_statement'
+      select 'In Copyright', from: 'masters_paper_rights_statement'
       fill_in 'Subject', with: 'test'
       fill_in 'Use', with: 'some use'
 

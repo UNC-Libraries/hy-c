@@ -95,9 +95,9 @@ RDFXML
       fill_in 'Conference name', with: 'a conference'
       find("#scholarly_work_based_near_attributes_0_id", visible: false).set('http://sws.geonames.org/4460162/')
       fill_in 'Keyword', with: 'Test Default Keyword'
-      select 'Attribution 3.0 United States', :from => 'scholarly_work_license'
+      select 'Attribution 3.0 United States', from: 'scholarly_work_license'
       select 'Other', from: 'scholarly_work_resource_type'
-      select 'In Copyright', :from => 'scholarly_work_rights_statement'
+      select 'In Copyright', from: 'scholarly_work_rights_statement'
       fill_in 'Subject', with: 'test'
 
       expect(page).not_to have_field('scholarly_work_date_created')
@@ -187,9 +187,9 @@ RDFXML
       fill_in 'DOI', with: 'some-doi'
       find("#scholarly_work_based_near_attributes_0_id", visible: false).set('http://sws.geonames.org/4460162/')
       fill_in 'Keyword', with: 'Test Default Keyword'
-      select 'Attribution 3.0 United States', :from => 'scholarly_work_license'
+      select 'Attribution 3.0 United States', from: 'scholarly_work_license'
       select 'Other', from: 'scholarly_work_resource_type'
-      select 'In Copyright', :from => 'scholarly_work_rights_statement'
+      select 'In Copyright', from: 'scholarly_work_rights_statement'
       fill_in 'Subject', with: 'test'
 
       expect(page).to have_selector('#scholarly_work_dcmi_type')

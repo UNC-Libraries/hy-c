@@ -113,7 +113,7 @@ RDFXML
       fill_in 'Graduation year', with: '2018'
       fill_in 'Identifier', with: 'some id'
       fill_in 'Keyword', with: 'Test Default Keyword'
-      select 'Attribution 3.0 United States', :from => 'dissertation_license'
+      select 'Attribution 3.0 United States', from: 'dissertation_license'
       fill_in 'Note', with: 'a note'
       fill_in 'Place of publication', with: 'UNC'
       fill_in 'Publisher', with: 'UNC Press'
@@ -121,7 +121,7 @@ RDFXML
       fill_in 'ORCID', { with: 'reviewer orcid', id: 'dissertation_reviewers_attributes_0_orcid' }
       select 'Department of Biology', from: 'dissertation_reviewers_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'dissertation_reviewers_attributes_0_other_affiliation' }
-      select 'In Copyright', :from => 'dissertation_rights_statement'
+      select 'In Copyright', from: 'dissertation_rights_statement'
       fill_in 'Subject', with: 'test'
       fill_in 'Use', with: 'some use'
 

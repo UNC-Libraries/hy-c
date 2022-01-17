@@ -139,7 +139,7 @@ RDFXML
       fill_in 'Keyword', with: 'Test Default Keyword'
       select 'Text', from: 'general_kind_of_data'
       fill_in 'Last modified date', with: '2018-10-03'
-      select 'Attribution 3.0 United States', :from => 'general_license'
+      select 'Attribution 3.0 United States', from: 'general_license'
       fill_in 'Medium', with: 'a medium'
       fill_in 'Methods', with: 'My methodology'
       fill_in 'Note', with: 'a note'
@@ -163,7 +163,7 @@ RDFXML
       fill_in 'Additional affiliation', { with: 'UNC', id: 'general_reviewers_attributes_0_other_affiliation' }
       fill_in 'Related resource URL', with: 'something.com'
       fill_in 'Rights holder', with: 'an author'
-      select 'In Copyright', :from => 'general_rights_statement'
+      select 'In Copyright', from: 'general_rights_statement'
       fill_in 'Series', with: 'a series'
       fill_in 'Sponsor', with: 'a sponsor'
       fill_in 'Subject', with: 'test'

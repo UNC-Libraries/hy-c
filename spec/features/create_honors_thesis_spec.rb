@@ -96,11 +96,11 @@ RDFXML
       # extra fields
       find("#honors_thesis_based_near_attributes_0_id", visible: false).set('http://sws.geonames.org/4460162/')
       fill_in 'Keyword', with: 'Test Default Keyword'
-      select 'Attribution 3.0 United States', :from => 'honors_thesis_license'
+      select 'Attribution 3.0 United States', from: 'honors_thesis_license'
       fill_in 'Note', with: 'a note'
       select 'Honors Thesis', from: 'honors_thesis_resource_type'
       fill_in 'Related resource URL', with: 'something.com'
-      select 'In Copyright', :from => 'honors_thesis_rights_statement'
+      select 'In Copyright', from: 'honors_thesis_rights_statement'
       fill_in 'Subject', with: 'test'
 
       expect(page).not_to have_field('honors_thesis_access')
@@ -199,11 +199,11 @@ RDFXML
       fill_in 'Extent', with: 'some extent'
       find("#honors_thesis_based_near_attributes_0_id", visible: false).set('http://sws.geonames.org/4460162/')
       fill_in 'Keyword', with: 'Test Default Keyword'
-      select 'Attribution 3.0 United States', :from => 'honors_thesis_license'
+      select 'Attribution 3.0 United States', from: 'honors_thesis_license'
       fill_in 'Note', with: 'a note'
       select 'Honors Thesis', from: 'honors_thesis_resource_type'
       fill_in 'Related resource URL', with: 'something.com'
-      select 'In Copyright', :from => 'honors_thesis_rights_statement'
+      select 'In Copyright', from: 'honors_thesis_rights_statement'
       fill_in 'Subject', with: 'test'
       fill_in 'Use', with: 'some use'
 

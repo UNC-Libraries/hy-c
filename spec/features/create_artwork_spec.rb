@@ -71,8 +71,8 @@ RSpec.feature 'Create an Artwork', js: false do
       # extra fields
 
       fill_in 'Note', with: 'my note'
-      select 'Attribution 3.0 United States', :from => 'artwork_license'
-      select 'In Copyright', :from => 'artwork_rights_statement'
+      select 'Attribution 3.0 United States', from: 'artwork_license'
+      select 'In Copyright', from: 'artwork_rights_statement'
 
       expect(page).to have_selector('#artwork_license_label', visible: false)
       expect(page).to have_selector('#artwork_rights_statement_label', visible: false)
@@ -143,8 +143,8 @@ RSpec.feature 'Create an Artwork', js: false do
       # extra fields
       fill_in 'Note', with: 'my note'
       fill_in 'DOI', with: 'some-doi'
-      select 'Attribution 3.0 United States', :from => 'artwork_license'
-      select 'In Copyright', :from => 'artwork_rights_statement'
+      select 'Attribution 3.0 United States', from: 'artwork_license'
+      select 'In Copyright', from: 'artwork_rights_statement'
       fill_in 'Creator', { with: 'Test Default Creator', id: 'artwork_creators_attributes_0_name' }
       fill_in 'ORCID', { with: 'http://orcid.org/creator', id: 'artwork_creators_attributes_0_orcid' }
       select 'Department of Biology', from: 'artwork_creators_attributes_0_affiliation'

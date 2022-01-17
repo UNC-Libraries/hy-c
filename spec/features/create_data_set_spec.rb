@@ -99,7 +99,7 @@ RDFXML
       find("#data_set_based_near_attributes_0_id", visible: false).set('http://sws.geonames.org/4460162/')
       fill_in 'Keyword', with: 'Test Default Keyword'
       fill_in 'Last modified date', with: '2018-10-03'
-      select 'Attribution 3.0 United States', :from => 'data_set_license'
+      select 'Attribution 3.0 United States', from: 'data_set_license'
       fill_in 'Project Director', { with: 'project director', id: 'data_set_project_directors_attributes_0_name' }
       fill_in 'ORCID', { with: 'project director orcid', id: 'data_set_project_directors_attributes_0_orcid' }
       select 'Department of Biology', from: 'data_set_project_directors_attributes_0_affiliation'
@@ -207,7 +207,7 @@ RDFXML
       find("#data_set_based_near_attributes_0_id", visible: false).set('http://sws.geonames.org/4460162/')
       fill_in 'Keyword', with: 'Test Default Keyword'
       fill_in 'Last modified date', with: '2018-10-03'
-      select 'Attribution 3.0 United States', :from => 'data_set_license'
+      select 'Attribution 3.0 United States', from: 'data_set_license'
       fill_in 'Project Director', { with: 'project director', id: 'data_set_project_directors_attributes_0_name' }
       fill_in 'ORCID', { with: 'project director orcid', id: 'data_set_project_directors_attributes_0_orcid' }
       select 'Department of Biology', from: 'data_set_project_directors_attributes_0_affiliation'
@@ -218,7 +218,7 @@ RDFXML
       fill_in 'Additional affiliation', { with: 'UNC', id: 'data_set_researchers_attributes_0_other_affiliation' }
       fill_in 'Rights holder', with: 'an author'
       fill_in 'Related resource URL', with: 'something.com'
-      select 'In Copyright', :from => 'data_set_rights_statement'
+      select 'In Copyright', from: 'data_set_rights_statement'
       fill_in 'Sponsor', with: 'a sponsor'
       fill_in 'Subject', with: 'test'
 

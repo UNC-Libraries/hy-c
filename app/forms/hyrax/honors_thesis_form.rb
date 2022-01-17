@@ -20,9 +20,9 @@ module Hyrax
     self.admin_only_terms = [:dcmi_type, :academic_concentration, :access, :admin_note, :award,
                              :degree_granting_institution, :doi, :extent, :use]
 
-    self.default_term_values = { :dcmi_type => ["http://purl.org/dc/dcmitype/Text"],
-                                 :rights_statement => "http://rightsstatements.org/vocab/InC/1.0/",
-                                 :language => ["http://id.loc.gov/vocabulary/iso639-2/eng"] }
+    self.default_term_values = { dcmi_type: ["http://purl.org/dc/dcmitype/Text"],
+                                 rights_statement: "http://rightsstatements.org/vocab/InC/1.0/",
+                                 language: ["http://id.loc.gov/vocabulary/iso639-2/eng"] }
 
     # Add overrides for required properties which are becoming single-valued
 

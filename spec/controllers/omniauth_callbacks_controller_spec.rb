@@ -14,7 +14,7 @@ RSpec.describe OmniauthCallbacksController, type: :request do
   describe '#shibboleth' do
     let(:app) {
       Rack::Builder.new do |b|
-        b.use Rack::Session::Cookie, { :secret => "abc123" }
+        b.use Rack::Session::Cookie, { secret: "abc123" }
         b.use OmniAuth::Strategies::Shibboleth
         b.run lambda { |_env| [200, {}, ['Not Found']] }
       end.to_app

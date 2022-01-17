@@ -71,7 +71,7 @@ RSpec.feature 'Edit a work', js: false do
       select 'Department of Biology', from: 'article_creators_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'article_creators_attributes_0_other_affiliation' }
       fill_in 'Keyword', with: 'Test Default Keyword'
-      select 'In Copyright', :from => 'article_rights_statement'
+      select 'In Copyright', from: 'article_rights_statement'
       choose 'article_visibility_open'
       check 'agreement'
 

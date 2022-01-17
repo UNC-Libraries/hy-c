@@ -3,9 +3,9 @@ require 'rails_helper'
 RSpec.describe "default_admin_sets/edit", type: :view do
   before(:each) do
     @default_admin_set = assign(:default_admin_set, DefaultAdminSet.create!(
-                                                      :work_type_name => "MyString",
-                                                      :admin_set_id => "MyString",
-                                                      :department => "MyString"
+                                                      work_type_name: "MyString",
+                                                      admin_set_id: "MyString",
+                                                      department: "MyString"
                                                     ))
     @admin_sets = [['default', 'MyString'], ['some admin set', 'id123456']]
     @work_type_names = ['Work', 'Article', 'MastersPaper']

@@ -199,9 +199,9 @@ module Tasks
       begin
         start_time = Time.now
         records = ActiveFedora::SolrService.get("visibility_ssi:open AND -doi_tesim:* AND workflow_state_name_ssim:deposited AND has_model_ssim:(Article Artwork DataSet Dissertation General HonorsThesis Journal MastersPaper Multimed ScholarlyWork)",
-                                                :rows => @rows,
-                                                :sort => "system_create_dtsi ASC",
-                                                :fl => "id")["response"]["docs"]
+                                                rows: @rows,
+                                                sort: "system_create_dtsi ASC",
+                                                fl: "id")["response"]["docs"]
 
         if records.length > 0
           puts "#{get_time} Preparing to add DOIs to #{records.length} records"
