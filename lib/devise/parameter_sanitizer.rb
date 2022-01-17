@@ -110,9 +110,7 @@ module Devise
     #
     # Returns nothing.
     def permit(action, keys: nil, except: nil, &block)
-      if block_given?
-        @permitted[action] = block
-      end
+      @permitted[action] = block if block_given?
 
       if keys.present?
         @permitted[action] ||= @auth_keys.dup

@@ -222,9 +222,7 @@ module Migrate
           puts "[#{end_time.to_s}] #{uuid},#{new_work.id} Completed migration in #{end_time - start_time} seconds"
         end
 
-        if !@child_work_type.blank?
-          attach_children
-        end
+        attach_children if !@child_work_type.blank?
         STDOUT.flush
       end
 
@@ -312,9 +310,7 @@ module Migrate
                                   work_attributes['admin_set_id']
                                 end
 
-        if !@config['collection_name'].blank? && !work_attributes['member_of_collections'].first.blank?
-          resource.member_of_collections = work_attributes['member_of_collections']
-        end
+        resource.member_of_collections = work_attributes['member_of_collections'] if !@config['collection_name'].blank? && !work_attributes['member_of_collections'].first.blank?
 
         save_time = Time.now
         puts "[#{save_time.to_s}] #{uuid} saving work"
@@ -331,9 +327,7 @@ module Migrate
                                    'researchers', 'reviewers', 'translators', 'based_near').each do |k, v|
           deduped[k] = work_attributes[k] if (Array(work_attributes[k]).sort != Array(v).sort && !work_attributes[k].blank?)
         end
-        if !deduped.blank?
-          puts "#{Time.now.to_s}] #{uuid},#{resource.id} deduped data: #{deduped}"
-        end
+        puts "#{Time.now.to_s}] #{uuid},#{resource.id} deduped data: #{deduped}" if !deduped.blank?
 
         puts "[#{Time.now.to_s}] #{uuid},#{resource.id} saved new work in #{Time.now - save_time} seconds"
 

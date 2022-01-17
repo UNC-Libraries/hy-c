@@ -159,9 +159,7 @@ module Migrate
           end
 
           # Check if aggregate work
-          if rdf_version.to_s.match(/hasModel/)
-            work_attributes['cdr_model_type'] = rdf_version.xpath('rdf:Description/*[local-name() = "hasModel"]/@rdf:resource', MigrationConstants::NS).map(&:text)
-          end
+          work_attributes['cdr_model_type'] = rdf_version.xpath('rdf:Description/*[local-name() = "hasModel"]/@rdf:resource', MigrationConstants::NS).map(&:text) if rdf_version.to_s.match(/hasModel/)
 
           # Create lists of attached files
           if rdf_version.to_s.match(/resource/)
@@ -169,13 +167,9 @@ module Migrate
             contained_files.each do |contained_file|
               tmp_uuid = MigrationHelper.get_uuid_from_path(contained_file.to_s)
               if work_attributes['cdr_model_type'].include? 'info:fedora/cdr-model:AggregateWork'
-                if !@binary_hash[tmp_uuid].blank? && !(@collection_uuids.include? tmp_uuid)
-                  work_attributes['contained_files'] << tmp_uuid
-                end
+                work_attributes['contained_files'] << tmp_uuid if !@binary_hash[tmp_uuid].blank? && !(@collection_uuids.include? tmp_uuid)
               else
-                if !@binary_hash[tmp_uuid].blank?
-                  work_attributes['contained_files'] << tmp_uuid
-                end
+                work_attributes['contained_files'] << tmp_uuid if !@binary_hash[tmp_uuid].blank?
               end
             end
 

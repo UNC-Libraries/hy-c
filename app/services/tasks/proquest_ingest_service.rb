@@ -133,9 +133,7 @@ module Tasks
           resource.ordered_members << fileset
 
           # delete zip file after files have been extracted and ingested successfully
-          if Rails.env != 'test'
-            File.delete(package)
-          end
+          File.delete(package) if Rails.env != 'test'
         end
       end
     end
@@ -147,9 +145,7 @@ module Tasks
       begin
         Zip::File.open(file) do |zip_file|
           zip_file.each do |f|
-            if f.name.match(/DATA.xml/)
-              @file_last_modified = Date.strptime(zip_file.get_entry(f).as_json['time'].split('T')[0], "%Y-%m-%d")
-            end
+            @file_last_modified = Date.strptime(zip_file.get_entry(f).as_json['time'].split('T')[0], "%Y-%m-%d") if f.name.match(/DATA.xml/)
             fpath = File.join(dirname, f.name)
             zip_file.extract(f, fpath) unless File.exist?(fpath)
           end
@@ -165,9 +161,7 @@ module Tasks
       puts "[#{Time.now}][#{parent.id}] ingesting... #{f.to_s}"
       fileset_metadata = file_record(resource)
 
-      if fileset_metadata['embargo_release_date'].blank?
-        fileset_metadata.except!('embargo_release_date', 'visibility_during_embargo', 'visibility_after_embargo')
-      end
+      fileset_metadata.except!('embargo_release_date', 'visibility_during_embargo', 'visibility_after_embargo') if fileset_metadata['embargo_release_date'].blank?
       file_set = FileSet.create(fileset_metadata)
       actor = Hyrax::Actors::FileSetActor.new(file_set, User.where(uid: @depositor_onyen).first)
       actor.create_metadata(fileset_metadata)
@@ -208,13 +202,9 @@ module Tasks
           embargo_release_date = ''
         end
 
-        if !embargo_release_date.blank? && embargo_release_date != current_date && embargo_release_date < current_date
-          embargo_release_date = ''
-        end
+        embargo_release_date = '' if !embargo_release_date.blank? && embargo_release_date != current_date && embargo_release_date < current_date
 
-        unless embargo_release_date.blank?
-          visibility = visibility_during_embargo
-        end
+        visibility = visibility_during_embargo unless embargo_release_date.blank?
       end
 
       puts "[#{Time.now}][#{metadata_file}] embargo release date: #{embargo_release_date}"

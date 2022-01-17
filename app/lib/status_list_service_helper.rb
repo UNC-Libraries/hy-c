@@ -27,9 +27,7 @@ Hyrax::Workflow::StatusListService.class_eval do
   def roles_for_user
     Sipity::Workflow.all.flat_map do |wf|
       workflow_roles_for_user_and_workflow(wf).map do |wf_role|
-        unless wf_role.role.name == 'depositing'
-          "#{wf.permission_template.source_id}-#{wf.name}-#{wf_role.role.name}"
-        end
+        "#{wf.permission_template.source_id}-#{wf.name}-#{wf_role.role.name}" unless wf_role.role.name == 'depositing'
       end
     end
   end

@@ -22,9 +22,7 @@ module Migrate
       private
 
       def create_log
-        if !File.exist?(@filename)
-          FileUtils.touch(@filename)
-        end
+        FileUtils.touch(@filename) if !File.exist?(@filename)
       end
     end
   end

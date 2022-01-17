@@ -7,15 +7,11 @@ class AdminSetSelectService
   def self.select(model, affiliation, select_options)
     # Check to see if there is a default admin set for work type
     default_admin_set = DefaultAdminSet.where(work_type_name: model, department: affiliation)
-    if default_admin_set.blank?
-      default_admin_set = DefaultAdminSet.where(work_type_name: model, department: '')
-    end
+    default_admin_set = DefaultAdminSet.where(work_type_name: model, department: '') if default_admin_set.blank?
 
     # Select default admin set for work type
     admin_set_id = ''
-    unless default_admin_set.blank?
-      admin_set_id = default_admin_set.first.admin_set_id
-    end
+    admin_set_id = default_admin_set.first.admin_set_id unless default_admin_set.blank?
 
     # Use work type's default if available
     if select_options.find { |o| o.second.casecmp(admin_set_id).zero? }

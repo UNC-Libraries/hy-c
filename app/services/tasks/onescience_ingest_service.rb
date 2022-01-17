@@ -98,9 +98,7 @@ module Tasks
           attached_file_count = 0
 
           # Move pubmed file to beginning of hash so it will be the primary work
-          if files.key?('PubMedCentral-Link_Files')
-            files = { 'PubMedCentral-Link_Files' => files['PubMedCentral-Link_Files'] }.merge(files)
-          end
+          files = { 'PubMedCentral-Link_Files' => files['PubMedCentral-Link_Files'] }.merge(files) if files.key?('PubMedCentral-Link_Files')
 
           files.each_with_index do |(source_name, file_id), file_index|
             puts "[#{Time.now}] #{item_data['onescience_id']} attaching file #{file_index + 1} of #{file_count}"
@@ -115,9 +113,7 @@ module Tasks
             file_visibility = vis_private
 
             # set pubmed central or first listed file as public
-            if (file_index == 0 && !files.key?('PubMedCentral-Link_Files')) || (source_name.include? 'PubMedCentral-Link')
-              file_visibility = vis_public
-            end
+            file_visibility = vis_public if (file_index == 0 && !files.key?('PubMedCentral-Link_Files')) || (source_name.include? 'PubMedCentral-Link')
 
             # parse filename
             if source_name.include? 'PubMedCentral-Link'
@@ -279,13 +275,9 @@ module Tasks
         puts "[#{Time.now}] #{onescience_data['onescience_id']} error: journal issue value is 'C'"
       end
       page_start = scopus_page_start.blank? ? onescience_data['First Page'].to_s : scopus_page_start
-      unless page_start.blank?
-        work_attributes['page_start'] = page_start
-      end
+      work_attributes['page_start'] = page_start unless page_start.blank?
       page_end = scopus_page_end.blank? ? onescience_data['Last Page'].to_s : scopus_page_end
-      unless page_end.blank?
-        work_attributes['page_end'] = page_end
-      end
+      work_attributes['page_end'] = page_end unless page_end.blank?
       work_attributes['issn'] = onescience_data['ISSNs'].to_s.split('||') if !onescience_data['ISSNs'].blank?
       work_attributes['abstract'] = onescience_data['Abstract'].to_s
       work_attributes['keyword'] = onescience_data['Keywords'].to_s.split('||') if !onescience_data['Keywords'].blank?
@@ -427,9 +419,7 @@ module Tasks
                       unc_organizations << affiliation['organization']
                     end
                   else
-                    if affiliation['organization'].match('UNC')
-                      puts "affiliation which contains 'UNC' but is not in the list of UNC afids: #{author_id}, #{affiliations}"
-                    end
+                    puts "affiliation which contains 'UNC' but is not in the list of UNC afids: #{author_id}, #{affiliations}" if affiliation['organization'].match('UNC')
                     other_organizations << affiliation['organization']
                   end
                 end
@@ -437,9 +427,7 @@ module Tasks
 
               # log record-person-affiliation data for restoring multiple affiliations later
               multiple = 'false'
-              if unc_organizations.count > 1
-                multiple = 'true'
-              end
+              multiple = 'true' if unc_organizations.count > 1
               File.open(@config['multiple_unc_affiliations'], 'a+')  do |f|
                 f.puts "#{record_doi}\t#{multiple}\t#{author_id}\t#{surname}, #{given_name}\t#{orcid}\t#{unc_organizations.join('||')}\t#{other_organizations.join('||')}\t#{index + 1}"
               end
@@ -456,9 +444,7 @@ module Tasks
               # verify that first author is first in list
               if index == 0
                 author_url = author.xpath('author-url').text
-                if author_url != first_author && !author_url.blank? && !first_author.blank?
-                  puts 'authors not in correct order ' + first_author
-                end
+                puts 'authors not in correct order ' + first_author if author_url != first_author && !author_url.blank? && !first_author.blank?
               end
             end
           end

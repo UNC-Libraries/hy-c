@@ -95,9 +95,7 @@ class ApplicationController < ActionController::Base
     full_path = request.original_fullpath
     request_host = "#{request.protocol}#{request.host}"
 
-    if request_host =~ /localhost/
-      request_host = "#{request_host}:#{request.port}"
-    end
+    request_host = "#{request_host}:#{request.port}" if request_host =~ /localhost/
 
     uuid = full_path[/uuid:([a-f0-9\-]+)/, 1]
 

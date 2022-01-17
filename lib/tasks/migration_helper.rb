@@ -8,9 +8,7 @@ class MigrationHelper
       file.each do |line|
         value = line.strip
         key = get_uuid_from_path(value)
-        if !key.blank?
-          hash[key] = value
-        end
+        hash[key] = value if !key.blank?
       end
     end
   end
@@ -19,9 +17,7 @@ class MigrationHelper
     collection_uuids = Array.new
     File.open(collection_ids_file) do |file|
       file.each do |line|
-        if !line.blank? && !get_uuid_from_path(line.strip).blank?
-          collection_uuids.append(get_uuid_from_path(line.strip))
-        end
+        collection_uuids.append(get_uuid_from_path(line.strip)) if !line.blank? && !get_uuid_from_path(line.strip).blank?
       end
     end
 
@@ -79,9 +75,7 @@ class MigrationHelper
                               'visibility_during_embargo', 'visibility_after_embargo', 'visibility',
                               'member_of_collections', 'based_near_attributes')
 
-    if !missing.blank?
-      puts "[#{Time.now.to_s}][#{identifier}] missing: #{missing}"
-    end
+    puts "[#{Time.now.to_s}][#{identifier}] missing: #{missing}" if !missing.blank?
 
     resource
   end

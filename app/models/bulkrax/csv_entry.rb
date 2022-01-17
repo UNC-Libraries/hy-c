@@ -56,9 +56,7 @@ module Bulkrax
       raise StandardError, 'Record not found' if record.nil?
       raise StandardError, "Missing required elements, missing element(s) are: #{importerexporter.parser.missing_elements(keys_without_numbers(record.keys)).join(', ')}" unless importerexporter.parser.required_elements?(keys_without_numbers(record.keys))
 
-      unless record['model'].nil? || work_types.include?(record['model'])
-        raise StandardError.new "uninitialized constant #{record['model']} (NameError)"
-      end
+      raise StandardError.new "uninitialized constant #{record['model']} (NameError)" unless record['model'].nil? || work_types.include?(record['model'])
 
       self.parsed_metadata = {}
       self.parsed_metadata[work_identifier] = [record[source_identifier]]

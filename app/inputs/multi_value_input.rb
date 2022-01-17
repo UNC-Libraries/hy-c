@@ -85,9 +85,7 @@ class MultiValueInput < SimpleForm::Inputs::CollectionInput
 
   #[hyc-override] convert from EDTF for multivalue dates
   def format_value(value, should_format)
-    if should_format && value.to_s.strip =~ /^(\d{4}|\d{3}(u|x)|\d{2}xx|[u]{4})/
-      return Hyc::EdtfConvert.convert_from_edtf(value)
-    end
+    return Hyc::EdtfConvert.convert_from_edtf(value) if should_format && value.to_s.strip =~ /^(\d{4}|\d{3}(u|x)|\d{2}xx|[u]{4})/
 
     value
   end

@@ -11,14 +11,10 @@ module Hyc
       end
 
       # Decades
-      unless humanized_date.match(/[1-9]0s$/).nil?
-        return year_range(humanized_date, 'decade')
-      end
+      return year_range(humanized_date, 'decade') unless humanized_date.match(/[1-9]0s$/).nil?
 
       # Centuries
-      unless humanized_date.match(/00s$/).nil?
-        return year_range(humanized_date, 'century')
-      end
+      return year_range(humanized_date, 'century') unless humanized_date.match(/00s$/).nil?
 
       years
     end

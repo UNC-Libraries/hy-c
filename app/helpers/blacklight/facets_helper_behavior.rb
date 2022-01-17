@@ -219,9 +219,7 @@ module Blacklight::FacetsHelperBehavior
             end
 
     # [hyc-override] Overriding to transform date facets from EDTF to human readable strings
-    if field == 'date_issued_sim' || field == 'date_created_sim'
-      value = Hyc::EdtfConvert.convert_from_edtf(value)
-    end
+    value = Hyc::EdtfConvert.convert_from_edtf(value) if field == 'date_issued_sim' || field == 'date_created_sim'
 
     if facet_config.helper_method
       send facet_config.helper_method, value

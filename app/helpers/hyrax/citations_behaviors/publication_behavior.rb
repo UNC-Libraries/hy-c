@@ -34,9 +34,7 @@ module Hyrax
           pub_info << CGI.escapeHTML(place)
         end
         if (publisher = setup_pub_publisher(work))
-          unless place.to_s == ''
-            pub_info << ": "
-          end
+          pub_info << ": " unless place.to_s == ''
           pub_info << CGI.escapeHTML(publisher)
         end
 
@@ -47,9 +45,7 @@ module Hyrax
         pub_info.strip!
 
         # Remove any trailing commas
-        if pub_info.last == ','
-          pub_info = pub_info[0...-1]
-        end
+        pub_info = pub_info[0...-1] if pub_info.last == ','
 
         pub_info.blank? ? nil : pub_info
       end

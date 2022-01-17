@@ -735,11 +735,6 @@ Style/IfInsideElse:
     - 'lib/tasks/migrate/services/ingest_service.rb'
     - 'lib/tasks/migrate/services/metadata_parser.rb'
 
-# Offense count: 82
-# Cop supports --auto-correct.
-Style/IfUnlessModifier:
-  Enabled: false
-
 # Offense count: 1
 # Cop supports --auto-correct.
 # Configuration parameters: InverseMethods, InverseBlocks.

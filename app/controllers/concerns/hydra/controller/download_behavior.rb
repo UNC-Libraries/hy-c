@@ -132,9 +132,7 @@ module Hydra
 
       def stream_body(iostream)
         # see https://github.com/rails/rails/issues/18714#issuecomment-96204444
-        unless response.headers["Last-Modified"] || response.headers["ETag"]
-          Rails.logger.warn("Response may be buffered instead of streaming, best to set a Last-Modified or ETag header")
-        end
+        Rails.logger.warn("Response may be buffered instead of streaming, best to set a Last-Modified or ETag header") unless response.headers["Last-Modified"] || response.headers["ETag"]
         self.response_body = iostream
       end
 

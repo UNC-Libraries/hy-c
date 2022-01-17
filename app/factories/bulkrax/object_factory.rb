@@ -250,9 +250,7 @@ module Bulkrax
 
       # convert people objects from hash notation to valid json
       attrs.each do |k, v|
-        if k.ends_with? '_attributes'
-          attrs[k] = JSON.parse(v.gsub('=>', ':').gsub("'", '"'))
-        end
+        attrs[k] = JSON.parse(v.gsub('=>', ':').gsub("'", '"')) if k.ends_with? '_attributes'
       end
 
       attrs

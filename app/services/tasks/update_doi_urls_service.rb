@@ -38,17 +38,13 @@ AND has_model_ssim:(DataSet HonorsThesis MastersPaper ScholarlyWork) AND system_
                                               sort: "system_create_dtsi ASC",
                                               fl: "id,doi_tesim")["response"]["docs"]
 
-      if records.count == 0
-        log.info "[#{Time.now}] no works with dois to be updated"
-      end
+      log.info "[#{Time.now}] no works with dois to be updated" if records.count == 0
 
       count = 0
 
       # loop through records and update doi urls
       records.each_with_index do |record, index|
-        if updated.include? record['id']
-          next
-        end
+        next if updated.include? record['id']
 
         # check existing url
         get_response = fetch_doi_record(record['doi_tesim'].first.gsub('https://doi.org/', ''), doi_update_url, 2)

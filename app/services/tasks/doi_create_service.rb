@@ -137,24 +137,16 @@ module Tasks
       #
       ############################
       contributors = parse_people(work, 'contributors')
-      unless contributors.blank?
-        data[:data][:attributes][:contributors] = contributors
-      end
+      data[:data][:attributes][:contributors] = contributors unless contributors.blank?
 
       description = parse_description(work, 'abstract')
-      unless description.blank?
-        data[:data][:attributes][:descriptions] = description
-      end
+      data[:data][:attributes][:descriptions] = description unless description.blank?
 
       funding = parse_funding(work, 'funder')
-      unless funding.blank?
-        data[:data][:attributes][:fundingReferences] = funding
-      end
+      data[:data][:attributes][:fundingReferences] = funding unless funding.blank?
 
       language = parse_field(work, 'language_label').first
-      unless language.blank?
-        data[:data][:attributes][:language] = language
-      end
+      data[:data][:attributes][:language] = language unless language.blank?
 
       rights = parse_field(work, 'rights_statement')
       unless rights.blank?
@@ -164,14 +156,10 @@ module Tasks
       end
 
       sizes = parse_field(work, 'extent')
-      unless sizes.blank?
-        data[:data][:attributes][:sizes] = sizes
-      end
+      data[:data][:attributes][:sizes] = sizes unless sizes.blank?
 
       subjects = parse_subjects(work, 'subject')
-      unless subjects.blank?
-        data[:data][:attributes][:subjects] = subjects
-      end
+      data[:data][:attributes][:subjects] = subjects unless subjects.blank?
 
       data.to_json
     end
@@ -229,9 +217,7 @@ module Tasks
     def get_values(record_field, process_method)
       values = []
 
-      unless record_field.blank?
-        values = process_method.call(record_field)
-      end
+      values = process_method.call(record_field) unless record_field.blank?
 
       values
     end
@@ -259,15 +245,11 @@ module Tasks
         resource_type = record_type&.first
         datacite_type = RESOURCE_TYPE_TO_DATACITE[resource_type]
       end
-      if datacite_type.nil?
-        puts "#{get_time} WARNING: Unable to determine resourceTypeGeneral for record"
-      end
+      puts "#{get_time} WARNING: Unable to determine resourceTypeGeneral for record" if datacite_type.nil?
       # Storing the datacite type. If it is nil or invalid, datacite will reject the creation
       result[:resourceTypeGeneral] = datacite_type
 
-      unless record_type.blank?
-        result[:resourceType] = record_type.first
-      end
+      result[:resourceType] = record_type.first unless record_type.blank?
 
       result
     end
@@ -302,9 +284,7 @@ module Tasks
     end
 
     def parse_people(work, person_field)
-      if !work.attributes.keys.member?(person_field)
-        return []
-      end
+      return [] if !work.attributes.keys.member?(person_field)
 
       people = []
 
@@ -323,9 +303,7 @@ module Tasks
         end
 
         orcid = p_json['orcid']&.first
-        if !orcid.blank?
-          person[:nameIdentifiers] = [ nameIdentifier: orcid, nameIdentifierScheme: 'ORCID']
-        end
+        person[:nameIdentifiers] = [ nameIdentifier: orcid, nameIdentifierScheme: 'ORCID'] if !orcid.blank?
 
         people << person
       end

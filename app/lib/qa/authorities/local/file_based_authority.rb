@@ -48,9 +48,7 @@ module Qa::Authorities
         end
       end
 
-      if show_all_fields
-        returned_values[:active] = field.fetch(:active, true)
-      end
+      returned_values[:active] = field.fetch(:active, true) if show_all_fields
 
       returned_values
     end

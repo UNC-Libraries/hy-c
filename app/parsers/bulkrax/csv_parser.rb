@@ -239,13 +239,9 @@ module Bulkrax
         importerexporter.entries.where(identifier: current_work_ids)[0..limit || total].each_with_index do |e, index|
           metadata = e.parsed_metadata
 
-          if metadata['source_identifier'].blank?
-            metadata['source_identifier'] = metadata['id']
-          end
+          metadata['source_identifier'] = metadata['id'] if metadata['source_identifier'].blank?
 
-          if metadata['source_identifier'].is_a?(Array)
-            metadata['source_identifier'] = metadata['source_identifier'].join(', ')
-          end
+          metadata['source_identifier'] = metadata['source_identifier'].join(', ') if metadata['source_identifier'].is_a?(Array)
 
           # get people metadata
           work_record = ActiveFedora::Base.find(current_work_ids[index])

@@ -47,9 +47,7 @@ module Blacklight::Document::DublinCore
           if field.to_s == 'creator'
             xml.tag! "dc:#{field}", v.to_s.split('||').first
             affiliation = v.to_s.split('||Affiliation: ')[1]
-            if !affiliation.blank?
-              xml.tag! "dc:contributor", affiliation.split('||').first
-            end
+            xml.tag! "dc:contributor", affiliation.split('||').first if !affiliation.blank?
           elsif field.to_s == 'contributor'
             xml.tag! "dc:#{field}", v.to_s.split('||').first
           # display journal values as comma separated string (journal values come from single-valued fields)

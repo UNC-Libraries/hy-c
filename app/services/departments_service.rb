@@ -32,9 +32,7 @@ module DepartmentsService
       html_options[:class] << ' force-select'
       # Add the current value to the options if it is not already present
       value_index = render_options.index { |opt| opt[0] == value }
-      if value_index == nil
-        render_options += [[value, value]]
-      end
+      render_options += [[value, value]] if value_index == nil
     end
     [render_options, html_options]
   end

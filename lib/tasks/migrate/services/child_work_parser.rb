@@ -27,9 +27,7 @@ module Migrate
           rdf_version = metadata.xpath("//rdf:RDF", MigrationConstants::NS).last
           if rdf_version
             # Check if aggregate work
-            if rdf_version.to_s.match(/hasModel/)
-              cdr_model_type = rdf_version.xpath('rdf:Description/*[local-name() = "hasModel"]/@rdf:resource', MigrationConstants::NS).map(&:text)
-            end
+            cdr_model_type = rdf_version.xpath('rdf:Description/*[local-name() = "hasModel"]/@rdf:resource', MigrationConstants::NS).map(&:text) if rdf_version.to_s.match(/hasModel/)
 
             # Create lists of attached files and children
             if rdf_version.to_s.match(/resource/)
@@ -65,9 +63,7 @@ module Migrate
 
       # Store the parent to children mapping for a work
       def store_children(uuid, child_works)
-        if child_works.blank?
-          return
-        end
+        return if child_works.blank?
 
         @parent_child_mapper.add_row(uuid, child_works.join('|'))
       end

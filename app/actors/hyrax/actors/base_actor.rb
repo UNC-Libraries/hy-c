@@ -150,9 +150,7 @@ module Hyrax
         entity = Sipity::Entity.where(proxy_for_global_id: env.curation_concern.to_global_id.to_s).first_or_create!
         permissions_attributes.each do |_k, permission|
           # skip the pre-existing permissions since they have already been applied
-          if !permission['id'].blank?
-            next
-          end
+          next if !permission['id'].blank?
 
           if permission['type'] == 'person'
             agent_type = 'User'
