@@ -9,7 +9,7 @@ class Person < ActiveTriples::Resource
   def initialize(uri=RDF::Node.new, parent=nil)
     if uri.try(:node?)
       uri = RDF::URI("#nested_person#{uri.to_s.gsub('_:', '')}")
-    elsif uri.start_with?("#")
+    elsif uri.start_with?('#')
       uri = RDF::URI(uri)
     end
     super
@@ -20,7 +20,7 @@ class Person < ActiveTriples::Resource
   end
 
   def new_record?
-    id.start_with?("#")
+    id.start_with?('#')
   end
 
   def _destroy

@@ -1033,13 +1033,6 @@ Style/SoleNestedConditional:
 Style/StringConcatenation:
   Enabled: false
 
-# Offense count: 4095
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, ConsistentQuotesInMultiline.
-# SupportedStyles: single_quotes, double_quotes
-Style/StringLiterals:
-  Enabled: false
-
 # Offense count: 4
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle.

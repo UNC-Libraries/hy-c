@@ -2,12 +2,12 @@ require 'rails_helper'
 
 RSpec.describe Tasks::DoiCreateService do
   around(:all) do |tests|
-    cached_use_test_api = ENV["DATACITE_USE_TEST_API"]
-    ENV["DATACITE_USE_TEST_API"] = "true"
+    cached_use_test_api = ENV['DATACITE_USE_TEST_API']
+    ENV['DATACITE_USE_TEST_API'] = 'true'
     cached_datacite_prefix = ENV['DATACITE_PREFIX']
-    ENV['DATACITE_PREFIX'] = "10.5077"
+    ENV['DATACITE_PREFIX'] = '10.5077'
     tests.run
-    ENV["DATACITE_USE_TEST_API"] = cached_use_test_api
+    ENV['DATACITE_USE_TEST_API'] = cached_use_test_api
     ENV['DATACITE_PREFIX'] = cached_datacite_prefix
   end
 
@@ -46,8 +46,8 @@ RSpec.describe Tasks::DoiCreateService do
                                                                type: 'dois',
                                                                attributes: { doi: '10.5077/0001' } } }.to_json.to_s)
 
-      data = { "data": { "type": "dois",
-                         "attributes": { "prefix": "10.5077",
+      data = { "data": { "type": 'dois',
+                         "attributes": { "prefix": '10.5077',
                                          titles: [{ title: 'new work' }],
                                          types: { resourceType: 'Article', resourceTypeGeneral: 'Text' },
                                          url: "#{ENV['HYRAX_HOST']}/concern/articles/d7f59f11-a35b-41cd-a7d9-77f36738b728",
@@ -182,8 +182,8 @@ RSpec.describe Tasks::DoiCreateService do
                   password_confirmation: 'password')
     }
     let(:admin_set) do
-      AdminSet.create(title: ["article admin set"],
-                      description: ["some description"],
+      AdminSet.create(title: ['article admin set'],
+                      description: ['some description'],
                       edit_users: [depositor.user_key])
     end
     let(:work) {

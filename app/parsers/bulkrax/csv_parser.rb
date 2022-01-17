@@ -147,14 +147,14 @@ module Bulkrax
     end
 
     def extra_filters
-      output = ""
+      output = ''
       if importerexporter.start_date.present?
         start_dt = importerexporter.start_date.to_datetime.strftime('%FT%TZ')
-        finish_dt = importerexporter.finish_date.present? ? importerexporter.finish_date.to_datetime.end_of_day.strftime('%FT%TZ') : "NOW"
+        finish_dt = importerexporter.finish_date.present? ? importerexporter.finish_date.to_datetime.end_of_day.strftime('%FT%TZ') : 'NOW'
         output += " AND system_modified_dtsi:[#{start_dt} TO #{finish_dt}]"
       end
-      output += importerexporter.work_visibility.present? ? " AND visibility_ssi:#{importerexporter.work_visibility}" : ""
-      output += importerexporter.workflow_status.present? ? " AND workflow_state_name_ssim:#{importerexporter.workflow_status}" : ""
+      output += importerexporter.work_visibility.present? ? " AND visibility_ssi:#{importerexporter.work_visibility}" : ''
+      output += importerexporter.workflow_status.present? ? " AND workflow_state_name_ssim:#{importerexporter.workflow_status}" : ''
       output
     end
 
@@ -235,7 +235,7 @@ module Bulkrax
     # overriding to correctly export people attributes
     # overriding to set source_identifier to string if an Array and set it to work id if empty
     def write_files
-      CSV.open(setup_export_file, "w", headers: export_headers, write_headers: true) do |csv|
+      CSV.open(setup_export_file, 'w', headers: export_headers, write_headers: true) do |csv|
         importerexporter.entries.where(identifier: current_work_ids)[0..limit || total].each_with_index do |e, index|
           metadata = e.parsed_metadata
 

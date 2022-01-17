@@ -28,7 +28,7 @@ module Hyrax
     end
 
     def set_record_admin_set
-      record = ActiveFedora::SolrService.get("file_set_ids_ssim:#{params[:id]}", rows: 1)["response"]["docs"]
+      record = ActiveFedora::SolrService.get("file_set_ids_ssim:#{params[:id]}", rows: 1)['response']['docs']
 
       @admin_set_name = if !record.blank?
                           record[0]['admin_set_tesim'].first

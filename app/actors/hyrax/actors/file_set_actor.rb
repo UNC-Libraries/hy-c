@@ -86,7 +86,7 @@ module Hyrax
         end
       end
       alias attach_file_to_work attach_to_work
-      deprecation_deprecate attach_file_to_work: "use attach_to_work instead"
+      deprecation_deprecate attach_file_to_work: 'use attach_to_work instead'
 
       # @param [String] revision_id the revision to revert to
       # @param [Symbol, #to_sym] relation

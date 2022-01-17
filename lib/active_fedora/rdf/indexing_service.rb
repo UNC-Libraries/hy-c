@@ -19,7 +19,7 @@ module ActiveFedora::RDF
     # @param [ActiveFedora::Indexing::Map] index_config the configuration to use to map object values to index document values
     def initialize(obj, index_config = nil)
       unless index_config
-        Deprecation.warn(self, "initializing ActiveFedora::RDF::IndexingService without an index_config is deprecated and will be removed in ActiveFedora 13.0")
+        Deprecation.warn(self, 'initializing ActiveFedora::RDF::IndexingService without an index_config is deprecated and will be removed in ActiveFedora 13.0')
         index_config = obj.class.index_config
       end
       @object = obj

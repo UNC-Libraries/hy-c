@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe DataSet do
-  it "has a title" do
+  it 'has a title' do
     subject.title = ['data set']
     expect(subject.title).to eq ['data set']
   end
@@ -14,8 +14,8 @@ RSpec.describe DataSet do
     it { is_expected.to eq 'hyrax_data_set' }
   end
 
-  describe "metadata" do
-    it "has metadata" do
+  describe 'metadata' do
+    it 'has metadata' do
       expect(subject).to respond_to(:relative_path)
       expect(subject).to respond_to(:depositor)
       expect(subject).to respond_to(:contributor)

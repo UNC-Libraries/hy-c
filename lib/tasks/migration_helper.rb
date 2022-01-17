@@ -92,10 +92,10 @@ class MigrationHelper
     # update work permissions to give admin set managers edit access and viewer groups read access
     permissions_array = []
     manager_groups.each do |manager_group|
-      permissions_array << { "type" => "group", "name" => manager_group.agent_id, "access" => "edit" }
+      permissions_array << { 'type' => 'group', 'name' => manager_group.agent_id, 'access' => 'edit' }
     end
     viewer_groups.each do |viewer_group|
-      permissions_array << { "type" => "group", "name" => viewer_group.agent_id, "access" => "read" }
+      permissions_array << { 'type' => 'group', 'name' => viewer_group.agent_id, 'access' => 'read' }
     end
 
     permissions_array

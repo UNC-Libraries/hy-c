@@ -2,7 +2,7 @@
 
 # [hyc-override] Fix hardcoded path for import/exports
 
-require "bulkrax/engine"
+require 'bulkrax/engine'
 require 'active_support/all'
 
 module Bulkrax
@@ -23,11 +23,11 @@ module Bulkrax
                    :removed_image_path
 
     self.parsers = [
-      { name: "OAI - Dublin Core", class_name: "Bulkrax::OaiDcParser", partial: "oai_fields" },
-      { name: "OAI - Qualified Dublin Core", class_name: "Bulkrax::OaiQualifiedDcParser", partial: "oai_fields" },
-      { name: "CSV - Comma Separated Values", class_name: "Bulkrax::CsvParser", partial: "csv_fields" },
-      { name: "Bagit", class_name: "Bulkrax::BagitParser", partial: "bagit_fields" },
-      { name: "XML", class_name: "Bulkrax::XmlParser", partial: "xml_fields" }
+      { name: 'OAI - Dublin Core', class_name: 'Bulkrax::OaiDcParser', partial: 'oai_fields' },
+      { name: 'OAI - Qualified Dublin Core', class_name: 'Bulkrax::OaiQualifiedDcParser', partial: 'oai_fields' },
+      { name: 'CSV - Comma Separated Values', class_name: 'Bulkrax::CsvParser', partial: 'csv_fields' },
+      { name: 'Bagit', class_name: 'Bulkrax::BagitParser', partial: 'bagit_fields' },
+      { name: 'XML', class_name: 'Bulkrax::XmlParser', partial: 'xml_fields' }
     ]
 
     self.import_path = ENV['TEMP_STORAGE'] + '/hyrax/imports'
@@ -61,48 +61,48 @@ module Bulkrax
     # Based on Hyrax CoreMetadata && BasicMetadata
     # Override at application level to change
     self.field_mappings = {
-      "Bulkrax::OaiDcParser" => {
-        "contributor" => { from: ["contributor"] },
+      'Bulkrax::OaiDcParser' => {
+        'contributor' => { from: ['contributor'] },
         # no appropriate mapping for coverage (based_near needs id)
         #  ""=>{:from=>["coverage"]},
-        "creator" => { from: ["creator"] },
-        "date_created" => { from: ["date"] },
-        "description" => { from: ["description"] },
+        'creator' => { from: ['creator'] },
+        'date_created' => { from: ['date'] },
+        'description' => { from: ['description'] },
         # no appropriate mapping for format
         # ""=>{:from=>["format"]},
-        "identifier" => { from: ["identifier"] },
-        "language" => { from: ["language"], parsed: true },
-        "publisher" => { from: ["publisher"] },
-        "related_url" => { from: ["relation"] },
-        "rights_statement" => { from: ["rights"] },
-        "source" => { from: ["source"] },
-        "subject" => { from: ["subject"], parsed: true },
-        "title" => { from: ["title"] },
-        "resource_type" => { from: ["type"], parsed: true },
-        "remote_files" => { from: ["thumbnail_url"], parsed: true }
+        'identifier' => { from: ['identifier'] },
+        'language' => { from: ['language'], parsed: true },
+        'publisher' => { from: ['publisher'] },
+        'related_url' => { from: ['relation'] },
+        'rights_statement' => { from: ['rights'] },
+        'source' => { from: ['source'] },
+        'subject' => { from: ['subject'], parsed: true },
+        'title' => { from: ['title'] },
+        'resource_type' => { from: ['type'], parsed: true },
+        'remote_files' => { from: ['thumbnail_url'], parsed: true }
       },
-      "Bulkrax::OaiQualifiedDcParser" => {
-        "abstract" => { from: ["abstract"] },
-        "alternative_title" => { from: ["alternative"] },
-        "bibliographic_citation" => { from: ["bibliographicCitation"] },
-        "contributor" => { from: ["contributor"] },
-        "creator" => { from: ["creator"] },
-        "date_created" => { from: ["created"] },
-        "description" => { from: ["description"] },
-        "language" => { from: ["language"] },
-        "license" => { from: ["license"] },
-        "publisher" => { from: ["publisher"] },
-        "related_url" => { from: ["relation"] },
-        "rights_holder" => { from: ["rightsHolder"] },
-        "rights_statement" => { from: ["rights"] },
-        "source" => { from: ["source"] },
-        "subject" => { from: ["subject"], parsed: true },
-        "title" => { from: ["title"] },
-        "resource_type" => { from: ["type"], parsed: true },
-        "remote_files" => { from: ["thumbnail_url"], parsed: true }
+      'Bulkrax::OaiQualifiedDcParser' => {
+        'abstract' => { from: ['abstract'] },
+        'alternative_title' => { from: ['alternative'] },
+        'bibliographic_citation' => { from: ['bibliographicCitation'] },
+        'contributor' => { from: ['contributor'] },
+        'creator' => { from: ['creator'] },
+        'date_created' => { from: ['created'] },
+        'description' => { from: ['description'] },
+        'language' => { from: ['language'] },
+        'license' => { from: ['license'] },
+        'publisher' => { from: ['publisher'] },
+        'related_url' => { from: ['relation'] },
+        'rights_holder' => { from: ['rightsHolder'] },
+        'rights_statement' => { from: ['rights'] },
+        'source' => { from: ['source'] },
+        'subject' => { from: ['subject'], parsed: true },
+        'title' => { from: ['title'] },
+        'resource_type' => { from: ['type'], parsed: true },
+        'remote_files' => { from: ['thumbnail_url'], parsed: true }
       },
       # When empty, a default_field_mapping will be generated
-      "Bulkrax::CsvParser" => {
+      'Bulkrax::CsvParser' => {
         'identifier' => { from: ['identifier'], split: true },
         'issn' => { from: ['issn'], split: true },
         'keyword' => { from: ['keyword'], split: true }

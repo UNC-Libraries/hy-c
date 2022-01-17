@@ -1,5 +1,5 @@
 # [hyc-override] Overriding default. Show the language term instead of the saved value. Allow itemprop to be rendered
-require "rails_autolink/helpers"
+require 'rails_autolink/helpers'
 
 module Hyrax
   module Renderers
@@ -88,7 +88,7 @@ module Hyrax
       end
 
       def html_attributes(attributes)
-        buffer = ""
+        buffer = ''
         attributes.each do |k, v|
           buffer << " #{k}"
           buffer << %(="#{v}") if v.present?

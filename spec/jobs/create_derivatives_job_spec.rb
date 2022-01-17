@@ -25,10 +25,10 @@ RSpec.describe CreateDerivativesJob do
   # TODO: Get tests passing when these are set to different values
   # These tests currently assume that the upload_file is in the same place as the WorkingFile
   # And as of 11/22/2021 they were in different places in production
-  let(:temp_storage_path) { File.join(fixture_path, "tmp") }
-  let(:data_storage_path) { File.join(fixture_path, "tmp") }
+  let(:temp_storage_path) { File.join(fixture_path, 'tmp') }
+  let(:data_storage_path) { File.join(fixture_path, 'tmp') }
 
-  context "with an audio file" do
+  context 'with an audio file' do
     let(:id)       { '123' }
     let(:file_set) { FileSet.new }
 
@@ -48,7 +48,7 @@ RSpec.describe CreateDerivativesJob do
 
     let!(:upload_file) { Hyrax::WorkingDirectory.find_or_retrieve(file.id, file_set.id) }
 
-    context "with a file name" do
+    context 'with a file name' do
       it 'calls create_derivatives and save on a file set' do
         expect(Hydra::Derivatives::AudioDerivatives).to receive(:create)
         expect(file_set).to receive(:reload)
@@ -98,12 +98,12 @@ RSpec.describe CreateDerivativesJob do
     end
   end
 
-  context "with a pdf file" do
+  context 'with a pdf file' do
     let!(:user) do
       User.new(email: 'test@example.com', guest: false, uid: 'test') { |u| u.save!(validate: false) }
     end
     let(:file_set) { FileSet.new }
-    let(:temp_pdf_path) { File.join(fixture_path, "tmp", "hyrax_test4.pdf") }
+    let(:temp_pdf_path) { File.join(fixture_path, 'tmp', 'hyrax_test4.pdf') }
 
     let(:file) do
       Hydra::PCDM::File.new do |f|
@@ -115,7 +115,7 @@ RSpec.describe CreateDerivativesJob do
 
     before do
       allow(Hydra::Works::VirusCheckerService).to receive(:file_has_virus?) { false }
-      FileUtils.cp(File.join(fixture_path, "hyrax/hyrax_test4.pdf"), temp_pdf_path)
+      FileUtils.cp(File.join(fixture_path, 'hyrax/hyrax_test4.pdf'), temp_pdf_path)
       file_set.apply_depositor_metadata user.user_key
       file_set.save!
       file_set.original_file = file
@@ -128,7 +128,7 @@ RSpec.describe CreateDerivativesJob do
 
     let!(:upload_file) { Hyrax::WorkingDirectory.find_or_retrieve(file.id, file_set.id) }
 
-    it "runs a full text extract" do
+    it 'runs a full text extract' do
       expect(Hydra::Derivatives::PdfDerivatives).to receive(:create)
         .with(/test\.pdf/, outputs: [{ label: :thumbnail,
                                        format: 'jpg',
@@ -136,7 +136,7 @@ RSpec.describe CreateDerivativesJob do
                                        url: String,
                                        layer: 0 }])
       expect(Hydra::Derivatives::FullTextExtract).to receive(:create)
-        .with(/test\.pdf/, outputs: [{ url: RDF::URI, container: "extracted_text" }])
+        .with(/test\.pdf/, outputs: [{ url: RDF::URI, container: 'extracted_text' }])
       described_class.perform_now(file_set, file.id)
 
       # Verify that the uploaded file was deleted

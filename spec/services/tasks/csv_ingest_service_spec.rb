@@ -36,8 +36,8 @@ RSpec.describe Tasks::CsvIngestService do
     end
 
     let(:admin_set) do
-      AdminSet.create!(title: ["csv default"],
-                       description: ["some description"])
+      AdminSet.create!(title: ['csv default'],
+                       description: ['some description'])
     end
 
     let(:permission_template) do
@@ -66,7 +66,7 @@ RSpec.describe Tasks::CsvIngestService do
       File.delete('spec/fixtures/csv/csv_deposit_record_id.log')
     end
 
-    it "creates a new work" do
+    it 'creates a new work' do
       expect { Tasks::CsvIngestService.new(args).ingest }.to change { General.count }.by(1)
                                                                                      .and change { DepositRecord.count }.by(1)
       new_general = General.all[-1]

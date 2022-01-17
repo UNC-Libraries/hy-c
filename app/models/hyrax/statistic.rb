@@ -33,7 +33,7 @@ module Hyrax
         path = polymorphic_path(object)
         profile = Hyrax::Analytics.profile
         unless profile
-          Rails.logger.error("Google Analytics profile has not been established. Unable to fetch statistics.")
+          Rails.logger.error('Google Analytics profile has not been established. Unable to fetch statistics.')
           return []
         end
 

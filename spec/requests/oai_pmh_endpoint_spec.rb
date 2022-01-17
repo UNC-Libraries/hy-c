@@ -1,4 +1,4 @@
-require "rails_helper"
+require 'rails_helper'
 require Rails.root.join('spec/support/oai_sample_solr_documents.rb')
 
 RSpec.describe 'OAI-PMH catalog endpoint' do
@@ -10,7 +10,7 @@ RSpec.describe 'OAI-PMH catalog endpoint' do
   let(:oai_config) { { provider: provider_config, document: document_config } }
   let(:timestamps) do
     solrRecords['response']['docs'].map do |doc|
-      Time.parse(doc["timestamp"]).utc.iso8601
+      Time.parse(doc['timestamp']).utc.iso8601
     end.sort!
   end
   let(:solrRecords) do

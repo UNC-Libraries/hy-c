@@ -43,7 +43,7 @@ module Tasks
           # parse metadata and file names; add deposit record id to metadata
           work_attributes = row.to_h.except('source_identifier', 'files', 'model')
           work_attributes.select { |k, _v| k.to_s.ends_with? '_attributes' }.each do |k, v|
-            work_attributes[k] = JSON.parse(v.gsub('=>', ':').gsub("\\'", "||").gsub("'", '"').gsub('; ', ', ').gsub("||", "'"))
+            work_attributes[k] = JSON.parse(v.gsub('=>', ':').gsub("\\'", '||').gsub("'", '"').gsub('; ', ', ').gsub('||', "'"))
           end
           work_attributes['subject'] = work_attributes['subject'].split('; ')
           work_attributes['deposit_record'] = @deposit_record_id

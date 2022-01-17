@@ -7,7 +7,7 @@ RSpec.describe HycIndexer, type: :indexer do
 
   describe 'indexing date issued' do
     context 'as full date' do
-      it "indexes id and label" do
+      it 'indexes id and label' do
         work.date_issued = ['2018-10-01']
 
         expect(solr_document.fetch('date_issued_tesim')).to eq ['October 1, 2018']
@@ -19,7 +19,7 @@ RSpec.describe HycIndexer, type: :indexer do
     end
 
     context 'as date range' do
-      it "indexes id and label" do
+      it 'indexes id and label' do
         work.date_issued = ['2016 to 2019']
 
         expect(solr_document.fetch('date_issued_tesim')).to eq ['2016 to 2019']
@@ -31,7 +31,7 @@ RSpec.describe HycIndexer, type: :indexer do
     end
 
     context 'as decade' do
-      it "indexes id and label" do
+      it 'indexes id and label' do
         work.date_issued = ['2010s']
 
         expect(solr_document.fetch('date_issued_tesim')).to eq ['2010s']
@@ -43,7 +43,7 @@ RSpec.describe HycIndexer, type: :indexer do
     end
 
     context 'as century' do
-      it "indexes id and label" do
+      it 'indexes id and label' do
         work.date_issued = ['2000s']
 
         expect(solr_document.fetch('date_issued_tesim')).to eq ['2000s']
@@ -60,7 +60,7 @@ RSpec.describe HycIndexer, type: :indexer do
       work.date_issued = nil
     end
 
-    it "indexes id and label" do
+    it 'indexes id and label' do
       expect(solr_document).to_not have_key('date_issued_tesim')
       expect(solr_document).to_not have_key('date_issued_edtf_tesim')
       expect(solr_document).to_not have_key('date_issued_isim')

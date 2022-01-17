@@ -24,7 +24,7 @@ module Migrate
 
           # RDF information
           cdr_model_type = ''
-          rdf_version = metadata.xpath("//rdf:RDF", MigrationConstants::NS).last
+          rdf_version = metadata.xpath('//rdf:RDF', MigrationConstants::NS).last
           if rdf_version
             # Check if aggregate work
             cdr_model_type = rdf_version.xpath('rdf:Description/*[local-name() = "hasModel"]/@rdf:resource', MigrationConstants::NS).map(&:text) if rdf_version.to_s.match(/hasModel/)

@@ -14,8 +14,8 @@ module Blacklight::Document::DublinCore
 
   def self.register_export_formats(document)
     document.will_export_as(:xml)
-    document.will_export_as(:dc_xml, "text/xml")
-    document.will_export_as(:oai_dc_xml, "text/xml")
+    document.will_export_as(:dc_xml, 'text/xml')
+    document.will_export_as(:oai_dc_xml, 'text/xml')
   end
 
   # added thumbnail as separate field to help with ordering
@@ -28,10 +28,10 @@ module Blacklight::Document::DublinCore
   # dublin core elements are mapped against the #dublin_core_field_names whitelist.
   def export_as_oai_dc_xml
     xml = Builder::XmlMarkup.new
-    xml.tag!("oai_dc:dc",
-             'xmlns:oai_dc' => "http://www.openarchives.org/OAI/2.0/oai_dc/",
-             'xmlns:dc' => "http://purl.org/dc/elements/1.1/",
-             'xmlns:xsi' => "http://www.w3.org/2001/XMLSchema-instance",
+    xml.tag!('oai_dc:dc',
+             'xmlns:oai_dc' => 'http://www.openarchives.org/OAI/2.0/oai_dc/',
+             'xmlns:dc' => 'http://purl.org/dc/elements/1.1/',
+             'xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance',
              'xsi:schemaLocation' => %(http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd)) do
       to_semantic_values.select { |field, _values| dublin_core_field_name? field  }.each do |field, values|
         source = []
@@ -47,7 +47,7 @@ module Blacklight::Document::DublinCore
           if field.to_s == 'creator'
             xml.tag! "dc:#{field}", v.to_s.split('||').first
             affiliation = v.to_s.split('||Affiliation: ')[1]
-            xml.tag! "dc:contributor", affiliation.split('||').first unless affiliation.blank?
+            xml.tag! 'dc:contributor', affiliation.split('||').first unless affiliation.blank?
           elsif field.to_s == 'contributor'
             xml.tag! "dc:#{field}", v.to_s.split('||').first
           # display journal values as comma separated string (journal values come from single-valued fields)
@@ -56,7 +56,7 @@ module Blacklight::Document::DublinCore
           elsif field.to_s == 'thumbnail'
             if doi.blank?
               record_url = URI.join(ENV['HYRAX_HOST'], "concern/#{first('has_model_ssim').tableize}/#{id()}").to_s
-              xml.tag! "dc:identifier", record_url
+              xml.tag! 'dc:identifier', record_url
             end
             thumb_download = (values.first)
             xml.tag! 'dc:identifier', "#{ENV['HYRAX_HOST']}#{thumb_download}"
@@ -69,9 +69,9 @@ module Blacklight::Document::DublinCore
         unless source.blank?
           # Based on tests in blacklight, the journal information should always be returned in the order listed in app/models/solr_document.rb
           if source.count == 3
-            xml.tag! "dc:source", "#{source[0]}, #{source[1]}(#{source[2]})"
+            xml.tag! 'dc:source', "#{source[0]}, #{source[1]}(#{source[2]})"
           else
-            xml.tag! "dc:source", source.join(', ')
+            xml.tag! 'dc:source', source.join(', ')
           end
         end
       end

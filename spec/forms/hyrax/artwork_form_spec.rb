@@ -6,19 +6,19 @@ RSpec.describe Hyrax::ArtworkForm do
   let(:work) { Artwork.new }
   let(:form) { described_class.new(work, nil, nil) }
 
-  describe "#required_fields" do
+  describe '#required_fields' do
     subject { form.required_fields }
 
     it { is_expected.to match_array [:title, :date_issued, :abstract, :extent, :medium, :resource_type] }
   end
 
-  describe "#primary_terms" do
+  describe '#primary_terms' do
     subject { form.primary_terms }
 
     it { is_expected.to match_array [:title, :date_issued, :abstract, :extent, :medium, :resource_type] }
   end
 
-  describe "#secondary_terms" do
+  describe '#secondary_terms' do
     subject { form.secondary_terms }
 
     it {
@@ -27,7 +27,7 @@ RSpec.describe Hyrax::ArtworkForm do
     }
   end
 
-  describe "#admin_only_terms" do
+  describe '#admin_only_terms' do
     subject { form.admin_only_terms }
 
     it { is_expected.to match_array [:admin_note, :dcmi_type, :doi] }
@@ -35,7 +35,7 @@ RSpec.describe Hyrax::ArtworkForm do
 
   describe 'default value set' do
     subject { form }
-    it "rights statement must have a default value" do
+    it 'rights statement must have a default value' do
       expect(form.model['rights_statement']).to eq 'http://rightsstatements.org/vocab/InC/1.0/'
     end
   end
@@ -163,21 +163,21 @@ RSpec.describe Hyrax::ArtworkForm do
     end
   end
 
-  describe "#visibility" do
+  describe '#visibility' do
     subject { form.visibility }
 
     it { is_expected.to eq 'restricted' }
   end
 
-  describe "#agreement_accepted" do
+  describe '#agreement_accepted' do
     subject { form.agreement_accepted }
 
     it { is_expected.to eq false }
   end
 
-  context "on a work already saved" do
+  context 'on a work already saved' do
     before { allow(work).to receive(:new_record?).and_return(false) }
-    it "defaults deposit agreement to true" do
+    it 'defaults deposit agreement to true' do
       expect(form.agreement_accepted).to eq(true)
     end
   end

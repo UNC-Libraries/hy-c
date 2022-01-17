@@ -52,7 +52,7 @@ module Tasks
 
     def initialize(rows = 1000)
       @rows = rows
-      use_test_api = ENV['DATACITE_USE_TEST_API'].to_s.downcase == "true"
+      use_test_api = ENV['DATACITE_USE_TEST_API'].to_s.downcase == 'true'
       @doi_prefix = ENV['DATACITE_PREFIX']
       if use_test_api
         @doi_creation_url = 'https://api.test.datacite.org/dois'
@@ -183,10 +183,10 @@ module Tasks
 
     def create_batch_doi
       start_time = Time.now
-      records = ActiveFedora::SolrService.get("visibility_ssi:open AND -doi_tesim:* AND workflow_state_name_ssim:deposited AND has_model_ssim:(Article Artwork DataSet Dissertation General HonorsThesis Journal MastersPaper Multimed ScholarlyWork)",
+      records = ActiveFedora::SolrService.get('visibility_ssi:open AND -doi_tesim:* AND workflow_state_name_ssim:deposited AND has_model_ssim:(Article Artwork DataSet Dissertation General HonorsThesis Journal MastersPaper Multimed ScholarlyWork)',
                                               rows: @rows,
-                                              sort: "system_create_dtsi ASC",
-                                              fl: "id")["response"]["docs"]
+                                              sort: 'system_create_dtsi ASC',
+                                              fl: 'id')['response']['docs']
 
       if records.length.positive?
         puts "#{get_time} Preparing to add DOIs to #{records.length} records"

@@ -8,8 +8,8 @@ RSpec.describe Hyrax::DcmiTypeService do
 
   let(:service) { described_class }
 
-  describe "#select_all_options" do
-    it "returns all terms" do
+  describe '#select_all_options' do
+    it 'returns all terms' do
       expect(service.select_all_options).to include(['Dataset', 'http://purl.org/dc/dcmitype/Dataset'],
                                                     ['Sound', 'http://purl.org/dc/dcmitype/Sound'],
                                                     ['Still Image', 'http://purl.org/dc/dcmitype/StillImage'],
@@ -17,8 +17,8 @@ RSpec.describe Hyrax::DcmiTypeService do
     end
   end
 
-  describe "#label" do
-    it "resolves for ids of terms" do
+  describe '#label' do
+    it 'resolves for ids of terms' do
       expect(service.label('http://purl.org/dc/dcmitype/Text')).to eq('Text')
     end
   end

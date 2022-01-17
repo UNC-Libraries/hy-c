@@ -8,8 +8,8 @@ RSpec.describe Hyrax::AcademicConcentrationService do
   end
   let(:service) { described_class }
 
-  describe "#select_options" do
-    it "returns only active  masters papers terms for masters form" do
+  describe '#select_options' do
+    it 'returns only active  masters papers terms for masters form' do
       expect(service.select('masters')).to include(['Aquatic and Atmospheric Sciences', 'Aquatic and Atmospheric Sciences'],
                                                    ['Clinical Nutrition', 'Clinical Nutrition'],
                                                    ['Economic Development', 'Economic Development'],
@@ -26,7 +26,7 @@ RSpec.describe Hyrax::AcademicConcentrationService do
                                                    ['Water Resources Engineering', 'Water Resources Engineering'])
     end
 
-    it "returns only honors thesis active terms for honors form" do
+    it 'returns only honors thesis active terms for honors form' do
       expect(service.select('honors')).to include(['Anthropology', 'Anthropology'],
                                                   ['Chemistry', 'Chemistry'],
                                                   ['Biostatistics', 'Biostatistics'],
@@ -36,7 +36,7 @@ RSpec.describe Hyrax::AcademicConcentrationService do
                                                   ['Comparative Literature', 'Comparative Literature'])
     end
 
-    it "returns all terms for general form" do
+    it 'returns all terms for general form' do
       expect(service.select('all')).to include(['Aquatic and Atmospheric Sciences', 'Aquatic and Atmospheric Sciences'],
                                                ['Clinical Nutrition', 'Clinical Nutrition'],
                                                ['Economic Development', 'Economic Development'],
@@ -61,8 +61,8 @@ RSpec.describe Hyrax::AcademicConcentrationService do
     end
   end
 
-  describe "#label" do
-    it "resolves for ids of active terms" do
+  describe '#label' do
+    it 'resolves for ids of active terms' do
       expect(service.label('Economic Development')).to eq('Economic Development')
     end
   end

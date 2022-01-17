@@ -1,5 +1,5 @@
 # [hyc-override] Remove warnings before parsing image data
-require "json"
+require 'json'
 
 module MiniMagick
   class Image
@@ -14,23 +14,23 @@ module MiniMagick
 
       def [](value, *args)
         case value
-          when "format", "width", "height", "dimensions", "size", "human_size"
+          when 'format', 'width', 'height', 'dimensions', 'size', 'human_size'
             cheap_info(value)
-          when "colorspace"
+          when 'colorspace'
             colorspace
-          when "mime_type"
+          when 'mime_type'
             mime_type
-          when "resolution"
+          when 'resolution'
             resolution(*args)
-          when "signature"
+          when 'signature'
             signature
           when /^EXIF\:/i
             raw_exif(value)
-          when "exif"
+          when 'exif'
             exif
-          when "details"
+          when 'details'
             details
-          when "data"
+          when 'data'
             data
           else
             raw(value)
@@ -44,25 +44,25 @@ module MiniMagick
       # [hyc-override] remove warnings and print errors
       def cheap_info(value)
         @info.fetch(value) do
-          image_data = self["%m %w %h %b"]
+          image_data = self['%m %w %h %b']
           if !image_data.blank? && image_data.include?('Warning')
             warning, image_info = image_data.split("\n")
-            format, width, height, size = image_info.split(" ")
+            format, width, height, size = image_info.split(' ')
             Rails.logger.info "Warning logged for image: #{warning}"
           else
-            format, width, height, size = image_data.split(" ")
+            format, width, height, size = image_data.split(' ')
           end
 
           path = @path
           path = path.match(/\[\d+\]$/).pre_match if path =~ /\[\d+\]$/
 
           @info.update(
-            "format" => format,
-            "width" => Integer(width),
-            "height" => Integer(height),
-            "dimensions" => [Integer(width), Integer(height)],
-            "size" => File.size(path),
-            "human_size" => size,
+            'format' => format,
+            'width' => Integer(width),
+            'height' => Integer(height),
+            'dimensions' => [Integer(width), Integer(height)],
+            'size' => File.size(path),
+            'human_size' => size,
           )
 
           @info.fetch(value)
@@ -72,7 +72,7 @@ module MiniMagick
       end
 
       def colorspace
-        @info["colorspace"] ||= self["%r"]
+        @info['colorspace'] ||= self['%r']
       end
 
       def mime_type
@@ -82,9 +82,9 @@ module MiniMagick
       def resolution(unit = nil)
         output = identify do |b|
           b.units unit if unit
-          b.format "%x %y"
+          b.format '%x %y'
         end
-        output.split(" ").map(&:to_i)
+        output.split(' ').map(&:to_i)
       end
 
       def raw_exif(value)
@@ -92,9 +92,9 @@ module MiniMagick
       end
 
       def exif
-        @info["exif"] ||= (
+        @info['exif'] ||= (
         hash = {}
-        output = self["%[EXIF:*]"]
+        output = self['%[EXIF:*]']
 
         output.each_line do |line|
           line = line.chomp("\n")
@@ -102,17 +102,17 @@ module MiniMagick
           case MiniMagick.cli
             when :imagemagick, :imagemagick7
               if match = line.match(/^exif:/)
-                key, value = match.post_match.split("=", 2)
+                key, value = match.post_match.split('=', 2)
                 value = decode_comma_separated_ascii_characters(value) if ASCII_ENCODED_EXIF_KEYS.include?(key)
                 hash[key] = value
               else
                 hash[hash.keys.last] << "\n#{line}"
               end
             when :graphicsmagick
-              next if line == "unknown"
+              next if line == 'unknown'
 
-              key, value = line.split("=", 2)
-              value.gsub!("\\012", "\n") # convert "\012" characters to newlines
+              key, value = line.split('=', 2)
+              value.gsub!('\\012', "\n") # convert "\012" characters to newlines
               hash[key] = value
           end
         end
@@ -126,13 +126,13 @@ module MiniMagick
       end
 
       def signature
-        @info["signature"] ||= self["%#"]
+        @info['signature'] ||= self['%#']
       end
 
       def details
-        warn "[MiniMagick] MiniMagick::Image#details has been deprecated, as it was causing too many parsing errors. You should use MiniMagick::Image#data instead, which differs in a way that the keys are in camelcase." if MiniMagick.imagemagick? || MiniMagick.imagemagick7?
+        warn '[MiniMagick] MiniMagick::Image#details has been deprecated, as it was causing too many parsing errors. You should use MiniMagick::Image#data instead, which differs in a way that the keys are in camelcase.' if MiniMagick.imagemagick? || MiniMagick.imagemagick7?
 
-        @info["details"] ||= (
+        @info['details'] ||= (
         details_string = identify(&:verbose)
         key_stack = []
         details_string.lines.to_a[1..-1].each_with_object({}) do |line, details_hash|
@@ -165,15 +165,15 @@ module MiniMagick
       def data
         raise Error, "MiniMagick::Image#data isn't supported on GraphicsMagick. Use MiniMagick::Image#details instead." if MiniMagick.graphicsmagick?
 
-        @info["data"] ||= (
+        @info['data'] ||= (
         json = MiniMagick::Tool::Convert.new do |convert|
           convert << path
-          convert << "json:"
+          convert << 'json:'
         end
 
         data = JSON.parse(json)
         data = data.fetch(0) if data.is_a?(Array)
-        data.fetch("image")
+        data.fetch('image')
       )
       end
 
@@ -194,7 +194,7 @@ module MiniMagick
 
       def path
         value = @path
-        value += "[0]" unless value =~ /\[\d+\]$/
+        value += '[0]' unless value =~ /\[\d+\]$/
         value
       end
 

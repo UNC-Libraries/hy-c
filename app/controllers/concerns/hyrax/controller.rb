@@ -31,9 +31,9 @@ module Hyrax::Controller
   # A presenter for selecting a work type to create this is needed here because
   # the selector is in the header on every page.
   def create_work_presenter
-    Deprecation.warn(self, "The `create_work_presenter` helper is deprecated " \
-                           "for removal in Hyrax 3.0. The work selector has " \
-                           "been removed the masthead in Hyrax 2.1.")
+    Deprecation.warn(self, 'The `create_work_presenter` helper is deprecated ' \
+                           'for removal in Hyrax 3.0. The work selector has ' \
+                           'been removed the masthead in Hyrax 2.1.')
 
     Hyrax::SelectTypeListPresenter.new(current_user)
   end

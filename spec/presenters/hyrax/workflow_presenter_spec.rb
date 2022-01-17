@@ -3,8 +3,8 @@ require 'rails_helper'
 RSpec.describe Hyrax::WorkflowPresenter do
   let(:solr_document) { SolrDocument.new(attributes) }
   let(:attributes) do
-    { "id" => '888888',
-      "has_model_ssim" => ["GenericWork"] }
+    { 'id' => '888888',
+      'has_model_ssim' => ['GenericWork'] }
   end
 
   let(:user) do
@@ -14,7 +14,7 @@ RSpec.describe Hyrax::WorkflowPresenter do
   let(:presenter) { described_class.new(solr_document, ability) }
   let(:entity) { instance_double(Sipity::Entity) }
 
-  describe "#badge" do
+  describe '#badge' do
     let(:workflow) { create(:workflow, name: 'testing') }
 
     subject { presenter.badge }
@@ -28,7 +28,7 @@ RSpec.describe Hyrax::WorkflowPresenter do
     end
   end
 
-  describe "#is_mfa_in_review?" do
+  describe '#is_mfa_in_review?' do
     let(:workflow) { create(:workflow, name: 'testing') }
 
     subject { presenter.is_mfa_in_review? }
@@ -70,7 +70,7 @@ RSpec.describe Hyrax::WorkflowPresenter do
     end
   end
 
-  describe "is_mfa?" do
+  describe 'is_mfa?' do
     let(:workflow) { create(:workflow, name: 'testing') }
 
     subject { presenter.is_mfa? }
@@ -103,7 +103,7 @@ RSpec.describe Hyrax::WorkflowPresenter do
     end
   end
 
-  describe "#in_workflow_state?" do
+  describe '#in_workflow_state?' do
     let(:workflow) { create(:workflow, name: 'testing') }
 
     subject { presenter.in_workflow_state?(['withdrawn', 'pending deletion']) }

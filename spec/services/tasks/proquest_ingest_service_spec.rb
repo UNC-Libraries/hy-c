@@ -20,7 +20,7 @@ RSpec.describe Tasks::ProquestIngestService do
   before do
     allow(Date).to receive(:today).and_return(Date.parse('2019-09-12'))
     AdminSet.delete_all
-    Sipity::WorkflowState.create(workflow_id: workflow.id, name: "deposited")
+    Sipity::WorkflowState.create(workflow_id: workflow.id, name: 'deposited')
   end
 
   after do
@@ -364,18 +364,18 @@ RSpec.describe Tasks::ProquestIngestService do
     }
 
     it 'returns fileset metadata' do
-      expect(Tasks::ProquestIngestService.new(args).file_record(metadata)).to include({ "date_created" => nil,
-                                                                                        "depositor" => "admin",
-                                                                                        "embargo_release_date" => "2021-11-13",
-                                                                                        "keyword" => ["aesthetics", "attachments", "Philosophy"],
-                                                                                        "label" => "Perspective on Attachments and Ingests",
-                                                                                        "language" => ["http://id.loc.gov/vocabulary/iso639-2/eng"],
-                                                                                        "resource_type" => ["Dissertation"],
-                                                                                        "rights_statement" => "http://rightsstatements.org/vocab/InC-EDU/1.0/",
-                                                                                        "title" => ["Perspective on Attachments and Ingests"],
-                                                                                        "visibility" => "restricted",
-                                                                                        "visibility_after_embargo" => "open",
-                                                                                        "visibility_during_embargo" => "restricted" })
+      expect(Tasks::ProquestIngestService.new(args).file_record(metadata)).to include({ 'date_created' => nil,
+                                                                                        'depositor' => 'admin',
+                                                                                        'embargo_release_date' => '2021-11-13',
+                                                                                        'keyword' => ['aesthetics', 'attachments', 'Philosophy'],
+                                                                                        'label' => 'Perspective on Attachments and Ingests',
+                                                                                        'language' => ['http://id.loc.gov/vocabulary/iso639-2/eng'],
+                                                                                        'resource_type' => ['Dissertation'],
+                                                                                        'rights_statement' => 'http://rightsstatements.org/vocab/InC-EDU/1.0/',
+                                                                                        'title' => ['Perspective on Attachments and Ingests'],
+                                                                                        'visibility' => 'restricted',
+                                                                                        'visibility_after_embargo' => 'open',
+                                                                                        'visibility_during_embargo' => 'restricted' })
     end
   end
 end

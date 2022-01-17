@@ -58,7 +58,7 @@ RSpec.feature 'Create a Article', js: false do
           </gn:Feature>
           </rdf:RDF>
 RDFXML
-      stub_request(:get, "http://sws.geonames.org/4460162/").
+      stub_request(:get, 'http://sws.geonames.org/4460162/').
         to_return(status: 200, body: chapel_hill, headers: { 'Content-Type' => 'application/rdf+xml;charset=UTF-8' })
 
       stub_request(:any, "http://api.geonames.org/getJSON?geonameId=4460162&username=#{ENV['GEONAMES_USER']}").
@@ -98,7 +98,7 @@ RDFXML
       select 'Article', from: 'article_resource_type'
       select 'Preprint', from: 'article_edition'
       fill_in 'Funder', with: 'some funder'
-      find("#article_based_near_attributes_0_id", visible: false).set('http://sws.geonames.org/4460162/')
+      find('#article_based_near_attributes_0_id', visible: false).set('http://sws.geonames.org/4460162/')
       fill_in 'ISSN', with: 'some issn'
       fill_in 'Journal issue', with: '1'
       fill_in 'Journal title', with: 'a journal'
@@ -223,7 +223,7 @@ RDFXML
       select 'Preprint', from: 'article_edition'
       fill_in 'Extent', with: 'some extent'
       fill_in 'Funder', with: 'some funder'
-      find("#article_based_near_attributes_0_id", visible: false).set('http://sws.geonames.org/4460162/')
+      find('#article_based_near_attributes_0_id', visible: false).set('http://sws.geonames.org/4460162/')
       fill_in 'ISSN', with: 'some issn'
       fill_in 'Journal issue', with: '1'
       fill_in 'Journal title', with: 'a journal'

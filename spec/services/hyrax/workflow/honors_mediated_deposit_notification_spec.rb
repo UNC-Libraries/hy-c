@@ -5,8 +5,8 @@ RSpec.describe Hyrax::Workflow::HonorsMediatedDepositNotification do
   let(:cc_user) { User.create(email: 'test2@example.com', uid: 'test2@example.com', password: 'password', password_confirmation: 'password') }
   let(:work) { Article.create(title: ['New Article'], depositor: depositor.email) }
   let(:admin_set) do
-    AdminSet.create(title: ["article admin set"],
-                    description: ["some description"],
+    AdminSet.create(title: ['article admin set'],
+                    description: ['some description'],
                     edit_users: [depositor.user_key])
   end
   let(:permission_template) do
@@ -17,9 +17,9 @@ RSpec.describe Hyrax::Workflow::HonorsMediatedDepositNotification do
                             permission_template_id: permission_template.id)
   end
   let(:entity) { Sipity::Entity.create(proxy_for_global_id: work.to_global_id.to_s, workflow_id: workflow.id) }
-  let(:comment) { double("comment", comment: 'A pleasant read') }
+  let(:comment) { double('comment', comment: 'A pleasant read') }
 
-  describe ".send_notification" do
+  describe '.send_notification' do
     it 'sends a message to depositor and carbon-copied users' do
       recipients = { 'to' => [depositor], 'cc' => [cc_user] }
       expect(depositor).to receive(:send_message)

@@ -35,7 +35,7 @@ module Hyrax
     config.log_formatter = proc do |severity, time, _progname, msg|
       "#{time} - #{severity}: #{msg}\n"
     end
-    log_path = ENV["LOGS_PATH"] || "log/#{Rails.env}.log"
+    log_path = ENV['LOGS_PATH'] || "log/#{Rails.env}.log"
     logger = ActiveSupport::Logger.new(log_path)
     logger.formatter = config.log_formatter
     config.logger = ActiveSupport::TaggedLogging.new(logger)

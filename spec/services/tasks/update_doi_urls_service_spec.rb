@@ -10,8 +10,8 @@ RSpec.describe Tasks::UpdateDoiUrlsService do
     FileUtils.remove('spec/fixtures/files/failed_doi_updates.log')
   end
 
-  describe "#initialize" do
-    it "sets all params" do
+  describe '#initialize' do
+    it 'sets all params' do
       service = Tasks::UpdateDoiUrlsService.new(params, logger)
 
       expect(service.state).to eq 'test'
@@ -24,7 +24,7 @@ RSpec.describe Tasks::UpdateDoiUrlsService do
     end
   end
 
-  describe "#update_dois" do
+  describe '#update_dois' do
     # make sure there is at least one work with a doi
     let(:approver) { User.find_by_user_key('admin') }
     let(:depositor) {
@@ -34,8 +34,8 @@ RSpec.describe Tasks::UpdateDoiUrlsService do
                   password_confirmation: 'password')
     }
     let(:admin_set) do
-      AdminSet.create(title: ["article admin set"],
-                      description: ["some description"],
+      AdminSet.create(title: ['article admin set'],
+                      description: ['some description'],
                       edit_users: [depositor.user_key])
     end
     let(:work) {
@@ -72,7 +72,7 @@ RSpec.describe Tasks::UpdateDoiUrlsService do
                                                                url: "#{ENV['HYRAX_HOST']}/concerns/honors_thesiss/#{work.id}" } }.to_json.to_s)
     end
 
-    it "finds and updates dois" do
+    it 'finds and updates dois' do
       expect(Tasks::UpdateDoiUrlsService.new(params, logger).update_dois).to eql 1
     end
   end

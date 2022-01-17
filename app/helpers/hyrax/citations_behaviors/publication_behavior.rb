@@ -29,17 +29,17 @@ module Hyrax
       end
 
       def setup_pub_info(work, include_date = false)
-        pub_info = ""
+        pub_info = ''
         if (place = setup_pub_place(work))
           pub_info << CGI.escapeHTML(place)
         end
         if (publisher = setup_pub_publisher(work))
-          pub_info << ": " unless place.to_s == ''
+          pub_info << ': ' unless place.to_s == ''
           pub_info << CGI.escapeHTML(publisher)
         end
 
         pub_date = include_date ? setup_pub_date(work) : nil
-        pub_info << ", " unless pub_info.blank?
+        pub_info << ', ' unless pub_info.blank?
         pub_info << pub_date unless pub_date.nil?
 
         pub_info.strip!

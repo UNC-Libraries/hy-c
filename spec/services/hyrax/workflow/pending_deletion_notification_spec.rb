@@ -6,8 +6,8 @@ RSpec.describe Hyrax::Workflow::PendingDeletionNotification do
   let(:cc_user) { FactoryBot.create(:user) }
   let(:work) { Article.create(title: ['New Article'], depositor: depositor.email) }
   let(:admin_set) do
-    AdminSet.create(title: ["article admin set"],
-                    description: ["some description"],
+    AdminSet.create(title: ['article admin set'],
+                    description: ['some description'],
                     edit_users: [depositor.user_key])
   end
   let(:permission_template) do
@@ -18,9 +18,9 @@ RSpec.describe Hyrax::Workflow::PendingDeletionNotification do
                             permission_template_id: permission_template.id)
   end
   let(:entity) { Sipity::Entity.create(proxy_for_global_id: work.to_global_id.to_s, workflow_id: workflow.id) }
-  let(:comment) { double("comment", comment: 'A pleasant read') }
+  let(:comment) { double('comment', comment: 'A pleasant read') }
 
-  describe ".send_notification" do
+  describe '.send_notification' do
     before do
       User.delete_all
     end

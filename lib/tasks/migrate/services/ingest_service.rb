@@ -59,7 +59,7 @@ module Migrate
 
         unless @run_skipped
           already_migrated += @skipped_objects.completed_set
-          puts "Skipping previously skipped works"
+          puts 'Skipping previously skipped works'
         end
 
         puts "[#{Time.now.to_s}] Object count:  #{collection_uuids.count.to_s}"

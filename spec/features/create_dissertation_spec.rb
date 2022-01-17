@@ -58,7 +58,7 @@ RSpec.feature 'Create a Dissertation', js: false do
           </gn:Feature>
           </rdf:RDF>
 RDFXML
-      stub_request(:get, "http://sws.geonames.org/4460162/").
+      stub_request(:get, 'http://sws.geonames.org/4460162/').
         to_return(status: 200, body: chapel_hill, headers: { 'Content-Type' => 'application/rdf+xml;charset=UTF-8' })
 
       stub_request(:any, "http://api.geonames.org/getJSON?geonameId=4460162&username=#{ENV['GEONAMES_USER']}").
@@ -109,7 +109,7 @@ RDFXML
       fill_in 'DOI', with: 'some-doi'
       select 'Dissertation', from: 'dissertation_resource_type'
       fill_in 'Access', with: 'some access'
-      find("#dissertation_based_near_attributes_0_id", visible: false).set('http://sws.geonames.org/4460162/')
+      find('#dissertation_based_near_attributes_0_id', visible: false).set('http://sws.geonames.org/4460162/')
       fill_in 'Graduation year', with: '2018'
       fill_in 'Identifier', with: 'some id'
       fill_in 'Keyword', with: 'Test Default Keyword'

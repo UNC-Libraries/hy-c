@@ -26,12 +26,12 @@ RSpec.describe Hyrax::DepositorsController, type: :request do
     }
   end
 
-  context "as a logged in user" do
+  context 'as a logged in user' do
     before do
       sign_in user
     end
 
-    describe "#create" do
+    describe '#create' do
       context 'when the grantee has not yet been designated as a depositor' do
         let(:request_to_grant_proxy) { post hyrax.user_depositors_path(grant_proxy_params) }
 

@@ -58,7 +58,7 @@ RSpec.feature 'Create a General', js: false do
           </gn:Feature>
           </rdf:RDF>
 RDFXML
-      stub_request(:get, "http://sws.geonames.org/4460162/").
+      stub_request(:get, 'http://sws.geonames.org/4460162/').
         to_return(status: 200, body: chapel_hill, headers: { 'Content-Type' => 'application/rdf+xml;charset=UTF-8' })
 
       stub_request(:any, "http://api.geonames.org/getJSON?geonameId=4460162&username=#{ENV['GEONAMES_USER']}").
@@ -76,7 +76,7 @@ RDFXML
       login_as user
 
       visit new_hyrax_general_path
-      expect(page).to have_content "You are not authorized to access this page"
+      expect(page).to have_content 'You are not authorized to access this page'
     end
 
     scenario 'as an admin' do
@@ -128,7 +128,7 @@ RDFXML
       select 'Preprint', from: 'general_edition'
       fill_in 'Extent', with: 'some extent'
       fill_in 'Funder', with: 'some funder'
-      find("#general_based_near_attributes_0_id", visible: false).set('http://sws.geonames.org/4460162/')
+      find('#general_based_near_attributes_0_id', visible: false).set('http://sws.geonames.org/4460162/')
       fill_in 'Graduation year', with: '2018'
       fill_in 'Identifier', with: 'an identifier'
       fill_in 'ISBN', with: 'some isbn'

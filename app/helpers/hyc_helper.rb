@@ -31,7 +31,7 @@ module HycHelper
   end
 
   def get_work_url(model, id)
-    Rails.application.routes.url_helpers.send(Hyrax::Name.new(model).singular_route_key + "_url", id)
+    Rails.application.routes.url_helpers.send(Hyrax::Name.new(model).singular_route_key + '_url', id)
   end
 
   def sort_people_by_index(values)

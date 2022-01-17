@@ -21,7 +21,7 @@ module Qa::Authorities
 
     def find(id)
       # If an id includes https, translate it to http
-      id["https://"] = "http://" if id.start_with?("https://")
+      id['https://'] = 'http://' if id.start_with?('https://')
       terms.find { |term| term[:id] == id } || {}
     end
 

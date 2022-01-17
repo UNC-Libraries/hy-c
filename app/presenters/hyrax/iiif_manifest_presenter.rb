@@ -80,7 +80,7 @@ module Hyrax
         # Remove everything but name from people object terms
         if field.to_s.match(/display$/)
           # Name should always be the second value of the split string
-          field_value = field_value.map { |f| f.split("||")[1] }
+          field_value = field_value.map { |f| f.split('||')[1] }
         end
 
         metadata << {
@@ -131,8 +131,8 @@ module Hyrax
         next unless rendering
 
         { '@id' => Hyrax::Engine.routes.url_helpers.download_url(rendering.id, host: hostname),
-          'format' => rendering.mime_type.present? ? rendering.mime_type : I18n.t("hyrax.manifest.unknown_mime_text"),
-          'label' => I18n.t("hyrax.manifest.download_text") + (rendering.label || '') }
+          'format' => rendering.mime_type.present? ? rendering.mime_type : I18n.t('hyrax.manifest.unknown_mime_text'),
+          'label' => I18n.t('hyrax.manifest.download_text') + (rendering.label || '') }
       end.flatten
     end
 

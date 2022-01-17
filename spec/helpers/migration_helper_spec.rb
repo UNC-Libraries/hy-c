@@ -107,8 +107,8 @@ RSpec.describe MigrationHelper do
     let(:viewer_agent) { Sipity::Agent.new(id: Date.today.to_time.to_i, proxy_for_id: viewer_group.name, proxy_for_type: 'Hyrax::Group') }
     let(:expected_result) do
       [
-          { "type" => "group", "name" => manager_group.name, "access" => "edit" },
-          { "type" => "group", "name" => viewer_group.name, "access" => "read" }
+          { 'type' => 'group', 'name' => manager_group.name, 'access' => 'edit' },
+          { 'type' => 'group', 'name' => viewer_group.name, 'access' => 'read' }
       ]
     end
 

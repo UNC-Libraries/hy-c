@@ -1,4 +1,4 @@
-desc "Sets up testing environment"
+desc 'Sets up testing environment'
 task test_setup: :environment do
   Rake::Task['db:migrate'].invoke
   puts 'ran migrations'

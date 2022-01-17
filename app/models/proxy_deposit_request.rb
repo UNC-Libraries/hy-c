@@ -65,7 +65,7 @@ class ProxyDepositRequest < ActiveRecord::Base
   private
 
   def transfer_to_should_be_a_valid_username
-    errors.add(:transfer_to, "must be an existing user") unless receiving_user
+    errors.add(:transfer_to, 'must be an existing user') unless receiving_user
   end
 
   def sending_user_should_not_be_receiving_user
@@ -107,7 +107,7 @@ class ProxyDepositRequest < ActiveRecord::Base
                                                                                              title: work_link, receiving_user: receiving_user)
 
     if receiver_comment.present?
-      message += " " + I18n.t('hyrax.notifications.proxy_deposit_request.transfer_on_update.comments',
+      message += ' ' + I18n.t('hyrax.notifications.proxy_deposit_request.transfer_on_update.comments',
                               receiver_comment: receiver_comment)
     end
 

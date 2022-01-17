@@ -1,6 +1,6 @@
 require 'tasks/migrate/services/progress_tracker'
 
-desc "Check all record, fileset, and download links for restricted works"
+desc 'Check all record, fileset, and download links for restricted works'
 task :check_restricted_routes, [:start, :rows, :log_dir] => :environment do |_t, args|
   puts "[#{Time.now}] starting check"
 
@@ -22,15 +22,15 @@ task :check_restricted_routes, [:start, :rows, :log_dir] => :environment do |_t,
   restricted_item_error_progress = Migrate::Services::ProgressTracker.new("#{args[:log_dir]}/restricted_item_error_progress.log")
   checked = restricted_item_progress.completed_set + restricted_item_error_progress.completed_set
 
-  restricted_item_query = ActiveFedora::SolrService.get("(visibility_ssi:authenticated OR visibility_ssi:restricted) AND has_model_ssim:(Article Artwork DataSet Dissertation General HonorsThesis Journal MastersPaper Multimed ScholarlyWork FileSet)",
-                                                        sort: "system_create_dtsi ASC",
+  restricted_item_query = ActiveFedora::SolrService.get('(visibility_ssi:authenticated OR visibility_ssi:restricted) AND has_model_ssim:(Article Artwork DataSet Dissertation General HonorsThesis Journal MastersPaper Multimed ScholarlyWork FileSet)',
+                                                        sort: 'system_create_dtsi ASC',
                                                         start: args[:start],
                                                         rows: args[:rows],
-                                                        fl: "id,has_model_ssim")["response"]
-  restricted_item_count = restricted_item_query["numFound"]
+                                                        fl: 'id,has_model_ssim')['response']
+  restricted_item_count = restricted_item_query['numFound']
   puts restricted_item_count
 
-  restricted_items = restricted_item_query["docs"]
+  restricted_items = restricted_item_query['docs']
   puts restricted_items.count
 
   # iterate through each

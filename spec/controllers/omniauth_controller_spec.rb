@@ -18,7 +18,7 @@ RSpec.describe OmniauthController, type: :request do
       end
 
       before do
-        allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new("production"))
+        allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new('production'))
       end
 
       it 'is successful' do
@@ -49,7 +49,7 @@ RSpec.describe OmniauthController, type: :request do
       end
 
       before do
-        allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new("production"))
+        allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new('production'))
       end
 
       it 'redirects to shibboleth logout url' do

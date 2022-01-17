@@ -8,16 +8,16 @@ RSpec.describe Hyrax::AuthorStatusService do
   end
   let(:service) { described_class }
 
-  describe "#select_all_options" do
-    it "returns all terms" do
+  describe '#select_all_options' do
+    it 'returns all terms' do
       expect(service.select_all_options).to include(['Faculty', 'faculty'], ['Student', 'student'],
                                                     ['Staff', 'staff'], ['Post-Doctoral', 'post_doc'])
     end
   end
 
-  describe "#label" do
-    it "resolves for ids of active terms" do
-      expect(service.label('faculty')).to eq("Faculty")
+  describe '#label' do
+    it 'resolves for ids of active terms' do
+      expect(service.label('faculty')).to eq('Faculty')
     end
   end
 end

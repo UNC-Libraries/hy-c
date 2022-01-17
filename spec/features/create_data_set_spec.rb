@@ -58,7 +58,7 @@ RSpec.feature 'Create a DataSet', js: false do
           </gn:Feature>
           </rdf:RDF>
 RDFXML
-      stub_request(:get, "http://sws.geonames.org/4460162/").
+      stub_request(:get, 'http://sws.geonames.org/4460162/').
         to_return(status: 200, body: chapel_hill, headers: { 'Content-Type' => 'application/rdf+xml;charset=UTF-8' })
 
       stub_request(:any, "http://api.geonames.org/getJSON?geonameId=4460162&username=#{ENV['GEONAMES_USER']}").
@@ -96,7 +96,7 @@ RDFXML
       select 'Department of Biology', from: 'data_set_contributors_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'data_set_contributors_attributes_0_other_affiliation' }
       fill_in 'Funder', with: 'some funder'
-      find("#data_set_based_near_attributes_0_id", visible: false).set('http://sws.geonames.org/4460162/')
+      find('#data_set_based_near_attributes_0_id', visible: false).set('http://sws.geonames.org/4460162/')
       fill_in 'Keyword', with: 'Test Default Keyword'
       fill_in 'Last modified date', with: '2018-10-03'
       select 'Attribution 3.0 United States', from: 'data_set_license'
@@ -204,7 +204,7 @@ RDFXML
       fill_in 'DOI', with: 'some-doi'
       fill_in 'Extent', with: 'some extent'
       fill_in 'Funder', with: 'some funder'
-      find("#data_set_based_near_attributes_0_id", visible: false).set('http://sws.geonames.org/4460162/')
+      find('#data_set_based_near_attributes_0_id', visible: false).set('http://sws.geonames.org/4460162/')
       fill_in 'Keyword', with: 'Test Default Keyword'
       fill_in 'Last modified date', with: '2018-10-03'
       select 'Attribution 3.0 United States', from: 'data_set_license'

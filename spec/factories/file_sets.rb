@@ -16,11 +16,11 @@ FactoryBot.define do
     end
 
     trait :public do
-      read_groups { ["public"] }
+      read_groups { ['public'] }
     end
 
     trait :registered do
-      read_groups { ["registered"] }
+      read_groups { ['registered'] }
     end
 
     trait :image do

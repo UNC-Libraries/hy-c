@@ -16,15 +16,15 @@ module Hyrax
     # Add overrides for required properties which are becoming single-valued
     self.single_value_fields = [:title, :license]
     self.admin_only_terms = [:admin_note, :dcmi_type, :doi]
-    self.default_term_values = { dcmi_type: ["http://purl.org/dc/dcmitype/Image"],
-                                 rights_statement: "http://rightsstatements.org/vocab/InC/1.0/" }
+    self.default_term_values = { dcmi_type: ['http://purl.org/dc/dcmitype/Image'],
+                                 rights_statement: 'http://rightsstatements.org/vocab/InC/1.0/' }
 
     def title
-      super.first || ""
+      super.first || ''
     end
 
     def license
-      super.first || ""
+      super.first || ''
     end
 
     delegate :creators_attributes=, to: :model

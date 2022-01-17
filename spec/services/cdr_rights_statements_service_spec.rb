@@ -8,7 +8,7 @@ RSpec.describe Hyrax::CdrRightsStatementsService do
   end
   let(:service) { described_class }
 
-  describe "#select_options" do
+  describe '#select_options' do
     it "returns all options for 'General' work types" do
       expect(service.select('hyrax/generals')).to include(
         ['In Copyright', 'http://rightsstatements.org/vocab/InC/1.0/'],
@@ -38,8 +38,8 @@ RSpec.describe Hyrax::CdrRightsStatementsService do
     end
   end
 
-  describe "#label" do
-    it "resolves for ids of active terms" do
+  describe '#label' do
+    it 'resolves for ids of active terms' do
       expect(service.label('http://rightsstatements.org/vocab/NKC/1.0/')).to eq('No Known Copyright')
     end
   end

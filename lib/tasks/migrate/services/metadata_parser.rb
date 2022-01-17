@@ -150,7 +150,7 @@ module Migrate
         # RDF information
         work_attributes['deposit_record'] = ''
         work_attributes['cdr_model_type'] = ''
-        rdf_version = metadata.xpath("//rdf:RDF", MigrationConstants::NS).last
+        rdf_version = metadata.xpath('//rdf:RDF', MigrationConstants::NS).last
         if rdf_version
           # Check for deposit record
           if rdf_version.to_s.match(/originalDeposit/)
@@ -185,7 +185,7 @@ module Migrate
           work_attributes['premis_files'] = []
           premis_mods = metadata.xpath("//foxml:datastream[contains(@ID, 'MD_EVENTS')]", MigrationConstants::NS).last
           unless premis_mods.blank?
-            premis_reference = premis_mods.xpath("foxml:datastreamVersion/foxml:contentLocation/@REF", MigrationConstants::NS).map(&:text)
+            premis_reference = premis_mods.xpath('foxml:datastreamVersion/foxml:contentLocation/@REF', MigrationConstants::NS).map(&:text)
             premis_reference.each do |reference|
               work_attributes['premis_files'] << MigrationHelper.get_uuid_from_path(reference)
             end

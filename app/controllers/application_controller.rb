@@ -50,7 +50,7 @@ class ApplicationController < ActionController::Base
   def render_rsolr_exceptions(exception)
     exception_text = exception.to_s
 
-    if exception_text.include?("java.lang.NumberFormatException") ||
+    if exception_text.include?('java.lang.NumberFormatException') ||
       exception_text.include?("Can't determine a Sort Order")
       render_400
     else
@@ -85,7 +85,7 @@ class ApplicationController < ActionController::Base
 
     redirect_back(
       fallback_location: root_path,
-      alert: "The Carolina Digital Repository is in read-only mode for maintenance. No submissions or edits can be made at this time."
+      alert: 'The Carolina Digital Repository is in read-only mode for maintenance. No submissions or edits can be made at this time.'
     )
   end
 

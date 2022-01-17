@@ -104,7 +104,7 @@ module Bulkrax
     def build_mapping_metadata
       mapping.each do |key, value|
         next if Bulkrax.reserved_properties.include?(key) && !field_supported?(key)
-        next if key == "model"
+        next if key == 'model'
 
         unless hyrax_record.respond_to?(key)
           self.parsed_metadata[key] = nil

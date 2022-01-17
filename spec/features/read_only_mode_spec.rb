@@ -14,8 +14,8 @@ RSpec.feature 'Read Only Mode' do
     end
 
     let(:admin_set) do
-      AdminSet.create(title: ["honors thesis admin set"],
-                      description: ["some description"],
+      AdminSet.create(title: ['honors thesis admin set'],
+                      description: ['some description'],
                       edit_users: [user.user_key])
     end
 

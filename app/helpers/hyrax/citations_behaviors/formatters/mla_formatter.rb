@@ -19,20 +19,20 @@ module Hyrax
           # Publication
           pub_info = clean_end_punctuation(setup_pub_info(work, true))
 
-          text << pub_info + ". " if pub_info.present?
+          text << pub_info + '. ' if pub_info.present?
           # UNC customization. Add DOI
           text << work.doi[0] if !work.doi.nil? && work.doi.length.positive?
           text.html_safe
         end
 
         def format_authors(authors_list = [])
-          return "" if authors_list.blank?
+          return '' if authors_list.blank?
 
           authors_list = Array.wrap(authors_list)
           text = concatenate_authors_from(authors_list)
           if text.present?
-            text << "." unless text =~ /\.$/
-            text << " "
+            text << '.' unless text =~ /\.$/
+            text << ' '
           end
           text
         end
@@ -43,11 +43,11 @@ module Hyrax
           if authors_list.length > 1
             if authors_list.length < 4
               authors_list[1...-1].each do |author|
-                text << ", " << given_name_first(author)
+                text << ', ' << given_name_first(author)
               end
               text << ", and #{given_name_first(authors_list.last)}"
             else
-              text << ", et al"
+              text << ', et al'
             end
           end
           text
@@ -59,7 +59,7 @@ module Hyrax
         end
 
         def format_title(title_info)
-          title_info.blank? ? "" : "<i class=\"citation-title\">#{mla_citation_title(title_info)}</i> "
+          title_info.blank? ? '' : "<i class=\"citation-title\">#{mla_citation_title(title_info)}</i> "
         end
       end
     end

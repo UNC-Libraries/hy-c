@@ -145,7 +145,7 @@ module Tasks
       begin
         Zip::File.open(file) do |zip_file|
           zip_file.each do |f|
-            @file_last_modified = Date.strptime(zip_file.get_entry(f).as_json['time'].split('T')[0], "%Y-%m-%d") if f.name.match(/DATA.xml/)
+            @file_last_modified = Date.strptime(zip_file.get_entry(f).as_json['time'].split('T')[0], '%Y-%m-%d') if f.name.match(/DATA.xml/)
             fpath = File.join(dirname, f.name)
             zip_file.extract(f, fpath) unless File.exist?(fpath)
           end
@@ -259,7 +259,7 @@ module Tasks
       affiliation = ProquestDepartmentMappingsService.standard_department_name(department) || department
 
       date_issued = metadata.xpath('//DISS_description/DISS_dates/DISS_comp_date').text
-      date_issued = Date.strptime(date_issued, "%Y")
+      date_issued = Date.strptime(date_issued, '%Y')
 
       graduation_year = (date_issued.year || @file_last_modified.year).to_s
 
@@ -280,7 +280,7 @@ module Tasks
         'depositor' => @depositor_onyen,
         'creators_attributes' => build_person_hash(creators, affiliation),
         'date_issued' => (Date.try(:edtf, date_issued.year) || date_issued.year).to_s,
-        'abstract' => abstract.gsub(/\n/, "").strip,
+        'abstract' => abstract.gsub(/\n/, '').strip,
         'advisors_attributes' => build_person_hash(advisor, nil),
         'dcmi_type' => dcmi_type,
         'degree' => degree,

@@ -31,7 +31,7 @@ module Hyrax
         return name unless name =~ /,/
 
         temp_name = name.split(/,\s*/)
-        temp_name.last + " " + temp_name.first
+        temp_name.last + ' ' + temp_name.first
       end
 
       def surname_first(name)
@@ -60,7 +60,7 @@ module Hyrax
         name_segments = name.split(/,\s*/)
         abbreviated_name << name_segments.first
         abbreviated_name << ", #{name_segments.last.first}" if name_segments[1]
-        abbreviated_name << "."
+        abbreviated_name << '.'
       end
     end
   end

@@ -4,13 +4,13 @@ RSpec.describe Hyrax::UnrestrictedSelectTypeListPresenter do
   let(:instance) { described_class.new(user) }
   let(:user) { nil }
 
-  describe "#many?" do
+  describe '#many?' do
     subject { instance.many? }
 
     context 'without a logged in user' do
       it { is_expected.to be true }
 
-      context "if user is nil" do
+      context 'if user is nil' do
         it { is_expected.to be true }
       end
     end
@@ -21,7 +21,7 @@ RSpec.describe Hyrax::UnrestrictedSelectTypeListPresenter do
       end
 
       it { is_expected.to be true }
-      context "if authorized_models returns only one" do
+      context 'if authorized_models returns only one' do
         before do
           allow(instance).to receive(:authorized_models).and_return([double])
         end

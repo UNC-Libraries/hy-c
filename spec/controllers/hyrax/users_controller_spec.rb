@@ -59,7 +59,7 @@ RSpec.context Hyrax::UsersController, type: :request do
       it 'redirects to the home page' do
         get hyrax.user_path(id: user.uid)
         expect(response).to redirect_to root_path
-        expect(flash[:alert]).to eq "You are not authorized to access this page."
+        expect(flash[:alert]).to eq 'You are not authorized to access this page.'
       end
     end
 

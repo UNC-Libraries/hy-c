@@ -35,7 +35,7 @@ module Hyrax
       request = HTTParty.get("http://api.geonames.org/getJSON?geonameId=#{geo_id}&username=#{ENV['GEONAMES_USER']}")
       response = JSON.parse(request.body)
       # Remove empty elements to avoid trailing commas
-      human_readable_location = [response["asciiName"], response["adminName1"], response["countryName"]].reject(&:blank?)
+      human_readable_location = [response['asciiName'], response['adminName1'], response['countryName']].reject(&:blank?)
       human_readable_location.join(', ')
     rescue StandardError => e
       Rails.logger.warn "Unable to index location for #{location} from geonames service"

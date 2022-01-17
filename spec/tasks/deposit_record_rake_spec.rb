@@ -1,9 +1,9 @@
 # no further tests will be added for this task unless it is needed again in the future
 
-require "rails_helper"
-require "rake"
+require 'rails_helper'
+require 'rake'
 
-describe "rake deposit_record:migrate", type: :task do
+describe 'rake deposit_record:migrate', type: :task do
   let(:output_dir) { Dir.mktmpdir }
 
   before do
@@ -14,11 +14,11 @@ describe "rake deposit_record:migrate", type: :task do
     FileUtils.remove_entry_secure output_dir
   end
 
-  it "preloads the Rails environment" do
-    expect(Rake::Task['deposit_record:migrate'].prerequisites).to include "environment"
+  it 'preloads the Rails environment' do
+    expect(Rake::Task['deposit_record:migrate'].prerequisites).to include 'environment'
   end
 
-  it "creates a new work" do
+  it 'creates a new work' do
     expect {
       Rake::Task['deposit_record:migrate'].invoke('spec/fixtures/deposit_record/config.yml',
                                                   output_dir.to_s,

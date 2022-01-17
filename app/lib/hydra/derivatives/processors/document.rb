@@ -23,7 +23,7 @@ module Hydra::Derivatives::Processors
     # For jpeg files, a pdf is created from the original source and then passed to the Image processor class
     # so we can get a better conversion with resizing options. Otherwise, the ::encode method is used.
     def convert_to_format
-      if directives.fetch(:format) == "jpg"
+      if directives.fetch(:format) == 'jpg'
         Hydra::Derivatives::Processors::Image.new(converted_file, directives).process
       else
         output_file_service.call(File.read(converted_file), directives)
@@ -31,8 +31,8 @@ module Hydra::Derivatives::Processors
     end
 
     def converted_file
-      @converted_file ||= if directives.fetch(:format) == "jpg"
-                            convert_to("pdf")
+      @converted_file ||= if directives.fetch(:format) == 'jpg'
+                            convert_to('pdf')
                           else
                             convert_to(directives.fetch(:format))
                           end
@@ -44,7 +44,7 @@ module Hydra::Derivatives::Processors
       FileUtils.mkdir(temp_dir)
       self.class.encode(source_path, format, temp_dir)
 
-      File.join(temp_dir, [File.basename(source_path, ".*"), format].join('.'))
+      File.join(temp_dir, [File.basename(source_path, '.*'), format].join('.'))
     end
   end
 end

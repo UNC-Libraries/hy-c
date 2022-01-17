@@ -39,7 +39,7 @@ module Hyrax
       private
 
       def subject
-        raise NotImplementedError, "Implement #subject in a child class"
+        raise NotImplementedError, 'Implement #subject in a child class'
       end
 
       def message
@@ -56,7 +56,7 @@ module Hyrax
       # Replacing "_path" with "_url"
       def document_path
         key = document.model_name.singular_route_key
-        Rails.application.routes.url_helpers.send(key + "_url", document.id)
+        Rails.application.routes.url_helpers.send(key + '_url', document.id)
       end
 
       def users_to_notify

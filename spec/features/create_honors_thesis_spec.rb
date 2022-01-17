@@ -15,8 +15,8 @@ RSpec.feature 'Create a HonorsThesis', js: false do
     end
 
     let(:admin_set) do
-      AdminSet.create(title: ["honors thesis admin set"],
-                      description: ["some description"],
+      AdminSet.create(title: ['honors thesis admin set'],
+                      description: ['some description'],
                       edit_users: [user.user_key])
     end
 
@@ -58,7 +58,7 @@ RSpec.feature 'Create a HonorsThesis', js: false do
           </gn:Feature>
           </rdf:RDF>
 RDFXML
-      stub_request(:get, "http://sws.geonames.org/4460162/").
+      stub_request(:get, 'http://sws.geonames.org/4460162/').
         to_return(status: 200, body: chapel_hill, headers: { 'Content-Type' => 'application/rdf+xml;charset=UTF-8' })
 
       stub_request(:any, "http://api.geonames.org/getJSON?geonameId=4460162&username=#{ENV['GEONAMES_USER']}").
@@ -76,7 +76,7 @@ RDFXML
       login_as user
 
       visit new_hyrax_honors_thesis_path
-      expect(page).to have_content "Add New Undergraduate Honors Thesis"
+      expect(page).to have_content 'Add New Undergraduate Honors Thesis'
 
       # required fields
       fill_in 'Title', with: 'Test HonorsThesis work'
@@ -94,7 +94,7 @@ RDFXML
       fill_in 'Graduation year', with: '2018'
 
       # extra fields
-      find("#honors_thesis_based_near_attributes_0_id", visible: false).set('http://sws.geonames.org/4460162/')
+      find('#honors_thesis_based_near_attributes_0_id', visible: false).set('http://sws.geonames.org/4460162/')
       fill_in 'Keyword', with: 'Test Default Keyword'
       select 'Attribution 3.0 United States', from: 'honors_thesis_license'
       fill_in 'Note', with: 'a note'
@@ -118,7 +118,7 @@ RDFXML
       expect(page).not_to have_field('honors_thesis_visibility_lease')
       expect(page).not_to have_field('honors_thesis_deposit_agreement')
       expect(page).to have_select('honors_thesis_resource_type', selected: 'Honors Thesis')
-      choose "honors_thesis_visibility_open"
+      choose 'honors_thesis_visibility_open'
       check 'agreement'
 
       expect(page).not_to have_selector('#honors_thesis_dcmi_type')
@@ -127,7 +127,7 @@ RDFXML
         attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'), make_visible: true)
       end
 
-      click_link "Add to Collection"
+      click_link 'Add to Collection'
       expect(page).to_not have_content 'Administrative Set'
 
       click_button 'Save'
@@ -173,7 +173,7 @@ RDFXML
       login_as admin_user
 
       visit new_hyrax_honors_thesis_path
-      expect(page).to have_content "Add New Undergraduate Honors Thesis"
+      expect(page).to have_content 'Add New Undergraduate Honors Thesis'
 
       # required fields
       fill_in 'Title', with: 'Test HonorsThesis work'
@@ -197,7 +197,7 @@ RDFXML
       fill_in 'Access', with: 'some access'
       fill_in 'DOI', with: 'some-doi'
       fill_in 'Extent', with: 'some extent'
-      find("#honors_thesis_based_near_attributes_0_id", visible: false).set('http://sws.geonames.org/4460162/')
+      find('#honors_thesis_based_near_attributes_0_id', visible: false).set('http://sws.geonames.org/4460162/')
       fill_in 'Keyword', with: 'Test Default Keyword'
       select 'Attribution 3.0 United States', from: 'honors_thesis_license'
       fill_in 'Note', with: 'a note'
@@ -215,7 +215,7 @@ RDFXML
       expect(page).not_to have_field('honors_thesis_deposit_agreement')
       expect(page).not_to have_field('honors_thesis_date_created')
       expect(page).to have_select('honors_thesis_resource_type', selected: 'Honors Thesis')
-      choose "honors_thesis_visibility_open"
+      choose 'honors_thesis_visibility_open'
       check 'agreement'
 
       expect(page).to have_selector('#honors_thesis_dcmi_type')
@@ -224,7 +224,7 @@ RDFXML
         attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'), make_visible: true)
       end
 
-      click_link "Add to Collection"
+      click_link 'Add to Collection'
       expect(page).to have_content 'Administrative Set'
       find('#honors_thesis_admin_set_id').text eq 'honors thesis admin set'
 

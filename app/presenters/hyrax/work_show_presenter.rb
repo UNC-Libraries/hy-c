@@ -68,7 +68,7 @@ module Hyrax
     end
 
     alias universal_viewer? iiif_viewer?
-    deprecation_deprecate universal_viewer?: "use iiif_viewer? instead"
+    deprecation_deprecate universal_viewer?: 'use iiif_viewer? instead'
 
     # @return [Symbol] the name of the IIIF viewer partial to render
     # @example A work presenter with a custom iiif viewer
@@ -145,7 +145,7 @@ module Hyrax
     end
 
     def presenter_types
-      Hyrax.config.registered_curation_concern_types.map(&:underscore) + ["collection"]
+      Hyrax.config.registered_curation_concern_types.map(&:underscore) + ['collection']
     end
 
     # @return [Array] presenters grouped by model name, used to show the parents of this object
@@ -229,7 +229,7 @@ module Hyrax
         # Remove everything but name from people object terms
         if field.to_s.match(/display$/)
           # Name should always be the second value of the split string
-          field_value = field_value.map { |f| f.split("||")[1] }
+          field_value = field_value.map { |f| f.split('||')[1] }
         end
 
         metadata << {

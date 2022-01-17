@@ -7,8 +7,8 @@ Rails.application.routes.draw do
   get 'accounts/new', to: 'accounts#new'
   post 'accounts/create', to: 'accounts#create'
 
-  match "/404", to: "errors#not_found", via: :all
-  match "/500", to: "errors#internal_server_error", via: :all
+  match '/404', to: 'errors#not_found', via: :all
+  match '/500', to: 'errors#internal_server_error', via: :all
 
   resources :default_admin_sets, except: :show
   get 'masters_papers/department', to: 'masters_papers#department'
@@ -38,7 +38,7 @@ Rails.application.routes.draw do
     concerns :range_searchable
   end
 
-  devise_for :users, controllers: { sessions: "omniauth", omniauth_callbacks: "omniauth_callbacks" }
+  devise_for :users, controllers: { sessions: 'omniauth', omniauth_callbacks: 'omniauth_callbacks' }
 
   # Disable these routes if you are using Devise's
   # database_authenticatable in your development environment.
@@ -72,7 +72,7 @@ Rails.application.routes.draw do
   # end
 
   # Catch all route for any routes that don't exist. Always have this as the last route
-  match "*path", to: "errors#not_found", via: :all, format: false, defaults: { format: 'html' }
+  match '*path', to: 'errors#not_found', via: :all, format: false, defaults: { format: 'html' }
 
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end

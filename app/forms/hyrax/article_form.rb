@@ -21,18 +21,18 @@ module Hyrax
 
     self.admin_only_terms = [:dcmi_type, :access, :admin_note, :bibliographic_citation, :copyright_date, :date_captured, :date_other,
                              :digital_collection, :doi, :extent, :identifier, :rights_holder, :translator, :use]
-    self.default_term_values = { dcmi_type: ["http://purl.org/dc/dcmitype/Text"],
-                                 language: ["http://id.loc.gov/vocabulary/iso639-2/eng"],
-                                 rights_statement: "http://rightsstatements.org/vocab/InC/1.0/" }
+    self.default_term_values = { dcmi_type: ['http://purl.org/dc/dcmitype/Text'],
+                                 language: ['http://id.loc.gov/vocabulary/iso639-2/eng'],
+                                 rights_statement: 'http://rightsstatements.org/vocab/InC/1.0/' }
 
     # Add overrides for required properties which are becoming single-valued
 
     def title
-      super.first || ""
+      super.first || ''
     end
 
     def license
-      super.first || ""
+      super.first || ''
     end
 
     delegate :creators_attributes=, to: :model

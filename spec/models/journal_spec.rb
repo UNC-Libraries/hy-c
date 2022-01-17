@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe Journal do
-  it "has a title" do
+  it 'has a title' do
     subject.title = ['journal']
     expect(subject.title).to eq ['journal']
   end
@@ -14,8 +14,8 @@ RSpec.describe Journal do
     it { is_expected.to eq 'hyrax_journal' }
   end
 
-  describe "metadata" do
-    it "has metadata" do
+  describe 'metadata' do
+    it 'has metadata' do
       expect(subject).to respond_to(:relative_path)
       expect(subject).to respond_to(:depositor)
       expect(subject).to respond_to(:contributor)

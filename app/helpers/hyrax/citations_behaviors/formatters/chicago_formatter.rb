@@ -6,7 +6,7 @@ module Hyrax
         include Hyrax::CitationsBehaviors::PublicationBehavior
         include Hyrax::CitationsBehaviors::TitleBehavior
         def format(work)
-          text = ""
+          text = ''
 
           # setup formatted author list
           authors_list = all_authors(work)
@@ -36,10 +36,10 @@ module Hyrax
                       ", #{given_name_first(author)}"
                     end
           end
-          text << " et al." if authors_list.length > 7
+          text << ' et al.' if authors_list.length > 7
           # if for some reason the first author ended with a comma
           text.gsub!(',,', ',')
-          text << "." unless text =~ /\.$/
+          text << '.' unless text =~ /\.$/
           whitewash(text)
         end
         # rubocop:enable Metrics/MethodLength
@@ -47,7 +47,7 @@ module Hyrax
         def format_date(pub_date); end
 
         def format_title(title_info)
-          return "" if title_info.blank?
+          return '' if title_info.blank?
 
           title_text = chicago_citation_title(title_info)
           title_text << '.' unless title_text =~ /\.$/

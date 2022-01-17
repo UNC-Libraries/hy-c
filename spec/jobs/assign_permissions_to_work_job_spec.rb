@@ -32,8 +32,8 @@ RSpec.describe AssignPermissionsToWorkJob, type: :job do
     entity
   end
 
-  context "a biology work is added" do
-    it "and reviewer gets read access" do
+  context 'a biology work is added' do
+    it 'and reviewer gets read access' do
       expect(work).to be_valid
       expect(work.read_groups).to eq([])
       expect { described_class.perform_now(work.class.name, work.id, role.name, 'group', 'read') }

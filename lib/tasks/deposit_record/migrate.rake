@@ -107,10 +107,10 @@ namespace :deposit_record do
 
     files.each do |mods|
       attrs = Hash.new
-      id = mods.xpath("foxml:datastreamVersion/foxml:contentLocation/@REF", MigrationConstants::NS).text
-      attrs['title'] = mods.xpath("foxml:datastreamVersion/@ID", MigrationConstants::NS).text
-      attrs['date_created'] = mods.xpath("foxml:datastreamVersion/@CREATED", MigrationConstants::NS).text
-      attrs['mime_type'] = mods.xpath("foxml:datastreamVersion/@MIMETYPE", MigrationConstants::NS).text
+      id = mods.xpath('foxml:datastreamVersion/foxml:contentLocation/@REF', MigrationConstants::NS).text
+      attrs['title'] = mods.xpath('foxml:datastreamVersion/@ID', MigrationConstants::NS).text
+      attrs['date_created'] = mods.xpath('foxml:datastreamVersion/@CREATED', MigrationConstants::NS).text
+      attrs['mime_type'] = mods.xpath('foxml:datastreamVersion/@MIMETYPE', MigrationConstants::NS).text
 
       binary_file = binary_hash[MigrationHelper.get_uuid_from_path(id)]
 

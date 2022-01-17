@@ -14,8 +14,8 @@ RSpec.describe Article do
     it { is_expected.to eq 'hyrax_article' }
   end
 
-  describe "metadata" do
-    it "has descriptive metadata" do
+  describe 'metadata' do
+    it 'has descriptive metadata' do
       # Basic hyrax metadata
       expect(subject).to respond_to(:relative_path)
       expect(subject).to respond_to(:depositor)

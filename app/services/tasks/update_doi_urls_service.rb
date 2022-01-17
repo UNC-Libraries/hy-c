@@ -35,8 +35,8 @@ module Tasks
       records = ActiveFedora::SolrService.get("visibility_ssi:open AND doi_tesim:* AND workflow_state_name_ssim:deposited \
 AND has_model_ssim:(DataSet HonorsThesis MastersPaper ScholarlyWork) AND system_create_dtsi:[* TO #{Date.parse(end_date).strftime('%Y-%m-%dT%H:%M:%SZ')}]",
                                               rows: rows,
-                                              sort: "system_create_dtsi ASC",
-                                              fl: "id,doi_tesim")["response"]["docs"]
+                                              sort: 'system_create_dtsi ASC',
+                                              fl: 'id,doi_tesim')['response']['docs']
 
       log.info "[#{Time.now}] no works with dois to be updated" if records.count.zero?
 
