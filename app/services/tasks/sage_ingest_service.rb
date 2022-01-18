@@ -12,7 +12,7 @@ module Tasks
 
     def initialize(args)
       config = YAML.load_file(args[:configuration_file])
-      logger.info("Beginning Sage ingest")
+      logger.info('Beginning Sage ingest')
       @admin_set = ::AdminSet.where(title: config['admin_set'])&.first
       raise(ActiveRecord::RecordNotFound, "Could not find AdminSet with title #{config['admin_set']}") unless @admin_set.present?
 
@@ -117,9 +117,7 @@ module Tasks
           file_path = File.join(temp_dir, file.name)
           zip_file.extract(file, file_path)
         end
-        unless extracted_files.count.between?(2, 3)
-          logger.error("Unexpected package contents - #{extracted_files.count} files extracted from #{package_path}")
-        end
+        logger.error("Unexpected package contents - #{extracted_files.count} files extracted from #{package_path}") unless extracted_files.count.between?(2, 3)
         extracted_files
       rescue Zip::DestinationFileExistsError => e
         logger.info("#{package_path}, zip file error: #{e.message}")

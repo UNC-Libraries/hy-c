@@ -41,11 +41,11 @@ RSpec.feature 'Edit works created through the Sage ingest', js: false do
     expect(page).to have_content('sage admin set')
     expect(page).to have_content('Attribution-NonCommercial 4.0 International')
     expect(page).to have_content('February 1, 2021')
-    click_link('Edit', :match => :first)
-    expect(page).to have_link("Work Deposit Form")
+    click_link('Edit', match: :first)
+    expect(page).to have_link('Work Deposit Form')
   end
 
-  it "can render the pre-populated edit page" do
+  it 'can render the pre-populated edit page' do
     login_as @admin_user
     visit "concern/articles/#{@first_work_id}/edit"
     # These values are also tested in the spec/services/tasks/sage_ingest_service_spec.rb
@@ -87,13 +87,13 @@ RSpec.feature 'Edit works created through the Sage ingest', js: false do
     expect(page).to have_field('Creator #2', with: 'Zhang, Xi')
   end
 
-  it "renders a date that includes only month and year on the edit page" do
+  it 'renders a date that includes only month and year on the edit page' do
     login_as @admin_user
     visit "concern/articles/#{@third_work_id}/edit"
     expect(page).to have_field('Date of publication', with: 'January 2021') # aka date_issued
   end
 
-  it "can render values only present on the second work" do
+  it 'can render values only present on the second work' do
     login_as @admin_user
     visit "concern/articles/#{@third_work_id}/edit"
     expect(page).to have_field('Title', with: /The Prevalence of Bacterial Infection in Patients Undergoing/)
