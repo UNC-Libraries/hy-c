@@ -13,11 +13,8 @@ RSpec.feature 'Edit works created through the Sage ingest', :sage, js: false do
     File.open(ingest_progress_log_path, 'w') {|file| file.truncate(0) }
   end
 
-  after(:all) do
-    User.find_by(uid: 'admin').delete
-  end
-
   before(:all) do
+    User.find_by(uid: 'admin')&.delete
     @admin_user = FactoryBot.create(:admin, uid: 'admin')
     @admin_set = AdminSet.create(title: ['sage admin set'],
                                  description: ['some description'],

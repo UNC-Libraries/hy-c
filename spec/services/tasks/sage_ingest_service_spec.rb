@@ -25,6 +25,9 @@ RSpec.describe Tasks::SageIngestService, :sage do
   before do
     # return the FactoryBot admin user when searching for uid: admin from config
     allow(User).to receive(:find_by).with(uid: 'admin').and_return(admin)
+    allow(Hydra::Works::VirusCheckerService).to receive(:file_has_virus?) { false }
+    allow(RegisterToLongleafJob).to receive(:perform_later).and_return(nil)
+
     # instantiate the sage ingest admin_set
     admin_set
   end
@@ -115,16 +118,18 @@ RSpec.describe Tasks::SageIngestService, :sage do
         service.attach_file_set_to_work(work: built_article, dir: temp_dir, pdf_file_name: '10.1177_1073274820985792.pdf', user: user)
       end.to change { FileSet.count }.by(1)
       expect(built_article.file_sets).to be_instance_of(Array)
-      expect(built_article.file_sets.first).to be_instance_of(FileSet)
+      fs = built_article.file_sets.first
+      expect(fs).to be_instance_of(FileSet)
+      expect(fs.depositor).to eq(user.uid)
+      expect(fs.visibility).to eq(built_article.visibility)
+      expect(fs.parent).to eq(built_article)
     end
 
     it 'attaches a file to the file_set' do
-      pending('successfully attaching the file')
       service.extract_files(first_zip_path, temp_dir)
       service.attach_file_set_to_work(work: built_article, dir: temp_dir, pdf_file_name: '10.1177_1073274820985792.pdf', user: user)
       fs = built_article.file_sets.first
-      expect(fs.files).to be_instance_of(Array)
-      expect(file_set.files.first).to be_instance_of(File)
+      expect(fs.files.first).to be_instance_of(Hydra::PCDM::File)
     end
   end
 

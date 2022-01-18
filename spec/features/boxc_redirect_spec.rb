@@ -77,13 +77,14 @@ RSpec.feature 'boxc redirects' do
   end
 
   describe '#after_sign_in_path_for' do
+    let(:admin) { FactoryBot.create(:admin, password: 'password') }
     scenario 'visiting a private work page' do
       private_article = Article.create(title: ['test article'])
 
       visit "#{ENV['HYRAX_HOST']}/concern/articles/#{private_article.id}"
       expect(current_path).to eq '/users/sign_in'
 
-      fill_in 'Onyen', with: 'admin'
+      fill_in 'Onyen', with: admin.uid
       fill_in 'Password', with: 'password'
       click_button 'Log in'
 

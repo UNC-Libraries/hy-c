@@ -4,18 +4,14 @@ include Warden::Test::Helpers
 # testing overrides
 RSpec.feature 'Create a batch of works', js: false do
   context 'a logged in user' do
-    let(:user) do
-      User.new(email: 'test@example.com', guest: false, uid: 'test') { |u| u.save!(validate: false)}
-    end
+    let(:user) { FactoryBot.create(:user) }
 
-    let(:admin_user) do
-      User.find_by_user_key('admin')
-    end
+    let(:admin_user) { FactoryBot.create(:admin) }
 
     scenario 'as a non-admin' do
       login_as user
       visit root_path
-      expect(page).to have_content user.uid
+      expect(page).to have_content user.display_name
 
       within("//ul[@id='user_utility_links']") do
         click_link 'Dashboard'
@@ -33,7 +29,7 @@ RSpec.feature 'Create a batch of works', js: false do
     scenario 'as an admin' do
       login_as admin_user
       visit root_path
-      expect(page).to have_content admin_user.uid
+      expect(page).to have_content admin_user.display_name
 
       within("//ul[@id='user_utility_links']") do
         click_link 'Dashboard'
