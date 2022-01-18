@@ -117,15 +117,11 @@ module Tasks
           file_path = File.join(temp_dir, file.name)
           zip_file.extract(file, file_path)
         end
-        logger.error("Unexpected package contents - #{extracted_files.count} files extracted from #{package_path}") unless extracted_files.count.between?(2, 3)
-        extracted_files
-      rescue Zip::DestinationFileExistsError => e
-        logger.info("#{package_path}, zip file error: #{e.message}")
       end
-      Rails.logger.tagged('Sage ingest') { Rails.logger.error("Unexpected package contents - more than two files extracted from #{package_path}") } unless extracted_files.count == 2
+      logger.error("Unexpected package contents - #{extracted_files.count} files extracted from #{package_path}") unless extracted_files.count.between?(2, 3)
       extracted_files
     rescue Zip::DestinationFileExistsError => e
-      Rails.logger.tagged('Sage ingest') { Rails.logger.info("#{package_path}, zip file error: #{e.message}") }
+      logger.info("#{package_path}, zip file error: #{e.message}")
     end
   end
 end
