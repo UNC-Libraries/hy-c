@@ -7,7 +7,7 @@ namespace :deposit_record do
   require 'tasks/migration_helper'
 
   desc 'batch migrate deposit records'
-  task :migrate, [:configuration_file, :output_dir, :mapping_file] => :environment do |t, args|
+  task :migrate, [:configuration_file, :output_dir, :mapping_file] => :environment do |_t, args|
     STDOUT.sync = true
 
     start_time = Time.now
@@ -67,14 +67,14 @@ namespace :deposit_record do
         # Record that this object was migrated
         object_progress.add_entry(uuid)
 
-        puts "[#{Time.now.to_s}] Completed migration of #{uuid},#{deposit_record.id} in #{Time.now-start_time} seconds"
+        puts "[#{Time.now.to_s}] Completed migration of #{uuid},#{deposit_record.id} in #{Time.now - start_time} seconds"
       else
         puts "[#{Time.now.to_s}] Skipped migration of #{uuid}; could not find metadata file"
       end
     end
 
     end_time = Time.now
-    puts "[#{end_time.to_s}] Completed migration of deposit records in #{end_time-start_time} seconds"
+    puts "[#{end_time.to_s}] Completed migration of deposit records in #{end_time - start_time} seconds"
   end
 
   # parse metadata
@@ -97,35 +97,35 @@ namespace :deposit_record do
     # Find premis files
     premis_files = metadata.xpath("//foxml:datastream[contains(@ID, 'MD_EVENTS')]", MigrationConstants::NS)
 
-    { resource: record_attributes.reject!{|k,v| v.blank?}, manifests: manifests, premis: premis_files }
+    { resource: record_attributes.reject! { |_k, v| v.blank? }, manifests: manifests, premis: premis_files }
   end
 
   private
 
-    def create_fedora_file_record(files, binary_hash, parent)
-      uris = Array.new
+  def create_fedora_file_record(files, binary_hash, parent)
+    uris = Array.new
 
-      files.each do |mods|
-        attrs = Hash.new
-        id = mods.xpath("foxml:datastreamVersion/foxml:contentLocation/@REF", MigrationConstants::NS).text
-        attrs['title'] = mods.xpath("foxml:datastreamVersion/@ID", MigrationConstants::NS).text
-        attrs['date_created'] = mods.xpath("foxml:datastreamVersion/@CREATED", MigrationConstants::NS).text
-        attrs['mime_type'] = mods.xpath("foxml:datastreamVersion/@MIMETYPE", MigrationConstants::NS).text
+    files.each do |mods|
+      attrs = Hash.new
+      id = mods.xpath('foxml:datastreamVersion/foxml:contentLocation/@REF', MigrationConstants::NS).text
+      attrs['title'] = mods.xpath('foxml:datastreamVersion/@ID', MigrationConstants::NS).text
+      attrs['date_created'] = mods.xpath('foxml:datastreamVersion/@CREATED', MigrationConstants::NS).text
+      attrs['mime_type'] = mods.xpath('foxml:datastreamVersion/@MIMETYPE', MigrationConstants::NS).text
 
-        binary_file = binary_hash[MigrationHelper.get_uuid_from_path(id)]
+      binary_file = binary_hash[MigrationHelper.get_uuid_from_path(id)]
 
-        file = FedoraOnlyFile.new(attrs)
-        file.deposit_record = parent
+      file = FedoraOnlyFile.new(attrs)
+      file.deposit_record = parent
 
-        file.file.content = File.open(binary_file)
-        file.file.mime_type = attrs['mime_type']
-        file.file.original_name = attrs['title']
+      file.file.content = File.open(binary_file)
+      file.file.mime_type = attrs['mime_type']
+      file.file.original_name = attrs['title']
 
-        file.save
+      file.save
 
-        uris << file.uri
-      end
-
-      uris
+      uris << file.uri
     end
+
+    uris
+  end
 end

@@ -7,7 +7,7 @@ include Warden::Test::Helpers
 RSpec.feature 'Create and review a work in the honors thesis workflow', js: false do
   context 'a logged in user' do
     let(:user) do
-      User.new(email: 'test@example.com', guest: false, uid: 'test') { |u| u.save!(validate: false)}
+      User.new(email: 'test@example.com', guest: false, uid: 'test') { |u| u.save!(validate: false) }
     end
 
     let(:admin_user) do
@@ -15,34 +15,34 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
     end
 
     let(:admin_user2) do
-      User.new(email: 'admin2@example.com', guest: false, uid: 'admin2') { |u| u.save!(validate: false)}
+      User.new(email: 'admin2@example.com', guest: false, uid: 'admin2') { |u| u.save!(validate: false) }
     end
 
     # department contact with view permissions
     let(:department_contact1) do
-      User.new(email: 'department_contact1@example.com', guest: false, uid: 'department_contact1') { |u| u.save!(validate: false)}
+      User.new(email: 'department_contact1@example.com', guest: false, uid: 'department_contact1') { |u| u.save!(validate: false) }
     end
 
     # department contact with no permissions
     let(:department_contact2) do
-      User.new(email: 'department_contact2@example.com', guest: false, uid: 'department_contact2') { |u| u.save!(validate: false)}
+      User.new(email: 'department_contact2@example.com', guest: false, uid: 'department_contact2') { |u| u.save!(validate: false) }
     end
 
     let(:manager) do
-      User.new(email: 'manager@example.com', guest: false, uid: 'manager') { |u| u.save!(validate: false)}
+      User.new(email: 'manager@example.com', guest: false, uid: 'manager') { |u| u.save!(validate: false) }
     end
 
     let(:reviewer) do
-      User.new(email: 'reviewer@example.com', guest: false, uid: 'reviewer') { |u| u.save!(validate: false)}
+      User.new(email: 'reviewer@example.com', guest: false, uid: 'reviewer') { |u| u.save!(validate: false) }
     end
 
     let(:nonreviewer) do
-      User.new(email: 'nonreviewer@example.com', guest: false, uid: 'nonreviewer') { |u| u.save!(validate: false)}
+      User.new(email: 'nonreviewer@example.com', guest: false, uid: 'nonreviewer') { |u| u.save!(validate: false) }
     end
 
     let(:admin_set) do
-      AdminSet.create(title: ["honors thesis admin set"],
-                      description: ["some description"],
+      AdminSet.create(title: ['honors thesis admin set'],
+                      description: ['some description'],
                       edit_users: [user.user_key],
                       creator: [admin_user.user_key])
     end
@@ -129,7 +129,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       login_as user
 
       visit new_hyrax_honors_thesis_path
-      expect(page).to have_content "Add New Undergraduate Honors Thesis"
+      expect(page).to have_content 'Add New Undergraduate Honors Thesis'
 
       fill_in 'Title', with: 'Honors workflow test 1'
       fill_in 'Creator', { with: 'Test Default Creator', id: 'honors_thesis_creators_attributes_0_name' }
@@ -137,10 +137,10 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       select 'Department of Biology', from: 'honors_thesis_creators_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'honors_thesis_creators_attributes_0_other_affiliation' }
       fill_in 'Keyword', with: 'Test Default Keyword'
-      select "In Copyright", from: "honors_thesis_rights_statement"
+      select 'In Copyright', from: 'honors_thesis_rights_statement'
       expect(page).to have_field('honors_thesis_visibility_embargo')
       expect(page).not_to have_field('honors_thesis_visibility_lease')
-      choose "honors_thesis_visibility_open"
+      choose 'honors_thesis_visibility_open'
       check 'agreement'
 
       expect(page).not_to have_selector('#honors_thesis_dcmi_type')
@@ -149,7 +149,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
         attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'), make_visible: true)
       end
 
-      click_link "Add to Collection"
+      click_link 'Add to Collection'
       expect(page).to_not have_content 'Administrative Set'
 
       click_button 'Save'
@@ -177,7 +177,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       click_on 'Logout'
 
       # Check that work is not yet visible to general public
-      visit '/concern/honors_theses/'+HonorsThesis.all[-1].id
+      visit "/concern/honors_theses/#{HonorsThesis.all[-1].id}"
       expect(page).to have_content 'Login'
       expect(page).to have_content 'Honors workflow test 1'
       expect(page).not_to have_content 'Review and Approval'
@@ -194,7 +194,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       click_on 'department_of_biology_reviewer'
       fill_in 'User', with: department_contact2.uid
       click_button 'Add'
-      expect(page).to have_content "Accounts: department_contact2"
+      expect(page).to have_content 'Accounts: department_contact2'
 
       click_on 'Logout'
 
@@ -205,7 +205,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       expect(page).to have_content 'Your activity'
       expect(page).not_to have_content 'Review Submissions'
 
-      visit '/concern/honors_theses/'+HonorsThesis.all[-1].id
+      visit "/concern/honors_theses/#{HonorsThesis.all[-1].id}"
       expect(page).to have_content 'Honors workflow test'
       expect(page).not_to have_content 'Review and Approval'
 
@@ -218,7 +218,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       # current functionality only allows approving role to see 'Review Submissions'
       # expect(page).to have_content 'Review Submissions'
 
-      visit '/concern/honors_theses/'+HonorsThesis.all[-1].id
+      visit "/concern/honors_theses/#{HonorsThesis.all[-1].id}"
       expect(page).to have_content 'Review and Approval'
       expect(page).not_to have_content 'Approve'
       expect(page).not_to have_content 'Request Changes'
@@ -243,7 +243,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       visit '/dashboard'
       expect(page).to have_content 'Review Submissions'
 
-      visit '/concern/honors_theses/'+HonorsThesis.all[-1].id
+      visit "/concern/honors_theses/#{HonorsThesis.all[-1].id}"
       expect(page).to have_content 'Review and Approval'
       expect(page).to have_content 'Approve'
       expect(page).to have_content 'Request Changes'
@@ -268,7 +268,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       visit '/dashboard'
       expect(page).to have_content 'Review Submissions'
 
-      visit '/concern/honors_theses/'+HonorsThesis.all[-1].id
+      visit "/concern/honors_theses/#{HonorsThesis.all[-1].id}"
       expect(page).to have_content 'Review and Approval'
       within '#workflow_controls' do
         choose 'Approve'
@@ -302,7 +302,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       # Check notifications for tombstone requests
       login_as user
 
-      visit '/concern/honors_theses/'+HonorsThesis.all[-1].id
+      visit "/concern/honors_theses/#{HonorsThesis.all[-1].id}"
       click_on 'Request Deletion'
 
       within '#deletion-request-modal' do
@@ -324,7 +324,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
 
       # create a second honors thesis work to test viewer notification
       visit new_hyrax_honors_thesis_path
-      expect(page).to have_content "Add New Undergraduate Honors Thesis"
+      expect(page).to have_content 'Add New Undergraduate Honors Thesis'
 
       fill_in 'Title', with: 'Honors workflow test 2'
       fill_in 'Creator', { with: 'Test Default Creator', id: 'honors_thesis_creators_attributes_0_name' }
@@ -332,10 +332,10 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       select 'Department of Biology', from: 'honors_thesis_creators_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'honors_thesis_creators_attributes_0_other_affiliation' }
       fill_in 'Keyword', with: 'Test Default Keyword'
-      select "In Copyright", from: "honors_thesis_rights_statement"
+      select 'In Copyright', from: 'honors_thesis_rights_statement'
       expect(page).to have_field('honors_thesis_visibility_embargo')
       expect(page).not_to have_field('honors_thesis_visibility_lease')
-      choose "honors_thesis_visibility_open"
+      choose 'honors_thesis_visibility_open'
       check 'agreement'
 
       expect(page).not_to have_selector('#honors_thesis_dcmi_type')
@@ -344,7 +344,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
         attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'), make_visible: true)
       end
 
-      click_link "Add to Collection"
+      click_link 'Add to Collection'
       expect(page).to_not have_content 'Administrative Set'
 
       click_button 'Save'
@@ -371,7 +371,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       click_on 'Logout'
 
       # Check that work is not yet visible to general public
-      visit '/concern/honors_theses/'+HonorsThesis.all[-1].id
+      visit "/concern/honors_theses/#{HonorsThesis.all[-1].id}"
       expect(page).to have_content 'Login'
       expect(page).to have_content 'Honors workflow test 2'
       expect(page).not_to have_content 'Review and Approval'
@@ -383,7 +383,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       visit '/dashboard'
       expect(page).to have_content 'Review Submissions'
 
-      visit '/concern/honors_theses/'+HonorsThesis.all[-1].id
+      visit "/concern/honors_theses/#{HonorsThesis.all[-1].id}"
       expect(page).to have_content 'Review and Approval'
       within '#workflow_controls' do
         choose 'Approve'

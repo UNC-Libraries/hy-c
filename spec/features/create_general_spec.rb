@@ -7,7 +7,7 @@ include Warden::Test::Helpers
 RSpec.feature 'Create a General', js: false do
   context 'a logged in user' do
     let(:user) do
-      User.new(email: 'test@example.com', guest: false, uid: 'test') { |u| u.save!(validate: false)}
+      User.new(email: 'test@example.com', guest: false, uid: 'test') { |u| u.save!(validate: false) }
     end
 
     let(:admin_user) do
@@ -58,25 +58,25 @@ RSpec.feature 'Create a General', js: false do
           </gn:Feature>
           </rdf:RDF>
 RDFXML
-      stub_request(:get, "http://sws.geonames.org/4460162/").
-          to_return(status: 200, body: chapel_hill, headers: {'Content-Type' => 'application/rdf+xml;charset=UTF-8'})
+      stub_request(:get, 'http://sws.geonames.org/4460162/').
+        to_return(status: 200, body: chapel_hill, headers: { 'Content-Type' => 'application/rdf+xml;charset=UTF-8' })
 
       stub_request(:any, "http://api.geonames.org/getJSON?geonameId=4460162&username=#{ENV['GEONAMES_USER']}").
-          with(headers: {
-              'Accept' => '*/*',
-              'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-              'User-Agent' => 'Ruby'
-          }).to_return(status: 200, body: { asciiName: 'Chapel Hill',
-                                            countryName: 'United States',
-                                            adminName1: 'North Carolina' }.to_json,
-                       headers: { 'Content-Type' => 'application/json' })
+        with(headers: {
+               'Accept' => '*/*',
+               'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+               'User-Agent' => 'Ruby'
+             }).to_return(status: 200, body: { asciiName: 'Chapel Hill',
+                                               countryName: 'United States',
+                                               adminName1: 'North Carolina' }.to_json,
+                          headers: { 'Content-Type' => 'application/json' })
     end
 
     scenario 'as a non-admin' do
       login_as user
 
       visit new_hyrax_general_path
-      expect(page).to have_content "You are not authorized to access this page"
+      expect(page).to have_content 'You are not authorized to access this page'
     end
 
     scenario 'as an admin' do
@@ -128,7 +128,7 @@ RDFXML
       select 'Preprint', from: 'general_edition'
       fill_in 'Extent', with: 'some extent'
       fill_in 'Funder', with: 'some funder'
-      find("#general_based_near_attributes_0_id", visible: false).set('http://sws.geonames.org/4460162/')
+      find('#general_based_near_attributes_0_id', visible: false).set('http://sws.geonames.org/4460162/')
       fill_in 'Graduation year', with: '2018'
       fill_in 'Identifier', with: 'an identifier'
       fill_in 'ISBN', with: 'some isbn'
@@ -139,7 +139,7 @@ RDFXML
       fill_in 'Keyword', with: 'Test Default Keyword'
       select 'Text', from: 'general_kind_of_data'
       fill_in 'Last modified date', with: '2018-10-03'
-      select 'Attribution 3.0 United States', :from => 'general_license'
+      select 'Attribution 3.0 United States', from: 'general_license'
       fill_in 'Medium', with: 'a medium'
       fill_in 'Methods', with: 'My methodology'
       fill_in 'Note', with: 'a note'
@@ -163,7 +163,7 @@ RDFXML
       fill_in 'Additional affiliation', { with: 'UNC', id: 'general_reviewers_attributes_0_other_affiliation' }
       fill_in 'Related resource URL', with: 'something.com'
       fill_in 'Rights holder', with: 'an author'
-      select 'In Copyright', :from => 'general_rights_statement'
+      select 'In Copyright', from: 'general_rights_statement'
       fill_in 'Series', with: 'a series'
       fill_in 'Sponsor', with: 'a sponsor'
       fill_in 'Subject', with: 'test'

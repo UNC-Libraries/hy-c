@@ -33,7 +33,7 @@ module Bulkrax
       raw_data[:collection] = raw_data[collection_field.to_sym] if raw_data.keys.include?(collection_field.to_sym) && collection_field != 'collection'
       # If the children field mapping is not 'children', add 'children' - the parser needs it
       raw_data[:children] = raw_data[collection_field.to_sym] if raw_data.keys.include?(children_field.to_sym) && children_field != 'children'
-      return raw_data
+      raw_data
     end
 
     def self.collection_field
@@ -56,9 +56,7 @@ module Bulkrax
       raise StandardError, 'Record not found' if record.nil?
       raise StandardError, "Missing required elements, missing element(s) are: #{importerexporter.parser.missing_elements(keys_without_numbers(record.keys)).join(', ')}" unless importerexporter.parser.required_elements?(keys_without_numbers(record.keys))
 
-      unless record['model'].nil? || work_types.include?(record['model'])
-        raise StandardError.new "uninitialized constant #{record['model']} (NameError)"
-      end
+      raise StandardError.new "uninitialized constant #{record['model']} (NameError)" unless record['model'].nil? || work_types.include?(record['model'])
 
       self.parsed_metadata = {}
       self.parsed_metadata[work_identifier] = [record[source_identifier]]
@@ -106,7 +104,7 @@ module Bulkrax
     def build_mapping_metadata
       mapping.each do |key, value|
         next if Bulkrax.reserved_properties.include?(key) && !field_supported?(key)
-        next if key == "model"
+        next if key == 'model'
 
         unless hyrax_record.respond_to?(key)
           self.parsed_metadata[key] = nil

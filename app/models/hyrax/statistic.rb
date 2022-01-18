@@ -33,16 +33,14 @@ module Hyrax
         path = polymorphic_path(object)
         profile = Hyrax::Analytics.profile
         unless profile
-          Rails.logger.error("Google Analytics profile has not been established. Unable to fetch statistics.")
+          Rails.logger.error('Google Analytics profile has not been established. Unable to fetch statistics.')
           return []
         end
 
         # check if work was migrated
         redirect_path = redirect_lookup('new_path', path.split('/')[-1])
 
-        if redirect_path
-          path = "#{path}|/record/uuid:#{redirect_path['uuid']}"
-        end
+        path = "#{path}|/record/uuid:#{redirect_path['uuid']}" if redirect_path
 
         profile.hyrax__pageview(sort: 'date',
                                 start_date: start_date,

@@ -147,14 +147,14 @@ module Bulkrax
     end
 
     def extra_filters
-      output = ""
+      output = ''
       if importerexporter.start_date.present?
         start_dt = importerexporter.start_date.to_datetime.strftime('%FT%TZ')
-        finish_dt = importerexporter.finish_date.present? ? importerexporter.finish_date.to_datetime.end_of_day.strftime('%FT%TZ') : "NOW"
+        finish_dt = importerexporter.finish_date.present? ? importerexporter.finish_date.to_datetime.end_of_day.strftime('%FT%TZ') : 'NOW'
         output += " AND system_modified_dtsi:[#{start_dt} TO #{finish_dt}]"
       end
-      output += importerexporter.work_visibility.present? ? " AND visibility_ssi:#{importerexporter.work_visibility}" : ""
-      output += importerexporter.workflow_status.present? ? " AND workflow_state_name_ssim:#{importerexporter.workflow_status}" : ""
+      output += importerexporter.work_visibility.present? ? " AND visibility_ssi:#{importerexporter.work_visibility}" : ''
+      output += importerexporter.workflow_status.present? ? " AND workflow_state_name_ssim:#{importerexporter.workflow_status}" : ''
       output
     end
 
@@ -228,24 +228,20 @@ module Bulkrax
         # Problematic for a large upload
         Bulkrax::DownloadCloudFileJob.perform_now(file, target_file)
       end
-      return nil
+      nil
     end
 
     # export methods
     # overriding to correctly export people attributes
     # overriding to set source_identifier to string if an Array and set it to work id if empty
     def write_files
-      CSV.open(setup_export_file, "w", headers: export_headers, write_headers: true) do |csv|
+      CSV.open(setup_export_file, 'w', headers: export_headers, write_headers: true) do |csv|
         importerexporter.entries.where(identifier: current_work_ids)[0..limit || total].each_with_index do |e, index|
           metadata = e.parsed_metadata
 
-          if metadata['source_identifier'].blank?
-            metadata['source_identifier'] = metadata['id']
-          end
+          metadata['source_identifier'] = metadata['id'] if metadata['source_identifier'].blank?
 
-          if metadata['source_identifier'].is_a?(Array)
-            metadata['source_identifier'] = metadata['source_identifier'].join(', ')
-          end
+          metadata['source_identifier'] = metadata['source_identifier'].join(', ') if metadata['source_identifier'].is_a?(Array)
 
           # get people metadata
           work_record = ActiveFedora::Base.find(current_work_ids[index])
@@ -258,11 +254,11 @@ module Bulkrax
               work_record[person_type].each_with_index do |person_object, index|
                 person_hash[index.to_s] = person_object.as_json
               end
-              if person_hash.blank?
-                metadata["#{person_type}_attributes"] = nil
-              else
-                metadata["#{person_type}_attributes"] = person_hash
-              end
+              metadata["#{person_type}_attributes"] = if person_hash.blank?
+                                                        nil
+                                                      else
+                                                        person_hash
+                                                      end
             end
           end
           csv << metadata
@@ -328,7 +324,7 @@ module Bulkrax
     def real_import_file_path
       if file? && zip?
         unzip(parser_fields['import_file_path'], importer_unzip_path)
-        return Dir["#{importer_unzip_path}/*.csv"].first
+        Dir["#{importer_unzip_path}/*.csv"].first
       else
         parser_fields['import_file_path']
       end

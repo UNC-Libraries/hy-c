@@ -71,7 +71,7 @@ RSpec.feature 'Edit a work', js: false do
       select 'Department of Biology', from: 'article_creators_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'article_creators_attributes_0_other_affiliation' }
       fill_in 'Keyword', with: 'Test Default Keyword'
-      select 'In Copyright', :from => 'article_rights_statement'
+      select 'In Copyright', from: 'article_rights_statement'
       choose 'article_visibility_open'
       check 'agreement'
 
@@ -111,11 +111,11 @@ RSpec.feature 'Edit a work', js: false do
       AdminSet.delete_all
       Article.create!(
         creator: ['Carroll, Lewis'],
-        depositor: "admin",
+        depositor: 'admin',
         label: "Alice's Adventures in Wonderland",
         title: ["Alice's Adventures in Wonderland"],
-        date_created: "2017-10-02T15:38:56Z",
-        date_modified:" 2017-10-02T15:38:56Z",
+        date_created: '2017-10-02T15:38:56Z',
+        date_modified: ' 2017-10-02T15:38:56Z',
         contributor: ['Smith, Jennifer'],
         description: 'Abstract',
         related_url: ['http://dx.doi.org/10.1186/1753-6561-3-S7-S87'],
@@ -124,7 +124,7 @@ RSpec.feature 'Edit a work', js: false do
         language: ['http://id.loc.gov/vocabulary/iso639-2/eng'],
         language_label: ['English'],
         rights_statement: 'http://www.europeana.eu/portal/rights/rr-r.html',
-        visibility: "open"
+        visibility: 'open'
       )
     end
 
@@ -132,7 +132,7 @@ RSpec.feature 'Edit a work', js: false do
       login_as admin_user
 
       visit '/'
-      fill_in "search-field-header", with: 'Alice'
+      fill_in 'search-field-header', with: 'Alice'
       click_button 'search-submit-header'
 
       expect(page).to have_content "Alice's Adventures in Wonderland"
@@ -144,7 +144,7 @@ RSpec.feature 'Edit a work', js: false do
 
       click_link 'Edit'
 
-      expect(page).to have_content "Deposit Your Work"
+      expect(page).to have_content 'Deposit Your Work'
       expect(page).to have_content 'No Admin Sets have been created.'
     end
   end

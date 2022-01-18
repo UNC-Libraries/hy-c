@@ -27,7 +27,7 @@ module Bulkrax
       process_split
       @result = @result[0] if @result.is_a?(Array) && @result.size == 1
       process_parse
-      return @result
+      @result
     end
 
     def process_split

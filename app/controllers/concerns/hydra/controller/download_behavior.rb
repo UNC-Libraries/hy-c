@@ -22,7 +22,7 @@ module Hydra
 
       def render_404
         respond_to do |format|
-          format.html { render :file => "#{Rails.root}/app/views/errors/not_found", :status => :not_found }
+          format.html { render file: "#{Rails.root}/app/views/errors/not_found", status: :not_found }
           format.any  { head :not_found }
         end
       end
@@ -124,7 +124,7 @@ module Hydra
         response.headers['Content-Type'] = file.mime_type
         response.headers['Content-Length'] ||= file.size.to_s
         # Prevent Rack::ETag from calculating a digest over body
-        response.headers['Last-Modified'] = asset.modified_date.utc.strftime("%a, %d %b %Y %T GMT")
+        response.headers['Last-Modified'] = asset.modified_date.utc.strftime('%a, %d %b %Y %T GMT')
         self.content_type = file.mime_type
       end
 
@@ -132,9 +132,7 @@ module Hydra
 
       def stream_body(iostream)
         # see https://github.com/rails/rails/issues/18714#issuecomment-96204444
-        unless response.headers["Last-Modified"] || response.headers["ETag"]
-          Rails.logger.warn("Response may be buffered instead of streaming, best to set a Last-Modified or ETag header")
-        end
+        Rails.logger.warn('Response may be buffered instead of streaming, best to set a Last-Modified or ETag header') unless response.headers['Last-Modified'] || response.headers['ETag']
         self.response_body = iostream
       end
 
@@ -148,7 +146,7 @@ module Hydra
 
       module ClassMethods
         def default_file_path
-          "content"
+          'content'
         end
       end
     end

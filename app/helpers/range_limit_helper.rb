@@ -6,11 +6,11 @@ module RangeLimitHelper
   def render_range_input(solr_field, type, input_label = nil, maxlength=4)
     type = type.to_s
 
-    default = params["range"][solr_field][type] if params["range"] && params["range"][solr_field] && params["range"][solr_field][type]
+    default = params['range'][solr_field][type] if params['range'] && params['range'][solr_field] && params['range'][solr_field][type]
 
     html = label_tag("range[#{solr_field}][#{type}]", input_label, class: 'sr-only') if input_label.present?
     html ||= ''.html_safe
-    html += number_field_tag("range[#{solr_field}][#{type}]", default, :maxlength=>maxlength, :class => "form-control range_#{type}")
+    html += number_field_tag("range[#{solr_field}][#{type}]", default, maxlength: maxlength, class: "form-control range_#{type}")
   end
 
   # type is 'min' or 'max'
@@ -22,27 +22,27 @@ module RangeLimitHelper
     return nil unless stats
     # StatsComponent returns weird min/max when there are in
     # fact no values
-    return nil if @response.total == stats["missing"]
+    return nil if @response.total == stats['missing']
 
-    return stats[type].to_s.gsub(/\.0+/, '')
+    stats[type].to_s.gsub(/\.0+/, '')
   end
 
   def range_display(solr_field, my_params = params)
-    return "" unless my_params[:range] && my_params[:range][solr_field]
+    return '' unless my_params[:range] && my_params[:range][solr_field]
 
     hash = my_params[:range][solr_field]
 
-    if hash["missing"]
+    if hash['missing']
       return BlacklightRangeLimit.labels[:missing]
-    elsif hash["begin"] || hash["end"]
-      if hash["begin"] == hash["end"]
+    elsif hash['begin'] || hash['end']
+      if hash['begin'] == hash['end']
         return "<span class='single'>#{h(hash["begin"])}</span>".html_safe
       else
         return "<span class='from'>#{h(hash['begin'])}</span> to <span class='to'>#{h(hash['end'])}</span>".html_safe
       end
     end
 
-    return ""
+    ''
   end
 
   # Show the limit area if:
@@ -53,14 +53,14 @@ module RangeLimitHelper
   def should_show_limit(solr_field)
     stats = stats_for_field(solr_field)
 
-    (params["range"] && params["range"][solr_field]) ||
+    (params['range'] && params['range'][solr_field]) ||
       (  stats &&
-        stats["max"] > stats["min"]) ||
-      ( !stats  && @response.total > 0 )
+        stats['max'] > stats['min']) ||
+      ( !stats && @response.total.positive? )
   end
 
   def stats_for_field(solr_field)
-    @response["stats"]["stats_fields"][solr_field] if @response["stats"] && @response["stats"]["stats_fields"]
+    @response['stats']['stats_fields'][solr_field] if @response['stats'] && @response['stats']['stats_fields']
   end
 
   def stats_for_field?(solr_field)
@@ -69,48 +69,48 @@ module RangeLimitHelper
 
   def add_range_missing(solr_field, my_params = params)
     my_params = Blacklight::SearchState.new(my_params.except(:page), blacklight_config).to_h
-    my_params["range"] ||= {}
-    my_params["range"][solr_field] ||= {}
-    my_params["range"][solr_field]["missing"] = "true"
+    my_params['range'] ||= {}
+    my_params['range'][solr_field] ||= {}
+    my_params['range'][solr_field]['missing'] = 'true'
 
     # Need to ensure there's a search_field to trick Blacklight
     # into displaying results, not placeholder page. Kind of hacky,
     # but works for now.
-    my_params["search_field"] ||= "dummy_range"
+    my_params['search_field'] ||= 'dummy_range'
 
     my_params
   end
 
   def add_range(solr_field, from, to, my_params = params)
     my_params = Blacklight::SearchState.new(my_params.except(:page), blacklight_config).to_h
-    my_params["range"] ||= {}
-    my_params["range"][solr_field] ||= {}
+    my_params['range'] ||= {}
+    my_params['range'][solr_field] ||= {}
 
-    my_params["range"][solr_field]["begin"] = from
-    my_params["range"][solr_field]["end"] = to
-    my_params["range"][solr_field].delete("missing")
+    my_params['range'][solr_field]['begin'] = from
+    my_params['range'][solr_field]['end'] = to
+    my_params['range'][solr_field].delete('missing')
 
     # eliminate temporary range status params that were just
     # for looking things up
-    my_params.delete("range_field")
-    my_params.delete("range_start")
-    my_params.delete("range_end")
+    my_params.delete('range_field')
+    my_params.delete('range_start')
+    my_params.delete('range_end')
 
-    return my_params
+    my_params
   end
 
   def has_selected_range_limit?(solr_field)
-    params["range"] &&
-      params["range"][solr_field] &&
+    params['range'] &&
+      params['range'][solr_field] &&
       (
-        params["range"][solr_field]["begin"].present? ||
-          params["range"][solr_field]["end"].present? ||
-          params["range"][solr_field]["missing"]
+        params['range'][solr_field]['begin'].present? ||
+          params['range'][solr_field]['end'].present? ||
+          params['range'][solr_field]['missing']
       )
   end
 
   def selected_missing_for_range_limit?(solr_field)
-    params["range"] && params["range"][solr_field] && params["range"][solr_field]["missing"]
+    params['range'] && params['range'][solr_field] && params['range'][solr_field]['missing']
   end
 
 end

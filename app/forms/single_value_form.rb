@@ -17,7 +17,7 @@ class SingleValueForm < Hyrax::Forms::WorkForm
 
   def initialize(model, current_ability, controller)
     initialize_default_term_values(model)
-    
+
     super(model, current_ability, controller)
   end
 
@@ -36,14 +36,14 @@ class SingleValueForm < Hyrax::Forms::WorkForm
 
     single_value_fields.each do |field|
       if attrs[field]
-        if attrs[field].blank?
-          attrs[field] = []
-        else
-          attrs[field] = Array(attrs[field])
-        end
+        attrs[field] = if attrs[field].blank?
+                         []
+                       else
+                         Array(attrs[field])
+                       end
       end
     end
-    
+
     # For new works, add default values in if the field key is not present, as this indicates
     # that the field was not present in the form
     is_new_model = !form_params.has_key?(:permissions_attributes)
@@ -52,9 +52,7 @@ class SingleValueForm < Hyrax::Forms::WorkForm
         unless attrs.key?(field)
           values = default_term_values[field]
 
-          if attrs[field].blank?
-            attrs[field] = values
-          end
+          attrs[field] = values if attrs[field].blank?
         end
       end
     end
@@ -73,19 +71,13 @@ class SingleValueForm < Hyrax::Forms::WorkForm
       end
     end
 
-    if attrs.key?(:rights_statement) && !attrs[:rights_statement].blank?
-      attrs[:rights_statement_label] = CdrRightsStatementsService.label(attrs[:rights_statement])
-    end
+    attrs[:rights_statement_label] = CdrRightsStatementsService.label(attrs[:rights_statement]) if attrs.key?(:rights_statement) && !attrs[:rights_statement].blank?
 
     attrs.each do |person_key, person_value|
       if person_key.to_s.match('_attributes')
-        person_value.each do |k,v|
-          if v['index'].blank? && !v['name'].blank?
-            v['index'] = k.to_i + 1
-          end
-          if !v['affiliation'].blank?
-            v['affiliation'] = v['affiliation']
-          end
+        person_value.each do |k, v|
+          v['index'] = k.to_i + 1 if v['index'].blank? && !v['name'].blank?
+          v['affiliation'] = v['affiliation'] unless v['affiliation'].blank?
         end
       end
     end
@@ -94,9 +86,7 @@ class SingleValueForm < Hyrax::Forms::WorkForm
     edtf_form_update(attrs, :date_issued)
 
     # Log deposit agreement acceptance
-    if agreement != '0'
-      (attrs[:deposit_agreement] ||= []) << "#{agreement} accepted the deposit agreement on #{Time.now}"
-    end
+    (attrs[:deposit_agreement] ||= []) << "#{agreement} accepted the deposit agreement on #{Time.now}" if agreement != '0'
     # Previous deposit agreement statements are passed to the forms as a single, comma-separated string
     # To add the new statement, join with the current string, and then split into an array of all statements
     attrs[:deposit_agreement] = attrs[:deposit_agreement].join(',').split(',')
@@ -106,24 +96,22 @@ class SingleValueForm < Hyrax::Forms::WorkForm
 
   private
 
-    def initialize_default_term_values(model)
-      # Do not set default values for existing works
-      if model.id != nil
-        return
-      end
+  def initialize_default_term_values(model)
+    # Do not set default values for existing works
+    return if model.id != nil
 
-      default_term_values.each do |field, values|
-        Rails.logger.debug "Init field #{field} with default values #{values.inspect} or retain existing #{model[field].inspect}"
+    default_term_values.each do |field, values|
+      Rails.logger.debug "Init field #{field} with default values #{values.inspect} or retain existing #{model[field].inspect}"
 
-        if model[field].blank?
-          if single_value_fields.include? field.to_sym
-            model[field].set(values.first)
-          elsif !model[field].kind_of?(Array)
-            model[field] = values
-          else
-            model[field].set(values)
-          end
+      if model[field].blank?
+        if single_value_fields.include? field.to_sym
+          model[field].set(values.first)
+        elsif !model[field].kind_of?(Array)
+          model[field] = values
+        else
+          model[field].set(values)
         end
       end
     end
+  end
 end

@@ -8,35 +8,35 @@ RSpec.describe Hyrax::DissertationPresenter do
   let(:user_key) { 'a_user_key' }
 
   let(:attributes) do
-    { "id" => '888888',
-      "title_tesim" => ['a title'],
-      "license_tesim" => ['a license'],
-      "resource_type_tesim" => ['a type'],
-      "human_readable_type_tesim" => ["Dissertation"],
-      "has_model_ssim" => ["Dissertation"],
-      "creator_display_tesim" => ['a creator'],
-      "contributor_display_tesim" => ['a contributor'],
-      "date_created_tesim" => ['an unformatted date'],
-      "depositor_tesim" => user_key,
-      "abstract_tesim" => ['an abstract'],
-      "access_tesim" => ['an access state'],
-      "advisor_display_tesim" => ['an advisor'],
-      "alternative_title_tesim" => ['another title'],
-      "date_issued_tesim" => ['2018-01-08'],
-      "dcmi_type_tesim" => ['science fiction'],
-      "degree_tesim" => ['a degree'],
-      "degree_granting_institution_tesim" => ['an institution'],
-      "deposit_record_tesim" => 'a deposit record',
-      "doi_tesim" => ['a doi'],
-      "based_near_tesim" => ['a geographic subject'],
-      "graduation_year_tesim" => ['a year'],
-      "note_tesim" => ['a note'],
-      "place_of_publication_tesim" => ['a place'],
-      "reviewer_display_tesim" => ['a reviewer'],
-      "use_tesim" => ['a use'],
-      "language_label_tesim" => ['language'],
-      "license_label_tesim" => ['license'],
-      "rights_statement_label_tesim" => 'rights'
+    { 'id' => '888888',
+      'title_tesim' => ['a title'],
+      'license_tesim' => ['a license'],
+      'resource_type_tesim' => ['a type'],
+      'human_readable_type_tesim' => ['Dissertation'],
+      'has_model_ssim' => ['Dissertation'],
+      'creator_display_tesim' => ['a creator'],
+      'contributor_display_tesim' => ['a contributor'],
+      'date_created_tesim' => ['an unformatted date'],
+      'depositor_tesim' => user_key,
+      'abstract_tesim' => ['an abstract'],
+      'access_tesim' => ['an access state'],
+      'advisor_display_tesim' => ['an advisor'],
+      'alternative_title_tesim' => ['another title'],
+      'date_issued_tesim' => ['2018-01-08'],
+      'dcmi_type_tesim' => ['science fiction'],
+      'degree_tesim' => ['a degree'],
+      'degree_granting_institution_tesim' => ['an institution'],
+      'deposit_record_tesim' => 'a deposit record',
+      'doi_tesim' => ['a doi'],
+      'based_near_tesim' => ['a geographic subject'],
+      'graduation_year_tesim' => ['a year'],
+      'note_tesim' => ['a note'],
+      'place_of_publication_tesim' => ['a place'],
+      'reviewer_display_tesim' => ['a reviewer'],
+      'use_tesim' => ['a use'],
+      'language_label_tesim' => ['language'],
+      'license_label_tesim' => ['license'],
+      'rights_statement_label_tesim' => 'rights'
     }
   end
   let(:ability) { nil }
@@ -81,13 +81,13 @@ RSpec.describe Hyrax::DissertationPresenter do
   it { is_expected.to delegate_method(:license_label).to(:solr_document) }
   it { is_expected.to delegate_method(:rights_statement_label).to(:solr_document) }
 
-  describe "#model_name" do
+  describe '#model_name' do
     subject { presenter.model_name }
 
     it { is_expected.to be_kind_of ActiveModel::Name }
   end
 
-  describe "#attribute_to_html" do
+  describe '#attribute_to_html' do
     let(:renderer) { double('renderer') }
 
     context 'with an existing field' do
@@ -95,7 +95,7 @@ RSpec.describe Hyrax::DissertationPresenter do
         allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:title, ['a title'], {}).and_return(renderer)
       end
 
-      it "calls the AttributeRenderer" do
+      it 'calls the AttributeRenderer' do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:title)
       end
@@ -106,237 +106,237 @@ RSpec.describe Hyrax::DissertationPresenter do
         allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:license, ['a license'], {}).and_return(renderer)
       end
 
-      it "calls the AttributeRenderer" do
+      it 'calls the AttributeRenderer' do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:license)
       end
     end
 
-    context "with a custom abstract field" do
+    context 'with a custom abstract field' do
       before do
         allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:abstract, ['an abstract'], {}).and_return(renderer)
       end
 
-      it "calls the AttributeRenderer" do
+      it 'calls the AttributeRenderer' do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:abstract)
       end
     end
 
-    context "with a custom access field" do
+    context 'with a custom access field' do
       before do
         allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:access, ['an access state'], {}).and_return(renderer)
       end
 
-      it "calls the AttributeRenderer" do
+      it 'calls the AttributeRenderer' do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:access)
       end
     end
 
-    context "with a custom advisor_display field" do
+    context 'with a custom advisor_display field' do
       before do
         allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:advisor_display, ['an advisor'], {}).and_return(renderer)
       end
 
-      it "calls the AttributeRenderer" do
+      it 'calls the AttributeRenderer' do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:advisor_display)
       end
     end
 
-    context "with a custom alternative_title field" do
+    context 'with a custom alternative_title field' do
       before do
         allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:alternative_title, ['another title'], {}).and_return(renderer)
       end
 
-      it "calls the AttributeRenderer" do
+      it 'calls the AttributeRenderer' do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:alternative_title)
       end
     end
 
-    context "with a custom creator_display field" do
+    context 'with a custom creator_display field' do
       before do
         allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:creator_display, ['a creator'], {}).and_return(renderer)
       end
 
-      it "calls the AttributeRenderer" do
+      it 'calls the AttributeRenderer' do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:creator_display)
       end
     end
 
-    context "with a custom contributor_display field" do
+    context 'with a custom contributor_display field' do
       before do
         allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:contributor_display, ['a contributor'], {}).and_return(renderer)
       end
 
-      it "calls the AttributeRenderer" do
+      it 'calls the AttributeRenderer' do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:contributor_display)
       end
     end
 
-    context "with a custom date_issued field" do
+    context 'with a custom date_issued field' do
       before do
         allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:date_issued, ['2018-01-08'], {}).and_return(renderer)
       end
 
-      it "calls the AttributeRenderer" do
+      it 'calls the AttributeRenderer' do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:date_issued)
       end
     end
 
-    context "with a custom degree field" do
+    context 'with a custom degree field' do
       before do
         allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:degree, ['a degree'], {}).and_return(renderer)
       end
 
-      it "calls the AttributeRenderer" do
+      it 'calls the AttributeRenderer' do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:degree)
       end
     end
 
-    context "with a custom degree_granting_institution field" do
+    context 'with a custom degree_granting_institution field' do
       before do
         allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:degree_granting_institution, ['an institution'], {}).and_return(renderer)
       end
 
-      it "calls the AttributeRenderer" do
+      it 'calls the AttributeRenderer' do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:degree_granting_institution)
       end
     end
 
-    context "with a custom deposit_record field" do
+    context 'with a custom deposit_record field' do
       before do
         allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:deposit_record, 'a deposit record', {}).and_return(renderer)
       end
 
-      it "calls the AttributeRenderer" do
+      it 'calls the AttributeRenderer' do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:deposit_record)
       end
     end
 
-    context "with a custom doi field" do
+    context 'with a custom doi field' do
       before do
         allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:doi, ['a doi'], {}).and_return(renderer)
       end
 
-      it "calls the AttributeRenderer" do
+      it 'calls the AttributeRenderer' do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:doi)
       end
     end
 
-    context "with a custom dcmi_type field" do
+    context 'with a custom dcmi_type field' do
       before do
         allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:dcmi_type, ['science fiction'], {}).and_return(renderer)
       end
-      it "calls the AttributeRenderer" do
+      it 'calls the AttributeRenderer' do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:dcmi_type)
       end
     end
 
-    context "with a custom graduation_year field" do
+    context 'with a custom graduation_year field' do
       before do
         allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:graduation_year, ['a year'], {}).and_return(renderer)
       end
 
-      it "calls the AttributeRenderer" do
+      it 'calls the AttributeRenderer' do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:graduation_year)
       end
     end
 
-    context "with a custom note field" do
+    context 'with a custom note field' do
       before do
         allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:note, ['a note'], {}).and_return(renderer)
       end
 
-      it "calls the AttributeRenderer" do
+      it 'calls the AttributeRenderer' do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:note)
       end
     end
 
-    context "with a custom place_of_publication field" do
+    context 'with a custom place_of_publication field' do
       before do
         allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:place_of_publication, ['a place'], {}).and_return(renderer)
       end
 
-      it "calls the AttributeRenderer" do
+      it 'calls the AttributeRenderer' do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:place_of_publication)
       end
     end
 
-    context "with a custom resource_type field" do
+    context 'with a custom resource_type field' do
       before do
         allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:resource_type, ['a type'], {}).and_return(renderer)
       end
 
-      it "calls the AttributeRenderer" do
+      it 'calls the AttributeRenderer' do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:resource_type)
       end
     end
 
-    context "with a custom reviewer_display field" do
+    context 'with a custom reviewer_display field' do
       before do
         allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:reviewer_display, ['a reviewer'], {}).and_return(renderer)
       end
 
-      it "calls the AttributeRenderer" do
+      it 'calls the AttributeRenderer' do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:reviewer_display)
       end
     end
 
-    context "with a custom use field" do
+    context 'with a custom use field' do
       before do
         allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:use, ['a use'], {}).and_return(renderer)
       end
 
-      it "calls the AttributeRenderer" do
+      it 'calls the AttributeRenderer' do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:use)
       end
     end
 
-    context "with a custom language label field" do
+    context 'with a custom language label field' do
       before do
         allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:language_label, ['language'], {}).and_return(renderer)
       end
 
-      it "calls the AttributeRenderer" do
+      it 'calls the AttributeRenderer' do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:language_label)
       end
     end
 
-    context "with a custom license label field" do
+    context 'with a custom license label field' do
       before do
         allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:license_label, ['license'], {}).and_return(renderer)
       end
 
-      it "calls the AttributeRenderer" do
+      it 'calls the AttributeRenderer' do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:license_label)
       end
     end
 
-    context "with a custom rights statement label field" do
+    context 'with a custom rights statement label field' do
       before do
         allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:rights_statement_label, 'rights', {}).and_return(renderer)
       end
 
-      it "calls the AttributeRenderer" do
+      it 'calls the AttributeRenderer' do
         expect(renderer).to receive(:render)
         presenter.attribute_to_html(:rights_statement_label)
       end
@@ -347,7 +347,7 @@ RSpec.describe Hyrax::DissertationPresenter do
         allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:something, 'foo', {}).and_return(renderer)
       end
 
-      it "calls the AttributeRenderer" do
+      it 'calls the AttributeRenderer' do
         expect(renderer).not_to receive(:render)
       end
     end

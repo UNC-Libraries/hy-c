@@ -73,7 +73,7 @@ class General < ActiveFedora::Base
   end
 
   property :degree_granting_institution, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/dgg'),
-           multiple: false do |index|
+                                         multiple: false do |index|
     index.as :stored_searchable
   end
 
@@ -103,7 +103,7 @@ class General < ActiveFedora::Base
   end
 
   property :graduation_year, predicate: ::RDF::URI('http://rdaregistry.info/Elements/w/yearDegreeGranted.en'),
-           multiple: false do |index|
+                             multiple: false do |index|
     index.as :stored_searchable
   end
 
@@ -120,7 +120,7 @@ class General < ActiveFedora::Base
   end
 
   property :journal_title, predicate: ::RDF::URI('http://rdaregistry.info/Elements/w/containedIn.en'),
-           multiple: false do |index|
+                           multiple: false do |index|
     index.as :stored_searchable
   end
 
@@ -165,7 +165,7 @@ class General < ActiveFedora::Base
   end
 
   property :peer_review_status, predicate: ::RDF::URI('http://purl.org/ontology/bibo/status/peerReviewed'),
-           multiple: false do |index|
+                                multiple: false do |index|
     index.as :stored_searchable
   end
 

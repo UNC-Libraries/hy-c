@@ -21,7 +21,7 @@ class AddPermissionTemplateToSipityWorkflow < ActiveRecord::Migration[4.2]
         end
         remove_column :permission_templates, :workflow_id
       end
-    rescue
+    rescue StandardError
       # It's okay, we didn't have the column
     end
   end

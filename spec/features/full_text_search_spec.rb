@@ -22,35 +22,35 @@ RSpec.describe 'Search the catalog for full text', type: :feature, js: false do
     solr.commit
   end
 
-  it "can perform a regular open search" do
+  it 'can perform a regular open search' do
     visit search_catalog_path
     expect(page).to have_content('Showing all Results')
     expect(page).to have_content(target_title)
-    expect(page).to have_content("The Legend of Sleepy Hollow")
+    expect(page).to have_content('The Legend of Sleepy Hollow')
   end
 
-  it "can perform a regular search against full text" do
+  it 'can perform a regular search against full text' do
     visit root_path
     fill_in('q', with: query_term)
-    click_button("Go")
+    click_button('Go')
     expect(page).to have_content(target_title)
-    expect(page).not_to have_content("The Legend of Sleepy Hollow")
+    expect(page).not_to have_content('The Legend of Sleepy Hollow')
   end
 
-  it "can do an advanced search against full text" do
+  it 'can do an advanced search against full text' do
     visit '/advanced'
     fill_in('all_fields', with: query_term)
     click_button('Search')
     expect(page).to have_content(target_title)
-    expect(page).not_to have_content("The Legend of Sleepy Hollow")
+    expect(page).not_to have_content('The Legend of Sleepy Hollow')
   end
 
-  it "can return to the advanced search page after an advanced search" do
+  it 'can return to the advanced search page after an advanced search' do
     visit '/advanced'
     fill_in('all_fields', with: query_term)
     click_button('Search')
     expect(page).to have_content(target_title)
-    click_link("Advanced search", match: :first)
+    click_link('Advanced search', match: :first)
     expect(page).to have_content('Select "match all" to require all fields.')
   end
 end

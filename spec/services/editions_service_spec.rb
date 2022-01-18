@@ -8,15 +8,15 @@ RSpec.describe Hyrax::EditionsService do
 
   let(:service) { described_class }
 
-  describe "#select_all_options" do
-    it "returns all terms" do
+  describe '#select_all_options' do
+    it 'returns all terms' do
       expect(service.select_all_options).to include(['Preprint', 'Preprint'], ['Publisher', 'Publisher'],
                                                     ['Postprint', 'Postprint'])
     end
   end
 
-  describe "#label" do
-    it "resolves for ids of terms" do
+  describe '#label' do
+    it 'resolves for ids of terms' do
       expect(service.label('Postprint')).to eq('Postprint')
     end
   end

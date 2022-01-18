@@ -27,7 +27,7 @@ Rails.application.configure do
     config.cache_store = :null_store
   end
 
-  config.log_formatter = proc do |severity, time, progname, msg|
+  config.log_formatter = proc do |severity, time, _progname, msg|
     "#{time} - #{severity}: #{msg}\n"
   end
 
@@ -54,7 +54,7 @@ Rails.application.configure do
   # config.action_view.raise_on_missing_translations = true
 
   # Use a real queuing backend for Active Job (and separate queues per environment)
-  config.active_job.queue_adapter     = :sidekiq
+  config.active_job.queue_adapter = :sidekiq
 
   config.action_mailer.perform_caching = false
   config.action_mailer.perform_deliveries = true
@@ -68,6 +68,6 @@ Rails.application.configure do
   # NOTE: When we upgrade to Web Console 4.x this will change to
   # config.web_console.permissions = ['10.0.2.2']
   config.web_console.whitelisted_ips = ['10.0.2.2']
-  
+
   config.log_level = :debug
 end

@@ -1,5 +1,5 @@
 class FedoraOnlyFile < ActiveFedora::Base
-  has_subresource "file"
+  has_subresource 'file'
 
   belongs_to :deposit_record, predicate: ActiveFedora::RDF::Fcrepo::RelsExt.isPartOf
 

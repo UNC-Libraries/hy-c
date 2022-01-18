@@ -39,12 +39,12 @@ module Hyrax
       private
 
       def subject
-        raise NotImplementedError, "Implement #subject in a child class"
+        raise NotImplementedError, 'Implement #subject in a child class'
       end
 
       def message
         I18n.t('hyrax.notifications.workflow.review_advanced.message', title: title, work_id: work_id,
-               document_path: document_path, user: user, comment: comment)
+                                                                       document_path: document_path, user: user, comment: comment)
       end
 
       # @return [ActiveFedora::Base] the document (work) the the Abstract WorkFlow is creating a notification for
@@ -56,7 +56,7 @@ module Hyrax
       # Replacing "_path" with "_url"
       def document_path
         key = document.model_name.singular_route_key
-        Rails.application.routes.url_helpers.send(key + "_url", document.id)
+        Rails.application.routes.url_helpers.send("#{key}_url", document.id)
       end
 
       def users_to_notify

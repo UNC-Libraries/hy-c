@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :article do
     id { Noid::Rails::Service.new.mint }
-    title { [] << "No Embargo" }
+    title { [] << 'No Embargo' }
     visibility { Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC }
 
     transient do

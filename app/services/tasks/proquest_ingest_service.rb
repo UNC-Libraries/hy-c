@@ -36,7 +36,7 @@ module Tasks
       proquest_packages = Dir.glob("#{@metadata_dir}/*.zip").sort
       count = proquest_packages.count
       proquest_packages.each_with_index do |package, index|
-        puts "[#{Time. now}] Unpacking #{package} (#{index+1} of #{count})"
+        puts "[#{Time. now}] Unpacking #{package} (#{index + 1} of #{count})"
         @file_last_modified = ''
         unzipped_package_dir = extract_proquest_files(package)
 
@@ -93,7 +93,7 @@ module Tasks
 
           # Create sipity record
           workflow = Sipity::Workflow.joins(:permission_template)
-                         .where(permission_templates: { source_id: resource.admin_set_id }, active: true)
+                                     .where(permission_templates: { source_id: resource.admin_set_id }, active: true)
           workflow_state = Sipity::WorkflowState.where(workflow_id: workflow.first.id, name: 'deposited')
           Sipity::Entity.create!(proxy_for_global_id: resource.to_global_id.to_s,
                                  workflow: workflow.first,
@@ -114,7 +114,7 @@ module Tasks
 
             if File.file?(file_path)
               file_set = ingest_proquest_file(parent: resource,
-                                              resource: metadata.merge({title: [f]}),
+                                              resource: metadata.merge({ title: [f] }),
                                               f: file_path)
               ordered_members << file_set if file_set
             end
@@ -133,29 +133,25 @@ module Tasks
           resource.ordered_members << fileset
 
           # delete zip file after files have been extracted and ingested successfully
-          if Rails.env != 'test'
-            File.delete(package)
-          end
+          File.delete(package) if Rails.env != 'test'
         end
       end
     end
 
     def extract_proquest_files(file)
       fname = file.split('.zip')[0].split('/')[-1]
-      dirname = @temp+'/'+fname
+      dirname = "#{@temp}/#{fname}"
       FileUtils::mkdir_p dirname
       begin
         Zip::File.open(file) do |zip_file|
           zip_file.each do |f|
-            if f.name.match(/DATA.xml/)
-              @file_last_modified = Date.strptime(zip_file.get_entry(f).as_json['time'].split('T')[0],"%Y-%m-%d")
-            end
+            @file_last_modified = Date.strptime(zip_file.get_entry(f).as_json['time'].split('T')[0], '%Y-%m-%d') if f.name.match(/DATA.xml/)
             fpath = File.join(dirname, f.name)
             zip_file.extract(f, fpath) unless File.exist?(fpath)
           end
         end
         dirname
-      rescue => e
+      rescue StandardError => e
         puts "[#{Time.now}] #{file}, zip file error: #{e.message}"
         nil
       end
@@ -165,9 +161,7 @@ module Tasks
       puts "[#{Time.now}][#{parent.id}] ingesting... #{f.to_s}"
       fileset_metadata = file_record(resource)
 
-      if fileset_metadata['embargo_release_date'].blank?
-        fileset_metadata.except!('embargo_release_date', 'visibility_during_embargo', 'visibility_after_embargo')
-      end
+      fileset_metadata.except!('embargo_release_date', 'visibility_during_embargo', 'visibility_after_embargo') if fileset_metadata['embargo_release_date'].blank?
       file_set = FileSet.create(fileset_metadata)
       actor = Hyrax::Actors::FileSetActor.new(file_set, User.where(uid: @depositor_onyen).first)
       actor.create_metadata(fileset_metadata)
@@ -208,13 +202,9 @@ module Tasks
           embargo_release_date = ''
         end
 
-        if !embargo_release_date.blank? && embargo_release_date != current_date && embargo_release_date < current_date
-          embargo_release_date = ''
-        end
+        embargo_release_date = '' if !embargo_release_date.blank? && embargo_release_date != current_date && embargo_release_date < current_date
 
-        unless embargo_release_date.blank?
-          visibility = visibility_during_embargo
-        end
+        visibility = visibility_during_embargo unless embargo_release_date.blank?
       end
 
       puts "[#{Time.now}][#{metadata_file}] embargo release date: #{embargo_release_date}"
@@ -233,7 +223,7 @@ module Tasks
       abstract = metadata.xpath('//DISS_content/DISS_abstract').text
 
       advisor = metadata.xpath('//DISS_description/DISS_advisor/DISS_name').map do |advise|
-        advise.xpath('DISS_surname').text+', '+advise.xpath('DISS_fname').text+' '+advise.xpath('DISS_middle').text
+        "#{advise.xpath('DISS_surname').text}, #{advise.xpath('DISS_fname').text} #{advise.xpath('DISS_middle').text}"
       end
 
       committee_members = metadata.xpath('//DISS_description/DISS_cmte_member/DISS_name').map do |advise|
@@ -251,7 +241,7 @@ module Tasks
                      'de' => 'Doctor of Education',
                      'phd' => 'Doctor of Philosophy',
                      'drph' => 'Doctor of Public Health',
-                     'dnp' => 'Doctor of Nursing Practice'}
+                     'dnp' => 'Doctor of Nursing Practice' }
       if !degree_map[normalized_degree].blank?
         degree = DegreesService.label(degree_map[normalized_degree])
       else
@@ -259,25 +249,24 @@ module Tasks
         degree = abbreviated_degree
       end
 
-      resource_type = ''
-      if normalized_degree.in? ['ma', 'ms']
-        resource_type = 'Masters Thesis'
-      else
-        resource_type = 'Dissertation'
-      end
+      resource_type = if normalized_degree.in? ['ma', 'ms']
+                        'Masters Thesis'
+                      else
+                        'Dissertation'
+                      end
 
       department = metadata.xpath('//DISS_description/DISS_institution/DISS_inst_contact').text.strip
       affiliation = ProquestDepartmentMappingsService.standard_department_name(department) || department
 
       date_issued = metadata.xpath('//DISS_description/DISS_dates/DISS_comp_date').text
-      date_issued = Date.strptime(date_issued,"%Y")
+      date_issued = Date.strptime(date_issued, '%Y')
 
       graduation_year = (date_issued.year || @file_last_modified.year).to_s
 
       language = metadata.xpath('//DISS_description/DISS_categorization/DISS_language').text
       if language == 'en'
         language = MigrationHelper.get_language_uri(['eng'])
-        language_label = LanguagesService.label(language) if !language.blank?
+        language_label = LanguagesService.label(language) unless language.blank?
       end
 
       file_full << metadata.xpath('//DISS_content/DISS_binary').text
@@ -286,31 +275,31 @@ module Tasks
       end
 
       work_attributes = {
-          'title'=>[title],
-          'label' => title,
-          'depositor' => @depositor_onyen,
-          'creators_attributes'=>build_person_hash(creators, affiliation),
-          'date_issued'=>(Date.try(:edtf, date_issued.year) || date_issued.year).to_s,
-          'abstract'=>abstract.gsub(/\n/, "").strip,
-          'advisors_attributes'=>build_person_hash(advisor, nil),
-          'dcmi_type'=>dcmi_type,
-          'degree'=>degree,
-          'degree_granting_institution'=> degree_granting_institution,
-          'graduation_year'=>graduation_year,
-          'language'=>language,
-          'language_label'=>language_label,
-          'rights_statement' => 'http://rightsstatements.org/vocab/InC-EDU/1.0/',
-          'rights_statement_label' => 'In Copyright - Educational Use Permitted',
-          'keyword'=>keywords.flatten,
-          'resource_type'=>resource_type,
-          'visibility'=>visibility,
-          'embargo_release_date'=>(Date.try(:edtf, embargo_release_date.to_s)).to_s,
-          'visibility_during_embargo'=>visibility_during_embargo,
-          'visibility_after_embargo'=>visibility_after_embargo,
-          'admin_set_id'=>@admin_set_id
+        'title' => [title],
+        'label' => title,
+        'depositor' => @depositor_onyen,
+        'creators_attributes' => build_person_hash(creators, affiliation),
+        'date_issued' => (Date.try(:edtf, date_issued.year) || date_issued.year).to_s,
+        'abstract' => abstract.gsub(/\n/, '').strip,
+        'advisors_attributes' => build_person_hash(advisor, nil),
+        'dcmi_type' => dcmi_type,
+        'degree' => degree,
+        'degree_granting_institution' => degree_granting_institution,
+        'graduation_year' => graduation_year,
+        'language' => language,
+        'language_label' => language_label,
+        'rights_statement' => 'http://rightsstatements.org/vocab/InC-EDU/1.0/',
+        'rights_statement_label' => 'In Copyright - Educational Use Permitted',
+        'keyword' => keywords.flatten,
+        'resource_type' => resource_type,
+        'visibility' => visibility,
+        'embargo_release_date' => (Date.try(:edtf, embargo_release_date.to_s)).to_s,
+        'visibility_during_embargo' => visibility_during_embargo,
+        'visibility_after_embargo' => visibility_after_embargo,
+        'admin_set_id' => @admin_set_id
       }
 
-      work_attributes.reject!{|k,v| v.blank?}
+      work_attributes.reject! { |_k, v| v.blank? }
 
       [work_attributes, file_full]
     end
@@ -318,7 +307,7 @@ module Tasks
     def build_person_hash(people, affiliation)
       person_hash = {}
       people.each_with_index do |person, index|
-        person_hash[index.to_s] = {'name' => person, 'affiliation' => affiliation, 'index' => index+1}
+        person_hash[index.to_s] = { 'name' => person, 'affiliation' => affiliation, 'index' => index + 1 }
       end
 
       person_hash
@@ -327,9 +316,9 @@ module Tasks
     def format_name(person)
       name_parts = []
       name_parts << person.xpath('DISS_surname').text
-      name_parts << (person.xpath('DISS_fname').text+' '+person.xpath('DISS_middle').text).strip
+      name_parts << ("#{person.xpath('DISS_fname').text} #{person.xpath('DISS_middle').text}").strip
       name_parts << person.xpath('DISS_suffix').text
-      name_parts.reject{ |name| name.blank? }.join(', ')
+      name_parts.reject { |name| name.blank? }.join(', ')
     end
 
     # FileSets can include any metadata listed in BasicMetadata file
@@ -338,15 +327,15 @@ module Tasks
       file_attributes = Hash.new
 
       # Singularize non-enumerable attributes and make sure enumerable attributes are arrays
-      attrs.each do |k,v|
+      attrs.each do |k, v|
         if file_set.attributes.keys.member?(k.to_s)
-          if !file_set.attributes[k.to_s].respond_to?(:each) && file_attributes[k].respond_to?(:each)
-            file_attributes[k] = v.first
-          elsif file_set.attributes[k.to_s].respond_to?(:each) && !file_attributes[k].respond_to?(:each)
-            file_attributes[k] = Array(v)
-          else
-            file_attributes[k] = v
-          end
+          file_attributes[k] = if !file_set.attributes[k.to_s].respond_to?(:each) && file_attributes[k].respond_to?(:each)
+                                 v.first
+                               elsif file_set.attributes[k.to_s].respond_to?(:each) && !file_attributes[k].respond_to?(:each)
+                                 Array(v)
+                               else
+                                 v
+                               end
         end
       end
 

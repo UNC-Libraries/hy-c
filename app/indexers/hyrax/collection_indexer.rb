@@ -12,7 +12,7 @@ module Hyrax
     def generate_solr_document
       super.tap do |solr_doc|
         # Makes Collections show under the "Collections" tab
-        solr_doc['generic_type_sim'] = ["Collection"]
+        solr_doc['generic_type_sim'] = ['Collection']
         solr_doc['visibility_ssi'] = object.visibility
         solr_doc['date_issued_sort_ssi'] = Array(object.date_created).first unless object.date_created.blank?
         solr_doc['title_sort_ssi'] = Array(object.title).first.downcase unless object.title.blank?

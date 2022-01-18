@@ -182,7 +182,7 @@ module Hyrax
       def valid_future_date?(env, date, attribute_name: :embargo_release_date)
         return true if date.present? && date.future?
 
-        env.curation_concern.errors.add(attribute_name, "Must be a future date.")
+        env.curation_concern.errors.add(attribute_name, 'Must be a future date.')
         false
       end
 
@@ -196,7 +196,7 @@ module Hyrax
         # Validate against template's release_date requirements
         return true if template.valid_release_date?(date)
 
-        env.curation_concern.errors.add(:embargo_release_date, "Release date specified does not match permission template release requirements for selected AdminSet.")
+        env.curation_concern.errors.add(:embargo_release_date, 'Release date specified does not match permission template release requirements for selected AdminSet.')
         false
       end
 
@@ -205,7 +205,7 @@ module Hyrax
         # Validate against template's visibility requirements
         return true if validate_template_visibility(attributes[:visibility_after_embargo], template)
 
-        env.curation_concern.errors.add(:visibility_after_embargo, "Visibility after embargo does not match permission template visibility requirements for selected AdminSet.")
+        env.curation_concern.errors.add(:visibility_after_embargo, 'Visibility after embargo does not match permission template visibility requirements for selected AdminSet.')
         false
       end
 

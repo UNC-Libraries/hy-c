@@ -39,3 +39,8 @@ Style/RedundantRegexpEscape:
   Enabled: false
 Style/SlicingWithRange:
   Enabled: false
+
+# Section to keep long term
+
+Style/SymbolArray:
+  Enabled: false

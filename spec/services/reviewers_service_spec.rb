@@ -8,10 +8,9 @@ RSpec.describe Hyrax::ReviewersService do
   end
   let(:service) { described_class }
 
-  describe "#label" do
-    it "resolves for ids of active terms" do
-      expect(service.label('biology')).to eq("person1@example.com")
+  describe '#label' do
+    it 'resolves for ids of active terms' do
+      expect(service.label('biology')).to eq('person1@example.com')
     end
   end
 end
-

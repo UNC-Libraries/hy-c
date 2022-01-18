@@ -13,20 +13,20 @@ module Hyrax
     self.required_fields = [:title, :creator, :abstract, :date_issued, :resource_type]
 
     self.single_value_fields = [:title, :license]
-    
+
     self.admin_only_terms = [:dcmi_type, :access, :admin_note, :digital_collection, :doi, :medium]
 
-    self.default_term_values = { :rights_statement => "http://rightsstatements.org/vocab/InC/1.0/",
-                                 :language => ["http://id.loc.gov/vocabulary/iso639-2/eng"] }
+    self.default_term_values = { rights_statement: 'http://rightsstatements.org/vocab/InC/1.0/',
+                                 language: ['http://id.loc.gov/vocabulary/iso639-2/eng'] }
 
     # Add overrides for required properties which are becoming single-valued
 
     def title
-      super.first || ""
+      super.first || ''
     end
 
     def license
-      super.first || ""
+      super.first || ''
     end
 
     delegate :creators_attributes=, to: :model

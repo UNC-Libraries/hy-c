@@ -87,20 +87,16 @@ module Tasks
     end
 
     def extract_files(package_path, temp_dir)
-      begin
-        extracted_files = Zip::File.open(package_path) do |zip_file|
-          zip_file.each do |file|
-            file_path = File.join(temp_dir, file.name)
-            zip_file.extract(file, file_path)
-          end
+      extracted_files = Zip::File.open(package_path) do |zip_file|
+        zip_file.each do |file|
+          file_path = File.join(temp_dir, file.name)
+          zip_file.extract(file, file_path)
         end
-        unless extracted_files.count == 2
-          Rails.logger.tagged('Sage ingest') { Rails.logger.error("Unexpected package contents - more than two files extracted from #{package_path}") }
-        end
-        extracted_files
-      rescue Zip::DestinationFileExistsError => e
-        Rails.logger.tagged('Sage ingest') { Rails.logger.info("#{package_path}, zip file error: #{e.message}") }
       end
+      Rails.logger.tagged('Sage ingest') { Rails.logger.error("Unexpected package contents - more than two files extracted from #{package_path}") } unless extracted_files.count == 2
+      extracted_files
+    rescue Zip::DestinationFileExistsError => e
+      Rails.logger.tagged('Sage ingest') { Rails.logger.info("#{package_path}, zip file error: #{e.message}") }
     end
   end
 end

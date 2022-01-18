@@ -8,12 +8,12 @@ RSpec.describe Hyrax::ProquestDepartmentMappingsService do
   end
   let(:service) { described_class }
 
-  describe "#standard_department_name" do
-    it "returns department name mapped to proquest department" do
+  describe '#standard_department_name' do
+    it 'returns department name mapped to proquest department' do
       expect(service.standard_department_name('Biology')).to eq ['Department of Biology']
     end
 
-    it "returns nil for unmapped proquest department" do
+    it 'returns nil for unmapped proquest department' do
       expect(service.standard_department_name('American History')).to be_nil
     end
   end

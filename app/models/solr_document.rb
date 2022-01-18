@@ -44,7 +44,7 @@ class SolrDocument
     source: ['journal_title_tesim', 'journal_volume_tesim', 'journal_issue_tesim'],
     thumbnail: 'thumbnail_path_ss')
 
-  # Do content negotiation for AF models. 
+  # Do content negotiation for AF models.
 
   use_extension( Hydra::ContentNegotiation )
 

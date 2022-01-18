@@ -19,7 +19,7 @@ module ActiveFedora::RDF
     # @param [ActiveFedora::Indexing::Map] index_config the configuration to use to map object values to index document values
     def initialize(obj, index_config = nil)
       unless index_config
-        Deprecation.warn(self, "initializing ActiveFedora::RDF::IndexingService without an index_config is deprecated and will be removed in ActiveFedora 13.0")
+        Deprecation.warn(self, 'initializing ActiveFedora::RDF::IndexingService without an index_config is deprecated and will be removed in ActiveFedora 13.0')
         index_config = obj.class.index_config
       end
       @object = obj
@@ -50,10 +50,10 @@ module ActiveFedora::RDF
     def add_assertions(prefix_method, solr_doc = {})
       fields.each do |field_key, field_info|
         if person_fields.include? field_key.to_s
-          if !field_info.values.blank?
+          unless field_info.values.blank?
             field_to_use = field_key == 'based_near' ? field_info : field_info.behaviors
             append_to_solr_doc(solr_doc,
-                               solr_document_field_name((field_key.to_s[0...-1]+'_display').to_sym, prefix_method),
+                               solr_document_field_name(("#{field_key.to_s[0...-1]}_display").to_sym, prefix_method),
                                field_to_use,
                                build_person_display(field_key, field_info.values))
           end
@@ -64,13 +64,13 @@ module ActiveFedora::RDF
             value = val
 
             if solr_field_key == 'date_created'
-              if val.is_a? Date
-                value = val
-              elsif val.is_a? DateTime
-                value =  Hyc::EdtfConvert.convert_from_edtf(val.strftime('%Y-%m-%d'))
-              else
-                value =  Hyc::EdtfConvert.convert_from_edtf(val)
-              end
+              value = if val.is_a? Date
+                        val
+                      elsif val.is_a? DateTime
+                        Hyc::EdtfConvert.convert_from_edtf(val.strftime('%Y-%m-%d'))
+                      else
+                        Hyc::EdtfConvert.convert_from_edtf(val)
+                      end
             end
 
             append_to_solr_doc(solr_doc, solr_field_key, field_to_use, value)
@@ -159,51 +159,49 @@ module ActiveFedora::RDF
     # [hyc-override] add method for serializing display data
     private
 
-      def build_person_display(field_key, people)
-        displays = []
-        people.each do |person|
-          display_text = []
-          if !Array(person['name']).first.blank?
-            if person['index']
-              display_text << "index:#{Array(person['index']).first}"
-            end
-            display_text << Array(person['name']).first
-            @person_label.push(Array(person['name']))
-            if field_key.to_s == 'creators'
-              @creator_label.push(Array(person['name']))
-            elsif field_key.to_s == 'advisors'
-              @advisor_label.push(Array(person['name']))
-            end
-
-            display_text << "ORCID: #{Array(person['orcid']).first}" if !Array(person['orcid']).first.blank?
-            @orcid_label.push(Array(person['orcid']))
-
-            affiliations = split_affiliations(person['affiliation'])
-            if !affiliations.blank?
-              display_text << "Affiliation: #{affiliations.join(', ')}"
-              @affiliation_label.push(Array(person['affiliation']))
-            end
-
-            display_text << "Other Affiliation: #{Array(person['other_affiliation']).first}" if !Array(person['other_affiliation']).first.blank?
-            @other_affiliation_label.push(Array(person['other_affiliation']))
-
-            displays << display_text.join('||')
+    def build_person_display(field_key, people)
+      displays = []
+      people.each do |person|
+        display_text = []
+        unless Array(person['name']).first.blank?
+          display_text << "index:#{Array(person['index']).first}" if person['index']
+          display_text << Array(person['name']).first
+          @person_label.push(Array(person['name']))
+          if field_key.to_s == 'creators'
+            @creator_label.push(Array(person['name']))
+          elsif field_key.to_s == 'advisors'
+            @advisor_label.push(Array(person['name']))
           end
+
+          display_text << "ORCID: #{Array(person['orcid']).first}" unless Array(person['orcid']).first.blank?
+          @orcid_label.push(Array(person['orcid']))
+
+          affiliations = split_affiliations(person['affiliation'])
+          unless affiliations.blank?
+            display_text << "Affiliation: #{affiliations.join(', ')}"
+            @affiliation_label.push(Array(person['affiliation']))
+          end
+
+          display_text << "Other Affiliation: #{Array(person['other_affiliation']).first}" unless Array(person['other_affiliation']).first.blank?
+          @other_affiliation_label.push(Array(person['other_affiliation']))
+
+          displays << display_text.join('||')
         end
-        displays.flatten
+      end
+      displays.flatten
+    end
+
+    # split affiliations out
+    def split_affiliations(affiliations)
+      affiliations_list = []
+
+      Array(affiliations).reject { |a| a.blank? }.each do |aff|
+        Array(DepartmentsService.label(aff)).join(';').split(';').each do |value|
+          affiliations_list.push(value.squish!)
+        end
       end
 
-      # split affiliations out
-      def split_affiliations(affiliations)
-        affiliations_list = []
-
-        Array(affiliations).reject { |a| a.blank? }.each do |aff|
-          Array(DepartmentsService.label(aff)).join(';').split(';').each do |value|
-            affiliations_list.push(value.squish!)
-          end
-        end
-
-        affiliations_list.uniq
-      end
+      affiliations_list.uniq
+    end
   end
 end

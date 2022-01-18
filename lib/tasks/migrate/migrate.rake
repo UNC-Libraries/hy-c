@@ -14,7 +14,7 @@ namespace :migrate do
   require 'tasks/migration_helper'
 
   desc 'batch migrate records from FOXML file'
-  task :works, [:collection, :configuration_file, :output_dir] => :environment do |t, args|
+  task :works, [:collection, :configuration_file, :output_dir] => :environment do |_t, args|
     start_time = Time.now
     puts "[#{start_time.to_s}] Start migration of #{args[:collection]}"
 
@@ -23,7 +23,7 @@ namespace :migrate do
 
     # The default admin set and designated depositor must exist before running this script
     if AdminSet.where(title: ENV['DEFAULT_ADMIN_SET']).count != 0 &&
-        User.where(email: collection_config['depositor_email']).count > 0
+        User.where(email: collection_config['depositor_email']).count.positive?
       @depositor = User.where(email: collection_config['depositor_email']).first
 
       puts "[#{Time.now.to_s}] create binary hash"
@@ -52,7 +52,7 @@ namespace :migrate do
       # Create the output directory if it does not yet exist
       FileUtils.mkdir(args[:output_dir]) unless File.exist?(args[:output_dir])
 
-      if !collection_config['child_work_type'].blank?
+      unless collection_config['child_work_type'].blank?
         Migrate::Services::ChildWorkParser.new(@object_hash,
                                                collection_config,
                                                args[:output_dir],
@@ -72,6 +72,6 @@ namespace :migrate do
     end
 
     end_time = Time.now
-    puts "[#{end_time.to_s}] Completed migration of #{args[:collection]} in #{end_time-start_time} seconds"
+    puts "[#{end_time.to_s}] Completed migration of #{args[:collection]} in #{end_time - start_time} seconds"
   end
 end

@@ -16,21 +16,21 @@ FactoryBot.define do
     end
 
     trait :public do
-      read_groups { ["public"] }
+      read_groups { ['public'] }
     end
 
     trait :registered do
-      read_groups { ["registered"] }
+      read_groups { ['registered'] }
     end
 
     trait :image do
-      content { File.open(Hyrax::Engine.root + 'spec/fixtures/world.png') }
+      content { File.open("#{Hyrax::Engine.root}spec/fixtures/world.png") }
     end
 
     trait :with_original_file do
       after(:create) do |file_set, _evaluator|
         Hydra::Works::AddFileToFileSet
-          .call(file_set, File.open(Hyrax::Engine.root + 'spec/fixtures/world.png'), :original_file)
+          .call(file_set, File.open("#{Hyrax::Engine.root}spec/fixtures/world.png"), :original_file)
       end
     end
 

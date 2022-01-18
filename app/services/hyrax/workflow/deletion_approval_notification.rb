@@ -9,7 +9,7 @@ module Hyrax
 
       def message
         I18n.t('hyrax.notifications.workflow.deletion_approved.message', title: title, work_id: work_id,
-               document_path: document_path, user: user, comment: comment)
+                                                                         document_path: document_path, user: user, comment: comment)
       end
 
       def users_to_notify

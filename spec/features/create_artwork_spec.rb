@@ -7,7 +7,7 @@ include Warden::Test::Helpers
 RSpec.feature 'Create an Artwork', js: false do
   context 'a logged in user' do
     let(:user) do
-      User.new(email: 'test@example.com', guest: false, uid: 'test') { |u| u.save!(validate: false)}
+      User.new(email: 'test@example.com', guest: false, uid: 'test') { |u| u.save!(validate: false) }
     end
 
     let(:admin_user) do
@@ -15,8 +15,8 @@ RSpec.feature 'Create an Artwork', js: false do
     end
 
     let(:admin_set) do
-      AdminSet.create(title: ["artwork admin set"],
-                      description: ["some description"],
+      AdminSet.create(title: ['artwork admin set'],
+                      description: ['some description'],
                       edit_users: [user.user_key])
     end
 
@@ -55,7 +55,7 @@ RSpec.feature 'Create an Artwork', js: false do
       login_as user
 
       visit new_hyrax_artwork_path
-      expect(page).to have_content "Add New Artwork"
+      expect(page).to have_content 'Add New Artwork'
 
       # required fields
       fill_in 'Title', with: 'Test Artwork work'
@@ -71,8 +71,8 @@ RSpec.feature 'Create an Artwork', js: false do
       # extra fields
 
       fill_in 'Note', with: 'my note'
-      select 'Attribution 3.0 United States', :from => 'artwork_license'
-      select 'In Copyright', :from => 'artwork_rights_statement'
+      select 'Attribution 3.0 United States', from: 'artwork_license'
+      select 'In Copyright', from: 'artwork_rights_statement'
 
       expect(page).to have_selector('#artwork_license_label', visible: false)
       expect(page).to have_selector('#artwork_rights_statement_label', visible: false)
@@ -82,7 +82,7 @@ RSpec.feature 'Create an Artwork', js: false do
       expect(page).not_to have_field('artwork_visibility_lease')
       expect(page).not_to have_field('artwork_deposit_agreement')
       expect(page).to have_select('artwork_resource_type', selected: 'Art')
-      choose "artwork_visibility_open"
+      choose 'artwork_visibility_open'
 
       check 'agreement'
 
@@ -90,7 +90,7 @@ RSpec.feature 'Create an Artwork', js: false do
         attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'), make_visible: true)
       end
 
-      click_link "Add to Collection"
+      click_link 'Add to Collection'
       expect(page).to_not have_content 'Administrative Set'
       expect(page).not_to have_selector('#artwork_dcmi_type')
 
@@ -131,7 +131,7 @@ RSpec.feature 'Create an Artwork', js: false do
       login_as admin_user
 
       visit new_hyrax_artwork_path
-      expect(page).to have_content "Add New Artwork"
+      expect(page).to have_content 'Add New Artwork'
 
       # required fields
       fill_in 'Title', with: 'Test Artwork work'
@@ -143,8 +143,8 @@ RSpec.feature 'Create an Artwork', js: false do
       # extra fields
       fill_in 'Note', with: 'my note'
       fill_in 'DOI', with: 'some-doi'
-      select 'Attribution 3.0 United States', :from => 'artwork_license'
-      select 'In Copyright', :from => 'artwork_rights_statement'
+      select 'Attribution 3.0 United States', from: 'artwork_license'
+      select 'In Copyright', from: 'artwork_rights_statement'
       fill_in 'Creator', { with: 'Test Default Creator', id: 'artwork_creators_attributes_0_name' }
       fill_in 'ORCID', { with: 'http://orcid.org/creator', id: 'artwork_creators_attributes_0_orcid' }
       select 'Department of Biology', from: 'artwork_creators_attributes_0_affiliation'
@@ -156,7 +156,7 @@ RSpec.feature 'Create an Artwork', js: false do
       expect(page).not_to have_field('artwork_visibility_lease')
       expect(page).not_to have_field('artwork_deposit_agreement')
       expect(page).not_to have_field('artwork_date_created')
-      choose "artwork_visibility_open"
+      choose 'artwork_visibility_open'
 
       check 'agreement'
 
@@ -166,7 +166,7 @@ RSpec.feature 'Create an Artwork', js: false do
         attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'), make_visible: true)
       end
 
-      click_link "Add to Collection"
+      click_link 'Add to Collection'
       expect(page).to have_content 'Administrative Set'
       find('#artwork_admin_set_id').text eq 'artwork admin set'
 

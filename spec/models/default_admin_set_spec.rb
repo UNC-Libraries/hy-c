@@ -5,16 +5,16 @@ RSpec.describe DefaultAdminSet, type: :model do
     described_class.new(work_type_name: 'an admin set', admin_set_id: 'id123456')
   }
 
-  it "is valid with valid attributes" do
+  it 'is valid with valid attributes' do
     expect(subject).to be_valid
   end
 
-  it "is not valid without a work_type_name" do
+  it 'is not valid without a work_type_name' do
     subject.work_type_name = nil
     expect(subject).to_not be_valid
   end
 
-  it "is not valid without an admin_set_id" do
+  it 'is not valid without an admin_set_id' do
     subject.admin_set_id = nil
     expect(subject).to_not be_valid
   end
