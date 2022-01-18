@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe Multimed do
-  it "has a title" do
+  it 'has a title' do
     subject.title = ['multimed']
     expect(subject.title).to eq ['multimed']
   end
@@ -14,8 +14,8 @@ RSpec.describe Multimed do
     it { is_expected.to eq 'hyrax_multimed' }
   end
 
-  describe "metadata" do
-    it "has descriptive metadata" do
+  describe 'metadata' do
+    it 'has descriptive metadata' do
       # Basic hyrax metadata
       expect(subject).to respond_to(:relative_path)
       expect(subject).to respond_to(:depositor)

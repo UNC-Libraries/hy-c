@@ -13,7 +13,7 @@ FactoryBot.define do
     factory :admin do
       groups { ['admin'] }
 
-      after(:create) do |user, evaluator|
+      after(:create) do |user, _evaluator|
         role = Role.find_or_create_by(name: 'admin')
         role.users << user
         role.save

@@ -10,8 +10,8 @@ RSpec.feature 'Create and edit default admin set', js: false do
     before do
       AdminSet.delete_all
       DefaultAdminSet.delete_all
-      AdminSet.create(title: ["default"], description: ["some description"], edit_users: [user.user_key])
-      AdminSet.create(title: ["other admin set"], description: ["some description"], edit_users: [user.user_key])
+      AdminSet.create(title: ['default'], description: ['some description'], edit_users: [user.user_key])
+      AdminSet.create(title: ['other admin set'], description: ['some description'], edit_users: [user.user_key])
       login_as user
     end
 
@@ -27,7 +27,7 @@ RSpec.feature 'Create and edit default admin set', js: false do
     scenario 'with an admin set' do
       visit default_admin_sets_path
 
-      expect(page).to have_content "Admin Set Worktypes"
+      expect(page).to have_content 'Admin Set Worktypes'
 
       expect(page).to have_selector 'tr>th', text: 'Work Type'
       expect(page).to have_selector 'tr>th', text: 'Department'
@@ -48,7 +48,7 @@ RSpec.feature 'Create and edit default admin set', js: false do
 
       click_link 'Add new admin set worktype'
 
-      expect(page).to have_content "New Admin Set Worktype"
+      expect(page).to have_content 'New Admin Set Worktype'
 
       expect(page).to have_content 'Work type name'
       expect(page).to have_selector '#default_admin_set_work_type_name', text: 'Journal'
@@ -64,7 +64,7 @@ RSpec.feature 'Create and edit default admin set', js: false do
 
       find('input[name="commit"]').click
 
-      expect(page).to have_content "Admin Set Worktypes"
+      expect(page).to have_content 'Admin Set Worktypes'
 
       expect(page).to have_selector 'tr>th', text: 'Work Type'
       expect(page).to have_selector 'tr>th', text: 'Department'
@@ -84,7 +84,7 @@ RSpec.feature 'Create and edit default admin set', js: false do
 
       first(:link, 'Edit').click
 
-      expect(page).to have_content "Edit Admin Set Worktype"
+      expect(page).to have_content 'Edit Admin Set Worktype'
 
       expect(page).to have_content 'Work type name'
       expect(page).to have_selector '#default_admin_set_work_type_name', text: 'Journal'
@@ -98,7 +98,7 @@ RSpec.feature 'Create and edit default admin set', js: false do
 
       find('input[name="commit"]').click
 
-      expect(page).to have_content "Admin Set Worktypes"
+      expect(page).to have_content 'Admin Set Worktypes'
 
       expect(page).to have_selector 'tr>td', text: 'Journal', count: 2
       expect(page).to have_selector 'tr>td', text: 'Article', count: 1

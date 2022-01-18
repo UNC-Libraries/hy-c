@@ -16,7 +16,7 @@ module Hyrax
         user_id = ::User.where(uid: current_user_key).first.id
         usergroup = Role.select('name').joins(:roles_users).where('roles_users.user_id = ?', user_id)
         solr_parameters[:fq] ||= []
-        if !(usergroup.map{|role| role.name}.include? 'admin')
+        unless usergroup.map { |role| role.name }.include? 'admin'
           solr_parameters[:fq] += [
               ActiveFedora::SolrQueryBuilder.construct_query_for_rel(depositor: current_user_key)
           ]

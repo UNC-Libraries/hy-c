@@ -13,7 +13,7 @@ module Hyrax
           text << add_title_text_for(work)
           text << add_publisher_text_for(work)
           # UNC customization. Add DOI
-          text << work.doi[0] if !work.doi.nil? && work.doi.length > 0
+          text << work.doi[0] if !work.doi.nil? && work.doi.length.positive?
 
           text.html_safe
         end
@@ -41,14 +41,14 @@ module Hyrax
           unless authors_list[1..-1].blank?
             authors_list[1..-1].each do |author|
               if author == authors_list.last # last
-                text << ", &amp; " << author
+                text << ', &amp; ' << author
               else # all others
-                text << ", " << author
+                text << ', ' << author
               end
             end
           end
 
-          text << "." unless text =~ /\.$/
+          text << '.' unless text =~ /\.$/
           text
         end
 
@@ -72,18 +72,18 @@ module Hyrax
           if pub_info.nil?
             ''
           else
-            pub_info + ". "
+            "#{pub_info}. "
           end
         end
 
         public
 
         def format_date(pub_date)
-          pub_date.blank? ? "" : "(" + pub_date + "). "
+          pub_date.blank? ? '' : "(#{pub_date}). "
         end
 
         def format_title(title_info)
-          title_info.nil? ? "" : "<i class=\"citation-title\">#{title_info}</i> "
+          title_info.nil? ? '' : "<i class=\"citation-title\">#{title_info}</i> "
         end
       end
     end

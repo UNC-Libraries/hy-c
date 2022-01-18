@@ -6,53 +6,55 @@ RSpec.describe Hyrax::JournalForm do
   let(:work) { Journal.new }
   let(:form) { described_class.new(work, nil, nil) }
 
-  describe "#required_fields" do
+  describe '#required_fields' do
     subject { form.required_fields }
 
     it { is_expected.to match_array [:title, :date_issued, :publisher] }
   end
 
-  describe "#primary_terms" do
+  describe '#primary_terms' do
     subject { form.primary_terms }
 
     it { is_expected.to match_array [:title, :date_issued, :publisher] }
   end
 
-  describe "#secondary_terms" do
+  describe '#secondary_terms' do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:abstract, :alternative_title, :based_near, :dcmi_type, :digital_collection,
-                                     :doi, :edition, :extent, :isbn, :issn, :note, :place_of_publication, :series,
-                                     :creator, :subject, :keyword, :language, :resource_type, :license,
-                                     :rights_statement, :language_label, :license_label, :related_url,
-                                     :rights_statement_label, :deposit_agreement, :agreement, :admin_note]
-    }    
+    it {
+      is_expected.to match_array [:abstract, :alternative_title, :based_near, :dcmi_type, :digital_collection,
+                                  :doi, :edition, :extent, :isbn, :issn, :note, :place_of_publication, :series,
+                                  :creator, :subject, :keyword, :language, :resource_type, :license,
+                                  :rights_statement, :language_label, :license_label, :related_url,
+                                  :rights_statement_label, :deposit_agreement, :agreement, :admin_note]
+    }
   end
-  
-  describe "#admin_only_terms" do
+
+  describe '#admin_only_terms' do
     subject { form.admin_only_terms }
 
-    it { is_expected.to match_array [:dcmi_type, :access, :alternative_title, :digital_collection, :doi, :use,
-                                     :admin_note]
-    }    
+    it {
+      is_expected.to match_array [:dcmi_type, :access, :alternative_title, :digital_collection, :doi, :use,
+                                  :admin_note]
+    }
   end
-  
+
   describe 'default value set' do
     subject { form }
-    it "dcmi type must have default values" do
+    it 'dcmi type must have default values' do
       expect(form.model['dcmi_type']).to eq ['http://purl.org/dc/dcmitype/Text']
     end
 
-    it "rights statement must have a default value" do
+    it 'rights statement must have a default value' do
       expect(form.model['rights_statement']).to eq 'http://rightsstatements.org/vocab/InC/1.0/'
     end
 
-    it "language must have default values" do
+    it 'language must have default values' do
       expect(form.model['language']).to eq ['http://id.loc.gov/vocabulary/iso639-2/eng']
     end
   end
 
-  describe ".model_attributes" do
+  describe '.model_attributes' do
     let(:params) do
       ActionController::Parameters.new(
         title: 'journal name', # single-valued
@@ -60,12 +62,12 @@ RSpec.describe Hyrax::JournalForm do
                                         orcid: 'creator orcid',
                                         affiliation: 'Carolina Center for Genome Sciences',
                                         other_affiliation: 'another affiliation',
-                                        index: 1},
-                               '1' => {name: 'creator2',
-                                       orcid: 'creator2 orcid',
-                                       affiliation: 'Department of Chemistry',
-                                       other_affiliation: 'another affiliation',
-                                       index: 2} },
+                                        index: 1 },
+                               '1' => { name: 'creator2',
+                                        orcid: 'creator2 orcid',
+                                        affiliation: 'Department of Chemistry',
+                                        other_affiliation: 'another affiliation',
+                                        index: 2 } },
         subject: ['a subject'],
         keyword: ['a keyword'],
         language: ['http://id.loc.gov/vocabulary/iso639-2/eng'],
@@ -101,7 +103,7 @@ RSpec.describe Hyrax::JournalForm do
 
     subject { described_class.model_attributes(params) }
 
-    it "permits parameters" do
+    it 'permits parameters' do
       expect(subject['title']).to eq ['journal name']
       expect(subject['subject']).to eq ['a subject']
       expect(subject['keyword']).to eq ['a keyword']
@@ -168,58 +170,58 @@ RSpec.describe Hyrax::JournalForm do
     context 'with people parameters' do
       let(:params) do
         ActionController::Parameters.new(
-          creators_attributes: { '0' => {name: 'creator',
-                                         orcid: 'creator orcid',
-                                         affiliation: 'Carolina Center for Genome Sciences',
-                                         other_affiliation: 'another affiliation',
-                                         index: 2},
-                                 '1' => {name: 'creator2',
-                                         orcid: 'creator2 orcid',
-                                         affiliation: 'Department of Chemistry',
-                                         other_affiliation: 'another affiliation',
-                                         index: 1},
-                                 '2' => {name: 'creator3',
-                                         orcid: 'creator3 orcid',
-                                         affiliation: 'Department of Chemistry',
-                                         other_affiliation: 'another affiliation'}}
+          creators_attributes: { '0' => { name: 'creator',
+                                          orcid: 'creator orcid',
+                                          affiliation: 'Carolina Center for Genome Sciences',
+                                          other_affiliation: 'another affiliation',
+                                          index: 2 },
+                                 '1' => { name: 'creator2',
+                                          orcid: 'creator2 orcid',
+                                          affiliation: 'Department of Chemistry',
+                                          other_affiliation: 'another affiliation',
+                                          index: 1 },
+                                 '2' => { name: 'creator3',
+                                          orcid: 'creator3 orcid',
+                                          affiliation: 'Department of Chemistry',
+                                          other_affiliation: 'another affiliation' } }
         )
       end
 
       it 'retains existing index values and adds missing index values' do
-        expect(subject['creators_attributes'].as_json).to include({'0' => {'name' => 'creator',
-                                                                           'orcid' => 'creator orcid',
-                                                                           'affiliation' => 'Carolina Center for Genome Sciences',
-                                                                           'other_affiliation' => 'another affiliation',
-                                                                           'index' => 2},
-                                                                   '1' => {'name' => 'creator2',
-                                                                           'orcid' => 'creator2 orcid',
-                                                                           'affiliation' => 'Department of Chemistry',
-                                                                           'other_affiliation' => 'another affiliation',
-                                                                           'index' => 1},
-                                                                   '2' => {'name' => 'creator3',
-                                                                           'orcid' => 'creator3 orcid',
-                                                                           'affiliation' => 'Department of Chemistry',
-                                                                           'other_affiliation' => 'another affiliation',
-                                                                           'index' => 3}})
+        expect(subject['creators_attributes'].as_json).to include({ '0' => { 'name' => 'creator',
+                                                                             'orcid' => 'creator orcid',
+                                                                             'affiliation' => 'Carolina Center for Genome Sciences',
+                                                                             'other_affiliation' => 'another affiliation',
+                                                                             'index' => 2 },
+                                                                    '1' => { 'name' => 'creator2',
+                                                                             'orcid' => 'creator2 orcid',
+                                                                             'affiliation' => 'Department of Chemistry',
+                                                                             'other_affiliation' => 'another affiliation',
+                                                                             'index' => 1 },
+                                                                    '2' => { 'name' => 'creator3',
+                                                                             'orcid' => 'creator3 orcid',
+                                                                             'affiliation' => 'Department of Chemistry',
+                                                                             'other_affiliation' => 'another affiliation',
+                                                                             'index' => 3 } })
       end
     end
   end
 
-  describe "#visibility" do
+  describe '#visibility' do
     subject { form.visibility }
 
     it { is_expected.to eq 'restricted' }
   end
 
-  describe "#agreement_accepted" do
+  describe '#agreement_accepted' do
     subject { form.agreement_accepted }
 
     it { is_expected.to eq false }
   end
 
-  context "on a work already saved" do
+  context 'on a work already saved' do
     before { allow(work).to receive(:new_record?).and_return(false) }
-    it "defaults deposit agreement to true" do
+    it 'defaults deposit agreement to true' do
       expect(form.agreement_accepted).to eq(true)
     end
   end

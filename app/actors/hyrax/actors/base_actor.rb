@@ -70,7 +70,7 @@ module Hyrax
 
       def save(env)
         # [hyc-override] Save updated nested objects individually; they will not be updated with the rest of the attributes
-        env.attributes.each do |k,v|
+        env.attributes.each do |k, _v|
           next unless (k.ends_with? '_attributes') && (!env.curation_concern.attributes[k.gsub('_attributes', '')].nil?)
 
           env.curation_concern.attributes[k.gsub('_attributes', '')].each do |person|
@@ -93,14 +93,14 @@ module Hyrax
         # [hyc-override] Overriding actor to cast rights statements as single valued
         # removed rights_statement-specific line of code so that it could be cast in `remove_blank_attributes!`
         # [hyc-override] remove index field if for some reason is added to permissions_attributes hashes
-        if !attributes['permissions_attributes'].blank?
+        unless attributes['permissions_attributes'].blank?
           permission_attrs = {}
-          attributes['permissions_attributes'].each do |k,v|
-            if !v['index'].blank?
-              permission_attrs[k] = v.except('index')
-            else
-              permission_attrs[k] = v
-            end
+          attributes['permissions_attributes'].each do |k, v|
+            permission_attrs[k] = if !v['index'].blank?
+                                    v.except('index')
+                                  else
+                                    v
+                                  end
           end
           attributes['permissions_attributes'] = permission_attrs
         end
@@ -127,7 +127,7 @@ module Hyrax
       def log_deleted_people_objects(attributes, work_id)
         attributes.each do |attr, set|
           if attr.match(/_attributes/)
-            set.each do |k,v|
+            set.each do |_k, v|
               if v['_destroy']
                 File.open(ENV['DELETED_PEOPLE_FILE'], 'a+') do |file|
                   file.puts work_id
@@ -148,11 +148,9 @@ module Hyrax
         workflow = Sipity::Workflow.where(permission_template_id: env.curation_concern.admin_set.permission_template.id,
                                           active: true).first
         entity = Sipity::Entity.where(proxy_for_global_id: env.curation_concern.to_global_id.to_s).first_or_create!
-        permissions_attributes.each do |k,permission|
+        permissions_attributes.each do |_k, permission|
           # skip the pre-existing permissions since they have already been applied
-          if !permission['id'].blank?
-            next
-          end
+          next unless permission['id'].blank?
 
           if permission['type'] == 'person'
             agent_type = 'User'
@@ -163,11 +161,11 @@ module Hyrax
           end
           agents = [Sipity::Agent.where(proxy_for_id: agent_id, proxy_for_type: agent_type).first_or_create]
 
-          if permission['access'] == 'edit'
-            roles = 'approving'
-          else
-            roles = 'viewing'
-          end
+          roles = if permission['access'] == 'edit'
+                    'approving'
+                  else
+                    'viewing'
+                  end
 
           create_workflow_permissions(entity, agents, roles, workflow)
         end

@@ -6,50 +6,52 @@ RSpec.describe Hyrax::ArticleForm do
   let(:work) { Article.new }
   let(:form) { described_class.new(work, nil, nil) }
 
-  describe "#required_fields" do
+  describe '#required_fields' do
     subject { form.required_fields }
 
     it { is_expected.to match_array [:title, :creator, :abstract, :date_issued] }
   end
 
-  describe "#primary_terms" do
+  describe '#primary_terms' do
     subject { form.primary_terms }
 
     it { is_expected.to match_array [:title, :creator, :abstract, :date_issued] }
   end
 
-  describe "#secondary_terms" do
+  describe '#secondary_terms' do
     subject { form.secondary_terms }
 
-    it { is_expected.to match_array [:based_near, :keyword, :license, :rights_statement, :publisher, :subject,
-                                     :language, :identifier, :related_url, :resource_type, :access, :alternative_title,
-                                     :bibliographic_citation, :copyright_date, :date_captured, :date_other, :dcmi_type,
-                                     :doi, :digital_collection, :edition, :extent, :funder, :issn,
-                                     :journal_title, :journal_volume, :journal_issue, :note, :page_end, :page_start,
-                                     :peer_review_status, :place_of_publication, :rights_holder, :translator, :use,
-                                     :language_label, :license_label, :rights_statement_label, :deposit_agreement,
-                                     :agreement, :admin_note]
-    }    
+    it {
+      is_expected.to match_array [:based_near, :keyword, :license, :rights_statement, :publisher, :subject,
+                                  :language, :identifier, :related_url, :resource_type, :access, :alternative_title,
+                                  :bibliographic_citation, :copyright_date, :date_captured, :date_other, :dcmi_type,
+                                  :doi, :digital_collection, :edition, :extent, :funder, :issn,
+                                  :journal_title, :journal_volume, :journal_issue, :note, :page_end, :page_start,
+                                  :peer_review_status, :place_of_publication, :rights_holder, :translator, :use,
+                                  :language_label, :license_label, :rights_statement_label, :deposit_agreement,
+                                  :agreement, :admin_note]
+    }
   end
-  
-  describe "#admin_only_terms" do
+
+  describe '#admin_only_terms' do
     subject { form.admin_only_terms }
 
-    it { is_expected.to match_array [:dcmi_type, :access, :bibliographic_citation, :copyright_date,
-                                     :date_captured, :date_other, :digital_collection, :doi, :extent, :rights_holder,
-                                     :translator, :identifier, :use, :admin_note]
-    }    
+    it {
+      is_expected.to match_array [:dcmi_type, :access, :bibliographic_citation, :copyright_date,
+                                  :date_captured, :date_other, :digital_collection, :doi, :extent, :rights_holder,
+                                  :translator, :identifier, :use, :admin_note]
+    }
   end
-  
+
   describe 'default value set' do
     subject { form }
-    it "dcmi type must have default values" do
-      expect(form.model['dcmi_type']).to eq ['http://purl.org/dc/dcmitype/Text'] 
+    it 'dcmi type must have default values' do
+      expect(form.model['dcmi_type']).to eq ['http://purl.org/dc/dcmitype/Text']
     end
-    it "language must have default values" do
-      expect(form.model['language']).to eq ['http://id.loc.gov/vocabulary/iso639-2/eng'] 
+    it 'language must have default values' do
+      expect(form.model['language']).to eq ['http://id.loc.gov/vocabulary/iso639-2/eng']
     end
-    it "rights statement must have a default value" do
+    it 'rights statement must have a default value' do
       expect(form.model['rights_statement']).to eq 'http://rightsstatements.org/vocab/InC/1.0/'
     end
   end
@@ -63,12 +65,12 @@ RSpec.describe Hyrax::ArticleForm do
                                         orcid: 'creator orcid',
                                         affiliation: 'Carolina Center for Genome Sciences',
                                         other_affiliation: 'another affiliation',
-                                        index: 1},
-                               '1' => {name: 'creator2',
-                                       orcid: 'creator2 orcid',
-                                       affiliation: 'Department of Chemistry',
-                                       other_affiliation: 'another affiliation',
-                                       index: 2} },
+                                        index: 1 },
+                               '1' => { name: 'creator2',
+                                        orcid: 'creator2 orcid',
+                                        affiliation: 'Department of Chemistry',
+                                        other_affiliation: 'another affiliation',
+                                        index: 2 } },
         language: ['http://id.loc.gov/vocabulary/iso639-2/eng'],
         based_near: ['California'],
         publisher: ['a publisher'],
@@ -106,9 +108,9 @@ RSpec.describe Hyrax::ArticleForm do
         place_of_publication: ['durham'],
         rights_holder: ['dean'],
         translators_attributes: { '0' => { name: 'translator',
-                                        orcid: 'translator orcid',
-                                        affiliation: 'Carolina Center for Genome Sciences',
-                                        other_affiliation: 'another affiliation'} },
+                                           orcid: 'translator orcid',
+                                           affiliation: 'Carolina Center for Genome Sciences',
+                                           other_affiliation: 'another affiliation' } },
         use: ['a use'],
         language_label: [],
         license_label: [],
@@ -202,76 +204,76 @@ RSpec.describe Hyrax::ArticleForm do
     context 'with people parameters' do
       let(:params) do
         ActionController::Parameters.new(
-          creators_attributes: { '0' => {name: 'creator',
-                                         orcid: 'creator orcid',
-                                         affiliation: 'Carolina Center for Genome Sciences',
-                                         other_affiliation: 'another affiliation',
-                                         index: 2},
-                                 '1' => {name: 'creator2',
-                                         orcid: 'creator2 orcid',
-                                         affiliation: 'Department of Chemistry',
-                                         other_affiliation: 'another affiliation',
-                                         index: 1},
-                                 '2' => {name: 'creator3',
-                                         orcid: 'creator3 orcid',
-                                         affiliation: 'Department of Chemistry',
-                                         other_affiliation: 'another affiliation'}},
-          translators_attributes: {'0' => {name: 'translator',
-                                         orcid: 'translator orcid',
-                                         affiliation: 'Carolina Center for Genome Sciences',
-                                         other_affiliation: 'another affiliation'},
-                                 '1' => {name: 'translator2',
-                                         orcid: 'translator2 orcid',
-                                         affiliation: 'Department of Chemistry',
-                                         other_affiliation: 'another affiliation'}}
+          creators_attributes: { '0' => { name: 'creator',
+                                          orcid: 'creator orcid',
+                                          affiliation: 'Carolina Center for Genome Sciences',
+                                          other_affiliation: 'another affiliation',
+                                          index: 2 },
+                                 '1' => { name: 'creator2',
+                                          orcid: 'creator2 orcid',
+                                          affiliation: 'Department of Chemistry',
+                                          other_affiliation: 'another affiliation',
+                                          index: 1 },
+                                 '2' => { name: 'creator3',
+                                          orcid: 'creator3 orcid',
+                                          affiliation: 'Department of Chemistry',
+                                          other_affiliation: 'another affiliation' } },
+          translators_attributes: { '0' => { name: 'translator',
+                                             orcid: 'translator orcid',
+                                             affiliation: 'Carolina Center for Genome Sciences',
+                                             other_affiliation: 'another affiliation' },
+                                    '1' => { name: 'translator2',
+                                             orcid: 'translator2 orcid',
+                                             affiliation: 'Department of Chemistry',
+                                             other_affiliation: 'another affiliation' } }
         )
       end
 
       it 'retains existing index values and adds missing index values' do
-        expect(subject['creators_attributes'].as_json).to include({'0' => {'name' => 'creator',
-                                                                           'orcid' => 'creator orcid',
-                                                                           'affiliation' => 'Carolina Center for Genome Sciences',
-                                                                           'other_affiliation' => 'another affiliation',
-                                                                           'index' => 2},
-                                                                   '1' => {'name' => 'creator2',
-                                                                           'orcid' => 'creator2 orcid',
-                                                                           'affiliation' => 'Department of Chemistry',
-                                                                           'other_affiliation' => 'another affiliation',
-                                                                           'index' => 1},
-                                                                   '2' => {'name' => 'creator3',
-                                                                           'orcid' => 'creator3 orcid',
-                                                                           'affiliation' => 'Department of Chemistry',
-                                                                           'other_affiliation' => 'another affiliation',
-                                                                           'index' => 3}})
-        expect(subject['translators_attributes'].as_json).to include({'0' => {'name' => 'translator',
-                                                                              'orcid' => 'translator orcid',
-                                                                              'affiliation' => 'Carolina Center for Genome Sciences',
-                                                                              'other_affiliation' => 'another affiliation',
-                                                                              'index' => 1},
-                                                                      '1' => {'name' => 'translator2',
-                                                                              'orcid' => 'translator2 orcid',
-                                                                              'affiliation' => 'Department of Chemistry',
-                                                                              'other_affiliation' => 'another affiliation',
-                                                                              'index' => 2}})
+        expect(subject['creators_attributes'].as_json).to include({ '0' => { 'name' => 'creator',
+                                                                             'orcid' => 'creator orcid',
+                                                                             'affiliation' => 'Carolina Center for Genome Sciences',
+                                                                             'other_affiliation' => 'another affiliation',
+                                                                             'index' => 2 },
+                                                                    '1' => { 'name' => 'creator2',
+                                                                             'orcid' => 'creator2 orcid',
+                                                                             'affiliation' => 'Department of Chemistry',
+                                                                             'other_affiliation' => 'another affiliation',
+                                                                             'index' => 1 },
+                                                                    '2' => { 'name' => 'creator3',
+                                                                             'orcid' => 'creator3 orcid',
+                                                                             'affiliation' => 'Department of Chemistry',
+                                                                             'other_affiliation' => 'another affiliation',
+                                                                             'index' => 3 } })
+        expect(subject['translators_attributes'].as_json).to include({ '0' => { 'name' => 'translator',
+                                                                                'orcid' => 'translator orcid',
+                                                                                'affiliation' => 'Carolina Center for Genome Sciences',
+                                                                                'other_affiliation' => 'another affiliation',
+                                                                                'index' => 1 },
+                                                                       '1' => { 'name' => 'translator2',
+                                                                                'orcid' => 'translator2 orcid',
+                                                                                'affiliation' => 'Department of Chemistry',
+                                                                                'other_affiliation' => 'another affiliation',
+                                                                                'index' => 2 } })
       end
     end
   end
 
-  describe "#visibility" do
+  describe '#visibility' do
     subject { form.visibility }
 
     it { is_expected.to eq 'restricted' }
   end
 
-  describe "#agreement_accepted" do
+  describe '#agreement_accepted' do
     subject { form.agreement_accepted }
 
     it { is_expected.to eq false }
   end
 
-  context "on a work already saved" do
+  context 'on a work already saved' do
     before { allow(work).to receive(:new_record?).and_return(false) }
-    it "defaults deposit agreement to true" do
+    it 'defaults deposit agreement to true' do
       expect(form.agreement_accepted).to eq(true)
     end
   end

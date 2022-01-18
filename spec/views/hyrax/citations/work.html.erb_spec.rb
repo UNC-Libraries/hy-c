@@ -2,8 +2,8 @@
 require 'rails_helper'
 
 RSpec.describe 'hyrax/citations/work.html.erb', type: :view do
-  context "full work metadata" do
-    let(:object_profile) { ["{\"id\":\"999\"}"] }
+  context 'full work metadata' do
+    let(:object_profile) { ['{"id":"999"}'] }
     let(:contributor) { ['Gandalf Grey'] }
     let(:creator_display)     { ['Bilbo Baggins', 'Baggins, Frodo'] }
     let(:solr_document) do
@@ -93,8 +93,8 @@ RSpec.describe 'hyrax/citations/work.html.erb', type: :view do
     end
   end
 
-  context "minimal work metatdata" do
-    let(:object_profile) { ["{\"id\":\"999\"}"] }
+  context 'minimal work metatdata' do
+    let(:object_profile) { ['{"id":"999"}'] }
     let(:creator_display) { ['Bilbo Baggins', 'Baggins, Frodo'] }
     let(:solr_document) do
       SolrDocument.new(

@@ -3,14 +3,14 @@ require Rails.root.join('spec/support/capybara.rb')
 
 include Warden::Test::Helpers
 
-RSpec.feature 'Edit works created through the Sage ingest', :sage, js: false do
-  let(:ingest_progress_log_path) { File.join(fixture_path, "sage", "ingest_progress.log") }
+RSpec.feature 'Edit works created through the Sage ingest', js: false do
+  let(:ingest_progress_log_path) { File.join(fixture_path, 'sage', 'ingest_progress.log') }
 
   # empty the progress log
   around do |example|
-    File.open(ingest_progress_log_path, 'w') {|file| file.truncate(0) }
+    File.open(ingest_progress_log_path, 'w') { |file| file.truncate(0) }
     example.run
-    File.open(ingest_progress_log_path, 'w') {|file| file.truncate(0) }
+    File.open(ingest_progress_log_path, 'w') { |file| file.truncate(0) }
   end
 
   before(:all) do
@@ -19,7 +19,7 @@ RSpec.feature 'Edit works created through the Sage ingest', :sage, js: false do
     @admin_set = AdminSet.create(title: ['sage admin set'],
                                  description: ['some description'],
                                  edit_users: [@admin_user.user_key])
-    @path_to_config = File.join(fixture_path, "sage", "sage_config.yml")
+    @path_to_config = File.join(fixture_path, 'sage', 'sage_config.yml')
 
     @ingest_service = Tasks::SageIngestService.new(configuration_file: @path_to_config)
     @ingest_service.process_packages
@@ -33,10 +33,10 @@ RSpec.feature 'Edit works created through the Sage ingest', :sage, js: false do
     @third_work_id = @articles[-2].id
   end
 
-  it "can open the edit page" do
+  it 'can open the edit page' do
     login_as @admin_user
     visit "concern/articles/#{@first_work_id}"
-    expect(page).to have_content("Inequalities in Cervical Cancer Screening Uptake Between")
+    expect(page).to have_content('Inequalities in Cervical Cancer Screening Uptake Between')
     expect(page).to have_content('Smith, Jennifer S.')
     expect(page).to have_content('sage admin set')
     expect(page).to have_content('Attribution-NonCommercial 4.0 International')
@@ -81,7 +81,7 @@ RSpec.feature 'Edit works created through the Sage ingest', :sage, js: false do
   end
 
   # creators after the first one need JS to render
-  it "can render the javascript-drawn fields", js: true do
+  it 'can render the javascript-drawn fields', js: true do
     login_as @admin_user
     visit "concern/articles/#{@first_work_id}/edit"
     expect(page).to have_field('Creator #2', with: 'Zhang, Xi')

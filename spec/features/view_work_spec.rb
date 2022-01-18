@@ -8,7 +8,7 @@ RSpec.feature 'View a Work', js: false do
   context 'not logged in' do
     scenario do
       visit '/'
-      fill_in "search-field-header", with: 'Alice'
+      fill_in 'search-field-header', with: 'Alice'
       click_button 'search-submit-header'
 
       expect(page).to have_content "Alice's Adventures in Wonderland"

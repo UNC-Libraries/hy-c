@@ -7,7 +7,7 @@ include Warden::Test::Helpers
 RSpec.feature 'Create a DataSet', js: false do
   context 'a logged in user' do
     let(:user) do
-      User.new(email: 'test@example.com', guest: false, uid: 'test') { |u| u.save!(validate: false)}
+      User.new(email: 'test@example.com', guest: false, uid: 'test') { |u| u.save!(validate: false) }
     end
 
     let(:admin_user) do
@@ -58,18 +58,18 @@ RSpec.feature 'Create a DataSet', js: false do
           </gn:Feature>
           </rdf:RDF>
 RDFXML
-      stub_request(:get, "http://sws.geonames.org/4460162/").
-          to_return(status: 200, body: chapel_hill, headers: {'Content-Type' => 'application/rdf+xml;charset=UTF-8'})
+      stub_request(:get, 'http://sws.geonames.org/4460162/').
+        to_return(status: 200, body: chapel_hill, headers: { 'Content-Type' => 'application/rdf+xml;charset=UTF-8' })
 
       stub_request(:any, "http://api.geonames.org/getJSON?geonameId=4460162&username=#{ENV['GEONAMES_USER']}").
-          with(headers: {
-              'Accept' => '*/*',
-              'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-              'User-Agent' => 'Ruby'
-          }).to_return(status: 200, body: { asciiName: 'Chapel Hill',
-                                            countryName: 'United States',
-                                            adminName1: 'North Carolina' }.to_json,
-                       headers: { 'Content-Type' => 'application/json' })
+        with(headers: {
+               'Accept' => '*/*',
+               'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+               'User-Agent' => 'Ruby'
+             }).to_return(status: 200, body: { asciiName: 'Chapel Hill',
+                                               countryName: 'United States',
+                                               adminName1: 'North Carolina' }.to_json,
+                          headers: { 'Content-Type' => 'application/json' })
     end
 
     scenario 'as a non-admin' do
@@ -96,10 +96,10 @@ RDFXML
       select 'Department of Biology', from: 'data_set_contributors_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'data_set_contributors_attributes_0_other_affiliation' }
       fill_in 'Funder', with: 'some funder'
-      find("#data_set_based_near_attributes_0_id", visible: false).set('http://sws.geonames.org/4460162/')
+      find('#data_set_based_near_attributes_0_id', visible: false).set('http://sws.geonames.org/4460162/')
       fill_in 'Keyword', with: 'Test Default Keyword'
       fill_in 'Last modified date', with: '2018-10-03'
-      select 'Attribution 3.0 United States', :from => 'data_set_license'
+      select 'Attribution 3.0 United States', from: 'data_set_license'
       fill_in 'Project Director', { with: 'project director', id: 'data_set_project_directors_attributes_0_name' }
       fill_in 'ORCID', { with: 'project director orcid', id: 'data_set_project_directors_attributes_0_orcid' }
       select 'Department of Biology', from: 'data_set_project_directors_attributes_0_affiliation'
@@ -127,7 +127,7 @@ RDFXML
       expect(page).to have_select('data_set_resource_type', selected: 'Dataset')
       choose 'data_set_visibility_open'
       check 'agreement'
-      
+
       expect(page).not_to have_selector('#data_set_dcmi_type')
 
       find('label[for=addFiles]').click do
@@ -204,10 +204,10 @@ RDFXML
       fill_in 'DOI', with: 'some-doi'
       fill_in 'Extent', with: 'some extent'
       fill_in 'Funder', with: 'some funder'
-      find("#data_set_based_near_attributes_0_id", visible: false).set('http://sws.geonames.org/4460162/')
+      find('#data_set_based_near_attributes_0_id', visible: false).set('http://sws.geonames.org/4460162/')
       fill_in 'Keyword', with: 'Test Default Keyword'
       fill_in 'Last modified date', with: '2018-10-03'
-      select 'Attribution 3.0 United States', :from => 'data_set_license'
+      select 'Attribution 3.0 United States', from: 'data_set_license'
       fill_in 'Project Director', { with: 'project director', id: 'data_set_project_directors_attributes_0_name' }
       fill_in 'ORCID', { with: 'project director orcid', id: 'data_set_project_directors_attributes_0_orcid' }
       select 'Department of Biology', from: 'data_set_project_directors_attributes_0_affiliation'
@@ -218,7 +218,7 @@ RDFXML
       fill_in 'Additional affiliation', { with: 'UNC', id: 'data_set_researchers_attributes_0_other_affiliation' }
       fill_in 'Rights holder', with: 'an author'
       fill_in 'Related resource URL', with: 'something.com'
-      select 'In Copyright', :from => 'data_set_rights_statement'
+      select 'In Copyright', from: 'data_set_rights_statement'
       fill_in 'Sponsor', with: 'a sponsor'
       fill_in 'Subject', with: 'test'
 
@@ -233,7 +233,7 @@ RDFXML
       expect(page).to have_select('data_set_resource_type', selected: 'Dataset')
       choose 'data_set_visibility_open'
       check 'agreement'
-      
+
       expect(page).to have_selector('#data_set_dcmi_type')
 
       find('label[for=addFiles]').click do

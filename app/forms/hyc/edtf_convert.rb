@@ -37,7 +37,7 @@ module Hyc
     def convert_to_edtf(field)
       case field
       when /^\d{4}s$/ # 1900s, 1980s
-        normalized_string = (field[2].to_i == 0 && field[3].to_i == 0) ? "#{field[0...-3]}xx" : "#{field[0...-2]}x"
+        normalized_string = (field[2].to_i.zero? && field[3].to_i.zero?) ? "#{field[0...-3]}xx" : "#{field[0...-2]}x"
       when /^(\d{4}-\d{2}-\d{2}|\d{4})$/ # 2000-01-01 or 2000
         normalized_string = field
       when /^(\d{2})(-|\/)(\d{2})(-|\/)(\d{4})$/ # 01-01-2000, 01/01/2000
@@ -69,21 +69,21 @@ module Hyc
 
     def month_season_list(full_list = true)
       months = {
-          january: '01', jan: '01',
-          february: '02', feb: '02',
-          march: '03', mar: '03',
-          april: '04', apr: '04',
-          may: '05', june: '06', july: '07',
-          august: '08', aug: '08',
-          september: '09', sept: '09',
-          october: '10', oct: '10',
-          november: '11', nov: '11',
-          december: '12', dec: '12'
+        january: '01', jan: '01',
+        february: '02', feb: '02',
+        march: '03', mar: '03',
+        april: '04', apr: '04',
+        may: '05', june: '06', july: '07',
+        august: '08', aug: '08',
+        september: '09', sept: '09',
+        october: '10', oct: '10',
+        november: '11', nov: '11',
+        december: '12', dec: '12'
       }
 
       seasons = {
-          spring: '21', summer: '22',
-          fall: '23', autumn: '23', winter: '24'
+        spring: '21', summer: '22',
+        fall: '23', autumn: '23', winter: '24'
       }
 
       if full_list

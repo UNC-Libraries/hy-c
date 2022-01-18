@@ -43,7 +43,7 @@ module Blacklight::FacetsHelperBehavior
 
     options = options.dup
     options[:partial] ||= facet_partial_name(display_facet)
-    options[:layout] ||= "facet_layout" unless options.key?(:layout)
+    options[:layout] ||= 'facet_layout' unless options.key?(:layout)
     options[:locals] ||= {}
     options[:locals][:field_name] ||= display_facet.name
     options[:locals][:solr_field] ||= display_facet.name # deprecated
@@ -58,7 +58,7 @@ module Blacklight::FacetsHelperBehavior
   # removes any elements where render_facet_item returns a nil value. This enables an application
   # to filter undesireable facet items so they don't appear in the UI
   def render_facet_limit_list(paginator, facet_field, wrapping_element=:li)
-    safe_join(paginator.items.map { |item| render_facet_item(facet_field, item) }.compact.map { |item| content_tag(wrapping_element,item)})
+    safe_join(paginator.items.map { |item| render_facet_item(facet_field, item) }.compact.map { |item| content_tag(wrapping_element, item) })
   end
 
   ##
@@ -108,8 +108,8 @@ module Blacklight::FacetsHelperBehavior
   def facet_partial_name(display_facet = nil)
     config = facet_configuration_for_field(display_facet.name)
     name = config.try(:partial)
-    name ||= "facet_pivot" if config.pivot
-    name ||= "facet_limit"
+    name ||= 'facet_pivot' if config.pivot
+    name ||= 'facet_limit'
   end
 
   ##
@@ -124,8 +124,8 @@ module Blacklight::FacetsHelperBehavior
   # @return [String]
   def render_facet_value(facet_field, item, options ={})
     path = path_for_facet(facet_field, item)
-    content_tag(:span, :class => "facet-label") do
-      link_to_unless(options[:suppress_link], facet_display_value(facet_field, item), path, :class=>"facet_select")
+    content_tag(:span, class: 'facet-label') do
+      link_to_unless(options[:suppress_link], facet_display_value(facet_field, item), path, class: 'facet_select')
     end + render_facet_count(item.hits)
   end
 
@@ -150,14 +150,14 @@ module Blacklight::FacetsHelperBehavior
   # @param [String] item
   def render_selected_facet_value(facet_field, item)
     remove_href = search_action_path(search_state.remove_facet_params(facet_field, item))
-    content_tag(:span, class: "facet-label") do
-      content_tag(:span, facet_display_value(facet_field, item), class: "selected") +
+    content_tag(:span, class: 'facet-label') do
+      content_tag(:span, facet_display_value(facet_field, item), class: 'selected') +
           # remove link
-          link_to(remove_href, class: "remove") do
-            content_tag(:span, '', class: "glyphicon glyphicon-remove") +
+          link_to(remove_href, class: 'remove') do
+            content_tag(:span, '', class: 'glyphicon glyphicon-remove') +
                 content_tag(:span, '[remove]', class: 'sr-only')
           end
-    end + render_facet_count(item.hits, :classes => ["selected"])
+    end + render_facet_count(item.hits, classes: ['selected'])
   end
 
   ##
@@ -169,8 +169,8 @@ module Blacklight::FacetsHelperBehavior
   # @option options [Array<String>]  an array of classes to add to count span.
   # @return [String]
   def render_facet_count(num, options = {})
-    classes = (options[:classes] || []) << "facet-count"
-    content_tag("span", t('blacklight.search.facets.count', :number => number_with_delimiter(num)), :class => classes)
+    classes = (options[:classes] || []) << 'facet-count'
+    content_tag('span', t('blacklight.search.facets.count', number: number_with_delimiter(num)), class: classes)
   end
 
   ##
@@ -219,9 +219,7 @@ module Blacklight::FacetsHelperBehavior
             end
 
     # [hyc-override] Overriding to transform date facets from EDTF to human readable strings
-    if field == 'date_issued_sim' || field == 'date_created_sim'
-      value = Hyc::EdtfConvert.convert_from_edtf(value)
-    end
+    value = Hyc::EdtfConvert.convert_from_edtf(value) if field == 'date_issued_sim' || field == 'date_created_sim'
 
     if facet_config.helper_method
       send facet_config.helper_method, value

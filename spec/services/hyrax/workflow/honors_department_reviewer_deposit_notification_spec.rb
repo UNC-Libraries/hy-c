@@ -6,8 +6,8 @@ RSpec.describe Hyrax::Workflow::HonorsDepartmentReviewerDepositNotification do
   let(:cc_user) { User.create(email: 'test2@example.com', uid: 'test2@example.com', password: 'password', password_confirmation: 'password') }
   let(:work) { Article.create(title: ['New Article'], depositor: depositor.email) }
   let(:admin_set) do
-    AdminSet.create(title: ["article admin set"],
-                    description: ["some description"],
+    AdminSet.create(title: ['article admin set'],
+                    description: ['some description'],
                     edit_users: [depositor.user_key])
   end
   let(:permission_template) do
@@ -18,20 +18,20 @@ RSpec.describe Hyrax::Workflow::HonorsDepartmentReviewerDepositNotification do
                             permission_template_id: permission_template.id)
   end
   let(:entity) { Sipity::Entity.create(proxy_for_global_id: work.to_global_id.to_s, workflow_id: workflow.id) }
-  let(:comment) { double("comment", comment: 'A pleasant read') }
+  let(:comment) { double('comment', comment: 'A pleasant read') }
 
-  describe ".send_notification" do
+  describe '.send_notification' do
     it 'sends a message to all users' do
       recipients = { 'to' => [department_contact], 'cc' => [cc_user] }
       expect(depositor).to receive(:send_message)
-                              .with(anything, I18n.t('hyrax.notifications.workflow.honors_department_reviewer_deposit.message',
-                                                     title_link: "<a href=\"#{ENV['HYRAX_HOST']}/concern/articles/#{work.id}\">#{work.title.first}</a>"),
-                                    anything).exactly(2).times.and_call_original
+        .with(anything, I18n.t('hyrax.notifications.workflow.honors_department_reviewer_deposit.message',
+                               title_link: "<a href=\"#{ENV['HYRAX_HOST']}/concern/articles/#{work.id}\">#{work.title.first}</a>"),
+              anything).exactly(2).times.and_call_original
 
       expect { described_class.send_notification(entity: entity, user: depositor, comment: comment, recipients: recipients) }
-          .to change { depositor.mailbox.inbox.count }.by(0)
-                  .and change { cc_user.mailbox.inbox.count }.by(1)
-                           .and change { department_contact.mailbox.inbox.count }.by(1)
+        .to change { depositor.mailbox.inbox.count }.by(0)
+                                                    .and change { cc_user.mailbox.inbox.count }.by(1)
+                                                                                               .and change { department_contact.mailbox.inbox.count }.by(1)
     end
 
     context 'without carbon-copied users' do
@@ -39,9 +39,9 @@ RSpec.describe Hyrax::Workflow::HonorsDepartmentReviewerDepositNotification do
         recipients = { 'to' => [department_contact], 'cc' => [] }
         expect(depositor).to receive(:send_message).exactly(1).times.and_call_original
         expect { described_class.send_notification(entity: entity, user: depositor, comment: comment, recipients: recipients) }
-            .to change { depositor.mailbox.inbox.count }.by(0)
-                    .and change { cc_user.mailbox.inbox.count }.by(0)
-                             .and change { department_contact.mailbox.inbox.count }.by(1)
+          .to change { depositor.mailbox.inbox.count }.by(0)
+                                                      .and change { cc_user.mailbox.inbox.count }.by(0)
+                                                                                                 .and change { department_contact.mailbox.inbox.count }.by(1)
       end
     end
   end

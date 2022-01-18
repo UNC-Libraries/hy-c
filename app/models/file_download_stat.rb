@@ -11,7 +11,7 @@ class FileDownloadStat < Hyrax::Statistic
     def ga_statistics(start_date, file)
       profile = Hyrax::Analytics.profile
       unless profile
-        Rails.logger.error("Google Analytics profile has not been established. Unable to fetch statistics.")
+        Rails.logger.error('Google Analytics profile has not been established. Unable to fetch statistics.')
         return []
       end
 

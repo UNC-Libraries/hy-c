@@ -41,11 +41,9 @@ class JatsIngestWork
   end
 
   def creators
-    @creators ||= begin
-      creators_metadata.xpath('.//contrib').map.with_index do |contributor, index|
-        [index, contributor_to_hash(contributor, index)]
-      end.to_h
-    end
+    @creators ||= creators_metadata.xpath('.//contrib').map.with_index do |contributor, index|
+      [index, contributor_to_hash(contributor, index)]
+    end.to_h
   end
 
   # TODO: Map affiliation to UNC controlled vocabulary
@@ -58,36 +56,34 @@ class JatsIngestWork
       'affiliation' => '',
       # 'affiliation' => some_method, # Do not store affiliation until we can map it to the controlled vocabulary
       'other_affiliation' => first_affiliation,
-      'index' => (index+1).to_s
+      'index' => (index + 1).to_s
     }
   end
 
   def affiliation_map
-    @affiliation_map ||= begin
-      document.xpath('//aff').map do |affil|
-        [affil.attributes["id"].value, affiliation_to_s(affil)]
-      end.to_h
-    end
+    @affiliation_map ||= document.xpath('//aff').map do |affil|
+      [affil.attributes['id'].value, affiliation_to_s(affil)]
+    end.to_h
   end
 
   def affiliation_ids(elem)
     references = elem.xpath('xref')
     references.map do |ref|
       reference_type = ref['ref-type']
-      next unless reference_type=="aff"
+      next unless reference_type == 'aff'
 
-      ref["rid"]
+      ref['rid']
     end.compact
   end
 
   def affiliation_to_s(affil_elem)
     affil_elem.children.map do |child|
       # Don't include newlines or the order label
-      next if child.inner_text == "\n" || child.name == "label"
+      next if child.inner_text == "\n" || child.name == 'label'
 
       # Only include the institution name proper from the institution-wrap, don't include the institution-id
-      if child.xpath(".//institution").present?
-        child.xpath(".//institution").inner_text
+      if child.xpath('.//institution').present?
+        child.xpath('.//institution').inner_text
       else
         child.inner_text
       end
@@ -117,7 +113,7 @@ class JatsIngestWork
   end
 
   def issn
-    journal_metadata.xpath(".//issn").map(&:inner_text)
+    journal_metadata.xpath('.//issn').map(&:inner_text)
   end
 
   def journal_issue
@@ -125,7 +121,7 @@ class JatsIngestWork
   end
 
   def journal_title
-    journal_metadata.xpath(".//journal-title-group/journal-title").inner_text
+    journal_metadata.xpath('.//journal-title-group/journal-title').inner_text
   end
 
   def journal_volume
@@ -133,7 +129,7 @@ class JatsIngestWork
   end
 
   def keyword
-    article_metadata.at('kwd-group').xpath("//kwd").map do |elem|
+    article_metadata.at('kwd-group').xpath('//kwd').map do |elem|
       if elem.at('italic')
         elem.at('italic').inner_text
       else
@@ -143,7 +139,7 @@ class JatsIngestWork
   end
 
   def license
-    permissions.xpath(".//license/@xlink:href").map do |elem|
+    permissions.xpath('.//license/@xlink:href').map do |elem|
       CdrLicenseService.authority.find(elem&.inner_text)[:id]
     end
   end

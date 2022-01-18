@@ -21,7 +21,7 @@ module Qa::Authorities
 
     def find(id)
       # If an id includes https, translate it to http
-      id["https://"] = "http://" if id.start_with?("https://")
+      id['https://'] = 'http://' if id.start_with?('https://')
       terms.find { |term| term[:id] == id } || {}
     end
 
@@ -48,9 +48,7 @@ module Qa::Authorities
         end
       end
 
-      if show_all_fields
-        returned_values[:active] = field.fetch(:active, true)
-      end
+      returned_values[:active] = field.fetch(:active, true) if show_all_fields
 
       returned_values
     end

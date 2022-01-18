@@ -6,7 +6,7 @@ RSpec.feature 'Read Only Mode' do
 
   context 'a logged in user' do
     let(:user) do
-      User.new(email: 'test@example.com', guest: false, uid: 'test') { |u| u.save!(validate: false)}
+      User.new(email: 'test@example.com', guest: false, uid: 'test') { |u| u.save!(validate: false) }
     end
 
     let(:admin_user) do
@@ -14,8 +14,8 @@ RSpec.feature 'Read Only Mode' do
     end
 
     let(:admin_set) do
-      AdminSet.create(title: ["honors thesis admin set"],
-                      description: ["some description"],
+      AdminSet.create(title: ['honors thesis admin set'],
+                      description: ['some description'],
                       edit_users: [user.user_key])
     end
 
@@ -55,26 +55,26 @@ RSpec.feature 'Read Only Mode' do
 
       visit new_hyrax_honors_thesis_path
       expect(page).to have_content('Add New Undergraduate Honors Thesis')
-      
+
       allow(Flipflop).to receive(:read_only?).and_return(true)
       visit new_hyrax_honors_thesis_path
       expect(page).to have_content('The Carolina Digital Repository is in read-only mode for maintenance.')
-      
+
       allow(Flipflop).to receive(:read_only?).and_return(false)
       visit new_hyrax_honors_thesis_path
       expect(page).to have_content('Add New Undergraduate Honors Thesis')
     end
-    
+
     scenario 'as admin', js: false do
       login_as admin_user
 
       visit new_hyrax_honors_thesis_path
       expect(page).to have_content('Add New Undergraduate Honors Thesis')
-      
+
       allow(Flipflop).to receive(:read_only?).and_return(true)
       visit new_hyrax_honors_thesis_path
       expect(page).to have_content('The Carolina Digital Repository is in read-only mode for maintenance.')
-      
+
       allow(Flipflop).to receive(:read_only?).and_return(false)
       visit new_hyrax_honors_thesis_path
       expect(page).to have_content('Add New Undergraduate Honors Thesis')

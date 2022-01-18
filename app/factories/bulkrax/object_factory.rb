@@ -235,24 +235,22 @@ module Bulkrax
     def transform_attributes
       attrs = attributes.slice(*permitted_attributes).merge(file_attributes(update_files))
       resource = @klass.new
-      attrs.each do |k,v|
+      attrs.each do |k, v|
         # check if attribute is single-valued but is currently an array
-        if resource.attributes.keys.member?(k.to_s) && !resource.attributes[k.to_s].respond_to?(:each) && attrs[k].respond_to?(:each)
-          attrs[k] = v.first
-          # check if attribute is multi-valued but is currently not an array
-        elsif resource.attributes.keys.member?(k.to_s) && resource.attributes[k.to_s].respond_to?(:each) && !attrs[k].respond_to?(:each)
-          attrs[k] = Array(v)
-          # otherwise, the attribute does not need to be transformed
-        else
-          attrs[k] = v
-        end
+        attrs[k] = if resource.attributes.keys.member?(k.to_s) && !resource.attributes[k.to_s].respond_to?(:each) && attrs[k].respond_to?(:each)
+                     v.first
+                   # check if attribute is multi-valued but is currently not an array
+                   elsif resource.attributes.keys.member?(k.to_s) && resource.attributes[k.to_s].respond_to?(:each) && !attrs[k].respond_to?(:each)
+                     Array(v)
+                   # otherwise, the attribute does not need to be transformed
+                   else
+                     v
+                   end
       end
 
       # convert people objects from hash notation to valid json
-      attrs.each do |k,v|
-        if k.ends_with? '_attributes'
-          attrs[k] = JSON.parse(v.gsub('=>',':').gsub("'",'"'))
-        end
+      attrs.each do |k, v|
+        attrs[k] = JSON.parse(v.gsub('=>', ':').gsub("'", '"')) if k.ends_with? '_attributes'
       end
 
       attrs
@@ -265,8 +263,8 @@ module Bulkrax
       people_types = [:advisors, :arrangers, :composers, :contributors, :creators, :project_directors, :researchers,
                       :reviewers, :translators]
       properties = klass.properties.keys.map(&:to_sym)
-      people = properties.map{|p| people_types.include?(p) ? p : nil}.compact
-      properties + people.map{|p| "#{p}_attributes".to_sym} + %i[id edit_users edit_groups read_groups visibility work_members_attributes admin_set_id dcmi_type]
+      people = properties.map { |p| people_types.include?(p) ? p : nil }.compact
+      properties + people.map { |p| "#{p}_attributes".to_sym } + %i[id edit_users edit_groups read_groups visibility work_members_attributes admin_set_id dcmi_type]
     end
   end
 end

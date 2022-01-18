@@ -54,7 +54,7 @@ module Hyrax
 
     def self.oauth_client
       OAuth2::Client.new('', '', authorize_url: 'https://accounts.google.com/o/oauth2/auth',
-                         token_url: 'https://accounts.google.com/o/oauth2/token')
+                                 token_url: 'https://accounts.google.com/o/oauth2/token')
     end
 
     def self.auth_client(scope)

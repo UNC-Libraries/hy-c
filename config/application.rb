@@ -12,11 +12,11 @@ module Hyrax
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
     config.before_configuration do
-      if ENV.has_key?('LOCAL_ENV_PATH')
-        env_file = ENV['LOCAL_ENV_PATH'].to_s
-      else
-        env_file = File.join(Rails.root, 'config', 'local_env.yml')
-      end
+      env_file = if ENV.has_key?('LOCAL_ENV_PATH')
+                   ENV['LOCAL_ENV_PATH'].to_s
+                 else
+                   File.join(Rails.root, 'config', 'local_env.yml')
+                 end
 
       YAML.load(File.open(env_file)).each do |key, value|
         ENV[key.to_s] = value
@@ -32,10 +32,10 @@ module Hyrax
     config.exceptions_app = self.routes
 
     # Configure logger
-    config.log_formatter = proc do |severity, time, progname, msg|
+    config.log_formatter = proc do |severity, time, _progname, msg|
       "#{time} - #{severity}: #{msg}\n"
     end
-    log_path = ENV["LOGS_PATH"] || "log/#{Rails.env}.log"
+    log_path = ENV['LOGS_PATH'] || "log/#{Rails.env}.log"
     logger = ActiveSupport::Logger.new(log_path)
     logger.formatter = config.log_formatter
     config.logger = ActiveSupport::TaggedLogging.new(logger)

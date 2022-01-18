@@ -7,7 +7,7 @@ include Warden::Test::Helpers
 RSpec.feature 'Create a MastersPaper', js: false do
   context 'a logged in user' do
     let(:user) do
-      User.new(email: 'test@example.com', guest: false, uid: 'test') { |u| u.save!(validate: false)}
+      User.new(email: 'test@example.com', guest: false, uid: 'test') { |u| u.save!(validate: false) }
     end
 
     let(:admin_user) do
@@ -15,14 +15,14 @@ RSpec.feature 'Create a MastersPaper', js: false do
     end
 
     let(:admin_set) do
-      AdminSet.create(title: ["masters paper admin set"],
-                      description: ["some description"],
+      AdminSet.create(title: ['masters paper admin set'],
+                      description: ['some description'],
                       edit_users: [user.user_key])
     end
 
     let(:dept_admin_set) do
-      AdminSet.create(title: ["dept admin set"],
-                      description: ["some description"],
+      AdminSet.create(title: ['dept admin set'],
+                      description: ['some description'],
                       edit_users: [user.user_key])
     end
 
@@ -81,18 +81,18 @@ RSpec.feature 'Create a MastersPaper', js: false do
           </gn:Feature>
           </rdf:RDF>
 RDFXML
-      stub_request(:get, "http://sws.geonames.org/4460162/").
-          to_return(status: 200, body: chapel_hill, headers: {'Content-Type' => 'application/rdf+xml;charset=UTF-8'})
+      stub_request(:get, 'http://sws.geonames.org/4460162/').
+        to_return(status: 200, body: chapel_hill, headers: { 'Content-Type' => 'application/rdf+xml;charset=UTF-8' })
 
       stub_request(:any, "http://api.geonames.org/getJSON?geonameId=4460162&username=#{ENV['GEONAMES_USER']}").
-          with(headers: {
-              'Accept' => '*/*',
-              'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-              'User-Agent' => 'Ruby'
-          }).to_return(status: 200, body: { asciiName: 'Chapel Hill',
-                                            countryName: 'United States',
-                                            adminName1: 'North Carolina' }.to_json,
-                       headers: { 'Content-Type' => 'application/json' })
+        with(headers: {
+               'Accept' => '*/*',
+               'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+               'User-Agent' => 'Ruby'
+             }).to_return(status: 200, body: { asciiName: 'Chapel Hill',
+                                               countryName: 'United States',
+                                               adminName1: 'North Carolina' }.to_json,
+                          headers: { 'Content-Type' => 'application/json' })
     end
 
     scenario 'as a non-admin' do
@@ -104,7 +104,7 @@ RDFXML
       click_on 'Select'
 
       expect(page).to have_content "Add New Master's Paper"
-      
+
       # required fields
       fill_in 'Title', with: 'Test MastersPaper work'
       fill_in 'Creator', { with: 'Test Default Creator', id: 'masters_paper_creators_attributes_0_name' }
@@ -123,15 +123,15 @@ RDFXML
 
       # extra fields
       select 'Clinical Nutrition', from: 'Academic Concentration'
-      find("#masters_paper_based_near_attributes_0_id", visible: false).set('http://sws.geonames.org/4460162/')
+      find('#masters_paper_based_near_attributes_0_id', visible: false).set('http://sws.geonames.org/4460162/')
       fill_in 'Keyword', with: 'Test Default Keyword'
-      select 'Attribution 3.0 United States', :from => 'masters_paper_license'
+      select 'Attribution 3.0 United States', from: 'masters_paper_license'
       fill_in 'Note', with: 'a note'
       fill_in 'Reviewer', { with: 'reviewer', id: 'masters_paper_reviewers_attributes_0_name' }
       fill_in 'ORCID', { with: 'reviewer orcid', id: 'masters_paper_reviewers_attributes_0_orcid' }
       select 'Department of Biology', from: 'masters_paper_reviewers_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'masters_paper_reviewers_attributes_0_other_affiliation' }
-      select 'In Copyright', :from => 'masters_paper_rights_statement'
+      select 'In Copyright', from: 'masters_paper_rights_statement'
       fill_in 'Subject', with: 'test'
 
       expect(page).not_to have_field('masters_paper_access')
@@ -146,9 +146,9 @@ RDFXML
       expect(page).to have_select('masters_paper_resource_type', selected: 'Masters Paper')
       expect(page).not_to have_field('masters_paper_use')
       expect(page).not_to have_field('masters_paper_deposit_agreement')
-      choose "masters_paper_visibility_open"
+      choose 'masters_paper_visibility_open'
       check 'agreement'
-      
+
       # Verify that admin only field is not visible
       expect(page).not_to have_selector('#masters_paper_dcmi_type')
 
@@ -156,7 +156,7 @@ RDFXML
         attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'), make_visible: true)
       end
 
-      click_link "Add to Collection"
+      click_link 'Add to Collection'
       expect(page).to_not have_content 'Administrative Set'
 
       click_button 'Save'
@@ -164,7 +164,7 @@ RDFXML
 
       visit '/dashboard/my/works/'
       expect(page).to have_content 'Test MastersPaper work'
-      
+
       first('.document-title', text: 'Test MastersPaper work').click
       expect(page).to have_content 'Abstract an abstract'
       expect(page).to have_content 'Academic concentration Clinical Nutrition'
@@ -190,7 +190,7 @@ RDFXML
       expect(page).to_not have_content 'Language http://id.loc.gov/vocabulary/iso639-2/eng'
       expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
       expect(page).to_not have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'
-      
+
       expect(page).to_not have_content 'In Administrative Set: dept admin set'
       expect(page).to_not have_content 'Type http://purl.org/dc/dcmitype/Text'
 
@@ -232,15 +232,15 @@ RDFXML
       fill_in 'Access', with: 'some access'
       fill_in 'DOI', with: 'some-doi'
       fill_in 'Extent', with: 'some extent'
-      find("#masters_paper_based_near_attributes_0_id", visible: false).set('http://sws.geonames.org/4460162/')
+      find('#masters_paper_based_near_attributes_0_id', visible: false).set('http://sws.geonames.org/4460162/')
       fill_in 'Keyword', with: 'Test Default Keyword'
-      select 'Attribution 3.0 United States', :from => 'masters_paper_license'
+      select 'Attribution 3.0 United States', from: 'masters_paper_license'
       fill_in 'Note', with: 'a note'
       fill_in 'Reviewer', { with: 'reviewer', id: 'masters_paper_reviewers_attributes_0_name' }
       fill_in 'ORCID', { with: 'reviewer orcid', id: 'masters_paper_reviewers_attributes_0_orcid' }
       select 'Department of Biology', from: 'masters_paper_reviewers_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'masters_paper_reviewers_attributes_0_other_affiliation' }
-      select 'In Copyright', :from => 'masters_paper_rights_statement'
+      select 'In Copyright', from: 'masters_paper_rights_statement'
       fill_in 'Subject', with: 'test'
       fill_in 'Use', with: 'some use'
 
@@ -252,16 +252,16 @@ RDFXML
       expect(page).not_to have_field('masters_paper_deposit_agreement')
       expect(page).not_to have_field('masters_paper_date_created')
       expect(page).to have_select('masters_paper_resource_type', selected: 'Masters Paper')
-      choose "masters_paper_visibility_open"
+      choose 'masters_paper_visibility_open'
       check 'agreement'
-      
+
       expect(page).to have_selector('#masters_paper_dcmi_type')
 
       find('label[for=addFiles]').click do
         attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'), make_visible: true)
       end
 
-      click_link "Add to Collection"
+      click_link 'Add to Collection'
       expect(page).to have_content 'Administrative Set'
       find('#masters_paper_admin_set_id').text eq 'masters paper admin set'
 

@@ -33,7 +33,7 @@ module Hyrax
     # Returns a list of users excluding the system users and guest_users
     # @param query [String] the query string
     def search(query)
-      clause = query.blank? ? nil : "%" + query.downcase + "%"
+      clause = query.blank? ? nil : "%#{query.downcase}%"
       base = ::User.where(*base_query)
       base = base.where("#{Hydra.config.user_key_field} like lower(?) OR display_name like lower(?)", clause, clause) if clause.present?
       base.registered
@@ -51,11 +51,11 @@ module Hyrax
 
     def find_user
       @user = ::User.from_url_component(params[:id])
-      redirect_to root_path, alert: "User does not exist" unless @user
+      redirect_to root_path, alert: 'User does not exist' unless @user
     end
 
     def sort_value
-      sort = params[:sort].blank? ? "name" : params[:sort]
+      sort = params[:sort].blank? ? 'name' : params[:sort]
       case sort
       when 'name'
         'display_name'

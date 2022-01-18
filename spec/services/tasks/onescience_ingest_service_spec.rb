@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Tasks::OnescienceIngestService do
-  let(:args) { {configuration_file: 'spec/fixtures/onescience/onescience_config.yml'} }
+  let(:args) { { configuration_file: 'spec/fixtures/onescience/onescience_config.yml' } }
 
   describe '#initialize' do
     it 'sets all params' do
@@ -38,8 +38,8 @@ RSpec.describe Tasks::OnescienceIngestService do
     end
 
     let(:admin_set) do
-      AdminSet.create!(title: ["onescience default"],
-                       description: ["some description"])
+      AdminSet.create!(title: ['onescience default'],
+                       description: ['some description'])
     end
 
     let(:permission_template) do
@@ -69,19 +69,19 @@ RSpec.describe Tasks::OnescienceIngestService do
       File.delete('spec/fixtures/onescience/1science_skipped.log')
     end
 
-    it "creates a new work" do
+    it 'creates a new work' do
       allow(RegisterToLongleafJob).to receive(:perform_later).and_return(nil)
       expect { Tasks::OnescienceIngestService.new(args).ingest }
-        .to change{ Article.count }.by(1)
-        .and change{ DepositRecord.count }.by(1)
+        .to change { Article.count }.by(1)
+                                    .and change { DepositRecord.count }.by(1)
       new_article = Article.all[-1]
       expect(new_article['depositor']).to eq 'admin'
       expect(new_article['title']).to match_array ['A Multi-Institutional Longitudinal Faculty Development Program in Humanism Supports the Professional Development of Faculty Teachers:']
       expect(new_article['label']).to eq 'A Multi-Institutional Longitudinal Faculty Development Program in Humanism Supports the Professional Development of Faculty Teachers:'
       expect(new_article['date_issued']).to eq '2017'
-      expect(["Osterberg, Lars G.", "Frankel, Richard M.", "Branch, William T.", "Gilligan, MaryAnn C.",
-              "Plews-Ogan, Margaret", "Dunne, Dana", "Hafler, Janet P.", "Litzelman, Debra K.", "Rider, Elizabeth A.",
-              "Weil, Amy B.", "Derse, Arthur R.", "May, Natalie B."]).to include (new_article['creators'][0]['name'].first)
+      expect(['Osterberg, Lars G.', 'Frankel, Richard M.', 'Branch, William T.', 'Gilligan, MaryAnn C.',
+              'Plews-Ogan, Margaret', 'Dunne, Dana', 'Hafler, Janet P.', 'Litzelman, Debra K.', 'Rider, Elizabeth A.',
+              'Weil, Amy B.', 'Derse, Arthur R.', 'May, Natalie B.']).to include (new_article['creators'][0]['name'].first)
       expect(new_article['resource_type']).to match_array ['Article']
       expect(new_article['abstract']).to match_array ['The authors describe the first 11 academic years (2005–2006 through 2016–2017) of a longitudinal, small-group faculty development program for strengthening humanistic teaching and role modeling at 30 U.S. and Canadian medical schools that continues today. During the yearlong program, small groups of participating faculty met twice monthly with a local facilitator for exercises in humanistic teaching, role modeling, and related topics that combined narrative reflection with skills training using experiential learning techniques. The program focused on the professional development of its participants. Thirty schools participated; 993 faculty, including some residents, completed the program.']
       expect(new_article['dcmi_type']).to match_array ['http://purl.org/dc/dcmitype/Text']
@@ -105,29 +105,29 @@ RSpec.describe Tasks::OnescienceIngestService do
       File.delete('spec/fixtures/onescience/1science_deposit_record_id.log')
     end
     it 'creates a deposit record for the onescience ingest batch' do
-      expect { Tasks::OnescienceIngestService.new(args).create_deposit_record }.to change{ DepositRecord.count }.by(1)
+      expect { Tasks::OnescienceIngestService.new(args).create_deposit_record }.to change { DepositRecord.count }.by(1)
     end
   end
 
   describe '#parse_onescience_metadata' do
-    let(:data) { {'Title' => 'An article title', 'onescience_id' => '12345', 'DOI' => 'some-doi'} }
+    let(:data) { { 'Title' => 'An article title', 'onescience_id' => '12345', 'DOI' => 'some-doi' } }
     it 'parses data for onescience record' do
       service = Tasks::OnescienceIngestService.new(args)
-      service.instance_variable_set(:@affiliation_mapping, [{'onescience_id' => '12345', 'lastname_author1' => 'Smith', 'firstname_author1' => 'John'}])
-      service.instance_variable_set(:@scopus_hash, {'some-doi' => {'authors' => {'0' => {'name' => 'Smith, John', 'index' => '1'}}}})
+      service.instance_variable_set(:@affiliation_mapping, [{ 'onescience_id' => '12345', 'lastname_author1' => 'Smith', 'firstname_author1' => 'John' }])
+      service.instance_variable_set(:@scopus_hash, { 'some-doi' => { 'authors' => { '0' => { 'name' => 'Smith, John', 'index' => '1' } } } })
       service.instance_variable_set(:@deposit_record_id, 'some deposit record id')
       work_attributes, files = service.parse_onescience_metadata(data)
-      expect(work_attributes).to include({"identifier"=>["Onescience id: 12345", "Publisher DOI: https://doi.org/some-doi"],
-                                       "title"=>"An article title",
-                                       "label"=>"An article title",
-                                       "creators_attributes"=>{"0"=>{"name"=>"Smith, John", "index" => "1"}},
-                                       "resource_type"=>"Article",
-                                       "language"=>"http://id.loc.gov/vocabulary/iso639-2/eng",
-                                       "language_label"=>"English",
-                                       "dcmi_type"=>"http://purl.org/dc/dcmitype/Text",
-                                       "rights_statement"=>"http://rightsstatements.org/vocab/InC/1.0/",
-                                       "rights_statement_label"=>"In Copyright",
-                                       "deposit_record"=>'some deposit record id'})
+      expect(work_attributes).to include({ 'identifier' => ['Onescience id: 12345', 'Publisher DOI: https://doi.org/some-doi'],
+                                           'title' => 'An article title',
+                                           'label' => 'An article title',
+                                           'creators_attributes' => { '0' => { 'name' => 'Smith, John', 'index' => '1' } },
+                                           'resource_type' => 'Article',
+                                           'language' => 'http://id.loc.gov/vocabulary/iso639-2/eng',
+                                           'language_label' => 'English',
+                                           'dcmi_type' => 'http://purl.org/dc/dcmitype/Text',
+                                           'rights_statement' => 'http://rightsstatements.org/vocab/InC/1.0/',
+                                           'rights_statement_label' => 'In Copyright',
+                                           'deposit_record' => 'some deposit record id' })
       expect(files).to be {}
     end
   end
@@ -135,10 +135,10 @@ RSpec.describe Tasks::OnescienceIngestService do
   describe '#get_people' do
     it 'creates attribute hashes for people obejcts' do
       service = Tasks::OnescienceIngestService.new(args)
-      service.instance_variable_set(:@affiliation_mapping, [{'onescience_id' => '12345', 'lastname_author1' => 'Smith', 'firstname_author1' => 'John'}])
-      service.instance_variable_set(:@scopus_hash, {'a doi' => {'authors' => {'0' => {'name' => 'Smith, John', 'index' => '1'}}}})
+      service.instance_variable_set(:@affiliation_mapping, [{ 'onescience_id' => '12345', 'lastname_author1' => 'Smith', 'firstname_author1' => 'John' }])
+      service.instance_variable_set(:@scopus_hash, { 'a doi' => { 'authors' => { '0' => { 'name' => 'Smith, John', 'index' => '1' } } } })
       people = service.get_people('DOI' => 'a doi')
-      expect(people).to include({'0' => {'name' => 'Smith, John', 'index' => '1'}})
+      expect(people).to include({ '0' => { 'name' => 'Smith, John', 'index' => '1' } })
     end
   end
 end

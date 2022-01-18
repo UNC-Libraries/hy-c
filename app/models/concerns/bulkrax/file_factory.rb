@@ -102,9 +102,7 @@ module Bulkrax
         opts[:mime_type] = fileset.files.first.mime_type
 
         fileset.add_file(File.open(Bulkrax.removed_image_path), opts)
-        unless @update_files
-          fileset.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
-        end
+        fileset.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE unless @update_files
         fileset.save
         ::CreateDerivativesJob.set(wait: 1.minute).perform_later(fileset, fileset.files.first.id)
       end

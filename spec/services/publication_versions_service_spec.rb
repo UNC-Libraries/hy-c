@@ -8,21 +8,20 @@ RSpec.describe Hyrax::PublicationVersionsService do
   end
   let(:service) { described_class }
 
-  describe "#select_all_options" do
-    it "returns only active terms" do
+  describe '#select_all_options' do
+    it 'returns only active terms' do
       expect(service.select_all_options).to include(['Preprint', 'preprint'], ['Postprint', 'postprint'],
                                                     ['Publisher', 'publisher'])
     end
   end
 
-  describe "#label" do
-    it "resolves for ids of active terms" do
+  describe '#label' do
+    it 'resolves for ids of active terms' do
       expect(service.label('postprint')).to eq('Postprint')
     end
 
-    it "resolves for ids of inactive terms" do
+    it 'resolves for ids of inactive terms' do
       expect(service.label('other')).to eq('Other Version')
     end
   end
 end
-

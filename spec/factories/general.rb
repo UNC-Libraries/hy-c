@@ -25,7 +25,7 @@ FactoryBot.define do
       work.save! if work.member_of_collections.present?
     end
 
-    title { ["Test title"] }
+    title { ['Test title'] }
 
     after(:build) do |work, evaluator|
       work.apply_depositor_metadata(evaluator.user.user_key)
@@ -47,7 +47,7 @@ FactoryBot.define do
     end
 
     factory :registered_generic_work do
-      read_groups { ["registered"] }
+      read_groups { ['registered'] }
     end
 
     factory :work_with_one_file do
@@ -79,8 +79,8 @@ FactoryBot.define do
 
     factory :work_with_two_children do
       before(:create) do |work, evaluator|
-        work.ordered_members << create(:work, user: evaluator.user, title: ['A Contained Work'], id: "BlahBlah1")
-        work.ordered_members << create(:work, user: evaluator.user, title: ['Another Contained Work'], id: "BlahBlah2")
+        work.ordered_members << create(:work, user: evaluator.user, title: ['A Contained Work'], id: 'BlahBlah1')
+        work.ordered_members << create(:work, user: evaluator.user, title: ['Another Contained Work'], id: 'BlahBlah2')
       end
     end
 

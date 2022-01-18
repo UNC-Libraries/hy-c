@@ -41,7 +41,7 @@ class MastersPaper < ActiveFedora::Base
   end
 
   property :degree_granting_institution, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/dgg'),
-           multiple: false do |index|
+                                         multiple: false do |index|
     index.as :stored_searchable
   end
 
@@ -59,7 +59,7 @@ class MastersPaper < ActiveFedora::Base
   end
 
   property :graduation_year, predicate: ::RDF::URI('http://rdaregistry.info/Elements/w/yearDegreeGranted.en'),
-           multiple: false do |index|
+                             multiple: false do |index|
     index.as :stored_searchable
   end
 

@@ -37,9 +37,7 @@ module BlacklightOaiProvider
       if selector == :all
         response = @controller.repository.search(conditions(options))
 
-        if limit && response.total > limit
-          return select_partial(BlacklightOaiProvider::ResumptionToken.new(options.merge(last: 0), nil, response.total))
-        end
+        return select_partial(BlacklightOaiProvider::ResumptionToken.new(options.merge(last: 0), nil, response.total)) if limit && response.total > limit
 
         response.documents
       else

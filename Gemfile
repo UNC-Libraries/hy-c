@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 git_source(:github) do |repo_name|
-  repo_name = "#{repo_name}/#{repo_name}" unless repo_name.include?("/")
+  repo_name = "#{repo_name}/#{repo_name}" unless repo_name.include?('/')
   "https://github.com/#{repo_name}.git"
 end
 
@@ -85,9 +85,9 @@ group :test do
   gem 'factory_bot_rails', '~> 6.1.0'
   gem 'ffaker'
   gem 'rspec-mocks'
-  gem "selenium-webdriver"
+  gem 'selenium-webdriver'
   gem 'shoulda-matchers', '~> 5.0.0'
   gem 'simplecov', '~> 0.17.0'
-  gem "webdrivers"
+  gem 'webdrivers'
   gem 'webmock', '~> 3.14.0'
 end

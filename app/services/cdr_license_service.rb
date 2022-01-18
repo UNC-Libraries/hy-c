@@ -3,25 +3,23 @@ module CdrLicenseService
   self.authority = Qa::Authorities::Local.subauthority_for('licenses')
 
   def self.select(work_type)
-    if work_type.match?('data_sets')
-      license_type = 'all'
-    else
-      license_type = ''
-    end
+    license_type = if work_type.match?('data_sets')
+                     'all'
+                   else
+                     ''
+                   end
 
-    authority.all.reject{ |item| item['active'] == license_type }.map do |element|
+    authority.all.reject { |item| item['active'] == license_type }.map do |element|
       [element[:label], element[:id]]
     end
   end
 
   def self.label(id)
-    begin
-      authority.find(id).fetch('term')
-    rescue
-      Rails.logger.warn "CdrLicensesService: cannot find '#{id}'"
-      puts "CdrLicensesService: cannot find '#{id}'" # for migration log
-      id # cannot return nil
-    end
+    authority.find(id).fetch('term')
+  rescue StandardError
+    Rails.logger.warn "CdrLicensesService: cannot find '#{id}'"
+    puts "CdrLicensesService: cannot find '#{id}'" # for migration log
+    id # cannot return nil
   end
 
   def self.include_current_value(value, _index, render_options, html_options)

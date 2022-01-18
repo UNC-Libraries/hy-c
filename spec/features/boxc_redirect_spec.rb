@@ -20,7 +20,7 @@ RSpec.feature 'boxc redirects' do
     cached_redirect_old_domain = ENV['REDIRECT_OLD_DOMAIN']
     cached_redirect_new_domain = ENV['REDIRECT_NEW_DOMAIN']
     ENV['REDIRECT_FILE_PATH'] = 'spec/fixtures/redirect_uuids.csv'
-    ENV['REDIRECT_OLD_DOMAIN'] = ENV['HYRAX_HOST'].gsub('https://','')
+    ENV['REDIRECT_OLD_DOMAIN'] = ENV['HYRAX_HOST'].gsub('https://', '')
     ENV['REDIRECT_NEW_DOMAIN'] = 'dcr-test.lib.unc.edu'
     # example.run is where the test actually runs
     example.run

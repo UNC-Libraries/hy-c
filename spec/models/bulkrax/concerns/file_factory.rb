@@ -4,13 +4,13 @@ RSpec.describe Bulkrax::FileFactory do
   include Bulkrax::FileFactory
 
   let!(:user) do
-    User.new(email: 'test@example.com', guest: false, uid: 'test') { |u| u.save!(validate: false)}
+    User.new(email: 'test@example.com', guest: false, uid: 'test') { |u| u.save!(validate: false) }
   end
   let(:klass) { Article }
   let(:attributes) { {} }
   let(:object) { {} }
   let(:file_set) { FileSet.new }
-  let(:temp_pdf_path) { File.join(fixture_path, "tmp", "hyrax_test4.pdf") }
+  let(:temp_pdf_path) { File.join(fixture_path, 'tmp', 'hyrax_test4.pdf') }
 
   let(:file) do
     Hydra::PCDM::File.new do |f|
@@ -22,7 +22,7 @@ RSpec.describe Bulkrax::FileFactory do
 
   before do
     allow(Hydra::Works::VirusCheckerService).to receive(:file_has_virus?) { false }
-    FileUtils.cp(File.join(fixture_path, "hyrax/hyrax_test4.pdf"), temp_pdf_path)
+    FileUtils.cp(File.join(fixture_path, 'hyrax/hyrax_test4.pdf'), temp_pdf_path)
 
     file_set.apply_depositor_metadata user.user_key
     file_set.save!
@@ -31,7 +31,7 @@ RSpec.describe Bulkrax::FileFactory do
     file_set.save!
 
     allow(new_remote_files).to receive(:present?).and_return(false)
-    allow(::CreateDerivativesJob).to receive(:set).with(:wait=> 1.minute).and_return(::CreateDerivativesJob)
+    allow(::CreateDerivativesJob).to receive(:set).with(wait: 1.minute).and_return(::CreateDerivativesJob)
     allow(::CreateDerivativesJob).to receive(:perform_later).with(file_set, file.id).and_return(file_set)
   end
 

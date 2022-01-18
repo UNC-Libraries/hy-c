@@ -26,19 +26,19 @@ module Hyrax
         obj = ActiveFedora::Base.find(doc_id, cast: true)
         obj.destroy
       end
-      flash[:notice] = "Batch delete complete"
+      flash[:notice] = 'Batch delete complete'
       after_destroy_collection
     end
 
     def update
-      case params["update_type"]
-      when "update"
+      case params['update_type']
+      when 'update'
         batch.each do |doc_id|
           update_document(ActiveFedora::Base.find(doc_id))
         end
-        flash[:notice] = "Batch update complete"
+        flash[:notice] = 'Batch update complete'
         after_update
-      when "delete_all"
+      when 'delete_all'
         destroy_batch
       end
     end
@@ -57,7 +57,7 @@ module Hyrax
       # return if current_user.admin?
       redirect_back(
         fallback_location: root_path,
-        alert: "Batch operations are not allowed."
+        alert: 'Batch operations are not allowed.'
       )
     end
 
@@ -78,8 +78,8 @@ module Hyrax
       obj.date_modified = Time.current.ctime
 
       if params[:visibility]
-        Deprecation.warn(self, "visibility is not submitted by the Hyrax UI and is deprecated " \
-                               "for removal in Hyrax 3.0. Please use " \
+        Deprecation.warn(self, 'visibility is not submitted by the Hyrax UI and is deprecated ' \
+                               'for removal in Hyrax 3.0. Please use ' \
                                "#{form_class.model_name.param_key}[visibility] instead.")
         obj.visibility = params[:visibility]
       end

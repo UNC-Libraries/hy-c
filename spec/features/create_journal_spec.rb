@@ -7,7 +7,7 @@ include Warden::Test::Helpers
 RSpec.feature 'Create a Journal', js: false do
   context 'a logged in user' do
     let(:user) do
-      User.new(email: 'test@example.com', guest: false, uid: 'test') { |u| u.save!(validate: false)}
+      User.new(email: 'test@example.com', guest: false, uid: 'test') { |u| u.save!(validate: false) }
     end
 
     let(:admin_user) do
@@ -15,11 +15,11 @@ RSpec.feature 'Create a Journal', js: false do
     end
 
     let(:admin_set) do
-      AdminSet.create(title: ["journal admin set"],
-                      description: ["some description"],
+      AdminSet.create(title: ['journal admin set'],
+                      description: ['some description'],
                       edit_users: [user.user_key])
     end
-    
+
     let(:permission_template) do
       Hyrax::PermissionTemplate.create!(source_id: admin_set.id)
     end
@@ -58,26 +58,26 @@ RSpec.feature 'Create a Journal', js: false do
           </gn:Feature>
           </rdf:RDF>
 RDFXML
-      stub_request(:get, "http://sws.geonames.org/4460162/").
-          to_return(status: 200, body: chapel_hill, headers: {'Content-Type' => 'application/rdf+xml;charset=UTF-8'})
+      stub_request(:get, 'http://sws.geonames.org/4460162/').
+        to_return(status: 200, body: chapel_hill, headers: { 'Content-Type' => 'application/rdf+xml;charset=UTF-8' })
 
       stub_request(:any, "http://api.geonames.org/getJSON?geonameId=4460162&username=#{ENV['GEONAMES_USER']}").
-          with(headers: {
-              'Accept' => '*/*',
-              'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-              'User-Agent' => 'Ruby'
-          }).to_return(status: 200, body: { asciiName: 'Chapel Hill',
-                                            countryName: 'United States',
-                                            adminName1: 'North Carolina' }.to_json,
-                       headers: { 'Content-Type' => 'application/json' })
+        with(headers: {
+               'Accept' => '*/*',
+               'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+               'User-Agent' => 'Ruby'
+             }).to_return(status: 200, body: { asciiName: 'Chapel Hill',
+                                               countryName: 'United States',
+                                               adminName1: 'North Carolina' }.to_json,
+                          headers: { 'Content-Type' => 'application/json' })
     end
 
     scenario 'as a non-admin' do
       login_as user
 
       visit new_hyrax_journal_path
-      expect(page).to have_content "Add New Scholarly Journal, Newsletter or Book"
-      
+      expect(page).to have_content 'Add New Scholarly Journal, Newsletter or Book'
+
       # required fields
       fill_in 'Title', with: 'Test Journal work'
       fill_in 'Date of publication', with: '2018-10-03'
@@ -90,17 +90,17 @@ RDFXML
       select 'Department of Biology', from: 'journal_creators_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'journal_creators_attributes_0_other_affiliation' }
       fill_in 'Extent', with: 'some extent'
-      find("#journal_based_near_attributes_0_id", visible: false).set('http://sws.geonames.org/4460162/')
+      find('#journal_based_near_attributes_0_id', visible: false).set('http://sws.geonames.org/4460162/')
       fill_in 'ISBN', with: 'some isbn'
       fill_in 'ISSN', with: 'some issn'
       select 'Preprint', from: 'Version'
       fill_in 'Related resource URL', with: 'a url'
       fill_in 'Keyword', with: 'Test Default Keyword'
-      select 'Attribution 3.0 United States', :from => 'journal_license'
+      select 'Attribution 3.0 United States', from: 'journal_license'
       fill_in 'Note', with: 'a note'
       fill_in 'Place of publication', with: 'UNC'
       select 'Journal', from: 'journal_resource_type'
-      select 'In Copyright', :from => 'journal_rights_statement'
+      select 'In Copyright', from: 'journal_rights_statement'
       fill_in 'Series', with: 'series1'
       fill_in 'Subject', with: 'test'
 
@@ -113,16 +113,16 @@ RDFXML
       expect(page).to have_field('journal_visibility_embargo')
       expect(page).not_to have_field('journal_visibility_lease')
       expect(page).not_to have_field('journal_deposit_agreement')
-      choose "journal_visibility_open"
+      choose 'journal_visibility_open'
       check 'agreement'
-      
+
       expect(page).not_to have_selector('#journal_dcmi_type')
 
       find('label[for=addFiles]').click do
         attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'), make_visible: true)
       end
 
-      click_link "Add to Collection"
+      click_link 'Add to Collection'
       expect(page).to_not have_content 'Administrative Set'
 
       click_button 'Save'
@@ -172,7 +172,7 @@ RDFXML
       login_as admin_user
 
       visit new_hyrax_journal_path
-      expect(page).to have_content "Add New Scholarly Journal, Newsletter or Book"
+      expect(page).to have_content 'Add New Scholarly Journal, Newsletter or Book'
 
       # required fields
       fill_in 'Title', with: 'Test Journal work'
@@ -189,17 +189,17 @@ RDFXML
       fill_in 'Digital collection', with: 'my collection'
       fill_in 'DOI', with: 'some-doi'
       fill_in 'Extent', with: 'some extent'
-      find("#journal_based_near_attributes_0_id", visible: false).set('http://sws.geonames.org/4460162/')
+      find('#journal_based_near_attributes_0_id', visible: false).set('http://sws.geonames.org/4460162/')
       fill_in 'ISBN', with: 'some isbn'
       fill_in 'ISSN', with: 'some issn'
       select 'Preprint', from: 'Version'
       fill_in 'Related resource URL', with: 'a url'
       fill_in 'Keyword', with: 'Test Default Keyword'
-      select 'Attribution 3.0 United States', :from => 'journal_license'
+      select 'Attribution 3.0 United States', from: 'journal_license'
       fill_in 'Note', with: 'a note'
       fill_in 'Place of publication', with: 'UNC'
       select 'Journal', from: 'journal_resource_type'
-      select 'In Copyright', :from => 'journal_rights_statement'
+      select 'In Copyright', from: 'journal_rights_statement'
       fill_in 'Series', with: 'series1'
       fill_in 'Subject', with: 'test'
 
@@ -210,7 +210,7 @@ RDFXML
       expect(page).not_to have_field('journal_visibility_lease')
       expect(page).not_to have_field('journal_deposit_agreement')
       expect(page).not_to have_field('journal_date_created')
-      choose "journal_visibility_open"
+      choose 'journal_visibility_open'
       check 'agreement'
 
       expect(page).to have_selector('#journal_dcmi_type')
@@ -219,7 +219,7 @@ RDFXML
         attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'), make_visible: true)
       end
 
-      click_link "Add to Collection"
+      click_link 'Add to Collection'
       expect(page).to have_content 'Administrative Set'
       find('#journal_admin_set_id').text eq 'journal admin set'
 

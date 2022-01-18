@@ -31,20 +31,18 @@ module Hyrax
 
     # [hyc-override] Method to return custom label
     def parse_geo_request(location)
-      begin
-        geo_id = location.match(/\d+/)[0]
-        request = HTTParty.get("http://api.geonames.org/getJSON?geonameId=#{geo_id}&username=#{ENV['GEONAMES_USER']}")
-        response = JSON.parse(request.body)
-        # Remove empty elements to avoid trailing commas
-        human_readable_location = [response["asciiName"], response["adminName1"], response["countryName"]].reject(&:blank?)
-        human_readable_location.join(', ')
-      rescue => e
-        Rails.logger.warn "Unable to index location for #{location} from geonames service"
-        mail(to: ENV['EMAIL_GEONAMES_ERRORS_ADDRESS'], subject: 'Unable to index geonames uri to human readable text') do |format|
-          format.text { render plain: e.message }
-        end
-        return ''
+      geo_id = location.match(/\d+/)[0]
+      request = HTTParty.get("http://api.geonames.org/getJSON?geonameId=#{geo_id}&username=#{ENV['GEONAMES_USER']}")
+      response = JSON.parse(request.body)
+      # Remove empty elements to avoid trailing commas
+      human_readable_location = [response['asciiName'], response['adminName1'], response['countryName']].reject(&:blank?)
+      human_readable_location.join(', ')
+    rescue StandardError => e
+      Rails.logger.warn "Unable to index location for #{location} from geonames service"
+      mail(to: ENV['EMAIL_GEONAMES_ERRORS_ADDRESS'], subject: 'Unable to index geonames uri to human readable text') do |format|
+        format.text { render plain: e.message }
       end
+      ''
     end
 
     # Grab the labels for controlled properties from the remote sources

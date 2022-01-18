@@ -1,9 +1,9 @@
 # no further tests will be added for this task unless it is needed again in the future
 
-require "rails_helper"
-require "rake"
+require 'rails_helper'
+require 'rake'
 
-describe "rake deposit_record:migrate", type: :task do
+describe 'rake deposit_record:migrate', type: :task do
   let(:output_dir) { Dir.mktmpdir }
 
   before do
@@ -14,17 +14,18 @@ describe "rake deposit_record:migrate", type: :task do
     FileUtils.remove_entry_secure output_dir
   end
 
-  it "preloads the Rails environment" do
-    expect(Rake::Task['deposit_record:migrate'].prerequisites).to include "environment"
+  it 'preloads the Rails environment' do
+    expect(Rake::Task['deposit_record:migrate'].prerequisites).to include 'environment'
   end
 
-  it "creates a new work" do
-    expect { Rake::Task['deposit_record:migrate'].invoke('spec/fixtures/deposit_record/config.yml',
-                                                         output_dir.to_s,
-                                                         'spec/fixtures/migration/dr_mapping.csv',
-                                                         'RAILS_ENV=test')
-    }    
-        .to change{ DepositRecord.count }.by(1)
+  it 'creates a new work' do
+    expect {
+      Rake::Task['deposit_record:migrate'].invoke('spec/fixtures/deposit_record/config.yml',
+                                                  output_dir.to_s,
+                                                  'spec/fixtures/migration/dr_mapping.csv',
+                                                  'RAILS_ENV=test')
+    }
+      .to change { DepositRecord.count }.by(1)
     new_record = DepositRecord.all[-1]
     expect(new_record['title']).to eq 'Deposit by Biomed Central Depositor via SWORD 1.3'
     expect(new_record['deposit_method']).to eq 'SWORD 1.3'

@@ -12,15 +12,15 @@ module Hyrax
 
       # return all unique authors of a work or nil if none
       def all_authors(work, &block)
-        if work.creator_display.blank?
-          author_vals = []
-        else
-          if work.creator_display.first.match('index:')
-            author_vals = sort_people_by_index(work.creator_display).map {|d| d.split('||').second.titleize}
-          else
-            author_vals = work.creator_display.map { |d| d.split('|').first.titleize }
-          end
-        end
+        author_vals = if work.creator_display.blank?
+                        []
+                      else
+                        if work.creator_display.first.match('index:')
+                          sort_people_by_index(work.creator_display).map { |d| d.split('||').second.titleize }
+                        else
+                          work.creator_display.map { |d| d.split('|').first.titleize }
+                        end
+                      end
 
         authors = author_vals.uniq.compact
         block_given? ? authors.map(&block) : authors
@@ -31,7 +31,7 @@ module Hyrax
         return name unless name =~ /,/
 
         temp_name = name.split(/,\s*/)
-        temp_name.last + " " + temp_name.first
+        "#{temp_name.last} #{temp_name.first}"
       end
 
       def surname_first(name)
@@ -60,7 +60,7 @@ module Hyrax
         name_segments = name.split(/,\s*/)
         abbreviated_name << name_segments.first
         abbreviated_name << ", #{name_segments.last.first}" if name_segments[1]
-        abbreviated_name << "."
+        abbreviated_name << '.'
       end
     end
   end

@@ -19,9 +19,9 @@ ActiveSupport::Reloader.to_prepare do
     raise "Unable to find solr document with id:#{fs_id}" unless doc
 
     {
-        height: doc["height_is"] || 100,
-        width: doc["width_is"] || 100,
-        format: doc["mime_type_ssi"]
+      height: doc['height_is'] || 100,
+      width: doc['width_is'] || 100,
+      format: doc['mime_type_ssi']
     }
   end
 

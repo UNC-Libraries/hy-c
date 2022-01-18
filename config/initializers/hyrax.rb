@@ -209,9 +209,9 @@ Hyrax.config do |config|
   # Temporary paths to hold uploads before they are ingested into FCrepo
   # These must be lambdas that return a Pathname. Can be configured separately
   #  config.upload_path = ->() { Rails.root + 'tmp' + 'uploads' }
-   config.upload_path = ->() { Pathname.new ENV['DATA_STORAGE'] }
+  config.upload_path = ->() { Pathname.new ENV['DATA_STORAGE'] }
   #  config.cache_path = ->() { Rails.root + 'tmp' + 'uploads' + 'cache' }
-   config.cache_path = ->() { Pathname.new ENV['DATA_STORAGE'] + '/cache' }
+  config.cache_path = ->() { Pathname.new "#{ENV['DATA_STORAGE']}/cache" }
 
   # Location on local file system where derivatives will be stored
   # If you use a multi-server architecture, this MUST be a shared volume
@@ -293,13 +293,11 @@ Hyrax.config do |config|
   config.browse_everything = nil
 end
 
-Date::DATE_FORMATS[:standard] = "%Y-%m-%d"
+Date::DATE_FORMATS[:standard] = '%Y-%m-%d'
 
 Qa::Authorities::Local.register_subauthority('subjects', 'Qa::Authorities::Local::TableBasedAuthority')
 # Qa::Authorities::Local.register_subauthority('languages', 'Qa::Authorities::Local::TableBasedAuthority')
 Qa::Authorities::Local.register_subauthority('genres', 'Qa::Authorities::Local::TableBasedAuthority')
 
 # set bulkrax default work type to first curation_concern if it isn't already set
-if Bulkrax.default_work_type.blank?
-  Bulkrax.default_work_type = 'General'
-end
+Bulkrax.default_work_type = 'General' if Bulkrax.default_work_type.blank?

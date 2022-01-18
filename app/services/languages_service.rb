@@ -9,13 +9,11 @@ module LanguagesService
   end
 
   def self.label(id)
-    begin
-      authority.find(Array.wrap(id).first).fetch('term')
-    rescue
-      Rails.logger.debug "LanguagesService: cannot find '#{id}'"
-      puts "LanguagesService: cannot find '#{id}'" # for migration log
-      nil
-    end
+    authority.find(Array.wrap(id).first).fetch('term')
+  rescue StandardError
+    Rails.logger.debug "LanguagesService: cannot find '#{id}'"
+    puts "LanguagesService: cannot find '#{id}'" # for migration log
+    nil
   end
 
   def self.include_current_value(value, _index, render_options, html_options)
