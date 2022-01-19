@@ -58,6 +58,7 @@ module Tasks
     end
 
     def article_with_metadata(ingest_work)
+      logger.info("Creating article from DOI: #{ingest_work.identifier}")
       art = Article.new
       art.admin_set = @admin_set
       # required fields
@@ -94,6 +95,7 @@ module Tasks
     end
 
     def attach_file_set_to_work(work:, dir:, pdf_file_name:, user:)
+      logger.info("Attaching file_set to DOI: #{work.identifier.first}")
       file_set = FileSet.create
       actor = Hyrax::Actors::FileSetActor.new(file_set, user)
       actor.create_metadata
@@ -119,6 +121,7 @@ module Tasks
     end
 
     def extract_files(package_path, temp_dir)
+      logger.info("Extracting files from #{package_path} to #{temp_dir}")
       extracted_files = Zip::File.open(package_path) do |zip_file|
         zip_file.each do |file|
           file_path = File.join(temp_dir, file.name)
