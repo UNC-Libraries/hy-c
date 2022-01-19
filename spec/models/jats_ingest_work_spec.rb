@@ -4,6 +4,13 @@ RSpec.describe JatsIngestWork, :sage, type: :model do
   let(:xml_file_path) { File.join(fixture_path, 'sage', 'CCX_2021_28_10.1177_1073274820985792', '10.1177_1073274820985792.xml') }
   let(:work) { described_class.new(xml_path: xml_file_path) }
 
+  context 'when it can\'t match the license' do
+    it "can return the license info" do
+      allow(CdrLicenseService.authority).to receive(:find).and_return({})
+      expect(work.license).to eq([])
+    end
+  end
+
   it 'can be initialized' do
     expect(described_class.new(xml_path: xml_file_path)).to be_instance_of described_class
   end

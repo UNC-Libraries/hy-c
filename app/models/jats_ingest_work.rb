@@ -141,7 +141,7 @@ class JatsIngestWork
   def license
     permissions.xpath('.//license/@xlink:href').map do |elem|
       CdrLicenseService.authority.find(elem&.inner_text)[:id]
-    end
+    end.compact
   end
 
   def license_label
