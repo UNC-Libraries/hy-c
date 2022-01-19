@@ -5,7 +5,7 @@ RSpec.describe JatsIngestWork, :sage, type: :model do
   let(:work) { described_class.new(xml_path: xml_file_path) }
 
   context 'when it can\'t match the license' do
-    it "can return the license info" do
+    it 'can return the license info' do
       allow(CdrLicenseService.authority).to receive(:find).and_return({})
       expect(work.license).to eq([])
     end
