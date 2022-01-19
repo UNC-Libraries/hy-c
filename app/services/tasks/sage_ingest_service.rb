@@ -32,22 +32,29 @@ module Tasks
         orig_file_name = File.basename(package_path, '.zip')
         Dir.mktmpdir do |dir|
           file_names = extract_files(package_path, dir).keys
-          next unless file_names.count == 2
+          unless file_names.count.between?(2, 3)
+            logger.info("Error extracting #{package_path}: skipping zip file")
+            next
+          end
 
           pdf_file_name = file_names.find { |name| name.match(/^(\S*).pdf/) }
-          xml_file_name = file_names.find { |name| name.match(/^(\S*).xml/) }
+          jats_xml_path = jats_xml_path(file_names: file_names, dir: dir)
 
           # parse xml
-          ingest_work = JatsIngestWork.new(xml_path: File.join(dir, xml_file_name))
+          ingest_work = JatsIngestWork.new(xml_path: jats_xml_path)
           # Create Article with metadata and save
           art_with_meta = article_with_metadata(ingest_work)
           # Add PDF file to Article (including FileSets)
-          _art_with_fs = attach_file_set_to_work(work: art_with_meta, dir: dir, pdf_file_name: pdf_file_name, user: @depositor)
-          # save object
-          # set off background jobs for object?
+          attach_file_set_to_work(work: art_with_meta, dir: dir, pdf_file_name: pdf_file_name, user: @depositor)
           mark_done(orig_file_name) if package_ingest_complete?(dir, file_names)
         end
       end
+    end
+
+    def jats_xml_path(file_names:, dir:)
+      file_names -= ['manifest.xml']
+      jats_xml_name = file_names.find { |name| name.match(/^(\S*).xml/) }
+      File.join(dir, jats_xml_name)
     end
 
     def article_with_metadata(ingest_work)

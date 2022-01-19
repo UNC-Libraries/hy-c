@@ -89,8 +89,8 @@ RSpec.describe Tasks::SageIngestService, :sage do
       expect(File.foreach(ingest_progress_log_path).count).to eq 0
       expect do
         service.process_packages
-      end.to change { Article.count }.by(4)
-      expect(File.foreach(ingest_progress_log_path).count).to eq 4
+      end.to change { Article.count }.by(5)
+      expect(File.foreach(ingest_progress_log_path).count).to eq 5
     end
 
     context 'with an ingest work object' do
@@ -221,6 +221,16 @@ RSpec.describe Tasks::SageIngestService, :sage do
         allow(Logger).to receive(:new).and_return(logger)
         described_class.new(configuration_file: path_to_config)
         expect(logger).to have_received(:info).with('Beginning Sage ingest')
+      end
+    end
+
+    context 'with a package including a manifest' do
+      let(:temp_dir) { Dir.mktmpdir }
+      let(:package_path) { File.join(fixture_path, 'sage', 'AJH_2021_38_4_10.1177_1049909120951088.zip') }
+
+      it 'correctly identifies the manifest and jats xml' do
+        file_names = service.extract_files(package_path, temp_dir).keys
+        expect(service.jats_xml_path(file_names: file_names, dir: temp_dir)).to eq(File.join(temp_dir, '10.1177_1049909120951088.xml'))
       end
     end
 
