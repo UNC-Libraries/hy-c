@@ -3,8 +3,21 @@ require Rails.root.join('spec/support/capybara.rb')
 
 include Warden::Test::Helpers
 
-RSpec.feature 'Edit works created through the Sage ingest', js: false do
+RSpec.feature 'Edit works created through the Sage ingest', :sage, js: false do
   let(:ingest_progress_log_path) { File.join(fixture_path, 'sage', 'ingest_progress.log') }
+  let(:admin) { FactoryBot.create(:admin) }
+  let(:admin_set) do
+    AdminSet.create(title: ['sage admin set'], description: ['some description'], edit_users: [admin.user_key])
+  end
+  let(:path_to_config) { File.join(fixture_path, 'sage', 'sage_config.yml') }
+  let(:ingest_service) { Tasks::SageIngestService.new(configuration_file: path_to_config) }
+  let(:article_count) { Article.count }
+  let(:articles) { Article.all }
+  # We're not clearing out the database, Fedora, and Solr before this test, so to find the first work created in this
+  # test, we need to count backwards from the last work created.
+  let(:first_work) { articles[-4] }
+  let(:first_work_id) { first_work.id }
+  let(:third_work_id) { articles[-2].id }
 
   # empty the progress log
   around do |example|
@@ -13,29 +26,22 @@ RSpec.feature 'Edit works created through the Sage ingest', js: false do
     File.open(ingest_progress_log_path, 'w') { |file| file.truncate(0) }
   end
 
-  before(:all) do
-    User.find_by(uid: 'admin')&.delete
-    @admin_user = FactoryBot.create(:admin, uid: 'admin')
-    @admin_set = AdminSet.create(title: ['sage admin set'],
-                                 description: ['some description'],
-                                 edit_users: [@admin_user.user_key])
-    @path_to_config = File.join(fixture_path, 'sage', 'sage_config.yml')
-
-    @ingest_service = Tasks::SageIngestService.new(configuration_file: @path_to_config)
-    @ingest_service.process_packages
-
-    @article_count = Article.count
-    @articles = Article.all
-    # We're not clearing out the database, Fedora, and Solr before this test, so to find the first work created in this
-    # test, we need to count backwards from the last work created.
-    @first_work = @articles[-4]
-    @first_work_id = @first_work.id
-    @third_work_id = @articles[-2].id
+  before(:each) do
+    # return the FactoryBot admin user when searching for uid: admin from config
+    allow(User).to receive(:find_by).and_return(admin)
+    # Stub background jobs that don't do well in CI
+    # stub virus checking
+    allow(Hydra::Works::VirusCheckerService).to receive(:file_has_virus?) { false }
+    # stub longleaf job
+    allow(RegisterToLongleafJob).to receive(:perform_later).and_return(nil)
+    # stub FITS characterization
+    allow(CharacterizeJob).to receive(:perform_later)
+    ingest_service.process_packages
   end
 
   it 'can open the edit page' do
-    login_as @admin_user
-    visit "concern/articles/#{@first_work_id}"
+    login_as admin
+    visit "concern/articles/#{first_work_id}"
     expect(page).to have_content('Inequalities in Cervical Cancer Screening Uptake Between')
     expect(page).to have_content('Smith, Jennifer S.')
     expect(page).to have_content('sage admin set')
@@ -46,8 +52,8 @@ RSpec.feature 'Edit works created through the Sage ingest', js: false do
   end
 
   it 'can render the pre-populated edit page' do
-    login_as @admin_user
-    visit "concern/articles/#{@first_work_id}/edit"
+    login_as admin
+    visit "concern/articles/#{first_work_id}/edit"
     # These values are also tested in the spec/services/tasks/sage_ingest_service_spec.rb
     # form order
     expect(page).to have_field('Title', with: 'Inequalities in Cervical Cancer Screening Uptake Between Chinese Migrant Women and Local Women: A Cross-Sectional Study')
@@ -82,20 +88,20 @@ RSpec.feature 'Edit works created through the Sage ingest', js: false do
 
   # creators after the first one need JS to render
   it 'can render the javascript-drawn fields', js: true do
-    login_as @admin_user
-    visit "concern/articles/#{@first_work_id}/edit"
+    login_as admin
+    visit "concern/articles/#{first_work_id}/edit"
     expect(page).to have_field('Creator #2', with: 'Zhang, Xi')
   end
 
   it 'renders a date that includes only month and year on the edit page' do
-    login_as @admin_user
-    visit "concern/articles/#{@third_work_id}/edit"
+    login_as admin
+    visit "concern/articles/#{third_work_id}/edit"
     expect(page).to have_field('Date of publication', with: 'January 2021') # aka date_issued
   end
 
   it 'can render values only present on the second work' do
-    login_as @admin_user
-    visit "concern/articles/#{@third_work_id}/edit"
+    login_as admin
+    visit "concern/articles/#{third_work_id}/edit"
     expect(page).to have_field('Title', with: /The Prevalence of Bacterial Infection in Patients Undergoing/)
     expect(page).to have_field('Journal issue', with: '1')
     expect(page).to have_field('Journal volume', with: '11')

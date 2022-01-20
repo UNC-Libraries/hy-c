@@ -31,7 +31,7 @@ module Tasks
         logger.info("Begin processing #{package_path} (#{index} of #{count})")
         orig_file_name = File.basename(package_path, '.zip')
         dir = Rails.root.join('tmp', 'sage_files', orig_file_name)
-        Dir.mkdir(dir) unless File.exist?(dir)
+        FileUtils.mkdir_p(dir) unless File.exist?(dir)
         file_names = extract_files(package_path, dir).keys
         unless file_names.count.between?(2, 3)
           logger.info("Error extracting #{package_path}: skipping zip file")
