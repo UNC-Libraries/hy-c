@@ -191,37 +191,11 @@ RSpec.describe Tasks::SageIngestService, :sage do
       end
     end
 
-    context 'with a package already unzipped' do
-      it 'can write to the progress log' do
-        allow(service).to receive(:package_ingest_complete?).and_return(true)
-        expect(File.size(ingest_progress_log_path)).to eq 0
-        service.mark_done(first_package_identifier)
-        expect(File.read(ingest_progress_log_path).chomp).to eq 'CCX_2021_28_10.1177_1073274820985792'
-      end
-    end
-
-    context 'with an unzipped file already present' do
-      before do
-        FileUtils.touch(first_pdf_path)
-      end
-
-      after do
-        FileUtils.rm_rf(Dir["#{path_to_tmp}/*"])
-      end
-
-      it 'logs info to a new log' do
-        logger = spy('logger')
-        allow(Logger).to receive(:new).and_return(logger)
-        service.extract_files(first_zip_path, path_to_tmp)
-        expect(logger).to have_received(:info).with("#{first_zip_path}, zip file error: Destination '#{first_pdf_path}' already exists")
-      end
-
-      it 'writes to the log' do
-        logger = spy('logger')
-        allow(Logger).to receive(:new).and_return(logger)
-        described_class.new(configuration_file: path_to_config)
-        expect(logger).to have_received(:info).with('Beginning Sage ingest')
-      end
+    it 'writes to the log' do
+      logger = spy('logger')
+      allow(Logger).to receive(:new).and_return(logger)
+      described_class.new(configuration_file: path_to_config)
+      expect(logger).to have_received(:info).with('Beginning Sage ingest')
     end
 
     context 'with a package including a manifest' do

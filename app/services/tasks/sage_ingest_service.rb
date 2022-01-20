@@ -30,24 +30,24 @@ module Tasks
       sage_package_paths.each.with_index(1) do |package_path, index|
         logger.info("Begin processing #{package_path} (#{index} of #{count})")
         orig_file_name = File.basename(package_path, '.zip')
-        Dir.mktmpdir do |dir|
-          file_names = extract_files(package_path, dir).keys
-          unless file_names.count.between?(2, 3)
-            logger.info("Error extracting #{package_path}: skipping zip file")
-            next
-          end
-
-          pdf_file_name = file_names.find { |name| name.match(/^(\S*).pdf/) }
-          jats_xml_path = jats_xml_path(file_names: file_names, dir: dir)
-
-          # parse xml
-          ingest_work = JatsIngestWork.new(xml_path: jats_xml_path)
-          # Create Article with metadata and save
-          art_with_meta = article_with_metadata(ingest_work)
-          # Add PDF file to Article (including FileSets)
-          attach_file_set_to_work(work: art_with_meta, dir: dir, pdf_file_name: pdf_file_name, user: @depositor)
-          mark_done(orig_file_name) if package_ingest_complete?(dir, file_names)
+        dir = Rails.root.join('tmp', 'sage_files', orig_file_name)
+        Dir.mkdir(dir) unless File.exist?(dir)
+        file_names = extract_files(package_path, dir).keys
+        unless file_names.count.between?(2, 3)
+          logger.info("Error extracting #{package_path}: skipping zip file")
+          next
         end
+
+        pdf_file_name = file_names.find { |name| name.match(/^(\S*).pdf/) }
+        jats_xml_path = jats_xml_path(file_names: file_names, dir: dir)
+
+        # parse xml
+        ingest_work = JatsIngestWork.new(xml_path: jats_xml_path)
+        # Create Article with metadata and save
+        art_with_meta = article_with_metadata(ingest_work)
+        # Add PDF file to Article (including FileSets)
+        attach_file_set_to_work(work: art_with_meta, dir: dir, pdf_file_name: pdf_file_name, user: @depositor)
+        mark_done(orig_file_name) if package_ingest_complete?(dir, file_names)
       end
     end
 
@@ -125,7 +125,7 @@ module Tasks
       extracted_files = Zip::File.open(package_path) do |zip_file|
         zip_file.each do |file|
           file_path = File.join(temp_dir, file.name)
-          zip_file.extract(file, file_path)
+          zip_file.extract(file, file_path) unless File.exist?(file_path)
         end
       end
       logger.error("Unexpected package contents - #{extracted_files.count} files extracted from #{package_path}") unless extracted_files.count.between?(2, 3)
