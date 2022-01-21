@@ -300,7 +300,7 @@ Qa::Authorities::Local.register_subauthority('subjects', 'Qa::Authorities::Local
 Qa::Authorities::Local.register_subauthority('genres', 'Qa::Authorities::Local::TableBasedAuthority')
 
 # Set timeout for creating video derivatives. Otherwise the process sometimes silently fails.
-Hydra::Derivatives::Processors::Video::Processor.timeout  = 10.minutes
+Hydra::Derivatives::Processors::Video::Processor.timeout = 10.minutes
 
 # set bulkrax default work type to first curation_concern if it isn't already set
 Bulkrax.default_work_type = 'General' if Bulkrax.default_work_type.blank?
