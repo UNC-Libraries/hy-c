@@ -42,8 +42,12 @@ module Hydra::Derivatives::Processors
       def execute(command)
         context = {}
         if timeout
+          Rails.logger.debug("[ffmpeg] - executing with timeout: #{timeout}, command: #{command}, context: #{context}")
+
           execute_with_timeout(timeout, command, context)
         else
+          Rails.logger.debug("[ffmpeg] - executing WITHOUT timeout: #{timeout}, command: #{command}, context: #{context}")
+          
           execute_without_timeout(command, context)
         end
       end
@@ -60,7 +64,6 @@ module Hydra::Derivatives::Processors
 
       def execute_without_timeout(command, context)
         err_str = ''
-        Rails.logger.debug("Command sent to popen3 for ffmpeg encoding: #{command}")
         stdin, stdout, stderr, wait_thr = popen3(command)
         context[:pid] = wait_thr[:pid]
         files = [stderr, stdout]
