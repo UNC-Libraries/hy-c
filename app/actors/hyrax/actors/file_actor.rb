@@ -27,7 +27,8 @@ module Hyrax
                                             io,
                                             relation,
                                             versioning: false)
-        return false unless file_set.save
+
+        return false unless file_set.save!
 
         repository_file = related_file
         Hyrax::VersioningService.create(repository_file, user)
@@ -35,6 +36,8 @@ module Hyrax
         RegisterToLongleafJob.perform_later(repository_file.checksum.value)
         pathhint = io.uploaded_file.uploader.path if io.uploaded_file # in case next worker is on same filesystem
         CharacterizeJob.perform_later(file_set, repository_file.id, pathhint || io.path)
+      rescue ActiveFedora::RecordInvalid => error
+        Rails.logger.error("Could not save FileSet with id: #{file_set.id} after adding file due to error: #{error}")
       end
 
       # Reverts file and spawns async job to characterize and create derivatives.
