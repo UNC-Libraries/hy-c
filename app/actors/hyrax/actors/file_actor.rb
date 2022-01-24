@@ -21,6 +21,9 @@ module Hyrax
       # @note Instead of calling this method, use IngestJob to avoid synchronous execution cost
       # @see IngestJob
       # @todo create a job to monitor the temp directory (or in a multi-worker system, directories!) to prune old files that have made it into the repo
+
+      # [hyc-override] - Raise an error if the file_set cannot save, then rescue and log the error, finally return false after logging
+      # Returning false after the save should maintain the method's API while allowing us to see errors more readily
       def ingest_file(io)
         # Skip versioning because versions will be minted by VersionCommitter as necessary during save_characterize_and_record_committer.
         Hydra::Works::AddFileToFileSet.call(file_set,
@@ -28,7 +31,7 @@ module Hyrax
                                             relation,
                                             versioning: false)
 
-        return false unless file_set.save!
+        file_set.save!
 
         repository_file = related_file
         Hyrax::VersioningService.create(repository_file, user)
@@ -38,6 +41,7 @@ module Hyrax
         CharacterizeJob.perform_later(file_set, repository_file.id, pathhint || io.path)
       rescue ActiveFedora::RecordInvalid => error
         Rails.logger.error("Could not save FileSet with id: #{file_set.id} after adding file due to error: #{error}")
+        false
       end
 
       # Reverts file and spawns async job to characterize and create derivatives.
