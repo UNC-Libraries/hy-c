@@ -41,6 +41,7 @@ Style/SlicingWithRange:
   Enabled: false
 
 # Section to keep long term
-
+Naming/RescuedExceptionsVariableName:
+  Enabled: false
 Style/SymbolArray:
   Enabled: false
