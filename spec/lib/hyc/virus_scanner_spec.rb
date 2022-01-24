@@ -33,6 +33,14 @@ RSpec.describe Hyc::VirusScanner do
     end
   end
 
+  context 'when it cannot find the file' do
+    let(:file) { 'not/a/file.txt' }
+
+    it 'raises an error' do
+      expect { scanner.infected? }.to raise_error(ClamAV::Util::UnknownPathException)
+    end
+  end
+
   context 'when a file is infected' do
     src_path = Pathname.new('spec/fixtures/files/virus.txt').realpath.to_s
     if Dir.pwd.include? 'runner'
