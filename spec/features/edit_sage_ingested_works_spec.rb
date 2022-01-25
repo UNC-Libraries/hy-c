@@ -53,13 +53,16 @@ RSpec.feature 'Edit works created through the Sage ingest', :sage, js: false do
     expect(page).to have_link('Work Deposit Form')
   end
 
-  it 'can render the pre-populated edit page' do
+  # Creator 2 only visible with Javascript on
+  it 'can render the pre-populated edit page', js: true do
     login_as admin
     visit "concern/articles/#{first_work_id}/edit"
     # These values are also tested in the spec/services/tasks/sage_ingest_service_spec.rb
     # form order
     expect(page).to have_field('Title', with: 'Inequalities in Cervical Cancer Screening Uptake Between Chinese Migrant Women and Local Women: A Cross-Sectional Study')
     expect(page).to have_field('Creator #1', with: 'Holt, Hunter K.')
+    # Creator 2 only visible with Javascript on
+    expect(page).to have_field('Creator #2', with: 'Zhang, Xi')
     expect(page).to have_field('Additional affiliation (Creator #1)', with: 'Department of Family and Community Medicine, University of California, San Francisco, CA, USA')
     expect(page).to have_field('ORCID (Creator #1)', with: 'https://orcid.org/0000-0001-6833-8372')
     expect(page).to have_field('Abstract', with: /Efforts to increase education opportunities, provide insurance/)
@@ -88,23 +91,12 @@ RSpec.feature 'Edit works created through the Sage ingest', :sage, js: false do
     expect(page).to have_checked_field('Public')
   end
 
-  # creators after the first one need JS to render
-  it 'can render the javascript-drawn fields', js: true do
-    login_as admin
-    visit "concern/articles/#{first_work_id}/edit"
-    expect(page).to have_field('Creator #2', with: 'Zhang, Xi')
-  end
-
-  it 'renders a date that includes only month and year on the edit page' do
-    login_as admin
-    visit "concern/articles/#{third_work_id}/edit"
-    expect(page).to have_field('Date of publication', with: 'January 2021') # aka date_issued
-  end
-
   it 'can render values only present on the second work' do
     login_as admin
     visit "concern/articles/#{third_work_id}/edit"
     expect(page).to have_field('Title', with: /The Prevalence of Bacterial Infection in Patients Undergoing/)
+    # date that includes only month and year on the edit page
+    expect(page).to have_field('Date of publication', with: 'January 2021') # aka date_issued
     expect(page).to have_field('Journal issue', with: '1')
     expect(page).to have_field('Journal volume', with: '11')
     keyword_fields = page.all(:xpath, '/html/body/div[2]/div[2]/form/div/div[1]/div/div/div[1]/div[2]/div[2]/div[1]/ul/li/input')
