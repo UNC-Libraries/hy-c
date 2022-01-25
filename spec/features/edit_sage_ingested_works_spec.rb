@@ -36,6 +36,8 @@ RSpec.feature 'Edit works created through the Sage ingest', :sage, js: false do
     allow(RegisterToLongleafJob).to receive(:perform_later).and_return(nil)
     # stub FITS characterization
     allow(CharacterizeJob).to receive(:perform_later)
+    # instantiate the sage ingest admin_set
+    admin_set
     ingest_service.process_packages
   end
 
