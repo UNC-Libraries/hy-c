@@ -5,7 +5,7 @@ module Tasks
 
     def logger
       @logger ||= begin
-        log_path = Rails.root.join('log', 'sage_ingest.log')
+        log_path = File.join(Rails.configuration.log_directory, 'sage_ingest.log')
         Logger.new(log_path, progname: 'Sage ingest')
       end
     end

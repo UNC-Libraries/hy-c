@@ -198,6 +198,28 @@ RSpec.describe Tasks::SageIngestService, :sage do
       expect(logger).to have_received(:info).with('Beginning Sage ingest')
     end
 
+    context 'with a log directory configured' do
+      it 'can write to the configured log path when it is an absolute path' do
+        allow(Rails.configuration).to receive(:log_directory).and_return('/some/absolute/path/')
+
+        logger = spy('logger')
+        allow(Logger).to receive(:new).and_return(logger)
+
+        expect(Logger).to receive(:new).with('/some/absolute/path/sage_ingest.log', { progname: 'Sage ingest' })
+        described_class.new(configuration_file: path_to_config)
+      end
+
+      it 'can write to the configured log path when it is a relative path' do
+        allow(Rails.configuration).to receive(:log_directory).and_return('some/relative/path/')
+
+        logger = spy('logger')
+        allow(Logger).to receive(:new).and_return(logger)
+
+        expect(Logger).to receive(:new).with('some/relative/path/sage_ingest.log', { progname: 'Sage ingest' })
+        described_class.new(configuration_file: path_to_config)
+      end
+    end
+
     context 'with a package including a manifest' do
       let(:temp_dir) { Dir.mktmpdir }
       let(:package_path) { File.join(fixture_path, 'sage', 'AJH_2021_38_4_10.1177_1049909120951088.zip') }
