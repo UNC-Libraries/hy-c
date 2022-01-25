@@ -52,6 +52,7 @@ RSpec.describe Tasks::OnescienceIngestService do
     end
 
     before do
+      allow(CharacterizeJob).to receive(:perform_later)
       allow(Hydra::Works::VirusCheckerService).to receive(:file_has_virus?) { false }
       AdminSet.delete_all
       Hyrax::PermissionTemplateAccess.delete_all

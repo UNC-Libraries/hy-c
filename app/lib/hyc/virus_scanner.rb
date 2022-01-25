@@ -5,7 +5,7 @@ module Hyc
     def infected?
       results = hyc_infected?
 
-      raise StandardError, "ClamAV::ErrorResponse: #{results.error_str}" if results.instance_of? ClamAV::ErrorResponse
+      raise(StandardError, "ClamAV::ErrorResponse: #{results.error_str}") if results.instance_of? ClamAV::ErrorResponse
 
       results.instance_of? ClamAV::VirusResponse
     end
