@@ -141,7 +141,7 @@ class JatsIngestWork
   def license
     permissions.xpath('.//license/@xlink:href').map do |elem|
       controlled_vocab_hash = CdrLicenseService.authority.find(elem&.inner_text)
-      Rails.logger.warn("Could not match license uri: #{elem&.inner_text} to a license in the controlled vocabulary. Work with DOI #{identifier&.first} may not include the required license.")
+      Rails.logger.warn("Could not match license uri: #{elem&.inner_text} to a license in the controlled vocabulary. Work with DOI #{identifier&.first} may not include the required license.") if controlled_vocab_hash.empty?
       controlled_vocab_hash[:id]
     end.compact
   end
