@@ -5,9 +5,18 @@ RSpec.describe JatsIngestWork, :sage, type: :model do
   let(:work) { described_class.new(xml_path: xml_file_path) }
 
   context 'when it can\'t match the license' do
-    it 'can return the license info' do
+    before do
       allow(CdrLicenseService.authority).to receive(:find).and_return({})
+    end
+
+    it 'can return the license info' do
       expect(work.license).to eq([])
+    end
+
+    it 'logs a warning to the rails log' do
+      allow(Rails.logger).to receive(:warn)
+      work.license
+      expect(Rails.logger).to have_received(:warn).with('Could not match license uri: https://creativecommons.org/licenses/by-nc/4.0/ to a license in the controlled vocabulary. Work with DOI https://doi.org/10.1177/1073274820985792 may not include the required license.')
     end
   end
 
