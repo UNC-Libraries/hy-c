@@ -29,7 +29,7 @@ bundle exec rake sage:ingest[PATH_TO_CONFIG]
 bundle exec rake sage:ingest[/hyrax/spec/fixtures/sage/sage_config.yml]
 ```
 * See [example config file](spec/fixtures/sage/sage_config.yml).
-* The beginning and ending of the rake task will be output to the console, the remaining events will be logged to the rails log and tagged with "Sage ingest".
+* The beginning and ending of the rake task will be output to the console, the remaining events will be logged to the sage ingest log (in the same directory as the Rails log).
 
 #### Testing
 ##### RSpec Testing

@@ -1,12 +1,27 @@
 module Tasks
   require 'tasks/migrate/services/progress_tracker'
   class SageIngestService
-    attr_reader :package_dir, :ingest_progress_log, :admin_set
+    attr_reader :package_dir, :ingest_progress_log, :admin_set, :depositor
+
+    def logger
+      @logger ||= begin
+        log_path = File.join(Rails.configuration.log_directory, 'sage_ingest.log')
+        Logger.new(log_path, progname: 'Sage ingest')
+      end
+    end
 
     def initialize(args)
       config = YAML.load_file(args[:configuration_file])
+      # Create temp directory for unzipped contents
+      @temp = config['unzip_dir']
+      FileUtils.mkdir_p @temp unless File.exist?(@temp)
 
-      @admin_set = ::AdminSet.where(title: config['admin_set']).first
+      logger.info('Beginning Sage ingest')
+      @admin_set = ::AdminSet.where(title: config['admin_set'])&.first
+      raise(ActiveRecord::RecordNotFound, "Could not find AdminSet with title #{config['admin_set']}") unless @admin_set.present?
+
+      @depositor = User.find_by(uid: config['depositor_onyen'])
+      raise(ActiveRecord::RecordNotFound, "Could not find User with onyen #{config['depositor_onyen']}") unless @depositor.present?
 
       @package_dir = config['package_dir']
       @ingest_progress_log = Migrate::Services::ProgressTracker.new(config['ingest_progress_log'])
@@ -15,29 +30,47 @@ module Tasks
     def process_packages
       sage_package_paths = Dir.glob("#{@package_dir}/*.zip").sort
       count = sage_package_paths.count
-      Rails.logger.tagged('Sage ingest') { Rails.logger.info("Beginning ingest of #{count} Sage packages") }
+      logger.info("Beginning ingest of #{count} Sage packages")
       sage_package_paths.each.with_index(1) do |package_path, index|
-        Rails.logger.tagged('Sage ingest') { Rails.logger.info("Begin processing #{package_path} (#{index} of #{count})") }
+        logger.info("Begin processing #{package_path} (#{index} of #{count})")
         orig_file_name = File.basename(package_path, '.zip')
-        Dir.mktmpdir do |dir|
-          file_names = extract_files(package_path, dir).keys
-          next unless file_names.count == 2
 
-          _pdf_file_name = file_names.find { |name| name.match(/^(\S*).pdf/) }
-          xml_file_name = file_names.find { |name| name.match(/^(\S*).xml/) }
-          # parse xml
-          ingest_work = JatsIngestWork.new(xml_path: File.join(dir, xml_file_name))
-          # Create Article with metadata and save
-          build_article(ingest_work)
-          # Add PDF file to Article (including FileSets)
-          # save object
-          # set off background jobs for object?
-          mark_done(orig_file_name) if package_ingest_complete?(dir, file_names)
+        file_names = extract_files(package_path, @temp).keys
+        unless file_names.count.between?(2, 3)
+          logger.info("Error extracting #{package_path}: skipping zip file")
+          next
         end
+
+        pdf_file_name = file_names.find { |name| name.match(/^(\S*).pdf/) }
+
+        jats_xml_path = jats_xml_path(file_names: file_names, dir: @temp)
+
+        # parse xml
+        ingest_work = JatsIngestWork.new(xml_path: jats_xml_path)
+        # Create Article with metadata and save
+        art_with_meta = article_with_metadata(ingest_work)
+        # Add PDF file to Article (including FileSets)
+        attach_file_set_to_work(work: art_with_meta, dir: @temp, file_name: pdf_file_name, user: @depositor, visibility: art_with_meta.visibility)
+        # Add xml metadata file to Article
+        attach_file_set_to_work(work: art_with_meta, dir: @temp, file_name: jats_xml_file_name(file_names: file_names), user: @depositor, visibility: Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE)
+        mark_done(orig_file_name) if package_ingest_complete?(@temp, file_names)
       end
+      logger.info("Completing ingest of #{count} Sage packages.")
     end
 
-    def build_article(ingest_work)
+    def jats_xml_path(file_names:, dir:)
+      jats_xml_name = jats_xml_file_name(file_names: file_names)
+
+      File.join(dir, jats_xml_name)
+    end
+
+    def jats_xml_file_name(file_names:)
+      file_names -= ['manifest.xml']
+      file_names.find { |name| name.match(/^(\S*).xml/) }
+    end
+
+    def article_with_metadata(ingest_work)
+      logger.info("Creating article from DOI: #{ingest_work.identifier}")
       art = Article.new
       art.admin_set = @admin_set
       # required fields
@@ -63,6 +96,7 @@ module Tasks
       art.resource_type = ['Article']
       art.rights_holder = ingest_work.rights_holder
       art.rights_statement = 'http://rightsstatements.org/vocab/InC/1.0/'
+      art.rights_statement_label = 'In Copyright'
       art.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
       # fields not normally edited via UI
       art.date_uploaded = DateTime.current
@@ -73,8 +107,22 @@ module Tasks
       art
     end
 
+    def attach_file_set_to_work(work:, dir:, file_name:, user:, visibility:)
+      file_set_params = { visibility: visibility }
+      logger.info("Attaching file_set for #{file_name} to DOI: #{work.identifier.first}")
+      file_set = FileSet.create
+      actor = Hyrax::Actors::FileSetActor.new(file_set, user)
+      actor.create_metadata(file_set_params)
+      file = File.open(File.join(dir, file_name))
+      actor.create_content(file)
+      actor.attach_to_work(work, file_set_params)
+      file.close
+
+      file_set
+    end
+
     def mark_done(orig_file_name)
-      Rails.logger.tagged('Sage ingest') { Rails.logger.info("Marked package ingest complete #{orig_file_name}") }
+      logger.info("Marked package ingest complete #{orig_file_name}")
       @ingest_progress_log.add_entry(orig_file_name)
     end
 
@@ -82,21 +130,22 @@ module Tasks
     def package_ingest_complete?(dir, file_names)
       return true if File.exist?(File.join(dir, file_names.first)) && File.exist?(File.join(dir, file_names.last))
 
-      Rails.logger.tagged('Sage ingest') { Rails.logger.error("Package ingest not complete for #{file_names.first} and #{file_names.last}") }
+      logger.error("Package ingest not complete for #{file_names.first} and #{file_names.last}")
       false
     end
 
     def extract_files(package_path, temp_dir)
+      logger.info("Extracting files from #{package_path} to #{temp_dir}")
       extracted_files = Zip::File.open(package_path) do |zip_file|
         zip_file.each do |file|
           file_path = File.join(temp_dir, file.name)
-          zip_file.extract(file, file_path)
+          zip_file.extract(file, file_path) unless File.exist?(file_path)
         end
       end
-      Rails.logger.tagged('Sage ingest') { Rails.logger.error("Unexpected package contents - more than two files extracted from #{package_path}") } unless extracted_files.count == 2
+      logger.error("Unexpected package contents - #{extracted_files.count} files extracted from #{package_path}") unless extracted_files.count.between?(2, 3)
       extracted_files
     rescue Zip::DestinationFileExistsError => e
-      Rails.logger.tagged('Sage ingest') { Rails.logger.info("#{package_path}, zip file error: #{e.message}") }
+      logger.info("#{package_path}, zip file error: #{e.message}")
     end
   end
 end

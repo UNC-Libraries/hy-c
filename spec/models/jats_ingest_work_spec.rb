@@ -1,8 +1,24 @@
 require 'rails_helper'
 
-RSpec.describe JatsIngestWork, type: :model do
+RSpec.describe JatsIngestWork, :sage, type: :model do
   let(:xml_file_path) { File.join(fixture_path, 'sage', 'CCX_2021_28_10.1177_1073274820985792', '10.1177_1073274820985792.xml') }
   let(:work) { described_class.new(xml_path: xml_file_path) }
+
+  context 'when it can\'t match the license' do
+    before do
+      allow(CdrLicenseService.authority).to receive(:find).and_return({})
+    end
+
+    it 'can return the license info' do
+      expect(work.license).to eq([])
+    end
+
+    it 'logs a warning to the rails log' do
+      allow(Rails.logger).to receive(:warn)
+      work.license
+      expect(Rails.logger).to have_received(:warn).with('Could not match license uri: https://creativecommons.org/licenses/by-nc/4.0/ to a license in the controlled vocabulary. Work with DOI https://doi.org/10.1177/1073274820985792 may not include the required license.')
+    end
+  end
 
   it 'can be initialized' do
     expect(described_class.new(xml_path: xml_file_path)).to be_instance_of described_class
