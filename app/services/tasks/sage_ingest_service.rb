@@ -87,6 +87,7 @@ module Tasks
       art.resource_type = ['Article']
       art.rights_holder = ingest_work.rights_holder
       art.rights_statement = 'http://rightsstatements.org/vocab/InC/1.0/'
+      art.rights_statement_label = 'In Copyright'
       art.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
       # fields not normally edited via UI
       art.date_uploaded = DateTime.current

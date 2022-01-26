@@ -130,6 +130,7 @@ RSpec.describe Tasks::SageIngestService, :sage do
         expect(built_article.resource_type).to match_array(['Article'])
         expect(built_article.rights_holder).to include(/SAGE Publications Inc, unless otherwise noted. Manuscript/)
         expect(built_article.rights_statement).to eq('http://rightsstatements.org/vocab/InC/1.0/')
+        expect(built_article.rights_statement_label).to eq('In Copyright')
         expect(built_article.visibility).to eq('open')
       end
 

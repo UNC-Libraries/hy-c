@@ -10,6 +10,7 @@ RSpec.feature 'Edit works created through the Sage ingest', :sage, js: false do
     AdminSet.create(title: ['sage admin set'], description: ['some description'], edit_users: [admin.user_key])
   end
   let(:path_to_config) { File.join(fixture_path, 'sage', 'sage_config.yml') }
+  let(:path_to_tmp) { FileUtils.mkdir_p(File.join(fixture_path, 'sage', 'tmp')).first }
   let(:ingest_service) { Tasks::SageIngestService.new(configuration_file: path_to_config) }
   let(:article_count) { Article.count }
   let(:articles) { Article.all }
@@ -20,10 +21,11 @@ RSpec.feature 'Edit works created through the Sage ingest', :sage, js: false do
   let(:third_work_id) { articles[-2].id }
 
   # empty the progress log
-  around do |example|
+  around(:all) do |example|
     File.open(ingest_progress_log_path, 'w') { |file| file.truncate(0) }
     example.run
     File.open(ingest_progress_log_path, 'w') { |file| file.truncate(0) }
+    FileUtils.remove_entry(path_to_tmp)
   end
 
   before(:each) do
@@ -49,6 +51,7 @@ RSpec.feature 'Edit works created through the Sage ingest', :sage, js: false do
     expect(page).to have_content('sage admin set')
     expect(page).to have_content('Attribution-NonCommercial 4.0 International')
     expect(page).to have_content('February 1, 2021')
+    expect(page).to have_content('In Copyright')
     click_link('Edit', match: :first)
     expect(page).to have_link('Work Deposit Form')
   end
