@@ -12,6 +12,10 @@ module Tasks
 
     def initialize(args)
       config = YAML.load_file(args[:configuration_file])
+      # Create temp directory for unzipped contents
+      @temp = config['unzip_dir']
+      FileUtils.mkdir_p @temp unless File.exist?(@temp)
+
       logger.info('Beginning Sage ingest')
       @admin_set = ::AdminSet.where(title: config['admin_set'])&.first
       raise(ActiveRecord::RecordNotFound, "Could not find AdminSet with title #{config['admin_set']}") unless @admin_set.present?
@@ -30,24 +34,23 @@ module Tasks
       sage_package_paths.each.with_index(1) do |package_path, index|
         logger.info("Begin processing #{package_path} (#{index} of #{count})")
         orig_file_name = File.basename(package_path, '.zip')
-        dir = Rails.root.join('tmp', 'sage_files', orig_file_name)
-        FileUtils.mkdir_p(dir) unless File.exist?(dir)
-        file_names = extract_files(package_path, dir).keys
+
+        file_names = extract_files(package_path, @temp).keys
         unless file_names.count.between?(2, 3)
           logger.info("Error extracting #{package_path}: skipping zip file")
           next
         end
 
         pdf_file_name = file_names.find { |name| name.match(/^(\S*).pdf/) }
-        jats_xml_path = jats_xml_path(file_names: file_names, dir: dir)
+        jats_xml_path = jats_xml_path(file_names: file_names, dir: @temp)
 
         # parse xml
         ingest_work = JatsIngestWork.new(xml_path: jats_xml_path)
         # Create Article with metadata and save
         art_with_meta = article_with_metadata(ingest_work)
         # Add PDF file to Article (including FileSets)
-        attach_file_set_to_work(work: art_with_meta, dir: dir, pdf_file_name: pdf_file_name, user: @depositor)
-        mark_done(orig_file_name) if package_ingest_complete?(dir, file_names)
+        attach_file_set_to_work(work: art_with_meta, dir: @temp, pdf_file_name: pdf_file_name, user: @depositor)
+        mark_done(orig_file_name) if package_ingest_complete?(@temp, file_names)
       end
     end
 

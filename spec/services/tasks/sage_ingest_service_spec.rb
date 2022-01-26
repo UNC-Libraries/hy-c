@@ -8,7 +8,7 @@ RSpec.describe Tasks::SageIngestService, :sage do
 
   let(:sage_fixture_path) { File.join(fixture_path, 'sage') }
   let(:path_to_config) { File.join(sage_fixture_path, 'sage_config.yml') }
-  let(:path_to_tmp) { File.join(sage_fixture_path, 'tmp') }
+  let(:path_to_tmp) { FileUtils.mkdir_p(File.join(fixture_path, 'sage', 'tmp')).first }
   let(:first_package_identifier) { 'CCX_2021_28_10.1177_1073274820985792' }
   let(:first_zip_path) { "spec/fixtures/sage/#{first_package_identifier}.zip" }
   let(:first_dir_path) { "spec/fixtures/sage/tmp/#{first_package_identifier}" }
@@ -29,10 +29,13 @@ RSpec.describe Tasks::SageIngestService, :sage do
     admin_set
   end
 
+  after do
+    FileUtils.remove_entry(path_to_tmp)
+  end
+
   context 'running the background jobs' do
     let(:ingest_work) { JatsIngestWork.new(xml_path: first_xml_path) }
     let(:built_article) { service.article_with_metadata(ingest_work) }
-    let(:temp_dir) { Dir.mktmpdir }
     let(:user) { FactoryBot.create(:admin) }
 
     before do
@@ -45,10 +48,6 @@ RSpec.describe Tasks::SageIngestService, :sage do
       allow(CharacterizeJob).to receive(:perform_later)
     end
 
-    after do
-      FileUtils.remove_entry(temp_dir)
-    end
-
     around do |example|
       File.open(ingest_progress_log_path, 'w') { |file| file.truncate(0) }
       perform_enqueued_jobs do
@@ -58,8 +57,8 @@ RSpec.describe Tasks::SageIngestService, :sage do
     end
 
     it 'attaches a file to the file_set' do
-      service.extract_files(first_zip_path, temp_dir)
-      service.attach_file_set_to_work(work: built_article, dir: temp_dir, pdf_file_name: '10.1177_1073274820985792.pdf', user: user)
+      service.extract_files(first_zip_path, path_to_tmp)
+      service.attach_file_set_to_work(work: built_article, dir: path_to_tmp, pdf_file_name: '10.1177_1073274820985792.pdf', user: user)
       fs = built_article.file_sets.first
       expect(fs.files.first).to be_instance_of(Hydra::PCDM::File)
     end
@@ -96,12 +95,7 @@ RSpec.describe Tasks::SageIngestService, :sage do
     context 'with an ingest work object' do
       let(:ingest_work) { JatsIngestWork.new(xml_path: first_xml_path) }
       let(:built_article) { service.article_with_metadata(ingest_work) }
-      let(:temp_dir) { Dir.mktmpdir }
       let(:user) { FactoryBot.create(:admin) }
-
-      after do
-        FileUtils.remove_entry(temp_dir)
-      end
 
       it 'can create a valid article' do
         expect do
@@ -145,9 +139,9 @@ RSpec.describe Tasks::SageIngestService, :sage do
       end
 
       it 'attaches a file_set to the article' do
-        service.extract_files(first_zip_path, temp_dir)
+        service.extract_files(first_zip_path, path_to_tmp)
         expect do
-          service.attach_file_set_to_work(work: built_article, dir: temp_dir, pdf_file_name: '10.1177_1073274820985792.pdf', user: user)
+          service.attach_file_set_to_work(work: built_article, dir: path_to_tmp, pdf_file_name: '10.1177_1073274820985792.pdf', user: user)
         end.to change { FileSet.count }.by(1)
         expect(built_article.file_sets).to be_instance_of(Array)
         fs = built_article.file_sets.first
@@ -180,14 +174,9 @@ RSpec.describe Tasks::SageIngestService, :sage do
     end
 
     describe '#extract_files' do
-      let(:temp_dir) { Dir.mktmpdir }
-
-      after do
-        FileUtils.remove_entry(temp_dir)
-      end
       it 'takes a path to a zip file and a temp directory as arguments' do
-        service.extract_files(first_zip_path, temp_dir)
-        expect(Dir.entries(temp_dir)).to match_array(['.', '..', '10.1177_1073274820985792.pdf', '10.1177_1073274820985792.xml'])
+        service.extract_files(first_zip_path, path_to_tmp)
+        expect(Dir.entries(path_to_tmp)).to match_array(['.', '..', '10.1177_1073274820985792.pdf', '10.1177_1073274820985792.xml'])
       end
     end
 
@@ -221,23 +210,22 @@ RSpec.describe Tasks::SageIngestService, :sage do
     end
 
     context 'with a package including a manifest' do
-      let(:temp_dir) { Dir.mktmpdir }
       let(:package_path) { File.join(fixture_path, 'sage', 'AJH_2021_38_4_10.1177_1049909120951088.zip') }
 
       it 'correctly identifies the manifest and jats xml' do
-        file_names = service.extract_files(package_path, temp_dir).keys
-        expect(service.jats_xml_path(file_names: file_names, dir: temp_dir)).to eq(File.join(temp_dir, '10.1177_1049909120951088.xml'))
+        file_names = service.extract_files(package_path, path_to_tmp).keys
+        expect(service.jats_xml_path(file_names: file_names, dir: path_to_tmp)).to eq(File.join(path_to_tmp, '10.1177_1049909120951088.xml'))
       end
     end
 
     context 'with unexpected contents in the package' do
-      let(:temp_dir) { Dir.mktmpdir }
+      let(:path_to_tmp) { Dir.mktmpdir }
       let(:package_path) { File.join(fixture_path, 'sage', 'quadruple_package.zip') }
 
       it 'logs an error' do
         logger = spy('logger')
         allow(Logger).to receive(:new).and_return(logger)
-        service.extract_files(package_path, temp_dir)
+        service.extract_files(package_path, path_to_tmp)
         expect(logger).to have_received(:error).with("Unexpected package contents - 4 files extracted from #{package_path}")
       end
     end
