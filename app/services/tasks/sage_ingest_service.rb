@@ -55,6 +55,7 @@ module Tasks
         attach_file_set_to_work(work: art_with_meta, dir: @temp, file_name: jats_xml_file_name(file_names: file_names), user: @depositor, visibility: Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE)
         mark_done(orig_file_name) if package_ingest_complete?(@temp, file_names)
       end
+      logger.info("Completing ingest of #{count} Sage packages.")
     end
 
     def jats_xml_path(file_names:, dir:)
