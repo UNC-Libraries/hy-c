@@ -58,7 +58,7 @@ RSpec.describe Tasks::SageIngestService, :sage do
 
     it 'attaches a file to the file_set' do
       service.extract_files(first_zip_path, path_to_tmp)
-      service.attach_file_set_to_work(work: built_article, dir: path_to_tmp, pdf_file_name: '10.1177_1073274820985792.pdf', user: user)
+      service.attach_file_set_to_work(work: built_article, dir: path_to_tmp, file_name: '10.1177_1073274820985792.pdf', user: user, visibility: 'open')
       fs = built_article.file_sets.first
       expect(fs.files.first).to be_instance_of(Hydra::PCDM::File)
     end
@@ -83,14 +83,16 @@ RSpec.describe Tasks::SageIngestService, :sage do
         expect(service.ingest_progress_log).to be_instance_of(Migrate::Services::ProgressTracker)
       end
     end
-
+    # rubocop:disable Layout/MultilineMethodCallIndentation
     it 'can run a wrapper method' do
       expect(File.foreach(ingest_progress_log_path).count).to eq 0
       expect do
         service.process_packages
       end.to change { Article.count }.by(5)
+         .and change { FileSet.count }.by(10)
       expect(File.foreach(ingest_progress_log_path).count).to eq 5
     end
+    # rubocop:enable Layout/MultilineMethodCallIndentation
 
     context 'with an ingest work object' do
       let(:ingest_work) { JatsIngestWork.new(xml_path: first_xml_path) }
@@ -139,16 +141,29 @@ RSpec.describe Tasks::SageIngestService, :sage do
         expect(built_article.admin_set.title).to eq(admin_set.title)
       end
 
-      it 'attaches a file_set to the article' do
+      it 'attaches a pdf file_set to the article' do
         service.extract_files(first_zip_path, path_to_tmp)
         expect do
-          service.attach_file_set_to_work(work: built_article, dir: path_to_tmp, pdf_file_name: '10.1177_1073274820985792.pdf', user: user)
+          service.attach_file_set_to_work(work: built_article, dir: path_to_tmp, file_name: '10.1177_1073274820985792.pdf', user: user, visibility: 'open')
         end.to change { FileSet.count }.by(1)
         expect(built_article.file_sets).to be_instance_of(Array)
         fs = built_article.file_sets.first
         expect(fs).to be_instance_of(FileSet)
         expect(fs.depositor).to eq(user.uid)
         expect(fs.visibility).to eq(built_article.visibility)
+        expect(fs.parent).to eq(built_article)
+      end
+
+      it 'attaches an xml file_set to the article' do
+        service.extract_files(first_zip_path, path_to_tmp)
+        expect do
+          service.attach_file_set_to_work(work: built_article, dir: path_to_tmp, file_name: '10.1177_1073274820985792.xml', user: user, visibility: 'restricted')
+        end.to change { FileSet.count }.by(1)
+        expect(built_article.file_sets).to be_instance_of(Array)
+        fs = built_article.file_sets.first
+        expect(fs).to be_instance_of(FileSet)
+        expect(fs.depositor).to eq(user.uid)
+        expect(fs.visibility).to eq('restricted')
         expect(fs.parent).to eq(built_article)
       end
     end

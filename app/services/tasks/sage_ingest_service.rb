@@ -42,6 +42,7 @@ module Tasks
         end
 
         pdf_file_name = file_names.find { |name| name.match(/^(\S*).pdf/) }
+
         jats_xml_path = jats_xml_path(file_names: file_names, dir: @temp)
 
         # parse xml
@@ -49,15 +50,22 @@ module Tasks
         # Create Article with metadata and save
         art_with_meta = article_with_metadata(ingest_work)
         # Add PDF file to Article (including FileSets)
-        attach_file_set_to_work(work: art_with_meta, dir: @temp, pdf_file_name: pdf_file_name, user: @depositor)
+        attach_file_set_to_work(work: art_with_meta, dir: @temp, file_name: pdf_file_name, user: @depositor, visibility: art_with_meta.visibility)
+        # Add xml metadata file to Article
+        attach_file_set_to_work(work: art_with_meta, dir: @temp, file_name: jats_xml_file_name(file_names: file_names), user: @depositor, visibility: Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE)
         mark_done(orig_file_name) if package_ingest_complete?(@temp, file_names)
       end
     end
 
     def jats_xml_path(file_names:, dir:)
-      file_names -= ['manifest.xml']
-      jats_xml_name = file_names.find { |name| name.match(/^(\S*).xml/) }
+      jats_xml_name = jats_xml_file_name(file_names: file_names)
+
       File.join(dir, jats_xml_name)
+    end
+
+    def jats_xml_file_name(file_names:)
+      file_names -= ['manifest.xml']
+      file_names.find { |name| name.match(/^(\S*).xml/) }
     end
 
     def article_with_metadata(ingest_work)
@@ -98,15 +106,16 @@ module Tasks
       art
     end
 
-    def attach_file_set_to_work(work:, dir:, pdf_file_name:, user:)
-      logger.info("Attaching file_set to DOI: #{work.identifier.first}")
+    def attach_file_set_to_work(work:, dir:, file_name:, user:, visibility:)
+      file_set_params = { visibility: visibility }
+      logger.info("Attaching file_set for #{file_name} to DOI: #{work.identifier.first}")
       file_set = FileSet.create
       actor = Hyrax::Actors::FileSetActor.new(file_set, user)
-      actor.create_metadata
-      pdf = File.open(File.join(dir, pdf_file_name))
-      actor.create_content(pdf)
-      actor.attach_to_work(work)
-      pdf.close
+      actor.create_metadata(file_set_params)
+      file = File.open(File.join(dir, file_name))
+      actor.create_content(file)
+      actor.attach_to_work(work, file_set_params)
+      file.close
 
       file_set
     end
