@@ -49,6 +49,7 @@ module Tasks
         ingest_work = JatsIngestWork.new(xml_path: jats_xml_path)
         # Create Article with metadata and save
         art_with_meta = article_with_metadata(ingest_work)
+        create_sipity_workflow(work: art_with_meta)
         # Add PDF file to Article (including FileSets)
         attach_file_set_to_work(work: art_with_meta, dir: @temp, file_name: pdf_file_name, user: @depositor, visibility: art_with_meta.visibility)
         # Add xml metadata file to Article
@@ -56,6 +57,20 @@ module Tasks
         mark_done(orig_file_name) if package_ingest_complete?(@temp, file_names)
       end
       logger.info("Completing ingest of #{count} Sage packages.")
+    end
+
+    def create_sipity_workflow(work:)
+      # Create sipity record
+      join = Sipity::Workflow.joins(:permission_template)
+      workflow = join.where(permission_templates: { source_id: work.admin_set_id }, active: true)
+      raise(ActiveRecord::RecordNotFound, "Could not find Sipity::Workflow with permissions template with source id #{work.admin_set_id}") unless workflow.present?
+
+      workflow_state = Sipity::WorkflowState.where(workflow_id: workflow.first.id, name: 'deposited')
+      raise(ActiveRecord::RecordNotFound, "Could not find Sipity::WorkflowState with workflow_id: #{workflow.first.id} and name: 'deposited'") unless workflow_state.present?
+
+      Sipity::Entity.create!(proxy_for_global_id: work.to_global_id.to_s,
+                             workflow: workflow.first,
+                             workflow_state: workflow_state.first)
     end
 
     def jats_xml_path(file_names:, dir:)
