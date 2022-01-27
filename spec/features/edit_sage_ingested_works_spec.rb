@@ -5,10 +5,6 @@ include Warden::Test::Helpers
 
 RSpec.feature 'Edit works created through the Sage ingest', :sage, js: false do
   let(:ingest_progress_log_path) { File.join(fixture_path, 'sage', 'ingest_progress.log') }
-  let(:admin) { FactoryBot.create(:admin) }
-  let(:admin_set) do
-    AdminSet.create(title: ['sage admin set'], description: ['some description'], edit_users: [admin.user_key])
-  end
   let(:path_to_config) { File.join(fixture_path, 'sage', 'sage_config.yml') }
   let(:path_to_tmp) { FileUtils.mkdir_p(File.join(fixture_path, 'sage', 'tmp')).first }
   let(:ingest_service) { Tasks::SageIngestService.new(configuration_file: path_to_config) }
@@ -19,6 +15,22 @@ RSpec.feature 'Edit works created through the Sage ingest', :sage, js: false do
   let(:first_work) { articles[-4] }
   let(:first_work_id) { first_work.id }
   let(:third_work_id) { articles[-2].id }
+
+  let(:permission_template) do
+    FactoryBot.create(:permission_template, source_id: admin_set.id)
+  end
+  let(:workflow) do
+    FactoryBot.create(:workflow, permission_template_id: permission_template.id, active: true)
+  end
+
+  let(:admin) { FactoryBot.create(:admin) }
+
+  let(:admin_set) do
+    FactoryBot.create(:admin_set, title: ['sage admin set'])
+  end
+  let(:workflow_state) do
+    FactoryBot.create(:workflow_state, workflow_id: workflow.id, name: 'deposited')
+  end
 
   # empty the progress log
   around(:all) do |example|
@@ -31,6 +43,8 @@ RSpec.feature 'Edit works created through the Sage ingest', :sage, js: false do
   before(:each) do
     # return the FactoryBot admin user when searching for uid: admin from config
     allow(User).to receive(:find_by).and_return(admin)
+    # return the FactoryBot admin_set when searching for admin set from config
+    allow(AdminSet).to receive(:where).with(title: 'sage admin set').and_return([admin_set])
     # Stub background jobs that don't do well in CI
     # stub virus checking
     allow(Hydra::Works::VirusCheckerService).to receive(:file_has_virus?) { false }
@@ -40,6 +54,9 @@ RSpec.feature 'Edit works created through the Sage ingest', :sage, js: false do
     allow(CharacterizeJob).to receive(:perform_later)
     # instantiate the sage ingest admin_set
     admin_set
+    permission_template
+    workflow
+    workflow_state
     ingest_service.process_packages
   end
 
@@ -62,6 +79,7 @@ RSpec.feature 'Edit works created through the Sage ingest', :sage, js: false do
       expect(page).to have_content('Attribution-NonCommercial 4.0 International')
       expect(page).to have_content('February 1, 2021')
       expect(page).to have_content('In Copyright')
+      # expect(page).to have_button('Withdraw')
       click_link('Edit', match: :first)
       expect(page).to have_link('Work Deposit Form')
     end
