@@ -104,6 +104,11 @@ RSpec.describe Tasks::SageIngestService, :sage do
         expect(service.admin_set.title).to eq ['Open_Access_Articles_and_Book_Chapters']
       end
 
+      it 'has a default admin set' do
+        expect(service.admin_set).to eq admin_set
+        expect(service.admin_set.title).to eq ['Open_Access_Articles_and_Book_Chapters']
+      end
+
       it 'creates a progress log for the ingest' do
         expect(service.ingest_progress_log).to be_instance_of(Migrate::Services::ProgressTracker)
       end
