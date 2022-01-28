@@ -26,7 +26,7 @@ RSpec.describe Tasks::SageIngestService, :sage do
   let(:admin) { FactoryBot.create(:admin) }
 
   let(:admin_set) do
-    FactoryBot.create(:admin_set, title: ['sage admin set'])
+    FactoryBot.create(:admin_set, title: ['Open_Access_Articles_and_Book_Chapters'])
   end
   let(:workflow_state) do
     FactoryBot.create(:workflow_state, workflow_id: workflow.id, name: 'deposited')
@@ -40,7 +40,7 @@ RSpec.describe Tasks::SageIngestService, :sage do
     # return the FactoryBot admin user when searching for uid: admin from config
     allow(User).to receive(:find_by).with(uid: 'admin').and_return(admin)
     # return the FactoryBot admin_set when searching for admin set from config
-    allow(AdminSet).to receive(:where).with(title: 'sage admin set').and_return([admin_set])
+    allow(AdminSet).to receive(:where).with(title: 'Open_Access_Articles_and_Book_Chapters').and_return([admin_set])
   end
 
   after do
@@ -89,8 +89,12 @@ RSpec.describe Tasks::SageIngestService, :sage do
     describe '#initialize' do
       it 'sets parameters from the configuration file' do
         expect(service.package_dir).to eq 'spec/fixtures/sage'
-        expect(service.admin_set).to be_instance_of(AdminSet)
         expect(service.depositor).to be_instance_of(User)
+      end
+
+      it 'has a default admin set' do
+        expect(service.admin_set).to eq admin_set
+        expect(service.admin_set.title).to eq ['Open_Access_Articles_and_Book_Chapters']
       end
 
       it 'creates a progress log for the ingest' do
