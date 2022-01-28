@@ -26,7 +26,7 @@ RSpec.feature 'Edit works created through the Sage ingest', :sage, js: false do
   let(:admin) { FactoryBot.create(:admin) }
 
   let(:admin_set) do
-    FactoryBot.create(:admin_set, title: ['sage admin set'])
+    FactoryBot.create(:admin_set, title: ['Open_Access_Articles_and_Book_Chapters'])
   end
   let(:workflow_state) do
     FactoryBot.create(:workflow_state, workflow_id: workflow.id, name: 'deposited')
@@ -44,7 +44,7 @@ RSpec.feature 'Edit works created through the Sage ingest', :sage, js: false do
     # return the FactoryBot admin user when searching for uid: admin from config
     allow(User).to receive(:find_by).and_return(admin)
     # return the FactoryBot admin_set when searching for admin set from config
-    allow(AdminSet).to receive(:where).with(title: 'sage admin set').and_return([admin_set])
+    allow(AdminSet).to receive(:where).with(title: 'Open_Access_Articles_and_Book_Chapters').and_return([admin_set])
     # Stub background jobs that don't do well in CI
     # stub virus checking
     allow(Hydra::Works::VirusCheckerService).to receive(:file_has_virus?) { false }
@@ -75,7 +75,7 @@ RSpec.feature 'Edit works created through the Sage ingest', :sage, js: false do
       visit "concern/articles/#{first_work_id}"
       expect(page).to have_content('Inequalities in Cervical Cancer Screening Uptake Between')
       expect(page).to have_content('Smith, Jennifer S.')
-      expect(page).to have_content('sage admin set')
+      expect(page).to have_content('Open_Access_Articles_and_Book_Chapters')
       expect(page).to have_content('Attribution-NonCommercial 4.0 International')
       expect(page).to have_content('February 1, 2021')
       expect(page).to have_content('In Copyright')

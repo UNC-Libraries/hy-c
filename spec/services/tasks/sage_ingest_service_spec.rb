@@ -200,11 +200,11 @@ RSpec.describe Tasks::SageIngestService, :sage do
 
     context 'when it cannot find the admin_set' do
       before do
-        allow(AdminSet).to receive(:where).with(title: 'sage admin set').and_return(nil)
+        allow(AdminSet).to receive(:where).with(title: 'Open_Access_Articles_and_Book_Chapters').and_return(nil)
       end
 
       it 'raises an error' do
-        expect { described_class.new(configuration_file: path_to_config) }.to raise_error(ActiveRecord::RecordNotFound, 'Could not find AdminSet with title sage admin set')
+        expect { described_class.new(configuration_file: path_to_config) }.to raise_error(ActiveRecord::RecordNotFound, 'Could not find AdminSet with title Open_Access_Articles_and_Book_Chapters')
       end
     end
 

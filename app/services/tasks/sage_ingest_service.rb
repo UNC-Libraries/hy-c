@@ -18,7 +18,7 @@ module Tasks
 
       logger.info('Beginning Sage ingest')
       @admin_set = ::AdminSet.where(title: 'Open_Access_Articles_and_Book_Chapters')&.first
-      raise(ActiveRecord::RecordNotFound, "Could not find AdminSet with title Open_Access_Articles_and_Book_Chapters") unless @admin_set.present?
+      raise(ActiveRecord::RecordNotFound, 'Could not find AdminSet with title Open_Access_Articles_and_Book_Chapters') unless @admin_set.present?
 
       @depositor = User.find_by(uid: config['depositor_onyen'])
       raise(ActiveRecord::RecordNotFound, "Could not find User with onyen #{config['depositor_onyen']}") unless @depositor.present?
