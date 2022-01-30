@@ -32,12 +32,12 @@ module Tasks
       proquest_packages = Dir.glob("#{@package_dir}/*.zip").sort
       count = proquest_packages.count
       proquest_packages.each_with_index do |package, index|
-        puts "[#{Time. now}] Unpacking #{package} (#{index + 1} of #{count})"
+        logger.info("Unpacking #{package} (#{index + 1} of #{count})")
         @file_last_modified = ''
         unzipped_package_dir = extract_proquest_files(package)
 
         if unzipped_package_dir.blank?
-          puts "[#{Time.now}] error extracting #{package}: skipping zip file"
+          logger.error("Error extracting #{package}: skipping zip file")
           next
         end
 
@@ -46,12 +46,12 @@ module Tasks
         if metadata_file.count == 1
           metadata_file = metadata_file.first.to_s
         else
-          puts "[#{Time.now}] error: #{unzipped_package_dir} has #{metadata_file.count} xml file(s)"
+          logger.error("Error: #{unzipped_package_dir} has #{metadata_file.count} xml file(s)")
           next
         end
         pdf_file = Dir.glob("#{unzipped_package_dir}/*.pdf")
         unless pdf_file.count == 1
-          puts "[#{Time.now}] error: #{unzipped_package_dir} has more than 1 pdf file"
+          logger.error("Error: #{unzipped_package_dir} has more than 1 pdf file")
           next
         end
 
@@ -59,7 +59,7 @@ module Tasks
           # only use xml file for metadata extraction
           metadata, listed_files = proquest_metadata(metadata_file)
 
-          puts "[#{Time.now}] #{metadata_file}, Number of files: #{listed_files.count.to_s}"
+          logger.info("#{metadata_file}, Number of files: #{listed_files.count.to_s}")
 
           # create deposit record
           deposit_record = DepositRecord.new(@deposit_record_hash)
@@ -81,7 +81,7 @@ module Tasks
 
           id = resource.id
 
-          puts "[#{Time.now}][#{metadata_file}] created dissertation: #{id}"
+          logger.info("[#{metadata_file}] created dissertation: #{id}")
 
           # get group permissions info to use for setting work and fileset permissions
           group_permissions = MigrationHelper.get_permissions_attributes(@admin_set_id)
@@ -100,11 +100,11 @@ module Tasks
 
           ordered_members = []
           listed_files.each do |f|
-            puts "[#{Time.now}][#{id}] trying...#{f.to_s}"
+            logger.info("[#{id}] trying...#{f.to_s}")
 
             file_path = unzipped_file_list.find { |e| e.match(f.to_s) }
             if file_path.blank?
-              puts "[#{Time.now}][#{id}] cannot find #{f.to_s}"
+              logger.error("[#{id}] cannot find #{f.to_s}")
               next
             end
 
@@ -148,13 +148,13 @@ module Tasks
         end
         dirname
       rescue StandardError => e
-        puts "[#{Time.now}] #{file}, zip file error: #{e.message}"
+        logger.error("#{file}, zip file error: #{e.message}")
         nil
       end
     end
 
     def ingest_proquest_file(parent: nil, resource: nil, f: nil)
-      puts "[#{Time.now}][#{parent.id}] ingesting... #{f.to_s}"
+      logger.info("[#{parent.id}] ingesting... #{f.to_s}")
       fileset_metadata = file_record(resource)
 
       fileset_metadata.except!('embargo_release_date', 'visibility_during_embargo', 'visibility_after_embargo') if fileset_metadata['embargo_release_date'].blank?
@@ -182,7 +182,7 @@ module Tasks
 
       embargo_code = metadata.xpath('//DISS_submission/@embargo_code').text
 
-      puts "[#{Time.now}][#{metadata_file}] embargo code: #{embargo_code}"
+      logger.info("[#{metadata_file}] embargo code: #{embargo_code}")
 
       unless embargo_code.blank?
         current_date = Date.today
@@ -203,7 +203,7 @@ module Tasks
         visibility = visibility_during_embargo unless embargo_release_date.blank?
       end
 
-      puts "[#{Time.now}][#{metadata_file}] embargo release date: #{embargo_release_date}"
+      logger.info("[#{metadata_file}] embargo release date: #{embargo_release_date}")
 
       title = metadata.xpath('//DISS_description/DISS_title').text
 
@@ -241,7 +241,7 @@ module Tasks
       if !degree_map[normalized_degree].blank?
         degree = DegreesService.label(degree_map[normalized_degree])
       else
-        puts "[#{Time.now}][#{metadata_file}] unknown degree: #{abbreviated_degree}"
+        logger.warn("[#{metadata_file}] unknown degree: #{abbreviated_degree}")
         degree = abbreviated_degree
       end
 
