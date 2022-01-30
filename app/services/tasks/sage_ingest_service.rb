@@ -1,30 +1,7 @@
 module Tasks
-  require 'tasks/migrate/services/progress_tracker'
-  class SageIngestService
-    attr_reader :package_dir, :ingest_progress_log, :admin_set, :depositor
-
-    def logger
-      @logger ||= begin
-        log_path = File.join(Rails.configuration.log_directory, 'sage_ingest.log')
-        Logger.new(log_path, progname: 'Sage ingest')
-      end
-    end
-
-    def initialize(args)
-      config = YAML.load_file(args[:configuration_file])
-      # Create temp directory for unzipped contents
-      @temp = config['unzip_dir']
-      FileUtils.mkdir_p @temp unless File.exist?(@temp)
-
-      logger.info('Beginning Sage ingest')
-      @admin_set = ::AdminSet.where(title: 'Open_Access_Articles_and_Book_Chapters')&.first
-      raise(ActiveRecord::RecordNotFound, 'Could not find AdminSet with title Open_Access_Articles_and_Book_Chapters') unless @admin_set.present?
-
-      @depositor = User.find_by(uid: config['depositor_onyen'])
-      raise(ActiveRecord::RecordNotFound, "Could not find User with onyen #{config['depositor_onyen']}") unless @depositor.present?
-
-      @package_dir = config['package_dir']
-      @ingest_progress_log = Migrate::Services::ProgressTracker.new(config['ingest_progress_log'])
+  class SageIngestService < IngestService
+    def ingest_source
+      'Sage'
     end
 
     def deposit_record_hash

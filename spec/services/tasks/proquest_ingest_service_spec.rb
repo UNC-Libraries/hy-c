@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Tasks::ProquestIngestService do
+RSpec.describe Tasks::ProquestIngestService, :ingest do
   let(:args) { { configuration_file: 'spec/fixtures/proquest/proquest_config.yml' } }
 
   let(:admin_set) do
@@ -41,7 +41,7 @@ RSpec.describe Tasks::ProquestIngestService do
                                                        deposit_package_type: 'http://proquest.com',
                                                        deposit_package_subtype: nil,
                                                        deposited_by: 'admin' })
-      expect(service.metadata_dir).to eq 'spec/fixtures/proquest'
+      expect(service.package_dir).to eq 'spec/fixtures/proquest'
     end
   end
 

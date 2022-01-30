@@ -1,7 +1,7 @@
 require 'rails_helper'
 include ActiveSupport::Testing::TimeHelpers
 
-RSpec.describe Tasks::SageIngestService, :sage do
+RSpec.describe Tasks::SageIngestService, :sage, :ingest do
   include ActiveJob::TestHelper
 
   let(:service) { described_class.new(configuration_file: path_to_config) }

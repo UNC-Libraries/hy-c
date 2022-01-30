@@ -6,34 +6,30 @@ module Tasks
   require 'zip'
   require 'tasks/migration_helper'
 
-  class ProquestIngestService
-    attr_reader :temp, :admin_set_id, :depositor_onyen, :deposit_record_hash, :metadata_dir
+  class ProquestIngestService < IngestService
+    attr_reader :admin_set_id, :depositor_onyen, :deposit_record_hash
 
     def initialize(args)
-      config = YAML.load_file(args[:configuration_file])
+      super
 
-      # Create temp directory for unzipped contents
-      @temp = config['unzip_dir']
-      FileUtils::mkdir_p @temp
-
-      # Should deposit works into an admin set
-      # Update title parameter to reflect correct admin set
-      @admin_set_id = ::AdminSet.where(title: config['admin_set']).first.id
-      @depositor_onyen = config['depositor_onyen']
+      @admin_set_id = @admin_set.id
+      @depositor_onyen = @depositor.uid
 
       # deposit record info
-      @deposit_record_hash = { title: config['deposit_title'],
-                               deposit_method: config['deposit_method'],
-                               deposit_package_type: config['deposit_type'],
-                               deposit_package_subtype: config['deposit_subtype'],
+      @deposit_record_hash = { title: @config['deposit_title'],
+                               deposit_method: @config['deposit_method'],
+                               deposit_package_type: @config['deposit_type'],
+                               deposit_package_subtype: @config['deposit_subtype'],
                                deposited_by: @depositor_onyen }
+    end
 
-      @metadata_dir = config['package_dir']
+    def ingest_source
+      'ProQuest'
     end
 
     def migrate_proquest_packages
       # sort zip files for tests
-      proquest_packages = Dir.glob("#{@metadata_dir}/*.zip").sort
+      proquest_packages = Dir.glob("#{@package_dir}/*.zip").sort
       count = proquest_packages.count
       proquest_packages.each_with_index do |package, index|
         puts "[#{Time. now}] Unpacking #{package} (#{index + 1} of #{count})"
