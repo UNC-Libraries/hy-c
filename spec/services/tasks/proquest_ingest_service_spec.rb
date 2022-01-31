@@ -45,14 +45,14 @@ RSpec.describe Tasks::ProquestIngestService, :ingest do
     end
   end
 
-  describe '#migrate_proquest_packages' do
+  describe '#process_packages' do
     before do
       Dissertation.delete_all
     end
 
     it 'ingests proquest records' do
       allow(RegisterToLongleafJob).to receive(:perform_later).and_return(nil)
-      expect { Tasks::ProquestIngestService.new(args).migrate_proquest_packages }.to change { Dissertation.count }.by(1).and change { DepositRecord.count }.by(1)
+      expect { Tasks::ProquestIngestService.new(args).process_packages }.to change { Dissertation.count }.by(1).and change { DepositRecord.count }.by(1)
 
       # check embargo information
       dissertation = Dissertation.first
@@ -77,9 +77,9 @@ RSpec.describe Tasks::ProquestIngestService, :ingest do
     end
   end
 
-  describe '#extract_proquest_files' do
+  describe '#extract_files' do
     it 'extracts files from zip' do
-      expect(Tasks::ProquestIngestService.new(args).extract_proquest_files('spec/fixtures/proquest/proquest-attach0.zip'))
+      expect(Tasks::ProquestIngestService.new(args).extract_files('spec/fixtures/proquest/proquest-attach0.zip'))
         .to eq 'spec/fixtures/proquest/tmp/proquest-attach0'
     end
   end

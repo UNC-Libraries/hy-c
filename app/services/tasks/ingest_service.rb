@@ -24,6 +24,19 @@ module Tasks
       @ingest_progress_log = Migrate::Services::ProgressTracker.new(@config['ingest_progress_log']) if @config['ingest_progress_log']
     end
 
+    def process_packages
+      logger.info("Beginning ingest of #{count} #{ingest_source} packages")
+    end
+
+    def package_paths
+      # sort zip files for tests
+      @package_paths ||= Dir.glob("#{@package_dir}/*.zip").sort
+    end
+
+    def count
+      @count ||= package_paths.count
+    end
+
     def logger
       @logger ||= begin
         log_path = File.join(Rails.configuration.log_directory, "#{ingest_source.downcase}_ingest.log")

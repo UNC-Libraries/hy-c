@@ -27,14 +27,12 @@ module Tasks
       'ProQuest'
     end
 
-    def migrate_proquest_packages
-      # sort zip files for tests
-      proquest_packages = Dir.glob("#{@package_dir}/*.zip").sort
-      count = proquest_packages.count
-      proquest_packages.each_with_index do |package, index|
+    def process_packages
+      super
+      package_paths.each_with_index do |package, index|
         logger.info("Unpacking #{package} (#{index + 1} of #{count})")
         @file_last_modified = ''
-        unzipped_package_dir = extract_proquest_files(package)
+        unzipped_package_dir = extract_files(package)
 
         if unzipped_package_dir.blank?
           logger.error("Error extracting #{package}: skipping zip file")
@@ -134,12 +132,12 @@ module Tasks
       end
     end
 
-    def extract_proquest_files(file)
-      fname = file.split('.zip')[0].split('/')[-1]
+    def extract_files(package_path)
+      fname = package_path.split('.zip')[0].split('/')[-1]
       dirname = "#{@temp}/#{fname}"
       FileUtils::mkdir_p dirname
       begin
-        Zip::File.open(file) do |zip_file|
+        _extracted_files = Zip::File.open(package_path) do |zip_file|
           zip_file.each do |f|
             @file_last_modified = Date.strptime(zip_file.get_entry(f).as_json['time'].split('T')[0], '%Y-%m-%d') if f.name.match(/DATA.xml/)
             fpath = File.join(dirname, f.name)
@@ -148,7 +146,7 @@ module Tasks
         end
         dirname
       rescue StandardError => e
-        logger.error("#{file}, zip file error: #{e.message}")
+        logger.error("#{package_path}, zip file error: #{e.message}")
         nil
       end
     end

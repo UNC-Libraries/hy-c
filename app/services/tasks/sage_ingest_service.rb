@@ -26,14 +26,14 @@ module Tasks
     def process_packages
       # Create DepositRecord
       deposit_record
-      sage_package_paths = Dir.glob("#{@package_dir}/*.zip").sort
-      count = sage_package_paths.count
-      logger.info("Beginning ingest of #{count} Sage packages")
-      sage_package_paths.each.with_index(1) do |package_path, index|
+
+      super
+
+      package_paths.each.with_index(1) do |package_path, index|
         logger.info("Begin processing #{package_path} (#{index} of #{count})")
         orig_file_name = File.basename(package_path, '.zip')
 
-        file_names = extract_files(package_path, @temp).keys
+        file_names = extract_files(package_path).keys
         unless file_names.count.between?(2, 3)
           logger.info("Error extracting #{package_path}: skipping zip file")
           next
@@ -148,11 +148,11 @@ module Tasks
       false
     end
 
-    def extract_files(package_path, temp_dir)
-      logger.info("Extracting files from #{package_path} to #{temp_dir}")
+    def extract_files(package_path)
+      logger.info("Extracting files from #{package_path} to #{@temp}")
       extracted_files = Zip::File.open(package_path) do |zip_file|
         zip_file.each do |file|
-          file_path = File.join(temp_dir, file.name)
+          file_path = File.join(@temp, file.name)
           zip_file.extract(file, file_path) unless File.exist?(file_path)
         end
       end
@@ -160,6 +160,7 @@ module Tasks
       extracted_files
     rescue Zip::DestinationFileExistsError => e
       logger.info("#{package_path}, zip file error: #{e.message}")
+      false
     end
   end
 end
