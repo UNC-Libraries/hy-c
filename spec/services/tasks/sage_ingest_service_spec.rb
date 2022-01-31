@@ -15,18 +15,32 @@ RSpec.describe Tasks::SageIngestService, :sage do
   let(:first_pdf_path) { "#{path_to_tmp}/10.1177_1073274820985792.pdf" }
   let(:first_xml_path) { "#{sage_fixture_path}/#{first_package_identifier}/10.1177_1073274820985792.xml" }
   let(:ingest_progress_log_path) { File.join(sage_fixture_path, 'ingest_progress.log') }
+
+  let(:permission_template) do
+    FactoryBot.create(:permission_template, source_id: admin_set.id)
+  end
+  let(:workflow) do
+    FactoryBot.create(:workflow, permission_template_id: permission_template.id, active: true)
+  end
+
   let(:admin) { FactoryBot.create(:admin) }
 
   let(:admin_set) do
-    AdminSet.create(title: ['sage admin set'],
-                    description: ['some description'])
+    FactoryBot.create(:admin_set, title: ['Open_Access_Articles_and_Book_Chapters'])
+  end
+  let(:workflow_state) do
+    FactoryBot.create(:workflow_state, workflow_id: workflow.id, name: 'deposited')
   end
 
   before do
+    admin_set
+    permission_template
+    workflow
+    workflow_state
     # return the FactoryBot admin user when searching for uid: admin from config
     allow(User).to receive(:find_by).with(uid: 'admin').and_return(admin)
-    # instantiate the sage ingest admin_set
-    admin_set
+    # return the FactoryBot admin_set when searching for admin set from config
+    allow(AdminSet).to receive(:where).with(title: 'Open_Access_Articles_and_Book_Chapters').and_return([admin_set])
   end
 
   after do
@@ -75,8 +89,12 @@ RSpec.describe Tasks::SageIngestService, :sage do
     describe '#initialize' do
       it 'sets parameters from the configuration file' do
         expect(service.package_dir).to eq 'spec/fixtures/sage'
-        expect(service.admin_set).to be_instance_of(AdminSet)
         expect(service.depositor).to be_instance_of(User)
+      end
+
+      it 'has a default admin set' do
+        expect(service.admin_set).to eq admin_set
+        expect(service.admin_set.title).to eq ['Open_Access_Articles_and_Book_Chapters']
       end
 
       it 'creates a progress log for the ingest' do
@@ -90,6 +108,7 @@ RSpec.describe Tasks::SageIngestService, :sage do
         service.process_packages
       end.to change { Article.count }.by(5)
          .and change { FileSet.count }.by(10)
+         .and change { Sipity::Entity.count }.by(5)
       expect(File.foreach(ingest_progress_log_path).count).to eq 5
     end
     # rubocop:enable Layout/MultilineMethodCallIndentation
@@ -181,11 +200,11 @@ RSpec.describe Tasks::SageIngestService, :sage do
 
     context 'when it cannot find the admin_set' do
       before do
-        allow(AdminSet).to receive(:where).with(title: 'sage admin set').and_return(nil)
+        allow(AdminSet).to receive(:where).with(title: 'Open_Access_Articles_and_Book_Chapters').and_return(nil)
       end
 
       it 'raises an error' do
-        expect { described_class.new(configuration_file: path_to_config) }.to raise_error(ActiveRecord::RecordNotFound, 'Could not find AdminSet with title sage admin set')
+        expect { described_class.new(configuration_file: path_to_config) }.to raise_error(ActiveRecord::RecordNotFound, 'Could not find AdminSet with title Open_Access_Articles_and_Book_Chapters')
       end
     end
 
