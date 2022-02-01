@@ -23,7 +23,7 @@ module Tasks
 
       # deposit record info
       @deposit_record_hash = { title: "#{ingest_source} Ingest #{Time.new.strftime('%B %d, %Y')}",
-                               deposit_method: 'CDR Collector 1.0',
+                               deposit_method: "Hy-C #{BRANCH}, #{self.class}",
                                deposit_package_type: deposit_package_type,
                                deposit_package_subtype: deposit_package_subtype,
                                deposited_by: @depositor.uid }

@@ -32,6 +32,7 @@ RSpec.describe Tasks::ProquestIngestService, :ingest do
   describe '#initialize' do
     it 'sets all params' do
       allow(Time).to receive(:new).and_return(Time.parse('2022-01-31 23:27:21'))
+      stub_const('BRANCH', 'v1.4.2')
       service = Tasks::ProquestIngestService.new(args)
 
       expect(service.temp).to eq 'spec/fixtures/proquest/tmp'
@@ -39,7 +40,7 @@ RSpec.describe Tasks::ProquestIngestService, :ingest do
       expect(service.depositor).to be_instance_of(User)
 
       expect(service.deposit_record_hash).to include({ title: 'ProQuest Ingest January 31, 2022',
-                                                       deposit_method: 'CDR Collector 1.0',
+                                                       deposit_method: 'Hy-C v1.4.2, Tasks::ProquestIngestService',
                                                        deposit_package_type: 'http://proquest.com',
                                                        deposit_package_subtype: 'ProQuest',
                                                        deposited_by: 'admin' })
