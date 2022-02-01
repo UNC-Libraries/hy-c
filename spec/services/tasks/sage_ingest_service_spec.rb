@@ -88,8 +88,15 @@ RSpec.describe Tasks::SageIngestService, :sage do
 
     describe '#initialize' do
       it 'sets parameters from the configuration file' do
+        stub_const('BRANCH', 'v1.4.2')
+        allow(Time).to receive(:new).and_return(Time.parse('2022-01-31 23:27:21'))
         expect(service.package_dir).to eq 'spec/fixtures/sage'
         expect(service.depositor).to be_instance_of(User)
+        expect(service.deposit_record_hash).to eq({ title: 'Sage Ingest January 31, 2022',
+                                                    deposit_method: 'Hy-C v1.4.2, Tasks::SageIngestService',
+                                                    deposit_package_type: 'https://sagepub.com',
+                                                    deposit_package_subtype: 'https://jats.nlm.nih.gov/publishing/',
+                                                    deposited_by: admin.uid })
       end
 
       it 'has a default admin set' do
@@ -109,6 +116,7 @@ RSpec.describe Tasks::SageIngestService, :sage do
       end.to change { Article.count }.by(5)
          .and change { FileSet.count }.by(10)
          .and change { Sipity::Entity.count }.by(5)
+         .and change { DepositRecord.count }.by(1)
       expect(File.foreach(ingest_progress_log_path).count).to eq 5
     end
     # rubocop:enable Layout/MultilineMethodCallIndentation
@@ -153,6 +161,7 @@ RSpec.describe Tasks::SageIngestService, :sage do
         expect(built_article.rights_statement).to eq('http://rightsstatements.org/vocab/InC/1.0/')
         expect(built_article.rights_statement_label).to eq('In Copyright')
         expect(built_article.visibility).to eq('open')
+        expect(built_article.deposit_record).to be
       end
 
       it 'puts the work in an admin_set' do

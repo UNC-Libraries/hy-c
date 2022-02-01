@@ -27,7 +27,28 @@ module Tasks
       @ingest_progress_log = Migrate::Services::ProgressTracker.new(config['ingest_progress_log'])
     end
 
+    def deposit_record_hash
+      @deposit_record_hash ||= { title: "Sage Ingest #{Time.new.strftime('%B %d, %Y')}",
+                                 deposit_method: "Hy-C #{BRANCH}, #{self.class}",
+                                 deposit_package_type: 'https://sagepub.com',
+                                 deposit_package_subtype: 'https://jats.nlm.nih.gov/publishing/',
+                                 deposited_by: @depositor.uid }
+    end
+
+    def deposit_record
+      @deposit_record ||= begin
+        record = DepositRecord.new(deposit_record_hash)
+        record[:manifest] = nil
+        record[:premis] = nil
+        record.save!
+
+        record
+      end
+    end
+
     def process_packages
+      # Create DepositRecord
+      deposit_record
       sage_package_paths = Dir.glob("#{@package_dir}/*.zip").sort
       count = sage_package_paths.count
       logger.info("Beginning ingest of #{count} Sage packages")
@@ -113,6 +134,7 @@ module Tasks
       art.rights_statement = 'http://rightsstatements.org/vocab/InC/1.0/'
       art.rights_statement_label = 'In Copyright'
       art.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
+      art.deposit_record = deposit_record.id
       # fields not normally edited via UI
       art.date_uploaded = DateTime.current
       art.date_modified = DateTime.current
