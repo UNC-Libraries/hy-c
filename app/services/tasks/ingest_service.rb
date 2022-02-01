@@ -1,7 +1,7 @@
 module Tasks
   require 'tasks/migrate/services/progress_tracker'
   class IngestService
-    attr_reader :temp, :admin_set, :depositor, :package_dir, :ingest_progress_log, :deposit_record_hash
+    attr_reader :temp, :admin_set, :depositor, :package_dir, :ingest_progress_log
 
     def initialize(args)
       logger.info("Beginning #{ingest_source} ingest")
@@ -21,14 +21,16 @@ module Tasks
 
       @package_dir = @config['package_dir']
 
-      # deposit record info
-      @deposit_record_hash = { title: "#{ingest_source} Ingest #{Time.new.strftime('%B %d, %Y')}",
-                               deposit_method: "Hy-C #{BRANCH}, #{self.class}",
-                               deposit_package_type: deposit_package_type,
-                               deposit_package_subtype: deposit_package_subtype,
-                               deposited_by: @depositor.uid }
       deposit_record
       @ingest_progress_log = Migrate::Services::ProgressTracker.new(@config['ingest_progress_log']) if @config['ingest_progress_log']
+    end
+
+    def deposit_record_hash
+      @deposit_record_hash ||= { title: "#{ingest_source} Ingest #{Time.new.strftime('%B %d, %Y')}",
+                                 deposit_method: "Hy-C #{BRANCH}, #{self.class}",
+                                 deposit_package_type: deposit_package_type,
+                                 deposit_package_subtype: deposit_package_subtype,
+                                 deposited_by: @depositor.uid }
     end
 
     def deposit_record

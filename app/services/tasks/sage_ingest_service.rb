@@ -4,14 +4,6 @@ module Tasks
       'Sage'
     end
 
-    def deposit_record_hash
-      @deposit_record_hash ||= { title: "Sage Ingest #{Time.new.strftime('%B %d, %Y')}",
-                                 deposit_method: "Hy-C #{BRANCH}, #{self.class}",
-                                 deposit_package_type: 'https://sagepub.com',
-                                 deposit_package_subtype: 'https://jats.nlm.nih.gov/publishing/',
-                                 deposited_by: @depositor.uid }
-    end
-
     def deposit_record
       @deposit_record ||= begin
         record = DepositRecord.new(deposit_record_hash)
@@ -32,6 +24,7 @@ module Tasks
       package_paths.each.with_index(1) do |package_path, index|
         logger.info("Begin processing #{package_path} (#{index} of #{count})")
         orig_file_name = File.basename(package_path, '.zip')
+        dirname = extracted_package_directory(package_path)
 
         file_names = extract_files(package_path).keys
         unless file_names.count.between?(2, 3)
@@ -41,7 +34,7 @@ module Tasks
 
         pdf_file_name = file_names.find { |name| name.match(/^(\S*).pdf/) }
 
-        jats_xml_path = jats_xml_path(file_names: file_names, dir: @temp)
+        jats_xml_path = jats_xml_path(file_names: file_names, dir: dirname)
 
         # parse xml
         ingest_work = JatsIngestWork.new(xml_path: jats_xml_path)
@@ -50,10 +43,10 @@ module Tasks
         art_with_meta = article_with_metadata(ingest_work)
         create_sipity_workflow(work: art_with_meta)
         # Add PDF file to Article (including FileSets)
-        attach_file_set_to_work(work: art_with_meta, dir: @temp, file_name: pdf_file_name, user: @depositor, visibility: art_with_meta.visibility)
+        attach_file_set_to_work(work: art_with_meta, dir: dirname, file_name: pdf_file_name, user: @depositor, visibility: art_with_meta.visibility)
         # Add xml metadata file to Article
-        attach_file_set_to_work(work: art_with_meta, dir: @temp, file_name: jats_xml_file_name(file_names: file_names), user: @depositor, visibility: Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE)
-        mark_done(orig_file_name) if package_ingest_complete?(@temp, file_names)
+        attach_file_set_to_work(work: art_with_meta, dir: dirname, file_name: jats_xml_file_name(file_names: file_names), user: @depositor, visibility: Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE)
+        mark_done(orig_file_name) if package_ingest_complete?(dirname, file_names)
       end
       logger.info("Completing ingest of #{count} Sage packages.")
     end
@@ -160,11 +153,19 @@ module Tasks
       false
     end
 
+    def extracted_package_directory(package_path)
+      fname = package_path.split('.zip')[0].split('/')[-1]
+      dirname = "#{@temp}/#{fname}"
+      FileUtils.mkdir_p(dirname) unless File.exist?(dirname)
+      dirname
+    end
+
     def extract_files(package_path)
-      logger.info("Extracting files from #{package_path} to #{@temp}")
+      dirname = extracted_package_directory(package_path)
+      logger.info("Extracting files from #{package_path} to #{dirname}")
       extracted_files = Zip::File.open(package_path) do |zip_file|
         zip_file.each do |file|
-          file_path = File.join(@temp, file.name)
+          file_path = File.join(dirname, file.name)
           zip_file.extract(file, file_path) unless File.exist?(file_path)
         end
       end
