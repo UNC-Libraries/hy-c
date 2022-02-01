@@ -58,8 +58,13 @@ module Tasks
       logger.info("Completing ingest of #{count} Sage packages.")
     end
 
+    # URI representing the type of packaging used for the original deposit represented by this record, such as CDR METS or BagIt.
     def deposit_package_type
       'https://sagepub.com'
+    end
+
+    def deposit_package_subtype
+      'https://jats.nlm.nih.gov/publishing/'
     end
 
     def create_sipity_workflow(work:)

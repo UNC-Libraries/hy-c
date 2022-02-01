@@ -23,6 +23,10 @@ module Tasks
       'http://proquest.com'
     end
 
+    def deposit_package_subtype
+      'ProQuest'
+    end
+
     def process_packages
       super
       package_paths.each_with_index do |package, index|

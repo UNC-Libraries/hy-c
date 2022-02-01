@@ -25,7 +25,7 @@ module Tasks
       @deposit_record_hash = { title: "#{ingest_source} Ingest #{Time.new.strftime('%B %d, %Y')}",
                                deposit_method: 'CDR Collector 1.0',
                                deposit_package_type: deposit_package_type,
-                               deposit_package_subtype: ingest_source,
+                               deposit_package_subtype: deposit_package_subtype,
                                deposited_by: @depositor.uid }
       deposit_record
       @ingest_progress_log = Migrate::Services::ProgressTracker.new(@config['ingest_progress_log']) if @config['ingest_progress_log']
