@@ -7,24 +7,20 @@ module Tasks
   require 'tasks/migration_helper'
 
   class ProquestIngestService < IngestService
-    attr_reader :admin_set_id, :depositor_onyen, :deposit_record_hash
+    attr_reader :admin_set_id
 
     def initialize(args)
       super
 
       @admin_set_id = @admin_set.id
-      @depositor_onyen = @depositor.uid
-
-      # deposit record info
-      @deposit_record_hash = { title: @config['deposit_title'],
-                               deposit_method: @config['deposit_method'],
-                               deposit_package_type: @config['deposit_type'],
-                               deposit_package_subtype: @config['deposit_subtype'],
-                               deposited_by: @depositor_onyen }
     end
 
     def ingest_source
       'ProQuest'
+    end
+
+    def deposit_package_type
+      'http://proquest.com'
     end
 
     def process_packages
@@ -59,12 +55,6 @@ module Tasks
 
           logger.info("#{metadata_file}, Number of files: #{listed_files.count.to_s}")
 
-          # create deposit record
-          deposit_record = DepositRecord.new(@deposit_record_hash)
-          deposit_record[:manifest] = nil
-          deposit_record[:premis] = nil
-          deposit_record.save!
-
           # create disseration record
           resource = MigrationHelper.check_enumeration(metadata, Dissertation.new, metadata_file)
           resource.visibility = metadata['visibility']
@@ -74,7 +64,6 @@ module Tasks
             resource.embargo_release_date = metadata['embargo_release_date']
           end
           resource[:deposit_record] = deposit_record.id
-
           resource.save!
 
           id = resource.id
@@ -157,7 +146,7 @@ module Tasks
 
       fileset_metadata.except!('embargo_release_date', 'visibility_during_embargo', 'visibility_after_embargo') if fileset_metadata['embargo_release_date'].blank?
       file_set = FileSet.create(fileset_metadata)
-      actor = Hyrax::Actors::FileSetActor.new(file_set, User.where(uid: @depositor_onyen).first)
+      actor = Hyrax::Actors::FileSetActor.new(file_set, @depositor)
       actor.create_metadata(fileset_metadata)
       file = File.open(f)
       actor.create_content(file)
@@ -271,7 +260,7 @@ module Tasks
       work_attributes = {
         'title' => [title],
         'label' => title,
-        'depositor' => @depositor_onyen,
+        'depositor' => @depositor.uid,
         'creators_attributes' => build_person_hash(creators, affiliation),
         'date_issued' => (Date.try(:edtf, date_issued.year) || date_issued.year).to_s,
         'abstract' => abstract.gsub(/\n/, '').strip,

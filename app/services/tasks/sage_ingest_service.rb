@@ -45,6 +45,7 @@ module Tasks
 
         # parse xml
         ingest_work = JatsIngestWork.new(xml_path: jats_xml_path)
+
         # Create Article with metadata and save
         art_with_meta = article_with_metadata(ingest_work)
         create_sipity_workflow(work: art_with_meta)
@@ -55,6 +56,10 @@ module Tasks
         mark_done(orig_file_name) if package_ingest_complete?(@temp, file_names)
       end
       logger.info("Completing ingest of #{count} Sage packages.")
+    end
+
+    def deposit_package_type
+      'https://sagepub.com'
     end
 
     def create_sipity_workflow(work:)
@@ -83,7 +88,7 @@ module Tasks
     end
 
     def article_with_metadata(ingest_work)
-      logger.info("Creating article from DOI: #{ingest_work.identifier}")
+      logger.info("Creating Article from DOI: #{ingest_work.identifier}")
       art = Article.new
       art.admin_set = @admin_set
       # required fields
@@ -115,6 +120,8 @@ module Tasks
       # fields not normally edited via UI
       art.date_uploaded = DateTime.current
       art.date_modified = DateTime.current
+
+      art.deposit_record = deposit_record.id
 
       art.save!
       # return the Article object

@@ -41,5 +41,12 @@ RSpec.describe Tasks::IngestService, :ingest do
       expect(service.ingest_source).to eq('Sage')
       expect(service.ingest_progress_log).to be_instance_of(Migrate::Services::ProgressTracker)
     end
+
+    it 'only creates a single deposit record per service instance' do
+      expect do
+        service.deposit_record
+        service.deposit_record
+      end.to change { DepositRecord.count }.by(1)
+    end
   end
 end

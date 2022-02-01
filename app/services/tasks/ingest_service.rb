@@ -1,7 +1,7 @@
 module Tasks
   require 'tasks/migrate/services/progress_tracker'
   class IngestService
-    attr_reader :temp, :admin_set, :depositor, :package_dir, :ingest_progress_log
+    attr_reader :temp, :admin_set, :depositor, :package_dir, :ingest_progress_log, :deposit_record_hash
 
     def initialize(args)
       logger.info("Beginning #{ingest_source} ingest")
@@ -21,7 +21,25 @@ module Tasks
 
       @package_dir = @config['package_dir']
 
+      # deposit record info
+      @deposit_record_hash = { title: "#{ingest_source} Ingest #{Time.new.strftime('%B %d, %Y')}",
+                               deposit_method: 'CDR Collector 1.0',
+                               deposit_package_type: deposit_package_type,
+                               deposit_package_subtype: ingest_source,
+                               deposited_by: @depositor.uid }
+      deposit_record
       @ingest_progress_log = Migrate::Services::ProgressTracker.new(@config['ingest_progress_log']) if @config['ingest_progress_log']
+    end
+
+    def deposit_record
+      @deposit_record ||= begin
+        record = DepositRecord.new(@deposit_record_hash)
+        record[:manifest] = nil
+        record[:premis] = nil
+        record.save!
+
+        record
+      end
     end
 
     def process_packages

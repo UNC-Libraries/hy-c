@@ -31,15 +31,17 @@ RSpec.describe Tasks::ProquestIngestService, :ingest do
 
   describe '#initialize' do
     it 'sets all params' do
+      allow(Time).to receive(:new).and_return(Time.parse('2022-01-31 23:27:21'))
       service = Tasks::ProquestIngestService.new(args)
 
       expect(service.temp).to eq 'spec/fixtures/proquest/tmp'
       expect(service.admin_set_id).to eq AdminSet.where(title: 'proquest admin set').first.id
-      expect(service.depositor_onyen).to eq 'admin'
-      expect(service.deposit_record_hash).to include({ title: 'Deposit by ProQuest Depositor via CDR Collector 1.0',
+      expect(service.depositor).to be_instance_of(User)
+
+      expect(service.deposit_record_hash).to include({ title: 'ProQuest Ingest January 31, 2022',
                                                        deposit_method: 'CDR Collector 1.0',
                                                        deposit_package_type: 'http://proquest.com',
-                                                       deposit_package_subtype: nil,
+                                                       deposit_package_subtype: 'ProQuest',
                                                        deposited_by: 'admin' })
       expect(service.package_dir).to eq 'spec/fixtures/proquest'
     end
