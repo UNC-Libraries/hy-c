@@ -81,9 +81,15 @@ RSpec.describe Tasks::ProquestIngestService, :ingest do
   end
 
   describe '#extract_files' do
+    let(:service) { Tasks::ProquestIngestService.new(args) }
+    let(:zip_path) { 'spec/fixtures/proquest/proquest-attach0.zip' }
+    let(:unzipped_dir) { service.unzip_dir(zip_path) }
+
     it 'extracts files from zip' do
-      expect(Tasks::ProquestIngestService.new(args).extract_files('spec/fixtures/proquest/proquest-attach0.zip'))
-        .to eq 'spec/fixtures/proquest/tmp/proquest-attach0'
+      expect(service.unzip_dir(zip_path)).to eq 'spec/fixtures/proquest/tmp/proquest-attach0'
+      expect(Dir.entries(unzipped_dir)).to match_array(['.', '..'])
+      service.extract_files(zip_path)
+      expect(Dir.entries(unzipped_dir)).to match_array(['.', '..', '__MACOSX', 'attach_unc_1.pdf', 'attach_unc_1_DATA.xml', 'attach_unc_1_attach'])
     end
   end
 
@@ -96,6 +102,20 @@ RSpec.describe Tasks::ProquestIngestService, :ingest do
       allow(RegisterToLongleafJob).to receive(:perform_later).and_return(nil)
       expect { Tasks::ProquestIngestService.new(args).ingest_proquest_file(parent: dissertation, resource: metadata, f: file) }
         .to change { FileSet.count }.by(1)
+    end
+  end
+
+  describe '#metadata_file_path' do
+    let(:service) { Tasks::ProquestIngestService.new(args) }
+    let(:zip_path) { 'spec/fixtures/proquest/proquest-attach0.zip' }
+    let(:unzipped_dir) { service.unzip_dir(zip_path) }
+
+    before do
+      service.extract_files(zip_path)
+    end
+
+    it 'returns the path to the metadata file' do
+      expect(service.metadata_file_path(dir: unzipped_dir)).to eq(File.join(unzipped_dir, 'attach_unc_1_DATA.xml'))
     end
   end
 

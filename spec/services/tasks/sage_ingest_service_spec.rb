@@ -15,6 +15,8 @@ RSpec.describe Tasks::SageIngestService, :sage, :ingest do
   let(:first_pdf_path) { "#{path_to_tmp}/10.1177_1073274820985792.pdf" }
   let(:first_xml_path) { "#{sage_fixture_path}/#{first_package_identifier}/10.1177_1073274820985792.xml" }
   let(:ingest_progress_log_path) { File.join(sage_fixture_path, 'ingest_progress.log') }
+  let(:last_zip_path) { "spec/fixtures/sage/#{last_package_identifier}.zip" }
+  let(:last_package_identifier) { 'GSJ_2021_11_1_10.1177_2192568219890573' }
 
   let(:permission_template) do
     FactoryBot.create(:permission_template, source_id: admin_set.id)
@@ -72,7 +74,7 @@ RSpec.describe Tasks::SageIngestService, :sage, :ingest do
 
     it 'attaches a file to the file_set' do
       service.extract_files(first_zip_path)
-      service.attach_file_set_to_work(work: built_article, dir: service.extracted_package_directory(first_zip_path), file_name: '10.1177_1073274820985792.pdf', user: user, visibility: 'open')
+      service.attach_file_set_to_work(work: built_article, dir: service.unzip_dir(first_zip_path), file_name: '10.1177_1073274820985792.pdf', user: user, visibility: 'open')
       fs = built_article.file_sets.first
       expect(fs.files.first).to be_instance_of(Hydra::PCDM::File)
     end
@@ -113,6 +115,12 @@ RSpec.describe Tasks::SageIngestService, :sage, :ingest do
         expect(service.ingest_progress_log).to be_instance_of(Migrate::Services::ProgressTracker)
       end
     end
+
+    describe '#unzip_dir' do
+      it 'determines the directory to unzip the files to based on the zipfile path' do
+        expect(service.unzip_dir(first_zip_path)).to eq('spec/fixtures/sage/tmp/CCX_2021_28_10.1177_1073274820985792')
+      end
+    end
     # rubocop:disable Layout/MultilineMethodCallIndentation
     it 'can run a wrapper method' do
       expect(File.foreach(ingest_progress_log_path).count).to eq 0
@@ -130,7 +138,7 @@ RSpec.describe Tasks::SageIngestService, :sage, :ingest do
       let(:ingest_work) { JatsIngestWork.new(xml_path: first_xml_path) }
       let(:built_article) { service.article_with_metadata(ingest_work) }
       let(:user) { FactoryBot.create(:admin) }
-      let(:unzipped_dir) { service.extracted_package_directory(first_zip_path) }
+      let(:unzipped_dir) { service.unzip_dir(first_zip_path) }
 
       it 'can create a valid article' do
         expect do
@@ -224,9 +232,10 @@ RSpec.describe Tasks::SageIngestService, :sage, :ingest do
     end
 
     describe '#extract_files' do
-      let(:unzipped_dir) { service.extracted_package_directory(first_zip_path) }
+      let(:unzipped_dir) { service.unzip_dir(first_zip_path) }
 
       it 'takes a path to a zip file as an argument' do
+        expect(Dir.entries(unzipped_dir)).to match_array(['.', '..'])
         service.extract_files(first_zip_path)
         expect(Dir.entries(unzipped_dir)).to match_array(['.', '..', '10.1177_1073274820985792.pdf', '10.1177_1073274820985792.xml'])
       end
@@ -263,11 +272,11 @@ RSpec.describe Tasks::SageIngestService, :sage, :ingest do
 
     context 'with a package including a manifest' do
       let(:package_path) { File.join(fixture_path, 'sage', 'AJH_2021_38_4_10.1177_1049909120951088.zip') }
-      let(:unzipped_dir) { service.extracted_package_directory(first_zip_path) }
+      let(:unzipped_dir) { service.unzip_dir(first_zip_path) }
 
       it 'correctly identifies the manifest and jats xml' do
         file_names = service.extract_files(package_path).keys
-        expect(service.jats_xml_path(file_names: file_names, dir: unzipped_dir)).to eq(File.join(unzipped_dir, '10.1177_1049909120951088.xml'))
+        expect(service.metadata_file_path(file_names: file_names, dir: unzipped_dir)).to eq(File.join(unzipped_dir, '10.1177_1049909120951088.xml'))
       end
     end
 

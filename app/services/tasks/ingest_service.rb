@@ -44,8 +44,31 @@ module Tasks
       end
     end
 
+    def orig_file_name(package_path)
+      File.basename(package_path, '.zip')
+    end
+
+    def unzip_dir(package_path)
+      fname = orig_file_name(package_path)
+      dirname = "#{@temp}/#{fname}"
+      FileUtils.mkdir_p(dirname) unless File.exist?(dirname)
+      dirname
+    end
+
     def process_packages
       logger.info("Beginning ingest of #{count} #{ingest_source} packages")
+
+      package_paths.each.with_index(1) do |package_path, index|
+        process_package(package_path, index)
+      end
+      logger.info("Completing ingest of #{ingest_source} Sage packages.")
+    end
+
+    def process_package(package_path, index)
+      logger.info("Begin processing #{package_path} (#{index} of #{count})")
+      _unzipped_package_dir = unzip_dir(package_path)
+      # extract the files
+      _file_names = extract_files(package_path).keys
     end
 
     def package_paths
