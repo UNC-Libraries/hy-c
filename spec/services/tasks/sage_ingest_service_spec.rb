@@ -272,7 +272,7 @@ RSpec.describe Tasks::SageIngestService, :sage, :ingest do
 
     context 'with a package including a manifest' do
       let(:package_path) { File.join(fixture_path, 'sage', 'AJH_2021_38_4_10.1177_1049909120951088.zip') }
-      let(:unzipped_dir) { service.unzip_dir(first_zip_path) }
+      let(:unzipped_dir) { service.unzip_dir(package_path) }
 
       it 'correctly identifies the manifest and jats xml' do
         file_names = service.extract_files(package_path).keys

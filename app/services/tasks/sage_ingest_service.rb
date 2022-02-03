@@ -30,9 +30,8 @@ module Tasks
         logger.info("Error extracting #{package_path}: skipping zip file")
         return
       end
-      pdf_file_name = file_names.find { |name| name.match(/^(\S*).pdf/) }
 
-      metadata_file_path = metadata_file_path(file_names: file_names, dir: unzipped_package_dir)
+      metadata_file_path = metadata_file_path(dir: unzipped_package_dir, file_names: file_names)
 
       # parse xml
       ingest_work = JatsIngestWork.new(xml_path: metadata_file_path)
@@ -41,6 +40,8 @@ module Tasks
       art_with_meta = article_with_metadata(ingest_work)
       create_sipity_workflow(work: art_with_meta)
       # Add PDF file to Article (including FileSets)
+      pdf_file_name = file_names.find { |name| name.match(/^(\S*).pdf/) }
+
       attach_file_set_to_work(work: art_with_meta, dir: unzipped_package_dir, file_name: pdf_file_name, user: @depositor, visibility: art_with_meta.visibility)
       # Add xml metadata file to Article
       attach_file_set_to_work(work: art_with_meta, dir: unzipped_package_dir, file_name: jats_xml_file_name(file_names: file_names), user: @depositor, visibility: Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE)
@@ -135,22 +136,6 @@ module Tasks
       return true if File.exist?(File.join(dir, file_names.first)) && File.exist?(File.join(dir, file_names.last))
 
       logger.error("Package ingest not complete for #{file_names.first} and #{file_names.last}")
-      false
-    end
-
-    def extract_files(package_path)
-      dirname = unzip_dir(package_path)
-      logger.info("Extracting files from #{package_path} to #{dirname}")
-      extracted_files = Zip::File.open(package_path) do |zip_file|
-        zip_file.each do |file|
-          file_path = File.join(dirname, file.name)
-          zip_file.extract(file, file_path) unless File.exist?(file_path)
-        end
-      end
-      logger.error("Unexpected package contents - #{extracted_files.count} files extracted from #{package_path}") unless extracted_files.count.between?(2, 3)
-      extracted_files
-    rescue Zip::DestinationFileExistsError => e
-      logger.info("#{package_path}, zip file error: #{e.message}")
       false
     end
   end

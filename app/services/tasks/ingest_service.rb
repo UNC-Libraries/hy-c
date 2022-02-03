@@ -66,9 +66,23 @@ module Tasks
 
     def process_package(package_path, index)
       logger.info("Begin processing #{package_path} (#{index} of #{count})")
-      _unzipped_package_dir = unzip_dir(package_path)
+
+      unzipped_package_dir = unzip_dir(package_path)
+
       # extract the files
-      _file_names = extract_files(package_path).keys
+      file_names = extract_files(package_path).keys
+
+      # rubocop:disable Style/GuardClause
+      if unzipped_package_dir.blank?
+        logger.error("Error extracting #{package_path}: skipping zip file")
+        return nil
+      end
+
+      unless file_names.count.between?(2, 3)
+        logger.info("Error extracting #{package_path}: skipping zip file")
+        nil
+      end
+      # rubocop:enable Style/GuardClause
     end
 
     def package_paths
@@ -85,6 +99,22 @@ module Tasks
         log_path = File.join(Rails.configuration.log_directory, "#{ingest_source.downcase}_ingest.log")
         Logger.new(log_path, progname: "#{ingest_source} ingest")
       end
+    end
+
+    def extract_files(package_path)
+      dirname = unzip_dir(package_path)
+      logger.info("Extracting files from #{package_path} to #{dirname}")
+      extracted_files = Zip::File.open(package_path) do |zip_file|
+        zip_file.each do |file|
+          file_path = File.join(dirname, file.name)
+          zip_file.extract(file, file_path) unless File.exist?(file_path)
+        end
+      end
+      logger.error("Unexpected package contents - #{extracted_files.count} files extracted from #{package_path}") unless extracted_files.count.between?(2, 3)
+      extracted_files
+    rescue StandardError => e
+      logger.info("#{package_path}, zip file error: #{e.message}")
+      false
     end
   end
 end

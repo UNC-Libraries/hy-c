@@ -45,8 +45,8 @@ module Tasks
 
       metadata_file_path = metadata_file_path(dir: unzipped_package_dir)
 
-      pdf_file = Dir.glob("#{unzipped_package_dir}/*.pdf")
-      unless pdf_file.count == 1
+      pdf_file_path = Dir.glob("#{unzipped_package_dir}/*.pdf")
+      unless pdf_file_path.count == 1
         logger.error("Error: #{unzipped_package_dir} has more than 1 pdf file")
         return
       end
@@ -123,29 +123,11 @@ module Tasks
     end
 
     def metadata_file_path(dir:)
-      # get all files in unzipped directory (should be 1 pdf and 1 xml)
       metadata_file = Dir.glob("#{dir}/*_DATA.xml")
       if metadata_file.count == 1
         metadata_file.first.to_s
       else
         logger.error("Error: #{dir} has #{metadata_file.count} xml file(s)")
-        nil
-      end
-    end
-
-    def extract_files(package_path)
-      dirname = unzip_dir(package_path)
-      logger.info("Extracting files from #{package_path} to #{dirname}")
-      begin
-        Zip::File.open(package_path) do |zip_file|
-          zip_file.each do |file|
-            @file_last_modified = Date.strptime(zip_file.get_entry(file).as_json['time'].split('T')[0], '%Y-%m-%d') if file.name.match(/DATA.xml/)
-            fpath = File.join(dirname, file.name)
-            zip_file.extract(file, fpath) unless File.exist?(fpath)
-          end
-        end
-      rescue StandardError => e
-        logger.error("#{package_path}, zip file error: #{e.message}")
         nil
       end
     end
