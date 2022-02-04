@@ -1,6 +1,9 @@
 ActiveSupport::Reloader.to_prepare do
   Riiif::Image.file_resolver = Riiif::HttpFileResolver.new
 
+  Riiif::ImagemagickCommandFactory.external_command = ImageService.external_convert_command
+  Riiif::ImageMagickInfoExtractor.external_command  = ImageService.external_identify_command
+
   Riiif::Image.file_resolver.id_to_uri = lambda do |id|
     ActiveFedora::Base.id_to_uri(CGI.unescape(id)).tap do |url|
       logger.info "Riiif resolved #{id} to #{url}"

@@ -20,6 +20,28 @@ module Hydra::Derivatives::Processors
     # When resizing images, it is necessary to flatten any layers, otherwise the background
     # may be completely black. This happens especially with PDFs. See #110
     def create_resized_image
+      if Flipflop.graphicsmagick?
+        create_resized_image_with_graphicsmagick
+      else
+        create_resized_image_with_imagemagick
+      end
+    end
+
+    def create_resized_image_with_graphicsmagick
+      create_image do
+        if size
+          # remove layers and resize using convert instead of mogrify
+          MiniMagick::Tool::Convert.new do |cmd|
+            cmd << source_path # input
+            cmd.flatten
+            cmd.resize(size)
+            cmd << source_path # output
+          end
+        end
+      end
+    end
+
+    def create_resized_image_with_imagemagick
       create_image do |xfrm|
         if size
           xfrm.flatten
@@ -37,7 +59,11 @@ module Hydra::Derivatives::Processors
 
       # check image profile of original file
       unless Rails.env.test? # travis-ci cannot run the minimagick 'data' method
-        source_data = MiniMagick::Image.open(source_path).data
+        source_data = if Flipflop.graphicsmagick?
+                        MiniMagick::Image.open(source_path).details
+                      else
+                        MiniMagick::Image.open(source_path).data
+                      end
         if source_data['backgroundColor'] == '#FFFFFFFFFFFF0000'
           Rails.logger.info "\n\n######\nbackground color is black\n######\n\n"
           xfrm.negate
