@@ -7,6 +7,10 @@ ActiveSupport::Reloader.to_prepare do
     end
   end
 
+  # Use GraphicsMagick, rather than ImageMagick
+  Riiif::ImagemagickCommandFactory.external_command = "gm convert"
+  Riiif::ImageMagickInfoExtractor.external_command  = "gm identify"
+
   Riiif::Image.info_service = lambda do |id, _file|
     # id will look like a path to a pcdm:file
     # (e.g. rv042t299%2Ffiles%2F6d71677a-4f80-42f1-ae58-ed1063fd79c7)
