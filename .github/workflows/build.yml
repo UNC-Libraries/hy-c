@@ -12,6 +12,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
+      CC_TEST_REPORTER_ID: ab9f6d96726a23c491c04cdad5cc4959551f10716196aaf2260bdf72ca1a3d0b
       ALLOW_NOTIFICATIONS: true
       CLAMD_TCP_HOST: 'localhost'
       CLAMD_TCP_PORT: '3310'
@@ -135,3 +136,38 @@ jobs:
         POSTGRES_USER: hyrax
         POSTGRES_PASSWORD: password
         TMPDIR: /tmp
+
+    - uses: actions/upload-artifact@v2
+      with:
+        name: test-coverage
+        path: coverage
+
+    - uses: actions/upload-artifact@v2
+      with:
+        name: test-coverage-report
+        path: coverage/coverage.json
+
+    - name: Report to CodeClimate
+      uses: paambaati/codeclimate-action@v3.0.0
+      with:
+        debug: true
+        coverageLocations: |
+          ${{github.workspace}}/coverage/coverage.json:simplecov
+
+  # coverage:
+  #   needs: [ build ]
+  #   name: coverage
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - uses: actions/checkout@v2
+  #   - name: Download a single artifact
+  #     uses: actions/download-artifact@v2
+  #     with:
+  #       name: test-coverage-report
+    # - uses: paambaati/codeclimate-action@v3.0.0
+    #   env:
+    #     CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+    #   with:
+    #     debug: true
+    #     coverageLocations: |
+    #       test-coverage-report:simplecov
