@@ -94,7 +94,7 @@ RSpec.describe Tasks::SageIngestService, :sage, :ingest do
         allow(Time).to receive(:new).and_return(Time.parse('2022-01-31 23:27:21'))
         expect(service.package_dir).to eq 'spec/fixtures/sage'
         expect(service.depositor).to be_instance_of(User)
-        expect(service.deposit_record_hash).to eq({ title: 'Sage Ingest January 31, 2022',
+        expect(service.deposit_record_hash).to eq({ title: 'Sage Ingest 2022-01-31 23:27:21',
                                                     deposit_method: 'Hy-C v1.4.2, Tasks::SageIngestService',
                                                     deposit_package_type: 'https://sagepub.com',
                                                     deposit_package_subtype: 'https://jats.nlm.nih.gov/publishing/',
@@ -125,7 +125,7 @@ RSpec.describe Tasks::SageIngestService, :sage, :ingest do
     it 'can run a wrapper method' do
       expect(File.foreach(ingest_progress_log_path).count).to eq 0
       expect do
-        service.process_packages
+        service.process_all_packages
       end.to change { Article.count }.by(5)
          .and change { FileSet.count }.by(10)
          .and change { Sipity::Entity.count }.by(5)
@@ -288,6 +288,11 @@ RSpec.describe Tasks::SageIngestService, :sage, :ingest do
         allow(Logger).to receive(:new).and_return(logger)
         service.extract_files(package_path)
         expect(logger).to have_received(:error).with("Unexpected package contents - 4 files extracted from #{package_path}")
+      end
+
+      it 'does not validate the extracted packages' do
+        extracted_files = service.extract_files(package_path)
+        expect(service.valid_extract?(extracted_files)).to eq false
       end
     end
   end

@@ -29,9 +29,7 @@ module Tasks
       'ProQuest'
     end
 
-    def process_package(package_path, index)
-      super
-
+    def process_package(package_path, _index)
       @file_last_modified = ''
       unzipped_package_dir = unzip_dir(package_path)
 
@@ -50,6 +48,8 @@ module Tasks
         logger.error("Error: #{unzipped_package_dir} has more than 1 pdf file")
         return
       end
+
+      return unless metadata_file_path
 
       return unless File.file?(metadata_file_path)
 
@@ -323,6 +323,16 @@ module Tasks
       end
 
       file_attributes
+    end
+
+    def valid_extract?(extracted_files)
+      # There should only be one _DATA.xml file
+      metadata_file_match = extracted_files.keys.map { |file_name| file_name.match('_DATA.xml') }.compact
+      # There should be at least one PDF file, but there could be more if there are supplemental materials
+      pdf_file_match = extracted_files.keys.map { |file_name| file_name.match('.pdf') }.compact
+      return true if metadata_file_match.size == 1 && pdf_file_match.size >= 1
+
+      false
     end
   end
 end

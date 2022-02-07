@@ -26,7 +26,7 @@ module Tasks
     end
 
     def deposit_record_hash
-      @deposit_record_hash ||= { title: "#{ingest_source} Ingest #{Time.new.strftime('%B %d, %Y')}",
+      @deposit_record_hash ||= { title: "#{ingest_source} Ingest #{Time.new.strftime('%F %T')}",
                                  deposit_method: "Hy-C #{BRANCH}, #{self.class}",
                                  deposit_package_type: deposit_package_type,
                                  deposit_package_subtype: deposit_package_subtype,
@@ -55,34 +55,13 @@ module Tasks
       dirname
     end
 
-    def process_packages
+    def process_all_packages
       logger.info("Beginning ingest of #{count} #{ingest_source} packages")
 
       package_paths.each.with_index(1) do |package_path, index|
         process_package(package_path, index)
       end
-      logger.info("Completing ingest of #{ingest_source} Sage packages.")
-    end
-
-    def process_package(package_path, index)
-      logger.info("Begin processing #{package_path} (#{index} of #{count})")
-
-      unzipped_package_dir = unzip_dir(package_path)
-
-      # extract the files
-      file_names = extract_files(package_path).keys
-
-      # rubocop:disable Style/GuardClause
-      if unzipped_package_dir.blank?
-        logger.error("Error extracting #{package_path}: skipping zip file")
-        return nil
-      end
-
-      unless file_names.count.between?(2, 3)
-        logger.info("Error extracting #{package_path}: skipping zip file")
-        nil
-      end
-      # rubocop:enable Style/GuardClause
+      logger.info("Completing ingest of #{ingest_source} packages.")
     end
 
     def package_paths
@@ -110,9 +89,9 @@ module Tasks
           zip_file.extract(file, file_path) unless File.exist?(file_path)
         end
       end
-      logger.error("Unexpected package contents - #{extracted_files.count} files extracted from #{package_path}") unless extracted_files.count.between?(2, 3)
+      logger.error("Unexpected package contents - #{extracted_files.count} files extracted from #{package_path}") unless valid_extract?(extracted_files)
       extracted_files
-    rescue StandardError => e
+    rescue Zip::Error => e
       logger.info("#{package_path}, zip file error: #{e.message}")
       false
     end

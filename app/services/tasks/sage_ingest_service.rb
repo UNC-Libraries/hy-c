@@ -14,9 +14,7 @@ module Tasks
       'https://jats.nlm.nih.gov/publishing/'
     end
 
-    def process_package(package_path, index)
-      super
-
+    def process_package(package_path, _index)
       unzipped_package_dir = unzip_dir(package_path)
 
       file_names = extract_files(package_path).keys
@@ -136,6 +134,12 @@ module Tasks
       return true if File.exist?(File.join(dir, file_names.first)) && File.exist?(File.join(dir, file_names.last))
 
       logger.error("Package ingest not complete for #{file_names.first} and #{file_names.last}")
+      false
+    end
+
+    def valid_extract?(extracted_files)
+      return true if extracted_files.count.between?(2, 3)
+
       false
     end
   end

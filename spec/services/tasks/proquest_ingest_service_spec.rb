@@ -39,7 +39,7 @@ RSpec.describe Tasks::ProquestIngestService, :ingest do
       expect(service.admin_set_id).to eq AdminSet.where(title: 'proquest admin set').first.id
       expect(service.depositor).to be_instance_of(User)
 
-      expect(service.deposit_record_hash).to include({ title: 'ProQuest Ingest January 31, 2022',
+      expect(service.deposit_record_hash).to include({ title: 'ProQuest Ingest 2022-01-31 23:27:21',
                                                        deposit_method: 'Hy-C v1.4.2, Tasks::ProquestIngestService',
                                                        deposit_package_type: 'http://proquest.com',
                                                        deposit_package_subtype: 'ProQuest',
@@ -48,14 +48,14 @@ RSpec.describe Tasks::ProquestIngestService, :ingest do
     end
   end
 
-  describe '#process_packages' do
+  describe '#process_all_packages' do
     before do
       Dissertation.delete_all
     end
 
     it 'ingests proquest records' do
       allow(RegisterToLongleafJob).to receive(:perform_later).and_return(nil)
-      expect { Tasks::ProquestIngestService.new(args).process_packages }.to change { Dissertation.count }.by(1).and change { DepositRecord.count }.by(1)
+      expect { Tasks::ProquestIngestService.new(args).process_all_packages }.to change { Dissertation.count }.by(1).and change { DepositRecord.count }.by(1)
 
       # check embargo information
       dissertation = Dissertation.first
@@ -89,7 +89,29 @@ RSpec.describe Tasks::ProquestIngestService, :ingest do
       expect(service.unzip_dir(zip_path)).to eq 'spec/fixtures/proquest/tmp/proquest-attach0'
       expect(Dir.entries(unzipped_dir)).to match_array(['.', '..'])
       service.extract_files(zip_path)
-      expect(Dir.entries(unzipped_dir)).to match_array(['.', '..', '__MACOSX', 'attach_unc_1.pdf', 'attach_unc_1_DATA.xml', 'attach_unc_1_attach'])
+      expect(Dir.entries(unzipped_dir)).to match_array(['.', '..', 'attach_unc_1.pdf', 'attach_unc_1_DATA.xml', 'attach_unc_1_attach'])
+    end
+  end
+
+  describe '#valid_extract?' do
+    let(:service) { Tasks::ProquestIngestService.new(args) }
+
+    context 'with a properly formed package' do
+      let(:zip_path) { 'spec/fixtures/proquest/proquest-attach0.zip' }
+
+      it 'returns true' do
+        extracted_files = service.extract_files(zip_path)
+        expect(service.valid_extract?(extracted_files)).to eq true
+      end
+    end
+
+    context 'with a package with unexpected contents' do
+      let(:zip_path) { 'spec/fixtures/proquest/proquest-attach7.zip' }
+
+      it 'returns false' do
+        extracted_files = service.extract_files(zip_path)
+        expect(service.valid_extract?(extracted_files)).to eq false
+      end
     end
   end
 
