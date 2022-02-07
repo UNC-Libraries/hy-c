@@ -139,12 +139,12 @@ jobs:
 
     - uses: actions/upload-artifact@v2
       with:
-        name: test-coverage
+        name: coverage
         path: coverage
 
     - uses: actions/upload-artifact@v2
       with:
-        name: test-coverage-report
+        name: coverage.json
         path: coverage/coverage.json
 
     - name: Report to CodeClimate
@@ -154,20 +154,20 @@ jobs:
         coverageLocations: |
           ${{github.workspace}}/coverage/coverage.json:simplecov
 
-  # coverage:
-  #   needs: [ build ]
-  #   name: coverage
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #   - uses: actions/checkout@v2
-  #   - name: Download a single artifact
-  #     uses: actions/download-artifact@v2
-  #     with:
-  #       name: test-coverage-report
-    # - uses: paambaati/codeclimate-action@v3.0.0
-    #   env:
-    #     CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
-    #   with:
-    #     debug: true
-    #     coverageLocations: |
-    #       test-coverage-report:simplecov
+  coverage:
+    needs: [ build ]
+    name: coverage
+    env:
+      CC_TEST_REPORTER_ID: ab9f6d96726a23c491c04cdad5cc4959551f10716196aaf2260bdf72ca1a3d0b
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Download coverage directory
+      uses: actions/download-artifact@v2
+      with:
+        name: coverage
+    - uses: paambaati/codeclimate-action@v3.0.0
+      with:
+        debug: true
+        coverageLocations: |
+          ${{github.workspace}}/coverage/coverage.json:simplecov
