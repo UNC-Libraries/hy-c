@@ -6,164 +6,139 @@ module Tasks
   require 'zip'
   require 'tasks/migration_helper'
 
-  class ProquestIngestService
-    attr_reader :temp, :admin_set_id, :depositor_onyen, :deposit_record_hash, :metadata_dir
+  class ProquestIngestService < IngestService
+    attr_reader :admin_set_id
 
     def initialize(args)
-      config = YAML.load_file(args[:configuration_file])
+      super
 
-      # Create temp directory for unzipped contents
-      @temp = config['unzip_dir']
-      FileUtils::mkdir_p @temp
-
-      # Should deposit works into an admin set
-      # Update title parameter to reflect correct admin set
-      @admin_set_id = ::AdminSet.where(title: config['admin_set']).first.id
-      @depositor_onyen = config['depositor_onyen']
-
-      # deposit record info
-      @deposit_record_hash = { title: config['deposit_title'],
-                               deposit_method: config['deposit_method'],
-                               deposit_package_type: config['deposit_type'],
-                               deposit_package_subtype: config['deposit_subtype'],
-                               deposited_by: @depositor_onyen }
-
-      @metadata_dir = config['package_dir']
+      @admin_set_id = @admin_set.id
     end
 
-    def migrate_proquest_packages
-      # sort zip files for tests
-      proquest_packages = Dir.glob("#{@metadata_dir}/*.zip").sort
-      count = proquest_packages.count
-      proquest_packages.each_with_index do |package, index|
-        puts "[#{Time. now}] Unpacking #{package} (#{index + 1} of #{count})"
-        @file_last_modified = ''
-        unzipped_package_dir = extract_proquest_files(package)
+    def ingest_source
+      'ProQuest'
+    end
 
-        if unzipped_package_dir.blank?
-          puts "[#{Time.now}] error extracting #{package}: skipping zip file"
+    # URI representing the type of packaging used for the original deposit represented by this record, such as CDR METS or BagIt.
+    def deposit_package_type
+      'http://proquest.com'
+    end
+
+    # Subclassification of the packaging type for this deposit, such as a METS profile.
+    def deposit_package_subtype
+      'ProQuest'
+    end
+
+    def process_package(package_path, _index)
+      @file_last_modified = ''
+      unzipped_package_dir = unzip_dir(package_path)
+
+      # extract files
+      extract_files(package_path)
+
+      if unzipped_package_dir.blank?
+        logger.error("Error extracting #{package_path}: skipping zip file")
+        return
+      end
+
+      metadata_file_path = metadata_file_path(dir: unzipped_package_dir)
+
+      pdf_file_path = Dir.glob("#{unzipped_package_dir}/*.pdf")
+      unless pdf_file_path.count == 1
+        logger.error("Error: #{unzipped_package_dir} has more than 1 pdf file")
+        return
+      end
+
+      return unless metadata_file_path
+
+      return unless File.file?(metadata_file_path)
+
+      # only use xml file for metadata extraction
+      metadata, listed_files = proquest_metadata(metadata_file_path)
+
+      logger.info("#{metadata_file_path}, Number of files: #{listed_files.count.to_s}")
+
+      # create disseration record
+      resource = MigrationHelper.check_enumeration(metadata, Dissertation.new, metadata_file_path)
+      resource.visibility = metadata['visibility']
+      unless metadata['embargo_release_date'].blank?
+        resource.visibility_during_embargo = metadata['visibility_during_embargo']
+        resource.visibility_after_embargo = metadata['visibility_after_embargo']
+        resource.embargo_release_date = metadata['embargo_release_date']
+      end
+      resource[:deposit_record] = deposit_record.id
+      resource.save!
+
+      id = resource.id
+
+      logger.info("[#{metadata_file_path}] created dissertation: #{id}")
+
+      # get group permissions info to use for setting work and fileset permissions
+      group_permissions = MigrationHelper.get_permissions_attributes(@admin_set_id)
+      resource.update permissions_attributes: group_permissions
+
+      # Create sipity record
+      workflow = Sipity::Workflow.joins(:permission_template)
+                                 .where(permission_templates: { source_id: resource.admin_set_id }, active: true)
+      workflow_state = Sipity::WorkflowState.where(workflow_id: workflow.first.id, name: 'deposited')
+      Sipity::Entity.create!(proxy_for_global_id: resource.to_global_id.to_s,
+                             workflow: workflow.first,
+                             workflow_state: workflow_state.first)
+
+      # get list of all files in unzipped proquest package
+      unzipped_file_list = Dir.glob("#{unzipped_package_dir}/**/*.*")
+
+      ordered_members = []
+      listed_files.each do |f|
+        logger.info("[#{id}] trying...#{f.to_s}")
+
+        file_path = unzipped_file_list.find { |e| e.match(f.to_s) }
+        if file_path.blank?
+          logger.error("[#{id}] cannot find #{f.to_s}")
           next
         end
 
-        # get all files in unzipped directory (should be 1 pdf and 1 xml)
-        metadata_file = Dir.glob("#{unzipped_package_dir}/*_DATA.xml")
-        if metadata_file.count == 1
-          metadata_file = metadata_file.first.to_s
-        else
-          puts "[#{Time.now}] error: #{unzipped_package_dir} has #{metadata_file.count} xml file(s)"
-          next
-        end
-        pdf_file = Dir.glob("#{unzipped_package_dir}/*.pdf")
-        unless pdf_file.count == 1
-          puts "[#{Time.now}] error: #{unzipped_package_dir} has more than 1 pdf file"
-          next
-        end
-
-        if File.file?(metadata_file)
-          # only use xml file for metadata extraction
-          metadata, listed_files = proquest_metadata(metadata_file)
-
-          puts "[#{Time.now}] #{metadata_file}, Number of files: #{listed_files.count.to_s}"
-
-          # create deposit record
-          deposit_record = DepositRecord.new(@deposit_record_hash)
-          deposit_record[:manifest] = nil
-          deposit_record[:premis] = nil
-          deposit_record.save!
-
-          # create disseration record
-          resource = MigrationHelper.check_enumeration(metadata, Dissertation.new, metadata_file)
-          resource.visibility = metadata['visibility']
-          unless metadata['embargo_release_date'].blank?
-            resource.visibility_during_embargo = metadata['visibility_during_embargo']
-            resource.visibility_after_embargo = metadata['visibility_after_embargo']
-            resource.embargo_release_date = metadata['embargo_release_date']
-          end
-          resource[:deposit_record] = deposit_record.id
-
-          resource.save!
-
-          id = resource.id
-
-          puts "[#{Time.now}][#{metadata_file}] created dissertation: #{id}"
-
-          # get group permissions info to use for setting work and fileset permissions
-          group_permissions = MigrationHelper.get_permissions_attributes(@admin_set_id)
-          resource.update permissions_attributes: group_permissions
-
-          # Create sipity record
-          workflow = Sipity::Workflow.joins(:permission_template)
-                                     .where(permission_templates: { source_id: resource.admin_set_id }, active: true)
-          workflow_state = Sipity::WorkflowState.where(workflow_id: workflow.first.id, name: 'deposited')
-          Sipity::Entity.create!(proxy_for_global_id: resource.to_global_id.to_s,
-                                 workflow: workflow.first,
-                                 workflow_state: workflow_state.first)
-
-          # get list of all files in unzipped proquest package
-          unzipped_file_list = Dir.glob("#{unzipped_package_dir}/**/*.*")
-
-          ordered_members = []
-          listed_files.each do |f|
-            puts "[#{Time.now}][#{id}] trying...#{f.to_s}"
-
-            file_path = unzipped_file_list.find { |e| e.match(f.to_s) }
-            if file_path.blank?
-              puts "[#{Time.now}][#{id}] cannot find #{f.to_s}"
-              next
-            end
-
-            if File.file?(file_path)
-              file_set = ingest_proquest_file(parent: resource,
-                                              resource: metadata.merge({ title: [f] }),
-                                              f: file_path)
-              ordered_members << file_set if file_set
-            end
-          end
-          resource.ordered_members = ordered_members
-
-          # Attach metadata file
-          fileset_attrs = { 'title' => [File.basename(metadata_file)] }
-          fileset = ingest_proquest_file(parent: resource, resource: fileset_attrs, f: metadata_file)
-
-          # Force visibility to private since it seems to be saving as public
-          fileset.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
-          fileset.permissions_attributes = group_permissions
-          fileset.save
-
-          resource.ordered_members << fileset
-
-          # delete zip file after files have been extracted and ingested successfully
-          File.delete(package) if Rails.env != 'test'
+        if File.file?(file_path)
+          file_set = ingest_proquest_file(parent: resource,
+                                          resource: metadata.merge({ title: [f] }),
+                                          f: file_path)
+          ordered_members << file_set if file_set
         end
       end
+      resource.ordered_members = ordered_members
+
+      # Attach metadata file
+      fileset_attrs = { 'title' => [File.basename(metadata_file_path)] }
+      fileset = ingest_proquest_file(parent: resource, resource: fileset_attrs, f: metadata_file_path)
+
+      # Force visibility to private since it seems to be saving as public
+      fileset.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
+      fileset.permissions_attributes = group_permissions
+      fileset.save
+
+      resource.ordered_members << fileset
+
+      # delete zip file after files have been extracted and ingested successfully
+      File.delete(package_path) if Rails.env != 'test'
     end
 
-    def extract_proquest_files(file)
-      fname = file.split('.zip')[0].split('/')[-1]
-      dirname = "#{@temp}/#{fname}"
-      FileUtils::mkdir_p dirname
-      begin
-        Zip::File.open(file) do |zip_file|
-          zip_file.each do |f|
-            @file_last_modified = Date.strptime(zip_file.get_entry(f).as_json['time'].split('T')[0], '%Y-%m-%d') if f.name.match(/DATA.xml/)
-            fpath = File.join(dirname, f.name)
-            zip_file.extract(f, fpath) unless File.exist?(fpath)
-          end
-        end
-        dirname
-      rescue StandardError => e
-        puts "[#{Time.now}] #{file}, zip file error: #{e.message}"
+    def metadata_file_path(dir:)
+      metadata_file = Dir.glob("#{dir}/*_DATA.xml")
+      if metadata_file.count == 1
+        metadata_file.first.to_s
+      else
+        logger.error("Error: #{dir} has #{metadata_file.count} xml file(s)")
         nil
       end
     end
 
     def ingest_proquest_file(parent: nil, resource: nil, f: nil)
-      puts "[#{Time.now}][#{parent.id}] ingesting... #{f.to_s}"
+      logger.info("[#{parent.id}] ingesting... #{f.to_s}")
       fileset_metadata = file_record(resource)
 
       fileset_metadata.except!('embargo_release_date', 'visibility_during_embargo', 'visibility_after_embargo') if fileset_metadata['embargo_release_date'].blank?
       file_set = FileSet.create(fileset_metadata)
-      actor = Hyrax::Actors::FileSetActor.new(file_set, User.where(uid: @depositor_onyen).first)
+      actor = Hyrax::Actors::FileSetActor.new(file_set, @depositor)
       actor.create_metadata(fileset_metadata)
       file = File.open(f)
       actor.create_content(file)
@@ -186,7 +161,7 @@ module Tasks
 
       embargo_code = metadata.xpath('//DISS_submission/@embargo_code').text
 
-      puts "[#{Time.now}][#{metadata_file}] embargo code: #{embargo_code}"
+      logger.info("[#{metadata_file}] embargo code: #{embargo_code}")
 
       unless embargo_code.blank?
         current_date = Date.today
@@ -207,7 +182,7 @@ module Tasks
         visibility = visibility_during_embargo unless embargo_release_date.blank?
       end
 
-      puts "[#{Time.now}][#{metadata_file}] embargo release date: #{embargo_release_date}"
+      logger.info("[#{metadata_file}] embargo release date: #{embargo_release_date}")
 
       title = metadata.xpath('//DISS_description/DISS_title').text
 
@@ -245,7 +220,7 @@ module Tasks
       if !degree_map[normalized_degree].blank?
         degree = DegreesService.label(degree_map[normalized_degree])
       else
-        puts "[#{Time.now}][#{metadata_file}] unknown degree: #{abbreviated_degree}"
+        logger.warn("[#{metadata_file}] unknown degree: #{abbreviated_degree}")
         degree = abbreviated_degree
       end
 
@@ -277,7 +252,7 @@ module Tasks
       work_attributes = {
         'title' => [title],
         'label' => title,
-        'depositor' => @depositor_onyen,
+        'depositor' => @depositor.uid,
         'creators_attributes' => build_person_hash(creators, affiliation),
         'date_issued' => (Date.try(:edtf, date_issued.year) || date_issued.year).to_s,
         'abstract' => abstract.gsub(/\n/, '').strip,
@@ -348,6 +323,16 @@ module Tasks
       end
 
       file_attributes
+    end
+
+    def valid_extract?(extracted_files)
+      # There should only be one _DATA.xml file
+      metadata_file_match = extracted_files.keys.map { |file_name| file_name.match('_DATA.xml') }.compact
+      # There should be at least one PDF file, but there could be more if there are supplemental materials
+      pdf_file_match = extracted_files.keys.map { |file_name| file_name.match('.pdf') }.compact
+      return true if metadata_file_match.size == 1 && pdf_file_match.size >= 1
+
+      false
     end
   end
 end

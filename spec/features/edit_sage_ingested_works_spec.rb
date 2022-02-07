@@ -57,7 +57,7 @@ RSpec.feature 'Edit works created through the Sage ingest', :sage, js: false do
     permission_template
     workflow
     workflow_state
-    ingest_service.process_packages
+    ingest_service.process_all_packages
   end
 
   context 'as a regular user' do

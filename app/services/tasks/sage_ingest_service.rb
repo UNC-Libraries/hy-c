@@ -1,83 +1,49 @@
 module Tasks
-  require 'tasks/migrate/services/progress_tracker'
-  class SageIngestService
-    attr_reader :package_dir, :ingest_progress_log, :admin_set, :depositor
+  class SageIngestService < IngestService
+    def ingest_source
+      'Sage'
+    end
 
-    def logger
-      @logger ||= begin
-        log_path = File.join(Rails.configuration.log_directory, 'sage_ingest.log')
-        Logger.new(log_path, progname: 'Sage ingest')
+    # URI representing the type of packaging used for the original deposit represented by this record, such as CDR METS or BagIt.
+    def deposit_package_type
+      'https://sagepub.com'
+    end
+
+    # Subclassification of the packaging type for this deposit, such as a METS profile.
+    def deposit_package_subtype
+      'https://jats.nlm.nih.gov/publishing/'
+    end
+
+    def process_package(package_path, _index)
+      unzipped_package_dir = unzip_dir(package_path)
+
+      file_names = extract_files(package_path).keys
+
+      if unzipped_package_dir.blank?
+        logger.error("Error extracting #{package_path}: skipping zip file")
+        return
       end
-    end
 
-    def initialize(args)
-      config = YAML.load_file(args[:configuration_file])
-      # Create temp directory for unzipped contents
-      @temp = config['unzip_dir']
-      FileUtils.mkdir_p @temp unless File.exist?(@temp)
-
-      logger.info('Beginning Sage ingest')
-      @admin_set = ::AdminSet.where(title: 'Open_Access_Articles_and_Book_Chapters')&.first
-      raise(ActiveRecord::RecordNotFound, 'Could not find AdminSet with title Open_Access_Articles_and_Book_Chapters') unless @admin_set.present?
-
-      @depositor = User.find_by(uid: config['depositor_onyen'])
-      raise(ActiveRecord::RecordNotFound, "Could not find User with onyen #{config['depositor_onyen']}") unless @depositor.present?
-
-      @package_dir = config['package_dir']
-      @ingest_progress_log = Migrate::Services::ProgressTracker.new(config['ingest_progress_log'])
-    end
-
-    def deposit_record_hash
-      @deposit_record_hash ||= { title: "Sage Ingest #{Time.new.strftime('%B %d, %Y')}",
-                                 deposit_method: "Hy-C #{BRANCH}, #{self.class}",
-                                 deposit_package_type: 'https://sagepub.com',
-                                 deposit_package_subtype: 'https://jats.nlm.nih.gov/publishing/',
-                                 deposited_by: @depositor.uid }
-    end
-
-    def deposit_record
-      @deposit_record ||= begin
-        record = DepositRecord.new(deposit_record_hash)
-        record[:manifest] = nil
-        record[:premis] = nil
-        record.save!
-
-        record
+      unless file_names.count.between?(2, 3)
+        logger.info("Error extracting #{package_path}: skipping zip file")
+        return
       end
-    end
 
-    def process_packages
-      # Create DepositRecord
-      deposit_record
-      sage_package_paths = Dir.glob("#{@package_dir}/*.zip").sort
-      count = sage_package_paths.count
-      logger.info("Beginning ingest of #{count} Sage packages")
-      sage_package_paths.each.with_index(1) do |package_path, index|
-        logger.info("Begin processing #{package_path} (#{index} of #{count})")
-        orig_file_name = File.basename(package_path, '.zip')
+      metadata_file_path = metadata_file_path(dir: unzipped_package_dir, file_names: file_names)
 
-        file_names = extract_files(package_path, @temp).keys
-        unless file_names.count.between?(2, 3)
-          logger.info("Error extracting #{package_path}: skipping zip file")
-          next
-        end
+      # parse xml
+      ingest_work = JatsIngestWork.new(xml_path: metadata_file_path)
 
-        pdf_file_name = file_names.find { |name| name.match(/^(\S*).pdf/) }
+      # Create Article with metadata and save
+      art_with_meta = article_with_metadata(ingest_work)
+      create_sipity_workflow(work: art_with_meta)
+      # Add PDF file to Article (including FileSets)
+      pdf_file_name = file_names.find { |name| name.match(/^(\S*).pdf/) }
 
-        jats_xml_path = jats_xml_path(file_names: file_names, dir: @temp)
-
-        # parse xml
-        ingest_work = JatsIngestWork.new(xml_path: jats_xml_path)
-        # Create Article with metadata and save
-        art_with_meta = article_with_metadata(ingest_work)
-        create_sipity_workflow(work: art_with_meta)
-        # Add PDF file to Article (including FileSets)
-        attach_file_set_to_work(work: art_with_meta, dir: @temp, file_name: pdf_file_name, user: @depositor, visibility: art_with_meta.visibility)
-        # Add xml metadata file to Article
-        attach_file_set_to_work(work: art_with_meta, dir: @temp, file_name: jats_xml_file_name(file_names: file_names), user: @depositor, visibility: Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE)
-        mark_done(orig_file_name) if package_ingest_complete?(@temp, file_names)
-      end
-      logger.info("Completing ingest of #{count} Sage packages.")
+      attach_file_set_to_work(work: art_with_meta, dir: unzipped_package_dir, file_name: pdf_file_name, user: @depositor, visibility: art_with_meta.visibility)
+      # Add xml metadata file to Article
+      attach_file_set_to_work(work: art_with_meta, dir: unzipped_package_dir, file_name: jats_xml_file_name(file_names: file_names), user: @depositor, visibility: Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE)
+      mark_done(orig_file_name(package_path)) if package_ingest_complete?(unzipped_package_dir, file_names)
     end
 
     def create_sipity_workflow(work:)
@@ -94,7 +60,7 @@ module Tasks
                              workflow_state: workflow_state.first)
     end
 
-    def jats_xml_path(file_names:, dir:)
+    def metadata_file_path(file_names:, dir:)
       jats_xml_name = jats_xml_file_name(file_names: file_names)
 
       File.join(dir, jats_xml_name)
@@ -106,7 +72,7 @@ module Tasks
     end
 
     def article_with_metadata(ingest_work)
-      logger.info("Creating article from DOI: #{ingest_work.identifier}")
+      logger.info("Creating Article from DOI: #{ingest_work.identifier}")
       art = Article.new
       art.admin_set = @admin_set
       # required fields
@@ -171,18 +137,10 @@ module Tasks
       false
     end
 
-    def extract_files(package_path, temp_dir)
-      logger.info("Extracting files from #{package_path} to #{temp_dir}")
-      extracted_files = Zip::File.open(package_path) do |zip_file|
-        zip_file.each do |file|
-          file_path = File.join(temp_dir, file.name)
-          zip_file.extract(file, file_path) unless File.exist?(file_path)
-        end
-      end
-      logger.error("Unexpected package contents - #{extracted_files.count} files extracted from #{package_path}") unless extracted_files.count.between?(2, 3)
-      extracted_files
-    rescue Zip::DestinationFileExistsError => e
-      logger.info("#{package_path}, zip file error: #{e.message}")
+    def valid_extract?(extracted_files)
+      return true if extracted_files.count.between?(2, 3)
+
+      false
     end
   end
 end

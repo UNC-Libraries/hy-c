@@ -3,6 +3,7 @@ unzip_dir: spec/fixtures/sage/tmp
 package_dir: spec/fixtures/sage
 ingest_progress_log: spec/fixtures/sage/ingest_progress.log
 depositor_onyen: admin
+admin_set: Open_Access_Articles_and_Book_Chapters
 # deposit_title: Deposit by Sage Depositor via CDR Collector 1.0
 # deposit_method: CDR Collector 1.0
 # deposit_type: Sage
