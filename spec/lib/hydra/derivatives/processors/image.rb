@@ -6,8 +6,14 @@ RSpec.describe Hydra::Derivatives::Processors::Image do
   let(:file_name) { 'file_name' }
 
   before do
-    test_strategy = Flipflop::FeatureSet.current.test!
-    test_strategy.switch!(:graphicsmagick, false)
+    allow(MiniMagick).to receive(:cli).and_return(:imagemagick)
+  end
+
+  around do |example|
+    cached_image_processor = ENV['IMAGE_PROCESSOR']
+    ENV['IMAGE_PROCESSOR'] = 'imagemagick'
+    example.run
+    ENV['IMAGE_PROCESSOR'] = cached_image_processor
   end
 
   context 'when arguments are passed as a hash' do
@@ -156,13 +162,17 @@ RSpec.describe Hydra::Derivatives::Processors::Image do
       end
       context 'using GraphicsMagick' do
         before do
-          test_strategy = Flipflop::FeatureSet.current.test!
-          test_strategy.switch!(:graphicsmagick, true)
+          allow(MiniMagick).to receive(:cli).and_return(:imagemagick)
+        end
+
+        around do |example|
+          cached_image_processor = ENV['IMAGE_PROCESSOR']
+          ENV['IMAGE_PROCESSOR'] = 'graphicsmagick'
+          example.run
+          ENV['IMAGE_PROCESSOR'] = cached_image_processor
         end
 
         it 'calls the GraphicsMagick version of create_resized_image' do
-          # expect(subject).to receive(:create_resized_image)
-
           expect(subject).to receive(:create_resized_image_with_graphicsmagick)
           subject.process
         end

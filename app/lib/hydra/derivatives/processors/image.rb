@@ -20,7 +20,7 @@ module Hydra::Derivatives::Processors
     # When resizing images, it is necessary to flatten any layers, otherwise the background
     # may be completely black. This happens especially with PDFs. See #110
     def create_resized_image
-      if Flipflop.graphicsmagick?
+      if ImageService.processor == :graphicsmagick
         create_resized_image_with_graphicsmagick
       else
         create_resized_image_with_imagemagick
