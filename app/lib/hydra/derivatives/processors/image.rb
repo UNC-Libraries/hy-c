@@ -28,6 +28,7 @@ module Hydra::Derivatives::Processors
     end
 
     def create_resized_image_with_graphicsmagick
+      Rails.logger.info('[ImageProcessor] Using GraphicsMagick image resize method')
       create_image do
         if size
           # remove layers and resize using convert instead of mogrify
@@ -42,6 +43,7 @@ module Hydra::Derivatives::Processors
     end
 
     def create_resized_image_with_imagemagick
+      Rails.logger.info('[ImageProcessor] Using ImageMagick image resize method')
       create_image do |xfrm|
         if size
           xfrm.flatten

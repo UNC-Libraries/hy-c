@@ -26,4 +26,18 @@ namespace 'derivs' do
       end
     end
   end
+
+  desc 'Regenerate derivatives for a single FileSet'
+  task :file_set, [:id] => :environment do |_t, args|
+    file_set = FileSet.find(args.id)
+    puts "Could not find FileSet with id: #{args.id}" unless file_set
+    return unless file_set
+    file_set.files.each do |file|
+      # Do not try to create a derivative of the text file that's generated alongside PDFs
+      # Since it is, itself, a derivative
+      next if file.mime_type == 'text/plain;charset=UTF-8'
+
+      CreateDerivativesJob.perform_later(file_set, file.id)
+    end
+  end
 end
