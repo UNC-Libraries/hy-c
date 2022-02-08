@@ -32,6 +32,7 @@ namespace 'derivs' do
     file_set = FileSet.find(args.id)
     puts "Could not find FileSet with id: #{args.id}" unless file_set
     return unless file_set
+
     file_set.files.each do |file|
       # Do not try to create a derivative of the text file that's generated alongside PDFs
       # Since it is, itself, a derivative
