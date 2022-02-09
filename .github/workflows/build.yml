@@ -35,6 +35,7 @@ jobs:
       SSO_LOGIN_PATH: '/Shibboleth.sso/Login'
       SSO_LOGOUT_URL: 'https://shibboleth.example.com/idp/logout.jsp'
       TEMP_STORAGE: ./public
+      IMAGE_PROCESSOR: 'graphicsmagick'
     services:
       fedora:
         image: samvera/fcrepo4:4.7.5
