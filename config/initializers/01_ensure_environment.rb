@@ -4,7 +4,6 @@ Rails.logger.debug('[ImageProcessing] Ensure environment variables are loaded pr
 %w[
   IMAGE_PROCESSOR
 ].each do |env_var|
-
   next unless !ENV.key?(env_var) || ENV[env_var].blank?
 
   raise <<~MESSAGE
