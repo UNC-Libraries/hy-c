@@ -1,4 +1,5 @@
 require 'rails_helper'
+require Rails.root.join('spec/support/image_source_data.rb')
 
 RSpec.describe Hydra::Derivatives::Processors::Image do
   subject { described_class.new(file_name, directives) }
@@ -18,7 +19,10 @@ RSpec.describe Hydra::Derivatives::Processors::Image do
     end
 
     context 'when arguments are passed as a hash' do
-      before { allow(subject).to receive(:load_image_transformer).and_return(mock_image) }
+      before do
+        allow(subject).to receive(:load_image_transformer).and_return(mock_image)
+        allow(subject).to receive(:source_data).and_return(IMAGE_SOURCE_DATA)
+      end
 
       context 'with a multi-page pdf source file' do
         let(:first_page)  { instance_double('MockPage') }
@@ -157,6 +161,7 @@ RSpec.describe Hydra::Derivatives::Processors::Image do
 
   context 'using GraphicsMagick' do
     let(:directives) { { size: '100x100>', format: 'png', url: 'file:/tmp/12/34/56/7-thumbnail.jpeg' } }
+    let(:file_name) { File.join(fixture_path, 'derivatives', 'test.tif') }
 
     before do
       allow(MiniMagick).to receive(:cli).and_return(:graphicsmagick)
@@ -179,6 +184,11 @@ RSpec.describe Hydra::Derivatives::Processors::Image do
 
       it 'converts the image' do
         expect(Hyrax::PersistDerivatives).to receive(:call).with(kind_of(StringIO), directives)
+        subject.process
+      end
+
+      it 'gets the source data' do
+        expect(subject).to receive(:source_data).and_return(IMAGE_SOURCE_DATA)
         subject.process
       end
     end

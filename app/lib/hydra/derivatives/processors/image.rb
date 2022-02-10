@@ -60,19 +60,20 @@ module Hydra::Derivatives::Processors
       xfrm.quality(quality.to_s) if quality
 
       # check image profile of original file
-      unless Rails.env.test? # travis-ci cannot run the minimagick 'data' method
-        source_data = if Flipflop.graphicsmagick?
-                        MiniMagick::Image.open(source_path).details
-                      else
-                        MiniMagick::Image.open(source_path).data
-                      end
-        if source_data['backgroundColor'] == '#FFFFFFFFFFFF0000'
-          Rails.logger.info "\n\n######\nbackground color is black\n######\n\n"
-          xfrm.negate
-        end
+      if source_data['backgroundColor'] == '#FFFFFFFFFFFF0000'
+        Rails.logger.info "\n\n######\nbackground color is black\n######\n\n"
+        xfrm.negate
       end
 
       write_image(xfrm)
+    end
+
+    def source_data
+      if ImageService.processor == :graphicsmagick
+        MiniMagick::Image.open(source_path).details
+      else
+        MiniMagick::Image.open(source_path).data
+      end
     end
 
     def write_image(xfrm)
