@@ -29,14 +29,14 @@ module Hydra::Derivatives::Processors
 
     def create_resized_image_with_graphicsmagick
       Rails.logger.info('[ImageProcessor] Using GraphicsMagick image resize method')
-      create_image do
+      create_image do |temp_file|
         if size
           # remove layers and resize using convert instead of mogrify
           MiniMagick::Tool::Convert.new do |cmd|
-            cmd << source_path # input
+            cmd << temp_file.path # input
             cmd.flatten
             cmd.resize(size)
-            cmd << source_path # output
+            cmd << temp_file.path # output
           end
         end
       end
@@ -44,10 +44,10 @@ module Hydra::Derivatives::Processors
 
     def create_resized_image_with_imagemagick
       Rails.logger.info('[ImageProcessor] Using ImageMagick image resize method')
-      create_image do |xfrm|
+      create_image do |temp_file|
         if size
-          xfrm.flatten
-          xfrm.resize(size)
+          temp_file.flatten
+          temp_file.resize(size)
         end
       end
     end

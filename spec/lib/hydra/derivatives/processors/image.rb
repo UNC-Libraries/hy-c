@@ -179,7 +179,7 @@ RSpec.describe Hydra::Derivatives::Processors::Image do
       subject.process
     end
 
-    context 'when running the complete command', requires_imagemagick: true do
+    context 'when running the complete command' do
       let(:file_name) { File.join(fixture_path, 'derivatives', 'test.tif') }
 
       it 'converts the image' do
