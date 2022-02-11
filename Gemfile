@@ -41,7 +41,7 @@ gem 'passenger', '5.3.7', require: 'phusion_passenger/rack_handler'
 # Use postgresql as the database for Active Record
 gem 'pg', '~> 1.2.3'
 # TODO: Remove puma from gemfile - duplicates passenger functionality
-gem 'puma', '~> 4.3.9'
+gem 'puma', '~> 4.3.11'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.2.6'
 # Use Redis adapter to run Action Cable in production
