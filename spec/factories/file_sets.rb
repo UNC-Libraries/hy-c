@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'rails_helper'
+
 # from https://github.com/samvera/hyrax/blob/b034218b89dde7df534e32d1e5ade9161e129a1d/spec/factories/file_sets.rb#L35
 FactoryBot.define do
   factory :file_set do
@@ -24,13 +26,20 @@ FactoryBot.define do
     end
 
     trait :image do
-      content { File.open("#{Hyrax::Engine.root}spec/fixtures/world.png") }
+      content { File.open("#{RSpec.configuration.fixture_path}/files/image.png") }
     end
 
     trait :with_original_file do
       after(:create) do |file_set, _evaluator|
         Hydra::Works::AddFileToFileSet
-          .call(file_set, File.open("#{Hyrax::Engine.root}spec/fixtures/world.png"), :original_file)
+          .call(file_set, File.open("#{RSpec.configuration.fixture_path}/files/image.png"), :original_file)
+      end
+    end
+
+    trait :with_original_pdf_file do
+      after(:create) do |file_set, _evaluator|
+        Hydra::Works::AddFileToFileSet
+          .call(file_set, File.open("#{RSpec.configuration.fixture_path}/files/sample_pdf.pdf"), :original_file)
       end
     end
 
