@@ -12,6 +12,7 @@ RSpec.describe RegeneratePdfThumbnailsJob, type: :job do
     Blacklight.default_index.connection.delete_by_query('*:*')
     Blacklight.default_index.connection.commit
 
+    allow(Hydra::Works::VirusCheckerService).to receive(:file_has_virus?) { false }
     file_set_one
     file_set_two
     file_set_three
