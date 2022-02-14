@@ -21,6 +21,7 @@ jobs:
       DATACITE_USER: 'test-datacite-user'
       DATACITE_USE_TEST_API: 'true'
       DATA_STORAGE: ./public
+      TEMP_STORAGE: ./public
       DEFAULT_ADMIN_SET: 'default'
       DELETED_PEOPLE_FILE: ./tmp/deleted_people.txt
       DOI_PREFIX: '10.17615'
@@ -34,7 +35,7 @@ jobs:
       SOLR_TEST_PORT: 8983
       SSO_LOGIN_PATH: '/Shibboleth.sso/Login'
       SSO_LOGOUT_URL: 'https://shibboleth.example.com/idp/logout.jsp'
-      TEMP_STORAGE: ./public
+      IMAGE_PROCESSOR: 'graphicsmagick'
     services:
       fedora:
         image: samvera/fcrepo4:4.7.5
@@ -105,7 +106,7 @@ jobs:
     - name: Install OS packages
       run: |
         sudo apt-get update
-        sudo apt-get install unzip imagemagick ghostscript libpq-dev
+        sudo apt-get install unzip imagemagick ghostscript libpq-dev graphicsmagick
 
     - name: Setup test database
       env:

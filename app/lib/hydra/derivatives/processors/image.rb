@@ -20,10 +20,34 @@ module Hydra::Derivatives::Processors
     # When resizing images, it is necessary to flatten any layers, otherwise the background
     # may be completely black. This happens especially with PDFs. See #110
     def create_resized_image
-      create_image do |xfrm|
+      if ImageService.processor == :graphicsmagick
+        create_resized_image_with_graphicsmagick
+      else
+        create_resized_image_with_imagemagick
+      end
+    end
+
+    def create_resized_image_with_graphicsmagick
+      Rails.logger.info('[ImageProcessor] Using GraphicsMagick image resize method')
+      create_image do |temp_file|
         if size
-          xfrm.flatten
-          xfrm.resize(size)
+          # remove layers and resize using convert instead of mogrify
+          MiniMagick::Tool::Convert.new do |cmd|
+            cmd << temp_file.path # input
+            cmd.flatten
+            cmd.resize(size)
+            cmd << temp_file.path # output
+          end
+        end
+      end
+    end
+
+    def create_resized_image_with_imagemagick
+      Rails.logger.info('[ImageProcessor] Using ImageMagick image resize method')
+      create_image do |temp_file|
+        if size
+          temp_file.flatten
+          temp_file.resize(size)
         end
       end
     end
@@ -36,15 +60,20 @@ module Hydra::Derivatives::Processors
       xfrm.quality(quality.to_s) if quality
 
       # check image profile of original file
-      unless Rails.env.test? # travis-ci cannot run the minimagick 'data' method
-        source_data = MiniMagick::Image.open(source_path).data
-        if source_data['backgroundColor'] == '#FFFFFFFFFFFF0000'
-          Rails.logger.info "\n\n######\nbackground color is black\n######\n\n"
-          xfrm.negate
-        end
+      if source_data['backgroundColor'] == '#FFFFFFFFFFFF0000'
+        Rails.logger.info "\n\n######\nbackground color is black\n######\n\n"
+        xfrm.negate
       end
 
       write_image(xfrm)
+    end
+
+    def source_data
+      if ImageService.processor == :graphicsmagick
+        MiniMagick::Image.open(source_path).details
+      else
+        MiniMagick::Image.open(source_path).data
+      end
     end
 
     def write_image(xfrm)

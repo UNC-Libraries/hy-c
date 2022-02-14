@@ -24,13 +24,20 @@ FactoryBot.define do
     end
 
     trait :image do
-      content { File.open("#{Hyrax::Engine.root}spec/fixtures/world.png") }
+      content { File.open("#{RSpec.configuration.fixture_path}/files/image.png") }
     end
 
     trait :with_original_file do
       after(:create) do |file_set, _evaluator|
         Hydra::Works::AddFileToFileSet
-          .call(file_set, File.open("#{Hyrax::Engine.root}spec/fixtures/world.png"), :original_file)
+          .call(file_set, File.open("#{RSpec.configuration.fixture_path}/files/image.png"), :original_file)
+      end
+    end
+
+    trait :with_original_pdf_file do
+      after(:create) do |file_set, _evaluator|
+        Hydra::Works::AddFileToFileSet
+          .call(file_set, File.open("#{RSpec.configuration.fixture_path}/files/sample_pdf.pdf"), :original_file)
       end
     end
 
