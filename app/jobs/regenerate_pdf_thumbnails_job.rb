@@ -1,3 +1,7 @@
+# This class is needed to remediate a bug with thumbnails for PDF files whose first page is black and white
+# See https://github.com/samvera/hyrax/issues/4971
+# TODO:  Once this job has been run successfully on production, we can remove it.
+
 class RegeneratePdfThumbnailsJob < Hyrax::ApplicationJob
   queue_as :derivatives
 

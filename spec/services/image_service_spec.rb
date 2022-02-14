@@ -16,17 +16,14 @@ RSpec.describe ImageService do
 
     it 'returns a symbol for imagemagick as the cli' do
       expect(service.cli).to eq(:imagemagick)
-      # expect(MiniMagick.cli).to eq(:imagemagick)
     end
 
     it 'returns the correct command for converting images' do
       expect(service.external_convert_command).to eq('convert')
-      # expect(Riiif::ImagemagickCommandFactory.external_command).to eq('convert')
     end
 
     it 'returns the correct command for identifying images' do
       expect(service.external_identify_command).to eq('identify')
-      # expect(Riiif::ImageMagickInfoExtractor.external_command).to eq('identify')
     end
   end
 
@@ -44,17 +41,14 @@ RSpec.describe ImageService do
 
     it 'returns a symbol for graphicsmagick as the cli' do
       expect(service.cli).to eq(:graphicsmagick)
-      # expect(MiniMagick.cli).to eq(:graphicsmagick)
     end
 
     it 'returns the correct command for converting images' do
       expect(service.external_convert_command).to eq('gm convert')
-      # expect(Riiif::ImagemagickCommandFactory.external_command).to eq('gm convert')
     end
 
     it 'returns the correct command for identifying images' do
       expect(service.external_identify_command).to eq('gm identify')
-      # expect(Riiif::ImageMagickInfoExtractor.external_command).to eq('gm identify')
     end
   end
 
@@ -75,11 +69,8 @@ RSpec.describe ImageService do
     # TODO: Once we're using GraphicsMagick across all environments, we should switch the default to GraphicsMagick
     it 'defaults to imagemagick for everything' do
       expect(service.cli).to eq(:imagemagick)
-      # expect(MiniMagick.cli).to eq(:imagemagick)
       expect(service.external_convert_command).to eq('convert')
-      # expect(Riiif::ImagemagickCommandFactory.external_command).to eq('convert')
       expect(service.external_identify_command).to eq('identify')
-      # expect(Riiif::ImageMagickInfoExtractor.external_command).to eq('identify')
     end
   end
 end
