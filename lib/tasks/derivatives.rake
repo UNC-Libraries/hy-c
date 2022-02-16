@@ -1,7 +1,7 @@
 namespace 'derivs' do
   desc 'Regenerates thumbnails for PDFs'
   task pdf_thumbs: :environment do
-    RegeneratePdfThumbnailsJob.perform_later
+    RegenerateAllPdfThumbnailsJob.perform_later
   end
 
   desc 'Regenerates derivatives for a single file set'
