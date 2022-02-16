@@ -5,6 +5,10 @@ RSpec.describe CreatePdfThumbnailJob, type: :job do
   let(:file_set_one) { FactoryBot.create(:file_set, :with_original_pdf_file) }
   let(:file_set_three) { FactoryBot.create(:file_set, :with_original_file) }
 
+  before do
+    allow(Hydra::Works::VirusCheckerService).to receive(:file_has_virus?) { false }
+  end
+
   it 'enqueues jobs' do
     ActiveJob::Base.queue_adapter = :test
     expect { described_class.perform_later }.to have_enqueued_job(described_class).on_queue('import')
