@@ -9,6 +9,7 @@ class RegenerateAllPdfThumbnailsJob < Hyrax::ApplicationJob
   def perform
     # search_in_batches returns RSolr::Response::PaginatedDocSet, each object in group is a hash of a solr response
     FileSet.search_in_batches('mime_type_ssi' => 'application/pdf') do |group|
+      Rails.logger.debug("Creating CreatePdfThumbnailJob for filesets with ids: #{group.map { |solr_doc| solr_doc['id'] }}")
       group.map do |solr_doc|
         CreatePdfThumbnailJob.perform_later(file_set_id: solr_doc['id'], file_id: solr_doc['original_file_id_ssi'])
       end

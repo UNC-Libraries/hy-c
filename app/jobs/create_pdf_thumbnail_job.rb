@@ -7,17 +7,14 @@ class CreatePdfThumbnailJob < Hyrax::ApplicationJob
   queue_as :import
 
   def perform(file_set_id:, file_id:)
+    Rails.logger.debug("Starting CreatePdfThumbnailJob on file_set: #{file_set_id}, file_id: #{file_id}")
     file_set = FileSet.find(file_set_id)
 
-    # There is no method I can find to directly ask "What is the mime_type of the file with ID foo?", so this is my
-    # indirect way of doing so
-    mime_type_map = file_set.files.map { |file| { mime_type: file.mime_type, file_id: file.id } }
-    target_file = mime_type_map.select { |file| file[:file_id] == file_id }&.first
-
+    target_file = file_set.files.select { |file| file.id == file_id }&.first
     # Do not continue if the file_set and file_id somehow don't match
     return unless target_file
     # Do not continue if the file is not a PDF
-    return unless target_file[:mime_type] == 'application/pdf'
+    return unless target_file.mime_type == 'application/pdf'
 
     filename = Hyrax::WorkingDirectory.find_or_retrieve(file_id, file_set_id)
     deriv_service = Hyrax::FileSetDerivativesService.new(file_set)
@@ -30,5 +27,6 @@ class CreatePdfThumbnailJob < Hyrax::ApplicationJob
                                                 url: deriv_service.derivative_url('thumbnail'),
                                                 layer: 0
                                               }])
+    Rails.logger.debug("Finishing CreatePdfThumbnailJob on file_set: #{file_set_id}, file_id: #{file_id}. Should have saved to: #{deriv_service.derivative_url('thumbnail')}")
   end
 end
