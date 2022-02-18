@@ -4,6 +4,7 @@ require 'active_fedora/cleaner'
 RSpec.describe CreatePdfThumbnailJob, type: :job do
   let(:file_set_one) { FactoryBot.create(:file_set, :with_original_pdf_file) }
   let(:file_set_three) { FactoryBot.create(:file_set, :with_original_file) }
+  let(:file_set_with_extracted_text) { FactoryBot.create(:file_set, :with_extracted_text) }
 
   before do
     allow(Hydra::Works::VirusCheckerService).to receive(:file_has_virus?) { false }
@@ -17,22 +18,26 @@ RSpec.describe CreatePdfThumbnailJob, type: :job do
   it 'calls the CreateDerivativesJob on those file sets' do
     ActiveJob::Base.queue_adapter = :inline
     expect(Hydra::Derivatives::PdfDerivatives).to receive(:create)
-    described_class.perform_now(file_set_id: file_set_one.id, file_id: file_set_one.files.first.id)
+    described_class.perform_now(file_set_id: file_set_one.id)
   end
 
   it 'stops processing if the FileSet and file are not pdfs' do
     ActiveJob::Base.queue_adapter = :inline
     expect(Hydra::Derivatives::PdfDerivatives).not_to receive(:create)
-    described_class.perform_now(file_set_id: file_set_three.id, file_id: file_set_three.files.first.id)
+    described_class.perform_now(file_set_id: file_set_three.id)
   end
 
-  context 'with version information on the file' do
-    let(:file_id_solr) { "#{file_set_one.files.first.id}/fcr:versions/version1" }
+  it 'runs the job without errors' do
+    ActiveJob::Base.queue_adapter = :inline
+    described_class.perform_now(file_set_id: file_set_one.id)
+  end
 
-    it 'matches the file_id if it has version information at the end' do
-      ActiveJob::Base.queue_adapter = :inline
-      expect(Hydra::Derivatives::PdfDerivatives).to receive(:create)
-      described_class.perform_now(file_set_id: file_set_one.id, file_id: file_id_solr)
-    end
+  it 'only creates a thumbnail for the pdf file' do
+    ActiveJob::Base.queue_adapter = :inline
+    pdf_temp_path = /sample_pdf.pdf/
+    text_temp_path = /test.txt/
+    expect(Hydra::Derivatives::PdfDerivatives).to receive(:create).with(pdf_temp_path, any_args)
+    expect(Hydra::Derivatives::PdfDerivatives).not_to receive(:create).with(text_temp_path, any_args)
+    described_class.perform_now(file_set_id: file_set_with_extracted_text.id)
   end
 end

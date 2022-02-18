@@ -41,6 +41,15 @@ FactoryBot.define do
       end
     end
 
+    trait :with_extracted_text do
+      after(:create) do |file_set, _evaluator|
+        Hydra::Works::AddFileToFileSet
+          .call(file_set, File.open("#{RSpec.configuration.fixture_path}/files/sample_pdf.pdf"), :original_file)
+        Hydra::Works::AddFileToFileSet
+          .call(file_set, File.open("#{RSpec.configuration.fixture_path}/files/test.txt"), :extracted_text)
+      end
+    end
+
     factory :file_with_work do
       after(:build) do |file, _evaluator|
         file.title = ['testfile']
