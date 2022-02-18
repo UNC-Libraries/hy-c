@@ -5,6 +5,7 @@ RSpec.describe RegenerateAllPdfThumbnailsJob, type: :job do
   let(:file_set_one) { FactoryBot.create(:file_set, :with_original_pdf_file) }
   let(:file_set_two) { FactoryBot.create(:file_set, :with_original_pdf_file) }
   let(:file_set_three) { FactoryBot.create(:file_set, :with_original_file) }
+  let(:file_set_with_extracted_text) { FactoryBot.create(:file_set, :with_extracted_text) }
 
   before do
     # Clean out index so we only find our example files
@@ -17,6 +18,7 @@ RSpec.describe RegenerateAllPdfThumbnailsJob, type: :job do
     file_set_one
     file_set_two
     file_set_three
+    file_set_with_extracted_text
   end
 
   it 'enqueues jobs' do
@@ -26,7 +28,7 @@ RSpec.describe RegenerateAllPdfThumbnailsJob, type: :job do
 
   it 'calls the CreateDerivativesJob on those file sets' do
     ActiveJob::Base.queue_adapter = :inline
-    expect(Hydra::Derivatives::PdfDerivatives).to receive(:create).exactly(2).times
+    expect(Hydra::Derivatives::PdfDerivatives).to receive(:create).exactly(3).times
     described_class.perform_now
   end
 end
