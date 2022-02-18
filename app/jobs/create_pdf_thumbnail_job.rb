@@ -10,6 +10,12 @@ class CreatePdfThumbnailJob < Hyrax::ApplicationJob
     Rails.logger.debug("Starting CreatePdfThumbnailJob on file_set: #{file_set_id}, file_id: #{file_id}")
     file_set = FileSet.find(file_set_id)
 
+    if file_id.include?('fcr:versions')
+      Rails.logger.debug("Stripping version information from file_id: #{file_id}")
+      file_id.slice!(%r{/fcr:versions/version\d})
+      file_id
+    end
+    Rails.logger.debug("file_id after slice is now: #{file_id}")
     target_file = file_set.files.select { |file| file.id == file_id }&.first
     # Do not continue if the file_set and file_id somehow don't match
     return unless target_file

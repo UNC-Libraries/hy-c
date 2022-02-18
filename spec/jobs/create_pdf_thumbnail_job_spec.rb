@@ -20,9 +20,19 @@ RSpec.describe CreatePdfThumbnailJob, type: :job do
     described_class.perform_now(file_set_id: file_set_one.id, file_id: file_set_one.files.first.id)
   end
 
-  it 'stops processing if the FileSet and file file are not pdfs' do
+  it 'stops processing if the FileSet and file are not pdfs' do
     ActiveJob::Base.queue_adapter = :inline
     expect(Hydra::Derivatives::PdfDerivatives).not_to receive(:create)
     described_class.perform_now(file_set_id: file_set_three.id, file_id: file_set_three.files.first.id)
+  end
+
+  context 'with version information on the file' do
+    let(:file_id_solr) { "#{file_set_one.files.first.id}/fcr:versions/version1" }
+
+    it 'matches the file_id if it has version information at the end' do
+      ActiveJob::Base.queue_adapter = :inline
+      expect(Hydra::Derivatives::PdfDerivatives).to receive(:create)
+      described_class.perform_now(file_set_id: file_set_one.id, file_id: file_id_solr)
+    end
   end
 end
