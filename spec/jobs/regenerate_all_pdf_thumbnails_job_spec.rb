@@ -23,7 +23,7 @@ RSpec.describe RegenerateAllPdfThumbnailsJob, type: :job do
 
   it 'enqueues jobs' do
     ActiveJob::Base.queue_adapter = :test
-    expect { described_class.perform_later }.to have_enqueued_job(described_class).on_queue('import')
+    expect { described_class.perform_later }.to have_enqueued_job(described_class).on_queue('long_running_jobs')
   end
 
   it 'calls the CreateDerivativesJob on those file sets' do

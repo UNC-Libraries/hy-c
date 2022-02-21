@@ -3,8 +3,8 @@
 # TODO:  Once this job has been run successfully on production, we can remove it.
 
 class CreatePdfThumbnailJob < Hyrax::ApplicationJob
-  # Queueing as import so that it doesn't block works imported via the UI
-  queue_as :import
+  # Queueing as a new queue so that it doesn't block works imported via the UI, or the PO's ingest work
+  queue_as :long_running_jobs
 
   def perform(file_set_id:)
     Rails.logger.debug("Starting CreatePdfThumbnailJob on file_set: #{file_set_id}")

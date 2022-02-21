@@ -4,7 +4,7 @@
 
 class RegenerateAllPdfThumbnailsJob < Hyrax::ApplicationJob
   # Queueing as import so that it doesn't block works imported via the UI
-  queue_as :import
+  queue_as :long_running_jobs
 
   def perform
     # search_in_batches returns RSolr::Response::PaginatedDocSet, each object in group is a hash of a solr response
