@@ -278,7 +278,7 @@ Lint/AmbiguousRegexpLiteral:
 # Configuration parameters: AllowSafeAssignment.
 Lint/AssignmentInCondition:
   Exclude:
-    - 'app/lib/mini_magick/image/info.rb'
+    - 'lib/mini_magick/image/info.rb'
 
 # Offense count: 1
 # Cop supports --auto-correct.

@@ -40,4 +40,15 @@ RSpec.describe CreatePdfThumbnailJob, type: :job do
     expect(Hydra::Derivatives::PdfDerivatives).not_to receive(:create).with(text_temp_path, any_args)
     described_class.perform_now(file_set_id: file_set_with_extracted_text.id)
   end
+
+  describe 'with a pdf with unexpected info' do
+    let(:file_set) { FactoryBot.create(:file_set, :with_malformed_pdf) }
+
+    it 'runs the job and logs errors' do
+      ActiveJob::Base.queue_adapter = :inline
+      allow(Rails.logger).to receive(:warn)
+      described_class.perform_now(file_set_id: file_set.id)
+      expect(Rails.logger).to have_received(:warn).with('Error logged for image:    **** Error: /BBox has zero width or height, which is not allowed.                Output may be incorrect.')
+    end
+  end
 end
