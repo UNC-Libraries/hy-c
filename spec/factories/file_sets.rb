@@ -27,6 +27,13 @@ FactoryBot.define do
       content { File.open("#{RSpec.configuration.fixture_path}/files/image.png") }
     end
 
+    trait :with_malformed_pdf do
+      after(:create) do |file_set, _evaluator|
+        Hydra::Works::AddFileToFileSet
+          .call(file_set, File.open("#{RSpec.configuration.fixture_path}/files/1022-0.pdf"), :original_file)
+      end
+    end
+
     trait :with_original_file do
       after(:create) do |file_set, _evaluator|
         Hydra::Works::AddFileToFileSet
@@ -38,6 +45,15 @@ FactoryBot.define do
       after(:create) do |file_set, _evaluator|
         Hydra::Works::AddFileToFileSet
           .call(file_set, File.open("#{RSpec.configuration.fixture_path}/files/sample_pdf.pdf"), :original_file)
+      end
+    end
+
+    trait :with_extracted_text do
+      after(:create) do |file_set, _evaluator|
+        Hydra::Works::AddFileToFileSet
+          .call(file_set, File.open("#{RSpec.configuration.fixture_path}/files/sample_pdf.pdf"), :original_file)
+        Hydra::Works::AddFileToFileSet
+          .call(file_set, File.open("#{RSpec.configuration.fixture_path}/files/test.txt"), :extracted_text)
       end
     end
 

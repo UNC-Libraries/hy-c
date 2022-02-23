@@ -5,35 +5,37 @@ module MiniMagick
   class Image
     # @private
     class Info
-      ASCII_ENCODED_EXIF_KEYS = %w[ExifVersion FlashPixVersion]
+      ASCII_ENCODED_EXIF_KEYS = %w[ExifVersion FlashPixVersion].freeze
 
       def initialize(path)
+        Rails.logger.info('MiniMagick::Image::Info initialize method in lib/mini_magick/image/info.rb')
+
         @path = path
         @info = {}
       end
 
       def [](value, *args)
         case value
-          when 'format', 'width', 'height', 'dimensions', 'size', 'human_size'
-            cheap_info(value)
-          when 'colorspace'
-            colorspace
-          when 'mime_type'
-            mime_type
-          when 'resolution'
-            resolution(*args)
-          when 'signature'
-            signature
-          when /^EXIF\:/i
-            raw_exif(value)
-          when 'exif'
-            exif
-          when 'details'
-            details
-          when 'data'
-            data
-          else
-            raw(value)
+        when 'format', 'width', 'height', 'dimensions', 'size', 'human_size'
+          cheap_info(value)
+        when 'colorspace'
+          colorspace
+        when 'mime_type'
+          mime_type
+        when 'resolution'
+          resolution(*args)
+        when 'signature'
+          signature
+        when /^EXIF\:/i
+          raw_exif(value)
+        when 'exif'
+          exif
+        when 'details'
+          details
+        when 'data'
+          data
+        else
+          raw(value)
         end
       end
 
@@ -43,12 +45,18 @@ module MiniMagick
 
       # [hyc-override] remove warnings and print errors
       def cheap_info(value)
+        Rails.logger.info('MiniMagick cheap_info in lib directory')
         @info.fetch(value) do
           image_data = self['%m %w %h %b']
+
           if !image_data.blank? && image_data.include?('Warning')
             warning, image_info = image_data.split("\n")
             format, width, height, size = image_info.split(' ')
             Rails.logger.info "Warning logged for image: #{warning}"
+          elsif !image_data.blank? && image_data.include?('Error')
+            error_part_one, error_part_two, image_info = image_data.split("\n")
+            format, width, height, size = image_info.split(' ')
+            Rails.logger.warn("Error logged for image: #{error_part_one} #{error_part_two}")
           else
             format, width, height, size = image_data.split(' ')
           end
@@ -62,7 +70,7 @@ module MiniMagick
             'height' => Integer(height),
             'dimensions' => [Integer(width), Integer(height)],
             'size' => File.size(path),
-            'human_size' => size,
+            'human_size' => size
           )
 
           @info.fetch(value)
@@ -76,7 +84,7 @@ module MiniMagick
       end
 
       def mime_type
-        "image/#{self["format"].downcase}"
+        "image/#{self['format'].downcase}"
       end
 
       def resolution(unit = nil)
@@ -92,14 +100,14 @@ module MiniMagick
       end
 
       def exif
-        @info['exif'] ||= (
-        hash = {}
-        output = self['%[EXIF:*]']
+        @info['exif'] ||= begin
+          hash = {}
+          output = self['%[EXIF:*]']
 
-        output.each_line do |line|
-          line = line.chomp("\n")
+          output.each_line do |line|
+            line = line.chomp("\n")
 
-          case MiniMagick.cli
+            case MiniMagick.cli
             when :imagemagick, :imagemagick7
               if match = line.match(/^exif:/)
                 key, value = match.post_match.split('=', 2)
@@ -114,11 +122,11 @@ module MiniMagick
               key, value = line.split('=', 2)
               value.gsub!('\\012', "\n") # convert "\012" characters to newlines
               hash[key] = value
+            end
           end
-        end
 
-        hash
-      )
+          hash
+        end
       end
 
       def raw(value)
@@ -132,49 +140,49 @@ module MiniMagick
       def details
         warn '[MiniMagick] MiniMagick::Image#details has been deprecated, as it was causing too many parsing errors. You should use MiniMagick::Image#data instead, which differs in a way that the keys are in camelcase.' if MiniMagick.imagemagick? || MiniMagick.imagemagick7?
 
-        @info['details'] ||= (
-        details_string = identify(&:verbose)
-        key_stack = []
-        details_string.lines.to_a[1..-1].each_with_object({}) do |line, details_hash|
-          next if !line.valid_encoding? || line.strip.length.zero?
+        @info['details'] ||= begin
+          details_string = identify(&:verbose)
+          key_stack = []
+          details_string.lines.to_a[1..-1].each_with_object({}) do |line, details_hash|
+            next if !line.valid_encoding? || line.strip.length.zero?
 
-          level = line[/^\s*/].length / 2 - 1
-          if level >= 0
-            key_stack.pop until key_stack.size <= level
-          else
-            # Some metadata, such as SVG clipping paths, will be saved without
-            # indentation, resulting in a level of -1
-            last_key = details_hash.keys.last
-            details_hash[last_key] = '' if details_hash[last_key].empty?
-            details_hash[last_key] << line
-            next
-          end
+            level = line[/^\s*/].length / 2 - 1
+            if level >= 0
+              key_stack.pop until key_stack.size <= level
+            else
+              # Some metadata, such as SVG clipping paths, will be saved without
+              # indentation, resulting in a level of -1
+              last_key = details_hash.keys.last
+              details_hash[last_key] = '' if details_hash[last_key].empty?
+              details_hash[last_key] << line
+              next
+            end
 
-          key, _, value = line.partition(/:[\s]/).map(&:strip)
-          hash = key_stack.inject(details_hash) { |h, k| h.fetch(k) }
-          if value.empty?
-            hash[key] = {}
-            key_stack.push key
-          else
-            hash[key] = value
+            key, _, value = line.partition(/:[\s]/).map(&:strip)
+            hash = key_stack.inject(details_hash) { |h, k| h.fetch(k) }
+            if value.empty?
+              hash[key] = {}
+              key_stack.push key
+            else
+              hash[key] = value
+            end
           end
         end
-      )
       end
 
       def data
         raise Error, "MiniMagick::Image#data isn't supported on GraphicsMagick. Use MiniMagick::Image#details instead." if MiniMagick.graphicsmagick?
 
-        @info['data'] ||= (
-        json = MiniMagick::Tool::Convert.new do |convert|
-          convert << path
-          convert << 'json:'
-        end
+        @info['data'] ||= begin
+          json = MiniMagick::Tool::Convert.new do |convert|
+            convert << path
+            convert << 'json:'
+          end
 
-        data = JSON.parse(json)
-        data = data.fetch(0) if data.is_a?(Array)
-        data.fetch('image')
-      )
+          data = JSON.parse(json)
+          data = data.fetch(0) if data.is_a?(Array)
+          data.fetch('image')
+        end
       end
 
       def identify
@@ -197,7 +205,6 @@ module MiniMagick
         value += '[0]' unless value =~ /\[\d+\]$/
         value
       end
-
     end
   end
 end

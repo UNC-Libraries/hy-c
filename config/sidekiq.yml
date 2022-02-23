@@ -5,8 +5,10 @@
   - derivatives
   - import
   - export
+  - long_running_jobs
 :logfile: ./log/sidekiq.log
 :limits:
   derivatives: 1
   import: 1
   export: 1
+  long_running_jobs: 1
