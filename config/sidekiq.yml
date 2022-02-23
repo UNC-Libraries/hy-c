@@ -1,4 +1,5 @@
 ---
+# In production this is overridden by a template in the vagrant-rails project
 :concurrency: 25
 :queues:
   - default

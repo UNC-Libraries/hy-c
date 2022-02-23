@@ -8,8 +8,6 @@ module MiniMagick
       ASCII_ENCODED_EXIF_KEYS = %w[ExifVersion FlashPixVersion].freeze
 
       def initialize(path)
-        Rails.logger.info('MiniMagick::Image::Info initialize method in lib/mini_magick/image/info.rb')
-
         @path = path
         @info = {}
       end
@@ -45,7 +43,6 @@ module MiniMagick
 
       # [hyc-override] remove warnings and print errors
       def cheap_info(value)
-        Rails.logger.info('MiniMagick cheap_info in lib directory')
         @info.fetch(value) do
           image_data = self['%m %w %h %b']
 
