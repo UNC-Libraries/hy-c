@@ -44,6 +44,7 @@ RSpec.describe CreatePdfThumbnailJob, type: :job do
   describe 'with a pdf with unexpected info' do
     let(:file_set) { FactoryBot.create(:file_set, :with_malformed_pdf) }
 
+    # This test currently fails in CI.
     # This test passes either when Rails.configuration.eager_load = true, which makes many other tests fail;
     # or when app/lib/mini_magick/image/info.rb is moved to the lib directory, in which case it doesn't get picked up in production
     xit 'runs the job and logs errors' do
