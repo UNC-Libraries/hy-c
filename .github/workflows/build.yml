@@ -38,7 +38,7 @@ jobs:
       TEMP_STORAGE: ./public
     services:
       fedora:
-        image: samvera/fcrepo4:4.7.5
+        image: samvera/fcrepo4:4.7.5-prev
         ports:
           - 8080:8080
         env:
