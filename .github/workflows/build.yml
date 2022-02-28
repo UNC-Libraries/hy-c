@@ -153,21 +153,3 @@ jobs:
         debug: true
         coverageLocations: |
           ${{github.workspace}}/coverage/coverage.json:simplecov
-
-  # coverage:
-  #   needs: [ build ]
-  #   name: coverage
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #   - uses: actions/checkout@v2
-  #   - name: Download a single artifact
-  #     uses: actions/download-artifact@v2
-  #     with:
-  #       name: test-coverage-report
-    # - uses: paambaati/codeclimate-action@v3.0.0
-    #   env:
-    #     CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
-    #   with:
-    #     debug: true
-    #     coverageLocations: |
-    #       test-coverage-report:simplecov
