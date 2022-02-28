@@ -2,6 +2,8 @@
 
 ![Build](https://github.com/UNC-Libraries/hy-c/workflows/Build/badge.svg?branch=main)
 [![Ruby Style Guide](https://img.shields.io/badge/code_style-rubocop-brightgreen.svg)](https://github.com/rubocop/rubocop)
+[![Maintainability](https://api.codeclimate.com/v1/badges/5114a1aec550de0ce672/maintainability)](https://codeclimate.com/github/UNC-Libraries/hy-c/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/5114a1aec550de0ce672/test_coverage)](https://codeclimate.com/github/UNC-Libraries/hy-c/test_coverage)
 
 #### Hyrax based system underlying the Carolina Digital Repository
 

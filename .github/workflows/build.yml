@@ -12,6 +12,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
+      CC_TEST_REPORTER_ID: ab9f6d96726a23c491c04cdad5cc4959551f10716196aaf2260bdf72ca1a3d0b
       ALLOW_NOTIFICATIONS: true
       CLAMD_TCP_HOST: 'localhost'
       CLAMD_TCP_PORT: '3310'
@@ -38,7 +39,7 @@ jobs:
       IMAGE_PROCESSOR: 'graphicsmagick'
     services:
       fedora:
-        image: samvera/fcrepo4:4.7.5
+        image: samvera/fcrepo4:4.7.5-cgroup1
         ports:
           - 8080:8080
         env:
@@ -136,3 +137,20 @@ jobs:
         POSTGRES_USER: hyrax
         POSTGRES_PASSWORD: password
         TMPDIR: /tmp
+
+    - uses: actions/upload-artifact@v2
+      with:
+        name: test-coverage
+        path: coverage
+
+    - uses: actions/upload-artifact@v2
+      with:
+        name: test-coverage-report
+        path: coverage/coverage.json
+
+    - name: Report to CodeClimate
+      uses: paambaati/codeclimate-action@v3.0.0
+      with:
+        debug: true
+        coverageLocations: |
+          ${{github.workspace}}/coverage/coverage.json:simplecov
