@@ -151,6 +151,6 @@ jobs:
     - name: Report to CodeClimate
       uses: paambaati/codeclimate-action@v3.0.0
       with:
-        debug: true
+        debug: false
         coverageLocations: |
           ${{github.workspace}}/coverage/coverage.json:simplecov
