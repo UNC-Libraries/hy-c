@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Tasks::ProquestIngestService, :ingest do
   let(:args) { { configuration_file: 'spec/fixtures/proquest/proquest_config.yml' } }
+  let(:admin) { FactoryBot.create(:admin) }
 
   let(:admin_set) do
     AdminSet.create(title: ['proquest admin set'],
@@ -18,6 +19,8 @@ RSpec.describe Tasks::ProquestIngestService, :ingest do
   end
 
   before do
+    allow(RegisterToLongleafJob).to receive(:perform_later).and_return(nil)
+    allow(User).to receive(:find_by).with(uid: 'admin').and_return(admin)
     allow(CharacterizeJob).to receive(:perform_later)
     allow(Hydra::Works::VirusCheckerService).to receive(:file_has_virus?) { false }
     allow(Date).to receive(:today).and_return(Date.parse('2019-09-12'))
@@ -43,7 +46,7 @@ RSpec.describe Tasks::ProquestIngestService, :ingest do
                                                        deposit_method: 'Hy-C v1.4.2, Tasks::ProquestIngestService',
                                                        deposit_package_type: 'http://proquest.com',
                                                        deposit_package_subtype: 'ProQuest',
-                                                       deposited_by: 'admin' })
+                                                       deposited_by: admin.uid })
       expect(service.package_dir).to eq 'spec/fixtures/proquest'
     end
   end
@@ -54,14 +57,13 @@ RSpec.describe Tasks::ProquestIngestService, :ingest do
     end
 
     it 'ingests proquest records' do
-      allow(RegisterToLongleafJob).to receive(:perform_later).and_return(nil)
       expect { Tasks::ProquestIngestService.new(args).process_all_packages }.to change { Dissertation.count }.by(1).and change { DepositRecord.count }.by(1)
 
       # check embargo information
       dissertation = Dissertation.first
 
       # first dissertation - embargo code: 3, publication year: 2019
-      expect(dissertation['depositor']).to eq 'admin'
+      expect(dissertation['depositor']).to eq admin.uid
       expect(dissertation['title']).to match_array ['Perspective on Attachments and Ingests']
       expect(dissertation['label']).to eq 'Perspective on Attachments and Ingests'
       expect(dissertation['date_issued']).to eq '2019'
@@ -121,7 +123,6 @@ RSpec.describe Tasks::ProquestIngestService, :ingest do
     let(:file) { 'spec/fixtures/files/test.txt' }
 
     it 'saves a fileset' do
-      allow(RegisterToLongleafJob).to receive(:perform_later).and_return(nil)
       expect { Tasks::ProquestIngestService.new(args).ingest_proquest_file(parent: dissertation, resource: metadata, f: file) }
         .to change { FileSet.count }.by(1)
     end
@@ -151,7 +152,7 @@ RSpec.describe Tasks::ProquestIngestService, :ingest do
         attributes, files = service.proquest_metadata(metadata_file)
         expect(attributes).to include({ 'title' => ['Perspective on Attachments and Ingests'],
                                         'label' => 'Perspective on Attachments and Ingests',
-                                        'depositor' => 'admin',
+                                        'depositor' => admin.uid,
                                         'creators_attributes' => { '0' => { 'name' => 'Smith, Blandy', 'affiliation' => ['Department of Philosophy'], 'index' => 1 } },
                                         'date_issued' => '2019',
                                         'abstract' => 'The purpose of this study is to test ingest of a proquest deposit object without any attachments',
@@ -183,7 +184,7 @@ RSpec.describe Tasks::ProquestIngestService, :ingest do
         attributes, files = service.proquest_metadata(metadata_file)
         expect(attributes).to include({ 'title' => ['Perspective on Attachments and Ingests'],
                                         'label' => 'Perspective on Attachments and Ingests',
-                                        'depositor' => 'admin',
+                                        'depositor' => admin.uid,
                                         'creators_attributes' => { '0' => { 'name' => 'Smith, Blandy', 'affiliation' => ['Department of Philosophy'], 'index' => 1 } },
                                         'date_issued' => '2019',
                                         'abstract' => 'The purpose of this study is to test ingest of a proquest deposit object without any attachments',
@@ -216,7 +217,7 @@ RSpec.describe Tasks::ProquestIngestService, :ingest do
         attributes, files = service.proquest_metadata(metadata_file)
         expect(attributes).to include({ 'title' => ['Perspective on Attachments and Ingests'],
                                         'label' => 'Perspective on Attachments and Ingests',
-                                        'depositor' => 'admin',
+                                        'depositor' => admin.uid,
                                         'creators_attributes' => { '0' => { 'name' => 'Smith, Blandy', 'affiliation' => ['Department of Philosophy'], 'index' => 1 } },
                                         'date_issued' => '2017',
                                         'abstract' => 'The purpose of this study is to test ingest of a proquest deposit object without any attachments',
@@ -248,7 +249,7 @@ RSpec.describe Tasks::ProquestIngestService, :ingest do
         attributes, files = service.proquest_metadata(metadata_file)
         expect(attributes).to include({ 'title' => ['Perspective on Attachments and Ingests'],
                                         'label' => 'Perspective on Attachments and Ingests',
-                                        'depositor' => 'admin',
+                                        'depositor' => admin.uid,
                                         'creators_attributes' => { '0' => { 'name' => 'Smith, Blandy', 'affiliation' => ['Department of Philosophy'], 'index' => 1 } },
                                         'date_issued' => '2019',
                                         'abstract' => 'The purpose of this study is to test ingest of a proquest deposit object without any attachments',
@@ -280,7 +281,7 @@ RSpec.describe Tasks::ProquestIngestService, :ingest do
         attributes, files = service.proquest_metadata(metadata_file)
         expect(attributes).to include({ 'title' => ['Perspective on Attachments and Ingests'],
                                         'label' => 'Perspective on Attachments and Ingests',
-                                        'depositor' => 'admin',
+                                        'depositor' => admin.uid,
                                         'creators_attributes' => { '0' => { 'name' => 'Smith, Blandy', 'affiliation' => ['Department of Philosophy'], 'index' => 1 } },
                                         'date_issued' => '2018',
                                         'abstract' => 'The purpose of this study is to test ingest of a proquest deposit object without any attachments',
@@ -312,7 +313,7 @@ RSpec.describe Tasks::ProquestIngestService, :ingest do
         attributes, files = service.proquest_metadata(metadata_file)
         expect(attributes).to include({ 'title' => ['Perspective on Attachments and Ingests'],
                                         'label' => 'Perspective on Attachments and Ingests',
-                                        'depositor' => 'admin',
+                                        'depositor' => admin.uid,
                                         'creators_attributes' => { '0' => { 'name' => 'Smith, Blandy', 'affiliation' => ['Department of Philosophy'], 'index' => 1 } },
                                         'date_issued' => '2018',
                                         'abstract' => 'The purpose of this study is to test ingest of a proquest deposit object without any attachments',
@@ -344,7 +345,7 @@ RSpec.describe Tasks::ProquestIngestService, :ingest do
         attributes, files = service.proquest_metadata(metadata_file)
         expect(attributes).to include({ 'title' => ['Perspective on Attachments and Ingests'],
                                         'label' => 'Perspective on Attachments and Ingests',
-                                        'depositor' => 'admin',
+                                        'depositor' => admin.uid,
                                         'creators_attributes' => { '0' => { 'name' => 'Smith, Blandy', 'affiliation' => ['Department of Philosophy'], 'index' => 1 } },
                                         'date_issued' => '2018',
                                         'abstract' => 'The purpose of this study is to test ingest of a proquest deposit object without any attachments',
@@ -390,7 +391,7 @@ RSpec.describe Tasks::ProquestIngestService, :ingest do
     let(:metadata) {
       { 'title' => ['Perspective on Attachments and Ingests'],
         'label' => 'Perspective on Attachments and Ingests',
-        'depositor' => 'admin',
+        'depositor' => admin.uid,
         'creators_attributes' => { '0' => { 'name' => 'Smith, Blandy', 'affiliation' => ['Department of Philosophy'], 'index' => 1 } },
         'date_issued' => '2019',
         'abstract' => 'The purpose of this study is to test ingest of a proquest deposit object without any attachments',
@@ -412,7 +413,7 @@ RSpec.describe Tasks::ProquestIngestService, :ingest do
 
     it 'returns fileset metadata' do
       expect(Tasks::ProquestIngestService.new(args).file_record(metadata)).to include({ 'date_created' => nil,
-                                                                                        'depositor' => 'admin',
+                                                                                        'depositor' => admin.uid,
                                                                                         'embargo_release_date' => '2021-11-13',
                                                                                         'keyword' => ['aesthetics', 'attachments', 'Philosophy'],
                                                                                         'label' => 'Perspective on Attachments and Ingests',

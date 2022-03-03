@@ -5,6 +5,90 @@ RSpec.describe HycIndexer, type: :indexer do
   let(:service) { described_class.new(work) }
   subject(:solr_document) { service.generate_solr_document }
 
+  describe 'indexing affiliations' do
+    let(:solr_doc) { described_class.new(work_with_people).generate_solr_document }
+    let(:solr_creator_array) { solr_doc.fetch('creator_display_tesim') }
+    let(:solr_expected_creator_array) do
+      ['index:1||creator||Affiliation: School of Medicine, Carolina Center for Genome Sciences',
+       'index:2||creator2||Affiliation: College of Arts and Sciences, Department of Chemistry']
+    end
+    let(:fedora_creator_array) { work_with_people.creators.map(&:attributes) }
+    let(:fedora_creator_hash_one) { fedora_creator_array.select { |hash| hash['index'] == [1] }.first }
+    let(:fedora_creator_hash_two) { fedora_creator_array.select { |hash| hash['index'] == [2] }.first }
+
+    context 'using the regular departments vocabulary' do
+      let(:work_with_people) do
+        General.new(title: ['New General Work with people'],
+                    creators_attributes: { '0' => { name: 'creator',
+                                                    affiliation: 'Carolina Center for Genome Sciences',
+                                                    index: 1 },
+                                           '1' => { name: 'creator2',
+                                                    affiliation: 'Department of Chemistry',
+                                                    index: 2 } })
+      end
+
+      it 'maps the affiliation ids to labels in solr' do
+        expect(solr_creator_array).to match_array(solr_expected_creator_array)
+      end
+
+      it 'stores the id in Fedora' do
+        expect(fedora_creator_hash_one['affiliation']).to eq(['Carolina Center for Genome Sciences'])
+      end
+    end
+
+    context 'with a work ingested with ProQuest' do
+      let(:solr_expected_creator_array) do
+        ['index:1||creator||Affiliation: School of Medicine, Curriculum in Genetics and Molecular Biology',
+         'index:2||creator2']
+      end
+      let(:work_with_people) do
+        Dissertation.new(title: ['New General Work with people'],
+                         creators_attributes: { '0' => { name: 'creator',
+                                                         affiliation: ProquestDepartmentMappingsService.standard_department_name('Genetics &amp; Molecular Biology'),
+                                                         index: 1 },
+                                                '1' => { name: 'creator2',
+                                                         affiliation: 'Some string parsed from xml that doesn\'t match anything',
+                                                         index: 2 } })
+      end
+
+      it 'stores the affiliation id in Fedora' do
+        expect(fedora_creator_hash_one['affiliation']).to eq(['Curriculum in Genetics and Molecular Biology'])
+        expect(fedora_creator_hash_two['affiliation']).to eq(['Some string parsed from xml that doesn\'t match anything'])
+      end
+
+      it 'only indexes the controlled affiliation to Solr' do
+        expect(solr_creator_array).to match_array(solr_expected_creator_array)
+        expect(solr_doc.fetch('affiliation_label_tesim')).to match_array(['Curriculum in Genetics and Molecular Biology'])
+        expect(solr_doc.fetch('affiliation_label_sim')).to match_array(['Curriculum in Genetics and Molecular Biology'])
+      end
+    end
+    context 'with uncontrolled other_affiliation' do
+      let(:work_with_people) do
+        General.new(title: ['New General Work with people'],
+                    creators_attributes: { '0' => { name: 'creator',
+                                                    other_affiliation: 'Some Other Affiliation in Rotterdam',
+                                                    index: 1 },
+                                           '1' => { name: 'creator2',
+                                                    other_affiliation: 'Some Other Affiliation in Spain',
+                                                    index: 2 } })
+      end
+      let(:solr_expected_creator_array) do
+        ['index:1||creator||Other Affiliation: Some Other Affiliation in Rotterdam',
+         'index:2||creator2||Other Affiliation: Some Other Affiliation in Spain']
+      end
+
+      it 'stores the affiliation id in Fedora' do
+        expect(fedora_creator_hash_one['other_affiliation']).to eq(['Some Other Affiliation in Rotterdam'])
+        expect(fedora_creator_hash_two['other_affiliation']).to eq(['Some Other Affiliation in Spain'])
+      end
+
+      it 'indexes the other affiliation to Solr' do
+        expect(solr_creator_array).to match_array(solr_expected_creator_array)
+        expect(solr_doc.fetch('other_affiliation_label_tesim')).to match_array(['Some Other Affiliation in Rotterdam', 'Some Other Affiliation in Spain'])
+        expect(solr_doc.key?('other_affiliation_label_sim')).to be false
+      end
+    end
+  end
   describe 'indexing date issued' do
     context 'as full date' do
       it 'indexes id and label' do
