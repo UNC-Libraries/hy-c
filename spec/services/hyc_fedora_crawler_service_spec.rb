@@ -13,6 +13,8 @@ RSpec.describe HycFedoraCrawlerService do
                                                                        index: 2 } })
   end
 
+  let(:work_without_people) { FactoryBot.create(:admin_set) }
+
   before do
     work_with_people
   end
@@ -20,6 +22,11 @@ RSpec.describe HycFedoraCrawlerService do
   it 'knows what fields are person fields' do
     expect(described_class.person_fields).to match_array([:advisors, :arrangers, :composers, :contributors, :creators,
                                                           :project_directors, :researchers, :reviewers, :translators])
+  end
+
+  it 'knows whether an object responds to the person fields' do
+    expect(described_class.has_person_field?(work_without_people)).to eq false
+    expect(described_class.has_person_field?(work_with_people)).to eq true
   end
 
   context 'with creators' do
@@ -35,7 +42,7 @@ RSpec.describe HycFedoraCrawlerService do
     end
 
     it 'can return the affiliations connected to an object' do
-      expect(described_class.person_affiliations(work_with_people, :creators)).to match_array([['Department of Chemistry'], ['Carolina Center for Genome Sciences']])
+      expect(described_class.person_affiliations_by_type(work_with_people, :creators)).to match_array([['Department of Chemistry'], ['Carolina Center for Genome Sciences']])
     end
   end
 
@@ -52,7 +59,7 @@ RSpec.describe HycFedoraCrawlerService do
     end
 
     it 'can return the affiliations connected to an object' do
-      expect(described_class.person_affiliations(work_with_people, type_of_person)).to match_array([['Department of Chemistry'], ['Carolina Center for Genome Sciences']])
+      expect(described_class.person_affiliations_by_type(work_with_people, type_of_person)).to match_array([['Department of Chemistry'], ['Carolina Center for Genome Sciences']])
     end
   end
 end
