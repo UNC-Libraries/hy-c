@@ -9,29 +9,31 @@ module HycFedoraCrawlerService
     ActiveFedora::Base.descendant_uris(ActiveFedora.fedora.base_uri, exclude_uri: true).each do |uri|
       id = ActiveFedora::Base.uri_to_id(uri)
       object = ActiveFedora::Base.find(id)
-      next unless has_person_field?(object)
+      next unless object_has_person_field?(object)
 
       affiliations = all_person_affiliations(object)
-
-      yield(id, affiliations) unless affiliations.empty?
+      yield(id, affiliations) unless affiliations.compact.empty?
     end
   end
 
-  # rubocop:disable Naming/PredicateName
-  def self.has_person_field?(object)
+  def self.object_has_person_field?(object)
     person_fields.map { |field| object.respond_to?(field) }.include?(true)
   end
-  # rubocop:enable Naming/PredicateName
 
   def self.person_affiliations_by_type(object, person_type)
     people_object = object.try(person_type)
-    people_object.map { |person| person.attributes['affiliation'] } if people_object && !people_object.empty?
+    return unless people_object && !people_object.empty?
+
+    people_object.map do |person|
+      affil = person.attributes['affiliation']
+      affil unless affil.empty?
+    end
   end
 
   def self.all_person_affiliations(object)
     person_fields.map do |field|
       affiliations = person_affiliations_by_type(object, field)
-      affiliations unless affiliations.nil?
+      affiliations unless affiliations.nil? || affiliations.compact.empty?
     end.compact.flatten
   end
 end

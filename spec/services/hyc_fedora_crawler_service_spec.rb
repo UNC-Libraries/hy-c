@@ -25,8 +25,27 @@ RSpec.describe HycFedoraCrawlerService do
   end
 
   it 'knows whether an object responds to the person fields' do
-    expect(described_class.has_person_field?(work_without_people)).to eq false
-    expect(described_class.has_person_field?(work_with_people)).to eq true
+    expect(described_class.object_has_person_field?(work_without_people)).to eq false
+    expect(described_class.object_has_person_field?(work_with_people)).to eq true
+  end
+
+  context 'without affiliations' do
+    let(:work_with_people) do
+      General.create(title: ['New General Work with people'],
+                     "#{type_of_person}_attributes".to_sym => { '0' => { name: "#{type_of_person}_1",
+                                                                         index: 1 },
+                                                                '1' => { name: "#{type_of_person}_2",
+                                                                         index: 2 } })
+    end
+
+    it 'does not yield anything for the object' do
+      yielded = []
+      described_class.crawl_for_affiliations do |document_id, affiliations|
+        yielded << { id: document_id, affiliations: affiliations }
+      end
+      target_hash = yielded.find { |x| x[:id] == work_with_people.id }
+      expect(target_hash).to eq nil
+    end
   end
 
   context 'with creators' do
