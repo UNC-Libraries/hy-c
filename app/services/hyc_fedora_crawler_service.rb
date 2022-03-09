@@ -11,9 +11,9 @@ module HycFedoraCrawlerService
       object = ActiveFedora::Base.find(id)
       next unless object_has_person_field?(object)
 
-      # "#{ENV['HYRAX_HOST']}/concern/#{object.class.name.underscore}s/#{object.id}"
+      url = Rails.application.routes.url_helpers.url_for(object)
       affiliations = all_person_affiliations(object).sort
-      yield(id, affiliations) unless affiliations.compact.empty?
+      yield(id, url, affiliations) unless affiliations.compact.empty?
     end
   end
 
@@ -21,12 +21,14 @@ module HycFedoraCrawlerService
     csv_directory = Rails.root.join(ENV['DATA_STORAGE'], 'reports')
     FileUtils.mkdir_p(csv_directory) unless File.exist?(csv_directory)
     csv_file_path = Rails.root.join(ENV['DATA_STORAGE'], 'reports', 'umappable_affiliations.csv')
-    headers = ['object_id', 'affiliations']
+    headers = ['object_id', 'url', 'affiliations']
 
     CSV.open(csv_file_path, 'w') do |csv|
       csv << headers
-      crawl_for_affiliations do |document_id, affiliations|
-        csv << [document_id, affiliations]
+      crawl_for_affiliations do |document_id, url, affiliations|
+        # csv << [document_id, url, unmappable_affiliations(affiliations)]
+        unmappable_affiliations = unmappable_affiliations(affiliations)
+        csv << [document_id, url, unmappable_affiliations] unless unmappable_affiliations.empty?
       end
     end
   end
@@ -43,6 +45,16 @@ module HycFedoraCrawlerService
       affil = person.attributes['affiliation']
       affil.to_a unless affil.empty?
     end
+  end
+
+  def self.unmappable_affiliations(affiliations)
+    affiliations.map do |affil|
+      if DepartmentsService.label(affil)
+        nil
+      else
+        affil
+      end
+    end.compact
   end
 
   def self.all_person_affiliations(object)
