@@ -2,6 +2,15 @@ require 'rails_helper'
 
 RSpec.describe HycFedoraCrawlerService do
   let(:type_of_person) { :creators }
+  let(:yielded) do
+    yielded = []
+    described_class.crawl_for_affiliations do |document_id, affiliations|
+      yielded << { id: document_id, affiliations: affiliations }
+    end
+    yielded
+  end
+
+  let(:target_hash) { yielded.find { |x| x[:id] == work_with_people.id } }
 
   let(:work_with_people) do
     General.create(title: ['New General Work with people'],
@@ -39,12 +48,28 @@ RSpec.describe HycFedoraCrawlerService do
     end
 
     it 'does not yield anything for the object' do
-      yielded = []
-      described_class.crawl_for_affiliations do |document_id, affiliations|
-        yielded << { id: document_id, affiliations: affiliations }
-      end
-      target_hash = yielded.find { |x| x[:id] == work_with_people.id }
       expect(target_hash).to eq nil
+    end
+  end
+
+  context 'creating a csv' do
+    let(:csv_path) { "#{ENV['DATA_STORAGE']}/reports/umappable_affiliations.csv" }
+    after do
+      FileUtils.remove_entry(csv_path) if File.exist?(csv_path)
+    end
+    it 'writes unmappable affiliations to a csv' do
+      expect(File.exist?(csv_path)).to eq false
+      described_class.create_csv_of_umappable_affiliations
+      expect(File.exist?(csv_path)).to eq true
+    end
+
+    it 'is a parseable csv with headers' do
+      described_class.create_csv_of_umappable_affiliations
+      csv = CSV.parse(File.read(csv_path), headers: true)
+
+      expect(csv.headers).to eq(['object_id', 'affiliations'])
+      target_row = csv.find { |row| row['object_id'] == work_with_people.id }.to_h
+      expect(target_row['affiliations']).to eq('["Carolina Center for Genome Sciences", "Department of Chemistry"]')
     end
   end
 
@@ -52,12 +77,7 @@ RSpec.describe HycFedoraCrawlerService do
     let(:type_of_person) { :creators }
 
     it 'can crawl over all the objects in Fedora and return pairs of ids and affiliations' do
-      yielded = []
-      described_class.crawl_for_affiliations do |document_id, affiliations|
-        yielded << { id: document_id, affiliations: affiliations }
-      end
-      target_hash = yielded.find { |x| x[:id] == work_with_people.id }
-      expect(target_hash[:affiliations]).to match_array([['Department of Chemistry'], ['Carolina Center for Genome Sciences']])
+      expect(target_hash[:affiliations]).to match_array(['Department of Chemistry', 'Carolina Center for Genome Sciences'])
     end
 
     it 'can return the affiliations connected to an object' do
@@ -69,12 +89,7 @@ RSpec.describe HycFedoraCrawlerService do
     let(:type_of_person) { :reviewers }
 
     it 'can crawl over all the objects in Fedora and return pairs of ids and affiliations' do
-      yielded = []
-      described_class.crawl_for_affiliations do |document_id, affiliations|
-        yielded << { id: document_id, affiliations: affiliations }
-      end
-      target_hash = yielded.find { |x| x[:id] == work_with_people.id }
-      expect(target_hash[:affiliations]).to match_array([['Department of Chemistry'], ['Carolina Center for Genome Sciences']])
+      expect(target_hash[:affiliations]).to match_array(['Department of Chemistry', 'Carolina Center for Genome Sciences'])
     end
 
     it 'can return the affiliations connected to an object' do
