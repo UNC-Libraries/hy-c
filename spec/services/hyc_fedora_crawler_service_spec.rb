@@ -9,6 +9,7 @@ RSpec.describe HycFedoraCrawlerService do
     end
     yielded
   end
+  let(:expected_affiliations_array) { ['Department of Chemistry', 'Carolina Center for Genome Sciences', 'Unmappable affiliation 1', 'Unmappable affiliation 2'] }
 
   let(:target_hash) { yielded.find { |x| x[:id] == work_with_people.id } }
 
@@ -98,17 +99,16 @@ RSpec.describe HycFedoraCrawlerService do
     let(:type_of_person) { :creators }
 
     it 'can crawl over all the objects in Fedora and return pairs of ids, urls, and affiliations' do
-      expect(target_hash[:affiliations]).to match_array(['Department of Chemistry', 'Carolina Center for Genome Sciences', 'Unmappable affiliation 1', 'Unmappable affiliation 2'])
+      expect(target_hash[:affiliations]).to match_array(expected_affiliations_array)
       expect(target_hash[:url]).to eq("#{ENV['HYRAX_HOST']}/concern/generals/#{work_with_people.id}")
     end
 
     it 'can return the affiliations connected to an object' do
-      expect(described_class.person_affiliations_by_type(work_with_people, :creators)).to match_array([['Department of Chemistry'], ['Carolina Center for Genome Sciences'], ['Unmappable affiliation 1'], ['Unmappable affiliation 2']])
+      expect(described_class.person_affiliations_by_type(work_with_people, :creators)).to match_array(expected_affiliations_array)
     end
 
     it 'can return only the affiliations that are unmappable' do
-      affiliations_array = ['Department of Chemistry', 'Carolina Center for Genome Sciences', 'Unmappable affiliation 1', 'Unmappable affiliation 2']
-      expect(described_class.unmappable_affiliations(affiliations_array)).to match_array(['Unmappable affiliation 1', 'Unmappable affiliation 2'])
+      expect(described_class.unmappable_affiliations(expected_affiliations_array)).to match_array(['Unmappable affiliation 1', 'Unmappable affiliation 2'])
     end
   end
 
@@ -116,11 +116,11 @@ RSpec.describe HycFedoraCrawlerService do
     let(:type_of_person) { :reviewers }
 
     it 'can crawl over all the objects in Fedora and return pairs of ids and affiliations' do
-      expect(target_hash[:affiliations]).to match_array(['Department of Chemistry', 'Carolina Center for Genome Sciences', 'Unmappable affiliation 1', 'Unmappable affiliation 2'])
+      expect(target_hash[:affiliations]).to match_array(expected_affiliations_array)
     end
 
     it 'can return the affiliations connected to an object' do
-      expect(described_class.person_affiliations_by_type(work_with_people, type_of_person)).to match_array([['Department of Chemistry'], ['Carolina Center for Genome Sciences'], ['Unmappable affiliation 1'], ['Unmappable affiliation 2']])
+      expect(described_class.person_affiliations_by_type(work_with_people, type_of_person)).to match_array(expected_affiliations_array)
     end
   end
 end

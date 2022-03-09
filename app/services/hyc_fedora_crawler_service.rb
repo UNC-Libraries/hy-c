@@ -26,7 +26,6 @@ module HycFedoraCrawlerService
     CSV.open(csv_file_path, 'w') do |csv|
       csv << headers
       crawl_for_affiliations do |document_id, url, affiliations|
-        # csv << [document_id, url, unmappable_affiliations(affiliations)]
         unmappable_affiliations = unmappable_affiliations(affiliations)
         csv << [document_id, url, unmappable_affiliations] unless unmappable_affiliations.empty?
       end
@@ -41,20 +40,11 @@ module HycFedoraCrawlerService
     people_object = object.try(person_type)
     return unless people_object && !people_object.empty?
 
-    people_object.map do |person|
-      affil = person.attributes['affiliation']
-      affil.to_a unless affil.empty?
-    end
+    people_object.map { |person| person.attributes['affiliation'].to_a }.compact.flatten
   end
 
   def self.unmappable_affiliations(affiliations)
-    affiliations.map do |affil|
-      if DepartmentsService.label(affil)
-        nil
-      else
-        affil
-      end
-    end.compact
+    affiliations.map { |affil| DepartmentsService.label(affil) ? nil : affil }.compact
   end
 
   def self.all_person_affiliations(object)
