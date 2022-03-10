@@ -6,9 +6,14 @@ module HycFedoraCrawlerService
   end
 
   def self.crawl_for_affiliations
+    Rails.logger.info('Beginning to crawl Fedora for affiliations')
     ActiveFedora::Base.descendant_uris(ActiveFedora.fedora.base_uri, exclude_uri: true).each do |uri|
+      Rails.logger.debug("Starting to find affiliations for uri: #{uri}")
       id = ActiveFedora::Base.uri_to_id(uri)
       object = ActiveFedora::Base.find(id)
+      # Collections respond to the person fields, but don't actually have person objects
+      next if object.instance_of?(Collection)
+
       next unless object_has_person_field?(object)
 
       url = Rails.application.routes.url_helpers.url_for(object)
@@ -27,6 +32,7 @@ module HycFedoraCrawlerService
       csv << headers
       crawl_for_affiliations do |document_id, url, affiliations|
         unmappable_affiliations = unmappable_affiliations(affiliations)
+        Rails.logger.debug("Saving object info to csv. url: #{url}") unless unmappable_affiliations.empty?
         csv << [document_id, url, unmappable_affiliations] unless unmappable_affiliations.empty?
       end
     end
