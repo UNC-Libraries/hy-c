@@ -3,6 +3,7 @@ require 'active_fedora/cleaner'
 
 RSpec.describe CreateDocxThumbnailJob, type: :job do
   let(:file_set_one) { FactoryBot.create(:file_set, :with_original_docx_file) }
+  let(:file_set_two) { FactoryBot.create(:file_set, :with_original_msword_file) }
   let(:file_set_three) { FactoryBot.create(:file_set, :with_original_file) }
   let(:file_set_with_extracted_text) { FactoryBot.create(:file_set, :with_extracted_text) }
 
@@ -30,5 +31,12 @@ RSpec.describe CreateDocxThumbnailJob, type: :job do
   it 'runs the job without errors' do
     ActiveJob::Base.queue_adapter = :inline
     described_class.perform_now(file_set_id: file_set_one.id)
+  end
+
+  context 'with an msword document' do
+    it 'runs the job without errors' do
+      ActiveJob::Base.queue_adapter = :inline
+      described_class.perform_now(file_set_id: file_set_two.id)
+    end
   end
 end
