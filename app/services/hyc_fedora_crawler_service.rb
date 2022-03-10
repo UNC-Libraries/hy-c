@@ -5,20 +5,28 @@ module HycFedoraCrawlerService
      :researchers, :reviewers, :translators]
   end
 
-  def self.crawl_for_affiliations
-    Rails.logger.info('Beginning to crawl Fedora for affiliations')
-    ActiveFedora::Base.descendant_uris(ActiveFedora.fedora.base_uri, exclude_uri: true).each do |uri|
-      Rails.logger.debug("Starting to find affiliations for uri: #{uri}")
-      id = ActiveFedora::Base.uri_to_id(uri)
-      object = ActiveFedora::Base.find(id)
-      # Collections respond to the person fields, but don't actually have person objects
-      next if object.instance_of?(Collection)
+  def self.person_classes
+    [Article, Artwork, DataSet, Dissertation, General, HonorsThesis, Journal, MastersPaper]
+  end
 
-      next unless object_has_person_field?(object)
+  def self.crawl_for_affiliations(&block)
+    Rails.logger.info('Beginning to search for affiliations')
+    person_classes.each do |klass|
+      search_by_class(klass, &block)
+    end
+  end
 
-      url = Rails.application.routes.url_helpers.url_for(object)
-      affiliations = all_person_affiliations(object).sort
-      yield(id, url, affiliations) unless affiliations.compact.empty?
+  def self.search_by_class(klass)
+    # search_in_batches returns RSolr::Response::PaginatedDocSet, each object in group is a hash of a solr response
+    klass.search_in_batches('person_label_tesim:*') do |group|
+      Rails.logger.debug("Finding affiliations for group of #{klass} with ids: #{group.map { |solr_doc| solr_doc['id'] }}")
+      group.map do |solr_doc|
+        object = klass.find(solr_doc['id'])
+
+        url = Rails.application.routes.url_helpers.url_for(object)
+        affiliations = all_person_affiliations(object).sort
+        yield(solr_doc['id'], url, affiliations) unless affiliations.compact.empty?
+      end
     end
   end
 
@@ -28,7 +36,7 @@ module HycFedoraCrawlerService
     csv_file_path = Rails.root.join(ENV['DATA_STORAGE'], 'reports', 'umappable_affiliations.csv')
     headers = ['object_id', 'url', 'affiliations']
 
-    CSV.open(csv_file_path, 'w') do |csv|
+    CSV.open(csv_file_path, 'a+') do |csv|
       csv << headers
       crawl_for_affiliations do |document_id, url, affiliations|
         unmappable_affiliations = unmappable_affiliations(affiliations)
