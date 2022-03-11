@@ -5,7 +5,9 @@ module Hydra::Derivatives::Processors
 
     def self.encode(path, format, outdir)
       Rails.logger.debug("Encoding with path: #{path}, format: #{format}, outdir: #{outdir}")
-      execute "#{Hydra::Derivatives.libreoffice_path} --invisible --headless --convert-to #{format} --outdir #{outdir} #{Shellwords.escape(path)}"
+      command = "#{Hydra::Derivatives.libreoffice_path} --invisible --headless --convert-to #{format} --outdir #{outdir} #{Shellwords.escape(path)}"
+      Rails.logger.debug("Encoding using command #{command}")
+      execute(command)
     end
 
     # Converts the document to the format specified in the directives hash.
