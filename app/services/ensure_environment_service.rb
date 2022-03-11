@@ -43,6 +43,7 @@ module EnsureEnvironmentService
        HYRAX_DATABASE_PASSWORD
        HYRAX_HOST
        IMAGE_PROCESSOR
+       LOG_LEVEL
        LONGLEAF_BASE_COMMAND
        LONGLEAF_STORAGE_PATH
        SECRET_KEY_BASE
