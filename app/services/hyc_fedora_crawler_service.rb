@@ -19,13 +19,14 @@ module HycFedoraCrawlerService
   def self.search_by_class(klass)
     # search_in_batches returns RSolr::Response::PaginatedDocSet, each object in group is a hash of a solr response
     klass.search_in_batches('person_label_tesim:*') do |group|
-      Rails.logger.debug("Finding affiliations for group of #{klass} with ids: #{group.map { |solr_doc| solr_doc['id'] }}")
+      Rails.logger.info("Finding affiliations for group of #{klass} with ids: #{group.map { |solr_doc| solr_doc['id'] }}")
       group.map do |solr_doc|
         object = klass.find(solr_doc['id'])
 
         url = Rails.application.routes.url_helpers.url_for(object)
+        # Sort so that we can test csv line more easily
         affiliations = all_person_affiliations(object).sort
-        yield(solr_doc['id'], url, affiliations) unless affiliations.compact.empty?
+        yield(solr_doc['id'], url, affiliations) unless affiliations.empty?
       end
     end
   end
@@ -46,15 +47,13 @@ module HycFedoraCrawlerService
     end
   end
 
-  def self.object_has_person_field?(object)
-    person_fields.map { |field| object.respond_to?(field) }.include?(true)
-  end
-
   def self.person_affiliations_by_type(object, person_type)
     people_object = object.try(person_type)
     return unless people_object && !people_object.empty?
 
-    people_object.map { |person| person.attributes['affiliation'].to_a }.compact.flatten
+    affiliations = people_object.map { |person| person.attributes['affiliation'].to_a }
+    # Remove nils and empty strings
+    affiliations.flatten.reject { |e| e.to_s.empty? }
   end
 
   def self.unmappable_affiliations(affiliations)
