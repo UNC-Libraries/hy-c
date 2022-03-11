@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe HycFedoraCrawlerService do
+RSpec.describe HycCrawlerService do
   let(:type_of_person) { :creators }
   let(:yielded) do
     yielded = []

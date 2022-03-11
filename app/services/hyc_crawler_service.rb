@@ -1,5 +1,5 @@
-# Cribbing from https://github.com/samvera/hyrax/blob/v2.9.6/app/services/hyrax/adapters/nesting_index_adapter.rb
-module HycFedoraCrawlerService
+# Searches Solr in chunks for affiliations
+module HycCrawlerService
   def self.person_fields
     [:advisors, :arrangers, :composers, :contributors, :creators, :project_directors,
      :researchers, :reviewers, :translators]
@@ -31,14 +31,19 @@ module HycFedoraCrawlerService
     end
   end
 
-  def self.create_csv_of_umappable_affiliations
+  def self.csv_file_path
     csv_directory = Rails.root.join(ENV['DATA_STORAGE'], 'reports')
     FileUtils.mkdir_p(csv_directory) unless File.exist?(csv_directory)
-    csv_file_path = Rails.root.join(ENV['DATA_STORAGE'], 'reports', 'umappable_affiliations.csv')
-    headers = ['object_id', 'url', 'affiliations']
+    Rails.root.join(ENV['DATA_STORAGE'], 'reports', 'umappable_affiliations.csv')
+  end
 
+  def self.csv_headers
+    ['object_id', 'url', 'affiliations']
+  end
+
+  def self.create_csv_of_umappable_affiliations
     CSV.open(csv_file_path, 'a+') do |csv|
-      csv << headers
+      csv << csv_headers
       crawl_for_affiliations do |document_id, url, affiliations|
         unmappable_affiliations = unmappable_affiliations(affiliations)
         Rails.logger.debug("Saving object info to csv. url: #{url}") unless unmappable_affiliations.empty?
