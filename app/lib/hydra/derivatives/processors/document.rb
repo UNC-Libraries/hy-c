@@ -40,6 +40,8 @@ module Hydra::Derivatives::Processors
 
     def convert_to(format)
       # [hyc-override] create temp subdir for output to avoid repeat filename conflicts
+      Rails.logger.debug("Converting document to #{format} from source path: #{source_path} to destination file: #{directives[:url]}")
+
       temp_dir = File.join(Hydra::Derivatives.temp_file_base, Time.now.nsec.to_s)
       FileUtils.mkdir(temp_dir)
       self.class.encode(source_path, format, temp_dir)
