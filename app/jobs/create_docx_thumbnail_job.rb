@@ -22,7 +22,7 @@ class CreateDocxThumbnailJob < Hyrax::ApplicationJob
                                                      outputs: [{
                                                        label: :thumbnail,
                                                        format: 'jpg',
-                                                       size: '200x150>',
+                                                       size: '338x493',
                                                        url: deriv_service.derivative_url('thumbnail'),
                                                        layer: 0
                                                      }])
