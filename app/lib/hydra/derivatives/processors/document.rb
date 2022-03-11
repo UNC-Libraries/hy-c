@@ -4,6 +4,7 @@ module Hydra::Derivatives::Processors
     include ShellBasedProcessor
 
     def self.encode(path, format, outdir)
+      Rails.logger.debug("Encoding with path: #{path}, format: #{format}, outdir: #{outdir}")
       execute "#{Hydra::Derivatives.libreoffice_path} --invisible --headless --convert-to #{format} --outdir #{outdir} #{Shellwords.escape(path)}"
     end
 
@@ -45,7 +46,7 @@ module Hydra::Derivatives::Processors
       temp_dir = File.join(Hydra::Derivatives.temp_file_base, Time.now.nsec.to_s)
       FileUtils.mkdir(temp_dir)
       Rails.logger.debug("Temp directory created for derivatives: #{temp_dir}")
-      
+
       self.class.encode(source_path, format, temp_dir)
 
       File.join(temp_dir, [File.basename(source_path, '.*'), format].join('.'))
