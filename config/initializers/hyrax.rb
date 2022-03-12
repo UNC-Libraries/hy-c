@@ -304,7 +304,6 @@ Hydra::Derivatives::Processors::Video::Processor.timeout = 10.minutes
 Hydra::Derivatives::Processors::Document.timeout = 5.minutes
 Hydra::Derivatives::Processors::Audio.timeout = 10.minutes
 Hydra::Derivatives::Processors::Image.timeout = 5.minutes
-Hydra::Derivatives::Processors::ActiveEncode.timeout = 5.minutes
 
 # set bulkrax default work type to first curation_concern if it isn't already set
 Bulkrax.default_work_type = 'General' if Bulkrax.default_work_type.blank?
