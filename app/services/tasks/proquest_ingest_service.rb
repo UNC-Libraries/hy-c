@@ -231,6 +231,8 @@ module Tasks
                       end
 
       department = metadata.xpath('//DISS_description/DISS_institution/DISS_inst_contact').text.strip
+      # TODO: Currently, if the parsed department can't be mapped, the affiliation is just saved as whatever was parsed from the XML
+      #       These affiliations then cannot be indexed to Solr or displayed, since they don't align with the controlled vocabulary
       affiliation = ProquestDepartmentMappingsService.standard_department_name(department) || department
 
       date_issued = metadata.xpath('//DISS_description/DISS_dates/DISS_comp_date').text
