@@ -69,5 +69,5 @@ Rails.application.configure do
   # config.web_console.permissions = ['10.0.2.2']
   config.web_console.whitelisted_ips = ['10.0.2.2']
 
-  config.log_level = :debug
+  config.log_level = LogService.log_level
 end
