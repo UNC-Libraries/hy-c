@@ -33,7 +33,7 @@ module HycCrawlerService
 
   def self.csv_file_path
     csv_directory = Rails.root.join(ENV['DATA_STORAGE'], 'reports')
-    FileUtils.mkdir_p(csv_directory) unless File.exist?(csv_directory)
+    FileUtils.mkdir_p(csv_directory)
     Rails.root.join(ENV['DATA_STORAGE'], 'reports', 'umappable_affiliations.csv')
   end
 

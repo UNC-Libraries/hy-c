@@ -8,6 +8,9 @@ RSpec.describe HycIndexer, type: :indexer do
   describe 'indexing affiliations' do
     let(:solr_doc) { described_class.new(work_with_people).generate_solr_document }
     let(:solr_creator_array) { solr_doc.fetch('creator_display_tesim') }
+    let(:solr_affiliation_array_tesim) { solr_doc.fetch('affiliation_label_tesim') }
+    let(:solr_affiliation_array_sim) { solr_doc.fetch('affiliation_label_sim') }
+
     let(:solr_expected_creator_array) do
       ['index:1||creator||Affiliation: School of Medicine, Carolina Center for Genome Sciences',
        'index:2||creator2||Affiliation: College of Arts and Sciences, Department of Chemistry']
@@ -16,6 +19,22 @@ RSpec.describe HycIndexer, type: :indexer do
     let(:fedora_creator_hash_one) { fedora_creator_array.select { |hash| hash['index'] == [1] }.first }
     let(:fedora_creator_hash_two) { fedora_creator_array.select { |hash| hash['index'] == [2] }.first }
 
+    context 'without any people objects' do
+      let(:solr_doc) { described_class.new(work).generate_solr_document }
+
+      it 'does not have creators for display in Solr' do
+        expect(solr_doc.keys.include?('creator_display_tesim')).to be false
+      end
+
+      it 'does not have affiliations in Solr' do
+        expect(solr_doc.keys.include?('affiliation_label_tesim')).to be false
+        expect(solr_doc.keys.include?('affiliation_label_sim')).to be false
+      end
+
+      it 'does not have creators in Fedora' do
+        expect(work.creators.empty?).to be true
+      end
+    end
     context 'using the regular departments vocabulary' do
       let(:work_with_people) do
         General.new(title: ['New General Work with people'],
@@ -29,6 +48,11 @@ RSpec.describe HycIndexer, type: :indexer do
 
       it 'maps the affiliation ids to labels in solr' do
         expect(solr_creator_array).to match_array(solr_expected_creator_array)
+      end
+
+      it 'maps the affiliations to the facet with the id' do
+        expect(solr_affiliation_array_tesim).to match_array(['Carolina Center for Genome Sciences', 'Department of Chemistry'])
+        expect(solr_affiliation_array_sim).to match_array(['Carolina Center for Genome Sciences', 'Department of Chemistry'])
       end
 
       it 'stores the id in Fedora' do
@@ -58,10 +82,11 @@ RSpec.describe HycIndexer, type: :indexer do
 
       it 'only indexes the controlled affiliation to Solr' do
         expect(solr_creator_array).to match_array(solr_expected_creator_array)
-        expect(solr_doc.fetch('affiliation_label_tesim')).to match_array(['Curriculum in Genetics and Molecular Biology'])
-        expect(solr_doc.fetch('affiliation_label_sim')).to match_array(['Curriculum in Genetics and Molecular Biology'])
+        expect(solr_affiliation_array_tesim).to match_array(['Curriculum in Genetics and Molecular Biology'])
+        expect(solr_affiliation_array_sim).to match_array(['Curriculum in Genetics and Molecular Biology'])
       end
     end
+
     context 'with uncontrolled other_affiliation' do
       let(:work_with_people) do
         General.new(title: ['New General Work with people'],
@@ -86,6 +111,88 @@ RSpec.describe HycIndexer, type: :indexer do
         expect(solr_creator_array).to match_array(solr_expected_creator_array)
         expect(solr_doc.fetch('other_affiliation_label_tesim')).to match_array(['Some Other Affiliation in Rotterdam', 'Some Other Affiliation in Spain'])
         expect(solr_doc.key?('other_affiliation_label_sim')).to be false
+      end
+    end
+
+    context 'without affiliation or other_affiliation' do
+      let(:solr_expected_creator_array) do
+        ['index:1||creator||ORCID: creator orcid',
+         'index:2||creator2||ORCID: creator2 orcid']
+      end
+      let(:work_with_people) do
+        General.new(title: ['New General Work with people'],
+                    creators_attributes: { '0' => { name: 'creator',
+                                                    orcid: 'creator orcid',
+                                                    index: 1 },
+                                           '1' => { name: 'creator2',
+                                                    orcid: 'creator2 orcid',
+                                                    index: 2 } })
+      end
+
+      it 'does not index an affiliation to solr' do
+        expect(solr_creator_array).to match_array(solr_expected_creator_array)
+        expect(solr_doc.keys.include?('affiliation_label_tesim')).to be false
+        expect(solr_doc.keys.include?('affiliation_label_sim')).to be false
+      end
+
+      it 'does not include an affiliation value in fedora' do
+        expect(fedora_creator_hash_one['affiliation'].to_a).to eq([])
+        expect(fedora_creator_hash_one['other_affiliation'].to_a).to eq([])
+      end
+    end
+
+    context 'with two of the same affiliation' do
+      let(:solr_expected_creator_array) do
+        ['index:1||creator||Affiliation: School of Medicine, Carolina Center for Genome Sciences||Other Affiliation: Matching string',
+         'index:2||creator2||Affiliation: School of Medicine, Carolina Center for Genome Sciences||Other Affiliation: Matching string']
+      end
+      let(:work_with_people) do
+        Dissertation.new(title: ['New General Work with people'],
+                         creators_attributes: { '0' => { name: 'creator',
+                                                         affiliation: 'Carolina Center for Genome Sciences',
+                                                         other_affiliation: 'Matching string',
+                                                         index: 1 },
+                                                '1' => { name: 'creator2',
+                                                         affiliation: 'Carolina Center for Genome Sciences',
+                                                         other_affiliation: 'Matching string',
+                                                         index: 2 } })
+      end
+
+      it 'indexes the creator affiliations separately' do
+        expect(solr_creator_array).to match_array(solr_expected_creator_array)
+      end
+
+      it 'indexes the affiliations for faceting together' do
+        expect(solr_affiliation_array_tesim).to match_array(['Carolina Center for Genome Sciences'])
+        expect(solr_affiliation_array_sim).to match_array(['Carolina Center for Genome Sciences'])
+      end
+    end
+
+    context 'with an empty string in affiliation' do
+      let(:solr_expected_creator_array) do
+        ['index:1||creator',
+         'index:2||creator2']
+      end
+      let(:work_with_people) do
+        Dissertation.new(title: ['New General Work with people'],
+                         creators_attributes: { '0' => { name: 'creator',
+                                                         affiliation: '',
+                                                         other_affiliation: '',
+                                                         index: 1 },
+                                                '1' => { name: 'creator2',
+                                                         affiliation: '',
+                                                         other_affiliation: '',
+                                                         index: 2 } })
+      end
+      it 'does not index the empty string to Solr' do
+        expect(solr_creator_array).to match_array(solr_expected_creator_array)
+        expect(solr_doc.keys.include?('affiliation_label_tesim')).to be false
+        expect(solr_doc.keys.include?('affiliation_label_sim')).to be false
+      end
+
+      it 'saves the empty string to Fedora' do
+        expect(fedora_creator_hash_one['affiliation'].to_a).to eq([''])
+        expect(fedora_creator_hash_one['other_affiliation'].to_a).to eq([''])
       end
     end
   end
@@ -226,7 +333,7 @@ RSpec.describe HycIndexer, type: :indexer do
       end
     end
 
-    context 'with and without submitted index values' do
+    context 'with a mix of submitted and unsubmitted index values' do
       let(:expected_creator_array) do
         ['index:2||creator||ORCID: creator orcid||Affiliation: School of Medicine, Carolina Center for Genome Sciences||Other Affiliation: another affiliation',
          'index:1||creator2||ORCID: creator2 orcid||Affiliation: College of Arts and Sciences, Department of Chemistry||Other Affiliation: another affiliation',
