@@ -47,7 +47,7 @@ module HycCrawlerService
       crawl_for_affiliations do |document_id, url, affiliations|
         unmappable_affiliations = unmappable_affiliations(affiliations)
         Rails.logger.debug("Saving object info to csv. url: #{url}") unless unmappable_affiliations.empty?
-        csv << [document_id, url, unmappable_affiliations] unless unmappable_affiliations.empty?
+        csv << [document_id, url, unmappable_affiliations.join(' || ')] unless unmappable_affiliations.empty?
       end
     end
   end

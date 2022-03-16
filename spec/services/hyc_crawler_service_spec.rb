@@ -73,7 +73,7 @@ RSpec.describe HycCrawlerService do
   end
 
   context 'creating a csv' do
-    let(:csv_path) { "#{ENV['DATA_STORAGE']}/reports/umappable_affiliations.csv" }
+    let(:csv_path) { "#{ENV['DATA_STORAGE']}/reports/unmappable_affiliations.csv" }
     let(:work_with_only_mappable_affils) do
       General.create(title: ['New General Work with people'],
                      "#{type_of_person}_attributes".to_sym => { '0' => { name: "#{type_of_person}_1",
@@ -91,20 +91,30 @@ RSpec.describe HycCrawlerService do
     end
     it 'writes unmappable affiliations to a csv' do
       expect(File.exist?(csv_path)).to eq false
-      described_class.create_csv_of_umappable_affiliations
+      described_class.create_csv_of_unmappable_affiliations
       expect(File.exist?(csv_path)).to eq true
     end
 
-    it 'is a parseable csv with headers' do
-      described_class.create_csv_of_umappable_affiliations
-      csv = CSV.parse(File.read(csv_path), headers: true)
+    describe 'turning the csv back into ruby objects' do
+      before do
+        described_class.create_csv_of_unmappable_affiliations
+      end
 
-      expect(csv.headers).to eq(['object_id', 'url', 'affiliations'])
-      target_row = csv.find { |row| row['object_id'] == work_with_people.id }.to_h
+      it 'is a parseable csv with headers' do
+        csv = CSV.parse(File.read(csv_path), headers: true)
 
-      expect(target_row['affiliations']).to eq('["Unmappable affiliation 1", "Unmappable affiliation 2"]')
-      row_without_unmappable_affiliations = csv.find { |row| row['object_id'] == work_with_only_mappable_affils.id }
-      expect(row_without_unmappable_affiliations).to be nil
+        expect(csv.headers).to eq(['object_id', 'url', 'affiliations'])
+        target_row = csv.find { |row| row['object_id'] == work_with_people.id }.to_h
+
+        expect(target_row['affiliations']).to eq('Unmappable affiliation 1 || Unmappable affiliation 2')
+        row_without_unmappable_affiliations = csv.find { |row| row['object_id'] == work_with_only_mappable_affils.id }
+        expect(row_without_unmappable_affiliations).to be nil
+      end
+
+      it 'can be turned back into ruby objects' do
+        target_row = 'Unmappable affiliation 1 || Unmappable affiliation 2'
+        expect(target_row.split(' || ')).to match_array(['Unmappable affiliation 1', 'Unmappable affiliation 2'])
+      end
     end
   end
 
