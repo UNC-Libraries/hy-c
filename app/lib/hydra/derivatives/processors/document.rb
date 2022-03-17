@@ -2,9 +2,13 @@
 module Hydra::Derivatives::Processors
   class Document < Processor
     include ShellBasedProcessor
-
+    # TODO: soffice can only run one command at a time. Right now we manage this by only running one
+    # background job at a time; however, if we want to up concurrency we'll need to deal with this
     def self.encode(path, format, outdir)
-      execute "#{Hydra::Derivatives.libreoffice_path} --invisible --headless --convert-to #{format} --outdir #{outdir} #{Shellwords.escape(path)}"
+      Rails.logger.debug("Encoding with path: #{path}, format: #{format}, outdir: #{outdir}")
+      command = "#{Hydra::Derivatives.libreoffice_path} --invisible --headless --convert-to #{format} --outdir #{outdir} #{Shellwords.escape(path)}"
+      Rails.logger.debug("Encoding using command #{command}")
+      execute(command)
     end
 
     # Converts the document to the format specified in the directives hash.
@@ -40,8 +44,12 @@ module Hydra::Derivatives::Processors
 
     def convert_to(format)
       # [hyc-override] create temp subdir for output to avoid repeat filename conflicts
+      Rails.logger.debug("Converting document to #{format} from source path: #{source_path} to destination file: #{directives[:url]}")
+
       temp_dir = File.join(Hydra::Derivatives.temp_file_base, Time.now.nsec.to_s)
       FileUtils.mkdir(temp_dir)
+      Rails.logger.debug("Temp directory created for derivatives: #{temp_dir}")
+
       self.class.encode(source_path, format, temp_dir)
 
       File.join(temp_dir, [File.basename(source_path, '.*'), format].join('.'))

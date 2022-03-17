@@ -48,6 +48,20 @@ FactoryBot.define do
       end
     end
 
+    trait :with_original_docx_file do
+      after(:create) do |file_set, _evaluator|
+        Hydra::Works::AddFileToFileSet
+          .call(file_set, File.open("#{RSpec.configuration.fixture_path}/files/sample_docx.docx"), :original_file)
+      end
+    end
+
+    trait :with_original_msword_file do
+      after(:create) do |file_set, _evaluator|
+        Hydra::Works::AddFileToFileSet
+          .call(file_set, File.open("#{RSpec.configuration.fixture_path}/files/sample_msword.docx"), :original_file)
+      end
+    end
+
     trait :with_extracted_text do
       after(:create) do |file_set, _evaluator|
         Hydra::Works::AddFileToFileSet
