@@ -2,7 +2,8 @@
 module Hydra::Derivatives::Processors
   class Document < Processor
     include ShellBasedProcessor
-
+    # TODO: soffice can only run one command at a time. Right now we manage this by only running one
+    # background job at a time; however, if we want to up concurrency we'll need to deal with this
     def self.encode(path, format, outdir)
       Rails.logger.debug("Encoding with path: #{path}, format: #{format}, outdir: #{outdir}")
       command = "#{Hydra::Derivatives.libreoffice_path} --invisible --headless --convert-to #{format} --outdir #{outdir} #{Shellwords.escape(path)}"
