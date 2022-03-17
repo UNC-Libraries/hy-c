@@ -2,7 +2,7 @@ require 'rails_helper'
 require 'active_fedora/cleaner'
 
 RSpec.describe ListUnmappableAffiliationsJob, type: :job do
-  let(:csv_path) { "#{ENV['DATA_STORAGE']}/reports/umappable_affiliations.csv" }
+  let(:csv_path) { "#{ENV['DATA_STORAGE']}/reports/unmappable_affiliations.csv" }
   after do
     FileUtils.remove_entry(csv_path) if File.exist?(csv_path)
   end

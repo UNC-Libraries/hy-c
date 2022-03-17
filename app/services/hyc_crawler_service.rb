@@ -34,20 +34,20 @@ module HycCrawlerService
   def self.csv_file_path
     csv_directory = Rails.root.join(ENV['DATA_STORAGE'], 'reports')
     FileUtils.mkdir_p(csv_directory)
-    Rails.root.join(ENV['DATA_STORAGE'], 'reports', 'umappable_affiliations.csv')
+    Rails.root.join(ENV['DATA_STORAGE'], 'reports', 'unmappable_affiliations.csv')
   end
 
   def self.csv_headers
     ['object_id', 'url', 'affiliations']
   end
 
-  def self.create_csv_of_umappable_affiliations
+  def self.create_csv_of_unmappable_affiliations
     CSV.open(csv_file_path, 'a+') do |csv|
       csv << csv_headers
       crawl_for_affiliations do |document_id, url, affiliations|
         unmappable_affiliations = unmappable_affiliations(affiliations)
         Rails.logger.debug("Saving object info to csv. url: #{url}") unless unmappable_affiliations.empty?
-        csv << [document_id, url, unmappable_affiliations] unless unmappable_affiliations.empty?
+        csv << [document_id, url, unmappable_affiliations.join(' || ')] unless unmappable_affiliations.empty?
       end
     end
   end
