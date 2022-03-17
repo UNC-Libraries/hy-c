@@ -9,6 +9,11 @@ namespace 'derivs' do
     RegenerateAllDocxThumbnailsJob.perform_later
   end
 
+  desc 'Regenerates thumbnail for single Docx'
+  task :docx_one_thumb, [:id] => :environment do |_t, args|
+    CreateDocxThumbnailJob.perform_later(file_set_id: args.id)
+  end
+
   desc 'Regenerates derivatives for a single file set'
   task :file_set, [:id] => :environment do |_t, args|
     file_set = FileSet.find(args.id)
