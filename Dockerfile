@@ -18,10 +18,11 @@ FROM systemd-enabled
 RUN yum -y install httpd; yum clean all; systemctl enable httpd.service; \
 yum -y install centos-release-scl-rh centos-release-scl; \
 yum -y --enablerepo=centos-sclo-rh install rh-ruby26 rh-ruby26-ruby-devel
+# Install compilers for gems & more dependencies - this section is > 1 GB so might see if we can shrink it down some
+RUN yum -y install gcc gcc-c++ zlib-devel postgresql-devel libxslt-devel; \
+yum -y install git libreoffice clamav-devel clamav clamav-update clamd
 
-RUN scl enable rh-ruby26 -- gem install bundler -v '~> 2.2.28'; \
-# Install compilers for gems
-yum -y install gcc gcc-c++ zlib-devel postgresql-devel libxslt-devel
+RUN scl enable rh-ruby26 -- gem install bundler -v '~> 2.2.28'
 
 EXPOSE 3000
 CMD ["/usr/sbin/init"]

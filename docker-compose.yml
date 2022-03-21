@@ -4,5 +4,36 @@ services:
   web: &web
     build:
       context: .
+    image: mkadel/hy-c
+    depends_on:
+      # - db
+      # - fedora
+      - redis
+      # - solr
     ports:
       - 3000:3000
+  redis:
+    image: redis:5.0.14
+    restart: always
+    command: redis-server /usr/local/etc/redis/redis.conf
+    environment:
+      # ALLOW_EMPTY_PASSWORD is recommended only for development.
+      - ALLOW_EMPTY_PASSWORD=yes
+    volumes:
+      - redis_data:/data
+      - ./docker/redis.conf:/usr/local/etc/redis/redis.conf
+    ports:
+      - "6379:6379"
+volumes:
+  # data:
+  # bundle_dir:
+  # derivatives:
+  # fcrepo_data:
+  # log:
+  # pg_data:
+  redis_data:
+  # solr_data:
+  # tmp:
+  # tenejo_tmp:
+  # uploads:
+  # clam:
