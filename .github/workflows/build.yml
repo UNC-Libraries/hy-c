@@ -113,16 +113,16 @@ jobs:
         sudo apt-get update
         sudo apt-get install unzip imagemagick ghostscript libpq-dev graphicsmagick
 
-    - name: Setup test database
-      env:
-        RAILS_ENV: test
-        PGHOST: localhost
-        PGUSER: hyrax
-        # Variable needs to be PGPASSWORD so postgres cli can read it.
-        # Variable is supposedly deprecated in postgres, but can't find the notice in postgres docs
-        PGPASSWORD: password
-      run: |
-        psql -c 'create database hyrax_test with owner hyrax;'
+    # - name: Setup test database
+    #   env:
+    #     RAILS_ENV: test
+    #     PGHOST: localhost
+    #     PGUSER: hyrax
+    #     # Variable needs to be PGPASSWORD so postgres cli can read it.
+    #     # Variable is supposedly deprecated in postgres, but can't find the notice in postgres docs
+    #     PGPASSWORD: password
+    #   run: |
+    #     psql -c 'create database hyrax_test with owner hyrax;'
 
     - name: Copy solr config into docker container
       run: docker cp solr/config solr_container:/tmp/solr_config
