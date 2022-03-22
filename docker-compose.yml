@@ -66,7 +66,13 @@ services:
     ports:
       - "8983:8983"
     command: bash -c 'precreate-core hydra-development /opt/solr/server/solr/configsets/hy-c; precreate-core hydra-test /opt/solr/server/solr/configsets/hy-c; exec solr -f'
-
+  solr8:
+    image: solr:8-alpine
+    volumes:
+      - ./solr/new_config:/opt/solr/server/solr/configsets/hy-c
+    ports:
+      - "8989:8989"
+    command: bash -c 'precreate-core hydra-development /opt/solr/server/solr/configsets/hy-c; precreate-core hydra-test /opt/solr/server/solr/configsets/hy-c; exec solr -f'
 volumes:
   # data:
   # bundle_dir:
