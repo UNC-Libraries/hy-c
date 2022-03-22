@@ -6,12 +6,47 @@ services:
       context: .
     image: mkadel/hy-c
     depends_on:
-      # - db
-      # - fedora
+      - db
+      - fedora
       - redis
-      # - solr
+      - solr
+    environment:
+      DATABASE_URL: postgresql://db:5432
+      DATABASE_HOST: db
+      FEDORA_PORT: 8080
+      FEDORA_TEST_URL: http://fedora:8080/rest
+      FEDORA_DEV_URL: http://fedora:8080/rest
+      HYRAX_DATABASE_PASSWORD: password
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_URL: redis://redis:6379/0
+      SOLR_URL: http://solr6:8983/solr/hydra-development
+      SOLR_TEST_URL: http://solr6:8983/solr/hydra-test
     ports:
       - 3000:3000
+    volumes:
+      - .:/hy-c
+    stdin_open: true
+    tty: true
+  db:
+    image: postgres:9.6-alpine
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: hyrax
+      POSTGRES_PASSWORD: password
+  fedora:
+    image: nulib/fcrepo4:4.7.5
+    ports:
+      - "8984:8080"
+    volumes:
+      - fcrepo_data:/data
+    environment:
+      JAVA_OPTIONS: "-Xmx512m"
+    stdin_open: true
+    tty: true
   redis:
     image: redis:5.0.14
     restart: always
@@ -24,15 +59,23 @@ services:
       - ./docker/redis.conf:/usr/local/etc/redis/redis.conf
     ports:
       - "6379:6379"
+  solr6:
+    image: solr:6-alpine
+    volumes:
+      - ./solr/config:/opt/solr/server/solr/configsets/hy-c
+    ports:
+      - "8983:8983"
+    command: bash -c 'precreate-core hydra-development /opt/solr/server/solr/configsets/hy-c; precreate-core hydra-test /opt/solr/server/solr/configsets/hy-c; exec solr -f'
+
 volumes:
   # data:
   # bundle_dir:
   # derivatives:
-  # fcrepo_data:
+  fcrepo_data:
   # log:
-  # pg_data:
+  pg_data:
   redis_data:
-  # solr_data:
+  solr_data:
   # tmp:
   # tenejo_tmp:
   # uploads:

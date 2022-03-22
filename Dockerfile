@@ -24,5 +24,15 @@ yum -y install git libreoffice clamav-devel clamav clamav-update clamd
 
 RUN scl enable rh-ruby26 -- gem install bundler -v '~> 2.2.28'
 
+Run yum -y install make
+
+# Add application
+RUN mkdir /hyrax
+WORKDIR /hyrax
+COPY . /hyrax
+
+WORKDIR /hyrax
+RUN scl enable rh-ruby26 -- bundle install
+
 EXPOSE 3000
-CMD ["/usr/sbin/init"]
+CMD ["sh", "/hy-c/docker/start-app.sh"]
