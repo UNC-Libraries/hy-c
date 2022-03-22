@@ -17,8 +17,8 @@ jobs:
       CLAMD_TCP_HOST: 'localhost'
       CLAMD_TCP_PORT: '3310'
       DATABASE_AUTH: true
-      DATABASE_HOST: postgres
-      DATABASE_URL: postgresql://postgres:5432
+      DATABASE_HOST: localhost
+      DATABASE_URL: postgresql://localhost:5432
       DATACITE_PASSWORD: 'datacitepass'
       DATACITE_PREFIX: '10.5077'
       DATACITE_USER: 'test-datacite-user'
