@@ -27,6 +27,7 @@ development:
   database: hyrax_development
   username: hyrax
   password: <%= ENV['HYRAX_DATABASE_PASSWORD'] %>
+  url: <%= ENV['DATABASE_URL'] %>
 
   # The specified database role being used to connect to postgres.
   # To create additional roles in postgres see `$ createuser --help`.
@@ -63,6 +64,7 @@ test:
   database: hyrax_test
   username: hyrax
   password: <%= ENV['HYRAX_DATABASE_PASSWORD'] %>
+  url: <%= ENV['DATABASE_URL'] %>
 
 # As with config/secrets.yml, you never want to store sensitive information,
 # like your database password, in your source code. If your source code is
