@@ -37,7 +37,7 @@ jobs:
       RACK_ENV: test
       RAILS_ENV: test
       SOLR_TEST_PORT: 8983
-      SOLR_TEST_URL: http://solr6:8983/solr/hydra-test
+      SOLR_TEST_URL: http://127.0.0.1:8983/solr/hydra-test
       SSO_LOGIN_PATH: '/Shibboleth.sso/Login'
       SSO_LOGOUT_URL: 'https://shibboleth.example.com/idp/logout.jsp'
       IMAGE_PROCESSOR: 'graphicsmagick'
