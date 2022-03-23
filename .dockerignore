@@ -1,0 +1,6 @@
+Dockerfile
+
+.git
+./tmp
+./log
+coverage/*

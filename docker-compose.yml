@@ -1,0 +1,28 @@
+version: '3.7'
+
+services:
+  web: &web
+    build:
+      context: .
+    image: mkadel/hy-c
+    depends_on:
+      - db
+    environment:
+      HYRAX_DATABASE_PASSWORD: password
+    ports:
+      - 3000:3000
+    volumes:
+      - .:/hy-c
+    stdin_open: true
+    tty: true
+  db:
+    image: postgres:9.6-alpine
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: hyrax
+      POSTGRES_PASSWORD: password
+volumes:
+  pg_data:
