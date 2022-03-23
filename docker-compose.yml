@@ -19,7 +19,7 @@ services:
       HYRAX_DATABASE_PASSWORD: password
       REDIS_HOST: redis
       REDIS_PORT: 6379
-      REDIS_URL: redis://redis:6379/0
+      REDIS_URL: redis://redis
       SOLR_URL: http://solr6:8983/solr/hydra-development
       SOLR_TEST_URL: http://solr6:8983/solr/hydra-test
     ports:
@@ -49,14 +49,11 @@ services:
     tty: true
   redis:
     image: redis:5.0.14
-    restart: always
-    command: redis-server /usr/local/etc/redis/redis.conf
     environment:
       # ALLOW_EMPTY_PASSWORD is recommended only for development.
       - ALLOW_EMPTY_PASSWORD=yes
     volumes:
       - redis_data:/data
-      - ./docker/redis.conf:/usr/local/etc/redis/redis.conf
     ports:
       - "6379:6379"
   solr6:
