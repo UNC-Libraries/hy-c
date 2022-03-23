@@ -34,6 +34,8 @@ jobs:
       NOKOGIRI_USE_SYSTEM_LIBRARIES: true
       RACK_ENV: test
       RAILS_ENV: test
+      REDIS_HOST: localhost
+      REDIS_URL: redis://redis
       SOLR_TEST_URL: http://127.0.0.1:8983/solr/hydra-test
       SSO_LOGIN_PATH: '/Shibboleth.sso/Login'
       SSO_LOGOUT_URL: 'https://shibboleth.example.com/idp/logout.jsp'
