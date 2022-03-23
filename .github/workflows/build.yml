@@ -10,7 +10,7 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
- 
+
     env:
       CC_TEST_REPORTER_ID: ab9f6d96726a23c491c04cdad5cc4959551f10716196aaf2260bdf72ca1a3d0b
       ALLOW_NOTIFICATIONS: true
@@ -34,7 +34,7 @@ jobs:
       NOKOGIRI_USE_SYSTEM_LIBRARIES: true
       RACK_ENV: test
       RAILS_ENV: test
-      SOLR_TEST_URL: http://127.0.0.1:8983//solr/hydra-test
+      SOLR_TEST_URL: http://127.0.0.1:8983/solr/hydra-test
       SSO_LOGIN_PATH: '/Shibboleth.sso/Login'
       SSO_LOGOUT_URL: 'https://shibboleth.example.com/idp/logout.jsp'
       IMAGE_PROCESSOR: 'graphicsmagick'
