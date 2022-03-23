@@ -8,10 +8,13 @@ services:
     depends_on:
       - db
       - fedora
+      - solr6
     environment:
       FEDORA_TEST_URL: http://fedora:8080/rest
       FEDORA_DEV_URL: http://fedora:8080/rest
       HYRAX_DATABASE_PASSWORD: password
+      SOLR_DEV_URL: http://solr6:8983/solr/hydra-development
+      SOLR_TEST_URL: http://solr6:8983/solr/hydra-test
     ports:
       - 3000:3000
     volumes:
@@ -35,6 +38,14 @@ services:
       - fcrepo_data:/data
     environment:
       JAVA_OPTIONS: "-Xmx512m"
+  solr6:
+    image: solr:6-alpine
+    volumes:
+      - ./solr/config:/opt/solr/server/solr/configsets/hy-c
+    ports:
+      - "8983:8983"
+    command: bash -c 'precreate-core hydra-development /opt/solr/server/solr/configsets/hy-c; precreate-core hydra-test /opt/solr/server/solr/configsets/hy-c; exec solr -f'
 volumes:
   pg_data:
   fcrepo_data:
+  solr_data:
