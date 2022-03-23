@@ -13,6 +13,7 @@ services:
       FEDORA_TEST_URL: http://fedora:8080/rest
       FEDORA_DEV_URL: http://fedora:8080/rest
       HYRAX_DATABASE_PASSWORD: password
+      REDIS_URL: redis://redis
       SOLR_DEV_URL: http://solr6:8983/solr/hydra-development
       SOLR_TEST_URL: http://solr6:8983/solr/hydra-test
     ports:
@@ -38,6 +39,15 @@ services:
       - fcrepo_data:/data
     environment:
       JAVA_OPTIONS: "-Xmx512m"
+  redis:
+    image: redis:5.0.14
+    environment:
+      # ALLOW_EMPTY_PASSWORD is recommended only for development.
+      - ALLOW_EMPTY_PASSWORD=yes
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
   solr6:
     image: solr:6-alpine
     volumes:
@@ -48,4 +58,5 @@ services:
 volumes:
   pg_data:
   fcrepo_data:
+  redis_data:
   solr_data:
