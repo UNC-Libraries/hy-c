@@ -28,7 +28,7 @@ jobs:
       DELETED_PEOPLE_FILE: ./tmp/deleted_people.txt
       DOI_PREFIX: '10.17615'
       EMAIL_FROM_ADDRESS: 'hyraxapp@example.com'
-      FEDORA_TEST_URL: http://127.0.0.1:8080/fcrepo/rest
+      FEDORA_TEST_URL: http://127.0.0.1:8080/rest
       HYRAX_DATABASE_PASSWORD: 'password'
       HYRAX_HOST: 'https://example.com'
       NOKOGIRI_USE_SYSTEM_LIBRARIES: true
