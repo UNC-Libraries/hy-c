@@ -20,11 +20,15 @@ yum -y install centos-release-scl-rh centos-release-scl; \
 yum -y --enablerepo=centos-sclo-rh install rh-ruby26 rh-ruby26-ruby-devel
 # Install compilers for gems & more dependencies - this section is > 1 GB so might see if we can shrink it down some
 RUN yum -y install gcc gcc-c++ zlib-devel postgresql-devel libxslt-devel; \
-yum -y install git libreoffice clamav-devel clamav clamav-update clamd
+yum -y install git libreoffice clamav-devel clamav clamav-update clamd redhat-lsb libXScrnSaver wget unzip; \
+yum -y install epel-release; \
+yum -y install ghostscript GraphicsMagick
+
+# Download and install Chromedriver
+RUN wget -q -P /tmp "https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm"
+RUN yum -y localinstall /tmp/google-chrome-stable_current_x86_64.rpm
 
 RUN scl enable rh-ruby26 -- gem install bundler -v '~> 2.2.28'
-
-Run yum -y install make
 
 # Add application
 RUN mkdir /hyrax
@@ -35,4 +39,4 @@ WORKDIR /hyrax
 RUN scl enable rh-ruby26 -- bundle install
 
 EXPOSE 3000
-CMD ["sh", "/hy-c/docker/start-app.sh"]
+CMD ["sh", "/hyrax/docker/start-app.sh"]
