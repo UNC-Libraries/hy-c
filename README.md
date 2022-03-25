@@ -33,6 +33,40 @@ bundle exec rake sage:ingest[/hyrax/spec/fixtures/sage/sage_config.yml]
 * See [example config file](spec/fixtures/sage/sage_config.yml).
 * The beginning and ending of the rake task will be output to the console, the remaining events will be logged to the sage ingest log (in the same directory as the Rails log).
 
+#### Development on Docker
+* Pre-requisites:
+  * Docker installed locally
+  * (optional) If you use Atom, get the Dockerfile specific grammar (may need to restart Atom to see effect) `apm install language-docker`
+* Ensure you have the needed environment variables in `config/local_env.yml`. Either get a copy of this file from a colleague, or copy the sample file and fill in the appropriate values
+```bash
+cp config/local_env_sample.yml config/local_env.yml
+  ```
+- Either pull (faster) or build the application docker image
+```bash
+docker compose pull
+OR
+docker compose build
+```
+- Bring up the application and its dependencies
+```bash
+docker compose up
+```
+- Copy .bashrc into web container
+```bash
+docker cp ./docker/.bashrc hy-c-web-1:/root/.bashrc
+```
+- Go into a bash shell inside the running web container
+```bash
+docker compose exec web bash
+```
+- If you don't want to have to type `bundle exec` in front of each command, you can use the following command:
+
+*NOTE: You will not be able to run `bundle install` in this shell, since you would effectively be trying to run `bundle exec bundle install`, which doesn't work.*
+  ```bash
+  docker compose exec bundle exec web bash
+  ```
+- You can edit the code in your editor, as usual, and the changes will be reflected inside the docker container.
+
 #### Testing
 ##### RSpec Testing
 * Creating Solr fixture objects (see `spec/support/oai_sample_solr_documents.rb` )

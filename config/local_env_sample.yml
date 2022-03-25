@@ -1,0 +1,35 @@
+# Put production configuration variables here
+# Add this file to .gitignore
+
+SECRET_KEY_BASE: some_long_hash
+SOLR_PRODUCTION_URL: 'http://127.0.0.1:8983/solr/blacklight-core'
+FEDORA_PRODUCTION_URL: 'http://127.0.0.1:8984/fcrepo/rest'
+FEDORA_BINARY_STORAGE: /opt/fedora/binaries
+FITS_LOCATION: '/fits/fits.sh'
+DEFAULT_ADMIN_SET: 'default'
+DATABASE_URL: 'postgresql://db:5432'
+HYRAX_HOST: 'https://localhost:3000'
+EMAIL_FROM_ADDRESS: 'some_email@localhost'
+EMAIL_GEONAMES_ERRORS_ADDRESS: 'some_email@localhost'
+DATABASE_AUTH: 'true'
+SSO_LOGIN_PATH: '/Shibboleth.sso/Login'
+SSO_LOGOUT_URL: 'https://SOME_HOST.edu/idp/logout.jsp'
+DATA_STORAGE: /hyrax/tmp/data
+TEMP_STORAGE: /hyrax/tmp/scratch
+DERIVATIVE_STORAGE: /hyrax/tmp/derivatives
+DROPBOX_APP_KEY: YOUR_PASSWORD
+DROPBOX_APP_SECRET: YOUR_SECRET
+GEONAMES_USER: YOUR_USER
+LONGLEAF_BASE_COMMAND: 'scl enable rh-ruby26 -- /opt/longleaf/longleaf_command.rb'
+LONGLEAF_STORAGE_PATH: /opt/fedora/binaries
+DELETED_PEOPLE_FILE: tmp/deleted_people.txt
+ALLOW_NOTIFICATIONS: 'true'
+DOI_PREFIX: YOUR_DOI_STRING
+DATACITE_USER: YOUR_DATACITE_USER
+DATACITE_PASSWORD: YOUR_DATACITE_PASS
+DOI_TEST_PREFIX: YOUR_DOI_TEST_STRING
+DATACITE_TEST_USER: YOUR_DATACITE_TEST_USER
+DATACITE_TEST_PASSWORD: YOUR_DATACITE_TEST_PASS
+IMAGE_PROCESSOR: 'graphicsmagick'
+LOG_LEVEL: 'debug'
+HYRAX_DATABASE_PASSWORD: password
