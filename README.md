@@ -66,7 +66,7 @@ docker compose exec web bash
   docker compose exec bundle exec web bash
   ```
 - You can edit the code in your editor, as usual, and the changes will be reflected inside the docker container.
-
+- You should be able to see the application at http://localhost:3000/
 #### Testing
 ##### RSpec Testing
 * Creating Solr fixture objects (see `spec/support/oai_sample_solr_documents.rb` )
