@@ -79,7 +79,6 @@ module EnsureEnvironmentService
        FEDORA_DEV_URL
        REDIS_HOST
        REDIS_URL
-       SOLR_DEV_URL
-     ]
+       SOLR_DEV_URL]
   end
 end
