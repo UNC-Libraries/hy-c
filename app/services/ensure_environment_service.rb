@@ -24,6 +24,7 @@ module EnsureEnvironmentService
 
   def self.shared
     %w[ALLOW_NOTIFICATIONS
+       CLAMD_TCP_HOST
        DATABASE_AUTH
        DATABASE_URL
        DATACITE_PASSWORD
@@ -74,6 +75,11 @@ module EnsureEnvironmentService
     %w[DATACITE_TEST_PASSWORD
        DATACITE_TEST_USER
        DOI_TEST_PREFIX
-       DOI_PREFIX]
+       DOI_PREFIX
+       FEDORA_DEV_URL
+       REDIS_HOST
+       REDIS_URL
+       SOLR_DEV_URL
+     ]
   end
 end
