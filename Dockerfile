@@ -28,6 +28,14 @@ yum -y install ghostscript GraphicsMagick
 RUN wget -q -P /tmp "https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm"
 RUN yum -y localinstall /tmp/google-chrome-stable_current_x86_64.rpm
 
+# Install fits
+RUN mkdir /fits
+WORKDIR /fits
+ADD https://projects.iq.harvard.edu/files/fits/files/fits-1.0.5.zip /fits/
+RUN unzip fits-1.0.5.zip -d /fits && \
+rm -rf fits-1.0.5.zip
+ENV PATH "/fits:$PATH"
+
 RUN scl enable rh-ruby26 -- gem install bundler -v '~> 2.2.28'
 
 # Add application
