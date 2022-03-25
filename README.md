@@ -59,12 +59,6 @@ docker cp ./docker/.bashrc hy-c-web-1:/root/.bashrc
 ```bash
 docker compose exec web bash
 ```
-- If you don't want to have to type `bundle exec` in front of each command, you can use the following command:
-
-*NOTE: You will not be able to run `bundle install` in this shell, since you would effectively be trying to run `bundle exec bundle install`, which doesn't work.*
-  ```bash
-  docker compose exec bundle exec web bash
-  ```
 - You can edit the code in your editor, as usual, and the changes will be reflected inside the docker container.
 - You should be able to see the application at http://localhost:3000/
 #### Testing
