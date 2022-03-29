@@ -61,6 +61,14 @@ docker compose exec web bash
 ```
 - You can edit the code in your editor, as usual, and the changes will be reflected inside the docker container.
 - You should be able to see the application at http://localhost:3000/
+- If you are experiencing slow performance, you might want to increase the resources available to your Docker network, including CPUs, memory, and swap. If you're working on a Mac, go to Docker Desktop, click the gear icon -> Resources -> Advanced, drag the resources bars to the desired levels, and then click Apply & Restart
+
+- One configuration that seems to be working is:
+  - CPUs: 8
+  - Memory: 12GB
+  - Swap: 2 GB
+  - Disk image size: 200 GB
+
 #### Testing
 ##### RSpec Testing
 * Creating Solr fixture objects (see `spec/support/oai_sample_solr_documents.rb` )
