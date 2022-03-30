@@ -23,17 +23,23 @@ class AffiliationRemediationService
       next unless object.attributes.keys.member?(person_field.to_s)
 
       people_objects = object.try(person_field)
-      new_attributes = []
       next if people_objects.blank?
 
-      people_objects.each do |person|
-        new_attributes << map_person_attributes(person.attributes)
-      end
-      object[person_field.to_s] = nil
-      object.save!
-      object.update("#{person_field}_attributes" => new_attributes)
-      object.save!
+      update_affiliation_by_person_field(object, person_field)
     end
+  end
+
+  def update_affiliation_by_person_field(object, person_field)
+    people_objects = object.try(person_field)
+
+    new_attributes = []
+    people_objects.each do |person|
+      new_attributes << map_person_attributes(person.attributes)
+    end
+    object[person_field.to_s] = nil
+    object.save!
+    object.update("#{person_field}_attributes" => new_attributes)
+    object.save!
   end
 
   def id_list
