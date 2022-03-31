@@ -5,5 +5,5 @@ end
 
 desc 'Remediate affiliations that were previously found'
 task remediate_affiliations: :environment do
-  RemediateAffiliations.perform_later
+  RemediateAffiliationsJob.perform_later
 end

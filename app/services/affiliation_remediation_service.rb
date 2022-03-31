@@ -84,8 +84,10 @@ class AffiliationRemediationService
     elsif map_to_new_affiliation(original_affiliation) == 'n/a'
       attributes_hash.delete('other_affiliation')
       attributes_hash['other_affiliation'] = [original_affiliation]
+      Rails.logger.debug("Moved affiliation #{original_affiliation} to other_affiliation")
     elsif map_to_new_affiliation(original_affiliation)
       new_affiliation << map_to_new_affiliation(original_affiliation)
+      Rails.logger.debug("Mapped affiliation #{original_affiliation} to #{new_affiliation}")
     end
     attributes_hash.delete('affiliation')
     attributes_hash['affiliation'] = new_affiliation.flatten
@@ -93,6 +95,9 @@ class AffiliationRemediationService
   end
 
   def mappable_affiliation?(affiliation)
+    # No need to check service for empty strings
+    return false if affiliation.empty?
+
     mapping = DepartmentsService.label(affiliation)
     mapping ? true : false
   end

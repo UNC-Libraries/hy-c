@@ -70,6 +70,25 @@ RSpec.describe AffiliationRemediationService do
     expect(service.mappable_affiliation?(mapped_affiliation_one)).to eq true
   end
 
+  context 'with an empty string as the old affiliation' do
+    let(:unmappable_affiliation_one) { '' }
+    let(:updated_person_hash) do
+      {
+        'index' => [1],
+        'name' => ['creator_1'],
+        'orcid' => [],
+        'affiliation' => [],
+        'other_affiliation' => []
+      }
+    end
+
+    it 'maps the empty string to an empty array' do
+      first_creator = obj.creators.find { |person| person['index'] == [1] }
+      original_person_hash = first_creator.attributes
+      expect(service.map_person_attributes(original_person_hash)).to eq(updated_person_hash)
+    end
+  end
+
   context 'with an article and general work' do
     before do
       ActiveFedora::Cleaner.clean!
@@ -90,14 +109,13 @@ RSpec.describe AffiliationRemediationService do
   context 'with an affiliation that needs to be moved to "other_affiliation"' do
     let(:unmappable_affiliation_one) { 'Colorado School of Public Health' }
     let(:mapped_affiliation_one) { [] }
-    let(:expected_other_affiliation) { 'Colorado School of Public Health' }
     let(:updated_person_hash) do
       {
         'index' => [1],
         'name' => ['creator_1'],
         'orcid' => [],
         'affiliation' => [],
-        'other_affiliation' => [expected_other_affiliation]
+        'other_affiliation' => [unmappable_affiliation_one]
       }
     end
 
