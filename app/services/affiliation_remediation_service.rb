@@ -81,6 +81,9 @@ class AffiliationRemediationService
     new_affiliation = []
     if mappable_affiliation?(original_affiliation)
       new_affiliation << original_affiliation
+    elsif map_to_new_affiliation(original_affiliation) == 'n/a'
+      attributes_hash.delete('other_affiliation')
+      attributes_hash['other_affiliation'] = [original_affiliation]
     elsif map_to_new_affiliation(original_affiliation)
       new_affiliation << map_to_new_affiliation(original_affiliation)
     end
