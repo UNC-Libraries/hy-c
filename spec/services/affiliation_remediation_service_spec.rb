@@ -119,6 +119,19 @@ RSpec.describe AffiliationRemediationService do
       original_second_creator_hash = second_creator.attributes
       expect(service.map_person_attributes(original_second_creator_hash)).to eq(updated_second_creator_hash)
     end
+
+    it 'keeps both creators associated with the object' do
+      first_creator = obj.creators.find { |person| person['index'] == [1] }
+      expect(first_creator.attributes['affiliation']).to eq([unmappable_affiliation_one])
+      second_creator = obj.creators.find { |person| person['index'] == [2] }
+      expect(second_creator.attributes['affiliation']).to eq([])
+      service.update_affiliations(obj)
+      obj.reload
+      first_creator = obj.creators.find { |person| person['index'] == [1] }
+      expect(first_creator.attributes['affiliation']).to eq([mapped_affiliation_one])
+      second_creator = obj.creators.find { |person| person['index'] == [2] }
+      expect(second_creator.attributes['affiliation']).to eq([])
+    end
   end
 
   context 'with an article and general work' do
