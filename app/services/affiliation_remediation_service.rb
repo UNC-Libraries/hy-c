@@ -20,10 +20,7 @@ class AffiliationRemediationService
 
   def update_affiliations(object)
     person_fields.each do |person_field|
-      next unless object.attributes.keys.member?(person_field.to_s)
-
-      people_objects = object.try(person_field)
-      next if people_objects.blank?
+      next unless needs_updated_people?(object, person_field)
 
       update_affiliation_by_person_field(object, person_field)
     end
@@ -88,5 +85,13 @@ class AffiliationRemediationService
   def mappable_affiliation?(affiliation)
     mapping = DepartmentsService.label(affiliation)
     mapping ? true : false
+  end
+
+  def needs_updated_people?(object, person_field)
+    return false unless object.attributes.keys.member?(person_field.to_s)
+
+    return false if object.try(person_field).blank?
+
+    true
   end
 end
