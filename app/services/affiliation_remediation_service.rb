@@ -96,6 +96,8 @@ class AffiliationRemediationService
 
   def mappable_affiliation?(affiliation)
     # No need to check service for empty strings
+    return false unless affiliation
+
     return false if affiliation.empty?
 
     mapping = DepartmentsService.label(affiliation)

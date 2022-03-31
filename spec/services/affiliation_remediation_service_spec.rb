@@ -89,6 +89,38 @@ RSpec.describe AffiliationRemediationService do
     end
   end
 
+  context 'with one affiliation that needs to be mapped and one empty one' do
+    let(:article) do
+      FactoryBot.create(
+        :article,
+        id: article_identifier,
+        creators_attributes: { '0' => { name: 'creator_1',
+                                        affiliation: unmappable_affiliation_one,
+                                        index: 1 },
+                               '1' => { name: 'creator_2',
+                                        index: 2 } }
+      )
+    end
+    let(:updated_second_creator_hash) do
+      {
+        'index' => [2],
+        'name' => ['creator_2'],
+        'orcid' => [],
+        'affiliation' => [],
+        'other_affiliation' => []
+      }
+    end
+
+    it 'maps the attributes for both creators' do
+      first_creator = obj.creators.find { |person| person['index'] == [1] }
+      original_first_creator_hash = first_creator.attributes
+      expect(service.map_person_attributes(original_first_creator_hash)).to eq(updated_person_hash)
+      second_creator = obj.creators.find { |person| person['index'] == [2] }
+      original_second_creator_hash = second_creator.attributes
+      expect(service.map_person_attributes(original_second_creator_hash)).to eq(updated_second_creator_hash)
+    end
+  end
+
   context 'with an article and general work' do
     before do
       ActiveFedora::Cleaner.clean!
