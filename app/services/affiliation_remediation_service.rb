@@ -63,7 +63,14 @@ class AffiliationRemediationService
 
   def map_to_new_affiliation(unmappable_affiliation)
     target_hash = affiliation_map.find { |affil| affil[:original_affiliation] == unmappable_affiliation }
-    target_hash.try(:[], :new_affiliation)
+    new_affiliation = target_hash.try(:[], :new_affiliation)
+    return nil if new_affiliation.nil?
+
+    if new_affiliation.include?('|')
+      new_affiliation.split('|')
+    else
+      new_affiliation
+    end
   end
 
   def map_person_attributes(attributes)
@@ -78,7 +85,7 @@ class AffiliationRemediationService
       new_affiliation << map_to_new_affiliation(original_affiliation)
     end
     attributes_hash.delete('affiliation')
-    attributes_hash['affiliation'] = new_affiliation
+    attributes_hash['affiliation'] = new_affiliation.flatten
     attributes_hash
   end
 

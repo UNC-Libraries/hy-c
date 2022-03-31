@@ -70,6 +70,32 @@ RSpec.describe AffiliationRemediationService do
     expect(service.mappable_affiliation?(mapped_affiliation_one)).to eq true
   end
 
+  context 'with multiple affiliations' do
+    let(:unmappable_affiliation_one) { 'Departmentrof Chemistry and Neuroscience Center University of North Carolina at Chapel Hill Chapel Hill, NC 27599-3290' }
+    let(:mapped_affiliation_one) { ['UNC Neuroscience Center', 'Department of Chemistry'] }
+
+    before do
+      ActiveFedora::Cleaner.clean!
+      Blacklight.default_index.connection.delete_by_query('*:*')
+      Blacklight.default_index.connection.commit
+      article
+    end
+
+    it 'can map from an unmappable affiliation to a mappable affiliation' do
+      expect(service.map_to_new_affiliation(unmappable_affiliation_one)).to eq(mapped_affiliation_one)
+      # expect(service.map_to_new_affiliation(unmappable_affiliation_two)).to eq(mapped_affiliation_two)
+    end
+
+    it 'can update the creator affiliations' do
+      first_creator = obj.creators.find { |person| person['index'] == [1] }
+      expect(first_creator.attributes['affiliation']).to eq([unmappable_affiliation_one])
+      service.update_affiliations(obj)
+      obj.reload
+      first_creator = obj.creators.find { |person| person['index'] == [1] }
+      expect(first_creator.attributes['affiliation']).to eq(mapped_affiliation_one)
+    end
+  end
+
   context 'with an article and general work' do
     before do
       ActiveFedora::Cleaner.clean!
