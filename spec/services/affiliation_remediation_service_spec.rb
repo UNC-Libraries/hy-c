@@ -155,7 +155,7 @@ RSpec.describe AffiliationRemediationService do
   end
 
   context 'with an affiliation that needs to be moved to "other_affiliation"' do
-    let(:unmappable_affiliation_one) { 'Colorado School of Public Health' }
+    let(:uncontrolled_affiliation_one) { 'Colorado School of Public Health' }
     let(:mapped_affiliation_one) { [] }
     let(:updated_person_hash) do
       {
@@ -163,7 +163,7 @@ RSpec.describe AffiliationRemediationService do
         'name' => ['creator_1'],
         'orcid' => [],
         'affiliation' => [],
-        'other_affiliation' => [unmappable_affiliation_one]
+        'other_affiliation' => [uncontrolled_affiliation_one]
       }
     end
 
