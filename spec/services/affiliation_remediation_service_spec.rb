@@ -4,9 +4,9 @@ require 'active_fedora/cleaner'
 RSpec.describe AffiliationRemediationService do
   let(:service) { described_class.new(unmappable_affiliations_path) }
   let(:unmappable_affiliations_path) { File.join(fixture_path, 'files', 'short_unmappable_affiliations.csv') }
-  let(:unmappable_affiliation_one) { 'University of North Carolina at Chapel Hill. Library' }
+  let(:uncontrolled_affiliation_one) { 'University of North Carolina at Chapel Hill. Library' }
   let(:mapped_affiliation_one) { 'University of North Carolina at Chapel Hill. University Libraries' }
-  let(:unmappable_affiliation_two) { 'Department of Economics and Curriculum for the Environment and Ecology; University of North Carolina at Chapel Hill' }
+  let(:uncontrolled_affiliation_two) { 'Department of Economics and Curriculum for the Environment and Ecology; University of North Carolina at Chapel Hill' }
   let(:mapped_affiliation_two) { 'Department of Economics' }
   let(:updated_person_hash) do
     {
@@ -24,10 +24,10 @@ RSpec.describe AffiliationRemediationService do
       :article,
       id: article_identifier,
       creators_attributes: { '0' => { name: 'creator_1',
-                                      affiliation: unmappable_affiliation_one,
+                                      affiliation: uncontrolled_affiliation_one,
                                       index: 1 },
                              '1' => { name: 'creator_2',
-                                      affiliation: unmappable_affiliation_two,
+                                      affiliation: uncontrolled_affiliation_two,
                                       index: 2 } }
     )
   end
@@ -44,7 +44,10 @@ RSpec.describe AffiliationRemediationService do
                                                       index: 3 },
                                              '3' => { name: 'translator_4',
                                                       affiliation: 'Unmappable affiliation 2',
-                                                      index: 4 } })
+                                                      index: 4 } },
+                   creators_attributes: { '0' => { name: 'creator_1',
+                                                   affiliation: 'Carolina Center for Genome Sciences',
+                                                   index: 1 } })
   end
 
   before do
@@ -61,17 +64,17 @@ RSpec.describe AffiliationRemediationService do
   end
 
   it 'can map from an unmappable affiliation to a mappable affiliation' do
-    expect(service.map_to_new_affiliation(unmappable_affiliation_one)).to eq(mapped_affiliation_one)
-    expect(service.map_to_new_affiliation(unmappable_affiliation_two)).to eq(mapped_affiliation_two)
+    expect(service.map_to_new_affiliation(uncontrolled_affiliation_one)).to eq(mapped_affiliation_one)
+    expect(service.map_to_new_affiliation(uncontrolled_affiliation_two)).to eq(mapped_affiliation_two)
   end
 
   it 'can determine if an affiliation is unmappable' do
-    expect(service.mappable_affiliation?(unmappable_affiliation_one)).to eq false
+    expect(service.mappable_affiliation?(uncontrolled_affiliation_one)).to eq false
     expect(service.mappable_affiliation?(mapped_affiliation_one)).to eq true
   end
 
   context 'with an empty string as the old affiliation' do
-    let(:unmappable_affiliation_one) { '' }
+    let(:uncontrolled_affiliation_one) { '' }
     let(:updated_person_hash) do
       {
         'index' => [1],
@@ -95,7 +98,7 @@ RSpec.describe AffiliationRemediationService do
         :article,
         id: article_identifier,
         creators_attributes: { '0' => { name: 'creator_1',
-                                        affiliation: unmappable_affiliation_one,
+                                        affiliation: uncontrolled_affiliation_one,
                                         index: 1 },
                                '1' => { name: 'creator_2',
                                         index: 2 } }
@@ -122,7 +125,7 @@ RSpec.describe AffiliationRemediationService do
 
     it 'keeps both creators associated with the object' do
       first_creator = obj.creators.find { |person| person['index'] == [1] }
-      expect(first_creator.attributes['affiliation']).to eq([unmappable_affiliation_one])
+      expect(first_creator.attributes['affiliation']).to eq([uncontrolled_affiliation_one])
       second_creator = obj.creators.find { |person| person['index'] == [2] }
       expect(second_creator.attributes['affiliation']).to eq([])
       service.update_affiliations(obj)
@@ -179,22 +182,22 @@ RSpec.describe AffiliationRemediationService do
 
     it 'can update the creator affiliations' do
       first_creator = obj.creators.find { |person| person['index'] == [1] }
-      expect(first_creator.attributes['affiliation']).to eq([unmappable_affiliation_one])
+      expect(first_creator.attributes['affiliation']).to eq([uncontrolled_affiliation_one])
       expect(first_creator.attributes['other_affiliation']).to eq([])
       service.update_affiliations(obj)
       obj.reload
       first_creator = obj.creators.find { |person| person['index'] == [1] }
-      expect(first_creator.attributes['affiliation']).to eq(mapped_affiliation_one)
-      expect(first_creator.attributes['other_affiliation']).to eq([unmappable_affiliation_one])
+      expect(first_creator.attributes['affiliation']).to eq([])
+      expect(first_creator.attributes['other_affiliation']).to eq([uncontrolled_affiliation_one])
     end
   end
 
   context 'with multiple affiliations' do
-    let(:unmappable_affiliation_one) { 'Departmentrof Chemistry and Neuroscience Center University of North Carolina at Chapel Hill Chapel Hill, NC 27599-3290' }
+    let(:uncontrolled_affiliation_one) { 'Departmentrof Chemistry and Neuroscience Center University of North Carolina at Chapel Hill Chapel Hill, NC 27599-3290' }
     let(:mapped_affiliation_one) { ['UNC Neuroscience Center', 'Department of Chemistry'] }
 
     it 'can map from an unmappable affiliation to a mappable affiliation' do
-      expect(service.map_to_new_affiliation(unmappable_affiliation_one)).to eq(mapped_affiliation_one)
+      expect(service.map_to_new_affiliation(uncontrolled_affiliation_one)).to eq(mapped_affiliation_one)
     end
 
     context 'with an article' do
@@ -207,7 +210,7 @@ RSpec.describe AffiliationRemediationService do
 
       it 'can update the creator affiliations' do
         first_creator = obj.creators.find { |person| person['index'] == [1] }
-        expect(first_creator.attributes['affiliation']).to eq([unmappable_affiliation_one])
+        expect(first_creator.attributes['affiliation']).to eq([uncontrolled_affiliation_one])
         service.update_affiliations(obj)
         obj.reload
         first_creator = obj.creators.find { |person| person['index'] == [1] }
@@ -216,7 +219,7 @@ RSpec.describe AffiliationRemediationService do
     end
   end
 
-  context 'with an example Article' do
+  context 'with two creators with affiliations that need to be mapped' do
     let(:obj) { service.object_by_id(article.id) }
 
     before do
@@ -229,22 +232,26 @@ RSpec.describe AffiliationRemediationService do
     it 'can find the object associated with an id on the list' do
       expect(obj).to be_a_kind_of(Article)
       first_creator = obj.creators.find { |person| person['index'] == [1] }
-      expect(first_creator.attributes['affiliation']).to eq([unmappable_affiliation_one])
+      expect(first_creator.attributes['affiliation']).to eq([uncontrolled_affiliation_one])
     end
 
     it 'limits calls to the DepartmentService' do
       allow(DepartmentsService).to receive(:label)
       service.update_affiliations(obj)
-      expect(DepartmentsService).to have_received(:label).with(unmappable_affiliation_one).once
+      expect(DepartmentsService).to have_received(:label).with(uncontrolled_affiliation_one).twice
     end
 
     it 'can update the creator affiliations' do
       first_creator = obj.creators.find { |person| person['index'] == [1] }
-      expect(first_creator.attributes['affiliation']).to eq([unmappable_affiliation_one])
+      second_creator = obj.creators.find { |person| person['index'] == [2] }
+      expect(first_creator.attributes['affiliation']).to eq([uncontrolled_affiliation_one])
+      expect(second_creator.attributes['affiliation']).to eq([uncontrolled_affiliation_two])
       service.update_affiliations(obj)
       obj.reload
       first_creator = obj.creators.find { |person| person['index'] == [1] }
+      second_creator = obj.creators.find { |person| person['index'] == [2] }
       expect(first_creator.attributes['affiliation']).to eq([mapped_affiliation_one])
+      expect(second_creator.attributes['affiliation']).to eq([mapped_affiliation_two])
     end
 
     it 'can create a new person hash based on original person attributes' do
@@ -310,6 +317,29 @@ RSpec.describe AffiliationRemediationService do
       first_translator = obj.translators.find { |person| person['index'] == [1] }
       original_person_hash = first_translator.attributes
       expect(service.map_person_attributes(original_person_hash)).to eq(updated_translator_1_hash)
+    end
+
+    it 'recognizes that the creators do not need to be updated' do
+      expect(service.needs_updated_people?(obj, :creators)).to eq false
+    end
+
+    it 'recognizes that the translators do need to be updated' do
+      expect(service.needs_updated_people?(obj, :translators)).to eq true
+    end
+
+    it 'only updates the translator, not the creator' do
+      allow(obj).to receive(:save!)
+      before_first_translator = obj.translators.find { |person| person['index'] == [1] }
+      before_first_creator = obj.creators.find { |person| person['index'] == [1] }
+      service.update_affiliations(obj)
+      obj.reload
+      after_first_translator = obj.translators.find { |person| person['index'] == [1] }
+      after_first_creator = obj.creators.find { |person| person['index'] == [1] }
+      expect(before_first_translator).not_to eq(after_first_translator)
+      expect(before_first_creator).to eq(after_first_creator)
+      # When it only updates the translators it still saves twice - once for blanking out the translators, once for
+      # entering the new values
+      expect(obj).to have_received(:save!).twice
     end
   end
 end

@@ -19,7 +19,6 @@ module DepartmentsService
     authority.find(id).fetch('term')
   rescue StandardError
     Rails.logger.warn "DepartmentsService: cannot find '#{id}'"
-    puts "DepartmentsService: cannot find '#{id}'" # for migration log
     nil
   end
 

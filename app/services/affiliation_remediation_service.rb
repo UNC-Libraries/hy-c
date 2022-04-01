@@ -1,3 +1,5 @@
+# This class is to remediate People Objects where the affiliation is not controlled.
+# The metadata librarian has provided a one-time mapping from uncontrolled terms to controlled terms
 class AffiliationRemediationService
   def initialize(id_csv_path)
     @id_csv_path = id_csv_path
@@ -81,13 +83,14 @@ class AffiliationRemediationService
     new_affiliation = []
     if mappable_affiliation?(original_affiliation)
       new_affiliation << original_affiliation
+      Rails.logger.debug("Keeping original affiliation: #{original_affiliation}")
     elsif map_to_new_affiliation(original_affiliation) == 'n/a'
       attributes_hash.delete('other_affiliation')
       attributes_hash['other_affiliation'] = [original_affiliation]
       Rails.logger.debug("Moved affiliation #{original_affiliation} to other_affiliation")
     elsif map_to_new_affiliation(original_affiliation)
       new_affiliation << map_to_new_affiliation(original_affiliation)
-      Rails.logger.debug("Mapped affiliation #{original_affiliation} to #{new_affiliation}")
+      Rails.logger.debug("Mapped affiliation from: #{original_affiliation} to: #{new_affiliation.flatten}")
     end
     attributes_hash.delete('affiliation')
     attributes_hash['affiliation'] = new_affiliation.flatten
@@ -104,10 +107,18 @@ class AffiliationRemediationService
     mapping ? true : false
   end
 
+  def contains_unmappable_affiliation?(person_objects)
+    affiliations = person_objects.map { |person| person.attributes['affiliation'].first }
+    affiliations.map { |affiliation| mappable_affiliation?(affiliation) }.include?(false)
+  end
+
   def needs_updated_people?(object, person_field)
     return false unless object.attributes.keys.member?(person_field.to_s)
 
-    return false if object.try(person_field).blank?
+    person_objects = object.try(person_field)
+    return false if person_objects.blank?
+
+    return false unless contains_unmappable_affiliation?(person_objects)
 
     true
   end
