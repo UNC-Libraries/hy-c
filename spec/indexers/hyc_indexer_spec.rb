@@ -201,6 +201,36 @@ RSpec.describe HycIndexer, type: :indexer do
         expect(fedora_creator_hash_one['other_affiliation'].to_a).to eq([''])
       end
     end
+
+    context 'with uncontrolled vocabulary in affiliation' do
+      let(:work_with_people) do
+        General.new(title: ['New General Work with people'],
+                    creators_attributes: { '0' => { name: 'creator',
+                                                    affiliation: 'not-a-department',
+                                                    index: 1 },
+                                           '1' => { name: 'creator2',
+                                                    affiliation: 'not-a-department',
+                                                    index: 2 } })
+      end
+
+      let(:solr_expected_creator_array) do
+        ['index:1||creator',
+         'index:2||creator2']
+      end
+
+      it 'does not map the affiliations to solr' do
+        expect(solr_creator_array).to match_array(solr_expected_creator_array)
+      end
+
+      it 'does not index the uncontrolled term to Solr' do
+        expect(solr_doc.keys.include?('affiliation_label_tesim')).to be false
+        expect(solr_doc.keys.include?('affiliation_label_sim')).to be false
+      end
+
+      it 'stores the id in Fedora' do
+        expect(fedora_creator_hash_one['affiliation']).to eq(['not-a-department'])
+      end
+    end
   end
   describe 'indexing date issued' do
     context 'as full date' do

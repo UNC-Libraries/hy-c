@@ -24,6 +24,9 @@ module DepartmentsService
 
   def self.short_label(id)
     authority.find(id).fetch('short_label')
+  rescue KeyError
+    Rails.logger.warn "DepartmentsService: cannot find '#{id}'"
+    nil
   end
 
   def self.include_current_value(value, _index, render_options, html_options)
