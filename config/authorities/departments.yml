@@ -1018,6 +1018,7 @@ terms:
     active: false
   - id: School Counseling Graduate Program
     term: School of Education; School Counseling Graduate Program
+    active: true
   - id: School of Dentistry
     term: School of Dentistry
     active: true
