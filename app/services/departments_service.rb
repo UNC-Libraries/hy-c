@@ -22,6 +22,10 @@ module DepartmentsService
     nil
   end
 
+  def self.short_label(id)
+    authority.find(id).fetch('short_label')
+  end
+
   def self.include_current_value(value, _index, render_options, html_options)
     unless value.blank?
       html_options[:class] << ' force-select'

@@ -30,4 +30,11 @@ RSpec.describe Hyrax::DepartmentsService do
       expect(service.identifier('History')).to eq('history')
     end
   end
+
+  describe '#short_label' do
+    it 'resolves for ids of active terms' do
+      expect(service.short_label('history')).to eq('History')
+      expect(service.short_label('example')).to eq('Example Department')
+    end
+  end
 end

@@ -2,15 +2,19 @@
 terms:
   - id: biology
     active: true
+    short_label: Biology
     term: Biology
   - id: chemistry
     active: true
+    short_label: Chemistry
     term: Chemistry
   - id: history
     active: true
+    short_label: History
     term: History
   - id: example
     active: false
+    short_label: Example Department
     term: Some College; Example Department
   - id: Example Department
     active: true
