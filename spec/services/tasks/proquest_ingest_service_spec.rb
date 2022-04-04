@@ -156,7 +156,7 @@ RSpec.describe Tasks::ProquestIngestService, :ingest do
                                         'creators_attributes' => { '0' => { 'name' => 'Smith, Blandy', 'affiliation' => ['Department of Philosophy'], 'index' => 1 } },
                                         'date_issued' => '2019',
                                         'abstract' => 'The purpose of this study is to test ingest of a proquest deposit object without any attachments',
-                                        'advisors_attributes' => { '0' => { 'name' => 'Advisor, John T', 'affiliation' => nil, 'index' => 1 } },
+                                        'advisors_attributes' => { '0' => { 'name' => 'Advisor, John T', 'index' => 1 } },
                                         'dcmi_type' => 'http://purl.org/dc/dcmitype/Text',
                                         'degree' => 'Doctor of Philosophy',
                                         'degree_granting_institution' => 'University of North Carolina at Chapel Hill Graduate School',
@@ -188,8 +188,8 @@ RSpec.describe Tasks::ProquestIngestService, :ingest do
                                         'creators_attributes' => { '0' => { 'name' => 'Smith, Blandy', 'affiliation' => ['Department of Philosophy'], 'index' => 1 } },
                                         'date_issued' => '2019',
                                         'abstract' => 'The purpose of this study is to test ingest of a proquest deposit object without any attachments',
-                                        'advisors_attributes' => { '0' => { 'name' => 'Advisor, John T', 'affiliation' => nil, 'index' => 1 },
-                                                                   '1' => { 'name' => 'Advisor, Jane N', 'affiliation' => nil, 'index' => 2 } },
+                                        'advisors_attributes' => { '0' => { 'name' => 'Advisor, John T', 'index' => 1 },
+                                                                   '1' => { 'name' => 'Advisor, Jane N', 'index' => 2 } },
                                         'dcmi_type' => 'http://purl.org/dc/dcmitype/Text',
                                         'degree' => 'Master of Arts',
                                         'degree_granting_institution' => 'University of North Carolina at Chapel Hill Graduate School',
@@ -221,7 +221,7 @@ RSpec.describe Tasks::ProquestIngestService, :ingest do
                                         'creators_attributes' => { '0' => { 'name' => 'Smith, Blandy', 'affiliation' => ['Department of Philosophy'], 'index' => 1 } },
                                         'date_issued' => '2017',
                                         'abstract' => 'The purpose of this study is to test ingest of a proquest deposit object without any attachments',
-                                        'advisors_attributes' => { '0' => { 'name' => 'Advisor, John T', 'affiliation' => nil, 'index' => 1 } },
+                                        'advisors_attributes' => { '0' => { 'name' => 'Advisor, John T', 'index' => 1 } },
                                         'dcmi_type' => 'http://purl.org/dc/dcmitype/Text',
                                         'degree' => 'Doctor of Philosophy',
                                         'degree_granting_institution' => 'University of North Carolina at Chapel Hill Graduate School',
@@ -253,7 +253,7 @@ RSpec.describe Tasks::ProquestIngestService, :ingest do
                                         'creators_attributes' => { '0' => { 'name' => 'Smith, Blandy', 'affiliation' => ['Department of Philosophy'], 'index' => 1 } },
                                         'date_issued' => '2019',
                                         'abstract' => 'The purpose of this study is to test ingest of a proquest deposit object without any attachments',
-                                        'advisors_attributes' => { '0' => { 'name' => 'Advisor, John T', 'affiliation' => nil, 'index' => 1 } },
+                                        'advisors_attributes' => { '0' => { 'name' => 'Advisor, John T', 'index' => 1 } },
                                         'dcmi_type' => 'http://purl.org/dc/dcmitype/Text',
                                         'degree' => 'Doctor of Philosophy',
                                         'degree_granting_institution' => 'University of North Carolina at Chapel Hill Graduate School',
@@ -285,7 +285,7 @@ RSpec.describe Tasks::ProquestIngestService, :ingest do
                                         'creators_attributes' => { '0' => { 'name' => 'Smith, Blandy', 'affiliation' => ['Department of Philosophy'], 'index' => 1 } },
                                         'date_issued' => '2018',
                                         'abstract' => 'The purpose of this study is to test ingest of a proquest deposit object without any attachments',
-                                        'advisors_attributes' => { '0' => { 'name' => 'Advisor, John T', 'affiliation' => nil, 'index' => 1 } },
+                                        'advisors_attributes' => { '0' => { 'name' => 'Advisor, John T', 'index' => 1 } },
                                         'dcmi_type' => 'http://purl.org/dc/dcmitype/Text',
                                         'degree' => 'Doctor of Philosophy',
                                         'degree_granting_institution' => 'University of North Carolina at Chapel Hill Graduate School',
@@ -317,7 +317,7 @@ RSpec.describe Tasks::ProquestIngestService, :ingest do
                                         'creators_attributes' => { '0' => { 'name' => 'Smith, Blandy', 'affiliation' => ['Department of Philosophy'], 'index' => 1 } },
                                         'date_issued' => '2018',
                                         'abstract' => 'The purpose of this study is to test ingest of a proquest deposit object without any attachments',
-                                        'advisors_attributes' => { '0' => { 'name' => 'Advisor, John T', 'affiliation' => nil, 'index' => 1 } },
+                                        'advisors_attributes' => { '0' => { 'name' => 'Advisor, John T', 'index' => 1 } },
                                         'dcmi_type' => 'http://purl.org/dc/dcmitype/Text',
                                         'degree' => 'Doctor of Philosophy',
                                         'degree_granting_institution' => 'University of North Carolina at Chapel Hill Graduate School',
@@ -349,7 +349,7 @@ RSpec.describe Tasks::ProquestIngestService, :ingest do
                                         'creators_attributes' => { '0' => { 'name' => 'Smith, Blandy', 'affiliation' => ['Department of Philosophy'], 'index' => 1 } },
                                         'date_issued' => '2018',
                                         'abstract' => 'The purpose of this study is to test ingest of a proquest deposit object without any attachments',
-                                        'advisors_attributes' => { '0' => { 'name' => 'Advisor, John T', 'affiliation' => nil, 'index' => 1 } },
+                                        'advisors_attributes' => { '0' => { 'name' => 'Advisor, John T', 'index' => 1 } },
                                         'dcmi_type' => 'http://purl.org/dc/dcmitype/Text',
                                         'degree' => 'Doctor of Philosophy',
                                         'degree_granting_institution' => 'University of North Carolina at Chapel Hill Graduate School',
@@ -371,11 +371,59 @@ RSpec.describe Tasks::ProquestIngestService, :ingest do
 
   describe '#build_person_hash' do
     let(:people) { ['Smith, Blandy', 'Advisor, John T.'] }
-    let(:affiliation) { 'Department of Philosophy' }
+    let(:service) { Tasks::ProquestIngestService.new(args) }
 
-    it 'returns hash for creating a person object' do
-      expect(Tasks::ProquestIngestService.new(args).build_person_hash(people, affiliation)).to include({ '0' => { 'name' => 'Smith, Blandy', 'affiliation' => 'Department of Philosophy', 'index' => 1 },
-                                                                                                         '1' => { 'name' => 'Advisor, John T.', 'affiliation' => 'Department of Philosophy', 'index' => 2 } })
+    context 'with a department from the controlled vocabulary' do
+      let(:department) { 'Philosophy' }
+
+      it 'returns hash for creating a person object including the mapped affiliation' do
+        expect(service.build_person_hash(people, department))
+          .to eq({ '0' => { 'name' => 'Smith, Blandy', 'affiliation' => ['Department of Philosophy'], 'index' => 1 },
+                   '1' => { 'name' => 'Advisor, John T.', 'affiliation' => ['Department of Philosophy'], 'index' => 2 } })
+      end
+    end
+
+    context 'with a nil department' do
+      let(:department) { nil }
+
+      it 'returns hash for creating a person object including the mapped affiliation' do
+        expect(service.build_person_hash(people, department))
+          .to eq({ '0' => { 'name' => 'Smith, Blandy', 'index' => 1 },
+                   '1' => { 'name' => 'Advisor, John T.', 'index' => 2 } })
+      end
+    end
+
+    context 'with an affiliation that does not match the controlled vocabulary' do
+      let(:people) { ['Smith, Blandy', 'Advisor, John T.'] }
+      let(:department) { 'not-a-department' }
+
+      it 'maps the affiliation to other_affiliation and logs a warning' do
+        allow(service.logger).to receive(:warn)
+        expect(service.build_person_hash(people, department))
+          .to eq({ '0' => { 'name' => 'Smith, Blandy', 'other_affiliation' => 'not-a-department', 'index' => 1 },
+                   '1' => { 'name' => 'Advisor, John T.', 'other_affiliation' => 'not-a-department', 'index' => 2 } })
+
+        expect(service.logger).to have_received(:warn).twice.with('Could not map to standard department name: not-a-department')
+      end
+    end
+  end
+
+  describe '#affiliation' do
+    context 'when the affiliation is a controlled value' do
+      let(:original_affiliation) { 'Philosophy' }
+      let(:expected_mapped_affiliation) { ['Department of Philosophy'] }
+
+      it 'returns the mapped affiliation when it matches the controlled vocabulary' do
+        expect(Tasks::ProquestIngestService.new(args).affiliation(original_affiliation)).to eq(expected_mapped_affiliation)
+      end
+    end
+
+    context 'when the affiliation is not a controlled value' do
+      let(:original_affiliation) { 'not-a-department' }
+
+      it 'returns the mapped affiliation when it matches the controlled vocabulary' do
+        expect(Tasks::ProquestIngestService.new(args).affiliation(original_affiliation)).to eq(nil)
+      end
     end
   end
 
@@ -395,7 +443,7 @@ RSpec.describe Tasks::ProquestIngestService, :ingest do
         'creators_attributes' => { '0' => { 'name' => 'Smith, Blandy', 'affiliation' => ['Department of Philosophy'], 'index' => 1 } },
         'date_issued' => '2019',
         'abstract' => 'The purpose of this study is to test ingest of a proquest deposit object without any attachments',
-        'advisors_attributes' => { '0' => { 'name' => 'Advisor, John T', 'affiliation' => nil, 'index' => 1 } },
+        'advisors_attributes' => { '0' => { 'name' => 'Advisor, John T', 'index' => 1 } },
         'dcmi_type' => 'http://purl.org/dc/dcmitype/Text',
         'degree' => 'Doctor of Philosophy',
         'degree_granting_institution' => 'University of North Carolina at Chapel Hill Graduate School',
