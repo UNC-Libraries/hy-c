@@ -83,14 +83,14 @@ class AffiliationRemediationService
     new_affiliation = []
     if mappable_affiliation?(original_affiliation)
       new_affiliation << original_affiliation
-      Rails.logger.debug("Keeping original affiliation: #{original_affiliation}")
+      Rails.logger.info("Keeping original affiliation: #{original_affiliation}")
     elsif map_to_new_affiliation(original_affiliation) == 'n/a'
       attributes_hash.delete('other_affiliation')
       attributes_hash['other_affiliation'] = [original_affiliation]
-      Rails.logger.debug("Moved affiliation #{original_affiliation} to other_affiliation")
+      Rails.logger.info("Moved affiliation #{original_affiliation} to other_affiliation")
     elsif map_to_new_affiliation(original_affiliation)
       new_affiliation << map_to_new_affiliation(original_affiliation)
-      Rails.logger.debug("Mapped affiliation from: #{original_affiliation} to: #{new_affiliation.flatten}")
+      Rails.logger.info("Mapped affiliation from: #{original_affiliation} to: #{new_affiliation.flatten}")
     end
     attributes_hash.delete('affiliation')
     attributes_hash['affiliation'] = new_affiliation.flatten
