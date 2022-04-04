@@ -231,9 +231,6 @@ module Tasks
                       end
 
       department = metadata.xpath('//DISS_description/DISS_institution/DISS_inst_contact').text.strip
-      # TODO: Currently, if the parsed department can't be mapped, the affiliation is just saved as whatever was parsed from the XML
-      #       These affiliations then cannot be indexed to Solr or displayed, since they don't align with the controlled vocabulary
-      affiliation = ProquestDepartmentMappingsService.standard_department_name(department) || department
 
       date_issued = metadata.xpath('//DISS_description/DISS_dates/DISS_comp_date').text
       date_issued = Date.strptime(date_issued, '%Y')
@@ -255,7 +252,7 @@ module Tasks
         'title' => [title],
         'label' => title,
         'depositor' => @depositor.uid,
-        'creators_attributes' => build_person_hash(creators, affiliation),
+        'creators_attributes' => build_person_hash(creators, department),
         'date_issued' => (Date.try(:edtf, date_issued.year) || date_issued.year).to_s,
         'abstract' => abstract.gsub(/\n/, '').strip,
         'advisors_attributes' => build_person_hash(advisor, nil),
@@ -281,13 +278,36 @@ module Tasks
       [work_attributes, file_full]
     end
 
-    def build_person_hash(people, affiliation)
+    def build_person_hash(people, department)
       person_hash = {}
       people.each_with_index do |person, index|
-        person_hash[index.to_s] = { 'name' => person, 'affiliation' => affiliation, 'index' => index + 1 }
+        person_hash[index.to_s] = { 'name' => person, 'index' => index + 1 }
+        next if department.nil?
+
+        add_affiliation_hash(person_hash, index, department)
       end
 
       person_hash
+    end
+
+    def add_affiliation_hash(person_hash, index, department)
+      affiliation = affiliation(department)
+      if affiliation
+        person_hash[index.to_s]['affiliation'] = affiliation(department)
+      else
+        person_hash[index.to_s]['other_affiliation'] = department
+      end
+
+      person_hash
+    end
+
+    def affiliation(department)
+      return nil if department.nil? || department.empty?
+
+      ProquestDepartmentMappingsService.standard_department_name(department)
+    rescue ProquestDepartmentMappingsService::UnknownDepartmentError
+      logger.warn("Could not map to standard department name: #{department}")
+      nil
     end
 
     def format_name(person)

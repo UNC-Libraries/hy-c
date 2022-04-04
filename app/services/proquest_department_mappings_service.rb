@@ -7,7 +7,12 @@ module ProquestDepartmentMappingsService
     [authority.find(proquest_department).fetch('term')].flatten
   rescue StandardError
     Rails.logger.warn "ProquestDepartmentMappingsService: cannot find '#{proquest_department}'"
-    puts "ProquestDepartmentMappingsService: cannot find '#{proquest_department}'" # for migration log
-    nil
+    raise UnknownDepartmentError
+  end
+
+  class UnknownDepartmentError < StandardError
+    def message
+      'Cannot find related department'
+    end
   end
 end
