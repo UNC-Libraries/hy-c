@@ -156,7 +156,6 @@ RSpec.describe AffiliationRemediationService do
 
   context 'with an affiliation that needs to be moved to "other_affiliation"' do
     let(:uncontrolled_affiliation_one) { 'Colorado School of Public Health' }
-    let(:mapped_affiliation_one) { [] }
     let(:updated_person_hash) do
       {
         'index' => [1],
