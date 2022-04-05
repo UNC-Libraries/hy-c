@@ -4,20 +4,26 @@ class FileSetRemediationService
   def create_csv_of_file_sets_without_files
     CSV.open(csv_file_path, 'a+') do |csv|
       csv << ['file_set_id', 'url']
-      FileSet.search_in_batches('*:*') do |group|
-        group.each do |solr_doc|
-          file_set = FileSet.find(solr_doc['id'])
-          next unless file_set
-
-          next if has_files?(file_set)
-
-          csv << [file_set.id, Rails.application.routes.url_helpers.url_for(file_set)]
-        rescue ActiveFedora::ObjectNotFoundError
-          Rails.logger.warn("FileSet not found. FileSet identifier: #{identifier}")
-          nil
-        end
+      FileSet.search_in_batches('*:*') do |batch|
+        add_file_sets_to_csv(csv, batch)
       end
     end
+  end
+
+  def add_file_sets_to_csv(csv, batch)
+    batch.each do |solr_doc|
+      file_set = file_set_by_id(solr_doc['id'])
+      next if file_set.nil? || has_files?(file_set)
+
+      csv << [file_set.id, Rails.application.routes.url_helpers.url_for(file_set)]
+    end
+  end
+
+  def file_set_by_id(id)
+    FileSet.find(id)
+  rescue ActiveFedora::ObjectNotFoundError
+    Rails.logger.warn("FileSet not found. FileSet identifier: #{identifier}")
+    nil
   end
 
   # rubocop:disable Naming/PredicateName
