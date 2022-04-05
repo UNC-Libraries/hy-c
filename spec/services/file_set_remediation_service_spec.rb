@@ -10,6 +10,7 @@ RSpec.describe FileSetRemediationService do
     ActiveFedora::Cleaner.clean!
     Blacklight.default_index.connection.delete_by_query('*:*')
     Blacklight.default_index.connection.commit
+    allow(Hydra::Works::VirusCheckerService).to receive(:file_has_virus?) { false }
     file_set_without_file
     file_set_with_file
   end
