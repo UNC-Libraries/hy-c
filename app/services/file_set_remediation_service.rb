@@ -7,9 +7,14 @@ class FileSetRemediationService
       FileSet.search_in_batches('*:*') do |group|
         group.each do |solr_doc|
           file_set = FileSet.find(solr_doc['id'])
+          next unless file_set
+
           next if has_files?(file_set)
 
           csv << [file_set.id, Rails.application.routes.url_helpers.url_for(file_set)]
+        rescue ActiveFedora::ObjectNotFoundError
+          Rails.logger.warn("FileSet not found. FileSet identifier: #{identifier}")
+          nil
         end
       end
     end
