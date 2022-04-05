@@ -235,9 +235,9 @@ RSpec.describe AffiliationRemediationService do
     end
 
     it 'limits calls to the DepartmentService' do
-      allow(DepartmentsService).to receive(:label)
+      allow(DepartmentsService).to receive(:term)
       service.update_affiliations(obj)
-      expect(DepartmentsService).to have_received(:label).with(uncontrolled_affiliation_one).twice
+      expect(DepartmentsService).to have_received(:term).with(uncontrolled_affiliation_one).twice
     end
 
     it 'can update the creator affiliations' do

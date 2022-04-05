@@ -103,7 +103,7 @@ class AffiliationRemediationService
 
     return false if affiliation.empty?
 
-    mapping = DepartmentsService.label(affiliation)
+    mapping = DepartmentsService.term(affiliation)
     mapping ? true : false
   end
 
