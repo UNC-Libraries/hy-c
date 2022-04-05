@@ -62,7 +62,7 @@ module HycCrawlerService
   end
 
   def self.unmappable_affiliations(affiliations)
-    affiliations.map { |affil| DepartmentsService.label(affil) ? nil : affil }.compact
+    affiliations.map { |affil| DepartmentsService.term(affil) ? nil : affil }.compact
   end
 
   def self.all_person_affiliations(object)

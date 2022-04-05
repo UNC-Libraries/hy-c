@@ -292,7 +292,7 @@ module Tasks
         other_affil = p_json['other_affiliation']&.first
 
         if !affil.blank?
-          expanded_affils = DepartmentsService.label(affil)
+          expanded_affils = DepartmentsService.term(affil)
           person[:affiliation] = expanded_affils.split('; ') unless expanded_affils.nil?
         elsif !other_affil.blank?
           person[:affiliation] = [other_affil]

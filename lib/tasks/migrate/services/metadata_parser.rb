@@ -327,7 +327,7 @@ module Migrate
         merged_affiliations = []
         if !affiliations.blank?
           affiliations.each do |affiliation|
-            merged_affiliations << (DepartmentsService.label(affiliation) || affiliation).split('; ')
+            merged_affiliations << (DepartmentsService.term(affiliation) || affiliation).split('; ')
           end
           merged_affiliations.flatten!
           merged_affiliations.compact.uniq
