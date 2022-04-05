@@ -22,7 +22,7 @@ class FileSetRemediationService
   def file_set_by_id(id)
     FileSet.find(id)
   rescue ActiveFedora::ObjectNotFoundError
-    Rails.logger.warn("FileSet not found. FileSet identifier: #{identifier}")
+    Rails.logger.warn("FileSet not found. FileSet identifier: #{id}")
     nil
   end
 
