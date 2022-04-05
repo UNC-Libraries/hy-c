@@ -187,12 +187,12 @@ module ActiveFedora::RDF
       displays.flatten
     end
 
-    def build_affiliations(person_affiliation, display_text)
-      affiliations = split_affiliations(person_affiliation)
+    def build_affiliations(affiliation_identifier, display_text)
+      affiliations = split_affiliations(affiliation_identifier)
       unless affiliations.blank?
         display_text << "Affiliation: #{affiliations.join(', ')}"
 
-        affiliation_ids = Array(person_affiliation)
+        affiliation_ids = Array(affiliation_identifier)
         short_labels = affiliation_ids.map do |affil_id|
           DepartmentsService.short_label(affil_id)
         end
@@ -207,7 +207,7 @@ module ActiveFedora::RDF
       affiliations_list = []
 
       Array(affiliations).reject { |a| a.blank? }.each do |aff|
-        Array(DepartmentsService.label(aff)).join(';').split(';').each do |value|
+        Array(DepartmentsService.term(aff)).join(';').split(';').each do |value|
           affiliations_list.push(value.squish!)
         end
       end

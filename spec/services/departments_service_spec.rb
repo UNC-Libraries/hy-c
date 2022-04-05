@@ -17,11 +17,11 @@ RSpec.describe Hyrax::DepartmentsService do
 
   describe '#label' do
     it 'resolves for ids of active terms' do
-      expect(service.label('history')).to eq('History')
+      expect(service.term('history')).to eq('History')
     end
 
     it 'resolves for ids of inactive terms' do
-      expect(service.label('example')).to eq('Some College; Example Department')
+      expect(service.term('example')).to eq('Some College; Example Department')
     end
   end
 
