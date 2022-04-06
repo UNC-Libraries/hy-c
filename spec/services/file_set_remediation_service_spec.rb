@@ -10,6 +10,10 @@ RSpec.describe FileSetRemediationService do
   let(:work_without_file_set) { FactoryBot.create(:article, title: ['Work without file_set']) }
   let(:file_set_without_file_without_parent) { FactoryBot.create(:file_set, title: ['Should not have file or parent']) }
 
+  before do
+    allow(Hydra::Works::VirusCheckerService).to receive(:file_has_virus?) { false }
+  end
+
   it 'can tell if a FileSet has attached files' do
     expect(service.has_files?(file_set_without_file)).to eq false
     expect(service.has_files?(file_set_with_file)).to eq true
