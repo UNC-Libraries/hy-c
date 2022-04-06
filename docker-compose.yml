@@ -26,9 +26,7 @@ services:
       - 3000:3000
     volumes:
       - .:/hyrax
-      - type: bind
-        source: ../hyc-gems
-        target: /hyc-gems
+      - ../hyc-gems:/hyc-gems
     stdin_open: true
     tty: true
   clamav:
