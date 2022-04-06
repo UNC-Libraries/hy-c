@@ -3,7 +3,7 @@
 class FileSetRemediationService
   def create_csv_of_file_sets_without_files
     CSV.open(csv_file_path, 'a+') do |csv|
-      csv << ['file_set_id', 'url']
+      csv << ['file_set_id', 'file_set_url', 'parent_id', 'parent_url']
       FileSet.search_in_batches('*:*') do |batch|
         Rails.logger.info("Finding FileSets without files for FileSets with ids: #{batch.map { |solr_doc| solr_doc['id'] }}")
         add_file_sets_to_csv(csv, batch)
@@ -16,10 +16,13 @@ class FileSetRemediationService
       file_set = file_set_by_id(solr_doc['id'])
       next if file_set.nil? || has_files?(file_set)
 
-      url = Rails.application.routes.url_helpers.url_for(file_set)
-      Rails.logger.info("Adding FileSet with url: #{url}")
-      csv << [file_set.id, url]
+      Rails.logger.info("Adding FileSet with url: #{url_for(file_set)}")
+      csv << [file_set.id, url_for(file_set), file_set.parent&.id, url_for(file_set.parent)]
     end
+  end
+
+  def url_for(object)
+    Rails.application.routes.url_helpers.url_for(object) if object
   end
 
   def file_set_by_id(id)
