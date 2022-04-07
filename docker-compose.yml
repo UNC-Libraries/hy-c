@@ -6,7 +6,7 @@ services:
       context: .
     image: mkadel/hy-c
     depends_on:
-      - clamav
+    #   - clamav
       - db
       - fedora
       - solr6
@@ -25,19 +25,20 @@ services:
     ports:
       - 3000:3000
     volumes:
-      - .:/hyrax
-      - ../hyc-gems:/hyc-gems
+      - mount-code:/hyrax
+      # - ../hyc-gems:/hyc-gems
+
     stdin_open: true
     tty: true
-  clamav:
-    image: clamav/clamav
-    ports:
-      - "3310:3310"
-    volumes:
-      - clam:/var/lib/clamav
-      - type: bind
-        source: ./
-        target: /hyrax
+  # clamav:
+  #   image: clamav/clamav
+  #   ports:
+  #     - "3310:3310"
+  #   volumes:
+  #     - clam:/var/lib/clamav
+  #     - type: bind
+  #       source: ./
+  #       target: /hyrax
   db:
     image: postgres:9.6-alpine
     volumes:
@@ -57,15 +58,15 @@ services:
       CATALINA_OPTS: "-Djava.awt.headless=true -Dfile.encoding=UTF-8 -server -Xms512m -Xmx1024m -XX:NewSize=256m -XX:MaxNewSize=256m -XX:PermSize=256m -XX:MaxPermSize=256m -XX:+DisableExplicitGC"
     stdin_open: true
     tty: true
-  redis:
-    image: redis:5.0.14
-    environment:
-      # ALLOW_EMPTY_PASSWORD is recommended only for development.
-      - ALLOW_EMPTY_PASSWORD=yes
-    volumes:
-      - redis_data:/data
-    ports:
-      - "6379:6379"
+  # redis:
+  #   image: redis:5.0.14
+  #   environment:
+  #     # ALLOW_EMPTY_PASSWORD is recommended only for development.
+  #     - ALLOW_EMPTY_PASSWORD=yes
+  #   volumes:
+  #     - redis_data:/data
+  #   ports:
+  #     - "6379:6379"
   solr6:
     image: solr:6-alpine
     volumes:
@@ -74,8 +75,17 @@ services:
       - "8983:8983"
     command: bash -c 'precreate-core hydra-development /opt/solr/server/solr/configsets/hy-c; precreate-core hydra-test /opt/solr/server/solr/configsets/hy-c; exec solr -f'
 volumes:
-  clam:
+  mount-code:
+  # clam:
   pg_data:
   fcrepo_data:
-  redis_data:
-  solr_data:
+  # redis_data:
+
+x-mutagen:
+  sync:
+    defaults:
+      ignore:
+        vcs: true
+    mount-code:
+      alpha: '.'
+      beta: "volume://mount-code"
