@@ -37,6 +37,9 @@ bundle exec rake sage:ingest[/hyrax/spec/fixtures/sage/sage_config.yml]
 * Pre-requisites:
   * Docker installed locally
   * (optional) If you use Atom, get the Dockerfile specific grammar (may need to restart Atom to see effect) `apm install language-docker`
+  * Mutagen-compose installed locally, used for speeding up file syncing between the host and guest systems. (on Mac, `brew install mutagen-compose`)
+
+##### First-time setup, or if you've cleaned up Docker images or volumes
 * Ensure you have the needed environment variables in `config/local_env.yml`. Either get a copy of this file from a colleague, or copy the sample file and fill in the appropriate values
 ```bash
 cp config/local_env_sample.yml config/local_env.yml
@@ -47,9 +50,14 @@ docker compose pull
 OR
 docker compose build
 ```
+##### Every time
+- Start the mutagen daemon
+```bash
+mutagen daemon start
+```
 - Bring up the application and its dependencies
 ```bash
-docker compose up
+mutagen-compose up
 ```
 - Copy .bashrc into web container
 ```bash
