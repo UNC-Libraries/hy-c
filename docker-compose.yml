@@ -78,10 +78,23 @@ services:
       precreate-core hydra-test /opt/solr/server/solr/configsets/hy-c;
       exec solr -f
       "
+  solr8:
+    image: solr:8-alpine
+    volumes:
+      - solr8-data:/opt/solr/server/solr/configsets/hy-c
+    ports:
+      - "8989:8983"
+    command: >
+      bash -c "
+      precreate-core hydra-development /opt/solr/server/solr/configsets/hy-c;
+      precreate-core hydra-test /opt/solr/server/solr/configsets/hy-c;
+      exec solr -f
+      "
 volumes:
   mount-code:
   mount-gems:
   solr6-data:
+  solr8-data:
   clam:
   pg_data:
   fcrepo_data:
@@ -101,6 +114,13 @@ x-mutagen:
     solr6-data:
       alpha: './solr/config'
       beta: 'volume://solr6-data'
+      configurationBeta:
+        permissions:
+          defaultOwner: 'id:8983'
+          defaultGroup: 'id:8983'
+    solr8-data:
+      alpha: './solr/new_config'
+      beta: 'volume://solr8-data'
       configurationBeta:
         permissions:
           defaultOwner: 'id:8983'
