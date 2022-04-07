@@ -27,7 +27,7 @@ services:
       - 3000:3000
     volumes:
       - mount-code:/hyrax
-      # - ../hyc-gems:/hyc-gems
+      - mount-gems:/hyc-gems
 
     stdin_open: true
     tty: true
@@ -80,6 +80,7 @@ services:
       "
 volumes:
   mount-code:
+  mount-gems:
   solr6-data:
   clam:
   pg_data:
@@ -94,6 +95,9 @@ x-mutagen:
     mount-code:
       alpha: '.'
       beta: "volume://mount-code"
+    mount-gems:
+      alpha: '../hyc-gems'
+      beta: "volume://mount-gems"
     solr6-data:
       alpha: './solr/config'
       beta: 'volume://solr6-data'
