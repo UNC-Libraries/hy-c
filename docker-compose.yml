@@ -6,9 +6,10 @@ services:
       context: .
     image: mkadel/hy-c
     depends_on:
-    #   - clamav
+      - clamav
       - db
       - fedora
+      - redis
       - solr6
     environment:
       CLAMD_TCP_HOST: clamav
@@ -30,15 +31,13 @@ services:
 
     stdin_open: true
     tty: true
-  # clamav:
-  #   image: clamav/clamav
-  #   ports:
-  #     - "3310:3310"
-  #   volumes:
-  #     - clam:/var/lib/clamav
-  #     - type: bind
-  #       source: ./
-  #       target: /hyrax
+  clamav:
+    image: clamav/clamav
+    ports:
+      - "3310:3310"
+    volumes:
+      - clam:/var/lib/clamav
+      - mount-code:/hyrax
   db:
     image: postgres:9.6-alpine
     volumes:
@@ -58,15 +57,15 @@ services:
       CATALINA_OPTS: "-Djava.awt.headless=true -Dfile.encoding=UTF-8 -server -Xms512m -Xmx1024m -XX:NewSize=256m -XX:MaxNewSize=256m -XX:PermSize=256m -XX:MaxPermSize=256m -XX:+DisableExplicitGC"
     stdin_open: true
     tty: true
-  # redis:
-  #   image: redis:5.0.14
-  #   environment:
-  #     # ALLOW_EMPTY_PASSWORD is recommended only for development.
-  #     - ALLOW_EMPTY_PASSWORD=yes
-  #   volumes:
-  #     - redis_data:/data
-  #   ports:
-  #     - "6379:6379"
+  redis:
+    image: redis:5.0.14
+    environment:
+      # ALLOW_EMPTY_PASSWORD is recommended only for development.
+      - ALLOW_EMPTY_PASSWORD=yes
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
   solr6:
     image: solr:6-alpine
     volumes:
@@ -82,10 +81,10 @@ services:
 volumes:
   mount-code:
   solr6-data:
-  # clam:
+  clam:
   pg_data:
   fcrepo_data:
-  # redis_data:
+  redis_data:
 
 x-mutagen:
   sync:
