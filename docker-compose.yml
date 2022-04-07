@@ -9,6 +9,7 @@ services:
       - clamav
       - db
       - fedora
+      - redis
       - solr6
     environment:
       CLAMD_TCP_HOST: clamav
@@ -25,8 +26,9 @@ services:
     ports:
       - 3000:3000
     volumes:
-      - .:/hyrax
-      - ../hyc-gems:/hyc-gems
+      - mount-code:/hyrax
+      - mount-gems:/hyc-gems
+
     stdin_open: true
     tty: true
   clamav:
@@ -35,9 +37,7 @@ services:
       - "3310:3310"
     volumes:
       - clam:/var/lib/clamav
-      - type: bind
-        source: ./
-        target: /hyrax
+      - mount-code:/hyrax
   db:
     image: postgres:9.6-alpine
     volumes:
@@ -69,13 +69,39 @@ services:
   solr6:
     image: solr:6-alpine
     volumes:
-      - ./solr/config:/opt/solr/server/solr/configsets/hy-c
+      - solr6-data:/opt/solr/server/solr/configsets/hy-c
     ports:
       - "8983:8983"
-    command: bash -c 'precreate-core hydra-development /opt/solr/server/solr/configsets/hy-c; precreate-core hydra-test /opt/solr/server/solr/configsets/hy-c; exec solr -f'
+    command: >
+      bash -c "
+      precreate-core hydra-development /opt/solr/server/solr/configsets/hy-c;
+      precreate-core hydra-test /opt/solr/server/solr/configsets/hy-c;
+      exec solr -f
+      "
 volumes:
+  mount-code:
+  mount-gems:
+  solr6-data:
   clam:
   pg_data:
   fcrepo_data:
   redis_data:
-  solr_data:
+
+x-mutagen:
+  sync:
+    defaults:
+      ignore:
+        vcs: true
+    mount-code:
+      alpha: '.'
+      beta: "volume://mount-code"
+    mount-gems:
+      alpha: '../hyc-gems'
+      beta: "volume://mount-gems"
+    solr6-data:
+      alpha: './solr/config'
+      beta: 'volume://solr6-data'
+      configurationBeta:
+        permissions:
+          defaultOwner: 'id:8983'
+          defaultGroup: 'id:8983'
