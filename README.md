@@ -92,6 +92,10 @@ docker compose exec web bash
 
 #### Testing
 ##### RSpec Testing
+* Setting up for the first time
+```bash
+bundle exec rake test_setup RAILS_ENV=test
+```
 * To run the entire test suite (this takes from 20-30 minutes locally)
 ```bash
 bundle exec rspec
