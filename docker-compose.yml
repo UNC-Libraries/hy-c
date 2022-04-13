@@ -108,6 +108,10 @@ x-mutagen:
     mount-code:
       alpha: '.'
       beta: "volume://mount-code"
+      configurationBeta:
+        permissions:
+          defaultFileMode: 0644
+          defaultDirectoryMode: 0755
     mount-gems:
       alpha: '../hyc-gems'
       beta: "volume://mount-gems"
