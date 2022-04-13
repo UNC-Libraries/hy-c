@@ -92,7 +92,7 @@ docker compose exec web bash
 
 #### Testing
 ##### RSpec Testing
-* Setting up for the first time
+* Setting up for the first time (we are hoping to move away from needing this, but some tests still expect this to have been run)
 ```bash
 bundle exec rake test_setup RAILS_ENV=test
 ```
