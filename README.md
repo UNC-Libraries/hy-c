@@ -37,10 +37,10 @@ bundle exec rake sage:ingest[/hyrax/spec/fixtures/sage/sage_config.yml]
 * Pre-requisites:
   * Docker installed locally
   * (optional) If you use Atom, get the Dockerfile specific grammar (may need to restart Atom to see effect) `apm install language-docker`
-  * Mutagen-compose installed locally, used for speeding up file syncing between the host and guest systems. (on Mac, `brew install mutagen-compose`)
+  * Mutagen-compose installed locally, used for speeding up file syncing between the host and guest systems. (on Mac, `brew install mutagen-io/mutagen/mutagen-compose`)
 
 ##### First-time setup, or if you've cleaned up Docker images or volumes
-* Ensure you have the needed environment variables in `config/local_env.yml`. Either get a copy of this file from a colleague, or copy the sample file and fill in the appropriate values
+* Ensure you have the needed environment variables in `config/local_env.yml`. Either get a copy of this file from a colleague, use the `dev/local_env.yml` file from https://gitlab.lib.unc.edu/cdr/vagrant-rails/, or copy the sample file and fill in the appropriate values
 ```bash
 cp config/local_env_sample.yml config/local_env.yml
   ```
@@ -67,6 +67,14 @@ docker cp ./docker/.bashrc hy-c-web-1:/root/.bashrc
 ```bash
 docker compose exec web bash
 ```
+    - So, if you wanted to run the tests:
+    ```bash
+    mutagen-compose up web
+    [new terminal window or tab]
+    docker cp ./docker/.bashrc hy-c-web-1:/root/.bashrc
+    docker compose exec web bash
+    bundle exec rspec spec
+    ```
 - You can edit the code in your editor, as usual, and the changes will be reflected inside the docker container.
 - You should be able to see the application at http://localhost:3000/
 - If you are experiencing slow performance, you might want to increase the resources available to your Docker network, including CPUs, memory, and swap. If you're working on a Mac, go to Docker Desktop, click the gear icon -> Resources -> Advanced, drag the resources bars to the desired levels, and then click Apply & Restart
@@ -77,9 +85,25 @@ docker compose exec web bash
   - Swap: 2 GB
   - Disk image size: 200 GB
 
+##### Docker debugging notes
+* Updates to the code should be picked up pretty immediately - there could be a second or so lag, but it should be fairly instantaneous.
+* When your Solr, Fedora, and Postgres get out of sync, it might be easiest to stop the application and dependencies (`mutagen-compose stop`), delete the volumes for all three of these, then bring everything back up.
+* If you change volume permissions via the docker-compose file, you will need to delete the existing volumes before you see any changes.
+
 #### Testing
 ##### RSpec Testing
-* Creating Solr fixture objects (see `spec/support/oai_sample_solr_documents.rb` )
+* To run the entire test suite (this takes from 20-30 minutes locally)
+```bash
+bundle exec rspec
+```
+* To run an individual test
+```bash
+bundle exec rspec spec/path/to/test.rb:line_number
+aka
+bundle exec rspec spec/models/jats_ingest_work_spec.rb:7
+```
+
+##### Creating Solr fixture objects (see `spec/support/oai_sample_solr_documents.rb` )
   * Run the test_setup rake task in order to get all the fixtures in the development environment
   ```
   bundle exec rake test_setup RAILS_ENV=development
