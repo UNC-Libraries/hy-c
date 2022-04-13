@@ -38,10 +38,8 @@ RSpec.describe VersionService do
 
   context 'in a deployed environment' do
     before do
-      Rails.logger.debug("in test 'before' block, before 'allow': #{Rails.env}")
       allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new('production'))
-      allow(described_class).to receive(:directory_name).and_return('/net/deploy/ir/test/releases/20211202095413')
-      Rails.logger.debug("in test 'before' block, after 'allow': #{Rails.env}")
+      allow(described_class).to receive(:directory_name).and_return('/path/to/releases/20211202095413')
     end
 
     it 'can give a deploy date' do
@@ -53,7 +51,7 @@ RSpec.describe VersionService do
     end
     context 'with an unexpected directory name' do
       before do
-        allow(described_class).to receive(:directory_name).and_return('/net/deploy/ir/test/releases/cheeseburger')
+        allow(described_class).to receive(:directory_name).and_return('/path/to/releases/cheeseburger')
       end
 
       it 'can give a phrase about the deploy date' do
@@ -64,10 +62,8 @@ RSpec.describe VersionService do
 
   context 'in a development environment' do
     before do
-      Rails.logger.debug("in test 'before' block, before 'allow': #{Rails.env}")
       allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new('development'))
       allow(described_class).to receive(:directory_name).and_return('/hyrax')
-      Rails.logger.debug("in test 'before' block, after 'allow': #{Rails.env}")
     end
 
     it 'can give a phrase about the deploy date' do
