@@ -15,7 +15,10 @@
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 require 'simplecov'
 require 'simplecov_json_formatter'
-SimpleCov.formatter = SimpleCov::Formatter::JSONFormatter
+SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new([
+                                                                 SimpleCov::Formatter::JSONFormatter,
+                                                                 SimpleCov::Formatter::HTMLFormatter
+                                                               ])
 
 SimpleCov.start 'rails' do
   # Directories to exclude from coverage
@@ -23,6 +26,7 @@ SimpleCov.start 'rails' do
   add_filter '/bin'
   add_filter '/coverage/'
   add_filter '/db/'
+  add_filter '/docker/'
   add_filter '/public/'
   add_filter '/solr/'
   add_filter '/spec/'

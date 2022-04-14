@@ -1,8 +1,10 @@
 development:
   adapter: async
+  url: ENV['REDIS_URL']
 
 test:
   adapter: async
+  url: ENV['REDIS_URL']
 
 production:
   adapter: redis

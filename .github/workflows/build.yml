@@ -5,7 +5,7 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
-
+ 
 jobs:
   build:
 
@@ -17,6 +17,7 @@ jobs:
       CLAMD_TCP_HOST: 'localhost'
       CLAMD_TCP_PORT: '3310'
       DATABASE_AUTH: true
+      DATABASE_URL: postgresql://localhost:5432
       DATACITE_PASSWORD: 'datacitepass'
       DATACITE_PREFIX: '10.5077'
       DATACITE_USER: 'test-datacite-user'
@@ -27,13 +28,15 @@ jobs:
       DELETED_PEOPLE_FILE: ./tmp/deleted_people.txt
       DOI_PREFIX: '10.17615'
       EMAIL_FROM_ADDRESS: 'hyraxapp@example.com'
-      FCREPO_TEST_PORT: 8080
+      FEDORA_TEST_URL: http://127.0.0.1:8080/rest
       HYRAX_DATABASE_PASSWORD: 'password'
       HYRAX_HOST: 'https://example.com'
       NOKOGIRI_USE_SYSTEM_LIBRARIES: true
       RACK_ENV: test
       RAILS_ENV: test
-      SOLR_TEST_PORT: 8983
+      REDIS_HOST: localhost
+      REDIS_URL: redis://redis
+      SOLR_TEST_URL: http://127.0.0.1:8983/solr/hydra-test
       SSO_LOGIN_PATH: '/Shibboleth.sso/Login'
       SSO_LOGOUT_URL: 'https://shibboleth.example.com/idp/logout.jsp'
       IMAGE_PROCESSOR: 'graphicsmagick'

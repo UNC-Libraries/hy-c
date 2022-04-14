@@ -1,0 +1,131 @@
+version: '3.7'
+
+services:
+  web: &web
+    build:
+      context: .
+    image: mkadel/hy-c
+    depends_on:
+      - clamav
+      - db
+      - fedora
+      - redis
+      - solr6
+    environment:
+      CLAMD_TCP_HOST: clamav
+      DATABASE_URL: postgresql://db:5432
+      FEDORA_TEST_URL: http://fedora:8080/rest
+      FEDORA_DEV_URL: http://fedora:8080/rest
+      FITS_LOCATION: '/fits/fits-1.0.5/fits.sh'
+      HYRAX_DATABASE_PASSWORD: password
+      HYRAX_HOST: https://localhost:3000
+      REDIS_HOST: redis
+      REDIS_URL: redis://redis:6379/0
+      SOLR_DEV_URL: http://solr6:8983/solr/hydra-development
+      SOLR_TEST_URL: http://solr6:8983/solr/hydra-test
+    ports:
+      - 3000:3000
+    volumes:
+      - mount-code:/hyrax
+      - mount-gems:/hyc-gems
+
+    stdin_open: true
+    tty: true
+  clamav:
+    image: clamav/clamav
+    ports:
+      - "3310:3310"
+    volumes:
+      - clam:/var/lib/clamav
+      - mount-code:/hyrax
+  db:
+    image: postgres:9.6-alpine
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: hyrax
+      POSTGRES_PASSWORD: password
+  fedora:
+    image: samvera/fcrepo4:4.7.5
+    ports:
+      - "8984:8080"
+    volumes:
+      - fcrepo_data:/data
+    environment:
+      CATALINA_OPTS: "-Djava.awt.headless=true -Dfile.encoding=UTF-8 -server -Xms512m -Xmx1024m -XX:NewSize=256m -XX:MaxNewSize=256m -XX:PermSize=256m -XX:MaxPermSize=256m -XX:+DisableExplicitGC"
+    stdin_open: true
+    tty: true
+  redis:
+    image: redis:5.0.14
+    environment:
+      # ALLOW_EMPTY_PASSWORD is recommended only for development.
+      - ALLOW_EMPTY_PASSWORD=yes
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+  solr6:
+    image: solr:6-alpine
+    volumes:
+      - solr6-data:/opt/solr/server/solr/configsets/hy-c
+    ports:
+      - "8983:8983"
+    command: >
+      bash -c "
+      precreate-core hydra-development /opt/solr/server/solr/configsets/hy-c;
+      precreate-core hydra-test /opt/solr/server/solr/configsets/hy-c;
+      exec solr -f
+      "
+  solr8:
+    image: solr:8-alpine
+    volumes:
+      - solr8-data:/opt/solr/server/solr/configsets/hy-c
+    ports:
+      - "8989:8983"
+    command: >
+      bash -c "
+      precreate-core hydra-development /opt/solr/server/solr/configsets/hy-c;
+      precreate-core hydra-test /opt/solr/server/solr/configsets/hy-c;
+      exec solr -f
+      "
+volumes:
+  mount-code:
+  mount-gems:
+  solr6-data:
+  solr8-data:
+  clam:
+  pg_data:
+  fcrepo_data:
+  redis_data:
+
+x-mutagen:
+  sync:
+    defaults:
+      ignore:
+        vcs: true
+    mount-code:
+      alpha: '.'
+      beta: "volume://mount-code"
+      configurationBeta:
+        permissions:
+          defaultFileMode: 0644
+          defaultDirectoryMode: 0755
+    mount-gems:
+      alpha: '../hyc-gems'
+      beta: "volume://mount-gems"
+    solr6-data:
+      alpha: './solr/config'
+      beta: 'volume://solr6-data'
+      configurationBeta:
+        permissions:
+          defaultOwner: 'id:8983'
+          defaultGroup: 'id:8983'
+    solr8-data:
+      alpha: './solr/new_config'
+      beta: 'volume://solr8-data'
+      configurationBeta:
+        permissions:
+          defaultOwner: 'id:8983'
+          defaultGroup: 'id:8983'

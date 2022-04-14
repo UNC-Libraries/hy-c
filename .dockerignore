@@ -1,0 +1,7 @@
+Dockerfile
+
+.git
+./tmp
+./log
+coverage/*
+./config/local_env.yml 

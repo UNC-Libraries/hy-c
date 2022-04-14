@@ -6,9 +6,35 @@ require 'pathname'
 # Check for github actions runner when setting file path
 # Github actions needs a different path than the local vm
 RSpec.describe Hyc::VirusScanner do
-  subject(:scanner) { described_class.new(file) }
+  context 'with an environment variable set' do
+    around do |example|
+      cached_clamav_host = ENV['CLAMD_TCP_HOST']
+      ENV['CLAMD_TCP_HOST'] = 'clamav'
+      example.run
+      ENV['CLAMD_TCP_HOST'] = cached_clamav_host
+    end
+
+    it 'knows the ClamAV host' do
+      expect(described_class.clamav_host).to eq('clamav')
+    end
+  end
+
+  context 'with the environment variable unset' do
+    around do |example|
+      cached_clamav_host = ENV['CLAMD_TCP_HOST']
+      ENV.delete('CLAMD_TCP_HOST')
+      example.run
+      ENV['CLAMD_TCP_HOST'] = cached_clamav_host
+    end
+
+    it 'defaults to localhost' do
+      expect(described_class.clamav_host).to eq('localhost')
+    end
+  end
 
   context 'when a file is not infected' do
+    subject(:scanner) { described_class.new(file) }
+
     src_path = Pathname.new('spec/fixtures/files/test.txt').realpath.to_s
 
     if Dir.pwd.include? 'runner'
@@ -34,6 +60,8 @@ RSpec.describe Hyc::VirusScanner do
   end
 
   context 'when it cannot find the file' do
+    subject(:scanner) { described_class.new(file) }
+
     let(:file) { 'not/a/file.txt' }
 
     it 'raises an error' do
@@ -42,6 +70,8 @@ RSpec.describe Hyc::VirusScanner do
   end
 
   context 'when a file is infected' do
+    subject(:scanner) { described_class.new(file) }
+
     src_path = Pathname.new('spec/fixtures/files/virus.txt').realpath.to_s
     if Dir.pwd.include? 'runner'
       let(:file) { Tempfile.new.path }
@@ -66,6 +96,8 @@ RSpec.describe Hyc::VirusScanner do
   end
 
   context 'when a file name has special characters' do
+    subject(:scanner) { described_class.new(file) }
+
     src_path = Pathname.new('spec/fixtures/files/odd_chars_+.txt').realpath.to_s
 
     if Dir.pwd.include? 'runner'
