@@ -16,9 +16,9 @@
 require 'simplecov'
 require 'simplecov_json_formatter'
 SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new([
-                                                                SimpleCov::Formatter::JSONFormatter,
-                                                                SimpleCov::Formatter::HTMLFormatter
-                                                              ])
+                                                                 SimpleCov::Formatter::JSONFormatter,
+                                                                 SimpleCov::Formatter::HTMLFormatter
+                                                               ])
 
 SimpleCov.start 'rails' do
   # Directories to exclude from coverage
