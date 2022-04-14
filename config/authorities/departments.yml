@@ -1028,6 +1028,10 @@ terms:
   term: College of Arts and Sciences; Department of American Studies; Global American Studies Program
   active: true
   short_label: Global American Studies Program
+- id: Health Informatics PhD Program
+  term: University of North Carolina at Chapel Hill. Graduate School; Health Informatics PhD Program
+  active: true
+  short_label: Health Informatics PhD Program
 - id: Highway Safety Research Center
   term: Highway Safety Research Center
   active: true
