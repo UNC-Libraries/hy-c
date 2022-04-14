@@ -5,6 +5,12 @@ RSpec.describe HycIndexer, type: :indexer do
   let(:service) { described_class.new(work) }
   subject(:solr_document) { service.generate_solr_document }
 
+  before do
+    # Configure QA to use fixtures
+    qa_fixtures = { local_path: File.expand_path('spec/fixtures/authorities') }
+    allow(Qa::Authorities::Local).to receive(:config).and_return(qa_fixtures)
+  end
+
   describe 'indexing affiliations' do
     let(:solr_doc) { described_class.new(work_with_people).generate_solr_document }
     let(:solr_creator_array) { solr_doc.fetch('creator_display_tesim') }
@@ -50,9 +56,9 @@ RSpec.describe HycIndexer, type: :indexer do
         expect(solr_creator_array).to match_array(solr_expected_creator_array)
       end
 
-      it 'maps the affiliations to the facet with the id' do
-        expect(solr_affiliation_array_tesim).to match_array(['Carolina Center for Genome Sciences', 'Department of Chemistry'])
-        expect(solr_affiliation_array_sim).to match_array(['Carolina Center for Genome Sciences', 'Department of Chemistry'])
+      it 'maps the affiliations to the facet with the short_label' do
+        expect(solr_affiliation_array_tesim).to match_array(['Test short Carolina Center for Genome Sciences', 'Test short Department of Chemistry'])
+        expect(solr_affiliation_array_sim).to match_array(['Test short Carolina Center for Genome Sciences', 'Test short Department of Chemistry'])
       end
 
       it 'stores the id in Fedora' do
@@ -82,8 +88,8 @@ RSpec.describe HycIndexer, type: :indexer do
 
       it 'only indexes the controlled affiliation to Solr' do
         expect(solr_creator_array).to match_array(solr_expected_creator_array)
-        expect(solr_affiliation_array_tesim).to match_array(['Curriculum in Genetics and Molecular Biology'])
-        expect(solr_affiliation_array_sim).to match_array(['Curriculum in Genetics and Molecular Biology'])
+        expect(solr_affiliation_array_tesim).to match_array(['Test short Genetics and Molecular Biology'])
+        expect(solr_affiliation_array_sim).to match_array(['Test short Genetics and Molecular Biology'])
       end
     end
 
@@ -163,8 +169,8 @@ RSpec.describe HycIndexer, type: :indexer do
       end
 
       it 'indexes the affiliations for faceting together' do
-        expect(solr_affiliation_array_tesim).to match_array(['Carolina Center for Genome Sciences'])
-        expect(solr_affiliation_array_sim).to match_array(['Carolina Center for Genome Sciences'])
+        expect(solr_affiliation_array_tesim).to match_array(['Test short Carolina Center for Genome Sciences'])
+        expect(solr_affiliation_array_sim).to match_array(['Test short Carolina Center for Genome Sciences'])
       end
     end
 
@@ -193,6 +199,36 @@ RSpec.describe HycIndexer, type: :indexer do
       it 'saves the empty string to Fedora' do
         expect(fedora_creator_hash_one['affiliation'].to_a).to eq([''])
         expect(fedora_creator_hash_one['other_affiliation'].to_a).to eq([''])
+      end
+    end
+
+    context 'with uncontrolled vocabulary in affiliation' do
+      let(:work_with_people) do
+        General.new(title: ['New General Work with people'],
+                    creators_attributes: { '0' => { name: 'creator',
+                                                    affiliation: 'not-a-department',
+                                                    index: 1 },
+                                           '1' => { name: 'creator2',
+                                                    affiliation: 'not-a-department',
+                                                    index: 2 } })
+      end
+
+      let(:solr_expected_creator_array) do
+        ['index:1||creator',
+         'index:2||creator2']
+      end
+
+      it 'does not map the affiliations to solr' do
+        expect(solr_creator_array).to match_array(solr_expected_creator_array)
+      end
+
+      it 'does not index the uncontrolled term to Solr' do
+        expect(solr_doc.keys.include?('affiliation_label_tesim')).to be false
+        expect(solr_doc.keys.include?('affiliation_label_sim')).to be false
+      end
+
+      it 'stores the id in Fedora' do
+        expect(fedora_creator_hash_one['affiliation']).to eq(['not-a-department'])
       end
     end
   end

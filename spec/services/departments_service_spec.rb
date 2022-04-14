@@ -17,17 +17,33 @@ RSpec.describe Hyrax::DepartmentsService do
 
   describe '#label' do
     it 'resolves for ids of active terms' do
-      expect(service.label('history')).to eq('History')
+      expect(service.term('history')).to eq('History')
     end
 
     it 'resolves for ids of inactive terms' do
-      expect(service.label('example')).to eq('Some College; Example Department')
+      expect(service.term('example')).to eq('Some College; Example Department')
     end
   end
 
   describe '#identifier' do
     it 'resolves for labels of active terms' do
       expect(service.identifier('History')).to eq('history')
+    end
+  end
+
+  describe '#short_label' do
+    it 'resolves for ids of active terms' do
+      expect(service.short_label('history')).to eq('History')
+    end
+
+    it 'resolves for ids of inactive terms' do
+      expect(service.short_label('example')).to eq('Example Department')
+    end
+
+    it 'logs but does not raise error for non-existent terms' do
+      allow(Rails.logger).to receive(:warn)
+      expect(service.short_label('not-a-department')).to be_nil
+      expect(Rails.logger).to have_received(:warn)
     end
   end
 end

@@ -176,11 +176,7 @@ module ActiveFedora::RDF
           display_text << "ORCID: #{Array(person['orcid']).first}" unless Array(person['orcid']).first.blank?
           @orcid_label.push(Array(person['orcid']))
 
-          affiliations = split_affiliations(person['affiliation'])
-          unless affiliations.blank?
-            display_text << "Affiliation: #{affiliations.join(', ')}"
-            @affiliation_label.push(Array(person['affiliation']))
-          end
+          display_text = build_affiliations(person['affiliation'], display_text)
 
           display_text << "Other Affiliation: #{Array(person['other_affiliation']).first}" unless Array(person['other_affiliation']).first.blank?
           @other_affiliation_label.push(Array(person['other_affiliation']))
@@ -191,12 +187,27 @@ module ActiveFedora::RDF
       displays.flatten
     end
 
+    def build_affiliations(affiliation_identifier, display_text)
+      affiliations = split_affiliations(affiliation_identifier)
+      unless affiliations.blank?
+        display_text << "Affiliation: #{affiliations.join(', ')}"
+
+        affiliation_ids = Array(affiliation_identifier)
+        short_labels = affiliation_ids.map do |affil_id|
+          DepartmentsService.short_label(affil_id)
+        end
+        @affiliation_label.push(short_labels)
+      end
+
+      display_text
+    end
+
     # split affiliations out
     def split_affiliations(affiliations)
       affiliations_list = []
 
       Array(affiliations).reject { |a| a.blank? }.each do |aff|
-        Array(DepartmentsService.label(aff)).join(';').split(';').each do |value|
+        Array(DepartmentsService.term(aff)).join(';').split(';').each do |value|
           affiliations_list.push(value.squish!)
         end
       end
