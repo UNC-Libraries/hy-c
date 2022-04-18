@@ -21,7 +21,6 @@ RSpec.describe RegenerateAllDocxThumbnailsJob, type: :job do
     file_set_with_extracted_text
   end
 
-
   context 'with the test queue adapter' do
     around do |example|
       cached_adapter = ActiveJob::Base.queue_adapter

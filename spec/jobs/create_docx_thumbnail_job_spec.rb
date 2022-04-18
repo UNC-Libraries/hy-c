@@ -23,7 +23,6 @@ RSpec.describe CreateDocxThumbnailJob, type: :job do
     end
   end
 
-
   it 'calls the CreateDerivativesJob on those file sets' do
     expect(Hydra::Derivatives::DocumentDerivatives).to receive(:create)
     described_class.perform_now(file_set_id: file_set_one.id)

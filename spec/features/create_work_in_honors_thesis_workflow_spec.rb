@@ -42,9 +42,9 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
 
     let(:admin_set) do
       FactoryBot.create(:admin_set, title: ['honors thesis admin set'],
-                      description: ['some description'],
-                      edit_users: [user.user_key],
-                      creator: [admin_user.user_key])
+                                    description: ['some description'],
+                                    edit_users: [user.user_key],
+                                    creator: [admin_user.user_key])
     end
 
     let(:permission_template) do
