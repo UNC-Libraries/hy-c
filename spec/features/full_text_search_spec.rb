@@ -11,6 +11,7 @@ RSpec.describe 'Search the catalog for full text', type: :feature, js: false do
   let(:target_title) { 'Full text search testing' }
 
   before do
+    solr.delete_by_query("*:*") # delete everything in Solr
     solr.add([FULL_TEXT_WORK, FULL_TEXT_FILE_SET, SLEEPY_HOLLOW])
     solr.commit
   end

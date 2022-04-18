@@ -244,11 +244,13 @@ RSpec.shared_examples 'a restricted work type' do |model, pluralized_model|
   end
 
   describe '#destroy' do
-    let(:work) { model.last }
-    let!(:work_count) { model.all.count }
+    let(:work) { model.create(title: ['work to be deleted']) }
+    let(:work_count) { model.all.count }
 
     context 'as a non-admin' do
       before do
+        work
+        work_count
         sign_in user
       end
 
@@ -261,6 +263,8 @@ RSpec.shared_examples 'a restricted work type' do |model, pluralized_model|
 
     context 'as an admin' do
       before do
+        work
+        work_count
         sign_in admin_user
       end
 
@@ -273,6 +277,10 @@ RSpec.shared_examples 'a restricted work type' do |model, pluralized_model|
     end
 
     context 'as an unauthenticated user' do
+      before do
+        work
+        work_count
+      end
       it 'is not successful' do
         delete :destroy, params: { id: work.id }
         expect(response.status).to redirect_to '/users/sign_in?locale=en'

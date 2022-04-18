@@ -199,11 +199,13 @@ RSpec.shared_examples 'a work type' do |model, pluralized_model|
   end
 
   describe '#destroy' do
-    let(:work) { model.last }
-    let!(:work_count) { model.all.count }
+    let(:work) { model.create(title: ['new work to be destroyed']) }
+    let(:work_count) { model.all.count }
 
     context 'as a non-admin' do
       before do
+        work
+        work_count
         sign_in user
       end
 
@@ -216,11 +218,12 @@ RSpec.shared_examples 'a work type' do |model, pluralized_model|
 
     context 'as an admin' do
       before do
+        work
+        work_count # needs to be set before work is deleted
         sign_in admin_user
       end
 
       it 'is successful' do
-        work_count # needs to be set before work is deleted
         delete :destroy, params: { id: work.id }
         expect(response).to redirect_to '/dashboard/my/works?locale=en'
         expect(model.all.count).to eq (work_count - 1)

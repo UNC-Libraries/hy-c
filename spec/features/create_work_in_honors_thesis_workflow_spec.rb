@@ -7,41 +7,41 @@ include Warden::Test::Helpers
 RSpec.feature 'Create and review a work in the honors thesis workflow', js: false do
   context 'a logged in user' do
     let(:user) do
-      User.new(email: 'test@example.com', guest: false, uid: 'test') { |u| u.save!(validate: false) }
+      FactoryBot.create(:user, email: 'test@example.com', guest: false, uid: 'test')
     end
 
     let(:admin_user) do
-      User.find_by_user_key('admin')
+      FactoryBot.create(:admin)
     end
 
     let(:admin_user2) do
-      User.new(email: 'admin2@example.com', guest: false, uid: 'admin2') { |u| u.save!(validate: false) }
+      FactoryBot.create(:admin, email: 'admin2@example.com', guest: false, uid: 'admin2')
     end
 
     # department contact with view permissions
     let(:department_contact1) do
-      User.new(email: 'department_contact1@example.com', guest: false, uid: 'department_contact1') { |u| u.save!(validate: false) }
+      FactoryBot.create(:user, email: 'department_contact1@example.com', guest: false, uid: 'department_contact1')
     end
 
     # department contact with no permissions
     let(:department_contact2) do
-      User.new(email: 'department_contact2@example.com', guest: false, uid: 'department_contact2') { |u| u.save!(validate: false) }
+      FactoryBot.create(:user, email: 'department_contact2@example.com', guest: false, uid: 'department_contact2')
     end
 
     let(:manager) do
-      User.new(email: 'manager@example.com', guest: false, uid: 'manager') { |u| u.save!(validate: false) }
+      FactoryBot.create(:user, email: 'manager@example.com', guest: false, uid: 'manager')
     end
 
     let(:reviewer) do
-      User.new(email: 'reviewer@example.com', guest: false, uid: 'reviewer') { |u| u.save!(validate: false) }
+      FactoryBot.create(:user, email: 'reviewer@example.com', guest: false, uid: 'reviewer')
     end
 
     let(:nonreviewer) do
-      User.new(email: 'nonreviewer@example.com', guest: false, uid: 'nonreviewer') { |u| u.save!(validate: false) }
+      FactoryBot.create(:user, email: 'nonreviewer@example.com', guest: false, uid: 'nonreviewer')
     end
 
     let(:admin_set) do
-      AdminSet.create(title: ['honors thesis admin set'],
+      FactoryBot.create(:admin_set, title: ['honors thesis admin set'],
                       description: ['some description'],
                       edit_users: [user.user_key],
                       creator: [admin_user.user_key])
@@ -96,11 +96,8 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       Hyrax::Workflow::PermissionGenerator.call(roles: 'approving', workflow: workflow, agents: manager_agent)
       Hyrax::Workflow::PermissionGenerator.call(roles: 'depositing', workflow: workflow, agents: manager_agent)
 
-      permission_template.available_workflows.first.update!(active: true)
+      workflow.update!(active: true)
       DefaultAdminSet.create(work_type_name: 'HonorsThesis', admin_set_id: admin_set.id)
-      role = Role.where(name: 'admin').first
-      role.users << admin_user2
-      role.save
       manager_role = Role.where(name: 'honors_manager').first_or_create
       manager_role.users << manager
       manager_role.save
