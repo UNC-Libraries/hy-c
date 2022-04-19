@@ -2,13 +2,9 @@ require 'rails_helper'
 
 # test overridden actions
 RSpec.context Hyrax::UsersController, type: :request do
-  let(:user) do
-    User.new(email: "test#{Date.today.to_time.to_i}@example.com", guest: false, uid: "test#{Date.today.to_time.to_i}") { |u| u.save!(validate: false) }
-  end
+  let(:user) { FactoryBot.create(:user) }
 
-  let(:admin_user) do
-    User.find_by_user_key('admin')
-  end
+  let(:admin_user) { FactoryBot.create(:admin) }
 
   describe '#index' do
     context 'when not logged in' do
@@ -71,7 +67,7 @@ RSpec.context Hyrax::UsersController, type: :request do
       it 'shows a user profile' do
         get hyrax.user_path(id: user.uid)
         expect(response).to be_success
-        expect(response.body).to match "#{user.uid} has no highlighted works"
+        expect(response.body).to include('has no highlighted works')
       end
     end
   end

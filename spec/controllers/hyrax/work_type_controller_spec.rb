@@ -2,13 +2,9 @@ require 'rails_helper'
 require 'active_fedora/cleaner'
 
 RSpec.shared_examples 'a work type' do |model, pluralized_model|
-  let(:user) do
-    User.new(email: "test#{Date.today.to_time.to_i}@example.com", guest: false, uid: "test#{Date.today.to_time.to_i}") { |u| u.save!(validate: false) }
-  end
+  let(:user) { FactoryBot.create(:user) }
 
-  let(:admin_user) do
-    User.find_by_user_key('admin')
-  end
+  let(:admin_user) { FactoryBot.create(:admin) }
 
   let(:admin_set) do
     AdminSet.new(title: ['an admin set'],

@@ -5,13 +5,9 @@ RSpec.feature 'Read Only Mode' do
   let(:admin) { create :user }
 
   context 'a logged in user' do
-    let(:user) do
-      User.new(email: 'test@example.com', guest: false, uid: 'test') { |u| u.save!(validate: false) }
-    end
+    let(:user) { FactoryBot.create(:user) }
 
-    let(:admin_user) do
-      User.find_by_user_key('admin')
-    end
+    let(:admin_user) { FactoryBot.create(:admin) }
 
     let(:admin_set) do
       AdminSet.create(title: ['honors thesis admin set'],

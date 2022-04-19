@@ -9,6 +9,8 @@ RSpec.describe AccountsController, type: :controller do
     { onyen: 'admin' }
   }
 
+  let(:admin) { FactoryBot.create(:admin, uid: 'admin', email: 'admin@ad.unc.edu') }
+
   describe 'GET #new as admin' do
     before do
       allow(controller).to receive(:authorize!).with(:read, :admin_dashboard).and_return(true)
@@ -48,6 +50,9 @@ RSpec.describe AccountsController, type: :controller do
     end
 
     context 'when user exists' do
+      before do
+        admin
+      end
       it 'redirects to admin_users_path' do
         post :create, params: { account: invalid_attributes }
         expect(response).to redirect_to('/admin/users?locale=en')

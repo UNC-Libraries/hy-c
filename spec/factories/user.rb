@@ -1,6 +1,7 @@
 FactoryBot.define do
   factory :user do
-    uid { FFaker::Internet.user_name }
+    # Onyens are any 3-8 character alphanumeric string beginning with a letter - we are using the uid field to hold they onyen
+    uid { FFaker::InternetSE.user_name_variant_short }
     display_name { FFaker::Name.name }
     email { FFaker::Internet.email }
 
