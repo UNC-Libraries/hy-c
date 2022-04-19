@@ -36,6 +36,8 @@ terms:
     term: Department of Cell Biology and Physiology
   - id: Cell and Molecular Physiology
     term: Department of Cell and Molecular Physiology
+  - id: Cell Biology and Physiology
+    term: Department of Cell Biology and Physiology
   - id: Chemistry
     term: Department of Chemistry
   - id: City &amp; Regional Planning
@@ -120,6 +122,8 @@ terms:
     term: Department of Health Behavior
   - id: Health Behavior &amp; Health Education
     term: Department of Health Behavior
+  - id: Health Informatics
+    term: Health Informatics PhD Program
   - id: 'Health Policy &amp; Administration: Doctoral (residential)'
     term: Department of Health Policy and Management
   - id: Health Policy And Management
