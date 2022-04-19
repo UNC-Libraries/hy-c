@@ -29,9 +29,7 @@ RSpec.describe Tasks::OnescienceIngestService do
   end
 
   describe '#ingest' do
-    let(:admin_user) do
-      User.find_by_user_key('admin')
-    end
+    let(:admin_user) { FactoryBot.create(:admin) }
 
     let(:time) do
       Time.now
@@ -52,6 +50,7 @@ RSpec.describe Tasks::OnescienceIngestService do
     end
 
     before do
+      allow(User).to receive(:where).with(uid: 'admin').and_return([admin_user])
       allow(CharacterizeJob).to receive(:perform_later)
       allow(Hydra::Works::VirusCheckerService).to receive(:file_has_virus?) { false }
       AdminSet.delete_all

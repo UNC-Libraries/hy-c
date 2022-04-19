@@ -6,9 +6,7 @@ require 'rails_helper'
 require 'rake'
 
 describe 'rake migrate:works', type: :task do
-  let(:user) do
-    User.find_by_user_key('admin')
-  end
+  let(:user) { FactoryBot.create(:user) }
 
   let(:manager_group) do
     Role.create(name: 'test manager group')

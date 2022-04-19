@@ -27,9 +27,7 @@ RSpec.describe Tasks::CsvIngestService do
   end
 
   describe '#ingest' do
-    let(:admin_user) do
-      User.find_by_user_key('admin')
-    end
+    let(:admin_user) { FactoryBot.create(:admin) }
 
     let(:time) do
       Time.now
