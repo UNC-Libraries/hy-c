@@ -1,10 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe Hyrax::Workflow::VirusFoundNotification do
-  let(:approver) { User.find_by_user_key('admin') }
-  let(:depositor) { User.create(email: 'test@example.com', uid: 'test@example.com', password: 'password', password_confirmation: 'password') }
-  let(:cc_user) { User.create(email: 'test2@example.com', uid: 'test2@example.com', password: 'password', password_confirmation: 'password') }
-  let(:work) { Article.create(title: ['New Article'], depositor: depositor.email) }
+  let(:approver) { FactoryBot.create(:admin) }
+  let(:depositor) { FactoryBot.create(:user) }
+  let(:cc_user) { FactoryBot.create(:user) }
+  let(:work) { Article.create(title: ['New Article'], depositor: depositor.user_key) }
   let(:admin_set) do
     AdminSet.create(title: ['article admin set'],
                     description: ['some description'],
@@ -21,6 +21,7 @@ RSpec.describe Hyrax::Workflow::VirusFoundNotification do
   let(:comment) { double('comment', comment: 'A pleasant read') }
 
   describe '.send_notification' do
+    # rubocop:disable Layout/MultilineMethodCallIndentation
     it 'sends a message to all users' do
       recipients = { 'to' => [depositor], 'cc' => [cc_user] }
       expect(depositor).to receive(:send_message)
@@ -32,19 +33,22 @@ RSpec.describe Hyrax::Workflow::VirusFoundNotification do
 
       expect { described_class.send_notification(entity: entity, user: depositor, comment: comment, recipients: recipients) }
         .to change { depositor.mailbox.inbox.count }.by(1)
-                                                    .and change { cc_user.mailbox.inbox.count }.by(1)
-                                                                                               .and change { approver.mailbox.inbox.count }.by(0)
+        .and change { cc_user.mailbox.inbox.count }.by(1)
+        .and change { approver.mailbox.inbox.count }.by(0)
     end
+    # rubocop:enable Layout/MultilineMethodCallIndentation
 
     context 'without carbon-copied users' do
+      # rubocop:disable Layout/MultilineMethodCallIndentation
       it 'sends a message to the to user(s)' do
         recipients = { 'to' => [approver], 'cc' => [] }
         expect(depositor).to receive(:send_message).exactly(2).times.and_call_original
         expect { described_class.send_notification(entity: entity, user: depositor, comment: comment, recipients: recipients) }
           .to change { approver.mailbox.inbox.count }.by(1)
-                                                     .and change { depositor.mailbox.inbox.count }.by(1)
-                                                                                                  .and change { cc_user.mailbox.inbox.count }.by(0)
+          .and change { depositor.mailbox.inbox.count }.by(1)
+          .and change { cc_user.mailbox.inbox.count }.by(0)
       end
+      # rubocop:enable Layout/MultilineMethodCallIndentation
     end
   end
 end

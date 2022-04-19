@@ -16,7 +16,7 @@ RSpec.describe AssignPermissionsToWorkJob, type: :job do
   let(:workflow) { Sipity::Workflow.create(name: 'a workflow', permission_template_id: permission_template.id, active: true) }
   let(:work) {
     HonorsThesis.create(title: ['a title'],
-                        depositor: admin.uid,
+                        depositor: admin.user_key,
                         creators_attributes: { '0' => { name: 'creator',
                                                         orcid: 'creator orcid',
                                                         affiliation: 'biology',
