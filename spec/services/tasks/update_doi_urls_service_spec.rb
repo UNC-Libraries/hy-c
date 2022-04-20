@@ -26,7 +26,7 @@ RSpec.describe Tasks::UpdateDoiUrlsService do
 
   describe '#update_dois' do
     # make sure there is at least one work with a doi
-    let(:approver) { User.find_by_user_key('admin') }
+    let(:approver) { FactoryBot.create(:admin) }
     let(:depositor) {
       User.create(email: 'test@example.com',
                   uid: 'test@example.com',

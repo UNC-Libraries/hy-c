@@ -21,13 +21,20 @@ RSpec.describe RegenerateAllDocxThumbnailsJob, type: :job do
     file_set_with_extracted_text
   end
 
-  it 'enqueues jobs' do
-    ActiveJob::Base.queue_adapter = :test
-    expect { described_class.perform_later }.to have_enqueued_job(described_class).on_queue('long_running_jobs')
+  context 'with the test queue adapter' do
+    around do |example|
+      cached_adapter = ActiveJob::Base.queue_adapter
+      ActiveJob::Base.queue_adapter = :test
+      example.run
+      ActiveJob::Base.queue_adapter = cached_adapter
+    end
+
+    it 'enqueues jobs' do
+      expect { described_class.perform_later }.to have_enqueued_job(described_class).on_queue('long_running_jobs')
+    end
   end
 
   it 'calls the CreateDerivativesJob on those file sets' do
-    ActiveJob::Base.queue_adapter = :inline
     expect(Hydra::Derivatives::DocumentDerivatives).to receive(:create).exactly(2).times
     described_class.perform_now
   end

@@ -5,6 +5,10 @@ include Warden::Test::Helpers
 
 # NOTE: If you generated more than one work, you have to set "js: true"
 RSpec.feature 'View a Work', js: false do
+  let(:work) { FactoryBot.create(:article, title: ["Alice's Adventures in Wonderland"]) }
+  before do
+    work
+  end
   context 'not logged in' do
     scenario do
       visit '/'

@@ -2,13 +2,9 @@ require 'rails_helper'
 include Warden::Test::Helpers
 
 RSpec.feature 'Select work type modal', js: false do
-  let(:user) do
-    User.new(email: 'test@example.com', guest: false, uid: 'test') { |u| u.save!(validate: false) }
-  end
+  let(:user) { FactoryBot.create(:user) }
 
-  let(:admin_user) do
-    User.find_by_user_key('admin')
-  end
+  let(:admin_user) { FactoryBot.create(:admin) }
 
   # Work type selector modal is auto-loaded on the homepage
   scenario 'as a non-admin' do

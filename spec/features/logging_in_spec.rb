@@ -18,13 +18,19 @@ RSpec.feature 'logging into the application' do
     end
     context 'with shibboleth mocked' do
       before do
-        OmniAuth.config.test_mode = true
         OmniAuth.config.mock_auth[:shibboleth] = OmniAuth::AuthHash.new({
                                                                           provider: 'shibboleth',
                                                                           info: {
                                                                             uid: 'atester'
                                                                           }
                                                                         })
+      end
+
+      around do |example|
+        cached_test_mode = OmniAuth.config.test_mode
+        OmniAuth.config.test_mode = true
+        example.run
+        OmniAuth.config.test_mode = cached_test_mode
       end
 
       it 'can return to the application' do

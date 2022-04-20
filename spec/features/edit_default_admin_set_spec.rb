@@ -2,17 +2,15 @@ require 'rails_helper'
 include Warden::Test::Helpers
 
 RSpec.feature 'Create and edit default admin set', js: false do
-  context 'a logged in user' do
-    let(:user) do
-      User.find_by_user_key('admin')
-    end
+  context 'a logged in admin user' do
+    let(:admin) { FactoryBot.create(:admin) }
 
     before do
       AdminSet.delete_all
       DefaultAdminSet.delete_all
-      AdminSet.create(title: ['default'], description: ['some description'], edit_users: [user.user_key])
-      AdminSet.create(title: ['other admin set'], description: ['some description'], edit_users: [user.user_key])
-      login_as user
+      AdminSet.create(title: ['default'], description: ['some description'], edit_users: [admin.user_key])
+      AdminSet.create(title: ['other admin set'], description: ['some description'], edit_users: [admin.user_key])
+      login_as admin
     end
 
     scenario 'without an admin set' do

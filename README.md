@@ -107,6 +107,20 @@ aka
 bundle exec rspec spec/models/jats_ingest_work_spec.rb:7
 ```
 
+##### Debugging intermittent test failures
+* Our tests are set up to run in a random order, which can sometimes surface unexpected dependencies in our code. In order to re-create a failing test run, use the seed number printed at the end of the test.
+```bash
+foo@bar:~$ bundle exec rspec spec/controllers/hyrax/users_controller_spec.rb
+[...]
+6 examples, 1 failure
+
+Randomized with seed 44409
+
+foo@bar:~$ bundle exec rspec spec/controllers/hyrax/users_controller_spec.rb --seed 44409
+```
+
+*NOTE*: FFaker uses its own seed in order to randomize usernames, etc., in the test factories. If your test is inconsistent even with the same seed, you might look into whether different FFaker-generated values are to blame. See https://github.com/ffaker/ffaker/blob/main/RANDOM.md for more information. 
+
 ##### Creating Solr fixture objects (see `spec/support/oai_sample_solr_documents.rb` )
   * Run the test_setup rake task in order to get all the fixtures in the development environment
   ```

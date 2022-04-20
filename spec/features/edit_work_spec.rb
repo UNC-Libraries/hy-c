@@ -9,9 +9,7 @@ RSpec.feature 'Edit a work', js: false do
   end
 
   context 'a logged in user with an admin set' do
-    let(:admin_user) do
-      User.find_by_user_key('admin')
-    end
+    let(:admin_user) { FactoryBot.create(:admin) }
 
     let(:admin_set) do
       AdminSet.create(title: ['article admin set'],
@@ -103,9 +101,7 @@ RSpec.feature 'Edit a work', js: false do
 
   # Do not allow works to be edited before an admin set has been created
   context 'a logged in user without an admin set' do
-    let(:admin_user) do
-      User.find_by_user_key('admin')
-    end
+    let(:admin_user) { FactoryBot.create(:admin) }
 
     before do
       AdminSet.delete_all
