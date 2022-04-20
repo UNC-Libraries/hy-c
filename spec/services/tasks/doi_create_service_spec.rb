@@ -174,7 +174,7 @@ RSpec.describe Tasks::DoiCreateService do
 
   describe '#create_batch_doi' do
     # make sure there is at least one work without a doi
-    let(:approver) { User.find_by_user_key('admin') }
+    let(:approver) { FactoryBot.create(:admin) }
     let(:depositor) {
       User.create(email: 'test@example.com',
                   uid: 'test@example.com',

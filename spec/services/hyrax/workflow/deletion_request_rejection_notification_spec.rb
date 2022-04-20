@@ -23,6 +23,7 @@ RSpec.describe Hyrax::Workflow::DeletionRequestRejectionNotification do
   describe '.send_notification' do
     # rubocop:disable Layout/MultilineMethodCallIndentation
     it 'sends a message to all users' do
+      recipients = { 'to' => [depositor], 'cc' => [cc_user] }
       expect(approver).to receive(:send_message)
         .with(anything,
               I18n.t('hyrax.notifications.workflow.deletion_rejected.message', title: work.title[0], work_id: work.id,
