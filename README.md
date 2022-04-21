@@ -59,10 +59,6 @@ mutagen daemon start
 ```bash
 mutagen-compose up
 ```
-- Copy .bashrc into web container
-```bash
-docker cp ./docker/.bashrc hy-c-web-1:/root/.bashrc
-```
 - Go into a bash shell inside the running web container
 ```bash
 docker compose exec web bash
@@ -119,7 +115,7 @@ Randomized with seed 44409
 foo@bar:~$ bundle exec rspec spec/controllers/hyrax/users_controller_spec.rb --seed 44409
 ```
 
-*NOTE*: FFaker uses its own seed in order to randomize usernames, etc., in the test factories. If your test is inconsistent even with the same seed, you might look into whether different FFaker-generated values are to blame. See https://github.com/ffaker/ffaker/blob/main/RANDOM.md for more information. 
+*NOTE*: FFaker uses its own seed in order to randomize usernames, etc., in the test factories. If your test is inconsistent even with the same seed, you might look into whether different FFaker-generated values are to blame. See https://github.com/ffaker/ffaker/blob/main/RANDOM.md for more information.
 
 ##### Creating Solr fixture objects (see `spec/support/oai_sample_solr_documents.rb` )
   * Run the test_setup rake task in order to get all the fixtures in the development environment
