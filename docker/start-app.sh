@@ -1,5 +1,6 @@
 #!/bin/bash
 
+echo 'source /opt/rh/rh-ruby26/enable' >> ~/.bashrc
 source /opt/rh/rh-ruby26/enable
 bundle check || bundle install
 # The bundle config and package are needed for the odd way we manage gems in production
