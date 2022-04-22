@@ -1,11 +1,11 @@
 <%# [hyc-override] Overriding partial in hyrax to change citations to a modal %>
-<%# [hyc-override] Add link to request an accessible copy %>
+<%# [hyc-override] Add link to request a screen-reader accessible copy %>
 <div class="citations">
   <% if Hyrax.config.citations? %>
     <button class="btn btn-default" data-toggle="modal" data-target="#citations-modal"><%= t("hyrax.citations.citation") %></button>
   <% end %>
   <a class="btn btn-default access-request" href="https://blogs.lib.unc.edu/cdr/index.php/accessibility-request">
-    Request Accessible Version</a>
+    Request Version for Screen Reader</a>
 </div>
 
 <div class="modal fade" id="citations-modal" tabindex="-1" role="dialog" aria-labelledby="citations-modal-title" aria-hidden="true">
