@@ -2,11 +2,15 @@
 #  `rails generate hyrax:work Work`
 require 'rails_helper'
 include Warden::Test::Helpers
+require 'active_fedora/cleaner'
 
 # NOTE: If you generated more than one work, you have to set "js: true"
 RSpec.feature 'View a Work', js: false do
   let(:work) { FactoryBot.create(:article, title: ["Alice's Adventures in Wonderland"]) }
   before do
+    ActiveFedora::Cleaner.clean!
+    Blacklight.default_index.connection.delete_by_query('*:*')
+    Blacklight.default_index.connection.commit
     work
   end
   context 'not logged in' do

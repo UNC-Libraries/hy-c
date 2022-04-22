@@ -1,8 +1,6 @@
 module Tasks
   require 'fileutils'
-  require 'tasks/migration/migration_logging'
   require 'htmlentities'
-  require 'tasks/migration/migration_constants'
   require 'zip'
   require 'tasks/migration_helper'
 
