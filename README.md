@@ -66,7 +66,7 @@ mutagen daemon start
 ```bash
 mutagen-compose up
 ```
-- Go into a bash shell inside the running web container
+- In a new terminal window, in the hy-c directory, run this command in order to go into a bash shell inside the running web container (hy-c-web-1)
 ```bash
 docker compose exec web bash
 ```
@@ -74,9 +74,8 @@ docker compose exec web bash
     ```bash
     mutagen-compose up web
     [new terminal window or tab]
-    docker cp ./docker/.bashrc hy-c-web-1:/root/.bashrc
     docker compose exec web bash
-    bundle exec rspec spec
+    bundle exec rspec spec/models
     ```
 - You can edit the code in your editor, as usual, and the changes will be reflected inside the docker container.
 - You should be able to see the application at http://localhost:3000/
@@ -87,6 +86,8 @@ docker compose exec web bash
   - Memory: 12GB
   - Swap: 2 GB
   - Disk image size: 200 GB
+
+- In order to stop the application and services, you can do a ctrl-c inside the window where you ran `mutagen-compose up`, or you can click the "stop" button in Docker Desktop in the containers/apps section.
 
 ##### Docker debugging notes
 * Updates to the code should be picked up pretty immediately - there could be a second or so lag, but it should be fairly instantaneous.
