@@ -1,44 +1,4 @@
 class MigrationHelper
-  def self.get_uuid_from_path(path)
-    path.slice(/\w{8}-\w{4}-\w{4}-\w{4}-\w{12}/)
-  end
-
-  def self.create_filepath_hash(filename, hash)
-    File.open(filename) do |file|
-      file.each do |line|
-        value = line.strip
-        key = get_uuid_from_path(value)
-        hash[key] = value unless key.blank?
-      end
-    end
-  end
-
-  def self.get_collection_uuids(collection_ids_file)
-    collection_uuids = Array.new
-    File.open(collection_ids_file) do |file|
-      file.each do |line|
-        collection_uuids.append(get_uuid_from_path(line.strip)) if !line.blank? && !get_uuid_from_path(line.strip).blank?
-      end
-    end
-
-    collection_uuids
-  end
-
-  def self.retry_operation(message = nil)
-    retries ||= 0
-    yield
-  rescue Exception => e
-    puts "[#{Time.now.to_s}] #{e}"
-    puts e.backtrace.map { |x| x.match(/^\/net\/deploy\/ir\/test\/releases.*/) }.compact
-    puts message unless message.nil?
-    sleep(10)
-    retry if (retries += 1) < 5
-    # log full backtrace if not recovered
-    puts e.backtrace
-    # send abort message and backtrace to terminal
-    raise("[#{Time.now}] could not recover; aborting migration\nbacktrace:\n#{e.backtrace}")
-  end
-
   def self.check_enumeration(metadata, resource, identifier)
     # Singularize non-enumerable attributes and make sure enumerable attributes are arrays
     metadata.each do |k, v|
@@ -53,12 +13,12 @@ class MigrationHelper
 
     # Only keep attributes which apply to the given work type
     metadata.select { |k, _v| k.to_s.ends_with? '_attributes' }.each do |k, v|
-      unless resource.respond_to?("#{k.to_s}=")
-        # Log non-blank person data which is not saved
-        puts "[#{Time.now.to_s}] #{identifier} missing: #{k}=>#{v}"
-        metadata.delete("#{k.to_s.split('s_')[0]}_display")
-        metadata.delete(k)
-      end
+      next if resource.respond_to?("#{k}=")
+
+      # Log non-blank person data which is not saved
+      puts "[#{Time.now}] #{identifier} missing: #{k}=>#{v}"
+      metadata.delete("#{k.to_s.split('s_')[0]}_display")
+      metadata.delete(k)
     end
 
     # Only keep attributes which apply to the given work type
@@ -73,7 +33,7 @@ class MigrationHelper
                               'visibility_during_embargo', 'visibility_after_embargo', 'visibility',
                               'member_of_collections', 'based_near_attributes')
 
-    puts "[#{Time.now.to_s}][#{identifier}] missing: #{missing}" unless missing.blank?
+    puts "[#{Time.now}][#{identifier}] missing: #{missing}" unless missing.blank?
 
     resource
   end
