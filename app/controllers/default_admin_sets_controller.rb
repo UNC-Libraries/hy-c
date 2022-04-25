@@ -63,6 +63,7 @@ class DefaultAdminSetsController < ApplicationController
   end
 
   private
+
   # Use callbacks to share common setup or constraints between actions.
   def set_default_admin_set
     @default_admin_set = DefaultAdminSet.find(params[:id])

@@ -66,6 +66,7 @@ class ApplicationController < ActionController::Base
   end
 
   private
+
   def direct_to(resource)
     stored_location = stored_location_for(resource)
     return stored_location if stored_location.present?

@@ -2,7 +2,7 @@
 #  `rails generate hyrax:work HonorsThesis`
 
 module Hyrax
-  class HonorsThesesController < ApplicationController
+  class HonorsThesesController < HycController
     self.curation_concern_type = ::HonorsThesis
 
     # Use this line if you want to use a custom presenter

@@ -2,7 +2,7 @@
 #  `rails generate hyrax:work DataSet`
 
 module Hyrax
-  class DataSetsController < ApplicationController
+  class DataSetsController < HycController
     self.curation_concern_type = ::DataSet
 
     # Use this line if you want to use a custom presenter

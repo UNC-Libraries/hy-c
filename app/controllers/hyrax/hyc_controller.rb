@@ -5,6 +5,7 @@ module Hyrax
     include Hyrax::BreadcrumbsForWorks
 
     private
+
     def ensure_admin!
       authorize! :read, :admin_dashboard
     end

@@ -2,7 +2,7 @@
 #  `rails generate hyrax:work Dissertation`
 
 module Hyrax
-  class DissertationsController < ApplicationController
+  class DissertationsController < HycController
     self.curation_concern_type = ::Dissertation
 
     # Use this line if you want to use a custom presenter

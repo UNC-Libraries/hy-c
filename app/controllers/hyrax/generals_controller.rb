@@ -2,7 +2,7 @@
 #  `rails generate hyrax:work General`
 
 module Hyrax
-  class GeneralsController < ApplicationController
+  class GeneralsController < HycController
     self.curation_concern_type = ::General
 
     # Use this line if you want to use a custom presenter
