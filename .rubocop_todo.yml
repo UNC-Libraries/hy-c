@@ -121,7 +121,6 @@ Layout/FirstArrayElementIndentation:
   Exclude:
     - 'app/search_builders/hyrax/my/search_builder.rb'
     - 'config/initializers/hyrax.rb'
-    - 'spec/helpers/migration_helper_spec.rb'
     - 'spec/services/admin_set_select_service_spec.rb'
     - 'spec/services/degrees_service_spec.rb'
     - 'spec/views/default_admin_sets/index.html.erb_spec.rb'
@@ -244,7 +243,6 @@ Lint/AmbiguousBlockAssociation:
 Lint/AmbiguousRegexpLiteral:
   Exclude:
     - 'app/renderers/hyrax/renderers/attribute_renderer.rb'
-    - 'spec/helpers/migration_helper_spec.rb'
 
 # Offense count: 1
 # Configuration parameters: AllowSafeAssignment.
@@ -301,14 +299,8 @@ Lint/RedundantSafeNavigation:
 Lint/RedundantStringCoercion:
   Exclude:
     - 'app/services/tasks/proquest_ingest_service.rb'
-    - 'lib/tasks/migration_helper.rb'
     - 'spec/jobs/deregister_longleaf_job_spec.rb'
     - 'spec/jobs/register_to_longleaf_job_spec.rb'
-
-# Offense count: 1
-Lint/RescueException:
-  Exclude:
-    - 'lib/tasks/migration_helper.rb'
 
 # Offense count: 1
 # Cop supports --auto-correct.
@@ -570,8 +562,6 @@ Style/EmptyLiteral:
     - 'app/jobs/attach_files_to_work_job.rb'
     - 'app/parsers/bulkrax/csv_parser.rb'
     - 'app/services/tasks/proquest_ingest_service.rb'
-    - 'lib/tasks/migration_helper.rb'
-    - 'spec/helpers/migration_helper_spec.rb'
 
 # Offense count: 1
 # Cop supports --auto-correct.
@@ -725,7 +715,6 @@ Style/Next:
     - 'app/parsers/bulkrax/csv_parser.rb'
     - 'app/services/tasks/proquest_ingest_service.rb'
     - 'lib/active_fedora/rdf/indexing_service.rb'
-    - 'lib/tasks/migration_helper.rb'
 
 # Offense count: 2
 # Cop supports --auto-correct.
@@ -870,7 +859,6 @@ Style/RegexpLiteral:
     - 'app/indexers/hyrax/deep_indexing_service.rb'
     - 'app/services/hyrax/workflow/abstract_notification.rb'
     - 'config/initializers/riiif.rb'
-    - 'lib/tasks/migration_helper.rb'
 
 # Offense count: 2
 # Cop supports --auto-correct.

@@ -2,74 +2,6 @@ require 'rails_helper'
 require 'tasks/migration_helper'
 
 RSpec.describe MigrationHelper do
-  describe '#get_uuid_from_path' do
-    context 'when a valid path is given' do
-      let(:valid_path) { 'lib/tasks/migration/tmp/02002b92-aa8e-4eea-b196-ee951fe7511b/02002b92-aa8e-4eea-b196-ee951fe7511b-DATA_FILE.pdf' }
-
-      it 'returns the uuid' do
-        expect(described_class.get_uuid_from_path(valid_path)).to eq '02002b92-aa8e-4eea-b196-ee951fe7511b'
-      end
-    end
-
-    context 'when an invalid path is given' do
-      let(:invalid_path) { 'lib/tasks/migration/tmp/some_file.txt' }
-
-      it 'returns nil' do
-        expect(described_class.get_uuid_from_path(invalid_path)).to be_nil
-      end
-    end
-  end
-
-  describe '#create_filepath_hash' do
-    let(:filename) { 'spec/fixtures/migration/objects.txt' }
-    let(:hash) { Hash.new }
-    let(:filepath_hash) do
-      {
-        '2d005f01-844e-46f3-b528-6a9c40e29914' => 'spec/fixtures/migration/2d005f01-844e-46f3-b528-6a9c40e29914/uuid:2d005f01-844e-46f3-b528-6a9c40e29914-object.xml',
-        '2f847077-7060-445b-99b3-190e7cff0067' => 'spec/fixtures/migration/2f847077-7060-445b-99b3-190e7cff0067/uuid:2f847077-7060-445b-99b3-190e7cff0067-object.xml'
-      }
-    end
-
-    it 'creates a hash of file paths' do
-      described_class.create_filepath_hash(filename, hash)
-      expect(hash).to eq filepath_hash
-    end
-  end
-
-  describe '#get_collection_uuids' do
-    let(:collection_ids_file) { 'spec/fixtures/migration/collection.csv' }
-
-    it 'creates an array of uuids' do
-      expect(described_class.get_collection_uuids(collection_ids_file)).to eq ['2d005f01-844e-46f3-b528-6a9c40e29914']
-    end
-  end
-
-  describe '#retry_operation' do
-    context 'for a failing example' do
-      it 'allows method to be retried' do
-        retry_result = begin
-          described_class.retry_operation('failed') { some_undefined_method_that_will_fail }
-        rescue RuntimeError => e
-          e.message
-        end
-
-        expect(retry_result).to match /could not recover; aborting migration/
-      end
-    end
-
-    context 'for a successful example' do
-      it 'returns method result' do
-        retry_result = begin
-          described_class.retry_operation('failed') { described_class.get_language_uri(['eng']) }
-        rescue StandardError => e
-          e.message
-        end
-
-        expect(retry_result).to match_array ['http://id.loc.gov/vocabulary/iso639-2/eng']
-      end
-    end
-  end
-
   describe '#check_enumeration' do
     let(:metadata) do
       {
@@ -107,8 +39,8 @@ RSpec.describe MigrationHelper do
     let(:viewer_agent) { Sipity::Agent.new(id: Date.today.to_time.to_i, proxy_for_id: viewer_group.name, proxy_for_type: 'Hyrax::Group') }
     let(:expected_result) do
       [
-          { 'type' => 'group', 'name' => manager_group.name, 'access' => 'edit' },
-          { 'type' => 'group', 'name' => viewer_group.name, 'access' => 'read' }
+        { 'type' => 'group', 'name' => manager_group.name, 'access' => 'edit' },
+        { 'type' => 'group', 'name' => viewer_group.name, 'access' => 'read' }
       ]
     end
 
