@@ -34,12 +34,19 @@ bundle exec rake sage:ingest[/hyrax/spec/fixtures/sage/sage_config.yml]
 * The beginning and ending of the rake task will be output to the console, the remaining events will be logged to the sage ingest log (in the same directory as the Rails log).
 
 #### Development on Docker
-* Pre-requisites:
-  * Docker installed locally
+* Pre-requisites (for Mac):
+  * Docker Desktop - https://docs.docker.com/desktop/mac/install/
+  * Homebrew (package manager for Mac) - https://brew.sh/
   * (optional) If you use Atom, get the Dockerfile specific grammar (may need to restart Atom to see effect) `apm install language-docker`
   * Mutagen-compose installed locally, used for speeding up file syncing between the host and guest systems. (on Mac, `brew install mutagen-io/mutagen/mutagen-compose`)
 
 ##### First-time setup, or if you've cleaned up Docker images or volumes
+* Clone the repository `git clone git@github.com:UNC-Libraries/hy-c.git`
+* In the same parent directory, either
+  * create a directory called `hyc-gems`, or
+  * clone the private repository `git@gitlab.lib.unc.edu:cdr/hyc-gems.git` (*NOTE*: Must be on UNC VPN)
+* cd into the hy-c repository `cd hy-c`
+
 * Ensure you have the needed environment variables in `config/local_env.yml`. Either get a copy of this file from a colleague, use the `dev/local_env.yml` file from https://gitlab.lib.unc.edu/cdr/vagrant-rails/, or copy the sample file and fill in the appropriate values
 ```bash
 cp config/local_env_sample.yml config/local_env.yml
@@ -59,7 +66,7 @@ mutagen daemon start
 ```bash
 mutagen-compose up
 ```
-- Go into a bash shell inside the running web container
+- In a new terminal window, in the hy-c directory, run this command in order to go into a bash shell inside the running web container (hy-c-web-1)
 ```bash
 docker compose exec web bash
 ```
@@ -67,9 +74,8 @@ docker compose exec web bash
     ```bash
     mutagen-compose up web
     [new terminal window or tab]
-    docker cp ./docker/.bashrc hy-c-web-1:/root/.bashrc
     docker compose exec web bash
-    bundle exec rspec spec
+    bundle exec rspec spec/models
     ```
 - You can edit the code in your editor, as usual, and the changes will be reflected inside the docker container.
 - You should be able to see the application at http://localhost:3000/
@@ -81,10 +87,17 @@ docker compose exec web bash
   - Swap: 2 GB
   - Disk image size: 200 GB
 
+- In order to stop the application and services, you can do a ctrl-c inside the window where you ran `mutagen-compose up`, or you can click the "stop" button in Docker Desktop in the containers/apps section.
+
 ##### Docker debugging notes
 * Updates to the code should be picked up pretty immediately - there could be a second or so lag, but it should be fairly instantaneous.
 * When your Solr, Fedora, and Postgres get out of sync, it might be easiest to stop the application and dependencies (`mutagen-compose stop`), delete the volumes for all three of these, then bring everything back up.
 * If you change volume permissions via the docker-compose file, you will need to delete the existing volumes before you see any changes.
+* If you get a message like:
+```
+Error response from daemon: driver failed programming external connectivity on endpoint hy-c-db-1 (long_hash): Bind for 0.0.0.0:5432 failed: port is already allocated
+```
+  You may have a service already running locally, so you can either stop the service running locally, or map the service externally to another port (the left side of the `port` stanza in the `docker-compose.yml` file)
 
 #### Testing
 ##### RSpec Testing
