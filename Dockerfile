@@ -19,7 +19,7 @@ RUN yum -y install httpd; yum clean all; systemctl enable httpd.service; \
 yum -y install centos-release-scl-rh centos-release-scl; \
 yum -y --enablerepo=centos-sclo-rh install rh-ruby26 rh-ruby26-ruby-devel
 # Install compilers for gems & more dependencies - this section is > 1 GB so might see if we can shrink it down some
-# Should we remove git, since the mutagen files can't see the git directory? 
+# Should we remove git, since the mutagen files can't see the git directory?
 # See https://mutagen.io/documentation/synchronization/version-control-systems
 RUN yum -y install gcc gcc-c++ zlib-devel postgresql-devel libxslt-devel; \
 yum -y install git libreoffice clamav-devel clamav clamav-update clamd redhat-lsb libXScrnSaver wget unzip; \
@@ -45,8 +45,8 @@ RUN mkdir /hyrax
 WORKDIR /hyrax
 COPY . /hyrax
 
-WORKDIR /hyrax
-RUN scl enable rh-ruby26 -- bundle install
+# WORKDIR /hyrax
+# RUN scl enable rh-ruby26 -- bundle install
 
 EXPOSE 3000
 CMD ["sh", "/hyrax/docker/start-app.sh"]

@@ -4,7 +4,8 @@ services:
   web: &web
     build:
       context: .
-    image: mkadel/hy-c
+    image: mkadel/hy-c:arm64
+    platform: linux/arm64
     depends_on:
       - clamav
       - db
@@ -33,6 +34,7 @@ services:
     tty: true
   clamav:
     image: clamav/clamav
+    platform: linux/arm64
     ports:
       - "3310:3310"
     volumes:
@@ -40,6 +42,7 @@ services:
       - mount-code:/hyrax
   db:
     image: postgres:9.6-alpine
+    platform: linux/arm64
     volumes:
       - pg_data:/var/lib/postgresql/data
     ports:
@@ -49,6 +52,7 @@ services:
       POSTGRES_PASSWORD: password
   fedora:
     image: samvera/fcrepo4:4.7.5
+    platform: linux/arm64
     ports:
       - "8984:8080"
     volumes:
@@ -59,6 +63,7 @@ services:
     tty: true
   redis:
     image: redis:5.0.14
+    platform: linux/arm64
     environment:
       # ALLOW_EMPTY_PASSWORD is recommended only for development.
       - ALLOW_EMPTY_PASSWORD=yes
@@ -67,7 +72,8 @@ services:
     ports:
       - "6379:6379"
   solr6:
-    image: solr:6-alpine
+    image: solr:6.6.6-alpine
+    platform: linux/arm64
     volumes:
       - solr6-data:/opt/solr/server/solr/configsets/hy-c
     ports:
@@ -80,6 +86,7 @@ services:
       "
   solr8:
     image: solr:8-alpine
+    platform: linux/arm64
     volumes:
       - solr8-data:/opt/solr/server/solr/configsets/hy-c
     ports:

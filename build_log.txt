@@ -1,0 +1,1190 @@
+➜  hy-c git:(m_one_docker) ✗ docker compose build web
+[+] Building 354.9s (23/23) FINISHED
+ => [internal] load build definition from Dockerfile                                                                  0.0s
+ => => transferring dockerfile: 2.20kB                                                                                0.0s
+ => [internal] load .dockerignore                                                                                     0.0s
+ => => transferring context: 34B                                                                                      0.0s
+ => [internal] load metadata for docker.io/library/centos:7                                                           1.5s
+ => [auth] library/centos:pull token for registry-1.docker.io                                                         0.0s
+ => [internal] load build context                                                                                     0.1s
+ => => transferring context: 205.19kB                                                                                 0.1s
+ => https://projects.iq.harvard.edu/files/fits/files/fits-1.0.5.zip                                                   0.3s
+ => [systemd-enabled 1/2] FROM docker.io/library/centos:7@sha256:c73f515d06b0fa07bb18d8202035e739a494ce760aa73129f60  0.0s
+ => => resolve docker.io/library/centos:7@sha256:c73f515d06b0fa07bb18d8202035e739a494ce760aa73129f60f4bf2bd22b407     0.0s
+ => CACHED [systemd-enabled 2/2] RUN (cd /lib/systemd/system/sysinit.target.wants/; for i in *; do [ $i == systemd-t  0.0s
+ => CACHED [stage-1  1/15] RUN yum -y install httpd; yum clean all; systemctl enable httpd.service; yum -y install c  0.0s
+ => CACHED [stage-1  2/15] RUN yum -y install gcc gcc-c++ zlib-devel postgresql-devel libxslt-devel; yum -y install   0.0s
+ => CACHED [stage-1  3/15] RUN wget -q -P /tmp "https://dl.google.com/linux/direct/google-chrome-stable_current_x86_  0.0s
+ => CACHED [stage-1  4/15] RUN yum -y localinstall /tmp/google-chrome-stable_current_x86_64.rpm                       0.0s
+ => CACHED [stage-1  5/15] RUN mkdir /fits                                                                            0.0s
+ => CACHED [stage-1  6/15] WORKDIR /fits                                                                              0.0s
+ => CACHED [stage-1  7/15] ADD https://projects.iq.harvard.edu/files/fits/files/fits-1.0.5.zip /fits/                 0.0s
+ => CACHED [stage-1  8/15] RUN unzip fits-1.0.5.zip -d /fits && rm -rf fits-1.0.5.zip                                 0.0s
+ => CACHED [stage-1  9/15] RUN scl enable rh-ruby26 -- gem install bundler -v '~> 2.2.28'                             0.0s
+ => CACHED [stage-1 10/15] RUN mkdir /hyrax                                                                           0.0s
+ => CACHED [stage-1 11/15] WORKDIR /hyrax                                                                             0.0s
+ => [stage-1 12/15] COPY . /hyrax                                                                                     0.3s
+ => [stage-1 13/15] RUN yum -y install glibc                                                                          2.3s
+ => [stage-1 14/15] WORKDIR /hyrax                                                                                    0.0s
+ => ERROR [stage-1 15/15] RUN scl enable rh-ruby26 -- bundle install                                                350.4s
+------
+ > [stage-1 15/15] RUN scl enable rh-ruby26 -- bundle install:
+#0 0.250 Don't run Bundler as root. Bundler can ask for sudo if it is needed, and
+#0 0.250 installing your bundle as root will break this application for all non-root
+#0 0.250 users on this machine.
+#0 0.745 /opt/rh/rh-ruby26/root/usr/share/gems/gems/psych-3.1.0/lib/psych.rb:237: warning: already initialized constant Psych::LIBYAML_VERSION
+#0 0.745 /opt/rh/rh-ruby26/root/usr/share/ruby/psych.rb:237: warning: previous definition of LIBYAML_VERSION was here
+#0 0.745 /opt/rh/rh-ruby26/root/usr/share/gems/gems/psych-3.1.0/lib/psych.rb:239: warning: already initialized constant Psych::NOT_GIVEN
+#0 0.745 /opt/rh/rh-ruby26/root/usr/share/ruby/psych.rb:239: warning: previous definition of NOT_GIVEN was here
+#0 1.681 Fetching gem metadata from https://rubygems.org/.......
+#0 14.32 Fetching https://github.com/notch8/willow_sword.git
+#0 15.33 Fetching rake 13.0.6
+#0 15.72 Installing rake 13.0.6
+#0 15.78 Fetching builder 3.2.4
+#0 15.78 Fetching minitest 5.15.0
+#0 15.78 Fetching thread_safe 0.3.6
+#0 15.78 Fetching concurrent-ruby 1.1.9
+#0 15.95 Installing thread_safe 0.3.6
+#0 15.99 Fetching erubi 1.10.0
+#0 16.02 Installing concurrent-ruby 1.1.9
+#0 16.12 Fetching mini_portile2 2.8.0
+#0 16.13 Installing erubi 1.10.0
+#0 16.14 Fetching racc 1.6.0
+#0 16.27 Installing mini_portile2 2.8.0
+#0 16.31 Installing racc 1.6.0 with native extensions
+#0 16.34 Fetching crass 1.0.6
+#0 16.49 Installing crass 1.0.6
+#0 16.50 Fetching rack 2.2.3
+#0 16.71 Installing rack 2.2.3
+#0 16.72 Fetching nio4r 2.5.8
+#0 16.75 Fetching websocket-extensions 0.1.5
+#0 16.88 Installing websocket-extensions 0.1.5
+#0 16.90 Fetching mini_mime 1.1.2
+#0 16.91 Installing nio4r 2.5.8 with native extensions
+#0 17.03 Installing mini_mime 1.1.2
+#0 17.04 Fetching link_header 0.0.8
+#0 17.17 Installing link_header 0.0.8
+#0 17.18 Fetching multipart-post 2.1.1
+#0 17.52 Installing multipart-post 2.1.1
+#0 17.54 Fetching http_logger 0.6.0
+#0 17.73 Installing http_logger 0.6.0
+#0 17.75 Fetching htmlentities 4.3.4
+#0 17.89 Installing htmlentities 4.3.4
+#0 17.90 Fetching json-canonicalization 0.2.1
+#0 18.05 Installing json-canonicalization 0.2.1
+#0 18.06 Fetching multi_json 1.15.0
+#0 18.15 Fetching amazing_print 1.3.0
+#0 18.19 Installing multi_json 1.15.0
+#0 18.20 Using scanf 1.0.0
+#0 18.21 Fetching unicode-types 1.6.0
+#0 18.30 Installing amazing_print 1.3.0
+#0 18.33 Fetching slop 4.9.1
+#0 18.34 Installing unicode-types 1.6.0
+#0 18.35 Fetching ruby-progressbar 1.11.0
+#0 18.46 Installing slop 4.9.1
+#0 18.48 Installing ruby-progressbar 1.11.0
+#0 18.50 Fetching xml-simple 1.1.8
+#0 18.52 Fetching arel 9.0.0
+#0 18.64 Installing xml-simple 1.1.8
+#0 18.66 Fetching marcel 1.0.2
+#0 18.67 Installing arel 9.0.0
+#0 18.72 Using bundler 2.2.33
+#0 18.73 Fetching method_source 1.0.0
+#0 18.82 Installing marcel 1.0.2
+#0 18.84 Fetching thor 0.20.3
+#0 18.87 Installing method_source 1.0.0
+#0 18.88 Fetching public_suffix 4.0.6
+#0 19.01 Installing thor 0.20.3
+#0 19.04 Fetching ast 2.4.2
+#0 19.06 Installing public_suffix 4.0.6
+#0 19.09 Fetching execjs 2.8.1
+#0 19.18 Installing ast 2.4.2
+#0 19.20 Fetching aws-eventstream 1.2.0
+#0 19.22 Installing execjs 2.8.1
+#0 19.24 Fetching aws-partitions 1.525.0
+#0 19.54 Installing aws-eventstream 1.2.0
+#0 19.57 Fetching jmespath 1.4.0
+#0 19.69 Installing aws-partitions 1.525.0
+#0 19.70 Fetching babel-source 5.8.35
+#0 19.81 Installing jmespath 1.4.0
+#0 19.83 Fetching docopt 0.5.0
+#0 19.96 Installing babel-source 5.8.35
+#0 19.99 Fetching validatable 1.6.7
+#0 20.00 Installing docopt 0.5.0
+#0 20.01 Fetching bcrypt 3.1.16
+#0 20.13 Installing validatable 1.6.7
+#0 20.16 Fetching bindex 0.8.1
+#0 20.19 Installing bcrypt 3.1.16 with native extensions
+#0 20.30 Installing bindex 0.8.1 with native extensions
+#0 20.62 Fetching ffi 1.15.4
+#0 20.76 Fetching kaminari-core 1.2.1
+#0 20.90 Installing kaminari-core 1.2.1
+#0 21.07 Installing builder 3.2.4
+#0 21.08 Installing minitest 5.15.0
+#0 21.10 Fetching cancancan 1.17.0
+#0 21.14 Fetching parslet 2.0.0
+#0 21.16 Installing ffi 1.15.4 with native extensions
+#0 21.16 Fetching breadcrumbs_on_rails 3.0.1
+#0 21.46 Installing breadcrumbs_on_rails 3.0.1
+#0 21.48 Fetching jwt 2.3.0
+#0 21.49 Installing parslet 2.0.0
+#0 21.54 Fetching multi_xml 0.6.0
+#0 21.63 Installing jwt 2.3.0
+#0 21.65 Fetching memoist 0.16.2
+#0 21.69 Installing multi_xml 0.6.0
+#0 21.71 Fetching os 1.1.1
+#0 21.78 Installing memoist 0.16.2
+#0 21.80 Fetching httpclient 2.8.3
+#0 21.85 Installing os 1.1.1
+#0 21.86 Fetching declarative 0.0.20
+#0 22.01 Installing declarative 0.0.20
+#0 22.03 Fetching trailblazer-option 0.1.1
+#0 22.03 Installing httpclient 2.8.3
+#0 22.12 Fetching uber 0.1.0
+#0 22.29 Installing uber 0.1.0
+#0 22.30 Fetching retriable 3.1.2
+#0 22.36 Installing trailblazer-option 0.1.1
+#0 22.37 Fetching rexml 3.2.5
+#0 22.41 Installing cancancan 1.17.0
+#0 22.44 Fetching webrick 1.7.0
+#0 22.45 Installing retriable 3.1.2
+#0 22.46 Fetching gems 1.2.0
+#0 22.57 Installing rexml 3.2.5
+#0 22.60 Fetching json 2.6.1
+#0 22.60 Installing webrick 1.7.0
+#0 22.61 Installing gems 1.2.0
+#0 22.63 Fetching coderay 1.1.3
+#0 22.65 Fetching iso8601 0.9.1
+#0 22.76 Installing json 2.6.1 with native extensions
+#0 22.79 Installing coderay 1.1.3
+#0 22.80 Installing iso8601 0.9.1
+#0 22.86 Fetching language_list 1.2.1
+#0 22.86 Fetching libxml-ruby 3.1.0
+#0 23.12 Installing language_list 1.2.1
+#0 23.13 Installing libxml-ruby 3.1.0 with native extensions
+#0 23.16 Fetching byebug 9.1.0
+#0 23.34 Installing byebug 9.1.0 with native extensions
+#0 28.21 Fetching matrix 0.4.2
+#0 28.37 Installing matrix 0.4.2
+#0 28.39 Fetching regexp_parser 2.2.0
+#0 28.56 Installing regexp_parser 2.2.0
+#0 28.64 Fetching mime-types-data 3.2021.0901
+#0 28.86 Installing mime-types-data 3.2021.0901
+#0 28.91 Fetching ssrf_filter 1.0.7
+#0 29.05 Installing ssrf_filter 1.0.7
+#0 29.06 Fetching childprocess 4.1.0
+#0 29.20 Installing childprocess 4.1.0
+#0 29.22 Fetching numerizer 0.1.1
+#0 29.35 Installing numerizer 0.1.1
+#0 29.36 Fetching clamav-client 3.2.0
+#0 29.52 Installing clamav-client 3.2.0
+#0 29.53 Fetching clipboard-rails 1.7.1
+#0 29.67 Installing clipboard-rails 1.7.1
+#0 29.68 Fetching coffee-script-source 1.12.2
+#0 29.86 Installing coffee-script-source 1.12.2
+#0 29.87 Fetching connection_pool 2.2.5
+#0 30.25 Installing connection_pool 2.2.5
+#0 30.26 Fetching orm_adapter 0.5.0
+#0 30.41 Installing orm_adapter 0.5.0
+#0 30.43 Fetching diff-lcs 1.4.4
+#0 30.59 Installing diff-lcs 1.4.4
+#0 30.62 Fetching docile 1.4.0
+#0 30.76 Installing docile 1.4.0
+#0 30.78 Fetching ruby2_keywords 0.0.5
+#0 30.92 Installing ruby2_keywords 0.0.5
+#0 30.93 Fetching dry-equalizer 0.3.0
+#0 31.10 Installing dry-equalizer 0.3.0
+#0 31.11 Fetching dry-inflector 0.2.1
+#0 31.26 Installing dry-inflector 0.2.1
+#0 31.27 Fetching dry-initializer 3.0.4
+#0 31.38 Fetching ice_nine 0.11.2
+#0 31.44 Installing dry-initializer 3.0.4
+#0 31.47 Fetching ffaker 2.20.0
+#0 31.52 Installing ice_nine 0.11.2
+#0 31.55 Fetching geocoder 1.7.0
+#0 31.73 Installing ffaker 2.20.0
+#0 31.75 Installing geocoder 1.7.0
+#0 31.88 Fetching temple 0.8.2
+#0 32.00 Fetching tilt 2.0.10
+#0 32.11 Installing temple 0.8.2
+#0 32.19 Installing tilt 2.0.10
+#0 32.31 Fetching hashdiff 1.0.1
+#0 32.33 Fetching hashie 5.0.0
+#0 32.45 Fetching hiredis 0.6.3
+#0 32.46 Installing hashdiff 1.0.1
+#0 32.47 Fetching mini_magick 4.9.5
+#0 32.51 Installing hashie 5.0.0
+#0 32.54 Fetching rb-fsevent 0.11.0
+#0 32.57 Fetching noid 0.9.0
+#0 32.63 Installing mini_magick 4.9.5
+#0 32.65 Fetching oauth 0.5.7
+#0 32.68 Installing hiredis 0.6.3 with native extensions
+#0 32.71 Installing noid 0.9.0
+#0 32.72 Fetching posix-spawn 0.3.15
+#0 32.73 Installing rb-fsevent 0.11.0
+#0 32.75 Fetching power_converter 0.1.2
+#0 32.80 Installing oauth 0.5.7
+#0 32.82 Fetching pul_uv_rails 2.0.1
+#0 32.91 Installing posix-spawn 0.3.15 with native extensions
+#0 32.92 Installing power_converter 0.1.2
+#0 32.93 Fetching redis 3.3.5
+#0 33.11 Installing redis 3.3.5
+#0 33.15 Fetching select2-rails 3.5.11
+#0 33.22 Installing pul_uv_rails 2.0.1
+#0 33.34 Installing select2-rails 3.5.11
+#0 33.43 Fetching libv8 7.3.492.27.1
+#0 33.67 Fetching parallel 1.21.0
+#0 33.81 Installing parallel 1.21.0
+#0 33.82 Fetching pg 1.2.3
+#0 33.84 Installing libv8 7.3.492.27.1 with native extensions
+#0 33.92 Fetching rainbow 3.0.0
+#0 34.14 Fetching rubyzip 2.3.2
+#0 34.17 Installing rainbow 3.0.0
+#0 34.22 Installing pg 1.2.3 with native extensions
+#0 34.29 Fetching rspec-support 3.6.0
+#0 34.32 Installing rubyzip 2.3.2
+#0 34.43 Fetching unicode-display_width 2.1.0
+#0 34.44 Installing rspec-support 3.6.0
+#0 34.47 Fetching simplecov-html 0.12.3
+#0 34.57 Installing unicode-display_width 2.1.0
+#0 34.59 Fetching simplecov_json_formatter 0.1.3
+#0 34.73 Installing simplecov-html 0.12.3
+#0 34.76 Installing simplecov_json_formatter 0.1.3
+#0 34.78 Fetching staccato 0.5.3
+#0 34.78 Fetching turbolinks-source 5.2.0
+#0 34.91 Installing turbolinks-source 5.2.0
+#0 34.92 Fetching tzinfo 1.2.9
+#0 34.94 Installing staccato 0.5.3
+#0 34.96 Fetching i18n 1.10.0
+#0 35.10 Installing tzinfo 1.2.9
+#0 35.13 Installing i18n 1.10.0
+#0 35.18 Fetching hamster 3.0.0
+#0 35.20 Fetching dry-core 0.7.1
+#0 35.32 Installing dry-core 0.7.1
+#0 35.34 Fetching nokogiri 1.13.4 (aarch64-linux)
+#0 35.38 Installing hamster 3.0.0
+#0 35.56 Fetching rack-test 1.1.0
+#0 35.70 Installing rack-test 1.1.0
+#0 35.72 Fetching sprockets 3.7.2
+#0 36.12 Installing nokogiri 1.13.4 (aarch64-linux)
+#0 36.14 Installing sprockets 3.7.2
+#0 36.20 Fetching warden 1.2.9
+#0 36.34 Installing warden 1.2.9
+#0 36.38 Fetching request_store 1.5.0
+#0 36.40 Fetching rack-protection 2.1.0
+#0 36.52 Installing request_store 1.5.0
+#0 36.53 Fetching passenger 5.3.7
+#0 36.54 Installing rack-protection 2.1.0
+#0 36.58 Fetching websocket-driver 0.7.5
+#0 36.71 Installing websocket-driver 0.7.5 with native extensions
+#0 37.20 Installing passenger 5.3.7 with native extensions
+#0 37.55 Fetching mail 2.7.1
+#0 37.87 Installing mail 2.7.1
+#0 38.05 Fetching faraday 0.17.4
+#0 38.22 Installing faraday 0.17.4
+#0 38.30 Fetching legato 0.7.0
+#0 38.44 Installing legato 0.7.0
+#0 38.52 Fetching fcrepo_wrapper 0.8.0
+#0 38.66 Installing fcrepo_wrapper 0.8.0
+#0 38.70 Fetching addressable 2.8.0
+#0 39.26 Installing addressable 2.8.0
+#0 39.34 Fetching parser 3.0.3.2
+#0 39.68 Installing parser 3.0.3.2
+#0 39.84 Fetching autoprefixer-rails 10.3.1.0
+#0 40.18 Installing autoprefixer-rails 10.3.1.0
+#0 40.27 Fetching uglifier 4.2.0
+#0 40.61 Installing uglifier 4.2.0
+#0 40.63 Fetching aws-sigv4 1.4.0
+#0 40.77 Installing aws-sigv4 1.4.0
+#0 40.78 Fetching babel-transpiler 0.7.0
+#0 40.98 Installing babel-transpiler 0.7.0
+#0 40.99 Fetching bagit 0.4.4
+#0 41.19 Installing bagit 0.4.4
+#0 41.21 Fetching representable 3.1.1
+#0 41.37 Installing representable 3.1.1
+#0 41.40 Fetching crack 0.4.5
+#0 41.78 Installing crack 0.4.5
+#0 41.79 Fetching sassc 2.4.0
+#0 42.15 Installing sassc 2.4.0 with native extensions
+#0 277.7 Fetching ethon 0.15.0
+#0 278.1 Installing ethon 0.15.0
+#0 278.2 Fetching rb-inotify 0.10.1
+#0 278.3 Installing rb-inotify 0.10.1
+#0 278.3 Fetching mime-types 3.3.1
+#0 278.5 Installing mime-types 3.3.1
+#0 278.5 Fetching chronic_duration 0.10.6
+#0 278.6 Installing chronic_duration 0.10.6
+#0 278.7 Fetching coffee-script 2.4.1
+#0 278.8 Installing coffee-script 2.4.1
+#0 278.8 Fetching net-http-persistent 4.0.1
+#0 279.0 Installing net-http-persistent 4.0.1
+#0 279.0 Fetching samvera-nesting_indexer 2.0.0
+#0 279.2 Installing samvera-nesting_indexer 2.0.0
+#0 279.2 Fetching haml 5.2.2
+#0 279.4 Installing haml 5.2.2
+#0 279.6 Fetching redis-namespace 1.8.1
+#0 279.8 Installing redis-namespace 1.8.1
+#0 279.9 Fetching redlock 1.2.2
+#0 280.0 Installing redlock 1.2.2
+#0 280.0 Fetching redic 1.5.3
+#0 280.1 Installing redic 1.5.3
+#0 280.2 Fetching selenium-webdriver 4.1.0
+#0 280.4 Installing selenium-webdriver 4.1.0
+#0 280.4 Fetching rspec-core 3.6.0
+#0 280.6 Installing rspec-core 3.6.0
+#0 280.7 Fetching rspec-expectations 3.6.0
+#0 280.8 Installing rspec-expectations 3.6.0
+#0 280.9 Fetching rspec-mocks 3.6.0
+#0 281.0 Installing rspec-mocks 3.6.0
+#0 281.1 Fetching simplecov 0.21.2
+#0 281.2 Installing simplecov 0.21.2
+#0 281.3 Fetching turbolinks 5.0.1
+#0 281.4 Installing turbolinks 5.0.1
+#0 281.4 Fetching bcp47 0.3.3
+#0 281.5 Installing bcp47 0.3.3
+#0 281.5 Fetching activesupport 5.2.7
+#0 281.8 Installing activesupport 5.2.7
+#0 281.9 Fetching dry-configurable 0.13.0
+#0 282.0 Installing dry-configurable 0.13.0
+#0 282.0 Fetching dry-events 0.3.0
+#0 282.2 Installing dry-events 0.3.0
+#0 282.2 Fetching dry-logic 1.2.0
+#0 282.3 Installing dry-logic 1.2.0
+#0 282.3 Fetching dry-matcher 0.9.0
+#0 282.5 Installing dry-matcher 0.9.0
+#0 282.5 Fetching dry-monads 1.4.0
+#0 282.8 Installing dry-monads 1.4.0
+#0 282.9 Fetching rdf 3.1.15
+#0 283.0 Fetching loofah 2.10.0
+#0 283.1 Installing rdf 3.1.15
+#0 283.1 Fetching xpath 3.2.0
+#0 283.1 Installing loofah 2.10.0
+#0 283.3 Fetching equivalent-xml 0.6.0
+#0 283.3 Installing xpath 3.2.0
+#0 283.3 Fetching nokogumbo 2.0.5
+#0 283.5 Installing equivalent-xml 0.6.0
+#0 283.5 Fetching roo 2.8.3
+#0 283.6 Installing nokogumbo 2.0.5 with native extensions
+#0 283.7 Installing roo 2.8.3
+#0 283.7 Fetching omniauth 2.0.4
+#0 283.8 Installing omniauth 2.0.4
+#0 283.9 Fetching sidekiq 5.2.9
+#0 284.1 Installing sidekiq 5.2.9
+#0 284.1 Fetching faraday-encoding 0.0.4
+#0 284.3 Installing faraday-encoding 0.0.4
+#0 284.3 Fetching rsolr 2.0.2
+#0 284.4 Installing rsolr 2.0.2
+#0 284.5 Fetching faraday_middleware 0.14.0
+#0 284.6 Installing faraday_middleware 0.14.0
+#0 284.6 Fetching oauth2 1.4.7
+#0 284.9 Installing oauth2 1.4.7
+#0 284.9 Fetching solr_wrapper 1.1.0
+#0 285.0 Installing solr_wrapper 1.1.0
+#0 285.1 Fetching signet 0.16.0
+#0 285.2 Installing signet 0.16.0
+#0 285.2 Fetching json-schema 2.8.1
+#0 285.4 Installing json-schema 2.8.1
+#0 285.4 Fetching rubocop-ast 1.14.0
+#0 285.6 Installing rubocop-ast 1.14.0
+#0 285.6 Fetching aws-sdk-core 3.122.0
+#0 285.8 Installing aws-sdk-core 3.122.0
+#0 285.9 Fetching sprockets-es6 0.9.2
+#0 286.0 Installing sprockets-es6 0.9.2
+#0 286.1 Fetching webmock 3.14.0
+#0 286.2 Installing webmock 3.14.0
+#0 286.3 Fetching typhoeus 1.4.0
+#0 286.5 Installing typhoeus 1.4.0
+#0 286.5 Fetching sass-listen 4.0.0
+#0 286.8 Installing sass-listen 4.0.0
+#0 286.8 Fetching listen 3.7.0
+#0 286.9 Installing listen 3.7.0
+#0 286.9 Fetching httparty 0.20.0
+#0 287.1 Installing httparty 0.20.0
+#0 287.1 Fetching nest 3.2.0
+#0 287.2 Installing nest 3.2.0
+#0 287.2 Fetching webdrivers 5.0.0
+#0 287.4 Installing webdrivers 5.0.0
+#0 287.4 Fetching rails-dom-testing 2.0.3
+#0 287.5 Installing rails-dom-testing 2.0.3
+#0 287.6 Fetching globalid 1.0.0
+#0 287.7 Installing globalid 1.0.0
+#0 287.7 Fetching activemodel 5.2.7
+#0 287.9 Installing activemodel 5.2.7
+#0 287.9 Fetching deprecation 1.1.0
+#0 288.0 Installing deprecation 1.1.0
+#0 288.0 Fetching solrizer 4.1.0
+#0 288.2 Installing solrizer 4.1.0
+#0 288.2 Fetching jbuilder 2.11.2
+#0 288.3 Installing jbuilder 2.11.2
+#0 288.4 Fetching edtf 3.0.6
+#0 288.6 Installing edtf 3.0.6
+#0 288.6 Fetching factory_bot 6.1.0
+#0 288.8 Installing factory_bot 6.1.0
+#0 288.8 Fetching flipflop 2.6.0
+#0 288.9 Installing flipflop 2.6.0
+#0 289.0 Fetching hydra-file_characterization 1.1.2
+#0 289.2 Installing hydra-file_characterization 1.1.2
+#0 289.2 Fetching iiif_manifest 0.5.0
+#0 289.3 Installing iiif_manifest 0.5.0
+#0 289.4 Fetching iiif-image-api 0.2.0
+#0 289.5 Installing iiif-image-api 0.2.0
+#0 289.5 Fetching shoulda-matchers 5.0.0
+#0 289.7 Installing shoulda-matchers 5.0.0
+#0 289.7 Fetching dry-container 0.9.0
+#0 289.9 Installing dry-container 0.9.0
+#0 289.9 Fetching rdf-vocab 3.1.4
+#0 290.2 Installing rdf-vocab 3.1.4
+#0 290.3 Fetching json-ld 3.1.9
+#0 290.5 Installing json-ld 3.1.9
+#0 290.6 Fetching rdf-isomorphic 3.1.1
+#0 290.7 Installing rdf-isomorphic 3.1.1
+#0 290.7 Fetching sxp 1.1.0
+#0 290.9 Installing sxp 1.1.0
+#0 290.9 Fetching rdf-xsd 3.1.1
+#0 291.0 Installing rdf-xsd 3.1.1
+#0 291.0 Fetching rdf-aggregate-repo 3.1.0
+#0 291.2 Installing rdf-aggregate-repo 3.1.0
+#0 291.2 Fetching sparql-client 3.1.2
+#0 291.3 Installing sparql-client 3.1.2
+#0 291.3 Fetching rdf-json 3.1.0
+#0 291.5 Installing rdf-json 3.1.0
+#0 291.5 Fetching rdf-normalize 0.4.0
+#0 291.6 Installing rdf-normalize 0.4.0
+#0 291.6 Fetching ldpath 1.1.0
+#0 291.8 Installing ldpath 1.1.0
+#0 291.8 Fetching rails-html-sanitizer 1.4.2
+#0 291.9 Installing rails-html-sanitizer 1.4.2
+#0 291.9 Fetching capybara 3.36.0
+#0 292.2 Installing capybara 3.36.0
+#0 292.3 Fetching omniauth-shibboleth 1.3.0
+#0 292.6 Installing omniauth-shibboleth 1.3.0
+#0 292.6 Fetching sidekiq-limit_fetch 3.4.0
+#0 292.8 Installing sidekiq-limit_fetch 3.4.0
+#0 292.8 Fetching sidekiq-status 2.0.2
+#0 293.0 Installing sidekiq-status 2.0.2
+#0 293.1 Fetching oai 0.4.0
+#0 293.4 Installing oai 0.4.0
+#0 293.4 Fetching dropbox_api 0.1.18
+#0 293.6 Installing dropbox_api 0.1.18
+#0 293.8 Fetching ruby-box 1.15.0
+#0 293.9 Installing ruby-box 1.15.0
+#0 294.0 Fetching googleauth 0.17.1
+#0 294.1 Installing googleauth 0.17.1
+#0 294.1 Fetching rubocop 1.23.0
+#0 294.4 Installing rubocop 1.23.0
+#0 294.6 Fetching aws-sdk-kms 1.51.0
+#0 294.8 Installing aws-sdk-kms 1.51.0
+#0 294.8 Fetching sass 3.7.4
+#0 295.0 Installing sass 3.7.4
+#0 295.1 Fetching activejob 5.2.7
+#0 295.2 Installing activejob 5.2.7
+#0 295.3 Fetching activerecord 5.2.7
+#0 295.5 Installing activerecord 5.2.7
+#0 295.6 Fetching activemodel-serializers-xml 1.0.2
+#0 295.7 Installing activemodel-serializers-xml 1.0.2
+#0 295.7 Fetching carrierwave 1.3.2
+#0 295.9 Installing carrierwave 1.3.2
+#0 295.9 Fetching edtf-humanize 0.0.7
+#0 296.1 Installing edtf-humanize 0.0.7
+#0 296.1 Fetching dry-types 1.5.1
+#0 296.5 Installing dry-types 1.5.1
+#0 296.5 Fetching dry-transaction 0.13.3
+#0 296.6 Installing dry-transaction 0.13.3
+#0 296.6 Fetching active-triples 1.1.1
+#0 296.8 Installing active-triples 1.1.1
+#0 296.8 Fetching json-ld-preloaded 3.1.6
+#0 297.0 Installing json-ld-preloaded 3.1.6
+#0 297.0 Fetching ebnf 2.1.3
+#0 297.3 Installing ebnf 2.1.3
+#0 297.3 Fetching rdf-microdata 3.1.1
+#0 297.4 Installing rdf-microdata 3.1.1
+#0 297.4 Fetching rdf-reasoner 0.7.2
+#0 297.6 Installing rdf-reasoner 0.7.2
+#0 297.6 Fetching rdf-tabular 3.1.1
+#0 297.8 Installing rdf-tabular 3.1.1
+#0 297.8 Fetching rdf-trix 3.1.1
+#0 297.9 Installing rdf-trix 3.1.1
+#0 298.0 Fetching rdf-rdfa 3.1.0
+#0 298.1 Installing rdf-rdfa 3.1.0
+#0 298.1 Fetching actionview 5.2.7
+#0 298.5 Installing actionview 5.2.7
+#0 298.6 Fetching google-apis-core 0.4.1
+#0 298.7 Installing google-apis-core 0.4.1
+#0 298.7 Fetching rubocop-rails 2.12.4
+#0 298.9 Installing rubocop-rails 2.12.4
+#0 299.0 Fetching rubocop-rspec 2.6.0
+#0 299.1 Installing rubocop-rspec 2.6.0
+#0 299.2 Fetching aws-sdk-s3 1.105.0
+#0 299.4 Installing aws-sdk-s3 1.105.0
+#0 299.5 Fetching activerecord-import 1.2.0
+#0 299.6 Installing activerecord-import 1.2.0
+#0 299.7 Fetching awesome_nested_set 3.4.0
+#0 299.8 Installing awesome_nested_set 3.4.0
+#0 299.8 Fetching kaminari-activerecord 1.2.1
+#0 300.0 Installing kaminari-activerecord 1.2.1
+#0 300.0 Fetching dry-schema 1.8.0
+#0 300.1 Installing dry-schema 1.8.0
+#0 300.1 Fetching dry-struct 1.4.0
+#0 300.3 Installing dry-struct 1.4.0
+#0 300.4 Fetching rdf-turtle 3.1.3
+#0 300.5 Installing rdf-turtle 3.1.3
+#0 300.5 Fetching sparql 3.1.7
+#0 300.7 Installing sparql 3.1.7
+#0 300.8 Fetching rdf-rdfxml 3.1.1
+#0 300.9 Installing rdf-rdfxml 3.1.1
+#0 300.9 Fetching actionpack 5.2.7
+#0 301.1 Installing actionpack 5.2.7
+#0 301.2 Fetching kaminari-actionview 1.2.1
+#0 301.3 Installing kaminari-actionview 1.2.1
+#0 301.3 Fetching google-apis-discovery_v1 0.7.0
+#0 301.5 Installing google-apis-discovery_v1 0.7.0
+#0 301.5 Fetching google-apis-drive_v3 0.15.0
+#0 301.7 Installing google-apis-drive_v3 0.15.0
+#0 301.7 Fetching google-apis-sheets_v4 0.10.0
+#0 301.8 Installing google-apis-sheets_v4 0.10.0
+#0 301.9 Fetching dry-validation 1.7.0
+#0 302.0 Installing dry-validation 1.7.0
+#0 302.0 Fetching ldp 1.0.3
+#0 302.4 Installing ldp 1.0.3
+#0 302.4 Fetching rdf-trig 3.1.2
+#0 302.5 Installing rdf-trig 3.1.2
+#0 302.5 Fetching ld-patch 3.1.3
+#0 302.7 Installing ld-patch 3.1.3
+#0 302.7 Fetching rdf-n3 3.1.2
+#0 302.9 Installing rdf-n3 3.1.2
+#0 302.9 Fetching shex 0.6.2
+#0 303.1 Installing shex 0.6.2
+#0 303.1 Fetching actioncable 5.2.7
+#0 303.2 Installing actioncable 5.2.7
+#0 303.2 Fetching actionmailer 5.2.7
+#0 303.4 Installing actionmailer 5.2.7
+#0 303.4 Fetching activestorage 5.2.7
+#0 303.6 Installing activestorage 5.2.7
+#0 303.6 Fetching railties 5.2.7
+#0 303.8 Installing railties 5.2.7
+#0 303.9 Fetching sprockets-rails 3.4.2
+#0 304.1 Installing sprockets-rails 3.4.2
+#0 304.1 Fetching bootstrap_form 4.5.0
+#0 304.3 Installing bootstrap_form 4.5.0
+#0 304.4 Fetching simple_form 5.1.0
+#0 304.5 Installing simple_form 5.1.0
+#0 304.6 Fetching draper 4.0.2
+#0 304.7 Installing draper 4.0.2
+#0 304.8 Fetching noid-rails 3.0.3
+#0 304.9 Installing noid-rails 3.0.3
+#0 305.0 Fetching omniauth-rails_csrf_protection 1.0.0
+#0 305.1 Installing omniauth-rails_csrf_protection 1.0.0
+#0 305.1 Fetching kaminari 1.2.1
+#0 305.2 Installing kaminari 1.2.1
+#0 305.3 Fetching google-apis-generator 0.4.0
+#0 305.4 Installing google-apis-generator 0.4.0
+#0 305.4 Fetching google_drive 3.0.7
+#0 305.5 Installing google_drive 3.0.7
+#0 305.6 Fetching active-fedora 12.1.1
+#0 305.8 Installing active-fedora 12.1.1
+#0 305.9 Fetching jquery-rails 4.4.0
+#0 306.2 Installing jquery-rails 4.4.0
+#0 306.3 Fetching coffee-rails 4.2.2
+#0 306.4 Installing coffee-rails 4.2.2
+#0 306.4 Fetching responders 3.0.1
+#0 306.5 Installing responders 3.0.1
+#0 306.6 Fetching factory_bot_rails 6.1.0
+#0 306.7 Installing factory_bot_rails 6.1.0
+#0 306.7 Fetching font-awesome-rails 4.7.0.7
+#0 307.0 Installing font-awesome-rails 4.7.0.7
+#0 307.0 Fetching jquery-ui-rails 6.0.1
+#0 307.2 Installing jquery-ui-rails 6.0.1
+#0 307.3 Fetching tinymce-rails 4.9.11
+#0 307.5 Installing tinymce-rails 4.9.11
+#0 307.6 Fetching riiif 2.3.0
+#0 307.7 Installing riiif 2.3.0
+#0 307.7 Fetching rspec-rails 3.6.1
+#0 307.9 Installing rspec-rails 3.6.1
+#0 307.9 Fetching web-console 3.7.0
+#0 308.2 Installing web-console 3.7.0
+#0 308.2 Fetching rails 5.2.7
+#0 308.4 Installing rails 5.2.7
+#0 308.4 Fetching sass-rails 5.0.8
+#0 308.5 Installing sass-rails 5.0.8
+#0 308.5 Fetching kaminari_route_prefix 0.1.1
+#0 308.7 Installing kaminari_route_prefix 0.1.1
+#0 308.7 Fetching google-api-client 0.53.0
+#0 309.5 Installing google-api-client 0.53.0
+#0 310.6 Fetching hydra-pcdm 1.1.0
+#0 310.8 Installing hydra-pcdm 1.1.0
+#0 310.8 Fetching twitter-typeahead-rails 0.11.1.pre.corejavascript
+#0 310.9 Installing twitter-typeahead-rails 0.11.1.pre.corejavascript
+#0 311.0 Fetching flot-rails 0.0.7
+#0 311.1 Installing flot-rails 0.0.7
+#0 311.2 Fetching devise 4.8.0
+#0 311.3 Installing devise 4.8.0
+#0 311.4 Fetching active_encode 0.8.2
+#0 311.9 Installing active_encode 0.8.2
+#0 312.0 Fetching almond-rails 0.3.0
+#0 312.2 Installing almond-rails 0.3.0
+#0 312.2 Fetching openseadragon 0.6.0
+#0 312.5 Installing openseadragon 0.6.0
+#0 312.6 Fetching bulkrax 1.0.0
+#0 312.9 Installing bulkrax 1.0.0
+#0 313.0 Fetching mailboxer 0.15.1
+#0 313.2 Installing mailboxer 0.15.1
+#0 313.2 Fetching qa 5.7.0
+#0 313.7 Installing qa 5.7.0
+#0 314.0 Fetching rails_autolink 1.1.6
+#0 314.1 Installing rails_autolink 1.1.6
+#0 314.1 Using willow_sword 0.2.0 from https://github.com/notch8/willow_sword.git (at 0a669d7@0a669d7)
+#0 314.1 Fetching jquery-datatables-rails 3.4.0
+#0 314.4 Installing jquery-datatables-rails 3.4.0
+#0 314.4 Fetching browse-everything 1.1.2
+#0 314.7 Installing browse-everything 1.1.2
+#0 314.7 Fetching devise-guests 0.7.0
+#0 314.8 Installing devise-guests 0.7.0
+#0 314.8 Fetching hydra-derivatives 3.5.0
+#0 315.3 Installing hydra-derivatives 3.5.0
+#0 315.4 Fetching hydra-editor 5.0.1
+#0 315.5 Installing hydra-editor 5.0.1
+#0 315.5 Fetching hydra-works 1.2.0
+#0 315.8 Installing hydra-works 1.2.0
+#0 348.0 Fetching bootstrap-sass 3.4.1
+#0 348.3 Installing bootstrap-sass 3.4.1
+#0 348.4 Fetching blacklight 6.24.0
+#0 348.7 Installing blacklight 6.24.0
+#0 348.8 Fetching blacklight-access_controls 0.6.2
+#0 348.8 Fetching blacklight-gallery 0.12.0
+#0 348.8 Fetching blacklight_advanced_search 6.4.1
+#0 348.8 Fetching blacklight_oai_provider 6.0.0.pre1
+#0 349.0 Installing blacklight_oai_provider 6.0.0.pre1
+#0 349.0 Installing blacklight_advanced_search 6.4.1
+#0 349.0 Installing blacklight-access_controls 0.6.2
+#0 349.1 Installing blacklight-gallery 0.12.0
+#0 349.2 Fetching blacklight_range_limit 6.5.0
+#0 349.2 Fetching hydra-role-management 1.0.3
+#0 349.3 Fetching hydra-access-controls 11.0.7
+#0 349.4 Installing hydra-role-management 1.0.3
+#0 349.4 Installing blacklight_range_limit 6.5.0
+#0 349.4 Installing hydra-access-controls 11.0.7
+#0 349.5 Fetching hydra-core 11.0.7
+#0 349.7 Installing hydra-core 11.0.7
+#0 349.7 Fetching hydra-head 11.0.7
+#0 349.9 Installing hydra-head 11.0.7
+#0 349.9 Gem::Ext::BuildError: ERROR: Failed to build gem native extension.
+#0 349.9
+#0 349.9 current directory:
+#0 349.9 /opt/rh/rh-ruby26/root/usr/share/gems/gems/nokogumbo-2.0.5/ext/nokogumbo
+#0 349.9 /opt/rh/rh-ruby26/root/usr/bin/ruby -I /opt/rh/rh-ruby26/root/usr/share/rubygems
+#0 349.9 -r ./siteconf20220426-11-6yf7p6.rb extconf.rb
+#0 349.9
+#0 349.9 ERROR: It looks like you're trying to use Nokogiri as a precompiled native gem
+#0 349.9 on a system with glibc < 2.17:
+#0 349.9
+#0 349.9 /lib64/libm.so.6: version `GLIBC_2.29' not found (required by
+#0 349.9 /opt/rh/rh-ruby26/root/usr/share/gems/gems/nokogiri-1.13.4-aarch64-linux/lib/nokogiri/2.6/nokogiri.so)
+#0 349.9 -
+#0 349.9 /opt/rh/rh-ruby26/root/usr/share/gems/gems/nokogiri-1.13.4-aarch64-linux/lib/nokogiri/2.6/nokogiri.so
+#0 349.9
+#0 349.9   If that's the case, then please install Nokogiri via the `ruby` platform gem:
+#0 349.9       gem install nokogiri --platform=ruby
+#0 349.9   or:
+#0 349.9       bundle config set force_ruby_platform true
+#0 349.9
+#0 349.9 Please visit https://nokogiri.org/tutorials/installing_nokogiri.html for more
+#0 349.9 help.
+#0 349.9
+#0 349.9 *** extconf.rb failed ***
+#0 349.9 Could not create Makefile due to some reason, probably lack of necessary
+#0 349.9 libraries and/or headers.  Check the mkmf.log file for more details.  You may
+#0 349.9 need configuration options.
+#0 349.9
+#0 349.9 Provided configuration options:
+#0 349.9 	--with-opt-dir
+#0 349.9 	--without-opt-dir
+#0 349.9 	--with-opt-include
+#0 349.9 	--without-opt-include=${opt-dir}/include
+#0 349.9 	--with-opt-lib
+#0 349.9 	--without-opt-lib=${opt-dir}/lib64
+#0 349.9 	--with-make-prog
+#0 349.9 	--without-make-prog
+#0 349.9 	--srcdir=.
+#0 349.9 	--curdir
+#0 349.9 	--ruby=/opt/rh/rh-ruby26/root/usr/bin/$(RUBY_BASE_NAME)
+#0 349.9 /opt/rh/rh-ruby26/root/usr/share/gems/gems/nokogiri-1.13.4-aarch64-linux/lib/nokogiri/extension.rb:7:in
+#0 349.9 `require_relative': /lib64/libm.so.6: version `GLIBC_2.29' not found (required
+#0 349.9 by
+#0 349.9 /opt/rh/rh-ruby26/root/usr/share/gems/gems/nokogiri-1.13.4-aarch64-linux/lib/nokogiri/2.6/nokogiri.so)
+#0 349.9 -
+#0 349.9 /opt/rh/rh-ruby26/root/usr/share/gems/gems/nokogiri-1.13.4-aarch64-linux/lib/nokogiri/2.6/nokogiri.so
+#0 349.9 (LoadError)
+#0 349.9 from
+#0 349.9 /opt/rh/rh-ruby26/root/usr/share/gems/gems/nokogiri-1.13.4-aarch64-linux/lib/nokogiri/extension.rb:7:in
+#0 349.9 `<top (required)>'
+#0 349.9 from
+#0 349.9 /opt/rh/rh-ruby26/root/usr/share/gems/gems/nokogiri-1.13.4-aarch64-linux/lib/nokogiri.rb:10:in
+#0 349.9 `require_relative'
+#0 349.9 from
+#0 349.9 /opt/rh/rh-ruby26/root/usr/share/gems/gems/nokogiri-1.13.4-aarch64-linux/lib/nokogiri.rb:10:in
+#0 349.9 `<top (required)>'
+#0 349.9 from
+#0 349.9 /opt/rh/rh-ruby26/root/usr/share/rubygems/rubygems/core_ext/kernel_require.rb:130:in
+#0 349.9 `require'
+#0 349.9 from
+#0 349.9 /opt/rh/rh-ruby26/root/usr/share/rubygems/rubygems/core_ext/kernel_require.rb:130:in
+#0 349.9 `rescue in require'
+#0 349.9 from
+#0 349.9 /opt/rh/rh-ruby26/root/usr/share/rubygems/rubygems/core_ext/kernel_require.rb:34:in
+#0 349.9 `require'
+#0 349.9 	from extconf.rb:4:in `<main>'
+#0 349.9 /opt/rh/rh-ruby26/root/usr/share/rubygems/rubygems/core_ext/kernel_require.rb:54:in
+#0 349.9 `require': cannot load such file -- nokogiri (LoadError)
+#0 349.9 from
+#0 349.9 /opt/rh/rh-ruby26/root/usr/share/rubygems/rubygems/core_ext/kernel_require.rb:54:in
+#0 349.9 `require'
+#0 349.9 	from extconf.rb:4:in `<main>'
+#0 349.9
+#0 349.9 extconf failed, exit code 1
+#0 349.9
+#0 349.9 Gem files will remain installed in
+#0 349.9 /opt/rh/rh-ruby26/root/usr/share/gems/gems/nokogumbo-2.0.5 for inspection.
+#0 349.9 Results logged to
+#0 349.9 /opt/rh/rh-ruby26/root/usr/lib64/gems/ruby/nokogumbo-2.0.5/gem_make.out
+#0 349.9
+#0 349.9   /opt/rh/rh-ruby26/root/usr/share/rubygems/rubygems/ext/builder.rb:99:in `run'
+#0 349.9 /opt/rh/rh-ruby26/root/usr/share/rubygems/rubygems/ext/ext_conf_builder.rb:47:in
+#0 349.9 `block in build'
+#0 349.9   /opt/rh/rh-ruby26/root/usr/share/ruby/tempfile.rb:295:in `open'
+#0 349.9 /opt/rh/rh-ruby26/root/usr/share/rubygems/rubygems/ext/ext_conf_builder.rb:29:in
+#0 349.9 `build'
+#0 349.9 /opt/rh/rh-ruby26/root/usr/share/rubygems/rubygems/ext/builder.rb:185:in
+#0 349.9 `block in build_extension'
+#0 349.9   /opt/rh/rh-ruby26/root/usr/share/ruby/monitor.rb:235:in `mon_synchronize'
+#0 349.9 /opt/rh/rh-ruby26/root/usr/share/rubygems/rubygems/ext/builder.rb:181:in
+#0 349.9 `build_extension'
+#0 349.9 /opt/rh/rh-ruby26/root/usr/share/rubygems/rubygems/ext/builder.rb:229:in
+#0 349.9 `block in build_extensions'
+#0 349.9 /opt/rh/rh-ruby26/root/usr/share/rubygems/rubygems/ext/builder.rb:226:in
+#0 349.9 `each'
+#0 349.9 /opt/rh/rh-ruby26/root/usr/share/rubygems/rubygems/ext/builder.rb:226:in
+#0 349.9 `build_extensions'
+#0 349.9 /opt/rh/rh-ruby26/root/usr/share/rubygems/rubygems/installer.rb:830:in
+#0 349.9 `build_extensions'
+#0 349.9 /opt/rh/rh-ruby26/root/usr/local/share/gems/gems/bundler-2.2.33/lib/bundler/rubygems_gem_installer.rb:71:in
+#0 349.9 `build_extensions'
+#0 349.9 /opt/rh/rh-ruby26/root/usr/local/share/gems/gems/bundler-2.2.33/lib/bundler/rubygems_gem_installer.rb:28:in
+#0 349.9 `install'
+#0 349.9 /opt/rh/rh-ruby26/root/usr/local/share/gems/gems/bundler-2.2.33/lib/bundler/source/rubygems.rb:204:in
+#0 349.9 `install'
+#0 349.9 /opt/rh/rh-ruby26/root/usr/local/share/gems/gems/bundler-2.2.33/lib/bundler/installer/gem_installer.rb:54:in
+#0 349.9 `install'
+#0 349.9 /opt/rh/rh-ruby26/root/usr/local/share/gems/gems/bundler-2.2.33/lib/bundler/installer/gem_installer.rb:16:in
+#0 349.9 `install_from_spec'
+#0 349.9 /opt/rh/rh-ruby26/root/usr/local/share/gems/gems/bundler-2.2.33/lib/bundler/installer/parallel_installer.rb:186:in
+#0 349.9 `do_install'
+#0 349.9 /opt/rh/rh-ruby26/root/usr/local/share/gems/gems/bundler-2.2.33/lib/bundler/installer/parallel_installer.rb:177:in
+#0 349.9 `block in worker_pool'
+#0 349.9 /opt/rh/rh-ruby26/root/usr/local/share/gems/gems/bundler-2.2.33/lib/bundler/worker.rb:62:in
+#0 349.9 `apply_func'
+#0 349.9 /opt/rh/rh-ruby26/root/usr/local/share/gems/gems/bundler-2.2.33/lib/bundler/worker.rb:57:in
+#0 349.9 `block in process_queue'
+#0 349.9 /opt/rh/rh-ruby26/root/usr/local/share/gems/gems/bundler-2.2.33/lib/bundler/worker.rb:54:in
+#0 349.9 `loop'
+#0 349.9 /opt/rh/rh-ruby26/root/usr/local/share/gems/gems/bundler-2.2.33/lib/bundler/worker.rb:54:in
+#0 349.9 `process_queue'
+#0 349.9 /opt/rh/rh-ruby26/root/usr/local/share/gems/gems/bundler-2.2.33/lib/bundler/worker.rb:91:in
+#0 349.9 `block (2 levels) in create_threads'
+#0 349.9
+#0 349.9 An error occurred while installing nokogumbo (2.0.5), and Bundler cannot
+#0 349.9 continue.
+#0 349.9
+#0 349.9 In Gemfile:
+#0 349.9   hyrax was resolved to 2.9.6, which depends on
+#0 349.9     linkeddata was resolved to 3.1.1, which depends on
+#0 349.9       nokogumbo
+#0 349.9
+#0 349.9
+#0 349.9 Gem::Ext::BuildError: ERROR: Failed to build gem native extension.
+#0 349.9
+#0 349.9 current directory:
+#0 349.9 /opt/rh/rh-ruby26/root/usr/share/gems/gems/libv8-7.3.492.27.1/ext/libv8
+#0 349.9 /opt/rh/rh-ruby26/root/usr/bin/ruby -I /opt/rh/rh-ruby26/root/usr/share/rubygems
+#0 349.9 -r ./siteconf20220426-11-5se54e.rb extconf.rb
+#0 349.9 creating Makefile
+#0 349.9 WARNING: Your metrics.cfg file was invalid or nonexistent. A new one will be
+#0 349.9 created.
+#0 349.9
+#0 349.9 ________ running 'git -c core.deltaBaseCacheLimit=2g clone --no-checkout
+#0 349.9 --progress https://chromium.googlesource.com/v8/v8.git
+#0 349.9 /opt/rh/rh-ruby26/root/usr/share/gems/gems/libv8-7.3.492.27.1/vendor/_gclient_v8_CxxBeR'
+#0 349.9 in '/opt/rh/rh-ruby26/root/usr/share/gems/gems/libv8-7.3.492.27.1/vendor'
+#0 349.9 Cloning into
+#0 349.9 '/opt/rh/rh-ruby26/root/usr/share/gems/gems/libv8-7.3.492.27.1/vendor/_gclient_v8_CxxBeR'...
+#0 349.9 remote: Sending approximately 994.77 MiB ...
+remote: Counting objects: 7461, done
+remote: Finding sources:  40%ces:  20% (1/5)
+remote: Finding sources:  60% (3/5)
+remote: Finding sources: 100% (5/5)
+#0 349.9 remote: Finding sources: 100% (5/5)
+Receiving objects:   1% (9169/916822)   22)
+Receiving objects:   3%cts:   2% (18337/916822)
+Receiving objects:   4%, 7.75 MiB | 13.36 MiB/s
+Receiving objects:   4%, 7.75 MiB | 13.36 MiB/s
+Receiving objects:   5%, 7.75 MiB | 13.36 MiB/s
+Receiving objects:   6%, 7.75 MiB | 13.36 MiB/s
+Receiving objects:   7%, 21.20 MiB | 19.60 MiB/s
+Receiving objects:   8%, 21.20 MiB | 19.60 MiB/s
+Receiving objects:   9%, 21.20 MiB | 19.60 MiB/s
+Receiving objects:  10%, 33.98 MiB | 21.48 MiB/s
+Receiving objects:  11%, 33.98 MiB | 21.48 MiB/s
+Receiving objects:  11%), 33.98 MiB | 21.48 MiB/s
+Receiving objects:  12%), 33.98 MiB | 21.48 MiB/s
+Receiving objects:  13%), 33.98 MiB | 21.48 MiB/s
+Receiving objects:  14%), 48.25 MiB | 23.16 MiB/s
+Receiving objects:  15%), 48.25 MiB | 23.16 MiB/s
+Receiving objects:  16%), 63.38 MiB | 24.53 MiB/s
+Receiving objects:  16%), 63.38 MiB | 24.53 MiB/s
+Receiving objects:  17%), 63.38 MiB | 24.53 MiB/s
+Receiving objects:  18%), 63.38 MiB | 24.53 MiB/s
+Receiving objects:  19%), 81.79 MiB | 26.49 MiB/s
+Receiving objects:  20%), 81.79 MiB | 26.49 MiB/s
+Receiving objects:  20%), 96.66 MiB | 25.78 MiB/s
+Receiving objects:  21%), 96.66 MiB | 25.78 MiB/s
+Receiving objects:  22%), 96.66 MiB | 25.78 MiB/s
+Receiving objects:  23%), 96.66 MiB | 25.78 MiB/s
+Receiving objects:  24%), 113.53 MiB | 26.68 MiB/s
+Receiving objects:  25%), 113.53 MiB | 26.68 MiB/s
+Receiving objects:  25%), 123.53 MiB | 25.97 MiB/s
+Receiving objects:  26%), 123.53 MiB | 25.97 MiB/s
+Receiving objects:  27%), 123.53 MiB | 25.97 MiB/s
+Receiving objects:  28%), 123.53 MiB | 25.97 MiB/s
+Receiving objects:  29%), 139.46 MiB | 28.16 MiB/s
+Receiving objects:  30%), 139.46 MiB | 28.16 MiB/s
+Receiving objects:  30%), 155.77 MiB | 28.76 MiB/s
+Receiving objects:  31%), 155.77 MiB | 28.76 MiB/s
+Receiving objects:  32%), 155.77 MiB | 28.76 MiB/s
+Receiving objects:  33%), 163.56 MiB | 27.70 MiB/s
+Receiving objects:  34%), 163.56 MiB | 27.70 MiB/s
+Receiving objects:  35%), 163.56 MiB | 27.70 MiB/s
+Receiving objects:  36%), 177.07 MiB | 27.53 MiB/s
+Receiving objects:  37%), 177.07 MiB | 27.53 MiB/s
+Receiving objects:  38%), 177.07 MiB | 27.53 MiB/s
+Receiving objects:  39%), 177.07 MiB | 27.53 MiB/s
+Receiving objects:  40%), 177.07 MiB | 27.53 MiB/s
+Receiving objects:  41%), 177.07 MiB | 27.53 MiB/s
+Receiving objects:  42%), 177.07 MiB | 27.53 MiB/s
+Receiving objects:  42%), 177.07 MiB | 27.53 MiB/s
+Receiving objects:  43%), 177.07 MiB | 27.53 MiB/s
+Receiving objects:  44%), 177.07 MiB | 27.53 MiB/s
+Receiving objects:  45%), 177.07 MiB | 27.53 MiB/s
+Receiving objects:  46%), 177.07 MiB | 27.53 MiB/s
+Receiving objects:  47%), 177.07 MiB | 27.53 MiB/s
+Receiving objects:  48%), 177.07 MiB | 27.53 MiB/s
+Receiving objects:  49%), 177.07 MiB | 27.53 MiB/s
+Receiving objects:  50%), 177.07 MiB | 27.53 MiB/s
+Receiving objects:  51%), 177.07 MiB | 27.53 MiB/s
+Receiving objects:  52%), 189.82 MiB | 27.00 MiB/s
+Receiving objects:  53%), 189.82 MiB | 27.00 MiB/s
+Receiving objects:  54%), 189.82 MiB | 27.00 MiB/s
+Receiving objects:  55%), 189.82 MiB | 27.00 MiB/s
+Receiving objects:  55%), 189.82 MiB | 27.00 MiB/s
+Receiving objects:  56%), 196.95 MiB | 24.60 MiB/s
+Receiving objects:  57%), 211.13 MiB | 25.32 MiB/s
+Receiving objects:  57%), 223.23 MiB | 24.29 MiB/s
+Receiving objects:  57%), 223.23 MiB | 24.29 MiB/s
+Receiving objects:  58%), 233.87 MiB | 22.87 MiB/s
+Receiving objects:  58%), 243.30 MiB | 21.51 MiB/s
+Receiving objects:  58%), 253.36 MiB | 20.19 MiB/s
+Receiving objects:  59%), 269.04 MiB | 19.01 MiB/s
+Receiving objects:  59%), 277.64 MiB | 18.17 MiB/s
+Receiving objects:  59%), 289.97 MiB | 19.20 MiB/s
+Receiving objects:  59%), 304.34 MiB | 16.61 MiB/s
+Receiving objects:  60%), 319.96 MiB | 16.74 MiB/s
+Receiving objects:  60%), 330.83 MiB | 15.31 MiB/s
+Receiving objects:  60%), 330.83 MiB | 15.31 MiB/s
+Receiving objects:  60%), 346.08 MiB | 14.94 MiB/s
+Receiving objects:  61%), 358.33 MiB | 12.41 MiB/s
+Receiving objects:  61%), 364.53 MiB | 13.28 MiB/s
+Receiving objects:  61%), 370.70 MiB | 12.50 MiB/s
+Receiving objects:  61%), 385.76 MiB | 13.44 MiB/s
+Receiving objects:  62%), 398.22 MiB | 13.46 MiB/s
+Receiving objects:  62%), 406.73 MiB | 13.33 MiB/s
+Receiving objects:  62%), 413.62 MiB | 13.18 MiB/s
+Receiving objects:  62%), 430.37 MiB | 14.45 MiB/s
+Receiving objects:  63%), 449.08 MiB | 15.48 MiB/s
+Receiving objects:  63%), 455.42 MiB | 15.09 MiB/s
+Receiving objects:  63%), 466.85 MiB | 16.00 MiB/s
+Receiving objects:  64%), 481.79 MiB | 16.15 MiB/s
+Receiving objects:  64%), 486.66 MiB | 15.70 MiB/s
+Receiving objects:  64%), 493.03 MiB | 15.45 MiB/s
+Receiving objects:  64%), 509.78 MiB | 14.99 MiB/s
+Receiving objects:  65%), 521.25 MiB | 14.43 MiB/s
+Receiving objects:  65%), 521.25 MiB | 14.43 MiB/s
+Receiving objects:  65%), 534.02 MiB | 12.55 MiB/s
+Receiving objects:  65%), 546.58 MiB | 12.20 MiB/s
+Receiving objects:  66%), 554.55 MiB | 12.54 MiB/s
+Receiving objects:  66%), 562.26 MiB | 12.58 MiB/s
+Receiving objects:  66%), 571.70 MiB | 12.60 MiB/s
+Receiving objects:  67%), 584.89 MiB | 12.96 MiB/s
+Receiving objects:  67%), 591.25 MiB | 12.69 MiB/s
+Receiving objects:  67%), 599.12 MiB | 13.28 MiB/s
+Receiving objects:  68%), 607.50 MiB | 13.47 MiB/s
+Receiving objects:  68%), 613.37 MiB | 13.00 MiB/s
+Receiving objects:  68%), 618.99 MiB | 12.55 MiB/s
+Receiving objects:  69%), 627.15 MiB | 10.82 MiB/s
+Receiving objects:  69%), 636.24 MiB | 11.36 MiB/s
+Receiving objects:  69%), 645.67 MiB | 12.04 MiB/s
+Receiving objects:  70%), 661.42 MiB | 12.84 MiB/s
+Receiving objects:  70%), 669.34 MiB | 13.67 MiB/s
+Receiving objects:  70%), 676.42 MiB | 13.94 MiB/s
+Receiving objects:  71%), 695.22 MiB | 15.68 MiB/s
+Receiving objects:  71%), 695.22 MiB | 15.68 MiB/s
+Receiving objects:  71%), 710.99 MiB | 16.47 MiB/s
+Receiving objects:  72%), 730.27 MiB | 17.02 MiB/s
+Receiving objects:  72%), 738.33 MiB | 16.99 MiB/s
+Receiving objects:  72%), 746.26 MiB | 16.59 MiB/s
+Receiving objects:  72%), 755.74 MiB | 17.11 MiB/s
+Receiving objects:  73%), 770.45 MiB | 16.25 MiB/s
+[0:01:00] Still working on:70.45 MiB | 16.25 MiB/s
+#0 349.9 [0:01:00]   v8
+ReceivingReceiving objects:  73% (672787/916822), 788.06 MiB | 16.66 MiB/s
+Receiving objects: 73% (676341/916822), 803.56 MiB | 15.84 MiB/s
+Receiving objects:  74%6822), 816.80 MiB | 15.56 MiB/s
+Receiving objects:  74%), 816.80 MiB | 15.56 MiB/s
+Receiving objects:  75%), 831.20 MiB | 15.28 MiB/s
+Receiving objects:  75%), 844.14 MiB | 14.21 MiB/s
+Receiving objects:  75%), 844.14 MiB | 14.21 MiB/s
+Receiving objects:  76%), 861.41 MiB | 14.38 MiB/s
+Receiving objects:  76%), 871.86 MiB | 15.08 MiB/s
+Receiving objects:  76%), 886.57 MiB | 17.19 MiB/s
+Receiving objects:  77%), 907.70 MiB | 18.95 MiB/s
+Receiving objects:  77%), 919.37 MiB | 19.53 MiB/s
+Receiving objects:  78%), 930.52 MiB | 20.66 MiB/s
+Receiving objects:  79%), 949.13 MiB | 21.13 MiB/s
+Receiving objects:  80%), 949.13 MiB | 21.13 MiB/s
+Receiving objects:  81%), 949.13 MiB | 21.13 MiB/s
+Receiving objects:  81%), 949.13 MiB | 21.13 MiB/s
+Receiving objects:  82%), 949.13 MiB | 21.13 MiB/s
+Receiving objects:  83%), 959.07 MiB | 21.63 MiB/s
+Receiving objects:  84%), 959.07 MiB | 21.63 MiB/s
+Receiving objects:  85%), 959.07 MiB | 21.63 MiB/s
+Receiving objects:  86%), 959.07 MiB | 21.63 MiB/s
+Receiving objects:  87%), 959.07 MiB | 21.63 MiB/s
+Receiving objects:  88%), 959.07 MiB | 21.63 MiB/s
+Receiving objects:  89%), 959.07 MiB | 21.63 MiB/s
+Receiving objects:  90%), 968.51 MiB | 21.39 MiB/s
+Receiving objects:  91%), 968.51 MiB | 21.39 MiB/s
+Receiving objects:  92%), 968.51 MiB | 21.39 MiB/s
+[0:01:10] Still working on:68.51 MiB | 21.39 MiB/s
+#0 349.9 [0:01:10]   v8
+ReceivingReceiving objects:  92% (848203/916822), 968.51 MiB | 21.39 MiB/s
+Receiving objects: 93% (852645/916822), 968.51 MiB | 21.39 MiB/s
+Receiving objects:  95%6822), 981.88 MiB | 21.05 MiB/s
+Receiving objects:  96%), 981.88 MiB | 21.05 MiB/s
+Receiving objects:  97%), 981.88 MiB | 21.05 MiB/s
+Receiving objects:  98%), 981.88 MiB | 21.05 MiB/s
+Receiving objects:  99%), 981.88 MiB | 21.05 MiB/s
+remote: Total 916822 (delta92.44 MiB | 20.30 MiB/s
+#0 349.9 726127), reused 916820 (delta 726127)
+ReceivingReceiving objects: 100% (916822/916822), 992.44 MiB | 20.30 MiB/s
+#0 349.9 objects: 100% (916822/916822), 994.50 MiB | 21.04 MiB/s, done.
+Resolving deltas:   1% (7266/726127)   27)
+Resolving deltas:   3% (21790/726127)  726127)
+Resolving deltas:   5% (36313/726127)  726127)
+Resolving deltas:   7% (50831/726127)  726127)
+Resolving deltas:   9% (65353/726127)  726127)
+Resolving deltas:  11% (79877/726127)  726127)
+Resolving deltas:  12% (91349/726127)  726127)
+Resolving deltas:  14% (101681/726127) 726127)
+Resolving deltas:  16% (116473/726127)5/726127)
+Resolving deltas:  18% (132135/726127)7/726127)
+Resolving deltas:  20% (145231/726127)6/726127)
+Resolving deltas:  22% (159760/726127)6/726127)
+Resolving deltas:  24% (174339/726127)5/726127)
+Resolving deltas:  25% (181566/726127)5/726127)
+Resolving deltas:  27% (196157/726127)1/726127)
+Resolving deltas:  29% (210595/726127)8/726127)
+Resolving deltas:  31% (226230/726127)2/726127)
+Resolving deltas:  33% (239638/726127)8/726127)
+Resolving deltas:  35% (255489/726127)8/726127)
+Resolving deltas:  37% (268705/726127)0/726127)
+Resolving deltas:  38% (280628/726127)5/726127)
+Resolving deltas:  40% (290542/726127)0/726127)
+Resolving deltas:  42% (305155/726127)8/726127)
+Resolving deltas:  44% (319549/726127)5/726127)
+Resolving deltas:  46% (334302/726127)7/726127)
+Resolving deltas:  48% (348543/726127)7/726127)
+Resolving deltas:  50% (363069/726127)1/726127)
+Resolving deltas:  52% (381803/726127)6/726127)
+Resolving deltas:  54% (392129/726127)1/726127)
+Resolving deltas:  55% (399501/726127)3/726127)
+Resolving deltas:  56% (406658/726127)9/726127)
+Resolving deltas:  57% (415786/726127)6/726127)
+Resolving deltas:  59% (428418/726127)2/726127)
+Resolving deltas:  60% (435724/726127)8/726127)
+Resolving deltas:  62% (450268/726127)8/726127)
+Resolving deltas:  63% (459256/726127)4/726127)
+#0 349.9 [0:01:20] Still working on:
+#0 349.9 [0:01:20]   v8
+Resolving deltas:  64% (469887/726127)2/726127)
+Resolving deltas:  65% (478861/726127)1/726127)
+Resolving deltas:  67% (486516/726127)4/726127)
+Resolving deltas:  68% (493852/726127)8/726127)
+Resolving deltas:  69% (501030/726127)2/726127)
+Resolving deltas:  70% (508929/726127)2/726127)
+Resolving deltas:  71% (518302/726127)5/726127)
+Resolving deltas:  72% (525227/726127)6/726127)
+Resolving deltas:  73% (530077/726127)5/726127)
+Resolving deltas:  74% (537337/726127)0/726127)
+[0:01:30] Still working on: 74% (542775/726127)
+#0 349.9 [0:01:30]   v8
+Resolving deltas:  76% (552015/726127)8/726127)
+Resolving deltas:  77% (559149/726127)1/726127)
+Resolving deltas:  78% (566393/726127)6/726127)
+Resolving deltas:  79% (574086/726127)7/726127)
+Resolving deltas:  80% (583965/726127)2/726127)
+Resolving deltas:  81% (592385/726127)3/726127)
+Resolving deltas:  83% (602792/726127)1/726127)
+Resolving deltas:  84% (610434/726127)0/726127)
+Resolving deltas:  85% (618592/726127)3/726127)
+Resolving deltas:  86% (628835/726127)3/726127)
+[0:01:40] Still working on: 87% (632213/726127)
+#0 349.9 [0:01:40]   v8
+Resolving deltas:  88% (639603/726127)7/726127)
+Resolving deltas:  89% (646286/726127)4/726127)
+Resolving deltas:  89% (650972/726127)5/726127)
+Resolving deltas:  90% (658157/726127)0/726127)
+Resolving deltas:  91% (666713/726127)6/726127)
+Resolving deltas:  92% (671273/726127)8/726127)
+Resolving deltas:  94% (682586/726127)3/726127)
+Resolving deltas:  95% (690804/726127)7/726127)
+Resolving deltas:  97% (706367/726127)4/726127)
+#0 349.9 [0:01:50] Still working on:
+#0 349.9 [0:01:50]   v8
+Resolving deltas:  98% (712253/726127)9/726127)
+Resolving deltas:  99% (718943/726127)7/726127)
+Resolving deltas: 100% (726127/726127)2/726127)
+#0 349.9 Resolving deltas: 100% (726127/726127), done.
+#0 349.9 [0:02:00] Still working on:
+#0 349.9 [0:02:00]   v8
+#0 349.9 [0:02:10] Still working on:
+#0 349.9 [0:02:10]   v8
+#0 349.9 [0:02:20] Still working on:
+#0 349.9 [0:02:20]   v8
+#0 349.9 [0:02:26] Still working on:
+#0 349.9 [0:02:26]   v8
+#0 349.9 Traceback (most recent call last):
+#0 349.9 File
+#0 349.9 "/opt/rh/rh-ruby26/root/usr/share/gems/gems/libv8-7.3.492.27.1/vendor/depot_tools/metrics.py",
+#0 349.9 line 266, in print_notice_and_exit
+#0 349.9     yield
+#0 349.9 File
+#0 349.9 "/opt/rh/rh-ruby26/root/usr/share/gems/gems/libv8-7.3.492.27.1/vendor/depot_tools/gclient.py",
+#0 349.9 line 3155, in <module>
+#0 349.9     sys.exit(main(sys.argv[1:]))
+#0 349.9 File
+#0 349.9 "/opt/rh/rh-ruby26/root/usr/share/gems/gems/libv8-7.3.492.27.1/vendor/depot_tools/gclient.py",
+#0 349.9 line 3141, in main
+#0 349.9     return dispatcher.execute(OptionParser(), argv)
+#0 349.9 File
+#0 349.9 "/opt/rh/rh-ruby26/root/usr/share/gems/gems/libv8-7.3.492.27.1/vendor/depot_tools/subcommand.py",
+#0 349.9 line 252, in execute
+#0 349.9     return command(parser, args[1:])
+#0 349.9 File
+#0 349.9 "/opt/rh/rh-ruby26/root/usr/share/gems/gems/libv8-7.3.492.27.1/vendor/depot_tools/gclient.py",
+#0 349.9 line 2699, in CMDsync
+#0 349.9     ret = client.RunOnDeps('update', args)
+#0 349.9 File
+#0 349.9 "/opt/rh/rh-ruby26/root/usr/share/gems/gems/libv8-7.3.492.27.1/vendor/depot_tools/gclient.py",
+#0 349.9 line 1755, in RunOnDeps
+#0 349.9     gn_args_dep.WriteGNArgsFile()
+#0 349.9 File
+#0 349.9 "/opt/rh/rh-ruby26/root/usr/share/gems/gems/libv8-7.3.492.27.1/vendor/depot_tools/gclient.py",
+#0 349.9 line 1022, in WriteGNArgsFile
+#0 349.9     with open(os.path.join(self.root.root_dir, self._gn_args_file), 'w') as f:
+#0 349.9 IOError: [Errno 2] No such file or directory:
+#0 349.9 '/opt/rh/rh-ruby26/root/usr/share/gems/gems/libv8-7.3.492.27.1/vendor/build/config/gclient_args.gni'
+#0 349.9 Running: gclient root
+#0 349.9 Running: gclient config --spec 'solutions = [
+#0 349.9   {
+#0 349.9     "url": "https://chromium.googlesource.com/v8/v8.git",
+#0 349.9     "managed": False,
+#0 349.9     "name": "v8",
+#0 349.9     "deps_file": "DEPS",
+#0 349.9     "custom_deps": {},
+#0 349.9   },
+#0 349.9 ]
+#0 349.9 '
+#0 349.9 Running: gclient sync --with_branch_heads
+#0 349.9 Subprocess failed with return code 1.
+#0 349.9 /opt/rh/rh-ruby26/root/usr/share/gems/gems/libv8-7.3.492.27.1/ext/libv8/builder.rb:83:in
+#0 349.9 `block in setup_build_deps!': unable to fetch v8 source (RuntimeError)
+#0 349.9 from
+#0 349.9 /opt/rh/rh-ruby26/root/usr/share/gems/gems/libv8-7.3.492.27.1/ext/libv8/builder.rb:81:in
+#0 349.9 `chdir'
+#0 349.9 from
+#0 349.9 /opt/rh/rh-ruby26/root/usr/share/gems/gems/libv8-7.3.492.27.1/ext/libv8/builder.rb:81:in
+#0 349.9 `setup_build_deps!'
+#0 349.9 from
+#0 349.9 /opt/rh/rh-ruby26/root/usr/share/gems/gems/libv8-7.3.492.27.1/ext/libv8/builder.rb:40:in
+#0 349.9 `build_libv8!'
+#0 349.9 from
+#0 349.9 /opt/rh/rh-ruby26/root/usr/share/gems/gems/libv8-7.3.492.27.1/ext/libv8/location.rb:24:in
+#0 349.9 `install!'
+#0 349.9 	from extconf.rb:7:in `<main>'
+#0 349.9
+#0 349.9 extconf failed, exit code 1
+#0 349.9
+#0 349.9 Gem files will remain installed in
+#0 349.9 /opt/rh/rh-ruby26/root/usr/share/gems/gems/libv8-7.3.492.27.1 for inspection.
+#0 349.9 Results logged to
+#0 349.9 /opt/rh/rh-ruby26/root/usr/lib64/gems/ruby/libv8-7.3.492.27.1/gem_make.out
+#0 349.9
+#0 349.9   /opt/rh/rh-ruby26/root/usr/share/rubygems/rubygems/ext/builder.rb:99:in `run'
+#0 349.9 /opt/rh/rh-ruby26/root/usr/share/rubygems/rubygems/ext/ext_conf_builder.rb:47:in
+#0 349.9 `block in build'
+#0 349.9   /opt/rh/rh-ruby26/root/usr/share/ruby/tempfile.rb:295:in `open'
+#0 349.9 /opt/rh/rh-ruby26/root/usr/share/rubygems/rubygems/ext/ext_conf_builder.rb:29:in
+#0 349.9 `build'
+#0 349.9 /opt/rh/rh-ruby26/root/usr/share/rubygems/rubygems/ext/builder.rb:185:in
+#0 349.9 `block in build_extension'
+#0 349.9   /opt/rh/rh-ruby26/root/usr/share/ruby/monitor.rb:235:in `mon_synchronize'
+#0 349.9 /opt/rh/rh-ruby26/root/usr/share/rubygems/rubygems/ext/builder.rb:181:in
+#0 349.9 `build_extension'
+#0 349.9 /opt/rh/rh-ruby26/root/usr/share/rubygems/rubygems/ext/builder.rb:229:in
+#0 349.9 `block in build_extensions'
+#0 349.9 /opt/rh/rh-ruby26/root/usr/share/rubygems/rubygems/ext/builder.rb:226:in
+#0 349.9 `each'
+#0 349.9 /opt/rh/rh-ruby26/root/usr/share/rubygems/rubygems/ext/builder.rb:226:in
+#0 349.9 `build_extensions'
+#0 349.9 /opt/rh/rh-ruby26/root/usr/share/rubygems/rubygems/installer.rb:830:in
+#0 349.9 `build_extensions'
+#0 349.9 /opt/rh/rh-ruby26/root/usr/local/share/gems/gems/bundler-2.2.33/lib/bundler/rubygems_gem_installer.rb:71:in
+#0 349.9 `build_extensions'
+#0 349.9 /opt/rh/rh-ruby26/root/usr/local/share/gems/gems/bundler-2.2.33/lib/bundler/rubygems_gem_installer.rb:28:in
+#0 349.9 `install'
+#0 349.9 /opt/rh/rh-ruby26/root/usr/local/share/gems/gems/bundler-2.2.33/lib/bundler/source/rubygems.rb:204:in
+#0 349.9 `install'
+#0 349.9 /opt/rh/rh-ruby26/root/usr/local/share/gems/gems/bundler-2.2.33/lib/bundler/installer/gem_installer.rb:54:in
+#0 349.9 `install'
+#0 349.9 /opt/rh/rh-ruby26/root/usr/local/share/gems/gems/bundler-2.2.33/lib/bundler/installer/gem_installer.rb:16:in
+#0 349.9 `install_from_spec'
+#0 349.9 /opt/rh/rh-ruby26/root/usr/local/share/gems/gems/bundler-2.2.33/lib/bundler/installer/parallel_installer.rb:186:in
+#0 349.9 `do_install'
+#0 349.9 /opt/rh/rh-ruby26/root/usr/local/share/gems/gems/bundler-2.2.33/lib/bundler/installer/parallel_installer.rb:177:in
+#0 349.9 `block in worker_pool'
+#0 349.9 /opt/rh/rh-ruby26/root/usr/local/share/gems/gems/bundler-2.2.33/lib/bundler/worker.rb:62:in
+#0 349.9 `apply_func'
+#0 349.9 /opt/rh/rh-ruby26/root/usr/local/share/gems/gems/bundler-2.2.33/lib/bundler/worker.rb:57:in
+#0 349.9 `block in process_queue'
+#0 349.9 /opt/rh/rh-ruby26/root/usr/local/share/gems/gems/bundler-2.2.33/lib/bundler/worker.rb:54:in
+#0 349.9 `loop'
+#0 349.9 /opt/rh/rh-ruby26/root/usr/local/share/gems/gems/bundler-2.2.33/lib/bundler/worker.rb:54:in
+#0 349.9 `process_queue'
+#0 349.9 /opt/rh/rh-ruby26/root/usr/local/share/gems/gems/bundler-2.2.33/lib/bundler/worker.rb:91:in
+#0 349.9 `block (2 levels) in create_threads'
+#0 349.9
+#0 349.9 An error occurred while installing libv8 (7.3.492.27.1), and Bundler cannot
+#0 349.9 continue.
+#0 349.9
+#0 349.9 In Gemfile:
+#0 349.9   mini_racer was resolved to 0.2.15, which depends on
+#0 349.9     libv8
+------
+failed to solve: executor failed running [/bin/sh -c scl enable rh-ruby26 -- bundle install]: exit code: 5
