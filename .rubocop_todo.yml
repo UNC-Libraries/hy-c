@@ -50,26 +50,6 @@ Layout/DotPosition:
     - 'spec/features/create_scholarly_work_spec.rb'
     - 'spec/indexers/hyrax/deep_indexing_service_test.rb'
 
-# Offense count: 13
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: around, only_before
-Layout/EmptyLinesAroundAccessModifier:
-  Exclude:
-    - 'app/controllers/application_controller.rb'
-    - 'app/controllers/default_admin_sets_controller.rb'
-    - 'app/controllers/hyrax/articles_controller.rb'
-    - 'app/controllers/hyrax/artworks_controller.rb'
-    - 'app/controllers/hyrax/data_sets_controller.rb'
-    - 'app/controllers/hyrax/dissertations_controller.rb'
-    - 'app/controllers/hyrax/generals_controller.rb'
-    - 'app/controllers/hyrax/honors_theses_controller.rb'
-    - 'app/controllers/hyrax/journals_controller.rb'
-    - 'app/controllers/hyrax/masters_papers_controller.rb'
-    - 'app/controllers/hyrax/multimeds_controller.rb'
-    - 'app/controllers/hyrax/scholarly_works_controller.rb'
-    - 'app/controllers/masters_papers_controller.rb'
-
 # Offense count: 8
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle.

@@ -16,6 +16,7 @@ class MastersPapersController < ApplicationController
   end
 
   private
+
   def masters_papers_params
     params.require(:masters_paper).permit(:affiliation, :add_works_to_collection).reject { |_, v| v.blank? }
   end
