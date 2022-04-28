@@ -40,13 +40,17 @@ ENV PATH "/fits:$PATH"
 
 RUN scl enable rh-ruby26 -- gem install bundler -v '~> 2.2.28'
 
+RUN yum install -y python3
+
+RUN scl enable rh-ruby26 -- gem install libv8 -v '~> 8.4' -- --with-system-v8
+
 # Add application
 RUN mkdir /hyrax
 WORKDIR /hyrax
 COPY . /hyrax
 
-# WORKDIR /hyrax
-# RUN scl enable rh-ruby26 -- bundle install
+WORKDIR /hyrax
+# RUN scl enable rh-ruby26 -- bundle update
 
 EXPOSE 3000
-CMD ["sh", "/hyrax/docker/start-app.sh"]
+# CMD ["sh", "/hyrax/docker/start-app.sh"]

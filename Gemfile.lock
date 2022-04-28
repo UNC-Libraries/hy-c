@@ -619,6 +619,8 @@ GEM
     nokogiri (1.13.4)
       mini_portile2 (~> 2.8.0)
       racc (~> 1.4)
+    nokogiri (1.13.4-x86_64-darwin)
+      racc (~> 1.4)
     nokogumbo (2.0.5)
       nokogiri (~> 1.8, >= 1.8.4)
     numerizer (0.1.1)
@@ -972,6 +974,7 @@ GEM
 
 PLATFORMS
   ruby
+  x86_64-darwin-21
 
 DEPENDENCIES
   active-fedora (~> 12.1.1)
@@ -997,12 +1000,12 @@ DEPENDENCIES
   hyrax (= 2.9.6)
   jbuilder (~> 2.11.2)
   jquery-rails (~> 4.4.0)
-  libv8 (~> 7.3)
+  libv8
   linkeddata (~> 3.1.1)
   listen (~> 3.7.0)
   loofah (~> 2.10.0)
   mini_magick (~> 4.9.4)
-  mini_racer (~> 0.2.15)
+  mini_racer
   nokogiri (~> 1.13.4)
   omniauth (~> 2.0)
   omniauth-rails_csrf_protection

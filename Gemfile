@@ -27,12 +27,12 @@ gem 'hyrax', '2.9.6'
 gem 'jbuilder', '~> 2.11.2'
 # Use jquery as the JavaScript library
 gem 'jquery-rails', '~> 4.4.0'
-gem 'libv8', '~> 7.3'
+gem 'libv8', '~> 8.4'
 # linkeddata gem is released with rdf gems and should be the same version as rdf
 gem 'linkeddata', '~>3.1.1'
 gem 'loofah', '~>2.10.0'
 gem 'mini_magick', '~>4.9.4'
-gem 'mini_racer', '~> 0.2.15', platforms: :ruby
+gem 'mini_racer'
 gem 'nokogiri', '~>1.13.4'
 gem 'omniauth', '~> 2.0'
 gem 'omniauth-rails_csrf_protection'
