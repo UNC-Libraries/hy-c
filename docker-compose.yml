@@ -33,7 +33,7 @@ services:
     stdin_open: true
     tty: true
   clamav:
-    image: clamav/clamav
+    image: tiredofit/clamav
     ports:
       - "3310:3310"
     volumes:
@@ -80,7 +80,7 @@ services:
       exec solr -f
       "
   solr8:
-    image: solr:8-alpine
+    image: solr:8.9-slim
     volumes:
       - solr8-data:/opt/solr/server/solr/configsets/hy-c
     ports:
