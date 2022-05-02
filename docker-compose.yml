@@ -4,7 +4,7 @@ services:
   web: &web
     build:
       context: .
-    image: mkadel/hy-c
+    image: cazzerson/hy-c
     depends_on:
       - clamav
       - db
