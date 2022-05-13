@@ -4,7 +4,7 @@ services:
   web: &web
     build:
       context: .
-    image: mkadel/hy-c:arm64
+    image: cazzerson/hy-c:arm64
     platform: linux/arm64
     depends_on:
       - clamav
