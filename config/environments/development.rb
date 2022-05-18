@@ -64,6 +64,7 @@ Rails.application.configure do
   # routes, locales, etc. This feature depends on the listen gem.
   # TODO: This is currently not working in emulated amd64 Docker containers
   # config.file_watcher = ActiveSupport::EventedFileUpdateChecker
+  config.file_watcher = ActiveSupport::FileUpdateChecker
 
   # Allow Vagrant IP address to display web console in development mode
   # NOTE: When we upgrade to Web Console 4.x this will change to
