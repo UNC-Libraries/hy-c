@@ -39,7 +39,7 @@ gem 'omniauth', '~> 2.0'
 gem 'omniauth-rails_csrf_protection'
 gem 'omniauth-shibboleth', '~> 1.3'
 # Only install passenger when initially deploying or updating
-#gem 'passenger', '5.3.7', require: 'phusion_passenger/rack_handler', platform: :mri
+# gem 'passenger', '5.3.7', require: 'phusion_passenger/rack_handler', platform: :mri
 
 # Use postgresql as the database for Active Record
 gem 'pg', '~> 1.2.3'
