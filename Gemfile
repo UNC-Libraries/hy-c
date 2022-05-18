@@ -5,7 +5,7 @@ git_source(:github) do |repo_name|
   "https://github.com/#{repo_name}.git"
 end
 
-gem 'active-fedora', '~> 12.1.1'
+gem 'active-fedora', '~> 12.2.4'
 gem 'blacklight_advanced_search', '~> 6.4.1'
 gem 'blacklight_oai_provider', '6.0.0.pre1'
 gem 'blacklight_range_limit', '6.5.0'
@@ -27,17 +27,20 @@ gem 'hyrax', '2.9.6'
 gem 'jbuilder', '~> 2.11.2'
 # Use jquery as the JavaScript library
 gem 'jquery-rails', '~> 4.4.0'
-gem 'libv8', '~> 8.4'
 # linkeddata gem is released with rdf gems and should be the same version as rdf
 gem 'linkeddata', '~>3.1.1'
 gem 'loofah', '~>2.10.0'
 gem 'mini_magick', '~>4.9.4'
-gem 'mini_racer'
-gem 'nokogiri', '~>1.13.4'
+# Required by mini_racer
+gem 'libv8-node', '~> 16.10'
+gem 'mini_racer', '~> 0.6.2'
+gem 'nokogiri', '~>1.13.6'
 gem 'omniauth', '~> 2.0'
 gem 'omniauth-rails_csrf_protection'
 gem 'omniauth-shibboleth', '~> 1.3'
-gem 'passenger', '5.3.7', require: 'phusion_passenger/rack_handler'
+# Only install passenger when initially deploying or updating
+#gem 'passenger', '5.3.7', require: 'phusion_passenger/rack_handler', platform: :mri
+
 # Use postgresql as the database for Active Record
 gem 'pg', '~> 1.2.3'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
