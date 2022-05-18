@@ -1,7 +1,8 @@
 #!/bin/bash
 
-echo 'source /opt/rh/rh-ruby26/enable' >> ~/.bashrc
-source /opt/rh/rh-ruby26/enable
+source scl_source enable rh-ruby27
+source scl_source enable devtoolset-8
+
 bundle check || bundle install
 # The bundle config and package are needed for the odd way we manage gems in production
 bundle config --local cache_path /hyc-gems

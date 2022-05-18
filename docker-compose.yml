@@ -4,8 +4,8 @@ services:
   web: &web
     build:
       context: .
-    image: cazzerson/hy-c:arm64
-    platform: linux/arm64
+    image: cazzerson/hy-c
+    platform: linux/amd64
     depends_on:
       - clamav
       - db
@@ -29,7 +29,6 @@ services:
     volumes:
       - mount-code:/hyrax
       - mount-gems:/hyc-gems
-
     stdin_open: true
     tty: true
   clamav:
@@ -49,7 +48,7 @@ services:
       POSTGRES_USER: hyrax
       POSTGRES_PASSWORD: password
   fedora:
-    image: mkadel/fcrepo4:4.7.5
+    image: samvera/fcrepo4:4.7.5
     ports:
       - "8984:8080"
     volumes:
