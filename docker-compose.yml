@@ -16,7 +16,7 @@ services:
       DATABASE_URL: postgresql://db:5432
       FEDORA_TEST_URL: http://fedora:8080/rest
       FEDORA_DEV_URL: http://fedora:8080/rest
-      FITS_LOCATION: '/fits/fits-1.0.5/fits.sh'
+      FITS_LOCATION: '/fits/fits-1.5.5/fits.sh'
       HYRAX_DATABASE_PASSWORD: password
       HYRAX_HOST: https://localhost:3000
       REDIS_HOST: redis
