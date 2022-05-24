@@ -36,10 +36,7 @@ RUN yum -y install centos-release-scl-rh centos-release-scl \
 && echo "source scl_source enable rh-ruby27" >> /etc/bashrc
 
 # Install fits
-WORKDIR /fits
 ADD https://github.com/harvard-lts/fits/releases/download/1.5.5/fits-1.5.5.zip /fits/
-RUN unzip fits-1.5.5.zip -d /fits && \
-rm -rf fits-1.5.5.zip
 ENV PATH "/fits:$PATH"
 
 # Install gems
