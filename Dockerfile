@@ -37,7 +37,9 @@ RUN yum -y install centos-release-scl-rh centos-release-scl \
 
 # Install fits
 WORKDIR /fits
-ADD https://projects.iq.harvard.edu/files/fits/files/fits-1.0.5.zip /fits/
+ADD https://github.com/harvard-lts/fits/releases/download/1.5.5/fits-1.5.5.zip /fits/
+RUN unzip fits-1.5.5.zip -d /fits && \
+rm -rf fits-1.5.5.zip
 ENV PATH "/fits:$PATH"
 
 # Install gems
@@ -47,8 +49,8 @@ COPY Gemfile* /hyrax/
 #RUN scl enable devtoolset-8 rh-ruby27 -- gem update --system \
 RUN scl enable devtoolset-8 rh-ruby27 -- gem install bundler \
 && yum install -y python3 \
-&& unzip /fits/fits-1.0.5.zip -d /fits \
-&& rm -rf /fits/fits-1.0.5.zip \
+&& unzip /fits/fits-1.5.5.zip -d /fits \
+&& rm -rf /fits/fits-1.5.5.zip \
 && scl enable devtoolset-8 rh-ruby27 -- bundle install --jobs=3 --retry=3
 
 #&& scl enable devtoolset-8 rh-ruby27 -- gem install nokogiri --platform=ruby \
