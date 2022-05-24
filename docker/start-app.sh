@@ -11,7 +11,6 @@ find . -name *.pid -delete
 bundle exec rake db:create && bundle exec rake db:migrate
 bundle exec rake setup:admin_role
 bundle exec rails hyrax:default_collection_types:create
-# It seems like this isn't succeeding for some reason, but doesn't seem to be giving errors
 bundle exec rails hyrax:default_admin_set:create
 bundle exec sidekiq --daemon
 bundle exec rails s -b 0.0.0.0
