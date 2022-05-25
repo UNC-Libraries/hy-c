@@ -24,15 +24,14 @@ services:
       REDIS_URL: redis://redis:6379/0
       SOLR_DEV_URL: http://solr6:8983/solr/hydra-development
       SOLR_TEST_URL: http://solr6:8983/solr/hydra-test
+      RIIIF_CACHE_PATH: /opt/hyrax/riiif_cache
     ports:
       - 3000:3000
     volumes:
       - mount-code:/hyrax
       - mount-gems:/hyc-gems
       - fcrepo_data:/opt/fedora/binaries
-      - hyrax_data:/opt/data
-      - hyrax_derivs:/opt/derivatives
-      - hyrax_scratch:/opt/scratch
+      - hyrax_data:/opt/hyrax
     stdin_open: true
     tty: true
   clamav:
@@ -41,7 +40,7 @@ services:
       - "3310:3310"
     volumes:
       - clam:/var/lib/clamav
-      - mount-code:/hyrax
+      - hyrax_data:/opt/hyrax
   db:
     image: postgres:9.6-alpine
     volumes:
@@ -104,8 +103,6 @@ volumes:
   fcrepo_data:
   redis_data:
   hyrax_data:
-  hyrax_derivs:
-  hyrax_scratch:
 
 x-mutagen:
   sync:
