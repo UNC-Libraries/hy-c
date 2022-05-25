@@ -46,7 +46,7 @@ COPY Gemfile* /hyrax/
 #RUN scl enable devtoolset-8 rh-ruby27 -- gem update --system \
 RUN scl enable devtoolset-8 rh-ruby27 -- gem install bundler \
 && yum install -y python3 \
-&& unzip /fits/fits-1.5.5.zip -d /fits \
+&& unzip /fits/fits-1.5.5.zip -d /fits/fits-1.5.5 \
 && rm -rf /fits/fits-1.5.5.zip \
 && scl enable devtoolset-8 rh-ruby27 -- bundle install --jobs=3 --retry=3
 
