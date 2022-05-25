@@ -8,6 +8,7 @@ bundle check || bundle install
 bundle config --local cache_path /hyc-gems
 bundle package
 find . -name *.pid -delete
+bundle exec rake tmp:cache:clear
 bundle exec rake db:create && bundle exec rake db:migrate
 bundle exec rake setup:admin_role
 bundle exec rails hyrax:default_collection_types:create
