@@ -30,6 +30,9 @@ services:
       - mount-code:/hyrax
       - mount-gems:/hyc-gems
       - fcrepo_data:/opt/fedora/binaries
+      - hyrax_data:/opt/data
+      - hyrax_derivs:/opt/derivatives
+      - hyrax_scratch:/opt/scratch
     stdin_open: true
     tty: true
   clamav:
@@ -100,6 +103,9 @@ volumes:
   pg_data:
   fcrepo_data:
   redis_data:
+  hyrax_data:
+  hyrax_derivs:
+  hyrax_scratch:
 
 x-mutagen:
   sync:
