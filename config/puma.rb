@@ -6,7 +6,7 @@ threads threads_count, threads_count
 
 preload_app!
 
-rackup      DefaultRackup
+rackup DefaultRackup
 bind "tcp://0.0.0.0:#{ENV['PORT'] || 3000}"
 environment ENV['RACK_ENV'] || 'development'
 

@@ -72,8 +72,8 @@ group :development, :test do
   gem 'rubocop'
   gem 'rubocop-rails'
   gem 'rubocop-rspec'
-  gem 'solr_wrapper', '~> 1.1.0'
   gem 'puma'
+  gem 'solr_wrapper', '~> 1.1.0'
 end
 
 group :development do
