@@ -67,12 +67,12 @@ group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', '~> 9.1.0', platform: :mri
   gem 'fcrepo_wrapper', '~> 0.8.0'
+  gem 'puma'
   gem 'rspec-rails', '~> 3.6.1'
   # Rubocop for style and error checking (linter)
   gem 'rubocop'
   gem 'rubocop-rails'
   gem 'rubocop-rspec'
-  gem 'puma'
   gem 'solr_wrapper', '~> 1.1.0'
 end
 
