@@ -44,7 +44,7 @@ gem 'omniauth-shibboleth', '~> 1.3'
 # Use postgresql as the database for Active Record
 gem 'pg', '~> 1.2.3'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 5.2.6'
+gem 'rails', '~> 5.2'
 # Use Redis adapter to run Action Cable in production
 gem 'redis', '~> 3.3.0'
 gem 'riiif', '~> 2.3.0'
@@ -73,6 +73,7 @@ group :development, :test do
   gem 'rubocop-rails'
   gem 'rubocop-rspec'
   gem 'solr_wrapper', '~> 1.1.0'
+  gem 'puma'
 end
 
 group :development do

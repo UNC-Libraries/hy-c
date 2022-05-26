@@ -12,6 +12,12 @@ Rails.application.configure do
   # Show full error reports.
   config.consider_all_requests_local = true
 
+  # Where to store cached assets
+
+  config.assets.configure do |env|
+    env.cache = ActiveSupport::Cache.lookup_store(:file_store,"/opt/hyrax/rails-cache/assets/#{Rails.env}/")
+  end
+
   # Enable/disable caching. By default caching is disabled.
   if Rails.root.join('tmp/caching-dev.txt').exist?
     config.action_controller.perform_caching = true
@@ -66,10 +72,10 @@ Rails.application.configure do
   # config.file_watcher = ActiveSupport::EventedFileUpdateChecker
   config.file_watcher = ActiveSupport::FileUpdateChecker
 
-  # Allow Vagrant IP address to display web console in development mode
+  # Allow Docker host IP address to display web console in development mode
   # NOTE: When we upgrade to Web Console 4.x this will change to
-  # config.web_console.permissions = ['10.0.2.2']
-  config.web_console.whitelisted_ips = ['10.0.2.2']
+  # config.web_console.permissions = ['172.20.0.1']
+  config.web_console.whitelisted_ips = ['172.20.0.1']
 
   config.log_level = LogService.log_level
 end

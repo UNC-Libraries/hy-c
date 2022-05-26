@@ -116,9 +116,10 @@ x-mutagen:
         permissions:
           defaultFileMode: 0644
           defaultDirectoryMode: 0755
-    mount-gems:
-      alpha: '../hyc-gems'
-      beta: "volume://mount-gems"
+    #mount-gems:
+      #alpha: '../hyc-gems'
+      #beta: "volume://mount-gems"
+    # TODO: can we move these to simple volumes by auto-copying the configs over?
     solr6-data:
       alpha: './solr/config'
       beta: 'volume://solr6-data'

@@ -7,7 +7,7 @@
   - import
   - export
   - long_running_jobs
-:logfile: ./log/sidekiq.log
+:logfile: /opt/hyrax/log/sidekiq.log
 :limits:
   derivatives: 1
   import: 1
