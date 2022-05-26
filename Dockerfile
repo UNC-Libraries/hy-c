@@ -31,24 +31,28 @@ RUN yum -y install centos-release-scl-rh centos-release-scl \
 && yum -y install ghostscript GraphicsMagick \
 && wget -q -P /tmp "https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm" \
 && yum -y localinstall /tmp/google-chrome-stable_current_x86_64.rpm \
+&& rm -f google-chrome-stable_current_x86_64.rpm \
+&& yum install -y python3 \
 && yum clean all && rm -rf /var/cache/yum \
+&& wget -q -P /tmp "https://github.com/harvard-lts/fits/releases/download/1.5.5/fits-1.5.5.zip" \
+&& mkdir /fits \
+&& unzip /tmp/fits-1.5.5.zip -d /fits/fits-1.5.5 \
+&& rm -f /tmp/fits-1.5.5.zip \
 && echo "source scl_source enable devtoolset-8" >> /etc/bashrc \
 && echo "source scl_source enable rh-ruby27" >> /etc/bashrc
 
-# Install fits
-ADD https://github.com/harvard-lts/fits/releases/download/1.5.5/fits-1.5.5.zip /fits/
+
 ENV PATH "/fits:$PATH"
+COPY docker/fits.xml /fits/fits-1.5.5/xml/fits.xml
 
 # Install gems
-WORKDIR /hyrax
 COPY Gemfile* /hyrax/
+WORKDIR /hyrax
 
 #RUN scl enable devtoolset-8 rh-ruby27 -- gem update --system \
 RUN scl enable devtoolset-8 rh-ruby27 -- gem install bundler \
-&& yum install -y python3 \
-&& unzip /fits/fits-1.5.5.zip -d /fits/fits-1.5.5 \
-&& rm -rf /fits/fits-1.5.5.zip \
 && scl enable devtoolset-8 rh-ruby27 -- bundle install --jobs=3 --retry=3
+
 
 #&& scl enable devtoolset-8 rh-ruby27 -- gem install nokogiri --platform=ruby \
 #RUN scl enable devtoolset-8 rh-ruby27 -- gem install libv8 -- --with-system-v8
