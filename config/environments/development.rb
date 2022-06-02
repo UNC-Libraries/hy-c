@@ -72,7 +72,7 @@ Rails.application.configure do
   # config.file_watcher = ActiveSupport::EventedFileUpdateChecker
   config.file_watcher = ActiveSupport::FileUpdateChecker
 
-  # Allow Docker host IP address to display web console in development mode
+  # Allow Docker and Vagrant host IP address to display web console in development mode
   # NOTE: When we upgrade to Web Console 4.x this will change to
   # config.web_console.permissions = ['172.20.0.1', '10.0.2.2']
   config.web_console.whitelisted_ips = ['172.20.0.1', '10.0.2.2']
