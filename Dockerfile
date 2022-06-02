@@ -22,7 +22,6 @@ FROM systemd-enabled
 # devtoolset-8 installed due to newer mini_racer requirement of newer g++
 # Also install ChromeDriver
 # TODO: are we using httpd?
-#RUN yum -y update  && yum -y install httpd && yum clean all && systemctl enable httpd.service \
 RUN yum -y install centos-release-scl-rh centos-release-scl \
 && yum -y --enablerepo=centos-sclo-rh install rh-ruby26 rh-ruby26-ruby-devel \
 && yum -y install gcc gcc-c++ zlib-devel devtoolset-8 postgresql-devel libxslt-devel \
@@ -49,14 +48,8 @@ COPY docker/fits.xml /fits/fits-1.5.5/xml/fits.xml
 COPY Gemfile* /hyrax/
 WORKDIR /hyrax
 
-#RUN scl enable devtoolset-8 rh-ruby26 -- gem update --system \
 RUN scl enable devtoolset-8 rh-ruby26 -- gem install bundler \
 && scl enable devtoolset-8 rh-ruby26 -- bundle install --jobs=3 --retry=3
-
-
-#&& scl enable devtoolset-8 rh-ruby26 -- gem install nokogiri --platform=ruby \
-#RUN scl enable devtoolset-8 rh-ruby26 -- gem install libv8 -- --with-system-v8
-
 
 EXPOSE 3000
 CMD ["sh", "/hyrax/docker/start-app.sh"]
