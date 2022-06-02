@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source scl_source enable rh-ruby27
+source scl_source enable rh-ruby26
 source scl_source enable devtoolset-8
 
 mkdir -p /opt/hyrax/log/

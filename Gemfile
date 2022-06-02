@@ -5,7 +5,7 @@ git_source(:github) do |repo_name|
   "https://github.com/#{repo_name}.git"
 end
 
-gem 'active-fedora', '~> 12.2.4'
+gem 'active-fedora', '~> 12.1.1'
 gem 'blacklight_advanced_search', '~> 6.4.1'
 gem 'blacklight_oai_provider', '6.0.0.pre1'
 gem 'blacklight_range_limit', '6.5.0'
@@ -27,24 +27,21 @@ gem 'hyrax', '2.9.6'
 gem 'jbuilder', '~> 2.11.2'
 # Use jquery as the JavaScript library
 gem 'jquery-rails', '~> 4.4.0'
+gem 'libv8', '~> 7.3'
 # linkeddata gem is released with rdf gems and should be the same version as rdf
 gem 'linkeddata', '~>3.1.1'
 gem 'loofah', '~>2.10.0'
 gem 'mini_magick', '~>4.9.4'
-# Required by mini_racer
-gem 'libv8-node', '~> 16.10'
-gem 'mini_racer', '~> 0.6.2'
-gem 'nokogiri', '~>1.13.6'
+gem 'mini_racer', '~> 0.2.15', platforms: :ruby
+gem 'nokogiri', '~>1.13.4'
 gem 'omniauth', '~> 2.0'
 gem 'omniauth-rails_csrf_protection'
 gem 'omniauth-shibboleth', '~> 1.3'
-# Only install passenger when initially deploying or updating
-# gem 'passenger', '5.3.7', require: 'phusion_passenger/rack_handler', platform: :mri
-
+gem 'passenger', '5.3.7', require: 'phusion_passenger/rack_handler'
 # Use postgresql as the database for Active Record
 gem 'pg', '~> 1.2.3'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 5.2'
+gem 'rails', '~> 5.2.6'
 # Use Redis adapter to run Action Cable in production
 gem 'redis', '~> 3.3.0'
 gem 'riiif', '~> 2.3.0'
@@ -67,7 +64,6 @@ group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', '~> 9.1.0', platform: :mri
   gem 'fcrepo_wrapper', '~> 0.8.0'
-  gem 'puma'
   gem 'rspec-rails', '~> 3.6.1'
   # Rubocop for style and error checking (linter)
   gem 'rubocop'
