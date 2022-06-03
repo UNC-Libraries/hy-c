@@ -23,7 +23,7 @@ FROM systemd-enabled
 # Also install ChromeDriver
 # TODO: are we using httpd?
 RUN yum -y install centos-release-scl-rh centos-release-scl \
-&& yum -y --enablerepo=centos-sclo-rh install rh-ruby26 rh-ruby26-ruby-devel \
+&& yum -y --enablerepo=centos-sclo-rh install rh-ruby27 rh-ruby27-ruby-devel \
 && yum -y install gcc gcc-c++ zlib-devel devtoolset-8 postgresql-devel libxslt-devel \
 && yum -y install git libreoffice clamav-devel clamav clamav-update clamd redhat-lsb libXScrnSaver wget unzip \
 && yum -y install epel-release \
@@ -38,7 +38,7 @@ RUN yum -y install centos-release-scl-rh centos-release-scl \
 && unzip /tmp/fits-1.5.5.zip -d /fits/fits-1.5.5 \
 && rm -f /tmp/fits-1.5.5.zip \
 && echo "source scl_source enable devtoolset-8" >> /etc/bashrc \
-&& echo "source scl_source enable rh-ruby26" >> /etc/bashrc
+&& echo "source scl_source enable rh-ruby27" >> /etc/bashrc
 
 
 ENV PATH "/fits:$PATH"
@@ -48,8 +48,8 @@ COPY docker/fits.xml /fits/fits-1.5.5/xml/fits.xml
 COPY Gemfile* /hyrax/
 WORKDIR /hyrax
 
-RUN scl enable devtoolset-8 rh-ruby26 -- gem install bundler \
-&& scl enable devtoolset-8 rh-ruby26 -- bundle install --jobs=3 --retry=3
+RUN scl enable devtoolset-8 rh-ruby27 -- gem install bundler \
+&& scl enable devtoolset-8 rh-ruby27 -- bundle install --jobs=3 --retry=3
 
 EXPOSE 3000
 CMD ["sh", "/hyrax/docker/start-app.sh"]
