@@ -14,39 +14,42 @@ VOLUME [ "/sys/fs/cgroup" ]
 CMD ["/usr/sbin/init"]
 
 FROM systemd-enabled
+
 # Install dependencies
-RUN yum -y install httpd; yum clean all; systemctl enable httpd.service; \
-yum -y install centos-release-scl-rh centos-release-scl; \
-yum -y --enablerepo=centos-sclo-rh install rh-ruby26 rh-ruby26-ruby-devel
 # Install compilers for gems & more dependencies - this section is > 1 GB so might see if we can shrink it down some
-# Should we remove git, since the mutagen files can't see the git directory? 
+# Should we remove git, since the mutagen files can't see the git directory?
 # See https://mutagen.io/documentation/synchronization/version-control-systems
-RUN yum -y install gcc gcc-c++ zlib-devel postgresql-devel libxslt-devel; \
-yum -y install git libreoffice clamav-devel clamav clamav-update clamd redhat-lsb libXScrnSaver wget unzip; \
-yum -y install epel-release; \
-yum -y install ghostscript GraphicsMagick
+# devtoolset-8 installed due to newer mini_racer requirement of newer g++
+# Also install ChromeDriver
+# TODO: are we using httpd?
+RUN yum -y install centos-release-scl-rh centos-release-scl \
+&& yum -y --enablerepo=centos-sclo-rh install rh-ruby26 rh-ruby26-ruby-devel \
+&& yum -y install gcc gcc-c++ zlib-devel devtoolset-8 postgresql-devel libxslt-devel \
+&& yum -y install git libreoffice clamav-devel clamav clamav-update clamd redhat-lsb libXScrnSaver wget unzip \
+&& yum -y install epel-release \
+&& yum -y install ghostscript GraphicsMagick \
+&& wget -q -P /tmp "https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm" \
+&& yum -y localinstall /tmp/google-chrome-stable_current_x86_64.rpm \
+&& rm -f google-chrome-stable_current_x86_64.rpm \
+&& yum install -y python3 \
+&& yum clean all && rm -rf /var/cache/yum \
+&& wget -q -P /tmp "https://github.com/harvard-lts/fits/releases/download/1.5.5/fits-1.5.5.zip" \
+&& mkdir /fits \
+&& unzip /tmp/fits-1.5.5.zip -d /fits/fits-1.5.5 \
+&& rm -f /tmp/fits-1.5.5.zip \
+&& echo "source scl_source enable devtoolset-8" >> /etc/bashrc \
+&& echo "source scl_source enable rh-ruby26" >> /etc/bashrc
 
-# Download and install Chromedriver
-RUN wget -q -P /tmp "https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm"
-RUN yum -y localinstall /tmp/google-chrome-stable_current_x86_64.rpm
 
-# Install fits
-RUN mkdir /fits
-WORKDIR /fits
-ADD https://github.com/harvard-lts/fits/releases/download/1.5.5/fits-1.5.5.zip /fits/
-RUN unzip fits-1.5.5.zip -d /fits && \
-rm -rf fits-1.5.5.zip
 ENV PATH "/fits:$PATH"
+COPY docker/fits.xml /fits/fits-1.5.5/xml/fits.xml
 
-RUN scl enable rh-ruby26 -- gem install bundler -v '~> 2.2.28'
-
-# Add application
-RUN mkdir /hyrax
+# Install gems
+COPY Gemfile* /hyrax/
 WORKDIR /hyrax
-COPY . /hyrax
 
-WORKDIR /hyrax
-RUN scl enable rh-ruby26 -- bundle install
+RUN scl enable devtoolset-8 rh-ruby26 -- gem install bundler \
+&& scl enable devtoolset-8 rh-ruby26 -- bundle install --jobs=3 --retry=3
 
 EXPOSE 3000
 CMD ["sh", "/hyrax/docker/start-app.sh"]

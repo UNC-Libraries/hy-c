@@ -30,3 +30,5 @@ public/tmp
 lib/tasks/migration/mapping.csv
 /coverage/*
 rspec_examples.txt
+
+build_log.txt
