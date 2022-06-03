@@ -15,7 +15,9 @@ Rails.application.configure do
   # Where to store cached assets
 
   config.assets.configure do |env|
-    env.cache = ActiveSupport::Cache.lookup_store(:file_store, "/opt/hyrax/rails-cache/assets/#{Rails.env}/")
+    if ENV['RAILS_CACHE_PATH'].present?
+      env.cache = ActiveSupport::Cache.lookup_store(:file_store, "#{ENV['RAILS_CACHE_PATH']}/assets/#{Rails.env}/")
+    end
   end
 
   # Enable/disable caching. By default caching is disabled.
