@@ -35,6 +35,8 @@ Style/HashTransformKeys:
   Enabled: false
 Style/HashTransformValues:
   Enabled: false
+Style/IfUnlessModifier:
+  Enabled: false
 Style/RedundantRegexpCharacterClass:
   Enabled: false
 Style/RedundantRegexpEscape:
