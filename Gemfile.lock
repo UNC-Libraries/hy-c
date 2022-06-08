@@ -552,7 +552,7 @@ GEM
       rdf (~> 3.0)
     legato (0.7.0)
       multi_json
-    libv8 (7.3.492.27.1)
+    libv8 (7.3.492.27.1-x86_64-linux)
     libxml-ruby (3.1.0)
     link_header (0.0.8)
     linkeddata (3.1.1)
@@ -617,7 +617,7 @@ GEM
     noid-rails (3.0.3)
       actionpack (>= 5.0.0, < 7)
       noid (~> 0.9)
-    nokogiri (1.13.6-arm64-darwin)
+    nokogiri (1.13.6-x86_64-linux)
       racc (~> 1.4)
     nokogumbo (2.0.5)
       nokogiri (~> 1.8, >= 1.8.4)
@@ -979,7 +979,7 @@ GEM
       nokogiri (~> 1.8)
 
 PLATFORMS
-  arm64-darwin-21
+  x86_64-linux
 
 DEPENDENCIES
   active-fedora (~> 12.2.4)
