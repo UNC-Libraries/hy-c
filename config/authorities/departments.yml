@@ -488,6 +488,10 @@ terms:
   term: College of Arts and Sciences; Department of Dramatic Art
   active: true
   short_label: Department of Dramatic Art
+- id: Department of Earth, Marine and Environmental Sciences
+  term: College of Arts and Sciences; Department of Earth, Marine and Environmental Sciences
+  active: true
+  short_label: Department of Earth, Marine and Environmental Sciences
 - id: Department of Economics
   term: College of Arts and Sciences; Department of Economics
   active: true
