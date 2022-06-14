@@ -235,7 +235,7 @@ GEM
     dropbox_api (0.1.21)
       faraday (< 3.0)
       oauth2 (~> 1.1)
-    dry-configurable (0.15.0)
+    dry-configurable (0.13.0)
       concurrent-ruby (~> 1.0)
       dry-core (~> 0.6)
     dry-container (0.9.0)
@@ -248,7 +248,7 @@ GEM
       concurrent-ruby (~> 1.0)
       dry-core (~> 0.5, >= 0.5)
     dry-inflector (0.2.1)
-    dry-initializer (3.1.1)
+    dry-initializer (3.0.4)
     dry-logic (1.2.0)
       concurrent-ruby (~> 1.0)
       dry-core (~> 0.5, >= 0.5)
@@ -257,7 +257,7 @@ GEM
     dry-monads (1.4.0)
       concurrent-ruby (~> 1.0)
       dry-core (~> 0.7)
-    dry-schema (1.9.2)
+    dry-schema (1.8.0)
       concurrent-ruby (~> 1.0)
       dry-configurable (~> 0.13, >= 0.13.0)
       dry-core (~> 0.5, >= 0.5)
@@ -279,7 +279,7 @@ GEM
       dry-core (~> 0.5, >= 0.5)
       dry-inflector (~> 0.1, >= 0.1.2)
       dry-logic (~> 1.0, >= 1.0.2)
-    dry-validation (1.8.1)
+    dry-validation (1.7.0)
       concurrent-ruby (~> 1.0)
       dry-container (~> 0.7, >= 0.7.1)
       dry-core (~> 0.5, >= 0.5)
@@ -849,11 +849,10 @@ GEM
       ffi (~> 1.9)
     scanf (1.0.0)
     select2-rails (3.5.11)
-    selenium-webdriver (4.2.1)
+    selenium-webdriver (4.1.0)
       childprocess (>= 0.5, < 5.0)
       rexml (~> 3.2, >= 3.2.5)
-      rubyzip (>= 1.2.2, < 3.0)
-      websocket (~> 1.0)
+      rubyzip (>= 1.2.2)
     shex (0.7.1)
       ebnf (~> 2.2)
       htmlentities (~> 4.3)
@@ -967,7 +966,6 @@ GEM
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
     webrick (1.7.0)
-    websocket (1.2.9)
     websocket-driver (0.7.5)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
@@ -1041,6 +1039,9 @@ DEPENDENCIES
   webdrivers
   webmock (~> 3.14.0)
   willow_sword!
+
+RUBY VERSION
+   ruby 2.6.9p207
 
 BUNDLED WITH
    2.2.24
