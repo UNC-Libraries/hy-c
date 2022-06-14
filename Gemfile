@@ -5,7 +5,7 @@ git_source(:github) do |repo_name|
   "https://github.com/#{repo_name}.git"
 end
 
-gem 'active-fedora', '~> 12.2.4'
+gem 'active-fedora', '~> 12.2'
 gem 'blacklight_advanced_search', '~> 6.4.1'
 gem 'blacklight_oai_provider', '6.0.0.pre1'
 gem 'blacklight_range_limit', '6.5.0'
