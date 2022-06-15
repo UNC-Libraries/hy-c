@@ -37,7 +37,7 @@ gem 'nokogiri', '~>1.13.4'
 gem 'omniauth', '~> 2.0'
 gem 'omniauth-rails_csrf_protection'
 gem 'omniauth-shibboleth', '~> 1.3'
-gem 'passenger', '5.3.7', require: 'phusion_passenger/rack_handler'
+gem 'passenger', '6.0.14', require: 'phusion_passenger/rack_handler'
 # Use postgresql as the database for Active Record
 gem 'pg', '~> 1.2.3'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
