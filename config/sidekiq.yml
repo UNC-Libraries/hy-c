@@ -1,14 +1,16 @@
 ---
 # In production this is overridden by a template in the vagrant-rails project
-:concurrency: 25
+:concurrency: 6
+:max_retries: 5
 :queues:
   - default
   - derivatives
   - import
   - export
   - long_running_jobs
-:logfile: ./log/sidekiq.log
+:logfile: /opt/hyrax/log/sidekiq.log
 :limits:
+  default: 2
   derivatives: 1
   import: 1
   export: 1

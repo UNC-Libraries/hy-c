@@ -4,7 +4,8 @@ services:
   web: &web
     build:
       context: .
-    image: cazzerson/hy-c
+    image: cazzerson/hy-c-universal
+    platform: linux/amd64
     depends_on:
       - clamav
       - db
@@ -23,21 +24,24 @@ services:
       REDIS_URL: redis://redis:6379/0
       SOLR_DEV_URL: http://solr6:8983/solr/hydra-development
       SOLR_TEST_URL: http://solr6:8983/solr/hydra-test
+      RIIIF_CACHE_PATH: /opt/hyrax/riiif_cache
+      RAILS_CACHE_PATH: /opt/rails-cache
     ports:
       - 3000:3000
     volumes:
       - mount-code:/hyrax
       - mount-gems:/hyc-gems
-
+      - fcrepo_data:/opt/fedora/binaries
+      - hyrax_data:/opt/hyrax
     stdin_open: true
     tty: true
   clamav:
-    image: clamav/clamav
+    image: tiredofit/clamav
     ports:
       - "3310:3310"
     volumes:
       - clam:/var/lib/clamav
-      - mount-code:/hyrax
+      - hyrax_data:/opt/hyrax
   db:
     image: postgres:9.6-alpine
     volumes:
@@ -48,13 +52,13 @@ services:
       POSTGRES_USER: hyrax
       POSTGRES_PASSWORD: password
   fedora:
-    image: samvera/fcrepo4:4.7.5
+    image: cazzerson/fcrepo4:4.7.5
     ports:
       - "8984:8080"
     volumes:
-      - fcrepo_data:/data
+      - fcrepo_data:/usr/local/tomcat/fcrepo4-data/fcrepo.binary.directory
     environment:
-      CATALINA_OPTS: "-Djava.awt.headless=true -Dfile.encoding=UTF-8 -server -Xms512m -Xmx1024m -XX:NewSize=256m -XX:MaxNewSize=256m -XX:PermSize=256m -XX:MaxPermSize=256m -XX:+DisableExplicitGC"
+      CATALINA_OPTS: "-Djava.awt.headless=true -server -Xms1G -Xmx2G -XX:MaxNewSize=1G -XX:+HeapDumpOnOutOfMemoryError -Dfcrepo.modeshape.configuration=classpath:/config/file-simple/repository.json"
     stdin_open: true
     tty: true
   redis:
@@ -67,7 +71,7 @@ services:
     ports:
       - "6379:6379"
   solr6:
-    image: solr:6-alpine
+    image: solr:6.6.6-alpine
     volumes:
       - solr6-data:/opt/solr/server/solr/configsets/hy-c
     ports:
@@ -79,7 +83,7 @@ services:
       exec solr -f
       "
   solr8:
-    image: solr:8-alpine
+    image: solr:8.9-slim
     volumes:
       - solr8-data:/opt/solr/server/solr/configsets/hy-c
     ports:
@@ -99,6 +103,7 @@ volumes:
   pg_data:
   fcrepo_data:
   redis_data:
+  hyrax_data:
 
 x-mutagen:
   sync:
@@ -112,9 +117,10 @@ x-mutagen:
         permissions:
           defaultFileMode: 0644
           defaultDirectoryMode: 0755
-    mount-gems:
-      alpha: '../hyc-gems'
-      beta: "volume://mount-gems"
+    #mount-gems:
+      #alpha: '../hyc-gems'
+      #beta: "volume://mount-gems"
+    # TODO: can we move these to simple volumes by auto-copying the configs over?
     solr6-data:
       alpha: './solr/config'
       beta: 'volume://solr6-data'

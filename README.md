@@ -41,6 +41,7 @@ bundle exec rake sage:ingest[/hyrax/spec/fixtures/sage/sage_config.yml]
   * Mutagen-compose installed locally, used for speeding up file syncing between the host and guest systems. (on Mac, `brew install mutagen-io/mutagen/mutagen-compose`)
 
 ##### First-time setup, or if you've cleaned up Docker images or volumes
+* If on an M1 Mac: check "Use the new Virtualization framework" and "Enable VirtioFS accelerated directory sharing" in the Docker Desktop "Experimental Features" settings
 * Clone the repository `git clone git@github.com:UNC-Libraries/hy-c.git`
 * In the same parent directory, either
   * create a directory called `hyc-gems`, or
@@ -53,15 +54,11 @@ cp config/local_env_sample.yml config/local_env.yml
   ```
 - Either pull (faster) or build the application docker image
 ```bash
-docker compose pull
+mutagen-compose pull
 OR
-docker compose build
+mutagen-compose build --no-cache
 ```
 ##### Every time
-- Start the mutagen daemon
-```bash
-mutagen daemon start
-```
 - Bring up the application and its dependencies
 ```bash
 mutagen-compose up
