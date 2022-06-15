@@ -95,7 +95,7 @@ jobs:
         bundler-cache: true # runs 'bundle install' and caches installed gems automatically
     - name: Update rubygems
       run: |
-        gem update --system 3.0.3.1
+        gem update --system 3.3.16
         gem install bundler:2.2.18
 
     # Run Rubocop as soon as gems are installed, so we fail early if there are issues
