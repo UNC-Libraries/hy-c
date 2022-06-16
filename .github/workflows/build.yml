@@ -82,7 +82,7 @@ jobs:
 
     strategy:
       matrix:
-        ruby-version: ['2.7.4']
+        ruby-version: ['2.6.9', '2.7.4']
 
     steps:
     - uses: actions/checkout@v2
