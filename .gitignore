@@ -32,3 +32,4 @@ lib/tasks/migration/mapping.csv
 rspec_examples.txt
 
 build_log.txt
+lib/tasks/migration/
