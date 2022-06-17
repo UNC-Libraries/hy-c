@@ -1043,8 +1043,5 @@ DEPENDENCIES
   webmock (~> 3.14.0)
   willow_sword!
 
-RUBY VERSION
-   ruby 2.7.6p219
-
 BUNDLED WITH
    2.2.24
