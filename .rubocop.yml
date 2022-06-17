@@ -10,6 +10,8 @@ AllCops:
 # TODO: Enable this cop - temporarily disabled here because it is not being added to the auto-generated to-do list
 Lint/RedundantCopDisableDirective:
   Enabled: false
+Bundler/OrderedGems:
+  Enabled: false
 
 # This section consists of cops added since the last upgrade. Once the larger portion of the "todo" list is completed,
 # we can evaluate these for implementation.

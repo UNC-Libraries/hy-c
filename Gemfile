@@ -1,11 +1,12 @@
 source 'https://rubygems.org'
+ruby '~> 2.6'
 
 git_source(:github) do |repo_name|
   repo_name = "#{repo_name}/#{repo_name}" unless repo_name.include?('/')
   "https://github.com/#{repo_name}.git"
 end
 
-gem 'active-fedora', '~> 12.1.1'
+gem 'active-fedora', '~> 12.2'
 gem 'blacklight_advanced_search', '~> 6.4.1'
 gem 'blacklight_oai_provider', '6.0.0.pre1'
 gem 'blacklight_range_limit', '6.5.0'
@@ -29,6 +30,7 @@ gem 'jbuilder', '~> 2.11.2'
 gem 'jquery-rails', '~> 4.4.0'
 gem 'libv8', '~> 7.3'
 # linkeddata gem is released with rdf gems and should be the same version as rdf
+gem 'sparql', '3.1.7'
 gem 'linkeddata', '~>3.1.1'
 gem 'loofah', '~>2.10.0'
 gem 'mini_magick', '~>4.9.4'
@@ -80,7 +82,7 @@ group :development do
 end
 
 group :test do
-  gem 'capybara', '~> 3.36'
+  gem 'capybara', '~> 3.36.0'
   gem 'factory_bot_rails', '~> 6.1.0'
   gem 'ffaker'
   gem 'rspec-mocks'
