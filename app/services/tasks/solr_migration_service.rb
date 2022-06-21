@@ -5,15 +5,6 @@ module Tasks
   # Service for reindexing objects from one solr instance to another
   class SolrMigrationService
     PAGE_SIZE = 1000
-    WORK_TYPES = 'Article Artwork DataSet Dissertation General HonorsThesis Journal MastersPaper Multimed ScholarlyWork'
-    FILESET_TYPES = 'FileSet'
-    ADMINSET_TYPES = 'AdminSet'
-    COLLECTION_TYPES = 'Collection'
-    HYDRA_TYPES = 'Hydra*'
-    AF_TYPES = 'ActiveFedora*'
-    OTHER_TYPES = 'DepositRecord FedoraOnlyFile'
-    # Types in the order they should be listed
-    QUERY_TYPE_LIST = [HYDRA_TYPES, AF_TYPES, WORK_TYPES, FILESET_TYPES, OTHER_TYPES, COLLECTION_TYPES, ADMINSET_TYPES]
 
     # List all object ids in the repository, ordered by object type.
     # Returns the path to the file containing the list of ids. Its name contains the timestamp when the command was issued.
@@ -24,9 +15,6 @@ module Tasks
       filename = "id_list_#{start_time}.txt"
       file_path = File.join(output_path, filename)
       File.open(file_path, 'w') do |file|
-        # QUERY_TYPE_LIST.each do |query_types|
-        #   record_paged_type_query(file, query_types)
-        # end
         record_paged_type_query(file, nil)
       end
       return file_path
@@ -36,14 +24,12 @@ module Tasks
       start_row = 0
       total_count = 0
       begin
-        # resp = ActiveFedora::SolrService.get("has_model_ssim:(#{query_types})",
         resp = ActiveFedora::SolrService.get("*:*",
                                              sort: 'system_create_dtsi ASC',
                                              start: start_row,
                                              rows: PAGE_SIZE,
                                              fl: 'id')['response']
         total_count = resp['numFound'].to_i
-        puts "Response: #{resp}"
         resp['docs'].each do |doc|
           file.puts(doc['id'])
         end
@@ -72,7 +58,6 @@ module Tasks
       id_file = File.new(id_list_file)
       id_file.each_line do |id_line|
         id = id_line.chomp
-        # puts "Indexing #{id}"
         object = ActiveFedora::Base.find(id)
         # Must use update_index instead of going to SolrService.add in order to trigger NestingCollection behaviors
         object.update_index
