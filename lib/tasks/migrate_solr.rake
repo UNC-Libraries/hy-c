@@ -33,14 +33,23 @@ namespace :migrate_solr do
     opts = OptionParser.new
     opts.banner = "Usage: bundle exec rake migrate_solr:reindex -- [options]"
     opts.on("-i", "--id-list-file ARG", String, 'File path of id list to reindex from') { |val| options[:id_list_file] = val }
-    opts.on("-c", "--clean-index", FalseClass, 'Delete all content from the index before populating') { |val| options[:clean_index] = val }
+    opts.on("-c", "--clean-index", FalseClass, 'Delete all content from the index before populating') { |val| options[:clean_index] = true }
     args = opts.order!(ARGV) {}
     opts.parse!(args)
 
     puts "[#{Time.now.utc.iso8601}] starting indexing of objects from list file #{options[:id_list_file]}"
     puts "**** Using solr: #{ENV['SOLR_PRODUCTION_URL']}"
 
-    file_path = Tasks::SolrMigrationService.new().reindex(options[:id_list_file], options[:clean_index])
+    begin
+      Tasks::SolrMigrationService.new().reindex(options[:id_list_file], options[:clean_index])
+    rescue Interrupt => e
+      puts "Interrupted, aborting reindexing"
+      exit 1
+    rescue ArgumentError => e
+      puts "Error: #{e.message}"
+      exit 1
+    end
+
 
     puts "Indexing complete #{Time.now - start_time}s"
     # Need this exit, otherwise rake might think it has to run multiple tasks when options are provided

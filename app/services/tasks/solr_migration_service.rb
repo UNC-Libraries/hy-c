@@ -49,14 +49,25 @@ module Tasks
     def reindex(id_list_file, clean_index)
       id_total = File.foreach(id_list_file).inject(0) {|c, line| c+1}
 
-      progress_logger = Migrate::Services::ProgressTracker.new(progress_log_path(id_list_file))
+      progress_tracker = Migrate::Services::ProgressTracker.new(progress_log_path(id_list_file))
+      completed = progress_tracker.completed_set
+      resuming = false
+
+      if !completed.empty?
+        puts "**** Resuming reindexing, #{completed.length} previously completed ****"
+        resuming = true
+      end
       if clean_index
+        if resuming
+          raise ArgumentError.new("Cannot request clean index when resuming")
+        end
         puts "**** Clearing index ****"
         Blacklight.default_index.connection.delete_by_query('*:*')
         Blacklight.default_index.connection.commit
       end
 
       progressbar = ProgressBar.create(:total => id_total,
+          :starting_at => completed.length,
           :length => 80,
           :format => "%E |%b\u{15E7}%i| %p%% (%c / %C \u{0394}%R)",
           :progress_mark => ' ',
@@ -66,11 +77,14 @@ module Tasks
       id_file = File.new(id_list_file)
       id_file.each_line do |id_line|
         id = id_line.chomp
+        # skip id if it has previously been indexed
+        next if resuming && completed.include?(id)
+
         object = ActiveFedora::Base.find(id)
         # Must use update_index instead of going to SolrService.add in order to trigger NestingCollection behaviors
         object.update_index
         progressbar.increment
-        progress_logger.add_entry(id)
+        progress_tracker.add_entry(id)
       end
     end
 
