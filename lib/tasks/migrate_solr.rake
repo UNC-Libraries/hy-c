@@ -6,7 +6,7 @@ require 'optparse/date'
 
 namespace :migrate_solr do
   desc 'list object ids for solr migration'
-  task :list_ids, [] => :environment do |_t, args|
+  task :list_ids, [:output_dir, :after] => :environment do |_t, args|
     start_time = Time.now
     puts "[#{start_time.utc.iso8601}] starting listing of ids"
     options = {}
@@ -14,7 +14,7 @@ namespace :migrate_solr do
     opts = OptionParser.new
     opts.banner = "Usage: bundle exec rake migrate_solr:list_ids -- [options]"
     opts.on("-o", "--output-dir ARG", String, 'Directory list will be saved to') { |val| options[:output_dir] = val }
-    opts.on("-a", "--after ARG", DateTime, 'List objects which have been updated after this timestamp') { |val| options[:after] = val }
+    opts.on("-a", "--after ARG", String, 'List objects which have been updated after this timestamp') { |val| options[:after] = val }
     args = opts.order!(ARGV) {}
     opts.parse!(args)
     
@@ -22,6 +22,7 @@ namespace :migrate_solr do
 
     puts "Listing completed in #{Time.now - start_time}s"
     puts "Stored id list to file: #{file_path}"
+    exit 0
   end
 
   desc 'reindex objects from a list of ids into a new solr version'
@@ -40,7 +41,9 @@ namespace :migrate_solr do
     puts "**** Using solr: #{ENV['SOLR_PRODUCTION_URL']}"
 
     file_path = Tasks::SolrMigrationService.new().reindex(options[:id_list_file], options[:clean_index])
-    
+
     puts "Indexing complete #{Time.now - start_time}s"
+    # Need this exit, otherwise rake might think it has to run multiple tasks when options are provided
+    exit 0
   end
 end

@@ -15,16 +15,24 @@ module Tasks
       filename = "id_list_#{start_time}.txt"
       file_path = File.join(output_path, filename)
       File.open(file_path, 'w') do |file|
-        record_paged_type_query(file, nil)
+        record_paged_type_query(file, after_timestamp)
       end
       return file_path
     end
 
-    def record_paged_type_query(file, query_types)
+    def record_paged_type_query(file, after_timestamp)
       start_row = 0
       total_count = 0
+      if after_timestamp.nil?
+        query = "*:*"
+      else
+        # Replace underscores with :'s since that is the format used in the list filenames
+        after_timestamp.gsub!(/_/, ':')
+        query = "system_modified_dtsi:[#{after_timestamp} TO *]"
+      end
+      puts "Running query: #{query}"
       begin
-        resp = ActiveFedora::SolrService.get("*:*",
+        resp = ActiveFedora::SolrService.get(query,
                                              sort: 'system_create_dtsi ASC',
                                              start: start_row,
                                              rows: PAGE_SIZE,
