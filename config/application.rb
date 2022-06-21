@@ -13,7 +13,6 @@ module Hyrax
     # -- all .rb files in that directory are automatically loaded.
     config.before_configuration do
       env_file = File.join(Rails.root, 'config', ENV['LOCAL_ENV_FILE'] || 'local_env.yml')
-      puts "Loading env file #{env_file}"
 
       YAML.load(File.open(env_file)).each do |key, value|
         ENV[key.to_s] = value

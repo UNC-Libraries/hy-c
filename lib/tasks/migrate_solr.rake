@@ -38,7 +38,6 @@ namespace :migrate_solr do
     opts.parse!(args)
 
     puts "[#{Time.now.utc.iso8601}] starting indexing of objects from list file #{options[:id_list_file]}"
-    puts "**** Using solr: #{ENV['SOLR_PRODUCTION_URL']}"
 
     begin
       Tasks::SolrMigrationService.new().reindex(options[:id_list_file], options[:clean_index])
