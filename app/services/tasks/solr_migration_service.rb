@@ -19,27 +19,27 @@ module Tasks
       File.open(file_path, 'w') do |file|
         record_paged_type_query(file, after_timestamp)
       end
-      return file_path
+      file_path
     end
 
     def record_paged_type_query(file, after_timestamp)
       start_row = 0
       total_count = 0
       if after_timestamp.nil?
-        query = "*:*"
+        query = '*:*'
       else
         # Replace underscores with :'s since that is the format used in the list filenames
         after_timestamp.gsub!(/_/, ':')
         # Validate the timestamp is in iso8601 format
         begin
           DateTime.iso8601(after_timestamp)
-        rescue
-          raise ArgumentError.new("Invalid after timestamp, must be in ISO8601 format but was #{after_timestamp}")
+        rescue Date::Error
+          raise ArgumentError, "Invalid after timestamp, must be in ISO8601 format but was #{after_timestamp}"
         end
         query = "system_modified_dtsi:[#{after_timestamp} TO *]"
       end
       puts "Running query: #{query}"
-      begin
+      loop do
         resp = ActiveFedora::SolrService.get(query,
                                              sort: 'system_create_dtsi ASC',
                                              start: start_row,
@@ -50,13 +50,14 @@ module Tasks
           file.puts(doc['id'])
         end
         start_row += PAGE_SIZE
-      end while resp['docs'].length == PAGE_SIZE && (start_row + PAGE_SIZE) < total_count
+        break unless resp['docs'].length == PAGE_SIZE && (start_row + PAGE_SIZE) < total_count
+      end
     end
 
     # Trigger indexing of all objects listed in the provided file
     def reindex(id_list_file, clean_index)
       # count the number of lines in the file to get the total number of ids being indexed for presenting progress
-      id_total = File.foreach(id_list_file).inject(0) {|c, line| c+1}
+      id_total = File.foreach(id_list_file).inject(0) { |c, _line| c + 1 }
 
       # Start or resume from progress log, which is a sidecar file based off the id list.
       # For example, /tmp/id_list_2022-06-21T19_55_08Z.txt logs progress to /tmp/id_list_2022-06-21T19_55_08Z.txt-progress.log
@@ -65,25 +66,26 @@ module Tasks
       completed = progress_tracker.completed_set
       resuming = false
 
-      if !completed.empty?
+      unless completed.empty?
         puts "**** Resuming reindexing, #{completed.length} previously completed ****"
         resuming = true
       end
       if clean_index
         if resuming
-          raise ArgumentError.new("Cannot request clean index when resuming. To start over, delete the progress log at #{progress_file}")
+          raise ArgumentError, "Cannot request clean index when resuming. To start over, delete the progress log at #{progress_file}"
         end
-        puts "**** Clearing index ****"
+
+        puts '**** Clearing index ****'
         Blacklight.default_index.connection.delete_by_query('*:*')
         Blacklight.default_index.connection.commit
       end
 
-      progressbar = ProgressBar.create(:total => id_total,
-          :starting_at => completed.length,
-          :length => 80,
-          :format => "%E |%b\u{15E7}%i| %p%% (%c / %C \u{0394}%R)",
-          :progress_mark => ' ',
-          :remainder_mark => "\u{FF65}")
+      progressbar = ProgressBar.create(total: id_total,
+                                       starting_at: completed.length,
+                                       length: 80,
+                                       format: "%E |%b\u{15E7}%i| %p%% (%c / %C \u{0394}%R)",
+                                       progress_mark: ' ',
+                                       remainder_mark: "\u{FF65}")
 
       # Read input file
       id_file = File.new(id_list_file)
