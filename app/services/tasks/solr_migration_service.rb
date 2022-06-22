@@ -1,3 +1,4 @@
+require 'date'
 require 'time'
 require 'ruby-progressbar'
 
@@ -9,8 +10,9 @@ module Tasks
     # List all object ids in the repository, ordered by object type.
     # Returns the path to the file containing the list of ids. Its name contains the timestamp when the command was issued.
     def list_object_ids(output_path, after_timestamp = nil)
-      # Capture current time in UTC, as snapshot of starting point for ids
-      start_time = (Time.now - 1).utc.iso8601.gsub!(/:/, '_')
+      # Capture time in UTC, as snapshot of starting point for ids
+      # (back dated a minute to ensure no changes get lost between now and when the query executes)
+      start_time = (Time.now - 60).utc.iso8601.gsub!(/:/, '_')
       # Start list file for IDs, in file named with starting point timestamp
       filename = "id_list_#{start_time}.txt"
       file_path = File.join(output_path, filename)
@@ -28,6 +30,12 @@ module Tasks
       else
         # Replace underscores with :'s since that is the format used in the list filenames
         after_timestamp.gsub!(/_/, ':')
+        # Validate the timestamp is in iso8601 format
+        begin
+          DateTime.iso8601(after_timestamp)
+        rescue
+          raise ArgumentError.new("Invalid after timestamp, must be in ISO8601 format but was #{after_timestamp}")
+        end
         query = "system_modified_dtsi:[#{after_timestamp} TO *]"
       end
       puts "Running query: #{query}"
@@ -47,9 +55,13 @@ module Tasks
 
     # Trigger indexing of all objects listed in the provided file
     def reindex(id_list_file, clean_index)
+      # count the number of lines in the file to get the total number of ids being indexed for presenting progress
       id_total = File.foreach(id_list_file).inject(0) {|c, line| c+1}
 
-      progress_tracker = Migrate::Services::ProgressTracker.new(progress_log_path(id_list_file))
+      # Start or resume from progress log, which is a sidecar file based off the id list.
+      # For example, /tmp/id_list_2022-06-21T19_55_08Z.txt logs progress to /tmp/id_list_2022-06-21T19_55_08Z.txt-progress.log
+      progress_file = progress_log_path(id_list_file)
+      progress_tracker = Migrate::Services::ProgressTracker.new(progress_file)
       completed = progress_tracker.completed_set
       resuming = false
 
@@ -59,7 +71,7 @@ module Tasks
       end
       if clean_index
         if resuming
-          raise ArgumentError.new("Cannot request clean index when resuming")
+          raise ArgumentError.new("Cannot request clean index when resuming. To start over, delete the progress log at #{progress_file}")
         end
         puts "**** Clearing index ****"
         Blacklight.default_index.connection.delete_by_query('*:*')
