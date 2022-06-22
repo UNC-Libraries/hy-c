@@ -30,7 +30,7 @@ gem 'jbuilder', '~> 2.11.2'
 gem 'jquery-rails', '~> 4.5.0'
 gem 'libv8', '~> 7.3'
 # linkeddata gem is released with rdf gems and should be the same version as rdf
-gem 'sparql', '3.1.7'
+gem 'sparql', '3.2.4'
 gem 'linkeddata', '~>3.1.1'
 gem 'loofah', '~>2.18.0'
 gem 'mini_magick', '~>4.11.0'
