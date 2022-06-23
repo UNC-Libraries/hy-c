@@ -72,7 +72,7 @@ docker compose exec web bash
     mutagen-compose up web
     [new terminal window or tab]
     docker compose exec web bash
-    bundle exec rspec spec/models
+    bundle exec rspec
     ```
 - You can edit the code in your editor, as usual, and the changes will be reflected inside the docker container.
 - You should be able to see the application at http://localhost:3000/
