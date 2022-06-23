@@ -50,7 +50,7 @@ module Tasks
           file.puts(doc['id'])
         end
         start_row += PAGE_SIZE
-        break unless resp['docs'].length == PAGE_SIZE && (start_row + PAGE_SIZE) < total_count
+        break unless resp['docs'].length == PAGE_SIZE
       end
     end
 
@@ -94,9 +94,14 @@ module Tasks
         # skip id if it has previously been indexed
         next if resuming && completed.include?(id)
 
-        object = ActiveFedora::Base.find(id)
-        # Must use update_index instead of going to SolrService.add in order to trigger NestingCollection behaviors
-        object.update_index
+        begin
+          object = ActiveFedora::Base.find(id)
+          # Must use update_index instead of going to SolrService.add in order to trigger NestingCollection behaviors
+          object.update_index
+        rescue Ldp::Gone => e
+          puts "Object with id #{id} is gone, skipping"
+          Rails.logger.warn "Object with id #{id} is gone, skipping"
+        end
         progressbar.increment
         progress_tracker.add_entry(id)
       end
