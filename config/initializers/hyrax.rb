@@ -300,7 +300,7 @@ Qa::Authorities::Local.register_subauthority('subjects', 'Qa::Authorities::Local
 Qa::Authorities::Local.register_subauthority('genres', 'Qa::Authorities::Local::TableBasedAuthority')
 
 # Set timeout for creating video derivatives. Otherwise the process sometimes silently fails.
-Hydra::Derivatives::Processors::Video::Processor.timeout = 20.minutes
+Hydra::Derivatives::Processors::Video::Processor.timeout = 30.minutes
 Hydra::Derivatives::Processors::Document.timeout = 5.minutes
 Hydra::Derivatives::Processors::Audio.timeout = 10.minutes
 Hydra::Derivatives::Processors::Image.timeout = 5.minutes
