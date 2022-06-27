@@ -6,6 +6,10 @@ module Tasks
   # Service for reindexing objects from one solr instance to another
   class SolrMigrationService
     PAGE_SIZE = 1000
+    AF_TYPES = 'has_model_ssim:ActiveFedora*'
+    HYDRA_TYPES = 'has_model_ssim:Hydra*'
+    ALL_OTHER_TYPES = '-has_model_ssim:ActiveFedora* AND -has_model_ssim:Hydra*'
+    BASE_QUERIES = [AF_TYPES, HYDRA_TYPES, ALL_OTHER_TYPES]
 
     # List all object ids in the repository, ordered by object type.
     # Returns the path to the file containing the list of ids. Its name contains the timestamp when the command was issued.
@@ -17,17 +21,18 @@ module Tasks
       filename = "id_list_#{start_time}.txt"
       file_path = File.join(output_path, filename)
       File.open(file_path, 'w') do |file|
-        record_paged_type_query(file, after_timestamp)
+        BASE_QUERIES.each do |base_query|
+          record_paged_type_query(file, base_query, after_timestamp)
+        end
       end
       file_path
     end
 
-    def record_paged_type_query(file, after_timestamp)
+    def record_paged_type_query(file, base_query, after_timestamp)
       start_row = 0
       total_count = 0
-      if after_timestamp.nil?
-        query = '*:*'
-      else
+      query = base_query
+      unless after_timestamp.nil?
         # Replace underscores with :'s since that is the format used in the list filenames
         after_timestamp.gsub!(/_/, ':')
         # Validate the timestamp is in iso8601 format
@@ -36,7 +41,7 @@ module Tasks
         rescue Date::Error
           raise ArgumentError, "Invalid after timestamp, must be in ISO8601 format but was #{after_timestamp}"
         end
-        query = "system_modified_dtsi:[#{after_timestamp} TO *]"
+        query = "#{query} AND system_modified_dtsi:[#{after_timestamp} TO *]"
       end
       puts "Running query: #{query}"
       loop do
