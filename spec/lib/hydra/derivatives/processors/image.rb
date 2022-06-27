@@ -6,14 +6,14 @@ RSpec.describe Hydra::Derivatives::Processors::Image do
 
   let(:file_name) { 'file_name' }
 
-  context 'using ImageMagick as the image processor' do
+  context 'using GraphicsMagick as the image processor' do
     before do
-      allow(MiniMagick).to receive(:cli).and_return(:imagemagick)
+      allow(MiniMagick).to receive(:cli).and_return(:graphicsmagick)
     end
 
     around do |example|
       cached_image_processor = ENV['IMAGE_PROCESSOR']
-      ENV['IMAGE_PROCESSOR'] = 'imagemagick'
+      ENV['IMAGE_PROCESSOR'] = 'graphicsmagick'
       example.run
       ENV['IMAGE_PROCESSOR'] = cached_image_processor
     end
@@ -139,20 +139,6 @@ RSpec.describe Hydra::Derivatives::Processors::Image do
         it 'processes without a timeout' do
           expect(subject).to receive(:process_with_timeout).never
           expect(subject).to receive(:create_resized_image).once
-          subject.process
-        end
-      end
-
-      context 'when running the complete command', requires_imagemagick: true do
-        let(:file_name) { File.join(fixture_path, 'derivatives', 'test.tif') }
-
-        it 'calls the ImageMagick version of create_resized_image' do
-          expect(subject).to receive(:create_resized_image_with_imagemagick)
-          subject.process
-        end
-
-        it 'converts the image' do
-          expect(Hyrax::PersistDerivatives).to receive(:call).with(kind_of(StringIO), directives)
           subject.process
         end
       end
