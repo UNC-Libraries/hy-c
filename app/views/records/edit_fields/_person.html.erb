@@ -23,7 +23,7 @@
       <div class="person col-sm-12 <%= person_term %>-affiliation">
         <% is_required = person_term == 'creator' && f.object_name == 'honors_thesis' %>
         <%# Replace old value of UNC Libraries to avoid duplicate key in the yaml file %>
-        <% aff_val = person.object.affiliation.first.to_s.gsub(/(\.\s+)Library$/, '\1University Libraries') %>
+        <% aff_val = person.object.affiliation.first.to_s %>
         <%= person.input :affiliation, as: :select,
                          label: "UNC affiliation (#{person_term_display})",
                          collection: DepartmentsService.select_all_options.sort,
