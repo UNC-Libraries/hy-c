@@ -145,7 +145,7 @@ RSpec.describe Hydra::Derivatives::Processors::Image do
 
       context 'when running the complete command' do
         let(:file_name) { File.join(fixture_path, 'derivatives', 'test.tif') }
-  
+
         it 'calls the GraphicsMagick version of create_resized_image' do
           expect(subject).to receive(:create_resized_image_with_graphicsmagick)
           subject.process
@@ -155,7 +155,7 @@ RSpec.describe Hydra::Derivatives::Processors::Image do
           expect(Hyrax::PersistDerivatives).to receive(:call).with(kind_of(StringIO), directives)
           subject.process
         end
-  
+
         it 'gets the source data' do
           expect(subject).to receive(:source_data).and_return(IMAGE_SOURCE_DATA)
           subject.process
