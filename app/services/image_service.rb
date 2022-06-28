@@ -3,6 +3,10 @@ module ImageService
     :graphicsmagick
   end
 
+  def self.processor
+    :graphicsmagick
+  end
+
   def self.cli
     :graphicsmagick
   end
