@@ -6,10 +6,10 @@ module Tasks
   # Service for reindexing objects from one solr instance to another
   class SolrMigrationService
     PAGE_SIZE = 1000
-    AF_TYPES = 'has_model_ssim:ActiveFedora*'
-    HYDRA_TYPES = 'has_model_ssim:Hydra*'
-    ALL_OTHER_TYPES = '-has_model_ssim:ActiveFedora* AND -has_model_ssim:Hydra*'
-    BASE_QUERIES = [AF_TYPES, HYDRA_TYPES, ALL_OTHER_TYPES]
+    AF_TYPES = 'has_model_ssim:ActiveFedora*'.freeze
+    HYDRA_TYPES = 'has_model_ssim:Hydra*'.freeze
+    ALL_OTHER_TYPES = '-has_model_ssim:ActiveFedora* AND -has_model_ssim:Hydra*'.freeze
+    BASE_QUERIES = [AF_TYPES, HYDRA_TYPES, ALL_OTHER_TYPES].freeze
 
     # List all object ids in the repository, ordered by object type.
     # Returns the path to the file containing the list of ids. Its name contains the timestamp when the command was issued.
