@@ -41,7 +41,7 @@ gem 'omniauth-rails_csrf_protection'
 gem 'omniauth-shibboleth', '~> 1.3'
 gem 'passenger', '6.0.14', require: 'phusion_passenger/rack_handler'
 # Use postgresql as the database for Active Record
-gem 'pg', '~> 1.2.3'
+gem 'pg', '~> 1.3.5'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.2.6'
 # Use Redis adapter to run Action Cable in production
