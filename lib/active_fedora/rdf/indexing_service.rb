@@ -29,6 +29,7 @@ module ActiveFedora::RDF
       @person_label = []
       @creator_label = []
       @advisor_label = []
+      @contributor_label = []
       @orcid_label = []
       @affiliation_label = []
       @other_affiliation_label = []
@@ -103,6 +104,10 @@ module ActiveFedora::RDF
                          solr_document_field_name(('advisor_label').to_sym, prefix_method),
                          [:stored_searchable, :facetable],
                          @advisor_label.flatten)
+      append_to_solr_doc(solr_doc,
+                         solr_document_field_name(('contributor_label').to_sym, prefix_method),
+                         [:stored_searchable, :facetable],
+                         @contributor_label.flatten)
 
       solr_doc
     end
@@ -171,6 +176,8 @@ module ActiveFedora::RDF
             @creator_label.push(Array(person['name']))
           elsif field_key.to_s == 'advisors'
             @advisor_label.push(Array(person['name']))
+          elsif field_key.to_s == 'contributors'
+            @contributor_label.push(Array(person['name']))
           end
 
           display_text << "ORCID: #{Array(person['orcid']).first}" unless Array(person['orcid']).first.blank?

@@ -116,6 +116,10 @@ class SolrDocument
     self[Solrizer.solr_name('contributor_display')]
   end
 
+  def contributor_label
+    self[Solrizer.solr_name('contributor_label')]
+  end
+
   def conference_name
     self[Solrizer.solr_name('conference_name')]
   end
