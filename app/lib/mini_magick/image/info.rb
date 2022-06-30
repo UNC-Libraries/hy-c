@@ -127,7 +127,6 @@ module MiniMagick
       end
 
       def details
-        warn '[MiniMagick] MiniMagick::Image#details has been deprecated, as it was causing too many parsing errors. You should use MiniMagick::Image#data instead, which differs in a way that the keys are in camelcase.'
 
         @info['details'] ||= begin
           details_string = identify(&:verbose)
