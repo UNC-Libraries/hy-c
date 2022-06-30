@@ -41,24 +41,24 @@ RSpec.describe Tasks::SolrMigrationService do
   end
 
   context 'with multiple works populated' do
-    let(:work1) {
+    let(:work1) do
       HonorsThesis.create(title: ['Honors thesis Work 1'],
                           visibility: 'open',
                           admin_set_id: admin_set.id,
                           doi: 'https://doi.org/10.5077/test-doi')
-    }
+    end
 
-    let(:work2) {
+    let(:work2) do
       Article.create(title: ['Article Work 2'],
-                  date_issued: '2020',
-                  resource_type: ['Article'],
-                  funder: ['a funder'],
-                  subject: ['subject1', 'subject2'],
-                  abstract: ['a description'],
-                  extent: ['some extent'],
-                  language_label: ['English'],
-                  rights_statement: 'http://rightsstatements.org/vocab/InC/1.0/')
-    }
+                     date_issued: '2020',
+                     resource_type: ['Article'],
+                     funder: ['a funder'],
+                     subject: ['subject1', 'subject2'],
+                     abstract: ['a description'],
+                     extent: ['some extent'],
+                     language_label: ['English'],
+                     rights_statement: 'http://rightsstatements.org/vocab/InC/1.0/')
+    end
 
     before do
       work1.save!
@@ -70,7 +70,7 @@ RSpec.describe Tasks::SolrMigrationService do
       expect(initial_records['response']['numFound']).to eq 7
 
       list_path = service.list_object_ids(output_dir, nil)
-      
+
       # Empty out solr so we can repopulate it
       Blacklight.default_index.connection.delete_by_query('*:*')
       Blacklight.default_index.connection.commit
@@ -119,7 +119,7 @@ RSpec.describe Tasks::SolrMigrationService do
       # List half the ids as done
       id_list = File.readlines(list_path, chomp: true)
       split_ids = id_list.each_slice(4).to_a
-      File.open(progress_log, 'w') { |file| file.write("#{split_ids[0].join("\n")}") }
+      File.open(progress_log, 'w') { |file| file.write(split_ids[0].join("\n").to_s) }
 
       # Empty out solr so we can repopulate it
       Blacklight.default_index.connection.delete_by_query('*:*')
@@ -157,7 +157,8 @@ RSpec.describe Tasks::SolrMigrationService do
       docs1.each_with_index do |record1, index|
         record2 = docs2[index]
         record1.each do |key, value|
-          next if key == 'timestamp' || key == '_version_'
+          next if ['timestamp', '_version_'].include?(key)
+
           expect(value).to eq(record2[key]), "Expected #{key} to have value #{value} but was #{record2[key]}"
         end
         expect(record1.length).to eq record2.length
