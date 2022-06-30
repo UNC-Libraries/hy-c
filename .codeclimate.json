@@ -22,7 +22,7 @@
     "method-complexity": {
       "enabled": true,
       "config": {
-        "threshold": 5
+        "threshold": 24
       }
     },
     "method-count": {
@@ -34,7 +34,7 @@
     "method-lines": {
       "enabled": true,
       "config": {
-        "threshold": 25
+        "threshold": 130
       }
     },
     "nested-control-flow": {
