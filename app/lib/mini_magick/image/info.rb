@@ -127,7 +127,6 @@ module MiniMagick
       end
 
       def details
-
         @info['details'] ||= begin
           details_string = identify(&:verbose)
           key_stack = []
