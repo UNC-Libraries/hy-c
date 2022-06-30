@@ -3,6 +3,8 @@ require 'time'
 require 'ruby-progressbar'
 
 module Tasks
+  require 'tasks/migrate/services/progress_tracker'
+  require 'tasks/migration_helper'
   # Service for reindexing objects from one solr instance to another
   class SolrMigrationService
     PAGE_SIZE = 1000
@@ -43,7 +45,6 @@ module Tasks
         end
         query = "#{query} AND system_modified_dtsi:[#{after_timestamp} TO *]"
       end
-      puts "Running query: #{query}"
       loop do
         resp = ActiveFedora::SolrService.get(query,
                                              sort: 'system_create_dtsi ASC',
