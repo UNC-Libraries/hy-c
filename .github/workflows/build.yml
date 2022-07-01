@@ -42,13 +42,13 @@ jobs:
       IMAGE_PROCESSOR: 'graphicsmagick'
     services:
       fedora:
-        image: samvera/fcrepo4:4.7.5-cgroup1
+        image: cazzerson/fcrepo4:4.7.5
         ports:
           - 8080:8080
         env:
-          CATALINA_OPTS: "-Djava.awt.headless=true -Dfile.encoding=UTF-8 -server -Xms512m -Xmx1024m -XX:NewSize=256m -XX:MaxNewSize=256m -XX:PermSize=256m -XX:MaxPermSize=256m -XX:+DisableExplicitGC"
+          CATALINA_OPTS: "-Djava.awt.headless=true -Dfile.encoding=UTF-8 -server -Xms512m -Xmx1024m -XX:NewSize=256m -XX:MaxNewSize=256m -XX:PermSize=256m -XX:MaxPermSize=256m -XX:+DisableExplicitGC -Dfcrepo.modeshape.configuration=classpath:/config/file-simple/repository.json"
       redis:
-        image: redis
+        image: redis:5.0.14
         options: >-
           --health-cmd "redis-cli ping"
           --health-interval 10s
@@ -57,7 +57,7 @@ jobs:
         ports:
           - 6379:6379
       postgres:
-        image: postgres
+        image: postgres:9.6-alpine
         env:
           POSTGRES_USER: hyrax
           POSTGRES_PASSWORD: password
@@ -68,13 +68,13 @@ jobs:
           --health-timeout 5s
         ports: ["5432:5432"]
       solr:
-        image: solr:6.6
+        image: solr:6.6.6-alpine
         ports:
           - 8983:8983
         options: >-
           --name solr_container
       clamavd:
-        image: lokori/clamav-java
+        image: tiredofit/clamav
         ports:
           - 3310:3310
         volumes:
