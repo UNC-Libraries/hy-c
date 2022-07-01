@@ -58,7 +58,7 @@ services:
     volumes:
       - fcrepo_data:/usr/local/tomcat/fcrepo4-data/fcrepo.binary.directory
     environment:
-      CATALINA_OPTS: "-Djava.awt.headless=true -server -Xms1G -Xmx2G -XX:MaxNewSize=1G -XX:+HeapDumpOnOutOfMemoryError -Dfcrepo.modeshape.configuration=classpath:/config/file-simple/repository.json"
+      CATALINA_OPTS: "-Djava.awt.headless=true -Dfile.encoding=UTF-8 -server -Xms512m -Xmx1024m -XX:NewSize=256m -XX:MaxNewSize=256m -XX:PermSize=256m -XX:MaxPermSize=256m -XX:+DisableExplicitGC -Dfcrepo.modeshape.configuration=classpath:/config/file-simple/repository.json"
     stdin_open: true
     tty: true
   redis:
