@@ -122,6 +122,15 @@
       </analyzer>
     </fieldType>
 
+    <!-- A text field that only splits on whitespace for exact matching of words, and is case insensitive -->
+    <fieldType name="text_ws_icu" class="solr.TextField" positionIncrementGap="100">
+      <analyzer>
+        <tokenizer class="solr.WhitespaceTokenizerFactory"/>
+        <filter class="solr.ICUFoldingFilterFactory"/>
+        <filter class="solr.TrimFilterFactory"/>
+      </analyzer>
+    </fieldType>
+
     <!-- single token analyzed text, for sorting.  Punctuation is significant. -->
     <fieldtype name="alphaSort" class="solr.TextField" sortMissingLast="true" omitNorms="true">
       <analyzer>
@@ -187,6 +196,8 @@
 
     <field name="lat" type="tdouble" stored="true" indexed="true" multiValued="false"/>
     <field name="lng" type="tdouble" stored="true" indexed="true" multiValued="false"/>
+    <!-- Enable search of rights urls and labels together -->
+    <field name="rights_statement_search" type="text_ws_icu" stored="true" indexed="true" multiValued="true"/>
 
     <!-- NOTE:  not all possible Solr field types are represented in the dynamic fields -->
 
@@ -349,6 +360,9 @@
   <!-- for suggestions -->
   <copyField source="*_tesim" dest="suggest"/>
   <copyField source="*_ssim" dest="suggest"/>
+
+  <copyField source="rights_statement_tesim" dest="rights_statement_search"/>
+  <copyField source="rights_statement_label_tesim" dest="rights_statement_search"/>
 
   <!-- Similarity is the scoring routine for each document vs. a query.
        A custom similarity may be specified here, but the default is fine

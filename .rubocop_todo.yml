@@ -337,6 +337,9 @@ Metrics/BlockLength:
 # Configuration parameters: CountComments, CountAsOne.
 Metrics/ClassLength:
   Max: 294
+  Exclude:
+    - 'app/controllers/catalog_controller.rb'
+
 
 # Offense count: 33
 # Configuration parameters: IgnoredMethods.

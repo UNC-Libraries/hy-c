@@ -347,7 +347,7 @@ class CatalogController < ApplicationController
     end
 
     config.add_search_field('rights_statement') do |field|
-      solr_name = solr_name('rights_statement', :stored_searchable)
+      solr_name = 'rights_statement_search'
       field.solr_local_parameters = {
         qf: solr_name,
         pf: solr_name
