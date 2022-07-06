@@ -1,0 +1,56 @@
+# LOCAL_ENV_FILE=local_env.yml bundle exec rake migrate_solr:list_ids -- -o /tmp/
+# LOCAL_ENV_FILE=local_env_solr8.yml bundle exec rake migrate_solr:reindex -- -i /tmp/id_list_2022-06-20T15_40_05Z.txt
+require 'time'
+require 'optparse'
+require 'optparse/date'
+
+namespace :migrate_solr do
+  desc 'list object ids for solr migration'
+  task :list_ids, [:output_dir, :after] => :environment do |_t, _args|
+    start_time = Time.now
+    puts "[#{start_time.utc.iso8601}] starting listing of ids"
+    options = {}
+
+    opts = OptionParser.new
+    opts.banner = 'Usage: bundle exec rake migrate_solr:list_ids -- [options]'
+    opts.on('-o', '--output-dir ARG', String, 'Directory list will be saved to') { |val| options[:output_dir] = val }
+    opts.on('-a', '--after ARG', String, 'List objects which have been updated after this timestamp') { |val| options[:after] = val }
+    args = opts.order!(ARGV) {}
+    opts.parse!(args)
+
+    file_path = Tasks::SolrMigrationService.new.list_object_ids(options[:output_dir], options[:after])
+
+    puts "Listing completed in #{Time.now - start_time}s"
+    puts "Stored id list to file: #{file_path}"
+    exit 0
+  end
+
+  desc 'reindex objects from a list of ids into a new solr version'
+  task :reindex, [] => :environment do |_t, _args|
+    start_time = Time.now
+    puts "[#{start_time.utc.iso8601}] starting reindexing to #{ENV['SOLR_PRODUCTION_URL']}"
+    options = {}
+    opts = OptionParser.new
+    opts.banner = 'Usage: bundle exec rake migrate_solr:reindex -- [options]'
+    opts.on('-i', '--id-list-file ARG', String, 'File path of id list to reindex from') { |val| options[:id_list_file] = val }
+    opts.on('-c', '--clean-index', FalseClass, 'Delete all content from the index before populating') { options[:clean_index] = true }
+    args = opts.order!(ARGV) {}
+    opts.parse!(args)
+
+    puts "[#{Time.now.utc.iso8601}] starting indexing of objects from list file #{options[:id_list_file]}"
+
+    begin
+      Tasks::SolrMigrationService.new.reindex(options[:id_list_file], options[:clean_index])
+    rescue Interrupt => e
+      puts 'Interrupted, aborting reindexing'
+      exit 1
+    rescue ArgumentError => e
+      puts "Error: #{e.message}"
+      exit 1
+    end
+
+    puts "Indexing complete #{Time.now - start_time}s"
+    # Need this exit, otherwise rake might think it has to run multiple tasks when options are provided
+    exit 0
+  end
+end

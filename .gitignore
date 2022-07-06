@@ -17,6 +17,7 @@
 .byebug_history
 
 config/local_env.yml
+config/local_env_solr8.yml
 .ruby-*
 /.idea/*
 /public/assets/*
