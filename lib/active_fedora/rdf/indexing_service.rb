@@ -29,6 +29,7 @@ module ActiveFedora::RDF
       @person_label = []
       @creator_label = []
       @advisor_label = []
+      @contributor_label = []
       @orcid_label = []
       @affiliation_label = []
       @other_affiliation_label = []
@@ -103,6 +104,10 @@ module ActiveFedora::RDF
                          solr_document_field_name(('advisor_label').to_sym, prefix_method),
                          [:stored_searchable, :facetable],
                          @advisor_label.flatten)
+      append_to_solr_doc(solr_doc,
+                         solr_document_field_name(('contributor_label').to_sym, prefix_method),
+                         [:stored_searchable, :facetable],
+                         @contributor_label.flatten)
 
       solr_doc
     end
@@ -163,23 +168,28 @@ module ActiveFedora::RDF
       displays = []
       people.each do |person|
         display_text = []
-        unless Array(person['name']).first.blank?
+        person_name = Array(person['name'])
+        unless person_name.first.blank?
           display_text << "index:#{Array(person['index']).first}" if person['index']
-          display_text << Array(person['name']).first
-          @person_label.push(Array(person['name']))
+          display_text << person_name.first
+          @person_label.push(person_name)
           if field_key.to_s == 'creators'
-            @creator_label.push(Array(person['name']))
+            @creator_label.push(person_name)
           elsif field_key.to_s == 'advisors'
-            @advisor_label.push(Array(person['name']))
+            @advisor_label.push(person_name)
+          elsif field_key.to_s == 'contributors'
+            @contributor_label.push(person_name)
           end
 
-          display_text << "ORCID: #{Array(person['orcid']).first}" unless Array(person['orcid']).first.blank?
-          @orcid_label.push(Array(person['orcid']))
+          orcid = Array(person['orcid'])
+          display_text << "ORCID: #{orcid.first}" unless orcid.first.blank?
+          @orcid_label.push(orcid)
 
           display_text = build_affiliations(person['affiliation'], display_text)
 
-          display_text << "Other Affiliation: #{Array(person['other_affiliation']).first}" unless Array(person['other_affiliation']).first.blank?
-          @other_affiliation_label.push(Array(person['other_affiliation']))
+          other_affil = Array(person['other_affiliation'])
+          display_text << "Other Affiliation: #{other_affil.first}" unless other_affil.first.blank?
+          @other_affiliation_label.push(other_affil)
 
           displays << display_text.join('||')
         end
