@@ -933,6 +933,13 @@ li {
   .nav > li > a {
     padding: 10px;
   }
+
+  footer {
+    .navbar-text {
+      margin-left: 0;
+      margin-right: 0;
+    }
+  }
 }
 
 
