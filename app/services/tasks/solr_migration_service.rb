@@ -62,6 +62,15 @@ module Tasks
 
     # Trigger indexing of all objects listed in the provided file
     def reindex(id_list_file, clean_index)
+      reindex_list(id_list_file, clean_index)
+    rescue ArgumentError => e
+      raise e
+    rescue StandardError => e
+      Rails.logger.error 'Execution interrupted by unexpected error'
+      Rails.logger.error [e.class.to_s, e.message, *e.backtrace].join($RS)
+    end
+
+    def reindex_list(id_list_file, clean_index)
       # count the number of lines in the file to get the total number of ids being indexed for presenting progress
       id_total = File.foreach(id_list_file).inject(0) { |c, _line| c + 1 }
 
@@ -107,6 +116,10 @@ module Tasks
         rescue Ldp::Gone => e
           puts "Object with id #{id} is gone, skipping"
           Rails.logger.warn "Object with id #{id} is gone, skipping"
+        rescue ActiveFedora::ObjectNotFoundError => e
+          Rails.logger.warn "Object with id #{id} was not found, skipping: #{e.message}"
+        rescue JSON::GeneratorError => e
+          Rails.logger.error "Failed to generate doc for #{id}, skipping: #{e.message}"
         end
         progressbar.increment
         progress_tracker.add_entry(id)

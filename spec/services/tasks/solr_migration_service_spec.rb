@@ -1,5 +1,6 @@
 require 'rails_helper'
 require 'active_fedora/base'
+require 'fileutils'
 
 RSpec.describe Tasks::SolrMigrationService do
   let(:service) { described_class.new }
@@ -149,6 +150,17 @@ RSpec.describe Tasks::SolrMigrationService do
       service.reindex(list_path, true)
       reindexed_records = ActiveFedora::SolrService.get('*:*', rows: 100, sort: 'id ASC')
       expect(reindexed_records['response']['numFound']).to eq 6
+    end
+
+    it 'Index with invalid input file' do
+      list_path = service.list_object_ids(output_dir, nil)
+      # Delete the list file so that it won't be found when running reindexng
+      FileUtils.rm(list_path)
+
+      allow(Rails.logger).to receive(:error)
+      service.reindex(list_path, false)
+
+      expect(Rails.logger).to have_received(:error).with('Execution interrupted by unexpected error')
     end
 
     def expect_results_match(results1, results2)
