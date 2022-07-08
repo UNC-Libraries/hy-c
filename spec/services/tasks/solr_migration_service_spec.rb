@@ -138,13 +138,15 @@ RSpec.describe Tasks::SolrMigrationService do
     end
 
     it 'Index with invalid id is skipped' do
+      # Sort by created time in order to delete a consistent object across runs
       initial_records = ActiveFedora::SolrService.get('*:*', rows: 100, sort: 'id ASC')
       expect(initial_records['response']['numFound']).to eq 7
 
       list_path = service.list_object_ids(output_dir, nil)
 
       # Delete an object from fedora
-      ActiveFedora::Base.find(initial_records['response']['docs'][4]['id']).delete
+      target_records = ActiveFedora::SolrService.get('has_model_ssim:HonorsThesis', rows: 1, sort: 'id ASC')
+      ActiveFedora::Base.find(target_records['response']['docs'][0]['id']).delete
 
       # Using a clean reindex to reset the index before repopulation
       service.reindex(list_path, true)
