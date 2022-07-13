@@ -1,9 +1,11 @@
 require 'rails_helper'
+# Load the override being tested
+require Rails.root.join('app/overrides/services/hyrax/workflow/notification_service_override.rb')
 
 RSpec.describe Hyrax::Workflow::NotificationService do
   let(:entity) { Sipity::Entity.new }
 
-  describe "#call" do
+  describe '#call' do
     around do |example|
       class ConfirmationOfSubmittedToUlraCommittee
         def self.send_notification(notification); end
@@ -12,8 +14,8 @@ RSpec.describe Hyrax::Workflow::NotificationService do
       Object.send(:remove_const, :ConfirmationOfSubmittedToUlraCommittee)
     end
 
-    # Check that base behavior 
-    context "with no agents" do
+    # Check that base behavior
+    context 'with no agents' do
       let(:user) { [FactoryBot.create(:user)] }
       let(:creating_user) { Sipity::Role.new(name: 'creating_user') }
       let(:recipient1) do
@@ -26,7 +28,7 @@ RSpec.describe Hyrax::Workflow::NotificationService do
                                           role: advising)
       end
       let(:notification) do
-        Sipity::Notification.new(name: "confirmation_of_submitted_to_ulra_committee",
+        Sipity::Notification.new(name: 'confirmation_of_submitted_to_ulra_committee',
                                  recipients: [recipient1, recipient2])
       end
       let(:notifiable_context) { Sipity::NotifiableContext.new(notification: notification) }
@@ -34,7 +36,7 @@ RSpec.describe Hyrax::Workflow::NotificationService do
       let(:instance) do
         described_class.new(entity: entity,
                             action: action,
-                            comment: "A pleasant read",
+                            comment: 'A pleasant read',
                             user: user)
       end
 
@@ -55,10 +57,10 @@ RSpec.describe Hyrax::Workflow::NotificationService do
           .and_return(creator_rel)
       end
 
-      it "calls the notification" do
-        expect(ConfirmationOfSubmittedToUlraCommittee).to receive(:send_notification).with(hash_including(recipients: { "to" => creator, 'cc' => advisors }))
+      it 'calls the notification' do
+        expect(ConfirmationOfSubmittedToUlraCommittee).to receive(:send_notification).with(hash_including(recipients: { 'to' => creator, 'cc' => advisors }))
         instance.call
-      end     
+      end
     end
 
     RSpec.shared_examples 'sends notification recipients' do |role_name, proxy_for_type|
@@ -68,7 +70,7 @@ RSpec.describe Hyrax::Workflow::NotificationService do
                                           role: user_role)
       end
       let(:notification) do
-        Sipity::Notification.new(name: "confirmation_of_submitted_to_ulra_committee",
+        Sipity::Notification.new(name: 'confirmation_of_submitted_to_ulra_committee',
                                  recipients: [recipient1])
       end
       let(:notifiable_context) { Sipity::NotifiableContext.new(notification: notification) }
@@ -76,7 +78,7 @@ RSpec.describe Hyrax::Workflow::NotificationService do
       let(:instance) do
         described_class.new(entity: entity,
                             action: action,
-                            comment: "A pleasant read",
+                            comment: 'A pleasant read',
                             user: user)
       end
 
@@ -99,7 +101,7 @@ RSpec.describe Hyrax::Workflow::NotificationService do
         allow(Role).to receive(:where).with(name: user_role.name).and_return([hyrax_role])
       end
 
-      it "calls the notification" do
+      it 'calls the notification' do
         expect(ConfirmationOfSubmittedToUlraCommittee).to receive(:send_notification).with(hash_including(recipients: expected_recipients))
         instance.call
       end
@@ -108,37 +110,37 @@ RSpec.describe Hyrax::Workflow::NotificationService do
     it_behaves_like 'sends notification recipients', 'registered', 'Hyrax::Group' do
       let(:user) { [FactoryBot.create(:user)] }
       let(:notify_user) { [FactoryBot.create(:user)] }
-      let(:expected_recipients) { { "to" => [] } }
+      let(:expected_recipients) { { 'to' => [] } }
     end
 
     it_behaves_like 'sends notification recipients', 'registered', 'Role' do
       let(:user) { [FactoryBot.create(:user)] }
       let(:notify_user) { [FactoryBot.create(:user)] }
-      let(:expected_recipients) { { "to" => [] } }
+      let(:expected_recipients) { { 'to' => [] } }
     end
 
     it_behaves_like 'sends notification recipients', 'depositing', 'Role' do
       let(:user) { [FactoryBot.create(:user)] }
       let(:notify_user) { [FactoryBot.create(:user)] }
-      let(:expected_recipients) { { "to" => [] } }
+      let(:expected_recipients) { { 'to' => [] } }
     end
 
     it_behaves_like 'sends notification recipients', 'admin', 'Hyrax::Group' do
       let(:user) { [FactoryBot.create(:admin)] }
       let(:notify_user) { [FactoryBot.create(:user)] }
-      let(:expected_recipients) { { "to" => [] } }
+      let(:expected_recipients) { { 'to' => [] } }
     end
 
     it_behaves_like 'sends notification recipients', 'reviewing', 'Hyrax::Group' do
       let(:user) { [FactoryBot.create(:user)] }
       let(:notify_user) { [FactoryBot.create(:user)] }
-      let(:expected_recipients) { { "to" => notify_user } }
+      let(:expected_recipients) { { 'to' => notify_user } }
     end
 
     it_behaves_like 'sends notification recipients', 'reviewing', 'Role' do
       let(:user) { [FactoryBot.create(:user)] }
       let(:notify_user) { [FactoryBot.create(:user)] }
-      let(:expected_recipients) { { "to" => notify_user } }
+      let(:expected_recipients) { { 'to' => notify_user } }
     end
 
     # Recipient associated with User agent type
@@ -152,7 +154,7 @@ RSpec.describe Hyrax::Workflow::NotificationService do
         allow(::User).to receive(:find).with(user_agent.proxy_for_id).and_return(notify_user2.first)
       end
 
-      let(:expected_recipients) { { "to" => notify_user2 } }
+      let(:expected_recipients) { { 'to' => notify_user2 } }
     end
   end
 end
