@@ -921,3 +921,7 @@ Style/WordArray:
 # URISchemes: http, https
 Layout/LineLength:
   Max: 1666
+
+Lint/ConstantDefinitionInBlock:
+  Exclude:
+    - 'spec/services/hyrax/workflow/notification_service_spec.rb'
