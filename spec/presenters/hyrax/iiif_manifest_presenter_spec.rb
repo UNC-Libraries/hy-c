@@ -1,4 +1,6 @@
 require 'rails_helper'
+# Load the override being tested
+require Rails.root.join('app/overrides/presenters/hyrax/iiif_manifest_presenter_override.rb')
 
 RSpec.describe Hyrax::IiifManifestPresenter do
   describe '#manifest_metadata' do
