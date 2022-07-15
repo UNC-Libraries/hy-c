@@ -1,4 +1,6 @@
 require 'rails_helper'
+# Load the override being tested
+require Rails.root.join('app/overrides/models/file_download_stat_override.rb')
 
 RSpec.describe FileDownloadStat, type: :model do
   describe '.ga_statistic' do
@@ -21,6 +23,14 @@ RSpec.describe FileDownloadStat, type: :model do
         it 'calls the Legato method with the correct path' do
           expect(views).to receive(:for_file).with(file_set.id)
           described_class.ga_statistics(start_date, file_set)
+        end
+      end
+
+      context 'when a profile not available' do
+        let(:profile) { nil }
+
+        it 'calls the Legato method with the correct path' do
+          expect(described_class.ga_statistics(start_date, file_set)).to be_empty
         end
       end
 
