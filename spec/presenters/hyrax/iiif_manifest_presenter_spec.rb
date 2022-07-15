@@ -4,9 +4,11 @@ require Rails.root.join('app/overrides/presenters/hyrax/iiif_manifest_presenter_
 
 RSpec.describe Hyrax::IiifManifestPresenter do
   describe '#manifest_metadata' do
-    context 'work with image files' do
+    context 'work without person object' do
       subject(:presenter) { described_class.new(SolrDocument.new(work.to_solr)) }
-      let(:work) { FactoryBot.create(:work_with_image_files) }
+      let(:work) do
+        Article.new(title: ['Test title'])
+      end
 
       it 'includes metadata' do
         expect(presenter.manifest_metadata)

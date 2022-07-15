@@ -42,7 +42,6 @@ services:
     volumes:
       - clam:/var/lib/clamav
       - hyrax_data:/opt/hyrax
-      - mount-code:/hyrax
   db:
     image: postgres:9.6-alpine
     volumes:
