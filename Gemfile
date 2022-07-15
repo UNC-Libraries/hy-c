@@ -72,6 +72,8 @@ group :development, :test do
   gem 'rubocop-rails'
   gem 'rubocop-rspec'
   gem 'solr_wrapper', '~> 1.1.0'
+  gem 'rubocop-github'
+  gem 'rubocop-performance', require: false
 end
 
 group :development do

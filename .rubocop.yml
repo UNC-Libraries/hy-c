@@ -1,3 +1,8 @@
+inherit_gem:
+  rubocop-github:
+    - config/default.yml
+    - config/rails.yml
+
 inherit_from: .rubocop_todo.yml
 
 AllCops:
