@@ -1,6 +1,6 @@
 require 'rails_helper'
 # Load the override being tested
-# require Rails.root.join('app/overrides/models/file_download_stat_override.rb')
+require Rails.root.join('app/overrides/models/hyrax/statistic_override.rb')
 
 RSpec.describe Hyrax::Statistic, type: :model do
   let(:concrete_stat_class) do
