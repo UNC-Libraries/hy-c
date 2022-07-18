@@ -39,8 +39,17 @@ module Hyrax
 
     # Prepend all log lines with the following tags.
     config.log_tags = [:request_id]
+
     # @TODO This setting allows Blacklight to work with Rails 6.1.6.1.
     # Should be removed when Blacklight fixes this upstream
-    config.active_record.yaml_column_permitted_classes = [HashWithIndifferentAccess]
+    config.active_record.yaml_column_permitted_classes = [HashWithIndifferentAccess, Symbol]
+
+    # Load override files
+    overrides = "#{Rails.root}/app/overrides"
+    config.to_prepare do
+      Dir.glob("#{overrides}/**/*_override.rb").sort.each do |c|
+        Rails.configuration.cache_classes ? require(c) : load(c)
+      end
+    end
   end
 end
