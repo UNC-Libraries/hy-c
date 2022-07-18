@@ -55,14 +55,42 @@ RSpec.describe HycHelper do
 
     around do |example|
       cached_redirect_file_path = ENV['REDIRECT_FILE_PATH']
+      HycHelper.clear_redirect_mapping
       ENV['REDIRECT_FILE_PATH'] = 'spec/fixtures/redirect_uuids.csv'
       example.run
       ENV['REDIRECT_FILE_PATH'] = cached_redirect_file_path
+      HycHelper.clear_redirect_mapping
     end
 
     it 'returns redirect mapping' do
-      expect(helper.redirect_lookup('uuid', '02fc897a-12b6-4b81-91e4-b5e29cb683a6').to_h).to include('uuid' => '02fc897a-12b6-4b81-91e4-b5e29cb683a6', 'new_path' => "articles/#{article.id}")
-      expect(helper.redirect_lookup('new_path', "articles/#{article.id}").to_h).to include('uuid' => '02fc897a-12b6-4b81-91e4-b5e29cb683a6', 'new_path' => "articles/#{article.id}")
+      expect(helper.redirect_lookup('uuid', '02fc897a-12b6-4b81-91e4-b5e29cb683a6')).to include('uuid' => '02fc897a-12b6-4b81-91e4-b5e29cb683a6', 'new_path' => "articles/#{article.id}")
+      expect(helper.redirect_lookup('uuid', 'not_an_id')).to be_nil
+      expect(helper.redirect_lookup('new_path', "articles/#{article.id}")).to include('uuid' => '02fc897a-12b6-4b81-91e4-b5e29cb683a6', 'new_path' => "articles/#{article.id}")
+      expect(helper.redirect_lookup('new_path', article.id)).to include('uuid' => '02fc897a-12b6-4b81-91e4-b5e29cb683a6', 'new_path' => "articles/#{article.id}")
+      expect(helper.redirect_lookup('new_path', 'justmadethisup')).to be_nil
+    end
+
+    it 'raises error when invalid column specified' do
+      expect { helper.redirect_lookup('not_valid', '02fc897a-12b6-4b81-91e4-b5e29cb683a6') }.to raise_error(ArgumentError)
+    end
+
+    context 'with multiple mappings' do
+      before do
+        File.open(ENV['REDIRECT_FILE_PATH'], 'w') do |f|
+          f.puts 'uuid,new_path'
+          f.puts "02fc897a-12b6-4b81-91e4-b5e29cb683a6,articles/#{article.id}"
+          f.puts "b19ac193-3fc1-43b5-ac52-b4828ec0afdb,parent/#{article.id}/file_sets/ff365f05d"
+        end
+      end
+
+      it 'returns redirect mapping' do
+        expect(helper.redirect_lookup('uuid', '02fc897a-12b6-4b81-91e4-b5e29cb683a6')).to include('uuid' => '02fc897a-12b6-4b81-91e4-b5e29cb683a6', 'new_path' => "articles/#{article.id}")
+        expect(helper.redirect_lookup('uuid', 'b19ac193-3fc1-43b5-ac52-b4828ec0afdb')).to include('uuid' => 'b19ac193-3fc1-43b5-ac52-b4828ec0afdb', 'new_path' => "parent/#{article.id}/file_sets/ff365f05d")
+        expect(helper.redirect_lookup('new_path', "articles/#{article.id}")).to include('uuid' => '02fc897a-12b6-4b81-91e4-b5e29cb683a6', 'new_path' => "articles/#{article.id}")
+        expect(helper.redirect_lookup('new_path', article.id)).to include('uuid' => '02fc897a-12b6-4b81-91e4-b5e29cb683a6', 'new_path' => "articles/#{article.id}")
+        expect(helper.redirect_lookup('new_path', "parent/#{article.id}/file_sets/ff365f05d")).to include('uuid' => 'b19ac193-3fc1-43b5-ac52-b4828ec0afdb', 'new_path' => "parent/#{article.id}/file_sets/ff365f05d")
+        expect(helper.redirect_lookup('new_path', 'ff365f05d')).to include('uuid' => 'b19ac193-3fc1-43b5-ac52-b4828ec0afdb', 'new_path' => "parent/#{article.id}/file_sets/ff365f05d")
+      end
     end
   end
 end
