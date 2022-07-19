@@ -40,7 +40,7 @@ Hyrax::Workflow::StatusListService.class_eval do
       entities = agent.entity_specific_responsibilities.joins(:workflow_role).where('sipity_workflow_roles.role_id' => approving_role.id)
       unless entities.blank?
         entities.each do |entity|
-          entity_array << "#{(Sipity::Entity.find(entity.entity_id).proxy_for_global_id).split('/')[-1]}"
+          entity_array << "#{Sipity::Entity.find(entity.entity_id).proxy_for_global_id.split('/')[-1]}"
         end
       end
     end

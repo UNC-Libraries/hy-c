@@ -43,7 +43,7 @@ gem 'passenger', '6.0.14', require: 'phusion_passenger/rack_handler'
 # Use postgresql as the database for Active Record
 gem 'pg', '~> 1.2.3'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 5.2.6'
+gem 'rails', '~> 5.2.8.1'
 # Use Redis adapter to run Action Cable in production
 gem 'redis', '~> 3.3.0'
 gem 'riiif', '~> 2.4.0'
