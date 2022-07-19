@@ -1,3 +1,8 @@
+inherit_gem:
+  rubocop-github:
+    - config/default.yml
+    - config/rails.yml
+
 inherit_from: .rubocop_todo.yml
 
 AllCops:
@@ -13,41 +18,19 @@ Lint/RedundantCopDisableDirective:
 Bundler/OrderedGems:
   Enabled: false
 
-# This section consists of cops added since the last upgrade. Once the larger portion of the "todo" list is completed,
-# we can evaluate these for implementation.
-Layout/EmptyLinesAroundAttributeAccessor:
+# This section consists of cops added since the switch to the github rubocop config.
+Naming/InclusiveLanguage:
+  Enabled: true
+  FlaggedTerms:
+    master:
+      Suggestions:
+        - main
+        - primary
+        - leader
+      AllowedRegex:
+        - 'masters'  # exception for master's papers
+Style/NegatedIf:
   Enabled: false
-Layout/SpaceAroundMethodCallOperator:
-  Enabled: false
-Lint/DeprecatedOpenSSLConstant:
-  Enabled: false
-Lint/MixedRegexpCaptureTypes:
-  Enabled: false
-Lint/RaiseException:
-  Enabled: false
-Lint/StructNewOverride:
-  Enabled: false
-Lint/UselessAssignment:
-  Enabled: false
-Style/ExponentialNotation:
-  Enabled: false
-Style/HashEachMethods:
-  Enabled: false
-Style/HashTransformKeys:
-  Enabled: false
-Style/HashTransformValues:
-  Enabled: false
-Style/IfUnlessModifier:
-  Enabled: false
-Style/RedundantRegexpCharacterClass:
-  Enabled: false
-Style/RedundantRegexpEscape:
-  Enabled: false
-Style/SlicingWithRange:
-  Enabled: false
-
-# Section to keep long term
-Naming/RescuedExceptionsVariableName:
-  Enabled: false
-Style/SymbolArray:
-  Enabled: false
+Style/StringLiterals:
+  Enabled: true
+  EnforcedStyle: single_quotes # github defaults to double quotes
