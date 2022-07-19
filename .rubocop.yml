@@ -18,22 +18,7 @@ Lint/RedundantCopDisableDirective:
 Bundler/OrderedGems:
   Enabled: false
 
-# This section consists of cops added since the last upgrade. Once the larger portion of the "todo" list is completed,
-# we can evaluate these for implementation.
-Layout/EmptyLinesAroundAttributeAccessor:
-  Enabled: false
-Layout/SpaceAroundMethodCallOperator:
-  Enabled: false
-Lint/DeprecatedOpenSSLConstant:
-  Enabled: false
-Lint/MixedRegexpCaptureTypes:
-  Enabled: false
-Lint/RaiseException:
-  Enabled: false
-Lint/StructNewOverride:
-  Enabled: false
-Lint/UselessAssignment:
-  Enabled: false
+# This section consists of cops added since the switch to the github rubocop config.
 Naming/InclusiveLanguage:
   Enabled: true
   FlaggedTerms:
@@ -44,28 +29,6 @@ Naming/InclusiveLanguage:
         - leader
       AllowedRegex:
         - 'masters'  # exception for master's papers
-Style/ExponentialNotation:
-  Enabled: false
-Style/HashEachMethods:
-  Enabled: false
-Style/HashTransformKeys:
-  Enabled: false
-Style/HashTransformValues:
-  Enabled: false
-Style/IfUnlessModifier:
-  Enabled: false
-Style/RedundantRegexpCharacterClass:
-  Enabled: false
-Style/RedundantRegexpEscape:
-  Enabled: false
-Style/SlicingWithRange:
-  Enabled: false
 Style/StringLiterals:
   Enabled: true
-  EnforcedStyle: single_quotes
-
-# Section to keep long term
-Naming/RescuedExceptionsVariableName:
-  Enabled: false
-Style/SymbolArray:
-  Enabled: false
+  EnforcedStyle: single_quotes # github defaults to double quotes
