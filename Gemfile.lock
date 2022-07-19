@@ -89,13 +89,13 @@ GEM
     awesome_nested_set (3.5.0)
       activerecord (>= 4.0.0, < 7.1)
     aws-eventstream (1.2.0)
-    aws-partitions (1.607.0)
-    aws-sdk-core (3.131.2)
+    aws-partitions (1.608.0)
+    aws-sdk-core (3.131.3)
       aws-eventstream (~> 1, >= 1.0.2)
       aws-partitions (~> 1, >= 1.525.0)
       aws-sigv4 (~> 1.1)
       jmespath (~> 1, >= 1.6.1)
-    aws-sdk-kms (1.57.0)
+    aws-sdk-kms (1.58.0)
       aws-sdk-core (~> 3, >= 3.127.0)
       aws-sigv4 (~> 1.1)
     aws-sdk-s3 (1.114.0)
@@ -801,8 +801,10 @@ GEM
     rubocop-ast (1.19.1)
       parser (>= 3.1.1.0)
     rubocop-github (0.18.0)
-      rubocop (>= 1.7.0, < 2.0)
-    rubocop-performance (1.14.2)
+      rubocop (>= 1.0.0)
+      rubocop-performance
+      rubocop-rails
+    rubocop-performance (1.14.3)
       rubocop (>= 1.7.0, < 2.0)
       rubocop-ast (>= 0.4.0)
     rubocop-rails (2.15.2)
@@ -1012,6 +1014,8 @@ DEPENDENCIES
   rspec-mocks
   rspec-rails (~> 5.1.2)
   rubocop
+  rubocop-github
+  rubocop-performance
   rubocop-rails
   rubocop-rspec
   sass-rails (~> 5.1.0)
@@ -1035,4 +1039,4 @@ RUBY VERSION
    ruby 2.7.4p191
 
 BUNDLED WITH
-   2.2.33
+   2.2.24
