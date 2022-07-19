@@ -29,6 +29,8 @@ Naming/InclusiveLanguage:
         - leader
       AllowedRegex:
         - 'masters'  # exception for master's papers
+Style/NegatedIf:
+  Enabled: false
 Style/StringLiterals:
   Enabled: true
   EnforcedStyle: single_quotes # github defaults to double quotes
