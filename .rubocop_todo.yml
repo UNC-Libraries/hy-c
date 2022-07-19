@@ -90,8 +90,8 @@ Lint/RedundantStringCoercion:
 
 # Offense count: 5
 # Configuration parameters: CheckIdentifiers, CheckConstants, CheckVariables, CheckStrings, CheckSymbols, CheckComments, CheckFilepaths, FlaggedTerms.
-#Naming/InclusiveLanguage:
-#  Exclude:
+Naming/InclusiveLanguage:
+  Exclude:
     - 'app/actors/hyrax/actors/interpret_visibility_actor.rb'
     - 'app/controllers/default_admin_sets_controller.rb'
     - 'app/inputs/multi_value_input.rb'
