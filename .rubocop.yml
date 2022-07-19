@@ -34,6 +34,16 @@ Lint/StructNewOverride:
   Enabled: false
 Lint/UselessAssignment:
   Enabled: false
+Naming/InclusiveLanguage:
+  Enabled: true
+  FlaggedTerms:
+    master:
+      Suggestions:
+        - main
+        - primary
+        - leader
+      AllowedRegex:
+        - 'masters'  # exception for master's papers
 Style/ExponentialNotation:
   Enabled: false
 Style/HashEachMethods:
@@ -50,6 +60,9 @@ Style/RedundantRegexpEscape:
   Enabled: false
 Style/SlicingWithRange:
   Enabled: false
+Style/StringLiterals:
+  Enabled: true
+  EnforcedStyle: single_quotes
 
 # Section to keep long term
 Naming/RescuedExceptionsVariableName:
