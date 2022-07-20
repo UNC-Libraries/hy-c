@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 describe ParentQueryService do
-  let(:parent_doc) { { "response":{ "docs":[{ "id": 'asdf' }] } }.with_indifferent_access }
-  let(:empty_results) { { "response":{ "docs":[] } }.with_indifferent_access }
+  let(:parent_doc) { { "response": { "docs": [{ "id": 'asdf' }] } }.with_indifferent_access }
+  let(:empty_results) { { "response": { "docs": [] } }.with_indifferent_access }
   let(:child_id) { 'child_id' }
   describe '#query_parents_for_id' do
     context 'when a child work exists with a parent' do
