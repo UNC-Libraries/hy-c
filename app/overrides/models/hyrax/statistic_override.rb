@@ -36,7 +36,7 @@ Hyrax::Statistic.class_eval do
         begin
           ga_stats = ga_statistics(stat_cache_info[:ga_start_date], object)
           ga_stats.each do |stat|
-            lstat = build_for(object, date: stat[:date], object_method: stat[ga_key], user_id: user_id)
+            lstat = build_for(object, :date => stat[:date], object_method => stat[ga_key], :user_id => user_id)
             lstat.save unless Date.parse(stat[:date]) == Time.zone.today
             stats << lstat
           end
