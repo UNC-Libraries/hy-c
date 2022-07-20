@@ -120,6 +120,7 @@ RSpec.describe Hyrax::Statistic, type: :model do
       end
 
       it 'includes cached data' do
+        # Verify that the stats, converted to a list of points, contains the expected number of views for the correct timestamp
         expect(stats.map(&:to_flot)).to include([work_view_stat.date.to_i * 1000, work_view_stat.work_views], *view_output)
       end
     end
