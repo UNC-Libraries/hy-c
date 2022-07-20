@@ -54,9 +54,9 @@ module RangeLimitHelper
     stats = stats_for_field(solr_field)
 
     (params['range'] && params['range'][solr_field]) ||
-      (  stats &&
+      (stats &&
         stats['max'] > stats['min']) ||
-      ( !stats && @response.total.positive? )
+      (!stats && @response.total.positive?)
   end
 
   def stats_for_field(solr_field)

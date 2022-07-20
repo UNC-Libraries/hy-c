@@ -64,7 +64,7 @@ module Blacklight::FacetsHelperBehavior
   ##
   # Renders a single facet item
   def render_facet_item(facet_field, item)
-    if facet_in_params?(facet_field, item.value )
+    if facet_in_params?(facet_field, item.value)
       render_selected_facet_value(facet_field, item)
     else
       render_facet_value(facet_field, item)
