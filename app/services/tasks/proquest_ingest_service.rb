@@ -54,7 +54,7 @@ module Tasks
       # only use xml file for metadata extraction
       metadata, listed_files = proquest_metadata(metadata_file_path)
 
-      logger.info("#{metadata_file_path}, Number of files: #{listed_files.count.to_s}")
+      logger.info("#{metadata_file_path}, Number of files: #{listed_files.count}")
 
       # create disseration record
       resource = MigrationHelper.check_enumeration(metadata, Dissertation.new, metadata_file_path)
@@ -88,11 +88,11 @@ module Tasks
 
       ordered_members = []
       listed_files.each do |f|
-        logger.info("[#{id}] trying...#{f.to_s}")
+        logger.info("[#{id}] trying...#{f}")
 
         file_path = unzipped_file_list.find { |e| e.match(f.to_s) }
         if file_path.blank?
-          logger.error("[#{id}] cannot find #{f.to_s}")
+          logger.error("[#{id}] cannot find #{f}")
           next
         end
 
@@ -131,7 +131,7 @@ module Tasks
     end
 
     def ingest_proquest_file(parent: nil, resource: nil, f: nil)
-      logger.info("[#{parent.id}] ingesting... #{f.to_s}")
+      logger.info("[#{parent.id}] ingesting... #{f}")
       fileset_metadata = file_record(resource)
 
       fileset_metadata.except!('embargo_release_date', 'visibility_during_embargo', 'visibility_after_embargo') if fileset_metadata['embargo_release_date'].blank?

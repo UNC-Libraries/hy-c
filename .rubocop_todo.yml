@@ -41,11 +41,11 @@ GitHub/RailsViewRenderLiteral:
 
 # Offense count: 6
 # This cop supports safe autocorrection (--autocorrect).
-Lint/RedundantStringCoercion:
-  Exclude:
-    - 'app/services/tasks/proquest_ingest_service.rb'
-    - 'spec/jobs/deregister_longleaf_job_spec.rb'
-    - 'spec/jobs/register_to_longleaf_job_spec.rb'
+#Lint/RedundantStringCoercion:
+#  Exclude:
+#    - 'app/services/tasks/proquest_ingest_service.rb'
+#    - 'spec/jobs/deregister_longleaf_job_spec.rb'
+#    - 'spec/jobs/register_to_longleaf_job_spec.rb'
 
 # Offense count: 5
 # Configuration parameters: CheckIdentifiers, CheckConstants, CheckVariables, CheckStrings, CheckSymbols, CheckComments, CheckFilepaths, FlaggedTerms.
