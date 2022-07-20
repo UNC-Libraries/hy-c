@@ -38,7 +38,7 @@ RSpec.describe Hyrax::Statistic, type: :model do
         end
       end
 
-      context 'when a profile not available' do
+      context 'when a profile is not available' do
         let(:profile) { nil }
 
         it 'calls the Legato method with the correct path' do
