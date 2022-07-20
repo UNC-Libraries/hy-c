@@ -39,14 +39,6 @@ GitHub/RailsViewRenderLiteral:
   Exclude:
     - 'app/helpers/blacklight/facets_helper_behavior.rb'
 
-# Offense count: 6
-# This cop supports safe autocorrection (--autocorrect).
-#Lint/RedundantStringCoercion:
-#  Exclude:
-#    - 'app/services/tasks/proquest_ingest_service.rb'
-#    - 'spec/jobs/deregister_longleaf_job_spec.rb'
-#    - 'spec/jobs/register_to_longleaf_job_spec.rb'
-
 # Offense count: 5
 # Configuration parameters: CheckIdentifiers, CheckConstants, CheckVariables, CheckStrings, CheckSymbols, CheckComments, CheckFilepaths, FlaggedTerms.
 Naming/InclusiveLanguage:
@@ -108,13 +100,6 @@ Style/HashSyntax:
     - 'spec/controllers/hyrax/restricted_work_type_controller_spec.rb'
     - 'spec/controllers/hyrax/work_type_controller_spec.rb'
     - 'spec/services/hyc_crawler_service_spec.rb'
-
-# Offense count: 1
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: IgnoredMethods.
-Style/MethodCallWithoutArgsParentheses:
-  Exclude:
-    - 'app/models/concerns/blacklight/document/dublin_core.rb'
 
 # Offense count: 10
 # This cop supports safe autocorrection (--autocorrect).
