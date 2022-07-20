@@ -39,12 +39,6 @@ GitHub/RailsViewRenderLiteral:
   Exclude:
     - 'app/helpers/blacklight/facets_helper_behavior.rb'
 
-# Offense count: 1
-# This cop supports safe autocorrection (--autocorrect).
-Lint/DeprecatedClassMethods:
-  Exclude:
-    - 'config/application.rb'
-
 # Offense count: 6
 # This cop supports safe autocorrection (--autocorrect).
 Lint/RedundantStringCoercion:
