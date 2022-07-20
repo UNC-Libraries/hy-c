@@ -1,11 +1,8 @@
-# # TODO: Add tests for this model
-# [hyc-override] filter ga stats by old and new ids
-class FileDownloadStat < Hyrax::Statistic
-  self.cache_column = :downloads
-  self.event_type = :totalEvents
-
+# https://github.com/samvera/hyrax/tree/v2.9.6/app/models/file_download_stat.rb
+Hyrax::FileDownloadStat.class_eval do
   class << self
     include HycHelper
+
     # Hyrax::Download is sent to Hyrax::Analytics.profile as #hyrax__download
     # see Legato::ProfileMethods.method_name_from_klass
     def ga_statistics(start_date, file)
@@ -29,20 +26,6 @@ class FileDownloadStat < Hyrax::Statistic
                               start_date: start_date,
                               end_date: Date.yesterday,
                               limit: 10_000).for_file(filter_id)
-    end
-
-    # [hyc-override] add old id to filter query if work was migrated
-    # this is called by the parent class
-    def filter(file)
-      redirect_path = redirect_lookup('new_path', file.id)
-
-      _filter_id = if redirect_path
-                     "#{file.id}|#{redirect_path['uuid']}"
-                   else
-                     file.id
-                   end
-
-      { file_id: file.id }
     end
   end
 end
