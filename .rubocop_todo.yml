@@ -51,7 +51,7 @@ Naming/InclusiveLanguage:
 
 # Offense count: 4
 # This cop supports unsafe autocorrection (--autocorrect-all).
-#Performance/Detect:
+Performance/Detect:
   Exclude:
     - 'app/services/departments_service.rb'
     - 'app/services/masters_papers_depts_service.rb'
