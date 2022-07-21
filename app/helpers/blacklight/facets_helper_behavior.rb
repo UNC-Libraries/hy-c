@@ -10,7 +10,7 @@ module Blacklight::FacetsHelperBehavior
   # @param [Array<String>] fields
   # @param [Hash] options
   # @return [Boolean]
-  def has_facet_values? fields = facet_field_names, options = {}
+  def has_facet_values?(fields = facet_field_names, options = {})
     facets_from_request(fields).any? { |display_facet| !display_facet.items.empty? && should_render_facet?(display_facet) }
   end
 
@@ -21,7 +21,7 @@ module Blacklight::FacetsHelperBehavior
   # @param [Array<String>] fields
   # @param [Hash] options
   # @return String
-  def render_facet_partials fields = facet_field_names, options = {}
+  def render_facet_partials(fields = facet_field_names, options = {})
     safe_join(facets_from_request(fields).map do |display_facet|
       render_facet_limit(display_facet, options)
     end.compact, "\n")
@@ -78,7 +78,7 @@ module Blacklight::FacetsHelperBehavior
   #
   # @param [Blacklight::Solr::Response::Facets::FacetField] display_facet
   # @return [Boolean]
-  def should_render_facet? display_facet
+  def should_render_facet?(display_facet)
     # display when show is nil or true
     facet_config = facet_configuration_for_field(display_facet.name)
     display = should_render_field?(facet_config, display_facet)
@@ -94,7 +94,7 @@ module Blacklight::FacetsHelperBehavior
   #
   # @param [Blacklight::Configuration::FacetField] facet_field
   # @return [Boolean]
-  def should_collapse_facet? facet_field
+  def should_collapse_facet?(facet_field)
     !facet_field_in_params?(facet_field.key) && facet_field.collapse
   end
 
@@ -178,7 +178,7 @@ module Blacklight::FacetsHelperBehavior
   #
   # @param [String] field
   # @return [Boolean]
-  def facet_field_in_params? field
+  def facet_field_in_params?(field)
     !facet_params(field).blank?
   end
 
@@ -197,7 +197,7 @@ module Blacklight::FacetsHelperBehavior
 
   ##
   # Get the values of the facet set in the blacklight query string
-  def facet_params field
+  def facet_params(field)
     config = facet_configuration_for_field(field)
 
     params[:f][config.key] if params[:f]
@@ -209,7 +209,7 @@ module Blacklight::FacetsHelperBehavior
   # @param [Object] field
   # @param [String] item value
   # @return [String]
-  def facet_display_value field, item
+  def facet_display_value(field, item)
     facet_config = facet_configuration_for_field(field)
 
     value = if item.respond_to? :label
@@ -234,13 +234,13 @@ module Blacklight::FacetsHelperBehavior
     end
   end
 
-  def facet_field_id facet_field
+  def facet_field_id(facet_field)
     "facet-#{facet_field.key.parameterize}"
   end
 
   private
 
-  def facet_value_for_facet_item item
+  def facet_value_for_facet_item(item)
     if item.respond_to? :value
       item.value
     else

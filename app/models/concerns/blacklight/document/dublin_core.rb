@@ -91,7 +91,7 @@ module Blacklight::Document::DublinCore
 
   private
 
-  def dublin_core_field_name? field
+  def dublin_core_field_name?(field)
     dublin_core_field_names.include? field.to_sym
   end
 end
