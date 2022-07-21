@@ -84,14 +84,14 @@ Style/FrozenStringLiteralComment:
 # Configuration parameters: EnforcedStyle, EnforcedShorthandSyntax, UseHashRocketsWithSymbolValues, PreferHashRocketsForNonAlnumEndingSymbols.
 # SupportedStyles: ruby19, hash_rockets, no_mixed_keys, ruby19_no_mixed_keys
 # SupportedShorthandSyntax: always, never, either
-Style/HashSyntax:
-  Exclude:
-    - 'app/models/hyrax/statistic.rb'
-    - 'app/parsers/bulkrax/csv_parser.rb'
-    - 'config/routes.rb'
-    - 'spec/controllers/hyrax/restricted_work_type_controller_spec.rb'
-    - 'spec/controllers/hyrax/work_type_controller_spec.rb'
-    - 'spec/services/hyc_crawler_service_spec.rb'
+#Style/HashSyntax:
+#  Exclude:
+#    - 'app/models/hyrax/statistic.rb'
+#    - 'app/parsers/bulkrax/csv_parser.rb'
+#    - 'config/routes.rb'
+#    - 'spec/controllers/hyrax/restricted_work_type_controller_spec.rb'
+#    - 'spec/controllers/hyrax/work_type_controller_spec.rb'
+#    - 'spec/services/hyc_crawler_service_spec.rb'
 
 # Offense count: 1
 # This cop supports safe autocorrection (--autocorrect).
