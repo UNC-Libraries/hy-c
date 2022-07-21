@@ -66,7 +66,7 @@ module Hyrax
 
       # [hyc-override] new method to call language service
       def find_language(language)
-        if not /iso639-2/.match(language).nil?
+        if !/iso639-2/.match(language).nil?
           begin
             LanguagesService.label(language)
           rescue KeyError
