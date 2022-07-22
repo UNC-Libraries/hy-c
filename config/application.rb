@@ -16,7 +16,7 @@ module Hyrax
 
       YAML.load(File.open(env_file)).each do |key, value|
         ENV[key.to_s] = value
-      end if File.exists?(env_file)
+      end if File.exist?(env_file)
     end
 
     Rails.application.routes.default_url_options[:host] = ENV['HYRAX_HOST']

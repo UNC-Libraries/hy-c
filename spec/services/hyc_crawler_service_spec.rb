@@ -14,7 +14,7 @@ RSpec.describe HycCrawlerService do
   let(:target_hash) { yielded.find { |x| x[:id] == work_with_people.id } }
 
   let(:work_with_people) do
-    General.create(title: ['New General Work with people'],
+    General.create(:title => ['New General Work with people'],
                    "#{type_of_person}_attributes".to_sym => { '0' => { name: "#{type_of_person}_1",
                                                                        affiliation: 'Carolina Center for Genome Sciences',
                                                                        index: 1 },
@@ -42,7 +42,7 @@ RSpec.describe HycCrawlerService do
 
   context 'without affiliations' do
     let(:work_with_people) do
-      General.create(title: ['New General Work with people'],
+      General.create(:title => ['New General Work with people'],
                      "#{type_of_person}_attributes".to_sym => { '0' => { name: "#{type_of_person}_1",
                                                                          index: 1 },
                                                                 '1' => { name: "#{type_of_person}_2",
@@ -56,7 +56,7 @@ RSpec.describe HycCrawlerService do
 
   context 'with empty string affiliations' do
     let(:work_with_people) do
-      General.create(title: ['New General Work with people'],
+      General.create(:title => ['New General Work with people'],
                      "#{type_of_person}_attributes".to_sym => { '0' => { name: "#{type_of_person}_1",
                                                                          affiliation: [''],
                                                                          index: 1 },
@@ -75,7 +75,7 @@ RSpec.describe HycCrawlerService do
   context 'creating a csv' do
     let(:csv_path) { "#{ENV['DATA_STORAGE']}/reports/unmappable_affiliations.csv" }
     let(:work_with_only_mappable_affils) do
-      General.create(title: ['New General Work with people'],
+      General.create(:title => ['New General Work with people'],
                      "#{type_of_person}_attributes".to_sym => { '0' => { name: "#{type_of_person}_1",
                                                                          affiliation: 'Carolina Center for Genome Sciences',
                                                                          index: 1 },

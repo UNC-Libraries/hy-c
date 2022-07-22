@@ -46,7 +46,7 @@ class SolrDocument
 
   # Do content negotiation for AF models.
 
-  use_extension( Hydra::ContentNegotiation )
+  use_extension(Hydra::ContentNegotiation)
 
   def abstract
     self[Solrizer.solr_name('abstract')]

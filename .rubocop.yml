@@ -34,3 +34,8 @@ Style/NegatedIf:
 Style/StringLiterals:
   Enabled: true
   EnforcedStyle: single_quotes # github defaults to double quotes
+
+# This section consists of cop-specific inclusions/exclusions
+Style/BlockComments:
+  Exclude:
+    - 'spec/spec_helper.rb'
