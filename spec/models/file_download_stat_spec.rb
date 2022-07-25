@@ -52,12 +52,11 @@ RSpec.describe FileDownloadStat, type: :model do
         end
 
         around do |example|
-          HycHelper.clear_redirect_mapping
+          Rails.cache.clear
           cached_redirect_file_path = ENV['REDIRECT_FILE_PATH']
           ENV['REDIRECT_FILE_PATH'] = 'spec/fixtures/redirect_uuids.csv'
           example.run
           ENV['REDIRECT_FILE_PATH'] = cached_redirect_file_path
-          HycHelper.clear_redirect_mapping
         end
 
         it 'calls the Legato method with the correct path' do

@@ -31,10 +31,6 @@ RSpec.describe Hyrax::Statistic, type: :model do
         allow(Hyrax::Analytics).to receive(:profile).and_return(profile)
       end
 
-      after do
-        HycHelper.clear_redirect_mapping
-      end
-
       context 'when a profile is available' do
         it 'calls the Legato method with the correct path' do
           expect(views).to receive(:for_path).with("/concern/file_sets/#{file_set.id}")
@@ -66,12 +62,11 @@ RSpec.describe Hyrax::Statistic, type: :model do
         end
 
         around do |example|
-          HycHelper.clear_redirect_mapping
+          Rails.cache.clear
           cached_redirect_file_path = ENV['REDIRECT_FILE_PATH']
           ENV['REDIRECT_FILE_PATH'] = 'spec/fixtures/redirect_uuids.csv'
           example.run
           ENV['REDIRECT_FILE_PATH'] = cached_redirect_file_path
-          HycHelper.clear_redirect_mapping
         end
 
         it 'calls the Legato method with the correct path' do

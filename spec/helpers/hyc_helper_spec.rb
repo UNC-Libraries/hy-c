@@ -55,11 +55,10 @@ RSpec.describe HycHelper do
 
     around do |example|
       cached_redirect_file_path = ENV['REDIRECT_FILE_PATH']
-      HycHelper.clear_redirect_mapping
+      Rails.cache.clear
       ENV['REDIRECT_FILE_PATH'] = 'spec/fixtures/redirect_uuids.csv'
       example.run
       ENV['REDIRECT_FILE_PATH'] = cached_redirect_file_path
-      HycHelper.clear_redirect_mapping
     end
 
     it 'returns redirect mapping' do

@@ -41,10 +41,9 @@ module HycHelper
     { 'uuid' => id, 'new_path' => new_path }
   end
 
-  # rubocop:disable Style/ClassVars
   # Get the hash which maps old boxc uuids to new hyc paths
   def redirect_uuid_to_new_path_mappings
-    @@uuid_to_new_path ||= begin
+    Rails.cache.fetch("boxc_to_hyc_redirect_uuid_to_new_path_mappings") do
       mapping = {}
       CSV.foreach(redirect_mapping_file_path, headers: true) do |row|
         mapping[row[0]] = row[1]
@@ -55,7 +54,7 @@ module HycHelper
 
   # Get the hash which maps new hyc paths to old boxc uuids
   def redirect_new_id_to_uuid_mappings
-    @@new_id_to_uuid ||= begin
+    Rails.cache.fetch("boxc_to_hyc_redirect_new_id_to_uuid_mappings") do
       mapping = {}
       CSV.foreach(redirect_mapping_file_path, headers: true) do |row|
         new_id = row[1].split('/')[-1]
@@ -64,12 +63,6 @@ module HycHelper
       mapping
     end
   end
-
-  def self.clear_redirect_mapping
-    @@new_id_to_uuid = nil
-    @@uuid_to_new_path = nil
-  end
-  # rubocop:enable Style/ClassVars
 
   # Configured path to redirect csv file
   def redirect_mapping_file_path
