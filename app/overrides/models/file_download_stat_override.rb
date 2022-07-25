@@ -1,8 +1,6 @@
 # https://github.com/samvera/hyrax/tree/v2.9.6/app/models/file_download_stat.rb
 Hyrax::FileDownloadStat.class_eval do
   class << self
-    include HycHelper
-
     # Hyrax::Download is sent to Hyrax::Analytics.profile as #hyrax__download
     # see Legato::ProfileMethods.method_name_from_klass
     def ga_statistics(start_date, file)
@@ -14,7 +12,7 @@ Hyrax::FileDownloadStat.class_eval do
 
       # [hyc-override] add old id to filter query if work was migrated
       # check if file was migrated
-      redirect_path = redirect_lookup('new_path', file.id)
+      redirect_path = BoxcToHycRedirectService.redirect_lookup('new_path', file.id)
 
       filter_id = if redirect_path
                     "#{file.id}|#{redirect_path['uuid']}"

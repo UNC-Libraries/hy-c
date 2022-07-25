@@ -2,7 +2,6 @@ class ApplicationController < ActionController::Base
   helper Openseadragon::OpenseadragonHelper
   # Adds a few additional behaviors into the application controller
   include HyraxHelper
-  include HycHelper
   include Blacklight::Controller
   include Hydra::Controller::ControllerBehavior
 
@@ -102,7 +101,7 @@ class ApplicationController < ActionController::Base
 
     # Base redirect for Hy-C uuid links
     unless uuid.nil? || request_host.match(ENV['REDIRECT_NEW_DOMAIN']) # prevent infinite redirects in tests
-      redirect_path = redirect_lookup('uuid', uuid)
+      redirect_path = BoxcToHycRedirectService.redirect_lookup('uuid', uuid)
 
       # Should correctly redirect record, indexablecontent (download) paths
       if redirect_path # Redirect to Hy-C
