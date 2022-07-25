@@ -19,17 +19,6 @@ module HycHelper
     options
   end
 
-  def redirect_lookup(column, id)
-    redirect_uuids = if ENV.has_key?('REDIRECT_FILE_PATH') && File.exist?(ENV['REDIRECT_FILE_PATH'])
-                       File.read(ENV['REDIRECT_FILE_PATH'])
-                     else
-                       File.read(Rails.root.join('lib', 'redirects', 'redirect_uuids.csv'))
-                     end
-
-    csv = CSV.parse(redirect_uuids, headers: true)
-    csv.find { |row| row[column].match(id) }
-  end
-
   def get_work_url(model, id)
     Rails.application.routes.url_helpers.send("#{Hyrax::Name.new(model).singular_route_key}_url", id)
   end

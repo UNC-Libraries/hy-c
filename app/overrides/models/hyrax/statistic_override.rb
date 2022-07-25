@@ -1,8 +1,6 @@
 # https://github.com/samvera/hyrax/blob/v2.9.6/app/models/hyrax/statistic.rb
 Hyrax::Statistic.class_eval do
   class << self
-    include HycHelper
-
     # [hyc-override] add old id to filter query if work was migrated
     # Hyrax::Download is sent to Hyrax::Analytics.profile as #hyrax__download
     # see Legato::ProfileMethods.method_name_from_klass
@@ -15,7 +13,7 @@ Hyrax::Statistic.class_eval do
       end
 
       # check if work was migrated
-      redirect_path = redirect_lookup('new_path', path.split('/')[-1])
+      redirect_path = BoxcToHycRedirectService.redirect_lookup('new_path', path.split('/')[-1])
 
       path = "#{path}|/record/uuid:#{redirect_path['uuid']}" if redirect_path
 

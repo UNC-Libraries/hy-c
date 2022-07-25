@@ -52,6 +52,7 @@ RSpec.describe FileDownloadStat, type: :model do
         end
 
         around do |example|
+          Rails.cache.clear
           cached_redirect_file_path = ENV['REDIRECT_FILE_PATH']
           ENV['REDIRECT_FILE_PATH'] = 'spec/fixtures/redirect_uuids.csv'
           example.run
