@@ -108,6 +108,7 @@ volumes:
 x-mutagen:
   sync:
     defaults:
+      mode: "two-way-resolved"
       ignore:
         vcs: true
         paths:
@@ -115,7 +116,6 @@ x-mutagen:
     mount-code:
       alpha: '.'
       beta: "volume://mount-code"
-      mode: "two-way-resolved"
       configurationBeta:
         permissions:
           defaultFileMode: 0644
