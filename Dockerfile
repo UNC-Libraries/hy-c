@@ -17,8 +17,6 @@ FROM systemd-enabled
 
 # Install dependencies
 # Install compilers for gems & more dependencies - this section is > 1 GB so might see if we can shrink it down some
-# Should we remove git, since the mutagen files can't see the git directory?
-# See https://mutagen.io/documentation/synchronization/version-control-systems
 # devtoolset-8 installed due to newer mini_racer requirement of newer g++
 # Also install ChromeDriver
 # TODO: are we using httpd?
@@ -38,18 +36,19 @@ RUN yum -y install centos-release-scl-rh centos-release-scl \
 && unzip /tmp/fits-1.5.5.zip -d /fits/fits-1.5.5 \
 && rm -f /tmp/fits-1.5.5.zip \
 && echo "source scl_source enable devtoolset-8" >> /etc/bashrc \
-&& echo "source scl_source enable rh-ruby27" >> /etc/bashrc
+&& echo "source scl_source enable rh-ruby27" >> /etc/bashrc \
+&& scl enable devtoolset-8 rh-ruby27 -- gem install bundler:2.2.24
 
 
 ENV PATH "/fits:$PATH"
 COPY docker/fits.xml /fits/fits-1.5.5/xml/fits.xml
 
 # Install gems
-COPY Gemfile* /hyrax/
-WORKDIR /hyrax
+#COPY Gemfile* /hyrax/
+#WORKDIR /hyrax
 
-RUN scl enable devtoolset-8 rh-ruby27 -- gem install bundler:2.2.24 \
-&& scl enable devtoolset-8 rh-ruby27 -- bundle install --jobs=3 --retry=3
+#RUN scl enable devtoolset-8 rh-ruby27 -- gem install bundler:2.2.24 \
+#&& scl enable devtoolset-8 rh-ruby27 -- bundle install --jobs=3 --retry=3
 
 EXPOSE 3000
 CMD ["sh", "/hyrax/docker/start-app.sh"]
