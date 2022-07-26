@@ -108,8 +108,11 @@ volumes:
 x-mutagen:
   sync:
     defaults:
+      mode: "two-way-resolved"
       ignore:
         vcs: true
+        paths:
+          - ".DS_Store"
     mount-code:
       alpha: '.'
       beta: "volume://mount-code"
