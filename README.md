@@ -38,7 +38,7 @@ bundle exec rake sage:ingest[/hyrax/spec/fixtures/sage/sage_config.yml]
   * Docker Desktop - https://docs.docker.com/desktop/mac/install/
   * Homebrew (package manager for Mac) - https://brew.sh/
   * (optional) If you use Atom, get the Dockerfile specific grammar (may need to restart Atom to see effect) `apm install language-docker`
-  * Mutagen-compose installed locally, used for speeding up file syncing between the host and guest systems. (on Mac, `brew install mutagen-io/mutagen/mutagen-compose`)
+  * Docker-compose installed locally, used for speeding up file syncing between the host and guest systems. (on Mac, `brew install docker-compose`)
 
 ##### First-time setup, or if you've cleaned up Docker images or volumes
 * If on an M1 Mac: check "Use the new Virtualization framework" and "Enable VirtioFS accelerated directory sharing" in the Docker Desktop "Experimental Features" settings
@@ -54,14 +54,14 @@ cp config/local_env_sample.yml config/local_env.yml
   ```
 - Either pull (faster) or build the application docker image
 ```bash
-mutagen-compose pull
+docker-compose pull
 OR
-mutagen-compose build --no-cache
+docker-compose build --no-cache
 ```
 ##### Every time
 - Bring up the application and its dependencies
 ```bash
-mutagen-compose up
+docker-compose up web
 ```
 - In a new terminal window, in the hy-c directory, run this command in order to go into a bash shell inside the running web container (hy-c-web-1)
 ```bash
@@ -69,7 +69,7 @@ docker compose exec web bash
 ```
     - So, if you wanted to run the tests:
     ```bash
-    mutagen-compose up web
+    docker-compose up web
     [new terminal window or tab]
     docker compose exec web bash
     bundle exec rspec
@@ -84,11 +84,11 @@ docker compose exec web bash
   - Swap: 2 GB
   - Disk image size: 200 GB
 
-- In order to stop the application and services, you can do a ctrl-c inside the window where you ran `mutagen-compose up`, or you can click the "stop" button in Docker Desktop in the containers/apps section.
+- In order to stop the application and services, you can do a ctrl-c inside the window where you ran `docker-compose up`, or you can click the "stop" button in Docker Desktop in the containers/apps section.
 
 ##### Docker debugging notes
 * Updates to the code should be picked up pretty immediately - there could be a second or so lag, but it should be fairly instantaneous.
-* When your Solr, Fedora, and Postgres get out of sync, it might be easiest to stop the application and dependencies (`mutagen-compose stop`), delete the volumes for all three of these, then bring everything back up.
+* When your Solr, Fedora, and Postgres get out of sync, it might be easiest to stop the application and dependencies (`docker-compose stop`), delete the volumes for all three of these, then bring everything back up.
 * If you change volume permissions via the docker-compose file, you will need to delete the existing volumes before you see any changes.
 * If you get a message like:
 ```

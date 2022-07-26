@@ -29,12 +29,13 @@ services:
     ports:
       - 3000:3000
     volumes:
-      - mount-code:/hyrax
+      - ./:/hyrax
       - mount-gems:/hyc-gems
       - fcrepo_data:/opt/fedora/binaries
       - hyrax_data:/opt/hyrax
     stdin_open: true
     tty: true
+    working_dir: /hyrax
   clamav:
     image: tiredofit/clamav
     ports:
@@ -73,7 +74,7 @@ services:
   solr6:
     image: solr:6.6.6-alpine
     volumes:
-      - solr6-data:/opt/solr/server/solr/configsets/hy-c
+      - ./solr/config:/opt/solr/server/solr/configsets/hy-c
     ports:
       - "8983:8983"
     command: >
@@ -84,8 +85,9 @@ services:
       "
   solr8:
     image: solr:8.9-slim
+    # TODO: can we move these to simple volumes by auto-copying the configs over?
     volumes:
-      - solr8-data:/opt/solr/server/solr/configsets/hy-c
+      - ./solr/new_config:/opt/solr/server/solr/configsets/hy-c
     ports:
       - "8989:8983"
     command: >
@@ -95,43 +97,9 @@ services:
       exec solr -f
       "
 volumes:
-  mount-code:
   mount-gems:
-  solr6-data:
-  solr8-data:
   clam:
   pg_data:
   fcrepo_data:
   redis_data:
   hyrax_data:
-
-x-mutagen:
-  sync:
-    defaults:
-      ignore:
-        vcs: true
-    mount-code:
-      alpha: '.'
-      beta: "volume://mount-code"
-      configurationBeta:
-        permissions:
-          defaultFileMode: 0644
-          defaultDirectoryMode: 0755
-    #mount-gems:
-      #alpha: '../hyc-gems'
-      #beta: "volume://mount-gems"
-    # TODO: can we move these to simple volumes by auto-copying the configs over?
-    solr6-data:
-      alpha: './solr/config'
-      beta: 'volume://solr6-data'
-      configurationBeta:
-        permissions:
-          defaultOwner: 'id:8983'
-          defaultGroup: 'id:8983'
-    solr8-data:
-      alpha: './solr/new_config'
-      beta: 'volume://solr8-data'
-      configurationBeta:
-        permissions:
-          defaultOwner: 'id:8983'
-          defaultGroup: 'id:8983'
