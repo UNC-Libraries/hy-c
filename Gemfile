@@ -34,7 +34,7 @@ gem 'sparql', '3.1.7'
 gem 'linkeddata', '~>3.1.1'
 gem 'loofah', '~>2.18.0'
 gem 'mini_magick', '~>4.11.0'
-gem 'mini_racer', '~> 0.2.15', platforms: :ruby
+gem 'mini_racer', '~> 0.6.2', platforms: :ruby
 gem 'nokogiri', '~>1.13.6'
 gem 'omniauth', '~> 2.0'
 gem 'omniauth-rails_csrf_protection'

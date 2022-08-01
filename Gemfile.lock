@@ -533,6 +533,7 @@ GEM
     legato (0.7.0)
       multi_json
     libv8 (7.3.492.27.1-x86_64-linux)
+    libv8-node (16.10.0.0-x86_64-linux)
     libxml-ruby (3.1.0)
     link_header (0.0.8)
     linkeddata (3.1.1)
@@ -581,8 +582,8 @@ GEM
     mime-types-data (3.2022.0105)
     mini_magick (4.11.0)
     mini_mime (1.1.2)
-    mini_racer (0.2.15)
-      libv8 (> 7.3)
+    mini_racer (0.6.2)
+      libv8-node (~> 16.10.0.0)
     minitest (5.16.2)
     multi_json (1.15.0)
     multi_xml (0.6.0)
@@ -998,7 +999,7 @@ DEPENDENCIES
   listen (~> 3.7.0)
   loofah (~> 2.18.0)
   mini_magick (~> 4.11.0)
-  mini_racer (~> 0.2.15)
+  mini_racer (~> 0.6.2)
   nokogiri (~> 1.13.6)
   omniauth (~> 2.0)
   omniauth-rails_csrf_protection
