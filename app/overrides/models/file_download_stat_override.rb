@@ -1,7 +1,7 @@
 # https://github.com/samvera/hyrax/tree/v2.9.6/app/models/file_download_stat.rb
 Hyrax::FileDownloadStat.class_eval do
   class << self
-    # [hyc-override start] 
+    # [hyc-override start]
     # Rename method so that we can wrap its behaviors with our additional old stats
     alias :original_ga_statistics :ga_statistics
     def ga_statistics(start_date, file)
@@ -25,6 +25,6 @@ Hyrax::FileDownloadStat.class_eval do
         file
       end
     end
-    # [hyc-override end] 
+    # [hyc-override end]
   end
 end
