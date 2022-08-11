@@ -26,24 +26,16 @@ Hyrax::Statistic.class_eval do
     private
 
     # [hyc-override] add error handling for timeouts
+    alias :original_combined_stats :combined_stats
     def combined_stats(object, start_date, object_method, ga_key, user_id = nil)
-      stat_cache_info = cached_stats(object, start_date, object_method)
-      stats = stat_cache_info[:cached_stats]
-
-      if stat_cache_info[:ga_start_date] < Time.zone.today
-        begin
-          ga_stats = ga_statistics(stat_cache_info[:ga_start_date], object)
-          ga_stats.each do |stat|
-            lstat = build_for(object, :date => stat[:date], object_method => stat[ga_key], :user_id => user_id)
-            lstat.save unless Date.parse(stat[:date]) == Time.zone.today
-            stats << lstat
-          end
-        rescue Net::ReadTimeout
-          Rails.logger.warn "Unable to retrieve GA stats for #{object.id}. Request timed out. Using cached stats for object."
-        end
+      begin
+        original_combined_stats(object, start_date, object_method, ga_key, user_id)
+      rescue Net::ReadTimeout
+        Rails.logger.warn "Unable to retrieve GA stats for #{object.id}. Request timed out. Using cached stats for object."
+        # return the cached statistics since we can't get fresh ones
+        stat_cache_info = cached_stats(object, start_date, object_method)
+        stats = stat_cache_info[:cached_stats]
       end
-
-      stats
     end
   end
 end
