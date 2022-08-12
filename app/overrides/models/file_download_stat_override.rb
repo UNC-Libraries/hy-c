@@ -4,7 +4,9 @@ Hyrax::FileDownloadStat.class_eval do
     # [hyc-override start]
     # Rename method so that we can wrap its behaviors with our additional old stats
     alias :original_ga_statistics :ga_statistics
+
     def ga_statistics(start_date, file)
+      # This override assumes that ga_statistics only needs an object that returns an id
       original_ga_statistics(start_date, as_subject(file))
     end
 

@@ -27,6 +27,7 @@ Hyrax::Statistic.class_eval do
 
     # [hyc-override] add error handling for timeouts
     alias :original_combined_stats :combined_stats
+
     def combined_stats(object, start_date, object_method, ga_key, user_id = nil)
       begin
         original_combined_stats(object, start_date, object_method, ga_key, user_id)
