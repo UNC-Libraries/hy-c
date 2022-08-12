@@ -78,8 +78,7 @@ RSpec.describe Hyrax::Statistic, type: :model do
   end
 
   describe '.combined_stats' do
-    let(:user) { FactoryBot.create(:user) }
-    let(:user_id) { user.id }
+    let(:user_id) { 'user12345' }
     let(:work) { Article.create(title: ['New Article']) }
     let(:start_date) { Time.zone.today }
     let(:object_method) { 'method' }
@@ -103,7 +102,7 @@ RSpec.describe Hyrax::Statistic, type: :model do
         allow(concrete_stat_class).to receive(:cached_stats).and_return({cached_stats: :cached_results})
       end
 
-      it 'returns stats from the original method' do
+      it 'returns cached stats' do
         # combined_stats is a private method, so have to call with send
         expect(concrete_stat_class.send(:combined_stats, work, start_date, object_method, ga_key, user_id))
             .to eq :cached_results

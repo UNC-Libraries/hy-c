@@ -49,9 +49,8 @@ RSpec.describe FileDownloadStat, type: :model do
         allow(described_class).to receive(:original_ga_statistics)
       end
 
-      it 'calls wrapped method when override method is called' do
+      it 'calls wrapper method succeed' do
         described_class.ga_statistics(start_date, file_set2)
-        expect(described_class.original_ga_statistics(start_date, file_set2))
       end
     end
   end
