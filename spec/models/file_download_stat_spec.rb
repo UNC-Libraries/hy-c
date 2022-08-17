@@ -49,7 +49,8 @@ RSpec.describe FileDownloadStat, type: :model do
         allow(described_class).to receive(:original_ga_statistics)
       end
 
-      it 'calls wrapper method succeed' do
+      it 'calls wrapped method with provided parameters' do
+        expect(described_class).to receive(:original_ga_statistics).with(start_date, file_set2)
         described_class.ga_statistics(start_date, file_set2)
       end
     end
