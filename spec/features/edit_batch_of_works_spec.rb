@@ -25,7 +25,7 @@ RSpec.feature 'Edit a batch of works', js: false do
   end
 
   context 'with work present' do
-    let(:work) { FactoryBot.create(:article, title: ["Adventures in Hyc-land"]) }
+    let(:work) { FactoryBot.create(:article, title: ['Adventures in Hyc-land']) }
     before do
       ActiveFedora::Cleaner.clean!
       Blacklight.default_index.connection.delete_by_query('*:*')
@@ -36,7 +36,7 @@ RSpec.feature 'Edit a batch of works', js: false do
     scenario 'select a work and check for batch operations', js: true do
       login_as admin_user
       visit 'dashboard/my/works'
-      
+
       page.check('batch_document_ids[]')
 
       # Need to wait for the batch operation panel to appear after selecting work
