@@ -68,7 +68,7 @@ jobs:
           --health-timeout 5s
         ports: ["5432:5432"]
       solr:
-        image: solr:6.6
+        image: solr:8.11-slim
         ports:
           - 8983:8983
         options: >-
