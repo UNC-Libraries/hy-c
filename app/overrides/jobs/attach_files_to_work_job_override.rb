@@ -30,7 +30,7 @@ Hyrax::AttachFilesToWorkJob.class_eval do
 
   # [hyc-override] add virus checking method
   def virus_check!(uploaded_file)
-    file_path = URI.unescape(uploaded_file.file.to_s)
+    file_path = URI::Parser.new.unescape(uploaded_file.file.to_s)
     scan_results = Hyc::VirusScanner.hyc_infected?(file_path)
     return if scan_results.instance_of? ClamAV::SuccessResponse
 
