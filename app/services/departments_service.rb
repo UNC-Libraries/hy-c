@@ -11,7 +11,7 @@ module DepartmentsService
 
   # The permanent identifier for the term, stored in Fedora. This identifier should not be changed.
   def self.identifier(term)
-    authority.all.reject { |item| item['active'] == false }.select { |department| department['label'] == term }.first['id']
+    authority.all.reject { |item| item['active'] == false }.find { |department| department['label'] == term }['id']
   rescue StandardError
     nil
   end
