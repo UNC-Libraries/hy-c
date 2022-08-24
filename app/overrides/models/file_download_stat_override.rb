@@ -1,29 +1,31 @@
 # https://github.com/samvera/hyrax/tree/v2.9.6/app/models/file_download_stat.rb
 Hyrax::FileDownloadStat.class_eval do
   class << self
-    # Hyrax::Download is sent to Hyrax::Analytics.profile as #hyrax__download
-    # see Legato::ProfileMethods.method_name_from_klass
+    # [hyc-override]
+    # Rename method so that we can wrap its behaviors with our additional old stats
+    alias_method :original_ga_statistics, :ga_statistics
+
     def ga_statistics(start_date, file)
-      profile = Hyrax::Analytics.profile
-      unless profile
-        Rails.logger.error('Google Analytics profile has not been established. Unable to fetch statistics.')
-        return []
+      # This override assumes that ga_statistics only needs an object that returns an id
+      original_ga_statistics(start_date, as_subject(file))
+    end
+
+    class StatsSubject
+      attr_reader :id
+      def initialize(id)
+        @id = id
       end
+    end
 
-      # [hyc-override] add old id to filter query if work was migrated
-      # check if file was migrated
+    # for objects with old ids, pass in an object which returns the old and the new id
+    # so that we will get stats for both ids together.
+    def as_subject(file)
       redirect_path = BoxcToHycRedirectService.redirect_lookup('new_path', file.id)
-
-      filter_id = if redirect_path
-                    "#{file.id}|#{redirect_path['uuid']}"
-                  else
-                    file.id
-                  end
-
-      profile.hyrax__download(sort: 'date',
-                              start_date: start_date,
-                              end_date: Date.yesterday,
-                              limit: 10_000).for_file(filter_id)
+      if redirect_path
+        subject = StatsSubject.new("#{file.id}|#{redirect_path['uuid']}")
+      else
+        file
+      end
     end
   end
 end
