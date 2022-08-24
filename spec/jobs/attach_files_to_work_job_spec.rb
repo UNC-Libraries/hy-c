@@ -1,4 +1,5 @@
 require 'rails_helper'
+require Rails.root.join('app/overrides/jobs/attach_files_to_work_job_override.rb')
 
 RSpec.describe AttachFilesToWorkJob, type: :job do
   let(:user) { FactoryBot.create(:user) }
