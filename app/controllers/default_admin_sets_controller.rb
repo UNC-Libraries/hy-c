@@ -40,7 +40,7 @@ class DefaultAdminSetsController < ApplicationController
       if @default_admin_set.save
         format.html { redirect_to default_admin_sets_path, notice: 'Admin set worktype was successfully created.' }
       else
-        format.html { render :new }
+        format.html { render 'new' }
       end
     end
   end
@@ -50,7 +50,7 @@ class DefaultAdminSetsController < ApplicationController
       if @default_admin_set.update(default_admin_set_params)
         format.html { redirect_to default_admin_sets_path, notice: 'Admin set worktype was successfully updated.' }
       else
-        format.html { render :edit }
+        format.html { render 'edit' }
       end
     end
   end
