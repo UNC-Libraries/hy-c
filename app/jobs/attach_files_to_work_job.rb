@@ -71,7 +71,10 @@ class AttachFilesToWorkJob < Hyrax::ApplicationJob
     return if scan_results.instance_of? ClamAV::SuccessResponse
 
     if scan_results.instance_of? ClamAV::VirusResponse
-      FileUtils.rm_rf(File.dirname(file_path))
+      File.delete(file_path)
+      # Delete the parent directory if it is empty
+      parent_dir = File.dirname(file_path)
+      Dir.rmdir(parent_dir) if Dir.empty?(parent_dir)
       raise VirusDetectedError.new(scan_results, file_path)
     end
   end
