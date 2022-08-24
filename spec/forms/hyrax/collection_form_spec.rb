@@ -28,8 +28,12 @@ RSpec.describe Hyrax::Forms::CollectionForm do
     end
   end
 
+  let(:collection) { Collection.new }
+  let(:repository) { double }
+  let(:form) { described_class.new(collection, nil, repository) }
+
   describe '#secondary_terms' do
-    subject { described_class.secondary_terms }
+    subject { form.secondary_terms }
 
     it do
       is_expected.to eq [
