@@ -1,4 +1,5 @@
 # [hyc-override] Tests removal of :based_near (location) from form
+# https://github.com/samvera/hyrax/blob/v2.9.6/spec/forms/hyrax/forms/collection_form_spec.rb
 require 'rails_helper'
 # Load the override being tested
 require Rails.root.join('app/overrides/forms/collection_form_override.rb')
