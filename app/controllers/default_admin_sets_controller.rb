@@ -69,7 +69,7 @@ class DefaultAdminSetsController < ApplicationController
     @default_admin_set = DefaultAdminSet.find(params[:id])
   end
 
-  # Never trust parameters from the scary internet, only allow the white list through.
+  # Never trust parameters from the scary internet, only allow the allowlist through.
   def default_admin_set_params
     params.require(:default_admin_set).permit(:work_type_name, :admin_set_id, :department)
   end
