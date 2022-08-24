@@ -29,7 +29,7 @@ RSpec.describe Hyrax::Forms::CollectionForm do
   end
 
   describe '#secondary_terms' do
-    subject { form.secondary_terms }
+    subject { described_class.secondary_terms }
 
     it do
       is_expected.to eq [
@@ -56,11 +56,11 @@ RSpec.describe Hyrax::Forms::CollectionForm do
                          { title: [] },
                          { creator: [] },
                          { contributor: [] },
-                         { description: [] },
+                         :description,
                          { keyword: [] },
                          { license: [] },
                          { publisher: [] },
-                         { date_created: [] },
+                         :date_created,
                          { subject: [] },
                          { language: [] },
                          :representative_id,
