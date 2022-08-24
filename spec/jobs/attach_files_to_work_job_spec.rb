@@ -5,9 +5,9 @@ RSpec.describe AttachFilesToWorkJob, type: :job do
   let(:user) { FactoryBot.create(:user) }
   let(:admin) { FactoryBot.create(:admin) }
   let(:role) { Role.new(name: 'admin') }
-  let(:work) { 
+  let(:work) {
     Article.create(title: ['New Article'],
-      depositor: user.user_key) 
+      depositor: user.user_key)
   }
   let(:file_set) { FactoryBot.create(:file_set, title: ['test file set']) }
   let(:file_set_actor) { Hyrax::Actors::FileSetActor.new(file_set, user) }
@@ -39,6 +39,16 @@ RSpec.describe AttachFilesToWorkJob, type: :job do
     it 'sends virus email message' do
       subject.perform(work, [uploaded_file])
       expect(File).not_to exist(target_file)
+    end
+
+    context 'that cannot be deleted' do
+      before do
+        allow(File).to receive(:delete).and_raise(Errno::EACCES)
+      end
+
+      it 'still sends virus email message' do
+        subject.perform(work, [uploaded_file])
+      end
     end
   end
 

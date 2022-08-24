@@ -35,10 +35,14 @@ Hyrax::AttachFilesToWorkJob.class_eval do
     return if scan_results.instance_of? ClamAV::SuccessResponse
 
     if scan_results.instance_of? ClamAV::VirusResponse
-      File.delete(file_path)
-      # Delete the parent directory if it is empty
-      parent_dir = File.dirname(file_path)
-      Dir.rmdir(parent_dir) if Dir.empty?(parent_dir)
+      begin
+        File.delete(file_path)
+        # Delete the parent directory if it is empty
+        parent_dir = File.dirname(file_path)
+        Dir.rmdir(parent_dir) if Dir.empty?(parent_dir)
+      rescue StandardError => e
+        Rails.logger.warn("Failed to delete infected file #{file_path}: #{e.message}")
+      end
       raise VirusDetectedError.new(scan_results, file_path)
     end
   end
