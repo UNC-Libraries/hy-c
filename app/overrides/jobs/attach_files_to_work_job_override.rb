@@ -1,27 +1,17 @@
 # https://github.com/samvera/hyrax/blob/v2.9.6/app/jobs/attach_files_to_work_job.rb
 Hyrax::AttachFilesToWorkJob.class_eval do
-   # @param [ActiveFedora::Base] work - the work object
-  # @param [Array<Hyrax::UploadedFile>] uploaded_files - an array of files to attach
+
+  alias_method :original_perform, :perform
+
   def perform(work, uploaded_files, **work_attributes)
-    validate_files!(uploaded_files)
-    depositor = proxy_or_depositor(work)
-    user = User.find_by_user_key(depositor)
-    work_permissions = work.permissions.map(&:to_hash)
-    metadata = visibility_attributes(work_attributes)
     uploaded_files.each do |uploaded_file|
       # [hyc-override] check all files for viruses
       virus_check!(uploaded_file)
-      next if uploaded_file.file_set_uri.present?
-
-      actor = Hyrax::Actors::FileSetActor.new(FileSet.create, user)
-      uploaded_file.update(file_set_uri: actor.file_set.uri)
-      actor.file_set.permissions_attributes = work_permissions
-      actor.create_metadata(metadata)
-      actor.create_content(uploaded_file)
-      actor.attach_to_work(work)
     end
+    original_perform(work, uploaded_files, work_attributes)
   # [hyc-override] Log viruses
   rescue VirusDetectedError => error
+    user = User.find_by_user_key(proxy_or_depositor(work))
     message = "Virus encountered while processing file #{error.filename} for work #{work.id}. Virus signature: #{error.scan_results.virus_name}"
     send_email_about_virus(work, message, user) && (Rails.logger.error message)
   end

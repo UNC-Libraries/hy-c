@@ -38,6 +38,7 @@ RSpec.describe AttachFilesToWorkJob, type: :job do
 
     it 'sends virus email message' do
       subject.perform(work, [uploaded_file])
+      expect(File).not_to exist(target_file)
     end
   end
 
