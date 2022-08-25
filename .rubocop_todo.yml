@@ -19,22 +19,6 @@ GitHub/InsecureHashAlgorithm:
   Exclude:
     - 'app/models/concerns/bulkrax/file_factory.rb'
 
-# Offense count: 1
-GitHub/RailsApplicationRecord:
-  Exclude:
-    - 'app/models/proxy_deposit_request.rb'
-
-# Offense count: 2
-# This cop supports safe autocorrection (--autocorrect).
-GitHub/RailsControllerRenderActionSymbol:
-  Exclude:
-    - 'app/controllers/default_admin_sets_controller.rb'
-
-# Offense count: 2
-GitHub/RailsControllerRenderLiteral:
-  Exclude:
-    - 'app/controllers/errors_controller.rb'
-
 # Offense count: 3
 GitHub/RailsControllerRenderPathsExist:
   Exclude:
@@ -51,3 +35,12 @@ GitHub/RailsViewRenderLiteral:
 Naming/InclusiveLanguage:
   Exclude:
     - 'config/environments/development.rb'
+
+# Offense count: 6
+Rails/OutputSafety:
+  Exclude:
+    - 'app/helpers/hyrax/citations_behaviors/formatters/apa_formatter.rb'
+    - 'app/helpers/hyrax/citations_behaviors/formatters/chicago_formatter.rb'
+    - 'app/helpers/hyrax/citations_behaviors/formatters/mla_formatter.rb'
+    - 'app/helpers/range_limit_helper.rb'
+    - 'app/lib/mini_magick/image/info.rb'
