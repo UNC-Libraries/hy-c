@@ -31,6 +31,7 @@ RSpec.describe AttachFilesToWorkJob, type: :job do
       # Original method should not be called
       allow(subject).to receive(:original_perform).and_raise('nope')
       allow(Hyc::VirusScanner).to receive(:hyc_infected?).and_return(ClamAV::VirusResponse.new(target_file, 'avirus'))
+      # Establish expectation for the following tests that a virus detection notification gets sent
       expect(Hyrax::Workflow::VirusFoundNotification).to receive(:send_notification)
           .with(entity: entity, recipients: anything, comment: anything, user: user)
     end
