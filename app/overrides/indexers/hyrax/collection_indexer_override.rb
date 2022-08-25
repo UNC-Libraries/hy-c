@@ -5,7 +5,6 @@ Hyrax::CollectionIndexer.class_eval do
 
   # @yield [Hash] calls the yielded block with the solr document
   # @return [Hash] the solr document WITH all changes
-  #
   def generate_solr_document
     current_solr_doc = original_generate_solr_document
     current_solr_doc.tap do |solr_doc|
