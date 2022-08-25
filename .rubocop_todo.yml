@@ -12,3 +12,42 @@
 # SupportedStyles: always, always_true, never
 Style/FrozenStringLiteralComment:
   Enabled: false
+
+# This section consists of things that may be affected by hyc-overrides/break if changed
+# Offense count: 1
+GitHub/InsecureHashAlgorithm:
+  Exclude:
+    - 'app/models/concerns/bulkrax/file_factory.rb'
+
+# Offense count: 1
+GitHub/RailsApplicationRecord:
+  Exclude:
+    - 'app/models/proxy_deposit_request.rb'
+
+# Offense count: 2
+# This cop supports safe autocorrection (--autocorrect).
+GitHub/RailsControllerRenderActionSymbol:
+  Exclude:
+    - 'app/controllers/default_admin_sets_controller.rb'
+
+# Offense count: 2
+GitHub/RailsControllerRenderLiteral:
+  Exclude:
+    - 'app/controllers/errors_controller.rb'
+
+# Offense count: 3
+GitHub/RailsControllerRenderPathsExist:
+  Exclude:
+    - 'app/controllers/concerns/hyrax/controller.rb'
+    - 'app/controllers/default_admin_sets_controller.rb'
+
+# Offense count: 1
+GitHub/RailsViewRenderLiteral:
+  Exclude:
+    - 'app/helpers/blacklight/facets_helper_behavior.rb'
+
+# Offense count: 5
+# Configuration parameters: CheckIdentifiers, CheckConstants, CheckVariables, CheckStrings, CheckSymbols, CheckComments, CheckFilepaths, FlaggedTerms.
+Naming/InclusiveLanguage:
+  Exclude:
+    - 'config/environments/development.rb'

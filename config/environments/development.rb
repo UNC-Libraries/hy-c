@@ -77,7 +77,7 @@ Rails.application.configure do
   # Allow Docker and Vagrant host IP address to display web console in development mode
   # NOTE: When we upgrade to Web Console 4.x this will change to
   # config.web_console.permissions = ['172.20.0.1', '10.0.2.2']
-  config.web_console.allowlisted_ips = ['172.20.0.1', '10.0.2.2']
+  config.web_console.whitelisted_ips = ['172.20.0.1', '10.0.2.2']
 
   config.log_level = LogService.log_level
 end

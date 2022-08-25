@@ -40,24 +40,3 @@ Style/BlockComments:
   Exclude:
     - 'spec/spec_helper.rb'
 
-# This section consists of cop-specific inclusions/exclusions that may be affected by hyc-overrides
-GitHub/RailsApplicationRecord:
-  Exclude:
-    - 'app/models/proxy_deposit_request.rb'
-GitHub/InsecureHashAlgorithm:
-  Exclude:
-    - 'app/models/concerns/bulkrax/file_factory.rb'
-GitHub/RailsControllerRenderPathsExist:
-  Exclude:
-    - 'app/controllers/concerns/hyrax/controller.rb'
-    - 'app/controllers/default_admin_sets_controller.rb'
-GitHub/RailsViewRenderLiteral:
-  Exclude:
-    - 'app/helpers/blacklight/facets_helper_behavior.rb'
-Rails/OutputSafety:
-  Exclude:
-    - 'app/helpers/hyrax/citations_behaviors/formatters/apa_formatter.rb'
-    - 'app/helpers/hyrax/citations_behaviors/formatters/chicago_formatter.rb'
-    - 'app/helpers/hyrax/citations_behaviors/formatters/mla_formatter.rb'
-    - 'app/helpers/range_limit_helper.rb'
-    - 'app/lib/mini_magick/image/info.rb'
