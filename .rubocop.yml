@@ -41,6 +41,9 @@ Style/BlockComments:
     - 'spec/spec_helper.rb'
 
 # This section consists of cop-specific inclusions/exclusions that may be affected by hyc-overrides
+GitHub/RailsApplicationRecord:
+  Exclude:
+    - 'app/models/proxy_deposit_request.rb'
 GitHub/InsecureHashAlgorithm:
   Exclude:
     - 'app/models/concerns/bulkrax/file_factory.rb'

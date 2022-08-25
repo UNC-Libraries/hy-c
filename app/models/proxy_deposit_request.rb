@@ -5,7 +5,7 @@
 # @see ProxyDepositRequest.enum(:status)
 # @see ProxyDepositRequest.work_query_service_class for configuration (defaults to Hyrax::WorkQueryService)
 # @see Hyrax::WorkQueryService
-class ProxyDepositRequest < ApplicationRecord
+class ProxyDepositRequest < ActiveRecord::Base
   include ActionView::Helpers::UrlHelper
 
   class_attribute :work_query_service_class
