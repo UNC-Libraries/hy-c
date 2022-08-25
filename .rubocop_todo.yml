@@ -19,6 +19,11 @@ GitHub/InsecureHashAlgorithm:
   Exclude:
     - 'app/models/concerns/bulkrax/file_factory.rb'
 
+# Offense count: 1
+GitHub/RailsApplicationRecord:
+  Exclude:
+    - 'app/models/proxy_deposit_request.rb'
+
 # Offense count: 3
 GitHub/RailsControllerRenderPathsExist:
   Exclude:
