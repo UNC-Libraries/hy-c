@@ -1,4 +1,6 @@
 require 'rails_helper'
+# Load the override being tested
+require Rails.root.join('app/overrides/indexers/hyrax/deep_indexing_service_override.rb')
 
 RSpec.describe Hyrax::DeepIndexingService, type: :indexer do
   let(:work) { General.new(title: ['new general work']) }
