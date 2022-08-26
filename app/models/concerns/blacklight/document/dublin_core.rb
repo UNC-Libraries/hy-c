@@ -25,7 +25,7 @@ module Blacklight::Document::DublinCore
   end
 
   # [hyc-override] format values for display in oai feed
-  # dublin core elements are mapped against the #dublin_core_field_names whitelist.
+  # dublin core elements are mapped against the #dublin_core_field_names allowlist.
   def export_as_oai_dc_xml
     xml = Builder::XmlMarkup.new
     xml.tag!('oai_dc:dc',

@@ -6,6 +6,14 @@
 # Note that changes in the inspected code, or installation of new
 # versions of RuboCop, may require this file to be generated again.
 
+# Offense count: 516
+# This cop supports unsafe autocorrection (--autocorrect-all).
+# Configuration parameters: EnforcedStyle.
+# SupportedStyles: always, always_true, never
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+# This section consists of things that may be affected by hyc-overrides/break if changed
 # Offense count: 1
 GitHub/InsecureHashAlgorithm:
   Exclude:
@@ -15,17 +23,6 @@ GitHub/InsecureHashAlgorithm:
 GitHub/RailsApplicationRecord:
   Exclude:
     - 'app/models/proxy_deposit_request.rb'
-
-# Offense count: 2
-# This cop supports safe autocorrection (--autocorrect).
-GitHub/RailsControllerRenderActionSymbol:
-  Exclude:
-    - 'app/controllers/default_admin_sets_controller.rb'
-
-# Offense count: 2
-GitHub/RailsControllerRenderLiteral:
-  Exclude:
-    - 'app/controllers/errors_controller.rb'
 
 # Offense count: 3
 GitHub/RailsControllerRenderPathsExist:
@@ -42,19 +39,7 @@ GitHub/RailsViewRenderLiteral:
 # Configuration parameters: CheckIdentifiers, CheckConstants, CheckVariables, CheckStrings, CheckSymbols, CheckComments, CheckFilepaths, FlaggedTerms.
 Naming/InclusiveLanguage:
   Exclude:
-    - 'app/actors/hyrax/actors/interpret_visibility_actor.rb'
-    - 'app/controllers/default_admin_sets_controller.rb'
-    - 'app/inputs/multi_value_input.rb'
-    - 'app/models/concerns/blacklight/document/dublin_core.rb'
     - 'config/environments/development.rb'
-
-# Offense count: 4
-# This cop supports unsafe autocorrection (--autocorrect-all).
-Performance/Detect:
-  Exclude:
-    - 'app/services/departments_service.rb'
-    - 'app/services/masters_papers_depts_service.rb'
-    - 'spec/indexers/hyc_indexer_spec.rb'
 
 # Offense count: 6
 Rails/OutputSafety:
@@ -64,10 +49,3 @@ Rails/OutputSafety:
     - 'app/helpers/hyrax/citations_behaviors/formatters/mla_formatter.rb'
     - 'app/helpers/range_limit_helper.rb'
     - 'app/lib/mini_magick/image/info.rb'
-
-# Offense count: 516
-# This cop supports unsafe autocorrection (--autocorrect-all).
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: always, always_true, never
-Style/FrozenStringLiteralComment:
-  Enabled: false

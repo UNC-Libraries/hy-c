@@ -39,3 +39,4 @@ Style/StringLiterals:
 Style/BlockComments:
   Exclude:
     - 'spec/spec_helper.rb'
+
