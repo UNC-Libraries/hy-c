@@ -63,6 +63,7 @@
     }
   },
   "exclude_patterns": [
+    "app/assets/javascripts/chosen/",
     "config/",
     "db/",
     "dist/",
