@@ -23,6 +23,7 @@ SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new([
 SimpleCov.start 'rails' do
   # Directories to exclude from coverage
   add_filter '/.github/'
+  add_filter '/app/assets/javascripts/chosen/' # 3rd party code we don't maintain
   add_filter '/bin'
   add_filter '/coverage/'
   add_filter '/db/'
@@ -32,6 +33,8 @@ SimpleCov.start 'rails' do
   add_filter '/spec/'
   add_filter '/tmp/'
   add_filter '/vendor/'
+
+  maximum_coverage_drop 0.5
 end
 
 require 'capybara/rspec'
