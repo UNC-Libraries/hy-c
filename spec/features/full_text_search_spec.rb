@@ -1,4 +1,4 @@
-# frozen_string_literal: true
+# frozen_string_literal: false
 
 require 'rails_helper'
 require Rails.root.join('spec/support/full_text.rb')
