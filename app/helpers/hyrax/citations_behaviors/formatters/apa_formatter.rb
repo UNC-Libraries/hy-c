@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # [hyc-override] Overriding helper in order to add doi to citation
 module Hyrax
   module CitationsBehaviors

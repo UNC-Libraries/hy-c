@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class CreateCollectionTypeParticipants < ActiveRecord::Migration[5.0]
   def change
     create_table :collection_type_participants do |t|

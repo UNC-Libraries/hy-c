@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # [hyc-override] Adding in before_destroy hook to deregister from longleaf
 module Hydra::Works
   # This module provides all of the Behaviors of a Hydra::Works::GenericFile

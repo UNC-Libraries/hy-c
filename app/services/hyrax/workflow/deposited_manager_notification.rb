@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Hyrax
   module Workflow
     # This notification service was created to allow some admin set managers to get notifications.

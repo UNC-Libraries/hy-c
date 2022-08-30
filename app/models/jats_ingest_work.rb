@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # For information on the JATS metadata standard, see https://jats.nlm.nih.gov/
 # Currently used for Sage ingest
 class JatsIngestWork

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 namespace :csv do
   desc 'batch ingest from structured csv'
   task :ingest, [:configuration_file] => :environment do |_t, args|

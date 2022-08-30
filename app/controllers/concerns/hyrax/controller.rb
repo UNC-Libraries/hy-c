@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # [hyc-override] added create_unrestricted_work_presenter as a replacement for deprecated create_work_presenter
 # [hyc-override] Add begin/rescue for locale setting
 module Hyrax::Controller

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 GIT_SHA = VersionService.git_sha
 BRANCH = VersionService.branch
 Rails.logger.debug("in initializer: #{Rails.env}")

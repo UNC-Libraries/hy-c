@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module DcmiTypeService
   mattr_accessor :authority
   self.authority = Qa::Authorities::Local.subauthority_for('dcmi_types')

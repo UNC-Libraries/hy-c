@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # This class is needed to remediate a bug with thumbnails for docx files whose first page is black and white
 # This bug was mostly seen on PDFs, but can also be found with docx documents
 # See https://github.com/samvera/hyrax/issues/4971

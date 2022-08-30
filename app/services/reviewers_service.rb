@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # app/services/reviewers_service.rb
 module ReviewersService
   mattr_accessor :authority

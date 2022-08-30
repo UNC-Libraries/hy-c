@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'rails_helper'
 
 # https://github.com/samvera/hyrax/blob/v2.9.6/spec/models/hyrax/download_spec.rb

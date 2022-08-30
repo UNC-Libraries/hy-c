@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Hyrax::Workflow::AssignReviewerByAffiliation
 
   def self.call(target:, **)

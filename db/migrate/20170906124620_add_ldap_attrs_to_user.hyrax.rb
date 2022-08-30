@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # This migration comes from hyrax (originally 20160328222157)
 class AddLdapAttrsToUser < ActiveRecord::Migration[4.2]
   def self.up

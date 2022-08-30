@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Hyc
   module EdtfYearIndexer
     def self.index_dates(value)

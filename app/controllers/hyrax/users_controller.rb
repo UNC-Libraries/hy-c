@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # [hyc-override] Overriding users controller to restrict user profiles to admins
 # [hyc-override] Overriding to restrict index to authenticated users. Needed to search for users for sharing
 module Hyrax

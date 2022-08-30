@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class MigrationHelper
   def self.check_enumeration(metadata, resource, identifier)
     # Singularize non-enumerable attributes and make sure enumerable attributes are arrays

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 namespace :proquest do
   desc 'batch migrate generic files from FOXML file'
   task :ingest, [:configuration_file] => :environment do |_t, args|

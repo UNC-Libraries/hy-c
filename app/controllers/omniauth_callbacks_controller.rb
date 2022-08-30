@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # [hyc-override] Overriding omniauth callbacks in devise gem for shibboleth integration
 class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   # Allow users to login when in read-only mode

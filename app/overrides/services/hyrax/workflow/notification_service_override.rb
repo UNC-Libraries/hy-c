@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # app/services/hyrax/workflow/notification_service.rb
 # https://github.com/samvera/hyrax/blob/main/app/services/hyrax/workflow/notification_service.rb
 Hyrax::Workflow::NotificationService.class_eval do

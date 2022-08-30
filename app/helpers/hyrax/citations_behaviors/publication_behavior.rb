@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # [hyc-override] Overriding helper in order to use date_issued, if present, for publication date
 module Hyrax
   module CitationsBehaviors

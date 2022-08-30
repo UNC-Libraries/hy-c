@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Additional helper methods used by view templates inside this plugin.
 # # [hyc-override] Change input fields to number fields
 module RangeLimitHelper

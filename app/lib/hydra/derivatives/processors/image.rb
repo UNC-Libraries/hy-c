@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # [hyc-override] negate images with black backgrounds
 require 'mini_magick'
 

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Person < ActiveTriples::Resource
 
   property :index, predicate: ::RDF::Vocab::DC.identifier

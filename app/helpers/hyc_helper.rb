@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Include hyc-specific helper code here instead of in the HyraxHelper to avoid circular dependencies
 module HycHelper
   def language_links(options)

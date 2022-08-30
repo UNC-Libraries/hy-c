@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class ReindexJob < Hyrax::ApplicationJob
   queue_as :long_running_jobs
 
