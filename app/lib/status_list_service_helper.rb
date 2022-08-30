@@ -1,4 +1,5 @@
 # [hyc-override] Overriding workflow permissions methods
+# FIXME The class being overridden is deprecated in Hyrax 3, this will need to be implemented differently
 Hyrax::Workflow::StatusListService.class_eval do
   private
 
