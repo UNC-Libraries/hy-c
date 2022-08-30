@@ -21,12 +21,8 @@ RSpec.describe Hyrax::DeepIndexingService, type: :indexer do
 RDFXML
 
       before do
-        stub_request(:any, "http://api.geonames.org/getJSON?geonameId=4460162&username=#{ENV['GEONAMES_USER']}").
-          with(headers: {
-                 'Accept' => '*/*',
-                 'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-                 'User-Agent' => 'Ruby'
-               }).to_return(status: 200, body: { asciiName: 'Chapel Hill',
+        stub_request(:any, "http://api.geonames.org/getJSON?geonameId=4460162&username=#{ENV['GEONAMES_USER']}")
+          .to_return(status: 200, body: { asciiName: 'Chapel Hill',
                                                  countryName: 'United States',
                                                  adminName1: 'North Carolina' }.to_json,
                             headers: { 'Content-Type' => 'application/json' })
@@ -47,22 +43,11 @@ RDFXML
       before do
         allow(service).to receive(:geonames_mail).and_return(mail_sent)
 
-        stub_request(:get, "http://api.geonames.org/getJSON?geonameId=4460162&username=#{ENV['GEONAMES_USER']}").
-          with(
-            headers: {
-              'Accept'=>'*/*',
-              'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-              'User-Agent'=>'Ruby'
-            }).
-          to_return(status: 200, body: '', headers: {})
+        stub_request(:get, "http://api.geonames.org/getJSON?geonameId=4460162&username=#{ENV['GEONAMES_USER']}")
+          .to_return(status: 200, body: '', headers: {})
         work.based_near_attributes = [{ id: 'http://sws.geonames.org/4460162BadId/' }]
-        stub_request(:get, 'http://sws.geonames.org/4460162BadId/').
-          with(
-            headers: {
-              'Accept'=>'text/turtle, text/rdf+turtle, application/turtle;q=0.2, application/x-turtle;q=0.2, application/ld+json, application/x-ld+json, application/n-triples, text/plain;q=0.2, application/n-quads, text/x-nquads;q=0.2, application/rdf+json, text/html;q=0.5, application/xhtml+xml;q=0.7, image/svg+xml;q=0.4, text/n3, text/rdf+n3;q=0.2, application/rdf+n3;q=0.2, application/normalized+n-quads, application/x-normalized+n-quads, application/rdf+xml, text/csv;q=0.4, text/tab-separated-values;q=0.4, application/csvm+json, application/trig, application/x-trig;q=0.2, application/trix',
-              'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-              'User-Agent'=>'Ruby RDF.rb/3.2.8'
-            }).to_return(status: 200, body: '', headers: { 'Content-Type' => 'application/rdf+xml;charset=UTF-8' })
+        stub_request(:get, 'http://sws.geonames.org/4460162BadId/')
+          .to_return(status: 200, body: '', headers: { 'Content-Type' => 'application/rdf+xml;charset=UTF-8' })
       end
 
       it 'indexes id and label' do
