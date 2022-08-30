@@ -5,10 +5,10 @@ RSpec.describe Hyrax::Renderers::DateAttributeRenderer do
   subject { Nokogiri::HTML(renderer.render) }
 
   let(:expected) { Nokogiri::HTML(content) }
+  let(:field) { :embargo_release_date }
 
   describe '#attribute_to_html' do
     context 'with a UTC date' do
-      let(:field) { :embargo_release_date }
       let(:renderer) { described_class.new(field, ['2013-03-14T00:00:00Z']) }
       let(:content) do
         %(
@@ -24,7 +24,6 @@ RSpec.describe Hyrax::Renderers::DateAttributeRenderer do
     end
 
     context 'with an approximate date' do
-      let(:field) { :embargo_release_date }
       let(:renderer) { described_class.new(field, ['201x']) }
       let(:content) do
         %(
@@ -41,7 +40,6 @@ RSpec.describe Hyrax::Renderers::DateAttributeRenderer do
   end
 
   context 'with an invalid date' do
-    let(:field) { :embargo_release_date }
     let(:renderer) { described_class.new(field, ['invalid']) }
     let(:content) do
       %(
