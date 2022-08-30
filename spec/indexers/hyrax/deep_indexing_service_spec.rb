@@ -6,6 +6,8 @@ RSpec.describe Hyrax::DeepIndexingService, type: :indexer do
   let(:work) { General.new(title: ['new general work']) }
   let(:service) { described_class.new(work) }
   subject(:solr_document) { service.generate_solr_document }
+  let(:mail_sent) { GeonamesMailer.send_mail(error) }
+  let(:error) {  Exception.new('bad geonames request') }
 
   describe 'with a remote resource (based near)' do
     context 'with a successful call to geonames' do
@@ -41,7 +43,10 @@ RDFXML
     end
 
     context 'with an unsuccessful call to geonames' do
+
       before do
+        allow(service).to receive(:geonames_mail).and_return(mail_sent)
+
         stub_request(:get, "http://api.geonames.org/getJSON?geonameId=4460162&username=#{ENV['GEONAMES_USER']}").
           with(
             headers: {
@@ -64,6 +69,10 @@ RDFXML
         expect(solr_document).not_to have_key('based_near_label_sim')
         expect(solr_document).to have_key('based_near_sim')
         expect(solr_document.fetch('based_near_sim')).to eq ['http://sws.geonames.org/4460162BadId/']
+      end
+
+      it 'sends an email to administrators' do
+        expect (service.geonames_mail(error)).to have_received(mail_sent).with(nil).at_least(:once)
       end
     end
   end
