@@ -1,4 +1,4 @@
-# frozen_string_literal: true
+# frozen_string_literal: false
 require 'rails_helper'
 require 'active_fedora/base'
 require 'fileutils'
