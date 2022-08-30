@@ -1,4 +1,3 @@
-# frozen_string_literal: false
 require 'rails_helper'
 include Warden::Test::Helpers
 

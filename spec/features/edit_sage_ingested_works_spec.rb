@@ -1,4 +1,3 @@
-# frozen_string_literal: false
 require 'rails_helper'
 require Rails.root.join('spec/support/capybara.rb')
 

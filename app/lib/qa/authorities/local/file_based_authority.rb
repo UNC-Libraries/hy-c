@@ -1,4 +1,3 @@
-# frozen_string_literal: false
 # [hyc-override] Overriding to allow custom keys for Questioning Authority vocabularies
 module Qa::Authorities
   class Local::FileBasedAuthority < Base

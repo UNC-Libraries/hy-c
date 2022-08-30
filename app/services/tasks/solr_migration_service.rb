@@ -1,4 +1,3 @@
-# frozen_string_literal: false
 require 'date'
 require 'time'
 require 'ruby-progressbar'

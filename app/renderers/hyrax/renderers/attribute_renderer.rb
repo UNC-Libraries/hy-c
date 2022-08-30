@@ -1,4 +1,3 @@
-# frozen_string_literal: false
 # [hyc-override] Overriding default. Show the language term instead of the saved value. Allow itemprop to be rendered
 require 'rails_autolink/helpers'
 

@@ -1,4 +1,3 @@
-# frozen_string_literal: false
 # Generated via
 #  `rails generate hyrax:work Dissertation`
 require 'rails_helper'

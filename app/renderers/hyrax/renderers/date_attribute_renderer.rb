@@ -1,4 +1,3 @@
-# frozen_string_literal: false
 # [hyc-override] Overriding renderer from gem to display readable versions of EDTF dates
 module Hyrax
   module Renderers
