@@ -1,6 +1,8 @@
 # [hyc-override] Overriding to add method to return custom label and save it to Solr
 # Note: Customizations are very specific to the Location controlled vocabulary
 Hyrax::DeepIndexingService.class_eval do
+  private
+
   # Appends the uri to the default solr field and puts the label (if found) in the label solr field
   # @param [Hash] solr_doc
   # @param [String] solr_field_key
@@ -18,25 +20,6 @@ Hyrax::DeepIndexingService.class_eval do
                                                             label(val),
                                                             field_info.behaviors, solr_doc)
   end
-
-  # Use this method to append a string value from a controlled vocabulary field
-  # to the solr document. It just puts a copy into the corresponding label field
-  # @param [Hash] solr_doc
-  # @param [String] solr_field_key
-  # @param [Hash] field_info
-  # @param [String] val
-  def append_label(solr_doc, solr_field_key, field_info, val)
-    full_label = parse_geo_request(val.to_uri.to_s)
-
-    create_and_insert_terms_handler.create_and_insert_terms(solr_field_key,
-                                                            full_label,
-                                                            field_info.behaviors, solr_doc)
-    create_and_insert_terms_handler.create_and_insert_terms("#{solr_field_key}_label",
-                                                            full_label,
-                                                            field_info.behaviors, solr_doc)
-  end
-
-  private
 
   # [hyc-override] Method to return custom label
   def parse_geo_request(location)
