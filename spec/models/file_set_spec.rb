@@ -2,7 +2,11 @@
 require 'rails_helper'
 
 RSpec.describe FileSet do
-  it 'has tests' do
-    skip 'Add your tests here'
+  describe 'after destroy' do
+    it 'calls longleaf deregister hook' do
+      expect(DeregisterLongleafJob).to receive(:perform_later).with(subject)
+
+      subject.destroy
+    end
   end
 end
