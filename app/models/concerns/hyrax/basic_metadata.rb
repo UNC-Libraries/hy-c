@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # [hyc-override] Overriding default basic metadata to follow MAP
 module Hyrax
   # An optional model mixin to define some simple properties. This must be mixed

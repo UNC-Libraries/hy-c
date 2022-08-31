@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class CreateQaLocalAuthorities < ActiveRecord::Migration[5.0]
   def change
     create_table :qa_local_authorities do |t|

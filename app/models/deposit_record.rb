@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Carried over from Box-C
 # see https://github.com/UNC-Libraries/box-c/blob/b89e7b55a1f8a38332233674090de0f838838d4f/model-api/src/main/java/edu/unc/lib/boxc/model/api/rdf/Cdr.java#L51-L67
 # for description source

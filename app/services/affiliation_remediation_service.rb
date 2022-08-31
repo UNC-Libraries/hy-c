@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # This class is to remediate People Objects where the affiliation is not controlled.
 # The metadata librarian has provided a one-time mapping from uncontrolled terms to controlled terms
 class AffiliationRemediationService

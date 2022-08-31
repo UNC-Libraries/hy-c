@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # [hyc-override] Overriding user model to allow shibboleth integration. This should be able to be removed when upgrading to Hyrax 3
 # [hyc-override]Overriding hyrax default rewriting email addresses
 class User < ApplicationRecord

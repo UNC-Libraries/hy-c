@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Hyc
   module DownloadAnalyticsBehavior
     extend ActiveSupport::Concern

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # app/services/publication_versions_service.rb
 module PublicationVersionsService
   mattr_accessor :authority

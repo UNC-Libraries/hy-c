@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # This class is to remediate FileSets where the file was not attached because the anti-virus service
 # was either not running or timed out
 class FileSetRemediationService

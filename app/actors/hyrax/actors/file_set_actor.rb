@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # [hyc-override] Overriding to allow updated content jobs to run immediately so file reference isn't lost
 module Hyrax
   module Actors

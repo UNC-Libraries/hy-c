@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # [hyc-override] Using single item search builder when finding object by identifer
 module BlacklightOaiProvider
   class SolrDocumentWrapper < ::OAI::Provider::Model

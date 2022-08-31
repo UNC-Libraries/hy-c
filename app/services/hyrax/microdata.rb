@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # [hyc-override] Check for local schema.org file, so our overrides can take effect.
 module Hyrax
   # Responsible for extracting information related to Schema.org microdata.

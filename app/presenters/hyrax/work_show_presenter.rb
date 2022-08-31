@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # [hyc-override] Overriding helper in order to add doi to citation, see line 40
 # [hyc-override] Overriding iiif manifest metadata to check that field exists on a presenter, see line 222
 module Hyrax

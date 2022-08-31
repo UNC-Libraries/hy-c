@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 FULL_TEXT_WORK = {
   "has_model_ssim": ['General'],
   "id": '6969z2636',

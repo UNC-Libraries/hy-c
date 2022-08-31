@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # app/services/departments_service.rb
 module DepartmentsService
   mattr_accessor :authority

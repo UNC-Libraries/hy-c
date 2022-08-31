@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'open3'
 
 # Job which causes deregistration of files to longleaf

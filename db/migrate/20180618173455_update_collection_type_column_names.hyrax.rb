@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class UpdateCollectionTypeColumnNames < ActiveRecord::Migration[5.0]
   def change
     rename_column :hyrax_collection_types, :discovery, :discoverable

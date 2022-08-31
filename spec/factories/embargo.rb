@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 FactoryBot.define do
   factory :embargo, class: Hydra::AccessControls::Embargo do
     visibility_during_embargo { 'restricted' }

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require 'rails_helper'
 require Rails.root.join('spec/support/full_text.rb')
 require Rails.root.join('spec/support/oai_sample_solr_documents.rb')

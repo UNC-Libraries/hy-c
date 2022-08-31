@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Hyrax
   class UnrestrictedClassificationQuery < Hyrax::QuickClassificationQuery
     # @return [Array] a list of all the requested concerns

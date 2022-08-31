@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # This migration comes from hyrax (originally 20160401142419)
 class CreateUploadedFiles < ActiveRecord::Migration[4.2]
   def change

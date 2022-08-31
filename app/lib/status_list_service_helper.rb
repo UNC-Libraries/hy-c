@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # [hyc-override] Overriding workflow permissions methods
 Hyrax::Workflow::StatusListService.class_eval do
   private

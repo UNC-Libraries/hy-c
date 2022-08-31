@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # app/services/author_status_service.rb
 module AuthorStatusService
   mattr_accessor :authority

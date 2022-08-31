@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # [hyc-override] Overriding to add method to return custom label and save it to Solr
 # Note: Customizations are very specific to the Location controlled vocabulary
 require 'linkeddata' # we need all the linked data types, because we don't know what types a service might return.

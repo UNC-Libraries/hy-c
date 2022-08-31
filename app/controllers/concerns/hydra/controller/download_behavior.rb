@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # [hyc-override] Add file extension on download
 module Hydra
   module Controller

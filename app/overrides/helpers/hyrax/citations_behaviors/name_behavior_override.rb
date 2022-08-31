@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # [hyc-override] Overriding helper in order to use creator_display field for author listings
 # https://github.com/samvera/hyrax/blob/v2.9.6/app/helpers/hyrax/citations_behaviors/name_behavior.rb
 # There's a test for this helper in the Chicago Formatter tests

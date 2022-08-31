@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # [hyc-override] Overriding to allow files to be moved, rather than copied multiple times
 module Hyrax
   class UploadedFileUploader < CarrierWave::Uploader::Base
