@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # [hyc-override] Overriding actor to allow admins to override admin set embargo permissions
 module Hyrax
   module Actors

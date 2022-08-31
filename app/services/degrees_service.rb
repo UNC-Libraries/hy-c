@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # app/services/degrees_service.rb
 module DegreesService
   mattr_accessor :authority

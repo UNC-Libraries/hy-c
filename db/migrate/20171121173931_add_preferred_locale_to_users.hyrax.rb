@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # This migration comes from hyrax (originally 20170905135339)
 class AddPreferredLocaleToUsers < ActiveRecord::Migration[4.2]
   def change

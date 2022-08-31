@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 desc 'Sets up testing environment'
 task test_setup: :environment do
   Rake::Task['db:migrate'].invoke

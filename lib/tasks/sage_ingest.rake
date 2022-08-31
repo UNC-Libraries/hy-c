@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # bundle exec rake sage:ingest[path_to_my_config]
 namespace :sage do
   desc 'batch migrate generic files from Sage deposit'

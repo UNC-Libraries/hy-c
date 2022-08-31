@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # This service gives the information needed for the version footer, including the git_sha, branch or tag, Hyrax version,
 # and date deployed, if in a deployed environment
 module VersionService

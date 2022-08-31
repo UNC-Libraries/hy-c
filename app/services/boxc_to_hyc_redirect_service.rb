@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Service which assist with redirects from old boxc ids to current hyc object
 class BoxcToHycRedirectService
   # Retrieve redirect mapping based on the provided column and id

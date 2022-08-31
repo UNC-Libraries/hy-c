@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 namespace 'hyc' do
   desc 'Reindexes to Solr - Hy-C flavor'
   task reindex: :environment do

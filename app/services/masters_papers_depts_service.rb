@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # app/services/masters_papers_depts_service.rb
 module MastersPapersDeptsService
   mattr_accessor :authority

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Searches Solr in chunks for affiliations
 module HycCrawlerService
   def self.person_fields

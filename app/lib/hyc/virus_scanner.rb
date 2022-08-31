@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # switching from clamav gem to clamby gem to clamav-client gem
 module Hyc
   class VirusScanner < Hydra::Works::VirusScanner

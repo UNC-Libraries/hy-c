@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # This migration comes from hyrax (originally 20161012182404)
 class CreateSipityWorkflowMethods < ActiveRecord::Migration[4.2]
   def change

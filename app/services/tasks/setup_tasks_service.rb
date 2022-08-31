@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # these tasks are used during vm and test env setup
 module Tasks
   class SetupTasksService

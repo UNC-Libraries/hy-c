@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # app/services/proquest_department_mappings_service.rb
 module BiomedDepartmentMappingsService
   mattr_accessor :authority

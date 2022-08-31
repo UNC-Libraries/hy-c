@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # [hyc-override] Overriding work form in hyrax gem to allow default fields to be singular
 class SingleValueForm < Hyrax::Forms::WorkForm
   extend Hyc::EdtfConvert

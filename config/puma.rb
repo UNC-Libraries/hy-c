@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # https://gist.github.com/andrius/7c26a8deef10f3105a136f958b0d582d
 workers Integer(ENV['WEB_CONCURRENCY'] || [1, `grep -c processor /proc/cpuinfo`.to_i].max - 1)
 threads_count = Integer(ENV['RAILS_MAX_THREADS'] || 5)

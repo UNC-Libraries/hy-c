@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # [hyc-override] updated to work in hyc and to verify uploaded file cleanup
 require 'rails_helper'
 require 'tempfile'

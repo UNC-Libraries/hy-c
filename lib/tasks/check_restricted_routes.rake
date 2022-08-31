@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'tasks/migrate/services/progress_tracker'
 
 desc 'Check all record, fileset, and download links for restricted works'

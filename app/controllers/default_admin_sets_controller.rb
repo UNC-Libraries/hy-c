@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class DefaultAdminSetsController < ApplicationController
   before_action :set_default_admin_set, only: [:edit, :update, :destroy]
   before_action :create_default_records, only: [:edit, :new]

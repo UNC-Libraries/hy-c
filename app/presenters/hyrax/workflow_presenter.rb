@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # [hyc-override]
 module Hyrax
   class WorkflowPresenter

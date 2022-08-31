@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # [hyc-override] Adding permissions to admin group
 class Ability
   include Hydra::Ability

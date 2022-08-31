@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Tasks
   require 'tasks/migrate/services/progress_tracker'
   class IngestService

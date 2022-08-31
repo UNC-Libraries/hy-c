@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # This module ensures that all expected environment variables are present, based on whether the application is being run
 # in test, development, or production mode.
 module EnsureEnvironmentService

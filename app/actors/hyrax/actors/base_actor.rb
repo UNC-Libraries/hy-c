@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # [hyc-override] Overriding actor to cast rights statements as single valued
 # [hyc-override] Overriding actor to add work-specific workflow permissions
 module Hyrax

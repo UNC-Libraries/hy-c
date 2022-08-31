@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'rails_helper'
 # Note: test app generates multiple work types (concerns) now
 RSpec.describe Hyrax::UnrestrictedSelectTypeListPresenter do

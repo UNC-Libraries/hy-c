@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # https://github.com/samvera/hyrax/blob/v2.9.6/app/models/hyrax/statistic.rb
 Hyrax::Statistic.class_eval do
   class << self

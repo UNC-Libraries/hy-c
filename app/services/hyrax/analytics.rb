@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # [hyc-override] Load config file as ERB
 require 'oauth2'
 require 'signet/oauth_2/client'

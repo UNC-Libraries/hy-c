@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Based on https://github.com/samvera/hyrax/blob/v2.9.6/spec/factories/admin_sets.rb
 
 FactoryBot.define do

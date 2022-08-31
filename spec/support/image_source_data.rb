@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 IMAGE_SOURCE_DATA = { 'name' => '/tmp/mini_magick20220210-6165-5il5y.tif[0]',
                       'format' => 'TIFF', 'formatDescription' => 'Tagged Image File Format',
                       'mimeType' => 'image/tiff',
