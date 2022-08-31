@@ -19,7 +19,6 @@ RSpec.describe Hyrax::Renderers::DateAttributeRenderer do
       )
       end
 
-      it { expect(renderer).not_to be_microdata(field) }
       it { expect(subject).to be_equivalent_to(expected) }
     end
 
@@ -34,7 +33,6 @@ RSpec.describe Hyrax::Renderers::DateAttributeRenderer do
       )
       end
 
-      it { expect(renderer).not_to be_microdata(field) }
       it { expect(subject).to be_equivalent_to(expected) }
     end
   end
@@ -50,7 +48,6 @@ RSpec.describe Hyrax::Renderers::DateAttributeRenderer do
       )
     end
 
-    it { expect(renderer).not_to be_microdata(field) }
     it { expect(subject).to be_equivalent_to(expected) }
   end
 end
