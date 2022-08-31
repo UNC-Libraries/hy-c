@@ -8,10 +8,8 @@ RSpec.describe Hyrax::DeepIndexingService, type: :indexer do
   subject(:solr_document) { service.generate_solr_document }
   let(:mail_sent) { GeonamesMailer.send_mail(error) }
   let(:error) {  Exception.new('bad geonames request') }
-
-  describe 'with a remote resource (based near)' do
-    context 'with a successful call to geonames' do
-      chapel_hill = <<RDFXML.strip_heredoc
+  let(:geonames_response) {
+    <<RDFXML.strip_heredoc
       <?xml version="1.0" encoding="UTF-8" standalone="no"?>
           <rdf:RDF xmlns:foaf="http://xmlns.com/foaf/0.1/" xmlns:gn="http://www.geonames.org/ontology#" xmlns:owl="http://www.w3.org/2002/07/owl#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
           <gn:Feature rdf:about="http://sws.geonames.org/4460162/">
@@ -19,7 +17,10 @@ RSpec.describe Hyrax::DeepIndexingService, type: :indexer do
           </gn:Feature>
           </rdf:RDF>
 RDFXML
+  }
 
+  describe 'with a remote resource (based near)' do
+    context 'with a successful call to geonames' do
       before do
         stub_request(:any, "http://api.geonames.org/getJSON?geonameId=4460162&username=#{ENV['GEONAMES_USER']}")
           .to_return(status: 200, body: { asciiName: 'Chapel Hill',
@@ -28,7 +29,7 @@ RDFXML
                             headers: { 'Content-Type' => 'application/json' })
         work.based_near_attributes = [{ id: 'http://sws.geonames.org/4460162/' }]
         stub_request(:get, 'http://sws.geonames.org/4460162/')
-          .to_return(status: 200, body: chapel_hill,
+          .to_return(status: 200, body: geonames_response,
                      headers: { 'Content-Type' => 'application/rdf+xml;charset=UTF-8' })
       end
 
@@ -41,7 +42,7 @@ RDFXML
     context 'with an unsuccessful call to geonames' do
 
       before do
-        allow(service).to receive(:geonames_mail).and_return(mail_sent)
+        allow(GeonamesMailer).to receive(:send_mail).and_return(mail_sent)
 
         stub_request(:get, "http://api.geonames.org/getJSON?geonameId=4460162&username=#{ENV['GEONAMES_USER']}")
           .to_return(status: 200, body: '', headers: {})
@@ -57,7 +58,7 @@ RDFXML
       end
 
       it 'sends an email to administrators' do
-        expect (service.geonames_mail(error)).to have_received(mail_sent).with(nil).at_least(:once)
+        expect (GeonamesMailer.send_mail(error)).to have_received(mail_sent).with(nil).at_least(:once)
       end
     end
   end

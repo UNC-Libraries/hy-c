@@ -1,10 +1,7 @@
 # [hyc-override] Overriding to add method to return custom label and save it to Solr
 # Note: Customizations are very specific to the Location controlled vocabulary
+# https://github.com/samvera/hyrax/blob/v2.9.6/app/indexers/hyrax/deep_indexing_service.rb
 Hyrax::DeepIndexingService.class_eval do
-  def geonames_mail(e)
-    GeonamesMailer.send_mail(e)
-  end
-
   private
 
   def append_label_and_uri(solr_doc, solr_field_key, field_info, val)
@@ -30,7 +27,7 @@ Hyrax::DeepIndexingService.class_eval do
     human_readable_location.join(', ')
   rescue StandardError => e
     Rails.logger.warn "Unable to index location for #{location} from geonames service"
-    geonames_mail(e)
+    GeonamesMailer.send_mail(e)
     ''
   end
 
