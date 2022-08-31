@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # [hyc-override] Overriding to add index fields to sort date_created as date_issued (to match works sorting) and title
 # https://github.com/samvera/hyrax/blob/v2.9.6/spec/indexers/hyrax/collection_indexer_spec.rb
 require 'rails_helper'

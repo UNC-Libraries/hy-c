@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # This migration comes from hyrax (originally 20160328222156)
 class AddSocialToUsers < ActiveRecord::Migration[4.2]
   def self.up

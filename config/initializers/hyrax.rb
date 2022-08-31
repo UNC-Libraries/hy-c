@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 Hyrax.config do |config|
   # Injected via `rails g hyrax:work MastersPaper`
   config.register_curation_concern :masters_paper

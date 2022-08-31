@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'rails_helper'
 
 RSpec.shared_examples 'a restricted work type' do |model, pluralized_model|

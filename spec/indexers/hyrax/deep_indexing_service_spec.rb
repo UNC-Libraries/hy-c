@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'rails_helper'
 # Load the override being tested
 require Rails.root.join('app/overrides/indexers/hyrax/deep_indexing_service_override.rb')

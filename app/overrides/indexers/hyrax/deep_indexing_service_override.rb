@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # [hyc-override] Overriding to add method to return custom label and save it to Solr
 # Note: Customizations are very specific to the Location controlled vocabulary
 # https://github.com/samvera/hyrax/blob/v2.9.6/app/indexers/hyrax/deep_indexing_service.rb

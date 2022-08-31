@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # [hyc-override] Overriding to make depositor a facet search and not link to user profile
 # Log work depositor change to activity streams
 #

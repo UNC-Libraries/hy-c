@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # [hyc-override] Overriding staccato gem to allow hostname as a field.
 module Staccato
   # Event Hit type field definitions

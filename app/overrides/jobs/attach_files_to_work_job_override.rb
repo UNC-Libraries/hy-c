@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # https://github.com/samvera/hyrax/blob/v2.9.6/app/jobs/attach_files_to_work_job.rb
 Hyrax::AttachFilesToWorkJob.class_eval do
 

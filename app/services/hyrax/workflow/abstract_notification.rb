@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # [hyc-override] Overriding abstract notification service from gem
 module Hyrax
   module Workflow

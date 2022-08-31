@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # https://github.com/samvera/hyrax/tree/v2.9.6/app/models/file_download_stat.rb
 Hyrax::FileDownloadStat.class_eval do
   class << self

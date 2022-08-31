@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # [hyc-override] Override to use translation file for email text
 # [hyc-override] File can be deleted when upgrading to Hyrax 3.x
 

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module ImageService
   def self.default_processor
     :graphicsmagick

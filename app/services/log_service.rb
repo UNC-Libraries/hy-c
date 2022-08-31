@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module LogService
   def self.log_level
     log_level = ENV['LOG_LEVEL']&.to_sym

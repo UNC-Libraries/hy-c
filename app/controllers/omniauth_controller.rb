@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'cgi'
 # [hyc-override] Overriding sessions controller in devise gem to trigger shibboleth logout
 class OmniauthController < Devise::SessionsController

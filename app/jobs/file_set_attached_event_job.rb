@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # [hyc-override] Overriding to not make depositor a clickable link
 # Log a fileset attachment to activity streams
 class FileSetAttachedEventJob < ContentEventJob

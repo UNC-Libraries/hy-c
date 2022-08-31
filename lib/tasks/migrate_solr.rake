@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # LOCAL_ENV_FILE=local_env.yml bundle exec rake migrate_solr:list_ids -- -o /tmp/
 # LOCAL_ENV_FILE=local_env_solr8.yml bundle exec rake migrate_solr:reindex -- -i /tmp/id_list_2022-06-20T15_40_05Z.txt
 require 'time'

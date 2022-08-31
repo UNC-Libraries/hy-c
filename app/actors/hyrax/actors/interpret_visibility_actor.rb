@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # [hyc-override] Overriding actor to allow admins to override admin set embargo permissions
 module Hyrax
   module Actors
@@ -105,7 +106,7 @@ module Hyrax
       # Validate against selected AdminSet's PermissionTemplate (if any)
       def validate(env, intention, attributes)
         # If AdminSet was selected, look for its PermissionTemplate
-        # IMPORTANT: the schema for permission_templates table has changed in master!!!!!
+        # IMPORTANT: the schema for permission_templates table has changed in main!!!!!
         # admin_set_id is now source_id
         template = Hyrax::PermissionTemplate.find_by!(source_id: attributes[:admin_set_id]) if attributes[:admin_set_id].present?
 

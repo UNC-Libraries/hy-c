@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Tasks
   class DoiCreateService
     include HycHelper

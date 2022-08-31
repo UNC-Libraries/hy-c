@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # [hyc-override] adding downloads controller and merging hyc:downloadscontroller
 # [hyc-override] Catch not found errors and return 404
 module Hyrax

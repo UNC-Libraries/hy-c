@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # From https://github.com/samvera/hyrax/blob/v2.9.6/spec/factories/permission_templates.rb
 FactoryBot.define do
   factory :permission_template, class: Hyrax::PermissionTemplate do

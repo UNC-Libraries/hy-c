@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # [hyc-override] Overriding to make depositor a facet search and not link to user profile
 # Log a concern deposit to activity streams
 class ContentDepositEventJob < ContentEventJob
