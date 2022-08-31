@@ -19,9 +19,11 @@ RSpec.describe Hyrax::Actors::FileSetActor do
     end
 
     it 'runs callbacks' do
-      # Do not bother ingesting the file -- test only the result of callback
-      allow(Hydra::Works::VirusCheckerService).to receive(:file_has_virus?) { false }
+      # Do not bother ingesting or characterizing the file -- test only the result of callback
       allow(file_actor).to receive(:ingest_file).with(any_args).and_return(double)
+      allow(CharacterizeJob).to receive(:perform_later).with(any_args).and_return(double)
+      allow(Hydra::Works::VirusCheckerService).to receive(:file_has_virus?) { false }
+
       expect(ContentNewVersionEventJob).to receive(:perform_later).with(file_set, user)
       actor.update_content(file)
     end
