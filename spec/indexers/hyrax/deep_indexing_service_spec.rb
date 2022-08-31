@@ -59,7 +59,7 @@ RDFXML
       end
 
       it 'sends an email to administrators' do
-        expect (GeonamesMailer.send_mail(error)).to have_received(mail_sent).with(nil).at_least(:once)
+        expect (GeonamesMailer.send_mail(error)).to have_received(mail_sent).with(any_args).at_least(:once)
       end
     end
   end
