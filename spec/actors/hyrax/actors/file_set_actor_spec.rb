@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'rails_helper'
 # Load the override being tested
 require Rails.root.join('app/overrides/actors/hyrax/actors/file_set_actor_override.rb')
@@ -11,7 +12,7 @@ RSpec.describe Hyrax::Actors::FileSetActor do
   let(:actor) { described_class.new(file_set, user) }
   let(:file_actor)  { Hyrax::Actors::FileActor.new(file_set, relation, user) }
 
-  describe "#update_content" do
+  describe '#update_content' do
     it 'calls ingest_file and returns ingest job' do
       expect(IngestJob).to receive(:perform_now).with(any_args).and_return(IngestJob.new)
       expect(actor.update_content(file)).to be_a(IngestJob)
