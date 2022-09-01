@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 require Rails.root.join('app/overrides/renderers/hyrax/renderers/date_attribute_renderer_override.rb')
 
