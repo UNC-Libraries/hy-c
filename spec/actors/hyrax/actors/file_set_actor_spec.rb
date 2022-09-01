@@ -10,22 +10,11 @@ RSpec.describe Hyrax::Actors::FileSetActor do
   let(:file) { File.new(file_path) }
   let(:relation) { :original_file }
   let(:actor) { described_class.new(file_set, user) }
-  let(:file_actor)  { Hyrax::Actors::FileActor.new(file_set, relation, user) }
 
   describe '#update_content' do
-    it 'calls ingest_file and returns ingest job' do
+    it 'calls perform_now and returns ingest job' do
       expect(IngestJob).to receive(:perform_now).with(any_args).and_return(IngestJob.new)
       expect(actor.update_content(file)).to be_a(IngestJob)
-    end
-
-    it 'runs callbacks' do
-      # Do not bother ingesting or characterizing the file -- test only the result of callback
-      allow(file_actor).to receive(:ingest_file).with(any_args).and_return(double)
-      allow(CharacterizeJob).to receive(:perform_later).with(any_args).and_return(double)
-      allow(Hydra::Works::VirusCheckerService).to receive(:file_has_virus?) { false }
-
-      expect(ContentNewVersionEventJob).to receive(:perform_later).with(file_set, user)
-      actor.update_content(file)
     end
   end
 end
