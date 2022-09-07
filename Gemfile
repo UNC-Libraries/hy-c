@@ -9,7 +9,7 @@ end
 
 gem 'active-fedora', '~> 12.2'
 gem 'blacklight_advanced_search', '~> 6.4.1'
-gem 'blacklight_oai_provider', '6.0.0.pre1'
+gem 'blacklight_oai_provider', '6.1.1'
 gem 'blacklight_range_limit', '6.5.0'
 gem 'bootstrap-sass', '~> 3.4.1'
 gem 'bulkrax', '~> 1.0.0'
