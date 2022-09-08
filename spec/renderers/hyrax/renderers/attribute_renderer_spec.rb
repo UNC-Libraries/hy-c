@@ -5,7 +5,7 @@ require Rails.root.join('app/overrides/renderers/hyrax/renderers/attribute_rende
 
 RSpec.describe Hyrax::Renderers::AttributeRenderer do
 
-  describe "#attribute_to_html" do
+  describe '#attribute_to_html' do
     subject { Nokogiri::HTML(renderer.render) }
 
     let(:expected) { Nokogiri::HTML(tr_content) }
