@@ -5,20 +5,20 @@ require Rails.root.join('app/overrides/renderers/hyrax/renderers/attribute_rende
 
 RSpec.describe Hyrax::Renderers::AttributeRenderer do
 
-  describe '#attribute_to_html' do
+  describe "#attribute_to_html" do
     subject { Nokogiri::HTML(renderer.render) }
 
-    let(:expected) { Nokogiri::HTML(html_content) }
+    let(:expected) { Nokogiri::HTML(tr_content) }
 
     context 'with language' do
       let(:field) { :language }
       let(:renderer) { described_class.new(field, ['http://id.loc.gov/vocabulary/iso639-2/eng']) }
-      let(:html_content) do
+      let(:tr_content) do
         %(
-          <p>Language</p>
-          <ul class='tabular'>
-            <li class=\"attribute attribute-language\">English</li>
-          </ul>
+          <tr>
+          <th>Language</th>
+          <td><ul class="tabular"><li class="attribute attribute-language">English</li></ul></td>
+          </tr>
         )
       end
 
