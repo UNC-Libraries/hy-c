@@ -8,18 +8,17 @@ RSpec.describe Hyrax::Renderers::AttributeRenderer do
   describe "#attribute_to_html" do
     subject { Nokogiri::HTML(renderer.render) }
 
-    let(:expected) { Nokogiri::HTML(tr_content) }
+    let(:expected) { Nokogiri::HTML(html_content) }
 
-    context 'with links and < characters' do
+    context 'with language' do
       let(:field) { :language }
       let(:renderer) { described_class.new(field, ['http://id.loc.gov/vocabulary/iso639-2/eng']) }
-      let(:tr_content) do
+      let(:html_content) do
         %(
-          <tr><th>Language</th>
-          <td><ul class='tabular'><li class=\"attribute attribute-language\">
-          <span itemprop=\"language\">English
-          </span></li>
-          </ul></td></tr>
+          <p>Language</p>
+          <ul class='tabular'>
+            <li class=\"attribute attribute-language\">English</li>
+          </ul>
         )
       end
 
