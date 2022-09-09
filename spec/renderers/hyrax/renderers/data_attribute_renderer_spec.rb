@@ -14,10 +14,14 @@ RSpec.describe Hyrax::Renderers::DateAttributeRenderer do
       let(:renderer) { described_class.new(field, ['2013-03-14T00:00:00Z']) }
       let(:content) do
         %(
-      <p>Embargo release date</tp>
-      <ul class="tabular">
-      <li class="attribute attribute-embargo_release_date">March 14, 2013</li>
-      </ul>
+        <tr>
+        <th>Embargo release date</th>
+        <td>
+        <ul class="tabular">
+        <li class="attribute attribute-embargo_release_date">March 14, 2013</li>
+        </ul>
+        </td>
+        </tr>
       )
       end
 
@@ -28,10 +32,14 @@ RSpec.describe Hyrax::Renderers::DateAttributeRenderer do
       let(:renderer) { described_class.new(field, ['201x']) }
       let(:content) do
         %(
-      <p>Embargo release date</tp>
-      <ul class="tabular">
-      <li class="attribute attribute-embargo_release_date">2010s</li>
-      </ul>
+          <tr>
+          <th>Embargo release date</th>
+          <td>
+          <ul class="tabular">
+          <li class="attribute attribute-embargo_release_date">2010s</li>
+          </ul>
+          </td>
+          </tr>
       )
       end
 
@@ -43,10 +51,14 @@ RSpec.describe Hyrax::Renderers::DateAttributeRenderer do
     let(:renderer) { described_class.new(field, ['invalid']) }
     let(:content) do
       %(
-      <p>Embargo release date</tp>
-      <ul class="tabular">
-      <li class="attribute attribute-embargo_release_date">invalid</li>
-      </ul>
+        <tr>
+        <th>Embargo release date</th>
+        <td>
+        <ul class="tabular">
+        <li class="attribute attribute-embargo_release_date">invalid</li>
+        </ul>
+        </td>
+        </tr>
       )
     end
 
