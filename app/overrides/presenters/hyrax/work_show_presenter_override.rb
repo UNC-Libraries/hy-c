@@ -18,9 +18,9 @@ Hyrax::WorkShowPresenter.class_eval do
   def manifest_metadata
     metadata = []
     Hyrax.config.iiif_metadata_fields.each do |field|
-      next unless (respond_to? field) && !send(field).blank?
-
+      next unless (respond_to? field)
       field_value = send(field)
+      next if field_value.blank?
 
       # Remove everything but name from people object terms
       if field.to_s.match(/display$/)
