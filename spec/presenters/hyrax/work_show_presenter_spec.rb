@@ -37,38 +37,4 @@ RSpec.describe Hyrax::WorkShowPresenter do
   it { is_expected.to delegate_method(:resource_type).to(:solr_document) }
   it { is_expected.to delegate_method(:keyword).to(:solr_document) }
   it { is_expected.to delegate_method(:itemtype).to(:solr_document) }
-
-  describe '#manifest_metadata' do
-    context 'work with a doi' do
-      let(:work) { Article.new(title: ['Test title']) }
-      let(:solr_document) { SolrDocument.new(work.to_solr) }
-
-      before do
-        work.doi = 'http://doi.org'
-      end
-
-      it 'returns an array of metadata values' do
-        expect(presenter.manifest_metadata)
-          .to contain_exactly({ 'label' => 'Title', 'value' => ['Test title'] },
-                              { 'label' => 'DOI', 'value' => ['http://doi.org'] })
-      end
-    end
-
-    context 'with a person object' do
-      let(:work) { Article.new(title: ['Test title 2']) }
-      let(:solr_document) { SolrDocument.new(work.to_solr) }
-
-      before do
-        work.creators_attributes = { '0' => { name: 'Test, Person',
-                                              affiliation: 'University of North Carolina at Chapel Hill. University Libraries',
-                                              index: 1 } }
-      end
-
-      it 'returns an array of metadata values' do
-        expect(presenter.manifest_metadata)
-          .to contain_exactly({ 'label' => 'Title', 'value' => ['Test title 2'] },
-                              { 'label' => 'Creator', 'value' => ['Test, Person'] })
-      end
-    end
-  end
 end
