@@ -26,6 +26,9 @@ RSpec.describe Hyrax::Renderers::AttributeRenderer do
     end
 
     context 'with language key error' do
+      before do
+        allow(LanguagesService).to receive(:label).and_raise(KeyError)
+      end
       let(:field) { :language }
       let(:renderer) { described_class.new(field, ['http://id.loc.gov/vocabulary/iso639-2/bad_code']) }
       let(:tr_content) do
@@ -42,7 +45,7 @@ RSpec.describe Hyrax::Renderers::AttributeRenderer do
           </tr>
         )
       end
-
+      
       it { expect(subject).to be_equivalent_to(expected) }
     end
 
