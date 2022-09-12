@@ -55,7 +55,7 @@ RSpec.describe Hyrax::CitationsBehaviors::PublicationBehavior, type: :helper do
     end
   end
 
-  describe 'setup_pub_place' do
+  describe '#setup_pub_place' do
     let(:request) { double(host: 'example.org') }
     let(:user_key) { 'a_user_key' }
     let(:ability) { nil }
