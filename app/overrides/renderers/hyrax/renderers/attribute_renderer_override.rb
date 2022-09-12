@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 # [hyc-override] Overriding default. Show the language term instead of the saved value.
-# Allow itemprop to be rendered
 # https://github.com/samvera/hyrax/blob/v2.9.6/app/renderers/hyrax/renderers/attribute_renderer.rb
 Hyrax::Renderers::AttributeRenderer.class_eval do
   def find_language(language)
