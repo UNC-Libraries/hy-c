@@ -45,7 +45,7 @@ RSpec.describe Hyrax::Renderers::AttributeRenderer do
           </tr>
         )
       end
-      
+
       it { expect(subject).to be_equivalent_to(expected) }
     end
 
