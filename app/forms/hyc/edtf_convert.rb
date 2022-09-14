@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Hyc
   module EdtfConvert
     # Module method used in single_value_form.rb to convert dates to EDTF format

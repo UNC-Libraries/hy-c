@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Tasks
   # @example How to call this service
   #  # Run today's embargoes

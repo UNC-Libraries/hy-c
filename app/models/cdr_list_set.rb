@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class CdrListSet < ::BlacklightOaiProvider::SolrSet
   def description
     if label && value

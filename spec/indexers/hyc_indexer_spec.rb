@@ -22,8 +22,8 @@ RSpec.describe HycIndexer, type: :indexer do
        'index:2||creator2||Affiliation: College of Arts and Sciences, Department of Chemistry']
     end
     let(:fedora_creator_array) { work_with_people.creators.map(&:attributes) }
-    let(:fedora_creator_hash_one) { fedora_creator_array.select { |hash| hash['index'] == [1] }.first }
-    let(:fedora_creator_hash_two) { fedora_creator_array.select { |hash| hash['index'] == [2] }.first }
+    let(:fedora_creator_hash_one) { fedora_creator_array.find { |hash| hash['index'] == [1] } }
+    let(:fedora_creator_hash_two) { fedora_creator_array.find { |hash| hash['index'] == [2] } }
 
     context 'without any people objects' do
       let(:solr_doc) { described_class.new(work).generate_solr_document }

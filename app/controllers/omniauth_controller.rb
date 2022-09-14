@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'cgi'
 # [hyc-override] Overriding sessions controller in devise gem to trigger shibboleth logout
 class OmniauthController < Devise::SessionsController
@@ -7,7 +8,7 @@ class OmniauthController < Devise::SessionsController
   def new
     # Rails.logger.debug "SessionsController#new: request.referer = #{request.referer}"
     if Rails.env.production? && (AuthConfig.use_database_auth? == false)
-      shib_query = "target=#{user_shibboleth_omniauth_callback_path}%26origin=#{CGI.escape(request.referer.to_s)}"
+      shib_query = "target=#{user_shibboleth_omniauth_callback_path}%26origin=#{CGI.escape(request.referrer.to_s)}"
       shib_login_url = ENV['SSO_LOGIN_PATH'] + "?#{shib_query}"
       redirect_to shib_login_url
     else

@@ -11,7 +11,7 @@ services:
       - db
       - fedora
       - redis
-      - solr6
+      - solr8
     environment:
       CLAMD_TCP_HOST: clamav
       DATABASE_URL: postgresql://db:5432
@@ -22,8 +22,8 @@ services:
       HYRAX_HOST: https://localhost:3000
       REDIS_HOST: redis
       REDIS_URL: redis://redis:6379/0
-      SOLR_DEV_URL: http://solr6:8983/solr/hydra-development
-      SOLR_TEST_URL: http://solr6:8983/solr/hydra-test
+      SOLR_DEV_URL: http://solr8:8983/solr/hydra-development
+      SOLR_TEST_URL: http://solr8:8983/solr/hydra-test
       RIIIF_CACHE_PATH: /opt/hyrax/riiif_cache
       RAILS_CACHE_PATH: /opt/rails-cache
     ports:
@@ -70,24 +70,12 @@ services:
       - redis_data:/data
     ports:
       - "6379:6379"
-  solr6:
-    image: solr:6.6.6-alpine
-    volumes:
-      - solr6-data:/opt/solr/server/solr/configsets/hy-c
-    ports:
-      - "8983:8983"
-    command: >
-      bash -c "
-      precreate-core hydra-development /opt/solr/server/solr/configsets/hy-c;
-      precreate-core hydra-test /opt/solr/server/solr/configsets/hy-c;
-      exec solr -f
-      "
   solr8:
-    image: solr:8.9-slim
+    image: solr:8.11-slim
     volumes:
       - solr8-data:/opt/solr/server/solr/configsets/hy-c
     ports:
-      - "8989:8983"
+      - "8983:8983"
     command: >
       bash -c "
       precreate-core hydra-development /opt/solr/server/solr/configsets/hy-c;
@@ -97,7 +85,6 @@ services:
 volumes:
   mount-code:
   mount-gems:
-  solr6-data:
   solr8-data:
   clam:
   pg_data:
@@ -108,8 +95,11 @@ volumes:
 x-mutagen:
   sync:
     defaults:
+      mode: "two-way-resolved"
       ignore:
         vcs: true
+        paths:
+          - ".DS_Store"
     mount-code:
       alpha: '.'
       beta: "volume://mount-code"
@@ -121,15 +111,8 @@ x-mutagen:
       #alpha: '../hyc-gems'
       #beta: "volume://mount-gems"
     # TODO: can we move these to simple volumes by auto-copying the configs over?
-    solr6-data:
-      alpha: './solr/config'
-      beta: 'volume://solr6-data'
-      configurationBeta:
-        permissions:
-          defaultOwner: 'id:8983'
-          defaultGroup: 'id:8983'
     solr8-data:
-      alpha: './solr/new_config'
+      alpha: './solr/config'
       beta: 'volume://solr8-data'
       configurationBeta:
         permissions:

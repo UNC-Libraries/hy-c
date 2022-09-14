@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # This file is copied to spec/ when you run 'rails generate rspec:install'
 require 'spec_helper'
 ENV['RAILS_ENV'] ||= 'test'
@@ -7,7 +8,7 @@ abort('The Rails environment is running in production mode!') if Rails.env.produ
 require 'rspec/rails'
 require 'webmock/rspec'
 
-WebMock.disable_net_connect!(allow_localhost: true, allow: ['fedora:8080', 'solr6:8983', 'fcrepo:8080', 'solr:8983', 'opaquenamespace.org',
+WebMock.disable_net_connect!(allow_localhost: true, allow: ['fedora:8080', 'solr8:8983', 'fcrepo:8080', 'solr:8983', 'opaquenamespace.org',
                                                             'chromedriver.storage.googleapis.com'])
 Capybara.default_normalize_ws = true
 

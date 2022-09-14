@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 desc 'Removes all notification contexts'
 task clear_notifiable_contexts: :environment do
   Sipity::NotifiableContext.delete_all

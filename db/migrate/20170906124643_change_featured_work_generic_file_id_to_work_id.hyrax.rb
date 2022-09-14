@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # This migration comes from hyrax (originally 20160510000007)
 class ChangeFeaturedWorkGenericFileIdToWorkId < ActiveRecord::Migration[4.2]
   def change

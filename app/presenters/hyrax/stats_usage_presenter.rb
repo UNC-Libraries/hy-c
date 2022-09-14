@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # [hyc-override] use date_created instead of date_updated for analytics start date
 module Hyrax
   # Methods used by both WorkUsage and FileUsage

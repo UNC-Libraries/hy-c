@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'rails_helper'
 require 'fileutils'
 require 'tmpdir'
@@ -35,7 +36,7 @@ RSpec.describe DeregisterLongleafJob, type: :job do
 
     let(:longleaf_script) do
       path = File.join(ll_home_dir, 'llcommand.sh')
-      File.write(path, "#!/usr/bin/env bash\necho $@ > #{output_path.to_s}")
+      File.write(path, "#!/usr/bin/env bash\necho $@ > #{output_path}")
       path
     end
 

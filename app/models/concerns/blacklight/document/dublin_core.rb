@@ -25,7 +25,7 @@ module Blacklight::Document::DublinCore
   end
 
   # [hyc-override] format values for display in oai feed
-  # dublin core elements are mapped against the #dublin_core_field_names whitelist.
+  # dublin core elements are mapped against the #dublin_core_field_names allowlist.
   def export_as_oai_dc_xml
     xml = Builder::XmlMarkup.new
     xml.tag!('oai_dc:dc',
@@ -55,7 +55,7 @@ module Blacklight::Document::DublinCore
             source << v.to_s
           elsif field.to_s == 'thumbnail'
             if doi.blank?
-              record_url = URI.join(ENV['HYRAX_HOST'], "concern/#{first('has_model_ssim').tableize}/#{id()}").to_s
+              record_url = URI.join(ENV['HYRAX_HOST'], "concern/#{first('has_model_ssim').tableize}/#{id}").to_s
               xml.tag! 'dc:identifier', record_url
             end
             thumb_download = (values.first)
@@ -91,7 +91,7 @@ module Blacklight::Document::DublinCore
 
   private
 
-  def dublin_core_field_name? field
+  def dublin_core_field_name?(field)
     dublin_core_field_names.include? field.to_sym
   end
 end

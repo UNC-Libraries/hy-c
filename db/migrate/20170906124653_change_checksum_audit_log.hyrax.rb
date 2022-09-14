@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # This migration comes from hyrax (originally 20170504192714)
 class ChangeChecksumAuditLog < ActiveRecord::Migration[5.0]
   def change

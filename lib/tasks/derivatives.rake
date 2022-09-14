@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 namespace 'derivs' do
   desc 'Regenerates thumbnails for PDFs'
   task pdf_thumbs: :environment do

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 source 'https://rubygems.org'
 ruby '~> 2.7.4'
 
@@ -8,7 +9,7 @@ end
 
 gem 'active-fedora', '~> 12.2'
 gem 'blacklight_advanced_search', '~> 6.4.1'
-gem 'blacklight_oai_provider', '6.0.0.pre1'
+gem 'blacklight_oai_provider', '6.1.1'
 gem 'blacklight_range_limit', '6.5.0'
 gem 'bootstrap-sass', '~> 3.4.1'
 gem 'bulkrax', '~> 1.0.0'
@@ -43,7 +44,7 @@ gem 'passenger', '6.0.14', require: 'phusion_passenger/rack_handler'
 # Use postgresql as the database for Active Record
 gem 'pg', '~> 1.3.5'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 5.2.6'
+gem 'rails', '~> 5.2.8.1'
 # Use Redis adapter to run Action Cable in production
 gem 'redis', '~> 3.3.0'
 gem 'riiif', '~> 2.4.0'
@@ -72,6 +73,8 @@ group :development, :test do
   gem 'rubocop-rails'
   gem 'rubocop-rspec'
   gem 'solr_wrapper', '~> 1.1.0'
+  gem 'rubocop-github'
+  gem 'rubocop-performance', require: false
 end
 
 group :development do

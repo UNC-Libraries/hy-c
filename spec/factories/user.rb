@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 FactoryBot.define do
   factory :user do
     # Onyens are any 3-8 character alphanumeric string beginning with a letter - we are using the uid field to hold they onyen

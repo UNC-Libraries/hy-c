@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require_relative 'boot'
 
 require 'rails/all'
@@ -12,11 +13,11 @@ module Hyrax
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
     config.before_configuration do
-      env_file = File.join(Rails.root, 'config', 'local_env.yml')
+      env_file = File.join(Rails.root, 'config', ENV['LOCAL_ENV_FILE'] || 'local_env.yml')
 
       YAML.load(File.open(env_file)).each do |key, value|
         ENV[key.to_s] = value
-      end if File.exists?(env_file)
+      end if File.exist?(env_file)
     end
 
     Rails.application.routes.default_url_options[:host] = ENV['HYRAX_HOST']
@@ -39,5 +40,13 @@ module Hyrax
 
     # Prepend all log lines with the following tags.
     config.log_tags = [:request_id]
+
+    # Load override files
+    overrides = "#{Rails.root}/app/overrides"
+    config.to_prepare do
+      Dir.glob("#{overrides}/**/*_override.rb").sort.each do |c|
+        Rails.configuration.cache_classes ? require(c) : load(c)
+      end
+    end
   end
 end

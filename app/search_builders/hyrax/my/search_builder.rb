@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # [hyc-override] allow admins to attach child owned by another user
 module Hyrax
   module My

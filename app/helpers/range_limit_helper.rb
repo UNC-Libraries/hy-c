@@ -1,9 +1,10 @@
+# frozen_string_literal: true
 # Additional helper methods used by view templates inside this plugin.
 # # [hyc-override] Change input fields to number fields
 module RangeLimitHelper
 
   # type is 'begin' or 'end'
-  def render_range_input(solr_field, type, input_label = nil, maxlength=4)
+  def render_range_input(solr_field, type, input_label = nil, maxlength = 4)
     type = type.to_s
 
     default = params['range'][solr_field][type] if params['range'] && params['range'][solr_field] && params['range'][solr_field][type]
@@ -54,9 +55,9 @@ module RangeLimitHelper
     stats = stats_for_field(solr_field)
 
     (params['range'] && params['range'][solr_field]) ||
-      (  stats &&
+      (stats &&
         stats['max'] > stats['min']) ||
-      ( !stats && @response.total.positive? )
+      (!stats && @response.total.positive?)
   end
 
   def stats_for_field(solr_field)

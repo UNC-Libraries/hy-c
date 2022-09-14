@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # app/services/departments_service.rb
 module DepartmentsService
   mattr_accessor :authority
@@ -11,7 +12,7 @@ module DepartmentsService
 
   # The permanent identifier for the term, stored in Fedora. This identifier should not be changed.
   def self.identifier(term)
-    authority.all.reject { |item| item['active'] == false }.select { |department| department['label'] == term }.first['id']
+    authority.all.reject { |item| item['active'] == false }.find { |department| department['label'] == term }['id']
   rescue StandardError
     nil
   end
@@ -39,7 +40,7 @@ module DepartmentsService
       html_options[:class] << ' force-select'
       # Add the current value to the options if it is not already present
       value_index = render_options.index { |opt| opt[0] == value }
-      render_options += [[value, value]] if value_index == nil
+      render_options += [[value, value]] if value_index.nil?
     end
     [render_options, html_options]
   end

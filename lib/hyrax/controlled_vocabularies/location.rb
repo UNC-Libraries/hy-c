@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # [hyc-override] Overriding to add full label parameter
 module Hyrax
   module ControlledVocabularies

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'rails_helper'
 require 'active_fedora/cleaner'
 
@@ -159,7 +160,7 @@ RSpec.shared_examples 'a work type' do |model, pluralized_model|
       end
 
       it 'is successful' do
-        patch :update, params: { id: work.id, (model.to_s.downcase.to_sym) => { abstract: 'an abstract' } }
+        patch :update, params: { :id => work.id, (model.to_s.downcase.to_sym) => { abstract: 'an abstract' } }
         expect(response).to redirect_to "/concern/#{pluralized_model}/#{work.id}?locale=en"
         expect(flash[:notice]).to eq "Work \"#{work}\" successfully updated."
       end
@@ -175,7 +176,7 @@ RSpec.shared_examples 'a work type' do |model, pluralized_model|
       end
 
       it 'is not successful' do
-        patch :update, params: { id: work.id, (model.to_s.downcase.to_sym) => { abstract: ['an abstract'] } }
+        patch :update, params: { :id => work.id, (model.to_s.downcase.to_sym) => { abstract: ['an abstract'] } }
         expect(response).to redirect_to root_path
         expect(flash[:alert]).to eq 'No Admin Sets have been created.'
       end
@@ -187,7 +188,7 @@ RSpec.shared_examples 'a work type' do |model, pluralized_model|
       end
 
       it 'is not successful' do
-        get :update, params: { id: work.id, (model.to_s.downcase.to_sym) => { abstract: ['an abstract'] } }
+        get :update, params: { :id => work.id, (model.to_s.downcase.to_sym) => { abstract: ['an abstract'] } }
         expect(response).to redirect_to '/users/sign_in?locale=en'
         expect(flash[:alert]).to eq 'You are not authorized to access this page.'
       end

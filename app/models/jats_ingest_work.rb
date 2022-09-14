@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # For information on the JATS metadata standard, see https://jats.nlm.nih.gov/
 # Currently used for Sage ingest
 class JatsIngestWork
@@ -129,7 +130,10 @@ class JatsIngestWork
   end
 
   def keyword
-    article_metadata.at('kwd-group').xpath('//kwd').map do |elem|
+    keyword_list = article_metadata.at('kwd-group')
+    return [] if keyword_list.nil?
+
+    keyword_list.xpath('//kwd').map do |elem|
       if elem.at('italic')
         elem.at('italic').inner_text
       else

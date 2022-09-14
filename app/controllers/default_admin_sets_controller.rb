@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class DefaultAdminSetsController < ApplicationController
   before_action :set_default_admin_set, only: [:edit, :update, :destroy]
   before_action :create_default_records, only: [:edit, :new]
@@ -40,7 +41,7 @@ class DefaultAdminSetsController < ApplicationController
       if @default_admin_set.save
         format.html { redirect_to default_admin_sets_path, notice: 'Admin set worktype was successfully created.' }
       else
-        format.html { render :new }
+        format.html { render 'new' }
       end
     end
   end
@@ -50,7 +51,7 @@ class DefaultAdminSetsController < ApplicationController
       if @default_admin_set.update(default_admin_set_params)
         format.html { redirect_to default_admin_sets_path, notice: 'Admin set worktype was successfully updated.' }
       else
-        format.html { render :edit }
+        format.html { render 'edit' }
       end
     end
   end
@@ -69,7 +70,7 @@ class DefaultAdminSetsController < ApplicationController
     @default_admin_set = DefaultAdminSet.find(params[:id])
   end
 
-  # Never trust parameters from the scary internet, only allow the white list through.
+  # Never trust parameters from the scary internet, only allow the allowlist through.
   def default_admin_set_params
     params.require(:default_admin_set).permit(:work_type_name, :admin_set_id, :department)
   end

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 namespace 'setup' do
   desc 'Adds generic admin role to hyrax application'
   task admin_role: :environment do

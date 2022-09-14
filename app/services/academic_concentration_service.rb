@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # app/services/concentrations_service.rb
 module AcademicConcentrationService
   mattr_accessor :authority

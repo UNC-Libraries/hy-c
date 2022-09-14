@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Include hyc-specific helper code here instead of in the HyraxHelper to avoid circular dependencies
 module HycHelper
   def language_links(options)
@@ -17,17 +18,6 @@ module HycHelper
     lang_label = LanguagesService.label(options)
     options = lang_label unless lang_label.nil?
     options
-  end
-
-  def redirect_lookup(column, id)
-    redirect_uuids = if ENV.has_key?('REDIRECT_FILE_PATH') && File.exist?(ENV['REDIRECT_FILE_PATH'])
-                       File.read(ENV['REDIRECT_FILE_PATH'])
-                     else
-                       File.read(Rails.root.join('lib', 'redirects', 'redirect_uuids.csv'))
-                     end
-
-    csv = CSV.parse(redirect_uuids, headers: true)
-    csv.find { |row| row[column].match(id) }
   end
 
   def get_work_url(model, id)

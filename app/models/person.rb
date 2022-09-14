@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Person < ActiveTriples::Resource
 
   property :index, predicate: ::RDF::Vocab::DC.identifier
@@ -6,7 +7,7 @@ class Person < ActiveTriples::Resource
   property :affiliation, predicate: ::RDF::Vocab::SCHEMA.affiliation
   property :other_affiliation, predicate: ::RDF::Vocab::EBUCore.hasAffiliation
 
-  def initialize(uri=RDF::Node.new, parent=nil)
+  def initialize(uri = RDF::Node.new, parent = nil)
     if uri.try(:node?)
       uri = RDF::URI("#nested_person#{uri.to_s.gsub('_:', '')}")
     elsif uri.start_with?('#')

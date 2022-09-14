@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module MimeTypeService
   mattr_accessor :authority
   self.authority = Qa::Authorities::Local.subauthority_for('mime_types')

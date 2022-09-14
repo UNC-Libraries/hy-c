@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # [hyc-override] Bumping up the max results returned, as geonames doesn't deal well with multi-word states
 # Overridden file found here: https://github.com/samvera/questioning_authority/blob/f772e790622984c888388cc433c069b26d968921/lib/qa/authorities/geonames.rb
 module Qa::Authorities

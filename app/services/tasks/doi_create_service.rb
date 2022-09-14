@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Tasks
   class DoiCreateService
     include HycHelper
@@ -299,7 +300,7 @@ module Tasks
         end
 
         orcid = p_json['orcid']&.first
-        person[:nameIdentifiers] = [ nameIdentifier: orcid, nameIdentifierScheme: 'ORCID'] unless orcid.blank?
+        person[:nameIdentifiers] = [nameIdentifier: orcid, nameIdentifierScheme: 'ORCID'] unless orcid.blank?
 
         people << person
       end

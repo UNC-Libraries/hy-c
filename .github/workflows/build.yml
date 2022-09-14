@@ -28,6 +28,7 @@ jobs:
       DELETED_PEOPLE_FILE: ./tmp/deleted_people.txt
       DOI_PREFIX: '10.17615'
       EMAIL_FROM_ADDRESS: 'hyraxapp@example.com'
+      EMAIL_GEONAMES_ERRORS_ADDRESS: 'hyraxapp@example.com'
       FEDORA_TEST_URL: http://127.0.0.1:8080/rest
       HYRAX_DATABASE_PASSWORD: 'password'
       HYRAX_HOST: 'https://example.com'
@@ -68,7 +69,7 @@ jobs:
           --health-timeout 5s
         ports: ["5432:5432"]
       solr:
-        image: solr:6.6
+        image: solr:8.11-slim
         ports:
           - 8983:8983
         options: >-
@@ -110,7 +111,7 @@ jobs:
     - name: Install OS packages
       run: |
         sudo apt-get update
-        sudo apt-get install unzip imagemagick ghostscript libpq-dev graphicsmagick libreoffice
+        sudo apt-get install unzip ghostscript libpq-dev graphicsmagick libreoffice
 
     - name: Setup test database
       env:

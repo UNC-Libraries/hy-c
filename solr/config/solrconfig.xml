@@ -17,27 +17,27 @@
 -->
 
 <!--
- This is a stripped down config file used for a simple example...  
- It is *not* a good example to work from. 
+ This is a stripped down config file used for a simple example...
+ It is *not* a good example to work from.
 -->
 <config>
-  
+
   <!-- Controls what version of Lucene various components of Solr
        adhere to.  Generally, you want to use the latest version to
        get all bug fixes and improvements. It is highly recommended
        that you fully re-index after changing this setting as it can
        affect both how text is indexed and queried.
   -->
-  <luceneMatchVersion>5.0.0</luceneMatchVersion>
-  
+  <luceneMatchVersion>8.11.1</luceneMatchVersion>
+
   <lib dir="${solr.install.dir:../../../..}/contrib/analysis-extras/lib" />
   <lib dir="${solr.install.dir:../../../..}/contrib/analysis-extras/lucene-libs" />
   <lib dir="${solr.install.dir:../../../..}/contrib/extraction/lib" regex=".*\.jar" />
   <lib dir="${solr.install.dir:../../../..}/dist/" regex="solr-cell-\d.*\.jar" />
 
-  <directoryFactory name="DirectoryFactory" 
+  <directoryFactory name="DirectoryFactory"
                     class="${solr.directoryFactory:solr.NRTCachingDirectoryFactory}">
-  </directoryFactory> 
+  </directoryFactory>
 
   <codecFactory class="solr.SchemaCodecFactory"/>
 
@@ -45,14 +45,14 @@
 
 
   <dataDir>${solr.blacklight-core.data.dir:}</dataDir>
-  
+
   <requestDispatcher handleSelect="true" >
     <requestParsers enableRemoteStreaming="false" multipartUploadLimitInKB="2048000" />
   </requestDispatcher>
-  
+
   <requestHandler name="/analysis/field" startup="lazy" class="solr.FieldAnalysisRequestHandler" />
 
-  <!-- config for the admin interface --> 
+  <!-- config for the admin interface -->
   <admin>
     <defaultQuery>*:*</defaultQuery>
   </admin>
@@ -85,63 +85,64 @@
     <!-- default values for query parameters can be specified, these
          will be overridden by parameters in the request
       -->
-     <lst name="defaults">
-       <str name="defType">edismax</str>
-       <str name="echoParams">explicit</str>
-       <str name="q.alt">*:*</str>
-       <str name="mm">2&lt;-1 5&lt;-2 6&lt;90%</str>
-       <int name="qs">1</int>
-       <int name="ps">2</int>
-       <float name="tie">0.01</float>
-       <!-- this qf and pf are used by default, if not otherwise specified by
-            client. The default blacklight_config will use these for the
-            "keywords" search. See the author_qf/author_pf, title_qf, etc
-            below, which the default blacklight_config will specify for
-            those searches. You may also be interested in:
-            http://wiki.apache.org/solr/LocalParams
-       -->
-        <str name="qf">
-          id
-          title_tesim
-          author_tesim
-          subject_tesim
-        </str>
-        <str name="pf">
-          all_text_timv^10
-        </str>
+    <lst name="defaults">
+      <str name="defType">edismax</str>
+      <str name="echoParams">explicit</str>
+      <str name="q.alt">*:*</str>
+      <str name="q.op">OR</str>
+      <str name="mm">2&lt;-1 5&lt;-2 6&lt;90%</str>
+      <int name="qs">1</int>
+      <int name="ps">2</int>
+      <float name="tie">0.01</float>
+      <!-- this qf and pf are used by default, if not otherwise specified by
+           client. The default blacklight_config will use these for the
+           "keywords" search. See the author_qf/author_pf, title_qf, etc
+           below, which the default blacklight_config will specify for
+           those searches. You may also be interested in:
+           http://wiki.apache.org/solr/LocalParams
+      -->
+      <str name="qf">
+        id
+        title_tesim
+        author_tesim
+        subject_tesim
+      </str>
+      <str name="pf">
+        all_text_timv^10
+      </str>
 
-       <str name="author_qf">
-          author_tesim
-       </str>
-       <str name="author_pf">
-       </str>
-       <str name="title_qf">
-          title_tesim
-       </str>
-       <str name="title_pf">
-       </str>
-       <str name="subject_qf">
-          subject_tesim
-       </str>
-       <str name="subject_pf">
-       </str>
+      <str name="author_qf">
+        author_tesim
+      </str>
+      <str name="author_pf">
+      </str>
+      <str name="title_qf">
+        title_tesim
+      </str>
+      <str name="title_pf">
+      </str>
+      <str name="subject_qf">
+        subject_tesim
+      </str>
+      <str name="subject_pf">
+      </str>
 
-       <str name="fl">
-         *,
-         score
-       </str>
+      <str name="fl">
+        *,
+        score
+      </str>
 
-       <str name="facet">true</str>
-       <str name="facet.mincount">1</str>
+      <str name="facet">true</str>
+      <str name="facet.mincount">1</str>
 
-       <str name="spellcheck">true</str>
-       <str name="spellcheck.dictionary">default</str>
-       <str name="spellcheck.onlyMorePopular">true</str>
-       <str name="spellcheck.extendedResults">true</str>
-       <str name="spellcheck.collate">false</str>
-       <str name="spellcheck.count">5</str>
+      <str name="spellcheck">true</str>
+      <str name="spellcheck.dictionary">default</str>
+      <str name="spellcheck.onlyMorePopular">true</str>
+      <str name="spellcheck.extendedResults">true</str>
+      <str name="spellcheck.collate">false</str>
+      <str name="spellcheck.count">5</str>
 
-     </lst>
+    </lst>
     <arr name="last-components">
       <str>spellcheck</str>
     </arr>
@@ -171,10 +172,10 @@
   </requestHandler>
 
   <requestHandler name="standard" class="solr.SearchHandler">
-     <lst name="defaults">
-       <str name="echoParams">explicit</str>
-       <str name="defType">lucene</str>
-     </lst>
+    <lst name="defaults">
+      <str name="echoParams">explicit</str>
+      <str name="defType">lucene</str>
+    </lst>
   </requestHandler>
 
   <!-- for requests to get a single document; use id=666 instead of q=id:666 -->
@@ -198,13 +199,13 @@
     </arr>
   </requestHandler>
 
-<!-- Spell Check
+  <!-- Spell Check
 
-        The spell check component can return a list of alternative spelling
-        suggestions.  
+          The spell check component can return a list of alternative spelling
+          suggestions.
 
-        http://wiki.apache.org/solr/SpellCheckComponent
-     -->
+          http://wiki.apache.org/solr/SpellCheckComponent
+       -->
   <searchComponent name="spellcheck" class="solr.SpellCheckComponent">
 
     <str name="queryAnalyzerFieldType">textSpell</str>
@@ -256,7 +257,7 @@
        </lst>
      -->
 
-    <!-- a spellchecker that use an alternate comparator 
+    <!-- a spellchecker that use an alternate comparator
 
          comparatorClass be one of:
           1. score (default)
@@ -322,4 +323,3 @@
     <!-- </lst> -->
   </requestHandler>
 </config>
-

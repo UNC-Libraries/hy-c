@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class AuthConfig
   # In production, use Shibboleth for user authentication,
   # but in development mode, use local database

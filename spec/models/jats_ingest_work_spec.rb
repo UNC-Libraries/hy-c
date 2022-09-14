@@ -1,8 +1,11 @@
+# frozen_string_literal: true
 require 'rails_helper'
 
 RSpec.describe JatsIngestWork, :sage, type: :model do
   let(:xml_file_path) { File.join(fixture_path, 'sage', 'CCX_2021_28_10.1177_1073274820985792', '10.1177_1073274820985792.xml') }
+  let(:xml_file_path_no_keywords) { File.join(fixture_path, 'sage', '10.1177_08901171221077812.xml') }
   let(:work) { described_class.new(xml_path: xml_file_path) }
+  let(:work_no_keywords) { described_class.new(xml_path: xml_file_path_no_keywords) }
 
   context 'when it can\'t match the license' do
     before do
@@ -93,6 +96,25 @@ RSpec.describe JatsIngestWork, :sage, type: :model do
     # expect(work.resource_type).to eq(['Article'])
     expect(work.rights_holder).to eq(['SAGE Publications Inc, unless otherwise noted. Manuscript content on this site is licensed under Creative Common Licences'])
     expect(work.title).to eq(['Inequalities in Cervical Cancer Screening Uptake Between Chinese Migrant Women and Local Women: A Cross-Sectional Study'])
+  end
+
+  it 'can return metadata if there are no keywords in the xml' do
+    expect(work_no_keywords.abstract.first).to include 'provinces across China and administered a questionnaire'
+    expect(work_no_keywords.copyright_date).to eq '2021'
+    expect(work_no_keywords.date_of_publication).to eq '2021-02-01'
+    expect(work_no_keywords.funder).to eq ['Fogarty International Center']
+    expect(work_no_keywords.identifier).to eq ['https://doi.org/10.1177/1073274820985792']
+    expect(work_no_keywords.issn).to eq ['1073-2748']
+    expect(work_no_keywords.journal_issue).to be nil
+    expect(work_no_keywords.journal_title).to eq 'Cancer Control'
+    expect(work_no_keywords.journal_volume).to eq '28'
+    expect(work_no_keywords.keyword).to match_array([])
+    expect(work_no_keywords.license).to eq(['http://creativecommons.org/licenses/by-nc/4.0/'])
+    expect(work_no_keywords.page_end).to be nil
+    expect(work_no_keywords.page_start).to be nil
+    expect(work_no_keywords.publisher).to eq ['SAGE Publications']
+    expect(work_no_keywords.rights_holder).to eq(['SAGE Publications Inc, unless otherwise noted. Manuscript content on this site is licensed under Creative Common Licences'])
+    expect(work_no_keywords.title).to eq(['Inequalities in Cervical Cancer Screening Uptake Between Chinese Migrant Women and Local Women: A Cross-Sectional Study'])
   end
 
   it 'can map to the controlled license vocabulary' do

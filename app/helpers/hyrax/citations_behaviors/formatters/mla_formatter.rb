@@ -5,6 +5,7 @@ module Hyrax
       class MlaFormatter < BaseFormatter
         include Hyrax::CitationsBehaviors::PublicationBehavior
         include Hyrax::CitationsBehaviors::TitleBehavior
+        include HycHelper
 
         def format(work)
           text = ''

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 IMAGE_SOURCE_DATA = { 'name' => '/tmp/mini_magick20220210-6165-5il5y.tif[0]',
                       'format' => 'TIFF', 'formatDescription' => 'Tagged Image File Format',
                       'mimeType' => 'image/tiff',
@@ -43,4 +44,4 @@ IMAGE_SOURCE_DATA = { 'name' => '/tmp/mini_magick20220210-6165-5il5y.tif[0]',
                       'pixelsPerSecond' => '5.65758MB',
                       'userTime' => '0.000u',
                       'elapsedTime' => '0:01.001',
-                      'version' => 'ImageMagick 6.9.10-68 Q16 x86_64 2021-10-14 https://imagemagick.org' }.freeze
+                      'version' => 'GraphicsMagick 1.3.38 x86_64 2022-03-26 https://graphicsmagick.org' }.freeze

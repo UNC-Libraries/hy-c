@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class RangeLimitCatalogSearchBuilder < Hyrax::CatalogSearchBuilder
   include BlacklightAdvancedSearch::AdvancedSearchBuilder
   include BlacklightRangeLimit::RangeLimitBuilder
@@ -11,7 +12,7 @@ class RangeLimitCatalogSearchBuilder < Hyrax::CatalogSearchBuilder
   # This should always be the last processor in this processor chain.
   # Adds full text searching for :all_fields
   def join_works_from_files(solr_parameters)
-    return unless blacklight_params[:all_fields]
+    return if blacklight_params[:all_fields].blank?
 
     if solr_parameters[:q].present?
       solr_parameters[:q] += all_fields_query
