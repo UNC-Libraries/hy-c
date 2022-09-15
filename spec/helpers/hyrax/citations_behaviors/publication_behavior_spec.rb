@@ -105,4 +105,86 @@ RSpec.describe Hyrax::CitationsBehaviors::PublicationBehavior, type: :helper do
       end
     end
   end
+
+  describe '#setup_pub_info' do
+    context 'with a publication location' do
+      let(:work) {
+        General.new(title: ['new article title'], place_of_publication: ['Chapel Hill, NC'])
+      }
+
+      it 'returns publication info' do
+        expect(helper.setup_pub_info(work)).to eq 'Chapel Hill, NC'
+      end
+    end
+
+    context 'with a publication location and publisher' do
+      let(:work) {
+        General.new(title: ['new article title'], place_of_publication: ['Chapel Hill, NC'], publisher: ['UNC Press'])
+      }
+
+      it 'returns publication info' do
+        expect(helper.setup_pub_info(work)).to eq 'Chapel Hill, NC: UNC Press'
+      end
+    end
+
+    context 'with a publisher' do
+      let(:work) {
+        General.new(title: ['new article title'], publisher: ['UNC Press'])
+      }
+
+      it 'returns publication info' do
+        expect(helper.setup_pub_info(work)).to eq 'UNC Press'
+      end
+    end
+
+    context 'with publisher and publication date' do
+      let(:work) {
+        General.new(title: ['new article title'], publisher: ['UNC Press'], date_issued: ['2012-01-01'])
+      }
+
+      it 'returns publication info' do
+        expect(helper.setup_pub_info(work, true)).to eq 'UNC Press, 2012'
+      end
+    end
+
+    context 'publication date' do
+      let(:work) {
+        General.new(title: ['new article title'], date_issued: ['2012-01-01'])
+      }
+
+      it 'returns publication info' do
+        expect(helper.setup_pub_info(work, true)).to eq '2012'
+      end
+    end
+
+    context 'with location and date' do
+      let(:work) {
+        General.new(title: ['new article title'], place_of_publication: ['Chapel Hill, NC'], date_issued: ['2012-01-01'])
+      }
+
+      it 'returns publication info' do
+        expect(helper.setup_pub_info(work, true)).to eq 'Chapel Hill, NC, 2012'
+      end
+    end
+
+    context 'with publisher, location and date' do
+      let(:work) {
+        General.new(title: ['new article title'], publisher: ['UNC Press'], place_of_publication: ['Chapel Hill, NC'], date_issued: ['2012-01-01'])
+      }
+
+      it 'returns publication info' do
+        expect(helper.setup_pub_info(work, true)).to eq 'Chapel Hill, NC: UNC Press, 2012'
+      end
+    end
+
+    context 'with no publication info' do
+      let(:work) {
+        General.new(title: ['new article title'])
+      }
+
+      it 'returns nil' do
+        expect(helper.setup_pub_info(work)).to eq nil
+      end
+    end
+  end
 end
