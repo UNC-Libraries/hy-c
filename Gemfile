@@ -46,7 +46,7 @@ gem 'pg', '~> 1.3.5'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.2.8.1'
 # Use Redis adapter to run Action Cable in production
-gem 'redis', '~> 3.3.0'
+gem 'redis', '~> 4.1.4'
 gem 'riiif', '~> 2.4.0'
 gem 'roo', '~>2.9.0'
 gem 'rsolr', '~> 2.5.0'
