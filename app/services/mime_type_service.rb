@@ -22,6 +22,6 @@ module MimeTypeService
   end
 
   def self.valid?(term)
-    authority.all.detect { |element| element['label'] == term }
+    authority.all.any? { |element| element['label'] == term }
   end
 end
