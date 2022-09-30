@@ -56,8 +56,10 @@ cp config/local_env_sample.yml config/local_env.yml
 ```bash
 mutagen-compose pull
 OR
-mutagen-compose build --no-cache
+docker-compose build --no-cache --force-rm
 ```
+- To push the built images to Docker Hub, run a command similar to `docker push cazzerson/hy-c-universal` for a repository to which you have write privileges.
+ 
 ##### Every time
 - Bring up the application and its dependencies
 ```bash

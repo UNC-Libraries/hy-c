@@ -24,7 +24,8 @@ FROM systemd-enabled
 # TODO: are we using httpd?
 RUN yum -y install centos-release-scl-rh centos-release-scl \
 && yum -y --enablerepo=centos-sclo-rh install rh-ruby27 rh-ruby27-ruby-devel \
-&& yum -y install gcc gcc-c++ zlib-devel devtoolset-8 postgresql-devel libxslt-devel \
+&& yum -y install https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm \
+&& yum -y install gcc gcc-c++ zlib-devel devtoolset-8 postgresql14 libpq5-devel libxslt-devel \
 && yum -y install git libreoffice clamav-devel clamav clamav-update clamd redhat-lsb libXScrnSaver wget unzip \
 && yum -y install epel-release \
 && yum -y install ghostscript GraphicsMagick \
