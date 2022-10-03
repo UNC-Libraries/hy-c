@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 require 'rails_helper'
+require Rails.root.join('app/overrides/controllers/hydra/controller/download_behavior_override.rb')
 
 RSpec.describe Hyrax::DownloadsController, type: :controller do
   routes { Hyrax::Engine.routes }
@@ -79,6 +80,52 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
       it 'does not find admin set for file set' do
         expect(controller.set_record_admin_set).to eq('Unknown')
       end
+    end
+  end
+
+  describe '#download_file' do
+    before do
+      class ContentHolder < ActiveFedora::Base
+        include Hydra::AccessControls::Permissions
+        has_subresource 'thumbnail'
+      end
+      @user = FactoryBot.create(:user)
+      sign_in @user
+    end
+    let(:obj) do
+      ContentHolder.new.tap do |obj|
+        obj.add_file("It's a stream", path: 'descMetadata', original_name: 'metadata.xml', mime_type: 'text/plain')
+        obj.read_users = [@user.user_key]
+        obj.save!
+      end
+    end
+
+    after do
+      obj.destroy
+      Object.send(:remove_const, :ContentHolder)
+    end
+
+    context 'when downloading file' do
+      # mock MimeTypeService to return true
+      it 'will add proper mime type extension if valid' do
+        allow(MimeTypeService).to receive(:valid?) { true }
+        allow(MimeTypeService).to receive(:label) { 'txt' }
+        allow(controller.request).to receive(:referrer).and_return('http://example.com')
+
+        stub = stub_request(:post, 'http://www.google-analytics.com/collect').to_return(status: 200, body: '', headers: {})
+        get :show, params: { id: obj}
+        expect(response).to be_successful
+        expect(response.headers['Content-Type']).to start_with "text/plain"
+        expect(response.headers["Content-Disposition"]).to start_with "inline; filename=\"metadata.xml\""
+      end
+      # it 'will not add mime type extension if not valid' do
+      #   # mock MimeTypeService to return false
+      #   allow(MimeTypeService).to receive(:valid?) { false }
+      #   get :show, params: { id: obj}
+      #   expect(response).to be_successful
+      #   expect(response.headers['Content-Type']).to start_with "text/plain"
+      #   expect(response.headers["Content-Disposition"]).to start_with "inline; filename=\"metadata.xml\""
+      # end
     end
   end
 end
