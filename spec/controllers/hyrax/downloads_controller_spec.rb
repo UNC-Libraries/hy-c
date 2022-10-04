@@ -101,7 +101,7 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
 
         get :show, params: { id: file_set}
         expect(response).to be_successful
-        expect(response.headers['Content-Disposition']).to include 'filename=\'image.png.txt\''
+        expect(response.headers['Content-Disposition']).to include 'filename=\"image.png.txt\"'
       end
 
       it 'will not add mime type extension if not valid' do
@@ -110,7 +110,7 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
 
         get :show, params: { id: file_set}
         expect(response).to be_successful
-        expect(response.headers['Content-Disposition']).to include 'filename=\'image.png\''
+        expect(response.headers['Content-Disposition']).to include 'filename=\"image.png\"'
       end
     end
   end
