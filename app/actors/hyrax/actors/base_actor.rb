@@ -144,6 +144,7 @@ module Hyrax
         permissions_attributes = env.attributes['permissions_attributes']
         return true if permissions_attributes.blank?
         # File sets don't have admin sets. So updating them independently of their work should skip this update.
+        # It doesn't seem possible for a FileSet to reach here, since they have their own actor that doesn't inherit from BaseActor?
         return true unless env.curation_concern.respond_to? :admin_set
 
         workflow = Sipity::Workflow.where(permission_template_id: env.curation_concern.admin_set.permission_template.id,
@@ -167,7 +168,6 @@ module Hyrax
                   else
                     'viewing'
                   end
-
           create_workflow_permissions(entity, agents, roles, workflow)
         end
       end
