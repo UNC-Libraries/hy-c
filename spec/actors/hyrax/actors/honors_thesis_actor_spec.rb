@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 require 'rails_helper'
-require 'active_support/core_ext/hash'
 
 # Load the override being tested
-# require Rails.root.join('app/overrides/actors/hyrax/actors/file_set_actor_override.rb')
+require Rails.root.join('app/overrides/actors/hyrax/actors/base_actor_override.rb')
 
 RSpec.describe Hyrax::Actors::HonorsThesisActor do
   let(:depositor) {
