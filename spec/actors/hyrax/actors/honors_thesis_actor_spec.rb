@@ -54,7 +54,7 @@ RSpec.describe Hyrax::Actors::HonorsThesisActor do
 
     context 'with user permissions' do
       let(:attributes) {
-        { 
+        {
           permissions_attributes: {
             "0": {
               type: 'person',
@@ -64,7 +64,7 @@ RSpec.describe Hyrax::Actors::HonorsThesisActor do
           }
         }
       }
-      
+
       it 'assigns user agent permissions' do
         expect(Hyrax::Workflow::PermissionGenerator).to receive(:call)
 
@@ -74,7 +74,7 @@ RSpec.describe Hyrax::Actors::HonorsThesisActor do
 
     context 'with group permissions' do
       let(:attributes) {
-        { 
+        {
           permissions_attributes: {
             "0": {
               type: 'group',
@@ -84,7 +84,7 @@ RSpec.describe Hyrax::Actors::HonorsThesisActor do
           }
         }
       }
-      
+
       it 'assigns group agent permissions' do
         expect_create_workflow_permissions_called(entity, 'viewing', workflow)
         subject.update(env)
@@ -93,11 +93,11 @@ RSpec.describe Hyrax::Actors::HonorsThesisActor do
 
     context 'with blank permissions' do
       let(:attributes) {
-        { 
+        {
           permissions_attributes: {}
         }
       }
-      
+
       it 'does not assign permissions' do
         expect(Hyrax::Workflow::PermissionGenerator).not_to receive(:call)
 
@@ -108,7 +108,7 @@ RSpec.describe Hyrax::Actors::HonorsThesisActor do
     # Relates to cleaning up permissions before assigning
     context 'with permission index' do
       let(:attributes) {
-        { 
+        {
           permissions_attributes: {
             '0': {
               index: '0',
@@ -119,7 +119,7 @@ RSpec.describe Hyrax::Actors::HonorsThesisActor do
           }
         }
       }
-      
+
       it 'assigns user agent permissions' do
         expect_create_workflow_permissions_called(entity, 'approving', workflow)
 
@@ -129,17 +129,17 @@ RSpec.describe Hyrax::Actors::HonorsThesisActor do
 
     context 'with added person object' do
       let(:attributes) {
-        { 
+        {
           creators_attributes: { '0' => { name: 'creator person',
                                           affiliation: 'biology' } }
         }
       }
-      
+
       it 'saves person details to work' do
         expect(Hyrax::Workflow::PermissionGenerator).not_to receive(:call)
 
         subject.update(env)
-        
+
         first_creator = curation_concern.creators.first
         expect(first_creator.attributes['name']).to eq(['creator person'])
         expect(first_creator.attributes['affiliation']).to eq(['biology'])
@@ -156,7 +156,7 @@ RSpec.describe Hyrax::Actors::HonorsThesisActor do
       }
 
       let(:attributes) {
-        { 
+        {
           creators_attributes: { '0' => { name: 'creator hyc',
                                           affiliation: 'biology',
                                           _destroy: true } }
@@ -167,7 +167,7 @@ RSpec.describe Hyrax::Actors::HonorsThesisActor do
         expect(Hyrax::Workflow::PermissionGenerator).not_to receive(:call)
 
         subject.update(env)
-        
+
         File.open(ENV['DELETED_PEOPLE_FILE'], 'r') do |file|
           expect(file.read).to include(curation_concern.id)
         end
@@ -196,7 +196,7 @@ RSpec.describe Hyrax::Actors::HonorsThesisActor do
 
     context 'with user permissions' do
       let(:attributes) {
-        { 
+        {
           permissions_attributes: {
             "0": {
               type: 'person',
@@ -206,7 +206,7 @@ RSpec.describe Hyrax::Actors::HonorsThesisActor do
           }
         }
       }
-      
+
       it 'assigns user agent permissions' do
         expect_create_workflow_permissions_called(entity, 'approving', workflow)
 
