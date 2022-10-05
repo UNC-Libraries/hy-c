@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 require 'rails_helper'
-# require Rails.root.join('app/overrides/jobs/content_deposit_event_job_override.rb')
+require Rails.root.join('app/overrides/jobs/content_depositor_change_event_job_override.rb')
 
 RSpec.describe ContentDepositorChangeEventJob do
   let(:user) { FactoryBot.create(:user) }
