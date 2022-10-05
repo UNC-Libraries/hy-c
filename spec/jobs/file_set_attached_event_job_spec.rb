@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 require 'rails_helper'
-# require Rails.root.join('app/overrides/jobs/content_update_event_job_override.rb')
+require Rails.root.join('app/overrides/jobs/file_set_attached_event_job_override.rb')
 
 RSpec.describe FileSetAttachedEventJob do
   let(:user) { FactoryBot.create(:user) }
