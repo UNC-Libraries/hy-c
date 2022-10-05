@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 require 'rails_helper'
+require Rails.root.join('app/overrides/jobs/content_delete_event_job_override.rb')
 
 RSpec.describe ContentDeleteEventJob do
   let(:user) { FactoryBot.create(:user) }
