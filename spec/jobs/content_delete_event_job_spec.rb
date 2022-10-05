@@ -16,7 +16,7 @@ RSpec.describe ContentDeleteEventJob do
     allow(Time).to receive(:now).and_return(mock_time)
   end
 
-  it "produces event containing depositor search link" do
+  it 'produces event containing depositor search link' do
     expect do
       described_class.perform_now('workid5', user)
     end.to change { user.profile_events.length }.by(1)

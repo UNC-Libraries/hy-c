@@ -7,11 +7,11 @@ RSpec.describe ContentRestoredVersionEventJob do
   let(:file_set) { FactoryBot.create(:file_set) }
   let(:mock_time) { Time.zone.at(1) }
   let(:event) do
-    { 
+    {
       action: "User <a href=\"/catalog?f%5Bdepositor_ssim%5D%5B%5D=#{user.uid}\">#{user.email}</a> " \
                           "has restored a version 'content.0' of " \
                           "<a href=\"/concern/file_sets/#{file_set.id}\">Test fileset</a>",
-      timestamp: '1' 
+      timestamp: '1'
     }
   end
 

@@ -22,7 +22,7 @@ RSpec.describe FileSetAttachedEventJob do
     file_set.title = ['Test fileset']
   end
 
-  it "logs the event containing link to search result to the right places" do
+  it 'logs the event containing link to search result to the right places' do
     expect do
       described_class.perform_now(file_set, user)
     end.to change { user.profile_events.length }.by(1)

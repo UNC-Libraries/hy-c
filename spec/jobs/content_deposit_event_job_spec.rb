@@ -17,7 +17,7 @@ RSpec.describe ContentDepositEventJob do
     allow(Time).to receive(:now).and_return(mock_time)
   end
 
-  it "produces event containing user search link" do
+  it 'produces event containing user search link' do
     expect do
       described_class.perform_now(curation_concern, user)
     end.to change { user.profile_events.length }.by(1)
