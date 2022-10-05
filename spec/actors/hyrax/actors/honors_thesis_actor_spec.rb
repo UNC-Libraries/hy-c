@@ -1,10 +1,17 @@
 # frozen_string_literal: true
 require 'rails_helper'
+require 'active_fedora/cleaner'
 
 # Load the override being tested
 require Rails.root.join('app/overrides/actors/hyrax/actors/base_actor_override.rb')
 
 RSpec.describe Hyrax::Actors::HonorsThesisActor do
+  before do
+    ActiveFedora::Cleaner.clean!
+    Blacklight.default_index.connection.delete_by_query('*:*')
+    Blacklight.default_index.connection.commit
+  end
+
   let(:depositor) {
     User.create(email: 'test@example.com',
                 uid: 'test@example.com',
