@@ -24,9 +24,12 @@ RSpec.describe Hyrax::MimeTypeService do
   end
 
   describe '#valid?' do
-    it 'detects if term is present in authority' do
-      expect(service.valid?('something')).to be_nil
-      expect(service.valid?('txt')).to eq({ 'id' => 'text/plain', 'label' => 'txt', 'active' => true })
+    it 'returns true if term is present in authority' do
+      expect(service.valid?('txt')).to be true
+    end
+
+    it 'returns false if term is not present in authority' do
+      expect(service.valid?('something')).to be false
     end
   end
 end

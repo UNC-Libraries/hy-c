@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 require 'rails_helper'
+require Rails.root.join('app/overrides/controllers/hydra/controller/download_behavior_override.rb')
 
 RSpec.describe Hyrax::DownloadsController, type: :controller do
   routes { Hyrax::Engine.routes }
@@ -78,6 +79,38 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
 
       it 'does not find admin set for file set' do
         expect(controller.set_record_admin_set).to eq('Unknown')
+      end
+    end
+  end
+
+  describe '#download_file' do
+    before do
+      @user = FactoryBot.create(:user)
+      sign_in @user
+    end
+
+    context 'when downloading file' do
+      let(:file_set) do
+        FactoryBot.create(:file_with_work, user: @user, content: File.open("#{fixture_path}/files/image.png"))
+      end
+
+      it 'will add proper mime type extension if valid' do
+        allow(Hydra::Works::VirusCheckerService).to receive(:file_has_virus?) { false }
+        allow(MimeTypeService).to receive(:valid?) { true }
+        allow(MimeTypeService).to receive(:label) { 'txt' }
+
+        get :show, params: { id: file_set}
+        expect(response).to be_successful
+        expect(response.headers['Content-Disposition']).to include 'filename="image.png.txt"'
+      end
+
+      it 'will not add mime type extension if not valid' do
+        allow(Hydra::Works::VirusCheckerService).to receive(:file_has_virus?) { false }
+        allow(MimeTypeService).to receive(:valid?) { false }
+
+        get :show, params: { id: file_set}
+        expect(response).to be_successful
+        expect(response.headers['Content-Disposition']).to include 'filename="image.png"'
       end
     end
   end
