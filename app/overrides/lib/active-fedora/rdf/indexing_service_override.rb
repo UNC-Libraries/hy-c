@@ -97,7 +97,7 @@ ActiveFedora::RDF::IndexingService.class_eval do
 
   # [hyc-override] replaced field_info with behaviors in params
   def append_to_solr_doc(solr_doc, solr_field_key, behaviors, val)
-    self.class.create_and_insert_terms(solr_field_key,
+    ActiveFedora::Indexing::Inserter.create_and_insert_terms(solr_field_key,
                                        solr_document_field_value(val),
                                        behaviors,
                                        solr_doc)
