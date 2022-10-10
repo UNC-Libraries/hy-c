@@ -50,24 +50,24 @@ RSpec.describe ActiveFedora::RDF::IndexingService do
           date_created: '2022-01-01')
 
       end
-      let(:translator1_string) { "index:1||translator_1||Affiliation: School of Medicine, Carolina Center for Genome Sciences" }
-      let(:translator2_string) { "index:2||translator_2||Affiliation: College of Arts and Sciences, Department of Chemistry" }
+      let(:translator1_string) { 'index:1||translator_1||Affiliation: School of Medicine, Carolina Center for Genome Sciences' }
+      let(:translator2_string) { 'index:2||translator_2||Affiliation: College of Arts and Sciences, Department of Chemistry' }
       subject(:solr_doc) do
         indexer.generate_solr_document
       end
 
       it 'includes person attributes' do
         expect(solr_doc['translator_display_tesim']).to include(translator1_string, translator2_string)
-        expect(solr_doc['creator_display_tesim']).to eq ["index:1||creator_1||Affiliation: School of Medicine, Carolina Center for Genome Sciences"]
-        expect(solr_doc['person_label_tesim']).to include("advisor_1", "translator_2", "translator_1", "creator_1", "contributor_1")
-        expect(solr_doc['affiliation_label_tesim']).to include("Department of Chemistry", "Carolina Center for Genome Sciences")
-        expect(solr_doc['affiliation_label_sim']).to include("Department of Chemistry", "Carolina Center for Genome Sciences")
-        expect(solr_doc['creator_label_tesim']).to eq ["creator_1"]
-        expect(solr_doc['creator_label_sim']).to eq ["creator_1"]
-        expect(solr_doc['contributor_label_tesim']).to eq ["contributor_1"]
-        expect(solr_doc['contributor_label_sim']).to eq ["contributor_1"]
-        expect(solr_doc['advisor_label_tesim']).to eq ["advisor_1"]
-        expect(solr_doc['advisor_label_sim']).to eq ["advisor_1"]
+        expect(solr_doc['creator_display_tesim']).to eq ['index:1||creator_1||Affiliation: School of Medicine, Carolina Center for Genome Sciences']
+        expect(solr_doc['person_label_tesim']).to include('advisor_1', 'translator_2', 'translator_1', 'creator_1', 'contributor_1')
+        expect(solr_doc['affiliation_label_tesim']).to include('Department of Chemistry', 'Carolina Center for Genome Sciences')
+        expect(solr_doc['affiliation_label_sim']).to include('Department of Chemistry', 'Carolina Center for Genome Sciences')
+        expect(solr_doc['creator_label_tesim']).to eq ['creator_1']
+        expect(solr_doc['creator_label_sim']).to eq ['creator_1']
+        expect(solr_doc['contributor_label_tesim']).to eq ['contributor_1']
+        expect(solr_doc['contributor_label_sim']).to eq ['contributor_1']
+        expect(solr_doc['advisor_label_tesim']).to eq ['advisor_1']
+        expect(solr_doc['advisor_label_sim']).to eq ['advisor_1']
       end
     end
 
