@@ -48,9 +48,7 @@ ActiveFedora::RDF::IndexingService.class_eval do
           value = val
 
           if solr_field_key == 'date_created'
-            value = if val.is_a? Date
-                      val
-                    elsif val.is_a? DateTime
+            value = if val.is_a? DateTime
                       Hyc::EdtfConvert.convert_from_edtf(val.strftime('%Y-%m-%d'))
                     else
                       Hyc::EdtfConvert.convert_from_edtf(val)
