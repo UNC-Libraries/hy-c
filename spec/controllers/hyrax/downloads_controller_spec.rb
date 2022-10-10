@@ -28,7 +28,7 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
       let(:default_image) { ActionController::Base.helpers.image_path 'default.png' }
 
       it 'can use a fake request' do
-        allow(Hydra::Works::VirusCheckerService).to receive(:file_has_virus?) { false }
+        allow(Hyrax::VirusCheckerService).to receive(:file_has_virus?) { false }
         allow(SecureRandom).to receive(:uuid).and_return('555')
         allow(Hyrax.config).to receive(:google_analytics_id).and_return('blah')
         request.env['HTTP_REFERER'] = 'http://example.com'
@@ -42,7 +42,7 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
       end
 
       it 'sets the medium to direct when there is no referrer' do
-        allow(Hydra::Works::VirusCheckerService).to receive(:file_has_virus?) { false }
+        allow(Hyrax::VirusCheckerService).to receive(:file_has_virus?) { false }
         allow(SecureRandom).to receive(:uuid).and_return('555')
         allow(Hyrax.config).to receive(:google_analytics_id).and_return('blah')
         request.env['HTTP_REFERER'] = nil
@@ -95,7 +95,7 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
       end
 
       it 'will add proper mime type extension if valid' do
-        allow(Hydra::Works::VirusCheckerService).to receive(:file_has_virus?) { false }
+        allow(Hyrax::VirusCheckerService).to receive(:file_has_virus?) { false }
         allow(MimeTypeService).to receive(:valid?) { true }
         allow(MimeTypeService).to receive(:label) { 'txt' }
 
@@ -105,7 +105,7 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
       end
 
       it 'will not add mime type extension if not valid' do
-        allow(Hydra::Works::VirusCheckerService).to receive(:file_has_virus?) { false }
+        allow(Hyrax::VirusCheckerService).to receive(:file_has_virus?) { false }
         allow(MimeTypeService).to receive(:valid?) { false }
 
         get :show, params: { id: file_set}

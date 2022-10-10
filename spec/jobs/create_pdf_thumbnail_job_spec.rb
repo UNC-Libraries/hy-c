@@ -8,7 +8,7 @@ RSpec.describe CreatePdfThumbnailJob, type: :job do
   let(:file_set_with_extracted_text) { FactoryBot.create(:file_set, :with_extracted_text) }
 
   before do
-    allow(Hydra::Works::VirusCheckerService).to receive(:file_has_virus?) { false }
+    allow(Hyrax::VirusCheckerService).to receive(:file_has_virus?) { false }
   end
   context 'running the tests with the test queue adapter' do
     around do |example|
