@@ -1,4 +1,5 @@
 require 'rails_helper'
+require Rails.root.join('app/overrides/lib/active-fedora/rdf/indexing_service_override.rb')
 
 RSpec.describe HycIndexer, type: :indexer do
   let(:work) { General.new(title: ['New General Work']) }
