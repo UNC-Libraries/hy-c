@@ -8,12 +8,12 @@ Hyrax::DeepIndexingService.class_eval do
   def append_label_and_uri(solr_doc, solr_field_key, field_info, val)
     full_label = parse_geo_request(val.to_uri.to_s)
     val = val.solrize(full_label)
-    create_and_insert_terms_handler.create_and_insert_terms(solr_field_key,
+    ActiveFedora::Indexing::Inserter.create_and_insert_terms(solr_field_key,
                                                             val.first,
                                                             field_info.behaviors, solr_doc)
     return unless val.last.is_a? Hash
 
-    create_and_insert_terms_handler.create_and_insert_terms("#{solr_field_key}_label",
+    ActiveFedora::Indexing::Inserter.create_and_insert_terms("#{solr_field_key}_label",
                                                             label(val),
                                                             field_info.behaviors, solr_doc)
   end

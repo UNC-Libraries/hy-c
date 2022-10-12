@@ -47,7 +47,7 @@ RSpec.feature 'Edit works created through the Sage ingest', :sage, js: false do
     allow(AdminSet).to receive(:where).with(title: 'Open_Access_Articles_and_Book_Chapters').and_return([admin_set])
     # Stub background jobs that don't do well in CI
     # stub virus checking
-    allow(Hydra::Works::VirusCheckerService).to receive(:file_has_virus?) { false }
+    allow(Hyrax::VirusCheckerService).to receive(:file_has_virus?) { false }
     # stub longleaf job
     allow(RegisterToLongleafJob).to receive(:perform_later).and_return(nil)
     # stub FITS characterization

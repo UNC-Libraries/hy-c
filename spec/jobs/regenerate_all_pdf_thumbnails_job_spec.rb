@@ -14,7 +14,7 @@ RSpec.describe RegenerateAllPdfThumbnailsJob, type: :job do
     Blacklight.default_index.connection.delete_by_query('*:*')
     Blacklight.default_index.connection.commit
     # Mock virus checker so it passes in CI
-    allow(Hydra::Works::VirusCheckerService).to receive(:file_has_virus?) { false }
+    allow(Hyrax::VirusCheckerService).to receive(:file_has_virus?) { false }
     # instantiate FileSets
     file_set_one
     file_set_two

@@ -115,7 +115,7 @@ RSpec.describe CreateDerivativesJob do
     end
 
     before do
-      allow(Hydra::Works::VirusCheckerService).to receive(:file_has_virus?) { false }
+      allow(Hyrax::VirusCheckerService).to receive(:file_has_virus?) { false }
       FileUtils.cp(File.join(fixture_path, 'hyrax/hyrax_test4.pdf'), temp_pdf_path)
       file_set.apply_depositor_metadata user.user_key
       file_set.save!

@@ -12,7 +12,7 @@ RSpec.describe FileSetRemediationService do
   let(:file_set_without_file_without_parent) { FactoryBot.create(:file_set, title: ['Should not have file or parent']) }
 
   before do
-    allow(Hydra::Works::VirusCheckerService).to receive(:file_has_virus?) { false }
+    allow(Hyrax::VirusCheckerService).to receive(:file_has_virus?) { false }
   end
 
   it 'can tell if a FileSet has attached files' do
@@ -29,7 +29,7 @@ RSpec.describe FileSetRemediationService do
       ActiveFedora::Cleaner.clean!
       Blacklight.default_index.connection.delete_by_query('*:*')
       Blacklight.default_index.connection.commit
-      allow(Hydra::Works::VirusCheckerService).to receive(:file_has_virus?) { false }
+      allow(Hyrax::VirusCheckerService).to receive(:file_has_virus?) { false }
       work_without_file.ordered_members << file_set_without_file
       work_without_file.save!
       work_with_file.ordered_members << file_set_with_file

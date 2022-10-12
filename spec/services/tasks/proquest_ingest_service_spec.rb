@@ -23,7 +23,7 @@ RSpec.describe Tasks::ProquestIngestService, :ingest do
     allow(RegisterToLongleafJob).to receive(:perform_later).and_return(nil)
     allow(User).to receive(:find_by).with(uid: 'admin').and_return(admin)
     allow(CharacterizeJob).to receive(:perform_later)
-    allow(Hydra::Works::VirusCheckerService).to receive(:file_has_virus?) { false }
+    allow(Hyrax::VirusCheckerService).to receive(:file_has_virus?) { false }
     allow(Date).to receive(:today).and_return(Date.parse('2019-09-12'))
     AdminSet.delete_all
     Sipity::WorkflowState.create(workflow_id: workflow.id, name: 'deposited')

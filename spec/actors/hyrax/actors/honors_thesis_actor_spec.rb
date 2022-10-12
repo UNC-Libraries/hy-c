@@ -37,7 +37,7 @@ RSpec.describe Hyrax::Actors::HonorsThesisActor do
   let(:ability) { ::Ability.new(depositor) }
 
   before do
-    allow(Hydra::Works::VirusCheckerService).to receive(:file_has_virus?) { false }
+    allow(Hyrax::VirusCheckerService).to receive(:file_has_virus?).and_return(false)
     Sipity::WorkflowState.create(workflow_id: workflow.id, name: 'deposited')
   end
 

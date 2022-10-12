@@ -1,0 +1,8 @@
+<%# Override this partial in your application to insert extra HEAD content into every page %>
+<meta name="msvalidate.01" content="6963C16215285DFB9641BD17E441FAAE"/>
+
+<% if @presenter && ENV['NOINDEX'] && @presenter.is_a?(Hyrax::WorkShowPresenter) && ENV['NOINDEX'].split('|').include?(@presenter.id) %>
+<meta name="robots" content="noindex" />
+<% end %>
+
+<%= favicon_link_tag asset_path('favicon.ico'), :rel => 'icon', :type => "image/x-icon" %>

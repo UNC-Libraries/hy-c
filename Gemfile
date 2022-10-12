@@ -7,7 +7,7 @@ git_source(:github) do |repo_name|
   "https://github.com/#{repo_name}.git"
 end
 
-gem 'active-fedora', '~> 12.2'
+gem 'active-fedora', '~> 13.1'
 gem 'blacklight_advanced_search', '~> 6.4.1'
 gem 'blacklight_oai_provider', '6.1.1'
 gem 'blacklight_range_limit', '6.5.0'
@@ -22,17 +22,18 @@ gem 'edtf-humanize', '2.0.1'
 # See https://github.com/rails/execjs#readme for more supported runtimes
 gem 'execjs', '2.8.1'
 gem 'httparty', '~>0.20.0'
-gem 'hydra-editor', '5.0.1'
+gem 'hydra-editor', '~> 5.0'
 gem 'hydra-role-management', '~> 1.0'
-gem 'hyrax', '2.9.6'
+gem 'hyrax', '3.4.2'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.11.2'
 # Use jquery as the JavaScript library
 gem 'jquery-rails', '~> 4.5.0'
+gem 'json-ld', '< 3.2'
 gem 'libv8', '~> 7.3'
 # linkeddata gem is released with rdf gems and should be the same version as rdf
 gem 'sparql', '3.1.7'
-gem 'linkeddata', '~>3.1.1'
+gem 'linkeddata'
 gem 'loofah', '~>2.18.0'
 gem 'mini_magick', '~>4.11.0'
 gem 'mini_racer', '~> 0.2.15', platforms: :ruby
