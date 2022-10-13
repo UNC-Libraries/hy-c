@@ -21,6 +21,7 @@ config/local_env_solr8.yml
 .ruby-*
 /.idea/*
 /public/assets/*
+/public/uv
 fits.log
 
 /**/.DS_Store
@@ -33,3 +34,5 @@ lib/tasks/migration/mapping.csv
 rspec_examples.txt
 
 build_log.txt
+
+/node_modules
