@@ -1,3 +1,5 @@
+<%# [hyc-override] %>
+<%# https://github.com/samvera/hyrax/blob/v3.4.2/app/views/hyrax/base/show.html.erb %>
 <% provide :page_title, @presenter.page_title %>
 
 <%= render 'shared/citations' %>
@@ -13,18 +15,27 @@
       <div class="panel-body">
         <div class="row">
           <%= render 'workflow_actions_widget', presenter: @presenter %>
+          <%# [hyc-override] Show message to attach child works for art mfa deposits %>
+          <%if @presenter.workflow.is_mfa_in_review? %>
+            <p class="bg-success mfa-child-works">If you haven't already done so, please add your artworks now.
+            </p>
+          <% end %>
+          <%# [hyc-override] Changes end here %>
           <% if @presenter.iiif_viewer? %>
             <div class="col-sm-12">
               <%= render 'representative_media', presenter: @presenter, viewer: true %>
             </div>
           <% end %>
           <div class="col-sm-3 text-center">
-            <%= render 'representative_media', presenter: @presenter, viewer: false unless @presenter.iiif_viewer? %>
+            <%# [hyc-override] Remove restriction on showing representative media info when iiif viewer present %>
+            <%= render 'representative_media', presenter: @presenter, viewer: false %>
+            <%# [hyc-override] Changes end here %>
             <%= render 'citations', presenter: @presenter %>
             <%= render 'social_media' %>
           </div>
           <div class="col-sm-9">
-            <%= render 'work_description', presenter: @presenter %>
+            <%# [hyc-override] Remove description and display it interleaved in the metadata %>
+            <%# <%= render 'work_description', presenter: @presenter %>
             <%= render 'metadata', presenter: @presenter %>
           </div>
         </div>
