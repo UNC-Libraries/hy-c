@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 require 'rails_helper'
 
+require Rails.root.join('app/overrides/actors/hyrax/actors/file_actor_override.rb')
+
 RSpec.describe Hyrax::Actors::FileActor do
   let(:file_set) { FactoryBot.create(:file_set) }
   let(:user) { FactoryBot.create(:user) }
