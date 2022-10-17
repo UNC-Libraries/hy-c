@@ -1,27 +1,27 @@
 # frozen_string_literal: true
 # [hyc-override] Overriding to allow updated content jobs to run immediately so file reference isn't lost
-# https://github.com/samvera/hyrax/blob/v2.9.6/app/actors/hyrax/actors/base_actor.rb
+# https://github.com/samvera/hyrax/blob/v3.4.2/app/actors/hyrax/actors/base_actor.rb
 Hyrax::Actors::BaseActor.class_eval do
-  # @param [Hyrax::Actors::Environment] env
-  # @return [Boolean] true if create was successful
+  alias_method :original_create, :create
   def create(env)
-    apply_creation_data_to_curation_concern(env)
-    apply_save_data_to_curation_concern(env)
-    save(env) && next_actor.create(env) && run_callbacks(:after_create_concern, env) && apply_work_specific_permissions(env)
+    original_create(env) && apply_work_specific_permissions(env)
   end
 
   # @param [Hyrax::Actors::Environment] env
   # @return [Boolean] true if update was successful
   def update(env)
     apply_update_data_to_curation_concern(env)
+    # [hyc-override] Log deleted people objects
     log_deleted_people_objects(env.attributes, env.curation_concern.id)
     apply_save_data_to_curation_concern(env)
+    # [hyc-override] Apply work specific permissions
     apply_work_specific_permissions(env)
     next_actor.update(env) && save(env) && run_callbacks(:after_update_metadata, env)
   end
 
   private
-  def save(env)
+  alias_method :original_save, :save
+  def save(env, use_valkyrie: false)
     # [hyc-override] Save updated nested objects individually; they will not be updated with the rest of the attributes
     env.attributes.each do |k, _v|
       next unless (k.ends_with? '_attributes') && (!env.curation_concern.attributes[k.gsub('_attributes', '')].nil?)
@@ -30,7 +30,7 @@ Hyrax::Actors::BaseActor.class_eval do
         person.persist!
       end
     end
-    env.curation_concern.save
+    original_save(env, use_valkyrie: use_valkyrie)
   end
 
   # Cast any singular values from the form to multiple values for persistence
@@ -52,7 +52,7 @@ Hyrax::Actors::BaseActor.class_eval do
       end
       attributes['permissions_attributes'] = permission_attrs
     end
-    remove_blank_attributes!(attributes)
+    remove_blank_attributes!(attributes).except('file_set')
   end
 
   def log_deleted_people_objects(attributes, work_id)
