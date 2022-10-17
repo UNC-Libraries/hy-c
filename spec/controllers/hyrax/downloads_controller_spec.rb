@@ -5,6 +5,15 @@ require Rails.root.join('app/overrides/controllers/hyrax/downloads_controller_ov
 
 RSpec.describe Hyrax::DownloadsController, type: :controller do
   routes { Hyrax::Engine.routes }
+
+  let(:stub_ga) do
+    stub_request(:post, 'http://www.google-analytics.com/collect').to_return(status: 200, body: '', headers: {})
+  end
+
+  before do
+    allow(stub_ga)
+  end
+
   # app/controllers/concerns/hyrax/download_analytics_behavior.rb:8
   describe '#track_download' do
     WebMock.after_request do |request_signature, response|
@@ -14,10 +23,9 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
     it 'has the method for tracking analytics for download' do
       allow(Hyrax.config).to receive(:google_analytics_id).and_return('blah')
       allow(controller.request).to receive(:referrer).and_return('http://example.com')
-      stub = stub_request(:post, 'http://www.google-analytics.com/collect').to_return(status: 200, body: '', headers: {})
       expect(controller).to respond_to(:track_download)
       expect(controller.track_download).to be_a_kind_of Net::HTTPOK
-      expect(stub).to have_been_requested.times(1) # must be after the method call that creates request
+      expect(stub_ga).to have_been_requested.times(1) # must be after the method call that creates request
     end
 
     context 'with a created work' do
