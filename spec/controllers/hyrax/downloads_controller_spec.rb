@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 require 'rails_helper'
 require Rails.root.join('app/overrides/controllers/hydra/controller/download_behavior_override.rb')
+require Rails.root.join('app/overrides/controllers/hyrax/downloads_controller_override.rb')
 
 RSpec.describe Hyrax::DownloadsController, type: :controller do
   routes { Hyrax::Engine.routes }
