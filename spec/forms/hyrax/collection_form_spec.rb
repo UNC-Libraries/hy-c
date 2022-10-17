@@ -10,7 +10,8 @@ RSpec.describe Hyrax::Forms::CollectionForm do
     subject { described_class.terms }
 
     it do
-      is_expected.to eq [:resource_type,
+      is_expected.to eq [:alternative_title,
+                         :resource_type,
                          :title,
                          :creator,
                          :contributor,
@@ -39,6 +40,7 @@ RSpec.describe Hyrax::Forms::CollectionForm do
 
     it do
       is_expected.to eq [
+                          :alternative_title,
                           :creator,
                           :contributor,
                           :keyword,
