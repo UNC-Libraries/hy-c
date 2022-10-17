@@ -32,6 +32,7 @@ RUN yum -y install centos-release-scl-rh centos-release-scl \
 && wget -q -P /tmp "https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm" \
 && yum -y localinstall /tmp/google-chrome-stable_current_x86_64.rpm \
 && rm -f google-chrome-stable_current_x86_64.rpm \
+&& yum -y install install rh-nodejs14 \
 && yum install -y python3 \
 && yum clean all && rm -rf /var/cache/yum \
 && wget -q -P /tmp "https://github.com/harvard-lts/fits/releases/download/1.5.5/fits-1.5.5.zip" \
@@ -41,6 +42,8 @@ RUN yum -y install centos-release-scl-rh centos-release-scl \
 && echo "source scl_source enable devtoolset-8" >> /etc/bashrc \
 && echo "source scl_source enable rh-ruby27" >> /etc/bashrc
 
+RUN scl enable rh-nodejs14 -- npm install yarn -g \
+&& scl enable rh-nodejs14 -- yarn
 
 ENV PATH "/fits:$PATH"
 COPY docker/fits.xml /fits/fits-1.5.5/xml/fits.xml
