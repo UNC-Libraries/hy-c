@@ -1,5 +1,5 @@
 require 'rails_helper'
-require Rails.root.join('app/overrides/helpers/hyrax/citations_behaviors/apa_formatter_override.rb')
+require Rails.root.join('app/overrides/helpers/hyrax/citations_behaviors/formatters/apa_formatter_override.rb')
 
 RSpec.describe Hyrax::CitationsBehaviors::Formatters::ApaFormatter do
   subject(:formatter) { described_class.new(:no_context) }

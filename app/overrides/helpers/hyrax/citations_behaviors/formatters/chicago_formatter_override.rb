@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-# https://github.com/samvera/hyrax/blob/v3.4.2/app/helpers/hyrax/citations_behaviors/formatters/apa_formatter.rb
+# https://github.com/samvera/hyrax/blob/v3.4.2/app/helpers/hyrax/citations_behaviors/formatters/chicago_formatter.rb
 Hyrax::CitationsBehaviors::Formatters::ChicagoFormatter.class_eval do
   # [hyc-override] Add helper, which is used by some of the behaviors included at a higher level
   include HycHelper
