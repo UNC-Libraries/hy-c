@@ -1,6 +1,10 @@
+# frozen_string_literal: true
+# https://github.com/samvera/hyrax/blob/v3.4.2/app/helpers/hyrax/citations_behaviors/formatters/apa_formatter.rb
 Hyrax::CitationsBehaviors::Formatters::ApaFormatter.class_eval do
+  # [hyc-override] Add helper, which is used by some of the behaviors included at a higher level
   include HycHelper
 
+  # rubocop:disable Rails/OutputSafety
   def format(work)
     text = ''
     text += authors_text_for(work)
@@ -12,4 +16,5 @@ Hyrax::CitationsBehaviors::Formatters::ApaFormatter.class_eval do
 
     text.html_safe
   end
+  #rubocop:enable Rails/OutputSafety
 end
