@@ -1,4 +1,7 @@
+# frozen_string_literal: true
 require 'rails_helper'
+
+require Rails.root.join('app/overrides/helpers/hyrax/citations_behaviors/formatters/mla_formatter_override.rb')
 
 RSpec.describe Hyrax::CitationsBehaviors::Formatters::MlaFormatter do
   subject(:formatter) { described_class.new(:no_context) }
