@@ -4,6 +4,9 @@
 Hydra::Controller::DownloadBehavior.class_eval do
   protected
 
+  # [hyc-override] Remove from upstream behavior in order to use the default 404 from ApplicationController
+  remove_method :render_404
+
   # [hyc-override] Add extension to files on download
   # Override this if you'd like a different filename
   # @return [String] the filename
