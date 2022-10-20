@@ -1,6 +1,6 @@
-<%# [hyc-override] Overriding partial in hyrax gem to add UNC text %>
+<%# [hyc-override] Overriding partial in hyrax gem to add unc-text id and remove extra styling %>
 <% if display_content_block? @marketing_text %>
   <div id="unc-text" class="home_marketing_text">
-    <%= displayable_content_block @marketing_text %>
+    <%= displayable_content_block @marketing_text, role: 'complementary' %>
   </div>
 <% end %>
