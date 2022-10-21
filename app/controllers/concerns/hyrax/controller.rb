@@ -1,6 +1,5 @@
 # frozen_string_literal: true
-# [hyc-override] added create_unrestricted_work_presenter as a replacement for deprecated create_work_presenter
-# [hyc-override] Add begin/rescue for locale setting
+# https://github.com/samvera/hyrax/blob/v3.4.2/app/controllers/concerns/hyrax/controller.rb
 module Hyrax::Controller
   extend ActiveSupport::Concern
 
@@ -9,14 +8,14 @@ module Hyrax::Controller
 
     # Adds Hydra behaviors into the application controller
     include Hydra::Controller::ControllerBehavior
+    # [hyc-override] added create_unrestricted_work_presenter as a replacement for deprecated create_work_presenter
     helper_method :create_unrestricted_work_presenter
-    # helper_method :create_work_presenter
+    # helper_method :create_work_presenter # this is still present in hyrax 3, but the impl is in other controllers
     before_action :set_locale
-  end
+    before_action :check_read_only, except: [:show, :index]
 
-  # Provide a place for Devise to send the user to after signing in
-  def user_root_path
-    hyrax.dashboard_path
+    class_attribute :search_service_class
+    self.search_service_class = Hyrax::SearchService
   end
 
   # A presenter for selecting a work type to create, showing work types which are visible to non-admins.
@@ -25,18 +24,10 @@ module Hyrax::Controller
     Hyrax::UnrestrictedSelectTypeListPresenter.new(current_ability.current_user)
   end
 
-  ##
-  # @deprecated this helper is no longer used by Hyrax; if you need access to
-  #   this presenter on every page, you may need to readd it manually.
-  #
-  # A presenter for selecting a work type to create this is needed here because
-  # the selector is in the header on every page.
-  def create_work_presenter
-    Deprecation.warn(self, 'The `create_work_presenter` helper is deprecated ' \
-                           'for removal in Hyrax 3.0. The work selector has ' \
-                           'been removed the masthead in Hyrax 2.1.')
 
-    Hyrax::SelectTypeListPresenter.new(current_user)
+  # Provide a place for Devise to send the user to after signing in
+  def user_root_path
+    hyrax.dashboard_path
   end
 
   # Ensure that the locale choice is persistent across requests
@@ -44,22 +35,75 @@ module Hyrax::Controller
     super.merge(locale: I18n.locale)
   end
 
+  ##
+  # @deprecated provides short-term compatibility with Blacklight 6
+  # @return [Class<Blacklight::SearchBuilder>]
+  def search_builder_class
+    return super if defined?(super)
+    Deprecation.warn("Avoid direct calls to `#search_builder_class`; this" \
+                     " method provides short-term compatibility to" \
+                     " Blacklight 6 clients.")
+    blacklight_config.search_builder_class
+  end
+
+  ##
+  # @deprecated provides short-term compatibility with Blacklight 6
+  # @return [Blacklight::AbstractRepository]
+  def repository
+    return super if defined?(super)
+    Deprecation.warn("Avoid direct calls to `#repository`; this method" \
+                     " provides short-term compatibility to Blacklight 6 " \
+                     " clients.")
+    blacklight_config.repository
+  end
+
+  # @note for Blacklight 6/7 compatibility
+  def search_results(*args)
+    return super if defined?(super) # use the upstream if present (e.g. in BL 6)
+
+    search_service(*args).search_results
+  end
+
+  ##
+  # @note for Blacklight 6/7 compatibility
+  def search_service(**search_params)
+    return super if defined?(super) && search_params.empty?
+
+    search_service_class.new(config: blacklight_config,
+                             scope: self,
+                             user_params: search_params,
+                             search_builder_class: search_builder_class)
+  end
+
   private
 
+
+  ##
+  # @api public
+  #
+  # @return [#[]] a resolver for Hyrax's Transactions; this *should* be a
+  #   thread-safe {Dry::Container}, but callers to this method should strictly
+  #   use +#[]+ for access.
+  #
+  # @example
+  #   transactions['change_set.create_work'].call(my_form)
+  #
+  # @see Hyrax::Transactions::Container
+  # @see Hyrax::Transactions::Transaction
+  # @see https://dry-rb.org/gems/dry-container
+  def transactions
+    Hyrax::Transactions::Container
+  end
+
+  # [hyc-override] Add begin/rescue for locale setting
   def set_locale
     I18n.locale = params[:locale] || I18n.default_locale
   rescue I18n::InvalidLocale
     I18n.locale = I18n.default_locale
   end
 
-    # render a json response for +response_type+
-  def render_json_response(response_type: :success, message: nil, options: {})
-    json_body = Hyrax::API.generate_response_body(response_type: response_type, message: message, options: options)
-    render json: json_body, status: response_type
-  end
-
-    # Called by Hydra::Controller::ControllerBehavior when CanCan::AccessDenied is caught
-    # @param [CanCan::AccessDenied] exception error to handle
+  # Called by Hydra::Controller::ControllerBehavior when CanCan::AccessDenied is caught
+  # @param [CanCan::AccessDenied] exception error to handle
   def deny_access(exception)
     # For the JSON message, we don't want to display the default CanCan messages,
     # just custom Hydra messages such as "This item is under embargo.", etc.
@@ -85,10 +129,18 @@ module Hyrax::Controller
   end
 
   def deny_access_for_anonymous_user(exception, json_message)
-    session['user_return_to'.freeze] = request.url
+    session['user_return_to'] = request.url
     respond_to do |wants|
       wants.html { redirect_to main_app.new_user_session_path, alert: exception.message }
       wants.json { render_json_response(response_type: :unauthorized, message: json_message) }
     end
+  end
+
+  # Redirect all deposit and edit requests with warning message when in read only mode
+  def check_read_only
+    return unless Flipflop.read_only?
+    # Allows feature to be turned off
+    return if self.class.to_s == Hyrax::Admin::StrategiesController.to_s
+    redirect_to root_path, flash: { error: t('hyrax.read_only') }
   end
 end
