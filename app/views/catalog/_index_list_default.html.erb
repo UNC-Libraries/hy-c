@@ -8,7 +8,7 @@
         <% if should_render_index_field? document, field %>
           <% field_text = doc_presenter.field_value field %>
 
-          <dt><%= render_index_field_label document, field: field_name %></dt>
+          <dt data-solr-field-name="<%= field_name %>"><%= render_index_field_label document, field: field_name %></dt>
           <%# [hyc-override] truncate text abstract and creator %>
           <% if field_name == 'abstract_tesim' %>
             <dd><%= field_text.truncate_words(50).html_safe %></dd>
