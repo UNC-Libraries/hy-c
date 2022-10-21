@@ -1,6 +1,6 @@
 <%# [hyc-override] Overriding to make depositor a facet search and not link to user profile %>
 <div class="tab-pane" id="proxies">
-  <h2>Proxies</h2>
+  <h2><%= t('.proxies') %></h2>
   <ul>
     <% @user.can_receive_deposits_from.each do |depositor| %>
       <%# [hyc-override] Overriding to make depositor a facet search and not link to user profile %>
