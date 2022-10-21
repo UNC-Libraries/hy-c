@@ -29,6 +29,9 @@
       </div>
     </div>
   </td>
+  <td class="date text-center"><%= document.date_modified %></td>
+
+  <td class='text-center'><%= render_visibility_link document %></td>
 
   <td class='text-center'>
     <%= render 'work_action_menu', document: document %>
