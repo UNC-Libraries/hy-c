@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # [hyc-override] Overriding doi to hyrax citation tests
 require 'rails_helper'
 
