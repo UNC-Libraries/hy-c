@@ -42,7 +42,8 @@ RUN yum -y install centos-release-scl-rh centos-release-scl \
 && echo "source scl_source enable devtoolset-8" >> /etc/bashrc \
 && echo "source scl_source enable rh-ruby27" >> /etc/bashrc \
 && scl enable rh-nodejs14 -- npm install yarn -g \
-&& scl enable rh-nodejs14 -- yarn
+&& scl enable rh-nodejs14 -- yarn \
+&& yum -y update ca-certificates
 
 ENV PATH "/fits:$PATH"
 COPY docker/fits.xml /fits/fits-1.5.5/xml/fits.xml
