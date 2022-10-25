@@ -177,12 +177,6 @@ RSpec.describe Tasks::SolrMigrationService do
         record2 = docs2[index]
         record1.each do |key, value|
           next if ['timestamp', '_version_'].include?(key)
-
-          if value != record2[key]
-            puts "Mismatch"
-            puts "Rec1:\n#{record1}"
-            puts "Rec2:\n#{record2}"
-          end
           expect(value).to eq(record2[key]), "Expected #{key} to have value #{value} but was #{record2[key]}"
         end
         expect(record1.length).to eq record2.length
