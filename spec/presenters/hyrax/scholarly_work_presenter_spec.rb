@@ -236,4 +236,10 @@ RSpec.describe Hyrax::ScholarlyWorkPresenter do
       end
     end
   end
+
+  describe '#scholar?' do
+    it 'returns true' do
+      expect(presenter.scholarly?).to be_truthy
+    end
+  end
 end
