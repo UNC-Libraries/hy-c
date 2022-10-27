@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # [hyc-override] Overriding hydra editor custom input to allow for multivalue HTML5 dates and integers
 # [hyc-override] Overriding hydra editor custom input to allow for accessibility validation
 # https://github.com/samvera/hydra-editor/blob/main/app/inputs/multi_value_input.rb

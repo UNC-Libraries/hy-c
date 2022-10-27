@@ -40,9 +40,9 @@ module Hyrax::Controller
   # @return [Class<Blacklight::SearchBuilder>]
   def search_builder_class
     return super if defined?(super)
-    Deprecation.warn("Avoid direct calls to `#search_builder_class`; this" \
-                     " method provides short-term compatibility to" \
-                     " Blacklight 6 clients.")
+    Deprecation.warn('Avoid direct calls to `#search_builder_class`; this' \
+                     ' method provides short-term compatibility to' \
+                     ' Blacklight 6 clients.')
     blacklight_config.search_builder_class
   end
 
@@ -51,9 +51,9 @@ module Hyrax::Controller
   # @return [Blacklight::AbstractRepository]
   def repository
     return super if defined?(super)
-    Deprecation.warn("Avoid direct calls to `#repository`; this method" \
-                     " provides short-term compatibility to Blacklight 6 " \
-                     " clients.")
+    Deprecation.warn('Avoid direct calls to `#repository`; this method' \
+                     ' provides short-term compatibility to Blacklight 6 ' \
+                     ' clients.')
     blacklight_config.repository
   end
 
