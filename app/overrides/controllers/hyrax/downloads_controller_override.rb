@@ -25,7 +25,7 @@ Hyrax::DownloadsController.class_eval do
   def authorize_download!
     authorize! :download, params[asset_param_key]
   rescue CanCan::AccessDenied
-    # [hyc-override] Send permission failures to 
+    # [hyc-override] Send permission failures to
     render_401
   end
 end
