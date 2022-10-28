@@ -24,6 +24,9 @@ RSpec.feature 'Edit embargo', js: false do
     end
 
     before do
+      ActiveFedora::Cleaner.clean!
+      Blacklight.default_index.connection.delete_by_query('*:*')
+      Blacklight.default_index.connection.commit
       Hyrax::PermissionTemplateAccess.create(permission_template: permission_template,
                                              agent_type: 'user',
                                              agent_id: user.user_key,
@@ -52,8 +55,8 @@ RSpec.feature 'Edit embargo', js: false do
       choose 'article_visibility_embargo'
       check 'agreement'
 
-      find('label[for=addFiles]').click do
-        attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'), make_visible: true)
+      within('div#add-files') do
+        attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'), visible: false)
       end
 
       click_link 'Add to Collection'
@@ -74,8 +77,8 @@ RSpec.feature 'Edit embargo', js: false do
       choose 'article_visibility_embargo'
       check 'agreement'
 
-      find('label[for=addFiles]').click do
-        attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'), make_visible: true)
+      within('div#add-files') do
+        attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'), visible: false)
       end
 
       fill_in 'article_embargo_release_date', with: DateTime.now + 5.months
@@ -105,8 +108,8 @@ RSpec.feature 'Edit embargo', js: false do
       choose 'article_visibility_embargo'
       check 'agreement'
 
-      find('label[for=addFiles]').click do
-        attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'), make_visible: true)
+      within('div#add-files') do
+        attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'), visible: false)
       end
 
       click_link 'Add to Collection'

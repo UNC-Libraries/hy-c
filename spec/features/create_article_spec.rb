@@ -26,6 +26,9 @@ RSpec.feature 'Create a Article', js: false do
     let(:user_agent) { Sipity::Agent.where(proxy_for_id: user.id, proxy_for_type: 'User').first_or_create }
 
     before do
+      ActiveFedora::Cleaner.clean!
+      Blacklight.default_index.connection.delete_by_query('*:*')
+      Blacklight.default_index.connection.commit
       Hyrax::PermissionTemplateAccess.create(permission_template: permission_template,
                                              agent_type: 'user',
                                              agent_id: user.user_key,
@@ -129,8 +132,8 @@ RDFXML
 
       expect(page).not_to have_selector('#article_dcmi_type')
 
-      find('label[for=addFiles]').click do
-        attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'), make_visible: true)
+      within('div#add-files') do
+        attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'), visible: false)
       end
 
       click_link 'Add to Collection'
@@ -249,8 +252,8 @@ RDFXML
 
       expect(page).to have_selector('#article_dcmi_type')
 
-      find('label[for=addFiles]').click do
-        attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'), make_visible: true)
+      within('div#add-files') do
+        attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'), visible: false)
       end
 
       click_link 'Add to Collection'
