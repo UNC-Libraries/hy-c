@@ -24,6 +24,9 @@ RSpec.feature 'Edit embargo', js: false do
     end
 
     before do
+      ActiveFedora::Cleaner.clean!
+      Blacklight.default_index.connection.delete_by_query('*:*')
+      Blacklight.default_index.connection.commit
       Hyrax::PermissionTemplateAccess.create(permission_template: permission_template,
                                              agent_type: 'user',
                                              agent_id: user.user_key,
