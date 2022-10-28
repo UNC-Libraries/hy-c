@@ -117,8 +117,8 @@ RDFXML
 
       expect(page).not_to have_selector('#journal_dcmi_type')
 
-      find('label[for=addFiles]').click do
-        attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'), make_visible: true)
+      within('div#add-files') do
+        attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'), visible: false)
       end
 
       click_link 'Add to Collection'
@@ -214,8 +214,8 @@ RDFXML
 
       expect(page).to have_selector('#journal_dcmi_type')
 
-      find('label[for=addFiles]').click do
-        attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'), make_visible: true)
+      within('div#add-files') do
+        attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'), visible: false)
       end
 
       click_link 'Add to Collection'
