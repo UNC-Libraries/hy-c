@@ -110,7 +110,7 @@ RSpec.feature 'Edit works created through the Sage ingest', :sage, js: false do
       expect(page).to have_field('Journal volume', with: '28')
       # keywords
       expected_keywords = ['HPV', 'HPV knowledge and awareness', 'cervical cancer screening', 'migrant women', 'China', '']
-      keyword_fields = page.all(:xpath, '/html/body/div[2]/div[2]/form/div/div[1]/div/div/div[1]/div[2]/div[2]/div[1]/ul/li/input')
+      keyword_fields = page.all(:css, '.article_keyword input')
       keywords = keyword_fields.map(&:value)
       expect(keyword_fields.count).to eq 6
       expect(keywords).to match_array(expected_keywords)
@@ -130,7 +130,7 @@ RSpec.feature 'Edit works created through the Sage ingest', :sage, js: false do
       expect(page).to have_field('Date of publication', with: 'January 2021') # aka date_issued
       expect(page).to have_field('Journal issue', with: '1')
       expect(page).to have_field('Journal volume', with: '11')
-      keyword_fields = page.all(:xpath, '/html/body/div[2]/div[2]/form/div/div[1]/div/div/div[1]/div[2]/div[2]/div[1]/ul/li/input')
+      keyword_fields = page.all(:css, '.article_keyword input')
       keywords = keyword_fields.map(&:value)
       expect(keyword_fields.count).to eq 8
       expect(keywords).to include('Propionibacterium acnes')
