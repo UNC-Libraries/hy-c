@@ -77,7 +77,7 @@ RSpec.feature 'Create a MastersPaper', js: false do
                              department: 'Department of City and Regional Planning',
                              admin_set_id: dept_admin_set.id)
 
-      stub_geo_request()
+      stub_geo_request
     end
 
     scenario 'as a non-admin' do

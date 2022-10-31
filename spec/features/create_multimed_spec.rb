@@ -52,7 +52,7 @@ RSpec.feature 'Create a Multimed', js: false do
       permission_template.available_workflows.first.update!(active: true)
       DefaultAdminSet.create(work_type_name: 'Multimed', admin_set_id: admin_set.id)
 
-      stub_geo_request()
+      stub_geo_request
     end
 
     scenario 'as a non-admin' do

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module HycGeonameHelper
   CHAPEL_HILL_RESP = <<RDFXML.strip_heredoc
     <?xml version="1.0" encoding="UTF-8" standalone="no"?>
@@ -8,7 +9,7 @@ module HycGeonameHelper
         </rdf:RDF>
 RDFXML
 
-  def stub_geo_request()
+  def stub_geo_request
     stub_request(:get, 'http://sws.geonames.org/4460162/').
       to_return(status: 200, body: CHAPEL_HILL_RESP, headers: { 'Content-Type' => 'application/rdf+xml;charset=UTF-8' })
 

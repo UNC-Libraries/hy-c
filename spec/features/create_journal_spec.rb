@@ -7,7 +7,7 @@ require Rails.root.join('spec/support/hyc_geoname_helper.rb')
 # NOTE: If you generated more than one work, you have to set "js: true"
 RSpec.feature 'Create a Journal', js: false do
   include HycGeonameHelper
-  
+
   context 'a logged in user' do
     let(:user) { FactoryBot.create(:user) }
 
@@ -52,7 +52,7 @@ RSpec.feature 'Create a Journal', js: false do
       permission_template.available_workflows.first.update!(active: true)
       DefaultAdminSet.create(work_type_name: 'Journal', admin_set_id: admin_set.id)
 
-      stub_geo_request()
+      stub_geo_request
     end
 
     scenario 'as a non-admin' do
