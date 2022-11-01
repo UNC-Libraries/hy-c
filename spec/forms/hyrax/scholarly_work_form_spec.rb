@@ -26,7 +26,8 @@ RSpec.describe Hyrax::ScholarlyWorkForm do
       is_expected.to match_array [:advisor, :based_near, :conference_name, :dcmi_type, :digital_collection,
                                   :doi, :description, :identifier, :keyword, :language, :license, :note, :resource_type,
                                   :rights_statement, :subject, :language_label, :license_label,
-                                  :rights_statement_label, :deposit_agreement, :agreement, :admin_note]
+                                  :rights_statement_label, :deposit_agreement, :agreement, :admin_note,
+                                  :access_right, :alternative_title, :rights_notes]
     }
   end
 

@@ -7,7 +7,7 @@ module Hyrax
              :creator_display, :date_issued, :dcmi_type, :degree, :degree_granting_institution, :deposit_record, :doi,
              :extent, :graduation_year, :language_label, :license_label, :note,
              :rights_statement_label, :url, :use, to: :solr_document
-    
+
     # See: WorkShowPresenter.scholarly?
     def scholarly?
       true

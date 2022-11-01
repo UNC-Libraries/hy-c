@@ -32,7 +32,8 @@ RSpec.describe Hyrax::MastersPaperForm do
       is_expected.to match_array [:academic_concentration, :access, :based_near, :dcmi_type,
                                   :degree_granting_institution, :doi, :extent, :reviewer, :use, :keyword, :subject,
                                   :language, :note, :rights_statement, :license, :language_label, :license_label,
-                                  :rights_statement_label, :deposit_agreement, :agreement, :admin_note]
+                                  :rights_statement_label, :deposit_agreement, :agreement, :admin_note,
+                                  :access_right, :alternative_title, :rights_notes]
     }
   end
 

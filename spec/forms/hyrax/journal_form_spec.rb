@@ -27,7 +27,8 @@ RSpec.describe Hyrax::JournalForm do
                                   :doi, :edition, :extent, :isbn, :issn, :note, :place_of_publication, :series,
                                   :creator, :subject, :keyword, :language, :resource_type, :license,
                                   :rights_statement, :language_label, :license_label, :related_url,
-                                  :rights_statement_label, :deposit_agreement, :agreement, :admin_note]
+                                  :rights_statement_label, :deposit_agreement, :agreement, :admin_note,
+                                  :access_right, :rights_notes]
     }
   end
 
