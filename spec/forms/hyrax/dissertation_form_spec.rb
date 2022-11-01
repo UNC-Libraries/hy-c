@@ -28,7 +28,7 @@ RSpec.describe Hyrax::DissertationForm do
                                   :place_of_publication, :reviewer, :use, :contributor, :identifier, :subject,
                                   :publisher, :language, :keyword, :rights_statement, :license, :resource_type,
                                   :language_label, :license_label, :rights_statement_label, :deposit_agreement,
-                                  :agreement, :admin_note]
+                                  :agreement, :admin_note, :access_right, :rights_notes]
     }
   end
 

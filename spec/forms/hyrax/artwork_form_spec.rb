@@ -24,7 +24,8 @@ RSpec.describe Hyrax::ArtworkForm do
 
     it {
       is_expected.to match_array [:creator, :description, :license, :note, :rights_statement, :doi, :license_label,
-                                  :rights_statement_label, :dcmi_type, :deposit_agreement, :agreement, :admin_note]
+                                  :rights_statement_label, :dcmi_type, :deposit_agreement, :agreement, :admin_note,
+                                  :access_right, :alternative_title, :rights_notes]
     }
   end
 
