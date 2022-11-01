@@ -7,4 +7,10 @@ Hyrax::WorkShowPresenter.class_eval do
            :creator_display, :contributor, :subject, :publisher, :language, :embargo_release_date,
            :lease_expiration_date, :license, :source, :rights_statement, :thumbnail_id, :representative_id,
            :rendering_ids, :member_of_collection_ids, :alternative_title, to: :solr_document
+
+  # Indicates if the work is considered scholarly according to google scholar
+  # This method is not defined in hyrax, but it is referenced by GoogleScholarPresenter
+  def scholarly?
+    false
+  end
 end

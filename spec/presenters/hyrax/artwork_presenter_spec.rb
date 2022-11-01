@@ -193,4 +193,10 @@ RSpec.describe Hyrax::ArtworkPresenter do
       end
     end
   end
+
+  describe '#scholar?' do
+    it 'returns false' do
+      expect(presenter.scholarly?).to be_falsey
+    end
+  end
 end
