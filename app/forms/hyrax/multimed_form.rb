@@ -6,7 +6,7 @@ module Hyrax
     class_attribute :single_value_fields
 
     self.model_class = ::Multimed
-    self.terms += [:abstract, :dcmi_type, :admin_note, :date_issued, :digital_collection, :doi, :extent, :medium, :note,
+    self.terms += [:dcmi_type, :admin_note, :date_issued, :digital_collection, :doi, :extent, :medium, :note,
                    :resource_type, :deposit_agreement, :agreement]
 
     self.terms -= [:contributor, :description, :identifier, :publisher, :related_url, :source, :date_created]

@@ -8,7 +8,7 @@ module Hyrax
 
     self.model_class = ::Article
 
-    self.terms += [:resource_type, :abstract, :access, :admin_note, :alternative_title, :bibliographic_citation, :copyright_date,
+    self.terms += [:resource_type, :access, :admin_note, :bibliographic_citation, :copyright_date,
                    :date_captured, :date_issued, :date_other, :dcmi_type, :digital_collection, :doi, :edition, :extent,
                    :funder, :issn, :journal_title, :journal_volume, :journal_issue, :note, :page_start, :page_end,
                    :peer_review_status, :place_of_publication, :rights_holder, :translator, :use, :deposit_agreement,

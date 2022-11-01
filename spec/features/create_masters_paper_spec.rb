@@ -3,9 +3,12 @@
 require 'rails_helper'
 include Warden::Test::Helpers
 require 'active_fedora/cleaner'
+require Rails.root.join('spec/support/hyc_geoname_helper.rb')
 
 # NOTE: If you generated more than one work, you have to set "js: true"
 RSpec.feature 'Create a MastersPaper', js: false do
+  include HycGeonameHelper
+
   context 'a logged in user' do
     let(:user) { FactoryBot.create(:user) }
 
@@ -74,22 +77,7 @@ RSpec.feature 'Create a MastersPaper', js: false do
                              department: 'Department of City and Regional Planning',
                              admin_set_id: dept_admin_set.id)
 
-      chapel_hill = <<RDFXML.strip_heredoc
-      <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-          <rdf:RDF xmlns:foaf="http://xmlns.com/foaf/0.1/" xmlns:gn="http://www.geonames.org/ontology#" xmlns:owl="http://www.w3.org/2002/07/owl#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
-          <gn:Feature rdf:about="http://sws.geonames.org/4460162/">
-          <gn:name>Chapel Hill</gn:name>
-          </gn:Feature>
-          </rdf:RDF>
-RDFXML
-      stub_request(:get, 'http://sws.geonames.org/4460162/').
-        to_return(status: 200, body: chapel_hill, headers: { 'Content-Type' => 'application/rdf+xml;charset=UTF-8' })
-
-      stub_request(:any, "http://www.geonames.org/getJSON?geonameId=4460162&username=#{ENV['GEONAMES_USER']}").
-        to_return(status: 200, body: { name: 'Chapel Hill',
-                                        countryName: 'United States',
-                                        adminName1: 'North Carolina' }.to_json,
-                  headers: { 'Content-Type' => 'application/json' })
+      stub_geo_request
     end
 
     scenario 'as a non-admin' do

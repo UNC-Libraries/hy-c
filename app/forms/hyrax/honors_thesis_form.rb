@@ -7,7 +7,7 @@ module Hyrax
 
     class_attribute :single_value_fields
 
-    self.terms += [:abstract, :academic_concentration, :access, :admin_note, :advisor, :award, :date_issued, :dcmi_type, :degree,
+    self.terms += [:academic_concentration, :access, :admin_note, :advisor, :award, :date_issued, :dcmi_type, :degree,
                    :degree_granting_institution, :doi, :extent, :graduation_year, :note, :use, :resource_type,
                    :deposit_agreement, :agreement]
 
