@@ -25,7 +25,7 @@ RSpec.feature 'Edit a batch of works', js: false do
   end
 
   context 'with work present' do
-    let(:work) { FactoryBot.create(:article, title: ['Adventures in Hyc-land']) }
+    let(:work) { FactoryBot.create(:article, title: ['Adventures in Hyc-land'], depositor: admin_user.uid) }
     before do
       ActiveFedora::Cleaner.clean!
       Blacklight.default_index.connection.delete_by_query('*:*')
