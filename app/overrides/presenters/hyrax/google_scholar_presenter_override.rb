@@ -6,7 +6,7 @@ Hyrax::GoogleScholarPresenter.class_eval do
 
   # [hyc-override] use person objects for authors
   def authors
-    return if object.creator_display.blank?
+    return [] if object.creator_display.blank?
 
     sort_people_by_index(object.creator_display)
         .map { |creator| creator.split('||').second }
