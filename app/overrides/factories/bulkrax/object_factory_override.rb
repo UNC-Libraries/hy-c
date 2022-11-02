@@ -1,20 +1,23 @@
 # frozen_string_literal: true
 
+# [hyc-override] overriding `transform_attributes` and
+# `permitted_attributes` methods to handle people objects
 Bulkrax::ObjectFactory.class_eval do
   private
 
   # Override if we need to map the attributes from the parser in
   # a way that is compatible with how the factory needs them.
   # override to fix enumeration and formatting of people objects
-  def transform_attributes
-    attrs = attributes.slice(*permitted_attributes).merge(file_attributes(update_files))
+  def transform_attributes(update: false)
+    @transform_attributes = attributes.slice(*permitted_attributes)
+    @transform_attributes.merge!(file_attributes(update_files)) if with_files
     resource = @klass.new
-    attrs.each do |k, v|
+    @transform_attributes.each do |k, v|
       # check if attribute is single-valued but is currently an array
-      attrs[k] = if resource.attributes.keys.member?(k.to_s) && !resource.attributes[k.to_s].respond_to?(:each) && attrs[k].respond_to?(:each)
+      @transform_attributes[k] = if resource.attributes.keys.member?(k.to_s) && !resource.attributes[k.to_s].respond_to?(:each) && @transform_attributes[k].respond_to?(:each)
                    v.first
                    # check if attribute is multi-valued but is currently not an array
-                 elsif resource.attributes.keys.member?(k.to_s) && resource.attributes[k.to_s].respond_to?(:each) && !attrs[k].respond_to?(:each)
+                 elsif resource.attributes.keys.member?(k.to_s) && resource.attributes[k.to_s].respond_to?(:each) && !@transform_attributes[k].respond_to?(:each)
                    Array(v)
                    # otherwise, the attribute does not need to be transformed
                  else
@@ -23,11 +26,11 @@ Bulkrax::ObjectFactory.class_eval do
     end
 
     # convert people objects from hash notation to valid json
-    attrs.each do |k, v|
-      attrs[k] = JSON.parse(v.gsub('=>', ':').gsub("'", '"')) if k.ends_with? '_attributes'
+    @transform_attributes.each do |k, v|
+      @transform_attributes[k] = JSON.parse(v.gsub('=>', ':').gsub("'", '"')) if k.ends_with? '_attributes'
     end
 
-    attrs
+    update ? @transform_attributes.except(:id) : @transform_attributes
   end
 
   # Regardless of what the Parser gives us, these are the properties we are prepared to accept.

@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-# [hyc-override] Fix hardcoded path for import/exports
-
-require 'bulkrax/engine'
+require "bulkrax/engine"
 require 'active_support/all'
 
 module Bulkrax
@@ -10,9 +8,9 @@ module Bulkrax
     mattr_accessor :parsers,
                    :default_work_type,
                    :default_field_mapping,
-                   :collection_field_mapping,
                    :fill_in_blank_source_identifiers,
-                   :parent_child_field_mapping,
+                   :related_children_field_mapping,
+                   :related_parents_field_mapping,
                    :reserved_properties,
                    :field_mappings,
                    :import_path,
@@ -23,11 +21,11 @@ module Bulkrax
                    :removed_image_path
 
     self.parsers = [
-      { name: 'OAI - Dublin Core', class_name: 'Bulkrax::OaiDcParser', partial: 'oai_fields' },
-      { name: 'OAI - Qualified Dublin Core', class_name: 'Bulkrax::OaiQualifiedDcParser', partial: 'oai_fields' },
-      { name: 'CSV - Comma Separated Values', class_name: 'Bulkrax::CsvParser', partial: 'csv_fields' },
-      { name: 'Bagit', class_name: 'Bulkrax::BagitParser', partial: 'bagit_fields' },
-      { name: 'XML', class_name: 'Bulkrax::XmlParser', partial: 'xml_fields' }
+      { name: "OAI - Dublin Core", class_name: "Bulkrax::OaiDcParser", partial: "oai_fields" },
+      { name: "OAI - Qualified Dublin Core", class_name: "Bulkrax::OaiQualifiedDcParser", partial: "oai_fields" },
+      { name: "CSV - Comma Separated Values", class_name: "Bulkrax::CsvParser", partial: "csv_fields" },
+      { name: "Bagit", class_name: "Bulkrax::BagitParser", partial: "bagit_fields" },
+      { name: "XML", class_name: "Bulkrax::XmlParser", partial: "xml_fields" }
     ]
 
     self.import_path = "#{ENV['TEMP_STORAGE']}/hyrax/imports"
@@ -35,78 +33,53 @@ module Bulkrax
     self.removed_image_path = Bulkrax::Engine.root.join('spec', 'fixtures', 'removed.png').to_s
     self.server_name = 'bulkrax@example.com'
 
-    # @todo, merge parent_child_field_mapping and collection_field_mapping into field_mappings,
-    # or make them settable per import some other way.
-
-    # Field_mapping for establishing a parent-child relationship (FROM parent TO child)
-    # This can be a Collection to Work, or Work to Work relationship
-    # This value IS NOT used for OAI, so setting the OAI Entries here will have no effect
-    # The mapping is supplied per Entry, provide the full class name as a string, eg. 'Bulkrax::CsvEntry'
-    # Example:
-    #   {
-    #     'Bulkrax::RdfEntry'  => 'http://opaquenamespace.org/ns/contents',
-    #     'Bulkrax::CsvEntry'  => 'children'
-    #   }
-    # By default no parent-child relationships are added
-    self.parent_child_field_mapping = {}
-
-    # Field_mapping for establishing a collection relationship (FROM work TO collection)
-    # This value IS NOT used for OAI, so setting the OAI Entries here will have no effect
-    # The mapping is supplied per Entry, provide the full class name as a string, eg. 'Bulkrax::CsvEntry'
-    # The default value for CSV is collection
-    self.collection_field_mapping = {}
-
     # Hash of Generic field_mappings for use in the view
     # There must be one field_mappings hash per view parial
     # Based on Hyrax CoreMetadata && BasicMetadata
     # Override at application level to change
     self.field_mappings = {
-      'Bulkrax::OaiDcParser' => {
-        'contributor' => { from: ['contributor'] },
+      "Bulkrax::OaiDcParser" => {
+        "contributor" => { from: ["contributor"] },
         # no appropriate mapping for coverage (based_near needs id)
         #  ""=>{:from=>["coverage"]},
-        'creator' => { from: ['creator'] },
-        'date_created' => { from: ['date'] },
-        'description' => { from: ['description'] },
+        "creator" => { from: ["creator"] },
+        "date_created" => { from: ["date"] },
+        "description" => { from: ["description"] },
         # no appropriate mapping for format
         # ""=>{:from=>["format"]},
-        'identifier' => { from: ['identifier'] },
-        'language' => { from: ['language'], parsed: true },
-        'publisher' => { from: ['publisher'] },
-        'related_url' => { from: ['relation'] },
-        'rights_statement' => { from: ['rights'] },
-        'source' => { from: ['source'] },
-        'subject' => { from: ['subject'], parsed: true },
-        'title' => { from: ['title'] },
-        'resource_type' => { from: ['type'], parsed: true },
-        'remote_files' => { from: ['thumbnail_url'], parsed: true }
+        "identifier" => { from: ["identifier"] },
+        "language" => { from: ["language"], parsed: true },
+        "publisher" => { from: ["publisher"] },
+        "related_url" => { from: ["relation"] },
+        "rights_statement" => { from: ["rights"] },
+        "source" => { from: ["source"] },
+        "subject" => { from: ["subject"], parsed: true },
+        "title" => { from: ["title"] },
+        "resource_type" => { from: ["type"], parsed: true },
+        "remote_files" => { from: ["thumbnail_url"], parsed: true }
       },
-      'Bulkrax::OaiQualifiedDcParser' => {
-        'abstract' => { from: ['abstract'] },
-        'alternative_title' => { from: ['alternative'] },
-        'bibliographic_citation' => { from: ['bibliographicCitation'] },
-        'contributor' => { from: ['contributor'] },
-        'creator' => { from: ['creator'] },
-        'date_created' => { from: ['created'] },
-        'description' => { from: ['description'] },
-        'language' => { from: ['language'] },
-        'license' => { from: ['license'] },
-        'publisher' => { from: ['publisher'] },
-        'related_url' => { from: ['relation'] },
-        'rights_holder' => { from: ['rightsHolder'] },
-        'rights_statement' => { from: ['rights'] },
-        'source' => { from: ['source'] },
-        'subject' => { from: ['subject'], parsed: true },
-        'title' => { from: ['title'] },
-        'resource_type' => { from: ['type'], parsed: true },
-        'remote_files' => { from: ['thumbnail_url'], parsed: true }
+      "Bulkrax::OaiQualifiedDcParser" => {
+        "abstract" => { from: ["abstract"] },
+        "alternative_title" => { from: ["alternative"] },
+        "bibliographic_citation" => { from: ["bibliographicCitation"] },
+        "contributor" => { from: ["contributor"] },
+        "creator" => { from: ["creator"] },
+        "date_created" => { from: ["created"] },
+        "description" => { from: ["description"] },
+        "language" => { from: ["language"] },
+        "license" => { from: ["license"] },
+        "publisher" => { from: ["publisher"] },
+        "related_url" => { from: ["relation"] },
+        "rights_holder" => { from: ["rightsHolder"] },
+        "rights_statement" => { from: ["rights"] },
+        "source" => { from: ["source"] },
+        "subject" => { from: ["subject"], parsed: true },
+        "title" => { from: ["title"] },
+        "resource_type" => { from: ["type"], parsed: true },
+        "remote_files" => { from: ["thumbnail_url"], parsed: true }
       },
       # When empty, a default_field_mapping will be generated
-      'Bulkrax::CsvParser' => {
-        'identifier' => { from: ['identifier'], split: true },
-        'issn' => { from: ['issn'], split: true },
-        'keyword' => { from: ['keyword'], split: true }
-      },
+      "Bulkrax::CsvParser" => {},
       'Bulkrax::BagitParser' => {},
       'Bulkrax::XmlParser' => {}
     }
@@ -114,7 +87,6 @@ module Bulkrax
     # Lambda to set the default field mapping
     self.default_field_mapping = lambda do |field|
       return if field.blank?
-
       {
         field.to_s =>
           {

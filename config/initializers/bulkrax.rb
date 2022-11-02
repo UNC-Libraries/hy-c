@@ -21,18 +21,8 @@ Bulkrax.setup do |config|
   # Server name for oai request header
   # config.server_name = 'my_server@name.com'
 
-  # Field_mapping for establishing a parent-child relationship (FROM parent TO child)
-  # This can be a Collection to Work, or Work to Work relationship
-  # This value IS NOT used for OAI, so setting the OAI Entries here will have no effect
-  # The mapping is supplied per Entry, provide the full class name as a string, eg. 'Bulkrax::CsvEntry'
-  # Example:
-  #   {
-  #     'Bulkrax::RdfEntry'  => 'http://opaquenamespace.org/ns/contents',
-  #     'Bulkrax::CsvEntry'  => 'children'
-  #   }
-  # By default no parent-child relationships are added
-  # config.parent_child_field_mapping = { }
-
+  # NOTE: Creating Collections using the collection_field_mapping will no longer be supported as of Bulkrax version 3.0.
+  #       Please configure Bulkrax to use related_parents_field_mapping and related_children_field_mapping instead.
   # Field_mapping for establishing a collection relationship (FROM work TO collection)
   # This value IS NOT used for OAI, so setting the OAI parser here will have no effect
   # The mapping is supplied per Entry, provide the full class name as a string, eg. 'Bulkrax::CsvEntry'
@@ -50,6 +40,11 @@ Bulkrax.setup do |config|
   #   e.g. to exclude date
   #   config.field_mappings["Bulkrax::OaiDcParser"]["date"] = { from: ["date"], excluded: true  }
   #
+  #   e.g. to import parent-child relationships
+  #   config.field_mappings['Bulkrax::CsvParser']['parents'] = { from: ['parents'], related_parents_field_mapping: true }
+  #   config.field_mappings['Bulkrax::CsvParser']['children'] = { from: ['children'], related_children_field_mapping: true }
+  #   (For more info on importing relationships, see Bulkrax Wiki: https://github.com/samvera-labs/bulkrax/wiki/Configuring-Bulkrax#parent-child-relationship-field-mappings)
+  #
   # #   e.g. to add the required source_identifier field
   #   #   config.field_mappings["Bulkrax::CsvParser"]["source_id"] = { from: ["old_source_id"], source_identifier: true  }
   # If you want Bulkrax to fill in source_identifiers for you, see below
@@ -61,7 +56,7 @@ Bulkrax.setup do |config|
   # Should Bulkrax make up source identifiers for you? This allow round tripping
   # and download errored entries to still work, but does mean if you upload the
   # same source record in two different files you WILL get duplicates.
-  # It is given two arguments, self at the time of call and the index of the record
+  # It is given two aruguments, self at the time of call and the index of the reocrd
   #    config.fill_in_blank_source_identifiers = ->(parser, index) { "b-#{parser.importer.id}-#{index}"}
   # or use a uuid
   #    config.fill_in_blank_source_identifiers = ->(parser, index) { SecureRandom.uuid }
@@ -71,5 +66,4 @@ Bulkrax.setup do |config|
 end
 
 # Sidebar for hyrax 3+ support
-# UNC note uncomment this line when moving to hyrax 3.x
-# Hyrax::DashboardController.sidebar_partials[:repository_content] << "hyrax/dashboard/sidebar/bulkrax_sidebar_additions" if Object.const_defined?(:Hyrax) && ::Hyrax::DashboardController&.respond_to?(:sidebar_partials)
+Hyrax::DashboardController.sidebar_partials[:repository_content] << "hyrax/dashboard/sidebar/bulkrax_sidebar_additions" if Object.const_defined?(:Hyrax) && ::Hyrax::DashboardController&.respond_to?(:sidebar_partials)

@@ -9,6 +9,7 @@ require 'csv'
 
 Bulkrax:: CsvParser.class_eval do
   # overriding to include file permissions update from 0600 to 0644
+  # This method comes from application_parser.rb
   def write_import_file(file)
     path = File.join(path_for_import, file.original_filename)
     FileUtils.mv(
@@ -102,27 +103,21 @@ Bulkrax:: CsvParser.class_eval do
   # overriding to add columns for people attributes
   # if reimporting, there needs to be a source_identifier column
   def export_headers
-    headers = ['id']
-    headers << source_identifier.to_s
-    headers << 'model'
-    importerexporter.mapping.each_key { |key| headers << key if key_allowed(key) }
-    headers << 'file'
+    headers = sort_headers(self.headers)
+
+    # we don't want access_control_id exported and we want file at the end
+    headers.delete('access_control_id') if headers.include?('access_control_id')
+
+    # add the headers below at the beginning or end to maintain the preexisting export behavior
+    headers.prepend('model')
+    headers.prepend(source_identifier.to_s)
+    headers.prepend('id')
     people_types.each { |key| headers << "#{key}_attributes" }
+
     headers.uniq
   end
 
   private
-
-  # Override to return the first CSV in the path, if a zip file is supplied
-  # We expect a single CSV at the top level of the zip in the CSVParser
-  def real_import_file_path
-    if file? && zip?
-      unzip(parser_fields['import_file_path'], importer_unzip_path)
-      Dir["#{importer_unzip_path}/*.csv"].first
-    else
-      parser_fields['import_file_path']
-    end
-  end
 
   # overriding to add array of people types
   def people_types

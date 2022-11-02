@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# [hyc-override] Overriding set_removed_files to not hardcode updates as PNG files and set file set
+# to private if the file set is being replaced.
 Bulkrax::FileFactory.module_eval do
   def set_removed_filesets
     local_file_sets.each do |fileset|
