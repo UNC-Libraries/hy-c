@@ -1,3 +1,6 @@
+<%# [hyc-override] to actually use entry_path variable that's set in the template %>
+<%# Override can be removed if this issue is fixed %>
+<%# https://github.com/samvera-labs/bulkrax/blob/e1851e945180acb652c043f4fbe041ff3ba4c654/app/views/bulkrax/shared/_file_set_entries_tab.html.erb %>
 <div role="tabpanel" class="tab-pane bulkrax-nav-tab-table-left-align" id="file-set-entries">
   <table class='table table-striped'>
     <thead>
@@ -14,7 +17,7 @@
     <% entries.each do |e| %>
       <% entry_path = item.class.to_s.include?('Importer') ? bulkrax.importer_entry_path(item.id, e.id) : bulkrax.exporter_entry_path(item.id, e.id) %>
       <tr>
-        <td><%= link_to e.identifier, bulkrax.importer_entry_path(item.id, e.id) %></td>
+        <td><%= link_to e.identifier, entry_path %></td>
         <td><%= e.id %></td>
         <% if e.status == "Complete" %>
           <td><span class="glyphicon glyphicon-ok" style="color: green;"></span> <%= e.status %></td>
@@ -24,12 +27,12 @@
           <td><span class="glyphicon glyphicon-remove" style="color: <%= e.status == 'Deleted' ? 'green' : 'red' %>;"></span> <%= e.status %></td>
         <% end %>
         <% if e.last_error.present? %>
-          <td><%= link_to e.last_error.dig("error_class"), bulkrax.importer_entry_path(item.id, e.id) %></td>
+          <td><%= link_to e.last_error.dig("error_class"), entry_path %></td>
         <% else %>
           <td></td>
         <% end %>
         <td><%= e.status_at %></td>
-        <td><%= link_to raw('<span class="glyphicon glyphicon-info-sign"></span>'), bulkrax.importer_entry_path(item.id, e.id) %></td>
+        <td><%= link_to raw('<span class="glyphicon glyphicon-info-sign"></span>'), entry_path %></td>
       </tr>
     <% end %>
     </tbody>
