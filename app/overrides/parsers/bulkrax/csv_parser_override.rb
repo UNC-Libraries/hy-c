@@ -5,6 +5,7 @@
 # [hyc-override] overriding application_parser `write_import_files` and `unzip` methods
 # [hyc-override] raise errors in `valid_import?` method
 # [hyc-override] Set source_identifier to string if an Array and set it to work id if empty
+# [hyc-override] Fix bug in current_work_ids
 require 'csv'
 
 Bulkrax:: CsvParser.class_eval do
@@ -33,19 +34,21 @@ Bulkrax:: CsvParser.class_eval do
 
   # overriding to provide unzip location
   def unzip(file_to_unzip, unzip_path)
-    WillowSword::ZipPackage.new(file_to_unzip, unzip_path).unzip_file
+    Zip::File.open(file_to_unzip) do |zip_file|
+      zip_file.each do |entry|
+        entry_path = File.join(unzip_path, entry.name)
+        FileUtils.mkdir_p(File.dirname(entry_path))
+        zip_file.extract(entry, entry_path) unless File.exist?(entry_path)
+      end
+    end
   end
 
   def valid_import?
-    required_fields = required_elements?(import_fields)
-    file_path_array = file_paths.is_a?(Array)
-    if !required_fields
-      raise StandardError.new "missing required column: #{required_elements.join(' or ')}"
-    elsif !file_path_array
-      raise StandardError.new 'file paths are invalid'
-    end
-
-    required_elements?(import_fields) && file_paths.is_a?(Array)
+    import_strings = keys_without_numbers(import_fields.map(&:to_s))
+    error_alert = "Missing at least one required element, missing element(s) are: #{missing_elements(import_strings).join(', ')}"
+    raise StandardError, error_alert unless required_elements?(import_strings)
+    raise StandardError.new 'file paths are invalid' unless file_paths.is_a?(Array)
+    true
   rescue StandardError => e
     status_info(e)
     false
@@ -65,37 +68,55 @@ Bulkrax:: CsvParser.class_eval do
     path
   end
 
+  #Override to fix misspelling in ActiveSupport::Deprecation that was causing a constant not found error
+  # This can be removed when fixed in hyrax
+  def current_work_ids
+    ActiveSupport::Deprecation.warn('Bulkrax::CsvParser#current_work_ids will be replaced with #current_record_ids in version 3.0')
+    current_record_ids
+  end
+
   # export methods
   # overriding to correctly export people attributes
   # overriding to set source_identifier to string if an Array and set it to work id if empty
   def write_files
-    CSV.open(setup_export_file, 'w', headers: export_headers, write_headers: true) do |csv|
-      importerexporter.entries.where(identifier: current_work_ids)[0..limit || total].each_with_index do |e, index|
-        metadata = e.parsed_metadata
+    require 'open-uri'
+    folder_count = 0
+    sorted_entries = sort_entries(importerexporter.entries.uniq(&:identifier))
+                       .select { |e| valid_entry_types.include?(e.type) }
 
-        metadata['source_identifier'] = metadata['id'] if metadata['source_identifier'].blank?
+    sorted_entries[0..limit || total].in_groups_of(records_split_count, false) do |group|
+      folder_count += 1
 
-        metadata['source_identifier'] = metadata['source_identifier'].join(', ') if metadata['source_identifier'].is_a?(Array)
+      CSV.open(setup_export_file(folder_count), "w", headers: export_headers, write_headers: true) do |csv|
+        group.each do |entry|
+          metadata = entry.parsed_metadata
+          metadata['source_identifier'] = metadata['id'] if metadata['source_identifier'].blank?
+          metadata['source_identifier'] = metadata['source_identifier'].join(', ') if metadata['source_identifier'].is_a?(Array)
 
-        # get people metadata
-        work_record = ActiveFedora::Base.find(current_work_ids[index])
-        # create hash of people attributes
-        people_types.each do |person_type|
-          metadata[person_type] = nil
-          metadata["#{person_type}_attributes"] = nil
-          if work_record.has_attribute?(person_type)
-            person_hash = Hash.new
-            work_record[person_type].each_with_index do |person_object, index|
-              person_hash[index.to_s] = person_object.as_json
+          # get people metadata
+          work_record = ActiveFedora::Base.find(metadata['id'])
+          # create hash of people attributes
+          people_types.each do |person_type|
+            metadata[person_type] = nil
+            metadata["#{person_type}_attributes"] = nil
+            if work_record.has_attribute?(person_type)
+              person_hash = Hash.new
+              work_record[person_type].each_with_index do |person_object, index|
+                person_hash[index.to_s] = person_object.as_json
+              end
+              metadata["#{person_type}_attributes"] = if person_hash.blank?
+                                                        nil
+                                                      else
+                                                        person_hash
+                                                      end
             end
-            metadata["#{person_type}_attributes"] = if person_hash.blank?
-                                                      nil
-                                                    else
-                                                      person_hash
-                                                    end
           end
+
+          csv << metadata
+          next if importerexporter.metadata_only? || entry.type == 'Bulkrax::CsvCollectionEntry'
+
+          store_files(entry.identifier, folder_count.to_s)
         end
-        csv << metadata
       end
     end
   end

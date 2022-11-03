@@ -19,6 +19,7 @@ Bulkrax::CsvEntry.class_eval do
     add_visibility
     add_metadata_for_model
     add_rights_statement
+    sanitize_controlled_uri_values!
     add_local
 
     self.parsed_metadata

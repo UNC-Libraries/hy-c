@@ -12,7 +12,7 @@ gem 'blacklight_advanced_search', '~> 6.4.1'
 gem 'blacklight_oai_provider', '6.1.1'
 gem 'blacklight_range_limit', '6.5.0'
 gem 'bootstrap-sass', '~> 3.4.1'
-gem 'bulkrax', '~> 3.0.0'
+gem 'bulkrax', '~> 4.3.0'
 gem 'clamav-client', require: 'clamav/client'
 # Use CoffeeScript for .coffee assets and views
 gem 'coffee-rails', '~> 4.2.2'
@@ -61,8 +61,6 @@ gem 'staccato', '~>0.5.3'
 gem 'turbolinks', '~> 5.2.1'
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '~> 4.2.0'
-# required by bulkrax_override - rails engine for SWORDv2
-gem 'willow_sword', github: 'notch8/willow_sword', ref: '0a669d7'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
