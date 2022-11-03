@@ -6,6 +6,12 @@ RSpec.feature 'Select work type modal', js: false do
 
   let(:admin_user) { FactoryBot.create(:admin) }
 
+  before do
+    ActiveFedora::Cleaner.clean!
+    Blacklight.default_index.connection.delete_by_query('*:*')
+    Blacklight.default_index.connection.commit
+  end
+
   # Work type selector modal is auto-loaded on the homepage
   scenario 'as a non-admin' do
     login_as user

@@ -2,6 +2,7 @@
 #  `rails generate hyrax:work HonorsThesis`
 require 'rails_helper'
 include Warden::Test::Helpers
+require 'active_fedora/cleaner'
 
 # NOTE: If you generated more than one work, you have to set "js: true"
 RSpec.feature 'Create and review a work in the honors thesis workflow', js: false do
@@ -59,6 +60,9 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
     let(:reviewer_agent) { Sipity::Agent.where(proxy_for_id: reviewer.id, proxy_for_type: 'User').first_or_create }
 
     before do
+      ActiveFedora::Cleaner.clean!
+      Blacklight.default_index.connection.delete_by_query('*:*')
+      Blacklight.default_index.connection.commit
       Hyrax::PermissionTemplateAccess.create(permission_template: permission_template,
                                              agent_type: 'user',
                                              agent_id: user.user_key,

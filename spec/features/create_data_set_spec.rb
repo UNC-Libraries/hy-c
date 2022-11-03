@@ -2,6 +2,7 @@
 #  `rails generate hyrax:work DataSet`
 require 'rails_helper'
 include Warden::Test::Helpers
+require 'active_fedora/cleaner'
 require Rails.root.join('spec/support/hyc_geoname_helper.rb')
 
 # NOTE: If you generated more than one work, you have to set 'js: true'
