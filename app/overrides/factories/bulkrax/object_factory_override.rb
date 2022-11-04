@@ -15,14 +15,14 @@ Bulkrax::ObjectFactory.class_eval do
     @transform_attributes.each do |k, v|
       # check if attribute is single-valued but is currently an array
       @transform_attributes[k] = if resource.attributes.keys.member?(k.to_s) && !resource.attributes[k.to_s].respond_to?(:each) && @transform_attributes[k].respond_to?(:each)
-                   v.first
-                   # check if attribute is multi-valued but is currently not an array
-                 elsif resource.attributes.keys.member?(k.to_s) && resource.attributes[k.to_s].respond_to?(:each) && !@transform_attributes[k].respond_to?(:each)
-                   Array(v)
-                   # otherwise, the attribute does not need to be transformed
-                 else
-                   v
-                 end
+                                   v.first
+                                   # check if attribute is multi-valued but is currently not an array
+                                 elsif resource.attributes.keys.member?(k.to_s) && resource.attributes[k.to_s].respond_to?(:each) && !@transform_attributes[k].respond_to?(:each)
+                                   Array(v)
+                                   # otherwise, the attribute does not need to be transformed
+                                 else
+                                   v
+                                 end
     end
 
     # convert people objects from hash notation to valid json

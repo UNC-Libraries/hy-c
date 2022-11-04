@@ -80,7 +80,7 @@ RSpec.configure do |config|
 
   config.before :suite do
     # Noid minting causes extra LDP requests which slow the test suite.
-    Hyrax.config.enable_noids = false
+    # Hyrax.config.enable_noids = false
   end
 end
 

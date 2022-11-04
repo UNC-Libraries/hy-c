@@ -673,6 +673,10 @@ li {
   width: 100%;
 }
 
+.panel-body {
+  overflow-x: scroll;
+}
+
 @media only screen and (max-width: 1765px) {
   .access-request {
     margin-top: 10px;

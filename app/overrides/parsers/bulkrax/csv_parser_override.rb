@@ -87,7 +87,7 @@ Bulkrax:: CsvParser.class_eval do
     sorted_entries[0..limit || total].in_groups_of(records_split_count, false) do |group|
       folder_count += 1
 
-      CSV.open(setup_export_file(folder_count), "w", headers: export_headers, write_headers: true) do |csv|
+      CSV.open(setup_export_file(folder_count), 'w', headers: export_headers, write_headers: true) do |csv|
         group.each do |entry|
           metadata = entry.parsed_metadata
           metadata['source_identifier'] = metadata['id'] if metadata['source_identifier'].blank?
@@ -119,6 +119,8 @@ Bulkrax:: CsvParser.class_eval do
         end
       end
     end
+
+    sorted_entries
   end
 
   # overriding to add columns for people attributes

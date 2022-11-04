@@ -2,6 +2,7 @@
 
 require 'language_list'
 
+# [hyc-override] remove : as a split token
 Bulkrax::ApplicationMatcher.class_eval do
   def process_split
     if self.split.is_a?(TrueClass)

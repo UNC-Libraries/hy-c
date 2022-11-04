@@ -83,8 +83,8 @@ Bulkrax.setup do |config|
       'note' => { from: ['note'] },
       'page_end' => { from: ['page_end'] },
       'page_start' => { from: ['page_start'] },
-      "parent" => { from: ["parent"], related_parents_field_mapping: true },
-      "parent_title" => { from: ["parent_title"] },
+      'parent' => { from: ['parent'], related_parents_field_mapping: true },
+      'parent_title' => { from: ['parent_title'] },
       'peer_review_status' => { from: ['peer_review_status'] },
       'place_of_publication' => { from: ['place_of_publication'] },
       'publisher' => { from: ['publisher'] },
@@ -134,13 +134,14 @@ Bulkrax.setup do |config|
   # Should Bulkrax make up source identifiers for you? This allow round tripping
   # and download errored entries to still work, but does mean if you upload the
   # same source record in two different files you WILL get duplicates.
-  # It is given two aruguments, self at the time of call and the index of the reocrd
+  # It is given two arguments, self at the time of call and the index of the record
   #    config.fill_in_blank_source_identifiers = ->(parser, index) { "b-#{parser.importer.id}-#{index}"}
   # or use a uuid
   config.fill_in_blank_source_identifiers = ->(parser, index) { SecureRandom.uuid }
 
   # Properties that should not be used in imports/exports. They are reserved for use by Hyrax.
   # config.reserved_properties += ['my_field']
+  config.removed_image_path = Rails.root.join('app', 'assets', 'images', 'bulkrax', 'removed.png')
 end
 
 # Sidebar for hyrax 3+ support

@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 require 'rails_helper'
+require Rails.root.join('app/overrides/models/concerns/bulkrax/file_factory_override.rb')
 
 RSpec.describe Bulkrax::FileFactory do
   include Bulkrax::FileFactory
