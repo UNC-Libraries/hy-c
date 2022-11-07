@@ -5,6 +5,10 @@ require Rails.root.join('app/overrides/models/concerns/bulkrax/file_factory_over
 RSpec.describe Bulkrax::FileFactory do
   include Bulkrax::FileFactory
 
+  after do
+    ActiveFedora::Cleaner.clean!
+  end
+
   let!(:user) do
     User.new(email: 'test@example.com', guest: false, uid: 'test') { |u| u.save!(validate: false) }
   end
@@ -23,6 +27,7 @@ RSpec.describe Bulkrax::FileFactory do
   end
 
   before do
+    ActiveFedora::Cleaner.clean!
     allow(Hyrax::VirusCheckerService).to receive(:file_has_virus?) { false }
     FileUtils.cp(File.join(fixture_path, 'hyrax/hyrax_test4.pdf'), temp_pdf_path)
 

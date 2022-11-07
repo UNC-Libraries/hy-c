@@ -105,7 +105,8 @@ RSpec.describe HycCrawlerService do
 
       it 'is a parseable csv with headers' do
         csv = CSV.parse(File.read(csv_path), headers: true)
-
+        puts 'dean'
+        puts csv
         expect(csv.headers).to eq(['object_id', 'url', 'affiliations'])
         target_row = csv.find { |row| row['object_id'] == work_with_people.id }.to_h
 

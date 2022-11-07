@@ -8,6 +8,10 @@ RSpec.describe Bulkrax::CsvParser do
     ActiveFedora::Cleaner.clean!
   end
 
+  after do
+    ActiveFedora::Cleaner.clean!
+  end
+
   let(:user) do
     User.new(email: 'test@example.com', guest: false, uid: 'test') { |u| u.save!(validate: false) }
   end

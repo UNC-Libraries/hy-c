@@ -11,6 +11,7 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
   end
 
   before do
+    ActiveFedora::Cleaner.clean!
     allow(stub_ga)
   end
 
