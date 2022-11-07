@@ -13,7 +13,7 @@
     <%= render 'show_actions', presenter: @presenter %>
     <div class="panel panel-default">
       <div class="panel-body">
-        <div class="row">
+        <div class="row metadata-view">
           <%= render 'workflow_actions_widget', presenter: @presenter %>
           <%# [hyc-override] Show message to attach child works for art mfa deposits %>
           <%if @presenter.workflow.is_mfa_in_review? %>
@@ -26,14 +26,14 @@
               <%= render 'representative_media', presenter: @presenter, viewer: true %>
             </div>
           <% end %>
-          <div class="col-sm-3 text-center">
+          <div class="col-sm-4">
             <%# [hyc-override] Remove restriction on showing representative media info when iiif viewer present %>
             <%= render 'representative_media', presenter: @presenter, viewer: false %>
             <%# [hyc-override] Changes end here %>
             <%= render 'citations', presenter: @presenter %>
             <%= render 'social_media' %>
           </div>
-          <div class="col-sm-9">
+          <div class="col-sm-8">
             <%# [hyc-override] Comment out description, so it can be displayed interleaved in the metadata instead %>
             <%# <%= render 'work_description', presenter: @presenter %>
             <%= render 'metadata', presenter: @presenter %>

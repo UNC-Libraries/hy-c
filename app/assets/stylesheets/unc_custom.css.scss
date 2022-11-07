@@ -810,9 +810,21 @@ li {
   }
 }
 
+.metadata-view {
+  margin: auto;
+
+  .col-sm-12 {
+    margin-bottom: 25px;
+  }
+}
+
 @media only screen and (max-width: 767px) {
   .access-request {
     margin-top: 0;
+  }
+
+  .citations {
+    padding-left: 0;
   }
 }
 
