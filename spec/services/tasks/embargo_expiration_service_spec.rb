@@ -3,6 +3,10 @@ require 'rails_helper'
 include Warden::Test::Helpers
 
 describe Tasks::EmbargoExpirationService, :clean do
+  before do
+    ActiveFedora::Cleaner.clean!
+  end
+
   context 'rake task' do
     let(:expiration_service_instance) { instance_double(described_class) }
     it 'sets the default date to today if no value is passed' do

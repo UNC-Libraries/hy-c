@@ -36,6 +36,7 @@ RSpec.describe Tasks::SageIngestService, :sage, :ingest do
   end
 
   before do
+    ActiveFedora::Cleaner.clean!
     admin_set
     permission_template
     workflow

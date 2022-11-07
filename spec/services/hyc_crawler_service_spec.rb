@@ -33,6 +33,7 @@ RSpec.describe HycCrawlerService do
   let(:work_without_people) { FactoryBot.create(:admin_set) }
 
   before do
+    ActiveFedora::Cleaner.clean!
     work_with_people
   end
 
@@ -85,6 +86,7 @@ RSpec.describe HycCrawlerService do
                                                                          index: 2 } })
     end
     before do
+      ActiveFedora::Cleaner.clean!
       work_with_only_mappable_affils
     end
     after do

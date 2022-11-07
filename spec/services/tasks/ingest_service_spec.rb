@@ -8,6 +8,7 @@ RSpec.describe Tasks::IngestService, :ingest do
   let(:depositor_uid) { 'admin' }
 
   before do
+    ActiveFedora::Cleaner.clean!
     admin_set
     # return the FactoryBot admin user when searching for uid: admin from config
     allow(User).to receive(:find_by).with(uid: depositor_uid).and_return(admin)
