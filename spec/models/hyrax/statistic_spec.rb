@@ -4,6 +4,10 @@ require 'rails_helper'
 require Rails.root.join('app/overrides/models/hyrax/statistic_override.rb')
 
 RSpec.describe Hyrax::Statistic, type: :model do
+  before do
+    ActiveFedora::Cleaner.clean!
+  end
+
   let(:concrete_stat_class) do
     Class.new(Hyrax::Statistic) do
       self.cache_column = :downloads

@@ -100,6 +100,7 @@ RSpec.describe HycCrawlerService do
 
     describe 'turning the csv back into ruby objects' do
       before do
+        ActiveFedora::Cleaner.clean!
         described_class.create_csv_of_unmappable_affiliations
       end
 
