@@ -30,6 +30,12 @@ body {
   }
 }
 
+.navbar-static-top {
+  .navbar-nav {
+    margin-left: 0;
+  }
+}
+
 span.institution_name {
   font-family: LibreBaskerville, sans-serif;
 
@@ -438,6 +444,9 @@ div.unc-modal {
     border: 1px solid $light-gray;
     margin: 0 10px 10px 0;
   }
+  fieldset {
+    width: 100%;
+  }
 }
 
 .multi_value .btn.add {
@@ -677,6 +686,10 @@ li {
   overflow-x: scroll;
 }
 
+.citations {
+  padding-left: 0;
+}
+
 @media only screen and (max-width: 1765px) {
   .access-request {
     margin-top: 10px;
@@ -814,6 +827,14 @@ li {
   }
 }
 
+.metadata-view {
+  margin: auto;
+
+  .col-sm-12 {
+    margin-bottom: 25px;
+  }
+}
+
 @media only screen and (max-width: 767px) {
   .access-request {
     margin-top: 0;
@@ -926,16 +947,12 @@ li {
 
 /* Responsive Hyrax override */
 @media only screen and (min-width: 768px) {
-  .navbar-right {
-    margin-right: 15px;
-  }
-
-  .navbar-nav {
-    margin: 0 0 0 -15px;
-  }
-
   .nav > li > a {
     padding: 10px;
+  }
+
+  .navbar-right {
+    margin-right: 0;
   }
 
   footer {
@@ -945,7 +962,6 @@ li {
     }
   }
 }
-
 
 @media only screen and (min-width: 1400px) {
   #unc-search, #unc-description {
