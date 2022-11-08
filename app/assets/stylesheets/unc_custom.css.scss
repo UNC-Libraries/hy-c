@@ -444,6 +444,9 @@ div.unc-modal {
     border: 1px solid $light-gray;
     margin: 0 10px 10px 0;
   }
+  fieldset {
+    width: 100%;
+  }
 }
 
 .multi_value .btn.add {
