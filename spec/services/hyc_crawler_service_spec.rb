@@ -33,7 +33,6 @@ RSpec.describe HycCrawlerService do
   let(:work_without_people) { FactoryBot.create(:admin_set) }
 
   before do
-    ActiveFedora::Cleaner.clean!
     work_with_people
   end
 
@@ -86,7 +85,6 @@ RSpec.describe HycCrawlerService do
                                                                          index: 2 } })
     end
     before do
-      ActiveFedora::Cleaner.clean!
       work_with_only_mappable_affils
     end
     after do
@@ -100,14 +98,11 @@ RSpec.describe HycCrawlerService do
 
     describe 'turning the csv back into ruby objects' do
       before do
-        ActiveFedora::Cleaner.clean!
         described_class.create_csv_of_unmappable_affiliations
       end
 
       it 'is a parseable csv with headers' do
         csv = CSV.parse(File.read(csv_path), headers: true)
-        puts 'dean'
-        puts csv
         expect(csv.headers).to eq(['object_id', 'url', 'affiliations'])
         target_row = csv.find { |row| row['object_id'] == work_with_people.id }.to_h
 
