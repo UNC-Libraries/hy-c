@@ -3,6 +3,7 @@
 # [hyc-override] updating expected results for default splitting
 
 require 'rails_helper'
+require Rails.root.join('app/overrides/matchers/bulkrax/application_matcher_override.rb')
 
 module Bulkrax
   RSpec.describe ApplicationMatcher do

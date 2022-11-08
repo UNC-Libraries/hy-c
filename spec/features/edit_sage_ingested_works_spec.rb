@@ -41,6 +41,7 @@ RSpec.feature 'Edit works created through the Sage ingest', :sage, js: false do
   end
 
   before(:each) do
+    ActiveFedora::Cleaner.clean!
     # return the FactoryBot admin user when searching for uid: admin from config
     allow(User).to receive(:find_by).and_return(admin)
     # return the FactoryBot admin_set when searching for admin set from config

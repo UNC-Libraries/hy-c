@@ -682,6 +682,9 @@ li {
   width: 100%;
 }
 
+.panel-body {
+  overflow-x: scroll;
+}
 
 .citations {
   padding-left: 0;

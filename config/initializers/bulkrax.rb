@@ -21,18 +21,8 @@ Bulkrax.setup do |config|
   # Server name for oai request header
   # config.server_name = 'my_server@name.com'
 
-  # Field_mapping for establishing a parent-child relationship (FROM parent TO child)
-  # This can be a Collection to Work, or Work to Work relationship
-  # This value IS NOT used for OAI, so setting the OAI Entries here will have no effect
-  # The mapping is supplied per Entry, provide the full class name as a string, eg. 'Bulkrax::CsvEntry'
-  # Example:
-  #   {
-  #     'Bulkrax::RdfEntry'  => 'http://opaquenamespace.org/ns/contents',
-  #     'Bulkrax::CsvEntry'  => 'children'
-  #   }
-  # By default no parent-child relationships are added
-  # config.parent_child_field_mapping = { }
-
+  # NOTE: Creating Collections using the collection_field_mapping will no longer be supported as of Bulkrax version 3.0.
+  #       Please configure Bulkrax to use related_parents_field_mapping and related_children_field_mapping instead.
   # Field_mapping for establishing a collection relationship (FROM work TO collection)
   # This value IS NOT used for OAI, so setting the OAI parser here will have no effect
   # The mapping is supplied per Entry, provide the full class name as a string, eg. 'Bulkrax::CsvEntry'
@@ -45,10 +35,93 @@ Bulkrax.setup do |config|
   #   config.field_mappings = {
   #     "Bulkrax::OaiDcParser" => { **individual field mappings go here*** }
   #   }
+  config.field_mappings = {
+    'Bulkrax::CsvParser' => {
+      'id' => { from: ['id'] },
+      'model' => { from: ['model'] },
+      'abstract' => { from: ['abstract'] },
+      'academic_concentration' => { from: ['academic_concentration'] },
+      'access' => { from: ['access'] },
+      'admin_note' => { from: ['admin_note'] },
+      'alternative_title' => { from: ['alternative_title'] },
+      'award' => { from: ['award'] },
+      'based_near' => { from: ['based_near'] },
+      'bibliographic_citation' => { from: ['bibliographic_citation'] },
+      'conference_name' => { from: ['conference_name'] },
+      'copyright_date' => { from: ['copyright_date'] },
+      'date_captured' => { from: ['date_captured'] },
+      'date_created' => { from: ['date_created'] },
+      'date_issued' => { from: ['date_issued'] },
+      'date_other' => { from: ['date_other'] },
+      'dcmi_type' => { from: ['dcmi_type'] },
+      'degree' => { from: ['degree'] },
+      'degree_granting_institution' => { from: ['degree_granting_institution'] },
+      'deposit_agreement' => { from: ['deposit_agreement'] },
+      'deposit_record' => { from: ['deposit_record'] },
+      'description' => { from: ['description'] },
+      'digital_collection' => { from: ['digital_collection'] },
+      'doi' => { from: ['doi'] },
+      'edition' => { from: ['edition'] },
+      'extent' => { from: ['extent'] },
+      'funder' => { from: ['funder'] },
+      'graduation_year' => { from: ['graduation_year'] },
+      'identifier' => { from: ['identifier'], split: true },
+      'isbn' => { from: ['isbn'] },
+      'issn' => { from: ['issn'], split: true },
+      'journal_issue' => { from: ['journal_issue'] },
+      'journal_title' => { from: ['journal_title'] },
+      'journal_volume' => { from: ['journal_volume'] },
+      'keyword' => { from: ['keyword'], split: true },
+      'kind_of_data' => { from: ['kind_of_data'] },
+      'language' => { from: ['language'], split: true },
+      'language_label' => { from: ['language_label'], split: true },
+      'last_modified_date' => { from: ['last_modified_date'] },
+      'license' => { from: ['license'] },
+      'license_label' => { from: ['license_label'] },
+      'medium' => { from: ['medium'] },
+      'methodology' => { from: ['methodology'] },
+      'note' => { from: ['note'] },
+      'page_end' => { from: ['page_end'] },
+      'page_start' => { from: ['page_start'] },
+      'parent' => { from: ['parent'], related_parents_field_mapping: true },
+      'parent_title' => { from: ['parent_title'] },
+      'peer_review_status' => { from: ['peer_review_status'] },
+      'place_of_publication' => { from: ['place_of_publication'] },
+      'publisher' => { from: ['publisher'] },
+      'related_url' => { from: ['related_url'] },
+      'resource_type' => { from: ['resource_type'] },
+      'rights_holder' => { from: ['rights_holder'] },
+      'rights_statement' => { from: ['rights_statement'] },
+      'rights_statement_label' => { from: ['rights_statement_label'] },
+      'series' => { from: ['series'] },
+      'source_identifier' => { from: ['source_identifier'] },
+      'sponsor' => { from: ['sponsor'] },
+      'subject' => { from: ['subject'] },
+      'table_of_contents' => { from: ['table_of_contents'] },
+      'title' => { from: ['title'], parsed: true },
+      'url' => { from: ['url'] },
+      'use' => { from: ['use'] },
+      'file' => { from: ['file'] },
+      'advisors_attributes' => { from: ['advisors_attributes'] },
+      'arrangers_attributes' => { from: ['arrangers_attributes'] },
+      'composers_attributes' => { from: ['composers_attributes'] },
+      'contributors_attributes' => { from: ['contributors_attributes'] },
+      'creators_attributes' => { from: ['creators_attributes'] },
+      'project_directors_attributes' => { from: ['project_directors_attributes'] },
+      'researchers_attributes' => { from: ['researchers_attributes'] },
+      'reviewers_attributes' => { from: ['reviewers_attributes'] },
+      'translators_attributes' => { from: ['translators_attributes'] }
+    }
+  }
 
   # Add to, or change existing mappings as follows
   #   e.g. to exclude date
   #   config.field_mappings["Bulkrax::OaiDcParser"]["date"] = { from: ["date"], excluded: true  }
+  #
+  #   e.g. to import parent-child relationships
+  #   config.field_mappings['Bulkrax::CsvParser']['parents'] = { from: ['parents'], related_parents_field_mapping: true }
+  #   config.field_mappings['Bulkrax::CsvParser']['children'] = { from: ['children'], related_children_field_mapping: true }
+  #   (For more info on importing relationships, see Bulkrax Wiki: https://github.com/samvera-labs/bulkrax/wiki/Configuring-Bulkrax#parent-child-relationship-field-mappings)
   #
   # #   e.g. to add the required source_identifier field
   #   #   config.field_mappings["Bulkrax::CsvParser"]["source_id"] = { from: ["old_source_id"], source_identifier: true  }
@@ -64,12 +137,12 @@ Bulkrax.setup do |config|
   # It is given two arguments, self at the time of call and the index of the record
   #    config.fill_in_blank_source_identifiers = ->(parser, index) { "b-#{parser.importer.id}-#{index}"}
   # or use a uuid
-  #    config.fill_in_blank_source_identifiers = ->(parser, index) { SecureRandom.uuid }
+  config.fill_in_blank_source_identifiers = ->(parser, index) { SecureRandom.uuid }
 
   # Properties that should not be used in imports/exports. They are reserved for use by Hyrax.
   # config.reserved_properties += ['my_field']
+  config.removed_image_path = Rails.root.join('app', 'assets', 'images', 'bulkrax', 'removed.png')
 end
 
 # Sidebar for hyrax 3+ support
-# UNC note uncomment this line when moving to hyrax 3.x
-# Hyrax::DashboardController.sidebar_partials[:repository_content] << "hyrax/dashboard/sidebar/bulkrax_sidebar_additions" if Object.const_defined?(:Hyrax) && ::Hyrax::DashboardController&.respond_to?(:sidebar_partials)
+Hyrax::DashboardController.sidebar_partials[:repository_content] << 'hyrax/dashboard/sidebar/bulkrax_sidebar_additions' if Object.const_defined?(:Hyrax) && ::Hyrax::DashboardController&.respond_to?(:sidebar_partials)

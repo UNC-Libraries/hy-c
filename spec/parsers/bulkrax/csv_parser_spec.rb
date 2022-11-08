@@ -1,8 +1,17 @@
 # frozen_string_literal: true
 require 'rails_helper'
+require Rails.root.join('app/overrides/parsers/bulkrax/csv_parser_override.rb')
 
 # testing overrides
 RSpec.describe Bulkrax::CsvParser do
+  before do
+    ActiveFedora::Cleaner.clean!
+  end
+
+  after do
+    ActiveFedora::Cleaner.clean!
+  end
+
   let(:user) do
     User.new(email: 'test@example.com', guest: false, uid: 'test') { |u| u.save!(validate: false) }
   end
@@ -118,17 +127,20 @@ RSpec.describe Bulkrax::CsvParser do
 
     subject { described_class.new(exporter) }
 
+
     describe '#write_files' do
       it 'exports people objects' do
         test_work.save
         exporter_run.save
+        subject.create_new_entries
         exporter.export
-        export_file = subject.setup_export_file
         subject.write_files
+        export_file = subject.setup_export_file(1)
 
         first_row = CSV.read(export_file, headers: true).first
+
         expect(first_row['source_identifier']).to eq test_work.id
-        expect(first_row['title']).to eq test_work.title.first
+        expect(first_row['title_1']).to eq test_work.title.first
         expect(first_row['creators_attributes']).to eq "{\"0\"=>#{test_work.creators.first.as_json}}"
       end
     end
@@ -137,7 +149,6 @@ RSpec.describe Bulkrax::CsvParser do
       it 'includes columns for people objects' do
         exporter_run.save
         exporter.export
-
         expect(subject.export_headers).to include('advisors_attributes', 'arrangers_attributes', 'composers_attributes',
                                                   'contributors_attributes', 'creators_attributes',
                                                   'project_directors_attributes', 'researchers_attributes',

@@ -6,6 +6,7 @@ RSpec.describe Tasks::SetupTasksService do
     before do
       User.delete_all
       Role.delete_all
+      ActiveFedora::Cleaner.clean!
     end
 
     it 'creates an admin user in the admin role' do
@@ -17,6 +18,7 @@ RSpec.describe Tasks::SetupTasksService do
   describe '#default_admin_set' do
     before do
       AdminSet.delete_all
+      ActiveFedora::Cleaner.clean!
     end
 
     it 'creates a default admin set' do

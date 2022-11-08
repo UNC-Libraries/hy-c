@@ -20,6 +20,10 @@ RSpec.describe Hyrax::Workflow::DeletionRequestRejectionNotification do
   let(:entity) { Sipity::Entity.create(proxy_for_global_id: work.to_global_id.to_s, workflow_id: workflow.id) }
   let(:comment) { double('comment', comment: 'A pleasant read') }
 
+  before do
+    ActiveFedora::Cleaner.clean!
+  end
+
   describe '.send_notification' do
     # rubocop:disable Layout/MultilineMethodCallIndentation
     it 'sends a message to all users' do

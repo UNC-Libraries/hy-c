@@ -20,6 +20,7 @@ RSpec.describe Tasks::ProquestIngestService, :ingest do
   end
 
   before do
+    ActiveFedora::Cleaner.clean!
     allow(RegisterToLongleafJob).to receive(:perform_later).and_return(nil)
     allow(User).to receive(:find_by).with(uid: 'admin').and_return(admin)
     allow(CharacterizeJob).to receive(:perform_later)
