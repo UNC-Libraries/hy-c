@@ -15,7 +15,7 @@ RSpec.feature 'boxc redirects' do
     tempfile.unlink
     File.delete('spec/fixtures/redirect_uuids.csv') if File.exist?('spec/fixtures/redirect_uuids.csv')
   end
-  around(:all) do |example|
+  around(:example) do |example|
     Rails.cache.clear
     cached_redirect_file_path = ENV['REDIRECT_FILE_PATH']
     cached_redirect_old_domain = ENV['REDIRECT_OLD_DOMAIN']

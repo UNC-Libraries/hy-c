@@ -33,7 +33,7 @@ RSpec.feature 'Edit works created through the Sage ingest', :sage, js: false do
   end
 
   # empty the progress log
-  around(:all) do |example|
+  around(:example) do |example|
     File.open(ingest_progress_log_path, 'w') { |file| file.truncate(0) }
     example.run
     File.open(ingest_progress_log_path, 'w') { |file| file.truncate(0) }
