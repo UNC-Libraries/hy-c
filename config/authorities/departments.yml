@@ -592,6 +592,10 @@ terms:
   term: Gillings School of Global Public Health; Department of Health Policy and Management
   active: true
   short_label: Department of Health Policy and Management
+- id: Department of Health Sciences
+  term: School of Medicine; Department of Health Sciences
+  active: true
+  short_label: Department of Health Sciences
 - id: Department of History
   term: College of Arts and Sciences; Department of History
   active: true
