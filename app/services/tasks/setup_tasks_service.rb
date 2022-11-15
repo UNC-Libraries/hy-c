@@ -11,7 +11,7 @@ module Tasks
     end
 
     def self.default_admin_set
-      Hyrax::AdminSetCreateService.call(admin_set: AdminSet.new(title: ['default']),
+      Hyrax::AdminSetCreateService.call!(admin_set: AdminSet.new(title: ['default']),
                                         creating_user: User.where(email: 'admin@example.com').first)
     end
 

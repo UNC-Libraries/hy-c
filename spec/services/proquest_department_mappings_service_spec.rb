@@ -15,7 +15,7 @@ RSpec.describe Hyrax::ProquestDepartmentMappingsService do
     end
 
     it 'returns nil for unmapped proquest department' do
-      expect { service.standard_department_name('American History') }.to raise_error
+      expect { service.standard_department_name('American History') }.to raise_error(ProquestDepartmentMappingsService::UnknownDepartmentError)
     end
   end
 end
