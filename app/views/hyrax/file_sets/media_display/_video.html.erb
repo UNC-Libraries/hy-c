@@ -1,8 +1,6 @@
-<%# [hyc-override] Overriding to hide withdrawn files %>
+<%# [hyc-override] No thumbnail when not showing download link %>
 <%# [hyc-override] Style download link %>
-<% if current_user&.admin? || !@presenter.respond_to?('workflow') || 
-    (!@presenter.workflow.in_workflow_state?(['withdrawn', 'pending deletion']) &&
-      file_set.embargo_release_date.blank? && display_media_download_link?(file_set: file_set)) %>
+<% if display_media_download_link?(file_set: file_set) %>
     <div>
       <h2 class="sr-only"><%= t('hyrax.file_set.show.downloadable_content.heading') %></h2>
       <video controls="controls" class="video-js vjs-default-skin" style="width:100%" data-setup="{}" controlsList="nodownload" preload="auto">
