@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+# https://github.com/samvera/hyrax/blob/v3.4.2/app/helpers/hyrax/file_set_helper.rb
 Hyrax::WorkflowsHelper.module_eval do
   def workflow_restriction?(object, ability: current_ability)
       return false if object.nil? # Yup, we may get nil, and there's no restriction on nil
