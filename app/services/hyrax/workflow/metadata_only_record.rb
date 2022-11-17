@@ -4,7 +4,8 @@ module Hyrax
   module Workflow
     module MetadataOnlyRecord
       def self.call(user:, target:, **)
-        target.file_sets.each do |file_set|
+        target.file_ids.each do |file_id|
+          file_set = FileSet.find(file_id)
           Hyrax::Actors::FileSetActor.new(file_set, user)
                                      .update_metadata(visibility: Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE)
         end
