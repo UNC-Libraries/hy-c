@@ -7,7 +7,7 @@ Hyrax::WorkflowsHelper.module_eval do
       return false if ability.can?(:edit, object)
       # [hyc-override] permit access when user can read the object and has roles in the workflow.
       # This handles cases where objects are suppressed, but the workflow grants viewing for some.
-      return false if ability.can?(:read, object) && object.workflow.actions.present?
+      return false if ability.can?(:read, object) && object.respond_to?(:workflow) && object.workflow.actions.present?
       return object.suppressed? if object.respond_to?(:suppressed?)
       false
     end
