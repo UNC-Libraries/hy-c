@@ -301,7 +301,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       click_on 'Logout'
 
       # Check notifications for tombstone requests
-      login_as user
+      login_as admin_user
 
       visit "/concern/honors_theses/#{HonorsThesis.all[-1].id}"
       click_on 'Request Deletion'
@@ -323,6 +323,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       expect(nonreviewer.mailbox.inbox.count).to eq 0
       expect(manager.mailbox.inbox.count).to eq 0
 
+      login_as user
       # create a second honors thesis work to test viewer notification
       visit new_hyrax_honors_thesis_path
       expect(page).to have_content 'Add New Undergraduate Honors Thesis'
