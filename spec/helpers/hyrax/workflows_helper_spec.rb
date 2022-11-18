@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 RSpec.describe Hyrax::WorkflowsHelper do
   describe '#workflow_restriction?' do
     let(:ability) { double }
@@ -13,7 +14,7 @@ RSpec.describe Hyrax::WorkflowsHelper do
         let(:returning_actions) { [] }
         it { is_expected.to be_truthy }
       end
-      
+
       context 'with comment workflow action' do
         let(:returning_actions) { ['comment_only'] }
         it { is_expected.to be_falsey }

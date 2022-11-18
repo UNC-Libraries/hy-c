@@ -24,7 +24,7 @@ RSpec.describe Hyrax::Workflow::AssignReviewerByAffiliation do
   }
   let!(:entity) { Sipity::Entity.create(workflow_id: workflow.id, proxy_for_global_id: work.to_global_id.to_s) }
 
-  describe ".call" do
+  describe '.call' do
     context 'with reviewers assigned to role' do
       let(:role) { Role.new(name: 'biology2_reviewer') }
       before(:each) do
@@ -33,7 +33,7 @@ RSpec.describe Hyrax::Workflow::AssignReviewerByAffiliation do
         role.save
       end
 
-      it "assigns reviewer group and sends notifications" do
+      it 'assigns reviewer group and sends notifications' do
         expect(work).to be_valid
         expect { described_class.call(target: work) }
           .to change { reviewer1.mailbox.inbox.count }.by(1)
@@ -42,7 +42,7 @@ RSpec.describe Hyrax::Workflow::AssignReviewerByAffiliation do
       end
     end
     context 'without reviewers assigned to role' do
-      it "assigns reviewer group, does not send notifications" do
+      it 'assigns reviewer group, does not send notifications' do
         expect(work).to be_valid
         expect { described_class.call(target: work) }
           .to change { reviewer1.mailbox.inbox.count }.by(0)
