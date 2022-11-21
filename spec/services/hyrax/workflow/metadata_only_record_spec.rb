@@ -3,7 +3,9 @@ require 'rails_helper'
 
 RSpec.describe Hyrax::Workflow::MetadataOnlyRecord do
   let(:user) { FactoryBot.create(:user) }
+  # let(:work) { FactoryBot.valkyrie_create(:article) }
   let(:work) { Article.create(title: ['New Article'], visibility: Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC) }
+  # let(:target) { Hyrax.persister.save(resource: work.valkyrie_resource) }
   let(:file_set) { FileSet.new }
   let(:file_set_actor) { Hyrax::Actors::FileSetActor.new(file_set, user) }
   let(:admin_set) do
@@ -23,11 +25,14 @@ RSpec.describe Hyrax::Workflow::MetadataOnlyRecord do
 
   before do
     file_set_actor.attach_to_work(work)
+
+    work.reload
+    @target = Hyrax.persister.save(resource: work.valkyrie_resource)
   end
 
   describe '.call' do
     it 'makes file sets private' do
-      expect { described_class.call(target: work, user: user) }
+      expect { described_class.call(target: @target, user: user) }
         .to change { work.file_sets[0].visibility }
         .from(Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC)
         .to(Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE)
