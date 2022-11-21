@@ -658,6 +658,7 @@ input#check_all {
 #file_download {
   background-color: $carolina-blue-dark;
   border-color: $carolina-blue-dark;
+  color: $text-color;
 
   &:hover {
     background-color: #235d9d;
@@ -688,11 +689,14 @@ li {
 
 .citations {
   padding-left: 0;
-}
+  padding-top: 5px;
 
-@media only screen and (max-width: 1765px) {
+  .btn {
+    display: table;
+  }
+
   .access-request {
-    margin-top: 10px;
+    margin-top: 5px;
   }
 }
 
@@ -832,12 +836,6 @@ li {
 
   .col-sm-12 {
     margin-bottom: 25px;
-  }
-}
-
-@media only screen and (max-width: 767px) {
-  .access-request {
-    margin-top: 0;
   }
 }
 
