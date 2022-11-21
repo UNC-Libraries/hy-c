@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+require 'rails_helper'
 RSpec.describe Hyrax::WorkflowsHelper do
   describe '#workflow_restriction?' do
     let(:ability) { double }
@@ -8,11 +9,25 @@ RSpec.describe Hyrax::WorkflowsHelper do
     let(:object) { double(workflow: workflow) }
 
     context 'with read permissions' do
-      before { expect(ability).to receive(:can?).with(:read, object).and_return(true) }
+      before do
+        allow(ability).to receive(:can?).with(:edit, object).and_return(false)
+        allow(ability).to receive(:can?).with(:read, object).and_return(true)
+      end
 
       context 'with no workflow actions' do
         let(:returning_actions) { [] }
-        it { is_expected.to be_truthy }
+        context 'object is suppressed' do
+          before do
+            allow(object).to receive(:suppressed?).and_return(true)
+          end
+          it { is_expected.to be_truthy }
+        end
+        context 'object is not suppressed' do
+          before do
+            allow(object).to receive(:suppressed?).and_return(false)
+          end
+          it { is_expected.to be_falsey }
+        end
       end
 
       context 'with comment workflow action' do

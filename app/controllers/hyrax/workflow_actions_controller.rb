@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+# https://github.com/samvera/hyrax/blob/v3.4.2/app/controllers/hyrax/workflow_actions_controller.rb
 module Hyrax
   class WorkflowActionsController < ApplicationController
     DEFAULT_FORM_CLASS = Hyrax::Forms::WorkflowActionForm
@@ -16,6 +17,7 @@ module Hyrax
     # [hyc-override] end override
     before_action :authenticate_user!
 
+    # rubocop:disable GitHub/RailsControllerRenderPathsExist
     def update
       if workflow_action_form.save
         after_update_response
@@ -26,6 +28,7 @@ module Hyrax
         end
       end
     end
+    # rubocop:enable GitHub/RailsControllerRenderPathsExist
 
     private
 
