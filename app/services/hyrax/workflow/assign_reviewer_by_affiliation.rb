@@ -26,20 +26,23 @@ module Hyrax::Workflow::AssignReviewerByAffiliation
     end
   end
 
+  # Send notification to reviewer group
   def self.notify_reviewers(work, work_id, group_name, type, access)
-    # Send notification to reviewer group
-    entity = Sipity::Entity.where(proxy_for_global_id: work.to_global_id.to_s).first
+    # Find any users that are in the reviewer group
     recipients = Hash.new
     selected_role = Role.where(name: group_name).first
     recipients[:to] = selected_role.users
 
-    if recipients[:to].count.positive?
-      depositor = User.find_by_user_key(work.depositor)
-      Hyrax::Workflow::HonorsDepartmentReviewerDepositNotification.send_notification(entity: entity,
-                                                                                     comment: nil,
-                                                                                     user: depositor,
-                                                                                     recipients: recipients)
-    end
+    # Return early if there aren't any users in the group
+    return unless recipients[:to].count.positive?
+
+    # Send notification to the users
+    entity = Sipity::Entity.where(proxy_for_global_id: work.to_global_id.to_s).first
+    depositor = User.find_by_user_key(work.depositor)
+    Hyrax::Workflow::HonorsDepartmentReviewerDepositNotification.send_notification(entity: entity,
+                                                                                   comment: nil,
+                                                                                   user: depositor,
+                                                                                   recipients: recipients)
   end
 
   def self.find_reviewer_for(department:)
