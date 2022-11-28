@@ -1,8 +1,7 @@
-<%# [hyc-override] Overriding to hide withdrawn files %>
+<%# [hyc-override] Hide thumbnail when IIIF viewer present %>
+<%# [hyc-override] No thumbnail when not showing download link %>
 <%# [hyc-override] Style download link %>
-<% if current_user&.admin? || !@presenter.respond_to?('workflow') || 
-    (!@presenter.workflow.in_workflow_state?(['withdrawn', 'pending deletion']) &&
-      file_set.embargo_release_date.blank? && display_media_download_link?(file_set: file_set)) %>
+<% if display_media_download_link?(file_set: file_set) %>
     <div>
       <h2 class="sr-only"><%= t('hyrax.file_set.show.downloadable_content.heading') %></h2>
       <% if !@presenter.respond_to?(:iiif_viewer?) || !@presenter.iiif_viewer? %>

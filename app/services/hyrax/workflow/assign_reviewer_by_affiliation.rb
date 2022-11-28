@@ -9,21 +9,40 @@ module Hyrax::Workflow::AssignReviewerByAffiliation
         reviewer = find_reviewer_for(department: department)
         permission_template_id = Hyrax::PermissionTemplate.find_by_source_id(target.admin_set_id).id
 
-        # This assigns database permissions, but does not grant permissions on the Fedora object.
+        workflow = Sipity::Workflow.where(permission_template_id: permission_template_id,
+                                          active: true).first
+        # Assign permissions to the departmental reviewer group.
         Hyrax::Workflow::PermissionGenerator.call(entity: target,
                                                   agents: [reviewer],
                                                   roles: ['viewing'],
-                                                  workflow: Sipity::Workflow.where(permission_template_id: permission_template_id,
-                                                                                   active: true).first)
+                                                  workflow: workflow)
 
-        # This grants read access to the Fedora object.
-        ::AssignPermissionsToWorkJob.perform_later(target.class.name,
-                                                   target.id,
-                                                   "#{department}_reviewer",
-                                                   'group',
-                                                   'read')
+        notify_reviewers(target,
+                         target.id,
+                         "#{department}_reviewer",
+                         'group',
+-                        'read')
       end
     end
+  end
+
+  # Send notification to reviewer group
+  def self.notify_reviewers(work, work_id, group_name, type, access)
+    # Find any users that are in the reviewer group
+    recipients = Hash.new
+    selected_role = Role.where(name: group_name).first
+    recipients[:to] = selected_role.users
+
+    # Return early if there aren't any users in the group
+    return unless recipients[:to].count.positive?
+
+    # Send notification to the users
+    entity = Sipity::Entity.where(proxy_for_global_id: work.to_global_id.to_s).first
+    depositor = User.find_by_user_key(work.depositor)
+    Hyrax::Workflow::HonorsDepartmentReviewerDepositNotification.send_notification(entity: entity,
+                                                                                   comment: nil,
+                                                                                   user: depositor,
+                                                                                   recipients: recipients)
   end
 
   def self.find_reviewer_for(department:)
