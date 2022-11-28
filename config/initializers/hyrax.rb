@@ -334,3 +334,8 @@ Hydra::Derivatives::Processors::Image.timeout = 5.minutes
 
 # set bulkrax default work type to first curation_concern if it isn't already set
 Bulkrax.default_work_type = 'General' if Bulkrax.default_work_type.blank?
+
+# Load our local schema.org config instead of the default
+local_schema_file = Rails.root.join('config', 'schema_org.yml')
+local_filename = File.file?(local_schema_file) ? local_schema_file : FILENAME
+Hyrax::Microdata.load_paths=(local_filename)
