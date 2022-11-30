@@ -146,6 +146,18 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
           expect(response).to be_not_found
         end
       end
+
+      context 'when restricted by workflow' do
+
+        before do
+          allow(subject).to receive(:workflow_restriction?).and_return(true)
+        end
+
+        it 'gets 401 response' do
+          get :show, params: { id: file_set}
+          expect(response).to be_unauthorized
+        end
+      end
     end
   end
 end
