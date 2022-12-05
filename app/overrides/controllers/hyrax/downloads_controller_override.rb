@@ -20,14 +20,19 @@ Hyrax::DownloadsController.class_eval do
 
   private
 
+  def file_set_parent(file_set_id)
+    file_set = ActiveFedora::Base.where(id: file_set_id).first
+    file_set.parent
+  end
+
   # Customize the :read ability in your Ability class, or override this method.
   # Hydra::Ability#download_permissions can't be used in this case because it assumes
   # that files are in a LDP basic container, and thus, included in the asset's uri.
   def authorize_download!
     authorize! :download, params[asset_param_key]
     # Deny access if the work containing this file is restricted by a workflow
-    file_set = Hyrax.query_service.find_by_alternate_identifier(alternate_identifier: params[asset_param_key], use_valkyrie: Hyrax.config.use_valkyrie?)
-    return unless workflow_restriction?(file_set.parent, ability: current_ability)
+    return unless workflow_restriction?(file_set_parent(params[asset_param_key]),
+                                        ability: current_ability)
     raise Hyrax::WorkflowAuthorizationException
   rescue CanCan::AccessDenied, Hyrax::WorkflowAuthorizationException
     # [hyc-override] Send permission failures to

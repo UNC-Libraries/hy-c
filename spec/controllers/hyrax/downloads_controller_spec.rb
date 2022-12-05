@@ -158,6 +158,11 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
           expect(response).to be_unauthorized
         end
       end
+
+      it 'retrieves the thumbnail without contacting Fedora' do
+        expect(ActiveFedora::Base).not_to receive(:find).with(file_set.id)
+        get :show, params: { id: file_set, file: 'thumbnail' }
+      end
     end
   end
 end
