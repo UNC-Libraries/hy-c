@@ -1,5 +1,9 @@
 ## config/authorities/departments.yml
 terms:
+- id: African Studies Center
+  term: College of Arts and Sciences; African Studies Center
+  active: true
+  short_label: African Studies Center
 - id: American Indian and Indigenous Studies Program
   term: College of Arts and Sciences; Department of American Studies; American Indian and Indigenous Studies Program
   active: true
