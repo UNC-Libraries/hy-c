@@ -47,13 +47,13 @@ gem 'pg', '~> 1.3.5'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.2.8.1'
 # Use Redis adapter to run Action Cable in production
-gem 'redis', '~> 4.1.0'
+gem 'redis', '~> 4.5.0'
 gem 'riiif', '~> 2.4.0'
 gem 'roo', '~>2.9.0'
 gem 'rsolr', '~> 2.5.0'
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.1.0'
-gem 'sidekiq', '~> 6.0'
+gem 'sidekiq', '~> 5.2.10'
 gem 'staccato', '~>0.5.3'
 # Turbolinks makes navigating your web application faster. Read more: https://github.com/turbolinks/turbolinks
 gem 'turbolinks', '~> 5.2.1'
