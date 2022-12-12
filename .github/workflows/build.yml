@@ -29,7 +29,7 @@ jobs:
       DOI_PREFIX: '10.17615'
       EMAIL_FROM_ADDRESS: 'hyraxapp@example.com'
       EMAIL_GEONAMES_ERRORS_ADDRESS: 'hyraxapp@example.com'
-      FEDORA_TEST_URL: http://127.0.0.1:8080/rest
+      FEDORA_TEST_URL: http://localhost:8080/fcrepo/rest
       HYRAX_DATABASE_PASSWORD: 'password'
       HYRAX_HOST: 'https://example.com'
       NOKOGIRI_USE_SYSTEM_LIBRARIES: true
@@ -43,11 +43,11 @@ jobs:
       IMAGE_PROCESSOR: 'graphicsmagick'
     services:
       fedora:
-        image: samvera/fcrepo4:4.7.5-cgroup1
+        image: cazzerson/fcrepo4:4.7.5
         ports:
           - 8080:8080
         env:
-          CATALINA_OPTS: "-Djava.awt.headless=true -Dfile.encoding=UTF-8 -server -Xms512m -Xmx1024m -XX:NewSize=256m -XX:MaxNewSize=256m -XX:PermSize=256m -XX:MaxPermSize=256m -XX:+DisableExplicitGC"
+          CATALINA_OPTS: "-Djava.awt.headless=true -server -Xms1G -Xmx2G -XX:MaxNewSize=1G -XX:+HeapDumpOnOutOfMemoryError -Dfcrepo.modeshape.configuration=classpath:/config/file-simple/repository.json"
       redis:
         image: redis
         options: >-
