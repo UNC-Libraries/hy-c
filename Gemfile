@@ -24,7 +24,7 @@ gem 'execjs', '2.8.1'
 gem 'httparty', '~>0.20.0'
 gem 'hydra-editor', '~> 5.0'
 gem 'hydra-role-management', '~> 1.0'
-gem 'hyrax', '3.4.2'
+gem 'hyrax', '3.5.0'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.11.2'
 # Use jquery as the JavaScript library
@@ -47,15 +47,13 @@ gem 'pg', '~> 1.3.5'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.2.8.1'
 # Use Redis adapter to run Action Cable in production
-gem 'redis', '~> 3.3.0'
+gem 'redis', '~> 4.1.0'
 gem 'riiif', '~> 2.4.0'
 gem 'roo', '~>2.9.0'
 gem 'rsolr', '~> 2.5.0'
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.1.0'
-gem 'sidekiq', '~> 5.2.9'
-gem 'sidekiq-limit_fetch', '~> 3.4.0'
-gem 'sidekiq-status', '~> 2.1.3'
+gem 'sidekiq', '~> 6.0'
 gem 'staccato', '~>0.5.3'
 # Turbolinks makes navigating your web application faster. Read more: https://github.com/turbolinks/turbolinks
 gem 'turbolinks', '~> 5.2.1'
