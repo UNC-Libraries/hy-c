@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 require 'rails_helper'
+require 'active_fedora/cleaner'
 # Load the override being tested
 require Rails.root.join('app/overrides/services/hyrax/workflow/notification_service_override.rb')
 
@@ -13,6 +14,10 @@ RSpec.describe Hyrax::Workflow::NotificationService do
       end
       example.run
       Object.send(:remove_const, :ConfirmationOfSubmittedToUlraCommittee)
+    end
+
+    before do
+      ActiveFedora::Cleaner.clean!
     end
 
     # Check that base behavior
