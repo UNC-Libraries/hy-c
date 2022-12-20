@@ -27,7 +27,9 @@ Bulkrax::ObjectFactory.class_eval do
 
     # convert people objects from hash notation to valid json
     @transform_attributes.each do |k, v|
-      @transform_attributes[k] = JSON.parse(v.gsub('=>', ':').gsub("'", '"')) if k.ends_with? '_attributes'
+      if !v.blank? && k.ends_with?('_attributes')
+        @transform_attributes[k] = JSON.parse(v.gsub('=>', ':').gsub("'", '"'))
+      end
     end
 
     update ? @transform_attributes.except(:id) : @transform_attributes
