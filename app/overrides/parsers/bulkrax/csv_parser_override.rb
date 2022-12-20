@@ -68,13 +68,6 @@ Bulkrax:: CsvParser.class_eval do
     path
   end
 
-  #Override to fix misspelling in ActiveSupport::Deprecation that was causing a constant not found error
-  # This can be removed when fixed in hyrax
-  def current_work_ids
-    ActiveSupport::Deprecation.warn('Bulkrax::CsvParser#current_work_ids will be replaced with #current_record_ids in version 3.0')
-    current_record_ids
-  end
-
   # export methods
   # overriding to correctly export people attributes
   # overriding to set source_identifier to string if an Array and set it to work id if empty
