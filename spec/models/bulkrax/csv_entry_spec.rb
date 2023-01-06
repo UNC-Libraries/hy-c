@@ -67,7 +67,6 @@ module Bulkrax
 
           it 'succeeds' do
             metadata = subject.build_export_metadata
-            puts "*Metadata #{metadata}"
             expect(metadata['creators_name_1']).to eq('Doe, John')
             expect(metadata['creators_affiliation_1']).to eq('Department of Biology')
             expect(metadata['creators_orcid_1']).to eq('some orcid')
@@ -78,6 +77,35 @@ module Bulkrax
             expect(metadata['advisors_affiliation_1']).to eq('Department of Medicine')
             expect(metadata['advisors_orcid_1']).to be_nil
             expect(metadata['title_1']).to eq('new test bulkrax work')
+          end
+        end
+
+        context 'with work type that does not support advisors' do
+          let(:work_obj) do
+            Article.new(title: ['new test bulkrax article'],
+                        creators_attributes: { 
+                          '0' => {
+                            'name' => 'Doe, John',
+                            'affiliation' => 'Department of Biology',
+                            'orcid' => 'some orcid'
+                          }})
+          end
+          
+          before do
+            allow_any_instance_of(ObjectFactory).to receive(:run!)
+            allow(subject).to receive(:hyrax_record).and_return(work_obj)
+            allow(work_obj).to receive(:id).and_return('test123')
+            allow(work_obj).to receive(:member_of_work_ids).and_return([])
+            allow(work_obj).to receive(:in_work_ids).and_return([])
+            allow(work_obj).to receive(:member_work_ids).and_return([])
+          end
+
+          it 'succeeds' do
+            metadata = subject.build_export_metadata
+            expect(metadata['creators_name_1']).to eq('Doe, John')
+            expect(metadata['creators_affiliation_1']).to eq('Department of Biology')
+            expect(metadata['creators_orcid_1']).to eq('some orcid')
+            expect(metadata['title_1']).to eq('new test bulkrax article')
           end
         end
       end

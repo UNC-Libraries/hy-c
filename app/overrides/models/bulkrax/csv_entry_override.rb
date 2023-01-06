@@ -16,8 +16,8 @@ Bulkrax::CsvEntry.class_eval do
   end
 
   def build_object(value)
-    data = hyrax_record.send(value['object'])
-    return if data.empty?
+    data = hyrax_record.send(value['object']) if hyrax_record.respond_to?(value['object'])
+    return if data.nil? || data.empty?
 
     data = data.to_a if data.is_a?(ActiveTriples::Relation)
     data = serialize_people(data) if data && data.first.is_a?(Person)
