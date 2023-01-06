@@ -1,9 +1,9 @@
 # frozen_string_literal: true
-# [hyc-override] check model name before building entry
 # https://github.com/samvera-labs/bulkrax/blob/v4.4.0/app/models/bulkrax/csv_entry.rb
 Bulkrax::CsvEntry.class_eval do
   WORK_TYPES ||= %w[Article Artwork DataSet Dissertation General HonorsThesis Journal MastersPaper Multimed ScholarlyWork FileSet Collection]
 
+  # [hyc-override] check model name before building entry
   alias_method :original_build_metadata, :build_metadata
   def build_metadata
     raise StandardError.new "uninitialized constant #{record['model']} (NameError)" if invalid_model_type(record)
@@ -16,15 +16,17 @@ Bulkrax::CsvEntry.class_eval do
   end
 
   def build_object(value)
+    # [hyc-override] skip mapped fields that don't exist for the current record
     data = hyrax_record.send(value['object']) if hyrax_record.respond_to?(value['object'])
     return if data.nil? || data.empty?
 
     data = data.to_a if data.is_a?(ActiveTriples::Relation)
+    # [hyc-override] convert people objects to the hash serialization expected by bulkrax
     data = serialize_people(data) if data && data.first.is_a?(Person)
     object_metadata(Array.wrap(data), value['object'])
   end
 
-  # Transform Person objects to hashes, and flatten values from relations to single values
+  # [hyc-override] Transform Person objects to hashes, and flatten values from relations to single values
   def serialize_people(data)
     data.map do |d|
       person_hash = d.attributes
@@ -33,7 +35,8 @@ Bulkrax::CsvEntry.class_eval do
     end
   end
 
-  def object_metadata(data, object_name)
+  # [hyc-override] allow object_name to be passed down
+  def object_metadata(data, object_name = nil)
     data = data.map { |d| eval(d) }.flatten # rubocop:disable Security/Eval
 
     data.each_with_index do |obj, index|
@@ -53,6 +56,7 @@ Bulkrax::CsvEntry.class_eval do
     end
   end
 
+  # [hyc-override] when object_name is provided, scope to mappings of object and check with prefix
   def key_for_export(key, object_name = nil)
     clean_key = key_without_numbers(key)
     if object_name
