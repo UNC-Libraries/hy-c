@@ -61,6 +61,7 @@ Bulkrax::ObjectFactory.class_eval do
   def permitted_attributes
     properties = klass.properties.keys.map(&:to_sym)
     people = properties.map { |p| PersonHelper.person_field?(p) ? p : nil }.compact
-    properties + people.map { |p| "#{p}_attributes".to_sym } + %i[id edit_users edit_groups read_groups visibility work_members_attributes admin_set_id dcmi_type]
+    permitted = properties + people.map { |p| "#{p}_attributes".to_sym } + %i[id edit_users edit_groups read_groups visibility work_members_attributes dcmi_type]
+    permitted += %i[admin_set_id] if klass != Collection
   end
 end
