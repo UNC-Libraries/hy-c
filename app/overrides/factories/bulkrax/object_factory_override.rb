@@ -13,6 +13,8 @@ Bulkrax::ObjectFactory.class_eval do
     correct_value_types
     # [hyc-override] Move and convert person fields to _attributes field for updating
     prepare_person_fields
+
+    update ? @transform_attributes.except(:id) : @transform_attributes
   end
 
   # Changes attribute values to multi or single valued to match expected types in the object model
