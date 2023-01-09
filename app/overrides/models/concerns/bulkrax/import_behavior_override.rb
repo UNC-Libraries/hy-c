@@ -30,4 +30,9 @@ Bulkrax::ImportBehavior.module_eval do
       raise ::StandardError, error_msg
     end
   end
+
+  # [hyc-override] set rights_statement as a single value rather an an array to match our model
+  def add_rights_statement
+    self.parsed_metadata['rights_statement'] = parser.parser_fields['rights_statement'] if override_rights_statement || self.parsed_metadata['rights_statement'].blank?
+  end
 end

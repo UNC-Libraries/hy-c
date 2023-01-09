@@ -14,6 +14,62 @@ module Bulkrax
       property :rights_statement, predicate: ::RDF::Vocab::EDM.rights
     end
 
+    describe 'builds entry' do
+      let(:hyrax_record) do
+        OpenStruct.new(
+          file_sets: [],
+          member_of_collections: [],
+          member_of_work_ids: [],
+          in_work_ids: [],
+          member_work_ids: []
+        )
+      end
+
+      before do
+        allow_any_instance_of(described_class).to receive(:collections_created?).and_return(true)
+        # allow_any_instance_of(described_class).to receive(:find_collection).and_return(collection)
+        allow(subject).to receive(:hyrax_record).and_return(hyrax_record)
+      end
+      let(:importer) { FactoryBot.create(:bulkrax_importer_csv) }
+      subject { described_class.new(importerexporter: importer) }
+
+      describe 'single valued field with controlled vocabulary' do
+        let(:original_value) { 'http://example.com/obj/' }
+        let(:corrected_value) { 'https://example.com/obj/' }
+        # Mock 'single_object' as a controlled vocab field
+        before do
+          allow(Bulkrax).to receive(:qa_controlled_properties).and_return(['rights_statement'])
+          allow(subject).to receive(:raw_metadata).and_return('rights_statement' => original_value, 'source_identifier' => 'qa_1', 'title' => 'some title', 'model' => 'General')
+          allow(subject).to receive(:active_id_for_authority?).with(original_value, 'rights_statement').and_return(false)
+          allow(subject).to receive(:active_id_for_authority?).with(corrected_value, 'rights_statement').and_return(true)
+        end
+
+        it 'replaces http with https for single valued field' do
+          subject.build_metadata
+
+          expect(subject.parsed_metadata['rights_statement']).to eq(corrected_value)
+        end
+      end
+
+      describe 'single valued field with controlled vocabulary empty value' do
+        let(:original_value) { '' }
+        let(:corrected_value) { nil }
+        # Mock 'single_object' as a controlled vocab field
+        before do
+          allow(Bulkrax).to receive(:qa_controlled_properties).and_return(['rights_statement'])
+          allow(subject).to receive(:raw_metadata).and_return('rights_statement' => original_value, 'source_identifier' => 'qa_1', 'title' => 'some title', 'model' => 'General')
+          allow(subject).to receive(:active_id_for_authority?).with(original_value, 'rights_statement').and_return(false)
+          allow(subject).to receive(:active_id_for_authority?).with(corrected_value, 'rights_statement').and_return(true)
+        end
+
+        it 'replaces blank rights_statement with single valued default' do
+          subject.build_metadata
+
+          expect(subject.parsed_metadata['rights_statement']).to eq(corrected_value)
+        end
+      end
+    end
+
     describe 'reads entry' do
       subject { described_class.new(importerexporter: exporter) }
 
