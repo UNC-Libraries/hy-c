@@ -39,7 +39,7 @@ module Bulkrax
         context 'with general work with multiple people' do
           let(:work_obj) do
             General.new(title: ['new test bulkrax work'],
-                        creators_attributes: { 
+                        creators_attributes: {
                           '0' => {
                             'name' => 'Doe, John',
                             'affiliation' => 'Department of Biology',
@@ -52,10 +52,10 @@ module Bulkrax
                         advisors_attributes: {
                           '0' => {
                             'name' => 'Ad, Visor',
-                            'affiliation' => 'Department of Medicine' 
+                            'affiliation' => 'Department of Medicine'
                           }})
           end
-          
+
           before do
             allow_any_instance_of(ObjectFactory).to receive(:run!)
             allow(subject).to receive(:hyrax_record).and_return(work_obj)
@@ -83,14 +83,14 @@ module Bulkrax
         context 'with work type that does not support advisors' do
           let(:work_obj) do
             Article.new(title: ['new test bulkrax article'],
-                        creators_attributes: { 
+                        creators_attributes: {
                           '0' => {
                             'name' => 'Doe, John',
                             'affiliation' => 'Department of Biology',
                             'orcid' => 'some orcid'
                           }})
           end
-          
+
           before do
             allow_any_instance_of(ObjectFactory).to receive(:run!)
             allow(subject).to receive(:hyrax_record).and_return(work_obj)

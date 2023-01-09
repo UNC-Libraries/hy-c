@@ -8,7 +8,7 @@ Bulkrax::ObjectFactory.class_eval do
   alias_method :original_transform_attributes, :transform_attributes
   def transform_attributes(update: false)
     original_transform_attributes(update: update)
-    
+
     # [hyc-override] fix enumeration of fields
     correct_value_types
     # [hyc-override] Move and convert person fields to _attributes field for updating
