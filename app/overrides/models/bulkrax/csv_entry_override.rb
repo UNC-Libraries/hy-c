@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 # https://github.com/samvera-labs/bulkrax/blob/v4.4.0/app/models/bulkrax/csv_entry.rb
 Bulkrax::CsvEntry.class_eval do
-  WORK_TYPES ||= %w[Article Artwork DataSet Dissertation General HonorsThesis Journal MastersPaper Multimed ScholarlyWork FileSet Collection]
+  UPDATABLE_TYPES ||= %w[Article Artwork DataSet Dissertation General HonorsThesis Journal MastersPaper Multimed ScholarlyWork FileSet Collection]
 
   # [hyc-override] check model name before building entry
   alias_method :original_build_metadata, :build_metadata
@@ -12,7 +12,7 @@ Bulkrax::CsvEntry.class_eval do
 
   def invalid_model_type(record)
     return false if record.nil?
-    record['model'].nil? || !WORK_TYPES.include?(record['model'])
+    record['model'].nil? || !UPDATABLE_TYPES.include?(record['model'])
   end
 
   def build_object(value)
