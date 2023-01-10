@@ -77,8 +77,8 @@ Bulkrax:: CsvParser.class_eval do
       instance_variable_set(instance_var, ActiveFedora::SolrService.post(
         extra_filters.to_s,
         fq: [
-          # [hyc-override] Replacing Solrizer reference with direct id field reference
-          %(id:("#{complete_entry_identifiers.join('" OR "')}")),
+          # [hyc-override] Replacing Solrizer reference
+          %(#{::ActiveFedora.index_field_mapper.solr_name(work_identifier)}:("#{complete_entry_identifiers.join('" OR "')}")),
           "has_model_ssim:(#{models_to_search.join(' OR ')})"
         ],
         fl: 'id',
