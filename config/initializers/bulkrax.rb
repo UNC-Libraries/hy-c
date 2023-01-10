@@ -40,7 +40,7 @@ Bulkrax.setup do |config|
   #   }
   config.field_mappings = {
     'Bulkrax::CsvParser' => {
-      'id' => { from: ['id'], source_identifier: true },
+      'id' => { from: ['id'] },
       'model' => { from: ['model'] },
       'abstract' => { from: ['abstract'] },
       'academic_concentration' => { from: ['academic_concentration'] },
@@ -97,7 +97,7 @@ Bulkrax.setup do |config|
       'rights_statement' => { from: ['rights_statement'] },
       'rights_statement_label' => { from: ['rights_statement_label'] },
       'series' => { from: ['series'] },
-      'source_identifier' => { from: ['source_identifier'] },
+      'source' => { from: ['source'], source_identifier: true },
       'sponsor' => { from: ['sponsor'] },
       'subject' => { from: ['subject'] },
       'table_of_contents' => { from: ['table_of_contents'] },
