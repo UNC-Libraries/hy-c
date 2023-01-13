@@ -39,7 +39,7 @@ module Bulkrax
         # Mock 'single_object' as a controlled vocab field
         before do
           allow(Bulkrax).to receive(:qa_controlled_properties).and_return(['rights_statement'])
-          allow(subject).to receive(:raw_metadata).and_return('rights_statement' => original_value, 'source_identifier' => 'qa_1', 'title' => 'some title', 'model' => 'General')
+          allow(subject).to receive(:raw_metadata).and_return('rights_statement' => original_value, 'source' => 'qa_1', 'title' => 'some title', 'model' => 'General')
           allow(subject).to receive(:active_id_for_authority?).with(original_value, 'rights_statement').and_return(false)
           allow(subject).to receive(:active_id_for_authority?).with(corrected_value, 'rights_statement').and_return(true)
         end
@@ -57,7 +57,7 @@ module Bulkrax
         # Mock 'single_object' as a controlled vocab field
         before do
           allow(Bulkrax).to receive(:qa_controlled_properties).and_return(['rights_statement'])
-          allow(subject).to receive(:raw_metadata).and_return('rights_statement' => original_value, 'source_identifier' => 'qa_1', 'title' => 'some title', 'model' => 'General')
+          allow(subject).to receive(:raw_metadata).and_return('rights_statement' => original_value, 'source' => 'qa_1', 'title' => 'some title', 'model' => 'General')
           allow(subject).to receive(:active_id_for_authority?).with(original_value, 'rights_statement').and_return(false)
           allow(subject).to receive(:active_id_for_authority?).with(corrected_value, 'rights_statement').and_return(true)
         end
