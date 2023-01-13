@@ -45,7 +45,7 @@ Bulkrax::ObjectFactory.class_eval do
         v.each_with_index do |person, index|
           unprefixed_person = unprefix_keys(k, person)
           # Remove blank id fields
-          unprefixed_person.delete_if { |k,v| k == 'id' && v.blank? }
+          unprefixed_person.delete_if { |k, v| k == 'id' && v.blank? }
           unprefixed[index.to_s] = unprefixed_person
         end
         people_attributes["#{k}_attributes"] = unprefixed
