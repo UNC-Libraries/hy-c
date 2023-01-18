@@ -1,16 +1,24 @@
 # frozen_string_literal: true
-
-# [hyc-override] overriding `transform_attributes` and
-# `permitted_attributes` methods to handle people objects
+# https://github.com/samvera-labs/bulkrax/blob/v4.4.0/app/factories/bulkrax/object_factory.rb
 Bulkrax::ObjectFactory.class_eval do
   private
 
   # Override if we need to map the attributes from the parser in
   # a way that is compatible with how the factory needs them.
-  # override to fix enumeration and formatting of people objects
+  alias_method :original_transform_attributes, :transform_attributes
   def transform_attributes(update: false)
-    @transform_attributes = attributes.slice(*permitted_attributes)
-    @transform_attributes.merge!(file_attributes(update_files)) if with_files
+    original_transform_attributes(update: update)
+
+    # [hyc-override] fix enumeration of fields
+    correct_value_types
+    # [hyc-override] Move and convert person fields to _attributes field for updating
+    prepare_person_fields
+
+    update ? @transform_attributes.except(:id) : @transform_attributes
+  end
+
+  # Changes attribute values to multi or single valued to match expected types in the object model
+  def correct_value_types
     resource = @klass.new
     @transform_attributes.each do |k, v|
       # check if attribute is single-valued but is currently an array
@@ -24,23 +32,39 @@ Bulkrax::ObjectFactory.class_eval do
                                    v
                                  end
     end
+  end
 
-    # convert people objects from hash notation to valid json
+  # Transforms person fields into _attributes form and moves the value to
+  # the related _attributes field in the transform_attributes hash.
+  def prepare_person_fields
+    people_attributes = {}
     @transform_attributes.each do |k, v|
-      @transform_attributes[k] = JSON.parse(v.gsub('=>', ':').gsub("'", '"')) if k.ends_with? '_attributes'
+      if !v.blank? && PersonHelper.person_field?(k)
+        @transform_attributes.delete(k)
+        unprefixed = {}
+        v.each_with_index do |person, index|
+          unprefixed_person = unprefix_keys(k, person)
+          # Remove blank id fields
+          unprefixed_person.delete_if { |k, v| k == 'id' && v.blank? }
+          unprefixed[index.to_s] = unprefixed_person
+        end
+        people_attributes["#{k}_attributes"] = unprefixed
+      end
     end
+    @transform_attributes.merge!(people_attributes)
+  end
 
-    update ? @transform_attributes.except(:id) : @transform_attributes
+  def unprefix_keys(prefix, original)
+    original.map { |pk, pv| [pk.delete_prefix(prefix + '_'), pv] }.to_h
   end
 
   # Regardless of what the Parser gives us, these are the properties we are prepared to accept.
-  # override to allow '_attributes' properties for people objects
-  # override to add admin_set_id and dcmi_type to the list of permitted parameters
+  # [hyc-override] override to allow '_attributes' properties for people objects
+  # [hyc-override] override to add admin_set_id and dcmi_type to the list of permitted parameters
   def permitted_attributes
-    people_types = [:advisors, :arrangers, :composers, :contributors, :creators, :project_directors, :researchers,
-                    :reviewers, :translators]
     properties = klass.properties.keys.map(&:to_sym)
-    people = properties.map { |p| people_types.include?(p) ? p : nil }.compact
-    properties + people.map { |p| "#{p}_attributes".to_sym } + %i[id edit_users edit_groups read_groups visibility work_members_attributes admin_set_id dcmi_type]
+    people = properties.map { |p| PersonHelper.person_field?(p) ? p : nil }.compact
+    permitted = properties + people.map { |p| "#{p}_attributes".to_sym } + %i[id edit_users edit_groups read_groups visibility work_members_attributes dcmi_type]
+    permitted += %i[admin_set_id] if klass != Collection
   end
 end

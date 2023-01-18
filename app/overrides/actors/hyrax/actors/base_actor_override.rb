@@ -57,7 +57,7 @@ Hyrax::Actors::BaseActor.class_eval do
 
   def log_deleted_people_objects(attributes, work_id)
     attributes.each do |attr, set|
-      if attr.match(/_attributes/)
+      if set.present? && attr.match(/_attributes/)
         set.each do |_k, v|
           if v['_destroy']
             File.open(ENV['DELETED_PEOPLE_FILE'], 'a+') do |file|

@@ -12,6 +12,9 @@ Bulkrax.setup do |config|
   # Default is the first returned by Hyrax.config.curation_concerns
   # config.default_work_type = MyWork
 
+  # Factory Class to use when generating and saving objects
+  config.object_factory = Bulkrax::ObjectFactory
+
   # Path to store pending imports
   config.import_path = "#{ENV['TEMP_STORAGE']}/hyrax/imports"
 
@@ -73,8 +76,8 @@ Bulkrax.setup do |config|
       'journal_volume' => { from: ['journal_volume'] },
       'keyword' => { from: ['keyword'], split: true },
       'kind_of_data' => { from: ['kind_of_data'] },
-      'language' => { from: ['language'], split: true },
-      'language_label' => { from: ['language_label'], split: true },
+      'language' => { from: ['language'] },
+      'language_label' => { from: ['language_label'] },
       'last_modified_date' => { from: ['last_modified_date'] },
       'license' => { from: ['license'] },
       'license_label' => { from: ['license_label'] },
@@ -94,7 +97,7 @@ Bulkrax.setup do |config|
       'rights_statement' => { from: ['rights_statement'] },
       'rights_statement_label' => { from: ['rights_statement_label'] },
       'series' => { from: ['series'] },
-      'source_identifier' => { from: ['source_identifier'] },
+      'source' => { from: ['source'], source_identifier: true },
       'sponsor' => { from: ['sponsor'] },
       'subject' => { from: ['subject'] },
       'table_of_contents' => { from: ['table_of_contents'] },
@@ -102,15 +105,60 @@ Bulkrax.setup do |config|
       'url' => { from: ['url'] },
       'use' => { from: ['use'] },
       'file' => { from: ['file'] },
-      'advisors_attributes' => { from: ['advisors_attributes'] },
-      'arrangers_attributes' => { from: ['arrangers_attributes'] },
-      'composers_attributes' => { from: ['composers_attributes'] },
-      'contributors_attributes' => { from: ['contributors_attributes'] },
-      'creators_attributes' => { from: ['creators_attributes'] },
-      'project_directors_attributes' => { from: ['project_directors_attributes'] },
-      'researchers_attributes' => { from: ['researchers_attributes'] },
-      'reviewers_attributes' => { from: ['reviewers_attributes'] },
-      'translators_attributes' => { from: ['translators_attributes'] }
+      'advisors_name' => { from: ['advisors_name'], object: 'advisors' },
+      'advisors_id' => { from: ['advisors_id'], object: 'advisors' },
+      'advisors_orcid' => { from: ['advisors_orcid'], object: 'advisors' },
+      'advisors_affiliation' => { from: ['advisors_affiliation'], object: 'advisors' },
+      'advisors_other_affiliation' => { from: ['advisors_other_affiliation'], object: 'advisors' },
+      'advisors_index' => { from: ['advisors_index'], object: 'advisors' },
+      'arrangers_name' => { from: ['arrangers_name'], object: 'arrangers' },
+      'arrangers_id' => { from: ['arrangers_id'], object: 'arrangers' },
+      'arrangers_orcid' => { from: ['arrangers_orcid'], object: 'arrangers' },
+      'arrangers_affiliation' => { from: ['arrangers_affiliation'], object: 'arrangers' },
+      'arrangers_other_affiliation' => { from: ['arrangers_other_affiliation'], object: 'arrangers' },
+      'arrangers_index' => { from: ['arrangers_index'], object: 'arrangers' },
+      'composers_name' => { from: ['composers_name'], object: 'composers' },
+      'composers_id' => { from: ['composers_id'], object: 'composers' },
+      'composers_orcid' => { from: ['composers_orcid'], object: 'composers' },
+      'composers_affiliation' => { from: ['composers_affiliation'], object: 'composers' },
+      'composers_other_affiliation' => { from: ['composers_other_affiliation'], object: 'composers' },
+      'composers_index' => { from: ['composers_index'], object: 'composers' },
+      'contributors_name' => { from: ['contributors_name'], object: 'contributors' },
+      'contributors_id' => { from: ['contributors_id'], object: 'contributors' },
+      'contributors_orcid' => { from: ['contributors_orcid'], object: 'contributors' },
+      'contributors_affiliation' => { from: ['contributors_affiliation'], object: 'contributors' },
+      'contributors_other_affiliation' => { from: ['contributors_other_affiliation'], object: 'contributors' },
+      'contributors_index' => { from: ['contributors_index'], object: 'contributors' },
+      'creators_name' => { from: ['creators_name'], object: 'creators' },
+      'creators_id' => { from: ['creators_id'], object: 'creators' },
+      'creators_orcid' => { from: ['creators_orcid'], object: 'creators' },
+      'creators_affiliation' => { from: ['creators_affiliation'], object: 'creators' },
+      'creators_other_affiliation' => { from: ['creators_other_affiliation'], object: 'creators' },
+      'creators_index' => { from: ['creators_index'], object: 'creators' },
+      'project_directors_name' => { from: ['project_directors_name'], object: 'project_directors' },
+      'project_directors_id' => { from: ['project_directors_id'], object: 'project_directors' },
+      'project_directors_orcid' => { from: ['project_directors_orcid'], object: 'project_directors' },
+      'project_directors_affiliation' => { from: ['project_directors_affiliation'], object: 'project_directors' },
+      'project_directors_other_affiliation' => { from: ['project_directors_other_affiliation'], object: 'project_directors' },
+      'project_directors_index' => { from: ['project_directors_index'], object: 'project_directors' },
+      'researchers_name' => { from: ['researchers_name'], object: 'researchers' },
+      'researchers_id' => { from: ['researchers_id'], object: 'researchers' },
+      'researchers_orcid' => { from: ['researchers_orcid'], object: 'researchers' },
+      'researchers_affiliation' => { from: ['researchers_affiliation'], object: 'researchers' },
+      'researchers_other_affiliation' => { from: ['researchers_other_affiliation'], object: 'researchers' },
+      'researchers_index' => { from: ['researchers_index'], object: 'researchers' },
+      'reviewers_name' => { from: ['reviewers_name'], object: 'reviewers' },
+      'reviewers_id' => { from: ['reviewers_id'], object: 'reviewers' },
+      'reviewers_orcid' => { from: ['reviewers_orcid'], object: 'reviewers' },
+      'reviewers_affiliation' => { from: ['reviewers_affiliation'], object: 'reviewers' },
+      'reviewers_other_affiliation' => { from: ['reviewers_other_affiliation'], object: 'reviewers' },
+      'reviewers_index' => { from: ['reviewers_index'], object: 'reviewers' },
+      'translators_name' => { from: ['translators_name'], object: 'translators' },
+      'translators_id' => { from: ['translators_id'], object: 'translators' },
+      'translators_orcid' => { from: ['translators_orcid'], object: 'translators' },
+      'translators_affiliation' => { from: ['translators_affiliation'], object: 'translators' },
+      'translators_other_affiliation' => { from: ['translators_other_affiliation'], object: 'translators' },
+      'translators_index' => { from: ['translators_index'], object: 'translators' }
     }
   }
 
@@ -141,6 +189,21 @@ Bulkrax.setup do |config|
 
   # Properties that should not be used in imports/exports. They are reserved for use by Hyrax.
   # config.reserved_properties += ['my_field']
+
+  # List of Questioning Authority properties that are controlled via YAML files in
+  # the config/authorities/ directory. For example, the :rights_statement property
+  # is controlled by the active terms in config/authorities/rights_statements.yml
+  # Defaults: 'rights_statement' and 'license'
+  # config.qa_controlled_properties += ['my_field']
+
+  # Specify the delimiter regular expression for splitting an attribute's values into a multi-value array.
+  config.multi_value_element_split_on = /\s*[;|]\s*/.freeze
+
+  # Specify the delimiter for joining an attribute's multi-value array into a string.  Note: the
+  # specific delimeter should likely be present in the multi_value_element_split_on expression.
+  # config.multi_value_element_join_on = ' | '
+
+  # Overriding removed_image_path which by default refers to a file in the spec folder
   config.removed_image_path = Rails.root.join('app', 'assets', 'images', 'bulkrax', 'removed.png')
 end
 

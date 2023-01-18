@@ -12,7 +12,7 @@ gem 'blacklight_advanced_search', '~> 6.4.1'
 gem 'blacklight_oai_provider', '6.1.1'
 gem 'blacklight_range_limit', '6.5.0'
 gem 'bootstrap-sass', '~> 3.4.1'
-gem 'bulkrax', '~> 4.3.0'
+gem 'bulkrax', '~> 4.4.0'
 gem 'clamav-client', require: 'clamav/client'
 # Use CoffeeScript for .coffee assets and views
 gem 'coffee-rails', '~> 4.2.2'
