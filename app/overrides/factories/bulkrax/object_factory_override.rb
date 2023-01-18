@@ -59,6 +59,7 @@ Bulkrax::ObjectFactory.class_eval do
 
   # List the ids of person objects by the provided field type on the object being updated
   def existing_person_ids(field_name)
+    return [] if @object.nil?
     people = @object.send(field_name)
     people.to_a.map { |p| p.id }
   end
