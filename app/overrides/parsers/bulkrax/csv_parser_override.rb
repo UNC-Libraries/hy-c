@@ -2,7 +2,7 @@
 
 require 'csv'
 
-Bulkrax:: CsvParser.class_eval do
+Bulkrax::CsvParser.class_eval do
   # [hyc-override] file permissions update from 0600 to 0644
   # This method comes from application_parser.rb
   alias_method :original_write_import_file, :write_import_file

@@ -3,6 +3,15 @@
 Bulkrax::CsvEntry.class_eval do
   UPDATABLE_TYPES ||= %w[Article Artwork DataSet Dissertation General HonorsThesis Journal MastersPaper Multimed ScholarlyWork FileSet Collection]
 
+  def build_system_metadata
+    self.parsed_metadata['id'] = hyrax_record.id
+    # [hyc-override] convert source_identifier to a single value if its an array
+    source_id = hyrax_record.send(work_identifier)
+    source_id = source_id.to_a.first if source_id.is_a?(ActiveTriples::Relation)
+    self.parsed_metadata[source_identifier] = source_id
+    self.parsed_metadata[key_for_export('model')] = hyrax_record.has_model.first
+  end
+
   # [hyc-override] check model name before building entry
   alias_method :original_build_metadata, :build_metadata
   def build_metadata
