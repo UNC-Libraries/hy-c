@@ -29,12 +29,6 @@
   <%= menu.nav_link('/sidekiq', target: :_blank) do %>
     <span class="fa fa-area-chart" aria-hidden="true"></span> <span class="sidebar-action-text"><%= t('hyrax.links.sidekiq') %></span>
   <% end %>
-  <%= menu.nav_link('/importers') do %>
-    <span class="fa fa-upload" aria-hidden="true"></span> <span class="sidebar-action-text"><%= t('hyrax.links.importers') %></span>
-  <% end %>
-  <%= menu.nav_link('/exporters') do %>
-    <span class="fa fa-download" aria-hidden="true"></span> <span class="sidebar-action-text"><%= t('hyrax.links.exporters') %></span>
-  <% end %>
 <% end %>
 
 <% if current_ability.can_create_any_work? && Hyrax.config.analytics? %>
