@@ -25,6 +25,16 @@ class Ability
     # end
   end
 
+  # Added by bulkrax
+  def can_import_works?
+    can_create_any_work?
+  end
+
+  # Added by bulkrax
+  def can_export_works?
+    can_create_any_work?
+  end
+
   private
 
   # [hyc-override] Overriding review ability to include entity-specific permissions

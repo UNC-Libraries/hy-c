@@ -34,29 +34,6 @@ Bulkrax:: CsvParser.class_eval do
     path
   end
 
-  def set_ids_for_exporting_from_importer
-    entry_ids = Bulkrax::Importer.find(importerexporter.export_source).entries.pluck(:id)
-    complete_statuses = Bulkrax::Status.latest_by_statusable
-                              .includes(:statusable)
-                              .where('bulkrax_statuses.statusable_id IN (?) AND bulkrax_statuses.statusable_type = ? AND status_message = ?', entry_ids, 'Bulkrax::Entry', 'Complete')
-
-    complete_entry_identifiers = complete_statuses.map { |s| s.statusable&.identifier&.gsub(':', '\:') }
-    extra_filters = extra_filters.presence || '*:*'
-
-    { :@work_ids => ::Hyrax.config.curation_concerns, :@collection_ids => [::Collection], :@file_set_ids => [::FileSet] }.each do |instance_var, models_to_search|
-      instance_variable_set(instance_var, ActiveFedora::SolrService.post(
-        extra_filters.to_s,
-        fq: [
-          # [hyc-override] Replacing Solrizer reference
-          %(#{::ActiveFedora.index_field_mapper.solr_name(work_identifier)}:("#{complete_entry_identifiers.join('" OR "')}")),
-          "has_model_ssim:(#{models_to_search.join(' OR ')})"
-        ],
-        fl: 'id',
-        rows: 2_000_000_000
-      )['response']['docs'].map { |obj| obj['id'] })
-    end
-  end
-
   private
 
   def owner_write_and_global_read_file_permissions
