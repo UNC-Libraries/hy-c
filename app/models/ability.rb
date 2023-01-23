@@ -25,14 +25,14 @@ class Ability
     # end
   end
 
-  # Added by bulkrax
+  # [hyc-override] Added by bulkrax, changed to only permit admins
   def can_import_works?
-    can_create_any_work?
+    current_user.admin?
   end
 
-  # Added by bulkrax
+  # [hyc-override] Added by bulkrax, changed to only permit admins
   def can_export_works?
-    can_create_any_work?
+    current_user.admin?
   end
 
   private
