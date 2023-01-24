@@ -40,6 +40,7 @@ Bulkrax::ObjectFactory.class_eval do
     people_attributes = {}
     @transform_attributes.each do |k, v|
       if !v.blank? && PersonHelper.person_field?(k)
+        unaccounted_for_ids = existing_person_ids(k)
         @transform_attributes.delete(k)
         unprefixed = {}
         v.each_with_index do |person, index|
@@ -47,11 +48,27 @@ Bulkrax::ObjectFactory.class_eval do
           # Remove blank id fields
           unprefixed_person.delete_if { |k, v| k == 'id' && v.blank? }
           unprefixed[index.to_s] = unprefixed_person
+          unaccounted_for_ids.delete(unprefixed_person['id'])
         end
+        destroy_unaccounted_for(unprefixed, unaccounted_for_ids)
         people_attributes["#{k}_attributes"] = unprefixed
       end
     end
     @transform_attributes.merge!(people_attributes)
+  end
+
+  # List the ids of person objects by the provided field type on the object being updated
+  def existing_person_ids(field_name)
+    return [] if @object.nil?
+    people = @object.send(field_name)
+    people.to_a.map { |p| p.id }
+  end
+
+  # Add entries to people hash to mark unaccounted for ids as destroyed
+  def destroy_unaccounted_for(people_hash, unaccounted_for_ids)
+    unaccounted_for_ids.each do |id|
+      people_hash[people_hash.size.to_s] = { 'id' => id, '_destroy' => true }
+    end
   end
 
   def unprefix_keys(prefix, original)
