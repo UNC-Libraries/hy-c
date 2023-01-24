@@ -205,6 +205,9 @@ Bulkrax.setup do |config|
 
   # Overriding removed_image_path which by default refers to a file in the spec folder
   config.removed_image_path = Rails.root.join('app', 'assets', 'images', 'bulkrax', 'removed.png')
+
+  # Cleanup blank values during import
+  Bulkrax::ObjectFactory.transformation_removes_blank_hash_values = true
 end
 
 # Sidebar for hyrax 3+ support
