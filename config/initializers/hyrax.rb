@@ -61,10 +61,8 @@ Hyrax.config do |config|
   # Enable displaying usage statistics in the UI
   # Defaults to false
   # Requires a Google Analytics id and OAuth2 keyfile.  See README for more info
-  config.analytics = true
-
-  # Google Analytics tracking ID to gather usage statistics
-  config.google_analytics_id = ENV['GOOGLE_ANALYTICS_ID']
+  config.analytics = ActiveModel::Type::Boolean.new.cast(ENV.fetch('HYRAX_ANALYTICS', 'false'))
+  config.analytics_provider = ENV.fetch('HYRAX_ANALYTICS_PROVIDER', 'google')
 
   # Date you wish to start collecting Google Analytic statistics for
   # Leaving it blank will set the start date to when ever the file was uploaded by
@@ -89,13 +87,41 @@ Hyrax.config do |config|
   # where NOID = 10-character string and UUID = 32-character string w/ hyphens
   config.enable_noids = true
 
+  # Enable IIIF image service. This is required to use the
+  # IIIF viewer enabled show page
+  #
+  # If you have run the riiif generator, an embedded riiif service
+  # will be used to deliver images via IIIF. If you have not, you will
+  # need to configure the following other configuration values to work
+  # with your image server:
+  #
+  #   * iiif_image_url_builder
+  #   * iiif_info_url_builder
+  #   * iiif_image_compliance_level_uri
+  #   * iiif_image_size_default
+  #
+  # Default is false
   config.iiif_image_server = true
+
+  # Returns a URL that resolves to an image provided by a IIIF image server
+  config.iiif_image_url_builder = lambda do |file_id, base_url, size, format|
+    Riiif::Engine.routes.url_helpers.image_url(file_id, host: base_url, size: size)
+  end
+
+  # Returns a URL that resolves to an info.json file provided by a IIIF image server
   config.iiif_info_url_builder = lambda do |file_id, base_url|
     base_url = ENV['HYRAX_HOST'] if base_url != ENV['HYRAX_HOST']
     uri = Riiif::Engine.routes.url_helpers.info_url(file_id, host: base_url)
     uri.sub(%r{/info\.json\Z}, '')
   end
 
+  # Returns a URL that indicates your IIIF image server compliance level
+  # config.iiif_image_compliance_level_uri = 'http://iiif.io/api/image/2/level2.json'
+
+  # Returns a IIIF image size default
+  # config.iiif_image_size_default = '600,'
+
+  # Fields to display in the IIIF metadata section; default is the required fields
   config.iiif_metadata_fields = [
       :title,
       :creator_display,
@@ -308,3 +334,8 @@ Hydra::Derivatives::Processors::Image.timeout = 5.minutes
 
 # set bulkrax default work type to first curation_concern if it isn't already set
 Bulkrax.default_work_type = 'General' if Bulkrax.default_work_type.blank?
+
+# Load our local schema.org config instead of the default
+local_schema_file = Rails.root.join('config', 'schema_org.yml')
+local_filename = File.file?(local_schema_file) ? local_schema_file : Hyrax::Microdata::FILENAME
+Hyrax::Microdata.load_paths = local_filename

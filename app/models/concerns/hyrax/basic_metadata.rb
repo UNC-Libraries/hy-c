@@ -8,6 +8,8 @@ module Hyrax
     extend ActiveSupport::Concern
 
     included do
+      property :alternative_title, predicate: ::RDF::Vocab::DC.alternative
+
       property :label, predicate: ActiveFedora::RDF::Fcrepo::Model.downloadFilename, multiple: false
 
       property :relative_path, predicate: ::RDF::URI.new('http://scholarsphere.psu.edu/ns#relativePath'), multiple: false
@@ -25,13 +27,17 @@ module Hyrax
       end
       property :contributor, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#Contributor')
       property :description, predicate: ::RDF::Vocab::DC11.description, multiple: false
+      property :abstract, predicate: ::RDF::Vocab::DC.abstract
       # predicate changed
       property :keyword, predicate: ::RDF::Vocab::SCHEMA.keywords
       # predicate changed
       property :license, predicate: ::RDF::Vocab::DC.rights
 
+      property :rights_notes, predicate: ::RDF::URI.new('http://purl.org/dc/elements/1.1/rights'), multiple: true
+
       # This is for the rights statement
       property :rights_statement, predicate: ::RDF::Vocab::EDM.rights, multiple: false
+      property :access_right, predicate: ::RDF::Vocab::DC.accessRights
       property :publisher, predicate: ::RDF::Vocab::DC11.publisher
       property :date_created, predicate: ::RDF::Vocab::DC.created, multiple: false
       # predicate changed

@@ -52,7 +52,7 @@ RSpec.describe AffiliationRemediationService do
   end
 
   before do
-    allow(Hydra::Works::VirusCheckerService).to receive(:file_has_virus?) { false }
+    allow(Hyrax::VirusCheckerService).to receive(:file_has_virus?) { false }
   end
 
   it 'can be instantiated' do

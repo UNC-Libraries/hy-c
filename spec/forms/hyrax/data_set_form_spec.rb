@@ -27,7 +27,7 @@ RSpec.describe Hyrax::DataSetForm do
                                   :last_modified_date, :project_director, :researcher, :rights_holder, :sponsor,
                                   :language, :keyword, :related_url, :license, :note, :contributor, :subject,
                                   :rights_statement, :language_label, :license_label, :rights_statement_label,
-                                  :deposit_agreement, :agreement, :admin_note]
+                                  :deposit_agreement, :agreement, :admin_note, :access_right, :alternative_title, :rights_notes]
     }
   end
 

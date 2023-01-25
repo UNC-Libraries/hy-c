@@ -8,5 +8,10 @@ module Hyrax
              :issn, :journal_issue, :journal_title, :journal_volume, :language_label,
              :license_label, :note, :page_end, :page_start, :peer_review_status, :place_of_publication, :rights_holder,
              :rights_statement_label, :translator_display, :use, to: :solr_document
+
+    # See: WorkShowPresenter.scholarly?
+    def scholarly?
+      true
+    end
   end
 end

@@ -8,6 +8,7 @@ RSpec.feature 'Create and edit default admin set', js: false do
     before do
       AdminSet.delete_all
       DefaultAdminSet.delete_all
+      ActiveFedora::Cleaner.clean!
       AdminSet.create(title: ['default'], description: ['some description'], edit_users: [admin.user_key])
       AdminSet.create(title: ['other admin set'], description: ['some description'], edit_users: [admin.user_key])
       login_as admin

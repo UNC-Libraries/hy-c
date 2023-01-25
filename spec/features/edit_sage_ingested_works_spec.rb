@@ -33,7 +33,7 @@ RSpec.feature 'Edit works created through the Sage ingest', :sage, js: false do
   end
 
   # empty the progress log
-  around(:all) do |example|
+  around(:example) do |example|
     File.open(ingest_progress_log_path, 'w') { |file| file.truncate(0) }
     example.run
     File.open(ingest_progress_log_path, 'w') { |file| file.truncate(0) }
@@ -41,13 +41,14 @@ RSpec.feature 'Edit works created through the Sage ingest', :sage, js: false do
   end
 
   before(:each) do
+    ActiveFedora::Cleaner.clean!
     # return the FactoryBot admin user when searching for uid: admin from config
     allow(User).to receive(:find_by).and_return(admin)
     # return the FactoryBot admin_set when searching for admin set from config
     allow(AdminSet).to receive(:where).with(title: 'Open_Access_Articles_and_Book_Chapters').and_return([admin_set])
     # Stub background jobs that don't do well in CI
     # stub virus checking
-    allow(Hydra::Works::VirusCheckerService).to receive(:file_has_virus?) { false }
+    allow(Hyrax::VirusCheckerService).to receive(:file_has_virus?) { false }
     # stub longleaf job
     allow(RegisterToLongleafJob).to receive(:perform_later).and_return(nil)
     # stub FITS characterization
@@ -110,7 +111,7 @@ RSpec.feature 'Edit works created through the Sage ingest', :sage, js: false do
       expect(page).to have_field('Journal volume', with: '28')
       # keywords
       expected_keywords = ['HPV', 'HPV knowledge and awareness', 'cervical cancer screening', 'migrant women', 'China', '']
-      keyword_fields = page.all(:xpath, '/html/body/div[2]/div[2]/form/div/div[1]/div/div/div[1]/div[2]/div[2]/div[1]/ul/li/input')
+      keyword_fields = page.all(:css, '.article_keyword input')
       keywords = keyword_fields.map(&:value)
       expect(keyword_fields.count).to eq 6
       expect(keywords).to match_array(expected_keywords)
@@ -130,7 +131,7 @@ RSpec.feature 'Edit works created through the Sage ingest', :sage, js: false do
       expect(page).to have_field('Date of publication', with: 'January 2021') # aka date_issued
       expect(page).to have_field('Journal issue', with: '1')
       expect(page).to have_field('Journal volume', with: '11')
-      keyword_fields = page.all(:xpath, '/html/body/div[2]/div[2]/form/div/div[1]/div/div/div[1]/div[2]/div[2]/div[1]/ul/li/input')
+      keyword_fields = page.all(:css, '.article_keyword input')
       keywords = keyword_fields.map(&:value)
       expect(keyword_fields.count).to eq 8
       expect(keywords).to include('Propionibacterium acnes')

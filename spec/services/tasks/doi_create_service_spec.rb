@@ -2,7 +2,7 @@
 require 'rails_helper'
 
 RSpec.describe Tasks::DoiCreateService do
-  around(:all) do |tests|
+  around(:example) do |tests|
     cached_use_test_api = ENV['DATACITE_USE_TEST_API']
     ENV['DATACITE_USE_TEST_API'] = 'true'
     cached_datacite_prefix = ENV['DATACITE_PREFIX']

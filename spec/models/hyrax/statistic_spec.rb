@@ -4,6 +4,10 @@ require 'rails_helper'
 require Rails.root.join('app/overrides/models/hyrax/statistic_override.rb')
 
 RSpec.describe Hyrax::Statistic, type: :model do
+  before do
+    ActiveFedora::Cleaner.clean!
+  end
+
   let(:concrete_stat_class) do
     Class.new(Hyrax::Statistic) do
       self.cache_column = :downloads
@@ -19,7 +23,7 @@ RSpec.describe Hyrax::Statistic, type: :model do
   describe '.ga_statistic' do
     context 'with fileset' do
       let(:views) { double }
-      let(:profile) { double(hyrax__pageview: views) }
+      let(:profile) { double(hyrax__analytics__google__pageviews: views) }
 
       let(:user) { FactoryBot.create(:user) }
       let(:work) { Article.create(title: ['New Article']) }

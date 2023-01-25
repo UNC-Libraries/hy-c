@@ -13,7 +13,7 @@ RSpec.shared_examples 'a work type' do |model, pluralized_model|
                  edit_users: [user.user_key])
   end
 
-  before(:all) do
+  before do
     ActiveFedora::Cleaner.clean!
   end
 

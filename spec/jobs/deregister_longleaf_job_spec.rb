@@ -41,7 +41,7 @@ RSpec.describe DeregisterLongleafJob, type: :job do
     end
 
     before do
-      allow(Hydra::Works::VirusCheckerService).to receive(:file_has_virus?) { false }
+      allow(Hyrax::VirusCheckerService).to receive(:file_has_virus?) { false }
       FileUtils.chmod('u+x', longleaf_script)
 
       file_set.apply_depositor_metadata admin_user.user_key

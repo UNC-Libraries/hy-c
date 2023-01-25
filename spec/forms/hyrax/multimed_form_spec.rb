@@ -26,7 +26,7 @@ RSpec.describe Hyrax::MultimedForm do
       is_expected.to match_array [:based_near, :dcmi_type, :digital_collection, :doi, :extent, :keyword,
                                   :language, :license, :medium, :note, :rights_statement, :subject, :language_label,
                                   :license_label, :rights_statement_label, :deposit_agreement, :agreement,
-                                  :admin_note]
+                                  :admin_note, :access_right, :alternative_title, :rights_notes]
     }
   end
 

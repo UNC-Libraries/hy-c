@@ -38,7 +38,7 @@ module Hyrax
     def badge
       return unless state
 
-      content_tag(:span, state_label, class: "state state-#{state} label label-primary")
+      tag.span(state_label, class: "state state-#{state} label label-primary")
     end
 
     # [hyc-override] Add check to display message to MFA workflow depositor
@@ -70,7 +70,7 @@ module Hyrax
     end
 
     def sipity_entity
-      PowerConverter.convert(solr_document, to: :sipity_entity)
+      Sipity::Entity(solr_document)
     rescue PowerConverter::ConversionError
       nil
     end

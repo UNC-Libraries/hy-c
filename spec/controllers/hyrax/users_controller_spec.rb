@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 require 'rails_helper'
+require Rails.root.join('app/overrides/controllers/hyrax/users_controller_override.rb')
 
 # test overridden actions
 RSpec.context Hyrax::UsersController, type: :request do

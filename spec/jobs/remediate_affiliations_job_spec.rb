@@ -5,7 +5,7 @@ require 'active_fedora/cleaner'
 RSpec.describe RemediateAffiliationsJob, type: :job do
   let(:unmappable_affiliations_path) { File.join(fixture_path, 'files', 'short_unmappable_affiliations.csv') }
   before do
-    allow(Hydra::Works::VirusCheckerService).to receive(:file_has_virus?) { false }
+    allow(Hyrax::VirusCheckerService).to receive(:file_has_virus?) { false }
   end
   around do |example|
     cached_adapter = ActiveJob::Base.queue_adapter

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 require 'rails_helper'
 
+require Rails.root.join('app/overrides/actors/hyrax/actors/file_actor_override.rb')
+
 RSpec.describe Hyrax::Actors::FileActor do
   let(:file_set) { FactoryBot.create(:file_set) }
   let(:user) { FactoryBot.create(:user) }
@@ -10,7 +12,7 @@ RSpec.describe Hyrax::Actors::FileActor do
   let(:job_wrapper) { JobIoWrapper.create_with_varied_file_handling!(file_set: file_set, user: user, file: file, relation: 'some_string') }
 
   before do
-    allow(Hydra::Works::VirusCheckerService).to receive(:file_has_virus?) { false }
+    allow(Hyrax::VirusCheckerService).to receive(:file_has_virus?) { false }
     allow(RegisterToLongleafJob).to receive(:perform_later).and_return(nil)
   end
 
@@ -26,7 +28,7 @@ RSpec.describe Hyrax::Actors::FileActor do
   context 'with a file_set that fails validation' do
     before do
       # one of the FileSet validations is whether the file has a virus - mock that it does
-      allow(Hydra::Works::VirusCheckerService).to receive(:file_has_virus?) { true }
+      allow(Hyrax::VirusCheckerService).to receive(:file_has_virus?) { true }
     end
 
     it 'logs an error' do

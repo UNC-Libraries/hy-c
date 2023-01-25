@@ -28,24 +28,21 @@ Hyrax::CitationsBehaviors::PublicationBehavior.module_eval do
   end
 
   def setup_pub_info(work, include_date = false)
-    pub_info = []
+    pub_info = ''
     if (place = setup_pub_place(work))
-      pub_info << CGI.escapeHTML(place)
+      pub_info += CGI.escapeHTML(place)
     end
     if (publisher = setup_pub_publisher(work))
-      pub_info << ': ' unless place.to_s == ''
-      pub_info << CGI.escapeHTML(publisher)
+      pub_info += ': ' unless place.to_s == ''
+      pub_info += CGI.escapeHTML(publisher)
     end
 
     pub_date = include_date ? setup_pub_date(work) : nil
-    pub_info << ', ' unless pub_info.blank?
-    pub_info << pub_date unless pub_date.nil?
+    # [hyc-override] Skip adding leading comma when no content
+    pub_info += ', ' unless pub_info.blank?
+    pub_info += pub_date unless pub_date.nil?
 
-    pub_info = pub_info.join('').strip
-
-    # Remove any trailing commas
-    pub_info = pub_info[0...-1] if pub_info.last == ','
-
-    pub_info&.blank? ? nil : pub_info
+    # [hyc-override] Remove any trailing commas
+    pub_info.strip.chomp(',').presence
   end
 end

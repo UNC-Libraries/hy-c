@@ -2,6 +2,7 @@
 #  `rails generate hyrax:work HonorsThesis`
 require 'rails_helper'
 include Warden::Test::Helpers
+require 'active_fedora/cleaner'
 
 # NOTE: If you generated more than one work, you have to set "js: true"
 RSpec.feature 'Create and review a work in the honors thesis workflow', js: false do
@@ -59,6 +60,9 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
     let(:reviewer_agent) { Sipity::Agent.where(proxy_for_id: reviewer.id, proxy_for_type: 'User').first_or_create }
 
     before do
+      ActiveFedora::Cleaner.clean!
+      Blacklight.default_index.connection.delete_by_query('*:*')
+      Blacklight.default_index.connection.commit
       Hyrax::PermissionTemplateAccess.create(permission_template: permission_template,
                                              agent_type: 'user',
                                              agent_id: user.user_key,
@@ -142,8 +146,8 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
 
       expect(page).not_to have_selector('#honors_thesis_dcmi_type')
 
-      find('label[for=addFiles]').click do
-        attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'), make_visible: true)
+      within('div#add-files') do
+        attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'), visible: false)
       end
 
       click_link 'Add to Collection'
@@ -297,7 +301,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       click_on 'Logout'
 
       # Check notifications for tombstone requests
-      login_as user
+      login_as admin_user
 
       visit "/concern/honors_theses/#{HonorsThesis.all[-1].id}"
       click_on 'Request Deletion'
@@ -319,6 +323,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       expect(nonreviewer.mailbox.inbox.count).to eq 0
       expect(manager.mailbox.inbox.count).to eq 0
 
+      login_as user
       # create a second honors thesis work to test viewer notification
       visit new_hyrax_honors_thesis_path
       expect(page).to have_content 'Add New Undergraduate Honors Thesis'
@@ -337,8 +342,8 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
 
       expect(page).not_to have_selector('#honors_thesis_dcmi_type')
 
-      find('label[for=addFiles]').click do
-        attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'), make_visible: true)
+      within('div#add-files') do
+        attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'), visible: false)
       end
 
       click_link 'Add to Collection'

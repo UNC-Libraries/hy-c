@@ -25,6 +25,16 @@ class Ability
     # end
   end
 
+  # [hyc-override] Added by bulkrax, changed to only permit admins
+  def can_import_works?
+    current_user.admin?
+  end
+
+  # [hyc-override] Added by bulkrax, changed to only permit admins
+  def can_export_works?
+    current_user.admin?
+  end
+
   private
 
   # [hyc-override] Overriding review ability to include entity-specific permissions

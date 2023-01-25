@@ -5,7 +5,8 @@ Hyrax::Forms::CollectionForm.class_eval do
   self.terms -= [:based_near]
 
   def secondary_terms
-    [:creator,
+    [:alternative_title,
+     :creator,
      :contributor,
      :keyword,
      :license,

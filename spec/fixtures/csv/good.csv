@@ -1,0 +1,5 @@
+model,source,title,parents_column
+GenericWork,1,Lovely Title,3;4,
+GenericWork,2,Another Title,3,
+Collection,3,A Collection,,
+Collection,4,Another Collection,,

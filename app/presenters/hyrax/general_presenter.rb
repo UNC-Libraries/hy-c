@@ -12,5 +12,10 @@ module Hyrax
              :note, :page_start, :page_end, :peer_review_status, :place_of_publication,
              :project_director_display, :researcher_display, :reviewer_display, :rights_holder, :rights_statement_label,
              :series, :sponsor, :table_of_contents, :translator_display, :url, :use, to: :solr_document
+
+    # See: WorkShowPresenter.scholarly?
+    def scholarly?
+      true
+    end
   end
 end

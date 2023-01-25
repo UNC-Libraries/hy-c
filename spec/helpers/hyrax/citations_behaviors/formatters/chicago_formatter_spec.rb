@@ -1,5 +1,7 @@
 require 'rails_helper'
 
+require Rails.root.join('app/overrides/helpers/hyrax/citations_behaviors/formatters/chicago_formatter_override.rb')
+
 RSpec.describe Hyrax::CitationsBehaviors::Formatters::ChicagoFormatter do
   subject(:formatter) { described_class.new(:no_context) }
   let(:article) {

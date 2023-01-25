@@ -1,14 +1,12 @@
-<%# [hyc-override] Overriding to hide withdrawn files %>
+<%# [hyc-override] No thumbnail when not showing download link %>
 <%# [hyc-override] Style download link %>
-<% if current_user&.admin? || !@presenter.respond_to?('workflow') || 
-    (!@presenter.workflow.in_workflow_state?(['withdrawn', 'pending deletion']) &&
-      file_set.embargo_release_date.blank? && Hyrax.config.display_media_download_link?) %>
+<% if display_media_download_link?(file_set: file_set) %>
     <div>
       <h2 class="sr-only"><%= t('hyrax.file_set.show.downloadable_content.heading') %></h2>
       <audio controls="controls" class="audiojs" style="width:100%" controlsList="nodownload" preload="auto">
         <source src="<%= hyrax.download_path(file_set, file: 'ogg') %>" type="audio/ogg" />
         <source src="<%= hyrax.download_path(file_set, file: 'mp3') %>" type="audio/mpeg" />
-        Your browser does not support the audio tag.
+        <%= t('hyrax.file_set.show.downloadable_content.audio_tag_not_supported') %>
       </audio>
       <%= link_to t('hyrax.file_set.show.downloadable_content.audio_link'),
                   hyrax.download_path(file_set),

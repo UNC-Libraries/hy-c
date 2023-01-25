@@ -36,6 +36,7 @@ RSpec.describe Tasks::SageIngestService, :sage, :ingest do
   end
 
   before do
+    ActiveFedora::Cleaner.clean!
     admin_set
     permission_template
     workflow
@@ -58,7 +59,7 @@ RSpec.describe Tasks::SageIngestService, :sage, :ingest do
     before do
       # Stub background jobs that don't do well in CI
       # stub virus checking
-      allow(Hydra::Works::VirusCheckerService).to receive(:file_has_virus?) { false }
+      allow(Hyrax::VirusCheckerService).to receive(:file_has_virus?) { false }
       # stub longleaf job
       allow(RegisterToLongleafJob).to receive(:perform_later).and_return(nil)
       # stub FITS characterization

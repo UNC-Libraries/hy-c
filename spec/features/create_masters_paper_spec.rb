@@ -2,9 +2,13 @@
 #  `rails generate hyrax:work MastersPaper`
 require 'rails_helper'
 include Warden::Test::Helpers
+require 'active_fedora/cleaner'
+require Rails.root.join('spec/support/hyc_geoname_helper.rb')
 
 # NOTE: If you generated more than one work, you have to set "js: true"
 RSpec.feature 'Create a MastersPaper', js: false do
+  include HycGeonameHelper
+
   context 'a logged in user' do
     let(:user) { FactoryBot.create(:user) }
 
@@ -36,6 +40,10 @@ RSpec.feature 'Create a MastersPaper', js: false do
     let(:user_agent) { Sipity::Agent.where(proxy_for_id: user.id, proxy_for_type: 'User').first_or_create }
 
     before do
+      ActiveFedora::Cleaner.clean!
+      Blacklight.default_index.connection.delete_by_query('*:*')
+      Blacklight.default_index.connection.commit
+
       Hyrax::PermissionTemplateAccess.create(permission_template: dept_permission_template,
                                              agent_type: 'user',
                                              agent_id: user.user_key,
@@ -69,26 +77,7 @@ RSpec.feature 'Create a MastersPaper', js: false do
                              department: 'Department of City and Regional Planning',
                              admin_set_id: dept_admin_set.id)
 
-      chapel_hill = <<RDFXML.strip_heredoc
-      <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-          <rdf:RDF xmlns:foaf="http://xmlns.com/foaf/0.1/" xmlns:gn="http://www.geonames.org/ontology#" xmlns:owl="http://www.w3.org/2002/07/owl#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
-          <gn:Feature rdf:about="http://sws.geonames.org/4460162/">
-          <gn:name>Chapel Hill</gn:name>
-          </gn:Feature>
-          </rdf:RDF>
-RDFXML
-      stub_request(:get, 'http://sws.geonames.org/4460162/').
-        to_return(status: 200, body: chapel_hill, headers: { 'Content-Type' => 'application/rdf+xml;charset=UTF-8' })
-
-      stub_request(:any, "http://api.geonames.org/getJSON?geonameId=4460162&username=#{ENV['GEONAMES_USER']}").
-        with(headers: {
-               'Accept' => '*/*',
-               'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-               'User-Agent' => 'Ruby'
-             }).to_return(status: 200, body: { asciiName: 'Chapel Hill',
-                                               countryName: 'United States',
-                                               adminName1: 'North Carolina' }.to_json,
-                          headers: { 'Content-Type' => 'application/json' })
+      stub_geo_request
     end
 
     scenario 'as a non-admin' do
@@ -148,8 +137,8 @@ RDFXML
       # Verify that admin only field is not visible
       expect(page).not_to have_selector('#masters_paper_dcmi_type')
 
-      find('label[for=addFiles]').click do
-        attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'), make_visible: true)
+      within('div#add-files') do
+        attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'), visible: false)
       end
 
       click_link 'Add to Collection'
@@ -253,8 +242,8 @@ RDFXML
 
       expect(page).to have_selector('#masters_paper_dcmi_type')
 
-      find('label[for=addFiles]').click do
-        attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'), make_visible: true)
+      within('div#add-files') do
+        attach_file('files[]', File.join(Rails.root, '/spec/fixtures/files/test.txt'), visible: false)
       end
 
       click_link 'Add to Collection'

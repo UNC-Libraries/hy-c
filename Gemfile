@@ -7,12 +7,12 @@ git_source(:github) do |repo_name|
   "https://github.com/#{repo_name}.git"
 end
 
-gem 'active-fedora', '~> 12.2'
+gem 'active-fedora', '~> 13.1'
 gem 'blacklight_advanced_search', '~> 6.4.1'
 gem 'blacklight_oai_provider', '6.1.1'
 gem 'blacklight_range_limit', '6.5.0'
 gem 'bootstrap-sass', '~> 3.4.1'
-gem 'bulkrax', '~> 1.0.0'
+gem 'bulkrax', '~> 5.0.0'
 gem 'clamav-client', require: 'clamav/client'
 # Use CoffeeScript for .coffee assets and views
 gem 'coffee-rails', '~> 4.2.2'
@@ -22,17 +22,18 @@ gem 'edtf-humanize', '2.0.1'
 # See https://github.com/rails/execjs#readme for more supported runtimes
 gem 'execjs', '2.8.1'
 gem 'httparty', '~>0.20.0'
-gem 'hydra-editor', '5.0.1'
+gem 'hydra-editor', '~> 5.0'
 gem 'hydra-role-management', '~> 1.0'
-gem 'hyrax', '2.9.6'
+gem 'hyrax', '3.5.0'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.11.2'
 # Use jquery as the JavaScript library
 gem 'jquery-rails', '~> 4.5.0'
+gem 'json-ld', '< 3.2'
 gem 'libv8', '~> 7.3'
 # linkeddata gem is released with rdf gems and should be the same version as rdf
 gem 'sparql', '3.1.7'
-gem 'linkeddata', '~>3.1.1'
+gem 'linkeddata'
 gem 'loofah', '~>2.18.0'
 gem 'mini_magick', '~>4.11.0'
 gem 'mini_racer', '~> 0.2.15', platforms: :ruby
@@ -46,22 +47,19 @@ gem 'pg', '~> 1.3.5'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.2.8.1'
 # Use Redis adapter to run Action Cable in production
-gem 'redis', '~> 3.3.0'
+gem 'redis', '~> 4.5.0'
 gem 'riiif', '~> 2.4.0'
 gem 'roo', '~>2.9.0'
 gem 'rsolr', '~> 2.5.0'
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.1.0'
-gem 'sidekiq', '~> 5.2.9'
-gem 'sidekiq-limit_fetch', '~> 3.4.0'
+gem 'sidekiq', '~> 5.2.10'
 gem 'sidekiq-status', '~> 2.1.3'
 gem 'staccato', '~>0.5.3'
 # Turbolinks makes navigating your web application faster. Read more: https://github.com/turbolinks/turbolinks
 gem 'turbolinks', '~> 5.2.1'
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '~> 4.2.0'
-# required by bulkrax_override - rails engine for SWORDv2
-gem 'willow_sword', github: 'notch8/willow_sword', ref: '0a669d7'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

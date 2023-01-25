@@ -12,6 +12,12 @@ RSpec.shared_examples 'a restricted work type' do |model, pluralized_model|
                  edit_users: [user.user_key])
   end
 
+  before do
+    ActiveFedora::Cleaner.clean!
+    Blacklight.default_index.connection.delete_by_query('*:*')
+    Blacklight.default_index.connection.commit
+  end
+
   describe '#create' do
     let(:actor) { double(create: true) }
     let(:work) { model.create(title: ['new work to be created']) }

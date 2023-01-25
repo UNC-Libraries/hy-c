@@ -1,4 +1,4 @@
-<!--[hyc-override] Updating meta tags for google scholar-->
+<%# [hyc-override] Updating meta tags for google scholar %>
 <% content_for(:twitter_meta) do %>
   <meta name="twitter:card" content="product" />
   <meta name="twitter:site" content="<%= t('hyrax.product_twitter_handle') %>" />
@@ -15,35 +15,53 @@
   <meta name="twitter:label2" content="Rights Statement" />
 <% end %>
 
+<% gscholar = Hyrax::GoogleScholarPresenter.new(@presenter) %>
+
+<% if gscholar.scholarly? %>
 <% content_for(:gscholar_meta) do %>
-  <meta name="citation_title" content="<%= Array.wrap(@presenter.title).first %>" />
-  <% if !@presenter.creator_display.blank? %>
-    <%# conditional can be removed once all people objects have indexes %>
-    <% if @presenter.creator_display.first.match('index:') %>
-      <% sort_people_by_index(@presenter.creator_display).each do |creator| %>
-        <meta name="citation_author" content="<%= creator.split('||').second %>" />
-      <% end %>
-    <% else %>
-      <% Array.wrap(@presenter.creator_display).each do |creator| %>
-        <meta name="citation_author" content="<%= creator.split('||').first %>" />
-      <% end %>
-    <% end %>
+  <meta name="description" content="<%= gscholar.description %>" />
+  <meta name="citation_title" content="<%= gscholar.title %>" />
+
+  <% gscholar.authors.each do |author| %>
+  <meta name="citation_author" content="<%= author %>" />
   <% end %>
-  <meta name="citation_publication_date" content="<%= Array.wrap(@presenter.date_issued).first %>" />
-  <meta name="citation_pdf_url" content="<%= @presenter.download_url %>" />
-  <% if @presenter.respond_to?(:journal_title) %>
-  <meta name="citation_journal_title" content="<%= Array.wrap(@presenter.journal_title).first %>"/>
+
+  <% if gscholar.publication_date.present? %>
+  <meta name="citation_publication_date" content="<%= gscholar.publication_date %>" />
   <% end %>
-  <% if @presenter.respond_to?(:journal_volume) %>
-  <meta name="citation_volume" content="<%= Array.wrap(@presenter.journal_volume).first %>"/>
+
+  <% if gscholar.pdf_url.present? %>
+  <meta name="citation_pdf_url" content="<%= gscholar.pdf_url %>" />
   <% end %>
-  <% if @presenter.respond_to?(:journal_issue) %>
-  <meta name="citation_issue" content="<%= Array.wrap(@presenter.journal_issue).first %>"/>
+
+  <% if gscholar.keywords.present? %>
+  <meta name="citation_keywords" content="<%= gscholar.keywords %>" />
   <% end %>
-  <% if @presenter.respond_to?(:page_start) %>
-  <meta name="citation_firstpage" content="<%= Array.wrap(@presenter.page_start).first %>"/>
+
+  <% if gscholar.publisher.present? %>
+  <meta name="citation_publisher" content="<%= gscholar.publisher %>" />
   <% end %>
-  <% if @presenter.respond_to?(:page_end) %>
-  <meta name="citation_lastpage" content="<%= Array.wrap(@presenter.page_end).first %>"/>
+
+  <%# [hyc-override] Additional metadata fields %>
+  <% if gscholar.journal_title.present? %>
+  <meta name="citation_journal_title" content="<%= gscholar.journal_title %>" />
   <% end %>
+
+  <% if gscholar.volume.present? %>
+  <meta name="citation_volume" content="<%= gscholar.volume %>" />
+  <% end %>
+
+  <% if gscholar.issue.present? %>
+  <meta name="citation_issue" content="<%= gscholar.issue %>" />
+  <% end %>
+
+  <% if gscholar.firstpage.present? %>
+  <meta name="citation_firstpage" content="<%= gscholar.firstpage %>" />
+  <% end %>
+
+  <% if gscholar.lastpage.present? %>
+  <meta name="citation_lastpage" content="<%= gscholar.lastpage %>" />
+  <% end %>
+  <%# [hyc-override] End additional metadata fields %>
+<% end %>
 <% end %>

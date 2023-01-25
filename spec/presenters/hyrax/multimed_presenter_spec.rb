@@ -233,4 +233,10 @@ RSpec.describe Hyrax::MultimedPresenter do
       end
     end
   end
+
+  describe '#scholar?' do
+    it 'returns true' do
+      expect(presenter.scholarly?).to be_falsey
+    end
+  end
 end

@@ -7,5 +7,10 @@ module Hyrax
              :degree, :degree_granting_institution, :deposit_record, :doi, :extent,
              :graduation_year, :language_label, :license_label, :note, :reviewer_display, :rights_statement_label, :use,
              to: :solr_document
+
+    # See: WorkShowPresenter.scholarly?
+    def scholarly?
+      true
+    end
   end
 end

@@ -1,13 +1,13 @@
 <%# [hyc-override] Overriding partial in hyrax gem in order to hide lease option %>
 <%# [hyc-override] Overriding partial in hyrax gem in order to fix accessibility issues with the embargo options %>
-<% if f.object.embargo_release_date %>
+<% if embargo_enforced?(f.object) %>
   <%= render 'form_permission_under_embargo', f: f %>
 <%# Remove lease panel %>
-<%# elsif f.object.lease_expiration_date %>
+<%# elsif lease_enforced?(f.object) %>
   <%# render 'form_permission_under_lease', f: f %>
 <% else %>
   <fieldset>
-    <legend class="legend-save-work">Visibility</legend>
+    <legend><%= t('.visibility') %><%= raw(t('.subtitle_html')) %></legend>
     <ul class="visibility">
       <li class="radio">
         <label>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_08_06_065737) do
+ActiveRecord::Schema.define(version: 2022_10_12_131645) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -39,7 +39,7 @@ ActiveRecord::Schema.define(version: 2021_08_06_065737) do
     t.datetime "last_error_at"
     t.datetime "last_succeeded_at"
     t.string "importerexporter_type", default: "Bulkrax::Importer"
-    t.index ["importerexporter_id"], name: "index_bulkrax_entries_on_importerexporter_id"
+    t.integer "import_attempts", default: 0
   end
 
   create_table "bulkrax_exporter_runs", force: :cascade do |t|
@@ -70,6 +70,8 @@ ActiveRecord::Schema.define(version: 2021_08_06_065737) do
     t.date "finish_date"
     t.string "work_visibility"
     t.string "workflow_status"
+    t.boolean "include_thumbnails", default: false
+    t.boolean "generated_metadata", default: false
     t.index ["user_id"], name: "index_bulkrax_exporters_on_user_id"
   end
 
@@ -85,9 +87,14 @@ ActiveRecord::Schema.define(version: 2021_08_06_065737) do
     t.integer "processed_collections", default: 0
     t.integer "failed_collections", default: 0
     t.integer "total_collection_entries", default: 0
-    t.integer "processed_children", default: 0
-    t.integer "failed_children", default: 0
+    t.integer "processed_relationships", default: 0
+    t.integer "failed_relationships", default: 0
     t.text "invalid_records"
+    t.integer "processed_file_sets", default: 0
+    t.integer "failed_file_sets", default: 0
+    t.integer "total_file_set_entries", default: 0
+    t.integer "processed_works", default: 0
+    t.integer "failed_works", default: 0
     t.index ["importer_id"], name: "index_bulkrax_importer_runs_on_importer_id"
   end
 
@@ -108,10 +115,20 @@ ActiveRecord::Schema.define(version: 2021_08_06_065737) do
     t.index ["user_id"], name: "index_bulkrax_importers_on_user_id"
   end
 
+  create_table "bulkrax_pending_relationships", force: :cascade do |t|
+    t.bigint "importer_run_id", null: false
+    t.string "parent_id", null: false
+    t.string "child_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "order", default: 0
+    t.index ["importer_run_id"], name: "index_bulkrax_pending_relationships_on_importer_run_id"
+  end
+
   create_table "bulkrax_statuses", force: :cascade do |t|
     t.string "status_message"
     t.string "error_class"
-    t.string "error_message"
+    t.text "error_message"
     t.text "error_backtrace"
     t.integer "statusable_id"
     t.string "statusable_type"
@@ -239,6 +256,12 @@ ActiveRecord::Schema.define(version: 2021_08_06_065737) do
     t.boolean "brandable", default: true, null: false
     t.string "badge_color", default: "#663333"
     t.index ["machine_id"], name: "index_hyrax_collection_types_on_machine_id", unique: true
+  end
+
+  create_table "hyrax_default_administrative_set", force: :cascade do |t|
+    t.string "default_admin_set_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "hyrax_features", id: :serial, force: :cascade do |t|
@@ -410,9 +433,9 @@ ActiveRecord::Schema.define(version: 2021_08_06_065737) do
   end
 
   create_table "single_use_links", id: :serial, force: :cascade do |t|
-    t.string "downloadKey"
+    t.string "download_key"
     t.string "path"
-    t.string "itemId"
+    t.string "item_id"
     t.datetime "expires"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -450,7 +473,7 @@ ActiveRecord::Schema.define(version: 2021_08_06_065737) do
 
   create_table "sipity_entity_specific_responsibilities", id: :serial, force: :cascade do |t|
     t.integer "workflow_role_id", null: false
-    t.string "entity_id", null: false
+    t.integer "entity_id", null: false
     t.integer "agent_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -676,6 +699,7 @@ ActiveRecord::Schema.define(version: 2021_08_06_065737) do
 
   add_foreign_key "bulkrax_exporter_runs", "bulkrax_exporters", column: "exporter_id"
   add_foreign_key "bulkrax_importer_runs", "bulkrax_importers", column: "importer_id"
+  add_foreign_key "bulkrax_pending_relationships", "bulkrax_importer_runs", column: "importer_run_id"
   add_foreign_key "collection_type_participants", "hyrax_collection_types"
   add_foreign_key "curation_concerns_operations", "users"
   add_foreign_key "mailboxer_conversation_opt_outs", "mailboxer_conversations", column: "conversation_id", name: "mb_opt_outs_on_conversations_id"

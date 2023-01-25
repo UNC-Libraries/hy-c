@@ -1,9 +1,20 @@
 # frozen_string_literal: true
 require 'rails_helper'
 require Rails.root.join('app/overrides/controllers/hydra/controller/download_behavior_override.rb')
+require Rails.root.join('app/overrides/controllers/hyrax/downloads_controller_override.rb')
 
 RSpec.describe Hyrax::DownloadsController, type: :controller do
   routes { Hyrax::Engine.routes }
+
+  let(:stub_ga) do
+    stub_request(:post, 'http://www.google-analytics.com/collect').to_return(status: 200, body: '', headers: {})
+  end
+
+  before do
+    ActiveFedora::Cleaner.clean!
+    allow(stub_ga)
+  end
+
   # app/controllers/concerns/hyrax/download_analytics_behavior.rb:8
   describe '#track_download' do
     WebMock.after_request do |request_signature, response|
@@ -13,10 +24,9 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
     it 'has the method for tracking analytics for download' do
       allow(Hyrax.config).to receive(:google_analytics_id).and_return('blah')
       allow(controller.request).to receive(:referrer).and_return('http://example.com')
-      stub = stub_request(:post, 'http://www.google-analytics.com/collect').to_return(status: 200, body: '', headers: {})
       expect(controller).to respond_to(:track_download)
       expect(controller.track_download).to be_a_kind_of Net::HTTPOK
-      expect(stub).to have_been_requested.times(1) # must be after the method call that creates request
+      expect(stub_ga).to have_been_requested.times(1) # must be after the method call that creates request
     end
 
     context 'with a created work' do
@@ -28,7 +38,7 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
       let(:default_image) { ActionController::Base.helpers.image_path 'default.png' }
 
       it 'can use a fake request' do
-        allow(Hydra::Works::VirusCheckerService).to receive(:file_has_virus?) { false }
+        allow(Hyrax::VirusCheckerService).to receive(:file_has_virus?) { false }
         allow(SecureRandom).to receive(:uuid).and_return('555')
         allow(Hyrax.config).to receive(:google_analytics_id).and_return('blah')
         request.env['HTTP_REFERER'] = 'http://example.com'
@@ -42,7 +52,7 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
       end
 
       it 'sets the medium to direct when there is no referrer' do
-        allow(Hydra::Works::VirusCheckerService).to receive(:file_has_virus?) { false }
+        allow(Hyrax::VirusCheckerService).to receive(:file_has_virus?) { false }
         allow(SecureRandom).to receive(:uuid).and_return('555')
         allow(Hyrax.config).to receive(:google_analytics_id).and_return('blah')
         request.env['HTTP_REFERER'] = nil
@@ -89,13 +99,16 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
       sign_in @user
     end
 
-    context 'when downloading file' do
+    context 'with file set for download' do
       let(:file_set) do
         FactoryBot.create(:file_with_work, user: @user, content: File.open("#{fixture_path}/files/image.png"))
       end
 
+      before do
+        allow(Hyrax::VirusCheckerService).to receive(:file_has_virus?) { false }
+      end
+
       it 'will add proper mime type extension if valid' do
-        allow(Hydra::Works::VirusCheckerService).to receive(:file_has_virus?) { false }
         allow(MimeTypeService).to receive(:valid?) { true }
         allow(MimeTypeService).to receive(:label) { 'txt' }
 
@@ -105,12 +118,33 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
       end
 
       it 'will not add mime type extension if not valid' do
-        allow(Hydra::Works::VirusCheckerService).to receive(:file_has_virus?) { false }
         allow(MimeTypeService).to receive(:valid?) { false }
 
         get :show, params: { id: file_set}
         expect(response).to be_successful
         expect(response.headers['Content-Disposition']).to include 'filename="image.png"'
+      end
+
+      context 'when permission denied' do
+        before do
+          allow(subject).to receive(:authorize!).and_raise(CanCan::AccessDenied)
+        end
+
+        it 'gets 401 response' do
+          get :show, params: { id: file_set}
+          expect(response).to be_unauthorized
+        end
+      end
+
+      context 'when record not found' do
+        before do
+          allow(subject).to receive(:authorize!).and_raise(Blacklight::Exceptions::RecordNotFound)
+        end
+
+        it 'gets 404 response' do
+          get :show, params: { id: file_set}
+          expect(response).to be_not_found
+        end
       end
     end
   end

@@ -8,7 +8,7 @@ RSpec.describe ListFileSetsWithoutFilesJob, type: :job do
     FileUtils.remove_entry(csv_path) if File.exist?(csv_path)
   end
   before do
-    allow(Hydra::Works::VirusCheckerService).to receive(:file_has_virus?) { false }
+    allow(Hyrax::VirusCheckerService).to receive(:file_has_virus?) { false }
   end
 
   around do |example|

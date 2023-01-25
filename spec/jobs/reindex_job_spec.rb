@@ -4,7 +4,7 @@ require 'active_fedora/cleaner'
 
 RSpec.describe ReindexJob, type: :job do
   before do
-    allow(Hydra::Works::VirusCheckerService).to receive(:file_has_virus?) { false }
+    allow(Hyrax::VirusCheckerService).to receive(:file_has_virus?) { false }
   end
 
   around do |example|

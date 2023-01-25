@@ -1,0 +1,15 @@
+{
+  "options": {
+    "rightPanelEnabled": true
+  },
+  "modules": {
+    "headerPanel": {
+      "options": {
+        "settingsButtonEnabled": false
+      }
+    },
+    "footerPanel": {
+      "downloadEnabled": false
+    }
+  }
+}

@@ -1,36 +1,38 @@
 <%# [hyc-override] Overriding partial in hyrax gem to update homepage %>
 <!DOCTYPE html>
 <html lang="<%= I18n.locale.to_s %>" prefix="og:http://ogp.me/ns#">
-<head>
-  <%= render partial: 'layouts/head_tag_content' %>
-  <%= content_for(:head) %>
-</head>
+  <head>
+    <%= render partial: 'layouts/head_tag_content' %>
+    <%= content_for(:head) %>
+  </head>
 
-<body>
-<div class="skip-to-content sr-only">
-  <%= link_to "Skip to Content", "#skip-to-content", data: { turbolinks: false } %>
-</div>
-<%= render '/masthead' %>
-<%= content_for(:navbar) %>
-<%= content_for(:precontainer_content) %>
-<div id="content-wrapper" class="container-fluid" role="main">
-  <%= render '/flash_msg' %>
-  <%= render_breadcrumbs builder: Hyrax::BootstrapBreadcrumbsBuilder %>
-  <% if content_for?(:page_header) %>
-    <div class="row">
-      <div class="col-xs-12 main-header">
-        <%= yield(:page_header) %>
-      </div>
+  <body>
+    <div class="skip-to-content sr-only">
+      <%# [hyc-override] Disable turbolinks %>
+      <%= link_to "Skip to Content", "#skip-to-content", data: { turbolinks: false } %>
     </div>
-  <% end %>
+    <%= render '/masthead' %>
+    <%= content_for(:navbar) %>
+    <%= content_for(:precontainer_content) %>
+    <%# [hyc-override] Change class to container-fluid %>
+    <div id="content-wrapper" class="container-fluid" role="main">
+      <%= render '/flash_msg' %>
+      <%= render_breadcrumbs builder: Hyrax::BootstrapBreadcrumbsBuilder %>
+      <% if content_for?(:page_header) %>
+        <div class="row">
+          <div class="col-xs-12 main-header">
+            <%= yield(:page_header) %>
+          </div>
+        </div>
+      <% end %>
 
-  <a name="skip-to-content" id="skip-to-content"></a>
-
-  <%= content_for?(:content) ? yield(:content) : yield %>
-
-</div><!-- /#content-wrapper -->
-<%= render 'shared/footer_social' %>
-<%= render 'shared/footer' %>
-<%= render 'shared/ajax_modal' %>
-</body>
+      <a name="skip-to-content" id="skip-to-content"></a>
+      <%= render 'shared/read_only' if Flipflop.read_only? %>
+      <%= content_for?(:content) ? yield(:content) : yield %>
+    </div><!-- /#content-wrapper -->
+    <%# [hyc-override] Add social media link footer %>
+    <%= render 'shared/footer_social' %>
+    <%= render 'shared/footer' %>
+    <%= render 'shared/ajax_modal' %>
+  </body>
 </html>
