@@ -70,7 +70,7 @@ group :development, :test do
   gem 'rubocop'
   gem 'rubocop-rails'
   gem 'rubocop-rspec'
-  gem 'solr_wrapper', '~> 1.1.0'
+  gem 'solr_wrapper', '~> 4.0.2'
   gem 'rubocop-github'
   gem 'rubocop-performance', require: false
 end
