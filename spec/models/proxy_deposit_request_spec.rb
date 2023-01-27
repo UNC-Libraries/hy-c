@@ -15,7 +15,7 @@ RSpec.describe ProxyDepositRequest, type: :model do
 
   subject do
     described_class.new(work_id: work_id, sending_user: sender,
-                        receiving_user: receiver, sender_comment: "please take this")
+                        receiving_user: receiver, sender_comment: 'please take this')
   end
 
   # Injecting a different work_query_service_class to avoid hitting SOLR and Fedora
