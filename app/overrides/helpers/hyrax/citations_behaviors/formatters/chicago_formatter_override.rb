@@ -9,7 +9,8 @@ Hyrax::CitationsBehaviors::Formatters::ChicagoFormatter.class_eval do
     text = ''
 
     # setup formatted author list
-    authors_list = all_authors(work)
+    # [hyc-override] remove blank authors, otherwise it will generate an error
+    authors_list = all_authors(work).reject(&:blank?)
     text += format_authors(authors_list)
     text = "<span class=\"citation-author\">#{text}</span>" if text.present?
     # Get Pub Date
