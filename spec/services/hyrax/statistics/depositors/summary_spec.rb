@@ -8,8 +8,8 @@ RSpec.describe Hyrax::Statistics::Depositors::Summary, :clean_repo do
     Blacklight.default_index.connection.commit
   end
 
-  let(:user1) { FactoryBot.create(:user) }
-  let(:user2) { FactoryBot.create(:user) }
+  let(:user1) { FactoryBot.create(:user, display_name: 'FirstUser') }
+  let(:user2) { FactoryBot.create(:user, display_name: 'AnotherUser') }
   let!(:old_work) { FactoryBot.create(:work, user: user1) }
   let(:two_days_ago_date) { Time.zone.now - 2.days }
 
