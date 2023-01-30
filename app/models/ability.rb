@@ -54,4 +54,10 @@ class Ability
           agent.entity_specific_responsibilities.joins(:workflow_role).where('sipity_workflow_roles.role_id' => approving_role.id).any?)
     end
   end
+
+  def user_is_depositor?(document_id)
+    doc = Hyrax::SolrService.search_by_id(document_id, fl: 'depositor_ssim')
+    # [hyc-override] use [] instead of fetch, so that if there is no depositor field we get false instead of an error
+    current_user.user_key == doc['depositor_ssim']&.first
+  end
 end
