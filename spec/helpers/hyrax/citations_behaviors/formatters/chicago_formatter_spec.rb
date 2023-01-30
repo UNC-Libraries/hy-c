@@ -18,6 +18,21 @@ RSpec.describe Hyrax::CitationsBehaviors::Formatters::ChicagoFormatter do
     it 'returns a citation in apa format with a doi' do
       expect(formatter.format(presenter)).to eq '<span class="citation-author">Depositor, A.</span> 2019. <i class="citation-title">New Article Title.</i> NC: a publisher. doi.org/some-doi'
     end
+
+    context 'with creator named -' do
+      let(:article) {
+        Article.new(title: ['new article title'],
+                    creators_attributes: { '0' => { 'name' => '-' } },
+                    date_issued: '2019-10-11',
+                    publisher: ['a publisher'],
+                    place_of_publication: ['NC'],
+                    doi: 'doi.org/some-doi')
+      }
+
+      it 'returns citation in chicago format when there are no creators' do
+        expect(formatter.format(presenter)).to eq '2019. <i class="citation-title">New Article Title.</i> NC: a publisher. doi.org/some-doi'
+      end
+    end
   end
 
   describe '#format_authors' do

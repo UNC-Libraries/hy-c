@@ -63,7 +63,7 @@ module Hyrax::User
     def find_or_create_system_user(user_key)
       ::User.find_or_create_by(uid: user_key) do |user|
         user.display_name = user_key
-        user.email = "#{user_key}@ad.unc.edu"
+        user.email = user_key.include?('@') ? user_key : "#{user_key}@ad.unc.edu"
         user.password = ('a'..'z').to_a.shuffle(random: Random.new).join if AuthConfig.use_database_auth?
       end
     end
