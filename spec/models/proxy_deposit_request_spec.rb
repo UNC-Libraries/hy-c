@@ -43,6 +43,23 @@ RSpec.describe ProxyDepositRequest, type: :model do
         expect(proxy_request.work_id).to eq(work_id)
         expect(proxy_request.sending_user).to eq(sender)
       end
+
+      context 'with receiver comment' do
+        subject do
+          described_class.new(work_id: work_id, sending_user: sender,
+                              receiving_user: receiver, sender_comment: 'please take this', receiver_comment: 'ok')
+        end
+
+        it 'updates a transfer_request' do
+          subject.transfer_to = receiver.user_key
+          expect { subject.save! }.to change { receiver.mailbox.inbox(unread: true).count }.from(0).to(1)
+          subject.status = described_class::ACCEPTED
+          subject.save!
+          work_link = link_to work.title.first, "#{ENV['HYRAX_HOST']}/concern/#{work.class.to_s.underscore}s/#{work.id}"
+          expect(sender.mailbox.inbox.last.last_message.subject).to eq 'CDR work transfer request accepted'
+          expect(sender.mailbox.inbox.last.last_message.body).to include('Your request to transfer request ownership of ' + work_link + ' has been ' + described_class::ACCEPTED + ' by ' + receiver.email)
+        end
+      end
     end
   end
 end
