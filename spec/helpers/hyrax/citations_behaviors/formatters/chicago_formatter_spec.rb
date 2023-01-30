@@ -29,7 +29,7 @@ RSpec.describe Hyrax::CitationsBehaviors::Formatters::ChicagoFormatter do
                     doi: 'doi.org/some-doi')
       }
 
-      it 'returns citation in chicago format when there is no creators' do
+      it 'returns citation in chicago format when there are no creators' do
         expect(formatter.format(presenter)).to eq '2019. <i class="citation-title">New Article Title.</i> NC: a publisher. doi.org/some-doi'
       end
     end
