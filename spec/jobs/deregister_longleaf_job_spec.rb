@@ -61,7 +61,7 @@ RSpec.describe DeregisterLongleafJob, type: :job do
     end
 
     it 'calls deregistration script with the expected parameters' do
-      job.perform(file_set)
+      job.perform(file_set.original_file.checksum.value)
 
       arguments = File.read(output_path)
 

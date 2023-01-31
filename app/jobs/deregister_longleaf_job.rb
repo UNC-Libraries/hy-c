@@ -5,15 +5,12 @@ require 'open3'
 class DeregisterLongleafJob < Hyrax::ApplicationJob
   queue_as Hyrax.config.ingest_queue_name
 
-  def perform(file_set)
-    repository_file = file_set.original_file
-
+  def perform(checksum)
     if ENV['LONGLEAF_BASE_COMMAND'].blank?
       Rails.logger.error('LONGLEAF_BASE_COMMAND is not set, skipping deregistration of file to Longleaf.')
       return
     end
 
-    checksum = repository_file.checksum.value
     # Calculate the path to the file in fedora, assuming modeshape behavior of hashing based on sha1
     binary_path = File.join(ENV['LONGLEAF_STORAGE_PATH'], checksum.scan(/.{2}/)[0..2].join('/'), checksum)
 
