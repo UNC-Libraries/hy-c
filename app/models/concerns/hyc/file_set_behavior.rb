@@ -9,8 +9,9 @@ module Hyc
     end
 
     def deregister_longleaf
-      Rails.logger.info("Calling deregistration from longleaf after delete of #{original_file}")
-      DeregisterLongleafJob.perform_later(self)
+      checksum = original_file.checksum.value
+      Rails.logger.info("Calling deregistration from longleaf after delete of #{original_file} #{checksum}")
+      DeregisterLongleafJob.perform_later(checksum)
     end
   end
 end
