@@ -66,15 +66,15 @@ Bulkrax.setup do |config|
       'doi' => { from: ['doi'] },
       'edition' => { from: ['edition'] },
       'extent' => { from: ['extent'] },
-      'funder' => { from: ['funder'] },
+      'funder' => { from: ['funder'], split: /\s*[;|]\s*/.freeze },
       'graduation_year' => { from: ['graduation_year'] },
-      'identifier' => { from: ['identifier'], split: true },
+      'identifier' => { from: ['identifier'], split: /\s*[;|]\s*/.freeze },
       'isbn' => { from: ['isbn'] },
-      'issn' => { from: ['issn'], split: true },
+      'issn' => { from: ['issn'], split: /\s*[;|]\s*/.freeze },
       'journal_issue' => { from: ['journal_issue'] },
       'journal_title' => { from: ['journal_title'] },
       'journal_volume' => { from: ['journal_volume'] },
-      'keyword' => { from: ['keyword'], split: true },
+      'keyword' => { from: ['keyword'], split: /\s*[;|]\s*/.freeze },
       'kind_of_data' => { from: ['kind_of_data'] },
       'language' => { from: ['language'] },
       'language_label' => { from: ['language_label'] },
@@ -197,7 +197,8 @@ Bulkrax.setup do |config|
   # config.qa_controlled_properties += ['my_field']
 
   # Specify the delimiter regular expression for splitting an attribute's values into a multi-value array.
-  config.multi_value_element_split_on = /\s*[;|]\s*/.freeze
+  # NOTE: [hyc] this does not appear to work, so using split expressions on individual fields
+  # config.multi_value_element_split_on = /\s*[;|]\s*/.freeze
 
   # Specify the delimiter for joining an attribute's multi-value array into a string.  Note: the
   # specific delimeter should likely be present in the multi_value_element_split_on expression.
