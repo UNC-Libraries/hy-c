@@ -142,7 +142,7 @@ module MiniMagick
               # indentation, resulting in a level of -1
               last_key = details_hash.keys.last
               details_hash[last_key] = '' if details_hash[last_key].empty?
-              details_hash[last_key] << line
+              details_hash[last_key] += line
               next
             end
 
