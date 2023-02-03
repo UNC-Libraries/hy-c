@@ -7,7 +7,7 @@
 
 #### Hyrax based system underlying the Carolina Digital Repository
 
-* Currently using Hyrax version 2.9.5
+* Currently using Hyrax version 3.5.0
 * Currently in production
 * Hosts institutional repository content at UNC Chapel Hill
 
