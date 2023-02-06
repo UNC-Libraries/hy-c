@@ -21,7 +21,7 @@ gem 'devise-guests', '~> 0.8.1'
 gem 'edtf-humanize', '2.0.1'
 # See https://github.com/rails/execjs#readme for more supported runtimes
 gem 'execjs', '2.8.1'
-gem 'httparty', '~>0.20.0'
+gem 'httparty', '~>0.21.0'
 gem 'hydra-editor', '~> 5.0'
 gem 'hydra-role-management', '~> 1.0'
 gem 'hyrax', '3.5.0'
@@ -34,10 +34,10 @@ gem 'libv8', '~> 7.3'
 # linkeddata gem is released with rdf gems and should be the same version as rdf
 gem 'sparql', '3.1.7'
 gem 'linkeddata'
-gem 'loofah', '~>2.18.0'
+gem 'loofah', '~>2.19.1'
 gem 'mini_magick', '~>4.11.0'
 gem 'mini_racer', '~> 0.2.15', platforms: :ruby
-gem 'nokogiri', '~>1.13.6'
+gem 'nokogiri', '~>1.14.1'
 gem 'omniauth', '~> 2.0'
 gem 'omniauth-rails_csrf_protection'
 gem 'omniauth-shibboleth', '~> 1.3'
@@ -70,7 +70,7 @@ group :development, :test do
   gem 'rubocop'
   gem 'rubocop-rails'
   gem 'rubocop-rspec'
-  gem 'solr_wrapper', '~> 1.1.0'
+  gem 'solr_wrapper', '~> 4.0.2'
   gem 'rubocop-github'
   gem 'rubocop-performance', require: false
 end
