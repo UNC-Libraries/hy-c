@@ -18,10 +18,10 @@ Hyrax::Statistic.class_eval do
 
       path = "#{path}|/record/uuid:#{redirect_path['uuid']}" if redirect_path
 
-      profile.hyrax__analytics__google__visits(sort: 'date',
-                                                  start_date: start_date,
-                                                  end_date: Date.yesterday,
-                                                  limit: 10_000)
+      profile.hyrax__pageview(sort: 'date',
+                              start_date: start_date,
+                              end_date: Date.yesterday,
+                              limit: 10_000)
              .for_path(path)
     end
 

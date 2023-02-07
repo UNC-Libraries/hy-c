@@ -14,6 +14,6 @@ Hyrax::WorkUsage.class_eval do
   private
 
   def downloads
-    to_flots(FileDownloadStat.statistics(model, created, user_id))
+    to_flots(WorkDownloadStat.statistics(model, created, user_id))
   end
 end
