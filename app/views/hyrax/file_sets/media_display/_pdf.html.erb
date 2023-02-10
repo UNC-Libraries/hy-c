@@ -1,4 +1,5 @@
 <%# [hyc-override] Style download link %>
+<%# [hyc-override] Include missing data on link for analytics %>
 <% if display_media_download_link?(file_set: file_set) %>
     <div>
       <h2 class="sr-only"><%= t('hyrax.file_set.show.downloadable_content.heading') %></h2>
@@ -11,6 +12,6 @@
                   target: :_blank,
                   id: "file_download",
                   class: "btn btn-info",
-                  data: { label: file_set.id } %>
+                  data: { label: file_set.id, work_id: @presenter.id, collection_ids: @presenter.member_of_collection_ids } %>
     </div>
 <% end %>
