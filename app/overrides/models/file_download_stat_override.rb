@@ -15,7 +15,7 @@ Hyrax::FileDownloadStat.class_eval do
       file = as_subject(file)
       profile = Hyrax::Analytics.profile
       unless profile
-        Rails.logger.error("Google Analytics profile has not been established. Unable to fetch statistics.")
+        Rails.logger.error('Google Analytics profile has not been established. Unable to fetch statistics.')
         return []
       end
       profile.hyrax__download(sort: 'date',
