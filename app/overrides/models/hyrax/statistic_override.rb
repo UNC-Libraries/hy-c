@@ -18,6 +18,7 @@ Hyrax::Statistic.class_eval do
 
       path = "#{path}|/record/uuid:#{redirect_path['uuid']}" if redirect_path
 
+      # [hyc-override] https://github.com/samvera/hyrax/issues/5955
       profile.hyrax__pageview(sort: 'date',
                               start_date: start_date,
                               end_date: Date.yesterday,
