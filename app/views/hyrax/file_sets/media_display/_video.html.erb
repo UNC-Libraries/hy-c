@@ -1,5 +1,6 @@
 <%# [hyc-override] No thumbnail when not showing download link %>
 <%# [hyc-override] Style download link %>
+<%# [hyc-override] Include missing data on link for analytics %>
 <% if display_media_download_link?(file_set: file_set) %>
     <div>
       <h2 class="sr-only"><%= t('hyrax.file_set.show.downloadable_content.heading') %></h2>
@@ -10,7 +11,7 @@
       </video>
       <%= link_to t('hyrax.file_set.show.downloadable_content.video_link'),
                   hyrax.download_path(file_set),
-                  data: { label: file_set.id },
+                  data: { label: file_set.id, work_id: @presenter.id, collection_ids: @presenter.member_of_collection_ids },
                   target: :_blank,
                   class: "btn btn-info",
                   id: "file_download" %>
