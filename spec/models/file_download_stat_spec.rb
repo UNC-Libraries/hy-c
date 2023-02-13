@@ -44,15 +44,30 @@ RSpec.describe FileDownloadStat, type: :model do
 
     describe '.ga_statistic' do
       let(:start_date) { 2.days.ago }
-      let(:file_set2) { FactoryBot.create(:file_set) }
 
-      before do
-        allow(described_class).to receive(:original_ga_statistics)
+      context 'with profile' do
+        let(:views) { double }
+        let(:profile) { double(hyrax__download: views) }
+
+        before do
+          allow(Hyrax::Analytics).to receive(:profile).and_return(profile)
+          allow(views).to receive(:for_file)
+        end
+
+        it 'calls wrapped method with provided parameters' do
+          expect(views).to receive(:for_file).with("#{file_set.id}|bfe93126-849a-43a5-b9d9-391e18ffacc6")
+          described_class.ga_statistics(start_date, file_set)
+        end
       end
 
-      it 'calls wrapped method with provided parameters' do
-        expect(described_class).to receive(:original_ga_statistics).with(start_date, file_set2)
-        described_class.ga_statistics(start_date, file_set2)
+      context 'without profile' do
+        before do
+          allow(Hyrax::Analytics).to receive(:profile).and_return(nil)
+        end
+
+        it 'raises error' do
+          expect(described_class.ga_statistics(start_date, file_set)).to be_empty
+        end
       end
     end
   end
