@@ -115,6 +115,11 @@ en:
         option:
           all:
             label_long: All of the CDR
+    stats:
+      work:
+        header: Work Analytics
+        pageviews: Pageviews for the Past Year
+        downloads: Downloads for the Past Year
     visibility:
       authenticated:
         note_html: "Restrict access to Onyen login"

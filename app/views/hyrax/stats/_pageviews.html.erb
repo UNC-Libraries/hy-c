@@ -1,0 +1,20 @@
+<%# [hyc-override] Changing the stats period from a month to a year %>
+<%# https://github.com/samvera/hyrax/blob/hyrax-v3.5.0/app/views/hyrax/stats/_pageviews.html.erb %>
+<script>
+  Morris.Bar({
+      element: 'pageviews',
+      data: [
+        <% @pageviews.list.take(365).reverse.each do |result| %>
+          { date: "<%= result[0] %>", metric: <%= result[1] %>},
+        <% end %>
+      ],  
+      xkey: 'date',
+      ykeys: ['metric'],
+      labels: ["<%= t('.pageviews') %>"],
+      gridTextSize: '12px',
+      gridLineColor: '#E5E5E5',
+      gridIntegers: true,
+      ymin: 0,
+      resize: true
+    });
+</script>
