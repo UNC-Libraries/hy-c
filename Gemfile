@@ -37,7 +37,7 @@ gem 'linkeddata'
 gem 'loofah', '~>2.19.1'
 gem 'mini_magick', '~>4.11.0'
 gem 'mini_racer', '~> 0.2.15', platforms: :ruby
-gem 'nokogiri', '~>1.14.1'
+gem 'nokogiri', '~>1.14.2'
 gem 'omniauth', '~> 2.0'
 gem 'omniauth-rails_csrf_protection'
 gem 'omniauth-shibboleth', '~> 1.3'
