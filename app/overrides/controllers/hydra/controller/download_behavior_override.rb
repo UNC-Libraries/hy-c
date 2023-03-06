@@ -14,11 +14,11 @@ Hydra::Controller::DownloadBehavior.class_eval do
     filename = params[:filename] || file.original_name || (asset.respond_to?(:label) && asset.label) || file.id
     file_parts = filename.split('.')
     existing_extension = file_parts.length > 1 ? file_parts.last : nil
-    if MimeTypeService.valid?(existing_extension)
-      extension = MimeTypeService.label(file.mime_type)
-      "#{filename}.#{extension}"
-    else
+    vocab_extension = MimeTypeService.label(file.mime_type)
+    if vocab_extension.nil? || existing_extension == vocab_extension
       filename
+    else
+      "#{filename}.#{vocab_extension}"
     end
   end
 end
