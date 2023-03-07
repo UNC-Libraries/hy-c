@@ -108,8 +108,7 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
         allow(Hyrax::VirusCheckerService).to receive(:file_has_virus?) { false }
       end
 
-      it 'will add proper mime type extension if valid' do
-        allow(MimeTypeService).to receive(:valid?) { true }
+      it 'will add correct extension when mimetype has a different extension' do
         allow(MimeTypeService).to receive(:label) { 'txt' }
 
         get :show, params: { id: file_set}
@@ -117,8 +116,16 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
         expect(response.headers['Content-Disposition']).to include 'filename="image.png.txt"'
       end
 
-      it 'will not add mime type extension if not valid' do
-        allow(MimeTypeService).to receive(:valid?) { false }
+      it 'will not add extension when no extension for mimetype' do
+        allow(MimeTypeService).to receive(:label) { nil }
+
+        get :show, params: { id: file_set}
+        expect(response).to be_successful
+        expect(response.headers['Content-Disposition']).to include 'filename="image.png"'
+      end
+
+      it 'will not add mime type extension when vocabulary mimetype extension is the same as original extension' do
+        allow(MimeTypeService).to receive(:label) { 'png' }
 
         get :show, params: { id: file_set}
         expect(response).to be_successful
@@ -145,6 +152,31 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
           get :show, params: { id: file_set}
           expect(response).to be_not_found
         end
+      end
+    end
+    context 'with file set for download without file extension' do
+      let(:file_set) do
+        FactoryBot.create(:file_with_work, user: @user, content: File.open("#{fixture_path}/files/no_extension"))
+      end
+
+      before do
+        allow(Hyrax::VirusCheckerService).to receive(:file_has_virus?) { false }
+      end
+
+      it 'will add extension added when vocab provides one' do
+        allow(MimeTypeService).to receive(:label) { 'jpg' }
+
+        get :show, params: { id: file_set}
+        expect(response).to be_successful
+        expect(response.headers['Content-Disposition']).to include 'filename="no_extension.jpg"'
+      end
+
+      it 'will not add extension added when vocab does not have one for mimetype' do
+        allow(MimeTypeService).to receive(:label) { nil }
+
+        get :show, params: { id: file_set}
+        expect(response).to be_successful
+        expect(response.headers['Content-Disposition']).to include 'filename="no_extension"'
       end
     end
   end
