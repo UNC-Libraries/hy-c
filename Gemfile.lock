@@ -73,7 +73,7 @@ GEM
     amazing_print (1.4.0)
     arel (9.0.0)
     ast (2.4.2)
-    autoprefixer-rails (10.4.7.0)
+    autoprefixer-rails (10.4.13.0)
       execjs (~> 2)
     awesome_nested_set (3.5.0)
       activerecord (>= 4.0.0, < 7.1)
