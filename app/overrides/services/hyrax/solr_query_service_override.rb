@@ -3,6 +3,6 @@
 # frozen_string_literal: true
 Hyrax::SolrQueryService.module_eval do
   def get
-    solr_service.post(build, rows: 100000)
+    solr_service.post(build, rows: 1000)
   end
 end
