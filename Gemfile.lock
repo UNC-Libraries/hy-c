@@ -1,7 +1,7 @@
 GIT
   remote: https://github.com/UNC-Libraries/hyrax.git
-  revision: 9e448358d910def0d136bdca99749d550b8a0d14
-  ref: 9e448358d910def0d136bdca99749d550b8a0d14
+  revision: 0a558f25e1cff0a83bc51cf9bbea1583a7c7d047
+  ref: 0a558f25e1cff0a83bc51cf9bbea1583a7c7d047
   specs:
     hyrax (3.5.0)
       active-fedora (~> 13.1, >= 13.1.2)
@@ -142,7 +142,7 @@ GEM
     awesome_nested_set (3.5.0)
       activerecord (>= 4.0.0, < 7.1)
     aws-eventstream (1.2.0)
-    aws-partitions (1.742.0)
+    aws-partitions (1.743.0)
     aws-sdk-core (3.171.0)
       aws-eventstream (~> 1, >= 1.0.2)
       aws-partitions (~> 1, >= 1.651.0)
