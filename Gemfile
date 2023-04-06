@@ -24,7 +24,7 @@ gem 'execjs', '2.8.1'
 gem 'httparty', '~>0.21.0'
 gem 'hydra-editor', '~> 5.0'
 gem 'hydra-role-management', '~> 1.0'
-gem 'hyrax', :git => 'https://github.com/bbpennel/hyrax.git', :ref => 'f1bd355ae'
+gem 'hyrax', :git => 'https://github.com/UNC-Libraries/hyrax.git', :ref => '52922c0e4e0de0e08418a90f8992cc6d478a714f'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.11.2'
 # Use jquery as the JavaScript library
