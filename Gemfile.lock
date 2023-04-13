@@ -632,7 +632,7 @@ GEM
     noid-rails (3.0.3)
       actionpack (>= 5.0.0, < 7)
       noid (~> 0.9)
-    nokogiri (1.14.2-x86_64-linux)
+    nokogiri (1.14.3-x86_64-linux)
       racc (~> 1.4)
     nokogumbo (2.0.5)
       nokogiri (~> 1.8, >= 1.8.4)
@@ -1074,7 +1074,7 @@ DEPENDENCIES
   loofah (~> 2.19.1)
   mini_magick (~> 4.11.0)
   mini_racer (~> 0.2.15)
-  nokogiri (~> 1.14.2)
+  nokogiri (~> 1.14.3)
   omniauth (~> 2.0)
   omniauth-rails_csrf_protection
   omniauth-shibboleth (~> 1.3)
