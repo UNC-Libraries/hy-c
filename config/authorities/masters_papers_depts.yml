@@ -8,6 +8,9 @@ terms:
   - id: Department of City and Regional Planning
     term: College of Arts and Sciences; Department of City and Regional Planning
     active: true
+  - id: Department of Computer Science
+    term: College of Arts and Sciences; Department of Computer Science
+    active: true
   - id: Department of Environmental Sciences and Engineering
     term: Gillings School of Global Public Health; Department of Environmental Sciences and Engineering
     active: true
