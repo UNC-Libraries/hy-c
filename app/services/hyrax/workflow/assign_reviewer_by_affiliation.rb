@@ -4,8 +4,8 @@ module Hyrax::Workflow::AssignReviewerByAffiliation
   def self.call(target:, **)
     target.creators.each do |creator|
       creator['affiliation'].each do |affiliation|
-        # Replace spaces, dashes and commas. PostGres doesn't seem to do well with dashes and commas
-        department = affiliation.strip.to_s.downcase.gsub(/\s|–|,/, '_')
+        # Replace all non-alphanumeric characters, since postgres has a hard time with some punctuation
+        department = affiliation.strip.to_s.downcase.gsub(/[^a-z0-9_]/, '_')
         reviewer = find_reviewer_for(department: department)
         permission_template_id = Hyrax::PermissionTemplate.find_by_source_id(target.admin_set_id).id
 
