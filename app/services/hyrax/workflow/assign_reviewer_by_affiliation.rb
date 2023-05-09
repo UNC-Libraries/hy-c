@@ -5,7 +5,7 @@ module Hyrax::Workflow::AssignReviewerByAffiliation
     target.creators.each do |creator|
       creator['affiliation'].each do |affiliation|
         # Replace all non-alphanumeric characters, since postgres has a hard time with some punctuation
-        department = affiliation.strip.to_s.downcase.gsub(/[^a-z0-9_]/, '_')
+        department = affiliation.strip.to_s.downcase.gsub(/[^a-z0-9]+/, '_')
         reviewer = find_reviewer_for(department: department)
         permission_template_id = Hyrax::PermissionTemplate.find_by_source_id(target.admin_set_id).id
 
