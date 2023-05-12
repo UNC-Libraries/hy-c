@@ -28,7 +28,7 @@
                     "notifications": [
                         {
                             "notification_type": "email",
-                            "name": "Hyrax::Workflow::DeletionApprovalNotification",
+                            "name": "Hyrax::Workflow::WithdrawlNotification",
                             "to": ["depositing", "deleting"]
                         }
                     ],
