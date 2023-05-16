@@ -21,10 +21,10 @@ class IngestFromFtpController < ApplicationController
         filename: File.basename(filename),
         last_modified: File.ctime(filename)
       }
-      result['is_revision'] = is_revision?(filename) if needs_revision_flag?
+      result[:is_revision] = is_revision?(filename) if needs_revision_flag?
       package_results << result
     end
-    package_results
+    package_results.sort_by { |result| result[:filename] }
   end
 
   def provider
@@ -44,7 +44,7 @@ class IngestFromFtpController < ApplicationController
   end
 
   def is_revision?(filename)
-    File.extname(filename).match(/\.r[0-9]{4}-[0-9]{2}-[0-9]{2}/)
+    File.basename(filename).match?(/\.r[0-9]{4}-[0-9]{2}-[0-9]{2}/)
   end
 
   def ensure_admin!

@@ -33,7 +33,7 @@
                   <%= entry[:filename] %>
                 </td>
                 <td>
-                  <%= entry[:last_modified] %>
+                  <%= entry[:last_modified].strftime('%b %-d, %Y') %>
                 </td>
                 <% if @needs_revision_flag %>
                   <td>
