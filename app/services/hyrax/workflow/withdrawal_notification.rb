@@ -3,7 +3,7 @@ module Hyrax
   module Workflow
     # Same behavior as the DeletionApprovalNotification, except that the notification is also sent
     # to the instigating user
-    class WithdrawlNotification < DeletionApprovalNotification
+    class WithdrawalNotification < DeletionApprovalNotification
       private
       def users_to_notify
         users = []

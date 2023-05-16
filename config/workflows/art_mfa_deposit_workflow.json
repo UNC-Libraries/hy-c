@@ -82,7 +82,7 @@
           "notifications": [
             {
               "notification_type": "email",
-              "name": "Hyrax::Workflow::WithdrawlNotification",
+              "name": "Hyrax::Workflow::WithdrawalNotification",
               "to": ["depositing", "deleting"]
             }
           ],

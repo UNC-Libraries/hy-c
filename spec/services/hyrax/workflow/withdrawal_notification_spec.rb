@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'rails_helper'
 
-RSpec.describe Hyrax::Workflow::WithdrawlNotification do
+RSpec.describe Hyrax::Workflow::WithdrawalNotification do
   let(:approver) { FactoryBot.create(:admin) }
   let(:depositor) { FactoryBot.create(:user) }
   let(:work) { Article.create(title: ['New Article'], depositor: depositor.user_key) }
