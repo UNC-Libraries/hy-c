@@ -28,10 +28,10 @@ RSpec.describe IngestFromFtpController, type: :controller do
   let!(:sage_package2) { File.join(sage_dir, 'JPX_2021_8_10.1177_23743735211067313.r2022-01-21.zip') }
 
   before do
-    File.open(proquest_package1, "w") {}
-    File.open(proquest_package2, "w") {}
-    File.open(sage_package1, "w") {}
-    File.open(sage_package2, "w") {}
+    File.open(proquest_package1, 'w') {}
+    File.open(proquest_package2, 'w') {}
+    File.open(sage_package1, 'w') {}
+    File.open(sage_package2, 'w') {}
   end
 
   describe 'GET #list_packages' do

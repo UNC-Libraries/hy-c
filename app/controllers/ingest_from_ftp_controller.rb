@@ -16,7 +16,7 @@ class IngestFromFtpController < ApplicationController
 
   def build_package_listing
     package_results = []
-    Dir[File.join(storage_base_path, "*.zip")].each do |filename|
+    Dir[File.join(storage_base_path, '*.zip')].each do |filename|
       result = {
         filename: File.basename(filename),
         last_modified: File.ctime(filename)
