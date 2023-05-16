@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'rails_helper'
 
-RSpec.describe Hyrax::Workflow::DeletionApprovalNotification do
+RSpec.describe Hyrax::Workflow::WithdrawalNotification do
   let(:approver) { FactoryBot.create(:admin) }
   let(:depositor) { FactoryBot.create(:user) }
   let(:work) { Article.create(title: ['New Article'], depositor: depositor.user_key) }
@@ -21,14 +21,16 @@ RSpec.describe Hyrax::Workflow::DeletionApprovalNotification do
   let(:comment) { double('comment', comment: 'A pleasant read') }
 
   describe '.send_notification' do
-    context 'with to recipient configured' do
-      it 'sends a message to the to user(s)' do
-        recipients = { 'to' => [depositor], 'cc' => [] }
-        expect(approver).to receive(:send_message).exactly(1).times.and_call_original
-        expect { described_class.send_notification(entity: entity, user: approver, comment: comment, recipients: recipients) }
-          .to change { depositor.mailbox.inbox.count }.by(1)
-          .and change { approver.mailbox.inbox.count }.by(0)
-      end
+    it 'sends a message to depositor and user who instigated action' do
+      recipients = {}
+      expect(approver).to receive(:send_message)
+        .with(anything, I18n.t('hyrax.notifications.workflow.deletion_approved.message', title: work.title[0], work_id: work.id,
+                                                                                         document_path: "#{ENV['HYRAX_HOST']}/concern/articles/#{work.id}", user: approver, comment: comment.comment),
+              anything).exactly(2).times.and_call_original
+
+      expect { described_class.send_notification(entity: entity, user: approver, comment: comment, recipients: recipients) }
+        .to change { depositor.mailbox.inbox.count }.by(1)
+        .and change { approver.mailbox.inbox.count }.by(1)
     end
   end
 end
