@@ -60,5 +60,8 @@ RUN scl enable devtoolset-8 rh-ruby27 -- gem install rubygems-update \
 && scl enable devtoolset-8 rh-ruby27 -- gem install bundler:2.2.33 \
 && scl enable devtoolset-8 rh-ruby27 -- bundle install --jobs=3 --retry=3
 
+# Create FTP directories
+RUN mkdir -p /opt/data/ftp/proquest && mkdir -p /opt/data/ftp/sage
+
 EXPOSE 3000
 CMD ["sh", "/hyrax/docker/start-app.sh"]
