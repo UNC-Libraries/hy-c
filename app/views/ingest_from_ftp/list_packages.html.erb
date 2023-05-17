@@ -1,0 +1,50 @@
+<% provide :page_header do %>
+  <h1><span class="glyphicon glyphicon-ok-circle"></span> Ingest from FTP</h1>
+<% end %>
+
+<div class="row">
+  <div class="col-md-12">
+    <div class="panel panel-default tabs">
+      <ul class="nav nav-tabs" id="my_nav" role="list">
+        <li<%= ' class="active"'.html_safe if @provider == 'proquest' %>>
+            <%= link_to 'Proquest',
+              main_app.ingest_from_ftp_path(provider: 'proquest'), class: "nav-link#{' active' if @provider == 'proquest'}" %>
+        </li>
+        <li<%= ' class="active"'.html_safe if @provider == 'sage' %>>
+          <%= link_to 'Sage', main_app.ingest_from_ftp_path(provider: 'sage'), class: "nav-link#{' active' if @provider == 'sage'}" %>
+        </li>
+      </ul>
+      <div class="panel-body">
+        <h2 class="sr-only">Ingest from <%= @provider %> </h2>
+        <table class="table table-sm table-striped works-list">
+          <thead>
+            <tr>
+              <th>Package</th>
+              <th>Received Date</th>
+              <% if @needs_revision_flag %>
+                <th>Is revision?</th>
+              <% end %>
+            </tr>
+          </thead>
+          <tbody>
+            <% @package_results.each do |entry| %>
+              <tr>
+                <td>
+                  <%= entry[:filename] %>
+                </td>
+                <td>
+                  <%= entry[:last_modified].strftime('%b %-d, %Y') %>
+                </td>
+                <% if @needs_revision_flag %>
+                  <td>
+                  <%= entry[:is_revision] %>
+                </td>
+                <% end %>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

@@ -15,6 +15,8 @@ Rails.application.routes.draw do
   get 'masters_papers/department', to: 'masters_papers#department'
   post 'masters_papers/select_department', to: 'masters_papers#select_department'
 
+  get 'ingest_from_ftp', to: 'ingest_from_ftp#list_packages', controller: 'ingest_from_ftp'
+
   concern :oai_provider, BlacklightOaiProvider::Routes.new
 
   authenticate :user, ->(u) { u.admin? } do
