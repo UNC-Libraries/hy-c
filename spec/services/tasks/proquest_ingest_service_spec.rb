@@ -64,6 +64,24 @@ RSpec.describe Tasks::ProquestIngestService, :ingest do
     end
   end
 
+  describe '#initialize_statuses' do
+     it 'initializes and stores an outcome mapping' do
+      Tasks::ProquestIngestService.new(config).initialize_statuses
+
+      outcome_service = Tasks::ProquestIngestService.new(config)
+      outcomes = outcome_service.load_outcomes()
+      expect(outcomes.size).to eq 2
+      package1 = outcomes['proquest-attach0.zip']
+      expect(package1['status']).to eq 'Pending'
+      expect(package1['status_timestamp']).to_not be_nil
+      expect(package1['error']).to be_nil
+      package1 = outcomes['proquest-attach7.zip']
+      expect(package1['status']).to eq 'Pending'
+      expect(package1['status_timestamp']).to_not be_nil
+      expect(package1['error']).to be_nil
+    end
+  end
+
   describe '#process_all_packages' do
     before do
       Dissertation.delete_all
@@ -92,6 +110,41 @@ RSpec.describe Tasks::ProquestIngestService, :ingest do
       expect(dissertation['rights_statement_label']).to eq 'In Copyright - Educational Use Permitted'
       expect(dissertation.visibility).to eq 'restricted'
       expect(dissertation.embargo_release_date).to eq (Date.today.to_datetime + 2.years)
+
+      outcome_service = Tasks::ProquestIngestService.new(config)
+      outcomes = outcome_service.load_outcomes()
+      expect(outcomes.size).to eq 2
+      package1 = outcomes['proquest-attach0.zip']
+      expect(package1['status']).to eq 'Complete'
+      expect(package1['status_timestamp']).to_not be_nil
+      expect(package1['error']).to be_nil
+      package1 = outcomes['proquest-attach7.zip']
+      expect(package1['status']).to eq 'Complete'
+      expect(package1['status_timestamp']).to_not be_nil
+      expect(package1['error']).to be_nil
+    end
+
+    context 'with error thrown by process_package' do
+      let(:service) { Tasks::ProquestIngestService.new(config) }
+      before do
+        allow(service).to receive(:process_package).and_raise('Help')
+      end
+      
+      it 'records error in outcome' do
+        service.process_all_packages
+
+        outcome_service = Tasks::ProquestIngestService.new(config)
+        outcomes = outcome_service.load_outcomes()
+        expect(outcomes.size).to eq 2
+        package1 = outcomes['proquest-attach0.zip']
+        expect(package1['status']).to eq 'Failed'
+        expect(package1['status_timestamp']).to_not be_nil
+        expect(package1['error']).to include('Help:')
+        package1 = outcomes['proquest-attach7.zip']
+        expect(package1['status']).to eq 'Failed'
+        expect(package1['status_timestamp']).to_not be_nil
+        expect(package1['error']).to include('Help:')
+      end
     end
   end
 

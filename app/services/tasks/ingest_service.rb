@@ -61,13 +61,13 @@ module Tasks
 
     def process_all_packages
       logger.info("Beginning ingest of #{count} #{ingest_source} packages")
-      initialize_statuses(package_paths)
+      initialize_statuses()
 
       package_paths.each.with_index(1) do |package_path, index|
         begin
           status_in_progress(package_path)
           process_package(package_path, index)
-          status_completed(package_path)
+          status_complete(package_path)
         rescue => error
           stacktrace = "#{error.message}:\n#{error.backtrace.join('\n')}"
           logger.error("Failed to process package #{package_path}: #{stacktrace}")
@@ -94,7 +94,7 @@ module Tasks
     end
 
     # Initialize the outcome mapping to set all packages to pending
-    def initialize_statuses(package_paths)
+    def initialize_statuses()
       package_paths.each do |package_path|
         set_outcome_status(package_path, 'Pending', persist: false)
       end
@@ -116,9 +116,9 @@ module Tasks
     # Update the status of a package in the outcome mapping
     def set_outcome_status(package_path, new_status, error: nil, persist: true)
       filename = File.basename(package_path)
-      outcomes[package_path][:status] = new_status
-      outcomes[package_path][:status_timestamp] = Time.now.to_s
-      outcomes[package_path][:error] = error
+      outcomes[filename][:status] = new_status
+      outcomes[filename][:status_timestamp] = Time.now.to_s
+      outcomes[filename][:error] = error
       persist_outcomes() if persist
     end
 
@@ -128,9 +128,9 @@ module Tasks
     end
 
     def load_outcomes()
-      return unless File.exist?(outcome_path)
+      return unless File.exist?(@outcome_path)
 
-      File.open(outcome_path, 'r') do |file|
+      File.open(@outcome_path, 'r') do |file|
         @outcomes = JSON.parse(file.read)
       end
     end
