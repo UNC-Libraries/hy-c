@@ -4,7 +4,8 @@ namespace :proquest do
   task :ingest, [:configuration_file] => :environment do |_t, args|
     puts "[#{Time.now}] starting proquest ingest"
     config = YAML.load_file(args[:configuration_file])
-    Tasks::ProquestIngestService.new(config).process_all_packages
+    status_service = Tasks::IngestStatusService.new(@config['status_path'])
+    Tasks::ProquestIngestService.new(config, status_service).process_all_packages
     puts "[#{Time.now}] completed proquest ingest"
   end
 end

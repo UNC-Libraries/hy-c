@@ -15,9 +15,23 @@ RSpec.describe Tasks::IngestService, :ingest do
   end
 
   context 'with a proquest ingest' do
-    let(:path_to_config) { 'spec/fixtures/proquest/proquest_config.yml' }
+    let(:config) { 
+      {
+        'unzip_dir' => 'spec/fixtures/proquest/tmp',
+        'package_dir' => 'spec/fixtures/proquest',
+        'admin_set' => 'proquest admin set',
+        'depositor_onyen' => 'admin',
+        'deposit_title' => 'Deposit by ProQuest Depositor via CDR Collector 1.0',
+        'deposit_method' => 'CDR Collector 1.0',
+        'deposit_type' => 'http://proquest.com'
+      }
+    }
     let(:admin_set_title) { 'proquest admin set' }
-    let(:service) { Tasks::ProquestIngestService.new(args) }
+    let(:status_service) { Tasks::IngestStatusService.new('spec/fixtures/proquest/tmp/proquest_deposit_status.json') }
+    after do
+      FileUtils.rm_rf(Dir.glob('spec/fixtures/proquest/tmp/*'))
+    end
+    let(:service) { Tasks::ProquestIngestService.new(config, status_service) }
 
     it 'can be instantiated' do
       expect(service).to be_instance_of Tasks::ProquestIngestService
@@ -30,9 +44,21 @@ RSpec.describe Tasks::IngestService, :ingest do
   end
 
   context 'with a sage ingest' do
-    let(:path_to_config) { 'spec/fixtures/sage/sage_config.yml' }
+    let(:config) { 
+      {
+        'unzip_dir' => 'spec/fixtures/sage/tmp',
+        'package_dir' => 'spec/fixtures/sage',
+        'admin_set' => 'Open_Access_Articles_and_Book_Chapters',
+        'depositor_onyen' => 'admin',
+        'ingest_progress_log' => 'spec/fixtures/sage/ingest_progress.log'
+      }
+    }
     let(:admin_set_title) { 'Open_Access_Articles_and_Book_Chapters' }
-    let(:service) { Tasks::SageIngestService.new(args) }
+    let(:status_service) { Tasks::IngestStatusService.new('spec/fixtures/proquest/tmp/sage_deposit_status.json') }
+    after do
+      FileUtils.rm_rf(Dir.glob('spec/fixtures/sage/tmp/*'))
+    end
+    let(:service) { Tasks::SageIngestService.new(config, status_service) }
 
     it 'can be instantiated' do
       expect(service).to be_instance_of Tasks::SageIngestService

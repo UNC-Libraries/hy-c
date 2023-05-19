@@ -8,7 +8,7 @@ module Tasks
   class ProquestIngestService < IngestService
     attr_reader :admin_set_id
 
-    def initialize(args)
+    def initialize(config, status_service)
       super
 
       @admin_set_id = @admin_set.id

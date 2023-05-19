@@ -5,10 +5,19 @@ include ActiveSupport::Testing::TimeHelpers
 RSpec.describe Tasks::SageIngestService, :sage, :ingest do
   include ActiveJob::TestHelper
 
-  let(:service) { described_class.new(configuration_file: path_to_config) }
+  let(:config) { 
+    {
+      'unzip_dir' => 'spec/fixtures/sage/tmp',
+      'package_dir' => 'spec/fixtures/sage',
+      'admin_set' => 'Open_Access_Articles_and_Book_Chapters',
+      'depositor_onyen' => 'admin',
+      'ingest_progress_log' => 'spec/fixtures/sage/ingest_progress.log'
+    }
+  }
+  let(:status_service) { Tasks::IngestStatusService.new(File.join(path_to_tmp, 'deposit_status.json')) }
+  let(:service) { described_class.new(config, status_service) }
 
   let(:sage_fixture_path) { File.join(fixture_path, 'sage') }
-  let(:path_to_config) { File.join(sage_fixture_path, 'sage_config.yml') }
   let(:path_to_tmp) { FileUtils.mkdir_p(File.join(fixture_path, 'sage', 'tmp')).first }
   let(:first_package_identifier) { 'CCX_2021_28_10.1177_1073274820985792' }
   let(:first_zip_path) { "spec/fixtures/sage/#{first_package_identifier}.zip" }
@@ -219,7 +228,7 @@ RSpec.describe Tasks::SageIngestService, :sage, :ingest do
       end
 
       it 'raises an error' do
-        expect { described_class.new(configuration_file: path_to_config) }.to raise_error(ActiveRecord::RecordNotFound, 'Could not find User with onyen admin')
+        expect { described_class.new(config, status_service) }.to raise_error(ActiveRecord::RecordNotFound, 'Could not find User with onyen admin')
       end
     end
 
@@ -229,7 +238,7 @@ RSpec.describe Tasks::SageIngestService, :sage, :ingest do
       end
 
       it 'raises an error' do
-        expect { described_class.new(configuration_file: path_to_config) }.to raise_error(ActiveRecord::RecordNotFound, 'Could not find AdminSet with title Open_Access_Articles_and_Book_Chapters')
+        expect { described_class.new(config, status_service) }.to raise_error(ActiveRecord::RecordNotFound, 'Could not find AdminSet with title Open_Access_Articles_and_Book_Chapters')
       end
     end
 
@@ -246,7 +255,7 @@ RSpec.describe Tasks::SageIngestService, :sage, :ingest do
     it 'writes to the log' do
       logger = spy('logger')
       allow(Logger).to receive(:new).and_return(logger)
-      described_class.new(configuration_file: path_to_config)
+      described_class.new(config, status_service)
       expect(logger).to have_received(:info).with('Beginning Sage ingest')
     end
 
@@ -258,7 +267,7 @@ RSpec.describe Tasks::SageIngestService, :sage, :ingest do
         allow(Logger).to receive(:new).and_return(logger)
 
         expect(Logger).to receive(:new).with('/some/absolute/path/sage_ingest.log', { progname: 'Sage ingest' })
-        described_class.new(configuration_file: path_to_config)
+        described_class.new(config, status_service)
       end
 
       it 'can write to the configured log path when it is a relative path' do
@@ -268,7 +277,7 @@ RSpec.describe Tasks::SageIngestService, :sage, :ingest do
         allow(Logger).to receive(:new).and_return(logger)
 
         expect(Logger).to receive(:new).with('some/relative/path/sage_ingest.log', { progname: 'Sage ingest' })
-        described_class.new(configuration_file: path_to_config)
+        described_class.new(config, status_service)
       end
     end
 
