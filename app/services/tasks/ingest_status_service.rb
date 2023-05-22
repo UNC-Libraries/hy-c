@@ -14,7 +14,7 @@ module Tasks
       package_paths.each do |package_path|
         set_status(package_path, 'Pending', persist: false)
       end
-      persist_statuses()
+      persist_statuses
     end
 
     def status_complete(package_path)
@@ -34,17 +34,21 @@ module Tasks
       filename = File.basename(package_path)
       @statuses[filename]['status'] = new_status
       @statuses[filename]['status_timestamp'] = Time.now.to_s
-      @statuses[filename]['error'] = error
-      persist_statuses() if persist
+      if error.nil?
+        @statuses[filename]['error'] = nil
+      else
+        @statuses[filename]['error'] = { 'message' => error.message, 'trace' => error.backtrace }
+      end
+      persist_statuses if persist
     end
 
     # Write the current status mapping out to disk
-    def persist_statuses()
+    def persist_statuses
       File.write(@status_path, @statuses.to_json)
     end
 
     # Loads statuses from persisted version on disk, and returns the statuses
-    def load_statuses()
+    def load_statuses
       return unless File.exist?(@status_path)
 
       File.open(@status_path, 'r') do |file|

@@ -67,9 +67,9 @@ module Tasks
           process_package(package_path, index)
           @status_service.status_complete(package_path)
         rescue => error
-          stacktrace = "#{error.message}:\n#{error.backtrace.join('\n')}"
-          logger.error("Failed to process package #{package_path}: #{stacktrace}")
-          @status_service.status_failed(package_path, stacktrace)
+          stacktrace = error.backtrace.join('\n')
+          logger.error("Failed to process package #{package_path}, #{error.message}: #{stacktrace}")
+          @status_service.status_failed(package_path, error)
         end
       end
       logger.info("Completing ingest of #{ingest_source} packages.")

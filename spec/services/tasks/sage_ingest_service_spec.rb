@@ -5,7 +5,7 @@ include ActiveSupport::Testing::TimeHelpers
 RSpec.describe Tasks::SageIngestService, :sage, :ingest do
   include ActiveJob::TestHelper
 
-  let(:config) { 
+  let(:config) {
     {
       'unzip_dir' => 'spec/fixtures/sage/tmp',
       'package_dir' => 'spec/fixtures/sage',
@@ -23,7 +23,7 @@ RSpec.describe Tasks::SageIngestService, :sage, :ingest do
   let(:first_dir_path) { "spec/fixtures/sage/tmp/#{first_package_identifier}" }
   let(:first_pdf_path) { "#{path_to_tmp}/10.1177_1073274820985792.pdf" }
   let(:first_xml_path) { "#{sage_fixture_path}/#{first_package_identifier}/10.1177_1073274820985792.xml" }
-  let(:ingest_progress_log_path) { File.join(Rails.configuration.log_directory, "sage_progress.log") }
+  let(:ingest_progress_log_path) { File.join(Rails.configuration.log_directory, 'sage_progress.log') }
   let(:last_zip_path) { "spec/fixtures/sage/#{last_package_identifier}.zip" }
   let(:last_package_identifier) { 'GSJ_2021_11_1_10.1177_2192568219890573' }
 

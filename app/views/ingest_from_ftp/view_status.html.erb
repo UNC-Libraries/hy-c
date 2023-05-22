@@ -1,0 +1,60 @@
+<% provide :page_header do %>
+  <h1><span class="glyphicon glyphicon-ok-circle"></span> Ingest status from <%= @provider %></h1>
+<% end %>
+
+<div class="row">
+  <div class="col-md-12">
+    <div class="panel panel-default">
+      <div class="panel-body">
+        <h2 class="sr-only">Ingest Status from <%= @provider %> </h2>
+        <%= link_to "Return to list of #{@provider} packages", main_app.ingest_from_ftp_path(provider: @provider)%>
+        <table class="table table-sm table-striped works-list">
+          <thead>
+            <tr>
+              <th>Package</th>
+              <th>Status</th>
+              <th>Error</th>
+              <th>Status Set At</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @status_results.each_with_index do |(filename, entry), index| %>
+              <tr>
+                <td>
+                  <%= filename %>
+                </td>
+                <td>
+                  <%= entry['status'] %>
+                </td>
+                <td>
+                  <% if !entry['error'].nil? %>
+                    <%= link_to 'View error', "#status_error_#{index}", 'data-toggle' => 'modal' %>
+                    <div class="modal fade" id="status_error_<%= index %>" tabindex="-1" role="dialog" aria-labelledby="select-collectiontype-label">
+                      <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close error"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title">Error for <%= filename %></h4>
+                          </div>
+                          <div class="modal-body">
+                            <h4><%= entry['error']['message'] %></h4>
+                            <% entry['error']['trace'].each do |line| %>
+                              <%= line %><br>
+                            <% end %>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  <% end %>
+                </td>
+                <td>
+                  <%= entry['status_timestamp'].to_time.utc %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

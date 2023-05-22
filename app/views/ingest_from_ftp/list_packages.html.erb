@@ -16,6 +16,13 @@
       </ul>
       <div class="panel-body">
         <h2 class="sr-only">Ingest from <%= @provider %> </h2>
+        <fieldset class="btn-group">
+          <%= button_to 'Ingest Packages', main_app.ingest_from_ftp_path(provider: @provider), method: :post, class: 'btn btn-danger',  data: { confirm: 'Are you sure you want to ingest all packages?' } %>
+        </fieldset>
+        <fieldset class="btn-group">
+          <%= link_to 'View Status of last Ingest', main_app.ingest_from_ftp_status_path(provider: @provider), method: :get, class: 'btn btn-default' %>
+        </fieldset>
+        
         <table class="table table-sm table-striped works-list">
           <thead>
             <tr>

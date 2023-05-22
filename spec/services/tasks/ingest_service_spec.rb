@@ -15,7 +15,7 @@ RSpec.describe Tasks::IngestService, :ingest do
   end
 
   context 'with a proquest ingest' do
-    let(:config) { 
+    let(:config) {
       {
         'unzip_dir' => 'spec/fixtures/proquest/tmp',
         'package_dir' => 'spec/fixtures/proquest',
@@ -44,7 +44,7 @@ RSpec.describe Tasks::IngestService, :ingest do
   end
 
   context 'with a sage ingest' do
-    let(:config) { 
+    let(:config) {
       {
         'unzip_dir' => 'spec/fixtures/sage/tmp',
         'package_dir' => 'spec/fixtures/sage',

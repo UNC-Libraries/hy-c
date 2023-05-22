@@ -13,17 +13,34 @@ class IngestFromFtpController < ApplicationController
   end
 
   def ingest_packages
+    # Prepopulate statuses for packages so we can immediately view a report
+    ingest_status_service.initialize_statuses(list_package_files.map { |f| File.basename(f) })
     if provider == 'proquest'
-      ingest_service = Tasks::ProquestIngestService.new()
+      IngestFromProquestJob.perform_later
     else
+      IngestFromSageJob.perform_later
     end
+    redirect_to ingest_from_ftp_status_path(provider: @provider)
+  end
+
+  def view_status
+    add_breadcrumb t(:'hyrax.controls.home'), root_path
+    add_breadcrumb t(:'hyrax.dashboard.breadcrumbs.admin'), hyrax.dashboard_path
+    add_breadcrumb 'Ingest From FTP status', ingest_from_ftp_path
+    add_breadcrumb 'Ingest status', request.path
+    statuses = ingest_status_service.load_statuses || {}
+    @status_results = statuses.sort.to_h
   end
 
   private
 
+  def list_package_files
+    Dir[File.join(storage_base_path, '*.zip')]
+  end
+
   def build_package_listing
     package_results = []
-    Dir[File.join(storage_base_path, '*.zip')].each do |filename|
+    list_package_files.each do |filename|
       result = {
         filename: File.basename(filename),
         last_modified: File.ctime(filename)

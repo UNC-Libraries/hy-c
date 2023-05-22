@@ -2,7 +2,7 @@
 require 'rails_helper'
 
 RSpec.describe Tasks::ProquestIngestService, :ingest do
-  let(:config) { 
+  let(:config) {
     {
       'unzip_dir' => 'spec/fixtures/proquest/tmp',
       'package_dir' => 'spec/fixtures/proquest',
@@ -94,7 +94,7 @@ RSpec.describe Tasks::ProquestIngestService, :ingest do
       expect(dissertation.visibility).to eq 'restricted'
       expect(dissertation.embargo_release_date).to eq (Date.today.to_datetime + 2.years)
 
-      statuses = status_service.load_statuses()
+      statuses = status_service.load_statuses
       expect(statuses.size).to eq 2
       package1 = statuses['proquest-attach0.zip']
       expect(package1['status']).to eq 'Complete'
@@ -112,11 +112,11 @@ RSpec.describe Tasks::ProquestIngestService, :ingest do
       before do
         allow(service).to receive(:process_package).and_raise('Help')
       end
-      
+
       it 'records error in outcome' do
         service.process_all_packages
 
-        statuses = status_service.load_statuses()
+        statuses = status_service.load_statuses
         expect(statuses.size).to eq 2
         package1 = statuses['proquest-attach0.zip']
         expect(package1['status']).to eq 'Failed'
