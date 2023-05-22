@@ -5,7 +5,7 @@ namespace :sage do
   task :ingest, [:configuration_file] => :environment do |_t, args|
     puts "[#{Time.now}] starting sage ingest"
     config = YAML.load_file(args[:configuration_file])
-    status_service = Tasks::IngestStatusService.new(@config['status_path'])
+    status_service = Tasks::IngestStatusService.status_service_for_provider('sage')
     Tasks::SageIngestService.new(config, status_service).process_all_packages
     puts "[#{Time.now}] completed sage ingest"
   end

@@ -12,6 +12,13 @@ class IngestFromFtpController < ApplicationController
     @needs_revision_flag = needs_revision_flag?
   end
 
+  def ingest_packages
+    if provider == 'proquest'
+      ingest_service = Tasks::ProquestIngestService.new()
+    else
+    end
+  end
+
   private
 
   def build_package_listing
@@ -29,6 +36,10 @@ class IngestFromFtpController < ApplicationController
 
   def provider
     @provider ||= params[:provider].blank? ? 'proquest' : params[:provider]
+  end
+
+  def ingest_status_service
+    @ingest_status_service ||= Tasks::IngestStatusService.status_service_for_provider(provider)
   end
 
   def storage_base_path

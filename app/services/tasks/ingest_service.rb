@@ -2,7 +2,7 @@
 module Tasks
   require 'tasks/migrate/services/progress_tracker'
   class IngestService
-    attr_reader :temp, :admin_set, :depositor, :package_dir, :ingest_progress_log
+    attr_reader :temp, :admin_set, :depositor, :package_dir
 
     def initialize(config, status_service)
       logger.info("Beginning #{ingest_source} ingest")
@@ -25,7 +25,6 @@ module Tasks
       @package_dir = @config['package_dir']
 
       deposit_record
-      @ingest_progress_log = Migrate::Services::ProgressTracker.new(@config['ingest_progress_log']) if @config['ingest_progress_log']
     end
 
     def deposit_record_hash
@@ -89,6 +88,13 @@ module Tasks
       @logger ||= begin
         log_path = File.join(Rails.configuration.log_directory, "#{ingest_source.downcase}_ingest.log")
         Logger.new(log_path, progname: "#{ingest_source} ingest")
+      end
+    end
+
+    def ingest_progress_log
+      @ingest_progress_log ||= begin
+        log_path = File.join(Rails.configuration.log_directory, "#{ingest_source.downcase}_progress.log")
+        Migrate::Services::ProgressTracker.new(log_path)
       end
     end
 

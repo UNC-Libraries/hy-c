@@ -100,10 +100,11 @@ RSpec.describe Tasks::ProquestIngestService, :ingest do
       expect(package1['status']).to eq 'Complete'
       expect(package1['status_timestamp']).to_not be_nil
       expect(package1['error']).to be_nil
+      # This file is missing metadata
       package1 = statuses['proquest-attach7.zip']
-      expect(package1['status']).to eq 'Complete'
+      expect(package1['status']).to eq 'Failed'
       expect(package1['status_timestamp']).to_not be_nil
-      expect(package1['error']).to be_nil
+      expect(package1['error']).to_not be_nil
     end
 
     context 'with error thrown by process_package' do

@@ -51,5 +51,9 @@ module Tasks
         @statuses = JSON.parse(file.read)
       end
     end
+
+    def self.status_service_for_provider(provider)
+      IngestStatusService.new(File.join(ENV['TEMP_STORAGE'], "#{provider}_deposit_status.json"))
+    end
   end
 end
