@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 # Job which performs ingest of sage packages
-class IngestFromSageJob < IngestFromProviderJob
+class IngestFromSageJob < IngestFromSourceJob
   def ingest_service
     @ingest_service ||= Tasks::SageIngestService.new(config, ingest_status_service)
   end

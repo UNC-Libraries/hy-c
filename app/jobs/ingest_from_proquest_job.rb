@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 # Job which performs an ingest from proquest
-class IngestFromProquestJob < IngestFromProviderJob
+class IngestFromProquestJob < IngestFromSourceJob
   def ingest_service
     @ingest_service ||= Tasks::ProquestIngestService.new(config, ingest_status_service)
   end

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 # Abstract job which performs batch ingest from a source
-class IngestFromProviderJob < Hyrax::ApplicationJob
+class IngestFromSourceJob < Hyrax::ApplicationJob
   queue_as Hyrax.config.ingest_queue_name
 
   def perform(user)
