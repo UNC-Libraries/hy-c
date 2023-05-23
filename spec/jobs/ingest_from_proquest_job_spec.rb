@@ -43,7 +43,7 @@ RSpec.describe IngestFromProquestJob, type: :job do
 
   it 'triggers proquest ingest' do
     expect { job.perform(admin.uid) }.to change { Dissertation.count }.by(1).and change { DepositRecord.count }.by(1)
-    statuses = Tasks::IngestStatusService.status_service_for_provider('proquest').load_statuses
+    statuses = Tasks::IngestStatusService.status_service_for_source('proquest').load_statuses
     expect(statuses['proquest-attach0.zip']['status']).to eq 'Complete'
     expect(statuses['proquest-attach7.zip']['status']).to eq 'Failed'
   end

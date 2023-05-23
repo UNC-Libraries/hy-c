@@ -56,8 +56,8 @@ module Tasks
       end
     end
 
-    def self.status_service_for_provider(provider)
-      IngestStatusService.new(File.join(ENV['TEMP_STORAGE'], "#{provider}_deposit_status.json"))
+    def self.status_service_for_source(source)
+      IngestStatusService.new(File.join(ENV['TEMP_STORAGE'], "#{source}_deposit_status.json"))
     end
   end
 end

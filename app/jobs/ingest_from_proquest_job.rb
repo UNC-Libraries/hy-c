@@ -20,7 +20,7 @@ class IngestFromProquestJob < IngestFromProviderJob
     @storage_base_path ||= ENV['INGEST_PROQUEST_PATH']
   end
 
-  def provider
+  def source
     'proquest'
   end
 end

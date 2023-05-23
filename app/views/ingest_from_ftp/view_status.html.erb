@@ -1,13 +1,13 @@
 <% provide :page_header do %>
-  <h1><span class="glyphicon glyphicon-ok-circle"></span> Ingest status from <%= @provider %></h1>
+  <h1><span class="glyphicon glyphicon-ok-circle"></span> Ingest status from <%= @source %></h1>
 <% end %>
 
 <div class="row">
   <div class="col-md-12">
     <div class="panel panel-default">
       <div class="panel-body">
-        <h2 class="sr-only">Ingest Status from <%= @provider %> </h2>
-        <%= link_to "Return to list of #{@provider} packages", main_app.ingest_from_ftp_path(provider: @provider)%>
+        <h2 class="sr-only">Ingest Status from <%= @source %> </h2>
+        <%= link_to "Return to list of #{@source} packages", main_app.ingest_from_ftp_path(source: @source)%>
         <table class="table table-sm table-striped works-list">
           <thead>
             <tr>

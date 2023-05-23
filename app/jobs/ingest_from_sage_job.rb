@@ -18,7 +18,7 @@ class IngestFromSageJob < IngestFromProviderJob
     @storage_base_path ||= ENV['INGEST_SAGE_PATH']
   end
 
-  def provider
+  def source
     'sage'
   end
 end

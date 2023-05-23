@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe 'ingest_from_ftp/view_status', type: :view do
   context 'with proquest selected' do
     before(:each) do
-      assign(:provider, 'proquest')
+      assign(:source, 'proquest')
       assign(:status_results, {
         'etdadmin_upload_3806.zip' => {
           'status' => 'Complete',

@@ -41,8 +41,8 @@ RSpec.describe IngestFromFtpController, type: :controller do
         allow(controller).to receive(:authorize!).with(:read, :admin_dashboard).and_return(true)
       end
 
-      it 'proquest provider returns proquest results' do
-        get :list_packages, params: { provider: 'proquest'}, session: valid_session
+      it 'proquest source returns proquest results' do
+        get :list_packages, params: { source: 'proquest'}, session: valid_session
         expect(response).to be_successful
         package_results = subject.instance_variable_get('@package_results')
 
@@ -54,8 +54,8 @@ RSpec.describe IngestFromFtpController, type: :controller do
         expect(subject.instance_variable_get('@needs_revision_flag')).to be_falsey
       end
 
-      it 'sage provider returns sage results' do
-        get :list_packages, params: { provider: 'sage'}, session: valid_session
+      it 'sage source returns sage results' do
+        get :list_packages, params: { source: 'sage'}, session: valid_session
         expect(response).to be_successful
         package_results = subject.instance_variable_get('@package_results')
 
@@ -88,15 +88,15 @@ RSpec.describe IngestFromFtpController, type: :controller do
       end
 
       it 'submits a proquest ingest job and goes to results page' do
-        post :ingest_packages, params: { provider: 'proquest'}, session: valid_session
+        post :ingest_packages, params: { source: 'proquest'}, session: valid_session
         expect(IngestFromProquestJob).to have_received(:perform_later).with(user.uid)
-        expect(response).to redirect_to(ingest_from_ftp_status_path(provider: 'proquest'))
+        expect(response).to redirect_to(ingest_from_ftp_status_path(source: 'proquest'))
       end
 
       it 'submits a sage ingest job and goes to results page' do
-        post :ingest_packages, params: { provider: 'sage'}, session: valid_session
+        post :ingest_packages, params: { source: 'sage'}, session: valid_session
         expect(IngestFromSageJob).to have_received(:perform_later).with(user.uid)
-        expect(response).to redirect_to(ingest_from_ftp_status_path(provider: 'sage'))
+        expect(response).to redirect_to(ingest_from_ftp_status_path(source: 'sage'))
       end
     end
 
@@ -114,12 +114,12 @@ RSpec.describe IngestFromFtpController, type: :controller do
         allow(controller).to receive(:authorize!).with(:read, :admin_dashboard).and_return(true)
       end
 
-      context 'with proquest provider' do
-        let(:status_service) { Tasks::IngestStatusService.status_service_for_provider('proquest') }
+      context 'with proquest source' do
+        let(:status_service) { Tasks::IngestStatusService.status_service_for_source('proquest') }
 
         it 'displays proquest ingest status' do
           status_service.status_complete('etdadmin_upload_3806.zip')
-          get :view_status, params: { provider: 'proquest'}, session: valid_session
+          get :view_status, params: { source: 'proquest'}, session: valid_session
           expect(response).to be_successful
           status_results = subject.instance_variable_get('@status_results')
 
@@ -128,12 +128,12 @@ RSpec.describe IngestFromFtpController, type: :controller do
         end
       end
 
-      context 'with sage provider' do
-        let(:status_service) { Tasks::IngestStatusService.status_service_for_provider('sage') }
+      context 'with sage source' do
+        let(:status_service) { Tasks::IngestStatusService.status_service_for_source('sage') }
 
         it 'displays sage ingest status' do
           status_service.status_in_progress('1177_01605976231158397.zip')
-          get :view_status, params: { provider: 'sage'}, session: valid_session
+          get :view_status, params: { source: 'sage'}, session: valid_session
           expect(response).to be_successful
           status_results = subject.instance_variable_get('@status_results')
 

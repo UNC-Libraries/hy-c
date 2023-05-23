@@ -4,7 +4,7 @@ require 'rails_helper'
 RSpec.describe 'ingest_from_ftp/list_packages', type: :view do
   context 'with proquest selected' do
     before(:each) do
-      assign(:provider, 'proquest')
+      assign(:source, 'proquest')
       assign(:needs_revision_flag, false)
       assign(:package_results, [
         {
@@ -30,7 +30,7 @@ RSpec.describe 'ingest_from_ftp/list_packages', type: :view do
 
   context 'with sage selected' do
     before(:each) do
-      assign(:provider, 'sage')
+      assign(:source, 'sage')
       assign(:needs_revision_flag, true)
       assign(:package_results, [
         {

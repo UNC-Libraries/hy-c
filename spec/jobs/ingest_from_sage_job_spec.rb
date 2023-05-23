@@ -53,7 +53,7 @@ RSpec.describe IngestFromSageJob, type: :job do
 
   it 'triggers proquest ingest' do
     expect { job.perform(admin.uid) }.to change { Article.count }.by(1).and change { DepositRecord.count }.by(1)
-    statuses = Tasks::IngestStatusService.status_service_for_provider('sage').load_statuses
+    statuses = Tasks::IngestStatusService.status_service_for_source('sage').load_statuses
     expect(statuses['AJH_2021_38_4_10.1177_1049909120951088.zip']['status']).to eq 'Complete'
   end
 end
