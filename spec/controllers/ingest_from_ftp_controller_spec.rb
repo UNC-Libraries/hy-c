@@ -122,7 +122,7 @@ RSpec.describe IngestFromFtpController, type: :controller do
           get :view_status, params: { provider: 'proquest'}, session: valid_session
           expect(response).to be_successful
           status_results = subject.instance_variable_get('@status_results')
-          
+
           expect(status_results.size).to eq 1
           expect(status_results['etdadmin_upload_3806.zip']['status']).to eq 'Complete'
         end
