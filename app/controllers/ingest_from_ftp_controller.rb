@@ -16,9 +16,9 @@ class IngestFromFtpController < ApplicationController
     # Prepopulate statuses for packages so we can immediately view a report
     ingest_status_service.initialize_statuses(list_package_files.map { |f| File.basename(f) })
     if provider == 'proquest'
-      IngestFromProquestJob.perform_later
+      IngestFromProquestJob.perform_later(user_id)
     else
-      IngestFromSageJob.perform_later
+      IngestFromSageJob.perform_later(user_id)
     end
     redirect_to ingest_from_ftp_status_path(provider: @provider)
   end
@@ -73,6 +73,10 @@ class IngestFromFtpController < ApplicationController
 
   def is_revision?(filename)
     File.basename(filename).match?(/\.r[0-9]{4}-[0-9]{2}-[0-9]{2}/)
+  end
+
+  def user_id
+    current_ability.current_user.uid
   end
 
   def ensure_admin!

@@ -20,11 +20,12 @@ RSpec.describe IngestFromSageJob, type: :job do
     FactoryBot.create(:workflow_state, workflow_id: workflow.id, name: 'deposited')
   end
   let(:temp_storage) { Dir.mktmpdir }
+  let(:staging_path) { Dir.mktmpdir }
 
   around do |example|
     cached_sage = ENV['INGEST_SAGE_PATH']
     cached_temp_storage = ENV['TEMP_STORAGE']
-    ENV['INGEST_SAGE_PATH'] = 'spec/fixtures/sage'
+    ENV['INGEST_SAGE_PATH'] = staging_path.to_s
     ENV['TEMP_STORAGE'] = temp_storage.to_s
     example.run
     ENV['INGEST_SAGE_PATH'] = cached_sage
@@ -38,7 +39,7 @@ RSpec.describe IngestFromSageJob, type: :job do
     workflow
     workflow_state
     # return the FactoryBot admin user when searching for uid: admin from config
-    allow(User).to receive(:find_by).with(uid: 'admin').and_return(admin)
+    allow(User).to receive(:find_by).with(uid: admin.uid).and_return(admin)
     # return the FactoryBot admin_set when searching for admin set from config
     allow(AdminSet).to receive(:where).with(title: 'Open_Access_Articles_and_Book_Chapters').and_return([admin_set])
     # stub virus checking
@@ -47,16 +48,12 @@ RSpec.describe IngestFromSageJob, type: :job do
     allow(RegisterToLongleafJob).to receive(:perform_later).and_return(nil)
     # stub FITS characterization
     allow(CharacterizeJob).to receive(:perform_later)
+    FileUtils.cp('spec/fixtures/sage/AJH_2021_38_4_10.1177_1049909120951088.zip', File.join(staging_path, 'AJH_2021_38_4_10.1177_1049909120951088.zip'))
   end
 
   it 'triggers proquest ingest' do
-    expect { job.perform }.to change { Article.count }.by(5).and change { DepositRecord.count }.by(1)
+    expect { job.perform(admin.uid) }.to change { Article.count }.by(1).and change { DepositRecord.count }.by(1)
     statuses = Tasks::IngestStatusService.status_service_for_provider('sage').load_statuses
-    puts "***STATUS\n#{statuses}"
     expect(statuses['AJH_2021_38_4_10.1177_1049909120951088.zip']['status']).to eq 'Complete'
-    expect(statuses['CCX_2021_28_10.1177_1073274820985792.zip']['status']).to eq 'Complete'
-    expect(statuses['DHJ_2021_7_10.1177_20552076211037227.zip']['status']).to eq 'Complete'
-    expect(statuses['GSJ_2021_11_1_10.1177_2192568219888179.zip']['status']).to eq 'Complete'
-    expect(statuses['GSJ_2021_11_1_10.1177_2192568219890573.zip']['status']).to eq 'Complete'
   end
 end

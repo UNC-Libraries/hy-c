@@ -3,7 +3,8 @@
 class IngestFromProviderJob < Hyrax::ApplicationJob
   queue_as Hyrax.config.ingest_queue_name
 
-  def perform
+  def perform(user)
+    @user = user
     start = Time.now
     Rails.logger.info("Starting ingest job for #{provider}")
     ingest_service.process_all_packages

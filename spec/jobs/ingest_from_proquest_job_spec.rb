@@ -34,7 +34,7 @@ RSpec.describe IngestFromProquestJob, type: :job do
   before do
     ActiveFedora::Cleaner.clean!
     allow(RegisterToLongleafJob).to receive(:perform_later).and_return(nil)
-    allow(User).to receive(:find_by).with(uid: 'admin').and_return(admin)
+    allow(User).to receive(:find_by).with(uid: admin.uid).and_return(admin)
     allow(CharacterizeJob).to receive(:perform_later)
     allow(Hyrax::VirusCheckerService).to receive(:file_has_virus?) { false }
     AdminSet.delete_all
@@ -42,7 +42,7 @@ RSpec.describe IngestFromProquestJob, type: :job do
   end
 
   it 'triggers proquest ingest' do
-    expect { job.perform }.to change { Dissertation.count }.by(1).and change { DepositRecord.count }.by(1)
+    expect { job.perform(admin.uid) }.to change { Dissertation.count }.by(1).and change { DepositRecord.count }.by(1)
     statuses = Tasks::IngestStatusService.status_service_for_provider('proquest').load_statuses
     expect(statuses['proquest-attach0.zip']['status']).to eq 'Complete'
     expect(statuses['proquest-attach7.zip']['status']).to eq 'Failed'

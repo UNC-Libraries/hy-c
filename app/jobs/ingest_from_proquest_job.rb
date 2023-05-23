@@ -9,7 +9,7 @@ class IngestFromProquestJob < IngestFromProviderJob
     {
       'unzip_dir' => ENV['TEMP_STORAGE'],
       'package_dir' => storage_base_path,
-      'depositor_onyen' => 'admin',
+      'depositor_onyen' => @user,
       'admin_set' => 'Dissertation',
       'deposit_title' => "ProQuest Deposit #{Time.now.strftime('%Y-%m-%d')}",
       'deposit_subtype' => 'ProQuest'
