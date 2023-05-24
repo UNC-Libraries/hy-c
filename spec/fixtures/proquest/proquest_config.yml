@@ -1,8 +1,7 @@
-# Example configuration for proquest ingest
+# Example configuration for proquest ingest, retained for manual testing of the rake task
 unzip_dir: spec/fixtures/proquest/tmp
 package_dir: spec/fixtures/proquest
-admin_set: proquest admin set
+admin_set: Default Admin Set
 depositor_onyen: admin
 deposit_title: Deposit by ProQuest Depositor via CDR Collector 1.0
 deposit_method: CDR Collector 1.0
-deposit_type: http://proquest.com
