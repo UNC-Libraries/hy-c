@@ -27,7 +27,7 @@
                   <%= entry['status'] %>
                 </td>
                 <td>
-                  <% if !entry['error'].nil? %>
+                  <% if entry['error'].present? %>
                     <%= link_to 'View error', "#status_error_#{index}", 'data-toggle' => 'modal' %>
                     <div class="modal fade" id="status_error_<%= index %>" tabindex="-1" role="dialog" aria-labelledby="select-collectiontype-label">
                       <div class="modal-dialog" role="document">

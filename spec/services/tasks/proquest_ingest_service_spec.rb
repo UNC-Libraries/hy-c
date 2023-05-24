@@ -62,6 +62,7 @@ RSpec.describe Tasks::ProquestIngestService, :ingest do
                                                        deposit_package_subtype: 'ProQuest',
                                                        deposited_by: admin.uid })
       expect(service.package_dir).to eq 'spec/fixtures/proquest'
+      expect(service.depositor).to eq(admin)
     end
   end
 

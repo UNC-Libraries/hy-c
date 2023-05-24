@@ -109,6 +109,9 @@ RSpec.describe Tasks::SageIngestService, :sage, :ingest do
                                                     deposit_package_type: 'https://sagepub.com',
                                                     deposit_package_subtype: 'https://jats.nlm.nih.gov/publishing/',
                                                     deposited_by: admin.uid })
+        expect(service.depositor).to eq(admin)
+        expect(service.ingest_progress_log).to be_instance_of(Migrate::Services::ProgressTracker)
+        expect(service.ingest_source).to eq('Sage')
       end
 
       it 'has a default admin set' do
@@ -304,6 +307,13 @@ RSpec.describe Tasks::SageIngestService, :sage, :ingest do
         extracted_files = service.extract_files(package_path)
         expect(service.valid_extract?(extracted_files)).to eq false
       end
+    end
+    
+    it 'only creates a single deposit record per service instance' do
+      expect do
+        service.deposit_record
+        service.deposit_record
+      end.to change { DepositRecord.count }.by(1)
     end
   end
 end

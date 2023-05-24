@@ -4,6 +4,8 @@ module Tasks
   class IngestStatusService
     attr_reader :statuses
 
+    # Note, if the json file specified in status_path does not already exist,
+    # it will get created when any statuses are changed.
     def initialize(status_path)
       @status_path = status_path
       @statuses = Hash.new { |hash, key| hash[key] = {} }
