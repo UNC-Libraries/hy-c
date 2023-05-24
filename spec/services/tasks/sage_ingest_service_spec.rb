@@ -308,7 +308,7 @@ RSpec.describe Tasks::SageIngestService, :sage, :ingest do
         expect(service.valid_extract?(extracted_files)).to eq false
       end
     end
-    
+
     it 'only creates a single deposit record per service instance' do
       expect do
         service.deposit_record
