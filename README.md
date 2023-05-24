@@ -21,8 +21,8 @@
 * Import scripts for new ProQuest deposits
 * Merges old and new analytics data from Google Analytics
 
-##### Sage ingest rake task
-* From the command line, run
+##### Sage or Proquest ingest rake task
+The preferred way to perform sage and proquest ingests is via the "Ingest from FTP" action in the dashboard. However, they can still be executed from the commandline as follows:
 ```bash
 bundle exec rake sage:ingest[PATH_TO_CONFIG]
 ```
@@ -32,6 +32,11 @@ bundle exec rake sage:ingest[/hyrax/spec/fixtures/sage/sage_config.yml]
 ```
 * See [example config file](spec/fixtures/sage/sage_config.yml).
 * The beginning and ending of the rake task will be output to the console, the remaining events will be logged to the sage ingest log (in the same directory as the Rails log).
+
+For proquest, run:
+```bash
+bundle exec rake proquest:ingest[/hyrax/spec/fixtures/proquest/proquest_config.yml]
+```
 
 #### Development on Docker
 * Pre-requisites (for Mac):

@@ -1,0 +1,5 @@
+# Example configuration for Sage ingest, retained for manual testing of the rake task
+unzip_dir: spec/fixtures/sage/tmp
+package_dir: spec/fixtures/sage
+depositor_onyen: admin
+admin_set: Default Admin Set
