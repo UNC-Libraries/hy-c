@@ -2,7 +2,17 @@
 require 'rails_helper'
 
 RSpec.describe Tasks::ProquestIngestService, :ingest do
-  let(:args) { { configuration_file: 'spec/fixtures/proquest/proquest_config.yml' } }
+  let(:config) {
+    {
+      'unzip_dir' => 'spec/fixtures/proquest/tmp',
+      'package_dir' => 'spec/fixtures/proquest',
+      'admin_set' => 'proquest admin set',
+      'depositor_onyen' => 'admin',
+      'deposit_title' => 'Deposit by ProQuest Depositor via CDR Collector 1.0',
+      'deposit_method' => 'CDR Collector 1.0',
+      'deposit_type' => 'http://proquest.com'
+    }
+  }
   let(:admin) { FactoryBot.create(:admin) }
 
   let(:admin_set) do
@@ -18,6 +28,8 @@ RSpec.describe Tasks::ProquestIngestService, :ingest do
     Sipity::Workflow.create(name: 'test', allows_access_grant: true, active: true,
                             permission_template_id: permission_template.id)
   end
+
+  let(:status_service) { Tasks::IngestStatusService.new('spec/fixtures/proquest/tmp/proquest_deposit_status.json') }
 
   before do
     ActiveFedora::Cleaner.clean!
@@ -38,7 +50,7 @@ RSpec.describe Tasks::ProquestIngestService, :ingest do
     it 'sets all params' do
       allow(Time).to receive(:new).and_return(Time.parse('2022-01-31 23:27:21'))
       stub_const('BRANCH', 'v1.4.2')
-      service = Tasks::ProquestIngestService.new(args)
+      service = Tasks::ProquestIngestService.new(config, status_service)
 
       expect(service.temp).to eq 'spec/fixtures/proquest/tmp'
       expect(service.admin_set_id).to eq AdminSet.where(title: 'proquest admin set').first.id
@@ -50,6 +62,7 @@ RSpec.describe Tasks::ProquestIngestService, :ingest do
                                                        deposit_package_subtype: 'ProQuest',
                                                        deposited_by: admin.uid })
       expect(service.package_dir).to eq 'spec/fixtures/proquest'
+      expect(service.depositor).to eq(admin)
     end
   end
 
@@ -59,7 +72,7 @@ RSpec.describe Tasks::ProquestIngestService, :ingest do
     end
 
     it 'ingests proquest records' do
-      expect { Tasks::ProquestIngestService.new(args).process_all_packages }.to change { Dissertation.count }.by(1).and change { DepositRecord.count }.by(1)
+      expect { Tasks::ProquestIngestService.new(config, status_service).process_all_packages }.to change { Dissertation.count }.by(1).and change { DepositRecord.count }.by(1)
 
       # check embargo information
       dissertation = Dissertation.first
@@ -81,11 +94,47 @@ RSpec.describe Tasks::ProquestIngestService, :ingest do
       expect(dissertation['rights_statement_label']).to eq 'In Copyright - Educational Use Permitted'
       expect(dissertation.visibility).to eq 'restricted'
       expect(dissertation.embargo_release_date).to eq (Date.today.to_datetime + 2.years)
+
+      statuses = status_service.load_statuses
+      expect(statuses.size).to eq 2
+      package1 = statuses['proquest-attach0.zip']
+      expect(package1['status']).to eq 'Complete'
+      expect(package1['status_timestamp']).to_not be_nil
+      expect(package1['error']).to be_nil
+      # This file is missing metadata
+      package1 = statuses['proquest-attach7.zip']
+      expect(package1['status']).to eq 'Failed'
+      expect(package1['status_timestamp']).to_not be_nil
+      expect(package1['error']).to_not be_nil
+    end
+
+    context 'with error thrown by process_package' do
+      let(:service) { Tasks::ProquestIngestService.new(config, status_service) }
+      before do
+        allow(service).to receive(:process_package).and_raise('Help')
+      end
+
+      it 'records error in outcome' do
+        service.process_all_packages
+
+        statuses = status_service.load_statuses
+        expect(statuses.size).to eq 2
+        package0 = statuses['proquest-attach0.zip']
+        expect(package0['status']).to eq 'Failed'
+        expect(package0['status_timestamp']).to_not be_nil
+        expect(package0['error']['message']).to eq 'Help'
+        expect(package0['error']['trace']).to_not be_nil
+        package1 = statuses['proquest-attach7.zip']
+        expect(package1['status']).to eq 'Failed'
+        expect(package1['status_timestamp']).to_not be_nil
+        expect(package1['error']['message']).to eq 'Help'
+        expect(package1['error']['trace']).to_not be_nil
+      end
     end
   end
 
   describe '#extract_files' do
-    let(:service) { Tasks::ProquestIngestService.new(args) }
+    let(:service) { Tasks::ProquestIngestService.new(config, status_service) }
     let(:zip_path) { 'spec/fixtures/proquest/proquest-attach0.zip' }
     let(:unzipped_dir) { service.unzip_dir(zip_path) }
 
@@ -98,7 +147,7 @@ RSpec.describe Tasks::ProquestIngestService, :ingest do
   end
 
   describe '#valid_extract?' do
-    let(:service) { Tasks::ProquestIngestService.new(args) }
+    let(:service) { Tasks::ProquestIngestService.new(config, status_service) }
 
     context 'with a properly formed package' do
       let(:zip_path) { 'spec/fixtures/proquest/proquest-attach0.zip' }
@@ -125,13 +174,13 @@ RSpec.describe Tasks::ProquestIngestService, :ingest do
     let(:file) { 'spec/fixtures/files/test.txt' }
 
     it 'saves a fileset' do
-      expect { Tasks::ProquestIngestService.new(args).ingest_proquest_file(parent: dissertation, resource: metadata, f: file) }
+      expect { Tasks::ProquestIngestService.new(config, status_service).ingest_proquest_file(parent: dissertation, resource: metadata, f: file) }
         .to change { FileSet.count }.by(1)
     end
   end
 
   describe '#metadata_file_path' do
-    let(:service) { Tasks::ProquestIngestService.new(args) }
+    let(:service) { Tasks::ProquestIngestService.new(config, status_service) }
     let(:zip_path) { 'spec/fixtures/proquest/proquest-attach0.zip' }
     let(:unzipped_dir) { service.unzip_dir(zip_path) }
 
@@ -149,7 +198,7 @@ RSpec.describe Tasks::ProquestIngestService, :ingest do
       let(:metadata_file) { 'spec/fixtures/proquest/attach_unc_1_DATA.xml' }
 
       it 'parses metadata from proquest xml' do
-        service = Tasks::ProquestIngestService.new(args)
+        service = Tasks::ProquestIngestService.new(config, status_service)
         service.instance_variable_set(:@file_last_modified, Date.parse('2019-11-13'))
         attributes, files = service.proquest_metadata(metadata_file)
         expect(attributes).to include({ 'title' => ['Perspective on Attachments and Ingests'],
@@ -181,7 +230,7 @@ RSpec.describe Tasks::ProquestIngestService, :ingest do
       let(:metadata_file) { 'spec/fixtures/proquest/proquest-attach1/attach_unc_1_DATA.xml' }
 
       it 'parses metadata from proquest xml' do
-        service = Tasks::ProquestIngestService.new(args)
+        service = Tasks::ProquestIngestService.new(config, status_service)
         service.instance_variable_set(:@file_last_modified, Date.parse('2019-11-13'))
         attributes, files = service.proquest_metadata(metadata_file)
         expect(attributes).to include({ 'title' => ['Perspective on Attachments and Ingests'],
@@ -214,7 +263,7 @@ RSpec.describe Tasks::ProquestIngestService, :ingest do
       let(:metadata_file) { 'spec/fixtures/proquest/proquest-attach2/attach_unc_1_DATA.xml' }
 
       it 'parses metadata from proquest xml' do
-        service = Tasks::ProquestIngestService.new(args)
+        service = Tasks::ProquestIngestService.new(config, status_service)
         service.instance_variable_set(:@file_last_modified, Date.parse('2019-11-13'))
         attributes, files = service.proquest_metadata(metadata_file)
         expect(attributes).to include({ 'title' => ['Perspective on Attachments and Ingests'],
@@ -246,7 +295,7 @@ RSpec.describe Tasks::ProquestIngestService, :ingest do
       let(:metadata_file) { 'spec/fixtures/proquest/proquest-attach3/attach_unc_1_DATA.xml' }
 
       it 'parses metadata from proquest xml' do
-        service = Tasks::ProquestIngestService.new(args)
+        service = Tasks::ProquestIngestService.new(config, status_service)
         service.instance_variable_set(:@file_last_modified, Date.parse('2019-11-13'))
         attributes, files = service.proquest_metadata(metadata_file)
         expect(attributes).to include({ 'title' => ['Perspective on Attachments and Ingests'],
@@ -278,7 +327,7 @@ RSpec.describe Tasks::ProquestIngestService, :ingest do
       let(:metadata_file) { 'spec/fixtures/proquest/proquest-attach4/attach_unc_1_DATA.xml' }
 
       it 'parses metadata from proquest xml' do
-        service = Tasks::ProquestIngestService.new(args)
+        service = Tasks::ProquestIngestService.new(config, status_service)
         service.instance_variable_set(:@file_last_modified, Date.parse('2019-11-13'))
         attributes, files = service.proquest_metadata(metadata_file)
         expect(attributes).to include({ 'title' => ['Perspective on Attachments and Ingests'],
@@ -310,7 +359,7 @@ RSpec.describe Tasks::ProquestIngestService, :ingest do
       let(:metadata_file) { 'spec/fixtures/proquest/proquest-attach5/attach_unc_1_DATA.xml' }
 
       it 'parses metadata from proquest xml' do
-        service = Tasks::ProquestIngestService.new(args)
+        service = Tasks::ProquestIngestService.new(config, status_service)
         service.instance_variable_set(:@file_last_modified, Date.parse('2019-11-13'))
         attributes, files = service.proquest_metadata(metadata_file)
         expect(attributes).to include({ 'title' => ['Perspective on Attachments and Ingests'],
@@ -342,7 +391,7 @@ RSpec.describe Tasks::ProquestIngestService, :ingest do
       let(:metadata_file) { 'spec/fixtures/proquest/proquest-attach6/attach_unc_1_DATA.xml' }
 
       it 'parses metadata from proquest xml' do
-        service = Tasks::ProquestIngestService.new(args)
+        service = Tasks::ProquestIngestService.new(config, status_service)
         service.instance_variable_set(:@file_last_modified, Date.parse('2019-11-13'))
         attributes, files = service.proquest_metadata(metadata_file)
         expect(attributes).to include({ 'title' => ['Perspective on Attachments and Ingests'],
@@ -373,7 +422,7 @@ RSpec.describe Tasks::ProquestIngestService, :ingest do
 
   describe '#build_person_hash' do
     let(:people) { ['Smith, Blandy', 'Advisor, John T.'] }
-    let(:service) { Tasks::ProquestIngestService.new(args) }
+    let(:service) { Tasks::ProquestIngestService.new(config, status_service) }
 
     context 'with a department from the controlled vocabulary' do
       let(:department) { 'Philosophy' }
@@ -416,7 +465,7 @@ RSpec.describe Tasks::ProquestIngestService, :ingest do
       let(:expected_mapped_affiliation) { ['Department of Philosophy'] }
 
       it 'returns the mapped affiliation when it matches the controlled vocabulary' do
-        expect(Tasks::ProquestIngestService.new(args).affiliation(original_affiliation)).to eq(expected_mapped_affiliation)
+        expect(Tasks::ProquestIngestService.new(config, status_service).affiliation(original_affiliation)).to eq(expected_mapped_affiliation)
       end
     end
 
@@ -424,7 +473,7 @@ RSpec.describe Tasks::ProquestIngestService, :ingest do
       let(:original_affiliation) { 'not-a-department' }
 
       it 'returns the mapped affiliation when it matches the controlled vocabulary' do
-        expect(Tasks::ProquestIngestService.new(args).affiliation(original_affiliation)).to eq(nil)
+        expect(Tasks::ProquestIngestService.new(config, status_service).affiliation(original_affiliation)).to eq(nil)
       end
     end
   end
@@ -433,7 +482,7 @@ RSpec.describe Tasks::ProquestIngestService, :ingest do
     let(:xml) { Nokogiri::XML('<DISS_name><DISS_surname>Smith</DISS_surname><DISS_fname>Blandy</DISS_fname><DISS_middle/><DISS_suffix/><DISS_affiliation>University of North Carolina at Chapel Hill</DISS_affiliation></DISS_name>') }
 
     it 'returns formatted names' do
-      expect(Tasks::ProquestIngestService.new(args).format_name(xml.xpath('//DISS_name').first)).to eq 'Smith, Blandy'
+      expect(Tasks::ProquestIngestService.new(config, status_service).format_name(xml.xpath('//DISS_name').first)).to eq 'Smith, Blandy'
     end
   end
 
@@ -462,7 +511,7 @@ RSpec.describe Tasks::ProquestIngestService, :ingest do
     }
 
     it 'returns fileset metadata' do
-      expect(Tasks::ProquestIngestService.new(args).file_record(metadata)).to include({ 'date_created' => nil,
+      expect(Tasks::ProquestIngestService.new(config, status_service).file_record(metadata)).to include({ 'date_created' => nil,
                                                                                         'depositor' => admin.uid,
                                                                                         'embargo_release_date' => '2021-11-13',
                                                                                         'keyword' => ['aesthetics', 'attachments', 'Philosophy'],

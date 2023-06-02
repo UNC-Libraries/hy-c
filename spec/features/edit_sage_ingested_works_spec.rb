@@ -4,10 +4,18 @@ require Rails.root.join('spec/support/capybara.rb')
 include Warden::Test::Helpers
 
 RSpec.feature 'Edit works created through the Sage ingest', :sage, js: false do
-  let(:ingest_progress_log_path) { File.join(fixture_path, 'sage', 'ingest_progress.log') }
-  let(:path_to_config) { File.join(fixture_path, 'sage', 'sage_config.yml') }
+  let(:ingest_progress_log_path) { File.join(Rails.configuration.log_directory, 'sage_progress.log') }
   let(:path_to_tmp) { FileUtils.mkdir_p(File.join(fixture_path, 'sage', 'tmp')).first }
-  let(:ingest_service) { Tasks::SageIngestService.new(configuration_file: path_to_config) }
+  let(:config) {
+    {
+      'unzip_dir' => 'spec/fixtures/sage/tmp',
+      'package_dir' => 'spec/fixtures/sage',
+      'admin_set' => 'Open_Access_Articles_and_Book_Chapters',
+      'depositor_onyen' => 'admin'
+    }
+  }
+  let(:status_service) { Tasks::IngestStatusService.new(File.join(path_to_tmp, 'deposit_status.json')) }
+  let(:ingest_service) { Tasks::SageIngestService.new(config, status_service) }
   let(:article_count) { Article.count }
   let(:articles) { Article.all }
   # We're not clearing out the database, Fedora, and Solr before this test, so to find the first work created in this

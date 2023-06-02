@@ -2,15 +2,17 @@
 module Tasks
   require 'tasks/migrate/services/progress_tracker'
   class IngestService
-    attr_reader :temp, :admin_set, :depositor, :package_dir, :ingest_progress_log
+    attr_reader :temp, :admin_set, :depositor, :package_dir
 
-    def initialize(args)
+    def initialize(config, status_service)
       logger.info("Beginning #{ingest_source} ingest")
 
-      @config = YAML.load_file(args[:configuration_file])
+      @config = config
       # Create temp directory for unzipped contents
       @temp = @config['unzip_dir']
       FileUtils.mkdir_p @temp unless File.exist?(@temp)
+
+      @status_service = status_service
 
       # Should deposit works into an admin set
       admin_set_title = @config['admin_set']
@@ -23,7 +25,6 @@ module Tasks
       @package_dir = @config['package_dir']
 
       deposit_record
-      @ingest_progress_log = Migrate::Services::ProgressTracker.new(@config['ingest_progress_log']) if @config['ingest_progress_log']
     end
 
     def deposit_record_hash
@@ -58,9 +59,18 @@ module Tasks
 
     def process_all_packages
       logger.info("Beginning ingest of #{count} #{ingest_source} packages")
+      @status_service.initialize_statuses(package_paths)
 
       package_paths.each.with_index(1) do |package_path, index|
-        process_package(package_path, index)
+        begin
+          @status_service.status_in_progress(package_path)
+          process_package(package_path, index)
+          @status_service.status_complete(package_path)
+        rescue => error
+          stacktrace = error.backtrace.join('\n')
+          logger.error("Failed to process package #{package_path}, #{error.message}: #{stacktrace}")
+          @status_service.status_failed(package_path, error)
+        end
       end
       logger.info("Completing ingest of #{ingest_source} packages.")
     end
@@ -78,6 +88,13 @@ module Tasks
       @logger ||= begin
         log_path = File.join(Rails.configuration.log_directory, "#{ingest_source.downcase}_ingest.log")
         Logger.new(log_path, progname: "#{ingest_source} ingest")
+      end
+    end
+
+    def ingest_progress_log
+      @ingest_progress_log ||= begin
+        log_path = File.join(Rails.configuration.log_directory, "#{ingest_source.downcase}_progress.log")
+        Migrate::Services::ProgressTracker.new(log_path)
       end
     end
 

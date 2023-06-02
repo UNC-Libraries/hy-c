@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'rails_helper'
 
-RSpec.describe Hyrax::Workflow::DeletionApprovalNotification do
+RSpec.describe Hyrax::Workflow::PendingReviewNotification do
   let(:approver) { FactoryBot.create(:admin) }
   let(:depositor) { FactoryBot.create(:user) }
   let(:work) { Article.create(title: ['New Article'], depositor: depositor.user_key) }
@@ -23,11 +23,11 @@ RSpec.describe Hyrax::Workflow::DeletionApprovalNotification do
   describe '.send_notification' do
     context 'with to recipient configured' do
       it 'sends a message to the to user(s)' do
-        recipients = { 'to' => [depositor], 'cc' => [] }
-        expect(approver).to receive(:send_message).exactly(1).times.and_call_original
-        expect { described_class.send_notification(entity: entity, user: approver, comment: comment, recipients: recipients) }
-          .to change { depositor.mailbox.inbox.count }.by(1)
-          .and change { approver.mailbox.inbox.count }.by(0)
+        recipients = { 'to' => [approver], 'cc' => [] }
+        expect(depositor).to receive(:send_message).exactly(1).times.and_call_original
+        expect { described_class.send_notification(entity: entity, user: depositor, comment: comment, recipients: recipients) }
+          .to change { depositor.mailbox.inbox.count }.by(0)
+          .and change { approver.mailbox.inbox.count }.by(1)
       end
     end
   end

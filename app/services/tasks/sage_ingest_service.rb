@@ -20,15 +20,9 @@ module Tasks
 
       file_names = extract_files(package_path).keys
 
-      if unzipped_package_dir.blank?
-        logger.error("Error extracting #{package_path}: skipping zip file")
-        return
-      end
+      raise "Error extracting #{package_path}: skipping zip file" if unzipped_package_dir.blank?
 
-      unless file_names.count.between?(2, 3)
-        logger.info("Error extracting #{package_path}: skipping zip file")
-        return
-      end
+      raise "Error extracting #{package_path}: skipping zip file" unless file_names.count.between?(2, 3)
 
       metadata_file_path = metadata_file_path(dir: unzipped_package_dir, file_names: file_names)
 
@@ -127,7 +121,7 @@ module Tasks
 
     def mark_done(orig_file_name)
       logger.info("Marked package ingest complete #{orig_file_name}")
-      @ingest_progress_log.add_entry(orig_file_name)
+      ingest_progress_log.add_entry(orig_file_name)
     end
 
     # TODO: Make more assertions about what a completed ingest looks like and test here

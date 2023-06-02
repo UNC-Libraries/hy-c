@@ -8,7 +8,7 @@ module Tasks
   class ProquestIngestService < IngestService
     attr_reader :admin_set_id
 
-    def initialize(args)
+    def initialize(config, status_service)
       super
 
       @admin_set_id = @admin_set.id
@@ -35,22 +35,16 @@ module Tasks
       # extract files
       extract_files(package_path)
 
-      if unzipped_package_dir.blank?
-        logger.error("Error extracting #{package_path}: skipping zip file")
-        return
-      end
+      raise "Error extracting #{package_path}: skipping zip file" if unzipped_package_dir.blank?
 
       metadata_file_path = metadata_file_path(dir: unzipped_package_dir)
 
       pdf_file_path = Dir.glob("#{unzipped_package_dir}/*.pdf")
-      unless pdf_file_path.count == 1
-        logger.error("Error: #{unzipped_package_dir} has more than 1 pdf file")
-        return
-      end
+      raise "Error: #{unzipped_package_dir} has more than 1 pdf file" unless pdf_file_path.count == 1
 
-      return unless metadata_file_path
+      raise "Package #{unzipped_package_dir} has no metadata file path" unless metadata_file_path
 
-      return unless File.file?(metadata_file_path)
+      raise "Package #{unzipped_package_dir} contains an empty metadata file" unless File.file?(metadata_file_path)
 
       # only use xml file for metadata extraction
       metadata, listed_files = proquest_metadata(metadata_file_path)
