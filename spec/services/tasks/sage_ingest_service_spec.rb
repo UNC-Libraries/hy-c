@@ -84,9 +84,106 @@ RSpec.describe Tasks::SageIngestService, :sage, :ingest do
 
     it 'attaches a file to the file_set' do
       service.extract_files(first_zip_path)
-      service.attach_file_set_to_work(work: built_article, dir: service.unzip_dir(first_zip_path), file_name: '10.1177_1073274820985792.pdf', user: user, visibility: 'open')
+      service.attach_file_set_to_work(work: built_article, file_path: File.join(service.unzip_dir(first_zip_path), '10.1177_1073274820985792.pdf'), user: user, visibility: 'open')
       fs = built_article.file_sets.first
       expect(fs.files.first).to be_instance_of(Hydra::PCDM::File)
+    end
+
+    describe '#process_package' do
+      context 'revision with no existing work' do
+        before do
+          config['package_dir'] = 'spec/fixtures/sage/revisions/both_changed/'
+        end
+
+        it 'creates the work as if it were new' do
+          work_id = nil
+          expect { work_id = service.process_package('spec/fixtures/sage/revisions/both_changed/ASU_2022_88_10_10.1177_00031348221074228.r2022-12-22.zip', 0) }
+              .to change { Article.count }.by(1)
+              .and change { FileSet.count }.by(2)
+          work = ActiveFedora::Base.find(work_id)
+          expect(work.title.first).to eq 'America’s Original Immunization Controversy: The Tercentenary of the Boston Smallpox Epidemic of 1721'
+        end
+      end
+
+      context 'with existing work' do
+        before do
+          @work_id = service.process_package('spec/fixtures/sage/revisions/new/ASU_2022_88_10_10.1177_00031348221074228.zip', 0)
+        end
+
+        context 'revision indicating xml changed' do
+          it 'updates the xml, title and creator name' do
+            work = ActiveFedora::Base.find(@work_id)
+            expect(work.title.first).to eq 'Americas Original Immunization Controversy'
+            creators = work.creators.to_a
+            expect(creators.length).to eq 1
+            expect(creators[0].name.first).to eq 'Nakayama, Don'
+            file_sets = work.file_sets
+            xml_fs = file_sets.detect { |fs| fs.label.end_with?('.xml') }
+            xml_date_modified = xml_fs.date_modified
+            pdf_fs = file_sets.detect { |fs| fs.label.end_with?('.pdf') }
+            pdf_date_modified = pdf_fs.date_modified
+
+            expect { service.process_package('spec/fixtures/sage/revisions/metadata_changed/ASU_2022_88_10_10.1177_00031348221074228.r2022-12-19.zip', 0) }
+                .to change { Article.count }.by(0)
+                .and change { FileSet.count }.by(0)
+            work = ActiveFedora::Base.find(@work_id)
+            expect(work.title.first).to eq 'America\'s Original Immunization Controversy'
+            creators = work.creators.to_a
+            expect(creators.length).to eq 1
+            expect(creators[0].name.first).to eq 'Nakayama, Don K.'
+            file_sets = work.file_sets
+            xml_fs2 = file_sets.detect { |fs| fs.label.end_with?('.xml') }
+            pdf_fs2 = file_sets.detect { |fs| fs.label.end_with?('.pdf') }
+            expect(pdf_fs2.date_modified).to eq (pdf_date_modified)
+            expect(xml_fs2.date_modified).not_to eq (xml_date_modified)
+          end
+        end
+
+        context 'revision indicating the pdf changed' do
+          it 'updates only the pdf' do
+            work = ActiveFedora::Base.find(@work_id)
+            file_sets = work.file_sets
+            xml_fs = file_sets.detect { |fs| fs.label.end_with?('.xml') }
+            xml_date_modified = xml_fs.date_modified
+            pdf_fs = file_sets.detect { |fs| fs.label.end_with?('.pdf') }
+            pdf_date_modified = pdf_fs.date_modified
+
+            expect { service.process_package('spec/fixtures/sage/revisions/file_changed/ASU_2022_88_10_10.1177_00031348221074228.r2022-12-20.zip', 0) }
+                .to change { Article.count }.by(0)
+                .and change { FileSet.count }.by(0)
+            work = ActiveFedora::Base.find(@work_id)
+            expect(work.title.first).to eq 'Americas Original Immunization Controversy'
+            file_sets = work.file_sets
+            xml_fs2 = file_sets.detect { |fs| fs.label.end_with?('.xml') }
+            pdf_fs2 = file_sets.detect { |fs| fs.label.end_with?('.pdf') }
+            expect(pdf_fs2.date_modified).not_to eq (pdf_date_modified)
+            expect(xml_fs2.date_modified).to eq (xml_date_modified)
+          end
+        end
+
+        context 'revision indicating xml and pdf changed' do
+          it 'updates the pdf, xml and metadata' do
+            work = ActiveFedora::Base.find(@work_id)
+            expect(work.title.first).to eq 'Americas Original Immunization Controversy'
+            file_sets = work.file_sets
+            xml_fs = file_sets.detect { |fs| fs.label.end_with?('.xml') }
+            xml_date_modified = xml_fs.date_modified
+            pdf_fs = file_sets.detect { |fs| fs.label.end_with?('.pdf') }
+            pdf_date_modified = pdf_fs.date_modified
+
+            expect { service.process_package('spec/fixtures/sage/revisions/both_changed/ASU_2022_88_10_10.1177_00031348221074228.r2022-12-22.zip', 0) }
+                .to change { Article.count }.by(0)
+                .and change { FileSet.count }.by(0)
+            work = ActiveFedora::Base.find(@work_id)
+            expect(work.title.first).to eq 'America’s Original Immunization Controversy: The Tercentenary of the Boston Smallpox Epidemic of 1721'
+            file_sets = work.file_sets
+            xml_fs2 = file_sets.detect { |fs| fs.label.end_with?('.xml') }
+            pdf_fs2 = file_sets.detect { |fs| fs.label.end_with?('.pdf') }
+            expect(pdf_fs2.date_modified).not_to eq (pdf_date_modified)
+            expect(xml_fs2.date_modified).not_to eq (xml_date_modified)
+          end
+        end
+      end
     end
   end
 
@@ -199,7 +296,7 @@ RSpec.describe Tasks::SageIngestService, :sage, :ingest do
       it 'attaches a pdf file_set to the article' do
         service.extract_files(first_zip_path)
         expect do
-          service.attach_file_set_to_work(work: built_article, dir: unzipped_dir, file_name: '10.1177_1073274820985792.pdf', user: user, visibility: 'open')
+          service.attach_file_set_to_work(work: built_article, file_path: File.join(unzipped_dir, '10.1177_1073274820985792.pdf'), user: user, visibility: 'open')
         end.to change { FileSet.count }.by(1)
         expect(built_article.file_sets).to be_instance_of(Array)
         fs = built_article.file_sets.first
@@ -212,7 +309,7 @@ RSpec.describe Tasks::SageIngestService, :sage, :ingest do
       it 'attaches an xml file_set to the article' do
         service.extract_files(first_zip_path)
         expect do
-          service.attach_file_set_to_work(work: built_article, dir: unzipped_dir, file_name: '10.1177_1073274820985792.xml', user: user, visibility: 'restricted')
+          service.attach_file_set_to_work(work: built_article, file_path: File.join(unzipped_dir, '10.1177_1073274820985792.xml'), user: user, visibility: 'restricted')
         end.to change { FileSet.count }.by(1)
         expect(built_article.file_sets).to be_instance_of(Array)
         fs = built_article.file_sets.first
