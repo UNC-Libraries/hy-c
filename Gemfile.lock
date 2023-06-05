@@ -259,7 +259,7 @@ GEM
       execjs
     coffee-script-source (1.12.2)
     concurrent-ruby (1.2.0)
-    connection_pool (2.3.0)
+    connection_pool (2.4.1)
     crack (0.4.5)
       rexml
     crass (1.0.6)
@@ -690,8 +690,8 @@ GEM
       rails (>= 5.0, < 7.1)
       rdf
     racc (1.6.2)
-    rack (2.2.6.2)
-    rack-protection (3.0.2)
+    rack (2.2.7)
+    rack-protection (3.0.6)
       rack
     rack-test (2.0.2)
       rack (>= 1.3)
@@ -791,6 +791,8 @@ GEM
     redic (1.5.3)
       hiredis
     redis (4.5.1)
+    redis-client (0.14.1)
+      connection_pool
     redis-namespace (1.10.0)
       redis (>= 4)
     redlock (1.3.2)
@@ -913,11 +915,11 @@ GEM
       sxp (~> 1.1)
     shoulda-matchers (5.1.0)
       activesupport (>= 5.2.0)
-    sidekiq (5.2.10)
-      connection_pool (~> 2.2, >= 2.2.2)
-      rack (~> 2.0)
-      rack-protection (>= 1.5.0)
-      redis (~> 4.5, < 4.6.0)
+    sidekiq (7.1.1)
+      concurrent-ruby (< 2)
+      connection_pool (>= 2.3.0)
+      rack (>= 2.2.4)
+      redis-client (>= 0.14.0)
     sidekiq-status (2.1.3)
       chronic_duration
       sidekiq (>= 5.0)
@@ -1096,7 +1098,7 @@ DEPENDENCIES
   sass-rails (~> 5.1.0)
   selenium-webdriver
   shoulda-matchers (~> 5.1.0)
-  sidekiq (~> 5.2.10)
+  sidekiq (~> 7.1.1)
   sidekiq-status (~> 2.1.3)
   simplecov
   solr_wrapper (~> 4.0.2)
