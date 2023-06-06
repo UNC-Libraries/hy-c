@@ -57,8 +57,8 @@ RSpec.describe Tasks::IngestStatusService, :ingest do
     end
 
     it 'adds multiple errors' do
-      subject.status_in_progress('test_file.zip', error: StandardError.new("Error Number One"))
-      subject.status_in_progress('test_file.zip', error: StandardError.new("Second Error"))
+      subject.status_in_progress('test_file.zip', error: StandardError.new('Error Number One'))
+      subject.status_in_progress('test_file.zip', error: StandardError.new('Second Error'))
 
       # make sure the statuses persisted
       statuses = subject.statuses
