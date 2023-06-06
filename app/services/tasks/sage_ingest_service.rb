@@ -32,19 +32,22 @@ module Tasks
 
       # parse xml
       ingest_work = JatsIngestWork.new(xml_path: metadata_file_path)
+      # Check for existing works based on the publisher DOI
+      doi = ingest_work.identifier.first
+      existing_id = existing_work_id(doi)
 
-      if SageIngestService.is_revision?(package_path)
-        doi = ingest_work.identifier.first
-        existing_id = existing_work_id(doi)
-        # even if the file is marked as a revision, if there is no existing work then treat it as new
-        if existing_id.present?
+      if existing_id.present?
+        if SageIngestService.is_revision?(package_path)
           process_revision(ingest_work, package_path, unzipped_package_dir, file_names, existing_id)
           mark_done(orig_file_name(package_path), unzipped_package_dir, file_names)
           return existing_id
         else
-          @status_service.status_in_progress(package_path,
-              error: StandardError.new("Package #{File.basename(package_path)} indicates that it is a revision, but no existing work with DOI #{doi} was found. Creating a new work instead."))
+          raise "Work #{existing_id} already exists with DOI #{doi}, skipping package #{File.basename(package_path)}"
         end
+      elsif SageIngestService.is_revision?(package_path)
+        # For a revision file with no existing work to update, continue with ingest but warn the user
+        @status_service.status_in_progress(package_path,
+                error: StandardError.new("Package #{File.basename(package_path)} indicates that it is a revision, but no existing work with DOI #{doi} was found. Creating a new work instead."))
       end
 
       new_id = process_new_work(ingest_work, unzipped_package_dir, file_names)

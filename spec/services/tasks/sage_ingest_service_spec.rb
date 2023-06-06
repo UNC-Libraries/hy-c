@@ -210,6 +210,17 @@ RSpec.describe Tasks::SageIngestService, :sage, :ingest do
             expect(xml_fs2.date_modified).not_to eq (xml_date_modified)
           end
         end
+
+        context 'new work with the same DOI' do
+          let(:package_name) { 'ASU_2022_88_10_10.1177_00031348221074228.zip' }
+
+          it 'skips the duplicate work and records an error' do
+            expect { service.process_package("spec/fixtures/sage/revisions/new/#{package_name}", 0) }
+                .to raise_error("Work #{@work_id} already exists with DOI https://doi.org/10.1177/00031348221074228, skipping package #{package_name}")
+                .and change { Article.count }.by(0)
+                .and change { FileSet.count }.by(0)
+          end
+        end
       end
     end
   end
