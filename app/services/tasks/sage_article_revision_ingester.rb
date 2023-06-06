@@ -3,7 +3,7 @@ module Tasks
   class SageArticleRevisionIngester < SageBaseArticleIngester
     attr_accessor :existing_id
 
-    def process_package()
+    def process_package
       existing_work = ActiveFedora::Base.find(@existing_id)
       file_sets = existing_work.file_sets
       @logger.error("Updating Article #{@existing_id} with DOI: #{@jats_ingest_work.identifier}")
@@ -41,7 +41,7 @@ module Tasks
       existing_work.id
     end
 
-    def sections_changed()
+    def sections_changed
       manifest_path = File.join(@unzipped_package_dir, 'manifest.xml')
       doc = Nokogiri::XML(File.read(manifest_path))
       files_changed = doc.xpath('/manifests/manifest[@status = "changed"]/@uri')

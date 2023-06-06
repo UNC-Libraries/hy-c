@@ -3,7 +3,7 @@ module Tasks
   class SageNewArticleIngester < SageBaseArticleIngester
     attr_accessor :admin_set
 
-    def process_package()
+    def process_package
       logger.error("Creating new Article with DOI: #{@jats_ingest_work.identifier}")
       # Create Article with metadata and save
       art_with_meta = article_with_metadata
@@ -31,7 +31,7 @@ module Tasks
                              workflow_state: workflow_state.first)
     end
 
-    def article_with_metadata()
+    def article_with_metadata
       @logger.info("Creating Article from DOI: #{@jats_ingest_work.identifier}")
       art = Article.new
       art.admin_set = @admin_set

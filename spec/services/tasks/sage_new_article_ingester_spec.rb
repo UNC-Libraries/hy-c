@@ -12,7 +12,7 @@ RSpec.describe Tasks::SageNewArticleIngester, :sage, :ingest do
   let(:first_zip_path) { "spec/fixtures/sage/#{first_package_identifier}.zip" }
   let(:jats_ingest_work) { JatsIngestWork.new(xml_path: first_xml_path) }
   let(:unzipped_dir) { "#{sage_fixture_path}/#{first_package_identifier}/" }
-  let(:deposit_record) { double() }
+  let(:deposit_record) { double }
   let(:permission_template) do
     FactoryBot.create(:permission_template, source_id: admin_set.id)
   end
@@ -38,7 +38,7 @@ RSpec.describe Tasks::SageNewArticleIngester, :sage, :ingest do
     ingester.deposit_record = deposit_record
     ingester.admin_set = admin_set
     allow(logger).to receive(:info)
-    allow(deposit_record).to receive(:id).and_return("deposit_record_id")
+    allow(deposit_record).to receive(:id).and_return('deposit_record_id')
   end
 
   describe '#article_with_metadata' do

@@ -4,7 +4,7 @@ module Tasks
     attr_accessor :jats_ingest_work, :package_name, :package_file_names, :depositor, :unzipped_package_dir, :deposit_record
     attr_accessor :status_service, :logger
 
-    def pdf_file_path()
+    def pdf_file_path
       filename = @package_file_names.detect { |name| name.match(/^(\S*).pdf/) }
       File.join(@unzipped_package_dir, filename)
     end
