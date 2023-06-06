@@ -34,12 +34,16 @@ module Tasks
       ingest_work = JatsIngestWork.new(xml_path: metadata_file_path)
 
       if SageIngestService.is_revision?(package_path)
-        existing_id = existing_work_id(ingest_work.identifier.first)
+        doi = ingest_work.identifier.first
+        existing_id = existing_work_id(doi)
         # even if the file is marked as a revision, if there is no existing work then treat it as new
         if existing_id.present?
-          process_revision(ingest_work, unzipped_package_dir, file_names, existing_id)
+          process_revision(ingest_work, package_path, unzipped_package_dir, file_names, existing_id)
           mark_done(orig_file_name(package_path), unzipped_package_dir, file_names)
           return existing_id
+        else
+          @status_service.status_in_progress(package_path,
+              error: StandardError.new("Package #{File.basename(package_path)} indicates that it is a revision, but no existing work with DOI #{doi} was found. Creating a new work instead."))
         end
       end
 
@@ -56,34 +60,46 @@ module Tasks
       # Add PDF file to Article (including FileSets)
       pdf_path = pdf_file_path(file_names, unzipped_package_dir)
 
-      attach_file_set_to_work(work: art_with_meta, file_path: pdf_path, user: @depositor, visibility: art_with_meta.visibility)
+      attach_pdf_to_work(art_with_meta, pdf_path)
       # Add xml metadata file to Article
-      attach_file_set_to_work(work: art_with_meta, file_path: ingest_work.xml_path, user: @depositor, visibility: Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE)
+      attach_xml_to_work(art_with_meta, ingest_work.xml_path)
       art_with_meta.id
     end
 
-    def process_revision(ingest_work, unzipped_package_dir, file_names, existing_id)
+    def process_revision(ingest_work, package_path, unzipped_package_dir, file_names, existing_id)
       existing_work = ActiveFedora::Base.find(existing_id)
       file_sets = existing_work.file_sets
       logger.error("Updating Article #{existing_id} with DOI: #{ingest_work.identifier}")
       # Determine which parts of the work have been revised, which can be metadata and/or file
       changed = sections_changed(unzipped_package_dir)
       if changed[:metadata]
+        # upload new version of the metadata file
+        metadata_fs = file_sets.detect { |fs| fs.label.end_with?('.xml') }
+        if metadata_fs.nil?
+          attach_xml_to_work(existing_work, ingest_work.xml_path)
+          @status_service.status_in_progress(package_path,
+              error: StandardError.new("Package #{File.basename(package_path)} is a revision but did not have an existing XML file. Adding new file."))
+        else
+          update_file_set(metadata_fs, @depositor, ingest_work.xml_path)
+        end
         # Clear previous creators
         # Note: the old person objects are not deleted, only unlinked. creators_attributes _delete does not appear to delete the person objects
         existing_work.creators = []
         # update the metadata
         populate_article_metadata(ingest_work, existing_work)
         existing_work.save!
-        # upload new version of the metadata file
-        metadata_fs = file_sets.detect { |fs| fs.label.end_with?('.xml') }
-        update_file_set(metadata_fs, @depositor, ingest_work.xml_path)
       end
       if changed[:file]
         # upload new version of the file
         pdf_fs = file_sets.detect { |fs| fs.label.end_with?('.pdf') }
         pdf_path = pdf_file_path(file_names, unzipped_package_dir)
-        update_file_set(pdf_fs, @depositor, pdf_path)
+        if pdf_fs.nil?
+          attach_pdf_to_work(existing_work, pdf_path)
+          @status_service.status_in_progress(package_path,
+              error: StandardError.new("Package #{File.basename(package_path)} is a revision but did not have an existing PDF file. Adding new file."))
+        else
+          update_file_set(pdf_fs, @depositor, pdf_path)
+        end
       end
     end
 
@@ -98,13 +114,9 @@ module Tasks
     end
 
     def existing_work_id(vendor_doi)
-      resp = Hyrax::SolrService.get("identifier_tesim:\"#{vendor_doi}\"")
+      search_doi = vendor_doi.gsub(/.*doi.org/, '')
+      resp = Hyrax::SolrService.get("identifier_tesim:\"#{search_doi}\"")
       doc = resp['response']['docs'].first
-      if doc.blank?
-        alternate_doi = vendor_doi.sub('/doi.org', '/dx.doi.org')
-        resp = Hyrax::SolrService.get("identifier_tesim:\"#{alternate_doi}\"")
-        doc = resp['response']['docs'].first
-      end
       if doc.blank?
         nil
       else
@@ -182,6 +194,14 @@ module Tasks
       # fields not normally edited via UI
       art.date_uploaded = DateTime.current
       art.date_modified = DateTime.current
+    end
+
+    def attach_pdf_to_work(work, file_path)
+      attach_file_set_to_work(work: work, file_path: file_path, user: @depositor, visibility: work.visibility)
+    end
+
+    def attach_xml_to_work(work, file_path)
+      attach_file_set_to_work(work: work, file_path: file_path, user: @depositor, visibility: Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE)
     end
 
     def attach_file_set_to_work(work:, file_path:, user:, visibility:)

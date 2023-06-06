@@ -91,17 +91,44 @@ RSpec.describe Tasks::SageIngestService, :sage, :ingest do
 
     describe '#process_package' do
       context 'revision with no existing work' do
-        before do
-          config['package_dir'] = 'spec/fixtures/sage/revisions/both_changed/'
-        end
+        let(:package_name) { 'ASU_2022_88_10_10.1177_00031348221074228.r2022-12-22.zip' }
 
         it 'creates the work as if it were new' do
           work_id = nil
-          expect { work_id = service.process_package('spec/fixtures/sage/revisions/both_changed/ASU_2022_88_10_10.1177_00031348221074228.r2022-12-22.zip', 0) }
+          expect { work_id = service.process_package("spec/fixtures/sage/revisions/both_changed/#{package_name}", 0) }
               .to change { Article.count }.by(1)
               .and change { FileSet.count }.by(2)
           work = ActiveFedora::Base.find(work_id)
           expect(work.title.first).to eq 'America’s Original Immunization Controversy: The Tercentenary of the Boston Smallpox Epidemic of 1721'
+          status = status_service.statuses[package_name]
+          expect(status['status']).to eq 'In Progress'
+          expect(status['error'][0]['message']).to eq "Package #{package_name} indicates that it is a revision, but no existing work with DOI https://doi.org/10.1177/00031348221074228 was found. Creating a new work instead."
+          expect(status['error'][0]['trace']).to be_nil
+        end
+      end
+
+      context 'revision with existing work that does not have expected files' do
+        let(:package_name) { 'ASU_2022_88_10_10.1177_00031348221074228.r2022-12-22.zip' }
+        let(:work) { FactoryBot.create(:article, identifier: ['https://doi.org/10.1177/00031348221074228']) }
+
+        it 'creates the work as if it were new' do
+          work_id = work.id
+          expect { work_id = service.process_package("spec/fixtures/sage/revisions/both_changed/#{package_name}", 0) }
+              .to change { Article.count }.by(0)
+              .and change { FileSet.count }.by(2)
+          work = ActiveFedora::Base.find(work_id)
+          file_sets = work.file_sets
+          xml_fs = file_sets.detect { |fs| fs.label.end_with?('.xml') }
+          pdf_fs = file_sets.detect { |fs| fs.label.end_with?('.pdf') }
+          expect(xml_fs.present?).to be_truthy
+          expect(pdf_fs.present?).to be_truthy
+          status = status_service.statuses[package_name]
+          expect(status['status']).to eq 'In Progress'
+          expect(status['error'].length).to eq 2
+          expect(status['error'][0]['message']).to eq "Package #{package_name} is a revision but did not have an existing XML file. Adding new file."
+          expect(status['error'][0]['trace']).to be_nil
+          expect(status['error'][1]['message']).to eq "Package #{package_name} is a revision but did not have an existing PDF file. Adding new file."
+          expect(status['error'][1]['trace']).to be_nil
         end
       end
 
