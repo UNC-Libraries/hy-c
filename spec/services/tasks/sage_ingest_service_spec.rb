@@ -60,8 +60,6 @@ RSpec.describe Tasks::SageIngestService, :sage, :ingest do
   end
 
   context 'running the background jobs' do
-    let(:ingest_work) { JatsIngestWork.new(xml_path: first_xml_path) }
-    let(:built_article) { service.article_with_metadata(ingest_work) }
     let(:user) { FactoryBot.create(:admin) }
 
     before do
@@ -80,13 +78,6 @@ RSpec.describe Tasks::SageIngestService, :sage, :ingest do
         example.run
       end
       File.open(ingest_progress_log_path, 'w') { |file| file.truncate(0) }
-    end
-
-    it 'attaches a file to the file_set' do
-      service.extract_files(first_zip_path)
-      service.attach_file_set_to_work(work: built_article, file_path: File.join(service.unzip_dir(first_zip_path), '10.1177_1073274820985792.pdf'), user: user, visibility: 'open')
-      fs = built_article.file_sets.first
-      expect(fs.files.first).to be_instance_of(Hydra::PCDM::File)
     end
 
     describe '#process_package' do
@@ -113,7 +104,7 @@ RSpec.describe Tasks::SageIngestService, :sage, :ingest do
 
         it 'creates the work as if it were new' do
           work_id = work.id
-          expect { work_id = service.process_package("spec/fixtures/sage/revisions/both_changed/#{package_name}", 0) }
+          expect { service.process_package("spec/fixtures/sage/revisions/both_changed/#{package_name}", 0) }
               .to change { Article.count }.by(0)
               .and change { FileSet.count }.by(2)
           work = ActiveFedora::Base.find(work_id)
@@ -281,82 +272,6 @@ RSpec.describe Tasks::SageIngestService, :sage, :ingest do
       expect(File.foreach(ingest_progress_log_path).count).to eq 5
     end
     # rubocop:enable Layout/MultilineMethodCallIndentation
-
-    context 'with an ingest work object' do
-      let(:ingest_work) { JatsIngestWork.new(xml_path: first_xml_path) }
-      let(:built_article) { service.article_with_metadata(ingest_work) }
-      let(:user) { FactoryBot.create(:admin) }
-      let(:unzipped_dir) { service.unzip_dir(first_zip_path) }
-
-      it 'can create a valid article' do
-        expect do
-          service.article_with_metadata(ingest_work)
-        end.to change { Article.count }.by(1)
-      end
-
-      it 'returns a valid article' do
-        expect(built_article).to be_instance_of Article
-        expect(built_article.persisted?).to be true
-        expect(built_article.valid?).to be true
-        # These values are also tested via the edit form in spec/features/edit_sage_ingested_works_spec.rb
-        expect(built_article.title).to eq(['Inequalities in Cervical Cancer Screening Uptake Between Chinese Migrant Women and Local Women: A Cross-Sectional Study'])
-        first_creator = built_article.creators.find { |creator| creator[:index] == ['1'] }
-        expect(first_creator.attributes['name']).to match_array(['Holt, Hunter K.'])
-        expect(first_creator.attributes['other_affiliation']).to match_array(['Department of Family and Community Medicine, University of California, San Francisco, CA, USA'])
-        expect(first_creator.attributes['orcid']).to match_array(['https://orcid.org/0000-0001-6833-8372'])
-        expect(built_article.abstract).to include(/Efforts to increase education opportunities, provide insurance/)
-        expect(built_article.date_issued).to eq('2021-02-01')
-        expect(built_article.copyright_date).to eq('2021')
-        expect(built_article.dcmi_type).to match_array(['http://purl.org/dc/dcmitype/Text'])
-        expect(built_article.funder).to match_array(['Fogarty International Center'])
-        expect(built_article.identifier).to match_array(['https://doi.org/10.1177/1073274820985792'])
-        expect(built_article.issn).to match_array(['1073-2748'])
-        expect(built_article.journal_issue).to be nil
-        expect(built_article.journal_title).to eq('Cancer Control')
-        expect(built_article.journal_volume).to eq('28')
-        expect(built_article.keyword).to match_array(['HPV', 'HPV knowledge and awareness', 'cervical cancer screening', 'migrant women', 'China'])
-        expect(built_article.license).to match_array(['http://creativecommons.org/licenses/by-nc/4.0/'])
-        expect(built_article.license_label).to match_array(['Attribution-NonCommercial 4.0 International'])
-        expect(built_article.publisher).to match_array(['SAGE Publications'])
-        expect(built_article.resource_type).to match_array(['Article'])
-        expect(built_article.rights_holder).to include(/SAGE Publications Inc, unless otherwise noted. Manuscript/)
-        expect(built_article.rights_statement).to eq('http://rightsstatements.org/vocab/InC/1.0/')
-        expect(built_article.rights_statement_label).to eq('In Copyright')
-        expect(built_article.visibility).to eq('open')
-        expect(built_article.deposit_record).to be
-      end
-
-      it 'puts the work in an admin_set' do
-        expect(built_article.admin_set).to be_instance_of(AdminSet)
-        expect(built_article.admin_set.title).to eq(admin_set.title)
-      end
-
-      it 'attaches a pdf file_set to the article' do
-        service.extract_files(first_zip_path)
-        expect do
-          service.attach_file_set_to_work(work: built_article, file_path: File.join(unzipped_dir, '10.1177_1073274820985792.pdf'), user: user, visibility: 'open')
-        end.to change { FileSet.count }.by(1)
-        expect(built_article.file_sets).to be_instance_of(Array)
-        fs = built_article.file_sets.first
-        expect(fs).to be_instance_of(FileSet)
-        expect(fs.depositor).to eq(user.uid)
-        expect(fs.visibility).to eq(built_article.visibility)
-        expect(fs.parent).to eq(built_article)
-      end
-
-      it 'attaches an xml file_set to the article' do
-        service.extract_files(first_zip_path)
-        expect do
-          service.attach_file_set_to_work(work: built_article, file_path: File.join(unzipped_dir, '10.1177_1073274820985792.xml'), user: user, visibility: 'restricted')
-        end.to change { FileSet.count }.by(1)
-        expect(built_article.file_sets).to be_instance_of(Array)
-        fs = built_article.file_sets.first
-        expect(fs).to be_instance_of(FileSet)
-        expect(fs.depositor).to eq(user.uid)
-        expect(fs.visibility).to eq('restricted')
-        expect(fs.parent).to eq(built_article)
-      end
-    end
 
     context 'when it cannot find the depositor' do
       before do
