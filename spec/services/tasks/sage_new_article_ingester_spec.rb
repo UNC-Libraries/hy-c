@@ -39,6 +39,12 @@ RSpec.describe Tasks::SageNewArticleIngester, :sage, :ingest do
     ingester.admin_set = admin_set
     allow(logger).to receive(:info)
     allow(deposit_record).to receive(:id).and_return('deposit_record_id')
+    # stub virus checking
+    allow(Hyrax::VirusCheckerService).to receive(:file_has_virus?) { false }
+    # stub longleaf job
+    allow(RegisterToLongleafJob).to receive(:perform_later).and_return(nil)
+    # stub FITS characterization
+    allow(CharacterizeJob).to receive(:perform_later)
   end
 
   describe '#article_with_metadata' do
@@ -89,7 +95,6 @@ RSpec.describe Tasks::SageNewArticleIngester, :sage, :ingest do
       end
 
       it 'attaches a pdf file_set to the article' do
-        # ingester.extract_files(first_zip_path)
         expect do
           ingester.attach_file_set_to_work(work: built_article, file_path: File.join(unzipped_dir, '10.1177_1073274820985792.pdf'), user: user, visibility: 'open')
         end.to change { FileSet.count }.by(1)
@@ -102,7 +107,6 @@ RSpec.describe Tasks::SageNewArticleIngester, :sage, :ingest do
       end
 
       it 'attaches an xml file_set to the article' do
-        # ingester.extract_files(first_zip_path)
         expect do
           ingester.attach_file_set_to_work(work: built_article, file_path: File.join(unzipped_dir, '10.1177_1073274820985792.xml'), user: user, visibility: 'restricted')
         end.to change { FileSet.count }.by(1)
