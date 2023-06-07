@@ -144,8 +144,11 @@ module Tasks
       funding = parse_funding(work, 'funder')
       data[:data][:attributes][:fundingReferences] = funding unless funding.blank?
 
-      language = parse_field(work, 'language_label').first
-      data[:data][:attributes][:language] = language unless language.blank?
+      language = parse_field(work, 'language').first
+      if language.present?
+        lang_code = LanguagesService.iso639_1(language)
+        data[:data][:attributes][:language] = lang_code unless lang_code.blank?
+      end
 
       rights = parse_field(work, 'rights_statement')
       unless rights.blank?

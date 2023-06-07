@@ -71,7 +71,7 @@ RSpec.describe Tasks::DoiCreateService do
                     subject: ['subject1', 'subject2'],
                     abstract: ['a description'],
                     extent: ['some extent'],
-                    language_label: ['English'],
+                    language: ['http://id.loc.gov/vocabulary/iso639-2/eng'],
                     rights_statement: 'http://rightsstatements.org/vocab/InC/1.0/')
       end
 
@@ -88,7 +88,7 @@ RSpec.describe Tasks::DoiCreateService do
         expect(JSON.parse(result)['data']['attributes']['descriptions']).to match_array [{ 'description' => 'a description', 'descriptionType' => 'Abstract' }]
         expect(JSON.parse(result)['data']['attributes']['subjects']).to match_array [{ 'subject' => 'subject1' }, { 'subject' => 'subject2' }]
         expect(JSON.parse(result)['data']['attributes']['sizes']).to match_array ['some extent']
-        expect(JSON.parse(result)['data']['attributes']['language']).to eq 'English'
+        expect(JSON.parse(result)['data']['attributes']['language']).to eq 'en'
         expect(JSON.parse(result)['data']['attributes']['rightsList']['rights']).to eq 'In Copyright'
         expect(JSON.parse(result)['data']['attributes']['rightsList']['rightsUri']).to eq 'http://rightsstatements.org/vocab/InC/1.0/'
       end
@@ -105,6 +105,7 @@ RSpec.describe Tasks::DoiCreateService do
                                                  orcid: 'some orcid' },
                                                { name: 'Person, Non-UNC',
                                                  other_affiliation: 'NCSU' }],
+                         language: ['http://id.loc.gov/vocabulary/iso639-2/ace'],
                          publisher: ['Some Publisher'])
       end
 
@@ -125,6 +126,7 @@ RSpec.describe Tasks::DoiCreateService do
                                                                                        'nameType' => 'Personal',
                                                                                        'affiliation' => ['NCSU'] }]
         expect(JSON.parse(result)['data']['attributes']['publisher']).to eq 'Some Publisher'
+        expect(JSON.parse(result)['data']['attributes']).to_not include 'language'
       end
     end
 
