@@ -135,9 +135,6 @@ module Tasks
       # Optional fields
       #
       ############################
-      contributors = parse_people(work, 'contributors')
-      data[:data][:attributes][:contributors] = contributors unless contributors.blank?
-
       description = parse_description(work, 'abstract')
       data[:data][:attributes][:descriptions] = description unless description.blank?
 
