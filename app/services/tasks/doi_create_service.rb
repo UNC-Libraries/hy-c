@@ -123,12 +123,7 @@ module Tasks
                                                publisher.first
                                              end
 
-      publication_year = parse_field(work, 'date_issued')
-      data[:data][:attributes][:publicationYear] = if publication_year.blank?
-                                                     Date.today.year
-                                                   else
-                                                     Array.wrap(publication_year).first.to_s.match(/\d{4}/)[0]
-                                                   end
+      data[:data][:attributes][:publicationYear] = extract_publication_year(work)
 
       ############################
       #
@@ -161,6 +156,16 @@ module Tasks
       data[:data][:attributes][:subjects] = subjects unless subjects.blank?
 
       data.to_json
+    end
+
+    def extract_publication_year(work)
+      date_issued = parse_field(work, 'date_issued')
+      year_match = Array.wrap(date_issued).first.to_s.match(/\d{4}/)
+      if year_match.nil?
+        work.create_date.year.to_s
+      else
+        year_match[0]
+      end
     end
 
     def create_doi(record)
