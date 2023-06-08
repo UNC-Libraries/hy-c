@@ -245,11 +245,19 @@ module Tasks
         resource_type = record_type&.first
         datacite_type = RESOURCE_TYPE_TO_DATACITE[resource_type]
       end
-      puts "#{get_time} WARNING: Unable to determine resourceTypeGeneral for record" if datacite_type.nil?
+      if datacite_type.nil?
+        puts "#{get_time} WARNING: Unable to determine resourceTypeGeneral for record" if datacite_type.nil?
+        datacite_type = 'Text'
+      end
+      
       # Storing the datacite type. If it is nil or invalid, datacite will reject the creation
       result[:resourceTypeGeneral] = datacite_type
 
-      result[:resourceType] = record_type.first unless record_type.blank?
+      if record_type.present?
+        result[:resourceType] = record_type.first unless record_type.blank?
+      else
+        result[:resourceType] = datacite_type
+      end
 
       result
     end
