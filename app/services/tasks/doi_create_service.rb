@@ -184,7 +184,7 @@ module Tasks
 
     def create_batch_doi
       start_time = Time.now
-      records = ActiveFedora::SolrService.get('visibility_ssi:open AND -doi_tesim:* AND workflow_state_name_ssim:deposited AND has_model_ssim:(Article Artwork DataSet Dissertation General HonorsThesis Journal MastersPaper Multimed ScholarlyWork)',
+      records = ActiveFedora::SolrService.get('visibility_ssi:open AND -doi_tesim:* AND date_issued_tesim:[* TO *] AND workflow_state_name_ssim:deposited AND has_model_ssim:(Article Artwork DataSet Dissertation General HonorsThesis Journal MastersPaper Multimed ScholarlyWork)',
                                               rows: @rows,
                                               sort: 'system_create_dtsi ASC',
                                               fl: 'id')['response']['docs']
