@@ -159,6 +159,34 @@ RSpec.describe Tasks::DoiCreateService do
       end
     end
 
+    context 'for a scholarly work with century for publicate date' do
+      let(:scholarly_work) do
+        ScholarlyWork.new(title: ['new 1800s scholarly work'],
+                          date_issued: '18xx',
+                          id: 'd7f59f11-a35b-41cd-a7d9-77f36738b728',
+                          resource_type: ['Image'],
+                          creators_attributes: [{ name: 'Person, Test',
+                                                  affiliation: 'Department of Biology',
+                                                  orcid: 'some orcid' }],
+                          publisher: ['Some Publisher'])
+      end
+
+      it 'includes a correct url for a two-word work type with simple pluralization' do
+        result = described_class.new.format_data(scholarly_work)
+        expect(JSON.parse(result)['data']['attributes']['url']).to eq "#{ENV['HYRAX_HOST']}/concern/scholarly_works/d7f59f11-a35b-41cd-a7d9-77f36738b728"
+        expect(JSON.parse(result)['data']['attributes']['titles']).to match_array [{ 'title' => 'new 1800s scholarly work' }]
+        expect(JSON.parse(result)['data']['attributes']['publicationYear']).to eq '1800'
+        expect(JSON.parse(result)['data']['attributes']['types']['resourceType']).to eq 'Image'
+        expect(JSON.parse(result)['data']['attributes']['types']['resourceTypeGeneral']).to eq 'Image'
+        expect(JSON.parse(result)['data']['attributes']['creators']).to match_array [{ 'name' => 'Person, Test',
+                                                                                       'nameType' => 'Personal',
+                                                                                       'affiliation' => ['College of Arts and Sciences', 'Department of Biology'],
+                                                                                       'nameIdentifiers' => [{ 'nameIdentifier' => 'some orcid',
+                                                                                                               'nameIdentifierScheme' => 'ORCID' }] }]
+        expect(JSON.parse(result)['data']['attributes']['publisher']).to eq 'Some Publisher'
+      end
+    end
+
     context 'for an article with invalid date_issued' do
       let(:article) do
         Article.create(title: ['new article without date issued'],

@@ -160,11 +160,13 @@ module Tasks
 
     def extract_publication_year(work)
       date_issued = parse_field(work, 'date_issued')
-      year_match = Array.wrap(date_issued).first.to_s.match(/\d{4}/)
+      year_match = Array.wrap(date_issued).first.to_s.match(/[0-9x]{4}/)
       if year_match.nil?
+        puts "#{get_time} Invalid date_issued '#{date_issued}' for record #{work.id}, falling back to create_date"
         work.create_date.year.to_s
       else
-        year_match[0]
+        # For dates like 1800s, they are retrieved as 18xx, so we need to convert the x's back to 0's
+        year_match[0].gsub('x', '0')
       end
     end
 
@@ -207,6 +209,7 @@ module Tasks
       end
     rescue StandardError => e
       puts "#{get_time} There was an error creating dois: #{e.message}"
+      puts [e.class.to_s, *e.backtrace].join($RS)
       -1
     end
 
@@ -251,7 +254,7 @@ module Tasks
         puts "#{get_time} WARNING: Unable to determine resourceTypeGeneral for record" if datacite_type.nil?
         datacite_type = 'Text'
       end
-      
+
       # Storing the datacite type. If it is nil or invalid, datacite will reject the creation
       result[:resourceTypeGeneral] = datacite_type
 
