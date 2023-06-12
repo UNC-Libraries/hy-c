@@ -123,7 +123,7 @@ module Tasks
                                                publisher.first
                                              end
 
-      data[:data][:attributes][:publicationYear] = extract_publication_year(work)
+      data[:data][:attributes][:publicationYear] = publication_year(work)
 
       ############################
       #
@@ -158,7 +158,7 @@ module Tasks
       data.to_json
     end
 
-    def extract_publication_year(work)
+    def publication_year(work)
       date_issued = parse_field(work, 'date_issued')
       year_match = Array.wrap(date_issued).first.to_s.match(/[0-9x]{4}/)
       if year_match.nil?
@@ -251,18 +251,13 @@ module Tasks
         datacite_type = RESOURCE_TYPE_TO_DATACITE[resource_type]
       end
       if datacite_type.nil?
-        puts "#{get_time} WARNING: Unable to determine resourceTypeGeneral for record" if datacite_type.nil?
+        puts "#{get_time} WARNING: Unable to determine resourceTypeGeneral for record"
         datacite_type = 'Text'
       end
 
       # Storing the datacite type. If it is nil or invalid, datacite will reject the creation
       result[:resourceTypeGeneral] = datacite_type
-
-      if record_type.present?
-        result[:resourceType] = record_type.first unless record_type.blank?
-      else
-        result[:resourceType] = datacite_type
-      end
+      result[:resourceType] = record_type.present? ? record_type.first : datacite_type
 
       result
     end
