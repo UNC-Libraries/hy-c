@@ -18,7 +18,9 @@
           <%= t("hyrax.dashboard.my.action.edit_work") %>
         <% end %>
       </li>
+    <% end %>
 
+    <% if can? :delete, document.id %>
       <li role="menuitem" tabindex="-1">
         <%= link_to [main_app, document],
                     method: :delete,
