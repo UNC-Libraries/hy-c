@@ -60,8 +60,6 @@ RSpec.describe Tasks::SageIngestService, :sage, :ingest do
   end
 
   context 'running the background jobs' do
-    let(:ingest_work) { JatsIngestWork.new(xml_path: first_xml_path) }
-    let(:built_article) { service.article_with_metadata(ingest_work) }
     let(:user) { FactoryBot.create(:admin) }
 
     before do
@@ -82,11 +80,145 @@ RSpec.describe Tasks::SageIngestService, :sage, :ingest do
       File.open(ingest_progress_log_path, 'w') { |file| file.truncate(0) }
     end
 
-    it 'attaches a file to the file_set' do
-      service.extract_files(first_zip_path)
-      service.attach_file_set_to_work(work: built_article, dir: service.unzip_dir(first_zip_path), file_name: '10.1177_1073274820985792.pdf', user: user, visibility: 'open')
-      fs = built_article.file_sets.first
-      expect(fs.files.first).to be_instance_of(Hydra::PCDM::File)
+    describe '#process_package' do
+      let(:original_title) { 'Americas Original Immunization Controversy' }
+      let(:updated_title1) { 'America\'s Original Immunization Controversy' }
+      let(:updated_title2) { 'America’s Original Immunization Controversy: The Tercentenary of the Boston Smallpox Epidemic of 1721' }
+      let(:original_creator) { 'Nakayama, Don' }
+      let(:updated_creator) { 'Nakayama, Don K.' }
+
+      context 'revision with no existing work' do
+        let(:package_name) { 'ASU_2022_88_10_10.1177_00031348221074228.r2022-12-22.zip' }
+
+        it 'creates the work as if it were new' do
+          work_id = nil
+          expect { work_id = service.process_package("spec/fixtures/sage/revisions/both_changed/#{package_name}", 0) }
+              .to change { Article.count }.by(1)
+              .and change { FileSet.count }.by(2)
+          work = ActiveFedora::Base.find(work_id)
+          expect(work.title.first).to eq updated_title2
+          status = status_service.statuses[package_name]
+          expect(status['status']).to eq 'In Progress'
+          expect(status['error'][0]['message']).to eq "Package #{package_name} indicates that it is a revision, but no existing work with DOI https://doi.org/10.1177/00031348221074228 was found. Creating a new work instead."
+          expect(status['error'][0]['trace']).to be_nil
+        end
+      end
+
+      context 'revision with existing work that does not have expected files' do
+        let(:package_name) { 'ASU_2022_88_10_10.1177_00031348221074228.r2022-12-22.zip' }
+        let(:work) { FactoryBot.create(:article, identifier: ['https://doi.org/10.1177/00031348221074228']) }
+
+        it 'adds new filesets to the existing work, and sets warnings' do
+          work_id = work.id
+          expect { service.process_package("spec/fixtures/sage/revisions/both_changed/#{package_name}", 0) }
+              .to change { Article.count }.by(0)
+              .and change { FileSet.count }.by(2)
+          work = ActiveFedora::Base.find(work_id)
+          file_sets = work.file_sets
+          xml_fs = file_sets.detect { |fs| fs.label.end_with?('.xml') }
+          pdf_fs = file_sets.detect { |fs| fs.label.end_with?('.pdf') }
+          expect(xml_fs.present?).to be_truthy
+          expect(pdf_fs.present?).to be_truthy
+          status = status_service.statuses[package_name]
+          expect(status['status']).to eq 'In Progress'
+          expect(status['error'].length).to eq 2
+          expect(status['error'][0]['message']).to eq "Package #{package_name} is a revision but did not have an existing XML file. Adding new file."
+          expect(status['error'][0]['trace']).to be_nil
+          expect(status['error'][1]['message']).to eq "Package #{package_name} is a revision but did not have an existing PDF file. Adding new file."
+          expect(status['error'][1]['trace']).to be_nil
+        end
+      end
+
+      context 'with existing work' do
+        before do
+          @work_id = service.process_package('spec/fixtures/sage/revisions/new/ASU_2022_88_10_10.1177_00031348221074228.zip', 0)
+        end
+
+        context 'revision indicating xml changed' do
+          it 'updates the xml, title and creator name' do
+            work = ActiveFedora::Base.find(@work_id)
+            expect(work.title.first).to eq original_title
+            creators = work.creators.to_a
+            expect(creators.length).to eq 1
+            expect(creators[0].name.first).to eq original_creator
+            file_sets = work.file_sets
+            xml_fs = file_sets.detect { |fs| fs.label.end_with?('.xml') }
+            xml_date_modified = xml_fs.date_modified
+            pdf_fs = file_sets.detect { |fs| fs.label.end_with?('.pdf') }
+            pdf_date_modified = pdf_fs.date_modified
+
+            expect { service.process_package('spec/fixtures/sage/revisions/metadata_changed/ASU_2022_88_10_10.1177_00031348221074228.r2022-12-19.zip', 0) }
+                .to change { Article.count }.by(0)
+                .and change { FileSet.count }.by(0)
+            work = ActiveFedora::Base.find(@work_id)
+            expect(work.title.first).to eq updated_title1
+            creators = work.creators.to_a
+            expect(creators.length).to eq 1
+            expect(creators[0].name.first).to eq updated_creator
+            file_sets = work.file_sets
+            xml_fs2 = file_sets.detect { |fs| fs.label.end_with?('.xml') }
+            pdf_fs2 = file_sets.detect { |fs| fs.label.end_with?('.pdf') }
+            expect(pdf_fs2.date_modified).to eq (pdf_date_modified)
+            expect(xml_fs2.date_modified).not_to eq (xml_date_modified)
+          end
+        end
+
+        context 'revision indicating the pdf changed' do
+          it 'updates only the pdf' do
+            work = ActiveFedora::Base.find(@work_id)
+            file_sets = work.file_sets
+            xml_fs = file_sets.detect { |fs| fs.label.end_with?('.xml') }
+            xml_date_modified = xml_fs.date_modified
+            pdf_fs = file_sets.detect { |fs| fs.label.end_with?('.pdf') }
+            pdf_date_modified = pdf_fs.date_modified
+
+            expect { service.process_package('spec/fixtures/sage/revisions/file_changed/ASU_2022_88_10_10.1177_00031348221074228.r2022-12-20.zip', 0) }
+                .to change { Article.count }.by(0)
+                .and change { FileSet.count }.by(0)
+            work = ActiveFedora::Base.find(@work_id)
+            expect(work.title.first).to eq original_title
+            file_sets = work.file_sets
+            xml_fs2 = file_sets.detect { |fs| fs.label.end_with?('.xml') }
+            pdf_fs2 = file_sets.detect { |fs| fs.label.end_with?('.pdf') }
+            expect(pdf_fs2.date_modified).not_to eq (pdf_date_modified)
+            expect(xml_fs2.date_modified).to eq (xml_date_modified)
+          end
+        end
+
+        context 'revision indicating xml and pdf changed' do
+          it 'updates the pdf, xml and metadata' do
+            work = ActiveFedora::Base.find(@work_id)
+            expect(work.title.first).to eq original_title
+            file_sets = work.file_sets
+            xml_fs = file_sets.detect { |fs| fs.label.end_with?('.xml') }
+            xml_date_modified = xml_fs.date_modified
+            pdf_fs = file_sets.detect { |fs| fs.label.end_with?('.pdf') }
+            pdf_date_modified = pdf_fs.date_modified
+
+            expect { service.process_package('spec/fixtures/sage/revisions/both_changed/ASU_2022_88_10_10.1177_00031348221074228.r2022-12-22.zip', 0) }
+                .to change { Article.count }.by(0)
+                .and change { FileSet.count }.by(0)
+            work = ActiveFedora::Base.find(@work_id)
+            expect(work.title.first).to eq updated_title2
+            file_sets = work.file_sets
+            xml_fs2 = file_sets.detect { |fs| fs.label.end_with?('.xml') }
+            pdf_fs2 = file_sets.detect { |fs| fs.label.end_with?('.pdf') }
+            expect(pdf_fs2.date_modified).not_to eq (pdf_date_modified)
+            expect(xml_fs2.date_modified).not_to eq (xml_date_modified)
+          end
+        end
+
+        context 'new work with the same DOI' do
+          let(:package_name) { 'ASU_2022_88_10_10.1177_00031348221074228.zip' }
+
+          it 'skips the duplicate work and records an error' do
+            expect { service.process_package("spec/fixtures/sage/revisions/new/#{package_name}", 0) }
+                .to raise_error("Work #{@work_id} already exists with DOI https://doi.org/10.1177/00031348221074228, skipping package #{package_name}")
+                .and change { Article.count }.by(0)
+                .and change { FileSet.count }.by(0)
+          end
+        end
+      end
     end
   end
 
@@ -146,82 +278,6 @@ RSpec.describe Tasks::SageIngestService, :sage, :ingest do
       expect(File.foreach(ingest_progress_log_path).count).to eq 5
     end
     # rubocop:enable Layout/MultilineMethodCallIndentation
-
-    context 'with an ingest work object' do
-      let(:ingest_work) { JatsIngestWork.new(xml_path: first_xml_path) }
-      let(:built_article) { service.article_with_metadata(ingest_work) }
-      let(:user) { FactoryBot.create(:admin) }
-      let(:unzipped_dir) { service.unzip_dir(first_zip_path) }
-
-      it 'can create a valid article' do
-        expect do
-          service.article_with_metadata(ingest_work)
-        end.to change { Article.count }.by(1)
-      end
-
-      it 'returns a valid article' do
-        expect(built_article).to be_instance_of Article
-        expect(built_article.persisted?).to be true
-        expect(built_article.valid?).to be true
-        # These values are also tested via the edit form in spec/features/edit_sage_ingested_works_spec.rb
-        expect(built_article.title).to eq(['Inequalities in Cervical Cancer Screening Uptake Between Chinese Migrant Women and Local Women: A Cross-Sectional Study'])
-        first_creator = built_article.creators.find { |creator| creator[:index] == ['1'] }
-        expect(first_creator.attributes['name']).to match_array(['Holt, Hunter K.'])
-        expect(first_creator.attributes['other_affiliation']).to match_array(['Department of Family and Community Medicine, University of California, San Francisco, CA, USA'])
-        expect(first_creator.attributes['orcid']).to match_array(['https://orcid.org/0000-0001-6833-8372'])
-        expect(built_article.abstract).to include(/Efforts to increase education opportunities, provide insurance/)
-        expect(built_article.date_issued).to eq('2021-02-01')
-        expect(built_article.copyright_date).to eq('2021')
-        expect(built_article.dcmi_type).to match_array(['http://purl.org/dc/dcmitype/Text'])
-        expect(built_article.funder).to match_array(['Fogarty International Center'])
-        expect(built_article.identifier).to match_array(['https://doi.org/10.1177/1073274820985792'])
-        expect(built_article.issn).to match_array(['1073-2748'])
-        expect(built_article.journal_issue).to be nil
-        expect(built_article.journal_title).to eq('Cancer Control')
-        expect(built_article.journal_volume).to eq('28')
-        expect(built_article.keyword).to match_array(['HPV', 'HPV knowledge and awareness', 'cervical cancer screening', 'migrant women', 'China'])
-        expect(built_article.license).to match_array(['http://creativecommons.org/licenses/by-nc/4.0/'])
-        expect(built_article.license_label).to match_array(['Attribution-NonCommercial 4.0 International'])
-        expect(built_article.publisher).to match_array(['SAGE Publications'])
-        expect(built_article.resource_type).to match_array(['Article'])
-        expect(built_article.rights_holder).to include(/SAGE Publications Inc, unless otherwise noted. Manuscript/)
-        expect(built_article.rights_statement).to eq('http://rightsstatements.org/vocab/InC/1.0/')
-        expect(built_article.rights_statement_label).to eq('In Copyright')
-        expect(built_article.visibility).to eq('open')
-        expect(built_article.deposit_record).to be
-      end
-
-      it 'puts the work in an admin_set' do
-        expect(built_article.admin_set).to be_instance_of(AdminSet)
-        expect(built_article.admin_set.title).to eq(admin_set.title)
-      end
-
-      it 'attaches a pdf file_set to the article' do
-        service.extract_files(first_zip_path)
-        expect do
-          service.attach_file_set_to_work(work: built_article, dir: unzipped_dir, file_name: '10.1177_1073274820985792.pdf', user: user, visibility: 'open')
-        end.to change { FileSet.count }.by(1)
-        expect(built_article.file_sets).to be_instance_of(Array)
-        fs = built_article.file_sets.first
-        expect(fs).to be_instance_of(FileSet)
-        expect(fs.depositor).to eq(user.uid)
-        expect(fs.visibility).to eq(built_article.visibility)
-        expect(fs.parent).to eq(built_article)
-      end
-
-      it 'attaches an xml file_set to the article' do
-        service.extract_files(first_zip_path)
-        expect do
-          service.attach_file_set_to_work(work: built_article, dir: unzipped_dir, file_name: '10.1177_1073274820985792.xml', user: user, visibility: 'restricted')
-        end.to change { FileSet.count }.by(1)
-        expect(built_article.file_sets).to be_instance_of(Array)
-        fs = built_article.file_sets.first
-        expect(fs).to be_instance_of(FileSet)
-        expect(fs.depositor).to eq(user.uid)
-        expect(fs.visibility).to eq('restricted')
-        expect(fs.parent).to eq(built_article)
-      end
-    end
 
     context 'when it cannot find the depositor' do
       before do

@@ -23,8 +23,8 @@ module Tasks
       set_status(package_path, 'Complete')
     end
 
-    def status_in_progress(package_path)
-      set_status(package_path, 'In Progress')
+    def status_in_progress(package_path, error: nil)
+      set_status(package_path, 'In Progress', error: error)
     end
 
     def status_failed(package_path, error)
@@ -36,10 +36,9 @@ module Tasks
       filename = File.basename(package_path)
       @statuses[filename]['status'] = new_status
       @statuses[filename]['status_timestamp'] = Time.now.to_s
-      if error.nil?
-        @statuses[filename]['error'] = nil
-      else
-        @statuses[filename]['error'] = { 'message' => error.message, 'trace' => error.backtrace }
+      if error.present?
+        @statuses[filename]['error'] ||= []
+        @statuses[filename]['error'].push({ 'message' => error.message, 'trace' => error.backtrace })
       end
       persist_statuses if persist
     end

@@ -111,7 +111,7 @@ module Tasks
       extracted_files
     rescue Zip::Error => e
       logger.info("#{package_path}, zip file error: #{e.message}")
-      false
+      raise
     end
   end
 end

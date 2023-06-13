@@ -122,13 +122,13 @@ RSpec.describe Tasks::ProquestIngestService, :ingest do
         package0 = statuses['proquest-attach0.zip']
         expect(package0['status']).to eq 'Failed'
         expect(package0['status_timestamp']).to_not be_nil
-        expect(package0['error']['message']).to eq 'Help'
-        expect(package0['error']['trace']).to_not be_nil
+        expect(package0['error'][0]['message']).to eq 'Help'
+        expect(package0['error'][0]['trace']).to_not be_nil
         package1 = statuses['proquest-attach7.zip']
         expect(package1['status']).to eq 'Failed'
         expect(package1['status_timestamp']).to_not be_nil
-        expect(package1['error']['message']).to eq 'Help'
-        expect(package1['error']['trace']).to_not be_nil
+        expect(package1['error'][0]['message']).to eq 'Help'
+        expect(package1['error'][0]['trace']).to_not be_nil
       end
     end
   end

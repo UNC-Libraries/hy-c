@@ -15,6 +15,10 @@ module Tasks
       'https://jats.nlm.nih.gov/publishing/'
     end
 
+    def self.is_revision?(filename)
+      File.basename(filename).match?(/\.r[0-9]{4}-[0-9]{2}-[0-9]{2}/)
+    end
+
     def process_package(package_path, _index)
       unzipped_package_dir = unzip_dir(package_path)
 
@@ -28,31 +32,56 @@ module Tasks
 
       # parse xml
       ingest_work = JatsIngestWork.new(xml_path: metadata_file_path)
+      # Check for existing works based on the publisher DOI
+      doi = ingest_work.identifier.first
+      existing_id = existing_work_id(doi)
 
-      # Create Article with metadata and save
-      art_with_meta = article_with_metadata(ingest_work)
-      create_sipity_workflow(work: art_with_meta)
-      # Add PDF file to Article (including FileSets)
-      pdf_file_name = file_names.find { |name| name.match(/^(\S*).pdf/) }
-
-      attach_file_set_to_work(work: art_with_meta, dir: unzipped_package_dir, file_name: pdf_file_name, user: @depositor, visibility: art_with_meta.visibility)
-      # Add xml metadata file to Article
-      attach_file_set_to_work(work: art_with_meta, dir: unzipped_package_dir, file_name: jats_xml_file_name(file_names: file_names), user: @depositor, visibility: Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE)
-      mark_done(orig_file_name(package_path)) if package_ingest_complete?(unzipped_package_dir, file_names)
+      package_ingester = construct_ingester(ingest_work, unzipped_package_dir, existing_id)
+      work_id = package_ingester.process_package
+      mark_done(orig_file_name(package_path), unzipped_package_dir, file_names)
+      work_id
     end
 
-    def create_sipity_workflow(work:)
-      # Create sipity record
-      join = Sipity::Workflow.joins(:permission_template)
-      workflow = join.where(permission_templates: { source_id: work.admin_set_id }, active: true)
-      raise(ActiveRecord::RecordNotFound, "Could not find Sipity::Workflow with permissions template with source id #{work.admin_set_id}") unless workflow.present?
+    def construct_ingester(jats_ingest_work, unzipped_package_dir, existing_id)
+      ingester = nil
+      package_name = File.basename(unzipped_package_dir) + '.zip'
+      doi = jats_ingest_work.identifier.first
+      if existing_id.present?
+        if SageIngestService.is_revision?(package_name)
+          ingester = Tasks::SageArticleRevisionIngester.new
+          ingester.existing_id = existing_id
+        else
+          raise "Work #{existing_id} already exists with DOI #{doi}, skipping package #{package_name}"
+        end
+      else
+        if SageIngestService.is_revision?(package_name)
+          # For a revision file with no existing work to update, continue with ingest but warn the user
+          @status_service.status_in_progress(package_name,
+                error: StandardError.new("Package #{package_name} indicates that it is a revision, but no existing work with DOI #{doi} was found. Creating a new work instead."))
+        end
+        ingester = Tasks::SageNewArticleIngester.new
+        ingester.admin_set = @admin_set
+      end
+      ingester.package_file_names = Dir.entries(unzipped_package_dir)
+      ingester.package_name = package_name
+      ingester.jats_ingest_work = jats_ingest_work
+      ingester.depositor = @depositor
+      ingester.unzipped_package_dir = unzipped_package_dir
+      ingester.status_service = @status_service
+      ingester.logger = logger
+      ingester.deposit_record = deposit_record
+      ingester
+    end
 
-      workflow_state = Sipity::WorkflowState.where(workflow_id: workflow.first.id, name: 'deposited')
-      raise(ActiveRecord::RecordNotFound, "Could not find Sipity::WorkflowState with workflow_id: #{workflow.first.id} and name: 'deposited'") unless workflow_state.present?
-
-      Sipity::Entity.create!(proxy_for_global_id: work.to_global_id.to_s,
-                             workflow: workflow.first,
-                             workflow_state: workflow_state.first)
+    def existing_work_id(vendor_doi)
+      search_doi = vendor_doi.gsub(/.*doi.org/, '')
+      resp = Hyrax::SolrService.get("identifier_tesim:\"#{search_doi}\"")
+      doc = resp['response']['docs'].first
+      if doc.blank?
+        nil
+      else
+        doc['id']
+      end
     end
 
     def metadata_file_path(file_names:, dir:)
@@ -66,60 +95,8 @@ module Tasks
       file_names.find { |name| name.match(/^(\S*).xml/) }
     end
 
-    def article_with_metadata(ingest_work)
-      logger.info("Creating Article from DOI: #{ingest_work.identifier}")
-      art = Article.new
-      art.admin_set = @admin_set
-      # required fields
-      art.title = ingest_work.title
-      art.creators_attributes = ingest_work.creators
-      art.abstract = ingest_work.abstract
-      art.date_issued = ingest_work.date_of_publication
-      # additional fields
-      art.copyright_date = ingest_work.copyright_date
-      art.dcmi_type = ['http://purl.org/dc/dcmitype/Text']
-      art.funder = ingest_work.funder
-      art.identifier = ingest_work.identifier
-      art.issn = ingest_work.issn
-      art.journal_issue = ingest_work.journal_issue
-      art.journal_title = ingest_work.journal_title
-      art.journal_volume = ingest_work.journal_volume
-      art.keyword = ingest_work.keyword
-      art.license = ingest_work.license
-      art.license_label = ingest_work.license_label
-      art.page_end = ingest_work.page_end
-      art.page_start = ingest_work.page_start
-      art.publisher = ingest_work.publisher
-      art.resource_type = ['Article']
-      art.rights_holder = ingest_work.rights_holder
-      art.rights_statement = 'http://rightsstatements.org/vocab/InC/1.0/'
-      art.rights_statement_label = 'In Copyright'
-      art.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
-      art.deposit_record = deposit_record.id
-      # fields not normally edited via UI
-      art.date_uploaded = DateTime.current
-      art.date_modified = DateTime.current
-
-      art.save!
-      # return the Article object
-      art
-    end
-
-    def attach_file_set_to_work(work:, dir:, file_name:, user:, visibility:)
-      file_set_params = { visibility: visibility }
-      logger.info("Attaching file_set for #{file_name} to DOI: #{work.identifier.first}")
-      file_set = FileSet.create
-      actor = Hyrax::Actors::FileSetActor.new(file_set, user)
-      actor.create_metadata(file_set_params)
-      file = File.open(File.join(dir, file_name))
-      actor.create_content(file)
-      actor.attach_to_work(work, file_set_params)
-      file.close
-
-      file_set
-    end
-
-    def mark_done(orig_file_name)
+    def mark_done(orig_file_name, unzipped_package_dir, file_names)
+      return unless package_ingest_complete?(unzipped_package_dir, file_names)
       logger.info("Marked package ingest complete #{orig_file_name}")
       ingest_progress_log.add_entry(orig_file_name)
     end

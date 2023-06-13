@@ -55,6 +55,23 @@ RSpec.describe Tasks::IngestStatusService, :ingest do
       expect(package1['status_timestamp']).to_not be_nil
       expect(package1['error']).to be_nil
     end
+
+    it 'adds multiple errors' do
+      subject.status_in_progress('test_file.zip', error: StandardError.new('Error Number One'))
+      subject.status_in_progress('test_file.zip', error: StandardError.new('Second Error'))
+
+      # make sure the statuses persisted
+      statuses = subject.statuses
+      expect(statuses.size).to eq 1
+      package1 = statuses['test_file.zip']
+      expect(package1['status']).to eq 'In Progress'
+      expect(package1['status_timestamp']).to_not be_nil
+      expect(package1['error'].length).to eq 2
+      expect(package1['error'][0]['message']).to eq 'Error Number One'
+      expect(package1['error'][0]['trace']).to be_nil
+      expect(package1['error'][1]['message']).to eq 'Second Error'
+      expect(package1['error'][1]['trace']).to be_nil
+    end
   end
 
   describe '#status_failed' do
@@ -69,8 +86,8 @@ RSpec.describe Tasks::IngestStatusService, :ingest do
       package1 = statuses['test_file.zip']
       expect(package1['status']).to eq 'Failed'
       expect(package1['status_timestamp']).to_not be_nil
-      expect(package1['error']['message']).to eq 'Oh no'
-      expect(package1['error']['trace']).to_not be_nil
+      expect(package1['error'][0]['message']).to eq 'Oh no'
+      expect(package1['error'][0]['trace']).to_not be_nil
     end
   end
 end
