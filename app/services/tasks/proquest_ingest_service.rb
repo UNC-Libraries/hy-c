@@ -112,7 +112,7 @@ module Tasks
       resource.ordered_members << fileset
 
       # delete zip file after files have been extracted and ingested successfully
-      File.delete(package_path) if Rails.env != 'test'
+      File.delete(package_path) if ENV['CLEANUP_FTP_PACKAGES']
     end
 
     def metadata_file_path(dir:)
