@@ -36,8 +36,9 @@ module Tasks
       art.rights_statement_label = 'In Copyright'
       art.deposit_record = @deposit_record.id
       # fields not normally edited via UI
-      art.date_uploaded = DateTime.current
-      art.date_modified = DateTime.current
+      current_time = DateTime.current
+      art.date_uploaded = current_time
+      art.date_modified = current_time
     end
 
     def attach_pdf_to_work(work, file_path)

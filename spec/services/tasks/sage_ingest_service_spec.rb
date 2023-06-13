@@ -81,6 +81,12 @@ RSpec.describe Tasks::SageIngestService, :sage, :ingest do
     end
 
     describe '#process_package' do
+      let(:original_title) { 'Americas Original Immunization Controversy' }
+      let(:updated_title1) { 'America\'s Original Immunization Controversy' }
+      let(:updated_title2) { 'America’s Original Immunization Controversy: The Tercentenary of the Boston Smallpox Epidemic of 1721' }
+      let(:original_creator) { 'Nakayama, Don' }
+      let(:updated_creator) { 'Nakayama, Don K.' }
+
       context 'revision with no existing work' do
         let(:package_name) { 'ASU_2022_88_10_10.1177_00031348221074228.r2022-12-22.zip' }
 
@@ -90,7 +96,7 @@ RSpec.describe Tasks::SageIngestService, :sage, :ingest do
               .to change { Article.count }.by(1)
               .and change { FileSet.count }.by(2)
           work = ActiveFedora::Base.find(work_id)
-          expect(work.title.first).to eq 'America’s Original Immunization Controversy: The Tercentenary of the Boston Smallpox Epidemic of 1721'
+          expect(work.title.first).to eq updated_title2
           status = status_service.statuses[package_name]
           expect(status['status']).to eq 'In Progress'
           expect(status['error'][0]['message']).to eq "Package #{package_name} indicates that it is a revision, but no existing work with DOI https://doi.org/10.1177/00031348221074228 was found. Creating a new work instead."
@@ -102,7 +108,7 @@ RSpec.describe Tasks::SageIngestService, :sage, :ingest do
         let(:package_name) { 'ASU_2022_88_10_10.1177_00031348221074228.r2022-12-22.zip' }
         let(:work) { FactoryBot.create(:article, identifier: ['https://doi.org/10.1177/00031348221074228']) }
 
-        it 'creates the work as if it were new' do
+        it 'adds new filesets to the existing work, and sets warnings' do
           work_id = work.id
           expect { service.process_package("spec/fixtures/sage/revisions/both_changed/#{package_name}", 0) }
               .to change { Article.count }.by(0)
@@ -131,10 +137,10 @@ RSpec.describe Tasks::SageIngestService, :sage, :ingest do
         context 'revision indicating xml changed' do
           it 'updates the xml, title and creator name' do
             work = ActiveFedora::Base.find(@work_id)
-            expect(work.title.first).to eq 'Americas Original Immunization Controversy'
+            expect(work.title.first).to eq original_title
             creators = work.creators.to_a
             expect(creators.length).to eq 1
-            expect(creators[0].name.first).to eq 'Nakayama, Don'
+            expect(creators[0].name.first).to eq original_creator
             file_sets = work.file_sets
             xml_fs = file_sets.detect { |fs| fs.label.end_with?('.xml') }
             xml_date_modified = xml_fs.date_modified
@@ -145,10 +151,10 @@ RSpec.describe Tasks::SageIngestService, :sage, :ingest do
                 .to change { Article.count }.by(0)
                 .and change { FileSet.count }.by(0)
             work = ActiveFedora::Base.find(@work_id)
-            expect(work.title.first).to eq 'America\'s Original Immunization Controversy'
+            expect(work.title.first).to eq updated_title1
             creators = work.creators.to_a
             expect(creators.length).to eq 1
-            expect(creators[0].name.first).to eq 'Nakayama, Don K.'
+            expect(creators[0].name.first).to eq updated_creator
             file_sets = work.file_sets
             xml_fs2 = file_sets.detect { |fs| fs.label.end_with?('.xml') }
             pdf_fs2 = file_sets.detect { |fs| fs.label.end_with?('.pdf') }
@@ -170,7 +176,7 @@ RSpec.describe Tasks::SageIngestService, :sage, :ingest do
                 .to change { Article.count }.by(0)
                 .and change { FileSet.count }.by(0)
             work = ActiveFedora::Base.find(@work_id)
-            expect(work.title.first).to eq 'Americas Original Immunization Controversy'
+            expect(work.title.first).to eq original_title
             file_sets = work.file_sets
             xml_fs2 = file_sets.detect { |fs| fs.label.end_with?('.xml') }
             pdf_fs2 = file_sets.detect { |fs| fs.label.end_with?('.pdf') }
@@ -182,7 +188,7 @@ RSpec.describe Tasks::SageIngestService, :sage, :ingest do
         context 'revision indicating xml and pdf changed' do
           it 'updates the pdf, xml and metadata' do
             work = ActiveFedora::Base.find(@work_id)
-            expect(work.title.first).to eq 'Americas Original Immunization Controversy'
+            expect(work.title.first).to eq original_title
             file_sets = work.file_sets
             xml_fs = file_sets.detect { |fs| fs.label.end_with?('.xml') }
             xml_date_modified = xml_fs.date_modified
@@ -193,7 +199,7 @@ RSpec.describe Tasks::SageIngestService, :sage, :ingest do
                 .to change { Article.count }.by(0)
                 .and change { FileSet.count }.by(0)
             work = ActiveFedora::Base.find(@work_id)
-            expect(work.title.first).to eq 'America’s Original Immunization Controversy: The Tercentenary of the Boston Smallpox Epidemic of 1721'
+            expect(work.title.first).to eq updated_title2
             file_sets = work.file_sets
             xml_fs2 = file_sets.detect { |fs| fs.label.end_with?('.xml') }
             pdf_fs2 = file_sets.detect { |fs| fs.label.end_with?('.pdf') }

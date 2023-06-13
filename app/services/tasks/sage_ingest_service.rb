@@ -51,7 +51,7 @@ module Tasks
           ingester = Tasks::SageArticleRevisionIngester.new
           ingester.existing_id = existing_id
         else
-          raise "Work #{existing_id} already exists with DOI #{doi}, skipping package #{package_name}" if existing_id.present?
+          raise "Work #{existing_id} already exists with DOI #{doi}, skipping package #{package_name}"
         end
       else
         if SageIngestService.is_revision?(package_name)
@@ -92,7 +92,7 @@ module Tasks
 
     def jats_xml_file_name(file_names:)
       file_names -= ['manifest.xml']
-      file_names.detect { |name| name.match(/^(\S*).xml/) }
+      file_names.find { |name| name.match(/^(\S*).xml/) }
     end
 
     def mark_done(orig_file_name, unzipped_package_dir, file_names)
