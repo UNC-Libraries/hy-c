@@ -3,6 +3,7 @@ require 'rails_helper'
 
 RSpec.describe Tasks::DoiCreateService do
   around(:example) do |tests|
+    ActiveFedora::Cleaner.clean!
     cached_use_test_api = ENV['DATACITE_USE_TEST_API']
     ENV['DATACITE_USE_TEST_API'] = 'true'
     cached_datacite_prefix = ENV['DATACITE_PREFIX']
@@ -64,14 +65,14 @@ RSpec.describe Tasks::DoiCreateService do
     context 'for an article' do
       let(:article) do
         Article.new(title: ['new article'],
-                    date_issued: DateTime.now,
+                    date_issued: 'May 2020',
                     id: 'd7f59f11-a35b-41cd-a7d9-77f36738b728',
                     resource_type: ['Article'],
                     funder: ['a funder'],
                     subject: ['subject1', 'subject2'],
                     abstract: ['a description'],
                     extent: ['some extent'],
-                    language_label: ['English'],
+                    language: ['http://id.loc.gov/vocabulary/iso639-2/eng'],
                     rights_statement: 'http://rightsstatements.org/vocab/InC/1.0/')
       end
 
@@ -79,7 +80,7 @@ RSpec.describe Tasks::DoiCreateService do
         result = described_class.new.format_data(article)
         expect(JSON.parse(result)['data']['attributes']['url']).to eq "#{ENV['HYRAX_HOST']}/concern/articles/d7f59f11-a35b-41cd-a7d9-77f36738b728"
         expect(JSON.parse(result)['data']['attributes']['titles']).to match_array [{ 'title' => 'new article' }]
-        expect(JSON.parse(result)['data']['attributes']['publicationYear']).to eq Date.today.year.to_s
+        expect(JSON.parse(result)['data']['attributes']['publicationYear']).to eq '2020'
         expect(JSON.parse(result)['data']['attributes']['types']['resourceType']).to eq 'Article'
         expect(JSON.parse(result)['data']['attributes']['types']['resourceTypeGeneral']).to eq 'Text'
         expect(JSON.parse(result)['data']['attributes']['creators']['name']).to eq 'The University of North Carolina at Chapel Hill University Libraries'
@@ -88,7 +89,7 @@ RSpec.describe Tasks::DoiCreateService do
         expect(JSON.parse(result)['data']['attributes']['descriptions']).to match_array [{ 'description' => 'a description', 'descriptionType' => 'Abstract' }]
         expect(JSON.parse(result)['data']['attributes']['subjects']).to match_array [{ 'subject' => 'subject1' }, { 'subject' => 'subject2' }]
         expect(JSON.parse(result)['data']['attributes']['sizes']).to match_array ['some extent']
-        expect(JSON.parse(result)['data']['attributes']['language']).to eq 'English'
+        expect(JSON.parse(result)['data']['attributes']['language']).to eq 'en'
         expect(JSON.parse(result)['data']['attributes']['rightsList']['rights']).to eq 'In Copyright'
         expect(JSON.parse(result)['data']['attributes']['rightsList']['rightsUri']).to eq 'http://rightsstatements.org/vocab/InC/1.0/'
       end
@@ -97,7 +98,7 @@ RSpec.describe Tasks::DoiCreateService do
     context 'for an honors thesis' do
       let(:honors_thesis) do
         HonorsThesis.new(title: ['new thesis'],
-                         date_issued: DateTime.now,
+                         date_issued: 'March 14, 2021',
                          id: 'd7f59f11-a35b-41cd-a7d9-77f36738b728',
                          resource_type: ['Video', 'Honors Thesis', 'Journal'],
                          creators_attributes: [{ name: 'Person, Test',
@@ -105,6 +106,7 @@ RSpec.describe Tasks::DoiCreateService do
                                                  orcid: 'some orcid' },
                                                { name: 'Person, Non-UNC',
                                                  other_affiliation: 'NCSU' }],
+                         language: ['http://id.loc.gov/vocabulary/iso639-2/ace'],
                          publisher: ['Some Publisher'])
       end
 
@@ -112,7 +114,7 @@ RSpec.describe Tasks::DoiCreateService do
         result = described_class.new.format_data(honors_thesis)
         expect(JSON.parse(result)['data']['attributes']['url']).to eq "#{ENV['HYRAX_HOST']}/concern/honors_theses/d7f59f11-a35b-41cd-a7d9-77f36738b728"
         expect(JSON.parse(result)['data']['attributes']['titles']).to match_array [{ 'title' => 'new thesis' }]
-        expect(JSON.parse(result)['data']['attributes']['publicationYear']).to eq Date.today.year.to_s
+        expect(JSON.parse(result)['data']['attributes']['publicationYear']).to eq '2021'
         # method uses first element in array, and rdf does not preserve order
         expect(['Video', 'Honors Thesis', 'Journal']).to include JSON.parse(result)['data']['attributes']['types']['resourceType']
         expect(['Audiovisual', 'Text']).to include JSON.parse(result)['data']['attributes']['types']['resourceTypeGeneral']
@@ -125,13 +127,14 @@ RSpec.describe Tasks::DoiCreateService do
                                                                                        'nameType' => 'Personal',
                                                                                        'affiliation' => ['NCSU'] }]
         expect(JSON.parse(result)['data']['attributes']['publisher']).to eq 'Some Publisher'
+        expect(JSON.parse(result)['data']['attributes']).to_not include 'language'
       end
     end
 
     context 'for a scholarly work' do
       let(:scholarly_work) do
         ScholarlyWork.new(title: ['new scholarly work'],
-                          date_issued: DateTime.now,
+                          date_issued: '2022',
                           id: 'd7f59f11-a35b-41cd-a7d9-77f36738b728',
                           resource_type: ['Poster'],
                           creators_attributes: [{ name: 'Person, Test',
@@ -144,7 +147,7 @@ RSpec.describe Tasks::DoiCreateService do
         result = described_class.new.format_data(scholarly_work)
         expect(JSON.parse(result)['data']['attributes']['url']).to eq "#{ENV['HYRAX_HOST']}/concern/scholarly_works/d7f59f11-a35b-41cd-a7d9-77f36738b728"
         expect(JSON.parse(result)['data']['attributes']['titles']).to match_array [{ 'title' => 'new scholarly work' }]
-        expect(JSON.parse(result)['data']['attributes']['publicationYear']).to eq Date.today.year.to_s
+        expect(JSON.parse(result)['data']['attributes']['publicationYear']).to eq '2022'
         expect(JSON.parse(result)['data']['attributes']['types']['resourceType']).to eq 'Poster'
         expect(JSON.parse(result)['data']['attributes']['types']['resourceTypeGeneral']).to eq 'Text'
         expect(JSON.parse(result)['data']['attributes']['creators']).to match_array [{ 'name' => 'Person, Test',
@@ -153,6 +156,58 @@ RSpec.describe Tasks::DoiCreateService do
                                                                                        'nameIdentifiers' => [{ 'nameIdentifier' => 'some orcid',
                                                                                                                'nameIdentifierScheme' => 'ORCID' }] }]
         expect(JSON.parse(result)['data']['attributes']['publisher']).to eq 'Some Publisher'
+      end
+    end
+
+    context 'for a scholarly work with century for publicate date' do
+      let(:scholarly_work) do
+        ScholarlyWork.new(title: ['new 1800s scholarly work'],
+                          date_issued: '18xx',
+                          id: 'd7f59f11-a35b-41cd-a7d9-77f36738b728',
+                          resource_type: ['Image'],
+                          creators_attributes: [{ name: 'Person, Test',
+                                                  affiliation: 'Department of Biology',
+                                                  orcid: 'some orcid' }],
+                          publisher: ['Some Publisher'])
+      end
+
+      it 'includes a correct url for a two-word work type with simple pluralization' do
+        result = described_class.new.format_data(scholarly_work)
+        expect(JSON.parse(result)['data']['attributes']['url']).to eq "#{ENV['HYRAX_HOST']}/concern/scholarly_works/d7f59f11-a35b-41cd-a7d9-77f36738b728"
+        expect(JSON.parse(result)['data']['attributes']['titles']).to match_array [{ 'title' => 'new 1800s scholarly work' }]
+        expect(JSON.parse(result)['data']['attributes']['publicationYear']).to eq '1800'
+        expect(JSON.parse(result)['data']['attributes']['types']['resourceType']).to eq 'Image'
+        expect(JSON.parse(result)['data']['attributes']['types']['resourceTypeGeneral']).to eq 'Image'
+        expect(JSON.parse(result)['data']['attributes']['creators']).to match_array [{ 'name' => 'Person, Test',
+                                                                                       'nameType' => 'Personal',
+                                                                                       'affiliation' => ['College of Arts and Sciences', 'Department of Biology'],
+                                                                                       'nameIdentifiers' => [{ 'nameIdentifier' => 'some orcid',
+                                                                                                               'nameIdentifierScheme' => 'ORCID' }] }]
+        expect(JSON.parse(result)['data']['attributes']['publisher']).to eq 'Some Publisher'
+      end
+    end
+
+    context 'for an article with invalid date_issued' do
+      let(:article) do
+        Article.create(title: ['new article without date issued'],
+                    date_issued: 'what 5',
+                    abstract: ['a description'],
+                    language: ['http://id.loc.gov/vocabulary/iso639-2/eng'],
+                    rights_statement: 'http://rightsstatements.org/vocab/InC/1.0/')
+      end
+
+      it 'includes a correct url ' do
+        result = described_class.new.format_data(article)
+        expect(JSON.parse(result)['data']['attributes']['titles']).to match_array [{ 'title' => 'new article without date issued' }]
+        expect(JSON.parse(result)['data']['attributes']['publicationYear']).to eq DateTime.now.year.to_s
+        expect(JSON.parse(result)['data']['attributes']['types']['resourceType']).to eq 'Text'
+        expect(JSON.parse(result)['data']['attributes']['types']['resourceTypeGeneral']).to eq 'Text'
+        expect(JSON.parse(result)['data']['attributes']['creators']['name']).to eq 'The University of North Carolina at Chapel Hill University Libraries'
+        expect(JSON.parse(result)['data']['attributes']['creators']['nameType']).to eq 'Organizational'
+        expect(JSON.parse(result)['data']['attributes']['publisher']).to eq 'The University of North Carolina at Chapel Hill University Libraries'
+        expect(JSON.parse(result)['data']['attributes']['descriptions']).to match_array [{ 'description' => 'a description', 'descriptionType' => 'Abstract' }]
+        expect(JSON.parse(result)['data']['attributes']['rightsList']['rights']).to eq 'In Copyright'
+        expect(JSON.parse(result)['data']['attributes']['rightsList']['rightsUri']).to eq 'http://rightsstatements.org/vocab/InC/1.0/'
       end
     end
   end
@@ -189,6 +244,7 @@ RSpec.describe Tasks::DoiCreateService do
     end
     let(:work) {
       Article.create(title: ['new article for testing doi creation'],
+                     date_issued: '2023',
                      depositor: depositor.email,
                      visibility: 'open',
                      admin_set_id: admin_set.id)

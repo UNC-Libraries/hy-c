@@ -1,7 +1,12 @@
 terms:
   - id: http://id.loc.gov/vocabulary/iso639-2/eng
     term: English
+    iso639_1: en
   - id: http://id.loc.gov/vocabulary/iso639-2/aar
     term: Afar
+    iso639_1: aa
   - id: http://id.loc.gov/vocabulary/iso639-2/abk
     term: Abkhazian
+    iso639_1: ab
+  - id: http://id.loc.gov/vocabulary/iso639-2/ace
+    term: Achinese

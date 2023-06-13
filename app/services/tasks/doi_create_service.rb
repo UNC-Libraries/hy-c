@@ -123,29 +123,24 @@ module Tasks
                                                publisher.first
                                              end
 
-      publication_year = parse_field(work, 'date_issued')
-      data[:data][:attributes][:publicationYear] = if publication_year.blank?
-                                                     Date.today.year
-                                                   else
-                                                     Array.wrap(publication_year).first.to_s.match(/\d{4}/)[0]
-                                                   end
+      data[:data][:attributes][:publicationYear] = publication_year(work)
 
       ############################
       #
       # Optional fields
       #
       ############################
-      contributors = parse_people(work, 'contributors')
-      data[:data][:attributes][:contributors] = contributors unless contributors.blank?
-
       description = parse_description(work, 'abstract')
       data[:data][:attributes][:descriptions] = description unless description.blank?
 
       funding = parse_funding(work, 'funder')
       data[:data][:attributes][:fundingReferences] = funding unless funding.blank?
 
-      language = parse_field(work, 'language_label').first
-      data[:data][:attributes][:language] = language unless language.blank?
+      language = parse_field(work, 'language').first
+      if language.present?
+        lang_code = LanguagesService.iso639_1(language)
+        data[:data][:attributes][:language] = lang_code unless lang_code.blank?
+      end
 
       rights = parse_field(work, 'rights_statement')
       unless rights.blank?
@@ -161,6 +156,18 @@ module Tasks
       data[:data][:attributes][:subjects] = subjects unless subjects.blank?
 
       data.to_json
+    end
+
+    def publication_year(work)
+      date_issued = parse_field(work, 'date_issued')
+      year_match = Array.wrap(date_issued).first.to_s.match(/[0-9x]{4}/)
+      if year_match.nil?
+        puts "#{get_time} Invalid date_issued '#{date_issued}' for record #{work.id}, falling back to create_date"
+        work.create_date.year.to_s
+      else
+        # For dates like 1800s, they are retrieved as 18xx, so we need to convert the x's back to 0's
+        year_match[0].gsub('x', '0')
+      end
     end
 
     def create_doi(record)
@@ -184,7 +191,7 @@ module Tasks
 
     def create_batch_doi
       start_time = Time.now
-      records = ActiveFedora::SolrService.get('visibility_ssi:open AND -doi_tesim:* AND workflow_state_name_ssim:deposited AND has_model_ssim:(Article Artwork DataSet Dissertation General HonorsThesis Journal MastersPaper Multimed ScholarlyWork)',
+      records = ActiveFedora::SolrService.get('visibility_ssi:open AND -doi_tesim:* AND date_issued_tesim:[* TO *] AND workflow_state_name_ssim:deposited AND has_model_ssim:(Article Artwork DataSet Dissertation General HonorsThesis Journal MastersPaper Multimed ScholarlyWork)',
                                               rows: @rows,
                                               sort: 'system_create_dtsi ASC',
                                               fl: 'id')['response']['docs']
@@ -202,6 +209,7 @@ module Tasks
       end
     rescue StandardError => e
       puts "#{get_time} There was an error creating dois: #{e.message}"
+      puts [e.class.to_s, *e.backtrace].join($RS)
       -1
     end
 
@@ -242,11 +250,14 @@ module Tasks
         resource_type = record_type&.first
         datacite_type = RESOURCE_TYPE_TO_DATACITE[resource_type]
       end
-      puts "#{get_time} WARNING: Unable to determine resourceTypeGeneral for record" if datacite_type.nil?
+      if datacite_type.nil?
+        puts "#{get_time} WARNING: Unable to determine resourceTypeGeneral for record"
+        datacite_type = 'Text'
+      end
+
       # Storing the datacite type. If it is nil or invalid, datacite will reject the creation
       result[:resourceTypeGeneral] = datacite_type
-
-      result[:resourceType] = record_type.first unless record_type.blank?
+      result[:resourceType] = record_type.present? ? record_type.first : datacite_type
 
       result
     end

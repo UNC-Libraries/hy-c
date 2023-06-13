@@ -17,6 +17,13 @@ module LanguagesService
     nil
   end
 
+  def self.iso639_1(id)
+    authority.find(id).fetch('iso639_1')
+  rescue KeyError
+    Rails.logger.warn "DepartmentsService: cannot find '#{id}'"
+    nil
+  end
+
   def self.include_current_value(value, _index, render_options, html_options)
     unless value.blank?
       html_options[:class] << ' force-select'

@@ -1,10 +1,13 @@
 terms:
   - id: http://id.loc.gov/vocabulary/iso639-2/eng
     term: English
+    iso639_1: en
   - id: http://id.loc.gov/vocabulary/iso639-2/aar
     term: Afar
+    iso639_1: aa
   - id: http://id.loc.gov/vocabulary/iso639-2/abk
     term: Abkhazian
+    iso639_1: ab
   - id: http://id.loc.gov/vocabulary/iso639-2/ace
     term: Achinese
   - id: http://id.loc.gov/vocabulary/iso639-2/ach
@@ -19,14 +22,17 @@ terms:
     term: Afrihili
   - id: http://id.loc.gov/vocabulary/iso639-2/afr
     term: Afrikaans
+    iso639_1: af
   - id: http://id.loc.gov/vocabulary/iso639-2/ain
     term: Ainu
   - id: http://id.loc.gov/vocabulary/iso639-2/aka
     term: Akan
+    iso639_1: ak
   - id: http://id.loc.gov/vocabulary/iso639-2/akk
     term: Akkadian
   - id: http://id.loc.gov/vocabulary/iso639-2/alb
     term: Albanian
+    iso639_1: sq
   - id: http://id.loc.gov/vocabulary/iso639-2/ale
     term: Aleut
   - id: http://id.loc.gov/vocabulary/iso639-2/alg
@@ -35,6 +41,7 @@ terms:
     term: Southern Altai
   - id: http://id.loc.gov/vocabulary/iso639-2/amh
     term: Amharic
+    iso639_1: am
   - id: http://id.loc.gov/vocabulary/iso639-2/ang
     term: English, Old (ca.450-1100)
   - id: http://id.loc.gov/vocabulary/iso639-2/anp
@@ -43,12 +50,15 @@ terms:
     term: Apache languages
   - id: http://id.loc.gov/vocabulary/iso639-2/ara
     term: Arabic
+    iso639_1: ar
   - id: http://id.loc.gov/vocabulary/iso639-2/arc
     term: Official Aramaic (700-300 BCE) |  Imperial Aramaic (700-300 BCE)
   - id: http://id.loc.gov/vocabulary/iso639-2/arg
     term: Aragonese
+    iso639_1: an
   - id: http://id.loc.gov/vocabulary/iso639-2/arm
     term: Armenian
+    iso639_1: hy
   - id: http://id.loc.gov/vocabulary/iso639-2/arn
     term: Mapudungun |  Mapuche
   - id: http://id.loc.gov/vocabulary/iso639-2/arp
@@ -59,6 +69,7 @@ terms:
     term: Arawak
   - id: http://id.loc.gov/vocabulary/iso639-2/asm
     term: Assamese
+    iso639_1: as
   - id: http://id.loc.gov/vocabulary/iso639-2/ast
     term: Asturian |  Bable |  Leonese |  Asturleonese
   - id: http://id.loc.gov/vocabulary/iso639-2/ath
@@ -67,28 +78,35 @@ terms:
     term: Australian languages
   - id: http://id.loc.gov/vocabulary/iso639-2/ava
     term: Avaric
+    iso639_1: av
   - id: http://id.loc.gov/vocabulary/iso639-2/ave
     term: Avestan
+    iso639_1: ae
   - id: http://id.loc.gov/vocabulary/iso639-2/awa
     term: Awadhi
   - id: http://id.loc.gov/vocabulary/iso639-2/aym
     term: Aymara
+    iso639_1: ay
   - id: http://id.loc.gov/vocabulary/iso639-2/aze
     term: Azerbaijani
+    iso639_1: az
   - id: http://id.loc.gov/vocabulary/iso639-2/bad
     term: Banda languages
   - id: http://id.loc.gov/vocabulary/iso639-2/bai
     term: Bamileke languages
   - id: http://id.loc.gov/vocabulary/iso639-2/bak
     term: Bashkir
+    iso639_1: ba
   - id: http://id.loc.gov/vocabulary/iso639-2/bal
     term: Baluchi
   - id: http://id.loc.gov/vocabulary/iso639-2/bam
     term: Bambara
+    iso639_1: bm
   - id: http://id.loc.gov/vocabulary/iso639-2/ban
     term: Balinese
   - id: http://id.loc.gov/vocabulary/iso639-2/baq
     term: Basque
+    iso639_1: eu
   - id: http://id.loc.gov/vocabulary/iso639-2/bas
     term: Basa
   - id: http://id.loc.gov/vocabulary/iso639-2/bat
@@ -97,10 +115,12 @@ terms:
     term: Beja |  Bedawiyet
   - id: http://id.loc.gov/vocabulary/iso639-2/bel
     term: Belarusian
+    iso639_1: be
   - id: http://id.loc.gov/vocabulary/iso639-2/bem
     term: Bemba
   - id: http://id.loc.gov/vocabulary/iso639-2/ben
     term: Bengali
+    iso639_1: bn
   - id: http://id.loc.gov/vocabulary/iso639-2/ber
     term: Berber languages
   - id: http://id.loc.gov/vocabulary/iso639-2/bho
@@ -113,6 +133,7 @@ terms:
     term: Bini |  Edo
   - id: http://id.loc.gov/vocabulary/iso639-2/bis
     term: Bislama
+    iso639_1: bi
   - id: http://id.loc.gov/vocabulary/iso639-2/bla
     term: Siksika
   - id: http://id.loc.gov/vocabulary/iso639-2/bnt
@@ -121,10 +142,12 @@ terms:
     term: Tibetan
   - id: http://id.loc.gov/vocabulary/iso639-2/bos
     term: Bosnian
+    iso639_1: bs
   - id: http://id.loc.gov/vocabulary/iso639-2/bra
     term: Braj
   - id: http://id.loc.gov/vocabulary/iso639-2/bre
     term: Breton
+    iso639_1: br
   - id: http://id.loc.gov/vocabulary/iso639-2/btk
     term: Batak languages
   - id: http://id.loc.gov/vocabulary/iso639-2/bua
@@ -133,8 +156,10 @@ terms:
     term: Buginese
   - id: http://id.loc.gov/vocabulary/iso639-2/bul
     term: Bulgarian
+    iso639_1: bg
   - id: http://id.loc.gov/vocabulary/iso639-2/bur
     term: Burmese
+    iso639_1: my
   - id: http://id.loc.gov/vocabulary/iso639-2/byn
     term: Blin |  Bilin
   - id: http://id.loc.gov/vocabulary/iso639-2/cad
@@ -145,6 +170,7 @@ terms:
     term: Galibi Carib
   - id: http://id.loc.gov/vocabulary/iso639-2/cat
     term: Catalan |  Valencian
+    iso639_1: ca
   - id: http://id.loc.gov/vocabulary/iso639-2/cau
     term: Caucasian languages
   - id: http://id.loc.gov/vocabulary/iso639-2/ceb
@@ -155,14 +181,17 @@ terms:
     term: Czech
   - id: http://id.loc.gov/vocabulary/iso639-2/cha
     term: Chamorro
+    iso639_1: ch
   - id: http://id.loc.gov/vocabulary/iso639-2/chb
     term: Chibcha
   - id: http://id.loc.gov/vocabulary/iso639-2/che
     term: Chechen
+    iso639_1: ce
   - id: http://id.loc.gov/vocabulary/iso639-2/chg
     term: Chagatai
   - id: http://id.loc.gov/vocabulary/iso639-2/chi
     term: Chinese
+    iso639_1: zh
   - id: http://id.loc.gov/vocabulary/iso639-2/chk
     term: Chuukese
   - id: http://id.loc.gov/vocabulary/iso639-2/chm
@@ -177,8 +206,10 @@ terms:
     term: Cherokee
   - id: http://id.loc.gov/vocabulary/iso639-2/chu
     term: Church Slavic |  Old Slavonic |  Church Slavonic |  Old Bulgarian |  Old Church Slavonic
+    iso639_1: cu
   - id: http://id.loc.gov/vocabulary/iso639-2/chv
     term: Chuvash
+    iso639_1: cv
   - id: http://id.loc.gov/vocabulary/iso639-2/chy
     term: Cheyenne
   - id: http://id.loc.gov/vocabulary/iso639-2/cmc
@@ -189,8 +220,10 @@ terms:
     term: Coptic
   - id: http://id.loc.gov/vocabulary/iso639-2/cor
     term: Cornish
+    iso639_1: kw
   - id: http://id.loc.gov/vocabulary/iso639-2/cos
     term: Corsican
+    iso639_1: co
   - id: http://id.loc.gov/vocabulary/iso639-2/cpe
     term: Creoles and pidgins, English based
   - id: http://id.loc.gov/vocabulary/iso639-2/cpf
@@ -199,6 +232,7 @@ terms:
     term: Creoles and pidgins, Portuguese-based
   - id: http://id.loc.gov/vocabulary/iso639-2/cre
     term: Cree
+    iso639_1: cr
   - id: http://id.loc.gov/vocabulary/iso639-2/crh
     term: Crimean Tatar |  Crimean Turkish
   - id: http://id.loc.gov/vocabulary/iso639-2/crp
@@ -211,10 +245,12 @@ terms:
     term: Welsh
   - id: http://id.loc.gov/vocabulary/iso639-2/cze
     term: Czech
+    iso639_1: cs
   - id: http://id.loc.gov/vocabulary/iso639-2/dak
     term: Dakota
   - id: http://id.loc.gov/vocabulary/iso639-2/dan
     term: Danish
+    iso639_1: da
   - id: http://id.loc.gov/vocabulary/iso639-2/dar
     term: Dargwa
   - id: http://id.loc.gov/vocabulary/iso639-2/day
@@ -231,6 +267,7 @@ terms:
     term: Dinka
   - id: http://id.loc.gov/vocabulary/iso639-2/div
     term: Divehi |  Dhivehi |  Maldivian
+    iso639_1: dv
   - id: http://id.loc.gov/vocabulary/iso639-2/doi
     term: Dogri
   - id: http://id.loc.gov/vocabulary/iso639-2/dra
@@ -243,10 +280,12 @@ terms:
     term: Dutch, Middle (ca.1050-1350)
   - id: http://id.loc.gov/vocabulary/iso639-2/dut
     term: Dutch |  Flemish
+    iso639_1: nl
   - id: http://id.loc.gov/vocabulary/iso639-2/dyu
     term: Dyula
   - id: http://id.loc.gov/vocabulary/iso639-2/dzo
     term: Dzongkha
+    iso639_1: dz
   - id: http://id.loc.gov/vocabulary/iso639-2/efi
     term: Efik
   - id: http://id.loc.gov/vocabulary/iso639-2/egy
@@ -261,28 +300,34 @@ terms:
     term: English, Middle (1100-1500)
   - id: http://id.loc.gov/vocabulary/iso639-2/epo
     term: Esperanto
+    iso639_1: eo
   - id: http://id.loc.gov/vocabulary/iso639-2/est
     term: Estonian
+    iso639_1: et
   - id: http://id.loc.gov/vocabulary/iso639-2/eus
     term: Basque
   - id: http://id.loc.gov/vocabulary/iso639-2/ewe
     term: Ewe
+    iso639_1: ee
   - id: http://id.loc.gov/vocabulary/iso639-2/ewo
     term: Ewondo
   - id: http://id.loc.gov/vocabulary/iso639-2/fan
     term: Fang
   - id: http://id.loc.gov/vocabulary/iso639-2/fao
     term: Faroese
+    iso639_1: fo
   - id: http://id.loc.gov/vocabulary/iso639-2/fas
     term: Persian
   - id: http://id.loc.gov/vocabulary/iso639-2/fat
     term: Fanti
   - id: http://id.loc.gov/vocabulary/iso639-2/fij
     term: Fijian
+    iso639_1: fj
   - id: http://id.loc.gov/vocabulary/iso639-2/fil
     term: Filipino |  Pilipino
   - id: http://id.loc.gov/vocabulary/iso639-2/fin
     term: Finnish
+    iso639_1: fi
   - id: http://id.loc.gov/vocabulary/iso639-2/fiu
     term: Finno-Ugrian languages
   - id: http://id.loc.gov/vocabulary/iso639-2/fon
@@ -291,6 +336,7 @@ terms:
     term: French
   - id: http://id.loc.gov/vocabulary/iso639-2/fre
     term: French
+    iso639_1: fr
   - id: http://id.loc.gov/vocabulary/iso639-2/frm
     term: French, Middle (ca.1400-1600)
   - id: http://id.loc.gov/vocabulary/iso639-2/fro
@@ -301,8 +347,10 @@ terms:
     term: Eastern Frisian
   - id: http://id.loc.gov/vocabulary/iso639-2/fry
     term: Western Frisian
+    iso639_1: fy
   - id: http://id.loc.gov/vocabulary/iso639-2/ful
     term: Fulah
+    iso639_1: ff
   - id: http://id.loc.gov/vocabulary/iso639-2/fur
     term: Friulian
   - id: http://id.loc.gov/vocabulary/iso639-2/gaa
@@ -315,20 +363,26 @@ terms:
     term: Germanic languages
   - id: http://id.loc.gov/vocabulary/iso639-2/geo
     term: Georgian
+    iso639_1: ka
   - id: http://id.loc.gov/vocabulary/iso639-2/ger
     term: German
+    iso639_1: de
   - id: http://id.loc.gov/vocabulary/iso639-2/gez
     term: Geez
   - id: http://id.loc.gov/vocabulary/iso639-2/gil
     term: Gilbertese
   - id: http://id.loc.gov/vocabulary/iso639-2/gla
     term: Gaelic |  Scottish Gaelic
+    iso639_1: gd
   - id: http://id.loc.gov/vocabulary/iso639-2/gle
     term: Irish
+    iso639_1: ga
   - id: http://id.loc.gov/vocabulary/iso639-2/glg
     term: Galician
+    iso639_1: gl
   - id: http://id.loc.gov/vocabulary/iso639-2/glv
     term: Manx
+    iso639_1: gv
   - id: http://id.loc.gov/vocabulary/iso639-2/gmh
     term: German, Middle High (ca.1050-1500)
   - id: http://id.loc.gov/vocabulary/iso639-2/goh
@@ -345,44 +399,55 @@ terms:
     term: Greek, Ancient (to 1453)
   - id: http://id.loc.gov/vocabulary/iso639-2/gre
     term: Greek, Modern (1453-)
+    iso639_1: el
   - id: http://id.loc.gov/vocabulary/iso639-2/grn
     term: Guarani
+    iso639_1: gn
   - id: http://id.loc.gov/vocabulary/iso639-2/gsw
     term: Swiss German |  Alemannic |  Alsatian
   - id: http://id.loc.gov/vocabulary/iso639-2/guj
     term: Gujarati
+    iso639_1: gu
   - id: http://id.loc.gov/vocabulary/iso639-2/gwi
     term: Gwich'in
   - id: http://id.loc.gov/vocabulary/iso639-2/hai
     term: Haida
   - id: http://id.loc.gov/vocabulary/iso639-2/hat
     term: Haitian |  Haitian Creole
+    iso639_1: ht
   - id: http://id.loc.gov/vocabulary/iso639-2/hau
     term: Hausa
+    iso639_1: ha
   - id: http://id.loc.gov/vocabulary/iso639-2/haw
     term: Hawaiian
   - id: http://id.loc.gov/vocabulary/iso639-2/heb
     term: Hebrew
+    iso639_1: he
   - id: http://id.loc.gov/vocabulary/iso639-2/her
     term: Herero
+    iso639_1: hz
   - id: http://id.loc.gov/vocabulary/iso639-2/hil
     term: Hiligaynon
   - id: http://id.loc.gov/vocabulary/iso639-2/him
     term: Himachali languages |  Western Pahari languages
   - id: http://id.loc.gov/vocabulary/iso639-2/hin
     term: Hindi
+    iso639_1: hi
   - id: http://id.loc.gov/vocabulary/iso639-2/hit
     term: Hittite
   - id: http://id.loc.gov/vocabulary/iso639-2/hmn
     term: Hmong |  Mong
   - id: http://id.loc.gov/vocabulary/iso639-2/hmo
     term: Hiri Motu
+    iso639_1: ho
   - id: http://id.loc.gov/vocabulary/iso639-2/hrv
     term: Croatian
+    iso639_1: hr
   - id: http://id.loc.gov/vocabulary/iso639-2/hsb
     term: Upper Sorbian
   - id: http://id.loc.gov/vocabulary/iso639-2/hun
     term: Hungarian
+    iso639_1: hu
   - id: http://id.loc.gov/vocabulary/iso639-2/hup
     term: Hupa
   - id: http://id.loc.gov/vocabulary/iso639-2/hye
@@ -391,32 +456,41 @@ terms:
     term: Iban
   - id: http://id.loc.gov/vocabulary/iso639-2/ibo
     term: Igbo
+    iso639_1: ig
   - id: http://id.loc.gov/vocabulary/iso639-2/ice
     term: Icelandic
+    iso639_1: is
   - id: http://id.loc.gov/vocabulary/iso639-2/ido
     term: Ido
+    iso639_1: io
   - id: http://id.loc.gov/vocabulary/iso639-2/iii
     term: Sichuan Yi |  Nuosu
+    iso639_1: ii
   - id: http://id.loc.gov/vocabulary/iso639-2/ijo
     term: Ijo languages
   - id: http://id.loc.gov/vocabulary/iso639-2/iku
     term: Inuktitut
+    iso639_1: iu
   - id: http://id.loc.gov/vocabulary/iso639-2/ile
     term: Interlingue |  Occidental
+    iso639_1: ie
   - id: http://id.loc.gov/vocabulary/iso639-2/ilo
     term: Iloko
   - id: http://id.loc.gov/vocabulary/iso639-2/ina
     term: Interlingua (International Auxiliary Language Association)
+    iso639_1: ia
   - id: http://id.loc.gov/vocabulary/iso639-2/inc
     term: Indic languages
   - id: http://id.loc.gov/vocabulary/iso639-2/ind
     term: Indonesian
+    iso639_1: id
   - id: http://id.loc.gov/vocabulary/iso639-2/ine
     term: Indo-European languages
   - id: http://id.loc.gov/vocabulary/iso639-2/inh
     term: Ingush
   - id: http://id.loc.gov/vocabulary/iso639-2/ipk
     term: Inupiaq
+    iso639_1: ik
   - id: http://id.loc.gov/vocabulary/iso639-2/ira
     term: Iranian languages
   - id: http://id.loc.gov/vocabulary/iso639-2/iro
@@ -425,12 +499,15 @@ terms:
     term: Icelandic
   - id: http://id.loc.gov/vocabulary/iso639-2/ita
     term: Italian
+    iso639_1: it
   - id: http://id.loc.gov/vocabulary/iso639-2/jav
     term: Javanese
+    iso639_1: jv
   - id: http://id.loc.gov/vocabulary/iso639-2/jbo
     term: Lojban
   - id: http://id.loc.gov/vocabulary/iso639-2/jpn
     term: Japanese
+    iso639_1: ja
   - id: http://id.loc.gov/vocabulary/iso639-2/jpr
     term: Judeo-Persian
   - id: http://id.loc.gov/vocabulary/iso639-2/jrb
@@ -443,22 +520,27 @@ terms:
     term: Kachin |  Jingpho
   - id: http://id.loc.gov/vocabulary/iso639-2/kal
     term: Kalaallisut |  Greenlandic
+    iso639_1: kl
   - id: http://id.loc.gov/vocabulary/iso639-2/kam
     term: Kamba
   - id: http://id.loc.gov/vocabulary/iso639-2/kan
     term: Kannada
+    iso639_1: kn
   - id: http://id.loc.gov/vocabulary/iso639-2/kar
     term: Karen languages
   - id: http://id.loc.gov/vocabulary/iso639-2/kas
     term: Kashmiri
+    iso639_1: ks
   - id: http://id.loc.gov/vocabulary/iso639-2/kat
     term: Georgian
   - id: http://id.loc.gov/vocabulary/iso639-2/kau
     term: Kanuri
+    iso639_1: kr
   - id: http://id.loc.gov/vocabulary/iso639-2/kaw
     term: Kawi
   - id: http://id.loc.gov/vocabulary/iso639-2/kaz
     term: Kazakh
+    iso639_1: kk
   - id: http://id.loc.gov/vocabulary/iso639-2/kbd
     term: Kabardian
   - id: http://id.loc.gov/vocabulary/iso639-2/kha
@@ -467,24 +549,31 @@ terms:
     term: Khoisan languages
   - id: http://id.loc.gov/vocabulary/iso639-2/khm
     term: Central Khmer
+    iso639_1: km
   - id: http://id.loc.gov/vocabulary/iso639-2/kho
     term: Khotanese |  Sakan
   - id: http://id.loc.gov/vocabulary/iso639-2/kik
     term: Kikuyu |  Gikuyu
+    iso639_1: ki
   - id: http://id.loc.gov/vocabulary/iso639-2/kin
     term: Kinyarwanda
+    iso639_1: rw
   - id: http://id.loc.gov/vocabulary/iso639-2/kir
     term: Kirghiz |  Kyrgyz
+    iso639_1: ky
   - id: http://id.loc.gov/vocabulary/iso639-2/kmb
     term: Kimbundu
   - id: http://id.loc.gov/vocabulary/iso639-2/kok
     term: Konkani
   - id: http://id.loc.gov/vocabulary/iso639-2/kom
     term: Komi
+    iso639_1: kv
   - id: http://id.loc.gov/vocabulary/iso639-2/kon
     term: Kongo
+    iso639_1: kg
   - id: http://id.loc.gov/vocabulary/iso639-2/kor
     term: Korean
+    iso639_1: ko
   - id: http://id.loc.gov/vocabulary/iso639-2/kos
     term: Kosraean
   - id: http://id.loc.gov/vocabulary/iso639-2/kpe
@@ -499,10 +588,12 @@ terms:
     term: Kurukh
   - id: http://id.loc.gov/vocabulary/iso639-2/kua
     term: Kuanyama |  Kwanyama
+    iso639_1: kj
   - id: http://id.loc.gov/vocabulary/iso639-2/kum
     term: Kumyk
   - id: http://id.loc.gov/vocabulary/iso639-2/kur
     term: Kurdish
+    iso639_1: ku
   - id: http://id.loc.gov/vocabulary/iso639-2/kut
     term: Kutenai
   - id: http://id.loc.gov/vocabulary/iso639-2/lad
@@ -513,30 +604,39 @@ terms:
     term: Lamba
   - id: http://id.loc.gov/vocabulary/iso639-2/lao
     term: Lao
+    iso639_1: lo
   - id: http://id.loc.gov/vocabulary/iso639-2/lat
     term: Latin
+    iso639_1: la
   - id: http://id.loc.gov/vocabulary/iso639-2/lav
     term: Latvian
+    iso639_1: lv
   - id: http://id.loc.gov/vocabulary/iso639-2/lez
     term: Lezghian
   - id: http://id.loc.gov/vocabulary/iso639-2/lim
     term: Limburgan |  Limburger |  Limburgish
+    iso639_1: li
   - id: http://id.loc.gov/vocabulary/iso639-2/lin
     term: Lingala
+    iso639_1: ln
   - id: http://id.loc.gov/vocabulary/iso639-2/lit
     term: Lithuanian
+    iso639_1: lt
   - id: http://id.loc.gov/vocabulary/iso639-2/lol
     term: Mongo
   - id: http://id.loc.gov/vocabulary/iso639-2/loz
     term: Lozi
   - id: http://id.loc.gov/vocabulary/iso639-2/ltz
     term: Luxembourgish |  Letzeburgesch
+    iso639_1: lb
   - id: http://id.loc.gov/vocabulary/iso639-2/lua
     term: Luba-Lulua
   - id: http://id.loc.gov/vocabulary/iso639-2/lub
     term: Luba-Katanga
+    iso639_1: lu
   - id: http://id.loc.gov/vocabulary/iso639-2/lug
     term: Ganda
+    iso639_1: lg
   - id: http://id.loc.gov/vocabulary/iso639-2/lui
     term: Luiseno
   - id: http://id.loc.gov/vocabulary/iso639-2/lun
@@ -547,30 +647,36 @@ terms:
     term: Lushai
   - id: http://id.loc.gov/vocabulary/iso639-2/mac
     term: Macedonian
+    iso639_1: mk
   - id: http://id.loc.gov/vocabulary/iso639-2/mad
     term: Madurese
   - id: http://id.loc.gov/vocabulary/iso639-2/mag
     term: Magahi
   - id: http://id.loc.gov/vocabulary/iso639-2/mah
     term: Marshallese
+    iso639_1: mh
   - id: http://id.loc.gov/vocabulary/iso639-2/mai
     term: Maithili
   - id: http://id.loc.gov/vocabulary/iso639-2/mak
     term: Makasar
   - id: http://id.loc.gov/vocabulary/iso639-2/mal
     term: Malayalam
+    iso639_1: ml
   - id: http://id.loc.gov/vocabulary/iso639-2/man
     term: Mandingo
   - id: http://id.loc.gov/vocabulary/iso639-2/mao
     term: Maori
+    iso639_1: mi
   - id: http://id.loc.gov/vocabulary/iso639-2/map
     term: Austronesian languages
   - id: http://id.loc.gov/vocabulary/iso639-2/mar
     term: Marathi
+    iso639_1: mr
   - id: http://id.loc.gov/vocabulary/iso639-2/mas
     term: Masai
   - id: http://id.loc.gov/vocabulary/iso639-2/may
     term: Malay
+    iso639_1: ms
   - id: http://id.loc.gov/vocabulary/iso639-2/mdf
     term: Moksha
   - id: http://id.loc.gov/vocabulary/iso639-2/mdr
@@ -591,8 +697,10 @@ terms:
     term: Mon-Khmer languages
   - id: http://id.loc.gov/vocabulary/iso639-2/mlg
     term: Malagasy
+    iso639_1: mg
   - id: http://id.loc.gov/vocabulary/iso639-2/mlt
     term: Maltese
+    iso639_1: mt
   - id: http://id.loc.gov/vocabulary/iso639-2/mnc
     term: Manchu
   - id: http://id.loc.gov/vocabulary/iso639-2/mni
@@ -603,6 +711,7 @@ terms:
     term: Mohawk
   - id: http://id.loc.gov/vocabulary/iso639-2/mon
     term: Mongolian
+    iso639_1: mn
   - id: http://id.loc.gov/vocabulary/iso639-2/mos
     term: Mossi
   - id: http://id.loc.gov/vocabulary/iso639-2/mri
@@ -633,18 +742,24 @@ terms:
     term: Neapolitan
   - id: http://id.loc.gov/vocabulary/iso639-2/nau
     term: Nauru
+    iso639_1: na
   - id: http://id.loc.gov/vocabulary/iso639-2/nav
     term: Navajo |  Navaho
+    iso639_1: nv
   - id: http://id.loc.gov/vocabulary/iso639-2/nbl
     term: Ndebele, South |  South Ndebele
+    iso639_1: nr
   - id: http://id.loc.gov/vocabulary/iso639-2/nde
     term: Ndebele, North |  North Ndebele
+    iso639_1: nd
   - id: http://id.loc.gov/vocabulary/iso639-2/ndo
     term: Ndonga
+    iso639_1: ng
   - id: http://id.loc.gov/vocabulary/iso639-2/nds
     term: Low German |  Low Saxon |  German, Low |  Saxon, Low
   - id: http://id.loc.gov/vocabulary/iso639-2/nep
     term: Nepali
+    iso639_1: ne
   - id: http://id.loc.gov/vocabulary/iso639-2/new
     term: Nepal Bhasa |  Newari
   - id: http://id.loc.gov/vocabulary/iso639-2/nia
@@ -657,14 +772,17 @@ terms:
     term: Dutch |  Flemish
   - id: http://id.loc.gov/vocabulary/iso639-2/nno
     term: Norwegian Nynorsk |  Nynorsk, Norwegian
+    iso639_1: nn
   - id: http://id.loc.gov/vocabulary/iso639-2/nob
     term: Bokmål, Norwegian |  Norwegian Bokmål
+    iso639_1: nb
   - id: http://id.loc.gov/vocabulary/iso639-2/nog
     term: Nogai
   - id: http://id.loc.gov/vocabulary/iso639-2/non
     term: Norse, Old
   - id: http://id.loc.gov/vocabulary/iso639-2/nor
     term: Norwegian
+    iso639_1: 'no'
   - id: http://id.loc.gov/vocabulary/iso639-2/nqo
     term: N'Ko
   - id: http://id.loc.gov/vocabulary/iso639-2/nso
@@ -675,6 +793,7 @@ terms:
     term: Classical Newari |  Old Newari |  Classical Nepal Bhasa
   - id: http://id.loc.gov/vocabulary/iso639-2/nya
     term: Chichewa |  Chewa |  Nyanja
+    iso639_1: ny
   - id: http://id.loc.gov/vocabulary/iso639-2/nym
     term: Nyamwezi
   - id: http://id.loc.gov/vocabulary/iso639-2/nyn
@@ -685,16 +804,21 @@ terms:
     term: Nzima
   - id: http://id.loc.gov/vocabulary/iso639-2/oci
     term: Occitan (post 1500)
+    iso639_1: oc
   - id: http://id.loc.gov/vocabulary/iso639-2/oji
     term: Ojibwa
+    iso639_1: oj
   - id: http://id.loc.gov/vocabulary/iso639-2/ori
     term: Oriya
+    iso639_1: or
   - id: http://id.loc.gov/vocabulary/iso639-2/orm
     term: Oromo
+    iso639_1: om
   - id: http://id.loc.gov/vocabulary/iso639-2/osa
     term: Osage
   - id: http://id.loc.gov/vocabulary/iso639-2/oss
     term: Ossetian |  Ossetic
+    iso639_1: os
   - id: http://id.loc.gov/vocabulary/iso639-2/ota
     term: Turkish, Ottoman (1500-1928)
   - id: http://id.loc.gov/vocabulary/iso639-2/oto
@@ -709,6 +833,7 @@ terms:
     term: Pampanga |  Kapampangan
   - id: http://id.loc.gov/vocabulary/iso639-2/pan
     term: Panjabi |  Punjabi
+    iso639_1: pa
   - id: http://id.loc.gov/vocabulary/iso639-2/pap
     term: Papiamento
   - id: http://id.loc.gov/vocabulary/iso639-2/pau
@@ -717,28 +842,34 @@ terms:
     term: Persian, Old (ca.600-400 B.C.)
   - id: http://id.loc.gov/vocabulary/iso639-2/per
     term: Persian
+    iso639_1: fa
   - id: http://id.loc.gov/vocabulary/iso639-2/phi
     term: Philippine languages
   - id: http://id.loc.gov/vocabulary/iso639-2/phn
     term: Phoenician
   - id: http://id.loc.gov/vocabulary/iso639-2/pli
     term: Pali
+    iso639_1: pi
   - id: http://id.loc.gov/vocabulary/iso639-2/pol
     term: Polish
+    iso639_1: pl
   - id: http://id.loc.gov/vocabulary/iso639-2/pon
     term: Pohnpeian
   - id: http://id.loc.gov/vocabulary/iso639-2/por
     term: Portuguese
+    iso639_1: pt
   - id: http://id.loc.gov/vocabulary/iso639-2/pra
     term: Prakrit languages
   - id: http://id.loc.gov/vocabulary/iso639-2/pro
     term: Provençal, Old (to 1500) | Occitan, Old (to 1500)
   - id: http://id.loc.gov/vocabulary/iso639-2/pus
     term: Pushto |  Pashto
+    iso639_1: ps
   - id: http://id.loc.gov/vocabulary/iso639-2/qaa-qtz
     term: Reserved for local use
   - id: http://id.loc.gov/vocabulary/iso639-2/que
     term: Quechua
+    iso639_1: qu
   - id: http://id.loc.gov/vocabulary/iso639-2/raj
     term: Rajasthani
   - id: http://id.loc.gov/vocabulary/iso639-2/rap
@@ -749,22 +880,27 @@ terms:
     term: Romance languages
   - id: http://id.loc.gov/vocabulary/iso639-2/roh
     term: Romansh
+    iso639_1: rm
   - id: http://id.loc.gov/vocabulary/iso639-2/rom
     term: Romany
   - id: http://id.loc.gov/vocabulary/iso639-2/ron
     term: Romanian |  Moldavian |  Moldovan
   - id: http://id.loc.gov/vocabulary/iso639-2/rum
     term: Romanian |  Moldavian |  Moldovan
+    iso639_1: ro
   - id: http://id.loc.gov/vocabulary/iso639-2/run
     term: Rundi
+    iso639_1: rn
   - id: http://id.loc.gov/vocabulary/iso639-2/rup
     term: Aromanian |  Arumanian |  Macedo-Romanian
   - id: http://id.loc.gov/vocabulary/iso639-2/rus
     term: Russian
+    iso639_1: ru
   - id: http://id.loc.gov/vocabulary/iso639-2/sad
     term: Sandawe
   - id: http://id.loc.gov/vocabulary/iso639-2/sag
     term: Sango
+    iso639_1: sg
   - id: http://id.loc.gov/vocabulary/iso639-2/sah
     term: Yakut
   - id: http://id.loc.gov/vocabulary/iso639-2/sai
@@ -775,6 +911,7 @@ terms:
     term: Samaritan Aramaic
   - id: http://id.loc.gov/vocabulary/iso639-2/san
     term: Sanskrit
+    iso639_1: sa
   - id: http://id.loc.gov/vocabulary/iso639-2/sas
     term: Sasak
   - id: http://id.loc.gov/vocabulary/iso639-2/sat
@@ -797,6 +934,7 @@ terms:
     term: Sidamo
   - id: http://id.loc.gov/vocabulary/iso639-2/sin
     term: Sinhala |  Sinhalese
+    iso639_1: si
   - id: http://id.loc.gov/vocabulary/iso639-2/sio
     term: Siouan languages
   - id: http://id.loc.gov/vocabulary/iso639-2/sit
@@ -807,12 +945,15 @@ terms:
     term: Slovak
   - id: http://id.loc.gov/vocabulary/iso639-2/slo
     term: Slovak
+    iso639_1: sk
   - id: http://id.loc.gov/vocabulary/iso639-2/slv
     term: Slovenian
+    iso639_1: sl
   - id: http://id.loc.gov/vocabulary/iso639-2/sma
     term: Southern Sami
   - id: http://id.loc.gov/vocabulary/iso639-2/sme
     term: Northern Sami
+    iso639_1: se
   - id: http://id.loc.gov/vocabulary/iso639-2/smi
     term: Sami languages
   - id: http://id.loc.gov/vocabulary/iso639-2/smj
@@ -821,64 +962,80 @@ terms:
     term: Inari Sami
   - id: http://id.loc.gov/vocabulary/iso639-2/smo
     term: Samoan
+    iso639_1: sm
   - id: http://id.loc.gov/vocabulary/iso639-2/sms
     term: Skolt Sami
   - id: http://id.loc.gov/vocabulary/iso639-2/sna
     term: Shona
+    iso639_1: sn
   - id: http://id.loc.gov/vocabulary/iso639-2/snd
     term: Sindhi
+    iso639_1: sd
   - id: http://id.loc.gov/vocabulary/iso639-2/snk
     term: Soninke
   - id: http://id.loc.gov/vocabulary/iso639-2/sog
     term: Sogdian
   - id: http://id.loc.gov/vocabulary/iso639-2/som
     term: Somali
+    iso639_1: so
   - id: http://id.loc.gov/vocabulary/iso639-2/son
     term: Songhai languages
   - id: http://id.loc.gov/vocabulary/iso639-2/sot
     term: Sotho, Southern
+    iso639_1: st
   - id: http://id.loc.gov/vocabulary/iso639-2/spa
     term: Spanish |  Castilian
+    iso639_1: es
   - id: http://id.loc.gov/vocabulary/iso639-2/sqi
     term: Albanian
   - id: http://id.loc.gov/vocabulary/iso639-2/srd
     term: Sardinian
+    iso639_1: sc
   - id: http://id.loc.gov/vocabulary/iso639-2/srn
     term: Sranan Tongo
   - id: http://id.loc.gov/vocabulary/iso639-2/srp
     term: Serbian
+    iso639_1: sr
   - id: http://id.loc.gov/vocabulary/iso639-2/srr
     term: Serer
   - id: http://id.loc.gov/vocabulary/iso639-2/ssa
     term: Nilo-Saharan languages
   - id: http://id.loc.gov/vocabulary/iso639-2/ssw
     term: Swati
+    iso639_1: ss
   - id: http://id.loc.gov/vocabulary/iso639-2/suk
     term: Sukuma
   - id: http://id.loc.gov/vocabulary/iso639-2/sun
     term: Sundanese
+    iso639_1: su
   - id: http://id.loc.gov/vocabulary/iso639-2/sus
     term: Susu
   - id: http://id.loc.gov/vocabulary/iso639-2/sux
     term: Sumerian
   - id: http://id.loc.gov/vocabulary/iso639-2/swa
     term: Swahili
+    iso639_1: sw
   - id: http://id.loc.gov/vocabulary/iso639-2/swe
     term: Swedish
+    iso639_1: sv
   - id: http://id.loc.gov/vocabulary/iso639-2/syc
     term: Classical Syriac
   - id: http://id.loc.gov/vocabulary/iso639-2/syr
     term: Syriac
   - id: http://id.loc.gov/vocabulary/iso639-2/tah
     term: Tahitian
+    iso639_1: ty
   - id: http://id.loc.gov/vocabulary/iso639-2/tai
     term: Tai languages
   - id: http://id.loc.gov/vocabulary/iso639-2/tam
     term: Tamil
+    iso639_1: ta
   - id: http://id.loc.gov/vocabulary/iso639-2/tat
     term: Tatar
+    iso639_1: tt
   - id: http://id.loc.gov/vocabulary/iso639-2/tel
     term: Telugu
+    iso639_1: te
   - id: http://id.loc.gov/vocabulary/iso639-2/tem
     term: Timne
   - id: http://id.loc.gov/vocabulary/iso639-2/ter
@@ -887,16 +1044,21 @@ terms:
     term: Tetum
   - id: http://id.loc.gov/vocabulary/iso639-2/tgk
     term: Tajik
+    iso639_1: tg
   - id: http://id.loc.gov/vocabulary/iso639-2/tgl
     term: Tagalog
+    iso639_1: tl
   - id: http://id.loc.gov/vocabulary/iso639-2/tha
     term: Thai
+    iso639_1: th
   - id: http://id.loc.gov/vocabulary/iso639-2/tib
     term: Tibetan
+    iso639_1: bo
   - id: http://id.loc.gov/vocabulary/iso639-2/tig
     term: Tigre
   - id: http://id.loc.gov/vocabulary/iso639-2/tir
     term: Tigrinya
+    iso639_1: ti
   - id: http://id.loc.gov/vocabulary/iso639-2/tiv
     term: Tiv
   - id: http://id.loc.gov/vocabulary/iso639-2/tkl
@@ -911,28 +1073,34 @@ terms:
     term: Tonga (Nyasa)
   - id: http://id.loc.gov/vocabulary/iso639-2/ton
     term: Tonga (Tonga Islands)
+    iso639_1: to
   - id: http://id.loc.gov/vocabulary/iso639-2/tpi
     term: Tok Pisin
   - id: http://id.loc.gov/vocabulary/iso639-2/tsi
     term: Tsimshian
   - id: http://id.loc.gov/vocabulary/iso639-2/tsn
     term: Tswana
+    iso639_1: tn
   - id: http://id.loc.gov/vocabulary/iso639-2/tso
     term: Tsonga
+    iso639_1: ts
   - id: http://id.loc.gov/vocabulary/iso639-2/tuk
     term: Turkmen
+    iso639_1: tk
   - id: http://id.loc.gov/vocabulary/iso639-2/tum
     term: Tumbuka
   - id: http://id.loc.gov/vocabulary/iso639-2/tup
     term: Tupi languages
   - id: http://id.loc.gov/vocabulary/iso639-2/tur
     term: Turkish
+    iso639_1: tr
   - id: http://id.loc.gov/vocabulary/iso639-2/tut
     term: Altaic languages
   - id: http://id.loc.gov/vocabulary/iso639-2/tvl
     term: Tuvalu
   - id: http://id.loc.gov/vocabulary/iso639-2/twi
     term: Twi
+    iso639_1: tw
   - id: http://id.loc.gov/vocabulary/iso639-2/tyv
     term: Tuvinian
   - id: http://id.loc.gov/vocabulary/iso639-2/udm
@@ -941,24 +1109,31 @@ terms:
     term: Ugaritic
   - id: http://id.loc.gov/vocabulary/iso639-2/uig
     term: Uighur |  Uyghur
+    iso639_1: ug
   - id: http://id.loc.gov/vocabulary/iso639-2/ukr
     term: Ukrainian
+    iso639_1: uk
   - id: http://id.loc.gov/vocabulary/iso639-2/umb
     term: Umbundu
   - id: http://id.loc.gov/vocabulary/iso639-2/und
     term: Undetermined
   - id: http://id.loc.gov/vocabulary/iso639-2/urd
     term: Urdu
+    iso639_1: ur
   - id: http://id.loc.gov/vocabulary/iso639-2/uzb
     term: Uzbek
+    iso639_1: uz
   - id: http://id.loc.gov/vocabulary/iso639-2/vai
     term: Vai
   - id: http://id.loc.gov/vocabulary/iso639-2/ven
     term: Venda
+    iso639_1: ve
   - id: http://id.loc.gov/vocabulary/iso639-2/vie
     term: Vietnamese
+    iso639_1: vi
   - id: http://id.loc.gov/vocabulary/iso639-2/vol
     term: Volapük
+    iso639_1: vo
   - id: http://id.loc.gov/vocabulary/iso639-2/vot
     term: Votic
   - id: http://id.loc.gov/vocabulary/iso639-2/wak
@@ -971,24 +1146,30 @@ terms:
     term: Washo
   - id: http://id.loc.gov/vocabulary/iso639-2/wel
     term: Welsh
+    iso639_1: cy
   - id: http://id.loc.gov/vocabulary/iso639-2/wen
     term: Sorbian languages
   - id: http://id.loc.gov/vocabulary/iso639-2/wln
     term: Walloon
+    iso639_1: wa
   - id: http://id.loc.gov/vocabulary/iso639-2/wol
     term: Wolof
+    iso639_1: wo
   - id: http://id.loc.gov/vocabulary/iso639-2/xal
     term: Kalmyk |  Oirat
   - id: http://id.loc.gov/vocabulary/iso639-2/xho
     term: Xhosa
+    iso639_1: xh
   - id: http://id.loc.gov/vocabulary/iso639-2/yao
     term: Yao
   - id: http://id.loc.gov/vocabulary/iso639-2/yap
     term: Yapese
   - id: http://id.loc.gov/vocabulary/iso639-2/yid
     term: Yiddish
+    iso639_1: yi
   - id: http://id.loc.gov/vocabulary/iso639-2/yor
     term: Yoruba
+    iso639_1: yo
   - id: http://id.loc.gov/vocabulary/iso639-2/ypk
     term: Yupik languages
   - id: http://id.loc.gov/vocabulary/iso639-2/zap
@@ -1001,12 +1182,14 @@ terms:
     term: Standard Moroccan Tamazight
   - id: http://id.loc.gov/vocabulary/iso639-2/zha
     term: Zhuang |  Chuang
+    iso639_1: za
   - id: http://id.loc.gov/vocabulary/iso639-2/zho
     term: Chinese
   - id: http://id.loc.gov/vocabulary/iso639-2/znd
     term: Zande languages
   - id: http://id.loc.gov/vocabulary/iso639-2/zul
     term: Zulu
+    iso639_1: zu
   - id: http://id.loc.gov/vocabulary/iso639-2/zun
     term: Zuni
   - id: http://id.loc.gov/vocabulary/iso639-2/zxx
