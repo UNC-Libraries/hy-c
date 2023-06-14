@@ -39,6 +39,10 @@ module Tasks
       package_ingester = construct_ingester(ingest_work, unzipped_package_dir, existing_id)
       work_id = package_ingester.process_package
       mark_done(orig_file_name(package_path), unzipped_package_dir, file_names)
+
+      # delete zip file after files have been extracted and ingested successfully
+      File.delete(package_path) if ENV['CLEANUP_FTP_PACKAGES']
+
       work_id
     end
 
