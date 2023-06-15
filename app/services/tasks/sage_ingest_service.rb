@@ -41,7 +41,7 @@ module Tasks
       mark_done(orig_file_name(package_path), unzipped_package_dir, file_names)
 
       # delete zip file after files have been extracted and ingested successfully
-      File.delete(package_path) if ENV['CLEANUP_FTP_PACKAGES']
+      File.delete(package_path) if cleanup_enabled?
 
       work_id
     end
