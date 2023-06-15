@@ -98,6 +98,10 @@ module Tasks
       end
     end
 
+    def cleanup_enabled?
+      @cleanup_enabled ||= ENV['CLEANUP_FTP_PACKAGES'].to_s.downcase == 'true'
+    end
+
     def extract_files(package_path)
       dirname = unzip_dir(package_path)
       logger.info("Extracting files from #{package_path} to #{dirname}")
