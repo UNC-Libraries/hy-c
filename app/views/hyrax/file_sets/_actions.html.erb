@@ -28,8 +28,7 @@
       </li>
     <% end %>
     <%# [hyc-override] Overriding to see if user can delete the work, to be able to delete the fileset %>
-    <% work = Hyrax.custom_queries.find_parent_work(resource: file_set) %>
-    <% if can?(:destroy, work.id) %>
+    <% if can?(:destroy, file_set.work.id) %>
       <li class="dropdown-item" role="menuitem" tabindex="-1">
         <%= link_to t('.delete'), polymorphic_path([main_app, file_set]),
           method: :delete, title: t('.delete_title', file_set: file_set),
