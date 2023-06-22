@@ -16,4 +16,9 @@ Hyrax::FileSetPresenter.class_eval do
                                       presenter_args: current_ability).first
 
   end
+
+  # [hyc-override] get work related to file set
+  def work
+    Hyrax.custom_queries.find_parent_work(resource: self)
+  end
 end
