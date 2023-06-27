@@ -6,12 +6,10 @@
     <%= link_to t('.analytics'), @presenter.stats_path, id: 'stats', class: 'btn btn-secondary', data: { turbolinks: false } %>
   <% end %>
 
-  <% if !workflow_restriction?(@presenter) %>
-    <% if @presenter.editor? %>
-      <%= link_to t(".edit_this", type: @presenter.human_readable_type), edit_polymorphic_path([main_app, @presenter]),
+  <% if @presenter.editor? && !workflow_restriction?(@presenter) %>
+    <%= link_to t(".edit_this", type: @presenter.human_readable_type), edit_polymorphic_path([main_app, @presenter]),
                   class: 'btn btn-secondary' %>
-    <% end %>
-    <% if @presenter.admin? %>
+    <% if can?(:destroy, @presenter.id) %>
       <%= link_to t(".delete_this", type: @presenter.human_readable_type), [main_app, @presenter],
                   class: 'btn btn-danger', data: { confirm: t(".confirm_delete_this", type: @presenter.human_readable_type) },
                   method: :delete %>
