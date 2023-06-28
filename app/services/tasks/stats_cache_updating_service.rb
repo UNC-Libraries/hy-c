@@ -5,6 +5,7 @@ module Tasks
   class StatsCacheUpdatingService
     WORK_TYPES = ['Article', 'Artwork', 'DataSet', 'Dissertation', 'General', 'HonorsThesis', 'Journal', 'MastersPaper',
                 'Multimed', 'ScholarlyWork']
+    REPORT_EVERY_N = 10
 
     attr_accessor :per_page
 
@@ -31,6 +32,7 @@ module Tasks
 
     def update_records(model_name, usage_class)
       total_entries = nil
+      total_time = 0
       cnt = 0
       loop do
         resp = ActiveFedora::SolrService.get("has_model_ssim:#{model_name}", :rows => @per_page, :start => cnt)["response"]
@@ -41,14 +43,16 @@ module Tasks
         records.each do |record|
           obj_id = record['id']
           next if @completed_ids.include?(obj_id)
+          start_time = Time.now
           # Refresh cache
           usage_class.new(obj_id).to_flot
+          total_time += Time.now - start_time
 
           progress_tracker.add_entry(obj_id)
           cnt += 1
+          average_time = total_time / cnt
+          logger.info("Progress: #{cnt} of #{total_entries}, average #{average_time}s per record") if cnt % REPORT_EVERY_N == 0
         end
-
-        logger.info("Progress: #{cnt} of #{total_entries}")
 
         break if cnt >= total_entries
       end
