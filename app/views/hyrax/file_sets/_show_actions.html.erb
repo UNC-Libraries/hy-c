@@ -9,7 +9,9 @@
   <% if @presenter.editor? && !workflow_restriction?(@presenter) %>
     <%= link_to t(".edit_this", type: @presenter.human_readable_type), edit_polymorphic_path([main_app, @presenter]),
                   class: 'btn btn-secondary' %>
-    <% if can?(:destroy, @presenter.id) %>
+    <%# [hyc-override] Overriding to see if user can delete the work, to be able to delete the fileset %>
+    <% work = Hyrax.custom_queries.find_parent_work(resource: @presenter) %>
+    <% if can?(:destroy, work.id) %>
       <%= link_to t(".delete_this", type: @presenter.human_readable_type), [main_app, @presenter],
                   class: 'btn btn-danger', data: { confirm: t(".confirm_delete_this", type: @presenter.human_readable_type) },
                   method: :delete %>
