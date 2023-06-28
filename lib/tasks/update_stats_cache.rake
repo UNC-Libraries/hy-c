@@ -2,6 +2,6 @@
 namespace 'hyc' do
   desc 'Update analytics statistics cache'
   task update_stats_cache: :environment do
-    StatsCacheUpdatingService.new.update_all
+    Tasks::StatsCacheUpdatingService.new.update_all
   end
 end
