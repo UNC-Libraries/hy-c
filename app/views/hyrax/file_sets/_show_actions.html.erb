@@ -1,14 +1,15 @@
 <%# [hyc-override] Overriding to make only admins able to delete a fileset %>
+<%# https://github.com/samvera/hyrax/blob/hyrax-v3.6.0/app/views/hyrax/file_sets/_show_actions.html.erb %>
 <div class="form-actions">
-  <% if Hyrax.config.analytics? %>
+  <% if Hyrax.config.analytics? && Hyrax.config.analytics_provider != 'ga4' %>
     <%# turbolinks needs to be turned off or the page will use the cache and the %>
     <%# analytics graph will not show unless the page is refreshed. %>
-    <%= link_to t('.analytics'), @presenter.stats_path, id: 'stats', class: 'btn btn-secondary', data: { turbolinks: false } %>
+    <%= link_to t('.analytics'), @presenter.stats_path, id: 'stats', class: 'btn btn-default', data: { turbolinks: false } %>
   <% end %>
 
   <% if @presenter.editor? && !workflow_restriction?(@presenter) %>
-    <%= link_to t(".edit_this", type: @presenter.human_readable_type), edit_polymorphic_path([main_app, @presenter]),
-                  class: 'btn btn-secondary' %>
+      <%= link_to t(".edit_this", type: @presenter.human_readable_type), edit_polymorphic_path([main_app, @presenter]),
+                  class: 'btn btn-default' %>
     <%# [hyc-override] only admins may delete the fileset %>
     <% if @current_ability.admin? %>
       <%= link_to t(".delete_this", type: @presenter.human_readable_type), [main_app, @presenter],
