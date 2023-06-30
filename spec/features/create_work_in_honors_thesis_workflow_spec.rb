@@ -121,7 +121,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       login_as admin_user
 
       visit '/roles'
-      expect(page).to have_content 'Admin'
+      expect(page).to have_content 'admin'
       expect(page).not_to have_content 'department_of_biology_reviewer'
 
       click_on 'Logout'
@@ -188,7 +188,7 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       login_as admin_user
 
       visit '/roles'
-      expect(page).to have_content 'Admin'
+      expect(page).to have_content 'admin'
       expect(page).to have_content 'department_of_biology_reviewer'
 
       # Add reviewer to role

@@ -5,14 +5,25 @@ require Rails.root.join('app/overrides/controllers/hyrax/downloads_controller_ov
 
 RSpec.describe Hyrax::DownloadsController, type: :controller do
   routes { Hyrax::Engine.routes }
+  let(:base_analytics_url) { 'https://www.google-analytics.com/mp/collect?api_secret=supersecret&measurement_id=analytics_id' }
 
   let(:stub_ga) do
-    stub_request(:post, 'http://www.google-analytics.com/collect').to_return(status: 200, body: '', headers: {})
+    stub_request(:post, base_analytics_url).to_return(status: 200, body: '', headers: {})
+  end
+
+  around do |example|
+    cached_secret = ENV['ANALYTICS_API_SECRET']
+    ENV['ANALYTICS_API_SECRET'] = 'supersecret'
+    example.run
+    ENV['ANALYTICS_API_SECRET'] = cached_secret
   end
 
   before do
     ActiveFedora::Cleaner.clean!
     allow(stub_ga)
+    allow(Hyrax::Analytics.config).to receive(:analytics_id).and_return('analytics_id')
+    allow(SecureRandom).to receive(:uuid).and_return('555')
+    allow(Hyrax::VirusCheckerService).to receive(:file_has_virus?) { false }
   end
 
   # app/controllers/concerns/hyrax/download_analytics_behavior.rb:8
@@ -22,10 +33,9 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
     end
 
     it 'has the method for tracking analytics for download' do
-      allow(Hyrax.config).to receive(:google_analytics_id).and_return('blah')
       allow(controller.request).to receive(:referrer).and_return('http://example.com')
       expect(controller).to respond_to(:track_download)
-      expect(controller.track_download).to be_a_kind_of Net::HTTPOK
+      expect(controller.track_download).to eq 200
       expect(stub_ga).to have_been_requested.times(1) # must be after the method call that creates request
     end
 
@@ -40,29 +50,54 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
       it 'can use a fake request' do
         allow(Hyrax::VirusCheckerService).to receive(:file_has_virus?) { false }
         allow(SecureRandom).to receive(:uuid).and_return('555')
-        allow(Hyrax.config).to receive(:google_analytics_id).and_return('blah')
         request.env['HTTP_REFERER'] = 'http://example.com'
-        stub = stub_request(:post, 'http://www.google-analytics.com/collect')
-               .with(body: { 'cid' => '555', 'cm' => 'referral', 'dr' => 'http://example.com', 'ds' => 'server-side', 'ea' => 'DownloadIR',
-                             'ec' => 'Unknown', 'el' => file_set.id, 't' => 'event', 'tid' => 'blah',
-                             'ua' => 'Rails Testing', 'uip' => '0.0.0.0', 'v' => '1' })
+        stub = stub_request(:post, base_analytics_url)
+               .with(body: { 'client_id': '555', "events": [{
+                    "name": 'DownloadIR',
+                    "params": {
+                      "category": 'Unknown',
+                      "label": file_set.id,
+                      "host_name": 'test.host',
+                      "medium": 'referral',
+                      "page_referrer": 'http://example.com',
+                      "page_location": "http://test.host/downloads/#{file_set.id}"
+                    }
+                  }]
+                }.to_json)
                .to_return(status: 200, body: '', headers: {})
         get :show, params: { id: file_set }
         expect(stub).to have_been_requested.times(1) # must be after the method call that creates request
       end
 
       it 'sets the medium to direct when there is no referrer' do
-        allow(Hyrax::VirusCheckerService).to receive(:file_has_virus?) { false }
-        allow(SecureRandom).to receive(:uuid).and_return('555')
-        allow(Hyrax.config).to receive(:google_analytics_id).and_return('blah')
+        allow(controller).to receive(:cookies) { { _ga: 'ga.1.2.3'} }
         request.env['HTTP_REFERER'] = nil
-        stub = stub_request(:post, 'http://www.google-analytics.com/collect')
-               .with(body: { 'cid' => '555', 'cm' => 'direct', 'ds' => 'server-side', 'ea' => 'DownloadIR',
-                             'ec' => 'Unknown', 'el' => file_set.id, 't' => 'event', 'tid' => 'blah',
-                             'ua' => 'Rails Testing', 'uip' => '0.0.0.0', 'v' => '1' })
+        stub = stub_request(:post, base_analytics_url)
+               .with(body: { 'client_id': '2.3', "events": [{
+                    "name": 'DownloadIR',
+                    "params": {
+                      "category": 'Unknown',
+                      "label": file_set.id,
+                      "host_name": 'test.host',
+                      "medium": 'direct',
+                      "page_referrer": nil,
+                      "page_location": "http://test.host/downloads/#{file_set.id}"
+                    }
+                  }]
+                }.to_json)
                .to_return(status: 200, body: '', headers: {})
         get :show, params: { id: file_set }
         expect(stub).to have_been_requested.times(1) # must be after the method call that creates request
+      end
+
+      it 'logs an error for a 400 response' do
+        allow(Rails.logger).to receive(:error)
+        request.env['HTTP_REFERER'] = 'http://example.com'
+        stub = stub_request(:post, base_analytics_url)
+               .to_return(status: 400, body: '', headers: {})
+        get :show, params: { id: file_set }
+        expect(stub).to have_been_requested.times(1) # must be after the method call that creates request
+        expect(Rails.logger).to have_received(:error).exactly(1).times
       end
     end
   end

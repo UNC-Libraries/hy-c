@@ -24,7 +24,7 @@ gem 'execjs', '2.8.1'
 gem 'httparty', '~>0.21.0'
 gem 'hydra-editor', '~> 5.0'
 gem 'hydra-role-management', '~> 1.0'
-gem 'hyrax', git: 'https://github.com/UNC-Libraries/hyrax.git', ref: '0a558f25e1cff0a83bc51cf9bbea1583a7c7d047'
+gem 'hyrax', git: 'https://github.com/UNC-Libraries/hyrax.git', tag: 'hyrax-v3.6.0'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.11.2'
 # Use jquery as the JavaScript library
@@ -55,7 +55,6 @@ gem 'rsolr', '~> 2.5.0'
 gem 'sass-rails', '~> 5.1.0'
 gem 'sidekiq', '~> 5.2.10'
 gem 'sidekiq-status', '~> 2.1.3'
-gem 'staccato', '~>0.5.3'
 # Turbolinks makes navigating your web application faster. Read more: https://github.com/turbolinks/turbolinks
 gem 'turbolinks', '~> 5.2.1'
 # Use Uglifier as compressor for JavaScript assets
