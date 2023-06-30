@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe 'hyrax/file_sets/_show_actions.html.erb', type: :view do
   let(:user) { FactoryBot.create(:user) }
-  let(:object_profile) { ["{\"id\":\"999\"}"] }
+  let(:object_profile) { ["{'id':'999'}"] }
   let(:contributor) { ['Frodo'] }
   let(:creator)     { ['Bilbo'] }
   let(:solr_document) do
@@ -40,7 +40,7 @@ RSpec.describe 'hyrax/file_sets/_show_actions.html.erb', type: :view do
     end
 
     it 'shows delete button' do
-      expect(page).to have_link("Delete This File")
+      expect(page).to have_link('Delete This File')
     end
   end
 
@@ -50,9 +50,9 @@ RSpec.describe 'hyrax/file_sets/_show_actions.html.erb', type: :view do
       view.lookup_context.view_paths.push 'app/views/hyrax/base'
       render
     end
-    
+
     it 'does not show delete button' do
-      expect(page).not_to have_link("Delete This File")
+      expect(page).not_to have_link('Delete This File')
     end
   end
 end

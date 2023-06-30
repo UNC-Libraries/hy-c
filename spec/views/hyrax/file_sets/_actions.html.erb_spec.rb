@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe 'hyrax/file_sets/_actions.html.erb', type: :view do
-  let(:solr_document) { double("Solr Doc", id: 'file_set_id') }
+  let(:solr_document) { double('Solr Doc', id: 'file_set_id') }
   let(:file_set_model) { FactoryBot.create(:file_set) }
   let(:user) { FactoryBot.create(:user) }
   let(:ability) { Ability.new(user) }
@@ -32,7 +32,7 @@ RSpec.describe 'hyrax/file_sets/_actions.html.erb', type: :view do
     end
 
     it 'shows delete action in dropdown' do
-      expect(rendered).to have_link("Delete")
+      expect(rendered).to have_link('Delete')
     end
   end
 
@@ -41,9 +41,9 @@ RSpec.describe 'hyrax/file_sets/_actions.html.erb', type: :view do
       allow(ability).to receive(:admin?).and_return(false)
       render 'hyrax/file_sets/actions', file_set: file_set
     end
-    
+
     it 'does not show delete action in dropdown' do
-      expect(rendered).not_to have_link("Delete")
+      expect(rendered).not_to have_link('Delete')
     end
   end
 end
