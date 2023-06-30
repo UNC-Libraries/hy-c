@@ -53,7 +53,8 @@ module Tasks
 
           start_time = Time.now
           # Refresh cache
-          usage_class.new(obj_id).to_flot
+          update_individual_record(usage_class, obj_id)
+
           total_time += Time.now - start_time
 
           progress_tracker.add_entry(obj_id)
@@ -74,6 +75,21 @@ module Tasks
 
       # Wait for all threads to finish
       threads.each(&:join)
+    end
+
+    def update_individual_record(usage_class, obj_id)
+      error = nil
+      3.times do |try_counter|
+        begin
+          usage_class.new(obj_id).to_flot
+          return
+        rescue OAuth2::Error => e
+          # retrying
+          error = e
+        end
+      end
+      logger.error("Failed to update record #{obj_id} due to OAuth failure after retries")
+      logger.error [error.class.to_s, error.message, *error.backtrace].join($RS)
     end
 
     def logger
