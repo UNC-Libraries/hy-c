@@ -12,7 +12,7 @@ module Tasks
     def initialize
       @completed_ids = progress_tracker.completed_set
       @per_page = 1000
-      @obj_id_mutex = Mutex.new
+      @report_mutex = Mutex.new
       @num_threads = 6
     end
 
@@ -33,29 +33,37 @@ module Tasks
     end
 
     def update_records(model_name, usage_class)
-      @total_entries = nil
-      @current_cnt = 0
-      @obj_id_queue = Queue.new
-      @completed_obj_type = false
-      @total_time = 0
-      @model_name = model_name
+      @obj_id_queue = ObjectIdQueue.new(model_name, @per_page)
+      @obj_id_queue.enqueue_next_page # populate the first page of results
+      logger.info("Beginning processing of #{model_name}, #{@obj_id_queue.total_entries} items found")
+      total_time = 0
+      cnt = 0
+      batch_start_time = nil
 
       # Array of threads
       threads = []
 
       # Define the work to be done by each thread
       cache_update_proc = Proc.new do
-        obj_id = next_obj_id
+        obj_id = @obj_id_queue.pop
         until obj_id.nil?
+          # skip the object if its already been updated according to the progress tracker
+          next if @completed_ids.include?(obj_id)
+          batch_start_time = Time.now if batch_start_time.nil?
+
           start_time = Time.now
           # Refresh cache
           usage_class.new(obj_id).to_flot
-          @total_time += Time.now - start_time
+          total_time += Time.now - start_time
 
           progress_tracker.add_entry(obj_id)
 
-          # get next id
-          obj_id = next_obj_id
+          @report_mutex.synchronize do
+            cnt += 1
+            logger.info("Progress: #{cnt} of #{@obj_id_queue.total_entries}. Average times per record: Individual #{total_time / cnt}s, total #{(Time.now - batch_start_time) /cnt}s") if cnt % REPORT_EVERY_N == 0
+          end
+          # Get next id
+          obj_id = @obj_id_queue.pop
         end
       end
 
@@ -66,36 +74,6 @@ module Tasks
 
       # Wait for all threads to finish
       threads.each(&:join)
-    end
-
-    def next_obj_id
-      @obj_id_mutex.synchronize do
-        return nil if @completed_obj_type
-
-        if @obj_id_queue.empty?
-          resp = ActiveFedora::SolrService.get("has_model_ssim:#{@model_name}", :rows => @per_page, :start => @current_cnt)["response"]
-          # Record total entries when retrieving the first page of results
-          if @total_entries.nil?
-            @total_entries = resp['numFound']
-            logger.info("Beginning processing of #{@model_name}, #{@total_entries} items found")
-          end
-          
-          records = resp["docs"]
-          # No more items, mark as done to prevent other workers from searching for more ids
-          if records.empty?
-            @completed_obj_type = true
-            return nil
-          end
-          # populate the queue with the next batch of ids
-          records.each do |record|
-            @obj_id_queue << record['id']
-          end
-        end
-
-        @current_cnt += 1
-        logger.info("Progress: #{@current_cnt} of #{@total_entries}, average #{@total_time / @current_cnt}s per record") if @current_cnt % REPORT_EVERY_N == 0
-        @obj_id_queue.pop
-      end
     end
 
     def logger
@@ -109,6 +87,52 @@ module Tasks
       @progress_tracker ||= begin
         tracker_path = File.join(Rails.configuration.log_directory, 'stats_cache_progress.log')
         Migrate::Services::ProgressTracker.new(tracker_path)
+      end
+    end
+
+    class ObjectIdQueue < Queue
+      attr_accessor :total_entries, :current_cnt
+
+      def initialize(model_name, per_page)
+        super()
+        @mutex = Mutex.new
+        @total_entries = nil
+        @completed_obj_type = false
+        @model_name = model_name
+        @next_page_start = 0
+        @per_page = per_page
+      end
+
+      def pop
+        begin
+          return super(true)
+        rescue ThreadError => error
+          # error raised if the queue was empty
+        end
+
+        @mutex.synchronize do
+          enqueue_next_page
+        end
+
+        begin
+          return super(true)
+        rescue ThreadError => error
+          # error raised if the queue was empty
+        end
+      end
+
+      def enqueue_next_page
+        resp = ActiveFedora::SolrService.get("has_model_ssim:#{@model_name}", :rows => @per_page, :start => @next_page_start)["response"]
+        # Record total entries when retrieving the first page of results
+        @total_entries = resp['numFound'] if @total_entries.nil?
+
+        # populate the queue with the next batch of ids
+        resp['docs'].each do |record|
+          self << record['id']
+        end
+
+        # Adjust index of the next page of results to retrieve
+        @next_page_start += @per_page
       end
     end
   end
