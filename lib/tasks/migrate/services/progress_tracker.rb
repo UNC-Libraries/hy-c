@@ -7,12 +7,16 @@ module Migrate
 
       def initialize(filename)
         @filename = filename
+        @write_mutex = Mutex.new
         create_log
       end
 
       def add_entry(entry)
-        File.open(@filename, 'a+') do |file|
-          file.puts(entry)
+        # Prevent multiple threads from writing to the file at the same time
+        @write_mutex.synchronize do
+          File.open(@filename, 'a+') do |file|
+            file.puts(entry)
+          end
         end
       end
 

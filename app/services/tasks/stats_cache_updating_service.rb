@@ -7,11 +7,13 @@ module Tasks
                 'Multimed', 'ScholarlyWork']
     REPORT_EVERY_N = 10
 
-    attr_accessor :per_page
+    attr_accessor :per_page, :num_threads
 
     def initialize
       @completed_ids = progress_tracker.completed_set
       @per_page = 1000
+      @obj_id_mutex = Mutex.new
+      @num_threads = 6
     end
 
     def update_all
@@ -31,32 +33,69 @@ module Tasks
     end
 
     def update_records(model_name, usage_class)
-      total_entries = nil
-      total_time = 0
-      cnt = 0
-      loop do
-        resp = ActiveFedora::SolrService.get("has_model_ssim:#{model_name}", :rows => @per_page, :start => cnt)["response"]
-        total_entries = resp['numFound'] if total_entries.nil?
-        records = resp["docs"]
-        logger.info("Beginning processing of #{model_name}, #{records.length} items found")
+      @total_entries = nil
+      @current_cnt = 0
+      @obj_id_queue = Queue.new
+      @completed_obj_type = false
+      @total_time = 0
+      @model_name = model_name
 
-        records.each do |record|
-          obj_id = record['id']
-          next if @completed_ids.include?(obj_id)
+      # Array of threads
+      threads = []
+
+      # Define the work to be done by each thread
+      cache_update_proc = Proc.new do
+        obj_id = next_obj_id
+        until obj_id.nil?
           start_time = Time.now
           # Refresh cache
           usage_class.new(obj_id).to_flot
-          total_time += Time.now - start_time
+          @total_time += Time.now - start_time
 
           progress_tracker.add_entry(obj_id)
-          cnt += 1
-          average_time = total_time / cnt
-          logger.info("Progress: #{cnt} of #{total_entries}, average #{average_time}s per record") if cnt % REPORT_EVERY_N == 0
+
+          # get next id
+          obj_id = next_obj_id
+        end
+      end
+
+      # Start the threads
+      @num_threads.times do
+        threads << Thread.new(&cache_update_proc)
+      end
+
+      # Wait for all threads to finish
+      threads.each(&:join)
+    end
+
+    def next_obj_id
+      @obj_id_mutex.synchronize do
+        return nil if @completed_obj_type
+
+        if @obj_id_queue.empty?
+          resp = ActiveFedora::SolrService.get("has_model_ssim:#{@model_name}", :rows => @per_page, :start => @current_cnt)["response"]
+          # Record total entries when retrieving the first page of results
+          if @total_entries.nil?
+            @total_entries = resp['numFound']
+            logger.info("Beginning processing of #{@model_name}, #{@total_entries} items found")
+          end
+          
+          records = resp["docs"]
+          # No more items, mark as done to prevent other workers from searching for more ids
+          if records.empty?
+            @completed_obj_type = true
+            return nil
+          end
+          # populate the queue with the next batch of ids
+          records.each do |record|
+            @obj_id_queue << record['id']
+          end
         end
 
-        break if cnt >= total_entries
+        @current_cnt += 1
+        logger.info("Progress: #{@current_cnt} of #{@total_entries}, average #{@total_time / @current_cnt}s per record") if @current_cnt % REPORT_EVERY_N == 0
+        @obj_id_queue.pop
       end
-      
     end
 
     def logger
