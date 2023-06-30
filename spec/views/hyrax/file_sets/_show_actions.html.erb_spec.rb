@@ -24,15 +24,21 @@ RSpec.describe 'hyrax/file_sets/_show_actions.html.erb', type: :view do
     Hyrax::WorkShowPresenter.new(solr_document, ability)
   end
   let(:page) { Capybara::Node::Simple.new(rendered) }
-  before { allow(controller).to receive(:current_ability).and_return(ability) }
+
+  before do
+    allow(controller).to receive(:current_ability).and_return(ability)
+    allow(presenter).to receive(:editor?).and_return(true)
+    allow(view).to receive(:workflow_restriction?).and_return(false)
+    assign(:presenter, presenter)
+  end
 
   context 'as an admin' do
     before do
       allow(ability).to receive(:admin?).and_return(true)
-      assign(:presenter, presenter)
       view.lookup_context.view_paths.push 'app/views/hyrax/base'
       render
     end
+
     it 'shows delete button' do
       expect(page).to have_link("Delete This File")
     end
@@ -41,10 +47,10 @@ RSpec.describe 'hyrax/file_sets/_show_actions.html.erb', type: :view do
   context 'as a regular user' do
     before do
       allow(ability).to receive(:admin?).and_return(false)
-      assign(:presenter, presenter)
       view.lookup_context.view_paths.push 'app/views/hyrax/base'
       render
     end
+    
     it 'does not show delete button' do
       expect(page).not_to have_link("Delete This File")
     end

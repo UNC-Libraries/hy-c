@@ -31,7 +31,7 @@
     <% end %>
 
     <%# [hyc-override] only admins may delete filesets %>
-    <% if @current_ability.admin? %>
+    <% if current_ability.admin? %>
       <li role="menuitem" tabindex="-1">
         <%= link_to t('.delete'), polymorphic_path([main_app, file_set]),
           method: :delete, title: t('.delete_title', file_set: file_set),
