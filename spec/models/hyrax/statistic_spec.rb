@@ -112,6 +112,20 @@ RSpec.describe Hyrax::Statistic, type: :model do
         expect(concrete_stat_class.send(:combined_stats, work, start_date, object_method, ga_key, user_id))
             .to eq :cached_results
       end
+
+      context 'with timeouts set to raise' do
+        around do |example|
+          original = ENV['ANALYTICS_RAISE_TIMEOUTS']
+          ENV['ANALYTICS_RAISE_TIMEOUTS'] = 'true'
+          example.run
+          ENV['ANALYTICS_RAISE_TIMEOUTS'] = original
+        end
+
+        it 'throws the error' do
+          # combined_stats is a private method, so have to call with send
+          expect { concrete_stat_class.send(:combined_stats, work, start_date, object_method, ga_key, user_id) }.to raise_error(Net::ReadTimeout)
+        end
+      end
     end
   end
 end

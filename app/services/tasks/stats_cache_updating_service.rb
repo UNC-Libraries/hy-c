@@ -86,7 +86,7 @@ module Tasks
         begin
           usage_class.new(obj_id).to_flot
           return
-        rescue OAuth2::Error => e
+        rescue OAuth2::Error, Net::ReadTimeout => e
           # retrying
           error = e
         rescue Ldp::Gone => e
@@ -94,7 +94,7 @@ module Tasks
           return
         end
       end
-      logger.error("Failed to update record #{obj_id} due to OAuth failure after retries")
+      logger.error("Failed to update record #{obj_id} after retries")
       logger.error [error.class.to_s, error.message, *error.backtrace].join($RS)
     end
 

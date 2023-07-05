@@ -63,6 +63,8 @@ RSpec.describe Tasks::StatsCacheUpdatingService do
       allow(FileDownloadStat).to receive(:ga_statistics).and_return(file_download_statistics)
       allow(FileViewStat).to receive(:ga_statistics).and_return(file_pageview_statistics)
 
+      allow(Hyrax::VirusCheckerService).to receive(:file_has_virus?) { false }
+
       ActiveFedora::Cleaner.clean!
       Blacklight.default_index.connection.delete_by_query('*:*')
       Blacklight.default_index.connection.commit
@@ -114,6 +116,74 @@ RSpec.describe Tasks::StatsCacheUpdatingService do
         expect(cached_for_fs1_views.length).to eq 0
         cached_for_fs1_downloads = FileDownloadStat.statistics_for(file_set_1).to_a
         expect(cached_for_fs1_downloads.length).to eq 0
+        cached_for_fs2_views = FileViewStat.statistics_for(file_set_2).to_a
+        expect(cached_for_fs2_views.length).to eq 2
+        cached_for_fs2_downloads = FileDownloadStat.statistics_for(file_set_2).to_a
+        expect(cached_for_fs2_downloads.length).to eq 3
+      end
+    end
+
+    context 'timeout the first time getting stats' do
+      around do |example|
+        original = ENV['ANALYTICS_RAISE_TIMEOUTS']
+          ENV['ANALYTICS_RAISE_TIMEOUTS'] = 'true'
+          example.run
+          ENV['ANALYTICS_RAISE_TIMEOUTS'] = original
+      end
+
+      before do
+        general
+        article
+
+        allow(WorkViewStat).to receive(:ga_statistics) do
+          @counter ||= 0
+          @counter += 1
+
+          if @counter == 1
+            raise Net::ReadTimeout, 'Timed out'
+          else
+            sample_work_pageview_statistics
+          end
+        end
+      end
+
+      it 'retries and completes updates of object caches' do
+        subject.update_all
+        # All the normal stats should have been set
+        cached_for_article = WorkViewStat.statistics_for(article).to_a
+        expect(cached_for_article.length).to eq 4
+        cached_for_general = WorkViewStat.statistics_for(general).to_a
+        expect(cached_for_general.length).to eq 4
+        cached_for_fs1_views = FileViewStat.statistics_for(file_set_1).to_a
+        expect(cached_for_fs1_views.length).to eq 2
+        cached_for_fs1_downloads = FileDownloadStat.statistics_for(file_set_1).to_a
+        expect(cached_for_fs1_downloads.length).to eq 3
+        cached_for_fs2_views = FileViewStat.statistics_for(file_set_2).to_a
+        expect(cached_for_fs2_views.length).to eq 2
+        cached_for_fs2_downloads = FileDownloadStat.statistics_for(file_set_2).to_a
+        expect(cached_for_fs2_downloads.length).to eq 3
+      end
+    end
+
+    context 'with deleted object' do
+      before do
+        general
+        article
+
+        General.delete_all
+      end
+
+      it 'skips over deleted object and its filesets' do
+        subject.update_all
+        # verify that previously processed ids did not get cached from this run
+        cached_for_article = WorkViewStat.statistics_for(article).to_a
+        expect(cached_for_article.length).to eq 4
+        cached_for_general = WorkViewStat.statistics_for(general).to_a
+        expect(cached_for_general.length).to eq 0
+        cached_for_fs1_views = FileViewStat.statistics_for(file_set_1).to_a
+        expect(cached_for_fs1_views.length).to eq 2
+        cached_for_fs1_downloads = FileDownloadStat.statistics_for(file_set_1).to_a
+        expect(cached_for_fs1_downloads.length).to eq 3
         cached_for_fs2_views = FileViewStat.statistics_for(file_set_2).to_a
         expect(cached_for_fs2_views.length).to eq 2
         cached_for_fs2_downloads = FileDownloadStat.statistics_for(file_set_2).to_a

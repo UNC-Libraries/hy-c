@@ -6,6 +6,9 @@ namespace 'hyc' do
     eager_load = [Hyrax::Pageview, Hyrax::Download, Hyrax::WorkRelation, Hyrax::WorkUsage, Hyrax::FileUsage,
       Hyrax::WorkUsage::WorkViewStat, Hyrax::FileUsage::FileViewStat, MastersPaper]
     Rails.logger.debug("Eager loading classes: #{eager_load}")
+    # Tell Statistics class to raise timeout errors so we can retry them
+    Hyrax::Statistic.raise_timeouts = true
+
     Tasks::StatsCacheUpdatingService.new.update_all
   end
 end
