@@ -107,10 +107,19 @@ RSpec.describe Hyrax::Statistic, type: :model do
         allow(concrete_stat_class).to receive(:cached_stats).and_return({cached_stats: :cached_results})
       end
 
-      it 'returns cached stats' do
-        # combined_stats is a private method, so have to call with send
-        expect(concrete_stat_class.send(:combined_stats, work, start_date, object_method, ga_key, user_id))
-            .to eq :cached_results
+      context 'with timeout behavior set to default' do
+        around do |example|
+          original = ENV['ANALYTICS_RAISE_TIMEOUTS']
+          ENV.delete('ANALYTICS_RAISE_TIMEOUTS')
+          example.run
+          ENV['ANALYTICS_RAISE_TIMEOUTS'] = original
+        end
+
+        it 'returns cached stats' do
+          # combined_stats is a private method, so have to call with send
+          expect(concrete_stat_class.send(:combined_stats, work, start_date, object_method, ga_key, user_id))
+              .to eq :cached_results
+        end
       end
 
       context 'with timeouts set to raise' do
