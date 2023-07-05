@@ -14,5 +14,6 @@ analytics:
     app_name: <%= ENV['GOOGLE_OAUTH_APP_NAME'] %>
     app_version: <%= ENV['GOOGLE_OAUTH_APP_VERSION'] %>
     privkey_path: <%= ENV['GOOGLE_OAUTH_PRIVATE_KEY_PATH'] %>
+    privkey_value: ""
     privkey_secret: <%= ENV['GOOGLE_OAUTH_PRIVATE_KEY_SECRET'] %>
     client_email: <%= ENV['GOOGLE_OAUTH_CLIENT_EMAIL'] %>
