@@ -89,6 +89,9 @@ module Tasks
         rescue OAuth2::Error => e
           # retrying
           error = e
+        rescue Ldp::Gone => e
+          logger.warn("Skipping #{obj_id}, it no longer exists")
+          return
         end
       end
       logger.error("Failed to update record #{obj_id} due to OAuth failure after retries")

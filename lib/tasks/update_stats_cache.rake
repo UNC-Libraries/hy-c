@@ -9,6 +9,8 @@ namespace 'hyc' do
     Hyrax::WorkUsage
     Hyrax::FileUsage
     Hyrax::WorkUsage::WorkViewStat
+    Hyrax::FileUsage::FileViewStat
+    MastersPaper
     Tasks::StatsCacheUpdatingService.new.update_all
   end
 end
