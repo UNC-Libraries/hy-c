@@ -101,7 +101,7 @@ module Tasks
     def logger
       @logger ||= begin
         log_path = File.join(Rails.configuration.log_directory, 'stats_cache_output.log')
-        Logger.new(log_path, progname: "stats cache")
+        Logger.new(log_path, progname: 'stats cache')
       end
     end
 
@@ -144,7 +144,7 @@ module Tasks
       end
 
       def enqueue_next_page
-        resp = ActiveFedora::SolrService.get("has_model_ssim:#{@model_name}", :rows => @per_page, :start => @next_page_start)["response"]
+        resp = ActiveFedora::SolrService.get("has_model_ssim:#{@model_name}", rows: @per_page, start: @next_page_start)['response']
         # Record total entries when retrieving the first page of results
         @total_entries = resp['numFound'] if @total_entries.nil?
 

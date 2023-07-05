@@ -1,25 +1,27 @@
 # frozen_string_literal: true
 require 'rails_helper'
 
-RSpec.describe Tasks::StatsCacheUpdatingService do  
+RSpec.describe Tasks::StatsCacheUpdatingService do
   describe '#update_all' do
     let(:general) do
       General.create(title: ['new general'],
                     date_created: (Time.zone.today - 40.days).to_s)
     end
     let(:file_set_1) { FactoryBot.create(:file_set, :with_original_file,
-                                         date_created: (Time.zone.today - 40.days).to_s)}
+                                         date_created: (Time.zone.today - 40.days).to_s)
+    }
     let(:file_set_2) { FactoryBot.create(:file_set, :with_original_file,
-                                         date_created: (Time.zone.today - 39.days).to_s)}
-    
+                                         date_created: (Time.zone.today - 39.days).to_s)
+    }
+
     let(:article) do
-        Article.create(title: ['new article'],
-                    date_issued: 'May 2020',
-                    date_created: (Time.zone.today - 30.days).to_s,
-                    resource_type: ['Article'],
-                    abstract: ['a description'],
-                    language: ['http://id.loc.gov/vocabulary/iso639-2/eng'],
-                    rights_statement: 'http://rightsstatements.org/vocab/InC/1.0/')
+      Article.create(title: ['new article'],
+                  date_issued: 'May 2020',
+                  date_created: (Time.zone.today - 30.days).to_s,
+                  resource_type: ['Article'],
+                  abstract: ['a description'],
+                  language: ['http://id.loc.gov/vocabulary/iso639-2/eng'],
+                  rights_statement: 'http://rightsstatements.org/vocab/InC/1.0/')
     end
 
     let(:dates) do
@@ -28,7 +30,7 @@ RSpec.describe Tasks::StatsCacheUpdatingService do
       ldates
     end
     let(:date_strs) do
-      dates.map { |date| date.strftime("%Y%m%d") }
+      dates.map { |date| date.strftime('%Y%m%d') }
     end
 
     let(:sample_work_pageview_statistics) do
@@ -42,9 +44,9 @@ RSpec.describe Tasks::StatsCacheUpdatingService do
 
     let(:file_download_statistics) do
       [
-        SpecStatistic.new(eventCategory: "Files", eventAction: "Downloaded", eventLabel: "hyrax:x920fw85p", date: date_strs[0], totalEvents: "1"),
-        SpecStatistic.new(eventCategory: "Files", eventAction: "Downloaded", eventLabel: "hyrax:x920fw85p", date: date_strs[1], totalEvents: "1"),
-        SpecStatistic.new(eventCategory: "Files", eventAction: "Downloaded", eventLabel: "hyrax:x920fw85p", date: date_strs[3], totalEvents: "3")
+        SpecStatistic.new(eventCategory: 'Files', eventAction: 'Downloaded', eventLabel: 'hyrax:x920fw85p', date: date_strs[0], totalEvents: '1'),
+        SpecStatistic.new(eventCategory: 'Files', eventAction: 'Downloaded', eventLabel: 'hyrax:x920fw85p', date: date_strs[1], totalEvents: '1'),
+        SpecStatistic.new(eventCategory: 'Files', eventAction: 'Downloaded', eventLabel: 'hyrax:x920fw85p', date: date_strs[3], totalEvents: '3')
       ]
     end
 
@@ -74,7 +76,7 @@ RSpec.describe Tasks::StatsCacheUpdatingService do
       article
 
       subject.per_page = 1
-      
+
       subject.update_all
       # verify that cache tables are populated
       cached_for_article = WorkViewStat.statistics_for(article).to_a
@@ -89,6 +91,34 @@ RSpec.describe Tasks::StatsCacheUpdatingService do
       expect(cached_for_fs2_views.length).to eq 2
       cached_for_fs2_downloads = FileDownloadStat.statistics_for(file_set_2).to_a
       expect(cached_for_fs2_downloads.length).to eq 3
+    end
+
+    context 'with previously completed ids' do
+      before do
+        general
+        article
+        tracker_path = File.join(Rails.configuration.log_directory, 'stats_cache_progress.log')
+        tracker = Migrate::Services::ProgressTracker.new(tracker_path)
+        tracker.add_entry(general.id)
+        tracker.add_entry(file_set_1.id)
+      end
+
+      it 'skips over completed ids' do
+        subject.update_all
+        # verify that previously processed ids did not get cached from this run
+        cached_for_article = WorkViewStat.statistics_for(article).to_a
+        expect(cached_for_article.length).to eq 4
+        cached_for_general = WorkViewStat.statistics_for(general).to_a
+        expect(cached_for_general.length).to eq 0
+        cached_for_fs1_views = FileViewStat.statistics_for(file_set_1).to_a
+        expect(cached_for_fs1_views.length).to eq 0
+        cached_for_fs1_downloads = FileDownloadStat.statistics_for(file_set_1).to_a
+        expect(cached_for_fs1_downloads.length).to eq 0
+        cached_for_fs2_views = FileViewStat.statistics_for(file_set_2).to_a
+        expect(cached_for_fs2_views.length).to eq 2
+        cached_for_fs2_downloads = FileDownloadStat.statistics_for(file_set_2).to_a
+        expect(cached_for_fs2_downloads.length).to eq 3
+      end
     end
   end
 
