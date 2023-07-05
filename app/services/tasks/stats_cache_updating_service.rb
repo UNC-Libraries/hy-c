@@ -48,7 +48,10 @@ module Tasks
         obj_id = @obj_id_queue.pop
         until obj_id.nil?
           # skip the object if its already been updated according to the progress tracker
-          next if @completed_ids.include?(obj_id)
+          if @completed_ids.include?(obj_id)
+            obj_id = @obj_id_queue.pop
+            next
+          end
           batch_start_time = Time.now if batch_start_time.nil?
 
           start_time = Time.now
