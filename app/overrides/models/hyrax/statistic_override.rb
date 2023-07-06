@@ -5,7 +5,11 @@ Hyrax::Statistic.class_eval do
     # [hyc-override]
     # Flag indicating if ReadTimeouts should be raised or suppressed
     def raise_timeouts?
-      @raise_timeouts ||= ENV['ANALYTICS_RAISE_TIMEOUTS'].to_s.downcase == 'true'
+      @@raise_timeouts ||= ENV['ANALYTICS_RAISE_TIMEOUTS'].to_s.downcase == 'true'
+    end
+
+    def raise_timeouts=(value)
+      @@raise_timeouts = value
     end
 
     # [hyc-override] add old id to filter query if work was migrated

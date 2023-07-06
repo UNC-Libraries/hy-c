@@ -103,6 +103,8 @@ RSpec.describe Hyrax::Statistic, type: :model do
 
     context 'timeout encountered' do
       before do
+        # Clear the cached value between runs, since it is a class variable
+        concrete_stat_class.raise_timeouts = nil
         allow(concrete_stat_class).to receive(:original_combined_stats).and_raise(Net::ReadTimeout)
         allow(concrete_stat_class).to receive(:cached_stats).and_return({cached_stats: :cached_results})
       end

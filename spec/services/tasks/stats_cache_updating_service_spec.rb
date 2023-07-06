@@ -125,10 +125,13 @@ RSpec.describe Tasks::StatsCacheUpdatingService do
 
     context 'timeout the first time getting stats' do
       around do |example|
+        WorkViewStat.raise_timeouts = nil
+        FileViewStat.raise_timeouts = nil
+        FileDownloadStat.raise_timeouts = nil
         original = ENV['ANALYTICS_RAISE_TIMEOUTS']
-          ENV['ANALYTICS_RAISE_TIMEOUTS'] = 'true'
-          example.run
-          ENV['ANALYTICS_RAISE_TIMEOUTS'] = original
+        ENV['ANALYTICS_RAISE_TIMEOUTS'] = 'true'
+        example.run
+        ENV['ANALYTICS_RAISE_TIMEOUTS'] = original
       end
 
       before do

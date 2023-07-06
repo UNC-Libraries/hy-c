@@ -86,12 +86,13 @@ module Tasks
         begin
           usage_class.new(obj_id).to_flot
           return
-        rescue OAuth2::Error, Net::ReadTimeout => e
-          # retrying
-          error = e
         rescue Ldp::Gone => e
           logger.warn("Skipping #{obj_id}, it no longer exists")
           return
+        rescue StandardError => e
+          # retrying after a short delay
+          sleep(1.second)
+          error = e
         end
       end
       logger.error("Failed to update record #{obj_id} after retries")
