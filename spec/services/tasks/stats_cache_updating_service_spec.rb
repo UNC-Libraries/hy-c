@@ -65,6 +65,8 @@ RSpec.describe Tasks::StatsCacheUpdatingService do
 
       allow(Hyrax::VirusCheckerService).to receive(:file_has_virus?) { false }
 
+      subject.failure_delay = 0
+
       ActiveFedora::Cleaner.clean!
       Blacklight.default_index.connection.delete_by_query('*:*')
       Blacklight.default_index.connection.commit

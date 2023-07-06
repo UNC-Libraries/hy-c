@@ -7,13 +7,13 @@ module Tasks
                 'Multimed', 'ScholarlyWork']
     REPORT_EVERY_N = 10
 
-    attr_accessor :per_page, :num_threads
+    attr_accessor :per_page, :num_threads, :failure_delay
 
     def initialize
-      @completed_ids = progress_tracker.completed_set
       @per_page = 1000
       @report_mutex = Mutex.new
       @num_threads = 6
+      @failure_delay = 30
     end
 
     def update_all
@@ -32,12 +32,17 @@ module Tasks
       update_records('FileSet', Hyrax::FileUsage)
     end
 
+    def completed_ids
+      @completed_ids ||= progress_tracker.completed_set
+    end
+
     def update_records(model_name, usage_class)
       @obj_id_queue = ObjectIdQueue.new(model_name, @per_page)
       @obj_id_queue.enqueue_next_page # populate the first page of results
       logger.info("Beginning processing of #{model_name}, #{@obj_id_queue.total_entries} items found")
       total_time = 0
       cnt = 0
+      skipped_cnt = 0
       batch_start_time = nil
 
       # Array of threads
@@ -48,8 +53,9 @@ module Tasks
         obj_id = @obj_id_queue.pop
         until obj_id.nil?
           # skip the object if its already been updated according to the progress tracker
-          if @completed_ids.include?(obj_id)
+          if completed_ids.include?(obj_id)
             obj_id = @obj_id_queue.pop
+            skipped_cnt += 1
             next
           end
           batch_start_time = Time.now if batch_start_time.nil?
@@ -64,7 +70,9 @@ module Tasks
 
           @report_mutex.synchronize do
             cnt += 1
-            logger.info("Progress: #{cnt} of #{@obj_id_queue.total_entries}. Average times per record: Individual #{total_time / cnt}s, total #{(Time.now - batch_start_time) /cnt}s") if cnt % REPORT_EVERY_N == 0
+            logger.info("Progress: #{cnt + skipped_cnt} of #{@obj_id_queue.total_entries}." \
+              " Average times per record: Individual #{total_time / cnt}s," \
+              " total #{(Time.now - batch_start_time) /cnt}s") if cnt % REPORT_EVERY_N == 0
           end
           # Get next id
           obj_id = @obj_id_queue.pop
@@ -91,7 +99,8 @@ module Tasks
           return
         rescue StandardError => e
           # retrying after a short delay
-          sleep(1.second)
+          logger.warn("Failed to update record #{obj_id}: #{e.message}")
+          sleep(@failure_delay.second)
           error = e
         end
       end
