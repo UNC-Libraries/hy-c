@@ -5,10 +5,10 @@ require Rails.root.join('app/overrides/controllers/hyrax/file_sets_controller_ov
 RSpec.describe Hyrax::FileSetsController do
   let(:user) { FactoryBot.create(:user) }
   let(:admin_user) { FactoryBot.create(:admin) }
-  routes { Hyrax::Engine.routes }
+  routes { Rails.application.routes }
 
   describe '#destroy' do
-    let(:file_set) { FactoryBot.create(:file_set, :public, user: user)}
+    let(:file_set) { FactoryBot.create(:file_set, :public, :with_original_file, user: user) }
     let(:work) { FactoryBot.create(:work, title: ['test title'], user: user) }
 
     before do
@@ -22,14 +22,10 @@ RSpec.describe Hyrax::FileSetsController do
       end
 
       it 'is not successful' do
-        expect { delete :destroy, params: { id: file_set } }
-            .to change { FileSet.exists?(file_set.id) }
-            .from(true)
-            .to(false)
-
-        expect(response).to redirect_to main_app.hyrax_generic_work_path(work, locale: 'en')
-        # delete :destroy, params: { id: file_set }
-        # expect(response.status).to eq 401
+        delete :destroy, params: { id: file_set }
+        expect(response).to redirect_to '/?locale=en'
+        expect(flash[:alert]).to eq 'You are not authorized to access this page.'
+        expect(response.status).to eq 302
       end
     end
 
@@ -41,18 +37,21 @@ RSpec.describe Hyrax::FileSetsController do
       end
 
       it 'is successful' do
-        delete :destroy, params: { id: file_set }
-        expect(response).to redirect_to '/dashboard/my/works?locale=en'
-        expect(flash[:notice]).to eq "Deleted #{file_set.title.first}"
-        expect(response).to be_successful
+        expect { delete :destroy, params: { id: file_set } }
+            .to change { FileSet.exists?(file_set.id) }
+            .from(true)
+            .to(false)
+        expect(response).to redirect_to '/concern/generals/' + work.id + '?locale=en'
+        expect(flash[:notice]).to eq 'The file has been deleted.'
+        expect(response.status).to eq 302
       end
     end
 
     context 'as an unauthenticated user' do
       it 'is not successful' do
         delete :destroy, params: { id: file_set }
-        expect(response.status).to redirect_to '/users/sign_in?locale=en'
-        expect(flash[:alert]).to eq 'You are not authorized to access this page.'
+        expect(response.status).to redirect_to '/users/sign_in'
+        expect(flash[:alert]).to eq 'You need to sign in or sign up before continuing.'
       end
     end
   end
