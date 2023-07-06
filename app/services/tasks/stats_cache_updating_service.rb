@@ -12,8 +12,9 @@ module Tasks
     def initialize
       @per_page = 1000
       @report_mutex = Mutex.new
+      @fail_wait_mutex = Mutex.new
       @num_threads = 6
-      @failure_delay = 30
+      @failure_delay = 60
     end
 
     def update_all
@@ -58,16 +59,17 @@ module Tasks
             skipped_cnt += 1
             next
           end
-          batch_start_time = Time.now if batch_start_time.nil?
 
+          batch_start_time = Time.now if batch_start_time.nil?
           start_time = Time.now
+
           # Refresh cache
+          await_failure_delay
           update_individual_record(usage_class, obj_id)
 
           total_time += Time.now - start_time
-
           progress_tracker.add_entry(obj_id)
-
+          # Synchronize for reporting so we don't skip over any numbers a miss a report
           @report_mutex.synchronize do
             cnt += 1
             logger.info("Progress: #{cnt + skipped_cnt} of #{@obj_id_queue.total_entries}." \
@@ -88,9 +90,16 @@ module Tasks
       threads.each(&:join)
     end
 
+    # Makes the current thread wait until a delay caused by a failed request to GA completes
+    def await_failure_delay
+      while @fail_wait_mutex.locked?
+        sleep(1.second)
+      end
+    end
+
     def update_individual_record(usage_class, obj_id)
       error = nil
-      3.times do |try_counter|
+      2.times do |try_counter|
         begin
           usage_class.new(obj_id).to_flot
           return
@@ -100,7 +109,10 @@ module Tasks
         rescue StandardError => e
           # retrying after a short delay
           logger.warn("Failed to update record #{obj_id}: #{e.message}")
+          # Start a lock to prevent other update requests from starting until the delay has completed
+          @fail_wait_mutex.lock
           sleep(@failure_delay.second)
+          @fail_wait_mutex.unlock
           error = e
         end
       end
