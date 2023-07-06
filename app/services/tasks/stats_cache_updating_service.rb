@@ -65,10 +65,10 @@ module Tasks
 
           # Refresh cache
           await_failure_delay
-          update_individual_record(usage_class, obj_id)
+          completed = update_individual_record(usage_class, obj_id)
 
           total_time += Time.now - start_time
-          progress_tracker.add_entry(obj_id)
+          progress_tracker.add_entry(obj_id) if completed
           # Synchronize for reporting so we don't skip over any numbers a miss a report
           @report_mutex.synchronize do
             cnt += 1
@@ -102,10 +102,10 @@ module Tasks
       2.times do |try_counter|
         begin
           usage_class.new(obj_id).to_flot
-          return
+          return true
         rescue Ldp::Gone => e
           logger.warn("Skipping #{obj_id}, it no longer exists")
-          return
+          return true
         rescue StandardError => e
           # retrying after a short delay
           logger.warn("Failed to update record #{obj_id}: #{e.message}")
@@ -118,6 +118,7 @@ module Tasks
       end
       logger.error("Failed to update record #{obj_id} after retries")
       logger.error [error.class.to_s, error.message, *error.backtrace].join($RS)
+      false
     end
 
     def logger
