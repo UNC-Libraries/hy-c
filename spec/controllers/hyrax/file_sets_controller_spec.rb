@@ -12,9 +12,9 @@ RSpec.describe Hyrax::FileSetsController do
     let(:work) { FactoryBot.create(:work, title: ['test title'], user: user) }
 
     before do
+      allow(Hyrax::VirusCheckerService).to receive(:file_has_virus?) { false }
       work.ordered_members << file_set
       work.save!
-      allow(Hyrax::VirusCheckerService).to receive(:infected?) { false }
     end
 
     context 'as a non-admin' do
