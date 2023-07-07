@@ -14,7 +14,7 @@ RSpec.describe Hyrax::FileSetsController do
     before do
       work.ordered_members << file_set
       work.save!
-      allow(Hyrax::VirusCheckerService).to receive(:file_has_virus?) { false }
+      allow(Hyrax::VirusCheckerService).to receive(:infected?) { false }
     end
 
     context 'as a non-admin' do
