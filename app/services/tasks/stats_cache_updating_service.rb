@@ -42,8 +42,8 @@ module Tasks
       @obj_id_queue.enqueue_next_page # populate the first page of results
       logger.info("Beginning processing of #{model_name}, #{@obj_id_queue.total_entries} items found")
       total_time = 0
-      cnt = 0
-      skipped_cnt = 0
+      count = 0
+      skipped_count = 0
       batch_start_time = nil
 
       # Array of threads
@@ -51,30 +51,32 @@ module Tasks
 
       # Define the work to be done by each thread
       cache_update_proc = Proc.new do
+        batch_start_time = Time.now
         obj_id = @obj_id_queue.pop
         until obj_id.nil?
           # skip the object if its already been updated according to the progress tracker
           if completed_ids.include?(obj_id)
             obj_id = @obj_id_queue.pop
-            skipped_cnt += 1
+            skipped_count += 1
             next
           end
 
-          batch_start_time = Time.now if batch_start_time.nil?
-          start_time = Time.now
-
-          # Refresh cache
           await_failure_delay
+          # Refresh cache
+          start_time = Time.now
           completed = update_individual_record(usage_class, obj_id)
-
           total_time += Time.now - start_time
+
           progress_tracker.add_entry(obj_id) if completed
           # Synchronize for reporting so we don't skip over any numbers a miss a report
           @report_mutex.synchronize do
-            cnt += 1
-            logger.info("Progress: #{cnt + skipped_cnt} of #{@obj_id_queue.total_entries}." \
-              " Average times per record: Individual #{total_time / cnt}s," \
-              " total #{(Time.now - batch_start_time) /cnt}s") if cnt % REPORT_EVERY_N == 0
+            count += 1
+            if count % REPORT_EVERY_N == 0
+              logger.info("Progress: #{count + skipped_count} of #{@obj_id_queue.total_entries}." \
+                " Average times per record: Individual #{total_time / count}s," \
+                " batch #{(Time.now - batch_start_time) / REPORT_EVERY_N}s")
+              batch_start_time = Time.now
+            end
           end
           # Get next id
           obj_id = @obj_id_queue.pop
@@ -99,7 +101,8 @@ module Tasks
 
     def update_individual_record(usage_class, obj_id)
       error = nil
-      2.times do |try_counter|
+      num_tries = 3
+      num_tries.times do |try_counter|
         begin
           usage_class.new(obj_id).to_flot
           return true
@@ -107,18 +110,32 @@ module Tasks
           logger.warn("Skipping #{obj_id}, it no longer exists")
           return true
         rescue StandardError => e
-          # retrying after a short delay
+          # retrying after a delay, unless we are out of retries
           logger.warn("Failed to update record #{obj_id}: #{e.message}")
-          # Start a lock to prevent other update requests from starting until the delay has completed
-          @fail_wait_mutex.lock
-          sleep(@failure_delay.second)
-          @fail_wait_mutex.unlock
+          delay_after_error(e) if try_counter < (num_tries - 1)
           error = e
         end
       end
       logger.error("Failed to update record #{obj_id} after retries")
       logger.error [error.class.to_s, error.message, *error.backtrace].join($RS)
       false
+    end
+
+    def delay_after_error(e)
+      end_time = Time.now + @failure_delay.second
+      # Too many requests for the day, so delay until the next day
+      if e.message.include?('exceeded the daily request limit')
+        # Delay until the next midnight west coast time, either today or the next day depending on current time
+        end_time = Time.parse('3am')
+        end_time += 24.hours if Time.now >= end_time
+      elsif e.message.include?('blocked from the reporting API for at least an hour')
+        end_time = Time.now + 60.minutes
+      end
+      # Start a lock to prevent other update requests from starting until the delay has completed
+      @fail_wait_mutex.lock
+      # Delay until end time, unless that time has already passed while waiting for the lock
+      sleep(end_time - Time.now) if Time.now < end_time
+      @fail_wait_mutex.unlock
     end
 
     def logger
@@ -136,7 +153,7 @@ module Tasks
     end
 
     class ObjectIdQueue < Queue
-      attr_accessor :total_entries, :current_cnt
+      attr_accessor :total_entries, :current_count
 
       def initialize(model_name, per_page)
         super()
