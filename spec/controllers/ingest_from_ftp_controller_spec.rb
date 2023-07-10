@@ -150,4 +150,38 @@ RSpec.describe IngestFromFtpController, type: :controller do
       end
     end
   end
+
+  describe 'POST #delete_packages' do
+    context 'as an admin' do
+      before do
+        allow(controller).to receive(:authorize!).with(:read, :admin_dashboard).and_return(true)
+        allow(controller).to receive(:current_user).and_return(user)
+      end
+
+      it 'deletes a proquest ingest job and returns to the same page' do
+        post :delete_packages, params: { source: 'proquest', filename: 'etdadmin_upload_3806.zip'}, session: valid_session
+        expect(response).to redirect_to(ingest_from_ftp_status_path(source: 'proquest'))
+
+        package_results = subject.instance_variable_get('@package_results')
+        expect(package_results.length).to eq 1
+        expect(package_results[0][:filename]).to eq 'etdadmin_upload_942402.zip'
+      end
+
+      it 'deletes a sage ingest job and returns to the same page' do
+        post :delete_packages, params: { source: 'sage', filename: '1177_01605976231158397.zip'}, session: valid_session
+        expect(response).to redirect_to(ingest_from_ftp_status_path(source: 'sage'))
+
+        package_results = subject.instance_variable_get('@package_results')
+        expect(package_results.length).to eq 1
+        expect(package_results[1][:filename]).to eq 'JPX_2021_8_10.1177_23743735211067313.r2022-01-21.zip'
+      end
+    end
+
+    context 'as a non-admin' do
+      it 'returns an unauthorized response' do
+        post :delete_packages, params: {}, session: valid_session
+        expect(response).to redirect_to new_user_session_path
+      end
+    end
+  end
 end
