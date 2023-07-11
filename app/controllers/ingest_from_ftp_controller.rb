@@ -32,6 +32,17 @@ class IngestFromFtpController < ApplicationController
     @status_results = statuses.sort.to_h
   end
 
+  def delete_packages
+    filenames_to_delete = params[:filenames_to_delete]
+    package_paths = list_package_files
+    package_paths.each do |package_path|
+      if filenames_to_delete.any? { |filename| package_path.include?(filename) }
+        File.delete(package_path)
+      end
+    end
+    redirect_to ingest_from_ftp_status_path(source: @source)
+  end
+
   private
 
   def list_package_files

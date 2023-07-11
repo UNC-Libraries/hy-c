@@ -159,21 +159,32 @@ RSpec.describe IngestFromFtpController, type: :controller do
       end
 
       it 'deletes a proquest ingest job and returns to the same page' do
-        post :delete_packages, params: { source: 'proquest', filename: 'etdadmin_upload_3806.zip'}, session: valid_session
+        filenames_to_delete = ['etdadmin_upload_3806.zip']
+        post :delete_packages, params: { source: 'proquest', filenames_to_delete: filenames_to_delete }, session: valid_session
         expect(response).to redirect_to(ingest_from_ftp_status_path(source: 'proquest'))
 
-        package_results = subject.instance_variable_get('@package_results')
-        expect(package_results.length).to eq 1
-        expect(package_results[0][:filename]).to eq 'etdadmin_upload_942402.zip'
+        package_filepaths = Dir[File.join(proquest_dir.to_s, '*.zip')]
+        expect(package_filepaths.length).to eq 1
+        expect(deleted_files_exist?(package_filepaths, filenames_to_delete)).to eq false
       end
 
       it 'deletes a sage ingest job and returns to the same page' do
-        post :delete_packages, params: { source: 'sage', filename: '1177_01605976231158397.zip'}, session: valid_session
+        filenames_to_delete = ['1177_01605976231158397.zip']
+        post :delete_packages, params: { source: 'sage', filenames_to_delete: filenames_to_delete }, session: valid_session
         expect(response).to redirect_to(ingest_from_ftp_status_path(source: 'sage'))
 
-        package_results = subject.instance_variable_get('@package_results')
-        expect(package_results.length).to eq 1
-        expect(package_results[1][:filename]).to eq 'JPX_2021_8_10.1177_23743735211067313.r2022-01-21.zip'
+        package_filepaths = Dir[File.join(sage_dir.to_s, '*.zip')]
+        expect(package_filepaths.length).to eq 1
+        expect(deleted_files_exist?(package_filepaths, filenames_to_delete)).to eq false
+      end
+
+      it 'deletes an array of packages and returns to the same page' do
+        post :delete_packages, params: { source: 'proquest', filenames_to_delete: ['etdadmin_upload_3806.zip', 'etdadmin_upload_942402.zip']},
+          session: valid_session
+        expect(response).to redirect_to(ingest_from_ftp_status_path(source: 'proquest'))
+
+        package_filepaths = Dir[File.join(proquest_dir.to_s, '*.zip')]
+        expect(package_filepaths.empty?).to eq true
       end
     end
 
@@ -182,6 +193,11 @@ RSpec.describe IngestFromFtpController, type: :controller do
         post :delete_packages, params: {}, session: valid_session
         expect(response).to redirect_to new_user_session_path
       end
+    end
+
+    def deleted_files_exist?(filename_array, deleted_filenames)
+      existing_filenames = filename_array.map { |path| path.split('/').last }
+      existing_filenames.intersection(deleted_filenames).present?
     end
   end
 end

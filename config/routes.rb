@@ -18,6 +18,7 @@ Rails.application.routes.draw do
   get 'ingest_from_ftp', to: 'ingest_from_ftp#list_packages', controller: 'ingest_from_ftp'
   post 'ingest_from_ftp', to: 'ingest_from_ftp#ingest_packages', controller: 'ingest_from_ftp'
   get 'ingest_from_ftp_status', to: 'ingest_from_ftp#view_status', controller: 'ingest_from_ftp'
+  post 'delete_from_ftp', to: 'ingest_from_ftp#delete_packages', controller: 'ingest_from_ftp'
 
   concern :oai_provider, BlacklightOaiProvider::Routes.new
 
