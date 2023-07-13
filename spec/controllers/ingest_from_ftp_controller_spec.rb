@@ -186,6 +186,13 @@ RSpec.describe IngestFromFtpController, type: :controller do
         package_filepaths = Dir[File.join(proquest_dir.to_s, '*.zip')]
         expect(package_filepaths.empty?).to eq true
       end
+
+      it 'returns to same page with alert if no packages were chosen' do
+        post :delete_packages, params: { source: 'proquest', filenames_to_delete: []},
+          session: valid_session
+        expect(response).to redirect_to(ingest_from_ftp_path(source: 'proquest'))
+        expect(flash[:alert]).to be_present
+      end
     end
 
     context 'as a non-admin' do
