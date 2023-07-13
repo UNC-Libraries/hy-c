@@ -40,7 +40,7 @@ class IngestFromFtpController < ApplicationController
         File.delete(package_path)
       end
     end
-    redirect_to ingest_from_ftp_status_path(source: @source)
+    redirect_to ingest_from_ftp_path(source: @source)
   end
 
   private
