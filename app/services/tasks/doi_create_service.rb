@@ -160,7 +160,8 @@ module Tasks
 
     def publication_year(work)
       date_issued = parse_field(work, 'date_issued')
-      year_match = Array.wrap(date_issued).first.to_s.match(/[0-9x]{4}/)
+      date_issued = date_issued.class == ActiveTriples::Relation ? date_issued.to_a : Array.wrap(date_issued)
+      year_match = date_issued.first.to_s.match(/[0-9x]{4}/)
       if year_match.nil?
         puts "#{get_time} Invalid date_issued '#{date_issued}' for record #{work.id}, falling back to create_date"
         work.create_date.year.to_s
