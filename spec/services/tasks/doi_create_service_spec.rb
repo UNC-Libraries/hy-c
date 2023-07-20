@@ -210,6 +210,22 @@ RSpec.describe Tasks::DoiCreateService do
         expect(JSON.parse(result)['data']['attributes']['rightsList']['rightsUri']).to eq 'http://rightsstatements.org/vocab/InC/1.0/'
       end
     end
+
+    context 'for a general with date_issued as an array' do
+      let(:general) do
+        General.create(title: ['new general date issued array'],
+                    date_issued: ['2023-07-12'],
+                    rights_statement: 'http://rightsstatements.org/vocab/InC/1.0/')
+      end
+
+      it 'includes a valid publication year ' do
+        result = described_class.new.format_data(general)
+        expect(JSON.parse(result)['data']['attributes']['titles']).to match_array [{ 'title' => 'new general date issued array' }]
+        expect(JSON.parse(result)['data']['attributes']['publicationYear']).to eq '2023'
+        expect(JSON.parse(result)['data']['attributes']['rightsList']['rights']).to eq 'In Copyright'
+        expect(JSON.parse(result)['data']['attributes']['rightsList']['rightsUri']).to eq 'http://rightsstatements.org/vocab/InC/1.0/'
+      end
+    end
   end
 
   describe '#create_doi' do
