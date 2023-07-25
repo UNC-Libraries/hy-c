@@ -58,10 +58,14 @@ module Tasks
     end
 
     def process_all_packages
-      logger.info("Beginning ingest of #{count} #{ingest_source} packages")
-      @status_service.initialize_statuses(package_paths)
+      process_packages(package_paths)
+    end
 
-      package_paths.each do |package_path|
+    def process_packages(file_paths)
+      logger.info("Beginning ingest of #{file_paths.count} #{ingest_source} packages")
+      @status_service.initialize_statuses(file_paths)
+
+      file_paths.each do |package_path|
         begin
           @status_service.status_in_progress(package_path)
           process_package(package_path)
@@ -75,6 +79,7 @@ module Tasks
       logger.info("Completing ingest of #{ingest_source} packages.")
     end
 
+    # the paths of all the packages in the ingest directory
     def package_paths
       # sort zip files for tests
       @package_paths ||= Dir.glob("#{@package_dir}/*.zip").sort
