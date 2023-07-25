@@ -7,7 +7,7 @@ RSpec.describe Hyrax::Workflow::WorkflowActionService do
   let(:comment) { 'I approve' }
   let(:work) { double }
   let(:service) { Hyrax::Workflow::WorkflowActionService.new(subject: workflow_subject, action: action, comment: comment) }
-  
+
   before do
     allow(workflow_subject).to receive(:work).and_return(work)
     allow(work).to receive(:id).and_return('99')
@@ -42,6 +42,4 @@ RSpec.describe Hyrax::Workflow::WorkflowActionService do
       end
     end
   end
-
-
 end
