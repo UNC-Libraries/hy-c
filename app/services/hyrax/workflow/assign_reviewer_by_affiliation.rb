@@ -16,12 +16,15 @@ module Hyrax::Workflow::AssignReviewerByAffiliation
                                                   agents: [reviewer],
                                                   roles: ['viewing'],
                                                   workflow: workflow)
+        group_name = "#{department}_reviewer"
+        # This grants read access to the Fedora object.
+        target.update permissions_attributes: [{ name: group_name, type: 'group', access: 'read' }]
 
         notify_reviewers(target,
                          target.id,
-                         "#{department}_reviewer",
+                         group_name,
                          'group',
--                        'read')
+                         'read')
       end
     end
   end
