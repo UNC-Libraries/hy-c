@@ -92,7 +92,7 @@ RSpec.describe Tasks::SageIngestService, :sage, :ingest do
 
         it 'creates the work as if it were new' do
           work_id = nil
-          expect { work_id = service.process_package("spec/fixtures/sage/revisions/both_changed/#{package_name}", 0) }
+          expect { work_id = service.process_package("spec/fixtures/sage/revisions/both_changed/#{package_name}") }
               .to change { Article.count }.by(1)
               .and change { FileSet.count }.by(2)
           work = ActiveFedora::Base.find(work_id)
@@ -110,7 +110,7 @@ RSpec.describe Tasks::SageIngestService, :sage, :ingest do
 
         it 'adds new filesets to the existing work, and sets warnings' do
           work_id = work.id
-          expect { service.process_package("spec/fixtures/sage/revisions/both_changed/#{package_name}", 0) }
+          expect { service.process_package("spec/fixtures/sage/revisions/both_changed/#{package_name}") }
               .to change { Article.count }.by(0)
               .and change { FileSet.count }.by(2)
           work = ActiveFedora::Base.find(work_id)
@@ -131,7 +131,7 @@ RSpec.describe Tasks::SageIngestService, :sage, :ingest do
 
       context 'with existing work' do
         before do
-          @work_id = service.process_package('spec/fixtures/sage/revisions/new/ASU_2022_88_10_10.1177_00031348221074228.zip', 0)
+          @work_id = service.process_package('spec/fixtures/sage/revisions/new/ASU_2022_88_10_10.1177_00031348221074228.zip')
         end
 
         context 'revision indicating xml changed' do
@@ -147,7 +147,7 @@ RSpec.describe Tasks::SageIngestService, :sage, :ingest do
             pdf_fs = file_sets.detect { |fs| fs.label.end_with?('.pdf') }
             pdf_date_modified = pdf_fs.date_modified
 
-            expect { service.process_package('spec/fixtures/sage/revisions/metadata_changed/ASU_2022_88_10_10.1177_00031348221074228.r2022-12-19.zip', 0) }
+            expect { service.process_package('spec/fixtures/sage/revisions/metadata_changed/ASU_2022_88_10_10.1177_00031348221074228.r2022-12-19.zip') }
                 .to change { Article.count }.by(0)
                 .and change { FileSet.count }.by(0)
             work = ActiveFedora::Base.find(@work_id)
@@ -172,7 +172,7 @@ RSpec.describe Tasks::SageIngestService, :sage, :ingest do
             pdf_fs = file_sets.detect { |fs| fs.label.end_with?('.pdf') }
             pdf_date_modified = pdf_fs.date_modified
 
-            expect { service.process_package('spec/fixtures/sage/revisions/file_changed/ASU_2022_88_10_10.1177_00031348221074228.r2022-12-20.zip', 0) }
+            expect { service.process_package('spec/fixtures/sage/revisions/file_changed/ASU_2022_88_10_10.1177_00031348221074228.r2022-12-20.zip') }
                 .to change { Article.count }.by(0)
                 .and change { FileSet.count }.by(0)
             work = ActiveFedora::Base.find(@work_id)
@@ -195,7 +195,7 @@ RSpec.describe Tasks::SageIngestService, :sage, :ingest do
             pdf_fs = file_sets.detect { |fs| fs.label.end_with?('.pdf') }
             pdf_date_modified = pdf_fs.date_modified
 
-            expect { service.process_package('spec/fixtures/sage/revisions/both_changed/ASU_2022_88_10_10.1177_00031348221074228.r2022-12-22.zip', 0) }
+            expect { service.process_package('spec/fixtures/sage/revisions/both_changed/ASU_2022_88_10_10.1177_00031348221074228.r2022-12-22.zip') }
                 .to change { Article.count }.by(0)
                 .and change { FileSet.count }.by(0)
             work = ActiveFedora::Base.find(@work_id)
@@ -212,7 +212,7 @@ RSpec.describe Tasks::SageIngestService, :sage, :ingest do
           let(:package_name) { 'ASU_2022_88_10_10.1177_00031348221074228.zip' }
 
           it 'skips the duplicate work and records an error' do
-            expect { service.process_package("spec/fixtures/sage/revisions/new/#{package_name}", 0) }
+            expect { service.process_package("spec/fixtures/sage/revisions/new/#{package_name}") }
                 .to raise_error("Work #{@work_id} already exists with DOI https://doi.org/10.1177/00031348221074228, skipping package #{package_name}")
                 .and change { Article.count }.by(0)
                 .and change { FileSet.count }.by(0)

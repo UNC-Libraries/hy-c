@@ -159,27 +159,27 @@ RSpec.describe IngestFromFtpController, type: :controller do
       end
 
       it 'deletes a proquest ingest job and returns to the same page' do
-        filenames_to_delete = ['etdadmin_upload_3806.zip']
-        post :delete_packages, params: { source: 'proquest', filenames_to_delete: filenames_to_delete }, session: valid_session
+        selected_filenames = ['etdadmin_upload_3806.zip']
+        post :delete_packages, params: { source: 'proquest', selected_filenames: selected_filenames }, session: valid_session
         expect(response).to redirect_to(ingest_from_ftp_path(source: 'proquest'))
 
         package_filepaths = Dir[File.join(proquest_dir.to_s, '*.zip')]
         expect(package_filepaths.length).to eq 1
-        expect(deleted_files_exist?(package_filepaths, filenames_to_delete)).to eq false
+        expect(deleted_files_exist?(package_filepaths, selected_filenames)).to eq false
       end
 
       it 'deletes a sage ingest job and returns to the same page' do
-        filenames_to_delete = ['1177_01605976231158397.zip']
-        post :delete_packages, params: { source: 'sage', filenames_to_delete: filenames_to_delete }, session: valid_session
+        selected_filenames = ['1177_01605976231158397.zip']
+        post :delete_packages, params: { source: 'sage', selected_filenames: selected_filenames }, session: valid_session
         expect(response).to redirect_to(ingest_from_ftp_path(source: 'sage'))
 
         package_filepaths = Dir[File.join(sage_dir.to_s, '*.zip')]
         expect(package_filepaths.length).to eq 1
-        expect(deleted_files_exist?(package_filepaths, filenames_to_delete)).to eq false
+        expect(deleted_files_exist?(package_filepaths, selected_filenames)).to eq false
       end
 
       it 'deletes an array of packages and returns to the same page' do
-        post :delete_packages, params: { source: 'proquest', filenames_to_delete: ['etdadmin_upload_3806.zip', 'etdadmin_upload_942402.zip']},
+        post :delete_packages, params: { source: 'proquest', selected_filenames: ['etdadmin_upload_3806.zip', 'etdadmin_upload_942402.zip']},
           session: valid_session
         expect(response).to redirect_to(ingest_from_ftp_path(source: 'proquest'))
 
@@ -188,7 +188,7 @@ RSpec.describe IngestFromFtpController, type: :controller do
       end
 
       it 'returns to same page with alert if no packages were chosen' do
-        post :delete_packages, params: { source: 'proquest', filenames_to_delete: []},
+        post :delete_packages, params: { source: 'proquest', selected_filenames: []},
           session: valid_session
         expect(response).to redirect_to(ingest_from_ftp_path(source: 'proquest'))
         expect(flash[:alert]).to be_present
@@ -207,4 +207,50 @@ RSpec.describe IngestFromFtpController, type: :controller do
       existing_filenames.intersection(deleted_filenames).present?
     end
   end
+
+  # describe 'POST #ingest_selected_packages' do
+  #   context 'as an admin' do
+  #     before do
+  #       allow(controller).to receive(:authorize!).with(:read, :admin_dashboard).and_return(true)
+  #       allow(controller).to receive(:current_user).and_return(user)
+  #       allow(IngestFromProquestJob).to receive(:perform_later).with(user.uid)
+  #       allow(IngestFromSageJob).to receive(:perform_later).with(user.uid)
+  #     end
+  #
+  #     it 'ingests a proquest job and goes to the status page' do
+  #       filenames_to_ingest = ['etdadmin_upload_3806.zip']
+  #       post :ingest_selected_packages, params: { source: 'proquest', filenames_to_ingest: filenames_to_ingest }, session: valid_session
+  #       expect(IngestFromProquestJob).to have_received(:perform_later).with(user.uid)
+  #       expect(response).to redirect_to(ingest_from_ftp_status_path(source: 'proquest'))
+  #     end
+  #
+  #     it 'ingests a sage job and goes to the status page' do
+  #       filenames_to_ingest = ['1177_01605976231158397.zip']
+  #       post :ingest_selected_packages, params: { source: 'sage', filenames_to_ingest: filenames_to_ingest }, session: valid_session
+  #       expect(IngestFromSageJob).to have_received(:perform_later).with(user.uid)
+  #       expect(response).to redirect_to(ingest_from_ftp_status_path(source: 'sage'))
+  #     end
+  #
+  #     it 'ingests a selection of packages and goes to the status page' do
+  #       post :ingest_selected_packages, params: { source: 'proquest', filenames_to_ingest: ['etdadmin_upload_3806.zip', 'etdadmin_upload_942402.zip']},
+  #         session: valid_session
+  #         expect(IngestFromProquestJob).to have_received(:perform_later).with(user.uid)
+  #       expect(response).to redirect_to(ingest_from_ftp_path(source: 'proquest'))
+  #     end
+  #
+  #     it 'returns to same page with alert if no packages were chosen' do
+  #       post :ingest_selected_packages, params: { source: 'proquest', filenames_to_ingest: []},
+  #         session: valid_session
+  #       expect(response).to redirect_to(ingest_from_ftp_path(source: 'proquest'))
+  #       expect(flash[:alert]).to be_present
+  #     end
+  #   end
+  #
+  #   context 'as a non-admin' do
+  #     it 'returns an unauthorized response' do
+  #       post :ingest_selected_packages, params: {}, session: valid_session
+  #       expect(response).to redirect_to new_user_session_path
+  #     end
+  #   end
+  # end
 end

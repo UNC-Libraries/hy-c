@@ -28,7 +28,7 @@ module Tasks
       'ProQuest'
     end
 
-    def process_package(package_path, _index)
+    def process_package(package_path)
       @file_last_modified = ''
       unzipped_package_dir = unzip_dir(package_path)
 

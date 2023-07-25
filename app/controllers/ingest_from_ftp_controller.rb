@@ -35,15 +35,15 @@ class IngestFromFtpController < ApplicationController
   def delete_packages
     # need to instantiate source again for redirect
     source
-    filenames_to_delete = params[:filenames_to_delete]
-    if filenames_to_delete.blank?
+    selected_filenames = params[:selected_filenames]
+    if selected_filenames.blank?
       flash[:alert] = 'No packages were chosen'
       redirect_to ingest_from_ftp_path(source: @source)
       return
     end
     package_paths = list_package_files
     package_paths.each do |package_path|
-      if filenames_to_delete.any? { |filename| package_path.include?(filename) }
+      if selected_filenames.any? { |filename| package_path.include?(filename) }
         File.delete(package_path)
       end
     end
@@ -54,6 +54,16 @@ class IngestFromFtpController < ApplicationController
 
   def list_package_files
     Dir[File.join(storage_base_path, '*.zip')]
+  end
+
+  def list_selected_package_paths(selected_filenames)
+    selected_package_paths = []
+    list_package_files.each do |package_path|
+      if selected_filenames.any? { |filename| package_path.include?(filename) }
+        selected_package_paths << package_path
+      end
+    end
+    selected_package_paths
   end
 
   def build_package_listing

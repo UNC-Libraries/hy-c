@@ -61,10 +61,10 @@ module Tasks
       logger.info("Beginning ingest of #{count} #{ingest_source} packages")
       @status_service.initialize_statuses(package_paths)
 
-      package_paths.each.with_index(1) do |package_path, index|
+      package_paths.each do |package_path|
         begin
           @status_service.status_in_progress(package_path)
-          process_package(package_path, index)
+          process_package(package_path)
           @status_service.status_complete(package_path)
         rescue => error
           stacktrace = error.backtrace.join('\n')

@@ -41,7 +41,7 @@
             <% @package_results.each do |entry| %>
               <tr>
                 <td>
-                  <%= check_box_tag 'filenames_to_delete[]', entry[:filename] %>
+                  <%= check_box_tag 'selected_filenames[]', entry[:filename] %>
                 <td>
                   <%= entry[:filename] %>
                 </td>
