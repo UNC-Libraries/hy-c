@@ -78,36 +78,6 @@ RSpec.describe IngestFromFtpController, type: :controller do
     end
   end
 
-  describe 'POST #ingest_packages' do
-    context 'as an admin' do
-      before do
-        allow(controller).to receive(:authorize!).with(:read, :admin_dashboard).and_return(true)
-        allow(controller).to receive(:current_user).and_return(user)
-        allow(IngestFromProquestJob).to receive(:perform_later).with(user.uid)
-        allow(IngestFromSageJob).to receive(:perform_later).with(user.uid)
-      end
-
-      it 'submits a proquest ingest job and goes to results page' do
-        post :ingest_packages, params: { source: 'proquest'}, session: valid_session
-        expect(IngestFromProquestJob).to have_received(:perform_later).with(user.uid)
-        expect(response).to redirect_to(ingest_from_ftp_status_path(source: 'proquest'))
-      end
-
-      it 'submits a sage ingest job and goes to results page' do
-        post :ingest_packages, params: { source: 'sage'}, session: valid_session
-        expect(IngestFromSageJob).to have_received(:perform_later).with(user.uid)
-        expect(response).to redirect_to(ingest_from_ftp_status_path(source: 'sage'))
-      end
-    end
-
-    context 'as a non-admin' do
-      it 'returns an unauthorized response' do
-        post :ingest_packages, params: {}, session: valid_session
-        expect(response).to redirect_to new_user_session_path
-      end
-    end
-  end
-
   describe 'GET #view_status' do
     context 'as an admin' do
       before do
@@ -208,49 +178,48 @@ RSpec.describe IngestFromFtpController, type: :controller do
     end
   end
 
-  # describe 'POST #ingest_selected_packages' do
-  #   context 'as an admin' do
-  #     before do
-  #       allow(controller).to receive(:authorize!).with(:read, :admin_dashboard).and_return(true)
-  #       allow(controller).to receive(:current_user).and_return(user)
-  #       allow(IngestFromProquestJob).to receive(:perform_later).with(user.uid)
-  #       allow(IngestFromSageJob).to receive(:perform_later).with(user.uid)
-  #     end
-  #
-  #     it 'ingests a proquest job and goes to the status page' do
-  #       filenames_to_ingest = ['etdadmin_upload_3806.zip']
-  #       post :ingest_selected_packages, params: { source: 'proquest', filenames_to_ingest: filenames_to_ingest }, session: valid_session
-  #       expect(IngestFromProquestJob).to have_received(:perform_later).with(user.uid)
-  #       expect(response).to redirect_to(ingest_from_ftp_status_path(source: 'proquest'))
-  #     end
-  #
-  #     it 'ingests a sage job and goes to the status page' do
-  #       filenames_to_ingest = ['1177_01605976231158397.zip']
-  #       post :ingest_selected_packages, params: { source: 'sage', filenames_to_ingest: filenames_to_ingest }, session: valid_session
-  #       expect(IngestFromSageJob).to have_received(:perform_later).with(user.uid)
-  #       expect(response).to redirect_to(ingest_from_ftp_status_path(source: 'sage'))
-  #     end
-  #
-  #     it 'ingests a selection of packages and goes to the status page' do
-  #       post :ingest_selected_packages, params: { source: 'proquest', filenames_to_ingest: ['etdadmin_upload_3806.zip', 'etdadmin_upload_942402.zip']},
-  #         session: valid_session
-  #         expect(IngestFromProquestJob).to have_received(:perform_later).with(user.uid)
-  #       expect(response).to redirect_to(ingest_from_ftp_path(source: 'proquest'))
-  #     end
-  #
-  #     it 'returns to same page with alert if no packages were chosen' do
-  #       post :ingest_selected_packages, params: { source: 'proquest', filenames_to_ingest: []},
-  #         session: valid_session
-  #       expect(response).to redirect_to(ingest_from_ftp_path(source: 'proquest'))
-  #       expect(flash[:alert]).to be_present
-  #     end
-  #   end
-  #
-  #   context 'as a non-admin' do
-  #     it 'returns an unauthorized response' do
-  #       post :ingest_selected_packages, params: {}, session: valid_session
-  #       expect(response).to redirect_to new_user_session_path
-  #     end
-  #   end
-  # end
+  describe 'POST #ingest_packages' do
+    context 'as an admin' do
+      before do
+        allow(controller).to receive(:authorize!).with(:read, :admin_dashboard).and_return(true)
+        allow(controller).to receive(:current_user).and_return(user)
+        allow(IngestFromProquestJob).to receive(:perform_later).with(user.uid, anything)
+        allow(IngestFromSageJob).to receive(:perform_later).with(user.uid, anything)
+      end
+
+      it 'ingests a proquest job and goes to the status page' do
+        post :ingest_packages, params: { source: 'proquest', selected_filenames: ['etdadmin_upload_3806.zip'] }, session: valid_session
+        expect(IngestFromProquestJob).to have_received(:perform_later).with(user.uid, [proquest_package1])
+        expect(response).to redirect_to(ingest_from_ftp_status_path(source: 'proquest'))
+      end
+
+      # it 'ingests a sage job and goes to the status page' do
+      #   filenames_to_ingest = ['1177_01605976231158397.zip']
+      #   post :ingest_selected_packages, params: { source: 'sage', filenames_to_ingest: filenames_to_ingest }, session: valid_session
+      #   expect(IngestFromSageJob).to have_received(:perform_later).with(user.uid)
+      #   expect(response).to redirect_to(ingest_from_ftp_status_path(source: 'sage'))
+      # end
+
+      it 'ingests a selection of packages and goes to the status page' do
+        post :ingest_packages, params: { source: 'proquest', selected_filenames: ['etdadmin_upload_3806.zip', 'etdadmin_upload_942402.zip']},
+          session: valid_session
+          expect(IngestFromProquestJob).to have_received(:perform_later).with(user.uid, [proquest_package2, proquest_package1])
+        expect(response).to redirect_to(ingest_from_ftp_status_path(source: 'proquest'))
+      end
+
+      it 'returns to same page with alert if no packages were chosen' do
+        post :ingest_packages, params: { source: 'proquest', filenames_to_ingest: []},
+          session: valid_session
+        expect(response).to redirect_to(ingest_from_ftp_path(source: 'proquest'))
+        expect(flash[:alert]).to be_present
+      end
+    end
+
+    context 'as a non-admin' do
+      it 'returns an unauthorized response' do
+        post :ingest_packages, params: {}, session: valid_session
+        expect(response).to redirect_to new_user_session_path
+      end
+    end
+  end
 end

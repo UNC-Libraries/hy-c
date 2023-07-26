@@ -13,12 +13,21 @@ class IngestFromFtpController < ApplicationController
   end
 
   def ingest_packages
+    # need to instantiate source again for redirect
+    source
+    selected_filenames = params[:selected_filenames]
+    if selected_filenames.blank?
+      flash[:alert] = 'No packages were chosen'
+      redirect_to ingest_from_ftp_path(source: @source)
+      return
+    end
+    selected_filepaths = list_selected_package_paths(selected_filenames)
     # Prepopulate statuses for packages so we can immediately view a report
-    ingest_status_service.initialize_statuses(list_package_files.map { |f| File.basename(f) })
+    ingest_status_service.initialize_statuses(selected_filepaths.map { |f| File.basename(f) })
     if source == 'proquest'
-      IngestFromProquestJob.perform_later(user_id)
+      IngestFromProquestJob.perform_later(user_id, selected_filepaths)
     else
-      IngestFromSageJob.perform_later(user_id)
+      IngestFromSageJob.perform_later(user_id, selected_filepaths)
     end
     redirect_to ingest_from_ftp_status_path(source: @source)
   end

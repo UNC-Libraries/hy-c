@@ -133,6 +133,28 @@ RSpec.describe Tasks::ProquestIngestService, :ingest do
     end
   end
 
+  # most processing functionality is tested in process_all_packages
+  # this test is to make sure only selected packages are processed
+  describe '#process_packages' do
+    before do
+      Dissertation.delete_all
+    end
+
+    let(:filepath_array) { ['spec/fixtures/proquest/proquest-attach0.zip'] }
+    let(:service) { Tasks::ProquestIngestService.new(config, status_service) }
+
+    it 'ingests selected proquest records' do
+      expect { service.process_packages(filepath_array) }.to change { Dissertation.count }.by(1).and change { DepositRecord.count }.by(1)
+
+      statuses = status_service.load_statuses
+      expect(statuses.size).to eq 1
+      package1 = statuses['proquest-attach0.zip']
+      expect(package1['status']).to eq 'Complete'
+      expect(package1['status_timestamp']).to_not be_nil
+      expect(package1['error']).to be_nil
+    end
+  end
+
   describe '#extract_files' do
     let(:service) { Tasks::ProquestIngestService.new(config, status_service) }
     let(:zip_path) { 'spec/fixtures/proquest/proquest-attach0.zip' }
