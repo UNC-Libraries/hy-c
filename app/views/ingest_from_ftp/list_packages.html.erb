@@ -14,22 +14,22 @@
           <%= link_to 'Sage', main_app.ingest_from_ftp_path(source: 'sage'), class: "nav-link#{' active' if @source == 'sage'}" %>
         </li>
       </ul>
-      <%= form_tag main_app.delete_from_ftp_path(source: @source), method: :post do %>
+      <%= form_tag main_app.ingest_from_ftp_path(source: @source), method: :post do %>
       <div class="panel-body">
         <h2 class="sr-only">Ingest from <%= @source %> </h2>
         <fieldset class="btn-group">
-          <%= button_to 'Ingest Packages', main_app.ingest_from_ftp_path(source: @source), method: :post, class: 'btn btn-danger',  data: { confirm: 'Are you sure you want to ingest all packages?' } %>
+          <%= submit_tag 'Ingest Packages', class: 'btn btn-danger', data: { confirm: 'Are you sure you want to ingest selected packages?' } %>
         </fieldset>
         <fieldset class="btn-group">
           <%= link_to 'View Status of last Ingest', main_app.ingest_from_ftp_status_path(source: @source), method: :get, class: 'btn btn-default' %>
         </fieldset>
         <fieldset class="btn-group">
-          <%= submit_tag 'Delete Selected Packages', class: 'btn',  data: { confirm: 'Are you sure you want to delete selected packages?' } %>
+          <%= submit_tag 'Delete Selected Packages', class: 'btn', formaction: main_app.delete_from_ftp_path(source: @source), data: { confirm: 'Are you sure you want to delete selected packages?' } %>
         </fieldset>
         <table class="table table-sm table-striped works-list">
           <thead>
             <tr>
-              <th></th>
+              <th><%= check_box_tag 'select_all' %></th>
               <th>Package</th>
               <th>Received Date</th>
               <% if @needs_revision_flag %>
@@ -41,7 +41,7 @@
             <% @package_results.each do |entry| %>
               <tr>
                 <td>
-                  <%= check_box_tag 'selected_filenames[]', entry[:filename] %>
+                  <%= check_box_tag 'selected_filenames[]', entry[:filename], false, class: 'checkbox' %>
                 <td>
                   <%= entry[:filename] %>
                 </td>
@@ -62,3 +62,15 @@
     </div>
   </div>
 </div>
+<script>
+  $(document).ready(function(){
+    $('#select_all').on("click", function() {
+      var checkboxes = $(".checkbox");
+      if(checkboxes.prop("checked")){
+        checkboxes.prop("checked",false);
+      } else {
+        checkboxes.prop("checked",true);
+      }
+    });
+  });
+</script>
