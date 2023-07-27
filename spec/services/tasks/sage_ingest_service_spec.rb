@@ -220,6 +220,24 @@ RSpec.describe Tasks::SageIngestService, :sage, :ingest do
         end
       end
     end
+
+    # most processing functionality is tested in process_package
+    # this test is to make sure only selected packages are processed
+    describe '#process_packages' do
+      it 'processes selected package' do
+        expect { service.process_packages([first_zip_path]) }
+            .to change { Article.count }.by(1)
+        statuses = status_service.load_statuses
+        expect(statuses.size).to eq 1
+      end
+
+      it 'processes multiple selected packages' do
+        expect { service.process_packages([first_zip_path, last_zip_path]) }
+            .to change { Article.count }.by(2)
+        statuses = status_service.load_statuses
+        expect(statuses.size).to eq 2
+      end
+    end
   end
 
   context 'without running the background jobs' do
