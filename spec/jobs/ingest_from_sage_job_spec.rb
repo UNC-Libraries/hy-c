@@ -21,6 +21,7 @@ RSpec.describe IngestFromSageJob, type: :job do
   end
   let(:temp_storage) { Dir.mktmpdir }
   let(:staging_path) { Dir.mktmpdir }
+  let(:filepath) { File.join(staging_path, 'AJH_2021_38_4_10.1177_1049909120951088.zip') }
 
   around do |example|
     cached_sage = ENV['INGEST_SAGE_PATH']
@@ -48,11 +49,11 @@ RSpec.describe IngestFromSageJob, type: :job do
     allow(RegisterToLongleafJob).to receive(:perform_later).and_return(nil)
     # stub FITS characterization
     allow(CharacterizeJob).to receive(:perform_later)
-    FileUtils.cp('spec/fixtures/sage/AJH_2021_38_4_10.1177_1049909120951088.zip', File.join(staging_path, 'AJH_2021_38_4_10.1177_1049909120951088.zip'))
+    FileUtils.cp('spec/fixtures/sage/AJH_2021_38_4_10.1177_1049909120951088.zip', filepath)
   end
 
   it 'triggers proquest ingest' do
-    expect { job.perform(admin.uid) }.to change { Article.count }.by(1).and change { DepositRecord.count }.by(1)
+    expect { job.perform(admin.uid, [filepath]) }.to change { Article.count }.by(1).and change { DepositRecord.count }.by(1)
     statuses = Tasks::IngestStatusService.status_service_for_source('sage').load_statuses
     expect(statuses['AJH_2021_38_4_10.1177_1049909120951088.zip']['status']).to eq 'Complete'
   end

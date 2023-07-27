@@ -41,8 +41,10 @@ RSpec.describe IngestFromProquestJob, type: :job do
     Sipity::WorkflowState.create(workflow_id: workflow.id, name: 'deposited')
   end
 
+  let(:selected_filepaths) { ['spec/fixtures/proquest/proquest-attach0.zip', 'spec/fixtures/proquest/proquest-attach7.zip'] }
+
   it 'triggers proquest ingest' do
-    expect { job.perform(admin.uid) }.to change { Dissertation.count }.by(1).and change { DepositRecord.count }.by(1)
+    expect { job.perform(admin.uid, selected_filepaths) }.to change { Dissertation.count }.by(1).and change { DepositRecord.count }.by(1)
     statuses = Tasks::IngestStatusService.status_service_for_source('proquest').load_statuses
     expect(statuses['proquest-attach0.zip']['status']).to eq 'Complete'
     expect(statuses['proquest-attach7.zip']['status']).to eq 'Failed'
