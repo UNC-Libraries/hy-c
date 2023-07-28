@@ -86,7 +86,7 @@ group :test do
   gem 'factory_bot_rails', '~> 6.2.0'
   gem 'ffaker'
   gem 'rspec-mocks'
-  gem 'selenium-webdriver'
+  gem 'selenium-webdriver', '~> 4.8'
   gem 'shoulda-matchers', '~> 5.1.0'
   gem 'simplecov'
   gem 'webdrivers'
