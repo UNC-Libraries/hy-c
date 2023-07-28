@@ -245,7 +245,6 @@ GEM
       activesupport (>= 4.0.0)
       mime-types (>= 1.16)
       ssrf_filter (~> 1.0, < 1.1.0)
-    childprocess (4.1.0)
     chronic_duration (0.10.6)
       numerizer (~> 0.1.1)
     clamav-client (3.2.0)
@@ -893,8 +892,7 @@ GEM
       ffi (~> 1.9)
     scanf (1.0.0)
     select2-rails (3.5.11)
-    selenium-webdriver (4.5.0)
-      childprocess (>= 0.5, < 5.0)
+    selenium-webdriver (4.9.0)
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 3.0)
       websocket (~> 1.0)
@@ -1094,7 +1092,7 @@ DEPENDENCIES
   rubocop-rails
   rubocop-rspec
   sass-rails (~> 5.1.0)
-  selenium-webdriver
+  selenium-webdriver (~> 4.8)
   shoulda-matchers (~> 5.1.0)
   sidekiq (~> 5.2.10)
   sidekiq-status (~> 2.1.3)
