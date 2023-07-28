@@ -38,6 +38,13 @@ For proquest, run:
 bundle exec rake proquest:ingest[/hyrax/spec/fixtures/proquest/proquest_config.yml]
 ```
 
+In order to perform ingest from FTP by either the UI or CLI on the docker VM, you will need to create two admin sets:
+* Open_Access_Articles_and_Book_Chapters
+* Dissertation
+
+To do so, log in as an admin, navigate to the Dashboard and then Collections, Add New Collection, Admin Set, and the title should match one of those values.
+
+
 #### Development on Docker
 * Pre-requisites (for Mac):
   * Docker Desktop - https://docs.docker.com/desktop/mac/install/
