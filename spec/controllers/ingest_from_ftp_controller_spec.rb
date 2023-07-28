@@ -102,12 +102,15 @@ RSpec.describe IngestFromFtpController, type: :controller do
       it 'ingests a selection of packages and goes to the status page' do
         post :ingest_packages, params: { source: 'proquest', selected_filenames: ['etdadmin_upload_3806.zip', 'etdadmin_upload_942402.zip']},
           session: valid_session
-          expect(IngestFromProquestJob).to have_received(:perform_later).with(user.uid, [proquest_package2, proquest_package1])
+          expect(IngestFromProquestJob).to have_received(:perform_later) do |arg1, arg2|
+            expect(arg1).to eq(user.uid)
+            expect(arg2).to match_array([proquest_package1, proquest_package2])
+          end
         expect(response).to redirect_to(ingest_from_ftp_status_path(source: 'proquest'))
       end
 
       it 'returns to same page with alert if no packages were chosen' do
-        post :ingest_packages, params: { source: 'proquest', filenames_to_ingest: []},
+        post :ingest_packages, params: { source: 'proquest', selected_filenames: []},
           session: valid_session
         expect(response).to redirect_to(ingest_from_ftp_path(source: 'proquest'))
         expect(flash[:alert]).to be_present
