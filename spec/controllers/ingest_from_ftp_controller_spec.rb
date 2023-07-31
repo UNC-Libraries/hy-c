@@ -102,10 +102,10 @@ RSpec.describe IngestFromFtpController, type: :controller do
       it 'ingests a selection of packages and goes to the status page' do
         post :ingest_packages, params: { source: 'proquest', selected_filenames: ['etdadmin_upload_3806.zip', 'etdadmin_upload_942402.zip']},
           session: valid_session
-          expect(IngestFromProquestJob).to have_received(:perform_later) do |arg1, arg2|
-            expect(arg1).to eq(user.uid)
-            expect(arg2).to match_array([proquest_package1, proquest_package2])
-          end
+        expect(IngestFromProquestJob).to have_received(:perform_later) do |arg1, arg2|
+          expect(arg1).to eq(user.uid)
+          expect(arg2).to match_array([proquest_package1, proquest_package2])
+        end
         expect(response).to redirect_to(ingest_from_ftp_status_path(source: 'proquest'))
       end
 
@@ -175,7 +175,7 @@ RSpec.describe IngestFromFtpController, type: :controller do
         allow(controller).to receive(:current_user).and_return(user)
       end
 
-      it 'deletes a proquest ingest job and returns to the same page' do
+      it 'deletes a proquest ingest package and returns to the same page' do
         selected_filenames = ['etdadmin_upload_3806.zip']
         post :delete_packages, params: { source: 'proquest', selected_filenames: selected_filenames }, session: valid_session
         expect(response).to redirect_to(ingest_from_ftp_path(source: 'proquest'))
@@ -201,7 +201,7 @@ RSpec.describe IngestFromFtpController, type: :controller do
         expect(response).to redirect_to(ingest_from_ftp_path(source: 'proquest'))
 
         package_filepaths = Dir[File.join(proquest_dir.to_s, '*.zip')]
-        expect(package_filepaths.empty?).to eq true
+        expect(package_filepaths).to be_empty
       end
 
       it 'returns to same page with alert if no packages were chosen' do
@@ -220,7 +220,7 @@ RSpec.describe IngestFromFtpController, type: :controller do
     end
 
     def deleted_files_exist?(filename_array, deleted_filenames)
-      existing_filenames = filename_array.map { |path| path.split('/').last }
+      existing_filenames = filename_array.map { |path| File.basename(path) }
       existing_filenames.intersection(deleted_filenames).present?
     end
   end

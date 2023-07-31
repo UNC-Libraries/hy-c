@@ -13,12 +13,10 @@ class IngestFromFtpController < ApplicationController
   end
 
   def ingest_packages
-    # need to instantiate source again for redirect
-    source
     selected_filenames = params[:selected_filenames]
     if selected_filenames.blank?
       flash[:alert] = 'No packages were chosen'
-      redirect_to ingest_from_ftp_path(source: @source)
+      redirect_to ingest_from_ftp_path(source: source)
       return
     end
     selected_filepaths = list_selected_package_paths(selected_filenames)
@@ -29,7 +27,7 @@ class IngestFromFtpController < ApplicationController
     else
       IngestFromSageJob.perform_later(user_id, selected_filepaths)
     end
-    redirect_to ingest_from_ftp_status_path(source: @source)
+    redirect_to ingest_from_ftp_status_path(source: source)
   end
 
   def view_status
@@ -42,21 +40,16 @@ class IngestFromFtpController < ApplicationController
   end
 
   def delete_packages
-    # need to instantiate source again for redirect
-    source
     selected_filenames = params[:selected_filenames]
     if selected_filenames.blank?
       flash[:alert] = 'No packages were chosen'
-      redirect_to ingest_from_ftp_path(source: @source)
+      redirect_to ingest_from_ftp_path(source: source)
       return
     end
-    package_paths = list_package_files
-    package_paths.each do |package_path|
-      if selected_filenames.any? { |filename| package_path.include?(filename) }
-        File.delete(package_path)
-      end
+    list_selected_package_paths(selected_filenames).each do |package_path|
+      File.delete(package_path)
     end
-    redirect_to ingest_from_ftp_path(source: @source)
+    redirect_to ingest_from_ftp_path(source: source)
   end
 
   private
@@ -68,7 +61,7 @@ class IngestFromFtpController < ApplicationController
   def list_selected_package_paths(selected_filenames)
     selected_package_paths = []
     list_package_files.each do |package_path|
-      if selected_filenames.any? { |filename| package_path.include?(filename) }
+      if selected_filenames.any? { |filename| File.basename(package_path) == filename }
         selected_package_paths << package_path
       end
     end
