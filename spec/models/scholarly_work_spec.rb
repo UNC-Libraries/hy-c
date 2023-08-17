@@ -43,6 +43,7 @@ RSpec.describe ScholarlyWork do
       expect(subject).to respond_to(:source)
       expect(subject).to respond_to(:resource_type)
       expect(subject).to respond_to(:access_right)
+      expect(subject).to respond_to(:rights_notes)
 
       # Additional metadata
       expect(subject).to respond_to(:abstract)
