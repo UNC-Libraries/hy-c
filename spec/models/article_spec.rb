@@ -43,10 +43,10 @@ RSpec.describe Article do
       expect(subject).to respond_to(:identifier)
       expect(subject).to respond_to(:source)
       expect(subject).to respond_to(:resource_type)
+      expect(subject).to respond_to(:access_right)
 
       # Additional metadata
       expect(subject).to respond_to(:abstract)
-      expect(subject).to respond_to(:access)
       expect(subject).to respond_to(:admin_note)
       expect(subject).to respond_to(:alternative_title)
       expect(subject).to respond_to(:bibliographic_citation)

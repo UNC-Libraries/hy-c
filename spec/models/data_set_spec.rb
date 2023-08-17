@@ -37,6 +37,7 @@ RSpec.describe DataSet do
       expect(subject).to respond_to(:identifier)
       expect(subject).to respond_to(:source)
       expect(subject).to respond_to(:resource_type)
+      expect(subject).to respond_to(:access_right)
 
       # Custom fields
       expect(subject).to respond_to(:abstract)
