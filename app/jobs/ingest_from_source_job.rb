@@ -3,11 +3,11 @@
 class IngestFromSourceJob < Hyrax::ApplicationJob
   queue_as Hyrax.config.ingest_queue_name
 
-  def perform(user)
+  def perform(user, selected_filepaths)
     @user = user
     start = Time.now
     Rails.logger.info("Starting ingest job for #{source}")
-    ingest_service.process_all_packages
+    ingest_service.process_packages(selected_filepaths)
     Rails.logger.debug("Ingest job for #{source} completed in #{Time.now - start}")
   end
 

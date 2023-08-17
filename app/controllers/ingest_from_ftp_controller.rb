@@ -13,14 +13,21 @@ class IngestFromFtpController < ApplicationController
   end
 
   def ingest_packages
-    # Prepopulate statuses for packages so we can immediately view a report
-    ingest_status_service.initialize_statuses(list_package_files.map { |f| File.basename(f) })
-    if source == 'proquest'
-      IngestFromProquestJob.perform_later(user_id)
-    else
-      IngestFromSageJob.perform_later(user_id)
+    selected_filenames = params[:selected_filenames]
+    if selected_filenames.blank?
+      flash[:alert] = 'No packages were chosen'
+      redirect_to ingest_from_ftp_path(source: source)
+      return
     end
-    redirect_to ingest_from_ftp_status_path(source: @source)
+    selected_filepaths = list_selected_package_paths(selected_filenames)
+    # Prepopulate statuses for packages so we can immediately view a report
+    ingest_status_service.initialize_statuses(selected_filepaths.map { |f| File.basename(f) })
+    if source == 'proquest'
+      IngestFromProquestJob.perform_later(user_id, selected_filepaths)
+    else
+      IngestFromSageJob.perform_later(user_id, selected_filepaths)
+    end
+    redirect_to ingest_from_ftp_status_path(source: source)
   end
 
   def view_status
@@ -32,10 +39,33 @@ class IngestFromFtpController < ApplicationController
     @status_results = statuses.sort.to_h
   end
 
+  def delete_packages
+    selected_filenames = params[:selected_filenames]
+    if selected_filenames.blank?
+      flash[:alert] = 'No packages were chosen'
+      redirect_to ingest_from_ftp_path(source: source)
+      return
+    end
+    list_selected_package_paths(selected_filenames).each do |package_path|
+      File.delete(package_path)
+    end
+    redirect_to ingest_from_ftp_path(source: source)
+  end
+
   private
 
   def list_package_files
     Dir[File.join(storage_base_path, '*.zip')]
+  end
+
+  def list_selected_package_paths(selected_filenames)
+    selected_package_paths = []
+    list_package_files.each do |package_path|
+      if selected_filenames.any? { |filename| File.basename(package_path) == filename }
+        selected_package_paths << package_path
+      end
+    end
+    selected_package_paths
   end
 
   def build_package_listing

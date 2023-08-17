@@ -19,7 +19,7 @@ module Tasks
       File.basename(filename).match?(/\.r[0-9]{4}-[0-9]{2}-[0-9]{2}/)
     end
 
-    def process_package(package_path, _index)
+    def process_package(package_path)
       unzipped_package_dir = unzip_dir(package_path)
 
       file_names = extract_files(package_path).keys
