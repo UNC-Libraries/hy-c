@@ -35,7 +35,7 @@ RSpec.describe Hyrax::DataSetForm do
     subject { form.admin_only_terms }
 
     it {
-      is_expected.to match_array [:dcmi_type, :access, :doi, :extent, :rights_holder, :rights_statement,
+      is_expected.to match_array [:dcmi_type, :doi, :extent, :rights_holder, :rights_statement,
                                   :copyright_date, :admin_note]
     }
   end
@@ -65,7 +65,7 @@ RSpec.describe Hyrax::DataSetForm do
         keyword: ['data set'],
         member_of_collection_ids: ['123456', 'abcdef'],
         abstract: ['an abstract'],
-        access: 'public',
+        access_right: ['public'],
         contributors_attributes: { '0' => { name: 'contributor',
                                             orcid: 'contributor orcid',
                                             affiliation: 'Carolina Center for Genome Sciences',
@@ -104,7 +104,7 @@ RSpec.describe Hyrax::DataSetForm do
         rights_holder: ['dean'],
         rights_statement: 'http://rightsstatements.org/vocab/InC/1.0/',
         sponsor: ['david'],
-        use: ['a usage'],
+        rights_notes: ['a rights note'],
         language_label: [],
         license_label: [],
         rights_statement_label: ''

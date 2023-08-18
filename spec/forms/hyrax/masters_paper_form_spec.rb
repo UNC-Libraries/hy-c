@@ -29,8 +29,8 @@ RSpec.describe Hyrax::MastersPaperForm do
     subject { form.secondary_terms }
 
     it {
-      is_expected.to match_array [:academic_concentration, :access, :based_near, :dcmi_type,
-                                  :degree_granting_institution, :doi, :extent, :reviewer, :use, :keyword, :subject,
+      is_expected.to match_array [:academic_concentration, :based_near, :dcmi_type,
+                                  :degree_granting_institution, :doi, :extent, :reviewer, :keyword, :subject,
                                   :language, :note, :rights_statement, :license, :language_label, :license_label,
                                   :rights_statement_label, :deposit_agreement, :agreement, :admin_note,
                                   :access_right, :alternative_title, :rights_notes]
@@ -41,7 +41,7 @@ RSpec.describe Hyrax::MastersPaperForm do
     subject { form.admin_only_terms }
 
     it {
-      is_expected.to match_array [:dcmi_type, :access, :degree_granting_institution, :doi, :extent, :use,
+      is_expected.to match_array [:dcmi_type, :degree_granting_institution, :doi, :extent,
                                   :admin_note]
     }
   end
@@ -88,7 +88,7 @@ RSpec.describe Hyrax::MastersPaperForm do
         member_of_collection_ids: ['123456', 'abcdef'],
         abstract: [''],
         academic_concentration: ['a concentration'],
-        access: 'public', # single-valued
+        access_right: ['public'],
         advisors_attributes: { '0' => { name: 'advisor',
                                         orcid: 'advisor orcid',
                                         affiliation: 'Carolina Center for Genome Sciences',
@@ -105,7 +105,7 @@ RSpec.describe Hyrax::MastersPaperForm do
                                          orcid: 'reviewer orcid',
                                          affiliation: 'Carolina Center for Genome Sciences',
                                          other_affiliation: 'another affiliation' } },
-        use: ['a use'],
+        rights_notes: ['a rights note'],
         language_label: [],
         license_label: [],
         rights_statement_label: ''
@@ -128,7 +128,7 @@ RSpec.describe Hyrax::MastersPaperForm do
 
       expect(subject['abstract']).to be_empty
       expect(subject['academic_concentration']).to eq ['a concentration']
-      expect(subject['access']).to eq 'public'
+      expect(subject['access_right']).to eq ['public']
       expect(subject['date_issued']).to eq '1999-22'
       expect(subject['degree']).to eq 'MS'
       expect(subject['degree_granting_institution']).to eq 'UNC'
@@ -137,7 +137,7 @@ RSpec.describe Hyrax::MastersPaperForm do
       expect(subject['dcmi_type']).to eq ['http://purl.org/dc/dcmitype/Text']
       expect(subject['graduation_year']).to eq '2017'
       expect(subject['note']).to eq ['a note']
-      expect(subject['use']).to eq ['a use']
+      expect(subject['rights_notes']).to eq ['a rights note']
       expect(subject['language_label']).to eq ['English']
       expect(subject['license_label']).to eq ['Attribution 3.0 United States']
       expect(subject['rights_statement_label']).to eq 'In Copyright'

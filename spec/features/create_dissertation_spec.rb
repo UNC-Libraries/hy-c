@@ -91,7 +91,7 @@ RSpec.feature 'Create a Dissertation', js: false do
       select 'Doctor of Philosophy', from: 'dissertation_degree'
       fill_in 'DOI', with: 'some-doi'
       select 'Dissertation', from: 'dissertation_resource_type'
-      fill_in 'Access', with: 'some access'
+      fill_in 'Access Right', with: 'some access'
       find('#dissertation_based_near_attributes_0_id', visible: false).set('http://sws.geonames.org/4460162/')
       fill_in 'Graduation year', with: '2018'
       fill_in 'Identifier', with: 'some id'
@@ -106,7 +106,7 @@ RSpec.feature 'Create a Dissertation', js: false do
       fill_in 'Additional affiliation', { with: 'UNC', id: 'dissertation_reviewers_attributes_0_other_affiliation' }
       select 'In Copyright', from: 'dissertation_rights_statement'
       fill_in 'Subject', with: 'test'
-      fill_in 'Use', with: 'some use'
+      fill_in 'Rights Notes', with: 'some rights notes'
 
       expect(page).to have_selector('#dissertation_language_label', visible: false)
       expect(page).to have_selector('#dissertation_license_label', visible: false)

@@ -6,9 +6,9 @@ module Hyrax
     class_attribute :single_value_fields
 
     self.model_class = ::Dissertation
-    self.terms += [:access, :admin_note, :advisor, :reviewer, :date_issued,
+    self.terms += [:admin_note, :advisor, :reviewer, :date_issued,
                    :dcmi_type, :degree, :degree_granting_institution, :doi, :graduation_year, :note,
-                   :place_of_publication, :resource_type, :use, :deposit_agreement, :agreement]
+                   :place_of_publication, :resource_type, :deposit_agreement, :agreement]
 
     self.terms -= [:bibliographic_citation, :date_created, :description, :source, :related_url]
     self.required_fields = [:title, :creator, :date_issued]

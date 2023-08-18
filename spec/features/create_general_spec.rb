@@ -76,7 +76,7 @@ RSpec.feature 'Create a General', js: false do
       # extra fields
       fill_in 'Abstract', with: 'an abstract'
       select 'Clinical Nutrition', from: 'Academic Concentration'
-      fill_in 'Access', with: 'some access'
+      fill_in 'Access Right', with: 'some access'
       fill_in 'Advisor', { with: 'advisor', id: 'general_advisors_attributes_0_name' }
       fill_in 'ORCID', { with: 'advisor orcid', id: 'general_advisors_attributes_0_orcid' }
       select 'Department of Biology', from: 'general_advisors_attributes_0_affiliation'
@@ -156,7 +156,7 @@ RSpec.feature 'Create a General', js: false do
       fill_in 'ORCID', { with: 'translator orcid', id: 'general_translators_attributes_0_orcid' }
       select 'Department of Biology', from: 'general_translators_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'general_translators_attributes_0_other_affiliation' }
-      fill_in 'Use', with: 'some use'
+      fill_in 'Rights Notes', with: 'some rights notes'
 
       expect(page).to have_selector('#general_language_label', visible: false)
       expect(page).to have_selector('#general_license_label', visible: false)

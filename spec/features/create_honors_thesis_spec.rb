@@ -178,7 +178,7 @@ RSpec.feature 'Create a HonorsThesis', js: false do
 
       # extra fields
       select 'Biostatistics', from: 'Academic Concentration'
-      fill_in 'Access', with: 'some access'
+      fill_in 'Access Right', with: 'some access'
       fill_in 'DOI', with: 'some-doi'
       fill_in 'Extent', with: 'some extent'
       find('#honors_thesis_based_near_attributes_0_id', visible: false).set('http://sws.geonames.org/4460162/')
@@ -189,7 +189,7 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       fill_in 'Related resource URL', with: 'something.com'
       select 'In Copyright', from: 'honors_thesis_rights_statement'
       fill_in 'Subject', with: 'test'
-      fill_in 'Use', with: 'some use'
+      fill_in 'Rights Notes', with: 'some rights notes'
 
       expect(page).to have_selector('#honors_thesis_language_label', visible: false)
       expect(page).to have_selector('#honors_thesis_license_label', visible: false)

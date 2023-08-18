@@ -196,7 +196,7 @@ RSpec.feature 'Create a Article', js: false do
       fill_in 'Identifier', with: 'some id'
       fill_in 'Related resource URL', with: 'something.com'
       select 'Article', from: 'article_resource_type'
-      fill_in 'Access', with: 'some access'
+      fill_in 'Access Right', with: 'some access'
       fill_in 'Alternate title', with: 'my other title'
       fill_in 'Bibliographic citation', with: 'a citation'
       fill_in 'Copyright date', with: '2018'
@@ -221,7 +221,7 @@ RSpec.feature 'Create a Article', js: false do
       fill_in 'ORCID', { with: 'translator orcid', id: 'article_translators_attributes_0_orcid' }
       select 'Department of Biology', from: 'article_translators_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'article_translators_attributes_0_other_affiliation' }
-      fill_in 'Use', with: 'some use'
+      fill_in 'Rights Notes', with: 'some rights notes'
 
       expect(page).to have_selector('#article_language_label', visible: false)
       expect(page).to have_selector('#article_license_label', visible: false)

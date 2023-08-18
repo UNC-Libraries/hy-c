@@ -8,10 +8,10 @@ module Hyrax
 
     self.model_class = ::Article
 
-    self.terms += [:resource_type, :access, :admin_note, :bibliographic_citation, :copyright_date,
+    self.terms += [:resource_type, :admin_note, :bibliographic_citation, :copyright_date,
                    :date_captured, :date_issued, :date_other, :dcmi_type, :digital_collection, :doi, :edition, :extent,
                    :funder, :issn, :journal_title, :journal_volume, :journal_issue, :note, :page_start, :page_end,
-                   :peer_review_status, :place_of_publication, :rights_holder, :translator, :use, :deposit_agreement,
+                   :peer_review_status, :place_of_publication, :rights_holder, :translator, :deposit_agreement,
                    :agreement]
 
     self.required_fields = [:title, :creator, :abstract, :date_issued]
@@ -20,8 +20,8 @@ module Hyrax
 
     self.single_value_fields = [:title, :license]
 
-    self.admin_only_terms = [:dcmi_type, :access, :admin_note, :bibliographic_citation, :copyright_date, :date_captured, :date_other,
-                             :digital_collection, :doi, :extent, :identifier, :rights_holder, :translator, :use]
+    self.admin_only_terms = [:dcmi_type, :admin_note, :bibliographic_citation, :copyright_date, :date_captured, :date_other,
+                             :digital_collection, :doi, :extent, :identifier, :rights_holder, :translator]
     self.default_term_values = { dcmi_type: ['http://purl.org/dc/dcmitype/Text'],
                                  language: ['http://id.loc.gov/vocabulary/iso639-2/eng'],
                                  rights_statement: 'http://rightsstatements.org/vocab/InC/1.0/' }

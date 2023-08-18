@@ -34,7 +34,7 @@ RSpec.describe Hyrax::DissertationPresenter do
       'note_tesim' => ['a note'],
       'place_of_publication_tesim' => ['a place'],
       'reviewer_display_tesim' => ['a reviewer'],
-      'use_tesim' => ['a use'],
+      'rights_notes_tesim' => ['a rights note'],
       'language_label_tesim' => ['language'],
       'license_label_tesim' => ['license'],
       'rights_statement_label_tesim' => 'rights'
@@ -77,7 +77,7 @@ RSpec.describe Hyrax::DissertationPresenter do
   it { is_expected.to delegate_method(:note).to(:solr_document) }
   it { is_expected.to delegate_method(:place_of_publication).to(:solr_document) }
   it { is_expected.to delegate_method(:reviewer_display).to(:solr_document) }
-  it { is_expected.to delegate_method(:use).to(:solr_document) }
+  it { is_expected.to delegate_method(:rights_notes).to(:solr_document) }
   it { is_expected.to delegate_method(:language_label).to(:solr_document) }
   it { is_expected.to delegate_method(:license_label).to(:solr_document) }
   it { is_expected.to delegate_method(:rights_statement_label).to(:solr_document) }
@@ -124,14 +124,14 @@ RSpec.describe Hyrax::DissertationPresenter do
       end
     end
 
-    context 'with a custom access field' do
+    context 'with a custom access_right field' do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:access, ['an access state'], {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:access_right, ['an access state'], {}).and_return(renderer)
       end
 
       it 'calls the AttributeRenderer' do
         expect(renderer).to receive(:render)
-        presenter.attribute_to_html(:access)
+        presenter.attribute_to_html(:access_right)
       end
     end
 
@@ -299,14 +299,14 @@ RSpec.describe Hyrax::DissertationPresenter do
       end
     end
 
-    context 'with a custom use field' do
+    context 'with a custom rights_notes field' do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:use, ['a use'], {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:rights_notes, ['a rights note'], {}).and_return(renderer)
       end
 
       it 'calls the AttributeRenderer' do
         expect(renderer).to receive(:render)
-        presenter.attribute_to_html(:use)
+        presenter.attribute_to_html(:rights_notes)
       end
     end
 

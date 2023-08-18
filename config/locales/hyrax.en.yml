@@ -247,7 +247,6 @@ en:
       defaults:
         abstract: "A short paragraph describing your work."
         academic_concentration: "Fill out this field only if it is relevant to your program."
-        access: "Access restrictions placed on the work"
         advisor: "Your advisor's name. Please enter the last name first, e.g. \"Smith, John.\""
         affiliation: "Primary departmental affiliation"
         alternative_title: "A unique secondary title for your work if applicable. Enter subtitle in the \"Title\" field, instead."
@@ -295,12 +294,10 @@ en:
         table_of_contents: "The table of contents for this issue, proceeding or book."
         title: "The name of the work"
         translator: "If your work that you are depositing is translated, enter the name of the person who translated it."
-        use: "Additional information about the rights held over the work."
     labels:
       defaults:
         abstract: "Abstract"
         academic_concentration: "Academic concentration"
-        access: "Access"
         advisor_display: "Advisor"
         affiliation: "UNC affiliation"
         alternative_title: "Alternate title"
@@ -353,4 +350,3 @@ en:
         sponsor: "Sponsor"
         table_of_contents: "Table of contents"
         translator_display: "Translator"
-        use: "Use"

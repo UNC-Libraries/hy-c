@@ -26,7 +26,7 @@ RSpec.describe Hyrax::GeneralForm do
       is_expected.to match_array [:based_near, :contributor, :creator, :description,
                                   :keyword, :identifier, :language, :license, :publisher, :related_url,
                                   :resource_type, :rights_statement, :subject, :bibliographic_citation, :abstract,
-                                  :academic_concentration, :access, :advisor, :alternative_title, :arranger, :award,
+                                  :academic_concentration, :advisor, :alternative_title, :arranger, :award,
                                   :composer, :conference_name, :copyright_date, :date_captured, :date_issued,
                                   :date_other, :degree, :degree_granting_institution, :digital_collection,
                                   :doi, :edition, :extent, :funder, :graduation_year, :isbn, :issn,
@@ -34,7 +34,7 @@ RSpec.describe Hyrax::GeneralForm do
                                   :medium, :methodology, :note, :page_start, :page_end, :peer_review_status,
                                   :place_of_publication, :project_director, :researcher,
                                   :reviewer, :rights_holder, :series, :sponsor, :table_of_contents, :translator,
-                                  :use, :language_label, :license_label, :rights_statement_label, :deposit_agreement,
+                                  :language_label, :license_label, :rights_statement_label, :deposit_agreement,
                                   :agreement, :admin_note, :access_right, :rights_notes]
     }
   end
@@ -91,7 +91,7 @@ RSpec.describe Hyrax::GeneralForm do
         member_of_collection_ids: ['123456', 'abcdef'],
         abstract: ['an abstract'],
         academic_concentration: ['a concentration'],
-        access: 'public', # single-valued
+        access_right: ['public'],
         advisors_attributes: { '0' => { name: 'advisor',
                                         orcid: 'advisor orcid',
                                         affiliation: 'Carolina Center for Genome Sciences',
@@ -154,7 +154,7 @@ RSpec.describe Hyrax::GeneralForm do
                                            orcid: 'translator orcid',
                                            affiliation: 'Carolina Center for Genome Sciences',
                                            other_affiliation: 'another affiliation' } },
-        use: ['a use'],
+        rights_notes: ['a rights note'],
         language_label: [],
         license_label: [],
         rights_statement_label: ''
@@ -181,7 +181,7 @@ RSpec.describe Hyrax::GeneralForm do
       expect(subject['member_of_collection_ids']).to eq ['123456', 'abcdef']
       expect(subject['abstract']).to eq ['an abstract']
       expect(subject['academic_concentration']).to eq ['a concentration']
-      expect(subject['access']).to eq 'public'
+      expect(subject['access_right']).to eq ['public']
       expect(subject['alternative_title']).to eq ['some title']
       expect(subject['award']).to eq 'an award'
       expect(subject['conference_name']).to eq ['a conference']
@@ -216,7 +216,7 @@ RSpec.describe Hyrax::GeneralForm do
       expect(subject['series']).to eq ['series']
       expect(subject['sponsor']).to eq ['a sponsor']
       expect(subject['table_of_contents']).to eq ['cool table']
-      expect(subject['use']).to eq ['a use']
+      expect(subject['rights_notes']).to eq ['a rights note']
       expect(subject['language_label']).to eq ['English']
       expect(subject['license_label']).to eq ['Attribution 3.0 United States']
       expect(subject['rights_statement_label']).to eq 'In Copyright'

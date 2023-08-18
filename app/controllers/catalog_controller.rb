@@ -124,7 +124,7 @@ class CatalogController < ApplicationController
     # Search fields
     # include all fields available to allow searching across all attributes
     config.add_show_field solr_name('academic_concentration', :stored_searchable), label: 'Academic Concentration'
-    config.add_show_field solr_name('access', :stored_searchable), label: 'Access'
+    config.add_show_field solr_name('access_right', :stored_searchable), label: 'Access Right'
     config.add_show_field solr_name('admin_note', :stored_searchable), label: 'Admin Note'
     config.add_show_field solr_name('affiliation', :stored_searchable), label: 'Departments', link_to_search: solr_name('affiliation', :facetable)
     config.add_show_field solr_name('affiliation_label', :stored_searchable)
@@ -168,13 +168,13 @@ class CatalogController < ApplicationController
     config.add_show_field solr_name('place_of_publication', :stored_searchable), label: 'Place of Publication'
     config.add_show_field solr_name('publisher', :stored_searchable), label: 'Publisher'
     config.add_show_field solr_name('rights_holder', :stored_searchable), label: 'Rights Holder'
+    config.add_show_field solr_name('rights_notes', :stored_searchable), label: 'Rights Notes'
     config.add_show_field solr_name('rights_statement_label', :stored_searchable), label: 'Rights Statement Label'
     config.add_show_field solr_name('series', :stored_searchable), label: 'Series'
     config.add_show_field solr_name('source', :stored_searchable), label: 'Source'
     config.add_show_field solr_name('subject', :stored_searchable), label: 'Subject'
     config.add_show_field solr_name('table_of_contents', :stored_searchable), label: 'Table of Contents'
     config.add_show_field solr_name('url', :stored_searchable), label: 'Url'
-    config.add_show_field solr_name('use', :stored_searchable), label: 'Use'
 
     # "fielded" search configuration. Used by pulldown among other places.
     # For supported keys in hash, see rdoc for Blacklight::SearchFields
