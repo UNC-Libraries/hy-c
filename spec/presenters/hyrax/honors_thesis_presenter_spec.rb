@@ -18,7 +18,7 @@ RSpec.describe Hyrax::HonorsThesisPresenter do
       'depositor_tesim' => user_key,
       'abstract_tesim' => ['an abstract'],
       'academic_concentration_tesim' => ['a concentration'],
-      'access_tesim' => ['an access right'],
+      'access_right_tesim' => ['an access right'],
       'advisor_display_tesim' => ['an advisor'],
       'award_tesim' => ['an award'],
       'date_issued_tesim' => ['a date'],

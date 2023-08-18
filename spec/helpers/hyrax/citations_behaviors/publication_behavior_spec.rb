@@ -68,7 +68,7 @@ RSpec.describe Hyrax::CitationsBehaviors::PublicationBehavior, type: :helper do
           'has_model_ssim' => ['Article'],
           'depositor_tesim' => user_key,
           'abstract_tesim' => ['an abstract'],
-          'access_tesim' => 'public',
+          'access_right_tesim' => ['public'],
           'creator_display_tesim' => ['a creator'],
           'date_created_tesim' => '2017-01-22',
           'date_issued_tesim' => '2017-01-22',
@@ -91,7 +91,7 @@ RSpec.describe Hyrax::CitationsBehaviors::PublicationBehavior, type: :helper do
           'has_model_ssim' => ['Article'],
           'depositor_tesim' => user_key,
           'abstract_tesim' => ['an abstract'],
-          'access_tesim' => 'public',
+          'access_right_tesim' => ['public'],
           'creator_display_tesim' => ['a creator'],
           'date_created_tesim' => '2017-01-22',
           'date_issued_tesim' => '2017-01-22'

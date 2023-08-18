@@ -13,7 +13,7 @@ RSpec.describe Hyrax::ArtworkPresenter do
       'title_tesim' => ['foo'],
       'human_readable_type_tesim' => ['Artwork'],
       'has_model_ssim' => ['Artwork'],
-      'access_tesim' => 'public',
+      'access_right_tesim' => ['public'],
       'date_created_tesim' => '2017-01-22',
       'date_issued_tesim' => '2017-01-22',
       'dcmi_type_tesim' => ['Image'],

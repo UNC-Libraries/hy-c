@@ -180,7 +180,7 @@ RSpec.describe Hyrax::DissertationForm do
         expect(subject['title']).to be_nil
         expect(subject['abstract']).to be_empty
         expect(subject['keyword']).to be_empty
-        expect(subject['access_right']).to be_nil
+        expect(subject['access_right']).to be_empty
         expect(subject['degree']).to be_nil
         expect(subject['member_of_collection_ids']).to be_empty
         expect(subject['on_behalf_of']).to eq 'Melissa'

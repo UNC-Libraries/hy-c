@@ -15,7 +15,7 @@ RSpec.describe Hyrax::ArticlePresenter do
       'has_model_ssim' => ['Article'],
       'depositor_tesim' => user_key,
       'abstract_tesim' => ['an abstract'],
-      'access_tesim' => 'public',
+      'access_right_tesim' => ['public'],
       'alternative_title_tesim' => ['my other title'],
       'bibliographic_citation_tesim' => ['a citation'],
       'creator_display_tesim' => ['a creator'],
@@ -70,7 +70,7 @@ RSpec.describe Hyrax::ArticlePresenter do
   it { is_expected.to delegate_method(:itemtype).to(:solr_document) }
 
   it { is_expected.to delegate_method(:abstract).to(:solr_document) }
-  it { is_expected.to delegate_method(:access).to(:solr_document) }
+  it { is_expected.to delegate_method(:access_right).to(:solr_document) }
   it { is_expected.to delegate_method(:alternative_title).to(:solr_document) }
   it { is_expected.to delegate_method(:bibliographic_citation).to(:solr_document) }
   it { is_expected.to delegate_method(:copyright_date).to(:solr_document) }
@@ -132,7 +132,7 @@ RSpec.describe Hyrax::ArticlePresenter do
 
     context 'with a custom access_right field' do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:access_right, 'public', {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:access_right, ['public'], {}).and_return(renderer)
       end
 
       it 'calls the AttributeRenderer' do

@@ -60,7 +60,7 @@ RSpec.describe Hyrax::MastersPaperPresenter do
 
   it { is_expected.to delegate_method(:abstract).to(:solr_document) }
   it { is_expected.to delegate_method(:academic_concentration).to(:solr_document) }
-  it { is_expected.to delegate_method(:access).to(:solr_document) }
+  it { is_expected.to delegate_method(:access_right).to(:solr_document) }
   it { is_expected.to delegate_method(:advisor_display).to(:solr_document) }
   it { is_expected.to delegate_method(:date_issued).to(:solr_document) }
   it { is_expected.to delegate_method(:dcmi_type).to(:solr_document) }
@@ -121,7 +121,7 @@ RSpec.describe Hyrax::MastersPaperPresenter do
 
     context 'with a custom access_right field' do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:access_right, 'access', {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:access_right, ['access'], {}).and_return(renderer)
       end
 
       it 'calls the AttributeRenderer' do

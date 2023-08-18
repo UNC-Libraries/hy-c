@@ -106,7 +106,7 @@ RSpec.feature 'Create a Dissertation', js: false do
       fill_in 'Additional affiliation', { with: 'UNC', id: 'dissertation_reviewers_attributes_0_other_affiliation' }
       select 'In Copyright', from: 'dissertation_rights_statement'
       fill_in 'Subject', with: 'test'
-      fill_in 'Rights Notes', with: 'some rights notes'
+      fill_in 'Rights notes', with: 'some rights notes'
 
       expect(page).to have_selector('#dissertation_language_label', visible: false)
       expect(page).to have_selector('#dissertation_license_label', visible: false)
@@ -152,7 +152,7 @@ RSpec.feature 'Create a Dissertation', js: false do
       expect(page).to have_content 'Degree Doctor of Philosophy'
       expect(page).to have_content 'DOI some-doi'
       expect(page).to have_content 'Resource type Dissertation'
-      expect(page).to have_content 'Access some access'
+      expect(page).to have_content 'Access right some access'
       expect(page).to have_content 'Location Chapel Hill, North Carolina, United States'
       expect(page).to have_content 'Graduation year 2018'
       expect(page).to have_content 'Identifier some id'
@@ -165,7 +165,7 @@ RSpec.feature 'Create a Dissertation', js: false do
       expect(page).to have_content 'Reviewer reviewer ORCID: reviewer orcid'
       expect(page).to have_content 'Rights statement In Copyright'
       expect(page).to have_content 'Subject test'
-      expect(page).to have_content 'Use some use'
+      expect(page).to have_content 'Rights notes some rights notes'
       expect(page).to_not have_content 'Language http://id.loc.gov/vocabulary/iso639-2/eng'
       expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
       expect(page).to_not have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'

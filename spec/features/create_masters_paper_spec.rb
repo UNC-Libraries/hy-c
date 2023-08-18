@@ -227,7 +227,7 @@ RSpec.feature 'Create a MastersPaper', js: false do
       fill_in 'Additional affiliation', { with: 'UNC', id: 'masters_paper_reviewers_attributes_0_other_affiliation' }
       select 'In Copyright', from: 'masters_paper_rights_statement'
       fill_in 'Subject', with: 'test'
-      fill_in 'Rights Notes', with: 'some rights notes'
+      fill_in 'Rights notes', with: 'some rights notes'
 
       expect(page).to have_selector('#masters_paper_language_label', visible: false)
       expect(page).to have_selector('#masters_paper_license_label', visible: false)
@@ -259,7 +259,7 @@ RSpec.feature 'Create a MastersPaper', js: false do
       first('.document-title', text: 'Test MastersPaper work').click
       expect(page).to have_content 'Abstract an abstract'
       expect(page).to have_content 'Academic concentration Clinical Nutrition'
-      expect(page).to have_content 'Access some access'
+      expect(page).to have_content 'Access right some access'
       expect(page).to have_content 'Advisor advisor ORCID: advisor orcid'
       expect(page).to have_content 'Affiliation:'
       expect(page).to have_content 'College of Arts and Sciences'
@@ -282,7 +282,7 @@ RSpec.feature 'Create a MastersPaper', js: false do
       expect(page).to have_content 'Reviewer reviewer ORCID: reviewer orcid'
       expect(page).to have_content 'Rights statement In Copyright'
       expect(page).to have_content 'Subject test'
-      expect(page).to have_content 'Use some use'
+      expect(page).to have_content 'Rights notes some rights notes'
       expect(page).to_not have_content 'Language http://id.loc.gov/vocabulary/iso639-2/eng'
       expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
       expect(page).to_not have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'

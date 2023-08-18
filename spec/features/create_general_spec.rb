@@ -156,7 +156,7 @@ RSpec.feature 'Create a General', js: false do
       fill_in 'ORCID', { with: 'translator orcid', id: 'general_translators_attributes_0_orcid' }
       select 'Department of Biology', from: 'general_translators_attributes_0_affiliation'
       fill_in 'Additional affiliation', { with: 'UNC', id: 'general_translators_attributes_0_other_affiliation' }
-      fill_in 'Rights Notes', with: 'some rights notes'
+      fill_in 'Rights notes', with: 'some rights notes'
 
       expect(page).to have_selector('#general_language_label', visible: false)
       expect(page).to have_selector('#general_license_label', visible: false)
@@ -187,7 +187,7 @@ RSpec.feature 'Create a General', js: false do
       first('.document-title', text: 'Test General work').click
       expect(page).to have_content 'Abstract an abstract'
       expect(page).to have_content 'Academic concentration Clinical Nutrition'
-      expect(page).to have_content 'Access some access'
+      expect(page).to have_content 'Access right some access'
       expect(page).to have_content 'Advisor advisor ORCID: advisor orcid'
       expect(page).to have_content 'Affiliation:'
       expect(page).to have_content 'College of Arts and Sciences'
@@ -246,7 +246,6 @@ RSpec.feature 'Create a General', js: false do
       expect(page).to have_content 'Subject test'
       expect(page).to have_content 'Table of contents contents'
       expect(page).to have_content 'Translator translator ORCID: translator orcid'
-      expect(page).to have_content 'Use some use'
       expect(page).to_not have_content 'Language http://id.loc.gov/vocabulary/iso639-2/eng'
       expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
       expect(page).to_not have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'

@@ -16,7 +16,7 @@ RSpec.describe Hyrax::GeneralPresenter do
       'depositor_tesim' => user_key,
       'abstract_tesim' => ['an abstract'],
       'academic_concentration_tesim' => ['a concentration'],
-      'access_tesim' => 'public',
+      'access_right_tesim' => ['public'],
       'advisor_display_tesim' => ['an advisor'],
       'alternative_title_tesim' => ['some title'],
       'arranger_display_tesim' => ['an arranger'],
@@ -91,7 +91,7 @@ RSpec.describe Hyrax::GeneralPresenter do
 
   it { is_expected.to delegate_method(:abstract).to(:solr_document) }
   it { is_expected.to delegate_method(:academic_concentration).to(:solr_document) }
-  it { is_expected.to delegate_method(:access).to(:solr_document) }
+  it { is_expected.to delegate_method(:access_right).to(:solr_document) }
   it { is_expected.to delegate_method(:advisor_display).to(:solr_document) }
   it { is_expected.to delegate_method(:alternative_title).to(:solr_document) }
   it { is_expected.to delegate_method(:arranger_display).to(:solr_document) }
@@ -182,7 +182,7 @@ RSpec.describe Hyrax::GeneralPresenter do
 
     context 'with a custom access_right field' do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:access_right, 'public', {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:access_right, ['public'], {}).and_return(renderer)
       end
 
       it 'calls the AttributeRenderer' do
