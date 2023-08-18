@@ -16,7 +16,7 @@ module Hyrax
 
     self.single_value_fields = [:title, :license]
 
-    self.admin_only_terms = [:dcmi_type, :admin_note, :description, :digital_collection, :doi]
+    self.admin_only_terms = [:dcmi_type, :admin_note, :description, :digital_collection, :doi, :access_right, :rights_notes]
 
     self.default_term_values = { dcmi_type: ['http://purl.org/dc/dcmitype/Text'],
                                  rights_statement: 'http://rightsstatements.org/vocab/InC/1.0/',

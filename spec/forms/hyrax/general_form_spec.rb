@@ -44,7 +44,7 @@ RSpec.describe Hyrax::GeneralForm do
 
     it {
       is_expected.to match_array [:dcmi_type, :degree_granting_institution, :digital_collection, :doi,
-                                  :admin_note]
+                                  :admin_note, :access_right, :rights_notes]
     }
   end
 

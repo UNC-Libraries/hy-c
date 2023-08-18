@@ -40,7 +40,7 @@ RSpec.describe Hyrax::ArticleForm do
     it {
       is_expected.to match_array [:dcmi_type, :bibliographic_citation, :copyright_date,
                                   :date_captured, :date_other, :digital_collection, :doi, :extent, :rights_holder,
-                                  :translator, :identifier, :admin_note]
+                                  :translator, :identifier, :admin_note, :access_right, :rights_notes]
     }
   end
 

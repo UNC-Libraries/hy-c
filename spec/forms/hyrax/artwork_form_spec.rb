@@ -32,7 +32,7 @@ RSpec.describe Hyrax::ArtworkForm do
   describe '#admin_only_terms' do
     subject { form.admin_only_terms }
 
-    it { is_expected.to match_array [:admin_note, :dcmi_type, :doi] }
+    it { is_expected.to match_array [:admin_note, :dcmi_type, :doi, :access_right, :rights_notes] }
   end
 
   describe 'default value set' do

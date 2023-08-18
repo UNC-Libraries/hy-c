@@ -37,7 +37,7 @@ RSpec.describe Hyrax::JournalForm do
 
     it {
       is_expected.to match_array [:dcmi_type, :alternative_title, :digital_collection, :doi,
-                                  :admin_note]
+                                  :admin_note, :access_right, :rights_notes]
     }
   end
 

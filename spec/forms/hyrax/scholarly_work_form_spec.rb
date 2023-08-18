@@ -36,7 +36,7 @@ RSpec.describe Hyrax::ScholarlyWorkForm do
 
     it {
       is_expected.to match_array [:dcmi_type, :description, :digital_collection, :doi,
-                                  :admin_note]
+                                  :admin_note, :access_right, :rights_notes]
     }
   end
 

@@ -36,7 +36,7 @@ RSpec.describe Hyrax::DataSetForm do
 
     it {
       is_expected.to match_array [:dcmi_type, :doi, :extent, :rights_holder, :rights_statement,
-                                  :copyright_date, :admin_note]
+                                  :copyright_date, :admin_note, :access_right, :rights_notes]
     }
   end
 
