@@ -18,8 +18,7 @@ module Hyrax
 
     self.single_value_fields = [:title, :license]
 
-    self.admin_only_terms = [:dcmi_type, :academic_concentration, :admin_note, :award,
-                             :degree_granting_institution, :doi, :extent, :access_right, :rights_notes]
+    self.admin_only_terms += [:academic_concentration, :award, :degree_granting_institution, :extent]
 
     self.default_term_values = { dcmi_type: ['http://purl.org/dc/dcmitype/Text'],
                                  rights_statement: 'http://rightsstatements.org/vocab/InC/1.0/',
