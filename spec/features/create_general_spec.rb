@@ -240,6 +240,7 @@ RSpec.feature 'Create a General', js: false do
       expect(page).to have_content 'Reviewer reviewer ORCID: reviewer orcid'
       expect(page).to have_content 'Related resource URL something.com'
       expect(page).to have_content 'Rights holder an author'
+      expect(page).to have_content 'Rights notes some rights notes'
       expect(page).to have_content 'Rights statement In Copyright'
       expect(page).to have_content 'Series a series'
       expect(page).to have_content 'Sponsor a sponsor'

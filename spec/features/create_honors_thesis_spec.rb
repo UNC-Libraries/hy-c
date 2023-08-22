@@ -220,6 +220,7 @@ RSpec.feature 'Create a HonorsThesis', js: false do
 
       first('.document-title', text: 'Test HonorsThesis work').click
       expect(page).to have_content 'Abstract an abstract'
+      expect(page).to have_content 'Access right some access'
       expect(page).to have_content 'Advisor advisor ORCID: advisor orcid'
       expect(page).to have_content 'Affiliation:'
       expect(page).to have_content 'College of Arts and Sciences'
