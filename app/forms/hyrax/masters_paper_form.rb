@@ -6,9 +6,9 @@ module Hyrax
     class_attribute :single_value_fields
 
     self.model_class = ::MastersPaper
-    self.terms += [:academic_concentration, :access, :admin_note, :advisor, :reviewer, :date_issued, :dcmi_type, :degree,
+    self.terms += [:academic_concentration, :admin_note, :advisor, :reviewer, :date_issued, :dcmi_type, :degree,
                    :degree_granting_institution, :doi, :extent, :graduation_year, :note,
-                   :use, :resource_type, :deposit_agreement, :agreement]
+                   :resource_type, :deposit_agreement, :agreement]
 
     self.terms -= [:contributor, :publisher, :identifier, :related_url, :source, :description, :date_created]
 
@@ -17,7 +17,7 @@ module Hyrax
 
     self.single_value_fields = [:title, :license]
 
-    self.admin_only_terms = [:dcmi_type, :access, :admin_note, :degree_granting_institution, :doi, :extent, :use]
+    self.admin_only_terms += [:degree_granting_institution, :extent]
     self.default_term_values = { dcmi_type: ['http://purl.org/dc/dcmitype/Text'],
                                  rights_statement: 'http://rightsstatements.org/vocab/InC/1.0/',
                                  language: ['http://id.loc.gov/vocabulary/iso639-2/eng'] }

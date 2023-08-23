@@ -35,8 +35,8 @@ RSpec.describe Hyrax::ScholarlyWorkForm do
     subject { form.admin_only_terms }
 
     it {
-      is_expected.to match_array [:dcmi_type, :access, :description, :digital_collection, :doi, :use,
-                                  :admin_note]
+      is_expected.to match_array [:dcmi_type, :description, :digital_collection, :doi,
+                                  :admin_note, :access_right, :rights_notes]
     }
   end
 

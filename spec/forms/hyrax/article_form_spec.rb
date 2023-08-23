@@ -24,11 +24,11 @@ RSpec.describe Hyrax::ArticleForm do
 
     it {
       is_expected.to match_array [:based_near, :keyword, :license, :rights_statement, :publisher, :subject,
-                                  :language, :identifier, :related_url, :resource_type, :access, :alternative_title,
+                                  :language, :identifier, :related_url, :resource_type, :alternative_title,
                                   :bibliographic_citation, :copyright_date, :date_captured, :date_other, :dcmi_type,
                                   :doi, :digital_collection, :edition, :extent, :funder, :issn,
                                   :journal_title, :journal_volume, :journal_issue, :note, :page_end, :page_start,
-                                  :peer_review_status, :place_of_publication, :rights_holder, :translator, :use,
+                                  :peer_review_status, :place_of_publication, :rights_holder, :translator,
                                   :language_label, :license_label, :rights_statement_label, :deposit_agreement,
                                   :agreement, :admin_note, :access_right, :rights_notes]
     }
@@ -38,9 +38,9 @@ RSpec.describe Hyrax::ArticleForm do
     subject { form.admin_only_terms }
 
     it {
-      is_expected.to match_array [:dcmi_type, :access, :bibliographic_citation, :copyright_date,
+      is_expected.to match_array [:dcmi_type, :bibliographic_citation, :copyright_date,
                                   :date_captured, :date_other, :digital_collection, :doi, :extent, :rights_holder,
-                                  :translator, :identifier, :use, :admin_note]
+                                  :translator, :identifier, :admin_note, :access_right, :rights_notes]
     }
   end
 
@@ -86,7 +86,7 @@ RSpec.describe Hyrax::ArticleForm do
         license: 'http://creativecommons.org/licenses/by/3.0/us/', # single-valued
         member_of_collection_ids: ['123456', 'abcdef'],
         abstract: ['an abstract'],
-        access: 'public', # single-valued
+        access_right: ['public'],
         alternative_title: ['my other title'],
         copyright_date: '2017', # single-valued
         date_issued: '2017-01-22', # single-valued
@@ -112,7 +112,7 @@ RSpec.describe Hyrax::ArticleForm do
                                            orcid: 'translator orcid',
                                            affiliation: 'Carolina Center for Genome Sciences',
                                            other_affiliation: 'another affiliation' } },
-        use: ['a use'],
+        rights_notes: ['a rights note'],
         language_label: [],
         license_label: [],
         rights_statement_label: ''
@@ -137,7 +137,7 @@ RSpec.describe Hyrax::ArticleForm do
       expect(subject['keyword']).to eq ['derp']
       expect(subject['member_of_collection_ids']).to eq ['123456', 'abcdef']
       expect(subject['abstract']).to eq ['an abstract']
-      expect(subject['access']).to eq 'public'
+      expect(subject['access_right']).to eq ['public']
       expect(subject['alternative_title']).to eq ['my other title']
       expect(subject['copyright_date']).to eq '2017'
       expect(subject['date_issued']).to eq '2017-01-22'
@@ -159,7 +159,7 @@ RSpec.describe Hyrax::ArticleForm do
       expect(subject['peer_review_status']).to eq 'in review'
       expect(subject['place_of_publication']).to eq ['durham']
       expect(subject['rights_holder']).to eq ['dean']
-      expect(subject['use']).to eq ['a use']
+      expect(subject['rights_notes']).to eq ['a rights note']
       expect(subject['language_label']).to eq ['English']
       expect(subject['license_label']).to eq ['Attribution 3.0 United States']
       expect(subject['rights_statement_label']).to eq 'In Copyright'

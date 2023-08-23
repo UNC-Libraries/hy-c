@@ -34,11 +34,12 @@ RSpec.describe MastersPaper do
       expect(subject).to respond_to(:license)
       expect(subject).to respond_to(:rights_statement)
       expect(subject).to respond_to(:resource_type)
+      expect(subject).to respond_to(:access_right)
+      expect(subject).to respond_to(:rights_notes)
 
       # Additional metadata
       expect(subject).to respond_to(:abstract)
       expect(subject).to respond_to(:academic_concentration)
-      expect(subject).to respond_to(:access)
       expect(subject).to respond_to(:admin_note)
       expect(subject).to respond_to(:advisors)
       expect(subject).to respond_to(:date_issued)
@@ -52,7 +53,6 @@ RSpec.describe MastersPaper do
       expect(subject).to respond_to(:graduation_year)
       expect(subject).to respond_to(:note)
       expect(subject).to respond_to(:reviewers)
-      expect(subject).to respond_to(:use)
       expect(subject).to respond_to(:language_label)
       expect(subject).to respond_to(:license_label)
       expect(subject).to respond_to(:rights_statement_label)

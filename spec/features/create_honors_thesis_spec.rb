@@ -178,7 +178,7 @@ RSpec.feature 'Create a HonorsThesis', js: false do
 
       # extra fields
       select 'Biostatistics', from: 'Academic Concentration'
-      fill_in 'Access', with: 'some access'
+      fill_in 'Access Right', with: 'some access'
       fill_in 'DOI', with: 'some-doi'
       fill_in 'Extent', with: 'some extent'
       find('#honors_thesis_based_near_attributes_0_id', visible: false).set('http://sws.geonames.org/4460162/')
@@ -189,7 +189,7 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       fill_in 'Related resource URL', with: 'something.com'
       select 'In Copyright', from: 'honors_thesis_rights_statement'
       fill_in 'Subject', with: 'test'
-      fill_in 'Use', with: 'some use'
+      fill_in 'Rights notes', with: 'some rights notes'
 
       expect(page).to have_selector('#honors_thesis_language_label', visible: false)
       expect(page).to have_selector('#honors_thesis_license_label', visible: false)
@@ -220,6 +220,7 @@ RSpec.feature 'Create a HonorsThesis', js: false do
 
       first('.document-title', text: 'Test HonorsThesis work').click
       expect(page).to have_content 'Abstract an abstract'
+      expect(page).to have_content 'Access right some access'
       expect(page).to have_content 'Advisor advisor ORCID: advisor orcid'
       expect(page).to have_content 'Affiliation:'
       expect(page).to have_content 'College of Arts and Sciences'
@@ -244,7 +245,6 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       expect(page).to have_content 'Related resource URL something.com'
       expect(page).to have_content 'Rights statement In Copyright'
       expect(page).to have_content 'Subject test'
-      expect(page).to have_content 'Use some use'
       expect(page).to_not have_content 'Language http://id.loc.gov/vocabulary/iso639-2/eng'
       expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
       expect(page).to_not have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'

@@ -13,10 +13,6 @@ class Article < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :access, predicate: ::RDF::Vocab::DC.accessRights, multiple: false do |index|
-    index.as :stored_searchable
-  end
-
   property :admin_note, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#AdminNote'), multiple: false do |index|
     index.as :stored_searchable
   end
@@ -124,10 +120,6 @@ class Article < ActiveFedora::Base
   end
 
   property :translators, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/trl'), class_name: 'Person' do |index|
-    index.as :stored_searchable
-  end
-
-  property :use, predicate: ::RDF::Vocab::DC11.rights do |index|
     index.as :stored_searchable
   end
 

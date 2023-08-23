@@ -42,10 +42,11 @@ RSpec.describe Dissertation do
       expect(subject).to respond_to(:identifier)
       expect(subject).to respond_to(:source)
       expect(subject).to respond_to(:resource_type)
+      expect(subject).to respond_to(:access_right)
+      expect(subject).to respond_to(:rights_notes)
 
       # Additional metadata
       expect(subject).to respond_to(:abstract)
-      expect(subject).to respond_to(:access)
       expect(subject).to respond_to(:admin_note)
       expect(subject).to respond_to(:advisors)
       expect(subject).to respond_to(:alternative_title)
@@ -60,7 +61,6 @@ RSpec.describe Dissertation do
       expect(subject).to respond_to(:note)
       expect(subject).to respond_to(:place_of_publication)
       expect(subject).to respond_to(:reviewers)
-      expect(subject).to respond_to(:use)
       expect(subject).to respond_to(:language_label)
       expect(subject).to respond_to(:license_label)
       expect(subject).to respond_to(:rights_statement_label)

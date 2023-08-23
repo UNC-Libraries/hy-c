@@ -16,7 +16,7 @@ RSpec.describe Hyrax::GeneralPresenter do
       'depositor_tesim' => user_key,
       'abstract_tesim' => ['an abstract'],
       'academic_concentration_tesim' => ['a concentration'],
-      'access_tesim' => 'public',
+      'access_right_tesim' => ['public'],
       'advisor_display_tesim' => ['an advisor'],
       'alternative_title_tesim' => ['some title'],
       'arranger_display_tesim' => ['an arranger'],
@@ -61,7 +61,7 @@ RSpec.describe Hyrax::GeneralPresenter do
       'sponsor_tesim' => ['a sponsor'],
       'table_of_contents_tesim' => ['contents of yon table'],
       'translator_display_tesim' => ['dean'],
-      'use_tesim' => ['a use'],
+      'rights_notes_tesim' => ['a rights note'],
       'language_label_tesim' => ['language'],
       'license_label_tesim' => ['license'],
       'rights_statement_label_tesim' => 'rights'
@@ -91,7 +91,7 @@ RSpec.describe Hyrax::GeneralPresenter do
 
   it { is_expected.to delegate_method(:abstract).to(:solr_document) }
   it { is_expected.to delegate_method(:academic_concentration).to(:solr_document) }
-  it { is_expected.to delegate_method(:access).to(:solr_document) }
+  it { is_expected.to delegate_method(:access_right).to(:solr_document) }
   it { is_expected.to delegate_method(:advisor_display).to(:solr_document) }
   it { is_expected.to delegate_method(:alternative_title).to(:solr_document) }
   it { is_expected.to delegate_method(:arranger_display).to(:solr_document) }
@@ -133,7 +133,7 @@ RSpec.describe Hyrax::GeneralPresenter do
   it { is_expected.to delegate_method(:sponsor).to(:solr_document) }
   it { is_expected.to delegate_method(:table_of_contents).to(:solr_document) }
   it { is_expected.to delegate_method(:translator_display).to(:solr_document) }
-  it { is_expected.to delegate_method(:use).to(:solr_document) }
+  it { is_expected.to delegate_method(:rights_notes).to(:solr_document) }
   it { is_expected.to delegate_method(:language_label).to(:solr_document) }
   it { is_expected.to delegate_method(:license_label).to(:solr_document) }
   it { is_expected.to delegate_method(:rights_statement_label).to(:solr_document) }
@@ -180,14 +180,14 @@ RSpec.describe Hyrax::GeneralPresenter do
       end
     end
 
-    context 'with a custom access field' do
+    context 'with a custom access_right field' do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:access, 'public', {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:access_right, ['public'], {}).and_return(renderer)
       end
 
       it 'calls the AttributeRenderer' do
         expect(renderer).to receive(:render)
-        presenter.attribute_to_html(:access)
+        presenter.attribute_to_html(:access_right)
       end
     end
 
@@ -663,14 +663,14 @@ RSpec.describe Hyrax::GeneralPresenter do
       end
     end
 
-    context 'with a custom use field' do
+    context 'with a custom rights_notes field' do
       before do
-        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:use, ['a use'], {}).and_return(renderer)
+        allow(Hyrax::Renderers::AttributeRenderer).to receive(:new).with(:rights_notes, ['a rights note'], {}).and_return(renderer)
       end
 
       it 'calls the AttributeRenderer' do
         expect(renderer).to receive(:render)
-        presenter.attribute_to_html(:use)
+        presenter.attribute_to_html(:rights_notes)
       end
     end
 

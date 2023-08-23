@@ -36,8 +36,8 @@ RSpec.describe Hyrax::JournalForm do
     subject { form.admin_only_terms }
 
     it {
-      is_expected.to match_array [:dcmi_type, :access, :alternative_title, :digital_collection, :doi, :use,
-                                  :admin_note]
+      is_expected.to match_array [:dcmi_type, :alternative_title, :digital_collection, :doi,
+                                  :admin_note, :access_right, :rights_notes]
     }
   end
 

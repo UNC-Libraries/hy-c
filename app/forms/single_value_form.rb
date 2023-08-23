@@ -5,7 +5,7 @@ class SingleValueForm < Hyrax::Forms::WorkForm
 
   # Field which will not be rendered to the work form
   class_attribute :admin_only_terms
-  self.admin_only_terms = Array.new
+  self.admin_only_terms = [:access_right, :admin_note, :dcmi_type, :doi, :rights_notes]
   # Map of fields to default values
   class_attribute :default_term_values
   self.default_term_values = Hash.new

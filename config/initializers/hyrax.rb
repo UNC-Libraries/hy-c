@@ -135,7 +135,7 @@ Hyrax.config do |config|
       :researcher_display,
       :reviewer_display,
       :translator_display,
-      :access,
+      :access_right,
       :alternative_title,
       :arrangers,
       :award,
@@ -169,13 +169,13 @@ Hyrax.config do |config|
       :peer_review_status,
       :place_of_publication,
       :rights_holder,
+      :rights_notes,
       :rights_statement_label,
       :series,
       :sponsor,
       :table_of_contents,
       :translator_display,
-      :url,
-      :use
+      :url
   ]
 
   # Template for your repository's NOID IDs

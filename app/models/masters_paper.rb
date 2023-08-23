@@ -21,10 +21,6 @@ class MastersPaper < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :access, predicate: ::RDF::Vocab::DC.accessRights, multiple: false do |index|
-    index.as :stored_searchable
-  end
-
   property :advisors, predicate: ::RDF::URI('http://id.loc.gov/vocabulary/relators/ths'), class_name: 'Person' do |index|
     index.as :stored_searchable
   end
@@ -81,10 +77,6 @@ class MastersPaper < ActiveFedora::Base
   end
 
   property :rights_statement_label, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#RightsStatementLabel'), multiple: false do |index|
-    index.as :stored_searchable
-  end
-
-  property :use, predicate: ::RDF::Vocab::DC11.rights do |index|
     index.as :stored_searchable
   end
 

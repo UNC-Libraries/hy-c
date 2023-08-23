@@ -23,9 +23,9 @@ RSpec.describe Hyrax::DissertationForm do
     subject { form.secondary_terms }
 
     it {
-      is_expected.to match_array [:abstract, :access, :advisor, :alternative_title, :based_near,
+      is_expected.to match_array [:abstract, :advisor, :alternative_title, :based_near,
                                   :dcmi_type, :degree, :degree_granting_institution, :doi, :graduation_year, :note,
-                                  :place_of_publication, :reviewer, :use, :contributor, :identifier, :subject,
+                                  :place_of_publication, :reviewer, :contributor, :identifier, :subject,
                                   :publisher, :language, :keyword, :rights_statement, :license, :resource_type,
                                   :language_label, :license_label, :rights_statement_label, :deposit_agreement,
                                   :agreement, :admin_note, :access_right, :rights_notes]
@@ -35,7 +35,7 @@ RSpec.describe Hyrax::DissertationForm do
   describe '#admin_only_terms' do
     subject { form.admin_only_terms }
 
-    it { is_expected.to match_array [:dcmi_type, :doi, :degree_granting_institution, :admin_note] }
+    it { is_expected.to match_array [:dcmi_type, :doi, :degree_granting_institution, :admin_note, :access_right, :rights_notes] }
   end
 
   describe 'default value set' do
@@ -81,7 +81,7 @@ RSpec.describe Hyrax::DissertationForm do
         thumbnail_id: '789',
         member_of_collection_ids: ['123456', 'abcdef'],
         abstract: ['an abstract'],
-        access: 'public', # single-valued
+        access_right: ['public'],
         advisors_attributes: { '0' => { name: 'advisor',
                                         orcid: 'advisor orcid',
                                         affiliation: 'Carolina Center for Genome Sciences',
@@ -99,7 +99,7 @@ RSpec.describe Hyrax::DissertationForm do
                                          orcid: 'reviewer orcid',
                                          affiliation: 'Carolina Center for Genome Sciences',
                                          other_affiliation: 'another affiliation' } },
-        use: ['a use'],
+        rights_notes: ['a rights note'],
         language_label: [],
         license_label: [],
         rights_statement_label: ''
@@ -122,7 +122,7 @@ RSpec.describe Hyrax::DissertationForm do
       expect(subject['visibility']).to eq 'open'
       expect(subject['member_of_collection_ids']).to eq ['123456', 'abcdef']
       expect(subject['abstract']).to eq ['an abstract']
-      expect(subject['access']).to eq 'public'
+      expect(subject['access_right']).to eq ['public']
       expect(subject['alternative_title']).to eq ['another title']
       expect(subject['date_issued']).to eq '2018-01-08'
       expect(subject['degree']).to eq 'MSIS'
@@ -132,7 +132,7 @@ RSpec.describe Hyrax::DissertationForm do
       expect(subject['graduation_year']).to eq '2017'
       expect(subject['note']).to be_empty
       expect(subject['place_of_publication']).to eq ['a place']
-      expect(subject['use']).to eq ['a use']
+      expect(subject['rights_notes']).to eq ['a rights note']
       expect(subject['language_label']).to eq ['English']
       expect(subject['license_label']).to eq ['Attribution 3.0 United States']
       expect(subject['rights_statement_label']).to eq 'In Copyright'
@@ -170,7 +170,7 @@ RSpec.describe Hyrax::DissertationForm do
           abstract: [''],
           keyword: [''],
           member_of_collection_ids: [''],
-          access: '',
+          access_right: [''],
           degree: '',
           on_behalf_of: 'Melissa'
         )
@@ -180,7 +180,7 @@ RSpec.describe Hyrax::DissertationForm do
         expect(subject['title']).to be_nil
         expect(subject['abstract']).to be_empty
         expect(subject['keyword']).to be_empty
-        expect(subject['access']).to be_nil
+        expect(subject['access_right']).to be_empty
         expect(subject['degree']).to be_nil
         expect(subject['member_of_collection_ids']).to be_empty
         expect(subject['on_behalf_of']).to eq 'Melissa'

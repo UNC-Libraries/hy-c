@@ -17,10 +17,6 @@ class General < ActiveFedora::Base
     index.as :stored_searchable
   end
 
-  property :access, predicate: ::RDF::Vocab::DC.accessRights, multiple: false do |index|
-    index.as :stored_searchable
-  end
-
   property :admin_note, predicate: ::RDF::URI('http://cdr.unc.edu/definitions/model#AdminNote'), multiple: false do |index|
     index.as :stored_searchable
   end
@@ -211,10 +207,6 @@ class General < ActiveFedora::Base
   end
 
   property :url, predicate: ::RDF::Vocab::SCHEMA.url do |index|
-    index.as :stored_searchable
-  end
-
-  property :use, predicate: ::RDF::Vocab::DC11.rights do |index|
     index.as :stored_searchable
   end
 
