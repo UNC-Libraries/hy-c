@@ -11,15 +11,19 @@
 // about supported directives.
 //
 //= require turbolinks
-//= require jquery
+//= require jquery3
 //= require 'blacklight_advanced_search'
 
-//= require jquery_ujs
-//= require dataTables/jquery.dataTables
-//= require dataTables/bootstrap/3/jquery.dataTables.bootstrap
+//= require rails-ujs
+//= require popper
+//= require twitter/typeahead
+//= require bootstrap
+//= require jquery.dataTables
+//= require dataTables.bootstrap4
 
 // Required by Blacklight
 //= require blacklight/blacklight
+//= require blacklight_gallery
 
 //= require hyrax
 //= require almond

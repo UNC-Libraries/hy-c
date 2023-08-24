@@ -15,7 +15,6 @@ class ApplicationController < ActionController::Base
   before_action :check_redirect
 
   protect_from_forgery with: :exception
-  skip_after_action :discard_flash_if_xhr
 
   # Catch various page not found and bad request exceptions
   rescue_from ActionController::RoutingError, with: :render_404
