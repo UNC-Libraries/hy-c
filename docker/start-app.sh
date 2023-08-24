@@ -14,5 +14,6 @@ bundle exec rake db:create && bundle exec rake db:migrate
 bundle exec rake setup:admin_role
 bundle exec rails hyrax:default_collection_types:create
 bundle exec rails hyrax:default_admin_set:create
-bundle exec sidekiq --daemon
+# sidekiq 6 does not support the daemon flag anymore, so we'll need to start it some other way
+# bundle exec sidekiq --daemon
 bundle exec puma -C config/puma.rb
