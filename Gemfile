@@ -57,6 +57,7 @@ gem 'sidekiq', '~> 6.0'
 gem 'sidekiq-status', '~> 3.0.0'
 # Turbolinks makes navigating your web application faster. Read more: https://github.com/turbolinks/turbolinks
 gem 'turbolinks', '~> 5.2.1'
+gem 'twitter-typeahead-rails', '0.11.1.pre.corejavascript'
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '~> 4.2.0'
 
