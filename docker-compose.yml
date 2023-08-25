@@ -10,7 +10,6 @@ services:
       - clamav
       - db
       - fedora
-      - redis
       - solr8
     environment:
       CLAMD_TCP_HOST: clamav
@@ -35,6 +34,42 @@ services:
       - hyrax_data:/opt/hyrax
     stdin_open: true
     tty: true
+    networks:
+      - hycdev
+  sidekiq:
+    build:
+      context: .
+    image: cazzerson/hy-c-universal
+    platform: linux/amd64
+    depends_on:
+      - clamav
+      - db
+      - fedora
+      - redis
+      - solr8
+      - web
+    command: sh /hyrax/docker/start-sidekiq.sh
+    environment:
+      CLAMD_TCP_HOST: clamav
+      DATABASE_URL: postgresql://db:5432
+      FEDORA_TEST_URL: http://fedora:8080/rest
+      FEDORA_DEV_URL: http://fedora:8080/rest
+      FITS_LOCATION: '/fits/fits-1.5.5/fits.sh'
+      HYRAX_DATABASE_PASSWORD: password
+      HYRAX_HOST: https://localhost:3000
+      REDIS_HOST: redis
+      REDIS_URL: redis://redis:6379/0
+      SOLR_DEV_URL: http://solr8:8983/solr/hydra-development
+      SOLR_TEST_URL: http://solr8:8983/solr/hydra-test
+      RIIIF_CACHE_PATH: /opt/hyrax/riiif_cache
+      RAILS_CACHE_PATH: /opt/rails-cache
+    volumes:
+      - mount-code:/hyrax
+      - mount-gems:/hyc-gems
+      - fcrepo_data:/opt/fedora/binaries
+      - hyrax_data:/opt/hyrax
+    networks:
+      - hycdev
   clamav:
     image: tiredofit/clamav
     ports:
@@ -43,6 +78,8 @@ services:
       - clam:/var/lib/clamav
       - hyrax_data:/opt/hyrax
       - mount-code:/hyrax
+    networks:
+      - hycdev
   db:
     image: postgres:14-alpine
     volumes:
@@ -52,6 +89,8 @@ services:
     environment:
       POSTGRES_USER: hyrax
       POSTGRES_PASSWORD: password
+    networks:
+      - hycdev
   fedora:
     image: cazzerson/fcrepo4:4.7.5
     ports:
@@ -62,6 +101,8 @@ services:
       CATALINA_OPTS: "-Djava.awt.headless=true -server -Xms1G -Xmx2G -XX:MaxNewSize=1G -XX:+HeapDumpOnOutOfMemoryError -Dfcrepo.modeshape.configuration=classpath:/config/file-simple/repository.json"
     stdin_open: true
     tty: true
+    networks:
+      - hycdev
   redis:
     image: redis:5.0.14
     environment:
@@ -71,6 +112,8 @@ services:
       - redis_data:/data
     ports:
       - "6379:6379"
+    networks:
+      - hycdev
   solr8:
     image: solr:8.11-slim
     volumes:
@@ -83,6 +126,8 @@ services:
       precreate-core hydra-test /opt/solr/server/solr/configsets/hy-c;
       exec solr -f
       "
+    networks:
+      - hycdev
 volumes:
   mount-code:
   mount-gems:
@@ -92,6 +137,12 @@ volumes:
   fcrepo_data:
   redis_data:
   hyrax_data:
+
+networks:
+  hycdev:
+    driver: bridge
+    driver_opts:
+      com.docker.network.bridge.name: br-hycdev
 
 x-mutagen:
   sync:
