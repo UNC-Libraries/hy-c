@@ -14,6 +14,7 @@ RSpec.describe Hyrax::Actors::FileActor do
   before do
     allow(Hyrax::VirusCheckerService).to receive(:file_has_virus?) { false }
     allow(RegisterToLongleafJob).to receive(:perform_later).and_return(nil)
+    allow(CharacterizeJob).to receive(:perform_later).and_return(nil)
   end
 
   it 'can be instantiated' do
@@ -21,8 +22,9 @@ RSpec.describe Hyrax::Actors::FileActor do
   end
 
   it 'can ingest a file' do
-    expect(CharacterizeJob).to receive(:perform_later)
     actor.ingest_file(job_wrapper)
+    expect(CharacterizeJob).to have_received(:perform_later)
+    expect(RegisterToLongleafJob).to have_received(:perform_later)
   end
 
   context 'with a file_set that fails validation' do
