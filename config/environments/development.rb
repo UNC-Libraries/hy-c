@@ -83,10 +83,10 @@ Rails.application.configure do
 
   # Tell rails that this application can be addressed as "web" in the dev environments
   config.hosts = [
-    IPAddr.new("0.0.0.0/0"), # All IPv4 addresses.
-    IPAddr.new("::/0"),      # All IPv6 addresses.
-    "localhost",             # The localhost reserved domain.
-    "web"   # Allow this to be addressed when running in containers via docker-compose.yml.
+    IPAddr.new('0.0.0.0/0'), # All IPv4 addresses.
+    IPAddr.new('::/0'),      # All IPv6 addresses.
+    'localhost',             # The localhost reserved domain.
+    'web'   # Allow this to be addressed when running in containers via docker-compose.yml.
   ]
 
   config.log_level = LogService.log_level

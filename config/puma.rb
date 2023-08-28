@@ -8,18 +8,18 @@
 # and maximum; this matches the default thread size of Active Record.
 # More: https://devcenter.heroku.com/articles/deploying-rails-applications-with-the-puma-web-server#threads
 #
-threads_count = ENV.fetch("RAILS_MAX_THREADS") { 5 }
+threads_count = ENV.fetch('RAILS_MAX_THREADS') { 5 }
 threads threads_count, threads_count
 
 # Specifies the `port` that Puma will listen on to receive requests; default is 3000.
 # More: https://devcenter.heroku.com/articles/deploying-rails-applications-with-the-puma-web-server#port
 #
-port        ENV.fetch("PORT") { 3000 }
+port        ENV.fetch('PORT') { 3000 }
 
 # Specifies the `environment` that Puma will run in.
 # More: https://devcenter.heroku.com/articles/deploying-rails-applications-with-the-puma-web-server#environment
 #
-environment ENV.fetch("RAILS_ENV") { "development" }
+environment ENV.fetch('RAILS_ENV') { 'development' }
 
 # Specifies the number of `workers` to boot in clustered mode.
 # Workers are forked webserver processes. If using threads and workers together
@@ -28,7 +28,7 @@ environment ENV.fetch("RAILS_ENV") { "development" }
 # processes).
 # More: https://devcenter.heroku.com/articles/deploying-rails-applications-with-the-puma-web-server#workers
 #
-workers ENV.fetch("WEB_CONCURRENCY") { 2 }
+workers ENV.fetch('WEB_CONCURRENCY') { 2 }
 
 # Use the `preload_app!` method when specifying a `workers` number.
 # This directive tells Puma to first boot the application and load code
@@ -43,7 +43,7 @@ plugin :tmp_restart
 
 ########## Aditional Configurations ##########
 
-# An internal health check to verify that workers have checked in to the master
+# An internal health check to verify that workers have checked in to the main
 # process within a specific time frame. If this time is exceeded, the worker
 # will automatically be rebooted. Defaults to 60s.
 #
