@@ -5,7 +5,7 @@ source scl_source enable devtoolset-8
 
 mkdir -p /opt/hyrax/log/
 echo "#### Ensure rubygems system is up to date before bundle installing"
-gem install rubygems-update -v 3.4.19
+gem install rubygems-update -v '~> 3.4'
 update_rubygems  >> /dev/null
 
 echo "#### Bundle install"

@@ -21,7 +21,7 @@ until $(curl --output /dev/null --silent --head --fail $SERVICE_URL); do
 done
 
 echo "#### Ensure rubygems system is up to date before bundle installing"
-gem install rubygems-update -v 3.4.19
+gem install rubygems-update -v '~> 3.4'
 update_rubygems >> /dev/null
 
 echo "#### Starting sidekiq"
