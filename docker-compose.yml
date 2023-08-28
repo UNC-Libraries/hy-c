@@ -11,20 +11,8 @@ services:
       - db
       - fedora
       - solr8
-    environment:
-      CLAMD_TCP_HOST: clamav
-      DATABASE_URL: postgresql://db:5432
-      FEDORA_TEST_URL: http://fedora:8080/rest
-      FEDORA_DEV_URL: http://fedora:8080/rest
-      FITS_LOCATION: '/fits/fits-1.5.5/fits.sh'
-      HYRAX_DATABASE_PASSWORD: password
-      HYRAX_HOST: https://localhost:3000
-      REDIS_HOST: redis
-      REDIS_URL: redis://redis:6379/0
-      SOLR_DEV_URL: http://solr8:8983/solr/hydra-development
-      SOLR_TEST_URL: http://solr8:8983/solr/hydra-test
-      RIIIF_CACHE_PATH: /opt/hyrax/riiif_cache
-      RAILS_CACHE_PATH: /opt/rails-cache
+    env_file:
+      - docker/.env
     ports:
       - 3000:3000
     volumes:
@@ -49,20 +37,8 @@ services:
       - solr8
       - web
     command: sh /hyrax/docker/start-sidekiq.sh
-    environment:
-      CLAMD_TCP_HOST: clamav
-      DATABASE_URL: postgresql://db:5432
-      FEDORA_TEST_URL: http://fedora:8080/rest
-      FEDORA_DEV_URL: http://fedora:8080/rest
-      FITS_LOCATION: '/fits/fits-1.5.5/fits.sh'
-      HYRAX_DATABASE_PASSWORD: password
-      HYRAX_HOST: https://localhost:3000
-      REDIS_HOST: redis
-      REDIS_URL: redis://redis:6379/0
-      SOLR_DEV_URL: http://solr8:8983/solr/hydra-development
-      SOLR_TEST_URL: http://solr8:8983/solr/hydra-test
-      RIIIF_CACHE_PATH: /opt/hyrax/riiif_cache
-      RAILS_CACHE_PATH: /opt/rails-cache
+    env_file:
+      - docker/.env
     volumes:
       - mount-code:/hyrax
       - mount-gems:/hyc-gems
