@@ -29,7 +29,7 @@ RSpec.describe CreateDerivativesJob do
   let(:temp_storage_path) { File.join(fixture_path, 'tmp') }
   let(:data_storage_path) { File.join(fixture_path, 'tmp') }
 
-  context "filepath parameter" do
+  context 'filepath parameter' do
     let(:file_set) { FactoryBot.create(:file_set) }
 
     let(:file) do

@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-require 'rails_helper' 
+require 'rails_helper'
 require Rails.root.join('app/overrides/jobs/change_depositor_event_job_override.rb')
 
 RSpec.describe ChangeDepositorEventJob do

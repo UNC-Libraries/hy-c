@@ -17,13 +17,13 @@ RSpec.describe Hyrax::WorkflowPresenter do
 
   let(:workflow) { FactoryBot.create(:workflow, name: 'testing') }
 
-  describe "#actions" do
+  describe '#actions' do
     subject { presenter.actions }
 
     context 'with a Sipity::Entity in pending_deletion state' do
       before do
         allow(entity).to receive(:workflow_state_name).and_return('pending_deletion')
-        allow(Hyrax::Workflow::PermissionQuery).to receive(:scope_permitted_workflow_actions_available_for_current_state).and_return([Sipity::WorkflowAction.new(name: "complete", workflow: workflow)])
+        allow(Hyrax::Workflow::PermissionQuery).to receive(:scope_permitted_workflow_actions_available_for_current_state).and_return([Sipity::WorkflowAction.new(name: 'complete', workflow: workflow)])
         allow(presenter).to receive(:sipity_entity).and_return(entity)
       end
 
@@ -35,8 +35,8 @@ RSpec.describe Hyrax::WorkflowPresenter do
         let(:admin_user) { FactoryBot.create(:admin) }
         let(:ability) { Ability.new(admin_user) }
 
-        it "user has normal actions" do
-          allow(I18n).to receive(:t).with('hyrax.workflow.testing.complete', default: 'Complete').and_return("Approve")
+        it 'user has normal actions' do
+          allow(I18n).to receive(:t).with('hyrax.workflow.testing.complete', default: 'Complete').and_return('Approve')
           is_expected.to eq [['complete', 'Approve']]
         end
       end
