@@ -25,7 +25,7 @@ RSpec.describe Hyrax::WorkflowPresenter do
         allow(entity).to receive(:workflow_state_name).and_return('withdrawn')
         allow(presenter).to receive(:sipity_entity).and_return(entity)
       end
-      it { is_expected.to eq '<span class="state state-withdrawn label label-primary">Withdrawn</span>' }
+      it { is_expected.to eq '<span class="state state-withdrawn badge badge-primary">Withdrawn</span>' }
     end
   end
 
