@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-# https://github.com/samvera/hyrax/blob/v2.9.6/app/models/hyrax/statistic.rb
+# https://github.com/samvera/hyrax/blob/hyrax-v4.0.0/app/models/hyrax/statistic.rb
 Hyrax::Statistic.class_eval do
   class << self
     # [hyc-override]
@@ -10,30 +10,6 @@ Hyrax::Statistic.class_eval do
 
     def raise_timeouts=(value)
       @@raise_timeouts = value
-    end
-
-    # [hyc-override] add old id to filter query if work was migrated
-    # Hyrax::Download is sent to Hyrax::Analytics.profile as #hyrax__download
-    # see Legato::ProfileMethods.method_name_from_klass
-    def ga_statistics(start_date, object)
-      path = polymorphic_path(object)
-      profile = Hyrax::Analytics.profile
-      unless profile
-        Rails.logger.error('Google Analytics profile has not been established. Unable to fetch statistics.')
-        return []
-      end
-
-      # check if work was migrated
-      redirect_path = BoxcToHycRedirectService.redirect_lookup('new_path', path.split('/')[-1])
-
-      path = "#{path}|/record/uuid:#{redirect_path['uuid']}" if redirect_path
-
-      # [hyc-override] https://github.com/samvera/hyrax/issues/5955
-      profile.hyrax__pageview(sort: 'date',
-                              start_date: start_date,
-                              end_date: Date.yesterday,
-                              limit: 10_000)
-             .for_path(path)
     end
 
     private
