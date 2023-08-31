@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-# [hyc-override]
+# [hyc-override] https://github.com/samvera/hyrax/blob/hyrax-v4.0.0/app/presenters/hyrax/workflow_presenter.rb
 module Hyrax
   class WorkflowPresenter
     include ActionView::Helpers::TagHelper
@@ -37,8 +37,7 @@ module Hyrax
 
     def badge
       return unless state
-
-      tag.span(state_label, class: "state state-#{state} label label-primary")
+      tag.span(state_label, class: "state state-#{state} badge badge-primary")
     end
 
     # [hyc-override] Add check to display message to MFA workflow depositor
@@ -71,7 +70,7 @@ module Hyrax
 
     def sipity_entity
       Sipity::Entity(solr_document)
-    rescue PowerConverter::ConversionError
+    rescue Sipity::ConversionError
       nil
     end
   end
