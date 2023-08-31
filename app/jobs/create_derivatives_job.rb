@@ -24,7 +24,7 @@ class CreateDerivativesJob < Hyrax::ApplicationJob
     file_set.parent.update_index if parent_needs_reindex?(file_set)
 
     # [hyc-override] this is the last job, so cleanup the uploaded file
-    cleanup_uploaded_file(filepath)
+    cleanup_uploaded_file(filepath) unless filepath.nil?
   end
 
   # [hyc-override] Deletes the uploaded file if it is in the uploaded_files dir
