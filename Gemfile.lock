@@ -1,7 +1,7 @@
 GIT
   remote: https://github.com/UNC-Libraries/hyrax.git
-  revision: 815e0abaacf9f331a5640c5d6129661d01eadf75
-  tag: hyrax-v4.0.0
+  revision: bd2aa55168e8c6e4205c08d3d21b3342c8264fab
+  branch: unc-hyrax-4-development
   specs:
     hyrax (4.0.0)
       active-fedora (~> 14.0)
@@ -154,7 +154,7 @@ GEM
     awesome_nested_set (3.5.0)
       activerecord (>= 4.0.0, < 7.1)
     aws-eventstream (1.2.0)
-    aws-partitions (1.810.0)
+    aws-partitions (1.815.0)
     aws-sdk-core (3.181.0)
       aws-eventstream (~> 1, >= 1.0.2)
       aws-partitions (~> 1, >= 1.651.0)
@@ -163,7 +163,7 @@ GEM
     aws-sdk-kms (1.71.0)
       aws-sdk-core (~> 3, >= 3.177.0)
       aws-sigv4 (~> 1.1)
-    aws-sdk-s3 (1.133.0)
+    aws-sdk-s3 (1.134.0)
       aws-sdk-core (~> 3, >= 3.181.0)
       aws-sdk-kms (~> 1)
       aws-sigv4 (~> 1.6)
@@ -412,7 +412,7 @@ GEM
       retriable (>= 2.0, < 4.a)
       rexml
       webrick
-    google-apis-drive_v3 (0.43.0)
+    google-apis-drive_v3 (0.44.0)
       google-apis-core (>= 0.11.0, < 2.a)
     googleauth (1.7.0)
       faraday (>= 0.17.3, < 3.a)
