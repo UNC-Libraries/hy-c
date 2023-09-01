@@ -41,6 +41,7 @@ RSpec.describe CreateDerivativesJob do
     end
 
     before do
+      allow(Hyrax::VirusCheckerService).to receive(:file_has_virus?) { false }
       file_set.original_file = file
       file_set.save!
     end
