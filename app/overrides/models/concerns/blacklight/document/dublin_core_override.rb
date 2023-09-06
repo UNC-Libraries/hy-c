@@ -1,24 +1,9 @@
-# [hyc-override] override file from blacklight gem
 # frozen_string_literal: true
-
-require 'builder'
-
-# This module provides Dublin Core export based on the document's semantic values
-module Blacklight::Document::DublinCore
+# [hyc-override] override file from blacklight gem
+Blacklight::Document::DublinCore.module_eval do
   include HycHelper
 
-  def self.extended(document)
-    # Register our exportable formats
-    Blacklight::Document::DublinCore.register_export_formats(document)
-  end
-
-  def self.register_export_formats(document)
-    document.will_export_as(:xml)
-    document.will_export_as(:dc_xml, 'text/xml')
-    document.will_export_as(:oai_dc_xml, 'text/xml')
-  end
-
-  # added thumbnail as separate field to help with ordering
+  # [hyc-override] added thumbnail as separate field to help with ordering
   def dublin_core_field_names
     [:contributor, :coverage, :creator, :date, :description, :format, :identifier, :language, :publisher, :relation,
      :rights, :source, :subject, :title, :type, :thumbnail]
@@ -80,18 +65,9 @@ module Blacklight::Document::DublinCore
     xml.target!
   end
 
-  alias_method :export_as_xml, :export_as_oai_dc_xml
-  alias_method :export_as_dc_xml, :export_as_oai_dc_xml
-
-  # Used by ruby-oai gem to determine if a status=deleted header should be added.
+  # [hyc-override] Used by ruby-oai gem to determine if a status=deleted header should be added.
   # See OAI::Provider::Response::RecordResponse
   def deleted?
     fetch('workflow_state_name_ssim', nil)&.include?('withdrawn')
-  end
-
-  private
-
-  def dublin_core_field_name?(field)
-    dublin_core_field_names.include? field.to_sym
   end
 end
