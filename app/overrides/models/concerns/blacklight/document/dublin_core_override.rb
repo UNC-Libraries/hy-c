@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-# [hyc-override] override file from blacklight gem
+# [hyc-override] https://github.com/projectblacklight/blacklight/tree/v7.33.1/app/models/concerns/blacklight/document/dublin_core.rb
 Blacklight::Document::DublinCore.module_eval do
   include HycHelper
 
