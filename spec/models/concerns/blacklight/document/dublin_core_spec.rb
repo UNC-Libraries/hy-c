@@ -5,22 +5,6 @@ RSpec.describe 'Blacklight::Document::DublinCore' do
   let(:work_solr) { work.to_solr }
   let(:document) { SolrDocument.new(work_solr) }
 
-  # before(:all) do
-  #   @mock_class = Class.new do
-  #     include SolrDocument
-  #   end
-  #   @mock_class.use_extension(Blacklight::Document::DublinCore)
-  #   @mock_class.field_semantics.merge!(
-  #     title: :title_tsim,
-  #     non_dc_title: :title_tsim,
-  #     creator: :creator_display_tesim,
-  #     contributor: :translator_display_tesim,
-  #     source: ['journal_title_tesim', 'journal_volume_tesim', 'journal_issue_tesim'],
-  #     identifier: :doi_tesim,
-  #     thumbnail: :thumbnail_path_ss
-  #   )
-  # end
-
   describe '#dublin_core_field_names' do
     let(:work) { General.new }
 
