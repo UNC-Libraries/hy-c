@@ -39,11 +39,6 @@ SimpleCov.start 'rails' do
 end
 
 require 'capybara/rspec'
-# Temporarily fix chromedriver version, as newer versions are not accessible from the original
-# download path. We could revisit this when we are on ruby 3 and there may be appropriate
-# versions of selenium available
-require 'webdrivers'
-Webdrivers::Chromedriver.required_version = '114.0.5735.90'
 require 'webmock/rspec'
 require 'shoulda/matchers'
 Shoulda::Matchers.configure do |config|

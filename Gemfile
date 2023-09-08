@@ -89,6 +89,6 @@ group :test do
   gem 'selenium-webdriver', '~> 4.8'
   gem 'shoulda-matchers', '~> 5.1.0'
   gem 'simplecov'
-  gem 'webdrivers'
+  gem 'webdrivers', '~> 5.3'
   gem 'webmock', '~> 3.14.0'
 end
