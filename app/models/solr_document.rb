@@ -56,10 +56,6 @@ class SolrDocument
     self['academic_concentration_tesim']
   end
 
-  def access
-    self['access_tesim']
-  end
-
   def admin_note
     self['admin_note_tesim']
   end
@@ -338,9 +334,5 @@ class SolrDocument
 
   def url
     self['url_tesim']
-  end
-
-  def use
-    self['use_tesim']
   end
 end
