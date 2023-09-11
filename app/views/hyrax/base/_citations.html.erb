@@ -1,34 +1,35 @@
-<%# [hyc-override] Overriding partial in hyrax to change citations to a modal %>
-<%# [hyc-override] Add link to request a screen-reader accessible copy %>
+<%# [hyc-override] https://github.com/samvera/hyrax/tree/hyrax-v4.0.0/app/views/hyrax/base/_citations.html.erb %>
+<%# [hyc-override] Overriding partial in hyrax to change citations to a modal instead of a link to another page %>
+<%# [hyc-override] Note for future hyrax updates: this file is almost completely different from the original %>
 <div class="citations">
   <% if Hyrax.config.citations? %>
     <button class="btn btn-default" data-toggle="modal" data-target="#citations-modal"><%= t(".citations") %></button>
   <% end %>
+  <%# [hyc-override] Add link to request a screen-reader accessible copy %>
   <a class="btn btn-default access-request" href="https://blogs.lib.unc.edu/cdr/index.php/accessibility-request">
     Request Version for Screen Reader</a>
 </div>
 
 <div class="modal fade" id="citations-modal" tabindex="-1" role="dialog" aria-labelledby="citations-modal-title" aria-hidden="true">
-  <div class="modal-dialog" role="document">
+  <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-        <h5 class="modal-title" id="citations-modal-title"><%= t("hyrax.citations.citation") %></h5>
+        <h4 class="modal-title" id="citations-modal-title"><%= t('hyrax.citations.citation') %></h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="<%= t('hyrax.dashboard.heading_actions.close') %>"><span aria-hidden="true">&times;</span></button>
       </div>
       <div class="modal-body unc-modal">
+        <%# [hyc-override] section is loosely based on: https://github.com/samvera/hyrax/blob/hyrax-v4.0.0/app/views/hyrax/citations/work.html.erb %>
         <div class="cite">
-          <h4 class="text-center">MLA</h4>
+          <h4>MLA</h4>
           <span class="mla-citation"><%= export_as_mla_citation(presenter) %></span>
         </div>
         <div class="cite">
-          <h4 class="text-center">APA</h4>
+          <h4>APA</h4>
           <span class="apa-citation"><%= export_as_apa_citation(presenter) %></span>
         </div>
         <div class="cite">
-          <h4 class="text-center">Chicago</h4>
-          <span class="chicago-citation "><%= export_as_chicago_citation(presenter) %></span>
+          <h4>Chicago</h4>
+          <span class="chicago-citation"><%= export_as_chicago_citation(presenter) %></span>
         </div>
         <ul class="list-inline">
           <li><%= link_to t('.endnote'), polymorphic_path([main_app, presenter], format: 'endnote') %></li>
