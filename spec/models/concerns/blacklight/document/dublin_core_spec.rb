@@ -53,6 +53,7 @@ RSpec.describe 'Blacklight::Document::DublinCore' do
         puts "Result: #{document.export_as_oai_dc_xml}"
         creators = xml_doc.xpath('//dc:creator', 'dc' => 'http://purl.org/dc/elements/1.1/').map(&:text)
         expect(creators).to eq ['User1, B', 'User0, D', 'User3, C', 'User4, A']
+        # Affiliations are captured as dc:contributor fields for creators
         affiliations = xml_doc.xpath('//dc:contributor', 'dc' => 'http://purl.org/dc/elements/1.1/').map(&:text)
         expect(affiliations).to eq ['School of Medicine, Carolina Center for Genome Sciences']
       end
@@ -69,9 +70,10 @@ RSpec.describe 'Blacklight::Document::DublinCore' do
         )
       }
 
-      it 'returns xml document with contributors in index order, and no affiliation' do
+      it 'returns xml document with contributors in index order' do
         xml_doc = Nokogiri::XML(document.export_as_oai_dc_xml)
         contributors = xml_doc.xpath('//dc:contributor', 'dc' => 'http://purl.org/dc/elements/1.1/').map(&:text)
+        # No affiliation is captured under dc:contributor for people objects that map to dc:contributor
         expect(contributors).to eq ['User1, B', 'User4, A']
       end
     end
@@ -98,7 +100,7 @@ RSpec.describe 'Blacklight::Document::DublinCore' do
         work_solr['thumbnail_path_ss'] = '/downloads/123456?file=thumbnail'
       end
 
-      it 'returns xml document with contributors in index order, and no affiliation' do
+      it 'returns record, thumbnail and download urls as identifiers' do
         xml_doc = Nokogiri::XML(document.export_as_oai_dc_xml)
         identifiers = xml_doc.xpath('//dc:identifier', 'dc' => 'http://purl.org/dc/elements/1.1/').map(&:text)
         # Contains an identifier to the resource itself in addition to the thumb/download links
