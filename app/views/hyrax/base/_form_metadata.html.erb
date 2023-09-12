@@ -1,3 +1,4 @@
+<%# [hyc-override] https://github.com/samvera/hyrax/tree/hyrax-v4.0.0/app/views/hyrax/base/_form_metadata.html.erb %>
 <%# [hyc-override] Overriding partial from gem to allow for suppressed fields only visible to admins %>
 <%# [hyc-override] Overriding display of file img/video metadata. Move to bottom of page %>
         <div class="base-terms">
@@ -14,7 +15,7 @@
   <%# [hyc-override] Overriding aria-expaneded, set to "false" if JS is turned on %>
           <%= link_to t('hyrax.works.form.additional_fields'),
                       '#extended-terms',
-                      class: 'btn btn-default additional-fields',
+                      class: 'btn btn-secondary additional-fields',
                       data: { toggle: 'collapse' },
                       role: "button",
                       'aria-expanded'=> "true",
