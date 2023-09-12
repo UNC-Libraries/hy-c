@@ -1,4 +1,4 @@
-<%#  [hyc-override] Overriding hyrax default to make add/remove buttons keyboard accessible %>
+<%# [hyc-override] https://github.com/samvera/hyrax/tree/hyrax-v4.0.0/app/views/hyrax/base/_form_child_work_relationships.html.erb %>
 <%# Form UI behavior code and details;
 Code:
   app/assets/javascripts/hyrax/relationships
@@ -21,10 +21,11 @@ HTML Properties:
                           'autocomplete-url' => Rails.application.routes.url_helpers.qa_path + '/search/find_works',
                           'exclude-work': f.object.model.id.to_s # exclude this item from the result set.
                       } %>
-    <button type="button" class="btn btn-primary" tabindex="0" data-behavior="add-relationship"><%= t('.add') %></button>
+    <%# [hyc-override] Change to button and add tabindex to button to make it keyboard accessible %>
+    <button type="button" class="btn btn-secondary ml-2" tabindex="0" data-behavior="add-relationship"><%= t('.add') %></button>
   </div>
-  <div class="message has-warning hidden"></div>
-  <div style="margin-top: 10px">
+  <div class="message has-warning"></div>
+  <div class="my-4">
     <%= link_to t('.attach_new_work'), polymorphic_path([main_app, :new, :hyrax, :parent, curation_concern.model_name.singular.to_sym], parent_id: curation_concern.id), target: "_blank", class: 'btn btn-primary' %>
   </div>
   <table class="table table-striped">
@@ -43,6 +44,7 @@ HTML Properties:
 <script type="text/x-tmpl" id="tmpl-child-work">
 <tr>
   <td>{%= o.title %}</td>
+  <%# [hyc-override] Add tab index to make button keyboard accessible %>
   <td><button type="button" class="btn btn-danger" tab-index="0" data-behavior="remove-relationship" data-confirm-text="<%= t('.confirm.text') %>" data-confirm-cancel="<%= t('.confirm.cancel') %>" data-confirm-remove="<%= t('.confirm.remove') %>"><%= t('.actions.remove') %></button></td>
 </tr>
 </script>
