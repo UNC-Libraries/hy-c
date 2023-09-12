@@ -1,7 +1,7 @@
-<%# https://github.com/samvera/hyrax/blob/v3.4.2/app/views/hyrax/base/_currently_shared.html.erb %>
+<%# hyc-override] https://github.com/samvera/hyrax/tree/hyrax-v4.0.0/app/views/hyrax/base/_currently_shared.html.erb %>
 <% permission_service = Hyrax::EditPermissionsService.build_service_object_from(form: f, ability: current_ability) %>
 
-<h2><%= t('.currently_sharing') %></h2>
+<h2 class="h3 mt-4"><%= t('.currently_sharing') %></h2>
 
 <table class="table table-bordered">
   <tr>
@@ -11,8 +11,8 @@
   <tr id="file_permissions">
     <td>
       <%# [hyc-override] Overriding to make depositor a facet search and not link to user profile %>
-      <%= label_tag :owner_access, class: "control-label" do %>
-        <%= t('.depositor') %> (<span id="file_owner" data-depositor="<%= permission_service.depositor %>"><%= link_to permission_service.depositor, main_app.search_catalog_path(f: { depositor_ssim: [permission_service.depositor]}) %></span>)
+      <%= label_tag :owner_access, class: "col-form-label" do %>
+        Depositor (<span id="file_owner" data-depositor="<%= permission_service.depositor %>"><%= link_to permission_service.depositor, main_app.search_catalog_path(f: { depositor_ssim: [permission_service.depositor]}) %></span>)
       <% end %>
     </td>
     <td>
@@ -25,7 +25,7 @@
     <% permission_service.with_applicable_permission(permission_hash: permission_fields.object.to_hash) do |permission| %>
     <tr>
       <td>
-        <%= permission_fields.label :agent_name, class: "control-label" do %>
+        <%= permission_fields.label :agent_name, class: "col-form-label" do %>
           <%= user_display_name_and_key(permission.name) %>
           <%= permission.granted_by_html_hint %>
         <% end %>
