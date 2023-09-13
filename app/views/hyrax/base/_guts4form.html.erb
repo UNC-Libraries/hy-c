@@ -21,14 +21,8 @@
       </ul>
 
       <!-- Tab panes -->
-      <div class="tab-content">
+      <div class="tab-content card">
         <% (tabs - ['share']).each_with_index do | tab, i | %>
-          <% if i == 0 %>
-            <div role="tabpanel" class="tab-pane active" id="<%= tab %>">
-          <% else %>
-            <div role="tabpanel" class="tab-pane" id="<%= tab %>">
-          <% end %>
-
           <%# [hyc-override] only show files partial on metadata page %>
           <% if tab == 'metadata' %>
             <div class="table-responsive">
@@ -37,7 +31,8 @@
             <hr class="file-upload-divider">
           <% end %>
 
-          <%# [hyc-override] Don't add undisplayable "files" tab text to dom %>
+          <div role="tabpanel" class="tab-pane <% if i == 0 %>show active<% end %>" id="<%= tab %>">
+            <%# [hyc-override] Don't add undisplayable "files" tab text to dom %>
             <div class="form-tab-content">
               <% # metadata_tab is sometimes provided %>
               <%= yield "#{tab}_tab".to_sym if content_for? "#{tab}_tab".to_sym %>
