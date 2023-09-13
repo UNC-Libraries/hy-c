@@ -1,5 +1,6 @@
-<%# [hyc-override] Overriding partial in hyrax gem in order to change the workflow action panel %>
-<div class="col-xs-12">
+<%# [hyc-override] https://github.com/samvera/hyrax/tree/hyrax-v4.0.0/app/views/hyrax/base/_workflow_actions_widget.erb %>
+<%# [hyc-override] Overriding partial in hyrax gem in order to change the workflow action panel (most of file is additions) %>
+<div class="col-12">
   <div class="workflow-actions">
     <%= render 'workflow_actions', presenter: @presenter if @presenter.workflow.actions.present? &&
         @presenter.workflow.actions.select{|action| action[0] == 'request_deletion'}.blank? %>
