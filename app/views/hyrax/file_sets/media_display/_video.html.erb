@@ -1,6 +1,4 @@
-<%# [hyc-override] No thumbnail when not showing download link %>
-<%# [hyc-override] Style download link %>
-<%# [hyc-override] Include missing data on link for analytics %>
+<%# [hyc-override] https://github.com/samvera/hyrax/tree/hyrax-v4.0.0/app/views/hyrax/file_sets/media_display/_video.html.erb %>
 <% if display_media_download_link?(file_set: file_set) %>
     <div>
       <h2 class="sr-only"><%= t('hyrax.file_set.show.downloadable_content.heading') %></h2>
@@ -9,6 +7,7 @@
         <source src="<%= hyrax.download_path(file_set, file: 'mp4') %>" type="video/mp4" />
         <%= t('hyrax.file_set.show.downloadable_content.video_tag_not_supported') %>
       </video>
+      <%# [hyc-override] Style download link %>
       <%= link_to t('hyrax.file_set.show.downloadable_content.video_link'),
                   hyrax.download_path(file_set),
                   data: { label: file_set.id, work_id: @presenter.id, collection_ids: @presenter.member_of_collection_ids },
@@ -16,4 +15,13 @@
                   class: "btn btn-info",
                   id: "file_download" %>
     </div>
+<%# [hyc-override] No thumbnail when not showing download link (is this really what this code did? %>
+<%# else %>
+    <%# <div> %>
+      <%# <video controls="controls" class="video-js vjs-default-skin" style="width:100%" data-setup="{}" controlsList="nodownload" preload="auto"> %>
+        <%# <source src="<%= hyrax.download_path(file_set, file: 'webm') % >" type="video/webm" /> %>
+        <%# <source src="<%= hyrax.download_path(file_set, file: 'mp4') % >" type="video/mp4" /> %>
+        <%#= t('hyrax.file_set.show.downloadable_content.video_tag_not_supported') %>
+      <%# </video> %>
+    <%# </div> %>
 <% end %>
