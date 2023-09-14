@@ -1,20 +1,32 @@
-<%# [hyc-override] Overriding to make depositor a facet search and not link to user profile and display date_created instead of date_uplaoded if present %>
+<%# [hyc-override] https://github.com/samvera/hyrax/tree/hyrax-v4.0.0/app/views/hyrax/file_sets/_show_details.html.erb %>
 <h2><%= t(".file_details") %></h2>
-<dl class="dl-horizontal file-show-term file-show-details">
-  <dt><%= t(".depositor") %></dt>
-  <dd itemprop="accountablePerson" itemscope itemtype="http://schema.org/Person"><span itemprop="name"><%= link_to @presenter.depositor, main_app.search_catalog_path(f: { depositor_ssim: [@presenter.depositor]}) %></span></dd>
-  <dt><%= t(".date_uploaded") %></dt>
-  <dd itemprop="datePublished"><%= @presenter.date_created.first || @presenter.date_uploaded %></dd>
-  <dt><%= t(".date_modified") %></dt>
-  <dd itemprop="dateModified"><%= @presenter.date_modified %></dd>
-  <dt><%= t(".fixity_check") %></dt>
-  <dd><%= @presenter.fixity_check_status %></dd>
-  <dt><%= t(".characterization") %></dt>
-  <dd>
-    <% if @presenter.characterized? %>
-      <%= render 'show_characterization_details' %>
-    <% else %>
-      <%= t(".not_yet_characterized") %>
-    <% end %>
-  </dd>
+<dl class="file-show-term file-show-details">
+  <div class="row">
+    <dt class="col-5"><%= t(".depositor") %></dt>
+    <%# [hyc-override] make depositor a facet search and not link to user profile %>
+    <dd class="col-7" itemprop="accountablePerson" itemscope itemtype="http://schema.org/Person"><span itemprop="name"><%= link_to @presenter.depositor, main_app.search_catalog_path(f: { depositor_ssim: [@presenter.depositor]}) %></span></dd>
+  </div>
+  <div class="row">
+    <dt class="col-5"><%= t(".date_uploaded") %></dt>
+    <%# [hyc-override] display date_created instead of date_uploaded if present %>
+    <dd class="col-7" itemprop="datePublished"><%= @presenter.date_created.first || @presenter.date_uploaded %></dd>
+  </div>
+  <div class="row">
+    <dt class="col-5"><%= t(".date_modified") %></dt>
+    <dd class="col-7" itemprop="dateModified"><%= @presenter.date_modified %></dd>
+  </div>
+  <div class="row">
+    <dt class="col-5"><%= t(".fixity_check") %></dt>
+    <dd class="col-7"><%= @presenter.fixity_check_status %></dd>
+  </div>
+  <div class="row">
+    <dt class="col-5"><%= t(".characterization") %></dt>
+    <dd class="col-7">
+      <% if @presenter.characterized? %>
+        <%= render 'show_characterization_details' %>
+      <% else %>
+        <%= t(".not_yet_characterized") %>
+      <% end %>
+    </dd>
+  </div>
 </dl>
