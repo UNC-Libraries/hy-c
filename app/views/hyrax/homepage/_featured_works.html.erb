@@ -1,4 +1,8 @@
-<%#  [hyc-override] Overriding hyrax default %>
+<%# [hyc-override] https://github.com/samvera/hyrax/tree/hyrax-v4.0.0/app/views/hyrax/homepage/_featured_works.html.erb %>
+<%# [hyc-override] Restructured into a single row, and does not include the sorting feature %>
 <h2 class="sr-only"><%= t('hyrax.homepage.featured_works.title') %></h2>
-<%= render partial: 'featured', collection: @featured_work_list.featured_works %>
-
+<% if @featured_work_list.empty? %>
+  <p><%= t('hyrax.homepage.featured_works.no_works') %></p>
+<% else %>
+  <%= render partial: 'featured', collection: @featured_work_list.featured_works %>
+<% end %>

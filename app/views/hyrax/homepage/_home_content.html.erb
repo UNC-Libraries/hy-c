@@ -1,12 +1,13 @@
-<%# [hyc-override] Overriding partial in hyrax gem to change featured deposits %>
+<%# [hyc-override] https://github.com/samvera/hyrax/tree/hyrax-v4.0.0/app/views/hyrax/homepage/_home_content.html.erb %>
+<%# [hyc-override] Content on the home page is completely restructured versus hyrax implementation %>
 <%= render 'hyrax/homepage/unc_deposit' %>
 <%= render 'hyrax/homepage/unc_description' %>
 
 
 <div id="unc-featured" class="row text-center large-screen">
-  <h2>Featured Deposits</h2>
+  <h2 class="col-12">Featured Deposits</h2>
   <%= render 'featured_works' %>
-  <div class="col-xs-12 col-sm-12">
+  <div class="col-12">
     <p class="text-center">Interested in seeing more? <%= link_to "Explore the repository &rarr;".html_safe,
                                                                   main_app.search_catalog_path %></p>
   </div>
