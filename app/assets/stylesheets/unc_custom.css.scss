@@ -230,7 +230,6 @@ span.institution_name {
 
   img {
     max-width: 20%;
-    max-height: 20%;
     margin: 0 0 0 5%;
   }
 
@@ -290,6 +289,7 @@ span.institution_name {
 .social {
   width: 100%;
   margin-top: 25px;
+  flex-flow: row;
 
   ul.navbar-nav {
     padding: 0 40%;
@@ -336,6 +336,7 @@ div.person {
 
   ul {
     margin: auto;
+    display: block;
 
     li {
       color: $text-color;
