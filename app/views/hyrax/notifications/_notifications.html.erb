@@ -1,36 +1,37 @@
-<%# [hyc-override] Overriding partial in hyrax gem to sort messages ascending instead of descending %>
+<%# [hyc-override] https://github.com/samvera/hyrax/tree/hyrax-v4.0.0/app/views/hyrax/notifications/_notifications.html.erb %> 
 <% if messages.present? %>
   <div class="table-responsive">
-    <table class="table table-striped datatable">
+    <%# [hyc-override] default sort messages ascending instead of descending %>
+    <table class="table table-striped datatable" data-order='[[0, "desc"]]'>
       <thead>
-      <tr>
-        <th><%= t('hyrax.mailbox.date') %></th>
-        <th><%= t('hyrax.mailbox.subject') %></th>
-        <th><%= t('hyrax.mailbox.message') %></th>
-        <th><span class="sr-only"><%= t('hyrax.mailbox.delete') %></span></th>
-      </tr>
+        <tr>
+          <th><%= t('hyrax.mailbox.date') %></th>
+          <th><%= t('hyrax.mailbox.subject') %></th>
+          <th><%= t('hyrax.mailbox.message') %></th>
+          <th><span class="sr-only"><%= t('hyrax.mailbox.delete') %></span></th>
+        </tr>
       </thead>
       <tbody>
-      <% messages.sort_by {|m| m.created_at.to_i }.reverse.each do |msg| %>
-        <tr>
-          <td>
-            <relative-time datetime="<%= msg.last_message.created_at.getutc.iso8601 %>" title="<%= msg.last_message.created_at.to_formatted_s(:standard) %>">
-              <%= msg.last_message.created_at.to_formatted_s(:long_ordinal) %>
-            </relative-time>
-          </td>
-          <td><%= sanitize msg.last_message.subject %></td>
-          <td><%= sanitize msg.last_message.body %></td>
-          <td>
-            <%= link_to hyrax.notification_path(msg.id),
-                        class: "itemicon itemtrash",
-                        title: t('hyrax.mailbox.delete'),
-                        method: :delete do %>
-              <span class="sr-only"><%= I18n.t('hyrax.dashboard.delete_notification') %></span>
-              <i class="glyphicon glyphicon-trash" aria-hidden="true"></i>
-            <% end %>
-          </td>
-        </tr>
-      <% end %>
+        <% messages.each do |msg| %>
+          <tr>
+            <td data-sort="<%= msg.last_message.created_at.getutc.iso8601(5) %>">
+              <relative-time datetime="<%= msg.last_message.created_at.getutc.iso8601 %>" title="<%= msg.last_message.created_at.to_formatted_s(:standard) %>">
+                <%= msg.last_message.created_at.to_formatted_s(:long_ordinal) %>
+              </relative-time>
+            </td>
+            <td><%= sanitize msg.last_message.subject %></td>
+            <td><%= sanitize msg.last_message.body %></td>
+            <td>
+              <%= link_to hyrax.notification_path(msg.id),
+                      class: "itemicon itemtrash",
+                      title: t('hyrax.mailbox.delete'),
+                      method: :delete do %>
+                  <span class="sr-only"><%= I18n.t('hyrax.dashboard.delete_notification') %></span>
+                <i class="fa fa-trash" aria-hidden="true"></i>
+                <% end %>
+            </td>
+          </tr>
+          <% end %>
       </tbody>
     </table>
   </div>
