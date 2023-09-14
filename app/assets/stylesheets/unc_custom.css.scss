@@ -1048,3 +1048,11 @@ li {
     }
   }
 }
+
+.dashboard {
+  .sidebar {
+    .nav-link[href="/leases?locale=en"], .nav-link[href^="/dashboard/profiles"] {
+      display: none;
+    }
+  }
+}

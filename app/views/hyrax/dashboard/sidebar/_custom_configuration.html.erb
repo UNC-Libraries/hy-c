@@ -1,0 +1,6 @@
+<%# [hyc-override] Add link to group management page %>
+<% if can? :manage, User %>
+  <%= menu.nav_link(role_management.roles_path, class: "nav-link") do %>
+    <span class="fa fa-user-circle" aria-hidden="true"></span> <span class="sidebar-action-text">Group Management</span>
+  <% end %>
+<% end %>
