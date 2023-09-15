@@ -341,5 +341,5 @@ local_filename = File.file?(local_schema_file) ? local_schema_file : Hyrax::Micr
 Hyrax::Microdata.load_paths = local_filename
 
 # Dashboard menu extensions
-Hyrax::DashboardController.sidebar_partials[:configuration] << "hyrax/dashboard/sidebar/custom_configuration"
-Hyrax::DashboardController.sidebar_partials[:tasks] << "hyrax/dashboard/sidebar/custom_tasks"
+Hyrax::DashboardController.sidebar_partials[:configuration] << 'hyrax/dashboard/sidebar/custom_configuration'
+Hyrax::DashboardController.sidebar_partials[:tasks] << 'hyrax/dashboard/sidebar/custom_tasks'
