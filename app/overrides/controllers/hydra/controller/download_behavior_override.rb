@@ -1,6 +1,5 @@
 # frozen_string_literal: true
-# [hyc-override] Add file extension on download
-#
+# [hyc-override] https://github.com/samvera/hydra-head/blob/v12.1.0/hydra-core/app/controllers/concerns/hydra/controller/download_behavior.rb
 Hydra::Controller::DownloadBehavior.class_eval do
   protected
 
@@ -12,6 +11,7 @@ Hydra::Controller::DownloadBehavior.class_eval do
   # @return [String] the filename
   def file_name
     filename = params[:filename] || file.original_name || (asset.respond_to?(:label) && asset.label) || file.id
+    filename = CGI.unescape(fname) if Rails.version >= '6.0'
     file_parts = filename.split('.')
     existing_extension = file_parts.length > 1 ? file_parts.last : nil
     vocab_extension = MimeTypeService.label(file.mime_type)
