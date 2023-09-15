@@ -27,6 +27,7 @@ RSpec.describe 'hyrax/file_sets/_show_actions.html.erb', type: :view do
 
   before do
     allow(controller).to receive(:current_ability).and_return(ability)
+    allow(controller).to receive(:controller_name).and_return('file_sets')
     allow(presenter).to receive(:editor?).and_return(true)
     allow(view).to receive(:workflow_restriction?).and_return(false)
     assign(:presenter, presenter)
