@@ -400,10 +400,10 @@ terms:
   term: College of Arts and Sciences; Department of Art and Art History; Studio Art
   active: true
   short_label: Department of Art and Art History – Studio Art
-- id: Department of Asian Studies
-  term: College of Arts and Sciences; Department of Asian Studies
+- id: Department of Asian and Middle Eastern Studies
+  term: College of Arts and Sciences; Department of Asian and Middle Eastern Studies
   active: true
-  short_label: Department of Asian Studies
+  short_label: Department of Asian and Middle Eastern Studies
 - id: Department of Biochemistry and Biophysics
   term: School of Medicine; Department of Biochemistry and Biophysics
   active: true
@@ -1088,10 +1088,10 @@ terms:
   term: School of Medicine; Institute for Drug Safety Sciences
   active: true
   short_label: Institute for Drug Safety Sciences
-- id: Institute for Global Health and Infectious Disease
-  term: School of Medicine; Institute for Global Health and Infectious Disease
+- id: Institute for Global Health and Infectious Diseases
+  term: School of Medicine; Institute for Global Health and Infectious Diseases
   active: true
-  short_label: Institute for Global Health and Infectious Disease
+  short_label: Institute for Global Health and Infectious Diseases
 - id: Institute for the Study of the Americas
   term: Institute for the Study of the Americas
   active: true
