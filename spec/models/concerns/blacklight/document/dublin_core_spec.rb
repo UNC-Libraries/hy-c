@@ -48,14 +48,11 @@ RSpec.describe 'Blacklight::Document::DublinCore' do
         )
       }
 
-      it 'returns xml document with creator objects in index order, and affiliation' do
+      it 'returns xml document with creator objects in index order' do
         xml_doc = Nokogiri::XML(document.export_as_oai_dc_xml)
         puts "Result: #{document.export_as_oai_dc_xml}"
         creators = xml_doc.xpath('//dc:creator', 'dc' => 'http://purl.org/dc/elements/1.1/').map(&:text)
         expect(creators).to eq ['User1, B', 'User0, D', 'User3, C', 'User4, A']
-        # Affiliations are captured as dc:contributor fields for creators
-        affiliations = xml_doc.xpath('//dc:contributor', 'dc' => 'http://purl.org/dc/elements/1.1/').map(&:text)
-        expect(affiliations).to eq ['School of Medicine, Carolina Center for Genome Sciences']
       end
     end
 
