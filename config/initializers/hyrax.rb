@@ -339,3 +339,7 @@ Bulkrax.default_work_type = 'General' if Bulkrax.default_work_type.blank?
 local_schema_file = Rails.root.join('config', 'schema_org.yml')
 local_filename = File.file?(local_schema_file) ? local_schema_file : Hyrax::Microdata::FILENAME
 Hyrax::Microdata.load_paths = local_filename
+
+# Dashboard menu extensions
+Hyrax::DashboardController.sidebar_partials[:configuration] << 'hyrax/dashboard/sidebar/custom_configuration'
+Hyrax::DashboardController.sidebar_partials[:tasks] << 'hyrax/dashboard/sidebar/custom_tasks'

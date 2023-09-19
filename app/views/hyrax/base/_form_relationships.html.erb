@@ -1,3 +1,4 @@
+<%# [hyc-override] https://github.com/samvera/hyrax/tree/hyrax-v4.0.0/app/views/hyrax/base/_form_progress.html.erb %>
 <%# [hyc-override] Overriding partial in hyrax gem in order to auto-select an admin set %>
 <% if Flipflop.assign_admin_set? %>
   <% if f.object.model.title.blank? %>
@@ -35,6 +36,6 @@
 <%= render 'form_member_of_collections', f: f %>
 
 <% if f.object.persisted? %>
-  <h2><%= t("hyrax.works.form.in_this_work") %></h2>
+  <h2 class="h3 mt-4"><%= t("hyrax.works.form.in_this_work") %></h2>
   <%= render 'form_child_work_relationships', f: f %>
 <% end %>

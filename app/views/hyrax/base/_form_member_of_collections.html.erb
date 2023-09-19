@@ -1,4 +1,4 @@
-<%#  [hyc-override] Overriding hyrax default to make add/remove buttons keyboard accessible %>
+<%# [hyc-override] https://github.com/samvera/hyrax/tree/hyrax-v4.0.0/app/views/hyrax/base/_form_member_of_collections.html.erb %>
 <%# Form UI behavior code and details;
 Code:
   app/assets/javascripts/hyrax/relationships
@@ -10,11 +10,11 @@ HTML Properties:
   table:
     [data-behavior="child-relationships"] : allows the javascript to be initialized
     data-param-key : the parameter key value for this model type %>
-<h2><%= t("hyrax.works.form.in_collections") %></h2>
+<h2 class="h3 mt-4"><%= t("hyrax.works.form.in_collections") %></h2>
 
 <div class="form-group" data-behavior="collection-relationships" data-param-key="<%= f.object.model_name.param_key %>" data-members="<%= member_of_collections_json(f.object) %>">
 
-  <div class="form-inline">
+  <div class="form-inline mb-3">
     <%= f.label :member_of_collection_ids %>
     <%= f.input_field :member_of_collection_ids,
                       prompt: :translate,
@@ -22,7 +22,8 @@ HTML Properties:
                           autocomplete: 'collection',
                           'autocomplete-url' => Rails.application.routes.url_helpers.qa_path + '/search/collections?access=deposit'
                       } %>
-    <button type="button" class="btn btn-primary" tabindex="0" data-behavior="add-relationship"><%= t('.add') %></button>
+    <%# [hyc-override] Change to a button and add a tab index to make keyboard accessible %>
+    <button type="button" class="btn btn-secondary ml-2" tabindex="0" data-behavior="add-relationship"><%= t('.add') %></button>
   </div>
 
   <table class="table table-striped">

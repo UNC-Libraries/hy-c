@@ -1,7 +1,7 @@
-<%#  [hyc-override] Overriding hyrax default %>
+<%# [hyc-override] https://github.com/samvera/hyrax/tree/hyrax-v4.0.0/app/views/hyrax/homepage/_featured.html.erb %>
 <% presenter = featured.presenter %>
 
-<div class="col-xs-12 col-sm-3 is-featured">
-  <%= render_thumbnail_tag presenter%>
+<%# [hyc-override] Display featured entries in a single row instead of on individual rows %>
+<div class="col-xs-12 col-sm-3 is-featured" data-id="<%= presenter.id %>">
   <%= render 'hyrax/homepage/featured_fields', featured: presenter %>
 </div>
