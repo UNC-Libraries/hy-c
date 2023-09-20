@@ -10,7 +10,7 @@ end
 gem 'active-fedora', '~> 14.0'
 gem 'blacklight_advanced_search', '~> 7.0.0'
 gem 'blacklight_oai_provider', '7.0.2'
-gem 'blacklight_range_limit', '8.2.3 '
+gem 'blacklight_range_limit', '~> 8.3.0'
 gem 'bootstrap', '~> 4.0'
 gem 'bulkrax', '~> 5.0'
 gem 'clamav-client', require: 'clamav/client'
