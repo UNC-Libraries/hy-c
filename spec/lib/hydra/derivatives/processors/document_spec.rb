@@ -8,28 +8,7 @@ RSpec.describe Hydra::Derivatives::Processors::Document do
   let(:source_path)    { File.join(fixture_path, 'test.doc') }
   let(:output_service) { Hyrax::PersistDerivatives }
 
-  # before { allow(subject).to receive(:converted_file).and_return(converted_file) }
-
   describe '#encode_file' do
-    # context "when converting to jpg" do
-    #   let(:directives)     { { format: "jpg" } }
-    #   let(:converted_file) { "path/to/pdf/created/from/original" }
-    #   let(:mock_processor) { double }
-
-    #   before do
-    #     allow(Hydra::Derivatives::Processors::Image).to receive(:new).with(converted_file, directives).and_return(mock_processor)
-    #   end
-
-    #   it "creates a thumbnail of the document using a pdf created from the original" do
-    #     expect(mock_processor).to receive(:process)
-    #     expect(Time.now).to receive(:nsec).and_return(160974000)
-    #     expect(FileUtils).to receive(:mkdir).with(File.join(Hydra::Derivatives.temp_file_base, '160974000'))
-    #     expect(File).to receive(:unlink).with(converted_file)
-    #     expect(FileUtils).to receive(:rmdir).with("path/to/pdf/created/from")
-    #     subject.encode_file("jpg")
-    #   end
-    # end
-
     context 'when converting to another format' do
       let(:directives)     { { format: 'png' } }
       let(:expected_tmp_dir) { File.join(Hydra::Derivatives.temp_file_base, '160974000') }
