@@ -39,7 +39,7 @@ RSpec.describe MiniMagick::Image::Info do
 
     context 'with just the file info' do
       before do
-        allow(subject).to receive(:raw).and_return("JPEG 1200 1000 12345B")
+        allow(subject).to receive(:raw).and_return('JPEG 1200 1000 12345B')
       end
 
       it 'returns the data and no logger' do

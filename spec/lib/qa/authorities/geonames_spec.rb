@@ -8,8 +8,8 @@ describe Qa::Authorities::Geonames do
 
   let(:authority) { described_class.new }
 
-  describe "#build_query_url" do
-    subject { authority.build_query_url("foo") }
+  describe '#build_query_url' do
+    subject { authority.build_query_url('foo') }
     it { is_expected.to eq 'http://api.geonames.org/searchJSON?q=foo&username=dummy&maxRows=25' }
   end
 end
