@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # [hyc-override] https://github.com/minimagick/minimagick/blob/v4.12.0/lib/mini_magick/image/info.rb
 MiniMagick::Image::Info.class_eval do
   def parse_warnings(raw_info)
