@@ -17,6 +17,8 @@
 
 // Required by Blacklight
 //= require jquery3
+// [hyc-override] explicitly include jquery-ui here before bootstrap, otherwise there will be conflicts with tooltips
+//= require jquery-ui
 //= require rails-ujs
 //= require popper
 //= require twitter/typeahead
