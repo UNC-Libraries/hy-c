@@ -9,7 +9,7 @@ require 'rspec/rails'
 require 'webmock/rspec'
 
 WebMock.disable_net_connect!(allow_localhost: true, allow: ['fedora:8080', 'solr8:8983', 'fcrepo:8080', 'solr:8983', 'opaquenamespace.org',
-                                                            'chromedriver.storage.googleapis.com'])
+                                                            'googlechromelabs.github.io', 'chromedriver.storage.googleapis.com', 'https://edgedl.me.gvt1.com'])
 Capybara.default_normalize_ws = true
 
 # Add additional requires below this line. Rails is not loaded until this point!

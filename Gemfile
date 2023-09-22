@@ -35,7 +35,7 @@ gem 'libv8', '~> 7.3'
 gem 'sparql', '3.2.5'
 gem 'linkeddata'
 gem 'loofah', '~>2.19.1'
-gem 'mini_magick', '~>4.11.0'
+gem 'mini_magick', '~>4.12.0'
 gem 'mini_racer', '~> 0.2.15', platforms: :ruby
 gem 'nokogiri', '~>1.14.2'
 gem 'omniauth', '~> 2.0'
@@ -90,6 +90,6 @@ group :test do
   gem 'selenium-webdriver', '~> 4.8'
   gem 'shoulda-matchers', '~> 5.1.0'
   gem 'simplecov'
-  gem 'webdrivers'
+  gem 'webdrivers', '~> 5.3', require: false
   gem 'webmock', '~> 3.14.0'
 end

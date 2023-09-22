@@ -614,7 +614,7 @@ GEM
     mime-types (3.5.1)
       mime-types-data (~> 3.2015)
     mime-types-data (3.2023.0808)
-    mini_magick (4.11.0)
+    mini_magick (4.12.0)
     mini_mime (1.1.5)
     mini_racer (0.2.15)
       libv8 (> 7.3)
@@ -1088,7 +1088,7 @@ DEPENDENCIES
   linkeddata
   listen (~> 3.7.0)
   loofah (~> 2.19.1)
-  mini_magick (~> 4.11.0)
+  mini_magick (~> 4.12.0)
   mini_racer (~> 0.2.15)
   nokogiri (~> 1.14.2)
   omniauth (~> 2.0)
@@ -1121,7 +1121,7 @@ DEPENDENCIES
   twitter-typeahead-rails (= 0.11.1.pre.corejavascript)
   uglifier (~> 4.2.0)
   web-console (~> 3.7.0)
-  webdrivers
+  webdrivers (~> 5.3)
   webmock (~> 3.14.0)
 
 RUBY VERSION
