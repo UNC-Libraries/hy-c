@@ -17,7 +17,7 @@ describe Hydra::RoleManagement::UserRoles do
       expect(subject.admin_unit_manager?('librarian')).to be_truthy
     end
 
-    it 'returns true for non-existent group' do
+    it 'returns false for non-existent group' do
       expect(subject.admin_unit_manager?('secret_agents')).to be_falsey
     end
   end
