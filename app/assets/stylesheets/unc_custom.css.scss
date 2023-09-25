@@ -8,6 +8,10 @@ $shadow-base-bottom: 0 -10px 10px -10px;
 $shadow: inset $shadow-base-top #000;
 $description-shadow: inset $shadow-base-top gray;
 
+// Overridden Bootstrap variables. Bumps the font down to 14px
+$font-size-base: .875rem;
+$font-size-sm: $font-size-base;
+
 @font-face {
   font-family: LibreBaskerville;
   src: url(asset-path("libre-baskerville/LibreBaskerville-Italic.otf")) format("opentype");
@@ -15,6 +19,7 @@ $description-shadow: inset $shadow-base-top gray;
 
 body {
   font-family: Verdana, Arial, sans-serif;
+  font-size: $font-size-base;
 }
 
 #logo {
@@ -34,6 +39,12 @@ body {
   .navbar-nav {
     margin-left: 0;
   }
+}
+
+// Fixes https://github.com/samvera/hyrax/blob/main/app/assets/stylesheets/hyrax/_facets.scss#L6
+// Which causes the toggle icon to never display
+.navbar-toggler-icon {
+  display: inline-block;
 }
 
 span.institution_name {
@@ -60,7 +71,7 @@ span.institution_name {
 }
 
 #masthead {
-  background-color: $carolina-blue-dark;
+  background-color: $carolina-blue-dark !important;
   margin-bottom: 0;
 
   &+ nav {
@@ -90,9 +101,15 @@ span.institution_name {
   }
 }
 
+#top-navbar-collapse {
+    .dropdown-menu {
+      left: -70px;
+    }
+}
+
 .advanced_search {
   float: right;
-  margin: -11px 0 2px 0;
+  margin-right: 15px;
   &:hover {
     text-decoration: none;
   }
@@ -129,6 +146,17 @@ span.institution_name {
   }
 }
 
+#advanced_search {
+  .form-group {
+    display: inline-flex;
+    width: 100%;
+
+    label {
+      font-weight: bold;
+    }
+  }
+}
+
 .link-tabs {
   background-color: $carolina-blue;
 
@@ -159,6 +187,10 @@ span.institution_name {
   }
 }
 
+.site-title.h1 {
+  padding-top: 20px;
+}
+
 #unc-text {
   color: $text-color !important;
 
@@ -174,7 +206,8 @@ span.institution_name {
     -moz-border-radius: 5px;
     border-radius: 5px;
     padding: 10px;
-    font-size: 1.2em;
+    font-size: 2.6rem;
+    line-height: 43px;
   }
 
   blockquote {
@@ -187,6 +220,10 @@ span.institution_name {
   color: $text-color;
   padding-left: 0;
   padding-right: 30px;
+
+  h2 {
+    margin-top: 15px;
+  }
 
   a {
     color: $text-color;
@@ -268,6 +305,7 @@ span.institution_name {
   }
 
   h2 {
+    margin-top: 15px;
     margin-bottom: 50px;
   }
 
@@ -318,10 +356,8 @@ div.person {
   height: auto;
 }
 
-
-
 #unc-footer {
-  background-color: $carolina-blue-dark;
+  background-color: $carolina-blue-dark !important;
 
   .navbar-text {
     display: flex;
@@ -425,6 +461,21 @@ div.unc-modal {
   h1 {
     margin-bottom: 25px;
     text-align: center;
+  }
+}
+
+#content {
+  #documents {
+    justify-content: left;
+  }
+}
+
+/* Fixes https://github.com/samvera/hyrax/blob/f14958e665535be2696dc1cdf9e205d6fc54e668/app/assets/stylesheets/hyrax/_card.scss#L5
+Resets it to the default Bootstrap card margins
+ */
+#admin_sets {
+  .card-title {
+    margin-bottom: .75rem;
   }
 }
 
@@ -705,31 +756,15 @@ li {
   }
 }
 
-@media only screen and (max-width: 1399px) {
-  .row {
-    margin-right: -7px;
-  }
-}
-
 @media only screen and (max-width: 1375px) {
   .navbar-brand {
     margin-left: 0;
-  }
-
-  #unc-text {
-    div {
-      width: auto;
-    }
   }
 }
 
 @media only screen and (max-width: 1100px) {
   dl.work-show {
     margin-left: 75px;
-  }
-
-  .navbar-nav {
-    margin: 0 0 0 -15px;
   }
 }
 
@@ -844,13 +879,13 @@ li {
   }
 }
 
-@media only screen and (max-width: 550px) {
+@media only screen and (max-width: 768px) {
   #masthead .navbar-brand {
     padding-right: 0;
   }
 
   .institution_name {
-    font-size: 14px;
+    font-size: $font-size-base
   }
 }
 
@@ -1004,14 +1039,6 @@ li {
       width: 100%;
     }
 
-    .navbar-header {
-      float: none;
-    }
-
-    .navbar-left, .navbar-right {
-      float: none !important;
-    }
-
     .navbar-toggle {
       display: block;
     }
@@ -1019,6 +1046,7 @@ li {
     .navbar-collapse {
       border-top: 1px solid transparent;
       box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      padding-left: 25px;
     }
 
     .navbar-fixed-top {
@@ -1026,17 +1054,8 @@ li {
       border-width: 0 0 1px;
     }
 
-    .navbar-collapse.collapse {
-      display: none !important;
-    }
-
     .navbar-nav {
-      float: none !important;
       margin-top: 7.5px;
-    }
-
-    .navbar-nav > li {
-      float: none;
     }
 
     .navbar-nav > li > a {

@@ -1,5 +1,5 @@
 <%# [hyc-override] Overriding partial in hyrax gem to update homepage %>
-<nav class="navbar navbar-light bg-light navbar-expand-sm justify-content-between align-items-center px-2 py-3 border-bottom" role="navigation" aria-label="Root Menu">
+<nav class="navbar navbar-light bg-light navbar-expand-sm justify-content-between align-items-baseline px-2 py-3 border-bottom" role="navigation" aria-label="Root Menu">
     <ul class="nav navbar-nav col-sm-5">
       <li class="nav-item <%= 'active' if current_page?(hyrax.root_path) %>">
         <%= link_to t(:'hyrax.links.browse_all'), main_app.search_catalog_path, class: "nav-link", aria: current_page?(main_app.search_catalog_path) ? {current: 'page'} : nil %></li>
