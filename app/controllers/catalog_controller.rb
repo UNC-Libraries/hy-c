@@ -78,6 +78,7 @@ class CatalogController < ApplicationController
     config.index.title_field = solr_name('title', :stored_searchable)
     config.index.display_type_field = solr_name('has_model', :symbol)
     config.index.thumbnail_field = 'thumbnail_path_ss'
+    config.index.constraints_component = Hyc::ConstraintsComponent
 
     # solr fields that will be treated as facets by the blacklight application
     #   The ordering of the field names is the order of the display
@@ -91,6 +92,7 @@ class CatalogController < ApplicationController
     config.add_facet_field solr_name('edition', :facetable), label: 'Version', limit: 5
     config.add_facet_field solr_name('language', :facetable), helper_method: :language_links_facets, limit: 5
     config.add_facet_field solr_name('member_of_collections', :symbol), limit: 5, label: 'Collection'
+    config.add_facet_field solr_name('human_readable_type', :facetable), label: 'Type', show: false
 
     # The generic_type isn't displayed on the facet list
     # It's used to give a label to the filter that comes from the user profile
