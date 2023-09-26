@@ -88,6 +88,7 @@ span.institution_name {
   height: 225px;
   box-shadow: $shadow;
   border-bottom: 0;
+  z-index: 1;
 
   .background-container {
     -ms-filter: none;
@@ -444,6 +445,12 @@ div.unc-modal {
   ul {
     list-style-type: circle;
   }
+}
+
+.page-header {
+  padding-bottom: 9px;
+  margin: 40px 0 20px;
+  border-bottom: 1px solid #eeeeee;
 }
 
 /* Override width of Blacklight Range Limit date boxes */
@@ -1009,8 +1016,8 @@ li {
 
   .large-screen {
     background-color: $carolina-blue;
-    margin-left: -135px;
-    margin-right: -135px;
+    margin-left: -150px;
+    margin-right: -150px;
   }
 
   #masthead {

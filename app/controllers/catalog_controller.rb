@@ -59,9 +59,11 @@ class CatalogController < ApplicationController
     config.search_builder_class = RangeLimitCatalogSearchBuilder
 
     # Show gallery view
-    # config.view.gallery.partials = [:index_header, :index]
-    config.view.masonry.partials = [:index]
-    config.view.slideshow.partials = [:index]
+    # The display buttons were removed here. Not sure they actually do anything if added back in
+    # @TODO https://github.com/samvera/hyrax/commit/7a2d11b3aed7d626cd8171dc1e9d4812be5c37d4
+    # config.view.gallery(document_component: Blacklight::Gallery::DocumentComponent)
+    config.view.masonry(document_component: Blacklight::Gallery::DocumentComponent)
+    config.view.slideshow(document_component: Blacklight::Gallery::SlideshowComponent)
 
     # Because too many times on Samvera tech people raise a problem regarding a failed query to SOLR.
     # Often, it's because they inadvertantly exceeded the character limit of a GET request.
