@@ -98,7 +98,7 @@ class CatalogController < ApplicationController
     config.add_facet_field solr_name('resource_type', :facetable), label: 'Resource Type', limit: 5
     config.add_facet_field solr_name('creator_label', :facetable), label: 'Creator', limit: 5
     config.add_facet_field solr_name('affiliation_label', :facetable), label: 'Departments', limit: 5
-    config.add_facet_field 'date_issued_isim', label: 'Date', limit: 5, range: true
+    config.add_facet_field 'date_issued_isim', label: 'Date', limit: 5, **default_range_config
     config.add_facet_field solr_name('keyword', :facetable), limit: 5
     config.add_facet_field solr_name('subject', :facetable), limit: 5
     config.add_facet_field solr_name('advisor_label', :facetable), label: 'Advisor', limit: 5
