@@ -10,7 +10,7 @@ module Hyrax
                    :degree_granting_institution, :doi, :extent, :graduation_year, :note,
                    :resource_type, :deposit_agreement, :agreement]
 
-    self.terms -= [:contributor, :publisher, :identifier, :related_url, :source, :description, :date_created]
+    self.terms -= [:bibliographic_citation, :contributor, :publisher, :identifier, :related_url, :source, :description, :date_created]
 
     self.required_fields = [:title, :creator, :abstract, :advisor, :date_issued, :degree,
                             :graduation_year, :resource_type]
