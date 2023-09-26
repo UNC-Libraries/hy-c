@@ -4,7 +4,7 @@
 SECRET_KEY_BASE: some_long_hash
 SOLR_PRODUCTION_URL: 'http://127.0.0.1:8983/solr/blacklight-core'
 FEDORA_PRODUCTION_URL: 'http://127.0.0.1:8984/fcrepo/rest'
-FEDORA_BINARY_STORAGE: /opt/fedora/binaries
+FEDORA_BINARY_STORAGE: /opt/fedora/fcrepo.binary.directory
 FITS_LOCATION: '/fits/fits-1.0.5/fits.sh'
 DEFAULT_ADMIN_SET: 'default'
 DATABASE_URL: 'postgresql://db:5432'
