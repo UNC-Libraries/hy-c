@@ -15,7 +15,7 @@ Bulkrax::CsvEntry.class_eval do
     record['model'].nil? || !UPDATABLE_TYPES.include?(record['model'])
   end
 
-  def build_object(value)
+  def build_object(_key, value)
     # [hyc-override] skip mapped fields that don't exist for the current record
     data = hyrax_record.send(value['object']) if hyrax_record.respond_to?(value['object'])
     return if data.nil? || data.empty?
