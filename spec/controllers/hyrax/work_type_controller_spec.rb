@@ -75,7 +75,7 @@ RSpec.shared_examples 'a work type' do |model, pluralized_model|
 
       it 'is successful' do
         get :new
-        expect(response).to be_success
+        expect(response).to be_successful
       end
     end
 
@@ -116,7 +116,7 @@ RSpec.shared_examples 'a work type' do |model, pluralized_model|
 
       it 'is successful' do
         get :edit, params: { id: work.id }
-        expect(response).to be_success
+        expect(response).to be_successful
       end
     end
 
