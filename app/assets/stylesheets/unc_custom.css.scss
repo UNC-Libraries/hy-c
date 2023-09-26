@@ -491,23 +491,10 @@ Resets it to the default Bootstrap card margins
   width: 100%;
 }
 
-#documents {
-  display: inline-flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  margin: 0;
-
-  .document {
-    border-bottom: inherit;
-  }
-  .masonry.document {
-    background-color: white;
-    border: 1px solid $light-gray;
-    margin: 0 10px 10px 0;
-  }
-  fieldset {
-    width: 100%;
-  }
+.search-result-wrapper {
+  border-bottom: 1px dashed #ccc;
+  margin-bottom: 30px;
+  padding-bottom: 0;
 }
 
 .multi_value .btn.add {
