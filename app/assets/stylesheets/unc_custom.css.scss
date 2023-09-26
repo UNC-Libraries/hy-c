@@ -116,6 +116,13 @@ span.institution_name {
   }
 }
 
+.file_set.attributes .btn-group a {
+  color: black !important;
+  &:hover {
+    text-decoration: none;
+  }
+}
+
 #unc-search {
   background-color: $carolina-blue;
   height: 45%;
@@ -701,31 +708,6 @@ table p.name span {
 
 input#check_all {
   margin-right: 5px;
-}
-
-#file_download {
-  background-color: $carolina-blue-dark;
-  border-color: $carolina-blue-dark;
-  color: $text-color;
-
-  &:hover {
-    background-color: #235d9d;
-    border-color: #1c4c80;
-  }
-}
-
-li {
-  #file_download {
-    background-color: inherit;
-    border-color: inherit;
-    color: #333333;
-
-    &:hover {
-      color: #262626;
-      text-decoration: none;
-      background-color: #f5f5f5;
-    }
-  }
 }
 
 .controlled_vocabulary .input-append {
