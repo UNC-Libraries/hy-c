@@ -4,6 +4,9 @@ source scl_source enable rh-ruby27
 source scl_source enable devtoolset-8
 
 mkdir -p /opt/hyrax/log/
+gem install rubygems-update -v '~> 3.4'
+update_rubygems  >> /dev/null
+
 bundle check || bundle install
 # The bundle config and package are needed for the odd way we manage gems in production
 bundle config --local cache_path /hyc-gems

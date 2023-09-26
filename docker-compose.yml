@@ -31,7 +31,7 @@ services:
     volumes:
       - mount-code:/hyrax
       - mount-gems:/hyc-gems
-      - fcrepo_data:/opt/fedora/binaries
+      - fcrepo_data:/opt/fedora/
       - hyrax_data:/opt/hyrax
     stdin_open: true
     tty: true
@@ -57,7 +57,7 @@ services:
     ports:
       - "8984:8080"
     volumes:
-      - fcrepo_data:/usr/local/tomcat/fcrepo4-data/fcrepo.binary.directory
+      - fcrepo_data:/usr/local/tomcat/fcrepo4-data/
     environment:
       CATALINA_OPTS: "-Djava.awt.headless=true -server -Xms1G -Xmx2G -XX:MaxNewSize=1G -XX:+HeapDumpOnOutOfMemoryError -Dfcrepo.modeshape.configuration=classpath:/config/file-simple/repository.json"
     stdin_open: true
