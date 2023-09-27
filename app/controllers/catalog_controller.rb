@@ -208,7 +208,7 @@ class CatalogController < ApplicationController
     # solr request handler? The one set in config[:default_solr_parameters][:qt],
     # since we aren't specifying it otherwise.
     config.add_search_field('all_fields', label: 'All Fields', advanced_parse: false, include_in_advanced_search: true) do |field|
-      all_names = config.show_fields.values.map(&:field).join(" ")
+      all_names = config.show_fields.values.map(&:field).join(' ')
       title_name = 'title_tesim'
       field.solr_parameters = {
         qf: "#{all_names} file_format_tesim all_text_timv",

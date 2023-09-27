@@ -1,4 +1,4 @@
-# frozen_string_literal: true 
+# frozen_string_literal: true
 
 require 'rails_helper'
 
@@ -24,7 +24,7 @@ RSpec.describe Hyc::CatalogSearchBuilder do
     context 'joining with file_sets' do
       let(:blacklight_params) do
         {
-          search_field: 'advanced', 
+          search_field: 'advanced',
           clause: { '0' => {field: 'all_fields', query: 'metalloprotease' } }
         }
       end

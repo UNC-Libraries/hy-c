@@ -23,9 +23,9 @@ module Hyc
     end
 
     def retrieve_all_fields_query
-      blacklight_params["clause"]&.each do |_, entry|
-        if entry["field"] == "all_fields"
-          return entry["query"]
+      blacklight_params['clause']&.each do |_, entry|
+        if entry['field'] == 'all_fields'
+          return entry['query']
         end
       end
       return nil
