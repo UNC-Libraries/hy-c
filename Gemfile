@@ -8,7 +8,7 @@ git_source(:github) do |repo_name|
 end
 
 gem 'active-fedora', '~> 14.0'
-gem 'blacklight_advanced_search', '~> 7.0.0'
+gem 'blacklight_advanced_search', '~> 8.0.0.alpha2'
 gem 'blacklight_oai_provider', '7.0.2'
 gem 'blacklight_range_limit', '~> 8.3.0'
 gem 'bootstrap', '~> 4.0'

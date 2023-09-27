@@ -32,8 +32,6 @@
 // # require_tree .
 //= require hyrax
 //
-// [hyc-override] advanced search blacklight plugins
-//= require 'blacklight_advanced_search'
 // [hyc-override] blacklight_range_limit plugin and dependency
 //= require 'bootstrap-slider'
 //= require 'blacklight_range_limit'
