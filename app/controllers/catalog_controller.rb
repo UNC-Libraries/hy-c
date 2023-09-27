@@ -38,34 +38,18 @@ class CatalogController < ApplicationController
   end
 
   configure_blacklight do |config|
-    # default advanced config values
-    # config.advanced_search.enabled = true
-    # config.advanced_search = Blacklight::OpenStructWithHashAccess.new(
-    #   enabled: true,
-    #   query_parser: 'dismax',
-    #   url_key: 'advanced',
-    #   form_solr_parameters: {
-    #     "facet.field" => ["member_of_collections_ssim", "date_issued_isim", "affiliation_label_sim", "edition_sim"],
-    #      # return all facet values
-    #     "f.member_of_collections_ssim.facet.limit" => -1,
-    #     "f.date_issued_isim.facet.limit" => -1,
-    #     "f.resource_type_sim.facet.limit" => -1,
-    #     "f.affiliation_label_sim.facet.limit" => -1,
-    #     "f.edition_sim.facet.limit" => -1,
-    #     "facet.sort" => "index" # sort by byte order of values
-    #   }
-    # )
+    # Advanced search configuration
     config.advanced_search ||= Blacklight::OpenStructWithHashAccess.new
     config.advanced_search[:url_key] ||= 'advanced'
     config.advanced_search[:query_parser] ||= 'dismax'
     config.advanced_search[:form_solr_parameters] ||= {}
-    # config.advanced_search[:form_solr_parameters]['facet.field'] ||=
-        # %w[member_of_collections_ssim date_issued_isim resource_type_sim affiliation_label_sim edition_sim]
-    # config.advanced_search[:form_solr_parameters]['f.member_of_collections_ssim.facet.limit'] ||= -1
-    # config.advanced_search[:form_solr_parameters]['f.date_issued_isim.facet.limit'] ||= -1
-    # config.advanced_search[:form_solr_parameters]['f.resource_type_sim.facet.limit'] ||= -1
-    # config.advanced_search[:form_solr_parameters]['f.affiliation_label_sim.facet.limit'] ||= -1
-    # config.advanced_search[:form_solr_parameters]['f.edition_sim.facet.limit'] ||= -1
+    config.advanced_search[:form_solr_parameters]['facet.field'] ||=
+        %w[member_of_collections_ssim date_issued_isim human_readable_type_sim affiliation_label_sim edition_sim]
+    config.advanced_search[:form_solr_parameters]['f.member_of_collections_ssim.facet.limit'] ||= -1
+    config.advanced_search[:form_solr_parameters]['f.date_issued_isim.facet.limit'] ||= -1
+    config.advanced_search[:form_solr_parameters]['f.human_readable_type_sim.facet.limit'] ||= -1
+    config.advanced_search[:form_solr_parameters]['f.affiliation_label_sim.facet.limit'] ||= -1
+    config.advanced_search[:form_solr_parameters]['f.edition_sim.facet.limit'] ||= -1
 
     # config.advanced_search[:form_facet_partial] ||= 'advanced_search_facets_as_select'
 
