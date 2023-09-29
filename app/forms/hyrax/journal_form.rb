@@ -10,7 +10,7 @@ module Hyrax
     self.terms += [:admin_note, :date_issued, :dcmi_type, :digital_collection, :doi, :edition, :extent, :isbn,
                    :issn, :note, :place_of_publication, :publisher, :series, :resource_type, :deposit_agreement, :agreement]
 
-    self.terms -= [:description, :identifier, :contributor, :source, :date_created]
+    self.terms -= [:bibliographic_citation, :description, :identifier, :contributor, :source, :date_created]
 
     self.required_fields = [:title, :date_issued, :publisher]
 

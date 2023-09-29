@@ -64,7 +64,7 @@ RSpec.feature 'Edit embargo', js: false do
 
       fill_in 'article_embargo_release_date', with: DateTime.now + 7.months
       click_button 'Save'
-      expect(page).to have_content 'Embargo release date Release date specified does not match permission template release requirements for selected AdminSet'
+      expect(page).to have_content 'Release date specified does not match permission template release requirements for selected AdminSet'
 
       # Hyrax empties the form
       fill_in 'Title', with: 'Test Article work'

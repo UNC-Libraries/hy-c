@@ -38,7 +38,7 @@ RSpec.describe 'Search the catalog for full text', type: :feature, js: false do
 
   it 'can do an advanced search against full text' do
     visit '/advanced'
-    fill_in('all_fields', with: query_term)
+    fill_in('All Fields', with: query_term)
     click_button('Search')
     expect(page).to have_content(target_title)
     expect(page).not_to have_content('The Legend of Sleepy Hollow')
@@ -46,7 +46,7 @@ RSpec.describe 'Search the catalog for full text', type: :feature, js: false do
 
   it 'can return to the advanced search page after an advanced search' do
     visit '/advanced'
-    fill_in('all_fields', with: query_term)
+    fill_in('All Fields', with: query_term)
     click_button('Search')
     expect(page).to have_content(target_title)
     click_link('Advanced search', match: :first)

@@ -38,25 +38,24 @@ class CatalogController < ApplicationController
   end
 
   configure_blacklight do |config|
-    # default advanced config values
+    # Advanced search configuration
     config.advanced_search ||= Blacklight::OpenStructWithHashAccess.new
-    # config.advanced_search[:qt] ||= 'advanced'
     config.advanced_search[:url_key] ||= 'advanced'
     config.advanced_search[:query_parser] ||= 'dismax'
     config.advanced_search[:form_solr_parameters] ||= {}
     config.advanced_search[:form_solr_parameters]['facet.field'] ||=
-        %w[member_of_collections_ssim date_issued_isim resource_type_sim affiliation_label_sim edition_sim]
+        %w[member_of_collections_ssim date_issued_isim human_readable_type_sim affiliation_label_sim edition_sim]
     config.advanced_search[:form_solr_parameters]['f.member_of_collections_ssim.facet.limit'] ||= -1
     config.advanced_search[:form_solr_parameters]['f.date_issued_isim.facet.limit'] ||= -1
-    config.advanced_search[:form_solr_parameters]['f.resource_type_sim.facet.limit'] ||= -1
+    config.advanced_search[:form_solr_parameters]['f.human_readable_type_sim.facet.limit'] ||= -1
     config.advanced_search[:form_solr_parameters]['f.affiliation_label_sim.facet.limit'] ||= -1
     config.advanced_search[:form_solr_parameters]['f.edition_sim.facet.limit'] ||= -1
 
-    config.advanced_search[:form_facet_partial] ||= 'advanced_search_facets_as_select'
+    # config.advanced_search[:form_facet_partial] ||= 'advanced_search_facets_as_select'
 
     config.show.tile_source_field = :content_metadata_image_iiif_info_ssm
     config.show.partials.insert(1, :openseadragon)
-    config.search_builder_class = RangeLimitCatalogSearchBuilder
+    config.search_builder_class = Hyc::CatalogSearchBuilder
 
     # Show gallery view
     # The display buttons were removed here. Not sure they actually do anything if added back in
@@ -73,7 +72,7 @@ class CatalogController < ApplicationController
     config.default_solr_params = {
       qt: 'search',
       rows: 10,
-      qf: 'title_tesim description_tesim creator_tesim keyword_tesim'
+      qf: 'title_tesim description_tesim creator_tesim keyword_tesim all_text_timv'
     }
 
     # solr field configuration for document/show views
@@ -98,7 +97,7 @@ class CatalogController < ApplicationController
     config.add_facet_field solr_name('resource_type', :facetable), label: 'Resource Type', limit: 5
     config.add_facet_field solr_name('creator_label', :facetable), label: 'Creator', limit: 5
     config.add_facet_field solr_name('affiliation_label', :facetable), label: 'Departments', limit: 5
-    config.add_facet_field 'date_issued_isim', label: 'Date', limit: 5, range: true
+    config.add_facet_field 'date_issued_isim', label: 'Date', limit: 5, **default_range_config
     config.add_facet_field solr_name('keyword', :facetable), limit: 5
     config.add_facet_field solr_name('subject', :facetable), limit: 5
     config.add_facet_field solr_name('advisor_label', :facetable), label: 'Advisor', limit: 5
@@ -208,14 +207,13 @@ class CatalogController < ApplicationController
     # This one uses all the defaults set by the solr request handler. Which
     # solr request handler? The one set in config[:default_solr_parameters][:qt],
     # since we aren't specifying it otherwise.
-    config.add_search_field('all_fields', label: 'All Fields') do |field|
+    config.add_search_field('all_fields', label: 'All Fields', advanced_parse: false, include_in_advanced_search: true) do |field|
       all_names = config.show_fields.values.map(&:field).join(' ')
-      title_name = solr_name('title', :stored_searchable)
+      title_name = 'title_tesim'
       field.solr_parameters = {
         qf: "#{all_names} file_format_tesim all_text_timv",
         pf: title_name.to_s
       }
-      field.advanced_parse = false
     end
 
     # Now we see how to over-ride Solr request handler defaults, in this

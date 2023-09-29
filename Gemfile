@@ -8,7 +8,7 @@ git_source(:github) do |repo_name|
 end
 
 gem 'active-fedora', '~> 14.0'
-gem 'blacklight_advanced_search', '~> 7.0.0'
+gem 'blacklight_advanced_search', '~> 8.0.0.alpha2'
 gem 'blacklight_oai_provider', '7.0.2'
 gem 'blacklight_range_limit', '~> 8.3.0'
 gem 'bootstrap', '~> 4.0'
@@ -58,8 +58,8 @@ gem 'sidekiq-status', '~> 3.0.0'
 # Turbolinks makes navigating your web application faster. Read more: https://github.com/turbolinks/turbolinks
 gem 'turbolinks', '~> 5.2.1'
 gem 'twitter-typeahead-rails', '0.11.1.pre.corejavascript'
-# Use Uglifier as compressor for JavaScript assets
-gem 'uglifier', '~> 4.2.0'
+# Use terser as compressor for JavaScript assets
+gem 'terser', '~> 1.1'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

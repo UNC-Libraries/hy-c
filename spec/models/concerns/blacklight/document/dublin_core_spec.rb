@@ -102,9 +102,9 @@ RSpec.describe 'Blacklight::Document::DublinCore' do
         identifiers = xml_doc.xpath('//dc:identifier', 'dc' => 'http://purl.org/dc/elements/1.1/').map(&:text)
         # Contains an identifier to the resource itself in addition to the thumb/download links
         expect(identifiers).to eq [
-            'http://localhost:3000/concern/articles/123456',
-            'http://localhost:3000/downloads/123456?file=thumbnail',
-            'http://localhost:3000/downloads/123456']
+            "#{ENV['HYRAX_HOST']}/concern/articles/123456",
+            "#{ENV['HYRAX_HOST']}/downloads/123456?file=thumbnail",
+            "#{ENV['HYRAX_HOST']}/downloads/123456"]
       end
     end
   end

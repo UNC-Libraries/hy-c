@@ -6,7 +6,7 @@ RSpec.describe OmniauthController, type: :request do
     context 'using database auth' do
       it 'is successful' do
         get new_user_session_path
-        expect(response).to be_success
+        expect(response).to be_successful
       end
     end
 

@@ -2,8 +2,8 @@
 
 require 'rails_helper'
 
-RSpec.describe RangeLimitCatalogSearchBuilder do
-  let(:context) { double }
+RSpec.describe Hyc::CatalogSearchBuilder do
+  let(:context) { FakeSearchBuilderScope.new }
   let(:builder) { described_class.new(context).with(blacklight_params) }
   let(:solr_params) { Blacklight::Solr::Request.new }
 
@@ -24,8 +24,8 @@ RSpec.describe RangeLimitCatalogSearchBuilder do
     context 'joining with file_sets' do
       let(:blacklight_params) do
         {
-          all_fields: 'metalloprotease',
-          search_field: 'advanced'
+          search_field: 'advanced',
+          clause: { '0' => {field: 'all_fields', query: 'metalloprotease' } }
         }
       end
       subject { builder.join_works_from_files(solr_params) }
@@ -34,6 +34,19 @@ RSpec.describe RangeLimitCatalogSearchBuilder do
         subject
         expect(solr_params[:q]).to eq ' _query_:"{!join from=id to=file_set_ids_ssim}{!dismax qf=all_text_timv}metalloprotease"'
       end
+    end
+  end
+
+  class FakeSearchBuilderScope
+    attr_reader :blacklight_config, :current_ability, :current_user, :params, :repository, :search_state_class
+
+    def initialize(blacklight_config: CatalogController.blacklight_config, current_ability: nil, current_user: nil, params: {}, search_state_class: nil)
+      @blacklight_config = blacklight_config
+      @current_user = current_user
+      @current_ability = current_ability || ::Ability.new(current_user)
+      @params = params
+      @repository = Blacklight::Solr::Repository.new(blacklight_config)
+      @search_state_class = search_state_class
     end
   end
 end
