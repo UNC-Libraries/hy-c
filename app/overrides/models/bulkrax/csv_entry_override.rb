@@ -16,9 +16,10 @@ Bulkrax::CsvEntry.class_eval do
   end
 
   def build_object(_key, value)
-    # [hyc-override] skip mapped fields that don't exist for the current record
-    data = hyrax_record.send(value['object']) if hyrax_record.respond_to?(value['object'])
-    return if data.nil? || data.empty?
+    return unless hyrax_record.respond_to?(value['object'])
+
+    data = hyrax_record.send(value['object'])
+    return if data.empty?
 
     data = data.to_a if data.is_a?(ActiveTriples::Relation)
     # [hyc-override] convert people objects to the hash serialization expected by bulkrax
@@ -37,6 +38,14 @@ Bulkrax::CsvEntry.class_eval do
 
   # [hyc-override] allow object_name to be passed down
   def object_metadata(data, object_name = nil)
+    # NOTE: What is `d` in this case:
+    #
+    #  "[{\"single_object_first_name\"=>\"Fake\", \"single_object_last_name\"=>\"Fakerson\", \"single_object_position\"=>\"Leader, Jester, Queen\", \"single_object_language\"=>\"english\"}]"
+    #
+    # The above is a stringified version of a Ruby string.  Using eval is a very bad idea as it
+    # will execute the value of `d` within the full Ruby interpreter context.
+    #
+    # TODO: Would it be possible to store this as a non-string?  Maybe the actual Ruby Array and Hash?
     data = data.map { |d| eval(d) }.flatten # rubocop:disable Security/Eval
 
     data.each_with_index do |obj, index|

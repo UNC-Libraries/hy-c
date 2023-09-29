@@ -1,4 +1,4 @@
-<%# (it duplicates "create and validate") %>
+<%# [hyc-override] https://github.com/samvera-labs/bulkrax/tree/v5.3.0/app/views/bulkrax/importers/new.html.erb %>
 <% provide :page_header do %>
   <h1><span class="fa fa-edit" aria-hidden="true"></span> New Importer</h1>
 <% end %>
@@ -10,9 +10,11 @@
         <%= render 'form', importer: @importer, form: form %>
         <div class="panel-footer">
           <div class='pull-right'>
-            <%# [hyc-override] Removing validate option since it is very buggy right now %>
-            <%#= form.button :submit, value: 'Create and Validate', class: 'btn btn-primary' %>
-            <%# | %>
+            <% if ENV['SHOW_CREATE_AND_VALIDATE'] == 'true' %>
+              <%# [hyc-override] Removing validate option since it is very buggy right now %>
+              <%#= form.button :submit, value: 'Create and Validate', class: 'btn btn-primary' %>
+              <%# | %>
+            <% end  %>
             <%= form.button :submit, value: 'Create and Import', class: 'btn btn-primary' %>
             |
             <%# [hyc-override] removing "create" button since there is no separate functionality defined for it at the moment %>
