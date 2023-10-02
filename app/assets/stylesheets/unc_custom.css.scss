@@ -73,13 +73,10 @@ span.institution_name {
 #masthead {
   background-color: $carolina-blue-dark !important;
   margin-bottom: 0;
+  max-height: 56px;
 
   &+ nav {
     margin-top: 0;
-  }
-
-  .navbar-brand {
-    padding: 10px 15px;
   }
 }
 
@@ -743,8 +740,6 @@ input#check_all {
     margin-left: 75px;
   }
 }
-
-
 
 @media only screen and (max-width: 865px) {
   #unc-footer {
