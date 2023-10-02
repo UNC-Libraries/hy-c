@@ -12,7 +12,7 @@ gem 'blacklight_advanced_search', '~> 8.0.0.alpha2'
 gem 'blacklight_oai_provider', '7.0.2'
 gem 'blacklight_range_limit', '~> 8.3.0'
 gem 'bootstrap', '~> 4.0'
-gem 'bulkrax', '~> 5.0'
+gem 'bulkrax', git: 'https://github.com/UNC-Libraries/bulkrax.git', branch: 'unc-bulkrax-5-development'
 gem 'clamav-client', require: 'clamav/client'
 # Use CoffeeScript for .coffee assets and views
 gem 'coffee-rails', '~> 5.0.0'
