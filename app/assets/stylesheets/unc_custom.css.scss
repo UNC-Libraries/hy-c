@@ -1050,5 +1050,9 @@ input#check_all {
     .nav-link[href="/leases?locale=en"], .nav-link[href^="/dashboard/profiles"] {
       display: none;
     }
+    /* Temporary fix so that bulkrax links format correctly, until the gem is updated */
+    .nav-item a {
+      display: block;
+    }
   }
 }
