@@ -36,11 +36,11 @@ export default class UncSaveWorkControl extends SaveWorkControl {
         const $cancelBtn = this.uploads.form.find('#file-upload-cancel-btn');
 
         $uploadsEl.bind('fileuploadstart', () => {
-            $cancelBtn.removeClass('hidden');
+            $cancelBtn.removeClass('d-none');
         });
 
         $uploadsEl.bind('fileuploadstop', () => {
-            $cancelBtn.addClass('hidden');
+            $cancelBtn.addClass('d-none');
         });
     }
 }

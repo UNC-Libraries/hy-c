@@ -67,7 +67,7 @@
     </div>
   <% end %>
 
-  <div class="<%= person_term %> row cloning hidden field-wrapper" id='<%= person_term %>-cloning_row'>
+  <div class="<%= person_term %> row cloning d-none field-wrapper" id='<%= person_term %>-cloning_row'>
     <%= f.fields_for person_key do |person| %>
       <% if person.index <= @form.instance_eval(person_key.to_s).count %>
         <div class="<%= person_term %> row well">
