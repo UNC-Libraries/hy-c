@@ -51,7 +51,7 @@
                         target: '_blank' %>
           </label>
         <% else %>
-          <label class="hidden">
+          <label class="d-none">
             <%= f.input :agreement,
                         as: :boolean,
                         checked: f.object.agreement_accepted,
