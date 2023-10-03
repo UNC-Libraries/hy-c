@@ -1072,3 +1072,10 @@ input#check_all {
     color: #fff;
   }
 }
+
+#new_exporter {
+  /* Correcting the font color until bulkrax is updated for hyrax 4 */
+  .btn-primary {
+    color: #fff;
+  }
+}
