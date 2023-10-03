@@ -1013,6 +1013,23 @@ Hide it entirely until the issue is resolved upstreeam
   font-weight: bold;
 }
 
+#form-progress {
+  .card-footer {
+    padding: 5px;
+    text-align: center;
+
+    .checkbox {
+      label {
+        padding-bottom: 0;
+      }
+    }
+
+    #agreement {
+      margin-right: 5px;
+    }
+  }
+}
+
 
 /* Responsive Hyrax override */
 @media only screen and (min-width: 768px) {
