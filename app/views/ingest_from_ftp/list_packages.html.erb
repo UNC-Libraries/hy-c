@@ -1,32 +1,32 @@
 <% provide :page_header do %>
-  <h1><span class="glyphicon glyphicon-ok-circle"></span> Ingest from FTP</h1>
+  <h1><i class="fa fa-check-circle-o" aria-hidden="true"></i> Ingest from FTP</h1>
 <% end %>
 
 <div class="row">
-  <div class="col-md-12">
-    <div class="panel panel-default tabs">
+  <div class="col-md-12 tabs">
+    <div class="card">
       <ul class="nav nav-tabs" id="my_nav" role="list">
-        <li<%= ' class="active"'.html_safe if @source == 'proquest' %>>
+        <li class="nav-item">
             <%= link_to 'Proquest',
               main_app.ingest_from_ftp_path(source: 'proquest'), class: "nav-link#{' active' if @source == 'proquest'}" %>
         </li>
-        <li<%= ' class="active"'.html_safe if @source == 'sage' %>>
+        <li class="nav-item">
           <%= link_to 'Sage', main_app.ingest_from_ftp_path(source: 'sage'), class: "nav-link#{' active' if @source == 'sage'}" %>
         </li>
       </ul>
       <%= form_tag main_app.ingest_from_ftp_path(source: @source), method: :post do %>
-      <div class="panel-body">
+      <div class="card-body">
         <h2 class="sr-only">Ingest from <%= @source %> </h2>
         <fieldset class="btn-group">
-          <%= submit_tag 'Ingest Packages', class: 'btn btn-danger', data: { confirm: 'Are you sure you want to ingest selected packages?' } %>
+          <%= submit_tag 'Ingest Packages', class: 'btn btn-primary', data: { confirm: 'Are you sure you want to ingest selected packages?' } %>
         </fieldset>
         <fieldset class="btn-group">
-          <%= link_to 'View Status of last Ingest', main_app.ingest_from_ftp_status_path(source: @source), method: :get, class: 'btn btn-default' %>
+          <%= link_to 'View Status of last Ingest', main_app.ingest_from_ftp_status_path(source: @source), method: :get, class: 'btn btn-secondary' %>
         </fieldset>
         <fieldset class="btn-group">
-          <%= submit_tag 'Delete Selected Packages', class: 'btn', formaction: main_app.delete_from_ftp_path(source: @source), data: { confirm: 'Are you sure you want to delete selected packages?' } %>
+          <%= submit_tag 'Delete Selected Packages', class: 'btn btn-danger', formaction: main_app.delete_from_ftp_path(source: @source), data: { confirm: 'Are you sure you want to delete selected packages?' } %>
         </fieldset>
-        <table class="table table-sm table-striped works-list">
+        <table class="table table-sm table-striped works-list mt-4">
           <thead>
             <tr>
               <th><%= check_box_tag 'select_all' %></th>
