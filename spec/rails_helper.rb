@@ -31,6 +31,15 @@ Capybara.default_normalize_ws = true
 
 # Checks for pending migration and applies them before tests are run.
 # If you are not using ActiveRecord, you can remove this line.
+
+# Setup test database
+db_config = ActiveRecord::Base.configurations[ENV['RAILS_ENV']]
+ActiveRecord::Tasks::DatabaseTasks.create(db_config)
+
+ActiveRecord::Migrator.migrations_paths = [Pathname.new('.').join('db', 'migrate').to_s]
+ActiveRecord::Tasks::DatabaseTasks.migrate
+ActiveRecord::Base.descendants.each(&:reset_column_information)
+
 ActiveRecord::Migration.maintain_test_schema!
 
 RSpec.configure do |config|
