@@ -1057,3 +1057,18 @@ input#check_all {
     }
   }
 }
+
+#new_importer {
+  /* suppressing "Create and Validate" and "Create" buttons since the former is very buggy, and the latter is the same as "Create and Import" */
+  .btn[value="Create and Validate"], .btn[value="Create"] {
+    display: none;
+  }
+  /* Hiding the vertical pipes between buttons */
+  .panel-footer {
+    color: transparent;
+  }
+  /* Correcting the font color until bulkrax is updated for hyrax 4 */
+  .btn-primary {
+    color: #fff;
+  }
+}
