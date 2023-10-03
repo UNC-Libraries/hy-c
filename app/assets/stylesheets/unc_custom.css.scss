@@ -561,6 +561,12 @@ div.fileupload-progress {
   clip: rect(1px, 1px, 1px, 1px);
 }
 
+#fileuploadVersioning {
+  h3 {
+    width: 100%;
+  }
+}
+
 /* Colors taken from Bootstrap's focus */
 input.hidden-file-input:focus + label {
   outline: -webkit-focus-ring-color auto 5px;
