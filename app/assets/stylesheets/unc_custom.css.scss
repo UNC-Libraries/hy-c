@@ -73,13 +73,10 @@ span.institution_name {
 #masthead {
   background-color: $carolina-blue-dark !important;
   margin-bottom: 0;
+  max-height: 56px;
 
   &+ nav {
     margin-top: 0;
-  }
-
-  .navbar-brand {
-    padding: 10px 15px;
   }
 }
 
@@ -564,6 +561,16 @@ div.fileupload-progress {
   clip: rect(1px, 1px, 1px, 1px);
 }
 
+.base-terms .card {
+  margin-bottom: 15px !important;
+}
+
+#fileuploadVersioning {
+  h3 {
+    width: 100%;
+  }
+}
+
 /* Colors taken from Bootstrap's focus */
 input.hidden-file-input:focus + label {
   outline: -webkit-focus-ring-color auto 5px;
@@ -743,8 +750,6 @@ input#check_all {
     margin-left: 75px;
   }
 }
-
-
 
 @media only screen and (max-width: 865px) {
   #unc-footer {

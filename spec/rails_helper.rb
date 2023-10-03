@@ -31,9 +31,27 @@ Capybara.default_normalize_ws = true
 
 # Checks for pending migration and applies them before tests are run.
 # If you are not using ActiveRecord, you can remove this line.
+
 ActiveRecord::Migration.maintain_test_schema!
 
 RSpec.configure do |config|
+  DatabaseCleaner.url_allowlist = [ENV['DATABASE_URL']]
+
+  config.before(:suite) do
+    DatabaseCleaner.clean_with :truncation
+    DatabaseCleaner.strategy = :transaction
+  end
+
+  config.before do
+    DatabaseCleaner.start
+  end
+
+  config.after do
+    DatabaseCleaner.clean
+  rescue
+    puts 'database clean failed'
+  end
+
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   config.fixture_path = "#{::Rails.root}/spec/fixtures"
 
