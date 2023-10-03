@@ -10,7 +10,7 @@
     <% end %>
 
     <%= f.fields_for person_key, sorted_values do |person| %>
-    <div class="<%= person_term %> row well field-wrapper person-object">
+    <div class="<%= person_term %> row card card-body bg-light field-wrapper person-object">
       <div class="person col-sm-12 <%= person_term %>-name">
         <%= person.input :name,
                          label: person_term_display,
@@ -70,7 +70,7 @@
   <div class="<%= person_term %> row cloning d-none field-wrapper" id='<%= person_term %>-cloning_row'>
     <%= f.fields_for person_key do |person| %>
       <% if person.index <= @form.instance_eval(person_key.to_s).count %>
-        <div class="<%= person_term %> row well">
+        <div class="<%= person_term %> row card card-body bg-light">
           <div class="col-sm-12 <%= person_term %>-name">
             <%= person.input :name,
                              label: person_term_display,
