@@ -482,6 +482,21 @@ div.unc-modal {
   }
 }
 
+.facet-limit-active {
+  .card-header {
+    button {
+      color: white;
+    }
+  }
+  .facet-label .remove {
+    margin: 0;
+  }
+
+  .facet-values li .selected {
+     color: black !important;
+  }
+}
+
 /* Fixes https://github.com/samvera/hyrax/blob/f14958e665535be2696dc1cdf9e205d6fc54e668/app/assets/stylesheets/hyrax/_card.scss#L5
 Resets it to the default Bootstrap card margins
  */
