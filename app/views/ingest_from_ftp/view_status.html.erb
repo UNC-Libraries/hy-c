@@ -1,14 +1,14 @@
 <% provide :page_header do %>
-  <h1><span class="glyphicon glyphicon-ok-circle"></span> Ingest status from <%= @source %></h1>
+  <h1><i class="fa fa-check-circle-o" aria-hidden="true"></i> Ingest status from <%= @source %></h1>
 <% end %>
 
 <div class="row">
-  <div class="col-md-12">
-    <div class="panel panel-default">
-      <div class="panel-body">
+  <div class="col-md-12 tabs">
+    <div class="card">
+      <div class="card-body">
         <h2 class="sr-only">Ingest Status from <%= @source %> </h2>
-        <%= link_to "Return to list of #{@source} packages", main_app.ingest_from_ftp_path(source: @source)%>
-        <table class="table table-sm table-striped works-list">
+        <%= link_to "Return to list of #{@source} packages", main_app.ingest_from_ftp_path(source: @source), class: 'btn btn-secondary'%>
+        <table class="table table-sm table-striped works-list mt-4">
           <thead>
             <tr>
               <th>Package</th>
