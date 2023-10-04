@@ -589,10 +589,6 @@ table p.name span {
   overflow: auto
 }
 
-.well {
-  margin: 15px auto;
-}
-
 .person-divider {
   height: 2px;
   border: none;
@@ -739,6 +735,28 @@ input#check_all {
   }
 }
 
+.sidebar:not(.maximized) {
+  .sidebar-action-text,
+  a span + span,
+  h5 {
+    display: none;
+  }
+
+  .active {
+    width: fit-content;
+  }
+}
+
+.dashboard {
+  .main-header {
+    padding-left: 15px;
+
+    .pull-right {
+      padding-right: 15px;
+    }
+  }
+}
+
 @media only screen and (max-width: 1375px) {
   .navbar-brand {
     margin-left: 0;
@@ -829,10 +847,6 @@ input#check_all {
     }
   }
 
-  .nav {
-    padding-left: 15px;
-  }
-
   #collection-description-text-btn {
     margin-bottom: 15px;
   }
@@ -867,6 +881,26 @@ input#check_all {
 
   .institution_name {
     font-size: $font-size-base
+  }
+
+  .dashboard {
+    .main-header {
+      .pull-right {
+        float: none;
+        padding-right: 0;
+        text-align: center;
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 576px) {
+  .dashboard {
+    .main-header {
+      .pull-right {
+        padding-right: 15px;
+      }
+    }
   }
 }
 
