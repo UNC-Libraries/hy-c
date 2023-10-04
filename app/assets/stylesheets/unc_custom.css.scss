@@ -101,7 +101,8 @@ span.institution_name {
 
 #top-navbar-collapse {
     .dropdown-menu {
-      left: -70px;
+      margin: 0 -50px;
+      text-align: center;
     }
 }
 
@@ -1028,6 +1029,19 @@ input#check_all {
       border-top: 1px solid transparent;
       box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
       padding-left: 25px;
+      background: inherit;
+      margin: 8px -15px 0 -15px;
+      z-index: 100;
+
+      #user_utility_links {
+        text-align: center;
+      }
+    }
+
+    #navbarDropdown.dropdown-toggle {
+      &:focus {
+        outline: none;
+      }
     }
 
     .navbar-fixed-top {
