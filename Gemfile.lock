@@ -1,9 +1,9 @@
 GIT
   remote: https://github.com/UNC-Libraries/bulkrax.git
-  revision: 3a8eb19f950e5488d11297298b933c11a90fd377
+  revision: ccbc380e1a51543017b9ddab5cd5d03f46fd293d
   branch: unc-bulkrax-5-development
   specs:
-    bulkrax (5.4.0)
+    bulkrax (5.4.1)
       bagit (~> 0.4)
       coderay
       dry-monads (~> 1.5.0)
