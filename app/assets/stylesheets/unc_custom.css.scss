@@ -758,6 +758,21 @@ input#check_all {
   }
 }
 
+/*
+@TODO This is broken in hyrax 4.0.0 through at least hyrax 5.0.0.rc1
+Toggling the facet values closes and immediately reopens the facet list
+Hide it entirely until the issue is resolved upstreeam
+ */
+.facets-toggleable-md {
+  .navbar-toggler {
+    display: none;
+  }
+}
+
+#facet-panel-collapse {
+  margin-bottom: 25px;
+}
+
 @media only screen and (max-width: 1375px) {
   .navbar-brand {
     margin-left: 0;
