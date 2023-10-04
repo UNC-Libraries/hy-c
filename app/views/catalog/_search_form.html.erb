@@ -1,4 +1,5 @@
-<%# [hyc-override] Remove the search form label. Add aria label %>
+<%# [hyc-override] https://github.com/samvera/hyrax/blob/f14958e665535be2696dc1cdf9e205d6fc54e668/app/views/catalog/_search_form.html.erb %>
+<%# [hyc-override] Remove the search form label. Add advanced search link %>
 <%= form_tag search_form_action, method: :get, class: "form-horizontal search-form", id: "search-form-header", role: "search" do %>
   <%= render Blacklight::HiddenSearchStateComponent.new(params: search_state.params_for_search.except(:q, :search_field, :qt, :page, :utf8)) %>
   <%= hidden_field_tag :search_field, 'all_fields' %>
@@ -10,7 +11,6 @@
     </label> -->
 
     <div class="input-group col">
-      <%# [hyc-override] Add aria label %>
       <%= text_field_tag :q, current_search_parameters , 'aria-label': 'Search', class: "q form-control", id: "search-field-header", placeholder: t("hyrax.search.form.q.placeholder") %>
 
       <div class="input-group-append">
