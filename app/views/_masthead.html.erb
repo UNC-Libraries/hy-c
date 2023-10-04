@@ -1,6 +1,6 @@
 <%# [hyc-override] https://github.com/samvera/hyrax/tree/hyrax-v4.0.0/app/views/_masthead.html.erb %>
 <header aria-label="header" class="top-header">
-  <nav id="masthead" class="navbar navbar-expand-lg navbar-dark bg-dark justify-content-between <%= placement_class %>" role="navigation" aria-label="masthead">
+  <nav id="masthead" class="navbar navbar-expand-lg navbar-dark bg-dark <%= placement_class %>" role="navigation" aria-label="masthead">
     <h1 class="sr-only"><%= application_name %></h1>
     <%# [hyc-override] Overriding partial in hyrax gem to make display of logo conditonal %>
     <%= render '/logo' unless controller_name == 'homepage' %>
