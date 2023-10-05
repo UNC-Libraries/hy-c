@@ -11,7 +11,8 @@
       <%# [hyc-override] Disable turbolinks %>
       <%= link_to "Skip to Content", "#skip-to-content", data: { turbolinks: false } %>
     </div>
-    <%= render '/masthead', placement_class: nil %>
+    <% header_class = controller_name == 'homepage' ? 'justify-content-end' : 'justify-content-between' %>
+    <%= render '/masthead', placement_class: header_class %>
     <%= content_for(:navbar) %>
     <%= content_for(:precontainer_content) %>
     <%# [hyc-override] Change class to container-fluid %>

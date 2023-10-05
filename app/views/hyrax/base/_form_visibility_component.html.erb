@@ -16,7 +16,6 @@
     <ul class="visibility">
       <li class="form-check">
         <label class="form-check-label">
-          <%# [hyc-override] Add aria-label to embargo button %>
           <%= f.radio_button :visibility, Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC, 'aria-label': 'Embargo', class: 'form-check-input', data: { 'target': '#collapsePublic' } %>
           <%= visibility_badge(Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC) %>
           <br />

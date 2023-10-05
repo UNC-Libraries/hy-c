@@ -101,7 +101,8 @@ span.institution_name {
 
 #top-navbar-collapse {
     .dropdown-menu {
-      left: -70px;
+      margin: 0 -50px;
+      text-align: center;
     }
 }
 
@@ -589,10 +590,6 @@ table p.name span {
   overflow: auto
 }
 
-.well {
-  margin: 15px auto;
-}
-
 .person-divider {
   height: 2px;
   border: none;
@@ -739,6 +736,43 @@ input#check_all {
   }
 }
 
+.sidebar:not(.maximized) {
+  .sidebar-action-text,
+  a span + span,
+  h5 {
+    display: none;
+  }
+
+  .active {
+    width: fit-content;
+  }
+}
+
+.dashboard {
+  .main-header {
+    padding-left: 15px;
+
+    .pull-right {
+      padding-right: 15px;
+    }
+  }
+}
+
+/*
+@TODO This is broken in hyrax 4.0.0 through at least hyrax 5.0.0.rc1
+Toggling the facet values closes and immediately reopens the facet list
+Hide it entirely until the issue is resolved upstreeam
+ */
+.facets-toggleable-md {
+  .navbar-toggler {
+    display: none;
+  }
+}
+
+#facet-panel-collapse {
+  margin-bottom: 25px;
+}
+
 @media only screen and (max-width: 1375px) {
   .navbar-brand {
     margin-left: 0;
@@ -829,10 +863,6 @@ input#check_all {
     }
   }
 
-  .nav {
-    padding-left: 15px;
-  }
-
   #collection-description-text-btn {
     margin-bottom: 15px;
   }
@@ -867,6 +897,26 @@ input#check_all {
 
   .institution_name {
     font-size: $font-size-base
+  }
+
+  .dashboard {
+    .main-header {
+      .pull-right {
+        float: none;
+        padding-right: 0;
+        text-align: center;
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 576px) {
+  .dashboard {
+    .main-header {
+      .pull-right {
+        padding-right: 15px;
+      }
+    }
   }
 }
 
@@ -1028,6 +1078,19 @@ input#check_all {
       border-top: 1px solid transparent;
       box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
       padding-left: 25px;
+      background: inherit;
+      margin: 8px -15px 0 -15px;
+      z-index: 100;
+
+      #user_utility_links {
+        text-align: center;
+      }
+    }
+
+    #navbarDropdown.dropdown-toggle {
+      &:focus {
+        outline: none;
+      }
     }
 
     .navbar-fixed-top {
@@ -1087,5 +1150,11 @@ input#check_all {
 .bulkrax-align-text {
   .panel-body {
     width: 100%;
+  }
+}
+
+.search-form {
+  label {
+    visibility: hidden;
   }
 }
