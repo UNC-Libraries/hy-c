@@ -28,6 +28,8 @@ development:
   username: hyrax
   password: <%= ENV['HYRAX_DATABASE_PASSWORD'] %>
   url: <%= ENV['DATABASE_URL'] %>
+  # Increase pool size on in dev, otherwise sidekiq (running in its own vm) runs out of connections
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } * 2 %>
 
   # The specified database role being used to connect to postgres.
   # To create additional roles in postgres see `$ createuser --help`.

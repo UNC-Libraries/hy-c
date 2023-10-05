@@ -1118,6 +1118,10 @@ Hide it entirely until the issue is resolved upstreeam
     .nav-link[href="/leases?locale=en"], .nav-link[href^="/dashboard/profiles"] {
       display: none;
     }
+    /* Temporary fix so that bulkrax links format correctly, until the gem is updated */
+    .nav-item a {
+      display: block;
+    }
   }
 }
 
@@ -1140,6 +1144,12 @@ Hide it entirely until the issue is resolved upstreeam
   /* Correcting the font color until bulkrax is updated for hyrax 4 */
   .btn-primary {
     color: #fff;
+  }
+}
+
+.bulkrax-align-text {
+  .panel-body {
+    width: 100%;
   }
 }
 
