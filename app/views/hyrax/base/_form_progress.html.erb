@@ -1,5 +1,5 @@
 <%# [hyc-override] https://github.com/samvera/hyrax/tree/hyrax-v4.0.0/app/views/hyrax/base/_form_progress.html.erb %>
-<%# [hyc-override] Overriding partial from gem to switch ordering of form completion requirements %>
+<%# [hyc-override] Switch ordering of form completion requirements. Change agreement checkbox %>
 <aside id="form-progress" class="form-progress card">
   <div class="card-header">
     <h3 class="card-title"><%= t("hyrax.works.progress.header") %></h3>
@@ -9,7 +9,7 @@
       <fieldset>
         <legend class="legend-save-work"><%= t('.requirements') %></legend>
         <ul class="requirements">
-          <%# [hyc-override] Overriding partial. Make file completion first in the list %>
+          <%# [hyc-override] Make file completion first in the list %>
           <% if Hyrax.config.work_requires_files? %>
             <li class="incomplete" id="required-files"><%= t('.required_files') %></li>
           <% end %>
@@ -39,6 +39,7 @@
       <% if ::Flipflop.active_deposit_agreement_acceptance? %>
         <% if !current_user.admin? || (current_user.admin? && params[:action] == 'new') %>
           <label>
+            <%# [hyc-override] Changing agreement button to submit the onyen of the depositor %>
             <%= f.input :agreement,
                         as: :boolean,
                         label: t('hyrax.active_consent_to_agreement'),
@@ -52,6 +53,7 @@
           </label>
         <% else %>
           <label class="d-none">
+            <%# [hyc-override] Changing agreement button to submit the onyen of the depositor %>
             <%= f.input :agreement,
                         as: :boolean,
                         checked: f.object.agreement_accepted,
@@ -62,7 +64,7 @@
         <% end %>
       <% end %>
     <% end %>
-
+    <br />
     <%# TODO: If we start using ActionCable, we could listen for object updates and
               alert the user that the object has changed by someone else %>
     <%= f.input Hyrax::Actors::OptimisticLockValidator.version_field, as: :hidden if f.object.persisted? %>
