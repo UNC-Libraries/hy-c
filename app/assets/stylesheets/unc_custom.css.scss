@@ -1035,7 +1035,7 @@ Hide it entirely until the issue is resolved upstreeam
 
     .checkbox {
       label {
-        padding-bottom: 0;
+        margin-bottom: 0;
       }
     }
 
@@ -1045,6 +1045,10 @@ Hide it entirely until the issue is resolved upstreeam
 
     #agreement {
       margin-right: 5px;
+    }
+
+    a {
+      font-weight: bold;
     }
   }
 }
