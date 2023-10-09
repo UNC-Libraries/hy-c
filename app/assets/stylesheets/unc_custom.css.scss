@@ -482,6 +482,21 @@ div.unc-modal {
   }
 }
 
+.facet-limit-active {
+  .card-header {
+    button {
+      color: white;
+    }
+  }
+  .facet-label .remove {
+    margin: 0;
+  }
+
+  .facet-values li .selected {
+     color: black !important;
+  }
+}
+
 /* Fixes https://github.com/samvera/hyrax/blob/f14958e665535be2696dc1cdf9e205d6fc54e668/app/assets/stylesheets/hyrax/_card.scss#L5
 Resets it to the default Bootstrap card margins
  */
@@ -1011,6 +1026,31 @@ Hide it entirely until the issue is resolved upstreeam
 
 .form-progress .checkbox label {
   font-weight: bold;
+}
+
+#form-progress {
+  .card-footer {
+    padding: 5px;
+    text-align: center;
+
+    .checkbox {
+      label {
+        margin-bottom: 0;
+      }
+    }
+
+    label {
+      width: 100%;
+    }
+
+    #agreement {
+      margin-right: 5px;
+    }
+
+    a {
+      font-weight: bold;
+    }
+  }
 }
 
 
