@@ -1,26 +1,25 @@
-<% if @default_admin_sets.nil? %>
 <p id="notice"><%= notice %></p>
-
 <div class="row">
-  <div class="col-xs-12 main-header">
-    <h1><span class="fa fa-archive"></span> Assign Admin Set Worktype</h1>
+  <div class="col-12 main-header">
+    <h1><span class="fa fa-archive"></span> Admin Set Worktype</h1>
   </div>
 </div>
 
-<div class="panel panel-default">
-  <div class="panel-body">
+<% if @default_admin_sets.nil? %>
+
+<div class="card card-default">
+  <div class="card-body">
     <p>You must create an admin set before selecting a default.</p>
   </div>
 </div>
-<% else %>
-<p id="notice"><%= notice %></p>
 
-<div class="row">
-  <div class="col-xs-12 main-header">
-    <h1><span class="fa fa-archive"></span> Admin Set Worktypes</h1>
+<% else %>
+
+<div class="row mb-2 pl-2">
+  <div class="col-12">
     <h4>A listing of the admin sets chosen for each work type or work type-department combination.</h4>
 
-    <div class="pull-right">
+    <div class="float-right">
       <a href="<%= new_default_admin_set_path %>" class="btn btn-primary">
         <span class="fa fa-edit"></span> Add new admin set worktype
       </a>
@@ -28,8 +27,8 @@
   </div>
 </div>
 
-<div class="panel panel-default">
-  <div class="panel-body">
+<div class="card card-default">
+  <div class="card-body">
     <div class="table-responsive">
       <table class="table table-striped datatable">
         <caption class="sr-only">admin set worktypes <%= application_name %></caption>
