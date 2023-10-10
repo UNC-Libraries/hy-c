@@ -4,9 +4,9 @@
   <%= label_tag "date_issued_isim", :class => "col-sm-3 col-form-label text-md-right" do %>Date<% end %>
   <div class="col-sm-9 form-inline row">
     <%= label_tag("range[date_issued_isim][begin]", 'from year', class: 'sr-only visually-hidden') %>
-    <%= number_field_tag("range[date_issued_isim][begin]", params.dig('range', 'date_issued_isim', 'begin'), maxlength: 6, class: "form-control text-center range_begin") %>
+    <%= number_field_tag("range[date_issued_isim][begin]", params.dig('range', 'date_issued_isim', 'begin'), maxlength: 6, class: "form-control text-center range_begin", placeholder: 'yyyy') %>
     <span class="control-label">&nbsp;-&nbsp;</span>
     <%= label_tag("range[date_issued_isim][end]", 'to year', class: 'sr-only visually-hidden') %>
-    <%= number_field_tag("range[date_issued_isim][end]", params.dig('range', 'date_issued_isim', 'end'), maxlength: 6, class: "form-control text-center range_end") %>
+    <%= number_field_tag("range[date_issued_isim][end]", params.dig('range', 'date_issued_isim', 'end'), maxlength: 6, class: "form-control text-center range_end", placeholder: 'yyyy') %>
   </div>
 </div>
