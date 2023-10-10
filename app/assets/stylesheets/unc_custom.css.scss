@@ -114,6 +114,21 @@ span.institution_name {
   }
 }
 
+.advanced-search-form {
+  .adv-date-year-range {
+    margin-left: -37.5%;
+    .form-control {
+      width: 6rem;
+    }
+    .form-inline {
+      margin-left: 0;
+    }
+    .control-label {
+      font-weight: bold;
+    }
+  }
+}
+
 .file_set.attributes .btn-group a {
   color: black !important;
   &:hover {

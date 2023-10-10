@@ -1,0 +1,12 @@
+<%# [hyc-override] https://github.com/sul-dlss/SearchWorks/blob/01b8a0e8502220d4775ea868b097e9c723756455/app/components/advanced_search_range_limit_component.html.erb %>
+<%#  The file is unchanged, but is imported from another project %>
+<div class="form-group advanced-search-facet row facet_limit adv-date-year-range">
+  <%= label_tag "date_issued_isim", :class => "col-sm-3 col-form-label text-md-right" do %>Date<% end %>
+  <div class="col-sm-9 form-inline row">
+    <%= label_tag("range[date_issued_isim][begin]", 'from year', class: 'sr-only visually-hidden') %>
+    <%= number_field_tag("range[date_issued_isim][begin]", nil, maxlength: 6, class: "form-control text-center range_begin") %>
+    <span class="control-label"> - </span>
+    <%= label_tag("range[date_issued_isim][end]", 'to year', class: 'sr-only visually-hidden') %>
+    <%= number_field_tag("range[date_issued_isim][end]", nil, maxlength: 6, class: "form-control text-center range_end") %>
+  </div>
+</div>
