@@ -150,6 +150,7 @@ $(function() {
     hideNonRequiredFieldsBtn();
     hideNonRequiredFormFields();
     removeCloning();
+    toggleCollectionPageDescription();
     showRemoveOption();
 
     // Make sure that form visibility and datepicker work with turbolinks
