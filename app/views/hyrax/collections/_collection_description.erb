@@ -1,3 +1,5 @@
+<%# [hyc-override] https://github.com/samvera/hyrax/blob/hyrax-v4.0.0/app/views/hyrax/collections/_collection_description.html.erb %>
+<%# [hyc-override] truncate the description field by default %>
 <% presenter.description.each do |description| %>
   <%  if description.split.size > 100 %>
     <div class="truncated">
