@@ -721,6 +721,12 @@ table p.name span {
   font-size: 18px;
 }
 
+.collection-works-table {
+  .media-left {
+    margin-right: 1rem;
+  }
+}
+
 .social-media {
   .sr-only {
     color: $carolina-blue;
