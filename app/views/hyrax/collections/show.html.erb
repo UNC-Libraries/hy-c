@@ -7,6 +7,7 @@
       <% unless @presenter.banner_file.blank? %>
         <header class="hyc-banner" style="background-image:url(<%= @presenter.banner_file %>)">
       <% else %>
+        <%# [hyc-override] Set a default banner image %>
         <header class="hyc-generic" style="background-image:url(<%= image_path('cdr-banner-bg.png') %>)">
       <% end %>
 
@@ -16,10 +17,10 @@
         <%= @presenter.permission_badge %>
       </div>
 
-
-        <div class="hyc-logos">
-          <% unless @presenter.logo_record.blank? %>
+      <% unless @presenter.logo_record.blank? %>
+          <div class="hyc-logos">
             <% @presenter.logo_record.each_with_index  do |lr, i| %>
+
               <% if lr[:linkurl].blank? %>
                 <img alt="<%= lr[:alttext] %>" src="<%= lr[:file_location] %>" />
               <% else %>
@@ -28,27 +29,35 @@
                 </a>
               <% end %>
             <% end %>
-          <% else %>
-              <img alt="UNC logo" src="<%= image_path('unc-icon.png') %>" />
-          <% end %>
-        </div>
+          </div>
+      <% else %>
+          <%# [hyc-override] Show a default logo %>
+          <div class="hyc-logos">
+            <img alt="UNC logo" src="<%= image_path('unc-icon.png') %>" />
+          </div>
+      <% end %>
       </header>
     </div>
   </div>
 
+  <%# [hyc-override] Move subcollections list to the top %>
   <!-- Subcollections -->
   <% if @presenter.collection_type_is_nestable? && @subcollection_count > 0 %>
-    <div class="hyc-blacklight hyc-bl-results col-md-12">
+    <%# [hyc-override] Remove the section header %>
+    <div class="hyc-blacklight hyc-bl-results">
       <%= render 'subcollection_list', collection: @subcollection_docs %>
     </div>
   <% end %>
+
   <div class="row hyc-body">
+    <%# [hyc-override] Made 12 columns instead of 8 to account for removing description %>
     <div class="col-md-12 hyc-description">
       <%= render 'collection_description', presenter: @presenter %>
 
       <% if @presenter.collection_type_is_nestable? && @presenter.total_parent_collections > 0 %>
         <div class="hyc-blacklight hyc-bl-title">
           <h2>
+            <%# [hyc-override] Remove display of count %>
             <%= t('.parent_collection_header') %>:
           </h2>
         </div>
@@ -56,18 +65,18 @@
           <%= render 'show_parent_collections', presenter: @presenter %>
         </div>
       <% end %>
-
+      <%# [hyc-override] Removed metadata display to a modal %>
     </div>
   </div>
 
   <!-- Search results label -->
   <% if @members_count > 0 || @presenter.subcollection_count > 0 %>
     <div class="hyc-blacklight hyc-bl-title">
+    <% if collection_search_parameters? %>
       <h2>
-        <% if has_collection_search_parameters? %>
-          <%= t('hyrax.dashboard.collections.show.search_results') %>
-        <% end %>
+        <%= t('hyrax.dashboard.collections.show.search_results') %>
       </h2>
+    <% end %>
     </div>
   <% end %>
 
@@ -77,11 +86,13 @@
       <%= render 'search_form', presenter: @presenter, url: hyrax.collection_path(@presenter.id) %>
 
     </div>
+    <%# [hyc-override] Add a button to display the metadata modal %>
     <button class="btn btn-primary more-metadata-btn" data-toggle="modal" data-target="#collection-metadata-modal">View detailed metadata</button>
   </div>
 
   <!-- Works -->
   <% if @members_count > 0 %>
+    <%# [hyc-override] Added outer div for styling %>
     <div class="works">
       <div class="hyc-blacklight hyc-bl-title">
         <h4><%= t('.works_in_collection') %> (<%= @members_count %>)</h4>
@@ -102,6 +113,7 @@
   <% end # if @members_count > 0 %>
 </div>
 
+<%# [hyc-override] Added modal for displaying metadata %>
 <div class="modal fade" id="collection-metadata-modal" tabindex="-1" role="dialog" aria-labelledby="collection-modal-title" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -117,3 +129,5 @@
     </div>
   </div>
 </div>
+
+<span class='hide analytics-event' data-category="collection" data-action="collection-page-view" data-name="<%= @presenter.id %>" >
