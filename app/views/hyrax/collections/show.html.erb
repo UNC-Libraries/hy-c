@@ -115,13 +115,11 @@
 
 <%# [hyc-override] Added modal for displaying metadata %>
 <div class="modal fade" id="collection-metadata-modal" tabindex="-1" role="dialog" aria-labelledby="collection-modal-title" aria-hidden="true">
-  <div class="modal-dialog" role="document">
+  <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-        <h2 class="modal-title text-center" id="collection-modal-title"><%= t('hyrax.dashboard.collections.show.metadata_header') %></h2>
+        <h2 class="modal-title" id="collection-modal-title"><%= t('hyrax.dashboard.collections.show.metadata_header') %></h2>
+        <button type="button" class="close" data-dismiss="modal" aria-label="<%= t('hyrax.dashboard.heading_actions.close') %>"><span aria-hidden="true">&times;</span></button>
       </div>
       <div class="modal-body unc-modal">
         <%= render 'show_descriptions' %>
