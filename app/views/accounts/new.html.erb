@@ -1,21 +1,21 @@
 <div class="row">
-  <div class="col-xs-12 main-header">
+  <div class="col-12 main-header">
     <h1><span class="fa fa-edit"></span> New User</h1>
   </div>
 </div>
 
-<div class="panel panel-default">
-  <div class="panel-body">
+<div class="card card-default">
+  <div class="card-body">
     <div class="col-md-4">
       <%= simple_form_for :account, url: accounts_create_path, method: :post do |f| %>
         <div class="form-group">
-          <%= f.label :onyen %>
+          <%= f.label :onyen, class: 'font-weight-bold' %>
           <%= f.text_field :onyen, pattern: '^[A-Za-z0-9]+', title: 'UNC ONYEN', class: 'form-control' %>
         </div>
 
         <div class="actions pull-right">
           <%= f.submit 'Save', class: 'btn btn-primary' %>
-          <%= link_to 'Cancel', hyrax.admin_users_path, class: 'btn btn-default' %>
+          <%= link_to 'Cancel', hyrax.admin_users_path, class: 'btn btn-outline-secondary' %>
         </div>
       <% end %>
     </div>
