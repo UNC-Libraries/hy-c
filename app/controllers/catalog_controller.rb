@@ -97,7 +97,11 @@ class CatalogController < ApplicationController
     config.add_facet_field solr_name('resource_type', :facetable), label: 'Resource Type', limit: 5
     config.add_facet_field solr_name('creator_label', :facetable), label: 'Creator', limit: 5
     config.add_facet_field solr_name('affiliation_label', :facetable), label: 'Departments', limit: 5
-    config.add_facet_field 'date_issued_isim', label: 'Date', limit: 5, **default_range_config
+    # Search results version of the date_issued facet
+    config.add_facet_field 'date_issued_isim', field: 'date_issued_isim', label: 'Date', range: true, range_config: {
+      input_label_range_begin: 'from year',
+      input_label_range_end: 'to year'
+    }
     config.add_facet_field solr_name('keyword', :facetable), limit: 5
     config.add_facet_field solr_name('subject', :facetable), limit: 5
     config.add_facet_field solr_name('advisor_label', :facetable), label: 'Advisor', limit: 5
@@ -105,6 +109,8 @@ class CatalogController < ApplicationController
     config.add_facet_field solr_name('language', :facetable), helper_method: :language_links_facets, limit: 5
     config.add_facet_field solr_name('member_of_collections', :symbol), limit: 5, label: 'Collection'
     config.add_facet_field solr_name('human_readable_type', :facetable), label: 'Type', show: false
+    # Advanced search version of the date_issued facet
+    config.add_facet_field 'date_issued_adv_search', show: false, field: 'date_issued_isim', label: 'Date', range: true, advanced_search_component: AdvancedSearchRangeLimitComponent
 
     # The generic_type isn't displayed on the facet list
     # It's used to give a label to the filter that comes from the user profile
