@@ -727,6 +727,14 @@ table p.name span {
   }
 }
 
+.collections-wrapper {
+  .batch-info {
+    .form-control-lg, .sort-toggle {
+      height: auto;
+    }
+  }
+}
+
 .social-media {
   .sr-only {
     color: $carolina-blue;
