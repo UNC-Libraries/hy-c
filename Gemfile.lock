@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/UNC-Libraries/blacklight.git
-  revision: 8b344aa9273d307b3fe93e3915ce5d762e53a28f
+  revision: a68a03f3871aeb49ec897b9007122c0ad033e4e6
   branch: advanced_start_over
   specs:
     blacklight (7.34.0)
