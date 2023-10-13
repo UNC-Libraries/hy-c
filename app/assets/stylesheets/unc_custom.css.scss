@@ -108,7 +108,7 @@ span.institution_name {
 
 .advanced_search {
   float: right;
-  margin-right: 15px;
+  margin: 0.5rem 1rem 0 0;
   &:hover {
     text-decoration: none;
   }
@@ -1226,6 +1226,18 @@ Hide it entirely until the issue is resolved upstreeam
 
 .search-form {
   label {
-    visibility: hidden;
+    display: none;
+  }
+}
+
+#unc-search {
+  #search-form-header {
+    .input-group {
+      padding: 0;
+    }
+  }
+
+  .advanced_search {
+    margin-right: 0;
   }
 }
