@@ -312,6 +312,8 @@ span.institution_name {
     -ms-flex-direction: column;
     -webkit-flex-direction: column;
     flex-direction: column;
+    margin-bottom: 25px;
+    margin-top: 25px;
 
     height: 200px;
 
@@ -328,11 +330,6 @@ span.institution_name {
   h2 {
     margin-top: 15px;
     margin-bottom: 50px;
-  }
-
-  div {
-    margin-bottom: 25px;
-    margin-top: 25px;
   }
 
   .featured-item-title {

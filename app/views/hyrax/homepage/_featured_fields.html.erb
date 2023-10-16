@@ -2,7 +2,7 @@
 <%# [hyc-override] Restructured to display thumbnail on top of title, and removed other fields %>
 <div>
   <%= link_to [main_app, featured] do %>
-    <%= render_thumbnail_tag(featured, {width: 90, alt: "#{featured.title.first.to_s} #{ t('hyrax.homepage.admin_sets.thumbnail')}" }, {suppress_link: true})%>
+    <%= render_thumbnail_tag(featured, {alt: "#{featured.title.first.to_s} #{ t('hyrax.homepage.admin_sets.thumbnail')}" }, {suppress_link: true})%>
   <% end %>
   <div class="featured-item-title">
     <span class="sr-only"><%= t('hyrax.homepage.featured_works.document.title_label') %></span>
