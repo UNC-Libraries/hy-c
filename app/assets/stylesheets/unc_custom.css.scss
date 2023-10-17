@@ -146,6 +146,7 @@ span.institution_name {
   .repo-name {
     font-family: LibreBaskerville, sans-serif;
     padding-left: 15px;
+    white-space: nowrap;
   }
 
   img.banner-img {
@@ -216,7 +217,6 @@ span.institution_name {
   color: $text-color !important;
 
   div {
-    width: 65%;
     margin: 0 auto;
   }
 
@@ -859,7 +859,7 @@ Hide it entirely until the issue is resolved upstreeam
     }
 
     p {
-      font-size: 1.05em;
+      font-size: .9em;
     }
   }
 
@@ -951,6 +951,10 @@ Hide it entirely until the issue is resolved upstreeam
       }
     }
   }
+
+  .repo-name {
+    font-size: 2rem;
+  }
 }
 
 @media only screen and (max-width: 576px) {
@@ -963,7 +967,7 @@ Hide it entirely until the issue is resolved upstreeam
   }
 }
 
-@media only screen and (max-width: 480px) {
+@media only screen and (max-width: 576px) {
   .navbar-toggle {
     margin-right: 0;
   }
@@ -1001,7 +1005,7 @@ Hide it entirely until the issue is resolved upstreeam
 
   #unc-text {
     p {
-      font-size: .7em;
+      font-size: .8em;
     }
   }
 
