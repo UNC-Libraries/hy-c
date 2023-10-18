@@ -1247,3 +1247,10 @@ Hide it entirely until the issue is resolved upstreeam
     margin-right: 0;
   }
 }
+
+.visibility {
+  /* this prevents the embargo inputs from running out of the side of their container */
+  .form-inline {
+    display: block;
+  }
+}
