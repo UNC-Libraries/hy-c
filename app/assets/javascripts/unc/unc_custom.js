@@ -151,7 +151,11 @@ $(function() {
         }
 
         // hide disabled visibility options
-        visibility.find('input:disabled').parentsUntil(visibility, '.form-check').addClass('d-none');
+        visibility.find('.form-check-input:disabled').parentsUntil(visibility, '.form-check').addClass('d-none');
+        // If this is a new work, then default to the first active visibility option
+        if (visibility.parents('.simple_form').first().attr('class').match(/\bnew_/)) {
+            visibility.find('.form-check-input:not([disabled]):first').click();
+        }
     }
 
     visibleForms();
