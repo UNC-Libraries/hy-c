@@ -16,7 +16,7 @@
     <ul class="visibility">
       <li class="form-check">
         <label class="form-check-label">
-          <%= f.radio_button :visibility, Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC, 'aria-label': 'Embargo', class: 'form-check-input', data: { 'target': '#collapsePublic' } %>
+          <%= f.radio_button :visibility, Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC, class: 'form-check-input', data: { 'target': '#collapsePublic' } %>
           <%= visibility_badge(Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC) %>
           <br />
           <%= t('hyrax.visibility.open.note_html', type: f.object.human_readable_type) %>

@@ -108,7 +108,7 @@ span.institution_name {
 
 .advanced_search {
   float: right;
-  margin-right: 15px;
+  margin: 0.5rem 1rem 0 0;
   &:hover {
     text-decoration: none;
   }
@@ -146,6 +146,7 @@ span.institution_name {
   .repo-name {
     font-family: LibreBaskerville, sans-serif;
     padding-left: 15px;
+    white-space: nowrap;
   }
 
   img.banner-img {
@@ -216,7 +217,6 @@ span.institution_name {
   color: $text-color !important;
 
   div {
-    width: 65%;
     margin: 0 auto;
   }
 
@@ -312,6 +312,8 @@ span.institution_name {
     -ms-flex-direction: column;
     -webkit-flex-direction: column;
     flex-direction: column;
+    margin-bottom: 25px;
+    margin-top: 25px;
 
     height: 200px;
 
@@ -330,19 +332,14 @@ span.institution_name {
     margin-bottom: 50px;
   }
 
-  div {
-    margin-bottom: 25px;
-    margin-top: 25px;
-  }
-
   .featured-item-title {
     margin-top: 15px;
   }
 }
 
 .collections-browse {
-  margin-bottom: 30px;
-  font-size: 30px;
+  margin: .7rem 0 -0.5rem 0;
+  font-size: 1.9rem;
 }
 
 .social {
@@ -454,7 +451,9 @@ div.unc-modal {
   text-align: center;
   font-size: 1.5em;
   padding: 10px 5px;
-  margin: 0 15px 10px 15px;
+  margin: -20px 15px 10px 15px;
+  background-color: #dff0d8;
+  width: 100%;
 }
 
 .form-inline .date-input {
@@ -860,7 +859,7 @@ Hide it entirely until the issue is resolved upstreeam
     }
 
     p {
-      font-size: 1.05em;
+      font-size: .9em;
     }
   }
 
@@ -952,6 +951,10 @@ Hide it entirely until the issue is resolved upstreeam
       }
     }
   }
+
+  .repo-name {
+    font-size: 2rem;
+  }
 }
 
 @media only screen and (max-width: 576px) {
@@ -964,9 +967,14 @@ Hide it entirely until the issue is resolved upstreeam
   }
 }
 
-@media only screen and (max-width: 480px) {
+@media only screen and (max-width: 576px) {
   .navbar-toggle {
     margin-right: 0;
+  }
+
+  .navbar-nav {
+    margin-left: 30px;
+    margin-bottom: .7rem;
   }
 
   #logo {
@@ -1002,7 +1010,7 @@ Hide it entirely until the issue is resolved upstreeam
 
   #unc-text {
     p {
-      font-size: .7em;
+      font-size: .8em;
     }
   }
 
@@ -1224,6 +1232,25 @@ Hide it entirely until the issue is resolved upstreeam
 
 .search-form {
   label {
-    visibility: hidden;
+    display: none;
+  }
+}
+
+#unc-search {
+  #search-form-header {
+    .input-group {
+      padding: 0;
+    }
+  }
+
+  .advanced_search {
+    margin-right: 0;
+  }
+}
+
+.visibility {
+  /* this prevents the embargo inputs from running out of the side of their container */
+  .form-inline {
+    display: block;
   }
 }

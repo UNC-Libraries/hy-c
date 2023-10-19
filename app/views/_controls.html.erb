@@ -1,5 +1,6 @@
-<%# [hyc-override] Overriding partial in hyrax gem to update homepage %>
-<nav class="navbar navbar-light bg-light navbar-expand-sm justify-content-between align-items-baseline px-2 py-3 border-bottom" role="navigation" aria-label="Root Menu">
+<%# [hyc-override] https://github.com/samvera/hyrax/blob/hyrax-v4.0.0/app/views/_controls.html.erb %>
+<%# [hyc-override] Reduced top and bottom padding with py %>
+<nav class="navbar navbar-light bg-light navbar-expand-sm justify-content-between align-items-baseline px-2 py-2 border-bottom" role="navigation" aria-label="Root Menu">
     <ul class="nav navbar-nav col-sm-5">
       <li class="nav-item <%= 'active' if current_page?(hyrax.root_path) %>">
         <%= link_to t(:'hyrax.links.browse_all'), main_app.search_catalog_path, class: "nav-link", aria: current_page?(main_app.search_catalog_path) ? {current: 'page'} : nil %></li>
@@ -7,6 +8,7 @@
         <%= link_to t(:'hyrax.links.collections'), main_app.search_catalog_path(f: { human_readable_type_sim: ["Collection"]}), class: "nav-link", aria: current_page?(main_app.search_catalog_path(f: { human_readable_type_sim: ["Collection"]})) ? {current: 'page'} : nil %></li>
       <li class="nav-item <%= 'active' if current_page?(hyrax.root_path) %>">
         <%= link_to t(:'hyrax.links.departments'), main_app.facet_catalog_path(id: 'affiliation_label_sim'), class: "nav-link", aria: current_page?(main_app.facet_catalog_path(id: 'affiliation_label_sim')) ? {current: 'page'} : nil %></li>
+      <%# [hyc-override] Suppress deposit option when read only mode is enabled %>
       <% unless Flipflop.read_only? %>
         <li class="nav-item" data-turbolinks="false">
           <%= link_to '#', class: 'all-unc-work-types nav-link',
