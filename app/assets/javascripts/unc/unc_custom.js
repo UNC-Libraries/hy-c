@@ -143,7 +143,19 @@ $(function() {
         });
     }
 
+    // Local modifications to the editor's visibility component behaviors
+    function modifyVisibilityComponent() {
+        var visibility = $('.visibility');
+        if (visibility.length == 0) {
+            return;
+        }
+
+        // hide disabled visibility options
+        visibility.find('input:disabled').parentsUntil(visibility, '.form-check').addClass('d-none');
+    }
+
     visibleForms();
+    modifyVisibilityComponent();
    // browseEverythingUploads();
     accessUrl()
     uploadProgress();
@@ -167,13 +179,4 @@ $(function() {
         // Turns advanced search multi-select boxes into typeaheads
         $(".advanced-search-facet-select").chosen({ placeholder_text: 'Select option(s)'});
     });
-
-    // Override default workEditor to pick up our local changes
-    Hyrax.workEditor = function() {
-        var element = $("[data-behavior='work-form']")
-        if (element.length > 0) {
-            var Editor = require('unc/unc_editor');
-            new Editor(element).init();
-        }
-    };
 });
