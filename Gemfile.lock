@@ -16,7 +16,7 @@ GIT
 
 GIT
   remote: https://github.com/UNC-Libraries/bulkrax.git
-  revision: ccbc380e1a51543017b9ddab5cd5d03f46fd293d
+  revision: 605a43a5d9725cebb87d796b729991080970741f
   branch: unc-bulkrax-5-development
   specs:
     bulkrax (5.4.1)
