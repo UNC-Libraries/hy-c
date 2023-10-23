@@ -150,12 +150,26 @@ $(function() {
             return;
         }
 
-        // hide disabled visibility options
-        visibility.find('.form-check-input:disabled').parentsUntil(visibility, '.form-check').addClass('d-none');
+        let is_admin = isAdmin();
+        if (is_admin) {
+            // Enable all visibility options for admins
+            visibility.find("*:disabled").prop("disabled", false);
+        } else {
+            // hide disabled visibility options
+            visibility.find('.form-check-input:disabled').parentsUntil(visibility, '.form-check').addClass('d-none');
+        }
         // If this is a new work, then default to the first active visibility option
-        if (visibility.parents('.simple_form').first().attr('class').match(/\bnew_/)) {
+        if (isNewFile(visibility)) {
             visibility.find('.form-check-input:not([disabled]):first').click();
         }
+    }
+
+    function isNewFile(component) {
+        return component.parents('.simple_form').first().attr('id').startsWith('new_');
+    }
+
+    function isAdmin() {
+        return $('li.h5:contains("Configuration")').length > 0;
     }
 
     visibleForms();
@@ -172,6 +186,7 @@ $(function() {
     // Make sure that form visibility and datepicker work with turbolinks
     $(document).on('turbolinks:load', function() {
         visibleForms();
+        modifyVisibilityComponent();
      //   browseEverythingUploads();
         uploadProgress();
         hideNonRequiredFieldsBtn();
