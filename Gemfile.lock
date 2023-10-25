@@ -37,8 +37,8 @@ GIT
 
 GIT
   remote: https://github.com/UNC-Libraries/hyrax.git
-  revision: 5af9862897810c8b7736062f727613faff391394
-  branch: hyc-1793
+  revision: ca42481857b3b316d2299159bf4340f7d92308f4
+  branch: unc-hyrax-4-development
   specs:
     hyrax (4.0.0)
       active-fedora (~> 14.0)
@@ -191,7 +191,7 @@ GEM
     awesome_nested_set (3.6.0)
       activerecord (>= 4.0.0, < 7.2)
     aws-eventstream (1.2.0)
-    aws-partitions (1.835.0)
+    aws-partitions (1.840.0)
     aws-sdk-core (3.185.1)
       aws-eventstream (~> 1, >= 1.0.2)
       aws-partitions (~> 1, >= 1.651.0)
