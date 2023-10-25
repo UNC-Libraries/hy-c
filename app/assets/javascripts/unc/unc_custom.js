@@ -149,27 +149,8 @@ $(function() {
         if (visibility.length == 0) {
             return;
         }
-
-        let is_admin = isAdmin();
-        if (is_admin) {
-            // Enable all visibility options for admins
-            visibility.find("*:disabled").prop("disabled", false);
-        } else {
-            // hide disabled visibility options
-            visibility.find('.form-check-input:disabled').parentsUntil(visibility, '.form-check').addClass('d-none');
-        }
-        // If this is a new work, then default to the first active visibility option
-        if (isNewFile(visibility)) {
-            visibility.find('.form-check-input:not([disabled]):first').click();
-        }
-    }
-
-    function isNewFile(component) {
-        return component.parents('.simple_form').first().attr('id').startsWith('new_');
-    }
-
-    function isAdmin() {
-        return $('li.h5:contains("Configuration")').length > 0;
+        // Hide any visibility options the admin set is disallowing
+        visibility.find('.form-check-input:disabled').parentsUntil(visibility, '.form-check').addClass('d-none');
     }
 
     visibleForms();

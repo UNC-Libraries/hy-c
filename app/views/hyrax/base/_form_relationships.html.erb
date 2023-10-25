@@ -4,8 +4,7 @@
   <% if f.object.model.title.blank? %>
     <% admin_set_id = AdminSetSelectService.select(f.object.model.class.to_s,
                                                    params[:affiliation],
-                                                   Hyrax::AdminSetOptionsPresenter
-                                                       .new(Hyrax::AdminSetService.new(controller)).select_options)
+                                                   admin_set_options)
     %>
   <% else %>
     <% if f.object.model.admin_set_id.blank? %>
