@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # [hyc-override] https://github.com/samvera/hyrax/blob/hyrax-v4.0.0/app/controllers/concerns/hyrax/works_controller_behavior.rb
 Hyrax::WorksControllerBehavior.module_eval do
   def available_admin_sets

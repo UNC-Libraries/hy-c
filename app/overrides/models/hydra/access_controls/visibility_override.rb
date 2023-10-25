@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # [hyc-override] https://github.com/samvera/hydra-head/blob/v12.1.0/hydra-access-controls/app/models/concerns/hydra/access_controls/visibility.rb
 Hydra::AccessControls::Visibility.module_eval do
   alias_method :original_visibility, :visibility
