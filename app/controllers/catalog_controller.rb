@@ -408,7 +408,8 @@ class CatalogController < ApplicationController
         limit: 50,
         set_model: CdrListSet,
         set_fields: [{ label: 'Admin Set', solr_field: 'admin_set_sim' },
-                     { label: 'Collection', solr_field: 'member_of_collections_ssim' }]
+                     { label: 'Collection', solr_field: 'member_of_collections_ssim' },
+                     { label: 'Worktype', solr_field: 'has_model_ssim' }]
       }
     }
   end
