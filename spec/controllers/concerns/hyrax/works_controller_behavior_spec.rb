@@ -15,25 +15,24 @@ RSpec.describe Hyrax::WorksControllerBehavior, type: :controller do
       before { sign_in user }
 
       context 'admin set limited to public and no embargoes' do
-        let(:admin_set) { Hyrax::AdminSetCreateService.find_or_create_default_admin_set }
-
-        let!(:permission_template) do
-          FactoryBot.create(:permission_template,
-                            source_id: admin_set.id,
-                            release_period: Hyrax::PermissionTemplate::RELEASE_TEXT_VALUE_NO_DELAY)
+        let(:admin_set) do
+          AdminSet.create(title: ['test admin set'],
+                          edit_users: [user.user_key])
         end
-
-        let!(:permission_template_access) do
-          FactoryBot.create(:permission_template_access,
-                      :deposit,
-                      permission_template: permission_template,
-                      agent_type: 'user',
-                      agent_id: user.user_key)
+        let(:permission_template) do
+          Hyrax::PermissionTemplate.create!(source_id: admin_set.id,
+                                            release_period: Hyrax::PermissionTemplate::RELEASE_TEXT_VALUE_NO_DELAY)
         end
+        let(:workflow) { Sipity::Workflow.find_by!(name: 'default', permission_template: permission_template) }
 
-        let!(:workflow) do
-          Sipity::Workflow.create(name: 'test', allows_access_grant: true, active: true,
-                                  permission_template_id: permission_template.id)
+        before do
+          ActiveFedora::Cleaner.clean!
+          Blacklight.default_index.connection.delete_by_query('*:*')
+          Blacklight.default_index.connection.commit
+          Hyrax::PermissionTemplateAccess.create(permission_template: permission_template,
+                                             agent_type: 'user',
+                                             agent_id: user.user_key,
+                                             access: 'deposit')
         end
 
         context 'as a regular user' do
@@ -44,7 +43,7 @@ RSpec.describe Hyrax::WorksControllerBehavior, type: :controller do
             options = admin_sets.select_options
 
             expect(options).to contain_exactly(
-              ['Default Admin Set', admin_set.id.to_s, {'data-release-no-delay'=>true, 'data-sharing'=>true}])
+              ['test admin set', admin_set.id.to_s, {'data-release-no-delay'=>true, 'data-sharing'=>false}])
           end
         end
 
@@ -56,7 +55,7 @@ RSpec.describe Hyrax::WorksControllerBehavior, type: :controller do
             options = admin_sets.select_options
 
             expect(options).to contain_exactly(
-              ['Default Admin Set', admin_set.id.to_s, {'data-sharing'=>true}])
+              ['test admin set', admin_set.id.to_s, {'data-sharing'=>true}])
           end
         end
       end
