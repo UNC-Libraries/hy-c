@@ -41,9 +41,6 @@
 // [hyc-override] Enable type ahead in advanced search
 //= require chosen/chosen.jquery.min
 // [hyc-override] unc custom scripts
-//= require unc/unc_visibility_component
-//= require unc/unc_save_work_control
-//= require unc/unc_editor
 //= require unc/unc_custom
 //= require person_objects
 

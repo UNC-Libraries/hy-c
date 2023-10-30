@@ -20,7 +20,7 @@ RSpec.describe MigrationHelper do
         'date_issued' => '2019-10-02',
         'edition' => 'preprint',
         'alternative_title' => ['another title for an article'],
-        'visibility' => 'restricted'
+        'visibility' => 'open'
       }
     end
 

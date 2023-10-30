@@ -66,6 +66,22 @@ FactoryBot.define do
       view_groups { nil }
     end
   end
+
+  factory :permission_template_access, class: Hyrax::PermissionTemplateAccess do
+    permission_template
+    trait :manage do
+      access { 'manage' }
+    end
+
+    trait :deposit do
+      access { 'deposit' }
+    end
+
+    trait :view do
+      access { 'view' }
+    end
+  end
+
   # rubocop:disable Lint/ConstantDefinitionInBlock
   class AccessHelper
     def self.create_access(permission_template_id, agent_type, access, agent_ids)
