@@ -1,3 +1,4 @@
+<%# [hyc-override] https://github.com/samvera/hyrax/tree/hyrax-v4.0.0/app/views/hyrax/base/_form_permission.html.erb %>
 <%# [hyc-override] Overriding partial in hyrax gem in order to hide lease option and display note for public option %>
 <%# # This is used by works and by FileSet and the layout (col-6 vs col-12) is different for both %>
 <% if embargo_enforced?(f.object) %>
@@ -12,30 +13,41 @@
     </legend>
 
     <div class="form-group">
-      <label class="radio">
-        <%= f.radio_button :visibility, Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC %>
-        <%= visibility_badge(Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC) %>
-        <div class="files-public-note">
-          <%= t('hyrax.visibility.open.warning_html', label: visibility_badge(Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC)) %>
-        </div>
-      </label>
-      <label class="radio">
-        <%= f.radio_button :visibility, Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_AUTHENTICATED %>
-        <%= visibility_badge(Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_AUTHENTICATED) %>
-      </label>
-      <label class="radio">
-        <%= f.radio_button :visibility, Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_EMBARGO %>
-        <%= render "form_permission_embargo", f: f %>
-      </label>
+      <div class="form-check">
+        <label class="form-check-label">
+          <%= f.radio_button :visibility, Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC, class: 'form-check-input' %>
+          <%= visibility_badge(Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC) %>
+          <%# [hyc-override] Add note for public option %>
+          <div class="files-public-note">
+            <%= t('hyrax.visibility.open.warning_html', label: visibility_badge(Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC)) %>
+          </div>
+        </label>
+      </div>
+      <div class="form-check">
+        <label class="form-check-label">
+          <%= f.radio_button :visibility, Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_AUTHENTICATED, class: 'form-check-input' %>
+          <%= visibility_badge(Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_AUTHENTICATED) %>
+        </label>
+      </div>
+      <div class="form-check">
+        <label class="form-check-label">
+          <%= f.radio_button :visibility, Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_EMBARGO, class: 'form-check-input' %>
+          <%= render "form_permission_embargo", f: f %>
+        </label>
+      </div>
       <%# [hyc-override] Remove lease option %>
-      <%# <label class="radio"> %>
-        <%#= f.radio_button :visibility, Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_LEASE %>
-        <%#= render "form_permission_lease", f: f %>
-      <%# </label> %>
-      <label class="radio">
-        <%= f.radio_button :visibility, Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE %>
-        <%= visibility_badge(Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE) %>
-      </label>
+      <%# <div class="form-check"> %>
+        <%# <label class="form-check-label"> %>
+          <%#= f.radio_button :visibility, Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_LEASE, class: 'form-check-input' %>
+          <%#= render "form_permission_lease", f: f %>
+        <%# </label> %>
+      <%# </div> %>
+      <div class="form-check">
+        <label class="form-check-label">
+          <%= f.radio_button :visibility, Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE, class: 'form-check-input' %>
+          <%= visibility_badge(Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE) %>
+        </label>
+      </div>
     </div>
   </fieldset>
 <% end %>

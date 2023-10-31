@@ -1,27 +1,25 @@
-<%# [hyc-override] Overriding partial in hyrax gem to update homepage %>
-<nav class="navbar navbar-default navbar-static-top" role="navigation" aria-label="Root Menu">
-  <div class="container-fluid">
-    <div class="row">
-      <ul class="nav navbar-nav col-sm-8">
-        <li <%= 'class=active' if current_page?(hyrax.root_path) %>>
-          <%= link_to t(:'hyrax.links.browse_all'), main_app.search_catalog_path %></li>
-        <li <%= 'class=active' if current_page?(hyrax.root_path) %>>
-          <%= link_to t(:'hyrax.links.collections'), main_app.search_catalog_path(f: { human_readable_type_sim: ["Collection"]}) %></li>
-        <li <%= 'class=active' if current_page?(hyrax.root_path) %>>
-          <%= link_to t(:'hyrax.links.departments'), main_app.facet_catalog_path(id: 'affiliation_label_sim') %></li>
-        <% unless Flipflop.read_only? %>
-          <li data-turbolinks="false">
-            <%= link_to '#', class: 'all-unc-work-types',
-                           data: { behavior: 'select-work', target: '#worktypes-to-create', 'create-type' => 'single' } do %>
-              <i class="fa fa-arrow-circle-up" aria-hidden="true"></i>
-              <%= t('hyrax.links.deposit') %>
-            <% end %>
-          </li>
-        <% end %>
-      </ul><!-- /.nav -->
-      <div class="searchbar-right navbar-right col-sm-4">
-        <%= render partial: 'catalog/search_form' %>
-      </div>
+<%# [hyc-override] https://github.com/samvera/hyrax/blob/hyrax-v4.0.0/app/views/_controls.html.erb %>
+<%# [hyc-override] Reduced top and bottom padding with py %>
+<nav class="navbar navbar-light bg-light navbar-expand-sm justify-content-between align-items-baseline px-2 py-2 border-bottom" role="navigation" aria-label="Root Menu">
+    <ul class="nav navbar-nav col-sm-5">
+      <li class="nav-item <%= 'active' if current_page?(hyrax.root_path) %>">
+        <%= link_to t(:'hyrax.links.browse_all'), main_app.search_catalog_path, class: "nav-link", aria: current_page?(main_app.search_catalog_path) ? {current: 'page'} : nil %></li>
+      <li class="nav-item <%= 'active' if current_page?(hyrax.root_path) %>">
+        <%= link_to t(:'hyrax.links.collections'), main_app.search_catalog_path(f: { human_readable_type_sim: ["Collection"]}), class: "nav-link", aria: current_page?(main_app.search_catalog_path(f: { human_readable_type_sim: ["Collection"]})) ? {current: 'page'} : nil %></li>
+      <li class="nav-item <%= 'active' if current_page?(hyrax.root_path) %>">
+        <%= link_to t(:'hyrax.links.departments'), main_app.facet_catalog_path(id: 'affiliation_label_sim'), class: "nav-link", aria: current_page?(main_app.facet_catalog_path(id: 'affiliation_label_sim')) ? {current: 'page'} : nil %></li>
+      <%# [hyc-override] Suppress deposit option when read only mode is enabled %>
+      <% unless Flipflop.read_only? %>
+        <li class="nav-item" data-turbolinks="false">
+          <%= link_to '#', class: 'all-unc-work-types nav-link',
+                         data: { behavior: 'select-work', target: '#worktypes-to-create', 'create-type' => 'single' } do %>
+            <i class="fa fa-arrow-circle-up" aria-hidden="true"></i>
+            <%= t('hyrax.links.deposit') %>
+          <% end %>
+        </li>
+      <% end %>
+    </ul><!-- /.nav -->
+    <div class="col-sm-7">
+      <%= render partial: 'catalog/search_form' %>
     </div>
-  </div>
-</nav><!-- /.navbar -->
+  </nav><!-- /.navbar -->

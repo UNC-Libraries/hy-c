@@ -1,4 +1,4 @@
-<%# [hyc-override] Overriding partial in hyrax gem to update homepage %>
+<%# [hyc-override] https://github.com/samvera/hyrax/tree/hyrax-v4.0.0/app/views/layouts/hyrax.html.erb %>
 <!DOCTYPE html>
 <html lang="<%= I18n.locale.to_s %>" prefix="og:http://ogp.me/ns#">
   <head>
@@ -11,16 +11,18 @@
       <%# [hyc-override] Disable turbolinks %>
       <%= link_to "Skip to Content", "#skip-to-content", data: { turbolinks: false } %>
     </div>
-    <%= render '/masthead' %>
+    <% header_class = controller_name == 'homepage' ? 'justify-content-end' : 'justify-content-between' %>
+    <%= render '/masthead', placement_class: header_class %>
     <%= content_for(:navbar) %>
     <%= content_for(:precontainer_content) %>
     <%# [hyc-override] Change class to container-fluid %>
     <div id="content-wrapper" class="container-fluid" role="main">
+      <%= content_for(:container_header) %>
       <%= render '/flash_msg' %>
-      <%= render_breadcrumbs builder: Hyrax::BootstrapBreadcrumbsBuilder %>
+      <%= render_breadcrumbs builder: Hyrax.config.breadcrumb_builder %>
       <% if content_for?(:page_header) %>
         <div class="row">
-          <div class="col-xs-12 main-header">
+          <div class="col-12 main-header">
             <%= yield(:page_header) %>
           </div>
         </div>
@@ -33,6 +35,6 @@
     <%# [hyc-override] Add social media link footer %>
     <%= render 'shared/footer_social' %>
     <%= render 'shared/footer' %>
-    <%= render 'shared/ajax_modal' %>
+    <%= render 'shared/modal' %>
   </body>
 </html>

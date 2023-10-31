@@ -15,9 +15,35 @@ RSpec.describe Hyrax::WorkflowPresenter do
   let(:presenter) { described_class.new(solr_document, ability) }
   let(:entity) { instance_double(Sipity::Entity) }
 
-  describe '#badge' do
-    let(:workflow) { create(:workflow, name: 'testing') }
+  let(:workflow) { FactoryBot.create(:workflow, name: 'testing') }
 
+  describe '#actions' do
+    subject { presenter.actions }
+
+    context 'with a Sipity::Entity in pending_deletion state' do
+      before do
+        allow(entity).to receive(:workflow_state_name).and_return('pending_deletion')
+        allow(Hyrax::Workflow::PermissionQuery).to receive(:scope_permitted_workflow_actions_available_for_current_state).and_return([Sipity::WorkflowAction.new(name: 'complete', workflow: workflow)])
+        allow(presenter).to receive(:sipity_entity).and_return(entity)
+      end
+
+      context 'as non-admin' do
+        it { is_expected.to eq [] }
+      end
+
+      context 'as admin' do
+        let(:admin_user) { FactoryBot.create(:admin) }
+        let(:ability) { Ability.new(admin_user) }
+
+        it 'user has normal actions' do
+          allow(I18n).to receive(:t).with('hyrax.workflow.testing.complete', default: 'Complete').and_return('Approve')
+          is_expected.to eq [['complete', 'Approve']]
+        end
+      end
+    end
+  end
+
+  describe '#badge' do
     subject { presenter.badge }
 
     context 'with a Sipity::Entity marked as withdrawn' do
@@ -25,13 +51,11 @@ RSpec.describe Hyrax::WorkflowPresenter do
         allow(entity).to receive(:workflow_state_name).and_return('withdrawn')
         allow(presenter).to receive(:sipity_entity).and_return(entity)
       end
-      it { is_expected.to eq '<span class="state state-withdrawn label label-primary">Withdrawn</span>' }
+      it { is_expected.to eq '<span class="state state-withdrawn badge badge-primary">Withdrawn</span>' }
     end
   end
 
   describe '#is_mfa_in_review?' do
-    let(:workflow) { create(:workflow, name: 'testing') }
-
     subject { presenter.is_mfa_in_review? }
 
     context 'with a Sipity::Entity marked as Pending Review and Art MFA Workflow' do
@@ -72,8 +96,6 @@ RSpec.describe Hyrax::WorkflowPresenter do
   end
 
   describe 'is_mfa?' do
-    let(:workflow) { create(:workflow, name: 'testing') }
-
     subject { presenter.is_mfa? }
 
     context 'with a Sipity::Entity marked as Pending Review and Art MFA Workflow' do
@@ -105,8 +127,6 @@ RSpec.describe Hyrax::WorkflowPresenter do
   end
 
   describe '#in_workflow_state?' do
-    let(:workflow) { create(:workflow, name: 'testing') }
-
     subject { presenter.in_workflow_state?(['withdrawn', 'pending deletion']) }
 
     context 'with a Sipity::Entity marked as Withdrawn' do

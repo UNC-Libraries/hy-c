@@ -13,9 +13,10 @@ class CreateDerivativesJob < Hyrax::ApplicationJob
     end
     return if file_set.video? && !Hyrax.config.enable_ffmpeg
 
-    filename = Hyrax::WorkingDirectory.find_or_retrieve(file_id, file_set.id, filepath)
+    # Ensure a fresh copy of the repo file's latest version is being worked on, if no filepath is directly provided
+    filepath = Hyrax::WorkingDirectory.copy_repository_resource_to_working_directory(Hydra::PCDM::File.find(file_id), file_set.id) unless filepath && File.exist?(filepath)
 
-    file_set.create_derivatives(filename)
+    file_set.create_derivatives(filepath)
 
     # Reload from Fedora and reindex for thumbnail and extracted text
     file_set.reload
@@ -23,7 +24,7 @@ class CreateDerivativesJob < Hyrax::ApplicationJob
     file_set.parent.update_index if parent_needs_reindex?(file_set)
 
     # [hyc-override] this is the last job, so cleanup the uploaded file
-    cleanup_uploaded_file(filename)
+    cleanup_uploaded_file(filepath) unless filepath.nil?
   end
 
   # [hyc-override] Deletes the uploaded file if it is in the uploaded_files dir

@@ -1,13 +1,17 @@
+<%# [hyc-override] https://github.com/samvera/hyrax/tree/hyrax-v4.0.0/app/views/hyrax/dashboard/collections/_show_descriptions.html.erb %>
 <%# [hyc-override] Partial to display language term instead of link %>
-<%# @TODO This file changes significantly in Hyrax 3.0 %>
-<h2 class="sr-only">Descriptions</h2>
-<dl class="dl-horizontal metadata-collections">
-  <% present_terms(@presenter, @presenter.terms_with_values) do |r, term| %>
-    <dt><%= r.label(term) %></dt>
-    <% if term.to_s == 'language' %>
-      <dd><%= language_links({ value: @presenter.language }) %></dd>
-    <% else %>
-      <dd><%= r.value(term) %></dd>
-    <% end %>
+<h2 class="sr-only"><%= t('.descriptions') %></h2>
+<dl class="metadata-collections">
+  <% @presenter.terms_with_values.each do |field_name| %>
+    <div class="row">
+      <dt class="col-5 text-right"><%= collection_metadata_label(@presenter, field_name) %></dt>
+      <dd class="col-7">
+        <% if field_name.to_s == 'language' %>
+          <%= language_links({ value: @presenter.language }) %>
+        <% else %>
+          <%= collection_metadata_value(@presenter, field_name) %>
+        <% end %>
+      </dd>
+    </div>
   <% end %>
 </dl>

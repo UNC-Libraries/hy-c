@@ -38,30 +38,31 @@ class CatalogController < ApplicationController
   end
 
   configure_blacklight do |config|
-    # default advanced config values
+    # Advanced search configuration
     config.advanced_search ||= Blacklight::OpenStructWithHashAccess.new
-    # config.advanced_search[:qt] ||= 'advanced'
     config.advanced_search[:url_key] ||= 'advanced'
     config.advanced_search[:query_parser] ||= 'dismax'
     config.advanced_search[:form_solr_parameters] ||= {}
     config.advanced_search[:form_solr_parameters]['facet.field'] ||=
-        %w[member_of_collections_ssim date_issued_isim resource_type_sim affiliation_label_sim edition_sim]
+        %w[member_of_collections_ssim date_issued_isim human_readable_type_sim affiliation_label_sim edition_sim]
     config.advanced_search[:form_solr_parameters]['f.member_of_collections_ssim.facet.limit'] ||= -1
     config.advanced_search[:form_solr_parameters]['f.date_issued_isim.facet.limit'] ||= -1
-    config.advanced_search[:form_solr_parameters]['f.resource_type_sim.facet.limit'] ||= -1
+    config.advanced_search[:form_solr_parameters]['f.human_readable_type_sim.facet.limit'] ||= -1
     config.advanced_search[:form_solr_parameters]['f.affiliation_label_sim.facet.limit'] ||= -1
     config.advanced_search[:form_solr_parameters]['f.edition_sim.facet.limit'] ||= -1
 
-    config.advanced_search[:form_facet_partial] ||= 'advanced_search_facets_as_select'
+    # config.advanced_search[:form_facet_partial] ||= 'advanced_search_facets_as_select'
 
     config.show.tile_source_field = :content_metadata_image_iiif_info_ssm
     config.show.partials.insert(1, :openseadragon)
-    config.search_builder_class = RangeLimitCatalogSearchBuilder
+    config.search_builder_class = Hyc::CatalogSearchBuilder
 
     # Show gallery view
-    # config.view.gallery.partials = [:index_header, :index]
-    config.view.masonry.partials = [:index]
-    config.view.slideshow.partials = [:index]
+    # The display buttons were removed here. Not sure they actually do anything if added back in
+    # @TODO https://github.com/samvera/hyrax/commit/7a2d11b3aed7d626cd8171dc1e9d4812be5c37d4
+    # config.view.gallery(document_component: Blacklight::Gallery::DocumentComponent)
+    config.view.masonry(document_component: Blacklight::Gallery::DocumentComponent)
+    config.view.slideshow(document_component: Blacklight::Gallery::SlideshowComponent)
 
     # Because too many times on Samvera tech people raise a problem regarding a failed query to SOLR.
     # Often, it's because they inadvertantly exceeded the character limit of a GET request.
@@ -71,26 +72,45 @@ class CatalogController < ApplicationController
     config.default_solr_params = {
       qt: 'search',
       rows: 10,
-      qf: 'title_tesim description_tesim creator_tesim keyword_tesim'
+      qf: 'title_tesim description_tesim creator_tesim keyword_tesim all_text_timv'
     }
 
     # solr field configuration for document/show views
     config.index.title_field = solr_name('title', :stored_searchable)
     config.index.display_type_field = solr_name('has_model', :symbol)
     config.index.thumbnail_field = 'thumbnail_path_ss'
+    config.index.constraints_component = Hyc::ConstraintsComponent
+
+    config.add_results_document_tool(:bookmark, partial: 'bookmark_control', if: :render_bookmarks_control?)
+    config.add_results_collection_tool(:sort_widget)
+    config.add_results_collection_tool(:per_page_widget)
+    config.add_results_collection_tool(:view_type_group)
+    config.add_show_tools_partial(:bookmark, partial: 'bookmark_control', if: :render_bookmarks_control?)
+    config.add_show_tools_partial(:email, callback: :email_action, validator: :validate_email_params)
+    config.add_show_tools_partial(:sms, if: :render_sms_action?, callback: :sms_action, validator: :validate_sms_params)
+    config.add_show_tools_partial(:citation)
+    config.add_nav_action(:bookmark, partial: 'blacklight/nav/bookmark', if: :render_bookmarks_control?)
+    config.add_nav_action(:search_history, partial: 'blacklight/nav/search_history')
 
     # solr fields that will be treated as facets by the blacklight application
     #   The ordering of the field names is the order of the display
     config.add_facet_field solr_name('resource_type', :facetable), label: 'Resource Type', limit: 5
     config.add_facet_field solr_name('creator_label', :facetable), label: 'Creator', limit: 5
     config.add_facet_field solr_name('affiliation_label', :facetable), label: 'Departments', limit: 5
-    config.add_facet_field 'date_issued_isim', label: 'Date', limit: 5, range: true
+    # Search results version of the date_issued facet
+    config.add_facet_field 'date_issued_isim', field: 'date_issued_isim', label: 'Date', range: true, range_config: {
+      input_label_range_begin: 'from year',
+      input_label_range_end: 'to year'
+    }
     config.add_facet_field solr_name('keyword', :facetable), limit: 5
     config.add_facet_field solr_name('subject', :facetable), limit: 5
     config.add_facet_field solr_name('advisor_label', :facetable), label: 'Advisor', limit: 5
     config.add_facet_field solr_name('edition', :facetable), label: 'Version', limit: 5
     config.add_facet_field solr_name('language', :facetable), helper_method: :language_links_facets, limit: 5
     config.add_facet_field solr_name('member_of_collections', :symbol), limit: 5, label: 'Collection'
+    config.add_facet_field solr_name('human_readable_type', :facetable), label: 'Type', show: false
+    # Advanced search version of the date_issued facet
+    config.add_facet_field 'date_issued_adv_search', show: false, field: 'date_issued_isim', label: 'Date', range: true, advanced_search_component: AdvancedSearchRangeLimitComponent
 
     # The generic_type isn't displayed on the facet list
     # It's used to give a label to the filter that comes from the user profile
@@ -193,14 +213,13 @@ class CatalogController < ApplicationController
     # This one uses all the defaults set by the solr request handler. Which
     # solr request handler? The one set in config[:default_solr_parameters][:qt],
     # since we aren't specifying it otherwise.
-    config.add_search_field('all_fields', label: 'All Fields') do |field|
+    config.add_search_field('all_fields', label: 'All Fields', advanced_parse: false, include_in_advanced_search: true) do |field|
       all_names = config.show_fields.values.map(&:field).join(' ')
-      title_name = solr_name('title', :stored_searchable)
+      title_name = 'title_tesim'
       field.solr_parameters = {
         qf: "#{all_names} file_format_tesim all_text_timv",
         pf: title_name.to_s
       }
-      field.advanced_parse = false
     end
 
     # Now we see how to over-ride Solr request handler defaults, in this

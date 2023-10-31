@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+require_relative '../../app/services/log_service'
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
@@ -79,6 +80,14 @@ Rails.application.configure do
   # NOTE: When we upgrade to Web Console 4.x this will change to
   # config.web_console.permissions = ['172.20.0.1', '10.0.2.2']
   config.web_console.whitelisted_ips = ['172.20.0.1', '10.0.2.2']
+
+  # Tell rails that this application can be addressed as "web" in the dev environments
+  config.hosts = [
+    IPAddr.new('0.0.0.0/0'), # All IPv4 addresses.
+    IPAddr.new('::/0'),      # All IPv6 addresses.
+    'localhost',             # The localhost reserved domain.
+    'web'   # Allow this to be addressed when running in containers via docker-compose.yml.
+  ]
 
   config.log_level = LogService.log_level
 end

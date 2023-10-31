@@ -15,9 +15,9 @@ Bulkrax:: CsvParser.class_eval do
   end
 
   def valid_import?
-    import_strings = keys_without_numbers(import_fields.map(&:to_s))
-    error_alert = "Missing at least one required element, missing element(s) are: #{missing_elements(import_strings).join(', ')}"
-    raise StandardError, error_alert unless required_elements?(import_strings)
+    compressed_record = records.flat_map(&:to_a).partition { |_, v| !v }.flatten(1).to_h
+    error_alert = "Missing at least one required element, missing element(s) are: #{missing_elements(compressed_record).join(', ')}"
+    raise StandardError, error_alert unless required_elements?(compressed_record)
     # [hyc-override] explicitly raise error when file paths are not present
     raise StandardError.new 'file paths are invalid' unless file_paths.is_a?(Array)
     true

@@ -72,7 +72,7 @@ $(document).on('turbolinks:load', function () {
             // stop page from reloading
             event.preventDefault();
 
-            $(remove_selector).removeClass('hidden');
+            $(remove_selector).removeClass('d-none');
 
             // Retrieve an index for the new person
             var current_index = getNextPersonIndex(person_type);
@@ -87,7 +87,7 @@ $(document).on('turbolinks:load', function () {
 
             // remove $new_row's id so we don't find it again when looking for blank row to clone
             $new_row.removeAttr('id');
-            $new_row.removeClass('hidden');
+            $new_row.removeClass('d-none');
             $('div#' + person_type).append($new_row);
 
             attachRemovePersonListener(person_type, $new_row);

@@ -13,7 +13,7 @@ RDFXML
     stub_request(:get, 'http://sws.geonames.org/4460162/').
       to_return(status: 200, body: CHAPEL_HILL_RESP, headers: { 'Content-Type' => 'application/rdf+xml;charset=UTF-8' })
 
-    stub_request(:any, "http://www.geonames.org/getJSON?geonameId=4460162&username=#{ENV['GEONAMES_USER']}").
+    stub_request(:any, /http:\/\/www\.geonames\.org\/getJSON\?geonameId=4460162&username=.*/).
       to_return(status: 200, body: { name: 'Chapel Hill',
                                      countryName: 'United States',
                                      adminName1: 'North Carolina' }.to_json,

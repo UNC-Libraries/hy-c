@@ -1,12 +1,18 @@
-<%# [hyc-override] Remove the search form label. Add aria label %>
+<%# [hyc-override] https://github.com/samvera/hyrax/blob/f14958e665535be2696dc1cdf9e205d6fc54e668/app/views/catalog/_search_form.html.erb %>
+<%# [hyc-override] Add advanced search link %>
 <%= form_tag search_form_action, method: :get, class: "form-horizontal search-form", id: "search-form-header", role: "search" do %>
-  <%= render_hash_as_hidden_fields(search_state.params_for_search.except(:q, :search_field, :qt, :page, :utf8)) %>
+  <%= render Blacklight::HiddenSearchStateComponent.new(params: search_state.params_for_search.except(:q, :search_field, :qt, :page, :utf8)) %>
   <%= hidden_field_tag :search_field, 'all_fields' %>
-  <div class="form-group">
-    <div class="input-group">
+   <div class="form-group row">
+
+    <label class="col-sm-3 mb-0" for="search-field-header">
+      <%= t("hyrax.search.form.q.label", application_name: application_name) %>
+    </label>
+
+    <div class="input-group col">
       <%= text_field_tag :q, current_search_parameters , 'aria-label': 'Search', class: "q form-control", id: "search-field-header", placeholder: t("hyrax.search.form.q.placeholder") %>
 
-      <div class="input-group-btn">
+      <div class="input-group-append">
         <button type="submit" class="btn btn-primary" id="search-submit-header">
           <%= t('hyrax.search.button.html') %>
         </button>
@@ -15,31 +21,29 @@
 
             <span class="sr-only" data-search-element="label"><%= t("hyrax.search.form.option.all.label_long", application_name: application_name) %></span>
             <span aria-hidden="true"><%= t("hyrax.search.form.option.all.label_short") %></span>
-            <span class="caret"></span>
           </button>
 
-          <ul class="dropdown-menu pull-right">
-            <li>
+          <ul class="dropdown-menu dropdown-menu-right">
+            <li class="dropdown-item">
               <%= link_to t("hyrax.search.form.option.all.label_long", application_name: application_name), "#",
-                          data: { "search-option" => main_app.search_catalog_path, "search-label" => t("hyrax.search.form.option.all.label_short") } %>
+                  data: { "search-option" => main_app.search_catalog_path, "search-label" => t("hyrax.search.form.option.all.label_short") } %>
             </li>
-            <li>
+            <li class="dropdown-item">
               <%= link_to t("hyrax.search.form.option.my_works.label_long"), "#",
-                          data: { "search-option" => hyrax.my_works_path, "search-label" => t("hyrax.search.form.option.my_works.label_short") } %>
+                  data: { "search-option" => hyrax.my_works_path, "search-label" => t("hyrax.search.form.option.my_works.label_short") } %>
             </li>
-            <li>
+            <li class="dropdown-item">
               <%= link_to t("hyrax.search.form.option.my_collections.label_long"), "#",
-                          data: { "search-option" => hyrax.my_collections_path, "search-label" => t("hyrax.search.form.option.my_collections.label_short") } %>
+                  data: { "search-option" => hyrax.my_collections_path, "search-label" => t("hyrax.search.form.option.my_collections.label_short") } %>
             </li>
+          </ul>
         <% end %>
-
-        </ul>
       </div><!-- /.input-group-btn -->
     </div><!-- /.input-group -->
-
+    
   </div><!-- /.form-group -->
 <% end %>
 
-
-  <%= link_to 'Advanced search', blacklight_advanced_search_engine.advanced_search_path(search_state.to_h), class: 'advanced_search'%>
+<%# [hyc-override] Add advanced search link %>
+<%= link_to 'Advanced search', blacklight_advanced_search_engine.advanced_search_path(search_state.to_h), class: 'advanced_search'%>
 

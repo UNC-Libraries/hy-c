@@ -18,7 +18,7 @@ export class RequiredFields {
         let selector = $(elem);
         let parentHidden = selector.parent().closest('div.cloning');
 
-        if (parentHidden.hasClass('hidden')) {
+        if (parentHidden.hasClass('d-none')) {
             return false;
         }
 

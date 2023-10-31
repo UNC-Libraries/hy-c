@@ -247,7 +247,7 @@ RSpec.describe Hyrax::DataSetForm do
   describe '#visibility' do
     subject { form.visibility }
 
-    it { is_expected.to eq 'restricted' }
+    it { is_expected.to eq 'open' }
   end
 
   describe '#agreement_accepted' do

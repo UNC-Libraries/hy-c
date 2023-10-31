@@ -1,6 +1,6 @@
 # frozen_string_literal: true
-require 'uglifier'
-
+require 'terser'
+require_relative '../../app/services/log_service'
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
@@ -22,7 +22,7 @@ Rails.application.configure do
   config.public_file_server.enabled = true
 
   # Compress JavaScripts and CSS.
-  config.assets.js_compressor = Uglifier.new(harmony: true)
+  config.assets.js_compressor = :terser
   # config.assets.css_compressor = :sass
 
   # Do not fallback to assets pipeline if a precompiled asset is missed.
@@ -68,8 +68,8 @@ Rails.application.configure do
   # config.i18n.fallbacks = true
   config.i18n.fallbacks = [I18n.default_locale]
 
-  # Send deprecation notices to registered listeners.
-  config.active_support.deprecation = :notify
+  # Silence deprecation warnings.
+  config.active_support.deprecation = :silence
 
   # Use a different logger for distributed setups.
   # require 'syslog/logger'

@@ -20,7 +20,7 @@ RSpec.describe Hyrax::CollectionIndexer do
         'thumbnail_path_ss' => thumbnail,
         'member_of_collection_ids_ssim' => [col1id],
         'member_of_collections_ssim' => [col1title],
-        'visibility_ssi' => 'restricted',
+        'visibility_ssi' => 'open',
         'date_issued_sort_ssi' => col1created,
         'title_sort_ssi' => col1title
       }

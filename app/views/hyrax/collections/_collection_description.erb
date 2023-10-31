@@ -1,9 +1,11 @@
+<%# [hyc-override] https://github.com/samvera/hyrax/blob/hyrax-v4.0.0/app/views/hyrax/collections/_collection_description.html.erb %>
+<%# [hyc-override] truncate the description field by default %>
 <% presenter.description.each do |description| %>
   <%  if description.split.size > 100 %>
     <div class="truncated">
       <%= simple_format(auto_link(description.truncate_words(100))) %>
     </div>
-    <div class="full hidden">
+    <div class="full d-none">
       <%= simple_format(auto_link(description)) %>
     </div>
     <button id="collection-description-text-btn" class="btn btn-default">Show More</button>

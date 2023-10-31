@@ -8,6 +8,10 @@ $shadow-base-bottom: 0 -10px 10px -10px;
 $shadow: inset $shadow-base-top #000;
 $description-shadow: inset $shadow-base-top gray;
 
+// Overridden Bootstrap variables. Bumps the font down to 14px
+$font-size-base: .875rem;
+$font-size-sm: $font-size-base;
+
 @font-face {
   font-family: LibreBaskerville;
   src: url(asset-path("libre-baskerville/LibreBaskerville-Italic.otf")) format("opentype");
@@ -15,6 +19,7 @@ $description-shadow: inset $shadow-base-top gray;
 
 body {
   font-family: Verdana, Arial, sans-serif;
+  font-size: $font-size-base;
 }
 
 #logo {
@@ -34,6 +39,12 @@ body {
   .navbar-nav {
     margin-left: 0;
   }
+}
+
+// Fixes https://github.com/samvera/hyrax/blob/main/app/assets/stylesheets/hyrax/_facets.scss#L6
+// Which causes the toggle icon to never display
+.navbar-toggler-icon {
+  display: inline-block;
 }
 
 span.institution_name {
@@ -60,15 +71,12 @@ span.institution_name {
 }
 
 #masthead {
-  background-color: $carolina-blue-dark;
+  background-color: $carolina-blue-dark !important;
   margin-bottom: 0;
+  max-height: 56px;
 
   &+ nav {
     margin-top: 0;
-  }
-
-  .navbar-brand {
-    padding: 10px 15px;
   }
 }
 
@@ -77,6 +85,7 @@ span.institution_name {
   height: 225px;
   box-shadow: $shadow;
   border-bottom: 0;
+  z-index: 1;
 
   .background-container {
     -ms-filter: none;
@@ -92,7 +101,29 @@ span.institution_name {
 
 .advanced_search {
   float: right;
-  margin: -11px 0 2px 0;
+  margin: 0.5rem 1rem 0 0;
+  &:hover {
+    text-decoration: none;
+  }
+}
+
+.advanced-search-form {
+  .adv-date-year-range {
+    margin-left: -37.5%;
+    .form-control {
+      width: 6rem;
+    }
+    .form-inline {
+      margin-left: 0;
+    }
+    .col-form-label {
+      font-weight: bold;
+    }
+  }
+}
+
+.file_set.attributes .btn-group a {
+  color: black !important;
   &:hover {
     text-decoration: none;
   }
@@ -108,6 +139,7 @@ span.institution_name {
   .repo-name {
     font-family: LibreBaskerville, sans-serif;
     padding-left: 15px;
+    white-space: nowrap;
   }
 
   img.banner-img {
@@ -125,6 +157,17 @@ span.institution_name {
     &:hover {
       color: $light-gray;
       text-decoration: none;
+    }
+  }
+}
+
+#advanced_search {
+  .form-group {
+    display: inline-flex;
+    width: 100%;
+
+    label {
+      font-weight: bold;
     }
   }
 }
@@ -159,11 +202,14 @@ span.institution_name {
   }
 }
 
+.site-title.h1 {
+  padding-top: 20px;
+}
+
 #unc-text {
   color: $text-color !important;
 
   div {
-    width: 65%;
     margin: 0 auto;
   }
 
@@ -174,7 +220,8 @@ span.institution_name {
     -moz-border-radius: 5px;
     border-radius: 5px;
     padding: 10px;
-    font-size: 1.2em;
+    font-size: 2.6rem;
+    line-height: 43px;
   }
 
   blockquote {
@@ -187,6 +234,10 @@ span.institution_name {
   color: $text-color;
   padding-left: 0;
   padding-right: 30px;
+
+  h2 {
+    margin-top: 15px;
+  }
 
   a {
     color: $text-color;
@@ -230,7 +281,6 @@ span.institution_name {
 
   img {
     max-width: 20%;
-    max-height: 20%;
     margin: 0 0 0 5%;
   }
 
@@ -255,6 +305,8 @@ span.institution_name {
     -ms-flex-direction: column;
     -webkit-flex-direction: column;
     flex-direction: column;
+    margin-bottom: 25px;
+    margin-top: 25px;
 
     height: 200px;
 
@@ -269,12 +321,8 @@ span.institution_name {
   }
 
   h2 {
+    margin-top: 15px;
     margin-bottom: 50px;
-  }
-
-  div {
-    margin-bottom: 25px;
-    margin-top: 25px;
   }
 
   .featured-item-title {
@@ -283,13 +331,14 @@ span.institution_name {
 }
 
 .collections-browse {
-  margin-bottom: 30px;
-  font-size: 30px;
+  margin: .7rem 0 -0.5rem 0;
+  font-size: 1.9rem;
 }
 
 .social {
   width: 100%;
   margin-top: 25px;
+  flex-flow: row;
 
   ul.navbar-nav {
     padding: 0 40%;
@@ -318,10 +367,8 @@ div.person {
   height: auto;
 }
 
-
-
 #unc-footer {
-  background-color: $carolina-blue-dark;
+  background-color: $carolina-blue-dark !important;
 
   .navbar-text {
     display: flex;
@@ -336,6 +383,7 @@ div.person {
 
   ul {
     margin: auto;
+    display: block;
 
     li {
       color: $text-color;
@@ -362,11 +410,13 @@ div.person {
 div.unc-modal {
   h4 {
     text-align: left;
+    font-size: 18px;
   }
 
   .cite {
-    margin: 0 15px;
+    margin: 0 15px 10px;
     text-align: left;
+    font-size: 14px;
   }
 
   ul {
@@ -394,7 +444,9 @@ div.unc-modal {
   text-align: center;
   font-size: 1.5em;
   padding: 10px 5px;
-  margin: 0 15px 10px 15px;
+  margin: -20px 15px 10px 15px;
+  background-color: #dff0d8;
+  width: 100%;
 }
 
 .form-inline .date-input {
@@ -405,6 +457,12 @@ div.unc-modal {
   ul {
     list-style-type: circle;
   }
+}
+
+.page-header {
+  padding-bottom: 9px;
+  margin: 40px 0 20px;
+  border-bottom: 1px solid #eeeeee;
 }
 
 /* Override width of Blacklight Range Limit date boxes */
@@ -425,28 +483,45 @@ div.unc-modal {
   }
 }
 
+#content {
+  #documents {
+    justify-content: left;
+  }
+}
+
+.facet-limit-active {
+  .card-header {
+    button {
+      color: white;
+    }
+  }
+  .facet-label .remove {
+    margin: 0;
+  }
+
+  .facet-values li .selected {
+     color: black !important;
+  }
+}
+
+/* Fixes https://github.com/samvera/hyrax/blob/f14958e665535be2696dc1cdf9e205d6fc54e668/app/assets/stylesheets/hyrax/_card.scss#L5
+Resets it to the default Bootstrap card margins
+ */
+#admin_sets {
+  .card-title {
+    margin-bottom: .75rem;
+  }
+}
+
 #documents.table-responsive {
   justify-content: left;
   width: 100%;
 }
 
-#documents {
-  display: inline-flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  margin: 0;
-
-  .document {
-    border-bottom: inherit;
-  }
-  .masonry.document {
-    background-color: white;
-    border: 1px solid $light-gray;
-    margin: 0 10px 10px 0;
-  }
-  fieldset {
-    width: 100%;
-  }
+.search-result-wrapper {
+  border-bottom: 1px dashed #ccc;
+  margin-bottom: 30px;
+  padding-bottom: 0;
 }
 
 .multi_value .btn.add {
@@ -509,6 +584,16 @@ div.fileupload-progress {
   clip: rect(1px, 1px, 1px, 1px);
 }
 
+.base-terms .card {
+  margin-bottom: 15px !important;
+}
+
+#fileuploadVersioning {
+  h3 {
+    width: 100%;
+  }
+}
+
 /* Colors taken from Bootstrap's focus */
 input.hidden-file-input:focus + label {
   outline: -webkit-focus-ring-color auto 5px;
@@ -525,10 +610,6 @@ table p.name span {
 .progress-bar-active {
   height: auto;
   overflow: auto
-}
-
-.well {
-  margin: 15px auto;
 }
 
 .person-divider {
@@ -632,6 +713,20 @@ table p.name span {
   font-size: 18px;
 }
 
+.hyc-container, .collection-works-table {
+  .media-left {
+    margin-right: 1rem;
+  }
+}
+
+.collections-wrapper {
+  .batch-info {
+    .form-control-lg, .sort-toggle {
+      height: auto;
+    }
+  }
+}
+
 .social-media {
   .sr-only {
     color: $carolina-blue;
@@ -653,31 +748,6 @@ table p.name span {
 
 input#check_all {
   margin-right: 5px;
-}
-
-#file_download {
-  background-color: $carolina-blue-dark;
-  border-color: $carolina-blue-dark;
-  color: $text-color;
-
-  &:hover {
-    background-color: #235d9d;
-    border-color: #1c4c80;
-  }
-}
-
-li {
-  #file_download {
-    background-color: inherit;
-    border-color: inherit;
-    color: #333333;
-
-    &:hover {
-      color: #262626;
-      text-decoration: none;
-      background-color: #f5f5f5;
-    }
-  }
 }
 
 .controlled_vocabulary .input-append {
@@ -702,21 +772,46 @@ li {
   }
 }
 
-@media only screen and (max-width: 1399px) {
-  .row {
-    margin-right: -7px;
+.sidebar:not(.maximized) {
+  .sidebar-action-text,
+  a span + span,
+  h5 {
+    display: none;
   }
+
+  .active {
+    width: fit-content;
+  }
+}
+
+.dashboard {
+  .main-header {
+    padding-left: 15px;
+
+    .pull-right {
+      padding-right: 15px;
+    }
+  }
+}
+
+/*
+@TODO This is broken in hyrax 4.0.0 through at least hyrax 5.0.0.rc1
+Toggling the facet values closes and immediately reopens the facet list
+Hide it entirely until the issue is resolved upstreeam
+ */
+.facets-toggleable-md {
+  .navbar-toggler {
+    display: none;
+  }
+}
+
+#facet-panel-collapse {
+  margin-bottom: 25px;
 }
 
 @media only screen and (max-width: 1375px) {
   .navbar-brand {
     margin-left: 0;
-  }
-
-  #unc-text {
-    div {
-      width: auto;
-    }
   }
 }
 
@@ -724,13 +819,7 @@ li {
   dl.work-show {
     margin-left: 75px;
   }
-
-  .navbar-nav {
-    margin: 0 0 0 -15px;
-  }
 }
-
-
 
 @media only screen and (max-width: 865px) {
   #unc-footer {
@@ -763,7 +852,7 @@ li {
     }
 
     p {
-      font-size: 1.05em;
+      font-size: .9em;
     }
   }
 
@@ -810,10 +899,6 @@ li {
     }
   }
 
-  .nav {
-    padding-left: 15px;
-  }
-
   #collection-description-text-btn {
     margin-bottom: 15px;
   }
@@ -841,19 +926,48 @@ li {
   }
 }
 
-@media only screen and (max-width: 550px) {
+@media only screen and (max-width: 768px) {
   #masthead .navbar-brand {
     padding-right: 0;
   }
 
   .institution_name {
-    font-size: 14px;
+    font-size: $font-size-base
+  }
+
+  .dashboard {
+    .main-header {
+      .pull-right {
+        float: none;
+        padding-right: 0;
+        text-align: center;
+      }
+    }
+  }
+
+  .repo-name {
+    font-size: 2rem;
   }
 }
 
-@media only screen and (max-width: 480px) {
+@media only screen and (max-width: 576px) {
+  .dashboard {
+    .main-header {
+      .pull-right {
+        padding-right: 15px;
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 576px) {
   .navbar-toggle {
     margin-right: 0;
+  }
+
+  .navbar-nav {
+    margin-left: 30px;
+    margin-bottom: .7rem;
   }
 
   #logo {
@@ -889,7 +1003,7 @@ li {
 
   #unc-text {
     p {
-      font-size: .7em;
+      font-size: .8em;
     }
   }
 
@@ -944,6 +1058,31 @@ li {
   font-weight: bold;
 }
 
+#form-progress {
+  .card-footer {
+    padding: 5px;
+    text-align: center;
+
+    .checkbox {
+      label {
+        margin-bottom: 0;
+      }
+    }
+
+    label {
+      width: 100%;
+    }
+
+    #agreement {
+      margin-right: 5px;
+    }
+
+    a {
+      font-weight: bold;
+    }
+  }
+}
+
 
 /* Responsive Hyrax override */
 @media only screen and (min-width: 768px) {
@@ -971,8 +1110,8 @@ li {
 
   .large-screen {
     background-color: $carolina-blue;
-    margin-left: -135px;
-    margin-right: -135px;
+    margin-left: -150px;
+    margin-right: -150px;
   }
 
   #masthead {
@@ -1001,14 +1140,6 @@ li {
       width: 100%;
     }
 
-    .navbar-header {
-      float: none;
-    }
-
-    .navbar-left, .navbar-right {
-      float: none !important;
-    }
-
     .navbar-toggle {
       display: block;
     }
@@ -1016,6 +1147,20 @@ li {
     .navbar-collapse {
       border-top: 1px solid transparent;
       box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      padding-left: 25px;
+      background: inherit;
+      margin: 8px -15px 0 -15px;
+      z-index: 100;
+
+      #user_utility_links {
+        text-align: center;
+      }
+    }
+
+    #navbarDropdown.dropdown-toggle {
+      &:focus {
+        outline: none;
+      }
     }
 
     .navbar-fixed-top {
@@ -1023,17 +1168,8 @@ li {
       border-width: 0 0 1px;
     }
 
-    .navbar-collapse.collapse {
-      display: none !important;
-    }
-
     .navbar-nav {
-      float: none !important;
       margin-top: 7.5px;
-    }
-
-    .navbar-nav > li {
-      float: none;
     }
 
     .navbar-nav > li > a {
@@ -1044,5 +1180,70 @@ li {
     .collapse.in {
       display: block !important;
     }
+  }
+}
+
+.dashboard {
+  .sidebar {
+    .nav-link[href="/leases?locale=en"], .nav-link[href^="/dashboard/profiles"] {
+      display: none;
+    }
+    /* Temporary fix so that bulkrax links format correctly, until the gem is updated */
+    .nav-item a {
+      display: block;
+    }
+  }
+}
+
+#new_importer {
+  /* suppressing "Create and Validate" and "Create" buttons since the former is very buggy, and the latter is the same as "Create and Import" */
+  .btn[value="Create and Validate"], .btn[value="Create"] {
+    display: none;
+  }
+  /* Hiding the vertical pipes between buttons */
+  .panel-footer {
+    color: transparent;
+  }
+  /* Correcting the font color until bulkrax is updated for hyrax 4 */
+  .btn-primary {
+    color: #fff;
+  }
+}
+
+#new_exporter {
+  /* Correcting the font color until bulkrax is updated for hyrax 4 */
+  .btn-primary {
+    color: #fff;
+  }
+}
+
+.bulkrax-align-text {
+  .panel-body {
+    width: 100%;
+  }
+}
+
+.search-form {
+  label {
+    display: none;
+  }
+}
+
+#unc-search {
+  #search-form-header {
+    .input-group {
+      padding: 0;
+    }
+  }
+
+  .advanced_search {
+    margin-right: 0;
+  }
+}
+
+.visibility {
+  /* this prevents the embargo inputs from running out of the side of their container */
+  .form-inline {
+    display: block;
   }
 }

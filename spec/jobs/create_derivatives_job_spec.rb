@@ -29,6 +29,44 @@ RSpec.describe CreateDerivativesJob do
   let(:temp_storage_path) { File.join(fixture_path, 'tmp') }
   let(:data_storage_path) { File.join(fixture_path, 'tmp') }
 
+  context 'filepath parameter' do
+    let(:file_set) { FactoryBot.create(:file_set) }
+
+    let(:file) do
+      Hydra::PCDM::File.new do |f|
+        f.content = File.open(File.join(fixture_path, 'files/image.png'))
+        f.original_name = 'image.png'
+        f.mime_type = 'image/png'
+      end
+    end
+
+    before do
+      allow(Hyrax::VirusCheckerService).to receive(:file_has_virus?) { false }
+      file_set.original_file = file
+      file_set.save!
+    end
+
+    describe 'with valid filepath param' do
+      let(:filename) { File.join(fixture_path, 'files/image.png') }
+
+      it 'skips Hyrax::WorkingDirectory.copy_repository_resource_to_working_directory' do
+        expect(Hyrax::WorkingDirectory).not_to receive(:copy_repository_resource_to_working_directory)
+        expect(Hydra::Derivatives::ImageDerivatives).to receive(:create)
+        described_class.perform_now(file_set, file.id, filename)
+      end
+    end
+
+    describe 'with no filepath param' do
+      let(:filename) { nil }
+
+      it 'Uses Hyrax::WorkingDirectory.copy_repository_resource_to_working_directory to pull the repo file' do
+        expect(Hyrax::WorkingDirectory).to receive(:copy_repository_resource_to_working_directory)
+        expect(Hydra::Derivatives::ImageDerivatives).to receive(:create)
+        described_class.perform_now(file_set, file.id, filename)
+      end
+    end
+  end
+
   context 'with an audio file' do
     let(:id)       { '123' }
     let(:file_set) { FileSet.new }

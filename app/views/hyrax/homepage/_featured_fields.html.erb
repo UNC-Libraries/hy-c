@@ -1,5 +1,13 @@
-<%#  [hyc-override] Overriding hyrax default %>
-<div class="featured-item-title">
-  <span class="sr-only"><%= t('hyrax.homepage.featured_works.document.title_label') %></span>
-  <%= link_to featured.title.first.truncate(100, separator: ' '), [main_app, featured], aria: {hidden: true} %>
+<%# [hyc-override] https://github.com/samvera/hyrax/tree/hyrax-v4.0.0/app/views/hyrax/homepage/_featured_fields.html.erb %>
+<%# [hyc-override] Restructured to display thumbnail on top of title, and removed other fields %>
+<div>
+  <%= link_to [main_app, featured] do %>
+    <%= render_thumbnail_tag(featured, {alt: "#{featured.title.first.to_s} #{ t('hyrax.homepage.admin_sets.thumbnail')}" }, {suppress_link: true})%>
+  <% end %>
+  <div class="featured-item-title">
+    <span class="sr-only"><%= t('hyrax.homepage.featured_works.document.title_label') %></span>
+    <%= link_to [main_app, featured] do %>
+      <%= featured.title.first.truncate(100, separator: ' ') %>
+    <% end %>
+  </div>
 </div>

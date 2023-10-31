@@ -1,0 +1,13 @@
+<% if can? :manage, User %>
+  <%= menu.nav_link(main_app.accounts_new_path, class: "nav-link") do %>
+    <span class="fa fa-edit" aria-hidden="true"></span> <span class="sidebar-action-text">Add new user</span>
+  <% end %>
+<% end %>
+<% if can? :read, :admin_dashboard %>
+  <%= menu.nav_link(main_app.ingest_from_ftp_path, class: "nav-link") do %>
+    <span class="fa fa-upload" aria-hidden="true"></span> <span class="sidebar-action-text">Ingest from FTP</span>
+  <% end %>
+  <%= menu.nav_link(main_app.default_admin_sets_path, class: "nav-link") do %>
+    <span class="fa fa-archive" aria-hidden="true"></span> <span class="sidebar-action-text">Assign Admin Set Worktype</span>
+  <% end %>
+<% end %>

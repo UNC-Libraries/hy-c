@@ -13,7 +13,7 @@ GitHub/InsecureHashAlgorithm:
     - 'app/models/concerns/bulkrax/file_factory.rb'
 
 # Offense count: 1
-GitHub/RailsApplicationRecord:
+Rails/ApplicationRecord:
   Exclude:
     - 'app/models/proxy_deposit_request.rb'
 

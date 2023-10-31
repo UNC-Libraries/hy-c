@@ -1,17 +1,22 @@
+<%# [hyc-override] https://github.com/samvera/hyrax/tree/hyrax-v4.0.0/app/views/hyrax/base/_form_visibility_component.html.erb %>
 <%# [hyc-override] Overriding partial in hyrax gem in order to hide lease option %>
 <%# [hyc-override] Overriding partial in hyrax gem in order to fix accessibility issues with the embargo options %>
 <% if embargo_enforced?(f.object) %>
   <%= render 'form_permission_under_embargo', f: f %>
-<%# Remove lease panel %>
+<%# [hyc-override] Remove lease panel %>
 <%# elsif lease_enforced?(f.object) %>
   <%# render 'form_permission_under_lease', f: f %>
 <% else %>
   <fieldset>
-    <legend><%= t('.visibility') %><%= raw(t('.subtitle_html')) %></legend>
+    <% if local_assigns[:save_work] %>
+      <legend class="legend-save-work"><%= t('.visibility') %></legend>
+    <% else %>
+      <legend><%= t('.visibility') %><%= raw(t('.subtitle_html')) %></legend>
+    <% end %>
     <ul class="visibility">
-      <li class="radio">
-        <label>
-          <%= f.radio_button :visibility, Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC, data: { 'target': '#collapsePublic' } %>
+      <li class="form-check">
+        <label class="form-check-label">
+          <%= f.radio_button :visibility, Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC, class: 'form-check-input', data: { 'target': '#collapsePublic' } %>
           <%= visibility_badge(Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC) %>
           <br />
           <%= t('hyrax.visibility.open.note_html', type: f.object.human_readable_type) %>
@@ -20,48 +25,50 @@
           </div>
         </label>
       </li>
-      <li class="radio">
-        <label>
-          <%= f.radio_button :visibility, Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_AUTHENTICATED %>
+      <li class="form-check">
+        <label class="form-check-label">
+          <%= f.radio_button :visibility, Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_AUTHENTICATED, class: 'form-check-input' %>
           <%= visibility_badge(Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_AUTHENTICATED) %>
           <br />
           <%= t('hyrax.visibility.authenticated.note_html', institution: institution_name) %>
         </label>
       </li>
-      <li class="radio embargoed">
-        <%= f.radio_button :visibility, Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_EMBARGO, 'aria-label': 'Embargo', data: { 'target': '#collapseEmbargo' } %>
-        <%= visibility_badge(Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_EMBARGO) %>
-        <br />
-        <%= t('hyrax.visibility.embargo.note_html') %>
-        <div class="collapse" id="collapseEmbargo">
-          <div class="form-inline">
-            <%= f.input :visibility_during_embargo, wrapper: :inline, collection: visibility_options(:restrict), include_blank: false %>
-            <%= t('hyrax.works.form.visibility_until') %>
-            <%= f.date_field :embargo_release_date, wrapper: :inline, 'aria-label': 'Embargo Release Date', value: f.object.embargo_release_date || Date.tomorrow, class: 'datepicker form-control' %>
-            <%= f.input :visibility_after_embargo, wrapper: :inline, collection: visibility_options(:loosen), include_blank: false %>
+      <li class="form-check">
+        <label class="form-check-label">
+          <%= f.radio_button :visibility, Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_EMBARGO, class: 'form-check-input', data: { 'target': '#collapseEmbargo' } %>
+          <%= visibility_badge(Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_EMBARGO) %>
+          <br />
+          <%= t('hyrax.visibility.embargo.note_html') %>
+          <div class="collapse" id="collapseEmbargo">
+            <div class="form-inline">
+              <%= f.input :visibility_during_embargo, wrapper: :inline, collection: visibility_options(:restrict), include_blank: false %>
+              <%= t('hyrax.works.form.visibility_until') %>
+              <%= f.date_field :embargo_release_date, wrapper: :inline, 'aria-label': 'Embargo Release Date', value: f.object.embargo_release_date || Date.tomorrow, class: 'datepicker form-control' %>
+              <%= f.input :visibility_after_embargo, wrapper: :inline, collection: visibility_options(:loosen), include_blank: false %>
+            </div>
           </div>
-        </div>
+        </label>
       </li>
-      <%# Remove lease option %>
-      <%# <li class="radio"> %>
-      <%# <label> %>
-      <%#= f.radio_button :visibility, Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_LEASE, data: { 'target': '#collapseLease' } %>
-      <%#= visibility_badge(Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_LEASE) %>
-      <%# <br /> %>
-      <%#= t('hyrax.visibility.lease.note_html') %>
-      <%# <div class="collapse" id="collapseLease"> %>
-      <%# <div class="form-inline"> %>
-      <%#= f.input :visibility_during_lease, wrapper: :inline, collection: visibility_options(:loosen), include_blank: false %>
-      <%#= t('hyrax.works.form.visibility_until') %>
-      <%#= f.date_field :lease_expiration_date, wrapper: :inline, value: f.object.lease_expiration_date || Date.tomorrow, class: 'datepicker form-control' %>
-      <%#= f.input :visibility_after_lease, wrapper: :inline, collection: visibility_options(:restrict), include_blank: false %>
-      <%# </div> %>
-      <%# </div> %>
-      <%# </label> %>
+      <%# [hyc-override] Remove lease option %>
+      <%# <li class="form-check"> %>
+        <%# <label class="form-check-label"> %>
+          <%#= f.radio_button :visibility, Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_LEASE, class: 'form-check-input', data: { 'target': '#collapseLease' } %>
+          <%#= visibility_badge(Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_LEASE) %>
+          <%# <br /> %>
+          <%# <%= t('hyrax.visibility.lease.note_html') %>
+          <%# <div class="collapse" id="collapseLease"> %>
+            <%# <div class="form-inline"> %>
+              <%#= f.input :visibility_during_lease, wrapper: :inline, collection: visibility_options(:loosen), include_blank: false %>
+              <%#= t('hyrax.works.form.visibility_until') %>
+              <%#= f.date_field :lease_expiration_date, wrapper: :inline, value: f.object.lease_expiration_date || Date.tomorrow, class: 'datepicker form-control' %>
+              <%#= f.input :visibility_after_lease, wrapper: :inline, collection: visibility_options(:restrict), include_blank: false %>
+            <%# </div> %>
+          <%# </div> %>
+        <%# </label> %>
       <%# </li> %>
-      <li class="radio">
-        <label>
-          <%= f.radio_button :visibility, Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE, 'aria-label': 'Private' %>
+      <li class="form-check">
+        <label class="form-check-label">
+          <%= f.radio_button :visibility, Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE, class: 'form-check-input' %>
           <%= visibility_badge(Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE) %>
           <br />
           <%= t('hyrax.visibility.restricted.note_html') %>

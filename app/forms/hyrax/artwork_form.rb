@@ -10,7 +10,7 @@ module Hyrax
     self.model_class = ::Artwork
     self.terms += [:resource_type, :admin_note, :dcmi_type, :date_issued, :note, :doi, :extent, :medium,
                    :deposit_agreement, :agreement]
-    self.terms -= [:contributor, :keyword, :publisher, :subject, :language, :identifier, :based_near,
+    self.terms -= [:bibliographic_citation, :contributor, :keyword, :publisher, :subject, :language, :identifier, :based_near,
                    :related_url, :source, :language_label, :date_created]
     self.required_fields = [:title, :date_issued, :abstract, :extent, :medium, :resource_type]
 

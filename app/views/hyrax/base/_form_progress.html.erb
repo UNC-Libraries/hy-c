@@ -1,14 +1,15 @@
-<%# [hyc-override] Overriding partial from gem to switch ordering of form completion requirements %>
-<aside id="form-progress" class="form-progress panel panel-default">
-  <div class="panel-heading">
-    <h3 class="panel-title"><%= t("hyrax.works.progress.header") %></h3>
+<%# [hyc-override] https://github.com/samvera/hyrax/tree/hyrax-v4.0.0/app/views/hyrax/base/_form_progress.html.erb %>
+<%# [hyc-override] Switch ordering of form completion requirements. Change agreement checkbox %>
+<aside id="form-progress" class="form-progress card">
+  <div class="card-header">
+    <h3 class="card-title"><%= t("hyrax.works.progress.header") %></h3>
   </div>
   <div class="list-group">
     <div class="list-group-item">
       <fieldset>
         <legend class="legend-save-work"><%= t('.requirements') %></legend>
         <ul class="requirements">
-          <%# [hyc-override] Overriding partial. Make file completion first in the list %>
+          <%# [hyc-override] Make file completion first in the list %>
           <% if Hyrax.config.work_requires_files? %>
             <li class="incomplete" id="required-files"><%= t('.required_files') %></li>
           <% end %>
@@ -33,11 +34,12 @@
       <%= render "form_progress_#{section}", f: f %>
     <% end %>
   </div>
-  <div class="panel-footer text-center">
+  <div class="card-footer text-center">
     <% if ::Flipflop.show_deposit_agreement? %>
       <% if ::Flipflop.active_deposit_agreement_acceptance? %>
         <% if !current_user.admin? || (current_user.admin? && params[:action] == 'new') %>
           <label>
+            <%# [hyc-override] Changing agreement button to submit the onyen of the depositor %>
             <%= f.input :agreement,
                         as: :boolean,
                         label: t('hyrax.active_consent_to_agreement'),
@@ -50,7 +52,8 @@
                         target: '_blank' %>
           </label>
         <% else %>
-          <label class="hidden">
+          <label class="d-none">
+            <%# [hyc-override] Changing agreement button to submit the onyen of the depositor %>
             <%= f.input :agreement,
                         as: :boolean,
                         checked: f.object.agreement_accepted,
@@ -69,9 +72,9 @@
   </div>
 
   <%# Provide immediate feedback after the form is submitted while the subsequent page is loading %>
-  <div class="panel-footer hidden">
+  <div class="card-footer save-progress" hidden>
     <div class="progress">
-      <div class="progress-bar progress-bar-striped progress-bar-complete active">
+      <div class="progress-bar progress-bar-striped progress-bar-complete progress-bar-animated">
         <span id="form-feedback" aria-live="assertive"><%= t(".saving_your_work") %></span>
       </div>
     </div>

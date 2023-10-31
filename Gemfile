@@ -7,24 +7,25 @@ git_source(:github) do |repo_name|
   "https://github.com/#{repo_name}.git"
 end
 
-gem 'active-fedora', '~> 13.1'
-gem 'blacklight_advanced_search', '~> 6.4.1'
-gem 'blacklight_oai_provider', '6.1.1'
-gem 'blacklight_range_limit', '6.5.0'
-gem 'bootstrap-sass', '~> 3.4.1'
-gem 'bulkrax', '~> 5.0.0'
+gem 'active-fedora', '~> 14.0'
+gem 'blacklight', git: 'https://github.com/UNC-Libraries/blacklight.git', branch: 'advanced_start_over'
+gem 'blacklight_advanced_search', '~> 8.0.0.alpha2'
+gem 'blacklight_oai_provider', '7.0.2'
+gem 'blacklight_range_limit', '~> 8.3.0'
+gem 'bootstrap', '~> 4.0'
+gem 'bulkrax', git: 'https://github.com/UNC-Libraries/bulkrax.git', branch: 'unc-bulkrax-5-development'
 gem 'clamav-client', require: 'clamav/client'
 # Use CoffeeScript for .coffee assets and views
-gem 'coffee-rails', '~> 4.2.2'
+gem 'coffee-rails', '~> 5.0.0'
 gem 'devise', '~> 4.8.0'
 gem 'devise-guests', '~> 0.8.1'
 gem 'edtf-humanize', '2.0.1'
 # See https://github.com/rails/execjs#readme for more supported runtimes
 gem 'execjs', '2.8.1'
 gem 'httparty', '~>0.21.0'
-gem 'hydra-editor', '~> 5.0'
+gem 'hydra-editor', '~> 6.0'
 gem 'hydra-role-management', '~> 1.0'
-gem 'hyrax', git: 'https://github.com/UNC-Libraries/hyrax.git', tag: 'hyrax-v3.6.0'
+gem 'hyrax', git: 'https://github.com/UNC-Libraries/hyrax.git', branch: 'unc-hyrax-4-development'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.11.2'
 # Use jquery as the JavaScript library
@@ -35,7 +36,7 @@ gem 'libv8', '~> 7.3'
 gem 'sparql', '3.2.5'
 gem 'linkeddata'
 gem 'loofah', '~>2.19.1'
-gem 'mini_magick', '~>4.11.0'
+gem 'mini_magick', '~>4.12.0'
 gem 'mini_racer', '~> 0.2.15', platforms: :ruby
 gem 'nokogiri', '~>1.14.2'
 gem 'omniauth', '~> 2.0'
@@ -45,24 +46,26 @@ gem 'passenger', '6.0.14', require: 'phusion_passenger/rack_handler'
 # Use postgresql as the database for Active Record
 gem 'pg', '~> 1.3.5'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 5.2.8.1'
+gem 'rails', '~> 6.0'
 # Use Redis adapter to run Action Cable in production
 gem 'redis', '~> 4.5.0'
 gem 'riiif', '~> 2.4.0'
 gem 'roo', '~>2.9.0'
 gem 'rsolr', '~> 2.5.0'
 # Use SCSS for stylesheets
-gem 'sass-rails', '~> 5.1.0'
-gem 'sidekiq', '~> 5.2.10'
-gem 'sidekiq-status', '~> 2.1.3'
+gem 'sass-rails', '~> 6.0.0'
+gem 'sidekiq', '~> 6.0'
+gem 'sidekiq-status', '~> 3.0.0'
 # Turbolinks makes navigating your web application faster. Read more: https://github.com/turbolinks/turbolinks
 gem 'turbolinks', '~> 5.2.1'
-# Use Uglifier as compressor for JavaScript assets
-gem 'uglifier', '~> 4.2.0'
+gem 'twitter-typeahead-rails', '0.11.1.pre.corejavascript'
+# Use terser as compressor for JavaScript assets
+gem 'terser', '~> 1.1'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', '~> 11.1.3', platform: :mri
+  gem 'database_cleaner'
   gem 'fcrepo_wrapper', '~> 0.9.0'
   gem 'rspec-rails', '~> 5.1.2'
   # Rubocop for style and error checking (linter)

@@ -8,7 +8,7 @@ $(function() {
 
         // Remove any currently hidden student work types
         $('.all-unc-work-types').on('click', function() {
-            all_work_types.removeClass('hidden');
+            all_work_types.removeClass('d-none');
         });
 
         // Filter form options based on which button is clicked
@@ -19,7 +19,7 @@ $(function() {
             var regex;
 
             // Clear all hidden forms before hiding current clicked options
-            all_work_types.removeClass('hidden');
+            all_work_types.removeClass('d-none');
 
             if (clicked_link === 'student-papers-work-types') {
                 regex = /MastersPaper|HonorsThesis/;
@@ -38,7 +38,7 @@ $(function() {
                 } else {
                     return regex.test(work_type);
                 }
-            }).addClass('hidden');
+            }).addClass('d-none');
         });
     }
 
@@ -71,7 +71,7 @@ $(function() {
 
     function hideNonRequiredFieldsBtn() {
         $('#metadata a.additional-fields').on('click', function () {
-            $(this).addClass('hidden');
+            $(this).addClass('d-none');
         });
     }
 
@@ -96,15 +96,15 @@ $(function() {
         var less_text = $('.truncated');
 
         $('#collection-description-text-btn').on('click touchstart', function() {
-            var show_less_text = less_text.hasClass('hidden');
+            var show_less_text = less_text.hasClass('d-none');
             var btn_text = (show_less_text) ? 'Show More' : 'Show Less';
 
             if (show_less_text) {
-                full_text.addClass('hidden');
-                less_text.removeClass('hidden');
+                full_text.addClass('d-none');
+                less_text.removeClass('d-none');
             } else {
-                full_text.removeClass('hidden');
-                less_text.addClass('hidden');
+                full_text.removeClass('d-none');
+                less_text.addClass('d-none');
             }
 
             $(this).text(btn_text);
@@ -143,18 +143,31 @@ $(function() {
         });
     }
 
+    // Local modifications to the editor's visibility component behaviors
+    function modifyVisibilityComponent() {
+        var visibility = $('.visibility');
+        if (visibility.length == 0) {
+            return;
+        }
+        // Hide any visibility options the admin set is disallowing
+        visibility.find('.form-check-input:disabled').parentsUntil(visibility, '.form-check').addClass('d-none');
+    }
+
     visibleForms();
+    modifyVisibilityComponent();
    // browseEverythingUploads();
     accessUrl()
     uploadProgress();
     hideNonRequiredFieldsBtn();
     hideNonRequiredFormFields();
     removeCloning();
+    toggleCollectionPageDescription();
     showRemoveOption();
 
     // Make sure that form visibility and datepicker work with turbolinks
     $(document).on('turbolinks:load', function() {
         visibleForms();
+        modifyVisibilityComponent();
      //   browseEverythingUploads();
         uploadProgress();
         hideNonRequiredFieldsBtn();
@@ -166,13 +179,4 @@ $(function() {
         // Turns advanced search multi-select boxes into typeaheads
         $(".advanced-search-facet-select").chosen({ placeholder_text: 'Select option(s)'});
     });
-
-    // Override default workEditor to pick up our local changes
-    Hyrax.workEditor = function() {
-        var element = $("[data-behavior='work-form']")
-        if (element.length > 0) {
-            var Editor = require('unc/unc_editor');
-            new Editor(element).init();
-        }
-    };
 });
