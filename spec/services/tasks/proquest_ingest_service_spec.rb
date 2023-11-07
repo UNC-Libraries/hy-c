@@ -136,8 +136,22 @@ RSpec.describe Tasks::ProquestIngestService, :ingest do
   # most processing functionality is tested in process_all_packages
   # this test is to make sure only selected packages are processed
   describe '#process_packages' do
+    let(:manager) do
+      FactoryBot.create(:user, email: 'manager@example.com', guest: false, uid: 'manager')
+    end
+    let(:manager_agent) { Sipity::Agent.where(proxy_for_id: 'dissertation_manager', proxy_for_type: 'Hyrax::Group').first_or_create }
+
     before do
       Dissertation.delete_all
+
+      Hyrax::PermissionTemplateAccess.create(permission_template: permission_template,
+                                             agent_type: 'group',
+                                             agent_id: 'dissertation_manager',
+                                             access: 'manage')
+      Hyrax::Workflow::PermissionGenerator.call(roles: 'managing', workflow: workflow, agents: manager_agent)
+      manager_role = Role.where(name: 'dissertation_manager').first_or_create
+      manager_role.users << manager
+      manager_role.save
     end
 
     let(:filepath_array) { ['spec/fixtures/proquest/proquest-attach0.zip'] }
@@ -152,6 +166,22 @@ RSpec.describe Tasks::ProquestIngestService, :ingest do
       expect(package1['status']).to eq 'Complete'
       expect(package1['status_timestamp']).to_not be_nil
       expect(package1['error']).to be_nil
+
+      # Dissertation and both of its files should have the manager role assigned to it
+      dissertation = Dissertation.first
+      expect_to_have_manager_permission(dissertation)
+
+      diss_file_sets = dissertation.file_sets
+      expect(diss_file_sets.length).to eq 2
+      expect_to_have_manager_permission(diss_file_sets[0])
+      expect_to_have_manager_permission(diss_file_sets[1])
+      expect(diss_file_sets[1].visibility).to eq Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
+    end
+
+    def expect_to_have_manager_permission(item)
+      perm = item.permissions.first
+      expect(perm.agent.first.id).to eq 'http://projecthydra.org/ns/auth/group#dissertation_manager'
+      expect(perm.mode.first.id).to eq 'http://www.w3.org/ns/auth/acl#Write'
     end
   end
 

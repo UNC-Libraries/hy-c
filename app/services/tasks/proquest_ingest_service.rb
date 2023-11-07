@@ -95,6 +95,7 @@ module Tasks
           file_set = ingest_proquest_file(parent: resource,
                                           resource: metadata.merge({ title: [f] }),
                                           f: file_path)
+          file_set.update permissions_attributes: group_permissions
           ordered_members << file_set if file_set
         end
       end
@@ -106,8 +107,7 @@ module Tasks
 
       # Force visibility to private since it seems to be saving as public
       fileset.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
-      fileset.permissions_attributes = group_permissions
-      fileset.save
+      fileset.update permissions_attributes: group_permissions
 
       resource.ordered_members << fileset
 
