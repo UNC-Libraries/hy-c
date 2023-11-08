@@ -88,7 +88,25 @@ RSpec.describe Tasks::SageIngestService, :sage, :ingest do
       let(:updated_creator) { 'Nakayama, Don K.' }
 
       context 'revision with no existing work' do
+        let(:manager) do
+          FactoryBot.create(:user, email: 'manager@example.com', guest: false, uid: 'manager')
+        end
+        let(:manager_agent) { Sipity::Agent.where(proxy_for_id: 'oa_manager', proxy_for_type: 'Hyrax::Group').first_or_create }
+
         let(:package_name) { 'ASU_2022_88_10_10.1177_00031348221074228.r2022-12-22.zip' }
+
+        before do
+          Article.delete_all
+
+          Hyrax::PermissionTemplateAccess.create(permission_template: permission_template,
+                                             agent_type: 'group',
+                                             agent_id: 'oa_manager',
+                                             access: 'manage')
+          Hyrax::Workflow::PermissionGenerator.call(roles: 'managing', workflow: workflow, agents: manager_agent)
+          manager_role = Role.where(name: 'oa_manager').first_or_create
+          manager_role.users << manager
+          manager_role.save
+        end
 
         it 'creates the work as if it were new' do
           work_id = nil
@@ -101,6 +119,26 @@ RSpec.describe Tasks::SageIngestService, :sage, :ingest do
           expect(status['status']).to eq 'In Progress'
           expect(status['error'][0]['message']).to eq "Package #{package_name} indicates that it is a revision, but no existing work with DOI https://doi.org/10.1177/00031348221074228 was found. Creating a new work instead."
           expect(status['error'][0]['trace']).to be_nil
+
+          article = Article.first
+          expect_to_have_manager_permission(article)
+          expect_to_have_public_permission(article)
+
+          article_file_sets = article.file_sets
+          expect(article_file_sets.length).to eq 2
+          expect_to_have_manager_permission(article_file_sets[0])
+          expect_to_have_public_permission(article_file_sets[0])
+          expect_to_have_manager_permission(article_file_sets[1])
+        end
+
+        def expect_to_have_manager_permission(item)
+          manager_perm = item.permissions.to_a.find { |perm| perm.agent.first.id == 'http://projecthydra.org/ns/auth/group#oa_manager' }
+          expect(manager_perm.mode.first.id).to eq 'http://www.w3.org/ns/auth/acl#Write'
+        end
+
+        def expect_to_have_public_permission(item)
+          pub_perm = item.permissions.to_a.find { |perm| perm.agent.first.id == 'http://projecthydra.org/ns/auth/group#public' }
+          expect(pub_perm.mode.first.id).to eq 'http://www.w3.org/ns/auth/acl#Read'
         end
       end
 
