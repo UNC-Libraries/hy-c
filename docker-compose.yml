@@ -20,6 +20,7 @@ services:
       - mount-gems:/hyc-gems
       - fcrepo_data:/opt/fedora/
       - hyrax_data:/opt/hyrax
+      - ftp_data:/opt/data/ftp
     stdin_open: true
     tty: true
     networks:
@@ -44,6 +45,7 @@ services:
       - mount-gems:/hyc-gems
       - fcrepo_data:/opt/fedora/
       - hyrax_data:/opt/hyrax
+      - ftp_data:/opt/data/ftp
     networks:
       - hycdev
   clamav:
@@ -113,6 +115,7 @@ volumes:
   fcrepo_data:
   redis_data:
   hyrax_data:
+  ftp_data:
 
 networks:
   hycdev:

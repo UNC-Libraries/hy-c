@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 module Tasks
+  require 'tasks/migration_helper'
+
   class SageNewArticleIngester < SageBaseArticleIngester
     attr_accessor :admin_set
 
@@ -11,9 +13,12 @@ module Tasks
       # Add PDF file to Article (including FileSets)
       pdf_path = pdf_file_path
 
-      attach_pdf_to_work(art_with_meta, pdf_path)
+      pdf_file = attach_pdf_to_work(art_with_meta, pdf_path)
+      pdf_file.update permissions_attributes: group_permissions
+
       # Add xml metadata file to Article
-      attach_xml_to_work(art_with_meta, @jats_ingest_work.xml_path)
+      xml_file = attach_xml_to_work(art_with_meta, @jats_ingest_work.xml_path)
+      xml_file.update permissions_attributes: group_permissions
       art_with_meta.id
     end
 
@@ -37,9 +42,14 @@ module Tasks
       art.admin_set = @admin_set
       populate_article_metadata(art)
       art.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
+      art.permissions_attributes = group_permissions
       art.save!
       # return the Article object
       art
+    end
+
+    def group_permissions
+      @group_permissions ||= MigrationHelper.get_permissions_attributes(@admin_set.id)
     end
   end
 end
