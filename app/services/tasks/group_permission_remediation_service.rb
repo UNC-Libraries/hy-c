@@ -15,11 +15,15 @@ module Tasks
 
     def run
       work_id_list.each do |work_id|
+        start_time = Time.now
+        work_id = work_id.chomp
         work = ActiveFedora::Base.find(work_id)
+        Rails.logger.info("Remediating groups for #{work_id}")
         work.update permissions_attributes: group_permissions
         work.file_sets.each do |file_set|
           file_set.update permissions_attributes: group_permissions
         end
+        Rails.logger.info("Completed remediation of #{work_id} in #{Time.now - start_time}")
       end
     end
 
