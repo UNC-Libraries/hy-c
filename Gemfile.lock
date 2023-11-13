@@ -1007,7 +1007,7 @@ GEM
       unicode-display_width (>= 1.1.1, < 3)
     terser (1.1.18)
       execjs (>= 0.3.0, < 3)
-    thor (1.2.2)
+    thor (1.3.0)
     tilt (2.2.0)
     timeout (0.4.0)
     tinymce-rails (5.10.7.1)
