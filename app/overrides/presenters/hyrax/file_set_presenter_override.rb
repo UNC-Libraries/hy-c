@@ -1,8 +1,9 @@
 # frozen_string_literal: true
-# https://github.com/samvera/hyrax/blob/v3.4.2/app/presenters/hyrax/file_set_presenter.rb
+# [hyc-override] https://github.com/samvera/hyrax/blob/hyrax-v4.0.0/app/presenters/hyrax/file_set_presenter.rb
 Hyrax::FileSetPresenter.class_eval do
   def fetch_parent_presenter
-    ids = Hyrax::SolrService.query("{!field f=member_ids_ssim}#{id}", fl: Hyrax.config.id_field)
+    # [hyc-override] set a rows field to avoid warnings about no rows being explicitly set
+    ids = Hyrax::SolrService.query("{!field f=member_ids_ssim}#{id}", fl: Hyrax.config.id_field, rows: 10)
                             .map { |x| x.fetch(Hyrax.config.id_field) }
     Hyrax.logger.warn("Couldn't find a parent work for FileSet: #{id}.") if ids.empty?
     ids.each do |id|
