@@ -38,6 +38,11 @@ class ApplicationController < ActionController::Base
     render_json_response(response_type: :not_found)
   end
 
+  def render_json_response(response_type: :success, message: nil, options: {})
+    json_body = Hyrax::API.generate_response_body(response_type: response_type, message: message, options: options)
+    render json: json_body, status: response_type
+  end
+
   def render_404
     render 'errors/not_found', status: 404
   end
