@@ -23,15 +23,16 @@ class ApplicationController < ActionController::Base
   rescue_from Hyrax::ObjectNotFoundError, with: :render_404
   rescue_from ActiveFedora::ObjectNotFoundError, with: :render_404
   rescue_from ActionController::InvalidAuthenticityToken, with: :render_401
+  rescue_from ActionController::UnknownFormat, with: :render_404
 
   protected
 
   def render_400
-    render 'errors/not_found', status: 400
+    render 'errors/not_found', status: 400, formats: :html
   end
 
   def render_401
-    render 'errors/not_found', status: 401
+    render 'errors/not_found', status: 401, formats: :html
   end
 
   def render_riiif_404
@@ -44,11 +45,11 @@ class ApplicationController < ActionController::Base
   end
 
   def render_404
-    render 'errors/not_found', status: 404
+    render 'errors/not_found', status: 404, formats: :html
   end
 
   def render_500
-    render 'errors/internal_server_error', status: 500
+    render 'errors/internal_server_error', status: 500, formats: :html
   end
 
   # Error caught in catalogController
