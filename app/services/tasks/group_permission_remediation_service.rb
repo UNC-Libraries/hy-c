@@ -17,13 +17,18 @@ module Tasks
       work_id_list.each do |work_id|
         start_time = Time.now
         work_id = work_id.chomp
-        work = ActiveFedora::Base.find(work_id)
-        Rails.logger.info("Remediating groups for #{work_id}")
-        work.update permissions_attributes: group_permissions
-        work.file_sets.each do |file_set|
-          file_set.update permissions_attributes: group_permissions
+        begin
+          work = ActiveFedora::Base.find(work_id)
+          logger.info("Remediating groups for #{work_id}")
+          work.update permissions_attributes: group_permissions
+          work.file_sets.each do |file_set|
+            file_set.update permissions_attributes: group_permissions
+          end
+          logger.info("Completed remediation of #{work_id} in #{Time.now - start_time}")
+        rescue StandardError => e
+          logger.error("Failed to update #{work_id}:")
+          logger.error(e)
         end
-        Rails.logger.info("Completed remediation of #{work_id} in #{Time.now - start_time}")
       end
     end
 
@@ -33,6 +38,13 @@ module Tasks
 
     def group_permissions
       @group_permissions ||= MigrationHelper.get_permissions_attributes(@admin_set_id)
+    end
+
+    def logger
+      @logger ||= begin
+        log_path = File.join(Rails.configuration.log_directory, 'remediate_permissions.log')
+        Logger.new(log_path, progname: 'remediate')
+      end
     end
   end
 end
