@@ -86,7 +86,7 @@ Hyrax::Actors::BaseActor.class_eval do
 
       if permission['type'] == 'person'
         agent_type = 'User'
-        agent_id = ::User.find_by(uid: permission['name'])
+        agent_id = ::User.find_by(email: permission['name'])
       else
         agent_type = 'Hyrax::Group'
         agent_id = permission['name']
