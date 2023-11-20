@@ -71,7 +71,7 @@ RSpec.describe Hyrax::Actors::BaseActor do
         env = Hyrax::Actors::Environment.new(work, ability, attributes)
         middleware.update(env)
 
-        user_perm = work.permissions.to_a.find { |perm| perm.agent.first.id == "http://projecthydra.org/ns/auth/person##{basic_user.email}" }
+        user_perm = work.permissions.to_a.find { |perm| perm.agent.first.id == "http://projecthydra.org/ns/auth/person##{basic_user.uid}" }
         expect(user_perm.mode.first.id).to eq 'http://www.w3.org/ns/auth/acl#Read'
       end
     end
