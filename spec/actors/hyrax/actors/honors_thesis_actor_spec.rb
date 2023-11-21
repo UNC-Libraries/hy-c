@@ -13,8 +13,8 @@ RSpec.describe Hyrax::Actors::HonorsThesisActor do
   end
 
   let(:depositor) {
-    User.create(email: 'test@example.com',
-                uid: 'test@example.com',
+    User.create(email: 'test_depositor@example.com',
+                uid: 'test_depositor',
                 password: 'password',
                 password_confirmation: 'password')
   }
@@ -65,7 +65,7 @@ RSpec.describe Hyrax::Actors::HonorsThesisActor do
           permissions_attributes: {
             "0": {
               type: 'person',
-              name: 'test@example.com',
+              name: 'test_depositor@example.com',
               access: 'edit'
             }
           }
@@ -73,9 +73,10 @@ RSpec.describe Hyrax::Actors::HonorsThesisActor do
       }
 
       it 'assigns user agent permissions' do
-        expect(Hyrax::Workflow::PermissionGenerator).to receive(:call)
-
         subject.update(env)
+
+        approver_perm = curation_concern.permissions.to_a.find { |perm| perm.agent.first.id == 'http://projecthydra.org/ns/auth/person#test_depositor' }
+        expect(approver_perm.mode.first.id).to eq 'http://www.w3.org/ns/auth/acl#Write'
       end
     end
 
@@ -93,8 +94,10 @@ RSpec.describe Hyrax::Actors::HonorsThesisActor do
       }
 
       it 'assigns group agent permissions' do
-        expect_create_workflow_permissions_called(entity, 'viewing', workflow)
         subject.update(env)
+
+        reader_perm = curation_concern.permissions.to_a.find { |perm| perm.agent.first.id == 'http://projecthydra.org/ns/auth/group#agroup' }
+        expect(reader_perm.mode.first.id).to eq 'http://www.w3.org/ns/auth/acl#Read'
       end
     end
 
@@ -109,6 +112,8 @@ RSpec.describe Hyrax::Actors::HonorsThesisActor do
         expect(Hyrax::Workflow::PermissionGenerator).not_to receive(:call)
 
         subject.update(env)
+
+        expect(curation_concern.permissions.to_a).to be_empty
       end
     end
 
@@ -120,7 +125,7 @@ RSpec.describe Hyrax::Actors::HonorsThesisActor do
             '0': {
               index: '0',
               type: 'person',
-              name: 'test@example.com',
+              name: 'test_depositor@example.com',
               access: 'edit'
             }
           }
@@ -128,9 +133,10 @@ RSpec.describe Hyrax::Actors::HonorsThesisActor do
       }
 
       it 'assigns user agent permissions' do
-        expect_create_workflow_permissions_called(entity, 'approving', workflow)
-
         subject.update(env)
+
+        approver_perm = curation_concern.permissions.to_a.find { |perm| perm.agent.first.id == 'http://projecthydra.org/ns/auth/person#test_depositor' }
+        expect(approver_perm.mode.first.id).to eq 'http://www.w3.org/ns/auth/acl#Write'
       end
     end
 
@@ -143,8 +149,6 @@ RSpec.describe Hyrax::Actors::HonorsThesisActor do
       }
 
       it 'saves person details to work' do
-        expect(Hyrax::Workflow::PermissionGenerator).not_to receive(:call)
-
         subject.update(env)
 
         first_creator = curation_concern.creators.first
@@ -171,8 +175,6 @@ RSpec.describe Hyrax::Actors::HonorsThesisActor do
       }
 
       it 'logs the id of the work containing the deleted person' do
-        expect(Hyrax::Workflow::PermissionGenerator).not_to receive(:call)
-
         subject.update(env)
 
         File.open(ENV['DELETED_PEOPLE_FILE'], 'r') do |file|
@@ -207,7 +209,7 @@ RSpec.describe Hyrax::Actors::HonorsThesisActor do
           permissions_attributes: {
             "0": {
               type: 'person',
-              name: 'test@example.com',
+              name: 'test_depositor@example.com',
               access: 'edit'
             }
           }
@@ -215,9 +217,10 @@ RSpec.describe Hyrax::Actors::HonorsThesisActor do
       }
 
       it 'assigns user agent permissions' do
-        expect_create_workflow_permissions_called(entity, 'approving', workflow)
-
         middleware.create(env)
+
+        approver_perm = curation_concern.permissions.to_a.find { |perm| perm.agent.first.id == 'http://projecthydra.org/ns/auth/person#test_depositor' }
+        expect(approver_perm.mode.first.id).to eq 'http://www.w3.org/ns/auth/acl#Write'
       end
     end
   end
