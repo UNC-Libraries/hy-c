@@ -30,7 +30,8 @@ gem 'hyrax', git: 'https://github.com/UNC-Libraries/hyrax.git', branch: 'unc-hyr
 gem 'jbuilder', '~> 2.11.2'
 # Use jquery as the JavaScript library
 gem 'jquery-rails', '~> 4.5.0'
-gem 'json-ld', '< 3.2'
+gem 'json-canonicalization', git: 'https://github.com/dryruby/json-canonicalization.git', ref: '3a7cda2883a7787c76566932af878067e489a9b3'
+gem 'json-ld', '~> 3.2'
 gem 'libv8', '~> 7.3'
 # linkeddata gem is released with rdf gems and should be the same version as rdf
 gem 'sparql', '3.2.5'
