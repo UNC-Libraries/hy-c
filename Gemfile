@@ -36,6 +36,7 @@ gem 'libv8', '~> 7.3'
 # linkeddata gem is released with rdf gems and should be the same version as rdf
 gem 'sparql', '3.2.5'
 gem 'linkeddata'
+gem 'logger', '1.5.3'
 gem 'loofah', '~>2.19.1'
 gem 'mini_magick', '~>4.12.0'
 gem 'mini_racer', '~> 0.2.15', platforms: :ruby

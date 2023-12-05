@@ -614,7 +614,7 @@ GEM
     llhttp-ffi (0.4.0)
       ffi-compiler (~> 1.0)
       rake (~> 13.0)
-    logger (1.6.0)
+    logger (1.5.3)
     loofah (2.19.1)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
@@ -1105,6 +1105,7 @@ DEPENDENCIES
   libv8 (~> 7.3)
   linkeddata
   listen (~> 3.7.0)
+  logger (= 1.5.3)
   loofah (~> 2.19.1)
   mini_magick (~> 4.12.0)
   mini_racer (~> 0.2.15)
