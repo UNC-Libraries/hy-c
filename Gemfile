@@ -30,11 +30,13 @@ gem 'hyrax', git: 'https://github.com/UNC-Libraries/hyrax.git', branch: 'unc-hyr
 gem 'jbuilder', '~> 2.11.2'
 # Use jquery as the JavaScript library
 gem 'jquery-rails', '~> 4.5.0'
+gem 'json-canonicalization', '0.3.1'
 gem 'json-ld', '< 3.2'
 gem 'libv8', '~> 7.3'
 # linkeddata gem is released with rdf gems and should be the same version as rdf
 gem 'sparql', '3.2.5'
 gem 'linkeddata'
+gem 'logger', '1.5.3'
 gem 'loofah', '~>2.19.1'
 gem 'mini_magick', '~>4.12.0'
 gem 'mini_racer', '~> 0.2.15', platforms: :ruby

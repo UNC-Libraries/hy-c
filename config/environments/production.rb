@@ -69,7 +69,7 @@ Rails.application.configure do
   config.i18n.fallbacks = [I18n.default_locale]
 
   # Silence deprecation warnings.
-  config.active_support.deprecation = :silence
+  Deprecation.default_deprecation_behavior = :silence
 
   # Use a different logger for distributed setups.
   # require 'syslog/logger'
