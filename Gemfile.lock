@@ -232,9 +232,10 @@ GEM
       blacklight (~> 7.0)
       oai (~> 1.2)
       rexml
-    blacklight_range_limit (8.3.0)
+    blacklight_range_limit (8.4.0)
       blacklight (>= 7.25.2, < 9)
       deprecation
+      view_component (>= 2.54, < 4)
     bootstrap (4.6.2)
       autoprefixer-rails (>= 9.1.0)
       popper_js (>= 1.16.1, < 2)
@@ -1079,7 +1080,7 @@ DEPENDENCIES
   blacklight!
   blacklight_advanced_search (~> 8.0.0.alpha2)
   blacklight_oai_provider (= 7.0.2)
-  blacklight_range_limit (~> 8.3.0)
+  blacklight_range_limit (~> 8.4.0)
   bootstrap (~> 4.0)
   bulkrax!
   byebug (~> 11.1.3)
