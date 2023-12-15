@@ -45,6 +45,7 @@ module Tasks
       'Project' => 'Other',
       'Report' => 'Text',
       'Research Paper' => 'Text',
+      'Research Protocol'=> 'Other',
       'Software or Program Code' => 'Software',
       'Undergraduate Thesis' => 'Text',
       'Video' => 'Audiovisual',
