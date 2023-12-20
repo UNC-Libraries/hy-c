@@ -10,7 +10,7 @@ en:
       journal: 'Scholarly Journal, Newsletter or Book'
       masters_paper: "Master's Paper"
       multimed: 'Multimedia'
-      scholarly_work: 'Poster, Presentation or Paper'
+      scholarly_work: 'Poster, Presentation, Protocol or Paper'
   blacklight:
     search:
       fields:
