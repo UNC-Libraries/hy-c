@@ -49,6 +49,8 @@ terms:
     term: Report
   - id: Research Paper
     term: Research Paper
+  - id: Research Protocol
+    term: Research Protocol
   - id: Software or Program Code
     term: Software or Program Code
   - id: Undergraduate Thesis
