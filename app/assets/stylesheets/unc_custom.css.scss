@@ -602,6 +602,14 @@ input.hidden-file-input:focus + label {
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);
 }
 
+/* Fixes pagination links displaying vertically. */
+/* @TODO Possibly a 4.x bug. It doesn't seem to be an issue in Hyrax 5.x */
+.hyc-bl-pager {
+  .pagination {
+    display: flex;
+  }
+}
+
 table p.name span {
   word-break: break-word;
   display: block;
