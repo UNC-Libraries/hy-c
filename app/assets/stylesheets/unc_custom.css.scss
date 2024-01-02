@@ -20,6 +20,7 @@ $font-size-sm: $font-size-base;
 body {
   font-family: Verdana, Arial, sans-serif;
   font-size: $font-size-base;
+  margin-bottom: 0;
 }
 
 #logo {
@@ -369,6 +370,7 @@ div.person {
 
 #unc-footer {
   background-color: $carolina-blue-dark !important;
+  position: relative;
 
   .navbar-text {
     display: flex;
@@ -1024,10 +1026,6 @@ Hide it entirely until the issue is resolved upstreeam
     }
   }
 
-  .site-footer {
-    position: absolute;
-  }
-
   #unc-footer {
     ul li {
       display: block;
@@ -1090,7 +1088,6 @@ Hide it entirely until the issue is resolved upstreeam
     }
   }
 }
-
 
 /* Responsive Hyrax override */
 @media only screen and (min-width: 768px) {
