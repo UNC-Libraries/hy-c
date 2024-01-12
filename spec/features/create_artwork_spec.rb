@@ -71,7 +71,7 @@ RSpec.feature 'Create an Artwork', js: false do
       # extra fields
 
       fill_in 'Note', with: 'my note'
-      select 'Attribution 3.0 United States', from: 'artwork_license'
+      select 'Attribution 4.0 International', from: 'artwork_license'
       select 'In Copyright', from: 'artwork_rights_statement'
 
       expect(page).to have_selector('#artwork_license_label', visible: false)
@@ -110,12 +110,12 @@ RSpec.feature 'Create an Artwork', js: false do
       expect(page).to have_content 'Other Affiliation: UNC'
       expect(page).to have_content 'Abstract a description'
       expect(page).to have_content 'Extent some extent'
-      expect(page).to have_content 'License Attribution 3.0 United States'
+      expect(page).to have_content 'License Attribution 4.0 International'
       expect(page).to have_content 'Medium a medium'
       expect(page).to have_content 'Note my note'
       expect(page).to have_content 'Resource type Art'
       expect(page).to have_content 'Rights statement In Copyright'
-      expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
+      expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/4.0/'
       expect(page).to_not have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'
 
       expect(page).to_not have_content 'In Administrative Set: artwork admin set'

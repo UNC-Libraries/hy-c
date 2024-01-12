@@ -110,7 +110,7 @@ RSpec.feature 'Create a MastersPaper', js: false do
       select 'Clinical Nutrition', from: 'Academic Concentration'
       find('#masters_paper_based_near_attributes_0_id', visible: false).set('http://sws.geonames.org/4460162/')
       fill_in 'Keyword', with: 'Test Default Keyword'
-      select 'Attribution 3.0 United States', from: 'masters_paper_license'
+      select 'Attribution 4.0 International', from: 'masters_paper_license'
       fill_in 'Note', with: 'a note'
       fill_in 'Reviewer', { with: 'reviewer', id: 'masters_paper_reviewers_attributes_0_name' }
       fill_in 'ORCID', { with: 'reviewer orcid', id: 'masters_paper_reviewers_attributes_0_orcid' }
@@ -166,14 +166,14 @@ RSpec.feature 'Create a MastersPaper', js: false do
       expect(page).to have_content 'Graduation year 2018'
       expect(page).to have_content 'Keyword Test Default Keyword'
       expect(page).to have_content 'Language English'
-      expect(page).to have_content 'License Attribution 3.0 United States'
+      expect(page).to have_content 'License Attribution 4.0 International'
       expect(page).to have_content 'Note a note'
       expect(page).to have_content 'Resource type Masters Paper'
       expect(page).to have_content 'Reviewer reviewer ORCID: reviewer orcid'
       expect(page).to have_content 'Rights statement In Copyright'
       expect(page).to have_content 'Subject test'
       expect(page).to_not have_content 'Language http://id.loc.gov/vocabulary/iso639-2/eng'
-      expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
+      expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/4.0/'
       expect(page).to_not have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'
 
       expect(page).to_not have_content 'In Administrative Set: dept admin set'

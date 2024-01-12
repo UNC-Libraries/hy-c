@@ -72,7 +72,7 @@ RSpec.feature 'Create a Article', js: false do
 
       # extra fields
       fill_in 'Keyword', with: 'Test Default Keyword'
-      select 'Attribution 3.0 United States', from: 'article_license'
+      select 'Attribution 4.0 International', from: 'article_license'
       select 'In Copyright', from: 'article_rights_statement'
       fill_in 'Publisher', with: 'UNC Press'
       fill_in 'Subject', with: 'test'
@@ -140,7 +140,7 @@ RSpec.feature 'Create a Article', js: false do
       expect(page).to have_content 'Abstract some abstract'
       expect(page).to have_content 'Alternate title my other title'
       expect(page).to have_content 'Date of publication October 3, 2018'
-      expect(page).to have_content 'License Attribution 3.0 United States'
+      expect(page).to have_content 'License Attribution 4.0 International'
       expect(page).to have_content 'Rights statement In Copyright'
       expect(page).to have_content 'Publisher UNC Press'
       expect(page).to have_content 'Subject test'
@@ -160,7 +160,7 @@ RSpec.feature 'Create a Article', js: false do
       expect(page).to have_content 'Is the article or chapter peer-reviewed? Yes'
       expect(page).to have_content 'Place of publication UNC'
       expect(page).to_not have_content 'Language http://id.loc.gov/vocabulary/iso639-2/eng'
-      expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
+      expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/4.0/'
       expect(page).to_not have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'
 
       expect(page).to_not have_content 'In Administrative Set: article admin set'
