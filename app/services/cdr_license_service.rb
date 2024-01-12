@@ -6,7 +6,7 @@ module CdrLicenseService
   def self.select(work_type, admin_check)
     is_data_set = work_type.match?('data_sets')
     filtered_elements = authority.all
-      .reject { |item| is_data_set && item['active'] != 'data'} # hide non-data licenses from data sets
+      .reject { |item| is_data_set && item['active'] != 'data' } # hide non-data licenses from data sets
       .reject { |item| !admin_check && item['archived'] } # hide archived licenses from non-admins
     filtered_elements.map do |element|
       [element[:label], element[:id]]

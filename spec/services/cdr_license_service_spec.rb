@@ -11,7 +11,7 @@ RSpec.describe Hyrax::CdrLicenseService do
   describe '#select_options' do
     context 'as an admin' do
       it 'returns all options for non dataSet work types' do
-        expect(service.select('hyrax/masters_papers',true)).to contain_exactly(
+        expect(service.select('hyrax/masters_papers', true)).to contain_exactly(
           ['Attribution 4.0 International', 'http://creativecommons.org/licenses/by/4.0/'],
           ['Attribution-NonCommercial 4.0 International', 'http://creativecommons.org/licenses/by-nc/4.0/'],
           ['Attribution-NoDerivs 4.0 International', 'http://creativecommons.org/licenses/by-nd/4.0/'],
@@ -30,7 +30,7 @@ RSpec.describe Hyrax::CdrLicenseService do
       end
 
       it "returns 'limited' options for dataSet work type" do
-        expect(service.select('hyrax/data_sets',true)).to contain_exactly(
+        expect(service.select('hyrax/data_sets', true)).to contain_exactly(
           ['Attribution 4.0 International', 'http://creativecommons.org/licenses/by/4.0/'],
           ['Attribution 3.0 United States', 'http://creativecommons.org/licenses/by/3.0/us/'],
           ['CC0 1.0 Universal', 'http://creativecommons.org/publicdomain/zero/1.0/'])
@@ -39,7 +39,7 @@ RSpec.describe Hyrax::CdrLicenseService do
 
     context 'as a non-admin' do
       it 'returns all non-archived options for non dataSet work types' do
-        expect(service.select('hyrax/masters_papers',false)).to contain_exactly(
+        expect(service.select('hyrax/masters_papers', false)).to contain_exactly(
           ['Attribution 4.0 International', 'http://creativecommons.org/licenses/by/4.0/'],
           ['Attribution-NonCommercial 4.0 International', 'http://creativecommons.org/licenses/by-nc/4.0/'],
           ['Attribution-NoDerivs 4.0 International', 'http://creativecommons.org/licenses/by-nd/4.0/'],
@@ -50,9 +50,9 @@ RSpec.describe Hyrax::CdrLicenseService do
           ['CC0 1.0 Universal', 'http://creativecommons.org/publicdomain/zero/1.0/'],
           ['All rights reserved', 'http://www.europeana.eu/portal/rights/rr-r.html'])
       end
-    
+
       it "returns 'limited' non-archived options for dataSet work type" do
-        expect(service.select('hyrax/data_sets',false)).to contain_exactly(
+        expect(service.select('hyrax/data_sets', false)).to contain_exactly(
           ['Attribution 4.0 International', 'http://creativecommons.org/licenses/by/4.0/'],
           ['CC0 1.0 Universal', 'http://creativecommons.org/publicdomain/zero/1.0/'])
       end
