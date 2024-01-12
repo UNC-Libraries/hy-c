@@ -7,6 +7,14 @@ terms:
       term: Attribution-NonCommercial 4.0 International
       active: all
       archived: false
+    - id: https://creativecommons.org/licenses/by-nc-nd/4.0/
+      term: Attribution-NonCommercial-NoDerivs 4.0 International
+      active: all
+      archived: false
+    - id: https://creativecommons.org/licenses/by-nc-sa/4.0/
+      term: Attribution-NonCommercial-ShareAlike 4.0 International
+      active: all
+      archived: false
     - id: http://creativecommons.org/licenses/by-nd/4.0/
       term: Attribution-NoDerivs 4.0 International
       active: all
@@ -14,41 +22,13 @@ terms:
     - id: https://creativecommons.org/licenses/by-sa/4.0/
       term: Attribution-ShareAlike 4.0 International
       active: all
-      archived: false
-    - id: https://creativecommons.org/licenses/by-nc-sa/4.0/
-      term: Attribution-NonCommercial-ShareAlike 4.0 International
-      active: all
-      archived: false
-    - id: https://creativecommons.org/licenses/by-nc-nd/4.0/
-      term: Attribution-NonCommercial-NoDerivs 4.0 International
-      active: all
-      archived: false
-    - id: http://creativecommons.org/publicdomain/mark/1.0/
-      term: Public Domain Mark 1.0
-      active: all
-      archived: false
-    - id: http://creativecommons.org/publicdomain/zero/1.0/
-      term: CC0 1.0 Universal
-      active: data
-      archived: false
-    - id: http://www.europeana.eu/portal/rights/rr-r.html
-      term: All rights reserved
-      active: all
-      archived: false
+      archived: false  
     - id: http://creativecommons.org/licenses/by/3.0/us/
       term: Attribution 3.0 United States
       active: data
       archived: true
-    - id: http://creativecommons.org/licenses/by-sa/3.0/us/
-      term: Attribution-ShareAlike 3.0 United States
-      active: all
-      archived: true
     - id: http://creativecommons.org/licenses/by-nc/3.0/us/
       term: Attribution-NonCommercial 3.0 United States
-      active: all
-      archived: true
-    - id: http://creativecommons.org/licenses/by-nd/3.0/us/
-      term: Attribution-NoDerivs 3.0 United States
       active: all
       archived: true
     - id: http://creativecommons.org/licenses/by-nc-nd/3.0/us/
@@ -59,3 +39,23 @@ terms:
       term: Attribution-NonCommercial-ShareAlike 3.0 United States
       active: all
       archived: true
+    - id: http://creativecommons.org/licenses/by-nd/3.0/us/
+      term: Attribution-NoDerivs 3.0 United States
+      active: all
+      archived: true
+    - id: http://creativecommons.org/licenses/by-sa/3.0/us/
+      term: Attribution-ShareAlike 3.0 United States
+      active: all
+      archived: true
+    - id: http://www.europeana.eu/portal/rights/rr-r.html
+      term: All rights reserved
+      active: all
+      archived: false
+    - id: http://creativecommons.org/publicdomain/zero/1.0/
+      term: CC0 1.0 Universal
+      active: data
+      archived: false
+    - id: http://creativecommons.org/publicdomain/mark/1.0/
+      term: Public Domain Mark 1.0
+      active: all
+      archived: false
