@@ -7,11 +7,11 @@ terms:
       term: Attribution-NonCommercial 4.0 International
       active: all
       archived: false
-    - id: https://creativecommons.org/licenses/by-nc-nd/4.0/
+    - id: http://creativecommons.org/licenses/by-nc-nd/4.0/
       term: Attribution-NonCommercial-NoDerivs 4.0 International
       active: all
       archived: false
-    - id: https://creativecommons.org/licenses/by-nc-sa/4.0/
+    - id: http://creativecommons.org/licenses/by-nc-sa/4.0/
       term: Attribution-NonCommercial-ShareAlike 4.0 International
       active: all
       archived: false
@@ -19,7 +19,7 @@ terms:
       term: Attribution-NoDerivs 4.0 International
       active: all
       archived: false
-    - id: https://creativecommons.org/licenses/by-sa/4.0/
+    - id: http://creativecommons.org/licenses/by-sa/4.0/
       term: Attribution-ShareAlike 4.0 International
       active: all
       archived: false 
