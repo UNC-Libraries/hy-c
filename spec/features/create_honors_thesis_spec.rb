@@ -80,7 +80,7 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       # extra fields
       find('#honors_thesis_based_near_attributes_0_id', visible: false).set('http://sws.geonames.org/4460162/')
       fill_in 'Keyword', with: 'Test Default Keyword'
-      select 'Attribution 3.0 United States', from: 'honors_thesis_license'
+      select 'Attribution 4.0 International', from: 'honors_thesis_license'
       fill_in 'Note', with: 'a note'
       select 'Honors Thesis', from: 'honors_thesis_resource_type'
       fill_in 'Related resource URL', with: 'something.com'
@@ -135,14 +135,14 @@ RSpec.feature 'Create a HonorsThesis', js: false do
       expect(page).to have_content 'Graduation year 2018'
       expect(page).to have_content 'Keyword Test Default Keyword'
       expect(page).to have_content 'Language English'
-      expect(page).to have_content 'License Attribution 3.0 United States'
+      expect(page).to have_content 'License Attribution 4.0 International'
       expect(page).to have_content 'Note a note'
       expect(page).to have_content 'Resource type Honors Thesis'
       expect(page).to have_content 'Related resource URL something.com'
       expect(page).to have_content 'Rights statement In Copyright'
       expect(page).to have_content 'Subject test'
       expect(page).to_not have_content 'Language http://id.loc.gov/vocabulary/iso639-2/eng'
-      expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
+      expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/4.0/'
       expect(page).to_not have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'
 
       expect(page).to_not have_content 'In Administrative Set: honors thesis admin set'

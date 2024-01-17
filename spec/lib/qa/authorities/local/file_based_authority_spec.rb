@@ -12,7 +12,7 @@ RSpec.describe Qa::Authorities::Local::FileBasedAuthority do
       expect(licenses.all.first).to be_instance_of(HashWithIndifferentAccess)
     end
     it 'has the expected keys in those hashes' do
-      expect(licenses.all.first.keys).to match_array(['id', 'label', 'active'])
+      expect(licenses.all.first.keys).to match_array(['id', 'label', 'active', 'archived'])
     end
   end
 
@@ -29,21 +29,30 @@ RSpec.describe Qa::Authorities::Local::FileBasedAuthority do
     context 'with at least one matching entry' do
       let(:term) { 'NonCommercial' }
       let(:expected) do
-        [{ 'id' => 'http://creativecommons.org/licenses/by-nc/3.0/us/',
-           'label' => 'Attribution-NonCommercial 3.0 United States',
-           'active' => 'all' },
-         { 'id' => 'http://creativecommons.org/licenses/by-nc/4.0/',
+        [{ 'id' => 'http://creativecommons.org/licenses/by-nc/4.0/',
            'label' => 'Attribution-NonCommercial 4.0 International',
-           'active' => 'all' },
+           'active' => 'all' ,
+           'archived' => false },
+          {'id' => 'http://creativecommons.org/licenses/by-nc-nd/4.0/',
+           'label' => 'Attribution-NonCommercial-NoDerivs 4.0 International',
+           'active' => 'all' ,
+           'archived' => false },
+          {'id' => 'http://creativecommons.org/licenses/by-nc-sa/4.0/',
+           'label' => 'Attribution-NonCommercial-ShareAlike 4.0 International',
+           'active' => 'all' ,
+           'archived' => false },
+          {'id' => 'http://creativecommons.org/licenses/by-nc/3.0/us/',
+           'label' => 'Attribution-NonCommercial 3.0 United States',
+           'active' => 'all',
+           'archived' => true },
          { 'id' => 'http://creativecommons.org/licenses/by-nc-nd/3.0/us/',
            'label' => 'Attribution-NonCommercial-NoDerivs 3.0 United States',
-           'active' => 'all' },
-         { 'id' => 'http://creativecommons.org/licenses/by-nc-nd/4.0/',
-           'label' => 'Attribution-NonCommercial-NoDerivatives 4.0 International',
-           'active' => 'all' },
+           'active' => 'all',
+           'archived' => true },
          { 'id' => 'http://creativecommons.org/licenses/by-nc-sa/3.0/us/',
            'label' => 'Attribution-NonCommercial-ShareAlike 3.0 United States',
-           'active' => 'all' }]
+           'active' => 'all',
+           'archived' => true }]
       end
       it 'returns only entries matching the query term' do
         results = licenses.search(term)
@@ -72,7 +81,7 @@ RSpec.describe Qa::Authorities::Local::FileBasedAuthority do
       let(:https_id) { 'https://creativecommons.org/licenses/by/3.0/us/' }
       let(:id) { 'http://creativecommons.org/licenses/by/3.0/us/' }
 
-      let(:expected) { { 'id' => id, 'term' => 'Attribution 3.0 United States', 'active' => 'data' } }
+      let(:expected) { { 'id' => id, 'archived' => true, 'term' => 'Attribution 3.0 United States', 'active' => 'data' } }
 
       it 'returns the full term record' do
         record = licenses.find(id)

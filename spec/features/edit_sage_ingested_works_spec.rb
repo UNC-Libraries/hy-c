@@ -143,7 +143,7 @@ RSpec.feature 'Edit works created through the Sage ingest', :sage, js: false do
       keywords = keyword_fields.map(&:value)
       expect(keyword_fields.count).to eq 8
       expect(keywords).to include('Propionibacterium acnes')
-      expect(page).to have_select('License', with_selected: 'Attribution-NonCommercial-NoDerivatives 4.0 International')
+      expect(page).to have_select('License', with_selected: 'Attribution-NonCommercial-NoDerivs 4.0 International')
       expect(page).to have_field('Page end', with: '20')
       expect(page).to have_field('Page start', with: '13')
     end

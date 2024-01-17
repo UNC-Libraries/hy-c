@@ -79,7 +79,7 @@ RSpec.feature 'Create a ScholarlyWork', js: false do
       fill_in 'Conference name', with: 'a conference'
       find('#scholarly_work_based_near_attributes_0_id', visible: false).set('http://sws.geonames.org/4460162/')
       fill_in 'Keyword', with: 'Test Default Keyword'
-      select 'Attribution 3.0 United States', from: 'scholarly_work_license'
+      select 'Attribution 4.0 International', from: 'scholarly_work_license'
       select 'Other', from: 'scholarly_work_resource_type'
       select 'In Copyright', from: 'scholarly_work_rights_statement'
       fill_in 'Subject', with: 'test'
@@ -129,12 +129,12 @@ RSpec.feature 'Create a ScholarlyWork', js: false do
       expect(page).to have_content 'Location Chapel Hill, North Carolina, United States'
       expect(page).to have_content 'Keyword Test Default Keyword'
       expect(page).to have_content 'Language English'
-      expect(page).to have_content 'License Attribution 3.0 United States'
+      expect(page).to have_content 'License Attribution 4.0 International'
       expect(page).to have_content 'Resource type Other'
       expect(page).to have_content 'Rights statement In Copyright'
       expect(page).to have_content 'Subject test'
       expect(page).to_not have_content 'Language http://id.loc.gov/vocabulary/iso639-2/eng'
-      expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
+      expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/4.0/'
       expect(page).to_not have_content 'Rights statement http://rightsstatements.org/vocab/InC/1.0/'
 
       expect(page).to_not have_content 'In Administrative Set: scholarly work admin set'

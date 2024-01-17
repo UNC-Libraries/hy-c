@@ -84,7 +84,7 @@ RSpec.feature 'Create a DataSet', js: false do
       find('#data_set_based_near_attributes_0_id', visible: false).set('http://sws.geonames.org/4460162/')
       fill_in 'Keyword', with: 'Test Default Keyword'
       fill_in 'Last modified date', with: '2018-10-03'
-      select 'Attribution 3.0 United States', from: 'data_set_license'
+      select 'Attribution 4.0 International', from: 'data_set_license'
       fill_in 'Project Director', { with: 'project director', id: 'data_set_project_directors_attributes_0_name' }
       fill_in 'ORCID', { with: 'project director orcid', id: 'data_set_project_directors_attributes_0_orcid' }
       select 'Department of Biology', from: 'data_set_project_directors_attributes_0_affiliation'
@@ -139,7 +139,7 @@ RSpec.feature 'Create a DataSet', js: false do
       expect(page).to have_content 'Abstract some abstract'
       expect(page).to have_content 'Date of publication October 3, 2018'
       expect(page).to have_content 'Kind of data Text'
-      expect(page).to have_content 'License Attribution 3.0 United States'
+      expect(page).to have_content 'License Attribution 4.0 International'
       expect(page).to have_content 'Language English'
       expect(page).to have_content 'Related resource URL something.com'
       expect(page).to have_content 'Resource type Dataset'
@@ -153,7 +153,7 @@ RSpec.feature 'Create a DataSet', js: false do
       expect(page).to have_content 'Sponsor a sponsor'
       expect(page).to have_content 'Subject test'
       expect(page).to_not have_content 'Language http://id.loc.gov/vocabulary/iso639-2/eng'
-      expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/3.0/us/'
+      expect(page).to_not have_content 'License http://creativecommons.org/licenses/by/4.0/'
 
       expect(page).to_not have_content 'In Administrative Set: data set admin set'
       expect(page).to_not have_content 'Type http://purl.org/dc/dcmitype/Dataset'
