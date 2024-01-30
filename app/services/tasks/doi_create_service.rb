@@ -107,14 +107,30 @@ module Tasks
       # Required fields
       #
       #########################
+      yaml_data = YAML.load(File.read(File.expand_path('../../../../config/authorities/departments.yml', __FILE__)))
       creators = parse_people(work, 'creators')
+      unc_affiliation_metadata = {
+        "name": "University of North Carolina at Chapel Hill",
+        "schemeUri": "https://ror.org",
+        "affiliationIdentifier": "https://ror.org/0130frc33",
+        "affiliationIdentifierScheme": "ROR"
+        }
       data[:data][:attributes][:creators] = if creators.blank?
                                               {
                                                 name: 'The University of North Carolina at Chapel Hill University Libraries',
                                                 nameType: 'Organizational'
                                               }
                                             else
-                                              creators
+                                              short_labels = yaml_data['terms'].map { |term| term['short_label'] }
+                                              creators.each do |creator|
+                                                creator_affiliations = creator[:affiliation]
+                                                if creator_affiliations.any? { |affil| short_labels.include?(affil) }
+                                                  creator[:affiliation] << unc_affiliation_metadata
+                                                end
+                                              end
+                                              # Remove later
+                                              Rails.logger.debug "Contents of creators: #{creators.inspect}"
+                                              creators                    
                                             end
 
       publisher = parse_field(work, 'publisher')

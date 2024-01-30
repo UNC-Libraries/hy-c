@@ -118,6 +118,8 @@ RSpec.describe Tasks::DoiCreateService do
         # method uses first element in array, and rdf does not preserve order
         expect(['Video', 'Honors Thesis', 'Journal']).to include JSON.parse(result)['data']['attributes']['types']['resourceType']
         expect(['Audiovisual', 'Text']).to include JSON.parse(result)['data']['attributes']['types']['resourceTypeGeneral']
+        # Remove later
+        puts "Test Output: #{JSON.parse(result)['data']['attributes']['creators']}"
         expect(JSON.parse(result)['data']['attributes']['creators']).to match_array [{ 'name' => 'Person, Test',
                                                                                        'nameType' => 'Personal',
                                                                                        'affiliation' => ['College of Arts and Sciences', 'Department of Biology'],
