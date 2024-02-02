@@ -115,7 +115,7 @@ module Tasks
                                                 nameType: 'Organizational'
                                               }
                                             else
-                                              creators                    
+                                              creators
                                             end
 
       publisher = parse_field(work, 'publisher')
@@ -236,7 +236,7 @@ module Tasks
     #     Rails.logger.error("=========Logging All Attributes For Record Fields=========")
     #     Rails.logger.error("#{attribute}: #{value}")
     #   end
-    # end    
+    # end
     def parse_field(record, field)
       # Removing after tests
       # log_all_attributes(record)
@@ -308,10 +308,10 @@ module Tasks
 
       people = []
       unc_affiliation_metadata = {
-        "name": "University of North Carolina at Chapel Hill",
-        "schemeUri": "https://ror.org",
-        "affiliationIdentifier": "https://ror.org/0130frc33",
-        "affiliationIdentifierScheme": "ROR"
+        "name": 'University of North Carolina at Chapel Hill',
+        "schemeUri": 'https://ror.org',
+        "affiliationIdentifier": 'https://ror.org/0130frc33',
+        "affiliationIdentifierScheme": 'ROR'
         }
 
       work[person_field].each do |p|

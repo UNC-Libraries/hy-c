@@ -120,7 +120,12 @@ RSpec.describe Tasks::DoiCreateService do
         expect(['Audiovisual', 'Text']).to include JSON.parse(result)['data']['attributes']['types']['resourceTypeGeneral']
         expect(JSON.parse(result)['data']['attributes']['creators']).to match_array [{ 'name' => 'Person, Test',
                                                                                        'nameType' => 'Personal',
-                                                                                       'affiliation' => ['College of Arts and Sciences', 'Department of Biology'],
+                                                                                       'affiliation' => [{
+                                                                                        'name' => 'University of North Carolina at Chapel Hill',
+                                                                                        'schemeUri' => 'https://ror.org',
+                                                                                        'affiliationIdentifier' => 'https://ror.org/0130frc33',
+                                                                                        'affiliationIdentifierScheme'=> 'ROR'
+                                                                                        }],
                                                                                        'nameIdentifiers' => [{ 'nameIdentifier' => 'some orcid',
                                                                                                                'nameIdentifierScheme' => 'ORCID' }] },
                                                                                      { 'name' => 'Person, Non-UNC',
@@ -152,7 +157,12 @@ RSpec.describe Tasks::DoiCreateService do
         expect(JSON.parse(result)['data']['attributes']['types']['resourceTypeGeneral']).to eq 'Text'
         expect(JSON.parse(result)['data']['attributes']['creators']).to match_array [{ 'name' => 'Person, Test',
                                                                                        'nameType' => 'Personal',
-                                                                                       'affiliation' => ['College of Arts and Sciences', 'Department of Biology'],
+                                                                                       'affiliation' => [{
+                                                                                        'name' => 'University of North Carolina at Chapel Hill',
+                                                                                        'schemeUri' => 'https://ror.org',
+                                                                                        'affiliationIdentifier' => 'https://ror.org/0130frc33',
+                                                                                        'affiliationIdentifierScheme'=> 'ROR'
+                                                                                        }],
                                                                                        'nameIdentifiers' => [{ 'nameIdentifier' => 'some orcid',
                                                                                                                'nameIdentifierScheme' => 'ORCID' }] }]
         expect(JSON.parse(result)['data']['attributes']['publisher']).to eq 'Some Publisher'
@@ -180,7 +190,12 @@ RSpec.describe Tasks::DoiCreateService do
         expect(JSON.parse(result)['data']['attributes']['types']['resourceTypeGeneral']).to eq 'Image'
         expect(JSON.parse(result)['data']['attributes']['creators']).to match_array [{ 'name' => 'Person, Test',
                                                                                        'nameType' => 'Personal',
-                                                                                       'affiliation' => ['College of Arts and Sciences', 'Department of Biology'],
+                                                                                       'affiliation' => [{
+                                                                                        'name' => 'University of North Carolina at Chapel Hill',
+                                                                                        'schemeUri' => 'https://ror.org',
+                                                                                        'affiliationIdentifier' => 'https://ror.org/0130frc33',
+                                                                                        'affiliationIdentifierScheme'=> 'ROR'
+                                                                                        }],
                                                                                        'nameIdentifiers' => [{ 'nameIdentifier' => 'some orcid',
                                                                                                                'nameIdentifierScheme' => 'ORCID' }] }]
         expect(JSON.parse(result)['data']['attributes']['publisher']).to eq 'Some Publisher'
