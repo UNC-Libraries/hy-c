@@ -297,6 +297,12 @@ module Tasks
       return [] unless work.attributes.keys.member?(person_field)
 
       people = []
+      unc_affiliation_metadata = {
+        "name": 'University of North Carolina at Chapel Hill',
+        "schemeUri": 'https://ror.org',
+        "affiliationIdentifier": 'https://ror.org/0130frc33',
+        "affiliationIdentifierScheme": 'ROR'
+        }
 
       work[person_field].each do |p|
         p_json = JSON.parse(p.to_json)
@@ -306,8 +312,7 @@ module Tasks
         other_affil = p_json['other_affiliation']&.first
 
         if !affil.blank?
-          expanded_affils = DepartmentsService.term(affil)
-          person[:affiliation] = expanded_affils.split('; ') unless expanded_affils.nil?
+          person[:affiliation] = [unc_affiliation_metadata]
         elsif !other_affil.blank?
           person[:affiliation] = [other_affil]
         end
