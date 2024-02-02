@@ -107,7 +107,6 @@ module Tasks
       # Required fields
       #
       #########################
-      # yaml_data = YAML.load(File.read(File.expand_path('../../../../config/authorities/departments.yml', __FILE__)))
       creators = parse_people(work, 'creators')
       data[:data][:attributes][:creators] = if creators.blank?
                                               {
@@ -230,16 +229,7 @@ module Tasks
       values
     end
 
-    # Removing after tests
-    # def log_all_attributes(record)
-    #   record.attributes.each do |attribute, value|
-    #     Rails.logger.error("=========Logging All Attributes For Record Fields=========")
-    #     Rails.logger.error("#{attribute}: #{value}")
-    #   end
-    # end
     def parse_field(record, field)
-      # Removing after tests
-      # log_all_attributes(record)
       record.attributes.keys.member?(field) ? record[field.to_sym] : []
     end
 
@@ -322,8 +312,6 @@ module Tasks
         other_affil = p_json['other_affiliation']&.first
 
         if !affil.blank?
-          # expanded_affils = DepartmentsService.term(affil)
-          # person[:affiliation] = expanded_affils.split('; ') unless expanded_affils.nil?
           person[:affiliation] = [unc_affiliation_metadata]
         elsif !other_affil.blank?
           person[:affiliation] = [other_affil]
