@@ -324,7 +324,7 @@ module Tasks
         if !affil.blank?
           # expanded_affils = DepartmentsService.term(affil)
           # person[:affiliation] = expanded_affils.split('; ') unless expanded_affils.nil?
-          person[:affiliation] = unc_affiliation_metadata
+          person[:affiliation] = [unc_affiliation_metadata]
         elsif !other_affil.blank?
           person[:affiliation] = [other_affil]
         end
