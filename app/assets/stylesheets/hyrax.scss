@@ -14,3 +14,16 @@
 @import "blacklight_gallery/osd_viewer";
 @import "hyrax/blacklight_gallery";
 @import 'hyrax/hyrax';
+
+// [hyc-override] Custom CSS to show Remove button for first of type Location controlled vocabulary
+  .form-group
+.controlled_vocabulary {
+    .listing {
+      li:first-of-type {
+        .remove {
+          display: block;
+        }
+      }
+    }
+  }
+  
