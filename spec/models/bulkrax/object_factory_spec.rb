@@ -6,6 +6,7 @@ module Bulkrax
       subject { described_class.new(attributes: attributes,
                                     source_identifier_value: '9p2909328',
                                     work_identifier: '9p2909328',
+                                    work_identifier_search_field: 'id',
                                     klass: General)
       }
 
