@@ -31,7 +31,7 @@ gem 'jbuilder', '~> 2.11.2'
 # Use jquery as the JavaScript library
 gem 'jquery-rails', '~> 4.5.0'
 gem 'json-canonicalization', '0.3.1'
-gem 'json-ld', '< 3.2'
+gem 'json-ld', '< 3.3'
 gem 'libv8', '~> 7.3'
 # linkeddata gem is released with rdf gems and should be the same version as rdf
 gem 'sparql', '3.2.5'
