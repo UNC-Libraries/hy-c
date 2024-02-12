@@ -51,11 +51,9 @@ export default class ControlledVocabulary extends FieldManager {
 
   // Overrides FieldManager in order to avoid doing a clone of the existing field
   createNewField($activeField) {
-     // Using querySelector to find elements with data-attribute="based_near"
-     const basedNearElements = document.querySelectorAll('[data-attribute="based_near"]');
-
-     // Log the count of found elements to the console
-     console.log('Count of elements with data-attribute="based_near":', basedNearElements.length);
+    console.log('createNewField')
+    console.trace('createNewField called from:');
+    console.log('createNewField called with arguments:', $activeField);
       let $newField = this._newFieldTemplate()
       this._addBehaviorsToInput($newField)
       this.element.trigger("managed_field:add", $newField);
@@ -131,11 +129,10 @@ export default class ControlledVocabulary extends FieldManager {
       const parentsArray = Array.from(basedNearElements).map(element => element.parentElement);
       const nonHiddenElements = parentsArray.filter(element => element.style.display !== 'none');
       const nonHiddenCount = nonHiddenElements.length;
-  
-      console.log(nonHiddenCount);
-      if (nonHiddenCount < 1){
-        console.log('You cannot remove the last element, replacing');
-        this._newFieldTemplate()
+        if (nonHiddenCount < 1){
+        let $listing = $(event.target).closest(this.inputTypeClass).find(this.listClass)
+        let $activeField = $listing.children('li').last()
+        $listing.append(this._newField($activeField));
       }
   }
 }
