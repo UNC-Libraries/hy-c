@@ -119,7 +119,18 @@ export default class ControlledVocabulary extends FieldManager {
       event.preventDefault()
 
       let field = $(event.target).parents(this.fieldWrapperClass)
-      field.find('[data-destroy]').val('true')
+      if (field.find('[data-id]').val() && field.find('[data-label]').data('label')) {
+        // Debugging issue caused by removing locations while editing works
+        const locationName = field.find('[data-label]').data('label')
+        console.log('Deleting field with value: ' + field.find('[data-label]').val())
+        field.find('[data-label]').prop('readonly', false);
+        field.find('[data-label]').data('value', locationName);
+        console.log('Post Update: ' + field.find('[data-label]').val())
+        field.find('[data-destroy]').val('true')
+      }
+      else {
+        field.find('[data-destroy]').val('')
+      }
       field.hide()
       this.element.trigger("managed_field:remove", field)
 

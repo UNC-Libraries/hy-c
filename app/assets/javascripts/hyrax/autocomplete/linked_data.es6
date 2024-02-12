@@ -18,14 +18,6 @@ export default class LinkedData {
       let result = this.element.select2("data")
       this.element.select2("destroy")
       this.element.val(result.label).attr("readonly", "readonly")
-      const basedNearElements = document.querySelectorAll('[data-attribute="based_near"]');
-      const parentsArray = Array.from(basedNearElements).map(element => element.parentElement);
-      const nonHiddenElements = parentsArray.filter(element => element.style.display !== 'none');
-      const nonHiddenCount = nonHiddenElements.length;
-        if (nonHiddenCount === 1) {
-        let removeButton = this.element.closest('.field-wrapper').find('.input-group-btn.field-controls .remove');
-        removeButton.addClass('show');
-      }
       this.setIdentifier(result.id)
     }
   

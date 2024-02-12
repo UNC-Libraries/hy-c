@@ -30,6 +30,10 @@ body {
   }
 }
 
+.controlled_vocabulary .listing li:first-of-type .remove {
+  display: block;
+}
+
 #user-util-links {
   ul.navbar-nav {
     padding-left: 0;
