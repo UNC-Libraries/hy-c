@@ -99,6 +99,7 @@ export default class ControlledVocabulary extends FieldManager {
   */
   _addBehaviorsToInput($newField) {
       let $newInput = $('input.multi-text-field', $newField)
+      $newInput.attr('placeholder', 'Search for a location')
       $newInput.focus()
       this.addAutocompleteToEditor($newInput)
       this.element.trigger("managed_field:add", $newInput)
