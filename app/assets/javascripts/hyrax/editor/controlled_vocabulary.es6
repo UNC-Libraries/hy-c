@@ -77,7 +77,8 @@ export default class ControlledVocabulary extends FieldManager {
       let row =  $(rowTemplate({ "paramKey": this.paramKey,
                                  "name": this.fieldName,
                                  "index": index,
-                                 "class": "controlled_vocabulary" }))
+                                 "class": "controlled_vocabulary",
+                                 "placeholder": "Search for a location" }))
                   .append(controls)
       return row
   }
@@ -119,13 +120,9 @@ export default class ControlledVocabulary extends FieldManager {
       event.preventDefault()
 
       let field = $(event.target).parents(this.fieldWrapperClass)
+      // If the field has a selection, we mark it for destruction
+      // Marking an empty selection for deletion causes issues with Fedora
       if (field.find('[data-id]').val() && field.find('[data-label]').data('label')) {
-        // Debugging issue caused by removing locations while editing works
-        const locationName = field.find('[data-label]').data('label')
-        console.log('Deleting field with value: ' + field.find('[data-label]').val())
-        field.find('[data-label]').prop('readonly', false);
-        field.find('[data-label]').data('value', locationName);
-        console.log('Post Update: ' + field.find('[data-label]').val())
         field.find('[data-destroy]').val('true')
       }
       else {
