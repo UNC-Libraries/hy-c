@@ -1,7 +1,4 @@
-//= require handlebars
-
 import { FieldManager } from 'hydra-editor/field_manager'
-import Handlebars from 'handlebars'
 import Autocomplete from 'hyrax/autocomplete'
 
 export default class ControlledVocabulary extends FieldManager {
@@ -51,9 +48,6 @@ export default class ControlledVocabulary extends FieldManager {
 
   // Overrides FieldManager in order to avoid doing a clone of the existing field
   createNewField($activeField) {
-    console.log('createNewField')
-    console.trace('createNewField called from:');
-    console.log('createNewField called with arguments:', $activeField);
       let $newField = this._newFieldTemplate()
       this._addBehaviorsToInput($newField)
       this.element.trigger("managed_field:add", $newField);
@@ -72,13 +66,13 @@ export default class ControlledVocabulary extends FieldManager {
 
   _newFieldTemplate() {
       let index = this._maxIndex()
-      let rowTemplate = this._template()
+      let newRow = this._renderTemplate({ "paramKey": this.paramKey,
+                                                "name": this.fieldName,
+                                                "index": index,
+                                                "class": "controlled_vocabulary",
+                                                "placeholder": "Search for a location" })
       let controls = this.controls.clone()//.append(this.remover)
-      let row =  $(rowTemplate({ "paramKey": this.paramKey,
-                                 "name": this.fieldName,
-                                 "index": index,
-                                 "class": "controlled_vocabulary",
-                                 "placeholder": "Search for a location" }))
+      let row =  $(newRow)
                   .append(controls)
       return row
   }
@@ -90,9 +84,16 @@ export default class ControlledVocabulary extends FieldManager {
         "<input name=\"{{paramKey}}[{{name}}_attributes][{{index}}][_destroy]\" id=\"{{paramKey}}_{{name}}_attributes_{{index}}__destroy\" value=\"\" data-destroy=\"true\" type=\"hidden\"></li>"
   }
 
-  _template() {
-      return Handlebars.compile(this._source)
+  _renderTemplate(data) {
+    const templateString = this._source
+    const interpolatedHTML = templateString.replace(/\{\{([^}]+)\}\}/g, (match, variable) => data[variable]);
+    return interpolatedHTML
   }
+
+  // Removing the Handlebars dependency
+  // _template() {
+  //     return Handlebars.compile(this._source)
+  // }
 
   /**
   * @param {jQuery} $newField - The <li> tag
