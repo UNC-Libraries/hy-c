@@ -21,6 +21,7 @@ class ApplicationController < ActionController::Base
   rescue_from Riiif::ImageNotFoundError, with: :render_riiif_404
   rescue_from Blacklight::Exceptions::RecordNotFound, with: :render_404
   rescue_from Hyrax::ObjectNotFoundError, with: :render_404
+  rescue_from BlacklightRangeLimit::InvalidRange, with: :render_400
   rescue_from Ldp::Gone, with: :render_404
   rescue_from ActiveFedora::ObjectNotFoundError, with: :render_404
   rescue_from ActionController::InvalidAuthenticityToken, with: :render_401

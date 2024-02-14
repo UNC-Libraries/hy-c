@@ -17,6 +17,7 @@ module ActionDispatch
       return true if wrapper.exception.is_a? ActionDispatch::Http::Parameters::ParseError
       return true if wrapper.exception.is_a? ActionDispatch::Http::MimeNegotiation::InvalidType
       return true if wrapper.exception.is_a? Ldp::Gone
+      return true if wrapper.exception.is_a? BlacklightRangeLimit::InvalidRange
       return false
     end
   end
