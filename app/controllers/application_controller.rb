@@ -21,6 +21,7 @@ class ApplicationController < ActionController::Base
   rescue_from Riiif::ImageNotFoundError, with: :render_riiif_404
   rescue_from Blacklight::Exceptions::RecordNotFound, with: :render_404
   rescue_from Hyrax::ObjectNotFoundError, with: :render_404
+  rescue_from Ldp::Gone, with: :render_404
   rescue_from ActiveFedora::ObjectNotFoundError, with: :render_404
   rescue_from ActionController::InvalidAuthenticityToken, with: :render_401
   rescue_from ActionController::UnknownFormat, with: :render_404
@@ -45,7 +46,7 @@ class ApplicationController < ActionController::Base
   end
 
   def render_404
-    render 'errors/not_found', status: 404, formats: :html
+    render 'errors/not_found', status: 404, formats: :html, layout: 'layouts/hyrax/1_column'
   end
 
   def render_500
