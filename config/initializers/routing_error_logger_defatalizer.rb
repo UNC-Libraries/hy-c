@@ -4,11 +4,19 @@ module ActionDispatch
   class DebugExceptions
     alias_method :old_log_error, :log_error
     def log_error(request, wrapper)
-      if wrapper.exception.is_a?  ActionController::RoutingError
+      if should_reduce_log_level?(wrapper)
         logger(request).send(:warn, "[404] #{wrapper.exception.class.name} (#{wrapper.exception.message})")
       else
         old_log_error request, wrapper
       end
+    end
+
+    def should_reduce_log_level?(wrapper)
+      return true if wrapper.exception.is_a? ActionController::RoutingError
+      return true if wrapper.exception.is_a? ActionController::BadRequest
+      return true if wrapper.exception.is_a? ActionDispatch::Http::Parameters::ParseError
+      return true if wrapper.exception.is_a? ActionDispatch::Http::MimeNegotiation::InvalidType
+      return false
     end
   end
 end
