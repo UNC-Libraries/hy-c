@@ -7,7 +7,7 @@ module ActionDispatch
       if should_reduce_log_level?(wrapper)
         logger(request).send(:warn, "[404] #{wrapper.exception.class.name} (#{wrapper.exception.message})")
       else
-        old_log_error request, wrapper
+        old_log_error(request, wrapper)
       end
     end
 
