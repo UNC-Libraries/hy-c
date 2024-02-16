@@ -137,7 +137,7 @@ RSpec.feature 'Edit works created through the Sage ingest', :sage, js: false do
       end
     end
   end
-  
+
   context 'with file 2' do
     before do
       FileUtils.cp('spec/fixtures/sage/GSJ_2021_11_1_10.1177_2192568219888179.zip', ingest_from_dir)
