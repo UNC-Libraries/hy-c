@@ -1,4 +1,5 @@
 <%# [hyc-override] https://github.com/samvera/hyrax/tree/hyrax-v4.0.0/app/views/hyrax/admin/admin_sets/_show_document_list_row.html.erb %>
+<%# [hyc-override] Add alt text for thumbnails  @todo can be removed when fixed upstream %>
 <% document = show_document_list_row %>
 <% id = document.id %>
 <tr id="document_<%= id %>">
@@ -10,7 +11,7 @@
   <td>
     <div class="media">
       <%= link_to [main_app, document], "class" => "media-left", "aria-hidden" => "true" do %>
-        <%= document_presenter(document)&.thumbnail&.thumbnail_tag({ class: "d-none d-md-block file_listing_thumbnail" }, { suppress_link: true }) %>
+        <%= document_presenter(document)&.thumbnail&.thumbnail_tag({ class: "d-none d-md-block file_listing_thumbnail", alt: document.title_or_label }, { suppress_link: true }) %>
       <% end %>
       <div class="media-body">
         <p class="media-heading">

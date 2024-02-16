@@ -1,0 +1,3 @@
+<%# https://github.com/samvera/hyrax/blob/hyrax-v4.0.0/app/views/hyrax/base/_file_manager_thumbnail.html.erb %>
+<%# [hyc-override] Add alt text for thumbnails  @todo can be removed when fixed upstream %>
+<%= document_presenter(node)&.thumbnail&.thumbnail_tag({ alt: '', class: 'thumbnail-inner mw-100' }, {}) %>
