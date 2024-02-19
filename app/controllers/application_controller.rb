@@ -21,9 +21,13 @@ class ApplicationController < ActionController::Base
   rescue_from Riiif::ImageNotFoundError, with: :render_riiif_404
   rescue_from Blacklight::Exceptions::RecordNotFound, with: :render_404
   rescue_from Hyrax::ObjectNotFoundError, with: :render_404
+  rescue_from BlacklightRangeLimit::InvalidRange, with: :render_400
+  rescue_from Ldp::Gone, with: :render_404
   rescue_from ActiveFedora::ObjectNotFoundError, with: :render_404
   rescue_from ActionController::InvalidAuthenticityToken, with: :render_401
   rescue_from ActionController::UnknownFormat, with: :render_404
+  rescue_from Riiif::ConversionError, with: :render_400
+  rescue_from Faraday::TimeoutError, with: :render_408
 
   protected
 
@@ -45,7 +49,11 @@ class ApplicationController < ActionController::Base
   end
 
   def render_404
-    render 'errors/not_found', status: 404, formats: :html
+    render 'errors/not_found', status: 404, formats: :html, layout: 'layouts/hyrax/1_column'
+  end
+
+  def render_408
+    head :request_timeout
   end
 
   def render_500
