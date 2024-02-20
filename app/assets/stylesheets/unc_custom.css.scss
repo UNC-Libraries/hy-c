@@ -19,8 +19,11 @@ $font-size-sm: $font-size-base;
 
 body {
   font-family: Verdana, Arial, sans-serif;
-  font-size: $font-size-base;
   margin-bottom: 0;
+}
+
+a {
+  color: #2a62bc;
 }
 
 #logo {
@@ -46,6 +49,17 @@ body {
 // Which causes the toggle icon to never display
 .navbar-toggler-icon {
   display: inline-block;
+}
+
+.navbar-light {
+  .navbar-nav {
+    .nav-link {
+      &:hover,
+      &:focus {
+        color: black;
+      }
+    }
+  }
 }
 
 span.institution_name {
@@ -102,7 +116,7 @@ span.institution_name {
 
 .advanced_search {
   float: right;
-  margin: 0.5rem 1rem 0 0;
+  margin: 0 1rem 0 0;
   &:hover {
     text-decoration: none;
   }
@@ -155,6 +169,9 @@ span.institution_name {
 
   .advanced_search {
     color: $text-color;
+    font-size: 1.2rem;
+    font-weight: bold;
+
     &:hover {
       color: $light-gray;
       text-decoration: none;
@@ -171,6 +188,35 @@ span.institution_name {
       font-weight: bold;
     }
   }
+}
+
+nav.breadcrumb {
+  background-color: #f8f9fa;
+}
+
+.badge-primary {
+  background-color: #13294b;
+}
+
+form .nav-link:not(.active),
+.help-block a,
+#collapsePublic a,
+#unc-featured a {
+  text-decoration: underline;
+}
+
+form .nav-link:not(.active),
+#my_nav .nav-link:not(.active),
+.thumbnail-title-wrapper a,
+.ensure-wrapped a,
+.page-item .page-link,
+.media-body a,
+.btn-link {
+  color: #2a62bc;
+}
+
+.navbar-light .navbar-nav .nav-link {
+  color: rgb(0, 0, 0);
 }
 
 .link-tabs {
@@ -1239,10 +1285,6 @@ Hide it entirely until the issue is resolved upstreeam
     .input-group {
       padding: 0;
     }
-  }
-
-  .advanced_search {
-    margin-right: 0;
   }
 }
 
