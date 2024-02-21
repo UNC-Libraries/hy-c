@@ -1,0 +1,5 @@
+<%# [hyc-override] https://github.com/samvera/hyrax/blob/hyrax-v4.0.0/app/views/catalog/_thumbnail_list_collection.html.erb %>
+<%# [hyc-override] Add alt text for thumbnails  @todo can be removed when fixed upstream %>
+<div class="col-md-3">
+  <%= document_presenter(document)&.thumbnail&.thumbnail_tag({ alt: "Thumbnail for #{document.title_or_label}" }, { suppress_link: true }) %>
+</div>
