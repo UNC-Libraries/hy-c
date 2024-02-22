@@ -46,5 +46,6 @@
 
 <%# [hyc-override] Add advanced search link %>
 <%= search_state.to_h %>
+<%= search_state.is_a? String %>
 <%= link_to 'Advanced search', blacklight_advanced_search_engine.advanced_search_path(search_state.to_h), class: 'advanced_search'%>
 
