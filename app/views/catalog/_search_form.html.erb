@@ -48,6 +48,6 @@
 <%= search_info = search_state %>
 <% unless  search_state.is_a? String %>
   <%= search_info = search_state.to_h %>
-  <% end %>
+<% end %>
 <%= link_to 'Advanced search', blacklight_advanced_search_engine.advanced_search_path(search_info), class: 'advanced_search'%>
 
