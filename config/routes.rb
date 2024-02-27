@@ -32,6 +32,7 @@ Rails.application.routes.draw do
   match 'search_history', to: 'errors#not_found', via: :all
   match 'saved_searches', to: 'errors#not_found', via: :all
   get 'suggest', to: 'errors#not_found'
+  get 'catalog/:id', to: 'errors#not_found'
 
   mount Blacklight::Engine => '/'
   mount BlacklightAdvancedSearch::Engine => '/'
