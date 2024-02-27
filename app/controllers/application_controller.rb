@@ -13,6 +13,7 @@ class ApplicationController < ActionController::Base
 
   before_action :check_read_only, only: [:new, :create, :edit, :update, :destroy]
   before_action :check_redirect
+  before_action :replace_invalid_f_parameter
 
   protect_from_forgery with: :exception
 
@@ -148,5 +149,15 @@ class ApplicationController < ActionController::Base
     end
 
     Rails.logger.debug "Fall through to original path: #{request.url}"
+  end
+
+  # Replace the blacklight filter field param with an empty Parameters object if
+  # the current value
+  def replace_invalid_f_parameter
+    if params[:f].nil? || params[:f].is_a?(ActionController::Parameters)
+      return
+    end
+    Rails.logger.warn('Overriding invalid filter field value')
+    params[:f] = ActionController::Parameters.new({})
   end
 end
