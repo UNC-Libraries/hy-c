@@ -27,7 +27,7 @@ RSpec.describe ApplicationController, type: :controller do
       expect(subject.instance_variable_get(:@params)[:f]).to eq(ActionController::Parameters.new({}))
     end
 
-    it 'does not replace f parameter when it is a Parameters objects' do
+    it 'does not replace f parameter when it is a Parameters object' do
       get :index, params: { f: { 'resource_type_sim' => ['Article'] }}
       expect(subject.instance_variable_get(:@params)[:f]).to eq(ActionController::Parameters.new({'resource_type_sim' => ['Article']}))
     end
