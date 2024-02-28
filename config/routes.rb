@@ -32,7 +32,6 @@ Rails.application.routes.draw do
   match 'search_history', to: 'errors#not_found', via: :all
   match 'saved_searches', to: 'errors#not_found', via: :all
   get 'suggest', to: 'errors#not_found'
-  get 'catalog/:id', to: 'errors#not_found', constraints: { format: :html }
 
   mount Blacklight::Engine => '/'
   mount BlacklightAdvancedSearch::Engine => '/'
@@ -65,6 +64,10 @@ Rails.application.routes.draw do
   root 'hyrax/homepage#index'
   curation_concerns_basic_routes
   concern :exportable, Blacklight::Routes::Exportable.new
+
+  # [hyc-override] disable the blacklight full record page, since we do not use it. This must be after OAI-PMH
+  # and most other routes are defined, in order to avoid interference.
+  get 'catalog/:id', to: 'errors#not_found'
 
   # [hyc-override] Remove routes we don't use e.g. catalog email and sms routes
   # we need this for accessing ttl files
