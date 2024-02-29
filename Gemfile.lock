@@ -16,8 +16,8 @@ GIT
 
 GIT
   remote: https://github.com/UNC-Libraries/hyrax.git
-  revision: 810a776108f484e43d5acfc82b26e87f237447a5
-  branch: hyc-1866
+  revision: d48b3bdb21c1b82528aa7594c9cfbea7d5fc644e
+  branch: unc-hyrax-4-development
   specs:
     hyrax (4.0.0)
       active-fedora (~> 14.0)
