@@ -22,7 +22,6 @@ Hydra::Controller::DownloadBehavior.class_eval do
     end
   end
 
-
   def send_range
     _, range = request.headers['HTTP_RANGE'].split('bytes=')
     # [hyc-override] assume client is requesting whole file if no range specified

@@ -188,6 +188,14 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
           expect(response).to be_not_found
         end
       end
+
+      it 'downloads whole file when byte Range not specified' do
+        request.headers['HTTP_RANGE'] = 'bytes='
+        get :show, params: { id: file_set}
+        expect(response.status).to eq 206
+        expect(response.headers['Content-Disposition']).to include 'filename="image.png"'
+        expect(response.headers['Content-Range']).to include 'bytes 0-19101/19102'
+      end
     end
     context 'with file set for download without file extension' do
       let(:file_set) do
