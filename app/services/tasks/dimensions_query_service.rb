@@ -4,10 +4,10 @@ module Tasks
   class DimensionsQueryService
     def initialize
       @dimensions_url = 'https://app.dimensions.ai/api'
-      @token = token_request
+      @token = retrieve_token
     end
 
-    def token_request
+    def retrieve_token
       begin
         response = HTTParty.post(
           "#{@dimensions_url}/auth",
@@ -16,7 +16,8 @@ module Tasks
         )
 
         if response.success?
-          return response.parsed_response['token']
+          Rails.logger.info("Parsed Response: #{response.parsed_response}")
+          return JSON.parse(response.parsed_response)['data']['token']
         else
           raise DimensionsTokenRetrievalError, "Failed to retrieve Dimensions API Token. Status code #{response.code}, response body: #{response.body}"
         end
