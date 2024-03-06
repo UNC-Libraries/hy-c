@@ -51,7 +51,7 @@ module Tasks
         )
         # WIP: Remove later
         Rails.logger.info("Dimensions Response: #{response.parsed_response}")
-        return response.parsed_response
+        return response.parsed_response['publications']
       rescue HTTParty::Error, StandardError => e
         Rails.logger.error("HTTParty error during Dimensions API query: #{e.message}")
         raise e
