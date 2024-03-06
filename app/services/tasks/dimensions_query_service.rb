@@ -3,7 +3,7 @@
 module Tasks
   class DimensionsTokenRetrievalError < StandardError
   end
-  
+
   class DimensionsQueryService
     def initialize
       @dimensions_url = 'https://app.dimensions.ai/api'
@@ -35,12 +35,19 @@ module Tasks
     def query_dimensions
       token = retrieve_token
       begin
+        query_string = <<~QUERY
+                      search publications in raw_affiliations#{' '}
+                      for """
+                      "University of North Carolina, Chapel Hill" OR "UNC"
+                      """#{'  '}
+                      return publications
+                    QUERY
         # Searching for publications related to UNC
         response = HTTParty.post(
             "#{@dimensions_url}/dsl",
             headers: { 'Content-Type' => 'application/json',
                        'Authorization' => "JWT #{token}" },
-            body: { 'query' => 'search publications in raw_affiliations for "University of North Carolina, Chapel Hill" OR "UNC" return publications' }.to_json
+            body: query_string
         )
         # WIP: Remove later
         Rails.logger.info("Dimensions Response: #{response.parsed_response}")
