@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 module Tasks
+  class DimensionsTokenRetrievalError < StandardError
+  end
+  
   class DimensionsQueryService
     def initialize
       @dimensions_url = 'https://app.dimensions.ai/api'
@@ -14,8 +17,7 @@ module Tasks
           body: { 'key' => "#{ENV['DIMENSIONS_API_KEY']}" }.to_json
         )
         if response.success?
-          Rails.logger.info("Parsed Response: #{response.parsed_response}")
-          return JSON.parse(response.parsed_response)['data']['token']
+          return response.parsed_response['token']
         else
           raise DimensionsTokenRetrievalError, "Failed to retrieve Dimensions API Token. Status code #{response.code}, response body: #{response.body}"
         end
