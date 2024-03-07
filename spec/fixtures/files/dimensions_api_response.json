@@ -1,0 +1,139 @@
+{
+    "_copyright": "© 2024 Digital Science & Research Solutions Inc. All rights reserved. Please refer to our Copyright Notice https://terms.dsrsi.com/public/DimensionsCopyrightNotice for further information.",
+    "_stats": {
+        "limit": 3,
+        "offset": 0,
+        "total_count": 106742
+    },
+    "_version": {
+        "release": "2.9",
+        "version": "2.9.1"
+    },
+    "_warnings": [
+        "Field current_organization_id of the authors field is deprecated and will be removed in the next major release."
+    ],
+    "publications": [
+        {
+            "authors": [
+                {
+                    "affiliations": [
+                        {
+                            "city": null,
+                            "city_id": null,
+                            "country": null,
+                            "country_code": null,
+                            "id": null,
+                            "name": "UNC Vector Core University of North Carolina Chapel Hill NY",
+                            "raw_affiliation": "UNC Vector Core University of North Carolina Chapel Hill NY",
+                            "state": null,
+                            "state_code": null
+                        }
+                    ],
+                    "corresponding": "",
+                    "current_organization_id": "grid.10698.36",
+                    "first_name": "David",
+                    "last_name": "Dismuke",
+                    "orcid": null,
+                    "raw_affiliation": [
+                        "UNC Vector Core University of North Carolina Chapel Hill NY"
+                    ],
+                    "researcher_id": "ur.01125213534.60"
+                },
+                {
+                    "affiliations": [
+                        {
+                            "city": null,
+                            "city_id": null,
+                            "country": null,
+                            "country_code": null,
+                            "id": null,
+                            "name": "UNC Gene Therapy Center University of North Carolina Chapel Hill NY",
+                            "raw_affiliation": "UNC Gene Therapy Center University of North Carolina Chapel Hill NY",
+                            "state": null,
+                            "state_code": null
+                        }
+                    ],
+                    "corresponding": true,
+                    "current_organization_id": "grid.10698.36",
+                    "first_name": "R. Jude",
+                    "last_name": "Samulski",
+                    "orcid": null,
+                    "raw_affiliation": [
+                        "UNC Gene Therapy Center University of North Carolina Chapel Hill NY"
+                    ],
+                    "researcher_id": "ur.014415654554.76"
+                }
+            ],
+            "id": "pub.1032685389",
+            "issue": "1",
+            "journal": {
+                "id": "jour.1093917",
+                "title": "Hepatology"
+            },
+            "pages": "13-14",
+            "title": "Hepatic gene therapy using lentiviral vectors: Has safety been established?",
+            "type": "article",
+            "volume": "58",
+            "year": 2013
+        },
+        {
+            "authors": [
+                {
+                    "affiliations": [
+                        {
+                            "city": "Chapel Hill",
+                            "city_id": 4460162,
+                            "country": "United States",
+                            "country_code": "US",
+                            "id": "grid.10698.36",
+                            "name": "University of North Carolina at Chapel Hill",
+                            "raw_affiliation": "University of North Carolina-Chapel Hill (UNC), USA.",
+                            "state": "North Carolina",
+                            "state_code": "US-NC"
+                        }
+                    ],
+                    "corresponding": "",
+                    "current_organization_id": "",
+                    "first_name": "M",
+                    "last_name": "Schwarz",
+                    "orcid": [],
+                    "raw_affiliation": [
+                        "University of North Carolina-Chapel Hill (UNC), USA."
+                    ],
+                    "researcher_id": null
+                },
+                {
+                    "affiliations": [],
+                    "corresponding": "",
+                    "current_organization_id": "",
+                    "first_name": "S E",
+                    "last_name": "Landis",
+                    "orcid": [],
+                    "raw_affiliation": [],
+                    "researcher_id": null
+                },
+                {
+                    "affiliations": [],
+                    "corresponding": "",
+                    "current_organization_id": "",
+                    "first_name": "J E",
+                    "last_name": "Rowe",
+                    "orcid": [],
+                    "raw_affiliation": [],
+                    "researcher_id": null
+                }
+            ],
+            "id": "pub.1074539864",
+            "issue": "4",
+            "journal": {
+                "id": "jour.1105336",
+                "title": "Family practice management"
+            },
+            "pages": "25-30",
+            "title": "A team approach to quality improvement.",
+            "type": "article",
+            "volume": "6",
+            "year": 1999
+        }
+    ]
+}

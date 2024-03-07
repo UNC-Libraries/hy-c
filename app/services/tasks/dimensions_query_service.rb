@@ -3,6 +3,8 @@
 module Tasks
   class DimensionsTokenRetrievalError < StandardError
   end
+  class DimensionsPublicationQueryError < StandardError
+  end
 
   class DimensionsQueryService
     def initialize
@@ -49,9 +51,12 @@ module Tasks
                        'Authorization' => "JWT #{token}" },
             body: query_string
         )
-        # WIP: Remove later
-        Rails.logger.info("Dimensions Response: #{response.parsed_response}")
-        return response.parsed_response['publications']
+        if response.success?
+          publications = response.parsed_response['publications']
+          return publications
+        else
+          raise DimensionsPublicationQueryError, "Failed to retrieve UNC affiliated articles from dimensions. Status code #{response.code}, response body: #{response.body}"
+        end
       rescue HTTParty::Error, StandardError => e
         Rails.logger.error("HTTParty error during Dimensions API query: #{e.message}")
         raise e
