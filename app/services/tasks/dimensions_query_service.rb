@@ -34,15 +34,19 @@ module Tasks
       end
     end
 
-    def query_dimensions
+    # def deduplicate_publications(with_doi,publications)
+
+
+    def query_dimensions(with_doi: true)
       token = retrieve_token
       begin
+        doi_clause = with_doi ? 'where doi is not empty' : 'where doi is empty'
         query_string = <<~QUERY
-                      search publications in raw_affiliations#{' '}
+                      search publications #{doi_clause} in raw_affiliations#{' '}
                       for """
                       "University of North Carolina, Chapel Hill" OR "UNC"
                       """#{'  '}
-                      return publications
+                      return publications[basics + extras]
                     QUERY
         # Searching for publications related to UNC
         response = HTTParty.post(
@@ -53,6 +57,7 @@ module Tasks
         )
         if response.success?
           publications = response.parsed_response['publications']
+          # WIP: Deduplicate publications
           return publications
         else
           raise DimensionsPublicationQueryError, "Failed to retrieve UNC affiliated articles from dimensions. Status code #{response.code}, response body: #{response.body}"
