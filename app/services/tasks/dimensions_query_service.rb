@@ -34,7 +34,39 @@ module Tasks
       end
     end
 
-    # def deduplicate_publications(with_doi,publications)
+    def deduplicate_publications(with_doi, publications)
+      if with_doi
+        # Removing publications with DOIs currently in Solr
+        new_publications = publications.reject do |pub|
+          doi_tesim = "https://doi.org/#{pub['doi']}"
+          result = Hyrax::SolrService.get("doi_tesim:\"#{doi_tesim}\"")
+          !result['response']['docs'].empty? 
+        end        
+        return new_publications
+      else
+        # Deduplicate publications by pmcid, pmid and title
+        new_publications = publications.reject do |pub|
+          query_string = solr_query_builder(pub)
+          puts "Query string: #{query_string}"
+          result = Hyrax::SolrService.get(query_string)
+          # Mark publications for review if they are not found in Solr and do not have a pmcid or pmid
+          if result['response']['docs'].empty? and pub['pmcid'].nil? and pub['pmid'].nil?
+            pub['marked_for_review'] = true
+          end
+          !result['response']['docs'].empty? 
+        end  
+        return new_publications
+      end
+    
+    def solr_query_builder(pub)
+      pmcid_search = pub['pmcid'] ? "identifier_tesim:(\"PMCID: #{pub['pmcid']}\")" : ""
+      pmid_search = pub['pmid'] ? "identifier_tesim:(\"PMID: #{pub['pmid']}\")" : ""
+      title_search = pub['title'] ? "title_tesim:\"#{pub['title']}\"" : ""
+
+      publication_data = [pmcid_search, pmid_search, title_search]
+      query_string = publication_data.join(" OR ")
+      return query_string
+    end
 
 
     def query_dimensions(with_doi: true)
@@ -56,8 +88,7 @@ module Tasks
             body: query_string
         )
         if response.success?
-          publications = response.parsed_response['publications']
-          # WIP: Deduplicate publications
+          publications = deduplicate_publications(with_doi,response.parsed_response['publications'])
           return publications
         else
           raise DimensionsPublicationQueryError, "Failed to retrieve UNC affiliated articles from dimensions. Status code #{response.code}, response body: #{response.body}"
