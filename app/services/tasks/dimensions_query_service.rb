@@ -33,7 +33,7 @@ module Tasks
         if response.success?
           body = response.body
           parsed_body = JSON.parse(body)
-          publications = deduplicate_publications(with_doi,parsed_body["publications"])
+          publications = deduplicate_publications(with_doi, parsed_body['publications'])
           return publications
         else
           raise DimensionsPublicationQueryError, "Failed to retrieve UNC affiliated articles from dimensions. Status code #{response.code}, response body: #{response.body}"
@@ -70,10 +70,10 @@ module Tasks
     def solr_query_builder(pub)
       pmcid_search = pub['pmcid'] ? "identifier_tesim:(\"PMCID: #{pub['pmcid']}\")" : nil
       pmid_search = pub['pmid'] ? "identifier_tesim:(\"PMID: #{pub['pmid']}\")" : nil
-      title_search = pub['title'] ? "title_tesim:\"#{pub['title']}\"" : nit
+      title_search = pub['title'] ? "title_tesim:\"#{pub['title']}\"" : nil
 
       publication_data = [pmcid_search, pmid_search, title_search].compact
-      query_string = publication_data.join(" OR ")
+      query_string = publication_data.join(' OR ')
       return query_string
     end
 
@@ -83,8 +83,8 @@ module Tasks
         new_publications = publications.reject do |pub|
           doi_tesim = "https://doi.org/#{pub['doi']}"
           result = Hyrax::SolrService.get("doi_tesim:\"#{doi_tesim}\"")
-          !result['response']['docs'].empty? 
-        end        
+          !result['response']['docs'].empty?
+        end
         return new_publications
       else
         # Deduplicate publications by pmcid, pmid and title
@@ -96,11 +96,11 @@ module Tasks
           if result['response']['docs'].empty? and pub['pmcid'].nil? and pub['pmid'].nil?
             pub['marked_for_review'] = true
           end
-          !result['response']['docs'].empty? 
-        end  
+          !result['response']['docs'].empty?
+        end
         return new_publications
       end
 
-  end
+    end
 end
 end
