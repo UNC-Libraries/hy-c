@@ -48,11 +48,12 @@ RSpec.describe Tasks::DimensionsQueryService do
       .with(
           body: query_string,
           headers: { 'Content-Type' => 'application/json' })
-          .to_return(status: 200, body: dimensions_query_response.to_json, headers: { 'Content-Type' => 'application/json' })
+          .to_return(status: 200, body: dimensions_query_response, headers: { 'Content-Type' => 'application/json' })
 
       dimensions_query_service = Tasks::DimensionsQueryService.new
       publications = dimensions_query_service.query_dimensions
-      expect(publications).to eq(dimensions_query_response['publications'])
+      expected_publications = JSON.parse(dimensions_query_response)['publications']
+      expect(publications).to eq(expected_publications)
     end
 
     it 'returns unc affiliated articles that do not have dois if specified' do
@@ -68,11 +69,12 @@ RSpec.describe Tasks::DimensionsQueryService do
       .with(
           body: query_string,
           headers: { 'Content-Type' => 'application/json' })
-          .to_return(status: 200, body: dimensions_query_response_non_doi.to_json, headers: { 'Content-Type' => 'application/json' })
+          .to_return(status: 200, body: dimensions_query_response_non_doi, headers: { 'Content-Type' => 'application/json' })
 
       dimensions_query_service = Tasks::DimensionsQueryService.new
       publications = dimensions_query_service.query_dimensions(with_doi: false)
-      expect(publications).to eq(dimensions_query_response_non_doi['publications'])
+      expected_publications = JSON.parse(dimensions_query_response_non_doi)['publications']
+      expect(publications).to eq(expected_publications)
     end
   end
 end
