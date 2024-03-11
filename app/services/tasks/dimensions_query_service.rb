@@ -11,37 +11,56 @@ module Tasks
       @dimensions_url = 'https://app.dimensions.ai/api'
     end
 
-    def query_dimensions(with_doi: true)
+    def query_dimensions(with_doi: true, page_size: 100)
+      # Itializing a set in case the same publication shows up in subsequent queries
+      all_publications = Set.new
       token = retrieve_token
-      begin
-        doi_clause = with_doi ? 'where doi is not empty' : 'where doi is empty'
-        query_string = <<~QUERY
-                      search publications #{doi_clause} in raw_affiliations#{' '}
-                      for """
-                      "University of North Carolina, Chapel Hill" OR "UNC"
-                      """#{'  '}
-                      return publications[basics + extras]
-                    QUERY
-        # Searching for publications related to UNC
-        response = HTTParty.post(
-            "#{@dimensions_url}/dsl",
-            headers: { 'Content-Type' => 'application/json',
-                       'Authorization' => "JWT #{token}" },
-            body: query_string,
-            format: :json
-        )
-        if response.success?
-          body = response.body
-          parsed_body = JSON.parse(body)
-          publications = deduplicate_publications(with_doi, parsed_body['publications'])
-          return publications
-        else
-          raise DimensionsPublicationQueryError, "Failed to retrieve UNC affiliated articles from dimensions. Status code #{response.code}, response body: #{response.body}"
+      doi_clause = with_doi ? 'where doi is not empty' : 'where doi is empty'
+      start = 0
+
+      loop do
+        begin
+          query_string = <<~QUERY
+                        search publications #{doi_clause} in raw_affiliations#{' '}
+                        for """
+                        "University of North Carolina, Chapel Hill" OR "UNC"
+                        """#{'  '}
+                        return publications[basics + extras]
+                        limit #{page_size}
+                        skip #{start}
+                      QUERY
+          # Searching for publications related to UNC
+          response = HTTParty.post(
+              "#{@dimensions_url}/dsl",
+              headers: { 'Content-Type' => 'application/json',
+                        'Authorization' => "JWT #{token}" },
+              body: query_string,
+              format: :json
+          )
+          if response.success?
+            body = response.body
+            parsed_body = JSON.parse(body)
+            publications = deduplicate_publications(with_doi, parsed_body['publications'])
+            all_publications.merge(publications)
+
+            total_count = parsed_body['_stats']['total_count']
+            start += page_size
+
+            break if start >= total_count
+          elsif response.code == 403
+            # If the token has expired, retrieve a new token and try the query again
+            Rails.logger.warn('Received 403 Forbidden error. Retrying after token refresh.')
+            token = retrieve_token
+            redo
+          else
+            raise DimensionsPublicationQueryError, "Failed to retrieve UNC affiliated articles from dimensions. Status code #{response.code}, response body: #{response.body}"
+          end
+        rescue HTTParty::Error, StandardError => e
+          Rails.logger.error("HTTParty error during Dimensions API query: #{e.message}")
+          raise e
         end
-      rescue HTTParty::Error, StandardError => e
-        Rails.logger.error("HTTParty error during Dimensions API query: #{e.message}")
-        raise e
       end
+      return all_publications.to_a
     end
 
     def retrieve_token

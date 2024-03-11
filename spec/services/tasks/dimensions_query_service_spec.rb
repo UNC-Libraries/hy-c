@@ -48,6 +48,8 @@ RSpec.describe Tasks::DimensionsQueryService do
                         "University of North Carolina, Chapel Hill" OR "UNC"
                         """#{'  '}
                         return publications[basics + extras]
+                        limit 100
+                        skip 0
                     QUERY
 
       stub_request(:post, 'https://app.dimensions.ai/api/dsl')
@@ -68,6 +70,8 @@ RSpec.describe Tasks::DimensionsQueryService do
                         "University of North Carolina, Chapel Hill" OR "UNC"
                         """#{'  '}
                         return publications[basics + extras]
+                        limit 100
+                        skip 0
                     QUERY
 
       stub_request(:post, 'https://app.dimensions.ai/api/dsl')
