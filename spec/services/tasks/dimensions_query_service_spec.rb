@@ -26,12 +26,6 @@ RSpec.describe Tasks::DimensionsQueryService do
     ActiveFedora::Cleaner.clean!
   end
 
-  describe '#initialize' do
-    it 'creates a new instance of the service' do
-      expect(service).to be_an_instance_of described_class
-    end
-  end
-
   describe '#retrieve_token' do
     it 'returns a token' do
       token = service.retrieve_token
