@@ -850,6 +850,18 @@ input#check_all {
   }
 }
 
+.resp-sharing-button--twitter {
+  background-color: black;
+  border-color: black;
+
+  &:focus,
+  &:hover {
+    background-color: #333;
+    border-color: #333;
+    color: white;
+  }
+}
+
 /*
 @TODO This is broken in hyrax 4.0.0 through at least hyrax 5.0.0.rc1
 Toggling the facet values closes and immediately reopens the facet list
