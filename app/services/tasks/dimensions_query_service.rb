@@ -90,7 +90,6 @@ module Tasks
         # Deduplicate publications by pmcid, pmid and title
         new_publications = publications.reject do |pub|
           query_string = solr_query_builder(pub)
-          puts "Query string: #{query_string}"
           result = Hyrax::SolrService.get(query_string)
           # Mark publications for review if they are not found in Solr and do not have a pmcid or pmid
           if result['response']['docs'].empty? and pub['pmcid'].nil? and pub['pmid'].nil?
