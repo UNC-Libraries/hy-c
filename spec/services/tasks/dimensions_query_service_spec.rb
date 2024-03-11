@@ -10,7 +10,6 @@ RSpec.describe Tasks::DimensionsQueryService do
     File.read(File.expand_path('../../../fixtures/files/dimensions_query_response_non_doi.json', __FILE__))
   end
 
-
   let(:service) { described_class.new }
 
   before do
@@ -41,6 +40,50 @@ RSpec.describe Tasks::DimensionsQueryService do
   end
 
   describe '#query_dimensions' do
+
+    it 'paginates to retrieve all articles meeting search criteria' do
+      start = 0
+      query_strings = []
+      page_size = 100
+
+      # Define the expected responses for each page
+      dimensions_pagination_query_responses = [
+        File.read(File.expand_path('../../../fixtures/files/dimensions_pagination_query_response_1.json', __FILE__)),
+        File.read(File.expand_path('../../../fixtures/files/dimensions_pagination_query_response_2.json', __FILE__))
+      ]
+
+      # Stub the requests for each page
+      dimensions_pagination_query_responses.each_with_index do |response_body, index|
+        query_string = <<~QUERY
+          search publications where doi is not empty in raw_affiliations#{' '}
+          for """
+          "University of North Carolina, Chapel Hill" OR "UNC"
+          """#{'  '}
+          return publications[basics + extras]
+          limit #{page_size}
+          skip #{index * page_size}
+        QUERY
+
+        stub_request(:post, 'https://app.dimensions.ai/api/dsl')
+          .with(
+            body: query_string,
+            headers: { 'Content-Type' => 'application/json' }
+          )
+          .to_return(status: 200, body: response_body, headers: { 'Content-Type' => 'application/json' })
+      end
+
+      # Make the query using the service
+      publications = service.query_dimensions(with_doi: true)
+
+      # Combine the publications from all pages for comparison
+      expected_publications = dimensions_pagination_query_responses.flat_map { |response| JSON.parse(response)['publications'] }
+
+      # Check if every publication in expected_publications is present in the retrieved publications
+      expected_publications.each do |expected_publication|
+        expect(publications).to include(expected_publication)
+      end
+    end
+
     it 'returns unc affiliated articles that have dois' do
       query_string = <<~QUERY
                         search publications where doi is not empty in raw_affiliations#{' '}

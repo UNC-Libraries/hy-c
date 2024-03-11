@@ -49,6 +49,7 @@ module Tasks
             break if start >= total_count
           elsif response.code == 403
             # If the token has expired, retrieve a new token and try the query again
+            # WIP: Not entirely sure if this is the correct way to handle this error, may cause an infinite loop
             Rails.logger.warn('Received 403 Forbidden error. Retrying after token refresh.')
             token = retrieve_token
             redo
