@@ -9,6 +9,8 @@ RSpec.describe Tasks::DimensionsQueryService do
   let(:dimensions_query_response_non_doi) do
     File.read(File.expand_path('../../../fixtures/files/dimensions_query_response_non_doi.json', __FILE__))
   end
+
+
   let(:service) { described_class.new }
 
   before do
@@ -81,27 +83,48 @@ RSpec.describe Tasks::DimensionsQueryService do
   end
 
   describe '#deduplicate_publications' do
-    context 'when dimensions publications have dois currently in solr' do
+      let(:dimensions_publications) { JSON.parse(dimensions_query_response)['publications'] }
+      let(:dimensions_publications_without_dois) { JSON.parse(dimensions_query_response_non_doi)['publications'] }
 
-      let(:documents) do
-        [{ id: '1111',
-          doi_tesim: ['https://doi.org/10.5688/ajpe7320']},
-        { id: '2222',
-          doi_tesim: ['https://doi.org/10.1002/hep.26460']}]
-      end
+      it 'removes publications with duplicate dois' do
+        documents =
+          [{ id: '1111',
+          doi_tesim: ["https://doi.org/#{dimensions_publications[0]['doi']}"] },
+          { id: '2222',
+          doi_tesim: ["https://doi.org/#{dimensions_publications[1]['doi']}"]}]
 
-      before do
         Hyrax::SolrService.add([documents[0], documents[1]], commit: true)
+        new_publications = service.deduplicate_publications(true, dimensions_publications)
+        expect(new_publications.count).to eq(1)
+        expect(new_publications.first['id']).to eq(dimensions_publications[2]['id'])
       end
 
-      it 'removes publications with dois currently in solr' do
-        new_publications = service.deduplicate_publications(true, JSON.parse(dimensions_query_response)['publications'])
+      it 'removes publications with duplicate titles' do
+        documents =
+          [{ id: '1111',
+          title_tesim: [dimensions_publications_without_dois[0]['title']] },
+          { id: '2222',
+          title_tesim: [dimensions_publications_without_dois[1]['title']]}]
+
+        Hyrax::SolrService.add([documents[0], documents[1]], commit: true)
+        new_publications = service.deduplicate_publications(false, dimensions_publications_without_dois)
         expect(new_publications.count).to eq(1)
-        expect(new_publications.first['doi']).to eq('10.1016/j.jaad.2020.06.824')
+        expect(new_publications.first['id']).to eq(dimensions_publications_without_dois[2]['id'])
+      end
+
+      it 'removes publications with duplicate pmids' do
+        documents =
+          [{ id: '1111',
+          identifier_tesim: ["PMID: #{dimensions_publications_without_dois[0]['pmid']}"]},
+          { id: '2222',
+          identifier_tesim: ["PMID: #{dimensions_publications_without_dois[1]['pmid']}"]}]
+
+        Hyrax::SolrService.add([documents[0], documents[1]], commit: true)
+        new_publications = service.deduplicate_publications(false, dimensions_publications_without_dois)
+        expect(new_publications.count).to eq(1)
+        expect(new_publications.first['id']).to eq(dimensions_publications_without_dois[2]['id'])
       end
 
     end
-  end
-
-
 end
+ 
