@@ -35,6 +35,63 @@ RSpec.describe Tasks::DimensionsQueryService do
 
   describe '#query_dimensions' do
 
+  with_doi_clause = lambda { |with_doi| with_doi ? 'where doi is not empty' : 'where doi is empty' }
+  query_template = <<~QUERY
+          search publications %{with_doi_clause} in raw_affiliations#{' '}
+          for """
+          "University of North Carolina, Chapel Hill" OR "UNC"
+          """#{'  '}
+          return publications[basics + extras]
+          limit %{page_size}
+          skip %{skip}
+        QUERY
+
+    it 'refreshes the token and retries if query returns a 403' do
+      allow(Rails.logger).to receive(:warn)
+      dimensions_pagination_query_responses = [
+        File.read(File.expand_path('../../../fixtures/files/dimensions_pagination_query_response_1.json', __FILE__)),
+        File.read(File.expand_path('../../../fixtures/files/dimensions_pagination_query_response_2.json', __FILE__))
+      ]
+      query_strings = [query_template % { with_doi_clause: with_doi_clause.call(true), page_size: 100, skip: 0 }, 
+                      query_template % {  with_doi_clause: with_doi_clause.call(true), page_size: 100, skip: 100 }]
+
+      stub = stub_request(:post, 'https://app.dimensions.ai/api/dsl')
+      .with(
+        body: query_strings[0],
+        headers: { 'Content-Type' => 'application/json' }
+      )
+      .to_return( status: 200, body: dimensions_pagination_query_responses[0], headers: { 'Content-Type' => 'application/json' })
+      .times(1)
+
+      # Simulating token expiration by returning a 403 error
+      # The first request will return a 403 error, the second request will return a 200 response
+      stub = stub_request(:post, 'https://app.dimensions.ai/api/dsl')
+      .with(
+        body: query_strings[1],
+        headers: { 'Content-Type' => 'application/json' }
+      )
+      .to_return({ status: 403, body: 'Unauthorized' },
+      { status: 200, body: dimensions_pagination_query_responses[1], headers: { 'Content-Type' => 'application/json' }})
+      .times(2)
+
+      # Make the query using the service
+      publications = service.query_dimensions(with_doi: true)
+      # Expect to have made 3 requests to the Dimensions API
+      expect(WebMock).to have_requested(:post, 'https://app.dimensions.ai/api/dsl').times(3)
+      # Expect to have made a second request to retrieve a new token
+      expect(WebMock).to have_requested(:post, 'https://app.dimensions.ai/api/auth').times(2)
+      # Expect the rails logger to have received a warning about the 403 error
+      expect(Rails.logger).to have_received(:warn).with('Received 403 Forbidden error. Retrying after token refresh.').once
+
+       # Combine the publications from all pages for comparison
+       expected_publications = dimensions_pagination_query_responses.flat_map { |response| JSON.parse(response)['publications'] }
+
+       # Check if every publication in expected_publications is present in the retrieved publications
+       expected_publications.each do |expected_publication|
+         expect(publications).to include(expected_publication)
+       end
+    end
+
     it 'paginates to retrieve all articles meeting search criteria' do
       start = 0
       query_strings = []
@@ -48,15 +105,7 @@ RSpec.describe Tasks::DimensionsQueryService do
 
       # Stub the requests for each page
       dimensions_pagination_query_responses.each_with_index do |response_body, index|
-        query_string = <<~QUERY
-          search publications where doi is not empty in raw_affiliations#{' '}
-          for """
-          "University of North Carolina, Chapel Hill" OR "UNC"
-          """#{'  '}
-          return publications[basics + extras]
-          limit #{page_size}
-          skip #{index * page_size}
-        QUERY
+        query_string = query_template % { with_doi_clause: with_doi_clause.call(true), page_size: page_size, skip: index * page_size }
 
         stub_request(:post, 'https://app.dimensions.ai/api/dsl')
           .with(
@@ -79,15 +128,7 @@ RSpec.describe Tasks::DimensionsQueryService do
     end
 
     it 'returns unc affiliated articles that have dois' do
-      query_string = <<~QUERY
-                        search publications where doi is not empty in raw_affiliations#{' '}
-                        for """
-                        "University of North Carolina, Chapel Hill" OR "UNC"
-                        """#{'  '}
-                        return publications[basics + extras]
-                        limit 100
-                        skip 0
-                    QUERY
+      query_string = query_template % { with_doi_clause: with_doi_clause.call(true),page_size: 100, skip: 0 }
 
       stub_request(:post, 'https://app.dimensions.ai/api/dsl')
       .with(
@@ -101,15 +142,7 @@ RSpec.describe Tasks::DimensionsQueryService do
     end
 
     it 'returns unc affiliated articles that do not have dois if specified' do
-      query_string = <<~QUERY
-                        search publications where doi is empty in raw_affiliations#{' '}
-                        for """
-                        "University of North Carolina, Chapel Hill" OR "UNC"
-                        """#{'  '}
-                        return publications[basics + extras]
-                        limit 100
-                        skip 0
-                    QUERY
+      query_string = query_template % { with_doi_clause: with_doi_clause.call(false), page_size: 100, skip: 0 }
 
       stub_request(:post, 'https://app.dimensions.ai/api/dsl')
       .with(
