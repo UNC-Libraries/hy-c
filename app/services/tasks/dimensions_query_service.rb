@@ -11,14 +11,15 @@ module Tasks
     end
 
     def query_dimensions(with_doi: true, page_size: 100)
-      # Itializing a set in case the same publication shows up in subsequent queries
+      # Initialized as a set to avoid retrieving duplicate publications from Dimensions if the page size exceeds the number of publications on the last page.
       all_publications = Set.new
       token = retrieve_token
       doi_clause = with_doi ? 'where doi is not empty' : 'where doi is empty'
-      start = 0
+      cursor = 0
 
       loop do
         begin
+          # Query with paramaters to retrieve publications related to UNC
           query_string = <<~QUERY
                         search publications #{doi_clause} in raw_affiliations#{' '}
                         for """
@@ -26,9 +27,8 @@ module Tasks
                         """#{'  '}
                         return publications[basics + extras]
                         limit #{page_size}
-                        skip #{start}
+                        skip #{cursor}
                       QUERY
-          # Searching for publications related to UNC
           response = HTTParty.post(
               "#{@dimensions_url}/dsl",
               headers: { 'Content-Type' => 'application/json',
@@ -37,15 +37,16 @@ module Tasks
               format: :json
           )
           if response.success?
-            body = response.body
-            parsed_body = JSON.parse(body)
+            # Merge the new publications with the existing set
+            parsed_body = JSON.parse(response.body)
             publications = deduplicate_publications(with_doi, parsed_body['publications'])
             all_publications.merge(publications)
 
+            # End the loop if the cursor exceeds the total count
             total_count = parsed_body['_stats']['total_count']
-            start += page_size
+            cursor += page_size
 
-            break if start >= total_count
+            break if cursor >= total_count
           elsif response.code == 403
             # If the token has expired, retrieve a new token and try the query again
             # WIP: Not entirely sure if this is the correct way to handle this error, may cause an infinite loop
@@ -57,6 +58,7 @@ module Tasks
           end
         rescue HTTParty::Error, StandardError => e
           Rails.logger.error("HTTParty error during Dimensions API query: #{e.message}")
+          # Re-raise the error to propagate it up the call stack
           raise e
         end
       end
@@ -83,10 +85,12 @@ module Tasks
     end
 
     def solr_query_builder(pub)
+      # Build a query string to search Solr for a publication based on pmcid, pmid, or title
       pmcid_search = pub['pmcid'] ? "identifier_tesim:(\"PMCID: #{pub['pmcid']}\")" : nil
       pmid_search = pub['pmid'] ? "identifier_tesim:(\"PMID: #{pub['pmid']}\")" : nil
       title_search = pub['title'] ? "title_tesim:\"#{pub['title']}\"" : nil
 
+      # Combine the search terms into a single query string excluding nil values
       publication_data = [pmcid_search, pmid_search, title_search].compact
       query_string = publication_data.join(' OR ')
       return query_string
@@ -94,7 +98,7 @@ module Tasks
 
     def deduplicate_publications(with_doi, publications)
       if with_doi
-        # Removing publications with DOIs currently in Solr
+        # Removing publications that have a matching DOI in Solr
         new_publications = publications.reject do |pub|
           doi_tesim = "https://doi.org/#{pub['doi']}"
           result = Hyrax::SolrService.get("doi_tesim:\"#{doi_tesim}\"")
@@ -102,11 +106,11 @@ module Tasks
         end
         return new_publications
       else
-        # Deduplicate publications by pmcid, pmid and title
+        # Removing publications that have a matching PMID, PMCID, or title in Solr
         new_publications = publications.reject do |pub|
           query_string = solr_query_builder(pub)
           result = Hyrax::SolrService.get(query_string)
-          # Mark publications for review if they are not found in Solr and do not have a pmcid or pmid
+          # Mark a publication for review if it has a unique title and no unique identifiers
           if result['response']['docs'].empty? and pub['pmcid'].nil? and pub['pmid'].nil?
             pub['marked_for_review'] = true
           end
