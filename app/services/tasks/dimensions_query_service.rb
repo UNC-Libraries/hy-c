@@ -49,14 +49,17 @@ module Tasks
             cursor += page_size
 
             break if cursor >= total_count
-          elsif response.code == 403 && !retry_attempted
-            # If the token has expired, retrieve a new token and try the query again
-            Rails.logger.warn('Received 403 Forbidden error. Retrying after token refresh.')
-            token = retrieve_token
-            redo
-          elsif response.code != 200 && retry_attempted
-            # If the token has expired and retry has already been attempted, raise a specific error
-            raise DimensionsPublicationQueryError, 'Retry attempted after token refresh failed with 403 Forbidden error'
+          elsif response.code == 403
+            if !retry_attempted
+              # If the token has expired, retrieve a new token and try the query again
+              Rails.logger.warn('Received 403 Forbidden error. Retrying after token refresh.')
+              token = retrieve_token
+              retry_attempted = true
+              redo
+            else
+              # If the token has expired and retry has already been attempted, raise a specific error
+              raise DimensionsPublicationQueryError, 'Retry attempted after token refresh failed with 403 Forbidden error'
+            end
           else
             raise DimensionsPublicationQueryError, "Failed to retrieve UNC affiliated articles from dimensions. Status code #{response.code}, response body: #{response.body}"
           end
