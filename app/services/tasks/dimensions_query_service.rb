@@ -16,6 +16,8 @@ module Tasks
       token = retrieve_token
       doi_clause = with_doi ? 'where doi is not empty' : 'where doi is empty'
       cursor = 0
+      # Flag to track if retry has been attempted after token refresh
+      retry_attempted = false
 
       loop do
         begin
@@ -47,11 +49,14 @@ module Tasks
             cursor += page_size
 
             break if cursor >= total_count
-          elsif response.code == 403
+          elsif response.code == 403 && !retry_attempted
             # If the token has expired, retrieve a new token and try the query again
             Rails.logger.warn('Received 403 Forbidden error. Retrying after token refresh.')
             token = retrieve_token
             redo
+          elsif response.code != 200 && retry_attempted
+            # If the token has expired and retry has already been attempted, raise a specific error
+            raise DimensionsPublicationQueryError, 'Retry attempted after token refresh failed with 403 Forbidden error'
           else
             raise DimensionsPublicationQueryError, "Failed to retrieve UNC affiliated articles from dimensions. Status code #{response.code}, response body: #{response.body}"
           end

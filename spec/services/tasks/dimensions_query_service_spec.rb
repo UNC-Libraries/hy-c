@@ -72,6 +72,24 @@ RSpec.describe Tasks::DimensionsQueryService do
       expect(Rails.logger).to have_received(:error).with("HTTParty error during Dimensions API query: Failed to retrieve UNC affiliated articles from dimensions. Status code #{response_status}, response body: #{response_body}")
     end
 
+    # Checks that the function only retries once to prevent infinite loops
+    it 'raises and logs an error if the query returns a non 200 status code after a token refresh' do
+      allow(Rails.logger).to receive(:error)
+      allow(Rails.logger).to receive(:warn)
+
+      unauthorized_status = 403
+      server_error_status = 500
+      stub_request(:post, 'https://app.dimensions.ai/api/dsl')
+        .to_return({status: unauthorized_status, body: 'Unauthorized'}, {status: server_error_status, body: 'Internal Server Error'})
+
+      expect { service.query_dimensions }.to raise_error(Tasks::DimensionsQueryService::DimensionsPublicationQueryError)
+      expect(WebMock).to have_requested(:post, 'https://app.dimensions.ai/api/auth').times(2)
+      expect(Rails.logger).to have_received(:warn).with('Received 403 Forbidden error. Retrying after token refresh.').once
+
+      # Check if the error message has been logged
+      expect(Rails.logger).to have_received(:error).with("HTTParty error during Dimensions API query: Failed to retrieve UNC affiliated articles from dimensions. Status code #{server_error_status}, response body: Internal Server Error")
+    end
+
     # Simulating token reretrieval and retry after expiration during query
     it 'refreshes the token and retries if query returns a 403' do
       allow(Rails.logger).to receive(:warn)
