@@ -14,6 +14,7 @@ RSpec.describe Tasks::DimensionsQueryService do
 
   before do
     ActiveFedora::Cleaner.clean!
+    ENV['DIMENSIONS_API_KEY'] = 'test_api_key'
     stub_request(:post, 'https://app.dimensions.ai/api/auth')
         .with(
             body: { 'key' => ENV['DIMENSIONS_API_KEY'] }.to_json,
@@ -24,6 +25,7 @@ RSpec.describe Tasks::DimensionsQueryService do
 
   after do
     ActiveFedora::Cleaner.clean!
+    ENV.delete('DIMENSIONS_API_KEY')
   end
 
   describe '#retrieve_token' do
