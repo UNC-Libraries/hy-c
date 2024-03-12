@@ -76,11 +76,7 @@ module Tasks
           raise DimensionsTokenRetrievalError, "Failed to retrieve Dimensions API Token. Status code #{response.code}, response body: #{response.body}"
         end
       rescue HTTParty::Error, StandardError => e
-        if e.is_a?(DimensionsTokenRetrievalError)
-          Rails.logger.error("DimensionsTokenRetrievalError: #{e.message}")
-        else
-          Rails.logger.error("HTTParty error during Dimensions API token retrieval: #{e.message}")
-        end
+        Rails.logger.error("DimensionsTokenRetrievalError: #{e.message}")
         # Re-raise the error to propagate it up the call stack
         raise e
       end

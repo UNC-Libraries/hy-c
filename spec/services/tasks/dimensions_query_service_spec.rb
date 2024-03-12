@@ -27,6 +27,19 @@ RSpec.describe Tasks::DimensionsQueryService do
   end
 
   describe '#retrieve_token' do
+    it 'raises and logs an error if token retrieval returns a status code that is not 403 or 200' do
+      allow(Rails.logger).to receive(:error)
+      response_status = 500
+      response_body = 'Internal Server Error'
+      stub_request(:post, 'https://app.dimensions.ai/api/auth')
+        .to_return(status: response_status, body: response_body)
+
+      expect { service.retrieve_token }.to raise_error(Tasks::DimensionsQueryService::DimensionsTokenRetrievalError)
+
+      # Check if the error message has been logged
+      expect(Rails.logger).to have_received(:error).with("DimensionsTokenRetrievalError: Failed to retrieve Dimensions API Token. Status code #{response_status}, response body: #{response_body}")
+    end
+
     it 'returns a token' do
       token = service.retrieve_token
       expect(token).to eq('test_token')
