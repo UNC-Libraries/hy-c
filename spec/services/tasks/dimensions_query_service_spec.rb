@@ -35,8 +35,8 @@ RSpec.describe Tasks::DimensionsQueryService do
 
   describe '#query_dimensions' do
 
-  with_doi_clause = lambda { |with_doi| with_doi ? 'where doi is not empty' : 'where doi is empty' }
-  query_template = <<~QUERY
+    with_doi_clause = lambda { |with_doi| with_doi ? 'where doi is not empty' : 'where doi is empty' }
+    query_template = <<~QUERY
           search publications %{with_doi_clause} in raw_affiliations#{' '}
           for """
           "University of North Carolina, Chapel Hill" OR "UNC"
@@ -46,13 +46,26 @@ RSpec.describe Tasks::DimensionsQueryService do
           skip %{skip}
         QUERY
 
+    it 'raises and logs an error if the query returns a status code that is not 403 or 200' do
+      allow(Rails.logger).to receive(:error)
+      response_status = 500
+      response_body = 'Internal Server Error'
+      stub_request(:post, 'https://app.dimensions.ai/api/dsl')
+        .to_return(status: response_status, body: response_body)
+
+      expect { service.query_dimensions }.to raise_error(Tasks::DimensionsQueryService::DimensionsPublicationQueryError)
+
+      # Check if the error message has been logged
+      expect(Rails.logger).to have_received(:error).with("HTTParty error during Dimensions API query: Failed to retrieve UNC affiliated articles from dimensions. Status code #{response_status}, response body: #{response_body}")
+    end
+
     it 'refreshes the token and retries if query returns a 403' do
       allow(Rails.logger).to receive(:warn)
       dimensions_pagination_query_responses = [
         File.read(File.expand_path('../../../fixtures/files/dimensions_pagination_query_response_1.json', __FILE__)),
         File.read(File.expand_path('../../../fixtures/files/dimensions_pagination_query_response_2.json', __FILE__))
       ]
-      query_strings = [query_template % { with_doi_clause: with_doi_clause.call(true), page_size: 100, skip: 0 }, 
+      query_strings = [query_template % { with_doi_clause: with_doi_clause.call(true), page_size: 100, skip: 0 },
                       query_template % {  with_doi_clause: with_doi_clause.call(true), page_size: 100, skip: 100 }]
 
       stub = stub_request(:post, 'https://app.dimensions.ai/api/dsl')
@@ -60,7 +73,7 @@ RSpec.describe Tasks::DimensionsQueryService do
         body: query_strings[0],
         headers: { 'Content-Type' => 'application/json' }
       )
-      .to_return( status: 200, body: dimensions_pagination_query_responses[0], headers: { 'Content-Type' => 'application/json' })
+      .to_return(status: 200, body: dimensions_pagination_query_responses[0], headers: { 'Content-Type' => 'application/json' })
       .times(1)
 
       # Simulating token expiration by returning a 403 error
@@ -84,12 +97,12 @@ RSpec.describe Tasks::DimensionsQueryService do
       expect(Rails.logger).to have_received(:warn).with('Received 403 Forbidden error. Retrying after token refresh.').once
 
        # Combine the publications from all pages for comparison
-       expected_publications = dimensions_pagination_query_responses.flat_map { |response| JSON.parse(response)['publications'] }
+      expected_publications = dimensions_pagination_query_responses.flat_map { |response| JSON.parse(response)['publications'] }
 
        # Check if every publication in expected_publications is present in the retrieved publications
-       expected_publications.each do |expected_publication|
-         expect(publications).to include(expected_publication)
-       end
+      expected_publications.each do |expected_publication|
+        expect(publications).to include(expected_publication)
+      end
     end
 
     it 'paginates to retrieve all articles meeting search criteria' do
@@ -128,7 +141,7 @@ RSpec.describe Tasks::DimensionsQueryService do
     end
 
     it 'returns unc affiliated articles that have dois' do
-      query_string = query_template % { with_doi_clause: with_doi_clause.call(true),page_size: 100, skip: 0 }
+      query_string = query_template % { with_doi_clause: with_doi_clause.call(true), page_size: 100, skip: 0 }
 
       stub_request(:post, 'https://app.dimensions.ai/api/dsl')
       .with(

@@ -1,12 +1,11 @@
 # frozen_string_literal: true
 
 module Tasks
-  class DimensionsTokenRetrievalError < StandardError
-  end
-  class DimensionsPublicationQueryError < StandardError
-  end
-
   class DimensionsQueryService
+    class DimensionsTokenRetrievalError < StandardError
+    end
+    class DimensionsPublicationQueryError < StandardError
+    end
     def initialize
       @dimensions_url = 'https://app.dimensions.ai/api'
     end
