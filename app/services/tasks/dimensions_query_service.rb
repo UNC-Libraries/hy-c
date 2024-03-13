@@ -6,9 +6,7 @@ module Tasks
     end
     class DimensionsPublicationQueryError < StandardError
     end
-    def initialize
-      @dimensions_url = 'https://app.dimensions.ai/api'
-    end
+    DIMENSIONS_URL = 'https://app.dimensions.ai/api'
 
     def query_dimensions(with_doi: true, page_size: 100)
       # Initialized as a set to avoid retrieving duplicate publications from Dimensions if the page size exceeds the number of publications on the last page.
@@ -32,7 +30,7 @@ module Tasks
                         skip #{cursor}
                       QUERY
           response = HTTParty.post(
-              "#{@dimensions_url}/dsl",
+              "#{DIMENSIONS_URL}/dsl",
               headers: { 'Content-Type' => 'application/json',
                         'Authorization' => "JWT #{token}" },
               body: query_string,
@@ -75,7 +73,7 @@ module Tasks
     def retrieve_token
       begin
         response = HTTParty.post(
-          "#{@dimensions_url}/auth",
+          "#{DIMENSIONS_URL}/auth",
           headers: { 'Content-Type' => 'application/json' },
           body: { 'key' => "#{ENV['DIMENSIONS_API_KEY']}" }.to_json
         )
