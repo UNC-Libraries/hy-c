@@ -135,6 +135,8 @@ RSpec.describe Tasks::DimensionsQueryService do
       expected_publications.each do |expected_publication|
         expect(publications).to include(expected_publication)
       end
+      # Verifying that the number of publications retrieved is the same as the number of publications in the test fixture
+      expect(publications.count). to eq(expected_publications.count)
     end
 
     it 'paginates to retrieve all articles meeting search criteria' do
@@ -168,6 +170,8 @@ RSpec.describe Tasks::DimensionsQueryService do
       expected_publications.each do |expected_publication|
         expect(publications).to include(expected_publication)
       end
+      # Verifying that the number of publications retrieved is the same as the number of publications in the test fixture
+      expect(publications.count). to eq(expected_publications.count)
     end
 
     it 'returns unc affiliated articles that have dois' do
