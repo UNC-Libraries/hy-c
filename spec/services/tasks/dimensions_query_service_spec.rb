@@ -2,6 +2,10 @@
 require 'rails_helper'
 
 RSpec.describe Tasks::DimensionsQueryService do
+
+  ERROR_RESPONSE_CODE = 500
+  UNAUTHORIZED_RESPONSE_OBJECT = {code: 403, message: 'Unauthorized'}
+
   let(:dimensions_query_response_fixture) do
     File.read(File.expand_path('../../../fixtures/files/dimensions_query_response.json', __FILE__))
   end
@@ -32,15 +36,14 @@ RSpec.describe Tasks::DimensionsQueryService do
   describe '#retrieve_token' do
     it 'raises and logs an error if token retrieval returns a status code that is not 200' do
       allow(Rails.logger).to receive(:error)
-      response_status = 500
       response_body = 'Internal Server Error'
       stub_request(:post, 'https://app.dimensions.ai/api/auth')
-        .to_return(status: response_status, body: response_body)
+        .to_return(status: ERROR_RESPONSE_CODE, body: response_body)
 
       expect { service.retrieve_token }.to raise_error(Tasks::DimensionsQueryService::DimensionsTokenRetrievalError)
 
       # Check if the error message has been logged
-      expect(Rails.logger).to have_received(:error).with("DimensionsTokenRetrievalError: Failed to retrieve Dimensions API Token. Status code #{response_status}, response body: #{response_body}")
+      expect(Rails.logger).to have_received(:error).with("DimensionsTokenRetrievalError: Failed to retrieve Dimensions API Token. Status code #{ERROR_RESPONSE_CODE}, response body: #{response_body}")
     end
 
     it 'returns a token' do
@@ -64,15 +67,14 @@ RSpec.describe Tasks::DimensionsQueryService do
 
     it 'raises and logs an error if the query returns a status code that is not 403 or 200' do
       allow(Rails.logger).to receive(:error)
-      response_status = 500
       response_body = 'Internal Server Error'
       stub_request(:post, 'https://app.dimensions.ai/api/dsl')
-        .to_return(status: response_status, body: response_body)
+        .to_return(status: ERROR_RESPONSE_CODE, body: response_body)
 
       expect { service.query_dimensions }.to raise_error(Tasks::DimensionsQueryService::DimensionsPublicationQueryError)
 
       # Check if the error message has been logged
-      expect(Rails.logger).to have_received(:error).with("HTTParty error during Dimensions API query: Failed to retrieve UNC affiliated articles from dimensions. Status code #{response_status}, response body: #{response_body}")
+      expect(Rails.logger).to have_received(:error).with("HTTParty error during Dimensions API query: Failed to retrieve UNC affiliated articles from dimensions. Status code #{ERROR_RESPONSE_CODE}, response body: #{response_body}")
     end
 
     # Checks that the function only retries once to prevent infinite loops
@@ -80,9 +82,8 @@ RSpec.describe Tasks::DimensionsQueryService do
       allow(Rails.logger).to receive(:error)
       allow(Rails.logger).to receive(:warn)
 
-      unauthorized_status = 403
-      server_error_status = 500
-      unauthorized_body = 'Unauthorized'
+      unauthorized_status = UNAUTHORIZED_RESPONSE_OBJECT.fetch(:code)
+      unauthorized_body = UNAUTHORIZED_RESPONSE_OBJECT.fetch(:message)
       stub_request(:post, 'https://app.dimensions.ai/api/dsl')
         .to_return({status: unauthorized_status, body: unauthorized_body}, {status: unauthorized_status, body: unauthorized_body})
 
