@@ -16,6 +16,7 @@ module Tasks
       cursor = 0
       # Flag to track if retry has been attempted after token refresh
       retry_attempted = false
+      wip_count = 0
 
       loop do
         begin
@@ -48,6 +49,7 @@ module Tasks
 
             break if cursor >= total_count
           elsif response.code == 403
+            puts "Attempting to retrieve new token"
             if !retry_attempted
               # If the token has expired, retrieve a new token and try the query again
               Rails.logger.warn('Received 403 Forbidden error. Retrying after token refresh.')

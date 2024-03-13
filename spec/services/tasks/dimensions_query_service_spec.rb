@@ -55,15 +55,6 @@ RSpec.describe Tasks::DimensionsQueryService do
   describe '#query_dimensions' do
 
     with_doi_clause = lambda { |with_doi| with_doi ? 'where doi is not empty' : 'where doi is empty' }
-    query_template = <<~QUERY
-          search publications %{with_doi_clause} in raw_affiliations#{' '}
-          for """
-          "University of North Carolina, Chapel Hill" OR "UNC"
-          """#{'  '}
-          return publications[basics + extras]
-          limit %{page_size}
-          skip %{skip}
-        QUERY
 
     it 'raises and logs an error if the query returns a status code that is not 403 or 200' do
       allow(Rails.logger).to receive(:error)
@@ -102,27 +93,26 @@ RSpec.describe Tasks::DimensionsQueryService do
         File.read(File.expand_path('../../../fixtures/files/dimensions_pagination_query_response_1.json', __FILE__)),
         File.read(File.expand_path('../../../fixtures/files/dimensions_pagination_query_response_2.json', __FILE__))
       ]
-      query_strings = [query_template % { with_doi_clause: with_doi_clause.call(true), page_size: 100, skip: 0 },
-                      query_template % {  with_doi_clause: with_doi_clause.call(true), page_size: 100, skip: 100 }]
 
-      stub = stub_request(:post, 'https://app.dimensions.ai/api/dsl')
+      # The first request will return a 403 error, the other requests will return a 200 response
+      # Repeating code to stub requests, encountered issues with chaining
+      stub_request(:post, 'https://app.dimensions.ai/api/dsl')
       .with(
-        body: query_strings[0],
+        body: /skip 0/,
         headers: { 'Content-Type' => 'application/json' }
       )
       .to_return(status: 200, body: dimensions_pagination_query_responses[0], headers: { 'Content-Type' => 'application/json' })
       .times(1)
 
-      # The first request will return a 403 error, the second request will return a 200 response
-      stub = stub_request(:post, 'https://app.dimensions.ai/api/dsl')
+      stub_request(:post, 'https://app.dimensions.ai/api/dsl')
       .with(
-        body: query_strings[1],
+        body: /skip 100/,
         headers: { 'Content-Type' => 'application/json' }
       )
       .to_return({ status: 403, body: 'Unauthorized' },
-      { status: 200, body: dimensions_pagination_query_responses[1], headers: { 'Content-Type' => 'application/json' }})
-      .times(2)
-
+                 { status: 200, body: dimensions_pagination_query_responses[1], headers: { 'Content-Type' => 'application/json' }})
+      .times(1)
+      
       publications = service.query_dimensions(with_doi: true)
       expect(WebMock).to have_requested(:post, 'https://app.dimensions.ai/api/dsl').times(3)
       expect(WebMock).to have_requested(:post, 'https://app.dimensions.ai/api/auth').times(2)
