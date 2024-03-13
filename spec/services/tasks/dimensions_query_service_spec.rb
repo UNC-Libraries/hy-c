@@ -7,11 +7,11 @@ RSpec.describe Tasks::DimensionsQueryService do
   UNAUTHORIZED_RESPONSE_OBJECT = {code: 403, message: 'Unauthorized'}
 
   let(:dimensions_query_response_fixture) do
-    File.read(File.expand_path('../../../fixtures/files/dimensions_query_response.json', __FILE__))
+    File.read(File.join(Rails.root,'/spec/fixtures/files/dimensions_query_response.json'))
   end
 
   let(:dimensions_query_response_fixture_non_doi) do
-    File.read(File.expand_path('../../../fixtures/files/dimensions_query_response_non_doi.json', __FILE__))
+    File.read(File.join(Rails.root,'spec/fixtures/files/dimensions_query_response_non_doi.json'))
   end
 
   let(:service) { described_class.new }
