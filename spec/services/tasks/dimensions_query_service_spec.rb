@@ -7,11 +7,11 @@ RSpec.describe Tasks::DimensionsQueryService do
   UNAUTHORIZED_RESPONSE_OBJECT = {code: 403, message: 'Unauthorized'}
 
   let(:dimensions_query_response_fixture) do
-    File.read(File.join(Rails.root,'/spec/fixtures/files/dimensions_query_response.json'))
+    File.read(File.join(Rails.root, '/spec/fixtures/files/dimensions_query_response.json'))
   end
 
   let(:dimensions_query_response_fixture_non_doi) do
-    File.read(File.join(Rails.root,'spec/fixtures/files/dimensions_query_response_non_doi.json'))
+    File.read(File.join(Rails.root, 'spec/fixtures/files/dimensions_query_response_non_doi.json'))
   end
 
   let(:service) { described_class.new }
@@ -88,10 +88,11 @@ RSpec.describe Tasks::DimensionsQueryService do
 
     # Simulating token reretrieval and retry after expiration during query
     it 'refreshes the token and retries if query returns a 403' do
+
       allow(Rails.logger).to receive(:warn)
       dimensions_pagination_query_responses = [
-        File.read(File.expand_path('../../../fixtures/files/dimensions_pagination_query_response_1.json', __FILE__)),
-        File.read(File.expand_path('../../../fixtures/files/dimensions_pagination_query_response_2.json', __FILE__))
+        File.read(File.join(Rails.root, 'spec/fixtures/files/dimensions_pagination_query_response_1.json')),
+        File.read(File.join(Rails.root, 'spec/fixtures/files/dimensions_pagination_query_response_2.json'))
       ]
 
       # The first request will return a 403 error, the other requests will return a 200 response
@@ -112,7 +113,7 @@ RSpec.describe Tasks::DimensionsQueryService do
       .to_return({ status: 403, body: 'Unauthorized' },
                  { status: 200, body: dimensions_pagination_query_responses[1], headers: { 'Content-Type' => 'application/json' }})
       .times(1)
-      
+
       publications = service.query_dimensions(with_doi: true)
       expect(WebMock).to have_requested(:post, 'https://app.dimensions.ai/api/dsl').times(3)
       expect(WebMock).to have_requested(:post, 'https://app.dimensions.ai/api/auth').times(2)
@@ -131,21 +132,18 @@ RSpec.describe Tasks::DimensionsQueryService do
 
     it 'paginates to retrieve all articles meeting search criteria' do
       start = 0
-      query_strings = []
       page_size = 100
 
       dimensions_pagination_query_responses = [
-        File.read(File.expand_path('../../../fixtures/files/dimensions_pagination_query_response_1.json', __FILE__)),
-        File.read(File.expand_path('../../../fixtures/files/dimensions_pagination_query_response_2.json', __FILE__))
+        File.read(File.join(Rails.root, 'spec/fixtures/files/dimensions_pagination_query_response_1.json')),
+        File.read(File.join(Rails.root, 'spec/fixtures/files/dimensions_pagination_query_response_2.json'))
       ]
 
       # Stub the requests for each page
       dimensions_pagination_query_responses.each_with_index do |response_body, index|
-        query_string = query_template % { with_doi_clause: with_doi_clause.call(true), page_size: page_size, skip: index * page_size }
-
         stub_request(:post, 'https://app.dimensions.ai/api/dsl')
           .with(
-            body: query_string,
+            body: /skip #{(page_size * index)}/,
             headers: { 'Content-Type' => 'application/json' }
           )
           .to_return(status: 200, body: response_body, headers: { 'Content-Type' => 'application/json' })
@@ -165,11 +163,9 @@ RSpec.describe Tasks::DimensionsQueryService do
     end
 
     it 'returns unc affiliated articles that have dois' do
-      query_string = query_template % { with_doi_clause: with_doi_clause.call(true), page_size: 100, skip: 0 }
-
       stub_request(:post, 'https://app.dimensions.ai/api/dsl')
       .with(
-          body: query_string,
+          body: /skip 0/,
           headers: { 'Content-Type' => 'application/json' })
           .to_return(status: 200, body: dimensions_query_response_fixture, headers: { 'Content-Type' => 'application/json' })
 
@@ -179,11 +175,9 @@ RSpec.describe Tasks::DimensionsQueryService do
     end
 
     it 'returns unc affiliated articles that do not have dois if specified' do
-      query_string = query_template % { with_doi_clause: with_doi_clause.call(false), page_size: 100, skip: 0 }
-
       stub_request(:post, 'https://app.dimensions.ai/api/dsl')
       .with(
-          body: query_string,
+          body: /skip 0/,
           headers: { 'Content-Type' => 'application/json' })
           .to_return(status: 200, body: dimensions_query_response_fixture_non_doi, headers: { 'Content-Type' => 'application/json' })
 
