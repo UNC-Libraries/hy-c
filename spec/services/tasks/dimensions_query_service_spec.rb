@@ -209,7 +209,7 @@ RSpec.describe Tasks::DimensionsQueryService do
         [{ id: '1111',
         doi_tesim: ["https://doi.org/#{test_fixture_dois[0]}"] },
         { id: '2222',
-        doi_tesim: ["https://doi.org/#{test_fixture_dois[1]}"]}]
+        identifier_tesim: ["PMID: 12345678, https://doi.org/#{test_fixture_dois[1]}"]}]
       Hyrax::SolrService.add(documents[0..1], commit: true)
 
       new_publications = service.deduplicate_publications(true, dimensions_publications)
