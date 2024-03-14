@@ -1,0 +1,393 @@
+{
+    "_copyright": "© 2024 Digital Science & Research Solutions Inc. All rights reserved. Please refer to our Copyright Notice https://terms.dsrsi.com/public/DimensionsCopyrightNotice for further information.",
+    "_stats": {
+        "offset": 0,
+        "total_count": 3
+    },
+    "_version": {
+        "release": "2.9",
+        "version": "2.9.1"
+    },
+    "_warnings": [
+        "Field current_organization_id of the authors field is deprecated and will be removed in the next major release."
+    ],
+    "publications": [
+        {
+            "authors": [
+                {
+                    "affiliations": [
+                        {
+                            "city": "Chapel Hill",
+                            "city_id": 4460162,
+                            "country": "United States",
+                            "country_code": "US",
+                            "id": "grid.10698.36",
+                            "name": "University of North Carolina at Chapel Hill",
+                            "raw_affiliation": "University of North Carolina-Chapel Hill (UNC), USA.",
+                            "state": "North Carolina",
+                            "state_code": "US-NC"
+                        }
+                    ],
+                    "corresponding": "",
+                    "current_organization_id": "",
+                    "first_name": "M",
+                    "last_name": "Schwarz",
+                    "orcid": [],
+                    "raw_affiliation": [
+                        "University of North Carolina-Chapel Hill (UNC), USA."
+                    ],
+                    "researcher_id": null
+                },
+                {
+                    "affiliations": [],
+                    "corresponding": "",
+                    "current_organization_id": "",
+                    "first_name": "S E",
+                    "last_name": "Landis",
+                    "orcid": [],
+                    "raw_affiliation": [],
+                    "researcher_id": null
+                },
+                {
+                    "affiliations": [],
+                    "corresponding": "",
+                    "current_organization_id": "",
+                    "first_name": "J E",
+                    "last_name": "Rowe",
+                    "orcid": [],
+                    "raw_affiliation": [],
+                    "researcher_id": null
+                }
+            ],
+            "date": "1999-04-01",
+            "id": "pub.1074539864",
+            "issue": "4",
+            "journal": {
+                "id": "jour.1105336",
+                "title": "Family practice management"
+            },
+            "open_access": [
+                "closed"
+            ],
+            "pages": "25-30",
+            "pmid": "10537790",
+            "relative_citation_ratio": 0.33,
+            "research_org_cities": [
+                {
+                    "id": "4460162",
+                    "name": "Chapel Hill"
+                }
+            ],
+            "research_org_countries": [
+                {
+                    "id": "US",
+                    "name": "United States"
+                }
+            ],
+            "research_org_country_names": [
+                "United States"
+            ],
+            "research_org_state_codes": [
+                {
+                    "id": "US-NC",
+                    "name": "North Carolina"
+                }
+            ],
+            "research_org_state_names": [
+                "North Carolina"
+            ],
+            "research_orgs": [
+                {
+                    "acronym": "UNC",
+                    "city_name": "Chapel Hill",
+                    "country_code": "US",
+                    "country_name": "United States",
+                    "id": "grid.10698.36",
+                    "latitude": 35.905163,
+                    "linkout": [
+                        "http://www.unc.edu/"
+                    ],
+                    "longitude": -79.04694,
+                    "name": "University of North Carolina at Chapel Hill",
+                    "state_name": "North Carolina",
+                    "types": [
+                        "Education"
+                    ]
+                }
+            ],
+            "times_cited": 12,
+            "title": "A team approach to quality improvement.",
+            "type": "article",
+            "volume": "6",
+            "year": 1999
+        },
+        {
+            "authors": [
+                {
+                    "affiliations": [
+                        {
+                            "city": "Chapel Hill",
+                            "city_id": 4460162,
+                            "country": "United States",
+                            "country_code": "US",
+                            "id": "grid.410711.2",
+                            "name": "University of North Carolina System",
+                            "raw_affiliation": "UNC Geriatric Education Center, University of North Carolina, Chapel Hill 27599.",
+                            "state": "North Carolina",
+                            "state_code": "US-NC"
+                        }
+                    ],
+                    "corresponding": "",
+                    "current_organization_id": null,
+                    "first_name": "W G",
+                    "last_name": "Weissert",
+                    "orcid": null,
+                    "raw_affiliation": [
+                        "UNC Geriatric Education Center, University of North Carolina, Chapel Hill 27599."
+                    ],
+                    "researcher_id": "ur.01126361345.59"
+                }
+            ],
+            "date": "1988-04-01",
+            "id": "pub.1079570138",
+            "issue": "1",
+            "journal": {
+                "id": "jour.1327364",
+                "title": "Health Services Research"
+            },
+            "open_access": [
+                "closed"
+            ],
+            "pages": "175-87",
+            "pmcid": "PMC1065496",
+            "pmid": "3130327",
+            "relative_citation_ratio": 2.38,
+            "research_org_cities": [
+                {
+                    "id": "4460162",
+                    "name": "Chapel Hill"
+                }
+            ],
+            "research_org_countries": [
+                {
+                    "id": "US",
+                    "name": "United States"
+                }
+            ],
+            "research_org_country_names": [
+                "United States"
+            ],
+            "research_org_state_codes": [
+                {
+                    "id": "US-NC",
+                    "name": "North Carolina"
+                }
+            ],
+            "research_org_state_names": [
+                "North Carolina"
+            ],
+            "research_orgs": [
+                {
+                    "city_name": "Chapel Hill",
+                    "country_code": "US",
+                    "country_name": "United States",
+                    "id": "grid.410711.2",
+                    "latitude": 35.904915,
+                    "linkout": [
+                        "https://www.northcarolina.edu/"
+                    ],
+                    "longitude": -79.04692,
+                    "name": "University of North Carolina System",
+                    "state_name": "North Carolina",
+                    "types": [
+                        "Education"
+                    ]
+                }
+            ],
+            "researchers": [
+                {
+                    "first_name": "William G",
+                    "id": "ur.01126361345.59",
+                    "last_name": "Weissert",
+                    "research_orgs": [
+                        "grid.255986.5",
+                        "grid.10698.36",
+                        "grid.410711.2",
+                        "grid.266673.0",
+                        "grid.56362.34",
+                        "grid.214458.e"
+                    ]
+                }
+            ],
+            "times_cited": 57,
+            "title": "The national channeling demonstration: what we knew, know now, and still need to know.",
+            "type": "article",
+            "volume": "23",
+            "year": 1988
+        },
+        {
+            "authors": [
+                {
+                    "affiliations": [
+                        {
+                            "city": "Chapel Hill",
+                            "city_id": 4460162,
+                            "country": "United States",
+                            "country_code": "US",
+                            "id": "grid.516137.7",
+                            "name": "UNC Lineberger Comprehensive Cancer Center",
+                            "raw_affiliation": "UNC Lineberger Comprehensive Cancer Center, University of North Carolina, Chapel Hill 27599.",
+                            "state": "North Carolina",
+                            "state_code": "US-NC"
+                        }
+                    ],
+                    "corresponding": "",
+                    "current_organization_id": null,
+                    "first_name": "P",
+                    "last_name": "Chen",
+                    "orcid": null,
+                    "raw_affiliation": [
+                        "UNC Lineberger Comprehensive Cancer Center, University of North Carolina, Chapel Hill 27599."
+                    ],
+                    "researcher_id": "ur.01232712647.15"
+                },
+                {
+                    "affiliations": [],
+                    "corresponding": "",
+                    "current_organization_id": "",
+                    "first_name": "H H",
+                    "last_name": "Lin",
+                    "orcid": [],
+                    "raw_affiliation": [],
+                    "researcher_id": null
+                },
+                {
+                    "affiliations": [],
+                    "corresponding": "",
+                    "current_organization_id": "grid.10698.36",
+                    "first_name": "B E",
+                    "last_name": "Weissman",
+                    "orcid": null,
+                    "raw_affiliation": [],
+                    "researcher_id": "ur.0770300137.08"
+                }
+            ],
+            "date": "1995-02-02",
+            "funders": [
+                {
+                    "acronym": "NCI",
+                    "city_name": "Bethesda",
+                    "country_code": "US",
+                    "country_name": "United States",
+                    "id": "grid.48336.3a",
+                    "latitude": 39.004326,
+                    "linkout": [
+                        "http://www.cancer.gov/"
+                    ],
+                    "longitude": -77.10119,
+                    "name": "National Cancer Institute",
+                    "state_name": "Maryland",
+                    "types": [
+                        "Government"
+                    ]
+                }
+            ],
+            "id": "pub.1082532984",
+            "issue": "3",
+            "journal": {
+                "id": "jour.1097543",
+                "title": "Oncogene"
+            },
+            "open_access": [
+                "closed"
+            ],
+            "pages": "577-86",
+            "pmid": "7845683",
+            "relative_citation_ratio": 0.23,
+            "research_org_cities": [
+                {
+                    "id": "4460162",
+                    "name": "Chapel Hill"
+                }
+            ],
+            "research_org_countries": [
+                {
+                    "id": "US",
+                    "name": "United States"
+                }
+            ],
+            "research_org_country_names": [
+                "United States"
+            ],
+            "research_org_state_codes": [
+                {
+                    "id": "US-NC",
+                    "name": "North Carolina"
+                }
+            ],
+            "research_org_state_names": [
+                "North Carolina"
+            ],
+            "research_orgs": [
+                {
+                    "city_name": "Chapel Hill",
+                    "country_code": "US",
+                    "country_name": "United States",
+                    "id": "grid.516137.7",
+                    "latitude": 35.90443,
+                    "linkout": [
+                        "https://unclineberger.org/"
+                    ],
+                    "longitude": -79.05084,
+                    "name": "UNC Lineberger Comprehensive Cancer Center",
+                    "state_name": "North Carolina",
+                    "types": [
+                        "Healthcare"
+                    ]
+                }
+            ],
+            "researchers": [
+                {
+                    "first_name": "Pengchin",
+                    "id": "ur.01232712647.15",
+                    "last_name": "Chen",
+                    "research_orgs": [
+                        "grid.516137.7",
+                        "grid.266102.1",
+                        "grid.10698.36",
+                        "grid.410711.2"
+                    ]
+                },
+                {
+                    "first_name": "Bernard Ellis",
+                    "id": "ur.0770300137.08",
+                    "last_name": "Weissman",
+                    "research_orgs": [
+                        "grid.266093.8",
+                        "grid.417404.2",
+                        "grid.168645.8",
+                        "grid.24827.3b",
+                        "grid.214458.e",
+                        "grid.240614.5",
+                        "grid.10698.36",
+                        "grid.42505.36",
+                        "grid.410711.2",
+                        "grid.516137.7",
+                        "grid.272458.e",
+                        "grid.284723.8",
+                        "grid.239546.f",
+                        "grid.7497.d",
+                        "grid.415231.0",
+                        "grid.417768.b",
+                        "grid.152326.1"
+                    ]
+                }
+            ],
+            "times_cited": 9,
+            "title": "A functional analysis of tumor suppressor activity for peripheral neuroepitheliomas by monochromosome transfer.",
+            "type": "article",
+            "volume": "10",
+            "year": 1995
+        }
+    ]
+}

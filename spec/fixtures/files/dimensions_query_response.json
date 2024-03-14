@@ -1,0 +1,519 @@
+{
+    "_copyright": "© 2024 Digital Science & Research Solutions Inc. All rights reserved. Please refer to our Copyright Notice https://terms.dsrsi.com/public/DimensionsCopyrightNotice for further information.",
+    "_stats": {
+        "offset": 0,
+        "total_count": 3
+    },
+    "_version": {
+        "release": "2.9",
+        "version": "2.9.1"
+    },
+    "_warnings": [
+        "Field current_organization_id of the authors field is deprecated and will be removed in the next major release."
+    ],
+    "publications": [
+        {
+            "altmetric": 1.0,
+            "authors": [
+                {
+                    "affiliations": [
+                        {
+                            "city": null,
+                            "city_id": null,
+                            "country": null,
+                            "country_code": null,
+                            "id": null,
+                            "name": "UNC Vector Core University of North Carolina Chapel Hill NY",
+                            "raw_affiliation": "UNC Vector Core University of North Carolina Chapel Hill NY",
+                            "state": null,
+                            "state_code": null
+                        }
+                    ],
+                    "corresponding": "",
+                    "current_organization_id": "grid.10698.36",
+                    "first_name": "David",
+                    "last_name": "Dismuke",
+                    "orcid": null,
+                    "raw_affiliation": [
+                        "UNC Vector Core University of North Carolina Chapel Hill NY"
+                    ],
+                    "researcher_id": "ur.01125213534.60"
+                },
+                {
+                    "affiliations": [
+                        {
+                            "city": null,
+                            "city_id": null,
+                            "country": null,
+                            "country_code": null,
+                            "id": null,
+                            "name": "UNC Gene Therapy Center University of North Carolina Chapel Hill NY",
+                            "raw_affiliation": "UNC Gene Therapy Center University of North Carolina Chapel Hill NY",
+                            "state": null,
+                            "state_code": null
+                        }
+                    ],
+                    "corresponding": true,
+                    "current_organization_id": "grid.10698.36",
+                    "first_name": "R. Jude",
+                    "last_name": "Samulski",
+                    "orcid": null,
+                    "raw_affiliation": [
+                        "UNC Gene Therapy Center University of North Carolina Chapel Hill NY"
+                    ],
+                    "researcher_id": "ur.014415654554.76"
+                }
+            ],
+            "date": "2013-06-24",
+            "doi": "10.1002/hep.26460",
+            "id": "pub.1032685389",
+            "issue": "1",
+            "journal": {
+                "id": "jour.1093917",
+                "title": "Hepatology"
+            },
+            "open_access": [
+                "closed"
+            ],
+            "pages": "13-14",
+            "pmid": "23695955",
+            "relative_citation_ratio": 0.1,
+            "researchers": [
+                {
+                    "first_name": "David J",
+                    "id": "ur.01125213534.60",
+                    "last_name": "Dismuke",
+                    "research_orgs": [
+                        "grid.502995.2",
+                        "grid.152326.1",
+                        "grid.10698.36"
+                    ]
+                },
+                {
+                    "first_name": "Richard Jude",
+                    "id": "ur.014415654554.76",
+                    "last_name": "Samulski",
+                    "research_orgs": [
+                        "grid.15276.37",
+                        "grid.134907.8",
+                        "grid.410513.2",
+                        "grid.10698.36",
+                        "grid.418682.1",
+                        "grid.137628.9",
+                        "grid.67105.35",
+                        "grid.428198.e",
+                        "grid.189747.4",
+                        "grid.59734.3c",
+                        "grid.16750.35",
+                        "grid.427739.c",
+                        "grid.280664.e",
+                        "grid.410711.2",
+                        "grid.418102.e",
+                        "grid.21925.3d",
+                        "grid.240382.f",
+                        "grid.257413.6",
+                        "grid.457374.6",
+                        "grid.516137.7",
+                        "grid.279885.9",
+                        "grid.40803.3f",
+                        "grid.5386.8"
+                    ]
+                }
+            ],
+            "times_cited": 5,
+            "title": "Hepatic gene therapy using lentiviral vectors: Has safety been established?",
+            "type": "article",
+            "volume": "58",
+            "year": 2013
+        },
+        {
+            "authors": [
+                {
+                    "affiliations": [
+                        {
+                            "city": null,
+                            "city_id": null,
+                            "country": null,
+                            "country_code": null,
+                            "id": null,
+                            "name": "UNC Dermatology",
+                            "raw_affiliation": "UNC Dermatology",
+                            "state": null,
+                            "state_code": null
+                        }
+                    ],
+                    "corresponding": "",
+                    "current_organization_id": "grid.10698.36",
+                    "first_name": "Mark",
+                    "last_name": "Ash",
+                    "orcid": null,
+                    "raw_affiliation": [
+                        "UNC Dermatology"
+                    ],
+                    "researcher_id": "ur.011024112217.30"
+                },
+                {
+                    "affiliations": [
+                        {
+                            "city": "Chapel Hill",
+                            "city_id": 4460162,
+                            "country": "United States",
+                            "country_code": "US",
+                            "id": "grid.410711.2",
+                            "name": "University of North Carolina System",
+                            "raw_affiliation": "University of North Carolina, Chapel Hill",
+                            "state": "North Carolina",
+                            "state_code": "US-NC"
+                        }
+                    ],
+                    "corresponding": "",
+                    "current_organization_id": "grid.10698.36",
+                    "first_name": "Carolyn",
+                    "last_name": "Ziemer",
+                    "orcid": null,
+                    "raw_affiliation": [
+                        "University of North Carolina, Chapel Hill"
+                    ],
+                    "researcher_id": "ur.014766067477.00"
+                },
+                {
+                    "affiliations": [],
+                    "corresponding": "",
+                    "current_organization_id": "grid.10698.36",
+                    "first_name": "Paul B.",
+                    "last_name": "Googe",
+                    "orcid": [
+                        "0000-0002-9185-3548"
+                    ],
+                    "raw_affiliation": [],
+                    "researcher_id": "ur.0670500635.41"
+                }
+            ],
+            "date": "2020-12-01",
+            "doi": "10.1016/j.jaad.2020.06.824",
+            "id": "pub.1132970496",
+            "issue": "6",
+            "journal": {
+                "id": "jour.1089909",
+                "title": "Journal of the American Academy of Dermatology"
+            },
+            "open_access": [
+                "closed"
+            ],
+            "pages": "ab184",
+            "research_org_cities": [
+                {
+                    "id": "4460162",
+                    "name": "Chapel Hill"
+                }
+            ],
+            "research_org_countries": [
+                {
+                    "id": "US",
+                    "name": "United States"
+                }
+            ],
+            "research_org_country_names": [
+                "United States"
+            ],
+            "research_org_state_codes": [
+                {
+                    "id": "US-NC",
+                    "name": "North Carolina"
+                }
+            ],
+            "research_org_state_names": [
+                "North Carolina"
+            ],
+            "research_orgs": [
+                {
+                    "city_name": "Chapel Hill",
+                    "country_code": "US",
+                    "country_name": "United States",
+                    "id": "grid.410711.2",
+                    "latitude": 35.904915,
+                    "linkout": [
+                        "https://www.northcarolina.edu/"
+                    ],
+                    "longitude": -79.04692,
+                    "name": "University of North Carolina System",
+                    "state_name": "North Carolina",
+                    "types": [
+                        "Education"
+                    ]
+                }
+            ],
+            "researchers": [
+                {
+                    "first_name": "Mark M",
+                    "id": "ur.011024112217.30",
+                    "last_name": "Ash",
+                    "research_orgs": [
+                        "grid.10698.36"
+                    ]
+                },
+                {
+                    "first_name": "Carolyn M",
+                    "id": "ur.014766067477.00",
+                    "last_name": "Ziemer",
+                    "research_orgs": [
+                        "grid.429995.a",
+                        "grid.10698.36",
+                        "grid.410711.2"
+                    ]
+                },
+                {
+                    "first_name": "Paul B",
+                    "id": "ur.0670500635.41",
+                    "last_name": "Googe",
+                    "orcid_id": [
+                        "0000-0002-9185-3548"
+                    ],
+                    "research_orgs": [
+                        "grid.32224.35",
+                        "grid.241128.c",
+                        "grid.412004.3",
+                        "grid.516137.7",
+                        "grid.429995.a",
+                        "grid.412587.d",
+                        "grid.38142.3c",
+                        "grid.420910.e",
+                        "grid.410711.2",
+                        "grid.65499.37",
+                        "grid.26790.3a",
+                        "grid.477165.6",
+                        "grid.240145.6",
+                        "grid.411461.7",
+                        "grid.51462.34",
+                        "grid.10698.36",
+                        "grid.152326.1",
+                        "grid.11598.34"
+                    ]
+                }
+            ],
+            "times_cited": 0,
+            "title": "16783 Prompt identification of primary cutaneous nocardiosis utilizing immunohistochemical staining: A case report",
+            "type": "article",
+            "volume": "83",
+            "year": 2020
+        },
+        {
+            "authors": [
+                {
+                    "affiliations": [
+                        {
+                            "city": "Chapel Hill",
+                            "city_id": 4460162,
+                            "country": "United States",
+                            "country_code": "US",
+                            "id": "grid.10698.36",
+                            "name": "University of North Carolina at Chapel Hill",
+                            "raw_affiliation": "UNC Eshelman School of Pharmacy, University of North Carolina, Chapel Hill, North Carolina.",
+                            "state": "North Carolina",
+                            "state_code": "US-NC"
+                        },
+                        {
+                            "city": "Chapel Hill",
+                            "city_id": 4460162,
+                            "country": "United States",
+                            "country_code": "US",
+                            "id": "grid.410711.2",
+                            "name": "University of North Carolina System",
+                            "raw_affiliation": "UNC School of Education, University of North Carolina, Chapel Hill, North Carolina.",
+                            "state": "North Carolina",
+                            "state_code": "US-NC"
+                        }
+                    ],
+                    "corresponding": "",
+                    "current_organization_id": "grid.1008.9",
+                    "first_name": "Kayley",
+                    "last_name": "Lyons",
+                    "orcid": [
+                        "0000-0003-2224-1107"
+                    ],
+                    "raw_affiliation": [
+                        "UNC Eshelman School of Pharmacy, University of North Carolina, Chapel Hill, North Carolina.",
+                        "UNC School of Education, University of North Carolina, Chapel Hill, North Carolina."
+                    ],
+                    "researcher_id": "ur.01002434733.06"
+                },
+                {
+                    "affiliations": [
+                        {
+                            "city": "Chapel Hill",
+                            "city_id": 4460162,
+                            "country": "United States",
+                            "country_code": "US",
+                            "id": "grid.10698.36",
+                            "name": "University of North Carolina at Chapel Hill",
+                            "raw_affiliation": "UNC Eshelman School of Pharmacy, University of North Carolina, Chapel Hill, North Carolina.",
+                            "state": "North Carolina",
+                            "state_code": "US-NC"
+                        }
+                    ],
+                    "corresponding": "",
+                    "current_organization_id": "grid.30760.32",
+                    "first_name": "Lana M",
+                    "last_name": "Minshew",
+                    "orcid": [
+                        "0000-0003-4918-2944"
+                    ],
+                    "raw_affiliation": [
+                        "UNC Eshelman School of Pharmacy, University of North Carolina, Chapel Hill, North Carolina."
+                    ],
+                    "researcher_id": "ur.014752215041.68"
+                },
+                {
+                    "affiliations": [
+                        {
+                            "city": "Chapel Hill",
+                            "city_id": 4460162,
+                            "country": "United States",
+                            "country_code": "US",
+                            "id": "grid.10698.36",
+                            "name": "University of North Carolina at Chapel Hill",
+                            "raw_affiliation": "UNC Eshelman School of Pharmacy, University of North Carolina, Chapel Hill, North Carolina.",
+                            "state": "North Carolina",
+                            "state_code": "US-NC"
+                        }
+                    ],
+                    "corresponding": "",
+                    "current_organization_id": "grid.10698.36",
+                    "first_name": "Jacqueline E",
+                    "last_name": "McLaughlin",
+                    "orcid": [
+                        "0000-0002-9161-8441"
+                    ],
+                    "raw_affiliation": [
+                        "UNC Eshelman School of Pharmacy, University of North Carolina, Chapel Hill, North Carolina."
+                    ],
+                    "researcher_id": "ur.01242261654.80"
+                }
+            ],
+            "date": "2018-10-01",
+            "doi": "10.5688/ajpe7320",
+            "id": "pub.1109932326",
+            "issue": "8",
+            "journal": {
+                "id": "jour.1017361",
+                "title": "American Journal of Pharmaceutical Education"
+            },
+            "open_access": [
+                "oa_all",
+                "gold"
+            ],
+            "pages": "7320",
+            "pmcid": "PMC6221520",
+            "pmid": "30425413",
+            "relative_citation_ratio": 0.2,
+            "research_org_cities": [
+                {
+                    "id": "4460162",
+                    "name": "Chapel Hill"
+                }
+            ],
+            "research_org_countries": [
+                {
+                    "id": "US",
+                    "name": "United States"
+                }
+            ],
+            "research_org_country_names": [
+                "United States"
+            ],
+            "research_org_state_codes": [
+                {
+                    "id": "US-NC",
+                    "name": "North Carolina"
+                }
+            ],
+            "research_org_state_names": [
+                "North Carolina"
+            ],
+            "research_orgs": [
+                {
+                    "city_name": "Chapel Hill",
+                    "country_code": "US",
+                    "country_name": "United States",
+                    "id": "grid.410711.2",
+                    "latitude": 35.904915,
+                    "linkout": [
+                        "https://www.northcarolina.edu/"
+                    ],
+                    "longitude": -79.04692,
+                    "name": "University of North Carolina System",
+                    "state_name": "North Carolina",
+                    "types": [
+                        "Education"
+                    ]
+                },
+                {
+                    "acronym": "UNC",
+                    "city_name": "Chapel Hill",
+                    "country_code": "US",
+                    "country_name": "United States",
+                    "id": "grid.10698.36",
+                    "latitude": 35.905163,
+                    "linkout": [
+                        "http://www.unc.edu/"
+                    ],
+                    "longitude": -79.04694,
+                    "name": "University of North Carolina at Chapel Hill",
+                    "state_name": "North Carolina",
+                    "types": [
+                        "Education"
+                    ]
+                }
+            ],
+            "researchers": [
+                {
+                    "first_name": "Kayley Marie",
+                    "id": "ur.01002434733.06",
+                    "last_name": "Lyons",
+                    "orcid_id": [
+                        "0000-0003-2224-1107"
+                    ],
+                    "research_orgs": [
+                        "grid.263791.8",
+                        "grid.1002.3",
+                        "grid.1008.9",
+                        "grid.410711.2",
+                        "grid.10698.36"
+                    ]
+                },
+                {
+                    "first_name": "Lana M",
+                    "id": "ur.014752215041.68",
+                    "last_name": "Minshew",
+                    "orcid_id": [
+                        "0000-0003-4918-2944"
+                    ],
+                    "research_orgs": [
+                        "grid.30760.32",
+                        "grid.10698.36"
+                    ]
+                },
+                {
+                    "first_name": "Jacqueline E",
+                    "id": "ur.01242261654.80",
+                    "last_name": "Mclaughlin",
+                    "orcid_id": [
+                        "0000-0002-9161-8441"
+                    ],
+                    "research_orgs": [
+                        "grid.1002.3",
+                        "grid.410711.2",
+                        "grid.10698.36",
+                        "grid.410332.7",
+                        "grid.40803.3f"
+                    ]
+                }
+            ],
+            "times_cited": 1,
+            "title": "Response to Student and School-level Predictors of Pharmacy Residency Attainment",
+            "type": "article",
+            "volume": "82",
+            "year": 2018
+        }
+    ]
+}
