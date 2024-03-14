@@ -4,7 +4,8 @@ require 'rails_helper'
 RSpec.describe Tasks::DimensionsQueryService do
 
   ERROR_RESPONSE_CODE = 500
-  UNAUTHORIZED_RESPONSE_OBJECT = {code: 403, message: 'Unauthorized'}
+  UNAUTHORIZED_CODE = 403
+  UNAUTHORIZED_MESSAGE = 'Unauthorized'
 
   let(:dimensions_query_response_fixture) do
     File.read(File.join(Rails.root, '/spec/fixtures/files/dimensions_query_response.json'))
@@ -73,8 +74,8 @@ RSpec.describe Tasks::DimensionsQueryService do
       allow(Rails.logger).to receive(:error)
       allow(Rails.logger).to receive(:warn)
 
-      unauthorized_status = UNAUTHORIZED_RESPONSE_OBJECT.fetch(:code)
-      unauthorized_body = UNAUTHORIZED_RESPONSE_OBJECT.fetch(:message)
+      unauthorized_status = UNAUTHORIZED_CODE
+      unauthorized_body = UNAUTHORIZED_MESSAGE
       stub_request(:post, 'https://app.dimensions.ai/api/dsl')
         .to_return({status: unauthorized_status, body: unauthorized_body}, {status: unauthorized_status, body: unauthorized_body})
 
