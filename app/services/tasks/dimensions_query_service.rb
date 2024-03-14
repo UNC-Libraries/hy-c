@@ -106,8 +106,8 @@ module Tasks
       if with_doi
         # Removing publications that have a matching DOI in Solr
         new_publications = publications.reject do |pub|
-          search_doi = pub['doi'].gsub(/.*doi.org/, '')
-          result = Hyrax::SolrService.get("doi_tesim:\"#{search_doi}\" OR identifier_tesim:\"#{search_doi}\"")
+          doi_tesim = "https://doi.org/#{pub['doi']}"
+          result = Hyrax::SolrService.get("doi_tesim:\"#{doi_tesim}\" OR identifier_tesim:\"#{pub['doi']}\"")
           !result['response']['docs'].empty?
         end
         return new_publications
