@@ -214,24 +214,38 @@ RSpec.describe Tasks::DimensionsQueryService do
     end
 
     it 'removes publications with duplicate titles' do
-      # Create two documents with titles that are the same as the first two publications in the test fixture
+
+      # Modifying the test fixture to include publications with the same title, concatenated with a string in double quotes. (to test for escaping double quotes in solr queries)
+      double_quote_test_string = '"test string in double quotes"'
+      dimensions_publications_without_modified_titles = dimensions_publications_without_dois
+      dimensions_publications_with_modified_titles = dimensions_publications_without_dois.map { |pub| pub.merge('title' => pub['title'] + double_quote_test_string) }
+      all_publications = dimensions_publications_without_modified_titles.concat(dimensions_publications_with_modified_titles)
+
+      # Creating four documents using the first two publications in the test fixture. Two with modified titles that include the test strings
       # Using publications without dois since deduplicate will default to using the other unique identifiers if there is no doi
-      test_fixture_titles = dimensions_publications_without_dois.map { |pub| pub['title'] }
+      test_fixture_titles = dimensions_publications_without_modified_titles.map { |pub| pub['title'] }
+      test_fixture_titles_with_test_string = dimensions_publications_with_modified_titles.map { |pub| pub['title'] }
 
       documents =
         [{ id: '1111',
         title_tesim: [test_fixture_titles[0]] },
         { id: '2222',
-        title_tesim: [test_fixture_titles[1]]}]
+        title_tesim: [test_fixture_titles[1]]},
+        { id: '3333',
+        title_tesim: [test_fixture_titles_with_test_string[0]] },
+        { id: '4444',
+        title_tesim: [test_fixture_titles_with_test_string[1]]}]
+      Hyrax::SolrService.add(documents, commit: true)
 
-      Hyrax::SolrService.add(documents[0..1], commit: true)
+      new_publications = service.deduplicate_publications(false, all_publications)
 
-      new_publications = service.deduplicate_publications(false, dimensions_publications_without_dois)
-
-      # Expecting that the two documents with titles that are the same as the first two publications in the test fixture have been removed
+      # Expecting that the four documents with titles that are the same as the publications in all_publications have been removed
       expect(new_publications.map { |pub| pub['title'] }) .not_to include(test_fixture_titles[0..1])
-      expect(new_publications.count).to eq(1)
-      expect(new_publications.first['title']).to eq(test_fixture_titles[2])
+      expect(new_publications.map { |pub| pub['title'] }) .not_to include(test_fixture_titles_with_test_string[0..1])
+
+      # Verifying deduplicate_publications only returns records with unique titles
+      expect(new_publications.count).to eq(2)
+      expect(new_publications.map { |pub| pub['title'] }).to include(test_fixture_titles[2], test_fixture_titles_with_test_string[2])
       # Expecting that none of the publications have been marked for review
       expect(new_publications.map { |pub| pub['marked_for_review'] }.all?).to be_falsy
     end

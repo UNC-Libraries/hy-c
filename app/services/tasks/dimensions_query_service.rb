@@ -94,8 +94,8 @@ module Tasks
       # Build a query string to search Solr for a publication based on pmcid, pmid, or title
       pmcid_search = pub['pmcid'] ? "identifier_tesim:(\"PMCID: #{pub['pmcid']}\")" : nil
       pmid_search = pub['pmid'] ? "identifier_tesim:(\"PMID: #{pub['pmid']}\")" : nil
-      title_search = pub['title'] ? "title_tesim:\"#{pub['title']}\"" : nil
-
+      title_quote_escaped = pub['title'] ? pub['title'].gsub(/"/, '\\"') : nil
+      title_search = pub['title'] ? "title_tesim:\"#{title_quote_escaped}\"" : nil
       # Combine the search terms into a single query string excluding nil values
       publication_data = [pmcid_search, pmid_search, title_search].compact
       query_string = publication_data.join(' OR ')
