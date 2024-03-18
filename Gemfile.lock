@@ -841,7 +841,7 @@ GEM
       railties (>= 5.2)
     retriable (3.1.2)
     rexml (3.2.6)
-    riiif (2.4.0)
+    riiif (2.5.0)
       deprecation (>= 1.0.0)
       iiif-image-api (>= 0.1.0)
       railties (>= 4.2, < 8)
@@ -1114,7 +1114,7 @@ DEPENDENCIES
   puma
   rails (~> 6.0)
   redis (~> 4.5.0)
-  riiif (~> 2.4.0)
+  riiif (~> 2.5.0)
   roo (~> 2.9.0)
   rsolr (~> 2.5.0)
   rspec-mocks

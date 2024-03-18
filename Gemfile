@@ -51,7 +51,7 @@ gem 'pg', '~> 1.3.5'
 gem 'rails', '~> 6.0'
 # Use Redis adapter to run Action Cable in production
 gem 'redis', '~> 4.5.0'
-gem 'riiif', '~> 2.4.0'
+gem 'riiif', '~> 2.5.0'
 gem 'roo', '~>2.9.0'
 gem 'rsolr', '~> 2.5.0'
 # Use SCSS for stylesheets
