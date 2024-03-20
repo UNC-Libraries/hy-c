@@ -13,7 +13,7 @@ module Hyc
           medium = request.referrer.present? ? 'referral' : 'direct'
 
           # wip: idsite, token_auth, differnt base url
-          matomo_id_site = '3'
+          matomo_id_site = '5'
           matomo_security_token = 'c7b71dddc7f088a630ab1c2e3bb1a322'
 
           base_url = "https://analytics-qa.lib.unc.edu/matomo.php"
@@ -22,12 +22,19 @@ module Hyc
             idsite: matomo_id_site,
             rec: '1',
             url: request.url,
-            e_a: 'DownloadIR',
-            e_c: @admin_set_name,
+            urlref: request.referrer,
+            _id: client_id,
+            action_name: 'DownloadIR',
+            e_c: 'Download',
             download: "test-id",
             uid: client_id,
             token_auth: matomo_security_token,
-            urlref: request.referrer
+            urlref: request.referrer,
+            apiv: '1',
+            dimension1: medium,
+            dimension2: request.host,
+            dimension3: @admin_set_name,
+            rand: SecureRandom.uuid
           }
           uri.query = URI.encode_www_form(params)
           response = HTTParty.post(uri.to_s)
