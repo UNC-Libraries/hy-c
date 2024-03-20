@@ -10,29 +10,26 @@ module Hyc
         if Hyrax::Analytics.config.analytics_id.present? && !request.url.match('thumbnail')
           Rails.logger.debug("Recording download event for #{params[:id]}")
           medium = request.referrer.present? ? 'referral' : 'direct'
-          body = {
-              'client_id' => client_id,
-              'events' => [
-                {
-                  'name' => 'DownloadIR',
-                  'params' => {
-                    'category' => @admin_set_name,
-                    'label' => params[:id],
-                    'host_name' => request.host,
-                    'medium' => medium,
-                    'page_referrer' => request.referrer,
-                    'page_location' => request.url
-                  }
-                }
-              ]
-            }.to_json
 
-          ga_id = Hyrax::Analytics.config.analytics_id
-          url = "https://www.google-analytics.com/mp/collect?measurement_id=#{ga_id}&api_secret=#{api_secret}"
-          response = HTTParty.post(url,
-            {
-              body: body
-            })
+          # wip: idsite, token_auth, differnt base url
+          matomo_id_site = '3'
+          matomo_security_token = 'c7b71dddc7f088a630ab1c2e3bb1a322'
+
+          base_url = "https://analytics-qa.lib.unc.edu/matomo.php"
+          uri = URI(base_url)
+          params = {
+            idsite: matomo_id_site,
+            rec: '1',
+            url: request.url,
+            e_a: 'DownloadIR',
+            e_c: @admin_set_name,
+            download: "test-id",
+            uid: client_id,
+            token_auth: matomo_security_token,
+            urlref: request.referrer
+          }
+          uri.query = URI.encode_www_form(params)
+          response = HTTParty.post(uri.to_s)
           if response.code >= 300
             Rails.logger.error("DownloadAnalyticsBehavior received an error response #{response.code} for body: #{body}")
           end
