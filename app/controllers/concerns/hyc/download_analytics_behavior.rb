@@ -21,10 +21,10 @@ module Hyc
           params = {
             idsite: matomo_id_site,
             rec: '1',
-            url: request.url,
+            url: request.url || request.host,
             urlref: request.referrer,
             _id: client_id,
-            action_name: 'DownloadIR',
+            e_a: 'DownloadIR',
             e_c: 'Download',
             download: "test-id",
             uid: client_id,
@@ -42,6 +42,8 @@ module Hyc
             Rails.logger.error("DownloadAnalyticsBehavior received an error response #{response.code} for body: #{body}")
           end
           Rails.logger.debug("DownloadAnalyticsBehavior request completed #{response.code}")
+          Rails.logger.debug("DownloadAnalyticsBehavior request body #{response.body}")
+          Rails.logger.debug("DownloadAnalyticsBehavior request url #{request.url}")
           response.code
         end
       end
