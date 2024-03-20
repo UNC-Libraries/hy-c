@@ -37,7 +37,7 @@ module Hyc
             rand: SecureRandom.uuid
           }
           uri.query = URI.encode_www_form(params)
-          response = HTTParty.post(uri.to_s)
+          response = HTTParty.get(uri.to_s)
           if response.code >= 300
             Rails.logger.error("DownloadAnalyticsBehavior received an error response #{response.code} for body: #{body}")
           end
