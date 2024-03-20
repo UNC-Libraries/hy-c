@@ -7,7 +7,8 @@ module Hyc
       after_action :track_download, only: :show
 
       def track_download
-        if Hyrax::Analytics.config.analytics_id.present? && !request.url.match('thumbnail')
+        # wip: modified if condition, revert later
+        if !request.url.match('thumbnail')
           Rails.logger.debug("Recording download event for #{params[:id]}")
           medium = request.referrer.present? ? 'referral' : 'direct'
 
