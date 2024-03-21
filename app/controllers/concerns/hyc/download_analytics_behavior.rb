@@ -28,7 +28,6 @@ module Hyc
             ca: '1',
             e_a: 'DownloadIR',
             e_c: 'Download',
-            download: "test-id",
             uid: client_id,
             token_auth: matomo_security_token,
             urlref: request.referrer
