@@ -19,6 +19,7 @@ module Hyc
           base_url = "https://analytics-qa.lib.unc.edu/matomo.php"
           uri = URI(base_url)
           params = {
+            action_name: 'Download',
             idsite: matomo_id_site,
             rec: '1',
             url: request.url || request.host,
@@ -37,6 +38,7 @@ module Hyc
           }
           uri.query = URI.encode_www_form(params)
           response = HTTParty.get(uri.to_s)
+          Rails.logger.debug("Matomo Query Url #{uri.to_s}")
           if response.code >= 300
             Rails.logger.error("DownloadAnalyticsBehavior received an error response #{response.code} for body: #{body}")
           end
