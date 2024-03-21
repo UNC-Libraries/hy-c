@@ -22,19 +22,19 @@ module Hyc
             idsite: matomo_id_site,
             rec: '1',
             url: request.url || request.host,
+            rand: SecureRandom.uuid,
+            apiv: '1',
             urlref: request.referrer,
-            _id: client_id,
+            ca: '1',
             e_a: 'DownloadIR',
             e_c: 'Download',
             download: "test-id",
             uid: client_id,
             token_auth: matomo_security_token,
-            urlref: request.referrer,
-            apiv: '1',
-            dimension1: medium,
-            dimension2: request.host,
-            dimension3: @admin_set_name,
-            rand: SecureRandom.uuid
+            urlref: request.referrer
+            # dimension1: medium,
+            # dimension2: request.host,
+            # dimension3: @admin_set_name,
           }
           uri.query = URI.encode_www_form(params)
           response = HTTParty.get(uri.to_s)
