@@ -99,6 +99,17 @@ RSpec.describe 'OAI-PMH catalog endpoint' do
         expect(token.count).to be 1
         expect(token.text).to be_empty
       end
+
+      scenario 'a resumption token is provided when a "from" parameter has a date value' do
+        params = { verb: 'ListRecords', metadataPrefix: format, from: '2010-01-01' }
+        expected_token = "oai_dc.f(2010-01-01T00:00:00Z).u(2021-11-23T00:00:00Z).t(#{timestamps.count}):25"
+        get oai_catalog_path(params)
+        token = xpath '//xmlns:resumptionToken'
+        records = xpath '//xmlns:record'
+
+        expect(records.count).to be 25
+        expect(token.text).to eq expected_token
+      end
     end
 
     context 'with a set' do
