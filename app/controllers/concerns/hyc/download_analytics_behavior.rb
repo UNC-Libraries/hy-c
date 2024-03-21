@@ -13,10 +13,9 @@ module Hyc
           medium = request.referrer.present? ? 'referral' : 'direct'
 
           # wip: idsite, token_auth, differnt base url
-          matomo_id_site = '5'
-          matomo_security_token = 'c7b71dddc7f088a630ab1c2e3bb1a322'
-
-          base_url = "https://analytics-qa.lib.unc.edu/matomo.php"
+          matomo_id_site = Hyrax.config.site_id || '5'
+          matomo_security_token = Hyrax.config.auth_token || 'c7b71dddc7f088a630ab1c2e3bb1a322'
+          base_url = Hyrax.config.base_url ||'https://analytics-qa.lib.unc.edu/matomo.php'
           uri = URI(base_url)
           params = {
             action_name: 'Download',
@@ -35,7 +34,7 @@ module Hyc
           }
           uri.query = URI.encode_www_form(params)
           response = HTTParty.get(uri.to_s)
-          Rails.logger.debug("Matomo Query Url #{uri.to_s}")
+          Rails.logger.debug("Matomo Query Url #{uri}")
           if response.code >= 300
             Rails.logger.error("DownloadAnalyticsBehavior received an error response #{response.code} for body: #{body}")
           end
