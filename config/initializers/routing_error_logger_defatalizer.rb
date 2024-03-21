@@ -12,15 +12,25 @@ module ActionDispatch
       end
     end
 
+    DEFATALIZED_CLASSES = [
+      ActionController::BadRequest,
+      ActionController::InvalidAuthenticityToken,
+      ActionController::RoutingError,
+      ActionController::UnknownFormat,
+      ActionDispatch::Http::MimeNegotiation::InvalidType,
+      ActionDispatch::Http::Parameters::ParseError,
+      ActiveFedora::ObjectNotFoundError,
+      Blacklight::Exceptions::RecordNotFound,
+      BlacklightRangeLimit::InvalidRange,
+      Faraday::TimeoutError,
+      Hyrax::ObjectNotFoundError,
+      Ldp::Gone,
+      Riiif::ConversionError,
+      Riiif::ImageNotFoundError
+    ].to_set
+
     def should_reduce_log_level?(wrapper)
-      return true if wrapper.exception.is_a? ActionController::RoutingError
-      return true if wrapper.exception.is_a? ActionController::BadRequest
-      return true if wrapper.exception.is_a? ActionDispatch::Http::Parameters::ParseError
-      return true if wrapper.exception.is_a? ActionDispatch::Http::MimeNegotiation::InvalidType
-      return true if wrapper.exception.is_a? Ldp::Gone
-      return true if wrapper.exception.is_a? BlacklightRangeLimit::InvalidRange
-      return true if wrapper.exception.is_a? Riiif::ConversionError
-      return false
+      return true if DEFATALIZED_CLASSES.include?(wrapper.exception.class)
     end
   end
 end
