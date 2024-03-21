@@ -32,9 +32,6 @@ module Hyc
             uid: client_id,
             token_auth: matomo_security_token,
             urlref: request.referrer
-            # dimension1: medium,
-            # dimension2: request.host,
-            # dimension3: @admin_set_name,
           }
           uri.query = URI.encode_www_form(params)
           response = HTTParty.get(uri.to_s)
