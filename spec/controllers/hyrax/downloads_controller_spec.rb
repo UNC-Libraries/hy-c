@@ -5,23 +5,26 @@ require Rails.root.join('app/overrides/controllers/hyrax/downloads_controller_ov
 
 RSpec.describe Hyrax::DownloadsController, type: :controller do
   routes { Hyrax::Engine.routes }
-  let(:base_analytics_url) { 'https://www.google-analytics.com/mp/collect?api_secret=supersecret&measurement_id=analytics_id' }
+  let(:base_analytics_url) { 'https://analytics-qa.lib.unc.edu/matomo.php' }
+  # let(:base_analytics_url) { 'https://www.google-analytics.com/mp/collect?api_secret=supersecret&measurement_id=analytics_id' }
 
   let(:stub_ga) do
-    stub_request(:post, base_analytics_url).to_return(status: 200, body: '', headers: {})
+    stub_request(:get, base_analytics_url).with(query: hash_including({'token_auth' => 'testtoken',
+                                                                       'idsite' => '5'}))
+    .to_return(status: 200, body: '', headers: {})
   end
 
   around do |example|
-    cached_secret = ENV['ANALYTICS_API_SECRET']
-    ENV['ANALYTICS_API_SECRET'] = 'supersecret'
+    cached_secret = ENV['MATOMO_AUTH_TOKEN']
+    ENV['MATOMO_AUTH_TOKEN'] = 'testtoken'
     example.run
-    ENV['ANALYTICS_API_SECRET'] = cached_secret
+    ENV['MATOMO_AUTH_TOKEN'] = cached_secret
   end
 
   before do
     ActiveFedora::Cleaner.clean!
     allow(stub_ga)
-    allow(Hyrax::Analytics.config).to receive(:analytics_id).and_return('analytics_id')
+    allow(Hyrax::Analytics.config).to receive(:site_id).and_return('5')
     allow(SecureRandom).to receive(:uuid).and_return('555')
     allow(Hyrax::VirusCheckerService).to receive(:file_has_virus?) { false }
   end
@@ -51,20 +54,15 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
         allow(Hyrax::VirusCheckerService).to receive(:file_has_virus?) { false }
         allow(SecureRandom).to receive(:uuid).and_return('555')
         request.env['HTTP_REFERER'] = 'http://example.com'
-        stub = stub_request(:post, base_analytics_url)
-               .with(body: { 'client_id': '555', "events": [{
-                    "name": 'DownloadIR',
-                    "params": {
-                      "category": 'Unknown',
-                      "label": file_set.id,
-                      "host_name": 'test.host',
-                      "medium": 'referral',
-                      "page_referrer": 'http://example.com',
-                      "page_location": "http://test.host/downloads/#{file_set.id}"
-                    }
-                  }]
-                }.to_json)
-               .to_return(status: 200, body: '', headers: {})
+        stub = stub_request(:get, base_analytics_url)
+          .with(query: hash_including({'e_a' => 'DownloadIR',
+                                      'e_c' => 'Unknown',
+                                      'e_n' => file_set.id,
+                                      'e_v' => 'referral',
+                                      'urlref' => 'http://example.com',
+                                      'url' => "http://test.host/downloads/#{file_set.id}"
+                                      }))
+            .to_return(status: 200, body: '', headers: {})
         get :show, params: { id: file_set }
         expect(stub).to have_been_requested.times(1) # must be after the method call that creates request
       end
@@ -72,19 +70,14 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
       it 'sets the medium to direct when there is no referrer' do
         allow(controller).to receive(:cookies) { { _ga: 'ga.1.2.3'} }
         request.env['HTTP_REFERER'] = nil
-        stub = stub_request(:post, base_analytics_url)
-               .with(body: { 'client_id': '2.3', "events": [{
-                    "name": 'DownloadIR',
-                    "params": {
-                      "category": 'Unknown',
-                      "label": file_set.id,
-                      "host_name": 'test.host',
-                      "medium": 'direct',
-                      "page_referrer": nil,
-                      "page_location": "http://test.host/downloads/#{file_set.id}"
-                    }
-                  }]
-                }.to_json)
+        stub = stub_request(:get, base_analytics_url)
+        .with(query: hash_including({'e_a' => 'DownloadIR',
+                                    'e_c' => 'Unknown',
+                                    'e_n' => file_set.id,
+                                    'e_v' => 'direct',
+                                    'urlref' => nil,
+                                    'url' => "http://test.host/downloads/#{file_set.id}"
+                                    }))
                .to_return(status: 200, body: '', headers: {})
         get :show, params: { id: file_set }
         expect(stub).to have_been_requested.times(1) # must be after the method call that creates request
@@ -93,7 +86,8 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
       it 'logs an error for a 400 response' do
         allow(Rails.logger).to receive(:error)
         request.env['HTTP_REFERER'] = 'http://example.com'
-        stub = stub_request(:post, base_analytics_url)
+        stub = stub_request(:get, base_analytics_url)
+        .with(query: hash_including({'e_a' => 'DownloadIR'}))
                .to_return(status: 400, body: '', headers: {})
         get :show, params: { id: file_set }
         expect(stub).to have_been_requested.times(1) # must be after the method call that creates request

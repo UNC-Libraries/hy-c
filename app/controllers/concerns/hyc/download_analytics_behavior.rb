@@ -13,30 +13,33 @@ module Hyc
           medium = request.referrer.present? ? 'referral' : 'direct'
 
           # wip: idsite, token_auth, differnt base url
-          matomo_id_site = Hyrax.config.site_id || '5'
-          matomo_security_token = Hyrax.config.auth_token || 'c7b71dddc7f088a630ab1c2e3bb1a322'
-          base_url = Hyrax.config.base_url ||'https://analytics-qa.lib.unc.edu/matomo.php'
+          # not entirely sure if the mapping of ga to matomo params is correct
+          # missing host_name
+          matomo_id_site = site_id || '5'
+          matomo_security_token = auth_token || 'c7b71dddc7f088a630ab1c2e3bb1a322'
+          base_url = base_url ||'https://analytics-qa.lib.unc.edu/matomo.php'
           uri = URI(base_url)
-          params = {
-            action_name: 'Download',
-            idsite: matomo_id_site,
+          uri_params = {
+            token_auth: matomo_security_token,
             rec: '1',
-            url: request.url || request.host,
-            rand: SecureRandom.uuid,
+            idsite: matomo_id_site,
+            action_name: 'Download',
+            url: request.url,
+            rand: rand(1_000_000).to_s,
             apiv: '1',
             urlref: request.referrer,
             ca: '1',
             e_a: 'DownloadIR',
-            e_c: 'Download',
-            uid: client_id,
-            token_auth: matomo_security_token,
-            urlref: request.referrer
+            e_c: @admin_set_name,
+            e_n: params[:id],
+            e_v: medium,
+            uid: client_id
           }
-          uri.query = URI.encode_www_form(params)
+          uri.query = URI.encode_www_form(uri_params)
           response = HTTParty.get(uri.to_s)
           Rails.logger.debug("Matomo Query Url #{uri}")
           if response.code >= 300
-            Rails.logger.error("DownloadAnalyticsBehavior received an error response #{response.code} for body: #{body}")
+            Rails.logger.error("DownloadAnalyticsBehavior received an error response #{response.code} for query parameters: #{uri_params}")
           end
           Rails.logger.debug("DownloadAnalyticsBehavior request completed #{response.code}")
           Rails.logger.debug("DownloadAnalyticsBehavior request body #{response.body}")
@@ -47,6 +50,18 @@ module Hyc
 
       def api_secret
         @api_secret ||= ENV['ANALYTICS_API_SECRET']
+      end
+
+      def site_id
+        @site_id ||= ENV['MATOMO_SITE_ID']
+      end
+
+      def auth_token
+        @auth_token ||= ENV['MATOMO_AUTH_TOKEN']
+      end
+
+      def base_url
+        @base_url ||= ENV['MATOMO_BASE_URL']
       end
 
       def client_id
