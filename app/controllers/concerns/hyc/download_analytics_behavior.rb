@@ -38,7 +38,7 @@ module Hyc
             e_v: medium,
             uid: client_id,
             _id: user_id,
-            cip: client_ip
+            cip: client_ip,
             send_image: '0',
             ua: user_agent
           }
