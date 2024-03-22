@@ -1,6 +1,12 @@
 <script>
+  var _paq = window._paq = window._paq || [];
   var _mtm = window._mtm = window._mtm || [];
-  _mtm.push({'mtm.startTime': (new Date().getTime()), 'event': 'mtm.Start'});
+  // Extracting the ID from the URL
+  var pathSegments = window.location.pathname.split('/');
+  var recordIdIndex = pathSegments.findIndex(segment => segment === 'concern') + 2;
+  var recordId = pathSegments.length > recordIdIndex ? pathSegments[recordIdIndex].split('?')[0] : 'undefined';
+  _mtm.push({'recordId': recordId});
+  _paq.push(['setCustomDimension', 1, recordId]);
   (function() {
     var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
     g.async=true; g.src='https://analytics-qa.lib.unc.edu/js/container_kXxjrumF.js'; s.parentNode.insertBefore(g,s);
