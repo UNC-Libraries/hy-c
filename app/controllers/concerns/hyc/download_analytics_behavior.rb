@@ -12,6 +12,10 @@ module Hyc
           Rails.logger.debug("Recording download event for #{params[:id]}")
           medium = request.referrer.present? ? 'referral' : 'direct'
 
+          user_id = current_user.id if current_user
+          client_ip = request.remote_ip
+          user_agent = request.user_agent
+
           # wip: idsite, token_auth, differnt base url
           # not entirely sure if the mapping of ga to matomo params is correct
           # missing host_name
@@ -28,12 +32,15 @@ module Hyc
             rand: rand(1_000_000).to_s,
             apiv: '1',
             urlref: request.referrer,
-            ca: '1',
             e_a: 'DownloadIR',
             e_c: @admin_set_name,
             e_n: params[:id],
             e_v: medium,
-            uid: client_id
+            uid: client_id,
+            _id: user_id,
+            cip: client_ip
+            send_image: '0',
+            ua: user_agent
           }
           uri.query = URI.encode_www_form(uri_params)
           response = HTTParty.get(uri.to_s)
@@ -42,7 +49,7 @@ module Hyc
             Rails.logger.error("DownloadAnalyticsBehavior received an error response #{response.code} for query parameters: #{uri_params}")
           end
           Rails.logger.debug("DownloadAnalyticsBehavior request completed #{response.code}")
-          Rails.logger.debug("DownloadAnalyticsBehavior request body #{response.body}")
+          Rails.logger.debug("DownloadAnalyticsBehavior request params #{uri_params}")
           Rails.logger.debug("DownloadAnalyticsBehavior request url #{request.url}")
           response.code
         end
