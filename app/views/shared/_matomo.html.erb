@@ -1,14 +1,20 @@
 <script>
   var _paq = window._paq = window._paq || [];
-  var _mtm = window._mtm = window._mtm || [];
-  // Extracting the ID from the URL
   var pathSegments = window.location.pathname.split('/');
-  var recordIdIndex = pathSegments.findIndex(segment => segment === 'concern') + 2;
-  var recordId = pathSegments.length > recordIdIndex ? pathSegments[recordIdIndex].split('?')[0] : 'undefined';
-  _mtm.push({'recordId': recordId});
-  _paq.push(['setCustomDimension', 1, recordId]);
+    // Extracting the ID from the URL if it's a record page
+  var concernIndex = pathSegments.indexOf('concern');
+  if (concernIndex !== -1) {
+    var recordIdIndex = pathSegments.findIndex(segment => segment === 'concern') + 2;
+    var recordId = pathSegments.length > recordIdIndex ? pathSegments[recordIdIndex].split('?')[0] : 'undefined';
+    _paq.push(['setCustomDimension', 1, recordId]);
+  }
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
   (function() {
+    var u="https://analytics-qa.lib.unc.edu/";
+    _paq.push(['setTrackerUrl', u+'matomo.php']);
+    _paq.push(['setSiteId', '5']);
     var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
-    g.async=true; g.src='https://analytics-qa.lib.unc.edu/js/container_kXxjrumF.js'; s.parentNode.insertBefore(g,s);
+    g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
   })();
 </script>
