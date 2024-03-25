@@ -1,6 +1,6 @@
 Hyrax::Analytics::Matomo.class_eval do
     # [hyc-override] https://github.com/samvera/hyrax/blob/hyrax-v3.5.0/app/services/hyrax/analytics/matomo.rb
-    def total_events_for_id(id, action, date = default_date_range)
+    def daily_events_for_id(id, action, date = default_date_range)
         additional_params = {
           flat: 1,
           segment: additional_params_helper(id, action)
