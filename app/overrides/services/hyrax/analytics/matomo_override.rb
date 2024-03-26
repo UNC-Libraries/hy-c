@@ -9,7 +9,7 @@ Hyrax::Analytics::Matomo.module_eval do
         segment: additional_params_helper(id, action)
       #   label: "#{id} - #{action}"
       }
-      response = api_params('Events.getName', 'week', date, additional_params)
+      response = api_params('Events.getName', 'day', date, additional_params)
       results_array(response, 'nb_events')
     end
 
@@ -26,7 +26,8 @@ Hyrax::Analytics::Matomo.module_eval do
     end
 
     def get(params)
-      response = Faraday.get("#{config.base_url}/index.php", params)
+      encoded_params = URI.encode_www_form(params)
+      response = Faraday.get("#{config.base_url}/index.php", encoded_params)
       Rails.logger.debug("GET OVERRIDE: response=#{response.inspect}, response.status=#{response.status}")
       Rails.logger.debug("RESPONSE BODY: #{response.body.inspect}")
       return [] if response.status != 200
