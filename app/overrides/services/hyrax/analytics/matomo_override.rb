@@ -28,8 +28,7 @@ Hyrax::Analytics::Matomo.module_eval do
 
     def get(params)
       response = Faraday.get(config.base_url, params)
-      Rails.logger.debug("GET RESPONSE STATUS=#{response.status}")
-      Rails.logger.debug("GET RESPONSE BODY=#{response.body}")
+      Rails.logger.debug("GET OVERRIDE: response=#{response}, json=#{JSON.parse(response.body)}")
       return [] if response.status != 200
       JSON.parse(response.body)
     end
