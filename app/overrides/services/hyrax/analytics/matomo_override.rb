@@ -6,24 +6,27 @@ Hyrax::Analytics::Matomo.module_eval do
     def daily_events_for_id(id, action, date = default_date_range)
       additional_params = {
         flat: 1,
-        segment: additional_params_helper(id, action)
-      #   label: "#{id} - #{action}"
+        label: "#{id} - #{action}"
       }
       response = api_params('Events.getName', 'day', date, additional_params)
       results_array(response, 'nb_events')
     end
 
-    def additional_params_helper(id, action)
-      segment = ''
-        # Filter by download event or pageview, and the id of the related work
-        # https://developer.matomo.org/api-reference/reporting-api-segmentation
-      if action == 'DownloadIR'
-        segment = "eventAction==DownloadIR;eventName==#{id}"
-      elsif action == 'work-view'
-        segment = "actionType==pageviews;dimension1==#{id}"
-      end
-      segment
-    end
+    # def additional_params_helper(id, action)
+    #   segment = ''
+    #     # Filter by download event or pageview, and the id of the related work
+    #     # https://developer.matomo.org/api-reference/reporting-api-segmentation
+    #   if action == 'DownloadIR'
+    #     # Thinking the ID of the record is different from the ID of the event
+    #     # Seems like the ID of the event being recorded corresponds to some identifier retrieved from the download url.
+    #     # segment = "eventAction==DownloadIR;eventName==#{id}"
+    #     segment = "eventAction==DownloadIR"
+    #   elsif action == 'work-view'
+    #     # segment = "actionType==pageviews;dimension1==#{id}"
+    #     segment = "actionType==pageviews"
+    #   end
+    #   segment
+    # end
 
     def get(params)
       encoded_params = URI.encode_www_form(params)
