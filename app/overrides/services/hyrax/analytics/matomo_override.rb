@@ -25,5 +25,13 @@ Hyrax::Analytics::Matomo.module_eval do
       segment
     end
 
+    def get(params)
+      response = Faraday.get(config.base_url, params)
+      Rails.logger.debug("GET RESPONSE STATUS=#{response.status}")
+      Rails.logger.debug("GET RESPONSE BODY=#{response.body}")
+      return [] if response.status != 200
+      JSON.parse(response.body)
+    end
+
   end
 end
