@@ -21,8 +21,7 @@ module Hyc
           # missing host_name
           matomo_id_site = site_id || '5'
           matomo_security_token = auth_token || 'c7b71dddc7f088a630ab1c2e3bb1a322'
-          base_url = base_url ||'https://analytics-qa.lib.unc.edu/matomo.php'
-          uri = URI(base_url)
+          uri = URI("#{base_url}/matomo.php")
           uri_params = {
             token_auth: matomo_security_token,
             rec: '1',
