@@ -3,7 +3,6 @@
 Hyrax::StatsController.class_eval do
   def work
     # [hyc-override] modified to include daily page views and custom download event
-    Rails.logger.debug("WORK OVERRIDE: params=#{params}")
     @document = ::SolrDocument.find(params[:id])
     @pageviews = Hyrax::Analytics.daily_events_for_id(@document.id, 'work-view')
     @downloads = Hyrax::Analytics.daily_events_for_id(@document.id, 'DownloadIR')
