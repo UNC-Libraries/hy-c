@@ -10,6 +10,7 @@ module Hyc
         # wip: modified if condition, revert later
         if !request.url.match('thumbnail')
           Rails.logger.debug("Recording download event for #{params[:id]}")
+          Rails.logger.debug("DownloadAnalyticsBehavior request inspect #{request.inspect}")
           medium = request.referrer.present? ? 'referral' : 'direct'
 
           user_id = current_user.id if current_user
