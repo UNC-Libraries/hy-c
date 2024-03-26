@@ -8,7 +8,7 @@ Hyrax::Analytics::Matomo.module_eval do
         segment: additional_params_helper(id, action)
       #   label: "#{id} - #{action}"
       }
-      response = api_params('Events.getName', 'day', date, additional_params)
+      response = api_params('Events.getName', 'week', date, additional_params)
       Rails.logger.debug("DAILY EVENTS FOR ID OVERRIDE RESPONSE: response=#{response}")
       results_array(response, 'nb_events')
     end
