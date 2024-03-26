@@ -10,7 +10,6 @@ Hyrax::Analytics::Matomo.module_eval do
       #   label: "#{id} - #{action}"
       }
       response = api_params('Events.getName', 'week', date, additional_params)
-      Rails.logger.debug("DAILY EVENTS FOR ID OVERRIDE RESPONSE: response=#{response}")
       results_array(response, 'nb_events')
     end
 
@@ -28,7 +27,8 @@ Hyrax::Analytics::Matomo.module_eval do
 
     def get(params)
       response = Faraday.get(config.base_url, params)
-      Rails.logger.debug("GET OVERRIDE: response=#{response}, body = #{response.body}")
+      Rails.logger.debug("GET OVERRIDE: response=#{response}, response.status=#{response.status}")
+      Rails.logger.debug("RESPONSE BODY: #{response.body}")
       return [] if response.status != 200
       JSON.parse(response.body)
     end
