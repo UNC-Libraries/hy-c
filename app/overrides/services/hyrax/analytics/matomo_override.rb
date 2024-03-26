@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 Hyrax::Analytics::Matomo.module_eval do
     # [hyc-override] https://github.com/samvera/hyrax/blob/hyrax-v3.5.0/app/services/hyrax/analytics/matomo.rb
   class_methods do
