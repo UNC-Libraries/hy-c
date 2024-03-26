@@ -27,7 +27,7 @@ Hyrax::Analytics::Matomo.module_eval do
 
     def get(params)
       encoded_params = URI.encode_www_form(params)
-      response = Faraday.get("#{config.base_url}/index.php", encoded_params)
+      response = Faraday.get("#{config.base_url}/index.php?#{encoded_params}")
       Rails.logger.debug("GET OVERRIDE: response=#{response.inspect}, response.status=#{response.status}")
       Rails.logger.debug("RESPONSE BODY: #{response.body.inspect}")
       return [] if response.status != 200
