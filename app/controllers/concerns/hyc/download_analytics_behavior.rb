@@ -36,7 +36,7 @@ module Hyc
             # WIP: Will likely need to change this for downloads recorded from other sources
             # Intention is to capture the id of the work being downloaded
             # Using solr query to recover record_id
-            e_n: record_id,
+            e_n: record_id || 'Unknown',
             e_v: medium,
             uid: client_id,
             _id: user_id,
@@ -75,6 +75,8 @@ module Hyc
       end
 
       def record_id
+        return nil if params[:id].nil?
+
         record = ActiveFedora::SolrService.get("file_set_ids_ssim:#{params[:id]}", rows: 1)['response']['docs']
 
         @record_id = if !record.blank?
