@@ -6,9 +6,13 @@ Hyrax::Analytics::Matomo.module_eval do
     def daily_events_for_id(id, action, date = default_date_range)
       additional_params = {
         flat: 1,
-        label: "#{id} - #{action}"
+        # WIP: Conditional additional params for different events
+        label: action == 'DownloadIR' ? "#{id} - #{action}" : nil,
+        # Filter pattern to match views of the work; excluding stats
+        filter_pattern: action == 'PageView' ? "^(?=.*\bconcern\b)(?=.*\b#{id}\b) : nil"
       }
-      response = api_params('Events.getName', 'day', date, additional_params)
+      method = action == 'DownloadIR' ? 'Events.getName' : 'Actions.getPageUrls'
+      response = api_params(method, 'day', date, additional_params)
       results_array(response, 'nb_events')
     end
 

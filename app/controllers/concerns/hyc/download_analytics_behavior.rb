@@ -35,6 +35,8 @@ module Hyc
             e_c: @admin_set_name,
             # WIP: Will likely need to change this for downloads recorded from other sources
             # Intention is to capture the id of the work being downloaded
+            # Using solr query to recover record_id
+            e_n: record_id,
             e_v: medium,
             uid: client_id,
             _id: user_id,
@@ -42,8 +44,8 @@ module Hyc
             send_image: '0',
             ua: user_agent
           }
-          extracted_id = extract_id_from_referrer(request.referrer)
-          uri_params[:e_n] = extracted_id if extracted_id
+          # extracted_id = extract_id_from_referrer(request.referrer)
+          # uri_params[:e_n] = extracted_id if extracted_id
           uri.query = URI.encode_www_form(uri_params)
           response = HTTParty.get(uri.to_s)
           Rails.logger.debug("Matomo Query Url #{uri}")
@@ -70,6 +72,16 @@ module Hyc
 
       def base_url
         @base_url ||= ENV['MATOMO_BASE_URL']
+      end
+
+      def record_id
+        record = ActiveFedora::SolrService.get("file_set_ids_ssim:#{params[:id]}", rows: 1)['response']['docs']
+
+        @record_id = if !record.blank?
+                       record[0]['id'].first
+                          else
+                            'Unknown'
+                          end
       end
 
       def client_id
