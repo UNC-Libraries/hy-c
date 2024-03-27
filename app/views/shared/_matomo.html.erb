@@ -3,20 +3,21 @@
 
   // Extracting the ID from the URL if it's a record 
   // WIP: It may be a good idea to include the category as well in another custom dimension
-  if (document.getElementById('file_download')) {
-    var workId = document.getElementById('file_download').getAttribute('data-work-id');
-    if (workId) {
-      console.log('Data Work ID:', workId); // Log the value to the consol
-      _paq.push(['setCustomDimension', 1, workId]);
-    }
-  }
-  //  var pathSegments = window.location.pathname.split('/');
-  // var concernIndex = pathSegments.indexOf('concern');
-  // if (concernIndex !== -1) {
-  //   var recordIdIndex = pathSegments.findIndex(segment => segment === 'concern') + 2;
-  //   var recordId = pathSegments.length > recordIdIndex ? pathSegments[recordIdIndex].split('?')[0] : 'undefined';
-  //   _paq.push(['setCustomDimension', 1, recordId]);
+  // if (document.getElementById('file_download')) {
+  //   var workId = document.getElementById('file_download').getAttribute('data-work-id');
+  //   console.log('Data Work ID:', workId); // Log the value to the console
+  //   if (workId) {
+  //     _paq.push(['setCustomDimension', 1, workId]);
+  //   }
   // }
+  var pathSegments = window.location.pathname.split('/');
+  var concernIndex = pathSegments.indexOf('concern');
+  if (concernIndex !== -1) {
+    var workIdIndex = pathSegments.findIndex(segment => segment === 'concern') + 2;
+    var workId = pathSegments.length > workIdIndex ? pathSegments[workIdIndex].split('?')[0] : 'undefined';
+    console.log(workId); // Log the value to the console
+    _paq.push(['setCustomDimension', 1, workId]);
+  }
   _paq.push(['trackPageView']);
   _paq.push(['enableLinkTracking']);
   (function() {
