@@ -1,14 +1,16 @@
 <script>
   var _paq = window._paq = window._paq || [];
 
-  // Extracting the ID from the URL if it's a record page
-  var workId = document.getElementById('file_download').getAttribute('data-work-id');
-  if (workId) {
-    _paq.push(['setCustomDimension', 1, workId]);
-  }
+  // Extracting the ID from the URL if it's a record 
   // WIP: It may be a good idea to include the category as well in another custom dimension
-  console.log('Data Work ID:', workId); // Log the value to the console
-    //  var pathSegments = window.location.pathname.split('/');
+  if (document.getElementById('file_download')) {
+    var workId = document.getElementById('file_download').getAttribute('data-work-id');
+    if (workId) {
+      console.log('Data Work ID:', workId); // Log the value to the consol
+      _paq.push(['setCustomDimension', 1, workId]);
+    }
+  }
+  //  var pathSegments = window.location.pathname.split('/');
   // var concernIndex = pathSegments.indexOf('concern');
   // if (concernIndex !== -1) {
   //   var recordIdIndex = pathSegments.findIndex(segment => segment === 'concern') + 2;
