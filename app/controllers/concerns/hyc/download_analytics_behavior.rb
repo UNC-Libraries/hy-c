@@ -10,7 +10,6 @@ module Hyc
         # wip: modified if condition, revert later
         if !request.url.match('thumbnail')
           Rails.logger.debug("Recording download event for #{params[:id]}")
-          Rails.logger.debug("DownloadAnalyticsBehavior request inspect #{request.inspect}")
           medium = request.referrer.present? ? 'referral' : 'direct'
 
           user_id = current_user.id if current_user
@@ -29,12 +28,13 @@ module Hyc
             idsite: matomo_id_site,
             action_name: 'Download',
             url: request.url,
+            urlref: request.referrer,
             rand: rand(1_000_000).to_s,
             apiv: '1',
-            urlref: request.referrer,
             e_a: 'DownloadIR',
             e_c: @admin_set_name,
-            e_n: params[:id],
+            # WIP: Will likely need to change this for downloads recorded from other sources
+            # Intention is to capture the id of the work being downloaded
             e_v: medium,
             uid: client_id,
             _id: user_id,
@@ -42,6 +42,8 @@ module Hyc
             send_image: '0',
             ua: user_agent
           }
+          extracted_id = extract_id_from_referrer(request.referrer)
+          uri_params[:e_n] = extracted_id if extracted_id
           uri.query = URI.encode_www_form(uri_params)
           response = HTTParty.get(uri.to_s)
           Rails.logger.debug("Matomo Query Url #{uri}")
@@ -50,7 +52,6 @@ module Hyc
           end
           Rails.logger.debug("DownloadAnalyticsBehavior request completed #{response.code}")
           Rails.logger.debug("DownloadAnalyticsBehavior request params #{uri_params}")
-          Rails.logger.debug("DownloadAnalyticsBehavior request url #{request.url}")
           response.code
         end
       end
@@ -80,6 +81,21 @@ module Hyc
         # fall back to a random id
         return SecureRandom.uuid if cookie.nil?
       end
+
+      def extract_id_from_referrer(referrer)
+        return nil if referrer.nil? || referrer.empty?
+
+        path_segments = referrer.split('/')
+        concern_index = path_segments.index('concern')
+        # If 'concern' exists in the path and there's at least one segment after it
+        if concern_index && path_segments.length > concern_index + 1
+          # Return the segment immediately after 'concern' as the ID
+          return path_segments[concern_index + 1]
+        else
+          return nil
+        end
+      end
+
     end
   end
 end
