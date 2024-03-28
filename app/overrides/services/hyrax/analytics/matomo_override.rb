@@ -16,25 +16,18 @@ Hyrax::Analytics::Matomo.module_eval do
       results_array(response, 'nb_events')
     end
 
-    # def additional_params_helper(id, action)
-    #   segment = ''
-    #     # Filter by download event or pageview, and the id of the related work
-    #     # https://developer.matomo.org/api-reference/reporting-api-segmentation
-    #   if action == 'DownloadIR'
-    #     # Thinking the ID of the record is different from the ID of the event
-    #     # Seems like the ID of the event being recorded corresponds to some identifier retrieved from the download url.
-    #     # segment = "eventAction==DownloadIR;eventName==#{id}"
-    #     segment = "eventAction==DownloadIR"
-    #   elsif action == 'work-view'
-    #     # segment = "actionType==pageviews;dimension1==#{id}"
-    #     segment = "actionType==pageviews"
-    #   end
-    #   segment
-    # end
-
     def get(params)
+      # Exclude filter_pattern from encoding
+      filter_pattern = params[:filter_pattern]
+      params.delete(:filter_pattern)
       encoded_params = URI.encode_www_form(params)
-      response = Faraday.get("#{config.base_url}/index.php?#{encoded_params}")
+
+      # Add filter_pattern separately without encoding
+      encoded_params += "&filter_pattern=#{filter_pattern}" if filter_pattern
+
+      requestURL = "#{config.base_url}/index.php?#{encoded_params}"
+      Rails.logger.debug("MATOMO GET requestURL=#{requestURL}")
+      response = Faraday.get(requestURL)
       Rails.logger.debug("GET OVERRIDE: response=#{response.inspect}, response.status=#{response.status}")
       Rails.logger.debug("RESPONSE BODY: #{response.body.inspect}")
       return [] if response.status != 200
