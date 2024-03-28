@@ -7,7 +7,7 @@ Hyrax::Analytics::Matomo.module_eval do
 
     def daily_events_for_id(id, action, date = default_date_range)
       # Filter pattern to match views of the work; excluding stats
-      @@filter_pattern = action == 'PageView' ? "^(?=\.\*\\bconcern\\b)(?=\.\*\\b#{id}\\b)" : nil
+      @@filter_pattern = action == 'PageView' ? "&filter_pattern=^(?=\.\*\\bconcern\\b)(?=\.\*\\b#{id}\\b)" : ""
       additional_params = {
         flat: 1,
         # WIP: Conditional additional params for different events
@@ -21,9 +21,7 @@ Hyrax::Analytics::Matomo.module_eval do
     def get(params)
       encoded_params = URI.encode_www_form(params)
       # Add filter_pattern separately without encoding
-      filter_pattern = @@filter_pattern ? "&filter_pattern=#{@@filter_pattern}" : ""
-
-      requestURL = "#{config.base_url}/index.php?#{encoded_params}#{filter_pattern}"
+      requestURL = @@filter_pattern ? "#{config.base_url}/index.php?#{encoded_params}#{@@filter_pattern}" : "#{config.base_url}/index.php?#{encoded_params}"
       Rails.logger.debug("MATOMO GET requestURL=#{requestURL}")
       response = Faraday.get(requestURL)
       Rails.logger.debug("GET OVERRIDE: response=#{response.inspect}, response.status=#{response.status}")
