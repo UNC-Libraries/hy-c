@@ -14,8 +14,9 @@ Hyrax::Analytics::Matomo.module_eval do
         label: action == 'DownloadIR' ? "#{id} - #{action}" : nil,
       }
       method = action == 'DownloadIR' ? 'Events.getName' : 'Actions.getPageUrls'
+      stat_field = action == 'DownloadIR' ? 'nb_events' : 'nb_visits'
       response = api_params(method, 'day', date, additional_params)
-      results_array(response, 'nb_events')
+      results_array(response, stat_field)
     end
 
     def get(params)
