@@ -13,7 +13,7 @@ Hyrax::Analytics::Matomo.module_eval do
         # Only including label for DownloadIR action
         label: action == 'DownloadIR' ? "#{id} - #{action}" : nil,
       }
-      # Methods can be changed to return different stats from matomo 
+      # Methods can be changed to return different stats from matomo
       # https://developer.matomo.org/api-reference/reporting-api
       method = action == 'DownloadIR' ? 'Events.getName' : 'Actions.getPageUrls'
       stat_field = action == 'DownloadIR' ? 'nb_events' : 'nb_visits'
