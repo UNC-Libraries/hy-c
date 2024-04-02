@@ -6,8 +6,6 @@ require Rails.root.join('app/overrides/controllers/hyrax/downloads_controller_ov
 RSpec.describe Hyrax::DownloadsController, type: :controller do
   routes { Hyrax::Engine.routes }
   let(:base_analytics_url) { 'https://analytics-qa.lib.unc.edu/matomo.php' }
-  # let(:base_analytics_url) { 'https://www.google-analytics.com/mp/collect?api_secret=supersecret&measurement_id=analytics_id' }
-
   let(:stub_ga) do
     stub_request(:get, base_analytics_url).with(query: hash_including({'token_auth' => 'testtoken',
                                                                        'idsite' => '5'}))

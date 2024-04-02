@@ -7,8 +7,7 @@ module Hyc
       after_action :track_download, only: :show
 
       def track_download
-        # wip: modified if condition, revert later
-        if !request.url.match('thumbnail')
+        if Hyrax::Analytics.config.auth_token.present? && !request.url.match('thumbnail')
           Rails.logger.debug("Recording download event for #{params[:id]}")
           medium = request.referrer.present? ? 'referral' : 'direct'
 
@@ -16,12 +15,12 @@ module Hyc
           client_ip = request.remote_ip
           user_agent = request.user_agent
 
-          # wip: idsite, token_auth, differnt base url
-          # not entirely sure if the mapping of ga to matomo params is correct
-          # missing host_name
-          matomo_id_site = site_id || '5'
-          matomo_security_token = auth_token || 'c7b71dddc7f088a630ab1c2e3bb1a322'
+          matomo_id_site = site_id
+          matomo_security_token = auth_token
           uri = URI("#{base_url}/matomo.php")
+
+          # Some parameters are optional, but included since tracking would not work otherwise
+          # https://developer.matomo.org/api-reference/tracking-api
           uri_params = {
             token_auth: matomo_security_token,
             rec: '1',
@@ -33,10 +32,8 @@ module Hyc
             apiv: '1',
             e_a: 'DownloadIR',
             e_c: @admin_set_name,
-            # WIP: Will likely need to change this for downloads recorded from other sources
-            # Intention is to capture the id of the work being downloaded
-            # Using solr query to recover record_id
-            e_n: record_id || 'Unknown',
+            # Recovering work id with a solr query
+            e_n: work_id || 'Unknown',
             e_v: medium,
             uid: client_id,
             _id: user_id,
@@ -44,16 +41,13 @@ module Hyc
             send_image: '0',
             ua: user_agent
           }
-          # extracted_id = extract_id_from_referrer(request.referrer)
-          # uri_params[:e_n] = extracted_id if extracted_id
           uri.query = URI.encode_www_form(uri_params)
           response = HTTParty.get(uri.to_s)
-          Rails.logger.debug("Matomo Query Url #{uri}")
+          Rails.logger.debug("Matomo download tracking URL: #{uri}")
           if response.code >= 300
-            Rails.logger.error("DownloadAnalyticsBehavior received an error response #{response.code} for query parameters: #{uri_params}")
+            Rails.logger.error("DownloadAnalyticsBehavior received an error response #{response.code} for matomo query: #{uri}")
           end
           Rails.logger.debug("DownloadAnalyticsBehavior request completed #{response.code}")
-          Rails.logger.debug("DownloadAnalyticsBehavior request params #{uri_params}")
           response.code
         end
       end
@@ -74,13 +68,13 @@ module Hyc
         @base_url ||= ENV['MATOMO_BASE_URL']
       end
 
-      def record_id
+      def work_id
         return nil if params[:id].nil?
 
         record = ActiveFedora::SolrService.get("file_set_ids_ssim:#{params[:id]}", rows: 1)['response']['docs']
 
-        @record_id = if !record.blank?
-                       record[0]['id']
+        @work_id = if !record.blank?
+                     record[0]['id']
                           else
                             'Unknown'
                           end
@@ -94,20 +88,6 @@ module Hyc
         end
         # fall back to a random id
         return SecureRandom.uuid if cookie.nil?
-      end
-
-      def extract_id_from_referrer(referrer)
-        return nil if referrer.nil? || referrer.empty?
-
-        path_segments = referrer.split('/')
-        concern_index = path_segments.index('concern')
-        # If 'concern' exists in the path and there's at least one segment after it
-        if concern_index && path_segments.length > concern_index + 1
-          # Return the segment immediately after 'concern' as the ID
-          return path_segments[concern_index + 1]
-        else
-          return nil
-        end
       end
 
     end

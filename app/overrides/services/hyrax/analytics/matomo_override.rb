@@ -6,13 +6,15 @@ Hyrax::Analytics::Matomo.module_eval do
   class_methods do
 
     def daily_events_for_id(id, action, date = default_date_range)
-      # Filter pattern to match views of the work; excluding stats
+      # Matching tracked views for a specific work excluding stats page views
       @@filter_pattern = action == 'PageView' ? "&filter_pattern=^(?=\.\*\\bconcern\\b)(?=\.\*\\b#{id}\\b)" : ''
       additional_params = {
         flat: 1,
-        # WIP: Conditional additional params for different events
+        # Only including label for DownloadIR action
         label: action == 'DownloadIR' ? "#{id} - #{action}" : nil,
       }
+      # Methods can be changed to return different stats from matomo 
+      # https://developer.matomo.org/api-reference/reporting-api
       method = action == 'DownloadIR' ? 'Events.getName' : 'Actions.getPageUrls'
       stat_field = action == 'DownloadIR' ? 'nb_events' : 'nb_visits'
       response = api_params(method, 'day', date, additional_params)
@@ -23,10 +25,7 @@ Hyrax::Analytics::Matomo.module_eval do
       encoded_params = URI.encode_www_form(params)
       # Add filter_pattern separately without encoding
       requestURL = @@filter_pattern ? "#{config.base_url}/index.php?#{encoded_params}#{@@filter_pattern}" : "#{config.base_url}/index.php?#{encoded_params}"
-      Rails.logger.debug("MATOMO GET requestURL=#{requestURL}")
       response = Faraday.get(requestURL)
-      Rails.logger.debug("GET OVERRIDE: response=#{response.inspect}, response.status=#{response.status}")
-      Rails.logger.debug("RESPONSE BODY: #{response.body.inspect}")
       return [] if response.status != 200
       JSON.parse(response.body)
     end
