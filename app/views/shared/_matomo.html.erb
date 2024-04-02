@@ -1,23 +1,27 @@
 <script>
   var _paq = window._paq = window._paq || [];
 
-  // Extracting the ID from the URL if it's a record 
-  // WIP: It may be a good idea to include the category as well in another custom dimension
-  // if (document.getElementById('file_download')) {
-  //   var workId = document.getElementById('file_download').getAttribute('data-work-id');
-  //   console.log('Data Work ID:', workId); // Log the value to the console
-  //   if (workId) {
-  //     _paq.push(['setCustomDimension', 1, workId]);
-  //   }
-  // }
-  var pathSegments = window.location.pathname.split('/');
-  var concernIndex = pathSegments.indexOf('concern');
-  if (concernIndex !== -1) {
-    var workIdIndex = pathSegments.findIndex(segment => segment === 'concern') + 2;
-    var workId = pathSegments.length > workIdIndex ? pathSegments[workIdIndex].split('?')[0] : 'undefined';
-    console.log(workId); // Log the value to the console
-    _paq.push(['setCustomDimension', 1, workId]);
-  }
+  document.addEventListener('DOMContentLoaded', function() {
+    // Extracting the ID of the work from the download button
+    if (document.getElementById('file_download')) {
+      var workId = document.getElementById('file_download').getAttribute('data-work-id');
+      if (workId) {
+        var resourceTypeElem = document.querySelector('.attribute-resource_type');
+        var collectionElem = document.querySelector('.attribute-title');
+        var adminSetElem = document.querySelector('.attribute-admin_set');
+
+        // Checking if resource type, collection or admin set have been assigned to the work
+        var resourceType = resourceTypeElem ? resourceTypeElem.textContent.trim() : 'undefined';
+        var collection = collectionElem ? collectionElem.textContent.trim() : 'undefined';
+        var adminSet = adminSetElem ? adminSetElem.textContent.trim() : 'undefined';
+        _paq.push(['setCustomDimension', 1, workId]);
+        _paq.push(['setCustomDimension', 2, resourceType]);
+        _paq.push(['setCustomDimension', 3, collectionElem]);
+        _paq.push(['setCustomDimension', 4, adminSetElem]);
+      }
+    }
+  }, false);
+
   _paq.push(['trackPageView']);
   _paq.push(['enableLinkTracking']);
   (function() {
