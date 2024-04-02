@@ -7,7 +7,7 @@ Hyrax::Analytics::Matomo.module_eval do
 
     def daily_events_for_id(id, action, date = default_date_range)
       # Filter pattern to match views of the work; excluding stats
-      @@filter_pattern = action == 'PageView' ? "&filter_pattern=^(?=\.\*\\bconcern\\b)(?=\.\*\\b#{id}\\b)" : ""
+      @@filter_pattern = action == 'PageView' ? "&filter_pattern=^(?=\.\*\\bconcern\\b)(?=\.\*\\b#{id}\\b)" : ''
       additional_params = {
         flat: 1,
         # WIP: Conditional additional params for different events
