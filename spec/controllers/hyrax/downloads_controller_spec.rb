@@ -5,23 +5,33 @@ require Rails.root.join('app/overrides/controllers/hyrax/downloads_controller_ov
 
 RSpec.describe Hyrax::DownloadsController, type: :controller do
   routes { Hyrax::Engine.routes }
-  let(:base_analytics_url) { 'https://analytics-qa.lib.unc.edu/matomo.php' }
-  let(:stub_ga) do
-    stub_request(:get, base_analytics_url).with(query: hash_including({'token_auth' => 'testtoken',
+  let(:spec_base_analytics_url) { 'https://analytics-qa.lib.unc.edu' }
+  let(:spec_site_id) { '5' }
+  let(:spec_auth_token) { 'testtoken' }
+  let(:stub_matomo) do
+    stub_request(:get, "#{spec_base_analytics_url}/matomo.php").with(query: hash_including({'token_auth' => 'testtoken',
                                                                        'idsite' => '5'}))
     .to_return(status: 200, body: '', headers: {})
   end
 
   around do |example|
-    cached_secret = ENV['MATOMO_AUTH_TOKEN']
-    ENV['MATOMO_AUTH_TOKEN'] = 'testtoken'
+    # Set the environment variables for the test
+    @auth_token = ENV['MATOMO_AUTH_TOKEN']
+    @site_id = ENV['MATOMO_SITE_ID']
+    @matomo_base_url = ENV['MATOMO_BASE_URL']
+    ENV['MATOMO_AUTH_TOKEN'] = spec_auth_token
+    ENV['MATOMO_SITE_ID'] = spec_site_id
+    ENV['MATOMO_BASE_URL'] = spec_base_analytics_url
     example.run
-    ENV['MATOMO_AUTH_TOKEN'] = cached_secret
+    # Reset the environment variables
+    ENV['MATOMO_AUTH_TOKEN'] = @auth_token
+    ENV['MATOMO_SITE_ID'] = @site_id
+    ENV['MATOMO_BASE_URL'] = @matomo_base_url
   end
 
   before do
     ActiveFedora::Cleaner.clean!
-    allow(stub_ga)
+    allow(stub_matomo)
     allow(Hyrax::Analytics.config).to receive(:site_id).and_return('5')
     allow(SecureRandom).to receive(:uuid).and_return('555')
     allow(Hyrax::VirusCheckerService).to receive(:file_has_virus?) { false }
@@ -37,7 +47,7 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
       allow(controller.request).to receive(:referrer).and_return('http://example.com')
       expect(controller).to respond_to(:track_download)
       expect(controller.track_download).to eq 200
-      expect(stub_ga).to have_been_requested.times(1) # must be after the method call that creates request
+      expect(stub_matomo).to have_been_requested.times(1) # must be after the method call that creates request
     end
 
     context 'with a created work' do
@@ -52,7 +62,7 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
         allow(Hyrax::VirusCheckerService).to receive(:file_has_virus?) { false }
         allow(SecureRandom).to receive(:uuid).and_return('555')
         request.env['HTTP_REFERER'] = 'http://example.com'
-        stub = stub_request(:get, base_analytics_url)
+        stub = stub_request(:get, "#{spec_base_analytics_url}/matomo.php")
           .with(query: hash_including({'e_a' => 'DownloadIR',
                                       'e_c' => 'Unknown',
                                       # 'e_n' => file_set.id,
@@ -68,7 +78,7 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
       it 'sets the medium to direct when there is no referrer' do
         allow(controller).to receive(:cookies) { { _ga: 'ga.1.2.3'} }
         request.env['HTTP_REFERER'] = nil
-        stub = stub_request(:get, base_analytics_url)
+        stub = stub_request(:get, "#{spec_base_analytics_url}/matomo.php")
         .with(query: hash_including({'e_a' => 'DownloadIR',
                                     'e_c' => 'Unknown',
                                     # 'e_n' => file_set.id,
@@ -84,7 +94,7 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
       it 'logs an error for a 400 response' do
         allow(Rails.logger).to receive(:error)
         request.env['HTTP_REFERER'] = 'http://example.com'
-        stub = stub_request(:get, base_analytics_url)
+        stub = stub_request(:get, "#{spec_base_analytics_url}/matomo.php")
         .with(query: hash_including({'e_a' => 'DownloadIR'}))
                .to_return(status: 400, body: '', headers: {})
         get :show, params: { id: file_set }
