@@ -29,6 +29,8 @@ class ApplicationController < ActionController::Base
   rescue_from ActionController::UnknownFormat, with: :render_404
   rescue_from Riiif::ConversionError, with: :render_400
   rescue_from Faraday::TimeoutError, with: :render_408
+  rescue_from ArgumentError, with: :render_400
+  rescue_from URI::InvalidURIError, with: :render_400
 
   protected
 
