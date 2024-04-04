@@ -2,9 +2,8 @@
 Hyrax::Analytics::Matomo.module_eval do
     # [hyc-override] https://github.com/samvera/hyrax/blob/hyrax-v3.5.0/app/services/hyrax/analytics/matomo.rb
   @@filter_pattern = nil
+  class MatomoError < StandardError; end
   class_methods do
-    class MatomoError < StandardError; end
-
     def daily_events_for_id(id, action, date = default_date_range)
       # Matching tracked views for a specific work excluding stats page views
       @@filter_pattern = action == 'PageView' ? "&filter_pattern=^(?=\.\*\\bconcern\\b)(?=\.\*\\b#{id}\\b)" : ''
