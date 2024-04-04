@@ -2,7 +2,6 @@
 require 'rails_helper'
 RSpec.describe Hyrax::StatsController do
   let(:user) { FactoryBot.create(:user) }
-  let(:document_id) { 'zp38wq32v' }
   let(:usage) { double }
   let(:document) { instance_double(SolrDocument) }
 
@@ -15,10 +14,6 @@ RSpec.describe Hyrax::StatsController do
 
   describe 'work' do
     let(:work) { FactoryBot.create(:work_with_files, user: user) }
-    before do
-      sign_in user
-      request.env['HTTP_REFERER'] = 'http://test.host/foo'
-    end
 
     it 'renders the stats view' do
       dates = [Time.new(2019, 6, 19), Time.new(2019, 6, 20), Time.new(2019, 6, 21)]
