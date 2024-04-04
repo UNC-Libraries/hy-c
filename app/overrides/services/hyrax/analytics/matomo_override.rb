@@ -1,7 +1,16 @@
 # frozen_string_literal: true
+
+module Hyrax
+  module Analytics
+    module Errors
+      class MatomoError < StandardError
+      end
+    end
+  end
+end
+
 Hyrax::Analytics::Matomo.module_eval do
     # [hyc-override] https://github.com/samvera/hyrax/blob/hyrax-v3.5.0/app/services/hyrax/analytics/matomo.rb
-
   @@filter_pattern = nil
   class_methods do
 
@@ -26,7 +35,11 @@ Hyrax::Analytics::Matomo.module_eval do
       # Add filter_pattern separately without encoding
       requestURL = @@filter_pattern ? "#{config.base_url}/index.php?#{encoded_params}#{@@filter_pattern}" : "#{config.base_url}/index.php?#{encoded_params}"
       response = Faraday.get(requestURL)
-      return [] if response.status != 200
+      unless response.success?
+        error_message = "Failed to fetch data from Matomo API: #{response.status} - #{response.reason_phrase}"
+        Rails.logger.error(error_message)
+        raise MatomoError, error_message
+      end
       JSON.parse(response.body)
     end
 
