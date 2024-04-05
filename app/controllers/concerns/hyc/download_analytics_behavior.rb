@@ -11,7 +11,6 @@ module Hyc
           Rails.logger.debug("Recording download event for #{params[:id]}")
           medium = request.referrer.present? ? 'referral' : 'direct'
 
-          user_id = current_user.id if current_user
           client_ip = request.remote_ip
           user_agent = request.user_agent
 
@@ -28,15 +27,13 @@ module Hyc
             action_name: 'Download',
             url: request.url,
             urlref: request.referrer,
-            rand: rand(1_000_000).to_s,
             apiv: '1',
             e_a: 'DownloadIR',
             e_c: @admin_set_name,
             # Recovering work id with a solr query
             e_n: params[:id] || 'Unknown',
             e_v: medium,
-            uid: client_id,
-            _id: user_id,
+            _id: client_id,
             cip: client_ip,
             send_image: '0',
             ua: user_agent
@@ -56,6 +53,10 @@ module Hyc
         @api_secret ||= ENV['ANALYTICS_API_SECRET']
       end
 
+      def user_id
+        current_ability.current_user.uid
+      end
+
       def site_id
         @site_id ||= ENV['MATOMO_SITE_ID']
       end
@@ -68,26 +69,14 @@ module Hyc
         @base_url ||= ENV['MATOMO_BASE_URL']
       end
 
-      # def work_id
-      #   return nil if params[:id].nil?
-
-      #   record = ActiveFedora::SolrService.get("file_set_ids_ssim:#{params[:id]}", rows: 1)['response']['docs']
-
-      #   @work_id = if !record.blank?
-      #                record[0]['id']
-      #                     else
-      #                       'Unknown'
-      #                     end
-      # end
-
       def client_id
-        cookie = cookies[:_ga]
+        cookie = cookies.find { |key, _| key.start_with?("_pk_id") }&.last
         if cookie.present?
           parts = cookie.to_s.split('.')
-          return "#{parts[2]}.#{parts[3]}" if parts.length == 4
+          return parts[0] if parts.length >= 2
         end
         # fall back to a random id
-        return SecureRandom.uuid if cookie.nil?
+        return SecureRandom.uuid
       end
 
     end
