@@ -20,13 +20,15 @@ module ActionDispatch
       ActionDispatch::Http::MimeNegotiation::InvalidType,
       ActionDispatch::Http::Parameters::ParseError,
       ActiveFedora::ObjectNotFoundError,
+      ArgumentError,
       Blacklight::Exceptions::RecordNotFound,
       BlacklightRangeLimit::InvalidRange,
       Faraday::TimeoutError,
       Hyrax::ObjectNotFoundError,
       Ldp::Gone,
       Riiif::ConversionError,
-      Riiif::ImageNotFoundError
+      Riiif::ImageNotFoundError,
+      URI::InvalidURIError
     ].to_set
 
     def should_reduce_log_level?(wrapper)
