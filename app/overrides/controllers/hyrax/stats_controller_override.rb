@@ -4,7 +4,7 @@ Hyrax::StatsController.class_eval do
   def work
     # [hyc-override] different parameters for daily_events_for_id
     @document = ::SolrDocument.find(params[:id])
-    @pageviews = Hyrax::Analytics.daily_events_for_id(@document.id, 'PageView', 'last365')
-    @downloads = Hyrax::Analytics.daily_events_for_id(@document.id, 'DownloadIR', 'last365')
+    @pageviews = Hyrax::Analytics.daily_events_for_id(@document.id, 'work-view')
+    @downloads = Hyrax::Analytics.daily_events_for_id(@document.id, 'DownloadIR')
   end
 end

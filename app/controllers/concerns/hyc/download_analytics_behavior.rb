@@ -33,7 +33,7 @@ module Hyc
             e_a: 'DownloadIR',
             e_c: @admin_set_name,
             # Recovering work id with a solr query
-            e_n: work_id || 'Unknown',
+            e_n: params[:id] || 'Unknown',
             e_v: medium,
             uid: client_id,
             _id: user_id,
@@ -68,17 +68,17 @@ module Hyc
         @base_url ||= ENV['MATOMO_BASE_URL']
       end
 
-      def work_id
-        return nil if params[:id].nil?
+      # def work_id
+      #   return nil if params[:id].nil?
 
-        record = ActiveFedora::SolrService.get("file_set_ids_ssim:#{params[:id]}", rows: 1)['response']['docs']
+      #   record = ActiveFedora::SolrService.get("file_set_ids_ssim:#{params[:id]}", rows: 1)['response']['docs']
 
-        @work_id = if !record.blank?
-                     record[0]['id']
-                          else
-                            'Unknown'
-                          end
-      end
+      #   @work_id = if !record.blank?
+      #                record[0]['id']
+      #                     else
+      #                       'Unknown'
+      #                     end
+      # end
 
       def client_id
         cookie = cookies[:_ga]
