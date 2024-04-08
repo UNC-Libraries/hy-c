@@ -70,7 +70,7 @@ module Hyc
       end
 
       def client_id
-        cookie = cookies.find { |key, _| key.start_with?("_pk_id") }&.last
+        cookie = cookies.find { |key, _| key.start_with?('_pk_id') }&.last
         if cookie.present?
           parts = cookie.to_s.split('.')
           return parts[0] if parts.length >= 2

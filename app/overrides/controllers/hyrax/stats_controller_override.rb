@@ -5,7 +5,6 @@ Hyrax::StatsController.class_eval do
     # [hyc-override] different parameters for daily_events_for_id
     @document = ::SolrDocument.find(params[:id])
     @pageviews = Hyrax::Analytics.daily_events_for_id(@document.id, 'work-view')
-    # @downloads = Hyrax::Analytics.daily_events_for_id(@document.id, 'DownloadIR')
     # [hyc-override] Pull DownloadIR stats from the first 100 filesets in the work
     work = ActiveFedora::Base.find(params[:id])
     fileset_ids = work.members.first(100).map(&:id)
