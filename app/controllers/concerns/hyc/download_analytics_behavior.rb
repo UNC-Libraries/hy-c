@@ -53,10 +53,6 @@ module Hyc
         @api_secret ||= ENV['ANALYTICS_API_SECRET']
       end
 
-      def user_id
-        current_ability.current_user.uid
-      end
-
       def site_id
         @site_id ||= ENV['MATOMO_SITE_ID']
       end
