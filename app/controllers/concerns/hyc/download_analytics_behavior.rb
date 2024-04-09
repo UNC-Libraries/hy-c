@@ -7,34 +7,42 @@ module Hyc
       after_action :track_download, only: :show
 
       def track_download
-        if Hyrax::Analytics.config.analytics_id.present? && !request.url.match('thumbnail')
+        if Hyrax::Analytics.config.auth_token.present? && !request.url.match('thumbnail')
           Rails.logger.debug("Recording download event for #{params[:id]}")
           medium = request.referrer.present? ? 'referral' : 'direct'
-          body = {
-              'client_id' => client_id,
-              'events' => [
-                {
-                  'name' => 'DownloadIR',
-                  'params' => {
-                    'category' => @admin_set_name,
-                    'label' => params[:id],
-                    'host_name' => request.host,
-                    'medium' => medium,
-                    'page_referrer' => request.referrer,
-                    'page_location' => request.url
-                  }
-                }
-              ]
-            }.to_json
 
-          ga_id = Hyrax::Analytics.config.analytics_id
-          url = "https://www.google-analytics.com/mp/collect?measurement_id=#{ga_id}&api_secret=#{api_secret}"
-          response = HTTParty.post(url,
-            {
-              body: body
-            })
+          client_ip = request.remote_ip
+          user_agent = request.user_agent
+
+          matomo_id_site = site_id
+          matomo_security_token = auth_token
+          uri = URI("#{base_url}/matomo.php")
+
+          # Some parameters are optional, but included since tracking would not work otherwise
+          # https://developer.matomo.org/api-reference/tracking-api
+          uri_params = {
+            token_auth: matomo_security_token,
+            rec: '1',
+            idsite: matomo_id_site,
+            action_name: 'Download',
+            url: request.url,
+            urlref: request.referrer,
+            apiv: '1',
+            e_a: 'DownloadIR',
+            e_c: @admin_set_name,
+            # Recovering work id with a solr query
+            e_n: params[:id] || 'Unknown',
+            e_v: medium,
+            _id: client_id,
+            cip: client_ip,
+            send_image: '0',
+            ua: user_agent
+          }
+          uri.query = URI.encode_www_form(uri_params)
+          response = HTTParty.get(uri.to_s)
+          Rails.logger.debug("Matomo download tracking URL: #{uri}")
           if response.code >= 300
-            Rails.logger.error("DownloadAnalyticsBehavior received an error response #{response.code} for body: #{body}")
+            Rails.logger.error("DownloadAnalyticsBehavior received an error response #{response.code} for matomo query: #{uri}")
           end
           Rails.logger.debug("DownloadAnalyticsBehavior request completed #{response.code}")
           response.code
@@ -45,15 +53,28 @@ module Hyc
         @api_secret ||= ENV['ANALYTICS_API_SECRET']
       end
 
+      def site_id
+        @site_id ||= ENV['MATOMO_SITE_ID']
+      end
+
+      def auth_token
+        @auth_token ||= ENV['MATOMO_AUTH_TOKEN']
+      end
+
+      def base_url
+        @base_url ||= ENV['MATOMO_BASE_URL']
+      end
+
       def client_id
-        cookie = cookies[:_ga]
+        cookie = cookies.find { |key, _| key.start_with?('_pk_id') }&.last
         if cookie.present?
           parts = cookie.to_s.split('.')
-          return "#{parts[2]}.#{parts[3]}" if parts.length == 4
+          return parts[0] if parts.length >= 2
         end
         # fall back to a random id
-        return SecureRandom.uuid if cookie.nil?
+        return SecureRandom.uuid
       end
+
     end
   end
 end
