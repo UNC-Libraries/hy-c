@@ -24,7 +24,7 @@ module Tasks
     def ingest_publication(publication)
     # Extract the publication attributes
       article_with_metadata(publication)
-      puts "Ingesting publication: #{publication['title']}"
+      # puts "Ingesting publication: #{publication['title']}"
       puts "Article Inspector: #{article_with_metadata(publication)}"
 
       # work_attributes = {
@@ -56,7 +56,7 @@ module Tasks
     def article_with_metadata(publication)
       art = Article.new
       art.title = [publication['title']]
-      # art.creator = publication['authors']
+      art.creator = [publication['authors']]
       # art.funder = publication['funders'].map { |funder| funder['name'] }
       # art.date_issued = publication['date']
       # art.abstract = publication['abstract']
