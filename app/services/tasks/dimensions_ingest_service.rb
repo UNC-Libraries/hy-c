@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Tasks
   class DimensionsIngestService
     class DimensionsPublicationIngestError < StandardError
@@ -9,23 +10,20 @@ module Tasks
 
       publications.each do |publication|
         begin
-        # Ingest the publication into the database
           ingest_publication(publication)
           ingested_count += 1
           rescue StandardError => e
-            # Wip remove puts later
-            puts "Error ingesting publication: #{e.message}"
-            Rails.logger.error("Error ingesting publication: #{e.message}")
+            raise DimensionsPublicationIngestError, "Error ingesting publication: #{e.message}"
         end
       end
       ingested_count
     end
 
     def ingest_publication(publication)
-    # Extract the publication attributes
       article_with_metadata(publication)
+      # WIP: Remove Comments Later
       # puts "Ingesting publication: #{publication['title']}"
-      puts "Article Inspector: #{article_with_metadata(publication)}"
+      # puts "Article Inspector: #{article_with_metadata(publication)}"
 
       # work_attributes = {
       #   # title: publication['title'],
@@ -56,12 +54,41 @@ module Tasks
     def article_with_metadata(publication)
       art = Article.new
       art.title = [publication['title']]
-      art.creator = [publication['authors']]
+      placeholder_creators_variable = publication['authors'].map.with_index { |author, index| [index,author_to_hash(author, index)] }.to_h
+      puts "Article Inspector: #{placeholder_creators_variable}"
+      # WIP: Remove Comments Later
+      # art.creators_attributes = placeholder
+      # puts "Article Inspector: #{art.creators_attributes}"
       # art.funder = publication['funders'].map { |funder| funder['name'] }
       # art.date_issued = publication['date']
       # art.abstract = publication['abstract']
       art.save!
       art
+    end
+
+    def author_to_hash(author, index)
+      hash = {
+        # 'name' => 'placeholder',
+        # 'orcid' => 'placeholder',
+        # 'affiliation' => '',
+        # 'affiliation' => some_method, # Do not store affiliation until we can map it to the controlled vocabulary
+        'other_affiliation' => '',
+        # 'index' => (index + 1).to_s
+      }
+
+      # Splitting author affiliations into UNC and other affiliations and adding them to hash
+      if author['affiliations'].present?
+        unc_grid_id = 'grid.410711.2'
+        author_unc_affiliation = author['affiliations'].select { |affiliation| affiliation['id'] == unc_grid_id || 
+                                                                  affiliation['raw_affiliation'].include?('UNC') ||
+                                                                  affiliation['raw_affiliation'].include?('University of North Carolina, Chapel Hill')}.first
+        author_other_affiliations = author['affiliations'].reject { |affiliation| affiliation['id'] == unc_grid_id || 
+                                                                  affiliation['raw_affiliation'].include?('UNC') ||
+                                                                  affiliation['raw_affiliation'].include?('University of North Carolina, Chapel Hill')}
+        hash['other_affiliation'] = author_other_affiliations.map { |affiliation| affiliation['raw_affiliation'] }
+        hash['affiliation'] = author_unc_affiliation.present? ? author_unc_affiliation['raw_affiliation'] : ''
+      end
+      hash
     end
   end
     end
