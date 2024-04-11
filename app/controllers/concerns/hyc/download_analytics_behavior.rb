@@ -30,13 +30,14 @@ module Hyc
             apiv: '1',
             e_a: 'DownloadIR',
             e_c: @admin_set_name,
-            # Recovering work id with a solr query
             e_n: params[:id] || 'Unknown',
             e_v: medium,
             _id: client_id,
             cip: client_ip,
             send_image: '0',
-            ua: user_agent
+            ua: user_agent,
+            # Recovering work id with a solr query
+            dimension1: "#{::SolrDocument.find(params[:id]).id}"
           }
           uri.query = URI.encode_www_form(uri_params)
           response = HTTParty.get(uri.to_s)
