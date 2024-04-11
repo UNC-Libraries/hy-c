@@ -30,16 +30,18 @@ module Tasks
     def article_with_metadata(publication)
       art = Article.new
       art.title = [publication['title']]
-      placeholder_creators_variable = publication['authors'].map.with_index { |author, index| [index,author_to_hash(author, index)] }.to_h
-      art.creators_attributes = placeholder_creators_variable
+      art.creators_attributes = publication['authors'].map.with_index { |author, index| [index,author_to_hash(author, index)] }.to_h
+      puts "Article Inspector: #{art.inspect}"
       art.save!
       art
     end
 
     def author_to_hash(author, index)
       hash = {
-        'name' => 'placeholder',
-        'other_affiliation' => ''}
+        'name' => "#{[author['first_name'], author['last_name']].compact.join(' ')}",
+        'orcid' => author['orcid'].present? ? author['orcid'] : '',
+        'index' => (index + 1).to_s,
+      }
 
       # Splitting author affiliations into UNC and other affiliations and adding them to hash
       if author['affiliations'].present?
