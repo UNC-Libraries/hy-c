@@ -68,7 +68,7 @@ module Hyc
       def record_title
         record = ActiveFedora::SolrService.get("file_set_ids_ssim:#{params[:id]}", rows: 1)['response']['docs']
 
-        @record_id = if !record.blank?
+        @record_title = if !record.blank?
                        record[0]['title_tesim'].first
                           else
                             'Unknown'
