@@ -44,6 +44,18 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
     end
 
     it 'has the method for tracking analytics for download' do
+      allow(ActiveFedora::SolrService).to receive(:get).and_return(
+        {
+        'response' => {
+          'docs' => [
+            { 'id' => 'id',
+              'file_set_ids_ssim' => 'file-id',
+              'title_tesim' => ['Test Title']}
+          ]
+        }
+      }
+      )
+
       allow(controller.request).to receive(:referrer).and_return('http://example.com')
       expect(controller).to respond_to(:track_download)
       expect(controller.track_download).to eq 200
