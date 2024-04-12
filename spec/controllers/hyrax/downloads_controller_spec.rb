@@ -44,9 +44,15 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
     end
 
     it 'has the method for tracking analytics for download' do
-      test_id = 'test123'
-      test_document = instance_double(SolrDocument, id: test_id)
-      allow(SolrDocument).to receive(:find).and_return(test_document)
+      allow(ActiveFedora::SolrService).to receive(:get).and_return(
+        {
+        'response' => {
+          'docs' => [
+            { 'file_set_ids_ssim' => 'id-123' }
+          ]
+        }
+      }
+      )
 
       allow(controller.request).to receive(:referrer).and_return('http://example.com')
       expect(controller).to respond_to(:track_download)
