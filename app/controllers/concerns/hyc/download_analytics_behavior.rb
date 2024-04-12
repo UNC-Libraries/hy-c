@@ -37,7 +37,8 @@ module Hyc
             send_image: '0',
             ua: user_agent,
             # Recovering work id with a solr query
-            dimension1: record_id
+            dimension1: record_id,
+            dimension2: record_title
           }
           uri.query = URI.encode_www_form(uri_params)
           response = HTTParty.get(uri.to_s)
@@ -59,6 +60,16 @@ module Hyc
 
         @record_id = if !record.blank?
                        record[0]['id']
+                          else
+                            'Unknown'
+                          end
+      end
+
+      def record_title
+        record = ActiveFedora::SolrService.get("file_set_ids_ssim:#{params[:id]}", rows: 1)['response']['docs']
+
+        @record_id = if !record.blank?
+                       record[0]['title_tesim'].first
                           else
                             'Unknown'
                           end

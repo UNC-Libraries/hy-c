@@ -48,7 +48,9 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
         {
         'response' => {
           'docs' => [
-            { 'file_set_ids_ssim' => 'id-123' }
+            { 'id' => 'id',
+              'file_set_ids_ssim' => 'file-id',
+              'title_tesim' => ['Test Title']}
           ]
         }
       }
