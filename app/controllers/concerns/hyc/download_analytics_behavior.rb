@@ -55,21 +55,21 @@ module Hyc
         @api_secret ||= ENV['ANALYTICS_API_SECRET']
       end
 
-      def record_id
-        record = ActiveFedora::SolrService.get("file_set_ids_ssim:#{params[:id]}", rows: 1)['response']['docs']
-
-        @record_id = if !record.blank?
-                       record[0]['id']
-                          else
-                            'Unknown'
-                          end
+      def fetch_record
+        @record ||= ActiveFedora::SolrService.get("file_set_ids_ssim:#{params[:id]}", rows: 1)['response']['docs']
       end
-
+    
+      def record_id
+        @record_id ||= if !fetch_record.blank?
+                         fetch_record[0]['id']
+                       else
+                         'Unknown'
+                       end
+      end
+    
       def record_title
-        record = ActiveFedora::SolrService.get("file_set_ids_ssim:#{params[:id]}", rows: 1)['response']['docs']
-
-        @record_title = if !record.blank?
-                       record[0]['title_tesim'].first
+        @record_title ||= if !fetch_record.blank? && fetch_record[0]['title_tesim']
+                            fetch_record[0]['title_tesim'].first
                           else
                             'Unknown'
                           end
