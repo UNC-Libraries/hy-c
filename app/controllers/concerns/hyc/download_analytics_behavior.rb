@@ -58,7 +58,7 @@ module Hyc
       def fetch_record
         @record ||= ActiveFedora::SolrService.get("file_set_ids_ssim:#{params[:id]}", rows: 1)['response']['docs']
       end
-    
+
       def record_id
         @record_id ||= if !fetch_record.blank?
                          fetch_record[0]['id']
@@ -66,7 +66,7 @@ module Hyc
                          'Unknown'
                        end
       end
-    
+
       def record_title
         @record_title ||= if !fetch_record.blank? && fetch_record[0]['title_tesim']
                             fetch_record[0]['title_tesim'].first
