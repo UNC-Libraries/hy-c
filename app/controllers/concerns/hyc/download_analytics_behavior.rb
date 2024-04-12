@@ -63,7 +63,7 @@ module Hyc
                             'Unknown'
                           end
       end
-        
+
       def site_id
         @site_id ||= ENV['MATOMO_SITE_ID']
       end
