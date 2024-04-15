@@ -32,4 +32,24 @@ RSpec.describe ApplicationController, type: :controller do
       expect(subject.instance_variable_get(:@params)[:f]).to eq(ActionController::Parameters.new({'resource_type_sim' => ['Article']}))
     end
   end
+
+  describe '#set_locale' do
+    controller(ApplicationController) do
+      def index
+        @params = params
+      end
+    end
+
+    it 'retains valid locale' do
+      get :index, params: { locale: 'fr' }
+      expect(I18n.locale).to eq :fr
+      expect(subject.instance_variable_get(:@params)[:locale]).to eq 'fr'
+    end
+
+    it 'overrides invalid locale' do
+      get :index, params: { locale: 'http://example.com/why' }
+      expect(I18n.locale).to eq :en
+      expect(subject.instance_variable_get(:@params)[:locale]).to eq 'en'
+    end
+  end
 end

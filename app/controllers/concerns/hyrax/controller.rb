@@ -77,8 +77,9 @@ module Hyrax::Controller
   # [hyc-override] Add begin/rescue for locale setting
   def set_locale
     I18n.locale = params[:locale] || I18n.default_locale
-  rescue I18n::InvalidLocale
+  rescue I18n::InvalidLocale => e
     I18n.locale = I18n.default_locale
+    params[:locale] = I18n.default_locale.to_s
   end
 
   # Called by Hydra::Controller::ControllerBehavior when CanCan::AccessDenied is caught
