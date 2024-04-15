@@ -2,13 +2,13 @@
 require 'rails_helper'
 
 RSpec.describe Tasks::DimensionsIngestService do
-  let(:dimensions_query_response_fixture) do
-    File.read(File.join(Rails.root, '/spec/fixtures/files/dimensions_pagination_query_response_1.json'))
+  let(:dimensions_ingest_test_fixture) do
+    File.read(File.join(Rails.root, '/spec/fixtures/files/dimensions_ingest_test_fixture.json'))
   end
 
   # Retrieving fixture publications and randomly assigning the marked_for_review attribute
   let(:test_input) do
-    fixture_publications = JSON.parse(dimensions_query_response_fixture)['publications']
+    fixture_publications = JSON.parse(dimensions_ingest_test_fixture)['publications']
     fixture_publications.each do |publication|
       random_number = rand(1..5)
       if random_number == 1

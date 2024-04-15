@@ -34,8 +34,13 @@ module Tasks
       art.funder = publication['funders'].presence&.map do |funder|
         funder.map { |key, value| "#{key}: #{value}" if value.present? }.compact.join('||')
       end
+      art.date_issued = publication['date']
+      art.abstract = publication['abstract'].present? ? [publication['abstract']] : nil
+      # art.version = publication['type'].present? && publication['type'] == 'preprint' ? 'preprint' : nil
+      art.resource_type = publication['type'].present? ? [publication['type']] : nil
+      art.identifier = publication_identifiers(publication)
       # puts "Article Inspector: #{art.funder.inspect}"
-      puts "Article Inspector: #{art.inspect}"
+      puts "Article Inspector Abstract: #{art.abstract.inspect}"
       art.save!
       art
     end
@@ -60,6 +65,15 @@ module Tasks
         hash['affiliation'] = author_unc_affiliation.present? ? author_unc_affiliation['raw_affiliation'] : ''
       end
       hash
+    end
+
+    def publication_identifiers(publication)
+      [
+        publication['id'].present? ? "Dimensions ID: #{publication['id']}" : nil,
+        publication['doi'].present? ? "DOI: https://dx.doi.org/#{publication['doi']}" : nil,
+        publication['pmid'].present? ? "PMID: #{publication['pmid']}" : nil,
+        publication['pmcid'].present? ? "PMCID: #{publication['pmcid']}" : nil,
+      ].compact
     end
   end
     end

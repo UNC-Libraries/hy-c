@@ -26,7 +26,7 @@ module Tasks
                         for """
                         "University of North Carolina, Chapel Hill" OR "UNC"
                         """#{'  '}
-                        return publications[basics + extras]
+                        return publications[basics + extras + abstract]
                         limit #{page_size}
                         skip #{cursor}
                       QUERY
