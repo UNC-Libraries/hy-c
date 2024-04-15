@@ -20,13 +20,14 @@ module Tasks
 
       loop do
         begin
+          return_fields = ['basics', 'extras', 'abstract', 'issn', 'publisher', 'journal_title_raw'].join(' + ')
           # Query with paramaters to retrieve publications related to UNC
           query_string = <<~QUERY
                         search publications #{doi_clause} in raw_affiliations#{' '}
                         for """
                         "University of North Carolina, Chapel Hill" OR "UNC"
                         """#{'  '}
-                        return publications[basics + extras + abstract]
+                        return publications[#{return_fields}]
                         limit #{page_size}
                         skip #{cursor}
                       QUERY

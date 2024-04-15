@@ -373,10 +373,15 @@
                 }
             ],
             "id": "pub.1140838514",
+            "issn": [
+                "0168-3659",
+                "1873-4995"
+            ],
             "journal": {
                 "id": "jour.1096382",
                 "title": "Journal of Controlled Release"
             },
+            "journal_title_raw": "Journal of Controlled Release",
             "open_access": [
                 "oa_all",
                 "green"
@@ -384,6 +389,7 @@
             "pages": "804-812",
             "pmcid": "PMC8794005",
             "pmid": "34481925",
+            "publisher": "Elsevier",
             "relative_citation_ratio": 0.58,
             "research_org_cities": [
                 {
@@ -770,11 +776,16 @@
                 }
             ],
             "id": "pub.1160372243",
+            "issn": [
+                "2376-0540",
+                "2376-1032"
+            ],
             "issue": "7",
             "journal": {
                 "id": "jour.1050864",
                 "title": "Journal of Managed Care & Specialty Pharmacy"
             },
+            "journal_title_raw": "Journal of Managed Care & Specialty Pharmacy",
             "open_access": [
                 "oa_all",
                 "green"
@@ -782,6 +793,7 @@
             "pages": "10.18553/jmcp.2023.29.7.770",
             "pmcid": "PMC10387912",
             "pmid": "37404075",
+            "publisher": "Academy of Managed Care Pharmacy",
             "research_org_cities": [
                 {
                     "id": "4460162",
@@ -1413,11 +1425,15 @@
                 }
             ],
             "id": "pub.1158190926",
+            "issn": [
+                "2589-0042"
+            ],
             "issue": "6",
             "journal": {
                 "id": "jour.1319505",
                 "title": "iScience"
             },
+            "journal_title_raw": "iScience",
             "open_access": [
                 "oa_all",
                 "gold"
@@ -1425,6 +1441,7 @@
             "pages": "106905",
             "pmcid": "PMC10251131",
             "pmid": "37305696",
+            "publisher": "Elsevier",
             "research_org_cities": [
                 {
                     "id": "4460162",
@@ -1737,6 +1754,10 @@
                 }
             ],
             "id": "pub.1052269221",
+            "issn": [
+                "1064-3745",
+                "1940-6029"
+            ],
             "open_access": [
                 "oa_all",
                 "green"
@@ -1744,6 +1765,7 @@
             "pages": "75-90",
             "pmcid": "PMC3025018",
             "pmid": "20217614",
+            "publisher": "Springer Nature",
             "relative_citation_ratio": 1.02,
             "research_org_cities": [
                 {
@@ -2203,15 +2225,21 @@
                 }
             ],
             "id": "pub.1152130762",
+            "issn": [
+                "0273-2300",
+                "1096-0295"
+            ],
             "journal": {
                 "id": "jour.1093457",
                 "title": "Regulatory Toxicology and Pharmacology"
             },
+            "journal_title_raw": "Regulatory Toxicology and Pharmacology",
             "open_access": [
                 "closed"
             ],
             "pages": "105277",
             "pmid": "36288772",
+            "publisher": "Elsevier",
             "relative_citation_ratio": 0.23,
             "research_org_cities": [
                 {
@@ -2689,11 +2717,16 @@
                 }
             ],
             "id": "pub.1101727864",
+            "issn": [
+                "2156-5333",
+                "2156-535X"
+            ],
             "issue": "3",
             "journal": {
                 "id": "jour.1044307",
                 "title": "Journal of Adolescent and Young Adult Oncology"
             },
+            "journal_title_raw": "Journal of Adolescent and Young Adult Oncology",
             "open_access": [
                 "oa_all",
                 "green"
@@ -2701,6 +2734,7 @@
             "pages": "374-383",
             "pmcid": "PMC5994155",
             "pmid": "29570988",
+            "publisher": "Mary Ann Liebert",
             "relative_citation_ratio": 1.24,
             "research_org_cities": [
                 {
@@ -3379,11 +3413,16 @@
                 }
             ],
             "id": "pub.1007892331",
+            "issn": [
+                "1538-7933",
+                "1538-7836"
+            ],
             "issue": "1",
             "journal": {
                 "id": "jour.1032051",
                 "title": "Journal of Thrombosis and Haemostasis"
             },
+            "journal_title_raw": "Journal of Thrombosis and Haemostasis",
             "open_access": [
                 "oa_all",
                 "hybrid"
@@ -3391,6 +3430,7 @@
             "pages": "153-166",
             "pmcid": "PMC4715578",
             "pmid": "26516108",
+            "publisher": "Elsevier",
             "relative_citation_ratio": 4.54,
             "research_org_cities": [
                 {
@@ -3865,11 +3905,16 @@
                 }
             ],
             "id": "pub.1075191463",
+            "issn": [
+                "1464-8431",
+                "2040-3445"
+            ],
             "issue": "5",
             "journal": {
                 "id": "jour.1021426",
                 "title": "Current Opinion in Molecular Therapeutics"
             },
+            "journal_title_raw": "Current opinion in molecular therapeutics",
             "open_access": [
                 "closed"
             ],
@@ -4017,10 +4062,15 @@
             "date": "2012-06-06",
             "doi": "10.1007/978-1-4614-3801-4_3",
             "id": "pub.1023012822",
+            "issn": [
+                "2196-8985",
+                "2196-8993"
+            ],
             "open_access": [
                 "closed"
             ],
             "pages": "61-80",
+            "publisher": "Springer Nature",
             "research_org_cities": [
                 {
                     "id": "4460162",
@@ -4170,17 +4220,23 @@
                 }
             ],
             "id": "pub.1018715071",
+            "issn": [
+                "1940-3402",
+                "1559-6095"
+            ],
             "issue": "11",
             "journal": {
                 "id": "jour.1037308",
                 "title": "Cold Spring Harbor Protocols"
             },
+            "journal_title_raw": "Cold Spring Harbor Protocols",
             "open_access": [
                 "oa_all",
                 "bronze"
             ],
             "pages": "pdb.prot5077",
             "pmid": "21356718",
+            "publisher": "Cold Spring Harbor Laboratory",
             "relative_citation_ratio": 0.38,
             "research_org_cities": [
                 {

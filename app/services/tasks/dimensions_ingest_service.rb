@@ -31,16 +31,23 @@ module Tasks
       art = Article.new
       art.title = [publication['title']]
       art.creators_attributes = publication['authors'].map.with_index { |author, index| [index,author_to_hash(author, index)] }.to_h
-      art.funder = publication['funders'].presence&.map do |funder|
-        funder.map { |key, value| "#{key}: #{value}" if value.present? }.compact.join('||')
-      end
+      art.funder = map_publication_funders(publication)
       art.date_issued = publication['date']
-      art.abstract = publication['abstract'].present? ? [publication['abstract']] : nil
+      art.abstract = [publication['abstract']].compact.presence
+      art.resource_type = [publication['type']].compact.presence
+      art.identifier = map_publication_identifiers(publication)
+      art.publisher = [publication['publisher']].compact.presence
+      art.journal_title = publication['journal_title_raw'].presence
+      art.journal_volume = publication['volume'].presence
+      art.journal_issue = publication['issue'].presence
+      # == WIP: Version doesn't exist in the model
       # art.version = publication['type'].present? && publication['type'] == 'preprint' ? 'preprint' : nil
-      art.resource_type = publication['type'].present? ? [publication['type']] : nil
-      art.identifier = publication_identifiers(publication)
-      # puts "Article Inspector: #{art.funder.inspect}"
-      puts "Article Inspector Abstract: #{art.abstract.inspect}"
+      # == WIP: Issn is an array of values from dim, but is a single value in the model
+      # art.issn = [publication['issn']].compact.presence
+
+      # puts "Article Inspector journal_title: #{art.journal_title.inspect}"
+      # puts "Article Inspector journal_volume: #{art.journal_volume.inspect}"
+      # puts "Article Inspector journal_issue: #{art.journal_issue.inspect}"
       art.save!
       art
     end
@@ -67,13 +74,23 @@ module Tasks
       hash
     end
 
-    def publication_identifiers(publication)
+    def map_publication_identifiers(publication)
       [
         publication['id'].present? ? "Dimensions ID: #{publication['id']}" : nil,
         publication['doi'].present? ? "DOI: https://dx.doi.org/#{publication['doi']}" : nil,
         publication['pmid'].present? ? "PMID: #{publication['pmid']}" : nil,
         publication['pmcid'].present? ? "PMCID: #{publication['pmcid']}" : nil,
       ].compact
+    end
+
+    def map_publication_funders(publication)
+      publication['funders'].presence&.map do |funder|
+        funder.map { |key, value| "#{key}: #{value}" if value.present? }.compact.join('||')
+      end
+    end
+
+    def map_creators_attributes(publication)
+      publication['authors'].map.with_index { |author, index| [index,author_to_hash(author, index)] }.to_h
     end
   end
     end
