@@ -31,15 +31,10 @@ module Tasks
       art = Article.new
       art.title = [publication['title']]
       art.creators_attributes = publication['authors'].map.with_index { |author, index| [index,author_to_hash(author, index)] }.to_h
-      art.funder = if publication['funders'].present?
-        publication['funders'].map do |funder|
-          res = []
-          funder.each do |key, value|
-            res << "#{key}: #{value}" if value.present?
-          end
-          res.join('||')
-        end
+      art.funder = publication['funders'].presence&.map do |funder|
+        funder.map { |key, value| "#{key}: #{value}" if value.present? }.compact.join('||')
       end
+      # puts "Article Inspector: #{art.funder.inspect}"
       puts "Article Inspector: #{art.inspect}"
       art.save!
       art
