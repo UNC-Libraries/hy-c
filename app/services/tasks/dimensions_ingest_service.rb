@@ -29,6 +29,7 @@ module Tasks
 
     def article_with_metadata(publication)
       art = Article.new
+      pages = map_publication_pages(publication)
       art.title = [publication['title']]
       art.creators_attributes = publication['authors'].map.with_index { |author, index| [index,author_to_hash(author, index)] }.to_h
       art.funder = map_publication_funders(publication)
@@ -40,13 +41,17 @@ module Tasks
       art.journal_title = publication['journal_title_raw'].presence
       art.journal_volume = publication['volume'].presence
       art.journal_issue = publication['issue'].presence
+      art.page_start = pages[:start]
+      art.page_end = pages[:end]
+      art.rights_statement = CdrRightsStatementsService.label('http://rightsstatements.org/vocab/InC/1.0/')
+      art.dcmi_type = [DcmiTypeService.label('http://purl.org/dc/dcmitype/Text')]
       # == WIP: Version doesn't exist in the model
       # art.version = publication['type'].present? && publication['type'] == 'preprint' ? 'preprint' : nil
       # == WIP: Issn is an array of values from dim, but is a single value in the model
       # art.issn = [publication['issn']].compact.presence
 
-      # puts "Article Inspector journal_title: #{art.journal_title.inspect}"
-      # puts "Article Inspector journal_volume: #{art.journal_volume.inspect}"
+      # puts "Article Inspector rights_statement: #{art.rights_statement.inspect}"
+      # puts "Article Inspector dcmi_type: #{art.dcmi_type.inspect}"
       # puts "Article Inspector journal_issue: #{art.journal_issue.inspect}"
       art.save!
       art
@@ -89,8 +94,22 @@ module Tasks
       end
     end
 
-    def map_creators_attributes(publication)
-      publication['authors'].map.with_index { |author, index| [index,author_to_hash(author, index)] }.to_h
+    def map_publication_pages(publication)
+      res = {
+        start: nil,
+        end: nil
+      }
+      if publication['pages'].present?
+        publication_pages = publication['pages'].split('-')
+        if publication_pages.length == 2
+          res[:start] = publication_pages.first
+          res[:end] = publication_pages.last
+        elsif publication_pages.length == 1
+          res[:start] = publication_pages.first
+        end
+      end
+      res
     end
+
   end
     end
