@@ -45,14 +45,8 @@ module Tasks
       art.page_end = pages[:end]
       art.rights_statement = CdrRightsStatementsService.label('http://rightsstatements.org/vocab/InC/1.0/')
       art.dcmi_type = [DcmiTypeService.label('http://purl.org/dc/dcmitype/Text')]
-      # == WIP: Version doesn't exist in the model
-      # art.version = publication['type'].present? && publication['type'] == 'preprint' ? 'preprint' : nil
-      # == WIP: Issn is an array of values from dim, but is a single value in the model
-      # art.issn = [publication['issn']].compact.presence
-
-      # puts "Article Inspector rights_statement: #{art.rights_statement.inspect}"
-      # puts "Article Inspector dcmi_type: #{art.dcmi_type.inspect}"
-      # puts "Article Inspector journal_issue: #{art.journal_issue.inspect}"
+      art.edition = publication['type'].present? && publication['type'] == 'preprint' ? 'preprint' : nil
+      art.issn = publication['issn'].presence
       art.save!
       art
     end
