@@ -26,19 +26,22 @@ module Tasks
       publications.each.with_index do |publication, index|
         begin
         # WIP: Remove Index Break Later
-          if index == 3
+          if index == 1
             break
           end
           article_with_metadata = article_with_metadata(publication)
           create_sipity_workflow(work: article_with_metadata)
           pdf_path = extract_pdf(publication)
-          pdf_file = attach_pdf_to_work(article_with_metadata, pdf_path, depositor)
 
-          pdf_file.update permissions_attributes: group_permissions(@admin_set)
+          if pdf_path.present?
+            pdf_file = attach_pdf_to_work(article_with_metadata, pdf_path, depositor)
+            pdf_file.update permissions_attributes: group_permissions(@admin_set)
+            File.delete(pdf_path) if File.exist?(pdf_path)
+          end
 
           ingested_count += 1
           rescue StandardError => e
-            raise DimensionsPublicationIngestError, "Error ingesting publication: #{e.message}"
+            raise DimensionsPublicationIngestError, "Error ingesting publication #{publication['title']}: #{e.message}"
         end
       end
       ingested_count
@@ -145,19 +148,21 @@ module Tasks
     def extract_pdf(publication)
       pdf_url = publication['linkout']
       return nil unless pdf_url.present?
-
       response = HTTParty.head(pdf_url)
       return nil unless response.headers['content-type'] && response.headers['content-type'].include?('application/pdf')
 
+      storage_dir = ENV['TEMP_STORAGE']
+      filename = "downloaded_pdf_#{Time.now.to_i}.pdf"
+      file_path = File.join(storage_dir, filename)
 
-      puts "Temp Storage: #{ENV['TEMP_STORAGE']}"
-      pdf_file = Tempfile.new(['temp_pdf', '.pdf'], dir: ENV['TEMP_STORAGE'])
-      pdf_file.binmode
-      pdf_file.write(HTTParty.get(pdf_url).body)
-      pdf_file.rewind
-
-      file_path = pdf_file.path
-      pdf_file.close
+      puts "Saving PDF #{filename} to: #{file_path}"
+      pdf_response = HTTParty.get(pdf_url)
+      return nil unless pdf_response.code == 200 
+      # Write to file
+      File.open(file_path, 'wb') do |file| 
+        file.write(pdf_response.body)
+      end
+    
       file_path  # Return the file path
     end
 
