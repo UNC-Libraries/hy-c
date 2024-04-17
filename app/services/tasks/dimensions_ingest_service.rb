@@ -4,17 +4,17 @@ module Tasks
     class DimensionsPublicationIngestError < StandardError
     end
    
-    def ingest_dimensions_publications(publications)
+    def ingest_publications(publications)
       puts "[#{Time.now}] Ingesting publications from Dimensions."
       ingested_count = 0
 
       publications.each.with_index do |publication, index|
-        # WIP: Remove Index Break Later
-        # if index == 3
-        #   break
-        # end
         begin
-          ingest_publication(publication)
+        # WIP: Remove Index Break Later
+          if index == 3
+            break
+          end
+          article_with_metadata(publication)
           ingested_count += 1
           rescue StandardError => e
             raise DimensionsPublicationIngestError, "Error ingesting publication: #{e.message}"
@@ -23,33 +23,48 @@ module Tasks
       ingested_count
     end
 
-    def ingest_publication(publication)
-      article_with_metadata(publication)
+    def article_with_metadata(publication)
+      article = Article.new
+      populate_article_metadata(article, publication)
+      puts "Article Inspector: #{article.inspect}"
+      article.save!
+      article
     end
 
-    def article_with_metadata(publication)
-      art = Article.new
-      pages = map_publication_pages(publication)
-      art.title = [publication['title']]
-      art.creators_attributes = publication['authors'].map.with_index { |author, index| [index,author_to_hash(author, index)] }.to_h
-      art.funder = map_publication_funders(publication)
-      art.date_issued = publication['date']
-      art.abstract = [publication['abstract']].compact.presence
-      art.resource_type = [publication['type']].compact.presence
-      art.identifier = map_publication_identifiers(publication)
-      art.publisher = [publication['publisher']].compact.presence
-      art.journal_title = publication['journal_title_raw'].presence
-      art.journal_volume = publication['volume'].presence
-      art.journal_issue = publication['issue'].presence
-      art.page_start = pages[:start]
-      art.page_end = pages[:end]
-      art.rights_statement = CdrRightsStatementsService.label('http://rightsstatements.org/vocab/InC/1.0/')
-      art.dcmi_type = [DcmiTypeService.label('http://purl.org/dc/dcmitype/Text')]
-      art.edition = publication['type'].present? && publication['type'] == 'preprint' ? 'preprint' : nil
-      art.issn = publication['issn'].presence
-      art.save!
-      art
+    def populate_article_metadata(article, publication)
+      set_basic_attributes(article, publication)
+      set_journal_attributes(article, publication)
+      set_rights_and_types(article, publication)
     end
+
+    def set_basic_attributes(article, publication)
+      article.title = [publication['title']]
+      article.creators_attributes = publication['authors'].map.with_index { |author, index| [index,author_to_hash(author, index)] }.to_h
+      article.funder = format_funders_data(publication)
+      article.date_issued = publication['date']
+      article.abstract = [publication['abstract']].compact.presence
+      article.resource_type = [publication['type']].compact.presence
+      article.publisher = [publication['publisher']].compact.presence
+    end
+
+    def set_rights_and_types(article, publication)
+      article.rights_statement = CdrRightsStatementsService.label('http://rightsstatements.org/vocab/InC/1.0/')
+      article.dcmi_type = [DcmiTypeService.label('http://purl.org/dc/dcmitype/Text')]
+      article.edition = determine_edition(publication)
+    end
+
+    def set_journal_attributes(article, publication)
+      article.journal_title = publication['journal_title_raw'].presence
+      article.journal_volume = publication['volume'].presence
+      article.journal_issue = publication['issue'].presence
+      article.page_start, article.page_end = parse_page_numbers(publication).values_at(:start, :end)
+    end
+
+    def set_identifiers(article, publication)
+      article.identifier = format_publication_identifiers(publication)
+      article.issn = publication['issn'].presence
+    end
+  
 
     def author_to_hash(author, index)
       hash = {
@@ -57,7 +72,6 @@ module Tasks
         'orcid' => author['orcid'].present? ? author['orcid'] : '',
         'index' => (index + 1).to_s,
       }
-
       # Splitting author affiliations into UNC and other affiliations and adding them to hash
       if author['affiliations'].present?
         unc_grid_id = 'grid.410711.2'
@@ -73,7 +87,7 @@ module Tasks
       hash
     end
 
-    def map_publication_identifiers(publication)
+    def format_publication_identifiers(publication)
       [
         publication['id'].present? ? "Dimensions ID: #{publication['id']}" : nil,
         publication['doi'].present? ? "DOI: https://dx.doi.org/#{publication['doi']}" : nil,
@@ -82,28 +96,41 @@ module Tasks
       ].compact
     end
 
-    def map_publication_funders(publication)
+    def format_funders_data(publication)
       publication['funders'].presence&.map do |funder|
         funder.map { |key, value| "#{key}: #{value}" if value.present? }.compact.join('||')
       end
     end
 
-    def map_publication_pages(publication)
-      res = {
-        start: nil,
-        end: nil
+    def parse_page_numbers(publication)
+      return { start: nil, end: nil } unless publication['pages'].present?
+      
+      pages = publication['pages'].split('-')
+      {
+        start: pages.first,
+        end: (pages.length == 2 ? pages.last : nil)
       }
-      if publication['pages'].present?
-        publication_pages = publication['pages'].split('-')
-        if publication_pages.length == 2
-          res[:start] = publication_pages.first
-          res[:end] = publication_pages.last
-        elsif publication_pages.length == 1
-          res[:start] = publication_pages.first
-        end
-      end
-      res
     end
+
+    def determine_edition(publication)
+      publication['type'].present? && publication['type'] == 'preprint' ? 'preprint' : nil
+    end
+
+    def extract_pdf(publication)
+      pdf_url = publication['linkout']
+      return nil unless pdf_url.present?
+      
+      response = HTTParticley.head(pdf_url)
+      return nil unless response.headers['content-type'].include?('application/pdf')
+
+      pdf_file = Tempfile.new(['temp_pdf', '.pdf'])
+      pdf_file.binmode
+      pdf_file.write(HTTParticley.get(pdf_url).body)
+      pdf_file.rewind
+      pdf_file
+    end
+
+  
 
   end
     end

@@ -20,7 +20,7 @@ module Tasks
 
       loop do
         begin
-          return_fields = ['basics', 'extras', 'abstract', 'issn', 'publisher', 'journal_title_raw'].join(' + ')
+          return_fields = ['basics', 'extras', 'abstract', 'issn', 'publisher', 'journal_title_raw', 'linkout'].join(' + ')
           # Query with paramaters to retrieve publications related to UNC
           query_string = <<~QUERY
                         search publications #{doi_clause} in raw_affiliations#{' '}

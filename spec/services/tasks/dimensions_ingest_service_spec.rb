@@ -20,7 +20,7 @@ RSpec.describe Tasks::DimensionsIngestService do
 
   describe '#ingest_dimensions_publications' do
     it 'ingests the publications into the database' do
-      described_class.new.ingest_dimensions_publications(test_input)
+      described_class.new.ingest_publications(test_input)
     #   expect { described_class.new.ingest_dimensions_publications(publications) }
     #     .to change { Publication.count }.by(2)
     end
