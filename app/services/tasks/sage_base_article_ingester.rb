@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 module Tasks
+  require 'tasks/ingest_helper'
   class SageBaseArticleIngester
+    include Tasks::IngestHelper 
     attr_accessor :jats_ingest_work, :package_name, :package_file_names, :depositor, :unzipped_package_dir, :deposit_record
     attr_accessor :status_service, :logger
 
@@ -39,28 +41,6 @@ module Tasks
       current_time = DateTime.current
       art.date_uploaded = current_time
       art.date_modified = current_time
-    end
-
-    def attach_pdf_to_work(work, file_path)
-      attach_file_set_to_work(work: work, file_path: file_path, user: @depositor, visibility: work.visibility)
-    end
-
-    def attach_xml_to_work(work, file_path)
-      attach_file_set_to_work(work: work, file_path: file_path, user: @depositor, visibility: Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE)
-    end
-
-    def attach_file_set_to_work(work:, file_path:, user:, visibility:)
-      file_set_params = { visibility: visibility }
-      @logger.info("Attaching file_set for #{file_path} to DOI: #{work.identifier.first}")
-      file_set = FileSet.create
-      actor = Hyrax::Actors::FileSetActor.new(file_set, user)
-      actor.create_metadata(file_set_params)
-      file = File.open(file_path)
-      actor.create_content(file)
-      actor.attach_to_work(work, file_set_params)
-      file.close
-
-      file_set
     end
   end
 end

@@ -20,9 +20,12 @@ RSpec.describe Tasks::DimensionsIngestService do
   let(:permission_template) do
     FactoryBot.create(:permission_template, source_id: admin_set.id)
   end
-  # let(:workflow) do
-  #   FactoryBot.create(:workflow, permission_template_id: permission_template.id, active: true)
-  # end
+  let(:workflow) do
+    FactoryBot.create(:workflow, permission_template_id: permission_template.id, active: true)
+  end
+  let(:workflow_state) do
+    FactoryBot.create(:workflow_state, workflow_id: workflow.id, name: 'deposited')
+  end
 
 
   # Retrieving fixture publications and randomly assigning the marked_for_review attribute
@@ -41,8 +44,8 @@ RSpec.describe Tasks::DimensionsIngestService do
     ActiveFedora::Cleaner.clean!
     admin_set
     permission_template
-    # workflow
-    # workflow_state
+    workflow
+    workflow_state
     # return the FactoryBot admin user when searching for uid: admin from config
     allow(User).to receive(:find_by).with(uid: 'admin').and_return(admin)
     # return the FactoryBot admin_set when searching for admin set from config
