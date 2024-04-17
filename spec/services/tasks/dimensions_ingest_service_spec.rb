@@ -29,16 +29,17 @@ RSpec.describe Tasks::DimensionsIngestService do
 
 
   # Retrieving fixture publications and randomly assigning the marked_for_review attribute
-  let(:test_input) do
+  let(:test_publications) do
     fixture_publications = JSON.parse(dimensions_ingest_test_fixture)['publications']
     fixture_publications.each do |publication|
       random_number = rand(1..5)
       if random_number == 1
         publication['marked_for_review'] = true
-  end
+      end
     end
     fixture_publications
   end
+
 
   before do
     ActiveFedora::Cleaner.clean!
@@ -50,12 +51,18 @@ RSpec.describe Tasks::DimensionsIngestService do
     allow(User).to receive(:find_by).with(uid: 'admin').and_return(admin)
     # return the FactoryBot admin_set when searching for admin set from config
     allow(AdminSet).to receive(:where).with(title: 'Open_Access_Articles_and_Book_Chapters').and_return([admin_set])
+
   end
 
 
   describe '#ingest_dimensions_publications' do
     it 'ingests the publications into the database' do
-      service.ingest_publications(test_input)
+      pdf_content = File.binread(File.join(Rails.root, '/spec/fixtures/files/sample_pdf.pdf'))
+      stub_request(:head, 'https://test-url.com/')
+      .to_return(status: 200, headers: { 'Content-Type' => 'application/pdf' })
+      stub_request(:get, 'https://test-url.com/')
+      .to_return(body: pdf_content, status: 200, headers: { 'Content-Type' => 'application/pdf' })
+      service.ingest_publications(test_publications)
     #   expect { described_class.new.ingest_dimensions_publications(publications) }
     #     .to change { Publication.count }.by(2)
     end

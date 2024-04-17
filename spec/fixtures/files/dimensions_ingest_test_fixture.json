@@ -185,7 +185,7 @@
                 "title": "Journal of Managed Care & Specialty Pharmacy"
             },
             "journal_title_raw": "Journal of Managed Care & Specialty Pharmacy",
-            "linkout": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10387912",
+            "linkout": "https://test-url.com",
             "open_access": [
                 "oa_all",
                 "green"
@@ -1024,7 +1024,7 @@
                 "title": "iScience"
             },
             "journal_title_raw": "iScience",
-            "linkout": "http://www.cell.com/article/S2589004223009823/pdf",
+            "linkout": "https://test-url.com",
             "open_access": [
                 "oa_all",
                 "gold"
@@ -1349,7 +1349,7 @@
                 "1064-3745",
                 "1940-6029"
             ],
-            "linkout": "https://europepmc.org/articles/pmc3025018?pdf=render",
+            "linkout": "https://test-url.com",
             "open_access": [
                 "oa_all",
                 "green"
@@ -1821,6 +1821,7 @@
                 "0273-2300",
                 "1096-0295"
             ],
+            "linkout": "https://test-url.com",
             "journal": {
                 "id": "jour.1093457",
                 "title": "Regulatory Toxicology and Pharmacology"
@@ -2191,7 +2192,7 @@
                 "0076-6879",
                 "1557-7988"
             ],
-            "linkout": "https://europepmc.org/articles/pmc7003698?pdf=render",
+            "linkout": "https://test-url.com",
             "open_access": [
                 "oa_all",
                 "green"
@@ -2673,7 +2674,6 @@
                 "title": "Molecular Systems Biology"
             },
             "journal_title_raw": "Molecular Systems Biology",
-            "linkout": "https://doi.org/10.15252/msb.20178140",
             "open_access": [
                 "oa_all",
                 "gold"
@@ -3756,7 +3756,6 @@
                 "title": "Drug Discovery Today"
             },
             "journal_title_raw": "Drug Discovery Today",
-            "linkout": "http://manuscript.elsevier.com/S1359644622000654/pdf/S1359644622000654.pdf",
             "open_access": [
                 "oa_all",
                 "hybrid"

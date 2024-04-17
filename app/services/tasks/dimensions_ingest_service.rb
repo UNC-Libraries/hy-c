@@ -2,7 +2,7 @@
 module Tasks
   require 'tasks/ingest_helper'
   class DimensionsIngestService
-    include Tasks::IngestHelper 
+    include Tasks::IngestHelper
     attr_reader :admin_set, :depositor
 
     class DimensionsPublicationIngestError < StandardError
@@ -32,7 +32,7 @@ module Tasks
           article_with_metadata = article_with_metadata(publication)
           create_sipity_workflow(work: article_with_metadata)
           pdf_path = extract_pdf(publication)
-          pdf_file = attach_pdf_to_work(article_with_metadata, pdf_path)
+          pdf_file = attach_pdf_to_work(article_with_metadata, pdf_path, depositor)
 
           pdf_file.update permissions_attributes: group_permissions(@admin_set)
 
@@ -147,9 +147,11 @@ module Tasks
       return nil unless pdf_url.present?
 
       response = HTTParty.head(pdf_url)
-      return nil unless response.headers['content-type'].include?('application/pdf')
+      return nil unless response.headers['content-type'] && response.headers['content-type'].include?('application/pdf')
 
-      pdf_file = Tempfile.new(['temp_pdf', '.pdf'])
+
+      puts "Temp Storage: #{ENV['TEMP_STORAGE']}"
+      pdf_file = Tempfile.new(['temp_pdf', '.pdf'], dir: ENV['TEMP_STORAGE'])
       pdf_file.binmode
       pdf_file.write(HTTParty.get(pdf_url).body)
       pdf_file.rewind
