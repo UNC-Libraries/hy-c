@@ -59,20 +59,38 @@ RSpec.describe Tasks::DimensionsIngestService do
   end
 
 
-  describe '#ingest_dimensions_publications' do
-    it 'ingests the publications into the database' do
-      res = service.ingest_publications(test_publications)
-      puts res
-    #   expect { described_class.new.ingest_dimensions_publications(publications) }
+  describe '#ingest_publications' do
+    # it 'ingests the publications into the database' do
+    #   res = service.ingest_publications(test_publications)
+    #   puts res
+    #   expect { described_class.new.ingest_publications(publications) }
     #     .to change { Publication.count }.by(2)
-    end
+    # end
 
     it 'logs an error if a publication fails to ingest but continues with the rest of the publications' do
-      publication = test_publications.first
-      allow(service).to receive(:create_sipity_workflow).and_raise(ActiveRecord::RecordNotFound, 'Could not find Sipity::Workflow with permissions template.')
-      expected_error = "Error ingesting publication '#{publication['title']}': Could not find Sipity::Workflow with permissions template."
-      expect(Rails.logger).to receive(:error).with(expected_error)
-      service.ingest_publications([publication])
+      failed_publication = test_publications.first
+      test_err_msg = 'Test Error'
+      expected_log_output = "Error ingesting publication '#{failed_publication['title']}': #{test_err_msg}"
+      ingested_publications = test_publications[1..-1]
+
+      # Stub the process_publication method to raise an error for the first publication only
+      allow(service).to receive(:process_publication) do |publication|
+        if publication == failed_publication
+          raise StandardError, test_err_msg
+        else
+          service.method(:process_publication).super_method.call(publication)
+        end
+      end
+
+      expect(Rails.logger).to receive(:error).with(expected_log_output)
+      expect {
+        res = service.ingest_publications(test_publications)
+        expect(res[:failed].count).to eq(1)
+        expect(res[:failed].first[:publication]).to eq(failed_publication)
+        expect(res[:failed].first[:error]).to eq(test_err_msg)
+        expect(res[:ingested]).to match_array(ingested_publications)
+        expect(res[:time]).to be_a(Time)
+      }.to change { Article.count }.by(ingested_publications.size)
     end
   end
 

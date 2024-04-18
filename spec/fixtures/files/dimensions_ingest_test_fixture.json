@@ -469,6 +469,7 @@
                 "title": "AIDS Care"
             },
             "journal_title_raw": "AIDS Care",
+            "linkout": "https://test-url.com",
             "open_access": [
                 "closed"
             ],
@@ -2674,6 +2675,7 @@
                 "title": "Molecular Systems Biology"
             },
             "journal_title_raw": "Molecular Systems Biology",
+            "linkout": "https://test-url.com",
             "open_access": [
                 "oa_all",
                 "gold"
@@ -3150,6 +3152,7 @@
                 "title": "Brain research reviews"
             },
             "journal_title_raw": "Brain Research Reviews",
+            "linkout": "https://test-url.com",
             "open_access": [
                 "closed"
             ],
@@ -3756,6 +3759,7 @@
                 "title": "Drug Discovery Today"
             },
             "journal_title_raw": "Drug Discovery Today",
+            "linkout": "https://test-url.com",
             "open_access": [
                 "oa_all",
                 "hybrid"
@@ -4232,6 +4236,7 @@
                 "title": "Current Opinion in Molecular Therapeutics"
             },
             "journal_title_raw": "Current opinion in molecular therapeutics",
+            "linkout": "https://test-url.com",
             "open_access": [
                 "closed"
             ],

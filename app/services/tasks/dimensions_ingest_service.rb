@@ -37,6 +37,7 @@ module Tasks
           rescue StandardError => e
             res[:failed] << { publication: publication, error: e.message }
             Rails.logger.error("Error ingesting publication '#{publication['title']}': #{e.message}")
+            puts "Error ingesting publication '#{publication['title']}': #{e.message}"
             # raise DimensionsPublicationIngestError, error_message
         end
       end
