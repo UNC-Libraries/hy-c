@@ -7,7 +7,6 @@ module Tasks
 
     def initialize(config)
       @config = config
-      # Should deposit works into an admin set
       admin_set_title = @config['admin_set']
       @admin_set = ::AdminSet.where(title: admin_set_title)&.first
       raise(ActiveRecord::RecordNotFound, "Could not find AdminSet with title #{admin_set_title}") unless @admin_set.present?
@@ -20,10 +19,6 @@ module Tasks
       time = Time.now
       Rails.logger.info("[#{time}] Ingesting publications from Dimensions.")
       puts "[#{time}] Ingesting publications from Dimensions."
-      # WIP Notes
-      # Articles marked for review and normal ones in the ingested array
-      # Failed, attach the error? (Just put it in the logs)
-      # Account for different errors in rescue
       res = {ingested: [], failed: [], time: time}
 
       publications.each.with_index do |publication, index|
@@ -37,8 +32,6 @@ module Tasks
           rescue StandardError => e
             res[:failed] << { publication: publication, error: e.message }
             Rails.logger.error("Error ingesting publication '#{publication['title']}': #{e.message}")
-            puts "Error ingesting publication '#{publication['title']}': #{e.message}"
-            # raise DimensionsPublicationIngestError, error_message
         end
       end
       res
@@ -54,12 +47,12 @@ module Tasks
         pdf_file.update(permissions_attributes: group_permissions(@admin_set))
         File.delete(pdf_path) if File.exist?(pdf_path)
       end
+      article
     end
 
     def article_with_metadata(publication)
       article = Article.new
       populate_article_metadata(article, publication)
-      # puts "Article Inspector: #{article.inspect}"
       article.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
       article.permissions_attributes = group_permissions(@admin_set)
       article.save!
@@ -111,10 +104,10 @@ module Tasks
       # Splitting author affiliations into UNC and other affiliations and adding them to hash
       if author['affiliations'].present?
         unc_grid_id = 'grid.410711.2'
-        author_unc_affiliation = author['affiliations'].select { |affiliation| affiliation['id'] == unc_grid_id ||
+        author_unc_affiliation = author['affiliations'].find { |affiliation| affiliation['id'] == unc_grid_id ||
                                                                   affiliation['raw_affiliation'].include?('UNC') ||
                                                                   affiliation['raw_affiliation'].include?('University of North Carolina, Chapel Hill')
-        }.first
+        }
         author_other_affiliations = author['affiliations'].reject { |affiliation| affiliation['id'] == unc_grid_id ||
                                                                   affiliation['raw_affiliation'].include?('UNC') ||
                                                                   affiliation['raw_affiliation'].include?('University of North Carolina, Chapel Hill')
@@ -172,7 +165,6 @@ module Tasks
         filename = "downloaded_pdf_#{Time.now.to_i}.pdf"
         file_path = File.join(storage_dir, filename)
 
-        # puts "Saving PDF #{filename} to: #{file_path}"
         File.open(file_path, 'wb') { |file| file.write(pdf_response.body) }
         file_path  # Return the file path
       rescue StandardError => e

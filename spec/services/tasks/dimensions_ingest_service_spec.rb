@@ -48,9 +48,7 @@ RSpec.describe Tasks::DimensionsIngestService do
     permission_template
     workflow
     workflow_state
-    # return the FactoryBot admin user when searching for uid: admin from config
     allow(User).to receive(:find_by).with(uid: 'admin').and_return(admin)
-    # return the FactoryBot admin_set when searching for admin set from config
     allow(AdminSet).to receive(:where).with(title: 'Open_Access_Articles_and_Book_Chapters').and_return([admin_set])
     stub_request(:head, 'https://test-url.com/')
     .to_return(status: 200, headers: { 'Content-Type' => 'application/pdf' })
@@ -73,6 +71,29 @@ RSpec.describe Tasks::DimensionsIngestService do
       end
     end
   end
+
+  describe '#process_publication' do
+    it 'creates an article with an attached PDF if it exists' do
+      publication = test_publications.first
+      # article = Article.new
+      # allow(service).to receive(:create_sipity_workflow)
+      # allow(service).to receive(:article_with_metadata).and_return(article)
+      # allow(service).to receive(:extract_pdf).and_return(pdf_path)
+      # allow(service).to receive(:attach_pdf_to_work)
+
+      #
+      # expect(service).to receive(:create_sipity_workflow).with(article)
+      # expect(service).to receive(:attach_pdf_to_work).with(article, pdf_path, service.depositor)
+
+      # WIP Checkpoint Testing -
+      # Expect article to have the right metadata
+      # Expect that it has a PDF attached
+      # Expect that the PDF has the right permissions
+      # Expect that the PDF is deleted after being attached
+      puts "Test Article Inspect: #{service.process_publication(publication).inspect}"
+    end
+  end
+
 
   describe '#ingest_publications' do
     it 'processes each publication and handles failures' do
