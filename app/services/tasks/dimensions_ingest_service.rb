@@ -154,27 +154,30 @@ module Tasks
     end
 
     def extract_pdf(publication)
-      pdf_url = publication['linkout']
-      unless pdf_url.present?
-        Rails.logger.error('Failed to retrieve PDF. Linkout URL is empty.')
+      pdf_url = publication && publication['linkout']? publication['linkout'] : nil
+      unless publication && publication['linkout']
+        no_linkout_message = 'Failed to retrieve PDF. Publication does not have a linkout URL.'
+        nil_message = 'Failed to retrieve PDF. Publication is nil.'
+        Rails.logger.error(publication.present? ? no_linkout_message : nil_message)
         return nil
       end
-      response = HTTParty.head(pdf_url)
-      return nil unless response.headers['content-type'] && response.headers['content-type'].include?('application/pdf')
+      begin
+        response = HTTParty.head(pdf_url)
+        raise 'Incorrect content type.' unless response.headers['content-type'] && response.headers['content-type'].include?('application/pdf')
+        pdf_response = HTTParty.get(pdf_url)
+        raise "Failed to download PDF: HTTP status #{pdf_response.code}" unless pdf_response.code == 200
+          
+        storage_dir = ENV['TEMP_STORAGE']
+        filename = "downloaded_pdf_#{Time.now.to_i}.pdf"
+        file_path = File.join(storage_dir, filename)
 
-      storage_dir = ENV['TEMP_STORAGE']
-      filename = "downloaded_pdf_#{Time.now.to_i}.pdf"
-      file_path = File.join(storage_dir, filename)
-
-      # puts "Saving PDF #{filename} to: #{file_path}"
-      pdf_response = HTTParty.get(pdf_url)
-      return nil unless pdf_response.code == 200
-      # Write to file
-      File.open(file_path, 'wb') do |file|
-        file.write(pdf_response.body)
-      end
-
-      file_path  # Return the file path
+        # puts "Saving PDF #{filename} to: #{file_path}"
+        File.open(file_path, 'wb') { |file| file.write(pdf_response.body) }
+        file_path  # Return the file path
+      rescue StandardError => e
+        Rails.logger.error("Failed to retrieve PDF from #{pdf_url}: #{e.message}")
+        nil
+      end  
     end
 
   end

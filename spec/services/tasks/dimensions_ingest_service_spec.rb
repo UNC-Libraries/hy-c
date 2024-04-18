@@ -74,5 +74,14 @@ RSpec.describe Tasks::DimensionsIngestService do
       pdf_path = service.extract_pdf(publication)
       expect(File.exist?(pdf_path)).to be true
     end
+
+    it 'returns nil if the publication does not have a linkout url, or if the publication is nil' do
+      publication = test_publications.first
+      publication['linkout'] = nil
+      expect(Rails.logger).to receive(:error).with('Failed to retrieve PDF. Publication does not have a linkout URL.')
+      expect(Rails.logger).to receive(:error).with('Failed to retrieve PDF. Publication is nil.')
+      expect(service.extract_pdf(publication)).to be nil
+      expect(service.extract_pdf(nil)).to be nil
+    end
   end
 end
