@@ -67,26 +67,21 @@ RSpec.describe Tasks::DimensionsIngestService do
     #     .to change { Publication.count }.by(2)
     # end
 
-    it 'logs an error if a publication fails to ingest but continues with the rest of the publications' do
-      failed_publication = test_publications.first
+    it 'logs an error if a publication fails to ingest but continues with the rest' do
+      failing_publication = test_publications.first
       test_err_msg = 'Test Error'
-      expected_log_output = "Error ingesting publication '#{failed_publication['title']}': #{test_err_msg}"
+      expected_log_output = "Error ingesting publication '#{failing_publication['title']}': #{test_err_msg}"
       ingested_publications = test_publications[1..-1]
 
       # Stub the process_publication method to raise an error for the first publication only
-      allow(service).to receive(:process_publication) do |publication|
-        if publication == failed_publication
-          raise StandardError, test_err_msg
-        else
-          service.method(:process_publication).super_method.call(publication)
-        end
-      end
+      allow(service).to receive(:process_publication).and_call_original
+      allow(service).to receive(:process_publication).with(failing_publication).and_raise(StandardError, test_err_msg)
 
       expect(Rails.logger).to receive(:error).with(expected_log_output)
       expect {
         res = service.ingest_publications(test_publications)
         expect(res[:failed].count).to eq(1)
-        expect(res[:failed].first[:publication]).to eq(failed_publication)
+        expect(res[:failed].first[:publication]).to eq(failing_publication)
         expect(res[:failed].first[:error]).to eq(test_err_msg)
         expect(res[:ingested]).to match_array(ingested_publications)
         expect(res[:time]).to be_a(Time)
