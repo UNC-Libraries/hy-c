@@ -66,6 +66,14 @@ RSpec.describe Tasks::DimensionsIngestService do
     #   expect { described_class.new.ingest_dimensions_publications(publications) }
     #     .to change { Publication.count }.by(2)
     end
+
+    it 'logs an error if a publication fails to ingest but continues with the rest of the publications' do
+      publication = test_publications.first
+      allow(service).to receive(:create_sipity_workflow).and_raise(ActiveRecord::RecordNotFound, 'Could not find Sipity::Workflow with permissions template.')
+      expected_error = "Error ingesting publication '#{publication['title']}': Could not find Sipity::Workflow with permissions template."
+      expect(Rails.logger).to receive(:error).with(expected_error)
+      service.ingest_publications([publication])
+    end
   end
 
   describe '#extract_pdf' do

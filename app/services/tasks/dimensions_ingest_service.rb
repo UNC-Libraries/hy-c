@@ -5,9 +5,6 @@ module Tasks
     include Tasks::IngestHelper
     attr_reader :admin_set, :depositor
 
-    class DimensionsPublicationIngestError < StandardError
-    end
-
     def initialize(config)
       @config = config
       # Should deposit works into an admin set
@@ -32,27 +29,30 @@ module Tasks
       publications.each.with_index do |publication, index|
         begin
         # WIP: Remove Index Break Later
-          if index == 3
-            break
-          end
-          article_with_metadata = article_with_metadata(publication)
-          create_sipity_workflow(work: article_with_metadata)
-          pdf_path = extract_pdf(publication)
-
-          if pdf_path.present?
-            pdf_file = attach_pdf_to_work(article_with_metadata, pdf_path, depositor)
-            pdf_file.update permissions_attributes: group_permissions(@admin_set)
-            File.delete(pdf_path) if File.exist?(pdf_path)
-          end
+          # if index == 3
+          #   break
+          # end
+          process_publication(publication)
           res[:ingested] << publication
           rescue StandardError => e
-            res[:failed] << publication
-            error_message = "Error ingesting publication '#{title}': #{e.message}"
-            Rails.logger.error(error_message)
+            res[:failed] << { publication: publication, error: e.message }
+            Rails.logger.error("Error ingesting publication '#{publication['title']}': #{e.message}")
             # raise DimensionsPublicationIngestError, error_message
         end
       end
       res
+    end
+
+    def process_publication(publication)
+      article = article_with_metadata(publication)
+      create_sipity_workflow(work: article)
+      pdf_path = extract_pdf(publication)
+
+      if pdf_path
+        pdf_file = attach_pdf_to_work(article, pdf_path, @depositor)
+        pdf_file.update(permissions_attributes: group_permissions(@admin_set))
+        File.delete(pdf_path) if File.exist?(pdf_path)
+      end
     end
 
     def article_with_metadata(publication)
@@ -166,7 +166,7 @@ module Tasks
         raise 'Incorrect content type.' unless response.headers['content-type'] && response.headers['content-type'].include?('application/pdf')
         pdf_response = HTTParty.get(pdf_url)
         raise "Failed to download PDF: HTTP status #{pdf_response.code}" unless pdf_response.code == 200
-          
+
         storage_dir = ENV['TEMP_STORAGE']
         filename = "downloaded_pdf_#{Time.now.to_i}.pdf"
         file_path = File.join(storage_dir, filename)
@@ -177,7 +177,7 @@ module Tasks
       rescue StandardError => e
         Rails.logger.error("Failed to retrieve PDF from #{pdf_url}: #{e.message}")
         nil
-      end  
+      end
     end
 
   end
