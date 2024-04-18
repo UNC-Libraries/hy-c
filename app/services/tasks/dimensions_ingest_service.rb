@@ -20,13 +20,19 @@ module Tasks
     end
 
     def ingest_publications(publications)
-      puts "[#{Time.now}] Ingesting publications from Dimensions."
-      ingested_count = 0
+      time = Time.now
+      Rails.logger.info("[#{time}] Ingesting publications from Dimensions.")
+      puts "[#{time}] Ingesting publications from Dimensions."
+      # WIP Notes
+      # Articles marked for review and normal ones in the ingested array
+      # Failed, attach the error? (Just put it in the logs)
+      # Account for different errors in rescue
+      res = {ingested: [], failed: [], time: time}
 
       publications.each.with_index do |publication, index|
         begin
         # WIP: Remove Index Break Later
-          if index == 1
+          if index == 3
             break
           end
           article_with_metadata = article_with_metadata(publication)
@@ -38,19 +44,21 @@ module Tasks
             pdf_file.update permissions_attributes: group_permissions(@admin_set)
             File.delete(pdf_path) if File.exist?(pdf_path)
           end
-
-          ingested_count += 1
+          res[:ingested] << publication
           rescue StandardError => e
-            raise DimensionsPublicationIngestError, "Error ingesting publication #{publication['title']}: #{e.message}"
+            res[:failed] << publication
+            error_message = "Error ingesting publication '#{title}': #{e.message}"
+            Rails.logger.error(error_message)
+            # raise DimensionsPublicationIngestError, error_message
         end
       end
-      ingested_count
+      res
     end
 
     def article_with_metadata(publication)
       article = Article.new
       populate_article_metadata(article, publication)
-      puts "Article Inspector: #{article.inspect}"
+      # puts "Article Inspector: #{article.inspect}"
       article.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
       article.permissions_attributes = group_permissions(@admin_set)
       article.save!
@@ -147,7 +155,10 @@ module Tasks
 
     def extract_pdf(publication)
       pdf_url = publication['linkout']
-      return nil unless pdf_url.present?
+      unless pdf_url.present?
+        Rails.logger.error('Failed to retrieve PDF. Linkout URL is empty.')
+        return nil
+      end
       response = HTTParty.head(pdf_url)
       return nil unless response.headers['content-type'] && response.headers['content-type'].include?('application/pdf')
 
@@ -155,14 +166,14 @@ module Tasks
       filename = "downloaded_pdf_#{Time.now.to_i}.pdf"
       file_path = File.join(storage_dir, filename)
 
-      puts "Saving PDF #{filename} to: #{file_path}"
+      # puts "Saving PDF #{filename} to: #{file_path}"
       pdf_response = HTTParty.get(pdf_url)
-      return nil unless pdf_response.code == 200 
+      return nil unless pdf_response.code == 200
       # Write to file
-      File.open(file_path, 'wb') do |file| 
+      File.open(file_path, 'wb') do |file|
         file.write(pdf_response.body)
       end
-    
+
       file_path  # Return the file path
     end
 

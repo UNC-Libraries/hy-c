@@ -26,6 +26,7 @@ RSpec.describe Tasks::DimensionsIngestService do
   let(:workflow_state) do
     FactoryBot.create(:workflow_state, workflow_id: workflow.id, name: 'deposited')
   end
+  let(:pdf_content) { File.binread(File.join(Rails.root, '/spec/fixtures/files/sample_pdf.pdf')) }
 
 
   # Retrieving fixture publications and randomly assigning the marked_for_review attribute
@@ -51,20 +52,27 @@ RSpec.describe Tasks::DimensionsIngestService do
     allow(User).to receive(:find_by).with(uid: 'admin').and_return(admin)
     # return the FactoryBot admin_set when searching for admin set from config
     allow(AdminSet).to receive(:where).with(title: 'Open_Access_Articles_and_Book_Chapters').and_return([admin_set])
-
+    stub_request(:head, 'https://test-url.com/')
+    .to_return(status: 200, headers: { 'Content-Type' => 'application/pdf' })
+    stub_request(:get, 'https://test-url.com/')
+    .to_return(body: pdf_content, status: 200, headers: { 'Content-Type' => 'application/pdf' })
   end
 
 
   describe '#ingest_dimensions_publications' do
     it 'ingests the publications into the database' do
-      pdf_content = File.binread(File.join(Rails.root, '/spec/fixtures/files/sample_pdf.pdf'))
-      stub_request(:head, 'https://test-url.com/')
-      .to_return(status: 200, headers: { 'Content-Type' => 'application/pdf' })
-      stub_request(:get, 'https://test-url.com/')
-      .to_return(body: pdf_content, status: 200, headers: { 'Content-Type' => 'application/pdf' })
-      service.ingest_publications(test_publications)
+      res = service.ingest_publications(test_publications)
+      puts res
     #   expect { described_class.new.ingest_dimensions_publications(publications) }
     #     .to change { Publication.count }.by(2)
+    end
+  end
+
+  describe '#extract_pdf' do
+    it 'extracts the PDF from the publication' do
+      publication = test_publications.first
+      pdf_path = service.extract_pdf(publication)
+      expect(File.exist?(pdf_path)).to be true
     end
   end
 end
