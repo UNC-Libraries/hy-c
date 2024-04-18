@@ -58,16 +58,24 @@ RSpec.describe Tasks::DimensionsIngestService do
     .to_return(body: pdf_content, status: 200, headers: { 'Content-Type' => 'application/pdf' })
   end
 
+  describe '#initialize' do
+    context 'when admin set and depositor are found' do
+      it 'successfully initializes the service' do
+        expect { described_class.new(config) }.not_to raise_error
+      end
+    end
+
+    context 'when admin set or user is not found' do
+      it 'raises an error' do
+        allow(AdminSet).to receive(:where).and_return([])
+        allow(User).to receive(:find_by).and_return(nil)
+        expect { described_class.new(config) }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+    end
+  end
 
   describe '#ingest_publications' do
-    # it 'ingests the publications into the database' do
-    #   res = service.ingest_publications(test_publications)
-    #   puts res
-    #   expect { described_class.new.ingest_publications(publications) }
-    #     .to change { Publication.count }.by(2)
-    # end
-
-    it 'logs an error if a publication fails to ingest but continues with the rest' do
+    it 'processes each publication and handles failures' do
       failing_publication = test_publications.first
       test_err_msg = 'Test Error'
       expected_log_output = "Error ingesting publication '#{failing_publication['title']}': #{test_err_msg}"
