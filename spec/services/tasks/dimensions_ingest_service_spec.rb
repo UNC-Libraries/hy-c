@@ -73,27 +73,59 @@ RSpec.describe Tasks::DimensionsIngestService do
   end
 
   describe '#process_publication' do
-    it 'creates an article with an attached PDF if it exists' do
-      publication = test_publications.first
-      # article = Article.new
-      # allow(service).to receive(:create_sipity_workflow)
-      # allow(service).to receive(:article_with_metadata).and_return(article)
-      # allow(service).to receive(:extract_pdf).and_return(pdf_path)
-      # allow(service).to receive(:attach_pdf_to_work)
+    context 'when the publication has a PDF' do
+      it 'creates article, handles workflows, and attaches PDF' do
+        publication = test_publications.first
+        expect(service).to receive(:create_sipity_workflow)
+        expect {
+          processed_publication = service.process_publication(publication)
+          expect(processed_publication.file_sets).to be_instance_of(Array)
+          fs = processed_publication.file_sets.first
+          expect(fs).to be_instance_of(FileSet)
+          expect(fs.depositor).to eq(admin.uid)
+          expect(fs.visibility).to eq(processed_publication.visibility)
+          expect(fs.parent).to eq(processed_publication)
+        }.to change { FileSet.count }.by(1)
+        .and change { Article.count }.by(1)
+      end
 
-      #
-      # expect(service).to receive(:create_sipity_workflow).with(article)
-      # expect(service).to receive(:attach_pdf_to_work).with(article, pdf_path, service.depositor)
+      it 'deletes the PDF file after processing' do
+        publication = test_publications.first
+        fixed_time = Time.now.to_i
+        test_file_path = "#{ENV['TEMP_STORAGE']}/downloaded_pdf_#{fixed_time}.pdf"
 
-      # WIP Checkpoint Testing -
-      # Expect article to have the right metadata
-      # Expect that it has a PDF attached
-      # Expect that the PDF has the right permissions
-      # Expect that the PDF is deleted after being attached
-      puts "Test Article Inspect: #{service.process_publication(publication).inspect}"
+        # Mock the time to control file naming
+        allow(Time).to receive(:now).and_return(Time.at(fixed_time))
+
+        allow(File).to receive(:join).and_call_original
+        # Mock File.join to ensure it returns the test file path
+        allow(File).to receive(:join).with(ENV['TEMP_STORAGE'], "downloaded_pdf_#{fixed_time}.pdf").and_return(test_file_path)
+        # Mock file operations
+        allow(File).to receive(:open).and_call_original
+        allow(File).to receive(:delete).and_call_original
+        allow(File).to receive(:exist?).and_call_original
+
+        expect {
+          service.process_publication(publication)
+        }.to change { Article.count }.by(1)
+
+        expect(File).to have_received(:delete).with(test_file_path)
+        expect(File.exist?(test_file_path)).to be false
+      end
+    end
+    context 'when the publication does not have a PDF' do
+      it 'creates article and handles workflows' do
+        publication = test_publications.first
+        publication['linkout'] = nil
+        expect(service).to receive(:create_sipity_workflow)
+        expect {
+          processed_publication = service.process_publication(publication)
+          expect(processed_publication.file_sets).to be_empty
+        }.to change { Article.count }.by(1)
+        .and change { FileSet.count }.by(0)
+      end
     end
   end
-
 
   describe '#ingest_publications' do
     it 'processes each publication and handles failures' do
@@ -134,4 +166,11 @@ RSpec.describe Tasks::DimensionsIngestService do
       expect(service.extract_pdf(nil)).to be nil
     end
   end
+
+  describe '#article_with_metadata' do
+  end
+
+  describe 'integration and error handling' do
+  end
+
 end
