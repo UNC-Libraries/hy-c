@@ -168,9 +168,35 @@ RSpec.describe Tasks::DimensionsIngestService do
   end
 
   describe '#article_with_metadata' do
-  end
+    it 'can create a valid article' do
+      publication = test_publications.first
+      expect do
+        service.article_with_metadata(publication)
+      end.to change { Article.count }.by(1)
+    end
 
-  describe 'integration and error handling' do
+    it 'creates an article with metadata' do
+      publication = test_publications.first
+      article = service.article_with_metadata(publication)
+      expect(article).to be_instance_of(Article)
+      expect(article.persisted?).to be true
+      expect(article.valid?).to be true
+      expect(article.title).to eq(['Polypharmacy in US Medicare beneficiaries with antineutrophil cytoplasmic antibody vasculitis'])
+      first_creator = article.creators.find { |creator| creator[:index] == ['1'] }
+      expect(first_creator.attributes['name']).to match_array(['Carolyn T Thorpe'])
+      expect(first_creator.attributes['other_affiliation']).to match_array(['Veterans Affairs Pittsburgh Healthcare System, PA.'])
+      expect(first_creator.attributes['orcid']).to match_array(['https://orcid.org/0000-0002-7662-7497'])
+      expect(article.abstract).to include(/Treatment requirements of antineutrophil cytoplasmic autoantibody vasculitis/)
+      expect(article.date_issued).to eq('2023-07-01')
+      expect(article.dcmi_type).to match_array(['http://purl.org/dc/dcmitype/Text'])
+      expect(article.funder).to match_array(['acronym: NIAID||city_name: Bethesda||country_code: US||country_name: United States||id: grid.419681.3||latitude: 39.066647||linkout: ["https://www.niaid.nih.gov"]||longitude: -77.11183||name: National Institute of Allergy and Infectious Diseases||state_name: Maryland||types: ["Government"]'])
+      expect(article.identifier).to match_array(['DOI: https://dx.doi.org/10.18553/jmcp.2023.29.7.770', 'Dimensions ID: pub.1160372243', 'PMCID: PMC10387912', 'PMID: 37404075'])
+      expect(article.issn).to match_array(['2376-0540', '2376-1032'])
+      expect(article.journal_issue).to eq('7')
+      expect(article.journal_title).to eq('Journal of Managed Care & Specialty Pharmacy')
+      expect(article.journal_volume).to eq('29')
+      expect(article.visibility).to eq(Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE)
+    end
   end
 
 end

@@ -30,6 +30,44 @@
                             "raw_affiliation": "Eshelman School of Pharmacy, University of North Carolina, Chapel Hill.",
                             "state": "North Carolina",
                             "state_code": "US-NC"
+                        },
+                        {
+                            "city": "Pittsburgh",
+                            "city_id": 5206379,
+                            "country": "United States",
+                            "country_code": "US",
+                            "id": "grid.413935.9",
+                            "name": "VA Pittsburgh Healthcare System",
+                            "raw_affiliation": "Veterans Affairs Pittsburgh Healthcare System, PA.",
+                            "state": "Pennsylvania",
+                            "state_code": "US-PA"
+                        }
+                    ],
+                    "corresponding": true,
+                    "current_organization_id": "grid.10698.36",
+                    "first_name": "Carolyn T",
+                    "last_name": "Thorpe",
+                    "orcid": [
+                        "0000-0002-7662-7497"
+                    ],
+                    "raw_affiliation": [
+                        "Eshelman School of Pharmacy, University of North Carolina, Chapel Hill.",
+                        "Veterans Affairs Pittsburgh Healthcare System, PA."
+                    ],
+                    "researcher_id": "ur.01301743521.21"
+                },
+                {
+                    "affiliations": [
+                        {
+                            "city": "Chapel Hill",
+                            "city_id": 4460162,
+                            "country": "United States",
+                            "country_code": "US",
+                            "id": "grid.10698.36",
+                            "name": "University of North Carolina at Chapel Hill",
+                            "raw_affiliation": "Eshelman School of Pharmacy, University of North Carolina, Chapel Hill.",
+                            "state": "North Carolina",
+                            "state_code": "US-NC"
                         }
                     ],
                     "corresponding": "",
@@ -115,42 +153,6 @@
                         "Eshelman School of Pharmacy, University of North Carolina, Chapel Hill."
                     ],
                     "researcher_id": "ur.014060150424.92"
-                },
-                {
-                    "affiliations": [
-                        {
-                            "city": "Chapel Hill",
-                            "city_id": 4460162,
-                            "country": "United States",
-                            "country_code": "US",
-                            "id": "grid.10698.36",
-                            "name": "University of North Carolina at Chapel Hill",
-                            "raw_affiliation": "Eshelman School of Pharmacy, University of North Carolina, Chapel Hill.",
-                            "state": "North Carolina",
-                            "state_code": "US-NC"
-                        },
-                        {
-                            "city": "Pittsburgh",
-                            "city_id": 5206379,
-                            "country": "United States",
-                            "country_code": "US",
-                            "id": "grid.413935.9",
-                            "name": "VA Pittsburgh Healthcare System",
-                            "raw_affiliation": "Veterans Affairs Pittsburgh Healthcare System, PA.",
-                            "state": "Pennsylvania",
-                            "state_code": "US-PA"
-                        }
-                    ],
-                    "corresponding": true,
-                    "current_organization_id": "grid.10698.36",
-                    "first_name": "Carolyn T",
-                    "last_name": "Thorpe",
-                    "orcid": null,
-                    "raw_affiliation": [
-                        "Eshelman School of Pharmacy, University of North Carolina, Chapel Hill.",
-                        "Veterans Affairs Pittsburgh Healthcare System, PA."
-                    ],
-                    "researcher_id": "ur.01301743521.21"
                 }
             ],
             "date": "2023-07-01",

@@ -24,7 +24,7 @@ module Tasks
       publications.each.with_index do |publication, index|
         begin
         # WIP: Remove Index Break Later
-          # if index == 3
+          # if index == 2
           #   break
           # end
           process_publication(publication)
@@ -63,6 +63,7 @@ module Tasks
       set_basic_attributes(article, publication)
       set_journal_attributes(article, publication)
       set_rights_and_types(article, publication)
+      set_identifiers(article, publication)
     end
 
     def set_basic_attributes(article, publication)
@@ -78,7 +79,7 @@ module Tasks
 
     def set_rights_and_types(article, publication)
       article.rights_statement = CdrRightsStatementsService.label('http://rightsstatements.org/vocab/InC/1.0/')
-      article.dcmi_type = [DcmiTypeService.label('http://purl.org/dc/dcmitype/Text')]
+      article.dcmi_type = ['http://purl.org/dc/dcmitype/Text']
       article.edition = determine_edition(publication)
     end
 
@@ -98,7 +99,7 @@ module Tasks
     def author_to_hash(author, index)
       hash = {
         'name' => "#{[author['first_name'], author['last_name']].compact.join(' ')}",
-        'orcid' => author['orcid'].present? ? author['orcid'] : '',
+        'orcid' => author['orcid'].present? ? "https://orcid.org/#{author['orcid'].first}" : '',
         'index' => (index + 1).to_s,
       }
       # Splitting author affiliations into UNC and other affiliations and adding them to hash
