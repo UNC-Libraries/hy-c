@@ -23,10 +23,6 @@ module Tasks
 
       publications.each.with_index do |publication, index|
         begin
-        # WIP: Remove Index Break Later
-          # if index == 2
-          #   break
-          # end
           process_publication(publication)
           res[:ingested] << publication
           rescue StandardError => e
