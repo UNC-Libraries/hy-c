@@ -73,12 +73,14 @@ module Tasks
       article.funder = format_funders_data(publication)
       article.date_issued = publication['date']
       article.abstract = [publication['abstract']].compact.presence
-      article.resource_type = [publication['type']].compact.presence
+      article.resource_type = [publication['type']].compact.map { |type| type.capitalize }.presence
       article.publisher = [publication['publisher']].compact.presence
     end
 
     def set_rights_and_types(article, publication)
-      article.rights_statement = CdrRightsStatementsService.label('http://rightsstatements.org/vocab/InC/1.0/')
+      rights_statement = 'http://rightsstatements.org/vocab/InC/1.0/'
+      article.rights_statement = rights_statement
+      article.rights_statement_label = CdrRightsStatementsService.label(rights_statement)
       article.dcmi_type = ['http://purl.org/dc/dcmitype/Text']
       article.edition = determine_edition(publication)
     end
@@ -158,9 +160,9 @@ module Tasks
       end
       begin
         response = HTTParty.head(pdf_url)
-        raise 'Incorrect content type.' unless response.headers['content-type'] && response.headers['content-type'].include?('application/pdf')
+        raise "Incorrect content type: '#{response.headers['content-type']}'" unless response.headers['content-type'] && response.headers['content-type'].include?('application/pdf')
         pdf_response = HTTParty.get(pdf_url)
-        raise "Failed to download PDF: HTTP status #{pdf_response.code}" unless pdf_response.code == 200
+        raise "Failed to download PDF: HTTP status '#{pdf_response.code}'" unless pdf_response.code == 200
 
         storage_dir = ENV['TEMP_STORAGE']
         filename = "downloaded_pdf_#{Time.now.to_i}.pdf"
@@ -169,7 +171,7 @@ module Tasks
         File.open(file_path, 'wb') { |file| file.write(pdf_response.body) }
         file_path  # Return the file path
       rescue StandardError => e
-        Rails.logger.error("Failed to retrieve PDF from #{pdf_url}: #{e.message}")
+        Rails.logger.error("Failed to retrieve PDF from URL '#{pdf_url}'. #{e.message}")
         nil
       end
     end

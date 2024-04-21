@@ -165,6 +165,24 @@ RSpec.describe Tasks::DimensionsIngestService do
       expect(service.extract_pdf(publication)).to be nil
       expect(service.extract_pdf(nil)).to be nil
     end
+
+    it 'returns nil if the publication linkout url is not a PDF and logs an error' do
+      publication = test_publications.first
+      publication['linkout'] = 'https://test-url.com/'
+      stub_request(:head, 'https://test-url.com/')
+      .to_return(status: 200, headers: { 'Content-Type' => 'application/text' })
+      expect(Rails.logger).to receive(:error).with("Failed to retrieve PDF from URL 'https://test-url.com/'. Incorrect content type: 'application/text'")
+      expect(service.extract_pdf(publication)).to be nil
+    end
+
+    it 'returns nil if the PDF download fails and logs an error' do
+      publication = test_publications.first
+      publication['linkout'] = 'https://test-url.com/'
+      stub_request(:get, 'https://test-url.com/')
+      .to_return(body: '', status: 500)
+      expect(Rails.logger).to receive(:error).with("Failed to retrieve PDF from URL 'https://test-url.com/'. Failed to download PDF: HTTP status '500'")
+      expect(service.extract_pdf(publication)).to be nil
+    end
   end
 
   describe '#article_with_metadata' do
@@ -195,7 +213,11 @@ RSpec.describe Tasks::DimensionsIngestService do
       expect(article.journal_issue).to eq('7')
       expect(article.journal_title).to eq('Journal of Managed Care & Specialty Pharmacy')
       expect(article.journal_volume).to eq('29')
-      expect(article.visibility).to eq(Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE)
+      expect(article.publisher).to match_array(['Academy of Managed Care Pharmacy'])
+      expect(article.resource_type).to match_array(['Article'])
+      expect(article.rights_statement).to eq('http://rightsstatements.org/vocab/InC/1.0/')
+      expect(article.rights_statement_label).to eq('In Copyright')
+      expect(article.visibility).to eq('restricted')
     end
   end
 
