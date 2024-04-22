@@ -48,13 +48,18 @@ RSpec.describe Tasks::DimensionsIngestService do
     permission_template
     workflow
     workflow_state
-    allow(Hyrax::VirusCheckerService).to receive(:file_has_virus?) { false }
     allow(User).to receive(:find_by).with(uid: 'admin').and_return(admin)
     allow(AdminSet).to receive(:where).with(title: 'Open_Access_Articles_and_Book_Chapters').and_return([admin_set])
     stub_request(:head, 'https://test-url.com/')
     .to_return(status: 200, headers: { 'Content-Type' => 'application/pdf' })
     stub_request(:get, 'https://test-url.com/')
     .to_return(body: pdf_content, status: 200, headers: { 'Content-Type' => 'application/pdf' })
+    # stub virus checking
+    allow(Hyrax::VirusCheckerService).to receive(:file_has_virus?) { false }
+    # stub longleaf job
+    allow(RegisterToLongleafJob).to receive(:perform_later).and_return(nil)
+    # stub FITS characterization
+    allow(CharacterizeJob).to receive(:perform_later)
   end
 
   describe '#initialize' do
