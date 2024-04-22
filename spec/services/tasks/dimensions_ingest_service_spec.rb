@@ -48,6 +48,7 @@ RSpec.describe Tasks::DimensionsIngestService do
     permission_template
     workflow
     workflow_state
+    allow(Hyrax::VirusCheckerService).to receive(:file_has_virus?) { false }
     allow(User).to receive(:find_by).with(uid: 'admin').and_return(admin)
     allow(AdminSet).to receive(:where).with(title: 'Open_Access_Articles_and_Book_Chapters').and_return([admin_set])
     stub_request(:head, 'https://test-url.com/')
@@ -66,6 +67,9 @@ RSpec.describe Tasks::DimensionsIngestService do
     context 'when admin set or user is not found' do
       it 'raises an error' do
         allow(AdminSet).to receive(:where).and_return([])
+        allow(User).to receive(:find_by).and_return(admin)
+        expect { described_class.new(config) }.to raise_error(ActiveRecord::RecordNotFound)
+        allow(AdminSet).to receive(:where).and_return([admin_set])
         allow(User).to receive(:find_by).and_return(nil)
         expect { described_class.new(config) }.to raise_error(ActiveRecord::RecordNotFound)
       end
@@ -97,18 +101,17 @@ RSpec.describe Tasks::DimensionsIngestService do
         # Mock the time to control file naming
         allow(Time).to receive(:now).and_return(Time.at(fixed_time))
 
-        allow(File).to receive(:join).and_call_original
-        # Mock File.join to ensure it returns the test file path
-        allow(File).to receive(:join).with(ENV['TEMP_STORAGE'], "downloaded_pdf_#{fixed_time}.pdf").and_return(test_file_path)
-        # Mock file operations
         allow(File).to receive(:open).and_call_original
         allow(File).to receive(:delete).and_call_original
         allow(File).to receive(:exist?).and_call_original
+        allow(File).to receive(:join).and_call_original
 
         expect {
           service.process_publication(publication)
         }.to change { Article.count }.by(1)
 
+        expect(File).to have_received(:join).with(ENV['TEMP_STORAGE'], "downloaded_pdf_#{fixed_time}.pdf")
+        expect(File).to have_received(:open).with(test_file_path).at_least(:once)
         expect(File).to have_received(:delete).with(test_file_path)
         expect(File.exist?(test_file_path)).to be false
       end
