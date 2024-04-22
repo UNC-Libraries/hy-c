@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 module Tasks
   class SageArticleRevisionIngester < SageBaseArticleIngester
-    attr_accessor :existing_id
+    attr_accessor :existing_id, :depositor
 
     def process_package
       existing_work = ActiveFedora::Base.find(@existing_id)
@@ -32,7 +32,7 @@ module Tasks
       # upload new version of the metadata file
       metadata_fs = file_sets.detect { |fs| fs.label.end_with?('.xml') }
       if metadata_fs.nil?
-        attach_xml_to_work(existing_work, @jats_ingest_work.xml_path)
+        attach_xml_to_work(existing_work, @jats_ingest_work.xml_path, depositor)
         @status_service.status_in_progress(@package_name,
             error: StandardError.new("Package #{@package_name} is a revision but did not have an existing XML file. Adding new file."))
       else
@@ -45,7 +45,7 @@ module Tasks
       pdf_fs = file_sets.detect { |fs| fs.label.end_with?('.pdf') }
       pdf_path = pdf_file_path
       if pdf_fs.nil?
-        attach_pdf_to_work(existing_work, pdf_path)
+        attach_pdf_to_work(existing_work, pdf_path, depositor)
         @status_service.status_in_progress(@package_name,
             error: StandardError.new("Package #{@package_name} is a revision but did not have an existing PDF file. Adding new file."))
       else

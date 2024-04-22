@@ -4,7 +4,7 @@ module Tasks
   require 'tasks/ingest_helper'
 
   class SageNewArticleIngester < SageBaseArticleIngester
-    attr_accessor :admin_set
+    attr_accessor :admin_set, :depositor
 
     def process_package
       logger.error("Creating new Article with DOI: #{@jats_ingest_work.identifier}")
@@ -14,11 +14,11 @@ module Tasks
       # Add PDF file to Article (including FileSets)
       pdf_path = pdf_file_path
 
-      pdf_file = attach_pdf_to_work(art_with_meta, pdf_path)
+      pdf_file = attach_pdf_to_work(art_with_meta, pdf_path, depositor)
       pdf_file.update permissions_attributes: group_permissions(admin_set)
 
       # Add xml metadata file to Article
-      xml_file = attach_xml_to_work(art_with_meta, @jats_ingest_work.xml_path)
+      xml_file = attach_xml_to_work(art_with_meta, @jats_ingest_work.xml_path, depositor)
       xml_file.update permissions_attributes: group_permissions(admin_set)
       art_with_meta.id
     end
