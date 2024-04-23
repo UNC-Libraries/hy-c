@@ -95,7 +95,7 @@ module Tasks
 
     def author_to_hash(author, index)
       hash = {
-        'name' => "#{[author['last_name'],author['first_name']].compact.join(', ')}",
+        'name' => "#{[author['last_name'], author['first_name']].compact.join(', ')}",
         'orcid' => author['orcid'].present? ? "https://orcid.org/#{author['orcid'].first}" : '',
         'index' => (index + 1).to_s,
       }

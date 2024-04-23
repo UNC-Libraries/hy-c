@@ -87,7 +87,7 @@ RSpec.describe Tasks::DimensionsIngestService do
         processed_publication = nil
         expect {
           processed_publication = service.process_publication(publication)
-          }.to change { FileSet.count }.by(1)
+        }.to change { FileSet.count }.by(1)
           .and change { Article.count }.by(1)
         expect(processed_publication.file_sets).to be_instance_of(Array)
         fs = processed_publication.file_sets.first
