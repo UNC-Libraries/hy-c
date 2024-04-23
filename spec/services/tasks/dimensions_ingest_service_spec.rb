@@ -231,7 +231,7 @@ RSpec.describe Tasks::DimensionsIngestService do
       expect(article.abstract).to include(/Treatment requirements of antineutrophil cytoplasmic autoantibody vasculitis/)
       expect(article.date_issued).to eq('2023-07-01')
       expect(article.dcmi_type).to match_array(['http://purl.org/dc/dcmitype/Text'])
-      expect(article.funder).to match_array(['acronym: NIAID||city_name: Bethesda||country_code: US||country_name: United States||id: grid.419681.3||latitude: 39.066647||linkout: ["https://www.niaid.nih.gov"]||longitude: -77.11183||name: National Institute of Allergy and Infectious Diseases||state_name: Maryland||types: ["Government"]'])
+      expect(article.funder).to match_array(['National Institute of Allergy and Infectious Diseases'])
       expect(article.identifier).to match_array(['DOI: https://dx.doi.org/10.18553/jmcp.2023.29.7.770', 'Dimensions ID: pub.1160372243', 'PMCID: PMC10387912', 'PMID: 37404075'])
       expect(article.issn).to match_array(['2376-0540', '2376-1032'])
       expect(article.journal_issue).to eq('7')

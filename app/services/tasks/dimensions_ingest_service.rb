@@ -66,10 +66,10 @@ module Tasks
       article.title = [publication['title']]
       article.admin_set = @admin_set
       article.creators_attributes = publication['authors'].map.with_index { |author, index| [index, author_to_hash(author, index)] }.to_h
-      article.funder = format_funders_data(publication)
+      article.funder = publication['funders']&.map { |funder| funder['name'] }
       article.date_issued = publication['date']
       article.abstract = [publication['abstract']].compact.presence
-      article.resource_type = [publication['type']].compact.map { |type| type.capitalize }.presence
+      article.resource_type = ['Article']
       article.publisher = [publication['publisher']].compact.presence
     end
 
@@ -78,7 +78,6 @@ module Tasks
       article.rights_statement = rights_statement
       article.rights_statement_label = CdrRightsStatementsService.label(rights_statement)
       article.dcmi_type = ['http://purl.org/dc/dcmitype/Text']
-      article.edition = determine_edition(publication)
     end
 
     def set_journal_attributes(article, publication)
@@ -96,7 +95,7 @@ module Tasks
 
     def author_to_hash(author, index)
       hash = {
-        'name' => "#{[author['last_name'],author['first_name']].compact.join(',')}",
+        'name' => "#{[author['last_name'],author['first_name']].compact.join(', ')}",
         'orcid' => author['orcid'].present? ? "https://orcid.org/#{author['orcid'].first}" : '',
         'index' => (index + 1).to_s,
       }
@@ -129,12 +128,6 @@ module Tasks
       ].compact
     end
 
-    def format_funders_data(publication)
-      publication['funders'].presence&.map do |funder|
-        funder.map { |key, value| "#{key}: #{value}" if value.present? }.compact.join('||')
-      end
-    end
-
     def parse_page_numbers(publication)
       return { start: nil, end: nil } unless publication['pages'].present?
 
@@ -143,10 +136,6 @@ module Tasks
         start: pages.first,
         end: (pages.length == 2 ? pages.last : nil)
       }
-    end
-
-    def determine_edition(publication)
-      publication['type'].present? && publication['type'] == 'preprint' ? 'preprint' : nil
     end
 
     def extract_pdf(publication)

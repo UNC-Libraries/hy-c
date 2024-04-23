@@ -12,18 +12,17 @@ module Tasks
       # Initialized as a set to avoid retrieving duplicate publications from Dimensions if the page size exceeds the number of publications on the last page.
       all_publications = Set.new
       token = retrieve_token
-      doi_clause = with_doi ? 'where doi is not empty' : 'where doi is empty'
+      doi_clauses = [with_doi ? 'where doi is not empty' : 'where doi is empty', 'type = "article"'].join(' and ')
+      return_fields = ['basics', 'extras', 'abstract', 'issn', 'publisher', 'journal_title_raw', 'linkout'].join(' + ')
       cursor = 0
       # Flag to track if retry has been attempted after token refresh
       retry_attempted = false
-      wip_count = 0
 
       loop do
         begin
-          return_fields = ['basics', 'extras', 'abstract', 'issn', 'publisher', 'journal_title_raw', 'linkout'].join(' + ')
           # Query with paramaters to retrieve publications related to UNC
           query_string = <<~QUERY
-                        search publications #{doi_clause} in raw_affiliations#{' '}
+                        search publications #{doi_clauses} in raw_affiliations#{' '}
                         for """
                         "University of North Carolina, Chapel Hill" OR "UNC"
                         """#{'  '}
