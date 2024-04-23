@@ -17,8 +17,7 @@ module Tasks
 
     def ingest_publications(publications)
       time = Time.now
-      Rails.logger.info("[#{time}] Ingesting publications from Dimensions.")
-      puts "[#{time}] Ingesting publications from Dimensions."
+      Rails.logger.info('Ingesting publications from Dimensions.')
       res = {ingested: [], failed: [], time: time}
 
       publications.each.with_index do |publication, index|
@@ -26,8 +25,9 @@ module Tasks
           process_publication(publication)
           res[:ingested] << publication
           rescue StandardError => e
-            res[:failed] << { publication: publication, error: e.message }
-            Rails.logger.error("Error ingesting publication '#{publication['title']}': #{e.message}")
+            res[:failed] << { publication: publication, error: [e.class.to_s, e.message] }
+            Rails.logger.error("Error ingesting publication '#{publication['title']}'")
+            Rails.logger.error [e.class.to_s, e.message, *e.backtrace].join($RS)
         end
       end
       res
@@ -96,25 +96,28 @@ module Tasks
 
     def author_to_hash(author, index)
       hash = {
-        'name' => "#{[author['first_name'], author['last_name']].compact.join(' ')}",
+        'name' => "#{[author['last_name'],author['first_name']].compact.join(',')}",
         'orcid' => author['orcid'].present? ? "https://orcid.org/#{author['orcid'].first}" : '',
         'index' => (index + 1).to_s,
       }
       # Splitting author affiliations into UNC and other affiliations and adding them to hash
       if author['affiliations'].present?
-        unc_grid_id = 'grid.410711.2'
-        author_unc_affiliation = author['affiliations'].find { |affiliation| affiliation['id'] == unc_grid_id ||
-                                                                  affiliation['raw_affiliation'].include?('UNC') ||
-                                                                  affiliation['raw_affiliation'].include?('University of North Carolina, Chapel Hill')
+
+        author_unc_affiliation = author['affiliations'].find {
+          |affiliation| is_unc_affiliation(affiliation)
         }
-        author_other_affiliations = author['affiliations'].reject { |affiliation| affiliation['id'] == unc_grid_id ||
-                                                                  affiliation['raw_affiliation'].include?('UNC') ||
-                                                                  affiliation['raw_affiliation'].include?('University of North Carolina, Chapel Hill')
+        author_other_affiliations = author['affiliations'].reject {
+          |affiliation| is_unc_affiliation(affiliation)
         }
         hash['other_affiliation'] = author_other_affiliations.map { |affiliation| affiliation['raw_affiliation'] }
         hash['affiliation'] = author_unc_affiliation.present? ? author_unc_affiliation['raw_affiliation'] : ''
       end
       hash
+    end
+
+    def is_unc_affiliation(affiliation)
+      unc_grid_id = 'grid.410711.2'
+      affiliation['id'] == unc_grid_id || affiliation['raw_affiliation'].include?('UNC') || affiliation['raw_affiliation'].include?('University of North Carolina, Chapel Hill')
     end
 
     def format_publication_identifiers(publication)
@@ -148,23 +151,26 @@ module Tasks
 
     def extract_pdf(publication)
       pdf_url = publication && publication['linkout']? publication['linkout'] : nil
+      publication&.[]=('pdf_attached', false)
       unless publication && publication['linkout']
         no_linkout_message = 'Failed to retrieve PDF. Publication does not have a linkout URL.'
         nil_message = 'Failed to retrieve PDF. Publication is nil.'
-        Rails.logger.error(publication.present? ? no_linkout_message : nil_message)
+        Rails.logger.warn(publication.present? ? no_linkout_message : nil_message)
         return nil
       end
       begin
         response = HTTParty.head(pdf_url)
-        raise "Incorrect content type: '#{response.headers['content-type']}'" unless response.headers['content-type'] && response.headers['content-type'].include?('application/pdf')
+        raise "Incorrect content type: '#{response.headers['content-type']}'" unless response.headers['content-type']&.include?('application/pdf')
         pdf_response = HTTParty.get(pdf_url)
         raise "Failed to download PDF: HTTP status '#{pdf_response.code}'" unless pdf_response.code == 200
 
         storage_dir = ENV['TEMP_STORAGE']
-        filename = "downloaded_pdf_#{Time.now.to_i}.pdf"
+        time_stamp = Time.now.strftime('%Y%m%d%H%M%S%L')
+        filename = "downloaded_pdf_#{time_stamp}.pdf"
         file_path = File.join(storage_dir, filename)
 
         File.open(file_path, 'wb') { |file| file.write(pdf_response.body) }
+        publication['pdf_attached'] = true
         file_path  # Return the file path
       rescue StandardError => e
         Rails.logger.error("Failed to retrieve PDF from URL '#{pdf_url}'. #{e.message}")

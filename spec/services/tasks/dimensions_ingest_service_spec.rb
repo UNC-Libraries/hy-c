@@ -31,14 +31,7 @@ RSpec.describe Tasks::DimensionsIngestService do
 
   # Retrieving fixture publications and randomly assigning the marked_for_review attribute
   let(:test_publications) do
-    fixture_publications = JSON.parse(dimensions_ingest_test_fixture)['publications']
-    fixture_publications.each do |publication|
-      random_number = rand(1..5)
-      if random_number == 1
-        publication['marked_for_review'] = true
-      end
-    end
-    fixture_publications
+    JSON.parse(dimensions_ingest_test_fixture)['publications']
   end
 
 
@@ -51,9 +44,9 @@ RSpec.describe Tasks::DimensionsIngestService do
     allow(User).to receive(:find_by).with(uid: 'admin').and_return(admin)
     allow(AdminSet).to receive(:where).with(title: 'Open_Access_Articles_and_Book_Chapters').and_return([admin_set])
     stub_request(:head, 'https://test-url.com/')
-    .to_return(status: 200, headers: { 'Content-Type' => 'application/pdf' })
+      .to_return(status: 200, headers: { 'Content-Type' => 'application/pdf' })
     stub_request(:get, 'https://test-url.com/')
-    .to_return(body: pdf_content, status: 200, headers: { 'Content-Type' => 'application/pdf' })
+      .to_return(body: pdf_content, status: 200, headers: { 'Content-Type' => 'application/pdf' })
     # stub virus checking
     allow(Hyrax::VirusCheckerService).to receive(:file_has_virus?) { false }
     # stub longleaf job
@@ -69,11 +62,16 @@ RSpec.describe Tasks::DimensionsIngestService do
       end
     end
 
-    context 'when admin set or user is not found' do
-      it 'raises an error' do
+    context 'when admin set is not found' do
+      it 'raises an ActiveRecord::RecordNotFound error' do
         allow(AdminSet).to receive(:where).and_return([])
         allow(User).to receive(:find_by).and_return(admin)
         expect { described_class.new(config) }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+    end
+
+    context 'when user is not found' do
+      it 'raises an ActiveRecord::RecordNotFound error' do
         allow(AdminSet).to receive(:where).and_return([admin_set])
         allow(User).to receive(:find_by).and_return(nil)
         expect { described_class.new(config) }.to raise_error(ActiveRecord::RecordNotFound)
@@ -86,25 +84,27 @@ RSpec.describe Tasks::DimensionsIngestService do
       it 'creates article, handles workflows, and attaches PDF' do
         publication = test_publications.first
         expect(service).to receive(:create_sipity_workflow)
+        processed_publication = nil
         expect {
           processed_publication = service.process_publication(publication)
-          expect(processed_publication.file_sets).to be_instance_of(Array)
-          fs = processed_publication.file_sets.first
-          expect(fs).to be_instance_of(FileSet)
-          expect(fs.depositor).to eq(admin.uid)
-          expect(fs.visibility).to eq(processed_publication.visibility)
-          expect(fs.parent).to eq(processed_publication)
-        }.to change { FileSet.count }.by(1)
-        .and change { Article.count }.by(1)
+          }.to change { FileSet.count }.by(1)
+          .and change { Article.count }.by(1)
+        expect(processed_publication.file_sets).to be_instance_of(Array)
+        fs = processed_publication.file_sets.first
+        expect(fs).to be_instance_of(FileSet)
+        expect(fs.depositor).to eq(admin.uid)
+        expect(fs.visibility).to eq(processed_publication.visibility)
+        expect(fs.parent).to eq(processed_publication)
       end
 
       it 'deletes the PDF file after processing' do
         publication = test_publications.first
-        fixed_time = Time.now.to_i
-        test_file_path = "#{ENV['TEMP_STORAGE']}/downloaded_pdf_#{fixed_time}.pdf"
+        fixed_time = Time.now
+        formatted_time = fixed_time.strftime('%Y%m%d%H%M%S%L')
+        test_file_path = "#{ENV['TEMP_STORAGE']}/downloaded_pdf_#{formatted_time}.pdf"
 
         # Mock the time to control file naming
-        allow(Time).to receive(:now).and_return(Time.at(fixed_time))
+        allow(Time).to receive(:now).and_return(fixed_time)
 
         allow(File).to receive(:open).and_call_original
         allow(File).to receive(:delete).and_call_original
@@ -115,7 +115,7 @@ RSpec.describe Tasks::DimensionsIngestService do
           service.process_publication(publication)
         }.to change { Article.count }.by(1)
 
-        expect(File).to have_received(:join).with(ENV['TEMP_STORAGE'], "downloaded_pdf_#{fixed_time}.pdf")
+        expect(File).to have_received(:join).with(ENV['TEMP_STORAGE'], "downloaded_pdf_#{formatted_time}.pdf")
         expect(File).to have_received(:open).with(test_file_path).at_least(:once)
         expect(File).to have_received(:delete).with(test_file_path)
         expect(File.exist?(test_file_path)).to be false
@@ -138,20 +138,29 @@ RSpec.describe Tasks::DimensionsIngestService do
   describe '#ingest_publications' do
     it 'processes each publication and handles failures' do
       failing_publication = test_publications.first
-      test_err_msg = 'Test Error'
-      expected_log_output = "Error ingesting publication '#{failing_publication['title']}': #{test_err_msg}"
+      expected_trace = [
+        "/opt/rh/rh-ruby27/root/usr/share/gems/gems/rspec-mocks-3.12.6/lib/rspec/mocks/message_expectation.rb:188:in `block in and_raise'",
+        "/opt/rh/rh-ruby27/root/usr/share/gems/gems/rspec-mocks-3.12.6/lib/rspec/mocks/message_expectation.rb:761:in `block in call'",
+        "/opt/rh/rh-ruby27/root/usr/share/gems/gems/rspec-mocks-3.12.6/lib/rspec/mocks/message_expectation.rb:760:in `map'"
+      ]
+      test_err_msg = 'Test error'
+      expected_log_outputs = [
+        "Error ingesting publication '#{failing_publication['title']}'",
+        [StandardError.to_s, test_err_msg, *expected_trace].join($RS)
+      ]
       ingested_publications = test_publications[1..-1]
 
       # Stub the process_publication method to raise an error for the first publication only
       allow(service).to receive(:process_publication).and_call_original
       allow(service).to receive(:process_publication).with(failing_publication).and_raise(StandardError, test_err_msg)
 
-      expect(Rails.logger).to receive(:error).with(expected_log_output)
+      expect(Rails.logger).to receive(:error).with(expected_log_outputs[0])
+      expect(Rails.logger).to receive(:error).with(include(expected_log_outputs[1]))
       expect {
         res = service.ingest_publications(test_publications)
         expect(res[:failed].count).to eq(1)
         expect(res[:failed].first[:publication]).to eq(failing_publication)
-        expect(res[:failed].first[:error]).to eq(test_err_msg)
+        expect(res[:failed].first[:error]).to eq([StandardError.to_s, test_err_msg])
         expect(res[:ingested]).to match_array(ingested_publications)
         expect(res[:time]).to be_a(Time)
       }.to change { Article.count }.by(ingested_publications.size)
@@ -163,14 +172,19 @@ RSpec.describe Tasks::DimensionsIngestService do
       publication = test_publications.first
       pdf_path = service.extract_pdf(publication)
       expect(File.exist?(pdf_path)).to be true
+      expect(publication['pdf_attached']).to be true
     end
 
-    it 'returns nil if the publication does not have a linkout url, or if the publication is nil' do
+    it 'returns nil if the publication does not have a linkout url' do
       publication = test_publications.first
-      publication['linkout'] = nil
-      expect(Rails.logger).to receive(:error).with('Failed to retrieve PDF. Publication does not have a linkout URL.')
-      expect(Rails.logger).to receive(:error).with('Failed to retrieve PDF. Publication is nil.')
+      publication['linkout'] = nil  # Ensure linkout URL is missing
+      expect(Rails.logger).to receive(:warn).with('Failed to retrieve PDF. Publication does not have a linkout URL.')
       expect(service.extract_pdf(publication)).to be nil
+      expect(publication['pdf_attached']).to be false
+    end
+
+    it 'returns nil if the publication is nil' do
+      expect(Rails.logger).to receive(:warn).with('Failed to retrieve PDF. Publication is nil.')
       expect(service.extract_pdf(nil)).to be nil
     end
 
@@ -178,18 +192,20 @@ RSpec.describe Tasks::DimensionsIngestService do
       publication = test_publications.first
       publication['linkout'] = 'https://test-url.com/'
       stub_request(:head, 'https://test-url.com/')
-      .to_return(status: 200, headers: { 'Content-Type' => 'application/text' })
+        .to_return(status: 200, headers: { 'Content-Type' => 'application/text' })
       expect(Rails.logger).to receive(:error).with("Failed to retrieve PDF from URL 'https://test-url.com/'. Incorrect content type: 'application/text'")
       expect(service.extract_pdf(publication)).to be nil
+      expect(publication['pdf_attached']).to be false
     end
 
     it 'returns nil if the PDF download fails and logs an error' do
       publication = test_publications.first
       publication['linkout'] = 'https://test-url.com/'
       stub_request(:get, 'https://test-url.com/')
-      .to_return(body: '', status: 500)
+        .to_return(body: '', status: 500)
       expect(Rails.logger).to receive(:error).with("Failed to retrieve PDF from URL 'https://test-url.com/'. Failed to download PDF: HTTP status '500'")
       expect(service.extract_pdf(publication)).to be nil
+      expect(publication['pdf_attached']).to be false
     end
   end
 
@@ -209,7 +225,7 @@ RSpec.describe Tasks::DimensionsIngestService do
       expect(article.valid?).to be true
       expect(article.title).to eq(['Polypharmacy in US Medicare beneficiaries with antineutrophil cytoplasmic antibody vasculitis'])
       first_creator = article.creators.find { |creator| creator[:index] == ['1'] }
-      expect(first_creator.attributes['name']).to match_array(['Carolyn T Thorpe'])
+      expect(first_creator.attributes['name']).to match_array(['Thorpe, Carolyn T'])
       expect(first_creator.attributes['other_affiliation']).to match_array(['Veterans Affairs Pittsburgh Healthcare System, PA.'])
       expect(first_creator.attributes['orcid']).to match_array(['https://orcid.org/0000-0002-7662-7497'])
       expect(article.abstract).to include(/Treatment requirements of antineutrophil cytoplasmic autoantibody vasculitis/)
