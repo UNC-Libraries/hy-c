@@ -149,9 +149,17 @@ module Tasks
       end
       begin
         response = HTTParty.head(pdf_url)
-        raise "Incorrect content type: '#{response.headers['content-type']}'" unless response.headers['content-type']&.include?('application/pdf')
+        # Verify the content type is PDF; raise an error if not.
+        if response.code == 200
+          raise "Incorrect content type: '#{response.headers['content-type']}'" unless response.headers['content-type']&.include?('application/pdf')
+        else
+          # Provide a warning and proceed with GET in case the HEAD request failed
+          Rails.logger.warn("Received a non-200 response code (#{response.code}) when making a HEAD request to the PDF URL: #{pdf_url}")
+        end
+
         pdf_response = HTTParty.get(pdf_url)
         raise "Failed to download PDF: HTTP status '#{pdf_response.code}'" unless pdf_response.code == 200
+        raise "Incorrect content type: '#{pdf_response.headers['content-type']}'" unless pdf_response.headers['content-type']&.include?('application/pdf')
 
         storage_dir = ENV['TEMP_STORAGE']
         time_stamp = Time.now.strftime('%Y%m%d%H%M%S%L')

@@ -207,6 +207,17 @@ RSpec.describe Tasks::DimensionsIngestService do
       expect(service.extract_pdf(publication)).to be nil
       expect(publication['pdf_attached']).to be false
     end
+
+    it 'logs a warning and proceeds with GET if HEAD request fails' do
+      publication = test_publications.first
+      publication['linkout'] = 'https://test-url.com/'
+      stub_request(:head, 'https://test-url.com/')
+        .to_return(status: 500)
+      expect(Rails.logger).to receive(:warn).with('Received a non-200 response code (500) when making a HEAD request to the PDF URL: https://test-url.com/')
+      pdf_path = service.extract_pdf(publication)
+      expect(publication['pdf_attached']).to be true
+      expect(File.exist?(pdf_path)).to be true
+    end
   end
 
   describe '#article_with_metadata' do
