@@ -183,11 +183,6 @@ RSpec.describe Tasks::DimensionsIngestService do
       expect(publication['pdf_attached']).to be false
     end
 
-    it 'returns nil if the publication is nil' do
-      expect(Rails.logger).to receive(:warn).with('Failed to retrieve PDF. Publication is nil.')
-      expect(service.extract_pdf(nil)).to be nil
-    end
-
     it 'returns nil if the publication linkout url is not a PDF and logs an error' do
       publication = test_publications.first
       publication['linkout'] = 'https://test-url.com/'

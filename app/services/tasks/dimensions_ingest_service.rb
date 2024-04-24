@@ -4,6 +4,7 @@ module Tasks
   class DimensionsIngestService
     include Tasks::IngestHelper
     attr_reader :admin_set, :depositor
+    UNC_GRID_ID = 'grid.410711.2'
 
     def initialize(config)
       @config = config
@@ -22,6 +23,7 @@ module Tasks
 
       publications.each.with_index do |publication, index|
         begin
+          next unless publication.presence
           process_publication(publication)
           res[:ingested] << publication
           rescue StandardError => e
@@ -115,8 +117,7 @@ module Tasks
     end
 
     def is_unc_affiliation(affiliation)
-      unc_grid_id = 'grid.410711.2'
-      affiliation['id'] == unc_grid_id || affiliation['raw_affiliation'].include?('UNC') || affiliation['raw_affiliation'].include?('University of North Carolina, Chapel Hill')
+      affiliation['id'] == UNC_GRID_ID || affiliation['raw_affiliation'].include?('UNC') || affiliation['raw_affiliation'].include?('University of North Carolina, Chapel Hill')
     end
 
     def format_publication_identifiers(publication)
@@ -139,12 +140,10 @@ module Tasks
     end
 
     def extract_pdf(publication)
-      pdf_url = publication && publication['linkout']? publication['linkout'] : nil
-      publication&.[]=('pdf_attached', false)
-      unless publication && publication['linkout']
-        no_linkout_message = 'Failed to retrieve PDF. Publication does not have a linkout URL.'
-        nil_message = 'Failed to retrieve PDF. Publication is nil.'
-        Rails.logger.warn(publication.present? ? no_linkout_message : nil_message)
+      pdf_url = publication['linkout']? publication['linkout'] : nil
+      publication['pdf_attached'] = false
+      unless publication['linkout']
+        Rails.logger.warn('Failed to retrieve PDF. Publication does not have a linkout URL.')
         return nil
       end
       begin
@@ -176,4 +175,4 @@ module Tasks
     end
 
   end
-    end
+end
