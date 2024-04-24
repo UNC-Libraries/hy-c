@@ -26,6 +26,9 @@ terms:
   - id: Department of Nutrition
     term: Gillings School of Global Public Health; Department of Nutrition
     active: true
+  - id: Department of Public Health Leadership and Practice
+    term: Gillings School of Global Public Health; Department of Public Health Leadership and Practice
+    active: true
   - id: Hussman School of Journalism and Media
     term: Hussman School of Journalism and Media
     active: true
@@ -34,12 +37,9 @@ terms:
     active: true
   - id: MPH@UNC
     term: Gillings School of Global Public Health; MPH@UNC
-    active: true
+    active: false
   - id: Physician Assistant Program
     term: School of Medicine; Department of Allied Health Sciences; Physician Assistant Program
-    active: true
-  - id: Public Health Leadership Program
-    term: Gillings School of Global Public Health; Public Health Leadership Program
     active: true
   - id: School of Information and Library Science
     term: School of Information and Library Science
