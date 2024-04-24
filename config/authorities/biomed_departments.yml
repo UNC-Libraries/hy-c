@@ -472,10 +472,10 @@ terms:
     term: School of Medicine, Department of Family Medicine
   - id: Department of Family Medicine, University of North Carolina School of Medicine, CB #7595, Chapel Hill, NC 27599, USA	
     term: School of Medicine, Department of Family Medicine
-  - id: Department of Family Medicine, University of North Carolina School of Medicine, and Public Health Leadership Program, University of North Carolina Gillings School of Global Public Health, Chapel Hill, NC, USA	
+  - id: Department of Family Medicine, University of North Carolina School of Medicine, and Department of Public Health Leadership and Practice, University of North Carolina Gillings School of Global Public Health, Chapel Hill, NC, USA	
     term: 
       - School of Medicine, Department of Family Medicine
-      - Gillings School of Global Public Health, Public Health Leadership Program
+      - Gillings School of Global Public Health, Department of Public Health Leadership and Practice
   - id: Department of Family Medicine, University of North Carolina at Chapel Hill	
     term: School of Medicine, Department of Family Medicine
   - id: Department of Family Medicine, University of North Carolina at Chapel Hill, 590 Manning Drive, Chapel Hill, NC 27599, USA	
@@ -1209,9 +1209,9 @@ terms:
     term: School of Medicine, Department of Physical Medicine and Rehabilitation
   - id: Program on Integrative Medicine, Department of Physical Medicine and Rehabilitation, School of Medicine, University of North Carolina at Chapel Hill	
     term: School of Medicine, Department of Physical Medicine and Rehabilitation
-  - id: Public Health Leadership Program, Gillings School of Global Public Health, University of North Carolina at Chapel Hill	
-    term: Gillings School of Global Public Health, Public Health Leadership Program
-  - id: Public Health Leadership Program, Gillings School of Global Public Health; School of Medicine, University of North Carolina at Chapel Hill, Chapel Hill, NC, USA	
+  - id: Department of Public Health Leadership and Practice, Gillings School of Global Public Health, University of North Carolina at Chapel Hill	
+    term: Gillings School of Global Public Health, Department of Public Health Leadership and Practice
+  - id: Department of Public Health Leadership and Practice, Gillings School of Global Public Health; School of Medicine, University of North Carolina at Chapel Hill, Chapel Hill, NC, USA	
     term: School of Medicine
   - id: R. L. Juliano Structural Bioinformatics Core Facility, University of North Carolina at Chapel Hill	
     term: null

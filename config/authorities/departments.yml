@@ -1325,13 +1325,13 @@ terms:
   active: true
   short_label: Public Administration Program
 - id: PHLP
-  term: Gillings School of Global Public Health; Public Health Leadership Program
+  term: Gillings School of Global Public Health; Department of Public Health Leadership and Practice
   active: false
   short_label: PHLP
-- id: Public Health Leadership Program
-  term: Gillings School of Global Public Health; Public Health Leadership Program
+- id: Department of Public Health Leadership and Practice
+  term: Gillings School of Global Public Health; Department of Public Health Leadership and Practice
   active: true
-  short_label: Public Health Leadership Program
+  short_label: Department of Public Health Leadership and Practice
 - id: Recreation Administration Minor
   term: College of Arts and Sciences; Department of Exercise and Sport Science; Recreation Administration Minor
   active: true
