@@ -34,7 +34,7 @@ terms:
     active: true
   - id: MPH@UNC
     term: Gillings School of Global Public Health; MPH@UNC
-    active: true
+    active: false
   - id: Physician Assistant Program
     term: School of Medicine; Department of Allied Health Sciences; Physician Assistant Program
     active: true
