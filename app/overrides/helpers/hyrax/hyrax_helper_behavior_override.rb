@@ -6,8 +6,8 @@ Hyrax::HyraxHelperBehavior.class_eval do
     # @return [Array<String>] the list of all user groups
     def available_user_groups(ability:)
         var = ::User.group_service.role_names
-        return ::User.group_service.role_names if ability.admin?
-    
+        Rails.logger.info "Current user groups: #{var}"
+        return var if ability.admin?    
         group = ability.user_groups
         # group << "registered"
         # group << "public"
