@@ -7,7 +7,6 @@ Hyrax::HyraxHelperBehavior.class_eval do
     def available_user_groups(ability:)
         user_groups = ability.user_groups
         return user_groups if ability.admin?    
-        Rails.logger.info "Pasta - Current user groups: #{ability.user_groups}"
         # Excluding "public" and "registered" groups if non admin user
         user_groups.delete("public")
         user_groups.delete("registered")
