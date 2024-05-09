@@ -16,7 +16,7 @@ GIT
 
 GIT
   remote: https://github.com/UNC-Libraries/hyrax.git
-  revision: 78550cfb8354037325eb5af3b9edc55f95546c4e
+  revision: 1fcbb1665b088fe3aa406202b53393f51913d8f0
   branch: unc-hyrax-4-development
   specs:
     hyrax (4.0.0)
