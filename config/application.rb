@@ -48,5 +48,8 @@ module Hyrax
         Rails.configuration.cache_classes ? require(c) : load(c)
       end
     end
+
+    require_relative '../app/middleware/decode_query_string'
+    config.middleware.insert_before Rack::Runtime, DecodeQueryString
   end
 end
