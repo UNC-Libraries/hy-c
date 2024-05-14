@@ -7,7 +7,7 @@ class DecodeQueryString
   def call(env)
     if env['QUERY_STRING']
       # Decode the '%3D' character
-      query_string = URI.decode_www_form_component(env['QUERY_STRING']).gsub('%3D', '=')
+      query_string = env['QUERY_STRING'].gsub('%5D%3D', '%5D=')
       env['QUERY_STRING'] = query_string
     end
     @app.call(env)
