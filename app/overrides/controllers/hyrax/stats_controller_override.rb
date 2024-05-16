@@ -17,6 +17,7 @@ Hyrax::StatsController.class_eval do
         # Merge incoming event counts into the combined result.
         # Results values are lists containing 2 elements, the date and the event count.
         events.results.each_with_index do |entry, index|
+          next if entry.nil?
           combined_results.results[index][1] += entry[1]
         end
       end
