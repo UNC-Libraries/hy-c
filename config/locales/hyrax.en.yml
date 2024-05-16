@@ -351,5 +351,5 @@ en:
         table_of_contents: "Table of contents"
         translator_display: "Translator"
   download:
-    one: "and 1 download.\r\nStatistics are reported monthly. Email cdr@unc.edu for more detailed statistics"
-    other: "and %{count} downloads.\r\nStatistics are reported monthly. Email cdr@unc.edu for more detailed statistics"
+    one: "and 1 download. Statistics are reported monthly. Email cdr@unc.edu for more detailed statistics."
+    other: "and %{count} downloads. Statistics are reported monthly. Email cdr@unc.edu for more detailed statistics."

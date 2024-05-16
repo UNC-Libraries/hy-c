@@ -16,21 +16,21 @@ RSpec.describe Hyrax::StatsController do
     let(:work) { FactoryBot.create(:work_with_files, user: user) }
 
     it 'renders the stats view' do
-      dates = [Time.new(2019, 6, 19), Time.new(2019, 6, 20), Time.new(2019, 6, 21)]
-      formatted_dates = dates.map { |time| time.strftime('%Y-%m-%d') }
+      dates = [Time.new(2019, 6, 1), Time.new(2019, 7, 1), Time.new(2019, 8, 1)]
+      formatted_dates = dates.map { |time| time.strftime('%Y-%m') }
       spec_page_views = formatted_dates.map { |date| [date, rand(11)] }
       spec_downloads = formatted_dates.map { |date| [date, rand(11)] }
       spec_fileset_ids = work.members.map(&:id)
 
       spec_fileset_ids.each_with_index do |fileset_id, index|
         if index == 0
-          expect(Hyrax::Analytics).to receive(:daily_events_for_id).with(fileset_id, 'DownloadIR').and_return(Hyrax::Analytics::Results.new(spec_downloads))
+          expect(Hyrax::Analytics).to receive(:monthly_events_for_id).with(fileset_id, 'DownloadIR').and_return(Hyrax::Analytics::Results.new(spec_downloads))
         else
-          expect(Hyrax::Analytics).to receive(:daily_events_for_id).with(fileset_id, 'DownloadIR').and_return(Hyrax::Analytics::Results.new([spec_downloads[index]]))
+          expect(Hyrax::Analytics).to receive(:monthly_events_for_id).with(fileset_id, 'DownloadIR').and_return(Hyrax::Analytics::Results.new([spec_downloads[index]]))
         end
       end
 
-      expect(Hyrax::Analytics).to receive(:daily_events_for_id).with(work.id, 'work-view').and_return(spec_page_views)
+      expect(Hyrax::Analytics).to receive(:monthly_events_for_id).with(work.id, 'work-view').and_return(spec_page_views)
       expect(controller).to receive(:add_breadcrumb).with('Home', Hyrax::Engine.routes.url_helpers.root_path(locale: 'en'))
       expect(controller).to receive(:add_breadcrumb).with(I18n.t('hyrax.dashboard.my.works'), Hyrax::Engine.routes.url_helpers.my_works_path(locale: 'en'))
       expect(controller).to receive(:add_breadcrumb).with(I18n.t('hyrax.dashboard.title'), Hyrax::Engine.routes.url_helpers.dashboard_path(locale: 'en'))
