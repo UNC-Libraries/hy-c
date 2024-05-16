@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Hyrax::Analytics::Matomo.module_eval do
   class_methods do
     def api_params(method, period, date, additional_params = {})
@@ -11,8 +13,8 @@ Hyrax::Analytics::Matomo.module_eval do
         token_auth: config.auth_token
       }
       params.merge!(additional_params)
-      get(params)
       Rails.logger.error("Matomo API call #{params}")
+      get(params)
     end
   end
 end
