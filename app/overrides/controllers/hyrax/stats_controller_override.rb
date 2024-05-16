@@ -13,18 +13,21 @@ Hyrax::StatsController.class_eval do
     work = ActiveFedora::Base.find(params[:id])
     fileset_ids = work.members.first(100).map(&:id)
     combined_results = nil
+    mutex = Mutex.new
 
     fileset_ids.each do |fileset_id|
       threads << Thread.new do
         events = Hyrax::Analytics.monthly_events_for_id(fileset_id, 'DownloadIR')
-        if combined_results.nil?
-          combined_results = events
-        else
-          # Merge incoming event counts into the combined result.
-          # Results values are lists containing 2 elements, the date and the event count.
-          events.results.each_with_index do |entry, index|
-            next if entry.nil?
-            combined_results.results[index][1] += entry[1]
+        mutex.synchronize do
+          if combined_results.nil?
+            combined_results = events
+          else
+            # Merge incoming event counts into the combined result.
+            # Results values are lists containing 2 elements, the date and the event count.
+            events.results.each_with_index do |entry, index|
+              next if entry.nil?
+              combined_results.results[index][1] += entry[1]
+            end
           end
         end
       end
