@@ -10,6 +10,8 @@ Hyrax::Analytics::Matomo.module_eval do
         label: "#{id} - #{action}"
       }
       response = api_params('Events.getName', 'month', date, additional_params)
+      # Update keys by appending "-01" so that they can be parsed as dates
+      response = response.transform_keys { |key| "#{key}-01" }
       results_array(response, 'nb_events')
     end
   end
