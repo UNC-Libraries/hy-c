@@ -16,21 +16,30 @@ RSpec.describe Hyrax::StatsController do
     let(:work) { FactoryBot.create(:work_with_files, user: user) }
 
     it 'renders the stats view' do
-      dates = [Time.new(2019, 6, 1), Time.new(2019, 7, 1), Time.new(2019, 8, 1)]
+      dates = [Date.new(2019, 6, 1), Date.new(2019, 7, 1), Date.new(2019, 8, 1)]
       formatted_dates = dates.map { |time| time.strftime('%Y-%m') }
       spec_page_views = formatted_dates.map { |date| [date, rand(11)] }
+      expected_page_views = dates.each_with_index.map { |date, i| [date, spec_page_views[i][1]] }
+      spec_page_views_hash = Hash.new
+      spec_page_views.each_with_object(spec_page_views_hash) do |pair, hash|
+        hash[pair[0]] = [{'nb_events' => pair[1]}]
+      end
       spec_downloads = formatted_dates.map { |date| [date, rand(11)] }
+      # Expected downloads need to be doubled since there are two filesets with the same stats
+      expected_downloads = dates.each_with_index.map { |date, i| [date, spec_downloads[i][1] * 2] }
+      spec_downloads_hash = Hash.new
+      spec_downloads.each_with_object(spec_downloads_hash) do |pair, hash|
+        hash[pair[0]] = [{'nb_events' => pair[1]}]
+      end
       spec_fileset_ids = work.members.map(&:id)
 
       spec_fileset_ids.each_with_index do |fileset_id, index|
-        if index == 0
-          expect(Hyrax::Analytics).to receive(:monthly_events_for_id).with(fileset_id, 'DownloadIR').and_return(Hyrax::Analytics::Results.new(spec_downloads))
-        else
-          expect(Hyrax::Analytics).to receive(:monthly_events_for_id).with(fileset_id, 'DownloadIR').and_return(Hyrax::Analytics::Results.new([spec_downloads[index]]))
-        end
+        expect(Hyrax::Analytics).to receive(:api_params).with('Events.getName', 'month', anything, { flat: 1,
+          label: "#{fileset_id} - DownloadIR"}).and_return(spec_downloads_hash)
       end
 
-      expect(Hyrax::Analytics).to receive(:monthly_events_for_id).with(work.id, 'work-view').and_return(spec_page_views)
+      expect(Hyrax::Analytics).to receive(:api_params).with('Events.getName', 'month', anything, { flat: 1,
+            label: "#{work.id} - work-view"}).and_return(spec_page_views_hash)
       expect(controller).to receive(:add_breadcrumb).with('Home', Hyrax::Engine.routes.url_helpers.root_path(locale: 'en'))
       expect(controller).to receive(:add_breadcrumb).with(I18n.t('hyrax.dashboard.my.works'), Hyrax::Engine.routes.url_helpers.my_works_path(locale: 'en'))
       expect(controller).to receive(:add_breadcrumb).with(I18n.t('hyrax.dashboard.title'), Hyrax::Engine.routes.url_helpers.dashboard_path(locale: 'en'))
@@ -40,8 +49,8 @@ RSpec.describe Hyrax::StatsController do
       pageviews = subject.instance_variable_get('@pageviews')
       downloads = subject.instance_variable_get('@downloads')
 
-      expect(pageviews).to eq(spec_page_views)
-      expect(downloads.results).to eq(spec_downloads)
+      expect(pageviews.results).to eq(expected_page_views)
+      expect(downloads.results).to eq(expected_downloads)
     end
   end
 
