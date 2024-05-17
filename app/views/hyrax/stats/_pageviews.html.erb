@@ -4,7 +4,7 @@
   Morris.Bar({
       element: 'pageviews',
       data: [
-        <% @pageviews.list.take(365).reverse.each do |result| %>
+        <% @pageviews.list.take(12).reverse.each do |result| %>
           { date: "<%= result[0] %>", metric: <%= result[1] %>},
         <% end %>
       ],  

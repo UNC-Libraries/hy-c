@@ -51,10 +51,6 @@ module Hyc
         end
       end
 
-      def api_secret
-        @api_secret ||= ENV['ANALYTICS_API_SECRET']
-      end
-
       def fetch_record
         @record ||= ActiveFedora::SolrService.get("file_set_ids_ssim:#{params[:id]}", rows: 1)['response']['docs']
       end
