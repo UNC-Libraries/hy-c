@@ -5,17 +5,20 @@ module Tasks
             @ingested_publications = ingested_publications
         end
 
-        def report
-            Rails.logger.info("Reporting publications from dimensions ingest at #{@ingested_publications[:time]} by #{@ingested_publications[:depositor]}.")
-            Rails.logger.info("Admin Set: #{@ingested_publications[:admin_set_title]}")
-            Rails.logger.info("Depositor: #{@ingested_publications[:depositor]}")
+        def generate_report
+            res = []
             extracted_info = extract_publication_info()
-            Rails.logger.info("Successfully Ingested:\n")
-            Rails.logger.info("#{extracted_info[:successfully_ingested].join("\n")}")
-            Rails.logger.info("Marked for Review:\n")
-            Rails.logger.info("#{extracted_info[:marked_for_review].join("\n")}")
-            Rails.logger.info("Failed to Ingest:\n")
-            Rails.logger.info("#{extracted_info[:failed_to_ingest].join("\n")}")
+            formatted_time = @ingested_publications[:time].strftime("%B %d, %Y at %I:%M %p %Z")
+            res << "Reporting dimensions ingest results from job at #{formatted_time} by #{@ingested_publications[:depositor]}."
+            res << "Admin Set: #{@ingested_publications[:admin_set_title]}"
+            res << "Total Publications: #{extracted_info[:successfully_ingested].length + extracted_info[:failed_to_ingest].length + extracted_info[:marked_for_review].length}"
+            res << "\nSuccessfully Ingested: (#{extracted_info[:successfully_ingested].length} Publications)"
+            res << extracted_info[:successfully_ingested].join("\n")
+            res << "\nMarked for Review: (#{extracted_info[:marked_for_review].length} Publications)"
+            res << extracted_info[:marked_for_review].join("\n")
+            res << "\nFailed to Ingest: (#{extracted_info[:failed_to_ingest].length} Publications)"
+            res << extracted_info[:failed_to_ingest].join("\n")
+            res.join("\n")
         end
 
         def extract_publication_info
@@ -28,7 +31,6 @@ module Tasks
                 end
             end
             @ingested_publications[:failed].map do |publication|
-                puts "Inspecting failed publication: #{publication}"
                 publication_info[:failed_to_ingest] << "Title: #{publication['title']}, ID: #{publication['id']}, URL: #{publication['url']}, Error: #{publication['error'][0]} - #{publication['error'][1]}"
             end
             publication_info
