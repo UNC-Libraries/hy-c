@@ -19,7 +19,7 @@ module Tasks
     def ingest_publications(publications)
       time = Time.now
       Rails.logger.info('Ingesting publications from Dimensions.')
-      res = {ingested: [], failed: [], time: time}
+      res = {ingested: [], failed: [], time: time, admin_set_title: @admin_set.title.first, depositor: @config['depositor_onyen']}
 
       publications.each.with_index do |publication, index|
         begin
