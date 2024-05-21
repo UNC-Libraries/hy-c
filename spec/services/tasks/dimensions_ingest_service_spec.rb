@@ -28,8 +28,6 @@ RSpec.describe Tasks::DimensionsIngestService do
   end
   let(:pdf_content) { File.binread(File.join(Rails.root, '/spec/fixtures/files/sample_pdf.pdf')) }
 
-
-  # Retrieving fixture publications and randomly assigning the marked_for_review attribute
   let(:test_publications) do
     JSON.parse(dimensions_ingest_test_fixture)['publications']
   end
@@ -137,27 +135,30 @@ RSpec.describe Tasks::DimensionsIngestService do
 
   describe '#ingest_publications' do
     it 'processes each publication and handles failures' do
-      failing_publication = test_publications.first
+      expected_failing_publication = test_publications.first
       test_err_msg = 'Test error'
       expected_log_outputs = [
-        "Error ingesting publication '#{failing_publication['title']}'",
+        "Error ingesting publication '#{expected_failing_publication['title']}'",
         [StandardError.to_s, test_err_msg].join($RS)
       ]
       ingested_publications = test_publications[1..-1]
 
       # Stub the process_publication method to raise an error for the first publication only
       allow(service).to receive(:process_publication).and_call_original
-      allow(service).to receive(:process_publication).with(failing_publication).and_raise(StandardError, test_err_msg)
+      allow(service).to receive(:process_publication).with(expected_failing_publication).and_raise(StandardError, test_err_msg)
 
       expect(Rails.logger).to receive(:error).with(expected_log_outputs[0])
       expect(Rails.logger).to receive(:error).with(include(expected_log_outputs[1]))
       expect {
         res = service.ingest_publications(test_publications)
+        actual_failed_publication = res[:failed].first
+        actual_failed_publication_error = res[:failed].first['error']
+        actual_failed_publication.delete('error') 
         expect(res[:admin_set_title]).to eq('Open_Access_Articles_and_Book_Chapters')
         expect(res[:depositor]).to eq('admin')
         expect(res[:failed].count).to eq(1)
-        expect(res[:failed].first[:publication]).to eq(failing_publication)
-        expect(res[:failed].first[:error]).to eq([StandardError.to_s, test_err_msg])
+        expect(actual_failed_publication).to eq(expected_failing_publication)
+        expect(actual_failed_publication_error).to eq([StandardError.to_s, test_err_msg])
         expect(res[:ingested]).to match_array(ingested_publications)
         expect(res[:time]).to be_a(Time)
       }.to change { Article.count }.by(ingested_publications.size)

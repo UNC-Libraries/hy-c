@@ -6,7 +6,7 @@ module Tasks
         end
 
         def report
-            Rails.logger.info("Reporting publications from dimensions ingest at #{ingested_publications[:time]} by #{ingested_publications[:depositor]}.")
+            Rails.logger.info("Reporting publications from dimensions ingest at #{@ingested_publications[:time]} by #{@ingested_publications[:depositor]}.")
             Rails.logger.info("Admin Set: #{@ingested_publications[:admin_set_title]}")
             Rails.logger.info("Depositor: #{@ingested_publications[:depositor]}")
             extracted_info = extract_publication_info()
@@ -28,8 +28,10 @@ module Tasks
                 end
             end
             @ingested_publications[:failed].map do |publication|
+                puts "Inspecting failed publication: #{publication}"
                 publication_info[:failed_to_ingest] << "Title: #{publication['title']}, ID: #{publication['id']}, URL: #{publication['url']}, Error: #{publication['error'][0]} - #{publication['error'][1]}"
             end
+            publication_info
         end
     end
 end

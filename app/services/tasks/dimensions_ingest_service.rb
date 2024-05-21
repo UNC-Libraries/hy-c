@@ -27,7 +27,7 @@ module Tasks
           process_publication(publication)
           res[:ingested] << publication
           rescue StandardError => e
-            res[:failed] << { publication: publication, error: [e.class.to_s, e.message] }
+            res[:failed] << publication.merge('error' => [e.class.to_s, e.message])
             Rails.logger.error("Error ingesting publication '#{publication['title']}'")
             Rails.logger.error [e.class.to_s, e.message, *e.backtrace].join($RS)
         end
