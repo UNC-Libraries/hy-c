@@ -9,7 +9,7 @@ module Tasks
             res = []
             extracted_info = extract_publication_info()
             formatted_time = @ingested_publications[:time].strftime("%B %d, %Y at %I:%M %p %Z")
-            res << "Reporting dimensions ingest results from job at #{formatted_time} by #{@ingested_publications[:depositor]}."
+            res << "Reporting publications from dimensions ingest at #{formatted_time} by #{@ingested_publications[:depositor]}."
             res << "Admin Set: #{@ingested_publications[:admin_set_title]}"
             res << "Total Publications: #{extracted_info[:successfully_ingested].length + extracted_info[:failed_to_ingest].length + extracted_info[:marked_for_review].length}"
             res << "\nSuccessfully Ingested: (#{extracted_info[:successfully_ingested].length} Publications)"

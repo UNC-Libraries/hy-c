@@ -51,6 +51,8 @@ RSpec.describe Tasks::DimensionsReportingService do
     failing_publication_sample
     marked_for_review_sample
     successful_publication_sample
+    fixed_time = Time.new(2024, 5, 21, 10, 0, 0)
+    allow(Time).to receive(:now).and_return(fixed_time)
     allow(User).to receive(:find_by).with(uid: 'admin').and_return(admin)
     allow(AdminSet).to receive(:where).with(title: 'Open_Access_Articles_and_Book_Chapters').and_return([admin_set])
     stub_request(:head, 'https://test-url.com/')
@@ -74,17 +76,12 @@ RSpec.describe Tasks::DimensionsReportingService do
     it 'generates a report for ingest dimensions publications' do
       report = service.generate_report
       puts "Report: #{report}"
-    #   expect(report).to include("Reporting publications from dimensions ingest at #{ingested_publications[:time]} by admin.")
-    #     expect(report).to include("Admin Set: Open_Access_Articles_and_Book_Chapters")
-    #     expect(report).to include("Depositor: admin")
-    #     expect(report).to include({"Successfully Ingested:" => failing_publication_sample})
-    #     expect(report).to include("Marked for Review:")
-    #     expect(report).to include("Failed to Ingest:")
-    #     for failing_publication in failing_publication_sample
-    #         expect(report).to include("Title: #{failing_publication['title']}, ID: #{failing_publication['id']}, URL: #{failing_publication['url']}, Error: StandardError - #{test_err_msg}")
-    #     end
-        # expect(report).to include("Title: #{marked_for_review_sample[0]['title']}, ID: #{marked_for_review_sample[0]['id']}, URL: #{marked_for_review_sample[0]['url']}, PDF Attached: No")
-        # expect(report).to include("Title: #{ingested_publications[:ingested][0]['title']}, ID: #{ingested_publications[:ingested][0]['id']}, URL: #{ingested_publications[:ingested][0]['url']}, PDF Attached: Yes")
+      expect(report).to include("Reporting publications from dimensions ingest at May 21, 2024 at 10:00 AM UTC by admin.")
+                    .and include("Admin Set: Open_Access_Articles_and_Book_Chapters")
+                    .and include("Total Publications: #{test_publications.length}")
+                    .and include("Successfully Ingested: (#{successful_publication_sample.length} Publications)")
+                    .and include("Marked for Review: (#{marked_for_review_sample.length} Publications)")
+                    .and include("Failed to Ingest: (#{failing_publication_sample.length} Publications)")
     end
   end
   
