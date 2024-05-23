@@ -24,8 +24,8 @@ module Tasks
       publications.each.with_index do |publication, index|
         begin
           next unless publication.presence
-          process_publication(publication)
-          res[:ingested] << publication
+          article = process_publication(publication)
+          res[:ingested] << publication.merge('article_id' => article.id)
           rescue StandardError => e
             res[:failed] << publication.merge('error' => [e.class.to_s, e.message])
             Rails.logger.error("Error ingesting publication '#{publication['title']}'")
@@ -54,6 +54,7 @@ module Tasks
       article.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
       article.permissions_attributes = group_permissions(@admin_set)
       article.save!
+      # puts "Article Inspection: #{article.inspect}"
       article
     end
 

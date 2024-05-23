@@ -25,13 +25,13 @@ module Tasks
             publication_info = {successfully_ingested: [], failed_to_ingest: [], marked_for_review: []}
             @ingested_publications[:ingested].map do |publication|
                 if publication['marked_for_review']
-                    publication_info[:marked_for_review] << "Title: #{publication['title']}, ID: #{publication['id']}, URL: #{publication['url']}, PDF Attached: #{publication['pdf_attached'] ? 'Yes' : 'No'}"
+                    publication_info[:marked_for_review] << "Title: #{publication['title']}, ID: #{publication['id']}, URL: https://cdr.lib.unc.edu/concern/articles/#{publication['article_id']}?locale=en, PDF Attached: #{publication['pdf_attached'] ? 'Yes' : 'No'}"
                 else
-                    publication_info[:successfully_ingested] << "Title: #{publication['title']}, ID: #{publication['id']}, URL: #{publication['url']}, PDF Attached: #{publication['pdf_attached'] ? 'Yes' : 'No'}"
+                    publication_info[:successfully_ingested] << "Title: #{publication['title']}, ID: #{publication['id']}, URL: https://cdr.lib.unc.edu/concern/articles/#{publication['article_id']}?locale=en, PDF Attached: #{publication['pdf_attached'] ? 'Yes' : 'No'}"
                 end
             end
             @ingested_publications[:failed].map do |publication|
-                publication_info[:failed_to_ingest] << "Title: #{publication['title']}, ID: #{publication['id']}, URL: #{publication['url']}, Error: #{publication['error'][0]} - #{publication['error'][1]}"
+                publication_info[:failed_to_ingest] << "Title: #{publication['title']}, ID: #{publication['id']}, Error: #{publication['error'][0]} - #{publication['error'][1]}"
             end
             publication_info
         end
