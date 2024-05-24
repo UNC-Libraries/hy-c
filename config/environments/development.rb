@@ -89,5 +89,16 @@ Rails.application.configure do
     'web'   # Allow this to be addressed when running in containers via docker-compose.yml.
   ]
 
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = {
+    address:              'smtp.office365.com',
+    port:                  587,
+    domain:               'localhost',
+    user_name:            ENV['EMAIL_USERNAME'],
+    password:             ENV['EMAIL_PASSWORD'],
+    authentication:       'plain',
+    enable_starttls_auto: true
+  }
+  config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
   config.log_level = LogService.log_level
 end
