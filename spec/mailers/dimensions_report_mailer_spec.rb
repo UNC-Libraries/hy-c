@@ -1,5 +1,5 @@
 # spec/mailers/dimensions_report_mailer_spec.rb
-require "rails_helper"
+require 'rails_helper'
 
 RSpec.describe DimensionsReportMailer, type: :mailer do
   let(:config) {
@@ -70,8 +70,8 @@ RSpec.describe DimensionsReportMailer, type: :mailer do
     allow(CharacterizeJob).to receive(:perform_later)
   end
 
-  describe 'report_email' do
-    let(:mail) { DimensionsReportMailer.report_email(report) }
+  describe 'dimensions_report_email' do
+    let(:mail) { DimensionsReportMailer.dimensions_report_email(report) }
 
     it 'renders the headers' do
       expect(mail.subject).to eq(report[:subject])
