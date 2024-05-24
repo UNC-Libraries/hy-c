@@ -54,7 +54,6 @@ module Tasks
       article.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
       article.permissions_attributes = group_permissions(@admin_set)
       article.save!
-      # puts "Article Inspection: #{article.inspect}"
       article
     end
 
