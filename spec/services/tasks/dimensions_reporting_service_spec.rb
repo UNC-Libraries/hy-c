@@ -70,22 +70,24 @@ RSpec.describe Tasks::DimensionsReportingService do
   describe '#generate_report' do
     it 'generates a report for ingest dimensions publications' do
       report = service.generate_report
-      expect(report).to include("Reporting publications from dimensions ingest at May 21, 2024 at 10:00 AM UTC by admin.")
-                    .and include("Admin Set: Open_Access_Articles_and_Book_Chapters")
-                    .and include("Total Publications: #{test_publications.length}")
-                    .and include("Successfully Ingested: (#{successful_publication_sample.length} Publications)")
-                    .and include("Marked for Review: (#{marked_for_review_sample.length} Publications)")
-                    .and include("Failed to Ingest: (#{failing_publication_sample.length} Publications)")
+      headers = report[:headers]
+      expect(report[:subject]).to eq("Dimensions Ingest Report for May 21, 2024 at 10:00 AM UTC")
+      expect(headers[:reporting_message]).to eq("Reporting publications from dimensions ingest at May 21, 2024 at 10:00 AM UTC by admin.")
+      expect(headers[:admin_set]).to eq("Admin Set: Open_Access_Articles_and_Book_Chapters")
+      expect(headers[:total_publications]).to eq("Total Publications: #{test_publications.length}")
+      expect(headers[:successfully_ingested]).to eq("\nSuccessfully Ingested: (#{successful_publication_sample.length} Publications)")
+      expect(headers[:marked_for_review]).to eq("\nMarked for Review: (#{marked_for_review_sample.length} Publications)")
+      expect(headers[:failed_to_ingest]).to eq("\nFailed to Ingest: (#{failing_publication_sample.length} Publications)")
     end
   end
   
   describe '#extract_publication_info' do
     def expect_publication_info(info_array, sample_array, failed)
         info_array.each_with_index do |info, i|
-        expect(info).to include("Title: #{sample_array[i]['title']}")
-        expect(info).to include("ID: #{sample_array[i]['id']}")
-        expect(info).to include("URL: https://cdr.lib.unc.edu/concern/articles/#{sample_array[i]['article_id']}?locale=en") if !failed
-        expect(info).to include("Error: StandardError - #{test_err_msg}") if failed
+        expect(info[:title]).to eq(sample_array[i]['title'])
+        expect(info[:id]).to eq(sample_array[i]['id'])
+        expect(info[:url]).to eq("https://cdr.lib.unc.edu/concern/articles/#{sample_array[i]['article_id']}?locale=en") if !failed
+        expect(info[:error]).to eq("StandardError - #{test_err_msg}") if failed
         end
     end
 
