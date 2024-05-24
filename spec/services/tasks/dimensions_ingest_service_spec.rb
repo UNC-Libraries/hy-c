@@ -153,7 +153,7 @@ RSpec.describe Tasks::DimensionsIngestService do
         res = service.ingest_publications(test_publications)
         actual_failed_publication = res[:failed].first
         actual_failed_publication_error = res[:failed].first['error']
-        actual_failed_publication.delete('error') 
+        actual_failed_publication.delete('error')
         expect(res[:admin_set_title]).to eq('Open_Access_Articles_and_Book_Chapters')
         expect(res[:depositor]).to eq('admin')
         expect(res[:failed].count).to eq(1)

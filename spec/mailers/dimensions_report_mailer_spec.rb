@@ -1,7 +1,7 @@
-# frozen_string_literal: true
-require 'rails_helper'
+# spec/mailers/dimensions_report_mailer_spec.rb
+require "rails_helper"
 
-RSpec.describe Tasks::DimensionsReportingService do
+RSpec.describe DimensionsReportMailer, type: :mailer do
   let(:config) {
     {
       'admin_set' => 'Open_Access_Articles_and_Book_Chapters',
@@ -43,11 +43,7 @@ RSpec.describe Tasks::DimensionsReportingService do
   let(:ingested_publications) do
     ingest_service.ingest_publications(test_publications)
   end
-
-  let(:service) { described_class.new(ingested_publications) }
-
-
-
+  let(:report) { Tasks::DimensionsReportingService.new(ingested_publications).generate_report }
 
   before do
     ActiveFedora::Cleaner.clean!
@@ -74,39 +70,42 @@ RSpec.describe Tasks::DimensionsReportingService do
     allow(CharacterizeJob).to receive(:perform_later)
   end
 
-  describe '#generate_report' do
-    it 'generates a report for ingest dimensions publications' do
-      report = service.generate_report
-      headers = report[:headers]
-      expect(report[:subject]).to eq('Dimensions Ingest Report for May 21, 2024 at 10:00 AM UTC')
-      expect(headers[:reporting_message]).to eq('Reporting publications from dimensions ingest at May 21, 2024 at 10:00 AM UTC by admin.')
-      expect(headers[:admin_set]).to eq('Admin Set: Open_Access_Articles_and_Book_Chapters')
-      expect(headers[:total_publications]).to eq("Total Publications: #{test_publications.length}")
-      expect(headers[:successfully_ingested]).to eq("\nSuccessfully Ingested: (#{successful_publication_sample.length} Publications)")
-      expect(headers[:marked_for_review]).to eq("\nMarked for Review: (#{marked_for_review_sample.length} Publications)")
-      expect(headers[:failed_to_ingest]).to eq("\nFailed to Ingest: (#{failing_publication_sample.length} Publications)")
-    end
-  end
+  describe 'report_email' do
+    let(:mail) { DimensionsReportMailer.report_email(report) }
 
-  describe '#extract_publication_info' do
-    def expect_publication_info(info_array, sample_array, failed)
-      info_array.each_with_index do |info, i|
-        expect(info[:title]).to eq(sample_array[i]['title'])
-        expect(info[:id]).to eq(sample_array[i]['id'])
-        expect(info[:url]).to eq("https://cdr.lib.unc.edu/concern/articles/#{sample_array[i]['article_id']}?locale=en") if !failed
-        expect(info[:error]).to eq("StandardError - #{test_err_msg}") if failed
+    it 'renders the headers' do
+      expect(mail.subject).to eq(report[:subject])
+      expect(mail.to).to eq(['recipient@example.com'])
+      expect(mail.from).to eq(['no-reply@example.com'])
+    end
+
+    it 'renders the body' do
+      expect(mail.body.encoded).to include(report[:headers][:reporting_message])
+                                .and include(report[:headers][:admin_set])
+                                .and include(report[:headers][:total_publications])
+                                .and include(report[:headers][:successfully_ingested])
+                                .and include(report[:headers][:marked_for_review])
+                                .and include(report[:headers][:failed_to_ingest])
+
+      report[:successfully_ingested_rows].each do |publication|
+        expect(mail.body.encoded).to include(publication[:title])
+                                .and include(publication[:id])
+                                .and include(publication[:url])
+                                .and include(publication[:pdf_attached])
       end
-    end
 
-    it 'extracts publication information for the report' do
-      extracted_info = service.extract_publication_info
-      expect(extracted_info[:successfully_ingested].length).to eq(4)
-      expect(extracted_info[:marked_for_review].length).to eq(3)
-      expect(extracted_info[:failed_to_ingest].length).to eq(3)
+      report[:marked_for_review_rows].each do |publication|
+        expect(mail.body.encoded).to include(publication[:title])
+                                .and include(publication[:id])
+                                .and include(publication[:url])
+                                .and include(publication[:pdf_attached])
+      end
 
-      expect_publication_info(extracted_info[:successfully_ingested], ingested_publications[:ingested].select { |pub| !pub['marked_for_review'] }, false)
-      expect_publication_info(extracted_info[:marked_for_review], ingested_publications[:ingested].select { |pub| pub['marked_for_review'] }, false)
-      expect_publication_info(extracted_info[:failed_to_ingest], ingested_publications[:failed], true)
+      report[:failed_to_ingest_rows].each do |publication|
+        expect(mail.body.encoded).to include(publication[:title])
+                                 .and include(publication[:id])
+                                 .and include(publication[:error])
+      end
     end
   end
 end
