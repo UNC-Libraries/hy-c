@@ -89,6 +89,8 @@ Rails.application.configure do
     'web'   # Allow this to be addressed when running in containers via docker-compose.yml.
   ]
 
+  # Configure the mailer for development
+  # Note: Configuration likely needs to be changed later
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
     address:              'smtp.office365.com',
