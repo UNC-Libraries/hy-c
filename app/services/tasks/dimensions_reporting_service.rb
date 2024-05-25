@@ -25,10 +25,11 @@ module Tasks
     def extract_publication_info
       publication_info = {successfully_ingested: [], failed_to_ingest: [], marked_for_review: []}
       @ingested_publications[:ingested].map do |publication|
+        publication_item = { title: publication['title'], id: publication['id'], url: "https://cdr.lib.unc.edu/concern/articles/#{publication['article_id']}?locale=en", pdf_attached: publication['pdf_attached'] ? 'Yes' : 'No' }
         if publication['marked_for_review']
-          publication_info[:marked_for_review] << { title: publication['title'], id: publication['id'], url: "https://cdr.lib.unc.edu/concern/articles/#{publication['article_id']}?locale=en", pdf_attached: publication['pdf_attached'] ? 'Yes' : 'No' }
+          publication_info[:marked_for_review] << publication_item
         else
-          publication_info[:successfully_ingested] << { title: publication['title'], id: publication['id'], url: "https://cdr.lib.unc.edu/concern/articles/#{publication['article_id']}?locale=en", pdf_attached: publication['pdf_attached'] ? 'Yes' : 'No' }
+          publication_info[:successfully_ingested] << publication_item
         end
       end
       @ingested_publications[:failed].map do |publication|
