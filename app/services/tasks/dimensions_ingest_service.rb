@@ -27,6 +27,7 @@ module Tasks
           article = process_publication(publication)
           res[:ingested] << publication.merge('article_id' => article.id)
           rescue StandardError => e
+            publication.delete('pdf_attached')
             res[:failed] << publication.merge('error' => [e.class.to_s, e.message])
             Rails.logger.error("Error ingesting publication '#{publication['title']}'")
             Rails.logger.error [e.class.to_s, e.message, *e.backtrace].join($RS)

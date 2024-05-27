@@ -27,7 +27,6 @@ RSpec.describe Tasks::DimensionsIngestService do
     FactoryBot.create(:workflow_state, workflow_id: workflow.id, name: 'deposited')
   end
   let(:pdf_content) { File.binread(File.join(Rails.root, '/spec/fixtures/files/sample_pdf.pdf')) }
-
   let(:test_publications) do
     JSON.parse(dimensions_ingest_test_fixture)['publications']
   end
@@ -141,7 +140,9 @@ RSpec.describe Tasks::DimensionsIngestService do
         "Error ingesting publication '#{expected_failing_publication['title']}'",
         [StandardError.to_s, test_err_msg].join($RS)
       ]
-      ingested_publications = test_publications[1..-1]
+      ingested_publications = test_publications[1..-1].map do |pub|
+        pub.merge('pdf_attached' => true)
+      end
 
       # Stub the process_publication method to raise an error for the first publication only
       allow(service).to receive(:process_publication).and_call_original
@@ -159,6 +160,10 @@ RSpec.describe Tasks::DimensionsIngestService do
         expect(res[:failed].count).to eq(1)
         expect(actual_failed_publication).to eq(expected_failing_publication)
         expect(actual_failed_publication_error).to eq([StandardError.to_s, test_err_msg])
+        # Removing article_id from the ingested publications for comparison
+        res[:ingested].each_with_index do |ingested_pub, index|
+          ingested_pub.delete('article_id')
+        end
         expect(res[:ingested]).to match_array(ingested_publications)
         expect(res[:time]).to be_a(Time)
       }.to change { Article.count }.by(ingested_publications.size)
