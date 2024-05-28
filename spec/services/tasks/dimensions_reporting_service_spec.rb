@@ -30,23 +30,30 @@ RSpec.describe Tasks::DimensionsReportingService do
   let(:test_err_msg) { 'Test error' }
 
   let(:fixed_time) { Time.new(2024, 5, 21, 10, 0, 0) }
-  let(:test_publications) { JSON.parse(dimensions_ingest_test_fixture)['publications'] }
-
-  let(:failing_publication_sample) { test_publications[0..2] }
+  # Removing linkout pdf from some publications to simulate missing pdfs
+  let(:test_publications) {
+    all_publications =  JSON.parse(dimensions_ingest_test_fixture)['publications']
+    all_publications.each_with_index do |pub, index|
+      pub.delete('linkout') if index.even?
+    end
+    all_publications
+  }
+  let(:failing_publication_sample) {
+    { publications: test_publications[0..2], test_fixture_start_index: 0 }
+  }
   let(:marked_for_review_sample) do
     test_publications[3..5].each { |pub| pub['marked_for_review'] = true }
-    test_publications[3..5]
+    { publications: test_publications[3..5], test_fixture_start_index: 3 }
   end
-  let(:successful_publication_sample) { test_publications[6..-1] }
-
+  let(:successful_publication_sample) {
+    { publications: test_publications[6..-1], test_fixture_start_index: 6 }
+  }
   let(:ingest_service) { Tasks::DimensionsIngestService.new(config) }
   let(:ingested_publications) do
     ingest_service.ingest_publications(test_publications)
   end
 
   let(:service) { described_class.new(ingested_publications) }
-
-
 
 
   before do
@@ -63,7 +70,7 @@ RSpec.describe Tasks::DimensionsReportingService do
     stub_request(:get, 'https://test-url.com/')
       .to_return(body: pdf_content, status: 200, headers: { 'Content-Type' => 'application/pdf' })
     allow(ingest_service).to receive(:process_publication).and_call_original
-    allow(ingest_service).to receive(:process_publication).with(satisfy { |pub| failing_publication_sample.include?(pub) }).and_raise(StandardError, test_err_msg)
+    allow(ingest_service).to receive(:process_publication).with(satisfy { |pub| failing_publication_sample[:publications].include?(pub) }).and_raise(StandardError, test_err_msg)
     marked_for_review_sample
     # stub virus checking
     allow(Hyrax::VirusCheckerService).to receive(:file_has_virus?) { false }
@@ -82,19 +89,28 @@ RSpec.describe Tasks::DimensionsReportingService do
       expect(headers[:reporting_message]).to eq('Reporting publications from dimensions ingest at May 21, 2024 at 10:00 AM UTC by admin.')
       expect(headers[:admin_set]).to eq('Admin Set: Open_Access_Articles_and_Book_Chapters')
       expect(headers[:total_publications]).to eq("Total Publications: #{test_publications.length}")
-      expect(headers[:successfully_ingested]).to eq("\nSuccessfully Ingested: (#{successful_publication_sample.length} Publications)")
-      expect(headers[:marked_for_review]).to eq("\nMarked for Review: (#{marked_for_review_sample.length} Publications)")
-      expect(headers[:failed_to_ingest]).to eq("\nFailed to Ingest: (#{failing_publication_sample.length} Publications)")
+      expect(headers[:successfully_ingested]).to eq("\nSuccessfully Ingested: (#{successful_publication_sample[:publications].length} Publications)")
+      expect(headers[:marked_for_review]).to eq("\nMarked for Review: (#{marked_for_review_sample[:publications].length} Publications)")
+      expect(headers[:failed_to_ingest]).to eq("\nFailed to Ingest: (#{failing_publication_sample[:publications].length} Publications)")
     end
   end
 
   describe '#extract_publication_info' do
-    def expect_publication_info(info_array, sample_array, failed)
+    def expect_publication_info(info_array, sample_array, failed, sample_start_index)
       info_array.each_with_index do |info, i|
+
         expect(info[:title]).to eq(sample_array[i]['title'])
         expect(info[:id]).to eq(sample_array[i]['id'])
-        expect(info[:url]).to eq("https://cdr.lib.unc.edu/concern/articles/#{sample_array[i]['article_id']}?locale=en") if !failed
+        expect(info[:url]).to eq("#{ENV['HYRAX_HOST']}/concern/articles/#{sample_array[i]['article_id']}?locale=en") if !failed
         expect(info[:error]).to eq("StandardError - #{test_err_msg}") if failed
+        if failed
+          expect(info[:pdf_attached]).to be_nil
+        else
+          # Offsetting the index if the sample start index is odd
+          offset_index = sample_start_index.even? ? i : i - 1
+          expect(info[:pdf_attached]).to eq('No') if offset_index.even?
+          expect(info[:pdf_attached]).to eq('Yes') if offset_index.odd?
+        end
       end
     end
 
@@ -104,9 +120,9 @@ RSpec.describe Tasks::DimensionsReportingService do
       expect(extracted_info[:marked_for_review].length).to eq(3)
       expect(extracted_info[:failed_to_ingest].length).to eq(3)
 
-      expect_publication_info(extracted_info[:successfully_ingested], ingested_publications[:ingested].select { |pub| !pub['marked_for_review'] }, false)
-      expect_publication_info(extracted_info[:marked_for_review], ingested_publications[:ingested].select { |pub| pub['marked_for_review'] }, false)
-      expect_publication_info(extracted_info[:failed_to_ingest], ingested_publications[:failed], true)
+      expect_publication_info(extracted_info[:successfully_ingested], ingested_publications[:ingested].select { |pub| !pub['marked_for_review'] }, false, successful_publication_sample[:test_fixture_start_index])
+      expect_publication_info(extracted_info[:marked_for_review], ingested_publications[:ingested].select { |pub| pub['marked_for_review'] }, false, marked_for_review_sample[:test_fixture_start_index])
+      expect_publication_info(extracted_info[:failed_to_ingest], ingested_publications[:failed], true, failing_publication_sample[:test_fixture_start_index])
     end
   end
 end

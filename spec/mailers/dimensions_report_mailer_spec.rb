@@ -31,7 +31,14 @@ RSpec.describe DimensionsReportMailer, type: :mailer do
   let(:test_err_msg) { 'Test error' }
 
   let(:fixed_time) { Time.new(2024, 5, 21, 10, 0, 0) }
-  let(:test_publications) { JSON.parse(dimensions_ingest_test_fixture)['publications'] }
+  # Removing linkout pdf from some publications to simulate missing pdfs
+  let(:test_publications) {
+    all_publications =  JSON.parse(dimensions_ingest_test_fixture)['publications']
+    all_publications.each_with_index do |pub, index|
+      pub.delete('linkout') if index.even?
+    end
+    all_publications
+  }
 
   let(:failing_publication_sample) { test_publications[0..2] }
   let(:marked_for_review_sample) do
