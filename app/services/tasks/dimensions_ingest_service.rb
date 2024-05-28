@@ -33,6 +33,9 @@ module Tasks
             Rails.logger.error [e.class.to_s, e.message, *e.backtrace].join($RS)
         end
       end
+      # Debug PR: Inspecting res
+      Rails.logger.error("Inspecting res: #{res.inspect}")
+      puts "Inspecting res: #{res.inspect}"
       res
     end
 
