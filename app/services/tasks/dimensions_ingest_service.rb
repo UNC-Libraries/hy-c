@@ -20,6 +20,9 @@ module Tasks
       time = Time.now
       Rails.logger.info('Ingesting publications from Dimensions.')
       res = {ingested: [], failed: [], time: time, admin_set_title: @admin_set.title.first, depositor: @config['depositor_onyen']}
+      # Debug PR: Sanity check, publications length
+      Rails.logger.error("Publications Length: #{publications.length}")
+      puts "Publications Length: #{publications.length}"
 
       publications.each.with_index do |publication, index|
         begin
