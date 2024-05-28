@@ -20,9 +20,6 @@ module Tasks
       time = Time.now
       Rails.logger.info('Ingesting publications from Dimensions.')
       res = {ingested: [], failed: [], time: time, admin_set_title: @admin_set.title.first, depositor: @config['depositor_onyen']}
-      # Debug PR: Sanity check, publications length
-      Rails.logger.error("E Publications Length: #{publications.length}")
-      puts "P Publications Length: #{publications.length}"
 
       publications.each.with_index do |publication, index|
         begin
@@ -34,14 +31,8 @@ module Tasks
             res[:failed] << publication.merge('error' => [e.class.to_s, e.message])
             Rails.logger.error("Error ingesting publication '#{publication['title']}'")
             Rails.logger.error [e.class.to_s, e.message, *e.backtrace].join($RS)
-            puts "P Error ingesting publication '#{publication['title']}'"
-            puts [e.class.to_s, e.message, *e.backtrace].join($RS)
         end
       end
-      # Debug PR: Inspecting res
-      Rails.logger.error("E Failed Array Length: #{res[:failed].length}")
-      puts "P Failed Array Length: #{res[:failed].length}"
-      puts "P Inspecting res failed array: #{res[:failed].map { |pub| [pub['title'], pub['error']] }}"
       res
     end
 

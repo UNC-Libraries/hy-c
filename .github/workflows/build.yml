@@ -12,7 +12,6 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      LOG_LEVEL: 'debug'
       CC_TEST_REPORTER_ID: ab9f6d96726a23c491c04cdad5cc4959551f10716196aaf2260bdf72ca1a3d0b
       ALLOW_NOTIFICATIONS: true
       CLAMD_TCP_HOST: 'localhost'
@@ -132,7 +131,7 @@ jobs:
       run: docker exec solr_container solr create -c hydra-test -d /tmp/solr_config
 
     - name: Run rspec tests
-      run: bundle exec rspec spec/services/tasks/dimensions_reporting_service_spec.rb
+      run: bundle exec rspec spec/mailers/dimensions_mailer_spec.rb
       env:
         REDIS_URL: redis://redis
         POSTGRES_USER: hyrax

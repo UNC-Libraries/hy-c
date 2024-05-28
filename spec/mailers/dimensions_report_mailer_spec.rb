@@ -62,13 +62,13 @@ RSpec.describe DimensionsReportMailer, type: :mailer do
     allow(ingest_service).to receive(:process_publication).and_call_original
     allow(ingest_service).to receive(:process_publication).with(satisfy { |pub| failing_publication_sample.include?(pub) }).and_raise(StandardError, test_err_msg)
     marked_for_review_sample
-    ingested_publications
     # stub virus checking
     allow(Hyrax::VirusCheckerService).to receive(:file_has_virus?) { false }
     # stub longleaf job
     allow(RegisterToLongleafJob).to receive(:perform_later).and_return(nil)
     # stub FITS characterization
     allow(CharacterizeJob).to receive(:perform_later)
+    ingested_publications
   end
 
   describe 'dimensions_report_email' do
