@@ -21,8 +21,8 @@ module Tasks
       Rails.logger.info('Ingesting publications from Dimensions.')
       res = {ingested: [], failed: [], time: time, admin_set_title: @admin_set.title.first, depositor: @config['depositor_onyen']}
       # Debug PR: Sanity check, publications length
-      Rails.logger.error("Publications Length: #{publications.length}")
-      puts "Publications Length: #{publications.length}"
+      Rails.logger.error("E Publications Length: #{publications.length}")
+      puts "P Publications Length: #{publications.length}"
 
       publications.each.with_index do |publication, index|
         begin
@@ -37,8 +37,9 @@ module Tasks
         end
       end
       # Debug PR: Inspecting res
-      Rails.logger.error("Inspecting res: #{res.inspect}")
-      puts "Inspecting res: #{res.inspect}"
+      Rails.logger.error("E Failed Array Length: #{res[:failed].length}")
+      puts "P Failed Array Length: #{res[:failed].length}"
+      puts "P Inspecting res failed array: #{res[:failed]}"
       res
     end
 
