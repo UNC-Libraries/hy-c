@@ -34,12 +34,14 @@ module Tasks
             res[:failed] << publication.merge('error' => [e.class.to_s, e.message])
             Rails.logger.error("Error ingesting publication '#{publication['title']}'")
             Rails.logger.error [e.class.to_s, e.message, *e.backtrace].join($RS)
+            puts "P Error ingesting publication '#{publication['title']}'"
+            puts [e.class.to_s, e.message, *e.backtrace].join($RS)
         end
       end
       # Debug PR: Inspecting res
       Rails.logger.error("E Failed Array Length: #{res[:failed].length}")
       puts "P Failed Array Length: #{res[:failed].length}"
-      puts "P Inspecting res failed array: #{res[:failed]}"
+      puts "P Inspecting res failed array: #{res[:failed].map { |pub| [pub['title'],pub['error']] }}"
       res
     end
 
