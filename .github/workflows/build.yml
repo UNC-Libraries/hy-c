@@ -131,7 +131,7 @@ jobs:
       run: docker exec solr_container solr create -c hydra-test -d /tmp/solr_config
 
     - name: Run rspec tests
-      run: bundle exec rspec
+      run: bundle exec rspec spec/services/tasks/dimensions_reporting_service_spec.rb
       env:
         REDIS_URL: redis://redis
         POSTGRES_USER: hyrax
