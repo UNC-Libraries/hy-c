@@ -41,7 +41,7 @@ module Tasks
       # Debug PR: Inspecting res
       Rails.logger.error("E Failed Array Length: #{res[:failed].length}")
       puts "P Failed Array Length: #{res[:failed].length}"
-      puts "P Inspecting res failed array: #{res[:failed].map { |pub| [pub['title'],pub['error']] }}"
+      puts "P Inspecting res failed array: #{res[:failed].map { |pub| [pub['title'], pub['error']] }}"
       res
     end
 
