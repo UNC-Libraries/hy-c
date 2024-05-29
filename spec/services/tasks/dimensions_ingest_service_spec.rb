@@ -150,23 +150,29 @@ RSpec.describe Tasks::DimensionsIngestService do
 
       expect(Rails.logger).to receive(:error).with(expected_log_outputs[0])
       expect(Rails.logger).to receive(:error).with(include(expected_log_outputs[1]))
+
       expect {
-        res = service.ingest_publications(test_publications)
-        actual_failed_publication = res[:failed].first
-        actual_failed_publication_error = res[:failed].first['error']
-        actual_failed_publication.delete('error')
-        expect(res[:admin_set_title]).to eq('Open_Access_Articles_and_Book_Chapters')
-        expect(res[:depositor]).to eq('admin')
-        expect(res[:failed].count).to eq(1)
-        expect(actual_failed_publication).to eq(expected_failing_publication)
-        expect(actual_failed_publication_error).to eq([StandardError.to_s, test_err_msg])
-        # Removing article_id from the ingested publications for comparison
-        res[:ingested].each_with_index do |ingested_pub, index|
-          ingested_pub.delete('article_id')
-        end
-        expect(res[:ingested]).to match_array(ingested_publications)
-        expect(res[:time]).to be_a(Time)
+        @res = service.ingest_publications(test_publications)
       }.to change { Article.count }.by(ingested_publications.size)
+
+      actual_failed_publication = @res[:failed].first
+      actual_failed_publication_error = @res[:failed].first['error']
+      # Removing error from the failed publication for comparison
+      actual_failed_publication.delete('error')
+      expect(actual_failed_publication).to eq(expected_failing_publication)
+      expect(actual_failed_publication_error).to eq([StandardError.to_s, test_err_msg])
+
+      expect(@res[:admin_set_title]).to eq('Open_Access_Articles_and_Book_Chapters')
+      expect(@res[:depositor]).to eq('admin')
+      expect(@res[:failed].count).to eq(1)
+
+      # Removing article_id from the ingested publications for comparison
+      @res[:ingested].each_with_index do |ingested_pub, index|
+        ingested_pub.delete('article_id')
+      end
+
+      expect(@res[:ingested]).to match_array(ingested_publications)
+      expect(@res[:time]).to be_a(Time)
     end
   end
 

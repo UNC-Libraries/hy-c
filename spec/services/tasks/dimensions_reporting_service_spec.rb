@@ -86,7 +86,7 @@ RSpec.describe Tasks::DimensionsReportingService do
       report = service.generate_report
       headers = report[:headers]
       expect(report[:subject]).to eq('Dimensions Ingest Report for May 21, 2024 at 10:00 AM UTC')
-      expect(headers[:reporting_message]).to eq('Reporting publications from dimensions ingest at May 21, 2024 at 10:00 AM UTC by admin.')
+      expect(headers[:reporting_message]).to eq('Reporting publications from dimensions ingest on May 21, 2024 at 10:00 AM UTC by admin.')
       expect(headers[:admin_set]).to eq('Admin Set: Open_Access_Articles_and_Book_Chapters')
       expect(headers[:total_publications]).to eq("Total Publications: #{test_publications.length}")
       expect(headers[:successfully_ingested]).to eq("\nSuccessfully Ingested: (#{successful_publication_sample[:publications].length} Publications)")
@@ -101,11 +101,11 @@ RSpec.describe Tasks::DimensionsReportingService do
 
         expect(info[:title]).to eq(sample_array[i]['title'])
         expect(info[:id]).to eq(sample_array[i]['id'])
-        expect(info[:url]).to eq("#{ENV['HYRAX_HOST']}/concern/articles/#{sample_array[i]['article_id']}?locale=en") if !failed
-        expect(info[:error]).to eq("StandardError - #{test_err_msg}") if failed
         if failed
+          expect(info[:error]).to eq("StandardError - #{test_err_msg}")
           expect(info[:pdf_attached]).to be_nil
         else
+          expect(info[:url]).to eq("#{ENV['HYRAX_HOST']}/concern/articles/#{sample_array[i]['article_id']}?locale=en")
           # Offsetting the index if the sample start index is odd
           offset_index = sample_start_index.even? ? i : i - 1
           expect(info[:pdf_attached]).to eq('No') if offset_index.even?
