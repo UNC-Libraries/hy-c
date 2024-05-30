@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+# https://github.com/samvera/hyrax/blob/v3.4.2/app/controllers/hyrax/admin/analytics/work_reports_controller.rb
 Hyrax::Admin::Analytics::WorkReportsController.class_eval do
   def index
     # [hyc-override] Only show analytics to logged in users
