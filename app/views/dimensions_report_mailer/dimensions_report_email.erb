@@ -1,0 +1,113 @@
+<!-- app/views/dimensions_report_mailer/dimensions_report_email.html.erb -->
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      border: 1px solid #dddddd;
+      text-align: left;
+      padding: 8px;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+    .title-col {
+      width: 30%;
+    }
+    .id-col {
+      width: 20%;
+    }
+    .url-col {
+      width: 30%;
+    }
+    .pdf-col {
+      width: 5%;
+    }
+    .error-col {
+      width: 15%;
+    }
+  </style>
+</head>
+<body>
+  <p><%= @report[:headers][:reporting_message] %></p>
+  <p><%= @report[:headers][:admin_set] %></p>
+  <p><%= @report[:headers][:total_publications] %></p>
+
+  <h2><%= @report[:headers][:successfully_ingested] %></h2>
+  <table>
+    <thead>
+      <tr>
+        <th class="title-col">Title</th>
+        <th class="id-col">Dimensions ID</th>
+        <th class="url-col">URL</th>
+        <th class="pdf-col">PDF Attached</th>
+        <th class="error-col">Error</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @report[:successfully_ingested_rows].each do |publication| %>
+        <tr>
+          <td class="title-col"><%= publication[:title] %></td>
+          <td class="id-col"><%= publication[:id] %></td>
+          <td class="url-col"><a href="<%= publication[:url] %>"><%= publication[:url] %></a></td>
+          <td class="pdf-col"><%= publication[:pdf_attached] %></td>
+          <td class="error-col">N/A</td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <h2><%= @report[:headers][:marked_for_review] %></h2>
+  <table>
+    <thead>
+      <tr>
+        <th class="title-col">Title</th>
+        <th class="id-col">Dimensions ID</th>
+        <th class="url-col">URL</th>
+        <th class="pdf-col">PDF Attached</th>
+        <th class="error-col">Error</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @report[:marked_for_review_rows].each do |publication| %>
+        <tr>
+          <td class="title-col"><%= publication[:title] %></td>
+          <td class="id-col"><%= publication[:id] %></td>
+          <td class="url-col"><a href="<%= publication[:url] %>"><%= publication[:url] %></a></td>
+          <td class="pdf-col"><%= publication[:pdf_attached] %></td>
+          <td class="error-col">N/A</td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <h2><%= @report[:headers][:failed_to_ingest] %></h2>
+  <table>
+    <thead>
+      <tr>
+        <th class="title-col">Title</th>
+        <th class="id-col">Dimensions ID</th>
+        <th class="url-col">URL</th>
+        <th class="pdf-col">PDF Attached</th>
+        <th class="error-col">Error</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @report[:failed_to_ingest_rows].each do |publication| %>
+        <tr>
+          <td class="title-col"><%= publication[:title] %></td>
+          <td class="id-col"><%= publication[:id] %></td>
+          <td class="url-col">N/A</td>
+          <td class="pdf-col">N/A</td>
+          <td class="error-col"><%= publication[:error] %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</body>
+</html>

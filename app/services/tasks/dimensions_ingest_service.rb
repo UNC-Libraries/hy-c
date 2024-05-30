@@ -19,15 +19,16 @@ module Tasks
     def ingest_publications(publications)
       time = Time.now
       Rails.logger.info('Ingesting publications from Dimensions.')
-      res = {ingested: [], failed: [], time: time}
+      res = {ingested: [], failed: [], time: time, admin_set_title: @admin_set.title.first, depositor: @config['depositor_onyen']}
 
       publications.each.with_index do |publication, index|
         begin
           next unless publication.presence
-          process_publication(publication)
-          res[:ingested] << publication
+          article = process_publication(publication)
+          res[:ingested] << publication.merge('article_id' => article.id)
           rescue StandardError => e
-            res[:failed] << { publication: publication, error: [e.class.to_s, e.message] }
+            publication.delete('pdf_attached')
+            res[:failed] << publication.merge('error' => [e.class.to_s, e.message])
             Rails.logger.error("Error ingesting publication '#{publication['title']}'")
             Rails.logger.error [e.class.to_s, e.message, *e.backtrace].join($RS)
         end

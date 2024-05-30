@@ -27,9 +27,6 @@ RSpec.describe Tasks::DimensionsIngestService do
     FactoryBot.create(:workflow_state, workflow_id: workflow.id, name: 'deposited')
   end
   let(:pdf_content) { File.binread(File.join(Rails.root, '/spec/fixtures/files/sample_pdf.pdf')) }
-
-
-  # Retrieving fixture publications and randomly assigning the marked_for_review attribute
   let(:test_publications) do
     JSON.parse(dimensions_ingest_test_fixture)['publications']
   end
@@ -137,33 +134,45 @@ RSpec.describe Tasks::DimensionsIngestService do
 
   describe '#ingest_publications' do
     it 'processes each publication and handles failures' do
-      failing_publication = test_publications.first
-      # expected_trace = [
-      #   "/opt/rh/rh-ruby27/root/usr/share/gems/gems/rspec-mocks-3.12.6/lib/rspec/mocks/message_expectation.rb:188:in `block in and_raise'",
-      #   "/opt/rh/rh-ruby27/root/usr/share/gems/gems/rspec-mocks-3.12.6/lib/rspec/mocks/message_expectation.rb:761:in `block in call'",
-      #   "/opt/rh/rh-ruby27/root/usr/share/gems/gems/rspec-mocks-3.12.6/lib/rspec/mocks/message_expectation.rb:760:in `map'"
-      # ]
+      expected_failing_publication = test_publications.first
       test_err_msg = 'Test error'
       expected_log_outputs = [
-        "Error ingesting publication '#{failing_publication['title']}'",
+        "Error ingesting publication '#{expected_failing_publication['title']}'",
         [StandardError.to_s, test_err_msg].join($RS)
       ]
-      ingested_publications = test_publications[1..-1]
+      ingested_publications = test_publications[1..-1].map do |pub|
+        pub.merge('pdf_attached' => true)
+      end
 
       # Stub the process_publication method to raise an error for the first publication only
       allow(service).to receive(:process_publication).and_call_original
-      allow(service).to receive(:process_publication).with(failing_publication).and_raise(StandardError, test_err_msg)
+      allow(service).to receive(:process_publication).with(expected_failing_publication).and_raise(StandardError, test_err_msg)
 
       expect(Rails.logger).to receive(:error).with(expected_log_outputs[0])
       expect(Rails.logger).to receive(:error).with(include(expected_log_outputs[1]))
+
       expect {
-        res = service.ingest_publications(test_publications)
-        expect(res[:failed].count).to eq(1)
-        expect(res[:failed].first[:publication]).to eq(failing_publication)
-        expect(res[:failed].first[:error]).to eq([StandardError.to_s, test_err_msg])
-        expect(res[:ingested]).to match_array(ingested_publications)
-        expect(res[:time]).to be_a(Time)
+        @res = service.ingest_publications(test_publications)
       }.to change { Article.count }.by(ingested_publications.size)
+
+      actual_failed_publication = @res[:failed].first
+      actual_failed_publication_error = @res[:failed].first['error']
+      # Removing error from the failed publication for comparison
+      actual_failed_publication.delete('error')
+      expect(actual_failed_publication).to eq(expected_failing_publication)
+      expect(actual_failed_publication_error).to eq([StandardError.to_s, test_err_msg])
+
+      expect(@res[:admin_set_title]).to eq('Open_Access_Articles_and_Book_Chapters')
+      expect(@res[:depositor]).to eq('admin')
+      expect(@res[:failed].count).to eq(1)
+
+      # Removing article_id from the ingested publications for comparison
+      @res[:ingested].each_with_index do |ingested_pub, index|
+        ingested_pub.delete('article_id')
+      end
+
+      expect(@res[:ingested]).to match_array(ingested_publications)
+      expect(@res[:time]).to be_a(Time)
     end
   end
 
