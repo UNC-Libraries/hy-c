@@ -13,11 +13,6 @@ namespace :dimensions do
   desc 'Ingest metadata from Dimensions (implementation)'
   task ingest_metadata_task: :environment do
     puts "[#{Time.now}] starting dimensions metadata ingest"
-    # Check if the Dimensions API is up
-    unless ping_dimensions_api("#{DIMENSIONS_URL}/dsl")
-      puts 'Dimensions API is down. Aborting ingest.'
-      next
-    end
 
     last_run_time = read_last_run_time('dimensions_ingest')
     if last_run_time
@@ -25,14 +20,16 @@ namespace :dimensions do
     else
       puts 'No previous run time found.'
     end
-
+  
+    # WIP: Replace with 'Open_Acess_Articles_and_Book_Chapters' later
     config = {
-      'admin_set' => 'Open_Access_Articles_and_Book_Chapters',
+      'admin_set' => 'default',
       'depositor_onyen' => 'admin'
     }
     query_service = Tasks::DimensionsQueryService.new
-    ingest_service = Tasks::DimensionsIngestService.new(config)
-    publications = ingest_service.ingest_publications(query_service.query_dimensions)
+    ingest_service = Tasks::DimensionsIngestService.new(config)\
+    # WIP: Testing with a smaller page size
+    publications = ingest_service.ingest_publications(query_service.query_dimensions(page_size: 5))
     puts "Ingested #{publications[:ingested].count} publications"
     puts "Failed to ingest #{publications[:failed].count} publications"
 
