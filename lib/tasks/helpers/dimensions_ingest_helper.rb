@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # lib/tasks/helpers/task_helper.rb
 module DimensionsIngestHelper
   def save_last_run_time(task_name)

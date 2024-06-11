@@ -8,7 +8,9 @@ Rails.application.routes.draw do
   get 'accounts/new', to: 'accounts#new'
   post 'accounts/create', to: 'accounts#create'
 
+  # WIP: Remove these routes later
   get 'send_test_email', to: 'emails#send_test_email'
+  get 'run_dimensions_ingest_task', to: 'tasks#run_dimensions_ingest_task'
 
   match '/404', to: 'errors#not_found', via: :all
   match '/500', to: 'errors#internal_server_error', via: :all

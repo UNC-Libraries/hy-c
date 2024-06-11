@@ -12,73 +12,89 @@ module Tasks
       # Initialized as a set to avoid retrieving duplicate publications from Dimensions if the page size exceeds the number of publications on the last page.
       all_publications = Set.new
       token = retrieve_token
-      # WIP: Isolating publications with linkout for testing
-      doi_clauses = [with_doi ? 'where doi is not empty' : 'where doi is empty', 'type = "article"', 'linkout is not empty'].join(' and ')
+      doi_clauses = [with_doi ? 'where doi is not empty' : 'where doi is empty', 'type = "article"'].join(' and ')
       return_fields = ['basics', 'extras', 'abstract', 'issn', 'publisher', 'journal_title_raw', 'linkout'].join(' + ')
-      # WIP: Changing for testing
-      cursor = 0
-      cursor_limit = cursor + 1
+      raw_affiliation_filters = ['University of North Carolina, Chapel Hill', 'UNC']
+      # WIP: Cursor limit for testing
+      # cursor = 0
+      # cursor_limit = cursor + 1
       # Flag to track if retry has been attempted after token refresh
-      retry_attempted = false
+      # retry_attempted = false
 
-      loop do
-        begin
-          # Query with paramaters to retrieve publications related to UNC
-          query_string = <<~QUERY
-                        search publications #{doi_clauses} in raw_affiliations#{' '}
-                        for """
-                        "University of North Carolina, Chapel Hill" OR "UNC"
-                        """#{'  '}
-                        return publications[#{return_fields}]
-                        limit #{page_size}
-                        skip #{cursor}
-                      QUERY
-          response = HTTParty.post(
-              "#{DIMENSIONS_URL}/dsl",
-              headers: { 'Content-Type' => 'application/json',
-                        'Authorization' => "JWT #{token}" },
-              body: query_string,
-              format: :json
-          )
-          if response.success?
-            # Merge the new publications with the existing set
-            parsed_body = JSON.parse(response.body)
-            # WIP: Inspecting Parsed Body Titles
-            parsed_body_titles = parsed_body['publications'].map { |pub| pub['title'] }
-            puts "Inspecting Parsed Body: #{parsed_body_titles}"
-            publications = deduplicate_publications(with_doi, parsed_body['publications'])
-            all_publications.merge(publications)
+      # raw_affiliation_filters.each do |raw_affiliation|
+        # WIP: Testing with a smaller page size
+        # WIP: Cursor limit for testing
+        cursor = 0
+        cursor_limit = cursor + 5
+        # Flag to track if retry has been attempted after token refresh
+        retry_attempted = false
+        # all_publications = Set.new
+        loop do
+          begin
+            # Query with paramaters to retrieve publications related to UNC
+            query_string = <<~QUERY
+                          search publications #{doi_clauses} in raw_affiliations#{' '}
+                          for """
+                          "University of North Carolina, Chapel Hill" OR "UNC"
+                          """#{'  '}
+                          return publications[#{return_fields}]
+                          limit #{page_size}
+                          skip #{cursor}
+                        QUERY
+            Rails.logger.info("Querying Dimensions API with query: #{query_string}")
+            # Extra headers to avoid 400 bad request error
+            response = HTTParty.post(
+                "#{DIMENSIONS_URL}/dsl",
+                headers: { 'Content-Type' => 'application/json',
+                          'Authorization' => "JWT #{token}",
+                          'Host' => URI(DIMENSIONS_URL).host,
+                          'Connection' => 'keep-alive',
+                          'Accept-Encoding' => 'gzip, deflate, br'},
+                body: query_string,
+                format: :json,
+                timeout: 100
+            )
+            if response.success?
+              # Merge the new publications with the existing set
+              parsed_body = JSON.parse(response.body)
+              # WIP: Inspecting Parsed Body Titles
+              publications_size = parsed_body['publications'].size
+              Rails.logger.warn("Inspecting Parsed Body: #{publications_size}")
+              publications = deduplicate_publications(with_doi, parsed_body['publications'])
+              all_publications.merge(publications)
 
-            # End the loop if the cursor exceeds the total count
-            total_count = parsed_body['_stats']['total_count']
-            cursor += page_size
+              # End the loop if the cursor exceeds the total count
+              total_count = parsed_body['_stats']['total_count']
+              cursor += page_size
 
-            break if cursor >= total_count
-            # WIP: Limited Sample for testing
-            break if cursor >= cursor_limit
-          elsif response.code == 403
-            if !retry_attempted
-              # If the token has expired, retrieve a new token and try the query again
-              Rails.logger.warn('Received 403 Forbidden error. Retrying after token refresh.')
-              token = retrieve_token
-              retry_attempted = true
-              redo
+              break if cursor >= total_count
+              # WIP: Limited Sample for testing
+              break if cursor >= cursor_limit
+            elsif response.code == 403
+              if !retry_attempted
+                # If the token has expired, retrieve a new token and try the query again
+                Rails.logger.warn('Received 403 Forbidden error. Retrying after token refresh.')
+                token = retrieve_token
+                retry_attempted = true
+                redo
+              else
+                # If the token has expired and retry has already been attempted, raise a specific error
+                raise DimensionsPublicationQueryError, 'Retry attempted after token refresh failed with 403 Forbidden error'
+              end
             else
-              # If the token has expired and retry has already been attempted, raise a specific error
-              raise DimensionsPublicationQueryError, 'Retry attempted after token refresh failed with 403 Forbidden error'
+              raise DimensionsPublicationQueryError, "Failed to retrieve UNC affiliated articles from dimensions. Status code #{response.code}, response body: #{response.body}"
             end
-          else
-            raise DimensionsPublicationQueryError, "Failed to retrieve UNC affiliated articles from dimensions. Status code #{response.code}, response body: #{response.body}"
+          rescue HTTParty::Error, StandardError => e
+            Rails.logger.error("HTTParty error during Dimensions API query: #{e.message}")
+            # Re-raise the error to propagate it up the call stack
+            raise e
           end
-        rescue HTTParty::Error, StandardError => e
-          Rails.logger.error("HTTParty error during Dimensions API query: #{e.message}")
-          # Re-raise the error to propagate it up the call stack
-          raise e
         end
-      end
-      puts "Total publications: #{all_publications.size}"
+      # end
+      Rails.logger.error("Total publications: #{all_publications.size}")
       return all_publications.to_a
     end
+
 
     def retrieve_token
       begin
