@@ -8,6 +8,8 @@ Rails.application.routes.draw do
   get 'accounts/new', to: 'accounts#new'
   post 'accounts/create', to: 'accounts#create'
 
+  get 'send_test_email', to: 'emails#send_test_email'
+
   match '/404', to: 'errors#not_found', via: :all
   match '/500', to: 'errors#internal_server_error', via: :all
 
