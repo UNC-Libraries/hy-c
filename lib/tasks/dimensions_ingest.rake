@@ -16,10 +16,11 @@ namespace :dimensions do
 
     # Read the last run time from a file
     last_run_time = Date.parse(read_last_run_time('dimensions_ingest')) rescue nil
-    formatted_last_run_time = last_run_time.strftime('%Y-%m-%d')
+    formatted_last_run_time = last_run_time ? last_run_time.strftime('%Y-%m-%d') : nil
 
     if last_run_time
       Rails.logger.info "Last ingest run was at: #{last_run_time}"
+      formatted_last_run_time = last_run_time.strftime('%Y-%m-%d')
     else
       Rails.logger.info 'No previous run time found. Starting from default date. (1970-01-01)'
     end
