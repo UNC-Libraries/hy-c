@@ -68,7 +68,20 @@ Rails.application.configure do
 
   config.action_mailer.perform_caching = false
   config.action_mailer.perform_deliveries = true
-  config.action_mailer.delivery_method = :sendmail
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.raise_delivery_errors = true
+
+
+  # WIP: Configure mailer for development
+  config.action_mailer.smtp_settings = {
+    address: 'localhost',
+    port: 25,
+  }
+
+  config.action_mailer.default_options = {
+    from: 'no-reply@unc.edu'
+  }
+
 
   # Use an evented file watcher to asynchronously detect changes in source code,
   # routes, locales, etc. This feature depends on the listen gem.
