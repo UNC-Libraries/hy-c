@@ -7,14 +7,15 @@ module Tasks
     class DimensionsPublicationQueryError < StandardError
     end
     DIMENSIONS_URL = 'https://app.dimensions.ai/api'
+    EARLIEST_DATE = '1970-01-01'
 
-    def query_dimensions(with_doi: true, page_size: 100)
+    def query_dimensions(with_doi: true, page_size: 100, date_inserted: nil)
+      date_inserted ||= EARLIEST_DATE
       # Initialized as a set to avoid retrieving duplicate publications from Dimensions if the page size exceeds the number of publications on the last page.
       all_publications = Set.new
       token = retrieve_token
-      doi_clauses = [with_doi ? 'where doi is not empty' : 'where doi is empty', 'type = "article"'].join(' and ')
+      doi_clauses = [with_doi ? 'where doi is not empty' : 'where doi is empty', 'type = "article"', "date_inserted >= #{date_inserted}"].join(' and ')
       return_fields = ['basics', 'extras', 'abstract', 'issn', 'publisher', 'journal_title_raw', 'linkout'].join(' + ')
-      raw_affiliation_filters = ['University of North Carolina, Chapel Hill', 'UNC']
 
         cursor = 0
         cursor_limit = 5
