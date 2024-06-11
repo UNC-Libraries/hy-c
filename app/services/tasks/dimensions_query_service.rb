@@ -59,7 +59,7 @@ module Tasks
 
               break if cursor >= total_count
               # WIP: Limited Sample for testing
-              # break if cursor >= cursor_limit
+              break if cursor >= cursor_limit
             elsif response.code == 403
               if !retry_attempted
                 # If the token has expired, retrieve a new token and try the query again
