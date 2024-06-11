@@ -25,7 +25,7 @@ module Tasks
         # WIP: Testing with a smaller page size
         # WIP: Cursor limit for testing
         cursor = 0
-        cursor_limit = cursor + 5
+        # cursor_limit = cursor + 5
         # Flag to track if retry has been attempted after token refresh
         retry_attempted = false
         # all_publications = Set.new
@@ -71,7 +71,7 @@ module Tasks
 
               break if cursor >= total_count
               # WIP: Limited Sample for testing
-              break if cursor >= cursor_limit
+              # break if cursor >= cursor_limit
             elsif response.code == 403
               if !retry_attempted
                 # If the token has expired, retrieve a new token and try the query again
