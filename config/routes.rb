@@ -9,7 +9,7 @@ Rails.application.routes.draw do
   post 'accounts/create', to: 'accounts#create'
 
   # WIP: Remove these routes later
-  get 'send_test_email', to: 'emails#send_test_email'
+  # get 'send_test_email', to: 'emails#send_test_email'
   get 'run_dimensions_ingest_task', to: 'tasks#run_dimensions_ingest_task'
 
   match '/404', to: 'errors#not_found', via: :all

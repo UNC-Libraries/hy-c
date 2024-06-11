@@ -15,20 +15,11 @@ module Tasks
       doi_clauses = [with_doi ? 'where doi is not empty' : 'where doi is empty', 'type = "article"'].join(' and ')
       return_fields = ['basics', 'extras', 'abstract', 'issn', 'publisher', 'journal_title_raw', 'linkout'].join(' + ')
       raw_affiliation_filters = ['University of North Carolina, Chapel Hill', 'UNC']
-      # WIP: Cursor limit for testing
-      # cursor = 0
-      # cursor_limit = cursor + 1
-      # Flag to track if retry has been attempted after token refresh
-      # retry_attempted = false
 
-      # raw_affiliation_filters.each do |raw_affiliation|
-        # WIP: Testing with a smaller page size
-        # WIP: Cursor limit for testing
         cursor = 0
-        # cursor_limit = cursor + 5
+        cursor_limit = 5
         # Flag to track if retry has been attempted after token refresh
         retry_attempted = false
-        # all_publications = Set.new
         loop do
           begin
             # Query with paramaters to retrieve publications related to UNC
@@ -59,9 +50,6 @@ module Tasks
             if response.success?
               # Merge the new publications with the existing set
               parsed_body = JSON.parse(response.body)
-              # WIP: Inspecting Parsed Body Titles
-              publications_size = parsed_body['publications'].size
-              Rails.logger.warn("Inspecting Parsed Body: #{publications_size}")
               publications = deduplicate_publications(with_doi, parsed_body['publications'])
               all_publications.merge(publications)
 

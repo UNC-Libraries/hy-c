@@ -60,6 +60,18 @@ Rails.application.configure do
   config.action_mailer.perform_deliveries = ENV['ALLOW_NOTIFICATIONS']
   config.action_mailer.delivery_method = :sendmail
 
+  # WIP: Not sure if we'll want to change the configuration for the action mailer in prod as well
+  # config.action_mailer.delivery_method = :smtp
+
+  # config.action_mailer.smtp_settings = {
+  #   address: 'localhost',
+  #   port: 25,
+  # }
+
+  # config.action_mailer.default_options = {
+  #   from: 'no-reply@unc.edu'
+  # }
+
   # Ignore bad email addresses and do not raise email delivery errors.
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.
   # config.action_mailer.raise_delivery_errors = false
