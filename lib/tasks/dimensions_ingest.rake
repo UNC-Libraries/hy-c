@@ -15,14 +15,14 @@ namespace :dimensions do
 
 
     # WIP: Cleaning Articles from Last Manual Test
-    today = Date.today
-    # Delete articles created today
-    Article.all.each do |article|
-      if article.create_date.to_date == today
-        Rails.logger.info "WIP Destroying article: #{article.id}"
-        article.destroy
-      end
-    end
+    # today = Date.today
+    # # Delete articles created today
+    # Article.all.each do |article|
+    #   if article.create_date.to_date == today
+    #     Rails.logger.info "WIP Destroying article: #{article.id}"
+    #     article.destroy
+    #   end
+    # end
     # Article.all.each do |article|
     #     article.destroy
     # end
