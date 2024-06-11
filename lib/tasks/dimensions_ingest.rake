@@ -15,7 +15,9 @@ namespace :dimensions do
     Rails.logger.info "[#{Time.now}] starting dimensions metadata ingest"
 
     # Read the last run time from a file
-    last_run_time = read_last_run_time('dimensions_ingest') 
+    last_run_time = Date.parse(read_last_run_time('dimensions_ingest')) rescue nil
+    formatted_last_run_time = last_run_time.strftime('%Y-%m-%d')
+
     if last_run_time
       Rails.logger.info "Last ingest run was at: #{last_run_time}"
     else
@@ -30,7 +32,7 @@ namespace :dimensions do
     query_service = Tasks::DimensionsQueryService.new
     ingest_service = Tasks::DimensionsIngestService.new(config)
     # WIP: Testing with a limited page size
-    publications = ingest_service.ingest_publications(query_service.query_dimensions(page_size: 5, date_inserted: last_run_time) 
+    publications = ingest_service.ingest_publications(query_service.query_dimensions(page_size: 5, date_inserted: formatted_last_run_time))
     report = Tasks::DimensionsReportingService.new(publications).generate_report
     begin
       DimensionsReportMailer.dimensions_report_email(report).deliver_now
