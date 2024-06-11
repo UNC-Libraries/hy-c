@@ -41,15 +41,16 @@ module Tasks
                           limit #{page_size}
                           skip #{cursor}
                         QUERY
+            content_length = query_string.to_s.bytesize
             Rails.logger.info("Querying Dimensions API with query: #{query_string}")
             # Extra headers to avoid 400 bad request error
             response = HTTParty.post(
                 "#{DIMENSIONS_URL}/dsl",
-                headers: { 'Content-Type' => 'application/json',
+                headers: {'Content-Type' => 'application/json',
                           'Authorization' => "JWT #{token}",
                           'Host' => URI(DIMENSIONS_URL).host,
-                          'Connection' => 'keep-alive',
-                          'Accept-Encoding' => 'gzip, deflate, br'},
+                          'Content-Length' => content_length.to_s
+                          },
                 body: query_string,
                 format: :json,
                 timeout: 100
