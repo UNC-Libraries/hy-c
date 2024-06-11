@@ -12,9 +12,12 @@ module Tasks
       # Initialized as a set to avoid retrieving duplicate publications from Dimensions if the page size exceeds the number of publications on the last page.
       all_publications = Set.new
       token = retrieve_token
-      doi_clauses = [with_doi ? 'where doi is not empty' : 'where doi is empty', 'type = "article"'].join(' and ')
+      # WIP: Isolating publications with linkout for testing
+      doi_clauses = [with_doi ? 'where doi is not empty' : 'where doi is empty', 'type = "article"', 'linkout is not empty'].join(' and ')
       return_fields = ['basics', 'extras', 'abstract', 'issn', 'publisher', 'journal_title_raw', 'linkout'].join(' + ')
+      # WIP: Changing for testing
       cursor = 0
+      cursor_limit = cursor + 1
       # Flag to track if retry has been attempted after token refresh
       retry_attempted = false
 
@@ -40,6 +43,9 @@ module Tasks
           if response.success?
             # Merge the new publications with the existing set
             parsed_body = JSON.parse(response.body)
+            # WIP: Inspecting Parsed Body Titles
+            parsed_body_titles = parsed_body['publications'].map { |pub| pub['title'] }
+            puts "Inspecting Parsed Body: #{parsed_body_titles}"
             publications = deduplicate_publications(with_doi, parsed_body['publications'])
             all_publications.merge(publications)
 
@@ -48,6 +54,8 @@ module Tasks
             cursor += page_size
 
             break if cursor >= total_count
+            # WIP: Limited Sample for testing
+            break if cursor >= cursor_limit
           elsif response.code == 403
             if !retry_attempted
               # If the token has expired, retrieve a new token and try the query again
@@ -68,6 +76,7 @@ module Tasks
           raise e
         end
       end
+      puts "Total publications: #{all_publications.size}"
       return all_publications.to_a
     end
 
