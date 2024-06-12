@@ -9,6 +9,7 @@ Hyrax::AttachFilesToWorkJob.class_eval do
       # [hyc-override] check all files for viruses
       virus_check!(uploaded_file)
     end
+    raise 'Intentional error before starting the perform method'
     original_perform(work, uploaded_files, work_attributes)
   # [hyc-override] Log viruses
   rescue VirusDetectedError => error
