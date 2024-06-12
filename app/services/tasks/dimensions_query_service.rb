@@ -18,9 +18,10 @@ module Tasks
       doi_clauses = [with_doi ? 'where doi is not empty' : 'where doi is empty', 'type = "article"', "date_inserted >= \"#{date_inserted}\""].join(' and ')
       return_fields = ['basics', 'extras', 'abstract', 'issn', 'publisher', 'journal_title_raw', 'linkout'].join(' + ')
 
+      # WIP: Cursor should be initialized to 0 and cursor_limit removed
       cursor = 0
       retries = 0
-      cursor_limit = 5
+      cursor_limit = 10
         # Flag to track if retry has been attempted after token refresh
       retry_attempted = false
       loop do

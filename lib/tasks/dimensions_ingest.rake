@@ -33,7 +33,7 @@ namespace :dimensions do
     query_service = Tasks::DimensionsQueryService.new
     ingest_service = Tasks::DimensionsIngestService.new(config)
     # WIP: Testing with a limited page size
-    publications = ingest_service.ingest_publications(query_service.query_dimensions(page_size: 5, date_inserted: formatted_last_run_time))
+    publications = ingest_service.ingest_publications(query_service.query_dimensions(page_size: 10, date_inserted: formatted_last_run_time))
     report = Tasks::DimensionsReportingService.new(publications).generate_report
     begin
       DimensionsReportMailer.dimensions_report_email(report).deliver_now
