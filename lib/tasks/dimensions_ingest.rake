@@ -43,9 +43,8 @@ namespace :dimensions do
     begin
       DimensionsReportMailer.dimensions_report_email(report).deliver_now
       Rails.logger.info 'Dimensions ingest report email sent successfully.'
-      Rails.logger.info "Ingested Publications: #{publications[:ingested].map { |pub| pub['id'] }}"
-      Rails.logger.info "Ingested #{publications[:ingested].count} publications"
-      Rails.logger.info "Failed to ingest #{publications[:failed].count} publications"
+      Rails.logger.info "Ingested Publications (Total #{publications[:ingested].count}): #{publications[:ingested].map { |pub| pub['id'] }}"
+      Rails.logger.info "Failed Publication Ingest (Total #{publications[:failed].count}): #{publications[:failed].map { |pub| pub['id'] }}"
       Rails.logger.info "[#{Time.now}] completed dimensions metadata ingest"
     rescue StandardError => e
       Rails.logger.error "Failed to send test email: #{e.message}"

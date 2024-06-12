@@ -19,9 +19,9 @@ module Tasks
       return_fields = ['basics', 'extras', 'abstract', 'issn', 'publisher', 'journal_title_raw', 'linkout'].join(' + ')
 
       # WIP: Cursor should be initialized to 0 and cursor_limit removed
-      cursor = 0
+      cursor = 2000
       retries = 0
-      cursor_limit = 20
+      cursor_limit = 2020
         # Flag to track if retry has been attempted after token refresh
       retry_attempted = false
       loop do
@@ -55,8 +55,9 @@ module Tasks
             # Merge the new publications with the existing set
             parsed_body = JSON.parse(response.body)
             parsed_body_size = parsed_body['publications'].size
-            Rails.logger.info("Received #{parsed_body_size} publications from Dimensions API.")
+            Rails.logger.info("Dimensions API returned #{parsed_body_size} publications.")
             publications = deduplicate_publications(with_doi, parsed_body['publications'])
+            Rails.logger.info("Unique Publications after Deduplicating: #{publications.size}. #{parsed_body_size - publications.size} duplicates removed.")
             all_publications.merge(publications)
 
             # End the loop if the cursor exceeds the total count
@@ -136,6 +137,12 @@ module Tasks
           doi_tesim = "https://doi.org/#{pub['doi']}"
           result = Hyrax::SolrService.get("doi_tesim:\"#{doi_tesim}\" OR identifier_tesim:\"#{pub['doi']}\"")
           !result['response']['docs'].empty?
+        end
+
+        # Log the DOI and title of each publication that was removed
+        removed_publications = publications - new_publications
+        removed_publications.each do |pub|
+          Rails.logger.info("Removed duplicate publication with DOI: #{pub['doi']} and title: #{pub['title']}")
         end
         return new_publications
       else
