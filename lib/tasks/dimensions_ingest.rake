@@ -14,6 +14,11 @@ namespace :dimensions do
   task ingest_metadata_task: :environment do
     Rails.logger.info "[#{Time.now}] starting dimensions metadata ingest"
 
+    # WIP: Removing all previously ingested articles for testing purposes
+    # Article.find_each do |article|
+    #   article.destroy
+    # end
+
     # Read the last run time from a file
     last_run_time = Date.parse(read_last_run_time('dimensions_ingest')) rescue nil
     formatted_last_run_time = last_run_time ? last_run_time.strftime('%Y-%m-%d') : nil
@@ -32,8 +37,8 @@ namespace :dimensions do
     # Query and ingest publications
     query_service = Tasks::DimensionsQueryService.new
     ingest_service = Tasks::DimensionsIngestService.new(config)
-    # WIP: Testing with a limited page size
-    publications = ingest_service.ingest_publications(query_service.query_dimensions(page_size: 10, date_inserted: formatted_last_run_time))
+    # WIP: Testing with a limited page size, and no date_inserted. Reinsert date_inserted later
+    publications = ingest_service.ingest_publications(query_service.query_dimensions(page_size: 20))
     report = Tasks::DimensionsReportingService.new(publications).generate_report
     begin
       DimensionsReportMailer.dimensions_report_email(report).deliver_now

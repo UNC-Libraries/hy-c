@@ -21,7 +21,7 @@ module Tasks
       # WIP: Cursor should be initialized to 0 and cursor_limit removed
       cursor = 0
       retries = 0
-      cursor_limit = 10
+      cursor_limit = 20
         # Flag to track if retry has been attempted after token refresh
       retry_attempted = false
       loop do
@@ -54,6 +54,8 @@ module Tasks
           if response.success?
             # Merge the new publications with the existing set
             parsed_body = JSON.parse(response.body)
+            parsed_body_size = parsed_body['publications'].size
+            Rails.logger.info("Received #{parsed_body_size} publications from Dimensions API.")
             publications = deduplicate_publications(with_doi, parsed_body['publications'])
             all_publications.merge(publications)
 
@@ -92,7 +94,6 @@ module Tasks
         end
       end
       # end
-      Rails.logger.error("Total publications: #{all_publications.size}")
       return all_publications.to_a
     end
 
