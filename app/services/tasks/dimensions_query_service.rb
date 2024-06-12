@@ -8,15 +8,15 @@ module Tasks
     end
     DIMENSIONS_URL = 'https://app.dimensions.ai/api'
     EARLIEST_DATE = '1970-01-01'
-    MAX_RETRIES = 5
+    MAX_RETRIES = 0
 
     def query_dimensions(with_doi: true, page_size: 100, date_inserted: nil)
       date_inserted ||= EARLIEST_DATE
       # Initialized as a set to avoid retrieving duplicate publications from Dimensions if the page size exceeds the number of publications on the last page.
       all_publications = Set.new
       token = retrieve_token
-      doi_clauses = [with_doi ? 'where doi is not empty' : 'where doi is empty', 'type = "article"', "date_inserted >= \"#{date_inserted}\""].join(' and ')
-      return_fields = ['basics', 'extras', 'abstract', 'issn', 'publisher', 'journal_title_raw', 'linkout'].join(' + ')
+      doi_clauses = generate_doi_clauses(with_doi, date_inserted)
+      return_fields = generate_return_fields
 
       # WIP: Cursor should be initialized to 0 and cursor_limit removed
       cursor = 2000
@@ -26,49 +26,20 @@ module Tasks
       retry_attempted = false
       loop do
         begin
-          # Query with paramaters to retrieve publications related to UNC
-          query_string = <<~QUERY
-                          search publications #{doi_clauses} in raw_affiliations#{' '}
-                          for """
-                          "University of North Carolina, Chapel Hill" OR "UNC"
-                          """#{'  '}
-                          return publications[#{return_fields}]
-                          limit #{page_size}
-                          skip #{cursor}
-                        QUERY
+          query_string = generate_query_string(doi_clauses, return_fields, page_size, cursor)
           Rails.logger.info("Querying Dimensions API with query: #{query_string}")
-          # Extra headers to avoid 400 bad request error
-          content_length = query_string.to_s.bytesize
-          response = HTTParty.post(
-              "#{DIMENSIONS_URL}/dsl",
-              headers: { 'Content-Type' => 'application/json',
-                        'Authorization' => "JWT #{token}",
-                        'Host' => URI(DIMENSIONS_URL).host,
-                        'Content-Length' => content_length.to_s,
-                        'Connection' => 'keep-alive',
-                        'Accept-Encoding' => 'gzip, deflate, br'},
-              body: query_string,
-              format: :json,
-              timeout: 100
-          )
+          response = post_query(query_string, token)
           if response.success?
             # Merge the new publications with the existing set
-            parsed_body = JSON.parse(response.body)
-            parsed_body_size = parsed_body['publications'].size
-            Rails.logger.info("Dimensions API returned #{parsed_body_size} publications.")
-            publications = deduplicate_publications(with_doi, parsed_body['publications'])
-            Rails.logger.info("Unique Publications after Deduplicating: #{publications.size}. #{parsed_body_size - publications.size} duplicates removed.")
-            all_publications.merge(publications)
-
-            # End the loop if the cursor exceeds the total count
-            total_count = parsed_body['_stats']['total_count']
+            all_publications.merge(process_response(response, with_doi))
+            total_count = response['_stats']['total_count']
             cursor += page_size
-
-            break if cursor >= total_count
+            # End the loop if the cursor exceeds the total count
             # WIP: Limited Sample for testing
-            break if cursor >= cursor_limit
+            # break if cursor >= total_count
+            break if cursor >= total_count || cursor >= cursor_limit
           elsif response.code == 403
-            if !retry_attempted
+            unless retry_attempted
               # If the token has expired, retrieve a new token and try the query again
               Rails.logger.warn('Received 403 Forbidden error. Retrying after token refresh.')
               token = retrieve_token
@@ -82,22 +53,62 @@ module Tasks
             raise DimensionsPublicationQueryError, "Failed to retrieve UNC affiliated articles from dimensions. Status code #{response.code}, response body: #{response.body}"
           end
         rescue HTTParty::Error, StandardError => e
-          Rails.logger.error("HTTParty error during Dimensions API query: #{e.message}")
-          # Re-raise the error to propagate it up the call stack
+          handle_query_error(e, retries)
           retries += 1
-          if retries <= MAX_RETRIES
-            Rails.logger.warn("Retrying query after #{retries} seconds.")
-            sleep(2 ** retries) # Using base 2 for exponential backoff
-            retry
-          else
-            raise e
-          end
+          retry if retries <= MAX_RETRIES
+          raise e
         end
       end
       # end
       return all_publications.to_a
     end
 
+    def handle_query_error(error, retries)
+      Rails.logger.error("HTTParty error during Dimensions API query: #{error.message}")
+      if retries <= MAX_RETRIES
+        Rails.logger.warn("Retrying query after #{2**retries} seconds.")
+        sleep(2**retries) # Using base 2 for exponential backoff
+      end
+    end
+
+    # Extra headers to avoid 400 bad request error
+    def post_query(query_string, token)
+      content_length = query_string.to_s.bytesize
+      HTTParty.post(
+        "#{DIMENSIONS_URL}/dsl",
+        headers: {
+          'Content-Type' => 'application/json',
+          'Authorization' => "JWT #{token}",
+          'Host' => URI(DIMENSIONS_URL).host,
+          'Content-Length' => content_length.to_s,
+          'Connection' => 'keep-alive',
+          'Accept-Encoding' => 'gzip, deflate, br'
+        },
+        body: query_string,
+        format: :json,
+        timeout: 100
+      )
+    end
+
+    def generate_query_string(doi_clauses, return_fields, page_size, cursor)
+      <<~QUERY
+        search publications #{doi_clauses} in raw_affiliations
+        for """
+        "University of North Carolina, Chapel Hill" OR "UNC"
+        """
+        return publications[#{return_fields}]
+        limit #{page_size}
+        skip #{cursor}
+      QUERY
+    end
+
+    def process_response(response, with_doi)
+      parsed_body = JSON.parse(response.body)
+      publications = deduplicate_publications(with_doi, parsed_body['publications'])
+      Rails.logger.info("Dimensions API returned #{parsed_body['publications'].size} publications.")
+      Rails.logger.info("Unique Publications after Deduplicating: #{publications.size}.")
+      publications
+    end
 
     def retrieve_token
       begin
@@ -159,6 +170,27 @@ module Tasks
         return new_publications
       end
 
+    end
+
+    def generate_doi_clauses(with_doi, date_inserted)
+      [with_doi ? 'where doi is not empty' : 'where doi is empty', 'type = "article"', "date_inserted >= \"#{date_inserted}\""].join(' and ')
+    end
+
+    def generate_return_fields
+      ['basics', 'extras', 'abstract', 'issn', 'publisher', 'journal_title_raw', 'linkout'].join(' + ')
+    end
+
+    # Query with paramaters to retrieve publications related to UNC
+    def generate_query_string(doi_clauses, return_fields, page_size, cursor)
+      <<~QUERY
+        search publications #{doi_clauses} in raw_affiliations
+        for """
+        "University of North Carolina, Chapel Hill" OR "UNC"
+        """
+        return publications[#{return_fields}]
+        limit #{page_size}
+        skip #{cursor}
+      QUERY
     end
 end
 end
