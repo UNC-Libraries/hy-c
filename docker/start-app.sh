@@ -24,3 +24,7 @@ bundle exec rails hyrax:default_admin_set:create
 echo "#### Starting web application"
 bundle exec puma -C config/puma.rb
 echo "#### Shutdown web application"
+
+echo "####  Keep the container running for debugging"
+# Keep the container running for debugging
+while true; do sleep 30; done;

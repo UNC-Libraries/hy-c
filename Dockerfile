@@ -54,7 +54,7 @@ COPY docker/fits.xml /fits/fits-1.5.5/xml/fits.xml
 COPY Gemfile* /hyrax/
 WORKDIR /hyrax
 
-RUN scl enable devtoolset-8 rh-ruby27 -- gem install rubygems-update \
+RUN scl enable devtoolset-8 rh-ruby27 -- gem install rubygems-update -v 3.4.22 \
 && scl enable devtoolset-8 rh-ruby27 -- update_rubygems \
 && scl enable devtoolset-8 rh-ruby27 -- gem update --system \
 && scl enable devtoolset-8 rh-ruby27 -- gem install bundler:2.2.33 \

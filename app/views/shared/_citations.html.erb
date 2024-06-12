@@ -43,7 +43,7 @@
   <% end %>
 
   <%# [hyc-override] Additional metadata fields %>
-  <% if gscholar.journal_title.present? %>
+  <% if gscholar.journal_title && gscholar.journal_title.present? %>
   <meta name="citation_journal_title" content="<%= gscholar.journal_title %>" />
   <% end %>
 
