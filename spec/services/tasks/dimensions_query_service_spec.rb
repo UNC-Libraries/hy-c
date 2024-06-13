@@ -55,8 +55,6 @@ RSpec.describe Tasks::DimensionsQueryService do
 
   describe '#query_dimensions' do
 
-    with_doi_clause = lambda { |with_doi| with_doi ? 'where doi is not empty' : 'where doi is empty' }
-
     it 'raises and logs an error if the query returns a status code that is not 403 or 200' do
       allow(Rails.logger).to receive(:error)
       response_body = 'Internal Server Error'
@@ -66,7 +64,8 @@ RSpec.describe Tasks::DimensionsQueryService do
       expect { service.query_dimensions }.to raise_error(Tasks::DimensionsQueryService::DimensionsPublicationQueryError)
 
       # Check if the error message has been logged
-      expect(Rails.logger).to have_received(:error).with("HTTParty error during Dimensions API query: Failed to retrieve UNC affiliated articles from dimensions. Status code #{ERROR_RESPONSE_CODE}, response body: #{response_body}")
+      # Expecting the error message to be logged 6 times, once for the initial error and 5 times for the retries
+      expect(Rails.logger).to have_received(:error).with("HTTParty error during Dimensions API query: Failed to retrieve UNC affiliated articles from dimensions. Status code #{ERROR_RESPONSE_CODE}, response body: #{response_body}").exactly(6).times
     end
 
     # Checks that the function only retries once to prevent infinite loops
@@ -115,7 +114,7 @@ RSpec.describe Tasks::DimensionsQueryService do
                  { status: 200, body: dimensions_pagination_query_responses[1], headers: { 'Content-Type' => 'application/json' }})
       .times(1)
 
-      publications = service.query_dimensions(with_doi: true)
+      publications = service.query_dimensions
       expect(WebMock).to have_requested(:post, 'https://app.dimensions.ai/api/dsl').times(3)
       expect(WebMock).to have_requested(:post, 'https://app.dimensions.ai/api/auth').times(2)
       expect(Rails.logger).to have_received(:warn).with('Received 403 Forbidden error. Retrying after token refresh.').once
@@ -150,7 +149,7 @@ RSpec.describe Tasks::DimensionsQueryService do
           .to_return(status: 200, body: response_body, headers: { 'Content-Type' => 'application/json' })
       end
 
-      publications = service.query_dimensions(with_doi: true)
+      publications = service.query_dimensions
 
       # Combine the publications from all pages for comparison
       expected_publications = dimensions_pagination_query_responses.flat_map { |response| JSON.parse(response)['publications'] }
@@ -182,7 +181,7 @@ RSpec.describe Tasks::DimensionsQueryService do
           headers: { 'Content-Type' => 'application/json' })
           .to_return(status: 200, body: dimensions_query_response_fixture_non_doi, headers: { 'Content-Type' => 'application/json' })
 
-      publications = service.query_dimensions(with_doi: false)
+      publications = service.query_dimensions
       expected_publications = JSON.parse(dimensions_query_response_fixture_non_doi)['publications']
       expect(publications).to eq(expected_publications)
     end
@@ -203,7 +202,7 @@ RSpec.describe Tasks::DimensionsQueryService do
         identifier_tesim: ["PMID: 12345678, https://doi.org/#{test_fixture_dois[1]}"]}]
       Hyrax::SolrService.add(documents[0..1], commit: true)
 
-      new_publications = service.deduplicate_publications(true, dimensions_publications)
+      new_publications = service.deduplicate_publications(dimensions_publications)
 
       # Expecting that the two documents with dois that are the same as the first two publications in the test fixture have been removed
       expect(new_publications.map { |pub| pub['doi'] }) .not_to include([test_fixture_dois[0..1]])
@@ -237,7 +236,7 @@ RSpec.describe Tasks::DimensionsQueryService do
         title_tesim: [test_fixture_titles_with_test_string[1]]}]
       Hyrax::SolrService.add(documents, commit: true)
 
-      new_publications = service.deduplicate_publications(false, all_publications)
+      new_publications = service.deduplicate_publications(all_publications)
 
       # Expecting that the four documents with titles that are the same as the publications in all_publications have been removed
       expect(new_publications.map { |pub| pub['title'] }) .not_to include(test_fixture_titles[0..1])
@@ -262,7 +261,7 @@ RSpec.describe Tasks::DimensionsQueryService do
         identifier_tesim: ["PMID: #{test_fixture_pmids[1]}"]}]
       Hyrax::SolrService.add(documents[0..1], commit: true)
 
-      new_publications = service.deduplicate_publications(false, dimensions_publications_without_dois)
+      new_publications = service.deduplicate_publications(dimensions_publications_without_dois)
 
       expect(new_publications.count).to eq(1)
       expect(new_publications.first['id']).to eq(dimensions_publications_without_dois[2]['id'])
@@ -279,7 +278,7 @@ RSpec.describe Tasks::DimensionsQueryService do
       non_pmcid_publication_ids = [dimensions_publications_without_dois[0]['id'], dimensions_publications_without_dois[2]['id']]
       Hyrax::SolrService.add(documents[0], commit: true)
 
-      new_publications = service.deduplicate_publications(false, dimensions_publications_without_dois)
+      new_publications = service.deduplicate_publications(dimensions_publications_without_dois)
 
       expect(new_publications.count).to eq(2)
       expect(new_publications.map { |pub| pub['id'] }).to include(*non_pmcid_publication_ids)
@@ -293,7 +292,7 @@ RSpec.describe Tasks::DimensionsQueryService do
         'title' => 'Unique Title', },
       { 'title' => 'Unique Title 2', },
       { 'title' => 'Unique Title 3', }]
-      new_publications = service.deduplicate_publications(false, spoofed_dimensions_publications)
+      new_publications = service.deduplicate_publications(spoofed_dimensions_publications)
 
       expect(new_publications.count).to eq(3)
       expect(new_publications.map { |pub| pub['title'] }).to include(*spoofed_dimensions_publications.map { |pub| pub['title'] })
