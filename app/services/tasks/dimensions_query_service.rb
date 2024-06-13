@@ -66,7 +66,7 @@ module Tasks
     def handle_query_error(error, retries)
       Rails.logger.error("HTTParty error during Dimensions API query: #{error.message}")
       if retries <= MAX_RETRIES
-        Rails.logger.warn("Retrying query after #{2**retries} seconds. (Attempt #{retries + 1} of #{MAX_RETRIES})"
+        Rails.logger.warn("Retrying query after #{2**retries} seconds. (Attempt #{retries + 1} of #{MAX_RETRIES})")
         sleep(2**retries) # Using base 2 for exponential backoff
       end
     end
