@@ -21,7 +21,6 @@ module Tasks
 
       # WIP: Cursor should be initialized to 0 and cursor_limit removed, sample size of 50
       cursor = 2040
-      cursor = 0
       retries = 0
       cursor_limit = 2090
         # Flag to track if retry has been attempted after token refresh
