@@ -15,7 +15,7 @@ module Tasks
       # Initialized as a set to avoid retrieving duplicate publications from Dimensions if the page size exceeds the number of publications on the last page.
       all_publications = Set.new
       token = retrieve_token
-      doi_clauses = generate_doi_clauses(with_doi, date_inserted)
+      search_clauses = generate_search_clauses(with_doi, date_inserted)
       return_fields = generate_return_fields
 
       # WIP: Cursor should be initialized to 0 and cursor_limit removed
@@ -26,7 +26,7 @@ module Tasks
       retry_attempted = false
       loop do
         begin
-          query_string = generate_query_string(doi_clauses, return_fields, page_size, cursor)
+          query_string = generate_query_string(search_clauses, return_fields, page_size, cursor)
           Rails.logger.info("Querying Dimensions API with query: #{query_string}")
           response = post_query(query_string, token)
           if response.success?
@@ -88,18 +88,6 @@ module Tasks
         format: :json,
         timeout: 100
       )
-    end
-
-    def generate_query_string(doi_clauses, return_fields, page_size, cursor)
-      <<~QUERY
-        search publications #{doi_clauses} in raw_affiliations
-        for """
-        "University of North Carolina, Chapel Hill" OR "UNC"
-        """
-        return publications[#{return_fields}]
-        limit #{page_size}
-        skip #{cursor}
-      QUERY
     end
 
     def process_response(response, with_doi)
@@ -172,18 +160,19 @@ module Tasks
 
     end
 
-    def generate_doi_clauses(with_doi, date_inserted)
-      [with_doi ? 'where doi is not empty' : 'where doi is empty', 'type = "article"', "date_inserted >= \"#{date_inserted}\""].join(' and ')
+    # WIP: Retrieve publications without pmcid and pmid for testing, and with linkout
+    def generate_search_clauses(with_doi, date_inserted)
+      [with_doi ? 'where doi is not empty' : 'where doi is empty', 'type = "article"', "date_inserted >= \"#{date_inserted}\"", "pmcid is empty", "pmid is empty", "linkout is not empty"].join(' and ')
     end
 
     def generate_return_fields
       ['basics', 'extras', 'abstract', 'issn', 'publisher', 'journal_title_raw', 'linkout'].join(' + ')
-    end
+    end 
 
     # Query with paramaters to retrieve publications related to UNC
-    def generate_query_string(doi_clauses, return_fields, page_size, cursor)
+    def generate_query_string(search_clauses, return_fields, page_size, cursor)
       <<~QUERY
-        search publications #{doi_clauses} in raw_affiliations
+        search publications #{search_clauses} in raw_affiliations
         for """
         "University of North Carolina, Chapel Hill" OR "UNC"
         """
