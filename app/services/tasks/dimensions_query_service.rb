@@ -8,7 +8,7 @@ module Tasks
     end
     DIMENSIONS_URL = 'https://app.dimensions.ai/api'
     EARLIEST_DATE = '1970-01-01'
-    MAX_RETRIES = 0
+    MAX_RETRIES = 5
 
     def query_dimensions(with_doi: true, page_size: 100, date_inserted: nil)
       date_inserted ||= EARLIEST_DATE
@@ -66,7 +66,7 @@ module Tasks
     def handle_query_error(error, retries)
       Rails.logger.error("HTTParty error during Dimensions API query: #{error.message}")
       if retries <= MAX_RETRIES
-        Rails.logger.warn("Retrying query after #{2**retries} seconds.")
+        Rails.logger.warn("Retrying query after #{2**retries} seconds. (Attempt #{retries + 1} of #{MAX_RETRIES})"
         sleep(2**retries) # Using base 2 for exponential backoff
       end
     end
