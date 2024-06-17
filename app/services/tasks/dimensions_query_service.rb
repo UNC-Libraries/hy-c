@@ -20,12 +20,13 @@ module Tasks
 
       cursor = 0
       retries = 0
+      query_count = 0
       # Flag to track if retry has been attempted after token refresh
       retry_attempted = false
       loop do
         begin
           query_string = generate_query_string(search_clauses, return_fields, page_size, cursor)
-          Rails.logger.info("Querying Dimensions API with query: #{query_string}")
+          Rails.logger.info("Sending query ##{query_count += 1} to Dimensions API: #{query_string}")
           response = post_query(query_string, token)
           if response.success?
             # Merge the new publications with the existing set
