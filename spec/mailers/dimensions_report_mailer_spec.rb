@@ -78,8 +78,8 @@ RSpec.describe DimensionsReportMailer, type: :mailer do
 
     it 'renders the headers' do
       expect(mail.subject).to eq(report[:subject])
-      expect(mail.to).to eq(['recipient@example.com'])
-      expect(mail.from).to eq(['no-reply@example.com'])
+      expect(mail.to).to eq(['cdr@unc.edu'])
+      expect(mail.from).to eq(['no-reply@unc.edu'])
     end
 
     it 'renders the body' do
