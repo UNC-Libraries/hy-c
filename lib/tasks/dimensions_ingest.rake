@@ -12,7 +12,7 @@ namespace :dimensions do
     Rails.logger.info "[#{Time.now}] starting dimensions metadata ingest"
 
     # Read the last run time from a file
-    file_path = Rails.root.join('log', "last_dimensions_ingest_run.txt")
+    file_path = Rails.root.join('log', 'last_dimensions_ingest_run.txt')
     last_run_time = File.exist?(file_path) ? Date.parse(File.read(file_path).strip) : nil
     formatted_last_run_time = last_run_time ? last_run_time.strftime('%Y-%m-%d') : nil
 
@@ -42,8 +42,8 @@ namespace :dimensions do
     end
 
     # Write the last run time to a file
-    File.open(Rails.root.join('log', "last_dimensions_ingest_run.txt"), 'w') do |f|
-       f.puts Time.current
+    File.open(Rails.root.join('log', 'last_dimensions_ingest_run.txt'), 'w') do |f|
+      f.puts Time.current
     end
   end
 end
