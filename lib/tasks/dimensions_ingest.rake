@@ -1,8 +1,5 @@
 # frozen_string_literal: true
-require_relative './helpers/dimensions_ingest_task_helper'
-
 namespace :dimensions do
-  include DimensionsIngestTaskHelper
   DIMENSIONS_URL = 'https://app.dimensions.ai/api/'
 
   desc 'Ingest metadata from Dimensions'
@@ -15,7 +12,8 @@ namespace :dimensions do
     Rails.logger.info "[#{Time.now}] starting dimensions metadata ingest"
 
     # Read the last run time from a file
-    last_run_time = Date.parse(read_last_run_time('dimensions_ingest')) rescue nil
+    file_path = Rails.root.join('log', "last_dimensions_ingest_run.txt")
+    last_run_time = File.exist?(file_path) ? Date.parse(File.read(file_path).strip) : nil
     formatted_last_run_time = last_run_time ? last_run_time.strftime('%Y-%m-%d') : nil
 
     if last_run_time
@@ -43,6 +41,9 @@ namespace :dimensions do
       Rails.logger.error "Failed to send test email: #{e.message}"
     end
 
-    save_last_run_time('dimensions_ingest')
+    # Write the last run time to a file
+    File.open(Rails.root.join('log', "last_dimensions_ingest_run.txt"), 'w') do |f|
+       f.puts Time.current
+    end
   end
 end
