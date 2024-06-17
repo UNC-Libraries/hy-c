@@ -31,31 +31,7 @@
       <% end %>
     </tbody>
   </table>
-
-  <h2 style="font-size: 20px; margin-bottom: 10px;"><%= @report[:headers][:marked_for_review] %></h2>
-  <table style="width: 100%; border-collapse: collapse;">
-    <thead>
-      <tr>
-        <th style="border: 2px solid #dddddd; text-align: left; padding: 10px; background-color: #f2f2f2; width: 30%;">Title</th>
-        <th style="border: 2px solid #dddddd; text-align: left; padding: 10px; background-color: #f2f2f2; width: 20%;">Dimensions ID</th>
-        <th style="border: 2px solid #dddddd; text-align: left; padding: 10px; background-color: #f2f2f2; width: 30%;">URL</th>
-        <th style="border: 2px solid #dddddd; text-align: left; padding: 10px; background-color: #f2f2f2; width: 5%;">PDF Attached</th>
-        <th style="border: 2px solid #dddddd; text-align: left; padding: 10px; background-color: #f2f2f2; width: 15%;">Error</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% @report[:marked_for_review_rows].each_with_index do |publication, index| %>
-        <tr style="background-color: <%= index.even? ? '#f9f9f9' : '#ffffff' %>;">
-          <td style="border: 2px solid #dddddd; text-align: left; padding: 10px;"><%= publication[:title] %></td>
-          <td style="border: 2px solid #dddddd; text-align: left; padding: 10px;"><%= publication[:id] %></td>
-          <td style="border: 2px solid #dddddd; text-align: left; padding: 10px;"><a href="<%= publication[:url] %>"><%= publication[:url] %></a></td>
-          <td style="border: 2px solid #dddddd; text-align: left; padding: 10px;"><%= publication[:pdf_attached] %></td>
-          <td style="border: 2px solid #dddddd; text-align: left; padding: 10px;">N/A</td>
-        </tr>
-      <% end %>
-    </tbody>
-  </table>
-
+  
   <h2 style="font-size: 20px; margin-bottom: 10px;"><%= @report[:headers][:failed_to_ingest] %></h2>
   <table style="width: 100%; border-collapse: collapse;">
     <thead>

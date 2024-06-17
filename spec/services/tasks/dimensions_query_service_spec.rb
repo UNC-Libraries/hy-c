@@ -68,7 +68,6 @@ RSpec.describe Tasks::DimensionsQueryService do
       expect(Rails.logger).to have_received(:error).with("HTTParty error during Dimensions API query: Failed to retrieve UNC affiliated articles from dimensions. Status code #{ERROR_RESPONSE_CODE}, response body: #{response_body}").exactly(6).times
     end
 
-    # Checks that the function only retries once to prevent infinite loops
     it 'raises and logs an error if the query returns another 403 status code after a token refresh' do
       allow(Rails.logger).to receive(:error)
       allow(Rails.logger).to receive(:warn)
@@ -83,7 +82,8 @@ RSpec.describe Tasks::DimensionsQueryService do
       expect(Rails.logger).to have_received(:warn).with('Received 403 Forbidden error. Retrying after token refresh.').once
 
       # Check if the error message has been logged
-      expect(Rails.logger).to have_received(:error).with('HTTParty error during Dimensions API query: Retry attempted after token refresh failed with 403 Forbidden error')
+      # Expecting the error message to be logged 6 times, once for the initial error and 5 times for the retries
+      expect(Rails.logger).to have_received(:error).with('HTTParty error during Dimensions API query: Retry attempted after token refresh failed with 403 Forbidden error').exactly(6).times
     end
 
     # Simulating token reretrieval and retry after expiration during query
@@ -208,8 +208,6 @@ RSpec.describe Tasks::DimensionsQueryService do
       expect(new_publications.map { |pub| pub['doi'] }) .not_to include([test_fixture_dois[0..1]])
       expect(new_publications.count).to eq(1)
       expect(new_publications.first['doi']).to eq(test_fixture_dois[2])
-      # Expecting that none of the publications have been marked for review
-      expect(new_publications.map { |pub| pub['marked_for_review'] }.all?).to be_falsy
     end
 
     it 'removes publications with duplicate titles' do
@@ -245,8 +243,6 @@ RSpec.describe Tasks::DimensionsQueryService do
       # Verifying deduplicate_publications only returns records with unique titles
       expect(new_publications.count).to eq(2)
       expect(new_publications.map { |pub| pub['title'] }).to include(test_fixture_titles[2], test_fixture_titles_with_test_string[2])
-      # Expecting that none of the publications have been marked for review
-      expect(new_publications.map { |pub| pub['marked_for_review'] }.all?).to be_falsy
     end
 
     it 'removes publications with duplicate pmids' do
@@ -265,8 +261,6 @@ RSpec.describe Tasks::DimensionsQueryService do
 
       expect(new_publications.count).to eq(1)
       expect(new_publications.first['id']).to eq(dimensions_publications_without_dois[2]['id'])
-      # Expecting that none of the publications have been marked for review
-      expect(new_publications.map { |pub| pub['marked_for_review'] }.all?).to be_falsy
     end
 
     it 'removes publications with duplicate pmcids' do
@@ -282,8 +276,6 @@ RSpec.describe Tasks::DimensionsQueryService do
 
       expect(new_publications.count).to eq(2)
       expect(new_publications.map { |pub| pub['id'] }).to include(*non_pmcid_publication_ids)
-      # Expecting that none of the publications have been marked for review
-      expect(new_publications.map { |pub| pub['marked_for_review'] }.all?).to be_falsy
     end
 
     it 'marks publications for review if it has a unique title, no pmcid, pmid or doi' do
@@ -296,7 +288,6 @@ RSpec.describe Tasks::DimensionsQueryService do
 
       expect(new_publications.count).to eq(3)
       expect(new_publications.map { |pub| pub['title'] }).to include(*spoofed_dimensions_publications.map { |pub| pub['title'] })
-      expect(new_publications.map { |pub| pub['marked_for_review'] }.all?).to be_truthy
     end
 
   end

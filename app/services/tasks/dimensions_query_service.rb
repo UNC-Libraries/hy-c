@@ -20,9 +20,9 @@ module Tasks
       return_fields = generate_return_fields
 
       # WIP: Cursor should be initialized to 0 and cursor_limit removed, sample size of 50
-      cursor = 2040
+      cursor = 0
       retries = 0
-      cursor_limit = 2090
+      cursor_limit = 20
         # Flag to track if retry has been attempted after token refresh
       retry_attempted = false
       loop do
@@ -66,7 +66,7 @@ module Tasks
 
     def handle_query_error(error, retries)
       Rails.logger.error("HTTParty error during Dimensions API query: #{error.message}")
-      if retries <= MAX_RETRIES
+      if retries < MAX_RETRIES
         Rails.logger.warn("Retrying query after #{2**retries} seconds. (Attempt #{retries + 1} of #{MAX_RETRIES})")
         sleep(2**retries) # Using base 2 for exponential backoff
       end
@@ -93,7 +93,9 @@ module Tasks
 
     def process_response(response)
       parsed_body = JSON.parse(response.body)
-      publications = deduplicate_publications(parsed_body['publications'])
+      # WIP: No deduplication for testing
+      # publications = deduplicate_publications(parsed_body['publications'])
+      publications = parsed_body['publications']
       Rails.logger.info("Dimensions API returned #{parsed_body['publications'].size} publications.")
       Rails.logger.info("Unique Publications after Deduplicating: #{publications.size}.")
       publications
@@ -161,41 +163,8 @@ module Tasks
       new_publications_without_doi = publications_without_doi.reject do |pub|
         query_string = solr_query_builder(pub)
         result = Hyrax::SolrService.get(query_string)
-        # Mark a publication for review if it has a unique title and no unique identifiers
-        if result['response']['docs'].empty? && pub['pmcid'].nil? && pub['pmid'].nil?
-          pub['marked_for_review'] = true
-        end
         !result['response']['docs'].empty?
       end
-
-      # WIP: Remove later, refactoring separate queries
-      # if with_doi
-      #   # Removing publications that have a matching DOI in Solr
-      #   new_publications = publications.reject do |pub|
-      #     doi_tesim = "https://doi.org/#{pub['doi']}"
-      #     result = Hyrax::SolrService.get("doi_tesim:\"#{doi_tesim}\" OR identifier_tesim:\"#{pub['doi']}\"")
-      #     !result['response']['docs'].empty?
-      #   end
-
-      #   # Log the DOI and title of each publication that was removed
-      #   removed_publications = publications - new_publications
-      #   removed_publications.each do |pub|
-      #     Rails.logger.info("Removed duplicate publication with DOI: #{pub['doi']} and title: #{pub['title']}")
-      #   end
-      #   return new_publications
-      # else
-      #   # Removing publications that have a matching PMID, PMCID, or title in Solr
-      #   new_publications = publications.reject do |pub|
-      #     query_string = solr_query_builder(pub)
-      #     result = Hyrax::SolrService.get(query_string)
-      #     # Mark a publication for review if it has a unique title and no unique identifiers
-      #     if result['response']['docs'].empty? and pub['pmcid'].nil? and pub['pmid'].nil?
-      #       pub['marked_for_review'] = true
-      #     end
-      #     !result['response']['docs'].empty?
-      #   end
-      #   return new_publications
-      # end
 
       # Combine the new publications
       new_publications = new_publications_with_doi + new_publications_without_doi
@@ -205,7 +174,7 @@ module Tasks
 
     # WIP: Retrieve publications without pmcid and pmid for testing, and with linkout
     def generate_search_clauses(date_inserted)
-      ['where type = "article"', "date_inserted >= \"#{date_inserted}\"", 'pmcid is empty', 'pmid is empty'].join(' and ')
+      ['where type = "article"', "date_inserted >= \"#{date_inserted}\""].join(' and ')
     end
 
     def generate_return_fields

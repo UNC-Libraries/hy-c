@@ -41,10 +41,6 @@ RSpec.describe DimensionsReportMailer, type: :mailer do
   }
 
   let(:failing_publication_sample) { test_publications[0..2] }
-  let(:marked_for_review_sample) do
-    test_publications[3..5].each { |pub| pub['marked_for_review'] = true }
-    test_publications[3..5]
-  end
   let(:successful_publication_sample) { test_publications[6..-1] }
 
   let(:ingest_service) { Tasks::DimensionsIngestService.new(config) }
@@ -68,7 +64,6 @@ RSpec.describe DimensionsReportMailer, type: :mailer do
       .to_return(body: pdf_content, status: 200, headers: { 'Content-Type' => 'application/pdf' })
     allow(ingest_service).to receive(:process_publication).and_call_original
     allow(ingest_service).to receive(:process_publication).with(satisfy { |pub| failing_publication_sample.include?(pub) }).and_raise(StandardError, test_err_msg)
-    marked_for_review_sample
     # stub virus checking
     allow(Hyrax::VirusCheckerService).to receive(:file_has_virus?) { false }
     # stub longleaf job
@@ -92,7 +87,6 @@ RSpec.describe DimensionsReportMailer, type: :mailer do
                                 .and include(report[:headers][:admin_set])
                                 .and include(report[:headers][:total_publications])
                                 .and include(report[:headers][:successfully_ingested])
-                                .and include(report[:headers][:marked_for_review])
                                 .and include(report[:headers][:failed_to_ingest])
 
       report[:successfully_ingested_rows].each do |publication|
@@ -101,14 +95,6 @@ RSpec.describe DimensionsReportMailer, type: :mailer do
                                 .and include(publication[:url])
                                 .and include(publication[:pdf_attached])
       end
-
-      report[:marked_for_review_rows].each do |publication|
-        expect(mail.body.encoded).to include(publication[:title])
-                                .and include(publication[:id])
-                                .and include(publication[:url])
-                                .and include(publication[:pdf_attached])
-      end
-
       report[:failed_to_ingest_rows].each do |publication|
         expect(mail.body.encoded).to include(publication[:title])
                                  .and include(publication[:id])
