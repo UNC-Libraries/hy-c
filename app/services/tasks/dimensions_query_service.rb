@@ -8,7 +8,6 @@ module Tasks
     end
     DIMENSIONS_URL = 'https://app.dimensions.ai/api'
     EARLIEST_DATE = '1970-01-01'
-    # WIP: MAX_RETRIES should be set to 5
     MAX_RETRIES = 5
 
     def query_dimensions(page_size: 100, date_inserted: nil)
@@ -19,11 +18,9 @@ module Tasks
       search_clauses = generate_search_clauses(date_inserted)
       return_fields = generate_return_fields
 
-      # WIP: Cursor should be initialized to 0 and cursor_limit removed, sample size of 50
       cursor = 0
       retries = 0
-      cursor_limit = 20
-        # Flag to track if retry has been attempted after token refresh
+      # Flag to track if retry has been attempted after token refresh
       retry_attempted = false
       loop do
         begin
@@ -36,9 +33,7 @@ module Tasks
             total_count = response['_stats']['total_count']
             cursor += page_size
             # End the loop if the cursor exceeds the total count
-            # WIP: Limited Sample for testing
-            # break if cursor >= total_count
-            break if cursor >= total_count || cursor >= cursor_limit
+            break if cursor >= total_count
           elsif response.code == 403
             unless retry_attempted
               # If the token has expired, retrieve a new token and try the query again
@@ -93,9 +88,7 @@ module Tasks
 
     def process_response(response)
       parsed_body = JSON.parse(response.body)
-      # WIP: No deduplication for testing
-      # publications = deduplicate_publications(parsed_body['publications'])
-      publications = parsed_body['publications']
+      publications = deduplicate_publications(parsed_body['publications'])
       Rails.logger.info("Dimensions API returned #{parsed_body['publications'].size} publications.")
       Rails.logger.info("Unique Publications after Deduplicating: #{publications.size}.")
       publications
@@ -172,7 +165,6 @@ module Tasks
       new_publications
     end
 
-    # WIP: Retrieve publications without pmcid and pmid for testing, and with linkout
     def generate_search_clauses(date_inserted)
       ['where type = "article"', "date_inserted >= \"#{date_inserted}\""].join(' and ')
     end

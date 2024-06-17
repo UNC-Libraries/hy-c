@@ -1,6 +1,5 @@
 # frozen_string_literal: true
-# lib/tasks/helpers/task_helper.rb
-module DimensionsIngestHelper
+module DimensionsIngestTaskHelper
   # Write the last run time to a file
   def save_last_run_time(task_name)
     File.open(Rails.root.join('log', "last_#{task_name}_run.txt"), 'w') do |f|
