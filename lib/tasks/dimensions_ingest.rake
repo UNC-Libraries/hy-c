@@ -12,13 +12,12 @@ namespace :dimensions do
     Rails.logger.info "[#{Time.now}] starting dimensions metadata ingest"
 
     # Read the last run time from a file
-    file_path = Rails.root.join('log', 'last_dimensions_ingest_run.txt')
+    file_path = File.join(ENV['DATA_STORAGE'], 'last_dimensions_ingest_run.txt')
     last_run_time = File.exist?(file_path) ? Date.parse(File.read(file_path).strip) : nil
     formatted_last_run_time = last_run_time ? last_run_time.strftime('%Y-%m-%d') : nil
 
     if last_run_time
       Rails.logger.info "Last ingest run was at: #{last_run_time}"
-      formatted_last_run_time = last_run_time.strftime('%Y-%m-%d')
     else
       Rails.logger.info 'No previous run time found. Starting from default date. (1970-01-01)'
     end
@@ -38,7 +37,7 @@ namespace :dimensions do
       Rails.logger.info "Failed Publication Ingest (Total #{publications[:failed].count}): #{publications[:failed].map { |pub| pub['id'] }}"
       Rails.logger.info "[#{Time.now}] completed dimensions metadata ingest"
     rescue StandardError => e
-      Rails.logger.error "Failed to send test email: #{e.message}"
+      Rails.logger.error "Failed to send email: #{e.message}"
     end
 
     # Write the last run time to a file

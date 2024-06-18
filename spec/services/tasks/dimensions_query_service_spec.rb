@@ -54,9 +54,9 @@ RSpec.describe Tasks::DimensionsQueryService do
   end
 
   describe '#query_dimensions' do
-
-    it 'raises and logs an error if the query returns a status code that is not 403 or 200' do
+    it 'logs an error and raises an exception after exceeding max retries for non-403 or 200 status codes' do
       allow(Rails.logger).to receive(:error)
+      allow(Rails.logger).to receive(:warn)
       response_body = 'Internal Server Error'
       stub_request(:post, 'https://app.dimensions.ai/api/dsl')
         .to_return(status: ERROR_RESPONSE_CODE, body: response_body)
@@ -64,14 +64,16 @@ RSpec.describe Tasks::DimensionsQueryService do
       expect { service.query_dimensions }.to raise_error(Tasks::DimensionsQueryService::DimensionsPublicationQueryError)
 
       # Check if the error message has been logged
-      # Expecting the error message to be logged 6 times, once for the initial error and 5 times for the retries
-      expect(Rails.logger).to have_received(:error).with("HTTParty error during Dimensions API query: Failed to retrieve UNC affiliated articles from dimensions. Status code #{ERROR_RESPONSE_CODE}, response body: #{response_body}").exactly(6).times
+      # Expecting the error message to be logged 5 times for each failure
+      expect(Rails.logger).to have_received(:error).with("HTTParty error during Dimensions API query: Failed to retrieve UNC affiliated articles from dimensions. Status code #{ERROR_RESPONSE_CODE}, response body: #{response_body}").exactly(5).times
+      expect(Rails.logger).to have_received(:warn).with(/Retrying query after \d+ seconds/).exactly(5).times
+      # Log another unique error message for the final failure
+      expect(Rails.logger).to have_received(:error).with("Query failed after #{Tasks::DimensionsQueryService::MAX_RETRIES} attempts. Exiting.").once
     end
 
     it 'raises and logs an error if the query returns another 403 status code after a token refresh' do
       allow(Rails.logger).to receive(:error)
       allow(Rails.logger).to receive(:warn)
-
       unauthorized_status = UNAUTHORIZED_CODE
       unauthorized_body = UNAUTHORIZED_MESSAGE
       stub_request(:post, 'https://app.dimensions.ai/api/dsl')
@@ -82,11 +84,14 @@ RSpec.describe Tasks::DimensionsQueryService do
       expect(Rails.logger).to have_received(:warn).with('Received 403 Forbidden error. Retrying after token refresh.').once
 
       # Check if the error message has been logged
-      # Expecting the error message to be logged 6 times, once for the initial error and 5 times for the retries
-      expect(Rails.logger).to have_received(:error).with('HTTParty error during Dimensions API query: Retry attempted after token refresh failed with 403 Forbidden error').exactly(6).times
+       # Expecting the error message to be logged 5 times for each failure
+      expect(Rails.logger).to have_received(:error).with('HTTParty error during Dimensions API query: Retry attempted after token refresh failed with 403 Forbidden error.').exactly(5).times
+      expect(Rails.logger).to have_received(:warn).with(/Retrying query after \d+ seconds/).exactly(5).times
+       # Log another unique error message for the final failure
+      expect(Rails.logger).to have_received(:error).with("Query failed after #{Tasks::DimensionsQueryService::MAX_RETRIES} attempts. Exiting.").once
     end
 
-    # Simulating token reretrieval and retry after expiration during query
+    # Simulating token re-retrieval and retry after expiration during query
     it 'refreshes the token and retries if query returns a 403' do
 
       allow(Rails.logger).to receive(:warn)

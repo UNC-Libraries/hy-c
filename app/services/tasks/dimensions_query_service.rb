@@ -10,13 +10,10 @@ module Tasks
     EARLIEST_DATE = '1970-01-01'
     MAX_RETRIES = 5
 
-    def query_dimensions(page_size: 100, date_inserted: nil)
-      date_inserted ||= EARLIEST_DATE
+    def query_dimensions(page_size: 100, date_inserted: EARLIEST_DATE)
       # Initialized as a set to avoid retrieving duplicate publications from Dimensions if the page size exceeds the number of publications on the last page.
       all_publications = Set.new
       token = retrieve_token
-      search_clauses = generate_search_clauses(date_inserted)
-      return_fields = generate_return_fields
 
       cursor = 0
       retries = 0
@@ -25,7 +22,7 @@ module Tasks
       retry_attempted = false
       loop do
         begin
-          query_string = generate_query_string(search_clauses, return_fields, page_size, cursor)
+          query_string = generate_query_string(date_inserted, page_size, cursor)
           Rails.logger.info("Sending query ##{query_count += 1} to Dimensions API: #{query_string}")
           response = post_query(query_string, token)
           if response.success?
@@ -44,28 +41,30 @@ module Tasks
               redo
             else
               # If the token has expired and retry has already been attempted, raise a specific error
-              raise DimensionsPublicationQueryError, 'Retry attempted after token refresh failed with 403 Forbidden error'
+              raise DimensionsPublicationQueryError, 'Retry attempted after token refresh failed with 403 Forbidden error.'
             end
           else
             raise DimensionsPublicationQueryError, "Failed to retrieve UNC affiliated articles from dimensions. Status code #{response.code}, response body: #{response.body}"
           end
         rescue HTTParty::Error, StandardError => e
-          handle_query_error(e, retries)
           retries += 1
+          query_needs_retry?(e, retries)
           retry if retries <= MAX_RETRIES
           raise e
         end
       end
-      # end
       return all_publications.to_a
     end
 
-    def handle_query_error(error, retries)
-      Rails.logger.error("HTTParty error during Dimensions API query: #{error.message}")
-      if retries < MAX_RETRIES
-        Rails.logger.warn("Retrying query after #{2**retries} seconds. (Attempt #{retries + 1} of #{MAX_RETRIES})")
+    def query_needs_retry?(e, retries)
+      if retries <= MAX_RETRIES
+        Rails.logger.error("HTTParty error during Dimensions API query: #{e.message}")
+        Rails.logger.warn("Retrying query after #{2**retries} seconds. (Attempt #{retries} of #{MAX_RETRIES})")
         sleep(2**retries) # Using base 2 for exponential backoff
+        return true
       end
+      Rails.logger.error("Query failed after #{MAX_RETRIES} attempts. Exiting.")
+      false
     end
 
     # Extra headers to avoid 400 bad request error
@@ -150,7 +149,7 @@ module Tasks
        # Log the DOI and title of each publication that was removed
       removed_publications_with_doi = publications_with_doi - new_publications_with_doi
       removed_publications_with_doi.each do |pub|
-        Rails.logger.info("Removed duplicate publication with DOI: #{pub['doi']} and title: #{pub['title']}")
+        Rails.logger.debug("Removed duplicate publication with DOI: #{pub['doi']} and title: #{pub['title']}")
       end
 
       # Removing publications that have a matching PMID, PMCID, or title in Solr
@@ -166,16 +165,10 @@ module Tasks
       new_publications
     end
 
-    def generate_search_clauses(date_inserted)
-      ['where type = "article"', "date_inserted >= \"#{date_inserted}\""].join(' and ')
-    end
-
-    def generate_return_fields
-      ['basics', 'extras', 'abstract', 'issn', 'publisher', 'journal_title_raw', 'linkout'].join(' + ')
-    end
-
     # Query with paramaters to retrieve publications related to UNC
-    def generate_query_string(search_clauses, return_fields, page_size, cursor)
+    def generate_query_string(date_inserted, page_size, cursor)
+      search_clauses = ['where type = "article"', "date_inserted >= \"#{date_inserted}\""].join(' and ')
+      return_fields = ['basics', 'extras', 'abstract', 'issn', 'publisher', 'journal_title_raw', 'linkout'].join(' + ')
       <<~QUERY
         search publications #{search_clauses} in raw_affiliations
         for """
