@@ -48,8 +48,7 @@ module Tasks
           end
         rescue HTTParty::Error, StandardError => e
           retries += 1
-          query_needs_retry?(e, retries)
-          retry if retries <= MAX_RETRIES
+          retry if query_needs_retry?(e, retries)
           raise e
         end
       end
