@@ -89,7 +89,7 @@ RSpec.describe Tasks::DimensionsReportingService do
       report = service.generate_report
       headers = report[:headers]
       expect(report[:subject]).to eq('Dimensions Ingest Report for May 21, 2024 at 10:00 AM UTC')
-      expect(headers[:reporting_message]).to eq("Reporting publications from dimensions ingest on May 21, 2024 at 10:00 AM UTC by admin.")
+      expect(headers[:reporting_message]).to eq('Reporting publications from dimensions ingest on May 21, 2024 at 10:00 AM UTC by admin.')
       expect(headers[:admin_set]).to eq('Admin Set: Open_Access_Articles_and_Book_Chapters')
       expect(headers[:total_publications]).to eq("Total Publications: #{test_publications.length}")
       expect(headers[:successfully_ingested]).to eq("\nSuccessfully Ingested: (#{successful_publication_sample[:publications].length} Publications)")

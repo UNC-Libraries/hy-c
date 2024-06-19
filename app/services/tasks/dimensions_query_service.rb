@@ -16,7 +16,8 @@ module Tasks
       token = retrieve_token
 
       cursor = 0
-      retries = 0
+      # Wrapped value for tracking retries inside of an array to allow for pass by reference in the query_needs_retry? method
+      retries = [0]
       query_count = 0
       # Flag to track if retry has been attempted after token refresh
       retry_attempted = false
@@ -47,7 +48,6 @@ module Tasks
             raise DimensionsPublicationQueryError, "Failed to retrieve UNC affiliated articles from dimensions. Status code #{response.code}, response body: #{response.body}"
           end
         rescue HTTParty::Error, StandardError => e
-          retries += 1
           retry if query_needs_retry?(e, retries)
           raise e
         end
@@ -56,10 +56,11 @@ module Tasks
     end
 
     def query_needs_retry?(e, retries)
-      if retries <= MAX_RETRIES
+      retries[0] += 1
+      if retries[0] <= MAX_RETRIES
         Rails.logger.error("HTTParty error during Dimensions API query: #{e.message}")
-        Rails.logger.warn("Retrying query after #{2**retries} seconds. (Attempt #{retries} of #{MAX_RETRIES})")
-        sleep(2**retries) # Using base 2 for exponential backoff
+        Rails.logger.warn("Retrying query after #{2**retries[0]} seconds. (Attempt #{retries[0]} of #{MAX_RETRIES})")
+        sleep(2**retries[0]) # Using base 2 for exponential backoff
         return true
       end
       Rails.logger.error("Query failed after #{MAX_RETRIES} attempts. Exiting.")
