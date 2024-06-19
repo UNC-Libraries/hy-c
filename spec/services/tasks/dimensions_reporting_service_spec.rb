@@ -5,14 +5,14 @@ RSpec.describe Tasks::DimensionsReportingService do
   let(:config) {
     {
       'admin_set' => 'Open_Access_Articles_and_Book_Chapters',
-      'depositor_onyen' => 'admin'
+      'depositor_onyen' => ENV['DIMENSIONS_INGEST_DEPOSITOR_ONYEN']
     }
   }
   let(:dimensions_ingest_test_fixture) do
     File.read(File.join(Rails.root, '/spec/fixtures/files/dimensions_ingest_test_fixture.json'))
   end
 
-  let(:admin) { FactoryBot.create(:admin) }
+  let(:admin) { FactoryBot.create(:admin, uid: "#{ENV['DIMENSIONS_INGEST_DEPOSITOR_ONYEN']}") }
   let(:admin_set) do
     FactoryBot.create(:admin_set, title: ['Open_Access_Articles_and_Book_Chapters'])
   end
@@ -59,7 +59,7 @@ RSpec.describe Tasks::DimensionsReportingService do
     workflow
     workflow_state
     allow(Time).to receive(:now).and_return(fixed_time)
-    allow(User).to receive(:find_by).with(uid: 'admin').and_return(admin)
+    allow(User).to receive(:find_by).with(uid: ENV['DIMENSIONS_INGEST_DEPOSITOR_ONYEN']).and_return(admin)
     allow(AdminSet).to receive(:where).with(title: 'Open_Access_Articles_and_Book_Chapters').and_return([admin_set])
     stub_request(:head, 'https://test-url.com/')
       .to_return(status: 200, headers: { 'Content-Type' => 'application/pdf' })
@@ -81,7 +81,7 @@ RSpec.describe Tasks::DimensionsReportingService do
       report = service.generate_report
       headers = report[:headers]
       expect(report[:subject]).to eq('Dimensions Ingest Report for May 21, 2024 at 10:00 AM UTC')
-      expect(headers[:reporting_message]).to eq('Reporting publications from dimensions ingest on May 21, 2024 at 10:00 AM UTC by admin.')
+      expect(headers[:reporting_message]).to eq("Reporting publications from dimensions ingest on May 21, 2024 at 10:00 AM UTC by #{ENV['DIMENSIONS_INGEST_DEPOSITOR_ONYEN']}.")
       expect(headers[:admin_set]).to eq('Admin Set: Open_Access_Articles_and_Book_Chapters')
       expect(headers[:total_publications]).to eq("Total Publications: #{test_publications.length}")
       expect(headers[:successfully_ingested]).to eq("\nSuccessfully Ingested: (#{successful_publication_sample[:publications].length} Publications)")

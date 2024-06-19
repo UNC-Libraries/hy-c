@@ -5,13 +5,13 @@ RSpec.describe Tasks::DimensionsIngestService do
   let(:config) {
     {
       'admin_set' => 'Open_Access_Articles_and_Book_Chapters',
-      'depositor_onyen' => 'admin'
+      'depositor_onyen' => ENV['DIMENSIONS_INGEST_DEPOSITOR_ONYEN']
     }
   }
   let(:dimensions_ingest_test_fixture) do
     File.read(File.join(Rails.root, '/spec/fixtures/files/dimensions_ingest_test_fixture.json'))
   end
-  let(:admin) { FactoryBot.create(:admin) }
+  let(:admin) { FactoryBot.create(:admin, uid: "#{ENV['DIMENSIONS_INGEST_DEPOSITOR_ONYEN']}") }
   let(:service) { described_class.new(config) }
 
   let(:admin_set) do
@@ -38,7 +38,7 @@ RSpec.describe Tasks::DimensionsIngestService do
     permission_template
     workflow
     workflow_state
-    allow(User).to receive(:find_by).with(uid: 'admin').and_return(admin)
+    allow(User).to receive(:find_by).with(uid: ENV['DIMENSIONS_INGEST_DEPOSITOR_ONYEN']).and_return(admin)
     allow(AdminSet).to receive(:where).with(title: 'Open_Access_Articles_and_Book_Chapters').and_return([admin_set])
     stub_request(:head, 'https://test-url.com/')
       .to_return(status: 200, headers: { 'Content-Type' => 'application/pdf' })

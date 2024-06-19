@@ -7,7 +7,7 @@ class DimensionsReportMailerPreview < ActionMailer::Preview
     test_publications = JSON.parse(dimensions_ingest_test_fixture)['publications']
     config = {
         'admin_set' => 'default',
-        'depositor_onyen' => 'admin'
+        'depositor_onyen' => ENV['DIMENSIONS_INGEST_DEPOSITOR_ONYEN']
       }
 
     dimensions_ingest_service = Tasks::DimensionsIngestService.new(config)

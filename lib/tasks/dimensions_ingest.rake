@@ -23,7 +23,7 @@ namespace :dimensions do
     end
     config = {
       'admin_set' => 'Open_Acess_Articles_and_Book_Chapters',
-      'depositor_onyen' => 'admin'
+      'depositor_onyen' => ENV['DIMENSIONS_INGEST_DEPOSITOR_ONYEN'],
     }
     # Query and ingest publications
     query_service = Tasks::DimensionsQueryService.new
