@@ -3,7 +3,7 @@ namespace :dimensions do
   DIMENSIONS_URL = 'https://app.dimensions.ai/api/'
 
   desc 'Ingest metadata and publications from Dimensions'
-  task ingest_publications: :environment do
+  task :ingest_publications, [:admin_set] => :environment do |t, args|
     Rails.logger.info "[#{Time.now}] starting dimensions publications ingest"
 
     # Read the last run time from a file
@@ -18,7 +18,7 @@ namespace :dimensions do
     end
 
     config = {
-      'admin_set' => 'Open_Acess_Articles_and_Book_Chapters',
+      'admin_set' => args[:admin_set],
       'depositor_onyen' => ENV['DIMENSIONS_INGEST_DEPOSITOR_ONYEN'],
     }
 
