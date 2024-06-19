@@ -10,7 +10,9 @@ module Tasks
     EARLIEST_DATE = '1970-01-01'
     MAX_RETRIES = 5
 
-    def query_dimensions(page_size: 100, date_inserted: EARLIEST_DATE)
+    def query_dimensions(options = {})
+      date_inserted = options[:date_inserted] || EARLIEST_DATE
+      page_size = options[:page_size] || 100
       # Initialized as a set to avoid retrieving duplicate publications from Dimensions if the page size exceeds the number of publications on the last page.
       all_publications = Set.new
       token = retrieve_token
