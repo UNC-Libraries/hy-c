@@ -6,8 +6,7 @@ namespace :dimensions do
   task :ingest_publications, [:data_storage, :depositor_onyen] => :environment do |t, args|
     data_storage = args[:data_storage]
     depositor_onyen = args[:depositor_onyen]
-
-    Rails.logger.info "[#{Time.now}] starting dimensions publications ingest"
+    puts "[#{Time.now}] starting dimensions publications ingest"
 
     # Read the last run time from a file
     file_path = File.join(data_storage, 'last_dimensions_ingest_run.txt')
@@ -15,9 +14,9 @@ namespace :dimensions do
     formatted_last_run_time = last_run_time ? last_run_time.strftime('%Y-%m-%d') : nil
 
     if last_run_time
-      Rails.logger.info "Last ingest run was at: #{last_run_time}"
+      puts "Last ingest run was at: #{last_run_time}"
     else
-      Rails.logger.info 'No previous run time found. Starting from default date. (1970-01-01)'
+      puts 'No previous run time found. Starting from default date. (1970-01-01)'
     end
 
     config = {
@@ -33,12 +32,12 @@ namespace :dimensions do
 
     begin
       DimensionsReportMailer.dimensions_report_email(report).deliver_now
-      Rails.logger.info 'Dimensions ingest report email sent successfully.'
-      Rails.logger.info "Ingested Publications (Total #{publications[:ingested].count}): #{publications[:ingested].map { |pub| pub['id'] }}"
-      Rails.logger.info "Failed Publication Ingest (Total #{publications[:failed].count}): #{publications[:failed].map { |pub| pub['id'] }}"
-      Rails.logger.info "[#{Time.now}] completed dimensions publications ingest"
+      puts 'Dimensions ingest report email sent successfully.'
+      puts "Ingested Publications (Total #{publications[:ingested].count}): #{publications[:ingested].map { |pub| pub['id'] }}"
+      puts "Failed Publication Ingest (Total #{publications[:failed].count}): #{publications[:failed].map { |pub| pub['id'] }}"
+      puts "[#{Time.now}] completed dimensions publications ingest"
     rescue StandardError => e
-      Rails.logger.error "Failed to send email: #{e.message}"
+      puts "Failed to send email: #{e.message}"
     end
 
     # Write the last run time to a file
