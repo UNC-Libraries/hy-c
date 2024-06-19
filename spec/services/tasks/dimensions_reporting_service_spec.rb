@@ -76,6 +76,14 @@ RSpec.describe Tasks::DimensionsReportingService do
     ingested_publications
   end
 
+    # Override the depositor onyen for the duration of the test
+  around do |example|
+    dimensions_ingest_depositor_onyen = ENV['DIMENSIONS_INGEST_DEPOSITOR_ONYEN']
+    ENV['DIMENSIONS_INGEST_DEPOSITOR_ONYEN'] = 'admin'
+    example.run
+    ENV['DIMENSIONS_INGEST_DEPOSITOR_ONYEN'] = dimensions_ingest_depositor_onyen
+  end
+
   describe '#generate_report' do
     it 'generates a report for ingest dimensions publications' do
       report = service.generate_report

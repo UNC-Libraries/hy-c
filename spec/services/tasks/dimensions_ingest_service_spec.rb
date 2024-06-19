@@ -52,6 +52,14 @@ RSpec.describe Tasks::DimensionsIngestService do
     allow(CharacterizeJob).to receive(:perform_later)
   end
 
+    # Override the depositor onyen for the duration of the test
+  around do |example|
+    dimensions_ingest_depositor_onyen = ENV['DIMENSIONS_INGEST_DEPOSITOR_ONYEN']
+    ENV['DIMENSIONS_INGEST_DEPOSITOR_ONYEN'] = 'admin'
+    example.run
+    ENV['DIMENSIONS_INGEST_DEPOSITOR_ONYEN'] = dimensions_ingest_depositor_onyen
+  end
+
   describe '#initialize' do
     context 'when admin set and depositor are found' do
       it 'successfully initializes the service' do
