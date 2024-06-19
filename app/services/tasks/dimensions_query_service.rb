@@ -32,7 +32,8 @@ module Tasks
             total_count = response['_stats']['total_count']
             cursor += page_size
             # End the loop if the cursor exceeds the total count
-            break if cursor >= total_count
+            # WIP: Break if cursor is greater than or equal to 100 for testing purposes
+            break if cursor >= total_count || cursor >= 100
           elsif response.code == 403
             unless retry_attempted
               # If the token has expired, retrieve a new token and try the query again
@@ -88,7 +89,9 @@ module Tasks
 
     def process_response(response)
       parsed_body = JSON.parse(response.body)
-      publications = deduplicate_publications(parsed_body['publications'])
+      # WIP: Do not deduplicate publications for testing purposes
+      # publications = deduplicate_publications(parsed_body['publications'])
+      publications = parsed_body['publications']
       Rails.logger.info("Dimensions API returned #{parsed_body['publications'].size} publications.")
       Rails.logger.info("Unique Publications after Deduplicating: #{publications.size}.")
       publications
