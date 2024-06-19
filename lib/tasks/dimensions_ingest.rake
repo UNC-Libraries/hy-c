@@ -35,7 +35,7 @@ namespace :dimensions do
       Rails.logger.info "Failed Publication Ingest (Total #{publications[:failed].count}): #{publications[:failed].map { |pub| pub['id'] }}"
       Rails.logger.info "[#{Time.now}] completed dimensions publications ingest"
     rescue StandardError => e
-      Rails.logger.info "Failed to send email: #{e.message}"
+      Rails.logger.error "Failed to send email: #{e.message}"
     end
 
     # Write the last run time to a file
