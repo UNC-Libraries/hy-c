@@ -5,13 +5,13 @@ RSpec.describe Tasks::DimensionsIngestService do
   let(:config) {
     {
       'admin_set' => 'Open_Access_Articles_and_Book_Chapters',
-      'depositor_onyen' => 'admin'
+      'depositor_onyen' => ENV['DIMENSIONS_INGEST_DEPOSITOR_ONYEN']
     }
   }
   let(:dimensions_ingest_test_fixture) do
     File.read(File.join(Rails.root, '/spec/fixtures/files/dimensions_ingest_test_fixture.json'))
   end
-  let(:admin) { FactoryBot.create(:admin) }
+  let(:admin) { FactoryBot.create(:admin, uid: 'admin') }
   let(:service) { described_class.new(config) }
 
   let(:admin_set) do
@@ -50,6 +50,14 @@ RSpec.describe Tasks::DimensionsIngestService do
     allow(RegisterToLongleafJob).to receive(:perform_later).and_return(nil)
     # stub FITS characterization
     allow(CharacterizeJob).to receive(:perform_later)
+  end
+
+    # Override the depositor onyen for the duration of the test
+  around do |example|
+    dimensions_ingest_depositor_onyen = ENV['DIMENSIONS_INGEST_DEPOSITOR_ONYEN']
+    ENV['DIMENSIONS_INGEST_DEPOSITOR_ONYEN'] = 'admin'
+    example.run
+    ENV['DIMENSIONS_INGEST_DEPOSITOR_ONYEN'] = dimensions_ingest_depositor_onyen
   end
 
   describe '#initialize' do
