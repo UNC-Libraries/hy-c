@@ -42,6 +42,8 @@ module Tasks
             # WIP: Break if cursor is greater than or equal to 100 for testing purposes
             break if cursor >= total_count || cursor >= 100
             # break if cursor >= total_count
+            # Reset the retry count if the query is successful
+            retries[0] = 0
           elsif response.code == 403
             unless retry_attempted
               # If the token has expired, retrieve a new token and try the query again
