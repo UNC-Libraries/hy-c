@@ -179,7 +179,7 @@ module Tasks
     # Query with paramaters to retrieve publications related to UNC
     def generate_query_string(start_date, end_date, page_size, cursor)
       search_clauses = ['where type = "article"', "date >= \"#{start_date}\"", "date >= \"#{end_date}\""].join(' and ')
-      return_fields = ['basics', 'extras', 'abstract', 'issn', 'publisher', 'journal_title_raw', 'linkout'].join(' + ')
+      return_fields = ['basics', 'extras', 'abstract', 'issn', 'publisher', 'journal_title_raw', 'linkout', 'concepts'].join(' + ')
       <<~QUERY
         search publications #{search_clauses} in raw_affiliations
         for """

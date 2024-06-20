@@ -265,6 +265,7 @@ RSpec.describe Tasks::DimensionsIngestService do
         expect(author[:other_affiliation]).to eq(expected_author['other_affiliation'])
         expect(author[:orcid]).to eq(["https://orcid.org/#{expected_author['orcid'][0]}"])
       end
+      expect(article.keyword).to eq(publication['concepts'])
       expect(article.abstract).to eq([publication['abstract']])
       expect(article.date_issued).to eq('2022-10-01')
       expect(article.dcmi_type).to match_array(['http://purl.org/dc/dcmitype/Text'])
@@ -281,11 +282,13 @@ RSpec.describe Tasks::DimensionsIngestService do
       expect(article.visibility).to eq('restricted')
     end
 
-    it 'creates an article with a default abstract if the abstract is missing' do
+    it 'creates an article with a default abstract and keywords if they are missing' do
       publication = JSON.parse(dimensions_ingest_test_fixture_metadata_focus)['publications'].first
       publication['abstract'] = nil
+      publication['concepts'] = nil
       article = service.article_with_metadata(publication)
       expect(article.abstract).to eq(['N/A'])
+      expect(article.keyword).to eq(['N/A'])
     end
   end
 end
