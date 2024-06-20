@@ -25,7 +25,7 @@ namespace :dimensions do
     # Query and ingest publications
     query_service = Tasks::DimensionsQueryService.new
     ingest_service = Tasks::DimensionsIngestService.new(config)
-    publications = ingest_service.ingest_publications(query_service.query_dimensions(date_inserted: formatted_last_run_time))
+    publications = ingest_service.ingest_publications(query_service.query_dimensions(date: formatted_last_run_time))
     report = Tasks::DimensionsReportingService.new(publications).generate_report
 
     begin

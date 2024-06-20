@@ -11,7 +11,7 @@ module Tasks
     MAX_RETRIES = 5
 
     def query_dimensions(options = {})
-      date_inserted = options[:date_inserted] || EARLIEST_DATE
+      date = options[:date] || EARLIEST_DATE
       page_size = options[:page_size] || 100
       # Initialized as a set to avoid retrieving duplicate publications from Dimensions if the page size exceeds the number of publications on the last page.
       all_publications = Set.new
@@ -25,7 +25,7 @@ module Tasks
       retry_attempted = false
       loop do
         begin
-          query_string = generate_query_string(date_inserted, page_size, cursor)
+          query_string = generate_query_string(date, page_size, cursor)
           Rails.logger.info("Sending query ##{query_count += 1} to Dimensions API: #{query_string}")
           response = post_query(query_string, token)
           if response.success?
@@ -171,8 +171,8 @@ module Tasks
     end
 
     # Query with paramaters to retrieve publications related to UNC
-    def generate_query_string(date_inserted, page_size, cursor)
-      search_clauses = ['where type = "article"', "date_inserted >= \"#{date_inserted}\""].join(' and ')
+    def generate_query_string(date, page_size, cursor)
+      search_clauses = ['where type = "article"', "date >= \"#{date}\""].join(' and ')
       return_fields = ['basics', 'extras', 'abstract', 'issn', 'publisher', 'journal_title_raw', 'linkout'].join(' + ')
       <<~QUERY
         search publications #{search_clauses} in raw_affiliations
