@@ -71,7 +71,7 @@ module Tasks
       article.creators_attributes = publication['authors'].map.with_index { |author, index| [index, author_to_hash(author, index)] }.to_h
       article.funder = publication['funders']&.map { |funder| funder['name'] }
       article.date_issued = publication['date']
-      article.abstract = [publication['abstract']].compact.presence
+      article.abstract = [publication['abstract']].compact.presence || ['N/A']
       article.resource_type = ['Article']
       article.publisher = [publication['publisher']].compact.presence
     end

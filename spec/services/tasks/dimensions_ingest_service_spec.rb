@@ -280,6 +280,12 @@ RSpec.describe Tasks::DimensionsIngestService do
       expect(article.rights_statement_label).to eq('In Copyright')
       expect(article.visibility).to eq('restricted')
     end
-  end
 
+    it 'creates an article with a default abstract if the abstract is missing' do
+      publication = JSON.parse(dimensions_ingest_test_fixture_metadata_focus)['publications'].first
+      publication['abstract'] = nil
+      article = service.article_with_metadata(publication)
+      expect(article.abstract).to eq(['N/A'])
+    end
+  end
 end
