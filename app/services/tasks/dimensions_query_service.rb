@@ -7,12 +7,17 @@ module Tasks
     class DimensionsPublicationQueryError < StandardError
     end
     DIMENSIONS_URL = 'https://app.dimensions.ai/api'
-    EARLIEST_DATE = '1970-01-01'
     MAX_RETRIES = 5
 
     def query_dimensions(options = {})
-      date = options[:date] || EARLIEST_DATE
+      start_date = options[:start_date]
+      end_date = options[:end_date]
       page_size = options[:page_size] || 100
+
+      unless end_date and start_date
+        raise ArgumentError, 'Both start_date and end_date must be provided.'
+      end
+
       # Initialized as a set to avoid retrieving duplicate publications from Dimensions if the page size exceeds the number of publications on the last page.
       all_publications = Set.new
       token = retrieve_token
@@ -25,7 +30,7 @@ module Tasks
       retry_attempted = false
       loop do
         begin
-          query_string = generate_query_string(date, page_size, cursor)
+          query_string = generate_query_string(start_date, end_date, page_size, cursor)
           Rails.logger.info("Sending query ##{query_count += 1} to Dimensions API: #{query_string}")
           response = post_query(query_string, token)
           if response.success?
@@ -36,6 +41,7 @@ module Tasks
             # End the loop if the cursor exceeds the total count
             # WIP: Break if cursor is greater than or equal to 100 for testing purposes
             break if cursor >= total_count || cursor >= 100
+            # break if cursor >= total_count
           elsif response.code == 403
             unless retry_attempted
               # If the token has expired, retrieve a new token and try the query again
@@ -171,8 +177,8 @@ module Tasks
     end
 
     # Query with paramaters to retrieve publications related to UNC
-    def generate_query_string(date, page_size, cursor)
-      search_clauses = ['where type = "article"', "date >= \"#{date}\""].join(' and ')
+    def generate_query_string(start_date, end_date, page_size, cursor)
+      search_clauses = ['where type = "article"', "date >= \"#{start_date}\"", "date >= \"#{end_date}\""].join(' and ')
       return_fields = ['basics', 'extras', 'abstract', 'issn', 'publisher', 'journal_title_raw', 'linkout'].join(' + ')
       <<~QUERY
         search publications #{search_clauses} in raw_affiliations

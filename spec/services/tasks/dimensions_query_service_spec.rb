@@ -6,13 +6,11 @@ RSpec.describe Tasks::DimensionsQueryService do
   ERROR_RESPONSE_CODE = 500
   UNAUTHORIZED_CODE = 403
   UNAUTHORIZED_MESSAGE = 'Unauthorized'
+  TEST_START_DATE = '1970-01-01'
+  TEST_END_DATE = '2021-01-01'
 
   let(:dimensions_query_response_fixture) do
     File.read(File.join(Rails.root, '/spec/fixtures/files/dimensions_query_response.json'))
-  end
-
-  let(:dimensions_query_response_fixture_non_doi) do
-    File.read(File.join(Rails.root, 'spec/fixtures/files/dimensions_query_response_non_doi.json'))
   end
 
   let(:service) { described_class.new }
@@ -61,7 +59,7 @@ RSpec.describe Tasks::DimensionsQueryService do
       stub_request(:post, 'https://app.dimensions.ai/api/dsl')
         .to_return(status: ERROR_RESPONSE_CODE, body: response_body)
 
-      expect { service.query_dimensions }.to raise_error(Tasks::DimensionsQueryService::DimensionsPublicationQueryError)
+      expect { publications = service.query_dimensions(start_date: TEST_START_DATE, end_date: TEST_END_DATE) }.to raise_error(Tasks::DimensionsQueryService::DimensionsPublicationQueryError)
 
       # Check if the error message has been logged
       # Expecting the error message to be logged 5 times for each failure
@@ -79,7 +77,7 @@ RSpec.describe Tasks::DimensionsQueryService do
       stub_request(:post, 'https://app.dimensions.ai/api/dsl')
         .to_return({status: unauthorized_status, body: unauthorized_body}, {status: unauthorized_status, body: unauthorized_body})
 
-      expect { service.query_dimensions }.to raise_error(Tasks::DimensionsQueryService::DimensionsPublicationQueryError)
+      expect { publications = service.query_dimensions(start_date: TEST_START_DATE, end_date: TEST_END_DATE) }.to raise_error(Tasks::DimensionsQueryService::DimensionsPublicationQueryError)
       expect(WebMock).to have_requested(:post, 'https://app.dimensions.ai/api/auth').times(2)
       expect(Rails.logger).to have_received(:warn).with('Received 403 Forbidden error. Retrying after token refresh.').once
 
@@ -119,7 +117,7 @@ RSpec.describe Tasks::DimensionsQueryService do
                  { status: 200, body: dimensions_pagination_query_responses[1], headers: { 'Content-Type' => 'application/json' }})
       .times(1)
 
-      publications = service.query_dimensions
+      publications = service.query_dimensions(start_date: TEST_START_DATE, end_date: TEST_END_DATE)
       expect(WebMock).to have_requested(:post, 'https://app.dimensions.ai/api/dsl').times(3)
       expect(WebMock).to have_requested(:post, 'https://app.dimensions.ai/api/auth').times(2)
       expect(Rails.logger).to have_received(:warn).with('Received 403 Forbidden error. Retrying after token refresh.').once
@@ -154,7 +152,7 @@ RSpec.describe Tasks::DimensionsQueryService do
           .to_return(status: 200, body: response_body, headers: { 'Content-Type' => 'application/json' })
       end
 
-      publications = service.query_dimensions
+      publications = service.query_dimensions(start_date: TEST_START_DATE, end_date: TEST_END_DATE)
 
       # Combine the publications from all pages for comparison
       expected_publications = dimensions_pagination_query_responses.flat_map { |response| JSON.parse(response)['publications'] }
@@ -168,33 +166,22 @@ RSpec.describe Tasks::DimensionsQueryService do
     end
 
     it 'returns unc affiliated articles that have dois' do
+      # Combining the two fixtures to test for articles with and without dois
       stub_request(:post, 'https://app.dimensions.ai/api/dsl')
       .with(
           body: /skip 0/,
           headers: { 'Content-Type' => 'application/json' })
           .to_return(status: 200, body: dimensions_query_response_fixture, headers: { 'Content-Type' => 'application/json' })
 
-      publications = service.query_dimensions
+      publications = service.query_dimensions(start_date: TEST_START_DATE, end_date: TEST_END_DATE)
       expected_publications = JSON.parse(dimensions_query_response_fixture)['publications']
-      expect(publications).to eq(expected_publications)
-    end
-
-    it 'returns unc affiliated articles that do not have dois if specified' do
-      stub_request(:post, 'https://app.dimensions.ai/api/dsl')
-      .with(
-          body: /skip 0/,
-          headers: { 'Content-Type' => 'application/json' })
-          .to_return(status: 200, body: dimensions_query_response_fixture_non_doi, headers: { 'Content-Type' => 'application/json' })
-
-      publications = service.query_dimensions
-      expected_publications = JSON.parse(dimensions_query_response_fixture_non_doi)['publications']
       expect(publications).to eq(expected_publications)
     end
   end
 
   describe '#deduplicate_publications' do
-    let(:dimensions_publications) { JSON.parse(dimensions_query_response_fixture)['publications'] }
-    let(:dimensions_publications_without_dois) { JSON.parse(dimensions_query_response_fixture_non_doi)['publications'] }
+    let(:dimensions_publications) { JSON.parse(dimensions_query_response_fixture)['publications'].reject { |pub| pub['doi'].nil? } }
+    let(:dimensions_publications_without_dois) { JSON.parse(dimensions_query_response_fixture)['publications'].reject { |pub| pub['doi'] } }
 
     it 'removes publications with duplicate dois' do
       # Create two documents with dois that are the same as the first two publications in the test fixture

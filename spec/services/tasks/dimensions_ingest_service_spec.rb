@@ -258,8 +258,6 @@ RSpec.describe Tasks::DimensionsIngestService do
       expect(article.valid?).to be true
       expect(article.title).to eq(['Patient Perspectives on Performance of a Smartphone App for Atrial FibrillationSelf-Management'])
       all_creators_names = article.creators.map { |creator| creator.attributes['name'] }
-      puts "Inspecting all_creators: #{all_creators_names}"
-      puts "Inspecting expected_author_metadata: #{expected_author_metadata.map { |author| author['name'] }}"
       expected_author_metadata.each_with_index do |expected_author, index|
         author = article.creators.find { |creator| creator.attributes['name'][0] == expected_author['name'] }
         expect(author).to be_present
