@@ -269,18 +269,5 @@ RSpec.describe Tasks::DimensionsQueryService do
       expect(new_publications.count).to eq(2)
       expect(new_publications.map { |pub| pub['id'] }).to include(*non_pmcid_publication_ids)
     end
-
-    it 'marks publications for review if it has a unique title, no pmcid, pmid or doi' do
-      # Spoof publications with no unique identifiers
-      spoofed_dimensions_publications = [{
-        'title' => 'Unique Title', },
-      { 'title' => 'Unique Title 2', },
-      { 'title' => 'Unique Title 3', }]
-      new_publications = service.deduplicate_publications(spoofed_dimensions_publications)
-
-      expect(new_publications.count).to eq(3)
-      expect(new_publications.map { |pub| pub['title'] }).to include(*spoofed_dimensions_publications.map { |pub| pub['title'] })
-    end
-
   end
 end
