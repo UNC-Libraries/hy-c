@@ -103,15 +103,11 @@ module Tasks
         'orcid' => author['orcid'].present? ? "https://orcid.org/#{author['orcid'].first}" : '',
         'index' => (index + 1).to_s,
       }
-      # Add all affiliations to 'other_affiliation'
+      # Add first author affiliation to other affiliation array
       if author['affiliations'].present?
-        hash['other_affiliation'] = author['affiliations'].map { |affiliation| affiliation['raw_affiliation'] }
+        hash['other_affiliation'] = author['affiliations'][0]['raw_affiliation']
       end
       hash
-    end
-
-    def is_unc_affiliation(affiliation)
-      affiliation['id'] == UNC_GRID_ID || affiliation['raw_affiliation'].include?('UNC') || affiliation['raw_affiliation'].include?('University of North Carolina, Chapel Hill')
     end
 
     def format_publication_identifiers(publication)

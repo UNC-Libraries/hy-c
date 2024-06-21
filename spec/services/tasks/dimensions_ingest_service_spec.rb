@@ -248,7 +248,7 @@ RSpec.describe Tasks::DimensionsIngestService do
       expected_author_metadata = publication['authors'].map do |author|
         {
           'name' => "#{[author['last_name'], author['first_name']].compact.join(', ')}",
-          'other_affiliation' => author['affiliations'].map { |affiliation| affiliation['raw_affiliation'] },
+          'other_affiliation' => author['affiliations'][0]['raw_affiliation'],
           'orcid' => author['orcid']
         }
       end
@@ -262,7 +262,7 @@ RSpec.describe Tasks::DimensionsIngestService do
         author = article.creators.find { |creator| creator.attributes['name'][0] == expected_author['name'] }
         expect(author).to be_present
         expect(author[:name]).to eq([expected_author['name']])
-        expect(author[:other_affiliation]).to eq(expected_author['other_affiliation'])
+        expect(author[:other_affiliation]).to eq([expected_author['other_affiliation']])
         expect(author[:orcid]).to eq(["https://orcid.org/#{expected_author['orcid'][0]}"])
       end
       expect(article.keyword).to eq(publication['concepts'])
