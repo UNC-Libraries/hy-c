@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 # Preview all emails at http://localhost:3000/rails/mailers/dimensions_report_mailer
 class DimensionsReportMailerPreview < ActionMailer::Preview
+  TEST_START_DATE = '1970-01-01'
+  TEST_END_DATE = '2021-01-01'
   def dimensions_report_email
     # Ensuring template works with a report generated after an ingest with a test fixture
     dimensions_ingest_test_fixture =  File.read(File.join(Rails.root, '/spec/fixtures/files/dimensions_ingest_test_fixture.json'))
@@ -29,7 +31,7 @@ class DimensionsReportMailerPreview < ActionMailer::Preview
       pub.merge('error' => ['Test error', 'Test error message'])
     end
 
-    dimensions_reporting_service = Tasks::DimensionsReportingService.new(ingested_publications)
+    dimensions_reporting_service = Tasks::DimensionsReportingService.new(ingested_publications,TEST_START_DATE, TEST_END_DATE, FALSE)
     report = dimensions_reporting_service.generate_report
     DimensionsReportMailer.dimensions_report_email(report)
   end

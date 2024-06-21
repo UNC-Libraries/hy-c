@@ -2,6 +2,8 @@
 require 'rails_helper'
 
 RSpec.describe Tasks::DimensionsReportingService do
+  TEST_START_DATE = '1970-01-01'
+  TEST_END_DATE = '2021-01-01'
   let(:config) {
     {
       'admin_set' => 'Open_Access_Articles_and_Book_Chapters',
@@ -49,7 +51,7 @@ RSpec.describe Tasks::DimensionsReportingService do
     ingest_service.ingest_publications(test_publications)
   end
 
-  let(:service) { described_class.new(ingested_publications) }
+  let(:service) { described_class.new(ingested_publications, TEST_START_DATE, TEST_END_DATE, TRUE) }
 
 
   before do
@@ -89,11 +91,19 @@ RSpec.describe Tasks::DimensionsReportingService do
       report = service.generate_report
       headers = report[:headers]
       expect(report[:subject]).to eq('Dimensions Ingest Report for May 21, 2024 at 10:00 AM UTC')
-      expect(headers[:reporting_message]).to eq('Reporting publications from dimensions ingest on May 21, 2024 at 10:00 AM UTC by admin.')
+      expect(headers[:reporting_message]).to eq('Reporting publications from automated dimensions ingest on May 21, 2024 at 10:00 AM UTC by admin.')
+      expect(headers[:date_range]).to eq("Publication Date Range: #{TEST_START_DATE} to #{TEST_END_DATE}")
       expect(headers[:admin_set]).to eq('Admin Set: Open_Access_Articles_and_Book_Chapters')
       expect(headers[:total_publications]).to eq("Total Publications: #{test_publications.length}")
       expect(headers[:successfully_ingested]).to eq("\nSuccessfully Ingested: (#{successful_publication_sample[:publications].length} Publications)")
       expect(headers[:failed_to_ingest]).to eq("\nFailed to Ingest: (#{failing_publication_sample[:publications].length} Publications)")
+    end
+
+    it 'provides a different message for manually executed ingest' do
+      service = described_class.new(ingested_publications, TEST_START_DATE, TEST_END_DATE, FALSE)
+      report = service.generate_report
+      headers = report[:headers]
+      expect(headers[:reporting_message]).to eq('Reporting publications from manually executed dimensions ingest on May 21, 2024 at 10:00 AM UTC by admin.')
     end
   end
 

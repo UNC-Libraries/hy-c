@@ -3,6 +3,9 @@
 require 'rails_helper'
 
 RSpec.describe DimensionsReportMailer, type: :mailer do
+  TEST_START_DATE = '1970-01-01'
+  TEST_END_DATE = '2021-01-01'
+
   let(:config) {
     {
       'admin_set' => 'Open_Access_Articles_and_Book_Chapters',
@@ -47,7 +50,7 @@ RSpec.describe DimensionsReportMailer, type: :mailer do
   let(:ingested_publications) do
     ingest_service.ingest_publications(test_publications)
   end
-  let(:report) { Tasks::DimensionsReportingService.new(ingested_publications).generate_report }
+  let(:report) { Tasks::DimensionsReportingService.new(ingested_publications, TEST_START_DATE, TEST_END_DATE, TRUE).generate_report }
 
   before do
     ActiveFedora::Cleaner.clean!
@@ -108,6 +111,13 @@ RSpec.describe DimensionsReportMailer, type: :mailer do
                                  .and include(publication[:id])
                                  .and include(publication[:error])
       end
+    end
+
+    it 'renders a different message for manually executed ingest' do
+      service = Tasks::DimensionsReportingService.new(ingested_publications, TEST_START_DATE, TEST_END_DATE, FALSE)
+      report = service.generate_report
+      mail = DimensionsReportMailer.dimensions_report_email(report)
+      expect(mail.body.encoded).to include('Reporting publications from manually executed dimensions ingest')
     end
   end
 end
