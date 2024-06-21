@@ -177,6 +177,48 @@ RSpec.describe Tasks::DimensionsQueryService do
       expected_publications = JSON.parse(dimensions_query_response_fixture)['publications']
       expect(publications).to eq(expected_publications)
     end
+
+    it 'resets retries to 0 after a successful query' do
+      allow(Rails.logger).to receive(:warn)
+      allow(Rails.logger).to receive(:info)
+      allow(Rails.logger).to receive(:error)
+
+      dimensions_pagination_query_responses = [
+        File.read(File.join(Rails.root, 'spec/fixtures/files/dimensions_pagination_query_response_1.json')),
+        File.read(File.join(Rails.root, 'spec/fixtures/files/dimensions_pagination_query_response_2.json'))
+      ]
+      # Simulate a 500 error on the first request and a successful response on the second request for both stubs
+      stub_request(:post, 'https://app.dimensions.ai/api/dsl')
+        .with(
+          body: /skip 0/,
+          headers: { 'Content-Type' => 'application/json' }
+        )
+        .to_return({status: ERROR_RESPONSE_CODE, body: 'Internal Server Error'}, {status: 200, body: dimensions_pagination_query_responses[0]})
+
+      stub_request(:post, 'https://app.dimensions.ai/api/dsl')
+        .with(
+          body: /skip 100/,
+          headers: { 'Content-Type' => 'application/json' }
+        )
+        .to_return({status: ERROR_RESPONSE_CODE, body: 'Internal Server Error'}, status: 200, body: dimensions_pagination_query_responses[1], headers: { 'Content-Type' => 'application/json' })
+
+      publications = service.query_dimensions(start_date: TEST_START_DATE, end_date: TEST_END_DATE)
+
+      # Confirm that the number of retries was reset to 0 after a successful query
+      expect(Rails.logger).to have_received(:warn).with(/Attempt 1 of 5/).exactly(2).times
+
+      # Combine the publications from all pages for comparison
+      expected_publications = dimensions_pagination_query_responses.flat_map { |response| JSON.parse(response)['publications'] }
+
+      # Check if every publication in expected_publications is present in the retrieved publications
+      expected_publications.each do |expected_publication|
+        expect(publications).to include(expected_publication)
+      end
+
+      # Verifying that the number of publications retrieved is the same as the number of publications in the test fixture
+      expect(publications.count).to eq(expected_publications.count)
+    end
+
   end
 
   describe '#deduplicate_publications' do
