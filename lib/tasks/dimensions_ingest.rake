@@ -38,9 +38,7 @@ namespace :dimensions do
       end_date = Date.today.strftime('%Y-%m-%d')
       Rails.logger.info "Using date range: #{start_date} to #{end_date}"
     end
-
-    formatted_last_run_time = last_run_time ? last_run_time.strftime('%Y-%m-%d') : nil
-
+    
     config = {
       'admin_set' => args[:admin_set],
       'depositor_onyen' => ENV['DIMENSIONS_INGEST_DEPOSITOR_ONYEN'],
