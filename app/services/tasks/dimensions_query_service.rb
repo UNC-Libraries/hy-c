@@ -9,9 +9,8 @@ module Tasks
     DIMENSIONS_URL = 'https://app.dimensions.ai/api'
     MAX_RETRIES = 5
 
-    cattr_accessor :duplicate_publications
-
-    self.duplicate_publications = []
+    cattr_accessor :dimensions_total_count
+    self.dimensions_total_count = 0
 
     def query_dimensions(options = {})
       start_date = options[:start_date]
@@ -40,12 +39,13 @@ module Tasks
           if response.success?
             # Merge the new publications with the existing set
             all_publications.merge(process_response(response))
-            total_count = response['_stats']['total_count']
+            # total_count = response['_stats']['total_count']
+            self.dimensions_total_count = response.parsed_response['_stats']['total_count']
             cursor += page_size
             # End the loop if the cursor exceeds the total count
             # WIP: Break if cursor is greater than or equal to 100 for testing purposes
             # break if cursor >= total_count || cursor >= 100
-            break if cursor >= total_count
+            break if cursor >= self.dimensions_total_count
             # Reset the retry count if the query is successful
             retries[0] = 0
           elsif response.code == 403
@@ -144,7 +144,7 @@ module Tasks
     def separate_publications_by_doi(publications)
       publications_with_doi = []
       publications_without_doi = []
-    
+
       publications.each do |pub|
         if pub['doi'].present?
           publications_with_doi << pub
@@ -152,7 +152,7 @@ module Tasks
           publications_without_doi << pub
         end
       end
-    
+
       [publications_with_doi, publications_without_doi]
     end
 
@@ -162,9 +162,8 @@ module Tasks
         result = Hyrax::SolrService.get(query_string)
         !result['response']['docs'].empty?
       end
-    
+
       removed_publications = publications - new_publications
-      self.duplicate_publications.concat(removed_publications)
       log_removed_publications(removed_publications, type)
 
       new_publications

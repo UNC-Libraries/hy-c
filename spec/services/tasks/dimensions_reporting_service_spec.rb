@@ -30,6 +30,7 @@ RSpec.describe Tasks::DimensionsReportingService do
 
   let(:pdf_content) { File.binread(File.join(Rails.root, '/spec/fixtures/files/sample_pdf.pdf')) }
   let(:test_err_msg) { 'Test error' }
+  let(:fixed_dimensions_total_count) { 2974 }
 
   let(:fixed_time) { Time.new(2024, 5, 21, 10, 0, 0) }
   # Removing linkout pdf from some publications to simulate missing pdfs
@@ -51,7 +52,7 @@ RSpec.describe Tasks::DimensionsReportingService do
     ingest_service.ingest_publications(test_publications)
   end
 
-  let(:service) { described_class.new(ingested_publications, TEST_START_DATE, TEST_END_DATE, TRUE) }
+  let(:service) { described_class.new(ingested_publications, fixed_dimensions_total_count, TEST_START_DATE, TEST_END_DATE, TRUE) }
 
 
   before do
@@ -94,13 +95,13 @@ RSpec.describe Tasks::DimensionsReportingService do
       expect(headers[:reporting_message]).to eq('Reporting publications from automated dimensions ingest on May 21, 2024 at 10:00 AM UTC by admin.')
       expect(headers[:date_range]).to eq("Publication Date Range: #{TEST_START_DATE} to #{TEST_END_DATE}")
       expect(headers[:admin_set]).to eq('Admin Set: Open_Access_Articles_and_Book_Chapters')
-      expect(headers[:total_publications]).to eq("Total Publications: #{test_publications.length}")
+      expect(headers[:unique_publications]).to eq("Attempted to ingest #{test_publications.length} unique publications out of #{fixed_dimensions_total_count} total publications found in Dimensions.")
       expect(headers[:successfully_ingested]).to eq("\nSuccessfully Ingested: (#{successful_publication_sample[:publications].length} Publications)")
       expect(headers[:failed_to_ingest]).to eq("\nFailed to Ingest: (#{failing_publication_sample[:publications].length} Publications)")
     end
 
     it 'provides a different message for manually executed ingest' do
-      service = described_class.new(ingested_publications, TEST_START_DATE, TEST_END_DATE, FALSE)
+      service = described_class.new(ingested_publications, fixed_dimensions_total_count, TEST_START_DATE, TEST_END_DATE, FALSE)
       report = service.generate_report
       headers = report[:headers]
       expect(headers[:reporting_message]).to eq('Reporting publications from manually executed dimensions ingest on May 21, 2024 at 10:00 AM UTC by admin.')

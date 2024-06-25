@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 module Tasks
   class DimensionsReportingService
-    def initialize(ingested_publications, start_date, end_date, is_cron_job)
+    def initialize(ingested_publications, dimensions_total_count, start_date, end_date, is_cron_job)
       @ingested_publications = ingested_publications
+      @dimensions_total_count = dimensions_total_count
       @start_date = start_date
       @end_date = end_date
       @is_cron_job = is_cron_job
@@ -16,7 +17,7 @@ module Tasks
       report[:headers][:reporting_message] = "Reporting publications from #{@is_cron_job ? 'automated' : 'manually executed'} dimensions ingest on #{formatted_time} by #{@ingested_publications[:depositor]}."
       report[:headers][:date_range] = "Publication Date Range: #{@start_date} to #{@end_date}"
       report[:headers][:admin_set] = "Admin Set: #{@ingested_publications[:admin_set_title]}"
-      report[:headers][:total_publications] = "Total Publications: #{extracted_info[:successfully_ingested].length + extracted_info[:failed_to_ingest].length}"
+      report[:headers][:unique_publications] = "Attempted to ingest #{extracted_info[:successfully_ingested].length + extracted_info[:failed_to_ingest].length} unique publications out of #{@dimensions_total_count} total publications found in Dimensions."
       report[:headers][:successfully_ingested] = "\nSuccessfully Ingested: (#{extracted_info[:successfully_ingested].length} Publications)"
       report[:headers][:failed_to_ingest] = "\nFailed to Ingest: (#{extracted_info[:failed_to_ingest].length} Publications)"
       report[:successfully_ingested_rows] = extracted_info[:successfully_ingested]

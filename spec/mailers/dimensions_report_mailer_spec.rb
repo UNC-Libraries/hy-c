@@ -34,6 +34,7 @@ RSpec.describe DimensionsReportMailer, type: :mailer do
   let(:test_err_msg) { 'Test error' }
 
   let(:fixed_time) { Time.new(2024, 5, 21, 10, 0, 0) }
+  let(:fixed_dimensions_total_count) { 2974 }
   # Removing linkout pdf from some publications to simulate missing pdfs
   let(:test_publications) {
     all_publications =  JSON.parse(dimensions_ingest_test_fixture)['publications']
@@ -50,7 +51,7 @@ RSpec.describe DimensionsReportMailer, type: :mailer do
   let(:ingested_publications) do
     ingest_service.ingest_publications(test_publications)
   end
-  let(:report) { Tasks::DimensionsReportingService.new(ingested_publications, TEST_START_DATE, TEST_END_DATE, TRUE).generate_report }
+  let(:report) { Tasks::DimensionsReportingService.new(ingested_publications, fixed_dimensions_total_count, TEST_START_DATE, TEST_END_DATE, TRUE).generate_report }
 
   before do
     ActiveFedora::Cleaner.clean!
@@ -96,7 +97,7 @@ RSpec.describe DimensionsReportMailer, type: :mailer do
     it 'renders the body' do
       expect(mail.body.encoded).to include(report[:headers][:reporting_message])
                                 .and include(report[:headers][:admin_set])
-                                .and include(report[:headers][:total_publications])
+                                .and include(report[:headers][:unique_publications])
                                 .and include(report[:headers][:successfully_ingested])
                                 .and include(report[:headers][:failed_to_ingest])
 
@@ -114,7 +115,7 @@ RSpec.describe DimensionsReportMailer, type: :mailer do
     end
 
     it 'renders a different message for manually executed ingest' do
-      service = Tasks::DimensionsReportingService.new(ingested_publications, TEST_START_DATE, TEST_END_DATE, FALSE)
+      service = Tasks::DimensionsReportingService.new(ingested_publications, fixed_dimensions_total_count, TEST_START_DATE, TEST_END_DATE, FALSE)
       report = service.generate_report
       mail = DimensionsReportMailer.dimensions_report_email(report)
       expect(mail.body.encoded).to include('Reporting publications from manually executed dimensions ingest')
