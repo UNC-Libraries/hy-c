@@ -4,10 +4,10 @@
   <meta charset="UTF-8">
 </head>
 <body>
-  <p style="font-size: 16px; margin-bottom: 10px;"><%= @report[:headers][:reporting_message] %></p>
-  <p style="font-size: 16px; margin-bottom: 10px;"><%= @report[:headers][:date_range] %></p>
-  <p style="font-size: 16px; margin-bottom: 10px;"><%= @report[:headers][:admin_set] %></p>
-  <p style="font-size: 16px; margin-bottom: 10px;"><%= @report[:headers][:unique_publications] %></p>
+  <p style="font-size: 16px; margin-bottom: 10px;"><%= raw @report[:headers][:reporting_message] %></p>
+  <p style="font-size: 16px; margin-bottom: 10px;"><%= raw @report[:headers][:date_range] %></p>
+  <p style="font-size: 16px; margin-bottom: 10px;"><%= raw @report[:headers][:admin_set] %></p>
+  <p style="font-size: 16px; margin-bottom: 10px;"><%= raw @report[:headers][:unique_publications] %></p>
 
   <h2 style="font-size: 20px; margin-bottom: 10px;"><%= @report[:headers][:successfully_ingested] %></h2>
   <table style="width: 100%; border-collapse: collapse;">
