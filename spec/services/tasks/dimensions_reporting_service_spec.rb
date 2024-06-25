@@ -92,10 +92,10 @@ RSpec.describe Tasks::DimensionsReportingService do
       report = service.generate_report
       headers = report[:headers]
       expect(report[:subject]).to eq('Dimensions Ingest Report for May 21, 2024 at 10:00 AM UTC')
-      expect(headers[:reporting_message]).to eq('Reporting publications from automated Dimensions ingest on <strong>May 21, 2024 at 10:00 AM UTC</strong> by <strong>admin</strong>.')
-      expect(headers[:date_range]).to eq("Publication Date Range: <strong>#{TEST_START_DATE}</strong> to <strong>#{TEST_END_DATE}</strong>")
-      expect(headers[:admin_set]).to eq('Admin Set: <strong>Open_Access_Articles_and_Book_Chapters</strong>')
-      expect(headers[:unique_publications]).to eq("Attempted to ingest <strong>#{test_publications.length} unique publications</strong> out of <strong>#{FIXED_DIMENSIONS_TOTAL_COUNT} total</strong> found in Dimensions.")
+      expect(headers[:reporting_message]).to eq('Reporting publications from automated Dimensions ingest on May 21, 2024 at 10:00 AM UTC by admin.')
+      expect(headers[:date_range]).to eq("Publication Date Range: #{TEST_START_DATE} to #{TEST_END_DATE}")
+      expect(headers[:admin_set]).to eq('Admin Set: Open_Access_Articles_and_Book_Chapters')
+      expect(headers[:unique_publications]).to eq("Attempted to ingest #{test_publications.length} unique publications out of #{FIXED_DIMENSIONS_TOTAL_COUNT} total found in Dimensions.")
       expect(headers[:successfully_ingested]).to eq("\nSuccessfully Ingested: (#{successful_publication_sample[:publications].length} Publications)")
       expect(headers[:failed_to_ingest]).to eq("\nFailed to Ingest: (#{failing_publication_sample[:publications].length} Publications)")
     end
@@ -104,7 +104,7 @@ RSpec.describe Tasks::DimensionsReportingService do
       service = described_class.new(ingested_publications, FIXED_DIMENSIONS_TOTAL_COUNT, TEST_START_DATE, TEST_END_DATE, FALSE)
       report = service.generate_report
       headers = report[:headers]
-      expect(headers[:reporting_message]).to eq('Reporting publications from manually executed Dimensions ingest on <strong>May 21, 2024 at 10:00 AM UTC</strong> by <strong>admin</strong>.')
+      expect(headers[:reporting_message]).to eq('Reporting publications from manually executed Dimensions ingest on May 21, 2024 at 10:00 AM UTC by admin.')
     end
   end
 

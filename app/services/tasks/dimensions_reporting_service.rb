@@ -14,10 +14,10 @@ module Tasks
       extracted_info = extract_publication_info
       formatted_time = @ingested_publications[:time].strftime('%B %d, %Y at %I:%M %p %Z')
       report[:subject] = "Dimensions Ingest Report for #{formatted_time}"
-      report[:headers][:reporting_message] = "Reporting publications from #{@is_cron_job ? 'automated' : 'manually executed'} Dimensions ingest on <strong>#{formatted_time}</strong> by <strong>#{@ingested_publications[:depositor]}</strong>."
-      report[:headers][:date_range] = "Publication Date Range: <strong>#{@start_date}</strong> to <strong>#{@end_date}</strong>"
-      report[:headers][:admin_set] = "Admin Set: <strong>#{@ingested_publications[:admin_set_title]}</strong>"
-      report[:headers][:unique_publications] = "Attempted to ingest <strong>#{extracted_info[:successfully_ingested].length + extracted_info[:failed_to_ingest].length} unique publications</strong> out of <strong>#{@dimensions_total_count} total</strong> found in Dimensions."
+      report[:headers][:reporting_message] = "Reporting publications from #{@is_cron_job ? 'automated' : 'manually executed'} Dimensions ingest on #{formatted_time} by #{@ingested_publications[:depositor]}."
+      report[:headers][:date_range] = "Publication Date Range: #{@start_date} to #{@end_date}"
+      report[:headers][:admin_set] = "Admin Set: #{@ingested_publications[:admin_set_title]}"
+      report[:headers][:unique_publications] = "Attempted to ingest #{extracted_info[:successfully_ingested].length + extracted_info[:failed_to_ingest].length} unique publications out of #{@dimensions_total_count} total found in Dimensions."
       report[:headers][:successfully_ingested] = "\nSuccessfully Ingested: (#{extracted_info[:successfully_ingested].length} Publications)"
       report[:headers][:failed_to_ingest] = "\nFailed to Ingest: (#{extracted_info[:failed_to_ingest].length} Publications)"
       report[:successfully_ingested_rows] = extracted_info[:successfully_ingested]
