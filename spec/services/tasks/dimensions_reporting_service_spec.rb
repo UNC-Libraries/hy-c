@@ -129,7 +129,7 @@ RSpec.describe Tasks::DimensionsReportingService do
 
     it 'extracts publication information for the report' do
       extracted_info = service.extract_publication_info
-      expect(extracted_info[:successfully_ingested].length).to eq(7)
+      expect(extracted_info[:successfully_ingested].length).to eq(8)
       expect(extracted_info[:failed_to_ingest].length).to eq(3)
 
       expect_publication_info(extracted_info[:successfully_ingested], ingested_publications[:ingested], false, successful_publication_sample[:test_fixture_start_index])

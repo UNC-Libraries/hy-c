@@ -45,7 +45,6 @@ RSpec.describe DimensionsReportMailer, type: :mailer do
   }
 
   let(:failing_publication_sample) { test_publications[0..2] }
-  let(:successful_publication_sample) { test_publications[6..-1] }
 
   let(:ingest_service) { Tasks::DimensionsIngestService.new(config) }
   let(:ingested_publications) do
@@ -118,7 +117,7 @@ RSpec.describe DimensionsReportMailer, type: :mailer do
       service = Tasks::DimensionsReportingService.new(ingested_publications, FIXED_DIMENSIONS_TOTAL_COUNT, TEST_START_DATE, TEST_END_DATE, FALSE)
       report = service.generate_report
       mail = DimensionsReportMailer.dimensions_report_email(report)
-      expect(mail.body.encoded).to include('Reporting publications from manually executed dimensions ingest')
+      expect(mail.body.encoded).to include('Reporting publications from manually executed Dimensions ingest')
     end
   end
 end

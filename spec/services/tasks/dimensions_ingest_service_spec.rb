@@ -11,9 +11,6 @@ RSpec.describe Tasks::DimensionsIngestService do
   let(:dimensions_ingest_test_fixture) do
     File.read(File.join(Rails.root, '/spec/fixtures/files/dimensions_ingest_test_fixture.json'))
   end
-  let(:dimensions_ingest_test_fixture_metadata_focus) do
-    File.read(File.join(Rails.root, '/spec/fixtures/files/dimensions_ingest_test_fixture_metadata_focus.json'))
-  end
   let(:admin) { FactoryBot.create(:admin, uid: 'admin') }
   let(:service) { described_class.new(config) }
 
@@ -244,7 +241,7 @@ RSpec.describe Tasks::DimensionsIngestService do
     end
 
     it 'creates an article with metadata' do
-      publication = JSON.parse(dimensions_ingest_test_fixture_metadata_focus)['publications'].first
+      publication = test_publications.select { |pub| pub['title'] == 'Patient Perspectives on Performance of a Smartphone App for Atrial FibrillationSelf-Management' }.first
       expected_author_metadata = publication['authors'].map do |author|
         {
           'name' => "#{[author['last_name'], author['first_name']].compact.join(', ')}",
@@ -283,7 +280,7 @@ RSpec.describe Tasks::DimensionsIngestService do
     end
 
     it 'creates an article with a default abstract and keywords if they are missing' do
-      publication = JSON.parse(dimensions_ingest_test_fixture_metadata_focus)['publications'].first
+      publication = test_publications.select { |pub| pub['title'] == 'Patient Perspectives on Performance of a Smartphone App for Atrial FibrillationSelf-Management' }.first
       publication['abstract'] = nil
       publication['concepts'] = nil
       article = service.article_with_metadata(publication)
