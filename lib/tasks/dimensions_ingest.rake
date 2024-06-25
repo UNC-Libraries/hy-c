@@ -38,7 +38,7 @@ namespace :dimensions do
       end_date = Date.today.strftime('%Y-%m-%d')
       Rails.logger.info "Using date range: #{start_date} to #{end_date}"
     end
-    
+
     config = {
       'admin_set' => args[:admin_set],
       'depositor_onyen' => ENV['DIMENSIONS_INGEST_DEPOSITOR_ONYEN'],
@@ -48,7 +48,7 @@ namespace :dimensions do
     query_service = Tasks::DimensionsQueryService.new
     ingest_service = Tasks::DimensionsIngestService.new(config)
     publications = ingest_service.ingest_publications(query_service.query_dimensions(start_date: start_date, end_date: end_date))
-    report = Tasks::DimensionsReportingService.new(publications, query_service.dimensions_total_count, start_date, end_date, is_cron_job).generate_report
+    report = Tasks::DimensionsReportingService.new(publications, query_service.dimensions_total_count, { start_date: start_date, end_date: end_date }, is_cron_job).generate_report
 
     begin
       DimensionsReportMailer.dimensions_report_email(report).deliver_now

@@ -241,7 +241,7 @@ RSpec.describe Tasks::DimensionsIngestService do
     end
 
     it 'creates an article with metadata' do
-      publication = test_publications.select { |pub| pub['title'] == 'Patient Perspectives on Performance of a Smartphone App for Atrial FibrillationSelf-Management' }.first
+      publication = test_publications.find { |pub| pub['title'] == 'Patient Perspectives on Performance of a Smartphone App for Atrial FibrillationSelf-Management' }
       expected_author_metadata = publication['authors'].map do |author|
         {
           'name' => "#{[author['last_name'], author['first_name']].compact.join(', ')}",
@@ -280,7 +280,7 @@ RSpec.describe Tasks::DimensionsIngestService do
     end
 
     it 'creates an article with a default abstract and keywords if they are missing' do
-      publication = test_publications.select { |pub| pub['title'] == 'Patient Perspectives on Performance of a Smartphone App for Atrial FibrillationSelf-Management' }.first
+      publication = test_publications.find { |pub| pub['title'] == 'Patient Perspectives on Performance of a Smartphone App for Atrial FibrillationSelf-Management' }
       publication['abstract'] = nil
       publication['concepts'] = nil
       article = service.article_with_metadata(publication)

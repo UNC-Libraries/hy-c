@@ -52,9 +52,6 @@ RSpec.describe Tasks::DimensionsReportingService do
     ingest_service.ingest_publications(test_publications)
   end
 
-  let(:service) { described_class.new(ingested_publications, FIXED_DIMENSIONS_TOTAL_COUNT, TEST_START_DATE, TEST_END_DATE, TRUE) }
-
-
   before do
     ActiveFedora::Cleaner.clean!
     admin_set
@@ -89,6 +86,7 @@ RSpec.describe Tasks::DimensionsReportingService do
 
   describe '#generate_report' do
     it 'generates a report for ingest dimensions publications' do
+      service = described_class.new(ingested_publications, FIXED_DIMENSIONS_TOTAL_COUNT, { start_date: TEST_START_DATE, end_date: TEST_END_DATE }, TRUE)
       report = service.generate_report
       headers = report[:headers]
       expect(report[:subject]).to eq('Dimensions Ingest Report for May 21, 2024 at 10:00 AM UTC')
@@ -101,7 +99,7 @@ RSpec.describe Tasks::DimensionsReportingService do
     end
 
     it 'provides a different message for manually executed ingest' do
-      service = described_class.new(ingested_publications, FIXED_DIMENSIONS_TOTAL_COUNT, TEST_START_DATE, TEST_END_DATE, FALSE)
+      service = described_class.new(ingested_publications, FIXED_DIMENSIONS_TOTAL_COUNT, { start_date: TEST_START_DATE, end_date: TEST_END_DATE }, FALSE)
       report = service.generate_report
       headers = report[:headers]
       expect(headers[:reporting_message]).to eq('Reporting publications from manually executed Dimensions ingest on May 21, 2024 at 10:00 AM UTC by admin.')
@@ -128,6 +126,7 @@ RSpec.describe Tasks::DimensionsReportingService do
     end
 
     it 'extracts publication information for the report' do
+      service = described_class.new(ingested_publications, FIXED_DIMENSIONS_TOTAL_COUNT, { start_date: TEST_START_DATE, end_date: TEST_END_DATE }, TRUE)
       extracted_info = service.extract_publication_info
       expect(extracted_info[:successfully_ingested].length).to eq(8)
       expect(extracted_info[:failed_to_ingest].length).to eq(3)

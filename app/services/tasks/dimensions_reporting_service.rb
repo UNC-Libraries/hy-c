@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 module Tasks
   class DimensionsReportingService
-    def initialize(ingested_publications, dimensions_total_count, start_date, end_date, is_cron_job)
+    def initialize(ingested_publications, dimensions_total_count, date_range, is_cron_job)
       @ingested_publications = ingested_publications
       @dimensions_total_count = dimensions_total_count
-      @start_date = start_date
-      @end_date = end_date
+      @start_date = date_range[:start_date]
+      @end_date = date_range[:end_date]
       @is_cron_job = is_cron_job
     end
 

@@ -32,7 +32,7 @@ class DimensionsReportMailerPreview < ActionMailer::Preview
       pub.merge('error' => ['Test error', 'Test error message'])
     end
 
-    dimensions_reporting_service = Tasks::DimensionsReportingService.new(ingested_publications, FIXED_DIMENSIONS_TOTAL_COUNT, TEST_START_DATE, TEST_END_DATE, FALSE)
+    dimensions_reporting_service = Tasks::DimensionsReportingService.new(ingested_publications, FIXED_DIMENSIONS_TOTAL_COUNT, { start_date: TEST_START_DATE, end_date: TEST_END_DATE }, FALSE)
     report = dimensions_reporting_service.generate_report
     DimensionsReportMailer.dimensions_report_email(report)
   end
