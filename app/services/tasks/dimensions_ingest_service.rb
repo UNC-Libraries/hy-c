@@ -74,7 +74,7 @@ module Tasks
       article.abstract = [publication['abstract']].compact.presence || ['N/A']
       article.resource_type = ['Article']
       article.publisher = [publication['publisher']].compact.presence
-      article.keyword = publication['concepts'] ? publication['concepts'].compact.presence : ['N/A']
+      article.keyword = publication['concepts']
     end
 
     def set_rights_and_types(article, publication)

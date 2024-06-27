@@ -9,8 +9,11 @@ module Tasks
     DIMENSIONS_URL = 'https://app.dimensions.ai/api'
     MAX_RETRIES = 5
 
-    cattr_accessor :dimensions_total_count
-    self.dimensions_total_count = 0
+    attr_accessor :dimensions_total_count
+
+    def initialize
+      @dimensions_total_count = 0
+    end
 
     def query_dimensions(options = {})
       start_date = options[:start_date]
@@ -103,7 +106,7 @@ module Tasks
 
     def process_response(response)
       parsed_body = JSON.parse(response.body)
-      # WIP: Do not deduplicate publications for testing purposes
+      # To disable deduplication during testing, comment out the next line and uncomment the following line. (Makes it easier to conduct repeated tests of the ingest process.)
       publications = deduplicate_publications(parsed_body['publications'])
       # publications = parsed_body['publications']
       Rails.logger.info("Dimensions API returned #{parsed_body['publications'].size} publications.")
@@ -157,15 +160,12 @@ module Tasks
     end
 
     def remove_duplicate_publications(publications, type = :other)
-      new_publications = publications.reject do |pub|
+      new_publications, removed_publications = publications.partition do |pub|
         query_string = type == :doi ? doi_query_string(pub['doi']) : solr_query_builder(pub)
         result = Hyrax::SolrService.get(query_string)
-        !result['response']['docs'].empty?
+        result['response']['docs'].empty?
       end
-
-      removed_publications = publications - new_publications
       log_removed_publications(removed_publications, type)
-
       new_publications
     end
 
@@ -198,7 +198,7 @@ module Tasks
 
     # Query with paramaters to retrieve publications related to UNC
     def generate_query_string(start_date, end_date, page_size, cursor)
-      search_clauses = ['where type = "article"', "date >= \"#{start_date}\"", "date <= \"#{end_date}\""].join(' and ')
+      search_clauses = ['where type = "article"', "date >= \"#{start_date}\"", "date < \"#{end_date}\""].join(' and ')
       return_fields = ['basics', 'extras', 'abstract', 'issn', 'publisher', 'journal_title_raw', 'linkout', 'concepts'].join(' + ')
       <<~QUERY
         search publications #{search_clauses} in raw_affiliations

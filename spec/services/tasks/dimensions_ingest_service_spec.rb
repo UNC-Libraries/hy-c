@@ -254,6 +254,7 @@ RSpec.describe Tasks::DimensionsIngestService do
       expect(article.persisted?).to be true
       expect(article.valid?).to be true
       expect(article.title).to eq(['Patient Perspectives on Performance of a Smartphone App for Atrial FibrillationSelf-Management'])
+      expect(article.creators.size).to eq(expected_author_metadata.size)
       all_creators_names = article.creators.map { |creator| creator.attributes['name'] }
       expected_author_metadata.each_with_index do |expected_author, index|
         author = article.creators.find { |creator| creator.attributes['name'][0] == expected_author['name'] }
@@ -279,13 +280,13 @@ RSpec.describe Tasks::DimensionsIngestService do
       expect(article.visibility).to eq('restricted')
     end
 
-    it 'creates an article with a default abstract and keywords if they are missing' do
+    it 'creates an article with a default abstract and empty keywords if they are missing' do
       publication = test_publications.find { |pub| pub['title'] == 'Patient Perspectives on Performance of a Smartphone App for Atrial FibrillationSelf-Management' }
       publication['abstract'] = nil
       publication['concepts'] = nil
       article = service.article_with_metadata(publication)
       expect(article.abstract).to eq(['N/A'])
-      expect(article.keyword).to eq(['N/A'])
+      expect(article.keyword).to eq([])
     end
   end
 end
