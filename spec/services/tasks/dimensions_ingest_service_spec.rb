@@ -241,31 +241,54 @@ RSpec.describe Tasks::DimensionsIngestService do
     end
 
     it 'creates an article with metadata' do
-      publication = test_publications.first
+      publication = test_publications.find { |pub| pub['title'] == 'Patient Perspectives on Performance of a Smartphone App for Atrial FibrillationSelf-Management' }
+      # Explicitly defined creator size in case a bug interferes with creation of the expected author metadata
+      expected_creator_size = 6
+      expected_author_metadata = publication['authors'].map do |author|
+        {
+          'name' => "#{[author['last_name'], author['first_name']].compact.join(', ')}",
+          'other_affiliation' => author['affiliations'][0]['raw_affiliation'],
+          'orcid' => author['orcid']
+        }
+      end
       article = service.article_with_metadata(publication)
       expect(article).to be_instance_of(Article)
       expect(article.persisted?).to be true
       expect(article.valid?).to be true
-      expect(article.title).to eq(['Polypharmacy in US Medicare beneficiaries with antineutrophil cytoplasmic antibody vasculitis'])
-      first_creator = article.creators.find { |creator| creator[:index] == ['1'] }
-      expect(first_creator.attributes['name']).to match_array(['Thorpe, Carolyn T'])
-      expect(first_creator.attributes['other_affiliation']).to match_array(['Veterans Affairs Pittsburgh Healthcare System, PA.'])
-      expect(first_creator.attributes['orcid']).to match_array(['https://orcid.org/0000-0002-7662-7497'])
-      expect(article.abstract).to include(/Treatment requirements of antineutrophil cytoplasmic autoantibody vasculitis/)
-      expect(article.date_issued).to eq('2023-07-01')
+      expect(article.title).to eq(['Patient Perspectives on Performance of a Smartphone App for Atrial FibrillationSelf-Management'])
+      expect(article.creators.size).to eq(expected_creator_size)
+      all_creators_names = article.creators.map { |creator| creator.attributes['name'] }
+      expected_author_metadata.each_with_index do |expected_author, index|
+        author = article.creators.find { |creator| creator.attributes['name'][0] == expected_author['name'] }
+        expect(author).to be_present
+        expect(author[:name]).to eq([expected_author['name']])
+        expect(author[:other_affiliation]).to eq([expected_author['other_affiliation']])
+        expect(author[:orcid]).to eq(["https://orcid.org/#{expected_author['orcid'][0]}"])
+      end
+      expect(article.keyword).to eq(publication['concepts'])
+      expect(article.abstract).to eq([publication['abstract']])
+      expect(article.date_issued).to eq('2022-10-01')
       expect(article.dcmi_type).to match_array(['http://purl.org/dc/dcmitype/Text'])
       expect(article.funder).to match_array(['National Institute of Allergy and Infectious Diseases'])
-      expect(article.identifier).to match_array(['DOI: https://dx.doi.org/10.18553/jmcp.2023.29.7.770', 'Dimensions ID: pub.1160372243', 'PMCID: PMC10387912', 'PMID: 37404075'])
-      expect(article.issn).to match_array(['2376-0540', '2376-1032'])
-      expect(article.journal_issue).to eq('7')
-      expect(article.journal_title).to eq('Journal of Managed Care & Specialty Pharmacy')
-      expect(article.journal_volume).to eq('29')
-      expect(article.publisher).to match_array(['Academy of Managed Care Pharmacy'])
+      expect(article.identifier).to match_array(['DOI: https://dx.doi.org/10.2147/ppa.s366963', 'Dimensions ID: pub.1151967112', 'PMCID: PMC9587729', 'PMID: 36281351'])
+      expect(article.issn).to match_array(['1177-889X'])
+      expect(article.journal_issue).to eq('10')
+      expect(article.journal_title).to eq('Patient preference and adherence')
+      expect(article.journal_volume).to eq('16')
+      expect(article.publisher).to match_array(['Taylor & Francis'])
       expect(article.resource_type).to match_array(['Article'])
       expect(article.rights_statement).to eq('http://rightsstatements.org/vocab/InC/1.0/')
       expect(article.rights_statement_label).to eq('In Copyright')
       expect(article.visibility).to eq('restricted')
     end
-  end
 
+    it 'creates an article with a default abstract and empty keywords if they are missing' do
+      publication = test_publications.find { |pub| pub['title'] == 'Patient Perspectives on Performance of a Smartphone App for Atrial FibrillationSelf-Management' }
+      publication['abstract'] = nil
+      publication['concepts'] = nil
+      article = service.article_with_metadata(publication)
+      expect(article.abstract).to eq(['N/A'])
+      expect(article.keyword).to eq([])
+    end
+  end
 end

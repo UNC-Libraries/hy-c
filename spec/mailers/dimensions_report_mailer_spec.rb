@@ -3,6 +3,10 @@
 require 'rails_helper'
 
 RSpec.describe DimensionsReportMailer, type: :mailer do
+  TEST_START_DATE = '1970-01-01'
+  TEST_END_DATE = '2021-01-01'
+  FIXED_DIMENSIONS_TOTAL_COUNT = 2974
+
   let(:config) {
     {
       'admin_set' => 'Open_Access_Articles_and_Book_Chapters',
@@ -41,13 +45,12 @@ RSpec.describe DimensionsReportMailer, type: :mailer do
   }
 
   let(:failing_publication_sample) { test_publications[0..2] }
-  let(:successful_publication_sample) { test_publications[6..-1] }
 
   let(:ingest_service) { Tasks::DimensionsIngestService.new(config) }
   let(:ingested_publications) do
     ingest_service.ingest_publications(test_publications)
   end
-  let(:report) { Tasks::DimensionsReportingService.new(ingested_publications).generate_report }
+  let(:report) { Tasks::DimensionsReportingService.new(ingested_publications, FIXED_DIMENSIONS_TOTAL_COUNT, { start_date: TEST_START_DATE, end_date: TEST_END_DATE }, FALSE).generate_report }
 
   before do
     ActiveFedora::Cleaner.clean!
@@ -93,7 +96,7 @@ RSpec.describe DimensionsReportMailer, type: :mailer do
     it 'renders the body' do
       expect(mail.body.encoded).to include(report[:headers][:reporting_message])
                                 .and include(report[:headers][:admin_set])
-                                .and include(report[:headers][:total_publications])
+                                .and include(report[:headers][:unique_publications])
                                 .and include(report[:headers][:successfully_ingested])
                                 .and include(report[:headers][:failed_to_ingest])
 
@@ -108,6 +111,13 @@ RSpec.describe DimensionsReportMailer, type: :mailer do
                                  .and include(publication[:id])
                                  .and include(publication[:error])
       end
+    end
+
+    it 'renders a different message for manually executed ingest' do
+      service = Tasks::DimensionsReportingService.new(ingested_publications, FIXED_DIMENSIONS_TOTAL_COUNT, { start_date: TEST_START_DATE, end_date: TEST_END_DATE }, FALSE)
+      report = service.generate_report
+      mail = DimensionsReportMailer.dimensions_report_email(report)
+      expect(mail.body.encoded).to include('Reporting publications from manually executed Dimensions ingest')
     end
   end
 end

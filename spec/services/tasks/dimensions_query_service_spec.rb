@@ -6,13 +6,11 @@ RSpec.describe Tasks::DimensionsQueryService do
   ERROR_RESPONSE_CODE = 500
   UNAUTHORIZED_CODE = 403
   UNAUTHORIZED_MESSAGE = 'Unauthorized'
+  TEST_START_DATE = '1970-01-01'
+  TEST_END_DATE = '2021-01-01'
 
   let(:dimensions_query_response_fixture) do
     File.read(File.join(Rails.root, '/spec/fixtures/files/dimensions_query_response.json'))
-  end
-
-  let(:dimensions_query_response_fixture_non_doi) do
-    File.read(File.join(Rails.root, 'spec/fixtures/files/dimensions_query_response_non_doi.json'))
   end
 
   let(:service) { described_class.new }
@@ -61,7 +59,7 @@ RSpec.describe Tasks::DimensionsQueryService do
       stub_request(:post, 'https://app.dimensions.ai/api/dsl')
         .to_return(status: ERROR_RESPONSE_CODE, body: response_body)
 
-      expect { service.query_dimensions }.to raise_error(Tasks::DimensionsQueryService::DimensionsPublicationQueryError)
+      expect { publications = service.query_dimensions(start_date: TEST_START_DATE, end_date: TEST_END_DATE) }.to raise_error(Tasks::DimensionsQueryService::DimensionsPublicationQueryError)
 
       # Check if the error message has been logged
       # Expecting the error message to be logged 5 times for each failure
@@ -79,7 +77,7 @@ RSpec.describe Tasks::DimensionsQueryService do
       stub_request(:post, 'https://app.dimensions.ai/api/dsl')
         .to_return({status: unauthorized_status, body: unauthorized_body}, {status: unauthorized_status, body: unauthorized_body})
 
-      expect { service.query_dimensions }.to raise_error(Tasks::DimensionsQueryService::DimensionsPublicationQueryError)
+      expect { publications = service.query_dimensions(start_date: TEST_START_DATE, end_date: TEST_END_DATE) }.to raise_error(Tasks::DimensionsQueryService::DimensionsPublicationQueryError)
       expect(WebMock).to have_requested(:post, 'https://app.dimensions.ai/api/auth').times(2)
       expect(Rails.logger).to have_received(:warn).with('Received 403 Forbidden error. Retrying after token refresh.').once
 
@@ -119,7 +117,7 @@ RSpec.describe Tasks::DimensionsQueryService do
                  { status: 200, body: dimensions_pagination_query_responses[1], headers: { 'Content-Type' => 'application/json' }})
       .times(1)
 
-      publications = service.query_dimensions
+      publications = service.query_dimensions(start_date: TEST_START_DATE, end_date: TEST_END_DATE)
       expect(WebMock).to have_requested(:post, 'https://app.dimensions.ai/api/dsl').times(3)
       expect(WebMock).to have_requested(:post, 'https://app.dimensions.ai/api/auth').times(2)
       expect(Rails.logger).to have_received(:warn).with('Received 403 Forbidden error. Retrying after token refresh.').once
@@ -154,7 +152,7 @@ RSpec.describe Tasks::DimensionsQueryService do
           .to_return(status: 200, body: response_body, headers: { 'Content-Type' => 'application/json' })
       end
 
-      publications = service.query_dimensions
+      publications = service.query_dimensions(start_date: TEST_START_DATE, end_date: TEST_END_DATE)
 
       # Combine the publications from all pages for comparison
       expected_publications = dimensions_pagination_query_responses.flat_map { |response| JSON.parse(response)['publications'] }
@@ -168,33 +166,64 @@ RSpec.describe Tasks::DimensionsQueryService do
     end
 
     it 'returns unc affiliated articles that have dois' do
+      # Combining the two fixtures to test for articles with and without dois
       stub_request(:post, 'https://app.dimensions.ai/api/dsl')
       .with(
           body: /skip 0/,
           headers: { 'Content-Type' => 'application/json' })
           .to_return(status: 200, body: dimensions_query_response_fixture, headers: { 'Content-Type' => 'application/json' })
 
-      publications = service.query_dimensions
+      publications = service.query_dimensions(start_date: TEST_START_DATE, end_date: TEST_END_DATE)
       expected_publications = JSON.parse(dimensions_query_response_fixture)['publications']
       expect(publications).to eq(expected_publications)
     end
 
-    it 'returns unc affiliated articles that do not have dois if specified' do
-      stub_request(:post, 'https://app.dimensions.ai/api/dsl')
-      .with(
-          body: /skip 0/,
-          headers: { 'Content-Type' => 'application/json' })
-          .to_return(status: 200, body: dimensions_query_response_fixture_non_doi, headers: { 'Content-Type' => 'application/json' })
+    it 'resets retries to 0 after a successful query' do
+      allow(Rails.logger).to receive(:warn)
+      allow(Rails.logger).to receive(:info)
+      allow(Rails.logger).to receive(:error)
 
-      publications = service.query_dimensions
-      expected_publications = JSON.parse(dimensions_query_response_fixture_non_doi)['publications']
-      expect(publications).to eq(expected_publications)
+      dimensions_pagination_query_responses = [
+        File.read(File.join(Rails.root, 'spec/fixtures/files/dimensions_pagination_query_response_1.json')),
+        File.read(File.join(Rails.root, 'spec/fixtures/files/dimensions_pagination_query_response_2.json'))
+      ]
+      # Simulate a 500 error on the first request and a successful response on the second request for both stubs
+      stub_request(:post, 'https://app.dimensions.ai/api/dsl')
+        .with(
+          body: /skip 0/,
+          headers: { 'Content-Type' => 'application/json' }
+        )
+        .to_return({status: ERROR_RESPONSE_CODE, body: 'Internal Server Error'}, {status: 200, body: dimensions_pagination_query_responses[0]})
+
+      stub_request(:post, 'https://app.dimensions.ai/api/dsl')
+        .with(
+          body: /skip 100/,
+          headers: { 'Content-Type' => 'application/json' }
+        )
+        .to_return({status: ERROR_RESPONSE_CODE, body: 'Internal Server Error'}, status: 200, body: dimensions_pagination_query_responses[1], headers: { 'Content-Type' => 'application/json' })
+
+      publications = service.query_dimensions(start_date: TEST_START_DATE, end_date: TEST_END_DATE)
+
+      # Confirm that the number of retries was reset to 0 after a successful query
+      expect(Rails.logger).to have_received(:warn).with(/Attempt 1 of 5/).exactly(2).times
+
+      # Combine the publications from all pages for comparison
+      expected_publications = dimensions_pagination_query_responses.flat_map { |response| JSON.parse(response)['publications'] }
+
+      # Check if every publication in expected_publications is present in the retrieved publications
+      expected_publications.each do |expected_publication|
+        expect(publications).to include(expected_publication)
+      end
+
+      # Verifying that the number of publications retrieved is the same as the number of publications in the test fixture
+      expect(publications.count).to eq(expected_publications.count)
     end
+
   end
 
   describe '#deduplicate_publications' do
-    let(:dimensions_publications) { JSON.parse(dimensions_query_response_fixture)['publications'] }
-    let(:dimensions_publications_without_dois) { JSON.parse(dimensions_query_response_fixture_non_doi)['publications'] }
+    let(:dimensions_publications) { JSON.parse(dimensions_query_response_fixture)['publications'].reject { |pub| pub['doi'].nil? } }
+    let(:dimensions_publications_without_dois) { JSON.parse(dimensions_query_response_fixture)['publications'].reject { |pub| pub['doi'] } }
 
     it 'removes publications with duplicate dois' do
       # Create two documents with dois that are the same as the first two publications in the test fixture
@@ -282,18 +311,5 @@ RSpec.describe Tasks::DimensionsQueryService do
       expect(new_publications.count).to eq(2)
       expect(new_publications.map { |pub| pub['id'] }).to include(*non_pmcid_publication_ids)
     end
-
-    it 'marks publications for review if it has a unique title, no pmcid, pmid or doi' do
-      # Spoof publications with no unique identifiers
-      spoofed_dimensions_publications = [{
-        'title' => 'Unique Title', },
-      { 'title' => 'Unique Title 2', },
-      { 'title' => 'Unique Title 3', }]
-      new_publications = service.deduplicate_publications(spoofed_dimensions_publications)
-
-      expect(new_publications.count).to eq(3)
-      expect(new_publications.map { |pub| pub['title'] }).to include(*spoofed_dimensions_publications.map { |pub| pub['title'] })
-    end
-
   end
 end

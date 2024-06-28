@@ -71,9 +71,10 @@ module Tasks
       article.creators_attributes = publication['authors'].map.with_index { |author, index| [index, author_to_hash(author, index)] }.to_h
       article.funder = publication['funders']&.map { |funder| funder['name'] }
       article.date_issued = publication['date']
-      article.abstract = [publication['abstract']].compact.presence
+      article.abstract = [publication['abstract']].compact.presence || ['N/A']
       article.resource_type = ['Article']
       article.publisher = [publication['publisher']].compact.presence
+      article.keyword = publication['concepts']
     end
 
     def set_rights_and_types(article, publication)
@@ -102,23 +103,11 @@ module Tasks
         'orcid' => author['orcid'].present? ? "https://orcid.org/#{author['orcid'].first}" : '',
         'index' => (index + 1).to_s,
       }
-      # Splitting author affiliations into UNC and other affiliations and adding them to hash
+      # Add first author affiliation to other affiliation array
       if author['affiliations'].present?
-
-        author_unc_affiliation = author['affiliations'].find {
-          |affiliation| is_unc_affiliation(affiliation)
-        }
-        author_other_affiliations = author['affiliations'].reject {
-          |affiliation| is_unc_affiliation(affiliation)
-        }
-        hash['other_affiliation'] = author_other_affiliations.map { |affiliation| affiliation['raw_affiliation'] }
-        hash['affiliation'] = author_unc_affiliation.present? ? author_unc_affiliation['raw_affiliation'] : ''
+        hash['other_affiliation'] = author['affiliations'][0]['raw_affiliation']
       end
       hash
-    end
-
-    def is_unc_affiliation(affiliation)
-      affiliation['id'] == UNC_GRID_ID || affiliation['raw_affiliation'].include?('UNC') || affiliation['raw_affiliation'].include?('University of North Carolina, Chapel Hill')
     end
 
     def format_publication_identifiers(publication)

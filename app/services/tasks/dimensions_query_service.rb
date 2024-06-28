@@ -7,10 +7,23 @@ module Tasks
     class DimensionsPublicationQueryError < StandardError
     end
     DIMENSIONS_URL = 'https://app.dimensions.ai/api'
-    EARLIEST_DATE = '1970-01-01'
     MAX_RETRIES = 5
 
-    def query_dimensions(page_size: 100, date_inserted: EARLIEST_DATE)
+    attr_accessor :dimensions_total_count
+
+    def initialize
+      @dimensions_total_count = 0
+    end
+
+    def query_dimensions(options = {})
+      start_date = options[:start_date]
+      end_date = options[:end_date]
+      page_size = options[:page_size] || 100
+
+      unless end_date and start_date
+        raise ArgumentError, 'Both start_date and end_date must be provided.'
+      end
+
       # Initialized as a set to avoid retrieving duplicate publications from Dimensions if the page size exceeds the number of publications on the last page.
       all_publications = Set.new
       token = retrieve_token
@@ -23,16 +36,21 @@ module Tasks
       retry_attempted = false
       loop do
         begin
-          query_string = generate_query_string(date_inserted, page_size, cursor)
+          query_string = generate_query_string(start_date, end_date, page_size, cursor)
           Rails.logger.info("Sending query ##{query_count += 1} to Dimensions API: #{query_string}")
           response = post_query(query_string, token)
           if response.success?
             # Merge the new publications with the existing set
             all_publications.merge(process_response(response))
-            total_count = response['_stats']['total_count']
+            # total_count = response['_stats']['total_count']
+            self.dimensions_total_count = response.parsed_response['_stats']['total_count']
             cursor += page_size
             # End the loop if the cursor exceeds the total count
-            break if cursor >= total_count
+            # WIP: Break if cursor is greater than or equal to 100 for testing purposes
+            # break if cursor >= total_count || cursor >= 100
+            break if cursor >= self.dimensions_total_count
+            # Reset the retry count if the query is successful
+            retries[0] = 0
           elsif response.code == 403
             unless retry_attempted
               # If the token has expired, retrieve a new token and try the query again
@@ -88,7 +106,9 @@ module Tasks
 
     def process_response(response)
       parsed_body = JSON.parse(response.body)
+      # To disable deduplication during testing, comment out the next line and uncomment the following line. (Makes it easier to conduct repeated tests of the ingest process.)
       publications = deduplicate_publications(parsed_body['publications'])
+      # publications = parsed_body['publications']
       Rails.logger.info("Dimensions API returned #{parsed_body['publications'].size} publications.")
       Rails.logger.info("Unique Publications after Deduplicating: #{publications.size}.")
       publications
@@ -113,6 +133,57 @@ module Tasks
       end
     end
 
+    def deduplicate_publications(publications)
+      # Separate publications with and without DOI
+      publications_with_doi, publications_without_doi = separate_publications_by_doi(publications)
+      new_publications_with_doi = remove_duplicate_publications(publications_with_doi, :doi)
+      new_publications_without_doi = remove_duplicate_publications(publications_without_doi)
+
+      # Combine the new publications
+      new_publications = new_publications_with_doi + new_publications_without_doi
+      new_publications
+    end
+
+    def separate_publications_by_doi(publications)
+      publications_with_doi = []
+      publications_without_doi = []
+
+      publications.each do |pub|
+        if pub['doi'].present?
+          publications_with_doi << pub
+        else
+          publications_without_doi << pub
+        end
+      end
+
+      [publications_with_doi, publications_without_doi]
+    end
+
+    def remove_duplicate_publications(publications, type = :other)
+      new_publications, removed_publications = publications.partition do |pub|
+        query_string = type == :doi ? doi_query_string(pub['doi']) : solr_query_builder(pub)
+        result = Hyrax::SolrService.get(query_string)
+        result['response']['docs'].empty?
+      end
+      log_removed_publications(removed_publications, type)
+      new_publications
+    end
+
+    def doi_query_string(doi)
+      doi_tesim = "https://doi.org/#{doi}"
+      "doi_tesim:\"#{doi_tesim}\" OR identifier_tesim:\"#{doi}\""
+    end
+
+    def log_removed_publications(publications, type)
+      publications.each do |pub|
+        if type == :doi
+          Rails.logger.debug("Removed duplicate publication with DOI: #{pub['doi']} and title: #{pub['title']}")
+        else
+          Rails.logger.debug("Removed duplicate publication with title: #{pub['title']}")
+        end
+      end
+    end
+
     def solr_query_builder(pub)
       # Build a query string to search Solr for a publication based on pmcid, pmid, or title
       pmcid_search = pub['pmcid'] ? "identifier_tesim:(\"PMCID: #{pub['pmcid']}\")" : nil
@@ -125,50 +196,10 @@ module Tasks
       return query_string
     end
 
-    def deduplicate_publications(publications)
-
-      publications_with_doi = []
-      publications_without_doi = []
-
-      # Separate publications with and without DOI
-      publications.each do |pub|
-        if pub['doi'].present?
-          publications_with_doi << pub
-        else
-          publications_without_doi << pub
-        end
-      end
-
-      # Removing publications that have a matching DOI in Solr
-      new_publications_with_doi = publications_with_doi.reject do |pub|
-        doi_tesim = "https://doi.org/#{pub['doi']}"
-        result = Hyrax::SolrService.get("doi_tesim:\"#{doi_tesim}\" OR identifier_tesim:\"#{pub['doi']}\"")
-        !result['response']['docs'].empty?
-      end
-
-       # Log the DOI and title of each publication that was removed
-      removed_publications_with_doi = publications_with_doi - new_publications_with_doi
-      removed_publications_with_doi.each do |pub|
-        Rails.logger.debug("Removed duplicate publication with DOI: #{pub['doi']} and title: #{pub['title']}")
-      end
-
-      # Removing publications that have a matching PMID, PMCID, or title in Solr
-      new_publications_without_doi = publications_without_doi.reject do |pub|
-        query_string = solr_query_builder(pub)
-        result = Hyrax::SolrService.get(query_string)
-        !result['response']['docs'].empty?
-      end
-
-      # Combine the new publications
-      new_publications = new_publications_with_doi + new_publications_without_doi
-
-      new_publications
-    end
-
     # Query with paramaters to retrieve publications related to UNC
-    def generate_query_string(date_inserted, page_size, cursor)
-      search_clauses = ['where type = "article"', "date_inserted >= \"#{date_inserted}\""].join(' and ')
-      return_fields = ['basics', 'extras', 'abstract', 'issn', 'publisher', 'journal_title_raw', 'linkout'].join(' + ')
+    def generate_query_string(start_date, end_date, page_size, cursor)
+      search_clauses = ['where type = "article"', "date >= \"#{start_date}\"", "date < \"#{end_date}\""].join(' and ')
+      return_fields = ['basics', 'extras', 'abstract', 'issn', 'publisher', 'journal_title_raw', 'linkout', 'concepts'].join(' + ')
       <<~QUERY
         search publications #{search_clauses} in raw_affiliations
         for """
