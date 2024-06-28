@@ -6,7 +6,7 @@ namespace :dimensions do
   desc 'Ingest metadata and publications from Dimensions'
   task :ingest_publications, [:admin_set, :start_date, :end_date] => :environment do |t, args|
     Rails.logger.info "[#{Time.now}] starting dimensions publications ingest"
-    is_cron_job = FALSE
+    is_cron_job = false
 
     start_date = args[:start_date]
     end_date = args[:end_date]
@@ -18,7 +18,7 @@ namespace :dimensions do
       raise ArgumentError, 'Both start_date and end_date must be provided if specifying a date range. Only end_date provided.'
     end
 
-    start_date, end_date, is_cron_job = get_last_run_time(args)
+    start_date, end_date, is_cron_job = get_date_range(args)
 
     config = {
       'admin_set' => args[:admin_set],
@@ -56,12 +56,12 @@ namespace :dimensions do
     File.join(ENV['DATA_STORAGE'], 'last_dimensions_ingest_run.txt')
   end
 
-  def self.get_last_run_time(args)
+  def self.get_date_range(args)
     if args[:start_date] && args[:end_date]
       start_date = Date.parse(args[:start_date]).strftime('%Y-%m-%d')
       end_date = Date.parse(args[:end_date]).strftime('%Y-%m-%d')
       Rails.logger.info "Using provided date range: #{start_date} to #{end_date}"
-      is_cron_job = FALSE
+      is_cron_job = false
     else
       last_run_time = File.exist?(dimensions_last_run_path) ? Date.parse(File.read(dimensions_last_run_path).strip) : nil
       if last_run_time
@@ -71,7 +71,7 @@ namespace :dimensions do
         Rails.logger.info "No previous run time found. Starting from default date. (#{EARLIEST_DATE})"
         start_date = EARLIEST_DATE
       end
-      is_cron_job = TRUE
+      is_cron_job = true
       end_date = Date.today.strftime('%Y-%m-%d')
       Rails.logger.info "Using date range: #{start_date} to #{end_date}"
     end

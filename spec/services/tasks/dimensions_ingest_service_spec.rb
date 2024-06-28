@@ -242,6 +242,8 @@ RSpec.describe Tasks::DimensionsIngestService do
 
     it 'creates an article with metadata' do
       publication = test_publications.find { |pub| pub['title'] == 'Patient Perspectives on Performance of a Smartphone App for Atrial FibrillationSelf-Management' }
+      # Explicitly defined creator size in case a bug interferes with creation of the expected author metadata
+      expected_creator_size = 6
       expected_author_metadata = publication['authors'].map do |author|
         {
           'name' => "#{[author['last_name'], author['first_name']].compact.join(', ')}",
@@ -254,7 +256,7 @@ RSpec.describe Tasks::DimensionsIngestService do
       expect(article.persisted?).to be true
       expect(article.valid?).to be true
       expect(article.title).to eq(['Patient Perspectives on Performance of a Smartphone App for Atrial FibrillationSelf-Management'])
-      expect(article.creators.size).to eq(expected_author_metadata.size)
+      expect(article.creators.size).to eq(expected_creator_size)
       all_creators_names = article.creators.map { |creator| creator.attributes['name'] }
       expected_author_metadata.each_with_index do |expected_author, index|
         author = article.creators.find { |creator| creator.attributes['name'][0] == expected_author['name'] }
