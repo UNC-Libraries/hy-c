@@ -7,6 +7,7 @@ git_source(:github) do |repo_name|
   "https://github.com/#{repo_name}.git"
 end
 
+gem 'browser', '~> 5.3', '>= 5.3.1'
 gem 'active-fedora', '~> 14.0'
 gem 'blacklight', git: 'https://github.com/UNC-Libraries/blacklight.git', branch: 'unc-development'
 gem 'blacklight_advanced_search', '~> 8.0.0.alpha2'
