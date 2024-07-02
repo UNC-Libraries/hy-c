@@ -8,6 +8,7 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
   let(:spec_base_analytics_url) { 'https://analytics-qa.lib.unc.edu' }
   let(:spec_site_id) { '5' }
   let(:spec_auth_token) { 'testtoken' }
+  let(:bot_user_agents) { YAML.load_file(Rails.root.join('spec/fixtures/files', 'bots_fixture.yml')).keys }
   let(:stub_matomo) do
     stub_request(:get, "#{spec_base_analytics_url}/matomo.php").with(query: hash_including({'token_auth' => 'testtoken',
                                                                        'idsite' => '5'}))
@@ -55,7 +56,6 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
         }
       }
       )
-
       allow(controller.request).to receive(:referrer).and_return('http://example.com')
       expect(controller).to respond_to(:track_download)
       expect(controller.track_download).to eq 200
@@ -85,6 +85,33 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
             .to_return(status: 200, body: '', headers: {})
         get :show, params: { id: file_set }
         expect(stub).to have_been_requested.times(1) # must be after the method call that creates request
+      end
+
+      it 'does not send a request to Matomo for any bot user agent' do
+        bot_user_agents.each do |bot_user_agent|
+          allow(controller.request).to receive(:user_agent).and_return(bot_user_agent)
+          allow(SecureRandom).to receive(:uuid).and_return('555')
+          request.env['HTTP_REFERER'] = 'http://example.com'
+          request.headers['User-Agent'] = bot_user_agent
+          stub = stub_request(:get, "#{spec_base_analytics_url}/matomo.php")
+            .with(query: hash_including({
+              'e_a' => 'DownloadIR',
+              'e_c' => 'Unknown',
+              'e_v' => 'referral',
+              'urlref' => 'http://example.com',
+              'url' => "http://test.host/downloads/#{file_set.id}"
+            }))
+            .to_return(status: 200, body: '', headers: {})
+
+          allow(Rails.logger).to receive(:info) # Add this line to stub the logger
+          expect(Rails.logger).to receive(:info).with("Bot request detected: #{bot_user_agent}")
+
+          get :show, params: { id: file_set.id }
+
+
+          # Assert no request is sent to Matomo
+          expect(stub).to have_been_requested.times(0)
+        end
       end
 
       it 'sets the medium to direct when there is no referrer' do
