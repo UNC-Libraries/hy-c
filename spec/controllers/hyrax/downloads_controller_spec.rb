@@ -87,7 +87,7 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
         expect(stub).to have_been_requested.times(1) # must be after the method call that creates request
       end
 
-      it 'does not send a request to Matomo for any bot user agent' do
+      it 'does not track downloads for any bot user agent' do
         bot_user_agents.each do |bot_user_agent|
           allow(controller.request).to receive(:user_agent).and_return(bot_user_agent)
           allow(SecureRandom).to receive(:uuid).and_return('555')
@@ -103,7 +103,7 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
             }))
             .to_return(status: 200, body: '', headers: {})
 
-          allow(Rails.logger).to receive(:info) # Add this line to stub the logger
+          allow(Rails.logger).to receive(:info) 
           expect(Rails.logger).to receive(:info).with("Bot request detected: #{bot_user_agent}")
 
           get :show, params: { id: file_set.id }
