@@ -56,7 +56,6 @@ gem 'riiif', '~> 2.5.0'
 gem 'roo', '~>2.9.0'
 gem 'rsolr', '~> 2.5.0'
 # Use SCSS for stylesheets
-gem 'sassc', '~> 2.1.0'
 gem 'sass-rails', '~> 6.0.0'
 gem 'sidekiq', '~> 6.5'
 gem 'sidekiq-status', '~> 3.0.0'
