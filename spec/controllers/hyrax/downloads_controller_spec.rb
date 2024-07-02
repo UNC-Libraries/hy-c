@@ -103,7 +103,7 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
             }))
             .to_return(status: 200, body: '', headers: {})
 
-          allow(Rails.logger).to receive(:info) 
+          allow(Rails.logger).to receive(:info)
           expect(Rails.logger).to receive(:info).with("Bot request detected: #{bot_user_agent}")
 
           get :show, params: { id: file_set.id }
