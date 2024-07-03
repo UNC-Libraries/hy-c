@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 module Hyc
   module DownloadAnalyticsBehavior
-    include HycHelper
     extend ActiveSupport::Concern
 
     included do
@@ -54,6 +53,11 @@ module Hyc
           Rails.logger.debug("DownloadAnalyticsBehavior request completed #{response.code}")
           response.code
         end
+      end
+
+      def bot_request?(user_agent)
+        browser = Browser.new(user_agent)
+        browser.bot?
       end
 
       def fetch_record

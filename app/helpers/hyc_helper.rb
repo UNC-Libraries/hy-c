@@ -1,11 +1,6 @@
 # frozen_string_literal: true
 # Include hyc-specific helper code here instead of in the HyraxHelper to avoid circular dependencies
 module HycHelper
-  def bot_request?(user_agent)
-    browser = Browser.new(user_agent)
-    browser.bot?
-  end
-
   def language_links(options)
     language_link_array = options[:value].map do |lang|
       lang_label = LanguagesService.label(lang)
