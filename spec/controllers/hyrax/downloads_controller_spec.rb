@@ -8,7 +8,6 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
   let(:spec_base_analytics_url) { 'https://analytics-qa.lib.unc.edu' }
   let(:spec_site_id) { '5' }
   let(:spec_auth_token) { 'testtoken' }
-  let(:bot_user_agents) { YAML.load_file(Rails.root.join('spec/fixtures/files', 'bots_fixture.yml')).keys }
   let(:stub_matomo) do
     stub_request(:get, "#{spec_base_analytics_url}/matomo.php").with(query: hash_including({'token_auth' => 'testtoken',
                                                                        'idsite' => '5'}))
@@ -87,7 +86,9 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
         expect(stub).to have_been_requested.times(1) # must be after the method call that creates request
       end
 
-      it 'does not track downloads for any bot user agent' do
+      it 'does not track downloads for well known bot user agents' do
+       # Testing with two well known user agents to account for potential changes in bot filtering due to updates in the Browser gem
+        bot_user_agents = ['googlebot', 'bingbot']
         bot_user_agents.each do |bot_user_agent|
           allow(controller.request).to receive(:user_agent).and_return(bot_user_agent)
           allow(SecureRandom).to receive(:uuid).and_return('555')

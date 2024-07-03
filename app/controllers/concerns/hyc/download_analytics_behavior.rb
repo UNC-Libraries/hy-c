@@ -9,8 +9,7 @@ module Hyc
 
       def track_download
         if bot_request?(request.user_agent)
-          Rails.logger.info("Bot request detected: #{request.user_agent}")
-          head :forbidden
+          Rails.logger.debug("Bot request detected: #{request.user_agent}")
           return
         end
         if Hyrax::Analytics.config.auth_token.present? && !request.url.match('thumbnail')
