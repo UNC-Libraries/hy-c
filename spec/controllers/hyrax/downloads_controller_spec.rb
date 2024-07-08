@@ -55,7 +55,6 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
         }
       }
       )
-
       allow(controller.request).to receive(:referrer).and_return('http://example.com')
       expect(controller).to respond_to(:track_download)
       expect(controller.track_download).to eq 200
@@ -85,6 +84,35 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
             .to_return(status: 200, body: '', headers: {})
         get :show, params: { id: file_set }
         expect(stub).to have_been_requested.times(1) # must be after the method call that creates request
+      end
+
+      it 'does not track downloads for well known bot user agents' do
+       # Testing with two well known user agents to account for potential changes in bot filtering due to updates in the Browser gem
+        bot_user_agents = ['googlebot', 'bingbot']
+        bot_user_agents.each do |bot_user_agent|
+          allow(controller.request).to receive(:user_agent).and_return(bot_user_agent)
+          allow(SecureRandom).to receive(:uuid).and_return('555')
+          request.env['HTTP_REFERER'] = 'http://example.com'
+          request.headers['User-Agent'] = bot_user_agent
+          stub = stub_request(:get, "#{spec_base_analytics_url}/matomo.php")
+            .with(query: hash_including({
+              'e_a' => 'DownloadIR',
+              'e_c' => 'Unknown',
+              'e_v' => 'referral',
+              'urlref' => 'http://example.com',
+              'url' => "http://test.host/downloads/#{file_set.id}"
+            }))
+            .to_return(status: 200, body: '', headers: {})
+
+          allow(Rails.logger).to receive(:debug)
+          expect(Rails.logger).to receive(:debug).with("Bot request detected: #{bot_user_agent}")
+
+          get :show, params: { id: file_set.id }
+
+
+          # Assert no request is sent to Matomo
+          expect(stub).to have_been_requested.times(0)
+        end
       end
 
       it 'sets the medium to direct when there is no referrer' do

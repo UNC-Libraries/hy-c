@@ -7,6 +7,10 @@ module Hyc
       after_action :track_download, only: :show
 
       def track_download
+        if bot_request?(request.user_agent)
+          Rails.logger.debug("Bot request detected: #{request.user_agent}")
+          return
+        end
         if Hyrax::Analytics.config.auth_token.present? && !request.url.match('thumbnail')
           Rails.logger.debug("Recording download event for #{params[:id]}")
           medium = request.referrer.present? ? 'referral' : 'direct'
@@ -49,6 +53,11 @@ module Hyc
           Rails.logger.debug("DownloadAnalyticsBehavior request completed #{response.code}")
           response.code
         end
+      end
+
+      def bot_request?(user_agent)
+        browser = Browser.new(user_agent)
+        browser.bot?
       end
 
       def fetch_record
