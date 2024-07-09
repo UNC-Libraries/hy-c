@@ -50,6 +50,7 @@ gem 'passenger', '6.0.14', require: 'phusion_passenger/rack_handler'
 gem 'pg', '~> 1.3.5'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 6.0'
+gem 'rdf', git: 'https://github.com/ruby-rdf/rdf.git', branch: '3.2.11-patch'
 # Use Redis adapter to run Action Cable in production
 gem 'redis', '~> 4.5.0'
 gem 'riiif', '~> 2.5.0'
