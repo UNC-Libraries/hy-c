@@ -49,7 +49,7 @@ services:
     networks:
       - hycdev
   clamav:
-    image: tiredofit/clamav
+    image: tiredofit/clamav:2.5.3
     ports:
       - "3310:3310"
     volumes:
