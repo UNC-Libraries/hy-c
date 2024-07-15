@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_06_08_153601) do
+ActiveRecord::Schema.define(version: 2024_07_14_234200) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -247,6 +247,21 @@ ActiveRecord::Schema.define(version: 2023_06_08_153601) do
     t.integer "user_id"
     t.index ["file_id"], name: "index_file_view_stats_on_file_id"
     t.index ["user_id"], name: "index_file_view_stats_on_user_id"
+  end
+
+  create_table "hyc_download_stats", force: :cascade do |t|
+    t.string "fileset_id", null: false
+    t.string "work_id", null: false
+    t.string "admin_set_id", null: false
+    t.string "work_type", null: false
+    t.date "date", null: false
+    t.integer "download_count", default: 0, null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["admin_set_id"], name: "index_hyc_download_stats_on_admin_set_id"
+    t.index ["fileset_id", "date"], name: "index_hyc_download_stats_on_fileset_id_and_date"
+    t.index ["work_id", "date"], name: "index_hyc_download_stats_on_work_id_and_date"
+    t.index ["work_type"], name: "index_hyc_download_stats_on_work_type"
   end
 
   create_table "hyrax_collection_types", id: :serial, force: :cascade do |t|
