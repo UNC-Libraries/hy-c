@@ -69,7 +69,7 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
       end
       let(:default_image) { ActionController::Base.helpers.image_path 'default.png' }
 
-      it 'can use a fake request' do
+      it 'sends a download event to analytics tracking platform upon successful download' do
         allow(Hyrax::VirusCheckerService).to receive(:file_has_virus?) { false }
         allow(SecureRandom).to receive(:uuid).and_return('555')
         request.env['HTTP_REFERER'] = 'http://example.com'
@@ -84,6 +84,25 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
             .to_return(status: 200, body: '', headers: {})
         get :show, params: { id: file_set }
         expect(stub).to have_been_requested.times(1) # must be after the method call that creates request
+      end
+
+      it 'records the download event in the database' do
+        allow(Hyrax::VirusCheckerService).to receive(:file_has_virus?) { false }
+        allow(SecureRandom).to receive(:uuid).and_return('555')
+        allow(controller).to receive(:record_id).and_return('spec_work_id')
+        request.env['HTTP_REFERER'] = 'http://example.com'
+        
+        expect {
+          get :show, params: { id: file_set.id }
+        }.to change { HycDownloadStat.count }.by(1)
+  
+        stat = HycDownloadStat.last
+        expect(stat.fileset_id).to eq(file_set.id)
+        expect(stat.work_id).to eq('spec_work_id')
+        # expect(stat.admin_set_id).to eq('admin_set_example')
+        # expect(stat.work_type).to eq('work_type_example')
+        expect(stat.date).to eq(Date.today.beginning_of_month)
+        expect(stat.download_count).to eq(1)
       end
 
       it 'does not track downloads for well known bot user agents' do
