@@ -52,7 +52,29 @@ module Hyc
           end
           Rails.logger.debug("DownloadAnalyticsBehavior request completed #{response.code}")
           response.code
+
+          # Send download events to db
+          create_download_stat
         end
+      end
+
+      def create_download_stat
+        fileset_id = params[:id]
+        work_id = record_id
+        admin_set_id = @admin_set_name
+        work_type = fetch_record.dig(0, 'has_model_ssim', 0)
+        date = Date.today
+        download_count = 1
+
+        stat = HycDownloadStat.find_or_initialize_by(
+          fileset_id: fileset_id,
+          work_id: work_id,
+          admin_set_id: admin_set_id,
+          work_type: work_type,
+          date: date.beginning_of_month
+        )
+        stat.download_count += 1
+        stat.save!
       end
 
       def bot_request?(user_agent)
