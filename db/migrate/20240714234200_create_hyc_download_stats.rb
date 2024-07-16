@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class CreateHycDownloadStats < ActiveRecord::Migration[6.1]
   def change
     create_table :hyc_download_stats do |t|

@@ -60,18 +60,18 @@ module Hyc
 
       def create_download_stat
         fileset_id = params[:id]
-        work_id = record_id
-        admin_set_id = @admin_set_name
+        record_id_value = record_id
+        admin_set_id_value = admin_set_id
         work_type = fetch_record.dig(0, 'has_model_ssim', 0)
         date = Date.today
-        
-        Rails.logger.debug("Creating or updating hyc-download-stat database entry with the following attributes:")
-        Rails.logger.debug("fileset_id: #{fileset_id}, work_id: #{work_id}, admin_set_id: #{admin_set_id}, work_type: #{work_type}, date: #{date.beginning_of_month}")
+
+        Rails.logger.debug('Creating or updating hyc-download-stat database entry with the following attributes:')
+        Rails.logger.debug("fileset_id: #{fileset_id}, work_id: #{record_id_value}, admin_set_id: #{admin_set_id_value}, work_type: #{work_type}, date: #{date.beginning_of_month}")
 
         stat = HycDownloadStat.find_or_initialize_by(
           fileset_id: fileset_id,
-          work_id: work_id,
-          admin_set_id: admin_set_id,
+          work_id: record_id_value,
+          admin_set_id: admin_set_id_value,
           work_type: work_type,
           date: date.beginning_of_month
         )
@@ -90,6 +90,14 @@ module Hyc
 
       def fetch_record
         @record ||= ActiveFedora::SolrService.get("file_set_ids_ssim:#{params[:id]}", rows: 1)['response']['docs']
+      end
+
+      def fetch_admin_set
+        @admin_set ||= ActiveFedora::SolrService.get("title_tesim:#{@admin_set_name}", rows: 1)['response']['docs']
+      end
+
+      def admin_set_id
+        @admin_set_id ||= fetch_admin_set.dig(0, 'id')
       end
 
       def record_id

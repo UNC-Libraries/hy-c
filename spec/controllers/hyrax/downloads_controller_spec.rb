@@ -87,20 +87,31 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
       end
 
       it 'records the download event in the database' do
+        example_admin_set_id = 'h128zk07m'
+        example_work_id = '1z40m031g'
         allow(Hyrax::VirusCheckerService).to receive(:file_has_virus?) { false }
         allow(SecureRandom).to receive(:uuid).and_return('555')
-        allow(controller).to receive(:record_id).and_return('spec_work_id')
+        allow(controller).to receive(:fetch_record).and_return([{
+          'has_model_ssim' => ['Article'],
+          'id' => example_work_id,
+          'title_tesim' => ['Key ethical issues discussed at CDC-sponsored international, regional meetings to explore cultural perspectives and contexts on pandemic influenza preparedness and response'],
+          'admin_set_tesim' => ['Open_Access_Articles_and_Book_Chapters']}
+        ])
+        allow(controller).to receive(:fetch_admin_set).and_return([{
+          'has_model_ssim' => ['AdminSet'],
+          'id' => example_admin_set_id,
+          'title_tesim' => ['Open_Access_Articles_and_Book_Chapters']}
+        ])
         request.env['HTTP_REFERER'] = 'http://example.com'
-        
+
         expect {
           get :show, params: { id: file_set.id }
         }.to change { HycDownloadStat.count }.by(1)
-  
+
         stat = HycDownloadStat.last
         expect(stat.fileset_id).to eq(file_set.id)
-        expect(stat.work_id).to eq('spec_work_id')
-        # expect(stat.admin_set_id).to eq('admin_set_example')
-        # expect(stat.work_type).to eq('work_type_example')
+        expect(stat.work_id).to eq(example_work_id)
+        expect(stat.admin_set_id).to eq(example_admin_set_id)
         expect(stat.date).to eq(Date.today.beginning_of_month)
         expect(stat.download_count).to eq(1)
       end
