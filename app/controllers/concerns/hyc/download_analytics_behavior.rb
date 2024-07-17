@@ -12,7 +12,7 @@ module Hyc
           return
         end
         if Hyrax::Analytics.config.auth_token.present? && !request.url.match('thumbnail')
-          Rails.logger.debug("Recording download event for #{params[:id]}")
+          Rails.logger.debug("Recording download event for #{fileset_id}")
           medium = request.referrer.present? ? 'referral' : 'direct'
 
           client_ip = request.remote_ip
@@ -34,7 +34,7 @@ module Hyc
             apiv: '1',
             e_a: 'DownloadIR',
             e_c: @admin_set_name,
-            e_n: params[:id] || 'Unknown',
+            e_n: fileset_id,
             e_v: medium,
             _id: client_id,
             cip: client_ip,
@@ -50,16 +50,14 @@ module Hyc
           if response.code >= 300
             Rails.logger.error("DownloadAnalyticsBehavior received an error response #{response.code} for matomo query: #{uri}")
           end
-          Rails.logger.debug("DownloadAnalyticsBehavior request completed #{response.code}")
-          response.code
-
           # Send download events to db
           create_download_stat
+          Rails.logger.debug("DownloadAnalyticsBehavior request completed #{response.code}")
+          response.code
         end
       end
 
       def create_download_stat
-        fileset_id = params[:id]
         record_id_value = record_id
         admin_set_id_value = admin_set_id
         work_type = fetch_record.dig(0, 'has_model_ssim', 0)
@@ -89,7 +87,7 @@ module Hyc
       end
 
       def fetch_record
-        @record ||= ActiveFedora::SolrService.get("file_set_ids_ssim:#{params[:id]}", rows: 1)['response']['docs']
+        @record ||= ActiveFedora::SolrService.get("file_set_ids_ssim:#{fileset_id}", rows: 1)['response']['docs']
       end
 
       def fetch_admin_set
@@ -106,6 +104,10 @@ module Hyc
                        else
                          'Unknown'
                        end
+      end
+
+      def fileset_id
+        @fileset_id ||= params[:id] || 'Unknown'
       end
 
       def record_title

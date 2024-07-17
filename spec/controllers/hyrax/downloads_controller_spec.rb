@@ -13,6 +13,21 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
                                                                        'idsite' => '5'}))
     .to_return(status: 200, body: '', headers: {})
   end
+  let(:example_admin_set_id) { 'h128zk07m' }
+  let(:example_work_id) { '1z40m031g' }
+  let(:mock_admin_set) { [{
+    'has_model_ssim' => ['AdminSet'],
+    'id' => 'h128zk07m',
+    'title_tesim' => ['Open_Access_Articles_and_Book_Chapters']}
+  ]
+  }
+  let(:mock_record) { [{
+    'has_model_ssim' => ['Article'],
+    'id' =>  '1z40m031g',
+    'title_tesim' => ['Key ethical issues discussed at CDC-sponsored international, regional meetings to explore cultural perspectives and contexts on pandemic influenza preparedness and response'],
+    'admin_set_tesim' => ['Open_Access_Articles_and_Book_Chapters']}
+  ]
+  }
 
   around do |example|
     # Set the environment variables for the test
@@ -32,12 +47,13 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
   before do
     ActiveFedora::Cleaner.clean!
     allow(stub_matomo)
-    allow(Hyrax::Analytics.config).to receive(:site_id).and_return('5')
+    allow(controller).to receive(:fetch_record).and_return(mock_record)
+    allow(controller).to receive(:fetch_admin_set).and_return(mock_admin_set)
+    allow(Hyrax::Analytics.config).to receive(:site_id).and_return(spec_site_id)
     allow(SecureRandom).to receive(:uuid).and_return('555')
     allow(Hyrax::VirusCheckerService).to receive(:file_has_virus?) { false }
   end
 
-  # app/controllers/concerns/hyrax/download_analytics_behavior.rb:8
   describe '#track_download' do
     WebMock.after_request do |request_signature, response|
       Rails.logger.debug("Request #{request_signature} was made and #{response} was returned")
@@ -63,31 +79,13 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
 
     context 'with a created work' do
       let(:user) { FactoryBot.create(:user) }
-      let(:example_admin_set_id) { 'h128zk07m' }
-      let(:example_work_id) { '1z40m031g' }
       before { sign_in user }
       let(:file_set) do
         FactoryBot.create(:file_with_work, user: user, content: File.open("#{fixture_path}/files/image.png"))
       end
       let(:default_image) { ActionController::Base.helpers.image_path 'default.png' }
-      let(:mock_admin_set) { [{
-        'has_model_ssim' => ['AdminSet'],
-        'id' => example_admin_set_id,
-        'title_tesim' => ['Open_Access_Articles_and_Book_Chapters']}
-      ]
-      }
-      let(:mock_record) { [{
-        'has_model_ssim' => ['Article'],
-        'id' => example_work_id,
-        'title_tesim' => ['Key ethical issues discussed at CDC-sponsored international, regional meetings to explore cultural perspectives and contexts on pandemic influenza preparedness and response'],
-        'admin_set_tesim' => ['Open_Access_Articles_and_Book_Chapters']}
-      ]
-      }
-
 
       it 'sends a download event to analytics tracking platform upon successful download' do
-        allow(Hyrax::VirusCheckerService).to receive(:file_has_virus?) { false }
-        allow(SecureRandom).to receive(:uuid).and_return('555')
         request.env['HTTP_REFERER'] = 'http://example.com'
         stub = stub_request(:get, "#{spec_base_analytics_url}/matomo.php")
           .with(query: hash_including({'e_a' => 'DownloadIR',
@@ -103,10 +101,6 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
       end
 
       it 'records the download event in the database' do
-        allow(Hyrax::VirusCheckerService).to receive(:file_has_virus?) { false }
-        allow(SecureRandom).to receive(:uuid).and_return('555')
-        allow(controller).to receive(:fetch_record).and_return(mock_record)
-        allow(controller).to receive(:fetch_admin_set).and_return(mock_admin_set)
         request.env['HTTP_REFERER'] = 'http://example.com'
 
         expect {
@@ -123,10 +117,6 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
 
       it 'updates the download count if the record already exists' do
         existing_download_count = 5
-        allow(Hyrax::VirusCheckerService).to receive(:file_has_virus?) { false }
-        allow(SecureRandom).to receive(:uuid).and_return('555')
-        allow(controller).to receive(:fetch_record).and_return(mock_record)
-        allow(controller).to receive(:fetch_admin_set).and_return(mock_admin_set)
         request.env['HTTP_REFERER'] = 'http://example.com'
 
         existing_stat = HycDownloadStat.create!(
@@ -155,7 +145,6 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
         bot_user_agents = ['googlebot', 'bingbot']
         bot_user_agents.each do |bot_user_agent|
           allow(controller.request).to receive(:user_agent).and_return(bot_user_agent)
-          allow(SecureRandom).to receive(:uuid).and_return('555')
           request.env['HTTP_REFERER'] = 'http://example.com'
           request.headers['User-Agent'] = bot_user_agent
           stub = stub_request(:get, "#{spec_base_analytics_url}/matomo.php")
@@ -208,7 +197,6 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
     end
   end
 
-  # app/controllers/hyrax/downloads_controller.rb:6
   describe '#set_record_admin_set' do
     let(:solr_response) { { response: { docs: [{ admin_set_tesim: ['admin set for download controller'] }] } }.to_json }
     let(:empty_solr_response) { { response: { docs: [] } }.to_json }
@@ -243,10 +231,6 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
     context 'with file set for download' do
       let(:file_set) do
         FactoryBot.create(:file_with_work, user: @user, content: File.open("#{fixture_path}/files/image.png"))
-      end
-
-      before do
-        allow(Hyrax::VirusCheckerService).to receive(:file_has_virus?) { false }
       end
 
       it 'will add correct extension when mimetype has a different extension' do
@@ -306,10 +290,6 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
     context 'with file set for download without file extension' do
       let(:file_set) do
         FactoryBot.create(:file_with_work, user: @user, content: File.open("#{fixture_path}/files/no_extension"))
-      end
-
-      before do
-        allow(Hyrax::VirusCheckerService).to receive(:file_has_virus?) { false }
       end
 
       it 'will add extension added when vocab provides one' do
