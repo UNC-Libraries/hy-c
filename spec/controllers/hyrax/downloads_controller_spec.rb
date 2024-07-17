@@ -5,7 +5,7 @@ require Rails.root.join('app/overrides/controllers/hyrax/downloads_controller_ov
 
 RSpec.describe Hyrax::DownloadsController, type: :controller do
   routes { Hyrax::Engine.routes }
-  let(:user) { FactoryBot.create(:user) }
+  let(:user) { FactoryBot.create(:user, uid: 'downloads_controller_test_user') }
   let(:spec_base_analytics_url) { 'https://analytics-qa.lib.unc.edu' }
   let(:spec_site_id) { '5' }
   let(:spec_auth_token) { 'testtoken' }
