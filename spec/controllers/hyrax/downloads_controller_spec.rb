@@ -5,6 +5,7 @@ require Rails.root.join('app/overrides/controllers/hyrax/downloads_controller_ov
 
 RSpec.describe Hyrax::DownloadsController, type: :controller do
   routes { Hyrax::Engine.routes }
+  let(:user) { FactoryBot.create(:user) }
   let(:spec_base_analytics_url) { 'https://analytics-qa.lib.unc.edu' }
   let(:spec_site_id) { '5' }
   let(:spec_auth_token) { 'testtoken' }
@@ -28,6 +29,9 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
     'admin_set_tesim' => ['Open_Access_Articles_and_Book_Chapters']}
   ]
   }
+  let(:file_set) do
+    FactoryBot.create(:file_with_work, user: user, content: File.open("#{fixture_path}/files/image.png"))
+  end
 
   around do |example|
     # Set the environment variables for the test
@@ -47,6 +51,8 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
   before do
     ActiveFedora::Cleaner.clean!
     allow(stub_matomo)
+    @user = user
+    sign_in @user
     allow(controller).to receive(:fetch_record).and_return(mock_record)
     allow(controller).to receive(:fetch_admin_set).and_return(mock_admin_set)
     allow(Hyrax::Analytics.config).to receive(:site_id).and_return(spec_site_id)
@@ -78,11 +84,6 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
     end
 
     context 'with a created work' do
-      let(:user) { FactoryBot.create(:user) }
-      before { sign_in user }
-      let(:file_set) do
-        FactoryBot.create(:file_with_work, user: user, content: File.open("#{fixture_path}/files/image.png"))
-      end
       let(:default_image) { ActionController::Base.helpers.image_path 'default.png' }
 
       it 'sends a download event to analytics tracking platform upon successful download' do
@@ -90,7 +91,6 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
         stub = stub_request(:get, "#{spec_base_analytics_url}/matomo.php")
           .with(query: hash_including({'e_a' => 'DownloadIR',
                                       'e_c' => 'Unknown',
-                                      # 'e_n' => file_set.id,
                                       'e_v' => 'referral',
                                       'urlref' => 'http://example.com',
                                       'url' => "http://test.host/downloads/#{file_set.id}"
@@ -174,7 +174,6 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
         stub = stub_request(:get, "#{spec_base_analytics_url}/matomo.php")
         .with(query: hash_including({'e_a' => 'DownloadIR',
                                     'e_c' => 'Unknown',
-                                    # 'e_n' => file_set.id,
                                     'e_v' => 'direct',
                                     'urlref' => nil,
                                     'url' => "http://test.host/downloads/#{file_set.id}"
@@ -194,6 +193,49 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
         expect(stub).to have_been_requested.times(1) # must be after the method call that creates request
         expect(Rails.logger).to have_received(:error).exactly(1).times
       end
+    end
+  end
+
+  describe '#create_download_stat' do
+    before do
+      allow(controller).to receive(:fileset_id).and_return(file_set.id)
+    end
+
+    it 'records the download event in the database' do
+      expect {
+        controller.send(:create_download_stat)
+      }.to change { HycDownloadStat.count }.by(1)
+
+      stat = HycDownloadStat.last
+      expect(stat.fileset_id).to eq(file_set.id)
+      expect(stat.work_id).to eq(example_work_id)
+      expect(stat.admin_set_id).to eq(example_admin_set_id)
+      expect(stat.date).to eq(Date.today.beginning_of_month)
+      expect(stat.download_count).to eq(1)
+    end
+
+    it 'updates the download count if the record already exists' do
+      existing_download_count = 5
+
+      existing_stat = HycDownloadStat.create!(
+        fileset_id: file_set.id,
+        work_id: example_work_id,
+        admin_set_id: example_admin_set_id,
+        work_type: 'Article',
+        date: Date.today.beginning_of_month,
+        download_count: existing_download_count
+      )
+
+      expect {
+        controller.send(:create_download_stat)
+      }.not_to change { HycDownloadStat.count }
+
+      stat = HycDownloadStat.last
+      expect(stat.fileset_id).to eq(file_set.id)
+      expect(stat.work_id).to eq(example_work_id)
+      expect(stat.admin_set_id).to eq(example_admin_set_id)
+      expect(stat.date).to eq(Date.today.beginning_of_month)
+      expect(stat.download_count).to eq(existing_download_count + 1)
     end
   end
 
@@ -223,11 +265,6 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
   end
 
   describe '#download_file' do
-    before do
-      @user = FactoryBot.create(:user)
-      sign_in @user
-    end
-
     context 'with file set for download' do
       let(:file_set) do
         FactoryBot.create(:file_with_work, user: @user, content: File.open("#{fixture_path}/files/image.png"))
@@ -287,6 +324,7 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
         expect(response.headers['Content-Range']).to include 'bytes 0-19101/19102'
       end
     end
+
     context 'with file set for download without file extension' do
       let(:file_set) do
         FactoryBot.create(:file_with_work, user: @user, content: File.open("#{fixture_path}/files/no_extension"))
