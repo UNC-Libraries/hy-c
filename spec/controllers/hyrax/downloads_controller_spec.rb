@@ -196,49 +196,6 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
     end
   end
 
-  describe '#create_download_stat' do
-    before do
-      allow(controller).to receive(:fileset_id).and_return(file_set.id)
-    end
-
-    it 'records the download event in the database' do
-      expect {
-        controller.send(:create_download_stat)
-      }.to change { HycDownloadStat.count }.by(1)
-
-      stat = HycDownloadStat.last
-      expect(stat.fileset_id).to eq(file_set.id)
-      expect(stat.work_id).to eq(example_work_id)
-      expect(stat.admin_set_id).to eq(example_admin_set_id)
-      expect(stat.date).to eq(Date.today.beginning_of_month)
-      expect(stat.download_count).to eq(1)
-    end
-
-    it 'updates the download count if the record already exists' do
-      existing_download_count = 5
-
-      existing_stat = HycDownloadStat.create!(
-        fileset_id: file_set.id,
-        work_id: example_work_id,
-        admin_set_id: example_admin_set_id,
-        work_type: 'Article',
-        date: Date.today.beginning_of_month,
-        download_count: existing_download_count
-      )
-
-      expect {
-        controller.send(:create_download_stat)
-      }.not_to change { HycDownloadStat.count }
-
-      stat = HycDownloadStat.last
-      expect(stat.fileset_id).to eq(file_set.id)
-      expect(stat.work_id).to eq(example_work_id)
-      expect(stat.admin_set_id).to eq(example_admin_set_id)
-      expect(stat.date).to eq(Date.today.beginning_of_month)
-      expect(stat.download_count).to eq(existing_download_count + 1)
-    end
-  end
-
   describe '#set_record_admin_set' do
     let(:solr_response) { { response: { docs: [{ admin_set_tesim: ['admin set for download controller'] }] } }.to_json }
     let(:empty_solr_response) { { response: { docs: [] } }.to_json }
@@ -345,6 +302,64 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
         expect(response).to be_successful
         expect(response.headers['Content-Disposition']).to include 'filename="no_extension"'
       end
+    end
+  end
+
+  describe '#fetch_record' do
+    it 'fetches the record from Solr' do
+      expect(controller.send(:fetch_record)).to eq(mock_record)
+    end
+  end
+
+  describe '#fetch_admin_set' do
+    it 'fetches the admin set from Solr' do
+      expect(controller.send(:fetch_admin_set)).to eq(mock_admin_set)
+    end
+  end
+
+  describe '#admin_set_id' do
+    it 'returns the admin set id' do
+      expect(controller.send(:admin_set_id)).to eq('h128zk07m')
+    end
+  end
+
+  describe '#record_id' do
+    it 'returns the record id' do
+      expect(controller.send(:record_id)).to eq('1z40m031g')
+    end
+
+    it 'returns Unknown if the record is blank' do
+      allow(controller).to receive(:fetch_record).and_return([])
+      expect(controller.send(:record_id)).to eq('Unknown')
+    end
+  end
+
+  describe '#fileset_id' do
+    it 'returns the fileset id from params' do
+      controller.params = { id: file_set.id }
+      expect(controller.send(:fileset_id)).to eq(file_set.id)
+    end
+
+    it 'returns Unknown if params id is missing' do
+      controller.params = {}
+      expect(controller.send(:fileset_id)).to eq('Unknown')
+    end
+  end
+
+  describe '#record_title' do
+    it 'returns the record title' do
+      expect(controller.send(:record_title)).to eq('Key ethical issues discussed at CDC-sponsored international, regional meetings to explore cultural perspectives and contexts on pandemic influenza preparedness and response')
+    end
+
+    it 'returns Unknown if the record title is blank' do
+      allow(controller).to receive(:fetch_record).and_return([{ 'title_tesim' => nil }])
+      expect(controller.send(:record_title)).to eq('Unknown')
+    end
+  end
+
+  describe '#site_id' do
+    it 'returns the site id from ENV' do
+      expect(controller.send(:site_id)).to eq('5')
     end
   end
 end
