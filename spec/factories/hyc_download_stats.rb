@@ -6,7 +6,7 @@ FactoryBot.define do
     sequence(:work_id) { |n| n.to_s }
     sequence(:admin_set_id) { |n| n.to_s }
     sequence(:work_type) { |n| n.to_s }
-    date { Date.today }
+    date { Date.today.beginning_of_month }
     download_count { 0 }
   end
 end

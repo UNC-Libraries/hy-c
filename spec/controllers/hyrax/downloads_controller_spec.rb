@@ -91,6 +91,7 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
         stub = stub_request(:get, "#{spec_base_analytics_url}/matomo.php")
           .with(query: hash_including({'e_a' => 'DownloadIR',
                                       'e_c' => 'Unknown',
+                                      'e_n' => file_set.id,
                                       'e_v' => 'referral',
                                       'urlref' => 'http://example.com',
                                       'url' => "http://test.host/downloads/#{file_set.id}"
@@ -151,6 +152,7 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
             .with(query: hash_including({
               'e_a' => 'DownloadIR',
               'e_c' => 'Unknown',
+              'e_n' => file_set.id,
               'e_v' => 'referral',
               'urlref' => 'http://example.com',
               'url' => "http://test.host/downloads/#{file_set.id}"
@@ -174,6 +176,7 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
         stub = stub_request(:get, "#{spec_base_analytics_url}/matomo.php")
         .with(query: hash_including({'e_a' => 'DownloadIR',
                                     'e_c' => 'Unknown',
+                                    'e_n' => file_set.id,
                                     'e_v' => 'direct',
                                     'urlref' => nil,
                                     'url' => "http://test.host/downloads/#{file_set.id}"

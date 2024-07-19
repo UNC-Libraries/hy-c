@@ -77,7 +77,8 @@ module Hyc
         if stat.save
           Rails.logger.debug("Database entry for fileset_id: #{fileset_id} successfully saved with download count: #{stat.download_count}.")
         else
-          Rails.logger.error("Failed to update database entry for fileset_id: #{fileset_id}.")
+          Rails.logger.error("Failed to update database entry for fileset_id: #{fileset_id}." \
+                             "Errors: #{stat.errors.full_messages}")
         end
       end
 
