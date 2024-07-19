@@ -5,6 +5,7 @@ require Rails.root.join('app/overrides/controllers/hyrax/downloads_controller_ov
 
 RSpec.describe Hyrax::DownloadsController, type: :controller do
   routes { Hyrax::Engine.routes }
+  let(:user) { FactoryBot.create(:user, uid: 'downloads_controller_test_user') }
   let(:spec_base_analytics_url) { 'https://analytics-qa.lib.unc.edu' }
   let(:spec_site_id) { '5' }
   let(:spec_auth_token) { 'testtoken' }
@@ -12,6 +13,24 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
     stub_request(:get, "#{spec_base_analytics_url}/matomo.php").with(query: hash_including({'token_auth' => 'testtoken',
                                                                        'idsite' => '5'}))
     .to_return(status: 200, body: '', headers: {})
+  end
+  let(:example_admin_set_id) { 'h128zk07m' }
+  let(:example_work_id) { '1z40m031g' }
+  let(:mock_admin_set) { [{
+    'has_model_ssim' => ['AdminSet'],
+    'id' => 'h128zk07m',
+    'title_tesim' => ['Open_Access_Articles_and_Book_Chapters']}
+  ]
+  }
+  let(:mock_record) { [{
+    'has_model_ssim' => ['Article'],
+    'id' =>  '1z40m031g',
+    'title_tesim' => ['Key ethical issues discussed at CDC-sponsored international, regional meetings to explore cultural perspectives and contexts on pandemic influenza preparedness and response'],
+    'admin_set_tesim' => ['Open_Access_Articles_and_Book_Chapters']}
+  ]
+  }
+  let(:file_set) do
+    FactoryBot.create(:file_with_work, user: user, content: File.open("#{fixture_path}/files/image.png"))
   end
 
   around do |example|
@@ -32,12 +51,15 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
   before do
     ActiveFedora::Cleaner.clean!
     allow(stub_matomo)
-    allow(Hyrax::Analytics.config).to receive(:site_id).and_return('5')
+    @user = user
+    sign_in @user
+    allow(controller).to receive(:fetch_record).and_return(mock_record)
+    allow(controller).to receive(:fetch_admin_set).and_return(mock_admin_set)
+    allow(Hyrax::Analytics.config).to receive(:site_id).and_return(spec_site_id)
     allow(SecureRandom).to receive(:uuid).and_return('555')
     allow(Hyrax::VirusCheckerService).to receive(:file_has_virus?) { false }
   end
 
-  # app/controllers/concerns/hyrax/download_analytics_behavior.rb:8
   describe '#track_download' do
     WebMock.after_request do |request_signature, response|
       Rails.logger.debug("Request #{request_signature} was made and #{response} was returned")
@@ -62,21 +84,14 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
     end
 
     context 'with a created work' do
-      let(:user) { FactoryBot.create(:user) }
-      before { sign_in user }
-      let(:file_set) do
-        FactoryBot.create(:file_with_work, user: user, content: File.open("#{fixture_path}/files/image.png"))
-      end
       let(:default_image) { ActionController::Base.helpers.image_path 'default.png' }
 
-      it 'can use a fake request' do
-        allow(Hyrax::VirusCheckerService).to receive(:file_has_virus?) { false }
-        allow(SecureRandom).to receive(:uuid).and_return('555')
+      it 'sends a download event to analytics tracking platform upon successful download' do
         request.env['HTTP_REFERER'] = 'http://example.com'
         stub = stub_request(:get, "#{spec_base_analytics_url}/matomo.php")
           .with(query: hash_including({'e_a' => 'DownloadIR',
                                       'e_c' => 'Unknown',
-                                      # 'e_n' => file_set.id,
+                                      'e_n' => file_set.id,
                                       'e_v' => 'referral',
                                       'urlref' => 'http://example.com',
                                       'url' => "http://test.host/downloads/#{file_set.id}"
@@ -86,18 +101,58 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
         expect(stub).to have_been_requested.times(1) # must be after the method call that creates request
       end
 
+      it 'records the download event in the database' do
+        request.env['HTTP_REFERER'] = 'http://example.com'
+
+        expect {
+          get :show, params: { id: file_set.id }
+        }.to change { HycDownloadStat.count }.by(1)
+
+        stat = HycDownloadStat.last
+        expect(stat.fileset_id).to eq(file_set.id)
+        expect(stat.work_id).to eq(example_work_id)
+        expect(stat.admin_set_id).to eq(example_admin_set_id)
+        expect(stat.date).to eq(Date.today.beginning_of_month)
+        expect(stat.download_count).to eq(1)
+      end
+
+      it 'updates the download count if the record already exists' do
+        existing_download_count = 5
+        request.env['HTTP_REFERER'] = 'http://example.com'
+
+        existing_stat = HycDownloadStat.create!(
+          fileset_id: file_set.id,
+          work_id: example_work_id,
+          admin_set_id: example_admin_set_id,
+          work_type: 'Article',
+          date: Date.today.beginning_of_month,
+          download_count: existing_download_count
+        )
+
+        expect {
+          get :show, params: { id: file_set.id }
+        }.not_to change { HycDownloadStat.count }
+
+        stat = HycDownloadStat.last
+        expect(stat.fileset_id).to eq(file_set.id)
+        expect(stat.work_id).to eq(example_work_id)
+        expect(stat.admin_set_id).to eq(example_admin_set_id)
+        expect(stat.date).to eq(Date.today.beginning_of_month)
+        expect(stat.download_count).to eq(existing_download_count + 1)
+      end
+
       it 'does not track downloads for well known bot user agents' do
        # Testing with two well known user agents to account for potential changes in bot filtering due to updates in the Browser gem
         bot_user_agents = ['googlebot', 'bingbot']
         bot_user_agents.each do |bot_user_agent|
           allow(controller.request).to receive(:user_agent).and_return(bot_user_agent)
-          allow(SecureRandom).to receive(:uuid).and_return('555')
           request.env['HTTP_REFERER'] = 'http://example.com'
           request.headers['User-Agent'] = bot_user_agent
           stub = stub_request(:get, "#{spec_base_analytics_url}/matomo.php")
             .with(query: hash_including({
               'e_a' => 'DownloadIR',
               'e_c' => 'Unknown',
+              'e_n' => file_set.id,
               'e_v' => 'referral',
               'urlref' => 'http://example.com',
               'url' => "http://test.host/downloads/#{file_set.id}"
@@ -121,7 +176,7 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
         stub = stub_request(:get, "#{spec_base_analytics_url}/matomo.php")
         .with(query: hash_including({'e_a' => 'DownloadIR',
                                     'e_c' => 'Unknown',
-                                    # 'e_n' => file_set.id,
+                                    'e_n' => file_set.id,
                                     'e_v' => 'direct',
                                     'urlref' => nil,
                                     'url' => "http://test.host/downloads/#{file_set.id}"
@@ -144,7 +199,6 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
     end
   end
 
-  # app/controllers/hyrax/downloads_controller.rb:6
   describe '#set_record_admin_set' do
     let(:solr_response) { { response: { docs: [{ admin_set_tesim: ['admin set for download controller'] }] } }.to_json }
     let(:empty_solr_response) { { response: { docs: [] } }.to_json }
@@ -171,18 +225,9 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
   end
 
   describe '#download_file' do
-    before do
-      @user = FactoryBot.create(:user)
-      sign_in @user
-    end
-
     context 'with file set for download' do
       let(:file_set) do
         FactoryBot.create(:file_with_work, user: @user, content: File.open("#{fixture_path}/files/image.png"))
-      end
-
-      before do
-        allow(Hyrax::VirusCheckerService).to receive(:file_has_virus?) { false }
       end
 
       it 'will add correct extension when mimetype has a different extension' do
@@ -239,13 +284,10 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
         expect(response.headers['Content-Range']).to include 'bytes 0-19101/19102'
       end
     end
+
     context 'with file set for download without file extension' do
       let(:file_set) do
         FactoryBot.create(:file_with_work, user: @user, content: File.open("#{fixture_path}/files/no_extension"))
-      end
-
-      before do
-        allow(Hyrax::VirusCheckerService).to receive(:file_has_virus?) { false }
       end
 
       it 'will add extension added when vocab provides one' do
@@ -263,6 +305,64 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
         expect(response).to be_successful
         expect(response.headers['Content-Disposition']).to include 'filename="no_extension"'
       end
+    end
+  end
+
+  describe '#fetch_record' do
+    it 'fetches the record from Solr' do
+      expect(controller.send(:fetch_record)).to eq(mock_record)
+    end
+  end
+
+  describe '#fetch_admin_set' do
+    it 'fetches the admin set from Solr' do
+      expect(controller.send(:fetch_admin_set)).to eq(mock_admin_set)
+    end
+  end
+
+  describe '#admin_set_id' do
+    it 'returns the admin set id' do
+      expect(controller.send(:admin_set_id)).to eq('h128zk07m')
+    end
+  end
+
+  describe '#record_id' do
+    it 'returns the record id' do
+      expect(controller.send(:record_id)).to eq('1z40m031g')
+    end
+
+    it 'returns Unknown if the record is blank' do
+      allow(controller).to receive(:fetch_record).and_return([])
+      expect(controller.send(:record_id)).to eq('Unknown')
+    end
+  end
+
+  describe '#fileset_id' do
+    it 'returns the fileset id from params' do
+      controller.params = { id: file_set.id }
+      expect(controller.send(:fileset_id)).to eq(file_set.id)
+    end
+
+    it 'returns Unknown if params id is missing' do
+      controller.params = {}
+      expect(controller.send(:fileset_id)).to eq('Unknown')
+    end
+  end
+
+  describe '#record_title' do
+    it 'returns the record title' do
+      expect(controller.send(:record_title)).to eq('Key ethical issues discussed at CDC-sponsored international, regional meetings to explore cultural perspectives and contexts on pandemic influenza preparedness and response')
+    end
+
+    it 'returns Unknown if the record title is blank' do
+      allow(controller).to receive(:fetch_record).and_return([{ 'title_tesim' => nil }])
+      expect(controller.send(:record_title)).to eq('Unknown')
+    end
+  end
+
+  describe '#site_id' do
+    it 'returns the site id from ENV' do
+      expect(controller.send(:site_id)).to eq('5')
     end
   end
 end

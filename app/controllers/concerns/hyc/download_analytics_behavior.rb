@@ -12,7 +12,7 @@ module Hyc
           return
         end
         if Hyrax::Analytics.config.auth_token.present? && !request.url.match('thumbnail')
-          Rails.logger.debug("Recording download event for #{params[:id]}")
+          Rails.logger.debug("Recording download event for #{fileset_id}")
           medium = request.referrer.present? ? 'referral' : 'direct'
 
           client_ip = request.remote_ip
@@ -34,7 +34,7 @@ module Hyc
             apiv: '1',
             e_a: 'DownloadIR',
             e_c: @admin_set_name,
-            e_n: params[:id] || 'Unknown',
+            e_n: fileset_id,
             e_v: medium,
             _id: client_id,
             cip: client_ip,
@@ -50,8 +50,35 @@ module Hyc
           if response.code >= 300
             Rails.logger.error("DownloadAnalyticsBehavior received an error response #{response.code} for matomo query: #{uri}")
           end
+          # Send download events to db
+          create_download_stat
           Rails.logger.debug("DownloadAnalyticsBehavior request completed #{response.code}")
           response.code
+        end
+      end
+
+      def create_download_stat
+        record_id_value = record_id
+        admin_set_id_value = admin_set_id
+        work_type = fetch_record.dig(0, 'has_model_ssim', 0)
+        date = Date.today
+
+        Rails.logger.debug('Creating or updating hyc-download-stat database entry with the following attributes:')
+        Rails.logger.debug("fileset_id: #{fileset_id}, work_id: #{record_id_value}, admin_set_id: #{admin_set_id_value}, work_type: #{work_type}, date: #{date.beginning_of_month}")
+
+        stat = HycDownloadStat.find_or_initialize_by(
+          fileset_id: fileset_id,
+          work_id: record_id_value,
+          admin_set_id: admin_set_id_value,
+          work_type: work_type,
+          date: date.beginning_of_month
+        )
+        stat.download_count += 1
+        if stat.save
+          Rails.logger.debug("Database entry for fileset_id: #{fileset_id} successfully saved with download count: #{stat.download_count}.")
+        else
+          Rails.logger.error("Failed to update database entry for fileset_id: #{fileset_id}." \
+                             "Errors: #{stat.errors.full_messages}")
         end
       end
 
@@ -61,7 +88,15 @@ module Hyc
       end
 
       def fetch_record
-        @record ||= ActiveFedora::SolrService.get("file_set_ids_ssim:#{params[:id]}", rows: 1)['response']['docs']
+        @record ||= ActiveFedora::SolrService.get("file_set_ids_ssim:#{fileset_id}", rows: 1)['response']['docs']
+      end
+
+      def fetch_admin_set
+        @admin_set ||= ActiveFedora::SolrService.get("title_tesim:#{@admin_set_name}", rows: 1)['response']['docs']
+      end
+
+      def admin_set_id
+        @admin_set_id ||= fetch_admin_set.dig(0, 'id')
       end
 
       def record_id
@@ -70,6 +105,10 @@ module Hyc
                        else
                          'Unknown'
                        end
+      end
+
+      def fileset_id
+        @fileset_id ||= params[:id] || 'Unknown'
       end
 
       def record_title
