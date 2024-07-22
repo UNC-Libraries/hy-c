@@ -59,6 +59,12 @@ RSpec.describe AccountsController, type: :controller do
         expect(response).to redirect_to('/admin/users?locale=en')
         expect(flash[:notice]).to eq "A user account for #{invalid_attributes[:onyen]}@ad.unc.edu already exists."
       end
+
+      it 'catches case differences' do
+        post :create, params: { account: { onyen: 'AdMiN' } }
+        expect(response).to redirect_to('/admin/users?locale=en')
+        expect(flash[:notice]).to eq "A user account for #{invalid_attributes[:onyen]}@ad.unc.edu already exists."
+      end
     end
   end
 
