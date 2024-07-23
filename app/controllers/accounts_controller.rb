@@ -26,6 +26,7 @@ class AccountsController < ApplicationController
   end
 
   def create_user(onyen)
+    onyen = onyen.downcase
     email = "#{onyen}@ad.unc.edu"
     if User.where(uid: onyen).blank?
       user = User.where(uid: onyen).first_or_create(provider: 'shibboleth', email: email)
