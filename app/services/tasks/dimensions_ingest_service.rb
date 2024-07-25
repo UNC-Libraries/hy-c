@@ -130,38 +130,57 @@ module Tasks
     end
 
     def extract_pdf(publication)
-      pdf_url = publication['linkout'] ? URI.encode(publication['linkout']) : nil
-      encoded_pdf_url = URI.encode(pdf_url)
-
+      pdf_url = publication['linkout'] ? publication['linkout'] : nil
+      # Set pdf_attached to false by default
       publication['pdf_attached'] = false
-      unless publication['linkout']
+      headers = {}
+
+      unless pdf_url
         Rails.logger.warn('Failed to retrieve PDF. Publication does not have a linkout URL.')
         return nil
       end
+
+      if pdf_url.include?('hindawi.com')
+        # Use the Wiiley Online Library text data mining API to retrieve the PDF
+        encoded_doi = URI.encode_www_form_component(publication['doi'])
+        encoded_url = "https://api.wiley.com/onlinelibrary/tdm/v1/articles/#{encoded_doi}"
+        headers['Wiley-TDM-Client-Token'] = "#{ENV['WILEY_TDM_API_TOKEN']}"
+      else
+        # Use the encoded linkout URL from dimensions otherwise
+        encoded_url = URI.encode(pdf_url)
+      end
+      download_pdf(encoded_url, publication, headers)
+    end
+
+    def download_pdf(encoded_url, publication, headers)
       begin
-        response = HTTParty.head(encoded_pdf_url)
-        # Verify the content type is PDF; raise an error if not.
+        # Verify the content type of the PDF before downloading
+        response = HTTParty.head(encoded_url, headers: headers)
         if response.code == 200
+          # Log a warning if the content type is not a PDF
           raise "Incorrect content type: '#{response.headers['content-type']}'" unless response.headers['content-type']&.include?('application/pdf')
         else
-          # Provide a warning and proceed with GET in case the HEAD request failed
-          Rails.logger.warn("Received a non-200 response code (#{response.code}) when making a HEAD request to the PDF URL: #{pdf_url}")
+         # Log a warning if the response code is not 200
+          Rails.logger.warn("Received a non-200 response code (#{response.code}) when making a HEAD request to the PDF URL: #{encoded_url}")
         end
 
-        pdf_response = HTTParty.get(encoded_pdf_url)
+        # Attempt to retrieve the PDF from the encoded URL
+        pdf_response = HTTParty.get(encoded_url, headers: headers)
         raise "Failed to download PDF: HTTP status '#{pdf_response.code}'" unless pdf_response.code == 200
         raise "Incorrect content type: '#{pdf_response.headers['content-type']}'" unless pdf_response.headers['content-type']&.include?('application/pdf')
 
+        # Generate a unique filename for the PDF and save it to the temporary storage directory
         storage_dir = ENV['TEMP_STORAGE']
         time_stamp = Time.now.strftime('%Y%m%d%H%M%S%L')
         filename = "downloaded_pdf_#{time_stamp}.pdf"
         file_path = File.join(storage_dir, filename)
 
+        # Write the PDF to the file system and mark the publication as having a PDF attached
         File.open(file_path, 'wb') { |file| file.write(pdf_response.body) }
         publication['pdf_attached'] = true
         file_path  # Return the file path
       rescue StandardError => e
-        Rails.logger.error("Failed to retrieve PDF from URL '#{pdf_url}'. #{e.message}")
+        Rails.logger.error("Failed to retrieve PDF from URL '#{encoded_url}'. #{e.message}")
         nil
       end
     end
