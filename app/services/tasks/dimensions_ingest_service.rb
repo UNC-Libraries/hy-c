@@ -139,9 +139,9 @@ module Tasks
         Rails.logger.warn('Failed to retrieve PDF. Publication does not have a linkout URL.')
         return nil
       end
-
-      if pdf_url.include?('hindawi.com')
-        # Use the Wiiley Online Library text data mining API to retrieve the PDF
+      # Use the Wiiley Online Library text data mining API to retrieve the PDF if it's a Wiley publication
+      if pdf_url.include?('hindawi.com') || pdf_url.include?('wiley.com')
+        Rails.logger.info("Detected a Wiley affiliated publication, attempting to retrieve PDF with their API.")
         encoded_doi = URI.encode_www_form_component(publication['doi'])
         encoded_url = "https://api.wiley.com/onlinelibrary/tdm/v1/articles/#{encoded_doi}"
         headers['Wiley-TDM-Client-Token'] = "#{ENV['WILEY_TDM_API_TOKEN']}"
@@ -150,6 +150,40 @@ module Tasks
         encoded_url = URI.encode(pdf_url)
       end
       download_pdf(encoded_url, publication, headers)
+    end
+
+    def m_t
+      file_path = File.join(File.dirname(__FILE__), 'dim_batch1_downloads.csv')
+      output_file_path = File.join(File.dirname(__FILE__), 'test_out_latest.csv')
+      # # Initialize an empty array to hold the first column's values
+      first_column = []
+      failing_urls = []
+
+      # # Read the CSV file and extract the first column
+      CSV.foreach(file_path, quote_char: "\x00") do |row|
+        first_column << row[0]  # Assuming the first column is at index 0
+      end
+
+      for linkout in first_column
+        # Sample publication for testing (m_t = manual_test)
+        publication = {
+          'linkout' => linkout,  # Replace with a valid PDF URL for testing
+          'title' => 'Test Publication',
+          'doi' => '10.1111/jgs.14298'
+        }
+        pdf_path = extract_pdf(publication)
+        if !pdf_path
+          failing_urls << linkout
+        end
+      end
+
+      # Write the failing URLs to a new CSV file
+      CSV.open(output_file_path, 'wb') do |csv|
+        failing_urls.each do |url|
+          csv << [url]
+        end
+      end
+      output_file_path
     end
 
     def download_pdf(encoded_url, publication, headers)
