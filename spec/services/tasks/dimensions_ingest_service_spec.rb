@@ -27,10 +27,7 @@ RSpec.describe Tasks::DimensionsIngestService do
     FactoryBot.create(:workflow_state, workflow_id: workflow.id, name: 'deposited')
   end
   let(:pdf_content) { File.binread(File.join(Rails.root, '/spec/fixtures/files/sample_pdf.pdf')) }
-  let(:test_publications) do
-    JSON.parse(dimensions_ingest_test_fixture)['publications']
-  end
-
+  let(:test_publications) { JSON.parse(dimensions_ingest_test_fixture)['publications'] }
 
   before do
     ActiveFedora::Cleaner.clean!
@@ -186,7 +183,7 @@ RSpec.describe Tasks::DimensionsIngestService do
 
   describe '#extract_pdf' do
     it 'extracts the PDF from the publication' do
-      publication = test_publications.first
+      publication = test_publications.last
       pdf_path = service.extract_pdf(publication)
       expect(File.exist?(pdf_path)).to be true
       expect(publication['pdf_attached']).to be true
@@ -229,6 +226,30 @@ RSpec.describe Tasks::DimensionsIngestService do
       pdf_path = service.extract_pdf(publication)
       expect(publication['pdf_attached']).to be true
       expect(File.exist?(pdf_path)).to be true
+    end
+
+    context 'when the publication linkout url is a Wiley Online Library URL' do
+      let (:test_doi) { '10.1002/cne.24143' }
+      let (:encoded_doi) { URI.encode_www_form_component(test_doi) }
+      before do
+        allow(service).to receive(:download_pdf).and_call_original
+        stub_request(:head, "https://api.wiley.com/onlinelibrary/tdm/v1/articles/#{encoded_doi}")
+        .to_return(status: 200, headers: { 'Content-Type' => 'application/pdf' })
+        stub_request(:get, "https://api.wiley.com/onlinelibrary/tdm/v1/articles/#{encoded_doi}")
+        .to_return(body: pdf_content, status: 200, headers: { 'Content-Type' => 'application/pdf' })
+      end
+
+      it 'attempts to download a PDF using their API' do
+        publication = test_publications.first
+        publication['linkout'] = "https://onlinelibrary.wiley.com/doi/pdfdirect/#{test_doi}"
+        publication['doi'] = test_doi
+        pdf_path = service.extract_pdf(publication)
+        expect(service).to have_received(:download_pdf).with(
+          "https://api.wiley.com/onlinelibrary/tdm/v1/articles/#{encoded_doi}",
+          publication,
+          'Wiley-TDM-Client-Token' => ENV['WILEY_TDM_API_TOKEN']
+        )
+      end
     end
   end
 

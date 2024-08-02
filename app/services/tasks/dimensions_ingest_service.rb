@@ -139,7 +139,7 @@ module Tasks
         Rails.logger.warn('Failed to retrieve PDF. Publication does not have a linkout URL.')
         return nil
       end
-      # Use the Wiiley Online Library text data mining API to retrieve the PDF if it's a Wiley publication
+      # Use the Wiley Online Library text data mining API to retrieve the PDF if it's a Wiley publication
       if pdf_url.include?('hindawi.com') || pdf_url.include?('wiley.com')
         Rails.logger.info('Detected a Wiley affiliated publication, attempting to retrieve PDF with their API.')
         @wiley_token_used = true
