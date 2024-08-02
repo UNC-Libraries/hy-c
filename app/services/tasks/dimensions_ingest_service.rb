@@ -4,10 +4,10 @@ module Tasks
   class DimensionsIngestService
     include Tasks::IngestHelper
     attr_reader :admin_set, :depositor
-    UNC_GRID_ID = 'grid.410711.2'
 
     def initialize(config)
       @config = config
+      @wiley_token_used = false
       admin_set_title = @config['admin_set']
       @admin_set = ::AdminSet.where(title: admin_set_title)&.first
       raise(ActiveRecord::RecordNotFound, "Could not find AdminSet with title #{admin_set_title}") unless @admin_set.present?
@@ -141,7 +141,8 @@ module Tasks
       end
       # Use the Wiiley Online Library text data mining API to retrieve the PDF if it's a Wiley publication
       if pdf_url.include?('hindawi.com') || pdf_url.include?('wiley.com')
-        Rails.logger.info("Detected a Wiley affiliated publication, attempting to retrieve PDF with their API.")
+        Rails.logger.info('Detected a Wiley affiliated publication, attempting to retrieve PDF with their API.')
+        @wiley_token_used = true
         encoded_doi = URI.encode_www_form_component(publication['doi'])
         encoded_url = "https://api.wiley.com/onlinelibrary/tdm/v1/articles/#{encoded_doi}"
         headers['Wiley-TDM-Client-Token'] = "#{ENV['WILEY_TDM_API_TOKEN']}"
@@ -150,40 +151,6 @@ module Tasks
         encoded_url = URI.encode(pdf_url)
       end
       download_pdf(encoded_url, publication, headers)
-    end
-
-    def m_t
-      file_path = File.join(File.dirname(__FILE__), 'dim_batch1_downloads.csv')
-      output_file_path = File.join(File.dirname(__FILE__), 'test_out_latest.csv')
-      # # Initialize an empty array to hold the first column's values
-      first_column = []
-      failing_urls = []
-
-      # # Read the CSV file and extract the first column
-      CSV.foreach(file_path, quote_char: "\x00") do |row|
-        first_column << row[0]  # Assuming the first column is at index 0
-      end
-
-      for linkout in first_column
-        # Sample publication for testing (m_t = manual_test)
-        publication = {
-          'linkout' => linkout,  # Replace with a valid PDF URL for testing
-          'title' => 'Test Publication',
-          'doi' => '10.1111/jgs.14298'
-        }
-        pdf_path = extract_pdf(publication)
-        if !pdf_path
-          failing_urls << linkout
-        end
-      end
-
-      # Write the failing URLs to a new CSV file
-      CSV.open(output_file_path, 'wb') do |csv|
-        failing_urls.each do |url|
-          csv << [url]
-        end
-      end
-      output_file_path
     end
 
     def download_pdf(encoded_url, publication, headers)
@@ -200,7 +167,14 @@ module Tasks
 
         # Attempt to retrieve the PDF from the encoded URL
         pdf_response = HTTParty.get(encoded_url, headers: headers)
-        raise "Failed to download PDF: HTTP status '#{pdf_response.code}'" unless pdf_response.code == 200
+        if pdf_response.code != 200
+          e_message = "Failed to download PDF: HTTP status '#{pdf_response.code}'"
+          # Include specific error message for potential Wiley-TDM API rate limiting (pdf_response.code != 200 and the Wiley API token was used previously)
+          if headers.keys.include?('Wiley-TDM-Client-Token') && @wiley_token_used
+            e_message += ' (Possibly exceeded Wiley-TDM API rate limit) '
+          end
+          raise e_message
+        end
         raise "Incorrect content type: '#{pdf_response.headers['content-type']}'" unless pdf_response.headers['content-type']&.include?('application/pdf')
 
         # Generate a unique filename for the PDF and save it to the temporary storage directory

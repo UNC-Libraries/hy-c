@@ -104,12 +104,14 @@ RSpec.describe DimensionsReportMailer, type: :mailer do
         expect(mail.body.encoded).to include(publication[:title])
                                 .and include(publication[:id])
                                 .and include(publication[:url])
+                                .and include(publication[:linkout])
                                 .and include(publication[:pdf_attached])
       end
       report[:failed_to_ingest_rows].each do |publication|
         expect(mail.body.encoded).to include(publication[:title])
                                  .and include(publication[:id])
                                  .and include(publication[:error])
+                                 .and include(publication[:linkout])
       end
     end
 
