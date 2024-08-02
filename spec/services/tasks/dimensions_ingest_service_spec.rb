@@ -231,24 +231,36 @@ RSpec.describe Tasks::DimensionsIngestService do
     context 'when the publication linkout url is a Wiley Online Library URL' do
       let (:test_doi) { '10.1002/cne.24143' }
       let (:encoded_doi) { URI.encode_www_form_component(test_doi) }
+      let (:wiley_test_publication) do
+        publication = test_publications.first
+        publication['linkout'] = "https://onlinelibrary.wiley.com/doi/pdfdirect/#{test_doi}"
+        publication['doi'] = test_doi
+        publication
+      end
+
       before do
         allow(service).to receive(:download_pdf).and_call_original
         stub_request(:head, "https://api.wiley.com/onlinelibrary/tdm/v1/articles/#{encoded_doi}")
         .to_return(status: 200, headers: { 'Content-Type' => 'application/pdf' })
-        stub_request(:get, "https://api.wiley.com/onlinelibrary/tdm/v1/articles/#{encoded_doi}")
-        .to_return(body: pdf_content, status: 200, headers: { 'Content-Type' => 'application/pdf' })
       end
 
       it 'attempts to download a PDF using their API' do
-        publication = test_publications.first
-        publication['linkout'] = "https://onlinelibrary.wiley.com/doi/pdfdirect/#{test_doi}"
-        publication['doi'] = test_doi
-        pdf_path = service.extract_pdf(publication)
+        stub_request(:get, "https://api.wiley.com/onlinelibrary/tdm/v1/articles/#{encoded_doi}")
+        .to_return(body: pdf_content, status: 200, headers: { 'Content-Type' => 'application/pdf' })
+        pdf_path = service.extract_pdf(wiley_test_publication)
         expect(service).to have_received(:download_pdf).with(
           "https://api.wiley.com/onlinelibrary/tdm/v1/articles/#{encoded_doi}",
-          publication,
+          wiley_test_publication,
           'Wiley-TDM-Client-Token' => ENV['WILEY_TDM_API_TOKEN']
         )
+      end
+
+      it 'raises a unique error if the Wiley API fails and the token has been used previously' do
+        allow(service).to receive(:wiley_token_used).and_return(true)
+        stub_request(:get, "https://api.wiley.com/onlinelibrary/tdm/v1/articles/#{encoded_doi}")
+        .to_return(body: pdf_content, status: 403, headers: { 'Content-Type' => 'application/pdf' })
+        expect(Rails.logger).to receive(:error).with("Failed to retrieve PDF from URL 'https://api.wiley.com/onlinelibrary/tdm/v1/articles/#{encoded_doi}'. Failed to download PDF: HTTP status '403' (Possibly exceeded Wiley-TDM API rate limit)")
+        service.extract_pdf(wiley_test_publication)
       end
     end
   end

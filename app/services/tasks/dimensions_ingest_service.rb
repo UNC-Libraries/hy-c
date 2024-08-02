@@ -7,7 +7,6 @@ module Tasks
 
     def initialize(config)
       @config = config
-      @wiley_token_used = false
       admin_set_title = @config['admin_set']
       @admin_set = ::AdminSet.where(title: admin_set_title)&.first
       raise(ActiveRecord::RecordNotFound, "Could not find AdminSet with title #{admin_set_title}") unless @admin_set.present?
@@ -154,6 +153,7 @@ module Tasks
     end
 
     def download_pdf(encoded_url, publication, headers)
+      puts "Downloading PDF from #{encoded_url}"
       begin
         # Verify the content type of the PDF before downloading
         response = HTTParty.head(encoded_url, headers: headers)
@@ -168,10 +168,11 @@ module Tasks
         # Attempt to retrieve the PDF from the encoded URL
         pdf_response = HTTParty.get(encoded_url, headers: headers)
         if pdf_response.code != 200
+          puts "Failed to download PDF: HTTP status '#{pdf_response.code}'"
           e_message = "Failed to download PDF: HTTP status '#{pdf_response.code}'"
           # Include specific error message for potential Wiley-TDM API rate limiting (pdf_response.code != 200 and the Wiley API token was used previously)
-          if headers.keys.include?('Wiley-TDM-Client-Token') && @wiley_token_used
-            e_message += ' (Possibly exceeded Wiley-TDM API rate limit) '
+          if headers.keys.include?('Wiley-TDM-Client-Token') && wiley_token_used
+            e_message += ' (Possibly exceeded Wiley-TDM API rate limit)'
           end
           raise e_message
         end
@@ -191,6 +192,10 @@ module Tasks
         Rails.logger.error("Failed to retrieve PDF from URL '#{encoded_url}'. #{e.message}")
         nil
       end
+    end
+
+    def wiley_token_used
+      @wiley_token_used ||= false
     end
   end
 end
