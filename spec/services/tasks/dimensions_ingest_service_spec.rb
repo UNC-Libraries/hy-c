@@ -52,9 +52,12 @@ RSpec.describe Tasks::DimensionsIngestService do
     # Override the depositor onyen for the duration of the test
   around do |example|
     dimensions_ingest_depositor_onyen = ENV['DIMENSIONS_INGEST_DEPOSITOR_ONYEN']
+    wiley_tdm_client_token = ENV['WILEY_TDM_API_TOKEN']
     ENV['DIMENSIONS_INGEST_DEPOSITOR_ONYEN'] = 'admin'
+    ENV['WILEY_TDM_API_TOKEN'] = 'test-token'
     example.run
     ENV['DIMENSIONS_INGEST_DEPOSITOR_ONYEN'] = dimensions_ingest_depositor_onyen
+    ENV['WILEY_TDM_API_TOKEN'] = wiley_tdm_client_token
   end
 
   describe '#initialize' do
