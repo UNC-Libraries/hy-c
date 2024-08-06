@@ -156,7 +156,7 @@ module Tasks
       puts "Downloading PDF from #{encoded_url}"
       begin
         # Enforce a delay before making the request
-        sleep @download_delay 
+        sleep @download_delay
         # Verify the content type of the PDF before downloading
         response = HTTParty.head(encoded_url, headers: headers)
         if response.code == 200
