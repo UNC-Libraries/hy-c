@@ -59,18 +59,18 @@ module Hyc
 
       def create_download_stat
         record_id_value = record_id
+        work_type_value = work_type
         admin_set_id_value = admin_set_id
-        work_type = fetch_record.dig(0, 'has_model_ssim', 0)
         date = Date.today
 
         Rails.logger.debug('Creating or updating hyc-download-stat database entry with the following attributes:')
-        Rails.logger.debug("fileset_id: #{fileset_id}, work_id: #{record_id_value}, admin_set_id: #{admin_set_id_value}, work_type: #{work_type}, date: #{date.beginning_of_month}")
+        Rails.logger.debug("fileset_id: #{fileset_id}, work_id: #{record_id_value}, admin_set_id: #{admin_set_id_value}, work_type: #{work_type_value}, date: #{date.beginning_of_month}")
 
         stat = HycDownloadStat.find_or_initialize_by(
           fileset_id: fileset_id,
           work_id: record_id_value,
           admin_set_id: admin_set_id_value,
-          work_type: work_type,
+          work_type: work_type_value,
           date: date.beginning_of_month
         )
         stat.download_count += 1
@@ -96,15 +96,15 @@ module Hyc
       end
 
       def admin_set_id
-        @admin_set_id ||= fetch_admin_set.dig(0, 'id')
+        @admin_set_id ||= fetch_admin_set.dig(0, 'id') || 'Unknown'
       end
 
       def record_id
-        @record_id ||= if !fetch_record.blank?
-                         fetch_record[0]['id']
-                       else
-                         'Unknown'
-                       end
+        @record_id ||= fetch_record.dig(0, 'id') || 'Unknown'
+      end
+
+      def work_type
+        @work_type ||= fetch_record.dig(0, 'has_model_ssim', 0) || 'Unknown'
       end
 
       def fileset_id

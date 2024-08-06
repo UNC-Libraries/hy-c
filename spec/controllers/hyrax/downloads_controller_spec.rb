@@ -111,6 +111,7 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
         stat = HycDownloadStat.last
         expect(stat.fileset_id).to eq(file_set.id)
         expect(stat.work_id).to eq(example_work_id)
+        expect(stat.work_type).to eq('Article')
         expect(stat.admin_set_id).to eq(example_admin_set_id)
         expect(stat.date).to eq(Date.today.beginning_of_month)
         expect(stat.download_count).to eq(1)
@@ -195,6 +196,29 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
         get :show, params: { id: file_set }
         expect(stub).to have_been_requested.times(1) # must be after the method call that creates request
         expect(Rails.logger).to have_received(:error).exactly(1).times
+      end
+    end
+
+    context 'fileset without a parent work' do
+      before do
+        allow(controller).to receive(:fetch_record).and_return([{}])
+        allow(controller).to receive(:fetch_admin_set).and_return([{}])
+      end
+
+      it 'records a download event with no work type' do
+        request.env['HTTP_REFERER'] = 'http://example.com'
+
+        expect {
+          get :show, params: { id: file_set.id }
+        }.to change { HycDownloadStat.count }.by(1)
+
+        stat = HycDownloadStat.last
+        expect(stat.fileset_id).to eq(file_set.id)
+        expect(stat.work_id).to eq('Unknown')
+        expect(stat.work_type).to eq('Unknown')
+        expect(stat.admin_set_id).to eq('Unknown')
+        expect(stat.date).to eq(Date.today.beginning_of_month)
+        expect(stat.download_count).to eq(1)
       end
     end
   end
