@@ -28,7 +28,7 @@
           <td style="border: 2px solid #dddddd; text-align: left; padding: 10px;"><%= publication[:id] %></td>
           <td style="border: 2px solid #dddddd; text-align: left; padding: 10px;"><a href="<%= publication[:url] %>"><%= publication[:url] %></a></td>
           <td style="border: 2px solid #dddddd; text-align: left; padding: 10px;"><%= publication[:pdf_attached] %></td>
-          <td style="border: 2px solid #dddddd; text-align: left; padding: 10px;"><%= publication[:linkout] %></td>
+          <td style="border: 2px solid #dddddd; text-align: left; padding: 10px;"><a href="<%= publication[:linkout].gsub('"', '\"') %>">Link</a></td>
           <td style="border: 2px solid #dddddd; text-align: left; padding: 10px;">N/A</td>
         </tr>
       <% end %>

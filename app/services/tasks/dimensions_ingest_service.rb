@@ -161,14 +161,13 @@ module Tasks
           # Log a warning if the content type is not a PDF
           raise "Incorrect content type: '#{response.headers['content-type']}'" unless response.headers['content-type']&.include?('application/pdf')
         else
-         # Log a warning if the response code is not 200
+          # Log a warning if the response code is not 200
           Rails.logger.warn("Received a non-200 response code (#{response.code}) when making a HEAD request to the PDF URL: #{encoded_url}")
         end
 
         # Attempt to retrieve the PDF from the encoded URL
         pdf_response = HTTParty.get(encoded_url, headers: headers)
         if pdf_response.code != 200
-          puts "Failed to download PDF: HTTP status '#{pdf_response.code}'"
           e_message = "Failed to download PDF: HTTP status '#{pdf_response.code}'"
           # Include specific error message for potential Wiley-TDM API rate limiting (pdf_response.code != 200 and the Wiley API token was used previously)
           if headers.keys.include?('Wiley-TDM-Client-Token') && wiley_token_used
