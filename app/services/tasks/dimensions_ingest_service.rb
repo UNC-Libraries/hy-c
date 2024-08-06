@@ -68,6 +68,7 @@ module Tasks
     def set_basic_attributes(article, publication)
       article.title = [publication['title']]
       article.admin_set = @admin_set
+      article.deposiotr = ENV['DIMENSIONS_INGEST_DEPOSITOR_ONYEN']
       article.creators_attributes = publication['authors'].map.with_index { |author, index| [index, author_to_hash(author, index)] }.to_h
       article.funder = publication['funders']&.map { |funder| funder['name'] }
       article.date_issued = publication['date']
