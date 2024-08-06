@@ -68,7 +68,7 @@ module Tasks
     def set_basic_attributes(article, publication)
       article.title = [publication['title']]
       article.admin_set = @admin_set
-      article.depositor = ENV['DIMENSIONS_INGEST_DEPOSITOR_ONYEN']
+      article.depositor = @config['depositor_onyen']
       article.creators_attributes = publication['authors'].map.with_index { |author, index| [index, author_to_hash(author, index)] }.to_h
       article.funder = publication['funders']&.map { |funder| funder['name'] }
       article.date_issued = publication['date']
@@ -173,7 +173,7 @@ module Tasks
           wiley_rate_exceeded = headers.keys.include?('Wiley-TDM-Client-Token') && pdf_response&.body.match?(/rate/i)
             # Retry the request after a delay if the Wiley-TDM API rate limit is exceeded
           if wiley_rate_exceeded
-            delay_time = 30
+            delay_time = @download_delay * 15
             Rails.logger.warn("Wiley-TDM API rate limit exceeded. Retrying request in #{delay_time} seconds.")
             # Retry the request after a delay if the Wiley-TDM API rate limit is exceeded
             sleep delay_time

@@ -8,7 +8,8 @@ RSpec.describe Tasks::DimensionsReportingService do
   let(:config) {
     {
       'admin_set' => 'Open_Access_Articles_and_Book_Chapters',
-      'depositor_onyen' => ENV['DIMENSIONS_INGEST_DEPOSITOR_ONYEN']
+      'depositor_onyen' => 'admin'
+      'download_delay' => 0
     }
   }
   let(:dimensions_ingest_test_fixture) do
