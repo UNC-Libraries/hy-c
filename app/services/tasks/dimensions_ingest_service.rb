@@ -68,7 +68,7 @@ module Tasks
     def set_basic_attributes(article, publication)
       article.title = [publication['title']]
       article.admin_set = @admin_set
-      article.deposiotr = ENV['DIMENSIONS_INGEST_DEPOSITOR_ONYEN']
+      article.depositor = ENV['DIMENSIONS_INGEST_DEPOSITOR_ONYEN']
       article.creators_attributes = publication['authors'].map.with_index { |author, index| [index, author_to_hash(author, index)] }.to_h
       article.funder = publication['funders']&.map { |funder| funder['name'] }
       article.date_issued = publication['date']
@@ -154,7 +154,6 @@ module Tasks
     end
 
     def download_pdf(encoded_url, publication, headers)
-      puts "Downloading PDF from #{encoded_url}"
       begin
         # Enforce a delay before making the request
         sleep @download_delay
@@ -171,12 +170,23 @@ module Tasks
         # Attempt to retrieve the PDF from the encoded URL
         pdf_response = HTTParty.get(encoded_url, headers: headers)
         if pdf_response.code != 200
-          e_message = "Failed to download PDF: HTTP status '#{pdf_response.code}'"
-          # Include specific error message for potential Wiley-TDM API rate limiting (pdf_response.code != 200 and the Wiley API response body mentions rate limiting)
-          if headers.keys.include?('Wiley-TDM-Client-Token') && pdf_response&.body.match?(/rate/i)
-            e_message += ' (Exceeded Wiley-TDM API rate limit)'
+          wiley_rate_exceeded = headers.keys.include?('Wiley-TDM-Client-Token') && pdf_response&.body.match?(/rate/i)
+            # Retry the request after a delay if the Wiley-TDM API rate limit is exceeded
+          if wiley_rate_exceeded
+            delay_time = 30
+            Rails.logger.warn("Wiley-TDM API rate limit exceeded. Retrying request in #{delay_time} seconds.")
+            # Retry the request after a delay if the Wiley-TDM API rate limit is exceeded
+            sleep delay_time
+            pdf_response = HTTParty.get(encoded_url, headers: headers)
           end
-          raise e_message
+
+            # If the second attempt also fails, or if there's another error, raise an error
+          if pdf_response.code != 200
+            e_message = "Failed to download PDF: HTTP status '#{pdf_response.code}'"
+            # Include specific error message for potential Wiley-TDM API rate limiting (pdf_response.code != 200 and the Wiley API response body mentions rate limiting)
+            e_message += ' (Exceeded Wiley-TDM API rate limit)' if wiley_rate_exceeded
+            raise e_message
+          end
         end
         raise "Incorrect content type: '#{pdf_response.headers['content-type']}'" unless pdf_response.headers['content-type']&.include?('application/pdf')
 

@@ -259,10 +259,11 @@ RSpec.describe Tasks::DimensionsIngestService do
         )
       end
 
-      it 'raises a unique error if the Wiley API returns a non 200 status code with rate limit message in the body' do
+      it 'raises a unique error if the Wiley API returns a non 200 status code with rate limit message in the body after a retry' do
         rate_limit_error = '"{""fault"":{""faultstring"":""Rate limit quota violation. Quota limit  exceeded. Identifier : 3c6dd2e9-faf5-4017-9039-b09388fc5a08"",""detail"":{""errorcode"":""policies.ratelimit.QuotaViolation""}}}"'
         stub_request(:get, "https://api.wiley.com/onlinelibrary/tdm/v1/articles/#{encoded_doi}")
         .to_return(body: rate_limit_error, status: 403, headers: { 'Content-Type' => 'application/pdf' })
+        expect(Rails.logger).to receive(:warn).with('Wiley-TDM API rate limit exceeded. Retrying request in 30 seconds.')
         expect(Rails.logger).to receive(:error).with("Failed to retrieve PDF from URL 'https://api.wiley.com/onlinelibrary/tdm/v1/articles/#{encoded_doi}'. Failed to download PDF: HTTP status '403' (Exceeded Wiley-TDM API rate limit)")
         service.extract_pdf(wiley_test_publication)
       end
