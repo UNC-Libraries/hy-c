@@ -6,7 +6,8 @@ RSpec.describe Tasks::DimensionsIngestService do
     {
       'admin_set' => 'Open_Access_Articles_and_Book_Chapters',
       'depositor_onyen' => 'admin',
-      'download_delay' => 0
+      'download_delay' => 0,
+      'wiley_tdm_api_token' => 'test-token'
     }
   }
   let(:dimensions_ingest_test_fixture) do
@@ -48,17 +49,6 @@ RSpec.describe Tasks::DimensionsIngestService do
     allow(RegisterToLongleafJob).to receive(:perform_later).and_return(nil)
     # stub FITS characterization
     allow(CharacterizeJob).to receive(:perform_later)
-  end
-
-    # Override the depositor onyen for the duration of the test
-  around do |example|
-    dimensions_ingest_depositor_onyen = ENV['DIMENSIONS_INGEST_DEPOSITOR_ONYEN']
-    wiley_tdm_client_token = ENV['WILEY_TDM_API_TOKEN']
-    ENV['DIMENSIONS_INGEST_DEPOSITOR_ONYEN'] = 'admin'
-    ENV['WILEY_TDM_API_TOKEN'] = 'test-token'
-    example.run
-    ENV['DIMENSIONS_INGEST_DEPOSITOR_ONYEN'] = dimensions_ingest_depositor_onyen
-    ENV['WILEY_TDM_API_TOKEN'] = wiley_tdm_client_token
   end
 
   describe '#initialize' do
@@ -232,6 +222,15 @@ RSpec.describe Tasks::DimensionsIngestService do
       expect(File.exist?(pdf_path)).to be true
     end
 
+    it 'does not send HEAD requests when attempting to retrieve a PDF from any API' do
+      publication = test_publications.first
+      publication['linkout'] = 'https://api.test-url.com/'
+      stub_request(:get, 'https://api.test-url.com/')
+        .to_return(body: pdf_content, status: 200, headers: { 'Content-Type' => 'application/pdf' })
+      expect(Rails.logger).to receive(:info).with("Skipping content type check for API URL: #{publication['linkout']}")
+      service.extract_pdf(publication)
+    end
+
     context 'when the publication linkout url is a Wiley Online Library URL' do
       let (:test_doi) { '10.1002/cne.24143' }
       let (:encoded_doi) { URI.encode_www_form_component(test_doi) }
@@ -255,7 +254,7 @@ RSpec.describe Tasks::DimensionsIngestService do
         expect(service).to have_received(:download_pdf).with(
           "https://api.wiley.com/onlinelibrary/tdm/v1/articles/#{encoded_doi}",
           wiley_test_publication,
-          'Wiley-TDM-Client-Token' => ENV['WILEY_TDM_API_TOKEN']
+          'Wiley-TDM-Client-Token' => config['wiley_tdm_api_token']
         )
       end
 

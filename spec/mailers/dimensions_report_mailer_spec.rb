@@ -77,14 +77,6 @@ RSpec.describe DimensionsReportMailer, type: :mailer do
     ingested_publications
   end
 
-  # Override the depositor onyen for the duration of the test
-  around do |example|
-    dimensions_ingest_depositor_onyen = ENV['DIMENSIONS_INGEST_DEPOSITOR_ONYEN']
-    ENV['DIMENSIONS_INGEST_DEPOSITOR_ONYEN'] = 'admin'
-    example.run
-    ENV['DIMENSIONS_INGEST_DEPOSITOR_ONYEN'] = dimensions_ingest_depositor_onyen
-  end
-
   describe 'dimensions_report_email' do
     let(:mail) { DimensionsReportMailer.dimensions_report_email(report) }
 

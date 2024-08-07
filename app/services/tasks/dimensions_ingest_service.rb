@@ -9,6 +9,7 @@ module Tasks
       @config = config
       admin_set_title = @config['admin_set']
       @download_delay = @config['download_delay'] || 2
+      @wiley_tdm_api_token = @config['wiley_tdm_api_token']
       @admin_set = ::AdminSet.where(title: admin_set_title)&.first
       raise(ActiveRecord::RecordNotFound, "Could not find AdminSet with title #{admin_set_title}") unless @admin_set.present?
 
@@ -97,7 +98,6 @@ module Tasks
       article.issn = publication['issn'].presence
     end
 
-
     def author_to_hash(author, index)
       hash = {
         'name' => "#{[author['last_name'], author['first_name']].compact.join(', ')}",
@@ -145,7 +145,7 @@ module Tasks
         Rails.logger.info('Detected a Wiley affiliated publication, attempting to retrieve PDF with their API.')
         encoded_doi = URI.encode_www_form_component(publication['doi'])
         encoded_url = "https://api.wiley.com/onlinelibrary/tdm/v1/articles/#{encoded_doi}"
-        headers['Wiley-TDM-Client-Token'] = "#{ENV['WILEY_TDM_API_TOKEN']}"
+        headers['Wiley-TDM-Client-Token'] = "#{@wiley_tdm_api_token}"
       else
         # Use the encoded linkout URL from dimensions otherwise
         encoded_url = URI.encode(pdf_url)
@@ -157,16 +157,20 @@ module Tasks
       begin
         # Enforce a delay before making the request
         sleep @download_delay
-        # Verify the content type of the PDF before downloading
-        response = HTTParty.head(encoded_url, headers: headers)
-        if response.code == 200
-          # Log a warning if the content type is not a PDF
-          raise "Incorrect content type: '#{response.headers['content-type']}'" unless response.headers['content-type']&.include?('application/pdf')
+        # Assume API URLs are valid and skip the content type check to avoid rate limiting
+        if !is_api(encoded_url)
+          # Verify the content type of the PDF before downloading
+          response = HTTParty.head(encoded_url, headers: headers)
+          if response.code == 200
+            # Log a warning if the content type is not a PDF
+            raise "Incorrect content type: '#{response.headers['content-type']}'" unless response.headers['content-type']&.include?('application/pdf')
+          else
+            # Log a warning if the response code is not 200
+            Rails.logger.warn("Received a non-200 response code (#{response.code}) when making a HEAD request to the PDF URL: #{encoded_url}")
+          end
         else
-          # Log a warning if the response code is not 200
-          Rails.logger.warn("Received a non-200 response code (#{response.code}) when making a HEAD request to the PDF URL: #{encoded_url}")
+          Rails.logger.info("Skipping content type check for API URL: #{encoded_url}")
         end
-
         # Attempt to retrieve the PDF from the encoded URL
         pdf_response = HTTParty.get(encoded_url, headers: headers)
         if pdf_response.code != 200
@@ -204,6 +208,10 @@ module Tasks
         Rails.logger.error("Failed to retrieve PDF from URL '#{encoded_url}'. #{e.message}")
         nil
       end
+    end
+
+    def is_api(encoded_url)
+      encoded_url.include?('api')
     end
   end
 end
