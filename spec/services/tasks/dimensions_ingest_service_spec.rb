@@ -304,6 +304,7 @@ RSpec.describe Tasks::DimensionsIngestService do
       end
       expect(article.keyword).to eq(publication['concepts'])
       expect(article.abstract).to eq([publication['abstract']])
+      expect(article.depositor).to eq(admin.uid)
       expect(article.date_issued).to eq('2022-10-01')
       expect(article.dcmi_type).to match_array(['http://purl.org/dc/dcmitype/Text'])
       expect(article.funder).to match_array(['National Institute of Allergy and Infectious Diseases'])
