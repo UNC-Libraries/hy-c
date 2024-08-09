@@ -30,7 +30,7 @@ module Tasks
           rescue StandardError => e
             publication.delete('pdf_attached')
             res[:failed] << publication.merge('error' => [e.class.to_s, e.message])
-            Rails.logger.error("Error ingesting publication '#{publication['title']}'")
+            Rails.logger.error("Error ingesting publication '#{publication['title']}' with Dimensions ID: #{publication['id']}")
             Rails.logger.error [e.class.to_s, e.message, *e.backtrace].join($RS)
         end
       end
@@ -41,8 +41,8 @@ module Tasks
       article = article_with_metadata(publication)
       create_sipity_workflow(work: article)
       pdf_path = extract_pdf(publication)
-
       if pdf_path
+        # Rails.logger.info("Attempting to attach PDF to new article for publication with Dimensions ID: #{publication['id']}")
         pdf_file = attach_pdf_to_work(article, pdf_path, @depositor)
         pdf_file.update(permissions_attributes: group_permissions(@admin_set))
         File.delete(pdf_path) if File.exist?(pdf_path)
@@ -131,6 +131,7 @@ module Tasks
     end
 
     def extract_pdf(publication)
+      # Rails.logger.info("Attempting to retrieve PDF for publication with Dimensions ID: #{publication['id']}")
       pdf_url = publication['linkout'] ? publication['linkout'] : nil
       # Set pdf_attached to false by default
       publication['pdf_attached'] = false
@@ -154,6 +155,7 @@ module Tasks
     end
 
     def download_pdf(encoded_url, publication, headers)
+      # Rails.logger.info("Attempting to download PDF for publication with Dimensions ID: #{publication['id']}")
       begin
         # Enforce a delay before making the request
         sleep @download_delay

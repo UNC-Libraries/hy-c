@@ -13,15 +13,18 @@ module Tasks
 
     def attach_file_set_to_work(work:, file_path:, user:, visibility:)
       file_set_params = { visibility: visibility }
-      Rails.logger.info("Attaching file_set for #{file_path} to DOI: #{work.identifier.first}")
-      file_set = FileSet.create
-      actor = Hyrax::Actors::FileSetActor.new(file_set, user)
-      actor.create_metadata(file_set_params)
-      file = File.open(file_path)
-      actor.create_content(file)
-      actor.attach_to_work(work, file_set_params)
-      file.close
-
+      begin
+        file_set = FileSet.create
+        actor = Hyrax::Actors::FileSetActor.new(file_set, user)
+        actor.create_metadata(file_set_params)
+        file = File.open(file_path)
+        actor.create_content(file)
+        actor.attach_to_work(work, file_set_params)
+        file.close
+      rescue StandardError => e
+        Rails.logger.error("Error attaching file_set for new work with DOI: #{work.identifier.first} and file_path: #{file_path}")
+        Rails.logger.error [e.class.to_s, e.message, *e.backtrace].join($RS)
+      end
       file_set
     end
 

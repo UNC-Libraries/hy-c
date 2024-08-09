@@ -201,7 +201,7 @@ module Tasks
       search_clauses = ['where type = "article"', "date >= \"#{start_date}\"", "date < \"#{end_date}\""].join(' and ')
       return_fields = ['basics', 'extras', 'abstract', 'issn', 'publisher', 'journal_title_raw', 'linkout', 'concepts'].join(' + ')
       <<~QUERY
-        search publications where doi in ["10.1183/13993003.01709-2016","10.1002/pbc.26302", "10.1089/jpm.2016.0271", "10.1016/j.fertnstert.2016.07.348", "10.1016/j.fertnstert.2016.07.490", "10.1096/fasebj.30.1_supplement.1149.15"]
+        search publications where doi in ["10.1183/13993003.01709-2016","10.1002/pbc.26302", "10.1089/jpm.2016.0271"]
         return publications[#{return_fields}]
       QUERY
     end
