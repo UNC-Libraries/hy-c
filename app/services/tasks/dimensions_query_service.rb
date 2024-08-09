@@ -107,8 +107,8 @@ module Tasks
     def process_response(response)
       parsed_body = JSON.parse(response.body)
       # To disable deduplication during testing, comment out the next line and uncomment the following line. (Makes it easier to conduct repeated tests of the ingest process.)
-      publications = deduplicate_publications(parsed_body['publications'])
-      # publications = parsed_body['publications']
+      # publications = deduplicate_publications(parsed_body['publications'])
+      publications = parsed_body['publications']
       Rails.logger.info("Dimensions API returned #{parsed_body['publications'].size} publications.")
       Rails.logger.info("Unique Publications after Deduplicating: #{publications.size}.")
       publications
@@ -201,13 +201,8 @@ module Tasks
       search_clauses = ['where type = "article"', "date >= \"#{start_date}\"", "date < \"#{end_date}\""].join(' and ')
       return_fields = ['basics', 'extras', 'abstract', 'issn', 'publisher', 'journal_title_raw', 'linkout', 'concepts'].join(' + ')
       <<~QUERY
-        search publications #{search_clauses} in raw_affiliations
-        for """
-        "University of North Carolina, Chapel Hill" OR "UNC"
-        """
+        search publications where doi in ["10.1183/13993003.01709-2016","10.1002/pbc.26302", "10.1089/jpm.2016.0271", "10.1016/j.fertnstert.2016.07.348", "10.1016/j.fertnstert.2016.07.490", "10.1096/fasebj.30.1_supplement.1149.15"]
         return publications[#{return_fields}]
-        limit #{page_size}
-        skip #{cursor}
       QUERY
     end
 end

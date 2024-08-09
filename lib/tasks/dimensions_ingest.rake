@@ -23,6 +23,7 @@ namespace :dimensions do
     config = {
       'admin_set' => args[:admin_set],
       'depositor_onyen' => ENV['DIMENSIONS_INGEST_DEPOSITOR_ONYEN'],
+      'wiley_tdm_api_token' => ENV['WILEY_TDM_API_TOKEN']
     }
 
     # Query and ingest publications
