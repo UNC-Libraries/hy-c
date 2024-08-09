@@ -136,7 +136,7 @@ RSpec.describe Tasks::DimensionsIngestService do
       expected_failing_publication = test_publications.first
       test_err_msg = 'Test error'
       expected_log_outputs = [
-        "Error ingesting publication '#{expected_failing_publication['title']}'",
+        "Error ingesting publication '#{expected_failing_publication['title']}' with Dimensions ID: #{expected_failing_publication['id']}",
         [StandardError.to_s, test_err_msg].join($RS)
       ]
       ingested_publications = test_publications[1..-1].map do |pub|
