@@ -4,12 +4,13 @@ namespace :dimensions do
   EARLIEST_DATE = '1970-01-01'
 
   desc 'Ingest metadata and publications from Dimensions'
-  task :ingest_publications, [:admin_set, :start_date, :end_date] => :environment do |t, args|
+  task :ingest_publications, [:admin_set, :start_date, :end_date, :deduplicate] => :environment do |t, args|
     Rails.logger.info "[#{Time.now}] starting dimensions publications ingest"
     is_cron_job = false
 
     start_date = args[:start_date]
     end_date = args[:end_date]
+    deduplicate = args[:deduplicate].present? ? args[:deduplicate].downcase == 'true' : true
 
     # Ensure start_date and end_date are provided, or neither are provided
     if args[:start_date].present? && !args[:end_date].present?
@@ -23,11 +24,12 @@ namespace :dimensions do
     config = {
       'admin_set' => args[:admin_set],
       'depositor_onyen' => ENV['DIMENSIONS_INGEST_DEPOSITOR_ONYEN'],
-      'wiley_tdm_api_token' => ENV['WILEY_TDM_API_TOKEN']
+      'wiley_tdm_api_token' => ENV['WILEY_TDM_API_TOKEN'],
+      'deduplicate' => deduplicate
     }
 
     # Query and ingest publications
-    query_service = Tasks::DimensionsQueryService.new
+    query_service = Tasks::DimensionsQueryService.new(config)
     ingest_service = Tasks::DimensionsIngestService.new(config)
     publications = ingest_service.ingest_publications(query_service.query_dimensions(start_date: start_date, end_date: end_date))
     report = Tasks::DimensionsReportingService.new(publications, query_service.dimensions_total_count, { start_date: start_date, end_date: end_date }, is_cron_job).generate_report
