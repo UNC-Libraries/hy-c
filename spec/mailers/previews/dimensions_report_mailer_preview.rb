@@ -33,6 +33,19 @@ class DimensionsReportMailerPreview < ActionMailer::Preview
       pub.merge('error' => ['Test error', 'Test error message'])
     end
 
+    # Test conditional rendering of linkout for even publications in both failed and ingested arrays
+    ingested_publications[:failed].each_with_index do |pub, index|
+      if index.even?
+        pub['linkout'] = nil
+      end
+    end
+
+    ingested_publications[:ingested].each_with_index do |pub, index|
+      if index.even?
+        pub['linkout'] = nil
+      end
+    end
+
     dimensions_reporting_service = Tasks::DimensionsReportingService.new(ingested_publications, FIXED_DIMENSIONS_TOTAL_COUNT, { start_date: TEST_START_DATE, end_date: TEST_END_DATE }, FALSE)
     report = dimensions_reporting_service.generate_report
     DimensionsReportMailer.dimensions_report_email(report)
