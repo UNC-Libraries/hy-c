@@ -10,7 +10,8 @@ RSpec.describe DimensionsReportMailer, type: :mailer do
   let(:config) {
     {
       'admin_set' => 'Open_Access_Articles_and_Book_Chapters',
-      'depositor_onyen' => ENV['DIMENSIONS_INGEST_DEPOSITOR_ONYEN']
+      'depositor_onyen' => 'admin',
+      'download_delay' => 0
     }
   }
   let(:dimensions_ingest_test_fixture) do
@@ -76,14 +77,6 @@ RSpec.describe DimensionsReportMailer, type: :mailer do
     ingested_publications
   end
 
-  # Override the depositor onyen for the duration of the test
-  around do |example|
-    dimensions_ingest_depositor_onyen = ENV['DIMENSIONS_INGEST_DEPOSITOR_ONYEN']
-    ENV['DIMENSIONS_INGEST_DEPOSITOR_ONYEN'] = 'admin'
-    example.run
-    ENV['DIMENSIONS_INGEST_DEPOSITOR_ONYEN'] = dimensions_ingest_depositor_onyen
-  end
-
   describe 'dimensions_report_email' do
     let(:mail) { DimensionsReportMailer.dimensions_report_email(report) }
 
@@ -104,12 +97,14 @@ RSpec.describe DimensionsReportMailer, type: :mailer do
         expect(mail.body.encoded).to include(publication[:title])
                                 .and include(publication[:id])
                                 .and include(publication[:url])
+                                .and include(publication[:linkout] || 'N/A')
                                 .and include(publication[:pdf_attached])
       end
       report[:failed_to_ingest_rows].each do |publication|
         expect(mail.body.encoded).to include(publication[:title])
                                  .and include(publication[:id])
                                  .and include(publication[:error])
+                                 .and include(publication[:linkout] || 'N/A')
       end
     end
 

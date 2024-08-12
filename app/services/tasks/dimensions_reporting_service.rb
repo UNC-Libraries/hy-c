@@ -28,11 +28,11 @@ module Tasks
     def extract_publication_info
       publication_info = {successfully_ingested: [], failed_to_ingest: []}
       @ingested_publications[:ingested].map do |publication|
-        publication_item = { title: publication['title'], id: publication['id'], url: "#{ENV['HYRAX_HOST']}/concern/articles/#{publication['article_id']}?locale=en", pdf_attached: publication['pdf_attached'] ? 'Yes' : 'No' }
+        publication_item = { title: publication['title'], id: publication['id'], linkout: publication['linkout'], url: "#{ENV['HYRAX_HOST']}/concern/articles/#{publication['article_id']}?locale=en", pdf_attached: publication['pdf_attached'] ? 'Yes' : 'No' }
         publication_info[:successfully_ingested] << publication_item
       end
       @ingested_publications[:failed].map do |publication|
-        publication_info[:failed_to_ingest] << { title: publication['title'], id: publication['id'], error: "#{publication['error'][0]} - #{publication['error'][1]}" }
+        publication_info[:failed_to_ingest] << { title: publication['title'], id: publication['id'], linkout: publication['linkout'], error: "#{publication['error'][0]} - #{publication['error'][1]}" }
       end
       publication_info
     end

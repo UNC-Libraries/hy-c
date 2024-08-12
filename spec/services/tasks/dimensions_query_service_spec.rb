@@ -13,7 +13,16 @@ RSpec.describe Tasks::DimensionsQueryService do
     File.read(File.join(Rails.root, '/spec/fixtures/files/dimensions_query_response.json'))
   end
 
-  let(:service) { described_class.new }
+  let(:config) {
+    {
+      'admin_set' => 'Open_Access_Articles_and_Book_Chapters',
+      'depositor_onyen' => 'admin',
+      'download_delay' => 0,
+      'wiley_tdm_api_token' => 'test-token'
+    }
+  }
+
+  let(:service) { described_class.new(config) }
 
   before do
     ActiveFedora::Cleaner.clean!

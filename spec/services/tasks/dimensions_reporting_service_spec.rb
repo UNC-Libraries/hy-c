@@ -8,7 +8,9 @@ RSpec.describe Tasks::DimensionsReportingService do
   let(:config) {
     {
       'admin_set' => 'Open_Access_Articles_and_Book_Chapters',
-      'depositor_onyen' => ENV['DIMENSIONS_INGEST_DEPOSITOR_ONYEN']
+      'depositor_onyen' => 'admin',
+      'download_delay' => 0,
+      'wiley_tdm_api_token' => 'test_token'
     }
   }
   let(:dimensions_ingest_test_fixture) do
@@ -74,14 +76,6 @@ RSpec.describe Tasks::DimensionsReportingService do
     # stub FITS characterization
     allow(CharacterizeJob).to receive(:perform_later)
     ingested_publications
-  end
-
-    # Override the depositor onyen for the duration of the test
-  around do |example|
-    dimensions_ingest_depositor_onyen = ENV['DIMENSIONS_INGEST_DEPOSITOR_ONYEN']
-    ENV['DIMENSIONS_INGEST_DEPOSITOR_ONYEN'] = 'admin'
-    example.run
-    ENV['DIMENSIONS_INGEST_DEPOSITOR_ONYEN'] = dimensions_ingest_depositor_onyen
   end
 
   describe '#generate_report' do

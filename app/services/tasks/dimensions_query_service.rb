@@ -11,7 +11,8 @@ module Tasks
 
     attr_accessor :dimensions_total_count
 
-    def initialize
+    def initialize(config)
+      @config = config
       @dimensions_total_count = 0
     end
 
@@ -42,12 +43,9 @@ module Tasks
           if response.success?
             # Merge the new publications with the existing set
             all_publications.merge(process_response(response))
-            # total_count = response['_stats']['total_count']
             self.dimensions_total_count = response.parsed_response['_stats']['total_count']
             cursor += page_size
             # End the loop if the cursor exceeds the total count
-            # WIP: Break if cursor is greater than or equal to 100 for testing purposes
-            # break if cursor >= total_count || cursor >= 100
             break if cursor >= self.dimensions_total_count
             # Reset the retry count if the query is successful
             retries[0] = 0
@@ -107,8 +105,7 @@ module Tasks
     def process_response(response)
       parsed_body = JSON.parse(response.body)
       # To disable deduplication during testing, comment out the next line and uncomment the following line. (Makes it easier to conduct repeated tests of the ingest process.)
-      publications = deduplicate_publications(parsed_body['publications'])
-      # publications = parsed_body['publications']
+      publications = @config['deduplicate'] ? deduplicate_publications(parsed_body['publications']) : parsed_body['publications']
       Rails.logger.info("Dimensions API returned #{parsed_body['publications'].size} publications.")
       Rails.logger.info("Unique Publications after Deduplicating: #{publications.size}.")
       publications

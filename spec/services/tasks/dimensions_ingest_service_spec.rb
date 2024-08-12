@@ -5,7 +5,9 @@ RSpec.describe Tasks::DimensionsIngestService do
   let(:config) {
     {
       'admin_set' => 'Open_Access_Articles_and_Book_Chapters',
-      'depositor_onyen' => ENV['DIMENSIONS_INGEST_DEPOSITOR_ONYEN']
+      'depositor_onyen' => 'admin',
+      'download_delay' => 0,
+      'wiley_tdm_api_token' => 'test-token'
     }
   }
   let(:dimensions_ingest_test_fixture) do
@@ -27,10 +29,7 @@ RSpec.describe Tasks::DimensionsIngestService do
     FactoryBot.create(:workflow_state, workflow_id: workflow.id, name: 'deposited')
   end
   let(:pdf_content) { File.binread(File.join(Rails.root, '/spec/fixtures/files/sample_pdf.pdf')) }
-  let(:test_publications) do
-    JSON.parse(dimensions_ingest_test_fixture)['publications']
-  end
-
+  let(:test_publications) { JSON.parse(dimensions_ingest_test_fixture)['publications'] }
 
   before do
     ActiveFedora::Cleaner.clean!
@@ -50,14 +49,6 @@ RSpec.describe Tasks::DimensionsIngestService do
     allow(RegisterToLongleafJob).to receive(:perform_later).and_return(nil)
     # stub FITS characterization
     allow(CharacterizeJob).to receive(:perform_later)
-  end
-
-    # Override the depositor onyen for the duration of the test
-  around do |example|
-    dimensions_ingest_depositor_onyen = ENV['DIMENSIONS_INGEST_DEPOSITOR_ONYEN']
-    ENV['DIMENSIONS_INGEST_DEPOSITOR_ONYEN'] = 'admin'
-    example.run
-    ENV['DIMENSIONS_INGEST_DEPOSITOR_ONYEN'] = dimensions_ingest_depositor_onyen
   end
 
   describe '#initialize' do
@@ -145,7 +136,7 @@ RSpec.describe Tasks::DimensionsIngestService do
       expected_failing_publication = test_publications.first
       test_err_msg = 'Test error'
       expected_log_outputs = [
-        "Error ingesting publication '#{expected_failing_publication['title']}'",
+        "Error ingesting publication '#{expected_failing_publication['title']}' with Dimensions ID: #{expected_failing_publication['id']}",
         [StandardError.to_s, test_err_msg].join($RS)
       ]
       ingested_publications = test_publications[1..-1].map do |pub|
@@ -186,7 +177,7 @@ RSpec.describe Tasks::DimensionsIngestService do
 
   describe '#extract_pdf' do
     it 'extracts the PDF from the publication' do
-      publication = test_publications.first
+      publication = test_publications.last
       pdf_path = service.extract_pdf(publication)
       expect(File.exist?(pdf_path)).to be true
       expect(publication['pdf_attached']).to be true
@@ -230,6 +221,52 @@ RSpec.describe Tasks::DimensionsIngestService do
       expect(publication['pdf_attached']).to be true
       expect(File.exist?(pdf_path)).to be true
     end
+
+    it 'does not send HEAD requests when attempting to retrieve a PDF from any API' do
+      publication = test_publications.first
+      publication['linkout'] = 'https://api.test-url.com/'
+      stub_request(:get, 'https://api.test-url.com/')
+        .to_return(body: pdf_content, status: 200, headers: { 'Content-Type' => 'application/pdf' })
+      expect(Rails.logger).to receive(:info).with("Skipping content type check for API URL: #{publication['linkout']}")
+      service.extract_pdf(publication)
+    end
+
+    context 'when the publication linkout url is a Wiley Online Library URL' do
+      let (:test_doi) { '10.1002/cne.24143' }
+      let (:encoded_doi) { URI.encode_www_form_component(test_doi) }
+      let (:wiley_test_publication) do
+        publication = test_publications.first
+        publication['linkout'] = "https://onlinelibrary.wiley.com/doi/pdfdirect/#{test_doi}"
+        publication['doi'] = test_doi
+        publication
+      end
+
+      before do
+        allow(service).to receive(:download_pdf).and_call_original
+        stub_request(:head, "https://api.wiley.com/onlinelibrary/tdm/v1/articles/#{encoded_doi}")
+        .to_return(status: 200, headers: { 'Content-Type' => 'application/pdf' })
+      end
+
+      it 'attempts to download a PDF using their API' do
+        stub_request(:get, "https://api.wiley.com/onlinelibrary/tdm/v1/articles/#{encoded_doi}")
+        .to_return(body: pdf_content, status: 200, headers: { 'Content-Type' => 'application/pdf' })
+        pdf_path = service.extract_pdf(wiley_test_publication)
+        expect(service).to have_received(:download_pdf).with(
+          "https://api.wiley.com/onlinelibrary/tdm/v1/articles/#{encoded_doi}",
+          wiley_test_publication,
+          'Wiley-TDM-Client-Token' => config['wiley_tdm_api_token']
+        )
+      end
+
+      it 'raises a unique error if the Wiley API returns a non 200 status code with rate limit message in the body after a retry' do
+        rate_limit_error = '"{""fault"":{""faultstring"":""Rate limit quota violation. Quota limit  exceeded. Identifier : 3c6dd2e9-faf5-4017-9039-b09388fc5a08"",""detail"":{""errorcode"":""policies.ratelimit.QuotaViolation""}}}"'
+        stub_request(:get, "https://api.wiley.com/onlinelibrary/tdm/v1/articles/#{encoded_doi}")
+        .to_return(body: rate_limit_error, status: 403, headers: { 'Content-Type' => 'application/pdf' })
+        expect(Rails.logger).to receive(:warn).with('Wiley-TDM API rate limit exceeded. Retrying request in 0 seconds.')
+        expect(Rails.logger).to receive(:error).with("Failed to retrieve PDF from URL 'https://api.wiley.com/onlinelibrary/tdm/v1/articles/#{encoded_doi}'. Failed to download PDF: HTTP status '403' (Exceeded Wiley-TDM API rate limit)")
+        service.extract_pdf(wiley_test_publication)
+      end
+    end
   end
 
   describe '#article_with_metadata' do
@@ -267,6 +304,7 @@ RSpec.describe Tasks::DimensionsIngestService do
       end
       expect(article.keyword).to eq(publication['concepts'])
       expect(article.abstract).to eq([publication['abstract']])
+      expect(article.depositor).to eq(admin.uid)
       expect(article.date_issued).to eq('2022-10-01')
       expect(article.dcmi_type).to match_array(['http://purl.org/dc/dcmitype/Text'])
       expect(article.funder).to match_array(['National Institute of Allergy and Infectious Diseases'])

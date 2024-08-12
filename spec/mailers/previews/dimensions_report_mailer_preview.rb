@@ -10,7 +10,8 @@ class DimensionsReportMailerPreview < ActionMailer::Preview
     test_publications = JSON.parse(dimensions_ingest_test_fixture)['publications']
     config = {
         'admin_set' => 'default',
-        'depositor_onyen' => ENV['DIMENSIONS_INGEST_DEPOSITOR_ONYEN']
+        'depositor_onyen' => ENV['DIMENSIONS_INGEST_DEPOSITOR_ONYEN'],
+        'wiley_tdm_api_token' => ENV['WILEY_TDM_API_TOKEN']
       }
 
     dimensions_ingest_service = Tasks::DimensionsIngestService.new(config)
@@ -30,6 +31,19 @@ class DimensionsReportMailerPreview < ActionMailer::Preview
     end
     ingested_publications[:failed] = failing_publication_sample.map do |pub|
       pub.merge('error' => ['Test error', 'Test error message'])
+    end
+
+    # Test conditional rendering of linkout for even publications in both failed and ingested arrays
+    ingested_publications[:failed].each_with_index do |pub, index|
+      if index.even?
+        pub['linkout'] = nil
+      end
+    end
+
+    ingested_publications[:ingested].each_with_index do |pub, index|
+      if index.even?
+        pub['linkout'] = nil
+      end
     end
 
     dimensions_reporting_service = Tasks::DimensionsReportingService.new(ingested_publications, FIXED_DIMENSIONS_TOTAL_COUNT, { start_date: TEST_START_DATE, end_date: TEST_END_DATE }, FALSE)

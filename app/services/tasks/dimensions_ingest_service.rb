@@ -4,11 +4,12 @@ module Tasks
   class DimensionsIngestService
     include Tasks::IngestHelper
     attr_reader :admin_set, :depositor
-    UNC_GRID_ID = 'grid.410711.2'
 
     def initialize(config)
       @config = config
       admin_set_title = @config['admin_set']
+      @download_delay = @config['download_delay'] || 2
+      @wiley_tdm_api_token = @config['wiley_tdm_api_token']
       @admin_set = ::AdminSet.where(title: admin_set_title)&.first
       raise(ActiveRecord::RecordNotFound, "Could not find AdminSet with title #{admin_set_title}") unless @admin_set.present?
 
@@ -29,7 +30,7 @@ module Tasks
           rescue StandardError => e
             publication.delete('pdf_attached')
             res[:failed] << publication.merge('error' => [e.class.to_s, e.message])
-            Rails.logger.error("Error ingesting publication '#{publication['title']}'")
+            Rails.logger.error("Error ingesting publication '#{publication['title']}' with Dimensions ID: #{publication['id']}")
             Rails.logger.error [e.class.to_s, e.message, *e.backtrace].join($RS)
         end
       end
@@ -40,7 +41,6 @@ module Tasks
       article = article_with_metadata(publication)
       create_sipity_workflow(work: article)
       pdf_path = extract_pdf(publication)
-
       if pdf_path
         pdf_file = attach_pdf_to_work(article, pdf_path, @depositor)
         pdf_file.update(permissions_attributes: group_permissions(@admin_set))
@@ -68,6 +68,7 @@ module Tasks
     def set_basic_attributes(article, publication)
       article.title = [publication['title']]
       article.admin_set = @admin_set
+      article.depositor = @config['depositor_onyen']
       article.creators_attributes = publication['authors'].map.with_index { |author, index| [index, author_to_hash(author, index)] }.to_h
       article.funder = publication['funders']&.map { |funder| funder['name'] }
       article.date_issued = publication['date']
@@ -95,7 +96,6 @@ module Tasks
       article.identifier = format_publication_identifiers(publication)
       article.issn = publication['issn'].presence
     end
-
 
     def author_to_hash(author, index)
       hash = {
@@ -130,39 +130,87 @@ module Tasks
     end
 
     def extract_pdf(publication)
-      pdf_url = publication['linkout']? publication['linkout'] : nil
+      pdf_url = publication['linkout'] ? publication['linkout'] : nil
+      # Set pdf_attached to false by default
       publication['pdf_attached'] = false
-      unless publication['linkout']
+      headers = {}
+
+      unless pdf_url
         Rails.logger.warn('Failed to retrieve PDF. Publication does not have a linkout URL.')
         return nil
       end
-      begin
-        response = HTTParty.head(pdf_url)
-        # Verify the content type is PDF; raise an error if not.
-        if response.code == 200
-          raise "Incorrect content type: '#{response.headers['content-type']}'" unless response.headers['content-type']&.include?('application/pdf')
-        else
-          # Provide a warning and proceed with GET in case the HEAD request failed
-          Rails.logger.warn("Received a non-200 response code (#{response.code}) when making a HEAD request to the PDF URL: #{pdf_url}")
-        end
+      # Use the Wiley Online Library text data mining API to retrieve the PDF if it's a Wiley publication
+      if pdf_url.include?('hindawi.com') || pdf_url.include?('wiley.com')
+        Rails.logger.info('Detected a Wiley affiliated publication, attempting to retrieve PDF with their API.')
+        encoded_doi = URI.encode_www_form_component(publication['doi'])
+        encoded_url = "https://api.wiley.com/onlinelibrary/tdm/v1/articles/#{encoded_doi}"
+        headers['Wiley-TDM-Client-Token'] = "#{@wiley_tdm_api_token}"
+      else
+        # Use the encoded linkout URL from dimensions otherwise
+        encoded_url = URI.encode(pdf_url)
+      end
+      download_pdf(encoded_url, publication, headers)
+    end
 
-        pdf_response = HTTParty.get(pdf_url)
-        raise "Failed to download PDF: HTTP status '#{pdf_response.code}'" unless pdf_response.code == 200
+    def download_pdf(encoded_url, publication, headers)
+      begin
+        # Enforce a delay before making the request
+        sleep @download_delay
+        # Assume API URLs are valid and skip the content type check to avoid rate limiting
+        if !is_api(encoded_url)
+          # Verify the content type of the PDF before downloading
+          response = HTTParty.head(encoded_url, headers: headers)
+          if response.code == 200
+            # Log a warning if the content type is not a PDF
+            raise "Incorrect content type: '#{response.headers['content-type']}'" unless response.headers['content-type']&.include?('application/pdf')
+          else
+            # Log a warning if the response code is not 200
+            Rails.logger.warn("Received a non-200 response code (#{response.code}) when making a HEAD request to the PDF URL: #{encoded_url}")
+          end
+        else
+          Rails.logger.info("Skipping content type check for API URL: #{encoded_url}")
+        end
+        # Attempt to retrieve the PDF from the encoded URL
+        pdf_response = HTTParty.get(encoded_url, headers: headers)
+        if pdf_response.code != 200
+          wiley_rate_exceeded = headers.keys.include?('Wiley-TDM-Client-Token') && pdf_response&.body.match?(/rate/i)
+            # Retry the request after a delay if the Wiley-TDM API rate limit is exceeded
+          if wiley_rate_exceeded
+            delay_time = @download_delay * 15
+            Rails.logger.warn("Wiley-TDM API rate limit exceeded. Retrying request in #{delay_time} seconds.")
+            # Retry the request after a delay if the Wiley-TDM API rate limit is exceeded
+            sleep delay_time
+            pdf_response = HTTParty.get(encoded_url, headers: headers)
+          end
+
+            # If the second attempt also fails, or if there's another error, raise an error
+          if pdf_response.code != 200
+            e_message = "Failed to download PDF: HTTP status '#{pdf_response.code}'"
+            # Include specific error message for potential Wiley-TDM API rate limiting (pdf_response.code != 200 and the Wiley API response body mentions rate limiting)
+            e_message += ' (Exceeded Wiley-TDM API rate limit)' if wiley_rate_exceeded
+            raise e_message
+          end
+        end
         raise "Incorrect content type: '#{pdf_response.headers['content-type']}'" unless pdf_response.headers['content-type']&.include?('application/pdf')
 
+        # Generate a unique filename for the PDF and save it to the temporary storage directory
         storage_dir = ENV['TEMP_STORAGE']
         time_stamp = Time.now.strftime('%Y%m%d%H%M%S%L')
         filename = "downloaded_pdf_#{time_stamp}.pdf"
         file_path = File.join(storage_dir, filename)
 
+        # Write the PDF to the file system and mark the publication as having a PDF attached
         File.open(file_path, 'wb') { |file| file.write(pdf_response.body) }
         publication['pdf_attached'] = true
         file_path  # Return the file path
       rescue StandardError => e
-        Rails.logger.error("Failed to retrieve PDF from URL '#{pdf_url}'. #{e.message}")
+        Rails.logger.error("Failed to retrieve PDF from URL '#{encoded_url}'. #{e.message}")
         nil
       end
     end
 
+    def is_api(encoded_url)
+      encoded_url.include?('api')
+    end
   end
 end

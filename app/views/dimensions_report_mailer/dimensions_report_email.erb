@@ -17,6 +17,7 @@
         <th style="border: 2px solid #dddddd; text-align: left; padding: 10px; background-color: #f2f2f2; width: 20%;">Dimensions ID</th>
         <th style="border: 2px solid #dddddd; text-align: left; padding: 10px; background-color: #f2f2f2; width: 30%;">URL</th>
         <th style="border: 2px solid #dddddd; text-align: left; padding: 10px; background-color: #f2f2f2; width: 5%;">PDF Attached</th>
+        <th style="border: 2px solid #dddddd; text-align: left; padding: 10px; background-color: #f2f2f2; width: 5%;">PDF Link</th>
         <th style="border: 2px solid #dddddd; text-align: left; padding: 10px; background-color: #f2f2f2; width: 15%;">Error</th>
       </tr>
     </thead>
@@ -27,6 +28,14 @@
           <td style="border: 2px solid #dddddd; text-align: left; padding: 10px;"><%= publication[:id] %></td>
           <td style="border: 2px solid #dddddd; text-align: left; padding: 10px;"><a href="<%= publication[:url] %>"><%= publication[:url] %></a></td>
           <td style="border: 2px solid #dddddd; text-align: left; padding: 10px;"><%= publication[:pdf_attached] %></td>
+          <!-- Render PDF Link Text Conditionally -->
+          <td style="border: 2px solid #dddddd; text-align: left; padding: 10px;">
+            <% if publication[:linkout].blank? %>
+              N/A
+            <% else %>
+              <a href="<%= publication[:linkout].gsub('"', '\"') %>">Link</a>
+            <% end %>
+          </td>
           <td style="border: 2px solid #dddddd; text-align: left; padding: 10px;">N/A</td>
         </tr>
       <% end %>
@@ -41,6 +50,7 @@
         <th style="border: 2px solid #dddddd; text-align: left; padding: 10px; background-color: #f2f2f2; width: 20%;">Dimensions ID</th>
         <th style="border: 2px solid #dddddd; text-align: left; padding: 10px; background-color: #f2f2f2; width: 30%;">URL</th>
         <th style="border: 2px solid #dddddd; text-align: left; padding: 10px; background-color: #f2f2f2; width: 5%;">PDF Attached</th>
+        <th style="border: 2px solid #dddddd; text-align: left; padding: 10px; background-color: #f2f2f2; width: 5%;">PDF Link</th>
         <th style="border: 2px solid #dddddd; text-align: left; padding: 10px; background-color: #f2f2f2; width: 15%;">Error</th>
       </tr>
     </thead>
@@ -51,6 +61,14 @@
           <td style="border: 2px solid #dddddd; text-align: left; padding: 10px;"><%= publication[:id] %></td>
           <td style="border: 2px solid #dddddd; text-align: left; padding: 10px;">N/A</td>
           <td style="border: 2px solid #dddddd; text-align: left; padding: 10px;">N/A</td>
+          <!-- Render PDF Link Text Conditionally -->
+          <td style="border: 2px solid #dddddd; text-align: left; padding: 10px;">
+            <% if publication[:linkout].blank? %>
+              N/A
+            <% else %>
+              <a href="<%= publication[:linkout].gsub('"', '\"') %>">Link</a>
+            <% end %>
+          </td>
           <td style="border: 2px solid #dddddd; text-align: left; padding: 10px;"><%= publication[:error] %></td>
         </tr>
       <% end %>
