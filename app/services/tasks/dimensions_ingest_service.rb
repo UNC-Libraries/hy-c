@@ -42,12 +42,9 @@ module Tasks
       create_sipity_workflow(work: article)
       pdf_path = extract_pdf(publication)
       if pdf_path
-        Rails.logger.info("1 - PDF Path: #{pdf_path}, File Exists?: #{File.exist?(pdf_path)}")
         pdf_file = attach_pdf_to_work(article, pdf_path, @depositor)
-        Rails.logger.info("2 - PDF Path: #{pdf_path}, File Exists?: #{File.exist?(pdf_path)}")
         pdf_file.update(permissions_attributes: group_permissions(@admin_set))
-        Rails.logger.info("3 - PDF Path: #{pdf_path}, File Exists?: #{File.exist?(pdf_path)}")
-        # File.delete(pdf_path) if File.exist?(pdf_path)
+        File.delete(pdf_path) if File.exist?(pdf_path)
       end
       article
     end
@@ -205,7 +202,6 @@ module Tasks
         # Write the PDF to the file system and mark the publication as having a PDF attached
         File.open(file_path, 'wb') { |file| file.write(pdf_response.body) }
         publication['pdf_attached'] = true
-        Rails.logger.info("Download PDF Debugging - File Path: #{file_path}, Encoded Url: #{encoded_url}")
         file_path  # Return the file path
       rescue StandardError => e
         Rails.logger.error("Failed to retrieve PDF from URL '#{encoded_url}'. #{e.message}")
