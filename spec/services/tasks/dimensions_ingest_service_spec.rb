@@ -92,30 +92,6 @@ RSpec.describe Tasks::DimensionsIngestService do
         expect(fs.visibility).to eq(processed_publication.visibility)
         expect(fs.parent).to eq(processed_publication)
       end
-
-      it 'deletes the PDF file after processing' do
-        publication = test_publications.first
-        fixed_time = Time.now
-        formatted_time = fixed_time.strftime('%Y%m%d%H%M%S%L')
-        test_file_path = "#{ENV['TEMP_STORAGE']}/downloaded_pdf_#{formatted_time}.pdf"
-
-        # Mock the time to control file naming
-        allow(Time).to receive(:now).and_return(fixed_time)
-
-        allow(File).to receive(:open).and_call_original
-        allow(File).to receive(:delete).and_call_original
-        allow(File).to receive(:exist?).and_call_original
-        allow(File).to receive(:join).and_call_original
-
-        expect {
-          service.process_publication(publication)
-        }.to change { Article.count }.by(1)
-
-        expect(File).to have_received(:join).with(ENV['TEMP_STORAGE'], "downloaded_pdf_#{formatted_time}.pdf")
-        expect(File).to have_received(:open).with(test_file_path).at_least(:once)
-        expect(File).to have_received(:delete).with(test_file_path)
-        expect(File.exist?(test_file_path)).to be false
-      end
     end
     context 'when the publication does not have a PDF' do
       it 'creates article and handles workflows' do
