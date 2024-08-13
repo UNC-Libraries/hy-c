@@ -44,7 +44,6 @@ module Tasks
       if pdf_path
         pdf_file = attach_pdf_to_work(article, pdf_path, @depositor)
         pdf_file.update(permissions_attributes: group_permissions(@admin_set))
-        File.delete(pdf_path) if File.exist?(pdf_path)
       end
       article
     end
