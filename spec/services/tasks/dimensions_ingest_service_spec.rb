@@ -305,4 +305,59 @@ RSpec.describe Tasks::DimensionsIngestService do
       expect(article.keyword).to eq([])
     end
   end
+
+  describe '#author_to_hash' do
+    let (:unc_grid_id)  { 'grid.410711.2' }
+    let (:non_unc_affiliation) {
+      {
+        'city' => 'Test City',
+        'city_id' => 5318313,
+        'country' => 'United States',
+        'country_code' =>  'US',
+        'id' =>  'grid.134563.6',
+        'name' =>  'Test University',
+        'raw_affiliation' =>  'Test Raw Affiliation',
+        'state' => 'Test-State',
+        'state_code' =>  'US-AZ'
+     }
+    }
+    it 'returns a hash with author metadata' do
+      non_unc_affiliated_author = test_publications.first['authors'].find { |author| author['id'] != unc_grid_id }
+      # Ensure the author has multiple non-unc affiliations
+      non_unc_affiliated_author['affiliations'].append(non_unc_affiliation)
+      author_hash = service.author_to_hash(non_unc_affiliated_author, 0)
+      # Check that the author hash contains the expected metadata from the first affiliation
+      expect(author_hash).to eq(
+        {
+          'name' => "#{[non_unc_affiliated_author['last_name'], non_unc_affiliated_author['first_name']].compact.join(', ')}",
+          'other_affiliation' => non_unc_affiliated_author['affiliations'][0]['raw_affiliation'],
+          'orcid' => "https://orcid.org/#{non_unc_affiliated_author['orcid'][0]}",
+          'index' => '1'
+        }
+      )
+    end
+
+    context 'when an author has multiple affiliations' do
+      it 'prioritizes retrieval of the UNC affiliation even if it is not the first one' do
+        first_publication_authors = test_publications.first['authors']
+        # Retrieve the first UNC-affiliated author and their first UNC-affiliation
+        unc_affiliated_author = first_publication_authors.find do |author|
+          author['affiliations'].any? { |affiliation| affiliation['id'] == unc_grid_id }
+        end
+        first_unc_affiliation = unc_affiliated_author['affiliations'].find { |affiliation| affiliation['id'] == unc_grid_id }
+        unc_affiliated_author['affiliations'].unshift(non_unc_affiliation)
+        # Spoof author orcid if it's missing
+        unc_affiliated_author['orcid'] ||= ['0000-0000-0000-0000']
+        author_hash = service.author_to_hash(unc_affiliated_author, 0)
+        expect(author_hash).to eq(
+          {
+            'name' => "#{[unc_affiliated_author['last_name'], unc_affiliated_author['first_name']].compact.join(', ')}",
+            'other_affiliation' => first_unc_affiliation['raw_affiliation'],
+            'orcid' => "https://orcid.org/#{unc_affiliated_author['orcid'][0]}",
+            'index' => '1'
+          }
+        )
+      end
+    end
+  end
 end
