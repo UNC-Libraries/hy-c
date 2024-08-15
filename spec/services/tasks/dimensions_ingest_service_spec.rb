@@ -321,23 +321,24 @@ RSpec.describe Tasks::DimensionsIngestService do
         'state_code' =>  'US-AZ'
      }
     }
-    it 'returns a hash with author metadata' do
-      non_unc_affiliated_author = test_publications.first['authors'].find { |author| author['id'] != unc_grid_id }
-      # Ensure the author has multiple non-unc affiliations
-      non_unc_affiliated_author['affiliations'].append(non_unc_affiliation)
-      author_hash = service.author_to_hash(non_unc_affiliated_author, 0)
-      # Check that the author hash contains the expected metadata from the first affiliation
-      expect(author_hash).to eq(
-        {
-          'name' => "#{[non_unc_affiliated_author['last_name'], non_unc_affiliated_author['first_name']].compact.join(', ')}",
-          'other_affiliation' => non_unc_affiliated_author['affiliations'][0]['raw_affiliation'],
-          'orcid' => "https://orcid.org/#{non_unc_affiliated_author['orcid'][0]}",
-          'index' => '1'
-        }
-      )
-    end
 
     context 'when an author has multiple affiliations' do
+      it 'uses their first affiliation to populate the author hash if no UNC affiliation exists' do
+        non_unc_affiliated_author = test_publications.first['authors'].find { |author| author['id'] != unc_grid_id }
+        # Ensure the author has multiple non-unc affiliations
+        non_unc_affiliated_author['affiliations'].append(non_unc_affiliation) unless non_unc_affiliated_author['affiliations'].size > 1
+        author_hash = service.author_to_hash(non_unc_affiliated_author, 0)
+        # Check that the author hash contains the expected metadata from the first affiliation
+        expect(author_hash).to eq(
+          {
+            'name' => "#{[non_unc_affiliated_author['last_name'], non_unc_affiliated_author['first_name']].compact.join(', ')}",
+            'other_affiliation' => non_unc_affiliated_author['affiliations'][0]['raw_affiliation'],
+            'orcid' => "https://orcid.org/#{non_unc_affiliated_author['orcid'][0]}",
+            'index' => '1'
+          }
+        )
+      end
+
       it 'prioritizes retrieval of the UNC affiliation even if it is not the first one' do
         first_publication_authors = test_publications.first['authors']
         # Retrieve the first UNC-affiliated author and their first UNC-affiliation
