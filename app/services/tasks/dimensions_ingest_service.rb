@@ -4,6 +4,7 @@ module Tasks
   class DimensionsIngestService
     include Tasks::IngestHelper
     attr_reader :admin_set, :depositor
+    UNC_GRID_ID = 'grid.410711.2'
 
     def initialize(config)
       @config = config
@@ -104,10 +105,21 @@ module Tasks
       }
       # Add first author affiliation to other affiliation array
       if author['affiliations'].present?
-        hash['other_affiliation'] = author['affiliations'][0]['raw_affiliation']
+        hash['other_affiliation'] = retrieve_author_affiliation(author['affiliations'])
       end
       hash
     end
+
+    def retrieve_author_affiliation(affiliations)
+      unc_affiliations = affiliations.select { |affiliation| affiliation['id'] == UNC_GRID_ID }
+      if !unc_affiliations.empty?
+        # Prioritize UNC affiliations, only retrieving the first one
+        return unc_affiliations[0]['raw_affiliation']
+      end
+      # Otherwise, retrieve the first affiliation
+      return affiliations[0]['raw_affiliation']
+    end
+
 
     def format_publication_identifiers(publication)
       [
