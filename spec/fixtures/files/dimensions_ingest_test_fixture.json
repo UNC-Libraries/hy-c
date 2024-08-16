@@ -98,7 +98,9 @@
                     "current_organization_id": "grid.10698.36",
                     "first_name": "Susan L",
                     "last_name": "Hogan",
-                    "orcid": null,
+                    "orcid": [
+                        "0000-0000-0000-0000"
+                    ],
                     "raw_affiliation": [
                         "UNC Kidney Center, Division of Nephrology and Hypertension, University of North Carolina, Chapel Hill."
                     ],

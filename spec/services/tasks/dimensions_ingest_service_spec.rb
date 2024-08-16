@@ -305,4 +305,59 @@ RSpec.describe Tasks::DimensionsIngestService do
       expect(article.keyword).to eq([])
     end
   end
+
+  describe '#author_to_hash' do
+    let (:unc_grid_id)  { 'grid.410711.2' }
+    let (:non_unc_affiliation) {
+      {
+        'city' => 'Test City',
+        'city_id' => 5318313,
+        'country' => 'United States',
+        'country_code' =>  'US',
+        'id' =>  'grid.134563.6',
+        'name' =>  'Test University',
+        'raw_affiliation' =>  'Test Raw Affiliation',
+        'state' => 'Test-State',
+        'state_code' =>  'US-AZ'
+     }
+    }
+
+    context 'when an author has multiple affiliations' do
+      it 'uses their first affiliation to populate the author hash if no UNC affiliation exists' do
+        non_unc_affiliated_author = test_publications.first['authors'].find { |author| author['id'] != unc_grid_id }
+        # Ensure the author has multiple non-unc affiliations
+        non_unc_affiliated_author['affiliations'].append(non_unc_affiliation) unless non_unc_affiliated_author['affiliations'].size > 1
+        author_hash = service.author_to_hash(non_unc_affiliated_author, 0)
+        # Check that the author hash contains the expected metadata from the first affiliation
+        expect(author_hash).to eq(
+          {
+            'name' => 'Thorpe, Carolyn T',
+            'other_affiliation' => 'Eshelman School of Pharmacy, University of North Carolina, Chapel Hill.',
+            'orcid' => 'https://orcid.org/0000-0002-7662-7497',
+            'index' => '1'
+          }
+        )
+      end
+
+      it 'prioritizes retrieval of the UNC affiliation even if it is not the first one' do
+        first_publication_authors = test_publications.first['authors']
+        # Retrieve the first UNC-affiliated author and their first UNC-affiliation
+        unc_affiliated_author = first_publication_authors.find do |author|
+          author['affiliations'].any? { |affiliation| affiliation['id'] == unc_grid_id }
+        end
+        first_unc_affiliation = unc_affiliated_author['affiliations'].find { |affiliation| affiliation['id'] == unc_grid_id }
+        # Ensure the author's first affiliation is not the UNC affiliation
+        unc_affiliated_author['affiliations'].unshift(non_unc_affiliation)
+        author_hash = service.author_to_hash(unc_affiliated_author, 0)
+        expect(author_hash).to eq(
+          {
+            'name' => 'Hogan, Susan L',
+            'other_affiliation' => 'UNC Kidney Center, Division of Nephrology and Hypertension, University of North Carolina, Chapel Hill.',
+            'orcid' => 'https://orcid.org/0000-0000-0000-0000',
+            'index' => '1'
+          }
+        )
+      end
+    end
+  end
 end
