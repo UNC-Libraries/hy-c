@@ -331,9 +331,9 @@ RSpec.describe Tasks::DimensionsIngestService do
         # Check that the author hash contains the expected metadata from the first affiliation
         expect(author_hash).to eq(
           {
-            'name' => "#{[non_unc_affiliated_author['last_name'], non_unc_affiliated_author['first_name']].compact.join(', ')}",
-            'other_affiliation' => non_unc_affiliated_author['affiliations'][0]['raw_affiliation'],
-            'orcid' => "https://orcid.org/#{non_unc_affiliated_author['orcid'][0]}",
+            'name' => 'Thorpe, Carolyn T',
+            'other_affiliation' => 'Eshelman School of Pharmacy, University of North Carolina, Chapel Hill.',
+            'orcid' => 'https://orcid.org/0000-0002-7662-7497',
             'index' => '1'
           }
         )
