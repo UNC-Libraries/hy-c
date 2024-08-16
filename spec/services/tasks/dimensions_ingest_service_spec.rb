@@ -346,15 +346,14 @@ RSpec.describe Tasks::DimensionsIngestService do
           author['affiliations'].any? { |affiliation| affiliation['id'] == unc_grid_id }
         end
         first_unc_affiliation = unc_affiliated_author['affiliations'].find { |affiliation| affiliation['id'] == unc_grid_id }
+        # Ensure the author's first affiliation is not the UNC affiliation
         unc_affiliated_author['affiliations'].unshift(non_unc_affiliation)
-        # Spoof author orcid if it's missing
-        unc_affiliated_author['orcid'] ||= ['0000-0000-0000-0000']
         author_hash = service.author_to_hash(unc_affiliated_author, 0)
         expect(author_hash).to eq(
           {
-            'name' => "#{[unc_affiliated_author['last_name'], unc_affiliated_author['first_name']].compact.join(', ')}",
-            'other_affiliation' => first_unc_affiliation['raw_affiliation'],
-            'orcid' => "https://orcid.org/#{unc_affiliated_author['orcid'][0]}",
+            'name' => 'Hogan, Susan L',
+            'other_affiliation' => 'UNC Kidney Center, Division of Nephrology and Hypertension, University of North Carolina, Chapel Hill.',
+            'orcid' => 'https://orcid.org/0000-0000-0000-0000',
             'index' => '1'
           }
         )
