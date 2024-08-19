@@ -2,7 +2,7 @@
 FactoryBot.define do
   factory :file_download_stat do
     sequence(:id) { |n| n }  # Auto-incrementing ID
-    date { FFaker::Time.between(Date.new(2019, 1, 1), Date.new(2024, 12, 31)) }  # Random date between a range
+    date { FFaker::Time.between(Date.new(2019, 1, 1), Date.new(2022, 1, 31)) }  # Random date between a range
     downloads { rand(1..50) }
     sequence(:file_id) { |n| "file_id_#{n}" }  # Unique file ID for each record
     created_at { date }
