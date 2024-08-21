@@ -2,7 +2,19 @@
 require 'rails_helper'
 
 RSpec.describe Tasks::DownloadStatsMigrationService, type: :service do
-  let!(:file_download_stats) { FactoryBot.create_list(:file_download_stat, 10) }
+  let!(:file_download_stats) do
+    [
+        FactoryBot.create(:file_download_stat, date: Date.new(2023, 1, 1)),
+        FactoryBot.create(:file_download_stat, date: Date.new(2023, 1, 15)),
+        FactoryBot.create(:file_download_stat, date: Date.new(2023, 1, 30)),
+        FactoryBot.create(:file_download_stat, date: Date.new(2023, 6, 1)),
+        FactoryBot.create(:file_download_stat, date: Date.new(2023, 6, 15)),
+        FactoryBot.create(:file_download_stat, date: Date.new(2023, 6, 30)),
+        FactoryBot.create(:file_download_stat, date: Date.new(2023, 12, 1)),
+        FactoryBot.create(:file_download_stat, date: Date.new(2023, 12, 15)),
+        FactoryBot.create(:file_download_stat, date: Date.new(2023, 12, 30))
+    ]
+  end
   let(:output_path) { Rails.root.join('tmp', 'download_migration_test_output.csv') }
   let(:csv_data) { CSV.read(output_path, headers: true) }
   let(:output_records) { csv_data.map { |row| row.to_h.symbolize_keys } }
@@ -16,13 +28,13 @@ RSpec.describe Tasks::DownloadStatsMigrationService, type: :service do
 
   describe '#list_record_info' do
     # Helper method to convert an array of FileDownloadStat objects to an array of hashes
+    # Checks for truncated date to the beginning of the month
     def expected_records_for(stats)
       stats.map do |stat|
         {
-          id: stat.id.to_s,
-          date: stat.date.to_s,
+          file_id: stat.file_id,
+          date: stat.date.beginning_of_month.to_s,
           downloads: stat.downloads.to_s,
-          file_id: stat.file_id
         }
       end
     end

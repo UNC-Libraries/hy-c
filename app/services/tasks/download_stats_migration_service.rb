@@ -9,7 +9,7 @@ module Tasks
       query = query.where('updated_at > ?', after_timestamp) if after_timestamp.present?
 
       # Group by file_id and truncated month
-      query = query.group("id, file_id, date, downloads").order('file_id, date')
+      query = query.group('id, file_id, date, downloads').order('file_id, date')
 
       # Fetch the IDs in batches for memory efficiency and performance
       records = []
