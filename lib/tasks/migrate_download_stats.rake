@@ -17,7 +17,12 @@ namespace :migrate_download_stats do
     args = opts.order!(ARGV) {}
     opts.parse!(args)
 
-    file_path = Tasks::DownloadStatsMigrationService.new.list_object_ids(options[:output_dir], options[:after])
+    unless options[:output_dir].present? && options[:output_dir][-4] == '.csv'
+      puts 'Please provide a valid output directory with a .csv extension'
+      exit 1
+    end
+
+    file_path = Tasks::DownloadStatsMigrationService.new.list_record_info(options[:output_dir], options[:after])
 
     puts "Listing completed in #{Time.now - start_time}s"
     puts "Stored id list to file: #{file_path}"
