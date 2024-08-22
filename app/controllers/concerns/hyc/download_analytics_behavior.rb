@@ -91,7 +91,7 @@ module Hyc
       def work_data
         @work_data ||= WorkUtilsHelper.fetch_work_data_by_fileset_id(fileset_id)
       end
-      
+
       def site_id
         @site_id ||= ENV['MATOMO_SITE_ID']
       end

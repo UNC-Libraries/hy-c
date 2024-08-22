@@ -35,7 +35,8 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
      title: ['Key ethical issues discussed at CDC-sponsored international, regional meetings to explore cultural perspectives and contexts on pandemic influenza preparedness and response'],
      admin_set_id: 'h128zk07m',
      admin_set_name: 'Open_Access_Articles_and_Book_Chapters'
-  } }
+  }
+  }
   let(:file_set) do
     FactoryBot.create(:file_with_work, user: user, content: File.open("#{fixture_path}/files/image.png"))
   end
@@ -344,64 +345,9 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
     end
   end
 
-  # describe '#fetch_record' do
-  #   it 'fetches the record from Solr' do
-  #     expect(controller.send(:fetch_record)).to eq(mock_record)
-  #   end
-  # end
-
-  # describe '#fetch_admin_set' do
-  #   it 'fetches the admin set from Solr' do
-  #     expect(controller.send(:fetch_admin_set)).to eq(mock_admin_set)
-  #   end
-  # end
-
-  # describe '#admin_set_id' do
-  #   it 'returns the admin set id' do
-  #     expect(controller.send(:admin_set_id)).to eq('h128zk07m')
-  #   end
-  # end
-
-  # describe '#record_id' do
-  #   it 'returns the record id' do
-  #     expect(controller.send(:record_id)).to eq('1z40m031g')
-  #   end
-
-  #   it 'returns Unknown if the record is blank' do
-  #     # allow(controller).to receive(:fetch_record).and_return([])
-  #     expect(controller.send(:record_id)).to eq('Unknown')
-  #   end
-  # end
-
-  # describe '#fileset_id' do
-  #   it 'returns the fileset id from params' do
-  #     controller.params = { id: file_set.id }
-  #     expect(controller.send(:fileset_id)).to eq(file_set.id)
-  #   end
-
-  #   it 'returns Unknown if params id is missing' do
-  #     controller.params = {}
-  #     expect(controller.send(:fileset_id)).to eq('Unknown')
-  #   end
-  # end
-
-  # describe '#record_title' do
-  #   it 'returns the record title' do
-  #     expect(controller.send(:record_title)).to eq('Key ethical issues discussed at CDC-sponsored international, regional meetings to explore cultural perspectives and contexts on pandemic influenza preparedness and response')
-  #   end
-
-  #   it 'returns Unknown if the record title is blank' do
-  #     # allow(controller).to receive(:fetch_record).and_return([{ 'title_tesim' => nil }])
-  #     expect(controller.send(:record_title)).to eq('Unknown')
-  #   end
-  # end
-
   describe '#site_id' do
     it 'returns the site id from ENV' do
       expect(controller.send(:site_id)).to eq('5')
     end
-    # it 'passes this simple test' do
-    #   expect(true).to eq(true)
-    # end
   end
 end
