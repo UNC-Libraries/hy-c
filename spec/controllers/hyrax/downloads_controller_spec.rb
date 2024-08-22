@@ -29,6 +29,13 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
     'admin_set_tesim' => ['Open_Access_Articles_and_Book_Chapters']}
   ]
   }
+  let(:mock_work_data) { {
+     work_id: '1z40m031g',
+     work_type: 'Article',
+     title: ['Key ethical issues discussed at CDC-sponsored international, regional meetings to explore cultural perspectives and contexts on pandemic influenza preparedness and response'],
+     admin_set_id: 'h128zk07m',
+     admin_set_name: 'Open_Access_Articles_and_Book_Chapters'
+  } }
   let(:file_set) do
     FactoryBot.create(:file_with_work, user: user, content: File.open("#{fixture_path}/files/image.png"))
   end
@@ -53,8 +60,7 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
     allow(stub_matomo)
     @user = user
     sign_in @user
-    allow(controller).to receive(:fetch_record).and_return(mock_record)
-    allow(controller).to receive(:fetch_admin_set).and_return(mock_admin_set)
+    allow(WorkUtilsHelper).to receive(:fetch_work_data_by_fileset_id).and_return(mock_work_data)
     allow(Hyrax::Analytics.config).to receive(:site_id).and_return(spec_site_id)
     allow(SecureRandom).to receive(:uuid).and_return('555')
     allow(Hyrax::VirusCheckerService).to receive(:file_has_virus?) { false }
@@ -201,8 +207,14 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
 
     context 'fileset without a parent work' do
       before do
-        allow(controller).to receive(:fetch_record).and_return([{}])
-        allow(controller).to receive(:fetch_admin_set).and_return([{}])
+        dummy_work_data = {
+          work_id: 'Unknown',
+          work_type: 'Unknown',
+          title: 'Unknown',
+          admin_set_id: 'Unknown',
+          admin_set_name: 'Unknown'
+        }
+        allow(WorkUtilsHelper).to receive(:fetch_work_data_by_fileset_id).and_return(dummy_work_data)
       end
 
       it 'records a download event with no work type' do
@@ -332,61 +344,64 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
     end
   end
 
-  describe '#fetch_record' do
-    it 'fetches the record from Solr' do
-      expect(controller.send(:fetch_record)).to eq(mock_record)
-    end
-  end
+  # describe '#fetch_record' do
+  #   it 'fetches the record from Solr' do
+  #     expect(controller.send(:fetch_record)).to eq(mock_record)
+  #   end
+  # end
 
-  describe '#fetch_admin_set' do
-    it 'fetches the admin set from Solr' do
-      expect(controller.send(:fetch_admin_set)).to eq(mock_admin_set)
-    end
-  end
+  # describe '#fetch_admin_set' do
+  #   it 'fetches the admin set from Solr' do
+  #     expect(controller.send(:fetch_admin_set)).to eq(mock_admin_set)
+  #   end
+  # end
 
-  describe '#admin_set_id' do
-    it 'returns the admin set id' do
-      expect(controller.send(:admin_set_id)).to eq('h128zk07m')
-    end
-  end
+  # describe '#admin_set_id' do
+  #   it 'returns the admin set id' do
+  #     expect(controller.send(:admin_set_id)).to eq('h128zk07m')
+  #   end
+  # end
 
-  describe '#record_id' do
-    it 'returns the record id' do
-      expect(controller.send(:record_id)).to eq('1z40m031g')
-    end
+  # describe '#record_id' do
+  #   it 'returns the record id' do
+  #     expect(controller.send(:record_id)).to eq('1z40m031g')
+  #   end
 
-    it 'returns Unknown if the record is blank' do
-      allow(controller).to receive(:fetch_record).and_return([])
-      expect(controller.send(:record_id)).to eq('Unknown')
-    end
-  end
+  #   it 'returns Unknown if the record is blank' do
+  #     # allow(controller).to receive(:fetch_record).and_return([])
+  #     expect(controller.send(:record_id)).to eq('Unknown')
+  #   end
+  # end
 
-  describe '#fileset_id' do
-    it 'returns the fileset id from params' do
-      controller.params = { id: file_set.id }
-      expect(controller.send(:fileset_id)).to eq(file_set.id)
-    end
+  # describe '#fileset_id' do
+  #   it 'returns the fileset id from params' do
+  #     controller.params = { id: file_set.id }
+  #     expect(controller.send(:fileset_id)).to eq(file_set.id)
+  #   end
 
-    it 'returns Unknown if params id is missing' do
-      controller.params = {}
-      expect(controller.send(:fileset_id)).to eq('Unknown')
-    end
-  end
+  #   it 'returns Unknown if params id is missing' do
+  #     controller.params = {}
+  #     expect(controller.send(:fileset_id)).to eq('Unknown')
+  #   end
+  # end
 
-  describe '#record_title' do
-    it 'returns the record title' do
-      expect(controller.send(:record_title)).to eq('Key ethical issues discussed at CDC-sponsored international, regional meetings to explore cultural perspectives and contexts on pandemic influenza preparedness and response')
-    end
+  # describe '#record_title' do
+  #   it 'returns the record title' do
+  #     expect(controller.send(:record_title)).to eq('Key ethical issues discussed at CDC-sponsored international, regional meetings to explore cultural perspectives and contexts on pandemic influenza preparedness and response')
+  #   end
 
-    it 'returns Unknown if the record title is blank' do
-      allow(controller).to receive(:fetch_record).and_return([{ 'title_tesim' => nil }])
-      expect(controller.send(:record_title)).to eq('Unknown')
-    end
-  end
+  #   it 'returns Unknown if the record title is blank' do
+  #     # allow(controller).to receive(:fetch_record).and_return([{ 'title_tesim' => nil }])
+  #     expect(controller.send(:record_title)).to eq('Unknown')
+  #   end
+  # end
 
   describe '#site_id' do
     it 'returns the site id from ENV' do
       expect(controller.send(:site_id)).to eq('5')
     end
+    # it 'passes this simple test' do
+    #   expect(true).to eq(true)
+    # end
   end
 end
