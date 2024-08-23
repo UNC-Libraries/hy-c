@@ -31,20 +31,30 @@ module Tasks
 
       # Recreate or update objects in new table
       records.each do |stat|
-        update_or_create_stat(stat)
+        create_hyc_download_stat(stat)
       end
     end
 
-    def update_or_create_stat(stat)
+    def create_hyc_download_stat(stat)
       puts "Inspect stat: #{stat.inspect}"
       puts "Stat file_id: #{stat[:file_id]}"
       hyc_download_stat = HycDownloadStat.find_or_initialize_by(fileset_id: stat[:file_id].to_s)
+      work_data = work_data_from_stat(stat)
       hyc_download_stat.assign_attributes(
+        fileset_id: stat[:file_id],
+        work_id: work_data[:work_id],
+        admin_set_id: work_data[:admin_set_id],
+        work_type: work_data[:work_type],
         date: stat[:date],
         download_count: stat[:downloads],
-        fileset_id: stat[:file_id]
       )
       hyc_download_stat.save
+    end
+
+    # Similar implementation to work_data in DownloadAnalyticsBehavior
+    # Memoization is not necessary here since this method is called per stat
+    def work_data_from_stat(stat)
+      WorkUtilsHelper.fetch_work_data_by_fileset_id(stat[:file_id])
     end
   end
 end

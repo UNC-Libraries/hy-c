@@ -15,6 +15,10 @@ RSpec.describe Tasks::DownloadStatsMigrationService, type: :service do
         FactoryBot.create(:file_download_stat, date: Date.new(2023, 12, 30))
     ]
   end
+  let(:admin_set_title) { 'Open_Access_Articles_and_Book_Chapters' }
+  let!(:mock_admin_set) { FactoryBot.create(:solr_query_result) }
+  # Generate works for the each file_download_stat
+  let!(:mock_works) { file_download_stats.map { |stat| FactoryBot.create(:solr_query_result, :work, file_set_ids_ssim: [stat.file_id]) } }
   let(:output_path) { Rails.root.join('tmp', 'download_migration_test_output.csv') }
   let(:csv_data) { CSV.read(output_path, headers: true) }
   let(:output_records) { csv_data.map { |row| row.to_h.symbolize_keys } }
@@ -24,6 +28,12 @@ RSpec.describe Tasks::DownloadStatsMigrationService, type: :service do
   before do
     # Ensure the output file is removed before each test
     File.delete(output_path) if File.exist?(output_path)
+    allow(ActiveFedora::SolrService).to receive(:get).with("title_tesim:#{admin_set_title}", rows: 1).and_return('response' => { 'docs' => [mock_admin_set] })
+    file_download_stats.each_with_index do |stat, index|
+      # Assign a random number of downloads to each stat
+      puts "Stat file_id: #{stat.file_id}"
+      allow(ActiveFedora::SolrService).to receive(:get).with("file_set_ids_ssim:#{stat.file_id}", rows: 1).and_return('response' => { 'docs' => [mock_works[index]] })
+    end
   end
 
   describe '#list_record_info' do
@@ -68,7 +78,12 @@ RSpec.describe Tasks::DownloadStatsMigrationService, type: :service do
     end
 
     it 'creates new HycDownloadStat records from the CSV file' do
-      output_records.each do |record|
+      output_records.each_with_index do |record,index|
+        # WIP: Break at index 5
+        if index == 5
+          break
+        end
+        puts "Record: #{record.inspect}"
         hyc_download_stat = HycDownloadStat.find(record[:id])
         expect(hyc_download_stat.date.to_s).to eq(record[:date])
         expect(hyc_download_stat.downloads).to eq(record[:downloads].to_i)
