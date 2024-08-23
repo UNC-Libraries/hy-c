@@ -3,21 +3,8 @@ module Tasks
   class DownloadStatsMigrationService
     PAGE_SIZE = 1000
     def list_record_info(output_path, after_timestamp = nil)
-
-    #   # Build the query
-    #   query = FileDownloadStat.select("file_id, DATE_TRUNC('month', date) AS date, SUM(downloads) AS downloads")
-    #   query = query.where('updated_at > ?', after_timestamp) if after_timestamp.present?
-
-    #   # Group by file_id and truncated month
-    #   query = query.group('file_id, DATE_TRUNC(\'month\', date)').order('file_id, date')
       query = FileDownloadStat.all
       query = query.where('updated_at > ?', after_timestamp) if after_timestamp.present?
-
-    #   # Fetch the IDs in batches for memory efficiency and performance
-    #   records = []
-    #   query.in_batches(of: PAGE_SIZE, load: true) do |relation|
-    #     records.concat(relation.map { |record| { file_id: record.file_id, date: record.date, downloads: record.downloads } })
-    #   end
 
     # Fetch the records in batches to handle large datasets
       records = []
@@ -29,7 +16,7 @@ module Tasks
         }
       end
 
-    # Perform aggregation in Ruby
+     # Perform aggregation of daily stats ino monthly stats in Ruby, encountered issues with SQL queries
       aggregated_records = aggregate_downloads(records)
 
       # Write the records to the specified CSV file
@@ -51,8 +38,6 @@ module Tasks
     end
 
     def create_hyc_download_stat(stat)
-      puts "Inspect stat: #{stat.inspect}"
-      puts "Stat file_id: #{stat[:file_id]}"
       hyc_download_stat = HycDownloadStat.find_or_initialize_by(
         fileset_id: stat[:file_id].to_s,
         date: stat[:date]

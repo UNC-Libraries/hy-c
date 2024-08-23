@@ -21,11 +21,34 @@ namespace :migrate_download_stats do
       puts 'Please provide a valid output directory with a .csv extension'
       exit 1
     end
-
-    file_path = Tasks::DownloadStatsMigrationService.new.list_record_info(options[:output_dir], options[:after])
-
+    
+    migration_service = Tasks::DownloadStatsMigrationService.new
+    old_stats_csv = migration_service.list_record_info(options[:output_dir], options[:after])
     puts "Listing completed in #{Time.now - start_time}s"
-    puts "Stored id list to file: #{file_path}"
+    puts "Stored id list to file: #{options[:output_dir]}"
+    exit 0
+  end
+
+  desc 'migrate download stats to new table'
+  task :migrate, [:csv_path] => :environment do |_t, _args|
+    start_time = Time.now
+    puts "[#{start_time.utc.iso8601}] Starting migration from CSV to new table"
+    options = {}
+
+    opts = OptionParser.new
+    opts.banner = 'Usage: bundle exec rake migrate_download_stats:migrate -- [options]'
+    opts.on('-c', '--csv-path ARG', String, 'Path to the CSV file to migrate') { |val| options[:csv_path] = val }
+    args = opts.order!(ARGV) {}
+    opts.parse!(args)
+
+    unless options[:csv_path].present? && File.exist?(options[:csv_path])
+      puts 'Please provide a valid CSV file path'
+      exit 1
+    end
+
+    migration_service = Tasks::DownloadStatsMigrationService.new
+    migration_service.migrate_to_new_table(options[:csv_path])
+    puts "Migration completed in #{Time.now - start_time}s"
     exit 0
   end
 end
