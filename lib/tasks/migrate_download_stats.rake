@@ -21,7 +21,7 @@ namespace :migrate_download_stats do
       puts 'Please provide a valid output directory with a .csv extension'
       exit 1
     end
-    
+
     migration_service = Tasks::DownloadStatsMigrationService.new
     old_stats_csv = migration_service.list_record_info(options[:output_dir], options[:after])
     puts "Listing completed in #{Time.now - start_time}s"
