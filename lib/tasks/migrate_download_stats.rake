@@ -18,7 +18,7 @@ namespace :migrate_download_stats do
     opts.parse!(args)
 
     unless options[:output_dir].present? && options[:output_dir][-4] == '.csv'
-      puts 'Please provide a valid output directory with a .csv extension'
+      puts 'Please provide a valid output directory with a .csv extension. Got ' + options[:output_dir].to_s
       exit 1
     end
 
