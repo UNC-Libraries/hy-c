@@ -8,9 +8,8 @@ module Tasks
       total_work_stats = query.count
       timestamp_clause = after_timestamp.present? ? "after specified time #{after_timestamp}" : 'without a timestamp'
 
-     # Log number of work_stats retrieved and timestamp clause
-      Rails.logger.info("Listing work_stats #{timestamp_clause} to #{output_path}")
-      Rails.logger.info("#{total_work_stats} work_stats from the hyrax local cache.")
+     # Log number of work stats retrieved and timestamp clause
+      Rails.logger.info("Listing #{total_work_stats} work stats #{timestamp_clause} to #{output_path} from the hyrax local cache.")
 
       work_stats = []
       work_stats_retrieved_from_query_count = 0
@@ -30,15 +29,10 @@ module Tasks
      # Perform aggregation of daily stats ino monthly stats in Ruby, encountered issues with SQL queries
       Rails.logger.info("Aggregating daily stats into monthly stats")
       aggregated_work_stats = aggregate_downloads(work_stats)
-
       Rails.logger.info("Aggregated #{aggregated_work_stats.count} monthly stats from #{work_stats.count} daily stats")
 
       # Write the work_stats to the specified CSV file
-      CSV.open(output_path, 'w', write_headers: true, headers: ['file_id', 'date', 'downloads']) do |csv|
-        aggregated_work_stats.each do |stat|
-          csv << [stat[:file_id], stat[:date], stat[:downloads]]
-        end
-      end
+      write_to_csv(output_path, aggregated_work_stats)
     end
 
     def migrate_to_new_table(csv_path)
@@ -104,5 +98,16 @@ module Tasks
       end
       aggregated_data.values
     end
+
+    # Method to write work stats to a CSV file
+    def write_to_csv(output_path, work_stats, headers = ['file_id', 'date', 'downloads'])
+      CSV.open(output_path, 'w', write_headers: true, headers: headers) do |csv|
+        work_stats.each do |stat|
+          csv << [stat[:file_id], stat[:date], stat[:downloads]]
+        end
+      end
+      Rails.logger.info("Work stats successfully written to #{output_path}")
+    end
+
   end
 end
