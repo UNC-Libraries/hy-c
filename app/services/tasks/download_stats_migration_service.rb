@@ -37,16 +37,24 @@ module Tasks
 
     def migrate_to_new_table(csv_path)
       csv_data = CSV.read(csv_path, headers: true)
-      work_stats = csv_data.map { |row| row.to_h.symbolize_keys }
-      migrated_work_stats_count = 0
+      csv_data_stats = csv_data.map { |row| row.to_h.symbolize_keys }
+      progress_tracker = {
+        all_categories: 0,
+        created: 0,
+        updated: 0,
+        skipped: 0,
+        failed: 0
+      }
 
-      Rails.logger.info("Migrating #{work_stats.count} work stats to the new table.")
+      Rails.logger.info("Migrating #{csv_data_stats.count} work stats to the new table.")
       # Recreate or update objects in new table
-      work_stats.each do |stat|
-        create_hyc_download_stat(stat)
-        migrated_work_stats_count += 1
-        log_progress(migrated_work_stats_count, work_stats.count, 'Migration')
+      csv_data_stats.each do |stat|
+        create_hyc_download_stat(stat, progress_tracker)
+        # WIP: Thinking about moving updates into an update progress tracker method
+        # progress_tracker[:all_categories] += 1
+        log_progress(progress_tracker[:all_categories], csv_data_stats.count, 'Migration')
       end
+      
     end
 
     private
@@ -61,21 +69,45 @@ module Tasks
       end
     end
 
-    def create_hyc_download_stat(stat)
-      hyc_download_stat = HycDownloadStat.find_or_initialize_by(
-        fileset_id: stat[:file_id].to_s,
-        date: stat[:date]
-    )
-      work_data = work_data_from_stat(stat)
-      hyc_download_stat.assign_attributes(
-        fileset_id: stat[:file_id],
-        work_id: work_data[:work_id],
-        admin_set_id: work_data[:admin_set_id],
-        work_type: work_data[:work_type],
-        date: stat[:date],
-        download_count: stat[:downloads],
+    def create_hyc_download_stat(stat, progress_tracker)
+      begin
+        hyc_download_stat = HycDownloadStat.find_or_initialize_by(
+          fileset_id: stat[:file_id].to_s,
+          date: stat[:date]
       )
-      hyc_download_stat.save
+        work_data = work_data_from_stat(stat)
+        hyc_download_stat.assign_attributes(
+          fileset_id: stat[:file_id],
+          work_id: work_data[:work_id],
+          admin_set_id: work_data[:admin_set_id],
+          work_type: work_data[:work_type],
+          date: stat[:date],
+          download_count: stat[:downloads],
+        )
+      rescue StandardError => e
+        Rails.logger.error("Failed to create HycDownloadStat for #{stat.inspect}: #{e.message}")
+        progress_tracker[:failed] += 1
+      end
+      save_hyc_download_stat(hyc_download_stat, stat, progress_tracker)
+
+        # if hyc_download_stat.new_record?
+        #   if hyc_download_stat.save
+        #     return :created
+        #   else
+        #     Rails.logger.error("Failed to create HycDownloadStat for #{stat.inspect}: #{hyc_download_stat.errors.full_messages.join(', ')}")
+        #     return :failed
+        #   end
+        # elsif hyc_download_stat.changed?
+        #   if hyc_download_stat.save
+        #     return :updated
+        #   else
+        #     Rails.logger.error("Failed to update HycDownloadStat for #{stat.inspect}: #{hyc_download_stat.errors.full_messages.join(', ')}")
+        #     return :failed
+        #   end
+        # else
+        #   return :skipped
+        # end
+      
     end
 
     # Similar implementation to work_data in DownloadAnalyticsBehavior
@@ -114,6 +146,24 @@ module Tasks
       end
       Rails.logger.info("Work stats successfully written to #{output_path}")
     end
+
+    # Method to save the HycDownloadStat object and update the progress tracker
+    def save_hyc_download_stat(hyc_download_stat, stat, progress_tracker)
+      begin
+        if hyc_download_stat.new_record?
+          hyc_download_stat.save
+          progress_tracker[:created] += 1
+        elsif hyc_download_stat.changed?
+          hyc_download_stat.save
+          progress_tracker[:updated] += 1
+        else
+          progress_tracker[:skipped] += 1
+        end
+      rescue StandardError => e
+        Rails.logger.error("Error saving new row to HycDownloadStat: #{stat.inspect}: #{e.message}")
+        progress_tracker[:failed] += 1
+      end
+    end    
 
   end
 end
