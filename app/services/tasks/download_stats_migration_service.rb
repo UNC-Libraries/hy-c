@@ -56,6 +56,7 @@ module Tasks
         # Recreate or update objects in new table
         csv_data_stats.each do |stat|
           create_hyc_download_stat(stat, progress_tracker)
+          progress_tracker[:all_categories] += 1
           log_progress(progress_tracker[:all_categories], csv_data_stats.count, 'Migration')
         end
         Rails.logger.info("Migration complete: #{progress_tracker[:created]} created, #{progress_tracker[:updated]} updated, #{progress_tracker[:skipped]} skipped, #{progress_tracker[:failed]} failed")
