@@ -3,58 +3,66 @@ module Tasks
   class DownloadStatsMigrationService
     PAGE_SIZE = 1000
     def list_work_stat_info(output_path, after_timestamp = nil)
-      query = FileDownloadStat.all
-      query = query.where('updated_at > ?', after_timestamp) if after_timestamp.present?
-      total_work_stats = query.count
-      timestamp_clause = after_timestamp.present? ? "after specified time #{after_timestamp}" : 'without a timestamp'
+      begin
+        query = FileDownloadStat.all
+        query = query.where('updated_at > ?', after_timestamp) if after_timestamp.present?
+        total_work_stats = query.count
+        timestamp_clause = after_timestamp.present? ? "after specified time #{after_timestamp}" : 'without a timestamp'
 
-     # Log number of work stats retrieved and timestamp clause
-      Rails.logger.info("Listing #{total_work_stats} work stats #{timestamp_clause} to #{output_path} from the hyrax local cache.")
+      # Log number of work stats retrieved and timestamp clause
+        Rails.logger.info("Listing #{total_work_stats} work stats #{timestamp_clause} to #{output_path} from the hyrax local cache.")
 
-      work_stats = []
-      work_stats_retrieved_from_query_count = 0
+        work_stats = []
+        work_stats_retrieved_from_query_count = 0
 
-      Rails.logger.info("Retrieving work_stats in batches of #{PAGE_SIZE}")
-     # Fetch the work_stats in batches
-      query.find_each(batch_size: PAGE_SIZE) do |stat|
-        work_stats << {
-          file_id: stat.file_id,
-          date: stat.date,
-          downloads: stat.downloads
-        }
-        work_stats_retrieved_from_query_count += 1
-        log_progress(work_stats_retrieved_from_query_count, total_work_stats, 'Retrieval')
+        Rails.logger.info("Retrieving work_stats in batches of #{PAGE_SIZE}")
+      # Fetch the work_stats in batches
+        query.find_each(batch_size: PAGE_SIZE) do |stat|
+          work_stats << {
+            file_id: stat.file_id,
+            date: stat.date,
+            downloads: stat.downloads
+          }
+          work_stats_retrieved_from_query_count += 1
+          log_progress(work_stats_retrieved_from_query_count, total_work_stats, 'Retrieval')
+        end
+
+      # Perform aggregation of daily stats ino monthly stats in Ruby, encountered issues with SQL queries
+        Rails.logger.info('Aggregating daily stats into monthly stats')
+        aggregated_work_stats = aggregate_downloads(work_stats)
+        Rails.logger.info("Aggregated #{aggregated_work_stats.count} monthly stats from #{work_stats.count} daily stats")
+
+        # Write the work_stats to the specified CSV file
+        write_to_csv(output_path, aggregated_work_stats)
+      rescue StandardError => e
+        Rails.logger.error("An error occurred while listing work stats: #{e.message}")
+        Rails.logger.error(e.backtrace.join("\n"))
       end
-
-     # Perform aggregation of daily stats ino monthly stats in Ruby, encountered issues with SQL queries
-      Rails.logger.info('Aggregating daily stats into monthly stats')
-      aggregated_work_stats = aggregate_downloads(work_stats)
-      Rails.logger.info("Aggregated #{aggregated_work_stats.count} monthly stats from #{work_stats.count} daily stats")
-
-      # Write the work_stats to the specified CSV file
-      write_to_csv(output_path, aggregated_work_stats)
     end
 
     def migrate_to_new_table(csv_path)
-      csv_data = CSV.read(csv_path, headers: true)
-      csv_data_stats = csv_data.map { |row| row.to_h.symbolize_keys }
-      progress_tracker = {
-        all_categories: 0,
-        created: 0,
-        updated: 0,
-        skipped: 0,
-        failed: 0
-      }
+      begin
+        csv_data = CSV.read(csv_path, headers: true)
+        csv_data_stats = csv_data.map { |row| row.to_h.symbolize_keys }
+        progress_tracker = {
+          all_categories: 0,
+          created: 0,
+          updated: 0,
+          skipped: 0,
+          failed: 0
+        }
 
-      Rails.logger.info("Migrating #{csv_data_stats.count} work stats to the new table.")
-      # Recreate or update objects in new table
-      csv_data_stats.each do |stat|
-        create_hyc_download_stat(stat, progress_tracker)
-        # WIP: Thinking about moving updates into an update progress tracker method
-        # progress_tracker[:all_categories] += 1
-        log_progress(progress_tracker[:all_categories], csv_data_stats.count, 'Migration')
+        Rails.logger.info("Migrating #{csv_data_stats.count} work stats to the new table.")
+        # Recreate or update objects in new table
+        csv_data_stats.each do |stat|
+          create_hyc_download_stat(stat, progress_tracker)
+          log_progress(progress_tracker[:all_categories], csv_data_stats.count, 'Migration')
+        end
+        Rails.logger.info("Migration complete: #{progress_tracker[:created]} created, #{progress_tracker[:updated]} updated, #{progress_tracker[:skipped]} skipped, #{progress_tracker[:failed]} failed")
+      rescue StandardError => e
+        Rails.logger.error("An error occurred while migrating work stats: #{e.message}")
+        Rails.logger.error(e.backtrace.join("\n"))
       end
-      
     end
 
     private
@@ -89,25 +97,6 @@ module Tasks
         progress_tracker[:failed] += 1
       end
       save_hyc_download_stat(hyc_download_stat, stat, progress_tracker)
-
-        # if hyc_download_stat.new_record?
-        #   if hyc_download_stat.save
-        #     return :created
-        #   else
-        #     Rails.logger.error("Failed to create HycDownloadStat for #{stat.inspect}: #{hyc_download_stat.errors.full_messages.join(', ')}")
-        #     return :failed
-        #   end
-        # elsif hyc_download_stat.changed?
-        #   if hyc_download_stat.save
-        #     return :updated
-        #   else
-        #     Rails.logger.error("Failed to update HycDownloadStat for #{stat.inspect}: #{hyc_download_stat.errors.full_messages.join(', ')}")
-        #     return :failed
-        #   end
-        # else
-        #   return :skipped
-        # end
-      
     end
 
     # Similar implementation to work_data in DownloadAnalyticsBehavior
@@ -163,7 +152,7 @@ module Tasks
         Rails.logger.error("Error saving new row to HycDownloadStat: #{stat.inspect}: #{e.message}")
         progress_tracker[:failed] += 1
       end
-    end    
+    end
 
   end
 end
