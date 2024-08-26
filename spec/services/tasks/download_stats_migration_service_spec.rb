@@ -43,13 +43,13 @@ RSpec.describe Tasks::DownloadStatsMigrationService, type: :service do
     end
   end
 
-  describe '#list_record_info' do
-    it 'writes all records to the output CSV file' do
+  describe '#list_work_info' do
+    it 'writes all works to the output CSV file' do
       file_download_stats.flatten.each_with_index do |stat, index|
         allow(ActiveFedora::SolrService).to receive(:get).with("file_set_ids_ssim:#{stat.file_id}", rows: 1).and_return('response' => { 'docs' => [mock_works[index]] })
       end
 
-      expected_records = [
+      expected_works = [
         { file_id: 'file_id_1', date: '2023-01-01 00:00:00 UTC', downloads: '20' },
         { file_id: 'file_id_1', date: '2023-03-01 00:00:00 UTC', downloads: '20' },
         { file_id: 'file_id_2', date: '2023-04-01 00:00:00 UTC', downloads: '20' },
@@ -57,10 +57,10 @@ RSpec.describe Tasks::DownloadStatsMigrationService, type: :service do
         { file_id: 'file_id_3', date: '2023-06-01 00:00:00 UTC', downloads: '20' },
         { file_id: 'file_id_3', date: '2023-07-01 00:00:00 UTC', downloads: '20' }
       ]
-      service.list_record_info(output_path, nil)
+      service.list_work_info(output_path, nil)
 
       expect(File).to exist(output_path)
-      expect(csv_to_hash_array(output_path)).to match_array(expected_records)
+      expect(csv_to_hash_array(output_path)).to match_array(expected_works)
     end
 
     context 'with an after_timestamp' do
@@ -79,14 +79,14 @@ RSpec.describe Tasks::DownloadStatsMigrationService, type: :service do
         end
       end
 
-      it 'filters records by the given timestamp' do
-        # Retrieve records created after 'updated_at' date for old stats
-        service.list_record_info(output_path, '2023-04-06 00:00:00 UTC')
+      it 'filters works by the given timestamp' do
+        # Retrieve works created after 'updated_at' date for old stats
+        service.list_work_info(output_path, '2023-04-06 00:00:00 UTC')
         puts "CSV data: #{csv_to_hash_array(output_path).inspect}"
 
         expect(File).to exist(output_path)
-        expect(csv_to_hash_array(output_path).map { |record| record[:file_id] }).to match_array(recent_stat_file_ids)
-        expect(csv_to_hash_array(output_path).map { |record| record[:file_id] }).not_to include(*old_stat_file_ids)
+        expect(csv_to_hash_array(output_path).map { |work| work[:file_id] }).to match_array(recent_stat_file_ids)
+        expect(csv_to_hash_array(output_path).map { |work| work[:file_id] }).not_to include(*old_stat_file_ids)
       end
     end
   end
@@ -96,20 +96,20 @@ RSpec.describe Tasks::DownloadStatsMigrationService, type: :service do
       file_download_stats.flatten.each_with_index do |stat, index|
         allow(ActiveFedora::SolrService).to receive(:get).with("file_set_ids_ssim:#{stat.file_id}", rows: 1).and_return('response' => { 'docs' => [mock_works[index]] })
       end
-      service.list_record_info(output_path, nil)
+      service.list_work_info(output_path, nil)
       service.migrate_to_new_table(output_path)
     end
 
-    it 'creates new HycDownloadStat records from the CSV file' do
-      csv_to_hash_array(output_path).each_with_index do |record, index|
-        work_data = WorkUtilsHelper.fetch_work_data_by_fileset_id(record[:file_id])
-        hyc_download_stat = HycDownloadStat.find_by(fileset_id: record[:file_id], date: record[:date].to_date.beginning_of_month)
+    it 'creates new HycDownloadStat works from the CSV file' do
+      csv_to_hash_array(output_path).each_with_index do |work, index|
+        work_data = WorkUtilsHelper.fetch_work_data_by_fileset_id(work[:file_id])
+        hyc_download_stat = HycDownloadStat.find_by(fileset_id: work[:file_id], date: work[:date].to_date.beginning_of_month)
 
         expect(hyc_download_stat).to be_present
-        expect(hyc_download_stat.fileset_id).to eq(record[:file_id])
+        expect(hyc_download_stat.fileset_id).to eq(work[:file_id])
         expect(hyc_download_stat.work_id).to eq(work_data[:work_id])
-        expect(hyc_download_stat.date).to eq(record[:date].to_date)
-        # Each mocked record has 10 downloads per month, so the download count should be 20
+        expect(hyc_download_stat.date).to eq(work[:date].to_date)
+        # Each mocked work has 10 downloads per month, so the download count should be 20
         expect(hyc_download_stat.download_count).to eq(20)
       end
     end
@@ -122,7 +122,7 @@ RSpec.describe Tasks::DownloadStatsMigrationService, type: :service do
 
   # Helper method to convert an array of FileDownloadStat objects to an array of hashes
   # Checks for truncated date to the beginning of the month
-  def expected_records_for(stats)
+  def expected_works_for(stats)
     stats.map do |stat|
       {
         file_id: stat.file_id,

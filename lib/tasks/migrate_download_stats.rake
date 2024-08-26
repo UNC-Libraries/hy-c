@@ -23,7 +23,7 @@ namespace :migrate_download_stats do
     end
 
     migration_service = Tasks::DownloadStatsMigrationService.new
-    old_stats_csv = migration_service.list_record_info(options[:output_dir], options[:after])
+    old_stats_csv = migration_service.list_work_info(options[:output_dir], options[:after])
     puts "Listing completed in #{Time.now - start_time}s"
     puts "Stored id list to file: #{options[:output_dir]}"
     exit 0
