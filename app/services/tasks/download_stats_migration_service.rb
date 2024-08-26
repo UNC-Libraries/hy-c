@@ -23,7 +23,7 @@ module Tasks
           downloads: stat.downloads
         }
         work_stats_retrieved_from_query_count += 1
-        log_progress(work_stats_retrieved_from_query_count, total_work_stats)
+        log_progress(work_stats_retrieved_from_query_count, total_work_stats, 'Retrieval')
       end
 
      # Perform aggregation of daily stats ino monthly stats in Ruby, encountered issues with SQL queries
@@ -38,22 +38,25 @@ module Tasks
     def migrate_to_new_table(csv_path)
       csv_data = CSV.read(csv_path, headers: true)
       work_stats = csv_data.map { |row| row.to_h.symbolize_keys }
+      migrated_work_stats_count = 0
 
+      Rails.logger.info("Migrating #{work_stats.count} work stats to the new table.")
       # Recreate or update objects in new table
       work_stats.each do |stat|
         create_hyc_download_stat(stat)
+        migrated_work_stats_count += 1
+        log_progress(migrated_work_stats_count, work_stats.count, 'Migration')
       end
     end
 
     private
 
     # Log progress at 25%, 50%, 75%, and 100%
-    def log_progress(work_stats_count, total_work_stats, is_aggregation = false)
+    def log_progress(work_stats_count, total_work_stats, process_type = 'Retrieval')
       percentages = [0.25, 0.5, 0.75, 1.0]
       log_intervals = percentages.map { |percent| (total_work_stats * percent).to_i }
       if log_intervals.include?(work_stats_count)
         percentage_done = percentages[log_intervals.index(work_stats_count)] * 100
-        process_type = is_aggregation ? 'Aggregation' : 'Retrieval'
         Rails.logger.info("#{process_type} progress: #{percentage_done}% (#{work_stats_count}/#{total_work_stats} work_stats)")
       end
     end
@@ -96,7 +99,8 @@ module Tasks
         aggregated_data[key] ||= { file_id: file_id, date: truncated_date, downloads: 0 }
         # Sum the downloads for each key
         aggregated_data[key][:downloads] += downloads
-        log_progress(aggregated_work_stats_count, work_stats.count, is_aggregation: true)
+        aggregated_work_stats_count += 1
+        log_progress(aggregated_work_stats_count, work_stats.count, 'Aggregation')
       end
       aggregated_data.values
     end
