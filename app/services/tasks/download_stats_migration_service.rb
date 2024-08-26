@@ -2,60 +2,63 @@
 module Tasks
   class DownloadStatsMigrationService
     PAGE_SIZE = 1000
-    def list_work_info(output_path, after_timestamp = nil)
+    def list_work_stat_info(output_path, after_timestamp = nil)
       query = FileDownloadStat.all
       query = query.where('updated_at > ?', after_timestamp) if after_timestamp.present?
-      total_works = query.count
+      total_work_stats = query.count
       timestamp_clause = after_timestamp.present? ? "after specified time #{after_timestamp}" : 'without a timestamp'
 
-     # Log number of works retrieved and timestamp clause
-      Rails.logger.info("Listing works #{timestamp_clause} to #{output_path}")
-      Rails.logger.info("#{total_works} works from the hyrax local cache.")
+     # Log number of work_stats retrieved and timestamp clause
+      Rails.logger.info("Listing work_stats #{timestamp_clause} to #{output_path}")
+      Rails.logger.info("#{total_work_stats} work_stats from the hyrax local cache.")
 
-      works = []
-      works_retrieved_from_query_count = 0
+      work_stats = []
+      work_stats_retrieved_from_query_count = 0
 
-      Rails.logger.info("Retrieving works in batches of #{PAGE_SIZE}")
-     # Fetch the works in batches
-      query.find_each(batch_size: PAGE_SIZE) do |work|
-        works << {
-          file_id: work.file_id,
-          date: work.date,
-          downloads: work.downloads
+      Rails.logger.info("Retrieving work_stats in batches of #{PAGE_SIZE}")
+     # Fetch the work_stats in batches
+      query.find_each(batch_size: PAGE_SIZE) do |stat|
+        work_stats << {
+          file_id: stat.file_id,
+          date: stat.date,
+          downloads: stat.downloads
         }
-        works_retrieved_from_query_count += 1
-        log_progress(works_retrieved_from_query_count, total_works)
+        work_stats_retrieved_from_query_count += 1
+        log_progress(work_stats_retrieved_from_query_count, total_work_stats)
       end
 
      # Perform aggregation of daily stats ino monthly stats in Ruby, encountered issues with SQL queries
-      aggregated_works = aggregate_downloads(works)
+      Rails.logger.info("Aggregating daily stats into monthly stats")
+      aggregated_work_stats = aggregate_downloads(work_stats)
 
-      # Write the works to the specified CSV file
+      Rails.logger.info("Aggregated #{aggregated_work_stats.count} monthly stats from #{work_stats.count} daily stats")
+
+      # Write the work_stats to the specified CSV file
       CSV.open(output_path, 'w', write_headers: true, headers: ['file_id', 'date', 'downloads']) do |csv|
-        aggregated_works.each do |work|
-          csv << [work[:file_id], work[:date], work[:downloads]]
+        aggregated_work_stats.each do |stat|
+          csv << [stat[:file_id], stat[:date], stat[:downloads]]
         end
       end
     end
 
     def migrate_to_new_table(csv_path)
       csv_data = CSV.read(csv_path, headers: true)
-      works = csv_data.map { |row| row.to_h.symbolize_keys }
+      work_stats = csv_data.map { |row| row.to_h.symbolize_keys }
 
       # Recreate or update objects in new table
-      works.each do |stat|
+      work_stats.each do |stat|
         create_hyc_download_stat(stat)
       end
     end
 
     # Log progress at 25%, 50%, 75%, and 100%
-    def log_progress(works_retrieved_from_query_count, total_works, is_aggregation = false)
+    def log_progress(work_stats_count, total_work_stats, is_aggregation = false)
       percentages = [0.25, 0.5, 0.75, 1.0]
-      log_intervals = percentages.map { |percent| (total_works * percent).to_i }
-      if log_intervals.include?(works_retrieved_from_query_count)
-        percentage_done = percentages[log_intervals.index(works_retrieved_from_query_count)] * 100
+      log_intervals = percentages.map { |percent| (total_work_stats * percent).to_i }
+      if log_intervals.include?(work_stats_count)
+        percentage_done = percentages[log_intervals.index(work_stats_count)] * 100
         process_type = is_aggregation ? 'Aggregation' : 'Retrieval'
-        Rails.logger.info("#{process_type} progress: #{percentage_done}% (#{works_retrieved_from_query_count}/#{total_works} works)")
+        Rails.logger.info("#{process_type} progress: #{percentage_done}% (#{work_stats_count}/#{total_work_stats} work_stats)")
       end
     end
 
@@ -82,13 +85,14 @@ module Tasks
       WorkUtilsHelper.fetch_work_data_by_fileset_id(stat[:file_id])
     end
 
-    def aggregate_downloads(works)
+    def aggregate_downloads(work_stats)
       aggregated_data = {}
+      aggregated_work_stats_count = 0
 
-      works.each do |work|
-        file_id = work[:file_id]
-        truncated_date = work[:date].beginning_of_month
-        downloads = work[:downloads]
+      work_stats.each do |stat|
+        file_id = stat[:file_id]
+        truncated_date = stat[:date].beginning_of_month
+        downloads = stat[:downloads]
 
         # Group the file_id and truncated date to be used as a key
         key = [file_id, truncated_date]
@@ -96,6 +100,7 @@ module Tasks
         aggregated_data[key] ||= { file_id: file_id, date: truncated_date, downloads: 0 }
         # Sum the downloads for each key
         aggregated_data[key][:downloads] += downloads
+        log_progress(aggregated_work_stats_count, work_stats.count, is_aggregation: true)
       end
       aggregated_data.values
     end

@@ -43,7 +43,7 @@ RSpec.describe Tasks::DownloadStatsMigrationService, type: :service do
     end
   end
 
-  describe '#list_work_info' do
+  describe '#list_work_stat_info' do
     it 'writes all works to the output CSV file' do
       file_download_stats.flatten.each_with_index do |stat, index|
         allow(ActiveFedora::SolrService).to receive(:get).with("file_set_ids_ssim:#{stat.file_id}", rows: 1).and_return('response' => { 'docs' => [mock_works[index]] })
@@ -57,7 +57,7 @@ RSpec.describe Tasks::DownloadStatsMigrationService, type: :service do
         { file_id: 'file_id_3', date: '2023-06-01 00:00:00 UTC', downloads: '20' },
         { file_id: 'file_id_3', date: '2023-07-01 00:00:00 UTC', downloads: '20' }
       ]
-      service.list_work_info(output_path, nil)
+      service.list_work_stat_info(output_path, nil)
 
       expect(File).to exist(output_path)
       expect(csv_to_hash_array(output_path)).to match_array(expected_works)
@@ -81,7 +81,7 @@ RSpec.describe Tasks::DownloadStatsMigrationService, type: :service do
 
       it 'filters works by the given timestamp' do
         # Retrieve works created after 'updated_at' date for old stats
-        service.list_work_info(output_path, '2023-04-06 00:00:00 UTC')
+        service.list_work_stat_info(output_path, '2023-04-06 00:00:00 UTC')
         puts "CSV data: #{csv_to_hash_array(output_path).inspect}"
 
         expect(File).to exist(output_path)
@@ -96,7 +96,7 @@ RSpec.describe Tasks::DownloadStatsMigrationService, type: :service do
       file_download_stats.flatten.each_with_index do |stat, index|
         allow(ActiveFedora::SolrService).to receive(:get).with("file_set_ids_ssim:#{stat.file_id}", rows: 1).and_return('response' => { 'docs' => [mock_works[index]] })
       end
-      service.list_work_info(output_path, nil)
+      service.list_work_stat_info(output_path, nil)
       service.migrate_to_new_table(output_path)
     end
 

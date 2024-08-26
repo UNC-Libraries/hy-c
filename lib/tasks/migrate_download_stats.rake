@@ -4,14 +4,14 @@ require 'optparse'
 require 'optparse/date'
 
 namespace :migrate_download_stats do
-  desc 'output object record data for download stats migration into a csv'
-  task :list_record_data, [:output_dir, :after] => :environment do |_t, _args|
+  desc 'output rows for download stat migration into a csv'
+  task :list_rows, [:output_dir, :after] => :environment do |_t, _args|
     start_time = Time.now
-    puts "[#{start_time.utc.iso8601}] starting listing of record data"
+    puts "[#{start_time.utc.iso8601}] starting listing of work data"
     options = {}
 
     opts = OptionParser.new
-    opts.banner = 'Usage: bundle exec rake migrate_download_stats:list_record_data -- [options]'
+    opts.banner = 'Usage: bundle exec rake migrate_download_stats:list_rows -- [options]'
     opts.on('-o', '--output-dir ARG', String, 'Directory list will be saved to') { |val| options[:output_dir] = val }
     opts.on('-a', '--after ARG', String, 'List objects which have been updated after this timestamp') { |val| options[:after] = val }
     args = opts.order!(ARGV) {}
@@ -23,7 +23,7 @@ namespace :migrate_download_stats do
     end
 
     migration_service = Tasks::DownloadStatsMigrationService.new
-    old_stats_csv = migration_service.list_work_info(options[:output_dir], options[:after])
+    old_stats_csv = migration_service.list_work_stat_info(options[:output_dir], options[:after])
     puts "Listing completed in #{Time.now - start_time}s"
     puts "Stored id list to file: #{options[:output_dir]}"
     exit 0
