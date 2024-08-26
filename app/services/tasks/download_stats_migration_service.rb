@@ -50,13 +50,13 @@ module Tasks
 
     # Log progress at 25%, 50%, 75%, and 100%
     def log_progress(works_retrieved_from_query_count, total_works, is_aggregation = false)
-        percentages = [0.25, 0.5, 0.75, 1.0]
-        log_intervals = percentages.map { |percent| (total_works * percent).to_i }    
-        if log_intervals.include?(works_retrieved_from_query_count)
-          percentage_done = percentages[log_intervals.index(works_retrieved_from_query_count)] * 100
-          process_type = is_aggregation ? 'Aggregation' : 'Retrieval'
-          Rails.logger.info("#{process_type} progress: #{percentage_done}% (#{works_retrieved_from_query_count}/#{total_works} works)")
-        end
+      percentages = [0.25, 0.5, 0.75, 1.0]
+      log_intervals = percentages.map { |percent| (total_works * percent).to_i }
+      if log_intervals.include?(works_retrieved_from_query_count)
+        percentage_done = percentages[log_intervals.index(works_retrieved_from_query_count)] * 100
+        process_type = is_aggregation ? 'Aggregation' : 'Retrieval'
+        Rails.logger.info("#{process_type} progress: #{percentage_done}% (#{works_retrieved_from_query_count}/#{total_works} works)")
+      end
     end
 
     def create_hyc_download_stat(stat)
