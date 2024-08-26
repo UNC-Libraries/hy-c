@@ -27,7 +27,7 @@ module Tasks
       end
 
      # Perform aggregation of daily stats ino monthly stats in Ruby, encountered issues with SQL queries
-      Rails.logger.info("Aggregating daily stats into monthly stats")
+      Rails.logger.info('Aggregating daily stats into monthly stats')
       aggregated_work_stats = aggregate_downloads(work_stats)
       Rails.logger.info("Aggregated #{aggregated_work_stats.count} monthly stats from #{work_stats.count} daily stats")
 
@@ -44,6 +44,8 @@ module Tasks
         create_hyc_download_stat(stat)
       end
     end
+
+    private
 
     # Log progress at 25%, 50%, 75%, and 100%
     def log_progress(work_stats_count, total_work_stats, is_aggregation = false)
