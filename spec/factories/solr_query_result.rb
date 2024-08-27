@@ -9,11 +9,6 @@ end
 # Factory for creating Solr query results
 FactoryBot.define do
   factory :solr_query_result, class: OpenStruct do
-
-    # General attributes that could be shared between works and admin sets
-    # sequence(:admin_set_id) { |n| "admin_set_id_#{n}" }
-    # sequence(:admin_set_name) { |n| "Admin Set #{n}" }
-
     trait :work do
       # Default values for has_model_ssim, admin_set_tesim, and file_set_ids_ssim
       has_model_ssim { ['Article'] }
