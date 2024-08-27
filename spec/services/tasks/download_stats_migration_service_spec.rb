@@ -63,6 +63,13 @@ RSpec.describe Tasks::DownloadStatsMigrationService, type: :service do
       expect(csv_to_hash_array(output_path)).to match_array(expected_works)
     end
 
+    it 'handles and logs errors' do
+      allow(Rails.logger).to receive(:error)
+      allow(FileDownloadStat).to receive(:all).and_raise(StandardError, 'Simulated database query failure')
+      service.list_work_stat_info(output_path, nil)
+      expect(Rails.logger).to have_received(:error).with('An error occurred while listing work stats: Simulated database query failure')
+    end
+
     context 'with an after_timestamp' do
       let(:recent_stats) { FactoryBot.create_list(:file_download_stat, 3, updated_at: '2023-05-05 00:00:00 UTC') }
       let(:old_stats) { FactoryBot.create_list(:file_download_stat, 3, updated_at: '2023-04-05 00:00:00 UTC') }
@@ -112,6 +119,13 @@ RSpec.describe Tasks::DownloadStatsMigrationService, type: :service do
         # Each mocked work has 10 downloads per month, so the download count should be 20
         expect(hyc_download_stat.download_count).to eq(20)
       end
+    end
+
+    it 'handles and logs errors' do
+      allow(CSV).to receive(:read).and_raise(StandardError, 'Simulated CSV read failure')
+      allow(Rails.logger).to receive(:error)
+      service.migrate_to_new_table(output_path)
+      expect(Rails.logger).to have_received(:error).with('An error occurred while migrating work stats: Simulated CSV read failure')
     end
   end
 
