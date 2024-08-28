@@ -18,24 +18,31 @@ RSpec.describe Tasks::DownloadStatsMigrationService, type: :service do
 
   # Smaller groups to allow for easier testing for aggregation of download stats from daily to monthly
   let(:file_download_stats) { [[
-   FactoryBot.create(:file_download_stat, date: Date.new(2023, 1, 15), downloads: 10, file_id: 'file_id_1'),
-   FactoryBot.create(:file_download_stat, date: Date.new(2023, 1, 30), downloads: 10, file_id: 'file_id_1'),
+   FactoryBot.create(:file_download_stat, date: Date.new(2023, 1, 15), downloads: 5, file_id: 'file_id_1'),
+   FactoryBot.create(:file_download_stat, date: Date.new(2023, 1, 30), downloads: 5, file_id: 'file_id_1'),
    FactoryBot.create(:file_download_stat, date: Date.new(2023, 3, 15), downloads: 10, file_id: 'file_id_1'),
    FactoryBot.create(:file_download_stat, date: Date.new(2023, 3, 30), downloads: 10, file_id: 'file_id_1'),
  ],
  [
-   FactoryBot.create(:file_download_stat, date: Date.new(2023, 4, 15), downloads: 10, file_id: 'file_id_2'),
-   FactoryBot.create(:file_download_stat, date: Date.new(2023, 4, 30), downloads: 10, file_id: 'file_id_2'),
-   FactoryBot.create(:file_download_stat, date: Date.new(2023, 5, 15), downloads: 10, file_id: 'file_id_2'),
-   FactoryBot.create(:file_download_stat, date: Date.new(2023, 5, 30), downloads: 10, file_id: 'file_id_2'),
+   FactoryBot.create(:file_download_stat, date: Date.new(2023, 4, 15), downloads: 25, file_id: 'file_id_2'),
+   FactoryBot.create(:file_download_stat, date: Date.new(2023, 4, 30), downloads: 25, file_id: 'file_id_2'),
+   FactoryBot.create(:file_download_stat, date: Date.new(2023, 5, 15), downloads: 50, file_id: 'file_id_2'),
+   FactoryBot.create(:file_download_stat, date: Date.new(2023, 5, 30), downloads: 50, file_id: 'file_id_2'),
  ],
  [
-   FactoryBot.create(:file_download_stat, date: Date.new(2023, 6, 15), downloads: 10, file_id: 'file_id_3'),
-   FactoryBot.create(:file_download_stat, date: Date.new(2023, 6, 30), downloads: 10, file_id: 'file_id_3'),
-   FactoryBot.create(:file_download_stat, date: Date.new(2023, 7, 15), downloads: 10, file_id: 'file_id_3'),
-   FactoryBot.create(:file_download_stat, date: Date.new(2023, 7, 30), downloads: 10, file_id: 'file_id_3'),
+   FactoryBot.create(:file_download_stat, date: Date.new(2023, 6, 15), downloads: 100, file_id: 'file_id_3'),
+   FactoryBot.create(:file_download_stat, date: Date.new(2023, 6, 30), downloads: 100, file_id: 'file_id_3'),
+   FactoryBot.create(:file_download_stat, date: Date.new(2023, 7, 15), downloads: 150, file_id: 'file_id_3'),
+   FactoryBot.create(:file_download_stat, date: Date.new(2023, 7, 30), downloads: 150, file_id: 'file_id_3'),
  ]]
   }
+
+  # Create a hash of [fileset_id, date.beginning_of_month] => download count for each file_download_stats
+  let(:expected_aggregated_download_count) do
+    file_download_stats.flatten.each_with_object(Hash.new(0)) do |stat, hash|
+      hash[[stat.file_id, stat.date.beginning_of_month.to_datetime]] += stat.downloads
+    end
+  end
 
   let(:mock_works) do
     file_download_stats.flatten.map do |stat|
@@ -50,12 +57,12 @@ RSpec.describe Tasks::DownloadStatsMigrationService, type: :service do
       end
 
       expected_works = [
-        { file_id: 'file_id_1', date: '2023-01-01 00:00:00 UTC', downloads: '20' },
+        { file_id: 'file_id_1', date: '2023-01-01 00:00:00 UTC', downloads: '10' },
         { file_id: 'file_id_1', date: '2023-03-01 00:00:00 UTC', downloads: '20' },
-        { file_id: 'file_id_2', date: '2023-04-01 00:00:00 UTC', downloads: '20' },
-        { file_id: 'file_id_2', date: '2023-05-01 00:00:00 UTC', downloads: '20' },
-        { file_id: 'file_id_3', date: '2023-06-01 00:00:00 UTC', downloads: '20' },
-        { file_id: 'file_id_3', date: '2023-07-01 00:00:00 UTC', downloads: '20' }
+        { file_id: 'file_id_2', date: '2023-04-01 00:00:00 UTC', downloads: '50' },
+        { file_id: 'file_id_2', date: '2023-05-01 00:00:00 UTC', downloads: '100' },
+        { file_id: 'file_id_3', date: '2023-06-01 00:00:00 UTC', downloads: '200' },
+        { file_id: 'file_id_3', date: '2023-07-01 00:00:00 UTC', downloads: '300' }
       ]
       service.list_work_stat_info(output_path, nil)
 
@@ -108,16 +115,16 @@ RSpec.describe Tasks::DownloadStatsMigrationService, type: :service do
     end
 
     it 'creates new HycDownloadStat works from the CSV file' do
-      csv_to_hash_array(output_path).each_with_index do |work, index|
-        work_data = WorkUtilsHelper.fetch_work_data_by_fileset_id(work[:file_id])
-        hyc_download_stat = HycDownloadStat.find_by(fileset_id: work[:file_id], date: work[:date].to_date.beginning_of_month)
+      csv_to_hash_array(output_path).each_with_index do |csv_row, index|
+        work_data = WorkUtilsHelper.fetch_work_data_by_fileset_id(csv_row[:file_id])
+        csv_row_date = Date.parse(csv_row[:date]).beginning_of_month
+        hyc_download_stat = HycDownloadStat.find_by(fileset_id: csv_row[:file_id], date: csv_row_date)
 
         expect(hyc_download_stat).to be_present
-        expect(hyc_download_stat.fileset_id).to eq(work[:file_id])
+        expect(hyc_download_stat.fileset_id).to eq(csv_row[:file_id])
         expect(hyc_download_stat.work_id).to eq(work_data[:work_id])
-        expect(hyc_download_stat.date).to eq(work[:date].to_date)
-        # Each mocked work has 10 downloads per month, so the download count should be 20
-        expect(hyc_download_stat.download_count).to eq(20)
+        expect(hyc_download_stat.date).to eq(csv_row[:date].to_date)
+        expect(hyc_download_stat.download_count).to eq(expected_aggregated_download_count[[csv_row[:file_id], csv_row_date]])
       end
     end
 

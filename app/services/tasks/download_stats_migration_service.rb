@@ -27,7 +27,7 @@ module Tasks
           log_progress(work_stats_retrieved_from_query_count, total_work_stats, 'Retrieval')
         end
 
-      # Perform aggregation of daily stats ino monthly stats in Ruby, encountered issues with SQL queries
+      # Perform aggregation of daily stats into monthly stats in Ruby, encountered issues with SQL queries
         Rails.logger.info('Aggregating daily stats into monthly stats')
         aggregated_work_stats = aggregate_downloads(work_stats)
         Rails.logger.info("Aggregated #{aggregated_work_stats.count} monthly stats from #{work_stats.count} daily stats")
