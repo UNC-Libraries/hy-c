@@ -134,7 +134,28 @@ RSpec.describe Tasks::DownloadStatsMigrationService, type: :service do
       service.migrate_to_new_table(output_path)
       expect(Rails.logger).to have_received(:error).with('An error occurred while migrating work stats: Simulated CSV read failure')
     end
+
+    context 'if a failure occurs during a private function' do
+      it 'handles and logs errors from create_hyc_download_stat' do
+        allow(Rails.logger).to receive(:error)
+        # Simulate a failure during the creation of a HycDownloadStat object for a specific file_id
+        allow(HycDownloadStat).to receive(:find_or_initialize_by).and_call_original
+        allow(HycDownloadStat).to receive(:find_or_initialize_by).with({:date=>"2023-03-01 00:00:00 UTC", :fileset_id=>"file_id_1"}).and_raise(StandardError, 'Simulated database query failure')
+        service.migrate_to_new_table(output_path)
+        expect(Rails.logger).to have_received(:error).with(a_string_including('Failed to create HycDownloadStat for'))
+      end
+
+      it 'handles and logs errors from save_hyc_download_stat' do
+        allow(Rails.logger).to receive(:error)
+        # Simulate a failure during the creation of a HycDownloadStat object for a specific file_id
+        allow(HycDownloadStat).to receive(:find_or_initialize_by).and_call_original
+        allow(HycDownloadStat).to receive(:find_or_initialize_by).with({:date=>"2023-03-01 00:00:00 UTC", :fileset_id=>"file_id_1"}).and_raise(StandardError, 'Simulated database query failure')
+        service.migrate_to_new_table(output_path)
+        expect(Rails.logger).to have_received(:error).with(a_string_including('Failed to create HycDownloadStat for'))
+      end
+    end
   end
+
 
   private
   def csv_to_hash_array(file_path)
