@@ -114,6 +114,8 @@ RSpec.describe Tasks::DownloadStatsMigrationService, type: :service do
       service.migrate_to_new_table(output_path)
     end
 
+    after { HycDownloadStat.delete_all }
+
     it 'creates new HycDownloadStat works from the CSV file' do
       csv_to_hash_array(output_path).each_with_index do |csv_row, index|
         work_data = WorkUtilsHelper.fetch_work_data_by_fileset_id(csv_row[:file_id])
@@ -140,18 +142,17 @@ RSpec.describe Tasks::DownloadStatsMigrationService, type: :service do
         allow(Rails.logger).to receive(:error)
         # Simulate a failure during the creation of a HycDownloadStat object for a specific file_id
         allow(HycDownloadStat).to receive(:find_or_initialize_by).and_call_original
-        allow(HycDownloadStat).to receive(:find_or_initialize_by).with({:date=>"2023-03-01 00:00:00 UTC", :fileset_id=>"file_id_1"}).and_raise(StandardError, 'Simulated database query failure')
+        allow(HycDownloadStat).to receive(:find_or_initialize_by).with({date: '2023-03-01 00:00:00 UTC', fileset_id: 'file_id_1'}).and_raise(StandardError, 'Simulated database query failure').once
         service.migrate_to_new_table(output_path)
         expect(Rails.logger).to have_received(:error).with(a_string_including('Failed to create HycDownloadStat for'))
       end
 
       it 'handles and logs errors from save_hyc_download_stat' do
         allow(Rails.logger).to receive(:error)
-        # Simulate a failure during the creation of a HycDownloadStat object for a specific file_id
-        allow(HycDownloadStat).to receive(:find_or_initialize_by).and_call_original
-        allow(HycDownloadStat).to receive(:find_or_initialize_by).with({:date=>"2023-03-01 00:00:00 UTC", :fileset_id=>"file_id_1"}).and_raise(StandardError, 'Simulated database query failure')
+        # Simulate a failure during the saving of a HycDownloadStat object for a specific file_id
+        allow_any_instance_of(HycDownloadStat).to receive(:new_record?).and_raise(StandardError, 'Simulated save failure')
         service.migrate_to_new_table(output_path)
-        expect(Rails.logger).to have_received(:error).with(a_string_including('Failed to create HycDownloadStat for'))
+        expect(Rails.logger).to have_received(:error).with(a_string_including('Error saving new row to HycDownloadStat')).at_least(1).times
       end
     end
   end
