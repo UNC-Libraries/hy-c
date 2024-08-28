@@ -12,25 +12,25 @@ module Tasks
       # Log number of work stats retrieved and timestamp clause
         Rails.logger.info("Listing #{total_work_stats} work stats #{timestamp_clause} to #{output_path} from the hyrax local cache.")
 
-        work_stats = []
+        aggregated_data = {}
         work_stats_retrieved_from_query_count = 0
 
-        Rails.logger.info("Retrieving work_stats in batches of #{PAGE_SIZE}")
-      # Fetch the work_stats in batches
+        Rails.logger.info('Retrieving work_stats from the database')
+      # Fetch the work_stats and aggregate them into monthly stats in Ruby, encountered issues with SQL queries
         query.find_each(batch_size: PAGE_SIZE) do |stat|
-          work_stats << {
-            file_id: stat.file_id,
-            date: stat.date,
-            downloads: stat.downloads
-          }
+          truncated_date = stat.date.beginning_of_month
+          # Group the file_id and truncated date to be used as a key
+          key = [stat.file_id, truncated_date]
+          # Initialize the hash for the key if it doesn't exist
+          aggregated_data[key] ||= { file_id: stat.file_id, date: truncated_date, downloads: 0 }
+          # Sum the downloads for each key
+          aggregated_data[key][:downloads] += stat.downloads
           work_stats_retrieved_from_query_count += 1
-          log_progress(work_stats_retrieved_from_query_count, total_work_stats, 'Retrieval')
+          log_progress(work_stats_retrieved_from_query_count, total_work_stats)
         end
 
-      # Perform aggregation of daily stats into monthly stats in Ruby, encountered issues with SQL queries
-        Rails.logger.info('Aggregating daily stats into monthly stats')
-        aggregated_work_stats = aggregate_downloads(work_stats)
-        Rails.logger.info("Aggregated #{aggregated_work_stats.count} monthly stats from #{work_stats.count} daily stats")
+        aggregated_work_stats = aggregated_data.values
+        Rails.logger.info("Aggregated #{aggregated_work_stats.count} monthly stats from #{total_work_stats} daily stats")
 
         # Write the work_stats to the specified CSV file
         write_to_csv(output_path, aggregated_work_stats)
@@ -69,7 +69,7 @@ module Tasks
     private
 
     # Log progress at 25%, 50%, 75%, and 100%
-    def log_progress(work_stats_count, total_work_stats, process_type = 'Retrieval')
+    def log_progress(work_stats_count, total_work_stats, process_type = 'Retrieval and Aggregation')
       percentages = [0.25, 0.5, 0.75, 1.0]
       log_intervals = percentages.map { |percent| (total_work_stats * percent).to_i }
       if log_intervals.include?(work_stats_count)
@@ -106,29 +106,9 @@ module Tasks
       WorkUtilsHelper.fetch_work_data_by_fileset_id(stat[:file_id])
     end
 
-    def aggregate_downloads(work_stats)
-      aggregated_data = {}
-      aggregated_work_stats_count = 0
-
-      work_stats.each do |stat|
-        file_id = stat[:file_id]
-        truncated_date = stat[:date].beginning_of_month
-        downloads = stat[:downloads]
-
-        # Group the file_id and truncated date to be used as a key
-        key = [file_id, truncated_date]
-        # Initialize the hash for the key if it doesn't exist
-        aggregated_data[key] ||= { file_id: file_id, date: truncated_date, downloads: 0 }
-        # Sum the downloads for each key
-        aggregated_data[key][:downloads] += downloads
-        aggregated_work_stats_count += 1
-        log_progress(aggregated_work_stats_count, work_stats.count, 'Aggregation')
-      end
-      aggregated_data.values
-    end
-
     # Method to write work stats to a CSV file
     def write_to_csv(output_path, work_stats, headers = ['file_id', 'date', 'downloads'])
+      puts "Inspect work_stats: #{work_stats.inspect}"
       CSV.open(output_path, 'w', write_headers: true, headers: headers) do |csv|
         work_stats.each do |stat|
           csv << [stat[:file_id], stat[:date], stat[:downloads]]
