@@ -108,7 +108,6 @@ module Tasks
 
     # Method to write work stats to a CSV file
     def write_to_csv(output_path, work_stats, headers = ['file_id', 'date', 'downloads'])
-      puts "Inspect work_stats: #{work_stats.inspect}"
       CSV.open(output_path, 'w', write_headers: true, headers: headers) do |csv|
         work_stats.each do |stat|
           csv << [stat[:file_id], stat[:date], stat[:downloads]]

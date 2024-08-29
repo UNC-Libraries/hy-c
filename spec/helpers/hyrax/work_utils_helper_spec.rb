@@ -60,7 +60,7 @@ RSpec.describe WorkUtilsHelper, type: :module do
         allow(ActiveFedora::SolrService).to receive(:get).with("file_set_ids_ssim:#{fileset_id}", rows: 1).and_return('response' => { 'docs' => [] })
       end
 
-      it 'raises an error if no work is found' do
+      it 'logs a warning if no work is found' do
         allow(Rails.logger).to receive(:warn)
         WorkUtilsHelper.fetch_work_data_by_fileset_id(fileset_id)
         expect(Rails.logger).to have_received(:warn).with("No work found for fileset id: #{fileset_id}")
@@ -73,7 +73,9 @@ RSpec.describe WorkUtilsHelper, type: :module do
       end
 
       it 'sets the admin_set_id to Unknown if admin set is not found' do
+        allow(Rails.logger).to receive(:warn)
         result = WorkUtilsHelper.fetch_work_data_by_fileset_id(fileset_id)
+        expect(Rails.logger).to have_received(:warn).with("No admin set found for title_tesim: #{admin_set_name}")
         expect(result[:admin_set_id]).to eq('Unknown')
       end
     end
