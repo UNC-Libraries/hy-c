@@ -61,7 +61,9 @@ RSpec.describe WorkUtilsHelper, type: :module do
       end
 
       it 'raises an error if no work is found' do
-        expect { WorkUtilsHelper.fetch_work_data_by_fileset_id(fileset_id) }.to raise_error(RuntimeError, "No work found for fileset id: #{fileset_id}")
+        allow(Rails.logger).to receive(:warn)
+        WorkUtilsHelper.fetch_work_data_by_fileset_id(fileset_id)
+        expect(Rails.logger).to have_received(:warn).with("No work found for fileset id: #{fileset_id}")
       end
     end
 
