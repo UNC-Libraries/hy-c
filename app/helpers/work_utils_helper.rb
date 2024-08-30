@@ -8,15 +8,24 @@ module WorkUtilsHelper
     # If the admin set name is not nil, fetch the admin set
     # Set the admin set to an empty hash if the solr query returns nil
     admin_set = admin_set_name ? ActiveFedora::SolrService.get("title_tesim:#{admin_set_name}", { :rows => 1, 'df' => 'title_tesim'})['response']['docs'].first || {} : {}
-    warning_message = admin_set_name ? "No admin set found for title_tesim: #{admin_set_name}" : "No admin set found with fileset id: #{fileset_id}"
-    Rails.logger.warn(warning_message) if admin_set.blank?
+    Rails.logger.warn(self.generate_warning_message(admin_set_name, fileset_id)) if admin_set.blank?
 
     {
-      work_id: work['id'] || 'Unknown',
-      work_type: work.dig('has_model_ssim', 0) || 'Unknown',
-      title: work['title_tesim']&.first || 'Unknown',
-      admin_set_id: admin_set['id'] || 'Unknown',
-      admin_set_name: admin_set_name || 'Unknown'
+      work_id: work['id'],
+      work_type: work.dig('has_model_ssim', 0),
+      title: work['title_tesim']&.first,
+      admin_set_id: admin_set['id'],
+      admin_set_name: admin_set_name
     }
+  end
+
+  private_class_method
+
+  def self.generate_warning_message(admin_set_name, fileset_id)
+    if admin_set_name.blank?
+      return "Could not find an admin set, the work with fileset id: #{fileset_id} has no admin set name."
+    else
+      return "No admin set found with title_tesim: #{admin_set_name}."
+    end
   end
 end
