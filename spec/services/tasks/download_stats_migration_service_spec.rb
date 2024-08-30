@@ -8,7 +8,7 @@ RSpec.describe Tasks::DownloadStatsMigrationService, type: :service do
   let(:service) { described_class.new }
 
   before do
-    allow(ActiveFedora::SolrService).to receive(:get).with("title_tesim:#{admin_set_title}", rows: 1).and_return('response' => { 'docs' => [mock_admin_set] })
+    allow(ActiveFedora::SolrService).to receive(:get).with("title_tesim:#{admin_set_title}", { rows: 1, 'df' => 'title_tesim'}).and_return('response' => { 'docs' => [mock_admin_set] })
   end
 
   after do
