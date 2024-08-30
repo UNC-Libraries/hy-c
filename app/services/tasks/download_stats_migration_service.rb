@@ -87,9 +87,9 @@ module Tasks
         work_data = work_data_from_stat(stat)
         hyc_download_stat.assign_attributes(
           fileset_id: stat[:file_id],
-          work_id: work_data[:work_id],
-          admin_set_id: work_data[:admin_set_id],
-          work_type: work_data[:work_type],
+          work_id: work_data[:work_id]  || 'Unknown',
+          admin_set_id: work_data[:admin_set_id]  || 'Unknown',
+          work_type: work_data[:work_type]  || 'Unknown',
           date: stat[:date],
           download_count: stat[:downloads],
         )
