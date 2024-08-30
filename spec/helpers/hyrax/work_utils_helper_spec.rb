@@ -53,7 +53,6 @@ RSpec.describe WorkUtilsHelper, type: :module do
         # Mock the solr response to simulate a work with missing values, if it somehow makes it past the initial nil check
       allow(ActiveFedora::SolrService).to receive(:get).with("file_set_ids_ssim:#{fileset_ids[0]}", rows: 1).and_return('response' => { 'docs' => [] })
       allow(Rails.logger).to receive(:warn)
-      # allow(ActiveFedora::SolrService).to receive(:get).with('title_tesim:Unknown', rows: 1).and_return('response' => { 'docs' => [] })
       result = WorkUtilsHelper.fetch_work_data_by_fileset_id(fileset_ids[0])
       expect(Rails.logger).to have_received(:warn).with("No work found for fileset id: #{fileset_ids[0]}")
       expect(Rails.logger).to have_received(:warn).with("Could not find an admin set, the work with fileset id: #{fileset_ids[0]} has no admin set name.")
