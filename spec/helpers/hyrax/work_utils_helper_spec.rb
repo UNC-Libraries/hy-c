@@ -73,10 +73,6 @@ RSpec.describe WorkUtilsHelper, type: :module do
     end
 
     context 'when admin set is not found' do
-      # before do
-      #   allow(ActiveFedora::SolrService).to receive(:get).with("title_tesim:#{admin_set_name}", {"df"=>"title_tesim", :rows=>1}).and_return('response' => { 'docs' => mock_records[1] })
-      # end
-
       it 'logs an appropriate message if the work doesnt have an admin set title' do
         # Using the mock record without an admin set title
         allow(ActiveFedora::SolrService).to receive(:get).with("file_set_ids_ssim:#{fileset_ids[1]}", rows: 1).and_return('response' => { 'docs' => mock_records[1] })
