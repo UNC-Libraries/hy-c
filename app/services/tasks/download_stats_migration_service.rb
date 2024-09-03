@@ -87,9 +87,9 @@ module Tasks
         work_data = work_data_from_stat(stat)
         hyc_download_stat.assign_attributes(
           fileset_id: stat[:file_id],
-          work_id: work_data[:work_id],
-          admin_set_id: work_data[:admin_set_id],
-          work_type: work_data[:work_type],
+          work_id: work_data[:work_id]  || 'Unknown',
+          admin_set_id: work_data[:admin_set_id]  || 'Unknown',
+          work_type: work_data[:work_type]  || 'Unknown',
           date: stat[:date],
           download_count: stat[:downloads],
         )
@@ -108,7 +108,6 @@ module Tasks
 
     # Method to write work stats to a CSV file
     def write_to_csv(output_path, work_stats, headers = ['file_id', 'date', 'downloads'])
-      puts "Inspect work_stats: #{work_stats.inspect}"
       CSV.open(output_path, 'w', write_headers: true, headers: headers) do |csv|
         work_stats.each do |stat|
           csv << [stat[:file_id], stat[:date], stat[:downloads]]

@@ -8,7 +8,7 @@ RSpec.describe Tasks::DownloadStatsMigrationService, type: :service do
   let(:service) { described_class.new }
 
   before do
-    allow(ActiveFedora::SolrService).to receive(:get).with("title_tesim:#{admin_set_title}", rows: 1).and_return('response' => { 'docs' => [mock_admin_set] })
+    allow(ActiveFedora::SolrService).to receive(:get).with("title_tesim:#{admin_set_title}", { :rows => 1, 'df' => 'title_tesim'}).and_return('response' => { 'docs' => [mock_admin_set] })
   end
 
   after do
@@ -110,13 +110,13 @@ RSpec.describe Tasks::DownloadStatsMigrationService, type: :service do
       file_download_stats.flatten.each_with_index do |stat, index|
         allow(ActiveFedora::SolrService).to receive(:get).with("file_set_ids_ssim:#{stat.file_id}", rows: 1).and_return('response' => { 'docs' => [mock_works[index]] })
       end
-      service.list_work_stat_info(output_path, nil)
-      service.migrate_to_new_table(output_path)
     end
 
     after { HycDownloadStat.delete_all }
 
     it 'creates new HycDownloadStat works from the CSV file' do
+      service.list_work_stat_info(output_path, nil)
+      service.migrate_to_new_table(output_path)
       csv_to_hash_array(output_path).each_with_index do |csv_row, index|
         work_data = WorkUtilsHelper.fetch_work_data_by_fileset_id(csv_row[:file_id])
         csv_row_date = Date.parse(csv_row[:date]).beginning_of_month
@@ -130,6 +130,27 @@ RSpec.describe Tasks::DownloadStatsMigrationService, type: :service do
       end
     end
 
+    it 'retains historic stats for a work even if the work cannot be found in solr' do
+      file_download_stats.flatten.each_with_index do |stat, index|
+        allow(ActiveFedora::SolrService).to receive(:get).with("file_set_ids_ssim:#{stat.file_id}", rows: 1).and_return('response' => { 'docs' => [] })
+      end
+      service.list_work_stat_info(output_path, nil)
+      service.migrate_to_new_table(output_path)
+      csv_to_hash_array(output_path).each_with_index do |csv_row, index|
+        work_data = WorkUtilsHelper.fetch_work_data_by_fileset_id(csv_row[:file_id])
+        csv_row_date = Date.parse(csv_row[:date]).beginning_of_month
+        hyc_download_stat = HycDownloadStat.find_by(fileset_id: csv_row[:file_id], date: csv_row_date)
+
+        expect(hyc_download_stat).to be_present
+        expect(hyc_download_stat.fileset_id).to eq(csv_row[:file_id])
+        expect(hyc_download_stat.work_id).to eq('Unknown')
+        expect(hyc_download_stat.admin_set_id).to eq('Unknown')
+        expect(hyc_download_stat.work_type).to eq('Unknown')
+        expect(hyc_download_stat.date).to eq(csv_row[:date].to_date)
+        expect(hyc_download_stat.download_count).to eq(expected_aggregated_download_count[[csv_row[:file_id], csv_row_date]])
+      end
+    end
+
     it 'handles and logs errors' do
       allow(CSV).to receive(:read).and_raise(StandardError, 'Simulated CSV read failure')
       allow(Rails.logger).to receive(:error)
@@ -138,6 +159,10 @@ RSpec.describe Tasks::DownloadStatsMigrationService, type: :service do
     end
 
     context 'if a failure occurs during a private function' do
+      before do
+        service.list_work_stat_info(output_path, nil)
+      end
+
       it 'handles and logs errors from create_hyc_download_stat' do
         allow(Rails.logger).to receive(:error)
         # Simulate a failure during the creation of a HycDownloadStat object for a specific file_id

@@ -56,7 +56,7 @@ namespace :dimensions do
 
     # Helper method to compute the last run file path
   def self.dimensions_last_run_path
-    File.join(ENV['DATA_STORAGE'], 'last_dimensions_ingest_run.txt')
+    File.join(ENV['DATA_STORAGE'], 'hyrax', 'last_dimensions_ingest_run.txt')
   end
 
   def self.get_date_range(args)
