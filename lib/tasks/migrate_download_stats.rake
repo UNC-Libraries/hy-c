@@ -5,7 +5,7 @@ require 'optparse/date'
 
 namespace :migrate_download_stats do
   desc 'output rows for download stat migration into a csv'
-  task :list_rows, [:output_dir, :after] => :environment do |_t, _args|
+  task :list_rows, [:output_dir, :after, :before, :source] => :environment do |_t, _args|
     start_time = Time.now
     puts "[#{start_time.utc.iso8601}] starting listing of work data"
     options = {}
@@ -14,6 +14,8 @@ namespace :migrate_download_stats do
     opts.banner = 'Usage: bundle exec rake migrate_download_stats:list_rows -- [options]'
     opts.on('-o', '--output-dir ARG', String, 'Directory list will be saved to') { |val| options[:output_dir] = val }
     opts.on('-a', '--after ARG', String, 'List objects which have been updated after this timestamp') { |val| options[:after] = val }
+    opts.on('-b', '--before ARG', String, 'List objects updated before this timestamp') { |val| options[:before] = val }
+    opts.on('-s', '--source ARG', String, 'Data source (matomo, ga4, cache)') { |val| options[:source] = val.to_sym }
     args = opts.order!(ARGV) {}
     opts.parse!(args)
 
@@ -21,6 +23,12 @@ namespace :migrate_download_stats do
       puts 'Please provide a valid output directory with a .csv extension. Got ' + options[:output_dir].to_s
       exit 1
     end
+
+    unless Tasks::DownloadStatsMigrationService::DownloadMigrationSource.valid?(options[:source])
+      puts "Please provide a valid source: #{Tasks::DownloadStatsMigrationService::DownloadMigrationSource.all_sources.join(', ')}"
+      exit 1
+    end
+
 
     migration_service = Tasks::DownloadStatsMigrationService.new
     old_stats_csv = migration_service.list_work_stat_info(options[:output_dir], options[:after])

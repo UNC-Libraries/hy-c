@@ -2,6 +2,19 @@
 module Tasks
   class DownloadStatsMigrationService
     PAGE_SIZE = 1000
+    module DownloadMigrationSource
+      MATOMO = :matomo
+      GA4 = :ga4
+      CACHE = :cache
+
+      def self.all_sources
+        [MATOMO, GA4, CACHE]
+      end
+
+      def self.valid?(source)
+        all_sources.include?(source)
+      end
+      end
     def list_work_stat_info(output_path, after_timestamp = nil)
       begin
         query = FileDownloadStat.all
