@@ -15,7 +15,7 @@ module Tasks
         all_sources.include?(source)
       end
       end
-    def list_work_stat_info(output_path, after_timestamp = nil)
+    def list_work_stat_info(output_path, before_timestamp = nil, after_timestamp = nil, source)
       begin
         query = FileDownloadStat.all
         query = query.where('updated_at > ?', after_timestamp) if after_timestamp.present?
