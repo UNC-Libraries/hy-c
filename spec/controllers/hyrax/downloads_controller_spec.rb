@@ -345,9 +345,4 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
     end
   end
 
-  describe '#site_id' do
-    it 'returns the site id from ENV' do
-      expect(controller.send(:site_id)).to eq('5')
-    end
-  end
 end

@@ -59,6 +59,12 @@ module Tasks
 
     private
 
+    # Method to fetch and aggregate work stats from Matomo
+    def fetch_matomo_stats(after_timestamp, before_timestamp, output_path)
+
+    end
+
+    # Method to fetch and aggregate work stats from the local cache
     def fetch_local_cache_stats(after_timestamp, output_path)
       query = FileDownloadStat.all
       query = query.where('updated_at > ?', after_timestamp) if after_timestamp.present?

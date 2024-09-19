@@ -18,9 +18,9 @@ module Hyc
           client_ip = request.remote_ip
           user_agent = request.user_agent
 
-          matomo_id_site = site_id
-          matomo_security_token = auth_token
-          uri = URI("#{base_url}/matomo.php")
+          matomo_id_site = ENV['MATOMO_SITE_ID']
+          matomo_security_token = ENV['MATOMO_AUTH_TOKEN']
+          tracking_uri = URI("#{ENV['MATOMO_BASE_URL']}/matomo.php")
 
           # Some parameters are optional, but included since tracking would not work otherwise
           # https://developer.matomo.org/api-reference/tracking-api
@@ -44,11 +44,11 @@ module Hyc
             dimension1: work_data[:work_id],
             dimension2: work_data[:title]
           }
-          uri.query = URI.encode_www_form(uri_params)
-          response = HTTParty.get(uri.to_s)
-          Rails.logger.debug("Matomo download tracking URL: #{uri}")
+          tracking_uri.query = URI.encode_www_form(uri_params)
+          response = HTTParty.get(tracking_uri.to_s)
+          Rails.logger.debug("Matomo download tracking URL: #{tracking_uri}")
           if response.code >= 300
-            Rails.logger.error("DownloadAnalyticsBehavior received an error response #{response.code} for matomo query: #{uri}")
+            Rails.logger.error("DownloadAnalyticsBehavior received an error response #{response.code} for matomo query: #{tracking_uri}")
           end
           # Send download events to db
           create_download_stat
@@ -90,18 +90,6 @@ module Hyc
 
       def work_data
         @work_data ||= WorkUtilsHelper.fetch_work_data_by_fileset_id(fileset_id)
-      end
-
-      def site_id
-        @site_id ||= ENV['MATOMO_SITE_ID']
-      end
-
-      def auth_token
-        @auth_token ||= ENV['MATOMO_AUTH_TOKEN']
-      end
-
-      def base_url
-        @base_url ||= ENV['MATOMO_BASE_URL']
       end
 
       def client_id
