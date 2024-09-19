@@ -14,7 +14,7 @@ namespace :migrate_download_stats do
     opts.banner = 'Usage: bundle exec rake migrate_download_stats:list_rows -- [options]'
     opts.on('-o', '--output-dir ARG', String, 'Directory list will be saved to') { |val| options[:output_dir] = val }
     opts.on('-a', '--after ARG', String, 'List objects which have been updated after this timestamp') { |val| options[:after] = val }
-    opts.on('-b', '--before ARG', String, 'List objects updated before this timestamp') { |val| options[:before] = val }
+    opts.on('-b', '--before ARG', String, 'List objects updated before this timestamp, only meant for matomo and ga4 migrations') { |val| options[:before] = val }
     opts.on('-s', '--source ARG', String, 'Data source (matomo, ga4, cache)') { |val| options[:source] = val.to_sym }
     args = opts.order!(ARGV) {}
     opts.parse!(args)
