@@ -18,7 +18,7 @@ module Hyc
           client_ip = request.remote_ip
           user_agent = request.user_agent
 
-          matomo_id_site = ENV['MATOMO_SITE_ID']
+          matomo_site_id = ENV['MATOMO_SITE_ID']
           matomo_security_token = ENV['MATOMO_AUTH_TOKEN']
           tracking_uri = URI("#{ENV['MATOMO_BASE_URL']}/matomo.php")
 
@@ -27,7 +27,7 @@ module Hyc
           uri_params = {
             token_auth: matomo_security_token,
             rec: '1',
-            idsite: matomo_id_site,
+            idsite: matomo_site_id,
             action_name: 'Download',
             url: request.url,
             urlref: request.referrer,

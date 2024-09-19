@@ -61,32 +61,77 @@ module Tasks
 
     # Method to fetch and aggregate work stats from Matomo
     def fetch_matomo_stats(after_timestamp, before_timestamp, output_path)
+      aggregated_data = {}
+      retrieved_work_stats_total = 0
+      # Fetch the first of each month in the range
+      months_array = first_of_each_month_in_range(after_timestamp, before_timestamp)
+      timestamp_clause = "in specified range #{after_timestamp} to #{before_timestamp}" 
+      matomo_site_id = ENV['MATOMO_SITE_ID']
+      matomo_security_token = ENV['MATOMO_AUTH_TOKEN']
+      reporting_uri = URI("#{ENV['MATOMO_BASE_URL']}/index.php")
+     
+      # Log number of work stats retrieved and timestamp clause
+      Rails.logger.info("Fetching work stats #{timestamp_clause} from Matomo.")
 
+      # Query Matomo API for each month in the range and aggregate the data
+      month.each_with_index do |month, index|
+        uri_params = {
+          module: 'API',
+          idSite: matomo_site_id,
+          method: 'Events.getName',
+          period: 'month',
+          date: month,
+          format: JSON,
+          token_auth: matomo_security_token,
+          flat: '1',
+          filter_pattern: 'DownloadIR',
+          filter_limit: -1,
+          showColumns: 'nb_events',
+        }
+        reporting_uri.query = URI.encode_www_form(uri_params)
+        response = HTTParty.get(reporting_uri.to_s)
+        Rails.logger.info("Processing Matomo response for #{month}. (#{index + 1}/#{months_array.count})")
+        for stat in response.body
+          # Events_EventName is the file_id, nb_events is the number of downloads
+          update_aggregate_stats(aggregated_data, month, stat['Events_EventName'], stat['nb_events'])
+        end
+        retrieved_work_stats_total += response.body.count
+      end
+      Rails.logger.info("Aggregated #{aggregated_data.values.count} monthly stats from #{retrieved_work_stats_total} daily stats")
+      # Return the aggregated data
+      aggregated_data.values
+    end
+
+    def update_aggregate_stats(aggregated_data, truncated_date, file_id, downloads)
+      # Group the file_id and truncated date to be used as a key
+      key = [file_id, truncated_date]
+      # Initialize the hash for the key if it doesn't exist
+      aggregated_data[key] ||= { file_id: file_id, date: truncated_date, downloads: 0 }
+      # Sum the downloads for each key
+      aggregated_data[key][:downloads] += downloads
+    end
+
+    def first_of_each_month_in_range(after_timestamp, before_timestamp)
+      after_date = after_timestamp.to_date.beginning_of_month
+      before_date = before_timestamp.to_date.beginning_of_month
+      (after_date..before_date).select { |d| d.day == 1 }.map(&:to_s)
     end
 
     # Method to fetch and aggregate work stats from the local cache
     def fetch_local_cache_stats(after_timestamp, output_path)
+      aggregated_data = {}
+      work_stats_retrieved_from_query_count = 0
       query = FileDownloadStat.all
       query = query.where('updated_at > ?', after_timestamp) if after_timestamp.present?
       total_work_stats = query.count
       timestamp_clause = after_timestamp.present? ? "after specified time #{after_timestamp}" : 'without a timestamp'
 
     # Log number of work stats retrieved and timestamp clause
-      Rails.logger.info("Listing #{total_work_stats} work stats #{timestamp_clause} to #{output_path} from the hyrax local cache.")
+      Rails.logger.info("Fetching #{total_work_stats} work stats #{timestamp_clause} from the hyrax local cache.")
 
-      aggregated_data = {}
-      work_stats_retrieved_from_query_count = 0
-
-      Rails.logger.info('Retrieving work_stats from the database')
     # Fetch the work_stats and aggregate them into monthly stats in Ruby, encountered issues with SQL queries
       query.find_each(batch_size: PAGE_SIZE) do |stat|
-        truncated_date = stat.date.beginning_of_month
-        # Group the file_id and truncated date to be used as a key
-        key = [stat.file_id, truncated_date]
-        # Initialize the hash for the key if it doesn't exist
-        aggregated_data[key] ||= { file_id: stat.file_id, date: truncated_date, downloads: 0 }
-        # Sum the downloads for each key
-        aggregated_data[key][:downloads] += stat.downloads
+        update_aggregate_stats(aggregated_data, stat.date.beginning_of_month, stat.file_id, stat.downloads)
         work_stats_retrieved_from_query_count += 1
         log_progress(work_stats_retrieved_from_query_count, total_work_stats)
       end
