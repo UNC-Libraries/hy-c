@@ -17,36 +17,41 @@ module Tasks
       end
     def list_work_stat_info(output_path, before_timestamp = nil, after_timestamp = nil, source)
       begin
-        query = FileDownloadStat.all
-        query = query.where('updated_at > ?', after_timestamp) if after_timestamp.present?
-        total_work_stats = query.count
-        timestamp_clause = after_timestamp.present? ? "after specified time #{after_timestamp}" : 'without a timestamp'
+        case source
+        when DownloadMigrationSource::CACHE
+          query = FileDownloadStat.all
+          query = query.where('updated_at > ?', after_timestamp) if after_timestamp.present?
+          total_work_stats = query.count
+          timestamp_clause = after_timestamp.present? ? "after specified time #{after_timestamp}" : 'without a timestamp'
 
-      # Log number of work stats retrieved and timestamp clause
-        Rails.logger.info("Listing #{total_work_stats} work stats #{timestamp_clause} to #{output_path} from the hyrax local cache.")
+        # Log number of work stats retrieved and timestamp clause
+          Rails.logger.info("Listing #{total_work_stats} work stats #{timestamp_clause} to #{output_path} from the hyrax local cache.")
 
-        aggregated_data = {}
-        work_stats_retrieved_from_query_count = 0
+          aggregated_data = {}
+          work_stats_retrieved_from_query_count = 0
 
-        Rails.logger.info('Retrieving work_stats from the database')
-      # Fetch the work_stats and aggregate them into monthly stats in Ruby, encountered issues with SQL queries
-        query.find_each(batch_size: PAGE_SIZE) do |stat|
-          truncated_date = stat.date.beginning_of_month
-          # Group the file_id and truncated date to be used as a key
-          key = [stat.file_id, truncated_date]
-          # Initialize the hash for the key if it doesn't exist
-          aggregated_data[key] ||= { file_id: stat.file_id, date: truncated_date, downloads: 0 }
-          # Sum the downloads for each key
-          aggregated_data[key][:downloads] += stat.downloads
-          work_stats_retrieved_from_query_count += 1
-          log_progress(work_stats_retrieved_from_query_count, total_work_stats)
+          Rails.logger.info('Retrieving work_stats from the database')
+        # Fetch the work_stats and aggregate them into monthly stats in Ruby, encountered issues with SQL queries
+          query.find_each(batch_size: PAGE_SIZE) do |stat|
+            truncated_date = stat.date.beginning_of_month
+            # Group the file_id and truncated date to be used as a key
+            key = [stat.file_id, truncated_date]
+            # Initialize the hash for the key if it doesn't exist
+            aggregated_data[key] ||= { file_id: stat.file_id, date: truncated_date, downloads: 0 }
+            # Sum the downloads for each key
+            aggregated_data[key][:downloads] += stat.downloads
+            work_stats_retrieved_from_query_count += 1
+            log_progress(work_stats_retrieved_from_query_count, total_work_stats)
+          end
+
+          aggregated_work_stats = aggregated_data.values
+          Rails.logger.info("Aggregated #{aggregated_work_stats.count} monthly stats from #{total_work_stats} daily stats")
+
+          # Write the work_stats to the specified CSV file
+          write_to_csv(output_path, aggregated_work_stats)
+        else
+          raise ArgumentError, "Unsupported source: #{source}"
         end
-
-        aggregated_work_stats = aggregated_data.values
-        Rails.logger.info("Aggregated #{aggregated_work_stats.count} monthly stats from #{total_work_stats} daily stats")
-
-        # Write the work_stats to the specified CSV file
-        write_to_csv(output_path, aggregated_work_stats)
       rescue StandardError => e
         Rails.logger.error("An error occurred while listing work stats: #{e.message}")
         Rails.logger.error(e.backtrace.join("\n"))

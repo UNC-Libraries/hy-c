@@ -123,6 +123,14 @@ RSpec.describe Tasks::DownloadStatsMigrationService, type: :service do
         expect(csv_to_hash_array(output_path).map { |work| work[:file_id] }).not_to include(*old_stat_file_ids)
       end
     end
+
+    context 'with an unsupported source' do
+      it 'handles and logs an error' do
+        allow(Rails.logger).to receive(:error)
+        service.list_work_stat_info(output_path, nil, nil, :unsupported_source)
+        expect(Rails.logger).to have_received(:error).with('An error occurred while listing work stats: Unsupported source: unsupported_source')
+      end
+    end
   end
 
   describe '#migrate_to_new_table' do
