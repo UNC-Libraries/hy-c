@@ -41,11 +41,11 @@ RSpec.describe Tasks::DownloadStatsMigrationService, type: :service do
   }
 
   # Create a hash of [fileset_id, date.beginning_of_month] => download count for each file_download_stats
-  let(:expected_aggregated_download_count) do
-    file_download_stats.flatten.each_with_object(Hash.new(0)) do |stat, hash|
-      hash[[stat.file_id, stat.date.beginning_of_month.to_datetime]] += stat.downloads
-    end
-  end
+  # let(:expected_aggregated_download_count) do
+  #   file_download_stats.flatten.each_with_object(Hash.new(0)) do |stat, hash|
+  #     hash[[stat.file_id, stat.date.beginning_of_month.to_datetime]] += stat.downloads
+  #   end
+  # end
 
   describe '#list_work_stat_info' do
     # Loop through each source to test the listing of work stats
@@ -60,14 +60,7 @@ RSpec.describe Tasks::DownloadStatsMigrationService, type: :service do
 
         it 'writes all works to the output CSV file' do
           expected_works = setup_expected_stats_for(source)
-          case source
-          when Tasks::DownloadStatsMigrationService::DownloadMigrationSource::CACHE
-            service.list_work_stat_info(output_path, nil, nil, Tasks::DownloadStatsMigrationService::DownloadMigrationSource::CACHE)
-          when Tasks::DownloadStatsMigrationService::DownloadMigrationSource::MATOMO
-            service.list_work_stat_info(output_path, '2024-01-01', '2024-03-01', Tasks::DownloadStatsMigrationService::DownloadMigrationSource::MATOMO)
-          when Tasks::DownloadStatsMigrationService::DownloadMigrationSource::GA4
-            # WIP: Implement later
-          end
+          list_work_stat_info_for(source)
           expect(File).to exist(output_path)
           expect(csv_to_hash_array(output_path)).to match_array(expected_works)
         end
@@ -124,18 +117,12 @@ RSpec.describe Tasks::DownloadStatsMigrationService, type: :service do
         before do
           setup_stubbed_stats_for(source)
         end
-
         after { HycDownloadStat.delete_all }
 
+        let (:expected_stats) { setup_expected_stats_for(source) }
+
         it 'creates new HycDownloadStat works from the CSV file' do
-          case source
-          when Tasks::DownloadStatsMigrationService::DownloadMigrationSource::CACHE
-            service.list_work_stat_info(output_path, nil, nil, Tasks::DownloadStatsMigrationService::DownloadMigrationSource::CACHE)
-          when Tasks::DownloadStatsMigrationService::DownloadMigrationSource::MATOMO
-            service.list_work_stat_info(output_path, '2024-01-01', '2024-03-01', Tasks::DownloadStatsMigrationService::DownloadMigrationSource::MATOMO)
-          when Tasks::DownloadStatsMigrationService::DownloadMigrationSource::GA4
-            # WIP: Implement later
-          end
+          list_work_stat_info_for(source)
           service.migrate_to_new_table(output_path)
           csv_to_hash_array(output_path).each_with_index do |csv_row, index|
             work_data = WorkUtilsHelper.fetch_work_data_by_fileset_id(csv_row[:file_id])
@@ -151,15 +138,15 @@ RSpec.describe Tasks::DownloadStatsMigrationService, type: :service do
         end
 
         it 'retains historic stats for a work even if the work cannot be found in solr' do
+          # Return an empty response for all file_set_ids
           file_download_stats.flatten.each_with_index do |stat, index|
             allow(ActiveFedora::SolrService).to receive(:get).with("file_set_ids_ssim:#{stat.file_id}", rows: 1).and_return('response' => { 'docs' => [] })
           end
+
           service.list_work_stat_info(output_path,  nil, nil, Tasks::DownloadStatsMigrationService::DownloadMigrationSource::CACHE)
           service.migrate_to_new_table(output_path)
           csv_to_hash_array(output_path).each_with_index do |csv_row, index|
-            work_data = WorkUtilsHelper.fetch_work_data_by_fileset_id(csv_row[:file_id])
-            csv_row_date = Date.parse(csv_row[:date]).beginning_of_month
-            hyc_download_stat = HycDownloadStat.find_by(fileset_id: csv_row[:file_id], date: csv_row_date)
+            hyc_download_stat = HycDownloadStat.find_by(fileset_id: csv_row[:file_id], date: Date.parse(csv_row[:date]).beginning_of_month)
 
             expect(hyc_download_stat).to be_present
             expect(hyc_download_stat.fileset_id).to eq(csv_row[:file_id])
@@ -167,7 +154,11 @@ RSpec.describe Tasks::DownloadStatsMigrationService, type: :service do
             expect(hyc_download_stat.admin_set_id).to eq('Unknown')
             expect(hyc_download_stat.work_type).to eq('Unknown')
             expect(hyc_download_stat.date).to eq(csv_row[:date].to_date)
-            expect(hyc_download_stat.download_count).to eq(expected_aggregated_download_count[[csv_row[:file_id], csv_row_date]])
+
+            expected_work = expected_stats[index]
+            expected_download_count = expected_work[:downloads].to_i
+            # Use the expected work's download count
+            expect(hyc_download_stat.download_count).to eq(expected_download_count)
           end
         end
 
@@ -282,6 +273,18 @@ RSpec.describe Tasks::DownloadStatsMigrationService, type: :service do
         date: stat.date.beginning_of_month.to_s,
         downloads: stat.downloads.to_s,
       }
+    end
+  end
+
+  # Execute the list_work_stat_info method for the given source with predefined timestamp parameters
+  def list_work_stat_info_for(source)
+    case source
+    when Tasks::DownloadStatsMigrationService::DownloadMigrationSource::CACHE
+      service.list_work_stat_info(output_path, nil, nil, Tasks::DownloadStatsMigrationService::DownloadMigrationSource::CACHE)
+    when Tasks::DownloadStatsMigrationService::DownloadMigrationSource::MATOMO
+      service.list_work_stat_info(output_path, '2024-01-01', '2024-03-01', Tasks::DownloadStatsMigrationService::DownloadMigrationSource::MATOMO)
+    when Tasks::DownloadStatsMigrationService::DownloadMigrationSource::GA4
+      # WIP: Implement later
     end
   end
 end
