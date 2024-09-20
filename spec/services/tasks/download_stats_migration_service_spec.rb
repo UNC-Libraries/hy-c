@@ -6,6 +6,9 @@ RSpec.describe Tasks::DownloadStatsMigrationService, type: :service do
   let(:mock_admin_set) { FactoryBot.create(:solr_query_result, :admin_set, title_tesim: [admin_set_title]) }
   let(:output_path) { Rails.root.join('tmp', 'download_migration_test_output.csv') }
   let(:service) { described_class.new }
+  let(:matomo_stats_migration_fixture) do
+    JSON.parse(File.read(File.join(Rails.root, '/spec/fixtures/files/matomo_stats_migration_fixture.json')))
+  end
 
   before do
     allow(ActiveFedora::SolrService).to receive(:get).with("title_tesim:#{admin_set_title}", { :rows => 1, 'df' => 'title_tesim'}).and_return('response' => { 'docs' => [mock_admin_set] })
@@ -64,30 +67,47 @@ RSpec.describe Tasks::DownloadStatsMigrationService, type: :service do
             end
           when Tasks::DownloadStatsMigrationService::DownloadMigrationSource::MATOMO
             # WIP: Implement Matomo API mock here later
-            allow(service).to receive(:fetch_stats_from_matomo).and_return([])
-          when Tasks::DownloadStatsMigrationService::DownloadMigrationSource::GA4
-            # WIP: Implement GA4 API mock here later
-            allow(service).to receive(:fetch_stats_from_ga4).and_return([])
+          # when Tasks::DownloadStatsMigrationService::DownloadMigrationSource::GA4
+          #   # WIP: Implement GA4 API mock here later
+          #   allow(service).to receive(:fetch_stats_from_ga4).and_return([])
           end
         end
 
         it 'writes all works to the output CSV file' do
-          file_download_stats.flatten.each_with_index do |stat, index|
-            allow(ActiveFedora::SolrService).to receive(:get).with("file_set_ids_ssim:#{stat.file_id}", rows: 1).and_return('response' => { 'docs' => [mock_works[index]] })
+          case source
+          when Tasks::DownloadStatsMigrationService::DownloadMigrationSource::CACHE
+            # file_download_stats.flatten.each_with_index do |stat, index|
+            #   allow(ActiveFedora::SolrService).to receive(:get).with("file_set_ids_ssim:#{stat.file_id}", rows: 1).and_return('response' => { 'docs' => [mock_works[index]] })
+            # end
+
+            expected_works = [
+              { file_id: 'file_id_1', date: '2023-01-01 00:00:00 UTC', downloads: '10' },
+              { file_id: 'file_id_1', date: '2023-03-01 00:00:00 UTC', downloads: '20' },
+              { file_id: 'file_id_2', date: '2023-04-01 00:00:00 UTC', downloads: '50' },
+              { file_id: 'file_id_2', date: '2023-05-01 00:00:00 UTC', downloads: '100' },
+              { file_id: 'file_id_3', date: '2023-06-01 00:00:00 UTC', downloads: '200' },
+              { file_id: 'file_id_3', date: '2023-07-01 00:00:00 UTC', downloads: '300' }
+            ]
+            service.list_work_stat_info(output_path, nil, nil, Tasks::DownloadStatsMigrationService::DownloadMigrationSource::CACHE)
+
+            expect(File).to exist(output_path)
+            expect(csv_to_hash_array(output_path)).to match_array(expected_works)
+          when Tasks::DownloadStatsMigrationService::DownloadMigrationSource::MATOMO
+            expected_works = [
+              { file_id: 'file_id_1', date: '2024-01-01 00:00:00 UTC', downloads: '190' },
+              { file_id: 'file_id_2', date: '2024-01-01 00:00:00 UTC', downloads: '150' },
+              { file_id: 'file_id_3', date: '2024-02-01 00:00:00 UTC', downloads: '100' },
+              { file_id: 'file_id_4', date: '2024-02-01 00:00:00 UTC', downloads: '80' },
+              { file_id: 'file_id_5', date: '2024-03-01 00:00:00 UTC', downloads: '180' },
+              { file_id: 'file_id_6', date: '2024-03-01 00:00:00 UTC', downloads: '550' }
+            ]
+            service.list_work_stat_info(output_path, '2024-01-01', '2024-03-01', Tasks::DownloadStatsMigrationService::DownloadMigrationSource::MATOMO)
+
+            expect(File).to exist(output_path)
+            expect(csv_to_hash_array(output_path)).to match_array(expected_works)
+          when Tasks::DownloadStatsMigrationService::DownloadMigrationSource::GA4
+            # WIP: Implement GA4 API mock here later
           end
-
-          expected_works = [
-            { file_id: 'file_id_1', date: '2023-01-01 00:00:00 UTC', downloads: '10' },
-            { file_id: 'file_id_1', date: '2023-03-01 00:00:00 UTC', downloads: '20' },
-            { file_id: 'file_id_2', date: '2023-04-01 00:00:00 UTC', downloads: '50' },
-            { file_id: 'file_id_2', date: '2023-05-01 00:00:00 UTC', downloads: '100' },
-            { file_id: 'file_id_3', date: '2023-06-01 00:00:00 UTC', downloads: '200' },
-            { file_id: 'file_id_3', date: '2023-07-01 00:00:00 UTC', downloads: '300' }
-          ]
-          service.list_work_stat_info(output_path, nil, nil, Tasks::DownloadStatsMigrationService::DownloadMigrationSource::CACHE)
-
-          expect(File).to exist(output_path)
-          expect(csv_to_hash_array(output_path)).to match_array(expected_works)
         end
 
         it 'handles and logs errors' do

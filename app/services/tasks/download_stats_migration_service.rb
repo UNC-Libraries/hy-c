@@ -22,6 +22,9 @@ module Tasks
         when DownloadMigrationSource::CACHE
           aggregated_work_stats = fetch_local_cache_stats(after_timestamp, output_path)
           write_to_csv(output_path, aggregated_work_stats)
+        when DownloadMigrationSource::MATOMO
+          aggregated_work_stats = fetch_matomo_stats(after_timestamp, before_timestamp, output_path)
+          write_to_csv(output_path, aggregated_work_stats)
         else
           raise ArgumentError, "Unsupported source: #{source}"
         end
@@ -74,7 +77,7 @@ module Tasks
       Rails.logger.info("Fetching work stats #{timestamp_clause} from Matomo.")
 
       # Query Matomo API for each month in the range and aggregate the data
-      month.each_with_index do |month, index|
+      months_array.each_with_index do |month, index|
         uri_params = {
           module: 'API',
           idSite: matomo_site_id,
