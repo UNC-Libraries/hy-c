@@ -66,7 +66,13 @@ RSpec.describe Tasks::DownloadStatsMigrationService, type: :service do
               allow(ActiveFedora::SolrService).to receive(:get).with("file_set_ids_ssim:#{stat.file_id}", rows: 1).and_return('response' => { 'docs' => [mock_works[index]] })
             end
           when Tasks::DownloadStatsMigrationService::DownloadMigrationSource::MATOMO
-            # WIP: Implement Matomo API mock here later
+            # Mocking Matomo API responses based on the fixture data
+            matomo_stats_migration_fixture.each do |month, stats|
+              puts "Inspect stats: #{stats.inspect}"
+              stub_request(:get, "#{ENV['MATOMO_BASE_URL']}/index.php")
+                .with(query: hash_including({ 'date' => month }))
+                .to_return(status: 200, body: stats.to_json, headers: { 'Content-Type' => 'application/json' })
+            end
           # when Tasks::DownloadStatsMigrationService::DownloadMigrationSource::GA4
           #   # WIP: Implement GA4 API mock here later
           #   allow(service).to receive(:fetch_stats_from_ga4).and_return([])
@@ -94,12 +100,12 @@ RSpec.describe Tasks::DownloadStatsMigrationService, type: :service do
             expect(csv_to_hash_array(output_path)).to match_array(expected_works)
           when Tasks::DownloadStatsMigrationService::DownloadMigrationSource::MATOMO
             expected_works = [
-              { file_id: 'file_id_1', date: '2024-01-01 00:00:00 UTC', downloads: '190' },
-              { file_id: 'file_id_2', date: '2024-01-01 00:00:00 UTC', downloads: '150' },
-              { file_id: 'file_id_3', date: '2024-02-01 00:00:00 UTC', downloads: '100' },
-              { file_id: 'file_id_4', date: '2024-02-01 00:00:00 UTC', downloads: '80' },
-              { file_id: 'file_id_5', date: '2024-03-01 00:00:00 UTC', downloads: '180' },
-              { file_id: 'file_id_6', date: '2024-03-01 00:00:00 UTC', downloads: '550' }
+              { file_id: 'file_id_1', date: '2024-01-01', downloads: '190' },
+              { file_id: 'file_id_2', date: '2024-01-01', downloads: '150' },
+              { file_id: 'file_id_3', date: '2024-02-01', downloads: '100' },
+              { file_id: 'file_id_4', date: '2024-02-01', downloads: '80' },
+              { file_id: 'file_id_5', date: '2024-03-01', downloads: '180' },
+              { file_id: 'file_id_6', date: '2024-03-01', downloads: '550' }
             ]
             service.list_work_stat_info(output_path, '2024-01-01', '2024-03-01', Tasks::DownloadStatsMigrationService::DownloadMigrationSource::MATOMO)
 
@@ -136,8 +142,7 @@ RSpec.describe Tasks::DownloadStatsMigrationService, type: :service do
       end
 
       it 'filters works by the given after_timestamp' do
-        service.list_work_stat_info(output_path, nil, '2023-04-06 00:00:00 UTC', Tasks::DownloadStatsMigrationService::DownloadMigrationSource::CACHE)
-
+        service.list_work_stat_info(output_path, '2023-04-06 00:00:00 UTC', nil, Tasks::DownloadStatsMigrationService::DownloadMigrationSource::CACHE)
         expect(File).to exist(output_path)
         expect(csv_to_hash_array(output_path).map { |work| work[:file_id] }).to match_array(recent_stat_file_ids)
         expect(csv_to_hash_array(output_path).map { |work| work[:file_id] }).not_to include(*old_stat_file_ids)

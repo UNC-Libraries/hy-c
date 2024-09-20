@@ -1,6 +1,6 @@
 {
     "2024-01-01": [
-        {
+       {
         "label": "file_id_1 - DownloadIR",
         "nb_events": 120,
         "Events_EventName": "file_id_1",
@@ -23,8 +23,8 @@
         "nb_events": 50,
         "Events_EventName": "file_id_2",
         "Events_EventAction": "DownloadIR"
-        }
-    ],
+        }]
+        ,
     "2024-02-01": [
         {
         "label": "file_id_3 - DownloadIR",

@@ -15,7 +15,7 @@ module Tasks
         all_sources.include?(source)
       end
       end
-    def list_work_stat_info(output_path, before_timestamp = nil, after_timestamp = nil, source)
+    def list_work_stat_info(output_path, after_timestamp = nil, before_timestamp = nil, source)
       aggregated_work_stats = []
       begin
         case source
@@ -64,15 +64,17 @@ module Tasks
 
     # Method to fetch and aggregate work stats from Matomo
     def fetch_matomo_stats(after_timestamp, before_timestamp, output_path)
+      puts 'Inspect arguments: ', after_timestamp, before_timestamp, output_path
       aggregated_data = {}
       retrieved_work_stats_total = 0
       # Fetch the first of each month in the range
       months_array = first_of_each_month_in_range(after_timestamp, before_timestamp)
-      timestamp_clause = "in specified range #{after_timestamp} to #{before_timestamp}" 
+      puts 'Inspect months_array: ', months_array
+      timestamp_clause = "in specified range #{after_timestamp} to #{before_timestamp}"
       matomo_site_id = ENV['MATOMO_SITE_ID']
       matomo_security_token = ENV['MATOMO_AUTH_TOKEN']
       reporting_uri = URI("#{ENV['MATOMO_BASE_URL']}/index.php")
-     
+
       # Log number of work stats retrieved and timestamp clause
       Rails.logger.info("Fetching work stats #{timestamp_clause} from Matomo.")
 
@@ -93,13 +95,15 @@ module Tasks
         }
         reporting_uri.query = URI.encode_www_form(uri_params)
         response = HTTParty.get(reporting_uri.to_s)
+        puts "Inspecting response: #{response.parsed_response}"
         Rails.logger.info("Processing Matomo response for #{month}. (#{index + 1}/#{months_array.count})")
-        for stat in response.body
+        response.parsed_response.each do |stat|
           # Events_EventName is the file_id, nb_events is the number of downloads
           update_aggregate_stats(aggregated_data, month, stat['Events_EventName'], stat['nb_events'])
         end
-        retrieved_work_stats_total += response.body.count
+        retrieved_work_stats_total += response.parsed_response.length
       end
+      puts 'Inspect aggregated_data: ', aggregated_data.values
       Rails.logger.info("Aggregated #{aggregated_data.values.count} monthly stats from #{retrieved_work_stats_total} daily stats")
       # Return the aggregated data
       aggregated_data.values
