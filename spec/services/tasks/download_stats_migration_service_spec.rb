@@ -216,16 +216,16 @@ RSpec.describe Tasks::DownloadStatsMigrationService, type: :service do
     case source
     when Tasks::DownloadStatsMigrationService::DownloadMigrationSource::CACHE
         # Use mocked file_download_stats to create works for each file_set_id
-        mock_works = file_download_stats.flatten.map do |stat|
-          FactoryBot.create(:solr_query_result, :work, file_set_ids_ssim: [stat.file_id])
-        end
+      mock_works = file_download_stats.flatten.map do |stat|
+        FactoryBot.create(:solr_query_result, :work, file_set_ids_ssim: [stat.file_id])
+      end
         # Mock query responses for each file_set_id with the corresponding work
-        file_download_stats.flatten.each_with_index do |stat, index|
-          allow(ActiveFedora::SolrService).to receive(:get).with("file_set_ids_ssim:#{stat.file_id}", rows: 1).and_return('response' => { 'docs' => [mock_works[index]] })
-        end
+      file_download_stats.flatten.each_with_index do |stat, index|
+        allow(ActiveFedora::SolrService).to receive(:get).with("file_set_ids_ssim:#{stat.file_id}", rows: 1).and_return('response' => { 'docs' => [mock_works[index]] })
+      end
     when Tasks::DownloadStatsMigrationService::DownloadMigrationSource::MATOMO
        # Mock query responses for file_set_ids 1-6
-       mock_works = (1..6).map do |index|
+      mock_works = (1..6).map do |index|
         FactoryBot.create(:solr_query_result, :work, file_set_ids_ssim: ["file_id_#{index}"])
       end
       (1..6).each do |index|
