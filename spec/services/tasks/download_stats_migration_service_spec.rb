@@ -40,29 +40,20 @@ RSpec.describe Tasks::DownloadStatsMigrationService, type: :service do
  ]]
   }
 
-  # Create a hash of [fileset_id, date.beginning_of_month] => download count for each file_download_stats
-  # let(:expected_aggregated_download_count) do
-  #   file_download_stats.flatten.each_with_object(Hash.new(0)) do |stat, hash|
-  #     hash[[stat.file_id, stat.date.beginning_of_month.to_datetime]] += stat.downloads
-  #   end
-  # end
-
   describe '#list_work_stat_info' do
     # Loop through each source to test the listing of work stats
     [Tasks::DownloadStatsMigrationService::DownloadMigrationSource::MATOMO,
-    # WIP: Implement later
-    # Tasks::DownloadStatsMigrationService::DownloadMigrationSource::GA4,
     Tasks::DownloadStatsMigrationService::DownloadMigrationSource::CACHE].each do |source|
       context "when the source is #{source}" do
         before do
-          setup_stubbed_stats_for(source)
+          test_setup_for(source)
         end
 
         it 'writes all works to the output CSV file' do
-          expected_works = setup_expected_stats_for(source)
+          expected_stats = setup_expected_stats_for(source)
           list_work_stat_info_for(source)
           expect(File).to exist(output_path)
-          expect(csv_to_hash_array(output_path)).to match_array(expected_works)
+          expect(csv_to_hash_array(output_path)).to match_array(expected_stats)
         end
 
         it 'handles and logs errors' do
@@ -74,6 +65,7 @@ RSpec.describe Tasks::DownloadStatsMigrationService, type: :service do
       end
     end
 
+    # Excluded from the source loop since it focuses on the after_timestamp parameter
     context 'with an after_timestamp (for cache migration only)' do
       let(:recent_stats) { FactoryBot.create_list(:file_download_stat, 3, updated_at: '2023-05-05 00:00:00 UTC') }
       let(:old_stats) { FactoryBot.create_list(:file_download_stat, 3, updated_at: '2023-04-05 00:00:00 UTC') }
@@ -115,7 +107,7 @@ RSpec.describe Tasks::DownloadStatsMigrationService, type: :service do
     Tasks::DownloadStatsMigrationService::DownloadMigrationSource::CACHE].each do |source|
       context "when the source is #{source}" do
         before do
-          setup_stubbed_stats_for(source)
+          test_setup_for(source)
         end
         after { HycDownloadStat.delete_all }
 
@@ -133,17 +125,21 @@ RSpec.describe Tasks::DownloadStatsMigrationService, type: :service do
             expect(hyc_download_stat.fileset_id).to eq(csv_row[:file_id])
             expect(hyc_download_stat.work_id).to eq(work_data[:work_id])
             expect(hyc_download_stat.date).to eq(csv_row[:date].to_date)
-            expect(hyc_download_stat.download_count).to eq(expected_aggregated_download_count[[csv_row[:file_id], csv_row_date]])
+
+           # Verify the download count is correct
+            expected_work = expected_stats[index]
+            expected_download_count = expected_work[:downloads].to_i
+            expect(hyc_download_stat.download_count).to eq(expected_download_count)
           end
         end
 
         it 'retains historic stats for a work even if the work cannot be found in solr' do
-          # Return an empty response for all file_set_ids
-          file_download_stats.flatten.each_with_index do |stat, index|
-            allow(ActiveFedora::SolrService).to receive(:get).with("file_set_ids_ssim:#{stat.file_id}", rows: 1).and_return('response' => { 'docs' => [] })
+          # Return an empty response for each test file_set_id (1-6)
+          (1..6).each do |index|
+            allow(ActiveFedora::SolrService).to receive(:get).with("file_set_ids_ssim:file_id_#{index}", rows: 1).and_return('response' => { 'docs' => [] })
           end
 
-          service.list_work_stat_info(output_path,  nil, nil, Tasks::DownloadStatsMigrationService::DownloadMigrationSource::CACHE)
+          list_work_stat_info_for(source)
           service.migrate_to_new_table(output_path)
           csv_to_hash_array(output_path).each_with_index do |csv_row, index|
             hyc_download_stat = HycDownloadStat.find_by(fileset_id: csv_row[:file_id], date: Date.parse(csv_row[:date]).beginning_of_month)
@@ -155,9 +151,9 @@ RSpec.describe Tasks::DownloadStatsMigrationService, type: :service do
             expect(hyc_download_stat.work_type).to eq('Unknown')
             expect(hyc_download_stat.date).to eq(csv_row[:date].to_date)
 
+             # Verify the download count is correct
             expected_work = expected_stats[index]
             expected_download_count = expected_work[:downloads].to_i
-            # Use the expected work's download count
             expect(hyc_download_stat.download_count).to eq(expected_download_count)
           end
         end
@@ -174,7 +170,7 @@ RSpec.describe Tasks::DownloadStatsMigrationService, type: :service do
     # Excluding this portion of tests from the source loop as the error handling is the same for all sources
     context 'if a failure occurs during a private function' do
       before do
-        setup_stubbed_stats_for(Tasks::DownloadStatsMigrationService::DownloadMigrationSource::CACHE)
+        test_setup_for(Tasks::DownloadStatsMigrationService::DownloadMigrationSource::CACHE)
         service.list_work_stat_info(output_path,  nil, nil, Tasks::DownloadStatsMigrationService::DownloadMigrationSource::CACHE)
       end
 
@@ -199,18 +195,9 @@ RSpec.describe Tasks::DownloadStatsMigrationService, type: :service do
 
 
   private
-  def setup_stubbed_stats_for(source)
+  def test_setup_for(source)
     case source
     when Tasks::DownloadStatsMigrationService::DownloadMigrationSource::CACHE
-      # Use mocked file_download_stats to create works for each file_set_id
-      mock_works = file_download_stats.flatten.map do |stat|
-        FactoryBot.create(:solr_query_result, :work, file_set_ids_ssim: [stat.file_id])
-      end
-      # Mock query responses for each file_set_id with the corresponding work
-      file_download_stats.flatten.each_with_index do |stat, index|
-        puts "file_id: #{stat.file_id}"
-        allow(ActiveFedora::SolrService).to receive(:get).with("file_set_ids_ssim:#{stat.file_id}", rows: 1).and_return('response' => { 'docs' => [mock_works[index]] })
-      end
     when Tasks::DownloadStatsMigrationService::DownloadMigrationSource::MATOMO
       # Mocking Matomo API responses based on the fixture data
       matomo_stats_migration_fixture.each do |month, stats|
@@ -218,26 +205,43 @@ RSpec.describe Tasks::DownloadStatsMigrationService, type: :service do
           .with(query: hash_including({ 'date' => month }))
           .to_return(status: 200, body: stats.to_json, headers: { 'Content-Type' => 'application/json' })
       end
-      # Mock query responses for file_set_ids 1-6
-      mock_works = (1..6).map do |index|
+    when Tasks::DownloadStatsMigrationService::DownloadMigrationSource::GA4
+    else
+      raise ArgumentError, "Unsupported source: #{source}"
+    end
+    stub_solr_query_results_for(source)
+  end
+
+  def stub_solr_query_results_for(source)
+    case source
+    when Tasks::DownloadStatsMigrationService::DownloadMigrationSource::CACHE
+        # Use mocked file_download_stats to create works for each file_set_id
+        mock_works = file_download_stats.flatten.map do |stat|
+          FactoryBot.create(:solr_query_result, :work, file_set_ids_ssim: [stat.file_id])
+        end
+        # Mock query responses for each file_set_id with the corresponding work
+        file_download_stats.flatten.each_with_index do |stat, index|
+          allow(ActiveFedora::SolrService).to receive(:get).with("file_set_ids_ssim:#{stat.file_id}", rows: 1).and_return('response' => { 'docs' => [mock_works[index]] })
+        end
+    when Tasks::DownloadStatsMigrationService::DownloadMigrationSource::MATOMO
+       # Mock query responses for file_set_ids 1-6
+       mock_works = (1..6).map do |index|
         FactoryBot.create(:solr_query_result, :work, file_set_ids_ssim: ["file_id_#{index}"])
       end
       (1..6).each do |index|
-        allow(ActiveFedora::SolrService).to receive(:get).with("file_set_ids_ssim:file_id_#{index}", rows: 1).and_return('response' => { 'docs' => [mock_works[index]] })
+        allow(ActiveFedora::SolrService).to receive(:get).with("file_set_ids_ssim:file_id_#{index}", rows: 1).and_return('response' => { 'docs' => [mock_works[index - 1]] })
       end
     when Tasks::DownloadStatsMigrationService::DownloadMigrationSource::GA4
-      # WIP: Implement GA4 API mock here later
-      # allow(service).to receive(:fetch_stats_from_ga4).and_return([])
     else
       raise ArgumentError, "Unsupported source: #{source}"
     end
   end
 
   def setup_expected_stats_for(source)
-    expected_works = []
+    expected_stats = []
     case source
     when Tasks::DownloadStatsMigrationService::DownloadMigrationSource::CACHE
-      expected_works = [
+      expected_stats = [
               { file_id: 'file_id_1', date: '2023-01-01 00:00:00 UTC', downloads: '10' },
               { file_id: 'file_id_1', date: '2023-03-01 00:00:00 UTC', downloads: '20' },
               { file_id: 'file_id_2', date: '2023-04-01 00:00:00 UTC', downloads: '50' },
@@ -246,7 +250,7 @@ RSpec.describe Tasks::DownloadStatsMigrationService, type: :service do
               { file_id: 'file_id_3', date: '2023-07-01 00:00:00 UTC', downloads: '300' }
             ]
     when Tasks::DownloadStatsMigrationService::DownloadMigrationSource::MATOMO
-      expected_works = [
+      expected_stats = [
               { file_id: 'file_id_1', date: '2024-01-01', downloads: '190' },
               { file_id: 'file_id_2', date: '2024-01-01', downloads: '150' },
               { file_id: 'file_id_3', date: '2024-02-01', downloads: '100' },
@@ -255,25 +259,12 @@ RSpec.describe Tasks::DownloadStatsMigrationService, type: :service do
               { file_id: 'file_id_6', date: '2024-03-01', downloads: '550' }
             ]
     when Tasks::DownloadStatsMigrationService::DownloadMigrationSource::GA4
-      # WIP: Implement later
     end
-    expected_works
+    expected_stats
   end
 
   def csv_to_hash_array(file_path)
     CSV.read(file_path, headers: true).map { |row| row.to_h.symbolize_keys }
-  end
-
-  # Helper method to convert an array of FileDownloadStat objects to an array of hashes
-  # Checks for truncated date to the beginning of the month
-  def expected_works_for(stats)
-    stats.map do |stat|
-      {
-        file_id: stat.file_id,
-        date: stat.date.beginning_of_month.to_s,
-        downloads: stat.downloads.to_s,
-      }
-    end
   end
 
   # Execute the list_work_stat_info method for the given source with predefined timestamp parameters
@@ -284,7 +275,6 @@ RSpec.describe Tasks::DownloadStatsMigrationService, type: :service do
     when Tasks::DownloadStatsMigrationService::DownloadMigrationSource::MATOMO
       service.list_work_stat_info(output_path, '2024-01-01', '2024-03-01', Tasks::DownloadStatsMigrationService::DownloadMigrationSource::MATOMO)
     when Tasks::DownloadStatsMigrationService::DownloadMigrationSource::GA4
-      # WIP: Implement later
     end
   end
 end
