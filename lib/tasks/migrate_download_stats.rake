@@ -5,7 +5,7 @@ require 'optparse/date'
 
 namespace :migrate_download_stats do
   desc 'output rows for download stat migration into a csv'
-  task :list_rows, [:output_dir, :before, :after, :source] => :environment do |_t, _args|
+  task :list_rows, [:output_dir, :after, :before, :source] => :environment do |_t, _args|
     start_time = Time.now
     puts "[#{start_time.utc.iso8601}] starting listing of work data"
     options = {}
@@ -37,7 +37,7 @@ namespace :migrate_download_stats do
 
 
     migration_service = Tasks::DownloadStatsMigrationService.new
-    old_stats_csv = migration_service.list_work_stat_info(options[:output_dir], options[:before], options[:after], options[:source])
+    old_stats_csv = migration_service.list_work_stat_info(options[:output_dir], options[:after],  options[:before], options[:source])
     puts "Listing completed in #{Time.now - start_time}s"
     puts "Stored id list to file: #{options[:output_dir]}"
     exit 0
