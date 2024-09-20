@@ -29,6 +29,12 @@ namespace :migrate_download_stats do
       exit 1
     end
 
+    # Require both 'before' and 'after' arguments if the source is not 'cache'
+    if options[:source] != Tasks::DownloadStatsMigrationService::DownloadMigrationSource::CACHE && (!options[:before].present? || !options[:after].present?)
+      puts "Both 'before' and 'after' timestamps are required for sources other than #{Tasks::DownloadStatsMigrationService::DownloadMigrationSource::CACHE}"
+      exit 1
+    end
+
 
     migration_service = Tasks::DownloadStatsMigrationService.new
     old_stats_csv = migration_service.list_work_stat_info(options[:output_dir], options[:before], options[:after], options[:source])
