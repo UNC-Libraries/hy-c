@@ -9,7 +9,7 @@ module WorkUtilsHelper
     Rails.logger.warn("No work found associated with fileset id: #{fileset_id}") if work_data.blank?
     # Set the admin set to an empty hash if the solr query returns nil
     admin_set_name = work_data['admin_set_tesim']&.first
-    admin_set_data =  ActiveFedora::SolrService.get("title_tesim:#{admin_set_name}", { :rows => 1, 'df' => 'title_tesim'})['response']['docs'].first || {}
+    admin_set_data = admin_set_name ? ActiveFedora::SolrService.get("title_tesim:#{admin_set_name}", { :rows => 1, 'df' => 'title_tesim'})['response']['docs'].first : {}
     Rails.logger.warn(self.generate_warning_message(admin_set_name, fileset_id)) if admin_set_data.blank?
     {
       work_id: fileset_data['id'],

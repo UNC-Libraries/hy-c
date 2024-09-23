@@ -134,20 +134,24 @@ RSpec.describe Tasks::DownloadStatsMigrationService, type: :service do
         end
 
         it 'retains historic stats for a work even if the work cannot be found in solr' do
-          # Return an empty response for each test file_set_id (1-6)
+          # Mock the solr query to return a mostly empty response for each test file_set_id (1-6)
+
           (1..6).each do |index|
-            allow(ActiveFedora::SolrService).to receive(:get).with("file_set_ids_ssim:file_id_#{index}", rows: 1).and_return('response' => { 'docs' => [] })
+            mock_data = {
+              'admin_set_tesim' => [admin_set_title],
+              'id' => "file_id_#{index}"
+            }
+            allow(ActiveFedora::SolrService).to receive(:get).with("file_set_ids_ssim:file_id_#{index}", rows: 1).and_return('response' => { 'docs' => [mock_data] })
           end
 
           list_work_stat_info_for(source)
           service.migrate_to_new_table(output_path)
           csv_to_hash_array(output_path).each_with_index do |csv_row, index|
             hyc_download_stat = HycDownloadStat.find_by(fileset_id: csv_row[:file_id], date: Date.parse(csv_row[:date]).beginning_of_month)
-
             expect(hyc_download_stat).to be_present
             expect(hyc_download_stat.fileset_id).to eq(csv_row[:file_id])
             expect(hyc_download_stat.work_id).to eq('Unknown')
-            expect(hyc_download_stat.admin_set_id).to eq('Unknown')
+            expect(hyc_download_stat.admin_set_id).to eq(mock_admin_set[:id])
             expect(hyc_download_stat.work_type).to eq('Unknown')
             expect(hyc_download_stat.date).to eq(csv_row[:date].to_date)
 
@@ -221,7 +225,12 @@ RSpec.describe Tasks::DownloadStatsMigrationService, type: :service do
       end
         # Mock query responses for each file_set_id with the corresponding work
       file_download_stats.flatten.each_with_index do |stat, index|
-        allow(ActiveFedora::SolrService).to receive(:get).with("file_set_ids_ssim:#{stat.file_id}", rows: 1).and_return('response' => { 'docs' => [mock_works[index]] })
+        mock_work = mock_works[index]
+        allow(ActiveFedora::SolrService).to receive(:get).with("id:#{stat.file_id}", rows: 1).and_return('response' => { 'docs' => [mock_work['id']] })
+
+        mock_work_with_admin_set = mock_work.dup
+        mock_work_with_admin_set['admin_set_tesim'] = [admin_set_title]
+        allow(ActiveFedora::SolrService).to receive(:get).with("file_set_ids_ssim:#{stat.file_id}", rows: 1).and_return('response' => { 'docs' => [mock_work_with_admin_set] })
       end
     when Tasks::DownloadStatsMigrationService::DownloadMigrationSource::MATOMO
        # Mock query responses for file_set_ids 1-6
