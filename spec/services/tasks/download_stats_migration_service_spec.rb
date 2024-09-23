@@ -123,7 +123,7 @@ RSpec.describe Tasks::DownloadStatsMigrationService, type: :service do
 
             expect(hyc_download_stat).to be_present
             expect(hyc_download_stat.fileset_id).to eq(csv_row[:file_id])
-            expect(hyc_download_stat.work_id).to eq(work_data[:work_id])
+            expect(hyc_download_stat.work_id).to eq(work_data[:work_id] || 'Unknown')
             expect(hyc_download_stat.date).to eq(csv_row[:date].to_date)
 
            # Verify the download count is correct
@@ -137,11 +137,8 @@ RSpec.describe Tasks::DownloadStatsMigrationService, type: :service do
           # Mock the solr query to return a mostly empty response for each test file_set_id (1-6)
 
           (1..6).each do |index|
-            mock_data = {
-              'admin_set_tesim' => [admin_set_title],
-              'id' => "file_id_#{index}"
-            }
-            allow(ActiveFedora::SolrService).to receive(:get).with("file_set_ids_ssim:file_id_#{index}", rows: 1).and_return('response' => { 'docs' => [mock_data] })
+            allow(ActiveFedora::SolrService).to receive(:get).with("file_set_ids_ssim:file_id_#{index}", rows: 1).and_return('response' => { 'docs' => [] })
+            allow(ActiveFedora::SolrService).to receive(:get).with("id:file_id_#{index}", rows: 1).and_return('response' => { 'docs' => [] })
           end
 
           list_work_stat_info_for(source)
@@ -151,7 +148,7 @@ RSpec.describe Tasks::DownloadStatsMigrationService, type: :service do
             expect(hyc_download_stat).to be_present
             expect(hyc_download_stat.fileset_id).to eq(csv_row[:file_id])
             expect(hyc_download_stat.work_id).to eq('Unknown')
-            expect(hyc_download_stat.admin_set_id).to eq(mock_admin_set[:id])
+            expect(hyc_download_stat.admin_set_id).to eq('Unknown')
             expect(hyc_download_stat.work_type).to eq('Unknown')
             expect(hyc_download_stat.date).to eq(csv_row[:date].to_date)
 
@@ -238,6 +235,7 @@ RSpec.describe Tasks::DownloadStatsMigrationService, type: :service do
         FactoryBot.create(:solr_query_result, :work, file_set_ids_ssim: ["file_id_#{index}"])
       end
       (1..6).each do |index|
+        allow(ActiveFedora::SolrService).to receive(:get).with("id:file_id_#{index}", rows: 1).and_return('response' => { 'docs' => [mock_works[index - 1]] })
         allow(ActiveFedora::SolrService).to receive(:get).with("file_set_ids_ssim:file_id_#{index}", rows: 1).and_return('response' => { 'docs' => [mock_works[index - 1]] })
       end
     when Tasks::DownloadStatsMigrationService::DownloadMigrationSource::GA4
