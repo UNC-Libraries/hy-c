@@ -195,7 +195,7 @@ module Tasks
 
     # Query with paramaters to retrieve publications related to UNC
     def generate_query_string(start_date, end_date, page_size, cursor)
-      search_clauses = ['where type = "article"', "date >= \"#{start_date}\"", "date < \"#{end_date}\""].join(' and ')
+      search_clauses = ['where type = "article"', "date_inserted >= \"#{start_date}\"", "date_inserted < \"#{end_date}\""].join(' and ')
       return_fields = ['basics', 'extras', 'abstract', 'issn', 'publisher', 'journal_title_raw', 'linkout', 'concepts'].join(' + ')
       unc_affiliation_variants = ['"UNC-CH"', '"University of North Carolina at Chapel Hill"', '"UNC-Chapel Hill"', '"University of North Carolina-Chapel Hill"', '"University of North Carolina, Chapel Hill"'].join(' OR ')
       <<~QUERY
