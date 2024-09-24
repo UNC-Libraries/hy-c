@@ -6,8 +6,26 @@ RSpec.describe Tasks::DownloadStatsMigrationService, type: :service do
   let(:mock_admin_set) { FactoryBot.create(:solr_query_result, :admin_set, title_tesim: [admin_set_title]) }
   let(:output_path) { Rails.root.join('tmp', 'download_migration_test_output.csv') }
   let(:service) { described_class.new }
+  let(:spec_base_analytics_url) { 'https://analytics-qa.lib.unc.edu' }
+  let(:spec_site_id) { '5' }
+  let(:spec_auth_token) { 'testtoken' }
   let(:matomo_stats_migration_fixture) do
     JSON.parse(File.read(File.join(Rails.root, '/spec/fixtures/files/matomo_stats_migration_fixture.json')))
+  end
+
+  around do |example|
+    # Set the environment variables for the test
+    @auth_token = ENV['MATOMO_AUTH_TOKEN']
+    @site_id = ENV['MATOMO_SITE_ID']
+    @matomo_base_url = ENV['MATOMO_BASE_URL']
+    ENV['MATOMO_AUTH_TOKEN'] = spec_auth_token
+    ENV['MATOMO_SITE_ID'] = spec_site_id
+    ENV['MATOMO_BASE_URL'] = spec_base_analytics_url
+    example.run
+    # Reset the environment variables
+    ENV['MATOMO_AUTH_TOKEN'] = @auth_token
+    ENV['MATOMO_SITE_ID'] = @site_id
+    ENV['MATOMO_BASE_URL'] = @matomo_base_url
   end
 
   before do
