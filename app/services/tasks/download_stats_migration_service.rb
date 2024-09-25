@@ -14,7 +14,7 @@ module Tasks
       def self.valid?(source)
         all_sources.include?(source)
       end
-      end
+    end
     def list_work_stat_info(output_path, after_timestamp = nil, before_timestamp = nil, source)
       aggregated_work_stats = []
       begin
