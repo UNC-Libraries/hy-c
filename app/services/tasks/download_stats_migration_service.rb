@@ -65,27 +65,26 @@ module Tasks
     # Method to fetch and aggregate work stats from Matomo
     def fetch_matomo_stats(after_timestamp, before_timestamp, output_path)
       aggregated_data = {}
-      retrieved_work_stats_total = 0
-      # Fetch the first of each month in the range
-      months_array = first_of_each_month_in_range(after_timestamp, before_timestamp)
-      timestamp_clause = "in specified range #{after_timestamp} to #{before_timestamp}"
-      matomo_site_id = ENV['MATOMO_SITE_ID']
-      matomo_security_token = ENV['MATOMO_AUTH_TOKEN']
-      reporting_uri = URI("#{ENV['MATOMO_BASE_URL']}/index.php")
-
+      # Keeps count of stats retrieved from Matomo from all queries
+      all_query_stat_total = 0
       # Log number of work stats retrieved and timestamp clause
+      timestamp_clause = "in specified range #{after_timestamp} to #{before_timestamp}"
       Rails.logger.info("Fetching work stats #{timestamp_clause} from Matomo.")
 
       # Query Matomo API for each month in the range and aggregate the data
-      months_array.each_with_index do |month, index|
+      # Setting period to month will return stats for each month in the range, regardless of the specified date
+      reporting_uri = URI("#{ENV['MATOMO_BASE_URL']}/index.php")
+      # Fetch the first of each month in the range
+      months_array = first_of_each_month_in_range(after_timestamp, before_timestamp)
+      months_array.each_with_index do |first_date_of_month, index|
         uri_params = {
           module: 'API',
-          idSite: matomo_site_id,
+          idSite: ENV['MATOMO_SITE_ID'],
           method: 'Events.getName',
           period: 'month',
-          date: month,
+          date: first_date_of_month,
           format: JSON,
-          token_auth: matomo_security_token,
+          token_auth: ENV['MATOMO_AUTH_TOKEN'],
           flat: '1',
           filter_pattern: 'DownloadIR',
           filter_limit: -1,
@@ -93,14 +92,16 @@ module Tasks
         }
         reporting_uri.query = URI.encode_www_form(uri_params)
         response = HTTParty.get(reporting_uri.to_s)
-        Rails.logger.info("Processing Matomo response for #{month}. (#{index + 1}/#{months_array.count})")
+        month_year_string = first_date_of_month.to_date.strftime('%B %Y')
+        Rails.logger.info("Processing Matomo response for #{month_year_string}. (#{index + 1}/#{months_array.count})")
         response.parsed_response.each do |stat|
           # Events_EventName is the file_id, nb_events is the number of downloads
-          update_aggregate_stats(aggregated_data, month, stat['Events_EventName'], stat['nb_events'])
+          update_aggregate_stats(aggregated_data, first_date_of_month, stat['Events_EventName'], stat['nb_events'])
         end
-        retrieved_work_stats_total += response.parsed_response.length
+        monthly_stat_total = response.parsed_response.length
+        all_query_stat_total += monthly_stat_total
       end
-      Rails.logger.info("Aggregated #{aggregated_data.values.count} monthly stats from #{retrieved_work_stats_total} daily stats")
+      Rails.logger.info("Aggregated #{aggregated_data.values.count} monthly stats from #{all_query_stat_total} total retrieved stats")
       # Return the aggregated data
       aggregated_data.values
     end
