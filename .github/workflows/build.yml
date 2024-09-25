@@ -138,12 +138,12 @@ jobs:
         POSTGRES_PASSWORD: password
         TMPDIR: /tmp
 
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       with:
         name: test-coverage
         path: coverage
 
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       with:
         name: test-coverage-report
         path: coverage/coverage.json

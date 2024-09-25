@@ -1,0 +1,80 @@
+{
+    "2024-01-01": [
+       {
+        "label": "file_id_1 - DownloadIR",
+        "nb_events": 120,
+        "Events_EventName": "file_id_1",
+        "Events_EventAction": "DownloadIR"
+        },
+        {
+        "label": "file_id_1 - DownloadIR",
+        "nb_events": 70,
+        "Events_EventName": "file_id_1",
+        "Events_EventAction": "DownloadIR"
+        },
+        {
+        "label": "file_id_2 - DownloadIR",
+        "nb_events": 100,
+        "Events_EventName": "file_id_2",
+        "Events_EventAction": "DownloadIR"
+        },
+        {
+        "label": "file_id_2 - DownloadIR",
+        "nb_events": 50,
+        "Events_EventName": "file_id_2",
+        "Events_EventAction": "DownloadIR"
+        }]
+        ,
+    "2024-02-01": [
+        {
+        "label": "file_id_3 - DownloadIR",
+        "nb_events": 10,
+        "Events_EventName": "file_id_3",
+        "Events_EventAction": "DownloadIR"
+        },
+        {
+        "label": "file_id_3 - DownloadIR",
+        "nb_events": 90,
+        "Events_EventName": "file_id_3",
+        "Events_EventAction": "DownloadIR"
+        },
+        {
+        "label": "file_id_4 - DownloadIR",
+        "nb_events": 50,
+        "Events_EventName": "file_id_4",
+        "Events_EventAction": "DownloadIR"
+        },
+        {
+        "label": "file_id_4 - DownloadIR",
+        "nb_events": 30,
+        "Events_EventName": "file_id_4",
+        "Events_EventAction": "DownloadIR"
+        }
+    ],
+    "2024-03-01": [
+        {
+        "label": "file_id_5 - DownloadIR",
+        "nb_events": 80,
+        "Events_EventName": "file_id_5",
+        "Events_EventAction": "DownloadIR"
+        },
+        {
+        "label": "file_id_5 - DownloadIR",
+        "nb_events": 100,
+        "Events_EventName": "file_id_5",
+        "Events_EventAction": "DownloadIR"
+        },
+        {
+        "label": "file_id_6 - DownloadIR",
+        "nb_events": 250,
+        "Events_EventName": "file_id_6",
+        "Events_EventAction": "DownloadIR"
+        },
+        {
+        "label": "file_id_6 - DownloadIR",
+        "nb_events": 300,
+        "Events_EventName": "file_id_6",
+        "Events_EventAction": "DownloadIR"
+        }
+    ]
+}

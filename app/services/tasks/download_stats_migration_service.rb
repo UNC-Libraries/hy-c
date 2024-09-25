@@ -2,38 +2,32 @@
 module Tasks
   class DownloadStatsMigrationService
     PAGE_SIZE = 1000
-    def list_work_stat_info(output_path, after_timestamp = nil)
+    module DownloadMigrationSource
+      MATOMO = :matomo
+      GA4 = :ga4
+      CACHE = :cache
+
+      def self.all_sources
+        [MATOMO, GA4, CACHE]
+      end
+
+      def self.valid?(source)
+        all_sources.include?(source)
+      end
+    end
+    def list_work_stat_info(output_path, after_timestamp = nil, before_timestamp = nil, source)
+      aggregated_work_stats = []
       begin
-        query = FileDownloadStat.all
-        query = query.where('updated_at > ?', after_timestamp) if after_timestamp.present?
-        total_work_stats = query.count
-        timestamp_clause = after_timestamp.present? ? "after specified time #{after_timestamp}" : 'without a timestamp'
-
-      # Log number of work stats retrieved and timestamp clause
-        Rails.logger.info("Listing #{total_work_stats} work stats #{timestamp_clause} to #{output_path} from the hyrax local cache.")
-
-        aggregated_data = {}
-        work_stats_retrieved_from_query_count = 0
-
-        Rails.logger.info('Retrieving work_stats from the database')
-      # Fetch the work_stats and aggregate them into monthly stats in Ruby, encountered issues with SQL queries
-        query.find_each(batch_size: PAGE_SIZE) do |stat|
-          truncated_date = stat.date.beginning_of_month
-          # Group the file_id and truncated date to be used as a key
-          key = [stat.file_id, truncated_date]
-          # Initialize the hash for the key if it doesn't exist
-          aggregated_data[key] ||= { file_id: stat.file_id, date: truncated_date, downloads: 0 }
-          # Sum the downloads for each key
-          aggregated_data[key][:downloads] += stat.downloads
-          work_stats_retrieved_from_query_count += 1
-          log_progress(work_stats_retrieved_from_query_count, total_work_stats)
+        case source
+        when DownloadMigrationSource::CACHE
+          aggregated_work_stats = fetch_local_cache_stats(after_timestamp, output_path)
+          write_to_csv(output_path, aggregated_work_stats)
+        when DownloadMigrationSource::MATOMO
+          aggregated_work_stats = fetch_matomo_stats(after_timestamp, before_timestamp, output_path)
+          write_to_csv(output_path, aggregated_work_stats)
+        else
+          raise ArgumentError, "Unsupported source: #{source}"
         end
-
-        aggregated_work_stats = aggregated_data.values
-        Rails.logger.info("Aggregated #{aggregated_work_stats.count} monthly stats from #{total_work_stats} daily stats")
-
-        # Write the work_stats to the specified CSV file
-        write_to_csv(output_path, aggregated_work_stats)
       rescue StandardError => e
         Rails.logger.error("An error occurred while listing work stats: #{e.message}")
         Rails.logger.error(e.backtrace.join("\n"))
@@ -67,6 +61,89 @@ module Tasks
     end
 
     private
+
+    # Method to fetch and aggregate work stats from Matomo
+    def fetch_matomo_stats(after_timestamp, before_timestamp, output_path)
+      aggregated_data = {}
+      # Keeps count of stats retrieved from Matomo from all queries
+      all_query_stat_total = 0
+      # Log number of work stats retrieved and timestamp clause
+      timestamp_clause = "in specified range #{after_timestamp} to #{before_timestamp}"
+      Rails.logger.info("Fetching work stats #{timestamp_clause} from Matomo.")
+
+      # Query Matomo API for each month in the range and aggregate the data
+      # Setting period to month will return stats for each month in the range, regardless of the specified date
+      reporting_uri = URI("#{ENV['MATOMO_BASE_URL']}/index.php")
+      # Fetch the first of each month in the range
+      months_array = first_of_each_month_in_range(after_timestamp, before_timestamp)
+      months_array.each_with_index do |first_date_of_month, index|
+        uri_params = {
+          module: 'API',
+          idSite: ENV['MATOMO_SITE_ID'],
+          method: 'Events.getName',
+          period: 'month',
+          date: first_date_of_month,
+          format: JSON,
+          token_auth: ENV['MATOMO_AUTH_TOKEN'],
+          flat: '1',
+          filter_pattern: 'DownloadIR',
+          filter_limit: -1,
+          showColumns: 'nb_events',
+        }
+        reporting_uri.query = URI.encode_www_form(uri_params)
+        response = HTTParty.get(reporting_uri.to_s)
+        month_year_string = first_date_of_month.to_date.strftime('%B %Y')
+        Rails.logger.info("Processing Matomo response for #{month_year_string}. (#{index + 1}/#{months_array.count})")
+        response.parsed_response.each do |stat|
+          # Events_EventName is the file_id, nb_events is the number of downloads
+          update_aggregate_stats(aggregated_data, first_date_of_month, stat['Events_EventName'], stat['nb_events'])
+        end
+        monthly_stat_total = response.parsed_response.length
+        all_query_stat_total += monthly_stat_total
+      end
+      Rails.logger.info("Aggregated #{aggregated_data.values.count} monthly stats from #{all_query_stat_total} total retrieved stats")
+      # Return the aggregated data
+      aggregated_data.values
+    end
+
+    def update_aggregate_stats(aggregated_data, truncated_date, file_id, downloads)
+      # Group the file_id and truncated date to be used as a key
+      key = [file_id, truncated_date]
+      # Initialize the hash for the key if it doesn't exist
+      aggregated_data[key] ||= { file_id: file_id, date: truncated_date, downloads: 0 }
+      # Sum the downloads for each key
+      aggregated_data[key][:downloads] += downloads
+    end
+
+    def first_of_each_month_in_range(after_timestamp, before_timestamp)
+      after_date = after_timestamp.to_date.beginning_of_month
+      before_date = before_timestamp.to_date.beginning_of_month
+      (after_date..before_date).select { |d| d.day == 1 }.map(&:to_s)
+    end
+
+    # Method to fetch and aggregate work stats from the local cache
+    def fetch_local_cache_stats(after_timestamp, output_path)
+      aggregated_data = {}
+      work_stats_retrieved_from_query_count = 0
+      query = FileDownloadStat.all
+      query = query.where('updated_at > ?', after_timestamp) if after_timestamp.present?
+      total_work_stats = query.count
+      timestamp_clause = after_timestamp.present? ? "after specified time #{after_timestamp}" : 'without a timestamp'
+
+    # Log number of work stats retrieved and timestamp clause
+      Rails.logger.info("Fetching #{total_work_stats} work stats #{timestamp_clause} from the hyrax local cache.")
+
+    # Fetch the work_stats and aggregate them into monthly stats in Ruby, encountered issues with SQL queries
+      query.find_each(batch_size: PAGE_SIZE) do |stat|
+        update_aggregate_stats(aggregated_data, stat.date.beginning_of_month, stat.file_id, stat.downloads)
+        work_stats_retrieved_from_query_count += 1
+        log_progress(work_stats_retrieved_from_query_count, total_work_stats)
+      end
+
+      Rails.logger.info("Aggregated #{aggregated_data.values.count} monthly stats from #{total_work_stats} daily stats")
+      # Return the aggregated data
+      aggregated_data.values
+    end
 
     # Log progress at 25%, 50%, 75%, and 100%
     def log_progress(work_stats_count, total_work_stats, process_type = 'Retrieval and Aggregation')

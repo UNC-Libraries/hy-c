@@ -5,7 +5,7 @@ require 'optparse/date'
 
 namespace :migrate_download_stats do
   desc 'output rows for download stat migration into a csv'
-  task :list_rows, [:output_dir, :after] => :environment do |_t, _args|
+  task :list_rows, [:output_dir, :after, :before, :source] => :environment do |_t, _args|
     start_time = Time.now
     puts "[#{start_time.utc.iso8601}] starting listing of work data"
     options = {}
@@ -14,6 +14,8 @@ namespace :migrate_download_stats do
     opts.banner = 'Usage: bundle exec rake migrate_download_stats:list_rows -- [options]'
     opts.on('-o', '--output-dir ARG', String, 'Directory list will be saved to') { |val| options[:output_dir] = val }
     opts.on('-a', '--after ARG', String, 'List objects which have been updated after this timestamp') { |val| options[:after] = val }
+    opts.on('-b', '--before ARG', String, 'List objects updated before this timestamp, only meant for matomo and ga4 migrations') { |val| options[:before] = val }
+    opts.on('-s', '--source ARG', String, 'Data source (matomo, ga4, cache)') { |val| options[:source] = val.to_sym }
     args = opts.order!(ARGV) {}
     opts.parse!(args)
 
@@ -22,8 +24,20 @@ namespace :migrate_download_stats do
       exit 1
     end
 
+    unless Tasks::DownloadStatsMigrationService::DownloadMigrationSource.valid?(options[:source])
+      puts "Please provide a valid source: #{Tasks::DownloadStatsMigrationService::DownloadMigrationSource.all_sources.join(', ')}"
+      exit 1
+    end
+
+    # Require both 'before' and 'after' arguments if the source is not 'cache'
+    if options[:source] != Tasks::DownloadStatsMigrationService::DownloadMigrationSource::CACHE && (!options[:before].present? || !options[:after].present?)
+      puts "Both 'before' and 'after' timestamps are required for sources other than #{Tasks::DownloadStatsMigrationService::DownloadMigrationSource::CACHE}"
+      exit 1
+    end
+
+
     migration_service = Tasks::DownloadStatsMigrationService.new
-    old_stats_csv = migration_service.list_work_stat_info(options[:output_dir], options[:after])
+    old_stats_csv = migration_service.list_work_stat_info(options[:output_dir], options[:after],  options[:before], options[:source])
     puts "Listing completed in #{Time.now - start_time}s"
     puts "Stored id list to file: #{options[:output_dir]}"
     exit 0
