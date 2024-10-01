@@ -8,7 +8,15 @@ namespace :dissertations do
       require 'rdf/ntriples'
       require 'open-uri'
       year = args[:year]
-      
+
+      def stringify_relation(relation)
+        if relation.is_a?(ActiveTriples::Relation) || relation.is_a?(Array)
+          relation.map(&:to_s).join(", ")  # Convert all elements to strings and join with a comma
+        else
+          relation.to_s 
+        end
+      end
+
       # Method to fetch all dissertations by paginating through Solr results
       def fetch_all_dissertations
         start = 0
@@ -51,7 +59,7 @@ namespace :dissertations do
 
           # Check if the object has a page_count method
           if fileset_object.respond_to?(:page_count)
-            page_count = fileset_object.page_count.to_s
+            page_count = stringify_relation(fileset_object.page_count)
             Rails.logger.info("Page count for #{fileset_id}: #{page_count}")
             # sum += page_count
           else
