@@ -10,7 +10,7 @@ namespace :dissertations do
       year = args[:year]
   
       # Method to get the total page count for all dissertations in admin set
-      def total_page_count(admin_set_name)
+      def total_page_count(year)
         # Print solr production url environment variable
         # dissertations = ActiveFedora::SolrService.get("admin_set_tesim:Dissertations")['response']['docs'].first || {}
         dissertations = ActiveFedora::SolrService.get('has_model_ssim:"AdminSet"', rows: 30)
