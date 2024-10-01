@@ -41,33 +41,22 @@ namespace :dissertations do
         Rails.logger.info("Total page count for fileset ids: #{fileset_ids}")
         sum = 0
         fileset_ids.each do |fileset_id|
-          # Fetch Solr document with specific fields requested
-          solr_response = ActiveFedora::SolrService.query("id:#{fileset_id}", fl: ['page_count_tesim'], rows: 1)
-
-          # Check if page_count_tesim is present
-          if solr_response.present? && solr_response.first['page_count_tesim']
-            page_count = solr_response.first['page_count_tesim'].first.to_i
-            Rails.logger.info("Page count from Solr for #{fileset_id}: #{page_count}")
-            sum += page_count
-          else
-            Rails.logger.warn("No page_count found in Solr for #{fileset_id}")
+          fileset_object = ActiveFedora::Base.find(fileset_id)
+          # WIP: Log the full object inspection
+          Rails.logger.info("Inspecting ActiveFedora::Base.find(#{fileset_id}): #{fileset_object.inspect}")
+          # Log the available attributes (if they exist)
+          if fileset_object.respond_to?(:attributes)
+            Rails.logger.info("Attributes: #{fileset_object.attributes}")
           end
-          # fileset_object = ActiveFedora::Base.find(fileset_id)
-          # # WIP: Log the full object inspection
-          # Rails.logger.info("Inspecting ActiveFedora::Base.find(#{fileset_id}): #{fileset_object.inspect}")
-          # # Log the available attributes (if they exist)
-          # if fileset_object.respond_to?(:attributes)
-          #   Rails.logger.info("Attributes: #{fileset_object.attributes}")
-          # end
 
-          # # Check if the object has a page_count method
-          # if fileset_object.respond_to?(:page_count)
-          #   page_count = fileset_object.page_count.to_i
-          #   Rails.logger.info("Page count for #{fileset_id}: #{page_count}")
-          #   sum += page_count
-          # else
-          #   Rails.logger.warn("No page_count method found for #{fileset_id}")
-          # end
+          # Check if the object has a page_count method
+          if fileset_object.respond_to?(:page_count)
+            page_count = fileset_object.page_count.to_s
+            Rails.logger.info("Page count for #{fileset_id}: #{page_count}")
+            # sum += page_count
+          else
+            Rails.logger.warn("No page_count method found for #{fileset_id}")
+          end
         end
         return sum
       end
