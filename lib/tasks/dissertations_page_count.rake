@@ -13,7 +13,7 @@ namespace :dissertations do
       def total_page_count(year)
         # Print solr production url environment variable
         # dissertations = ActiveFedora::SolrService.get("admin_set_tesim:Dissertations")['response']['docs'].first || {}
-        dissertations = ActiveFedora::SolrService.get('has_model_ssim:"AdminSet"', rows: 30)
+        dissertations = ActiveFedora::SolrService.get('admin_set_tesim:"Dissertations"', rows: 30)
         Rails.logger.info("Dissertations: #{dissertations.inspect}")
         # Inspect the response
         dissertations['response']['docs'].each_with_index do |doc,index|
