@@ -8,17 +8,8 @@ namespace :dissertations do
     require 'rdf'
     require 'rdf/ntriples'
     require 'open-uri'
+    require 'csv'
     year = args[:year]
-
-    def sum_relation_values(relation)
-      if relation.is_a?(ActiveTriples::Relation) || relation.is_a?(Array)
-        # Convert each element to an integer and sum them up
-        relation.map(&:to_i).sum
-      else
-        # If it's a single value, just convert it to an integer
-        relation.to_i
-      end
-    end
 
     # Method to fetch all dissertations by paginating through Solr results
     def fetch_all_dissertations
@@ -41,7 +32,7 @@ namespace :dissertations do
 
     def process_dissertation(dissertation)
       res = {}
-      res[:id] = dissertation['id']
+      res[:dissertation_id] = dissertation['id']
       res[:title] = dissertation['title_tesim']&.first
       # Associating page count with the dissertation instead of the fileset
       # dissertation['file_set_ids_ssim'] is an array of fileset ids
@@ -55,12 +46,6 @@ namespace :dissertations do
       sum = 0
       fileset_ids.each do |fileset_id|
         fileset_object = ActiveFedora::Base.find(fileset_id)
-        # WIP: Log the full object inspection
-        # Rails.logger.info("Inspecting ActiveFedora::Base.find(#{fileset_id}): #{fileset_object.inspect}")
-        # # Log the available attributes (if they exist)
-        # if fileset_object.respond_to?(:attributes)
-        #   Rails.logger.info("Attributes: #{fileset_object.attributes}")
-        # end
 
         # Check if the object has a page_count method
         if fileset_object.respond_to?(:page_count)
@@ -74,25 +59,34 @@ namespace :dissertations do
       return sum
     end
 
-    # # Method to get the total page count for all dissertations in admin set
-    # def total_page_count(year)
-    #   # Print solr production url environment variable
-    #   # dissertations = ActiveFedora::SolrService.get("admin_set_tesim:Dissertations")['response']['docs'].first || {}
-    #   dissertations = ActiveFedora::SolrService.get('admin_set_tesim:"Dissertations"', rows: 999)
-    #   Rails.logger.info("Dissertations: #{dissertations.inspect}")
-    #   # Inspect the response
-    #   dissertations['response']['docs'].each_with_index do |doc,index|
-    #     Rails.logger.info("Inspect doc #{index}: #{doc.inspect}")
-    #   end
-    #   # 0.upto(4) do |i|
-    #   #     Rails.logger.info("Inspect Dissertation #{i}: #{works_in_admin_set[i].inspect}")
-    #   # end
-    #   total_pages = 0
-    #   total_pages
-    # end
+    def sum_relation_values(relation)
+      if relation.is_a?(ActiveTriples::Relation) || relation.is_a?(Array)
+        # Convert each element to an integer and sum them up
+        relation.map(&:to_i).sum
+      else
+        # If it's a single value, just convert it to an integer
+        relation.to_i
+      end
+    end
+
+    def write_to_csv(data)
+      total_pages_all = 0
+      # Write the processed dissertations to a CSV file
+      CSV.open("/logs/dissertations_page_count.csv", "w") do |csv|
+        # Write CSV headers
+        csv << ['Dissertation ID', 'Title', 'Page Count']
+
+        # Write each dissertation's data to a new row
+        all_processed_dissertations.each do |dissertation|
+          csv << [dissertation[:dissertation_id], dissertation[:title], dissertation[:page_count]]
+          total_pages_all += dissertation[:page_count]
+        end
+        csv << ['N/A','All Total Pages', total_pages_all]
+      end
+    end
 
     total_pages_all = fetch_all_dissertations
-  #   total_pages_2023 = total_page_count_for_year(admin_set_id, 2023)
+    write_to_csv(total_pages_all)
 
   #   puts "Total page count for all dissertations: #{total_pages_all}"
   #   puts "Total page count for 2023 dissertations: #{total_pages_2023}"
