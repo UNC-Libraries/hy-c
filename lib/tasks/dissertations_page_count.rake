@@ -38,7 +38,6 @@ namespace :dissertations do
       # Associating page count with the dissertation instead of the fileset
       # dissertation['file_set_ids_ssim'] is an array of fileset ids
       res[:page_count] = total_page_count_for_fileset_ids(dissertation['file_set_ids_ssim'])
-      # Rails.logger.info("Processed dissertation: #{res}")
       return res
     end
 
@@ -69,10 +68,11 @@ namespace :dissertations do
       end
     end
 
-    def write_to_csv(all_processed_dissertations)
+    def write_to_csv(all_processed_dissertations, year)
       total_pages_all = 0
+      path = year ? "/logs/hyc/dissertations_page_count_#{year}.csv" : '/logs/hyc/dissertations_page_count_all.csv'
       # Write the processed dissertations to a CSV file
-      CSV.open('/logs/dissertations_page_count.csv', 'w') do |csv|
+      CSV.open(path, 'w') do |csv|
         # Write CSV headers
         csv << ['Dissertation ID', 'Title', 'Page Count']
 
@@ -85,10 +85,7 @@ namespace :dissertations do
       end
     end
 
-    all_processed_dissertations = fetch_all_dissertations
-    write_to_csv(all_processed_dissertations)
-
-  #   puts "Total page count for all dissertations: #{total_pages_all}"
-  #   puts "Total page count for 2023 dissertations: #{total_pages_2023}"
+    all_processed_dissertations = fetch_all_dissertations(year)
+    write_to_csv(all_processed_dissertations, year)
   end
 end
