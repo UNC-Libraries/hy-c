@@ -12,13 +12,14 @@ namespace :dissertations do
     year = args[:year]
 
     # Method to fetch all dissertations by paginating through Solr results
-    def fetch_all_dissertations
+    def fetch_all_dissertations(year = nil)
       start = 0
       rows = 1000
       all_processed_dissertations = []
 
       loop do
-        response = ActiveFedora::SolrService.get('admin_set_tesim:"Dissertations"', start: start, rows: rows)
+        query_string = year ? "admin_set_tesim:\"Dissertations\" AND year_tesim:\"#{year}\"" : 'admin_set_tesim:"Dissertations"'
+        response = ActiveFedora::SolrService.get(query_string, start: start, rows: rows)
         processed_dissertations = response['response']['docs'].map { |doc| process_dissertation(doc) }
         all_processed_dissertations.concat(processed_dissertations)
 
@@ -37,12 +38,11 @@ namespace :dissertations do
       # Associating page count with the dissertation instead of the fileset
       # dissertation['file_set_ids_ssim'] is an array of fileset ids
       res[:page_count] = total_page_count_for_fileset_ids(dissertation['file_set_ids_ssim'])
-      Rails.logger.info("Processed dissertation: #{res}")
+      # Rails.logger.info("Processed dissertation: #{res}")
       return res
     end
 
     def total_page_count_for_fileset_ids(fileset_ids)
-      Rails.logger.info("Total page count for fileset ids: #{fileset_ids}")
       sum = 0
       fileset_ids.each do |fileset_id|
         fileset_object = ActiveFedora::Base.find(fileset_id)
@@ -69,10 +69,10 @@ namespace :dissertations do
       end
     end
 
-    def write_to_csv(data)
+    def write_to_csv(all_processed_dissertations)
       total_pages_all = 0
       # Write the processed dissertations to a CSV file
-      CSV.open("/logs/dissertations_page_count.csv", "w") do |csv|
+      CSV.open('/logs/dissertations_page_count.csv', 'w') do |csv|
         # Write CSV headers
         csv << ['Dissertation ID', 'Title', 'Page Count']
 
@@ -81,12 +81,12 @@ namespace :dissertations do
           csv << [dissertation[:dissertation_id], dissertation[:title], dissertation[:page_count]]
           total_pages_all += dissertation[:page_count]
         end
-        csv << ['N/A','All Total Pages', total_pages_all]
+        csv << ['N/A', 'All Total Pages', total_pages_all]
       end
     end
 
-    total_pages_all = fetch_all_dissertations
-    write_to_csv(total_pages_all)
+    all_processed_dissertations = fetch_all_dissertations
+    write_to_csv(all_processed_dissertations)
 
   #   puts "Total page count for all dissertations: #{total_pages_all}"
   #   puts "Total page count for 2023 dissertations: #{total_pages_2023}"
