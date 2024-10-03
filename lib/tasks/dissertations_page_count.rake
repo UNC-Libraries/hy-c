@@ -19,6 +19,7 @@ namespace :dissertations do
 
       loop do
         query_string = year ? "admin_set_tesim:\"Dissertations\" AND year_tesim:\"#{year}\"" : 'admin_set_tesim:"Dissertations"'
+        Rails.logger.info("Querying Solr with: #{query_string}")
         response = ActiveFedora::SolrService.get(query_string, start: start, rows: rows)
         processed_dissertations = response['response']['docs'].map { |doc| process_dissertation(doc) }
         all_processed_dissertations.concat(processed_dissertations)
