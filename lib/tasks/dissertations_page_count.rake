@@ -71,7 +71,7 @@ namespace :dissertations do
 
     def write_to_csv(all_processed_dissertations, year)
       total_pages_all = 0
-      path = year ? "/logs/hyc/dissertations_page_count_#{year}.csv" : '/logs/hyc/dissertations_page_count_all.csv'
+      path = File.join(Rails.configuration.log_directory, year ? "dissertations_page_count_#{year}.csv" : 'dissertations_page_count_all.csv')
       # Write the processed dissertations to a CSV file
       CSV.open(path, 'w') do |csv|
         # Write CSV headers
