@@ -343,6 +343,16 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
         expect(response.headers['Content-Disposition']).to include 'filename="no_extension"'
       end
     end
+
+    context 'with work' do
+      let(:work) { Article.create(title: ['New Article']) }
+
+      it 'will deny permission if trying to download the work' do
+        allow(subject).to receive(:authorize!)
+        get :show, params: { id: work.id}
+        expect(response).to be_unauthorized
+      end
+    end
   end
 
 end

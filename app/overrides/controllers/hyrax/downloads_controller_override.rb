@@ -19,15 +19,23 @@ Hyrax::DownloadsController.class_eval do
 
   private
 
-  # This is unmodified from hyrax
   def file_set_parent(file_set_id)
-    file_set = Hyrax.query_service.find_by_alternate_identifier(alternate_identifier: file_set_id, use_valkyrie: Hyrax.config.use_valkyrie?)
+    file_set = if defined?(Wings) && Hyrax.metadata_adapter.is_a?(Wings::Valkyrie::MetadataAdapter)
+                 Hyrax.query_service.find_by_alternate_identifier(alternate_identifier: file_set_id, use_valkyrie: Hyrax.config.use_valkyrie?)
+               else
+                 Hyrax.query_service.find_by(id: file_set_id)
+               end
     @parent ||=
       case file_set
       when Hyrax::Resource
         Hyrax.query_service.find_parents(resource: file_set).first
       else
-        file_set.parent
+        # [hyc-override] If the object doesn't support parent, then throw an expected error
+        if file_set.respond_to?(:parent)
+          file_set.parent
+        else
+          raise Hyrax::WorkflowAuthorizationException
+        end
       end
   end
 
