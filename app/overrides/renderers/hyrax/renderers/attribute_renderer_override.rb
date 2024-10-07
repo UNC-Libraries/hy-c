@@ -16,6 +16,7 @@ Hyrax::Renderers::AttributeRenderer.class_eval do
   end
 
   private
+
   def li_value(value)
     field_value = find_language(value) || value
     auto_link(ERB::Util.h(field_value))
