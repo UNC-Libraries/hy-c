@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 source 'https://rubygems.org'
-ruby '~> 2.7.4'
+ruby '~> 3.0.2'
 
 git_source(:github) do |repo_name|
   repo_name = "#{repo_name}/#{repo_name}" unless repo_name.include?('/')
@@ -20,7 +20,7 @@ gem 'clamav-client', require: 'clamav/client'
 gem 'coffee-rails', '~> 5.0.0'
 gem 'devise', '~> 4.8.0'
 gem 'devise-guests', '~> 0.8.1'
-gem 'edtf-humanize', '2.0.1'
+gem 'edtf-humanize', '~> 2.1'
 # See https://github.com/rails/execjs#readme for more supported runtimes
 gem 'execjs', '2.8.1'
 gem 'httparty', '~>0.21.0'
@@ -32,10 +32,11 @@ gem 'jbuilder', '~> 2.11.2'
 # Use jquery as the JavaScript library
 gem 'jquery-rails', '~> 4.5.0'
 gem 'json-canonicalization', '0.3.1'
-gem 'json-ld', '< 3.2'
+gem 'json-ld', '~> 3.2'
 gem 'libv8', '~> 7.3'
 # linkeddata gem is released with rdf gems and should be the same version as rdf
 gem 'sparql', '3.2.5'
+gem 'ldp', '~> 1.1'
 gem 'linkeddata'
 gem 'logger', '1.5.3'
 gem 'loofah', '~>2.19.1'

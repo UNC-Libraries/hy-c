@@ -383,7 +383,7 @@ GEM
       unicode-types (~> 1.8)
     edtf (3.1.1)
       activesupport (>= 3.0, < 8.0)
-    edtf-humanize (2.0.1)
+    edtf-humanize (2.2.0)
       activesupport (>= 4)
       edtf (>= 2.3, < 4)
       roman (~> 0.2.0)
@@ -534,13 +534,13 @@ GEM
       thor (>= 0.14, < 2.0)
     json (2.7.1)
     json-canonicalization (0.3.1)
-    json-ld (3.1.10)
+    json-ld (3.2.4)
       htmlentities (~> 4.3)
-      json-canonicalization (~> 0.2)
+      json-canonicalization (~> 0.3)
       link_header (~> 0.0, >= 0.0.8)
-      multi_json (~> 1.14)
-      rack (~> 2.0)
-      rdf (~> 3.1)
+      multi_json (~> 1.15)
+      rack (>= 2.2, < 4)
+      rdf (~> 3.2, >= 3.2.10)
     json-ld-preloaded (3.1.6)
       json-ld (~> 3.1)
       rdf (~> 3.1)
@@ -568,13 +568,14 @@ GEM
       rdf-xsd (~> 3.2)
       sparql (~> 3.2)
       sxp (~> 1.2)
-    ldp (1.0.3)
+    ldp (1.2.0)
       deprecation
-      faraday
+      faraday (>= 1)
       http_logger
-      json-ld
-      rdf (>= 1.1)
+      json-ld (~> 3.2)
+      rdf (~> 3.2)
       rdf-isomorphic
+      rdf-ldp
       rdf-turtle
       rdf-vocab (>= 0.8)
       slop
@@ -770,6 +771,9 @@ GEM
       rdf (~> 3.2)
     rdf-json (3.2.0)
       rdf (~> 3.2)
+    rdf-ldp (0.1.0)
+      deprecation
+      rdf
     rdf-microdata (3.2.1)
       htmlentities (~> 4.3)
       nokogiri (~> 1.13)
@@ -1093,7 +1097,7 @@ DEPENDENCIES
   database_cleaner
   devise (~> 4.8.0)
   devise-guests (~> 0.8.1)
-  edtf-humanize (= 2.0.1)
+  edtf-humanize (~> 2.1)
   execjs (= 2.8.1)
   factory_bot_rails (~> 6.2.0)
   fcrepo_wrapper (~> 0.9.0)
@@ -1105,7 +1109,8 @@ DEPENDENCIES
   jbuilder (~> 2.11.2)
   jquery-rails (~> 4.5.0)
   json-canonicalization (= 0.3.1)
-  json-ld (< 3.2)
+  json-ld (~> 3.2)
+  ldp (~> 1.1)
   libv8 (~> 7.3)
   linkeddata
   listen (~> 3.7.0)
@@ -1149,7 +1154,7 @@ DEPENDENCIES
   webmock (~> 3.14.0)
 
 RUBY VERSION
-   ruby 2.7.4p191
+   ruby 3.0.2p107
 
 BUNDLED WITH
    2.2.33

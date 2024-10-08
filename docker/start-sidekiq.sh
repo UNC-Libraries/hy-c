@@ -1,6 +1,6 @@
 #!/bin/bash
 echo "#### Running start-sidekiq.sh"
-source scl_source enable rh-ruby27
+source scl_source enable rh-ruby30
 source scl_source enable devtoolset-8
 
 # Wait for the web container, so that it can handle installation of bundle gems for both
