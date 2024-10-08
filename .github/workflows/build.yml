@@ -83,10 +83,10 @@ jobs:
 
     strategy:
       matrix:
-        ruby-version: ['2.7.4']
+        ruby-version: ['3.0.4']
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - name: Set up Ruby
     # To automatically get bug fixes and new Ruby versions for ruby/setup-ruby,
     # change this to (see https://github.com/ruby/setup-ruby#versioning):
@@ -97,7 +97,7 @@ jobs:
     - name: Update rubygems
       run: |
         gem update --system 3.3.25
-        gem install bundler:2.2.33
+        gem install bundler:2.3.27
 
     # Run Rubocop as soon as gems are installed, so we fail early if there are issues
     - name: Run RuboCop
