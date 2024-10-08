@@ -9,5 +9,40 @@ content_block:
     - table
     - fullscreen
     - image
+rich_text:
+  menubar: false
+  toolbar:
+    - "undo redo | bold italic underline | alignleft aligncenter alignright | link | numlist bullist outdent indent | blockquote | code"
+  plugins:
+    - "link lists code"
+  style_formats:
+    - title: "Inline"
+      items:
+        - title: "Bold"
+          inline: "b"
+        - title: "Italic"
+          inline: "i"
+        - title: "Underline"
+          inline: "u"
+        - title: "Strikethrough"
+          inline: "strike"
+    - title: "Blocks"
+      items:
+        - title: "Paragraph"
+          block: "p"
+        - title: "Blockquote"
+          block: "blockquote"
+    - title: "Alignments"
+      items:
+        - title: "Left"
+          block: ""
+          classes: "align-left"
+        - title: "Center"
+          block: ""
+          classes: "align-center"
+        - title: "Right"
+          block: ""
+          classes: "align-right"
+
 custom:
   <<: *default
