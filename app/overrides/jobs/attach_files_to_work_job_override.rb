@@ -6,10 +6,10 @@ Hyrax::AttachFilesToWorkJob.class_eval do
 
   def perform(work, uploaded_files, **work_attributes)
     uploaded_files.each do |uploaded_file|
-      # [hyc-override] check all files for viruses
+      # [hyc-override] check all files for  viruses
       virus_check!(uploaded_file)
     end
-    original_perform(work, uploaded_files, work_attributes)
+    original_perform(work, uploaded_files, **work_attributes)
   # [hyc-override] Log viruses
   rescue VirusDetectedError => error
     user = User.find_by_user_key(proxy_or_depositor(work))

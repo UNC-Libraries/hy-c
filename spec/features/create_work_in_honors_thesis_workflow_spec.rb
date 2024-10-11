@@ -133,10 +133,10 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       expect(page).to have_content 'Add New Undergraduate Honors Thesis'
 
       fill_in 'Title', with: 'Honors workflow test 1'
-      fill_in 'Creator', { with: 'Test Default Creator', id: 'honors_thesis_creators_attributes_0_name' }
-      fill_in 'ORCID', { with: 'creator orcid', id: 'honors_thesis_creators_attributes_0_orcid' }
+      fill_in 'Creator', with: 'Test Default Creator', id: 'honors_thesis_creators_attributes_0_name'
+      fill_in 'ORCID', with: 'creator orcid', id: 'honors_thesis_creators_attributes_0_orcid'
       select 'Department of Biology', from: 'honors_thesis_creators_attributes_0_affiliation'
-      fill_in 'Additional affiliation', { with: 'UNC', id: 'honors_thesis_creators_attributes_0_other_affiliation' }
+      fill_in 'Additional affiliation', with: 'UNC', id: 'honors_thesis_creators_attributes_0_other_affiliation'
       fill_in 'Keyword', with: 'Test Default Keyword'
       select 'In Copyright', from: 'honors_thesis_rights_statement'
       expect(page).to have_field('honors_thesis_visibility_embargo')
@@ -329,10 +329,10 @@ RSpec.feature 'Create and review a work in the honors thesis workflow', js: fals
       expect(page).to have_content 'Add New Undergraduate Honors Thesis'
 
       fill_in 'Title', with: 'Honors workflow test 2'
-      fill_in 'Creator', { with: 'Test Default Creator', id: 'honors_thesis_creators_attributes_0_name' }
-      fill_in 'ORCID', { with: 'creator orcid', id: 'honors_thesis_creators_attributes_0_orcid' }
+      fill_in 'Creator', with: 'Test Default Creator', id: 'honors_thesis_creators_attributes_0_name'
+      fill_in 'ORCID', with: 'creator orcid', id: 'honors_thesis_creators_attributes_0_orcid'
       select 'Department of Biology', from: 'honors_thesis_creators_attributes_0_affiliation'
-      fill_in 'Additional affiliation', { with: 'UNC', id: 'honors_thesis_creators_attributes_0_other_affiliation' }
+      fill_in 'Additional affiliation', with: 'UNC', id: 'honors_thesis_creators_attributes_0_other_affiliation'
       fill_in 'Keyword', with: 'Test Default Keyword'
       select 'In Copyright', from: 'honors_thesis_rights_statement'
       expect(page).to have_field('honors_thesis_visibility_embargo')

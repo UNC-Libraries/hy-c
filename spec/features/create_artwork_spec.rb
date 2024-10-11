@@ -59,10 +59,10 @@ RSpec.feature 'Create an Artwork', js: false do
 
       # required fields
       fill_in 'Title', with: 'Test Artwork work'
-      fill_in 'Creator', { with: 'Test Default Creator', id: 'artwork_creators_attributes_0_name' }
-      fill_in 'ORCID', { with: 'http://orcid.org/creator', id: 'artwork_creators_attributes_0_orcid' }
+      fill_in 'Creator', with: 'Test Default Creator', id: 'artwork_creators_attributes_0_name'
+      fill_in 'ORCID', with: 'http://orcid.org/creator', id: 'artwork_creators_attributes_0_orcid'
       select 'Department of Biology', from: 'artwork_creators_attributes_0_affiliation'
-      fill_in 'Additional affiliation', { with: 'UNC', id: 'artwork_creators_attributes_0_other_affiliation' }
+      fill_in 'Additional affiliation', with: 'UNC', id: 'artwork_creators_attributes_0_other_affiliation'
       fill_in 'Date of publication', with: '2018-10-03'
       fill_in 'Abstract', with: 'a description'
       fill_in 'Extent', with: 'some extent'
@@ -145,10 +145,10 @@ RSpec.feature 'Create an Artwork', js: false do
       fill_in 'DOI', with: 'some-doi'
       select 'Attribution 3.0 United States', from: 'artwork_license'
       select 'In Copyright', from: 'artwork_rights_statement'
-      fill_in 'Creator', { with: 'Test Default Creator', id: 'artwork_creators_attributes_0_name' }
-      fill_in 'ORCID', { with: 'http://orcid.org/creator', id: 'artwork_creators_attributes_0_orcid' }
+      fill_in 'Creator', with: 'Test Default Creator', id: 'artwork_creators_attributes_0_name'
+      fill_in 'ORCID', with: 'http://orcid.org/creator', id: 'artwork_creators_attributes_0_orcid'
       select 'Department of Biology', from: 'artwork_creators_attributes_0_affiliation'
-      fill_in 'Additional affiliation', { with: 'UNC', id: 'artwork_creators_attributes_0_other_affiliation' }
+      fill_in 'Additional affiliation', with: 'UNC', id: 'artwork_creators_attributes_0_other_affiliation'
 
       expect(page).to have_selector('#artwork_license_label', visible: false)
       expect(page).to have_selector('#artwork_rights_statement_label', visible: false)

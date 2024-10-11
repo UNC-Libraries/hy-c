@@ -31,6 +31,15 @@ RSpec.describe Tasks::DimensionsIngestService do
   let(:pdf_content) { File.binread(File.join(Rails.root, '/spec/fixtures/files/sample_pdf.pdf')) }
   let(:test_publications) { JSON.parse(dimensions_ingest_test_fixture)['publications'] }
 
+  let(:temp_storage) { Dir.mktmpdir }
+
+  around do |example|
+    cached_temp_storage = ENV['TEMP_STORAGE']
+    ENV['TEMP_STORAGE'] = temp_storage.to_s
+    example.run
+    ENV['TEMP_STORAGE'] = cached_temp_storage
+  end
+
   before do
     ActiveFedora::Cleaner.clean!
     admin_set
@@ -49,6 +58,10 @@ RSpec.describe Tasks::DimensionsIngestService do
     allow(RegisterToLongleafJob).to receive(:perform_later).and_return(nil)
     # stub FITS characterization
     allow(CharacterizeJob).to receive(:perform_later)
+  end
+
+  after do
+    FileUtils.rm_rf(temp_storage)
   end
 
   describe '#initialize' do
