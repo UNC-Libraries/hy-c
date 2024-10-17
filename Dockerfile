@@ -27,6 +27,7 @@ COPY docker/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo
 RUN yum -y update \
 && yum -y install epel-release \
 && yum -y install centos-release-scl-rh centos-release-scl \
+&& yum -y install libyaml libyaml-devel \
 && yum -y --enablerepo=centos-sclo-rh install rh-ruby30 rh-ruby30-ruby-devel \
 && yum -y install https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm \
 && yum -y install gcc gcc-c++ zlib-devel devtoolset-8 postgresql14 libpq5-devel libxslt-devel \

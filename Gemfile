@@ -46,7 +46,8 @@ gem 'nokogiri', '~>1.14.2'
 gem 'omniauth', '~> 2.0'
 gem 'omniauth-rails_csrf_protection'
 gem 'omniauth-shibboleth', '~> 1.3'
-gem 'passenger', '6.0.14', require: 'phusion_passenger/rack_handler'
+# Cannot use 6.0.23 because it adds rackup as a dependency, which leads to conflicts for now
+gem 'passenger', '6.0.22', require: 'phusion_passenger/rack_handler'
 # Use postgresql as the database for Active Record
 gem 'pg', '~> 1.3.5'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
@@ -59,7 +60,7 @@ gem 'roo', '~>2.9.0'
 gem 'rsolr', '~> 2.5.0'
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 6.0.0'
-gem 'sidekiq', '~> 6.5'
+gem 'sidekiq', '~> 7.3'
 gem 'sidekiq-status', '~> 3.0.0'
 # Turbolinks makes navigating your web application faster. Read more: https://github.com/turbolinks/turbolinks
 gem 'turbolinks', '~> 5.2.1'
