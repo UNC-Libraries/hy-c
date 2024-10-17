@@ -92,15 +92,15 @@ RSpec.feature 'Create a MastersPaper', js: false do
 
       # required fields
       fill_in 'Title', with: 'Test MastersPaper work'
-      fill_in 'Creator', { with: 'Test Default Creator', id: 'masters_paper_creators_attributes_0_name' }
-      fill_in 'ORCID', { with: 'http://orcid.org/creator', id: 'masters_paper_creators_attributes_0_orcid' }
+      fill_in 'Creator', with: 'Test Default Creator', id: 'masters_paper_creators_attributes_0_name'
+      fill_in 'ORCID', with: 'http://orcid.org/creator', id: 'masters_paper_creators_attributes_0_orcid'
       select 'Department of Biology', from: 'masters_paper_creators_attributes_0_affiliation'
-      fill_in 'Additional affiliation', { with: 'UNC', id: 'masters_paper_creators_attributes_0_other_affiliation' }
+      fill_in 'Additional affiliation', with: 'UNC', id: 'masters_paper_creators_attributes_0_other_affiliation'
       fill_in 'Abstract', with: 'an abstract'
-      fill_in 'Advisor', { with: 'advisor', id: 'masters_paper_advisors_attributes_0_name' }
-      fill_in 'ORCID', { with: 'advisor orcid', id: 'masters_paper_advisors_attributes_0_orcid' }
+      fill_in 'Advisor', with: 'advisor', id: 'masters_paper_advisors_attributes_0_name'
+      fill_in 'ORCID', with: 'advisor orcid', id: 'masters_paper_advisors_attributes_0_orcid'
       select 'Department of Biology', from: 'masters_paper_advisors_attributes_0_affiliation'
-      fill_in 'Additional affiliation', { with: 'UNC', id: 'masters_paper_advisors_attributes_0_other_affiliation' }
+      fill_in 'Additional affiliation', with: 'UNC', id: 'masters_paper_advisors_attributes_0_other_affiliation'
       fill_in 'Date of publication', with: '2018-10-03'
       select 'Master of Science', from: 'masters_paper_degree'
       fill_in 'Graduation year', with: '2018'
@@ -112,10 +112,10 @@ RSpec.feature 'Create a MastersPaper', js: false do
       fill_in 'Keyword', with: 'Test Default Keyword'
       select 'Attribution 4.0 International', from: 'masters_paper_license'
       fill_in 'Note', with: 'a note'
-      fill_in 'Reviewer', { with: 'reviewer', id: 'masters_paper_reviewers_attributes_0_name' }
-      fill_in 'ORCID', { with: 'reviewer orcid', id: 'masters_paper_reviewers_attributes_0_orcid' }
+      fill_in 'Reviewer', with: 'reviewer', id: 'masters_paper_reviewers_attributes_0_name'
+      fill_in 'ORCID', with: 'reviewer orcid', id: 'masters_paper_reviewers_attributes_0_orcid'
       select 'Department of Biology', from: 'masters_paper_reviewers_attributes_0_affiliation'
-      fill_in 'Additional affiliation', { with: 'UNC', id: 'masters_paper_reviewers_attributes_0_other_affiliation' }
+      fill_in 'Additional affiliation', with: 'UNC', id: 'masters_paper_reviewers_attributes_0_other_affiliation'
       select 'In Copyright', from: 'masters_paper_rights_statement'
       fill_in 'Subject', with: 'test'
 
@@ -197,15 +197,15 @@ RSpec.feature 'Create a MastersPaper', js: false do
 
       # required fields
       fill_in 'Title', with: 'Test MastersPaper work'
-      fill_in 'Creator', { with: 'Test Default Creator', id: 'masters_paper_creators_attributes_0_name' }
-      fill_in 'ORCID', { with: 'http://orcid.org/creator', id: 'masters_paper_creators_attributes_0_orcid' }
+      fill_in 'Creator', with: 'Test Default Creator', id: 'masters_paper_creators_attributes_0_name'
+      fill_in 'ORCID', with: 'http://orcid.org/creator', id: 'masters_paper_creators_attributes_0_orcid'
       select 'Department of Biology', from: 'masters_paper_creators_attributes_0_affiliation'
-      fill_in 'Additional affiliation', { with: 'UNC', id: 'masters_paper_creators_attributes_0_other_affiliation' }
+      fill_in 'Additional affiliation', with: 'UNC', id: 'masters_paper_creators_attributes_0_other_affiliation'
       fill_in 'Abstract', with: 'an abstract'
-      fill_in 'Advisor', { with: 'advisor', id: 'masters_paper_advisors_attributes_0_name' }
-      fill_in 'ORCID', { with: 'advisor orcid', id: 'masters_paper_advisors_attributes_0_orcid' }
+      fill_in 'Advisor', with: 'advisor', id: 'masters_paper_advisors_attributes_0_name'
+      fill_in 'ORCID', with: 'advisor orcid', id: 'masters_paper_advisors_attributes_0_orcid'
       select 'Department of Biology', from: 'masters_paper_advisors_attributes_0_affiliation'
-      fill_in 'Additional affiliation', { with: 'UNC', id: 'masters_paper_advisors_attributes_0_other_affiliation' }
+      fill_in 'Additional affiliation', with: 'UNC', id: 'masters_paper_advisors_attributes_0_other_affiliation'
       fill_in 'Date of publication', with: '2018-10-03'
       select 'Master of Science', from: 'masters_paper_degree'
       fill_in 'Degree granting institution', with: 'UNC'
@@ -221,10 +221,10 @@ RSpec.feature 'Create a MastersPaper', js: false do
       fill_in 'Keyword', with: 'Test Default Keyword'
       select 'Attribution 3.0 United States', from: 'masters_paper_license'
       fill_in 'Note', with: 'a note'
-      fill_in 'Reviewer', { with: 'reviewer', id: 'masters_paper_reviewers_attributes_0_name' }
-      fill_in 'ORCID', { with: 'reviewer orcid', id: 'masters_paper_reviewers_attributes_0_orcid' }
+      fill_in 'Reviewer', with: 'reviewer', id: 'masters_paper_reviewers_attributes_0_name'
+      fill_in 'ORCID', with: 'reviewer orcid', id: 'masters_paper_reviewers_attributes_0_orcid'
       select 'Department of Biology', from: 'masters_paper_reviewers_attributes_0_affiliation'
-      fill_in 'Additional affiliation', { with: 'UNC', id: 'masters_paper_reviewers_attributes_0_other_affiliation' }
+      fill_in 'Additional affiliation', with: 'UNC', id: 'masters_paper_reviewers_attributes_0_other_affiliation'
       select 'In Copyright', from: 'masters_paper_rights_statement'
       fill_in 'Subject', with: 'test'
       fill_in 'Rights notes', with: 'some rights notes'

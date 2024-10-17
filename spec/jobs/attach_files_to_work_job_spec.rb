@@ -56,7 +56,7 @@ RSpec.describe AttachFilesToWorkJob, type: :job do
   context 'with safe file' do
     it 'succeeds without any reporting' do
       # Catch expected call to wrapped implementation of perform
-      expect(subject).to receive(:original_perform).with(work, [uploaded_file], {})
+      expect(subject).to receive(:original_perform).with(work, [uploaded_file])
       expect(Hyc::VirusScanner).to receive(:hyc_infected?).and_return(ClamAV::SuccessResponse.new(target_file))
       subject.perform(work, [uploaded_file])
     end

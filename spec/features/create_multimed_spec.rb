@@ -63,10 +63,10 @@ RSpec.feature 'Create a Multimed', js: false do
 
       # required fields
       fill_in 'Title', with: 'Test Multimed'
-      fill_in 'Creator', { with: 'Test Default Creator', id: 'multimed_creators_attributes_0_name' }
-      fill_in 'ORCID', { with: 'http://orcid.org/creator', id: 'multimed_creators_attributes_0_orcid' }
+      fill_in 'Creator', with: 'Test Default Creator', id: 'multimed_creators_attributes_0_name'
+      fill_in 'ORCID', with: 'http://orcid.org/creator', id: 'multimed_creators_attributes_0_orcid'
       select 'Department of Biology', from: 'multimed_creators_attributes_0_affiliation'
-      fill_in 'Additional affiliation', { with: 'UNC', id: 'multimed_creators_attributes_0_other_affiliation' }
+      fill_in 'Additional affiliation', with: 'UNC', id: 'multimed_creators_attributes_0_other_affiliation'
       fill_in 'Abstract', with: 'an abstract'
       fill_in 'Date of publication', with: '2018-10-03'
       select 'Video', from: 'multimed_resource_type'
@@ -147,10 +147,10 @@ RSpec.feature 'Create a Multimed', js: false do
 
       # required fields
       fill_in 'Title', with: 'Test Multimed'
-      fill_in 'Creator', { with: 'Test Default Creator', id: 'multimed_creators_attributes_0_name' }
-      fill_in 'ORCID', { with: 'http://orcid.org/creator', id: 'multimed_creators_attributes_0_orcid' }
+      fill_in 'Creator', with: 'Test Default Creator', id: 'multimed_creators_attributes_0_name'
+      fill_in 'ORCID', with: 'http://orcid.org/creator', id: 'multimed_creators_attributes_0_orcid'
       select 'Department of Biology', from: 'multimed_creators_attributes_0_affiliation'
-      fill_in 'Additional affiliation', { with: 'UNC', id: 'multimed_creators_attributes_0_other_affiliation' }
+      fill_in 'Additional affiliation', with: 'UNC', id: 'multimed_creators_attributes_0_other_affiliation'
       fill_in 'Abstract', with: 'an abstract'
       fill_in 'Date of publication', with: '2018-10-03'
       select 'Video', from: 'multimed_resource_type'

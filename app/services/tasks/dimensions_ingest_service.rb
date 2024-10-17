@@ -158,7 +158,7 @@ module Tasks
         headers['Wiley-TDM-Client-Token'] = "#{@wiley_tdm_api_token}"
       else
         # Use the encoded linkout URL from dimensions otherwise
-        encoded_url = URI.encode(pdf_url)
+        encoded_url = URI::DEFAULT_PARSER.escape(pdf_url)
       end
       download_pdf(encoded_url, publication, headers)
     end

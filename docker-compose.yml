@@ -42,7 +42,7 @@ services:
       - docker/.env
     volumes:
       - mount-code:/hyrax
-      - mount-gems:/hyc-gems
+      - mount-sidekiq-gems:/hyc-gems
       - fcrepo_data:/opt/fedora/
       - hyrax_data:/opt/hyrax
       - ftp_data:/opt/data/ftp
@@ -95,13 +95,14 @@ services:
   solr8:
     image: solr:8.11-slim
     volumes:
-      - solr8-data:/opt/solr/server/solr/configsets/hy-c
+      - ./solr/config:/opt/solr/server/solr/configsets/hy-c
+      - solr8-data:/var/solr/data
     ports:
       - "8983:8983"
     command: >
       bash -c "
-      precreate-core hydra-development /opt/solr/server/solr/configsets/hy-c;
-      precreate-core hydra-test /opt/solr/server/solr/configsets/hy-c;
+      precreate-core hydra-development /opt/solr/server/solr/configsets/hy-c &&
+      precreate-core hydra-test /opt/solr/server/solr/configsets/hy-c &&
       exec solr -f
       "
     networks:
@@ -109,6 +110,7 @@ services:
 volumes:
   mount-code:
   mount-gems:
+  mount-sidekiq-gems:
   solr8-data:
   clam:
   pg_data:
@@ -138,14 +140,3 @@ x-mutagen:
         permissions:
           defaultFileMode: 0644
           defaultDirectoryMode: 0755
-    #mount-gems:
-      #alpha: '../hyc-gems'
-      #beta: "volume://mount-gems"
-    # TODO: can we move these to simple volumes by auto-copying the configs over?
-    solr8-data:
-      alpha: './solr/config'
-      beta: 'volume://solr8-data'
-      configurationBeta:
-        permissions:
-          defaultOwner: 'id:8983'
-          defaultGroup: 'id:8983'
