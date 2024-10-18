@@ -6,7 +6,7 @@ Hyrax::AttachFilesToWorkJob.class_eval do
 
   def perform(work, uploaded_files, **work_attributes)
     uploaded_files.each do |uploaded_file|
-      # [hyc-override] check all files for  viruses
+      # [hyc-override] check all files for viruses
       virus_check!(uploaded_file)
     end
     original_perform(work, uploaded_files, **work_attributes)
