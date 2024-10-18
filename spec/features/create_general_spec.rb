@@ -77,31 +77,31 @@ RSpec.feature 'Create a General', js: false do
       fill_in 'Abstract', with: 'an abstract'
       select 'Clinical Nutrition', from: 'Academic Concentration'
       fill_in 'Access Right', with: 'some access'
-      fill_in 'Advisor', { with: 'advisor', id: 'general_advisors_attributes_0_name' }
-      fill_in 'ORCID', { with: 'advisor orcid', id: 'general_advisors_attributes_0_orcid' }
+      fill_in 'Advisor', with: 'advisor', id: 'general_advisors_attributes_0_name'
+      fill_in 'ORCID', with: 'advisor orcid', id: 'general_advisors_attributes_0_orcid'
       select 'Department of Biology', from: 'general_advisors_attributes_0_affiliation'
-      fill_in 'Additional affiliation', { with: 'UNC', id: 'general_advisors_attributes_0_other_affiliation' }
+      fill_in 'Additional affiliation', with: 'UNC', id: 'general_advisors_attributes_0_other_affiliation'
       fill_in 'Alternate title', with: 'another title'
-      fill_in 'Arranger', { with: 'arranger', id: 'general_arrangers_attributes_0_name' }
-      fill_in 'ORCID', { with: 'arranger orcid', id: 'general_arrangers_attributes_0_orcid' }
+      fill_in 'Arranger', with: 'arranger', id: 'general_arrangers_attributes_0_name'
+      fill_in 'ORCID', with: 'arranger orcid', id: 'general_arrangers_attributes_0_orcid'
       select 'Department of Biology', from: 'general_arrangers_attributes_0_affiliation'
-      fill_in 'Additional affiliation', { with: 'UNC', id: 'general_arrangers_attributes_0_other_affiliation' }
+      fill_in 'Additional affiliation', with: 'UNC', id: 'general_arrangers_attributes_0_other_affiliation'
       select 'Honors', from: 'Honors level'
       fill_in 'Bibliographic citation', with: 'a citation'
-      fill_in 'Creator', { with: 'Test Default Creator', id: 'general_creators_attributes_0_name' }
-      fill_in 'ORCID', { with: 'http://orcid.org/creator', id: 'general_creators_attributes_0_orcid' }
+      fill_in 'Creator', with: 'Test Default Creator', id: 'general_creators_attributes_0_name'
+      fill_in 'ORCID', with: 'http://orcid.org/creator', id: 'general_creators_attributes_0_orcid'
       select 'Department of Biology', from: 'general_creators_attributes_0_affiliation'
-      fill_in 'Additional affiliation', { with: 'UNC', id: 'general_creators_attributes_0_other_affiliation' }
+      fill_in 'Additional affiliation', with: 'UNC', id: 'general_creators_attributes_0_other_affiliation'
       fill_in 'Conference name', with: 'a conference'
-      fill_in 'Contributor', { with: 'contributor', id: 'general_contributors_attributes_0_name' }
-      fill_in 'ORCID', { with: 'contributor orcid', id: 'general_contributors_attributes_0_orcid' }
+      fill_in 'Contributor', with: 'contributor', id: 'general_contributors_attributes_0_name'
+      fill_in 'ORCID', with: 'contributor orcid', id: 'general_contributors_attributes_0_orcid'
       select 'Department of Biology', from: 'general_contributors_attributes_0_affiliation'
-      fill_in 'Additional affiliation', { with: 'UNC', id: 'general_contributors_attributes_0_other_affiliation' }
+      fill_in 'Additional affiliation', with: 'UNC', id: 'general_contributors_attributes_0_other_affiliation'
       fill_in 'Copyright date', with: '2018'
-      fill_in 'Composer', { with: 'composer', id: 'general_composers_attributes_0_name' }
-      fill_in 'ORCID', { with: 'composer orcid', id: 'general_composers_attributes_0_orcid' }
+      fill_in 'Composer', with: 'composer', id: 'general_composers_attributes_0_name'
+      fill_in 'ORCID', with: 'composer orcid', id: 'general_composers_attributes_0_orcid'
       select 'Department of Biology', from: 'general_composers_attributes_0_affiliation'
-      fill_in 'Additional affiliation', { with: 'UNC', id: 'general_composers_attributes_0_other_affiliation' }
+      fill_in 'Additional affiliation', with: 'UNC', id: 'general_composers_attributes_0_other_affiliation'
       fill_in 'Date of publication', with: '2018-10-03'
       fill_in 'Date other', with: '2018-10-03'
       select 'Bachelor of Science', from: 'general_degree'
@@ -130,21 +130,21 @@ RSpec.feature 'Create a General', js: false do
       fill_in 'Page end', with: '32'
       fill_in 'Page start', with: '30'
       fill_in 'Place of publication', with: 'UNC'
-      fill_in 'Project Director', { with: 'project director', id: 'general_project_directors_attributes_0_name' }
-      fill_in 'ORCID', { with: 'project director orcid', id: 'general_project_directors_attributes_0_orcid' }
+      fill_in 'Project Director', with: 'project director', id: 'general_project_directors_attributes_0_name'
+      fill_in 'ORCID', with: 'project director orcid', id: 'general_project_directors_attributes_0_orcid'
       select 'Department of Biology', from: 'general_project_directors_attributes_0_affiliation'
-      fill_in 'Additional affiliation', { with: 'UNC', id: 'general_project_directors_attributes_0_other_affiliation' }
+      fill_in 'Additional affiliation', with: 'UNC', id: 'general_project_directors_attributes_0_other_affiliation'
       select 'Yes', from: 'general_peer_review_status'
       fill_in 'Publisher', with: 'UNC Press'
       select 'Other', from: 'general_resource_type'
-      fill_in 'Researcher', { with: 'researcher', id: 'general_researchers_attributes_0_name' }
-      fill_in 'ORCID', { with: 'researcher orcid', id: 'general_researchers_attributes_0_orcid' }
+      fill_in 'Researcher', with: 'researcher', id: 'general_researchers_attributes_0_name'
+      fill_in 'ORCID', with: 'researcher orcid', id: 'general_researchers_attributes_0_orcid'
       select 'Department of Biology', from: 'general_researchers_attributes_0_affiliation'
-      fill_in 'Additional affiliation', { with: 'UNC', id: 'general_researchers_attributes_0_other_affiliation' }
-      fill_in 'Reviewer', { with: 'reviewer', id: 'general_reviewers_attributes_0_name' }
-      fill_in 'ORCID', { with: 'reviewer orcid', id: 'general_reviewers_attributes_0_orcid' }
+      fill_in 'Additional affiliation', with: 'UNC', id: 'general_researchers_attributes_0_other_affiliation'
+      fill_in 'Reviewer', with: 'reviewer', id: 'general_reviewers_attributes_0_name'
+      fill_in 'ORCID', with: 'reviewer orcid', id: 'general_reviewers_attributes_0_orcid'
       select 'Department of Biology', from: 'general_reviewers_attributes_0_affiliation'
-      fill_in 'Additional affiliation', { with: 'UNC', id: 'general_reviewers_attributes_0_other_affiliation' }
+      fill_in 'Additional affiliation', with: 'UNC', id: 'general_reviewers_attributes_0_other_affiliation'
       fill_in 'Related resource URL', with: 'something.com'
       fill_in 'Rights holder', with: 'an author'
       select 'In Copyright', from: 'general_rights_statement'
@@ -152,10 +152,10 @@ RSpec.feature 'Create a General', js: false do
       fill_in 'Sponsor', with: 'a sponsor'
       fill_in 'Subject', with: 'test'
       fill_in 'Table of contents', with: 'contents'
-      fill_in 'Translator', { with: 'translator', id: 'general_translators_attributes_0_name' }
-      fill_in 'ORCID', { with: 'translator orcid', id: 'general_translators_attributes_0_orcid' }
+      fill_in 'Translator', with: 'translator', id: 'general_translators_attributes_0_name'
+      fill_in 'ORCID', with: 'translator orcid', id: 'general_translators_attributes_0_orcid'
       select 'Department of Biology', from: 'general_translators_attributes_0_affiliation'
-      fill_in 'Additional affiliation', { with: 'UNC', id: 'general_translators_attributes_0_other_affiliation' }
+      fill_in 'Additional affiliation', with: 'UNC', id: 'general_translators_attributes_0_other_affiliation'
       fill_in 'Rights notes', with: 'some rights notes'
 
       expect(page).to have_selector('#general_language_label', visible: false)

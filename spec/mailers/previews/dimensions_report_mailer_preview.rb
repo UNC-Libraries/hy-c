@@ -46,7 +46,7 @@ class DimensionsReportMailerPreview < ActionMailer::Preview
       end
     end
 
-    dimensions_reporting_service = Tasks::DimensionsReportingService.new(ingested_publications, FIXED_DIMENSIONS_TOTAL_COUNT, { start_date: TEST_START_DATE, end_date: TEST_END_DATE }, FALSE)
+    dimensions_reporting_service = Tasks::DimensionsReportingService.new(ingested_publications, FIXED_DIMENSIONS_TOTAL_COUNT, { start_date: TEST_START_DATE, end_date: TEST_END_DATE }, false)
     report = dimensions_reporting_service.generate_report
     DimensionsReportMailer.dimensions_report_email(report)
   end
