@@ -60,4 +60,17 @@ export class RequiredFields {
         this.requiredFields = this.form.find(':input[required], input[name*="date_issued"]');
         this.requiredFields.change(this.callback)
     }
+
+    // [hyc-override] Save TinyMCE content to the textarea before checking for required fields
+    // Important for required fields that are TinyMCE editors
+    saveTinyMCEContent() {
+        // Loop through each TinyMCE instance in the form
+        $(this.form).find('.tinymce').each((index, elem) => {
+          const id = $(elem).attr('id');
+        // If the TinyMCE instance exists, save the content
+          if (id && tinymce.get(id)) {
+            tinymce.get(id).save();
+          }
+        });
+      }
 }
