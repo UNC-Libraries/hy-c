@@ -9,6 +9,7 @@ end
 
 gem 'browser', '~> 5.3', '>= 5.3.1'
 gem 'active-fedora', '~> 14.0'
+gem 'base64', '0.1.0' # Downgrade from 0.2 so that it will match the version being used by passenger on the server
 gem 'blacklight', git: 'https://github.com/UNC-Libraries/blacklight.git', branch: 'unc-development'
 gem 'blacklight_advanced_search', '~> 8.0.0.alpha2'
 gem 'blacklight_oai_provider', '7.0.2'
