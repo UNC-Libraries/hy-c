@@ -43,6 +43,12 @@ rich_text:
         - title: "Right"
           block: ""
           classes: "align-right"
+  setup: |
+    function (editor) {
+      editor.on('change', function () {
+        tinymce.triggerSave();
+      });
+    }
 
 custom:
   <<: *default

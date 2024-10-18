@@ -146,9 +146,6 @@ export default class SaveWorkControl {
 
   // sets the metadata indicator to complete/incomplete
   validateMetadata() {
-    // [hyc-override] Update textarea for fields using TinyMCE for rich text editing
-    this.requiredFields.saveTinyMCEContent()
-
     if (this.requiredFields.areComplete) {
       this.requiredMetadata.check()
       return true
