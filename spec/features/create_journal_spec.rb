@@ -68,10 +68,10 @@ RSpec.feature 'Create a Journal', js: false do
 
       # extra fields
       fill_in 'Abstract', with: 'an abstract'
-      fill_in 'Creator', { with: 'Test Default Creator', id: 'journal_creators_attributes_0_name' }
-      fill_in 'ORCID', { with: 'http://orcid.org/creator', id: 'journal_creators_attributes_0_orcid' }
+      fill_in 'Creator', with: 'Test Default Creator', id: 'journal_creators_attributes_0_name'
+      fill_in 'ORCID', with: 'http://orcid.org/creator', id: 'journal_creators_attributes_0_orcid'
       select 'Department of Biology', from: 'journal_creators_attributes_0_affiliation'
-      fill_in 'Additional affiliation', { with: 'UNC', id: 'journal_creators_attributes_0_other_affiliation' }
+      fill_in 'Additional affiliation', with: 'UNC', id: 'journal_creators_attributes_0_other_affiliation'
       fill_in 'Extent', with: 'some extent'
       find('#journal_based_near_attributes_0_id', visible: false).set('http://sws.geonames.org/4460162/')
       fill_in 'ISBN', with: 'some isbn'
@@ -165,10 +165,10 @@ RSpec.feature 'Create a Journal', js: false do
       # extra fields
       fill_in 'Abstract', with: 'an abstract'
       fill_in 'Alternate title', with: 'another title'
-      fill_in 'Creator', { with: 'Test Default Creator', id: 'journal_creators_attributes_0_name' }
-      fill_in 'ORCID', { with: 'http://orcid.org/creator', id: 'journal_creators_attributes_0_orcid' }
+      fill_in 'Creator', with: 'Test Default Creator', id: 'journal_creators_attributes_0_name'
+      fill_in 'ORCID', with: 'http://orcid.org/creator', id: 'journal_creators_attributes_0_orcid'
       select 'Department of Biology', from: 'journal_creators_attributes_0_affiliation'
-      fill_in 'Additional affiliation', { with: 'UNC', id: 'journal_creators_attributes_0_other_affiliation' }
+      fill_in 'Additional affiliation', with: 'UNC', id: 'journal_creators_attributes_0_other_affiliation'
       fill_in 'Digital collection', with: 'my collection'
       fill_in 'DOI', with: 'some-doi'
       fill_in 'Extent', with: 'some extent'
