@@ -110,7 +110,10 @@ RSpec.feature 'Edit works created through the Sage ingest', :sage, js: false do
         expect(page).to have_field('Creator #2', with: 'Zhang, Xi')
         expect(page).to have_field('Additional affiliation (Creator #1)', with: 'Department of Family and Community Medicine, University of California, San Francisco, CA, USA')
         expect(page).to have_field('ORCID (Creator #1)', with: 'https://orcid.org/0000-0001-6833-8372')
-        expect(page).to have_field('Abstract', with: /Efforts to increase education opportunities, provide insurance/)
+        # Assert content within an iframe to check the abstract. Tinymce rich text editors confuse Capybara assertions.
+        within_frame(find('iframe#article_abstract_ifr')) do
+          expect(page).to have_content('Efforts to increase education opportunities, provide insurance')
+        end
 
         # Javascript execution is inconsistent in the test environment, so rather than expanding the rest
         # of the form elements, checking for the remainder of the elements whether they are visible or not.
