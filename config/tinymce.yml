@@ -47,6 +47,9 @@ rich_text:
     function (editor) {
       editor.on('change', function () {
         tinymce.triggerSave();
+        if (window.saveWorkControlInstance) {
+          window.saveWorkControlInstance.validateMetadata();
+        }
       });
     }
 
