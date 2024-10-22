@@ -20,7 +20,7 @@ module Hyrax
         sanitize(string, tags: allowed_tags, attributes: allowed_attributes)
       end
 
-    # [hyc-override] Same as attribute renderer override, but without escaping the value
+    # Same as attribute renderer override, but without escaping the value
       def li_value(value)
         field_value = find_language(value) || value
         auto_link((field_value))
