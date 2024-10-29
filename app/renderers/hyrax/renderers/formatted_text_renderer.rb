@@ -15,8 +15,8 @@ module Hyrax
       # Sanitize the value, allowing only safe HTML tags and attributes
       def get_sanitized_string(string)
          # Define allowed tags and attributes
-        allowed_tags = %w[strong em b i u p br small mark sub sup a ul ol li dl dt dd div span h1 h2 h3 h4 h5 h6]
-        allowed_attributes = %w[href]
+        allowed_tags = %w[strong em b i u p br small mark sub sup a ul ol li dl dt dd div span h1 h2 h3 h4 h5 h6 blockquote]
+        allowed_attributes = %w[href style]
         sanitize(string, tags: allowed_tags, attributes: allowed_attributes)
       end
 
