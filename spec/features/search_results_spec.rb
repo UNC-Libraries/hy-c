@@ -22,6 +22,6 @@ RSpec.describe 'Search Results', type: :feature, js: false do
     expect(page).to have_content(SLEEPY_HOLLOW[:title_tesim][0])
     expect(page).to have_content(MYSTERIOUS_AFFAIR[:title_tesim][0])
     expect(page).to have_content(TIME_MACHINE[:title_tesim][0])
-    expect(page).to have_content("Actual Abstract and another abstract")
+    expect(page).to have_content('Actual Abstract and another abstract')
   end
 end
