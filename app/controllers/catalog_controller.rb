@@ -129,7 +129,7 @@ class CatalogController < ApplicationController
     config.add_index_field solr_name('creator_label', :stored_searchable), label: 'Creator', itemprop: 'creator', link_to_search: solr_name('creator', :facetable)
     config.add_index_field solr_name('date_captured', :stored_searchable), itemprop: 'dateCaptured', label: 'Date captured'
     config.add_index_field solr_name('date_issued', :stored_searchable), label: 'Date of publication'
-    config.add_index_field solr_name('abstract', :stored_searchable), label: 'Abstract'
+    config.add_index_field solr_name('abstract', :stored_searchable), label: 'Abstract', helper_method: :sanitize_abstract_field
     config.add_index_field solr_name('resource_type', :stored_searchable), label: 'Resource type', link_to_search: solr_name('resource_type', :facetable)
     config.add_index_field solr_name('based_near_label', :stored_searchable), itemprop: 'contentLocation', label: 'Location', link_to_search: solr_name('based_near_label', :facetable)
 
