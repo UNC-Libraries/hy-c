@@ -26,6 +26,8 @@ Blacklight::Document::DublinCore.module_eval do
           array_of_values = values_as_array(values)
           if field_s == 'source'
             add_source_to_xml(xml, array_of_values)
+          elsif field_s == 'description'
+            array_of_values.each { |v| add_field_to_xml(xml, field_s, ActionController::Base.helpers.strip_tags(v)) }
           else
             array_of_values.each { |v| add_field_to_xml(xml, field_s, v) }
           end

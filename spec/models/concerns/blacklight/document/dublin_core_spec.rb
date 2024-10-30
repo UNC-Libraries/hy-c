@@ -91,6 +91,19 @@ RSpec.describe 'Blacklight::Document::DublinCore' do
       end
     end
 
+    context 'with abstract containing html' do
+      let(:work) { Article.new(id: '123456', title: ['Testing HTML'],
+                    abstract: ['This <b>abstract</b> contains <i>html</i>']
+        )
+      }
+
+      it 'returns xml document with html tables sanitized from abstract' do
+        xml_doc = Nokogiri::XML(document.export_as_oai_dc_xml)
+        desc = xml_doc.xpath('//dc:description', 'dc' => 'http://purl.org/dc/elements/1.1/').map(&:text)
+        expect(desc).to eq ['This abstract contains html']
+      end
+    end
+
     context 'with thumbnail' do
       let(:work) { Article.new(id: '123456', title: ['654321']) }
       before do
