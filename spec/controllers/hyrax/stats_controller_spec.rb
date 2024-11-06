@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 require 'rails_helper'
+require 'hyrax/analytics'
 RSpec.describe Hyrax::StatsController do
   let(:user) { FactoryBot.create(:user) }
   let(:usage) { double }
@@ -10,6 +11,14 @@ RSpec.describe Hyrax::StatsController do
     request.env['HTTP_REFERER'] = 'http://test.host/foo'
     allow_any_instance_of(User).to receive(:groups).and_return([])
   end
+
+  around do |example|
+    cached_start_date = Hyrax.config.analytics_start_date
+    Hyrax.config.analytics_start_date = Date.new(2019, 5, 1)
+    example.run
+    Hyrax.config.analytics_start_date = cached_start_date
+  end
+
   routes { Hyrax::Engine.routes }
 
   describe 'work' do
@@ -33,10 +42,8 @@ RSpec.describe Hyrax::StatsController do
       end
       spec_fileset_ids = work.members.map(&:id)
 
-      spec_fileset_ids.each_with_index do |fileset_id, index|
-        expect(Hyrax::Analytics).to receive(:api_params).with('Events.getName', 'month', anything, { flat: 1,
-          label: "#{fileset_id} - DownloadIR"}).and_return(spec_downloads_hash)
-      end
+      generate_hyc_stats_for_range(work.id, spec_fileset_ids[0], spec_downloads)
+      generate_hyc_stats_for_range(work.id, spec_fileset_ids[1], spec_downloads)
 
       expect(Hyrax::Analytics).to receive(:api_params).with('Events.getName', 'month', anything, { flat: 1,
             label: "#{work.id} - work-view"}).and_return(spec_page_views_hash)
@@ -51,6 +58,13 @@ RSpec.describe Hyrax::StatsController do
 
       expect(pageviews.results).to eq(expected_page_views)
       expect(downloads.results).to eq(expected_downloads)
+    end
+  end
+
+  def generate_hyc_stats_for_range(work_id, fileset_id, expected_downloads)
+    expected_downloads.each do |pair|
+      event_date = "#{pair[0]}-01"
+      FactoryBot.create(:hyc_download_stat, work_id: work_id, fileset_id: fileset_id, date: event_date, download_count: pair[1])
     end
   end
 
