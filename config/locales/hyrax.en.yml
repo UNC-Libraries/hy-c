@@ -250,7 +250,6 @@ en:
         advisor: "Your advisor's name. Please enter the last name first, e.g. \"Smith, John.\""
         affiliation: "Primary departmental affiliation"
         alternative_title: "A unique secondary title for your work if applicable. Enter subtitle in the \"Title\" field, instead."
-        award: "Honors level"
         based_near: "A country, city, geographic area or other place. This could be where your data was collected or where your study took place. Select a value from the drop-down menu."
         bibliographic_citation: "A citation to a related work, or a different version of this work."
         contributor: "A person or group who had a role in creating the work."
