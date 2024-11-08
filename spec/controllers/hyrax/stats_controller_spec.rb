@@ -14,7 +14,7 @@ RSpec.describe Hyrax::StatsController do
 
   around do |example|
     cached_start_date = Hyrax.config.analytics_start_date
-    Hyrax.config.analytics_start_date = Date.new(2019, 5, 1)
+    Hyrax.config.analytics_start_date = '2019-5-1'
     example.run
     Hyrax.config.analytics_start_date = cached_start_date
   end
@@ -70,7 +70,8 @@ RSpec.describe Hyrax::StatsController do
 
   describe 'file' do
     it 'raises a routing error' do
-      expect { get :file, params: { id: '123' } }.to raise_error(ActionController::RoutingError, 'Not Found')
+      get :file, params: { id: '123' }
+      expect(response).to be_not_found
     end
   end
 end

@@ -13,7 +13,12 @@ Hyrax::StatsController.class_eval do
     end
     # [hyc-override] Retrieve download stats from local database
     threads << Thread.new do
-      @downloads = work_stats_as_results(@document.id)
+      begin
+        @downloads = work_stats_as_results(@document.id)
+      rescue StandardError => e
+        Rails.logger.error("Error retrieving download stats: #{e}")
+        Rails.logger.error(e.backtrace.join("\n"))
+      end
     end
     threads.each(&:join)
   end
@@ -21,7 +26,7 @@ Hyrax::StatsController.class_eval do
   def work_stats_as_results(work_id)
     # retrieve the download stats from the local database and turn it into a hash of date => nb_events
     Hyrax::Analytics::Results.new(
-          HycDownloadStat.with_work_id_and_date(work_id, Hyrax.config.analytics_start_date, Time.zone.today)
+          HycDownloadStat.with_work_id_and_date(work_id, Hyrax.config.analytics_start_date.to_date, Time.zone.today)
                         .group(:date)
                         .select('date, SUM(download_count) as download_count')
                         .map { |stat| [stat.date, stat.download_count] })
