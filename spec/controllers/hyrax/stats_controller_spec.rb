@@ -68,4 +68,9 @@ RSpec.describe Hyrax::StatsController do
     end
   end
 
+  describe 'file' do
+    it 'raises a routing error' do
+      expect { get :file, params: { id: '123' } }.to raise_error(ActionController::RoutingError, 'Not Found')
+    end
+  end
 end

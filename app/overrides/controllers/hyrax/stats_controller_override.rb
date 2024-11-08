@@ -26,4 +26,9 @@ Hyrax::StatsController.class_eval do
                         .select('date, SUM(download_count) as download_count')
                         .map { |stat| [stat.date, stat.download_count] })
   end
+
+  def file
+    # [hyc-override] file stats are not supported
+    raise ActionController::RoutingError, 'Not Found'
+  end
 end
