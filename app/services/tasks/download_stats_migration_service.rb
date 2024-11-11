@@ -76,7 +76,7 @@ module Tasks
         Rails.logger.info("Processing file with start date: #{range_start_date}")
         # Read each CSV file and aggregate data
         CSV.foreach(file_path, headers: true).with_index do |row, index|
-          next if index < 5  # Skip the first 5 rows
+          next if index < 4  # Skip the first 5 rows
           # Fetch values based on the column names 'Custom parameter' and 'Event count'
           fileset_id = row[0]
           download_count = row[1].to_i
