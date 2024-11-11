@@ -27,6 +27,7 @@ module Tasks
           write_to_csv(output_path, aggregated_work_stats)
         when DownloadMigrationSource::GA4
           aggregated_work_stats = fetch_ga4_stats(ga_stats_dir)
+          write_to_csv(output_path, aggregated_work_stats)
         else
           raise ArgumentError, "Unsupported source: #{source}"
         end
@@ -88,6 +89,7 @@ module Tasks
         Rails.logger.info("Processed #{unique_row_count} daily stats. Aggregated data contains #{aggregated_data.values.count} entries.")
       end
       Rails.logger.info("Aggregated #{aggregated_data.values.count} monthly stats from #{total_unique_row_count} daily stats")
+      aggregated_data.values
     end
 
     # Method to fetch and aggregate work stats from Matomo
