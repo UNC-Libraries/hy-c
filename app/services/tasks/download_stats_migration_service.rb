@@ -66,31 +66,28 @@ module Tasks
 
     def fetch_ga4_stats(ga_stats_dir)
       aggregated_data = {}
-      retrieved_stat_total = 0
+      total_unique_row_count = 0
       Rails.logger.info("Fetching GA4 work stats from specified path #{ga_stats_dir}.")
 
       # Iterate through each CSV file in the specified directory
       Dir.glob(File.join(ga_stats_dir, '*.csv')).each do |file_path|
-        start_date = retrieve_start_date_from_csv(file_path)
-        Rails.logger.info("Processing file: #{file_path} with start date: #{start_date}")
-        
-        # # Read each CSV file and aggregate data
-        # CSV.foreach(file_path, headers: true) do |row|
-        #   # Fetch values based on the column names 'Custom parameter' and 'Event count'
-        #   id = row['Custom parameter']
-        #   event_count = row['Event count'].to_i  # Convert to integer for numeric calculations
-
-        #   # Aggregate data for each 'Custom parameter'
-        #   if aggregated_data.key?(id)
-        #     aggregated_data[id] += event_count
-        #   else
-        #     aggregated_data[id] = event_count
-        #   end
-
-        #   # Increment total count of events retrieved
-        #   retrieved_stat_total += event_count
-        # end
+        range_start_date = retrieve_start_date_from_csv(file_path)
+        unique_row_count = 0
+        Rails.logger.info("Processing file with start date: #{range_start_date}")
+        # Read each CSV file and aggregate data
+        CSV.foreach(file_path, headers: true).with_index do |row, index|
+          next if index < 5  # Skip the first 5 rows
+          # Fetch values based on the column names 'Custom parameter' and 'Event count'
+          fileset_id = row[0]
+          download_count = row[1].to_i
+          # Range start date is always the first of the month, no need for truncation
+          update_aggregate_stats(aggregated_data, range_start_date, fileset_id, download_count)
+          unique_row_count += 1
+        end
+        total_unique_row_count += unique_row_count
+        Rails.logger.info("Processed #{unique_row_count} daily stats. Aggregated data contains #{aggregated_data.values.count} entries.")
       end
+      Rails.logger.info("Aggregated #{aggregated_data.values.count} monthly stats from #{total_unique_row_count} daily stats")
     end
 
     # Method to fetch and aggregate work stats from Matomo
@@ -185,10 +182,10 @@ module Tasks
 
         # Read and process the second line
         second_line = file.readline.strip
-        if second_line.start_with?("# Start date:")
+        if second_line.start_with?('# Start date:')
           date_str = second_line.split(':').last.strip
           begin
-            start_date = DateTime.strptime(date_str, "%Y%m%d")
+            start_date = DateTime.strptime(date_str, '%Y%m%d')
             return start_date
           rescue ArgumentError
             Rails.logger.error("Invalid date format '#{date_str}' in file #{file_path}")
@@ -196,7 +193,7 @@ module Tasks
           end
         else
           Rails.logger.error("Error reading start date from #{file_path}. Second line does not contain a start date.")
-          Rails.logger.error("Found second line: #{second_line}") 
+          Rails.logger.error("Found second line: #{second_line}")
           return nil
         end
       end
