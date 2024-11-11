@@ -5,7 +5,7 @@ require 'optparse/date'
 
 namespace :migrate_download_stats do
   desc 'output rows for download stat migration into a csv'
-  task :list_rows, [:output_path, :after, :before, :source, :ga_stats_path] => :environment do |_t, _args|
+  task :list_rows, [:output_path, :after, :before, :source, :ga_stats_dir] => :environment do |_t, _args|
     start_time = Time.now
     puts "[#{start_time.utc.iso8601}] starting listing of work data"
     options = {}
@@ -16,7 +16,7 @@ namespace :migrate_download_stats do
     opts.on('-a', '--after ARG', String, 'List objects which have been updated after this timestamp') { |val| options[:after] = val }
     opts.on('-b', '--before ARG', String, 'List objects updated before this timestamp, only meant for matomo and ga4 migrations') { |val| options[:before] = val }
     opts.on('-s', '--source ARG', String, 'Data source (matomo, ga4, cache)') { |val| options[:source] = val.to_sym }
-    opts.on('-ga', '--ga4-stats-dir ARG', String, 'Path to directory containing ga4 stats') { |val| options[:ga_stats_path] = val }
+    opts.on('-g', '--ga4-stats-dir ARG', String, 'Path to directory containing ga4 stats') { |val| options[:ga_stats_dir] = val }
     args = opts.order!(ARGV) {}
     opts.parse!(args)
 
@@ -36,14 +36,14 @@ namespace :migrate_download_stats do
       exit 1
     end
 
-    if options[:source] == Tasks::DownloadStatsMigrationService::DownloadMigrationSource::GA4 && !options[:ga_stats_path].present?
+    if options[:source] == Tasks::DownloadStatsMigrationService::DownloadMigrationSource::GA4 && !options[:ga_stats_dir].present?
       puts 'Please provide a path to the directory containing GA4 stats (use -ga option)'
       exit 1
     end
 
 
     migration_service = Tasks::DownloadStatsMigrationService.new
-    old_stats_csv = migration_service.list_work_stat_info(options[:output_path], options[:source], options[:after],  options[:before], options[:ga_stats_path])
+    old_stats_csv = migration_service.list_work_stat_info(options[:output_path], options[:source], options[:after],  options[:before], options[:ga_stats_dir])
     puts "Listing completed in #{Time.now - start_time}s"
     puts "Stored id list to file: #{options[:output_path]}"
     exit 0

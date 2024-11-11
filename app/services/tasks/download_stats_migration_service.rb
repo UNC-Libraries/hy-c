@@ -15,7 +15,7 @@ module Tasks
         all_sources.include?(source)
       end
     end
-    def list_work_stat_info(output_path, source, after_timestamp = nil, before_timestamp = nil, ga_stats_path = nil)
+    def list_work_stat_info(output_path, source, after_timestamp = nil, before_timestamp = nil, ga_stats_dir = nil)
       aggregated_work_stats = []
       begin
         case source
@@ -26,7 +26,7 @@ module Tasks
           aggregated_work_stats = fetch_matomo_stats(after_timestamp, before_timestamp)
           write_to_csv(output_path, aggregated_work_stats)
         when DownloadMigrationSource::GA4
-          aggregated_work_stats = fetch_ga4_stats(ga_stats_path)
+          aggregated_work_stats = fetch_ga4_stats(ga_stats_dir)
         else
           raise ArgumentError, "Unsupported source: #{source}"
         end
@@ -64,9 +64,33 @@ module Tasks
 
     private
 
-    def fetch_ga4_stats(ga_stats_path)
+    def fetch_ga4_stats(ga_stats_dir)
       aggregated_data = {}
       retrieved_stat_total = 0
+      Rails.logger.info("Fetching GA4 work stats from specified path #{ga_stats_dir}.")
+
+      # Iterate through each CSV file in the specified directory
+      Dir.glob(File.join(ga_stats_dir, '*.csv')).each do |file_path|
+        start_date = retrieve_start_date_from_csv(file_path)
+        Rails.logger.info("Processing file: #{file_path} with start date: #{start_date}")
+        
+        # # Read each CSV file and aggregate data
+        # CSV.foreach(file_path, headers: true) do |row|
+        #   # Fetch values based on the column names 'Custom parameter' and 'Event count'
+        #   id = row['Custom parameter']
+        #   event_count = row['Event count'].to_i  # Convert to integer for numeric calculations
+
+        #   # Aggregate data for each 'Custom parameter'
+        #   if aggregated_data.key?(id)
+        #     aggregated_data[id] += event_count
+        #   else
+        #     aggregated_data[id] = event_count
+        #   end
+
+        #   # Increment total count of events retrieved
+        #   retrieved_stat_total += event_count
+        # end
+      end
     end
 
     # Method to fetch and aggregate work stats from Matomo
@@ -150,6 +174,32 @@ module Tasks
       Rails.logger.info("Aggregated #{aggregated_data.values.count} monthly stats from #{total_work_stats} daily stats")
       # Return the aggregated data
       aggregated_data.values
+    end
+
+    # Assuming the second line of the CSV file contains the start date, process it and return the date
+    # Example: # Start date: 20220101
+    def retrieve_start_date_from_csv(file_path)
+      File.open(file_path) do |file|
+        # Skip the first line
+        file.readline
+
+        # Read and process the second line
+        second_line = file.readline.strip
+        if second_line.start_with?("# Start date:")
+          date_str = second_line.split(':').last.strip
+          begin
+            start_date = DateTime.strptime(date_str, "%Y%m%d")
+            return start_date
+          rescue ArgumentError
+            Rails.logger.error("Invalid date format '#{date_str}' in file #{file_path}")
+            return nil
+          end
+        else
+          Rails.logger.error("Error reading start date from #{file_path}. Second line does not contain a start date.")
+          Rails.logger.error("Found second line: #{second_line}") 
+          return nil
+        end
+      end
     end
 
     # Log progress at 25%, 50%, 75%, and 100%
