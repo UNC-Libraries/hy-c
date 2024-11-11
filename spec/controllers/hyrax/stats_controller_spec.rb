@@ -12,17 +12,14 @@ RSpec.describe Hyrax::StatsController do
     allow_any_instance_of(User).to receive(:groups).and_return([])
   end
 
-  around do |example|
-    cached_start_date = Hyrax.config.analytics_start_date
-    Hyrax.config.analytics_start_date = '2019-5-1'
-    example.run
-    Hyrax.config.analytics_start_date = cached_start_date
-  end
-
   routes { Hyrax::Engine.routes }
 
   describe 'work' do
     let(:work) { FactoryBot.create(:work_with_files, user: user) }
+
+    before do
+      allow(Time.zone).to receive(:today).and_return(Date.new(2019, 10, 20))
+    end
 
     it 'renders the stats view' do
       dates = [Date.new(2019, 6, 1), Date.new(2019, 7, 1), Date.new(2019, 8, 1)]
@@ -57,7 +54,20 @@ RSpec.describe Hyrax::StatsController do
       downloads = subject.instance_variable_get('@downloads')
 
       expect(pageviews.results).to eq(expected_page_views)
-      expect(downloads.results).to eq(expected_downloads)
+      expect(downloads.results.count).to eq 12
+      expected_downloads.each do |pair|
+        expect(downloads.results).to include(pair)
+      end
+      # Expect blank entries for missing months
+      expect(downloads.results).to include([Date.new(2018, 11, 1), 0])
+      expect(downloads.results).to include([Date.new(2018, 12, 1), 0])
+      expect(downloads.results).to include([Date.new(2019, 1, 1), 0])
+      expect(downloads.results).to include([Date.new(2019, 2, 1), 0])
+      expect(downloads.results).to include([Date.new(2019, 3, 1), 0])
+      expect(downloads.results).to include([Date.new(2019, 4, 1), 0])
+      expect(downloads.results).to include([Date.new(2019, 5, 1), 0])
+      expect(downloads.results).to include([Date.new(2019, 9, 1), 0])
+      expect(downloads.results).to include([Date.new(2019, 10, 1), 0])
     end
   end
 
