@@ -15,16 +15,18 @@ module Tasks
         all_sources.include?(source)
       end
     end
-    def list_work_stat_info(output_path, after_timestamp = nil, before_timestamp = nil, source)
+    def list_work_stat_info(output_path, source, after_timestamp = nil, before_timestamp = nil, ga_stats_path = nil)
       aggregated_work_stats = []
       begin
         case source
         when DownloadMigrationSource::CACHE
-          aggregated_work_stats = fetch_local_cache_stats(after_timestamp, output_path)
+          aggregated_work_stats = fetch_local_cache_stats(after_timestamp)
           write_to_csv(output_path, aggregated_work_stats)
         when DownloadMigrationSource::MATOMO
-          aggregated_work_stats = fetch_matomo_stats(after_timestamp, before_timestamp, output_path)
+          aggregated_work_stats = fetch_matomo_stats(after_timestamp, before_timestamp)
           write_to_csv(output_path, aggregated_work_stats)
+        when DownloadMigrationSource::GA4
+          aggregated_work_stats = fetch_ga4_stats(ga_stats_path)
         else
           raise ArgumentError, "Unsupported source: #{source}"
         end
@@ -62,8 +64,13 @@ module Tasks
 
     private
 
+    def fetch_ga4_stats(ga_stats_path)
+      aggregated_data = {}
+      retrieved_stat_total = 0
+    end
+
     # Method to fetch and aggregate work stats from Matomo
-    def fetch_matomo_stats(after_timestamp, before_timestamp, output_path)
+    def fetch_matomo_stats(after_timestamp, before_timestamp)
       aggregated_data = {}
       # Keeps count of stats retrieved from Matomo from all queries
       all_query_stat_total = 0
@@ -122,7 +129,7 @@ module Tasks
     end
 
     # Method to fetch and aggregate work stats from the local cache
-    def fetch_local_cache_stats(after_timestamp, output_path)
+    def fetch_local_cache_stats(after_timestamp)
       aggregated_data = {}
       work_stats_retrieved_from_query_count = 0
       query = FileDownloadStat.all
