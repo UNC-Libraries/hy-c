@@ -83,7 +83,7 @@ RSpec.describe Tasks::DownloadStatsMigrationService, type: :service do
           it 'handles and logs errors' do
             allow(Rails.logger).to receive(:error)
             allow(FileDownloadStat).to receive(:all).and_raise(StandardError, 'Simulated database query failure')
-            service.list_work_stat_info(output_path, Tasks::DownloadStatsMigrationService::DownloadMigrationSource::CACHE, nil, nil, nil)
+            service.list_work_stat_info(output_path, Tasks::DownloadStatsMigrationService::DownloadMigrationSource::CACHE)
             expect(Rails.logger).to have_received(:error).with('An error occurred while listing work stats: Simulated database query failure')
           end
         end
@@ -108,7 +108,7 @@ RSpec.describe Tasks::DownloadStatsMigrationService, type: :service do
       end
 
       it 'filters works by the given after_timestamp' do
-        service.list_work_stat_info(output_path, Tasks::DownloadStatsMigrationService::DownloadMigrationSource::CACHE, '2023-04-06 00:00:00 UTC', nil)
+        service.list_work_stat_info(output_path, Tasks::DownloadStatsMigrationService::DownloadMigrationSource::CACHE, after_timestamp: '2023-04-06 00:00:00 UTC')
         expect(File).to exist(output_path)
         expect(csv_to_hash_array(output_path).map { |work| work[:file_id] }).to match_array(recent_stat_file_ids)
         expect(csv_to_hash_array(output_path).map { |work| work[:file_id] }).not_to include(*old_stat_file_ids)
@@ -118,7 +118,7 @@ RSpec.describe Tasks::DownloadStatsMigrationService, type: :service do
     context 'with an unsupported source' do
       it 'handles and logs an error' do
         allow(Rails.logger).to receive(:error)
-        service.list_work_stat_info(output_path, :unsupported_source, nil, nil)
+        service.list_work_stat_info(output_path, :unsupported_source)
         expect(Rails.logger).to have_received(:error).with('An error occurred while listing work stats: Unsupported source: unsupported_source')
       end
     end
@@ -198,7 +198,7 @@ RSpec.describe Tasks::DownloadStatsMigrationService, type: :service do
     context 'if a failure occurs during a private function' do
       before do
         test_setup_for(Tasks::DownloadStatsMigrationService::DownloadMigrationSource::CACHE)
-        service.list_work_stat_info(output_path,  Tasks::DownloadStatsMigrationService::DownloadMigrationSource::CACHE, nil, nil)
+        service.list_work_stat_info(output_path,  Tasks::DownloadStatsMigrationService::DownloadMigrationSource::CACHE)
       end
 
       it 'handles and logs errors from create_hyc_download_stat' do
@@ -322,11 +322,11 @@ RSpec.describe Tasks::DownloadStatsMigrationService, type: :service do
   def list_work_stat_info_for(source)
     case source
     when Tasks::DownloadStatsMigrationService::DownloadMigrationSource::CACHE
-      service.list_work_stat_info(output_path, Tasks::DownloadStatsMigrationService::DownloadMigrationSource::CACHE , nil, nil)
+      service.list_work_stat_info(output_path, Tasks::DownloadStatsMigrationService::DownloadMigrationSource::CACHE)
     when Tasks::DownloadStatsMigrationService::DownloadMigrationSource::MATOMO
-      service.list_work_stat_info(output_path, Tasks::DownloadStatsMigrationService::DownloadMigrationSource::MATOMO, '2024-01-01', '2024-03-01')
+      service.list_work_stat_info(output_path, Tasks::DownloadStatsMigrationService::DownloadMigrationSource::MATOMO, after_timestamp: '2024-01-01', before_timestamp: '2024-03-01')
     when Tasks::DownloadStatsMigrationService::DownloadMigrationSource::GA4
-      service.list_work_stat_info(output_path, Tasks::DownloadStatsMigrationService::DownloadMigrationSource::GA4, nil, nil, File.join(Rails.root, '/spec/fixtures/csv/ga4_stats'))
+      service.list_work_stat_info(output_path, Tasks::DownloadStatsMigrationService::DownloadMigrationSource::GA4, ga_stats_dir: File.join(Rails.root, '/spec/fixtures/csv/ga4_stats'))
     end
   end
 end

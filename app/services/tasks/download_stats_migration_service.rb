@@ -15,8 +15,13 @@ module Tasks
         all_sources.include?(source)
       end
     end
-    def list_work_stat_info(output_path, source, after_timestamp = nil, before_timestamp = nil, ga_stats_dir = nil)
+    def list_work_stat_info(output_path, source, options = {})
       aggregated_work_stats = []
+
+      after_timestamp = options[:after_timestamp]
+      before_timestamp = options[:before_timestamp]
+      ga_stats_dir = options[:ga_stats_dir]
+
       begin
         case source
         when DownloadMigrationSource::CACHE
