@@ -77,7 +77,7 @@ module Tasks
         Rails.logger.info("Processing file with start date: #{range_start_date}")
         # Read each CSV file and aggregate data
         CSV.foreach(file_path, headers: true).with_index do |row, index|
-          next if index < 4  # Skip the first 5 rows
+          next if index < 3  # Skip the first 3 rows
           # Fetch values based on the column names 'Custom parameter' and 'Event count'
           fileset_id = row[0]
           download_count = row[1].to_i
@@ -188,7 +188,7 @@ module Tasks
           date_str = second_line.split(':').last.strip
           begin
             start_date = DateTime.strptime(date_str, '%Y%m%d')
-            return start_date
+            return start_date.strftime('%Y-%m-%d')  # Format to 'YYYY-MM-DD'
           rescue ArgumentError
             Rails.logger.error("Invalid date format '#{date_str}' in file #{file_path}")
             return nil

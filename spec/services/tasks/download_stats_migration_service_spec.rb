@@ -61,7 +61,8 @@ RSpec.describe Tasks::DownloadStatsMigrationService, type: :service do
   describe '#list_work_stat_info' do
     # Loop through each source to test the listing of work stats
     [Tasks::DownloadStatsMigrationService::DownloadMigrationSource::MATOMO,
-    Tasks::DownloadStatsMigrationService::DownloadMigrationSource::CACHE].each do |source|
+    Tasks::DownloadStatsMigrationService::DownloadMigrationSource::CACHE,
+    Tasks::DownloadStatsMigrationService::DownloadMigrationSource::GA4].each do |source|
       context "when the source is #{source}" do
         before do
           test_setup_for(source)
@@ -71,14 +72,20 @@ RSpec.describe Tasks::DownloadStatsMigrationService, type: :service do
           expected_stats = setup_expected_stats_for(source)
           list_work_stat_info_for(source)
           expect(File).to exist(output_path)
+          if source == Tasks::DownloadStatsMigrationService::DownloadMigrationSource::GA4
+            FileUtils.cp(output_path, Rails.root.join('tmp', 'download_migration_test_output_ga4.csv'))
+          end
           expect(csv_to_hash_array(output_path)).to match_array(expected_stats)
         end
 
-        it 'handles and logs errors' do
-          allow(Rails.logger).to receive(:error)
-          allow(FileDownloadStat).to receive(:all).and_raise(StandardError, 'Simulated database query failure')
-          service.list_work_stat_info(output_path, Tasks::DownloadStatsMigrationService::DownloadMigrationSource::CACHE, nil, nil, nil)
-          expect(Rails.logger).to have_received(:error).with('An error occurred while listing work stats: Simulated database query failure')
+        # Run this test only when the source is CACHE
+        if source == Tasks::DownloadStatsMigrationService::DownloadMigrationSource::CACHE
+          it 'handles and logs errors' do
+            allow(Rails.logger).to receive(:error)
+            allow(FileDownloadStat).to receive(:all).and_raise(StandardError, 'Simulated database query failure')
+            service.list_work_stat_info(output_path, Tasks::DownloadStatsMigrationService::DownloadMigrationSource::CACHE, nil, nil, nil)
+            expect(Rails.logger).to have_received(:error).with('An error occurred while listing work stats: Simulated database query failure')
+          end
         end
       end
     end
@@ -284,6 +291,18 @@ RSpec.describe Tasks::DownloadStatsMigrationService, type: :service do
               { file_id: 'file_id_6', date: '2024-03-01', downloads: '550' }
             ]
     when Tasks::DownloadStatsMigrationService::DownloadMigrationSource::GA4
+      expected_stats = [
+              { file_id: 'file_id_1', date: '2023-09-01', downloads: '506' },
+              { file_id: 'file_id_2', date: '2023-09-01', downloads: '457' },
+              # Using file_id_3 as a test case for aggregation of multiple months of data
+              { file_id: 'file_id_3', date: '2023-09-01', downloads: '2' },
+              { file_id: 'file_id_3', date: '2024-01-01', downloads: '5' },
+              { file_id: 'file_id_3', date: '2024-03-01', downloads: '8' },
+              { file_id: 'file_id_4', date: '2024-01-01', downloads: '503' },
+              { file_id: 'file_id_5', date: '2024-01-01', downloads: '262' },
+              { file_id: 'file_id_6', date: '2024-03-01', downloads: '1505' },
+              { file_id: 'file_id_7', date: '2024-03-01', downloads: '822' }
+            ]
     end
     expected_stats
   end
@@ -300,6 +319,7 @@ RSpec.describe Tasks::DownloadStatsMigrationService, type: :service do
     when Tasks::DownloadStatsMigrationService::DownloadMigrationSource::MATOMO
       service.list_work_stat_info(output_path, Tasks::DownloadStatsMigrationService::DownloadMigrationSource::MATOMO, '2024-01-01', '2024-03-01')
     when Tasks::DownloadStatsMigrationService::DownloadMigrationSource::GA4
+      service.list_work_stat_info(output_path, Tasks::DownloadStatsMigrationService::DownloadMigrationSource::GA4, nil, nil, File.join(Rails.root, '/spec/fixtures/csv/ga4_stats'))
     end
   end
 end
