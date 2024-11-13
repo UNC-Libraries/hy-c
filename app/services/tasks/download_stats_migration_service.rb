@@ -200,7 +200,6 @@ module Tasks
           end
         else
           raise ArgumentError, "Error reading start date from #{file_path}. '#{second_line}' does not adhere to the expected format."
-          return nil
         end
       end
     end
