@@ -15,15 +15,23 @@ module Tasks
         all_sources.include?(source)
       end
     end
-    def list_work_stat_info(output_path, after_timestamp = nil, before_timestamp = nil, source)
+    def list_work_stat_info(output_path, source, options = {})
       aggregated_work_stats = []
+
+      after_timestamp = options[:after_timestamp]
+      before_timestamp = options[:before_timestamp]
+      ga_stats_dir = options[:ga_stats_dir]
+
       begin
         case source
         when DownloadMigrationSource::CACHE
-          aggregated_work_stats = fetch_local_cache_stats(after_timestamp, output_path)
+          aggregated_work_stats = fetch_local_cache_stats(after_timestamp)
           write_to_csv(output_path, aggregated_work_stats)
         when DownloadMigrationSource::MATOMO
-          aggregated_work_stats = fetch_matomo_stats(after_timestamp, before_timestamp, output_path)
+          aggregated_work_stats = fetch_matomo_stats(after_timestamp, before_timestamp)
+          write_to_csv(output_path, aggregated_work_stats)
+        when DownloadMigrationSource::GA4
+          aggregated_work_stats = fetch_ga4_stats(ga_stats_dir)
           write_to_csv(output_path, aggregated_work_stats)
         else
           raise ArgumentError, "Unsupported source: #{source}"
@@ -62,8 +70,36 @@ module Tasks
 
     private
 
+    def fetch_ga4_stats(ga_stats_dir)
+      aggregated_data = {}
+      total_unique_row_count = 0
+      Rails.logger.info("Fetching GA4 work stats from specified path #{ga_stats_dir}.")
+
+      # Iterate through each CSV file in the specified directory
+      Dir.glob(File.join(ga_stats_dir, '*.csv')).each do |file_path|
+        range_start_date = retrieve_start_date_from_csv(file_path)
+        unique_row_count = 0
+        Rails.logger.info("Processing file with start date: #{range_start_date}")
+        # Read each CSV file and aggregate data
+        CSV.foreach(file_path, headers: true).with_index do |row, index|
+          # Skip the first 3 rows containing metadata and column names
+          next if index < 3
+          # Fetch values based on the column names 'Custom parameter' and 'Event count'
+          fileset_id = row[0]
+          download_count = row[1].to_i
+          # Range start date is always the first of the month, no need for truncation
+          update_aggregate_stats(aggregated_data, range_start_date, fileset_id, download_count)
+          unique_row_count += 1
+        end
+        total_unique_row_count += unique_row_count
+        Rails.logger.info("Processed #{unique_row_count} daily stats. Aggregated data contains #{aggregated_data.values.count} entries.")
+      end
+      Rails.logger.info("Aggregated #{aggregated_data.values.count} monthly stats from #{total_unique_row_count} daily stats")
+      aggregated_data.values
+    end
+
     # Method to fetch and aggregate work stats from Matomo
-    def fetch_matomo_stats(after_timestamp, before_timestamp, output_path)
+    def fetch_matomo_stats(after_timestamp, before_timestamp)
       aggregated_data = {}
       # Keeps count of stats retrieved from Matomo from all queries
       all_query_stat_total = 0
@@ -122,7 +158,7 @@ module Tasks
     end
 
     # Method to fetch and aggregate work stats from the local cache
-    def fetch_local_cache_stats(after_timestamp, output_path)
+    def fetch_local_cache_stats(after_timestamp)
       aggregated_data = {}
       work_stats_retrieved_from_query_count = 0
       query = FileDownloadStat.all
@@ -143,6 +179,29 @@ module Tasks
       Rails.logger.info("Aggregated #{aggregated_data.values.count} monthly stats from #{total_work_stats} daily stats")
       # Return the aggregated data
       aggregated_data.values
+    end
+
+    # Assuming the second line of the CSV file contains the start date, process it and return the date
+    # Example: # Start date: 20220101
+    def retrieve_start_date_from_csv(file_path)
+      File.open(file_path) do |file|
+        # Skip the first line
+        file.readline
+
+        # Read and process the second line
+        second_line = file.readline.strip
+        if second_line.start_with?('# Start date:')
+          date_str = second_line.split(':').last.strip
+          begin
+            start_date = DateTime.strptime(date_str, '%Y%m%d')
+            return start_date.strftime('%Y-%m-%d')  # Format to 'YYYY-MM-DD'
+          rescue ArgumentError
+            raise ArgumentError, "Invalid date format '#{date_str}' in file #{file_path}"
+          end
+        else
+          raise ArgumentError, "Error reading start date from #{file_path}. '#{second_line}' does not adhere to the expected format."
+        end
+      end
     end
 
     # Log progress at 25%, 50%, 75%, and 100%
