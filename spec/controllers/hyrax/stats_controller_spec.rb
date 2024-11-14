@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 require 'rails_helper'
+require 'hyrax/analytics'
 RSpec.describe Hyrax::StatsController do
   let(:user) { FactoryBot.create(:user) }
   let(:usage) { double }
@@ -10,10 +11,15 @@ RSpec.describe Hyrax::StatsController do
     request.env['HTTP_REFERER'] = 'http://test.host/foo'
     allow_any_instance_of(User).to receive(:groups).and_return([])
   end
+
   routes { Hyrax::Engine.routes }
 
   describe 'work' do
     let(:work) { FactoryBot.create(:work_with_files, user: user) }
+
+    before do
+      allow(Time.zone).to receive(:today).and_return(Date.new(2019, 10, 20))
+    end
 
     it 'renders the stats view' do
       dates = [Date.new(2019, 6, 1), Date.new(2019, 7, 1), Date.new(2019, 8, 1)]
@@ -33,10 +39,8 @@ RSpec.describe Hyrax::StatsController do
       end
       spec_fileset_ids = work.members.map(&:id)
 
-      spec_fileset_ids.each_with_index do |fileset_id, index|
-        expect(Hyrax::Analytics).to receive(:api_params).with('Events.getName', 'month', anything, { flat: 1,
-          label: "#{fileset_id} - DownloadIR"}).and_return(spec_downloads_hash)
-      end
+      generate_hyc_stats_for_range(work.id, spec_fileset_ids[0], spec_downloads)
+      generate_hyc_stats_for_range(work.id, spec_fileset_ids[1], spec_downloads)
 
       expect(Hyrax::Analytics).to receive(:api_params).with('Events.getName', 'month', anything, { flat: 1,
             label: "#{work.id} - work-view"}).and_return(spec_page_views_hash)
@@ -50,8 +54,34 @@ RSpec.describe Hyrax::StatsController do
       downloads = subject.instance_variable_get('@downloads')
 
       expect(pageviews.results).to eq(expected_page_views)
-      expect(downloads.results).to eq(expected_downloads)
+      expect(downloads.results.count).to eq 12
+      expected_downloads.each do |pair|
+        expect(downloads.results).to include(pair)
+      end
+      # Expect blank entries for missing months
+      expect(downloads.results).to include([Date.new(2018, 11, 1), 0])
+      expect(downloads.results).to include([Date.new(2018, 12, 1), 0])
+      expect(downloads.results).to include([Date.new(2019, 1, 1), 0])
+      expect(downloads.results).to include([Date.new(2019, 2, 1), 0])
+      expect(downloads.results).to include([Date.new(2019, 3, 1), 0])
+      expect(downloads.results).to include([Date.new(2019, 4, 1), 0])
+      expect(downloads.results).to include([Date.new(2019, 5, 1), 0])
+      expect(downloads.results).to include([Date.new(2019, 9, 1), 0])
+      expect(downloads.results).to include([Date.new(2019, 10, 1), 0])
     end
   end
 
+  def generate_hyc_stats_for_range(work_id, fileset_id, expected_downloads)
+    expected_downloads.each do |pair|
+      event_date = "#{pair[0]}-01"
+      FactoryBot.create(:hyc_download_stat, work_id: work_id, fileset_id: fileset_id, date: event_date, download_count: pair[1])
+    end
+  end
+
+  describe 'file' do
+    it 'raises a routing error' do
+      get :file, params: { id: '123' }
+      expect(response).to be_not_found
+    end
+  end
 end

@@ -1306,3 +1306,11 @@ Hide it entirely until the issue is resolved upstreeam
     display: block;
   }
 }
+
+.work-reports .nav-pills .nav-link {
+  color: #337ab7;
+}
+
+.work-reports .nav-pills .nav-link.active {
+  color: white;
+}
