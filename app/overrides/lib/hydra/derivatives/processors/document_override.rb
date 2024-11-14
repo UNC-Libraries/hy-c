@@ -1,6 +1,30 @@
 # frozen_string_literal: true
 # [hyc-override] https://github.com/samvera/hydra-derivatives/blob/v3.8.0/lib/hydra/derivatives/processors/document.rb
+class SofficeTimeoutError < Sidekiq::JobRetry::NoRetryError; end
+
 Hydra::Derivatives::Processors::Document.class_eval do
+  # [hyc-override] Trigger kill if soffice process takes too long, and throw a non-retry error if that happens
+  def self.encode(path, format, outdir, timeout = 30)
+    command = "#{Hydra::Derivatives.libreoffice_path} --invisible --headless --convert-to #{format} --outdir #{outdir} #{Shellwords.escape(path)}"
+    pid = nil
+    begin
+      Timeout.timeout(timeout) do
+        # Use Process.spawn to track the process and capture the pid
+        pid = Process.spawn(command)
+        Process.wait(pid) # Wait for the process to complete
+      end
+    rescue Timeout::Error
+      # If it times out, terminate the process
+      if pid
+        Process.kill('TERM', pid) # Attempt a graceful termination
+        sleep 5 # Give it a few seconds to exit
+        Process.kill('KILL', pid) if system("ps -p #{pid}") # Force kill if still running
+      end
+      # Raise a custom error to prevent Sidekiq from retrying
+      raise SofficeTimeoutError, "soffice process timed out after #{timeout} seconds"
+    end
+  end
+
   # TODO: soffice can only run one command at a time. Right now we manage this by only running one
   # background job at a time; however, if we want to up concurrency we'll need to deal with this
 
