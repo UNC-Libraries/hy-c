@@ -241,7 +241,6 @@ RSpec.describe Tasks::DownloadStatsMigrationService, type: :service do
         # Mock query responses for each file_set_id with the corresponding work
       file_download_stats.flatten.each_with_index do |stat, index|
         mock_work = mock_works[index]
-        allow(ActiveFedora::SolrService).to receive(:get).with("id:#{stat.file_id}", rows: 1).and_return('response' => { 'docs' => [mock_work['id']] })
 
         mock_work_with_admin_set = mock_work.dup
         mock_work_with_admin_set['admin_set_tesim'] = [admin_set_title]

@@ -1,9 +1,6 @@
 # frozen_string_literal: true
 module WorkUtilsHelper
   def self.fetch_work_data_by_fileset_id(fileset_id)
-    # Retrieve the fileset data
-    fileset_data = ActiveFedora::SolrService.get("id:#{fileset_id}", rows: 1)['response']['docs'].first || {}
-    Rails.logger.warn("No fileset data found for fileset id: #{fileset_id}") if fileset_data.blank?
     # Retrieve the work related to the fileset
     work_data = ActiveFedora::SolrService.get("file_set_ids_ssim:#{fileset_id}", rows: 1)['response']['docs'].first || {}
     Rails.logger.warn("No work found associated with fileset id: #{fileset_id}") if work_data.blank?
@@ -12,7 +9,7 @@ module WorkUtilsHelper
     admin_set_data = admin_set_name ? ActiveFedora::SolrService.get("title_tesim:#{admin_set_name}", { :rows => 1, 'df' => 'title_tesim'})['response']['docs'].first : {}
     Rails.logger.warn(self.generate_warning_message(admin_set_name, fileset_id)) if admin_set_data.blank?
     {
-      work_id: fileset_data['id'],
+      work_id: work_data['id'],
       work_type: work_data.dig('has_model_ssim', 0),
       title: work_data['title_tesim']&.first,
       admin_set_id: admin_set_data['id'],
