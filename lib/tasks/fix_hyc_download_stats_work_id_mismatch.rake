@@ -11,7 +11,7 @@ task fix_hyc_download_stats_work_id_mismatch: :environment do
 
     begin
       # Update the download stat with the work id
-        download_stat.update!(work_id: work_data[:work_id])
+        download_stat.update!(work_id: work_data[:work_id] || 'Unknown')
         updated += 1
     rescue StandardError => e
         # Log any errors encountered during the update
