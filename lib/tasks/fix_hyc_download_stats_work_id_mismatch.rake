@@ -19,5 +19,5 @@ task fix_hyc_download_stats_work_id_mismatch: :environment do
       end
   end
   puts 'Completed fixing hyc_download_stats work_id mismatches.'
-  puts 'Successfully updated #{updated} records out of #{download_stats.count} attempted.'
+  puts "Successfully updated #{updated} records out of #{download_stats.count} attempted."
 end
