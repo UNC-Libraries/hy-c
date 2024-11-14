@@ -46,6 +46,18 @@ Hyrax::Admin::Analytics::WorkReportsController.class_eval do
     end
   end
 
+  # [hyc-override] Switch to monthly stats and fix typo in file-set-in-work-download
+  def show
+    @pageviews = Hyrax::Analytics.monthly_events_for_id(@document.id, 'work-view')
+    @uniques = Hyrax::Analytics.unique_visitors_for_id(@document.id)
+    @downloads = Hyrax::Analytics.monthly_events_for_id(@document.id, 'file-set-in-work-download')
+    @files = paginate(@document._source['file_set_ids_ssim'], rows: 5)
+    respond_to do |format|
+      format.html
+      format.csv { export_data }
+    end
+  end
+
   private
   # [hyc-override] Builds a hash instead of an array for faster lookups
   def top_analytics_works
