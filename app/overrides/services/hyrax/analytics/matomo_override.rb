@@ -44,22 +44,20 @@ Hyrax::Analytics::Matomo.module_eval do
     def top_events(action, date = default_date_range)
       if action == 'file-set-in-work-download'
         start_date, end_date = split_date_range(date)
-        return hyc_stats_by_field_to_results(HycDownloadStat.within_date_range(start_date, end_date), :work_id)
+        return hyc_downloads_by_field_to_array(HycDownloadStat.within_date_range(start_date, end_date), :work_id)
       elsif action == 'file-set-download'
         start_date, end_date = split_date_range(date)
-        return hyc_downloads_by_field_to_results(HycDownloadStat.within_date_range(start_date, end_date), :fileset_id)
+        return hyc_downloads_by_field_to_array(HycDownloadStat.within_date_range(start_date, end_date), :fileset_id)
       end
 
-      original_top_events(action, date)
+      original_top_events(action, date = date)
     end
 
-    def hyc_downloads_by_field_to_results(download_query, field)
-      Hyrax::Analytics::Results.new(
-        download_query
-                    .group(field)
-                    .select("#{field}, SUM(download_count) as download_count")
-                    .map { |stat| [stat.send(field), stat.download_count] }
-      )
+    def hyc_downloads_by_field_to_array(download_query, field)
+      download_query
+                  .group(field)
+                  .select("#{field}, SUM(download_count) as download_count")
+                  .map { |stat| [stat.send(field), stat.download_count] }
     end
 
     def hyc_downloads_by_date_to_results(download_query, start_date, end_date)

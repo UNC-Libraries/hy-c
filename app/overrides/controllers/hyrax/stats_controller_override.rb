@@ -6,7 +6,6 @@ Hyrax::StatsController.class_eval do
   def work
     # [hyc-override] different parameters and switched to using monthly instead of daily events
     @document = ::SolrDocument.find(params[:id])
-    puts "initial: work_id=#{params[:id]}, start_date=#{start_date}, end_date=#{end_date}"
     # [hyc-override] Execute all of the stats requests in parallel
     threads = []
     threads << Thread.new do

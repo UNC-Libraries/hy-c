@@ -9,35 +9,35 @@ Hyrax::Admin::Analytics::WorkReportsController.class_eval do
     time = Benchmark.measure do
       @accessible_works ||= accessible_works
     end
-    Rails.logger.error("===accessible_works: #{time.real}")
+    Rails.logger.info("===accessible_works: #{time.real}")
     time = Benchmark.measure do
       @accessible_file_sets ||= accessible_file_sets
     end
-    Rails.logger.error("===accessible_file_sets: #{time.real}")
+    Rails.logger.info("===accessible_file_sets: #{time.real}")
     time = Benchmark.measure do
       @works_count = @accessible_works.count
     end
-    Rails.logger.error("===accessible_works.count: #{time.real}")
+    Rails.logger.info("===accessible_works.count: #{time.real}")
     time = Benchmark.measure do
       @top_works = paginate(top_works_list, rows: 10)
     end
-    Rails.logger.error("===top works: #{time.real}")
+    Rails.logger.info("===top works: #{time.real}")
     time = Benchmark.measure do
       @top_file_set_downloads = paginate(top_files_list, rows: 10)
     end
-    Rails.logger.error("===top download: #{time.real}")
+    Rails.logger.info("===top download: #{time.real}")
 
     if current_user.ability.admin?
       time = Benchmark.measure do
         # [hyc-override] Use monthly stats instead of daily
         @pageviews = Hyrax::Analytics.monthly_events('work-view')
       end
-      Rails.logger.error("===Total work page views: #{time.real}")
+      Rails.logger.info("===Total work page views: #{time.real}")
       time = Benchmark.measure do
         # [hyc-override] Use monthly stats instead of daily
         @downloads = Hyrax::Analytics.monthly_events('file-set-download')
       end
-      Rails.logger.error("===Total downloads: #{time.real}")
+      Rails.logger.info("===Total downloads: #{time.real}")
     end
 
     respond_to do |format|
@@ -47,53 +47,60 @@ Hyrax::Admin::Analytics::WorkReportsController.class_eval do
   end
 
   private
+  # [hyc-override] Builds a hash instead of an array for faster lookups
   def top_analytics_works
     time = Benchmark.measure do
-      @top_analytics_works ||= Hyrax::Analytics.top_events('work-view', date_range)
+      @top_analytics_works_hash ||= convert_top_events_to_hash(Hyrax::Analytics.top_events('work-view', date_range))
     end
-    Rails.logger.error("===top_analytics_works: #{time.real}")
-    @top_analytics_works
+    Rails.logger.info("===top_analytics_works: #{time.real}")
+    @top_analytics_works_hash
   end
 
+  # [hyc-override] Builds a hash instead of an array for faster lookups
   def top_analytics_downloads
     time = Benchmark.measure do
-      @top_analytics_downloads ||= Hyrax::Analytics.top_events('file-set-in-work-download', date_range)
+      @top_analytics_downloads_hash ||= convert_top_events_to_hash(Hyrax::Analytics.top_events('file-set-in-work-download', date_range))
     end
-    Rails.logger.error("===top_analytics_downloads: #{time.real}")
-    @top_analytics_downloads
+    Rails.logger.info("===top_analytics_downloads: #{time.real}")
+    @top_analytics_downloads_hash
   end
 
+  # [hyc-override] Builds a hash instead of an array for faster lookups
   def top_analytics_file_sets
     time = Benchmark.measure do
-      @top_analytics_file_sets ||= Hyrax::Analytics.top_events('file-set-download', date_range)
+      @top_analytics_file_sets_hash ||= convert_top_events_to_hash(Hyrax::Analytics.top_events('file-set-download', date_range))
     end
-    Rails.logger.error("===top_analytics_file_sets: #{time.real}")
-    @top_analytics_file_sets
+    Rails.logger.info("===top_analytics_file_sets: #{time.real}")
+    @top_analytics_file_sets_hash
   end
 
-  # [hyc-override] no changes yet
+  def convert_top_events_to_hash(top_events)
+    top_events.each_with_object(Hash.new(0)) do |(id, count), hash|
+      hash[id] += count
+    end
+  end
+
+  # [hyc-override] Refactored to use hashes for faster lookups
   def top_works_list
     list = []
     top_analytics_works
     top_analytics_downloads
     @accessible_works.each do |doc|
-      views_match = @top_analytics_works.detect { |id, _count| id == doc['id'] }
-      @view_count = views_match ? views_match[1] : 0
-      downloads_match = @top_analytics_downloads.detect { |id, _count| id == doc['id'] }
-      @download_count = downloads_match ? downloads_match[1] : 0
-      list.push([doc['id'], doc['title_tesim'].join(''), @view_count, @download_count, doc['member_of_collections']])
+      id = doc['id']
+      views_match = @top_analytics_works_hash[id]
+      downloads_match = @top_analytics_downloads_hash[id]
+      list.push([doc['id'], doc['title_tesim'].join(''), views_match, downloads_match, doc['member_of_collections']])
     end
     list.sort_by { |l| -l[2] }
   end
 
-  # [hyc-override] no changes yet
+  # [hyc-override] Refactored to use hashes for faster lookups
   def top_files_list
     list = []
     top_analytics_file_sets
     @accessible_file_sets.each do |doc|
-      downloads_match = @top_analytics_file_sets.detect { |id, _count| id == doc['id'] }
-      @download_count = downloads_match ? downloads_match[1] : 0
-      list.push([doc['id'], doc['title_tesim'].join(''), @download_count]) if doc['title_tesim'].present?
+      downloads_match = @top_analytics_file_sets_hash[doc['id']]
+      list.push([doc['id'], doc['title_tesim'].join(''), downloads_match]) if doc['title_tesim'].present?
     end
     list.sort_by { |l| -l[2] }
   end
