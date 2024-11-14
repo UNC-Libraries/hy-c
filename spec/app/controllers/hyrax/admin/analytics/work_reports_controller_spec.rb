@@ -4,23 +4,24 @@ require 'hyrax/analytics'
 
 RSpec.describe Hyrax::Admin::Analytics::WorkReportsController, type: :controller do
   routes { Hyrax::Engine.routes }
-  describe 'GET #index' do
-    around do |example|
-      ActiveFedora::Cleaner.clean!
-      Blacklight.default_index.connection.delete_by_query('*:*')
-      Blacklight.default_index.connection.commit
-      original_analytics = Hyrax.config.analytics?
-      original_provider = Hyrax.config.analytics_provider
-      original_start_date = Hyrax.config.analytics_start_date
-      Hyrax.config.analytics_start_date = '2018-01-01'
-      Hyrax.config.analytics = true
-      Hyrax.config.analytics_provider = 'matomo'
-      example.run
-      Hyrax.config.analytics = original_analytics
-      Hyrax.config.analytics_provider = original_provider
-      Hyrax.config.analytics_start_date = original_start_date
-    end
 
+  around do |example|
+    ActiveFedora::Cleaner.clean!
+    Blacklight.default_index.connection.delete_by_query('*:*')
+    Blacklight.default_index.connection.commit
+    original_analytics = Hyrax.config.analytics?
+    original_provider = Hyrax.config.analytics_provider
+    original_start_date = Hyrax.config.analytics_start_date
+    Hyrax.config.analytics_start_date = '2018-01-01'
+    Hyrax.config.analytics = true
+    Hyrax.config.analytics_provider = 'matomo'
+    example.run
+    Hyrax.config.analytics = original_analytics
+    Hyrax.config.analytics_provider = original_provider
+    Hyrax.config.analytics_start_date = original_start_date
+  end
+
+  describe 'GET #index' do
     context 'when user is not logged in' do
       it 'redirects to the login page' do
         get :index
@@ -94,6 +95,46 @@ RSpec.describe Hyrax::Admin::Analytics::WorkReportsController, type: :controller
         top_works = subject.instance_variable_get('@top_works')
         expect(top_works.count).to eq(1)
       end
+    end
+  end
+
+  describe 'GET #show' do
+    let(:admin_user) { FactoryBot.create(:admin) }
+    let(:work) { FactoryBot.create(:work_with_files, user: admin_user) }
+
+    before do
+      sign_in admin_user
+      allow(Time.zone).to receive(:today).and_return(Date.new(2019, 10, 20))
+    end
+
+    it 'returns a success response' do
+      dates = [Date.new(2019, 6, 1), Date.new(2019, 7, 1), Date.new(2019, 8, 1)]
+      formatted_dates = dates.map { |time| time.strftime('%Y-%m') }
+      spec_page_views = formatted_dates.map { |date| [date, rand(11)] }
+      expected_page_views = dates.each_with_index.map { |date, i| [date, spec_page_views[i][1]] }
+      spec_page_views_hash = Hash.new
+      spec_page_views.each_with_object(spec_page_views_hash) do |pair, hash|
+        hash[pair[0]] = [{'nb_events' => pair[1]}]
+      end
+
+      expect(Hyrax::Analytics).to receive(:api_params).with('Events.getName', 'month', anything, { flat: 1,
+          label: "#{work.id} - work-view"}).and_return(spec_page_views_hash)
+
+      spec_downloads = formatted_dates.map { |date| [date, rand(11)] }
+      # Expected downloads need to be doubled since there are two filesets with the same stats
+      expected_downloads = dates.each_with_index.map { |date, i| [date, spec_downloads[i][1] * 2] }
+      spec_fileset_ids = work.members.map(&:id)
+
+      generate_hyc_stats_for_range(work.id, spec_fileset_ids[0], spec_downloads)
+      generate_hyc_stats_for_range(work.id, spec_fileset_ids[1], spec_downloads)
+
+      get :show, params: { id: work.id }
+      expect(response).to be_successful
+
+      pageviews = subject.instance_variable_get('@pageviews')
+      expect(pageviews.results).to include(expected_page_views[0], expected_page_views[1], expected_page_views[2])
+      downloads = subject.instance_variable_get('@downloads')
+      expect(downloads.results).to include(expected_downloads[0], expected_downloads[1], expected_downloads[2])
     end
   end
 
