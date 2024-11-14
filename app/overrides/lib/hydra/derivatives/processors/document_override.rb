@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 # [hyc-override] https://github.com/samvera/hydra-derivatives/blob/v3.8.0/lib/hydra/derivatives/processors/document.rb
-class SofficeTimeoutError < Sidekiq::JobRetry::NoRetryError; end
+class SofficeTimeoutError; end
 
 Hydra::Derivatives::Processors::Document.class_eval do
   # [hyc-override] Trigger kill if soffice process takes too long, and throw a non-retry error if that happens
