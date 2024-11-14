@@ -4,6 +4,8 @@ task fix_hyc_download_stats_work_id_mismatch: :environment do
   puts 'Starting to fix hyc_download_stats work_id mismatches...'
     # Retrieve where work_id is equal to fileset_id
   download_stats = HycDownloadStat.where('work_id = fileset_id')
+  initial_count = download_stats.count
+
   updated = 0
   download_stats.each do |download_stat|
       # Retrieve the work data for the fileset id
@@ -19,5 +21,5 @@ task fix_hyc_download_stats_work_id_mismatch: :environment do
       end
   end
   puts 'Completed fixing hyc_download_stats work_id mismatches.'
-  puts "Successfully updated #{updated} records out of #{download_stats.count} attempted."
+  puts "Successfully updated #{updated} records out of #{initial_count} attempted."
 end
