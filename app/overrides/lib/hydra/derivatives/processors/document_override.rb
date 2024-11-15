@@ -6,9 +6,9 @@ class SofficeTimeoutError < StandardError; end
 
 Hydra::Derivatives::Processors::Document.class_eval do
   # [hyc-override] Use Redlock to manage soffice process lock
-  LOCK_KEY = "soffice:document_conversion"
+  LOCK_KEY = 'soffice:document_conversion'
   LOCK_TIMEOUT = 6 * 60 * 1000
-  JOB_TIMEOUT_SECONDS = 30
+  JOB_TIMEOUT_SECONDS = 300
   LOCK_MANAGER = Redlock::Client.new([Redis.current])
 
   # [hyc-override] Trigger kill if soffice process takes too long, and throw a non-retry error if that happens
@@ -32,9 +32,6 @@ Hydra::Derivatives::Processors::Document.class_eval do
       raise SofficeTimeoutError, "soffice process timed out after #{timeout} seconds"
     end
   end
-
-  # TODO: soffice can only run one command at a time. Right now we manage this by only running one
-  # background job at a time; however, if we want to up concurrency we'll need to deal with this
 
   # Converts the document to the format specified in the directives hash.
   # TODO: file_suffix and options are passed from ShellBasedProcessor.process but are not needed.

@@ -29,4 +29,57 @@ RSpec.describe Hydra::Derivatives::Processors::Document do
       end
     end
   end
+
+  describe '.encode' do
+    let(:path) { '/path/to/document.pptx' }
+    let(:format) { 'pdf' }
+    let(:outdir) { '/output/dir' }
+    let(:timeout) { 1 }
+
+    before do
+      # Mock the Hydra::Derivatives.libreoffice_path
+      allow(Hydra::Derivatives).to receive(:libreoffice_path).and_return('/fake/path/to/soffice')
+    end
+
+    context 'when the process completes successfully' do
+      it 'runs the command and completes without timeout' do
+        # Mock Process.spawn and Process.wait to simulate successful execution
+        pid = 991234
+        allow(Process).to receive(:spawn).and_return(pid)
+        allow(Process).to receive(:wait).with(pid)
+
+        expect do
+          described_class.encode(path, format, outdir, timeout)
+        end.not_to raise_error
+
+        # Verify that the process was spawned
+        expect(Process).to have_received(:spawn)
+        expect(Process).to have_received(:wait).with(pid)
+      end
+    end
+
+    context 'when the process times out' do
+      it 'kills the process after a timeout' do
+        pid = 991234
+
+        # Mock Process.spawn to return a fake PID
+        allow(Process).to receive(:spawn).and_return(pid)
+        # Simulate timeout by making Process.wait sleep beyond the timeout
+        allow(Process).to receive(:wait).with(pid) { sleep 5 }
+
+        # Mock Process.kill to simulate killing the process
+        allow(Process).to receive(:kill)
+        allow(Hydra::Derivatives::Processors::Document).to receive(:system).with("ps -p #{pid}").and_return(true)
+
+        expect do
+          described_class.encode(path, format, outdir, timeout)
+        end.to raise_error(SofficeTimeoutError, "soffice process timed out after #{timeout} seconds")
+
+        # Verify that the process was spawned
+        expect(Process).to have_received(:spawn)
+        expect(Process).to have_received(:kill).with('TERM', pid) # Attempted graceful termination
+        expect(Process).to have_received(:kill).with('KILL', pid) # Force kill if necessary
+      end
+    end
+  end
 end
