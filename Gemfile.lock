@@ -1130,6 +1130,7 @@ DEPENDENCIES
   rails (~> 6.0)
   rdf!
   redis (~> 4.5.0)
+  redlock
   riiif (~> 2.5.0)
   roo (~> 2.9.0)
   rsolr (~> 2.5.0)

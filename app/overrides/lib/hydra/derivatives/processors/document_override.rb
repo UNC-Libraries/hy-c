@@ -1,12 +1,15 @@
 # frozen_string_literal: true
 # [hyc-override] https://github.com/samvera/hydra-derivatives/blob/v3.8.0/lib/hydra/derivatives/processors/document.rb
+require 'redlock'
+
 class SofficeTimeoutError < StandardError; end
 
 Hydra::Derivatives::Processors::Document.class_eval do
+  # [hyc-override] Use Redlock to manage soffice process lock
   LOCK_KEY = "soffice:document_conversion"
   LOCK_TIMEOUT = 6 * 60 * 1000
   JOB_TIMEOUT_SECONDS = 30
-  LOCK_MANAGER = Redlock::Client.new([ENV['REDIS_URL']])
+  LOCK_MANAGER = Redlock::Client.new([Redis.current])
 
   # [hyc-override] Trigger kill if soffice process takes too long, and throw a non-retry error if that happens
   def self.encode(path, format, outdir, timeout = JOB_TIMEOUT_SECONDS)
@@ -37,6 +40,7 @@ Hydra::Derivatives::Processors::Document.class_eval do
   # TODO: file_suffix and options are passed from ShellBasedProcessor.process but are not needed.
   #       A refactor could simplify this.
   def encode_file(_file_suffix, _options = {})
+    # [hyc-override] Use Redlock to manage soffice process lock, since only one soffice process can run at a time
     LOCK_MANAGER.lock(LOCK_KEY, LOCK_TIMEOUT) do |locked|
       if locked
         convert_to_format
