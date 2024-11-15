@@ -2,13 +2,6 @@
 class CreateDerivativesJob < Hyrax::ApplicationJob
   queue_as :derivatives
 
-  sidekiq_retry_in do |count, exception, jobhash|
-    case exception
-    when SofficeTimeoutError
-      :kill
-    end
-  end
-
   # @param [FileSet] file_set
   # @param [String] file_id identifier for a Hydra::PCDM::File
   # @param [String, NilClass] filepath the cached file within the Hyrax.config.working_path

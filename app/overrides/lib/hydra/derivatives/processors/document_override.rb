@@ -1,10 +1,15 @@
 # frozen_string_literal: true
 # [hyc-override] https://github.com/samvera/hydra-derivatives/blob/v3.8.0/lib/hydra/derivatives/processors/document.rb
-class SofficeTimeoutError; end
+class SofficeTimeoutError < StandardError; end
 
 Hydra::Derivatives::Processors::Document.class_eval do
+  LOCK_KEY = "soffice:document_conversion"
+  LOCK_TIMEOUT = 6 * 60 * 1000
+  JOB_TIMEOUT_SECONDS = 30
+  LOCK_MANAGER = Redlock::Client.new([ENV['REDIS_URL']])
+
   # [hyc-override] Trigger kill if soffice process takes too long, and throw a non-retry error if that happens
-  def self.encode(path, format, outdir, timeout = 30)
+  def self.encode(path, format, outdir, timeout = JOB_TIMEOUT_SECONDS)
     command = "#{Hydra::Derivatives.libreoffice_path} --invisible --headless --convert-to #{format} --outdir #{outdir} #{Shellwords.escape(path)}"
     pid = nil
     begin
@@ -32,7 +37,13 @@ Hydra::Derivatives::Processors::Document.class_eval do
   # TODO: file_suffix and options are passed from ShellBasedProcessor.process but are not needed.
   #       A refactor could simplify this.
   def encode_file(_file_suffix, _options = {})
-    convert_to_format
+    LOCK_MANAGER.lock(LOCK_KEY, LOCK_TIMEOUT) do |locked|
+      if locked
+        convert_to_format
+      else
+        raise "Could not acquire lock for document conversion of #{source_path}"
+      end
+    end
   ensure
     FileUtils.rm_f(converted_file)
     # [hyc-override] clean up the parent temp dir
