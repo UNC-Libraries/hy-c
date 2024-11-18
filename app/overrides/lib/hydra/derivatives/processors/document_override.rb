@@ -11,38 +11,13 @@ Hydra::Derivatives::Processors::Document.class_eval do
   JOB_TIMEOUT_SECONDS = 5 * 60
   LOCK_MANAGER = Redlock::Client.new([Redis.current])
 
-  # [hyc-override] Adding in a graceful termination before hard kill, use spawn for process group
+  # [hyc-override] Adding in a graceful termination before hard kill, reap the process after kill
   def self.execute_with_timeout(timeout, command, context)
-    stdout, stderr = '', ''
-    pid = nil
-    status = nil
-
     Timeout.timeout(timeout) do
-      # Create pipes for stdout and stderr
-      stdout_r, stdout_w = IO.pipe
-      stderr_r, stderr_w = IO.pipe
-
-      # Use Process.spawn to start the command with process group
-      pid = Process.spawn(command, pgroup: true, out: stdout_w, err: stderr_w)
-
-      # Close unused ends in parent process
-      stdout_w.close
-      stderr_w.close
-
-      # Read the output in separate threads to avoid deadlocks
-      stdout_thread = Thread.new { stdout = stdout_r.read }
-      stderr_thread = Thread.new { stderr = stderr_r.read }
-
-      # Wait for the process to complete
-      _, status = Process.wait2(pid)
-
-      # Ensure threads finish reading
-      stdout_thread.join
-      stderr_thread.join
+      execute_without_timeout(command, context)
     end
-    raise "Unable to execute command \"#{command}\". Exit code: #{status}\nError message: #{stderr}" unless status == 0
   rescue Timeout::Error
-     # If it times out, terminate the process
+    pid = context[:pid]
     if pid
       Rails.logger.warn("Terminating soffice process #{pid} after #{timeout} seconds")
       Process.kill('TERM', pid) # Attempt a graceful termination
@@ -53,28 +28,28 @@ Hydra::Derivatives::Processors::Document.class_eval do
       end
       # Harvest the defunct process so it doesn't linger forever
       Process.wait(pid)
-   end
-    # Raise a custom error to prevent Sidekiq from retrying
-    raise SofficeTimeoutError, "soffice process timed out after #{timeout} seconds"
-  rescue EOFError
-    Rails.logger.debug 'Caught an eof error in ShellBasedProcessor'
+    end
+    raise SofficeTimeoutError, "Unable to execute command \"#{command}\"\nThe command took longer than #{timeout} seconds to execute"
   end
 
   def self.encode(path, format, outdir, timeout = JOB_TIMEOUT_SECONDS)
     # [hyc-override] Use Redlock to manage soffice process lock, since only one soffice process can run at a time
-    LOCK_MANAGER.lock(LOCK_KEY, LOCK_TIMEOUT) do |locked|
-      if locked
-        Rails.logger.error("Acquired lock for document conversion of #{source_path}")
-        Rails.logger.debug("Encoding document to #{format} from source path: #{path} to destination file: #{outdir}")
-        command = "#{Hydra::Derivatives.libreoffice_path} --invisible --headless --convert-to #{format} --outdir #{outdir} #{Shellwords.escape(path)}"
-        # [hyc-override] Use execute_with_timeout directly
-        execute_with_timeout(timeout, command, {})
-      else
-        sleep(0.5)
-        retry
+    begin
+      LOCK_MANAGER.lock(LOCK_KEY, LOCK_TIMEOUT) do |locked|
+        if locked
+          Rails.logger.debug("Acquired lock for document conversion of #{path}")
+          command = "#{Hydra::Derivatives.libreoffice_path} --invisible --headless --convert-to #{format} --outdir #{outdir} #{Shellwords.escape(path)}"
+          # [hyc-override] Use execute_with_timeout directly
+          execute_with_timeout(timeout, command, {})
+        else
+          sleep(0.5)
+          raise Redlock::LockError, "Failed to acquire lock for document conversion of #{path}"
+        end
       end
+      Rails.logger.debug("Released soffice lock for #{path}")
+    rescue Redlock::LockError
+      retry
     end
-    Rails.logger.debug("Released soffice lock for #{source_path}")
   end
 
   # Converts the document to the format specified in the directives hash.

@@ -35,7 +35,7 @@ RSpec.describe Hydra::Derivatives::Processors::Document do
     let(:path) { '/path/to/document.pptx' }
     let(:format) { 'pdf' }
     let(:outdir) { '/output/dir' }
-    let(:timeout) { 1 }
+    let(:timeout) { 5 }
 
     before do
       # Mock the Hydra::Derivatives.libreoffice_path
@@ -45,34 +45,33 @@ RSpec.describe Hydra::Derivatives::Processors::Document do
     context 'when the process completes successfully' do
       it 'runs the command and completes without timeout' do
         # Mock Process.spawn and Process.wait to simulate successful execution
-        allow(Process).to receive(:spawn).and_return(PID)
-        allow(Process).to receive(:wait2).with(PID).and_return([PID, 0])
+        allow(Hydra::Derivatives::Processors::Document).to receive(:execute_without_timeout).and_return(true)
 
         described_class.encode(path, format, outdir, timeout)
 
-        # Verify that the process was spawned
-        expect(Process).to have_received(:spawn)
-        expect(Process).to have_received(:wait2).with(PID)
+        # Verify that the process was executed
+        expect(Hydra::Derivatives::Processors::Document).to have_received(:execute_without_timeout)
       end
     end
 
     context 'when the process times out' do
       it 'kills the process after a timeout' do
-        allow(Process).to receive(:spawn).and_return(PID)
-        # Simulate timeout
-        allow(Process).to receive(:wait2).with(PID).and_raise(Timeout::Error)
-        allow(Process).to receive(:wait).with(PID)
-
         # Mock Process.kill to simulate killing the process
         allow(Process).to receive(:kill)
+        allow(Process).to receive(:wait).with(PID)
+        allow(Hydra::Derivatives::Processors::Document).to receive(:execute_without_timeout).and_wrap_original do |original_method, command, context|
+          # Simulate setting the PID in the context hash
+          context[:pid] = PID
+          # Raise the Timeout::Error
+          sleep 2
+        end
         allow(Hydra::Derivatives::Processors::Document).to receive(:system).with("ps -p #{PID}").and_return(true)
 
         expect do
-          described_class.encode(path, format, outdir, timeout)
-        end.to raise_error(SofficeTimeoutError, "soffice process timed out after #{timeout} seconds")
+          described_class.encode(path, format, outdir, 0.5)
+        end.to raise_error(SofficeTimeoutError, /Unable to execute command.*/)
 
         # Verify that the process was spawned
-        expect(Process).to have_received(:spawn)
         expect(Process).to have_received(:kill).with('TERM', PID) # Attempted graceful termination
         expect(Process).to have_received(:kill).with('KILL', PID) # Force kill if necessary
         # Verify that process was reaped after being killed
@@ -80,18 +79,33 @@ RSpec.describe Hydra::Derivatives::Processors::Document do
       end
     end
 
-    context 'when the process returns error status' do
-      it 'runs the command and throws an error' do
-        allow(Process).to receive(:spawn).and_return(PID)
-        allow(Process).to receive(:wait2).with(PID).and_return([PID, 1])
+    context 'when another job already has lock' do
+      let(:lock_manager) { instance_double(Redlock::Client) }
+      let(:lock_key) { 'soffice:document_conversion' }
 
-        expect do
-          described_class.encode(path, format, outdir, timeout)
-        end.to raise_error(/Unable to execute command.*Exit code: 1.*/)
+      before do
+        stub_const('LOCK_MANAGER', lock_manager)
+        allow(described_class).to receive(:execute_with_timeout)
+      end
 
-        # Verify that the process was spawned
-        expect(Process).to have_received(:spawn)
-        expect(Process).to have_received(:wait2).with(PID)
+      it 'it waits to acquire the lock and then runs the command' do
+        # Set up the locking block to indicate its locked twice, and then unlocked on the third attempt
+        lock_attempts = 0
+        allow(lock_manager).to receive(:lock).with(lock_key, anything) do |_key, _timeout, &block|
+          lock_attempts += 1
+          if lock_attempts == 3
+            block.call({ validity: 3000, resource: lock_key, value: 'lock_value' })
+          else
+            block.call(false)
+          end
+        end
+
+        described_class.encode(path, format, outdir, timeout)
+
+        # Verify lock was called multiple times
+        expect(lock_manager).to have_received(:lock).exactly(3).times
+        # Verify that the process was executed after those retries
+        expect(Hydra::Derivatives::Processors::Document).to have_received(:execute_with_timeout)
       end
     end
   end
