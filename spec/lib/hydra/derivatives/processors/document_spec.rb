@@ -61,6 +61,7 @@ RSpec.describe Hydra::Derivatives::Processors::Document do
         allow(Process).to receive(:spawn).and_return(PID)
         # Simulate timeout
         allow(Process).to receive(:wait2).with(PID).and_raise(Timeout::Error)
+        allow(Process).to receive(:wait).with(PID)
 
         # Mock Process.kill to simulate killing the process
         allow(Process).to receive(:kill)
@@ -74,6 +75,8 @@ RSpec.describe Hydra::Derivatives::Processors::Document do
         expect(Process).to have_received(:spawn)
         expect(Process).to have_received(:kill).with('TERM', PID) # Attempted graceful termination
         expect(Process).to have_received(:kill).with('KILL', PID) # Force kill if necessary
+        # Verify that process was reaped after being killed
+        expect(Process).to have_received(:wait).with(PID)
       end
     end
 
