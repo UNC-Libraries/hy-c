@@ -4,6 +4,7 @@ require Rails.root.join('spec/support/image_source_data.rb')
 
 RSpec.describe Hydra::Derivatives::Processors::Document do
   subject { described_class.new(source_path, directives) }
+  PID = 991234
 
   let(:source_path)    { File.join(fixture_path, 'test.doc') }
   let(:output_service) { Hyrax::PersistDerivatives }
@@ -44,32 +45,26 @@ RSpec.describe Hydra::Derivatives::Processors::Document do
     context 'when the process completes successfully' do
       it 'runs the command and completes without timeout' do
         # Mock Process.spawn and Process.wait to simulate successful execution
-        pid = 991234
-        allow(Process).to receive(:spawn).and_return(pid)
-        allow(Process).to receive(:wait).with(pid)
+        allow(Process).to receive(:spawn).and_return(PID)
+        allow(Process).to receive(:wait2).with(PID).and_return([PID, 0])
 
-        expect do
-          described_class.encode(path, format, outdir, timeout)
-        end.not_to raise_error
+        described_class.encode(path, format, outdir, timeout)
 
         # Verify that the process was spawned
         expect(Process).to have_received(:spawn)
-        expect(Process).to have_received(:wait).with(pid)
+        expect(Process).to have_received(:wait2).with(PID)
       end
     end
 
     context 'when the process times out' do
       it 'kills the process after a timeout' do
-        pid = 991234
-
-        # Mock Process.spawn to return a fake PID
-        allow(Process).to receive(:spawn).and_return(pid)
-        # Simulate timeout by making Process.wait sleep beyond the timeout
-        allow(Process).to receive(:wait).with(pid) { sleep 5 }
+        allow(Process).to receive(:spawn).and_return(PID)
+        # Simulate timeout
+        allow(Process).to receive(:wait2).with(PID).and_raise(Timeout::Error)
 
         # Mock Process.kill to simulate killing the process
         allow(Process).to receive(:kill)
-        allow(Hydra::Derivatives::Processors::Document).to receive(:system).with("ps -p #{pid}").and_return(true)
+        allow(Hydra::Derivatives::Processors::Document).to receive(:system).with("ps -p #{PID}").and_return(true)
 
         expect do
           described_class.encode(path, format, outdir, timeout)
@@ -77,8 +72,23 @@ RSpec.describe Hydra::Derivatives::Processors::Document do
 
         # Verify that the process was spawned
         expect(Process).to have_received(:spawn)
-        expect(Process).to have_received(:kill).with('TERM', pid) # Attempted graceful termination
-        expect(Process).to have_received(:kill).with('KILL', pid) # Force kill if necessary
+        expect(Process).to have_received(:kill).with('TERM', PID) # Attempted graceful termination
+        expect(Process).to have_received(:kill).with('KILL', PID) # Force kill if necessary
+      end
+    end
+
+    context 'when the process returns error status' do
+      it 'runs the command and throws an error' do
+        allow(Process).to receive(:spawn).and_return(PID)
+        allow(Process).to receive(:wait2).with(PID).and_return([PID, 1])
+
+        expect do
+          described_class.encode(path, format, outdir, timeout)
+        end.to raise_error(/Unable to execute command.*Exit code: 1.*/)
+
+        # Verify that the process was spawned
+        expect(Process).to have_received(:spawn)
+        expect(Process).to have_received(:wait2).with(PID)
       end
     end
   end
