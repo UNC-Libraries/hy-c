@@ -1,7 +1,7 @@
 ---
 # In production this is overridden by a template in the vagrant-rails project
 :concurrency: 6
-:max_retries: 5
+:max_retries: 3
 :queues:
   - default
   - derivatives

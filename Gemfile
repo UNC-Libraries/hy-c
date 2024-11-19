@@ -56,6 +56,7 @@ gem 'rails', '~> 6.0'
 gem 'rdf', git: 'https://github.com/ruby-rdf/rdf.git', branch: '3.2.11-patch'
 # Use Redis adapter to run Action Cable in production
 gem 'redis', '~> 4.5.0'
+gem 'redlock' # version determined by hyrax
 gem 'riiif', '~> 2.5.0'
 gem 'roo', '~>2.9.0'
 gem 'rsolr', '~> 2.5.0'
