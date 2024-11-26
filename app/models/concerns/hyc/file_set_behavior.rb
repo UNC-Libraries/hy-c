@@ -26,7 +26,7 @@ module Hyc
     #   @cached_parent_work_id = member_of_work_ids.first
     #   Rails.logger.info("Cached Parent Work ID: #{@cached_parent_work_id}")
     # end
-    
+
   #   def update_parent_thumbnail_path(parent_work_id)
   #     Rails.logger.info("update_parent_thumbnail_path called")
   #     # parent_work_2 = ActiveFedora::SolrService.get("id:#{parent_work_id}", rows: 1)['response']['docs'].first || {}
@@ -50,60 +50,106 @@ module Hyc
   #     else
   #       Rails.logger.warn("Parent work is nil or cannot be found")
   #     end
-  #   end    
+  #   end
   # end
 
-  def update_parent_thumbnail_path(parent_work_id)
-    Rails.logger.info("update_parent_thumbnail_path called with parent_work_id: #{parent_work_id}")
-  
-    # Retrieve the parent work from Solr
-    parent_work_solr_doc = ActiveFedora::SolrService.get("id:#{parent_work_id}", rows: 1)['response']['docs'].first
-    # parent_work_solr_doc_2 = ActiveFedora::SolrService.get("id:#{parent_work_id}", rows: 1)['response']['docs'].first || {}
-  
-    if parent_work_solr_doc.present?
-      Rails.logger.info("Inspect parent work Solr doc: #{parent_work_solr_doc.inspect}")
-  
-      # Retrieve the file set IDs from the parent work's Solr doc
-      file_set_ids = parent_work_solr_doc['file_set_ids_ssim'] || []
+  # def update_parent_thumbnail_path(parent_work_id)
+  #   Rails.logger.info("update_parent_thumbnail_path called with parent_work_id: #{parent_work_id}")
 
-      # if file_set_ids.length == 1
-      #   Rails.logger.warn("Updating parent work thumbnail to default since the only file set is being deleted")
-      #   return
-      # end
+  #   # Retrieve the parent work from Solr
+  #   parent_work_solr_doc = ActiveFedora::SolrService.get("id:#{parent_work_id}", rows: 1)['response']['docs'].first
+  #   # parent_work_solr_doc_2 = ActiveFedora::SolrService.get("id:#{parent_work_id}", rows: 1)['response']['docs'].first || {}
 
-      second_file_set_id = file_set_ids.second
-      # if second_file_set_id.nil?
-      #   Rails.logger.warn("Second file set ID not found; cannot update thumbnail")
-      #   return
-      # end
+  #   if parent_work_solr_doc.present?
+  #     Rails.logger.info("Inspect parent work Solr doc: #{parent_work_solr_doc.inspect}")
 
-      primary_file_set_solr_doc = ActiveFedora::SolrService.get("id:#{second_file_set_id}", rows: 1)['response']['docs'].first if file_set_ids.any?
-  
-      if primary_file_set_solr_doc.present?
-        # Extract the thumbnail path from the primary file set's Solr doc
-        new_thumbnail_path = primary_file_set_solr_doc['thumbnail_path_ss']
-  
-        if new_thumbnail_path.present?
-          # Update the parent work's thumbnail path in Solr
-          # parent_work_solr_doc['thumbnail_path_ss'] = new_thumbnail_path
-          # ActiveFedora::SolrService.delete(parent_work_id)
-          # ActiveFedora::SolrService.add(parent_work_solr_doc)
-          # ActiveFedora::SolrService.commit
-          parent_work_solr_doc['thumbnail_path_ss'] = new_thumbnail_path
-          parent_work_solr_doc['_version_'] = parent_work_solr_doc['_version_'] # Use the version for concurrency control
-  
-          ActiveFedora::SolrService.add(parent_work_solr_doc, params: { overwrite: true })
-          ActiveFedora::SolrService.commit
-          Rails.logger.info("Updated parent work thumbnail path to: #{new_thumbnail_path}")
-        else
-          Rails.logger.warn("Primary file set does not have a thumbnail path")
-        end
-      else
-        Rails.logger.warn("Primary file set Solr document not found")
-      end
-    else
-      Rails.logger.warn("Parent work Solr document not found")
-    end
-  end  
+  #     # Retrieve the file set IDs from the parent work's Solr doc
+  #     file_set_ids = parent_work_solr_doc['file_set_ids_ssim'] || []
+
+  #     # if file_set_ids.length == 1
+  #     #   Rails.logger.warn("Updating parent work thumbnail to default since the only file set is being deleted")
+  #     #   return
+  #     # end
+
+  #     second_file_set_id = file_set_ids.second
+  #     # if second_file_set_id.nil?
+  #     #   Rails.logger.warn("Second file set ID not found; cannot update thumbnail")
+  #     #   return
+  #     # end
+
+  #     primary_file_set_solr_doc = ActiveFedora::SolrService.get("id:#{second_file_set_id}", rows: 1)['response']['docs'].first if file_set_ids.any?
+
+  #     if primary_file_set_solr_doc.present?
+  #       # Extract the thumbnail path from the primary file set's Solr doc
+  #       new_thumbnail_path = primary_file_set_solr_doc['thumbnail_path_ss']
+
+  #       if new_thumbnail_path.present?
+  #         # Update the parent work's thumbnail path in Solr
+  #         # parent_work_solr_doc['thumbnail_path_ss'] = new_thumbnail_path
+  #         # ActiveFedora::SolrService.delete(parent_work_id)
+  #         # ActiveFedora::SolrService.add(parent_work_solr_doc)
+  #         # ActiveFedora::SolrService.commit
+  #         parent_work_solr_doc['thumbnail_path_ss'] = new_thumbnail_path
+  #         parent_work_solr_doc['_version_'] = parent_work_solr_doc['_version_'] # Use the version for concurrency control
+
+  #         ActiveFedora::SolrService.add(parent_work_solr_doc, params: { overwrite: true })
+  #         ActiveFedora::SolrService.commit
+  #         Rails.logger.info("Updated parent work thumbnail path to: #{new_thumbnail_path}")
+  #       else
+  #         Rails.logger.warn("Primary file set does not have a thumbnail path")
+  #       end
+  #     else
+  #       Rails.logger.warn("Primary file set Solr document not found")
+  #     end
+  #   else
+  #     Rails.logger.warn("Parent work Solr document not found")
+  #   end
+  # end
+
+    # def update_parent_thumbnail_path(parent_work_id)
+    #   Rails.logger.info("update_parent_thumbnail_path called with parent_work_id: #{parent_work_id}")
+
+    #   # Find the parent work
+    #   parent_work = ActiveFedora::Base.find(parent_work_id) rescue nil
+    #   unless parent_work
+    #     Rails.logger.warn("Parent work not found for ID: #{parent_work_id}")
+    #     return
+    #   end
+
+    #   Rails.logger.info("Inspect parent work: #{parent_work.inspect}")
+
+    #   # Get the file set IDs and find the next thumbnail
+    #   file_set_ids = parent_work.member_ids
+    #   Rails.logger.info("File set IDs for parent work: #{file_set_ids.inspect}")
+
+    #   # Handle case where there are no remaining file sets
+    #   if file_set_ids.empty?
+    #     Rails.logger.warn("No file sets left for parent work: #{parent_work_id}")
+    #     parent_work.representative_id = nil
+    #     parent_work.save
+    #     parent_work.update_index
+    #     Rails.logger.info("Cleared thumbnail for parent work: #{parent_work_id}")
+    #     return
+    #   end
+
+    #   # Use the second file set as the new thumbnail (or any other logic)
+    #   new_thumbnail_file_set = ActiveFedora::SolrService.get("id:#{file_set_ids.first}", rows: 1)['response']['docs'].first if file_set_ids.any?
+    #   unless new_thumbnail_file_set
+    #     Rails.logger.warn('Second file set not found; cannot update thumbnail')
+    #     return
+    #   end
+
+    #   new_thumbnail_path = new_thumbnail_file_set['thumbnail_path_ss']
+    #   if new_thumbnail_path.present?
+    #     parent_work.representative_id = file_set_ids.second
+    #     parent_work.save
+    #     parent_work.update_index
+    #     Rails.logger.info("Inspect parent work after update: #{parent_work.inspect}")
+    #     # Rails.logger.info("Updated thumbnail to #{new_thumbnail_path} for parent work #{parent_work_id}")
+    #   else
+    #     Rails.logger.warn('New file set does not have a valid thumbnail path')
+    #   end
+    # end
+
 end
 end

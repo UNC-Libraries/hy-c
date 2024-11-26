@@ -87,8 +87,15 @@ module Blacklight
       Rails.logger.info("document: #{document.inspect}")
       Rails.logger.info("view_context: #{view_context.inspect}")
 
+      solr_doc = extract_solr_document(document)
+
+      unless solr_doc
+        Rails.logger.warn('Could not extract SolrDocument')
+        return FieldRetriever.new(document, field_config, view_context).fetch
+      end
+
      # Convert SolrDocument to a mutable hash
-      document_copy = document.to_h
+      document_copy = solr_doc.to_h
 
       # Update the `thumbnail_path_ss` dynamically if needed
       if needs_thumbnail_path_update?(document_copy)
@@ -101,6 +108,17 @@ module Blacklight
       updated_document = SolrDocument.new(document_copy)
 
       FieldRetriever.new(updated_document, field_config, view_context).fetch
+    end
+
+    def extract_solr_document(doc)
+      if doc.is_a?(SolrDocument)
+        doc
+      elsif doc.respond_to?(:solr_document) && doc.solr_document.is_a?(SolrDocument)
+        doc.solr_document
+      else
+        Rails.logger.warn("Unrecognized document type: #{doc.class}")
+        nil
+      end
     end
 
     def needs_thumbnail_path_update?(document)
