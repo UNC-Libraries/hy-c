@@ -20,8 +20,8 @@ Hyrax::WorkShowPresenter.class_eval do
     res
   end
 
-
-    # @return FileSetPresenter presenter for the representative FileSets
+  # [hyc-override] Use a work's first related fileset_id instead of the representative_id if it's nil
+  # @return FileSetPresenter presenter for the representative FileSets
   def representative_presenter
     primary_fileset_id = fetch_primary_fileset_id
     return nil if primary_fileset_id.blank?
