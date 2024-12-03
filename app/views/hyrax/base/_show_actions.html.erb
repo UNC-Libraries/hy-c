@@ -41,7 +41,7 @@
   <div class="col-sm-6 text-right">
     <% if presenter.editor? && !workflow_restriction?(presenter) %>
       <%= link_to t('.edit'), edit_polymorphic_path([main_app, presenter]), class: 'btn btn-secondary' %>
-      <% if presenter.member_count > 1 %>
+      <% if presenter.member_count > 0 %>
           <%= link_to t("hyrax.file_manager.link_text"), polymorphic_path([main_app, :file_manager, presenter]), class: 'btn btn-secondary' %>
       <% end %>
       <% if presenter.valid_child_concerns.length > 0 %>
