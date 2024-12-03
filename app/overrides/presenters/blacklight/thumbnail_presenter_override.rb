@@ -30,6 +30,11 @@ module Blacklight
     # Extract the SolrDocument from the document if it's nested
     # Prevents errors when the document is a presenter on work show pages
     def extract_solr_document(doc)
+      unless doc
+        Rails.logger.warn("Attempted to extract SolrDocument but document is nil for document with id #{doc.id}")
+        return nil
+      end
+
       if doc.is_a?(SolrDocument)
         doc
       elsif doc.respond_to?(:solr_document) && doc.solr_document.is_a?(SolrDocument)
