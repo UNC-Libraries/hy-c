@@ -36,10 +36,7 @@ module Blacklight
     # @param [Hash] url_options to pass to #link_to_document
     # @return [String]
     def thumbnail_tag(image_options = {}, url_options = {})
-      # Rails.logger.info("thumbnail_tag image_options: #{image_options.inspect}")
-      # Rails.logger.info("thumbnail_tag url_options: #{url_options.inspect}")
       value = thumbnail_value(image_options)
-      Rails.logger.info("thumbnail_tag value: #{value.inspect}")
       return value if value.nil? || url_options[:suppress_link]
 
       view_context.link_to_document document, value, url_options
@@ -51,14 +48,10 @@ module Blacklight
 
     # @param [Hash] image_options to pass to the image tag
     def thumbnail_value(image_options)
-      # Rails.logger.info("thumbnail_method: #{thumbnail_method} for image_options: #{image_options.inspect}")
-      # Rails.logger.info("thumbnail_field: #{thumbnail_field} for image_options: #{image_options.inspect}")
-      # Rails.logger.info("default_thumbnail: #{default_thumbnail}")
       value = if thumbnail_method
                 view_context.send(thumbnail_method, document, image_options)
               elsif thumbnail_field
                 image_url = thumbnail_value_from_document
-                Rails.logger.info("thumbnail_value_from_document: #{image_url} for image_options: #{image_options.inspect}")
                 view_context.image_tag image_url, image_options if image_url.present?
               end
 
@@ -82,32 +75,29 @@ module Blacklight
       Array(thumbnail_field).lazy.map { |field| retrieve_values(field_config(field)).first }.compact_blank.first
     end
 
+    # [hyc-override] Retrieve the thumbnail of a document's first file_set instead of using the default if it exists
     def retrieve_values(field_config)
-      Rails.logger.info("field_config: #{field_config.inspect}")
-      Rails.logger.info("document: #{document.inspect}")
-      Rails.logger.info("view_context: #{view_context.inspect}")
-
+      # Extract the SolrDocument from the document if it's nested
       solr_doc = extract_solr_document(document)
-
       unless solr_doc
-        Rails.logger.warn('Could not extract SolrDocument')
+        Rails.logger.warn("Could not extract SolrDocument for document with id #{document.id}")
         return FieldRetriever.new(document, field_config, view_context).fetch
       end
 
      # Convert SolrDocument to a mutable hash
-      document_copy = solr_doc.to_h
+      document_hash = solr_doc.to_h
 
       # Update the `thumbnail_path_ss` dynamically if needed
-      if needs_thumbnail_path_update?(document_copy)
-        file_set_id = document_copy['file_set_ids_ssim']&.first
-        document_copy['thumbnail_path_ss'] = "/downloads/#{file_set_id}?file=thumbnail"
-        Rails.logger.info("Updated thumbnail_path_ss: #{document_copy['thumbnail_path_ss']}")
+      if needs_thumbnail_path_update?(document_hash)
+        file_set_id = document_hash['file_set_ids_ssim']&.first
+        document_hash['thumbnail_path_ss'] = "/downloads/#{file_set_id}?file=thumbnail"
+        Rails.logger.info("Updated thumbnail_path_ss: #{document_hash['thumbnail_path_ss']} for document with id #{document.id}")
+        # Create a temporary SolrDocument from the updated hash
+        updated_document = SolrDocument.new(document_hash)
+        FieldRetriever.new(updated_document, field_config, view_context).fetch
+      else
+        FieldRetriever.new(solr_doc, field_config, view_context).fetch
       end
-
-      # Create a temporary SolrDocument from the updated hash
-      updated_document = SolrDocument.new(document_copy)
-
-      FieldRetriever.new(updated_document, field_config, view_context).fetch
     end
 
     def extract_solr_document(doc)
@@ -116,16 +106,16 @@ module Blacklight
       elsif doc.respond_to?(:solr_document) && doc.solr_document.is_a?(SolrDocument)
         doc.solr_document
       else
-        Rails.logger.warn("Unrecognized document type: #{doc.class}")
+        Rails.logger.warn("Unrecognized document type: #{doc.class} for document with id #{doc.id}")
         nil
       end
     end
 
     def needs_thumbnail_path_update?(document)
-      thumbnail_path = document['thumbnail_path_ss']
+      thumbnail_path = document['thumbnail_path_ss'] || ''
       file_set_ids = document['file_set_ids_ssim']
 
-      # Check if the thumbnail path is invalid or missing and file_set_ids are present
+      # Check if the thumbnail path is the default or missing and file_set_ids are present
       thumbnail_path !~ %r{^/downloads/\w+\?file=thumbnail$} && file_set_ids.present?
     end
 
