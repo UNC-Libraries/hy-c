@@ -16,35 +16,22 @@ Hyrax::WorkShowPresenter.class_eval do
   end
 
   def fetch_primary_fileset_id
-    Rails.logger.info 'Hyrax::WorkShowPresenter#fetch_primary_fileset_id'
     res = representative_id.blank? ? member_ids.first : representative_id
-    Rails.logger.info "res: #{res}"
     res
   end
 
 
     # @return FileSetPresenter presenter for the representative FileSets
   def representative_presenter
-    # Rails.logger.info "fetch primary check: #{fetch_primary_fileset_id.present?}"
-    # Rails.logger.info "Hyrax::WorkShowPresenter#representative_presenter"
-    # Rails.logger.info "representative_id: #{representative_id}"
-    # Rails.logger.info "member of collection ids: #{member_of_collection_ids.inspect}"
-    # Rails.logger.info "member ids: #{member_ids.inspect}"
-    condition = representative_id.blank? && member_ids.blank?
-    Rails.logger.info "condition: #{condition}"
-    return nil if fetch_primary_fileset_id.blank?
+    primary_fileset_id = fetch_primary_fileset_id
+    return nil if primary_fileset_id.blank?
     @representative_presenter ||=
       begin
-        result = member_presenters([fetch_primary_fileset_id]).first
-        # Rails.logger.info "representative_presenter-result: #{result.inspect}"
+        result = member_presenters([primary_fileset_id]).first
         return nil if result.try(:id) == id
-        # Rails.logger.info "representative_presenter-result-id: #{result.try(:id)}"
-        Rails.logger.info "representative_presenter-OR: #{result.try(:representative_presenter) || result}"
         result.try(:representative_presenter) || result
       rescue Hyrax::ObjectNotFoundError
-        # Hyrax.logger.warn "Unable to find representative_id #{temp} for work #{id}"
-        # Rails.logger.warn "Unable to find representative_id #{temp} for work #{id}"
-        # Rails.logger.info "Unable to find representative_id #{temp} for work #{id}"
+        Hyrax.logger.warn "Unable to find representative_id #{primary_fileset_id} for work #{id}"
         return nil
       end
   end
