@@ -43,12 +43,12 @@ RSpec.describe Hyrax::WorkShowPresenter do
       before do
         allow(presenter).to receive(:fetch_primary_fileset_id).and_return('file_set_id_1')
         allow(presenter).to receive(:member_presenters).and_raise(Hyrax::ObjectNotFoundError)
-        allow(Hyrax.logger).to receive(:warn) 
+        allow(Hyrax.logger).to receive(:warn)
       end
 
       it 'logs a warning and returns nil' do
         result = presenter.representative_presenter
-        expect(Hyrax.logger).to have_received(:warn).with("Unable to find representative_id file_set_id_1 for work 888888")
+        expect(Hyrax.logger).to have_received(:warn).with('Unable to find representative_id file_set_id_1 for work 888888')
         expect(result).to be_nil
       end
     end
