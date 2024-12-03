@@ -2,14 +2,13 @@
 module Blacklight
   class ThumbnailPresenter
     private
-    # [hyc-override] Retrieve the thumbnail of a document's first file_set instead of using the default if it exists
+    # [hyc-override] Retrieve the thumbnail of the first file_set of any given work instead of using the default if it exists
     def retrieve_values(field_config)
-      # Return the default thumbnail if the solr document is nil
+      # Return the default thumbnail if the document object is nil
       unless document
         return FieldRetriever.new(document, field_config, view_context).fetch
       end
 
-      # Extract the SolrDocument from the document object if it's nested and convert it to a mutable hash
       solr_doc = extract_solr_document(document)
       document_hash = solr_doc.to_h
 
@@ -26,8 +25,8 @@ module Blacklight
       end
     end
 
-    # Extract the SolrDocument from the document if it's nested
-    # Prevents errors when the document is a presenter on work show pages
+    # Extract the SolrDocument from the document object if it's nested
+    # Prevents errors when the document object is a presenter on work show pages
     def extract_solr_document(doc)
       if doc.is_a?(SolrDocument)
         doc
