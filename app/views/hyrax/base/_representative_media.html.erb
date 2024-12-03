@@ -1,3 +1,6 @@
+<%# [hyc-override] https://github.com/samvera/hyrax/tree/hyrax-v4.0.0/app/views/hyrax/base/_representative_media.html.erb %>
+<%# [hyc-override] Use custom function fetch_primary_fileset_id in place of representative_id %>
+<!-- This renders the thumbnail for first file set associated with a work instead of the default in case the representative_id is nil. (Typically occurs after deleting the first file attached to a work) -->
 <% if presenter.fetch_primary_fileset_id.present? && presenter.representative_presenter.present? %>
   <% if defined?(viewer) && viewer %>
     <%= iiif_viewer_display presenter %>
