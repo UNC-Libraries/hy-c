@@ -6,7 +6,7 @@ Hyrax::WorkShowPresenter.class_eval do
   delegate :title, :date_created, :date_issued, :description, :doi, :creator, :place_of_publication,
            :creator_display, :contributor, :subject, :publisher, :language, :embargo_release_date,
            :lease_expiration_date, :license, :source, :rights_statement, :thumbnail_id, :representative_id,
-           :rendering_ids, :member_of_collection_ids, :member_ids, :alternative_title, :bibliographic_citation, to: :solr_document
+           :rendering_ids, :member_of_collection_ids, :member_ids, :alternative_title, to: :solr_document
 
   # [hyc-override] Add default scholarly? method
   # Indicates if the work is considered scholarly according to google scholar
