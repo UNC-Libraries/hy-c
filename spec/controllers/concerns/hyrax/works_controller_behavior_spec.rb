@@ -10,6 +10,12 @@ RSpec.describe Hyrax::WorksControllerBehavior, type: :controller do
     self.curation_concern_type = General
   end
 
+  before do
+    ActiveFedora::Cleaner.clean!
+    Blacklight.default_index.connection.delete_by_query('*:*')
+    Blacklight.default_index.connection.commit
+  end
+
   describe '#available_admin_sets' do
     context 'with a logged in user' do
       before { sign_in user }
@@ -26,9 +32,6 @@ RSpec.describe Hyrax::WorksControllerBehavior, type: :controller do
         let(:workflow) { Sipity::Workflow.find_by!(name: 'default', permission_template: permission_template) }
 
         before do
-          ActiveFedora::Cleaner.clean!
-          Blacklight.default_index.connection.delete_by_query('*:*')
-          Blacklight.default_index.connection.commit
           Hyrax::PermissionTemplateAccess.create(permission_template: permission_template,
                                              agent_type: 'user',
                                              agent_id: user.user_key,
@@ -58,6 +61,47 @@ RSpec.describe Hyrax::WorksControllerBehavior, type: :controller do
               ['test admin set', admin_set.id.to_s, {'data-sharing'=>true}])
           end
         end
+      end
+    end
+  end
+
+  describe '#permissions_changed?' do
+    let(:user) { FactoryBot.create(:user) }
+    let(:work) {
+        General.new(title: ['test work'])
+      }
+
+    context 'with no new permissions or embargo' do
+      it 'returns false' do
+        allow(work).to receive(:under_embargo?).and_return(false)
+        controller.instance_variable_set(:@curation_concern, work)
+
+        controller.send(:save_permissions)
+
+        expect(controller.send(:permissions_changed?)).to be false
+      end
+    end
+
+    context 'with an embargo added' do
+      it 'returns true' do
+        allow(work).to receive(:under_embargo?).and_return(true)
+        controller.instance_variable_set(:@curation_concern, work)
+
+        controller.send(:save_permissions)
+
+        expect(controller.send(:permissions_changed?)).to be true
+      end
+    end
+
+    context 'with new permissions but no new embargo' do
+      it 'returns true' do
+        allow(work).to receive(:under_embargo?).and_return(false)
+        allow(controller).to receive(:original_permissions_changed?).and_return(true)
+        controller.instance_variable_set(:@curation_concern, work)
+
+        controller.send(:save_permissions)
+
+        expect(controller.send(:permissions_changed?)).to be true
       end
     end
   end
