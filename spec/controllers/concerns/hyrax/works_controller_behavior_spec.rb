@@ -68,8 +68,8 @@ RSpec.describe Hyrax::WorksControllerBehavior, type: :controller do
   describe '#permissions_changed?' do
     let(:user) { FactoryBot.create(:user) }
     let(:work) {
-        General.new(title: ['test work'])
-      }
+      General.new(title: ['test work'])
+    }
 
     context 'with no new permissions or embargo' do
       it 'returns false' do
@@ -84,10 +84,12 @@ RSpec.describe Hyrax::WorksControllerBehavior, type: :controller do
 
     context 'with an embargo added' do
       it 'returns true' do
-        allow(work).to receive(:under_embargo?).and_return(true)
+        allow(work).to receive(:under_embargo?).and_return(false)
         controller.instance_variable_set(:@curation_concern, work)
 
         controller.send(:save_permissions)
+
+        allow(work).to receive(:under_embargo?).and_return(true)
 
         expect(controller.send(:permissions_changed?)).to be true
       end
