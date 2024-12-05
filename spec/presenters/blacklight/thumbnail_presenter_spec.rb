@@ -15,10 +15,11 @@ RSpec.describe Blacklight::ThumbnailPresenter do
       allow(retriever_instance).to receive(:fetch).and_return('default_thumbnail')
       allow(presenter).to receive(:extract_solr_document)
 
-      presenter.send(:retrieve_values, field_config)
+      result = presenter.send(:retrieve_values, field_config)
       expect(Blacklight::FieldRetriever).to have_received(:new).with(nil, field_config, view_context)
       # Presenter should not process the document if it's nil
       expect(presenter).not_to have_received(:extract_solr_document)
+      expect(result).to eq('default_thumbnail')
     end
 
     it 'updates the thumbnail_path_ss if it needs an update' do
@@ -39,11 +40,12 @@ RSpec.describe Blacklight::ThumbnailPresenter do
       allow(retriever_instance).to receive(:fetch).and_return('updated_thumbnail')
       allow(Rails.logger).to receive(:info)
 
-      presenter.send(:retrieve_values, field_config)
+      result = presenter.send(:retrieve_values, field_config)
       expect(Rails.logger).to have_received(:info).with('Updated thumbnail_path_ss: /downloads/file_set_1?file=thumbnail for work with id 1')
       expect(SolrDocument).to have_received(:new).with(
         hash_including('thumbnail_path_ss' => '/downloads/file_set_1?file=thumbnail')
       )
+      expect(result).to eq('updated_thumbnail')
     end
   end
 end

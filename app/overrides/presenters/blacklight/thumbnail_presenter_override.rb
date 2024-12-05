@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+# https://github.com/projectblacklight/blacklight/blob/v8.7.0/app/presenters/blacklight/thumbnail_presenter.rb
 module Blacklight
   class ThumbnailPresenter
     private
@@ -16,7 +17,7 @@ module Blacklight
       if needs_thumbnail_path_update?(document_hash)
         file_set_id = document_hash['file_set_ids_ssim']&.first
         document_hash['thumbnail_path_ss'] = "/downloads/#{file_set_id}?file=thumbnail"
-        Rails.logger.info("Updated thumbnail_path_ss: #{document_hash['thumbnail_path_ss']} for work with id #{document.id}")
+        Rails.logger.info("Updated thumbnail_path_ss: #{document_hash['thumbnail_path_ss']} for work with id #{document_hash['id']}")
         # Create a temporary SolrDocument from the updated hash
         updated_document = SolrDocument.new(document_hash)
         FieldRetriever.new(updated_document, field_config, view_context).fetch
@@ -38,9 +39,10 @@ module Blacklight
     def needs_thumbnail_path_update?(document)
       thumbnail_path = document['thumbnail_path_ss'] || ''
       file_set_ids = document['file_set_ids_ssim']
+      thumbnail_missing_or_default = thumbnail_path.blank? || thumbnail_path !~ %r{^/downloads/\w+\?file=thumbnail$}
 
-      # Check if the thumbnail path is the default or missing and file_set_ids are present
-      thumbnail_path !~ %r{^/downloads/\w+\?file=thumbnail$} && file_set_ids.present?
+      # Returns true if file_set_ids are present and the thumbnail path is the default or missing entirely
+      file_set_ids.present? && thumbnail_missing_or_default
     end
   end
   end

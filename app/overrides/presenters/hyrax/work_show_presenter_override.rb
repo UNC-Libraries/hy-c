@@ -6,7 +6,7 @@ Hyrax::WorkShowPresenter.class_eval do
   delegate :title, :date_created, :date_issued, :description, :doi, :creator, :place_of_publication,
            :creator_display, :contributor, :subject, :publisher, :language, :embargo_release_date,
            :lease_expiration_date, :license, :source, :rights_statement, :thumbnail_id, :representative_id,
-           :rendering_ids, :member_of_collection_ids, :member_ids, :alternative_title, to: :solr_document
+           :rendering_ids, :member_of_collection_ids, :bibliographic_citation, :alternative_title, :member_ids, to: :solr_document
 
   # [hyc-override] Add default scholarly? method
   # Indicates if the work is considered scholarly according to google scholar
@@ -23,10 +23,10 @@ Hyrax::WorkShowPresenter.class_eval do
   # [hyc-override] Use a work's first related fileset_id instead of the representative_id if it's nil
   # @return FileSetPresenter presenter for the representative FileSets
   def representative_presenter
-    primary_fileset_id = fetch_primary_fileset_id
-    return nil if primary_fileset_id.blank?
     @representative_presenter ||=
       begin
+        primary_fileset_id = fetch_primary_fileset_id
+        return nil if primary_fileset_id.blank?
         result = member_presenters([primary_fileset_id]).first
         return nil if result.try(:id) == id
         result.try(:representative_presenter) || result
