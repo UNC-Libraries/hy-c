@@ -26,6 +26,20 @@ Hyrax::WorksControllerBehavior.module_eval do
     Hyrax::AdminSetSelectionPresenter.new(admin_sets: admin_sets)
   end
 
+  private
+  # [hyc-override] Capture whether the work had an embargo before changes are saved
+  alias_method :original_save_permissions, :save_permissions
+  def save_permissions
+    original_save_permissions
+    @original_embargo_state = curation_concern.under_embargo?
+  end
+
+  # [hyc-override] Return true if the permissions have changed or the embargo state has changed
+  alias_method :original_permissions_changed?, :permissions_changed?
+  def permissions_changed?
+    original_permissions_changed? || @original_embargo_state != curation_concern.under_embargo?
+  end
+
   # [hyc-override] Special permissions for admins indicating they aren't constrained by the admin set
   class AdminPermissionTemplate < Hyrax::PermissionTemplate
     def release_no_delay?
