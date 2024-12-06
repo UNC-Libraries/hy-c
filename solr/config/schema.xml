@@ -333,7 +333,8 @@
     <!-- Type used to index the lat and lon components for the "location" FieldType -->
     <dynamicField name="*_coordinate" type="tdouble" indexed="true"  stored="false" />
 
-    <dynamicField name="*suggest" type="textSuggest" indexed="true" stored="false" multiValued="true" />
+    <!-- Disabling suggest fields due to performance issues -->
+    <!-- <dynamicField name="*suggest" type="textSuggest" indexed="true" stored="false" multiValued="true" /> -->
 
     <!-- you must define copyField source and dest fields explicity or schemaBrowser doesn't work -->
     <field name="all_text_timv" type="text" stored="false" indexed="true" multiValued="true" termVectors="true" termPositions="true" termOffsets="true"/>
@@ -358,8 +359,8 @@
 
   <!-- <copyField source="*_tesim" dest="all_text_timv" maxChars="3000"/> -->
   <!-- for suggestions -->
-  <copyField source="*_tesim" dest="suggest"/>
-  <copyField source="*_ssim" dest="suggest"/>
+  <!-- <copyField source="*_tesim" dest="suggest"/> -->
+  <!-- <copyField source="*_ssim" dest="suggest"/> -->
 
   <copyField source="rights_statement_tesim" dest="rights_statement_search"/>
   <copyField source="rights_statement_label_tesim" dest="rights_statement_search"/>
