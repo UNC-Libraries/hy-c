@@ -1,12 +1,15 @@
 <!-- https://github.com/projectblacklight/blacklight/blob/v8.7.0/app/components/blacklight/facet_field_pagination_component.html.erb  -->
  <!-- [hyc-override] paginate using hyrax function to enable skipping pages  -->
-  <div class="facet-pagination">
-  <% if @facet_field.paginator.total_pages > 1 %>
-    <div class="pagination">
-      <%= paginate @facet_field.paginator, outer_window: 2, theme: 'blacklight', param_name: param_name %>
+  <% paginator = @facet_field.paginator %>
+  <% if paginator.present? %>
+    <% items = paginator.instance_variable_get(:@all) %>
+    <% rows = paginator.instance_variable_get(:@limit) %>
+    <% paginated_items = dept_paginate(paginator, rows: rows) %>
+
+    <div class="facet-pagination" aria-label="pagination links">
+      <%= paginate paginated_items, theme: 'blacklight', param_name: :page %>
     </div>
-    <% end %>
-  </div>
+  <% end %>
 
 <div class="sort-options btn-group">
   <% if @facet_field.paginator.sort == 'index' -%>
