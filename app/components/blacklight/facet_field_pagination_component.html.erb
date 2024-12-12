@@ -1,0 +1,19 @@
+<!-- https://github.com/projectblacklight/blacklight/blob/v8.7.0/app/components/blacklight/facet_field_pagination_component.html.erb  -->
+ <!-- [hyc-override] paginate using hyrax function to enable skipping pages  -->
+  <div class="facet-pagination">
+  <% if @facet_field.paginator.total_pages > 1 %>
+    <div class="pagination">
+      <%= paginate @facet_field.paginator, outer_window: 2, theme: 'blacklight', param_name: param_name %>
+    </div>
+    <% end %>
+  </div>
+
+<div class="sort-options btn-group">
+  <% if @facet_field.paginator.sort == 'index' -%>
+    <span class="active az btn btn-outline-secondary"><%= t('blacklight.search.facets.sort.index') %></span>
+    <%= helpers.link_to(t('blacklight.search.facets.sort.count'), sort_facet_url('count'), class: "sort_change numeric btn btn-outline-secondary", data: { blacklight_modal: "preserve" }) %>
+  <% elsif @facet_field.paginator.sort == 'count' -%>
+    <%= helpers.link_to(t('blacklight.search.facets.sort.index'), sort_facet_url('index'), class: "sort_change az btn btn-outline-secondary",  data: { blacklight_modal: "preserve" }) %>
+    <span class="active numeric btn btn-outline-secondary"><%= t('blacklight.search.facets.sort.count') %></span>
+  <% end -%>
+</div>
