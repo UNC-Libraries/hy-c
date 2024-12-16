@@ -6,7 +6,7 @@ Kaminari::Helpers::HelperMethods.module_eval do
     begin
       # Validate inputs
       raise ArgumentError, 'Scope is required and must respond to :total_pages' unless scope&.respond_to?(:total_pages)
-      raise ArgumentError, 'Page number must be a positive integer' unless page.is_a?(Integer) && page.positive?
+      raise ArgumentError, "Page number must be a positive integer - got #{page}" unless page.is_a?(Integer) && page.positive?
 
       specific_page_path = path_to_specific_page(scope, page, options)
 
