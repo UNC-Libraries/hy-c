@@ -1,10 +1,10 @@
 <!-- https://github.com/projectblacklight/blacklight/blob/v8.7.0/app/components/blacklight/facet_field_pagination_component.html.erb  -->
- <!-- [hyc-override] paginate using hyrax function to enable skipping pages  -->
+ <!-- [hyc-override] paginate using Kaminari gem to enable skipping pages  -->
   <% paginator = @facet_field.paginator %>
   <% if paginator.present? %>
     <% items = paginator.instance_variable_get(:@all) %>
     <% rows = paginator.instance_variable_get(:@limit) %>
-    <% paginated_items = dept_paginate(paginator, rows: rows) %>
+    <% paginated_items = convert_facet_to_paginated_array(paginator, rows: rows) %>
 
     <div class="facet-pagination" aria-label="pagination links">
       <%= paginate paginated_items, theme: 'blacklight', param_name: :page %>
