@@ -1,15 +1,48 @@
 <!-- https://github.com/projectblacklight/blacklight/blob/v8.7.0/app/components/blacklight/facet_field_pagination_component.html.erb  -->
- <!-- [hyc-override] paginate using Kaminari gem to enable skipping pages  -->
-  <% paginator = @facet_field.paginator %>
-  <% if paginator.present? %>
-    <% items = paginator.instance_variable_get(:@all) %>
-    <% rows = paginator.instance_variable_get(:@limit) %>
-    <% paginated_items = convert_facet_to_paginated_array(paginator, rows: rows) %>
-
-    <div class="facet-pagination" aria-label="pagination links">
-      <%= paginate paginated_items, theme: 'blacklight', param_name: :page %>
-    </div>
+<div class="prev_next_links btn-group">
+  <%= helpers.link_to_previous_page @facet_field.paginator, raw(t('views.pagination.previous')), params: @facet_field.search_state.to_h, param_name: param_name, class: 'btn btn-link', data: { blacklight_modal: "preserve" } do %>
+    <%= content_tag :span, raw(t('views.pagination.previous')), class: 'disabled btn' %>
   <% end %>
+
+  <%= helpers.link_to_next_page @facet_field.paginator, raw(t('views.pagination.next')), params: @facet_field.search_state.to_h, param_name: param_name, class: 'btn btn-link', data: { blacklight_modal: "preserve" } do %>
+    <%= content_tag :span, raw(t('views.pagination.next')), class: 'disabled btn' %>
+  <% end %>
+
+   <!-- [hyc-override] Pagination using `Blacklight::Solr::FacetPaginator`  -->
+  <ul class="pagination">
+    <% total_items = @facet_field.paginator.instance_variable_get(:@all).size %>
+    <% limit = @facet_field.paginator.instance_variable_get(:@limit) %>
+    <% offset = @facet_field.paginator.instance_variable_get(:@offset) %>
+    <% current_page = (offset / limit) + 1 %>
+    <% total_pages = (total_items.to_f / limit).ceil %>
+    <% first_pages_count = 2 %> 
+    <% last_pages_count = 2 %> 
+    <% surrounding_pages = 4 %> 
+    <!-- Page Numbers -->
+    <% (1..total_pages).each do |page| %>
+    <!-- Display pages within +/-4 of the current page, always show the first and last two pages  -->
+      <% within_range = (page >= current_page - surrounding_pages && page <= current_page + surrounding_pages) %> 
+      <% show_page = (
+           page <= first_pages_count || 
+           page > total_pages - last_pages_count || 
+           within_range
+         ) %>
+
+      <% if show_page %>
+        <li class="page-item <%= 'active' if page == current_page %>">
+          <% if page == current_page %>
+            <span class="page-link" aria-label="Current Page, Page <%= page %>" aria-current="true"><%= page %></span>
+          <% else %>
+            <%= link_to page, params: @facet_field.search_state.to_h.merge(page: page), class: "page-link", aria: { label: "Go to page #{page}" } %>
+          <% end %>
+        </li>
+        <!-- Render ellipsis for pages that would be just outside of the range (3,last page - 2) if they aren't show pages -->
+      <% elsif page == first_pages_count + 1 || page == total_pages - last_pages_count %>
+        <li class="page-item disabled"><span class="page-link">…</span></li>
+      <% end %>
+    <% end %>
+  </ul>
+</div>
 
 <div class="sort-options btn-group">
   <% if @facet_field.paginator.sort == 'index' -%>
