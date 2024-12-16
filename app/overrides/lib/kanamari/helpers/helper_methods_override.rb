@@ -2,7 +2,7 @@
 # [hyc-override] https://github.com/kaminari/kaminari/blob/v1.2.2/kaminari-core/lib/kaminari/helpers/helper_methods.rb
 Kaminari::Helpers::HelperMethods.module_eval do
     # Helper to generate a link to a specific page
-    def link_to_specific_page(scope, page, name, **options)
+    def link_to_specific_page(scope, page = 1, name, **options)
       begin
         # Validate inputs
         raise ArgumentError, "Scope is required and must respond to :total_pages" unless scope&.respond_to?(:total_pages)
