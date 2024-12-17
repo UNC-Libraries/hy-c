@@ -34,7 +34,7 @@
           <% if page == current_page %>
             <span class="page-link" aria-label="Current Page, Page <%= page %>" aria-current="true"><%= page %></span>
           <% else %>
-            <%= helpers.link_to_specific_page @facet_field.paginator, page.to_i, "Page: #{page}", class: "page-link" %>
+            <%= helpers.link_to_specific_page @facet_field.paginator, "Page: #{page}", page.to_i, class: "page-link" %>
           <% end %>
         </li>
         <!-- Render ellipsis for pages that would be just outside of the range (3,last page - 2) if they aren't show pages -->
