@@ -55,7 +55,7 @@ class CatalogController < ApplicationController
     facet_values = response.dig('facet_counts', 'facet_fields', field_name)
     # Facet counts are included with names in the list, so divide by 2
     total_unique_facets = facet_values ? (facet_values.length / 2) : 0
-    total_unique_facet
+    total_unique_facets
   rescue StandardError => e
     Rails.logger.error("Error retrieving facets for '#{field_name}': #{e.message}")
     Rails.logger.error(e.backtrace.join("\n"))
