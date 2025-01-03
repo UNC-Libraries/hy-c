@@ -5,12 +5,11 @@ Kaminari::Helpers::HelperMethods.module_eval do
   def link_to_specific_page(scope, name, page, total_entries, **options)
     begin
       # Validate inputs
-    #   raise ArgumentError, 'Scope is required and must respond to :total_pages' unless scope&.respond_to?(:total_pages)
       raise ArgumentError, "Page number must be a positive integer - got #{page}" unless page.is_a?(Integer) && page.positive?
 
       specific_page_path = path_to_specific_page(scope, page, total_entries, options)
 
-      # Remove the :params and :param_name keys from the options hash before generating the link since they are irrelevant
+      # Remove unnecessary keys :params and :param_name from the options hash before generating the link
       options.except! :params, :param_name
 
       # Setting aria instead of rel for accessibility
@@ -18,19 +17,15 @@ Kaminari::Helpers::HelperMethods.module_eval do
 
       if specific_page_path
         link_to(name || page, specific_page_path, options)
-      elsif block_given?
-        yield
       else
         Rails.logger.warn "Specific page path could not be generated for page: #{page}"
-        nil
       end
     rescue ArgumentError => e
       Rails.logger.error "Error in link_to_specific_page: #{e.message}"
-      nil
     rescue StandardError => e
       Rails.logger.error "Unexpected error in link_to_specific_page: #{e.message}"
-      nil
     end
+    nil
   end
 
     # Helper to generate the path for a specific page
@@ -49,10 +44,9 @@ Kaminari::Helpers::HelperMethods.module_eval do
       Kaminari::Helpers::Page.new(self, **options.reverse_merge(page: page)).url
     rescue ArgumentError => e
       Rails.logger.info "Error in path_to_specific_page: #{e.message}"
-      nil
     rescue StandardError => e
       Rails.logger.error "Unexpected error in path_to_specific_page: #{e.message}\n#{e.backtrace.join("\n")}"
-      nil
     end
+    nil
   end
 end

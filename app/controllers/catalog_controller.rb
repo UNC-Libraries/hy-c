@@ -55,37 +55,23 @@ class CatalogController < ApplicationController
     facet_values = response.dig('facet_counts', 'facet_fields', field_name)
     # Facet counts are included with names in the list, so divide by 2
     total_unique_facets = facet_values ? (facet_values.length / 2) : 0
-
-    Rails.logger.info("Total unique facets for '#{field_name}': #{total_unique_facets}")
-    total_unique_facets
+    total_unique_facet
   rescue StandardError => e
-    # WIP: Change Later
-    Rails.logger.info("Error retrieving facets for '#{field_name}': #{e.message}")
-    Rails.logger.info(e.backtrace.join("\n"))
+    Rails.logger.error("Error retrieving facets for '#{field_name}': #{e.message}")
+    Rails.logger.error(e.backtrace.join("\n"))
     0
   end
 
   def facet
-    Rails.logger.info('FACET ACTION STARTED')
-    Rails.logger.info("Request Parameters: #{params.inspect}")
-
     begin
-      facet_field = params[:id]
-      Rails.logger.info("Facet Field: #{facet_field}")
+      facet_field_name = params[:id]
       super
-      # Calculate the total unique facet count and append it to the response
-      @total_unique_facets =  facet_total_count(facet_field)
-      # @response[:facet_total_count] = total_facet_count
-      # Log the response object if available
-      Rails.logger.info("Facet Response: #{@response.inspect}") if @response
+      # Calculate the total unique facet count
+      @total_unique_facets =  facet_total_count(facet_field_name)
     rescue StandardError => e
       # Capture any errors that occur and log them
       Rails.logger.error("Error during facet action: #{e.message}")
       Rails.logger.error(e.backtrace.join("\n"))
-      # Optionally, re-raise the error or render a fallback response
-      raise e
-    ensure
-      Rails.logger.info('FACET ACTION COMPLETED')
     end
   end
 
