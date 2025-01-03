@@ -2,7 +2,7 @@
 # [hyc-override] https://github.com/kaminari/kaminari/blob/v1.2.2/kaminari-core/lib/kaminari/helpers/helper_methods.rb
 Kaminari::Helpers::HelperMethods.module_eval do
     # Helper to generate a link to a specific page
-  def link_to_specific_page(scope, name, page, total_entries, **options)
+  def link_to_specific_page(scope, page, total_entries, **options)
     begin
       # Validate inputs
       raise ArgumentError, "Page number must be a positive integer - got #{page}" unless page.is_a?(Integer) && page.positive?
@@ -16,7 +16,7 @@ Kaminari::Helpers::HelperMethods.module_eval do
       options[:aria] ||= { label: "Go to page #{page}" }
 
       if specific_page_path
-        link_to(name || page, specific_page_path, options)
+        link_to("#{page}" || page, specific_page_path, options)
       else
         Rails.logger.warn "Specific page path could not be generated for page: #{page}"
       end
