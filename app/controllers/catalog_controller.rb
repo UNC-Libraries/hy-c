@@ -59,8 +59,9 @@ class CatalogController < ApplicationController
     Rails.logger.info("Total unique facets for '#{field_name}': #{total_unique_facets}")
     total_unique_facets
   rescue StandardError => e
-    Rails.logger.error("Error retrieving facets for '#{field_name}': #{e.message}")
-    Rails.logger.error(e.backtrace.join("\n"))
+    # WIP: Change Later
+    Rails.logger.info("Error retrieving facets for '#{field_name}': #{e.message}")
+    Rails.logger.info(e.backtrace.join("\n"))
     0
   end
 
