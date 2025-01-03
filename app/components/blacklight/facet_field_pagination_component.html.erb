@@ -17,6 +17,7 @@
     <% first_pages_count = 2 %> 
     <% last_pages_count = 2 %> 
     <% surrounding_pages = 4 %> 
+    <% Rails.logger.info("Limit: #{limit}, Offset: #{offset}, Total Pages: #{total_pages}, Total Unique Facets: #{@total_unique_facets}")%>
     <!-- Page Numbers -->
     <% (1..total_pages).each do |page| %>
     <!-- Display pages within +/-4 of the current page, always show the first and last two pages  -->
