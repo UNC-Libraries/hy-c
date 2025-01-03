@@ -2,13 +2,13 @@
 # [hyc-override] https://github.com/kaminari/kaminari/blob/v1.2.2/kaminari-core/lib/kaminari/helpers/helper_methods.rb
 Kaminari::Helpers::HelperMethods.module_eval do
     # Helper to generate a link to a specific page
-  def link_to_specific_page(scope, name, page, total_pages, **options)
+  def link_to_specific_page(scope, name, page, total_entries, **options)
     begin
       # Validate inputs
     #   raise ArgumentError, 'Scope is required and must respond to :total_pages' unless scope&.respond_to?(:total_pages)
       raise ArgumentError, "Page number must be a positive integer - got #{page}" unless page.is_a?(Integer) && page.positive?
 
-      specific_page_path = path_to_specific_page(scope, page, total_pages, options)
+      specific_page_path = path_to_specific_page(scope, page, total_entries, options)
 
       # Remove the :params and :param_name keys from the options hash before generating the link since they are irrelevant
       options.except! :params, :param_name
@@ -34,14 +34,14 @@ Kaminari::Helpers::HelperMethods.module_eval do
   end
 
     # Helper to generate the path for a specific page
-  def path_to_specific_page(scope, page, total_pages, options = {})
+  def path_to_specific_page(scope, page, total_entries, options = {})
     begin
       # Calculate total pages manually
     #   total_items = scope.instance_variable_get(:@all).size
     #   limit = scope.instance_variable_get(:@limit)
     #   total_pages = (total_items.to_f / limit).ceil
 
-      Rails.logger.info "path_to_specific_page: total_items=#{total_items}, limit=#{limit}, calculated total_pages=#{total_pages}, page=#{page}"
+      Rails.logger.info "path_to_specific_page: total_entries=#{total_entries}, limit=#{limit}, calculated total_pages=#{total_pages}, page=#{page}"
 
       # Validate inputs
       raise ArgumentError, 'Page number must be a positive integer' unless page.is_a?(Integer) && page.positive?
