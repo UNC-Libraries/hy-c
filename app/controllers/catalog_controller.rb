@@ -74,8 +74,8 @@ class CatalogController < ApplicationController
       Rails.logger.info("Facet Field: #{facet_field}")
       super
       # Calculate the total unique facet count and append it to the response
-      total_facet_count = facet_total_count(facet_field)
-      @response[:facet_total_count] = total_facet_count
+      @facet_total_count =  facet_total_count(facet_field)
+      # @response[:facet_total_count] = total_facet_count
       # Log the response object if available
       Rails.logger.info("Facet Response: #{@response.inspect}") if @response
     rescue StandardError => e
