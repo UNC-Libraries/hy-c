@@ -37,11 +37,10 @@ Kaminari::Helpers::HelperMethods.module_eval do
   def path_to_specific_page(scope, page, total_entries, options = {})
     begin
       # Calculate total pages manually
-    #   total_items = scope.instance_variable_get(:@all).size
-    #   limit = scope.instance_variable_get(:@limit)
-    #   total_pages = (total_items.to_f / limit).ceil
+      limit = scope.instance_variable_get(:@limit)
+      total_pages = (total_entries.to_f / limit).ceil
 
-      # Rails.logger.info "path_to_specific_page: total_entries=#{total_entries}, limit=#{limit}, calculated total_pages=#{total_pages}, page=#{page}"
+      Rails.logger.info "path_to_specific_page: total_entries=#{total_entries}, limit=#{limit}, calculated total_pages=#{total_pages}, page=#{page}"
 
       # Validate inputs
       raise ArgumentError, 'Page number must be a positive integer' unless page.is_a?(Integer) && page.positive?
