@@ -32,7 +32,14 @@
           <% if page == current_page %>
             <span class="page-link" aria-label="Current Page, Page <%= page %>" aria-current="true"><%= page %></span>
           <% else %>
-            <%=  helpers.link_to_specific_page @facet_field.paginator, page.to_i, @total_unique_facets, params: @facet_field.search_state.to_h.merge(page: page, 'facet.page' => page), class: "page-link" %>
+          <!-- Typecasting not effective in helper method, using hash as a workaround -->
+            <%= helpers.link_to_specific_page(
+                @facet_field.paginator,
+                { integer: page.to_i, string: "#{page}" },
+                @total_unique_facets,
+                params: @facet_field.search_state.to_h.merge(page: page, 'facet.page' => page),
+                class: "page-link"
+              ) %>
           <% end %>
         </li>
         <!-- Render ellipsis for pages that would be just outside of the range (3,last page - 2) if they aren't show pages -->
