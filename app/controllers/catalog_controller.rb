@@ -37,6 +37,58 @@ class CatalogController < ApplicationController
     single_item_search_builder_class.new(self, id).with(params.except(:q, :page))
   end
 
+  def facet_total_count(field_name)
+    query = '*:*'
+    params = {
+      facet: true,
+      'facet.field': field_name,
+      rows: 0,
+      'facet.limit': -1, # Retrieve all facets
+      wt: 'json'
+    }
+
+    # Perform the Solr query using Hyrax::SolrService
+    # Using spread operator to convert object into keyword arguments
+    response = Hyrax::SolrService.get(query, **params)
+
+    # Parse the response to extract the total unique facets
+    facet_values = response.dig('facet_counts', 'facet_fields', field_name)
+    # Facet counts are included with names in the list, so divide by 2
+    total_unique_facets = facet_values ? (facet_values.length / 2) : 0
+
+    Rails.logger.info("Total unique facets for '#{field_name}': #{total_unique_facets}")
+    total_unique_facets
+  rescue StandardError => e
+    Rails.logger.error("Error retrieving facets for '#{field_name}': #{e.message}")
+    Rails.logger.error(e.backtrace.join("\n"))
+    0
+  end
+
+  def facet
+    Rails.logger.info('FACET ACTION STARTED')
+    Rails.logger.info("Request Parameters: #{params.inspect}")
+
+    begin
+      facet_field = params[:id]
+      Rails.logger.info("Facet Field: #{facet_field}")
+      super
+      # Calculate the total unique facet count and append it to the response
+      total_facet_count = facet_total_count(facet_field)
+      @response[:facet_total_count] = total_facet_count
+      # Log the response object if available
+      Rails.logger.info("Facet Response: #{@response.inspect}") if @response
+    rescue StandardError => e
+      # Capture any errors that occur and log them
+      Rails.logger.error("Error during facet action: #{e.message}")
+      Rails.logger.error(e.backtrace.join("\n"))
+      # Optionally, re-raise the error or render a fallback response
+      raise e
+    ensure
+      Rails.logger.info('FACET ACTION COMPLETED')
+    end
+  end
+
+
   configure_blacklight do |config|
     # Advanced search configuration
     config.advanced_search ||= Blacklight::OpenStructWithHashAccess.new
