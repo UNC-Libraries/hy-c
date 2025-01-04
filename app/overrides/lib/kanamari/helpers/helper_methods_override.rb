@@ -17,17 +17,17 @@ Kaminari::Helpers::HelperMethods.module_eval do
 
       if specific_page_path
         link_to(name || page, specific_page_path, options)
-      elsif block_given?
-        yield
       else
         Rails.logger.warn "Specific page path could not be generated for page: #{page}"
+        nil
       end
     rescue ArgumentError => e
       Rails.logger.error "Error in link_to_specific_page: #{e.message}"
+      nil
     rescue StandardError => e
       Rails.logger.error "Unexpected error in link_to_specific_page: #{e.message}"
+      nil
     end
-    nil
   end
 
     # Helper to generate the path for a specific page
