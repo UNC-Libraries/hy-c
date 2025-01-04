@@ -46,9 +46,10 @@ Kaminari::Helpers::HelperMethods.module_eval do
       Kaminari::Helpers::Page.new(self, **options.reverse_merge(page: page)).url
     rescue ArgumentError => e
       Rails.logger.info "Error in path_to_specific_page: #{e.message}"
+      nil
     rescue StandardError => e
       Rails.logger.error "Unexpected error in path_to_specific_page: #{e.message}\n#{e.backtrace.join("\n")}"
+      nil
     end
-    nil
   end
 end
