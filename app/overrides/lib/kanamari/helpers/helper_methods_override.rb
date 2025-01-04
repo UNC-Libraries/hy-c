@@ -10,12 +10,12 @@ Kaminari::Helpers::HelperMethods.module_eval do
       options.except! :params, :param_name
 
       # Setting aria instead of rel for accessibility
-      options[:aria] ||= { label: "Go to page #{page_hash[:string]}" }
+      options[:aria] ||= { label: "Go to page #{page_hash[:integer]}" }
 
       if specific_page_path
-        link_to(page_hash[:string] || page, specific_page_path, options)
+        link_to(page_hash[:string] || page_hash[:integer], specific_page_path, options)
       else
-        Rails.logger.warn "Specific page path could not be generated for page: #{page_hash[:string]}"
+        Rails.logger.warn "Specific page path could not be generated for page: #{page_hash[:integer]}"
       end
     rescue ArgumentError => e
       Rails.logger.error "Error in link_to_specific_page: #{e.message}"
