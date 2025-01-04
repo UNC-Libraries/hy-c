@@ -35,7 +35,7 @@
           <!-- Typecasting not effective in helper method, using hash as a workaround -->
             <%= helpers.link_to_specific_page(
                 @facet_field.paginator,
-                { integer: page.to_i, string: "#{page}" },
+                page,
                 @total_unique_facets,
                 params: @facet_field.search_state.to_h.merge(page: page, 'facet.page' => page),
                 class: "page-link"

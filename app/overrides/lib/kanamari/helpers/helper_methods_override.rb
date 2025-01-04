@@ -2,27 +2,29 @@
 # [hyc-override] https://github.com/kaminari/kaminari/blob/v1.2.2/kaminari-core/lib/kaminari/helpers/helper_methods.rb
 Kaminari::Helpers::HelperMethods.module_eval do
     # Helper to generate a link to a specific page
-  def link_to_specific_page(scope, page_hash, total_entries, **options)
+  def link_to_specific_page(scope, page, total_entries, **options)
     begin
-      specific_page_path = path_to_specific_page(scope, page_hash[:integer], total_entries, options)
+      specific_page_path = path_to_specific_page(scope, page.to_i, total_entries, options)
 
       # Remove unnecessary keys :params and :param_name from the options hash before generating the link
       options.except! :params, :param_name
 
       # Setting aria instead of rel for accessibility
-      options[:aria] ||= { label: "Go to page #{page_hash[:integer]}" }
+      options[:aria] ||= { label: "Go to page #{page.to_i}" }
 
       if specific_page_path
-        link_to(page_hash[:string] || page_hash[:integer], specific_page_path, options)
+        link_to("#{page.to_i}" || page.to_i, specific_page_path, options)
       else
-        Rails.logger.warn "Specific page path could not be generated for page: #{page_hash[:integer]}"
+        Rails.logger.warn "Specific page path could not be generated for page: #{page.to_i}"
+        nil
       end
     rescue ArgumentError => e
       Rails.logger.error "Error in link_to_specific_page: #{e.message}"
+      nil
     rescue StandardError => e
       Rails.logger.error "Unexpected error in link_to_specific_page: #{e.message}"
+      nil
     end
-    nil
   end
 
     # Helper to generate the path for a specific page
@@ -41,9 +43,10 @@ Kaminari::Helpers::HelperMethods.module_eval do
       Kaminari::Helpers::Page.new(self, **options.reverse_merge(page: page_integer)).url
     rescue ArgumentError => e
       Rails.logger.info "Error in path_to_specific_page: #{e.message}"
+      nil
     rescue StandardError => e
       Rails.logger.error "Unexpected error in path_to_specific_page: #{e.message}\n#{e.backtrace.join("\n")}"
+      nil
     end
-    nil
   end
 end
