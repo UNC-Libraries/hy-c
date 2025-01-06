@@ -3,23 +3,18 @@
 Kaminari::Helpers::HelperMethods.module_eval do
     # Helper to generate a link to a specific page
   def link_to_specific_page(scope, page, total_entries, **options)
-    begin
-      specific_page_path = path_to_specific_page(scope, page.to_i, total_entries, options)
+    specific_page_path = path_to_specific_page(scope, page.to_i, total_entries, options)
 
       # Remove unnecessary keys :params and :param_name from the options hash before generating the link
-      options.except! :params, :param_name
+    options.except! :params, :param_name
 
       # Setting aria instead of rel for accessibility
-      options[:aria] ||= { label: "Go to page #{page.to_i}" }
+    options[:aria] ||= { label: "Go to page #{page.to_i}" }
 
-      if specific_page_path
-        link_to("#{page.to_i}" || page.to_i, specific_page_path, options)
-      else
-        Rails.logger.warn "Specific page path could not be generated for page: #{page.to_i}"
-        nil
-      end
-    rescue => e
-      Rails.logger.error "#{e.message}"
+    if specific_page_path
+      link_to("#{page.to_i}", specific_page_path, options)
+    else
+      Rails.logger.warn "Specific page path could not be generated for page: #{page.to_i}"
       nil
     end
   end
