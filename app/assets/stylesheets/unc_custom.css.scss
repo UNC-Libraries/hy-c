@@ -1314,3 +1314,10 @@ Hide it entirely until the issue is resolved upstreeam
 .work-reports .nav-pills .nav-link.active {
   color: white;
 }
+
+// Fix from https://github.com/samvera/hyrax/blob/hyrax-v5.0.1/app/assets/stylesheets/hyrax/_file_upload.scss#L40
+// fix blueimp jQuery-File-Upload display problems under Bootstrap 4+
+// found here: https://stackoverflow.com/a/48162651
+.fade.in {
+  opacity: 1
+}
