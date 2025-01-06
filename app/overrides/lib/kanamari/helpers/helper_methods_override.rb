@@ -18,11 +18,8 @@ Kaminari::Helpers::HelperMethods.module_eval do
         Rails.logger.warn "Specific page path could not be generated for page: #{page.to_i}"
         nil
       end
-    rescue ArgumentError => e
-      Rails.logger.error "Error in link_to_specific_page: #{e.message}"
-      nil
-    rescue StandardError => e
-      Rails.logger.error "Unexpected error in link_to_specific_page: #{e.message}"
+    rescue => e
+      Rails.logger.error "#{e.message}"
       nil
     end
   end
@@ -34,7 +31,7 @@ Kaminari::Helpers::HelperMethods.module_eval do
       limit = scope.instance_variable_get(:@limit)
       total_pages = (total_entries.to_f / limit).ceil
 
-      Rails.logger.info "path_to_specific_page: total_entries=#{total_entries}, limit=#{limit}, calculated total_pages=#{total_pages}, page=#{page_integer}"
+      Rails.logger.debug "path_to_specific_page: total_entries=#{total_entries}, limit=#{limit}, calculated total_pages=#{total_pages}, page=#{page_integer}"
 
       # Validate inputs
       raise ArgumentError, 'Page number must be a positive integer' unless page_integer.positive?
@@ -42,9 +39,9 @@ Kaminari::Helpers::HelperMethods.module_eval do
       # Generate URL using Kaminari's Page helper
       Kaminari::Helpers::Page.new(self, **options.reverse_merge(page: page_integer)).url
     rescue ArgumentError => e
-      Rails.logger.info "Error in path_to_specific_page: #{e.message}"
+      Rails.logger.error "Error in path_to_specific_page: #{e.message}"
       nil
-    rescue StandardError => e
+    rescue => e
       Rails.logger.error "Unexpected error in path_to_specific_page: #{e.message}\n#{e.backtrace.join("\n")}"
       nil
     end
