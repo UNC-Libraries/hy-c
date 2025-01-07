@@ -50,7 +50,7 @@
   </ul>
 </div>
 
-<div class="sort-options btn-group">
+<div class="sort-options btn-group" style="height: 40px;">
   <% if @facet_field.paginator.sort == 'index' -%>
     <span class="active az btn btn-outline-secondary"><%= t('blacklight.search.facets.sort.index') %></span>
     <%= helpers.link_to(t('blacklight.search.facets.sort.count'), sort_facet_url('count'), class: "sort_change numeric btn btn-outline-secondary", data: { blacklight_modal: "preserve" }) %>
