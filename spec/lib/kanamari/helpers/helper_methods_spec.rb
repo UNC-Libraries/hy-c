@@ -2,7 +2,12 @@
 require 'rails_helper'
 
 RSpec.describe Kaminari::Helpers::HelperMethods do
-  let(:dummy_class) { Class.new { extend Kaminari::Helpers::HelperMethods } }
+  let(:dummy_class) do
+    Class.new do
+      extend ActionView::Helpers::UrlHelper
+      extend Kaminari::Helpers::HelperMethods
+    end
+  end
   let(:scope) { double('FacetPaginator', instance_variable_get: 20) }
   let(:valid_page) { 1 }
   let(:total_entries) { 100 }
@@ -14,13 +19,13 @@ RSpec.describe Kaminari::Helpers::HelperMethods do
       allow(Kaminari::Helpers::Page).to receive(:new).and_return(double(url: '/some_path'))
     end
 
-    # it 'generates a valid link for correct input' do
-    #   expect(Rails.logger).to_not receive(:error)
-    #   allow(dummy_class).to receive(:link_to).and_return('link')
-    #   # Mock link_to to check its arguments
-    #   dummy_class.link_to_specific_page(scope, valid_page, total_entries, **options)
-    #     # Expect the method to return the mocked URL
-    # end
+    it 'generates a valid link for correct input' do
+      expect(Rails.logger).to_not receive(:error)
+      allow(dummy_class).to receive(:link_to).and_return('link')
+      # Mock link_to to check its arguments
+      dummy_class.link_to_specific_page(scope, valid_page, total_entries, **options)
+        # Expect the method to return the mocked URL
+    end
 
 
     it 'logs and returns nil for invalid page input' do
