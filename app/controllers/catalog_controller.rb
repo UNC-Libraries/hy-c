@@ -37,6 +37,46 @@ class CatalogController < ApplicationController
     single_item_search_builder_class.new(self, id).with(params.except(:q, :page))
   end
 
+  def facet_total_count(field_name)
+    query = '*:*'
+    params = {
+      facet: true,
+      'facet.field': field_name,
+      rows: 0,
+      'facet.limit': -1, # Retrieve all facets
+      wt: 'json'
+    }
+
+    # Perform the Solr query using Hyrax::SolrService
+    # Using spread operator to convert object into keyword arguments
+    response = Hyrax::SolrService.get(query, **params)
+
+    # Parse the response to extract the total unique facets
+    facet_values = response.dig('facet_counts', 'facet_fields', field_name)
+    # Facet counts are included with names in the list, so divide by 2
+    total_unique_facets = facet_values ? (facet_values.length / 2) : 0
+    total_unique_facets
+  rescue StandardError => e
+    Rails.logger.error("Error retrieving facets for '#{field_name}': #{e.message}")
+    Rails.logger.error(e.backtrace.join("\n"))
+    0
+  end
+
+  def facet
+    begin
+      facet_field_name = params[:id]
+      targeted_facet_list = ['affiliation_label_sim']
+      super
+      # Only calculate total unique facets for facets in the target list
+      @total_unique_facets =  targeted_facet_list.include?(facet_field_name) ? facet_total_count(facet_field_name) : 0
+    rescue StandardError => e
+      # Capture any errors that occur and log them
+      Rails.logger.error("Error during facet action: #{e.message}")
+      Rails.logger.error(e.backtrace.join("\n"))
+    end
+  end
+
+
   configure_blacklight do |config|
     # Advanced search configuration
     config.advanced_search ||= Blacklight::OpenStructWithHashAccess.new
