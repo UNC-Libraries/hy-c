@@ -125,7 +125,7 @@ ActiveFedora::RDF::IndexingService.class_eval do
         display_text << "ORCID: #{orcid.first}" unless orcid.first.blank?
         @orcid_label.push(orcid)
 
-        display_text = build_affiliations(person['affiliation'], display_text)
+        add_affiliation(person['affiliation'], display_text)
 
         other_affil = Array(person['other_affiliation'])
         display_text << "Other Affiliation: #{other_affil.first}" unless other_affil.first.blank?
@@ -137,31 +137,14 @@ ActiveFedora::RDF::IndexingService.class_eval do
     displays.flatten
   end
 
-  def build_affiliations(affiliation_identifier, display_text)
-    affiliations = split_affiliations(affiliation_identifier)
-    unless affiliations.blank?
-      display_text << "Affiliation: #{affiliations.join(', ')}"
-
-      affiliation_ids = Array(affiliation_identifier)
-      short_labels = affiliation_ids.map do |affil_id|
-        DepartmentsService.short_label(affil_id)
-      end
-      @affiliation_label.push(short_labels)
-    end
-
-    display_text
-  end
-
-  # split affiliations out
-  def split_affiliations(affiliations)
-    affiliations_list = []
-
-    Array(affiliations).reject { |a| a.blank? }.each do |aff|
-      Array(DepartmentsService.term(aff)).join(';').split(';').each do |value|
-        affiliations_list.push(value.squish!)
+  def add_affiliation(affiliation_relation, display_text)
+    affiliation_identifier = Array(affiliation_relation).first
+    term = DepartmentsService.term(affiliation_identifier)
+    if term.present?
+      display_text << "Affiliation: #{affiliation_identifier}"
+      term.split(';').each do |term_val|
+        @affiliation_label.push(term_val.strip)
       end
     end
-
-    affiliations_list.uniq
   end
 end

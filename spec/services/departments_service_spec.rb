@@ -16,7 +16,7 @@ RSpec.describe Hyrax::DepartmentsService do
     end
   end
 
-  describe '#label' do
+  describe '#term' do
     it 'resolves for ids of active terms' do
       expect(service.term('history')).to eq('History')
     end

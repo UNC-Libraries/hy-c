@@ -20,6 +20,13 @@ module HycHelper
     options
   end
 
+  # Format affiliation to display short label if available, otherwise display the original facet value
+  def format_affiliation_facet(facet_value)
+    label = DepartmentsService.short_label(facet_value)
+    Rails.logger.error("Getting affiliation label for '#{facet_value}': #{label}")
+    label.blank? ? facet_value : label
+  end
+
   def get_work_url(model, id)
     Rails.application.routes.url_helpers.send("#{Hyrax::Name.new(model).singular_route_key}_url", id)
   end
