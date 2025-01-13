@@ -37,4 +37,28 @@ RSpec.describe HycHelper do
       end
     end
   end
+
+  describe '#format_affiliation_facet' do
+    before do
+      # Configure QA to use fixtures
+      qa_fixtures = { local_path: File.expand_path('spec/fixtures/authorities') }
+      allow(Qa::Authorities::Local).to receive(:config).and_return(qa_fixtures)
+    end
+
+    context 'with valid facet value' do
+      let(:facet_value) { 'Department of Chemistry' }
+
+      it 'returns the short label for the facet value' do
+        expect(helper.format_affiliation_facet(facet_value)).to eq 'Test short Department of Chemistry'
+      end
+    end
+
+    context 'with invalid facet value' do
+      let(:invalid_facet_value) { 'not-a-department' }
+
+      it 'returns the original facet value' do
+        expect(helper.format_affiliation_facet(invalid_facet_value)).to eq invalid_facet_value
+      end
+    end
+  end
 end

@@ -19,8 +19,8 @@ RSpec.describe HycIndexer, type: :indexer do
     let(:solr_affiliation_array_sim) { solr_doc.fetch('affiliation_label_sim') }
 
     let(:solr_expected_creator_array) do
-      ['index:1||creator||Affiliation: School of Medicine, Carolina Center for Genome Sciences',
-       'index:2||creator2||Affiliation: College of Arts and Sciences, Department of Chemistry']
+      ['index:1||creator||Affiliation: Carolina Center for Genome Sciences',
+       'index:2||creator2||Affiliation: Department of Chemistry']
     end
     let(:fedora_creator_array) { work_with_people.creators.map(&:attributes) }
     let(:fedora_creator_hash_one) { fedora_creator_array.find { |hash| hash['index'] == [1] } }
@@ -58,8 +58,8 @@ RSpec.describe HycIndexer, type: :indexer do
       end
 
       it 'maps the affiliations to the facet with the short_label' do
-        expect(solr_affiliation_array_tesim).to match_array(['Test short Carolina Center for Genome Sciences', 'Test short Department of Chemistry'])
-        expect(solr_affiliation_array_sim).to match_array(['Test short Carolina Center for Genome Sciences', 'Test short Department of Chemistry'])
+        expect(solr_affiliation_array_tesim).to match_array(["Carolina Center for Genome Sciences", "College of Arts and Sciences", "Department of Chemistry", "School of Medicine"])
+        expect(solr_affiliation_array_sim).to match_array(["Carolina Center for Genome Sciences", "College of Arts and Sciences", "Department of Chemistry", "School of Medicine"])
       end
 
       it 'stores the id in Fedora' do
@@ -69,7 +69,7 @@ RSpec.describe HycIndexer, type: :indexer do
 
     context 'with a work ingested with ProQuest' do
       let(:solr_expected_creator_array) do
-        ['index:1||creator||Affiliation: School of Medicine, Curriculum in Genetics and Molecular Biology',
+        ['index:1||creator||Affiliation: Curriculum in Genetics and Molecular Biology',
          'index:2||creator2']
       end
       let(:work_with_people) do
@@ -89,8 +89,8 @@ RSpec.describe HycIndexer, type: :indexer do
 
       it 'only indexes the controlled affiliation to Solr' do
         expect(solr_creator_array).to match_array(solr_expected_creator_array)
-        expect(solr_affiliation_array_tesim).to match_array(['Test short Genetics and Molecular Biology'])
-        expect(solr_affiliation_array_sim).to match_array(['Test short Genetics and Molecular Biology'])
+        expect(solr_affiliation_array_tesim).to match_array(["Curriculum in Genetics and Molecular Biology", "School of Medicine"])
+        expect(solr_affiliation_array_sim).to match_array(["Curriculum in Genetics and Molecular Biology", "School of Medicine"])
       end
     end
 
@@ -150,8 +150,8 @@ RSpec.describe HycIndexer, type: :indexer do
 
     context 'with two of the same affiliation' do
       let(:solr_expected_creator_array) do
-        ['index:1||creator||Affiliation: School of Medicine, Carolina Center for Genome Sciences||Other Affiliation: Matching string',
-         'index:2||creator2||Affiliation: School of Medicine, Carolina Center for Genome Sciences||Other Affiliation: Matching string']
+        ['index:1||creator||Affiliation: Carolina Center for Genome Sciences||Other Affiliation: Matching string',
+         'index:2||creator2||Affiliation: Carolina Center for Genome Sciences||Other Affiliation: Matching string']
       end
       let(:work_with_people) do
         Dissertation.new(title: ['New General Work with people'],
@@ -170,8 +170,8 @@ RSpec.describe HycIndexer, type: :indexer do
       end
 
       it 'indexes the affiliations for faceting together' do
-        expect(solr_affiliation_array_tesim).to match_array(['Test short Carolina Center for Genome Sciences'])
-        expect(solr_affiliation_array_sim).to match_array(['Test short Carolina Center for Genome Sciences'])
+        expect(solr_affiliation_array_tesim).to match_array(["Carolina Center for Genome Sciences", "School of Medicine"])
+        expect(solr_affiliation_array_sim).to match_array(["Carolina Center for Genome Sciences", "School of Medicine"])
       end
     end
 
@@ -300,14 +300,14 @@ RSpec.describe HycIndexer, type: :indexer do
   describe 'indexing people objects' do
     let(:creator_array) { solr_doc.fetch('creator_display_tesim') }
     let(:expected_creator_array) do
-      ['index:1||creator||ORCID: creator orcid||Affiliation: School of Medicine, Carolina Center for Genome Sciences||Other Affiliation: another affiliation',
-       'index:2||creator2||ORCID: creator2 orcid||Affiliation: College of Arts and Sciences, Department of Chemistry||Other Affiliation: another affiliation']
+      ['index:1||creator||ORCID: creator orcid||Affiliation: Carolina Center for Genome Sciences||Other Affiliation: another affiliation',
+       'index:2||creator2||ORCID: creator2 orcid||Affiliation: Department of Chemistry||Other Affiliation: another affiliation']
     end
 
     let(:reviewer_array) { solr_doc.fetch('reviewer_display_tesim') }
     let(:expected_reviewer_array) do
-      ['index:1||reviewer||ORCID: reviewer orcid||Affiliation: School of Medicine, Carolina Center for Genome Sciences||Other Affiliation: another affiliation',
-       'index:2||reviewer2||ORCID: reviewer2 orcid||Affiliation: College of Arts and Sciences, Department of Chemistry||Other Affiliation: another affiliation']
+      ['index:1||reviewer||ORCID: reviewer orcid||Affiliation: Carolina Center for Genome Sciences||Other Affiliation: another affiliation',
+       'index:2||reviewer2||ORCID: reviewer2 orcid||Affiliation: Department of Chemistry||Other Affiliation: another affiliation']
     end
     let(:solr_doc) { described_class.new(work_with_people).generate_solr_document }
 
@@ -372,8 +372,8 @@ RSpec.describe HycIndexer, type: :indexer do
 
     context 'with a mix of submitted and unsubmitted index values' do
       let(:expected_creator_array) do
-        ['index:2||creator||ORCID: creator orcid||Affiliation: School of Medicine, Carolina Center for Genome Sciences||Other Affiliation: another affiliation',
-         'index:1||creator2||ORCID: creator2 orcid||Affiliation: College of Arts and Sciences, Department of Chemistry||Other Affiliation: another affiliation',
+        ['index:2||creator||ORCID: creator orcid||Affiliation: Carolina Center for Genome Sciences||Other Affiliation: another affiliation',
+         'index:1||creator2||ORCID: creator2 orcid||Affiliation: Department of Chemistry||Other Affiliation: another affiliation',
          'index:3||creator3||ORCID: creator3 orcid||Affiliation: Department of Chemistry||Other Affiliation: another affiliation']
       end
 
