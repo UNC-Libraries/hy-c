@@ -58,8 +58,8 @@ RSpec.describe HycIndexer, type: :indexer do
       end
 
       it 'maps the affiliations to the facet with the short_label' do
-        expect(solr_affiliation_array_tesim).to match_array(["Carolina Center for Genome Sciences", "College of Arts and Sciences", "Department of Chemistry", "School of Medicine"])
-        expect(solr_affiliation_array_sim).to match_array(["Carolina Center for Genome Sciences", "College of Arts and Sciences", "Department of Chemistry", "School of Medicine"])
+        expect(solr_affiliation_array_tesim).to match_array(['Carolina Center for Genome Sciences', 'College of Arts and Sciences', 'Department of Chemistry', 'School of Medicine'])
+        expect(solr_affiliation_array_sim).to match_array(['Carolina Center for Genome Sciences', 'College of Arts and Sciences', 'Department of Chemistry', 'School of Medicine'])
       end
 
       it 'stores the id in Fedora' do
@@ -89,8 +89,8 @@ RSpec.describe HycIndexer, type: :indexer do
 
       it 'only indexes the controlled affiliation to Solr' do
         expect(solr_creator_array).to match_array(solr_expected_creator_array)
-        expect(solr_affiliation_array_tesim).to match_array(["Curriculum in Genetics and Molecular Biology", "School of Medicine"])
-        expect(solr_affiliation_array_sim).to match_array(["Curriculum in Genetics and Molecular Biology", "School of Medicine"])
+        expect(solr_affiliation_array_tesim).to match_array(['Curriculum in Genetics and Molecular Biology', 'School of Medicine'])
+        expect(solr_affiliation_array_sim).to match_array(['Curriculum in Genetics and Molecular Biology', 'School of Medicine'])
       end
     end
 
@@ -170,8 +170,8 @@ RSpec.describe HycIndexer, type: :indexer do
       end
 
       it 'indexes the affiliations for faceting together' do
-        expect(solr_affiliation_array_tesim).to match_array(["Carolina Center for Genome Sciences", "School of Medicine"])
-        expect(solr_affiliation_array_sim).to match_array(["Carolina Center for Genome Sciences", "School of Medicine"])
+        expect(solr_affiliation_array_tesim).to match_array(['Carolina Center for Genome Sciences', 'School of Medicine'])
+        expect(solr_affiliation_array_sim).to match_array(['Carolina Center for Genome Sciences', 'School of Medicine'])
       end
     end
 
