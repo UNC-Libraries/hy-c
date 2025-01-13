@@ -165,7 +165,7 @@ terms:
   active: false
   short_label: Heart and Vascular Center
 - id: Center for Esophageal Diseases and Swallowing
-  term: School of Medicine, Department of Medicine, Center for Esophageal Diseases and Swallowing
+  term: School of Medicine; Department of Medicine; Center for Esophageal Diseases and Swallowing
   active: true
   short_label: Center for Esophageal Diseases and Swallowing
 - id: Center for Faculty Excellence
@@ -201,7 +201,7 @@ terms:
   active: true
   short_label: Center for Nanotechnology in Drug Delivery
 - id: Center for Pain Research and Innovation
-  term: School of Dentistry, Center for Pain Research and Innovation
+  term: School of Dentistry; Center for Pain Research and Innovation
   active: true
   short_label: Center for Pain Research and Innovation
 - id: Center of Pharmacogenomics and Individualized Therapy
@@ -769,7 +769,7 @@ terms:
   active: true
   short_label: Department of Religious Studies
 - id: Department of Research Computing
-  term: Information Technology Services, Department of Research Computing
+  term: Information Technology Services; Department of Research Computing
   active: true
   short_label: Department of Research Computing
 - id: Department of Romance Languages
@@ -845,7 +845,7 @@ terms:
   active: true
   short_label: Division of Cardiology
 - id: Division of Cardiothoracic Surgery
-  term: School of Medicine, Department of Surgery, Division of Cardiothoracic Surgery
+  term: School of Medicine; Department of Surgery; Division of Cardiothoracic Surgery
   active: true
   short_label: Division of Cardiothoracic Surgery
 - id: Division of Chemical Biology and Medicinal Chemistry
@@ -1189,7 +1189,7 @@ terms:
   active: true
   short_label: Mass Communication Graduate Program
 - id: Marsico Lung Institute/UNC Cystic Fibrosis Center
-  term: School of Medicine, Marsico Lung Institute/UNC Cystic Fibrosis Center
+  term: School of Medicine; Marsico Lung Institute/UNC Cystic Fibrosis Center
   active: true
   short_label: Marsico Lung Institute/UNC Cystic Fibrosis Center
 - id: Materials Science Program
@@ -1205,7 +1205,7 @@ terms:
   active: false
   short_label: Mathematical Decision Sciences Program
 - id: Matthew Gfeller Sport-Related Traumatic Brain Injury Research Center
-  term: College of Arts and Sciences, Department of Exercise and Sports Science, Matthew Gfeller Sport-Related Traumatic Brain Injury Research Center
+  term: College of Arts and Sciences; Department of Exercise and Sports Science; Matthew Gfeller Sport-Related Traumatic Brain Injury Research Center
   active: true
   short_label: Matthew Gfeller Sport-Related Traumatic Brain Injury Research Center
 - id: Michael Hooker Microscopy Facility
@@ -1217,7 +1217,7 @@ terms:
   active: true
   short_label: Molecular and Cellular Pathology Graduate Program
 - id: Moore Undergraduate Research Apprenticeship Program (MURAP)
-  term: Institute of African American Research, Moore Undergraduate Research Apprenticeship Program (MURAP)
+  term: Institute of African American Research; Moore Undergraduate Research Apprenticeship Program (MURAP)
   active: true
   short_label: Moore Undergraduate Research Apprenticeship Program (MURAP)
 - id: Musicology Graduate Program
@@ -1245,7 +1245,7 @@ terms:
   active: true
   short_label: Neuroscience Curriculum
 - id: NIMH Psychoactive Drug Screening Program
-  term: School of Medicine, Department of Pharmacology, NIMH Psychoactive Drug Screening Program
+  term: School of Medicine; Department of Pharmacology; NIMH Psychoactive Drug Screening Program
   active: true
   short_label: NIMH Psychoactive Drug Screening Program
 - id: North Carolina Institute for Public Health
@@ -1313,7 +1313,7 @@ terms:
   active: true
   short_label: Organic Chemistry Program
 - id: Partnerships in Aging Program
-  term: Office of the Provost, Partnerships in Aging Program
+  term: Office of the Provost; Partnerships in Aging Program
   active: true
   short_label: Partnerships in Aging Program
 - id: Pathobiology and Translational Science Graduate Program
@@ -1633,7 +1633,7 @@ terms:
   active: false
   short_label: Louis Round Wilson Library
 - id: UNC Global Women's Health
-  term: School of Medicine, Department of Obstetrics and Gynecology, UNC Global Women's Health
+  term: School of Medicine; Department of Obstetrics and Gynecology; UNC Global Women's Health
   active: true
   short_label: UNC Global Women's Health
 - id: UNC Medical Center
@@ -1641,11 +1641,11 @@ terms:
   active: true
   short_label: UNC Medical Center
 - id: UNC Project-China
-  term: School of Medicine, UNC Project-China
+  term: School of Medicine; UNC Project-China
   active: true
   short_label: UNC Project-China
 - id: UNC Project-Malawi
-  term: School of Medicine, UNC Project-Malawi
+  term: School of Medicine; UNC Project-Malawi
   active: true
   short_label: UNC Project-Malawi
 - id: University of North Carolina at Chapel Hill
