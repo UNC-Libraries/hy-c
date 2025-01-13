@@ -11,12 +11,13 @@ RSpec.describe Hyrax::DepartmentsService do
 
   describe '#select_all_options' do
     it 'returns only active terms' do
-      expect(service.select_all_options).to include(['biology', 'biology'], ['chemistry', 'chemistry'],
-                                                    ['history', 'history'])
+      expect(service.select_all_options).to include(['Biology', 'biology'], ['Chemistry', 'chemistry'],
+                                                    ['History', 'history'],
+                                                    ['Test short Carolina Center for Genome Sciences', 'Carolina Center for Genome Sciences'])
     end
   end
 
-  describe '#label' do
+  describe '#term' do
     it 'resolves for ids of active terms' do
       expect(service.term('history')).to eq('History')
     end

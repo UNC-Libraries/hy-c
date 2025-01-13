@@ -6,7 +6,7 @@ module DepartmentsService
 
   def self.select_all_options
     authority.all.reject { |item| item['active'] == false }.map do |element|
-      [element[:id], element[:id]]
+      [element[:short_label], element[:id]]
     end
   end
 

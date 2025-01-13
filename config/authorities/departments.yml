@@ -60,6 +60,10 @@ terms:
   term: Gillings School of Global Public Health; Carolina Global Breastfeeding Institute
   active: true
   short_label: Carolina Global Breastfeeding Institute
+- id: Carolina Health Informatics Program
+  term: Carolina Health Informatics Program
+  active: true
+  short_label: Carolina Health Informatics Program
 - id: Neurodevelopment Disorders Research Center
   term: School of Medicine; Neurodevelopment Disorders Research Center; Carolina Institute for Developmental Disabilities
   active: false
@@ -161,7 +165,7 @@ terms:
   active: false
   short_label: Heart and Vascular Center
 - id: Center for Esophageal Diseases and Swallowing
-  term: School of Medicine, Department of Medicine, Center for Esophageal Diseases and Swallowing
+  term: School of Medicine; Department of Medicine; Center for Esophageal Diseases and Swallowing
   active: true
   short_label: Center for Esophageal Diseases and Swallowing
 - id: Center for Faculty Excellence
@@ -176,6 +180,10 @@ terms:
   term: School of Medicine; Center for Heart and Vascular Care
   active: true
   short_label: Center for Heart and Vascular Care
+- id: Center for Information, Technology, and Public Life
+  term: Center for Information, Technology, and Public Life
+  active: true
+  short_label: Center for Information, Technology, and Public Life
 - id: Center for Integrative Chemical Biology and Drug Discovery
   term: Eshelman School of Pharmacy; Center for Integrative Chemical Biology and Drug Discovery
   active: true
@@ -193,7 +201,7 @@ terms:
   active: true
   short_label: Center for Nanotechnology in Drug Delivery
 - id: Center for Pain Research and Innovation
-  term: School of Dentistry, Center for Pain Research and Innovation
+  term: School of Dentistry; Center for Pain Research and Innovation
   active: true
   short_label: Center for Pain Research and Innovation
 - id: Center of Pharmacogenomics and Individualized Therapy
@@ -317,9 +325,9 @@ terms:
   active: true
   short_label: Curriculum in Russian and East European Studies
 - id: Curriculum in Toxicology
-  term: School of Medicine; Curriculum in Toxicology
+  term: School of Medicine; Curriculum in Toxicology and Environmental Medicine
   active: true
-  short_label: Curriculum in Toxicology
+  short_label: Curriculum in Toxicology and Environmental Medicine
 - id: CF/Pulmonary Research and Treatment Center
   term: School of Medicine; Cystic Fibrosis and Pulmonary Diseases Research and Treatment Center
   active: false
@@ -549,9 +557,9 @@ terms:
   active: true
   short_label: Department of Genetics
 - id: Department of Geography
-  term: College of Arts and Sciences; Department of Geography
+  term: College of Arts and Sciences; Department of Geography and Environment
   active: true
-  short_label: Department of Geography
+  short_label: Department of Geography and Environment
 - id: Department of Geological Sciences
   term: College of Arts and Sciences; Department of Geological Sciences
   active: true
@@ -761,7 +769,7 @@ terms:
   active: true
   short_label: Department of Religious Studies
 - id: Department of Research Computing
-  term: Information Technology Services, Department of Research Computing
+  term: Information Technology Services; Department of Research Computing
   active: true
   short_label: Department of Research Computing
 - id: Department of Romance Languages
@@ -837,7 +845,7 @@ terms:
   active: true
   short_label: Division of Cardiology
 - id: Division of Cardiothoracic Surgery
-  term: School of Medicine, Department of Surgery, Division of Cardiothoracic Surgery
+  term: School of Medicine; Department of Surgery; Division of Cardiothoracic Surgery
   active: true
   short_label: Division of Cardiothoracic Surgery
 - id: Division of Chemical Biology and Medicinal Chemistry
@@ -908,6 +916,10 @@ terms:
   term: School of Medicine; Department of Allied Health Sciences; Division of Occupational Science and Occupational Therapy
   active: true
   short_label: Division of Occupational Science and Occupational Therapy
+- id: Division of Pediatric Dermatology
+  term: School of Medicine; Department of Dermatology; Division of Pediatric Dermatology
+  active: true
+  short_label: Division of Pediatric Dermatology
 - id: Division of Pharmaceutical Outcomes and Policy
   term: Eshelman School of Pharmacy; Division of Pharmaceutical Outcomes and Policy
   active: true
@@ -924,6 +936,14 @@ terms:
   term: School of Medicine; Department of Allied Health Sciences; Division of Physical Therapy
   active: true
   short_label: Division of Physical Therapy
+- id: Division of Plastic and Reconstructive Surgery
+  term: School of Medicine; Department of Surgery; Division of Plastic and Reconstructive Surgery
+  active: true
+  short_label: Division of Plastic and Reconstructive Surgery
+- id: Division of Practice Advancement and Clinical Education
+  term: Eshelman School of Pharmacy; Division of Practice Advancement and Clinical Education
+  active: true
+  short_label: Division of Practice Advancement and Clinical Education
 - id: Division of Pulmonary Diseases and Critical Care Medicine
   term: School of Medicine; Department of Medicine; Division of Pulmonary Diseases and Critical Care Medicine
   active: true
@@ -1169,7 +1189,7 @@ terms:
   active: true
   short_label: Mass Communication Graduate Program
 - id: Marsico Lung Institute/UNC Cystic Fibrosis Center
-  term: School of Medicine, Marsico Lung Institute/UNC Cystic Fibrosis Center
+  term: School of Medicine; Marsico Lung Institute/UNC Cystic Fibrosis Center
   active: true
   short_label: Marsico Lung Institute/UNC Cystic Fibrosis Center
 - id: Materials Science Program
@@ -1185,7 +1205,7 @@ terms:
   active: false
   short_label: Mathematical Decision Sciences Program
 - id: Matthew Gfeller Sport-Related Traumatic Brain Injury Research Center
-  term: College of Arts and Sciences, Department of Exercise and Sports Science, Matthew Gfeller Sport-Related Traumatic Brain Injury Research Center
+  term: College of Arts and Sciences; Department of Exercise and Sports Science; Matthew Gfeller Sport-Related Traumatic Brain Injury Research Center
   active: true
   short_label: Matthew Gfeller Sport-Related Traumatic Brain Injury Research Center
 - id: Michael Hooker Microscopy Facility
@@ -1197,7 +1217,7 @@ terms:
   active: true
   short_label: Molecular and Cellular Pathology Graduate Program
 - id: Moore Undergraduate Research Apprenticeship Program (MURAP)
-  term: Institute of African American Research, Moore Undergraduate Research Apprenticeship Program (MURAP)
+  term: Institute of African American Research; Moore Undergraduate Research Apprenticeship Program (MURAP)
   active: true
   short_label: Moore Undergraduate Research Apprenticeship Program (MURAP)
 - id: Musicology Graduate Program
@@ -1225,7 +1245,7 @@ terms:
   active: true
   short_label: Neuroscience Curriculum
 - id: NIMH Psychoactive Drug Screening Program
-  term: School of Medicine, Department of Pharmacology, NIMH Psychoactive Drug Screening Program
+  term: School of Medicine; Department of Pharmacology; NIMH Psychoactive Drug Screening Program
   active: true
   short_label: NIMH Psychoactive Drug Screening Program
 - id: North Carolina Institute for Public Health
@@ -1293,7 +1313,7 @@ terms:
   active: true
   short_label: Organic Chemistry Program
 - id: Partnerships in Aging Program
-  term: Office of the Provost, Partnerships in Aging Program
+  term: Office of the Provost; Partnerships in Aging Program
   active: true
   short_label: Partnerships in Aging Program
 - id: Pathobiology and Translational Science Graduate Program
@@ -1372,10 +1392,18 @@ terms:
   term: School of Education; School Counseling Graduate Program
   active: true
   short_label: School Counseling Graduate Program
-- id: School of Dentistry
-  term: School of Dentistry
+- id: School of Civic Life and Leadership
+  term: School of Civic Life and Leadership
   active: true
-  short_label: School of Dentistry
+  short_label: School of Civic Life and Leadership
+- id: School of Data Science and Society
+  term: School of Data Science and Society
+  active: true
+  short_label: School of Data Science and Society
+- id: School of Dentistry
+  term: Adams School of Dentistry
+  active: true
+  short_label: Adams School of Dentistry
 - id: School of Education
   term: School of Education
   active: true
@@ -1548,6 +1576,22 @@ terms:
   term: School of Medicine; UNC/NCSU Joint Department of Biomedical Engineering
   active: true
   short_label: UNC/NCSU Joint Department of Biomedical Engineering
+- id: UNC Project-Liberia
+  term: School of Medicine; UNC Project-Liberia
+  active: true
+  short_label: UNC Project-Liberia
+- id: UNC Project-Nicaragua
+  term: School of Medicine; UNC Project-Nicaragua
+  active: true
+  short_label: UNC Project-Nicaragua
+- id: UNC Project-Vietnam
+  term: School of Medicine; UNC Project-Vietnam
+  active: true
+  short_label: UNC Project-Vietnam
+- id: UNC Project-Zambia
+  term: School of Medicine; UNC Project-Zambia
+  active: true
+  short_label: UNC Project-Zambia
 - id: University of North Carolina at Chapel Hill. Graduate School
   term: University of North Carolina at Chapel Hill. Graduate School
   active: true
@@ -1589,7 +1633,7 @@ terms:
   active: false
   short_label: Louis Round Wilson Library
 - id: UNC Global Women's Health
-  term: School of Medicine, Department of Obstetrics and Gynecology, UNC Global Women's Health
+  term: School of Medicine; Department of Obstetrics and Gynecology; UNC Global Women's Health
   active: true
   short_label: UNC Global Women's Health
 - id: UNC Medical Center
@@ -1597,11 +1641,11 @@ terms:
   active: true
   short_label: UNC Medical Center
 - id: UNC Project-China
-  term: School of Medicine, UNC Project-China
+  term: School of Medicine; UNC Project-China
   active: true
   short_label: UNC Project-China
 - id: UNC Project-Malawi
-  term: School of Medicine, UNC Project-Malawi
+  term: School of Medicine; UNC Project-Malawi
   active: true
   short_label: UNC Project-Malawi
 - id: University of North Carolina at Chapel Hill
