@@ -76,7 +76,6 @@ class CatalogController < ApplicationController
     end
   end
 
-
   configure_blacklight do |config|
     # Advanced search configuration
     config.advanced_search ||= Blacklight::OpenStructWithHashAccess.new
@@ -138,7 +137,7 @@ class CatalogController < ApplicationController
     #   The ordering of the field names is the order of the display
     config.add_facet_field solr_name('resource_type', :facetable), label: 'Resource Type', limit: 5
     config.add_facet_field solr_name('creator_label', :facetable), label: 'Creator', limit: 5
-    config.add_facet_field solr_name('affiliation_label', :facetable), label: 'Departments', limit: 5
+    config.add_facet_field solr_name('affiliation_label', :facetable), label: 'Departments', limit: 5, helper_method: :format_affiliation_facet
     # Search results version of the date_issued facet
     config.add_facet_field 'date_issued_isim', field: 'date_issued_isim', label: 'Date', range: true, range_config: {
       input_label_range_begin: 'from year',
