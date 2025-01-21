@@ -45,7 +45,7 @@
     that avoids logging every request
 -->
 
-<schema name="Hydra Demo Index" version="1.5">
+<schema name="Hydra Demo Index" version="1.6">
   <!-- attribute "name" is the name of this schema and is only used for display purposes.
        Applications should change this to reflect the nature of the search collection.
        version="1.5" is Solr's version number for the schema syntax and semantics.  It should
@@ -109,7 +109,7 @@
     <fieldType name="text" class="solr.TextField" omitNorms="false">
       <analyzer>
         <tokenizer class="solr.ICUTokenizerFactory"/>
-        <filter class="solr.ICUFoldingFilterFactory"/>  <!-- NFKC, case folding, diacritics removed -->
+        <filter class="org.apache.lucene.analysis.icu.ICUFoldingFilterFactory"/>  <!-- NFKC, case folding, diacritics removed -->
         <filter class="solr.TrimFilterFactory"/>
       </analyzer>
     </fieldType>
@@ -126,7 +126,7 @@
     <fieldType name="text_ws_icu" class="solr.TextField" positionIncrementGap="100">
       <analyzer>
         <tokenizer class="solr.WhitespaceTokenizerFactory"/>
-        <filter class="solr.ICUFoldingFilterFactory"/>
+        <filter class="org.apache.lucene.analysis.icu.ICUFoldingFilterFactory"/>
         <filter class="solr.TrimFilterFactory"/>
       </analyzer>
     </fieldType>
@@ -135,7 +135,7 @@
     <fieldtype name="alphaSort" class="solr.TextField" sortMissingLast="true" omitNorms="true">
       <analyzer>
         <tokenizer class="solr.KeywordTokenizerFactory" />
-        <filter class="solr.ICUFoldingFilterFactory"/>
+        <filter class="org.apache.lucene.analysis.icu.ICUFoldingFilterFactory"/>
         <filter class="solr.TrimFilterFactory" />
       </analyzer>
     </fieldtype>
@@ -144,7 +144,7 @@
     <fieldType name="text_en" class="solr.TextField" positionIncrementGap="100">
       <analyzer>
         <tokenizer class="solr.ICUTokenizerFactory"/>
-        <filter class="solr.ICUFoldingFilterFactory"/>  <!-- NFKC, case folding, diacritics removed -->
+        <filter class="org.apache.lucene.analysis.icu.ICUFoldingFilterFactory"/>  <!-- NFKC, case folding, diacritics removed -->
         <filter class="solr.EnglishPossessiveFilterFactory"/>
         <!-- EnglishMinimalStemFilterFactory is less aggressive than PorterStemFilterFactory: -->
         <filter class="solr.EnglishMinimalStemFilterFactory"/>

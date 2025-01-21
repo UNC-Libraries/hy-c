@@ -10,7 +10,7 @@ services:
       - clamav
       - db
       - fedora
-      - solr8
+      - solr
     env_file:
       - docker/.env
     ports:
@@ -35,7 +35,7 @@ services:
       - db
       - fedora
       - redis
-      - solr8
+      - solr
       - web
     command: sh /hyrax/docker/start-sidekiq.sh
     env_file:
@@ -92,26 +92,30 @@ services:
       - "6379:6379"
     networks:
       - hycdev
-  solr8:
-    image: solr:8.11-slim
+  solr:
+    image: solr:9
+    user: "8983:8983"
     volumes:
       - ./solr/config:/opt/solr/server/solr/configsets/hy-c
-      - solr8-data:/var/solr/data
+      - solr-data:/var/solr/data
     ports:
       - "8983:8983"
     command: >
       bash -c "
-      precreate-core hydra-development /opt/solr/server/solr/configsets/hy-c &&
-      precreate-core hydra-test /opt/solr/server/solr/configsets/hy-c &&
-      exec solr -f
+      mkdir -p /var/solr/data &&
+      chown -R 8983:8983 /var/solr &&
+      gosu solr precreate-core hydra-development /opt/solr/server/solr/configsets/hy-c &&
+      gosu solr precreate-core hydra-test /opt/solr/server/solr/configsets/hy-c &&
+      gosu solr solr -f
       "
+    user: root
     networks:
       - hycdev
 volumes:
   mount-code:
   mount-gems:
   mount-sidekiq-gems:
-  solr8-data:
+  solr-data:
   clam:
   pg_data:
   fcrepo_data:
