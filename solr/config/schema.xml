@@ -84,7 +84,7 @@
     <!-- A PointField based date field for faster date range queries and date faceting. -->
     <fieldType name="tdate" class="solr.DatePointField" docValues="true"/>
     <!-- A DateRange based date field for truly faster date range queries. -->
-    <fieldType name="dateRange" class="solr.DateRangeField" omitNorms="true" omitTermFreqAndPositions="true"/>
+    <fieldType name="dateRange" class="solr.DateRangeField"/>
 
     <!-- This point type indexes the coordinates as separate fields (subFields)
       If subFieldType is defined, it references a type, and a dynamic field
