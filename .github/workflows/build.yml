@@ -129,7 +129,22 @@ jobs:
       run: |
         docker run -v /tmp/solr-config:/opt/solr/server/solr/configsets/hy-c/ \
             -d --rm -p 8983:8983 solr:9 \
-            solr-precreate hydra-test -d /opt/solr/server/solr/configsets/hy-c/
+            solr-precreate hydra-test /opt/solr/server/solr/configsets/hy-c/
+
+    - name: Fetch Solr container logs
+      run: docker logs $(docker ps -q -f ancestor=solr:9)
+
+    - name: Wait for Solr to start
+      run: |
+        for i in {1..30}; do
+          curl -s http://127.0.0.1:8983/solr/admin/cores?action=STATUS | grep -q '"hydra-test"' && break
+          echo "Waiting for Solr to initialize..."
+          sleep 2
+        done
+        if ! curl -s http://127.0.0.1:8983/solr/admin/cores?action=STATUS | grep -q '"hydra-test"'; then
+          echo "Solr did not initialize in time"
+          exit 1
+        fi
 
     - name: Run rspec tests
       run: bundle exec rspec
