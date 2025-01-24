@@ -68,6 +68,12 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
         ports: ["5432:5432"]
+      solr:
+        image: solr:9
+        ports:
+          - 8983:8983
+        options: >-
+          --name solr_container
       clamavd:
         image: lokori/clamav-java
         ports:
@@ -118,18 +124,12 @@ jobs:
       run: |
         psql -c 'create database hyrax_test with owner hyrax;'
 
-    - name: Make directory for solr config
-      run: mkdir -p /tmp/solr-config
 
-    # Need to copy the config is outside of the source path, otherwise it produces permission conflicts
     - name: Copy Solr Config into container
-      run: sudo cp -r ${{ github.workspace }}/solr/config /tmp/solr-config/
+      run: docker cp ./solr/config solr_container:/var/solr/data/hydra-test/
 
-    - name: Run solr container as command to trigger core creation
-      run: |
-        docker run -v /tmp/solr-config:/opt/solr/server/solr/configsets/hy-c/ \
-            -d --rm -p 8983:8983 solr:9 \
-            solr-precreate hydra-test /opt/solr/server/solr/configsets/hy-c/
+    - name: Create Solr core
+      run: docker exec solr_container solr create_core -c hydra-test -d /var/solr/data/hydra-test
 
     - name: Fetch Solr container logs
       run: docker logs $(docker ps -q -f ancestor=solr:9)
