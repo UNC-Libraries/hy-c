@@ -126,10 +126,10 @@ jobs:
 
 
     - name: Copy Solr Config into container
-      run: docker cp ./solr/config solr_container:/var/solr/data/hydra-test/
+      run: docker cp ./solr/config solr_container:/opt/solr/server/solr/configsets/hy-c
 
     - name: Create Solr core
-      run: docker exec solr_container solr create_core -c hydra-test -d /var/solr/data/hydra-test
+      run: docker exec solr_container solr create_core -c hydra-test -d hy-c
 
     - name: Fetch Solr container logs
       run: docker logs $(docker ps -q -f ancestor=solr:9)
