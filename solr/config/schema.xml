@@ -108,7 +108,7 @@
 
     <fieldType name="text" class="solr.TextField" omitNorms="false">
       <analyzer>
-        <tokenizer class="solr.ICUTokenizerFactory"/>
+        <tokenizer class="org.apache.lucene.analysis.icu.segmentation.ICUTokenizerFactory"/>
         <filter class="org.apache.lucene.analysis.icu.ICUFoldingFilterFactory"/>  <!-- NFKC, case folding, diacritics removed -->
         <filter class="solr.TrimFilterFactory"/>
       </analyzer>
@@ -143,7 +143,7 @@
     <!-- A text field with defaults appropriate for English -->
     <fieldType name="text_en" class="solr.TextField" positionIncrementGap="100">
       <analyzer>
-        <tokenizer class="solr.ICUTokenizerFactory"/>
+        <tokenizer class="org.apache.lucene.analysis.icu.segmentation.ICUTokenizerFactory"/>
         <filter class="org.apache.lucene.analysis.icu.ICUFoldingFilterFactory"/>  <!-- NFKC, case folding, diacritics removed -->
         <filter class="solr.EnglishPossessiveFilterFactory"/>
         <!-- EnglishMinimalStemFilterFactory is less aggressive than PorterStemFilterFactory: -->
