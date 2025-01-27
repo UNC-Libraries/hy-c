@@ -126,68 +126,36 @@ jobs:
       run: |
         psql -c 'create database hyrax_test with owner hyrax;'
 
-
     - name: Create ConfigSet Directory
       run: docker exec solr_container bash -c "mkdir -p /var/solr/configsets/hy-c/conf"
 
     - name: Copy Solr Config into container
       run: docker cp ./solr/config/. solr_container:/var/solr/configsets/hy-c/conf
 
-    - name: List Solr Config Directory
-      run: docker exec solr_container bash -c "ls -la /var/solr/configsets/hy-c/conf"
-
-    - name: List libs
-      run: docker exec solr_container bash -c "ls -la /opt/solr/contrib/analysis-extras/lib"
-    
-    - name: Debug Classpath
-      run: docker exec solr_container bash -c 'echo $(find /opt/solr/ -name "*.jar" | tr "\n" ":")'
-      continue-on-error: true
-
     - name: Create Solr core
       run: docker exec solr_container solr create_core -c hydra-test -d /var/solr/configsets/hy-c
-      continue-on-error: true
 
-    - name: Fetch Solr container logs
-      run: docker logs $(docker ps -q -f ancestor=solr:9)
-      continue-on-error: true
+    - name: Run rspec tests
+      run: bundle exec rspec
+      env:
+        REDIS_URL: redis://redis
+        POSTGRES_USER: hyrax
+        POSTGRES_PASSWORD: password
+        TMPDIR: /tmp
 
-    - name: Dump Solr Logs
-      run: docker exec solr_container cat /var/solr/logs/solr.log
-      continue-on-error: true
+    - uses: actions/upload-artifact@v4
+      with:
+        name: test-coverage
+        path: coverage
 
-    # - name: Wait for Solr to start
-    #   run: |
-    #     for i in {1..30}; do
-    #       curl -s http://127.0.0.1:8983/solr/admin/cores?action=STATUS | grep -q '"hydra-test"' && break
-    #       echo "Waiting for Solr to initialize..."
-    #       sleep 2
-    #     done
-    #     if ! curl -s http://127.0.0.1:8983/solr/admin/cores?action=STATUS | grep -q '"hydra-test"'; then
-    #       echo "Solr did not initialize in time"
-    #       exit 1
-    #     fi
+    - uses: actions/upload-artifact@v4
+      with:
+        name: test-coverage-report
+        path: coverage/coverage.json
 
-    # - name: Run rspec tests
-    #   run: bundle exec rspec
-    #   env:
-    #     REDIS_URL: redis://redis
-    #     POSTGRES_USER: hyrax
-    #     POSTGRES_PASSWORD: password
-    #     TMPDIR: /tmp
-
-    # - uses: actions/upload-artifact@v4
-    #   with:
-    #     name: test-coverage
-    #     path: coverage
-
-    # - uses: actions/upload-artifact@v4
-    #   with:
-    #     name: test-coverage-report
-    #     path: coverage/coverage.json
-
-    # - name: Report to CodeClimate
-    #   uses: paambaati/codeclimate-action@v3.0.0
-    #   with:
-    #     debug: false
-    #     coverageLocations: |
-    #       ${{github.workspace}}/coverage/coverage.json:simplecov
+    - name: Report to CodeClimate
+      uses: paambaati/codeclimate-action@v3.0.0
+      with:
+        debug: false
+        coverageLocations: |
+          ${{github.workspace}}/coverage/coverage.json:simplecov
