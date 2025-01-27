@@ -74,6 +74,8 @@ jobs:
           - 8983:8983
         options: >-
           --name solr_container
+        env:
+          SOLR_MODULES: analysis-extras,extraction
       clamavd:
         image: lokori/clamav-java
         ports:
