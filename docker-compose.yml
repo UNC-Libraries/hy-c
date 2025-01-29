@@ -109,6 +109,8 @@ services:
       gosu solr precreate-core hydra-test /opt/solr/server/solr/configsets/hy-c &&
       gosu solr solr -f
       "
+    environment:
+      - SOLR_MODULES=analysis-extras,extraction
     user: root
     networks:
       - hycdev
