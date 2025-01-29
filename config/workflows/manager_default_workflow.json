@@ -24,11 +24,6 @@
               "notification_type": "email",
               "name": "Hyrax::Workflow::DepositedManagerNotification",
               "to": ["managing"]
-            },
-            {
-              "notification_type": "email",
-              "name": "Hyrax::Workflow::DatasetDepositedNotification",
-              "to": []
             }
           ]
         }, {
