@@ -15,7 +15,7 @@ module Hyrax
         # WIP: Depositor + Super
         # Notify users when a dataset is deposited
           def users_to_notify
-            return [] unless dataset?
+            # return [] unless dataset?
 
             user_key = ActiveFedora::Base.find(work_id).depositor
             super << ::User.find_by(uid: user_key)

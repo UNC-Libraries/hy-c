@@ -205,7 +205,7 @@ en:
           subject: "CDR deletion request was not approved"
           message: "The deletion request for %{title} (<a href=\"%{document_path}\">%{work_id}</a>) was rejected by %{user}. %{comment}"
         deposited:
-          subject: CDR deposit successful
+          subject: CDR deposit successful - 1
           message: "Hello,\r\n\r\n
           %{title} (%{link}) has been successfully deposited in the CDR and is now available in accordance with the visibility
           settings that you selected.\r\n\r\n
