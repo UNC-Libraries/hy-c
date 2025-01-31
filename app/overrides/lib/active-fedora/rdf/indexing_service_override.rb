@@ -142,7 +142,8 @@ ActiveFedora::RDF::IndexingService.class_eval do
     term = DepartmentsService.term(affiliation_identifier)
     if term.present?
       display_text << "Affiliation: #{affiliation_identifier}"
-      term.split(';').each do |term_val|
+      # ensure term is an array to deal with some affiliations containing multiple term values, while most are single
+      Array(term).map { |v| v.split(';') }.flatten.each do |term_val|
         @affiliation_label.push(term_val.strip)
       end
     end

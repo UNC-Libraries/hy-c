@@ -71,6 +71,28 @@ RSpec.describe ActiveFedora::RDF::IndexingService do
       end
     end
 
+    context 'when adding person object with affiliation that maps to two terms' do
+      let(:indexer) { described_class.new(work, work.class.index_config) }
+      let(:work) do
+        General.create(
+          title: ['New General Work with joint affiliation'],
+          creators_attributes: { '0' => { name: 'creator_1',
+                                          affiliation: 'Joint Department of Biomedical Engineering',
+                                          index: 1 } },
+          date_created: '2022-01-01')
+
+      end
+      subject(:solr_doc) do
+        indexer.generate_solr_document
+      end
+
+      it 'includes person attributes' do
+        expect(solr_doc['creator_display_tesim']).to eq ['index:1||creator_1||Affiliation: Joint Department of Biomedical Engineering']
+        expect(solr_doc['affiliation_label_tesim']).to include('School of Medicine', 'North Carolina State University', 'Joint Department of Biomedical Engineering')
+        expect(solr_doc['affiliation_label_sim']).to include('School of Medicine', 'North Carolina State University', 'Joint Department of Biomedical Engineering')
+      end
+    end
+
     context 'with date_created set' do
       let(:date_index_config) do
         {}.tap do |index_config|
