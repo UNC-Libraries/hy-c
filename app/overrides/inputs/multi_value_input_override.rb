@@ -41,11 +41,6 @@ MultiValueInput.class_eval do
     input_dom_id
   end
 
-  def input_dom_id
-    input_html_options[:id] || "#{object_name}_#{attribute_name}_#{SecureRandom.random_number(1000000)}"
-  end
-
-
   #[hyc-override] convert from EDTF for multivalue dates
   def format_value(value, should_format)
     return Hyc::EdtfConvert.convert_from_edtf(value) if should_format && value.to_s.strip =~ /^(\d{4}|\d{3}(u|x)|\d{2}xx|[u]{4})/
