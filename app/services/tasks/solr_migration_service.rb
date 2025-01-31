@@ -117,6 +117,10 @@ module Tasks
         rescue Ldp::Gone => e
           puts "Object with id #{id} is gone, skipping"
           Rails.logger.warn "Object with id #{id} is gone, skipping"
+        rescue Ldp::HttpError => e
+          puts "An error occurred when retrieving object with id #{id} from fedora, skipping"
+          Rails.logger.error "An error occurred when retrieving object with id #{id} from fedora, skipping"
+          Rails.logger.error [e.class.to_s, e.message, *e.backtrace].join($RS)
         rescue ActiveFedora::ObjectNotFoundError => e
           Rails.logger.warn "Object with id #{id} was not found, skipping: #{e.message}"
         rescue JSON::GeneratorError => e

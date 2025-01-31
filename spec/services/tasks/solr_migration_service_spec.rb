@@ -174,6 +174,47 @@ RSpec.describe Tasks::SolrMigrationService do
       expect(Rails.logger).to have_received(:error).with('Execution interrupted by unexpected error')
     end
 
+    it 'skips over a deleted object' do
+      initial_records = ActiveFedora::SolrService.get('*:*', rows: 100, sort: 'id ASC')
+      expect(initial_records['response']['numFound']).to eq TOTAL_SOLR_COUNT
+
+      list_path = service.list_object_ids(output_dir, nil)
+
+      # Empty out solr so we can repopulate it
+      Blacklight.default_index.connection.delete_by_query('*:*')
+      Blacklight.default_index.connection.commit
+
+      # Delete work1 to simulate a deleted object
+      work1.delete
+      allow(Rails.logger).to receive(:warn)
+
+      service.reindex(list_path, false)
+      reindexed_records = ActiveFedora::SolrService.get('*:*', rows: 100, sort: 'id ASC')
+      expect(reindexed_records['response']['numFound']).to eq TOTAL_SOLR_COUNT - 1
+      expect(Rails.logger).to have_received(:warn).with("Object with id #{work1.id} is gone, skipping")
+    end
+
+    it 'skips over ldp http error' do
+      initial_records = ActiveFedora::SolrService.get('*:*', rows: 100, sort: 'id ASC')
+      expect(initial_records['response']['numFound']).to eq TOTAL_SOLR_COUNT
+
+      list_path = service.list_object_ids(output_dir, nil)
+
+      # Empty out solr so we can repopulate it
+      Blacklight.default_index.connection.delete_by_query('*:*')
+      Blacklight.default_index.connection.commit
+
+      # Delete work1 to simulate a deleted object
+      allow(ActiveFedora::Base).to receive(:find).and_call_original
+      allow(ActiveFedora::Base).to receive(:find).with(work1.id).and_raise(Ldp::HttpError)
+      allow(Rails.logger).to receive(:error)
+
+      service.reindex(list_path, false)
+      reindexed_records = ActiveFedora::SolrService.get('*:*', rows: 100, sort: 'id ASC')
+      expect(reindexed_records['response']['numFound']).to eq TOTAL_SOLR_COUNT - 1
+      expect(Rails.logger).to have_received(:error).with("An error occurred when retrieving object with id #{work1.id} from fedora, skipping")
+    end
+
     def expect_results_match(results1, results2)
       docs1 = results1['response']['docs']
       docs2 = results2['response']['docs']
