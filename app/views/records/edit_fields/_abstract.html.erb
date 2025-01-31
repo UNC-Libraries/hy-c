@@ -3,6 +3,5 @@
 <% else %>
     <%= f.input :abstract, as: :text, input_html: { rows: '14', class: 'tinymce' }, required: f.object.required?(key) %>
 <% end %>
-<%= f.input :abstract, as: :multi_value, input_html: { rows: '14', type: 'textarea', id: 'article-1' class: 'tinymce'}, required: f.object.required?(key) %>
 <!-- [hyc-override] Include JS for TinyMCE with rich_text configuration. Enables rich text editing. -->
 <%= tinymce :rich_text %>
