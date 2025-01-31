@@ -1,5 +1,5 @@
 <% if f.object.multiple? key %>
-    <%= f.input :abstract, as: :multi_value, input_html: { rows: '14', type: 'textarea', class: 'tinymce'}, required: f.object.required?(key) %>
+    <%= f.input :abstract, as: :multi_value, input_html: { rows: '14', type: 'textarea', id: "abstract-#{SecureRandom.random_number(100)}", class: 'tinymce'}, required: f.object.required?(key) %>
 <% else %>
     <%= f.input :abstract, as: :text, input_html: { rows: '14', class: 'tinymce' }, required: f.object.required?(key) %>
 <% end %>
