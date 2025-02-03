@@ -10,6 +10,7 @@ module LanguagesService
   end
 
   def self.label(id)
+    return nil if id.blank?
     authority.find(Array.wrap(id).first).fetch('term')
   rescue StandardError
     Rails.logger.debug "LanguagesService: cannot find '#{id}'"
@@ -18,9 +19,10 @@ module LanguagesService
   end
 
   def self.iso639_1(id)
+    return nil if id.blank?
     authority.find(id).fetch('iso639_1')
   rescue KeyError
-    Rails.logger.warn "DepartmentsService: cannot find '#{id}'"
+    Rails.logger.warn "LanguageService: cannot find '#{id}'"
     nil
   end
 

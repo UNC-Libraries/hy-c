@@ -21,5 +21,19 @@ RSpec.describe Hyrax::LanguagesService do
     it 'resolves for ids of terms' do
       expect(service.label('http://id.loc.gov/vocabulary/iso639-2/eng')).to eq('English')
     end
+
+    it 'returns nil for blank input' do
+      expect(service.label('')).to be_nil
+    end
+  end
+
+  describe '#iso639_1' do
+    it 'resolves for ids of terms' do
+      expect(service.iso639_1('http://id.loc.gov/vocabulary/iso639-2/eng')).to eq('en')
+    end
+
+    it 'returns nil for blank input' do
+      expect(service.iso639_1('')).to be_nil
+    end
   end
 end
