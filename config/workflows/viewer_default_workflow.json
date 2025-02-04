@@ -22,8 +22,8 @@
             },
             {
               "notification_type": "email",
-              "name": "Hyrax::Workflow::DepositedManagerNotification",
-              "to": ["managing"]
+              "name": "Hyrax::Workflow::DepositedViewerNotification",
+              "to": ["viewer"]
             }
           ]
         }, {
