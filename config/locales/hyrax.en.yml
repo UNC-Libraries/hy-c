@@ -211,7 +211,7 @@ en:
           settings that you selected.\r\n\r\n
           If you have questions, please feel free to <a href=\"https://blogs.lib.unc.edu/cdr/index.php/contact-us/\">contact us</a>!"
         deposited_viewer:
-          subject: CDR deposit successful
+          subject: CDR deposit successful - deposited viewer notif
           message: "Hello,\r\n\r\n
           %{title} (%{link}) has been successfully deposited in the CDR and is now available in accordance with the visibility
           settings that were selected by the depositor.\r\n\r\n

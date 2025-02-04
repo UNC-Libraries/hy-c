@@ -23,7 +23,7 @@
             {
               "notification_type": "email",
               "name": "Hyrax::Workflow::DepositedViewerNotification",
-              "to": ["viewer"]
+              "to": ["viewing"]
             }
           ]
         }, {
