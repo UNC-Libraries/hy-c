@@ -69,11 +69,13 @@ jobs:
           --health-timeout 5s
         ports: ["5432:5432"]
       solr:
-        image: solr:8.11-slim
+        image: solr:9
         ports:
           - 8983:8983
         options: >-
           --name solr_container
+        env:
+          SOLR_MODULES: analysis-extras,extraction
       clamavd:
         image: lokori/clamav-java
         ports:
@@ -124,11 +126,14 @@ jobs:
       run: |
         psql -c 'create database hyrax_test with owner hyrax;'
 
-    - name: Copy solr config into docker container
-      run: docker cp solr/config solr_container:/tmp/solr_config
+    - name: Create ConfigSet Directory
+      run: docker exec solr_container bash -c "mkdir -p /var/solr/configsets/hy-c/conf"
+
+    - name: Copy Solr Config into container
+      run: docker cp ./solr/config/. solr_container:/var/solr/configsets/hy-c/conf
 
     - name: Create Solr core
-      run: docker exec solr_container solr create -c hydra-test -d /tmp/solr_config
+      run: docker exec solr_container solr create_core -c hydra-test -d /var/solr/configsets/hy-c
 
     - name: Run rspec tests
       run: bundle exec rspec

@@ -12,16 +12,19 @@ module DepartmentsService
 
   # The permanent identifier for the term, stored in Fedora. This identifier should not be changed.
   def self.identifier(term)
+    return nil if term.blank?
     authority.all.reject { |item| item['active'] == false }.find { |department| department['label'] == term }['id']
   rescue StandardError
+    Rails.logger.warn "DepartmentsService: cannot find identifier for '#{id}'"
     nil
   end
 
   # The full term associated with the identifier. This is currently used in the display of People objects
   def self.term(id)
+    return nil if id.blank?
     authority.find(id).fetch('term')
   rescue StandardError
-    Rails.logger.warn "DepartmentsService: cannot find '#{id}'"
+    Rails.logger.warn "DepartmentsService: cannot find term for '#{id}'"
     nil
   end
 
@@ -29,9 +32,10 @@ module DepartmentsService
   # values as the identifiers, but unlike the identifiers, these values *can* be changed without negative effects.
   # This values is indexed to solr for department faceting.
   def self.short_label(id)
+    return nil if id.blank?
     authority.find(id).fetch('short_label')
   rescue KeyError
-    Rails.logger.warn "DepartmentsService: cannot find '#{id}'"
+    Rails.logger.warn "DepartmentsService: cannot find short_label for '#{id}'"
     nil
   end
 

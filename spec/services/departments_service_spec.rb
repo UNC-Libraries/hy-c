@@ -25,11 +25,19 @@ RSpec.describe Hyrax::DepartmentsService do
     it 'resolves for ids of inactive terms' do
       expect(service.term('example')).to eq('Some College; Example Department')
     end
+
+    it 'returns nil for blank input' do
+      expect(service.term('')).to be_nil
+    end
   end
 
   describe '#identifier' do
     it 'resolves for labels of active terms' do
       expect(service.identifier('History')).to eq('history')
+    end
+
+    it 'returns nil for blank input' do
+      expect(service.identifier('')).to be_nil
     end
   end
 
@@ -40,6 +48,10 @@ RSpec.describe Hyrax::DepartmentsService do
 
     it 'resolves for ids of inactive terms' do
       expect(service.short_label('example')).to eq('Example Department')
+    end
+
+    it 'returns nil for blank input' do
+      expect(service.short_label('')).to be_nil
     end
 
     it 'logs but does not raise error for non-existent terms' do
