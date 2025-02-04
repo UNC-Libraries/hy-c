@@ -1,9 +1,9 @@
 {
   "workflows": [
     {
-      "name": "default_email_manager",
-      "label": "Default workflow - manager emails",
-      "description": "A single submission step, default workflow with manager emails",
+      "name": "default_email_viewer",
+      "label": "Default workflow - viewer emails",
+      "description": "A single submission step, default workflow with viewer emails",
       "allows_access_grant": true,
       "actions": [
         {
