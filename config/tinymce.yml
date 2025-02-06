@@ -14,7 +14,8 @@ rich_text:
   toolbar:
     - "undo redo | bold italic underline | alignleft aligncenter alignright | link | numlist bullist outdent indent | blockquote | code"
   plugins:
-    - "link lists code"
+    - "link lists code paste"
+  invalid_styles: "color font-family"
   style_formats:
     - title: "Inline"
       items:
