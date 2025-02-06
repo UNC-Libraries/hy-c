@@ -17,8 +17,8 @@
                     "notifications": [
                         {
                           "notification_type": "email",
-                          "name": "Hyrax::Workflow::DatasetDepositedNotification",
-                          "to": ["depositing"]
+                          "name": "Hyrax::Workflow::DepositedNotification",
+                          "to": []
                         }
                     ]
                 }, {
