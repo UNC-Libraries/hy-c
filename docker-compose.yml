@@ -94,7 +94,7 @@ services:
       - hycdev
   solr:
     image: solr:9
-    user: "8983:8983"
+    user: root
     volumes:
       - ./solr/config:/opt/solr/server/solr/configsets/hy-c/conf
       - solr-data:/var/solr/data
@@ -111,7 +111,6 @@ services:
       "
     environment:
       - SOLR_MODULES=analysis-extras,extraction
-    user: root
     networks:
       - hycdev
 volumes:
