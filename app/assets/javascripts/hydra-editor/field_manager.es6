@@ -113,7 +113,9 @@ export class FieldManager {
 
     createNewField($activeField) {
         let $newField = $activeField.clone();
-        console.log($newField);
+        $newField.children('textarea');
+
+        console.log($newField.children('textarea'));
         let $newChildren = this.createNewChildren($newField);
         this.element.trigger("managed_field:add", $newChildren);
         return $newField;
