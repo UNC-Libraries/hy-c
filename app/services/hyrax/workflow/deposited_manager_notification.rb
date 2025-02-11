@@ -16,11 +16,11 @@ module Hyrax
       end
 
       def print_instance_variables
-        Rails.logger.info("Begin Print Variables")
+        Rails.logger.info('Begin Print Variables')
         instance_variables.each_with_index do |var, index|
-           Rails.logger.info("Variable #{index} : #{var} = #{instance_variable_get(var).inspect}")
+          Rails.logger.info("Variable #{index} : #{var} = #{instance_variable_get(var).inspect}")
         end
-        Rails.logger.info("End Print Variables")
+        Rails.logger.info('End Print Variables')
       end
 
       def users_to_notify
@@ -31,7 +31,7 @@ module Hyrax
         # Rails.logger.info("Users to notify result #{res}")
 
 
-        all_recipients = @recipients["to"]|| []  + @recipients["cc"] || []
+        all_recipients = @recipients['to']|| []  + @recipients['cc'] || []
         # emails = to_recipients.map(&:email)
         # emails <<  user.email
         # Rails.logger.info("UTNEmails #{emails}")
