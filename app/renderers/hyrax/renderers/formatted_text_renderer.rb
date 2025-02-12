@@ -23,7 +23,7 @@ module Hyrax
     # Same as attribute renderer override, but without escaping the value
       def li_value(value)
         field_value = find_language(value) || value
-        auto_link((field_value))
+        auto_link(field_value, sanitize: false)
       end
     end
   end
