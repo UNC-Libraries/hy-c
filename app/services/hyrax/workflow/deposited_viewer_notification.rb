@@ -16,6 +16,7 @@ module Hyrax
       end
 
       def print_instance_variables
+        Rails.logger.info('CUSTOM - Printing Instance Variables')
         instance_variables.each do |var|
           Rails.logger.info("#{var}: #{instance_variable_get(var)}")
         end
@@ -23,8 +24,12 @@ module Hyrax
 
       def users_to_notify
         print_instance_variables
-        # Find admin set using work id
-        admin_set = ActiveFedora::SolrService.get("file_set_ids_ssim:#{fileset_id}", rows: 1)['response']['docs'].first || {}
+        all_recipients = recipients.fetch(:to, []) + recipients.fetch(:cc, [])
+        all_recipients.uniq
+        Rails.logger.info('NOTIF - Printing Recipients')
+        all_recipients.each_with_index do |r, i|
+          Rails.logger.info("##{i} : #{r.inspect}")
+        end
       end
     end
   end
