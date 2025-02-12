@@ -17,13 +17,13 @@
           "notifications": [
             {
               "notification_type": "email",
-              "name": "Hyrax::Workflow::DepositedManagerNotification",
-              "to": ["viewing"]
+              "name": "Hyrax::Workflow::DepositedNotification",
+              "to": []
             },
             {
               "notification_type": "email",
-              "name": "Hyrax::Workflow::DepositedNotification",
-              "to": []
+              "name": "Hyrax::Workflow::DepositedViewerNotification",
+              "to": ["viewing"]
             }
           ]
         }, {
