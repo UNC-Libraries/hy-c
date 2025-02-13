@@ -23,6 +23,8 @@ module Hyrax
     # Same as attribute renderer override, but without escaping the value
       def li_value(value)
         field_value = find_language(value) || value
+        # Use get_sanitized_string instead of auto_link sanitization to preserve HTML tags (specifically underline)
+        get_sanitized_string(field_value)
         auto_link(field_value, sanitize: false)
       end
     end
