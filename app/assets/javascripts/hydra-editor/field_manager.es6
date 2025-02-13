@@ -113,9 +113,8 @@ export class FieldManager {
 
     _updateFieldId($field) {
         let currentId = $field.attr('id');
-        console.log(currentId);
         let idParts = currentId.split('_');
-        console.log(idParts);
+
         if (idParts.length === 1) {
             $field.attr('id', `${currentId}_1`)
         } else {
@@ -193,7 +192,7 @@ export class FieldManager {
         $newChildren.val('').removeAttr('required');
         $newChildren.first().focus();
         console.log($newChildren.first());
-        console.log(this._updateFieldId($newChildren.first()))
-        return $newChildren.first();
+       // console.log(this._updateFieldId($newChildren.first()))
+        return this._updateFieldId($newChildren.first());
     }
 }
