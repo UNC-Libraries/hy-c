@@ -108,7 +108,7 @@ export class FieldManager {
 
     _newField ($activeField) {
         var $newField = this.createNewField($activeField);
-        return this._updateFieldId($newField);
+        return $newField;
     }
 
     _updateFieldId($field) {
@@ -134,7 +134,9 @@ export class FieldManager {
 
     createNewField($activeField) {
         let $newField = $activeField.clone();
+        console.log($newField);
         let $newChildren = this.createNewChildren($newField);
+        console.log($newChildren);
         this.element.trigger("managed_field:add", $newChildren);
         return $newField;
     }
