@@ -113,7 +113,9 @@ export class FieldManager {
 
     _updateFieldId($field) {
         let currentId = $field.attr('id');
+        console.log(currentId);
         let idParts = currentId.split('_');
+        console.log(idParts);
         if (idParts.length === 1) {
             $field.attr('id', `${currentId}_1`)
         } else {
