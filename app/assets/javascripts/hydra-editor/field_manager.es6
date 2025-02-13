@@ -133,11 +133,8 @@ export class FieldManager {
     }
 
     createNewField($activeField) {
-        let $newField = $activeField.clone();
-        console.log($newField);
-        this._updateFieldId($newField);
+        let $newField = $activeField.clone();;
         let $newChildren = this.createNewChildren($newField);
-        console.log($newChildren);
         this.element.trigger("managed_field:add", $newChildren);
         return $newField;
     }
@@ -195,6 +192,8 @@ export class FieldManager {
         let $newChildren = $(clone).children(this.inputTypeClass);
         $newChildren.val('').removeAttr('required');
         $newChildren.first().focus();
+        console.log($newChildren.first());
+        console.log(this._updateFieldId($newChildren.first()))
         return $newChildren.first();
     }
 }
