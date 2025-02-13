@@ -117,7 +117,7 @@ export class FieldManager {
         if (idParts.length === 1) {
             $field.attr('id', `${currentId}_1`)
         } else {
-            let id = parseInt(idParts[1])
+            let id = parseInt(idParts[idParts.length - 1])
 
             if (isNaN(id)) {
                 $field.attr('id', `${idParts[0]}_1`);
@@ -131,7 +131,7 @@ export class FieldManager {
     }
 
     createNewField($activeField) {
-        let $newField = this._updateFieldId($activeField.clone());
+        let $newField = $activeField.clone();
         let $newChildren = this.createNewChildren($newField);
         this.element.trigger("managed_field:add", $newChildren);
         return $newField;
