@@ -135,6 +135,7 @@ export class FieldManager {
     createNewField($activeField) {
         let $newField = $activeField.clone();
         console.log($newField);
+        this._updateFieldId($newField);
         let $newChildren = this.createNewChildren($newField);
         console.log($newChildren);
         this.element.trigger("managed_field:add", $newChildren);
