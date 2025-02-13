@@ -108,14 +108,30 @@ export class FieldManager {
 
     _newField ($activeField) {
         var $newField = this.createNewField($activeField);
-        return $newField;
+        return this._updateFieldId($newField);
+    }
+
+    _updateFieldId($field) {
+        let currentId = $field.attr('id');
+        let idParts = currentId.split('_');
+        if (idParts.length === 1) {
+            $field.attr('id', `${currentId}_1`)
+        } else {
+            let id = parseInt(idParts[1])
+
+            if (isNaN(id)) {
+                $field.attr('id', `${idParts[0]}_1`);
+            } else {
+                id += 1;
+                $field.attr('id', `${idParts[0]}_${id}`);
+            }
+        }
+
+        return $field;
     }
 
     createNewField($activeField) {
-        let $newField = $activeField.clone();
-        $newField.children('textarea');
-
-        console.log($newField.children('textarea'));
+        let $newField = this._updateFieldId($activeField.clone());
         let $newChildren = this.createNewChildren($newField);
         this.element.trigger("managed_field:add", $newChildren);
         return $newField;
