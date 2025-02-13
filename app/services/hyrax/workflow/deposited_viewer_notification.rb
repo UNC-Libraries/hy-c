@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 module Hyrax
   module Workflow
-    # This notification service was created to allow some admin set managers to get notifications.
-    # Using the default DepositedNotificaiton class for this would send deposit notifications
-    # to all managers in all workflows instead of just in the manager-specific workflow.
+    # This notification service was created to exclusively notify viewers in the viewer-specific workflow.
+    # Using the DepositedManagerNotificaiton class for this would send deposit notifications to managers as well.
     class DepositedViewerNotification < AbstractNotification
       private
 
@@ -15,21 +14,26 @@ module Hyrax
         I18n.t('hyrax.notifications.workflow.deposited_manager.message', title: title, link: (link_to work_id, document_path))
       end
 
-      def print_instance_variables
-        Rails.logger.info('CUSTOM - Printing Instance Variables')
-        instance_variables.each do |var|
-          Rails.logger.info("#{var}: #{instance_variable_get(var)}")
-        end
-      end
-
       def users_to_notify
-        print_instance_variables
         all_recipients = recipients.fetch(:to, []) + recipients.fetch(:cc, [])
         all_recipients.uniq
-        Rails.logger.info('NOTIF - Printing Recipients')
-        all_recipients.each_with_index do |r, i|
-          Rails.logger.info("##{i} : #{r.inspect}")
+
+        users_and_roles = Sipity::Entity.where(workflow_id: @entity.workflow_id)
+                    .joins('INNER JOIN sipity_workflow_roles ON sipity_workflow_roles.workflow_id = sipity_entities.workflow_id')
+                    .joins('INNER JOIN sipity_workflow_responsibilities ON sipity_workflow_responsibilities.workflow_role_id = sipity_workflow_roles.id')
+                    .joins('INNER JOIN sipity_roles ON sipity_roles.id = sipity_workflow_roles.role_id')
+                    .joins('INNER JOIN sipity_agents ON sipity_agents.id = sipity_workflow_responsibilities.agent_id')
+                    .where(sipity_roles: { name: ['managing', 'viewing'] })  # Filters results by role name
+                    .select('sipity_agents.proxy_for_id, sipity_roles.name AS role_name')
+
+        user_role_map = users_and_roles.each_with_object({}) do |record, h|
+          user_id = record.proxy_for_id.to_i
+          h[user_id] ||= Set.new
+          h[user_id] << record.role_name
         end
+
+        exclusively_viewers = user_role_map.select { |k, v| v.include?('viewing') && !v.include?('managing') }
+        all_recipients.select { |r| r.id.in?(exclusively_viewers.keys) }
       end
     end
   end
