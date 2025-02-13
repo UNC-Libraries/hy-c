@@ -60,21 +60,36 @@ module Hyrax
         users_and_group_info.each do |record|
           Rails.logger.info "Proxy For ID: #{record.proxy_for_id}, Proxy Type: #{record.proxy_for_type}, Role Name: #{record.role_name}"
         end
+
+        group_users = users_and_group_info.each_with_object([]) do |record, user_ids|
+          if record.proxy_for_type == 'Hyrax::Group'
+            user_ids.concat(User.joins(:roles).where(roles: { name: record.proxy_for_id }).pluck(:id))
+          else
+            user_ids << record.proxy_for_id.to_i
+          end
       
         user_role_map = users_and_group_info.each_with_object({}) do |record, h|
           if record.proxy_for_type == 'User'
+          # if record.proxy_for_type == 'User'
             user_id = record.proxy_for_id.to_i
             h[user_id] ||= Set.new
             h[user_id] << record.role_name
           elsif record.proxy_for_type == 'Hyrax::Group'
-            group_name = record.proxy_for_id  # The group name
-            group_users = User.joins(:groups).where(groups: { name: group_name }).pluck(:id) # Fetch user IDs in the group
-      
-            Rails.logger.info("NOTIF - Group '#{group_name}' contains users: #{group_users}")
-      
-            group_users.each do |user_id|
+            # Group role inheritance
+            group_name = record.proxy_for_id
+            
+            user_ids = ActiveRecord::Base.connection.execute(
+              "SELECT u.id FROM users u
+               JOIN roles_users ru ON u.id = ru.user_id
+               JOIN roles r ON ru.role_id = r.id
+               WHERE r.name = '#{group_name}'"
+            ).map { |row| row["id"].to_i }  # Convert results to integer IDs        
+        
+            Rails.logger.info("NOTIF - Group '#{group_name}' contains users: #{user_ids}")
+        
+            user_ids.each do |user_id|
               h[user_id] ||= Set.new
-              h[user_id] << record.role_name
+              h[user_id] << record.role_name  # Inherit group's role
             end
           end
         end
