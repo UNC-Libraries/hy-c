@@ -14,26 +14,91 @@ module Hyrax
         I18n.t('hyrax.notifications.workflow.deposited_manager.message', title: title, link: (link_to work_id, document_path))
       end
 
+      # def users_to_notify
+      #   all_recipients = recipients.fetch(:to, []) + recipients.fetch(:cc, [])
+      #   all_recipients.uniq
+
+      #   users_and_roles = Sipity::Entity.where(workflow_id: @entity.workflow_id)
+      #               .joins('INNER JOIN sipity_workflow_roles ON sipity_workflow_roles.workflow_id = sipity_entities.workflow_id')
+      #               .joins('INNER JOIN sipity_workflow_responsibilities ON sipity_workflow_responsibilities.workflow_role_id = sipity_workflow_roles.id')
+      #               .joins('INNER JOIN sipity_roles ON sipity_roles.id = sipity_workflow_roles.role_id')
+      #               .joins('INNER JOIN sipity_agents ON sipity_agents.id = sipity_workflow_responsibilities.agent_id')
+      #               .where(sipity_roles: { name: ['managing', 'viewing'] })  # Filters results by role name
+      #               .select('sipity_agents.proxy_for_id, sipity_roles.name AS role_name')
+
+      #   user_role_map = users_and_roles.each_with_object({}) do |record, h|
+      #     user_id = record.proxy_for_id.to_i
+      #     h[user_id] ||= Set.new
+      #     h[user_id] << record.role_name
+      #   end
+
+      #   only_viewers = user_role_map.select { |user_id, roles| roles.include?('viewing') }
+
+      #   all_recipients.select { |r| r.id.in?(only_viewers.keys) }
+      # end
+
       def users_to_notify
         all_recipients = recipients.fetch(:to, []) + recipients.fetch(:cc, [])
         all_recipients.uniq
-
-        users_and_roles = Sipity::Entity.where(workflow_id: @entity.workflow_id)
-                    .joins('INNER JOIN sipity_workflow_roles ON sipity_workflow_roles.workflow_id = sipity_entities.workflow_id')
-                    .joins('INNER JOIN sipity_workflow_responsibilities ON sipity_workflow_responsibilities.workflow_role_id = sipity_workflow_roles.id')
-                    .joins('INNER JOIN sipity_roles ON sipity_roles.id = sipity_workflow_roles.role_id')
-                    .joins('INNER JOIN sipity_agents ON sipity_agents.id = sipity_workflow_responsibilities.agent_id')
-                    .where(sipity_roles: { name: ['managing', 'viewing'] })  # Filters results by role name
-                    .select('sipity_agents.proxy_for_id, sipity_roles.name AS role_name')
-
-        user_role_map = users_and_roles.each_with_object({}) do |record, h|
-          user_id = record.proxy_for_id.to_i
-          h[user_id] ||= Set.new
-          h[user_id] << record.role_name
+      
+        Rails.logger.info("NOTIF - Printing Recipients")
+        all_recipients.each_with_index do |r, i|
+          Rails.logger.info("##{i} : #{r.inspect}")
         end
-
-        exclusively_viewers = user_role_map.select { |k, v| v.include?('viewing') && !v.include?('managing') }
-        all_recipients.select { |r| r.id.in?(exclusively_viewers.keys) }
+      
+        users_and_group_info = Sipity::Entity.where(workflow_id: @entity.workflow_id)
+                           .joins('INNER JOIN sipity_workflow_roles ON sipity_workflow_roles.workflow_id = sipity_entities.workflow_id')
+                           .joins('INNER JOIN sipity_workflow_responsibilities ON sipity_workflow_responsibilities.workflow_role_id = sipity_workflow_roles.id')
+                           .joins('INNER JOIN sipity_roles ON sipity_roles.id = sipity_workflow_roles.role_id')
+                           .joins('INNER JOIN sipity_agents ON sipity_agents.id = sipity_workflow_responsibilities.agent_id')
+                           .where(sipity_roles: { name: ['managing', 'viewing'] })
+                           .select('sipity_agents.proxy_for_id, sipity_agents.proxy_for_type, sipity_roles.name AS role_name')
+      
+        Rails.logger.info("NOTIF - QUERY INSPECT: #{users_and_group_info.to_sql}")
+      
+        Rails.logger.info("NOTIF - QUERY RESULTS")
+        users_and_group_info.each do |record|
+          Rails.logger.info "Proxy For ID: #{record.proxy_for_id}, Proxy Type: #{record.proxy_for_type}, Role Name: #{record.role_name}"
+        end
+      
+        user_role_map = users_and_group_info.each_with_object({}) do |record, h|
+          if record.proxy_for_type == 'User'
+            user_id = record.proxy_for_id.to_i
+            h[user_id] ||= Set.new
+            h[user_id] << record.role_name
+          elsif record.proxy_for_type == 'Hyrax::Group'
+            group_name = record.proxy_for_id  # The group name
+            group_users = User.joins(:groups).where(groups: { name: group_name }).pluck(:id) # Fetch user IDs in the group
+      
+            Rails.logger.info("NOTIF - Group '#{group_name}' contains users: #{group_users}")
+      
+            group_users.each do |user_id|
+              h[user_id] ||= Set.new
+              h[user_id] << record.role_name
+            end
+          end
+        end
+      
+        Rails.logger.info("NOTIF - USER ROLE MAP")
+        user_role_map.each do |k, v|
+          Rails.logger.info "User: #{k}, Roles: #{v.to_a}"
+        end
+      
+        only_viewers = user_role_map.select { |user_id, roles| roles.include?('viewing') }
+      
+        Rails.logger.info("NOTIF - EXCLUSIVELY VIEWERS")
+        only_viewers.each do |k, v|
+          Rails.logger.info "User: #{k}, Roles: #{v.to_a}"
+        end
+      
+        res = all_recipients.select { |r| only_viewers.keys.include?(r.id) }
+      
+        Rails.logger.info("NOTIF - FINAL RECIPIENTS")
+        res.each do |r|
+          Rails.logger.info("User ID: #{r.id}, Email: #{r.email}")
+        end
+      
+        res
       end
     end
   end
