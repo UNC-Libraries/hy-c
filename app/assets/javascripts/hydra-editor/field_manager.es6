@@ -122,10 +122,10 @@ export class FieldManager {
             let id = parseInt(idParts[idParts.length - 1])
 
             if (isNaN(id)) {
-                $field.attr('id', `${idParts[0]}_1`);
+                $field.attr('id', `${currentId}_1`);
             } else {
                 id += 1;
-                $field.attr('id', `${idParts[0]}_${id}`);
+                $field.attr('id', `${idParts[0]}_${idParts[1]}_${id}`);
             }
         }
 
