@@ -27,26 +27,47 @@ module Hyrax
         end
       
         admin_set_name = ActiveFedora::SolrService.get("id:#{@work_id}")['response']['docs'].first['admin_set_tesim'].first
+        admin_set_id = ActiveFedora::SolrService.get("title_tesim:#{admin_set_name}")['response']['docs'].first['id']
         # WIP: Users and groups has to be changed to a query that fetches info related to users and groups in an admin set instead of a workflow
-        Rails.logger.info("NOTIF - Admin Set Name: #{admin_set_name}")
+        Rails.logger.info("NOTIF 2 - Admin Set Name: #{admin_set_name}, Admin Set ID: #{admin_set_id}")
+
+        users_and_roles = ActiveRecord::Base.connection.execute(
+                      "SELECT u.id AS user_id, u.email, r.name AS group_name, pta.access AS admin_set_role
+                      FROM users u
+                      JOIN roles_users ru ON u.id = ru.user_id
+                      JOIN roles r ON ru.role_id = r.id
+                      JOIN permission_template_accesses pta ON pta.agent_id = r.name AND pta.agent_type = 'group'
+                      WHERE pta.permission_template_id = (
+                          SELECT id FROM permission_templates WHERE source_id = 'qf85nd42d'
+                      )"
+                    ).map { |row| row.symbolize_keys } 
+
+
         # Query for agents related to the current workflow that have been assigned the roles managing or viewing. Agents can be groups or users
         # Proxy for id is either the user id or name of a group
         # Proxy for type is either Group or User
-        users_and_group_info = Sipity::Entity.where(workflow_id: @entity.workflow_id)
-                           .joins('INNER JOIN sipity_workflow_roles ON sipity_workflow_roles.workflow_id = sipity_entities.workflow_id')
-                           .joins('INNER JOIN sipity_workflow_responsibilities ON sipity_workflow_responsibilities.workflow_role_id = sipity_workflow_roles.id')
-                           .joins('INNER JOIN sipity_roles ON sipity_roles.id = sipity_workflow_roles.role_id')
-                           .joins('INNER JOIN sipity_agents ON sipity_agents.id = sipity_workflow_responsibilities.agent_id')
-                           .where(sipity_roles: { name: ['managing', 'viewing'] })
-                           .select('sipity_agents.proxy_for_id, sipity_agents.proxy_for_type, sipity_roles.name AS role_name')
-      
-        Rails.logger.info("NOTIF - QUERY INSPECT: #{users_and_group_info.to_sql}")
-      
-        Rails.logger.info("NOTIF - QUERY RESULTS")
-        users_and_group_info.each do |query_result|
-          Rails.logger.info "Proxy For ID: #{query_result.proxy_for_id}, Proxy Type: #{query_result.proxy_for_type}, Role Name: #{query_result.role_name}"
-        end
+        # users_and_group_info = Sipity::Entity.where(workflow_id: @entity.workflow_id)
+        #                    .joins('INNER JOIN sipity_workflow_roles ON sipity_workflow_roles.workflow_id = sipity_entities.workflow_id')
+        #                    .joins('INNER JOIN sipity_workflow_responsibilities ON sipity_workflow_responsibilities.workflow_role_id = sipity_workflow_roles.id')
+        #                    .joins('INNER JOIN sipity_roles ON sipity_roles.id = sipity_workflow_roles.role_id')
+        #                    .joins('INNER JOIN sipity_agents ON sipity_agents.id = sipity_workflow_responsibilities.agent_id')
+        #                    .where(sipity_roles: { name: ['managing', 'viewing'] })
+        #                    .select('sipity_agents.proxy_for_id, sipity_agents.proxy_for_type, sipity_roles.name AS role_name')
+        
+        # Rails.logger.info("NOTIF 1 - QUERY INSPECT: #{users_and_roles.to_sql}")
 
+        Rails.logger.info("NOTIF 2 - QUERY INSPECT: #{users_and_group_info.to_sql}")
+      
+        # Rails.logger.info("NOTIF 1 - QUERY RESULTS")
+        # users_and_group_info.each do |query_result|
+        #   Rails.logger.info "Proxy For ID: #{query_result.proxy_for_id}, Proxy Type: #{query_result.proxy_for_type}, Role Name: #{query_result.role_name}"
+        # end
+
+        Rails.logger.info("NOTIF 1 - QUERY RESULTS")
+        users_and_roles.each do |query_result|
+          puts "User ID: #{query_result[:user_id]}, Email: #{query_result[:email]}, Group: #{query_result[:group_name]}, Admin Set Role: #{query_result[:admin_set_role]}"
+        end
+        
         # Map [proxy_for_id, proxy_for_type, role,name] -> [user_id, {role_name => count}]
         user_role_map = users_and_group_info.each_with_object({}) do |query_result, h|
           if query_result.proxy_for_type == 'User'
