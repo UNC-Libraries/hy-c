@@ -44,15 +44,14 @@ module Hyrax
           Rails.logger.info "Proxy For ID: #{query_result.proxy_for_id}, Proxy Type: #{query_result.proxy_for_type}, Role Name: #{query_result.role_name}"
         end
 
-        # Map [proxy_for_id, proxy_for_type, role,name] -> [user_id, [role names]]
+        # Map [proxy_for_id, proxy_for_type, role,name] -> [user_id, {role_name => count}]
         user_role_map = users_and_group_info.each_with_object({}) do |query_result, h|
           if query_result.proxy_for_type == 'User'
             user_id = query_result.proxy_for_id.to_i
-            h[user_id] ||= Set.new
-            h[user_id] << query_result.role_name
+            h[user_id] ||= {'viewing' => 0, 'managing' => 0}
+            h[user_id][query_result.role_name] += 1
           elsif query_result.proxy_for_type == 'Hyrax::Group'
             group_name = query_result.proxy_for_id
-
             # Retrieve user ids associated with a group
             user_ids = ActiveRecord::Base.connection.execute(
               "SELECT u.id FROM users u
@@ -60,28 +59,45 @@ module Hyrax
                JOIN roles r ON ru.role_id = r.id
                WHERE r.name = '#{group_name}'"
             ).map { |row| row["id"].to_i }  # Convert results to integer IDs        
-        
+
             Rails.logger.info("NOTIF - Group '#{group_name}' contains users: #{user_ids}")
         
             user_ids.each do |user_id|
-              h[user_id] ||= Set.new
-              h[user_id] << query_result.role_name  # Inherit group's role
+              h[user_id] ||= {'viewing' => 0, 'managing' => 0}
+              h[user_id][query_result.role_name] += 1
             end
           end
         end
       
         Rails.logger.info("NOTIF - USER ROLE MAP")
         user_role_map.each do |k, v|
-          Rails.logger.info "User: #{k}, Roles: #{v.to_a}"
+          # Manager addition v: 1, m: 1
+          # Admin addition v: 1, m: 1
+          # Viewer addition: v: 1
+
+          # All roles applied v: 3, m: 2
+          # Manager + Viewer roles applied - v: 2 m: 1
+          # Manager only applied - v: 1 m: 1 
+
+          # Condition v count > m count
+          viewing_count = v['viewing']
+          managing_count = v['managing']
+          send_notification = viewing_count > managing_count
+          
+          # Rails.logger.info "User: #{k}, Roles: #{v.to_a}"
+          Rails.logger.info "LOG VIEWING/MANAGING COUNT - User: #{k}, Viewing Count: #{viewing_count}, Managing Count: #{managing_count}, send_notification: #{send_notification}"
         end
+
       
-        # Select users that have the viewing role, but no managing role
-        only_viewers = user_role_map.select { |user_id, roles| roles.include?('viewing') && !roles.include?('managing') }
+        # Select users that have the viewing role applied to them more times than the managing role
+        only_viewers = user_role_map.select do |user_id, role_counts|
+          role_counts['viewing'] > role_counts['managing']
+        end
         only_viewer_ids = only_viewers.keys 
       
         Rails.logger.info("NOTIF - EXCLUSIVELY VIEWERS")
         only_viewers.each do |k, v|
-          Rails.logger.info "User: #{k}, Roles: #{v.to_a}"
+          Rails.logger.info "User: #{k}, Viewing: #{v['viewing']}, Managing: #{v['managing']}"
         end
         
         # Select recipients with a user id that is in the only_viewer_ids set
