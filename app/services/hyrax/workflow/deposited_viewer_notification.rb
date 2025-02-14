@@ -26,6 +26,8 @@ module Hyrax
           Rails.logger.info("##{i} : #{r.inspect}")
         end
       
+        admin_set_name = ActiveFedora::SolrService.get("id:#{@work_id}")['response']['docs'].first['admin_set_tesim'].first
+        # WIP: Users and groups has to be changed to a query that fetches info related to users and groups in an admin set instead of a workflow
         # Query for agents related to the current workflow that have been assigned the roles managing or viewing. Agents can be groups or users
         # Proxy for id is either the user id or name of a group
         # Proxy for type is either Group or User
