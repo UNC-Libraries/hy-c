@@ -40,18 +40,18 @@ module Hyrax
         Rails.logger.info("NOTIF - QUERY INSPECT: #{users_and_group_info.to_sql}")
       
         Rails.logger.info("NOTIF - QUERY RESULTS")
-        users_and_group_info.each do |record|
-          Rails.logger.info "Proxy For ID: #{record.proxy_for_id}, Proxy Type: #{record.proxy_for_type}, Role Name: #{record.role_name}"
+        users_and_group_info.each do |query_result|
+          Rails.logger.info "Proxy For ID: #{query_result.proxy_for_id}, Proxy Type: #{query_result.proxy_for_type}, Role Name: #{query_result.role_name}"
         end
 
         # Map [proxy_for_id, proxy_for_type, role,name] -> [user_id, [role names]]
-        user_role_map = users_and_group_info.each_with_object({}) do |record, h|
-          if record.proxy_for_type == 'User'
-            user_id = record.proxy_for_id.to_i
+        user_role_map = users_and_group_info.each_with_object({}) do |query_result, h|
+          if query_result.proxy_for_type == 'User'
+            user_id = query_result.proxy_for_id.to_i
             h[user_id] ||= Set.new
-            h[user_id] << record.role_name
-          elsif record.proxy_for_type == 'Hyrax::Group'
-            group_name = record.proxy_for_id
+            h[user_id] << query_result.role_name
+          elsif query_result.proxy_for_type == 'Hyrax::Group'
+            group_name = query_result.proxy_for_id
 
             # Retrieve user ids associated with a group
             user_ids = ActiveRecord::Base.connection.execute(
@@ -65,7 +65,7 @@ module Hyrax
         
             user_ids.each do |user_id|
               h[user_id] ||= Set.new
-              h[user_id] << record.role_name  # Inherit group's role
+              h[user_id] << query_result.role_name  # Inherit group's role
             end
           end
         end
