@@ -61,13 +61,6 @@ module Hyrax
           Rails.logger.info "Proxy For ID: #{record.proxy_for_id}, Proxy Type: #{record.proxy_for_type}, Role Name: #{record.role_name}"
         end
 
-        group_users = users_and_group_info.each_with_object([]) do |record, user_ids|
-          if record.proxy_for_type == 'Hyrax::Group'
-            user_ids.concat(User.joins(:roles).where(roles: { name: record.proxy_for_id }).pluck(:id))
-          else
-            user_ids << record.proxy_for_id.to_i
-          end
-        end
       
         user_role_map = users_and_group_info.each_with_object({}) do |record, h|
           if record.proxy_for_type == 'User'
