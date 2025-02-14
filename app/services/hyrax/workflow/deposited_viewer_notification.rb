@@ -14,31 +14,11 @@ module Hyrax
         I18n.t('hyrax.notifications.workflow.deposited_manager.message', title: title, link: (link_to work_id, document_path))
       end
 
-      # def users_to_notify
-      #   all_recipients = recipients.fetch(:to, []) + recipients.fetch(:cc, [])
-      #   all_recipients.uniq
-
-      #   users_and_roles = Sipity::Entity.where(workflow_id: @entity.workflow_id)
-      #               .joins('INNER JOIN sipity_workflow_roles ON sipity_workflow_roles.workflow_id = sipity_entities.workflow_id')
-      #               .joins('INNER JOIN sipity_workflow_responsibilities ON sipity_workflow_responsibilities.workflow_role_id = sipity_workflow_roles.id')
-      #               .joins('INNER JOIN sipity_roles ON sipity_roles.id = sipity_workflow_roles.role_id')
-      #               .joins('INNER JOIN sipity_agents ON sipity_agents.id = sipity_workflow_responsibilities.agent_id')
-      #               .where(sipity_roles: { name: ['managing', 'viewing'] })  # Filters results by role name
-      #               .select('sipity_agents.proxy_for_id, sipity_roles.name AS role_name')
-
-      #   user_role_map = users_and_roles.each_with_object({}) do |record, h|
-      #     user_id = record.proxy_for_id.to_i
-      #     h[user_id] ||= Set.new
-      #     h[user_id] << record.role_name
-      #   end
-
-      #   only_viewers = user_role_map.select { |user_id, roles| roles.include?('viewing') }
-
-      #   all_recipients.select { |r| r.id.in?(only_viewers.keys) }
-      # end
-
+      # Modified version of the users_to_notify method to only notify users that are exclusively viewers, since managers are assigned all roles they would get viewer notifications as well.
       def users_to_notify
+        # Fetch recipients, similar to the AbstractNotification implementation of this method
         all_recipients = recipients.fetch(:to, []) + recipients.fetch(:cc, [])
+        # Filter duplicates of users that might have been included in different groups
         all_recipients = all_recipients.uniq
       
         Rails.logger.info("NOTIF - Printing Recipients")
@@ -46,6 +26,9 @@ module Hyrax
           Rails.logger.info("##{i} : #{r.inspect}")
         end
       
+        # Query for agents related to the current workflow that have been assigned the roles managing or viewing. Agents can be groups or users
+        # Proxy for id is either the user id or name of a group
+        # Proxy for type is either Group or User
         users_and_group_info = Sipity::Entity.where(workflow_id: @entity.workflow_id)
                            .joins('INNER JOIN sipity_workflow_roles ON sipity_workflow_roles.workflow_id = sipity_entities.workflow_id')
                            .joins('INNER JOIN sipity_workflow_responsibilities ON sipity_workflow_responsibilities.workflow_role_id = sipity_workflow_roles.id')
@@ -61,17 +44,16 @@ module Hyrax
           Rails.logger.info "Proxy For ID: #{record.proxy_for_id}, Proxy Type: #{record.proxy_for_type}, Role Name: #{record.role_name}"
         end
 
-      
+        # Map [proxy_for_id, proxy_for_type, role,name] -> [user_id, [role names]]
         user_role_map = users_and_group_info.each_with_object({}) do |record, h|
           if record.proxy_for_type == 'User'
-          # if record.proxy_for_type == 'User'
             user_id = record.proxy_for_id.to_i
             h[user_id] ||= Set.new
             h[user_id] << record.role_name
           elsif record.proxy_for_type == 'Hyrax::Group'
-            # Group role inheritance
             group_name = record.proxy_for_id
 
+            # Retrieve user ids associated with a group
             user_ids = ActiveRecord::Base.connection.execute(
               "SELECT u.id FROM users u
                JOIN roles_users ru ON u.id = ru.user_id
@@ -93,14 +75,17 @@ module Hyrax
           Rails.logger.info "User: #{k}, Roles: #{v.to_a}"
         end
       
+        # Select users that have the viewing role, but no managing role
         only_viewers = user_role_map.select { |user_id, roles| roles.include?('viewing') && !roles.include?('managing') }
+        only_viewer_ids = only_viewers.keys 
       
         Rails.logger.info("NOTIF - EXCLUSIVELY VIEWERS")
         only_viewers.each do |k, v|
           Rails.logger.info "User: #{k}, Roles: #{v.to_a}"
         end
-      
-        res = all_recipients.select { |r| only_viewers.keys.include?(r.id) }
+        
+        # Select recipients with a user id that is in the only_viewer_ids set
+        res = all_recipients.select { |r| only_viewer_ids.include?(r.id) }
       
         Rails.logger.info("NOTIF - FINAL RECIPIENTS")
         res.each do |r|
