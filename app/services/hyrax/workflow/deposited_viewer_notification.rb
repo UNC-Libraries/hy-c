@@ -47,26 +47,7 @@ module Hyrax
                       )", [admin_set_id]
                     ).map { |row| row.symbolize_keys } 
 
-
-        # Query for agents related to the current workflow that have been assigned the roles managing or viewing. Agents can be groups or users
-        # Proxy for id is either the user id or name of a group
-        # Proxy for type is either Group or User
-        # users_and_group_info = Sipity::Entity.where(workflow_id: @entity.workflow_id)
-        #                    .joins('INNER JOIN sipity_workflow_roles ON sipity_workflow_roles.workflow_id = sipity_entities.workflow_id')
-        #                    .joins('INNER JOIN sipity_workflow_responsibilities ON sipity_workflow_responsibilities.workflow_role_id = sipity_workflow_roles.id')
-        #                    .joins('INNER JOIN sipity_roles ON sipity_roles.id = sipity_workflow_roles.role_id')
-        #                    .joins('INNER JOIN sipity_agents ON sipity_agents.id = sipity_workflow_responsibilities.agent_id')
-        #                    .where(sipity_roles: { name: ['managing', 'viewing'] })
-        #                    .select('sipity_agents.proxy_for_id, sipity_agents.proxy_for_type, sipity_roles.name AS role_name')
-        
-        # Rails.logger.info("NOTIF 1 - QUERY INSPECT: #{users_and_group_info.to_sql}")
-
         Rails.logger.info("NOTIF 2 - QUERY INSPECT: #{users_and_roles.inspect}")
-      
-        # Rails.logger.info("NOTIF 1 - QUERY RESULTS")
-        # users_and_group_info.each do |query_result|
-        #   Rails.logger.info "Proxy For ID: #{query_result.proxy_for_id}, Proxy Type: #{query_result.proxy_for_type}, Role Name: #{query_result.role_name}"
-        # end
 
         Rails.logger.info("NOTIF 2 - QUERY RESULTS")
         users_and_roles.each do |query_result|
@@ -74,55 +55,11 @@ module Hyrax
         end
         
         # Map [user_id, group_name, admin_set_role] -> [user_id, {role_name => count}]
-        # user_role_map = users_and_group_info.each_with_object({}) do |query_result, h|
-        #   if query_result.proxy_for_type == 'User'
-        #     user_id = query_result.proxy_for_id.to_i
-        #     h[user_id] ||= {'viewing' => 0, 'managing' => 0}
-        #     h[user_id][query_result.role_name] += 1
-        #   elsif query_result.proxy_for_type == 'Hyrax::Group'
-        #     group_name = query_result.proxy_for_id
-        #     # Retrieve user ids associated with a group
-        #     user_ids = ActiveRecord::Base.connection.execute(
-        #       "SELECT u.id FROM users u
-        #        JOIN roles_users ru ON u.id = ru.user_id
-        #        JOIN roles r ON ru.role_id = r.id
-        #        WHERE r.name = '#{group_name}'"
-        #     ).map { |row| row["id"].to_i }  # Convert results to integer IDs        
-
-        #     Rails.logger.info("NOTIF - Group '#{group_name}' contains users: #{user_ids}")
-        
-        #     user_ids.each do |user_id|
-        #       h[user_id] ||= {'viewing' => 0, 'managing' => 0}
-        #       h[user_id][query_result.role_name] += 1
-        #     end
-        #   end
-        # end
-
         user_role_map = users_and_roles.each_with_object({}) do |query_result, h|
           user_id = query_result[:user_id].to_i
           h[user_id] ||= { 'view' => 0, 'manage' => 0 }
           h[user_id][query_result[:admin_set_role]] += 1
-          # if query_result.proxy_for_type == 'User'
-          #   user_id = query_result.proxy_for_id.to_i
-          #   h[user_id] ||= {'viewing' => 0, 'managing' => 0}
-          #   h[user_id][query_result.role_name] += 1
-          # elsif query_result.proxy_for_type == 'Hyrax::Group'
-          #   group_name = query_result.proxy_for_id
-          #   # Retrieve user ids associated with a group
-          #   user_ids = ActiveRecord::Base.connection.execute(
-          #     "SELECT u.id FROM users u
-          #      JOIN roles_users ru ON u.id = ru.user_id
-          #      JOIN roles r ON ru.role_id = r.id
-          #      WHERE r.name = '#{group_name}'"
-          #   ).map { |row| row["id"].to_i }  # Convert results to integer IDs        
 
-          #   Rails.logger.info("NOTIF - Group '#{group_name}' contains users: #{user_ids}")
-        
-          #   user_ids.each do |user_id|
-          #     h[user_id] ||= {'viewing' => 0, 'managing' => 0}
-          #     h[user_id][query_result.role_name] += 1
-          #   end
-          # end
         end
         
       
