@@ -65,6 +65,7 @@ module Hyrax
       
         Rails.logger.info("NOTIF - USER ROLE MAP")
         # Also processing
+        # Probable remove later
         user_role_map.each do |id, count|
           # Manager addition v: 1, m: 1
           # Admin addition v: 1, m: 1
@@ -85,9 +86,7 @@ module Hyrax
 
       
         # Select users that have the viewing role applied to them more times than the managing role
-        only_viewers = user_role_map.select do |user_id, role_counts|
-          role_counts['view'] > role_counts['manage']
-        end
+        only_viewers = user_role_map.select { |user_id, role_counts| role_counts['view'] > role_counts['manage'] }
         only_viewer_ids = only_viewers.keys.map(&:to_i)
       
         Rails.logger.info("NOTIF - EXCLUSIVELY VIEWERS")
@@ -96,13 +95,15 @@ module Hyrax
         end
         
         # Select recipients with a user id that is in the only_viewer_ids set
-        res = all_recipients.select { |r| only_viewer_ids.include?(r.id) }
-      
+        Rails.logger.info("NOTIF - User IDs selected for notification: #{only_viewer_ids.inspect}")
+
+        # Fetch users directly from the database
+        res = User.where(id: only_viewer_ids)
+
+        Rails.logger.info("NOTIF - QUERY INSPECTION - #{res.inspect}")
+
         Rails.logger.info("NOTIF - FINAL RECIPIENTS")
-        res.each do |r|
-          Rails.logger.info("User ID: #{r.id}, Email: #{r.email}")
-        end
-      
+        res.each { |r| Rails.logger.info("User ID: #{r.id}, Email: #{r.email}") }
         res
       end
     end
