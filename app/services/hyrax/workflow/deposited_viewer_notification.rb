@@ -39,7 +39,7 @@ module Hyrax
 
       def users_to_notify
         all_recipients = recipients.fetch(:to, []) + recipients.fetch(:cc, [])
-        all_recipients.uniq
+        all_recipients = all_recipients.uniq
       
         Rails.logger.info("NOTIF - Printing Recipients")
         all_recipients.each_with_index do |r, i|
@@ -67,6 +67,7 @@ module Hyrax
           else
             user_ids << record.proxy_for_id.to_i
           end
+        end
       
         user_role_map = users_and_group_info.each_with_object({}) do |record, h|
           if record.proxy_for_type == 'User'
