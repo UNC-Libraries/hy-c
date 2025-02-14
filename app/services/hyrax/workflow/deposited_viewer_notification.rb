@@ -77,7 +77,7 @@ module Hyrax
           elsif record.proxy_for_type == 'Hyrax::Group'
             # Group role inheritance
             group_name = record.proxy_for_id
-            
+
             user_ids = ActiveRecord::Base.connection.execute(
               "SELECT u.id FROM users u
                JOIN roles_users ru ON u.id = ru.user_id
@@ -99,7 +99,7 @@ module Hyrax
           Rails.logger.info "User: #{k}, Roles: #{v.to_a}"
         end
       
-        only_viewers = user_role_map.select { |user_id, roles| roles.include?('viewing') }
+        only_viewers = user_role_map.select { |user_id, roles| roles.include?('viewing') && !roles.include?('managing') }
       
         Rails.logger.info("NOTIF - EXCLUSIVELY VIEWERS")
         only_viewers.each do |k, v|
