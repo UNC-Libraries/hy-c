@@ -38,7 +38,7 @@ module Hyrax
                       JOIN roles r ON ru.role_id = r.id
                       JOIN permission_template_accesses pta ON pta.agent_id = r.name AND pta.agent_type = 'group'
                       WHERE pta.permission_template_id = (
-                          SELECT id FROM permission_templates WHERE source_id = 'qf85nd42d'
+                          SELECT id FROM permission_templates WHERE source_id = #{admin_set_id}
                       )"
                     ).map { |row| row.symbolize_keys } 
 
@@ -68,33 +68,62 @@ module Hyrax
           puts "User ID: #{query_result[:user_id]}, Email: #{query_result[:email]}, Group: #{query_result[:group_name]}, Admin Set Role: #{query_result[:admin_set_role]}"
         end
         
-        # Map [proxy_for_id, proxy_for_type, role,name] -> [user_id, {role_name => count}]
-        user_role_map = users_and_group_info.each_with_object({}) do |query_result, h|
-          if query_result.proxy_for_type == 'User'
-            user_id = query_result.proxy_for_id.to_i
-            h[user_id] ||= {'viewing' => 0, 'managing' => 0}
-            h[user_id][query_result.role_name] += 1
-          elsif query_result.proxy_for_type == 'Hyrax::Group'
-            group_name = query_result.proxy_for_id
-            # Retrieve user ids associated with a group
-            user_ids = ActiveRecord::Base.connection.execute(
-              "SELECT u.id FROM users u
-               JOIN roles_users ru ON u.id = ru.user_id
-               JOIN roles r ON ru.role_id = r.id
-               WHERE r.name = '#{group_name}'"
-            ).map { |row| row["id"].to_i }  # Convert results to integer IDs        
+        # Map [user_id, group_name, admin_set_role] -> [user_id, {role_name => count}]
+        # user_role_map = users_and_group_info.each_with_object({}) do |query_result, h|
+        #   if query_result.proxy_for_type == 'User'
+        #     user_id = query_result.proxy_for_id.to_i
+        #     h[user_id] ||= {'viewing' => 0, 'managing' => 0}
+        #     h[user_id][query_result.role_name] += 1
+        #   elsif query_result.proxy_for_type == 'Hyrax::Group'
+        #     group_name = query_result.proxy_for_id
+        #     # Retrieve user ids associated with a group
+        #     user_ids = ActiveRecord::Base.connection.execute(
+        #       "SELECT u.id FROM users u
+        #        JOIN roles_users ru ON u.id = ru.user_id
+        #        JOIN roles r ON ru.role_id = r.id
+        #        WHERE r.name = '#{group_name}'"
+        #     ).map { |row| row["id"].to_i }  # Convert results to integer IDs        
 
-            Rails.logger.info("NOTIF - Group '#{group_name}' contains users: #{user_ids}")
+        #     Rails.logger.info("NOTIF - Group '#{group_name}' contains users: #{user_ids}")
         
-            user_ids.each do |user_id|
-              h[user_id] ||= {'viewing' => 0, 'managing' => 0}
-              h[user_id][query_result.role_name] += 1
-            end
-          end
+        #     user_ids.each do |user_id|
+        #       h[user_id] ||= {'viewing' => 0, 'managing' => 0}
+        #       h[user_id][query_result.role_name] += 1
+        #     end
+        #   end
+        # end
+
+        user_role_map = users_and_roles.each_with_object({}) do |query_result, h|
+          user_id = query_result[:user_id]
+          h[user_id] ||= {'viewer' => 0, 'manager' => 0}
+          h[user_id][query_result[:admin_set_role]] += 1
+          # if query_result.proxy_for_type == 'User'
+          #   user_id = query_result.proxy_for_id.to_i
+          #   h[user_id] ||= {'viewing' => 0, 'managing' => 0}
+          #   h[user_id][query_result.role_name] += 1
+          # elsif query_result.proxy_for_type == 'Hyrax::Group'
+          #   group_name = query_result.proxy_for_id
+          #   # Retrieve user ids associated with a group
+          #   user_ids = ActiveRecord::Base.connection.execute(
+          #     "SELECT u.id FROM users u
+          #      JOIN roles_users ru ON u.id = ru.user_id
+          #      JOIN roles r ON ru.role_id = r.id
+          #      WHERE r.name = '#{group_name}'"
+          #   ).map { |row| row["id"].to_i }  # Convert results to integer IDs        
+
+          #   Rails.logger.info("NOTIF - Group '#{group_name}' contains users: #{user_ids}")
+        
+          #   user_ids.each do |user_id|
+          #     h[user_id] ||= {'viewing' => 0, 'managing' => 0}
+          #     h[user_id][query_result.role_name] += 1
+          #   end
+          # end
         end
+        
       
         Rails.logger.info("NOTIF - USER ROLE MAP")
-        user_role_map.each do |k, v|
+        # Also processing
+        user_role_map.each do |id, count|
           # Manager addition v: 1, m: 1
           # Admin addition v: 1, m: 1
           # Viewer addition: v: 1
@@ -104,24 +133,24 @@ module Hyrax
           # Manager only applied - v: 1 m: 1 
 
           # Condition v count > m count
-          viewing_count = v['viewing']
-          managing_count = v['managing']
+          viewing_count = count['viewer']
+          managing_count = count['manager']
           send_notification = viewing_count > managing_count
           
-          # Rails.logger.info "User: #{k}, Roles: #{v.to_a}"
-          Rails.logger.info "LOG VIEWING/MANAGING COUNT - User: #{k}, Viewing Count: #{viewing_count}, Managing Count: #{managing_count}, send_notification: #{send_notification}"
+          # Rails.logger.info "User: #{k}, Roles: #{count.to_a}"
+          Rails.logger.info "LOG VIEWING/MANAGING COUNT - User: #{id}, Viewing Count: #{viewing_count}, Managing Count: #{managing_count}, send_notification: #{send_notification}"
         end
 
       
         # Select users that have the viewing role applied to them more times than the managing role
         only_viewers = user_role_map.select do |user_id, role_counts|
-          role_counts['viewing'] > role_counts['managing']
+          role_counts['viewer'] > role_counts['manager']
         end
         only_viewer_ids = only_viewers.keys 
       
         Rails.logger.info("NOTIF - EXCLUSIVELY VIEWERS")
         only_viewers.each do |k, v|
-          Rails.logger.info "User: #{k}, Viewing: #{v['viewing']}, Managing: #{v['managing']}"
+          Rails.logger.info "User: #{k}, Viewing: #{v['viewer']}, Managing: #{v['manager']}"
         end
         
         # Select recipients with a user id that is in the only_viewer_ids set
