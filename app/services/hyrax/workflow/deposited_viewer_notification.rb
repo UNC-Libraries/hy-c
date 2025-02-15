@@ -30,7 +30,7 @@ module Hyrax
         return if admin_set_query.empty?
         admin_set_name = admin_set_query.first['admin_set_tesim'].first
 
-        admin_set_query = ActiveFedora::SolrService.get("title_tesim:#{admin_set_name}")['response']['docs']
+        admin_set_query = ActiveFedora::SolrService.get("has_model_ssim:\"AdminSet\" AND title_tesim:\"#{admin_set_name}\"")['response']['docs']
         return if admin_set_query.empty?
         admin_set_id = admin_set_query.first['id']
         # WIP: Users and groups has to be changed to a query that fetches info related to users and groups in an admin set instead of a workflow
@@ -42,7 +42,8 @@ module Hyrax
                     JOIN roles r ON ru.role_id = r.id
                     JOIN permission_template_accesses pta ON pta.agent_id = r.name AND pta.agent_type = 'group'
                     WHERE pta.permission_template_id = (
-                        SELECT id FROM permission_templates WHERE source_id = '#{admin_set_id}'")
+                        SELECT id FROM permission_templates WHERE source_id = '#{admin_set_id}'
+                    )")
 
 
         Rails.logger.info("NOTIF 2 - QUERY INSPECT 1")
