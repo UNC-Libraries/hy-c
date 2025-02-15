@@ -36,18 +36,22 @@ module Hyrax
         # WIP: Users and groups has to be changed to a query that fetches info related to users and groups in an admin set instead of a workflow
         Rails.logger.info("NOTIF 2 - Admin Set Name: #{admin_set_name}, Admin Set ID: #{admin_set_id}")
 
-        users_and_roles = ActiveRecord::Base.connection.execute(
-                    "SELECT u.id AS user_id, u.email, r.name AS group_name, pta.access AS admin_set_role
-                    FROM users u
+        users_and_roles_query = ActiveRecord::Base.connection.execute("SELECT u.id AS user_id, u.email, r.name AS group_name, pta.access AS admin_set_role
+                    FROM users u  
                     JOIN roles_users ru ON u.id = ru.user_id
                     JOIN roles r ON ru.role_id = r.id
-                    JOIN permission_template_accesses pta ON pta.agent_id = r.name AND pta.agent_type = 'Group'
+                    JOIN permission_template_accesses pta ON pta.agent_id = r.name AND pta.agent_type = 'group'
                     WHERE pta.permission_template_id = (
                         SELECT id FROM permission_templates WHERE source_id = '#{admin_set_id}'
-                    )"
-                    ).map { |row| row.symbolize_keys }
+                    )")
 
 
+        Rails.logger.info("NOTIF 2 - QUERY INSPECT 1")
+        users_and_roles_query.each do |query_result|
+          Rails.logger.info("RESULT INSPECT #{query_result.inspect}")
+        end
+
+        users_and_roles = users_and_roles_query.map { |row| row.symbolize_keys }
         Rails.logger.info("NOTIF 2 - QUERY INSPECT: #{users_and_roles.inspect}")
 
         Rails.logger.info("NOTIF 2 - QUERY RESULTS")
