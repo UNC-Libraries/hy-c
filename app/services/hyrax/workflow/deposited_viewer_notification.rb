@@ -98,12 +98,12 @@ module Hyrax
         only_viewers.each do |k, v|
           Rails.logger.info "User: #{k}, Viewing: #{v['view']}, Managing: #{v['manage']}"
         end
-        
+  
         # Select recipients with a user id that is in the only_viewer_ids set
         Rails.logger.info("NOTIF - User IDs selected for notification: #{only_viewer_ids.inspect}")
 
         # Fetch users directly from the database
-        res = only_viewer_ids.map { |id| User.find(id) }
+        res = ::User.where(id: only_viewer_ids).to_a
 
         Rails.logger.info("NOTIF - QUERY INSPECTION - #{res.inspect}")
 
