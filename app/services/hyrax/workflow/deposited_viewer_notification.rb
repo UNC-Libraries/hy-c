@@ -16,21 +16,12 @@ module Hyrax
 
       # Modified version of the users_to_notify method to only notify users that are exclusively viewers, since managers are assigned all roles they would get viewer notifications as well.
       def users_to_notify
-        # Fetch recipients, similar to the AbstractNotification implementation of this method
-        all_recipients = recipients.fetch(:to, []) + recipients.fetch(:cc, [])
-        # Filter duplicates of users that might have been included in different groups
-        all_recipients = all_recipients.uniq
-      
-        Rails.logger.info("NOTIF - Printing Recipients")
-        all_recipients.each_with_index do |r, i|
-          Rails.logger.info("##{i} : #{r.inspect}")
-        end
         work_data = WorkUtilsHelper.fetch_work_data_by_fileset_id(@work_id)
         return if work_data[:admin_set_id].blank?
         admin_set_id = work_data[:admin_set_id]
         admin_set_name = work_data[:admin_set_name]
         # WIP: Users and groups has to be changed to a query that fetches info related to users and groups in an admin set instead of a workflow
-        Rails.logger.info("NOTIF 2 - Admin Set Name: #{admin_set_name}, Admin Set ID: #{admin_set_id}")
+        # Rails.logger.info("NOTIF 2 - Admin Set Name: #{admin_set_name}, Admin Set ID: #{admin_set_id}")
 
         users_and_roles_query = ActiveRecord::Base.connection.execute("SELECT u.id AS user_id, u.email, r.name AS group_name, pta.access AS admin_set_role
                     FROM users u  
@@ -42,18 +33,18 @@ module Hyrax
                     )")
 
 
-        Rails.logger.info("NOTIF 2 - QUERY INSPECT 1")
-        users_and_roles_query.each do |query_result|
-          Rails.logger.info("RESULT INSPECT #{query_result.inspect}")
-        end
+        # Rails.logger.info("NOTIF 2 - QUERY INSPECT 1")
+        # users_and_roles_query.each do |query_result|
+        #   Rails.logger.info("RESULT INSPECT #{query_result.inspect}")
+        # end
 
-        users_and_roles = users_and_roles_query.map { |row| row.symbolize_keys }
-        Rails.logger.info("NOTIF 2 - QUERY INSPECT: #{users_and_roles.inspect}")
+        # users_and_roles = users_and_roles_query.map { |row| row.symbolize_keys }
+        # Rails.logger.info("NOTIF 2 - QUERY INSPECT: #{users_and_roles.inspect}")
 
-        Rails.logger.info("NOTIF 2 - QUERY RESULTS")
-        users_and_roles.each do |query_result|
-          puts "User ID: #{query_result[:user_id]}, Email: #{query_result[:email]}, Group: #{query_result[:group_name]}, Admin Set Role: #{query_result[:admin_set_role]}"
-        end
+        # Rails.logger.info("NOTIF 2 - QUERY RESULTS")
+        # users_and_roles.each do |query_result|
+        #   puts "User ID: #{query_result[:user_id]}, Email: #{query_result[:email]}, Group: #{query_result[:group_name]}, Admin Set Role: #{query_result[:admin_set_role]}"
+        # end
         
         # Map [user_id, group_name, admin_set_role] -> [user_id, {role_name => count}]
         user_role_map = users_and_roles.each_with_object({}) do |query_result, h|
@@ -64,9 +55,8 @@ module Hyrax
         end
         
       
-        Rails.logger.info("NOTIF - USER ROLE MAP")
+        # Rails.logger.info("NOTIF - USER ROLE MAP")
         # Also processing
-        # Probable remove later
         user_role_map.each do |id, count|
           # Manager addition v: 1, m: 1
           # Admin addition v: 1, m: 1
@@ -82,7 +72,7 @@ module Hyrax
           send_notification = viewing_count > managing_count
           
           # Rails.logger.info "User: #{k}, Roles: #{count.to_a}"
-          Rails.logger.info "LOG VIEWING/MANAGING COUNT - User: #{id}, Viewing Count: #{viewing_count}, Managing Count: #{managing_count}, send_notification: #{send_notification}"
+          # Rails.logger.info "LOG VIEWING/MANAGING COUNT - User: #{id}, Viewing Count: #{viewing_count}, Managing Count: #{managing_count}, send_notification: #{send_notification}"
         end
 
       
@@ -90,21 +80,21 @@ module Hyrax
         only_viewers = user_role_map.select { |user_id, role_counts| role_counts['view'] > role_counts['manage'] }
         only_viewer_ids = only_viewers.keys.map(&:to_i)
       
-        Rails.logger.info("NOTIF - EXCLUSIVELY VIEWERS")
-        only_viewers.each do |k, v|
-          Rails.logger.info "User: #{k}, Viewing: #{v['view']}, Managing: #{v['manage']}"
-        end
+        # Rails.logger.info("NOTIF - EXCLUSIVELY VIEWERS")
+        # only_viewers.each do |k, v|
+        #   Rails.logger.info "User: #{k}, Viewing: #{v['view']}, Managing: #{v['manage']}"
+        # end
   
         # Select recipients with a user id that is in the only_viewer_ids set
-        Rails.logger.info("NOTIF - User IDs selected for notification: #{only_viewer_ids.inspect}")
+        # Rails.logger.info("NOTIF - User IDs selected for notification: #{only_viewer_ids.inspect}")
 
         # Fetch users directly from the database
         res = ::User.where(id: only_viewer_ids).to_a
 
-        Rails.logger.info("NOTIF - QUERY INSPECTION - #{res.inspect}")
+        # Rails.logger.info("NOTIF - QUERY INSPECTION - #{res.inspect}")
 
-        Rails.logger.info("NOTIF - FINAL RECIPIENTS")
-        res.each { |r| Rails.logger.info("User ID: #{r.id}, Email: #{r.email}") }
+        # Rails.logger.info("NOTIF - FINAL RECIPIENTS")
+        # res.each { |r| Rails.logger.info("User ID: #{r.id}, Email: #{r.email}") }
         res
       end
     end
