@@ -42,8 +42,7 @@ module Hyrax
                     JOIN roles r ON ru.role_id = r.id
                     JOIN permission_template_accesses pta ON pta.agent_id = r.name AND pta.agent_type = 'group'
                     WHERE pta.permission_template_id = (
-                        SELECT id FROM permission_templates WHERE source_id = '#{admin_set_id}'
-                    )")
+                        SELECT id FROM permission_templates WHERE source_id = '#{admin_set_id}'")
 
 
         Rails.logger.info("NOTIF 2 - QUERY INSPECT 1")
