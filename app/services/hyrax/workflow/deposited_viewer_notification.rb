@@ -103,7 +103,7 @@ module Hyrax
         Rails.logger.info("NOTIF - User IDs selected for notification: #{only_viewer_ids.inspect}")
 
         # Fetch users directly from the database
-        res = User.where(id: only_viewer_ids)
+        res = only_viewer_ids.map { |id| User.find(id) }
 
         Rails.logger.info("NOTIF - QUERY INSPECTION - #{res.inspect}")
 
