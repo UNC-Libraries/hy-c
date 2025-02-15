@@ -25,14 +25,10 @@ module Hyrax
         all_recipients.each_with_index do |r, i|
           Rails.logger.info("##{i} : #{r.inspect}")
         end
-      
-        admin_set_query = ActiveFedora::SolrService.get("id:#{@work_id}")['response']['docs']
-        return if admin_set_query.empty?
-        admin_set_name = admin_set_query.first['admin_set_tesim'].first
-
-        admin_set_query = ActiveFedora::SolrService.get("has_model_ssim:\"AdminSet\" AND title_tesim:\"#{admin_set_name}\"")['response']['docs']
-        return if admin_set_query.empty?
-        admin_set_id = admin_set_query.first['id']
+        work_data = WorkUtilsHelper.fetch_work_data_by_fileset_id(@work_id)
+        return if work_data[:admin_set_id].blank?
+        admin_set_id = work_data[:admin_set_id]
+        admin_set_name = work_data[:admin_set_name]
         # WIP: Users and groups has to be changed to a query that fetches info related to users and groups in an admin set instead of a workflow
         Rails.logger.info("NOTIF 2 - Admin Set Name: #{admin_set_name}, Admin Set ID: #{admin_set_id}")
 
