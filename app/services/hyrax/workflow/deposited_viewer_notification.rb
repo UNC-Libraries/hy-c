@@ -4,14 +4,22 @@ module Hyrax
     # This notification service was created to exclusively notify viewers in the viewer-specific workflow.
     # Using the DepositedManagerNotificaiton class for this would send deposit notifications to managers as well.
     class DepositedViewerNotification < AbstractNotification
+      def self.send_notification(entity:, comment:, user:, recipients:)
+        puts "NOTIF - DepositedViewerNotification.send_notification"
+        puts "NOTIF - Entity: #{entity.inspect}"
+        puts "NOTIF - Comment: #{comment.inspect}"
+        puts "NOTIF - User: #{user.inspect}"
+        puts "NOTIF - Recipients: #{recipients.inspect}"
+        new(entity, comment, user, recipients).call
+      end
+      
       private
-
       def subject
-        I18n.t('hyrax.notifications.workflow.deposited_manager.subject')
+        I18n.t('hyrax.notifications.workflow.deposited_viewer.subject')
       end
 
       def message
-        I18n.t('hyrax.notifications.workflow.deposited_manager.message', title: title, link: (link_to work_id, document_path))
+        I18n.t('hyrax.notifications.workflow.deposited_viewer.message', title: title, link: (link_to work_id, document_path))
       end
 
       # Modified version of the users_to_notify method to only notify users that are exclusively viewers, since managers are assigned all roles they would get viewer notifications as well.
