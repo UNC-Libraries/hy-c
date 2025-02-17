@@ -21,7 +21,7 @@ module WorkUtilsHelper
     work_data = ActiveFedora::SolrService.get("id:#{work_id}", rows: 1)['response']['docs'].first || {}
     Rails.logger.warn("No work found associated with work id: #{work_id}") if work_data.blank?
     admin_set_name = work_data['admin_set_tesim']&.first
-    admin_set_data = admin_set_name ? ActiveFedora::SolrService.get("title_tesim:#{admin_set_name}", { :rows => 1, 'df' => 'title_tesim'})['response']['docs'].first : {}
+    admin_set_data = admin_set_name ? ActiveFedora::SolrService.get("title_tesim:#{admin_set_name} AND has_model_ssim:(\"AdminSet\")", { :rows => 1, 'df' => 'title_tesim'})['response']['docs'].first : {}
     Rails.logger.warn("WORK UTILS - Inspect Admin Set Data: #{admin_set_data.inspect}")
     Rails.logger.warn(self.generate_warning_message(admin_set_name, work_id)) if admin_set_data.blank?
     {
