@@ -16,7 +16,7 @@ module Hyrax
 
       # Modified version of the users_to_notify method to only notify users that are exclusively viewers, since managers are assigned all roles they would get viewer notifications as well.
       def users_to_notify
-        work_data = WorkUtilsHelper.fetch_work_data_by_fileset_id(@work_id)
+        work_data = WorkUtilsHelper.fetch_work_data_by_work_id(@work_id)
         return if work_data[:admin_set_id].blank?
         admin_set_id = work_data[:admin_set_id]
         admin_set_name = work_data[:admin_set_name]
