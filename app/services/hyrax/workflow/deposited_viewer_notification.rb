@@ -33,18 +33,18 @@ module Hyrax
                     )")
 
 
-        # Rails.logger.info("NOTIF 2 - QUERY INSPECT 1")
-        # users_and_roles_query.each do |query_result|
-        #   Rails.logger.info("RESULT INSPECT #{query_result.inspect}")
-        # end
+        Rails.logger.info("NOTIF 2 - QUERY INSPECT 1")
+        users_and_roles_query.each do |query_result|
+          Rails.logger.info("RESULT INSPECT #{query_result.inspect}")
+        end
 
-        # users_and_roles = users_and_roles_query.map { |row| row.symbolize_keys }
-        # Rails.logger.info("NOTIF 2 - QUERY INSPECT: #{users_and_roles.inspect}")
+        users_and_roles = users_and_roles_query.map { |row| row.symbolize_keys }
+        Rails.logger.info("NOTIF 2 - QUERY INSPECT: #{users_and_roles.inspect}")
 
-        # Rails.logger.info("NOTIF 2 - QUERY RESULTS")
-        # users_and_roles.each do |query_result|
-        #   puts "User ID: #{query_result[:user_id]}, Email: #{query_result[:email]}, Group: #{query_result[:group_name]}, Admin Set Role: #{query_result[:admin_set_role]}"
-        # end
+        Rails.logger.info("NOTIF 2 - QUERY RESULTS")
+        users_and_roles.each do |query_result|
+          puts "User ID: #{query_result[:user_id]}, Email: #{query_result[:email]}, Group: #{query_result[:group_name]}, Admin Set Role: #{query_result[:admin_set_role]}"
+        end
         
         # Map [user_id, group_name, admin_set_role] -> [user_id, {role_name => count}]
         user_role_map = users_and_roles.each_with_object({}) do |query_result, h|
@@ -55,7 +55,7 @@ module Hyrax
         end
         
       
-        # Rails.logger.info("NOTIF - USER ROLE MAP")
+        Rails.logger.info("NOTIF - USER ROLE MAP")
         # Also processing
         user_role_map.each do |id, count|
           # Manager addition v: 1, m: 1
@@ -71,30 +71,30 @@ module Hyrax
           managing_count = count['manage']
           send_notification = viewing_count > managing_count
           
-          # Rails.logger.info "User: #{k}, Roles: #{count.to_a}"
-          # Rails.logger.info "LOG VIEWING/MANAGING COUNT - User: #{id}, Viewing Count: #{viewing_count}, Managing Count: #{managing_count}, send_notification: #{send_notification}"
+          Rails.logger.info "User: #{k}, Roles: #{count.to_a}"
+          Rails.logger.info "LOG VIEWING/MANAGING COUNT - User: #{id}, Viewing Count: #{viewing_count}, Managing Count: #{managing_count}, send_notification: #{send_notification}"
         end
 
       
         # Select users that have the viewing role applied to them more times than the managing role
-        only_viewers = user_role_map.select { |user_id, role_counts| role_counts['view'] > role_counts['manage'] }
+        only_viewers = user_role_map.select { |user_id, role_counts| role_counts['view'] >= role_counts['manage'] }
         only_viewer_ids = only_viewers.keys.map(&:to_i)
       
-        # Rails.logger.info("NOTIF - EXCLUSIVELY VIEWERS")
-        # only_viewers.each do |k, v|
-        #   Rails.logger.info "User: #{k}, Viewing: #{v['view']}, Managing: #{v['manage']}"
-        # end
+        Rails.logger.info("NOTIF - EXCLUSIVELY VIEWERS")
+        only_viewers.each do |k, v|
+          Rails.logger.info "User: #{k}, Viewing: #{v['view']}, Managing: #{v['manage']}"
+        end
   
         # Select recipients with a user id that is in the only_viewer_ids set
-        # Rails.logger.info("NOTIF - User IDs selected for notification: #{only_viewer_ids.inspect}")
+        Rails.logger.info("NOTIF - User IDs selected for notification: #{only_viewer_ids.inspect}")
 
         # Fetch users directly from the database
         res = ::User.where(id: only_viewer_ids).to_a
 
-        # Rails.logger.info("NOTIF - QUERY INSPECTION - #{res.inspect}")
+        Rails.logger.info("NOTIF - QUERY INSPECTION - #{res.inspect}")
 
-        # Rails.logger.info("NOTIF - FINAL RECIPIENTS")
-        # res.each { |r| Rails.logger.info("User ID: #{r.id}, Email: #{r.email}") }
+        Rails.logger.info("NOTIF - FINAL RECIPIENTS")
+        res.each { |r| Rails.logger.info("User ID: #{r.id}, Email: #{r.email}") }
         res
       end
     end
