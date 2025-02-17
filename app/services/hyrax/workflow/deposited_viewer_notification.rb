@@ -5,21 +5,21 @@ module Hyrax
     # Using the DepositedManagerNotificaiton class for this would send deposit notifications to managers as well.
     class DepositedViewerNotification < AbstractNotification
       def self.send_notification(entity:, comment:, user:, recipients:)
-        puts "NOTIF - DepositedViewerNotification.send_notification"
+        puts 'NOTIF - DepositedViewerNotification.send_notification'
         puts "NOTIF - Entity: #{entity.inspect}"
         puts "NOTIF - Comment: #{comment.inspect}"
         puts "NOTIF - User: #{user.inspect}"
         puts "NOTIF - Recipients: #{recipients.inspect}"
         new(entity, comment, user, recipients).call
       end
-      
+
       private
       def subject
-        I18n.t('hyrax.notifications.workflow.deposited_viewer.subject')
+        I18n.t('hyrax.notifications.workflow.deposited_manager.subject')
       end
 
       def message
-        I18n.t('hyrax.notifications.workflow.deposited_viewer.message', title: title, link: (link_to work_id, document_path))
+        I18n.t('hyrax.notifications.workflow.deposited_manager.message', title: title, link: (link_to work_id, document_path))
       end
 
       # Modified version of the users_to_notify method to only notify users that are exclusively viewers, since managers are assigned all roles they would get viewer notifications as well.
@@ -49,7 +49,9 @@ module Hyrax
                     AND pta.agent_type = 'user';"
         )
 
-
+        puts 'NOTIF 2 - QUERY INSPECT 1'
+        puts "NOTIF 2 - GROUPS AND ROLES QUERY: #{groups_and_roles_query.inspect}"
+        puts "NOTIF 2 - USERS AND ROLES QUERY: #{users_and_roles_query.inspect}"
 
         # Rails.logger.info('NOTIF 2 - QUERY INSPECT 1')
         # groups_and_roles_query.each do |query_result|
@@ -105,6 +107,7 @@ module Hyrax
           send_notification = viewing_count > managing_count
 
           # Rails.logger.info "User: #{id}, Roles: #{count.to_a}"
+          puts "LOG VIEWING/MANAGING COUNT - User: #{id}, Viewing Count: #{viewing_count}, Managing Count: #{managing_count}, send_notification: #{send_notification}"
           # Rails.logger.info "LOG VIEWING/MANAGING COUNT - User: #{id}, Viewing Count: #{viewing_count}, Managing Count: #{managing_count}, send_notification: #{send_notification}"
         end
 
@@ -128,7 +131,7 @@ module Hyrax
 
         # Rails.logger.info('NOTIF - FINAL RECIPIENTS')
         # res.each { |r| Rails.logger.info("User ID: #{r.id}, Email: #{r.email}") }
-        res
+        res << recipients['cc']
       end
     end
   end
