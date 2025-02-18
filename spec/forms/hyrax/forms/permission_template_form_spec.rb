@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 require 'rails_helper'
 
-RSpec.describe Hyrax::Forms::PermissionTemplateForm do  
+RSpec.describe Hyrax::Forms::PermissionTemplateForm do
 end
