@@ -7,14 +7,14 @@ module Hyrax
     APPROVING = 'approving'
     DEPOSITING = 'depositing'
     # [hyc-override] Added Viewing role
-    VIEWING   = 'viewing' 
+    VIEWING   = 'viewing'
 
     # Override the MAGIC_ROLES constant
     MAGIC_ROLES = {
       MANAGING  => 'Grants access to management tasks',
       APPROVING => 'Grants access to approval tasks',
       DEPOSITING => 'Grants access to depositing tasks',
-      VIEWING   => 'Grants access to viewing tasks' 
+      VIEWING   => 'Grants access to viewing tasks'
     }.freeze
 
     # Override initialize to ensure the correct roles are loaded
