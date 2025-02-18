@@ -9,7 +9,8 @@ ProxyDepositRequest.class_eval do
     message = I18n.t('hyrax.notifications.proxy_deposit_request.transfer_on_create.message', user_link: user_link,
                                                                                              transfer_link: transfer_link,
                                                                                              work_link: work_link)
-    Hyrax::MessengerService.deliver(::User.batch_user, receiving_user, message, I18n.t('hyrax.notifications.proxy_deposit_request.transfer_on_create.subject'))
+    Hyrax::MessengerService.deliver(::User.batch_user, receiving_user, message,
+                                    I18n.t('hyrax.notifications.proxy_deposit_request.transfer_on_create.subject'))
   end
 
   def send_request_transfer_message_as_part_of_update
