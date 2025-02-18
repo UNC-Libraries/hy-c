@@ -54,8 +54,8 @@ module Hyrax
           user_role_map[user_id][query_result[:admin_set_role]] += 1
         end
 
-        # Select users that have the viewing role applied to them equal to or more times than the managing role
-        only_viewers = user_role_map.select { |user_id, role_counts| role_counts['view'] >= role_counts['manage'] }
+        # Select users that have the viewing role applied to them more times than the managing role
+        only_viewers = user_role_map.select { |user_id, role_counts| role_counts['view'] > role_counts['manage'] }
         only_viewer_ids = only_viewers.keys.map(&:to_i)
         # Fetch users directly from the database
         res = ::User.where(id: only_viewer_ids).to_a
