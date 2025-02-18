@@ -2,20 +2,14 @@
 # https://github.com/samvera/hyrax/blob/hyrax-v3.5.0/app/models/proxy_deposit_request.rb
 ProxyDepositRequest.class_eval do
   def send_request_transfer_message_as_part_of_create
-    # wip_sending_user = "O'Reilly"
-    # wip_sending_user = sending_user.name,
-    # user_link = link_to(wip_sending_user, Hyrax::Engine.routes.url_helpers.user_path(sending_user))
     user_link = link_to(sending_user.name, Hyrax::Engine.routes.url_helpers.user_path(sending_user))
-    # puts "USER LINK: #{user_link}"
     transfer_link = link_to(I18n.t('hyrax.notifications.proxy_deposit_request.transfer_on_create.transfer_link_label'), Hyrax::Engine.routes.url_helpers.transfers_path)
     # [hyc-override] our message contains additional work_link variable
     work_link = link_to work.title.first, "#{ENV['HYRAX_HOST']}/concern/#{work.class.to_s.underscore}s/#{work.id}"
     message = I18n.t('hyrax.notifications.proxy_deposit_request.transfer_on_create.message', user_link: user_link,
                                                                                              transfer_link: transfer_link,
                                                                                              work_link: work_link)
-    # puts "TRANSFER LINK: #{message.inspect}"
-    Hyrax::MessengerService.deliver(::User.batch_user, receiving_user, message,
-                                    I18n.t('hyrax.notifications.proxy_deposit_request.transfer_on_create.subject'))
+    Hyrax::MessengerService.deliver(::User.batch_user, receiving_user, message, I18n.t('hyrax.notifications.proxy_deposit_request.transfer_on_create.subject'))
   end
 
   def send_request_transfer_message_as_part_of_update
