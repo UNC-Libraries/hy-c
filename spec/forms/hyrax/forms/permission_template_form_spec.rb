@@ -11,9 +11,6 @@ RSpec.describe Hyrax::Forms::PermissionTemplateForm do
         { access: Hyrax::PermissionTemplateAccess::VIEW },
     ]
     }
-      # let(:role_names) { Hyrax::RoleRegistry.new.role_names }
-      # let(:roles) { Sipity::Role.where(name: role_names) }
-    # let(:existing_role) { Sipity::Role.create!(name: 'managing', description: 'test-description') }
     let(:managing_role) { Sipity::Role.find_by(name: Hyrax::RoleRegistry::MANAGING) }
     let(:depositing_role) { Sipity::Role.find_by(name: Hyrax::RoleRegistry::DEPOSITING) }
     let(:viewing_role) { Sipity::Role.find_by(name: Hyrax::RoleRegistry::VIEWING) }
@@ -21,7 +18,6 @@ RSpec.describe Hyrax::Forms::PermissionTemplateForm do
 
     before do
       Sipity::Role.create!(name: 'managing', description: 'Grants access to management tasks')
-      # Sipity::Role.create!(name: 'approving', description: 'Grants access to approval tasks')
       Sipity::Role.create!(name: 'depositing', description: 'Grants access to depositing tasks')
       Sipity::Role.create!(name: 'viewing', description: 'Grants access to viewing tasks')
     end
