@@ -136,7 +136,7 @@ jobs:
       run: docker exec solr_container solr create_core -c hydra-test -d /var/solr/configsets/hy-c
 
     - name: Run rspec tests
-      run: bundle exec rspec ./spec/models/proxy_deposit_request_spec.rb
+      run: bundle exec rspec ./spec/forms/hyrax/forms/permission_template_form_spec.rb ./spec/lib/hyrax/role_registry_spec.rb ./spec/services/hyrax/workflow/deposited_viewer_notification_spec.rb
       env:
         REDIS_URL: redis://redis
         POSTGRES_USER: hyrax
