@@ -43,7 +43,7 @@ RSpec.describe Hyrax::Workflow::DepositedViewerNotification do
   end
   let(:workflow) do
     Sipity::Workflow.create(name: 'test', allows_access_grant: true, active: true,
-                            permission_template_id: permission_template.id)
+                              permission_template_id: permission_template.id)
   end
   let(:entity) { Sipity::Entity.create(proxy_for_global_id: work.to_global_id.to_s, workflow_id: workflow.id) }
   let(:comment) { double('comment', comment: 'A pleasant read') }

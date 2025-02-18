@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 require 'rails_helper'
+require 'cgi'
+require 'nokogiri'
 
 RSpec.describe ProxyDepositRequest, type: :model do
   include ActionView::Helpers::UrlHelper
@@ -38,7 +40,17 @@ RSpec.describe ProxyDepositRequest, type: :model do
         user_link = link_to(sender.name, Hyrax::Engine.routes.url_helpers.user_path(sender))
         transfer_link = link_to('transfer requests', Hyrax::Engine.routes.url_helpers.transfers_path)
         work_link = link_to work.title.first, "#{ENV['HYRAX_HOST']}/concern/#{work.class.to_s.underscore}s/#{work.id}"
-        expect(receiver.mailbox.inbox.last.last_message.body).to include(user_link + ' wants to transfer ownership of ' + work_link + ' to you. To accept this transfer request, go to the Carolina Digital Repository (CDR) ' + transfer_link)
+        # puts "USER LINK TEST: #{user_link}"
+        fragment_user_link = Nokogiri::HTML.fragment(user_link)
+        user_full_name = CGI.unescapeHTML(fragment_user_link.text.strip)
+        fragment_user_link.children.first.content = user_full_name
+        # The text renders in the receiver mailbox with the stuff unescaped, unescaping the text from there could be a solution
+        # puts "RECEIVER MAILBOX: #{receiver.mailbox.inbox.last.last_message.body}"
+        # expected_message = user_link + ' wants to transfer ownership of ' + work_link + ' to you. To accept this transfer request, go to the Carolina Digital Repository (CDR) ' + transfer_link
+        expected_message = fragment_user_link.to_html + ' wants to transfer ownership of ' + work_link + ' to you. To accept this transfer request, go to the Carolina Digital Repository (CDR) ' + transfer_link
+        # puts "UNESCAPED EXPECTED MESSAGE: #{expected_message}"
+        # puts "ESCAPED EXPECTED MESSAGE 2: #{expected_message2}"
+        expect(receiver.mailbox.inbox.last.last_message.body).to include(expected_message)
         proxy_request = receiver.proxy_deposit_requests.first
         expect(proxy_request.work_id).to eq(work_id)
         expect(proxy_request.sending_user).to eq(sender)
