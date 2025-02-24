@@ -41,26 +41,16 @@ module Hyrax
         groups_and_roles = groups_and_roles_query.map { |row| row.symbolize_keys }
         users_and_roles = users_and_roles_query.map { |row| row.symbolize_keys }
 
-        # Map [user_id, group_name, admin_set_role] -> [user_id, {role_name => count}]
-        user_role_map = groups_and_roles.each_with_object({}) do |query_result, h|
-          user_id = query_result[:user_id].to_i
-          h[user_id] ||= { 'view' => 0, 'manage' => 0 }
-          h[user_id][query_result[:admin_set_role]] += 1
-        end
 
-        users_and_roles.each do |query_result|
-          user_id = query_result[:id].to_i
-          user_role_map[user_id] ||= { 'view' => 0, 'manage' => 0 }
-          user_role_map[user_id][query_result[:admin_set_role]] += 1
-        end
+        # Combine results and exclude users with "manage" role
+        viewer_only_ids = (groups_and_roles_query + users_and_roles_query)
+          .map { |row| row.symbolize_keys }
+          .reject { |query_result| query_result[:admin_set_role] == 'manage' }
+          .map { |query_result| (query_result[:user_id] || query_result[:id]).to_i  }
+          .uniq
 
-        # Select users that have the viewing role applied to them more times than the managing role
-        only_viewers = user_role_map.select { |user_id, role_counts| role_counts['view'] > role_counts['manage'] }
-        only_viewer_ids = only_viewers.keys.map(&:to_i)
         # Fetch users directly from the database
-        res = ::User.where(id: only_viewer_ids).to_a
-        # Add carbon copy users
-        res << recipients['cc']
+        ::User.where(id: viewer_only_ids).to_a + recipients['cc']
       end
     end
   end
