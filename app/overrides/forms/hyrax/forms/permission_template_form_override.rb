@@ -10,7 +10,7 @@ Hyrax::Forms::PermissionTemplateForm.class_eval do
         roles << Sipity::Role.find_by(name: Hyrax::RoleRegistry::DEPOSITING)
       when Hyrax::PermissionTemplateAccess::MANAGE
         roles += Sipity::Role.where(name: Hyrax::RoleRegistry.new.role_names)
-        when Hyrax::PermissionTemplateAccess::VIEW
+      when Hyrax::PermissionTemplateAccess::VIEW
         roles << Sipity::Role.find_by(name: Hyrax::RoleRegistry::VIEWING)
       end
     end
