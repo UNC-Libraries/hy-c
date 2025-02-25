@@ -7,6 +7,7 @@ RSpec.describe Hyrax::Workflow::DepositedViewerNotification do
   let(:cc_user) { FactoryBot.create(:user) }
   let(:viewer1) { FactoryBot.create(:user) }
   let(:viewer2) { FactoryBot.create(:user) }
+  let(:manager) { FactoryBot.create(:user) }
 
   let(:work) { Article.create(title: ['New Article'], depositor: depositor.user_key) }
   let(:admin_set) do
@@ -17,13 +18,15 @@ RSpec.describe Hyrax::Workflow::DepositedViewerNotification do
   let(:mock_groups_and_roles) do
     [
       { 'user_id' => viewer1.id, 'email' => viewer1.email, 'group_name' => 'group1', 'admin_set_role' => 'view' },
-      { 'user_id' => approver.id, 'email' => approver.email, 'group_name' => 'group1', 'admin_set_role' => 'manage' }
+      { 'user_id' => approver.id, 'email' => approver.email, 'group_name' => 'group1', 'admin_set_role' => 'manage' },
+      { 'user_id' => manager.id, 'email' => manager.email, 'group_name' => 'group1', 'admin_set_role' => 'view' }
     ]
   end
 
   let(:mock_users_and_roles) do
     [
-      { 'id' => viewer2.id, 'email' => viewer2.email, 'admin_set_role' => 'view' }
+      { 'id' => viewer2.id, 'email' => viewer2.email, 'admin_set_role' => 'view' },
+      { 'id' => manager.id, 'email' => manager.email, 'admin_set_role' => 'manage' }
     ]
   end
   let(:mock_solr_article) { [{
@@ -65,6 +68,8 @@ RSpec.describe Hyrax::Workflow::DepositedViewerNotification do
       expect { described_class.send_notification(entity: entity, user: approver, comment: comment, recipients: recipients) }
         .to change { depositor.mailbox.inbox.count }.by(0)
         .and change { approver.mailbox.inbox.count }.by(0)
+        # Users assigned both the manager and viewer role should not be notified
+        .and change { manager.mailbox.inbox.count }.by(0)
         .and change { cc_user.mailbox.inbox.count }.by(1)
         .and change { viewer1.mailbox.inbox.count }.by(1)
         .and change { viewer2.mailbox.inbox.count }.by(1)
