@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 require 'rails_helper'
+require 'cgi'
+require 'nokogiri'
 
 RSpec.describe ProxyDepositRequest, type: :model do
   include ActionView::Helpers::UrlHelper
@@ -38,7 +40,9 @@ RSpec.describe ProxyDepositRequest, type: :model do
         user_link = link_to(sender.name, Hyrax::Engine.routes.url_helpers.user_path(sender))
         transfer_link = link_to('transfer requests', Hyrax::Engine.routes.url_helpers.transfers_path)
         work_link = link_to work.title.first, "#{ENV['HYRAX_HOST']}/concern/#{work.class.to_s.underscore}s/#{work.id}"
-        expect(receiver.mailbox.inbox.last.last_message.body).to include(user_link + ' wants to transfer ownership of ' + work_link + ' to you. To accept this transfer request, go to the Carolina Digital Repository (CDR) ' + transfer_link)
+        # Unescape user link for names with single quotes
+        expected_message = CGI.unescapeHTML(user_link.to_s) + ' wants to transfer ownership of ' + work_link + ' to you. To accept this transfer request, go to the Carolina Digital Repository (CDR) ' + transfer_link
+        expect(receiver.mailbox.inbox.last.last_message.body).to include(expected_message)
         proxy_request = receiver.proxy_deposit_requests.first
         expect(proxy_request.work_id).to eq(work_id)
         expect(proxy_request.sending_user).to eq(sender)
