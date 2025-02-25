@@ -2,6 +2,7 @@
 require 'rails_helper'
 require Rails.root.join('app/overrides/controllers/hydra/controller/download_behavior_override.rb')
 require Rails.root.join('app/overrides/controllers/hyrax/downloads_controller_override.rb')
+require 'hyrax/analytics'
 
 RSpec.describe Hyrax::DownloadsController, type: :controller do
   routes { Hyrax::Engine.routes }
@@ -209,11 +210,11 @@ RSpec.describe Hyrax::DownloadsController, type: :controller do
     context 'fileset without a parent work' do
       before do
         dummy_work_data = {
-          work_id: 'Unknown',
-          work_type: 'Unknown',
-          title: 'Unknown',
-          admin_set_id: 'Unknown',
-          admin_set_name: 'Unknown'
+          work_id: nil,
+          work_type: nil,
+          title: nil,
+          admin_set_id: nil,
+          admin_set_name: nil
         }
         allow(WorkUtilsHelper).to receive(:fetch_work_data_by_fileset_id).and_return(dummy_work_data)
       end
