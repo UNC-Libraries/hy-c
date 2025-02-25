@@ -11,7 +11,7 @@ Hyrax::Forms::PermissionTemplateForm.class_eval do
       when Hyrax::PermissionTemplateAccess::MANAGE
         roles += Sipity::Role.where(name: Hyrax::RoleRegistry.new.role_names)
         when Hyrax::PermissionTemplateAccess::VIEW
-          roles << Sipity::Role.find_by(name: Hyrax::RoleRegistry::VIEWING)
+        roles << Sipity::Role.find_by(name: Hyrax::RoleRegistry::VIEWING)
       end
     end
     roles.uniq
