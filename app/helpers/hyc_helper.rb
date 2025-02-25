@@ -22,8 +22,12 @@ module HycHelper
 
   # Format affiliation to display short label if available, otherwise display the original facet value
   def format_affiliation_facet(facet_value)
-    label = DepartmentsService.short_label(facet_value)
-    label.blank? ? facet_value : label
+    if facet_value.kind_of?(Array)
+      facet_value.map { |value| format_affiliation_facet(value) || value }
+    else
+      label = DepartmentsService.short_label(facet_value)
+      label.blank? ? facet_value : label
+    end
   end
 
   def get_work_url(model, id)
