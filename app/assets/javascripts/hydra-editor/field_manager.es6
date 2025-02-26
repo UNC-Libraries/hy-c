@@ -122,9 +122,11 @@ export class FieldManager {
 
             if (isNaN(id)) {
                 $field.attr('id', `${currentId}_1`);
+                $field.attr('labelledby', `${currentId}_1`);
             } else {
                 id += 1;
                 $field.attr('id', `${idParts[0]}_${idParts[1]}_${id}`);
+                $field.attr('labelledby', `${idParts[0]}_${idParts[1]}_${id}`);
             }
         }
 
