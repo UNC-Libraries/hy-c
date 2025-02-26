@@ -58,7 +58,9 @@ module Hyrax
         only_viewers = user_role_map.select { |user_id, role_counts| role_counts['view'] > 0 &&  role_counts['manage'] == 0 }
         viewer_ids = only_viewers.keys.map(&:to_i)
         # Fetch users directly from the database
-        ::User.where(id: viewer_ids).to_a + recipients['cc']
+        users = ::User.where(id: viewer_ids).to_a
+        # Add carbon copy recipients
+        users.concat(recipients['cc'] || [])
       end
     end
   end
