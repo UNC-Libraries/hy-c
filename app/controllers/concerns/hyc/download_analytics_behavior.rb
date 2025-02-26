@@ -65,9 +65,9 @@ module Hyc
 
         stat = HycDownloadStat.find_or_initialize_by(
           fileset_id: fileset_id,
-          work_id: work_data[:work_id],
-          admin_set_id: work_data[:admin_set_id],
-          work_type: work_data[:work_type],
+          work_id: work_data[:work_id] || 'Unknown',
+          admin_set_id: work_data[:admin_set_id] || 'Unknown',
+          work_type: work_data[:work_type] || 'Unknown',
           date: date.beginning_of_month
         )
         stat.download_count += 1
