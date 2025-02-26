@@ -57,7 +57,7 @@ RSpec.describe HycHelper do
       let(:facet_value) { ['Department of Chemistry', 'Carolina Center for Genome Sciences'] }
 
       it 'returns the short label for the facet value' do
-        expect(helper.format_affiliation_facet(facet_value)).to eq ["Test short Department of Chemistry", "Test short Carolina Center for Genome Sciences"]
+        expect(helper.format_affiliation_facet(facet_value)).to eq ['Test short Department of Chemistry', 'Test short Carolina Center for Genome Sciences']
       end
     end
 
