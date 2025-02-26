@@ -24,16 +24,17 @@ module Hyrax
       def attribute_value_to_html(value)
         person = value.split('||')
         display_text = ''
-        display_text << "<li><span#{html_attributes(microdata_value_attributes(field.to_s.chomp('_display')))}>#{person[1]}</span>"
+        display_text << "<span#{html_attributes(microdata_value_attributes(field.to_s.chomp('_display')))}>#{person[1]}</span>"
         if person.length > 2
           display_text << '<ul>'
           person[2..-1].each do |attr|
-            display_text << "<li>#{format_attribute(attr)}</li>"
+            format_attribute(attr).each do |attr|
+              display_text << "<li>#{attr}</li>"
+            end
           end
           display_text << '</ul>'
         end
 
-        display_text << '</li>'
       rescue ArgumentError
         value
       end
@@ -47,13 +48,15 @@ module Hyrax
           # Get the full hierarchy of terms, with correct short labels, for the affiliation id
           term = DepartmentsService.term(text.split(':').last.strip)
           if term.present?
-            text = term.split(';').map do |term_val|
-              DepartmentsService.short_label(term_val.strip)
-            end.join(', ')
+            text = Array(term).map { |t| t.split(';') }.map do |term_list|
+              term_list.map do |term_val|
+                DepartmentsService.short_label(term_val.strip) || term_val.strip
+              end.join(', ')
+            end
           end
         end
 
-        text
+        Array(text)
       end
     end
   end
