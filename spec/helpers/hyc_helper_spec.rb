@@ -53,6 +53,14 @@ RSpec.describe HycHelper do
       end
     end
 
+    context 'with array facet value' do
+      let(:facet_value) { ['Department of Chemistry', 'Carolina Center for Genome Sciences'] }
+
+      it 'returns the short label for the facet value' do
+        expect(helper.format_affiliation_facet(facet_value)).to eq ['Test short Department of Chemistry', 'Test short Carolina Center for Genome Sciences']
+      end
+    end
+
     context 'with invalid facet value' do
       let(:invalid_facet_value) { 'not-a-department' }
 
