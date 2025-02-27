@@ -46,12 +46,12 @@ rich_text:
   setup: |
     function (editor) {
       const observer = new MutationObserver((mutationList) => {
-        console.log('dean')
         mutationList.forEach((mutation) => {
           if (mutation.type == "childList") {
             mutation.addedNodes.forEach((node) => {
               if (node instanceof Element) {
                 if (node.matches(".tinymce")) {
+    console.log('dean')
                   tinymce.init();
                 }
               }
