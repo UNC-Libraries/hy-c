@@ -51,3 +51,12 @@ task :nal_list_ids, [:out_dir] => :environment do |t, args|
     end
   end
 end
+
+  # Task 2
+  # Check for duplicate against CDR by DOI, PMID, PMCID IF there is no fileset
+  # Produce a CSV file with metadata, including if it is a CDR duplicate, if
+  # there's a fileset, list of all supplemental file
+  # https://search.nal.usda.gov/primaws/rest/pub/pnxs/L/alma9916289359307426?vid=01NAL_INST:MAIN&lang=en&search_scope=pubag&adaptor=Local%20Search%20Engine&lang=en
+  desc 'Retrieve list of UNC records from NAL'
+  task :nal_export_md, [:out_dir] => :environment do |t, args|
+  end
