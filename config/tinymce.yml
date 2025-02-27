@@ -52,8 +52,8 @@ rich_text:
               console.log(node)
               if (node instanceof Element) {
 
-                  tinymce.init();
-                
+                  console.log(tinymce);
+
               }
             });
           }
