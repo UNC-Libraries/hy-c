@@ -59,4 +59,10 @@ end
   # https://search.nal.usda.gov/primaws/rest/pub/pnxs/L/alma9916289359307426?vid=01NAL_INST:MAIN&lang=en&search_scope=pubag&adaptor=Local%20Search%20Engine&lang=en
   desc 'Retrieve list of UNC records from NAL'
   task :nal_export_md, [:out_dir] => :environment do |t, args|
+    out_dir = args[:out_dir]
+    list_path = File.join(out_dir, 'nal_ids.csv')
+    md_file = File.join(out_dir, 'nal_metadata.csv')
+    
+    CSV.open(md_file, "w") do |csv_out|
+    end
   end
