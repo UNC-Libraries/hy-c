@@ -51,10 +51,9 @@ rich_text:
             mutation.addedNodes.forEach((node) => {
               console.log(node)
               if (node instanceof Element) {
-                if (node.matches(".tinymce")) {
-    console.log('dean')
+
                   tinymce.init();
-                }
+                
               }
             });
           }
