@@ -58,6 +58,7 @@ rich_text:
           }
         });
       });
+      console.log('dean')
       observer.observe(document.body, { childList: true, subtree: true });
 
       editor.on('change', function () {
