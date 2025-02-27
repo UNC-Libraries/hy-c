@@ -52,7 +52,7 @@ rich_text:
               console.log(node)
               if (node instanceof Element) {
 
-                  console.log(tinymce);
+                  tinymce.init({selector: 'textarea', plugins: 'advlist link image lists'});
 
               }
             });
