@@ -45,6 +45,21 @@ rich_text:
           classes: "align-right"
   setup: |
     function (editor) {
+      const observer = new MutationObserver((mutationList) => {
+        mutationList.forEach((mutation) => {
+          if (mutation.type == "childList") {
+            mutation.addedNodes.forEach((node) => {
+              if (node instanceof Element) {
+                if (node.matches(".tinymce")) {
+                  tinymce.init();
+                }
+              }
+            });
+          }
+        });
+      });
+      observer.observe(document.body, { childList: true, subtree: true });
+
       editor.on('change', function () {
         tinymce.triggerSave();
         if (window.saveWorkControlInstance) {
