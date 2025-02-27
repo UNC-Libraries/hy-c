@@ -46,7 +46,9 @@ rich_text:
   setup: |
     function (editor) {
       const observer = new MutationObserver((mutationList) => {
+    console.log(mutationList)
         mutationList.forEach((mutation) => {
+    console.log(mutation.type)
           if (mutation.type == "childList") {
             mutation.addedNodes.forEach((node) => {
               if (node instanceof Element) {
