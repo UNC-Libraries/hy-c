@@ -55,9 +55,9 @@ RSpec.describe Hyrax::DepartmentsService do
     end
 
     it 'logs but does not raise error for non-existent terms' do
-      allow(Rails.logger).to receive(:warn)
+      allow(Rails.logger).to receive(:debug)
       expect(service.short_label('not-a-department')).to be_nil
-      expect(Rails.logger).to have_received(:warn)
+      expect(Rails.logger).to have_received(:debug)
     end
   end
 end

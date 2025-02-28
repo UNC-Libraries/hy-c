@@ -15,7 +15,7 @@ module DepartmentsService
     return nil if term.blank?
     authority.all.reject { |item| item['active'] == false }.find { |department| department['label'] == term }['id']
   rescue StandardError
-    Rails.logger.warn "DepartmentsService: cannot find identifier for '#{id}'"
+    Rails.logger.debug "DepartmentsService: cannot find identifier for '#{id}'"
     nil
   end
 
@@ -24,7 +24,7 @@ module DepartmentsService
     return nil if id.blank?
     authority.find(id).fetch('term')
   rescue StandardError
-    Rails.logger.warn "DepartmentsService: cannot find term for '#{id}'"
+    Rails.logger.debug "DepartmentsService: cannot find term for '#{id}'"
     nil
   end
 
@@ -35,7 +35,7 @@ module DepartmentsService
     return nil if id.blank?
     authority.find(id).fetch('short_label')
   rescue KeyError
-    Rails.logger.warn "DepartmentsService: cannot find short_label for '#{id}'"
+    Rails.logger.debug "DepartmentsService: cannot find short_label for '#{id}'"
     nil
   end
 
