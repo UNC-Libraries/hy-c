@@ -5,9 +5,9 @@
 BASE_URL = 'https://search.nal.usda.gov/primaws/rest/pub/pnxs'
 desc 'Retrieve list of UNC records from the National Agricultural Library'
 task :nal_list_ids, [:out_dir] => :environment do |t, args|
-  limit = 1000
+  limit = 100
   # WIP - Remove Later
-  # limit = 1
+  # limit = 5
   record_ids = {}
   unc_variations = ['UNC-CH',
   'UNC-Chapel Hill',
@@ -18,12 +18,12 @@ task :nal_list_ids, [:out_dir] => :environment do |t, args|
   'University of North Carolina, Chapel Hill',
   'University of North Carolina-CH']
   # WIP - Remove Later
-  # unc_variations = [
-  #     'UNC-Chapel Hill',
-  #     'University of North Carolina, Chapel Hill',]
+  # unc_variations = ['UNC-Chapel Hill']
   out_dir = args[:out_dir]
   FileUtils.mkdir_p(out_dir)
   list_path = File.join(out_dir, 'nal_ids.csv')
+  pages_out = []
+  total_record_count = 0
 
   unc_variations.each do |unc|
     offset = 0
@@ -31,11 +31,41 @@ task :nal_list_ids, [:out_dir] => :environment do |t, args|
     loop do
       url = "#{BASE_URL}?limit=#{limit}&offset=#{offset}&q=any,contains,#{CGI.escape(unc)}&scope=pubag&sort=rank&tab=pubag&vid=01NAL_INST:MAIN"
       puts "[#{Time.now}] Retrieving records for #{unc} starting at #{offset}"
+      puts "url: #{url}"
+
       response = HTTParty.get(url)
-      data = response.parsed_response
-      total_record_count = data['info']['total']
+      puts "Response code : #{response.code}"
+
+      data = response.parsed_response || {}
+      data['docs'] ||= [] # Ensure it's an array to prevent errors
+
+      retries = 0
+      max_retries = 10
+      wait_time = 10
+      max_wait = 120
+
+      while data['docs'].empty? && retries < max_retries
+        puts "[#{Time.now}] No records returned. Retrying in #{wait_time} seconds (#{retries + 1}/#{max_retries})..."
+        sleep(wait_time)
+        response = HTTParty.get(url)
+        data = response.parsed_response || {}
+        data['docs'] ||= []
+        wait_time = [wait_time * 2, max_wait].min # Cap wait time
+        retries += 1
+      end
+
+      if data['docs'].empty?
+        puts "[#{Time.now}] No records found after #{max_retries} retries. Ending."
+        return
+      end
+
+      if offset == 0 && data['info']['total']
+        total_record_count = data['info']['total']
+      end
+      puts "Total-str: #{data['info']['total']}, int: #{total_record_count}"
       end_of_cursor_range = data['info']['last']
       docs = data['docs']
+      pages_out << " =======  Offset: #{offset} /  Total :  #{total_record_count}  || End of Cursor : #{end_of_cursor_range} || Variation #{unc} ======="
       docs.each do |doc|
         next unless doc['pnx']['display']
         id_field = doc['pnx']['display']['identifier'][0]
@@ -45,11 +75,15 @@ task :nal_list_ids, [:out_dir] => :environment do |t, args|
         doi_url = fragmented_doc.at('a')['href'] rescue nil
         record_ids[doi_url] ||= {title: title, record_id: record_id}
       end
-      sleep(5)
+      sleep(10)
+      # break unless end_of_cursor_range < total_record_count
+      if offset >= total_record_count
+        puts "Reached the end of records. Total: #{total_record_count}"
+        break
+      end      
       offset += limit
-      break unless end_of_cursor_range < total_record_count
       # WIP - Remove Later
-      # break
+      # break unless offset < 5
     end
   end
 
@@ -58,6 +92,10 @@ task :nal_list_ids, [:out_dir] => :environment do |t, args|
       csv << [doi_url, data[:title], data[:record_id]]
     end
   end
+
+  File.open(File.join(out_dir, 'nal_pages.txt'), 'w') {
+    |f| pages_out.each { |page| f.puts(page) }
+  }
 end
 
   # Task 2
