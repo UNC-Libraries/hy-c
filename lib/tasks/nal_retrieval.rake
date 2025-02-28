@@ -3,46 +3,69 @@
 # Query for UNC terms
 # Harvest IDs of records
 BASE_URL = 'https://search.nal.usda.gov/primaws/rest/pub/pnxs'
+require 'json'
+require 'fileutils'
+
+# File to store progress
+PROGRESS_FILE = 'progress.json'
+BASE_URL = 'https://search.nal.usda.gov/primaws/rest/pub/pnxs'
+
 desc 'Retrieve list of UNC records from the National Agricultural Library'
 task :nal_list_ids, [:out_dir] => :environment do |t, args|
   limit = 100
-  # WIP - Remove Later
-  # limit = 5
-  record_ids = {}
-  unc_variations = ['UNC-CH',
-  'UNC-Chapel Hill',
-  'UNC Chapel Hill',
-  'University of North Carolina at Chapel Hill',
-  'University of North Carolina Chapel Hill',
-  'University of North Carolina-Chapel Hill',
-  'University of North Carolina, Chapel Hill',
-  'University of North Carolina-CH']
-  # WIP - Remove Later
-  # unc_variations = ['UNC-Chapel Hill']
   out_dir = args[:out_dir]
   FileUtils.mkdir_p(out_dir)
   list_path = File.join(out_dir, 'nal_ids.csv')
+  progress_file_path = File.join(out_dir, PROGRESS_FILE)
+
+  # Load progress if it exists
+  progress = if File.exist?(progress_file_path)
+               JSON.parse(File.read(progress_file_path))
+             else
+              # Last offset, total and variation name -> in_progress
+               { }
+             end
+
+  puts "JSON: #{progress.inspect}"
+
+  unc_variations = [
+    'UNC-CH', 'UNC-Chapel Hill', 'UNC Chapel Hill',
+    'University of North Carolina at Chapel Hill',
+    'University of North Carolina Chapel Hill',
+    'University of North Carolina-Chapel Hill',
+    'University of North Carolina, Chapel Hill',
+    'University of North Carolina-CH'
+  ]
+
+  record_ids = {}
   pages_out = []
   total_record_count = 0
 
   unc_variations.each do |unc|
-    offset = 0
-      # Start Pagination
+    unc_variation_progress = progress[unc] || {}
+    offset = unc_variation_progress['last_offset'] || 0
+    total_record_count = unc_variation_progress['total_record_count'] || 0
+
+    skip_condition = total_record_count > 0 && offset >= total_record_count # Skip already completed
+    puts "Skipped UNC Variation: #{unc}. Offset #{offset}, Total Records: #{total_record_count}" if skip_condition
+    puts "UNC Variation: #{unc}. Offset #{offset}, Total Records: #{total_record_count}" if not skip_condition
+    next if skip_condition
+
     loop do
       url = "#{BASE_URL}?limit=#{limit}&offset=#{offset}&q=any,contains,#{CGI.escape(unc)}&scope=pubag&sort=rank&tab=pubag&vid=01NAL_INST:MAIN"
       puts "[#{Time.now}] Retrieving records for #{unc} starting at #{offset}"
-      puts "url: #{url}"
+      puts "URL: #{url}"
 
       response = HTTParty.get(url)
-      puts "Response code : #{response.code}"
 
       data = response.parsed_response || {}
-      data['docs'] ||= [] # Ensure it's an array to prevent errors
-
+      data['docs'] ||= [] # Prevent errors
+      
+      # Retry up to 3 times
       retries = 0
-      max_retries = 10
-      wait_time = 10
-      max_wait = 120
+      max_retries = 3
+      wait_time = 120
+      # max_wait = 600
 
       while data['docs'].empty? && retries < max_retries
         puts "[#{Time.now}] No records returned. Retrying in #{wait_time} seconds (#{retries + 1}/#{max_retries})..."
@@ -50,53 +73,82 @@ task :nal_list_ids, [:out_dir] => :environment do |t, args|
         response = HTTParty.get(url)
         data = response.parsed_response || {}
         data['docs'] ||= []
-        wait_time = [wait_time * 2, max_wait].min # Cap wait time
+        # wait_time = [wait_time * 2, max_wait].min # Cap wait time
         retries += 1
       end
 
+      # End the script early if the retries do not work
       if data['docs'].empty?
-        puts "[#{Time.now}] No records found after #{max_retries} retries. Ending."
+        puts "[#{Time.now}] No records found. Ending early."
         return
       end
 
-      if offset == 0 && data['info']['total']
-        total_record_count = data['info']['total']
-      end
-      puts "Total-str: #{data['info']['total']}, int: #{total_record_count}"
-      end_of_cursor_range = data['info']['last']
+      total_record_count = data.dig('info', 'total').to_i if offset.zero?
+
+      end_of_cursor_range = data.dig('info', 'last') || 0
       docs = data['docs']
-      pages_out << " =======  Offset: #{offset} /  Total :  #{total_record_count}  || End of Cursor : #{end_of_cursor_range} || Variation #{unc} ======="
+
+      debug_str =  "======= Offset: #{offset} / Total: #{total_record_count} / End of Cursor: #{end_of_cursor_range} / Variation: #{unc} ======="
+      pages_out << debug_str
+
       docs.each do |doc|
         next unless doc['pnx']['display']
+
         id_field = doc['pnx']['display']['identifier'][0]
         title = doc['pnx']['display']['title'][0]
         record_id = doc['pnx']['control']['recordid'][0]
         fragmented_doc = Nokogiri::HTML.fragment(id_field)
         doi_url = fragmented_doc.at('a')['href'] rescue nil
-        record_ids[doi_url] ||= {title: title, record_id: record_id}
+        record_ids[doi_url] ||= { title: title, record_id: record_id }
       end
-      sleep(10)
-      # break unless end_of_cursor_range < total_record_count
-      if offset >= total_record_count
-        puts "Reached the end of records. Total: #{total_record_count}"
-        break
-      end      
+      
+
+
+      # progress[:in_progress][unc] ||= {
+      #   total_record_count: total_record_count,
+      #   last_offset: offset,
+      #   is_complete: offset >= total_record_count
+      # }
+
+      # # Save progress
+      # File.write(PROGRESS_FILE, JSON.pretty_generate({
+      #   progress: progress[:in_progress]
+      #   # last_variation: unc,
+      #   # completed_variations: progress[:completed_variations],
+      #   # total_record_count: total_record_count
+      # }))
+
+      sleep(90)  # Respect API limits
       offset += limit
-      # WIP - Remove Later
-      # break unless offset < 5
+
+      progress[unc] = { last_offset: offset, total_record_count: total_record_count }
+      File.write(PROGRESS_FILE, JSON.pretty_generate(progress))
+
+      break if offset >= total_record_count
     end
+
+    # Mark this variation as completed
+    # progress[:completed_variations] << unc
+    # File.write(PROGRESS_FILE, JSON.pretty_generate(progress))
   end
 
+  # Write records to CSV
   CSV.open(list_path, 'wb') do |csv|
     record_ids.each do |doi_url, data|
       csv << [doi_url, data[:title], data[:record_id]]
     end
   end
 
-  File.open(File.join(out_dir, 'nal_pages.txt'), 'w') {
-    |f| pages_out.each { |page| f.puts(page) }
-  }
+  # Save progress file (final checkpoint)
+  # File.write(PROGRESS_FILE, JSON.pretty_generate({
+  #   last_offset: 0,
+  #   last_variation: nil,
+  #   completed_variations: unc_variations
+  # }))
+
+  # puts "Data collection complete!"
 end
+
 
   # Task 2
   # Check for duplicate against CDR by DOI, PMID, PMCID IF there is no fileset
