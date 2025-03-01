@@ -8,23 +8,34 @@ require 'fileutils'
 
 # File to store progress
 PROGRESS_FILE = 'progress.json'
-BASE_URL = 'https://search.nal.usda.gov/primaws/rest/pub/pnxs'
+ID_STORAGE = 'nal_ids.csv'
 
 desc 'Retrieve list of UNC records from the National Agricultural Library'
 task :nal_list_ids, [:out_dir] => :environment do |t, args|
   limit = 100
   out_dir = args[:out_dir]
   FileUtils.mkdir_p(out_dir)
-  list_path = File.join(out_dir, 'nal_ids.csv')
-  progress_file_path = File.join(out_dir, PROGRESS_FILE)
+  list_path = File.join(out_dir, ID_STORAGE)
 
   # Load progress if it exists
-  progress = if File.exist?(progress_file_path)
-               JSON.parse(File.read(progress_file_path))
-             else
-              # Last offset, total and variation name -> in_progress
-               { }
-             end
+  progress =
+  if File.exist?(PROGRESS_FILE) && !File.zero?(PROGRESS_FILE)
+    JSON.parse(File.read(PROGRESS_FILE))
+  else
+    # Last offset, total number of records associated, title
+    {}
+  end
+  record_info = if File.exist?(ID_STORAGE) && !File.zero?(ID_STORAGE)
+                  CSV.read(ID_STORAGE, headers: false).to_h
+  else
+              # doi_url => title, alma id
+    {}
+  end
+  last_saved_record_info = if File.exist?(ID_STORAGE) && !File.zero?(ID_STORAGE)
+                             CSV.read(ID_STORAGE, headers: false).to_h
+  else
+    {}
+  end
 
   puts "JSON: #{progress.inspect}"
 
@@ -37,7 +48,7 @@ task :nal_list_ids, [:out_dir] => :environment do |t, args|
     'University of North Carolina-CH'
   ]
 
-  record_ids = {}
+
   pages_out = []
   total_record_count = 0
 
@@ -48,7 +59,7 @@ task :nal_list_ids, [:out_dir] => :environment do |t, args|
 
     skip_condition = total_record_count > 0 && offset >= total_record_count # Skip already completed
     puts "Skipped UNC Variation: #{unc}. Offset #{offset}, Total Records: #{total_record_count}" if skip_condition
-    puts "UNC Variation: #{unc}. Offset #{offset}, Total Records: #{total_record_count}" if not skip_condition
+    puts "UNC Variation: #{unc}. Offset #{offset}, Total Records: #{total_record_count}" if !skip_condition
     next if skip_condition
 
     loop do
@@ -60,7 +71,7 @@ task :nal_list_ids, [:out_dir] => :environment do |t, args|
 
       data = response.parsed_response || {}
       data['docs'] ||= [] # Prevent errors
-      
+
       # Retry up to 3 times
       retries = 0
       max_retries = 3
@@ -80,16 +91,15 @@ task :nal_list_ids, [:out_dir] => :environment do |t, args|
       # End the script early if the retries do not work
       if data['docs'].empty?
         puts "[#{Time.now}] No records found. Ending early."
-        return
+        break
       end
 
       total_record_count = data.dig('info', 'total').to_i if offset.zero?
-
       end_of_cursor_range = data.dig('info', 'last') || 0
       docs = data['docs']
 
       debug_str =  "======= Offset: #{offset} / Total: #{total_record_count} / End of Cursor: #{end_of_cursor_range} / Variation: #{unc} ======="
-      pages_out << debug_str
+      puts "DEBUG: #{debug_str}"
 
       docs.each do |doc|
         next unless doc['pnx']['display']
@@ -99,9 +109,9 @@ task :nal_list_ids, [:out_dir] => :environment do |t, args|
         record_id = doc['pnx']['control']['recordid'][0]
         fragmented_doc = Nokogiri::HTML.fragment(id_field)
         doi_url = fragmented_doc.at('a')['href'] rescue nil
-        record_ids[doi_url] ||= { title: title, record_id: record_id }
+        record_info[doi_url] ||= { title: title, record_id: record_id }
       end
-      
+
 
 
       # progress[:in_progress][unc] ||= {
@@ -127,17 +137,32 @@ task :nal_list_ids, [:out_dir] => :environment do |t, args|
       break if offset >= total_record_count
     end
 
+    unless last_saved_record_info == record_info
+     # Write records to CSV
+      CSV.open(list_path, 'wb') do |csv|
+        record_info.each do |doi_url, data|
+          csv << [doi_url, data[:title], data[:record_id]]
+        end
+      end
+      last_saved_record_info = record_info
+    end
+
+    if offset < total_record_count
+      puts 'Returning early...'
+      return
+    end
+
     # Mark this variation as completed
     # progress[:completed_variations] << unc
     # File.write(PROGRESS_FILE, JSON.pretty_generate(progress))
   end
 
-  # Write records to CSV
-  CSV.open(list_path, 'wb') do |csv|
-    record_ids.each do |doi_url, data|
-      csv << [doi_url, data[:title], data[:record_id]]
-    end
-  end
+  # # Write records to CSV
+  # CSV.open(list_path, 'wb') do |csv|
+  #   record_ids.each do |doi_url, data|
+  #     csv << [doi_url, data[:title], data[:record_id]]
+  #   end
+  # end
 
   # Save progress file (final checkpoint)
   # File.write(PROGRESS_FILE, JSON.pretty_generate({
