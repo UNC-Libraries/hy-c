@@ -12,7 +12,6 @@ ID_STORAGE = 'nal_ids.csv'
 
 desc 'Retrieve list of UNC records from the National Agricultural Library'
 task :nal_list_ids, [:out_dir] => :environment do |t, args|
-  limit = 10
   out_dir = args[:out_dir]
   FileUtils.mkdir_p(out_dir)
   list_path = File.join(out_dir, ID_STORAGE)
@@ -37,7 +36,7 @@ task :nal_list_ids, [:out_dir] => :environment do |t, args|
   puts "JSON Progress: #{progress.inspect}"
 
   unc_variations = [
-    # 'UNC-CH', 
+    'UNC-CH', 
     'UNC-Chapel Hill', 'UNC Chapel Hill',
     'University of North Carolina at Chapel Hill',
     'University of North Carolina Chapel Hill',
@@ -47,6 +46,7 @@ task :nal_list_ids, [:out_dir] => :environment do |t, args|
   ]
 
   unc_variations.each do |unc|
+    limit = 50
     unc_variation_progress = progress[unc] || {}
     offset = unc_variation_progress['last_offset'] || 0
     total_record_count = unc_variation_progress['total_record_count'] || 0
@@ -56,50 +56,40 @@ task :nal_list_ids, [:out_dir] => :environment do |t, args|
                           "Processing UNC Variation: #{unc} (Offset: #{offset}, Total: #{total_record_count})"
     next if skip_condition
 
-    loop do
-      # limit = rand(5..20) 
-      # user_agents = [
-      #   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36",
-      #   "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Firefox/99.0",
-      #   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Edge/97.0.1072.69 Safari/537.36"
-      # ]
-      # headers = {
-      #   "Accept" => "application/json",
-      #   "User-Agent" => user_agents.sample,
-      #   "Referer" => "https://www.nal.usda.gov/",
-      #   "Accept-Encoding" => "gzip, deflate",
-      #   "Connection" => "keep-alive"
-      # }
+    failed_attempts = 0
+    retry_limit = 3
+
+    while failed_attempts < retry_limit
+      remaining_record_count = total_record_count - offset
+
       url = "https://search.nal.usda.gov/primaws/rest/pub/pnxs?acTriggered=false&blendFacetsSeparately=false&citationTrailFilterByAvailability=true&disableCache=false&getMore=0&inst=01NAL_INST&isCDSearch=false&lang=en&limit=#{limit}&mode=advanced&newspapersActive=false&newspapersSearch=false&offset=#{offset}&otbRanking=false&pcAvailability=true&q=any,contains,UNC-Chapel+Hill&qExclude=&qInclude=&rapido=false&refEntryActive=false&rtaLinks=true&scope=pubag&searchInFulltextUserSelection=true&skipDelivery=Y&sort=rank&tab=pubag&vid=01NAL_INST:MAIN"
 
-      # url = "#{BASE_URL}?limit=#{limit}&offset=#{offset}&q=any,contains,#{CGI.escape(unc)}&scope=pubag&sort=rank&tab=pubag&vid=01NAL_INST:MAIN"
       puts "[#{Time.now}] Retrieving records for #{unc} starting at offset #{offset}"
       puts "URL: #{url}"
 
-      response = HTTParty.get(url, headers: headers)
+      response = HTTParty.get(url)
       data = response.parsed_response || {}
       data['docs'] ||= []
 
-      # Retry up to 3 times if no records are returned
+      # Retry logic
       retries = 0
       max_retries = 2
       wait_time = 30
 
       while data['docs'].empty? && retries < max_retries
         puts "[#{Time.now}] No records returned. Retrying in #{wait_time} seconds (#{retries + 1}/#{max_retries})..."
-        # limit = rand(5..20) 
-        # url = "#{BASE_URL}?limit=#{limit}&offset=#{offset}&q=any,contains,#{CGI.escape(unc)}&scope=pubag&sort=rank&tab=pubag&vid=01NAL_INST:MAIN"
         sleep(wait_time)
-        # puts "Retried with new limit: #{limit}"
-        response = HTTParty.get(url, headers: headers)
+        response = HTTParty.get(url)
         data = response.parsed_response || {}
         data['docs'] ||= []
         retries += 1
       end
 
       if data['docs'].empty?
-        puts "[#{Time.now}] No records found. Ending early."
-        break
+        failed_attempts += 1
+        puts "[#{Time.now}] No records found. Waiting 5 minutes before retrying variation: #{unc} (Attempt #{failed_attempts}/#{retry_limit})"
+        sleep(300) # Wait 5 minutes before retrying
+        next # Restart the loop for the same variation
       end
 
       total_record_count = data.dig('info', 'total').to_i if offset.zero?
@@ -111,9 +101,9 @@ task :nal_list_ids, [:out_dir] => :environment do |t, args|
       data['docs'].each do |doc|
         next unless doc.dig('pnx', 'display')
 
-        id_field = doc['pnx']['display']['identifier'][0]
-        title = doc['pnx']['display']['title'][0]
-        record_id = doc['pnx']['control']['recordid'][0]
+        id_field = doc.dig('pnx', 'display', 'identifier')&.first
+        title = doc.dig('pnx', 'display', 'title')&.first
+        record_id = doc.dig('pnx', 'control', 'recordid')&.first 
         fragmented_doc = Nokogiri::HTML.fragment(id_field)
         doi_url = fragmented_doc.at('a')['href'] rescue nil
 
@@ -121,21 +111,21 @@ task :nal_list_ids, [:out_dir] => :environment do |t, args|
       end
 
       puts "Writing To Record Info File"
-      # **Save to CSV after every pagination exit**
       CSV.open(list_path, 'wb') do |csv|
         record_info.each do |doi_url, data|
           csv << [doi_url, data[:title], data[:record_id]]
         end
       end
 
-      puts "Completed Write, Sleeping"
+      puts "Completed Write To Record Info File"
       offset += limit
 
       puts "Writing To Progress File"
-      # Save progress
       progress[unc] = { last_offset: offset, total_record_count: total_record_count }
       File.write(PROGRESS_FILE, JSON.pretty_generate(progress))
+      puts "Completed Write To Record Info File"
 
+      puts "Sleep to respect API rate limiting."
       sleep(180) # Respect API limits
       break if offset >= total_record_count
     end
