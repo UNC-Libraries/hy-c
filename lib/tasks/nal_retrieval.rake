@@ -46,7 +46,7 @@ task :nal_list_ids, [:out_dir] => :environment do |t, args|
   ]
 
   unc_variations.each do |unc|
-    limit = 50
+    limit = 100
     unc_variation_progress = progress[unc] || {}
     offset = unc_variation_progress['last_offset'] || 0
     total_record_count = unc_variation_progress['total_record_count'] || 0
@@ -60,26 +60,123 @@ task :nal_list_ids, [:out_dir] => :environment do |t, args|
     retry_limit = 3
 
     while failed_attempts < retry_limit
-      remaining_record_count = total_record_count - offset
+      # remaining_record_count = total_record_count - offset
 
-      url = "https://search.nal.usda.gov/primaws/rest/pub/pnxs?acTriggered=false&blendFacetsSeparately=false&citationTrailFilterByAvailability=true&disableCache=false&getMore=0&inst=01NAL_INST&isCDSearch=false&lang=en&limit=#{limit}&mode=advanced&newspapersActive=false&newspapersSearch=false&offset=#{offset}&otbRanking=false&pcAvailability=true&q=any,contains,UNC-Chapel+Hill&qExclude=&qInclude=&rapido=false&refEntryActive=false&rtaLinks=true&scope=pubag&searchInFulltextUserSelection=true&skipDelivery=Y&sort=rank&tab=pubag&vid=01NAL_INST:MAIN"
+      # pre_req_url = "https://search.nal.usda.gov/primaws/rest/pub/pnxs?acTriggered=false&blendFacetsSeparately=false&citationTrailFilterByAvailability=true&disableCache=false&getMore=0&inst=01NAL_INST&isCDSearch=false&lang=en&limit=2&mode=advanced&newspapersActive=false&newspapersSearch=false&offset=1&otbRanking=false&pcAvailability=true&q=any,contains,#{CGI.escape(unc)}&qExclude=&qInclude=&rapido=false&refEntryActive=false&rtaLinks=true&scope=pubag&searchInFulltextUserSelection=true&skipDelivery=Y&sort=rank&tab=pubag&vid=01NAL_INST:MAIN"
+      # pre_response = HTTParty.get(pre_req_url)
+      # puts "Sent Prelim Response."
+      # sleep(25)
+
+      url = "https://search.nal.usda.gov/primaws/rest/pub/pnxs?acTriggered=false&blendFacetsSeparately=false&citationTrailFilterByAvailability=true&disableCache=false&getMore=0&inst=01NAL_INST&isCDSearch=false&lang=en&limit=#{limit}&mode=advanced&newspapersActive=false&newspapersSearch=false&offset=#{offset}&otbRanking=false&pcAvailability=true&q=any,contains,#{CGI.escape(unc)}&qExclude=&qInclude=&rapido=false&refEntryActive=false&rtaLinks=true&scope=pubag&searchInFulltextUserSelection=true&skipDelivery=Y&sort=rank&tab=pubag&vid=01NAL_INST:MAIN"
+
+     secure = "_Secure-UqZBpD3n3naPU20-9Fvn5i-TQ-tMpchbYtbA9YCEpg3UXgo_=v1HDIygw__c7X; institute=01NAL_INST"
+     j_session = "JSESSIONID=0941AD541B80E6EF70AFBFE312CCE5CC.apd04.na91.prod.almf.dc04.hosted.exlibrisgroup.com:1801"
+     urm_st = "urm_st=1741032706314"
+     urm_se = "urm_se=1741033606314"
+     cookie_string = "#{secure}; institute=01NAL_INST; digitalDoc=#####----######; " \
+        "_ga_3B6JN4Z2CV=GS1.1.1740688913.4.0.1740688921.52.0.0; " \
+        "CFIWebMonSession=%7B%22GUID%22%3A%222ee56478-d44f-4f99-09cb-740433208021%22%2C%22EmailPhone%22%3A%22%22%2C%22HttpReferer%22%3A%22https%3A//www.google.com/%22%2C%22PageViews%22%3A5%2C%22CurrentRuleId%22%3Anull%2C%22CurrentPType%22%3A0%2C%22Activity%22%3A%22Browse%22%2C%22SessionStart%22%3A1740433208021%2C%22UnloadDate%22%3A1740688920771%2C%22WindowCount%22%3A0%2C%22LastPageStayTime%22%3A7331%2C%22AcceptOrDecline%22%3A%7B%7D%2C%22FirstBrowsePage%22%3A%22https%3A//www.nal.usda.gov/all-collections%22%2C%22FirstBrowseTime%22%3A1740688913440%2C%22FinallyLeaveTime%22%3A1740688913440%2C%22FinallyBrowsePage%22%3A%22https%3A//www.nal.usda.gov/all-collections%22%2C%22SiteReferrer%22%3A%22%22%2C%22LastPopUpPage%22%3Anull%2C%22TimeSpentonSite%22%3A0%2C%22GoogleAnalyticsValue%22%3Anull%2C%22Dimension%22%3Anull%2C%22CookiePath%22%3A%22/%3B%20domain%3Dnal.usda.gov%3B%20Secure%3B%22%2C%22AdditionalAttributes%22%3A%7B%7D%2C%22ClickTracker%22%3A%22url%3Dhttps%253A%252F%252Fwww.nal.usda.gov%252Fservices%252Fagdatacommons%252Fpolicies%26p%3D0%26elapsed%3D12666ms%26movement%3D1805px%7Curl%3Dhttps%253A%252F%252Fwww.nal.usda.gov%252F%26p%3D1%26elapsed%3D1689127ms%26movement%3D2664px%7Curl%3Dhttps%253A%252F%252Fwww.nal.usda.gov%252Fall-collections%26p%3D2%26elapsed%3D5793ms%26movement%3D447px%7Curl%3Dhttps%253A%252F%252Fwww.nal.usda.gov%252F%26p%3D3%26elapsed%3D75037691ms%26movement%3D1133px%7Curl%3Dhttps%253A%252F%252Fwww.nal.usda.gov%252Fall-collections%26p%3D4%26elapsed%3D7572ms%26movement%3D976px%22%2C%22PageIndex%22%3A5%7D; " \
+        "_ga_ER98FFN75C=GS1.1.1740881386.9.1.1740881545.0.0.0; _ga_2YCFLHC3NC=GS1.1.1740881386.9.1.1740881545.0.0.0; " \
+        "_ga_CSLL4ZEK4L=GS1.1.1740881386.9.1.1740881545.0.0.0; _ga=GA1.1.1942926067.1740432994; " \
+        "_ga_VYRH7BQ1FL=GS1.1.1740881544.9.1.1740881546.0.0.0; #{j_session}; institute=01NAL_INST; #{urm_st}; #{urm_se}"
+
+      
+      headers = {
+        "User-Agent" => "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+        "Cookie" => cookie_string,
+        "Host" => "search.nal.usda.gov",
+        "Connection" => "keep-alive",
+        "Upgrade-Insecure-Requests" => "1",
+        "Sec-Fetch-Dest" => "document",
+        "Sec-Fetch-Mode" => "navigate",
+        "Sec-Fetch-Site" => "none",
+        "Sec-Fetch-User" => "?1",
+        "Cache-Control" => "no-cache"
+      }
 
       puts "[#{Time.now}] Retrieving records for #{unc} starting at offset #{offset}"
       puts "URL: #{url}"
+    
 
-      response = HTTParty.get(url)
+      response = HTTParty.get(url, headers: headers)
+      if response.headers["Set-Cookie"]
+        # WIP: Extract the old cookies from the request headers, keep the unmodified ones
+        # old_cookies = old_cookies = headers["Cookie"]&.split('; ') || []
+        # cookies = response.headers["Set-Cookie"].split(', ').map { |c| c.split(';').first }
+        # Extract old cookies (if they exist) and strip whitespace
+        old_cookies = headers["Cookie"]&.split('; ')&.map(&:strip) || []
+        # Extract new cookies from response headers and strip whitespace
+        cookies = response.headers["Set-Cookie"]&.split(', ')&.map { |c| c.split(';').first.strip } || []
+        j_session = (cookies + old_cookies).find { |c| c.start_with?("JSESSIONID") } || ""
+        urm_st = (cookies + old_cookies).find { |c| c.start_with?("urm_st") } || ""
+        urm_se = (cookies + old_cookies).find { |c| c.start_with?("urm_se") } || ""
+        secure = (cookies + old_cookies).find { |c| c.start_with?("__Secure-") } || ""
+        puts "Extracted Cookies: JSESSIONID=#{j_session}, URM_ST=#{urm_st}, URM_SE=#{urm_se}, Secure=#{secure}"
+        # Construct the cleaned-up cookie string
+        cookie_string = "#{secure}; institute=01NAL_INST; digitalDoc=#####----######; " \
+          "_ga_3B6JN4Z2CV=GS1.1.1740688913.4.0.1740688921.52.0.0; " \
+          "CFIWebMonSession=%7B%22GUID%22%3A%222ee56478-d44f-4f99-09cb-740433208021%22%2C%22EmailPhone%22%3A%22%22%2C%22HttpReferer%22%3A%22https%3A//www.google.com/%22%2C%22PageViews%22%3A5%2C%22CurrentRuleId%22%3Anull%2C%22CurrentPType%22%3A0%2C%22Activity%22%3A%22Browse%22%2C%22SessionStart%22%3A1740433208021%2C%22UnloadDate%22%3A1740688920771%2C%22WindowCount%22%3A0%2C%22LastPageStayTime%22%3A7331%2C%22AcceptOrDecline%22%3A%7B%7D%2C%22FirstBrowsePage%22%3A%22https%3A//www.nal.usda.gov/all-collections%22%2C%22FirstBrowseTime%22%3A1740688913440%2C%22FinallyLeaveTime%22%3A1740688913440%2C%22FinallyBrowsePage%22%3A%22https%3A//www.nal.usda.gov/all-collections%22%2C%22SiteReferrer%22%3A%22%22%2C%22LastPopUpPage%22%3Anull%2C%22TimeSpentonSite%22%3A0%2C%22GoogleAnalyticsValue%22%3Anull%2C%22Dimension%22%3Anull%2C%22CookiePath%22%3A%22/%3B%20domain%3Dnal.usda.gov%3B%20Secure%3B%22%2C%22AdditionalAttributes%22%3A%7B%7D%2C%22ClickTracker%22%3A%22url%3Dhttps%253A%252F%252Fwww.nal.usda.gov%252Fservices%252Fagdatacommons%252Fpolicies%26p%3D0%26elapsed%3D12666ms%26movement%3D1805px%7Curl%3Dhttps%253A%252F%252Fwww.nal.usda.gov%252F%26p%3D1%26elapsed%3D1689127ms%26movement%3D2664px%7Curl%3Dhttps%253A%252F%252Fwww.nal.usda.gov%252Fall-collections%26p%3D2%26elapsed%3D5793ms%26movement%3D447px%7Curl%3Dhttps%253A%252F%252Fwww.nal.usda.gov%252F%26p%3D3%26elapsed%3D75037691ms%26movement%3D1133px%7Curl%3Dhttps%253A%252F%252Fwww.nal.usda.gov%252Fall-collections%26p%3D4%26elapsed%3D7572ms%26movement%3D976px%22%2C%22PageIndex%22%3A5%7D; " \
+          "_ga_ER98FFN75C=GS1.1.1740881386.9.1.1740881545.0.0.0; _ga_2YCFLHC3NC=GS1.1.1740881386.9.1.1740881545.0.0.0; " \
+          "_ga_CSLL4ZEK4L=GS1.1.1740881386.9.1.1740881545.0.0.0; _ga=GA1.1.1942926067.1740432994; " \
+          "_ga_VYRH7BQ1FL=GS1.1.1740881544.9.1.1740881546.0.0.0; #{j_session}; institute=01NAL_INST; #{urm_st}; #{urm_se}"
+
+      # Update headers only if new_cookies are found
+      headers["Cookie"] = cookie_string unless cookie_string.empty?
+      else
+        puts "No Set-Cookie headers found in the response."
+      end
+
       data = response.parsed_response || {}
-      data['docs'] ||= []
+      is_valid_response = data.key?('docs') && data['docs'].is_a?(Array)
+
+      if is_valid_response
+        # Safe to use data['docs'] here
+        data['docs'] ||= []
+      end
 
       # Retry logic
       retries = 0
-      max_retries = 2
-      wait_time = 30
+      max_retries = 5
+      wait_time = 10
 
       while data['docs'].empty? && retries < max_retries
         puts "[#{Time.now}] No records returned. Retrying in #{wait_time} seconds (#{retries + 1}/#{max_retries})..."
-        sleep(wait_time)
-        response = HTTParty.get(url)
+        # sleep(wait_time)
+        # pre_req_url = "https://search.nal.usda.gov/primaws/rest/pub/pnxs?acTriggered=false&blendFacetsSeparately=false&citationTrailFilterByAvailability=true&disableCache=false&getMore=0&inst=01NAL_INST&isCDSearch=false&lang=en&limit=2&mode=advanced&newspapersActive=false&newspapersSearch=false&offset=1&otbRanking=false&pcAvailability=true&q=any,contains,#{CGI.escape(unc)}&qExclude=&qInclude=&rapido=false&refEntryActive=false&rtaLinks=true&scope=pubag&searchInFulltextUserSelection=true&skipDelivery=Y&sort=rank&tab=pubag&vid=01NAL_INST:MAIN"
+        # pre_response = HTTParty.get(pre_req_url)
+        # puts "Sent Prelim Response."
+        sleep(10)
+        # puts "Sending Actual Response."
+        response = HTTParty.get(url, headers: headers)
+        if response.headers["Set-Cookie"]
+          # WIP: Extract the old cookies from the request headers, keep the unmodified ones
+          # old_cookies = old_cookies = headers["Cookie"]&.split('; ') || []
+          # cookies = response.headers["Set-Cookie"].split(', ').map { |c| c.split(';').first }
+          # Extract old cookies (if they exist) and strip whitespace
+          old_cookies = headers["Cookie"]&.split('; ')&.map(&:strip) || []
+          # Extract new cookies from response headers and strip whitespace
+          cookies = response.headers["Set-Cookie"]&.split(', ')&.map { |c| c.split(';').first.strip } || []
+          j_session = (cookies + old_cookies).find { |c| c.start_with?("JSESSIONID") } || ""
+          urm_st = (cookies + old_cookies).find { |c| c.start_with?("urm_st") } || ""
+          urm_se = (cookies + old_cookies).find { |c| c.start_with?("urm_se") } || ""
+          secure = (cookies + old_cookies).find { |c| c.start_with?("__Secure-") } || ""
+          puts "Extracted Cookies: JSESSIONID=#{j_session}, URM_ST=#{urm_st}, URM_SE=#{urm_se}, Secure=#{secure}"
+          # Construct the cleaned-up cookie string
+          cookie_string = "#{secure}; institute=01NAL_INST; digitalDoc=#####----######; " \
+          "_ga_3B6JN4Z2CV=GS1.1.1740688913.4.0.1740688921.52.0.0; " \
+          "CFIWebMonSession=%7B%22GUID%22%3A%222ee56478-d44f-4f99-09cb-740433208021%22%2C%22EmailPhone%22%3A%22%22%2C%22HttpReferer%22%3A%22https%3A//www.google.com/%22%2C%22PageViews%22%3A5%2C%22CurrentRuleId%22%3Anull%2C%22CurrentPType%22%3A0%2C%22Activity%22%3A%22Browse%22%2C%22SessionStart%22%3A1740433208021%2C%22UnloadDate%22%3A1740688920771%2C%22WindowCount%22%3A0%2C%22LastPageStayTime%22%3A7331%2C%22AcceptOrDecline%22%3A%7B%7D%2C%22FirstBrowsePage%22%3A%22https%3A//www.nal.usda.gov/all-collections%22%2C%22FirstBrowseTime%22%3A1740688913440%2C%22FinallyLeaveTime%22%3A1740688913440%2C%22FinallyBrowsePage%22%3A%22https%3A//www.nal.usda.gov/all-collections%22%2C%22SiteReferrer%22%3A%22%22%2C%22LastPopUpPage%22%3Anull%2C%22TimeSpentonSite%22%3A0%2C%22GoogleAnalyticsValue%22%3Anull%2C%22Dimension%22%3Anull%2C%22CookiePath%22%3A%22/%3B%20domain%3Dnal.usda.gov%3B%20Secure%3B%22%2C%22AdditionalAttributes%22%3A%7B%7D%2C%22ClickTracker%22%3A%22url%3Dhttps%253A%252F%252Fwww.nal.usda.gov%252Fservices%252Fagdatacommons%252Fpolicies%26p%3D0%26elapsed%3D12666ms%26movement%3D1805px%7Curl%3Dhttps%253A%252F%252Fwww.nal.usda.gov%252F%26p%3D1%26elapsed%3D1689127ms%26movement%3D2664px%7Curl%3Dhttps%253A%252F%252Fwww.nal.usda.gov%252Fall-collections%26p%3D2%26elapsed%3D5793ms%26movement%3D447px%7Curl%3Dhttps%253A%252F%252Fwww.nal.usda.gov%252F%26p%3D3%26elapsed%3D75037691ms%26movement%3D1133px%7Curl%3Dhttps%253A%252F%252Fwww.nal.usda.gov%252Fall-collections%26p%3D4%26elapsed%3D7572ms%26movement%3D976px%22%2C%22PageIndex%22%3A5%7D; " \
+          "_ga_ER98FFN75C=GS1.1.1740881386.9.1.1740881545.0.0.0; _ga_2YCFLHC3NC=GS1.1.1740881386.9.1.1740881545.0.0.0; " \
+          "_ga_CSLL4ZEK4L=GS1.1.1740881386.9.1.1740881545.0.0.0; _ga=GA1.1.1942926067.1740432994; " \
+          "_ga_VYRH7BQ1FL=GS1.1.1740881544.9.1.1740881546.0.0.0; #{j_session}; institute=01NAL_INST; #{urm_se}; #{urm_st}"
+
+          puts "Inspect cookie string: #{cookie_string}"
+  
+        # Update headers only if new_cookies are found
+        headers["Cookie"] = cookie_string unless cookie_string.empty?
+        else
+          puts "No Set-Cookie headers found in the response."
+        end
+        # puts "Inspecting Response #{response.inspect}"
         data = response.parsed_response || {}
         data['docs'] ||= []
         retries += 1
@@ -94,6 +191,8 @@ task :nal_list_ids, [:out_dir] => :environment do |t, args|
 
       total_record_count = data.dig('info', 'total').to_i if offset.zero?
       end_of_cursor_range = data.dig('info', 'last') || 0
+      break if offset >= total_record_count
+
 
       puts "Beginning Write, Response Successful"
       puts "======= Offset: #{offset} / Total: #{total_record_count} / End of Cursor: #{end_of_cursor_range} / Variation: #{unc} ======="
@@ -126,7 +225,9 @@ task :nal_list_ids, [:out_dir] => :environment do |t, args|
       puts "Completed Write To Record Info File"
 
       puts "Sleep to respect API rate limiting."
-      sleep(180) # Respect API limits
+      # 5 seconds
+      # WIP change
+      sleep(5) # Respect API limits
       break if offset >= total_record_count
     end
 
