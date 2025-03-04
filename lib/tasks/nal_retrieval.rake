@@ -15,18 +15,36 @@ task :nal_list_ids, [:out_dir] => :environment do |t, args|
   progress = File.exist?(PROGRESS_FILE) && !File.zero?(PROGRESS_FILE) ? JSON.parse(File.read(PROGRESS_FILE)) : {}
   record_info = load_existing_records(ID_STORAGE)
 
+  # unc_variations = [
+  #   # Test
+  #   # 'UNC-CH', 'UNC-Chapel Hill', 'University of North Carolina Chapel Hill',        
+  #    # QA (In Progress)  
+  #   # 'UNC Chapel Hill', 'University of North Carolina at Chapel Hill', 'University of North Carolina-Chapel Hill',
+  #   # Local
+  #  'University of North Carolina, Chapel Hill', 'University of North Carolina-CH'
+  # ]
+
+
   unc_variations = [
-    # Repeat These
-    # 'UNC-CH', 'UNC-Chapel Hill', 'UNC Chapel Hill',
-    # QA
-    # 'University of North Carolina at Chapel Hill'
     # Test
-    'University of North Carolina Chapel Hill',
-    # Undecided
-    # 'University of North Carolina-Chapel Hill',
-    # 'University of North Carolina, Chapel Hill',
-    # 'University of North Carolina-CH'
+    # 'UNC-CH', 'UNC-Chapel Hill', 'University of North Carolina Chapel Hill',        
+     # QA 
+    'UNC Chapel Hill', 'University of North Carolina at Chapel Hill', 'University of North Carolina-Chapel Hill'
+    # Local
+  #  'University of North Carolina, Chapel Hill', 'University of North Carolina-CH'
   ]
+
+  # unc_variations = [
+  #   # Test
+  #   'UNC-CH', 'UNC-Chapel Hill', 'University of North Carolina Chapel Hill',        
+  #    # QA 
+  #   # 'UNC Chapel Hill', 'University of North Carolina at Chapel Hill', 'University of North Carolina-Chapel Hill',
+  #   # Local
+  # #  'University of North Carolina, Chapel Hill', 'University of North Carolina-CH'
+  # ]
+
+  #  'UNC-CH', 'UNC-Chapel Hill' - QA
+  # 'UNC-CH', 'UNC-Chapel Hill', 'University of North Carolina-Chapel Hill' - Test
 
   unc_variations.each do |unc|
     process_variation(unc, list_path, progress, record_info)
@@ -50,10 +68,10 @@ def process_variation(unc, list_path, progress, record_info)
     total_records = year_entry['total_record_count'] || 0
     year = year_entry['year']
 
-    return if total_records > 0 && offset >= total_records
+    next if total_records > 0 && offset >= total_records
 
     failed_attempts = 0
-    retry_limit = 5
+    retry_limit = 3
 
     while failed_attempts < retry_limit
       puts "[#{Time.now}] Retrieving records for #{unc} at offset #{offset} for year #{year}..."
@@ -62,7 +80,7 @@ def process_variation(unc, list_path, progress, record_info)
       if data['docs'].empty?
         failed_attempts += 1
         puts "[#{Time.now}] No records found. Retrying in 10 seconds (#{failed_attempts}/#{retry_limit})..."
-        sleep(20)
+        sleep(15)
         next
       end
 
@@ -72,7 +90,7 @@ def process_variation(unc, list_path, progress, record_info)
       offset += limit
       write_to_progress(progress, unc, offset, total_records, year)
       sleep(90)
-      break if offset >= total_records
+      break if offset >= total_records 
     end
   end
 end
