@@ -3,7 +3,7 @@
 # Query for UNC terms
 # Harvest IDs of records
 BASE_URL = 'https://search.nal.usda.gov/primaws/rest/pub/pnxs'
-PROGRESS_FILE = 'progress.json'
+PROGRESS_FILE = 'progress-dates.json'
 ID_STORAGE = 'nal_ids.csv'
 
 desc 'Retrieve list of UNC records from the National Agricultural Library'
@@ -16,12 +16,16 @@ task :nal_list_ids, [:out_dir] => :environment do |t, args|
   record_info = load_existing_records(ID_STORAGE)
 
   unc_variations = [
-    'UNC-CH', 'UNC-Chapel Hill', 'UNC Chapel Hill',
-    'University of North Carolina at Chapel Hill',
+    # Repeat These
+    # 'UNC-CH', 'UNC-Chapel Hill', 'UNC Chapel Hill',
+    # QA
+    # 'University of North Carolina at Chapel Hill'
+    # Test
     'University of North Carolina Chapel Hill',
-    'University of North Carolina-Chapel Hill',
-    'University of North Carolina, Chapel Hill',
-    'University of North Carolina-CH'
+    # Undecided
+    # 'University of North Carolina-Chapel Hill',
+    # 'University of North Carolina, Chapel Hill',
+    # 'University of North Carolina-CH'
   ]
 
   unc_variations.each do |unc|
@@ -40,51 +44,91 @@ end
 
 def process_variation(unc, list_path, progress, record_info)
   limit = 50
-  unc_progress = progress[unc] || {}
-  offset = unc_progress['last_offset'] || 0
-  total_records = unc_progress['total_record_count'] || 0
+  unc_variation_progress = progress[unc] || {}
+  unc_variation_progress.each do |year_entry|
+    offset = year_entry['last_offset'] || 0
+    total_records = year_entry['total_record_count'] || 0
+    year = year_entry['year']
 
-  return if total_records > 0 && offset >= total_records
+    return if total_records > 0 && offset >= total_records
 
-  failed_attempts = 0
-  retry_limit = 5
+    failed_attempts = 0
+    retry_limit = 5
 
-  while failed_attempts < retry_limit
-    puts "[#{Time.now}] Retrieving records for #{unc} at offset #{offset}"
-    data, headers = fetch_nal_records(unc, offset, limit)
+    while failed_attempts < retry_limit
+      puts "[#{Time.now}] Retrieving records for #{unc} at offset #{offset} for year #{year}..."
+      data, headers = fetch_nal_records(unc, offset, limit, year)
 
-    if data['docs'].empty?
-      failed_attempts += 1
-      puts "[#{Time.now}] No records found. Retrying in 10 seconds (#{failed_attempts}/#{retry_limit})..."
-      sleep(10)
-      next
+      if data['docs'].empty?
+        failed_attempts += 1
+        puts "[#{Time.now}] No records found. Retrying in 10 seconds (#{failed_attempts}/#{retry_limit})..."
+        sleep(20)
+        next
+      end
+
+      total_records = data.dig('info', 'total').to_i if offset.zero?
+      process_records(data, record_info)
+      write_to_csv(list_path, record_info)
+      offset += limit
+      write_to_progress(progress, unc, offset, total_records, year)
+      sleep(90)
+      break if offset >= total_records
     end
-
-    total_records = data.dig('info', 'total').to_i if offset.zero?
-    process_records(data, record_info)
-    write_to_csv(list_path, record_info)
-    offset += limit
-    write_to_progress(progress, unc, offset, total_records)
-    sleep(10)
-    break if offset >= total_records
   end
 end
 
-def fetch_nal_records(unc, offset, limit)
-  url = "#{BASE_URL}?acTriggered=false&disableCache=false&getMore=0&inst=01NAL_INST&lang=en" \
-        "&limit=#{limit}&mode=advanced&offset=#{offset}&q=any,contains,#{CGI.escape(unc)}" \
-        "&scope=pubag&tab=pubag&vid=01NAL_INST:MAIN"
+def fetch_nal_records(unc, offset, limit, year)
+  # Manually encoding only necessary parameters
+  q_value = "any,contains,%22#{CGI.escape(unc)}%22,AND;dr_s,exact,#{year}0101,AND;dr_e,exact,#{year}1231,AND"
+  multi_facets = "facet_tlevel,include,open_access%7C,%7Cfacet_rtype,include,articles"
+
+  query = {
+    acTriggered: "false",
+    blendFacetsSeparately: "false",
+    citationTrailFilterByAvailability: "true",
+    disableCache: "false",
+    getMore: "0",
+    inst: "01NAL_INST",
+    isCDSearch: "false",
+    lang: "en",
+    limit: limit,
+    mode: "advanced",
+    multiFacets: multi_facets,  # Keep manually encoded value
+    newspapersActive: "false",
+    newspapersSearch: "false",
+    offset: offset,
+    otbRanking: "false",
+    pcAvailability: "true",
+    q: q_value,  # Manually encoded q value
+    qExclude: "",
+    qInclude: "",
+    rapido: "false",
+    refEntryActive: "false",
+    rtaLinks: "true",
+    scope: "MyInstitution",
+    searchInFulltextUserSelection: "true",
+    skipDelivery: "Y",
+    sort: "rank",
+    tab: "LibraryCatalog",
+    vid: "01NAL_INST:MAIN"  # Do NOT encode the colon
+  }
+
+  # Convert query hash to a query string manually, avoiding over-encoding
+  query_string = query.map { |k, v| "#{k}=#{v}" }.join("&")
+
+  url = "#{BASE_URL}?#{query_string}"
 
   headers = construct_headers
   response = HTTParty.get(url, headers: headers)
-  puts "URL: #{url}"
-  puts "Response Code: #{response.code}, Response Body: #{response.body}"
 
+  puts "URL: #{url}"
+  # puts "Response Code: #{response.code}, Response Body: #{response.body}"
   # WIP - Removing Cookie extraction for now
   # headers["Cookie"] = extract_cookies(response, headers)
   # puts "Cookies: #{headers['Cookie']}"
   [response.parsed_response || {}, headers]
 end
+
 
 def construct_headers
   {
@@ -136,11 +180,18 @@ def write_to_csv(file_path, record_info)
   puts "Finished write to record info CSV file: #{file_path}"
 end
 
-def write_to_progress(progress, unc, offset, total_records)
-  progress[unc] = { last_offset: offset, total_record_count: total_records }
-  File.write(PROGRESS_FILE, JSON.pretty_generate(progress))
-  puts "Finished write to progress file: #{PROGRESS_FILE}"
+def write_to_progress(progress, unc, offset, total_records, year)
+  # Find the year + unc variation in the progress hash
+  # Update the last_offset and total_record_count
+  if (entry = progress.dig(unc)&.find { |record| record["year"] == year.to_s })
+    entry.merge!("last_offset" => offset, "total_record_count" => total_records)
+    File.write(PROGRESS_FILE, JSON.pretty_generate(progress))
+    puts "Updated progress file: #{PROGRESS_FILE} for #{unc} in #{year}"
+  else
+    puts "Error: #{unc} or year #{year} not found"
+  end
 end
+
 
 
 
