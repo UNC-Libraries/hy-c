@@ -39,7 +39,7 @@ def load_existing_records(file)
 end
 
 def process_variation(unc, list_path, progress, record_info)
-  limit = 100
+  limit = 50
   unc_progress = progress[unc] || {}
   offset = unc_progress['last_offset'] || 0
   total_records = unc_progress['total_record_count'] || 0
@@ -47,7 +47,7 @@ def process_variation(unc, list_path, progress, record_info)
   return if total_records > 0 && offset >= total_records
 
   failed_attempts = 0
-  retry_limit = 4
+  retry_limit = 5
 
   while failed_attempts < retry_limit
     puts "[#{Time.now}] Retrieving records for #{unc} at offset #{offset}"
@@ -77,8 +77,12 @@ def fetch_nal_records(unc, offset, limit)
 
   headers = construct_headers
   response = HTTParty.get(url, headers: headers)
+  puts "URL: #{url}"
+  puts "Response Code: #{response.code}, Response Body: #{response.body}"
 
-  headers["Cookie"] = extract_cookies(response, headers)
+  # WIP - Removing Cookie extraction for now
+  # headers["Cookie"] = extract_cookies(response, headers)
+  # puts "Cookies: #{headers['Cookie']}"
   [response.parsed_response || {}, headers]
 end
 
@@ -107,7 +111,7 @@ def extract_cookies(response, headers)
   urm_se = (new_cookies + old_cookies).find { |c| c.start_with?("urm_se") } || ""
   secure = (new_cookies + old_cookies).find { |c| c.start_with?("__Secure-") } || ""
 
-  "#{j_session}; #{secure}; institute=01NAL_INST; #{urm_se} #{urm_st};"
+  "#{j_session.empty? ? '' : j_session + '; '}#{secure}; institute=01NAL_INST; #{urm_st}; #{urm_se}"
 end
 
 def process_records(data, record_info)
