@@ -52,5 +52,24 @@ RSpec.describe Hyrax::Renderers::PersonAttributeRenderer do
 
       it { expect(subject).to be_equivalent_to(expected) }
     end
+
+    context 'with creator with no affiliation' do
+      let(:field) { :creator_display }
+      let(:renderer) { described_class.new(field, ['index:1||lone, person||']) }
+      let(:tr_content) do
+        %(
+          <dt>Creator display</dt>
+          <dd>
+            <ul class="tabular">
+              <li itemprop="creator" itemtype="http://schema.org/Person" class="attribute attribute-creator_display">
+                <span>lone, person</span>
+              </li>
+            </ul>
+          </dd>
+        )
+      end
+
+      it { expect(subject).to be_equivalent_to(expected) }
+    end
   end
 end

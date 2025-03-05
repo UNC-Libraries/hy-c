@@ -34,7 +34,7 @@ module Hyrax
           end
           display_text << '</ul>'
         end
-
+        display_text
       rescue ArgumentError
         value
       end
