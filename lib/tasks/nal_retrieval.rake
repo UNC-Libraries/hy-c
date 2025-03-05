@@ -50,6 +50,132 @@ task :nal_list_ids, [:out_dir] => :environment do |t, args|
     process_variation(unc, list_path, progress, record_info)
   end
 end
+  # Task 2
+  # Check for duplicate against CDR by DOI, PMID, PMCID IF there is no fileset
+  # Produce a CSV file with metadata, including if it is a CDR duplicate, if
+  # there's a fileset, list of all supplemental file
+  # https://search.nal.usda.gov/primaws/rest/pub/pnxs/L/alma9916289359307426?vid=01NAL_INST:MAIN&lang=en&search_scope=pubag&adaptor=Local%20Search%20Engine&lang=en
+desc 'Retrieve list of UNC records from NAL'
+task :nal_export_md, [:out_dir] => :environment do |t, args|
+  out_dir = args[:out_dir]
+  list_path = File.join(out_dir, 'combined_nal_ids.csv')
+  md_file = File.join(out_dir, 'nal_metadata.csv')
+  num_found = 0
+  num_not_found = 0
+
+  CSV.open(md_file, 'w') do |csv_out|
+    csv_out << ['alma_id', 'doi', 'cdr_url', 'has_fileset']
+    CSV.read(list_path).each do |row|
+      doi_url = row[0]
+      title = row[1]
+      record_id = row[2]
+
+      dup_data = nil
+      if doi_url
+        doi = doi_url.gsub(/https?:\/\/(dx\.)?doi\.org\//, '')
+        dup_data = get_cdr_duplicate_data(doi)
+      end
+
+      # csv columns: doi, pmid, pmcid, cdr_url, has_fileset
+      if dup_data.nil?
+        csv_out << [record_id, doi_url, nil, nil]
+        num_not_found += 1
+      else
+        csv_out << [record_id, doi_url, dup_data[0], dup_data[1]]
+        num_found += 1
+        num_with_fileset += 1 if dup_data[1]
+      end
+
+      sleep(1)
+      # End List Path Read
+    end
+    # End MD Writing
+  end
+end
+
+# Task 3
+# Fill out CSV with relevant metadata from the API
+desc 'Retrieve metadata for UNC affiliated records from the National Agricultural Library'
+task :metadata_retrieval, [:out_dir] => :environment do |t, args|
+  processed_ids_file = 'processed_ids.csv'
+  out_dir = args[:out_dir]
+  list_path = File.join(out_dir, 'nal_metadata.csv')
+  output_file = File.join(out_dir, 'nal_metadata_with_external_info.csv')
+  headers = ['alma_id', 'doi', 'title', 'abstract', 'publication_date', 'pmcid', 'pmid', 'creators', 'primary_creator', 'additional_creators']
+  # Load already processed IDs to prevent duplicate work
+  processed_ids = if File.exist?(processed_ids_file)
+    CSV.read(processed_ids_file, headers: false).flatten.to_set
+  else
+    Set.new
+  end
+
+  # Ensure the output CSV file has headers if it doesn't exist
+  unless File.exist?(output_file)
+    CSV.open(output_file, "w", write_headers: true, headers: headers) { |csv| }
+  end
+
+  CSV.open(output_file, "a", write_headers: false) do |csv_out|
+    CSV.foreach(list_path, headers: true) do |row|
+      alma_id = row[0] 
+
+      # Skip if already processed
+      if processed_ids.include?(alma_id)
+        puts "Skipping already processed ID: #{alma_id}"
+        next
+      end
+
+      metadata = get_alma_metadata(alma_id)
+
+      if metadata
+        csv_out << metadata  # Append row to CSV
+        puts "Successfully wrote metadata for #{alma_id}"
+
+        # Log processed ID
+        File.open(processed_ids_file, "a") { |f| f.puts alma_id }
+        processed_ids.add(alma_id) 
+
+        sleep(10) 
+      end
+  end
+end
+
+  puts "Metadata retrieval complete! Saved to #{output_file}"
+  puts "Processed IDs saved to #{processed_ids_file}"
+
+end
+
+# Retrieve complete metadata from the API
+def get_alma_metadata(alma_id)
+  url = "#{BASE_URL}/L/#{alma_id}?vid=01NAL_INST:MAIN&lang=en&search_scope=pubag"
+  uri = URI.parse(url)
+  response = Net::HTTP.get_response(uri)
+
+  if response.is_a?(Net::HTTPSuccess)
+    data = JSON.parse(response.body)
+    display = data.dig("pnx", "display") || {}
+    addata = data.dig("addata") || {}
+
+    # Extract required fields
+    title = display["title"]&.first || "N/A"
+    creators = display["contributor"]&.join("; ") || "N/A"
+    primary_creator = Array(addata["au"]).first || "N/A"
+    additional_creators = Array(addata["addau"]).first || []
+    abstract = display["description"]&.first || "N/A"
+    publication_date = display["creationdate"]&.first || "N/A"
+    # DOI, PMCID, and PMID stored in addata['doi']
+    identification_list = Array(addata["doi"]).first || "N/A"
+
+    # Change retrieval
+    doi = identification_list.find{ |id| id.contains?('/')} || "N/A" 
+    pmcid = identification_list.find{ |id| id.contains?('PMC')} || "N/A"
+    pmid = identification_list.find { |id| id != doi && id != pmcid } || "N/A"
+
+    return [alma_id, doi, title, abstract, publication_date, pmcid, pmid, creators, primary_creator, additional_creators]
+  else
+    puts "Failed to retrieve data for Alma ID: #{alma_id}"
+    return [alma_id, "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A"]
+  end
+end
 
 def load_existing_records(file)
   return {} unless File.exist?(file) && !File.zero?(file)
@@ -207,52 +333,6 @@ def write_to_progress(progress, unc, offset, total_records, year)
     puts "Updated progress file: #{PROGRESS_FILE} for #{unc} in #{year}"
   else
     puts "Error: #{unc} or year #{year} not found"
-  end
-end
-
-
-
-
-  # Task 2
-  # Check for duplicate against CDR by DOI, PMID, PMCID IF there is no fileset
-  # Produce a CSV file with metadata, including if it is a CDR duplicate, if
-  # there's a fileset, list of all supplemental file
-  # https://search.nal.usda.gov/primaws/rest/pub/pnxs/L/alma9916289359307426?vid=01NAL_INST:MAIN&lang=en&search_scope=pubag&adaptor=Local%20Search%20Engine&lang=en
-desc 'Retrieve list of UNC records from NAL'
-task :nal_export_md, [:out_dir] => :environment do |t, args|
-  out_dir = args[:out_dir]
-  list_path = File.join(out_dir, 'nal_ids.csv')
-  md_file = File.join(out_dir, 'nal_metadata.csv')
-  num_found = 0
-  num_not_found = 0
-
-  CSV.open(md_file, 'w') do |csv_out|
-    csv_out << ['alma_id', 'doi', 'cdr_url', 'has_fileset']
-    CSV.read(list_path).each do |row|
-      doi_url = row[0]
-      title = row[1]
-      record_id = row[2]
-
-      dup_data = nil
-      if doi_url
-        doi = doi_url.gsub(/https?:\/\/(dx\.)?doi\.org\//, '')
-        dup_data = get_cdr_duplicate_data(doi)
-      end
-
-      # csv columns: doi, pmid, pmcid, cdr_url, has_fileset
-      if dup_data.nil?
-        csv_out << [record_id, doi_url, nil, nil]
-        num_not_found += 1
-      else
-        csv_out << [record_id, doi_url, dup_data[0], dup_data[1]]
-        num_found += 1
-        num_with_fileset += 1 if dup_data[1]
-      end
-
-      sleep(1)
-      # End List Path Read
-    end
-    # End MD Writing
   end
 end
 
