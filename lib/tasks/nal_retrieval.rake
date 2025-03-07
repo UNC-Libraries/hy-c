@@ -178,6 +178,8 @@ task :nal_lookup, [:out_dir] => :environment do |t, args|
 
       # csv columns: alma_id, doi, title, abstract, publication_date, pmcid, pmid, creators, primary_creator, additional_creators, redirect_url, cdr_url, has_fileset
       if dup_data.nil?
+        row['cdr_url'] = 'None'
+        row['has_fileset'] = 'False'
         csv_out << row
         # num_not_found += 1
       else
