@@ -25,50 +25,8 @@ task :nal_list_ids, [:out_dir] => :environment do |t, args|
     process_variation(unc, list_path, progress, record_info)
   end
 end
-  # Task 2
-  # Check for duplicate against CDR by DOI, PMID, PMCID IF there is no fileset
-  # Produce a CSV file with metadata, including if it is a CDR duplicate, if
-  # there's a fileset, list of all supplemental file
-  # https://search.nal.usda.gov/primaws/rest/pub/pnxs/L/alma9916289359307426?vid=01NAL_INST:MAIN&lang=en&search_scope=pubag&adaptor=Local%20Search%20Engine&lang=en
-desc 'Retrieve list of UNC records from NAL'
-task :nal_export_md, [:out_dir] => :environment do |t, args|
-  out_dir = args[:out_dir]
-  list_path = File.join(out_dir, 'combined_nal_ids.csv')
-  md_file = File.join(out_dir, 'nal_metadata.csv')
-  num_found = 0
-  num_not_found = 0
 
-  CSV.open(md_file, 'w') do |csv_out|
-    csv_out << ['alma_id', 'doi', 'cdr_url', 'has_fileset']
-    CSV.read(list_path).each do |row|
-      doi_url = row[0]
-      title = row[1]
-      record_id = row[2]
-
-      dup_data = nil
-      if doi_url
-        doi = doi_url.gsub(/https?:\/\/(dx\.)?doi\.org\//, '')
-        dup_data = get_cdr_duplicate_data(doi)
-      end
-
-      # csv columns: doi, pmid, pmcid, cdr_url, has_fileset
-      if dup_data.nil?
-        csv_out << [record_id, doi_url, nil, nil]
-        num_not_found += 1
-      else
-        csv_out << [record_id, doi_url, dup_data[0], dup_data[1]]
-        num_found += 1
-        num_with_fileset += 1 if dup_data[1]
-      end
-
-      sleep(1)
-      # End List Path Read
-    end
-    # End MD Writing
-  end
-end
-
-# Task 3
+# Task 2
 # Fill out CSV with relevant metadata from the API
 desc 'Retrieve metadata for UNC affiliated records from the National Agricultural Library'
 task :metadata_retrieval, [:out_dir] => :environment do |t, args|
@@ -121,36 +79,39 @@ task :metadata_retrieval, [:out_dir] => :environment do |t, args|
 
 end
 
-# Task 4
+# Task 3
 # Retrieve redirect URLs for DOIs
 desc 'Retrieve redirect URLs for DOIs'
 task :doi_redirects, [:out_dir] => :environment do |t, args|
   processed_ids_file = 'processed_ids_redirects.csv'
   # Load already processed IDs to prevent duplicate work
   processed_ids = if File.exist?(processed_ids_file)
-    CSV.read(processed_ids_file, headers: false).flatten.to_set
+                    CSV.read(processed_ids_file, headers: false).flatten.to_set
   else
-  Set.new
+    Set.new
   end
-
 
   out_dir = args[:out_dir]
   nal_metadata_file = 'nal_metadata_with_external_info.csv'
   output_file = File.join(out_dir, 'nal_metadata_with_redirects.csv')
-  headers = ['alma_id', 'doi', 'title', 'abstract', 'publication_date', 'pmcid', 'pmid', 'creators', 'primary_creator', 'additional_creators','redirect_url']
+  headers = ['alma_id', 'doi', 'title', 'abstract', 'publication_date', 'pmcid', 'pmid', 'creators', 'primary_creator', 'additional_creators', 'redirect_url']
   CSV.foreach(nal_metadata_file, headers: true) do |row|
 
     # Skip if already processed
     if processed_ids.include?(row['doi'])
-      puts "Skipping already processed ID: #{row['doi']}"
-      next
+      if row['redirect_url'] == 'Unknown' || row['redirect_url'] == 'Broken Link'
+        puts "Retrying DOI: #{row['doi']}"
+      else
+        puts "Skipping already processed ID: #{row['doi']}"
+        next
+      end
     end
 
     write_headers = !File.exist?(output_file) || File.zero?(output_file)
     doi_url = 'https://doi.org/' + row['doi']
-    next if doi == 'N/A'
-    # WIP - Implement resolve_doi method
-    url = resolve_doi(doi)
+    next if row['doi'] == 'N/A'
+    url = resolve_doi(row['doi'])
+
     row['redirect_url'] = url
     CSV.open(output_file, 'a', write_headers: write_headers, headers: headers) do |csv_out|
       csv_out << row
@@ -161,6 +122,78 @@ task :doi_redirects, [:out_dir] => :environment do |t, args|
     processed_ids.add(row['doi'])
     puts "Successfully wrote metadata for #{row['doi']}"
     sleep(1)
+  end
+end
+
+  # Task 4
+  # Check for duplicate against CDR by DOI, PMID, PMCID IF there is no fileset
+  # Produce a CSV file with metadata, including if it is a CDR duplicate, if
+  # there's a fileset, list of all supplemental file
+  # https://search.nal.usda.gov/primaws/rest/pub/pnxs/L/alma9916289359307426?vid=01NAL_INST:MAIN&lang=en&search_scope=pubag&adaptor=Local%20Search%20Engine&lang=en
+desc 'Compare metadata with CDR records'
+task :nal_deduplicate, [:out_dir] => :environment do |t, args|
+  out_dir = args[:out_dir]
+  list_path = File.join(out_dir, 'combined_nal_ids.csv')
+  md_file = File.join(out_dir, 'nal_metadata_with_redirects.csv')
+  num_found = 0
+  num_not_found = 0
+  num_with_fileset = 0
+
+  CSV.open(md_file, 'w') do |csv_out|
+    csv_out << ['alma_id', 'doi', 'title', 'abstract', 'publication_date', 'pmcid', 'pmid', 'creators', 'primary_creator', 'additional_creators', 'redirect_url', 'cdr_url', 'has_fileset']
+    CSV.read(list_path).each do |row|
+      # doi_url = row[doi]
+      doi = row['doi']
+      title = row['title']
+      alma_id = row['alma_id']
+
+      dup_data = nil
+      if doi
+        # doi = doi_url.gsub(/https?:\/\/(dx\.)?doi\.org\//, '')
+        dup_data = get_cdr_duplicate_data(doi)
+      end
+
+      if dup_data.nil? && pmid
+        dup_data = get_cdr_duplicate_data("PMID: #{pmid}")
+        end
+      if dup_data.nil? && pmcid
+      dup_data = get_cdr_duplicate_data("PMCID: #{pmid}")
+      end
+
+      # csv columns: alma_id, doi, title, abstract, publication_date, pmcid, pmid, creators, primary_creator, additional_creators, redirect_url, cdr_url, has_fileset
+      if dup_data.nil?
+        csv_out << row
+        num_not_found += 1
+      else
+        row['cdr_url'] = dup_data[0]
+        row['has_fileset'] = dup_data[1]
+        csv_out << row
+        num_found += 1
+        num_with_fileset += 1 if dup_data[1]
+      end
+
+      sleep(1)
+      # End List Path Read
+    end
+    # End MD Writing
+  end
+end
+
+def resolve_doi(doi)
+  url = "https://doi.org/#{doi}"
+  response = HTTParty.get(url)
+  if response.code == 200
+    html = Nokogiri::HTML(response.body)
+    redirect_input = html.at('input#redirectURL')
+    if redirect_input
+      puts "Redirect URL found for DOI: #{doi}: #{redirect_input['value']}"
+      return CGI.unescape(redirect_input['value']) # Decode URL
+    end
+    puts "DOI resolved but no redirect URL found: #{doi}"
+    return url
+  else
+    puts "Failed to resolve DOI: #{doi}. Response code: #{response.code}"
+    return url
   end
 end
 
