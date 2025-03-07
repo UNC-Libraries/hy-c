@@ -206,6 +206,40 @@ task :nal_lookup, [:out_dir] => :environment do |t, args|
     # End MD Writing
   end
 end
+# Task 5
+desc 'Update existing metadata'
+task :update_nal_metadata, [:out_dir] => :environment do |t, args|
+  out_dir = args[:out_dir]
+  output_file = File.join(out_dir, 'nal_metadata_updated.csv')
+  md_file = File.join(out_dir, 'nal_metadata_unique.csv')
+  write_headers = !File.exist?(output_file) || File.zero?(output_file)
+  headers = ['alma_id', 'doi', 'title', 'abstract', 'publication_date', 'pmcid', 'pmid', 'creators', 'primary_creator', 'additional_creators', 'redirect_url', 'cdr_url', 'has_fileset', 'journal_citation', 'journal_title']
+  processed_ids_file = 'processed_ids_updates.csv'
+  # Load already processed IDs to prevent duplicate work
+  processed_ids = if File.exist?(processed_ids_file)
+    CSV.read(processed_ids_file, headers: false).flatten.to_set
+  else
+  Set.new
+  end
+
+  CSV.open(output_file, 'a', write_headers: write_headers, headers: headers) do |csv_out|
+    CSV.read(md_file, headers: true).each do |row|
+      if processed_ids.include?(row['alma_id'])
+        puts "Skipping already processed ID: #{row['alma_id']}"
+        next
+      end
+      new_metadata = get_extra_metadata(row['alma_id'])
+      row['ispartof'] = new_metadata[:ispartof]
+      row['jtitle'] = new_metadata[:jtitle]
+      csv_out << row
+      # Log processed ID
+      File.open(processed_ids_file, 'a') { |f| f.puts row['alma_id'] }
+      processed_ids.add(row['alma_id'])
+      puts "Successfully wrote metadata for #{row['alma_id']}"
+      sleep(1)
+    end
+  end
+end
 
 def resolve_doi(doi)
   url = "https://doi.org/#{doi}"
@@ -222,6 +256,27 @@ def resolve_doi(doi)
   else
     puts "Failed to resolve DOI: #{doi}. Response code: #{response.code}"
     return url
+  end
+end
+
+def get_extra_metadata(alma_id)
+  url = "#{BASE_URL}/L/#{alma_id}?vid=01NAL_INST:MAIN&lang=en&search_scope=pubag"
+  uri = URI.parse(url)
+  response = Net::HTTP.get_response(uri)
+
+  if response.is_a?(Net::HTTPSuccess)
+    data = JSON.parse(response.body)
+    display = data.dig('pnx', 'display') || {}
+    addata = data.dig('pnx', 'addata') || {}
+
+    # Extract required fields
+    ispartof = display['ispartof']&.first || 'N/A'
+    jtitle = addata['jtitle']&.first || 'N/A'
+
+    return { ispartof: ispartof, jtitle: jtitle }
+  else
+    puts "Failed to retrieve data for Alma ID: #{alma_id}"
+    return { ispartof: 'N/A', jtitle: 'N/A' }
   end
 end
 
