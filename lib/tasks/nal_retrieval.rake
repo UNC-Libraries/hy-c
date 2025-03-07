@@ -142,9 +142,6 @@ task :nal_lookup, [:out_dir] => :environment do |t, args|
   end
   output_file = File.join(out_dir, 'nal_metadata_unique.csv')
   md_file = File.join(out_dir, 'nal_metadata_with_redirects.csv')
-  # num_found = 0
-  # num_not_found = 0
-  # num_with_fileset = 0
   write_headers = !File.exist?(output_file) || File.zero?(output_file)
   headers = ['alma_id', 'doi', 'title', 'abstract', 'publication_date', 'pmcid', 'pmid', 'creators', 'primary_creator', 'additional_creators', 'redirect_url', 'cdr_url', 'has_fileset']
 
@@ -165,7 +162,6 @@ task :nal_lookup, [:out_dir] => :environment do |t, args|
 
       dup_data = nil
       if doi
-        # doi = doi_url.gsub(/https?:\/\/(dx\.)?doi\.org\//, '')
         dup_data = get_cdr_duplicate_data(doi)
       end
 
@@ -201,9 +197,7 @@ task :nal_lookup, [:out_dir] => :environment do |t, args|
       processed_ids.add(alma_id)
 
       sleep(1)
-      # End List Path Read
     end
-    # End MD Writing
   end
 end
 # Task 5
