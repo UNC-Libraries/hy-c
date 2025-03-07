@@ -15,36 +15,11 @@ task :nal_list_ids, [:out_dir] => :environment do |t, args|
   progress = File.exist?(PROGRESS_FILE) && !File.zero?(PROGRESS_FILE) ? JSON.parse(File.read(PROGRESS_FILE)) : {}
   record_info = load_existing_records(ID_STORAGE)
 
-  # unc_variations = [
-  #   # Test
-  #   # 'UNC-CH', 'UNC-Chapel Hill', 'University of North Carolina Chapel Hill',        
-  #    # QA (In Progress)  
-  #   # 'UNC Chapel Hill', 'University of North Carolina at Chapel Hill', 'University of North Carolina-Chapel Hill',
-  #   # Local
-  #  'University of North Carolina, Chapel Hill', 'University of North Carolina-CH'
-  # ]
-
-
   unc_variations = [
-    # Test
-    # 'UNC-CH', 'UNC-Chapel Hill', 'University of North Carolina Chapel Hill',        
-     # QA 
-    'UNC Chapel Hill', 'University of North Carolina at Chapel Hill', 'University of North Carolina-Chapel Hill'
-    # Local
-  #  'University of North Carolina, Chapel Hill', 'University of North Carolina-CH'
+    'UNC-CH', 'UNC-Chapel Hill', 'University of North Carolina Chapel Hill',
+    'UNC Chapel Hill', 'University of North Carolina at Chapel Hill', 'University of North Carolina-Chapel Hill',
+   'University of North Carolina, Chapel Hill', 'University of North Carolina-CH'
   ]
-
-  # unc_variations = [
-  #   # Test
-  #   'UNC-CH', 'UNC-Chapel Hill', 'University of North Carolina Chapel Hill',        
-  #    # QA 
-  #   # 'UNC Chapel Hill', 'University of North Carolina at Chapel Hill', 'University of North Carolina-Chapel Hill',
-  #   # Local
-  # #  'University of North Carolina, Chapel Hill', 'University of North Carolina-CH'
-  # ]
-
-  #  'UNC-CH', 'UNC-Chapel Hill' - QA
-  # 'UNC-CH', 'UNC-Chapel Hill', 'University of North Carolina-Chapel Hill' - Test
 
   unc_variations.each do |unc|
     process_variation(unc, list_path, progress, record_info)
@@ -104,19 +79,21 @@ task :metadata_retrieval, [:out_dir] => :environment do |t, args|
   headers = ['alma_id', 'doi', 'title', 'abstract', 'publication_date', 'pmcid', 'pmid', 'creators', 'primary_creator', 'additional_creators']
   # Load already processed IDs to prevent duplicate work
   processed_ids = if File.exist?(processed_ids_file)
-    CSV.read(processed_ids_file, headers: false).flatten.to_set
+                    CSV.read(processed_ids_file, headers: false).flatten.to_set
   else
     Set.new
   end
 
   # Ensure the output CSV file has headers if it doesn't exist
   unless File.exist?(output_file)
-    CSV.open(output_file, "w", write_headers: true, headers: headers) { |csv| }
+    CSV.open(output_file, 'w', write_headers: true, headers: headers) { |csv| }
   end
 
-  CSV.open(output_file, "a", write_headers: false) do |csv_out|
+  write_headers = !File.exist?(output_file) || File.zero?(output_file)
+
+  CSV.open(output_file, 'a', write_headers: write_headers, headers: headers) do |csv_out|
     CSV.foreach(list_path, headers: true) do |row|
-      alma_id = row[0] 
+      alma_id = row[0]
 
       # Skip if already processed
       if processed_ids.include?(alma_id)
@@ -131,18 +108,62 @@ task :metadata_retrieval, [:out_dir] => :environment do |t, args|
         puts "Successfully wrote metadata for #{alma_id}"
 
         # Log processed ID
-        File.open(processed_ids_file, "a") { |f| f.puts alma_id }
-        processed_ids.add(alma_id) 
+        File.open(processed_ids_file, 'a') { |f| f.puts alma_id }
+        processed_ids.add(alma_id)
 
-        sleep(10) 
+        sleep(10)
       end
+    end
   end
-end
 
   puts "Metadata retrieval complete! Saved to #{output_file}"
   puts "Processed IDs saved to #{processed_ids_file}"
 
 end
+
+# Task 4
+# Retrieve redirect URLs for DOIs
+desc 'Retrieve redirect URLs for DOIs'
+task :doi_redirects, [:out_dir] => :environment do |t, args|
+  processed_ids_file = 'processed_ids_redirects.csv'
+  # Load already processed IDs to prevent duplicate work
+  processed_ids = if File.exist?(processed_ids_file)
+    CSV.read(processed_ids_file, headers: false).flatten.to_set
+  else
+  Set.new
+  end
+
+
+  out_dir = args[:out_dir]
+  nal_metadata_file = 'nal_metadata_with_external_info.csv'
+  output_file = File.join(out_dir, 'nal_metadata_with_redirects.csv')
+  headers = ['alma_id', 'doi', 'title', 'abstract', 'publication_date', 'pmcid', 'pmid', 'creators', 'primary_creator', 'additional_creators','redirect_url']
+  CSV.foreach(nal_metadata_file, headers: true) do |row|
+
+    # Skip if already processed
+    if processed_ids.include?(row['doi'])
+      puts "Skipping already processed ID: #{row['doi']}"
+      next
+    end
+
+    write_headers = !File.exist?(output_file) || File.zero?(output_file)
+    doi_url = 'https://doi.org/' + row['doi']
+    next if doi == 'N/A'
+    # WIP - Implement resolve_doi method
+    url = resolve_doi(doi)
+    row['redirect_url'] = url
+    CSV.open(output_file, 'a', write_headers: write_headers, headers: headers) do |csv_out|
+      csv_out << row
+    end
+
+    # Log processed ID
+    File.open(processed_ids_file, 'a') { |f| f.puts row['doi'] }
+    processed_ids.add(row['doi'])
+    puts "Successfully wrote metadata for #{row['doi']}"
+    sleep(1)
+  end
+end
+
 
 # Retrieve complete metadata from the API
 def get_alma_metadata(alma_id)
@@ -152,28 +173,28 @@ def get_alma_metadata(alma_id)
 
   if response.is_a?(Net::HTTPSuccess)
     data = JSON.parse(response.body)
-    display = data.dig("pnx", "display") || {}
-    addata = data.dig("addata") || {}
+    display = data.dig('pnx', 'display') || {}
+    addata = data.dig('pnx', 'addata') || {}
 
     # Extract required fields
-    title = display["title"]&.first || "N/A"
-    creators = display["contributor"]&.join("; ") || "N/A"
-    primary_creator = Array(addata["au"]).first || "N/A"
-    additional_creators = Array(addata["addau"]).first || []
-    abstract = display["description"]&.first || "N/A"
-    publication_date = display["creationdate"]&.first || "N/A"
+    title = display['title']&.first || 'N/A'
+    creators = display['contributor']&.join('; ') || 'N/A'
+    primary_creator = Array(addata['au']).first || 'N/A'
+    additional_creators = Array(addata['addau']) || []
+    abstract = display['description']&.first || 'N/A'
+    publication_date = display['creationdate']&.first || 'N/A'
     # DOI, PMCID, and PMID stored in addata['doi']
-    identification_list = Array(addata["doi"]).first || "N/A"
+    identification_list = Array(addata['doi']) || []
 
     # Change retrieval
-    doi = identification_list.find{ |id| id.contains?('/')} || "N/A" 
-    pmcid = identification_list.find{ |id| id.contains?('PMC')} || "N/A"
-    pmid = identification_list.find { |id| id != doi && id != pmcid } || "N/A"
+    doi = identification_list.find { |id| id.include?('/') } || 'N/A'
+    pmcid = identification_list.find { |id| id.include?('PMC') } || 'N/A'
+    pmid = identification_list.find { |id| id != doi && id != pmcid } || 'N/A'
 
     return [alma_id, doi, title, abstract, publication_date, pmcid, pmid, creators, primary_creator, additional_creators]
   else
     puts "Failed to retrieve data for Alma ID: #{alma_id}"
-    return [alma_id, "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A"]
+    return [alma_id, 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A']
   end
 end
 
@@ -216,7 +237,7 @@ def process_variation(unc, list_path, progress, record_info)
       offset += limit
       write_to_progress(progress, unc, offset, total_records, year)
       sleep(90)
-      break if offset >= total_records 
+      break if offset >= total_records
     end
   end
 end
@@ -224,41 +245,41 @@ end
 def fetch_nal_records(unc, offset, limit, year)
   # Manually encoding only necessary parameters
   q_value = "any,contains,%22#{CGI.escape(unc)}%22,AND;dr_s,exact,#{year}0101,AND;dr_e,exact,#{year}1231,AND"
-  multi_facets = "facet_tlevel,include,open_access%7C,%7Cfacet_rtype,include,articles"
+  multi_facets = 'facet_tlevel,include,open_access%7C,%7Cfacet_rtype,include,articles'
 
   query = {
-    acTriggered: "false",
-    blendFacetsSeparately: "false",
-    citationTrailFilterByAvailability: "true",
-    disableCache: "false",
-    getMore: "0",
-    inst: "01NAL_INST",
-    isCDSearch: "false",
-    lang: "en",
+    acTriggered: 'false',
+    blendFacetsSeparately: 'false',
+    citationTrailFilterByAvailability: 'true',
+    disableCache: 'false',
+    getMore: '0',
+    inst: '01NAL_INST',
+    isCDSearch: 'false',
+    lang: 'en',
     limit: limit,
-    mode: "advanced",
+    mode: 'advanced',
     multiFacets: multi_facets,  # Keep manually encoded value
-    newspapersActive: "false",
-    newspapersSearch: "false",
+    newspapersActive: 'false',
+    newspapersSearch: 'false',
     offset: offset,
-    otbRanking: "false",
-    pcAvailability: "true",
+    otbRanking: 'false',
+    pcAvailability: 'true',
     q: q_value,  # Manually encoded q value
-    qExclude: "",
-    qInclude: "",
-    rapido: "false",
-    refEntryActive: "false",
-    rtaLinks: "true",
-    scope: "MyInstitution",
-    searchInFulltextUserSelection: "true",
-    skipDelivery: "Y",
-    sort: "rank",
-    tab: "LibraryCatalog",
-    vid: "01NAL_INST:MAIN"  # Do NOT encode the colon
+    qExclude: '',
+    qInclude: '',
+    rapido: 'false',
+    refEntryActive: 'false',
+    rtaLinks: 'true',
+    scope: 'MyInstitution',
+    searchInFulltextUserSelection: 'true',
+    skipDelivery: 'Y',
+    sort: 'rank',
+    tab: 'LibraryCatalog',
+    vid: '01NAL_INST:MAIN'  # Do NOT encode the colon
   }
 
   # Convert query hash to a query string manually, avoiding over-encoding
-  query_string = query.map { |k, v| "#{k}=#{v}" }.join("&")
+  query_string = query.map { |k, v| "#{k}=#{v}" }.join('&')
 
   url = "#{BASE_URL}?#{query_string}"
 
@@ -276,28 +297,28 @@ end
 
 def construct_headers
   {
-    "User-Agent" => "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
-    "Host" => "search.nal.usda.gov",
-    "Connection" => "keep-alive",
-    "Upgrade-Insecure-Requests" => "1",
-    "Sec-Fetch-Dest" => "document",
-    "Sec-Fetch-Mode" => "navigate",
-    "Sec-Fetch-Site" => "none",
-    "Sec-Fetch-User" => "?1",
-    "Cache-Control" => "no-cache"
+    'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+    'Host' => 'search.nal.usda.gov',
+    'Connection' => 'keep-alive',
+    'Upgrade-Insecure-Requests' => '1',
+    'Sec-Fetch-Dest' => 'document',
+    'Sec-Fetch-Mode' => 'navigate',
+    'Sec-Fetch-Site' => 'none',
+    'Sec-Fetch-User' => '?1',
+    'Cache-Control' => 'no-cache'
   }
 end
 
 def extract_cookies(response, headers)
-  return headers["Cookie"] unless response.headers["Set-Cookie"]
+  return headers['Cookie'] unless response.headers['Set-Cookie']
 
-  old_cookies = headers["Cookie"]&.split('; ')&.map(&:strip) || []
-  new_cookies = response.headers["Set-Cookie"].split(', ').map { |c| c.split(';').first.strip } || []
-  
-  j_session = (new_cookies + old_cookies).find { |c| c.start_with?("JSESSIONID") } || ""
-  urm_st = (new_cookies + old_cookies).find { |c| c.start_with?("urm_st") } || ""
-  urm_se = (new_cookies + old_cookies).find { |c| c.start_with?("urm_se") } || ""
-  secure = (new_cookies + old_cookies).find { |c| c.start_with?("__Secure-") } || ""
+  old_cookies = headers['Cookie']&.split('; ')&.map(&:strip) || []
+  new_cookies = response.headers['Set-Cookie'].split(', ').map { |c| c.split(';').first.strip } || []
+
+  j_session = (new_cookies + old_cookies).find { |c| c.start_with?('JSESSIONID') } || ''
+  urm_st = (new_cookies + old_cookies).find { |c| c.start_with?('urm_st') } || ''
+  urm_se = (new_cookies + old_cookies).find { |c| c.start_with?('urm_se') } || ''
+  secure = (new_cookies + old_cookies).find { |c| c.start_with?('__Secure-') } || ''
 
   "#{j_session.empty? ? '' : j_session + '; '}#{secure}; institute=01NAL_INST; #{urm_st}; #{urm_se}"
 end
@@ -327,8 +348,8 @@ end
 def write_to_progress(progress, unc, offset, total_records, year)
   # Find the year + unc variation in the progress hash
   # Update the last_offset and total_record_count
-  if (entry = progress.dig(unc)&.find { |record| record["year"] == year.to_s })
-    entry.merge!("last_offset" => offset, "total_record_count" => total_records)
+  if (entry = progress.dig(unc)&.find { |record| record['year'] == year.to_s })
+    entry.merge!('last_offset' => offset, 'total_record_count' => total_records)
     File.write(PROGRESS_FILE, JSON.pretty_generate(progress))
     puts "Updated progress file: #{PROGRESS_FILE} for #{unc} in #{year}"
   else
