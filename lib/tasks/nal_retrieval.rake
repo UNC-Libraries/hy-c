@@ -131,21 +131,37 @@ end
   # there's a fileset, list of all supplemental file
   # https://search.nal.usda.gov/primaws/rest/pub/pnxs/L/alma9916289359307426?vid=01NAL_INST:MAIN&lang=en&search_scope=pubag&adaptor=Local%20Search%20Engine&lang=en
 desc 'Compare metadata with CDR records'
-task :nal_deduplicate, [:out_dir] => :environment do |t, args|
+task :nal_lookup, [:out_dir] => :environment do |t, args|
   out_dir = args[:out_dir]
-  list_path = File.join(out_dir, 'combined_nal_ids.csv')
+  processed_ids_file = 'processed_ids_lookup.csv'
+  # Load already processed IDs to prevent duplicate work
+  processed_ids = if File.exist?(processed_ids_file)
+                    CSV.read(processed_ids_file, headers: true).map { |row| row[0] }.to_set
+  else
+    Set.new
+  end
+  output_file = File.join(out_dir, 'nal_metadata_unique.csv')
   md_file = File.join(out_dir, 'nal_metadata_with_redirects.csv')
-  num_found = 0
-  num_not_found = 0
-  num_with_fileset = 0
+  # num_found = 0
+  # num_not_found = 0
+  # num_with_fileset = 0
+  write_headers = !File.exist?(output_file) || File.zero?(output_file)
+  headers = ['alma_id', 'doi', 'title', 'abstract', 'publication_date', 'pmcid', 'pmid', 'creators', 'primary_creator', 'additional_creators', 'redirect_url', 'cdr_url', 'has_fileset']
 
-  CSV.open(md_file, 'w') do |csv_out|
-    csv_out << ['alma_id', 'doi', 'title', 'abstract', 'publication_date', 'pmcid', 'pmid', 'creators', 'primary_creator', 'additional_creators', 'redirect_url', 'cdr_url', 'has_fileset']
-    CSV.read(list_path).each do |row|
+  CSV.open(output_file, 'a', write_headers: write_headers, headers: headers) do |csv_out|
+    CSV.read(md_file, headers: true).each do |row|
+      found = false
+      found_with_fileset = false
       # doi_url = row[doi]
+      if processed_ids.include?(row['alma_id'])
+        puts "Skipping already processed ID: #{row['alma_id']}"
+        next
+      end
       doi = row['doi']
       title = row['title']
       alma_id = row['alma_id']
+      pmcid = row['pmcid'] && row['pmcid'] != 'N/A' ? row['pmcid'] : nil
+      pmid = row['pmid'] && row['pmid'] != 'N/A' ? row['pmid'] : nil
 
       dup_data = nil
       if doi
@@ -157,20 +173,30 @@ task :nal_deduplicate, [:out_dir] => :environment do |t, args|
         dup_data = get_cdr_duplicate_data("PMID: #{pmid}")
         end
       if dup_data.nil? && pmcid
-      dup_data = get_cdr_duplicate_data("PMCID: #{pmid}")
+        dup_data = get_cdr_duplicate_data("PMCID: #{pmcid}")
       end
 
       # csv columns: alma_id, doi, title, abstract, publication_date, pmcid, pmid, creators, primary_creator, additional_creators, redirect_url, cdr_url, has_fileset
       if dup_data.nil?
         csv_out << row
-        num_not_found += 1
+        # num_not_found += 1
       else
         row['cdr_url'] = dup_data[0]
         row['has_fileset'] = dup_data[1]
         csv_out << row
-        num_found += 1
-        num_with_fileset += 1 if dup_data[1]
+        # num_found += 1
+        # num_with_fileset += 1 if dup_data[1]
+        found = true
+        found_with_fileset = true if dup_data[1]
       end
+
+      progress_file_headers = ['alma_id', 'found', 'found_with_fileset']
+      progress_file_write_headers = !File.exist?(processed_ids_file) || File.zero?(processed_ids_file)
+      # Update progress file
+      CSV.open(processed_ids_file, 'a', write_headers: progress_file_write_headers, headers: progress_file_headers) do |csv_out|
+        csv_out << [alma_id, found, found_with_fileset] unless processed_ids.include?(alma_id)
+      end
+      processed_ids.add(alma_id)
 
       sleep(1)
       # End List Path Read
