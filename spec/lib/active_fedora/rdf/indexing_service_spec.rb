@@ -87,7 +87,7 @@ RSpec.describe ActiveFedora::RDF::IndexingService do
       end
 
       it 'includes person attributes' do
-        expect(solr_doc['creator_display_tesim']).to eq ['index:1||creator_1||Affiliation: Joint Department of Biomedical Engineering']
+        expect(solr_doc['creator_display_tesim']).to eq ['index:1||creator_1||Affiliation: Neurobiology Curriculum']
         expect(solr_doc['affiliation_label_tesim']).to include('School of Medicine', 'Neurobiology Curriculum', 'Neuroscience Center')
         expect(solr_doc['affiliation_label_sim']).to include('School of Medicine', 'Neurobiology Curriculum', 'Neuroscience Center')
       end
