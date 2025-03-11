@@ -13,7 +13,7 @@ gem 'base64', '0.1.0' # Downgrade from 0.2 so that it will match the version bei
 gem 'blacklight', git: 'https://github.com/UNC-Libraries/blacklight.git', branch: 'unc-development'
 gem 'blacklight_advanced_search', '~> 8.0.0.alpha2'
 gem 'blacklight_oai_provider', '7.0.2'
-gem 'blacklight_range_limit', '~> 8.3.0'
+gem 'blacklight_range_limit', '~> 8.4.0'
 gem 'bootstrap', '~> 4.0'
 gem 'bulkrax', '6.0.1'
 gem 'clamav-client', require: 'clamav/client'
