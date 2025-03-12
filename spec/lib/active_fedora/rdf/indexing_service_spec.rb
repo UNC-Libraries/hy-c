@@ -77,7 +77,7 @@ RSpec.describe ActiveFedora::RDF::IndexingService do
         General.create(
           title: ['New General Work with joint affiliation'],
           creators_attributes: { '0' => { name: 'creator_1',
-                                          affiliation: 'Joint Department of Biomedical Engineering',
+                                          affiliation: 'Neurobiology Curriculum',
                                           index: 1 } },
           date_created: '2022-01-01')
 
@@ -87,9 +87,9 @@ RSpec.describe ActiveFedora::RDF::IndexingService do
       end
 
       it 'includes person attributes' do
-        expect(solr_doc['creator_display_tesim']).to eq ['index:1||creator_1||Affiliation: Joint Department of Biomedical Engineering']
-        expect(solr_doc['affiliation_label_tesim']).to include('School of Medicine', 'North Carolina State University', 'Joint Department of Biomedical Engineering')
-        expect(solr_doc['affiliation_label_sim']).to include('School of Medicine', 'North Carolina State University', 'Joint Department of Biomedical Engineering')
+        expect(solr_doc['creator_display_tesim']).to eq ['index:1||creator_1||Affiliation: Neurobiology Curriculum']
+        expect(solr_doc['affiliation_label_tesim']).to include('School of Medicine', 'Neurobiology Curriculum', 'Neuroscience Center')
+        expect(solr_doc['affiliation_label_sim']).to include('School of Medicine', 'Neurobiology Curriculum', 'Neuroscience Center')
       end
     end
 

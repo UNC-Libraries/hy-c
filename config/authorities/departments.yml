@@ -325,7 +325,7 @@ terms:
   active: true
   short_label: Curriculum in Russian and East European Studies
 - id: Curriculum in Toxicology
-  term: School of Medicine; Curriculum in Toxicology and Environmental Medicine
+  term: School of Medicine; Curriculum in Toxicology
   active: true
   short_label: Curriculum in Toxicology and Environmental Medicine
 - id: CF/Pulmonary Research and Treatment Center
@@ -421,13 +421,13 @@ terms:
   active: true
   short_label: Department of Biology
 - id: Department of Biomedical Engineering - Applied Science
-  term: School of Medicine; UNC/NCSU Joint Department of Biomedical Engineering - Applied Science
+  term: School of Medicine; Department of Biomedical Engineering - Applied Science
   active: true
-  short_label: Department of Biomedical Engineering - Applied Science
+  short_label: Lampe Joint Department of Biomedical Engineering - Applied Science
 - id: Department of Biomedical Engineering - Biomedical Engineering
-  term: School of Medicine; UNC/NCSU Joint Department of Biomedical Engineering - Biomedical Engineering
+  term: School of Medicine; Department of Biomedical Engineering - Biomedical Engineering
   active: true
-  short_label: Department of Biomedical Engineering - Biomedical Engineering
+  short_label: Lampe Joint Department of Biomedical Engineering - Biomedical Engineering
 - id: Department of Biostatistics
   term: Gillings School of Global Public Health; Department of Biostatistics
   active: true
@@ -525,11 +525,11 @@ terms:
   active: true
   short_label: Department of English and Comparative Literature - Comparative Literature
 - id: Department of English and Comparative Literature - Creative Writing
-  term: College of Arts and Sciences; Department of English and Comparative Literature – Creative Writing
+  term: College of Arts and Sciences; Department of English and Comparative Literature - Creative Writing
   active: true
   short_label: Department of English and Comparative Literature - Creative Writing
 - id: Department of English and Comparative Literature - English
-  term: College of Arts and Sciences; Department of English and Comparative Literature – English
+  term: College of Arts and Sciences; Department of English and Comparative Literature - English
   active: true
   short_label: Department of English and Comparative Literature - English
 - id: Department of Environmental Sciences and Engineering
@@ -557,7 +557,7 @@ terms:
   active: true
   short_label: Department of Genetics
 - id: Department of Geography
-  term: College of Arts and Sciences; Department of Geography and Environment
+  term: College of Arts and Sciences; Department of Geography
   active: true
   short_label: Department of Geography and Environment
 - id: Department of Geological Sciences
@@ -981,12 +981,12 @@ terms:
   active: true
   short_label: Educational Leadership Graduate Program
 - id: Educational Psychology
-  term: School of Education; Educational Psychology; Measurement; and Evaluation
+  term: School of Education; Educational Psychology, Measurement, and Evaluation
   active: false
   short_label: Educational Psychology
 - id: Educational Psychology, Measurement, and Evaluation
   term: School of Education; Educational Psychology, Measurement, and Evaluation
-  active: true
+  active: false
   short_label: Educational Psychology, Measurement, and Evaluation
 - id: English
   term: College of Arts and Sciences; Department of English and Comparative Literature; English
@@ -1080,6 +1080,10 @@ terms:
   term: Institute of Marine Sciences
   active: false
   short_label: IMS
+- id: Information Technology Services
+  term: Information Technology Services
+  active: false
+  short_label: Information Technology Services
 - id: IPRC
   term: Injury Prevention Research Center
   active: false
@@ -1149,16 +1153,12 @@ terms:
   active: true
   short_label: International and Comparative American Studies
 - id: Department of Biomedical Engineering
-  term:
-  - School of Medicine; Joint Department of Biomedical Engineering
-  - North Carolina State University; Joint Department of Biomedical Engineering
+  term: School of Medicine; Joint Department of Biomedical Engineering
   active: false
   short_label: Department of Biomedical Engineering
 - id: Joint Department of Biomedical Engineering
-  term:
-  - School of Medicine; Joint Department of Biomedical Engineering
-  - North Carolina State University; Joint Department of Biomedical Engineering
-  active: true
+  term: School of Medicine; Joint Department of Biomedical Engineering
+  active: false
   short_label: Joint Department of Biomedical Engineering
 - id: Kenan Center for the Utilization of Carbon Dioxide
   term: Kenan Center for the Utilization of Carbon Dioxide
@@ -1205,9 +1205,9 @@ terms:
   active: false
   short_label: Mathematical Decision Sciences Program
 - id: Matthew Gfeller Sport-Related Traumatic Brain Injury Research Center
-  term: College of Arts and Sciences; Department of Exercise and Sports Science; Matthew Gfeller Sport-Related Traumatic Brain Injury Research Center
+  term: College of Arts and Sciences; Department of Exercise and Sport Science; Matthew Gfeller Sport-Related Traumatic Brain Injury Research Center
   active: true
-  short_label: Matthew Gfeller Sport-Related Traumatic Brain Injury Research Center
+  short_label: Matthew Gfeller Center
 - id: Michael Hooker Microscopy Facility
   term: School of Medicine; Michael Hooker Microscopy Facility
   active: true
@@ -1313,8 +1313,8 @@ terms:
   active: true
   short_label: Organic Chemistry Program
 - id: Partnerships in Aging Program
-  term: Office of the Provost; Partnerships in Aging Program
-  active: true
+  term: Partnerships in Aging Program
+  active: false
   short_label: Partnerships in Aging Program
 - id: Pathobiology and Translational Science Graduate Program
   term: School of Medicine; Department of Pathology and Laboratory Medicine; Pathobiology and Translational Science Graduate Program
@@ -1401,7 +1401,7 @@ terms:
   active: true
   short_label: School of Data Science and Society
 - id: School of Dentistry
-  term: Adams School of Dentistry
+  term: School of Dentistry
   active: true
   short_label: Adams School of Dentistry
 - id: School of Education
@@ -1481,7 +1481,7 @@ terms:
   active: false
   short_label: Studio Art Program
 - id: The Office of Undergraduate Curricula - Interdisciplinary Studies
-  term: College of Arts and Sciences; The Office of Undergraduate Curricula – Interdisciplinary Studies
+  term: College of Arts and Sciences; The Office of Undergraduate Curricula - Interdisciplinary Studies
   active: true
   short_label: The Office of Undergraduate Curricula - Interdisciplinary Studies
 - id: Thurston Arthritis Research Center
@@ -1552,10 +1552,6 @@ terms:
   term: N.C. Cancer Hospital; UNC Lineberger Comprehensive Cancer Center
   active: false
   short_label: N.C. Cancer Hospital
-- id: Neuroscience Center
-  term: School of Medicine; Neuroscience Center
-  active: false
-  short_label: Neuroscience Center
 - id: UNC Neuroscience Center
   term: School of Medicine; Neuroscience Center
   active: true
@@ -1575,7 +1571,7 @@ terms:
 - id: UNC/NCSU Joint Department of Biomedical Engineering
   term: School of Medicine; UNC/NCSU Joint Department of Biomedical Engineering
   active: true
-  short_label: UNC/NCSU Joint Department of Biomedical Engineering
+  short_label: Lampe Joint Department of Biomedical Engineering
 - id: UNC Project-Liberia
   term: School of Medicine; UNC Project-Liberia
   active: true
@@ -1609,7 +1605,7 @@ terms:
   active: true
   short_label: University of North Carolina at Chapel Hill. Health Sciences Library
 - id: University Libraries
-  term: University of North Carolina at Chapel Hill. Library
+  term: University Libraries
   active: false
   short_label: University Libraries
 - id: University of North Carolina at Chapel Hill. University Libraries
@@ -1617,19 +1613,19 @@ terms:
   active: true
   short_label: University of North Carolina at Chapel Hill. University Libraries
 - id: Walter Royal Davis Library
-  term: University of North Carolina at Chapel Hill. Library
+  term: University of North Carolina at Chapel Hill. University Libraries
   active: false
   short_label: Walter Royal Davis Library
 - id: Davis Library
-  term: University of North Carolina at Chapel Hill. Library
+  term: University of North Carolina at Chapel Hill. University Libraries
   active: false
   short_label: Davis Library
 - id: Wilson Library
-  term: University of North Carolina at Chapel Hill. Library
+  term: University of North Carolina at Chapel Hill. University Libraries
   active: false
   short_label: Wilson Library
 - id: Louis Round Wilson Library
-  term: University of North Carolina at Chapel Hill. Library
+  term: University of North Carolina at Chapel Hill. University Libraries
   active: false
   short_label: Louis Round Wilson Library
 - id: UNC Global Women's Health

@@ -32,7 +32,7 @@ RSpec.describe Hyrax::Renderers::PersonAttributeRenderer do
 
     context 'with department containing multiple terms' do
       let(:field) { :creator_display }
-      let(:renderer) { described_class.new(field, ['index:1||person||Affiliation: Joint Department of Biomedical Engineering']) }
+      let(:renderer) { described_class.new(field, ['index:1||person||Affiliation: Neurobiology Curriculum']) }
       let(:tr_content) do
         %(
           <dt>Creator display</dt>
@@ -41,8 +41,8 @@ RSpec.describe Hyrax::Renderers::PersonAttributeRenderer do
               <li itemprop="creator" itemtype="http://schema.org/Person" class="attribute attribute-creator_display">
                 <span>person</span>
                 <ul>
-                  <li>School of Medicine, Joint Department of Biomedical Engineering</li>
-                  <li>North Carolina State University, Joint Department of Biomedical Engineering</li>
+                  <li>School of Medicine, Neurobiology Curriculum</li>
+                  <li>Neuroscience Center, Neurobiology Curriculum</li>
                 </ul>
               </li>
             </ul>
