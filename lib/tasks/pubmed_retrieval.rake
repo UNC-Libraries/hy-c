@@ -1,4 +1,5 @@
 desc 'Retrieve Pubmed articles'
+# 2018-07-01 to today
 task :pubmed_retrieval, [:year] => :environment do |task, args|
   year = args[:year]
   out_dir = Rails.root.join('public', 'pubmed', year)
@@ -11,7 +12,7 @@ task :pubmed_retrieval, [:year] => :environment do |task, args|
   for month in 1..12
     # Skip if the month has been fully retrieved
     if progress_json[Date::MONTHNAMES[month]].present?
-        next if progress_json[Date::MONTHNAMES[month]]['record_end_number'].to_i =< progress_json[Date::MONTHNAMES[month]]['total_count'].to_i
+        next if progress_json[Date::MONTHNAMES[month]]['record_end_number'].to_i >= progress_json[Date::MONTHNAMES[month]]['total_count'].to_i
     end
     # M, Start, End, Total
     article_ids = retrieve_article_ids_for_month(year, month, out_dir, progress_json)
@@ -34,7 +35,7 @@ end
 def retrieve_article_ids_for_month(year, month, out_dir, progress_json)
     file_path = File.join(out_dir, "#{Date::MONTHNAMES[month]}.csv")
     pubmed_record_ids = if File.exist?(file_path)
-                            CSV.read(file_path).map { |row| row['id'] }.to_set
+                            CSV.read(file_path).map { |row| row[0] }.to_set
                         else
                             Set.new
                         end
@@ -49,21 +50,21 @@ def retrieve_article_ids_for_month(year, month, out_dir, progress_json)
         response = retry_request(request_url,year,month)
         if response.nil?
             puts "Out of retries for the #{year}-#{month} initial request. Exiting..."
-            break
+            return
         end
     end
     
-     # Skip already retrieved records (prior to procssing the response)
     response_hash = process_response(response)
-    update_files_and_progress_json(response_hash['records'], file_path, progress_json, month, out_dir)
+    # Skip already retrieved records (prior to updates)
+    update_files_and_progress_json(response_hash, file_path, progress_json, month, out_dir, pubmed_record_ids)
     puts "🔍 Retrieved articles for #{year}-#{month}. Range: #{response_hash['record_start_number']} - #{response_hash['record_end_number']} out of #{response_hash['total_count']}"
     # Retrieve additional records if available
     while response_hash['record_end_number'].to_i < response_hash['total_count'].to_i
         response = HTTParty.get(response_hash['resumption_url'])
         if response.ok?
-           # Skip already retrieved records (prior to procssing the response)
+           # Skip already retrieved records (prior to updates)
             response_hash = process_response(response)
-            update_files_and_progress_json(response_hash['records'], file_path, progress_json, month, out_dir)
+            update_files_and_progress_json(response_hash, file_path, progress_json, month, out_dir, pubmed_record_ids) 
             puts "🔍 Retrieved additional articles for #{year}-#{month}. Range: #{response_hash['record_start_number']} - #{response_hash['record_end_number']} out of #{response_hash['total_count']}"
         else
             puts "❌ Error retrieving articles for #{year}-#{month}. Initiating retries."
@@ -73,25 +74,25 @@ def retrieve_article_ids_for_month(year, month, out_dir, progress_json)
                 puts "Out of retries for the #{year}-#{month} initial request. Exiting..."
                 break
             else
-                 # Skip already retrieved records (prior to procssing the response)
+                 # Skip already retrieved records (prior to updates)
                 response_hash = process_response(response)
-                update_files_and_progress_json(response_hash['records'], file_path, progress_json, month, out_dir)
+                update_files_and_progress_json(response_hash, file_path, progress_json, month, out_dir, pubmed_record_ids)
                 puts "🔍 Retrieved additional articles for #{year}-#{month}. Range: #{response_hash['record_start_number']} - #{response_hash['record_end_number']} out of #{response_hash['total_count']}"
             end
         end
         # Respect the API rate limit
         sleep(5)
     end
-
     return pubmed_record_ids
 end
 
-def update_files_and_progress_json(records, file_path, current_progress_json, month, out_dir)
-    add_records_to_set(response_hash['records'], pubmed_record_ids)
-    write_to_file(response_hash['records'],file_path)
-    update_progress_json(response_hash['total_count'], response_hash['record_end_number'], progress_json, month, out_dir)
+def update_files_and_progress_json(response_hash, file_path, current_progress_json, month, out_dir, pubmed_record_ids)
+        skip_condition = current_progress_json[Date::MONTHNAMES[month]].present? && current_progress_json[Date::MONTHNAMES[month]]['record_end_number'].to_i >= response_hash['record_end_number'].to_i
+        return if skip_condition
+        add_records_to_set(response_hash['records'], pubmed_record_ids)
+        write_to_file(response_hash['records'],file_path)
+        update_progress_json(response_hash['total_count'], response_hash['record_end_number'], current_progress_json, month, out_dir)
 end
-
 
 def update_progress_json(total_count, record_end_number, current_progress_json, month, out_dir)
     current_progress_json[Date::MONTHNAMES[month]] = {
