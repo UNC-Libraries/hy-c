@@ -7,6 +7,7 @@ require File.expand_path('../../config/environment', __FILE__)
 abort('The Rails environment is running in production mode!') if Rails.env.production?
 require 'rspec/rails'
 require 'webmock/rspec'
+require 'test_support/helper_ruby/webmock_turnstile_helper_methods'
 
 WebMock.disable_net_connect!(allow_localhost: true, allow: ['fedora:8080', 'solr8:8983', 'fcrepo:8080', 'solr:8983', 'opaquenamespace.org',
                                                             'googlechromelabs.github.io', 'chromedriver.storage.googleapis.com', 'https://edgedl.me.gvt1.com',
@@ -52,6 +53,8 @@ RSpec.configure do |config|
   rescue
     puts 'database clean failed'
   end
+
+  config.include WebmockTurnstileHelperMethods
 
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   config.fixture_path = "#{::Rails.root}/spec/fixtures"
