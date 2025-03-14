@@ -1,5 +1,9 @@
 # frozen_string_literal: true
 class ApplicationController < ActionController::Base
+  if ENV.fetch('CF_TURNSTILE_ENABLED', 'false').downcase == 'true'
+    before_action { |controller| BotDetectController.bot_detection_enforce_filter(controller) }
+  end
+
   helper Openseadragon::OpenseadragonHelper
   # Adds a few additional behaviors into the application controller
   include HyraxHelper
