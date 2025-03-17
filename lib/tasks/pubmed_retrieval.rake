@@ -23,6 +23,29 @@ task :pubmed_retrieval, [:year] => :environment do |task, args|
    end
 end
 
+# WIP: Finish after filtering out non UNC affiliated records
+task :cdr_compare, [:year] => :environment do |task, args|
+    year = args[:year]
+    out_dir = Rails.root.join('public', 'pubmed', year)
+    progress_json = if File.exist?(File.join(out_dir, 'cdr_compare_progress.json'))
+                        JSON.parse(File.read(File.join(out_dir, 'cdr_compare_progress.json')))
+                        else
+                        {}
+                        end
+    for month in 1..12
+        # Skip if the month has been fully retrieved
+        if progress_json[Date::MONTHNAMES[month]].present?
+            next if progress_json[Date::MONTHNAMES[month]]['record_end_number'].to_i >= progress_json[Date::MONTHNAMES[month]]['total_count'].to_i
+        end
+        # M : Pubmed IDs
+        article_ids = compare_cdr_for_month(year, month, out_dir, progress_json)
+         # Write to file
+        #  month_file_path = out_dir.join("#{Date::MONTHNAMES[month]}.csv")
+        # WIP: Stop after 1 month for testing
+        break
+     end
+    end
+
 def make_dir(out_dir)
   unless File.directory?(out_dir)
     FileUtils.mkdir_p(out_dir)
@@ -31,6 +54,56 @@ def make_dir(out_dir)
     puts "📁 Directory already exists: #{out_dir}"
   end
 end
+
+
+def compare_cdr_for_month(year, month, out_dir, progress_json)
+    puts "🔍 Comparing CDR records for #{Date::MONTHNAMES[month]} in #{year}"
+    file_path = File.join(out_dir, "#{Date::MONTHNAMES[month]}.csv")
+    previously_compared_ids = Set.new(progress_json[Date::MONTHNAMES[month]]['compared_ids'])
+    pubmed_record_ids = if File.exist?(file_path)
+        CSV.read(file_path).map { |row| row[0] }.to_set
+    else
+        Set.new
+    end
+
+    if pubmed_record_ids.empty? 
+        puts "Warning: No records found for #{Date::MONTHNAMES[month]} in #{year}"
+        return
+    end
+
+    non_cdr_record_ids = []
+    pubmed_record_ids.each do |pubmed_id|
+        if previously_compared_ids.include?(pubmed_id)
+            puts "Skipping #{pubmed_id} as it has already been compared"
+            next
+        end
+        cdr_record = get_cdr_duplicate_data(pubmed_id)
+        if cdr_record.present?
+            non_cdr_record_ids << pubmed_id
+        end
+    end
+
+    return non_cdr_record_ids
+end
+
+
+def get_cdr_duplicate_data(identifier)
+    puts "[#{Time.now}] Searching for identifier_tesim:\"#{identifier}\""
+    result = Hyrax::SolrService.get("identifier_tesim:\"#{identifier}\"",
+                            rows: 1,
+                            fl: 'id,title_tesim,has_model_ssim,file_set_ids_ssim')['response']['docs']
+    if result.empty?
+        return nil
+    end
+    record = result.first
+    puts "[#{Time.now}] Found record for #{identifier}: #{record['id']}"
+    model_type = record['has_model_ssim'].first.underscore + 's'
+    has_fileset = record['file_set_ids_ssim'].present?
+    base_url = 'https://cdr.lib.unc.edu/concern/'
+    cdr_url = "#{base_url}#{model_type}/#{record['id']}"
+    return [cdr_url, has_fileset]
+end
+
 
 def retrieve_article_ids_for_month(year, month, out_dir, progress_json)
     file_path = File.join(out_dir, "#{Date::MONTHNAMES[month]}.csv")
@@ -92,6 +165,9 @@ def update_files_and_progress_json(response_hash, file_path, current_progress_js
         add_records_to_set(response_hash['records'], pubmed_record_ids)
         write_to_file(response_hash['records'],file_path)
         update_progress_json(response_hash['total_count'], response_hash['record_end_number'], current_progress_json, month, out_dir)
+end
+
+def update_files_and_progress_json_for_compare(file_path, current_progress_json, month, out_dir, pubmed_record_ids)
 end
 
 def update_progress_json(total_count, record_end_number, current_progress_json, month, out_dir)
