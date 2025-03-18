@@ -28,7 +28,7 @@ def fetch_pubmed_ids(stored_progress = {})
     # Retrieve progress information
   resumption_url = nil
   if stored_progress.present?
-      # WIP: Short cutting if condition to test base case
+      # WIP: Short cutting if condition to test end condition
       # if stored_progress["total_count"] <= stored_progress["pages_processed"] * BATCH_SIZE
     if 1000 <= stored_progress['pages_processed'] * BATCH_SIZE
       puts '🏁 All PMIDs have been fetched'
@@ -81,7 +81,6 @@ def fetch_pubmed_ids(stored_progress = {})
         csv << [record['id'], record['citation'], record['license'], record['retracted'], record['full_text_format'], record['full_text_href'], cdr_url, has_fileset]
       end
     end
-      # File.write(records_file_path, records.to_json)
     new_progress_hash = update_progress_info(stored_progress, xml_doc)
       # Recursively fetch PMIDs
     fetch_pubmed_ids(new_progress_hash)
