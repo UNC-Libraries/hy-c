@@ -1,26 +1,80 @@
+PUBMED_SEARCH_URL = 'https://www.ncbi.nlm.nih.gov/pmc/utils/oa/oa.fcgi'
+PUBMED_FETCH_URL = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi"
+UNC_VARIATIONS = ['UNC-CH',
+'UNC-Chapel Hill',
+'UNC Chapel Hill',
+'University of North Carolina at Chapel Hill',
+'University of North Carolina Chapel Hill',
+'University of North Carolina-Chapel Hill',
+'University of North Carolina, Chapel Hill',
+'University of North Carolina-CH']
+# Maximum IDs per batch
+BATCH_SIZE = 100
+
+# Output file
+OUTPUT_CSV = "pubmed_metadata.csv"
+
+def generate_query_string(unc_variations)
+    query = unc_variations.map { |var| "\"#{var}\"[Affiliation]" }.join(" OR ")
+    "(#{query})" 
+end
+# Function to fetch PMIDs from PubMed
+def fetch_pubmed_ids(start = 0)
+    params = {
+    db: "pubmed",
+    retmode: "json",
+    retmax: BATCH_SIZE,
+    retstart: start
+    }
+    unc_query_string = generate_query_string(UNC_VARIATIONS)
+    encoded_query = CGI.escape(unc_query_string)
+                      .gsub('%28', '(') 
+                      .gsub('%29', ')') 
+                      .gsub('%5B', '[')
+                      .gsub('%5D', ']')
+    encoded_params = URI.encode_www_form(params)
+    url = "#{PUBMED_SEARCH_URL}?#{encoded_params}&term=#{encoded_query}"
+    puts "URL INSPECT ZZZ: #{url}"
+    response = HTTParty.get(url, format: :plain)
+    if response.ok?
+        # puts "Inspecting response: #{response.inspect}"
+        response_json = response.parsed_response
+        pmids = response_json.dig("esearchresult", "idlist") || []
+        total_count = response_json.dig("esearchresult", "count").to_i
+        [pmids, total_count]
+    else
+        puts "❌ Error fetching PMIDs from PubMed"
+        []
+    end
+  end
+
+  
+
 desc 'Retrieve Pubmed articles'
 # 2018-07-01 to today
-task :pubmed_retrieval, [:year] => :environment do |task, args|
-  year = args[:year]
-  out_dir = Rails.root.join('public', 'pubmed', year)
-  make_dir(out_dir)
-  progress_json = if File.exist?(File.join(out_dir, 'retrieval_progress.json'))
-                    JSON.parse(File.read(File.join(out_dir, 'retrieval_progress.json')))
-                    else
-                    {}
-                    end
-  for month in 1..12
-    # Skip if the month has been fully retrieved
-    if progress_json[Date::MONTHNAMES[month]].present?
-        next if progress_json[Date::MONTHNAMES[month]]['record_end_number'].to_i >= progress_json[Date::MONTHNAMES[month]]['total_count'].to_i
-    end
-    # M, Start, End, Total
-    article_ids = retrieve_article_ids_for_month(year, month, out_dir, progress_json)
-     # Write to file
-    #  month_file_path = out_dir.join("#{Date::MONTHNAMES[month]}.csv")
-    # WIP: Stop after 1 month for testing
-    break
-   end
+task :pubmed_retrieval => :environment do |task, args|
+    ids = fetch_pubmed_ids
+    # puts "Inspecting pubmed ids: #{ids}"
+#   year = args[:year]
+#   out_dir = Rails.root.join('public', 'pubmed', year)
+#   make_dir(out_dir)
+#   progress_json = if File.exist?(File.join(out_dir, 'retrieval_progress.json'))
+#                     JSON.parse(File.read(File.join(out_dir, 'retrieval_progress.json')))
+#                     else
+#                     {}
+#                     end
+#   for month in 1..12
+#     # Skip if the month has been fully retrieved
+#     if progress_json[Date::MONTHNAMES[month]].present?
+#         next if progress_json[Date::MONTHNAMES[month]]['record_end_number'].to_i >= progress_json[Date::MONTHNAMES[month]]['total_count'].to_i
+#     end
+#     # M, Start, End, Total
+#     article_ids = retrieve_article_ids_for_month(year, month, out_dir, progress_json)
+#      # Write to file
+#     #  month_file_path = out_dir.join("#{Date::MONTHNAMES[month]}.csv")
+#     # WIP: Stop after 1 month for testing
+#     break
+#    end
 end
 
 # WIP: Finish after filtering out non UNC affiliated records
