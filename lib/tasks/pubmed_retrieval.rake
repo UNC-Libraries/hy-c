@@ -95,7 +95,6 @@ def fetch_pubmed_ids(stored_progress = {})
     write_headers = !File.exist?(csv_output_file_path) || File.zero?(csv_output_file_path)
 
     CSV.open(csv_output_file_path, 'a', write_headers: write_headers, headers: headers) do |csv|
-      csv << headers if write_headers
       records.each do |record|
         cdr_record = get_cdr_duplicate_data(record['id'])
         cdr_url = cdr_record.present? ? cdr_record[0] : nil
