@@ -26,7 +26,7 @@ RSpec.describe MultiValueWithUniqueIdInput do
       it 'generates a text field with unique ID' do
         expect(builder).to receive(:text_field).with(
           attribute_name,
-          { class: ['multi_value'], id: "#{input_dom_id}_0" }
+          { class: ['multi_value'] }
         )
 
         result = input.build_field(value, 0)

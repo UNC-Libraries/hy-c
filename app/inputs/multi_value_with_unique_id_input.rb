@@ -4,7 +4,9 @@ class MultiValueWithUniqueIdInput < MultiValueInput
     options = build_field_options(value, index)
 
     # Generate a unique ID using the field name and index
-    options[:id] = "#{input_dom_id}_#{index}"
+    if index > 0
+      options[:id] = "#{input_dom_id}_#{index}"
+    end
     # Add multi_value class since many parts of the UI rely on it
     options[:class] << 'multi_value'
 
