@@ -1,5 +1,9 @@
 # frozen_string_literal: true
 Rails.application.routes.draw do
+  # bot detection challenge
+  get "/challenge", to: "bot_detect#challenge", as: :bot_detect_challenge
+  post "/challenge", to: "bot_detect#verify_challenge"
+
   mount Bulkrax::Engine, at: '/'
        # mount BrowseEverything::Engine => '/browse'
   concern :range_searchable, BlacklightRangeLimit::Routes::RangeSearchable.new

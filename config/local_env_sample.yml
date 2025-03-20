@@ -21,7 +21,7 @@ HYRAX_ANALYTICS: 'false'
 DROPBOX_APP_KEY: YOUR_PASSWORD
 DROPBOX_APP_SECRET: YOUR_SECRET
 GEONAMES_USER: YOUR_USER
-LONGLEAF_BASE_COMMAND: 'scl enable rh-ruby26 -- /opt/longleaf/longleaf_command.rb'
+LONGLEAF_BASE_COMMAND: 'scl enable rh-ruby30 -- /opt/longleaf/longleaf_command.rb'
 LONGLEAF_STORAGE_PATH: /opt/fedora/binaries
 DELETED_PEOPLE_FILE: tmp/deleted_people.txt
 ALLOW_NOTIFICATIONS: 'true'
@@ -36,3 +36,7 @@ LOG_LEVEL: 'debug'
 HYRAX_DATABASE_PASSWORD: password
 INGEST_PROQUEST_PATH: /opt/data/ftp/proquest
 INGEST_SAGE_PATH: /opt/data/ftp/sage
+# Turnstile won't work on the VM, so just turn it off
+CF_TURNSTILE_ENABLED: 'false'
+CF_TURNSTILE_SITE_KEY: ''
+CF_TURNSTILE_SECRET_KEY: ''
