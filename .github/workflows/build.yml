@@ -13,6 +13,9 @@ jobs:
 
     env:
       CC_TEST_REPORTER_ID: ab9f6d96726a23c491c04cdad5cc4959551f10716196aaf2260bdf72ca1a3d0b
+      CF_TURNSTILE_ENABLED: 'false'
+      CF_TURNSTILE_SITE_KEY: ''
+      CF_TURNSTILE_SECRET_KEY: ''
       ALLOW_NOTIFICATIONS: true
       CLAMD_TCP_HOST: 'localhost'
       CLAMD_TCP_PORT: '3310'
