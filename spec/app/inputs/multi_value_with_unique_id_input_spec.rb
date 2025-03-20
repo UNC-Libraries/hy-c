@@ -19,14 +19,14 @@ RSpec.describe MultiValueWithUniqueIdInput do
   describe '#build_field' do
     context 'when type is not textarea' do
       before do
-        allow(input).to receive(:build_field_options).and_return({ class: [], type: 'text' })
+        allow(input).to receive(:build_field_options).and_return({ class: [], type: 'text', id: input_dom_id })
         allow(builder).to receive(:text_field).and_return('<input type="text" />')
       end
 
       it 'generates a text field with unique ID' do
         expect(builder).to receive(:text_field).with(
           attribute_name,
-          { class: ['multi_value'] }
+          { class: ['multi_value'], id: input_dom_id }
         )
 
         result = input.build_field(value, 0)
@@ -46,7 +46,7 @@ RSpec.describe MultiValueWithUniqueIdInput do
 
     context 'when type is textarea' do
       before do
-        allow(input).to receive(:build_field_options).and_return({ class: [], type: 'textarea' })
+        allow(input).to receive(:build_field_options).and_return({ class: [], type: 'textarea', id: input_dom_id })
         allow(builder).to receive(:text_area).and_return('<textarea></textarea>')
       end
 
