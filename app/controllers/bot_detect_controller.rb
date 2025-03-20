@@ -45,7 +45,7 @@ class BotDetectController < ApplicationController
     return if controller.kind_of?(self) ||
       self.allow_exempt.call(controller) ||
       unc_address?(controller.request.remote_ip) ||
-      controller.session[self.session_passed_key].try { |timestamp| time_check(timestamp) }
+      bot_detect_passed_good?(controller.request)
 
     # Only challenge facet and advanced search queries
     if issue_challenge?(controller.request.query_parameters)
@@ -89,7 +89,10 @@ class BotDetectController < ApplicationController
     if result["success"]
       # mark it as successful in session, and record timestamp. They do need a session/cookies
       # to get through the challenge.
-      session[self.session_passed_key] = (Time.now + self.session_passed_good_for).to_i
+      session[self.session_passed_key] = {
+        :SESSION_DATETIME_KEY => (Time.now + self.session_passed_good_for).to_i,
+        :SESSION_IP_KEY => request.remote_ip
+      }
     end
     Rails.logger.debug("#{self.class.name}: Cloudflare Turnstile validation result (#{request.remote_ip}, #{request.user_agent}): #{result}")
 
@@ -104,6 +107,20 @@ class BotDetectController < ApplicationController
   end
 
   private
+
+  # Does the session already contain a bot detect pass that is good for this request
+  # Tie to IP address to prevent session replay shared among IPs
+  def self.bot_detect_passed_good?(request)
+    session_data = request.session[self.session_passed_key]
+
+    return false unless session_data && session_data.kind_of?(Hash)
+
+    timestamp = session_data['SESSION_DATETIME_KEY']
+    ip = session_data['SESSION_IP_KEY']
+    Rails.logger.debug "Session data: Time: #{timestamp}, IP: #{ip}"
+
+    (ip == request.remote_ip) && self.time_check(timestamp)
+  end
 
   # Check if the request IP is within the allowed UNC subnets
   def self.unc_address?(remote_ip_address)
