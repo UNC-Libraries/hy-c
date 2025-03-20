@@ -36,3 +36,7 @@ LOG_LEVEL: 'debug'
 HYRAX_DATABASE_PASSWORD: password
 INGEST_PROQUEST_PATH: /opt/data/ftp/proquest
 INGEST_SAGE_PATH: /opt/data/ftp/sage
+# Turnstile won't work on the VM, so just turn it off
+CF_TURNSTILE_ENABLED: 'false'
+CF_TURNSTILE_SITE_KEY: ''
+CF_TURNSTILE_SECRET_KEY: ''
