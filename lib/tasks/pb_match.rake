@@ -46,6 +46,8 @@ task :attach_pubmed_pdfs, [:input_csv_path, :input_pdf_dir] => :environment do |
       skip_message = row['cdr_url'].nil? ? 'No CDR URL' : 'File already attached'
       row['pdf_attached'] = "Skipped: #{skip_message}"
       res[:skipped] << row
+      # WIP: Likely remove later, Log for debugging
+      puts "Skipped: #{skip_message}"
       next
     end
     # WIP: Likely remove later
@@ -56,6 +58,8 @@ task :attach_pubmed_pdfs, [:input_csv_path, :input_pdf_dir] => :environment do |
       concern = hyrax_work[:work_id].nil? ? 'Work' : 'Admin Set'
       row['pdf_attached'] =  "Failed: #{concern} not found"
       res[:failed] << row
+      # WIP: Likely remove later, Log for debugging
+      puts "Failed: #{concern} not found"
       next
     end
     # WIP: Likely remove later
