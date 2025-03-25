@@ -7,31 +7,44 @@ desc 'Fetch identifiers from a directory, compare against the CDR, and store the
 task fetch_identifiers: :environment do |task, args|
   path = Rails.root.join(INPUT_PATH)
   output_path = Rails.root.join(OUTPUT_PATH)
-    # Fetch file names from the directory
-    # Strip the file extension and remove duplicates
-  file_names = Dir.entries(path).select { |f| !File.directory? f }.map { |f| File.basename(f, '.*') }.uniq
+  file_names = filenames_in_dir(path)
     # Store the file names in a CSV
   store_file_names_and_cdr_data(file_names, output_path)
 end
 
 desc 'Attach new PDFs to works'
-task :attach_pubmed_pdfs, [:input_csv_path, :pdf_path] => :environment do |task, args|
-  return unless valid_args('attach_pubmed_pdfs', args[:input_csv_path], args[:pdf_path])
-  input_csv_arr = []
+task :attach_pubmed_pdfs, [:input_csv_path, :input_pdf_dir] => :environment do |task, args|
+  return unless valid_args('attach_pubmed_pdfs', args[:input_csv_path], args[:input_pdf_dir])
+#   WIP: Implement the PubmedIngestService
+#   ingest_service = Tasks::PubmedIngestService.new
+  res = {skipped: [], ingested: [], failed: [], time: Time.now, depositor: ENV['DIMENSIONS_INGEST_DEPOSITOR_ONYEN'], directory: args[:input_pdf_dir]}
+
+#   Retrieve all files within pdf directory
+  file_names = filenames_in_dir(args[:input_pdf_dir])
+
+  modified_rows = []
   CSV.foreach(args[:input_csv_path], headers: true) do |row|
-    input_csv_arr << {
-        'filename' => row['filename'],
-        'cdr_url' => row['cdr_url'],
-        'has_fileset' => row['has_fileset']
-    }
+    # Set 'pdf_attached' to 'Skipped' if the below conditions are met and categorize the row as skipped
+    if hash['cdr_url'].nil? || hash['has_fileset'].present?
+      skip_message = hash['cdr_url'].nil? ? 'No CDR URL' : 'File already attached'
+      hash['pdf_attached'] = "Skipped: #{skip_message}"
+      res[:skipped] << hash
+      next
+    end
+    # WIP: Implement the PubmedIngestService
+    row_post_attachment = ingest_service.attach_pdf_to_work(row, args[:input_pdf_dir])
+    # Categorize the row depending on the result of the attachment
+    modified_rows << row_post_attachment
   end
-    # Inspect the first 5 rows, print the size of the array
-    # puts "Total rows: #{input_csv_arr.size}"
-    # for hash in input_csv_arr[0..4]
-    #     puts hash.inspect
-    # end
+  ##### Write 'res' to a JSON file #####
+  ##### Write 'attached_pdfs_output' to a CSV file #####
 end
 
+def filenames_in_dir(directory)
+  # Fetch file names from the directory
+  # Strip the file extension and remove duplicates
+  Dir.entries(directory).select { |f| !File.directory? f }.map { |f| File.basename(f, '.*') }.uniq
+end
 def valid_args(function_name, *args)
   if args.any?(&:nil?)
     puts "❌ #{function_name}: One or more required arguments are missing."
