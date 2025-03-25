@@ -17,7 +17,7 @@ task :attach_pubmed_pdfs, [:input_csv_path, :input_pdf_dir] => :environment do |
   return unless valid_args('attach_pubmed_pdfs', args[:input_csv_path], args[:input_pdf_dir])
 #   WIP: Implement the PubmedIngestService
 #   ingest_service = Tasks::PubmedIngestService.new
-  res = {skipped: [], ingested: [], failed: [], time: Time.now, depositor: ENV['DIMENSIONS_INGEST_DEPOSITOR_ONYEN'], directory: args[:input_pdf_dir]}
+  res = {skipped: [], successful: [], failed: [], time: Time.now, depositor: ENV['DIMENSIONS_INGEST_DEPOSITOR_ONYEN'], directory: args[:input_pdf_dir]}
 
 #   Retrieve all files within pdf directory
   file_names = filenames_in_dir(args[:input_pdf_dir])
@@ -31,10 +31,22 @@ task :attach_pubmed_pdfs, [:input_csv_path, :input_pdf_dir] => :environment do |
       res[:skipped] << hash
       next
     end
-    # WIP: Implement the PubmedIngestService
-    row_post_attachment = ingest_service.attach_pdf_to_work(row, args[:input_pdf_dir])
-    # Categorize the row depending on the result of the attachment
-    modified_rows << row_post_attachment
+    hyrax_work = WorkUtilsHelper.fetch_work_data_by_alternate_identifier(hash['filename'])
+    # Skip the row if the work or admin set is not found
+    if hyrax_work[:work_id].nil? || hyrax_work[:admin_set_id].nil?
+      concern = hyrax_work[:work_id].nil? ? 'Work' : 'Admin Set'
+      hash['pdf_attached'] =  "Failed: #{concern} not found"
+      res[:failed] << hash
+      next
+    end
+    article = Article.find_by(identifier: hyrax_work[:work_id])
+    puts "Article inspect #{article.inspect}"
+     # WIP: Implement the PubmedIngestService
+    # attachment_result = ingest_service.attach_pdf_to_work(row, args[:input_pdf_dir])
+    # Modify the 'pdf_attached' field depending on the result of the attachment
+    # Categorize the modified row depending on the result of the attachment
+    # add id, title to the hash
+    modified_rows << attachment_result
   end
   ##### Write 'res' to a JSON file #####
   ##### Write 'attached_pdfs_output' to a CSV file #####
