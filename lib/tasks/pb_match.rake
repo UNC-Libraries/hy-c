@@ -13,39 +13,58 @@ task fetch_identifiers: :environment do |task, args|
 end
 
 desc 'Attach new PDFs to works'
+# Requiring a directory to be specified to avoid searching for the PDF
 task :attach_pubmed_pdfs, [:input_csv_path, :input_pdf_dir] => :environment do |task, args|
   return unless valid_args('attach_pubmed_pdfs', args[:input_csv_path], args[:input_pdf_dir])
 #   WIP: Implement the PubmedIngestService
-#   ingest_service = Tasks::PubmedIngestService.new
+  ingest_service = Tasks::PubmedIngestService.new
   res = {skipped: [], successful: [], failed: [], time: Time.now, depositor: ENV['DIMENSIONS_INGEST_DEPOSITOR_ONYEN'], directory: args[:input_pdf_dir]}
 
 #   Retrieve all files within pdf directory
   file_names = filenames_in_dir(args[:input_pdf_dir])
-
+  # Read the CSV file
+  csv = CSV.read(args[:input_csv_path], headers: true)
+  # WIP: Likely remove later
+  puts "Found #{file_names.length} files in the directory"
   modified_rows = []
-  CSV.foreach(args[:input_csv_path], headers: true) do |row|
-    # Set 'pdf_attached' to 'Skipped' if the below conditions are met and categorize the row as skipped
-    if hash['cdr_url'].nil? || hash['has_fileset'].present?
-      skip_message = hash['cdr_url'].nil? ? 'No CDR URL' : 'File already attached'
-      hash['pdf_attached'] = "Skipped: #{skip_message}"
-      res[:skipped] << hash
+  # WIP: Remove with index
+  # Iterate through files in the specified directory
+  file_names.each_with_index do |file_name, index|
+    # WIP: Short loop for testing
+    break if index > 3
+    # Retrieve the row from the CSV that matches the file name
+    row = csv.find { |row| row['filename'] == file_name }.to_h
+    if row.nil?
+      puts "No CSV entry found for #{file_name}"
       next
     end
-    hyrax_work = WorkUtilsHelper.fetch_work_data_by_alternate_identifier(hash['filename'])
+    # WIP: Likely remove later, Log for debugging
+    puts "Processing #{file_name}"
+    puts "Row: #{row}"
+    # Set 'pdf_attached' to 'Skipped' if the below conditions are met and categorize the row as skipped
+    if row['cdr_url'].nil? || row['has_fileset'].present?
+      skip_message = row['cdr_url'].nil? ? 'No CDR URL' : 'File already attached'
+      row['pdf_attached'] = "Skipped: #{skip_message}"
+      res[:skipped] << row
+      next
+    end
+    # WIP: Likely remove later
+    puts "Fetching work data for #{row['filename']}"
+    hyrax_work = WorkUtilsHelper.fetch_work_data_by_alternate_identifier(row['filename'])
     # Skip the row if the work or admin set is not found
     if hyrax_work[:work_id].nil? || hyrax_work[:admin_set_id].nil?
       concern = hyrax_work[:work_id].nil? ? 'Work' : 'Admin Set'
-      hash['pdf_attached'] =  "Failed: #{concern} not found"
-      res[:failed] << hash
+      row['pdf_attached'] =  "Failed: #{concern} not found"
+      res[:failed] << row
       next
     end
-    article = Article.find_by(identifier: hyrax_work[:work_id])
-    puts "Article inspect #{article.inspect}"
+    # WIP: Likely remove later
+    puts "Successfully fetched work with ID: #{hyrax_work[:work_id]}. Admin set ID: #{hyrax_work[:admin_set_id]}. Creating work object."
      # WIP: Implement the PubmedIngestService
-    # attachment_result = ingest_service.attach_pdf_to_work(row, args[:input_pdf_dir])
+    attachment_result = ingest_service.attach_pubmed_pdf(row, args[:input_pdf_dir])
     # Modify the 'pdf_attached' field depending on the result of the attachment
     # Categorize the modified row depending on the result of the attachment
-    # add id, title to the hash
+    # add id, title to the row
     modified_rows << attachment_result
   end
   ##### Write 'res' to a JSON file #####

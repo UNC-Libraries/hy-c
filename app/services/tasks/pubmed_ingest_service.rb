@@ -2,10 +2,12 @@
 module Tasks
     class PubmedIngestService
     include Tasks::IngestHelper
-    def initialize
+    def attach_pubmed_pdf(work_id, file_path, depositor, visibility)
+        # WIP: A bit unsure if I'm using this properly
+        model_class = model_name.constantize
+        work = model_class.find(work_id)
+        puts "Article inspect #{work.inspect}"
+        # attach_file_set_to_work(work: work, file_path: file_path, user: depositor, visibility: visibility)
     end
-
-    def attach_pubmed_pdf(work, file_path, depositor, visibility)
-        attach_file_set_to_work(work: work, file_path: file_path, user: depositor, visibility: visibility)
-    end
+end
 end
