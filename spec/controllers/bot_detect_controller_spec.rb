@@ -7,12 +7,12 @@ RSpec.describe BotDetectController, type: :controller do
     example.run
   end
 
-  describe "#verify_challenge" do
-    it "handles turnstile success" do
+  describe '#verify_challenge' do
+    it 'handles turnstile success' do
       turnstile_response = stub_turnstile_success
       milliseconds_in_a_day = 86400000
 
-      post :verify_challenge, params: { cf_turnstile_response: "XXXX.DUMMY.TOKEN.XXXX" }
+      post :verify_challenge, params: { cf_turnstile_response: 'XXXX.DUMMY.TOKEN.XXXX' }
       expect(response.status).to be 200
       expect(response.body).to eq turnstile_response.to_json
 
@@ -20,10 +20,10 @@ RSpec.describe BotDetectController, type: :controller do
       expect(session[BotDetectController.session_passed_key].to_i).to be_within(milliseconds_in_a_day).of(Time.now.to_i)
     end
 
-    it "handles turnstile failure" do
+    it 'handles turnstile failure' do
       turnstile_response = stub_turnstile_failure
 
-      post :verify_challenge, params: { cf_turnstile_response: "XXXX.DUMMY.TOKEN.XXXX" }
+      post :verify_challenge, params: { cf_turnstile_response: 'XXXX.DUMMY.TOKEN.XXXX' }
       expect(response.status).to be 200
       expect(response.body).to eq turnstile_response.to_json
 

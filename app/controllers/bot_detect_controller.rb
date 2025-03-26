@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 # This controller has actions for issuing a challenge page for CloudFlare Turnstile product,
 # and then redirecting back to desired page.
 #
 # It also includes logic for configuring a Rails controller filter to enforce
 # redirection to these actions. All the logic related to bot detection with turnstile is
-# mostly in this file -- with very flexible configuration in class_attributes -- to faciliate
+# mostly in this file -- with very flexible configuration in class_attributes -- to facilitate
 # future extraction to a re-usable gem if desired.
 #
 # See more local docs at https://sciencehistory.atlassian.net/wiki/spaces/HDC/pages/2645098498/Cloudflare+Turnstile+bot+detection
@@ -11,8 +13,8 @@
 class BotDetectController < ApplicationController
   skip_before_action :verify_authenticity_token, :only => [:verify_challenge]
 
-  class_attribute :cf_turnstile_sitekey, default: "1x00000000000000000000AA" # a testing key that always passes
-  class_attribute :cf_turnstile_secret_key, default: "1x0000000000000000000000000000000AA" # a testing key always passes
+  class_attribute :cf_turnstile_sitekey, default: '1x00000000000000000000AA' # a testing key that always passes
+  class_attribute :cf_turnstile_secret_key, default: '1x0000000000000000000000000000000AA' # a testing key always passes
 
   # how long is a challenge pass good for before re-challenge?
   class_attribute :session_passed_good_for, default: 24.hours
@@ -21,11 +23,11 @@ class BotDetectController < ApplicationController
   # actions from protection.
   class_attribute :allow_exempt, default: ->(controller) { false }
 
-  class_attribute :cf_turnstile_js_url, default: "https://challenges.cloudflare.com/turnstile/v0/api.js"
-  class_attribute :cf_turnstile_validation_url, default:  "https://challenges.cloudflare.com/turnstile/v0/siteverify"
+  class_attribute :cf_turnstile_js_url, default: 'https://challenges.cloudflare.com/turnstile/v0/api.js'
+  class_attribute :cf_turnstile_validation_url, default:  'https://challenges.cloudflare.com/turnstile/v0/siteverify'
   class_attribute :cf_timeout, default: 3 # max timeout seconds waiting on Cloudfront Turnstile api
   # key stored in Rails session object with change passed confirmed
-  class_attribute :session_passed_key, default: "bot_detection-passed"
+  class_attribute :session_passed_key, default: 'bot_detection-passed'
   class_attribute :allowed_ip_ranges, default: [
     '152.2.0.0/16', # Campus
     '152.19.0.0/16', # Campus
