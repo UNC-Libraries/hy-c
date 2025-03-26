@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'rails_helper'
 
 # We spec that the BotDetect filter is actually applying protection, as well as exempting what we want

@@ -11,7 +11,7 @@
 # See more local docs at https://sciencehistory.atlassian.net/wiki/spaces/HDC/pages/2645098498/Cloudflare+Turnstile+bot+detection
 #
 class BotDetectController < ApplicationController
-  skip_before_action :verify_authenticity_token, :only => [:verify_challenge]
+  skip_before_action :verify_authenticity_token, only: [:verify_challenge]
 
   class_attribute :cf_turnstile_sitekey, default: '1x00000000000000000000AA' # a testing key that always passes
   class_attribute :cf_turnstile_secret_key, default: '1x0000000000000000000000000000000AA' # a testing key always passes
@@ -89,8 +89,8 @@ class BotDetectController < ApplicationController
       # mark it as successful in session, and record timestamp. They do need a session/cookies
       # to get through the challenge.
       session[self.session_passed_key] = {
-        :SESSION_DATETIME_KEY => (Time.now + self.session_passed_good_for).to_i,
-        :SESSION_IP_KEY => request.remote_ip
+        SESSION_DATETIME_KEY: (Time.now + self.session_passed_good_for).to_i,
+        SESSION_IP_KEY: request.remote_ip
       }
     end
     Rails.logger.debug("#{self.class.name}: Cloudflare Turnstile validation result (#{request.remote_ip}, #{request.user_agent}): #{result}")
