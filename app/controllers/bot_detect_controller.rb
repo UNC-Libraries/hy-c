@@ -94,7 +94,7 @@ class BotDetectController < ApplicationController
     Rails.logger.debug("#{self.class.name}: Cloudflare Turnstile validation result (#{request.remote_ip}, #{request.user_agent}): #{result}")
 
     render json: result
-  rescue HTTTParty::Error, JSON::ParserError => e
+  rescue HTTParty::Error, JSON::ParserError => e
     # probably a http timeout? or something weird.
     Rails.logger.warn("#{self.class.name}: Cloudflare turnstile validation error (#{request.remote_ip}, #{request.user_agent}): #{e}: #{response&.body}")
     render json: {

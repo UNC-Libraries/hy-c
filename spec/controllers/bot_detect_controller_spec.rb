@@ -17,7 +17,8 @@ RSpec.describe BotDetectController, type: :controller do
       expect(response.body).to eq turnstile_response.to_json
 
       expect(session[BotDetectController.session_passed_key]).to be_present
-      expect(session[BotDetectController.session_passed_key].to_i).to be_within(milliseconds_in_a_day).of(Time.now.to_i)
+      expect(session[BotDetectController.session_passed_key][:SESSION_IP_KEY]).to eq('0.0.0.0')
+      expect(session[BotDetectController.session_passed_key][:SESSION_DATETIME_KEY].to_i).to be_within(milliseconds_in_a_day).of(Time.now.to_i)
     end
 
     it 'handles turnstile failure' do

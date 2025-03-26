@@ -2,28 +2,34 @@ require 'rails_helper'
 
 # We spec that the BotDetect filter is actually applying protection, as well as exempting what we want
 describe CatalogController, type: :controller do
+  before do
+    allow(ENV).to receive(:fetch)
+            .with('CF_TURNSTILE_ENABLED')
+            .and_return('true')
+  end
+
   it 'redirects when requested for facet queries' do
-    get :index, params: { 'f[resource_type_f][]': 'Image' }
-    # Rspec has a very hard time with the funky facet syntax in arclight. They seem to get double escaped, but this doesn't impact actual redirects
-    expect(response).to redirect_to(bot_detect_challenge_path(dest: "/catalog?f#{CGI.escape('[resource_type_f][]')}=Image"))
+    get :index, params: { 'f[creator_label_sim][]': 'test' }
+    # Rspec has a very hard time with the funky facet syntax in hyrax. They seem to get double escaped, but this doesn't impact actual redirects
+    expect(response).to redirect_to(bot_detect_challenge_path(dest: "/catalog?f#{CGI.escape('[creator_label_sim][]')}=test"))
   end
 
   it 'redirects when requested for facet inclusive queries' do
     get :index, params: { 'f_inclusive[access_type_f][]': 'Online' }
-    # Rspec has a very hard time with the funky facet syntax in arclight. They seem to get double escaped, but this doesn't impact actual redirects
+    # Rspec has a very hard time with the funky facet syntax in hyrax. They seem to get double escaped, but this doesn't impact actual redirects
     expect(response).to redirect_to(bot_detect_challenge_path(dest: "/catalog?f_inclusive#{CGI.escape('[access_type_f][]')}=Online"))
   end
 
   it 'redirects when requested for advanced search queries' do
     get :index, params: { 'clause[0][field]': 'author', 'clause[0][query]': 'Farrell' }
-    # Rspec has a very hard time with the funky facet syntax in arclight. They seem to get double escaped, but this doesn't impact actual redirects
+    # Rspec has a very hard time with the funky facet syntax in hyrax. They seem to get double escaped, but this doesn't impact actual redirects
     expect(response).to redirect_to(bot_detect_challenge_path(dest: "/catalog?clause#{CGI.escape('[0][field]')}=author&clause#{CGI.escape('[0][query]')}=Farrell"))
   end
 
   it 'redirects when requested for range queries' do
-    get :index, params: { 'range[publication_year_isort][begin]': '2000', 'range[publication_year_isort][end]': '2025' }
-    # Rspec has a very hard time with the funky facet syntax in arclight. They seem to get double escaped, but this doesn't impact actual redirects
-    expect(response).to redirect_to(bot_detect_challenge_path(dest: "/catalog?range#{CGI.escape('[publication_year_isort][begin]')}=2000&range#{CGI.escape('[publication_year_isort][end]')}=2025"))
+    get :index, params: { 'range[date_issued_isim][begin]': '2000', 'range[date_issued_isim][end]': '2025' }
+    # Rspec has a very hard time with the funky facet syntax in hyrax. They seem to get double escaped, but this doesn't impact actual redirects
+    expect(response).to redirect_to(bot_detect_challenge_path(dest: "/catalog?range#{CGI.escape('[date_issued_isim][begin]')}=2000&range#{CGI.escape('[date_issued_isim][end]')}=2025"))
   end
 
   it 'does not redirect from non facet requests' do

@@ -6,8 +6,8 @@ require File.expand_path('../../config/environment', __FILE__)
 # Prevent database truncation if the environment is production
 abort('The Rails environment is running in production mode!') if Rails.env.production?
 require 'rspec/rails'
-require 'test_support/helper_ruby/webmock_turnstile_helper_methods'
 require 'webmock/rspec'
+require 'test_support/helper_ruby/webmock_turnstile_helper_methods'
 
 WebMock.disable_net_connect!(allow_localhost: true, allow: ['fedora:8080', 'solr8:8983', 'fcrepo:8080', 'solr:8983', 'opaquenamespace.org',
                                                             'googlechromelabs.github.io', 'chromedriver.storage.googleapis.com', 'https://edgedl.me.gvt1.com',
