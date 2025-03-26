@@ -111,7 +111,6 @@ class BotDetectController < ApplicationController
   # Tie to IP address to prevent session replay shared among IPs
   def self.bot_detect_passed_good?(request)
     session_data = request.session[self.session_passed_key]
-
     return false unless session_data && session_data.kind_of?(Hash)
 
     timestamp = session_data['SESSION_DATETIME_KEY']

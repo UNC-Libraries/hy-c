@@ -33,11 +33,38 @@ describe CatalogController, type: :controller do
     expect(response).to redirect_to(bot_detect_challenge_path(dest: "/catalog?range#{CGI.escape('[date_issued_isim][begin]')}=2000&range#{CGI.escape('[date_issued_isim][end]')}=2025"))
   end
 
+  it 'redirects when requested for queries with an expired session' do
+    session = {
+      'bot_detection-passed': {
+        'SESSION_DATETIME_KEY' => (Time.now - 12.hours).to_i,
+        'SESSION_IP_KEY' => '0.0.0.0'
+      }
+    }
+    get :index, session: session, params: { 'range[date_issued_isim][begin]': '2000', 'range[date_issued_isim][end]': '2025' }
+    # Rspec has a very hard time with the funky facet syntax in hyrax. They seem to get double escaped, but this doesn't impact actual redirects
+    expect(response).to redirect_to(bot_detect_challenge_path(dest: "/catalog?range#{CGI.escape('[date_issued_isim][begin]')}=2000&range#{CGI.escape('[date_issued_isim][end]')}=2025"))
+  end
+
   it 'does not redirect from non facet requests' do
-    stub_request(:get, 'http://127.0.0.1:8983/solr/blacklight-core/select?collection.defType=lucene&collection.fl=*&collection.q=%7B!terms%20f=id%20v=$row._root_%7D&collection.rows=1&f.access_subjects_ssim.facet.limit=11&f.collection_ssim.facet.limit=11&f.creator_ssim.facet.limit=11&f.geogname_ssim.facet.limit=11&f.level_ssim.facet.limit=11&f.names_ssim.facet.limit=11&f.repository_ssim.facet.limit=11&facet=true&facet.field=access_subjects_ssim&facet.query=has_online_content_ssim:true&fl=*,collection:%5Bsubquery%5D&hl=true&hl.fl=text&hl.snippets=3&rows=10&sort=score%20desc,%20title_sort%20asc&stats=true&stats.field=date_range_isim&wt=json').
-      to_return(status: 200, body: '', headers: {})
     request.headers['sec-fetch-dest'] = 'empty'
     get :index
+    expect(response).to have_http_status(:success) # not a redirect
+  end
+
+  it 'does not redirect from post requests' do
+    request.headers['sec-fetch-dest'] = 'empty'
+    post :index
+    expect(response).to have_http_status(:success) # not a redirect
+  end
+
+  it 'does not redirect with a valid session' do
+    session = {
+      'bot_detection-passed': {
+        'SESSION_DATETIME_KEY' => (Time.now + 12.hours).to_i,
+        'SESSION_IP_KEY' => '0.0.0.0'
+      }
+    }
+    get :index, session: session, params: { 'range[date_issued_isim][begin]': '2000', 'range[date_issued_isim][end]': '2025' }
     expect(response).to have_http_status(:success) # not a redirect
   end
 end
