@@ -71,20 +71,17 @@ class BotDetectController < ApplicationController
   def verify_challenge
     body = {
       secret:  ENV['CF_TURNSTILE_SECRET_KEY'],
-      response: params["cf_turnstile_response"],
+      response: params['cf_turnstile_response'],
       remoteip: request.remote_ip
     }
 
-    http = HTTP.timeout(self.cf_timeout)
-    response = http.post(self.cf_turnstile_validation_url,
-                         json: body)
-
-    result = response.parse
+    response = HTTParty.post(self.cf_turnstile_validation_url,  body: body, timeout: self.cf_timeout)
+    result = JSON.parse(response.body)
     # Example turnstile responses
     # {"success"=>true, "error-codes"=>[], "challenge_ts"=>"2025-02-26T18:03:55.394Z", "hostname"=>"catalog-qa.lib.unc.edu", "action"=>"", "cdata"=>"", "metadata"=>{"interactive"=>true}}
     # {"success"=>false, "error-codes"=>["invalid-input-response"], "messages"=>[], "metadata"=>{"result_with_testing_key"=>true}}
 
-    if result["success"]
+    if result['success']
       # mark it as successful in session, and record timestamp. They do need a session/cookies
       # to get through the challenge.
       session[self.session_passed_key] = {
@@ -95,7 +92,7 @@ class BotDetectController < ApplicationController
     Rails.logger.debug("#{self.class.name}: Cloudflare Turnstile validation result (#{request.remote_ip}, #{request.user_agent}): #{result}")
 
     render json: result
-  rescue HTTP::Error, JSON::ParserError => e
+  rescue HTTTParty::Error, JSON::ParserError => e
     # probably a http timeout? or something weird.
     Rails.logger.warn("#{self.class.name}: Cloudflare turnstile validation error (#{request.remote_ip}, #{request.user_agent}): #{e}: #{response&.body}")
     render json: {
