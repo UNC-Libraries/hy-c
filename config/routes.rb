@@ -39,6 +39,7 @@ Rails.application.routes.draw do
 
   mount Blacklight::Engine => '/'
   mount BlacklightAdvancedSearch::Engine => '/'
+  mount BlacklightDynamicSitemap::Engine => '/'
 
   concern :searchable, Blacklight::Routes::Searchable.new
 
