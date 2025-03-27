@@ -48,7 +48,7 @@ task :attach_pubmed_pdfs, [:input_csv_path, :input_pdf_dir_or_csv] => :environme
     # puts "Processing #{file_name}, Index: #{index}"
     # puts "Row: #{row}"
     # Set 'pdf_attached' to 'Skipped' if the below conditions are met and categorize the row as skipped
-    if row['cdr_url'].nil? || row['has_fileset'].to_s != 'true'
+    if row['cdr_url'].nil? || row['has_fileset'].to_s == 'true'
       skip_message = row['cdr_url'].nil? ? 'No CDR URL' : 'File already attached'
       row['pdf_attached'] = "Skipped: #{skip_message}"
       res[:skipped] << row
