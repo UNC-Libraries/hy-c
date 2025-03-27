@@ -75,7 +75,7 @@ task :attach_pubmed_pdfs, [:input_csv_path, :input_pdf_dir_or_csv] => :environme
     # WIP: Likely remove later
     puts "Successfully fetched work with ID: #{hyrax_work[:work_id]}. Admin set ID: #{hyrax_work[:admin_set_id]}. Creating work object."
      # WIP: Implement the PubmedIngestService
-    attachment_result = ingest_service.attach_pubmed_pdf(row, args[:input_pdf_dir_or_csv], Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE)
+    attachment_result = ingest_service.attach_pubmed_pdf(hyrax_work, args[:input_pdf_dir_or_csv], Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE)
     # Modify the 'pdf_attached' field depending on the result of the attachment
     # Categorize the modified row depending on the result of the attachment
     # add id, title to the row
