@@ -15,7 +15,7 @@ end
 
 desc 'Attach new PDFs to works'
 # Requiring a directory to be specified to avoid searching for the PDF
-task :attach_pubmed_pdfs, [:input_csv_path, :pdf_filenames_dir_or_csv, :pdf_retrieval_directory] => :environment do |task, args|
+task :attach_pubmed_pdfs, [:input_csv_path, :pdf_filenames_dir_or_csv, :pdf_retrieval_directory, :output_dir] => :environment do |task, args|
   return unless valid_args('attach_pubmed_pdfs', args[:input_csv_path], args[:pdf_filenames_dir_or_csv])
 #   WIP: Implement the PubmedIngestService
   ingest_service = Tasks::PubmedIngestService.new
@@ -91,8 +91,19 @@ task :attach_pubmed_pdfs, [:input_csv_path, :pdf_filenames_dir_or_csv, :pdf_retr
       next
     end
   end
-  ##### Write 'res' to a JSON file #####
-  ##### Write 'attached_pdfs_output' to a CSV file #####
+  # Write results to JSON
+  json_output_path = File.join(args[:output_dir], "pdf_attachment_results.json")
+  File.open(json_output_path, 'w') do |f|
+    f.write(JSON.pretty_generate(res))
+  end
+  # Write modified rows to CSV
+  csv_output_path = File.join(args[:output_dir], "attached_pdfs_output.csv")
+  CSV.open(csv_output_path, 'w') do |csv_out|
+    csv_out << ['filename', 'cdr_url', 'has_fileset', 'pdf_attached']
+    modified_rows.each do |row|
+      csv_out << [row['filename'], row['cdr_url'], row['has_fileset'], row['pdf_attached']]
+    end
+  end
 end
 
 def filenames_in_dir(directory)
