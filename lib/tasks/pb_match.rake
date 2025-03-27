@@ -32,31 +32,36 @@ task :attach_pubmed_pdfs, [:input_csv_path, :input_pdf_dir_or_csv] => :environme
   # WIP: Likely remove later
   puts "Found #{file_names.length} files in the directory"
   modified_rows = []
+  attempted_attachements = 0
   # WIP: Remove with index
   # Iterate through files in the specified directory
   file_names.each_with_index do |file_name, index|
     # WIP: Short loop for testing
-    break if index > 3
+    break if attempted_attachements > 2
     # Retrieve the row from the CSV that matches the file name
     row = csv.find { |row| row['filename'] == file_name }.to_h
     if row.nil?
-      puts "No CSV entry found for #{file_name}"
+      # puts "No CSV entry found for #{file_name}"
       next
     end
     # WIP: Likely remove later, Log for debugging
-    puts "Processing #{file_name}"
-    puts "Row: #{row}"
+    # puts "Processing #{file_name}, Index: #{index}"
+    # puts "Row: #{row}"
     # Set 'pdf_attached' to 'Skipped' if the below conditions are met and categorize the row as skipped
-    if row['cdr_url'].nil? || row['has_fileset'].present?
+    if row['cdr_url'].nil? || row['has_fileset'].to_s != 'true'
       skip_message = row['cdr_url'].nil? ? 'No CDR URL' : 'File already attached'
       row['pdf_attached'] = "Skipped: #{skip_message}"
       res[:skipped] << row
       # WIP: Likely remove later, Log for debugging
-      puts "Skipped: #{skip_message}"
+      # puts "Skipped: #{skip_message}"
       next
     end
     # WIP: Likely remove later
     puts "Fetching work data for #{row['filename']}"
+    # Only print rows that are not skipped
+    attempted_attachements += 1
+    puts "Processing #{file_name}, Index: #{index}"
+    puts "Row: #{row}"
     hyrax_work = WorkUtilsHelper.fetch_work_data_by_alternate_identifier(row['filename'])
     # Skip the row if the work or admin set is not found
     if hyrax_work[:work_id].nil? || hyrax_work[:admin_set_id].nil?

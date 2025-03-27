@@ -3,6 +3,7 @@ module Tasks
     class PubmedIngestService
     include Tasks::IngestHelper
     def attach_pubmed_pdf(work_id, file_path, depositor, visibility)
+        puts "PubmedIngestService attach_pubmed_pdf"
         # WIP: A bit unsure if I'm using this properly
         model_class = model_name.constantize
         work = model_class.find(work_id)
