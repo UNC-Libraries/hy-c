@@ -14,14 +14,19 @@ end
 
 desc 'Attach new PDFs to works'
 # Requiring a directory to be specified to avoid searching for the PDF
-task :attach_pubmed_pdfs, [:input_csv_path, :input_pdf_dir] => :environment do |task, args|
-  return unless valid_args('attach_pubmed_pdfs', args[:input_csv_path], args[:input_pdf_dir])
+task :attach_pubmed_pdfs, [:input_csv_path, :input_pdf_dir_or_csv] => :environment do |task, args|
+  return unless valid_args('attach_pubmed_pdfs', args[:input_csv_path], args[:input_pdf_dir_or_csv])
 #   WIP: Implement the PubmedIngestService
   ingest_service = Tasks::PubmedIngestService.new
-  res = {skipped: [], successful: [], failed: [], time: Time.now, depositor: ENV['DIMENSIONS_INGEST_DEPOSITOR_ONYEN'], directory: args[:input_pdf_dir]}
+  res = {skipped: [], successful: [], failed: [], time: Time.now, depositor: ENV['DIMENSIONS_INGEST_DEPOSITOR_ONYEN'], directory_or_csv: args[:input_pdf_dir_or_csv]}
 
 #   Retrieve all files within pdf directory
-  file_names = filenames_in_dir(args[:input_pdf_dir])
+  file_names =
+  if File.extname(args[:input_pdf_dir_or_csv]) == '.csv'
+    CSV.read(args[:input_pdf_dir_or_csv], headers: true).map { |r| r['filename'] }
+  else
+    filenames_in_dir(args[:input_pdf_dir_or_csv])
+  end
   # Read the CSV file
   csv = CSV.read(args[:input_csv_path], headers: true)
   # WIP: Likely remove later
@@ -65,7 +70,7 @@ task :attach_pubmed_pdfs, [:input_csv_path, :input_pdf_dir] => :environment do |
     # WIP: Likely remove later
     puts "Successfully fetched work with ID: #{hyrax_work[:work_id]}. Admin set ID: #{hyrax_work[:admin_set_id]}. Creating work object."
      # WIP: Implement the PubmedIngestService
-    attachment_result = ingest_service.attach_pubmed_pdf(row, args[:input_pdf_dir])
+    attachment_result = ingest_service.attach_pubmed_pdf(row, args[:input_pdf_dir_or_csv])
     # Modify the 'pdf_attached' field depending on the result of the attachment
     # Categorize the modified row depending on the result of the attachment
     # add id, title to the row
