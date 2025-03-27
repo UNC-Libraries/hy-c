@@ -86,6 +86,7 @@ task :attach_pubmed_pdfs, [:input_csv_path, :pdf_filenames_dir_or_csv, :pdf_retr
       modified_rows << row
     rescue StandardError => e
       puts "Failed to attach PDF: #{e.message}"
+      puts "Backtrace: #{e.backtrace.join("\n")}"
       res[:failed] << row.merge('error' => [e.class.to_s, e.message])
       modified_rows << row
       next
