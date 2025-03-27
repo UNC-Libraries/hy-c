@@ -1,5 +1,9 @@
 # frozen_string_literal: true
 class CatalogController < ApplicationController
+  if ENV.fetch('CF_TURNSTILE_ENABLED', 'false').downcase == 'true'
+    before_action { |controller| BotDetectController.bot_detection_enforce_filter(controller) }
+  end
+
   include BlacklightAdvancedSearch::Controller
   include BlacklightRangeLimit::ControllerOverride
   include Hydra::Catalog
