@@ -2,6 +2,7 @@
 # Hardcode absolute paths for input and output directories
 INPUT_PATH = '/home/dcam/pmc_pdfs/sample'
 OUTPUT_PATH = '/home/dcam/pb_match_results.csv'
+DEPOSITOR = ENV['DIMENSIONS_INGEST_DEPOSITOR_ONYEN']
 
 desc 'Fetch identifiers from a directory, compare against the CDR, and store the results in a CSV'
 task fetch_identifiers: :environment do |task, args|
@@ -14,18 +15,18 @@ end
 
 desc 'Attach new PDFs to works'
 # Requiring a directory to be specified to avoid searching for the PDF
-task :attach_pubmed_pdfs, [:input_csv_path, :input_pdf_dir_or_csv] => :environment do |task, args|
-  return unless valid_args('attach_pubmed_pdfs', args[:input_csv_path], args[:input_pdf_dir_or_csv])
+task :attach_pubmed_pdfs, [:input_csv_path, :pdf_filenames_dir_or_csv, :pdf_retrieval_directory] => :environment do |task, args|
+  return unless valid_args('attach_pubmed_pdfs', args[:input_csv_path], args[:pdf_filenames_dir_or_csv])
 #   WIP: Implement the PubmedIngestService
   ingest_service = Tasks::PubmedIngestService.new
-  res = {skipped: [], successful: [], failed: [], time: Time.now, depositor: ENV['DIMENSIONS_INGEST_DEPOSITOR_ONYEN'], directory_or_csv: args[:input_pdf_dir_or_csv]}
+  res = {skipped: [], successful: [], failed: [], time: Time.now, depositor: DEPOSITOR, directory_or_csv: args[:pdf_filenames_dir_or_csv]}
 
 #   Retrieve all files within pdf directory
   file_names =
-  if File.extname(args[:input_pdf_dir_or_csv]) == '.csv'
-    CSV.read(args[:input_pdf_dir_or_csv], headers: true).map { |r| r['filename'] }
+  if File.extname(args[:pdf_filenames_dir_or_csv]) == '.csv'
+    CSV.read(args[:pdf_filenames_dir_or_csv], headers: true).map { |r| r['filename'] }
   else
-    filenames_in_dir(args[:input_pdf_dir_or_csv])
+    filenames_in_dir(args[:pdf_filenames_dir_or_csv])
   end
   # Read the CSV file
   csv = CSV.read(args[:input_csv_path], headers: true)
@@ -64,22 +65,31 @@ task :attach_pubmed_pdfs, [:input_csv_path, :input_pdf_dir_or_csv] => :environme
     puts "Row: #{row}"
     hyrax_work = WorkUtilsHelper.fetch_work_data_by_alternate_identifier(row['filename'])
     # Skip the row if the work or admin set is not found
+    # Modify the 'pdf_attached' field depending on the result of the attachment, and categorize the row as successful or failed
+    # Add the modified row to the 'modified_rows' array to write to a CSV later
     if hyrax_work[:work_id].nil? || hyrax_work[:admin_set_id].nil?
       concern = hyrax_work[:work_id].nil? ? 'Work' : 'Admin Set'
       row['pdf_attached'] =  "Failed: #{concern} not found"
       res[:failed] << row
       # WIP: Likely remove later, Log for debugging
       puts "Failed: #{concern} not found"
+      modified_rows << row
       next
     end
     # WIP: Likely remove later
     puts "Successfully fetched work with ID: #{hyrax_work[:work_id]}. Admin set ID: #{hyrax_work[:admin_set_id]}. Creating work object."
      # WIP: Implement the PubmedIngestService
-    attachment_result = ingest_service.attach_pubmed_pdf(hyrax_work, args[:input_pdf_dir_or_csv], Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE)
-    # Modify the 'pdf_attached' field depending on the result of the attachment
-    # Categorize the modified row depending on the result of the attachment
-    # add id, title to the row
-    modified_rows << attachment_result
+    begin
+     ingest_service.attach_pubmed_pdf(hyrax_work, args[:pdf_retrieval_directory], DEPOSITOR, Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE)
+      row['pdf_attached'] = "Success"
+      res[:successful] << row
+      modified_rows << row
+    rescue StandardError => e
+      puts "Failed to attach PDF: #{e.message}"
+      res[:failed] << row.merge('error' => [e.class.to_s, e.message])
+      modified_rows << row
+      next
+    end
   end
   ##### Write 'res' to a JSON file #####
   ##### Write 'attached_pdfs_output' to a CSV file #####
