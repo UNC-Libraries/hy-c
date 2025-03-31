@@ -33,6 +33,11 @@ describe CatalogController, type: :controller do
     expect(response).to redirect_to(bot_detect_challenge_path(dest: "/catalog?range#{CGI.escape('[date_issued_isim][begin]')}=2000&range#{CGI.escape('[date_issued_isim][end]')}=2025"))
   end
 
+  it 'redirects when requested for paged queries' do
+    get :index, params: { 'page': '10' }
+    expect(response).to redirect_to(bot_detect_challenge_path(dest: '/catalog?page=10'))
+  end
+
   it 'redirects when requested for queries with an expired session' do
     session = {
       'bot_detection-passed': {

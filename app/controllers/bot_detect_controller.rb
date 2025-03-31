@@ -135,6 +135,6 @@ class BotDetectController < ApplicationController
   end
 
   def self.issue_challenge?(query_parameters)
-    query_parameters.key?('f') || query_parameters.key?('f_inclusive') || query_parameters.key?('clause') || query_parameters.key?('range')
+    query_parameters.key?('f') || query_parameters.key?('f_inclusive') || query_parameters.key?('clause') || query_parameters.key?('range') || query_parameters.key?('page')
   end
 end
