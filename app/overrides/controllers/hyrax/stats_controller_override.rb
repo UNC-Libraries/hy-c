@@ -3,9 +3,10 @@
 require 'hyrax/analytics/results'
 
 Hyrax::StatsController.class_eval do
-  if ENV.fetch('CF_TURNSTILE_ENABLED', 'false').downcase == 'true'
-    before_action { |controller| BotDetectController.bot_detection_enforce_filter(controller) }
+  def self.turnstile_enabled?
+    @turnstile_enabled ||= ENV.fetch('CF_TURNSTILE_ENABLED', 'false').downcase == 'true'
   end
+  before_action { |controller| BotDetectController.bot_detection_enforce_filter(controller) if self.class.turnstile_enabled? }
 
   def work
     # [hyc-override] different parameters and switched to using monthly instead of daily events
