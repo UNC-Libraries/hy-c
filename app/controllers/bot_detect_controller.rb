@@ -33,7 +33,7 @@ class BotDetectController < ApplicationController
     '152.19.0.0/16', # Campus
     '152.23.0.0/16', # Campus
     '152.54.0.0/20', # RENCI
-    '172.17.0.0/18', # VPN
+    # '172.17.0.0/18', # VPN
     '172.17.57.0/28', # Library-IT VPN group
     '198.85.230.0/23', # Off campus location
     '204.84.8.0/22', # Off campus location
@@ -50,7 +50,7 @@ class BotDetectController < ApplicationController
       bot_detect_passed_good?(controller.request)
 
     # Only challenge facet and advanced search queries
-    if issue_challenge?(controller.request.query_parameters)
+    if issue_challenge?(controller)
       # we can only do GET requests right now
       unless controller.request.get?
         Rails.logger.warn("#{self}: Asked to protect request we could not, unprotected: #{controller.request.method} #{controller.request.url}, (#{controller.request.remote_ip}, #{controller.request.user_agent})")
@@ -134,7 +134,10 @@ class BotDetectController < ApplicationController
     unc_ip_address
   end
 
-  def self.issue_challenge?(query_parameters)
-    query_parameters.key?('f') || query_parameters.key?('f_inclusive') || query_parameters.key?('clause') || query_parameters.key?('range') || query_parameters.key?('page')
+  def self.issue_challenge?(controller)
+    query_parameters = controller.request.query_parameters
+    controller.is_a?(Hyrax::StatsController) || controller.is_a?(Hyrax::DownloadsController) \
+        || query_parameters.key?('f') || query_parameters.key?('f_inclusive') || query_parameters.key?('clause') \
+        || query_parameters.key?('range') || query_parameters.key?('page')
   end
 end
