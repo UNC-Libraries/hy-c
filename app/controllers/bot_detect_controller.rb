@@ -33,7 +33,7 @@ class BotDetectController < ApplicationController
     '152.19.0.0/16', # Campus
     '152.23.0.0/16', # Campus
     '152.54.0.0/20', # RENCI
-    # '172.17.0.0/18', # VPN
+    '172.17.0.0/18', # VPN
     '172.17.57.0/28', # Library-IT VPN group
     '198.85.230.0/23', # Off campus location
     '204.84.8.0/22', # Off campus location
