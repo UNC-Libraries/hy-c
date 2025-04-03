@@ -58,8 +58,15 @@ class BotDetectController < ApplicationController
       end
 
       Rails.logger.info("#{self.name}: Cloudflare Turnstile challenge redirect: (#{controller.request.remote_ip}, #{controller.request.user_agent}): from #{controller.request.url}")
+
+      # Use Rails.application.routes.url_helpers to access the route helper directly
+      # This avoids namespace issues that can occur with controller-specific route helpers
+      challenge_url = Rails.application.routes.url_helpers.bot_detect_challenge_path(
+        dest: controller.request.original_fullpath
+      )
+
       # status code temporary
-      controller.redirect_to controller.bot_detect_challenge_path(dest: controller.request.original_fullpath), status: 307
+      controller.redirect_to challenge_url, status: 307
     end
   end
 
