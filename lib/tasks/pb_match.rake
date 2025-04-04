@@ -83,26 +83,26 @@ task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :full_text_dir_or_csv,
     puts "Successfully fetched work with ID: #{hyrax_work[:work_id]}. Admin set ID: #{hyrax_work[:admin_set_id]}. Creating work object."
      # WIP: Implement the PubmedIngestService
     begin
-     file_path = File.join(args[:pdf_retrieval_directory], "#{file_name}.#{file_extension}")
-     ingest_service.attach_pubmed_pdf(hyrax_work, file_path, DEPOSITOR, Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE)
-      row['pdf_attached'] = "Success"
+      file_path = File.join(args[:pdf_retrieval_directory], "#{file_name}.#{file_extension}")
+      ingest_service.attach_pubmed_pdf(hyrax_work, file_path, DEPOSITOR, Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE)
+      row['pdf_attached'] = 'Success'
       res[:successful] << row
       modified_rows << row
-    rescue StandardError => e
-      puts "Failed to attach PDF: #{e.message}"
-      puts "Backtrace: #{e.backtrace.join("\n")}"
-      res[:failed] << row.merge('error' => [e.class.to_s, e.message])
-      modified_rows << row
-      next
+     rescue StandardError => e
+       puts "Failed to attach PDF: #{e.message}"
+       puts "Backtrace: #{e.backtrace.join("\n")}"
+       res[:failed] << row.merge('error' => [e.class.to_s, e.message])
+       modified_rows << row
+       next
     end
   end
   # Write results to JSON
-  json_output_path = File.join(args[:output_dir], "pdf_attachment_results.json")
+  json_output_path = File.join(args[:output_dir], 'pdf_attachment_results.json')
   File.open(json_output_path, 'w') do |f|
     f.write(JSON.pretty_generate(res))
   end
   # Write modified rows to CSV
-  csv_output_path = File.join(args[:output_dir], "attached_pdfs_output.csv")
+  csv_output_path = File.join(args[:output_dir], 'attached_pdfs_output.csv')
   CSV.open(csv_output_path, 'w') do |csv_out|
     csv_out << ['file_name', 'cdr_url', 'has_fileset', 'pdf_attached']
     modified_rows.each do |row|

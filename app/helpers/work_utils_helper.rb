@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 module WorkUtilsHelper
   def self.fetch_work_data_by_alternate_identifier(identifier)
-    work_data = Hyrax::SolrService.get("identifier_tesim:\"#{identifier}\"", rows: 1)['response']['docs'].first || {}
+    puts "Fetching work data for #{identifier}"
+    work_data = ActiveFedora::SolrService.get("identifier_tesim:\"#{identifier}\"", rows: 1)['response']['docs'].first || {}
+    puts "Work data: #{work_data}"
     Rails.logger.warn("No work found associated with alternate identifier: #{identifier}") if work_data.blank?
     admin_set_name = work_data['admin_set_tesim']&.first
     admin_set_data = admin_set_name ? ActiveFedora::SolrService.get("title_tesim:#{admin_set_name} AND has_model_ssim:(\"AdminSet\")", { :rows => 1, 'df' => 'title_tesim'})['response']['docs'].first : {}
@@ -50,7 +52,7 @@ module WorkUtilsHelper
 
   def self.generate_warning_message(admin_set_name, id, is_fileset_id)
     if admin_set_name.blank?
-      return "Could not find an admin set, the work with #{is_fileset_id ? 'fileset' : 'work'} id: #{id} has no admin set name."
+      return "Could not find an admin set, the work with #{is_fileset_id ? 'fileset id' : 'id'}: #{id} has no admin set name."
     else
       return "No admin set found with title_tesim: #{admin_set_name}."
     end
