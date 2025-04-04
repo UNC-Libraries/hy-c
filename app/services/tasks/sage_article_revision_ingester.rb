@@ -45,7 +45,7 @@ module Tasks
       pdf_fs = file_sets.detect { |fs| fs.label.end_with?('.pdf') }
       pdf_path = pdf_file_path
       if pdf_fs.nil?
-        attach_pdf_to_work(existing_work, pdf_path, depositor)
+        attach_pdf_to_work(existing_work, pdf_path, depositor, existing_work.visibility)
         @status_service.status_in_progress(@package_name,
             error: StandardError.new("Package #{@package_name} is a revision but did not have an existing PDF file. Adding new file."))
       else

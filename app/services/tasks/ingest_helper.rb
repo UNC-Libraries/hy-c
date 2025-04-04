@@ -2,8 +2,8 @@
 module Tasks
   require 'tasks/migration_helper'
   module IngestHelper
-    def attach_pdf_to_work(work, file_path, depositor)
-      attach_file_set_to_work(work: work, file_path: file_path, user: depositor, visibility: work.visibility)
+    def attach_pdf_to_work(work, file_path, depositor, visibility)
+      attach_file_set_to_work(work: work, file_path: file_path, user: depositor, visibility: visibility)
     end
 
     def attach_xml_to_work(work, file_path, depositor)
