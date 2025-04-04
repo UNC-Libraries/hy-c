@@ -50,7 +50,7 @@ class BotDetectController < ApplicationController
       bot_detect_passed_good?(controller.request)
 
     # Only challenge facet and advanced search queries
-    if issue_challenge?(controller.request.query_parameters)
+    if issue_challenge?(controller)
       # we can only do GET requests right now
       unless controller.request.get?
         Rails.logger.warn("#{self}: Asked to protect request we could not, unprotected: #{controller.request.method} #{controller.request.url}, (#{controller.request.remote_ip}, #{controller.request.user_agent})")
@@ -58,8 +58,15 @@ class BotDetectController < ApplicationController
       end
 
       Rails.logger.info("#{self.name}: Cloudflare Turnstile challenge redirect: (#{controller.request.remote_ip}, #{controller.request.user_agent}): from #{controller.request.url}")
+
+      # Use Rails.application.routes.url_helpers to access the route helper directly
+      # This avoids namespace issues that can occur with controller-specific route helpers
+      challenge_url = Rails.application.routes.url_helpers.bot_detect_challenge_path(
+        dest: controller.request.original_fullpath
+      )
+
       # status code temporary
-      controller.redirect_to controller.bot_detect_challenge_path(dest: controller.request.original_fullpath), status: 307
+      controller.redirect_to challenge_url, status: 307
     end
   end
 
@@ -134,7 +141,11 @@ class BotDetectController < ApplicationController
     unc_ip_address
   end
 
-  def self.issue_challenge?(query_parameters)
-    query_parameters.key?('f') || query_parameters.key?('f_inclusive') || query_parameters.key?('clause') || query_parameters.key?('range') || query_parameters.key?('page')
+  def self.issue_challenge?(controller)
+    query_parameters = controller.request.query_parameters
+    controller.is_a?(Hyrax::StatsController) \
+        || (controller.is_a?(Hyrax::DownloadsController) && query_parameters['file'] != 'thumbnail') \
+        || query_parameters.key?('f') || query_parameters.key?('f_inclusive') || query_parameters.key?('clause') \
+        || query_parameters.key?('range') || query_parameters.key?('page')
   end
 end
