@@ -29,7 +29,7 @@ RSpec.describe Tasks::PubmedIngestService do
   end
 
 
-  describe '#attach_pubmed_pdf' do
+  describe '#attach_pubmed_file' do
     let(:file_path) { Rails.root.join('spec', 'fixtures', 'files', 'sample_pdf.pdf') }
     let(:depositor) { FactoryBot.create(:user, uid: 'depositor') }
 
@@ -43,7 +43,7 @@ RSpec.describe Tasks::PubmedIngestService do
       }
       result = nil
       expect {
-        result = service.attach_pubmed_pdf(work_hash, file_path, depositor.uid, visibility)
+        result = service.attach_pubmed_file(work_hash, file_path, depositor.uid, visibility)
       }.to change { FileSet.count }.by(1)
       expect(result).to be_instance_of(FileSet)
       expect(result.depositor).to eq(depositor.uid)
