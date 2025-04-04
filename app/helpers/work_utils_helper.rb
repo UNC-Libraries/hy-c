@@ -3,7 +3,6 @@ module WorkUtilsHelper
   def self.fetch_work_data_by_alternate_identifier(identifier)
     puts "Fetching work data for #{identifier}"
     work_data = ActiveFedora::SolrService.get("identifier_tesim:\"#{identifier}\"", rows: 1)['response']['docs'].first || {}
-    puts "Work data: #{work_data}"
     Rails.logger.warn("No work found associated with alternate identifier: #{identifier}") if work_data.blank?
     admin_set_name = work_data['admin_set_tesim']&.first
     admin_set_data = admin_set_name ? ActiveFedora::SolrService.get("title_tesim:#{admin_set_name} AND has_model_ssim:(\"AdminSet\")", { :rows => 1, 'df' => 'title_tesim'})['response']['docs'].first : {}
