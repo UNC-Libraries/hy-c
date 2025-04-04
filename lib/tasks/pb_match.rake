@@ -10,14 +10,14 @@ task fetch_identifiers: :environment do |task, args|
   output_path = Rails.root.join(OUTPUT_PATH)
   # Name, Extension
   file_info = file_info_in_dir(path)
-    # Store the file names in a CSV
+    # Store ['file_name', 'file_extension' 'cdr_url', 'has_fileset'] names in a CSV
   store_file_info_and_cdr_data(file_info, output_path)
 end
 
 desc 'Attach new PDFs to works'
 # Requiring a directory to be specified to avoid searching for the PDF
-task :attach_pubmed_pdfs, [:input_csv_path, :full_text_dir_or_csv, :pdf_retrieval_directory, :output_dir] => :environment do |task, args|
-  return unless valid_args('attach_pubmed_pdfs', args[:input_csv_path], args[:full_text_dir_or_csv])
+task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :full_text_dir_or_csv, :pdf_retrieval_directory, :output_dir] => :environment do |task, args|
+  return unless valid_args('attach_pubmed_pdfs', args[:full_text_dir_or_csv])
 #   WIP: Implement the PubmedIngestService
   ingest_service = Tasks::PubmedIngestService.new
   res = {skipped: [], successful: [], failed: [], time: Time.now, depositor: DEPOSITOR, directory_or_csv: args[:full_text_dir_or_csv]}
@@ -30,7 +30,7 @@ task :attach_pubmed_pdfs, [:input_csv_path, :full_text_dir_or_csv, :pdf_retrieva
     file_info_in_dir(args[:full_text_dir_or_csv])
   end
   # Read the CSV file
-  csv = CSV.read(args[:input_csv_path], headers: true)
+  fetch_identifiers_output_csv = CSV.read(args[:fetch_identifiers_output_csv], headers: true)
   # WIP: Likely remove later
   puts "Found #{file_info.length} files in the directory"
   modified_rows = []
@@ -43,7 +43,7 @@ task :attach_pubmed_pdfs, [:input_csv_path, :full_text_dir_or_csv, :pdf_retrieva
     # WIP: Short loop for testing
     break if attempted_attachements > 2
     # Retrieve the row from the CSV that matches the file name
-    row = csv.find { |row| row['file_name'] == file_name }.to_h
+    row = fetch_identifiers_output_csv.find { |row| row['file_name'] == file_name }.to_h
     if row.nil?
       # puts "No CSV entry found for #{file_name}"
       next
@@ -124,13 +124,13 @@ def valid_args(function_name, *args)
     end
 
       # Custom validation for the 'attach_pubmed_pdfs' task
-  if function_name == 'attach_pubmed_pdfs'
-    csv_path = args[0]
-    unless File.extname(csv_path) == '.csv'
-      puts "❌ #{function_name}: First argument must be a valid CSV file."
-      return false
-    end
-  end
+  # if function_name == 'attach_pubmed_pdfs'
+  #   # csv_path = args[0]
+  #   # unless File.extname(csv_path) == '.csv'
+  #   #   puts "❌ #{function_name}: First argument must be a valid CSV file."
+  #   #   return false
+  #   # end
+  # end
 
   true
 end
