@@ -8,39 +8,42 @@ desc 'Fetch identifiers from a directory, compare against the CDR, and store the
 task fetch_identifiers: :environment do |task, args|
   path = Rails.root.join(INPUT_PATH)
   output_path = Rails.root.join(OUTPUT_PATH)
-  file_names = filenames_in_dir(path)
+  # Name, Extension
+  file_info = file_info_in_dir(path)
     # Store the file names in a CSV
-  store_file_names_and_cdr_data(file_names, output_path)
+  store_file_info_and_cdr_data(file_info, output_path)
 end
 
 desc 'Attach new PDFs to works'
 # Requiring a directory to be specified to avoid searching for the PDF
-task :attach_pubmed_pdfs, [:input_csv_path, :pdf_filenames_dir_or_csv, :pdf_retrieval_directory, :output_dir] => :environment do |task, args|
-  return unless valid_args('attach_pubmed_pdfs', args[:input_csv_path], args[:pdf_filenames_dir_or_csv])
+task :attach_pubmed_pdfs, [:input_csv_path, :full_text_dir_or_csv, :pdf_retrieval_directory, :output_dir] => :environment do |task, args|
+  return unless valid_args('attach_pubmed_pdfs', args[:input_csv_path], args[:full_text_dir_or_csv])
 #   WIP: Implement the PubmedIngestService
   ingest_service = Tasks::PubmedIngestService.new
-  res = {skipped: [], successful: [], failed: [], time: Time.now, depositor: DEPOSITOR, directory_or_csv: args[:pdf_filenames_dir_or_csv]}
+  res = {skipped: [], successful: [], failed: [], time: Time.now, depositor: DEPOSITOR, directory_or_csv: args[:full_text_dir_or_csv]}
 
 #   Retrieve all files within pdf directory
-  file_names =
-  if File.extname(args[:pdf_filenames_dir_or_csv]) == '.csv'
-    CSV.read(args[:pdf_filenames_dir_or_csv], headers: true).map { |r| r['filename'] }
+  file_info =
+  if File.extname(args[:full_text_dir_or_csv]) == '.csv'
+    CSV.read(args[:full_text_dir_or_csv], headers: true).map { |r| [r['file_name'], r['file_extension']] }
   else
-    filenames_in_dir(args[:pdf_filenames_dir_or_csv])
+    file_info_in_dir(args[:full_text_dir_or_csv])
   end
   # Read the CSV file
   csv = CSV.read(args[:input_csv_path], headers: true)
   # WIP: Likely remove later
-  puts "Found #{file_names.length} files in the directory"
+  puts "Found #{file_info.length} files in the directory"
   modified_rows = []
   attempted_attachements = 0
   # WIP: Remove with index
   # Iterate through files in the specified directory
-  file_names.each_with_index do |file_name, index|
+  file_info.each_with_index do |file, index|
+    file_name = file[0]
+    file_extension = file[1]
     # WIP: Short loop for testing
     break if attempted_attachements > 2
     # Retrieve the row from the CSV that matches the file name
-    row = csv.find { |row| row['filename'] == file_name }.to_h
+    row = csv.find { |row| row['file_name'] == file_name }.to_h
     if row.nil?
       # puts "No CSV entry found for #{file_name}"
       next
@@ -58,12 +61,12 @@ task :attach_pubmed_pdfs, [:input_csv_path, :pdf_filenames_dir_or_csv, :pdf_retr
       next
     end
     # WIP: Likely remove later
-    puts "Fetching work data for #{row['filename']}"
+    puts "Fetching work data for #{row['file_name']}"
     # Only print rows that are not skipped
     attempted_attachements += 1
     puts "Processing #{file_name}, Index: #{index}"
     puts "Row: #{row}"
-    hyrax_work = WorkUtilsHelper.fetch_work_data_by_alternate_identifier(row['filename'])
+    hyrax_work = WorkUtilsHelper.fetch_work_data_by_alternate_identifier(row['file_name'])
     # Skip the row if the work or admin set is not found
     # Modify the 'pdf_attached' field depending on the result of the attachment, and categorize the row as successful or failed
     # Add the modified row to the 'modified_rows' array to write to a CSV later
@@ -80,7 +83,8 @@ task :attach_pubmed_pdfs, [:input_csv_path, :pdf_filenames_dir_or_csv, :pdf_retr
     puts "Successfully fetched work with ID: #{hyrax_work[:work_id]}. Admin set ID: #{hyrax_work[:admin_set_id]}. Creating work object."
      # WIP: Implement the PubmedIngestService
     begin
-     ingest_service.attach_pubmed_pdf(hyrax_work, args[:pdf_retrieval_directory], DEPOSITOR, Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE)
+     file_path = File.join(args[:pdf_retrieval_directory], "#{file_name}.#{file_extension}")
+     ingest_service.attach_pubmed_pdf(hyrax_work, file_path, DEPOSITOR, Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE)
       row['pdf_attached'] = "Success"
       res[:successful] << row
       modified_rows << row
@@ -100,17 +104,18 @@ task :attach_pubmed_pdfs, [:input_csv_path, :pdf_filenames_dir_or_csv, :pdf_retr
   # Write modified rows to CSV
   csv_output_path = File.join(args[:output_dir], "attached_pdfs_output.csv")
   CSV.open(csv_output_path, 'w') do |csv_out|
-    csv_out << ['filename', 'cdr_url', 'has_fileset', 'pdf_attached']
+    csv_out << ['file_name', 'cdr_url', 'has_fileset', 'pdf_attached']
     modified_rows.each do |row|
-      csv_out << [row['filename'], row['cdr_url'], row['has_fileset'], row['pdf_attached']]
+      csv_out << [row['file_name'], row['cdr_url'], row['has_fileset'], row['pdf_attached']]
     end
   end
 end
 
-def filenames_in_dir(directory)
-  # Fetch file names from the directory
-  # Strip the file extension and remove duplicates
-  Dir.entries(directory).select { |f| !File.directory? f }.map { |f| File.basename(f, '.*') }.uniq
+def file_info_in_dir(directory)
+  Dir.entries(directory)
+     .select { |f| !File.directory?(File.join(directory, f)) }
+     .map { |f| [File.basename(f, '.*'), File.extname(f).delete('.')] }
+     .uniq
 end
 def valid_args(function_name, *args)
   if args.any?(&:nil?)
@@ -130,17 +135,19 @@ def valid_args(function_name, *args)
   true
 end
 # Store file names and CDR data in a CSV
-def store_file_names_and_cdr_data(file_names, output_path)
+def store_file_info_and_cdr_data(file_info, output_path)
   CSV.open(output_path, 'w') do |csv|
       # Add the header
-    csv << ['filename', 'cdr_url', 'has_fileset']
-    file_names.each do |file_name|
+    csv << ['file_name', 'file_extension' 'cdr_url', 'has_fileset']
+    file_info.each do |file|
+      file_name = file[0]
+      file_extension = file[1]
       cdr_info = get_cdr_duplicate_data(file_name)
       if cdr_info.present?
         cdr_url, has_fileset = cdr_info
-        csv << [file_name, cdr_url, has_fileset]
+        csv << [file_name, file_extension, cdr_url, has_fileset]
       else
-        csv << [file_name, nil, nil]
+        csv << [file_name, file_extension, nil, nil]
       end
     end
   end
