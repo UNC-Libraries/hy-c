@@ -25,10 +25,12 @@ task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :full_text_dir_or_csv,
   ingest_service = Tasks::PubmedIngestService.new
   res = {skipped: [], successful: [], failed: [], time: Time.now, depositor: DEPOSITOR, directory_or_csv: args[:full_text_dir_or_csv], counts: {}}
 
-#   Retrieve all files within pdf directory
+#  Retrieve all files within pdf directory
   file_info =
   if File.extname(args[:full_text_dir_or_csv]) == '.csv'
-    CSV.read(args[:full_text_dir_or_csv], headers: true).map { |r| [r['file_name'], r['file_extension']] }
+    CSV.read(args[:full_text_dir_or_csv], headers: true)
+    .map { |r| [r['file_name'], r['file_extension']] }
+    .uniq { |file| file[0] } # Deduplicate based on filename
   else
     file_info_in_dir(args[:full_text_dir_or_csv])
   end
