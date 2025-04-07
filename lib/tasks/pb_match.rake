@@ -76,6 +76,8 @@ task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :full_text_dir_or_csv,
        res[:failed] << row.merge('error' => [e.class.to_s, e.message])
        modified_rows << row
        puts "Error attaching file #{index} of #{file_info.length}:  (#{file_name}.#{file_extension})"
+       Rails.logger.error("Error attaching file #{index} of #{file_info.length}:  (#{file_name}.#{file_extension})")
+       Rails.logger.error(e.backtrace.join("\n"))
        next
     end
   end
