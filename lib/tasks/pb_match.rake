@@ -54,6 +54,7 @@ task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :full_text_dir_or_csv,
     end
     # Only print rows that are not skipped
     attempted_attachements += 1
+    puts "Attempting to attach file #{index} of #{file_info.length}:  (#{file_name}.#{file_extension})"
     hyrax_work = WorkUtilsHelper.fetch_work_data_by_alternate_identifier(row['file_name'])
     # Skip the row if the work or admin set is not found
     # Modify the 'pdf_attached' field depending on the result of the attachment, and categorize the row as successful or failed
@@ -74,6 +75,7 @@ task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :full_text_dir_or_csv,
      rescue StandardError => e
        res[:failed] << row.merge('error' => [e.class.to_s, e.message])
        modified_rows << row
+       puts "Error attaching file #{index} of #{file_info.length}:  (#{file_name}.#{file_extension})"
        next
     end
   end
@@ -90,6 +92,13 @@ task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :full_text_dir_or_csv,
       csv_out << [row['file_name'], row['cdr_url'], row['has_fileset'], row['pdf_attached']]
     end
   end
+  double_log("Results written to #{json_output_path} and #{csv_output_path}")
+  double_log("Attemped Attachments: #{attempted_attachements}, Successful: #{res[:successful].length}, Failed: #{res[:failed].length}, Skipped: #{res[:skipped].length}")
+end
+
+def double_log(message)
+  puts message
+  Rails.logger.info(message)
 end
 
 def file_info_in_dir(directory)
