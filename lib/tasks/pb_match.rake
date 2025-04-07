@@ -23,7 +23,7 @@ desc 'Attach new PDFs to works'
 task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :full_text_dir_or_csv, :file_retrieval_directory, :output_dir] => :environment do |task, args|
   return unless valid_args('attach_pubmed_pdfs', args[:full_text_dir_or_csv])
   ingest_service = Tasks::PubmedIngestService.new
-  res = {skipped: [], successful: [], failed: [], time: Time.now, depositor: DEPOSITOR, directory_or_csv: args[:full_text_dir_or_csv]}
+  res = {skipped: [], successful: [], failed: [], time: Time.now, depositor: DEPOSITOR, directory_or_csv: args[:full_text_dir_or_csv], counts: {}}
 
 #   Retrieve all files within pdf directory
   file_info =
@@ -81,6 +81,11 @@ task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :full_text_dir_or_csv,
        next
     end
   end
+  # Update Counts
+  res[:counts][:total_unique_files] = file_info.length
+  res[:counts][:failed] = res[:failed].length
+  res[:counts][:successful] = res[:successful].length
+  res[:counts][:skipped] = res[:skipped].length
   # Write results to JSON
   json_output_path = File.join(args[:output_dir], 'pdf_attachment_results.json')
   File.open(json_output_path, 'w') do |f|
