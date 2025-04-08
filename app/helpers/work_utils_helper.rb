@@ -11,7 +11,8 @@ module WorkUtilsHelper
       work_type: work_data.dig('has_model_ssim', 0),
       title: work_data['title_tesim']&.first,
       admin_set_id: admin_set_data['id'],
-      admin_set_name: admin_set_name
+      admin_set_name: admin_set_name,
+      file_set_names: self.get_filenames(work_data['file_set_ids_ssim']),
     }
   end
   def self.fetch_work_data_by_fileset_id(fileset_id)
@@ -54,5 +55,18 @@ module WorkUtilsHelper
     else
       return "No admin set found with title_tesim: #{admin_set_name}."
     end
+  end
+
+  def self.get_filenames(fileset_ids)
+    filenames = []
+    fileset_ids.each do |fileset_id|
+      file_set = ActiveFedora::SolrService.get("id:#{fileset_id}", rows: 1)['response']['docs'].first || {}
+      if file_set.present?
+        filenames << file_set['title_tesim']&.first
+      else
+        Rails.logger.warn("No FileSet found for ID: #{fileset_id}")
+      end
+    end
+    filenames
   end
 end

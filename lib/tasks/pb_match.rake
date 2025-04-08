@@ -1,6 +1,17 @@
 # frozen_string_literal: true
 DEPOSITOR = ENV['DIMENSIONS_INGEST_DEPOSITOR_ONYEN']
 
+# WIP: Delete Later
+# desc 'put pubmed id check'
+# task :pubmed_id_check, [:identifier] => :environment do |task, args|
+#   identifier = args[:identifier]
+#   if is_valid_pubmed_id?(identifier)
+#     puts "✅ Valid PubMed ID: #{identifier}"
+#   else
+#     puts "❌ Invalid PubMed ID: #{identifier}"
+#   end
+# end
+
 desc 'Fetch identifiers from a directory, compare against the CDR, and store the results in a CSV'
 task :fetch_identifiers, [:input_dir_path, :output_csv_path] => :environment do |task, args|
   input_dir_path = Rails.root.join(args[:input_dir_path])
@@ -58,6 +69,14 @@ task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :full_text_csv, :file_
       modified_rows << row
       next
     end
+    # Skip file attachment if the record has a file-set name which is a PubMed id
+    if has_valid_pubmed_id?(hyrax_work[:file_set_names])
+      row['pdf_attached'] = 'Skipped: Record has a PubMed associated file-set attached'
+      res[:skipped] << row
+      modified_rows << row
+      next
+    end
+    # Attach the file to the work
     begin
       file_path = File.join(args[:file_retrieval_directory], "#{file_name}.#{file_extension}")
       ingest_service.attach_pubmed_file(hyrax_work, file_path, DEPOSITOR, Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE)
@@ -93,6 +112,18 @@ task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :full_text_csv, :file_
   end
   double_log("Results written to #{json_output_path} and #{csv_output_path}")
   double_log("Attempted Attachments: #{attempted_attachments}, Successful: #{res[:successful].length}, Failed: #{res[:failed].length}, Skipped: #{res[:skipped].length}")
+end
+
+def has_valid_pubmed_id?(identifiers)
+  # Send a request to the PubMed conversion API
+  identifiers.each do |id|
+    response = HTTParty.get("https://www.ncbi.nlm.nih.gov/pmc/utils/idconv/v1.0/?ids=#{id}")
+    doc = Nokogiri::XML(response.body)
+    record = doc.at_xpath('//record')
+    if record && record['status'] != 'error'
+      return true
+    end
+  end
 end
 
 def double_log(message)
