@@ -59,12 +59,16 @@ module WorkUtilsHelper
 
   def self.get_filenames(fileset_ids)
     filenames = []
+    if fileset_ids.blank?
+      Rails.logger.warn('No Fileset IDs provided.')
+      return filenames
+    end
     fileset_ids.each do |fileset_id|
       file_set = ActiveFedora::SolrService.get("id:#{fileset_id}", rows: 1)['response']['docs'].first || {}
       if file_set.present?
         filenames << file_set['title_tesim']&.first
       else
-        Rails.logger.warn("No FileSet found for ID: #{fileset_id}")
+        Rails.logger.warn("No Fileset found for ID: #{fileset_id}")
       end
     end
     filenames
