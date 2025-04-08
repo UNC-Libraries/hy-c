@@ -1,47 +1,37 @@
 # frozen_string_literal: true
-# Hardcode absolute paths for input and output directories
-INPUT_PATH = '/home/dcam/pmc_pdfs/sample'
-OUTPUT_PATH = '/home/dcam/pb_match_results.csv'
 DEPOSITOR = ENV['DIMENSIONS_INGEST_DEPOSITOR_ONYEN']
 
 desc 'Fetch identifiers from a directory, compare against the CDR, and store the results in a CSV'
-task fetch_identifiers: :environment do |task, args|
-  path = Rails.root.join(INPUT_PATH)
-  output_path = Rails.root.join(OUTPUT_PATH)
+task :fetch_identifiers, [:input_dir_path, :output_csv_path] => :environment do |task, args|
+  input_dir_path = Rails.root.join(args[:input_dir_path])
+  output_csv_path = Rails.root.join(args[:output_csv_path])
   # Array of ['file_name', 'file_extension']
-  file_info = file_info_in_dir(path)
+  file_info = file_info_in_dir(input_dir_path)
   # Store ['file_name', 'file_extension' 'cdr_url', 'has_fileset'] names in a CSV
-  store_file_info_and_cdr_data(file_info, output_path)
+  store_file_info_and_cdr_data(file_info, output_csv_path)
 end
 
 desc 'Attach new PDFs to works'
 # Arguments:
 # 1. fetch_identifiers_output_csv: Path to the CSV file containing the identifiers and CDR data
-# 2. full_text_dir_or_csv: Path to the directory or CSV file containing the full text files
-# 3. file_retrieval_directory: Path to the directory where the files are located. Should be the same as full_text_dir_or_csv if it's a directory
+# 2. full_text_csv: CSV with full-text filenames and extensions
+# 3. file_retrieval_directory: Path to the directory where the files are located
 # 4. output_dir: Path to the directory where the output files will be saved
-task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :full_text_dir_or_csv, :file_retrieval_directory, :output_dir] => :environment do |task, args|
-  return unless valid_args('attach_pubmed_pdfs', args[:full_text_dir_or_csv])
+task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :full_text_csv, :file_retrieval_directory, :output_dir] => :environment do |task, args|
+  return unless valid_args('attach_pubmed_pdfs', args[:full_text_csv])
   ingest_service = Tasks::PubmedIngestService.new
-  res = {skipped: [], successful: [], failed: [], time: Time.now, depositor: DEPOSITOR, directory_or_csv: args[:full_text_dir_or_csv], counts: {}}
+  res = {skipped: [], successful: [], failed: [], time: Time.now, depositor: DEPOSITOR, directory_or_csv: args[:full_text_csv], counts: {}}
+  file_info = CSV.read(args[:full_text_csv], headers: true)
+              .map { |r| [r['file_name'], r['file_extension']] }
+              .uniq { |file| file[0] } # Deduplicate filenames
 
-#  Retrieve all files within pdf directory
-  file_info =
-  if File.extname(args[:full_text_dir_or_csv]) == '.csv'
-    CSV.read(args[:full_text_dir_or_csv], headers: true)
-    .map { |r| [r['file_name'], r['file_extension']] }
-    .uniq { |file| file[0] } # Deduplicate based on filename
-  else
-    file_info_in_dir(args[:full_text_dir_or_csv])
-  end
   # Read the CSV file
   fetch_identifiers_output_csv = CSV.read(args[:fetch_identifiers_output_csv], headers: true)
   modified_rows = []
   attempted_attachements = 0
   # Iterate through files in the specified directory
   file_info.each_with_index do |file, index|
-    file_name = file[0]
-    file_extension = file[1]
+    file_name, file_extension = file
     # Retrieve the row from the CSV that matches the file name
     row = fetch_identifiers_output_csv.find { |row| row['file_name'] == file_name }.to_h
     if row.nil?
@@ -56,8 +46,8 @@ task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :full_text_dir_or_csv,
     end
     # Only print rows that are not skipped
     attempted_attachements += 1
-    puts "Attempting to attach file #{index} of #{file_info.length}:  (#{file_name}.#{file_extension})"
-    hyrax_work = WorkUtilsHelper.fetch_work_data_by_alternate_identifier(row['file_name'])
+    puts "Attempting to attach file #{index + 1} of #{file_info.length}:  (#{file_name}.#{file_extension})"
+    hyrax_work = WorkUtilsHelper.fetch_work_data_by_alternate_identifier(file_name)
     # Skip the row if the work or admin set is not found
     # Modify the 'pdf_attached' field depending on the result of the attachment, and categorize the row as successful or failed
     # Add the modified row to the 'modified_rows' array to write to a CSV later
@@ -77,8 +67,8 @@ task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :full_text_dir_or_csv,
      rescue StandardError => e
        res[:failed] << row.merge('error' => [e.class.to_s, e.message])
        modified_rows << row
-       puts "Error attaching file #{index} of #{file_info.length}:  (#{file_name}.#{file_extension})"
-       Rails.logger.error("Error attaching file #{index} of #{file_info.length}:  (#{file_name}.#{file_extension})")
+       puts "Error attaching file #{index + 1} of #{file_info.length}:  (#{file_name}.#{file_extension})"
+       Rails.logger.error("Error attaching file #{index + 1} of #{file_info.length}:  (#{file_name}.#{file_extension})")
        Rails.logger.error(e.backtrace.join("\n"))
        next
     end
