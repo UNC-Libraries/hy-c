@@ -14,7 +14,7 @@ module Tasks
       # Add PDF file to Article (including FileSets)
       pdf_path = pdf_file_path
 
-      pdf_file = attach_pdf_to_work(art_with_meta, pdf_path, depositor)
+      pdf_file = attach_pdf_to_work(art_with_meta, pdf_path, depositor, art_with_meta.visibility)
       pdf_file.update permissions_attributes: group_permissions(admin_set)
 
       # Add xml metadata file to Article
