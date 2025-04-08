@@ -28,7 +28,7 @@ task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :full_text_csv, :file_
   # Read the CSV file
   fetch_identifiers_output_csv = CSV.read(args[:fetch_identifiers_output_csv], headers: true)
   modified_rows = []
-  attempted_attachements = 0
+  attempted_attachments = 0
   # Iterate through files in the specified directory
   file_info.each_with_index do |file, index|
     file_name, file_extension = file
@@ -45,7 +45,7 @@ task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :full_text_csv, :file_
       next
     end
     # Only print rows that are not skipped
-    attempted_attachements += 1
+    attempted_attachments += 1
     puts "Attempting to attach file #{index + 1} of #{file_info.length}:  (#{file_name}.#{file_extension})"
     hyrax_work = WorkUtilsHelper.fetch_work_data_by_alternate_identifier(file_name)
     # Skip the row if the work or admin set is not found
@@ -92,7 +92,7 @@ task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :full_text_csv, :file_
     end
   end
   double_log("Results written to #{json_output_path} and #{csv_output_path}")
-  double_log("Attemped Attachments: #{attempted_attachements}, Successful: #{res[:successful].length}, Failed: #{res[:failed].length}, Skipped: #{res[:skipped].length}")
+  double_log("Attempted Attachments: #{attempted_attachments}, Successful: #{res[:successful].length}, Failed: #{res[:failed].length}, Skipped: #{res[:skipped].length}")
 end
 
 def double_log(message)
