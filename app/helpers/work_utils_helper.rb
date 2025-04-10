@@ -11,7 +11,8 @@ module WorkUtilsHelper
       work_type: work_data.dig('has_model_ssim', 0),
       title: work_data['title_tesim']&.first,
       admin_set_id: admin_set_data['id'],
-      admin_set_name: admin_set_name
+      admin_set_name: admin_set_name,
+      file_set_names: self.get_filenames(work_data['file_set_ids_ssim']),
     }
   end
   def self.fetch_work_data_by_fileset_id(fileset_id)
@@ -30,10 +31,24 @@ module WorkUtilsHelper
       admin_set_name: admin_set_name
     }
   end
-
   def self.fetch_work_data_by_id(work_id)
     work_data = ActiveFedora::SolrService.get("id:#{work_id}", rows: 1)['response']['docs'].first || {}
     Rails.logger.warn("No work found associated with work id: #{work_id}") if work_data.blank?
+    admin_set_name = work_data['admin_set_tesim']&.first
+    admin_set_data = admin_set_name ? ActiveFedora::SolrService.get("title_tesim:#{admin_set_name} AND has_model_ssim:(\"AdminSet\")", { :rows => 1, 'df' => 'title_tesim'})['response']['docs'].first : {}
+    Rails.logger.warn(self.generate_warning_message(admin_set_name, work_id, false)) if admin_set_data.blank?
+    {
+      work_id: work_data['id'],
+      work_type: work_data.dig('has_model_ssim', 0),
+      title: work_data['title_tesim']&.first,
+      admin_set_id: admin_set_data['id'],
+      admin_set_name: admin_set_name
+    }
+  end
+
+  def self.fetch_work_data_by_doi(doi)
+    work_data = ActiveFedora::SolrService.get("doi_tesim:\"#{doi}\"", rows: 1)['response']['docs'].first || {}
+    Rails.logger.warn("No work found associated with work id: #{doi}") if work_data.blank?
     admin_set_name = work_data['admin_set_tesim']&.first
     admin_set_data = admin_set_name ? ActiveFedora::SolrService.get("title_tesim:#{admin_set_name} AND has_model_ssim:(\"AdminSet\")", { :rows => 1, 'df' => 'title_tesim'})['response']['docs'].first : {}
     Rails.logger.warn(self.generate_warning_message(admin_set_name, work_id, false)) if admin_set_data.blank?
@@ -54,5 +69,22 @@ module WorkUtilsHelper
     else
       return "No admin set found with title_tesim: #{admin_set_name}."
     end
+  end
+
+  def self.get_filenames(fileset_ids)
+    filenames = []
+    if fileset_ids.blank?
+      Rails.logger.warn('No Fileset IDs provided.')
+      return filenames
+    end
+    fileset_ids.each do |fileset_id|
+      file_set = ActiveFedora::SolrService.get("id:#{fileset_id}", rows: 1)['response']['docs'].first || {}
+      if file_set.present?
+        filenames << file_set['title_tesim']&.first
+      else
+        Rails.logger.warn("No Fileset found for ID: #{fileset_id}")
+      end
+    end
+    filenames
   end
 end
