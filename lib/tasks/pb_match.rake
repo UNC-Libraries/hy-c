@@ -52,7 +52,7 @@ task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :full_text_csv, :file_
       next
     end
 
-    # Set 'pdf_attached' to 'Skipped' if the doi for the file has already been encountered
+    # Skip attachment if the doi for the file has already been encountered
     if encountered_dois.include?(file_doi)
       row['pdf_attached'] = 'Skipped: Already encountered this work during current run'
       res[:skipped] << row
@@ -61,7 +61,7 @@ task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :full_text_csv, :file_
     end
     encountered_dois << file_doi
 
-    # Set 'pdf_attached' to 'Skipped' if the below conditions are met and categorize the row as skipped
+    # Skip attachment if the work doesn't exist or has a file attached
     if row['cdr_url'].nil? || row['has_fileset'].to_s == 'true'
       skip_message = row['cdr_url'].nil? ? 'No CDR URL' : 'File already attached'
       row['pdf_attached'] = "Skipped: #{skip_message}"
@@ -83,12 +83,13 @@ task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :full_text_csv, :file_
       next
     end
     # Skip file attachment if the record has a file-set name which is a PubMed id
-    if has_valid_pubmed_id?(hyrax_work[:file_set_names])
-      row['pdf_attached'] = 'Skipped: Record has a PubMed associated file-set attached'
-      res[:skipped] << row
-      modified_rows << row
-      next
-    end
+    # WIP: Redundant any work with a file attached will be skipped
+    # if has_valid_pubmed_id?(hyrax_work[:file_set_names])
+    #   row['pdf_attached'] = 'Skipped: Record has a PubMed associated file-set attached'
+    #   res[:skipped] << row
+    #   modified_rows << row
+    #   next
+    # end
     # Attach the file to the work
     begin
       file_path = File.join(args[:file_retrieval_directory], "#{file_name}.#{file_extension}")
@@ -127,18 +128,18 @@ task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :full_text_csv, :file_
   double_log("Attempted Attachments: #{attempted_attachments}, Successful: #{res[:successful].length}, Failed: #{res[:failed].length}, Skipped: #{res[:skipped].length}")
 end
 
-def has_valid_pubmed_id?(identifiers)
-  # Send a request to the PubMed conversion API
-  identifiers.each do |id|
-    base_name = File.basename(id, '.*')
-    response = HTTParty.get("https://www.ncbi.nlm.nih.gov/pmc/utils/idconv/v1.0/?ids=#{base_name}")
-    doc = Nokogiri::XML(response.body)
-    record = doc.at_xpath('//record')
-    if record && record['status'] != 'error'
-      return true
-    end
-  end
-end
+# def has_valid_pubmed_id?(identifiers)
+#   # Send a request to the PubMed conversion API
+#   identifiers.each do |id|
+#     base_name = File.basename(id, '.*')
+#     response = HTTParty.get("https://www.ncbi.nlm.nih.gov/pmc/utils/idconv/v1.0/?ids=#{base_name}")
+#     doc = Nokogiri::XML(response.body)
+#     record = doc.at_xpath('//record')
+#     if record && record['status'] != 'error'
+#       return true
+#     end
+#   end
+# end
 
 def pubmed_id_to_doi(identifier)
   # Send a request to the PubMed conversion API
