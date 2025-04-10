@@ -2,15 +2,16 @@
 DEPOSITOR = ENV['DIMENSIONS_INGEST_DEPOSITOR_ONYEN']
 
 # WIP: Delete Later
-# desc 'put pubmed id check'
-# task :pubmed_id_check, [:identifier] => :environment do |task, args|
-#   identifier = args[:identifier]
-#   if is_valid_pubmed_id?(identifier)
-#     puts "✅ Valid PubMed ID: #{identifier}"
-#   else
-#     puts "❌ Invalid PubMed ID: #{identifier}"
-#   end
-# end
+desc 'put pubmed id check'
+task :pubmed_id_check, [:identifier] => :environment do |task, args|
+  identifier = args[:identifier]
+  puts "DOI For #{identifier}: #{pubmed_id_to_doi(identifier)}"
+  # if is_valid_pubmed_id?(identifier)
+  #   puts "✅ Valid PubMed ID: #{identifier}"
+  # else
+  #   puts "❌ Invalid PubMed ID: #{identifier}"
+  # end
+end
 
 desc 'Fetch identifiers from a directory, compare against the CDR, and store the results in a CSV'
 task :fetch_identifiers, [:input_dir_path, :output_csv_path] => :environment do |task, args|
@@ -39,15 +40,27 @@ task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :full_text_csv, :file_
   # Read the CSV file
   fetch_identifiers_output_csv = CSV.read(args[:fetch_identifiers_output_csv], headers: true)
   modified_rows = []
+  encountered_dois = []
   attempted_attachments = 0
   # Iterate through files in the specified directory
   file_info.each_with_index do |file, index|
     file_name, file_extension = file
+    file_doi = pubmed_id_to_doi(file_name)
     # Retrieve the row from the CSV that matches the file name
     row = fetch_identifiers_output_csv.find { |row| row['file_name'] == file_name }.to_h
     if row.nil?
       next
     end
+
+    # Set 'pdf_attached' to 'Skipped' if the doi for the file has already been encountered
+    if encountered_dois.include?(file_doi)
+      row['pdf_attached'] = 'Skipped: Already encountered this work during current run'
+      res[:skipped] << row
+      modified_rows << row
+      next
+    end
+    encountered_dois << file_doi
+
     # Set 'pdf_attached' to 'Skipped' if the below conditions are met and categorize the row as skipped
     if row['cdr_url'].nil? || row['has_fileset'].to_s == 'true'
       skip_message = row['cdr_url'].nil? ? 'No CDR URL' : 'File already attached'
@@ -58,7 +71,7 @@ task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :full_text_csv, :file_
     # Only print rows that are not skipped
     attempted_attachments += 1
     puts "Attempting to attach file #{index + 1} of #{file_info.length}:  (#{file_name}.#{file_extension})"
-    hyrax_work = WorkUtilsHelper.fetch_work_data_by_alternate_identifier(file_name)
+    hyrax_work = WorkUtilsHelper.fetch_work_data_by_doi(file_doi)
     # Skip the row if the work or admin set is not found
     # Modify the 'pdf_attached' field depending on the result of the attachment, and categorize the row as successful or failed
     # Add the modified row to the 'modified_rows' array to write to a CSV later
@@ -117,12 +130,25 @@ end
 def has_valid_pubmed_id?(identifiers)
   # Send a request to the PubMed conversion API
   identifiers.each do |id|
-    response = HTTParty.get("https://www.ncbi.nlm.nih.gov/pmc/utils/idconv/v1.0/?ids=#{id}")
+    base_name = File.basename(id, '.*')
+    response = HTTParty.get("https://www.ncbi.nlm.nih.gov/pmc/utils/idconv/v1.0/?ids=#{base_name}")
     doc = Nokogiri::XML(response.body)
     record = doc.at_xpath('//record')
     if record && record['status'] != 'error'
       return true
     end
+  end
+end
+
+def pubmed_id_to_doi(identifier)
+  # Send a request to the PubMed conversion API
+  response = HTTParty.get("https://www.ncbi.nlm.nih.gov/pmc/utils/idconv/v1.0/?ids=#{identifier}")
+  doc = Nokogiri::XML(response.body)
+  record = doc.at_xpath('//record')
+  if record && record['status'] != 'error'
+    return record['doi']
+  else
+    return nil
   end
 end
 
