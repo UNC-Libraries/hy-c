@@ -51,7 +51,7 @@ module WorkUtilsHelper
     Rails.logger.warn("No work found associated with work id: #{doi}") if work_data.blank?
     admin_set_name = work_data['admin_set_tesim']&.first
     admin_set_data = admin_set_name ? ActiveFedora::SolrService.get("title_tesim:#{admin_set_name} AND has_model_ssim:(\"AdminSet\")", { :rows => 1, 'df' => 'title_tesim'})['response']['docs'].first : {}
-    Rails.logger.warn(self.generate_warning_message(admin_set_name, work_id, false)) if admin_set_data.blank?
+    Rails.logger.warn(self.generate_warning_message(admin_set_name, doi, false)) if admin_set_data.blank?
     {
       work_id: work_data['id'],
       work_type: work_data.dig('has_model_ssim', 0),

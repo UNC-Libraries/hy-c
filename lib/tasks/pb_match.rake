@@ -71,16 +71,23 @@ task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :full_text_csv, :file_
     # Only print rows that are not skipped
     attempted_attachments += 1
     puts "Attempting to attach file #{index + 1} of #{file_info.length}:  (#{file_name}.#{file_extension})"
-    hyrax_work = WorkUtilsHelper.fetch_work_data_by_doi(file_doi)
+    puts "File DOI: #{file_doi}"
+    # Fetch work data using the DOI or file name
+    hyrax_work = file_doi.present? ? WorkUtilsHelper.fetch_work_data_by_doi(file_doi) : WorkUtilsHelper.fetch_work_data_by_fileset_id(file_name)
+    puts "Work Inspection: #{hyrax_work.inspect}"
     # Skip the row if the work or admin set is not found
     # Modify the 'pdf_attached' field depending on the result of the attachment, and categorize the row as successful or failed
     # Add the modified row to the 'modified_rows' array to write to a CSV later
     if hyrax_work[:work_id].nil? || hyrax_work[:admin_set_id].nil?
-      concern = hyrax_work[:work_id].nil? ? 'Work' : 'Admin Set'
-      row['pdf_attached'] =  "Failed: #{concern} not found"
-      res[:failed] << row
-      modified_rows << row
-      next
+      # Fallback to using the file name (PMC or PMID) to fetch work data if DOI lookup fails
+      hyrax_work = WorkUtilsHelper.fetch_work_data_by_alternate_identifier(file_name)
+      if hyrax_work[:work_id].nil? || hyrax_work[:admin_set_id].nil?
+        concern = hyrax_work[:work_id].nil? ? 'Work' : 'Admin Set'
+        row['pdf_attached'] =  "Failed: #{concern} not found"
+        res[:failed] << row
+        modified_rows << row
+        next
+      end
     end
     # Skip file attachment if the record has a file-set name which is a PubMed id
     # WIP: Redundant any work with a file attached will be skipped
