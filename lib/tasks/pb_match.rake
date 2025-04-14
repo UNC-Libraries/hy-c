@@ -62,7 +62,7 @@ task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :full_text_csv, :file_
     row = fetch_identifiers_output_csv.find do |row|
       row['file_name'] == alternate_ids_for_file_name[:pmcid] ||
       row['file_name'] == alternate_ids_for_file_name[:pmid]
-    end
+    end&.to_h
 
     # Skip attachment if the row is nil or empty
     if row.nil? || row.empty?
@@ -94,7 +94,6 @@ task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :full_text_csv, :file_
       res[:skipped] << row.to_h
       next
     end
-    # Only print rows that are not skipped
     attempted_attachments += 1
     # Fetch work data using the DOI or file name
     potential_matches = [
