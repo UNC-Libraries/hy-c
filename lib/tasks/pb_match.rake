@@ -1,18 +1,5 @@
 # frozen_string_literal: true
 DEPOSITOR = ENV['DIMENSIONS_INGEST_DEPOSITOR_ONYEN']
-
-# WIP: Delete Later
-desc 'put pubmed id check'
-task :pubmed_id_check, [:identifier] => :environment do |task, args|
-  identifier = args[:identifier]
-  puts "DOI For #{identifier}: #{pubmed_id_to_doi(identifier)}"
-  # if is_valid_pubmed_id?(identifier)
-  #   puts "✅ Valid PubMed ID: #{identifier}"
-  # else
-  #   puts "❌ Invalid PubMed ID: #{identifier}"
-  # end
-end
-
 desc 'Fetch identifiers from a directory, compare against the CDR, and store the results in a CSV'
 task :fetch_identifiers, [:input_dir_path, :output_csv_path] => :environment do |task, args|
   input_dir_path = Rails.root.join(args[:input_dir_path])
