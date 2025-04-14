@@ -36,7 +36,6 @@ task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :full_text_csv, :file_
   file_info = CSV.read(args[:full_text_csv], headers: true)
               .map { |r| [r['file_name'], r['file_extension']] }
               .uniq { |file| file[0] } # Deduplicate filenames
-
   # Read the CSV file
   fetch_identifiers_output_csv = CSV.read(args[:fetch_identifiers_output_csv], headers: true)
   modified_rows = []
@@ -45,7 +44,6 @@ task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :full_text_csv, :file_
   # Iterate through files in the specified directory
   file_info.each_with_index do |file, index|
     file_name, file_extension = file
-    # WIP: File Doi to alternate identifiers hash
     alternate_ids_for_file_name = retrieve_alternate_ids(file_name)
     if alternate_ids_for_file_name.nil?
       # Log API failure
