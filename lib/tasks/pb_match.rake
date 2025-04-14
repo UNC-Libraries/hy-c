@@ -40,75 +40,99 @@ task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :full_text_csv, :file_
   # Read the CSV file
   fetch_identifiers_output_csv = CSV.read(args[:fetch_identifiers_output_csv], headers: true)
   modified_rows = []
-  encountered_dois = []
+  encountered_alternate_ids = []
   attempted_attachments = 0
   # Iterate through files in the specified directory
   file_info.each_with_index do |file, index|
     file_name, file_extension = file
-    file_doi = pubmed_id_to_doi(file_name)
-    # Retrieve the row from the CSV that matches the file name
-    row = fetch_identifiers_output_csv.find { |row| row['file_name'] == file_name }.to_h
-    if row.nil?
+    # WIP: File Doi to alternate identifiers hash
+    alternate_ids_for_file_name = retrieve_alternate_ids(file_name)
+    if alternate_ids_for_file_name.nil?
+      # Log API failure
+      double_log("Failed to retrieve alternate IDs for file from the NCBI API: #{file_name}.#{file_extension}", :warn)
+      res[:failed] << {
+        'file_name'     => file_name,
+        'pdf_attached'  => 'Failed to retrieve alternate IDs from NCBI API',
+        'cdr_url'       => nil,
+        'has_fileset'   => nil
+      }
+      next
+    end
+    # Retrieve the row from the CSV that matches the PMID or PMCID
+    row = fetch_identifiers_output_csv.find do |row|
+      row['file_name'] == alternate_ids_for_file_name[:pmcid] ||
+      row['file_name'] == alternate_ids_for_file_name[:pmid]
+    end
+
+    # Skip attachment if the row is nil or empty
+    if row.nil? || row.empty?
+      puts "Row not found for file: #{file_name}.#{file_extension}"
+      puts "Alternate IDs: #{alternate_ids_for_file_name.inspect}"
+      Rails.logger.warn("Row not found for file: #{file_name}.#{file_extension}")
       next
     end
 
     # Skip attachment if the doi for the file has already been encountered
-    if encountered_dois.include?(file_doi)
+    if encountered_alternate_ids.any? { |id_obj| has_matching_ids?(id_obj, alternate_ids_for_file_name) }
       row['pdf_attached'] = 'Skipped: Already encountered this work during current run'
+      row['pmid'] = alternate_ids_for_file_name[:pmid]
+      row['pmcid'] = alternate_ids_for_file_name[:pmcid]
+      row['doi'] = alternate_ids_for_file_name[:doi]
       res[:skipped] << row
       modified_rows << row
       next
+    else
+      encountered_alternate_ids << alternate_ids_for_file_name
     end
-    encountered_dois << file_doi
-
     # Skip attachment if the work doesn't exist or has a file attached
     if row['cdr_url'].nil? || row['has_fileset'].to_s == 'true'
       skip_message = row['cdr_url'].nil? ? 'No CDR URL' : 'File already attached'
       row['pdf_attached'] = "Skipped: #{skip_message}"
+      row['pmid'] = alternate_ids_for_file_name[:pmid]
+      row['pmcid'] = alternate_ids_for_file_name[:pmcid]
+      row['doi'] = alternate_ids_for_file_name[:doi]
       res[:skipped] << row
       next
     end
     # Only print rows that are not skipped
     attempted_attachments += 1
-    puts "Attempting to attach file #{index + 1} of #{file_info.length}:  (#{file_name}.#{file_extension})"
-    puts "File DOI: #{file_doi}"
     # Fetch work data using the DOI or file name
-    hyrax_work = file_doi.present? ? WorkUtilsHelper.fetch_work_data_by_doi(file_doi) : WorkUtilsHelper.fetch_work_data_by_fileset_id(file_name)
+    potential_matches = [
+      WorkUtilsHelper.fetch_work_data_by_doi(alternate_ids_for_file_name[:doi]),
+      WorkUtilsHelper.fetch_work_data_by_alternate_identifier(alternate_ids_for_file_name[:pmcid]),
+      WorkUtilsHelper.fetch_work_data_by_alternate_identifier(alternate_ids_for_file_name[:pmid])
+    ]
+    hyrax_work = potential_matches.find { |work| work[:work_id].present? }
+    puts "Attempting to attach file #{index + 1} of #{file_info.length}:  (#{file_name}.#{file_extension})"
+    puts "Inspecting Alternate IDs: #{alternate_ids_for_file_name.inspect}"
     puts "Work Inspection: #{hyrax_work.inspect}"
-    # Skip the row if the work or admin set is not found
-    # Modify the 'pdf_attached' field depending on the result of the attachment, and categorize the row as successful or failed
+
+    # Skip  admin set is not found
     # Add the modified row to the 'modified_rows' array to write to a CSV later
-    if hyrax_work[:work_id].nil? || hyrax_work[:admin_set_id].nil?
-      # Fallback to using the file name (PMC or PMID) to fetch work data if DOI lookup fails
-      hyrax_work = WorkUtilsHelper.fetch_work_data_by_alternate_identifier(file_name)
-      if hyrax_work[:work_id].nil? || hyrax_work[:admin_set_id].nil?
-        concern = hyrax_work[:work_id].nil? ? 'Work' : 'Admin Set'
-        row['pdf_attached'] =  "Failed: #{concern} not found"
-        res[:failed] << row
-        modified_rows << row
-        next
-      end
+    if hyrax_work.nil? || hyrax_work[:admin_set_id].nil?
+      double_log("Admin set or work not found for file: #{file_name}.#{file_extension}", :warn)
+      row['pdf_attached'] =  'Failed: Work or Admin Set not found'
+      row['pmid'] = alternate_ids_for_file_name[:pmid]
+      row['pmcid'] = alternate_ids_for_file_name[:pmcid]
+      row['doi'] = alternate_ids_for_file_name[:doi]
+      res[:failed] << row
+      modified_rows << row
+      next
     end
-    # Skip file attachment if the record has a file-set name which is a PubMed id
-    # WIP: Redundant any work with a file attached will be skipped
-    # if has_valid_pubmed_id?(hyrax_work[:file_set_names])
-    #   row['pdf_attached'] = 'Skipped: Record has a PubMed associated file-set attached'
-    #   res[:skipped] << row
-    #   modified_rows << row
-    #   next
-    # end
     # Attach the file to the work
     begin
       file_path = File.join(args[:file_retrieval_directory], "#{file_name}.#{file_extension}")
       ingest_service.attach_pubmed_file(hyrax_work, file_path, DEPOSITOR, Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE)
       row['pdf_attached'] = 'Success'
+      row['pmid'] = alternate_ids_for_file_name[:pmid]
+      row['pmcid'] = alternate_ids_for_file_name[:pmcid]
+      row['doi'] = alternate_ids_for_file_name[:doi]
       res[:successful] << row
       modified_rows << row
      rescue StandardError => e
        res[:failed] << row.merge('error' => [e.class.to_s, e.message])
        modified_rows << row
-       puts "Error attaching file #{index + 1} of #{file_info.length}:  (#{file_name}.#{file_extension})"
-       Rails.logger.error("Error attaching file #{index + 1} of #{file_info.length}:  (#{file_name}.#{file_extension})")
+       double_log("Error attaching file #{index + 1} of #{file_info.length}:  (#{file_name}.#{file_extension})", :error)
        Rails.logger.error(e.backtrace.join("\n"))
        next
     end
@@ -126,43 +150,51 @@ task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :full_text_csv, :file_
   # Write modified rows to CSV
   csv_output_path = File.join(args[:output_dir], 'attached_pdfs_output.csv')
   CSV.open(csv_output_path, 'w') do |csv_out|
-    csv_out << ['file_name', 'cdr_url', 'has_fileset', 'pdf_attached']
+    csv_out << ['file_name', 'cdr_url', 'has_fileset', 'pdf_attached', 'pmid', 'pmcid', 'doi']
     modified_rows.each do |row|
-      csv_out << [row['file_name'], row['cdr_url'], row['has_fileset'], row['pdf_attached']]
+      csv_out << [row['file_name'], row['cdr_url'], row['has_fileset'], row['pdf_attached'], row['pmid'], row['pmcid'], row['doi']]
     end
   end
-  double_log("Results written to #{json_output_path} and #{csv_output_path}")
-  double_log("Attempted Attachments: #{attempted_attachments}, Successful: #{res[:successful].length}, Failed: #{res[:failed].length}, Skipped: #{res[:skipped].length}")
+  double_log("Results written to #{json_output_path} and #{csv_output_path}", :info)
+  double_log("Attempted Attachments: #{attempted_attachments}, Successful: #{res[:successful].length}, Failed: #{res[:failed].length}, Skipped: #{res[:skipped].length}", :info)
 end
 
-# def has_valid_pubmed_id?(identifiers)
-#   # Send a request to the PubMed conversion API
-#   identifiers.each do |id|
-#     base_name = File.basename(id, '.*')
-#     response = HTTParty.get("https://www.ncbi.nlm.nih.gov/pmc/utils/idconv/v1.0/?ids=#{base_name}")
-#     doc = Nokogiri::XML(response.body)
-#     record = doc.at_xpath('//record')
-#     if record && record['status'] != 'error'
-#       return true
-#     end
-#   end
-# end
+def has_matching_ids?(existing_ids, current_ids)
+  # Check if the identifier matches any of the alternate IDs
+  existing_ids[:pmid] == current_ids[:pmid] ||
+  existing_ids[:pmcid] == current_ids[:pmcid] ||
+  existing_ids[:doi] == current_ids[:doi]
+end
 
-def pubmed_id_to_doi(identifier)
+def retrieve_alternate_ids(identifier)
   # Send a request to the PubMed conversion API
   response = HTTParty.get("https://www.ncbi.nlm.nih.gov/pmc/utils/idconv/v1.0/?ids=#{identifier}")
   doc = Nokogiri::XML(response.body)
   record = doc.at_xpath('//record')
   if record && record['status'] != 'error'
-    return record['doi']
+    res = {
+      pmid:  record['pmid'],
+      pmcid: record['pmcid'],
+      doi: record['doi'],
+    }
+    return res
   else
     return nil
   end
 end
 
-def double_log(message)
+def double_log(message, level)
   puts message
-  Rails.logger.info(message)
+  case level
+  when :info
+    Rails.logger.info(message)
+  when :warn
+    Rails.logger.warn(message)
+  when :error
+    Rails.logger.error(message)
+  else
+    Rails.logger.debug(message)
+  end
 end
 
 def file_info_in_dir(directory)
@@ -183,7 +215,7 @@ end
 def store_file_info_and_cdr_data(file_info, output_path)
   CSV.open(output_path, 'w') do |csv|
       # Add the header
-    csv << ['file_name', 'file_extension' 'cdr_url', 'has_fileset']
+    csv << ['file_name', 'file_extension', 'cdr_url', 'has_fileset']
     file_info.each do |file|
       file_name = file[0]
       file_extension = file[1]
