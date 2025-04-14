@@ -78,7 +78,7 @@ task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :full_text_csv, :file_
       row['pmid'] = alternate_ids_for_file_name[:pmid]
       row['pmcid'] = alternate_ids_for_file_name[:pmcid]
       row['doi'] = alternate_ids_for_file_name[:doi]
-      res[:skipped] << row
+      res[:skipped] << row.to_h
       modified_rows << row
       next
     else
@@ -91,17 +91,18 @@ task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :full_text_csv, :file_
       row['pmid'] = alternate_ids_for_file_name[:pmid]
       row['pmcid'] = alternate_ids_for_file_name[:pmcid]
       row['doi'] = alternate_ids_for_file_name[:doi]
-      res[:skipped] << row
+      res[:skipped] << row.to_h
       next
     end
     # Only print rows that are not skipped
     attempted_attachments += 1
     # Fetch work data using the DOI or file name
     potential_matches = [
-      WorkUtilsHelper.fetch_work_data_by_doi(alternate_ids_for_file_name[:doi]),
-      WorkUtilsHelper.fetch_work_data_by_alternate_identifier(alternate_ids_for_file_name[:pmcid]),
-      WorkUtilsHelper.fetch_work_data_by_alternate_identifier(alternate_ids_for_file_name[:pmid])
-    ]
+     alternate_ids_for_file_name[:doi]   && WorkUtilsHelper.fetch_work_data_by_doi(alternate_ids_for_file_name[:doi]),
+     alternate_ids_for_file_name[:pmcid] && WorkUtilsHelper.fetch_work_data_by_alternate_identifier(alternate_ids_for_file_name[:pmcid]),
+     alternate_ids_for_file_name[:pmid]  && WorkUtilsHelper.fetch_work_data_by_alternate_identifier(alternate_ids_for_file_name[:pmid])
+   ].compact
+
     hyrax_work = potential_matches.find { |work| work[:work_id].present? }
     puts "Attempting to attach file #{index + 1} of #{file_info.length}:  (#{file_name}.#{file_extension})"
     puts "Inspecting Alternate IDs: #{alternate_ids_for_file_name.inspect}"
@@ -115,7 +116,7 @@ task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :full_text_csv, :file_
       row['pmid'] = alternate_ids_for_file_name[:pmid]
       row['pmcid'] = alternate_ids_for_file_name[:pmcid]
       row['doi'] = alternate_ids_for_file_name[:doi]
-      res[:failed] << row
+      res[:failed] << row.to_h
       modified_rows << row
       next
     end
@@ -127,10 +128,14 @@ task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :full_text_csv, :file_
       row['pmid'] = alternate_ids_for_file_name[:pmid]
       row['pmcid'] = alternate_ids_for_file_name[:pmcid]
       row['doi'] = alternate_ids_for_file_name[:doi]
-      res[:successful] << row
+      res[:successful] << row.to_h
       modified_rows << row
      rescue StandardError => e
-       res[:failed] << row.merge('error' => [e.class.to_s, e.message])
+       row['pdf_attached'] = 'Failed: ' + e.message
+       row['pmid'] = alternate_ids_for_file_name[:pmid]
+       row['pmcid'] = alternate_ids_for_file_name[:pmcid]
+       row['doi'] = alternate_ids_for_file_name[:doi]
+       res[:failed] << row.to_h.merge('error' => [e.class.to_s, e.message])
        modified_rows << row
        double_log("Error attaching file #{index + 1} of #{file_info.length}:  (#{file_name}.#{file_extension})", :error)
        Rails.logger.error(e.backtrace.join("\n"))
