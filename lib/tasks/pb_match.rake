@@ -75,6 +75,8 @@ task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :full_text_csv, :file_
     # Skip attachment if the doi for the file has already been encountered
     if encountered_alternate_ids.any? { |id_obj| has_matching_ids?(id_obj, alternate_ids_for_file_name) }
       row['pdf_attached'] = 'Skipped: Already encountered this work during current run'
+      # Overwriting row file_name with the current one otherwise it defaults to the file name from the CSV 
+      row['file_name'] = file_name
       row['pmid'] = alternate_ids_for_file_name[:pmid]
       row['pmcid'] = alternate_ids_for_file_name[:pmcid]
       row['doi'] = alternate_ids_for_file_name[:doi]
