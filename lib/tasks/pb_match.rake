@@ -60,7 +60,7 @@ task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :full_text_csv, :file_
       Rails.logger.warn("Row not found for file: #{file_name}.#{file_extension}")
       next
     end
-      # Overwriting the matched row file name with the file name from the directory
+    # Overwriting the matched row file name with the file name from the directory
     # This is to ensure that the file name in the JSON and CSV match the file name in the directory
     row['file_name'] = file_name
 
