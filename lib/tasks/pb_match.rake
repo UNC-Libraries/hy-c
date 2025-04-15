@@ -48,8 +48,10 @@ task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :full_text_csv, :file_
       row['file_name'] == alternate_ids_for_file_name[:pmcid] ||
       row['file_name'] == alternate_ids_for_file_name[:pmid]
     end&.to_h
-    # Record processed file names in the row
-    row['file_name'] = file_name if row
+
+    row['pmid'] = alternate_ids_for_file_name[:pmid]
+    row['pmcid'] = alternate_ids_for_file_name[:pmcid]
+    row['doi'] = alternate_ids_for_file_name[:doi]
 
     # Skip attachment if the row is nil or empty
     if row.nil? || row.empty?
@@ -58,14 +60,13 @@ task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :full_text_csv, :file_
       Rails.logger.warn("Row not found for file: #{file_name}.#{file_extension}")
       next
     end
+      # Overwriting the matched row file name with the file name from the directory
+    # This is to ensure that the file name in the JSON and CSV match the file name in the directory
+    row['file_name'] = file_name
 
     # Skip attachment if the doi for the file has already been encountered
     if encountered_alternate_ids.any? { |id_obj| has_matching_ids?(id_obj, alternate_ids_for_file_name) }
       row['pdf_attached'] = 'Skipped: Already encountered this work during current run'
-      # Overwriting row file_name with the current one otherwise it defaults to the file name from the CSV
-      row['pmid'] = alternate_ids_for_file_name[:pmid]
-      row['pmcid'] = alternate_ids_for_file_name[:pmcid]
-      row['doi'] = alternate_ids_for_file_name[:doi]
       res[:skipped] << row.to_h
       modified_rows << row
       next
@@ -76,9 +77,6 @@ task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :full_text_csv, :file_
     if row['cdr_url'].nil? || row['has_fileset'].to_s == 'true'
       skip_message = row['cdr_url'].nil? ? 'No CDR URL' : 'File already attached'
       row['pdf_attached'] = "Skipped: #{skip_message}"
-      row['pmid'] = alternate_ids_for_file_name[:pmid]
-      row['pmcid'] = alternate_ids_for_file_name[:pmcid]
-      row['doi'] = alternate_ids_for_file_name[:doi]
       res[:skipped] << row.to_h
       next
     end
@@ -100,9 +98,6 @@ task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :full_text_csv, :file_
     if hyrax_work.nil? || hyrax_work[:admin_set_id].nil?
       double_log("Admin set or work not found for file: #{file_name}.#{file_extension}", :warn)
       row['pdf_attached'] =  'Failed: Work or Admin Set not found'
-      row['pmid'] = alternate_ids_for_file_name[:pmid]
-      row['pmcid'] = alternate_ids_for_file_name[:pmcid]
-      row['doi'] = alternate_ids_for_file_name[:doi]
       res[:failed] << row.to_h
       modified_rows << row
       next
@@ -112,16 +107,10 @@ task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :full_text_csv, :file_
       file_path = File.join(args[:file_retrieval_directory], "#{file_name}.#{file_extension}")
       ingest_service.attach_pubmed_file(hyrax_work, file_path, DEPOSITOR, Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE)
       row['pdf_attached'] = 'Success'
-      row['pmid'] = alternate_ids_for_file_name[:pmid]
-      row['pmcid'] = alternate_ids_for_file_name[:pmcid]
-      row['doi'] = alternate_ids_for_file_name[:doi]
       res[:successful] << row.to_h
       modified_rows << row
      rescue StandardError => e
        row['pdf_attached'] = 'Failed: ' + e.message
-       row['pmid'] = alternate_ids_for_file_name[:pmid]
-       row['pmcid'] = alternate_ids_for_file_name[:pmcid]
-       row['doi'] = alternate_ids_for_file_name[:doi]
        res[:failed] << row.to_h.merge('error' => [e.class.to_s, e.message])
        modified_rows << row
        double_log("Error attaching file #{index + 1} of #{file_info.length}:  (#{file_name}.#{file_extension})", :error)
