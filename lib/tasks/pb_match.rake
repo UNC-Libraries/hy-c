@@ -55,9 +55,14 @@ task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :full_text_csv, :file_
 
     # Skip attachment if the row is nil or empty
     if row.nil? || row.empty?
-      puts "Row not found for file: #{file_name}.#{file_extension}"
-      puts "Alternate IDs: #{alternate_ids_for_file_name.inspect}"
-      Rails.logger.warn("Row not found for file: #{file_name}.#{file_extension}")
+      log_message_alt_id = ''
+      if file_name.start_with?('PMC')
+        log_message_alt_id = "Alternative IDs: #{alternate_ids_for_file_name[:pmcid]}, #{alternate_ids_for_file_name[:doi]}"
+      else
+        log_message_alt_id = "Alternative IDs: #{alternate_ids_for_file_name[:pmid]}, #{alternate_ids_for_file_name[:doi]}"
+      end
+      # Log the error
+      double_log("Row not found for file: #{file_name}.#{file_extension}. #{log_message_alt_id}", :warn)
       next
     end
     # Overwriting the matched row file name with the file name from the directory
