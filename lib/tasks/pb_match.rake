@@ -98,7 +98,7 @@ task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :full_text_csv, :file_
     puts "Inspecting Alternate IDs: #{alternate_ids_for_file_name.inspect}"
     puts "Work Inspection: #{hyrax_work.inspect}"
 
-    # Skip  admin set is not found
+    # Skip if admin set is not found
     # Add the modified row to the 'modified_rows' array to write to a CSV later
     if hyrax_work.nil? || hyrax_work[:admin_set_id].nil?
       double_log("Admin set or work not found for file: #{file_name}.#{file_extension}", :warn)
@@ -143,7 +143,7 @@ task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :full_text_csv, :file_
     end
   end
   double_log("Results written to #{json_output_path} and #{csv_output_path}", :info)
-  double_log("Attempted Attachments: #{attempted_attachments}, Successful: #{res[:successful].length}, Failed: #{res[:failed].length}, Skipped: #{res[:skipped].length}", :info)
+  double_log("Attempted Attachments: #{attempted_attachments}, Successfully Ingested: #{res[:successfully_ingested].length}, Successfully Attached: #{res[:successfully_attached].length}, Failed: #{res[:failed].length}, Skipped: #{res[:skipped].length}", :info)
 end
 
 def has_matching_ids?(existing_ids, current_ids)
