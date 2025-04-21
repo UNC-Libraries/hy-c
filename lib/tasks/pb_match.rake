@@ -19,7 +19,7 @@ desc 'Attach new PDFs to works'
 task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :full_text_csv, :file_retrieval_directory, :output_dir] => :environment do |task, args|
   return unless valid_args('attach_pubmed_pdfs', args[:full_text_csv])
   ingest_service = Tasks::PubmedIngestService.new
-  res = {skipped: [], successful: [], failed: [], time: Time.now, depositor: DEPOSITOR, directory_or_csv: args[:full_text_csv], counts: {}}
+  res = {skipped: [], successfully_attached: [], successfully_ingested: [], failed: [], time: Time.now, depositor: DEPOSITOR, directory_or_csv: args[:full_text_csv], counts: {}}
   file_info = CSV.read(args[:full_text_csv], headers: true)
               .map { |r| [r['file_name'], r['file_extension']] }
               .uniq { |file| file[0] } # Deduplicate filenames
@@ -112,7 +112,7 @@ task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :full_text_csv, :file_
       file_path = File.join(args[:file_retrieval_directory], "#{file_name}.#{file_extension}")
       ingest_service.attach_pubmed_file(hyrax_work, file_path, DEPOSITOR, Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE)
       row['pdf_attached'] = 'Success'
-      res[:successful] << row.to_h
+      res[:successfully_attached] << row.to_h
       modified_rows << row
      rescue StandardError => e
        row['pdf_attached'] = 'Failed: ' + e.message
@@ -126,7 +126,8 @@ task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :full_text_csv, :file_
   # Update Counts
   res[:counts][:total_unique_files] = file_info.length
   res[:counts][:failed] = res[:failed].length
-  res[:counts][:successful] = res[:successful].length
+  res[:counts][:successfully_attached] = res[:successfully_attached].length
+  res[:counts][:successfully_ingested] = res[:successfully_ingested].length
   res[:counts][:skipped] = res[:skipped].length
   # Write results to JSON
   json_output_path = File.join(args[:output_dir], 'pdf_attachment_results.json')
