@@ -5,4 +5,10 @@
 <head>
   <meta charset="UTF-8">
 </head>
+<body>
+    <p style="font-size: 16px; margin-bottom: 10px;"><%= @report[:headers][:reporting_message] %></p>
+    <p style="font-size: 16px; margin-bottom: 10px;"><%= @report[:headers][:depositor] %></p>
+    <p style="font-size: 16px; margin-bottom: 10px;"><%= @report[:headers][:total_unique_files] %></p>
+    <p style="font-size: 16px; margin-bottom: 10px;"><%= @report[:headers][:successfully_attached] %></p>
+</body>
 </html>
