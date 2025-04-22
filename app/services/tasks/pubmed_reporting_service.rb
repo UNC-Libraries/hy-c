@@ -11,6 +11,7 @@ module Tasks
                total_unique_files: "#{ingest_output['counts']['total_unique_files']}",
                target_directory: "#{ingest_output['directory_or_csv']}",
                successfully_attached: "#{ingest_output['counts']['successfully_attached']}"
+               successfully_attached: "#{ingest_output['counts']['successfully_attached']}"
            },
            records: {
                successfully_attached: ingest_output['successfully_attached'],
