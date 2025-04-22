@@ -36,7 +36,7 @@ task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :full_text_csv, :file_
       # Log API failure
       double_log("Failed to retrieve alternate IDs for file from the NCBI API: #{file_name}.#{file_extension}", :warn)
       res[:failed] << {
-        'file_name'     => file_name,
+        'file_name'     => "#{file_name}.#{file_extension}"
         'pdf_attached'  => 'Failed to retrieve alternate IDs from NCBI API',
         'cdr_url'       => nil,
         'has_fileset'   => nil
@@ -67,7 +67,7 @@ task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :full_text_csv, :file_
     end
     # Overwriting the matched row file name with the file name from the directory
     # This is to ensure that the file name in the JSON and CSV match the file name in the directory
-    row['file_name'] = file_name
+    row['file_name'] = "#{file_name}.#{file_extension}"
 
     # Skip attachment if the doi for the file has already been encountered
     if encountered_alternate_ids.any? { |id_obj| has_matching_ids?(id_obj, alternate_ids_for_file_name) }
