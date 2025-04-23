@@ -36,7 +36,7 @@ task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :full_text_csv, :file_
       # Log API failure
       double_log("Failed to retrieve alternate IDs for file from the NCBI API: #{file_name}.#{file_extension}", :warn)
       res[:failed] << {
-        'file_name'     => "#{file_name}.#{file_extension}"
+        'file_name'     => "#{file_name}.#{file_extension}",
         'pdf_attached'  => 'Failed to retrieve alternate IDs from NCBI API',
         'cdr_url'       => nil,
         'has_fileset'   => nil
