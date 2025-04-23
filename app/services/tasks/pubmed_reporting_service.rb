@@ -5,13 +5,11 @@ module Tasks
       formatted_time = Time.parse(ingest_output['time']).strftime('%B %d, %Y at %I:%M %p %Z')
       {
            subject: "Pubmed Ingest Report for #{formatted_time}",
+           formatted_time: formatted_time,
+           file_retrieval_directory: "#{ingest_output['file_retrieval_directory']}",
            headers: {
-               reporting_message: "Reporting publications from Pubmed Ingest on #{formatted_time}",
                depositor: "#{ingest_output['depositor']}",
                total_unique_files: "#{ingest_output['counts']['total_unique_files']}",
-               target_directory: "#{ingest_output['directory_or_csv']}",
-               successfully_attached: "#{ingest_output['counts']['successfully_attached']}"
-               successfully_attached: "#{ingest_output['counts']['successfully_attached']}"
            },
            records: {
                successfully_attached: ingest_output['successfully_attached'],

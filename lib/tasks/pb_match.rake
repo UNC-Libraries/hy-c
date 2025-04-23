@@ -19,7 +19,7 @@ desc 'Attach new PDFs to works'
 task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :full_text_csv, :file_retrieval_directory, :output_dir] => :environment do |task, args|
   return unless valid_args('attach_pubmed_pdfs', args[:full_text_csv])
   ingest_service = Tasks::PubmedIngestService.new
-  res = {skipped: [], successfully_attached: [], successfully_ingested: [], failed: [], time: Time.now, depositor: DEPOSITOR, directory_or_csv: args[:full_text_csv], counts: {}}
+  res = {skipped: [], successfully_attached: [], successfully_ingested: [], failed: [], time: Time.now, depositor: DEPOSITOR, file_retrieval_directory: args[:file_retrieval_directory], counts: {}}
   file_info = CSV.read(args[:full_text_csv], headers: true)
               .map { |r| [r['file_name'], r['file_extension']] }
               .uniq { |file| file[0] } # Deduplicate filenames

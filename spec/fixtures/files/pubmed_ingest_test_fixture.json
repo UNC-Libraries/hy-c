@@ -216,7 +216,7 @@
     ],
     "time": "2025-04-14 14:26:13 -0400",
     "depositor": "dcam",
-    "directory_or_csv": "/opt/fake_dir/test_filenames.csv",
+    "file_retrieval_directory": "/opt/fake/full_text_dir/",
     "counts": {
       "total_unique_files": 23,
       "failed": 5,
