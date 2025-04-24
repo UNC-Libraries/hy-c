@@ -1,0 +1,227 @@
+{
+    "skipped": [
+        {
+            "file_name": "39050868",
+            "cdr_url": "https://cdr.lib.unc.edu/concern/articles/pk02cr76x",
+            "has_fileset": "false",
+            "pdf_attached": "Skipped: Already encountered this work during current run",
+            "pmid": "39106784",
+            "pmcid": "PMC11703522",
+            "doi": "10.1016/j.socscimed.2024.117142"
+        },
+        {
+            "file_name": "PMC11268832",
+            "cdr_url": "https://cdr.lib.unc.edu/concern/articles/t148fx873",
+            "has_fileset": "false",
+            "pdf_attached": "Skipped: Already encountered this work during current run",
+            "pmid": "39110868",
+            "pmcid": "PMC11268832",
+            "doi": "10.1016/j.jglr.2024.102336"
+        },
+        {
+            "file_name": "39006379",
+            "cdr_url": "https://cdr.lib.unc.edu/concern/articles/sq87c7745",
+            "has_fileset": "false",
+            "pdf_attached": "Skipped: Already encountered this work during current run",
+            "pmid": "39006379",
+            "pmcid": "PMC11245172",
+            "doi": "10.1080/10888691.2023.2221437"
+        },
+        {
+            "file_name": "PMC11178324",
+            "cdr_url": "https://cdr.lib.unc.edu/concern/articles/08613218p",
+            "has_fileset": "false",
+            "pdf_attached": "Skipped: Already encountered this work during current run",
+            "pmid": "38881730",
+            "pmcid": "PMC11178324",
+            "doi": "10.1177/00938548221081447"
+        },
+        {
+            "file_name": "38784917",
+            "cdr_url": "https://cdr.lib.unc.edu/concern/articles/0z7099690",
+            "has_fileset": "false",
+            "pdf_attached": "Skipped: Already encountered this work during current run",
+            "pmid": "38784917",
+            "pmcid": "PMC11115427",
+            "doi": null
+        },
+        {
+            "file_name": "PMC11109937",
+            "cdr_url": "https://cdr.lib.unc.edu/concern/articles/cr56nf341",
+            "has_fileset": "false",
+            "pdf_attached": "Skipped: Already encountered this work during current run",
+            "pmid": "38779434",
+            "pmcid": "PMC11109937",
+            "doi": "10.1016/j.ahr.2023.100158"
+        },
+        {
+            "file_name": "38748942",
+            "cdr_url": "https://cdr.lib.unc.edu/concern/articles/fj236g356",
+            "has_fileset": "false",
+            "pdf_attached": "Skipped: Already encountered this work during current run",
+            "pmid": "38748942",
+            "pmcid": "PMC11254559",
+            "doi": "10.1200/JCO.24.00480"
+        }
+    ],
+    "successfully_attached": [
+        {
+            "file_name": "PMC11645656",
+            "cdr_url": "https://cdr.lib.unc.edu/concern/articles/d504s116c",
+            "has_fileset": "false",
+            "pdf_attached": "Success",
+            "pmid": "38718132",
+            "pmcid": "PMC11645656",
+            "doi": "10.1126/scitranslmed.adk8198"
+          },
+          {
+            "file_name": "38707600",
+            "cdr_url": "https://cdr.lib.unc.edu/concern/articles/dz011389p",
+            "has_fileset": "false",
+            "pdf_attached": "Success",
+            "pmid": "38707600",
+            "pmcid": "PMC11065962",
+            "doi": "10.1177/26349825231156900"
+          },
+          {
+            "file_name": "PMC11257377",
+            "cdr_url": "https://cdr.lib.unc.edu/concern/articles/70795p88b",
+            "has_fileset": "false",
+            "pdf_attached": "Success",
+            "pmid": "38678559",
+            "pmcid": "PMC11257377",
+            "doi": "10.1016/j.celrep.2024.114164"
+          },
+          {
+            "file_name": "38707601",
+            "cdr_url": "https://cdr.lib.unc.edu/concern/articles/dz012389p",
+            "has_fileset": "false",
+            "pdf_attached": "Success",
+            "pmid": "38707601",
+            "pmcid": "PMC11065963",
+            "doi": "10.1177/26349825231156901"
+          },
+          {
+            "file_name": "PMC11257378",
+            "cdr_url": "https://cdr.lib.unc.edu/concern/articles/70796p88b",
+            "has_fileset": "false",
+            "pdf_attached": "Success",
+            "pmid": "48678559",
+            "pmcid": "PMC11257378",
+            "doi": "10.1016/j.celrep.2024.114165"
+          }
+    ],
+    "successfully_ingested": [
+        {
+            "file_name": "PMC22168832",
+            "cdr_url": "https://cdr.lib.unc.edu/concern/articles/t248fx873",
+            "has_fileset": "false",
+            "pdf_attached": "Success",
+            "pmid": "39150868",
+            "pmcid": "PMC22168832",
+            "doi": "10.1016/j.jglr.2025.102336"
+        },
+        {
+            "file_name": "39116379",
+            "cdr_url": "https://cdr.lib.unc.edu/concern/articles/sq89c7745",
+            "has_fileset": "false",
+            "pdf_attached": "Success",
+            "pmid": "39116379",
+            "pmcid": "PMC33245172",
+            "doi": "10.1080/10888691.2023.2331437"
+        },
+        {
+            "file_name": "PMC18878324",
+            "cdr_url": "https://cdr.lib.unc.edu/concern/articles/08688218p",
+            "has_fileset": "false",
+            "pdf_attached": "Success",
+            "pmid": "31181730",
+            "pmcid": "PMC10078324",
+            "doi": "10.1155/00938548221081447"
+        },
+        {
+            "file_name": "32724917",
+            "cdr_url": "https://cdr.lib.unc.edu/concern/articles/0z7011690",
+            "has_fileset": "false",
+            "pdf_attached": "Success",
+            "pmid": "32724917",
+            "pmcid": "PMC77115427",
+            "doi": null
+        },
+        {
+            "file_name": "PMC19909937",
+            "cdr_url": "https://cdr.lib.unc.edu/concern/articles/cr56nf3425",
+            "has_fileset": "false",
+            "pdf_attached": "Success",
+            "pmid": "38779939",
+            "pmcid": "PMC33109937",
+            "doi": "10.1016/j.ahr.2088.100158"
+        },
+        {
+            "file_name": "36748900",
+            "cdr_url": "https://cdr.lib.unc.edu/concern/articles/fj236g716",
+            "has_fileset": "false",
+            "pdf_attached": "Success",
+            "pmid": "36748900",
+            "pmcid": "PMC11254009",
+            "doi": "10.129998/JCO.24.00480"
+        }
+    ],
+    "failed": [
+        {
+            "file_name": "PMC11775656",
+            "cdr_url": "https://cdr.lib.unc.edu/concern/articles/d577s116c",
+            "has_fileset": "false",
+            "pdf_attached": "Failed: Work or Admin Set not found",
+            "pmid": "38710032",
+            "pmcid": "PMC11775656",
+            "doi": "10.1144/scitranslmed.adk8198"
+          },
+          {
+            "file_name": "11707600",
+            "cdr_url": "https://cdr.lib.unc.edu/concern/articles/dz017789p",
+            "has_fileset": "false",
+            "pdf_attached": "Failed: Test Error Stack Strace",
+            "pmid": "11707600",
+            "pmcid": "PMC11099962",
+            "doi": "10.1177/26349888831156900"
+          },
+          {
+            "file_name": "PMC11254444",
+            "cdr_url": "https://cdr.lib.unc.edu/concern/articles/707954444",
+            "has_fileset": "false",
+            "pdf_attached": "Failed: Test Error Stack Strace",
+            "pmid": "38674444",
+            "pmcid": "PMC11254444",
+            "doi": "10.1016/j.celrep.2024.114444"
+          },
+          {
+            "file_name": "68707606",
+            "cdr_url": "https://cdr.lib.unc.edu/concern/articles/dz612386p",
+            "has_fileset": "false",
+            "pdf_attached": "Failed: Test Error Stack Strace",
+            "pmid": "68707606",
+            "pmcid": "PMC61065966",
+            "doi": "10.1177/26349825231156945"
+          },
+          {
+            "file_name": "PMC11252222",
+            "cdr_url": "https://cdr.lib.unc.edu/concern/articles/707962211",
+            "has_fileset": "false",
+            "pdf_attached": "Failed: Test Error Stack Strace",
+            "pmid": "48672211",
+            "pmcid": "PMC11252222",
+            "doi": "10.1016/j.celrep.2024.112211"
+          }
+    ],
+    "time": "2025-04-14 14:26:13 -0400",
+    "depositor": "dcam",
+    "file_retrieval_directory": "/opt/fake/full_text_dir/",
+    "counts": {
+      "total_unique_files": 23,
+      "failed": 5,
+      "successfully_ingested": 5,
+      "successfully_attached": 6,
+      "skipped": 7
+    }
+  }

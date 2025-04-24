@@ -19,7 +19,7 @@ desc 'Attach new PDFs to works'
 task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :full_text_csv, :file_retrieval_directory, :output_dir] => :environment do |task, args|
   return unless valid_args('attach_pubmed_pdfs', args[:full_text_csv])
   ingest_service = Tasks::PubmedIngestService.new
-  res = {skipped: [], successful: [], failed: [], time: Time.now, depositor: DEPOSITOR, directory_or_csv: args[:full_text_csv], counts: {}}
+  res = {skipped: [], successfully_attached: [], successfully_ingested: [], failed: [], time: Time.now, depositor: DEPOSITOR, file_retrieval_directory: args[:file_retrieval_directory], counts: {}}
   file_info = CSV.read(args[:full_text_csv], headers: true)
               .map { |r| [r['file_name'], r['file_extension']] }
               .uniq { |file| file[0] } # Deduplicate filenames
@@ -36,7 +36,7 @@ task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :full_text_csv, :file_
       # Log API failure
       double_log("Failed to retrieve alternate IDs for file from the NCBI API: #{file_name}.#{file_extension}", :warn)
       res[:failed] << {
-        'file_name'     => file_name,
+        'file_name'     => "#{file_name}.#{file_extension}",
         'pdf_attached'  => 'Failed to retrieve alternate IDs from NCBI API',
         'cdr_url'       => nil,
         'has_fileset'   => nil
@@ -67,7 +67,7 @@ task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :full_text_csv, :file_
     end
     # Overwriting the matched row file name with the file name from the directory
     # This is to ensure that the file name in the JSON and CSV match the file name in the directory
-    row['file_name'] = file_name
+    row['file_name'] = "#{file_name}.#{file_extension}"
 
     # Skip attachment if the doi for the file has already been encountered
     if encountered_alternate_ids.any? { |id_obj| has_matching_ids?(id_obj, alternate_ids_for_file_name) }
@@ -98,7 +98,7 @@ task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :full_text_csv, :file_
     puts "Inspecting Alternate IDs: #{alternate_ids_for_file_name.inspect}"
     puts "Work Inspection: #{hyrax_work.inspect}"
 
-    # Skip  admin set is not found
+    # Skip if admin set is not found
     # Add the modified row to the 'modified_rows' array to write to a CSV later
     if hyrax_work.nil? || hyrax_work[:admin_set_id].nil?
       double_log("Admin set or work not found for file: #{file_name}.#{file_extension}", :warn)
@@ -112,7 +112,7 @@ task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :full_text_csv, :file_
       file_path = File.join(args[:file_retrieval_directory], "#{file_name}.#{file_extension}")
       ingest_service.attach_pubmed_file(hyrax_work, file_path, DEPOSITOR, Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE)
       row['pdf_attached'] = 'Success'
-      res[:successful] << row.to_h
+      res[:successfully_attached] << row.to_h
       modified_rows << row
      rescue StandardError => e
        row['pdf_attached'] = 'Failed: ' + e.message
@@ -126,7 +126,8 @@ task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :full_text_csv, :file_
   # Update Counts
   res[:counts][:total_unique_files] = file_info.length
   res[:counts][:failed] = res[:failed].length
-  res[:counts][:successful] = res[:successful].length
+  res[:counts][:successfully_attached] = res[:successfully_attached].length
+  res[:counts][:successfully_ingested] = res[:successfully_ingested].length
   res[:counts][:skipped] = res[:skipped].length
   # Write results to JSON
   json_output_path = File.join(args[:output_dir], 'pdf_attachment_results.json')
@@ -142,7 +143,7 @@ task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :full_text_csv, :file_
     end
   end
   double_log("Results written to #{json_output_path} and #{csv_output_path}", :info)
-  double_log("Attempted Attachments: #{attempted_attachments}, Successful: #{res[:successful].length}, Failed: #{res[:failed].length}, Skipped: #{res[:skipped].length}", :info)
+  double_log("Attempted Attachments: #{attempted_attachments}, Successfully Ingested: #{res[:successfully_ingested].length}, Successfully Attached: #{res[:successfully_attached].length}, Failed: #{res[:failed].length}, Skipped: #{res[:skipped].length}", :info)
 end
 
 def has_matching_ids?(existing_ids, current_ids)
