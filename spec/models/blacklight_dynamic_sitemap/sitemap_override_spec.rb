@@ -10,9 +10,7 @@ RSpec.describe BlacklightDynamicSitemap::Sitemap do
   let(:unique_id_field) { 'id' }
   let(:last_modified_field) { 'timestamp' }
   let(:solr_endpoint) { 'select' }
-  let(:engine_config) do
-    double('engine_config', default_params: { q: '*:*' })
-  end
+  let(:engine_config) { double('engine_config') }
   let(:index_connection) { double('index_connection') }
   let(:solr_response) do
     {
@@ -34,7 +32,10 @@ RSpec.describe BlacklightDynamicSitemap::Sitemap do
     allow(sitemap).to receive(:solr_endpoint).and_return(solr_endpoint)
     allow(sitemap).to receive(:engine_config).and_return(engine_config)
     allow(sitemap).to receive(:index_connection).and_return(index_connection)
-    allow(sitemap).to receive(:show_params).and_return({})
+    allow(sitemap).to receive(:show_params) do |id, params|
+      params # Return the second parameter as-is
+    end
+    allow(engine_config).to receive(:default_params).and_return({ q: '*:*' })
   end
 
   describe '#get' do
@@ -55,13 +56,13 @@ RSpec.describe BlacklightDynamicSitemap::Sitemap do
           q: '*:*'
         }
 
-        expect(sitemap).to receive(:show_params).with(valid_id, anything).and_return({})
-        expect(index_connection).to receive(:public_send)
-          .with(solr_endpoint, hash_including(params: expected_params))
+        allow(index_connection).to receive(:public_send)
           .and_return(solr_response)
 
         result = sitemap.get(valid_id)
         expect(result).to eq(solr_response.dig('response', 'docs'))
+        expect(index_connection).to have_received(:public_send)
+          .with(solr_endpoint, hash_including(params: expected_params))
       end
     end
   end
