@@ -1,4 +1,7 @@
 # frozen_string_literal: true
+# Notes: 
+# 1. Script uses PMC-OAI API to retrieve metadata and make comparisons of alternate IDs. (PMCID, PMID)
+# 2. PMC requests scripts making >100 requests be run outside of peak hours. (5 AM - 9 PM)
 DEPOSITOR = ENV['DIMENSIONS_INGEST_DEPOSITOR_ONYEN']
 desc 'Fetch identifiers from a directory, compare against the CDR, and store the results in a CSV'
 task :fetch_identifiers, [:input_dir_path, :output_csv_path] => :environment do |task, args|
@@ -80,6 +83,7 @@ task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :full_text_csv, :file_
     end
     # Skip attachment if the work doesn't exist or has a file attached
     if row['cdr_url'].nil? || row['has_fileset'].to_s == 'true'
+      # WIP: Create a new work if the work doesn't exist
       skip_message = row['cdr_url'].nil? ? 'No CDR URL' : 'File already attached'
       row['pdf_attached'] = "Skipped: #{skip_message}"
       res[:skipped] << row.to_h
