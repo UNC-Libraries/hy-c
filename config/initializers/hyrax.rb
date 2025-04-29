@@ -344,8 +344,3 @@ Hyrax::Microdata.load_paths = local_filename
 Hyrax::DashboardController.sidebar_partials[:activity] << 'hyrax/dashboard/sidebar/custom_activity'
 Hyrax::DashboardController.sidebar_partials[:configuration] << 'hyrax/dashboard/sidebar/custom_configuration'
 Hyrax::DashboardController.sidebar_partials[:tasks] << 'hyrax/dashboard/sidebar/custom_tasks'
-
-BlacklightDynamicSitemap::Engine.config do |config|
-  # Modify the default query used by sitemap gem so that it only includes open visibility records
-  config.default_params['fq'] = ['visibility_ssi:open']
-end
