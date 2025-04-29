@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-# Notes: 
+# Notes:
 # 1. Script uses PMC-OAI API to retrieve metadata and make comparisons of alternate IDs. (PMCID, PMID)
 # 2. PMC requests scripts making >100 requests be run outside of peak hours. (5 AM - 9 PM)
 DEPOSITOR = ENV['DIMENSIONS_INGEST_DEPOSITOR_ONYEN']
@@ -148,6 +148,29 @@ task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :full_text_csv, :file_
   end
   double_log("Results written to #{json_output_path} and #{csv_output_path}", :info)
   double_log("Attempted Attachments: #{attempted_attachments}, Successfully Ingested: #{res[:successfully_ingested].length}, Successfully Attached: #{res[:successfully_attached].length}, Failed: #{res[:failed].length}, Skipped: #{res[:skipped].length}", :info)
+end
+
+desc 'Test WIP: Create a new work'
+task create_new_work: :environment do |task, args|
+  path = Rails.root.join('spec', 'fixtures', 'files', 'pubmed_ingest_test_fixture.json')
+  # Read the JSON file
+  test_hashes = [
+    { 'pmid' => '31857942', 'pdf_attached' => 'Skipped: No CDR URL' },
+    { 'pmcid'=> 'PMC6101660', 'pdf_attached' => 'Skipped: No CDR URL' },
+    { 'pmid' => '32198428', 'pdf_attached' => 'Skipped: No CDR URL' },
+    { 'pmcid' => 'PMC9753428', 'pdf_attached' => 'Skipped: No CDR URL' },
+  ]
+  ingest_service = Tasks::PubmedIngestService.new
+  ingest_service.batch_retrieve_metadata(test_hashes)
+  # test_hashes.each do |hash|
+  #   # Create a new work
+  #   work = ingest_service.create_new_record(hash, path, DEPOSITOR, Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE)
+  #   if work.nil?
+  #     puts "Failed to create new work for #{hash}"
+  #   else
+  #     puts "Successfully created new work for #{hash}"
+  #   end
+  # end
 end
 
 def has_matching_ids?(existing_ids, current_ids)
