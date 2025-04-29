@@ -33,6 +33,7 @@ module Tasks
         article
       end
     end
+      
 
     def batch_retrieve_metadata(work_hash_array)
       retrieved_metadata = []
@@ -43,46 +44,26 @@ module Tasks
       # Prep for retrieving metadata from different endpoints
       works_with_pmids = work_hash_array.select { |work_hash| work_hash['pmid'].present? }
       works_with_pmcids = work_hash_array.select { |work_hash| works_with_pmids.exclude?(work_hash) && work_hash['pmcid'].present? }
-      # request_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=#{db}&id=#{representative_id}&retmode=xml"
-      # res = HTTParty.get(request_url)
 
-      short = 0
-      works_with_pmcids.each_slice(200) do |batch|
-        # WIP: Remove Later
-        break if short >= 200
-        ids = batch.map { |work| work['pmcid'].sub(/^PMC/, '') } # Remove "PMC" prefix if present
-        request_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pmc&id=#{ids.join(',')}&retmode=xml&tool=YourToolName&email=your@email.com"
-        res = HTTParty.get(request_url)
-        # WIP: Remove Later
-        if short == 0
-          puts "WIP LOG BATCH 1: #{request_url} #{res.code} #{res.body.truncate(500)}"
+      [works_with_pmids, works_with_pmcids].each do |works|
+        works.each_slice(200) do |batch|
+          ids = batch.map { |work| work['pmid'] || work['pmcid'].sub(/^PMC/, '') } # Remove "PMC" prefix if present
+          # Include Tool Name and Email in API request
+          request_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=#{works == works_with_pmids ? 'pubmed' : 'pmc'}&id=#{ids.join(',')}&retmode=xml&tool=CDR&email=cdr@unc.edu"
+          res = HTTParty.get(request_url)
+          xml_doc = Nokogiri::XML(res.body)
+          # WIP: Remove Later
+          if res.code != 200
+            Rails.logger.error("Failed to fetch metadata for #{ids.join(', ')}: #{res.code} - #{res.message}")
+            next
+          end
+          current_arr = xml_doc.xpath(works == works_with_pmids ? '//PubmedArticle' : '//article')
+          retrieved_metadata += current_arr
         end
-
-        # retrieved_metadata << res
-        short += ids.length
       end
-
-      short = 0
-      works_with_pmids.each_slice(200) do |batch|
-       # WIP: Remove Later
-        break if short >= 200
-        ids = batch.map { |work| work['pmid'] }
-        request_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=#{ids.join(',')}&retmode=xml&tool=YourToolName&email=your@email.com"
-        res = HTTParty.get(request_url)
-
-        # WIP: Remove Later
-        if short == 0
-          puts "WIP LOG BATCH 2: #{request_url} #{res.code} #{res.body.truncate(500)}"
-        end
-
-        # retrieved_metadata << res
-        short += ids.length
-      end
-
-      # work_hash_array.each do |work_hash|
-        # end
       retrieved_metadata
     end
+
 
 
     def set_basic_attributes(work_hash, file_path, depositor_onyen, visibility)
