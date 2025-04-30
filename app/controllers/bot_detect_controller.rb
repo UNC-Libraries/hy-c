@@ -143,8 +143,9 @@ class BotDetectController < ApplicationController
 
   def self.issue_challenge?(controller)
     query_parameters = controller.request.query_parameters
+    user_agent = controller.request.user_agent.to_s.downcase
     controller.is_a?(Hyrax::StatsController) \
-        || (controller.is_a?(Hyrax::DownloadsController) && query_parameters['file'] != 'thumbnail') \
+        || (controller.is_a?(Hyrax::DownloadsController) && query_parameters['file'] != 'thumbnail' && !user_agent.include?('googlebot')) \
         || query_parameters.key?('f') || query_parameters.key?('f_inclusive') || query_parameters.key?('clause') \
         || query_parameters.key?('range') || query_parameters.key?('page')
   end
