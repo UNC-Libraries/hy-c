@@ -1,7 +1,26 @@
 # frozen_string_literal: true
 module Tasks
+  require 'tasks/ingest_helper'
   class PubmedIngestService
     include Tasks::IngestHelper
+
+    def initialize(config)
+      # Validate the config hash
+      @config = config
+      raise ArgumentError, 'Missing required config keys' unless config['admin_set'] && config['depositor_onyen'] && config['new_pubmed_works']
+
+      @new_pubmed_works = config['new_pubmed_works']
+      admin_set_title = config['admin_set']
+
+      @admin_set = ::AdminSet.find_by(title: admin_set_title)
+      raise ActiveRecord::RecordNotFound, "AdminSet not found with title: #{admin_set_title}" unless @admin_set
+
+      @depositor = User.find_by(uid: config['depositor_onyen'])
+      raise ActiveRecord::RecordNotFound, "User not found with onyen: #{config['depositor_onyen']}" unless @depositor
+
+      @retrieved_metadata = []
+    end
+
     def attach_pubmed_file(work_hash, file_path, depositor_onyen, visibility)
       # Create a work object using the provided work_hash
       model_class = work_hash[:work_type].constantize
@@ -13,37 +32,10 @@ module Tasks
       file
     end
 
-    def create_new_record(work_hash, file_path, depositor_onyen, visibility)
-      representative_id = work_hash[:pmcid] || work_hash[:pmid]
-      db = representative_id.start_with?('PMC') ? 'pmc' : 'pubmed'
-      # API Prefers batches of 200
-
-      request_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=#{db}&id=#{representative_id}&retmode=xml"
-      res = HTTParty.get(request_url)
-
-      # WIP: Remove Later
-      puts "WIP LOG: #{request_url} #{res.code} #{res.body.truncate(500)}"
-
-      if res.code != 200
-        Rails.logger.error("Failed to fetch metadata for #{representative_id}: #{res.code} - #{res.message}")
-        return nil
-      else
-        article = Article.new
-        # attach_metadata_to_article(article, res.body)
-        article
-      end
-    end
-      
-
-    def batch_retrieve_metadata(work_hash_array)
-      retrieved_metadata = []
-      # Only retrieve metadata for PDFs with no matching work in the CDR
-      work_hash_array = work_hash_array.select do |work_hash|
-        work_hash['pdf_attached'] == 'Skipped: No CDR URL'
-      end
+    def batch_retrieve_metadata
       # Prep for retrieving metadata from different endpoints
-      works_with_pmids = work_hash_array.select { |work_hash| work_hash['pmid'].present? }
-      works_with_pmcids = work_hash_array.select { |work_hash| works_with_pmids.exclude?(work_hash) && work_hash['pmcid'].present? }
+      works_with_pmids = @new_pubmed_works.select { |work_hash| work_hash['pmid'].present? }
+      works_with_pmcids = @new_pubmed_works.select { |work_hash| works_with_pmids.exclude?(work_hash) && work_hash['pmcid'].present? }
 
       [works_with_pmids, works_with_pmcids].each do |works|
         works.each_slice(200) do |batch|
@@ -58,22 +50,57 @@ module Tasks
             next
           end
           current_arr = xml_doc.xpath(works == works_with_pmids ? '//PubmedArticle' : '//article')
-          retrieved_metadata += current_arr
+          @retrieved_metadata += current_arr
         end
       end
-      retrieved_metadata
+      @retrieved_metadata
     end
 
-
-
-    def set_basic_attributes(work_hash, file_path, depositor_onyen, visibility)
-      # Set the basic attributes for the work
-      work = work_hash[:work_type].constantize.new(work_hash)
-      work.depositor = depositor_onyen
-      work.admin_set_id = work_hash[:admin_set_id]
-      work.visibility = visibility
-      work.save!
-      attach_pubmed_file(work_hash, file_path, depositor_onyen, visibility)
+    def ingest_publications
+      res = []
+      # Ingest the retrieved metadata
+      @retrieved_metadata.each do |metadata|
+        article = new_article(metadata)
+        populate_article_metadata(article, metadata)
+        attach_pdf(article, metadata)
+      end
+      res
     end
+
+    def new_article(metadata)
+      article = Article.new
+      populate_article_metadata(article, metadata)
+      article.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
+      article.permissions_attributes = group_permissions(@admin_set)
+      article.save!
+      article
+    end
+
+    def attach_pdf(article, metadata)
+      create_sipity_workflow(work: article)
+      pdf_file = attach_pdf_to_work(article, metadata['path'], @depositor, article.visibility)
+      pdf_file.update(permissions_attributes: group_permissions(@admin_set))
+      article
+    end
+
+    def populate_article_metadata(article, metadata)
+      set_basic_attributes(metadata, @depositor, article.visibility)
+    end
+
+    # WIP: =================== Focus Area
+    def set_basic_attributes(metadata, depositor_onyen, visibility)
+      if metadata.name == 'PubmedArticle'
+        article.title = metadata.xpath('MedlineCitation/Article/ArticleTitle').text
+        article.doi = metadata.xpath('PubmedData/ArticleIdList/ArticleId[@IdType="doi"]').text
+        article.pmid = metadata.xpath('PubmedData/ArticleIdList/ArticleId[@IdType="pubmed"]').text
+        article.pmcid = metadata.xpath('PubmedData/ArticleIdList/ArticleId[@IdType="pmc"]').text
+        article.abstract = metadata.xpath('MedlineCitation/Article/Abstract/AbstractText').text
+        article.authors = metadata.xpath('MedlineCitation/Article/AuthorList/Author').map do |author|
+          "#{author.xpath('LastName').text}, #{author.xpath('ForeName').text}"
+        end.join(', ')
+      else
+      end
+    end
+    # WIP: =================== Focus Area
 end
 end
