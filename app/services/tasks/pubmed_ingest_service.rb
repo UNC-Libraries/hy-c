@@ -67,7 +67,7 @@ module Tasks
          skipped_row = find_skipped_row_for_metadata(metadata)
          article = new_article(metadata)
          populate_article_metadata(article, metadata)
-         attach_pdf(article, metadata)
+         attach_pdf(article, metadata, skipped_row)
          skipped_row['pdf_attached'] = 'Success'
          @attachment_results[:successfully_ingested] << skipped_row.to_h
         rescue => e
@@ -90,9 +90,15 @@ module Tasks
       article
     end
 
-    def attach_pdf(article, metadata)
+    def attach_pdf(article, metadata, skipped_row)
       create_sipity_workflow(work: article)
       pdf_file = attach_pdf_to_work(article, metadata['path'], @depositor, article.visibility)
+      if pdf_file.nil?
+        identifiers = []
+        identifiers << "PMID: #{skipped_row['pmid']}" if skipped_row['pmid'].present?
+        identifiers << "PMCID: #{skipped_row['pmcid']}" if skipped_row['pmcid'].present?
+        raise StandardError, "Error during file attachment for new work with the following identifiers: #{identifiers.join(', ')}"
+      end
       pdf_file.update(permissions_attributes: group_permissions(@admin_set))
       article
     end

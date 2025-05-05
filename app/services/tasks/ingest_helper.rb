@@ -21,11 +21,12 @@ module Tasks
         actor.create_content(file)
         actor.attach_to_work(work, file_set_params)
         file.close
+        file_set
       rescue StandardError => e
         Rails.logger.error("Error attaching file_set for new work with DOI: #{work.identifier.first} and file_path: #{file_path}")
         Rails.logger.error [e.class.to_s, e.message, *e.backtrace].join($RS)
+        nil
       end
-      file_set
     end
 
     def group_permissions(admin_set)
