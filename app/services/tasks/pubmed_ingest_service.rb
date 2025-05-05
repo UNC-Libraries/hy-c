@@ -71,7 +71,7 @@ module Tasks
          skipped_row['pdf_attached'] = 'Success'
          @attachment_results[:successfully_ingested] << skipped_row.to_h
         rescue => e
-          Rails.logger.error("Error ingesting article: #{e.message}")
+          Rails.logger.error(e.message)
           Rails.logger.error(e.backtrace.join("\n"))
           # WIP: Refactoring for error handling, reporting
           skipped_row['pdf_attached'] = e.message
@@ -97,7 +97,7 @@ module Tasks
         identifiers = []
         identifiers << "PMID: #{skipped_row['pmid']}" if skipped_row['pmid'].present?
         identifiers << "PMCID: #{skipped_row['pmcid']}" if skipped_row['pmcid'].present?
-        raise StandardError, "Error during file attachment for new work with the following identifiers: #{identifiers.join(', ')}"
+        raise StandardError, "File attachment error for new work with the following identifiers: #{identifiers.join(', ')}"
       end
       pdf_file.update(permissions_attributes: group_permissions(@admin_set))
       article
