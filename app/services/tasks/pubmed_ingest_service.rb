@@ -60,9 +60,16 @@ module Tasks
       res = []
       # Ingest the retrieved metadata
       @retrieved_metadata.each do |metadata|
+        begin
         article = new_article(metadata)
         populate_article_metadata(article, metadata)
         attach_pdf(article, metadata)
+        res << article
+        rescue => e
+          Rails.logger.error("Error ingesting article: #{e.message}")
+          Rails.logger.error(e.backtrace.join("\n"))
+          # WIP: Refactoring for error handling, reporting
+          res << { error: e.message }
       end
       res
     end
@@ -84,23 +91,58 @@ module Tasks
     end
 
     def populate_article_metadata(article, metadata)
-      set_basic_attributes(metadata, @depositor, article.visibility)
+      set_basic_attributes(metadata, @depositor, article)
     end
 
     # WIP: =================== Focus Area
-    def set_basic_attributes(metadata, depositor_onyen, visibility)
+    def set_basic_attributes(metadata, depositor_onyen, article)
+      article.admin_set = @admin_set
+      article.depositor = @config['depositor_onyen']
+      article.resource_type = ['Article']
       if metadata.name == 'PubmedArticle'
         article.title = metadata.xpath('MedlineCitation/Article/ArticleTitle').text
-        article.doi = metadata.xpath('PubmedData/ArticleIdList/ArticleId[@IdType="doi"]').text
-        article.pmid = metadata.xpath('PubmedData/ArticleIdList/ArticleId[@IdType="pubmed"]').text
-        article.pmcid = metadata.xpath('PubmedData/ArticleIdList/ArticleId[@IdType="pmc"]').text
         article.abstract = metadata.xpath('MedlineCitation/Article/Abstract/AbstractText').text
-        article.authors = metadata.xpath('MedlineCitation/Article/AuthorList/Author').map do |author|
-          "#{author.xpath('LastName').text}, #{author.xpath('ForeName').text}"
-        end.join(', ')
+        article.date_issued = get_date_issued(metadata)
+        # WIP: Generate Creator Hash Later
+        # article.creators_attributes = publication['authors'].map.with_index { |author, index| [index, author_to_hash(author, index)] }.to_h
+        # article.doi = metadata.xpath('PubmedData/ArticleIdList/ArticleId[@IdType="doi"]').text
+        # article.pmid = metadata.xpath('PubmedData/ArticleIdList/ArticleId[@IdType="pubmed"]').text
+        # article.pmcid = metadata.xpath('PubmedData/ArticleIdList/ArticleId[@IdType="pmc"]').text
+      elsif metadata.name == 'article'
+        article.title = metadata.xpath('front/article-meta/title-group/article-title').text
+        article.abstract = metadata.xpath('front/article-meta/abstract').text
+        article.date_issued = get_date_issued(metadata)
       else
+        # Raise an error for unknown metadata formats
+        raise StandardError, "Unknown metadata format: #{metadata.name}"
       end
     end
     # WIP: =================== Focus Area
+
+    def get_date_issued(metadata)
+      # Extract the date_issued from the metadata
+      if metadata.name == 'PubmedArticle'
+        pubmed_pubdate = metadata.at_xpath('PubmedData/History/PubMedPubDate[@PubStatus="pubmed"]')
+        year = pubmed_pubdate.at_xpath('Year')&.text
+        month = pubmed_pubdate.at_xpath('Month')&.text
+        day = pubmed_pubdate.at_xpath('Day')&.text
+      elsif metadata.name == 'article'
+        #  Use the electronic publication date if available, otherwise use the first available publication date
+        metadata_publication_date = metadata.at_xpath('front/article-meta/pub-date[@pub-type="epub"]') || nil
+        if metadata_publication_date
+          year = metadata_publication_date.at_xpath('year')&.text
+          month = metadata_publication_date.at_xpath('month')&.text
+          day = metadata_publication_date.at_xpath('day')&.text
+        else
+         # Raise an error if no publication date is found
+         raise StandardError, "No publication date found in metadata for #{metadata.name}."
+        end
+      end
+      # Provide defaults if day or month is missing
+      month = month.zero? ? 1 : month
+      day = day.zero? ? 1 : day
+      # Format the date as YYYY-MM-DD
+      DateTime.new(year.to_i, month.to_i, day.to_i).strftime('%Y-%m-%d')
+    end
 end
 end
