@@ -7,9 +7,12 @@ module Tasks
     def initialize(config)
       # Validate the config hash
       @config = config
-      raise ArgumentError, 'Missing required config keys' unless config['admin_set'] && config['depositor_onyen'] && config['new_pubmed_works']
+      raise ArgumentError, 'Missing required config keys' unless config['admin_set'] && config['depositor_onyen'] && config['attachment_results']
+      @attachment_results = config['attachment_results']
 
-      @new_pubmed_works = config['new_pubmed_works']
+      # Exclude the "Skipped: No CDR URL" rows from the attachment results
+      @new_pubmed_works = @attachment_results[:skipped].select { |row| row['pdf_attached'] == 'Skipped: No CDR URL' }
+      @attachment_results[:skipped] = @attachment_results[:skipped].reject { |row| row['pdf_attached'] == 'Skipped: No CDR URL' }
       admin_set_title = config['admin_set']
 
       @admin_set = ::AdminSet.find_by(title: admin_set_title)
@@ -57,21 +60,25 @@ module Tasks
     end
 
     def ingest_publications
-      res = []
-      # Ingest the retrieved metadata
+      # Ingest the retrieved metadata, returns a modified array of hashes
       @retrieved_metadata.each do |metadata|
         begin
-        article = new_article(metadata)
-        populate_article_metadata(article, metadata)
-        attach_pdf(article, metadata)
-        res << article
+         # Retrieve the corresponding row from @new_pubmed_works to be updated
+         skipped_row = find_skipped_row_for_metadata(metadata)
+         article = new_article(metadata)
+         populate_article_metadata(article, metadata)
+         attach_pdf(article, metadata)
+         skipped_row['pdf_attached'] = 'Success'
+         @attachment_results[:successfully_ingested] << skipped_row.to_h
         rescue => e
           Rails.logger.error("Error ingesting article: #{e.message}")
           Rails.logger.error(e.backtrace.join("\n"))
           # WIP: Refactoring for error handling, reporting
-          res << { error: e.message }
+          skipped_row['pdf_attached'] = e.message
+          @attachment_results[:failed] << skipped_row.to_h
       end
-      res
+      # Use updated attachment_results for reporting
+      @attachment_results
     end
 
     def new_article(metadata)
@@ -94,7 +101,6 @@ module Tasks
       set_basic_attributes(metadata, @depositor, article)
     end
 
-    # WIP: =================== Focus Area
     def set_basic_attributes(metadata, depositor_onyen, article)
       article.admin_set = @admin_set
       article.depositor = @config['depositor_onyen']
@@ -103,11 +109,6 @@ module Tasks
         article.title = metadata.xpath('MedlineCitation/Article/ArticleTitle').text
         article.abstract = metadata.xpath('MedlineCitation/Article/Abstract/AbstractText').text
         article.date_issued = get_date_issued(metadata)
-        # WIP: Generate Creator Hash Later
-        # article.creators_attributes = publication['authors'].map.with_index { |author, index| [index, author_to_hash(author, index)] }.to_h
-        # article.doi = metadata.xpath('PubmedData/ArticleIdList/ArticleId[@IdType="doi"]').text
-        # article.pmid = metadata.xpath('PubmedData/ArticleIdList/ArticleId[@IdType="pubmed"]').text
-        # article.pmcid = metadata.xpath('PubmedData/ArticleIdList/ArticleId[@IdType="pmc"]').text
       elsif metadata.name == 'article'
         article.title = metadata.xpath('front/article-meta/title-group/article-title').text
         article.abstract = metadata.xpath('front/article-meta/abstract').text
@@ -117,7 +118,6 @@ module Tasks
         raise StandardError, "Unknown metadata format: #{metadata.name}"
       end
     end
-    # WIP: =================== Focus Area
 
     def get_date_issued(metadata)
       # Extract the date_issued from the metadata
@@ -143,6 +143,18 @@ module Tasks
       day = day.zero? ? 1 : day
       # Format the date as YYYY-MM-DD
       DateTime.new(year.to_i, month.to_i, day.to_i).strftime('%Y-%m-%d')
+    end
+
+    def find_skipped_row_for_metadata(metadata)
+      if metadata.name == 'PubmedArticle'
+        pmid = metadata.xpath('PubmedData/ArticleIdList/ArticleId[@IdType="pubmed"]').text
+        pmcid = metadata.xpath('PubmedData/ArticleIdList/ArticleId[@IdType="pmc"]').text
+      elsif metadata.name == 'article'
+        pmid = metadata.xpath('front/article-meta/pub-id[@pub-id-type="pmid"]').text
+        pmcid = "PMC#{metadata.xpath('front/article-meta/pub-id[@pub-id-type="pmc"]').text}"
+      end
+        # Select a row from the attachment results based on an identifier extracted from the metadata
+        @new_pubmed_works.find { |row| row['pmid'] == pmid || row['pmcid'] == pmcid }
     end
 end
 end

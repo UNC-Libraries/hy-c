@@ -140,23 +140,24 @@ task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :full_text_csv, :file_
        next
     end
   end
-  # Update Counts
-  res[:counts][:total_unique_files] = file_info.length
-  res[:counts][:failed] = res[:failed].length
-  res[:counts][:successfully_attached] = res[:successfully_attached].length
-  res[:counts][:successfully_ingested] = res[:successfully_ingested].length
-  res[:counts][:skipped] = res[:skipped].length
-
   # WIP: =================== Focus Area
   # Create new works
   config = {
     'admin_set' => admin_set,
     'depositor_onyen' => DEPOSITOR,
-    'new_pubmed_works' => res[:skipped].select { |row| row['pdf_attached'] == 'Skipped: No CDR URL' }
+    'attachment_results' => res
    }
   ingest_service = Tasks::PubmedIngestService.new(config)
   ingest_service.batch_retrieve_metadata
+  res = ingest_service.ingest_publications
   #  WIP: =================== Update res successfully_ingested after creating new works, then write to JSON
+
+    # Update Counts
+  res[:counts][:total_unique_files] = file_info.length
+  res[:counts][:failed] = res[:failed].length
+  res[:counts][:successfully_attached] = res[:successfully_attached].length
+  res[:counts][:successfully_ingested] = res[:successfully_ingested].length
+  res[:counts][:skipped] = res[:skipped].length
 
   # Write results to JSON
   json_output_path = File.join(args[:output_dir], 'pdf_attachment_results.json')
