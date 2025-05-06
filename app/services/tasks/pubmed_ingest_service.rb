@@ -112,10 +112,16 @@ module Tasks
         article.title = metadata.xpath('MedlineCitation/Article/ArticleTitle').text
         article.abstract = metadata.xpath('MedlineCitation/Article/Abstract/AbstractText').text
         article.date_issued = get_date_issued(metadata)
+        publisher = metadata.at_xpath('MedlineCitation/MedlineJournalInfo/MedlineTA')&.text
+        article.publisher = [publisher].compact.presence
+        keywords = metadata.xpath('MedlineCitation/KeywordList/Keyword').map(&:text)
+        article.keyword = keywords if keywords.any?
       elsif metadata.name == 'article'
         article.title = metadata.xpath('front/article-meta/title-group/article-title').text
         article.abstract = metadata.xpath('front/article-meta/abstract').text
         article.date_issued = get_date_issued(metadata)
+        publisher = metadata.at_xpath('front/journal-meta/publisher/publisher-name')&.text
+        article.publisher = [publisher].compact.presence
       else
         # Raise an error for unknown metadata formats
         raise StandardError, "Unknown metadata format: #{metadata.name}"
