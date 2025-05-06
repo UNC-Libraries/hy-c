@@ -66,30 +66,47 @@ RSpec.describe Tasks::PubmedIngestService do
   end
 
   describe '#batch_retrieve_metadata' do
+    before do
+      stub_request(:get, /eutils.ncbi.nlm.nih.gov/).to_return do |request|
+        uri = URI.parse(request.uri)
+        params = CGI.parse(uri.query)
+        db = params['db'].first
+        ids = params['id'].first.split(',')
+
+        xml = build_dynamic_pubmed_xml(ids.count, db)
+
+        {
+          status: 200,
+          body: xml,
+          headers: { 'Content-Type' => 'text/xml' }
+        }
+      end
+    end
+
     let(:mock_attachment_results) do
       json = JSON.parse(File.read(Rails.root.join('spec', 'fixtures', 'files', 'pubmed_ingest_test_fixture_2.json'))).symbolize_keys
       base_pmid = 100000
       base_pmcid = 200000
       # Add 800 rows to the skipped array
-      800.times do |i|
+      900.times do |i|
         index_str = format('%03d', i + 1)
         if i.even?
           # pmid-only row
           json[:skipped] << {
-            "file_name" => "test_file_#{index_str}.pdf",
-            "cdr_url" => "https://cdr.lib.unc.edu/concern/articles/#{index_str}",
-            "pmid" => (base_pmid + i).to_s,
-            "doi" => "doi-#{index_str}",
-            "pdf_attached" => "Skipped: No CDR URL"
+            'file_name' => "test_file_#{index_str}.pdf",
+            'cdr_url' => "https://cdr.lib.unc.edu/concern/articles/#{index_str}",
+            'pmid' => (base_pmid + i).to_s,
+            'doi' => "doi-#{index_str}",
+            'pdf_attached' => 'Skipped: No CDR URL'
           }
         else
           # pmcid-only row
           json[:skipped] << {
-            "file_name" => "test_file_#{index_str}.pdf",
-            "cdr_url" => "https://cdr.lib.unc.edu/concern/articles/#{index_str}",
-           "pmcid" => "PMC#{base_pmcid + i}",
-            "doi" => "doi-#{index_str}",
-            "pdf_attached" => "Skipped: No CDR URL"
+            'file_name' => "test_file_#{index_str}.pdf",
+            'cdr_url' => "https://cdr.lib.unc.edu/concern/articles/#{index_str}",
+           'pmcid' => "PMC#{base_pmcid + i}",
+            'doi' => "doi-#{index_str}",
+            'pdf_attached' => 'Skipped: No CDR URL'
           }
         end
       end
@@ -103,23 +120,44 @@ RSpec.describe Tasks::PubmedIngestService do
       }
     end
     let(:pubmed_ingest_service) { described_class.new(config) }
-
-    it 'retrieves metadata for pmid and pmcid' do
-      # Print first 10 rows of the mock attachment results
-      puts "Mock Attachment Results (First 10 rows):"
-      mock_attachment_results[:skipped].first(10).each do |row|
-        puts row
-      end
-      # Mock the HTTP response for the PubMed API
-      stub_request(:get, /eutils.ncbi.nlm.nih.gov/).to_return(status: 200, body: '<PubmedArticle><PubmedData></PubmedData></PubmedArticle>')
-
-      # Call the method
+    it 'retrieves metadata in batches' do
       result = pubmed_ingest_service.batch_retrieve_metadata
-
       # Check that the metadata was retrieved correctly
       expect(result).not_to be_empty
-      expect(result.size).to eq(800)
+      expect(result.size).to eq(900)
       expect(result.first).to be_a(Nokogiri::XML::Element)
     end
-    end
   end
+
+  def build_dynamic_pubmed_xml(count, db_type)
+    Nokogiri::XML::Builder.new do |xml|
+      if db_type == 'pubmed'
+        xml.PubmedArticleSet {
+          count.times do |i|
+            xml.PubmedArticle {
+              xml.MedlineCitation {
+                xml.PMID "100000#{i}"
+              }
+              xml.Article {
+                xml.ArticleTitle "Mocked PubMed Article #{i}"
+              }
+            }
+          end
+        }
+      else
+        xml.ArticleSet {
+          count.times do |i|
+            xml.article {
+              xml.front {
+                xml.send('article-meta') {
+                  xml.send('pub-id', "200000#{i}", 'pub-id-type' => 'pmcid')
+                  xml.title "Mocked PMC Article #{i}"
+                }
+              }
+            }
+          end
+        }
+      end
+    end.to_xml
+  end
+end
