@@ -7,7 +7,7 @@ module Tasks
     def initialize(config)
       # Validate the config hash
       raise ArgumentError, 'Missing required config keys' unless config['admin_set_title'] && config['depositor_onyen'] && config['attachment_results']
-      @attachment_results = config['attachment_results']
+      @attachment_results = config['attachment_results'].symbolize_keys
 
       # Exclude the "Skipped: No CDR URL" rows from the attachment results
       @new_pubmed_works = @attachment_results[:skipped].select { |row| row['pdf_attached'] == 'Skipped: No CDR URL' }

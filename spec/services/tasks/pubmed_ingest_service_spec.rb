@@ -67,7 +67,7 @@ RSpec.describe Tasks::PubmedIngestService do
 
   describe '#batch_retrieve_metadata' do
     let(:mock_attachment_results) do
-      json = JSON.parse(File.read(Rails.root.join('spec', 'fixtures', 'files', 'pubmed_ingest_test_fixture_2.json')))
+      json = JSON.parse(File.read(Rails.root.join('spec', 'fixtures', 'files', 'pubmed_ingest_test_fixture_2.json'))).symbolize_keys
       base_pmid = 100000
       base_pmcid = 200000
       # Add 800 rows to the skipped array
@@ -75,7 +75,7 @@ RSpec.describe Tasks::PubmedIngestService do
         index_str = format('%03d', i + 1)
         if i.even?
           # pmid-only row
-          json["skipped"] << {
+          json[:skipped] << {
             "file_name" => "test_file_#{index_str}.pdf",
             "cdr_url" => "https://cdr.lib.unc.edu/concern/articles/#{index_str}",
             "pmid" => (base_pmid + i).to_s,
@@ -84,7 +84,7 @@ RSpec.describe Tasks::PubmedIngestService do
           }
         else
           # pmcid-only row
-          json["skipped"] << {
+          json[:skipped] << {
             "file_name" => "test_file_#{index_str}.pdf",
             "cdr_url" => "https://cdr.lib.unc.edu/concern/articles/#{index_str}",
            "pmcid" => "PMC#{base_pmcid + i}",
@@ -93,17 +93,23 @@ RSpec.describe Tasks::PubmedIngestService do
           }
         end
       end
+      json
     end
     let(:config) do
       {
         'admin_set_title' => admin_set.title.first,
-        'depositor_onyen' => 'test_depositor',
+        'depositor_onyen' => admin.uid,
         'attachment_results' => mock_attachment_results
       }
     end
     let(:pubmed_ingest_service) { described_class.new(config) }
 
     it 'retrieves metadata for pmid and pmcid' do
+      # Print first 10 rows of the mock attachment results
+      puts "Mock Attachment Results (First 10 rows):"
+      mock_attachment_results[:skipped].first(10).each do |row|
+        puts row
+      end
       # Mock the HTTP response for the PubMed API
       stub_request(:get, /eutils.ncbi.nlm.nih.gov/).to_return(status: 200, body: '<PubmedArticle><PubmedData></PubmedData></PubmedArticle>')
 
