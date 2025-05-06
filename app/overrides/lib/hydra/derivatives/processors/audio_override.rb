@@ -7,7 +7,7 @@ module Hydra::Derivatives::Processors
 
       def encode(path, options, output_file)
         FfmpegLocking.with_ffmpeg_lock do
-          Rails.logger.error("Audio encode acquired lock with path: #{path}, options: #{options}, output_file: #{output_file}")
+          Rails.logger.info("Audio encode acquired lock with path: #{path}, options: #{options}, output_file: #{output_file}")
           original_encode(path, options, output_file)
         end
       end
