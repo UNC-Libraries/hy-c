@@ -77,24 +77,6 @@ RSpec.describe Hydra::Derivatives::Processors::FfmpegLocking do
         described_class.with_ffmpeg_lock { executed = true }
         expect(executed).to be true
       end
-
-    #   it 'raises and retries when lock fails' do
-    #     # First attempt fails with false, which raises LockError
-    #     # Second attempt succeeds with true
-    #     call_count = 0
-    #     allow(mock_lock_manager).to receive(:lock)
-    #       .with(lock_key, lock_expiry) do |&block|
-    #         call_count += 1
-    #         if call_count == 1
-    #           block.call(false)  # This should raise a LockError
-    #         else
-    #           block.call(true)   # This should succeed
-    #         end
-    #       end
-
-    #     expect { |b| described_class.with_ffmpeg_lock(&b) }.to yield_control
-    #     expect(call_count).to eq(2)
-    #   end
     end
   end
 end
