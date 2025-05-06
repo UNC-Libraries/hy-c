@@ -6,17 +6,15 @@ module Tasks
 
     def initialize(config)
       # Validate the config hash
-      @config = config
-      raise ArgumentError, 'Missing required config keys' unless config['admin_set'] && config['depositor_onyen'] && config['attachment_results']
+      raise ArgumentError, 'Missing required config keys' unless config['admin_set_title'] && config['depositor_onyen'] && config['attachment_results']
       @attachment_results = config['attachment_results']
 
       # Exclude the "Skipped: No CDR URL" rows from the attachment results
       @new_pubmed_works = @attachment_results[:skipped].select { |row| row['pdf_attached'] == 'Skipped: No CDR URL' }
       @attachment_results[:skipped] = @attachment_results[:skipped].reject { |row| row['pdf_attached'] == 'Skipped: No CDR URL' }
-      admin_set_title = config['admin_set']
 
-      @admin_set = ::AdminSet.find_by(title: admin_set_title)
-      raise ActiveRecord::RecordNotFound, "AdminSet not found with title: #{admin_set_title}" unless @admin_set
+      @admin_set = ::AdminSet.where(title: config['admin_set_title'])&.first
+      raise ActiveRecord::RecordNotFound, "AdminSet not found with title: #{config['admin_set_title']}" unless @admin_set
 
       @depositor = User.find_by(uid: config['depositor_onyen'])
       raise ActiveRecord::RecordNotFound, "User not found with onyen: #{config['depositor_onyen']}" unless @depositor
@@ -30,8 +28,7 @@ module Tasks
       work = model_class.find(work_hash[:work_id])
       depositor =  User.find_by(uid: depositor_onyen)
       file = attach_pdf_to_work(work, file_path, depositor, visibility)
-      admin_set = ::AdminSet.where(id: work_hash[:admin_set_id]).first
-      file.update(permissions_attributes: group_permissions(admin_set))
+      file.update(permissions_attributes: group_permissions(@admin_set))
       file
     end
 
@@ -162,5 +159,6 @@ module Tasks
         # Select a row from the attachment results based on an identifier extracted from the metadata
         @new_pubmed_works.find { |row| row['pmid'] == pmid || row['pmcid'] == pmcid }
     end
+end
 end
 end

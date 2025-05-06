@@ -1,69 +1,5 @@
 {
     "skipped": [
-        {
-            "file_name": "1",
-            "cdr_url": "https://cdr.lib.unc.edu/concern/articles/1",
-            "has_fileset": "false",
-            "pdf_attached": "Skipped: No CDR URL",
-            "pmid": "1",
-            "doi": "doi-1"
-        },
-        {
-            "file_name": "2",
-            "cdr_url": "https://cdr.lib.unc.edu/concern/articles/2",
-            "has_fileset": "false",
-            "pdf_attached": "Skipped: No CDR URL",
-            "pmid": "2",
-            "doi": "doi-2"
-        },
-        {
-            "file_name": "3",
-            "cdr_url": "https://cdr.lib.unc.edu/concern/articles/3",
-            "has_fileset": "false",
-            "pdf_attached": "Skipped: No CDR URL",
-            "pmid": "3",
-            "doi": "doi-3"
-        },
-        {
-            "file_name": "4",
-            "cdr_url": "https://cdr.lib.unc.edu/concern/articles/4",
-            "has_fileset": "false",
-            "pdf_attached": "Skipped: No CDR URL",
-            "pmid": "4",
-            "doi": "doi-4"
-        },
-        {
-            "file_name": "5",
-            "cdr_url": "https://cdr.lib.unc.edu/concern/articles/5",
-            "has_fileset": "false",
-            "pdf_attached": "Skipped: No CDR URL",
-            "pmcid": "5",
-            "doi": "doi-5"
-        },
-        {
-            "file_name": "6",
-            "cdr_url": "https://cdr.lib.unc.edu/concern/articles/6",
-            "has_fileset": "false",
-            "pdf_attached": "Skipped: No CDR URL",
-            "pmcid": "6",
-            "doi": "doi-6"
-        },
-        {
-            "file_name": "7",
-            "cdr_url": "https://cdr.lib.unc.edu/concern/articles/7",
-            "has_fileset": "false",
-            "pdf_attached": "Skipped: No CDR URL",
-            "pmcid": "7",
-            "doi": "doi-7"
-        },
-        {
-            "file_name": "8",
-            "cdr_url": "https://cdr.lib.unc.edu/concern/articles/8",
-            "has_fileset": "false",
-            "pdf_attached": "Skipped: No CDR URL",
-            "pmcid": "8",
-            "doi": "doi-8"
-        }
     ],
     "successfully_attached": [
     ],
@@ -133,6 +69,6 @@
       "failed": 3,
       "successfully_ingested": 3,
       "successfully_attached": 0,
-      "skipped": 8
+      "skipped": 0
     }
   }
