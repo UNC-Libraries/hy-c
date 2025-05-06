@@ -50,4 +50,19 @@ RSpec.describe Tasks::PubmedIngestService do
       expect(result.visibility).to eq(visibility)
     end
   end
+
+  describe '#batch_retrieve_metadata' do
+    let(:attachment_results) do
+      JSON.parse(File.read(Rails.root.join('spec', 'fixtures', 'files', 'pubmed_ingest_test_fixture_2.json')))
+    end
+    let(:config) do
+      {
+        'admin_set' => admin_set.id,
+        'depositor_onyen' => 'test_depositor',
+        'attachment_results' => attachment_results
+      }
+    end
+    let(:pubmed_ingest_service) { described_class.new(config) }
+  end
+
 end
