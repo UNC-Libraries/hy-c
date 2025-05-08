@@ -1,4 +1,7 @@
 # frozen_string_literal: true
+# Notes:
+# 1. Script uses PMC-OAI API to retrieve metadata and make comparisons of alternate IDs. (PMCID, PMID)
+# 2. PMC requests scripts making >100 requests be run outside of peak hours. (5 AM - 9 PM)
 DEPOSITOR = ENV['DIMENSIONS_INGEST_DEPOSITOR_ONYEN']
 desc 'Fetch identifiers from a directory, compare against the CDR, and store the results in a CSV'
 task :fetch_identifiers, [:input_dir_path, :output_csv_path] => :environment do |task, args|
@@ -16,7 +19,7 @@ desc 'Attach new PDFs to works'
 # 2. full_text_csv: CSV with full-text filenames and extensions
 # 3. file_retrieval_directory: Path to the directory where the files are located
 # 4. output_dir: Path to the directory where the output files will be saved
-task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :full_text_csv, :file_retrieval_directory, :output_dir] => :environment do |task, args|
+task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :full_text_csv, :file_retrieval_directory, :output_dir, :admin_set] => :environment do |task, args|
   return unless valid_args('attach_pubmed_pdfs', args[:full_text_csv])
   ingest_service = Tasks::PubmedIngestService.new
   res = {skipped: [], successfully_attached: [], successfully_ingested: [], failed: [], time: Time.now, depositor: DEPOSITOR, file_retrieval_directory: args[:file_retrieval_directory], counts: {}}
@@ -80,8 +83,22 @@ task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :full_text_csv, :file_
     end
     # Skip attachment if the work doesn't exist or has a file attached
     if row['cdr_url'].nil? || row['has_fileset'].to_s == 'true'
-      skip_message = row['cdr_url'].nil? ? 'No CDR URL' : 'File already attached'
-      row['pdf_attached'] = "Skipped: #{skip_message}"
+      # Attach the file to the work to make it easy to attach to new works later
+      row['path'] = "#{args[:file_retrieval_directory]}/#{file_name}.#{file_extension}"
+      row['pdf_attached'] = row['cdr_url'].nil? ? 'Skipped: No CDR URL' : 'Skipped: File already attached'
+      res[:skipped] << row.to_h
+      next
+    end
+    # Skip attachment if the work has a file attached
+    if  row['has_fileset'].to_s == 'true'
+      row['pdf_attached'] = 'Skipped: File already attached'
+      res[:skipped] << row.to_h
+      next
+    end
+    # Skip attachment if the CDR URL is nil
+    if row['cdr_url'].nil?
+      row['pdf_attached'] = 'Skipped: No CDR URL'
+      row['path'] = "#{args[:file_retrieval_directory]}/#{file_name}.#{file_extension}"
       res[:skipped] << row.to_h
       next
     end
@@ -123,12 +140,25 @@ task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :full_text_csv, :file_
        next
     end
   end
-  # Update Counts
+  # WIP: =================== Focus Area
+  # Create new works
+  config = {
+    'admin_set' => admin_set,
+    'depositor_onyen' => DEPOSITOR,
+    'attachment_results' => res
+   }
+  ingest_service = Tasks::PubmedIngestService.new(config)
+  ingest_service.batch_retrieve_metadata
+  res = ingest_service.ingest_publications
+  #  WIP: =================== Update res successfully_ingested after creating new works, then write to JSON
+
+    # Update Counts
   res[:counts][:total_unique_files] = file_info.length
   res[:counts][:failed] = res[:failed].length
   res[:counts][:successfully_attached] = res[:successfully_attached].length
   res[:counts][:successfully_ingested] = res[:successfully_ingested].length
   res[:counts][:skipped] = res[:skipped].length
+
   # Write results to JSON
   json_output_path = File.join(args[:output_dir], 'pdf_attachment_results.json')
   File.open(json_output_path, 'w') do |f|
@@ -144,6 +174,38 @@ task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :full_text_csv, :file_
   end
   double_log("Results written to #{json_output_path} and #{csv_output_path}", :info)
   double_log("Attempted Attachments: #{attempted_attachments}, Successfully Ingested: #{res[:successfully_ingested].length}, Successfully Attached: #{res[:successfully_attached].length}, Failed: #{res[:failed].length}, Skipped: #{res[:skipped].length}", :info)
+end
+
+desc 'Test WIP: Create a new work'
+task create_new_work: :environment do |task, args|
+  path = Rails.root.join('spec', 'fixtures', 'files', 'pubmed_ingest_test_fixture.json')
+  # Read the JSON file
+  test_hashes = [
+    { 'pmid' => '31857942', 'pdf_attached' => 'Skipped: No CDR URL', 'path' => Rails.root.join('spec', 'fixtures', 'files', 'sample_pdf.pdf') },
+    { 'pmcid'=> 'PMC6101660', 'pdf_attached' => 'Skipped: No CDR URL', 'path' => Rails.root.join('spec', 'fixtures', 'files', '1022-0.pdf') },
+    { 'pmid' => '32198428', 'pdf_attached' => 'Skipped: No CDR URL', 'path' => Rails.root.join('spec', 'fixtures', 'files', 'sample_pdf.pdf') },
+    { 'pmcid' => 'PMC9753428', 'pdf_attached' => 'Skipped: No CDR URL', 'path' => Rails.root.join('spec', 'fixtures', 'files', '1022-0.pdf') }
+  ]
+  config = {
+    'admin_set' => 'default',
+    'depositor_onyen' => DEPOSITOR,
+  }
+  ingest_service = Tasks::PubmedIngestService.new(config)
+  retrieved_metadata = ingest_service.batch_retrieve_metadata
+  # Write results to JSON
+  json_output_path = File.join(Rails.root, 'test-out-2066.json')
+  File.open(json_output_path, 'w') do |f|
+    f.write(JSON.pretty_generate(retrieved_metadata))
+  end
+  # test_hashes.each do |hash|
+  #   # Create a new work
+  #   work = ingest_service.create_new_record(hash, path, DEPOSITOR, Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE)
+  #   if work.nil?
+  #     puts "Failed to create new work for #{hash}"
+  #   else
+  #     puts "Successfully created new work for #{hash}"
+  #   end
+  # end
 end
 
 def has_matching_ids?(existing_ids, current_ids)
