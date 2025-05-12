@@ -43,25 +43,40 @@ RSpec.describe Tasks::PubmedIngestService do
     allow(CharacterizeJob).to receive(:perform_later)
   end
 
-  describe '#attach_pubmed_file' do
-    let(:file_path) { Rails.root.join('spec', 'fixtures', 'files', 'sample_pdf.pdf') }
-    let(:depositor) { FactoryBot.create(:user, uid: 'depositor') }
+  describe '#initialize' do
+    it 'successfully initializes with a valid config' do
+      pending 'Not implemented yet'
+      expect(true).to eq(false)
+    end
 
-    it 'attaches a PDF to the work' do
-      work_hash = {
-        work_id: work.id,
-        work_type: 'Article',
-        title: 'Sample Work Title',
-        admin_set_id: admin_set.id,
-        admin_set_name: ['Open_Access_Articles_and_Book_Chapters']
-      }
-      result = nil
-      expect {
-        result = service.attach_pubmed_file(work_hash, file_path, depositor.uid, visibility)
-      }.to change { FileSet.count }.by(1)
-      expect(result).to be_instance_of(FileSet)
-      expect(result.depositor).to eq(depositor.uid)
-      expect(result.visibility).to eq(visibility)
+    it 'raises ArgumentError when admin_set_title is missing' do
+      pending 'Not implemented yet'
+      expect(true).to eq(false)
+    end
+
+    it 'raises ArgumentError when depositor_onyen is missing' do
+      pending 'Not implemented yet'
+      expect(true).to eq(false)
+    end
+
+    it 'raises ArgumentError when attachment_results is missing' do
+      pending 'Not implemented yet'
+      expect(true).to eq(false)
+    end
+
+    it 'raises RecordNotFound when an AdminSet cannot be found' do
+      pending 'Not implemented yet'
+      expect(true).to eq(false)
+    end
+
+    it 'raises RecordNotFound when a User object cannot be found' do
+      pending 'Not implemented yet'
+      expect(true).to eq(false)
+    end
+
+    it 'extracts only new Pubmed works from skipped array' do
+      pending 'Not implemented yet'
+      expect(true).to eq(false)
     end
   end
 
@@ -126,6 +141,28 @@ RSpec.describe Tasks::PubmedIngestService do
       expect(result).not_to be_empty
       expect(result.size).to eq(900)
       expect(result.first).to be_a(Nokogiri::XML::Element)
+    end
+  end
+
+  describe '#attach_pubmed_file' do
+    let(:file_path) { Rails.root.join('spec', 'fixtures', 'files', 'sample_pdf.pdf') }
+    let(:depositor) { FactoryBot.create(:user, uid: 'depositor') }
+
+    it 'attaches a PDF to the work' do
+      work_hash = {
+        work_id: work.id,
+        work_type: 'Article',
+        title: 'Sample Work Title',
+        admin_set_id: admin_set.id,
+        admin_set_name: ['Open_Access_Articles_and_Book_Chapters']
+      }
+      result = nil
+      expect {
+        result = service.attach_pubmed_file(work_hash, file_path, depositor.uid, visibility)
+      }.to change { FileSet.count }.by(1)
+      expect(result).to be_instance_of(FileSet)
+      expect(result.depositor).to eq(depositor.uid)
+      expect(result.visibility).to eq(visibility)
     end
   end
 
