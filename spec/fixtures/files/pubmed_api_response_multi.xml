@@ -1,0 +1,1930 @@
+<?xml version="1.0" ?>
+<!DOCTYPE PubmedArticleSet PUBLIC "-//NLM//DTD PubMedArticle, 1st January 2025//EN" "https://dtd.nlm.nih.gov/ncbi/pubmed/out/pubmed_250101.dtd">
+<PubmedArticleSet>
+    <PubmedArticle>
+        <MedlineCitation Status="PubMed-not-MEDLINE" Owner="NLM">
+            <PMID Version="1">35198922</PMID>
+            <DateRevised>
+                <Year>2023</Year>
+                <Month>03</Month>
+                <Day>15</Day>
+            </DateRevised>
+            <Article PubModel="Electronic-eCollection">
+                <Journal>
+                    <ISSN IssnType="Electronic">2589-5370</ISSN>
+                    <JournalIssue CitedMedium="Internet">
+                        <Volume>44</Volume>
+                        <PubDate>
+                            <Year>2022</Year>
+                            <Month>Feb</Month>
+                        </PubDate>
+                    </JournalIssue>
+                    <Title>EClinicalMedicine</Title>
+                    <ISOAbbreviation>EClinicalMedicine</ISOAbbreviation>
+                </Journal>
+                <ArticleTitle>Mortality in HIV and tuberculosis patients following implementation of integrated HIV-TB treatment: Results from an open-label cluster-randomized trial.</ArticleTitle>
+                <Pagination>
+                    <StartPage>101298</StartPage>
+                    <MedlinePgn>101298</MedlinePgn>
+                </Pagination>
+                <ELocationID EIdType="pii" ValidYN="Y">101298</ELocationID>
+                <ELocationID EIdType="doi" ValidYN="Y">10.1016/j.eclinm.2022.101298</ELocationID>
+                <Abstract>
+                    <AbstractText Label="BACKGROUND" NlmCategory="BACKGROUND">HIV-TB treatment integration reduces mortality. Operational implementation of integrated services is challenging. This study assessed the impact of quality improvement (QI) for HIV-TB integration on mortality within primary healthcare (PHC) clinics in South Africa.</AbstractText>
+                    <AbstractText Label="METHODS" NlmCategory="METHODS">An open-label cluster randomized controlled study was conducted between 2016 and 2018 in 40 rural clinics in South Africa. The study statistician randomized PHC nurse-supervisors 1:1 into 16 clusters (eight nurse-supervisors supporting 20 clinics per arm) to receive QI, supported HIV-TB integration intervention or standard of care (control). Nurse supervisors and clinics under their supervision, based in the study health districts were eligible for inclusion in this study. Nurse supervisors were excluded if their clinics were managed by municipal health (different resource allocation), did not offer co-located antiretroviral therapy (ART) and TB services, services were performed by a single nurse, did not receive non-governmental organisation (NGO) support, patient data was not available for &gt; 50% of attendees. The analysis population consists of all patients newly diagnosed with (i) both TB and HIV (ii) HIV only (among patients previously treated for TB or those who never had TB before) and (iii) TB only (among patients already diagnosed with HIV or those who were never diagnosed with HIV) after QI implementation in the intervention arm, or enrolment in the control arm. Mortality rates was assessed 12 months post enrolment, using unpaired 
+                        <i>t</i>-tests and cox-proportional hazards model. (Clinicaltrials.gov, NCT02654613, registered 01 June 2015, trial closed).
+                    </AbstractText>
+                    <AbstractText Label="FINDINGS" NlmCategory="RESULTS">Overall, 21 379 participants were enrolled between December 2016 and December 2018 in intervention and control arm clinics: 1329 and 841 HIV-TB co-infected (10&#xb7;2%); 10&#xa0;799 and 6&#xa0;611 people living with Human Immunodeficiency Virus (HIV)/ acquired immunodeficiency syndrome (AIDS) (PLWHA) only (81&#xb7;4%); 1&#xa0;131 and 668 patients with TB only (8&#xb7;4%), respectively. Average cluster sizes were 1657 (range 170-5782) and 1015 (range 33-2027) in intervention and control arms. By 12 months, 6529 (68&#xb7;7%) and 4074 (70&#xb7;4%) were alive and in care, 568 (6&#xb7;0%) and 321 (5&#xb7;6%) had completed TB treatment, 1078 (11&#xb7;3%) and 694 (12&#xb7;0%) were lost to follow-up, with 245 and 156 deaths occurring in intervention and control arms, respectively. Mortality rates overall [95% confidence interval (CI)] was 4&#xb7;5 (3&#xb7;4-5&#xb7;9) in intervention arm, and 3&#xb7;8 (2&#xb7;6-5&#xb7;4) per 100 person-years in control arm clusters [mortality rate ratio (MRR): 1&#xb7;19 (95% CI 0&#xb7;79-1&#xb7;80)]. Mortality rates among HIV-TB co-infected patients was 10&#xb7;1 (6&#xb7;7-15&#xb7;3) and 9&#xb7;8 (5&#xb7;0-18&#xb7;9) per 100 person-years, [MRR: 1&#xb7;04 (95% CI 0&#xb7;51-2&#xb7;10)], in intervention and control arm clusters, respectively.</AbstractText>
+                    <AbstractText Label="INTERPRETATION" NlmCategory="CONCLUSIONS">HIV-TB integration supported by a QI intervention did not reduce mortality in HIV-TB co-infected patients. Demonstrating mortality benefit from health systems process improvements in real-world operational settings remains challenging. Despite the study being potentially underpowered to demonstrate the effect size, integration interventions were implemented using existing facility staff and infrastructure reflecting the real-world context where most patients in similar settings access care, thereby improving generalizability and scalability of study findings.</AbstractText>
+                    <AbstractText Label="FUNDING" NlmCategory="BACKGROUND">Research reported in this publication was supported by South African Medical Research Council (SAMRC), and UK Government's Newton Fund through United Kingdom Medical Research Council (UKMRC).</AbstractText>
+                    <CopyrightInformation>&#xa9; 2022 The Author(s).</CopyrightInformation>
+                </Abstract>
+                <AuthorList CompleteYN="Y">
+                    <Author ValidYN="Y">
+                        <LastName>Naidoo</LastName>
+                        <ForeName>Kogieleum</ForeName>
+                        <Initials>K</Initials>
+                        <AffiliationInfo>
+                            <Affiliation>Centre for the AIDS Programme of Research in South Africa (CAPRISA), University of KwaZulu-Natal Nelson R Mandela School of Medicine, Private Bag X7 Congella, Durban 4013, South Africa.</Affiliation>
+                        </AffiliationInfo>
+                        <AffiliationInfo>
+                            <Affiliation>South African Medical Research Council (SAMRC)-CAPRISA-TB-HIV Pathogenesis and Treatment Research Unit, University of KwaZulu-Natal Nelson R Mandela School of Medicine, Durban, South Africa.</Affiliation>
+                        </AffiliationInfo>
+                    </Author>
+                    <Author ValidYN="Y">
+                        <LastName>Gengiah</LastName>
+                        <ForeName>Santhanalakshmi</ForeName>
+                        <Initials>S</Initials>
+                        <AffiliationInfo>
+                            <Affiliation>Centre for the AIDS Programme of Research in South Africa (CAPRISA), University of KwaZulu-Natal Nelson R Mandela School of Medicine, Private Bag X7 Congella, Durban 4013, South Africa.</Affiliation>
+                        </AffiliationInfo>
+                    </Author>
+                    <Author ValidYN="Y">
+                        <LastName>Yende-Zuma</LastName>
+                        <ForeName>Nonhlanhla</ForeName>
+                        <Initials>N</Initials>
+                        <AffiliationInfo>
+                            <Affiliation>Centre for the AIDS Programme of Research in South Africa (CAPRISA), University of KwaZulu-Natal Nelson R Mandela School of Medicine, Private Bag X7 Congella, Durban 4013, South Africa.</Affiliation>
+                        </AffiliationInfo>
+                        <AffiliationInfo>
+                            <Affiliation>South African Medical Research Council (SAMRC)-CAPRISA-TB-HIV Pathogenesis and Treatment Research Unit, University of KwaZulu-Natal Nelson R Mandela School of Medicine, Durban, South Africa.</Affiliation>
+                        </AffiliationInfo>
+                    </Author>
+                    <Author ValidYN="Y">
+                        <LastName>Mlobeli</LastName>
+                        <ForeName>Regina</ForeName>
+                        <Initials>R</Initials>
+                        <AffiliationInfo>
+                            <Affiliation>Centre for the AIDS Programme of Research in South Africa (CAPRISA), University of KwaZulu-Natal Nelson R Mandela School of Medicine, Private Bag X7 Congella, Durban 4013, South Africa.</Affiliation>
+                        </AffiliationInfo>
+                    </Author>
+                    <Author ValidYN="Y">
+                        <LastName>Ngozo</LastName>
+                        <ForeName>Jacqueline</ForeName>
+                        <Initials>J</Initials>
+                        <AffiliationInfo>
+                            <Affiliation>KwaZulu- Natal Provincial Department of Health, South Africa.</Affiliation>
+                        </AffiliationInfo>
+                    </Author>
+                    <Author ValidYN="Y">
+                        <LastName>Memela</LastName>
+                        <ForeName>Nhlakanipho</ForeName>
+                        <Initials>N</Initials>
+                        <AffiliationInfo>
+                            <Affiliation>Centre for the AIDS Programme of Research in South Africa (CAPRISA), University of KwaZulu-Natal Nelson R Mandela School of Medicine, Private Bag X7 Congella, Durban 4013, South Africa.</Affiliation>
+                        </AffiliationInfo>
+                    </Author>
+                    <Author ValidYN="Y">
+                        <LastName>Padayatchi</LastName>
+                        <ForeName>Nesri</ForeName>
+                        <Initials>N</Initials>
+                        <AffiliationInfo>
+                            <Affiliation>Centre for the AIDS Programme of Research in South Africa (CAPRISA), University of KwaZulu-Natal Nelson R Mandela School of Medicine, Private Bag X7 Congella, Durban 4013, South Africa.</Affiliation>
+                        </AffiliationInfo>
+                        <AffiliationInfo>
+                            <Affiliation>South African Medical Research Council (SAMRC)-CAPRISA-TB-HIV Pathogenesis and Treatment Research Unit, University of KwaZulu-Natal Nelson R Mandela School of Medicine, Durban, South Africa.</Affiliation>
+                        </AffiliationInfo>
+                    </Author>
+                    <Author ValidYN="Y">
+                        <LastName>Barker</LastName>
+                        <ForeName>Pierre</ForeName>
+                        <Initials>P</Initials>
+                        <AffiliationInfo>
+                            <Affiliation>Institute for Healthcare Improvement, Gilling's School of Global Public Health, UNC Chapel Hill, Chapel Hill, Cambridge, MA, USA.</Affiliation>
+                        </AffiliationInfo>
+                    </Author>
+                    <Author ValidYN="Y">
+                        <LastName>Nunn</LastName>
+                        <ForeName>Andrew</ForeName>
+                        <Initials>A</Initials>
+                        <AffiliationInfo>
+                            <Affiliation>Medical Research Council Clinical Trials Unit at University College, London, UK.</Affiliation>
+                        </AffiliationInfo>
+                    </Author>
+                    <Author ValidYN="Y">
+                        <LastName>Karim</LastName>
+                        <ForeName>Salim S Abdool</ForeName>
+                        <Initials>SSA</Initials>
+                        <AffiliationInfo>
+                            <Affiliation>Centre for the AIDS Programme of Research in South Africa (CAPRISA), University of KwaZulu-Natal Nelson R Mandela School of Medicine, Private Bag X7 Congella, Durban 4013, South Africa.</Affiliation>
+                        </AffiliationInfo>
+                        <AffiliationInfo>
+                            <Affiliation>South African Medical Research Council (SAMRC)-CAPRISA-TB-HIV Pathogenesis and Treatment Research Unit, University of KwaZulu-Natal Nelson R Mandela School of Medicine, Durban, South Africa.</Affiliation>
+                        </AffiliationInfo>
+                        <AffiliationInfo>
+                            <Affiliation>Department of Epidemiology, Mailman School of Public Health, Columbia University, New York, NY, USA.</Affiliation>
+                        </AffiliationInfo>
+                    </Author>
+                </AuthorList>
+                <Language>eng</Language>
+                <DataBankList CompleteYN="Y">
+                    <DataBank>
+                        <DataBankName>ClinicalTrials.gov</DataBankName>
+                        <AccessionNumberList>
+                            <AccessionNumber>NCT02654613</AccessionNumber>
+                        </AccessionNumberList>
+                    </DataBank>
+                </DataBankList>
+                <GrantList CompleteYN="Y">
+                    <Grant>
+                        <GrantID>MC_PC_16022</GrantID>
+                        <Acronym>MRC_</Acronym>
+                        <Agency>Medical Research Council</Agency>
+                        <Country>United Kingdom</Country>
+                    </Grant>
+                    <Grant>
+                        <GrantID>MC_UU_00004/04</GrantID>
+                        <Acronym>MRC_</Acronym>
+                        <Agency>Medical Research Council</Agency>
+                        <Country>United Kingdom</Country>
+                    </Grant>
+                </GrantList>
+                <PublicationTypeList>
+                    <PublicationType UI="D016428">Journal Article</PublicationType>
+                </PublicationTypeList>
+                <ArticleDate DateType="Electronic">
+                    <Year>2022</Year>
+                    <Month>02</Month>
+                    <Day>12</Day>
+                </ArticleDate>
+            </Article>
+            <MedlineJournalInfo>
+                <Country>England</Country>
+                <MedlineTA>EClinicalMedicine</MedlineTA>
+                <NlmUniqueID>101733727</NlmUniqueID>
+                <ISSNLinking>2589-5370</ISSNLinking>
+            </MedlineJournalInfo>
+            <KeywordList Owner="NOTNLM">
+                <Keyword MajorTopicYN="N">Cluster randomized trial</Keyword>
+                <Keyword MajorTopicYN="N">HIV</Keyword>
+                <Keyword MajorTopicYN="N">Mortality</Keyword>
+                <Keyword MajorTopicYN="N">Primary healthcare</Keyword>
+                <Keyword MajorTopicYN="N">Quality improvement</Keyword>
+                <Keyword MajorTopicYN="N">TB/HIV integration</Keyword>
+            </KeywordList>
+            <CoiStatement>Kogieleum Naidoo, Santhanalakshmi Gengiah, Nonhlanhla Yende-Zuma, Regina Mlobeli, Nhlakanipho Memela, Nesri Padayatchi, and Salim S. Abdool Karim report grants from Newton Fund through UKMRC and SAMRC, during the conduct of the study. The authors declare no competing interests.</CoiStatement>
+        </MedlineCitation>
+        <PubmedData>
+            <History>
+                <PubMedPubDate PubStatus="received">
+                    <Year>2021</Year>
+                    <Month>10</Month>
+                    <Day>12</Day>
+                </PubMedPubDate>
+                <PubMedPubDate PubStatus="revised">
+                    <Year>2022</Year>
+                    <Month>1</Month>
+                    <Day>17</Day>
+                </PubMedPubDate>
+                <PubMedPubDate PubStatus="accepted">
+                    <Year>2022</Year>
+                    <Month>1</Month>
+                    <Day>20</Day>
+                </PubMedPubDate>
+                <PubMedPubDate PubStatus="entrez">
+                    <Year>2022</Year>
+                    <Month>2</Month>
+                    <Day>24</Day>
+                    <Hour>5</Hour>
+                    <Minute>45</Minute>
+                </PubMedPubDate>
+                <PubMedPubDate PubStatus="pubmed">
+                    <Year>2022</Year>
+                    <Month>2</Month>
+                    <Day>25</Day>
+                    <Hour>6</Hour>
+                    <Minute>0</Minute>
+                </PubMedPubDate>
+                <PubMedPubDate PubStatus="medline">
+                    <Year>2022</Year>
+                    <Month>2</Month>
+                    <Day>25</Day>
+                    <Hour>6</Hour>
+                    <Minute>1</Minute>
+                </PubMedPubDate>
+                <PubMedPubDate PubStatus="pmc-release">
+                    <Year>2022</Year>
+                    <Month>2</Month>
+                    <Day>12</Day>
+                </PubMedPubDate>
+            </History>
+            <PublicationStatus>epublish</PublicationStatus>
+            <ArticleIdList>
+                <ArticleId IdType="pubmed">35198922</ArticleId>
+                <ArticleId IdType="pmc">PMC8850328</ArticleId>
+                <ArticleId IdType="doi">10.1016/j.eclinm.2022.101298</ArticleId>
+                <ArticleId IdType="pii">S2589-5370(22)00028-1</ArticleId>
+            </ArticleIdList>
+            <ReferenceList>
+                <Reference>
+                    <Citation>World Health Organization  . World Health Organization; Geneva, Switzerland: 2019. Global Tuberculosis Report 2019. World Health Organization. Available from  http://www.who.int/tb/publications/global_report/en/. Last Accessed December 2021.</Citation>
+                </Reference>
+                <Reference>
+                    <Citation>Naidoo K., Rampersad S., Karim S.A. Improving survival with tuberculosis &amp; HIV treatment integration: a mini review. Indian J Med Res. 2019;150(2):131. doi: 10.4103/ijmr.IJMR_660_19. Last Accessed December 2021.</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="doi">10.4103/ijmr.IJMR_660_19</ArticleId>
+                        <ArticleId IdType="pmc">PMC6829777</ArticleId>
+                        <ArticleId IdType="pubmed">31670268</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Abdool Karim S.S., Naidoo K., Grobler A., et al. Timing of initiation of antiretroviral drugs during tuberculosis therapy. N Engl J Med. 2010;362(8):697&#x2013;706. doi: 10.1056/NEJMoa0905848. Last Accessed December 2021.</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="doi">10.1056/NEJMoa0905848</ArticleId>
+                        <ArticleId IdType="pmc">PMC3076221</ArticleId>
+                        <ArticleId IdType="pubmed">20181971</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Havlir D.V., Kendall M.A., Ive P., et al. AIDS clinical trials group study A5221. N Engl J Med. 2011;365(16):1482&#x2013;1491. doi: 10.1056/NEJMoa1013607. Last Accessed December 2021.</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="doi">10.1056/NEJMoa1013607</ArticleId>
+                        <ArticleId IdType="pmc">PMC3327101</ArticleId>
+                        <ArticleId IdType="pubmed">22010914</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Blanc F.X., Sok T., Laureillard D., et al. Earlier versus later start of antiretroviral therapy in HIV-infected adults with tuberculosis. N Engl J Med. 2011;365(16):1471&#x2013;1481. doi: 10.1056/NEJMoa1013911. Last Accessed December 2021.</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="doi">10.1056/NEJMoa1013911</ArticleId>
+                        <ArticleId IdType="pmc">PMC4879711</ArticleId>
+                        <ArticleId IdType="pubmed">22010913</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Telisinghe L., Ruperez M., Amofa-Sekyi M., et al. Does tuberculosis screening improve individual outcomes? A systematic review. EClinicalMedicine. 2021;40 doi: 10.1016/j.eclinm.2021.101127. Last Accessed December 2021.</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="doi">10.1016/j.eclinm.2021.101127</ArticleId>
+                        <ArticleId IdType="pmc">PMC8473670</ArticleId>
+                        <ArticleId IdType="pubmed">34604724</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Temprano ANRS 12136 Study Group A study of early antiretrovirals and isoniazid preventive therapy in Africa. N Engl J Med. 2015;373(9):808&#x2013;822. doi: 10.1056/NEJMoa1507198. Last Accessed December 2021.</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="doi">10.1056/NEJMoa1507198</ArticleId>
+                        <ArticleId IdType="pubmed">26193126</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Ayele H.T., van Mourik M.S., Bonten M.J. Effect of isoniazid preventive therapy on tuberculosis or death in persons with HIV: a retrospective cohort study. BMC Infect Dis. 2015;15(1):334. doi: 10.1186/s12879-015-1089-3. Last Accessed 7 July 2020.</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="doi">10.1186/s12879-015-1089-3</ArticleId>
+                        <ArticleId IdType="pmc">PMC4535686</ArticleId>
+                        <ArticleId IdType="pubmed">26269094</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Ousley J., Soe K.P., Kyaw N.T.T., et al. IPT during HIV treatment in Myanmar: high rates of coverage, completion, and drug adherence. PHA. 2018;8(1):20&#x2013;24. doi: 10.5588/pha.17.0087. Last Accessed December 2021.</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="doi">10.5588/pha.17.0087</ArticleId>
+                        <ArticleId IdType="pmc">PMC5858061</ArticleId>
+                        <ArticleId IdType="pubmed">29581939</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Avoka V.A., Osei E. Evaluation of TB/HIV collaborative activities: the case of South Tongu District, Ghana. Tuberc Res Treat. 2020;2020 doi: 10.1155/2020/4587179. Last Accessed December 2021.</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="doi">10.1155/2020/4587179</ArticleId>
+                        <ArticleId IdType="pmc">PMC7262666</ArticleId>
+                        <ArticleId IdType="pubmed">32528737</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Wiysonge C.S, Middelkoop K, Naidoo K, Nicol L, Padayatchi N. Evidence to inform South Africa tuberculosis policies (EVISAT) project. A systematic review of the epidemiology of and programmatic response to tuberculosis in HIV-infected patients in South Africa. UNAIDS 2014. Last Accessed December 2021</Citation>
+                </Reference>
+                <Reference>
+                    <Citation>Kufa T., Fielding K.L., Hippner P., et al. An intervention to optimise the delivery of integrated tuberculosis and HIV services at primary care clinics: results of the MERGE cluster randomised study. Contemp Clin Stud. 2018;72:43&#x2013;52. doi: 10.1016/j.cct.2018.07.013. Accessed December 2021.</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="doi">10.1016/j.cct.2018.07.013</ArticleId>
+                        <ArticleId IdType="pubmed">30053431</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Grant A.D., Charalambous S., Tlali M., et al. Algorithm-guided empirical tuberculosis treatment for people with advanced HIV (TB fast track): an open-label, cluster-randomised study. Lancet HIV. 2020;7(1):e27&#x2013;e37. doi: 10.1016/S2352-3018(19)30266-8. Last Accessed December 2021.</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="doi">10.1016/S2352-3018(19)30266-8</ArticleId>
+                        <ArticleId IdType="pmc">PMC7617063</ArticleId>
+                        <ArticleId IdType="pubmed">31727580</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Naidoo K., Gengiah S., Yende-Zuma N., et al. Addressing challenges in scaling up TB and HIV treatment integration in rural primary healthcare clinics in South Africa (SUTHI): a cluster randomized controlled trial protocol. Implement Sci. 2017;12(1):129. doi: 10.1186/s13012-017-0661-1. Last Accessed December 2021.</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="doi">10.1186/s13012-017-0661-1</ArticleId>
+                        <ArticleId IdType="pmc">PMC5683330</ArticleId>
+                        <ArticleId IdType="pubmed">29132380</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Gengiah S., Barker P.M., Yende-Zuma N., et al. A cluster-randomized controlled trial to improve the quality of integrated HIV-tuberculosis services in primary healthcare clinics in South Africa. J Int AIDS Soc. 2021;24(9):e25803. doi: 10.1002/jia2.25803. Last Accessed December 2021.</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="doi">10.1002/jia2.25803</ArticleId>
+                        <ArticleId IdType="pmc">PMC8426757</ArticleId>
+                        <ArticleId IdType="pubmed">34498370</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>World Health Organization  . World Health Organization; Geneva, Switzerland: 2013. Definitions and Reporting Framework for Tuberculosis&#x2013;2013 Revision: updated December 2014 and January 2020.https://www.who.int/tb/publications/2019/diagnose_tb_hiv/en/ Last Accessed December 2021; Available from:</Citation>
+                </Reference>
+                <Reference>
+                    <Citation>Massyn N., Peer N., Padarath A., Barron P., Day C.  Health Systems Trust; Durban: 2015. District Health Barometer 2014/2015.https://www.hst.org.za/publications/District%20Health%20Barometers/District%20Health%20Barometer%202014-15.pdf Last Accessed December 2021; Available from.</Citation>
+                </Reference>
+                <Reference>
+                    <Citation>Hayes R.J., Moulton L.H. Chapman and Hall/CRC; 2009. Cluster Randomised Studies.</Citation>
+                </Reference>
+                <Reference>
+                    <Citation>Bassett I.V., Coleman S.M., Giddy J., et al. Sizanani: a randomized study of health system navigators to improve linkage to HIV and TB care in South Africa. J Acquir Immune Defic Syndr. 2016;73(2):154. doi: 10.1097/QAI.0000000000001025. Last Accessed December 2021.</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="doi">10.1097/QAI.0000000000001025</ArticleId>
+                        <ArticleId IdType="pmc">PMC5026386</ArticleId>
+                        <ArticleId IdType="pubmed">27632145</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Zwarenstein M., Fairall L.R., Lombard C., et al. Outreach education for integration of HIV/AIDS care, antiretroviral treatment, and tuberculosis care in primary care clinics in South Africa: PALSA PLUS pragmatic cluster randomised study. BMJ. 2011;342 doi: 10.1136/bmj.d2022. d2022. Last Accessed December 2021;</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="doi">10.1136/bmj.d2022</ArticleId>
+                        <ArticleId IdType="pmc">PMC3080737</ArticleId>
+                        <ArticleId IdType="pubmed">21511783</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Johnson L.F., Mossong J., Dorrington R.E., et al. Life expectancies of South African adults starting antiretroviral treatment: collaborative analysis of cohort studies. PLoS Med. 2013;10(4) doi: 10.1371/journal.pmed.1001418. Last Accessed December 2021.</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="doi">10.1371/journal.pmed.1001418</ArticleId>
+                        <ArticleId IdType="pmc">PMC3621664</ArticleId>
+                        <ArticleId IdType="pubmed">23585736</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>UNAIDS, 2020. UNAIDS global HIV &amp; AIDS statistics&#x2013;2019 fact sheet. Geneva, Switzerland: UNAIDS. Last Accessed 29 October 2020; Available at: https://www.unaids.org/en/resources/fact-sheet</Citation>
+                </Reference>
+                <Reference>
+                    <Citation>Belay H., Alemseged F., Angesom T., Hintsa S., Abay M. Effect of late HIV diagnosis on HIV-related mortality among adults in general hospitals of Central Zone Tigray, northern Ethiopia: a retrospective cohort study. HIV/AIDS(Auckl) 2017;9:187. doi: 10.2147/HIV.S141895. Last Accessed December 2021.</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="doi">10.2147/HIV.S141895</ArticleId>
+                        <ArticleId IdType="pmc">PMC5624595</ArticleId>
+                        <ArticleId IdType="pubmed">28989286</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Cheung C.C., Ding E., Sereda P., et al. Reductions in all-cause and cause-specific mortality among HIV-infected individuals receiving antiretroviral therapy in British Columbia, Canada: 2001&#x2013;2012. HIV Med. 2016;17(9):694&#x2013;701. doi: 10.1111/hiv.12379. Last Accessed December 2021.</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="doi">10.1111/hiv.12379</ArticleId>
+                        <ArticleId IdType="pmc">PMC5261070</ArticleId>
+                        <ArticleId IdType="pubmed">27279453</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Vandormael A., Cuadros D., Kim H.Y., B&#xe4;rnighausen T., Tanser F. The state of the HIV epidemic in rural KwaZulu-Natal, South Africa: a novel application of disease metrics to assess trajectories and highlight areas for intervention. Int J Epidemiol. 2020;49(2):666&#x2013;675. doi: 10.1093/ije/dyz269. Last Accessed December 2021.</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="doi">10.1093/ije/dyz269</ArticleId>
+                        <ArticleId IdType="pmc">PMC7266544</ArticleId>
+                        <ArticleId IdType="pubmed">31930292</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Chkhartishvili N., Chokoshvili O., Bolokadze N., et al. Late presentation of HIV infection in the country of Georgia: 2012-2015. PLoS One. 2017;12(10) doi: 10.1371/journal.pone.0186835. Last Accessed December 2021.</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="doi">10.1371/journal.pone.0186835</ArticleId>
+                        <ArticleId IdType="pmc">PMC5662083</ArticleId>
+                        <ArticleId IdType="pubmed">29084276</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Nishijima T., Inaba Y., Kawasaki Y., et al. Mortality and causes of death in people living with HIV in the era of combination antiretroviral therapy compared with the general population in Japan. AIDS (London, England) 2020;34(6):913. doi: 10.1097/QAD.0000000000002498. Last Accessed December 2021.</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="doi">10.1097/QAD.0000000000002498</ArticleId>
+                        <ArticleId IdType="pmc">PMC7170431</ArticleId>
+                        <ArticleId IdType="pubmed">32039993</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Pepper D.J., Schomaker M., Wilkinson R.J., de Azevedo V., Maartens G. Independent predictors of tuberculosis mortality in a high HIV prevalence setting: a retrospective cohort study. AIDS Res Ther. 2015;12(1):35. doi: 10.1186/s12981-015-0076-5. Last Accessed December 2021.</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="doi">10.1186/s12981-015-0076-5</ArticleId>
+                        <ArticleId IdType="pmc">PMC4596495</ArticleId>
+                        <ArticleId IdType="pubmed">26448780</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Burnett S.M., Zawedde-Muyanja S., Hermans S.M., Weaver M.R., Colebunders R., Manabe Y.C. Effect of TB/HIV integration on TB and HIV indicators in rural Ugandan health facilities. J Acquir Immune Defic Syndr. 2018;79(5):605. doi: 10.1097/QAI.0000000000001862. Last Accessed December 2021.</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="doi">10.1097/QAI.0000000000001862</ArticleId>
+                        <ArticleId IdType="pmc">PMC6422342</ArticleId>
+                        <ArticleId IdType="pubmed">30383587</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Lauer S.A., Kleinman K.P., Reich N.G. The effect of cluster sizevariability on statistical power in cluster-randomized study. PLoS One. 2015;10(4) doi: 10.1371/journal.pone.0119074. Last Accessed December 2021.</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="doi">10.1371/journal.pone.0119074</ArticleId>
+                        <ArticleId IdType="pmc">PMC4382318</ArticleId>
+                        <ArticleId IdType="pubmed">25830416</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+            </ReferenceList>
+        </PubmedData>
+    </PubmedArticle>
+    <PubmedArticle>
+        <MedlineCitation Status="MEDLINE" Owner="NLM" IndexingMethod="Manual">
+            <PMID Version="1">33026293</PMID>
+            <DateCompleted>
+                <Year>2021</Year>
+                <Month>08</Month>
+                <Day>16</Day>
+            </DateCompleted>
+            <DateRevised>
+                <Year>2022</Year>
+                <Month>01</Month>
+                <Day>20</Day>
+            </DateRevised>
+            <Article PubModel="Print-Electronic">
+                <Journal>
+                    <ISSN IssnType="Electronic">1744-828X</ISSN>
+                    <JournalIssue CitedMedium="Internet">
+                        <Volume>17</Volume>
+                        <Issue>6</Issue>
+                        <PubDate>
+                            <Year>2020</Year>
+                            <Month>Nov</Month>
+                        </PubDate>
+                    </JournalIssue>
+                    <Title>Personalized medicine</Title>
+                    <ISOAbbreviation>Per Med</ISOAbbreviation>
+                </Journal>
+                <ArticleTitle>Engaging community stakeholders in research on best practices for clinical genomic sequencing.</ArticleTitle>
+                <Pagination>
+                    <StartPage>435</StartPage>
+                    <EndPage>444</EndPage>
+                    <MedlinePgn>435-444</MedlinePgn>
+                </Pagination>
+                <ELocationID EIdType="doi" ValidYN="Y">10.2217/pme-2020-0074</ELocationID>
+                <Abstract>
+                    <AbstractText>
+                        <b>Aim:</b> Maximizing the utility and equity of genomic sequencing integration in clinical care requires engaging patients, their families, and communities. The NCGENES 2&#xa0;study explores the impact of engagement between clinicians and caregivers of children with undiagnosed conditions in the context of a diagnostic genomic sequencing study.
+                        <b>Methods:</b> A Community Consult Team (CCT) of diverse parents and advocates for children with genetic and/or neurodevelopmental conditions was formed.
+                        <b>Results:</b> Early and consistent engagement with the CCT resulted in adaptations to study protocol and materials relevant to this unique study population.
+                        <b>Discussion:</b> This study demonstrates valuable contributions of community stakeholders to inform the implementation of translational genomics research for diverse participants.
+                    </AbstractText>
+                </Abstract>
+                <AuthorList CompleteYN="Y">
+                    <Author ValidYN="Y">
+                        <LastName>Griesemer</LastName>
+                        <ForeName>Ida</ForeName>
+                        <Initials>I</Initials>
+                        <Identifier Source="ORCID">0000-0001-6556-2520</Identifier>
+                        <AffiliationInfo>
+                            <Affiliation>Department of Health Behavior, UNC Chapel Hill, Chapel Hill, NC, USA.</Affiliation>
+                        </AffiliationInfo>
+                        <AffiliationInfo>
+                            <Affiliation>Cecil G. Sheps Center for Health Services Research, UNC&#xa0;Chapel Hill, Chapel Hill&#xa0;NC, USA.</Affiliation>
+                        </AffiliationInfo>
+                    </Author>
+                    <Author ValidYN="Y">
+                        <LastName>Staley</LastName>
+                        <ForeName>Brooke S</ForeName>
+                        <Initials>BS</Initials>
+                        <Identifier Source="ORCID">0000-0003-1502-602X</Identifier>
+                        <AffiliationInfo>
+                            <Affiliation>Department of Epidemiology, UNC Chapel Hill, Chapel Hill, NC, USA.</Affiliation>
+                        </AffiliationInfo>
+                    </Author>
+                    <Author ValidYN="Y">
+                        <LastName>Lightfoot</LastName>
+                        <ForeName>Alexandra F</ForeName>
+                        <Initials>AF</Initials>
+                        <Identifier Source="ORCID">0000-0002-9681-5081</Identifier>
+                        <AffiliationInfo>
+                            <Affiliation>Department of Health Behavior, UNC Chapel Hill, Chapel Hill, NC, USA.</Affiliation>
+                        </AffiliationInfo>
+                        <AffiliationInfo>
+                            <Affiliation>Center for Health Promotion &amp; Disease Prevention, UNC Chapel Hill, Chapel Hill, NC, USA.</Affiliation>
+                        </AffiliationInfo>
+                    </Author>
+                    <Author ValidYN="Y">
+                        <LastName>Bain</LastName>
+                        <ForeName>Lizzy</ForeName>
+                        <Initials>L</Initials>
+                        <AffiliationInfo>
+                            <Affiliation>Parent/Advocate, Knightdale, NC, USA.</Affiliation>
+                        </AffiliationInfo>
+                    </Author>
+                    <Author ValidYN="Y">
+                        <LastName>Byrd</LastName>
+                        <ForeName>Derrick</ForeName>
+                        <Initials>D</Initials>
+                        <AffiliationInfo>
+                            <Affiliation>Parent/Advocate, Family Resource Center South Atlantic, Raleigh, NC, USA.</Affiliation>
+                        </AffiliationInfo>
+                    </Author>
+                    <Author ValidYN="Y">
+                        <LastName>Conway</LastName>
+                        <ForeName>Carol</ForeName>
+                        <Initials>C</Initials>
+                        <AffiliationInfo>
+                            <Affiliation>Parent/Advocate, Parent Advocates for Adult Children with Intellectual &amp;/or Developmental Disabilities in NC, Chapel Hill, NC, USA.</Affiliation>
+                        </AffiliationInfo>
+                    </Author>
+                    <Author ValidYN="Y">
+                        <LastName>Grant</LastName>
+                        <ForeName>Tracey L</ForeName>
+                        <Initials>TL</Initials>
+                        <AffiliationInfo>
+                            <Affiliation>Department of Genetics, UNC Chapel Hill, Chapel Hill, NC, USA.</Affiliation>
+                        </AffiliationInfo>
+                    </Author>
+                    <Author ValidYN="Y">
+                        <LastName>Leach</LastName>
+                        <ForeName>Barbara</ForeName>
+                        <Initials>B</Initials>
+                        <AffiliationInfo>
+                            <Affiliation>Parent/Advocate, Family Support Program, School of Social Work, UNC Chapel Hill, Chapel Hill, NC, USA.</Affiliation>
+                        </AffiliationInfo>
+                    </Author>
+                    <Author ValidYN="Y">
+                        <LastName>Milko</LastName>
+                        <ForeName>Laura</ForeName>
+                        <Initials>L</Initials>
+                        <Identifier Source="ORCID">0000-0002-8060-9013</Identifier>
+                        <AffiliationInfo>
+                            <Affiliation>Department of Genetics, UNC Chapel Hill, Chapel Hill, NC, USA.</Affiliation>
+                        </AffiliationInfo>
+                    </Author>
+                    <Author ValidYN="Y">
+                        <LastName>Mollison</LastName>
+                        <ForeName>Lonna</ForeName>
+                        <Initials>L</Initials>
+                        <AffiliationInfo>
+                            <Affiliation>Department of Genetics, UNC Chapel Hill, Chapel Hill, NC, USA.</Affiliation>
+                        </AffiliationInfo>
+                    </Author>
+                    <Author ValidYN="Y">
+                        <LastName>Porter</LastName>
+                        <ForeName>Nadiah</ForeName>
+                        <Initials>N</Initials>
+                        <AffiliationInfo>
+                            <Affiliation>Parent/Advocate, Durham, NC, USA.</Affiliation>
+                        </AffiliationInfo>
+                    </Author>
+                    <Author ValidYN="Y">
+                        <LastName>Reid</LastName>
+                        <ForeName>Sharron</ForeName>
+                        <Initials>S</Initials>
+                        <AffiliationInfo>
+                            <Affiliation>Parent/Advocate, Wake County Sickle Cell Support Group, Raleigh, NC, USA.</Affiliation>
+                        </AffiliationInfo>
+                    </Author>
+                    <Author ValidYN="Y">
+                        <LastName>Smith</LastName>
+                        <ForeName>Gerri</ForeName>
+                        <Initials>G</Initials>
+                        <AffiliationInfo>
+                            <Affiliation>Parent/Advocate, Holly Springs, NC, USA.</Affiliation>
+                        </AffiliationInfo>
+                    </Author>
+                    <Author ValidYN="Y">
+                        <LastName>Waltz</LastName>
+                        <ForeName>Margaret</ForeName>
+                        <Initials>M</Initials>
+                        <AffiliationInfo>
+                            <Affiliation>Department of Social Medicine, UNC Chapel Hill, Chapel Hill, NC, USA.</Affiliation>
+                        </AffiliationInfo>
+                    </Author>
+                    <Author ValidYN="Y">
+                        <LastName>Berg</LastName>
+                        <ForeName>Jonathan S</ForeName>
+                        <Initials>JS</Initials>
+                        <Identifier Source="ORCID">0000-0003-2360-2664</Identifier>
+                        <AffiliationInfo>
+                            <Affiliation>Department of Genetics, UNC Chapel Hill, Chapel Hill, NC, USA.</Affiliation>
+                        </AffiliationInfo>
+                    </Author>
+                    <Author ValidYN="Y">
+                        <LastName>Rini</LastName>
+                        <ForeName>Christine</ForeName>
+                        <Initials>C</Initials>
+                        <AffiliationInfo>
+                            <Affiliation>Department of Medical Social Sciences, Feinberg School of Medicine &amp; Robert H. Lurie Comprehensive Cancer Center of Northwestern University, Chicago, IL, USA.</Affiliation>
+                        </AffiliationInfo>
+                    </Author>
+                    <Author ValidYN="Y">
+                        <LastName>O'Daniel</LastName>
+                        <ForeName>Julianne M</ForeName>
+                        <Initials>JM</Initials>
+                        <Identifier Source="ORCID">0000-0001-5843-4432</Identifier>
+                        <AffiliationInfo>
+                            <Affiliation>Department of Genetics, UNC Chapel Hill, Chapel Hill, NC, USA.</Affiliation>
+                        </AffiliationInfo>
+                    </Author>
+                </AuthorList>
+                <Language>eng</Language>
+                <GrantList CompleteYN="Y">
+                    <Grant>
+                        <GrantID>RFA-HG-12-009</GrantID>
+                        <Acronym>CA</Acronym>
+                        <Agency>NCI NIH HHS</Agency>
+                        <Country>United States</Country>
+                    </Grant>
+                    <Grant>
+                        <GrantID>UL1TR002489</GrantID>
+                        <Acronym>TR</Acronym>
+                        <Agency>NCATS NIH HHS</Agency>
+                        <Country>United States</Country>
+                    </Grant>
+                    <Grant>
+                        <GrantID>U01HG006487</GrantID>
+                        <Acronym>HG</Acronym>
+                        <Agency>NHGRI NIH HHS</Agency>
+                        <Country>United States</Country>
+                    </Grant>
+                    <Grant>
+                        <GrantID>UL1 TR002489</GrantID>
+                        <Acronym>TR</Acronym>
+                        <Agency>NCATS NIH HHS</Agency>
+                        <Country>United States</Country>
+                    </Grant>
+                    <Grant>
+                        <GrantID>T32 HL129982</GrantID>
+                        <Acronym>HL</Acronym>
+                        <Agency>NHLBI NIH HHS</Agency>
+                        <Country>United States</Country>
+                    </Grant>
+                    <Grant>
+                        <GrantID>T32 HS000032</GrantID>
+                        <Acronym>HS</Acronym>
+                        <Agency>AHRQ HHS</Agency>
+                        <Country>United States</Country>
+                    </Grant>
+                    <Grant>
+                        <GrantID>U01 HG006487</GrantID>
+                        <Acronym>HG</Acronym>
+                        <Agency>NHGRI NIH HHS</Agency>
+                        <Country>United States</Country>
+                    </Grant>
+                </GrantList>
+                <PublicationTypeList>
+                    <PublicationType UI="D016428">Journal Article</PublicationType>
+                    <PublicationType UI="D052061">Research Support, N.I.H., Extramural</PublicationType>
+                    <PublicationType UI="D013487">Research Support, U.S. Gov't, P.H.S.</PublicationType>
+                </PublicationTypeList>
+                <ArticleDate DateType="Electronic">
+                    <Year>2020</Year>
+                    <Month>10</Month>
+                    <Day>07</Day>
+                </ArticleDate>
+            </Article>
+            <MedlineJournalInfo>
+                <Country>England</Country>
+                <MedlineTA>Per Med</MedlineTA>
+                <NlmUniqueID>101238549</NlmUniqueID>
+                <ISSNLinking>1741-0541</ISSNLinking>
+            </MedlineJournalInfo>
+            <CitationSubset>IM</CitationSubset>
+            <MeshHeadingList>
+                <MeshHeading>
+                    <DescriptorName UI="D000328" MajorTopicYN="N">Adult</DescriptorName>
+                </MeshHeading>
+                <MeshHeading>
+                    <DescriptorName UI="D019985" MajorTopicYN="N">Benchmarking</DescriptorName>
+                    <QualifierName UI="Q000379" MajorTopicYN="N">methods</QualifierName>
+                </MeshHeading>
+                <MeshHeading>
+                    <DescriptorName UI="D002648" MajorTopicYN="N">Child</DescriptorName>
+                </MeshHeading>
+                <MeshHeading>
+                    <DescriptorName UI="D002874" MajorTopicYN="N">Chromosome Mapping</DescriptorName>
+                </MeshHeading>
+                <MeshHeading>
+                    <DescriptorName UI="D005260" MajorTopicYN="N">Female</DescriptorName>
+                </MeshHeading>
+                <MeshHeading>
+                    <DescriptorName UI="D023281" MajorTopicYN="N">Genomics</DescriptorName>
+                    <QualifierName UI="Q000379" MajorTopicYN="Y">methods</QualifierName>
+                    <QualifierName UI="Q000639" MajorTopicYN="N">trends</QualifierName>
+                </MeshHeading>
+                <MeshHeading>
+                    <DescriptorName UI="D006801" MajorTopicYN="N">Humans</DescriptorName>
+                </MeshHeading>
+                <MeshHeading>
+                    <DescriptorName UI="D008297" MajorTopicYN="N">Male</DescriptorName>
+                </MeshHeading>
+                <MeshHeading>
+                    <DescriptorName UI="D008875" MajorTopicYN="N">Middle Aged</DescriptorName>
+                </MeshHeading>
+                <MeshHeading>
+                    <DescriptorName UI="D017410" MajorTopicYN="N">Practice Guidelines as Topic</DescriptorName>
+                    <QualifierName UI="Q000592" MajorTopicYN="N">standards</QualifierName>
+                </MeshHeading>
+                <MeshHeading>
+                    <DescriptorName UI="D040901" MajorTopicYN="N">Proteomics</DescriptorName>
+                </MeshHeading>
+                <MeshHeading>
+                    <DescriptorName UI="D011634" MajorTopicYN="N">Public Health</DescriptorName>
+                    <QualifierName UI="Q000379" MajorTopicYN="Y">methods</QualifierName>
+                </MeshHeading>
+                <MeshHeading>
+                    <DescriptorName UI="D000073597" MajorTopicYN="N">Stakeholder Participation</DescriptorName>
+                    <QualifierName UI="Q000523" MajorTopicYN="Y">psychology</QualifierName>
+                </MeshHeading>
+                <MeshHeading>
+                    <DescriptorName UI="D000073336" MajorTopicYN="N">Whole Genome Sequencing</DescriptorName>
+                    <QualifierName UI="Q000379" MajorTopicYN="N">methods</QualifierName>
+                    <QualifierName UI="Q000639" MajorTopicYN="N">trends</QualifierName>
+                </MeshHeading>
+            </MeshHeadingList>
+            <KeywordList Owner="NOTNLM">
+                <Keyword MajorTopicYN="N">clinical trial</Keyword>
+                <Keyword MajorTopicYN="N">community engagement</Keyword>
+                <Keyword MajorTopicYN="N">community&#x2013;academic partnerships</Keyword>
+                <Keyword MajorTopicYN="N">diagnostic odyssey</Keyword>
+                <Keyword MajorTopicYN="N">genetics</Keyword>
+                <Keyword MajorTopicYN="N">genomic sequencing</Keyword>
+                <Keyword MajorTopicYN="N">health equity</Keyword>
+                <Keyword MajorTopicYN="N">health services research</Keyword>
+                <Keyword MajorTopicYN="N">precision medicine</Keyword>
+                <Keyword MajorTopicYN="N">underserved populations</Keyword>
+            </KeywordList>
+        </MedlineCitation>
+        <PubmedData>
+            <History>
+                <PubMedPubDate PubStatus="pubmed">
+                    <Year>2020</Year>
+                    <Month>10</Month>
+                    <Day>8</Day>
+                    <Hour>6</Hour>
+                    <Minute>0</Minute>
+                </PubMedPubDate>
+                <PubMedPubDate PubStatus="medline">
+                    <Year>2021</Year>
+                    <Month>8</Month>
+                    <Day>17</Day>
+                    <Hour>6</Hour>
+                    <Minute>0</Minute>
+                </PubMedPubDate>
+                <PubMedPubDate PubStatus="entrez">
+                    <Year>2020</Year>
+                    <Month>10</Month>
+                    <Day>7</Day>
+                    <Hour>12</Hour>
+                    <Minute>9</Minute>
+                </PubMedPubDate>
+                <PubMedPubDate PubStatus="pmc-release">
+                    <Year>2021</Year>
+                    <Month>3</Month>
+                    <Day>8</Day>
+                </PubMedPubDate>
+            </History>
+            <PublicationStatus>ppublish</PublicationStatus>
+            <ArticleIdList>
+                <ArticleId IdType="pubmed">33026293</ArticleId>
+                <ArticleId IdType="mid">NIHMS1675217</ArticleId>
+                <ArticleId IdType="pmc">PMC7938705</ArticleId>
+                <ArticleId IdType="doi">10.2217/pme-2020-0074</ArticleId>
+            </ArticleIdList>
+            <ReferenceList>
+                <Reference>
+                    <Citation>Stark Z, Dolman L, Manolio TA et al. Integrating genomics into healthcare: a global responsibility. Am. J. Hum. Genet 104(1), 13&#x2013;20 (2019).</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pmc">PMC6323624</ArticleId>
+                        <ArticleId IdType="pubmed">30609404</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Retterer K, Juusola J, Cho MT et al. Clinical application of whole-exome sequencing across clinical indications. Genet. Med 18(7), 696&#x2013;704 (2016).</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pubmed">26633542</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Schwarze K, Buchanan J, Taylor JC, Wordsworth S. Are whole-exome and whole-genome sequencing approaches cost-effective? A systematic review of the literature. Genet. Med 20(10), 1122&#x2013;1130 (2018).</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pubmed">29446766</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Delaney SK, Hultner ML, Jacob HJ et al. Toward clinical genomics in everyday medicine: perspectives and recommendations. Expert Rev. Mol. Diagn 16(5), 521&#x2013;532 (2016).</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pmc">PMC4841021</ArticleId>
+                        <ArticleId IdType="pubmed">26810587</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Lemke AA, Harris-Wai JN. Stakeholder engagement in policy development: challenges and opportunities for human genomics. Genet. Med 17(12), 949&#x2013;957 (2015).</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pmc">PMC4567945</ArticleId>
+                        <ArticleId IdType="pubmed">25764215</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Hindorff LA, Bonham VL, Brody LC et al. Prioritizing diversity in human genomics research. Nat. Rev. Genet 19(3), 175 (2018).</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pmc">PMC6532668</ArticleId>
+                        <ArticleId IdType="pubmed">29151588</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Popejoy AB, Ritter DI, Crooks K et al. The clinical imperative for inclusivity: race, ethnicity, and ancestry (REA) in genomics. Hum. Mutat 39(11), 1713&#x2013;1720 (2018).</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pmc">PMC6188707</ArticleId>
+                        <ArticleId IdType="pubmed">30311373</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Hartzler A, Mccarty CA, Rasmussen LV et al. Stakeholder engagement: a key component of integrating genomic information into electronic health records. Genet. Med 15(10), 792&#x2013;801 (2013).</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pmc">PMC3909653</ArticleId>
+                        <ArticleId IdType="pubmed">24030437</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Amendola LM, Berg JS, Horowitz CR et al. The clinical sequencing evidence-generating research consortium: integrating genomic sequencing in diverse and medically underserved populations. Am. J. Hum. Genet 103(3), 319&#x2013;327 (2018).</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pmc">PMC6128306</ArticleId>
+                        <ArticleId IdType="pubmed">30193136</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Concannon TW, Grant S, Welch V et al. Practical guidance for involving stakeholders in health research. J. Gen. Intern. Med 34(3), 458&#x2013;463 (2019).</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pmc">PMC6420667</ArticleId>
+                        <ArticleId IdType="pubmed">30565151</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Esmail L, Moore E, Rein A. Evaluating patient and stakeholder engagement in research: moving from theory to practice. J. Comp. Eff. Res 4(2), 133&#x2013;145 (2015).</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pubmed">25825842</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Gamble VN. A legacy of distrust: African Americans and medical research. Am. J. Prev. Med 9(6), 35&#x2013;38 (1993).</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pubmed">8123285</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Brandt AM. Racism and research: the case of the Tuskegee Syphilis Study. Hastings Cent. Rep 8(6), 21&#x2013;29 (1978).</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pubmed">721302</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Katz RV, Russell SL, Kegeles SS et al. The Tuskegee Legacy Project: willingness of minorities to participate in biomedical research. J. Health Care Poor Underserved 17(4), 698 (2006).</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pmc">PMC1780164</ArticleId>
+                        <ArticleId IdType="pubmed">17242525</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Corbie-Smith G The continuing legacy of the Tuskegee Syphilis Study: considerations for clinical investigation. Am. J. Med. Sci 317(1), 5&#x2013;8 (1999).</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pubmed">9892266</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Wikler D Can we learn from eugenics? J. Med. Ethics 25(2), 183&#x2013;194 (1999).</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pmc">PMC479205</ArticleId>
+                        <ArticleId IdType="pubmed">10226926</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Beskow LM. Lessons from HeLa cells: the ethics and policy of biospecimens. Annu. Rev. Genomics Hum. Genet 17, 395&#x2013;417 (2016).</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pmc">PMC5072843</ArticleId>
+                        <ArticleId IdType="pubmed">26979405</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Robinson JM, Trochim WM. An examination of community members&#x2019;, researchers&#x2019; and health professionals&#x2019; perceptions of barriers to minority participation in medical research: an application of concept mapping. Ethn. Health 12(5), 521&#x2013;539 (2007).</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pubmed">17978947</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Samuel T Standardizing a process to engage African Americans in health research: the Community Research Outreach Workers&#x2019; Network (CROWN). Prog. Community Health Partnersh 8(1), 109&#x2013;116 (2014).</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pubmed">24859108</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Durant RW, Davis RB, George DMMS, Williams IC, Blumenthal C, Corbie-Smith GM. Participation in research studies: factors associated with failing to meet minority recruitment goals. Ann. Epidemiol 17(8), 634&#x2013;642 (2007).</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pmc">PMC1976259</ArticleId>
+                        <ArticleId IdType="pubmed">17531504</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Cotugna N, Vickery CE, Carpenter-Haefele KM. Evaluation of literacy level of patient education pages in health-related journals. J. Community Health 30(3), 213&#x2013;219 (2005).</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pubmed">15847246</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Foreman A, Lee K, Evans JP. The NCGENES project: exploring the new world of genome sequencing. N. C. Med. J 74(6), 500&#x2013;504 (2012).</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pubmed">24316776</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Samuel CA, Lightfoot AF, Schaal J et al. Establishing New Community-Based Participatory Research Partnerships using the Community-Based Participatory Research Charrette Model: Lessons from the Cancer Health Accountability for Managing Pain and Symptoms Study. Prog. Community Health Partnersh 12(1), 89&#x2013;99 (2018).</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pmc">PMC6542568</ArticleId>
+                        <ArticleId IdType="pubmed">29606697</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Griesemer I, O&#x2019;daniel J, Lightfoot A et al. Stakeholder engagement strategies to strengthen research on best practices for clinical genomic sequencing with underrepresented and underserved populations. Presented at: APHA&#x2019;s 2019 Annual Meeting and Expo, 2&#x2013;6 November 2019.</Citation>
+                </Reference>
+                <Reference>
+                    <Citation>Cohn EG, Husamudeen M, Larson EL, Williams JK. Increasing participation in genomic research and biobanking through community-based capacity building. J. Genet. Couns 24(3), 491&#x2013;502 (2015).</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pmc">PMC4815899</ArticleId>
+                        <ArticleId IdType="pubmed">25228357</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Ewing A, Thompson N, Ricks-Santi L. Strategies for enrollment of African Americans into cancer genetic studies. J. Cancer Educ 30(1), 108&#x2013;115 (2015).</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pmc">PMC4254900</ArticleId>
+                        <ArticleId IdType="pubmed">24882437</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Spruill IJ. Enhancing recruitment of African-American families into genetic research: lessons learned from Project SuGar. J. Community Genet 1(3), 125&#x2013;132 (2010).</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pmc">PMC3093663</ArticleId>
+                        <ArticleId IdType="pubmed">21584223</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Staunton C, Tindana P, Hendricks M, Moodley K. Rules of engagement: perspectives on stakeholder engagement for genomic biobanking research in South Africa. BMC Med. Ethics 19(1), (2018).</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pmc">PMC5828421</ArticleId>
+                        <ArticleId IdType="pubmed">29482536</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Beaton A, Hudson M, Milne M et al. Engaging M&#x101;ori in biobanking and genomic research: a model for biobanks to guide culturally informed governance, operational, and community engagement activities. Genet. Med 19(3), 345&#x2013;351 (2017).</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pubmed">27632687</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Concannon TW,, Fuster M, Saunders T et al. A systematic review of stakeholder engagement in comparative effectiveness and patient-centered outcomes research. J. Gen. Intern. Med 29(12), 1692&#x2013;1701 (2014).</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pmc">PMC4242886</ArticleId>
+                        <ArticleId IdType="pubmed">24893581</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Kaplan B,, Caddle-Steele C, Chisholm G et al. A culture of understanding: reflections and suggestions from a genomics research community board. Prog. Community Health Partnersh 11(2), 161&#x2013;165 (2017).</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pmc">PMC5830277</ArticleId>
+                        <ArticleId IdType="pubmed">28736408</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Dobransky-Fasiska D, Brown C, Pincus HA et al. Developing a community-academic partnership to improve recognition and treatment of depression in underserved African American and white elders. Am. J. Geriatr. Psychiatry 17(11), 953&#x2013;964 (2009).</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pmc">PMC3044484</ArticleId>
+                        <ArticleId IdType="pubmed">20104053</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Ochs-Balcom HM, Jandorf L, Wang Y et al. &#x201c;It takes a village&#x201d;: multilevel approaches to recruit African Americans and their families for genetic research. J. Community Genet 6(1), 39&#x2013;45 (2015).</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pmc">PMC4286558</ArticleId>
+                        <ArticleId IdType="pubmed">25112899</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Horowitz CR,, Orlando LA, Slavotinek AM et al. The genomic medicine integrative research framework: a conceptual framework for conducting genomic medicine research. Am. J. Hum. Genet 104(6), 1088&#x2013;1096 (2019).</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pmc">PMC6556906</ArticleId>
+                        <ArticleId IdType="pubmed">31104772</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+            </ReferenceList>
+        </PubmedData>
+    </PubmedArticle>
+    <PubmedArticle>
+        <MedlineCitation Status="MEDLINE" Owner="NLM" IndexingMethod="Manual">
+            <PMID Version="1">31721082</PMID>
+            <DateCompleted>
+                <Year>2021</Year>
+                <Month>05</Month>
+                <Day>14</Day>
+            </DateCompleted>
+            <DateRevised>
+                <Year>2021</Year>
+                <Month>05</Month>
+                <Day>14</Day>
+            </DateRevised>
+            <Article PubModel="Print-Electronic">
+                <Journal>
+                    <ISSN IssnType="Electronic">1538-2443</ISSN>
+                    <JournalIssue CitedMedium="Internet">
+                        <Volume>26</Volume>
+                        <Issue>2</Issue>
+                        <PubDate>
+                            <Year>2020</Year>
+                            <Month>Apr</Month>
+                        </PubDate>
+                    </JournalIssue>
+                    <Title>Journal of neurovirology</Title>
+                    <ISOAbbreviation>J Neurovirol</ISOAbbreviation>
+                </Journal>
+                <ArticleTitle>The Veterans Aging Cohort Study Index is not associated with HIV-associated neurocognitive disorders in Uganda.</ArticleTitle>
+                <Pagination>
+                    <StartPage>252</StartPage>
+                    <EndPage>256</EndPage>
+                    <MedlinePgn>252-256</MedlinePgn>
+                </Pagination>
+                <ELocationID EIdType="doi" ValidYN="Y">10.1007/s13365-019-00806-2</ELocationID>
+                <Abstract>
+                    <AbstractText>The Veterans Aging Cohort Study (VACS) Index has been associated with HIV-associated neurocognitive disorder (HAND) in some populations but has not been studied in sub-Saharan Africa. We investigated whether the VACS Index is associated with HAND in a rural population in Rakai, Uganda. HIV-infected (HIV+) adults on antiretroviral therapy underwent a neurocognitive battery for determination of HAND stage using Frascati criteria. VACS component scores were recorded for all participants. Out of 156 study participants, HAND stages were 49% normal cognition, 15% asymptomatic neurocognitive impairment, 31% minor neurocognitive disorder, and 7% HIV-associated dementia. There was no significant association between VACS Index and any HAND stage. In this first study of the VACS Index in sub-Saharan Africa, we found no association between VACS Index score and HAND.</AbstractText>
+                </Abstract>
+                <AuthorList CompleteYN="Y">
+                    <Author ValidYN="Y">
+                        <LastName>Awori</LastName>
+                        <ForeName>Violet</ForeName>
+                        <Initials>V</Initials>
+                        <AffiliationInfo>
+                            <Affiliation>Aga Khan University Hospital, Nairobi, Kenya.</Affiliation>
+                        </AffiliationInfo>
+                    </Author>
+                    <Author ValidYN="Y">
+                        <LastName>Nakigozi</LastName>
+                        <ForeName>Gertrude</ForeName>
+                        <Initials>G</Initials>
+                        <AffiliationInfo>
+                            <Affiliation>Rakai Health Sciences Program, Kalisizo, Uganda.</Affiliation>
+                        </AffiliationInfo>
+                    </Author>
+                    <Author ValidYN="Y">
+                        <LastName>Kisakye</LastName>
+                        <ForeName>Alice</ForeName>
+                        <Initials>A</Initials>
+                        <AffiliationInfo>
+                            <Affiliation>Rakai Health Sciences Program, Kalisizo, Uganda.</Affiliation>
+                        </AffiliationInfo>
+                    </Author>
+                    <Author ValidYN="Y">
+                        <LastName>Batte</LastName>
+                        <ForeName>James</ForeName>
+                        <Initials>J</Initials>
+                        <AffiliationInfo>
+                            <Affiliation>Rakai Health Sciences Program, Kalisizo, Uganda.</Affiliation>
+                        </AffiliationInfo>
+                    </Author>
+                    <Author ValidYN="Y">
+                        <LastName>Anok</LastName>
+                        <ForeName>Aggrey</ForeName>
+                        <Initials>A</Initials>
+                        <AffiliationInfo>
+                            <Affiliation>Rakai Health Sciences Program, Kalisizo, Uganda.</Affiliation>
+                        </AffiliationInfo>
+                    </Author>
+                    <Author ValidYN="Y">
+                        <LastName>Mayanja</LastName>
+                        <ForeName>Richard</ForeName>
+                        <Initials>R</Initials>
+                        <AffiliationInfo>
+                            <Affiliation>Rakai Health Sciences Program, Kalisizo, Uganda.</Affiliation>
+                        </AffiliationInfo>
+                    </Author>
+                    <Author ValidYN="Y">
+                        <LastName>Nakasujja</LastName>
+                        <ForeName>Noeline</ForeName>
+                        <Initials>N</Initials>
+                        <AffiliationInfo>
+                            <Affiliation>Department of Psychiatry, Makerere University, Kampala, Uganda.</Affiliation>
+                        </AffiliationInfo>
+                    </Author>
+                    <Author ValidYN="Y">
+                        <LastName>Robertson</LastName>
+                        <ForeName>Kevin R</ForeName>
+                        <Initials>KR</Initials>
+                        <AffiliationInfo>
+                            <Affiliation>Department of Neurology, University of North Carolina-Chapel Hill, Chapel Hill, NC, USA.</Affiliation>
+                        </AffiliationInfo>
+                    </Author>
+                    <Author ValidYN="Y">
+                        <LastName>Gray</LastName>
+                        <ForeName>Ronald H</ForeName>
+                        <Initials>RH</Initials>
+                        <AffiliationInfo>
+                            <Affiliation>Department of Epidemiology, Johns Hopkins University Bloomberg School of Public Health, Baltimore, MD, USA.</Affiliation>
+                        </AffiliationInfo>
+                    </Author>
+                    <Author ValidYN="Y">
+                        <LastName>Wawer</LastName>
+                        <ForeName>Maria J</ForeName>
+                        <Initials>MJ</Initials>
+                        <AffiliationInfo>
+                            <Affiliation>Department of Epidemiology, Johns Hopkins University Bloomberg School of Public Health, Baltimore, MD, USA.</Affiliation>
+                        </AffiliationInfo>
+                    </Author>
+                    <Author ValidYN="Y">
+                        <LastName>Sacktor</LastName>
+                        <ForeName>Ned</ForeName>
+                        <Initials>N</Initials>
+                        <AffiliationInfo>
+                            <Affiliation>Department of Neurology, Johns Hopkins University School of Medicine, Meyer 6-113, 600 N. Wolfe Street, Baltimore, MD, 21287, USA.</Affiliation>
+                        </AffiliationInfo>
+                    </Author>
+                    <Author ValidYN="Y">
+                        <LastName>Saylor</LastName>
+                        <ForeName>Deanna</ForeName>
+                        <Initials>D</Initials>
+                        <Identifier Source="ORCID">0000-0002-9297-0244</Identifier>
+                        <AffiliationInfo>
+                            <Affiliation>Department of Neurology, Johns Hopkins University School of Medicine, Meyer 6-113, 600 N. Wolfe Street, Baltimore, MD, 21287, USA. deanna@jhmi.edu.</Affiliation>
+                        </AffiliationInfo>
+                        <AffiliationInfo>
+                            <Affiliation>Department of Medicine, University of Zambia School of Medicine, Lusaka, Zambia. deanna@jhmi.edu.</Affiliation>
+                        </AffiliationInfo>
+                    </Author>
+                </AuthorList>
+                <Language>eng</Language>
+                <GrantList CompleteYN="Y">
+                    <Grant>
+                        <GrantID>NS065729-05S2</GrantID>
+                        <Acronym>NS</Acronym>
+                        <Agency>NINDS NIH HHS</Agency>
+                        <Country>United States</Country>
+                    </Grant>
+                    <Grant>
+                        <GrantID>P30 MH075673</GrantID>
+                        <Acronym>MH</Acronym>
+                        <Agency>NIMH NIH HHS</Agency>
+                        <Country>United States</Country>
+                    </Grant>
+                    <Grant>
+                        <GrantID>L30NS088658</GrantID>
+                        <Acronym>NS</Acronym>
+                        <Agency>NINDS NIH HHS</Agency>
+                        <Country>United States</Country>
+                    </Grant>
+                    <Grant>
+                        <GrantID>P30 AI094189</GrantID>
+                        <Acronym>AI</Acronym>
+                        <Agency>NIAID NIH HHS</Agency>
+                        <Country>United States</Country>
+                    </Grant>
+                    <Grant>
+                        <GrantID>R01 MH120693</GrantID>
+                        <Acronym>MH</Acronym>
+                        <Agency>NIMH NIH HHS</Agency>
+                        <Country>United States</Country>
+                    </Grant>
+                    <Grant>
+                        <GrantID>R25 NS065729</GrantID>
+                        <Acronym>NS</Acronym>
+                        <Agency>NINDS NIH HHS</Agency>
+                        <Country>United States</Country>
+                    </Grant>
+                    <Grant>
+                        <GrantID>P30AI094189-01A1</GrantID>
+                        <Agency>National Institute of Allergy and Infectious Diseases</Agency>
+                        <Country>International</Country>
+                    </Grant>
+                    <Grant>
+                        <GrantID>R25 MH080661</GrantID>
+                        <Acronym>MH</Acronym>
+                        <Agency>NIMH NIH HHS</Agency>
+                        <Country>United States</Country>
+                    </Grant>
+                    <Grant>
+                        <GrantID>L30 NS088658</GrantID>
+                        <Acronym>NS</Acronym>
+                        <Agency>NINDS NIH HHS</Agency>
+                        <Country>United States</Country>
+                    </Grant>
+                    <Grant>
+                        <GrantID>R01 MH099733</GrantID>
+                        <Acronym>MH</Acronym>
+                        <Agency>NIMH NIH HHS</Agency>
+                        <Country>United States</Country>
+                    </Grant>
+                    <Grant>
+                        <GrantID>MH080661-08</GrantID>
+                        <Acronym>MH</Acronym>
+                        <Agency>NIMH NIH HHS</Agency>
+                        <Country>United States</Country>
+                    </Grant>
+                    <Grant>
+                        <GrantID>MH075673</GrantID>
+                        <Acronym>MH</Acronym>
+                        <Agency>NIMH NIH HHS</Agency>
+                        <Country>United States</Country>
+                    </Grant>
+                    <Grant>
+                        <GrantID>MH099733</GrantID>
+                        <Acronym>MH</Acronym>
+                        <Agency>NIMH NIH HHS</Agency>
+                        <Country>United States</Country>
+                    </Grant>
+                </GrantList>
+                <PublicationTypeList>
+                    <PublicationType UI="D016428">Journal Article</PublicationType>
+                    <PublicationType UI="D052061">Research Support, N.I.H., Extramural</PublicationType>
+                    <PublicationType UI="D013485">Research Support, Non-U.S. Gov't</PublicationType>
+                </PublicationTypeList>
+                <ArticleDate DateType="Electronic">
+                    <Year>2019</Year>
+                    <Month>11</Month>
+                    <Day>12</Day>
+                </ArticleDate>
+            </Article>
+            <MedlineJournalInfo>
+                <Country>United States</Country>
+                <MedlineTA>J Neurovirol</MedlineTA>
+                <NlmUniqueID>9508123</NlmUniqueID>
+                <ISSNLinking>1355-0284</ISSNLinking>
+            </MedlineJournalInfo>
+            <CitationSubset>IM</CitationSubset>
+            <MeshHeadingList>
+                <MeshHeading>
+                    <DescriptorName UI="D015526" MajorTopicYN="N">AIDS Dementia Complex</DescriptorName>
+                    <QualifierName UI="Q000175" MajorTopicYN="Y">diagnosis</QualifierName>
+                </MeshHeading>
+                <MeshHeading>
+                    <DescriptorName UI="D000328" MajorTopicYN="N">Adult</DescriptorName>
+                </MeshHeading>
+                <MeshHeading>
+                    <DescriptorName UI="D015331" MajorTopicYN="N">Cohort Studies</DescriptorName>
+                </MeshHeading>
+                <MeshHeading>
+                    <DescriptorName UI="D005260" MajorTopicYN="N">Female</DescriptorName>
+                </MeshHeading>
+                <MeshHeading>
+                    <DescriptorName UI="D006801" MajorTopicYN="N">Humans</DescriptorName>
+                </MeshHeading>
+                <MeshHeading>
+                    <DescriptorName UI="D008297" MajorTopicYN="N">Male</DescriptorName>
+                </MeshHeading>
+                <MeshHeading>
+                    <DescriptorName UI="D012720" MajorTopicYN="Y">Severity of Illness Index</DescriptorName>
+                </MeshHeading>
+                <MeshHeading>
+                    <DescriptorName UI="D014454" MajorTopicYN="N" Type="Geographic">Uganda</DescriptorName>
+                </MeshHeading>
+                <MeshHeading>
+                    <DescriptorName UI="D014728" MajorTopicYN="N">Veterans</DescriptorName>
+                </MeshHeading>
+            </MeshHeadingList>
+            <KeywordList Owner="NOTNLM">
+                <Keyword MajorTopicYN="N">Global health</Keyword>
+                <Keyword MajorTopicYN="N">HIV</Keyword>
+                <Keyword MajorTopicYN="N">HIV-associated neurocognitive disorder</Keyword>
+                <Keyword MajorTopicYN="N">Uganda</Keyword>
+                <Keyword MajorTopicYN="N">Veterans aging cohort study index</Keyword>
+            </KeywordList>
+            <CoiStatement>Conflicts of Interest. Dr. Violet Awori reports no conflicts of interest. Dr. Gertrude Nakigozi reports no conflicts of interest. Dr. Alice Kisakye reports no conflicts of interest. Dr. James Bette reports no conflicts of interest. Mr. Aggrey Anok reports no conflicts of interest. Mr. Richard Mayanja reports no conflicts of interest. Dr. Noeline Nakasujja reports no conflicts of interest. Dr. Kevin R. Robertson reports no conflicts of interest. Dr. Ronald H. Gray reports no conflicts of interest. Dr. Maria J. Wawer reports no conflicts of interest. Dr. Ned Sacktor reports no conflicts of interest. Dr. Deanna Saylor reports no conflicts of interest.</CoiStatement>
+        </MedlineCitation>
+        <PubmedData>
+            <History>
+                <PubMedPubDate PubStatus="received">
+                    <Year>2019</Year>
+                    <Month>7</Month>
+                    <Day>12</Day>
+                </PubMedPubDate>
+                <PubMedPubDate PubStatus="accepted">
+                    <Year>2019</Year>
+                    <Month>9</Month>
+                    <Day>16</Day>
+                </PubMedPubDate>
+                <PubMedPubDate PubStatus="revised">
+                    <Year>2019</Year>
+                    <Month>9</Month>
+                    <Day>13</Day>
+                </PubMedPubDate>
+                <PubMedPubDate PubStatus="pubmed">
+                    <Year>2019</Year>
+                    <Month>11</Month>
+                    <Day>14</Day>
+                    <Hour>6</Hour>
+                    <Minute>0</Minute>
+                </PubMedPubDate>
+                <PubMedPubDate PubStatus="medline">
+                    <Year>2021</Year>
+                    <Month>5</Month>
+                    <Day>15</Day>
+                    <Hour>6</Hour>
+                    <Minute>0</Minute>
+                </PubMedPubDate>
+                <PubMedPubDate PubStatus="entrez">
+                    <Year>2019</Year>
+                    <Month>11</Month>
+                    <Day>14</Day>
+                    <Hour>6</Hour>
+                    <Minute>0</Minute>
+                </PubMedPubDate>
+                <PubMedPubDate PubStatus="pmc-release">
+                    <Year>2021</Year>
+                    <Month>4</Month>
+                    <Day>1</Day>
+                </PubMedPubDate>
+            </History>
+            <PublicationStatus>ppublish</PublicationStatus>
+            <ArticleIdList>
+                <ArticleId IdType="pubmed">31721082</ArticleId>
+                <ArticleId IdType="mid">NIHMS1684253</ArticleId>
+                <ArticleId IdType="pmc">PMC8012007</ArticleId>
+                <ArticleId IdType="doi">10.1007/s13365-019-00806-2</ArticleId>
+                <ArticleId IdType="pii">10.1007/s13365-019-00806-2</ArticleId>
+            </ArticleIdList>
+            <ReferenceList>
+                <Reference>
+                    <Citation>Barakat LA, Juthani-Mehta M, Allore H, Trentalange M, Tate J, Rimland D, &#x2026; Quagliarello VJ (2015). Comparing clinical outcomes in HIV-infected and uninfected older men hospitalized with community-acquired pneumonia. HIV Medicine. 10.1111/hiv.12244</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="doi">10.1111/hiv.12244</ArticleId>
+                        <ArticleId IdType="pmc">PMC5015437</ArticleId>
+                        <ArticleId IdType="pubmed">25959543</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Cantres-Rosario Y, Plaud-Valent&#xed;n M, Gerena Y, Skolasky RL, Wojna V, &amp; Mel&#xe9;ndez LM (2013). Cathepsin B and cystatin B in HIV-seropositive women are associated with infection and HIV-1-associated neurocognitive disorders. AIDS. 10.1097/QAD.0b013e32835b3e47</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="doi">10.1097/QAD.0b013e32835b3e47</ArticleId>
+                        <ArticleId IdType="pmc">PMC3593054</ArticleId>
+                        <ArticleId IdType="pubmed">23291538</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Ciccarelli N, Fabbiani M, Grima P, Limiti S, Fanti I, Mondi A, &#x2026; Di Giambenedetto S (2014). Liver fibrosis is associated with cognitive impairment in HIV-positive patients. Journal of the International AIDS Society. 10.7448/ias.17.4.19722</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="doi">10.7448/ias.17.4.19722</ArticleId>
+                        <ArticleId IdType="pmc">PMC4225249</ArticleId>
+                        <ArticleId IdType="pubmed">25397468</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Hammer SM, Squires KE, Hughes MD, Grimes JM, Demeter LM, Currier JS, &#x2026; Cook JC (2002). A Controlled Trial of Two Nucleoside Analogues plus Indinavir in Persons with Human Immunodeficiency Virus Infection and CD4 Cell Counts of 200 per Cubic Millimeter or Less. New England Journal of Medicine. 10.1056/nejm199709113371101</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="doi">10.1056/nejm199709113371101</ArticleId>
+                        <ArticleId IdType="pubmed">9287227</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Heaton RK, Clifford DB, Franklin DR, Woods SP, Ake C, Vaida F, &#x2026; Grant I (2010). HIV-associated neurocognitive disorders persist in the era of potent antiretroviral therapy: Charter Study. Neurology. 10.1212/WNL.0b013e318200d727</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="doi">10.1212/WNL.0b013e318200d727</ArticleId>
+                        <ArticleId IdType="pmc">PMC2995535</ArticleId>
+                        <ArticleId IdType="pubmed">21135382</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Hogg RS, Heath KV, Yip B, Craib KJP, O&#x2019;Shaughnessy MV, Schechter MT, &amp; Montaner JSG (1998). Improved survival among HIV-infected individuals following initiation of antiretroviral therapy. Journal of the American Medical Association. 10.1001/jama.279.6.450</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="doi">10.1001/jama.279.6.450</ArticleId>
+                        <ArticleId IdType="pubmed">9466638</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Hudson M, Sheron N, Rowe IA, &amp; Hirschfield GM (2017). Should we screen for cirrhosis? BMJ (Online). 10.1136/bmj.j3233</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="doi">10.1136/bmj.j3233</ArticleId>
+                        <ArticleId IdType="pubmed">28701337</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Justice AC, Freiberg MS, Tracy R, Kuller L, Tate JP, Goetz MB, &#x2026; Bryant K (2012). Does an index composed of clinical data reflect effects of inflammation, coagulation, and monocyte activation on mortality among those aging with HIV? Clinical Infectious Diseases. 10.1093/cid/cir989</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="doi">10.1093/cid/cir989</ArticleId>
+                        <ArticleId IdType="pmc">PMC3297653</ArticleId>
+                        <ArticleId IdType="pubmed">22337823</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Kallianpur AR, Wang Q, Jia P, Hulgan T, Zhao Z, Letendre SL, &#x2026; Teshome M (2016). Anemia and red blood cell indices predict HIV-associated neurocognitive impairment in the highly active antiretroviral therapy era. Journal of Infectious Diseases. 10.1093/infdis/jiv754</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="doi">10.1093/infdis/jiv754</ArticleId>
+                        <ArticleId IdType="pmc">PMC4779306</ArticleId>
+                        <ArticleId IdType="pubmed">26690344</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Kwasa J, Cettomai D, Lwanya E, Osiemo D, Oyaro P, Birbeck GL, &#x2026; Meyer ACL (2012). Lessons learned developing a diagnostic tool for HIV-associated dementia feasible to implement in resource-limited settings: Pilot testing in Kenya. PLoS ONE. 10.1371/journal.pone.0032898</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="doi">10.1371/journal.pone.0032898</ArticleId>
+                        <ArticleId IdType="pmc">PMC3296754</ArticleId>
+                        <ArticleId IdType="pubmed">22412945</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Marquine MJ, Sakamoto M, Dufour C, Rooney A, Fazeli P, Umlauf A, &#x2026; Moore DJ (2016). The impact of ethnicity/race on the association between the Veterans Aging Cohort Study (VACS) Index and neurocognitive function among HIV-infected persons. Journal of NeuroVirology. 10.1007/s13365-015-0411-6</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="doi">10.1007/s13365-015-0411-6</ArticleId>
+                        <ArticleId IdType="pmc">PMC4912471</ArticleId>
+                        <ArticleId IdType="pubmed">26679535</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Marquine Mar&#xed;a J., Flores I, Kamat R, Johnson N, Umlauf A, Letendre S, &#x2026; Heaton RK (2018). A composite of multisystem injury and neurocognitive impairment in HIV infection: association with everyday functioning. Journal of NeuroVirology. 10.1007/s13365-018-0643-3</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="doi">10.1007/s13365-018-0643-3</ArticleId>
+                        <ArticleId IdType="pmc">PMC6202221</ArticleId>
+                        <ArticleId IdType="pubmed">29777462</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Marquine Mar&#xed;a J., Umlauf A, Rooney AS, Fazeli PL, Gouaux BD, Woods SP, &#x2026; Moore DJ (2014). The veterans aging cohort study index is associated with concurrent risk for neurocognitive impairment. Journal of Acquired Immune Deficiency Syndromes. 10.1097/QAI.0000000000000008</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="doi">10.1097/QAI.0000000000000008</ArticleId>
+                        <ArticleId IdType="pmc">PMC3907119</ArticleId>
+                        <ArticleId IdType="pubmed">24442225</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Mullis CE, Laeyendecker O, Reynolds SJ, Ocama P, Quinn J, Boaz I, &#x2026; Stabinski L (2013). High frequency of false-positive hepatitis C virus enzyme-linked immunosorbent assay in Rakai, Uganda. Clinical Infectious Diseases. 10.1093/cid/cit602</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="doi">10.1093/cid/cit602</ArticleId>
+                        <ArticleId IdType="pmc">PMC3840403</ArticleId>
+                        <ArticleId IdType="pubmed">24051866</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Pirillo MF, Bassani L, Germinario EAP, Mancini MG, Vyankandondera J, Okong P, &#x2026; Giuliano M (2007). Seroprevalence of hepatitis B and C viruses among HIV-infected pregnant women in Uganda and Rwanda. Journal of Medical Virology. 10.1002/jmv.21007</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="doi">10.1002/jmv.21007</ArticleId>
+                        <ArticleId IdType="pubmed">17935164</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Rourke SB (2015). Asymptomatic neurocognitive impairment (ANI) is associated with progression to symptomatic HIV-associated neurocognitive disorders (HAND) in people with HIV: Results from the ontario HIV treatment network (OHTN) cohort study. Canadian Journal of Infectious Diseases and Medical Microbiology.</Citation>
+                </Reference>
+                <Reference>
+                    <Citation>Sacktor N, Saylor D, Nakigozi G, Nakasujja N, Robertson K, Grabowski MK, &#x2026; Wawer MJ (2019). Effect of HIV Subtype and Antiretroviral Therapy on HIV-Associated Neurocognitive Disorder Stage in Rakai, Uganda. JAIDS Journal of Acquired Immune Deficiency Syndromes. 10.1097/qai.0000000000001992</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="doi">10.1097/qai.0000000000001992</ArticleId>
+                        <ArticleId IdType="pmc">PMC6522269</ArticleId>
+                        <ArticleId IdType="pubmed">30865184</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Sacktor N, Skolasky RL, Seaberg E, Munro C, Becker JT, Martin E, &#x2026; Miller E (2016). Prevalence of HIV-associated neurocognitive disorders in the Multicenter AIDS Cohort Study. Neurology. 10.1212/WNL.0000000000002277</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="doi">10.1212/WNL.0000000000002277</ArticleId>
+                        <ArticleId IdType="pmc">PMC4776086</ArticleId>
+                        <ArticleId IdType="pubmed">26718568</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Sakoda ME, Fazeli PL, Ellis RJ, Jeste DV, Grant I, Letendre SL, &amp; Moore DJ (2017). Higher cystatin c levels are associated with neurocognitive impairment in older HIV+ adults. Journal of Acquired Immune Deficiency Syndromes. 10.1097/QAI.0000000000001235</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="doi">10.1097/QAI.0000000000001235</ArticleId>
+                        <ArticleId IdType="pmc">PMC5303169</ArticleId>
+                        <ArticleId IdType="pubmed">27861242</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Salinas JL, Rentsch C, Marconi VC, Tate J, Budoff M, Butt AA, &#x2026; Rimland D (2016). Baseline, time-updated, and cumulative HIV care metrics for predicting acute myocardial infarction and all-cause mortality. Clinical Infectious Diseases. 10.1093/cid/ciw564</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="doi">10.1093/cid/ciw564</ArticleId>
+                        <ArticleId IdType="pmc">PMC5106607</ArticleId>
+                        <ArticleId IdType="pubmed">27539575</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Shah A, Lydecker A, &amp; Murray K (2009). Use of the FIB4 Index for non invasive evaluation of fibrosis in Non Alcoholic Fatty Liver Disease. &#x2026; and Hepatology: The &#x2026; 10.1016/j.cgh.2009.05.033.USE</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="doi">10.1016/j.cgh.2009.05.033.USE</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Tate JP, Justice AC, Hughes MD, Bonnet F, Reiss P, Mocroft A, &#x2026; Sterne JAC (2013). An internationally generalizable risk index for mortality after one year of antiretroviral therapy. AIDS. 10.1097/QAD.0b013e32835b8c7f</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="doi">10.1097/QAD.0b013e32835b8c7f</ArticleId>
+                        <ArticleId IdType="pmc">PMC4283204</ArticleId>
+                        <ArticleId IdType="pubmed">23095314</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Valcour VG, Rubin LH, Obasi MU, Maki PM, Peters MG, Levin S, &#x2026; Golub E (2016). Liver Fibrosis Linked to Cognitive Performance in HIV and Hepatitis C. Journal of Acquired Immune Deficiency Syndromes. 10.1097/QAI.0000000000000957</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="doi">10.1097/QAI.0000000000000957</ArticleId>
+                        <ArticleId IdType="pmc">PMC4911304</ArticleId>
+                        <ArticleId IdType="pubmed">26885801</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Vallet-Pichard A, Mallet V, Nalpas B, Verkarre V, Nalpas A, Dhalluin-Venier V, &#x2026; Pol S (2007). FIB-4: An inexpensive and accurate marker of fibrosis in HCV infection. Comparison with liver biopsy and FibroTest. Hepatology. 10.1002/hep.21669</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="doi">10.1002/hep.21669</ArticleId>
+                        <ArticleId IdType="pubmed">17567829</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Yuen T, Brouillette MJ, Fellows LK, Ellis RJ, Letendre S, Heaton R, &amp; Mayo N (2017). Personalized risk index for neurocognitive decline among people with well-controlled HIV infection. Journal of Acquired Immune Deficiency Syndromes. 10.1097/QAI.0000000000001466</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="doi">10.1097/QAI.0000000000001466</ArticleId>
+                        <ArticleId IdType="pubmed">28797021</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+            </ReferenceList>
+        </PubmedData>
+    </PubmedArticle>
+    <PubmedArticle>
+        <MedlineCitation Status="MEDLINE" Owner="NLM" IndexingMethod="Manual">
+            <PMID Version="1">30256459</PMID>
+            <DateCompleted>
+                <Year>2019</Year>
+                <Month>01</Month>
+                <Day>07</Day>
+            </DateCompleted>
+            <DateRevised>
+                <Year>2020</Year>
+                <Month>01</Month>
+                <Day>01</Day>
+            </DateRevised>
+            <Article PubModel="Print-Electronic">
+                <Journal>
+                    <ISSN IssnType="Electronic">1600-0838</ISSN>
+                    <JournalIssue CitedMedium="Internet">
+                        <Volume>29</Volume>
+                        <Issue>1</Issue>
+                        <PubDate>
+                            <Year>2019</Year>
+                            <Month>Jan</Month>
+                        </PubDate>
+                    </JournalIssue>
+                    <Title>Scandinavian journal of medicine &amp; science in sports</Title>
+                    <ISOAbbreviation>Scand J Med Sci Sports</ISOAbbreviation>
+                </Journal>
+                <ArticleTitle>The use of an IL1-receptor antagonist to reverse the changes associated with established tendinopathy in a rat model.</ArticleTitle>
+                <Pagination>
+                    <StartPage>82</StartPage>
+                    <EndPage>88</EndPage>
+                    <MedlinePgn>82-88</MedlinePgn>
+                </Pagination>
+                <ELocationID EIdType="doi" ValidYN="Y">10.1111/sms.13310</ELocationID>
+                <Abstract>
+                    <AbstractText>Interleukin-1 (IL1) is a cytokine that plays a role in inflammation and is a potential contributor to the inflammation present in tendinopathy. Its inhibition may be of use in the treatment of tendinopathy and has been a target for treatment. To evaluate how an IL1-receptor antagonist (IL1-RA) reverses pathologic changes associated with established patellar tendinopathy, we randomized 48 Sprague-Dawley retired breeder rats into three groups having weekly bilateral patellar tendon injections for 6&#xa0;weeks. The control group received 0.1&#xa0;mL saline for 6&#xa0;weeks. The intervention groups were treated with 0.1&#xa0;mL 2% carrageenan for 4&#xa0;weeks. Beginning at week three, the IL1-RA group received 0.94&#xa0;mg of the IL1-RA (2.5&#xa0;mg/kg) added to the 0.1&#xa0;mL 2% carrageenan and 0.94&#xa0;mg of the IL1-RA alone for the final 2&#xa0;weeks, while the CAR received 0.1&#xa0;mL saline for the final 2&#xa0;weeks. Animals were euthanized 6&#xa0;weeks after initial injection. The CAR group demonstrated significantly (P&#xa0;&lt;&#xa0;0.05) shorter tendon lengths (7.81&#xa0;&#xb1;&#xa0;0.44&#xa0;mm) than the control (8.25&#xa0;&#xb1;&#xa0;0.58&#xa0;mm) and IL1-RA (8.34&#xa0;&#xb1;&#xa0;0.52&#xa0;mm) group (P&#xa0;&lt;&#xa0;0.05). Macroscopically, plaque-like formations were reduced and margins of the tendon were more evident in the IL1-RA group compared to the CAR group. CAR group demonstrated significantly greater histopathologic changes (inflammatory cell density, disorganization of collagen, nuclear rounding, and angiogenesis) than the control and IL1-RA group. No significant difference in mechanical properties of the tendon was noted. These findings demonstrate IL1-RA can reduce pathologic changes in the patellar tendon in an established tendonitis model although did not demonstrate a difference in mechanical properties.</AbstractText>
+                    <CopyrightInformation>&#xa9; 2018 John Wiley &amp; Sons A/S. Published by John Wiley &amp; Sons Ltd.</CopyrightInformation>
+                </Abstract>
+                <AuthorList CompleteYN="Y">
+                    <Author ValidYN="Y">
+                        <LastName>Eskildsen</LastName>
+                        <ForeName>Scott M</ForeName>
+                        <Initials>SM</Initials>
+                        <Identifier Source="ORCID">0000-0002-1730-5439</Identifier>
+                        <AffiliationInfo>
+                            <Affiliation>Department of Orthopaedics, University of North Carolina-Chapel Hill, Chapel Hill, North Carolina.</Affiliation>
+                        </AffiliationInfo>
+                    </Author>
+                    <Author ValidYN="Y">
+                        <LastName>Berkoff</LastName>
+                        <ForeName>David J</ForeName>
+                        <Initials>DJ</Initials>
+                        <AffiliationInfo>
+                            <Affiliation>Department of Orthopaedics, University of North Carolina-Chapel Hill, Chapel Hill, North Carolina.</Affiliation>
+                        </AffiliationInfo>
+                    </Author>
+                    <Author ValidYN="Y">
+                        <LastName>Kallianos</LastName>
+                        <ForeName>Stephen A</ForeName>
+                        <Initials>SA</Initials>
+                        <AffiliationInfo>
+                            <Affiliation>Department of Orthopaedics, University of North Carolina-Chapel Hill, Chapel Hill, North Carolina.</Affiliation>
+                        </AffiliationInfo>
+                    </Author>
+                    <Author ValidYN="Y">
+                        <LastName>Weinhold</LastName>
+                        <ForeName>Paul S</ForeName>
+                        <Initials>PS</Initials>
+                        <AffiliationInfo>
+                            <Affiliation>Department of Orthopaedics, University of North Carolina-Chapel Hill, Chapel Hill, North Carolina.</Affiliation>
+                        </AffiliationInfo>
+                    </Author>
+                </AuthorList>
+                <Language>eng</Language>
+                <GrantList CompleteYN="Y">
+                    <Grant>
+                        <GrantID>P30 DK034987</GrantID>
+                        <Acronym>DK</Acronym>
+                        <Agency>NIDDK NIH HHS</Agency>
+                        <Country>United States</Country>
+                    </Grant>
+                    <Grant>
+                        <Agency>UNC-Chapel Hill</Agency>
+                        <Country/>
+                    </Grant>
+                </GrantList>
+                <PublicationTypeList>
+                    <PublicationType UI="D016428">Journal Article</PublicationType>
+                </PublicationTypeList>
+                <ArticleDate DateType="Electronic">
+                    <Year>2018</Year>
+                    <Month>10</Month>
+                    <Day>15</Day>
+                </ArticleDate>
+            </Article>
+            <MedlineJournalInfo>
+                <Country>Denmark</Country>
+                <MedlineTA>Scand J Med Sci Sports</MedlineTA>
+                <NlmUniqueID>9111504</NlmUniqueID>
+                <ISSNLinking>0905-7188</ISSNLinking>
+            </MedlineJournalInfo>
+            <ChemicalList>
+                <Chemical>
+                    <RegistryNumber>0</RegistryNumber>
+                    <NameOfSubstance UI="C580803">IL1R1 protein, rat</NameOfSubstance>
+                </Chemical>
+                <Chemical>
+                    <RegistryNumber>0</RegistryNumber>
+                    <NameOfSubstance UI="D053590">Interleukin 1 Receptor Antagonist Protein</NameOfSubstance>
+                </Chemical>
+                <Chemical>
+                    <RegistryNumber>0</RegistryNumber>
+                    <NameOfSubstance UI="D053573">Receptors, Interleukin-1 Type I</NameOfSubstance>
+                </Chemical>
+                <Chemical>
+                    <RegistryNumber>9000-07-1</RegistryNumber>
+                    <NameOfSubstance UI="D002351">Carrageenan</NameOfSubstance>
+                </Chemical>
+            </ChemicalList>
+            <CitationSubset>IM</CitationSubset>
+            <MeshHeadingList>
+                <MeshHeading>
+                    <DescriptorName UI="D000818" MajorTopicYN="N">Animals</DescriptorName>
+                </MeshHeading>
+                <MeshHeading>
+                    <DescriptorName UI="D002351" MajorTopicYN="N">Carrageenan</DescriptorName>
+                    <QualifierName UI="Q000494" MajorTopicYN="N">pharmacology</QualifierName>
+                </MeshHeading>
+                <MeshHeading>
+                    <DescriptorName UI="D005260" MajorTopicYN="N">Female</DescriptorName>
+                </MeshHeading>
+                <MeshHeading>
+                    <DescriptorName UI="D053590" MajorTopicYN="N">Interleukin 1 Receptor Antagonist Protein</DescriptorName>
+                    <QualifierName UI="Q000494" MajorTopicYN="Y">pharmacology</QualifierName>
+                </MeshHeading>
+                <MeshHeading>
+                    <DescriptorName UI="D017847" MajorTopicYN="N">Patellar Ligament</DescriptorName>
+                    <QualifierName UI="Q000473" MajorTopicYN="Y">pathology</QualifierName>
+                </MeshHeading>
+                <MeshHeading>
+                    <DescriptorName UI="D011897" MajorTopicYN="N">Random Allocation</DescriptorName>
+                </MeshHeading>
+                <MeshHeading>
+                    <DescriptorName UI="D017207" MajorTopicYN="N">Rats, Sprague-Dawley</DescriptorName>
+                </MeshHeading>
+                <MeshHeading>
+                    <DescriptorName UI="D053573" MajorTopicYN="N">Receptors, Interleukin-1 Type I</DescriptorName>
+                    <QualifierName UI="Q000037" MajorTopicYN="Y">antagonists &amp; inhibitors</QualifierName>
+                </MeshHeading>
+                <MeshHeading>
+                    <DescriptorName UI="D052256" MajorTopicYN="N">Tendinopathy</DescriptorName>
+                    <QualifierName UI="Q000473" MajorTopicYN="Y">pathology</QualifierName>
+                </MeshHeading>
+            </MeshHeadingList>
+            <KeywordList Owner="NOTNLM">
+                <Keyword MajorTopicYN="N">IL1</Keyword>
+                <Keyword MajorTopicYN="N">carrageenan</Keyword>
+                <Keyword MajorTopicYN="N">inflammatory cytokine</Keyword>
+                <Keyword MajorTopicYN="N">patellar tendon</Keyword>
+                <Keyword MajorTopicYN="N">tendon inflammation</Keyword>
+            </KeywordList>
+        </MedlineCitation>
+        <PubmedData>
+            <History>
+                <PubMedPubDate PubStatus="received">
+                    <Year>2018</Year>
+                    <Month>2</Month>
+                    <Day>13</Day>
+                </PubMedPubDate>
+                <PubMedPubDate PubStatus="revised">
+                    <Year>2018</Year>
+                    <Month>9</Month>
+                    <Day>12</Day>
+                </PubMedPubDate>
+                <PubMedPubDate PubStatus="accepted">
+                    <Year>2018</Year>
+                    <Month>9</Month>
+                    <Day>19</Day>
+                </PubMedPubDate>
+                <PubMedPubDate PubStatus="pubmed">
+                    <Year>2018</Year>
+                    <Month>9</Month>
+                    <Day>27</Day>
+                    <Hour>6</Hour>
+                    <Minute>0</Minute>
+                </PubMedPubDate>
+                <PubMedPubDate PubStatus="medline">
+                    <Year>2019</Year>
+                    <Month>1</Month>
+                    <Day>8</Day>
+                    <Hour>6</Hour>
+                    <Minute>0</Minute>
+                </PubMedPubDate>
+                <PubMedPubDate PubStatus="entrez">
+                    <Year>2018</Year>
+                    <Month>9</Month>
+                    <Day>27</Day>
+                    <Hour>6</Hour>
+                    <Minute>0</Minute>
+                </PubMedPubDate>
+                <PubMedPubDate PubStatus="pmc-release">
+                    <Year>2020</Year>
+                    <Month>1</Month>
+                    <Day>1</Day>
+                </PubMedPubDate>
+            </History>
+            <PublicationStatus>ppublish</PublicationStatus>
+            <ArticleIdList>
+                <ArticleId IdType="pubmed">30256459</ArticleId>
+                <ArticleId IdType="mid">NIHMS990371</ArticleId>
+                <ArticleId IdType="pmc">PMC6289890</ArticleId>
+                <ArticleId IdType="doi">10.1111/sms.13310</ArticleId>
+            </ArticleIdList>
+            <ReferenceList>
+                <Reference>
+                    <Citation>Ma Y, Yan X, Zhao H, Wang W. Effects of interleukin-1 receptor antagonist on collagen and matrix metalloproteinases in stress-shielded achilles tendons of rats. Orthopedics 2012;35:e1238&#x2013;1244.</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pubmed">22868612</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Uchida H, Tohyama H, Nagashima K, Ohba Y, Matsumoto H, Toyama Y, Yasuda K. Stress deprivation simultaneously induces over-expression of interleukin-1beta, tumor necrosis factor-alpha, and transforming growth factor-beta in fibroblasts and mechanical deterioration of the tissue in the patellar tendon. J Biomech 2005;38:791&#x2013;798.</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pubmed">15713300</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Archambault J, Tsuzaki M, Herzog W, Banes AJ. Stretch and interleukin-1beta induce matrix metalloproteinases in rabbit tendon cells in vitro. J Orthop Res Off Publ Orthop Res Soc 2002;20:36&#x2013;39.</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pubmed">11853088</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Barbe MF, Elliott MB, Abdelmagid SM, Amin M, Popoff SN, Safadi FF, Barr AE. Serum and tissue cytokines and chemokines increase with repetitive upper extremity tasks. J Orthop Res Off Publ Orthop Res Soc 2008;26:1320&#x2013;1326.</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pubmed">18464247</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Cunha JM, Cunha FQ, Poole S, Ferreira SH. Cytokine-mediated inflammatory hyperalgesia limited by interleukin-1 receptor antagonist. Br J Pharmacol 2000;130:1418&#x2013;1424.</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pmc">PMC1572194</ArticleId>
+                        <ArticleId IdType="pubmed">10903985</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Ko JY, Wang FS, Huang HY, Wang CJ, Tseng SL, Hsu C. Increased IL-1beta expression and myofibroblast recruitment in subacromial bursa is associated with rotator cuff lesions with shoulder stiffness. J Orthop Res Off Publ Orthop Res Soc 2008;26:1090&#x2013;1097.</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pubmed">18327798</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Voloshin I, Gelinas J, Maloney MD, O&#x2019;Keefe RJ, Bigliani LU, Blaine TA. Proinflammatory cytokines and metalloproteases are expressed in the subacromial bursa in patients with rotator cuff disease. Arthrosc J Arthrosc Relat Surg Off Publ Arthrosc Assoc N Am Int Arthrosc Assoc 2005;21:1076.e1&#x2013;1076.e9.</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pubmed">16171632</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Sun HB, Li Y, Fung DT, Majeska RJ, Schaffler MB, Flatow EL. Coordinate regulation of IL-1beta and MMP-13 in rat tendons following subrupture fatigue damage. Clin Orthop 2008;466:1555&#x2013;1561.</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pmc">PMC2505236</ArticleId>
+                        <ArticleId IdType="pubmed">18470577</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Tsuzaki M, Guyton G, Garrett W, Archambault JM, Herzog W, Almekinders L, Bynum D, Yang X, Banes AJ. IL-1 beta induces COX2, MMP-1, &#x2212;3 and &#x2212;13, ADAMTS-4, IL-1 beta and IL-6 in human tendon cells. J Orthop Res Off Publ Orthop Res Soc 2003;21:256&#x2013;264.</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pubmed">12568957</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Lake SP, Ansorge HL, Soslowsky LJ. Animal models of tendinopathy. Disabil Rehabil 2008;30:1530&#x2013;1541.</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pubmed">18608372</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Warden SJ. Animal models for the study of tendinopathy. Br J Sports Med 2007;41:232&#x2013;240.</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pmc">PMC2658951</ArticleId>
+                        <ArticleId IdType="pubmed">17127722</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Sadeghi H, Hajhashemi V, Minaiyan M, Movahedian A, Talebi A. A study on the mechanisms involving the anti-inflammatory effect of amitriptyline in carrageenan-induced paw edema in rats. Eur J Pharmacol 2011;667:396&#x2013;401.</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pubmed">21645506</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Loram LC, Fuller A, Fick LG, Cartmell T, Poole S, Mitchell D. Cytokine profiles during carrageenan-induced inflammatory hyperalgesia in rat muscle and hind paw. J Pain Off J Am Pain Soc 2007;8:127&#x2013;136.</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pubmed">16949880</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Marsolais D, Duchesne E, C&#xf4;t&#xe9; CH, Frenette J. Inflammatory cells do not decrease the ultimate tensile strength of intact tendons in vivo and in vitro: protective role of mechanical loading. J Appl Physiol Bethesda Md 1985 2007;102:11&#x2013;17.</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pubmed">16916923</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Tillander B, Franz&#xe9;n LE, Nilsson E, Norlin R. Carrageenan-induced subacromial bursitis caused changes in the rat&#x2019;s rotator cuff. J Orthop Res Off Publ Orthop Res Soc 2001;19:441&#x2013;447.</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pubmed">11398858</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Berkoff DJ, Kallianos SA, Eskildsen SM, Weinhold PS. Use of an IL1-receptor antagonist to prevent the progression of tendinopathy in a rat model. J Orthop Res Off Publ Orthop Res Soc 2016;34:616&#x2013;622.</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pubmed">26418607</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Ferry ST, Afshari HM, Lee JA, Dahners LE, Weinhold PS. Effect of prostaglandin E2 injection on the structural properties of the rat patellar tendon. Sports Med Arthrosc Rehabil Ther Technol SMARTT 2012;4:2.</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pmc">PMC3271034</ArticleId>
+                        <ArticleId IdType="pubmed">22230219</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>qiu Zheng Y, Wei W, Dai M, Zhu L, yi Jia X, Wang Y. Interleukin-1 receptor antagonist intervenes in signaling between different types of synoviocytes in rats with adjuvant arthritis. Acta Pharmacol Sin 2006;27:111&#x2013;118.</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pubmed">16364217</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Laudier D, Schaffler MB, Flatow EL, Wang VM. Novel procedure for high-fidelity tendon histology. J Orthop Res Off Publ Orthop Res Soc 2007;25:390&#x2013;395.</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pubmed">17149746</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Movin T, Gad A, Reinholt FP, Rolf C. Tendon pathology in long-standing achillodynia. Biopsy findings in 40 patients. Acta Orthop Scand 1997;68:170&#x2013;175.</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pubmed">9174456</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Chen J, Yu Q, Wu B, Lin Z, Pavlos NJ, Xu J, Ouyang H, Wang A, Zheng MH. Autologous tenocyte therapy for experimental Achilles tendinopathy in a rabbit model. Tissue Eng Part A 2011;17:2037&#x2013;2048.</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pubmed">21495863</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Butler DL, Grood ES, Noyes FR, Zernicke RF, Brackett K. Effects of structure and strain measurement technique on the material properties of young human tendons and fascia. J Biomech 1984;17:579&#x2013;596.</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pubmed">6490671</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Farndale RW, Buttle DJ, Barrett AJ. Improved quantitation and discrimination of sulphated glycosaminoglycans by use of dimethylmethylene blue. Biochim Biophys Acta 1986;883:173&#x2013;177.</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pubmed">3091074</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Riley GP, Harrall RL, Constant CR, Chard MD, Cawston TE, Hazleman BL. Glycosaminoglycans of human rotator cuff tendons: changes with age and in chronic rotator cuff tendinitis. Ann Rheum Dis 1994;53:367&#x2013;376.</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pmc">PMC1005351</ArticleId>
+                        <ArticleId IdType="pubmed">8037495</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Chavira R, Burnett TJ, Hageman JH. Assaying proteinases with azocoll. Anal Biochem 1984;136:446&#x2013;450.</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pubmed">6426343</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+                <Reference>
+                    <Citation>Kurtz CA, Loebig TG, Anderson DD, DeMeo PJ, Campbell PG. Insulin-like growth factor I accelerates functional recovery from Achilles tendon injury in a rat model. Am J Sports Med 1999;27:363&#x2013;369.</Citation>
+                    <ArticleIdList>
+                        <ArticleId IdType="pubmed">10352775</ArticleId>
+                    </ArticleIdList>
+                </Reference>
+            </ReferenceList>
+        </PubmedData>
+    </PubmedArticle>
+</PubmedArticleSet>

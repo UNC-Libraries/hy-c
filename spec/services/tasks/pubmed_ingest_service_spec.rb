@@ -144,14 +144,21 @@ RSpec.describe Tasks::PubmedIngestService do
     end
   end
 
-
   describe '#ingest_publications' do
     it 'processes pubmed articles and handles failures' do
+      mock_response_body = Nokogiri::XML(File.read(Rails.root.join('spec/fixtures/files/pubmed_api_response_multi.xml')))
+      failing_sample = mock_response_body.xpath('//PubmedArticle')[0..2]
+      # puts "Testing Length #{mock_response_body.xpath('//PubmedArticle').length}"
+      # puts "Truncated Print #{failing_sample[0].to_s.truncate(500)}"
       pending 'Not implemented yet'
       expect(true).to eq(false)
     end
 
-    it 'processes pubmed central articles and handles failures' do
+    it 'processes pmc articles and handles failures' do
+      mock_response_body = Nokogiri::XML(File.read(Rails.root.join('spec/fixtures/files/pmc_api_response_multi.xml')))
+      failing_sample = mock_response_body.xpath('//article')[0..2]
+      # puts "Testing Length #{mock_response_body.xpath('//article').length}"
+      # puts "Truncated Print #{failing_sample[0].to_s.truncate(500)}"
       pending 'Not implemented yet'
       expect(true).to eq(false)
     end
