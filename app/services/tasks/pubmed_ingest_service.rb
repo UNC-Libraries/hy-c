@@ -63,7 +63,6 @@ module Tasks
          # Retrieve the corresponding row from @new_pubmed_works to be updated
          skipped_row = find_skipped_row_for_metadata(metadata)
          article = new_article(metadata)
-         populate_article_metadata(article, metadata)
          attach_pdf(article, metadata, skipped_row)
          skipped_row['pdf_attached'] = 'Success'
          @attachment_results[:successfully_ingested] << skipped_row.to_h
