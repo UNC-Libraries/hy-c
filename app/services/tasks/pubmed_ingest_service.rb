@@ -22,6 +22,30 @@ module Tasks
       @retrieved_metadata = []
     end
 
+    def batch_retrieve_metadata
+      # Prep for retrieving metadata from different endpoints
+      works_with_pmids = @new_pubmed_works.select { |work_hash| work_hash['pmid'].present? }
+      works_with_pmcids = @new_pubmed_works.select { |work_hash| works_with_pmids.exclude?(work_hash) && work_hash['pmcid'].present? }
+
+      [works_with_pmids, works_with_pmcids].each do |works|
+        works.each_slice(200) do |batch|
+          ids = batch.map { |work| work['pmid'] || work['pmcid'].sub(/^PMC/, '') } # Remove "PMC" prefix if present
+          # Include Tool Name and Email in API request
+          request_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=#{works == works_with_pmids ? 'pubmed' : 'pmc'}&id=#{ids.join(',')}&retmode=xml&tool=CDR&email=cdr@unc.edu"
+          res = HTTParty.get(request_url)
+          xml_doc = Nokogiri::XML(res.body)
+          # WIP: Remove Later
+          if res.code != 200
+            Rails.logger.error("Failed to fetch metadata for #{ids.join(', ')}: #{res.code} - #{res.message}")
+            next
+          end
+          current_arr = xml_doc.xpath(works == works_with_pmids ? '//PubmedArticle' : '//article')
+          @retrieved_metadata += current_arr
+        end
+      end
+      @retrieved_metadata
+    end
+
     def ingest_publications
       # Ingest the retrieved metadata, returns a modified array of hashes
       @retrieved_metadata.each do |metadata|
@@ -53,30 +77,6 @@ module Tasks
       file = attach_pdf_to_work(work, file_path, depositor, visibility)
       file.update(permissions_attributes: group_permissions(@admin_set))
       file
-    end
-
-    def batch_retrieve_metadata
-      # Prep for retrieving metadata from different endpoints
-      works_with_pmids = @new_pubmed_works.select { |work_hash| work_hash['pmid'].present? }
-      works_with_pmcids = @new_pubmed_works.select { |work_hash| works_with_pmids.exclude?(work_hash) && work_hash['pmcid'].present? }
-
-      [works_with_pmids, works_with_pmcids].each do |works|
-        works.each_slice(200) do |batch|
-          ids = batch.map { |work| work['pmid'] || work['pmcid'].sub(/^PMC/, '') } # Remove "PMC" prefix if present
-          # Include Tool Name and Email in API request
-          request_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=#{works == works_with_pmids ? 'pubmed' : 'pmc'}&id=#{ids.join(',')}&retmode=xml&tool=CDR&email=cdr@unc.edu"
-          res = HTTParty.get(request_url)
-          xml_doc = Nokogiri::XML(res.body)
-          # WIP: Remove Later
-          if res.code != 200
-            Rails.logger.error("Failed to fetch metadata for #{ids.join(', ')}: #{res.code} - #{res.message}")
-            next
-          end
-          current_arr = xml_doc.xpath(works == works_with_pmids ? '//PubmedArticle' : '//article')
-          @retrieved_metadata += current_arr
-        end
-      end
-      @retrieved_metadata
     end
 
     def new_article(metadata)
@@ -146,6 +146,7 @@ module Tasks
             'orcid'=> author.xpath('Identifier[@Source="orcid"]').present? ? "https://orcid.org/#{author.xpath('Identifier[@Source="orcid"]').text}" : '',
             'index' => index.to_s
         }
+        end
       else
         res = metadata.xpath('front/article-meta/contrib-group/contrib[@contrib-type="author"]').map_with_index do |author, index|
           {
