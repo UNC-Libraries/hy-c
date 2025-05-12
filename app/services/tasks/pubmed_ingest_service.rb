@@ -108,6 +108,7 @@ module Tasks
       article.admin_set = @admin_set
       article.depositor = @config['depositor_onyen']
       article.resource_type = ['Article']
+      article.creators_attributes = generate_authors(metadata)
       if metadata.name == 'PubmedArticle'
         article.title = metadata.xpath('MedlineCitation/Article/ArticleTitle').text
         article.abstract = metadata.xpath('MedlineCitation/Article/Abstract/AbstractText').text
@@ -128,6 +129,27 @@ module Tasks
         # Raise an error for unknown metadata formats
         raise StandardError, "Unknown metadata format: #{metadata.name}"
       end
+    end
+
+    def generate_authors(metadata)
+      res = []
+      if metadata.name == 'PubmedArticle'
+        res = metadata.xpath('MedlineCitation/Article/AuthorList/Author').map_with_index do |author, index|
+          {
+            'name' => [author.xpath('LastName').text, author.xpath('ForeName').text].join(', '),
+            'orcid'=> author.xpath('Identifier[@Source="orcid"]').present? ? "https://orcid.org/#{author.xpath('Identifier[@Source="orcid"]').text}" : '',
+            'index' => index.to_s
+        }
+      else
+        res = metadata.xpath('front/article-meta/contrib-group/contrib[@contrib-type="author"]').map_with_index do |author, index|
+          {
+            'name' => [author.xpath('name/surname').text, author.xpath('name/given-names').text].join(', '),
+            'orcid'=> author.xpath('orcid').present? ? "https://orcid.org/#{author.xpath('orcid').text}" : '',
+            'index' => index.to_s
+          }
+        end
+      end
+      res
     end
 
     def get_date_issued(metadata)
