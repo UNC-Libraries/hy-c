@@ -144,6 +144,18 @@ RSpec.describe Tasks::PubmedIngestService do
     end
   end
 
+
+  describe '#ingest_publications' do
+    it 'processes pubmed articles and handles failures' do
+      pending 'Not implemented yet'
+      expect(true).to eq(false)
+    end
+
+    it 'processes pubmed central articles and handles failures' do
+      pending 'Not implemented yet'
+      expect(true).to eq(false)
+    end
+  end
   describe '#attach_pubmed_file' do
     let(:file_path) { Rails.root.join('spec', 'fixtures', 'files', 'sample_pdf.pdf') }
     let(:depositor) { FactoryBot.create(:user, uid: 'depositor') }
