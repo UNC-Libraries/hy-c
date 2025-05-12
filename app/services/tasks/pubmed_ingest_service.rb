@@ -22,6 +22,29 @@ module Tasks
       @retrieved_metadata = []
     end
 
+    def ingest_publications
+      # Ingest the retrieved metadata, returns a modified array of hashes
+      @retrieved_metadata.each do |metadata|
+        begin
+         # Retrieve the corresponding row from @new_pubmed_works to be updated
+         skipped_row = find_skipped_row_for_metadata(metadata)
+         article = new_article(metadata)
+         attach_pdf(article, metadata, skipped_row)
+         skipped_row['pdf_attached'] = 'Success'
+         @attachment_results[:successfully_ingested] << skipped_row.to_h
+        rescue => e
+          Rails.logger.error(e.message)
+          Rails.logger.error(e.backtrace.join("\n"))
+          skipped_row['pdf_attached'] = e.message
+          @attachment_results[:failed] << skipped_row.to_h
+        end
+      end
+      # Use updated attachment_results for reporting
+      @attachment_results
+    end
+
+    private
+
     def attach_pubmed_file(work_hash, file_path, depositor_onyen, visibility)
       # Create a work object using the provided work_hash
       model_class = work_hash[:work_type].constantize
@@ -56,27 +79,6 @@ module Tasks
       @retrieved_metadata
     end
 
-    def ingest_publications
-      # Ingest the retrieved metadata, returns a modified array of hashes
-      @retrieved_metadata.each do |metadata|
-        begin
-         # Retrieve the corresponding row from @new_pubmed_works to be updated
-         skipped_row = find_skipped_row_for_metadata(metadata)
-         article = new_article(metadata)
-         attach_pdf(article, metadata, skipped_row)
-         skipped_row['pdf_attached'] = 'Success'
-         @attachment_results[:successfully_ingested] << skipped_row.to_h
-        rescue => e
-          Rails.logger.error(e.message)
-          Rails.logger.error(e.backtrace.join("\n"))
-          # WIP: Refactoring for error handling, reporting
-          skipped_row['pdf_attached'] = e.message
-          @attachment_results[:failed] << skipped_row.to_h
-      end
-      # Use updated attachment_results for reporting
-      @attachment_results
-    end
-
     def new_article(metadata)
       article = Article.new
       populate_article_metadata(article, metadata)
@@ -105,7 +107,7 @@ module Tasks
 
     def set_basic_attributes(metadata, depositor_onyen, article)
       article.admin_set = @admin_set
-      article.depositor = @config['depositor_onyen']
+      article.depositor = @depositor
       article.resource_type = ['Article']
       article.creators_attributes = generate_authors(metadata)
       if metadata.name == 'PubmedArticle'
@@ -126,11 +128,16 @@ module Tasks
         article.funder = metadata.xpath('//funding-source/institution-wrap/institution').map(&:text)
       else
         # Raise an error for unknown metadata formats
-        raise StandardError, "Unknown metadata format: #{metadata.name}"
+        raise StandardError, "Basic Attributes - Unknown metadata format: #{metadata.name}"
       end
     end
 
     def generate_authors(metadata)
+      unless metadata.name == 'PubmedArticle' || metadata.name == 'article'
+        # Raise an error for unknown metadata formats
+        raise StandardError, "Generate Authors - Unknown metadata format: #{metadata.name}"
+      end
+
       res = []
       if metadata.name == 'PubmedArticle'
         res = metadata.xpath('MedlineCitation/Article/AuthorList/Author').map_with_index do |author, index|
@@ -171,8 +178,8 @@ module Tasks
         end
       end
       # Provide defaults if day or month is missing
-      month = month.zero? ? 1 : month
-      day = day.zero? ? 1 : day
+      month = month.to_i.zero? ? 1 : month.to_i
+      day = day.to_i.zero? ? 1 : day.to_i
       # Format the date as YYYY-MM-DD
       DateTime.new(year.to_i, month.to_i, day.to_i).strftime('%Y-%m-%d')
     end
