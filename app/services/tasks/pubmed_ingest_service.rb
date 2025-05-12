@@ -51,16 +51,16 @@ module Tasks
       @retrieved_metadata.each do |metadata|
         begin
          # Retrieve the corresponding row from @new_pubmed_works to be updated
-         skipped_row = find_skipped_row_for_metadata(metadata)
-         article = new_article(metadata)
-         attach_pdf(article, metadata, skipped_row)
-         skipped_row['pdf_attached'] = 'Success'
-         @attachment_results[:successfully_ingested] << skipped_row.to_h
-        rescue => e
-          Rails.logger.error(e.message)
-          Rails.logger.error(e.backtrace.join("\n"))
-          skipped_row['pdf_attached'] = e.message
-          @attachment_results[:failed] << skipped_row.to_h
+          skipped_row = find_skipped_row_for_metadata(metadata)
+          article = new_article(metadata)
+          attach_pdf(article, metadata, skipped_row)
+          skipped_row['pdf_attached'] = 'Success'
+          @attachment_results[:successfully_ingested] << skipped_row.to_h
+         rescue => e
+           Rails.logger.error(e.message)
+           Rails.logger.error(e.backtrace.join("\n"))
+           skipped_row['pdf_attached'] = e.message
+           @attachment_results[:failed] << skipped_row.to_h
         end
       end
       # Use updated attachment_results for reporting
@@ -175,7 +175,7 @@ module Tasks
           day = metadata_publication_date.at_xpath('day')&.text
         else
          # Raise an error if no publication date is found
-         raise StandardError, "No publication date found in metadata for #{metadata.name}."
+          raise StandardError, "No publication date found in metadata for #{metadata.name}."
         end
       end
       # Provide defaults if day or month is missing
@@ -194,8 +194,7 @@ module Tasks
         pmcid = "PMC#{metadata.xpath('front/article-meta/pub-id[@pub-id-type="pmc"]').text}"
       end
         # Select a row from the attachment results based on an identifier extracted from the metadata
-        @new_pubmed_works.find { |row| row['pmid'] == pmid || row['pmcid'] == pmcid }
+      @new_pubmed_works.find { |row| row['pmid'] == pmid || row['pmcid'] == pmcid }
     end
-end
 end
 end

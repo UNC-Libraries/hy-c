@@ -156,6 +156,7 @@ RSpec.describe Tasks::PubmedIngestService do
       expect(true).to eq(false)
     end
   end
+
   describe '#attach_pubmed_file' do
     let(:file_path) { Rails.root.join('spec', 'fixtures', 'files', 'sample_pdf.pdf') }
     let(:depositor) { FactoryBot.create(:user, uid: 'depositor') }
