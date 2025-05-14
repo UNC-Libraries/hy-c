@@ -178,7 +178,7 @@ RSpec.describe Tasks::PubmedIngestService do
       {
         'admin_set_title' => admin_set.title.first,
         'depositor_onyen' => admin.uid,
-        'attachment_results' => { skipped: pubmed_rows }
+        'attachment_results' => { skipped: pubmed_rows, successfully_attached: [], successfully_ingested: [], failed: [] }
       }
     end
 
@@ -186,19 +186,13 @@ RSpec.describe Tasks::PubmedIngestService do
       {
         'admin_set_title' => admin_set.title.first,
         'depositor_onyen' => admin.uid,
-        'attachment_results' => { skipped: pmc_rows }
+        'attachment_results' => { skipped: pmc_rows, successfully_attached: [], successfully_ingested: [], failed: [] }
       }
     end
 
     before do
       ['pubmed', 'pmc'].each do |db|
-        stub_request(:get, 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi')
-        .with(query: {
-          'db' => db,
-          'retmode' => 'xml',
-          'tool' => 'CDR',
-          'email' => 'cdr@unc.edu'
-        })
+        stub_request(:get, %r{https://eutils\.ncbi\.nlm\.nih\.gov/entrez/eutils/efetch\.fcgi\?db=#{db}.*})
         .to_return(
           status: 200,
           body: mock_response_bodies[db],
@@ -218,25 +212,27 @@ RSpec.describe Tasks::PubmedIngestService do
       # WIP: Relies on identifier mapping to simulate failure
       failing_sample_pmids = sample['failing'].map { |article| article.xpath('PMID').text }
       allow(service).to receive(:ingest_publications).and_call_original
-      allow(service).to receive(:attach_pdf_to_work) do |article, path, depositor, visibility|
-        if article.identifier.include?(failing_sample_pmids)
-          nil # simulate failure
+      allow(service).to receive(:attach_pdf).and_wrap_original do |method, *args|
+        article = args[0]
+      
+        if failing_sample_pmids.any? { |pmid| article.identifier.include?("PMID: #{pmid}") }
+          raise StandardError, 'Simulated failure'
         else
-          call_original
+          method.call(*args)
         end
-      end
+      end      
 
     # WIP ==================================
     # Expect errors in logs
+    expect(Rails.logger).to receive(:error).with(/Simulated failure/)
     # Expect the article count to change by 2 (dimensions_ingest_service:142)
     # Expect the newly ingested articles to have PMIDs from the success sample
     # Expect the newly ingested array size to be 2
     # Expect that articles with matching PMIDs to the failing sample are properly categorized
     # Expect the failing array size to be 2
-
       result = service.ingest_publications
-      pending 'Not implemented yet'
-      expect(true).to eq(false)
+      # pending 'Not implemented yet'
+      # expect(true).to eq(false)
     end
 
     it 'processes pmc articles and handles failures' do
