@@ -1,18 +1,16 @@
 # frozen_string_literal: true
 module Tasks
   require 'tasks/ingest_helper'
+
   class PubmedIngestService
     include Tasks::IngestHelper
 
     def initialize(config)
-      # Validate the config hash
       raise ArgumentError, 'Missing required config keys' unless config['admin_set_title'] && config['depositor_onyen'] && config['attachment_results']
 
       @attachment_results = config['attachment_results'].symbolize_keys
-
-      # Exclude the "Skipped: No CDR URL" rows from the attachment results
       @new_pubmed_works = @attachment_results[:skipped].select { |row| row['pdf_attached'] == 'Skipped: No CDR URL' }
-      @attachment_results[:skipped] = @attachment_results[:skipped].reject { |row| row['pdf_attached'] == 'Skipped: No CDR URL' }
+      @attachment_results[:skipped] -= @new_pubmed_works
 
       @admin_set = ::AdminSet.where(title: config['admin_set_title'])&.first
       raise ActiveRecord::RecordNotFound, "AdminSet not found with title: #{config['admin_set_title']}" unless @admin_set
@@ -22,32 +20,38 @@ module Tasks
 
       @retrieved_metadata = []
     end
+
     def ingest_publications
       batch_retrieve_metadata
-      # Ingest the retrieved metadata, returns a modified array of hashes
-      Rails.logger.info("Starting ingestion of #{@retrieved_metadata.size} records")
+      Rails.logger.info("[Ingest] Starting ingestion of #{@retrieved_metadata.size} records")
+
       @retrieved_metadata.each_with_index do |metadata, index|
+        Rails.logger.info("[Ingest] Processing record ##{index + 1}")
         begin
-          # Retrieve the corresponding row from @new_pubmed_works to be updated
           skipped_row = find_skipped_row_for_metadata(metadata)
+          Rails.logger.info("[Ingest] Found skipped row: #{skipped_row.inspect}")
           article = new_article(metadata)
+          article.identifier.each { |id| Rails.logger.info("[Ingest] Article identifier: #{id}") }
+          Rails.logger.info("[Ingest] Created new article with ID #{article.id}")
+
           attach_pdf(article, metadata, skipped_row)
+
+          Rails.logger.info("[Ingest] Successfully attached PDF for article #{article.id}")
           skipped_row['pdf_attached'] = 'Success'
           @attachment_results[:successfully_ingested] << skipped_row.to_h
         rescue => e
-           Rails.logger.error(e.message)
-           Rails.logger.error(e.backtrace.join("\n"))
+          Rails.logger.error("[Ingest] Error processing record ##{index + 1}: #{e.message}")
+          Rails.logger.error(e.backtrace.join("\n"))
           skipped_row['pdf_attached'] = e.message
           @attachment_results[:failed] << skipped_row.to_h
         end
       end
-       # Use updated attachment_results for reporting
-      Rails.logger.info("Ingestion complete")
+
+      Rails.logger.info('[Ingest] Ingestion complete')
       @attachment_results
     end
 
     def attach_pubmed_file(work_hash, file_path, depositor_onyen, visibility)
-     # Create a work object using the provided work_hash
       model_class = work_hash[:work_type].constantize
       work = model_class.find(work_hash[:work_id])
       depositor = User.find_by(uid: depositor_onyen)
@@ -60,45 +64,56 @@ module Tasks
 
     def batch_retrieve_metadata
       Rails.logger.info("Starting metadata retrieval for #{@new_pubmed_works.size} records")
+
       works_with_pmids = @new_pubmed_works.select { |w| w['pmid'].present? }
       works_with_pmcids = @new_pubmed_works.select { |w| !works_with_pmids.include?(w) && w['pmcid'].present? }
+
       [works_with_pmids, works_with_pmcids].each do |works|
         db = (works == works_with_pmids) ? 'pubmed' : 'pmc'
         works.each_slice(200) do |batch|
           ids = batch.map { |w| w['pmid'] || w['pmcid'].sub(/^PMC/, '') }
-          # Include Tool Name and Email in API request
           request_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=#{db}&id=#{ids.join(',')}&retmode=xml&tool=CDR&email=cdr@unc.edu"
           res = HTTParty.get(request_url)
+
           if res.code != 200
             Rails.logger.error("Failed to fetch metadata for #{ids.join(', ')}: #{res.code} - #{res.message}")
             next
           end
+
           xml_doc = Nokogiri::XML(res.body)
           current_arr = xml_doc.xpath(db == 'pubmed' ? '//PubmedArticle' : '//article')
           @retrieved_metadata += current_arr
         end
       end
+
+      Rails.logger.info('Metadata retrieval complete')
       @retrieved_metadata
-      Rails.logger.info("Metadata retrieval complete")
     end
 
     def new_article(metadata)
+      Rails.logger.info('[Article] Initializing new article object')
       article = Article.new
       populate_article_metadata(article, metadata)
       article.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
       article.permissions_attributes = group_permissions(@admin_set)
       article.save!
+      Rails.logger.info("[Article] Article saved with ID #{article.id}")
       article
     end
 
     def attach_pdf(article, metadata, skipped_row)
+      Rails.logger.info("[AttachPDF] Attaching PDF for article #{article.id}")
       create_sipity_workflow(work: article)
       pdf_file = attach_pdf_to_work(article, metadata['path'], @depositor, article.visibility)
+
       if pdf_file.nil?
         ids = [skipped_row['pmid'], skipped_row['pmcid']].compact.join(', ')
+        Rails.logger.error("[AttachPDF] ERROR: No PDF file was attached for: #{ids}")
         raise StandardError, "File attachment error for identifiers: #{ids}"
       end
+
       pdf_file.update(permissions_attributes: group_permissions(@admin_set))
+      Rails.logger.info("[AttachPDF] PDF file attached to article #{article.id}")
       article
     end
 
@@ -112,35 +127,33 @@ module Tasks
       article.depositor = depositor_onyen
       article.resource_type = ['Article']
       article.creators_attributes = generate_authors(metadata)
+
       if metadata.name == 'PubmedArticle'
         article.title = [metadata.xpath('MedlineCitation/Article/ArticleTitle').text]
         article.abstract = [metadata.xpath('MedlineCitation/Article/Abstract/AbstractText').text]
         article.date_issued = get_date_issued(metadata)
-        publisher = metadata.at_xpath('MedlineCitation/MedlineJournalInfo/MedlineTA')&.text
-        article.publisher = [publisher].compact.presence
+        article.publisher = [metadata.at_xpath('MedlineCitation/MedlineJournalInfo/MedlineTA')&.text].compact.presence
         article.keyword = metadata.xpath('MedlineCitation/KeywordList/Keyword').map(&:text)
         article.funder = metadata.xpath('GrantList/Grant/Agency').map(&:text)
       elsif metadata.name == 'article'
         article.title = [metadata.xpath('front/article-meta/title-group/article-title').text]
         article.abstract = [metadata.xpath('front/article-meta/abstract').text]
         article.date_issued = get_date_issued(metadata)
-        publisher = metadata.at_xpath('front/journal-meta/publisher/publisher-name')&.text
-        article.publisher = [publisher].compact.presence
+        article.publisher = [metadata.at_xpath('front/journal-meta/publisher/publisher-name')&.text].compact.presence
         article.keyword = metadata.xpath('//kwd-group/kwd').map(&:text)
         article.funder = metadata.xpath('//funding-source/institution-wrap/institution').map(&:text)
       else
-        # Raise an error for unknown metadata formats
         raise StandardError, "Basic Attributes - Unknown metadata format: #{metadata.name}"
       end
     end
 
     def set_identifiers(article, metadata)
       article.identifier = format_publication_identifiers(metadata)
-      if metadata.name == 'PubmedArticle'
-        article.issn = [metadata.xpath('//ISSN[@IssnType="Electronic"]').text]
-      else
-        article.issn = [metadata.xpath('//issn[@pub-type="epub"]').text]
-      end
+      article.issn = if metadata.name == 'PubmedArticle'
+                       [metadata.xpath('//ISSN[@IssnType="Electronic"]').text]
+                 else
+                   [metadata.xpath('//issn[@pub-type="epub"]').text]
+                 end
     end
 
     def generate_authors(metadata)
@@ -164,18 +177,18 @@ module Tasks
     end
 
     def get_date_issued(metadata)
-      # Extract the date_issued from the metadata
-      if metadata.name == 'PubmedArticle'
-        pubdate = metadata.at_xpath('PubmedData/History/PubMedPubDate[@PubStatus="pubmed"]')
-        year, month, day = pubdate&.at_xpath('Year')&.text, pubdate&.at_xpath('Month')&.text, pubdate&.at_xpath('Day')&.text
-      else
-        pubdate = metadata.at_xpath('front/article-meta/pub-date[@pub-type="epub"]')
-        year, month, day = pubdate&.at_xpath('year')&.text, pubdate&.at_xpath('month')&.text, pubdate&.at_xpath('day')&.text
-      end
-      month = month.to_i.zero? ? 1 : month.to_i
-      day = day.to_i.zero? ? 1 : day.to_i
-      formatted = DateTime.new(year.to_i, month, day).strftime('%Y-%m-%d')
-      formatted
+      pubdate = if metadata.name == 'PubmedArticle'
+                  metadata.at_xpath('PubmedData/History/PubMedPubDate[@PubStatus="pubmed"]')
+           else
+             metadata.at_xpath('front/article-meta/pub-date[@pub-type="epub"]')
+           end
+
+
+      year = pubdate&.at_xpath('Year')&.text || pubdate&.at_xpath('year')&.text
+      month = pubdate&.at_xpath('Month')&.text || pubdate&.at_xpath('month')&.text
+      day = pubdate&.at_xpath('Day')&.text || pubdate&.at_xpath('day')&.text
+
+      DateTime.new(year.to_i, (month || 1).to_i, (day || 1).to_i).strftime('%Y-%m-%d')
     end
 
     def format_publication_identifiers(metadata)
@@ -197,16 +210,19 @@ module Tasks
     end
 
     def find_skipped_row_for_metadata(metadata)
-      if metadata.name == 'PubmedArticle'
-        pmid = metadata.xpath('PubmedData/ArticleIdList/ArticleId[@IdType="pubmed"]').text
-        pmcid = metadata.xpath('PubmedData/ArticleIdList/ArticleId[@IdType="pmc"]').text
-      else
-        pmid = metadata.xpath('front/article-meta/pub-id[@pub-id-type="pmid"]').text
-        pmcid = "PMC#{metadata.xpath('front/article-meta/pub-id[@pub-id-type="pmc"]').text}"
-      end
-      # Select a row from the attachment results based on an identifier extracted from the metadata
-      match = @new_pubmed_works.find { |row| row['pmid'] == pmid || row['pmcid'] == pmcid }
-      match
+      pmid, pmcid =
+        if metadata.name == 'PubmedArticle'
+          [
+            metadata.xpath('PubmedData/ArticleIdList/ArticleId[@IdType="pubmed"]').text,
+            metadata.xpath('PubmedData/ArticleIdList/ArticleId[@IdType="pmc"]').text
+          ]
+        else
+          [
+            metadata.xpath('front/article-meta/pub-id[@pub-id-type="pmid"]').text,
+            "PMC#{metadata.xpath('front/article-meta/pub-id[@pub-id-type="pmc"]').text}"
+          ]
+        end
+      @new_pubmed_works.find { |row| row['pmid'] == pmid || row['pmcid'] == pmcid }
     end
   end
 end

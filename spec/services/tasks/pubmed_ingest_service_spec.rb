@@ -2,6 +2,7 @@
 require 'rails_helper'
 
 RSpec.describe Tasks::PubmedIngestService do
+  let(:logger_spy) { double('Logger').as_null_object }
   let(:admin_set) do
     FactoryBot.create(:admin_set, title: ['Open_Access_Articles_and_Book_Chapters'])
   end
@@ -30,6 +31,7 @@ RSpec.describe Tasks::PubmedIngestService do
   end
 
   before do
+    allow(Rails).to receive(:logger).and_return(logger_spy)
     admin_set
     permission_template
     workflow
@@ -210,24 +212,25 @@ RSpec.describe Tasks::PubmedIngestService do
         'success' => parsed_response.xpath('//PubmedArticle')[2..3]
       }
       # WIP: Relies on identifier mapping to simulate failure
-      failing_sample_pmids = sample['failing'].map { |article| article.xpath('PMID').text }
+      failing_sample_pmids = sample['failing'].map { |article| article.xpath('MedlineCitation/PMID').text }
+
       allow(service).to receive(:ingest_publications).and_call_original
-      allow(service).to receive(:attach_pdf).and_wrap_original do |method, *args|
-        article = args[0]
-        metadata = args[1]
-        skipped_row = args[2]
-        # Modify metadata path to point to the sample PDF
-        metadata['path'] = Rails.root.join('spec', 'fixtures', 'files', 'sample_pdf.pdf')
-        if failing_sample_pmids.any? { |pmid| article.identifier.include?("PMID: #{pmid}") }
-          raise StandardError, 'Simulated failure'
+      allow(service).to receive(:attach_pdf_to_work).and_wrap_original do |method, *args|
+        article, _path, depositor, visibility = args
+        new_path = Rails.root.join('spec/fixtures/files/sample_pdf.pdf')
+
+        if article.identifier.any? { |id| failing_sample_pmids.include?(id.gsub(/^PMID:\s*/, '').strip) }
+          nil # simulate failure
         else
-          method.call(article, metadata, skipped_row)
+          method.call(article, new_path, depositor, visibility)
         end
-      end      
+      end
+
+
 
     # WIP ==================================
     # Expect errors in logs
-    expect(Rails.logger).to receive(:error).with(/Simulated failure/)
+      expect(logger_spy).to receive(:error).with(/File attachment error for identifiers:/).twice
     # Expect the article count to change by 2 (dimensions_ingest_service:142)
     # Expect the newly ingested articles to have PMIDs from the success sample
     # Expect the newly ingested array size to be 2
