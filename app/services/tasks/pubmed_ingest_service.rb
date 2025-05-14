@@ -103,6 +103,7 @@ module Tasks
 
     def populate_article_metadata(article, metadata)
       set_basic_attributes(metadata, @depositor, article)
+      set_identifiers(article, metadata)
     end
 
     def set_basic_attributes(metadata, depositor_onyen, article)
@@ -129,6 +130,33 @@ module Tasks
       else
         # Raise an error for unknown metadata formats
         raise StandardError, "Basic Attributes - Unknown metadata format: #{metadata.name}"
+      end
+    end
+
+    def set_identifiers(article, metadata)
+      article.identifier = format_publication_identifiers(metadata)
+      if metadata.name == 'PubmedArticle'
+        article.issn = metadata.xpath('//ISSN[@IssnType="Electronic"]').text
+      else
+        article.issn = metadata.xpath('//issn[@pub-type="epub"]').text
+      end
+    end
+
+    def format_publication_identifiers(metadata)
+      if metadata.name == 'PubmedArticle'
+        id_list = metadata.xpath('PubmedData/ArticleIdList')
+        [
+          (pmid = id_list.at_xpath('ArticleId[@IdType="pubmed"]')) ? "PMID: #{pmid.text}" : nil,
+          (pmcid = id_list.at_xpath('ArticleId[@IdType="pmc"]')) ? "PMCID: #{pmcid.text}" : nil,
+          (doi = id_list.at_xpath('ArticleId[@IdType="doi"]')) ? "DOI: https://dx.doi.org/#{doi.text}" : nil
+        ].compact
+      else
+        article_meta = metadata.at_xpath('front/article-meta')
+        [
+          (pmid = article_meta.at_xpath('pub-id[@pub-id-type="pmid"]')) ? "PMID: #{pmid.text}" : nil,
+          (pmcid = article_meta.at_xpath('pub-id[@pub-id-type="pmcid"]')) ? "PMCID: #{pmcid.text}" : nil,
+          (doi = article_meta.at_xpath('pub-id[@pub-id-type="doi"]')) ? "DOI: https://dx.doi.org/#{doi.text}" : nil
+        ].compact
       end
     end
 

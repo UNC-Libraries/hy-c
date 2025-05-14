@@ -208,13 +208,24 @@ RSpec.describe Tasks::PubmedIngestService do
     end
 
     it 'processes pubmed articles and handles failures' do
+      service = described_class.new(pubmed_config)
       mock_response_body = File.read(Rails.root.join('spec/fixtures/files/pubmed_api_response_multi.xml'))
       parsed_response = Nokogiri::XML(mock_response_body)
       sample = {
         'failing' => parsed_response.xpath('//PubmedArticle')[0..2],
         'success' => parsed_response.xpath('//PubmedArticle')[3..5]
       }
-      service = described_class.new(pubmed_config)
+      # WIP: Relies on identifier mapping to simulate failure
+      failing_sample_pmids = sample['failing'].map { |article| article.xpath('PMID').text }
+      allow(service).to receive(:attach_pdf_to_work) do |article, path, depositor, visibility|
+        if article.identifier.include?(failing_sample_pmids)
+          nil # simulate failure
+        else
+          call_original
+        end
+      end
+
+      result = service.ingest_publications
       # puts "Testing Length #{parsed_response.xpath('//PubmedArticle').length}"
       # puts "Truncated Print #{failing_sample[0].to_s.truncate(500)}"
       pending 'Not implemented yet'
@@ -229,6 +240,17 @@ RSpec.describe Tasks::PubmedIngestService do
         'success' => parsed_response.xpath('//article')[3..5]
       }
       service = described_class.new(pmc_config)
+      # WIP: Relies on identifier mapping to simulate failure
+      failing_sample_pmcids = sample['failing'].map { |article| article.xpath('//article-id[@pub-id-type="pmcaid"]').text }
+      allow(service).to receive(:attach_pdf_to_work) do |article, path, depositor, visibility|
+        if article.identifier.include?(failing_sample_pmcids)
+          nil # simulate failure
+        else
+          call_original
+        end
+      end
+
+      result = service.ingest_publications
       # puts "Testing Length #{mock_response_body.xpath('//article').length}"
       # puts "Truncated Print #{failing_sample[0].to_s.truncate(500)}"
       pending 'Not implemented yet'
