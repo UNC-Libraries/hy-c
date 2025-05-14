@@ -212,11 +212,12 @@ RSpec.describe Tasks::PubmedIngestService do
       mock_response_body = File.read(Rails.root.join('spec/fixtures/files/pubmed_api_response_multi.xml'))
       parsed_response = Nokogiri::XML(mock_response_body)
       sample = {
-        'failing' => parsed_response.xpath('//PubmedArticle')[0..2],
-        'success' => parsed_response.xpath('//PubmedArticle')[3..5]
+        'failing' => parsed_response.xpath('//PubmedArticle')[0..1],
+        'success' => parsed_response.xpath('//PubmedArticle')[2..3]
       }
       # WIP: Relies on identifier mapping to simulate failure
       failing_sample_pmids = sample['failing'].map { |article| article.xpath('PMID').text }
+      allow(service).to receive(:ingest_publications).and_call_original
       allow(service).to receive(:attach_pdf_to_work) do |article, path, depositor, visibility|
         if article.identifier.include?(failing_sample_pmids)
           nil # simulate failure
@@ -225,9 +226,15 @@ RSpec.describe Tasks::PubmedIngestService do
         end
       end
 
+    # WIP ==================================
+    # Expect errors in logs
+    # Expect the article count to change by 2 (dimensions_ingest_service:142)
+    # Expect the newly ingested articles to have PMIDs from the success sample
+    # Expect the newly ingested array size to be 2
+    # Expect that articles with matching PMIDs to the failing sample are properly categorized
+    # Expect the failing array size to be 2
+
       result = service.ingest_publications
-      # puts "Testing Length #{parsed_response.xpath('//PubmedArticle').length}"
-      # puts "Truncated Print #{failing_sample[0].to_s.truncate(500)}"
       pending 'Not implemented yet'
       expect(true).to eq(false)
     end
@@ -236,12 +243,13 @@ RSpec.describe Tasks::PubmedIngestService do
       mock_response_body = File.read(Rails.root.join('spec/fixtures/files/pmc_api_response_multi.xml'))
       parsed_response = Nokogiri::XML(mock_response_body)
       sample = {
-        'failing' => parsed_response.xpath('//article')[0..2],
-        'success' => parsed_response.xpath('//article')[3..5]
+        'failing' => parsed_response.xpath('//article')[0..1],
+        'success' => parsed_response.xpath('//article')[2..3]
       }
       service = described_class.new(pmc_config)
       # WIP: Relies on identifier mapping to simulate failure
       failing_sample_pmcids = sample['failing'].map { |article| article.xpath('//article-id[@pub-id-type="pmcaid"]').text }
+      allow(service).to receive(:ingest_publications).and_call_original
       allow(service).to receive(:attach_pdf_to_work) do |article, path, depositor, visibility|
         if article.identifier.include?(failing_sample_pmcids)
           nil # simulate failure
