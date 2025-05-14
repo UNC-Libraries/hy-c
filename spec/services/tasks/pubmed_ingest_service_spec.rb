@@ -145,18 +145,90 @@ RSpec.describe Tasks::PubmedIngestService do
   end
 
   describe '#ingest_publications' do
+    let(:mock_response_bodies) do
+      {
+        'pubmed' => File.read(Rails.root.join('spec/fixtures/files/pubmed_api_response_multi.xml')),
+        'pmc' => File.read(Rails.root.join('spec/fixtures/files/pmc_api_response_multi.xml'))
+      }
+    end
+
+    let(:pubmed_rows) do
+      parsed_response = Nokogiri::XML(mock_response_bodies['pubmed'])
+      parsed_response.xpath('//PMID').map do |pmid|
+        {
+          'file_name' => "test_file_#{pmid.text}.pdf",
+          'pmid' => pmid.text,
+          'pdf_attached' => 'Skipped: No CDR URL'
+        }
+      end
+    end
+
+    let(:pmc_rows) do
+      parsed_response = Nokogiri::XML(mock_response_bodies['pmc'])
+      parsed_response.xpath('//article-id[@pub-id-type="pmcaid"]').map do |pmcid|
+        {
+          'file_name' => "test_file_#{pmcid.text}.pdf",
+          'pmcid' => pmcid.text,
+          'pdf_attached' => 'Skipped: No CDR URL'
+        }
+      end
+    end
+
+    let(:pubmed_config) do
+      {
+        'admin_set_title' => admin_set.title.first,
+        'depositor_onyen' => admin.uid,
+        'attachment_results' => { skipped: pubmed_rows }
+      }
+    end
+
+    let(:pmc_config) do
+      {
+        'admin_set_title' => admin_set.title.first,
+        'depositor_onyen' => admin.uid,
+        'attachment_results' => { skipped: pmc_rows }
+      }
+    end
+
+    before do
+      ['pubmed', 'pmc'].each do |db|
+        stub_request(:get, 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi')
+        .with(query: {
+          'db' => db,
+          'retmode' => 'xml',
+          'tool' => 'CDR',
+          'email' => 'cdr@unc.edu'
+        })
+        .to_return(
+          status: 200,
+          body: mock_response_bodies[db],
+          headers: { 'Content-Type' => 'text/xml' }
+        )
+      end
+    end
+
     it 'processes pubmed articles and handles failures' do
-      mock_response_body = Nokogiri::XML(File.read(Rails.root.join('spec/fixtures/files/pubmed_api_response_multi.xml')))
-      failing_sample = mock_response_body.xpath('//PubmedArticle')[0..2]
-      # puts "Testing Length #{mock_response_body.xpath('//PubmedArticle').length}"
+      mock_response_body = File.read(Rails.root.join('spec/fixtures/files/pubmed_api_response_multi.xml'))
+      parsed_response = Nokogiri::XML(mock_response_body)
+      sample = {
+        'failing' => parsed_response.xpath('//PubmedArticle')[0..2],
+        'success' => parsed_response.xpath('//PubmedArticle')[3..5]
+      }
+      service = described_class.new(pubmed_config)
+      # puts "Testing Length #{parsed_response.xpath('//PubmedArticle').length}"
       # puts "Truncated Print #{failing_sample[0].to_s.truncate(500)}"
       pending 'Not implemented yet'
       expect(true).to eq(false)
     end
 
     it 'processes pmc articles and handles failures' do
-      mock_response_body = Nokogiri::XML(File.read(Rails.root.join('spec/fixtures/files/pmc_api_response_multi.xml')))
-      failing_sample = mock_response_body.xpath('//article')[0..2]
+      mock_response_body = File.read(Rails.root.join('spec/fixtures/files/pmc_api_response_multi.xml'))
+      parsed_response = Nokogiri::XML(mock_response_body)
+      sample = {
+        'failing' => parsed_response.xpath('//article')[0..2],
+        'success' => parsed_response.xpath('//article')[3..5]
+      }
+      service = described_class.new(pmc_config)
       # puts "Testing Length #{mock_response_body.xpath('//article').length}"
       # puts "Truncated Print #{failing_sample[0].to_s.truncate(500)}"
       pending 'Not implemented yet'

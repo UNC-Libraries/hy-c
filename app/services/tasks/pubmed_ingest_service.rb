@@ -67,8 +67,6 @@ module Tasks
       @attachment_results
     end
 
-    private
-
     def attach_pubmed_file(work_hash, file_path, depositor_onyen, visibility)
       # Create a work object using the provided work_hash
       model_class = work_hash[:work_type].constantize
@@ -78,6 +76,8 @@ module Tasks
       file.update(permissions_attributes: group_permissions(@admin_set))
       file
     end
+
+    private
 
     def new_article(metadata)
       article = Article.new
