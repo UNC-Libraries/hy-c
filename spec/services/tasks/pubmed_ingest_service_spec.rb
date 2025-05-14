@@ -214,11 +214,14 @@ RSpec.describe Tasks::PubmedIngestService do
       allow(service).to receive(:ingest_publications).and_call_original
       allow(service).to receive(:attach_pdf).and_wrap_original do |method, *args|
         article = args[0]
-      
+        metadata = args[1]
+        skipped_row = args[2]
+        # Modify metadata path to point to the sample PDF
+        metadata['path'] = Rails.root.join('spec', 'fixtures', 'files', 'sample_pdf.pdf')
         if failing_sample_pmids.any? { |pmid| article.identifier.include?("PMID: #{pmid}") }
           raise StandardError, 'Simulated failure'
         else
-          method.call(*args)
+          method.call(article, metadata, skipped_row)
         end
       end      
 
