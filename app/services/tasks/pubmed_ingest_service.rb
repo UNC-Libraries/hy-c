@@ -42,6 +42,7 @@ module Tasks
         rescue => e
           Rails.logger.error("[Ingest] Error processing record ##{index + 1}: #{e.message}")
           Rails.logger.error(e.backtrace.join("\n"))
+          article.destroy if article&.persisted?
           skipped_row['pdf_attached'] = e.message
           @attachment_results[:failed] << skipped_row.to_h
         end

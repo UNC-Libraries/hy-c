@@ -232,11 +232,14 @@ RSpec.describe Tasks::PubmedIngestService do
     # Expect errors in logs
       expect(logger_spy).to receive(:error).with(/File attachment error for identifiers:/).twice
     # Expect the article count to change by 2 (dimensions_ingest_service:142)
+    expect {
+        @res = service.ingest_publications
+      }.to change { Article.count }.by(2)
     # Expect the newly ingested articles to have PMIDs from the success sample
     # Expect the newly ingested array size to be 2
     # Expect that articles with matching PMIDs to the failing sample are properly categorized
     # Expect the failing array size to be 2
-      result = service.ingest_publications
+      # result = service.ingest_publications
       # pending 'Not implemented yet'
       # expect(true).to eq(false)
     end
