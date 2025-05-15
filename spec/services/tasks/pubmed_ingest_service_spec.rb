@@ -82,69 +82,70 @@ RSpec.describe Tasks::PubmedIngestService do
     end
   end
 
-  describe '#batch_retrieve_metadata' do
-    before do
-      stub_request(:get, /eutils.ncbi.nlm.nih.gov/).to_return do |request|
-        uri = URI.parse(request.uri)
-        params = CGI.parse(uri.query)
-        db = params['db'].first
-        ids = params['id'].first.split(',')
+  # WIP: Moved this into ingest_publications, probably needs a refactor
+  # describe '#batch_retrieve_metadata' do
+  #   before do
+  #     stub_request(:get, /eutils.ncbi.nlm.nih.gov/).to_return do |request|
+  #       uri = URI.parse(request.uri)
+  #       params = CGI.parse(uri.query)
+  #       db = params['db'].first
+  #       ids = params['id'].first.split(',')
 
-        xml = build_dynamic_pubmed_xml(ids.count, db)
+  #       xml = build_dynamic_pubmed_xml(ids.count, db)
 
-        {
-          status: 200,
-          body: xml,
-          headers: { 'Content-Type' => 'text/xml' }
-        }
-      end
-    end
+  #       {
+  #         status: 200,
+  #         body: xml,
+  #         headers: { 'Content-Type' => 'text/xml' }
+  #       }
+  #     end
+  #   end
 
-    let(:mock_attachment_results) do
-      json = JSON.parse(File.read(Rails.root.join('spec', 'fixtures', 'files', 'pubmed_ingest_test_fixture_2.json'))).symbolize_keys
-      base_pmid = 100000
-      base_pmcid = 200000
-      # Add 800 rows to the skipped array
-      900.times do |i|
-        index_str = format('%03d', i + 1)
-        if i.even?
-          # pmid-only row
-          json[:skipped] << {
-            'file_name' => "test_file_#{index_str}.pdf",
-            'cdr_url' => "https://cdr.lib.unc.edu/concern/articles/#{index_str}",
-            'pmid' => (base_pmid + i).to_s,
-            'doi' => "doi-#{index_str}",
-            'pdf_attached' => 'Skipped: No CDR URL'
-          }
-        else
-          # pmcid-only row
-          json[:skipped] << {
-            'file_name' => "test_file_#{index_str}.pdf",
-            'cdr_url' => "https://cdr.lib.unc.edu/concern/articles/#{index_str}",
-           'pmcid' => "PMC#{base_pmcid + i}",
-            'doi' => "doi-#{index_str}",
-            'pdf_attached' => 'Skipped: No CDR URL'
-          }
-        end
-      end
-      json
-    end
-    let(:config) do
-      {
-        'admin_set_title' => admin_set.title.first,
-        'depositor_onyen' => admin.uid,
-        'attachment_results' => mock_attachment_results
-      }
-    end
-    let(:pubmed_ingest_service) { described_class.new(config) }
-    it 'retrieves metadata in batches' do
-      result = pubmed_ingest_service.batch_retrieve_metadata
-      # Check that the metadata was retrieved correctly
-      expect(result).not_to be_empty
-      expect(result.size).to eq(900)
-      expect(result.first).to be_a(Nokogiri::XML::Element)
-    end
-  end
+  #   let(:mock_attachment_results) do
+  #     json = JSON.parse(File.read(Rails.root.join('spec', 'fixtures', 'files', 'pubmed_ingest_test_fixture_2.json'))).symbolize_keys
+  #     base_pmid = 100000
+  #     base_pmcid = 200000
+  #     # Add 800 rows to the skipped array
+  #     900.times do |i|
+  #       index_str = format('%03d', i + 1)
+  #       if i.even?
+  #         # pmid-only row
+  #         json[:skipped] << {
+  #           'file_name' => "test_file_#{index_str}.pdf",
+  #           'cdr_url' => "https://cdr.lib.unc.edu/concern/articles/#{index_str}",
+  #           'pmid' => (base_pmid + i).to_s,
+  #           'doi' => "doi-#{index_str}",
+  #           'pdf_attached' => 'Skipped: No CDR URL'
+  #         }
+  #       else
+  #         # pmcid-only row
+  #         json[:skipped] << {
+  #           'file_name' => "test_file_#{index_str}.pdf",
+  #           'cdr_url' => "https://cdr.lib.unc.edu/concern/articles/#{index_str}",
+  #          'pmcid' => "PMC#{base_pmcid + i}",
+  #           'doi' => "doi-#{index_str}",
+  #           'pdf_attached' => 'Skipped: No CDR URL'
+  #         }
+  #       end
+  #     end
+  #     json
+  #   end
+  #   let(:config) do
+  #     {
+  #       'admin_set_title' => admin_set.title.first,
+  #       'depositor_onyen' => admin.uid,
+  #       'attachment_results' => mock_attachment_results
+  #     }
+  #   end
+  #   let(:pubmed_ingest_service) { described_class.new(config) }
+  #   it 'retrieves metadata in batches' do
+  #     result = pubmed_ingest_service.batch_retrieve_metadata
+  #     # Check that the metadata was retrieved correctly
+  #     expect(result).not_to be_empty
+  #     expect(result.size).to eq(900)
+  #     expect(result.first).to be_a(Nokogiri::XML::Element)
+  #   end
+  # end
 
   describe '#ingest_publications' do
     let(:mock_response_bodies) do
@@ -242,7 +243,6 @@ RSpec.describe Tasks::PubmedIngestService do
     end
 
     it 'processes pmc articles and handles failures' do
-      # puts "PMC Row Inspection #{pmc_rows.inspect}"
       service = described_class.new(pmc_config)
       mock_response_body = File.read(Rails.root.join('spec/fixtures/files/pmc_api_response_multi.xml'))
       parsed_response = Nokogiri::XML(mock_response_body)
@@ -251,14 +251,10 @@ RSpec.describe Tasks::PubmedIngestService do
         'success' => parsed_response.xpath('//article')[2..3]
       }
       failing_sample_pmcids = sample['failing'].map { |article| article.xpath('.//article-id[@pub-id-type="pmcid"]').text }
-      puts "Failing Sample PMCIDs #{failing_sample_pmcids.inspect}"
-      puts "Inspect PMC Config #{pmc_config.inspect}"
       allow(service).to receive(:ingest_publications).and_call_original
       allow(service).to receive(:attach_pdf_to_work).and_wrap_original do |method, *args|
         article, _path, depositor, visibility = args
         new_path = Rails.root.join('spec/fixtures/files/sample_pdf.pdf')
-        puts "Inspect Article Identifier #{article.identifier.inspect}"
-        puts "Inspect Article issn #{article.issn.inspect}"
 
         if article.identifier.any? { |id| failing_sample_pmcids.include?(id.gsub(/^PMCID:\s*/, '').strip) }
           nil # simulate failure for PMCIDs in the failing sample
@@ -273,10 +269,15 @@ RSpec.describe Tasks::PubmedIngestService do
       expect {
         @res = service.ingest_publications
       }.to change { Article.count }.by(2)
-      # puts "Testing Length #{mock_response_body.xpath('//article').length}"
-      # puts "Truncated Print #{failing_sample[0].to_s.truncate(500)}"
-      # pending 'Not implemented yet'
-      # expect(true).to eq(false)
+      success_pmcids = @res[:successfully_ingested].map { |row| row['pmcid'] }
+      failed_pmcids = @res[:failed].map { |row| row['pmcid'] }
+
+      # Expect the PMIDs from the success sample to be in "successfully_ingested" and the failing sample to be in "failed"
+      expect(success_pmcids).to match_array(sample['success'].map { |a| a.xpath('.//article-id[@pub-id-type="pmcid"]').text })
+      expect(failed_pmcids).to match_array(failing_sample_pmcids)
+      # Expect the newly ingested array size to be 2 and the failed array size to be 2
+      expect(@res[:successfully_ingested].length).to eq(2)
+      expect(@res[:failed].length).to eq(2)
     end
   end
 
