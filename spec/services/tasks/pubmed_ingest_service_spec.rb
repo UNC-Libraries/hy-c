@@ -242,29 +242,39 @@ RSpec.describe Tasks::PubmedIngestService do
     end
 
     it 'processes pmc articles and handles failures' do
+      # puts "PMC Row Inspection #{pmc_rows.inspect}"
+      service = described_class.new(pmc_config)
       mock_response_body = File.read(Rails.root.join('spec/fixtures/files/pmc_api_response_multi.xml'))
       parsed_response = Nokogiri::XML(mock_response_body)
       sample = {
         'failing' => parsed_response.xpath('//article')[0..1],
         'success' => parsed_response.xpath('//article')[2..3]
       }
-      service = described_class.new(pmc_config)
-      # WIP: Relies on identifier mapping to simulate failure
-      failing_sample_pmcids = sample['failing'].map { |article| article.xpath('//article-id[@pub-id-type="pmcaid"]').text }
+      failing_sample_pmcids = sample['failing'].map { |article| article.xpath('.//article-id[@pub-id-type="pmcaid"]').text }
+      puts "Failing Sample PMCIDs #{failing_sample_pmcids.inspect}"
+      puts "Inspect PMC Config #{pmc_config.inspect}"
       allow(service).to receive(:ingest_publications).and_call_original
-      allow(service).to receive(:attach_pdf_to_work) do |article, path, depositor, visibility|
-        if article.identifier.include?(failing_sample_pmcids)
-          nil # simulate failure
+      allow(service).to receive(:attach_pdf_to_work).and_wrap_original do |method, *args|
+        article, _path, depositor, visibility = args
+        new_path = Rails.root.join('spec/fixtures/files/sample_pdf.pdf')
+
+        if article.identifier.any? { |id| failing_sample_pmcids.include?(id.gsub(/^PMCID:\s*/, '').strip) }
+          nil # simulate failure for PMCIDs in the failing sample
         else
-          call_original
+          method.call(article, new_path, depositor, visibility)
         end
       end
 
-      result = service.ingest_publications
+      # Expect errors in logs
+      expect(logger_spy).to receive(:error).with(/File attachment error for identifiers:/).twice
+      # Expect the article count to change by 2
+      expect {
+        @res = service.ingest_publications
+      }.to change { Article.count }.by(2)
       # puts "Testing Length #{mock_response_body.xpath('//article').length}"
       # puts "Truncated Print #{failing_sample[0].to_s.truncate(500)}"
-      pending 'Not implemented yet'
-      expect(true).to eq(false)
+      # pending 'Not implemented yet'
+      # expect(true).to eq(false)
     end
   end
 

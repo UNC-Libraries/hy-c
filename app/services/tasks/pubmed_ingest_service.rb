@@ -211,18 +211,22 @@ module Tasks
     end
 
     def find_skipped_row_for_metadata(metadata)
+      File.open(Rails.root.join('unmatched_metadata.xml'), 'a') do |f|
+        f.puts metadata.to_xml
+      end
       pmid, pmcid =
         if metadata.name == 'PubmedArticle'
           [
-            metadata.xpath('PubmedData/ArticleIdList/ArticleId[@IdType="pubmed"]').text,
-            metadata.xpath('PubmedData/ArticleIdList/ArticleId[@IdType="pmc"]').text
+            metadata.at_xpath('PubmedData/ArticleIdList/ArticleId[@IdType="pubmed"]')&.text,
+            metadata.at_xpath('PubmedData/ArticleIdList/ArticleId[@IdType="pmc"]')&.text
           ]
         else
           [
-            metadata.xpath('front/article-meta/pub-id[@pub-id-type="pmid"]').text,
-            "PMC#{metadata.xpath('front/article-meta/pub-id[@pub-id-type="pmc"]').text}"
+            metadata.at_xpath('.//article-id[@pub-id-type="pmid"]')&.text,
+            metadata.at_xpath('.//article-id[@pub-id-type="pmcid"]')&.text
           ]
         end
+        puts "Printing pmid and pmcid: #{pmid} and #{pmcid}"
       @new_pubmed_works.find { |row| row['pmid'] == pmid || row['pmcid'] == pmcid }
     end
   end
