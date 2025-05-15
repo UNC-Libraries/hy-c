@@ -211,7 +211,6 @@ RSpec.describe Tasks::PubmedIngestService do
         'failing' => parsed_response.xpath('//PubmedArticle')[0..1],
         'success' => parsed_response.xpath('//PubmedArticle')[2..3]
       }
-      # WIP: Relies on identifier mapping to simulate failure
       failing_sample_pmids = sample['failing'].map { |article| article.xpath('MedlineCitation/PMID').text }
 
       allow(service).to receive(:ingest_publications).and_call_original
@@ -220,28 +219,26 @@ RSpec.describe Tasks::PubmedIngestService do
         new_path = Rails.root.join('spec/fixtures/files/sample_pdf.pdf')
 
         if article.identifier.any? { |id| failing_sample_pmids.include?(id.gsub(/^PMID:\s*/, '').strip) }
-          nil # simulate failure
+          nil # simulate failure for PMIDs in the failing sample
         else
           method.call(article, new_path, depositor, visibility)
         end
       end
-
-
-
-    # WIP ==================================
     # Expect errors in logs
       expect(logger_spy).to receive(:error).with(/File attachment error for identifiers:/).twice
-    # Expect the article count to change by 2 (dimensions_ingest_service:142)
-    expect {
+    # Expect the article count to change by 2
+      expect {
         @res = service.ingest_publications
       }.to change { Article.count }.by(2)
-    # Expect the newly ingested articles to have PMIDs from the success sample
-    # Expect the newly ingested array size to be 2
-    # Expect that articles with matching PMIDs to the failing sample are properly categorized
-    # Expect the failing array size to be 2
-      # result = service.ingest_publications
-      # pending 'Not implemented yet'
-      # expect(true).to eq(false)
+      success_pmids = @res[:successfully_ingested].map { |row| row['pmid'] }
+      failed_pmids = @res[:failed].map { |row| row['pmid'] }
+
+    # Expect the PMIDs from the success sample to be in "successfully_ingested" and the failing sample to be in "failed"
+      expect(success_pmids).to match_array(sample['success'].map { |a| a.xpath('MedlineCitation/PMID').text })
+      expect(failed_pmids).to match_array(failing_sample_pmids)
+    # Expect the newly ingested array size to be 2 and the failed array size to be 2
+      expect(@res[:successfully_ingested].length).to eq(2)
+      expect(@res[:failed].length).to eq(2)
     end
 
     it 'processes pmc articles and handles failures' do
