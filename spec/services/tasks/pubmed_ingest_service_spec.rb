@@ -167,7 +167,7 @@ RSpec.describe Tasks::PubmedIngestService do
 
     let(:pmc_rows) do
       parsed_response = Nokogiri::XML(mock_response_bodies['pmc'])
-      parsed_response.xpath('//article-id[@pub-id-type="pmcaid"]').map do |pmcid|
+      parsed_response.xpath('//article-id[@pub-id-type="pmcid"]').map do |pmcid|
         {
           'file_name' => "test_file_#{pmcid.text}.pdf",
           'pmcid' => pmcid.text,
@@ -250,13 +250,15 @@ RSpec.describe Tasks::PubmedIngestService do
         'failing' => parsed_response.xpath('//article')[0..1],
         'success' => parsed_response.xpath('//article')[2..3]
       }
-      failing_sample_pmcids = sample['failing'].map { |article| article.xpath('.//article-id[@pub-id-type="pmcaid"]').text }
+      failing_sample_pmcids = sample['failing'].map { |article| article.xpath('.//article-id[@pub-id-type="pmcid"]').text }
       puts "Failing Sample PMCIDs #{failing_sample_pmcids.inspect}"
       puts "Inspect PMC Config #{pmc_config.inspect}"
       allow(service).to receive(:ingest_publications).and_call_original
       allow(service).to receive(:attach_pdf_to_work).and_wrap_original do |method, *args|
         article, _path, depositor, visibility = args
         new_path = Rails.root.join('spec/fixtures/files/sample_pdf.pdf')
+        puts "Inspect Article Identifier #{article.identifier.inspect}"
+        puts "Inspect Article issn #{article.issn.inspect}"
 
         if article.identifier.any? { |id| failing_sample_pmcids.include?(id.gsub(/^PMCID:\s*/, '').strip) }
           nil # simulate failure for PMCIDs in the failing sample

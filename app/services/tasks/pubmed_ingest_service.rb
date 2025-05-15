@@ -203,9 +203,9 @@ module Tasks
       else
         article_meta = metadata.at_xpath('front/article-meta')
         [
-          (pmid = article_meta.at_xpath('pub-id[@pub-id-type="pmid"]')) ? "PMID: #{pmid.text}" : nil,
-          (pmcid = article_meta.at_xpath('pub-id[@pub-id-type="pmcid"]')) ? "PMCID: #{pmcid.text}" : nil,
-          (doi = article_meta.at_xpath('pub-id[@pub-id-type="doi"]')) ? "DOI: https://dx.doi.org/#{doi.text}" : nil
+          (pmid = article_meta.at_xpath('article-id[@pub-id-type="pmid"]')) ? "PMID: #{pmid.text}" : nil,
+          (pmcid = article_meta.at_xpath('article-id[@pub-id-type="pmcid"]')) ? "PMCID: #{pmcid.text}" : nil,
+          (doi = article_meta.at_xpath('article-id[@pub-id-type="doi"]')) ? "DOI: https://dx.doi.org/#{doi.text}" : nil
         ].compact
       end
     end
@@ -227,6 +227,7 @@ module Tasks
           ]
         end
         puts "Printing pmid and pmcid: #{pmid} and #{pmcid}"
+        puts "Inspect of @new_pubmed_works: #{@new_pubmed_works.inspect}"
       @new_pubmed_works.find { |row| row['pmid'] == pmid || row['pmcid'] == pmcid }
     end
   end
