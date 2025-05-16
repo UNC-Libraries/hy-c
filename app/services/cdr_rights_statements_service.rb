@@ -3,17 +3,17 @@ module CdrRightsStatementsService
   mattr_accessor :authority
   self.authority = Qa::Authorities::Local.subauthority_for('rights_statements')
 
-  # Allow all rights statements only for "General" works
-  def self.select(work_type)
+  # Allow all rights statements only for "General" works, or for admin users
+  def self.select(work_type, admin_check)
     rights_type = if work_type.match?('generals')
                     ''
                   else
                     'general'
                   end
 
-    authority.all.reject { |item| item['active'] == rights_type }.map do |element|
-      [element[:label], element[:id]]
-    end
+    authority.all
+      .reject { |item| !admin_check && item['active'] == rights_type }
+      .map { |element| [element[:label], element[:id]] }
   end
 
   def self.label(id)
