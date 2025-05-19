@@ -249,6 +249,11 @@ RSpec.describe Tasks::PubmedIngestService do
     # Expect the newly ingested array size to be 2 and the failed array size to be 2
       expect(@res[:successfully_ingested].length).to eq(2)
       expect(@res[:failed].length).to eq(2)
+
+      # Grab the first successfully ingested article and validate metadata
+      ingested_article = Article.where(title: ['Engaging community stakeholders in research on best practices for clinical genomic sequencing.'])
+      # Sanity check
+      expect(ingested_article).not_to be_nil
     end
 
     it 'processes pmc articles and handles failures' do
