@@ -250,9 +250,9 @@ RSpec.describe Tasks::PubmedIngestService do
       expect(@res[:successfully_ingested].length).to eq(2)
       expect(@res[:failed].length).to eq(2)
 
-      # Grab the first successfully ingested article and validate metadata
+      # Grab the first successfully ingested article and validate metadata. 
       ingested_article = Article.where(title: ['The Veterans Aging Cohort Study Index is not associated with HIV-associated neurocognitive disorders in Uganda.']).first
-      # Sanity check
+      # Sanity check and validate article title was set correctly
       expect(ingested_article).not_to be_nil
       # Field-level assertions
       expect(ingested_article.abstract.first).to include(
@@ -264,6 +264,7 @@ RSpec.describe Tasks::PubmedIngestService do
                         'PMCID: PMC8012007',
                         'DOI: https://dx.doi.org/10.1007/s13365-019-00806-2'
                       )
+      expect(ingested_article.journal_title).to eq(['Journal of neurovirology'])
       # expect(ingested_article.publisher).to eq(['Oxford University Press'])
       # expect(ingested_article.publisher).to eq(['Oxford University Press'])
     end
@@ -306,8 +307,8 @@ RSpec.describe Tasks::PubmedIngestService do
       expect(@res[:failed].length).to eq(2)
 
       # Grab the first successfully ingested article and validate metadata
-      ingested_article = Article.where(title: ['Comparing Medicaid Expenditures for Standard and Enhanced Therapeutic Foster Care'])
-      # Sanity check
+      ingested_article = Article.where(title: ['Comparing Medicaid Expenditures for Standard and Enhanced Therapeutic Foster Care']).first
+       # Sanity check and validate article title was set correctly
       expect(ingested_article).not_to be_nil
        # Field-level assertions
       expect(ingested_article.abstract.first).to include(
@@ -316,7 +317,7 @@ RSpec.describe Tasks::PubmedIngestService do
         'Intensive Alternative Family Treatment (IAFT).'
       )
       expect(ingested_article.identifier).to include(
-                        'PMID: 10169148',
+                        'PMID: 37160645',
                         'PMCID: PMC10169148',
                         'DOI: https://dx.doi.org/10.1007/s10488-023-01270-1'
                       )

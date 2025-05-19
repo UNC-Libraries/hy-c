@@ -96,7 +96,6 @@ module Tasks
       article = Article.new
       populate_article_metadata(article, metadata)
       article.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
-      article.permissions_attributes = group_permissions(@admin_set)
       article.save!
       Rails.logger.info("[Article] Article saved with ID #{article.id}")
       article
@@ -156,7 +155,7 @@ module Tasks
         article.journal_issue = metadata.at_xpath('MedlineCitation/Article/Journal/JournalIssue/Issue')&.text.presence
         start_page = metadata.at_xpath('MedlineCitation/Article/Pagination/StartPage')&.text
         end_page = metadata.at_xpath('MedlineCitation/Article/Pagination/EndPage')&.text
-
+        # Handle cases where start_page and end_page are not present
         article.page_start = start_page.presence
         article.page_end = end_page.presence
       elsif metadata.name == 'article'
@@ -165,7 +164,7 @@ module Tasks
         article.journal_issue = metadata.at_xpath('front/article-meta/issue-id')&.text.presence
         start_page = metadata.at_xpath('front/article-meta/fpage')&.text
         end_page = metadata.at_xpath('front/article-meta/lpage')&.text
-
+        # Handle cases where start_page and end_page are not present
         article.page_start = start_page.presence
         article.page_end = end_page.presence
       else
