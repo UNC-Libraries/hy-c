@@ -251,9 +251,18 @@ RSpec.describe Tasks::PubmedIngestService do
       expect(@res[:failed].length).to eq(2)
 
       # Grab the first successfully ingested article and validate metadata
-      ingested_article = Article.where(title: ['Engaging community stakeholders in research on best practices for clinical genomic sequencing.'])
+      ingested_article = Article.where(title: ['The Veterans Aging Cohort Study Index is not associated with HIV-associated neurocognitive disorders in Uganda.']).first
       # Sanity check
       expect(ingested_article).not_to be_nil
+      # Field-level assertions
+      expect(ingested_article.abstract.first).to include('In this first study of the VACS Index in sub-Saharan Africa, we found no association between VACS Index score and HAND.')
+      expect(ingested_article.identifier).to include(
+                        'PMID: 31721082',
+                        'PMCID: PMC8012007',
+                        'DOI: https://dx.doi.org/10.1007/s13365-019-00806-2'
+                      )
+      # expect(ingested_article.publisher).to eq(['Oxford University Press'])
+      # expect(ingested_article.publisher).to eq(['Oxford University Press'])
     end
 
     it 'processes pmc articles and handles failures' do
