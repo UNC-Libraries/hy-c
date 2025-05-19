@@ -3,13 +3,13 @@
     params[:controller] != 'hyrax/data_sets' &&
     params[:controller] != 'hyrax/dissertations') %>
   <%= f.input :rights_statement,
-              collection: CdrRightsStatementsService.select(params[:controller]),
+              collection: CdrRightsStatementsService.select(params[:controller], current_user&.admin?),
               include_blank: true,
               selected: 'http://rightsstatements.org/vocab/InC/1.0/',
               input_html: { class: 'form-control' } %>
 <% else %>
   <%= f.input :rights_statement,
-              collection: CdrRightsStatementsService.select(params[:controller]),
+              collection: CdrRightsStatementsService.select(params[:controller], current_user&.admin?),
               include_blank: true,
               input_html: { class: 'form-control' } %>
 <% end %>
