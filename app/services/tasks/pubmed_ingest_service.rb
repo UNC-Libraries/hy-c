@@ -120,6 +120,7 @@ module Tasks
 
     def populate_article_metadata(article, metadata)
       set_basic_attributes(metadata, @depositor.uid, article)
+      set_journal_attributes(article, metadata)
       set_identifiers(article, metadata)
     end
 
@@ -145,6 +146,30 @@ module Tasks
         article.funder = metadata.xpath('//funding-source/institution-wrap/institution').map(&:text)
       else
         raise StandardError, "Basic Attributes - Unknown metadata format: #{metadata.name}"
+      end
+    end
+
+    def set_journal_attributes(article, metadata)
+      if metadata.name == 'PubmedArticle'
+        article.journal_title = metadata.at_xpath('MedlineCitation/Article/Journal/Title')&.text.presence
+        article.journal_volume = metadata.at_xpath('MedlineCitation/Article/Journal/JournalIssue/Volume')&.text.presence
+        article.journal_issue = metadata.at_xpath('MedlineCitation/Article/Journal/JournalIssue/Issue')&.text.presence
+        start_page = metadata.at_xpath('MedlineCitation/Article/Pagination/StartPage')&.text
+        end_page = metadata.at_xpath('MedlineCitation/Article/Pagination/EndPage')&.text
+
+        article.page_start = start_page.presence
+        article.page_end = end_page.presence
+      elsif metadata.name == 'article'
+        article.journal_title = metadata.at_xpath('front/journal-meta/journal-title-group/journal-title')&.text.presence
+        article.journal_volume = metadata.at_xpath('front/article-meta/volume')&.text.presence
+        article.journal_issue = metadata.at_xpath('front/article-meta/issue-id')&.text.presence
+        start_page = metadata.at_xpath('front/article-meta/fpage')&.text
+        end_page = metadata.at_xpath('front/article-meta/lpage')&.text
+
+        article.page_start = start_page.presence
+        article.page_end = end_page.presence
+      else
+        raise StandardError, "Journal Attributes - Unknown metadata format: #{metadata.name}"
       end
     end
 

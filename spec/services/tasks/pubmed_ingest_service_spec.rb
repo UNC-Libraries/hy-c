@@ -255,7 +255,10 @@ RSpec.describe Tasks::PubmedIngestService do
       # Sanity check
       expect(ingested_article).not_to be_nil
       # Field-level assertions
-      expect(ingested_article.abstract.first).to include('In this first study of the VACS Index in sub-Saharan Africa, we found no association between VACS Index score and HAND.')
+      expect(ingested_article.abstract.first).to include(
+        'In this first study of the VACS Index in sub-Saharan Africa, ' \
+        'we found no association between VACS Index score and HAND.'
+      )
       expect(ingested_article.identifier).to include(
                         'PMID: 31721082',
                         'PMCID: PMC8012007',
@@ -306,6 +309,17 @@ RSpec.describe Tasks::PubmedIngestService do
       ingested_article = Article.where(title: ['Comparing Medicaid Expenditures for Standard and Enhanced Therapeutic Foster Care'])
       # Sanity check
       expect(ingested_article).not_to be_nil
+       # Field-level assertions
+      expect(ingested_article.abstract.first).to include(
+        'The purpose of this study was to compare Medicaid expenditures associated with TFC ' \
+        'with Medicaid expenditures associated with an enhanced higher-rate service called ' \
+        'Intensive Alternative Family Treatment (IAFT).'
+      )
+      expect(ingested_article.identifier).to include(
+                        'PMID: 10169148',
+                        'PMCID: PMC10169148',
+                        'DOI: https://dx.doi.org/10.1007/s10488-023-01270-1'
+                      )
     end
   end
 
@@ -347,7 +361,7 @@ RSpec.describe Tasks::PubmedIngestService do
     end
 
     before do
-      allow(MigrationHelper).to receive(:get_permissions_attributes).and_return(mock_permissions)
+      allow(WorkUtilsHelper).to receive(:get_permissions_attributes).and_return(mock_permissions)
     end
 
     it 'attaches a PDF to the article and updates permissions' do
