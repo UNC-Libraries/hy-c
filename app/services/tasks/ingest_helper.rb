@@ -30,7 +30,6 @@ module Tasks
       rescue StandardError => e
         Rails.logger.error("Error attaching file_set for new work with #{work.identifier.first} and file_path: #{file_path}")
         Rails.logger.error [e.class.to_s, e.message, *e.backtrace].join($RS)
-        puts [e.class.to_s, e.message, *e.backtrace].join($RS)
         nil
       end
     end
