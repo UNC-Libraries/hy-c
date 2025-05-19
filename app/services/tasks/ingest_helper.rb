@@ -35,7 +35,7 @@ module Tasks
     end
 
     def group_permissions(admin_set)
-      @group_permissions ||= MigrationHelper.get_permissions_attributes(admin_set.id)
+      @group_permissions ||= WorkUtilsHelper.get_permissions_attributes(admin_set.id)
     end
 
     def create_sipity_workflow(work:)

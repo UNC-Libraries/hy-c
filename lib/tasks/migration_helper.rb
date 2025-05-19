@@ -38,35 +38,4 @@ class MigrationHelper
 
     resource
   end
-
-  def self.get_permissions_attributes(admin_set_id)
-    # find admin set and manager groups for work
-    manager_groups = Hyrax::PermissionTemplateAccess.joins(:permission_template)
-                                                    .where(access: 'manage', agent_type: 'group')
-                                                    .where(permission_templates: { source_id: admin_set_id })
-
-    # find admin set and viewer groups for work
-    viewer_groups = Hyrax::PermissionTemplateAccess.joins(:permission_template)
-                                                   .where(access: 'view', agent_type: 'group')
-                                                   .where(permission_templates: { source_id: admin_set_id })
-
-    # update work permissions to give admin set managers edit access and viewer groups read access
-    permissions_array = []
-    manager_groups.each do |manager_group|
-      permissions_array << { 'type' => 'group', 'name' => manager_group.agent_id, 'access' => 'edit' }
-    end
-    viewer_groups.each do |viewer_group|
-      permissions_array << { 'type' => 'group', 'name' => viewer_group.agent_id, 'access' => 'read' }
-    end
-
-    permissions_array
-  end
-
-  # Use language code to get iso639-2 uri from service
-  # TODO: Use multi-line version for conditional
-  def self.get_language_uri(language_codes)
-    Array.wrap(language_codes).map do |e|
-      LanguagesService.label("http://id.loc.gov/vocabulary/iso639-2/#{e.downcase}") ? "http://id.loc.gov/vocabulary/iso639-2/#{e.downcase}" : e
-    end
-  end
 end
