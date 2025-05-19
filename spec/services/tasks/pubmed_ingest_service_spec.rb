@@ -305,10 +305,52 @@ RSpec.describe Tasks::PubmedIngestService do
       result = nil
       expect {
         result = service.attach_pubmed_file(work_hash, file_path, depositor.uid, visibility)
+        expect(result).to be_instance_of(FileSet)
+        expect(result.depositor).to eq(depositor.uid)
+        expect(result.visibility).to eq(visibility)
       }.to change { FileSet.count }.by(1)
-      expect(result).to be_instance_of(FileSet)
-      expect(result.depositor).to eq(depositor.uid)
-      expect(result.visibility).to eq(visibility)
+    end
+  end
+
+  describe '#attach_pdf' do
+    let(:depositor) { FactoryBot.create(:user, uid: 'depositor') }
+    let(:article) do
+      Article.create!(
+        title: ['Test Article'],
+        depositor: depositor.uid,
+        admin_set: admin_set,
+        visibility: Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
+      )
+    end
+    let(:mock_permissions) do
+      [{ access: 'read', type: 'group', name: 'public' },
+        { access: 'edit', type: 'group', name: 'admin' }]
+    end
+
+    before do
+      allow(MigrationHelper).to receive(:get_permissions_attributes).and_return(mock_permissions)
+    end
+
+    it 'attaches a PDF to the article and updates permissions' do
+      metadata = { 'path' => Rails.root.join('spec/fixtures/files/sample_pdf.pdf') }
+      skipped_row = { 'pmid' => '12345678', 'pmcid' => 'PMC12345678' }
+
+      expect {
+        service.send(:attach_pdf, article, metadata, skipped_row)
+      }.to change { article.file_sets.count }.by(1)
+
+      file_set = article.file_sets.last
+      expect(file_set).to be_present
+      expect(file_set.read_groups).to include('public')
+      expect(file_set.edit_groups).to include('admin')
+    end
+
+    it 'raises an error when the PDF file cannot be attached' do
+      metadata = { 'path' => '/non/existent/path.pdf' }
+      skipped_row = { 'pmid' => '99999999', 'pmcid' => 'PMC99999999' }
+      expect {
+        service.send(:attach_pdf, article, metadata, skipped_row)
+      }.to raise_error(StandardError, /File attachment error/)
     end
   end
 

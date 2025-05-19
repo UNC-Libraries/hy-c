@@ -20,11 +20,17 @@ module Tasks
         file = File.open(file_path)
         actor.create_content(file)
         actor.attach_to_work(work, file_set_params)
+
+        # Apply and persist permissions
+        file_set.permissions_attributes = group_permissions(work.admin_set)
+        file_set.save!
+
         file.close
         file_set
       rescue StandardError => e
         Rails.logger.error("Error attaching file_set for new work with #{work.identifier.first} and file_path: #{file_path}")
         Rails.logger.error [e.class.to_s, e.message, *e.backtrace].join($RS)
+        puts [e.class.to_s, e.message, *e.backtrace].join($RS)
         nil
       end
     end
