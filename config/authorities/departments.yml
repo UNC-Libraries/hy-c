@@ -1184,6 +1184,10 @@ terms:
   term: College of Arts and Sciences; Department of English and Comparative Literature; Literature, Medicine, and Culture Concentration
   active: true
   short_label: Literature, Medicine, and Culture Concentration
+- id: Center for Innovation and Sustainability in Local Media
+  term: Hussman School of Journalism and Media; Center for Innovation and Sustainability in Local Media
+  active: true
+  short_label: Center for Innovation and Sustainability in Local Media
 - id: Mass Communication Graduate Program
   term: Hussman School of Journalism and Media; Mass Communication Graduate Program
   active: true
@@ -1520,6 +1524,10 @@ terms:
   term: UNC Center for Health Promotion and Disease Prevention
   active: true
   short_label: UNC Center for Health Promotion and Disease Prevention
+- id: UNC Center for the Business of Health
+  term: UNC Center for the Business of Health
+  active: true
+  short_label: UNC Center for the Business of Health
 - id: UNC Diabetes Care Center
   term: School of Medicine; Division of Endocrinology and Metabolism; UNC Diabetes Care Center
   active: true
