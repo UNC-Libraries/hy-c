@@ -46,39 +46,48 @@ RSpec.describe Tasks::PubmedIngestService do
   end
 
   describe '#initialize' do
+    let(:valid_config) do
+      {
+        'admin_set_title' => admin_set.title.first,
+        'depositor_onyen' => admin.uid,
+        'attachment_results' => { skipped: [{ 'pdf_attached' => 'Skipped: No CDR URL' }, { 'pdf_attached' => 'Other Reason' }] }
+      }
+    end
     it 'successfully initializes with a valid config' do
-      pending 'Not implemented yet'
-      expect(true).to eq(false)
+      service = described_class.new(valid_config)
+      expect(service).to be_a(Tasks::PubmedIngestService)
     end
 
     it 'raises ArgumentError when admin_set_title is missing' do
-      pending 'Not implemented yet'
-      expect(true).to eq(false)
+      config = valid_config.except('admin_set_title')
+      expect { described_class.new(config) }.to raise_error(ArgumentError, /Missing required config keys/)
     end
 
     it 'raises ArgumentError when depositor_onyen is missing' do
-      pending 'Not implemented yet'
-      expect(true).to eq(false)
+      config = valid_config.except('depositor_onyen')
+      expect { described_class.new(config) }.to raise_error(ArgumentError, /Missing required config keys/)
     end
 
     it 'raises ArgumentError when attachment_results is missing' do
-      pending 'Not implemented yet'
-      expect(true).to eq(false)
+      config = valid_config.except('attachment_results')
+      expect { described_class.new(config) }.to raise_error(ArgumentError, /Missing required config keys/)
     end
 
     it 'raises RecordNotFound when an AdminSet cannot be found' do
-      pending 'Not implemented yet'
-      expect(true).to eq(false)
+      allow(AdminSet).to receive(:where).with(title: valid_config['admin_set_title']).and_return([])
+      expect { described_class.new(valid_config) }.to raise_error(ActiveRecord::RecordNotFound, /AdminSet not found/)
     end
 
     it 'raises RecordNotFound when a User object cannot be found' do
-      pending 'Not implemented yet'
-      expect(true).to eq(false)
+      allow(User).to receive(:find_by).with(uid: valid_config['depositor_onyen']).and_return(nil)
+      expect { described_class.new(valid_config) }.to raise_error(ActiveRecord::RecordNotFound, /User not found/)
     end
 
     it 'extracts only new Pubmed works from skipped array' do
-      pending 'Not implemented yet'
-      expect(true).to eq(false)
+      service = described_class.new(valid_config)
+      new_pubmed_works = service.instance_variable_get(:@new_pubmed_works)
+      expect(new_pubmed_works.size).to eq(1)
+      expect(new_pubmed_works.first['pdf_attached']).to eq('Skipped: No CDR URL')
     end
   end
 
