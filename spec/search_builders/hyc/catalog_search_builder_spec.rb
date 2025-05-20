@@ -35,6 +35,21 @@ RSpec.describe Hyc::CatalogSearchBuilder do
         expect(solr_params[:q]).to eq ' _query_:"{!join from=id to=file_set_ids_ssim}{!dismax qf=all_text_timv}metalloprotease"'
       end
     end
+
+    context 'joining with unbalanced quote' do
+      let(:blacklight_params) do
+        {
+          search_field: 'advanced',
+          clause: { '0' => {field: 'all_fields', query: 'un"balanced' } }
+        }
+      end
+      subject { builder.join_works_from_files(solr_params) }
+
+      it 'removes the unbalanced quote' do
+        subject
+        expect(solr_params[:q]).to eq ' _query_:"{!join from=id to=file_set_ids_ssim}{!dismax qf=all_text_timv}unbalanced"'
+      end
+    end
   end
 
   class FakeSearchBuilderScope
