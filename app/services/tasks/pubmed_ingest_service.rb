@@ -33,15 +33,17 @@ module Tasks
           article = new_article(metadata)
           article.identifier.each { |id| Rails.logger.info("[Ingest] Article identifier: #{id}") }
           Rails.logger.info("[Ingest] Created new article with ID #{article.id}")
-
           attach_pdf(article, metadata, skipped_row)
-
           Rails.logger.info("[Ingest] Successfully attached PDF for article #{article.id}")
+          # article.reload
+          # puts "================================>  [DEBUG AFTER ATTACH] journal_title: #{article.journal_title.inspect}" if debug_target_article?(article)
           skipped_row['pdf_attached'] = 'Success'
           @attachment_results[:successfully_ingested] << skipped_row.to_h
         rescue => e
           Rails.logger.error("[Ingest] Error processing record ##{index + 1}: #{e.message}")
           Rails.logger.error(e.backtrace.join("\n"))
+          puts "[Ingest] Error processing record ##{index + 1}: #{e.message}"
+          puts e.backtrace.join("\n")
           article.destroy if article&.persisted?
           skipped_row['pdf_attached'] = e.message
           @attachment_results[:failed] << skipped_row.to_h
@@ -78,6 +80,7 @@ module Tasks
 
           if res.code != 200
             Rails.logger.error("Failed to fetch metadata for #{ids.join(', ')}: #{res.code} - #{res.message}")
+            puts "Failed to fetch metadata for #{ids.join(', ')}: #{res.code} - #{res.message}"
             next
           end
 
@@ -93,11 +96,42 @@ module Tasks
 
     def new_article(metadata)
       Rails.logger.info('[Article] Initializing new article object')
+      puts "[Article] Initializing new article object" 
       article = Article.new
-      populate_article_metadata(article, metadata)
       article.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
+      article = populate_article_metadata(article, metadata)
+      # article_of_concern_exists = article.identifier.any? { |id| id.match?(/31721082/) }
+      puts "================================>  [DEBUG] Article Identifier: #{article.identifier.inspect}" if debug_target_article?(article)
+
+
+      if debug_target_article?(article)
+          # 💾 Write debug info before saving
+        File.open(Rails.root.join('tmp', "newart_debug_article_7pm.json"), 'w') do |f|
+          f.write(JSON.pretty_generate({
+                title: format_value(article.title),
+                abstract: format_value(article.abstract),
+                journal_title: format_value(article.journal_title),
+                identifier: format_value(article.identifier),
+                date_issued: article.date_issued,
+                keyword: format_value(article.keyword),
+                funder: format_value(article.funder),
+                publisher: format_value(article.publisher),
+                issn: format_value(article.issn),
+                creators: article.creators.map do |creator|
+                  creator.attributes.transform_values { |v| format_value(v) }
+                end,
+                visibility: article.visibility,
+                valid?: article.valid?,
+                errors: article.errors.full_messages
+              }))
+      end
+      end
+      puts "================================> [DEBUG] journal_title (type=#{article.journal_title.class}): #{article.journal_title.inspect}" if debug_target_article?(article)
+
       article.save!
-      Rails.logger.info("[Article] Article saved with ID #{article.id}")
+      # Rails.logger.info("[Article] Article saved with ID #{article.id}")
+      # article.reload
+      # puts "================================> [DEBUG AFTER NEW ARTICLE] journal_title: #{article.journal_title.inspect}" if debug_target_article?(article)
       article
     end
 
@@ -109,11 +143,13 @@ module Tasks
       if pdf_file.nil?
         ids = [skipped_row['pmid'], skipped_row['pmcid']].compact.join(', ')
         Rails.logger.error("[AttachPDF] ERROR: No PDF file was attached for: #{ids}")
+        puts "[AttachPDF] ERROR: No PDF file was attached for: #{ids}"
         raise StandardError, "File attachment error for identifiers: #{ids}"
       end
 
       pdf_file.update(permissions_attributes: group_permissions(@admin_set))
       Rails.logger.info("[AttachPDF] PDF file attached to article #{article.id}")
+      article.save!
       article
     end
 
@@ -121,6 +157,7 @@ module Tasks
       set_basic_attributes(metadata, @depositor.uid, article)
       set_journal_attributes(article, metadata)
       set_identifiers(article, metadata)
+      article
     end
 
     def set_basic_attributes(metadata, depositor_onyen, article)
@@ -149,8 +186,11 @@ module Tasks
     end
 
     def set_journal_attributes(article, metadata)
+       puts "[DEBUG_JOURNAL] =======> #{metadata.name.inspect}" 
       if metadata.name == 'PubmedArticle'
-        article.journal_title = metadata.at_xpath('MedlineCitation/Article/Journal/Title')&.text.presence
+        puts "[DEBUG_JOURNAL] =======> Raw Journal Title: #{metadata.at_xpath('MedlineCitation/Article/Journal/Title')&.text.inspect}" 
+        article.journal_title = metadata.at_xpath('MedlineCitation/Article/Journal/Title')&.text
+        puts "Parsed Journal Title: #{article.journal_title.inspect}" 
         article.journal_volume = metadata.at_xpath('MedlineCitation/Article/Journal/JournalIssue/Volume')&.text.presence
         article.journal_issue = metadata.at_xpath('MedlineCitation/Article/Journal/JournalIssue/Issue')&.text.presence
         start_page = metadata.at_xpath('MedlineCitation/Article/Pagination/StartPage')&.text
@@ -249,5 +289,18 @@ module Tasks
         end
       @new_pubmed_works.find { |row| row['pmid'] == pmid || row['pmcid'] == pmcid }
     end
+
+    def format_value(val)
+      if val.respond_to?(:to_a)
+        val.to_a.map(&:to_s)
+      else
+        val.to_s
+      end
+    end
+
+    def debug_target_article?(article)
+      article.identifier.any? { |id| id.match?(/31721082/) }
+    end
+    
   end
 end

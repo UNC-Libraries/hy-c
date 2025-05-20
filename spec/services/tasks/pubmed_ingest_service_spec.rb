@@ -91,71 +91,6 @@ RSpec.describe Tasks::PubmedIngestService do
     end
   end
 
-  # WIP: Moved this into ingest_publications, probably needs a refactor
-  # describe '#batch_retrieve_metadata' do
-  #   before do
-  #     stub_request(:get, /eutils.ncbi.nlm.nih.gov/).to_return do |request|
-  #       uri = URI.parse(request.uri)
-  #       params = CGI.parse(uri.query)
-  #       db = params['db'].first
-  #       ids = params['id'].first.split(',')
-
-  #       xml = build_dynamic_pubmed_xml(ids.count, db)
-
-  #       {
-  #         status: 200,
-  #         body: xml,
-  #         headers: { 'Content-Type' => 'text/xml' }
-  #       }
-  #     end
-  #   end
-
-  #   let(:mock_attachment_results) do
-  #     json = JSON.parse(File.read(Rails.root.join('spec', 'fixtures', 'files', 'pubmed_ingest_test_fixture_2.json'))).symbolize_keys
-  #     base_pmid = 100000
-  #     base_pmcid = 200000
-  #     # Add 800 rows to the skipped array
-  #     900.times do |i|
-  #       index_str = format('%03d', i + 1)
-  #       if i.even?
-  #         # pmid-only row
-  #         json[:skipped] << {
-  #           'file_name' => "test_file_#{index_str}.pdf",
-  #           'cdr_url' => "https://cdr.lib.unc.edu/concern/articles/#{index_str}",
-  #           'pmid' => (base_pmid + i).to_s,
-  #           'doi' => "doi-#{index_str}",
-  #           'pdf_attached' => 'Skipped: No CDR URL'
-  #         }
-  #       else
-  #         # pmcid-only row
-  #         json[:skipped] << {
-  #           'file_name' => "test_file_#{index_str}.pdf",
-  #           'cdr_url' => "https://cdr.lib.unc.edu/concern/articles/#{index_str}",
-  #          'pmcid' => "PMC#{base_pmcid + i}",
-  #           'doi' => "doi-#{index_str}",
-  #           'pdf_attached' => 'Skipped: No CDR URL'
-  #         }
-  #       end
-  #     end
-  #     json
-  #   end
-  #   let(:config) do
-  #     {
-  #       'admin_set_title' => admin_set.title.first,
-  #       'depositor_onyen' => admin.uid,
-  #       'attachment_results' => mock_attachment_results
-  #     }
-  #   end
-  #   let(:pubmed_ingest_service) { described_class.new(config) }
-  #   it 'retrieves metadata in batches' do
-  #     result = pubmed_ingest_service.batch_retrieve_metadata
-  #     # Check that the metadata was retrieved correctly
-  #     expect(result).not_to be_empty
-  #     expect(result.size).to eq(900)
-  #     expect(result.first).to be_a(Nokogiri::XML::Element)
-  #   end
-  # end
-
   describe '#ingest_publications' do
     let(:mock_response_bodies) do
       {
@@ -252,19 +187,30 @@ RSpec.describe Tasks::PubmedIngestService do
 
       # Grab the first successfully ingested article and validate metadata. 
       ingested_article = Article.where(title: ['The Veterans Aging Cohort Study Index is not associated with HIV-associated neurocognitive disorders in Uganda.']).first
+      ingested_article.reload
+      # WIP: Trying different reference to find the article
+      # ingested_article = @res[:successfully_ingested][0]['article_ref']
       # Sanity check and validate article title was set correctly
       expect(ingested_article).not_to be_nil
       # Field-level assertions
       expect(ingested_article.abstract.first).to include(
         'In this first study of the VACS Index in sub-Saharan Africa, ' \
         'we found no association between VACS Index score and HAND.'
-      )
+      ) 
       expect(ingested_article.identifier).to include(
                         'PMID: 31721082',
                         'PMCID: PMC8012007',
                         'DOI: https://dx.doi.org/10.1007/s13365-019-00806-2'
                       )
-      expect(ingested_article.journal_title).to eq(['Journal of neurovirology'])
+
+      File.open(Rails.root.join('tmp', "ref_debug_ingested_article_#{ingested_article.id}.json"), 'w') do |file|
+      for attribute in ingested_article.attributes
+        file.write("#{attribute}: #{ingested_article.attributes[attribute].inspect}\n")
+      end
+      end
+      puts "================================>  Found article: #{ingested_article&.id}, journal_title: #{ingested_article&.journal_title.inspect}"
+      expect(ingested_article.journal_title).to eq('Journal of neurovirology')
+
       # expect(ingested_article.publisher).to eq(['Oxford University Press'])
       # expect(ingested_article.publisher).to eq(['Oxford University Press'])
     end
