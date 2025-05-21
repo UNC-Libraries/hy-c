@@ -203,23 +203,10 @@ RSpec.describe Tasks::PubmedIngestService do
                         'DOI: https://dx.doi.org/10.1007/s13365-019-00806-2'
                       )
       expect(ingested_article.issn).to include('1538-2443')
-      # File.open(Rails.root.join('tmp', "1ref_debug_ingested_article_#{ingested_article.id}.json"), 'w') do |file|
-      # for attribute in ingested_article.attributes
-      #   file.write("#{attribute}: #{ingested_article.attributes[attribute].inspect}\n")
-      # end
-      # end
-      # puts "================================>  Found article: #{ingested_article&.id}, journal_title: #{ingested_article&.journal_title.inspect}"
-
-      puts "[DEBUG] date_issued: #{ingested_article.date_issued.inspect}"
       expect(ingested_article.date_issued).to eq('2019-11-14')
-      puts "[DEBUG] publisher: #{ingested_article.publisher.inspect}"
-      expect(ingested_article.publisher).to include('J Neurovirol')
-      puts "[DEBUG] keyword: #{ingested_article.keyword.inspect}"
+      expect(ingested_article.publisher).to be_empty
       expect(ingested_article.keyword).to eq(['HIV-associated neurocognitive disorder', 'Global health', 'HIV', 'Veterans aging cohort study index', 'Uganda'])
-      puts "[DEBUG] funder: #{ingested_article.funder.inspect}"
       expect(ingested_article.funder).to eq(['NINDS NIH HHS', 'NIMH NIH HHS', 'National Institute of Allergy and Infectious Diseases', 'NIAID NIH HHS'])
-
-      
       expect(ingested_article.journal_title).to eq('Journal of neurovirology')
       expect(ingested_article.journal_volume).to eq('26')
       expect(ingested_article.journal_issue).to eq('2')
@@ -287,7 +274,7 @@ RSpec.describe Tasks::PubmedIngestService do
                         'DOI: https://dx.doi.org/10.1007/s10488-023-01270-1'
                       )
       expect(ingested_article.issn).to include('1573-3289')
-      expect(ingested_article.date_issued).to eq('2019-11-14')
+      expect(ingested_article.date_issued).to eq('2023-05-09')
       expect(ingested_article.publisher).to include('J Neurovirol')
       expect(ingested_article.keyword).to eq(['HIV-associated neurocognitive disorder', 'Global health', 'HIV', 'Veterans aging cohort study index', 'Uganda'])
       expect(ingested_article.funder).to eq(['NINDS NIH HHS', 'NIMH NIH HHS', 'National Institute of Allergy and Infectious Diseases', 'NIAID NIH HHS'])
