@@ -51,7 +51,7 @@ RSpec.describe DecodeQueryString do
       let(:error) { StandardError.new('Test error') }
 
       before do
-        allow_any_instance_of(DecodeQueryString).to receive(:call).and_raise(error)
+        allow(app).to receive(:call).and_raise(error)
         allow(Rails.logger).to receive(:error)
       end
 
