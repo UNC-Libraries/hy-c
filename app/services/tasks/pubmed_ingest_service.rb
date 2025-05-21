@@ -209,9 +209,9 @@ module Tasks
     def set_identifiers(article, metadata)
       article.identifier = format_publication_identifiers(metadata)
       article.issn = if metadata.name == 'PubmedArticle'
-                       [metadata.xpath('//ISSN[@IssnType="Electronic"]').text]
+                       [metadata.xpath('MedlineCitation/Article/Journal/ISSN[@IssnType="Electronic"]').text]
                  else
-                   [metadata.xpath('//issn[@pub-type="epub"]').text]
+                   [metadata.xpath('front/journal-meta/issn[@pub-type="epub"]').text]
                  end
     end
 

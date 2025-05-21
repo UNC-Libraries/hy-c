@@ -187,7 +187,6 @@ RSpec.describe Tasks::PubmedIngestService do
 
       # Grab the first successfully ingested article and validate metadata. 
       # ingested_article_id = Article.where(title: ['The Veterans Aging Cohort Study Index is not associated with HIV-associated neurocognitive disorders in Uganda.']).first&.id
-      # ingested_article = wait_for_attribute(Article, ingested_article_id, :rights_statement)
       # ingested_article.reload
       # WIP: Trying different reference to find the article
       ingested_article = @res[:successfully_ingested][0]['article']
@@ -203,7 +202,7 @@ RSpec.describe Tasks::PubmedIngestService do
                         'PMCID: PMC8012007',
                         'DOI: https://dx.doi.org/10.1007/s13365-019-00806-2'
                       )
-
+      expect(ingested_article.issn).to include('1538-2443')
       # File.open(Rails.root.join('tmp', "1ref_debug_ingested_article_#{ingested_article.id}.json"), 'w') do |file|
       # for attribute in ingested_article.attributes
       #   file.write("#{attribute}: #{ingested_article.attributes[attribute].inspect}\n")
@@ -261,7 +260,6 @@ RSpec.describe Tasks::PubmedIngestService do
 
       # Grab the first successfully ingested article and validate metadata
       # ingested_article_id = Article.where(title: ['Comparing Medicaid Expenditures for Standard and Enhanced Therapeutic Foster Care']).first&.id
-      # ingested_article = wait_for_attribute(Article, ingested_article_id, :rights_statement)
       # ingested_article.reload
       ingested_article = @res[:successfully_ingested][0]['article']
        # Sanity check and validate article title was set correctly
@@ -277,6 +275,7 @@ RSpec.describe Tasks::PubmedIngestService do
                         'PMCID: PMC10169148',
                         'DOI: https://dx.doi.org/10.1007/s10488-023-01270-1'
                       )
+      expect(ingested_article.issn).to include('1573-3289')
 
       puts "[DEBUG] journal_title: #{ingested_article.journal_title.inspect}"
       puts "[DEBUG] journal_volume: #{ingested_article.journal_volume.inspect}"
@@ -361,19 +360,6 @@ RSpec.describe Tasks::PubmedIngestService do
         service.send(:attach_pdf, article, metadata, skipped_row)
       }.to raise_error(StandardError, /File attachment error/)
     end
-  end
-
-    def wait_for_attribute(model_class, id, attr_name, timeout: 20, interval: 0.5)
-    start_time = Time.now
-    loop do
-      obj = model_class.find(id)
-      obj.reload  
-      value = obj.public_send(attr_name)
-      return obj if value.present?
-      break if Time.now - start_time > timeout
-      sleep(interval)
-    end
-    raise "Timeout: #{attr_name} was not populated within #{timeout} seconds"
   end
 
   def build_dynamic_pubmed_xml(count, db_type)
