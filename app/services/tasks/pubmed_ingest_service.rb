@@ -24,20 +24,20 @@ module Tasks
     def ingest_publications
       batch_retrieve_metadata
       Rails.logger.info("[Ingest] Starting ingestion of #{@retrieved_metadata.size} records")
-
       @retrieved_metadata.each_with_index do |metadata, index|
         Rails.logger.info("[Ingest] Processing record ##{index + 1}")
         begin
           skipped_row = find_skipped_row_for_metadata(metadata)
           Rails.logger.info("[Ingest] Found skipped row: #{skipped_row.inspect}")
           article = new_article(metadata)
+          article.save!
           article.identifier.each { |id| Rails.logger.info("[Ingest] Article identifier: #{id}") }
           Rails.logger.info("[Ingest] Created new article with ID #{article.id}")
           attach_pdf(article, metadata, skipped_row)
+          article.save!
           Rails.logger.info("[Ingest] Successfully attached PDF for article #{article.id}")
-          # article.reload
-          # puts "================================>  [DEBUG AFTER ATTACH] journal_title: #{article.journal_title.inspect}" if debug_target_article?(article)
           skipped_row['pdf_attached'] = 'Success'
+          skipped_row['article'] = article
           @attachment_results[:successfully_ingested] << skipped_row.to_h
         rescue => e
           Rails.logger.error("[Ingest] Error processing record ##{index + 1}: #{e.message}")
@@ -49,7 +49,7 @@ module Tasks
           @attachment_results[:failed] << skipped_row.to_h
         end
       end
-
+  
       Rails.logger.info('[Ingest] Ingestion complete')
       @attachment_results
     end
@@ -126,17 +126,12 @@ module Tasks
               }))
       end
       end
-      puts "================================> [DEBUG] journal_title (type=#{article.journal_title.class}): #{article.journal_title.inspect}" if debug_target_article?(article)
-
-      article.save!
-      # Rails.logger.info("[Article] Article saved with ID #{article.id}")
-      # article.reload
-      # puts "================================> [DEBUG AFTER NEW ARTICLE] journal_title: #{article.journal_title.inspect}" if debug_target_article?(article)
       article
     end
 
     def attach_pdf(article, metadata, skipped_row)
       Rails.logger.info("[AttachPDF] Attaching PDF for article #{article.id}")
+      puts "[AttachPDF] Attaching PDF for article #{article.id}"
       create_sipity_workflow(work: article)
       pdf_file = attach_pdf_to_work(article, metadata['path'], @depositor, article.visibility)
 
@@ -148,14 +143,12 @@ module Tasks
       end
 
       pdf_file.update(permissions_attributes: group_permissions(@admin_set))
-      Rails.logger.info("[AttachPDF] PDF file attached to article #{article.id}")
-      article.save!
-      article
     end
 
     def populate_article_metadata(article, metadata)
       set_basic_attributes(metadata, @depositor.uid, article)
       set_journal_attributes(article, metadata)
+      set_rights_and_types(article, metadata)
       set_identifiers(article, metadata)
       article
     end
@@ -185,6 +178,13 @@ module Tasks
       end
     end
 
+    def set_rights_and_types(article, metadata)
+      rights_statement = 'http://rightsstatements.org/vocab/InC/1.0/'
+      article.rights_statement = rights_statement
+      article.rights_statement_label = CdrRightsStatementsService.label(rights_statement)
+      article.dcmi_type = ['http://purl.org/dc/dcmitype/Text']
+    end
+
     def set_journal_attributes(article, metadata)
        puts "[DEBUG_JOURNAL] =======> #{metadata.name.inspect}" 
       if metadata.name == 'PubmedArticle'
@@ -193,20 +193,14 @@ module Tasks
         puts "Parsed Journal Title: #{article.journal_title.inspect}" 
         article.journal_volume = metadata.at_xpath('MedlineCitation/Article/Journal/JournalIssue/Volume')&.text.presence
         article.journal_issue = metadata.at_xpath('MedlineCitation/Article/Journal/JournalIssue/Issue')&.text.presence
-        start_page = metadata.at_xpath('MedlineCitation/Article/Pagination/StartPage')&.text
-        end_page = metadata.at_xpath('MedlineCitation/Article/Pagination/EndPage')&.text
-        # Handle cases where start_page and end_page are not present
-        article.page_start = start_page.presence
-        article.page_end = end_page.presence
+        article.page_start = metadata.at_xpath('MedlineCitation/Article/Pagination/StartPage')&.text.presence
+        article.page_end   = metadata.at_xpath('MedlineCitation/Article/Pagination/EndPage')&.text.presence
       elsif metadata.name == 'article'
         article.journal_title = metadata.at_xpath('front/journal-meta/journal-title-group/journal-title')&.text.presence
         article.journal_volume = metadata.at_xpath('front/article-meta/volume')&.text.presence
         article.journal_issue = metadata.at_xpath('front/article-meta/issue-id')&.text.presence
-        start_page = metadata.at_xpath('front/article-meta/fpage')&.text
-        end_page = metadata.at_xpath('front/article-meta/lpage')&.text
-        # Handle cases where start_page and end_page are not present
-        article.page_start = start_page.presence
-        article.page_end = end_page.presence
+        article.page_start = metadata.at_xpath('front/article-meta/fpage')&.text.presence
+        article.page_end   = metadata.at_xpath('front/article-meta/lpage')&.text.presence
       else
         raise StandardError, "Journal Attributes - Unknown metadata format: #{metadata.name}"
       end

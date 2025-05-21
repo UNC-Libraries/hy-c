@@ -186,10 +186,11 @@ RSpec.describe Tasks::PubmedIngestService do
       expect(@res[:failed].length).to eq(2)
 
       # Grab the first successfully ingested article and validate metadata. 
-      ingested_article = Article.where(title: ['The Veterans Aging Cohort Study Index is not associated with HIV-associated neurocognitive disorders in Uganda.']).first
-      ingested_article.reload
+      # ingested_article_id = Article.where(title: ['The Veterans Aging Cohort Study Index is not associated with HIV-associated neurocognitive disorders in Uganda.']).first&.id
+      # ingested_article = wait_for_attribute(Article, ingested_article_id, :rights_statement)
+      # ingested_article.reload
       # WIP: Trying different reference to find the article
-      # ingested_article = @res[:successfully_ingested][0]['article_ref']
+      ingested_article = @res[:successfully_ingested][0]['article']
       # Sanity check and validate article title was set correctly
       expect(ingested_article).not_to be_nil
       # Field-level assertions
@@ -203,14 +204,20 @@ RSpec.describe Tasks::PubmedIngestService do
                         'DOI: https://dx.doi.org/10.1007/s13365-019-00806-2'
                       )
 
-      File.open(Rails.root.join('tmp', "ref_debug_ingested_article_#{ingested_article.id}.json"), 'w') do |file|
-      for attribute in ingested_article.attributes
-        file.write("#{attribute}: #{ingested_article.attributes[attribute].inspect}\n")
-      end
-      end
-      puts "================================>  Found article: #{ingested_article&.id}, journal_title: #{ingested_article&.journal_title.inspect}"
+      # File.open(Rails.root.join('tmp', "1ref_debug_ingested_article_#{ingested_article.id}.json"), 'w') do |file|
+      # for attribute in ingested_article.attributes
+      #   file.write("#{attribute}: #{ingested_article.attributes[attribute].inspect}\n")
+      # end
+      # end
+      # puts "================================>  Found article: #{ingested_article&.id}, journal_title: #{ingested_article&.journal_title.inspect}"
       expect(ingested_article.journal_title).to eq('Journal of neurovirology')
-
+      expect(ingested_article.journal_volume).to eq('26')
+      expect(ingested_article.journal_issue).to eq('2')
+      expect(ingested_article.page_start).to eq('252')
+      expect(ingested_article.page_end).to eq('256')
+      expect(ingested_article.rights_statement).to eq('http://rightsstatements.org/vocab/InC/1.0/')
+      expect(ingested_article.rights_statement_label).to eq('In Copyright')
+      expect(ingested_article.dcmi_type).to include('http://purl.org/dc/dcmitype/Text')
       # expect(ingested_article.publisher).to eq(['Oxford University Press'])
       # expect(ingested_article.publisher).to eq(['Oxford University Press'])
     end
@@ -253,7 +260,10 @@ RSpec.describe Tasks::PubmedIngestService do
       expect(@res[:failed].length).to eq(2)
 
       # Grab the first successfully ingested article and validate metadata
-      ingested_article = Article.where(title: ['Comparing Medicaid Expenditures for Standard and Enhanced Therapeutic Foster Care']).first
+      # ingested_article_id = Article.where(title: ['Comparing Medicaid Expenditures for Standard and Enhanced Therapeutic Foster Care']).first&.id
+      # ingested_article = wait_for_attribute(Article, ingested_article_id, :rights_statement)
+      # ingested_article.reload
+      ingested_article = @res[:successfully_ingested][0]['article']
        # Sanity check and validate article title was set correctly
       expect(ingested_article).not_to be_nil
        # Field-level assertions
@@ -267,6 +277,25 @@ RSpec.describe Tasks::PubmedIngestService do
                         'PMCID: PMC10169148',
                         'DOI: https://dx.doi.org/10.1007/s10488-023-01270-1'
                       )
+
+      puts "[DEBUG] journal_title: #{ingested_article.journal_title.inspect}"
+      puts "[DEBUG] journal_volume: #{ingested_article.journal_volume.inspect}"
+      puts "[DEBUG] journal_issue: #{ingested_article.journal_issue.inspect}"
+      puts "[DEBUG] page_start: #{ingested_article.page_start.inspect}"
+      puts "[DEBUG] page_end: #{ingested_article.page_end.inspect}"
+      puts "[DEBUG] rights_statement: #{ingested_article.rights_statement.inspect}"
+      puts "[DEBUG] rights_statement_label: #{ingested_article.rights_statement_label.inspect}"
+      puts "[DEBUG] dcmi_type: #{ingested_article.dcmi_type.inspect}"
+
+      expect(ingested_article.journal_title).to eq('Administration and Policy in Mental Health')
+      expect(ingested_article.journal_volume).to eq('12')
+      expect(ingested_article.journal_issue).to eq('435313')
+      expect(ingested_article.page_start).to eq('1')
+      expect(ingested_article.page_end).to eq('10')
+      expect(ingested_article.rights_statement).to eq('http://rightsstatements.org/vocab/InC/1.0/')
+      expect(ingested_article.rights_statement_label).to eq('In Copyright')
+      expect(ingested_article.dcmi_type).to include('http://purl.org/dc/dcmitype/Text')
+
     end
   end
 
@@ -332,6 +361,19 @@ RSpec.describe Tasks::PubmedIngestService do
         service.send(:attach_pdf, article, metadata, skipped_row)
       }.to raise_error(StandardError, /File attachment error/)
     end
+  end
+
+    def wait_for_attribute(model_class, id, attr_name, timeout: 20, interval: 0.5)
+    start_time = Time.now
+    loop do
+      obj = model_class.find(id)
+      obj.reload  
+      value = obj.public_send(attr_name)
+      return obj if value.present?
+      break if Time.now - start_time > timeout
+      sleep(interval)
+    end
+    raise "Timeout: #{attr_name} was not populated within #{timeout} seconds"
   end
 
   def build_dynamic_pubmed_xml(count, db_type)
