@@ -67,7 +67,7 @@ module Tasks
       logger.info("[#{metadata_file_path}] created dissertation: #{id}")
 
       # get group permissions info to use for setting work and fileset permissions
-      group_permissions = MigrationHelper.get_permissions_attributes(@admin_set_id)
+      group_permissions = WorkUtilsHelper.get_permissions_attributes(@admin_set_id)
       resource.update permissions_attributes: group_permissions
 
       # Create sipity record

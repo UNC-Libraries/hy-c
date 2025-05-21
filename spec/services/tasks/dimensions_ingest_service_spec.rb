@@ -277,7 +277,10 @@ RSpec.describe Tasks::DimensionsIngestService do
           'orcid' => author['orcid']
         }
       end
-      article = service.article_with_metadata(publication)
+      article = nil
+      expect do
+        article = service.article_with_metadata(publication)
+      end.to change { Article.count }.by(1)
       expect(article).to be_instance_of(Article)
       expect(article.persisted?).to be true
       expect(article.valid?).to be true

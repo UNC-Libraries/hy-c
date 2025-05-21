@@ -7,9 +7,9 @@ describe Tasks::SetDepositorService, :clean do
     ActiveFedora::Cleaner.clean!
   end
 
-  let(:depositor1) { FactoryBot.create(:user) }
-  let(:depositor2) { FactoryBot.create(:user) }
-  let(:depositor3) { FactoryBot.create(:user) }
+  let(:depositor1) { FactoryBot.create(:user, uid: 'set_depositor1') }
+  let(:depositor2) { FactoryBot.create(:user, uid: 'set_depositor2') }
+  let(:depositor3) { FactoryBot.create(:user, uid: 'set_depositor3') }
 
   let(:admin_set) do
     AdminSet.create(title: ['test admin set'],
