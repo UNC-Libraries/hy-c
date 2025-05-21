@@ -45,5 +45,23 @@ RSpec.describe DecodeQueryString do
         expect(app).to have_received(:call).with(decoded_env)
       end
     end
+
+    context 'when an exception occurs' do
+      let(:env) { { 'QUERY_STRING' => 'f%5Bkeyword_sim%5D%5B%5D=Pharmacogenetics&locale=en' } }
+      let(:error) { StandardError.new('Test error') }
+
+      before do
+        allow_any_instance_of(DecodeQueryString).to receive(:call).and_raise(error)
+        allow(Rails.logger).to receive(:error)
+      end
+
+      it 'logs the exception and backtrace, then re-raises it' do
+        middleware = DecodeQueryString.new(app)
+
+        expect { middleware.call(env) }.to raise_error(StandardError)
+        expect(Rails.logger).to have_received(:error).with('StandardError: Test error')
+        expect(Rails.logger).to have_received(:error).with(error.backtrace.join("\n"))
+      end
+    end
   end
 end

@@ -52,4 +52,33 @@ RSpec.describe ApplicationController, type: :controller do
       expect(subject.instance_variable_get(:@params)[:locale]).to eq 'en'
     end
   end
+
+  describe '#render_rsolr_exceptions' do
+    controller(ApplicationController) do
+      def index
+        @exception = params[:exception]
+        render_rsolr_exceptions(@exception)
+      end
+    end
+
+    it 'renders a 400 response for NumberFormatException' do
+      number_exception = RSolr::Error::Http.new({ 'uri' => 'test' }, { code: 500, body: 'java.lang.NumberFormatException' })
+      get :index, params: { exception: number_exception }
+      expect(response).to have_http_status(:bad_request)
+    end
+
+    it 'renders a 400 response for sort order exceptions' do
+      sort_exception = RSolr::Error::Http.new({ 'uri' => 'test' }, { code: 500, body: "Can't determine a Sort Order" })
+      get :index, params: { exception: sort_exception }
+      expect(response).to have_http_status(:bad_request)
+    end
+
+    it 'renders a 404 response for other RSolr exceptions' do
+      allow(Rails.logger).to receive(:error)
+      other_exception = RSolr::Error::Http.new({ 'uri' => 'test' }, { code: 500, body: 'Some other RSolr error' })
+      get :index, params: { exception: other_exception }
+      expect(response).to have_http_status(:not_found)
+      expect(Rails.logger).to have_received(:error).twice
+    end
+  end
 end
