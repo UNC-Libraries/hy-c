@@ -6641,6 +6641,9 @@
                 <journal-title-group>
                     <journal-title>Administration and Policy in Mental Health</journal-title>
                 </journal-title-group>
+                <publisher>
+                    <publisher-name>Test Publisher</publisher-name>
+                </publisher>
                 <issn pub-type="ppub">0894-587X</issn>
                 <issn pub-type="epub">1573-3289</issn>
                 <custom-meta-group>
