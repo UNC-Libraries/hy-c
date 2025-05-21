@@ -31,7 +31,6 @@ class ApplicationController < ActionController::Base
   rescue_from Faraday::TimeoutError, with: :render_408
   rescue_from ArgumentError, with: :render_400
   rescue_from URI::InvalidURIError, with: :render_400
-  rescue_from StandardError, with: :handle_standard_error
 
   protected
 
@@ -62,16 +61,6 @@ class ApplicationController < ActionController::Base
 
   def render_500
     render 'errors/internal_server_error', status: 500, formats: :html
-  end
-
-  def handle_standard_error(exception)
-    # Log the full exception with backtrace
-    Rails.logger.error "Unhandled exception: #{exception.class}: #{exception.message}"
-    Rails.logger.error "URL: #{request.method} #{request.url} | IP: #{request.remote_ip}"
-    Rails.logger.error exception.backtrace.join("\n") if exception.backtrace
-
-    # Render the 500 page
-    render_500
   end
 
   # Error caught in catalogController
