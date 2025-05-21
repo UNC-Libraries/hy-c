@@ -49,8 +49,8 @@ RSpec.describe BlacklightAdvancedSearch::QueryParser do
       let(:query1) { 'parse failure' }
 
       it 'logs an error' do
-        expect(ParsingNesting::Tree).to receive(:parse).and_raise(StandardError.new('standard error'))
-        expect(Rails.logger).to receive(:error)
+        expect(ParsingNesting::Tree).to receive(:parse).twice.and_raise(StandardError.new('standard error'))
+        expect(Rails.logger).to receive(:error).twice
 
         parser.process_query(config)
       end
