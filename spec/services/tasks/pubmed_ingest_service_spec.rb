@@ -209,6 +209,13 @@ RSpec.describe Tasks::PubmedIngestService do
       # end
       # end
       # puts "================================>  Found article: #{ingested_article&.id}, journal_title: #{ingested_article&.journal_title.inspect}"
+
+      puts "[DEBUG] date_issued: #{ingested_article.date_issued.inspect}"
+      puts "[DEBUG] publisher: #{ingested_article.publisher.inspect}"
+      puts "[DEBUG] keyword: #{ingested_article.keyword.inspect}"
+      puts "[DEBUG] funder: #{ingested_article.funder.inspect}"
+
+      
       expect(ingested_article.journal_title).to eq('Journal of neurovirology')
       expect(ingested_article.journal_volume).to eq('26')
       expect(ingested_article.journal_issue).to eq('2')
@@ -277,14 +284,12 @@ RSpec.describe Tasks::PubmedIngestService do
                       )
       expect(ingested_article.issn).to include('1573-3289')
 
-      puts "[DEBUG] journal_title: #{ingested_article.journal_title.inspect}"
-      puts "[DEBUG] journal_volume: #{ingested_article.journal_volume.inspect}"
-      puts "[DEBUG] journal_issue: #{ingested_article.journal_issue.inspect}"
-      puts "[DEBUG] page_start: #{ingested_article.page_start.inspect}"
-      puts "[DEBUG] page_end: #{ingested_article.page_end.inspect}"
-      puts "[DEBUG] rights_statement: #{ingested_article.rights_statement.inspect}"
-      puts "[DEBUG] rights_statement_label: #{ingested_article.rights_statement_label.inspect}"
-      puts "[DEBUG] dcmi_type: #{ingested_article.dcmi_type.inspect}"
+
+      puts "[DEBUG] date_issued: #{ingested_article.date_issued.inspect}"
+      puts "[DEBUG] publisher: #{ingested_article.publisher.inspect}"
+      puts "[DEBUG] keyword: #{ingested_article.keyword.inspect}"
+      puts "[DEBUG] funder: #{ingested_article.funder.inspect}"
+
 
       expect(ingested_article.journal_title).to eq('Administration and Policy in Mental Health')
       expect(ingested_article.journal_volume).to eq('12')
