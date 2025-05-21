@@ -165,7 +165,7 @@ module Tasks
         article.date_issued = get_date_issued(metadata)
         article.publisher = [metadata.at_xpath('MedlineCitation/MedlineJournalInfo/MedlineTA')&.text].compact.presence
         article.keyword = metadata.xpath('MedlineCitation/KeywordList/Keyword').map(&:text)
-        article.funder = metadata.xpath('GrantList/Grant/Agency').map(&:text)
+        article.funder = metadata.xpath('MedlineCitation/Article/GrantList/Grant/Agency').map(&:text)
       elsif metadata.name == 'article'
         article.title = [metadata.xpath('front/article-meta/title-group/article-title').text]
         article.abstract = [metadata.xpath('front/article-meta/abstract').text]

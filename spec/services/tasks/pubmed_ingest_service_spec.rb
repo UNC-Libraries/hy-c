@@ -211,9 +211,13 @@ RSpec.describe Tasks::PubmedIngestService do
       # puts "================================>  Found article: #{ingested_article&.id}, journal_title: #{ingested_article&.journal_title.inspect}"
 
       puts "[DEBUG] date_issued: #{ingested_article.date_issued.inspect}"
+      expect(ingested_article.date_issued).to eq('2019-11-14')
       puts "[DEBUG] publisher: #{ingested_article.publisher.inspect}"
+      expect(ingested_article.publisher).to include('J Neurovirol')
       puts "[DEBUG] keyword: #{ingested_article.keyword.inspect}"
+      expect(ingested_article.keyword).to eq(['HIV-associated neurocognitive disorder', 'Global health', 'HIV', 'Veterans aging cohort study index', 'Uganda'])
       puts "[DEBUG] funder: #{ingested_article.funder.inspect}"
+      expect(ingested_article.funder).to eq(['NINDS NIH HHS', 'NIMH NIH HHS', 'National Institute of Allergy and Infectious Diseases', 'NIAID NIH HHS'])
 
       
       expect(ingested_article.journal_title).to eq('Journal of neurovirology')
@@ -283,14 +287,10 @@ RSpec.describe Tasks::PubmedIngestService do
                         'DOI: https://dx.doi.org/10.1007/s10488-023-01270-1'
                       )
       expect(ingested_article.issn).to include('1573-3289')
-
-
-      puts "[DEBUG] date_issued: #{ingested_article.date_issued.inspect}"
-      puts "[DEBUG] publisher: #{ingested_article.publisher.inspect}"
-      puts "[DEBUG] keyword: #{ingested_article.keyword.inspect}"
-      puts "[DEBUG] funder: #{ingested_article.funder.inspect}"
-
-
+      expect(ingested_article.date_issued).to eq('2019-11-14')
+      expect(ingested_article.publisher).to include('J Neurovirol')
+      expect(ingested_article.keyword).to eq(['HIV-associated neurocognitive disorder', 'Global health', 'HIV', 'Veterans aging cohort study index', 'Uganda'])
+      expect(ingested_article.funder).to eq(['NINDS NIH HHS', 'NIMH NIH HHS', 'National Institute of Allergy and Infectious Diseases', 'NIAID NIH HHS'])
       expect(ingested_article.journal_title).to eq('Administration and Policy in Mental Health')
       expect(ingested_article.journal_volume).to eq('12')
       expect(ingested_article.journal_issue).to eq('435313')
