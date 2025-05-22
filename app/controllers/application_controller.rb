@@ -71,6 +71,8 @@ class ApplicationController < ActionController::Base
       exception_text.include?("Can't determine a Sort Order")
       render_400
     else
+      Rails.logger.error "RSolr exception caught: #{exception.class}: #{exception.message}"
+      Rails.logger.error exception.backtrace.join("\n") if exception.backtrace
       render_404
     end
   end

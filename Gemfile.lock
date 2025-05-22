@@ -1,20 +1,4 @@
 GIT
-  remote: https://github.com/UNC-Libraries/blacklight.git
-  revision: fb14870ec545dd3c86f87337047033bfeec533f0
-  branch: unc-development
-  specs:
-    blacklight (7.37.0)
-      deprecation
-      globalid
-      hashdiff
-      i18n (>= 1.7.0)
-      jbuilder (~> 2.7)
-      kaminari (>= 0.15)
-      ostruct (>= 0.3.2)
-      rails (>= 5.1, < 7.2)
-      view_component (>= 2.66, < 4)
-
-GIT
   remote: https://github.com/UNC-Libraries/hyrax.git
   revision: 40e18c4a0b685a96f3663fde36bc87395d29e890
   branch: unc-hyrax-4-development
@@ -206,6 +190,17 @@ GEM
       i18n
     bcrypt (3.1.20)
     bindex (0.8.1)
+    blacklight (7.40.0)
+      deprecation
+      globalid
+      hashdiff
+      i18n (>= 1.7.0)
+      jbuilder (~> 2.7)
+      kaminari (>= 0.15)
+      ostruct (>= 0.3.2)
+      rails (>= 6.1, < 7.3)
+      view_component (>= 2.74, < 4)
+      zeitwerk
     blacklight-access_controls (6.0.1)
       blacklight (> 6.0, < 8)
       cancancan (>= 1.8)
@@ -701,7 +696,7 @@ GEM
       rails (> 3.2.0)
     orm_adapter (0.5.0)
     os (1.1.4)
-    ostruct (0.6.0)
+    ostruct (0.6.1)
     parallel (1.23.0)
     parser (3.2.2.4)
       ast (~> 2.4.1)
@@ -1088,7 +1083,7 @@ PLATFORMS
 DEPENDENCIES
   active-fedora (~> 14.0)
   base64 (= 0.1.0)
-  blacklight!
+  blacklight (~> 7.40)
   blacklight_advanced_search (~> 8.0.0.alpha2)
   blacklight_dynamic_sitemap (~> 1.0)
   blacklight_oai_provider (= 7.0.2)
