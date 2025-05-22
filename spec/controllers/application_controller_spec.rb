@@ -55,39 +55,58 @@ RSpec.describe ApplicationController, type: :controller do
 
   describe '#render_rsolr_exceptions' do
     controller(ApplicationController) do
+      cattr_accessor :test_exception
+
       def index
-        @exception = params[:exception]
-        render_rsolr_exceptions(@exception)
+        render_rsolr_exceptions(self.class.test_exception)
       end
     end
 
-    it 'renders a 400 response for NumberFormatException' do
-      number_exception = RSolr::Error::Http.new(
-        { 'uri' => 'test' },
-        { code: 500, body: String.new('java.lang.NumberFormatException') }
-      )
-      get :index, params: { exception: number_exception }
-      expect(response).to have_http_status(:bad_request)
+    context 'when an RSolr exception is raised' do
+      before do
+        controller.class.test_exception = RSolr::Error::Http.new(
+          { uri: 'test' },
+          { code: 500, body: String.new('java.lang.NumberFormatException') }
+        )
+        controller.class.test_exception.set_backtrace(caller)
+      end
+
+      it 'renders a 400 response for NumberFormatException' do
+        get :index
+        expect(response).to have_http_status(:bad_request)
+      end
     end
 
-    it 'renders a 400 response for sort order exceptions' do
-      sort_exception = RSolr::Error::Http.new(
-        { 'uri' => 'test' },
-        { code: 500, body: String.new("Can't determine a Sort Order") }
-      )
-      get :index, params: { exception: sort_exception }
-      expect(response).to have_http_status(:bad_request)
+    context 'when a Sort Order exception is raised' do
+      before do
+        controller.class.test_exception = RSolr::Error::Http.new(
+          { uri: 'test' },
+          { code: 500, body: String.new("Can't determine a Sort Order") }
+        )
+        controller.class.test_exception.set_backtrace(caller)
+      end
+
+      it 'renders a 400 response for sort order exceptions' do
+        get :index
+        expect(response).to have_http_status(:bad_request)
+      end
     end
 
-    it 'renders a 404 response for other RSolr exceptions' do
-      allow(Rails.logger).to receive(:error)
-      other_exception = RSolr::Error::Http.new(
-        { 'uri' => 'test' },
-        { code: 500, body: String.new('Some other RSolr error') }
-      )
-      get :index, params: { exception: other_exception }
-      expect(response).to have_http_status(:not_found)
-      expect(Rails.logger).to have_received(:error).twice
+    context 'when any other RSolr exception is raised' do
+      before do
+        controller.class.test_exception = RSolr::Error::Http.new(
+          { uri: 'test' },
+          { code: 500, body: String.new('Some other RSolr error') }
+        )
+        controller.class.test_exception.set_backtrace(caller)
+      end
+
+      it 'renders a 404 response for other RSolr exceptions' do
+        allow(Rails.logger).to receive(:error)
+        get :index
+        expect(response).to have_http_status(:not_found)
+        expect(Rails.logger).to have_received(:error).twice
+      end
     end
   end
 end
