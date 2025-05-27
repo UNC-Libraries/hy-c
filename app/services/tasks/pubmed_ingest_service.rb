@@ -49,7 +49,7 @@ module Tasks
           @attachment_results[:failed] << skipped_row.to_h
         end
       end
-  
+
       Rails.logger.info('[Ingest] Ingestion complete')
       @attachment_results
     end
@@ -96,7 +96,7 @@ module Tasks
 
     def new_article(metadata)
       Rails.logger.info('[Article] Initializing new article object')
-      puts "[Article] Initializing new article object" 
+      puts '[Article] Initializing new article object'
       article = Article.new
       article.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
       article = populate_article_metadata(article, metadata)
@@ -106,7 +106,7 @@ module Tasks
 
       if debug_target_article?(article)
           # 💾 Write debug info before saving
-        File.open(Rails.root.join('tmp', "newart_debug_article_7pm.json"), 'w') do |f|
+        File.open(Rails.root.join('tmp', 'newart_debug_article_7pm.json'), 'w') do |f|
           f.write(JSON.pretty_generate({
                 title: format_value(article.title),
                 abstract: format_value(article.abstract),
@@ -124,7 +124,7 @@ module Tasks
                 valid?: article.valid?,
                 errors: article.errors.full_messages
               }))
-      end
+        end
       end
       article
     end
@@ -187,11 +187,11 @@ module Tasks
     end
 
     def set_journal_attributes(article, metadata)
-       puts "[DEBUG_JOURNAL] =======> #{metadata.name.inspect}" 
+      puts "[DEBUG_JOURNAL] =======> #{metadata.name.inspect}"
       if metadata.name == 'PubmedArticle'
-        puts "[DEBUG_JOURNAL] =======> Raw Journal Title: #{metadata.at_xpath('MedlineCitation/Article/Journal/Title')&.text.inspect}" 
+        puts "[DEBUG_JOURNAL] =======> Raw Journal Title: #{metadata.at_xpath('MedlineCitation/Article/Journal/Title')&.text.inspect}"
         article.journal_title = metadata.at_xpath('MedlineCitation/Article/Journal/Title')&.text
-        puts "Parsed Journal Title: #{article.journal_title.inspect}" 
+        puts "Parsed Journal Title: #{article.journal_title.inspect}"
         article.journal_volume = metadata.at_xpath('MedlineCitation/Article/Journal/JournalIssue/Volume')&.text.presence
         article.journal_issue = metadata.at_xpath('MedlineCitation/Article/Journal/JournalIssue/Issue')&.text.presence
         article.page_start = metadata.at_xpath('MedlineCitation/Article/Pagination/StartPage')&.text.presence
@@ -221,7 +221,7 @@ module Tasks
         metadata.xpath('MedlineCitation/Article/AuthorList/Author').map.with_index do |author, i|
           {
             'name' => [author.xpath('LastName').text, author.xpath('ForeName').text].join(', '),
-            'orcid' => author.at_xpath('Identifier[@Source="orcid"]')&.text&.then { |id| "https://orcid.org/#{id}" } || '',
+            'orcid' => author.at_xpath('Identifier[@Source="ORCID"]')&.text&.then { |id| "https://orcid.org/#{id}" } || '',
             'index' => i.to_s
           }
         end
@@ -296,6 +296,6 @@ module Tasks
     def debug_target_article?(article)
       article.identifier.any? { |id| id.match?(/31721082/) }
     end
-    
+
   end
 end
