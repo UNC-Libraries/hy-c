@@ -217,6 +217,7 @@ module Tasks
     end
 
     def generate_authors(metadata)
+      # WIP: Add Author affiliations 
       if metadata.name == 'PubmedArticle'
         metadata.xpath('MedlineCitation/Article/AuthorList/Author').map.with_index do |author, i|
           {
@@ -229,7 +230,7 @@ module Tasks
         metadata.xpath('front/article-meta/contrib-group/contrib[@contrib-type="author"]').map.with_index do |author, i|
           {
             'name' => [author.xpath('name/surname').text, author.xpath('name/given-names').text].join(', '),
-            'orcid' => author.at_xpath('orcid')&.text&.then { |id| "https://orcid.org/#{id}" } || '',
+            'orcid' => author.at_xpath('contrib-id')&.text.to_s || '',
             'index' => i.to_s
           }
         end

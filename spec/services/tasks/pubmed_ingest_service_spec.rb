@@ -306,6 +306,11 @@ RSpec.describe Tasks::PubmedIngestService do
         expect(creator['orcid']).to be_present
         expect(creator['index']).to be_present
       end
+      # Validate specific creator, selected by name
+      sample_creator = ingested_article.creators.find { |c| active_relation_to_string(c['name']) == 'Lanier, Paul' }
+      expect(sample_creator).to be_present
+      expect(active_relation_to_string(sample_creator['index'])).to eq('0')
+      expect(active_relation_to_string(sample_creator['orcid'])).to eq('http://orcid.org/0000-0003-4360-3269')
       # Journal and page assertions
       expect(ingested_article.journal_title).to eq('Administration and Policy in Mental Health')
       expect(ingested_article.journal_volume).to eq('12')
