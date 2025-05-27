@@ -217,7 +217,6 @@ RSpec.describe Tasks::PubmedIngestService do
         expect(creator['name']).to be_present
         expect(creator['orcid']).to be_present
         expect(creator['index']).to be_present
-        expect(creator['other_attributes']).to be_present
       end
       # Validate specific creator, selected by name
       sample_creator = ingested_article.creators.find { |c| active_relation_to_string(c['name']) == 'Awori, Violet' }
@@ -277,6 +276,7 @@ RSpec.describe Tasks::PubmedIngestService do
       # Expect the newly ingested array size to be 2 and the failed array size to be 2
       expect(@res[:successfully_ingested].length).to eq(2)
       expect(@res[:failed].length).to eq(2)
+      
 
       # Grab the first successfully ingested article and validate metadata
       ingested_article = @res[:successfully_ingested][0]['article']
@@ -317,6 +317,7 @@ RSpec.describe Tasks::PubmedIngestService do
       expect(sample_creator).to be_present
       expect(active_relation_to_string(sample_creator['index'])).to eq('0')
       expect(active_relation_to_string(sample_creator['orcid'])).to eq('http://orcid.org/0000-0003-4360-3269')
+      expect(active_relation_to_string(sample_creator['other_affiliation'])).to include('School of Social Work, UNC Chapel Hill')
       # Journal and page assertions
       expect(ingested_article.journal_title).to eq('Administration and Policy in Mental Health')
       expect(ingested_article.journal_volume).to eq('12')
@@ -327,7 +328,15 @@ RSpec.describe Tasks::PubmedIngestService do
       expect(ingested_article.rights_statement).to eq('http://rightsstatements.org/vocab/InC/1.0/')
       expect(ingested_article.rights_statement_label).to eq('In Copyright')
       expect(ingested_article.dcmi_type).to include('http://purl.org/dc/dcmitype/Text')
-
+      # Retrieve two more samples to validate fallback logic
+      ingested_article = @res[:successfully_ingested][1]['article']
+      sample_creator_multi_affil = ingested_article.creators.find { |c| active_relation_to_string(c['name']) == 'Carrillo-Kappus, Kristen' }
+      expect(sample_creator_multi_affil).to be_present
+      expect(sample_creator_multi_affil['other_affiliation']).to include(
+        "Women's Health Center, Isabella Citizens for Health, Inc, Mt. Pleasant, Michigan; and the Department" \
+        ' of Obstetrics and Gynecology, University of North Carolina at Chapel Hill, Chapel Hill, and the Department' \
+        ' of Biostatistics and Bioinformatics and the Department of Obstetrics and Gynecology, Duke University Medical Center, Durham, North Carolina.'
+      )
     end
   end
 

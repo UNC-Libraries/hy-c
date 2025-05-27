@@ -235,13 +235,14 @@ module Tasks
             'orcid' => author.at_xpath('contrib-id[@contrib-id-type="orcid"]')&.text.to_s || '',
             'index' => i.to_s
           }
-          retrieve_author_affiliations(res, author, metadata.name)
+          # Include affiliations for each author if available
+          retrieve_author_affiliations(res, author, metadata.name, metadata.xpath('front/article-meta/contrib-group'))
           res
         end
       end
     end
 
-    def retrieve_author_affiliations(hash, author, metadata_name)
+    def retrieve_author_affiliations(hash, author, metadata_name, alt_affiliation_path = nil)
       if metadata_name == 'PubmedArticle'
         affiliations = author.xpath('AffiliationInfo/Affiliation').map(&:text)
         # Search for UNC affiliation
@@ -249,6 +250,39 @@ module Tasks
         # Fallback to first affiliation if no UNC affiliation found
         hash['other_affiliation'] = unc_affiliation.presence || affiliations[0].presence || ''
       else
+        affiliations = author.xpath('aff/institution').map(&:text)
+        # puts "[DEBUG_AFFILIATION] =======> Affiliations from institution: #{affiliations.inspect}".truncate(1000) unless affiliations.empty?  
+        if affiliations.empty? && alt_affiliation_path.any?
+          # author_affiliation_labels = author.xpath('xref[@ref-type="aff"]').map(&:text)
+          # puts "[DEBUG_AFFILIATION] =======> Author Affiliation Labels: #{author_affiliation_labels.inspect}" unless author_affiliation_labels.empty?
+            author_affiliation_ids = author.xpath('xref[@ref-type="aff"]').map { |n| n['rid'] }
+            # puts "[DEBUG_AFFILIATION] =======> Author Affiliation IDs: #{author_affiliation_ids.inspect}".truncate(1000) unless author_affiliation_ids.empty?
+            if author_affiliation_ids.any?
+              # Regex to remove trailing comma and whitespace
+              affiliations = author_affiliation_ids.map do |id|
+                nodes = alt_affiliation_path.xpath("aff[@id='#{id}']/institution-wrap/institution")
+                nodes.map(&:text).join.sub(/,\s*\z/, '')
+              end
+              # puts "[DEBUG_AFFILIATION] =======> Institution List: #{affiliations.inspect}".truncate(1000) unless affiliations.empty?
+            else
+              shared_affiliation = alt_affiliation_path.xpath('aff').map(&:text)
+              affiliations = [shared_affiliation]
+              # shared_affiliation_at_xpath = alt_affiliation_path.xpath('aff/institution-wrap/institution')
+              # puts "[DEBUG_AFFILIATION] =======> Shared Affiliation: #{shared_affiliation.inspect.truncate(1000)}" unless shared_affiliation.empty?
+              # puts "[DEBUG_AFFILIATION] =======> Shared Affiliation at XPath: #{shared_affiliation_at_xpath.inspect.truncate(1000)}" unless shared_affiliation_at_xpath.empty?
+            end
+            
+          # Referring to ref types under each author, to be retrieved from the ref xrefs
+          # institution_affiliations = alt_affiliation_path.xpath("aff/institution-wrap/institution").map(&:text)
+          
+        end
+        # puts "[DEBUG_AFFILIATION] =======> RID List: #{rid_list.inspect}" unless rid_list.empty?
+        # Search for UNC affiliation
+        unc_affiliation = affiliations.find { |aff| AffiliationUtilsHelper.unc_affiliation?(aff) }
+        # puts "[DEBUG_AFFILIATION] =======> UNC Affiliation: #{unc_affiliation.inspect}".truncate(1000) unless unc_affiliation.nil?
+        # Fallback to first affiliation if no UNC affiliation found
+        hash['other_affiliation'] = unc_affiliation.presence || affiliations[0].presence || ''
+        # puts "[DEBUG_AFFILIATION] =======> Final Affiliation: #{hash['other_affiliation'].inspect}".truncate(1000) unless hash['other_affiliation'].nil?
       end
     end
 
