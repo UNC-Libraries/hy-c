@@ -265,10 +265,9 @@ module Tasks
               end
               # puts "[DEBUG_AFFILIATION] =======> Institution List: #{affiliations.inspect}".truncate(1000) unless affiliations.empty?
             else
-              shared_affiliation = alt_affiliation_path.xpath('aff').map(&:text)
-              affiliations = [shared_affiliation]
+              affiliations = alt_affiliation_path.xpath('aff').map(&:text)
               # shared_affiliation_at_xpath = alt_affiliation_path.xpath('aff/institution-wrap/institution')
-              # puts "[DEBUG_AFFILIATION] =======> Shared Affiliation: #{shared_affiliation.inspect.truncate(1000)}" unless shared_affiliation.empty?
+              puts "[DEBUG_AFFILIATION] =======> Shared Affiliation: #{affiliations.inspect.truncate(1000)}" unless affiliations.empty?
               # puts "[DEBUG_AFFILIATION] =======> Shared Affiliation at XPath: #{shared_affiliation_at_xpath.inspect.truncate(1000)}" unless shared_affiliation_at_xpath.empty?
             end
             

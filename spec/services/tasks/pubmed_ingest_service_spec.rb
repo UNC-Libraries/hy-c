@@ -330,13 +330,17 @@ RSpec.describe Tasks::PubmedIngestService do
       expect(ingested_article.dcmi_type).to include('http://purl.org/dc/dcmitype/Text')
       # Retrieve two more samples to validate fallback logic
       ingested_article = @res[:successfully_ingested][1]['article']
-      sample_creator_multi_affil = ingested_article.creators.find { |c| active_relation_to_string(c['name']) == 'Carrillo-Kappus, Kristen' }
-      expect(sample_creator_multi_affil).to be_present
-      expect(sample_creator_multi_affil['other_affiliation']).to include(
+      # Validate specific creators for fallback logic
+      fallback_logic_sample = [
+        ingested_article.creators.find { |c| active_relation_to_string(c['name']) == 'Carrillo-Kappus, Kristen' },
+        ingested_article.creators.find { |c| active_relation_to_string(c['name']) == 'Bello, Susan M' }
+      ]
+      expect(fallback_logic_sample[0]['other_affiliation']).to include(
         "Women's Health Center, Isabella Citizens for Health, Inc, Mt. Pleasant, Michigan; and the Department" \
         ' of Obstetrics and Gynecology, University of North Carolina at Chapel Hill, Chapel Hill, and the Department' \
         ' of Biostatistics and Bioinformatics and the Department of Obstetrics and Gynecology, Duke University Medical Center, Durham, North Carolina.'
       )
+      expect(fallback_logic_sample[1]['other_affiliation']).to include('The Jackson Laboratory')
     end
   end
 

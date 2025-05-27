@@ -9182,6 +9182,18 @@
                         </name>
                         <degrees>MS</degrees>
                     </contrib>
+                     <contrib contrib-type="author">
+                        <name name-style="western">
+                            <surname>Bello</surname>
+                            <given-names initials="SM">Susan M</given-names>
+                        </name>
+                        <aff>
+                            <institution>The Jackson Laboratory</institution>,
+                            <addr-line>Bar Harbor, ME 04609</addr-line>,
+                            <country country="US">USA</country>
+                        </aff>
+                        <xref rid="iyaf027-FM1" ref-type="author-notes"/>
+                    </contrib>
                     <contrib contrib-type="author">
                         <name name-style="western">
                             <surname>Erkanli</surname>
