@@ -274,29 +274,45 @@ RSpec.describe Tasks::PubmedIngestService do
 
       # Grab the first successfully ingested article and validate metadata
       ingested_article = @res[:successfully_ingested][0]['article']
-       # Sanity check and validate article title was set correctly
+      # Sanity check and validate article title was set correctly
       expect(ingested_article).not_to be_nil
-       # Field-level assertions
-      expect(ingested_article.abstract.first).to include(
-        'The purpose of this study was to compare Medicaid expenditures associated with TFC ' \
-        'with Medicaid expenditures associated with an enhanced higher-rate service called ' \
-        'Intensive Alternative Family Treatment (IAFT).'
-      )
+      # Identifier field assertions
       expect(ingested_article.identifier).to include(
                         'PMID: 37160645',
                         'PMCID: PMC10169148',
                         'DOI: https://dx.doi.org/10.1007/s10488-023-01270-1'
                       )
       expect(ingested_article.issn).to include('1573-3289')
+      # Basic attribute assertions
+      expect(ingested_article.admin_set).to eq(admin_set)
+      expect(ingested_article.depositor).to eq(admin.uid)
+      expect(ingested_article.resource_type).to eq(['Article'])
+      expect(ingested_article.title).to eq(['Comparing Medicaid Expenditures for Standard and Enhanced Therapeutic Foster Care'])
+      # Abstract assertions
+      expect(ingested_article.abstract.first).to include(
+        'The purpose of this study was to compare Medicaid expenditures associated with TFC ' \
+        'with Medicaid expenditures associated with an enhanced higher-rate service called ' \
+        'Intensive Alternative Family Treatment (IAFT).'
+      )
       expect(ingested_article.date_issued).to eq('2023-05-09')
       expect(ingested_article.publisher).to include('Test Publisher')
       expect(ingested_article.keyword).to eq(['ontology', 'midwifery care', 'Adolescent', 'Cost analysis', 'phenotype', 'sociodemographic', 'Medicaid', 'pregnancy loss', 'semantics', 'Mental health services', 'miscarriage', 'Hispanic/Latinas', 'integration', 'acculturation', 'intimate partner violence'])
       expect(ingested_article.funder).to eq(['National Human Genome Research Institute', 'Office of Science', 'Center of Excellence in Genomic Science', 'BBSRC Growing Health', 'National Institutes of Health', 'Office of the Director', 'NIH National Human Genome Research Institute Phenomics First Resource', 'Open Targets', 'EMBL-EBI', 'GSK', 'EMBL-EBI Core Funds', 'Dicty database and Stock Center', 'Celgene', 'Takeda', 'Gene Ontology Consortium', 'Biogen', 'Office of Basic Energy Sciences', 'NICHD', 'Wellcome Trust Sanger Institute', 'Alliance of Genome Resources', 'NIH', 'US Department of Energy', 'Wellcome Grant', 'Sanofi', 'Delivering Sustainable Wheat'])
+      # Validate creator size, verify fields are present
+      expect(ingested_article.creators.length).to eq(3)
+      ingested_article.creators.each_with_index do |creator, i|
+        expect(creator).to be_a(Person)
+        expect(creator['name']).to be_present
+        expect(creator['orcid']).to be_present
+        expect(creator['index']).to be_present
+      end
+      # Journal and page assertions
       expect(ingested_article.journal_title).to eq('Administration and Policy in Mental Health')
       expect(ingested_article.journal_volume).to eq('12')
       expect(ingested_article.journal_issue).to eq('435313')
       expect(ingested_article.page_start).to eq('1')
       expect(ingested_article.page_end).to eq('10')
+      # Rights and type assertions
       expect(ingested_article.rights_statement).to eq('http://rightsstatements.org/vocab/InC/1.0/')
       expect(ingested_article.rights_statement_label).to eq('In Copyright')
       expect(ingested_article.dcmi_type).to include('http://purl.org/dc/dcmitype/Text')
