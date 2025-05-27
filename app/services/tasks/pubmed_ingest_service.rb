@@ -217,25 +217,40 @@ module Tasks
     end
 
     def generate_authors(metadata)
-      # WIP: Add Author affiliations 
+      # WIP: Add Author affiliations
       if metadata.name == 'PubmedArticle'
         metadata.xpath('MedlineCitation/Article/AuthorList/Author').map.with_index do |author, i|
-          {
+          res = {
             'name' => [author.xpath('LastName').text, author.xpath('ForeName').text].join(', '),
             'orcid' => author.at_xpath('Identifier[@Source="ORCID"]')&.text&.then { |id| "https://orcid.org/#{id}" } || '',
             'index' => i.to_s
           }
+          retrieve_author_affiliations(res, author, metadata.name)
+          res
         end
       else
         metadata.xpath('front/article-meta/contrib-group/contrib[@contrib-type="author"]').map.with_index do |author, i|
-          {
+          res = {
             'name' => [author.xpath('name/surname').text, author.xpath('name/given-names').text].join(', '),
             'orcid' => author.at_xpath('contrib-id')&.text.to_s || '',
             'index' => i.to_s
           }
+          retrieve_author_affiliations(res, author, metadata.name)
+          res
         end
       end
     end
+
+    def retrieve_author_affiliations(hash, author, metadata_name)
+      if metadata_name == 'PubmedArticle'
+        affiliations = author.xpath('AffiliationInfo/Affiliation').map(&:text)
+        # Search for UNC affiliation
+        unc_affiliation = affiliations.find { |aff| AffiliationUtilsHelper.unc_affiliation?(aff) }
+        # Fallback to first affiliation if no UNC affiliation found
+        hash['other_affiliation'] = unc_affiliation.presence || affiliations[0].presence || ''
+      end
+    end
+
 
     def get_date_issued(metadata)
       pubdate = if metadata.name == 'PubmedArticle'

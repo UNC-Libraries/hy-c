@@ -217,12 +217,18 @@ RSpec.describe Tasks::PubmedIngestService do
         expect(creator['name']).to be_present
         expect(creator['orcid']).to be_present
         expect(creator['index']).to be_present
+        expect(creator['other_attributes']).to be_present
       end
       # Validate specific creator, selected by name
       sample_creator = ingested_article.creators.find { |c| active_relation_to_string(c['name']) == 'Awori, Violet' }
       expect(sample_creator).to be_present
       expect(active_relation_to_string(sample_creator['index'])).to eq('0')
       expect(active_relation_to_string(sample_creator['orcid'])).to eq('https://orcid.org/0000-0001-0000-0027')
+      expect(active_relation_to_string(sample_creator['other_affiliation'])).to include('Aga Khan University Hospital, Nairobi, Kenya.')
+      # Retrieve another sample creator with non-UNC and UNC affiliations
+      sample_creator_multi_affil = ingested_article.creators.find { |c| active_relation_to_string(c['name']) == 'Kisakye, Alice' }
+      expect(sample_creator_multi_affil).to be_present
+      expect(active_relation_to_string(sample_creator_multi_affil['other_affiliation'])).to eq('Department of Orthopaedics, University of North Carolina-Chapel Hill, Chapel Hill, North Carolina.')
       # Journal and page assertions
       expect(ingested_article.journal_title).to eq('Journal of neurovirology')
       expect(ingested_article.journal_volume).to eq('26')

@@ -1089,6 +1089,7 @@
                         <ForeName>Alice</ForeName>
                         <Initials>A</Initials><Identifier Source="ORCID">0000-0001-0000-0029</Identifier>
                         <AffiliationInfo>
+                            <Affiliation>Department of Orthopaedics, University of North Carolina-Chapel Hill, Chapel Hill, North Carolina.</Affiliation>
                             <Affiliation>Rakai Health Sciences Program, Kalisizo, Uganda.</Affiliation>
                         </AffiliationInfo>
                     </Author>
