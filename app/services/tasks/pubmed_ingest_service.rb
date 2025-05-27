@@ -232,7 +232,7 @@ module Tasks
         metadata.xpath('front/article-meta/contrib-group/contrib[@contrib-type="author"]').map.with_index do |author, i|
           res = {
             'name' => [author.xpath('name/surname').text, author.xpath('name/given-names').text].join(', '),
-            'orcid' => author.at_xpath('contrib-id')&.text.to_s || '',
+            'orcid' => author.at_xpath('contrib-id[@contrib-id-type="orcid"]')&.text.to_s || '',
             'index' => i.to_s
           }
           retrieve_author_affiliations(res, author, metadata.name)
@@ -248,6 +248,7 @@ module Tasks
         unc_affiliation = affiliations.find { |aff| AffiliationUtilsHelper.unc_affiliation?(aff) }
         # Fallback to first affiliation if no UNC affiliation found
         hash['other_affiliation'] = unc_affiliation.presence || affiliations[0].presence || ''
+      else
       end
     end
 
