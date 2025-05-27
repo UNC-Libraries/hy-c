@@ -34,16 +34,16 @@
                     <AbstractText Label="METHODS" NlmCategory="METHODS">An open-label cluster randomized controlled study was conducted between 2016 and 2018 in 40 rural clinics in South Africa. The study statistician randomized PHC nurse-supervisors 1:1 into 16 clusters (eight nurse-supervisors supporting 20 clinics per arm) to receive QI, supported HIV-TB integration intervention or standard of care (control). Nurse supervisors and clinics under their supervision, based in the study health districts were eligible for inclusion in this study. Nurse supervisors were excluded if their clinics were managed by municipal health (different resource allocation), did not offer co-located antiretroviral therapy (ART) and TB services, services were performed by a single nurse, did not receive non-governmental organisation (NGO) support, patient data was not available for &gt; 50% of attendees. The analysis population consists of all patients newly diagnosed with (i) both TB and HIV (ii) HIV only (among patients previously treated for TB or those who never had TB before) and (iii) TB only (among patients already diagnosed with HIV or those who were never diagnosed with HIV) after QI implementation in the intervention arm, or enrolment in the control arm. Mortality rates was assessed 12 months post enrolment, using unpaired 
                         <i>t</i>-tests and cox-proportional hazards model. (Clinicaltrials.gov, NCT02654613, registered 01 June 2015, trial closed).
                     </AbstractText>
-                    <AbstractText Label="FINDINGS" NlmCategory="RESULTS">Overall, 21 379 participants were enrolled between December 2016 and December 2018 in intervention and control arm clinics: 1329 and 841 HIV-TB co-infected (10&#xb7;2%); 10&#xa0;799 and 6&#xa0;611 people living with Human Immunodeficiency Virus (HIV)/ acquired immunodeficiency syndrome (AIDS) (PLWHA) only (81&#xb7;4%); 1&#xa0;131 and 668 patients with TB only (8&#xb7;4%), respectively. Average cluster sizes were 1657 (range 170-5782) and 1015 (range 33-2027) in intervention and control arms. By 12 months, 6529 (68&#xb7;7%) and 4074 (70&#xb7;4%) were alive and in care, 568 (6&#xb7;0%) and 321 (5&#xb7;6%) had completed TB treatment, 1078 (11&#xb7;3%) and 694 (12&#xb7;0%) were lost to follow-up, with 245 and 156 deaths occurring in intervention and control arms, respectively. Mortality rates overall [95% confidence interval (CI)] was 4&#xb7;5 (3&#xb7;4-5&#xb7;9) in intervention arm, and 3&#xb7;8 (2&#xb7;6-5&#xb7;4) per 100 person-years in control arm clusters [mortality rate ratio (MRR): 1&#xb7;19 (95% CI 0&#xb7;79-1&#xb7;80)]. Mortality rates among HIV-TB co-infected patients was 10&#xb7;1 (6&#xb7;7-15&#xb7;3) and 9&#xb7;8 (5&#xb7;0-18&#xb7;9) per 100 person-years, [MRR: 1&#xb7;04 (95% CI 0&#xb7;51-2&#xb7;10)], in intervention and control arm clusters, respectively.</AbstractText>
+                    <AbstractText Label="FINDINGS" NlmCategory="RESULTS">Overall, 21 379 participants were enrolled between December 2016 and December 2018 in intervention and control arm clinics: 1329 and 841 HIV-TB co-infected (10&#xB7;2%); 10&#xA0;799 and 6&#xA0;611 people living with Human Immunodeficiency Virus (HIV)/ acquired immunodeficiency syndrome (AIDS) (PLWHA) only (81&#xB7;4%); 1&#xA0;131 and 668 patients with TB only (8&#xB7;4%), respectively. Average cluster sizes were 1657 (range 170-5782) and 1015 (range 33-2027) in intervention and control arms. By 12 months, 6529 (68&#xB7;7%) and 4074 (70&#xB7;4%) were alive and in care, 568 (6&#xB7;0%) and 321 (5&#xB7;6%) had completed TB treatment, 1078 (11&#xB7;3%) and 694 (12&#xB7;0%) were lost to follow-up, with 245 and 156 deaths occurring in intervention and control arms, respectively. Mortality rates overall [95% confidence interval (CI)] was 4&#xB7;5 (3&#xB7;4-5&#xB7;9) in intervention arm, and 3&#xB7;8 (2&#xB7;6-5&#xB7;4) per 100 person-years in control arm clusters [mortality rate ratio (MRR): 1&#xB7;19 (95% CI 0&#xB7;79-1&#xB7;80)]. Mortality rates among HIV-TB co-infected patients was 10&#xB7;1 (6&#xB7;7-15&#xB7;3) and 9&#xB7;8 (5&#xB7;0-18&#xB7;9) per 100 person-years, [MRR: 1&#xB7;04 (95% CI 0&#xB7;51-2&#xB7;10)], in intervention and control arm clusters, respectively.</AbstractText>
                     <AbstractText Label="INTERPRETATION" NlmCategory="CONCLUSIONS">HIV-TB integration supported by a QI intervention did not reduce mortality in HIV-TB co-infected patients. Demonstrating mortality benefit from health systems process improvements in real-world operational settings remains challenging. Despite the study being potentially underpowered to demonstrate the effect size, integration interventions were implemented using existing facility staff and infrastructure reflecting the real-world context where most patients in similar settings access care, thereby improving generalizability and scalability of study findings.</AbstractText>
                     <AbstractText Label="FUNDING" NlmCategory="BACKGROUND">Research reported in this publication was supported by South African Medical Research Council (SAMRC), and UK Government's Newton Fund through United Kingdom Medical Research Council (UKMRC).</AbstractText>
-                    <CopyrightInformation>&#xa9; 2022 The Author(s).</CopyrightInformation>
+                    <CopyrightInformation>&#xA9; 2022 The Author(s).</CopyrightInformation>
                 </Abstract>
                 <AuthorList CompleteYN="Y">
                     <Author ValidYN="Y">
                         <LastName>Naidoo</LastName>
                         <ForeName>Kogieleum</ForeName>
-                        <Initials>K</Initials>
+                        <Initials>K</Initials><Identifier Source="ORCID">0000-0001-0000-0000</Identifier>
                         <AffiliationInfo>
                             <Affiliation>Centre for the AIDS Programme of Research in South Africa (CAPRISA), University of KwaZulu-Natal Nelson R Mandela School of Medicine, Private Bag X7 Congella, Durban 4013, South Africa.</Affiliation>
                         </AffiliationInfo>
@@ -54,7 +54,7 @@
                     <Author ValidYN="Y">
                         <LastName>Gengiah</LastName>
                         <ForeName>Santhanalakshmi</ForeName>
-                        <Initials>S</Initials>
+                        <Initials>S</Initials><Identifier Source="ORCID">0000-0001-0000-0001</Identifier>
                         <AffiliationInfo>
                             <Affiliation>Centre for the AIDS Programme of Research in South Africa (CAPRISA), University of KwaZulu-Natal Nelson R Mandela School of Medicine, Private Bag X7 Congella, Durban 4013, South Africa.</Affiliation>
                         </AffiliationInfo>
@@ -62,7 +62,7 @@
                     <Author ValidYN="Y">
                         <LastName>Yende-Zuma</LastName>
                         <ForeName>Nonhlanhla</ForeName>
-                        <Initials>N</Initials>
+                        <Initials>N</Initials><Identifier Source="ORCID">0000-0001-0000-0002</Identifier>
                         <AffiliationInfo>
                             <Affiliation>Centre for the AIDS Programme of Research in South Africa (CAPRISA), University of KwaZulu-Natal Nelson R Mandela School of Medicine, Private Bag X7 Congella, Durban 4013, South Africa.</Affiliation>
                         </AffiliationInfo>
@@ -73,7 +73,7 @@
                     <Author ValidYN="Y">
                         <LastName>Mlobeli</LastName>
                         <ForeName>Regina</ForeName>
-                        <Initials>R</Initials>
+                        <Initials>R</Initials><Identifier Source="ORCID">0000-0001-0000-0003</Identifier>
                         <AffiliationInfo>
                             <Affiliation>Centre for the AIDS Programme of Research in South Africa (CAPRISA), University of KwaZulu-Natal Nelson R Mandela School of Medicine, Private Bag X7 Congella, Durban 4013, South Africa.</Affiliation>
                         </AffiliationInfo>
@@ -81,7 +81,7 @@
                     <Author ValidYN="Y">
                         <LastName>Ngozo</LastName>
                         <ForeName>Jacqueline</ForeName>
-                        <Initials>J</Initials>
+                        <Initials>J</Initials><Identifier Source="ORCID">0000-0001-0000-0004</Identifier>
                         <AffiliationInfo>
                             <Affiliation>KwaZulu- Natal Provincial Department of Health, South Africa.</Affiliation>
                         </AffiliationInfo>
@@ -89,7 +89,7 @@
                     <Author ValidYN="Y">
                         <LastName>Memela</LastName>
                         <ForeName>Nhlakanipho</ForeName>
-                        <Initials>N</Initials>
+                        <Initials>N</Initials><Identifier Source="ORCID">0000-0001-0000-0005</Identifier>
                         <AffiliationInfo>
                             <Affiliation>Centre for the AIDS Programme of Research in South Africa (CAPRISA), University of KwaZulu-Natal Nelson R Mandela School of Medicine, Private Bag X7 Congella, Durban 4013, South Africa.</Affiliation>
                         </AffiliationInfo>
@@ -97,7 +97,7 @@
                     <Author ValidYN="Y">
                         <LastName>Padayatchi</LastName>
                         <ForeName>Nesri</ForeName>
-                        <Initials>N</Initials>
+                        <Initials>N</Initials><Identifier Source="ORCID">0000-0001-0000-0006</Identifier>
                         <AffiliationInfo>
                             <Affiliation>Centre for the AIDS Programme of Research in South Africa (CAPRISA), University of KwaZulu-Natal Nelson R Mandela School of Medicine, Private Bag X7 Congella, Durban 4013, South Africa.</Affiliation>
                         </AffiliationInfo>
@@ -108,7 +108,7 @@
                     <Author ValidYN="Y">
                         <LastName>Barker</LastName>
                         <ForeName>Pierre</ForeName>
-                        <Initials>P</Initials>
+                        <Initials>P</Initials><Identifier Source="ORCID">0000-0001-0000-0007</Identifier>
                         <AffiliationInfo>
                             <Affiliation>Institute for Healthcare Improvement, Gilling's School of Global Public Health, UNC Chapel Hill, Chapel Hill, Cambridge, MA, USA.</Affiliation>
                         </AffiliationInfo>
@@ -116,7 +116,7 @@
                     <Author ValidYN="Y">
                         <LastName>Nunn</LastName>
                         <ForeName>Andrew</ForeName>
-                        <Initials>A</Initials>
+                        <Initials>A</Initials><Identifier Source="ORCID">0000-0001-0000-0008</Identifier>
                         <AffiliationInfo>
                             <Affiliation>Medical Research Council Clinical Trials Unit at University College, London, UK.</Affiliation>
                         </AffiliationInfo>
@@ -124,7 +124,7 @@
                     <Author ValidYN="Y">
                         <LastName>Karim</LastName>
                         <ForeName>Salim S Abdool</ForeName>
-                        <Initials>SSA</Initials>
+                        <Initials>SSA</Initials><Identifier Source="ORCID">0000-0001-0000-0009</Identifier>
                         <AffiliationInfo>
                             <Affiliation>Centre for the AIDS Programme of Research in South Africa (CAPRISA), University of KwaZulu-Natal Nelson R Mandela School of Medicine, Private Bag X7 Congella, Durban 4013, South Africa.</Affiliation>
                         </AffiliationInfo>
@@ -397,7 +397,7 @@
                     </ArticleIdList>
                 </Reference>
                 <Reference>
-                    <Citation>Vandormael A., Cuadros D., Kim H.Y., B&#xe4;rnighausen T., Tanser F. The state of the HIV epidemic in rural KwaZulu-Natal, South Africa: a novel application of disease metrics to assess trajectories and highlight areas for intervention. Int J Epidemiol. 2020;49(2):666&#x2013;675. doi: 10.1093/ije/dyz269. Last Accessed December 2021.</Citation>
+                    <Citation>Vandormael A., Cuadros D., Kim H.Y., B&#xE4;rnighausen T., Tanser F. The state of the HIV epidemic in rural KwaZulu-Natal, South Africa: a novel application of disease metrics to assess trajectories and highlight areas for intervention. Int J Epidemiol. 2020;49(2):666&#x2013;675. doi: 10.1093/ije/dyz269. Last Accessed December 2021.</Citation>
                     <ArticleIdList>
                         <ArticleId IdType="doi">10.1093/ije/dyz269</ArticleId>
                         <ArticleId IdType="pmc">PMC7266544</ArticleId>
@@ -483,7 +483,7 @@
                 <ELocationID EIdType="doi" ValidYN="Y">10.2217/pme-2020-0074</ELocationID>
                 <Abstract>
                     <AbstractText>
-                        <b>Aim:</b> Maximizing the utility and equity of genomic sequencing integration in clinical care requires engaging patients, their families, and communities. The NCGENES 2&#xa0;study explores the impact of engagement between clinicians and caregivers of children with undiagnosed conditions in the context of a diagnostic genomic sequencing study.
+                        <b>Aim:</b> Maximizing the utility and equity of genomic sequencing integration in clinical care requires engaging patients, their families, and communities. The NCGENES 2&#xA0;study explores the impact of engagement between clinicians and caregivers of children with undiagnosed conditions in the context of a diagnostic genomic sequencing study.
                         <b>Methods:</b> A Community Consult Team (CCT) of diverse parents and advocates for children with genetic and/or neurodevelopmental conditions was formed.
                         <b>Results:</b> Early and consistent engagement with the CCT resulted in adaptations to study protocol and materials relevant to this unique study population.
                         <b>Discussion:</b> This study demonstrates valuable contributions of community stakeholders to inform the implementation of translational genomics research for diverse participants.
@@ -493,19 +493,19 @@
                     <Author ValidYN="Y">
                         <LastName>Griesemer</LastName>
                         <ForeName>Ida</ForeName>
-                        <Initials>I</Initials>
+                        <Initials>I</Initials><Identifier Source="ORCID">0000-0001-0000-0010</Identifier>
                         <Identifier Source="ORCID">0000-0001-6556-2520</Identifier>
                         <AffiliationInfo>
                             <Affiliation>Department of Health Behavior, UNC Chapel Hill, Chapel Hill, NC, USA.</Affiliation>
                         </AffiliationInfo>
                         <AffiliationInfo>
-                            <Affiliation>Cecil G. Sheps Center for Health Services Research, UNC&#xa0;Chapel Hill, Chapel Hill&#xa0;NC, USA.</Affiliation>
+                            <Affiliation>Cecil G. Sheps Center for Health Services Research, UNC&#xA0;Chapel Hill, Chapel Hill&#xA0;NC, USA.</Affiliation>
                         </AffiliationInfo>
                     </Author>
                     <Author ValidYN="Y">
                         <LastName>Staley</LastName>
                         <ForeName>Brooke S</ForeName>
-                        <Initials>BS</Initials>
+                        <Initials>BS</Initials><Identifier Source="ORCID">0000-0001-0000-0011</Identifier>
                         <Identifier Source="ORCID">0000-0003-1502-602X</Identifier>
                         <AffiliationInfo>
                             <Affiliation>Department of Epidemiology, UNC Chapel Hill, Chapel Hill, NC, USA.</Affiliation>
@@ -514,7 +514,7 @@
                     <Author ValidYN="Y">
                         <LastName>Lightfoot</LastName>
                         <ForeName>Alexandra F</ForeName>
-                        <Initials>AF</Initials>
+                        <Initials>AF</Initials><Identifier Source="ORCID">0000-0001-0000-0012</Identifier>
                         <Identifier Source="ORCID">0000-0002-9681-5081</Identifier>
                         <AffiliationInfo>
                             <Affiliation>Department of Health Behavior, UNC Chapel Hill, Chapel Hill, NC, USA.</Affiliation>
@@ -526,7 +526,7 @@
                     <Author ValidYN="Y">
                         <LastName>Bain</LastName>
                         <ForeName>Lizzy</ForeName>
-                        <Initials>L</Initials>
+                        <Initials>L</Initials><Identifier Source="ORCID">0000-0001-0000-0013</Identifier>
                         <AffiliationInfo>
                             <Affiliation>Parent/Advocate, Knightdale, NC, USA.</Affiliation>
                         </AffiliationInfo>
@@ -534,7 +534,7 @@
                     <Author ValidYN="Y">
                         <LastName>Byrd</LastName>
                         <ForeName>Derrick</ForeName>
-                        <Initials>D</Initials>
+                        <Initials>D</Initials><Identifier Source="ORCID">0000-0001-0000-0014</Identifier>
                         <AffiliationInfo>
                             <Affiliation>Parent/Advocate, Family Resource Center South Atlantic, Raleigh, NC, USA.</Affiliation>
                         </AffiliationInfo>
@@ -542,7 +542,7 @@
                     <Author ValidYN="Y">
                         <LastName>Conway</LastName>
                         <ForeName>Carol</ForeName>
-                        <Initials>C</Initials>
+                        <Initials>C</Initials><Identifier Source="ORCID">0000-0001-0000-0015</Identifier>
                         <AffiliationInfo>
                             <Affiliation>Parent/Advocate, Parent Advocates for Adult Children with Intellectual &amp;/or Developmental Disabilities in NC, Chapel Hill, NC, USA.</Affiliation>
                         </AffiliationInfo>
@@ -550,7 +550,7 @@
                     <Author ValidYN="Y">
                         <LastName>Grant</LastName>
                         <ForeName>Tracey L</ForeName>
-                        <Initials>TL</Initials>
+                        <Initials>TL</Initials><Identifier Source="ORCID">0000-0001-0000-0016</Identifier>
                         <AffiliationInfo>
                             <Affiliation>Department of Genetics, UNC Chapel Hill, Chapel Hill, NC, USA.</Affiliation>
                         </AffiliationInfo>
@@ -558,7 +558,7 @@
                     <Author ValidYN="Y">
                         <LastName>Leach</LastName>
                         <ForeName>Barbara</ForeName>
-                        <Initials>B</Initials>
+                        <Initials>B</Initials><Identifier Source="ORCID">0000-0001-0000-0017</Identifier>
                         <AffiliationInfo>
                             <Affiliation>Parent/Advocate, Family Support Program, School of Social Work, UNC Chapel Hill, Chapel Hill, NC, USA.</Affiliation>
                         </AffiliationInfo>
@@ -566,7 +566,7 @@
                     <Author ValidYN="Y">
                         <LastName>Milko</LastName>
                         <ForeName>Laura</ForeName>
-                        <Initials>L</Initials>
+                        <Initials>L</Initials><Identifier Source="ORCID">0000-0001-0000-0018</Identifier>
                         <Identifier Source="ORCID">0000-0002-8060-9013</Identifier>
                         <AffiliationInfo>
                             <Affiliation>Department of Genetics, UNC Chapel Hill, Chapel Hill, NC, USA.</Affiliation>
@@ -575,7 +575,7 @@
                     <Author ValidYN="Y">
                         <LastName>Mollison</LastName>
                         <ForeName>Lonna</ForeName>
-                        <Initials>L</Initials>
+                        <Initials>L</Initials><Identifier Source="ORCID">0000-0001-0000-0019</Identifier>
                         <AffiliationInfo>
                             <Affiliation>Department of Genetics, UNC Chapel Hill, Chapel Hill, NC, USA.</Affiliation>
                         </AffiliationInfo>
@@ -583,7 +583,7 @@
                     <Author ValidYN="Y">
                         <LastName>Porter</LastName>
                         <ForeName>Nadiah</ForeName>
-                        <Initials>N</Initials>
+                        <Initials>N</Initials><Identifier Source="ORCID">0000-0001-0000-0020</Identifier>
                         <AffiliationInfo>
                             <Affiliation>Parent/Advocate, Durham, NC, USA.</Affiliation>
                         </AffiliationInfo>
@@ -591,7 +591,7 @@
                     <Author ValidYN="Y">
                         <LastName>Reid</LastName>
                         <ForeName>Sharron</ForeName>
-                        <Initials>S</Initials>
+                        <Initials>S</Initials><Identifier Source="ORCID">0000-0001-0000-0021</Identifier>
                         <AffiliationInfo>
                             <Affiliation>Parent/Advocate, Wake County Sickle Cell Support Group, Raleigh, NC, USA.</Affiliation>
                         </AffiliationInfo>
@@ -599,7 +599,7 @@
                     <Author ValidYN="Y">
                         <LastName>Smith</LastName>
                         <ForeName>Gerri</ForeName>
-                        <Initials>G</Initials>
+                        <Initials>G</Initials><Identifier Source="ORCID">0000-0001-0000-0022</Identifier>
                         <AffiliationInfo>
                             <Affiliation>Parent/Advocate, Holly Springs, NC, USA.</Affiliation>
                         </AffiliationInfo>
@@ -607,7 +607,7 @@
                     <Author ValidYN="Y">
                         <LastName>Waltz</LastName>
                         <ForeName>Margaret</ForeName>
-                        <Initials>M</Initials>
+                        <Initials>M</Initials><Identifier Source="ORCID">0000-0001-0000-0023</Identifier>
                         <AffiliationInfo>
                             <Affiliation>Department of Social Medicine, UNC Chapel Hill, Chapel Hill, NC, USA.</Affiliation>
                         </AffiliationInfo>
@@ -615,7 +615,7 @@
                     <Author ValidYN="Y">
                         <LastName>Berg</LastName>
                         <ForeName>Jonathan S</ForeName>
-                        <Initials>JS</Initials>
+                        <Initials>JS</Initials><Identifier Source="ORCID">0000-0001-0000-0024</Identifier>
                         <Identifier Source="ORCID">0000-0003-2360-2664</Identifier>
                         <AffiliationInfo>
                             <Affiliation>Department of Genetics, UNC Chapel Hill, Chapel Hill, NC, USA.</Affiliation>
@@ -624,7 +624,7 @@
                     <Author ValidYN="Y">
                         <LastName>Rini</LastName>
                         <ForeName>Christine</ForeName>
-                        <Initials>C</Initials>
+                        <Initials>C</Initials><Identifier Source="ORCID">0000-0001-0000-0025</Identifier>
                         <AffiliationInfo>
                             <Affiliation>Department of Medical Social Sciences, Feinberg School of Medicine &amp; Robert H. Lurie Comprehensive Cancer Center of Northwestern University, Chicago, IL, USA.</Affiliation>
                         </AffiliationInfo>
@@ -632,7 +632,7 @@
                     <Author ValidYN="Y">
                         <LastName>O'Daniel</LastName>
                         <ForeName>Julianne M</ForeName>
-                        <Initials>JM</Initials>
+                        <Initials>JM</Initials><Identifier Source="ORCID">0000-0001-0000-0026</Identifier>
                         <Identifier Source="ORCID">0000-0001-5843-4432</Identifier>
                         <AffiliationInfo>
                             <Affiliation>Department of Genetics, UNC Chapel Hill, Chapel Hill, NC, USA.</Affiliation>
@@ -1014,7 +1014,7 @@
                     </ArticleIdList>
                 </Reference>
                 <Reference>
-                    <Citation>Ochs-Balcom HM, Jandorf L, Wang Y et al. &#x201c;It takes a village&#x201d;: multilevel approaches to recruit African Americans and their families for genetic research. J. Community Genet 6(1), 39&#x2013;45 (2015).</Citation>
+                    <Citation>Ochs-Balcom HM, Jandorf L, Wang Y et al. &#x201C;It takes a village&#x201D;: multilevel approaches to recruit African Americans and their families for genetic research. J. Community Genet 6(1), 39&#x2013;45 (2015).</Citation>
                     <ArticleIdList>
                         <ArticleId IdType="pmc">PMC4286558</ArticleId>
                         <ArticleId IdType="pubmed">25112899</ArticleId>
@@ -1071,7 +1071,7 @@
                     <Author ValidYN="Y">
                         <LastName>Awori</LastName>
                         <ForeName>Violet</ForeName>
-                        <Initials>V</Initials>
+                        <Initials>V</Initials><Identifier Source="ORCID">0000-0001-0000-0027</Identifier>
                         <AffiliationInfo>
                             <Affiliation>Aga Khan University Hospital, Nairobi, Kenya.</Affiliation>
                         </AffiliationInfo>
@@ -1079,7 +1079,7 @@
                     <Author ValidYN="Y">
                         <LastName>Nakigozi</LastName>
                         <ForeName>Gertrude</ForeName>
-                        <Initials>G</Initials>
+                        <Initials>G</Initials><Identifier Source="ORCID">0000-0001-0000-0028</Identifier>
                         <AffiliationInfo>
                             <Affiliation>Rakai Health Sciences Program, Kalisizo, Uganda.</Affiliation>
                         </AffiliationInfo>
@@ -1087,7 +1087,7 @@
                     <Author ValidYN="Y">
                         <LastName>Kisakye</LastName>
                         <ForeName>Alice</ForeName>
-                        <Initials>A</Initials>
+                        <Initials>A</Initials><Identifier Source="ORCID">0000-0001-0000-0029</Identifier>
                         <AffiliationInfo>
                             <Affiliation>Rakai Health Sciences Program, Kalisizo, Uganda.</Affiliation>
                         </AffiliationInfo>
@@ -1095,7 +1095,7 @@
                     <Author ValidYN="Y">
                         <LastName>Batte</LastName>
                         <ForeName>James</ForeName>
-                        <Initials>J</Initials>
+                        <Initials>J</Initials><Identifier Source="ORCID">0000-0001-0000-0030</Identifier>
                         <AffiliationInfo>
                             <Affiliation>Rakai Health Sciences Program, Kalisizo, Uganda.</Affiliation>
                         </AffiliationInfo>
@@ -1103,7 +1103,7 @@
                     <Author ValidYN="Y">
                         <LastName>Anok</LastName>
                         <ForeName>Aggrey</ForeName>
-                        <Initials>A</Initials>
+                        <Initials>A</Initials><Identifier Source="ORCID">0000-0001-0000-0031</Identifier>
                         <AffiliationInfo>
                             <Affiliation>Rakai Health Sciences Program, Kalisizo, Uganda.</Affiliation>
                         </AffiliationInfo>
@@ -1111,7 +1111,7 @@
                     <Author ValidYN="Y">
                         <LastName>Mayanja</LastName>
                         <ForeName>Richard</ForeName>
-                        <Initials>R</Initials>
+                        <Initials>R</Initials><Identifier Source="ORCID">0000-0001-0000-0032</Identifier>
                         <AffiliationInfo>
                             <Affiliation>Rakai Health Sciences Program, Kalisizo, Uganda.</Affiliation>
                         </AffiliationInfo>
@@ -1119,7 +1119,7 @@
                     <Author ValidYN="Y">
                         <LastName>Nakasujja</LastName>
                         <ForeName>Noeline</ForeName>
-                        <Initials>N</Initials>
+                        <Initials>N</Initials><Identifier Source="ORCID">0000-0001-0000-0033</Identifier>
                         <AffiliationInfo>
                             <Affiliation>Department of Psychiatry, Makerere University, Kampala, Uganda.</Affiliation>
                         </AffiliationInfo>
@@ -1127,7 +1127,7 @@
                     <Author ValidYN="Y">
                         <LastName>Robertson</LastName>
                         <ForeName>Kevin R</ForeName>
-                        <Initials>KR</Initials>
+                        <Initials>KR</Initials><Identifier Source="ORCID">0000-0001-0000-0034</Identifier>
                         <AffiliationInfo>
                             <Affiliation>Department of Neurology, University of North Carolina-Chapel Hill, Chapel Hill, NC, USA.</Affiliation>
                         </AffiliationInfo>
@@ -1135,7 +1135,7 @@
                     <Author ValidYN="Y">
                         <LastName>Gray</LastName>
                         <ForeName>Ronald H</ForeName>
-                        <Initials>RH</Initials>
+                        <Initials>RH</Initials><Identifier Source="ORCID">0000-0001-0000-0035</Identifier>
                         <AffiliationInfo>
                             <Affiliation>Department of Epidemiology, Johns Hopkins University Bloomberg School of Public Health, Baltimore, MD, USA.</Affiliation>
                         </AffiliationInfo>
@@ -1143,7 +1143,7 @@
                     <Author ValidYN="Y">
                         <LastName>Wawer</LastName>
                         <ForeName>Maria J</ForeName>
-                        <Initials>MJ</Initials>
+                        <Initials>MJ</Initials><Identifier Source="ORCID">0000-0001-0000-0036</Identifier>
                         <AffiliationInfo>
                             <Affiliation>Department of Epidemiology, Johns Hopkins University Bloomberg School of Public Health, Baltimore, MD, USA.</Affiliation>
                         </AffiliationInfo>
@@ -1151,7 +1151,7 @@
                     <Author ValidYN="Y">
                         <LastName>Sacktor</LastName>
                         <ForeName>Ned</ForeName>
-                        <Initials>N</Initials>
+                        <Initials>N</Initials><Identifier Source="ORCID">0000-0001-0000-0037</Identifier>
                         <AffiliationInfo>
                             <Affiliation>Department of Neurology, Johns Hopkins University School of Medicine, Meyer 6-113, 600 N. Wolfe Street, Baltimore, MD, 21287, USA.</Affiliation>
                         </AffiliationInfo>
@@ -1159,7 +1159,7 @@
                     <Author ValidYN="Y">
                         <LastName>Saylor</LastName>
                         <ForeName>Deanna</ForeName>
-                        <Initials>D</Initials>
+                        <Initials>D</Initials><Identifier Source="ORCID">0000-0001-0000-0038</Identifier>
                         <Identifier Source="ORCID">0000-0002-9297-0244</Identifier>
                         <AffiliationInfo>
                             <Affiliation>Department of Neurology, Johns Hopkins University School of Medicine, Meyer 6-113, 600 N. Wolfe Street, Baltimore, MD, 21287, USA. deanna@jhmi.edu.</Affiliation>
@@ -1368,7 +1368,7 @@
                     </ArticleIdList>
                 </Reference>
                 <Reference>
-                    <Citation>Cantres-Rosario Y, Plaud-Valent&#xed;n M, Gerena Y, Skolasky RL, Wojna V, &amp; Mel&#xe9;ndez LM (2013). Cathepsin B and cystatin B in HIV-seropositive women are associated with infection and HIV-1-associated neurocognitive disorders. AIDS. 10.1097/QAD.0b013e32835b3e47</Citation>
+                    <Citation>Cantres-Rosario Y, Plaud-Valent&#xED;n M, Gerena Y, Skolasky RL, Wojna V, &amp; Mel&#xE9;ndez LM (2013). Cathepsin B and cystatin B in HIV-seropositive women are associated with infection and HIV-1-associated neurocognitive disorders. AIDS. 10.1097/QAD.0b013e32835b3e47</Citation>
                     <ArticleIdList>
                         <ArticleId IdType="doi">10.1097/QAD.0b013e32835b3e47</ArticleId>
                         <ArticleId IdType="pmc">PMC3593054</ArticleId>
@@ -1445,7 +1445,7 @@
                     </ArticleIdList>
                 </Reference>
                 <Reference>
-                    <Citation>Marquine Mar&#xed;a J., Flores I, Kamat R, Johnson N, Umlauf A, Letendre S, &#x2026; Heaton RK (2018). A composite of multisystem injury and neurocognitive impairment in HIV infection: association with everyday functioning. Journal of NeuroVirology. 10.1007/s13365-018-0643-3</Citation>
+                    <Citation>Marquine Mar&#xED;a J., Flores I, Kamat R, Johnson N, Umlauf A, Letendre S, &#x2026; Heaton RK (2018). A composite of multisystem injury and neurocognitive impairment in HIV infection: association with everyday functioning. Journal of NeuroVirology. 10.1007/s13365-018-0643-3</Citation>
                     <ArticleIdList>
                         <ArticleId IdType="doi">10.1007/s13365-018-0643-3</ArticleId>
                         <ArticleId IdType="pmc">PMC6202221</ArticleId>
@@ -1453,7 +1453,7 @@
                     </ArticleIdList>
                 </Reference>
                 <Reference>
-                    <Citation>Marquine Mar&#xed;a J., Umlauf A, Rooney AS, Fazeli PL, Gouaux BD, Woods SP, &#x2026; Moore DJ (2014). The veterans aging cohort study index is associated with concurrent risk for neurocognitive impairment. Journal of Acquired Immune Deficiency Syndromes. 10.1097/QAI.0000000000000008</Citation>
+                    <Citation>Marquine Mar&#xED;a J., Umlauf A, Rooney AS, Fazeli PL, Gouaux BD, Woods SP, &#x2026; Moore DJ (2014). The veterans aging cohort study index is associated with concurrent risk for neurocognitive impairment. Journal of Acquired Immune Deficiency Syndromes. 10.1097/QAI.0000000000000008</Citation>
                     <ArticleIdList>
                         <ArticleId IdType="doi">10.1097/QAI.0000000000000008</ArticleId>
                         <ArticleId IdType="pmc">PMC3907119</ArticleId>
@@ -1584,14 +1584,14 @@
                 </Pagination>
                 <ELocationID EIdType="doi" ValidYN="Y">10.1111/sms.13310</ELocationID>
                 <Abstract>
-                    <AbstractText>Interleukin-1 (IL1) is a cytokine that plays a role in inflammation and is a potential contributor to the inflammation present in tendinopathy. Its inhibition may be of use in the treatment of tendinopathy and has been a target for treatment. To evaluate how an IL1-receptor antagonist (IL1-RA) reverses pathologic changes associated with established patellar tendinopathy, we randomized 48 Sprague-Dawley retired breeder rats into three groups having weekly bilateral patellar tendon injections for 6&#xa0;weeks. The control group received 0.1&#xa0;mL saline for 6&#xa0;weeks. The intervention groups were treated with 0.1&#xa0;mL 2% carrageenan for 4&#xa0;weeks. Beginning at week three, the IL1-RA group received 0.94&#xa0;mg of the IL1-RA (2.5&#xa0;mg/kg) added to the 0.1&#xa0;mL 2% carrageenan and 0.94&#xa0;mg of the IL1-RA alone for the final 2&#xa0;weeks, while the CAR received 0.1&#xa0;mL saline for the final 2&#xa0;weeks. Animals were euthanized 6&#xa0;weeks after initial injection. The CAR group demonstrated significantly (P&#xa0;&lt;&#xa0;0.05) shorter tendon lengths (7.81&#xa0;&#xb1;&#xa0;0.44&#xa0;mm) than the control (8.25&#xa0;&#xb1;&#xa0;0.58&#xa0;mm) and IL1-RA (8.34&#xa0;&#xb1;&#xa0;0.52&#xa0;mm) group (P&#xa0;&lt;&#xa0;0.05). Macroscopically, plaque-like formations were reduced and margins of the tendon were more evident in the IL1-RA group compared to the CAR group. CAR group demonstrated significantly greater histopathologic changes (inflammatory cell density, disorganization of collagen, nuclear rounding, and angiogenesis) than the control and IL1-RA group. No significant difference in mechanical properties of the tendon was noted. These findings demonstrate IL1-RA can reduce pathologic changes in the patellar tendon in an established tendonitis model although did not demonstrate a difference in mechanical properties.</AbstractText>
-                    <CopyrightInformation>&#xa9; 2018 John Wiley &amp; Sons A/S. Published by John Wiley &amp; Sons Ltd.</CopyrightInformation>
+                    <AbstractText>Interleukin-1 (IL1) is a cytokine that plays a role in inflammation and is a potential contributor to the inflammation present in tendinopathy. Its inhibition may be of use in the treatment of tendinopathy and has been a target for treatment. To evaluate how an IL1-receptor antagonist (IL1-RA) reverses pathologic changes associated with established patellar tendinopathy, we randomized 48 Sprague-Dawley retired breeder rats into three groups having weekly bilateral patellar tendon injections for 6&#xA0;weeks. The control group received 0.1&#xA0;mL saline for 6&#xA0;weeks. The intervention groups were treated with 0.1&#xA0;mL 2% carrageenan for 4&#xA0;weeks. Beginning at week three, the IL1-RA group received 0.94&#xA0;mg of the IL1-RA (2.5&#xA0;mg/kg) added to the 0.1&#xA0;mL 2% carrageenan and 0.94&#xA0;mg of the IL1-RA alone for the final 2&#xA0;weeks, while the CAR received 0.1&#xA0;mL saline for the final 2&#xA0;weeks. Animals were euthanized 6&#xA0;weeks after initial injection. The CAR group demonstrated significantly (P&#xA0;&lt;&#xA0;0.05) shorter tendon lengths (7.81&#xA0;&#xB1;&#xA0;0.44&#xA0;mm) than the control (8.25&#xA0;&#xB1;&#xA0;0.58&#xA0;mm) and IL1-RA (8.34&#xA0;&#xB1;&#xA0;0.52&#xA0;mm) group (P&#xA0;&lt;&#xA0;0.05). Macroscopically, plaque-like formations were reduced and margins of the tendon were more evident in the IL1-RA group compared to the CAR group. CAR group demonstrated significantly greater histopathologic changes (inflammatory cell density, disorganization of collagen, nuclear rounding, and angiogenesis) than the control and IL1-RA group. No significant difference in mechanical properties of the tendon was noted. These findings demonstrate IL1-RA can reduce pathologic changes in the patellar tendon in an established tendonitis model although did not demonstrate a difference in mechanical properties.</AbstractText>
+                    <CopyrightInformation>&#xA9; 2018 John Wiley &amp; Sons A/S. Published by John Wiley &amp; Sons Ltd.</CopyrightInformation>
                 </Abstract>
                 <AuthorList CompleteYN="Y">
                     <Author ValidYN="Y">
                         <LastName>Eskildsen</LastName>
                         <ForeName>Scott M</ForeName>
-                        <Initials>SM</Initials>
+                        <Initials>SM</Initials><Identifier Source="ORCID">0000-0001-0000-0039</Identifier>
                         <Identifier Source="ORCID">0000-0002-1730-5439</Identifier>
                         <AffiliationInfo>
                             <Affiliation>Department of Orthopaedics, University of North Carolina-Chapel Hill, Chapel Hill, North Carolina.</Affiliation>
@@ -1600,7 +1600,7 @@
                     <Author ValidYN="Y">
                         <LastName>Berkoff</LastName>
                         <ForeName>David J</ForeName>
-                        <Initials>DJ</Initials>
+                        <Initials>DJ</Initials><Identifier Source="ORCID">0000-0001-0000-0040</Identifier>
                         <AffiliationInfo>
                             <Affiliation>Department of Orthopaedics, University of North Carolina-Chapel Hill, Chapel Hill, North Carolina.</Affiliation>
                         </AffiliationInfo>
@@ -1608,7 +1608,7 @@
                     <Author ValidYN="Y">
                         <LastName>Kallianos</LastName>
                         <ForeName>Stephen A</ForeName>
-                        <Initials>SA</Initials>
+                        <Initials>SA</Initials><Identifier Source="ORCID">0000-0001-0000-0041</Identifier>
                         <AffiliationInfo>
                             <Affiliation>Department of Orthopaedics, University of North Carolina-Chapel Hill, Chapel Hill, North Carolina.</Affiliation>
                         </AffiliationInfo>
@@ -1616,7 +1616,7 @@
                     <Author ValidYN="Y">
                         <LastName>Weinhold</LastName>
                         <ForeName>Paul S</ForeName>
-                        <Initials>PS</Initials>
+                        <Initials>PS</Initials><Identifier Source="ORCID">0000-0001-0000-0042</Identifier>
                         <AffiliationInfo>
                             <Affiliation>Department of Orthopaedics, University of North Carolina-Chapel Hill, Chapel Hill, North Carolina.</Affiliation>
                         </AffiliationInfo>
@@ -1845,13 +1845,13 @@
                     </ArticleIdList>
                 </Reference>
                 <Reference>
-                    <Citation>Marsolais D, Duchesne E, C&#xf4;t&#xe9; CH, Frenette J. Inflammatory cells do not decrease the ultimate tensile strength of intact tendons in vivo and in vitro: protective role of mechanical loading. J Appl Physiol Bethesda Md 1985 2007;102:11&#x2013;17.</Citation>
+                    <Citation>Marsolais D, Duchesne E, C&#xF4;t&#xE9; CH, Frenette J. Inflammatory cells do not decrease the ultimate tensile strength of intact tendons in vivo and in vitro: protective role of mechanical loading. J Appl Physiol Bethesda Md 1985 2007;102:11&#x2013;17.</Citation>
                     <ArticleIdList>
                         <ArticleId IdType="pubmed">16916923</ArticleId>
                     </ArticleIdList>
                 </Reference>
                 <Reference>
-                    <Citation>Tillander B, Franz&#xe9;n LE, Nilsson E, Norlin R. Carrageenan-induced subacromial bursitis caused changes in the rat&#x2019;s rotator cuff. J Orthop Res Off Publ Orthop Res Soc 2001;19:441&#x2013;447.</Citation>
+                    <Citation>Tillander B, Franz&#xE9;n LE, Nilsson E, Norlin R. Carrageenan-induced subacromial bursitis caused changes in the rat&#x2019;s rotator cuff. J Orthop Res Off Publ Orthop Res Soc 2001;19:441&#x2013;447.</Citation>
                     <ArticleIdList>
                         <ArticleId IdType="pubmed">11398858</ArticleId>
                     </ArticleIdList>

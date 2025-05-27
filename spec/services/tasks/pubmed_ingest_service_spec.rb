@@ -185,38 +185,54 @@ RSpec.describe Tasks::PubmedIngestService do
       expect(@res[:successfully_ingested].length).to eq(2)
       expect(@res[:failed].length).to eq(2)
 
-      # Grab the first successfully ingested article and validate metadata. 
-      # ingested_article_id = Article.where(title: ['The Veterans Aging Cohort Study Index is not associated with HIV-associated neurocognitive disorders in Uganda.']).first&.id
-      # ingested_article.reload
-      # WIP: Trying different reference to find the article
+      # Grab the first successfully ingested article and validate metadata
       ingested_article = @res[:successfully_ingested][0]['article']
       # Sanity check and validate article title was set correctly
       expect(ingested_article).not_to be_nil
-      # Field-level assertions
-      expect(ingested_article.abstract.first).to include(
-        'In this first study of the VACS Index in sub-Saharan Africa, ' \
-        'we found no association between VACS Index score and HAND.'
-      ) 
+      # Identifier field assertions
       expect(ingested_article.identifier).to include(
                         'PMID: 31721082',
                         'PMCID: PMC8012007',
                         'DOI: https://dx.doi.org/10.1007/s13365-019-00806-2'
                       )
       expect(ingested_article.issn).to include('1538-2443')
+      # Basic attribute assertions
+      expect(ingested_article.admin_set).to eq(admin_set)
+      expect(ingested_article.depositor).to eq(admin.uid)
+      expect(ingested_article.resource_type).to eq(['Article'])
+      expect(ingested_article.title).to eq(['The Veterans Aging Cohort Study Index is not associated with HIV-associated neurocognitive disorders in Uganda.'])
+      expect(ingested_article.abstract.first).to include(
+        'In this first study of the VACS Index in sub-Saharan Africa, ' \
+        'we found no association between VACS Index score and HAND.'
+      )
       expect(ingested_article.date_issued).to eq('2019-11-14')
+      # No explicit publisher in the XML, so expect it to be empty
       expect(ingested_article.publisher).to be_empty
       expect(ingested_article.keyword).to eq(['HIV-associated neurocognitive disorder', 'Global health', 'HIV', 'Veterans aging cohort study index', 'Uganda'])
       expect(ingested_article.funder).to eq(['NINDS NIH HHS', 'NIMH NIH HHS', 'National Institute of Allergy and Infectious Diseases', 'NIAID NIH HHS'])
+      # Validate creator size, verify fields are present
+      expect(ingested_article.creators.length).to eq(12)
+      ingested_article.creators.each_with_index do |creator, i|
+        expect(creator).to be_a(Person)
+        expect(creator['name']).to be_present
+        expect(creator['orcid']).to be_present
+        expect(creator['index']).to be_present
+      end
+      # Validate specific creator, selected by name
+      sample_creator = ingested_article.creators.find { |c| active_relation_to_string(c['name']) == 'Awori, Violet' }
+      expect(sample_creator).to be_present
+      expect(active_relation_to_string(sample_creator['index'])).to eq('0')
+      expect(active_relation_to_string(sample_creator['orcid'])).to eq('https://orcid.org/0000-0001-0000-0027')
+      # Journal and page assertions
       expect(ingested_article.journal_title).to eq('Journal of neurovirology')
       expect(ingested_article.journal_volume).to eq('26')
       expect(ingested_article.journal_issue).to eq('2')
       expect(ingested_article.page_start).to eq('252')
       expect(ingested_article.page_end).to eq('256')
+      # Rights and type assertions
       expect(ingested_article.rights_statement).to eq('http://rightsstatements.org/vocab/InC/1.0/')
       expect(ingested_article.rights_statement_label).to eq('In Copyright')
       expect(ingested_article.dcmi_type).to include('http://purl.org/dc/dcmitype/Text')
-      # expect(ingested_article.publisher).to eq(['Oxford University Press'])
-      # expect(ingested_article.publisher).to eq(['Oxford University Press'])
     end
 
     it 'processes pmc articles and handles failures' do
@@ -257,8 +273,6 @@ RSpec.describe Tasks::PubmedIngestService do
       expect(@res[:failed].length).to eq(2)
 
       # Grab the first successfully ingested article and validate metadata
-      # ingested_article_id = Article.where(title: ['Comparing Medicaid Expenditures for Standard and Enhanced Therapeutic Foster Care']).first&.id
-      # ingested_article.reload
       ingested_article = @res[:successfully_ingested][0]['article']
        # Sanity check and validate article title was set correctly
       expect(ingested_article).not_to be_nil
@@ -352,6 +366,10 @@ RSpec.describe Tasks::PubmedIngestService do
         service.send(:attach_pdf, article, metadata, skipped_row)
       }.to raise_error(StandardError, /File attachment error/)
     end
+  end
+
+  def active_relation_to_string(active_relation)
+    active_relation.to_a.map(&:to_s).join('; ')
   end
 
   def build_dynamic_pubmed_xml(count, db_type)
