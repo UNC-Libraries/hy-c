@@ -246,7 +246,7 @@ module Tasks
       if metadata_name == 'PubmedArticle'
         affiliations = author.xpath('AffiliationInfo/Affiliation').map(&:text)
         # Search for UNC affiliation
-        unc_affiliation = affiliations.find { |aff| AffiliationUtilsHelper.unc_affiliation?(aff) }
+        unc_affiliation = affiliations.find { |aff| GeneralUtilsHelper.is_unc_affiliation?(aff) }
         # Fallback to first affiliation if no UNC affiliation found
         hash['other_affiliation'] = unc_affiliation.presence || affiliations[0].presence || ''
       else
@@ -277,7 +277,7 @@ module Tasks
         end
         # puts "[DEBUG_AFFILIATION] =======> RID List: #{rid_list.inspect}" unless rid_list.empty?
         # Search for UNC affiliation
-        unc_affiliation = affiliations.find { |aff| AffiliationUtilsHelper.unc_affiliation?(aff) }
+        unc_affiliation = affiliations.find { |aff| GeneralUtilsHelper.is_unc_affiliation?(aff) }
         # puts "[DEBUG_AFFILIATION] =======> UNC Affiliation: #{unc_affiliation.inspect}".truncate(1000) unless unc_affiliation.nil?
         # Fallback to first affiliation if no UNC affiliation found
         hash['other_affiliation'] = unc_affiliation.presence || affiliations[0].presence || ''

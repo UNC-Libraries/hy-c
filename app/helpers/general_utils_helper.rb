@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-module AffiliationUtilsHelper
+module GeneralUtilsHelper
   # Matches common variations: "UNC Chapel Hill", "UNC-Chapel Hill", full university name, and abbreviations
   # Handles missing prepositions (e.g., "at", "of") and varied spacing/hyphenation
   # Case-insensitive and whitespace-tolerant
@@ -13,7 +13,7 @@ module AffiliationUtilsHelper
 /ix.freeze
 
   # Returns true if the given affiliation string likely refers to UNC-Chapel Hill
-  def self.unc_affiliation?(affiliation_text)
+  def self.is_unc_affiliation?(affiliation_text)
     # Convert regex match to strict boolean
     !!(affiliation_text.to_s =~ UNC_AFFILIATION_REGEX)
   end

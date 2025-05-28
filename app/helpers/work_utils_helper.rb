@@ -84,14 +84,6 @@ module WorkUtilsHelper
     permissions_array
   end
 
-  # Use language code to get iso639-2 uri from service
-  # TODO: Use multi-line version for conditional
-  def self.get_language_uri(language_codes)
-    Array.wrap(language_codes).map do |e|
-      lang_uri = "http://id.loc.gov/vocabulary/iso639-2/#{e.downcase}"
-      LanguagesService.label(lang_uri) ? lang_uri : e
-    end
-  end
 
   private_class_method
 
