@@ -251,29 +251,29 @@ module Tasks
         hash['other_affiliation'] = unc_affiliation.presence || affiliations[0].presence || ''
       else
         affiliations = author.xpath('aff/institution').map(&:text)
-        # puts "[DEBUG_AFFILIATION] =======> Affiliations from institution: #{affiliations.inspect}".truncate(1000) unless affiliations.empty?  
+        # puts "[DEBUG_AFFILIATION] =======> Affiliations from institution: #{affiliations.inspect}".truncate(1000) unless affiliations.empty?
         if affiliations.empty? && alt_affiliation_path.any?
           # author_affiliation_labels = author.xpath('xref[@ref-type="aff"]').map(&:text)
           # puts "[DEBUG_AFFILIATION] =======> Author Affiliation Labels: #{author_affiliation_labels.inspect}" unless author_affiliation_labels.empty?
-            author_affiliation_ids = author.xpath('xref[@ref-type="aff"]').map { |n| n['rid'] }
+          author_affiliation_ids = author.xpath('xref[@ref-type="aff"]').map { |n| n['rid'] }
             # puts "[DEBUG_AFFILIATION] =======> Author Affiliation IDs: #{author_affiliation_ids.inspect}".truncate(1000) unless author_affiliation_ids.empty?
-            if author_affiliation_ids.any?
-              # Regex to remove trailing comma and whitespace
-              affiliations = author_affiliation_ids.map do |id|
-                nodes = alt_affiliation_path.xpath("aff[@id='#{id}']/institution-wrap/institution")
-                nodes.map(&:text).join.sub(/,\s*\z/, '')
-              end
-              # puts "[DEBUG_AFFILIATION] =======> Institution List: #{affiliations.inspect}".truncate(1000) unless affiliations.empty?
-            else
-              affiliations = alt_affiliation_path.xpath('aff').map(&:text)
-              # shared_affiliation_at_xpath = alt_affiliation_path.xpath('aff/institution-wrap/institution')
-              puts "[DEBUG_AFFILIATION] =======> Shared Affiliation: #{affiliations.inspect.truncate(1000)}" unless affiliations.empty?
-              # puts "[DEBUG_AFFILIATION] =======> Shared Affiliation at XPath: #{shared_affiliation_at_xpath.inspect.truncate(1000)}" unless shared_affiliation_at_xpath.empty?
+          if author_affiliation_ids.any?
+            # Regex to remove trailing comma and whitespace
+            affiliations = author_affiliation_ids.map do |id|
+              nodes = alt_affiliation_path.xpath("aff[@id='#{id}']/institution-wrap/institution")
+              nodes.map(&:text).join.sub(/,\s*\z/, '')
             end
-            
+            # puts "[DEBUG_AFFILIATION] =======> Institution List: #{affiliations.inspect}".truncate(1000) unless affiliations.empty?
+          else
+            affiliations = alt_affiliation_path.xpath('aff').map(&:text)
+            # shared_affiliation_at_xpath = alt_affiliation_path.xpath('aff/institution-wrap/institution')
+            puts "[DEBUG_AFFILIATION] =======> Shared Affiliation: #{affiliations.inspect.truncate(1000)}" unless affiliations.empty?
+            # puts "[DEBUG_AFFILIATION] =======> Shared Affiliation at XPath: #{shared_affiliation_at_xpath.inspect.truncate(1000)}" unless shared_affiliation_at_xpath.empty?
+          end
+
           # Referring to ref types under each author, to be retrieved from the ref xrefs
           # institution_affiliations = alt_affiliation_path.xpath("aff/institution-wrap/institution").map(&:text)
-          
+
         end
         # puts "[DEBUG_AFFILIATION] =======> RID List: #{rid_list.inspect}" unless rid_list.empty?
         # Search for UNC affiliation
