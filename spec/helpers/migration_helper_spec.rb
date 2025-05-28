@@ -32,36 +32,6 @@ RSpec.describe MigrationHelper do
     end
   end
 
-  describe '#get_permissions_attributes' do
-    let(:admin_set) { AdminSet.new(id: Date.today.to_time.to_i.to_s, title: ['a test admin set']) }
-    let(:permission_template) { Hyrax::PermissionTemplate.new(id: Date.today.to_time.to_i, source_id: admin_set.id) }
-    let(:manager_group) { Role.new(id: Date.today.to_time.to_i, name: 'manager_group') }
-    let(:viewer_group) { Role.new(id: Date.today.to_time.to_i, name: 'viewer_group') }
-    let(:manager_agent) { Sipity::Agent.new(id: Date.today.to_time.to_i, proxy_for_id: manager_group.name, proxy_for_type: 'Hyrax::Group') }
-    let(:viewer_agent) { Sipity::Agent.new(id: Date.today.to_time.to_i, proxy_for_id: viewer_group.name, proxy_for_type: 'Hyrax::Group') }
-    let(:expected_result) do
-      [
-        { 'type' => 'group', 'name' => manager_group.name, 'access' => 'edit' },
-        { 'type' => 'group', 'name' => viewer_group.name, 'access' => 'read' }
-      ]
-    end
-
-    before do
-      Hyrax::PermissionTemplateAccess.create(permission_template: permission_template,
-                                             agent_type: 'group',
-                                             agent_id: manager_group.name,
-                                             access: 'manage')
-      Hyrax::PermissionTemplateAccess.create(permission_template: permission_template,
-                                             agent_type: 'group',
-                                             agent_id: viewer_group.name,
-                                             access: 'view')
-    end
-
-    it 'finds manager and viewer groups for an admin set' do
-      expect(described_class.get_permissions_attributes(admin_set.id)).to match_array expected_result
-    end
-  end
-
   describe '#get_language_uri' do
     let(:valid_code) { ['ido'] }
     let(:invalid_code) { ['unknown'] }

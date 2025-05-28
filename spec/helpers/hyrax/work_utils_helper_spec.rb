@@ -289,21 +289,4 @@ RSpec.describe WorkUtilsHelper, type: :module do
       expect(described_class.get_permissions_attributes(admin_set.id)).to match_array expected_result
     end
   end
-
-  describe '#get_language_uri' do
-    let(:valid_code) { ['ido'] }
-    let(:invalid_code) { ['unknown'] }
-
-    context 'with a known code' do
-      it 'returns language uri' do
-        expect(described_class.get_language_uri(valid_code)).to eq ['http://id.loc.gov/vocabulary/iso639-2/ido']
-      end
-    end
-
-    context 'with an invalid code' do
-      it 'returns the unknown code' do
-        expect(described_class.get_language_uri(invalid_code)).to eq invalid_code
-      end
-    end
-  end
 end
