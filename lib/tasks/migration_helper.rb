@@ -38,7 +38,7 @@ class MigrationHelper
 
     resource
   end
-  
+
   # Use language code to get iso639-2 uri from service
   def self.get_language_uri(language_codes)
     Array.wrap(language_codes).map do |e|
