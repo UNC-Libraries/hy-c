@@ -42,8 +42,6 @@ module Tasks
         rescue => e
           Rails.logger.error("[Ingest] Error processing record ##{index + 1}: #{e.message}")
           Rails.logger.error(e.backtrace.join("\n"))
-          puts "[Ingest] Error processing record ##{index + 1}: #{e.message}"
-          puts e.backtrace.join("\n")
           article.destroy if article&.persisted?
           skipped_row['pdf_attached'] = e.message
           @attachment_results[:failed] << skipped_row.to_h
@@ -80,7 +78,6 @@ module Tasks
 
           if res.code != 200
             Rails.logger.error("Failed to fetch metadata for #{ids.join(', ')}: #{res.code} - #{res.message}")
-            puts "Failed to fetch metadata for #{ids.join(', ')}: #{res.code} - #{res.message}"
             next
           end
 
@@ -96,49 +93,20 @@ module Tasks
 
     def new_article(metadata)
       Rails.logger.info('[Article] Initializing new article object')
-      puts '[Article] Initializing new article object'
       article = Article.new
       article.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
       article = populate_article_metadata(article, metadata)
-      # article_of_concern_exists = article.identifier.any? { |id| id.match?(/31721082/) }
-      puts "================================>  [DEBUG] Article Identifier: #{article.identifier.inspect}" if debug_target_article?(article)
-
-
-      if debug_target_article?(article)
-          # 💾 Write debug info before saving
-        File.open(Rails.root.join('tmp', 'newart_debug_article_7pm.json'), 'w') do |f|
-          f.write(JSON.pretty_generate({
-                title: format_value(article.title),
-                abstract: format_value(article.abstract),
-                journal_title: format_value(article.journal_title),
-                identifier: format_value(article.identifier),
-                date_issued: article.date_issued,
-                keyword: format_value(article.keyword),
-                funder: format_value(article.funder),
-                publisher: format_value(article.publisher),
-                issn: format_value(article.issn),
-                creators: article.creators.map do |creator|
-                  creator.attributes.transform_values { |v| format_value(v) }
-                end,
-                visibility: article.visibility,
-                valid?: article.valid?,
-                errors: article.errors.full_messages
-              }))
-        end
-      end
       article
     end
 
     def attach_pdf(article, metadata, skipped_row)
       Rails.logger.info("[AttachPDF] Attaching PDF for article #{article.id}")
-      puts "[AttachPDF] Attaching PDF for article #{article.id}"
       create_sipity_workflow(work: article)
       pdf_file = attach_pdf_to_work(article, metadata['path'], @depositor, article.visibility)
 
       if pdf_file.nil?
         ids = [skipped_row['pmid'], skipped_row['pmcid']].compact.join(', ')
         Rails.logger.error("[AttachPDF] ERROR: No PDF file was attached for: #{ids}")
-        puts "[AttachPDF] ERROR: No PDF file was attached for: #{ids}"
         raise StandardError, "File attachment error for identifiers: #{ids}"
       end
 
@@ -187,11 +155,8 @@ module Tasks
     end
 
     def set_journal_attributes(article, metadata)
-      puts "[DEBUG_JOURNAL] =======> #{metadata.name.inspect}"
       if metadata.name == 'PubmedArticle'
-        puts "[DEBUG_JOURNAL] =======> Raw Journal Title: #{metadata.at_xpath('MedlineCitation/Article/Journal/Title')&.text.inspect}"
         article.journal_title = metadata.at_xpath('MedlineCitation/Article/Journal/Title')&.text
-        puts "Parsed Journal Title: #{article.journal_title.inspect}"
         article.journal_volume = metadata.at_xpath('MedlineCitation/Article/Journal/JournalIssue/Volume')&.text.presence
         article.journal_issue = metadata.at_xpath('MedlineCitation/Article/Journal/JournalIssue/Issue')&.text.presence
         article.page_start = metadata.at_xpath('MedlineCitation/Article/Pagination/StartPage')&.text.presence
@@ -251,37 +216,22 @@ module Tasks
         hash['other_affiliation'] = unc_affiliation.presence || affiliations[0].presence || ''
       else
         affiliations = author.xpath('aff/institution').map(&:text)
-        # puts "[DEBUG_AFFILIATION] =======> Affiliations from institution: #{affiliations.inspect}".truncate(1000) unless affiliations.empty?
         if affiliations.empty? && alt_affiliation_path.any?
-          # author_affiliation_labels = author.xpath('xref[@ref-type="aff"]').map(&:text)
-          # puts "[DEBUG_AFFILIATION] =======> Author Affiliation Labels: #{author_affiliation_labels.inspect}" unless author_affiliation_labels.empty?
           author_affiliation_ids = author.xpath('xref[@ref-type="aff"]').map { |n| n['rid'] }
-            # puts "[DEBUG_AFFILIATION] =======> Author Affiliation IDs: #{author_affiliation_ids.inspect}".truncate(1000) unless author_affiliation_ids.empty?
           if author_affiliation_ids.any?
             # Regex to remove trailing comma and whitespace
             affiliations = author_affiliation_ids.map do |id|
               nodes = alt_affiliation_path.xpath("aff[@id='#{id}']/institution-wrap/institution")
               nodes.map(&:text).join.sub(/,\s*\z/, '')
             end
-            # puts "[DEBUG_AFFILIATION] =======> Institution List: #{affiliations.inspect}".truncate(1000) unless affiliations.empty?
           else
             affiliations = alt_affiliation_path.xpath('aff').map(&:text)
-            # shared_affiliation_at_xpath = alt_affiliation_path.xpath('aff/institution-wrap/institution')
-            puts "[DEBUG_AFFILIATION] =======> Shared Affiliation: #{affiliations.inspect.truncate(1000)}" unless affiliations.empty?
-            # puts "[DEBUG_AFFILIATION] =======> Shared Affiliation at XPath: #{shared_affiliation_at_xpath.inspect.truncate(1000)}" unless shared_affiliation_at_xpath.empty?
           end
-
-          # Referring to ref types under each author, to be retrieved from the ref xrefs
-          # institution_affiliations = alt_affiliation_path.xpath("aff/institution-wrap/institution").map(&:text)
-
         end
-        # puts "[DEBUG_AFFILIATION] =======> RID List: #{rid_list.inspect}" unless rid_list.empty?
         # Search for UNC affiliation
         unc_affiliation = affiliations.find { |aff| GeneralUtilsHelper.is_unc_affiliation?(aff) }
-        # puts "[DEBUG_AFFILIATION] =======> UNC Affiliation: #{unc_affiliation.inspect}".truncate(1000) unless unc_affiliation.nil?
         # Fallback to first affiliation if no UNC affiliation found
         hash['other_affiliation'] = unc_affiliation.presence || affiliations[0].presence || ''
-        # puts "[DEBUG_AFFILIATION] =======> Final Affiliation: #{hash['other_affiliation'].inspect}".truncate(1000) unless hash['other_affiliation'].nil?
       end
     end
 
