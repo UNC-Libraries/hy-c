@@ -123,7 +123,7 @@ module Tasks
         set_basic_attributes(metadata, @depositor.uid, article, builder)
         set_journal_attributes(article, metadata)
         set_rights_and_types(article, metadata)
-        set_identifiers(article, metadata, builder)
+        builder.set_identifiers(article, metadata)
         article
       end
 
@@ -178,14 +178,14 @@ module Tasks
         end
       end
 
-      def set_identifiers(article, metadata, builder)
-        article.identifier = builder.format_publication_identifiers(metadata)
-        article.issn = if is_pubmed?(metadata)
-                         [metadata.xpath('MedlineCitation/Article/Journal/ISSN[@IssnType="Electronic"]').text]
-                  else
-                    [metadata.xpath('front/journal-meta/issn[@pub-type="epub"]').text]
-                  end
-      end
+      # def set_identifiers(article, metadata, builder)
+      #   article.identifier = builder.format_publication_identifiers(metadata)
+      #   article.issn = if is_pubmed?(metadata)
+      #                    [metadata.xpath('MedlineCitation/Article/Journal/ISSN[@IssnType="Electronic"]').text]
+      #             else
+      #               [metadata.xpath('front/journal-meta/issn[@pub-type="epub"]').text]
+      #             end
+      # end
 
       def is_pubmed?(metadata)
         metadata.name == 'PubmedArticle'

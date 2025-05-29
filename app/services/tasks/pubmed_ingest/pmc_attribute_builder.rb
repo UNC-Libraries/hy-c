@@ -8,15 +8,6 @@ module Tasks
         new_pubmed_works.find { |row| row['pmid'] == pmid || row['pmcid'] == pmcid }
       end
 
-      def format_publication_identifiers(metadata)
-        article_meta = metadata.at_xpath('front/article-meta')
-        [
-            (pmid = article_meta.at_xpath('article-id[@pub-id-type="pmid"]')) ? "PMID: #{pmid.text}" : nil,
-            (pmcid = article_meta.at_xpath('article-id[@pub-id-type="pmcid"]')) ? "PMCID: #{pmcid.text}" : nil,
-            (doi = article_meta.at_xpath('article-id[@pub-id-type="doi"]')) ? "DOI: https://dx.doi.org/#{doi.text}" : nil
-        ].compact
-      end
-
       def get_date_issued(metadata)
         pubdate = metadata.at_xpath('front/article-meta/pub-date[@pub-type="epub"]')
         year = pubdate&.at_xpath('Year')&.text || pubdate&.at_xpath('year')&.text
@@ -36,6 +27,11 @@ module Tasks
           retrieve_author_affiliations(res, author, metadata.name)
           res
         end
+      end
+
+      def set_identifiers(article, metadata)
+        article.identifier = format_publication_identifiers(metadata)
+        article.issn = [metadata.xpath('front/journal-meta/issn[@pub-type="epub"]').text]
       end
 
       private
@@ -59,6 +55,15 @@ module Tasks
         unc_affiliation = affiliations.find { |aff| AffiliationUtilsHelper.is_unc_affiliation?(aff) }
           # Fallback to first affiliation if no UNC affiliation found
         hash['other_affiliation'] = unc_affiliation.presence || affiliations[0].presence || ''
+      end
+
+      def format_publication_identifiers(metadata)
+        article_meta = metadata.at_xpath('front/article-meta')
+        [
+            (pmid = article_meta.at_xpath('article-id[@pub-id-type="pmid"]')) ? "PMID: #{pmid.text}" : nil,
+            (pmcid = article_meta.at_xpath('article-id[@pub-id-type="pmcid"]')) ? "PMCID: #{pmcid.text}" : nil,
+            (doi = article_meta.at_xpath('article-id[@pub-id-type="doi"]')) ? "DOI: https://dx.doi.org/#{doi.text}" : nil
+        ].compact
       end
 
     end
