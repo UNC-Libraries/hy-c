@@ -33,6 +33,24 @@ module Tasks
         article.issn = [metadata.xpath('MedlineCitation/Article/Journal/ISSN[@IssnType="Electronic"]').text]
       end
 
+      def set_journal_attributes(article, metadata)
+        article.journal_title = metadata.at_xpath('MedlineCitation/Article/Journal/Title')&.text
+        article.journal_volume = metadata.at_xpath('MedlineCitation/Article/Journal/JournalIssue/Volume')&.text.presence
+        article.journal_issue = metadata.at_xpath('MedlineCitation/Article/Journal/JournalIssue/Issue')&.text.presence
+        article.page_start = metadata.at_xpath('MedlineCitation/Article/Pagination/StartPage')&.text.presence
+        article.page_end   = metadata.at_xpath('MedlineCitation/Article/Pagination/EndPage')&.text.presence
+      end
+
+      def apply_additional_basic_attributes(article, metadata)
+          article.title = [metadata.xpath('MedlineCitation/Article/ArticleTitle').text]
+          article.abstract = [metadata.xpath('MedlineCitation/Article/Abstract/AbstractText').text]
+          article.date_issued = get_date_issued(metadata)
+          # No explicit publisher in PubmedArticle XML
+          article.publisher = []
+          article.keyword = metadata.xpath('MedlineCitation/KeywordList/Keyword').map(&:text)
+          article.funder = metadata.xpath('MedlineCitation/Article/GrantList/Grant/Agency').map(&:text)
+      end
+
       private
 
       def retrieve_author_affiliations(hash, author, metadata_name)

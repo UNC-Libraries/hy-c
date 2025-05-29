@@ -120,9 +120,9 @@ module Tasks
       end
 
       def populate_article_metadata(article, metadata, builder)
-        set_basic_attributes(metadata, @depositor.uid, article, builder)
-        set_journal_attributes(article, metadata)
         set_rights_and_types(article, metadata)
+        set_basic_attributes(metadata, @depositor.uid, article, builder)
+        builder.set_journal_attributes(article, metadata)
         builder.set_identifiers(article, metadata)
         article
       end
@@ -132,28 +132,8 @@ module Tasks
         article.depositor = depositor_onyen
         article.resource_type = ['Article']
         article.creators_attributes = builder.generate_authors(metadata)
-
-        if is_pubmed?(metadata)
-          article.title = [metadata.xpath('MedlineCitation/Article/ArticleTitle').text]
-          article.abstract = [metadata.xpath('MedlineCitation/Article/Abstract/AbstractText').text]
-          article.date_issued = builder.get_date_issued(metadata)
-          # No explicit publisher in PubmedArticle XML
-          article.publisher = []
-          article.keyword = metadata.xpath('MedlineCitation/KeywordList/Keyword').map(&:text)
-          article.funder = metadata.xpath('MedlineCitation/Article/GrantList/Grant/Agency').map(&:text)
-        elsif metadata.name == 'article'
-          article.title = [metadata.xpath('front/article-meta/title-group/article-title').text]
-          article.abstract = [metadata.xpath('front/article-meta/abstract').text]
-          article.date_issued = builder.get_date_issued(metadata)
-          article.publisher = [metadata.at_xpath('front/journal-meta/publisher/publisher-name')&.text].compact.presence
-          article.keyword = metadata.xpath('//kwd-group/kwd').map(&:text)
-          article.funder = metadata.xpath('//funding-source/institution-wrap/institution').map(&:text)
-        else
-          raise StandardError, "Basic Attributes - Unknown metadata format: #{metadata.name}"
-        end
+        builder.apply_additional_basic_attributes(article, metadata)
       end
-
-
 
       def set_rights_and_types(article, metadata)
         rights_statement = 'http://rightsstatements.org/vocab/InC/1.0/'
@@ -161,31 +141,6 @@ module Tasks
         article.rights_statement_label = CdrRightsStatementsService.label(rights_statement)
         article.dcmi_type = ['http://purl.org/dc/dcmitype/Text']
       end
-
-      def set_journal_attributes(article, metadata)
-        if is_pubmed?(metadata)
-          article.journal_title = metadata.at_xpath('MedlineCitation/Article/Journal/Title')&.text
-          article.journal_volume = metadata.at_xpath('MedlineCitation/Article/Journal/JournalIssue/Volume')&.text.presence
-          article.journal_issue = metadata.at_xpath('MedlineCitation/Article/Journal/JournalIssue/Issue')&.text.presence
-          article.page_start = metadata.at_xpath('MedlineCitation/Article/Pagination/StartPage')&.text.presence
-          article.page_end   = metadata.at_xpath('MedlineCitation/Article/Pagination/EndPage')&.text.presence
-        elsif metadata.name == 'article'
-          article.journal_title = metadata.at_xpath('front/journal-meta/journal-title-group/journal-title')&.text.presence
-          article.journal_volume = metadata.at_xpath('front/article-meta/volume')&.text.presence
-          article.journal_issue = metadata.at_xpath('front/article-meta/issue-id')&.text.presence
-          article.page_start = metadata.at_xpath('front/article-meta/fpage')&.text.presence
-          article.page_end   = metadata.at_xpath('front/article-meta/lpage')&.text.presence
-        end
-      end
-
-      # def set_identifiers(article, metadata, builder)
-      #   article.identifier = builder.format_publication_identifiers(metadata)
-      #   article.issn = if is_pubmed?(metadata)
-      #                    [metadata.xpath('MedlineCitation/Article/Journal/ISSN[@IssnType="Electronic"]').text]
-      #             else
-      #               [metadata.xpath('front/journal-meta/issn[@pub-type="epub"]').text]
-      #             end
-      # end
 
       def is_pubmed?(metadata)
         metadata.name == 'PubmedArticle'

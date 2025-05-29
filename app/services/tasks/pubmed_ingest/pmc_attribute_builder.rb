@@ -34,6 +34,23 @@ module Tasks
         article.issn = [metadata.xpath('front/journal-meta/issn[@pub-type="epub"]').text]
       end
 
+      def set_journal_attributes(article, metadata)
+        article.journal_title = metadata.at_xpath('front/journal-meta/journal-title-group/journal-title')&.text.presence
+        article.journal_volume = metadata.at_xpath('front/article-meta/volume')&.text.presence
+        article.journal_issue = metadata.at_xpath('front/article-meta/issue-id')&.text.presence
+        article.page_start = metadata.at_xpath('front/article-meta/fpage')&.text.presence
+        article.page_end   = metadata.at_xpath('front/article-meta/lpage')&.text.presence
+      end
+
+      def apply_additional_basic_attributes(article, metadata)
+        article.title = [metadata.xpath('front/article-meta/title-group/article-title').text]
+        article.abstract = [metadata.xpath('front/article-meta/abstract').text]
+        article.date_issued = get_date_issued(metadata)
+        article.publisher = [metadata.at_xpath('front/journal-meta/publisher/publisher-name')&.text].compact.presence
+        article.keyword = metadata.xpath('//kwd-group/kwd').map(&:text)
+        article.funder = metadata.xpath('//funding-source/institution-wrap/institution').map(&:text)
+      end
+
       private
 
       def retrieve_author_affiliations(hash, author, metadata_name)
