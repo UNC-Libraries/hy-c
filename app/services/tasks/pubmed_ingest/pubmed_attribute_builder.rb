@@ -8,14 +8,6 @@ module Tasks
         new_pubmed_works.find { |row| row['pmid'] == pmid || row['pmcid'] == pmcid }
       end
 
-      def get_date_issued(metadata)
-        pubdate = metadata.at_xpath('PubmedData/History/PubMedPubDate[@PubStatus="pubmed"]')
-        year = pubdate&.at_xpath('year')&.text
-        month = pubdate&.at_xpath('month')&.text || 1
-        day = pubdate&.at_xpath('day')&.text || 1
-        DateTime.new(year.to_i, month.to_i, day.to_i).strftime('%Y-%m-%d')
-      end
-
       def generate_authors(metadata)
         metadata.xpath('MedlineCitation/Article/AuthorList/Author').map.with_index do |author, i|
           res = {
@@ -23,7 +15,7 @@ module Tasks
           'orcid' => author.at_xpath('Identifier[@Source="ORCID"]')&.text&.then { |id| "https://orcid.org/#{id}" } || '',
           'index' => i.to_s
           }
-          self.retrieve_author_affiliations(res, author, metadata.name)
+          self.retrieve_author_affiliations(res, author)
           res
         end
       end
@@ -53,7 +45,15 @@ module Tasks
 
       private
 
-      def retrieve_author_affiliations(hash, author, metadata_name)
+      def get_date_issued(metadata)
+        pubdate = metadata.at_xpath('PubmedData/History/PubMedPubDate[@PubStatus="pubmed"]')
+        year = pubdate&.at_xpath('Year')&.text
+        month = pubdate&.at_xpath('Month')&.text || 1
+        day = pubdate&.at_xpath('Day')&.text || 1
+        DateTime.new(year.to_i, month.to_i, day.to_i).strftime('%Y-%m-%d')
+      end
+
+      def retrieve_author_affiliations(hash, author)
         affiliations = author.xpath('AffiliationInfo/Affiliation').map(&:text)
             # Search for UNC affiliation
         unc_affiliation = affiliations.find { |aff| AffiliationUtilsHelper.is_unc_affiliation?(aff) }

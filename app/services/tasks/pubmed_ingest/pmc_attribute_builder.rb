@@ -8,14 +8,6 @@ module Tasks
         new_pubmed_works.find { |row| row['pmid'] == pmid || row['pmcid'] == pmcid }
       end
 
-      def get_date_issued(metadata)
-        pubdate = metadata.at_xpath('front/article-meta/pub-date[@pub-type="epub"]')
-        year = pubdate&.at_xpath('Year')&.text
-        month = pubdate&.at_xpath('Month')&.text || 1
-        day = pubdate&.at_xpath('Day')&.text || 1
-        DateTime.new(year.to_i, month.to_i, day.to_i).strftime('%Y-%m-%d')
-      end
-
       def generate_authors(metadata)
         metadata.xpath('front/article-meta/contrib-group/contrib[@contrib-type="author"]').map.with_index do |author, i|
           res = {
@@ -24,7 +16,7 @@ module Tasks
           'index' => i.to_s
           }
           # Include affiliations for each author if available
-          retrieve_author_affiliations(res, author, metadata.name)
+          retrieve_author_affiliations(res, author)
           res
         end
       end
@@ -53,7 +45,15 @@ module Tasks
 
       private
 
-      def retrieve_author_affiliations(hash, author, metadata_name)
+      def get_date_issued(metadata)
+        pubdate = metadata.at_xpath('front/article-meta/pub-date[@pub-type="epub"]')
+        year = pubdate&.at_xpath('year')&.text
+        month = pubdate&.at_xpath('month')&.text || 1
+        day = pubdate&.at_xpath('day')&.text || 1
+        DateTime.new(year.to_i, month.to_i, day.to_i).strftime('%Y-%m-%d')
+      end
+
+      def retrieve_author_affiliations(hash, author)
         contrib_group = author.ancestors('contrib-group').first
         affiliations = author.xpath('aff/institution').map(&:text)
         if affiliations.empty? && contrib_group
