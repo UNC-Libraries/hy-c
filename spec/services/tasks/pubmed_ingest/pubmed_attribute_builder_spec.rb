@@ -30,7 +30,7 @@ RSpec.describe Tasks::PubmedIngest::PubmedAttributeBuilder, type: :model do
       expect(row['pmcid']).to eq(pmcid)
     end
   end
-  
+
   describe '#generate_authors' do
     it 'returns authors with name, orcid, and affiliation' do
       authors = builder.generate_authors(article_node)
