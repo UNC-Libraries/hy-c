@@ -170,7 +170,8 @@ RSpec.describe Tasks::PubmedIngestService do
         end
       end
     # Expect errors in logs
-      expect(logger_spy).to receive(:error).with(/File attachment error for identifiers:/).twice
+      expect(logger_spy).to receive(:error).with(/Error processing record/).twice
+      expect(logger_spy).to receive(:error).with(/Backtrace/).twice
     # Expect the article count to change by 2
       expect {
         @res = service.ingest_publications
@@ -262,7 +263,8 @@ RSpec.describe Tasks::PubmedIngestService do
       end
 
       # Expect errors in logs
-      expect(logger_spy).to receive(:error).with(/File attachment error for identifiers:/).twice
+      expect(logger_spy).to receive(:error).with(/Error processing record/).twice
+      expect(logger_spy).to receive(:error).with(/Backtrace/).twice
       # Expect the article count to change by 2
       expect {
         @res = service.ingest_publications

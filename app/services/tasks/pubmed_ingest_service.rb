@@ -40,8 +40,11 @@ module Tasks
           skipped_row['article'] = article
           @attachment_results[:successfully_ingested] << skipped_row.to_h
         rescue => e
-          Rails.logger.error("[Ingest] Error processing record ##{index + 1}: #{e.message}")
-          Rails.logger.error(e.backtrace.join("\n"))
+          doi = skipped_row&.[]('doi') || 'N/A'
+          pmid = skipped_row&.[]('pmid') || 'N/A'
+          pmcid = skipped_row&.[]('pmcid') || 'N/A'
+          Rails.logger.error("[Ingest] Error processing record: DOI: #{doi}, PMID: #{pmid}, PMCID: #{pmcid}, Index: #{index}, Error: #{e.message}")
+          Rails.logger.error("Backtrace: #{e.backtrace.join("\n")}")
           article.destroy if article&.persisted?
           skipped_row['pdf_attached'] = e.message
           @attachment_results[:failed] << skipped_row.to_h
@@ -67,10 +70,10 @@ module Tasks
       Rails.logger.info("Starting metadata retrieval for #{@new_pubmed_works.size} records")
 
       works_with_pmids = @new_pubmed_works.select { |w| w['pmid'].present? }
-      works_with_pmcids = @new_pubmed_works.select { |w| !works_with_pmids.include?(w) && w['pmcid'].present? }
+      works_with_pmcids = @new_pubmed_works.select { |w| !w['pmid'].present?  && w['pmcid'].present? }
 
       [works_with_pmids, works_with_pmcids].each do |works|
-        db = (works == works_with_pmids) ? 'pubmed' : 'pmc'
+        db = (works.equal?(works_with_pmids)) ? 'pubmed' : 'pmc'
         works.each_slice(200) do |batch|
           ids = batch.map { |w| w['pmid'] || w['pmcid'].sub(/^PMC/, '') }
           request_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=#{db}&id=#{ids.join(',')}&retmode=xml&tool=CDR&email=cdr@unc.edu"
@@ -244,7 +247,7 @@ module Tasks
            end
 
 
-      year = pubdate&.at_xpath('Year')&.text || pubdate&.at_xpath('year')&.text 
+      year = pubdate&.at_xpath('Year')&.text || pubdate&.at_xpath('year')&.text
       month = pubdate&.at_xpath('Month')&.text || pubdate&.at_xpath('month')&.text || 1
       day = pubdate&.at_xpath('Day')&.text || pubdate&.at_xpath('day')&.text || 1
 
