@@ -65,6 +65,9 @@ RSpec.describe Tasks::PubmedIngest::PubmedAttributeBuilder, type: :model do
       allow(article_node).to receive(:at_xpath).and_call_original
       allow(article_node).to receive(:at_xpath).with('MedlineCitation/Article/Pagination/StartPage').and_return(double('Nokogiri::XML::Node', text: '1'))
       allow(article_node).to receive(:at_xpath).with('MedlineCitation/Article/Pagination/EndPage').and_return(double('Nokogiri::XML::Node', text: '100'))
+      allow(article_node).to receive(:at_xpath).with('MedlineCitation/Article/Journal/JournalIssue/Volume').and_return(double('Nokogiri::XML::Node', text: '10'))
+      allow(article_node).to receive(:at_xpath).with('MedlineCitation/Article/Journal/JournalIssue/Issue').and_return(double('Nokogiri::XML::Node', text: '2'))
+      allow(article_node).to receive(:at_xpath).with('MedlineCitation/Article/Journal/Title').and_return(double('Nokogiri::XML::Node', text: 'Journal of Testing'))
       builder.set_journal_attributes(article, article_node)
       expect(article.journal_title).to be_present
       expect(article.journal_volume).to be_present
