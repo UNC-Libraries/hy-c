@@ -10,9 +10,9 @@ module Tasks
 
       def get_date_issued(metadata)
         pubdate = metadata.at_xpath('front/article-meta/pub-date[@pub-type="epub"]')
-        year = pubdate&.at_xpath('Year')&.text || pubdate&.at_xpath('year')&.text
-        month = pubdate&.at_xpath('Month')&.text || pubdate&.at_xpath('month')&.text || 1
-        day = pubdate&.at_xpath('Day')&.text || pubdate&.at_xpath('day')&.text || 1
+        year = pubdate&.at_xpath('Year')&.text
+        month = pubdate&.at_xpath('Month')&.text || 1
+        day = pubdate&.at_xpath('Day')&.text || 1
         DateTime.new(year.to_i, month.to_i, day.to_i).strftime('%Y-%m-%d')
       end
 
