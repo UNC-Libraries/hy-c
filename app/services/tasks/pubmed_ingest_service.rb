@@ -127,7 +127,7 @@ module Tasks
       article.resource_type = ['Article']
       article.creators_attributes = generate_authors(metadata)
 
-      if metadata.name == 'PubmedArticle'
+      if is_pubmed?(metadata)
         article.title = [metadata.xpath('MedlineCitation/Article/ArticleTitle').text]
         article.abstract = [metadata.xpath('MedlineCitation/Article/Abstract/AbstractText').text]
         article.date_issued = get_date_issued(metadata)
@@ -155,7 +155,7 @@ module Tasks
     end
 
     def set_journal_attributes(article, metadata)
-      if metadata.name == 'PubmedArticle'
+      if is_pubmed?(metadata)
         article.journal_title = metadata.at_xpath('MedlineCitation/Article/Journal/Title')&.text
         article.journal_volume = metadata.at_xpath('MedlineCitation/Article/Journal/JournalIssue/Volume')&.text.presence
         article.journal_issue = metadata.at_xpath('MedlineCitation/Article/Journal/JournalIssue/Issue')&.text.presence
@@ -174,7 +174,7 @@ module Tasks
 
     def set_identifiers(article, metadata)
       article.identifier = format_publication_identifiers(metadata)
-      article.issn = if metadata.name == 'PubmedArticle'
+      article.issn = if is_pubmed?(metadata)
                        [metadata.xpath('MedlineCitation/Article/Journal/ISSN[@IssnType="Electronic"]').text]
                  else
                    [metadata.xpath('front/journal-meta/issn[@pub-type="epub"]').text]
@@ -183,7 +183,7 @@ module Tasks
 
     def generate_authors(metadata)
       # WIP: Add Author affiliations
-      if metadata.name == 'PubmedArticle'
+      if is_pubmed?(metadata)
         metadata.xpath('MedlineCitation/Article/AuthorList/Author').map.with_index do |author, i|
           res = {
             'name' => [author.xpath('LastName').text, author.xpath('ForeName').text].join(', '),
@@ -237,22 +237,22 @@ module Tasks
 
 
     def get_date_issued(metadata)
-      pubdate = if metadata.name == 'PubmedArticle'
+      pubdate = if is_pubmed?(metadata)
                   metadata.at_xpath('PubmedData/History/PubMedPubDate[@PubStatus="pubmed"]')
            else
              metadata.at_xpath('front/article-meta/pub-date[@pub-type="epub"]')
            end
 
 
-      year = pubdate&.at_xpath('Year')&.text || pubdate&.at_xpath('year')&.text
-      month = pubdate&.at_xpath('Month')&.text || pubdate&.at_xpath('month')&.text
-      day = pubdate&.at_xpath('Day')&.text || pubdate&.at_xpath('day')&.text
+      year = pubdate&.at_xpath('Year')&.text || pubdate&.at_xpath('year')&.text 
+      month = pubdate&.at_xpath('Month')&.text || pubdate&.at_xpath('month')&.text || 1
+      day = pubdate&.at_xpath('Day')&.text || pubdate&.at_xpath('day')&.text || 1
 
-      DateTime.new(year.to_i, (month || 1).to_i, (day || 1).to_i).strftime('%Y-%m-%d')
+      DateTime.new(year.to_i, month.to_i, day.to_i).strftime('%Y-%m-%d')
     end
 
     def format_publication_identifiers(metadata)
-      if metadata.name == 'PubmedArticle'
+      if is_pubmed?(metadata)
         id_list = metadata.xpath('PubmedData/ArticleIdList')
         [
           (pmid = id_list.at_xpath('ArticleId[@IdType="pubmed"]')) ? "PMID: #{pmid.text}" : nil,
@@ -271,7 +271,7 @@ module Tasks
 
     def find_skipped_row_for_metadata(metadata)
       pmid, pmcid =
-        if metadata.name == 'PubmedArticle'
+        if is_pubmed?(metadata)
           [
             metadata.at_xpath('PubmedData/ArticleIdList/ArticleId[@IdType="pubmed"]')&.text,
             metadata.at_xpath('PubmedData/ArticleIdList/ArticleId[@IdType="pmc"]')&.text
@@ -285,6 +285,10 @@ module Tasks
       @new_pubmed_works.find do |row|
         (pmid && row['pmid'] == pmid) || (pmcid && row['pmcid'] == pmcid)
       end
+    end
+
+    def is_pubmed?(metadata)
+      metadata.name == 'PubmedArticle'
     end
   end
 end
