@@ -25,11 +25,27 @@ module Tasks
         DateTime.new(year.to_i, month.to_i, day.to_i).strftime('%Y-%m-%d')
       end
 
+
+
+      def generate_authors(metadata)
+        metadata.xpath('MedlineCitation/Article/AuthorList/Author').map.with_index do |author, i|
+          res = {
+          'name' => [author.xpath('LastName').text, author.xpath('ForeName').text].join(', '),
+          'orcid' => author.at_xpath('Identifier[@Source="ORCID"]')&.text&.then { |id| "https://orcid.org/#{id}" } || '',
+          'index' => i.to_s
+          }
+          self.retrieve_author_affiliations(res, author, metadata.name)
+          res
+        end
+      end
+
+      private
+
       def retrieve_author_affiliations(hash, author, metadata_name)
         affiliations = author.xpath('AffiliationInfo/Affiliation').map(&:text)
-          # Search for UNC affiliation
+            # Search for UNC affiliation
         unc_affiliation = affiliations.find { |aff| AffiliationUtilsHelper.is_unc_affiliation?(aff) }
-          # Fallback to first affiliation if no UNC affiliation found
+            # Fallback to first affiliation if no UNC affiliation found
         hash['other_affiliation'] = unc_affiliation.presence || affiliations[0].presence || ''
       end
     end

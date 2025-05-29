@@ -131,7 +131,7 @@ module Tasks
         article.admin_set = @admin_set
         article.depositor = depositor_onyen
         article.resource_type = ['Article']
-        article.creators_attributes = generate_authors(metadata, builder)
+        article.creators_attributes = builder.generate_authors(metadata)
 
         if is_pubmed?(metadata)
           article.title = [metadata.xpath('MedlineCitation/Article/ArticleTitle').text]
@@ -152,6 +152,8 @@ module Tasks
           raise StandardError, "Basic Attributes - Unknown metadata format: #{metadata.name}"
         end
       end
+
+
 
       def set_rights_and_types(article, metadata)
         rights_statement = 'http://rightsstatements.org/vocab/InC/1.0/'
@@ -183,31 +185,6 @@ module Tasks
                   else
                     [metadata.xpath('front/journal-meta/issn[@pub-type="epub"]').text]
                   end
-      end
-
-      def generate_authors(metadata, builder)
-        if is_pubmed?(metadata)
-          metadata.xpath('MedlineCitation/Article/AuthorList/Author').map.with_index do |author, i|
-            res = {
-              'name' => [author.xpath('LastName').text, author.xpath('ForeName').text].join(', '),
-              'orcid' => author.at_xpath('Identifier[@Source="ORCID"]')&.text&.then { |id| "https://orcid.org/#{id}" } || '',
-              'index' => i.to_s
-            }
-            builder.retrieve_author_affiliations(res, author, metadata.name)
-            res
-          end
-        else
-          metadata.xpath('front/article-meta/contrib-group/contrib[@contrib-type="author"]').map.with_index do |author, i|
-            res = {
-              'name' => [author.xpath('name/surname').text, author.xpath('name/given-names').text].join(', '),
-              'orcid' => author.at_xpath('contrib-id[@contrib-id-type="orcid"]')&.text.to_s || '',
-              'index' => i.to_s
-            }
-            # Include affiliations for each author if available
-            builder.retrieve_author_affiliations(res, author, metadata.name)
-            res
-          end
-        end
       end
 
       def is_pubmed?(metadata)
