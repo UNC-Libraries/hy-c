@@ -282,7 +282,9 @@ module Tasks
             metadata.at_xpath('.//article-id[@pub-id-type="pmcid"]')&.text
           ]
         end
-      @new_pubmed_works.find { |row| row['pmid'] == pmid || row['pmcid'] == pmcid }
+      @new_pubmed_works.find do |row|
+        (pmid && row['pmid'] == pmid) || (pmcid && row['pmcid'] == pmcid)
+      end
     end
   end
 end
