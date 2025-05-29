@@ -284,18 +284,5 @@ module Tasks
         end
       @new_pubmed_works.find { |row| row['pmid'] == pmid || row['pmcid'] == pmcid }
     end
-
-    def format_value(val)
-      if val.respond_to?(:to_a)
-        val.to_a.map(&:to_s)
-      else
-        val.to_s
-      end
-    end
-
-    def debug_target_article?(article)
-      article.identifier.any? { |id| id.match?(/31721082/) }
-    end
-
   end
 end

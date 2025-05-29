@@ -140,7 +140,6 @@ task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :full_text_csv, :file_
        next
     end
   end
-  # WIP: =================== Focus Area
   # Create new works
   config = {
     'admin_set' => admin_set,
@@ -150,7 +149,6 @@ task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :full_text_csv, :file_
   ingest_service = Tasks::PubmedIngestService.new(config)
   ingest_service.batch_retrieve_metadata
   res = ingest_service.ingest_publications
-  #  WIP: =================== Update res successfully_ingested after creating new works, then write to JSON
 
     # Update Counts
   res[:counts][:total_unique_files] = file_info.length
@@ -160,12 +158,12 @@ task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :full_text_csv, :file_
   res[:counts][:skipped] = res[:skipped].length
 
   # Write results to JSON
-  json_output_path = File.join(args[:output_dir], 'pdf_attachment_results.json')
+  json_output_path = File.join(args[:output_dir], "pdf_attachment_results_#{res[:time].strftime('%Y%m%d%H%M%S')}.json")
   File.open(json_output_path, 'w') do |f|
     f.write(JSON.pretty_generate(res))
   end
   # Write modified rows to CSV
-  csv_output_path = File.join(args[:output_dir], 'attached_pdfs_output.csv')
+  csv_output_path = File.join(args[:output_dir], "attached_pdfs_output_#{res[:time].strftime('%Y%m%d%H%M%S')}.csv")
   CSV.open(csv_output_path, 'w') do |csv_out|
     csv_out << ['file_name', 'cdr_url', 'has_fileset', 'pdf_attached', 'pmid', 'pmcid', 'doi']
     modified_rows.each do |row|
