@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-module GeneralUtilsHelper
+module AffiliationUtilsHelper
   # Matches common variations: "UNC Chapel Hill", "UNC-Chapel Hill", full university name, and abbreviations
   # Handles missing prepositions (e.g., "at", "of") and varied spacing/hyphenation
   # Case-insensitive and whitespace-tolerant

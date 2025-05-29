@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 # Notes:
 # 1. Script uses PMC-OAI API to retrieve metadata and make comparisons of alternate IDs. (PMCID, PMID)
-# 2. PMC requests scripts making >100 requests be run outside of peak hours. (5 AM - 9 PM)
+# 2. PMC requests scripts making >100 requests be ran outside of peak hours. (5 AM - 9 PM)
 DEPOSITOR = ENV['DIMENSIONS_INGEST_DEPOSITOR_ONYEN']
 desc 'Fetch identifiers from a directory, compare against the CDR, and store the results in a CSV'
 task :fetch_identifiers, [:input_dir_path, :output_csv_path] => :environment do |task, args|

@@ -348,7 +348,6 @@ RSpec.describe Tasks::PubmedIngestService do
 
   describe '#attach_pubmed_file' do
     let(:file_path) { Rails.root.join('spec', 'fixtures', 'files', 'sample_pdf.pdf') }
-    let(:depositor) { FactoryBot.create(:user, uid: 'depositor') }
 
     it 'attaches a PDF to the work' do
       work_hash = {
@@ -360,20 +359,19 @@ RSpec.describe Tasks::PubmedIngestService do
       }
       result = nil
       expect {
-        result = service.attach_pubmed_file(work_hash, file_path, depositor.uid, visibility)
+        result = service.attach_pubmed_file(work_hash, file_path, admin.uid, visibility)
         expect(result).to be_instance_of(FileSet)
-        expect(result.depositor).to eq(depositor.uid)
+        expect(result.depositor).to eq(admin.uid)
         expect(result.visibility).to eq(visibility)
       }.to change { FileSet.count }.by(1)
     end
   end
 
   describe '#attach_pdf' do
-    let(:depositor) { FactoryBot.create(:user, uid: 'depositor') }
     let(:article) do
       Article.create!(
         title: ['Test Article'],
-        depositor: depositor.uid,
+        depositor: admin.uid,
         admin_set: admin_set,
         visibility: Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
       )

@@ -1,8 +1,8 @@
 # frozen_string_literal: true
-# spec/helpers/general_utils_helper_spec.rb
+# spec/helpers/affiliation_utils_helper_spec.rb
 require 'rails_helper'
 
-RSpec.describe GeneralUtilsHelper do
+RSpec.describe AffiliationUtilsHelper do
   describe '.is_unc_affiliation?' do
     context 'with UNC Chapel Hill variations' do
       it 'returns true for "UNC Chapel Hill"' do

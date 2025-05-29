@@ -51,15 +51,14 @@ module Tasks
         end
       end
 
-      Rails.logger.info('[Ingest] Ingestion complete')
+      Rails.logger.info('[Ingest] Ingest complete')
       @attachment_results
     end
 
     def attach_pubmed_file(work_hash, file_path, depositor_onyen, visibility)
       model_class = work_hash[:work_type].constantize
       work = model_class.find(work_hash[:work_id])
-      depositor = User.find_by(uid: depositor_onyen)
-      file = attach_pdf_to_work(work, file_path, depositor, visibility)
+      file = attach_pdf_to_work(work, file_path, @depositor, visibility)
       file.update(permissions_attributes: group_permissions(@admin_set))
       file
     end
@@ -214,7 +213,7 @@ module Tasks
       if metadata_name == 'PubmedArticle'
         affiliations = author.xpath('AffiliationInfo/Affiliation').map(&:text)
         # Search for UNC affiliation
-        unc_affiliation = affiliations.find { |aff| GeneralUtilsHelper.is_unc_affiliation?(aff) }
+        unc_affiliation = affiliations.find { |aff| AffiliationUtilsHelper.is_unc_affiliation?(aff) }
         # Fallback to first affiliation if no UNC affiliation found
         hash['other_affiliation'] = unc_affiliation.presence || affiliations[0].presence || ''
       else
@@ -232,7 +231,7 @@ module Tasks
           end
         end
         # Search for UNC affiliation
-        unc_affiliation = affiliations.find { |aff| GeneralUtilsHelper.is_unc_affiliation?(aff) }
+        unc_affiliation = affiliations.find { |aff| AffiliationUtilsHelper.is_unc_affiliation?(aff) }
         # Fallback to first affiliation if no UNC affiliation found
         hash['other_affiliation'] = unc_affiliation.presence || affiliations[0].presence || ''
       end
