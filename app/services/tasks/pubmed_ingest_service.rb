@@ -27,7 +27,7 @@ module Tasks
       @retrieved_metadata.each_with_index do |metadata, index|
         Rails.logger.info("[Ingest] Processing record ##{index + 1}")
         begin
-          skipped_row = find_skipped_row_for_metadata(metadata)
+          skipped_row = is_pubmed?(metadata) ? find_skipped_row_for_pubmed_article(metadata) : find_skipped_row_for_pmc_article(metadata)
           Rails.logger.info("[Ingest] Found skipped row: #{skipped_row.inspect}")
           article = new_article(metadata)
           article.save!
@@ -169,8 +169,6 @@ module Tasks
         article.journal_issue = metadata.at_xpath('front/article-meta/issue-id')&.text.presence
         article.page_start = metadata.at_xpath('front/article-meta/fpage')&.text.presence
         article.page_end   = metadata.at_xpath('front/article-meta/lpage')&.text.presence
-      else
-        raise StandardError, "Journal Attributes - Unknown metadata format: #{metadata.name}"
       end
     end
 
@@ -184,7 +182,6 @@ module Tasks
     end
 
     def generate_authors(metadata)
-      # WIP: Add Author affiliations
       if is_pubmed?(metadata)
         metadata.xpath('MedlineCitation/Article/AuthorList/Author').map.with_index do |author, i|
           res = {
@@ -271,22 +268,17 @@ module Tasks
       end
     end
 
-    def find_skipped_row_for_metadata(metadata)
-      pmid, pmcid =
-        if is_pubmed?(metadata)
-          [
-            metadata.at_xpath('PubmedData/ArticleIdList/ArticleId[@IdType="pubmed"]')&.text,
-            metadata.at_xpath('PubmedData/ArticleIdList/ArticleId[@IdType="pmc"]')&.text
-          ]
-        else
-          [
-            metadata.at_xpath('.//article-id[@pub-id-type="pmid"]')&.text,
-            metadata.at_xpath('.//article-id[@pub-id-type="pmcid"]')&.text
-          ]
-        end
-      @new_pubmed_works.find do |row|
-        (pmid && row['pmid'] == pmid) || (pmcid && row['pmcid'] == pmcid)
-      end
+
+    def find_skipped_row_for_pubmed_article(metadata)
+      pmid = metadata.at_xpath('PubmedData/ArticleIdList/ArticleId[@IdType="pubmed"]')&.text
+      pmcid = metadata.at_xpath('PubmedData/ArticleIdList/ArticleId[@IdType="pmc"]')&.text
+      @new_pubmed_works.find { |row| pmid && row['pmid'] == pmid }
+    end
+
+    def find_skipped_row_for_pmc_article(metadata)
+      pmid = metadata.at_xpath('.//article-id[@pub-id-type="pmid"]')&.text,
+      pmcid = metadata.at_xpath('.//article-id[@pub-id-type="pmcid"]')&.text
+      @new_pubmed_works.find { |row| pmcid && row['pmcid'] == pmcid }
     end
 
     def is_pubmed?(metadata)
