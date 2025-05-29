@@ -30,8 +30,6 @@ module Tasks
           begin
             builder = attribute_builder(metadata)
             skipped_row = builder.find_skipped_row(metadata, @new_pubmed_works)
-            # skipped_row = is_pubmed?(metadata) ? find_skipped_row_for_pubmed_article(metadata) : find_skipped_row_for_pmc_article(metadata)
-            # skipped_row = find_skipped_row_for_metadata(metadata)
             Rails.logger.info("[Ingest] Found skipped row: #{skipped_row.inspect}")
             article = new_article(metadata, builder)
             article.save!
