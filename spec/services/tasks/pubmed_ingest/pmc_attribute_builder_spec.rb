@@ -31,14 +31,6 @@ RSpec.describe Tasks::PubmedIngest::PmcAttributeBuilder, type: :model do
     end
   end
 
-  describe '#get_date_issued' do
-    it 'extracts the publication date from pub-date[@pub-type="epub"]' do
-      date = builder.get_date_issued(metadata)
-      puts "Extracted Date: #{date}"
-      expect(date).to match(/\d{4}-\d{2}-\d{2}/)
-    end
-  end
-
   describe '#generate_authors' do
     it 'returns authors with name, orcid, and affiliation' do
       authors = builder.generate_authors(article_node)

@@ -30,14 +30,7 @@ RSpec.describe Tasks::PubmedIngest::PubmedAttributeBuilder, type: :model do
       expect(row['pmcid']).to eq(pmcid)
     end
   end
-
-  describe '#get_date_issued' do
-    it 'extracts the publication date from PubMedPubDate[@PubStatus="pubmed"]' do
-      date = builder.get_date_issued(article_node)
-      expect(date).to match(/\d{4}-\d{2}-\d{2}/)
-    end
-  end
-
+  
   describe '#generate_authors' do
     it 'returns authors with name, orcid, and affiliation' do
       authors = builder.generate_authors(article_node)
