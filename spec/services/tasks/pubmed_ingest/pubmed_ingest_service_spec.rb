@@ -11,11 +11,11 @@ RSpec.describe Tasks::PubmedIngest::PubmedIngestService do
     {
       'admin_set_title' => admin_set.title.first,
       'depositor_onyen' => admin.uid,
-      'attachment_results' => {skipped: []}
+      'attachment_results' => {skipped: []},
+      'file_retrieval_directory' => Rails.root.join('spec/fixtures/files')
     }
   end
   let(:service) { described_class.new(config) }
-  let(:pdf_content) { File.binread(File.join(Rails.root, '/spec/fixtures/files/sample_pdf.pdf')) }
   let(:visibility) { Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE }
   let(:permission_template) do
     FactoryBot.create(:permission_template, source_id: admin_set.id)
@@ -50,7 +50,8 @@ RSpec.describe Tasks::PubmedIngest::PubmedIngestService do
       {
         'admin_set_title' => admin_set.title.first,
         'depositor_onyen' => admin.uid,
-        'attachment_results' => { skipped: [{ 'pdf_attached' => 'Skipped: No CDR URL' }, { 'pdf_attached' => 'Other Reason' }] }
+        'attachment_results' => { skipped: [{ 'pdf_attached' => 'Skipped: No CDR URL' }, { 'pdf_attached' => 'Other Reason' }] },
+        'file_retrieval_directory' => Rails.root.join('spec/fixtures/files')
       }
     end
     it 'successfully initializes with a valid config' do
@@ -125,7 +126,8 @@ RSpec.describe Tasks::PubmedIngest::PubmedIngestService do
       {
         'admin_set_title' => admin_set.title.first,
         'depositor_onyen' => admin.uid,
-        'attachment_results' => { skipped: pubmed_rows, successfully_attached: [], successfully_ingested: [], failed: [] }
+        'attachment_results' => { skipped: pubmed_rows, successfully_attached: [], successfully_ingested: [], failed: [] },
+        'file_retrieval_directory' => Rails.root.join('spec/fixtures/files')
       }
     end
 
@@ -133,7 +135,8 @@ RSpec.describe Tasks::PubmedIngest::PubmedIngestService do
       {
         'admin_set_title' => admin_set.title.first,
         'depositor_onyen' => admin.uid,
-        'attachment_results' => { skipped: pmc_rows, successfully_attached: [], successfully_ingested: [], failed: [] }
+        'attachment_results' => { skipped: pmc_rows, successfully_attached: [], successfully_ingested: [], failed: [] },
+        'file_retrieval_directory' => Rails.root.join('spec/fixtures/files')
       }
     end
 
@@ -390,11 +393,10 @@ RSpec.describe Tasks::PubmedIngest::PubmedIngestService do
     end
 
     it 'attaches a PDF to the article and updates permissions' do
-      metadata = { 'path' => Rails.root.join('spec/fixtures/files/sample_pdf.pdf') }
-      skipped_row = { 'pmid' => '12345678', 'pmcid' => 'PMC12345678' }
+      skipped_row = { 'pmid' => '12345678', 'pmcid' => 'PMC12345678', 'file_name' => 'sample_pdf.pdf' }
 
       expect {
-        service.send(:attach_pdf, article, metadata, skipped_row)
+        service.send(:attach_pdf, article, skipped_row)
       }.to change { article.file_sets.count }.by(1)
 
       file_set = article.file_sets.last
@@ -404,10 +406,9 @@ RSpec.describe Tasks::PubmedIngest::PubmedIngestService do
     end
 
     it 'raises an error when the PDF file cannot be attached' do
-      metadata = { 'path' => '/non/existent/path.pdf' }
-      skipped_row = { 'pmid' => '99999999', 'pmcid' => 'PMC99999999' }
+      skipped_row = { 'pmid' => '99999999', 'pmcid' => 'PMC99999999', 'file_name' => 'non_existent.pdf' }
       expect {
-        service.send(:attach_pdf, article, metadata, skipped_row)
+        service.send(:attach_pdf, article, skipped_row)
       }.to raise_error(StandardError, /File attachment error/)
     end
   end

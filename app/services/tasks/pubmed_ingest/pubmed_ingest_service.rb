@@ -39,7 +39,7 @@ module Tasks
             article.identifier.each { |id| Rails.logger.info("[Ingest] Article identifier: #{id}") }
             Rails.logger.info("[Ingest] Created new article with ID #{article.id}")
 
-            attach_pdf(article, metadata, skipped_row)
+            attach_pdf(article, skipped_row)
             article.save!
 
             Rails.logger.info("[Ingest] Successfully attached PDF for article #{article.id}")
@@ -52,6 +52,8 @@ module Tasks
             pmcid = skipped_row&.[]('pmcid') || 'N/A'
             Rails.logger.error("[Ingest] Error processing record: DOI: #{doi}, PMID: #{pmid}, PMCID: #{pmcid}, Index: #{index}, Error: #{e.message}")
             Rails.logger.error("Backtrace: #{e.backtrace.join("\n")}")
+            puts "Error processing record: DOI: #{doi}, PMID: #{pmid}, PMCID: #{pmcid}, Index: #{index}, Error: #{e.message}"
+            puts "Backtrace: #{e.backtrace.join("\n")}"
             article.destroy if article&.persisted?
             skipped_row['pdf_attached'] = e.message
             @attachment_results[:failed] << skipped_row.to_h
@@ -108,7 +110,7 @@ module Tasks
         builder.populate_article_metadata
       end
 
-      def attach_pdf(article, metadata, skipped_row)
+      def attach_pdf(article, skipped_row)
         Rails.logger.info("[AttachPDF] Attaching PDF for article #{article.id}")
         create_sipity_workflow(work: article)
 
