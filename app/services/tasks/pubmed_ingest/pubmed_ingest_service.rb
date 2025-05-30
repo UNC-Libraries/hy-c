@@ -140,15 +140,21 @@ module Tasks
 
       def generate_cdr_url(skipped_row)
         identifier = skipped_row['pmcid'] || skipped_row['pmid']
+        return nil unless identifier.present?
+
         result = Hyrax::SolrService.get("identifier_tesim:\"#{identifier}\"",
-                          rows: 1,
-                          fl: 'id,title_tesim,has_model_ssim,file_set_ids_ssim')['response']['docs']
-        if result.empty?
-          return nil
-        end
+                              rows: 1,
+                              fl: 'id,title_tesim,has_model_ssim,file_set_ids_ssim')['response']['docs']
+        return nil if result.empty?
+
         record = result.first
-        return "https://cdr.lib.unc.edu/concern/articles/#{record['id']}"
+        model = record['has_model_ssim']&.first&.underscore&.pluralize || 'works'
+        "https://cdr.lib.unc.edu/concern/#{model}/#{record['id']}"
+      rescue => e
+        Rails.logger.warn("[generate_cdr_url] Failed for identifier: #{identifier}, error: #{e.message}")
+        nil
       end
+
     end
   end
 end
