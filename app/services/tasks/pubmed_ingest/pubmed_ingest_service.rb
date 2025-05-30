@@ -44,8 +44,8 @@ module Tasks
 
             Rails.logger.info("[Ingest] Successfully attached PDF for article #{article.id}")
             skipped_row['pdf_attached'] = 'Success'
-            skipped_row['article_title'] = article.title.first
             skipped_row['cdr_url'] = generate_cdr_url(skipped_row)
+            skipped_row['article'] = article
             @attachment_results[:successfully_ingested] << skipped_row.to_h
           rescue => e
             doi = skipped_row&.[]('doi') || 'N/A'
@@ -53,8 +53,6 @@ module Tasks
             pmcid = skipped_row&.[]('pmcid') || 'N/A'
             Rails.logger.error("[Ingest] Error processing record: DOI: #{doi}, PMID: #{pmid}, PMCID: #{pmcid}, Index: #{index}, Error: #{e.message}")
             Rails.logger.error("Backtrace: #{e.backtrace.join("\n")}")
-            puts "Error processing record: DOI: #{doi}, PMID: #{pmid}, PMCID: #{pmcid}, Index: #{index}, Error: #{e.message}"
-            puts "Backtrace: #{e.backtrace.join("\n")}"
             article.destroy if article&.persisted?
             skipped_row['pdf_attached'] = e.message
             @attachment_results[:failed] << skipped_row.to_h
