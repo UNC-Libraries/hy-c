@@ -1,4 +1,16 @@
 <%# [hyc-override] https://github.com/samvera/hyrax/tree/hyrax-v4.0.0/app/views/hyrax/file_sets/media_display/_video.html.erb %>
+<%
+  # Get file size in MB (default to 0 if nil to avoid errors)
+  original_file = file_set.original_file
+  original_file_size = original_file&.file_size.to_i || 0
+  file_size_mb = (original_file_size / 1.megabyte.to_f).round(2)
+
+  Rails.logger.info "[VIDEO] Original file sanity check: #{original_file.inspect}".truncate(1000)
+  Rails.logger.info "[VIDEO] File size for file_set #{file_set.id} is #{original_file_size} bytes"
+  Rails.logger.info "[VIDEO] File size for file_set #{file_set.id} is #{file_size_mb} MB"
+  Rails.logger.info "[VIDEO] Less than or equal to 400MB: #{file_size_mb <= 400}"
+%>
+
 <% if display_media_download_link?(file_set: file_set) %>
     <div>
       <h2 class="sr-only"><%= t('hyrax.file_set.show.downloadable_content.heading') %></h2>
