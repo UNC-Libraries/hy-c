@@ -116,7 +116,9 @@ task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :file_retrieval_direct
     end
 
     begin
-      file_path = File.join(args[:file_retrieval_directory], "#{file_name}.#{file_extension}")
+      file_path = Pathname.new(args[:file_retrieval_directory]).absolute? ?
+              File.join(args[:file_retrieval_directory], "#{file_name}.#{file_extension}") :
+              Rails.root.join(args[:file_retrieval_directory], "#{file_name}.#{file_extension}")
       ingest_service.attach_pubmed_file(hyrax_work, file_path, DEPOSITOR, Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE)
       row['pdf_attached'] = 'Success'
       res[:successfully_attached] << row
@@ -144,10 +146,10 @@ task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :file_retrieval_direct
   res[:counts][:successfully_ingested] = res[:successfully_ingested].length
   res[:counts][:skipped] = res[:skipped].length
 
-  json_output_path = File.join(args[:output_dir], "pdf_attachment_results_#{res[:time].strftime('%Y%m%d%H%M%S')}.json")
+  json_output_path = Rails.root.join(args[:output_dir], "pdf_attachment_results_#{res[:time].strftime('%Y%m%d%H%M%S')}.json")
   File.open(json_output_path, 'w') { |f| f.write(JSON.pretty_generate(res)) }
 
-  csv_output_path = File.join(args[:output_dir], "attached_pdfs_output_#{res[:time].strftime('%Y%m%d%H%M%S')}.csv")
+  csv_output_path = Rails.root.join(args[:output_dir], "attached_pdfs_output_#{res[:time].strftime('%Y%m%d%H%M%S')}.csv")
   CSV.open(csv_output_path, 'w') do |csv_out|
     csv_out << ['file_name', 'cdr_url', 'has_fileset', 'pdf_attached', 'pmid', 'pmcid', 'doi']
     modified_rows.each do |row|
@@ -198,8 +200,9 @@ def double_log(message, level)
 end
 
 def file_info_in_dir(directory)
-  Dir.entries(directory)
-     .select { |f| !File.directory?(File.join(directory, f)) }
+  abs_dir = Pathname.new(directory).absolute? ? directory : Rails.root.join(directory)
+  Dir.entries(abs_dir)
+     .select { |f| !File.directory?(File.join(abs_dir, f)) }
      .map { |f| [File.basename(f, '.*'), File.extname(f).delete('.')] }
      .uniq
 end
