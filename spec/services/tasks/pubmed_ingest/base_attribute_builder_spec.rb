@@ -6,7 +6,6 @@ RSpec.describe Tasks::PubmedIngest::BaseAttributeBuilder, type: :model do
   let(:depositor_onyen) { 'admin' }
   let(:article) { Article.new }
   let(:metadata) { Nokogiri::XML('<root></root>') }
-  let(:skipped_rows) { [] }
 
   let(:stub_builder_class) do
     Class.new(described_class) do
@@ -40,7 +39,7 @@ RSpec.describe Tasks::PubmedIngest::BaseAttributeBuilder, type: :model do
     end
   end
 
-  let(:builder) { stub_builder_class.new(metadata, article, admin_set, depositor_onyen, skipped_rows) }
+  let(:builder) { stub_builder_class.new(metadata, article, admin_set, depositor_onyen) }
 
   describe '#populate_article_metadata' do
     it 'calls metadata population steps and returns the article' do
@@ -71,7 +70,11 @@ RSpec.describe Tasks::PubmedIngest::BaseAttributeBuilder, type: :model do
   end
 
   describe 'abstract methods' do
-    subject(:abstract_builder) { described_class.new(metadata, article, admin_set, depositor_onyen, skipped_rows) }
+    subject(:abstract_builder) { described_class.new(metadata, article, admin_set, depositor_onyen) }
+
+    it 'raises NotImplementedError for find_skipped_row' do
+      expect { abstract_builder.find_skipped_row([]) }.to raise_error(NotImplementedError)
+    end
 
     it 'raises NotImplementedError for generate_authors' do
       expect { abstract_builder.send(:generate_authors) }.to raise_error(NotImplementedError)

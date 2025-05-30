@@ -3,14 +3,13 @@ module Tasks
   module PubmedIngest
     # Abstract base class for PubMed and PMC article attribute builders
     class BaseAttributeBuilder
-      attr_reader :metadata, :article, :admin_set, :depositor_onyen, :new_pubmed_works
+      attr_reader :metadata, :article, :admin_set, :depositor_onyen
 
-      def initialize(metadata, article, admin_set, depositor_onyen, new_pubmed_works)
+      def initialize(metadata, article, admin_set, depositor_onyen)
         @metadata = metadata
         @article = article
         @admin_set = admin_set
         @depositor_onyen = depositor_onyen
-        @new_pubmed_works = new_pubmed_works
       end
 
       def populate_article_metadata
@@ -19,6 +18,11 @@ module Tasks
         set_journal_attributes
         set_identifiers
         article
+      end
+
+
+      def find_skipped_row(new_pubmed_works)
+        raise NotImplementedError
       end
 
       private

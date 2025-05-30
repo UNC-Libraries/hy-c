@@ -13,7 +13,7 @@ RSpec.describe Tasks::PubmedIngest::PmcAttributeBuilder, type: :model do
   let(:metadata) { Nokogiri::XML(File.read(Rails.root.join('spec/fixtures/files/pmc_api_response_multi.xml'))) }
   let(:article_node) { metadata.xpath('//article').first }
   let(:article) { Article.new }
-  let(:builder) { described_class.new(article_node, article, admin_set, depositor.uid, skipped_rows) }
+  let(:builder) { described_class.new(article_node, article, admin_set, depositor.uid) }
 
   describe '#find_skipped_row' do
     it 'matches by pmid' do
@@ -24,7 +24,7 @@ RSpec.describe Tasks::PubmedIngest::PmcAttributeBuilder, type: :model do
         .with('.//article-id[@pub-id-type="pmcid"]')
         .and_return(nil)
 
-      result = builder.find_skipped_row
+      result = builder.find_skipped_row(skipped_rows)
       expect(result['pmid']).to eq('12345678')
     end
 
@@ -36,7 +36,7 @@ RSpec.describe Tasks::PubmedIngest::PmcAttributeBuilder, type: :model do
         .with('.//article-id[@pub-id-type="pmcid"]')
         .and_return(double(text: 'PMC87654321'))
 
-      result = builder.find_skipped_row
+      result = builder.find_skipped_row(skipped_rows)
       expect(result['pmcid']).to eq('PMC87654321')
     end
   end

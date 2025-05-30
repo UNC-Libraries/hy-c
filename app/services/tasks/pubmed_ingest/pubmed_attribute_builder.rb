@@ -3,7 +3,7 @@ module Tasks
   module PubmedIngest
     class PubmedAttributeBuilder < BaseAttributeBuilder
 
-      def find_skipped_row
+      def find_skipped_row(new_pubmed_works)
         pmid = metadata.at_xpath('PubmedData/ArticleIdList/ArticleId[@IdType="pubmed"]')&.text
         pmcid = metadata.at_xpath('PubmedData/ArticleIdList/ArticleId[@IdType="pmc"]')&.text
         new_pubmed_works.find { |row| row['pmid'] == pmid || row['pmcid'] == pmcid }

@@ -31,7 +31,7 @@ module Tasks
           begin
             article = new_article(metadata)
             builder = attribute_builder(metadata, article)
-            skipped_row = builder.find_skipped_row
+            skipped_row = builder.find_skipped_row(@new_pubmed_works)
 
             Rails.logger.info("[Ingest] Found skipped row: #{skipped_row.inspect}")
             article.save!
@@ -127,8 +127,8 @@ module Tasks
 
       def attribute_builder(metadata, article)
         is_pubmed?(metadata) ?
-          PubmedAttributeBuilder.new(metadata, article, @admin_set, @depositor.uid, @new_pubmed_works) :
-          PmcAttributeBuilder.new(metadata, article, @admin_set, @depositor.uid, @new_pubmed_works)
+          PubmedAttributeBuilder.new(metadata, article, @admin_set, @depositor.uid) :
+          PmcAttributeBuilder.new(metadata, article, @admin_set, @depositor.uid)
       end
     end
   end
