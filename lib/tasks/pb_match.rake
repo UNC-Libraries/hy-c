@@ -151,6 +151,15 @@ task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :file_retrieval_direct
 
   double_log("Results written to #{json_output_path}", :info)
   double_log("Attempted: #{attempted_attachments}, Ingested: #{res[:successfully_ingested].length}, Attached: #{res[:successfully_attached].length}, Failed: #{res[:failed].length}, Skipped: #{res[:skipped].length}", :info)
+  double_log('Sending email with results', :info)
+  begin
+    report = Tasks::PubmedIngest::PubmedReportingService.generate_report(res)
+    PubmedReportMailer.pubmed_report_email(report).deliver_now
+    double_log('Email sent successfully', :info)
+  rescue StandardError => e
+    double_log("Failed to send email: #{e.message}", :error)
+    double_log(e.backtrace.join("\n"))
+  end
 end
 
 def has_matching_ids?(existing_ids, current_ids)
