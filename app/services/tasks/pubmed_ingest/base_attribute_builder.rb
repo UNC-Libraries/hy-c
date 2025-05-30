@@ -38,7 +38,19 @@ module Tasks
         article.dcmi_type = ['http://purl.org/dc/dcmitype/Text']
       end
 
-      def set_journal_attributes
+      def generate_authors
+        raise NotImplementedError
+      end
+
+      def retrieve_author_affiliations(hash, author)
+        raise NotImplementedError
+      end
+
+      def apply_additional_basic_attributes
+        raise NotImplementedError
+      end
+
+      def get_date_issued
         raise NotImplementedError
       end
 
@@ -46,11 +58,11 @@ module Tasks
         raise NotImplementedError
       end
 
-      def generate_authors
+      def format_publication_identifiers
         raise NotImplementedError
       end
 
-      def apply_additional_basic_attributes
+      def set_journal_attributes
         raise NotImplementedError
       end
     end

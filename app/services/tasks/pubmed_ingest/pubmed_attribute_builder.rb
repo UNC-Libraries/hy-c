@@ -2,11 +2,14 @@
 module Tasks
   module PubmedIngest
     class PubmedAttributeBuilder < BaseAttributeBuilder
+
       def find_skipped_row
         pmid = metadata.at_xpath('PubmedData/ArticleIdList/ArticleId[@IdType="pubmed"]')&.text
         pmcid = metadata.at_xpath('PubmedData/ArticleIdList/ArticleId[@IdType="pmc"]')&.text
         new_pubmed_works.find { |row| row['pmid'] == pmid || row['pmcid'] == pmcid }
       end
+
+      private
 
       def generate_authors
         metadata.xpath('MedlineCitation/Article/AuthorList/Author').map.with_index do |author, i|
@@ -20,17 +23,12 @@ module Tasks
         end
       end
 
-      def set_identifiers
-        article.identifier = format_publication_identifiers
-        article.issn = [metadata.xpath('MedlineCitation/Article/Journal/ISSN[@IssnType="Electronic"]').text]
-      end
-
-      def set_journal_attributes
-        article.journal_title = metadata.at_xpath('MedlineCitation/Article/Journal/Title')&.text
-        article.journal_volume = metadata.at_xpath('MedlineCitation/Article/Journal/JournalIssue/Volume')&.text.presence
-        article.journal_issue = metadata.at_xpath('MedlineCitation/Article/Journal/JournalIssue/Issue')&.text.presence
-        article.page_start = metadata.at_xpath('MedlineCitation/Article/Pagination/StartPage')&.text.presence
-        article.page_end   = metadata.at_xpath('MedlineCitation/Article/Pagination/EndPage')&.text.presence
+      def retrieve_author_affiliations(hash, author)
+        affiliations = author.xpath('AffiliationInfo/Affiliation').map(&:text)
+        # Search for UNC affiliation
+        unc_affiliation = affiliations.find { |aff| AffiliationUtilsHelper.is_unc_affiliation?(aff) }
+        # Fallback to first affiliation if no UNC affiliation found
+        hash['other_affiliation'] = unc_affiliation.presence || affiliations[0].presence || ''
       end
 
       def apply_additional_basic_attributes
@@ -42,8 +40,6 @@ module Tasks
         article.funder = metadata.xpath('MedlineCitation/Article/GrantList/Grant/Agency').map(&:text)
       end
 
-      private
-
       def get_date_issued
         pubdate = metadata.at_xpath('PubmedData/History/PubMedPubDate[@PubStatus="pubmed"]')
         year = pubdate&.at_xpath('Year')&.text
@@ -52,12 +48,9 @@ module Tasks
         DateTime.new(year.to_i, month.to_i, day.to_i).strftime('%Y-%m-%d')
       end
 
-      def retrieve_author_affiliations(hash, author)
-        affiliations = author.xpath('AffiliationInfo/Affiliation').map(&:text)
-            # Search for UNC affiliation
-        unc_affiliation = affiliations.find { |aff| AffiliationUtilsHelper.is_unc_affiliation?(aff) }
-            # Fallback to first affiliation if no UNC affiliation found
-        hash['other_affiliation'] = unc_affiliation.presence || affiliations[0].presence || ''
+      def set_identifiers
+        article.identifier = format_publication_identifiers
+        article.issn = [metadata.xpath('MedlineCitation/Article/Journal/ISSN[@IssnType="Electronic"]').text]
       end
 
       def format_publication_identifiers
@@ -67,6 +60,14 @@ module Tasks
           (pmcid = id_list.at_xpath('ArticleId[@IdType="pmc"]')) ? "PMCID: #{pmcid.text}" : nil,
           (doi = id_list.at_xpath('ArticleId[@IdType="doi"]')) ? "DOI: https://dx.doi.org/#{doi.text}" : nil
         ].compact
+      end
+
+      def set_journal_attributes
+        article.journal_title = metadata.at_xpath('MedlineCitation/Article/Journal/Title')&.text
+        article.journal_volume = metadata.at_xpath('MedlineCitation/Article/Journal/JournalIssue/Volume')&.text.presence
+        article.journal_issue = metadata.at_xpath('MedlineCitation/Article/Journal/JournalIssue/Issue')&.text.presence
+        article.page_start = metadata.at_xpath('MedlineCitation/Article/Pagination/StartPage')&.text.presence
+        article.page_end   = metadata.at_xpath('MedlineCitation/Article/Pagination/EndPage')&.text.presence
       end
     end
   end
