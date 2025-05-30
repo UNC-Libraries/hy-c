@@ -157,3 +157,89 @@ task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :file_retrieval_direct
   double_log("Results written to #{json_output_path} and #{csv_output_path}", :info)
   double_log("Attempted: #{attempted_attachments}, Ingested: #{res[:successfully_ingested].length}, Attached: #{res[:successfully_attached].length}, Failed: #{res[:failed].length}, Skipped: #{res[:skipped].length}", :info)
 end
+
+def has_matching_ids?(existing_ids, current_ids)
+  # Check if the identifier matches any of the alternate IDs
+  existing_ids[:pmid] == current_ids[:pmid] ||
+  existing_ids[:pmcid] == current_ids[:pmcid] ||
+  existing_ids[:doi] == current_ids[:doi]
+end
+
+def retrieve_alternate_ids(identifier)
+  # Send a request to the PubMed conversion API
+  response = HTTParty.get("https://www.ncbi.nlm.nih.gov/pmc/utils/idconv/v1.0/?ids=#{identifier}")
+  doc = Nokogiri::XML(response.body)
+  record = doc.at_xpath('//record')
+  if record && record['status'] != 'error'
+    res = {
+      pmid:  record['pmid'],
+      pmcid: record['pmcid'],
+      doi: record['doi'],
+    }
+    return res
+  else
+    return nil
+  end
+end
+
+def double_log(message, level)
+  puts message
+  case level
+  when :info
+    Rails.logger.info(message)
+  when :warn
+    Rails.logger.warn(message)
+  when :error
+    Rails.logger.error(message)
+  else
+    Rails.logger.debug(message)
+  end
+end
+
+def file_info_in_dir(directory)
+  Dir.entries(directory)
+     .select { |f| !File.directory?(File.join(directory, f)) }
+     .map { |f| [File.basename(f, '.*'), File.extname(f).delete('.')] }
+     .uniq
+end
+def valid_args(function_name, *args)
+  if args.any?(&:nil?)
+    puts "❌ #{function_name}: One or more required arguments are missing."
+    return false
+    end
+
+  true
+end
+# Store file names and CDR data in a CSV
+def store_file_info_and_cdr_data(file_info, output_path)
+  CSV.open(output_path, 'w') do |csv|
+      # Add the header
+    csv << ['file_name', 'file_extension', 'cdr_url', 'has_fileset']
+    file_info.each do |file|
+      file_name = file[0]
+      file_extension = file[1]
+      cdr_info = get_cdr_duplicate_data(file_name)
+      if cdr_info.present?
+        cdr_url, has_fileset = cdr_info
+        csv << [file_name, file_extension, cdr_url, has_fileset]
+      else
+        csv << [file_name, file_extension, nil, nil]
+      end
+    end
+  end
+end
+
+def get_cdr_duplicate_data(identifier)
+  result = Hyrax::SolrService.get("identifier_tesim:\"#{identifier}\"",
+                          rows: 1,
+                          fl: 'id,title_tesim,has_model_ssim,file_set_ids_ssim')['response']['docs']
+  if result.empty?
+    return nil
+  end
+  record = result.first
+  model_type = record['has_model_ssim'].first.underscore + 's'
+  has_fileset = record['file_set_ids_ssim'].present?
+  base_url = 'https://cdr.lib.unc.edu/concern/'
+  cdr_url = "#{base_url}#{model_type}/#{record['id']}"
+  return [cdr_url, has_fileset]
+end
