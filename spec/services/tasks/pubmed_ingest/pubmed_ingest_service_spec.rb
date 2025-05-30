@@ -307,7 +307,7 @@ RSpec.describe Tasks::PubmedIngest::PubmedIngestService do
       expect(ingested_article.keyword).to eq(['ontology', 'midwifery care', 'Adolescent', 'Cost analysis', 'phenotype', 'sociodemographic', 'Medicaid', 'pregnancy loss', 'semantics', 'Mental health services', 'miscarriage', 'Hispanic/Latinas', 'integration', 'acculturation', 'intimate partner violence'])
       expect(ingested_article.funder).to eq(['National Human Genome Research Institute', 'Office of Science', 'Center of Excellence in Genomic Science', 'BBSRC Growing Health', 'National Institutes of Health', 'Office of the Director', 'NIH National Human Genome Research Institute Phenomics First Resource', 'Open Targets', 'EMBL-EBI', 'GSK', 'EMBL-EBI Core Funds', 'Dicty database and Stock Center', 'Celgene', 'Takeda', 'Gene Ontology Consortium', 'Biogen', 'Office of Basic Energy Sciences', 'NICHD', 'Wellcome Trust Sanger Institute', 'Alliance of Genome Resources', 'NIH', 'US Department of Energy', 'Wellcome Grant', 'Sanofi', 'Delivering Sustainable Wheat'])
       # Validate creator size, verify fields are present
-      expect(ingested_article.creators.length).to eq(3)
+      expect(ingested_article.creators.length).to eq(4)
       ingested_article.creators.each_with_index do |creator, i|
         expect(creator).to be_a(Person)
         expect(creator['name']).to be_present
@@ -317,9 +317,13 @@ RSpec.describe Tasks::PubmedIngest::PubmedIngestService do
       # Validate specific creator, selected by name
       sample_creator = ingested_article.creators.find { |c| active_relation_to_string(c['name']) == 'Lanier, Paul' }
       expect(sample_creator).to be_present
-      expect(active_relation_to_string(sample_creator['index'])).to eq('0')
+      expect(active_relation_to_string(sample_creator['index'])).to eq('1')
       expect(active_relation_to_string(sample_creator['orcid'])).to eq('http://orcid.org/0000-0003-4360-3269')
       expect(active_relation_to_string(sample_creator['other_affiliation'])).to include('School of Social Work, UNC Chapel Hill')
+      # Retrieve another sample creator with non-UNC and UNC affiliations
+      sample_creator_multi_affil = ingested_article.creators.find { |c| active_relation_to_string(c['name']) == 'Doe, John' }
+      expect(sample_creator_multi_affil).to be_present
+      expect(active_relation_to_string(sample_creator_multi_affil['other_affiliation'])).to eq('School of Social Work, UNC Chapel Hill')
       # Journal and page assertions
       expect(ingested_article.journal_title).to eq('Administration and Policy in Mental Health')
       expect(ingested_article.journal_volume).to eq('12')

@@ -6676,6 +6676,18 @@
                 </title-group>
                 <contrib-group>
                     <contrib contrib-type="author" corresp="yes">
+                        <contrib-id contrib-id-type="orcid" authenticated="false">http://orcid.org/0000-0003-4360-3268</contrib-id>
+                        <name name-style="western">
+                            <surname>Doe</surname>
+                            <given-names initials="J">John</given-names>
+                        </name>
+                        <address>
+                            <email>doe@email.unc.edu</email>
+                        </address>
+                        <xref ref-type="aff" rid="Aff1">1</xref>
+                        <xref ref-type="aff" rid="Aff2">4</xref>
+                    </contrib>
+                    <contrib contrib-type="author" corresp="yes">
                         <contrib-id contrib-id-type="orcid" authenticated="false">http://orcid.org/0000-0003-4360-3269</contrib-id>
                         <name name-style="western">
                             <surname>Lanier</surname>

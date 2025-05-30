@@ -174,38 +174,6 @@ task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :full_text_csv, :file_
   double_log("Attempted Attachments: #{attempted_attachments}, Successfully Ingested: #{res[:successfully_ingested].length}, Successfully Attached: #{res[:successfully_attached].length}, Failed: #{res[:failed].length}, Skipped: #{res[:skipped].length}", :info)
 end
 
-desc 'Test WIP: Create a new work'
-task create_new_work: :environment do |task, args|
-  path = Rails.root.join('spec', 'fixtures', 'files', 'pubmed_ingest_test_fixture.json')
-  # Read the JSON file
-  test_hashes = [
-    { 'pmid' => '31857942', 'pdf_attached' => 'Skipped: No CDR URL', 'path' => Rails.root.join('spec', 'fixtures', 'files', 'sample_pdf.pdf') },
-    { 'pmcid'=> 'PMC6101660', 'pdf_attached' => 'Skipped: No CDR URL', 'path' => Rails.root.join('spec', 'fixtures', 'files', '1022-0.pdf') },
-    { 'pmid' => '32198428', 'pdf_attached' => 'Skipped: No CDR URL', 'path' => Rails.root.join('spec', 'fixtures', 'files', 'sample_pdf.pdf') },
-    { 'pmcid' => 'PMC9753428', 'pdf_attached' => 'Skipped: No CDR URL', 'path' => Rails.root.join('spec', 'fixtures', 'files', '1022-0.pdf') }
-  ]
-  config = {
-    'admin_set' => 'default',
-    'depositor_onyen' => DEPOSITOR,
-  }
-  ingest_service = Tasks::PubmedIngestService.new(config)
-  retrieved_metadata = ingest_service.batch_retrieve_metadata
-  # Write results to JSON
-  json_output_path = File.join(Rails.root, 'test-out-2066.json')
-  File.open(json_output_path, 'w') do |f|
-    f.write(JSON.pretty_generate(retrieved_metadata))
-  end
-  # test_hashes.each do |hash|
-  #   # Create a new work
-  #   work = ingest_service.create_new_record(hash, path, DEPOSITOR, Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE)
-  #   if work.nil?
-  #     puts "Failed to create new work for #{hash}"
-  #   else
-  #     puts "Successfully created new work for #{hash}"
-  #   end
-  # end
-end
-
 def has_matching_ids?(existing_ids, current_ids)
   # Check if the identifier matches any of the alternate IDs
   existing_ids[:pmid] == current_ids[:pmid] ||
