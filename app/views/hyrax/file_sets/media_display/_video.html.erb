@@ -1,24 +1,27 @@
 <%# [hyc-override] https://github.com/samvera/hyrax/tree/hyrax-v4.0.0/app/views/hyrax/file_sets/media_display/_video.html.erb %>
 <%
-  # Get file size in MB (default to 0 if nil to avoid errors)
   original_file = file_set.original_file
-  original_file_size = original_file&.file_size.to_i || 0
+  original_file_size = original_file&.file_size.to_i
   file_size_mb = (original_file_size / 1.megabyte.to_f).round(2)
+  show_video = file_size_mb <= 60
 
-  Rails.logger.info "[VIDEO] Original file sanity check: #{original_file.inspect}".truncate(1000)
-  Rails.logger.info "[VIDEO] File size for file_set #{file_set.id} is #{original_file_size} bytes"
-  Rails.logger.info "[VIDEO] File size for file_set #{file_set.id} is #{file_size_mb} MB"
-  Rails.logger.info "[VIDEO] Less than or equal to 400MB: #{file_size_mb <= 400}"
+  Rails.logger.info "[VIDEO] Original file: #{original_file.inspect}".truncate(1000)
+  Rails.logger.info "[VIDEO] File size (bytes): #{original_file_size}"
+  Rails.logger.info "[VIDEO] File size (MB): #{file_size_mb}"
+  Rails.logger.info "[VIDEO] Eligible for video preview? #{show_video}"
 %>
 
 <% if display_media_download_link?(file_set: file_set) %>
     <div>
       <h2 class="sr-only"><%= t('hyrax.file_set.show.downloadable_content.heading') %></h2>
-      <video controls="controls" class="video-js vjs-default-skin" style="width:100%" data-setup="{}" controlsList="nodownload" preload="auto">
-        <source src="<%= hyrax.download_path(file_set, file: 'webm') %>" type="video/webm" />
-        <source src="<%= hyrax.download_path(file_set, file: 'mp4') %>" type="video/mp4" />
-        <%= t('hyrax.file_set.show.downloadable_content.video_tag_not_supported') %>
-      </video>
+      <%# [hyc-override] Show video only if file size is less than or equal to 60MB %>
+      <% if show_video %>
+          <video controls="controls" class="video-js vjs-default-skin" style="width:100%" data-setup="{}" controlsList="nodownload" preload="auto">
+            <source src="<%= hyrax.download_path(file_set, file: 'webm') %>" type="video/webm" />
+            <source src="<%= hyrax.download_path(file_set, file: 'mp4') %>" type="video/mp4" />
+            <%= t('hyrax.file_set.show.downloadable_content.video_tag_not_supported') %>
+          </video>
+        <% end %>
       <%# [hyc-override] Style download link %>
       <%= link_to t('hyrax.file_set.show.downloadable_content.video_link'),
                   hyrax.download_path(file_set),
