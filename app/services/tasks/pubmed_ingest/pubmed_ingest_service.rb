@@ -44,7 +44,8 @@ module Tasks
 
             Rails.logger.info("[Ingest] Successfully attached PDF for article #{article.id}")
             skipped_row['pdf_attached'] = 'Success'
-            skipped_row['article'] = article
+            skipped_row['article_title'] = article.title.first
+            skipped_row['cdr_url'] = generate_cdr_url(skipped_row)
             @attachment_results[:successfully_ingested] << skipped_row.to_h
           rescue => e
             doi = skipped_row&.[]('doi') || 'N/A'
@@ -135,6 +136,18 @@ module Tasks
         is_pubmed?(metadata) ?
           PubmedAttributeBuilder.new(metadata, article, @admin_set, @depositor.uid) :
           PmcAttributeBuilder.new(metadata, article, @admin_set, @depositor.uid)
+      end
+
+      def generate_cdr_url(skipped_row)
+        identifier = skipped_row['pmcid'] || skipped_row['pmid']
+        result = Hyrax::SolrService.get("identifier_tesim:\"#{identifier}\"",
+                          rows: 1,
+                          fl: 'id,title_tesim,has_model_ssim,file_set_ids_ssim')['response']['docs']
+        if result.empty?
+          return nil
+        end
+        record = result.first
+        return "https://cdr.lib.unc.edu/concern/articles/#{record['id']}"
       end
     end
   end

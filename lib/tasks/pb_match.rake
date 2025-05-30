@@ -149,15 +149,7 @@ task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :file_retrieval_direct
   json_output_path = Rails.root.join(args[:output_dir], "pdf_attachment_results_#{res[:time].strftime('%Y%m%d%H%M%S')}.json")
   File.open(json_output_path, 'w') { |f| f.write(JSON.pretty_generate(res)) }
 
-  csv_output_path = Rails.root.join(args[:output_dir], "attached_pdfs_output_#{res[:time].strftime('%Y%m%d%H%M%S')}.csv")
-  CSV.open(csv_output_path, 'w') do |csv_out|
-    csv_out << ['file_name', 'cdr_url', 'has_fileset', 'pdf_attached', 'pmid', 'pmcid', 'doi']
-    modified_rows.each do |row|
-      csv_out << [row['file_name'], row['cdr_url'], row['has_fileset'], row['pdf_attached'], row['pmid'], row['pmcid'], row['doi']]
-    end
-  end
-
-  double_log("Results written to #{json_output_path} and #{csv_output_path}", :info)
+  double_log("Results written to #{json_output_path}", :info)
   double_log("Attempted: #{attempted_attachments}, Ingested: #{res[:successfully_ingested].length}, Attached: #{res[:successfully_attached].length}, Failed: #{res[:failed].length}, Skipped: #{res[:skipped].length}", :info)
 end
 
