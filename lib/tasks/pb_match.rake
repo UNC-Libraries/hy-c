@@ -18,17 +18,20 @@ desc 'Attach new PDFs to works'
 # 1. fetch_identifiers_output_csv: Path to the CSV file containing the identifiers and CDR data
 # 2. file_retrieval_directory: Path to the directory where the files are located
 # 3. output_dir: Path to the directory where the output files will be saved
-# 4. admin_set: The admin set into which new works should be ingested
-task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :file_retrieval_directory, :output_dir, :admin_set] => :environment do |task, args|
-  return unless valid_args('attach_pubmed_pdfs', args[:fetch_identifiers_output_csv], args[:file_retrieval_directory], args[:output_dir], args[:admin_set])
-
-  ingest_service = Tasks::PubmedIngest::PubmedIngestService.new
+# 4. admin_set_title: The admin set into which new works should be ingested
+task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :file_retrieval_directory, :output_dir, :admin_set_title] => :environment do |task, args|
+  return unless valid_args('attach_pubmed_pdfs', args[:fetch_identifiers_output_csv], args[:file_retrieval_directory], args[:output_dir], args[:admin_set_title])
   res = {
-    skipped: [], successfully_attached: [], successfully_ingested: [], failed: [],
-    time: Time.now, depositor: DEPOSITOR, file_retrieval_directory: args[:file_retrieval_directory],
-    output_dir: args[:output_dir], file_retrieval_directory: args[:file_retrieval_directory],
-    admin_set: args[:admin_set], counts: {}
-  }
+  skipped: [], successfully_attached: [], successfully_ingested: [], failed: [],
+  time: Time.now, depositor: DEPOSITOR, file_retrieval_directory: args[:file_retrieval_directory],
+  output_dir: args[:output_dir], admin_set: args[:admin_set_title], counts: {}
+}
+  ingest_service = Tasks::PubmedIngest::PubmedIngestService.new({
+    'admin_set_title' => args[:admin_set_title],
+    'depositor_onyen' => DEPOSITOR,
+    'attachment_results' => res,
+    'file_retrieval_directory' => args[:file_retrieval_directory]
+  })
 
   file_info = file_info_in_dir(args[:file_retrieval_directory])
   identifiers_csv = CSV.read(args[:fetch_identifiers_output_csv], headers: true)
@@ -127,14 +130,12 @@ task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :file_retrieval_direct
       next
     end
   end
-
-  config = {
-    'admin_set' => args[:admin_set],
+  ingest_service = Tasks::PubmedIngest::PubmedIngestService.new({
+    'admin_set_title' => args[:admin_set_title],
     'depositor_onyen' => DEPOSITOR,
-    'attachment_results' => res
-  }
-  ingest_service = Tasks::PubmedIngest::PubmedIngestService.new(config)
-  ingest_service.batch_retrieve_metadata
+    'attachment_results' => res,
+    'file_retrieval_directory' => args[:file_retrieval_directory]
+  })
   res = ingest_service.ingest_publications
 
   res[:counts][:total_unique_files] = file_info.length

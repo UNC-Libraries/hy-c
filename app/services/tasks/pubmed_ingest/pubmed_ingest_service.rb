@@ -7,8 +7,9 @@ module Tasks
       include Tasks::IngestHelper
 
       def initialize(config)
-        raise ArgumentError, 'Missing required config keys' unless config['admin_set_title'] && config['depositor_onyen'] && config['attachment_results']
+        raise ArgumentError, 'Missing required config keys' unless config['admin_set_title'] && config['depositor_onyen'] && config['attachment_results'] && config['file_retrieval_directory']
 
+        @file_retrieval_directory = config['file_retrieval_directory']
         @attachment_results = config['attachment_results'].symbolize_keys
         @new_pubmed_works = @attachment_results[:skipped].select { |row| row['pdf_attached'] == 'Skipped: No CDR URL' }
         @attachment_results[:skipped] -= @new_pubmed_works
@@ -110,7 +111,10 @@ module Tasks
       def attach_pdf(article, metadata, skipped_row)
         Rails.logger.info("[AttachPDF] Attaching PDF for article #{article.id}")
         create_sipity_workflow(work: article)
-        pdf_file = attach_pdf_to_work(article, metadata['path'], @depositor, article.visibility)
+
+        file_path = File.join(@file_retrieval_directory, skipped_row['file_name'])
+        Rails.logger.info("[AttachPDF] Resolved file path: #{file_path}")
+        pdf_file = attach_pdf_to_work(article, file_path, @depositor, article.visibility)
 
         if pdf_file.nil?
           ids = [skipped_row['pmid'], skipped_row['pmcid']].compact.join(', ')
