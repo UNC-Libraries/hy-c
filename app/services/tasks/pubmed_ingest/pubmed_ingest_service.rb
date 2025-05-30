@@ -25,18 +25,22 @@ module Tasks
       def ingest_publications
         batch_retrieve_metadata
         Rails.logger.info("[Ingest] Starting ingestion of #{@retrieved_metadata.size} records")
+
         @retrieved_metadata.each_with_index do |metadata, index|
           Rails.logger.info("[Ingest] Processing record ##{index + 1}")
           begin
-            builder = attribute_builder(metadata)
-            skipped_row = builder.find_skipped_row(metadata, @new_pubmed_works)
+            article = new_article(metadata)
+            builder = attribute_builder(metadata, article)
+            skipped_row = builder.find_skipped_row
+
             Rails.logger.info("[Ingest] Found skipped row: #{skipped_row.inspect}")
-            article = new_article(metadata, builder)
             article.save!
             article.identifier.each { |id| Rails.logger.info("[Ingest] Article identifier: #{id}") }
             Rails.logger.info("[Ingest] Created new article with ID #{article.id}")
+
             attach_pdf(article, metadata, skipped_row)
             article.save!
+
             Rails.logger.info("[Ingest] Successfully attached PDF for article #{article.id}")
             skipped_row['pdf_attached'] = 'Success'
             skipped_row['article'] = article
@@ -95,12 +99,12 @@ module Tasks
         @retrieved_metadata
       end
 
-      def new_article(metadata, builder)
+      def new_article(metadata)
         Rails.logger.info('[Article] Initializing new article object')
         article = Article.new
         article.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
-        article = populate_article_metadata(article, metadata, builder)
-        article
+        builder = attribute_builder(metadata, article)
+        builder.populate_article_metadata
       end
 
       def attach_pdf(article, metadata, skipped_row)
@@ -117,35 +121,14 @@ module Tasks
         pdf_file.update(permissions_attributes: group_permissions(@admin_set))
       end
 
-      def populate_article_metadata(article, metadata, builder)
-        set_rights_and_types(article, metadata)
-        set_basic_attributes(metadata, @depositor.uid, article, builder)
-        builder.set_journal_attributes(article, metadata)
-        builder.set_identifiers(article, metadata)
-        article
-      end
-
-      def set_basic_attributes(metadata, depositor_onyen, article, builder)
-        article.admin_set = @admin_set
-        article.depositor = depositor_onyen
-        article.resource_type = ['Article']
-        article.creators_attributes = builder.generate_authors(metadata)
-        builder.apply_additional_basic_attributes(article, metadata)
-      end
-
-      def set_rights_and_types(article, metadata)
-        rights_statement = 'http://rightsstatements.org/vocab/InC/1.0/'
-        article.rights_statement = rights_statement
-        article.rights_statement_label = CdrRightsStatementsService.label(rights_statement)
-        article.dcmi_type = ['http://purl.org/dc/dcmitype/Text']
-      end
-
       def is_pubmed?(metadata)
         metadata.name == 'PubmedArticle'
       end
 
-      def attribute_builder(metadata)
-        is_pubmed?(metadata) ? PubmedAttributeBuilder.new : PmcAttributeBuilder.new
+      def attribute_builder(metadata, article)
+        is_pubmed?(metadata) ?
+          PubmedAttributeBuilder.new(metadata, article, @admin_set, @depositor.uid, @new_pubmed_works) :
+          PmcAttributeBuilder.new(metadata, article, @admin_set, @depositor.uid, @new_pubmed_works)
       end
     end
   end

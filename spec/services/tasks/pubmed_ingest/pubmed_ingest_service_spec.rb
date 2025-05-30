@@ -415,36 +415,4 @@ RSpec.describe Tasks::PubmedIngest::PubmedIngestService do
   def active_relation_to_string(active_relation)
     active_relation.to_a.map(&:to_s).join('; ')
   end
-
-  def build_dynamic_pubmed_xml(count, db_type)
-    Nokogiri::XML::Builder.new do |xml|
-      if db_type == 'pubmed'
-        xml.PubmedArticleSet {
-          count.times do |i|
-            xml.PubmedArticle {
-              xml.MedlineCitation {
-                xml.PMID "100000#{i}"
-              }
-              xml.Article {
-                xml.ArticleTitle "Mocked PubMed Article #{i}"
-              }
-            }
-          end
-        }
-      else
-        xml.ArticleSet {
-          count.times do |i|
-            xml.article {
-              xml.front {
-                xml.send('article-meta') {
-                  xml.send('pub-id', "200000#{i}", 'pub-id-type' => 'pmcid')
-                  xml.title "Mocked PMC Article #{i}"
-                }
-              }
-            }
-          end
-        }
-      end
-    end.to_xml
-  end
 end

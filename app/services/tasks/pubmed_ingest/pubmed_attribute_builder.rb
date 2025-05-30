@@ -1,31 +1,31 @@
 # frozen_string_literal: true
 module Tasks
   module PubmedIngest
-    class PubmedAttributeBuilder
-      def find_skipped_row(metadata, new_pubmed_works)
+    class PubmedAttributeBuilder < BaseAttributeBuilder
+      def find_skipped_row
         pmid = metadata.at_xpath('PubmedData/ArticleIdList/ArticleId[@IdType="pubmed"]')&.text
         pmcid = metadata.at_xpath('PubmedData/ArticleIdList/ArticleId[@IdType="pmc"]')&.text
         new_pubmed_works.find { |row| row['pmid'] == pmid || row['pmcid'] == pmcid }
       end
 
-      def generate_authors(metadata)
+      def generate_authors
         metadata.xpath('MedlineCitation/Article/AuthorList/Author').map.with_index do |author, i|
           res = {
-          'name' => [author.xpath('LastName').text, author.xpath('ForeName').text].join(', '),
-          'orcid' => author.at_xpath('Identifier[@Source="ORCID"]')&.text&.then { |id| "https://orcid.org/#{id}" } || '',
-          'index' => i.to_s
+            'name' => [author.xpath('LastName').text, author.xpath('ForeName').text].join(', '),
+            'orcid' => author.at_xpath('Identifier[@Source="ORCID"]')&.text&.then { |id| "https://orcid.org/#{id}" } || '',
+            'index' => i.to_s
           }
-          self.retrieve_author_affiliations(res, author)
+          retrieve_author_affiliations(res, author)
           res
         end
       end
 
-      def set_identifiers(article, metadata)
-        article.identifier = format_publication_identifiers(metadata)
+      def set_identifiers
+        article.identifier = format_publication_identifiers
         article.issn = [metadata.xpath('MedlineCitation/Article/Journal/ISSN[@IssnType="Electronic"]').text]
       end
 
-      def set_journal_attributes(article, metadata)
+      def set_journal_attributes
         article.journal_title = metadata.at_xpath('MedlineCitation/Article/Journal/Title')&.text
         article.journal_volume = metadata.at_xpath('MedlineCitation/Article/Journal/JournalIssue/Volume')&.text.presence
         article.journal_issue = metadata.at_xpath('MedlineCitation/Article/Journal/JournalIssue/Issue')&.text.presence
@@ -33,19 +33,18 @@ module Tasks
         article.page_end   = metadata.at_xpath('MedlineCitation/Article/Pagination/EndPage')&.text.presence
       end
 
-      def apply_additional_basic_attributes(article, metadata)
+      def apply_additional_basic_attributes
         article.title = [metadata.xpath('MedlineCitation/Article/ArticleTitle').text]
         article.abstract = [metadata.xpath('MedlineCitation/Article/Abstract/AbstractText').text]
-        article.date_issued = get_date_issued(metadata)
-          # No explicit publisher in PubmedArticle XML
-        article.publisher = []
+        article.date_issued = get_date_issued
+        article.publisher = [] # No explicit publisher in PubMed XML
         article.keyword = metadata.xpath('MedlineCitation/KeywordList/Keyword').map(&:text)
         article.funder = metadata.xpath('MedlineCitation/Article/GrantList/Grant/Agency').map(&:text)
       end
 
       private
 
-      def get_date_issued(metadata)
+      def get_date_issued
         pubdate = metadata.at_xpath('PubmedData/History/PubMedPubDate[@PubStatus="pubmed"]')
         year = pubdate&.at_xpath('Year')&.text
         month = pubdate&.at_xpath('Month')&.text || 1
@@ -61,12 +60,12 @@ module Tasks
         hash['other_affiliation'] = unc_affiliation.presence || affiliations[0].presence || ''
       end
 
-      def format_publication_identifiers(metadata)
+      def format_publication_identifiers
         id_list = metadata.xpath('PubmedData/ArticleIdList')
         [
-            (pmid = id_list.at_xpath('ArticleId[@IdType="pubmed"]')) ? "PMID: #{pmid.text}" : nil,
-            (pmcid = id_list.at_xpath('ArticleId[@IdType="pmc"]')) ? "PMCID: #{pmcid.text}" : nil,
-            (doi = id_list.at_xpath('ArticleId[@IdType="doi"]')) ? "DOI: https://dx.doi.org/#{doi.text}" : nil
+          (pmid = id_list.at_xpath('ArticleId[@IdType="pubmed"]')) ? "PMID: #{pmid.text}" : nil,
+          (pmcid = id_list.at_xpath('ArticleId[@IdType="pmc"]')) ? "PMCID: #{pmcid.text}" : nil,
+          (doi = id_list.at_xpath('ArticleId[@IdType="doi"]')) ? "DOI: https://dx.doi.org/#{doi.text}" : nil
         ].compact
       end
     end
