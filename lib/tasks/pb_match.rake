@@ -22,7 +22,7 @@ desc 'Attach new PDFs to works'
 task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :file_retrieval_directory, :output_dir, :admin_set] => :environment do |task, args|
   return unless valid_args('attach_pubmed_pdfs', args[:fetch_identifiers_output_csv], args[:file_retrieval_directory], args[:output_dir], args[:admin_set])
 
-  ingest_service = Tasks::PubmedIngestService.new
+  ingest_service = Tasks::PubmedIngest::PubmedIngestService.new
   res = {
     skipped: [], successfully_attached: [], successfully_ingested: [], failed: [],
     time: Time.now, depositor: DEPOSITOR, file_retrieval_directory: args[:file_retrieval_directory],
@@ -133,7 +133,7 @@ task :attach_pubmed_pdfs, [:fetch_identifiers_output_csv, :file_retrieval_direct
     'depositor_onyen' => DEPOSITOR,
     'attachment_results' => res
   }
-  ingest_service = Tasks::PubmedIngestService.new(config)
+  ingest_service = Tasks::PubmedIngest::PubmedIngestService.new(config)
   ingest_service.batch_retrieve_metadata
   res = ingest_service.ingest_publications
 
