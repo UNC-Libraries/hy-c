@@ -8,16 +8,12 @@
 <body>
 <p style="font-size: 16px; margin-bottom: 10px;">Reporting publications from Pubmed Ingest on <strong><%= @report[:formatted_time] %></strong></p>
 
-  <p style="font-size: 16px; margin-bottom: 10px;">
+<p style="font-size: 16px; margin-bottom: 10px;">
   <strong>Depositor: </strong><%= @report[:headers][:depositor] %>
 </p>
 
 <p style="font-size: 16px; margin-bottom: 10px;">
   <strong>Total Unique Files: </strong><%= @report[:headers][:total_unique_files] %>
-</p>
-
-<p style="font-size: 16px; margin-bottom: 10px;">
-  <strong>File Retrieval Directory: </strong>"<%= @report[:file_retrieval_directory] %>"
 </p>
 
 <!-- Generate tables for each record category -->
@@ -40,24 +36,30 @@
         <th style="border: 2px solid #dddddd; text-align: left; padding: 10px; background-color: #f2f2f2; width: 10%;">DOI</th>
         <th style="border: 2px solid #dddddd; text-align: left; padding: 10px; background-color: #f2f2f2; width: 10%;">PMID</th>
         <th style="border: 2px solid #dddddd; text-align: left; padding: 10px; background-color: #f2f2f2; width: 10%;">PMCID</th>
-        <th style="border: 2px solid #dddddd; text-align: left; padding: 10px; background-color: #f2f2f2; width: 30%;">Ingest/Attachment Result</th>
+        <th style="border: 2px solid #dddddd; text-align: left; padding: 10px; background-color: #f2f2f2; width: 30%;">Error / Attachment Status</th>
       </tr>
     </thead>
     <tbody>
       <% @report[:records][key].each_with_index do |record, index| %>
         <tr style="background-color: <%= index.even? ? '#f9f9f9' : '#ffffff' %>;">
-          <td style="border: 2px solid #dddddd; text-align: left; padding: 10px;"><%= record['file_name'] %></td>
+          <td style="border: 2px solid #dddddd; text-align: left; padding: 10px;"><%= record[:file_name] %></td>
           <td style="border: 2px solid #dddddd; text-align: left; padding: 10px;">
-            <% if record['cdr_url'].present? %>
-              <a href="<%= record['cdr_url'] %>"><%= record['cdr_url'] %></a>
+            <% if record[:cdr_url].present? %>
+              <a href="<%= record[:cdr_url] %>"><%= record[:cdr_url] %></a>
             <% else %>
               N/A
             <% end %>
           </td>
-          <td style="border: 2px solid #dddddd; text-align: left; padding: 10px;"><%= record['doi'] || 'NONE' %></td>
-          <td style="border: 2px solid #dddddd; text-align: left; padding: 10px;"><%= record['pmid'] || 'NONE' %></td>
-          <td style="border: 2px solid #dddddd; text-align: left; padding: 10px;"><%= record['pmcid'] || 'NONE'%></td>
-          <td style="border: 2px solid #dddddd; text-align: left; padding: 10px;"><%= record['pdf_attached'] %></td>
+          <td style="border: 2px solid #dddddd; text-align: left; padding: 10px;"><%= record[:doi] || 'NONE' %></td>
+          <td style="border: 2px solid #dddddd; text-align: left; padding: 10px;"><%= record[:pmid] || 'NONE' %></td>
+          <td style="border: 2px solid #dddddd; text-align: left; padding: 10px;"><%= record[:pmcid] || 'NONE' %></td>
+          <td style="border: 2px solid #dddddd; text-align: left; padding: 10px;">
+            <% if [:skipped, :failed].include?(key) %>
+              <%= record[:pdf_attached].presence || 'N/A' %>
+            <% else %>
+              N/A
+            <% end %>
+          </td>
         </tr>
       <% end %>
     </tbody>
