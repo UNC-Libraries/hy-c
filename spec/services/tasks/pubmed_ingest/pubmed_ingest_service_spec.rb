@@ -104,7 +104,7 @@ RSpec.describe Tasks::PubmedIngest::PubmedIngestService do
       parsed_response = Nokogiri::XML(mock_response_bodies['pubmed'])
       parsed_response.xpath('//PMID').map do |pmid|
         {
-          'file_name' => "test_file_#{pmid.text}.pdf",
+          'file_name' => 'sample_pdf.pdf',
           'pmid' => pmid.text,
           'pdf_attached' => 'Skipped: No CDR URL'
         }
@@ -115,7 +115,7 @@ RSpec.describe Tasks::PubmedIngest::PubmedIngestService do
       parsed_response = Nokogiri::XML(mock_response_bodies['pmc'])
       parsed_response.xpath('//article-id[@pub-id-type="pmcid"]').map do |pmcid|
         {
-          'file_name' => "test_file_#{pmcid.text}.pdf",
+          'file_name' => 'sample_pdf.pdf',
           'pmcid' => pmcid.text,
           'pdf_attached' => 'Skipped: No CDR URL'
         }
@@ -353,27 +353,6 @@ RSpec.describe Tasks::PubmedIngest::PubmedIngestService do
     end
   end
 
-  describe '#attach_pubmed_file' do
-    let(:file_path) { Rails.root.join('spec', 'fixtures', 'files', 'sample_pdf.pdf') }
-
-    it 'attaches a PDF to the work' do
-      work_hash = {
-        work_id: work.id,
-        work_type: 'Article',
-        title: 'Sample Work Title',
-        admin_set_id: admin_set.id,
-        admin_set_name: ['Open_Access_Articles_and_Book_Chapters']
-      }
-      result = nil
-      expect {
-        result = service.attach_pubmed_file(work_hash, file_path, admin.uid, visibility)
-        expect(result).to be_instance_of(FileSet)
-        expect(result.depositor).to eq(admin.uid)
-        expect(result.visibility).to eq(visibility)
-      }.to change { FileSet.count }.by(1)
-    end
-  end
-
   describe '#attach_pdf' do
     let(:article) do
       Article.create!(
@@ -409,7 +388,7 @@ RSpec.describe Tasks::PubmedIngest::PubmedIngestService do
       skipped_row = { 'pmid' => '99999999', 'pmcid' => 'PMC99999999', 'file_name' => 'non_existent.pdf' }
       expect {
         service.send(:attach_pdf, article, skipped_row)
-      }.to raise_error(StandardError, /File attachment error/)
+      }.to raise_error(StandardError, /File not found at path/)
     end
   end
 

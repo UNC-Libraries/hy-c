@@ -153,7 +153,7 @@ module Tasks
 
         record = result.first
         model = record['has_model_ssim']&.first&.underscore&.pluralize || 'works'
-        "https://cdr.lib.unc.edu/concern/#{model}/#{record['id']}"
+        URI.join(ENV['HYRAX_HOST'], "/concern/#{model}/#{record['id']}").to_s
       rescue => e
         Rails.logger.warn("[generate_cdr_url] Failed for identifier: #{identifier}, error: #{e.message}")
         nil
