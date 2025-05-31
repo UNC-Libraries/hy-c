@@ -2,6 +2,7 @@
 class PubmedReportMailer < ApplicationMailer
   def pubmed_report_email(report)
     @report = report
-    mail(to: 'cdr@unc.edu', subject: report[:subject])
+    # WIP Change later
+    mail(to: 'dcam@ad.unc.edu', subject: report[:subject])
   end
   end
