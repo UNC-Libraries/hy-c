@@ -63,14 +63,6 @@ module Tasks
         @attachment_results
       end
 
-      def attach_pubmed_file(work_hash, file_path, depositor_onyen, visibility)
-        model_class = work_hash[:work_type].constantize
-        work = model_class.find(work_hash[:work_id])
-        file = attach_pdf_to_work(work, file_path, @depositor, visibility)
-        file.update(permissions_attributes: group_permissions(@admin_set))
-        file
-      end
-
       private
 
       def batch_retrieve_metadata
@@ -113,17 +105,31 @@ module Tasks
         Rails.logger.info("[AttachPDF] Attaching PDF for article #{article.id}")
         create_sipity_workflow(work: article)
 
-        file_path = File.join(@file_retrieval_directory, skipped_row['file_name'])
+        file_path =  Rails.root.join(@file_retrieval_directory, skipped_row['file_name'])
         Rails.logger.info("[AttachPDF] Resolved file path: #{file_path}")
+
+        unless File.exist?(file_path)
+          error_msg = "[AttachPDF] File not found at path: #{file_path}"
+          Rails.logger.error(error_msg)
+          raise StandardError, error_msg
+        end
+
         pdf_file = attach_pdf_to_work(article, file_path, @depositor, article.visibility)
 
         if pdf_file.nil?
           ids = [skipped_row['pmid'], skipped_row['pmcid']].compact.join(', ')
-          Rails.logger.error("[AttachPDF] ERROR: No PDF file was attached for: #{ids}")
-          raise StandardError, "File attachment error for identifiers: #{ids}"
+          error_msg = "[AttachPDF] ERROR: Attachment returned nil for identifiers: #{ids}"
+          Rails.logger.error(error_msg)
+          raise StandardError, error_msg
         end
 
-        pdf_file.update(permissions_attributes: group_permissions(@admin_set))
+        begin
+          pdf_file.update!(permissions_attributes: group_permissions(@admin_set))
+          Rails.logger.info("[AttachPDF] Permissions successfully set on file #{pdf_file.id}")
+        rescue => e
+          Rails.logger.warn("[AttachPDF] Could not update permissions: #{e.message}")
+          raise e
+        end
       end
 
       def is_pubmed?(metadata)
