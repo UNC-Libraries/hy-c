@@ -64,7 +64,7 @@ module Tasks
 
       def set_identifiers
         article.identifier = format_publication_identifiers
-        article.issn = [metadata.xpath('front/journal-meta/issn[@pub-type="epub"]').text]
+        article.issn = [metadata.xpath('front/journal-meta/issn[@pub-type="epub"]').text.presence || 'NONE']
       end
 
       def format_publication_identifiers
