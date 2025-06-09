@@ -63,6 +63,23 @@ module Tasks
         @attachment_results
       end
 
+      def attach_pdf_for_existing_work(work_hash, file_name, file_ext, alternate_ids)
+        begin
+          article = Article.find(work_hash[:work_id])
+          # Spoof skipped row to satisfy arguments
+          skipped_row = {
+          'file_name' => "#{file_name}.#{file_ext}",
+          'pmid' => alternate_ids[:pmid],
+          'pmcid' => alternate_ids[:pmcid]
+          }
+          attach_pdf(article, skipped_row)
+          Rails.logger.info("[AttachPDFExisting] Successfully attached file to #{article.id}")
+      rescue StandardError => e
+        Rails.logger.error("[AttachPDFExisting] Error finding article for work ID #{work_hash[:work_id]}: #{e.message}")
+        raise e
+        end
+      end
+
       private
 
       def batch_retrieve_metadata
