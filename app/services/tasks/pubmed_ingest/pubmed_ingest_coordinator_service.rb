@@ -6,6 +6,7 @@ module Tasks
         @config = config
         @file_retrieval_directory = config['file_retrieval_directory']
         @files_in_dir = file_info_in_dir(@config['file_retrieval_directory'])
+        @depositor_onyen = config['depositor_onyen']
         @results = {
           skipped: [],
           successfully_attached: [],
@@ -33,6 +34,7 @@ module Tasks
         @results
         # attach_remaining_pdfs
         # finalize_report_and_notify
+        # write_results_to_file
       end
 
       private
@@ -64,10 +66,12 @@ module Tasks
 
                match = find_best_work_match(alternate_ids)
 
-               if match&.dig(:work_id).present?
-                 double_log("Found existing work for #{file_name}: #{match[:work_id]}")
+               if match&.dig(:file_set_names).present?
+                 log_and_label_skip(file_name, file_ext, alternate_ids, 'File already attached to work')
+               elsif match&.dig(:work_id).present?
+                 double_log("Found existing work for #{file_name}: #{match[:work_id]} with no fileset. Attempting to attach PDF.")
                  path = File.join(@config['file_retrieval_directory'], full_file_name(file_name, file_ext))
-                 @pubmed_ingest_service.attach_pdf_for_existing_work(match, file_name, file_ext, alternate_ids)
+                 @pubmed_ingest_service.attach_pdf_for_existing_work(match, path, @depositor_onyen)
                    # @results[:successfully_attached] << {
                    #     file_name: full_file_name(file_name, file_ext),
                    #     pdf_attached: 'Success',
@@ -75,8 +79,6 @@ module Tasks
 
                    # }
                  @results[:successfully_attached] << build_result_row(file_name, file_ext, alternate_ids, 'Success', cdr_url: generate_cdr_url(match[:work_id]))
-               elsif match&.dig(:file_set_names).present?
-                 log_and_label_skip(file_name, file_ext, alternate_ids, 'File already attached to work')
                else
                  double_log("No match found — will be ingested: #{full_file_name(file_name, file_ext)}", :warn)
                    # @results[:skipped] << {

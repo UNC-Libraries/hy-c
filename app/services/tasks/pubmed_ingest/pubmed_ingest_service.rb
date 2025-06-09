@@ -63,17 +63,17 @@ module Tasks
         @attachment_results
       end
 
-      def attach_pdf_for_existing_work(work_hash, file_name, file_ext, alternate_ids)
+      def attach_pdf_for_existing_work(work_hash, file_path, depositor_onyen)
         begin
-          article = Article.find(work_hash[:work_id])
-          # Spoof skipped row to satisfy arguments
-          skipped_row = {
-          'file_name' => "#{file_name}.#{file_ext}",
-          'pmid' => alternate_ids[:pmid],
-          'pmcid' => alternate_ids[:pmcid]
-          }
-          attach_pdf(article, skipped_row)
-          Rails.logger.info("[AttachPDFExisting] Successfully attached file to #{article.id}")
+          # Create a work object using the provided work_hash
+          model_class = work_hash[:work_type].constantize
+          work = model_class.find(work_hash[:work_id])
+          depositor =  User.find_by(uid: depositor_onyen)
+          file = attach_pdf_to_work(work, file_path, depositor, Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE)
+          admin_set = ::AdminSet.where(id: work_hash[:admin_set_id]).first
+          file.update(permissions_attributes: group_permissions(admin_set))
+          Rails.logger.info("[AttachPDFExisting] Successfully attached file for #{work_hash[:work_id]}")
+          file
       rescue StandardError => e
         Rails.logger.error("[AttachPDFExisting] Error finding article for work ID #{work_hash[:work_id]}: #{e.message}")
         raise e
