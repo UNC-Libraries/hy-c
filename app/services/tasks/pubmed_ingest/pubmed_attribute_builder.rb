@@ -59,12 +59,18 @@ module Tasks
 
       def format_publication_identifiers
         id_list = metadata.xpath('PubmedData/ArticleIdList')
+
+        pmid_node  = id_list.at_xpath('ArticleId[@IdType="pubmed"]')
+        pmcid_node = id_list.at_xpath('ArticleId[@IdType="pmc"]')
+        doi_node   = id_list.at_xpath('ArticleId[@IdType="doi"]')
+
         [
-          (pmid = id_list.at_xpath('ArticleId[@IdType="pubmed"]')) ? "PMID: #{pmid.text}" : nil,
-          (pmcid = id_list.at_xpath('ArticleId[@IdType="pmc"]')) ? "PMCID: #{pmcid.text}" : nil,
-          (doi = id_list.at_xpath('ArticleId[@IdType="doi"]')) ? "DOI: https://dx.doi.org/#{doi.text}" : nil
+          pmid_node  ? "PMID: #{pmid_node.text}" : nil,
+          pmcid_node ? "PMCID: #{pmcid_node.text}" : nil,
+          doi_node   ? "DOI: https://dx.doi.org/#{doi_node.text}" : nil
         ].compact
       end
+
 
       def set_journal_attributes
         article.journal_title = metadata.at_xpath('MedlineCitation/Article/Journal/Title')&.text

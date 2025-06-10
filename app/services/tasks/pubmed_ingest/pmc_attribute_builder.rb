@@ -69,13 +69,18 @@ module Tasks
       end
 
       def format_publication_identifiers
-        article_meta = metadata.at_xpath('front/article-meta')
+
+        pmid_node  = metadata.at_xpath('front/article-meta/article-id[@pub-id-type="pmid"]')
+        pmcid_node = metadata.at_xpath('front/article-meta/article-id[@pub-id-type="pmcid"]')
+        doi_node   = metadata.at_xpath('front/article-meta/article-id[@pub-id-type="doi"]')
+
         [
-          (pmid  = article_meta.at_xpath('article-id[@pub-id-type="pmid"]'))  ? "PMID: #{pmid.text}" : nil,
-          (pmcid = article_meta.at_xpath('article-id[@pub-id-type="pmcid"]')) ? "PMCID: #{pmcid.text}" : nil,
-          (doi   = article_meta.at_xpath('article-id[@pub-id-type="doi"]'))   ? "DOI: https://dx.doi.org/#{doi.text}" : nil
+          pmid_node  ? "PMID: #{pmid_node.text}" : nil,
+          pmcid_node ? "PMCID: #{pmcid_node.text}" : nil,
+          doi_node   ? "DOI: https://dx.doi.org/#{doi_node.text}" : nil
         ].compact
       end
+
 
       def set_journal_attributes
         article.journal_title = metadata.at_xpath('front/journal-meta/journal-title-group/journal-title')&.text.presence
