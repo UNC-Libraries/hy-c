@@ -170,7 +170,7 @@ end
 
 desc 'Ingest new PubMed PDFs and attach them to Hyrax works if matched'
 task :pubmed_ingest, [:file_retrieval_directory, :output_dir, :admin_set_title] => :environment do |task, args|
-  return unless valid_args('attach_pubmed_pdfs', args[:file_retrieval_directory], args[:output_dir], args[:admin_set_title])
+  return unless valid_args('pubmed_ingest', args[:file_retrieval_directory], args[:output_dir], args[:admin_set_title])
   file_retrieval_directory = Pathname.new(args[:file_retrieval_directory]).absolute? ?
                              args[:file_retrieval_directory] :
                              Rails.root.join(args[:file_retrieval_directory])
