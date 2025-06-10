@@ -44,6 +44,7 @@ module Tasks
         # Update these here now that :skipped is populated
         @new_pubmed_works = @attachment_results[:skipped].select { |row| row['pdf_attached'] == 'Skipped: No CDR URL' }
         @attachment_results[:skipped] -= @new_pubmed_works
+        @attachment_results[:counts][:skipped] -= @new_pubmed_works.length
 
         batch_retrieve_metadata
         Rails.logger.info("[Ingest] Starting ingestion of #{@retrieved_metadata.size} records")
@@ -67,7 +68,17 @@ module Tasks
             skipped_row['pdf_attached'] = 'Success'
             skipped_row['cdr_url'] = generate_cdr_url(skipped_row)
             skipped_row['article'] = article
-            @attachment_results[:successfully_ingested] << skipped_row.to_h
+            record_result(
+              category: :successfully_ingested,
+              file_name: skipped_row['file_name'],
+              message: 'Success',
+              ids: {
+                pmid: skipped_row['pmid'],
+                pmcid: skipped_row['pmcid'],
+                doi: skipped_row['doi']
+              },
+              article: article
+            )
           rescue => e
             doi = skipped_row&.[]('doi') || 'N/A'
             pmid = skipped_row&.[]('pmid') || 'N/A'
@@ -77,6 +88,16 @@ module Tasks
             article.destroy if article&.persisted?
             skipped_row['pdf_attached'] = e.message
             @attachment_results[:failed] << skipped_row.to_h
+            record_result(
+              category: :failed,
+              file_name: skipped_row['file_name'],
+              message: "Failed: #{e.message}",
+              ids: {
+                pmid: skipped_row['pmid'],
+                pmcid: skipped_row['pmcid'],
+                doi: skipped_row['doi']
+              }
+            )
           end
         end
 
