@@ -12,8 +12,6 @@ module Tasks
 
         @file_retrieval_directory = config['file_retrieval_directory']
         @attachment_results = config['attachment_results'].symbolize_keys
-        @new_pubmed_works = @attachment_results[:skipped].select { |row| row['pdf_attached'] == 'Skipped: No CDR URL' }
-        @attachment_results[:skipped] -= @new_pubmed_works
 
         @admin_set = ::AdminSet.where(title: config['admin_set_title'])&.first
         raise ActiveRecord::RecordNotFound, "AdminSet not found with title: #{config['admin_set_title']}" unless @admin_set
@@ -27,15 +25,15 @@ module Tasks
       # Keywords for readability
       def record_result(category:, file_name:, message:, ids: {}, article: nil)
         row = {
-          file_name: file_name,
-          pdf_attached: message,
-          pmid: ids[:pmid],
-          pmcid: ids[:pmcid],
-          doi: ids[:doi]
+          'file_name' => file_name,
+          'pdf_attached' => message,
+          'pmid' => ids[:pmid],
+          'pmcid' => ids[:pmcid],
+          'doi' => ids[:doi]
         }
 
-        row[:cdr_url] = generate_cdr_url(row) if article
-        row[:article] = article if article
+        row['cdr_url'] = generate_cdr_url(row) if article
+        row['article'] = article if article
         @attachment_results[:counts][category] += 1
 
         @attachment_results[category] << row
@@ -43,6 +41,10 @@ module Tasks
 
 
       def ingest_publications
+        # Update these here now that :skipped is populated
+        @new_pubmed_works = @attachment_results[:skipped].select { |row| row['pdf_attached'] == 'Skipped: No CDR URL' }
+        @attachment_results[:skipped] -= @new_pubmed_works
+
         batch_retrieve_metadata
         Rails.logger.info("[Ingest] Starting ingestion of #{@retrieved_metadata.size} records")
 

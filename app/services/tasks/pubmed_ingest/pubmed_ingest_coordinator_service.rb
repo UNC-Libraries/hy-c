@@ -109,7 +109,19 @@ module Tasks
       end
 
       def attach_remaining_pdfs
-        # Iterate over queued attachments and call PdfAttachmentService
+        if @pubmed_ingest_service.attachment_results[:skipped].empty?
+          double_log('No skipped items to ingest', :info)
+          return
+        end
+        double_log('Attaching PDFs for skipped records...', :info)
+
+        begin
+          ingest_results = @pubmed_ingest_service.ingest_publications
+          double_log("Finished ingesting skipped PDFs. Counts: #{ingest_results[:counts]}")
+        rescue => e
+          double_log("Error during PDF ingestion: #{e.message}", :error)
+          Rails.logger.error(e.backtrace.join("\n"))
+        end
       end
 
       def finalize_report_and_notify
