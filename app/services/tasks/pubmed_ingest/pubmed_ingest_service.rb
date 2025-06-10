@@ -4,6 +4,7 @@ module Tasks
   module PubmedIngest
 
     class PubmedIngestService
+      attr_reader :attachment_results
       include Tasks::IngestHelper
 
       def initialize(config)
@@ -22,6 +23,24 @@ module Tasks
 
         @retrieved_metadata = []
       end
+
+      # Keywords for readability
+      def record_result(category:, file_name:, message:, ids: {}, article: nil)
+        row = {
+          file_name: file_name,
+          pdf_attached: message,
+          pmid: ids[:pmid],
+          pmcid: ids[:pmcid],
+          doi: ids[:doi]
+        }
+
+        row[:cdr_url] = generate_cdr_url(row) if article
+        row[:article] = article if article
+        @attachment_results[:counts][category] += 1
+
+        @attachment_results[category] << row
+      end
+
 
       def ingest_publications
         batch_retrieve_metadata

@@ -118,4 +118,14 @@ module WorkUtilsHelper
     end
     filenames
   end
+
+  def self.fetch_model_instance(work_type, work_id)
+    return nil unless work_type && work_id
+
+    work_type.constantize.find(work_id)
+  rescue NameError, ActiveRecord::RecordNotFound => e
+    Rails.logger.error("[WorkUtils] Failed to fetch model instance: #{e.message}")
+    nil
+  end
+
 end
