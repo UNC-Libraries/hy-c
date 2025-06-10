@@ -4,7 +4,6 @@ module Tasks
     class PmcAttributeBuilder < BaseAttributeBuilder
 
       def find_skipped_row(new_pubmed_works)
-        double_log("[PMC] Finding skipped row for article: #{article.title}", :info)
         pmid = metadata.at_xpath('.//article-id[@pub-id-type="pmid"]')&.text
         pmcid = metadata.at_xpath('.//article-id[@pub-id-type="pmcid"]')&.text
         new_pubmed_works.find { |row| row['pmid'] == pmid || row['pmcid'] == pmcid }
@@ -13,7 +12,6 @@ module Tasks
       private
 
       def generate_authors
-        double_log("[PMC] Generating authors for article: #{article.title}", :info)
         metadata.xpath('front/article-meta/contrib-group/contrib[@contrib-type="author"]').map.with_index do |author, i|
           res = {
             'name' => [author.xpath('name/surname').text, author.xpath('name/given-names').text].join(', '),
@@ -26,8 +24,6 @@ module Tasks
       end
 
       def retrieve_author_affiliations(hash, author)
-        double_log("[PMC] Retrieving affiliations for author: #{hash['name']}", :info)
-        
         contrib_group = author.ancestors('contrib-group').first
         affiliations = author.xpath('aff/institution').map(&:text)
 
@@ -50,7 +46,6 @@ module Tasks
       end
 
       def apply_additional_basic_attributes
-        double_log("[PMC] Applying additional basic attributes for article: #{article.title}", :info)
         article.title = [metadata.xpath('front/article-meta/title-group/article-title').text]
         article.abstract = [metadata.xpath('front/article-meta/abstract').text]
         article.date_issued = get_date_issued
@@ -60,7 +55,6 @@ module Tasks
       end
 
       def get_date_issued
-        double_log("[PMC] Getting date issued for article: #{article.title}", :info)
         pubdate = metadata.at_xpath('front/article-meta/pub-date[@pub-type="epub"]')
         year  = pubdate&.at_xpath('year')&.text
         month = pubdate&.at_xpath('month')&.text || 1
@@ -69,16 +63,12 @@ module Tasks
       end
 
       def set_identifiers
-        double_log("[PMC] Setting identifiers for article: #{article.title}", :info)
         article.identifier = format_publication_identifiers
-        article.issn = [metadata.xpath('front/journal-meta/issn[@pub-type="epub"]').text.presence || 'NONE']
-        double_log("[ISSN] epub: #{metadata.at_xpath('front/journal-meta/issn[@pub-type="epub"]')&.text}", :info)
-        double_log("[ISSN] ppub: #{metadata.at_xpath('front/journal-meta/issn[@pub-type="ppub"]')&.text}", :info)
-        double_log("[ISSN] any : #{metadata.at_xpath('front/journal-meta/issn')&.text}", :info)
+        # WIP: Might update in case other ISSN types are needed
+        article.issn = [metadata.xpath('front/journal-meta/issn[@pub-type="epub"]')&.text.presence || 'NONE']
       end
 
       def format_publication_identifiers
-        double_log("[PMC] Formatting publication identifiers for article: #{article.title}", :info)
         article_meta = metadata.at_xpath('front/article-meta')
         [
           (pmid  = article_meta.at_xpath('article-id[@pub-id-type="pmid"]'))  ? "PMID: #{pmid.text}" : nil,
@@ -88,27 +78,11 @@ module Tasks
       end
 
       def set_journal_attributes
-        double_log("[PMC] Setting journal attributes for article: #{article.title}", :info)
         article.journal_title = metadata.at_xpath('front/journal-meta/journal-title-group/journal-title')&.text.presence
         article.journal_volume = metadata.at_xpath('front/article-meta/volume')&.text.presence
         article.journal_issue = metadata.at_xpath('front/article-meta/issue-id')&.text.presence
         article.page_start     = metadata.at_xpath('front/article-meta/fpage')&.text.presence
         article.page_end       = metadata.at_xpath('front/article-meta/lpage')&.text.presence
-      end
-
-
-      def double_log(message, level)
-        puts message
-        case level
-        when :info
-          Rails.logger.info(message)
-        when :warn
-          Rails.logger.warn(message)
-        when :error
-          Rails.logger.error(message)
-        else
-          Rails.logger.debug(message)
-        end
       end
     end
   end

@@ -4,8 +4,12 @@ module Tasks
     class PubmedAttributeBuilder < BaseAttributeBuilder
 
       def find_skipped_row(new_pubmed_works)
+        Rails.logger.info("[PubMed] Finding skipped row for article: #{article.title}")
         pmid = metadata.at_xpath('PubmedData/ArticleIdList/ArticleId[@IdType="pubmed"]')&.text
         pmcid = metadata.at_xpath('PubmedData/ArticleIdList/ArticleId[@IdType="pmc"]')&.text
+        Rails.logger.info("[PubMed] Searching for PMID: #{pmid}, PMCID: #{pmcid} in new works")
+        Rails.logger.info("[PubMed] Raw PMID #{metadata.at_xpath('PubmedData/ArticleIdList/ArticleId[@IdType="pubmed"]').inspect}")
+        Rails.logger.info("[PubMed] Raw PMCID #{metadata.at_xpath('PubmedData/ArticleIdList/ArticleId[@IdType="pmc"]').inspect}")
         new_pubmed_works.find { |row| row['pmid'] == pmid || row['pmcid'] == pmcid }
       end
 
@@ -50,7 +54,7 @@ module Tasks
 
       def set_identifiers
         article.identifier = format_publication_identifiers
-        article.issn = [metadata.xpath('MedlineCitation/Article/Journal/ISSN[@IssnType="Electronic"]').text.presence || 'NONE']
+        article.issn = [metadata.at_xpath('MedlineCitation/Article/Journal/ISSN[@IssnType="Electronic"]')&.text.presence || 'NONE']
       end
 
       def format_publication_identifiers
