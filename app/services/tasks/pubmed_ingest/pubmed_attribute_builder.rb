@@ -61,11 +61,11 @@ module Tasks
         if electronic_issn
           article.issn = [electronic_issn]
         elsif print_issn
-          Rails.logger.warn("[Pubmed] No Electronic ISSN found for article with identifiers " \
+          Rails.logger.warn('[Pubmed] No Electronic ISSN found for article with identifiers ' \
                             "\"#{article.identifier.inspect}\". Using Print ISSN.")
           article.issn = [print_issn]
         else
-          Rails.logger.warn("[Pubmed] No Electronic or Print ISSN found for article with identifiers " \
+          Rails.logger.warn('[Pubmed] No Electronic or Print ISSN found for article with identifiers ' \
                             "\"#{article.identifier.inspect}\". Setting ISSN to 'NONE'.")
           article.issn = ['NONE']
         end
