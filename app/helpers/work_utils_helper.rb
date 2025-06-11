@@ -120,7 +120,7 @@ module WorkUtilsHelper
   end
 
   def self.fetch_model_instance(work_type, work_id)
-    return nil unless work_type && work_id
+    raise ArgumentError, 'Both work_type and work_id are required' unless work_type.present? && work_id.present?
 
     work_type.constantize.find(work_id)
   rescue NameError, ActiveRecord::RecordNotFound => e

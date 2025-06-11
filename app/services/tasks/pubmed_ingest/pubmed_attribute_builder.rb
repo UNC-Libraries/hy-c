@@ -55,6 +55,19 @@ module Tasks
       def set_identifiers
         article.identifier = format_publication_identifiers
         article.issn = [metadata.at_xpath('MedlineCitation/Article/Journal/ISSN[@IssnType="Electronic"]')&.text.presence || 'NONE']
+        epub_issn = metadata.at_xpath('MedlineCitation/Article/Journal/ISSN[@IssnType="Electronic"]')&.text.presence
+        ppub_issn = metadata.at_xpath('MedlineCitation/Article/Journal/ISSN[@IssnType="Print"]')&.text.presence
+
+        # Fallback logic for ISSN
+        if epub_issn
+          article.issn = [epub_issn]
+        elsif ppub_issn
+          Rails.logger.warn("[PMC] No epub ISSN found for article #{article.title}. Using ppub ISSN.")
+          article.issn = [ppub_issn]
+        else
+          Rails.logger.warn("[PMC] No epub or ppub ISSN found for article #{article.title}. Setting ISSN to 'NONE'.")
+          article.issn = ['NONE']
+        end
       end
 
       def format_publication_identifiers
