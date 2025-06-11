@@ -62,10 +62,10 @@ module Tasks
         if epub_issn
           article.issn = [epub_issn]
         elsif ppub_issn
-          Rails.logger.warn("[PMC] No epub ISSN found for article #{article.title}. Using ppub ISSN.")
+          Rails.logger.warn("[Pubmed] No epub ISSN found for article #{article.title}. Using ppub ISSN.")
           article.issn = [ppub_issn]
         else
-          Rails.logger.warn("[PMC] No epub or ppub ISSN found for article #{article.title}. Setting ISSN to 'NONE'.")
+          Rails.logger.warn("[Pubmed] No epub or ppub ISSN found for article #{article.title}. Setting ISSN to 'NONE'.")
           article.issn = ['NONE']
         end
       end
