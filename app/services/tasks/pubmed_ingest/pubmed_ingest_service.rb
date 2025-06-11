@@ -203,14 +203,16 @@ module Tasks
 
       def generate_cdr_url(skipped_row)
         identifier = skipped_row['pmcid'] || skipped_row['pmid']
-        return nil unless identifier.present?
+        raise ArgumentError, 'No identifier (PMCID or PMID) found in row' unless identifier.present?
 
         result = Hyrax::SolrService.get("identifier_tesim:\"#{identifier}\"",
                               rows: 1,
                               fl: 'id,title_tesim,has_model_ssim,file_set_ids_ssim')['response']['docs']
-        return nil if result.empty?
+        raise "No Solr record found for identifier: #{identifier}" if result.empty?
 
         record = result.first
+        raise "Missing `has_model_ssim` in Solr record: #{record.inspect}" unless record['has_model_ssim']&.first.present?
+
         model = record['has_model_ssim']&.first&.underscore&.pluralize || 'works'
         URI.join(ENV['HYRAX_HOST'], "/concern/#{model}/#{record['id']}").to_s
       rescue => e
