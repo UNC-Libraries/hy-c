@@ -5,7 +5,8 @@ module Tasks
       def initialize(config)
         @config = config
         @file_retrieval_directory = config['file_retrieval_directory']
-        @files_in_dir = file_info_in_dir(@config['file_retrieval_directory'])
+        @files_in_dir = retrieve_filenames(@config['file_retrieval_directory'])
+        @output_dir = config['output_dir'] || Rails.root.join('tmp')
         @depositor_onyen = config['depositor_onyen']
         @results = {
           skipped: [],
@@ -36,10 +37,9 @@ module Tasks
       def run
         process_file_matches
         attach_remaining_pdfs
-        # Return updated results
+        write_results_to_file
+        finalize_report_and_notify
         @pubmed_ingest_service.attachment_results
-        # finalize_report_and_notify
-        # write_results_to_file
       end
 
       private
@@ -124,8 +124,25 @@ module Tasks
         end
       end
 
+      def write_results_to_file
+        json_output_path = Rails.root.join(@output_dir, "pdf_attachment_results_#{@pubmed_ingest_service.attachment_results[:time].strftime('%Y%m%d%H%M%S')}.json")
+        File.open(json_output_path, 'w') { |f| f.write(JSON.pretty_generate(@pubmed_ingest_service.attachment_results)) }
+
+        double_log("Results written to #{json_output_path}", :info)
+        double_log("Ingested: #{@pubmed_ingest_service.attachment_results[:successfully_ingested].length}, Attached: #{@pubmed_ingest_service.attachment_results[:successfully_attached].length}, Failed: #{@pubmed_ingest_service.attachment_results[:failed].length}, Skipped: #{@pubmed_ingest_service.attachment_results[:skipped].length}", :info)
+      end
+
       def finalize_report_and_notify
         # Generate report, log, send email
+        double_log('Sending email with results', :info)
+        begin
+          report = Tasks::PubmedIngest::PubmedReportingService.generate_report(@pubmed_ingest_service.attachment_results)
+          PubmedReportMailer.pubmed_report_email(report).deliver_now
+          double_log('Email sent successfully', :info)
+        rescue StandardError => e
+          double_log("Failed to send email: #{e.message}", :error)
+          double_log(e.backtrace.join("\n"))
+        end
       end
 
     # Helper methods
@@ -189,7 +206,7 @@ module Tasks
         end
       end
 
-      def file_info_in_dir(directory)
+      def retrieve_filenames(directory)
         abs_path = Pathname.new(directory).absolute? ? directory : Rails.root.join(directory)
         Dir.entries(abs_path)
            .select { |f| !File.directory?(File.join(abs_path, f)) }
