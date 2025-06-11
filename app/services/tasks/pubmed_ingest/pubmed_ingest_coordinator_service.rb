@@ -210,6 +210,7 @@ module Tasks
         abs_path = Pathname.new(directory).absolute? ? directory : Rails.root.join(directory)
         Dir.entries(abs_path)
            .select { |f| !File.directory?(File.join(abs_path, f)) }
+           .reject { |f|  ['.', '..'].include?(f) } # Exclude hidden files
            .sort
            .map { |f| [File.basename(f, '.*'), File.extname(f).delete('.')] }
            .uniq

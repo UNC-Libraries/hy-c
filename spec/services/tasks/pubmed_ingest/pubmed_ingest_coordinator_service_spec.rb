@@ -419,7 +419,7 @@ RSpec.describe Tasks::PubmedIngest::PubmedIngestCoordinatorService do
       result = service.send(:find_best_work_match, alternate_ids)
 
       expect(result).to include(
-        work_id: work.id,
+        work_id: work_data['id'],
         work_type: 'Article',
         title: 'Test Article',
         admin_set_id: admin_set.id,
@@ -533,11 +533,31 @@ RSpec.describe Tasks::PubmedIngest::PubmedIngestCoordinatorService do
   end
 
   describe '#retrieve_filenames' do
+    let(:test_pathname) { Pathname.new('spec/fixtures/files') }
+
+    before do
+      allow(Pathname).to receive(:new).and_call_original
+      allow(Pathname).to receive(:new).with('spec/fixtures/files').and_return(test_pathname)
+      allow(test_pathname).to receive(:absolute?).and_return(true)
+
+      allow(Dir).to receive(:entries).with(test_pathname).and_return(['.', '..', 'file1.pdf', 'file2.txt', 'file1.pdf'])
+      allow(File).to receive(:directory?).with(test_pathname.join('.')).and_return(true)
+      allow(File).to receive(:directory?).with(test_pathname.join('..')).and_return(true)
+      allow(File).to receive(:directory?).with(test_pathname.join('file1.pdf')).and_return(false)
+      allow(File).to receive(:directory?).with(test_pathname.join('file2.txt')).and_return(false)
+    end
+
     context 'with absolute path' do
+      let(:absolute_pathname) { Pathname.new('/absolute/path') }
+
       it 'uses path as-is' do
-        allow(Pathname).to receive(:new).with('/absolute/path').and_return(double('pathname', absolute?: true))
+        allow(Pathname).to receive(:new).with('/absolute/path').and_return(absolute_pathname)
+        allow(absolute_pathname).to receive(:absolute?).and_return(true)
+
         allow(Dir).to receive(:entries).with('/absolute/path').and_return(['.', '..', 'test.pdf'])
-        allow(File).to receive(:directory?).with('/absolute/path/test.pdf').and_return(false)
+        allow(File).to receive(:directory?).with(absolute_pathname.join('.')).and_return(true)
+        allow(File).to receive(:directory?).with(absolute_pathname.join('..')).and_return(true)
+        allow(File).to receive(:directory?).with(absolute_pathname.join('test.pdf')).and_return(false)
 
         result = service.send(:retrieve_filenames, '/absolute/path')
         expect(result).to eq([['test', 'pdf']])
@@ -545,10 +565,17 @@ RSpec.describe Tasks::PubmedIngest::PubmedIngestCoordinatorService do
     end
 
     context 'with relative path' do
+      let(:relative_pathname) { Pathname.new('relative/path') }
+
       it 'joins with Rails root' do
-        allow(Pathname).to receive(:new).with('relative/path').and_return(double('pathname', absolute?: false))
-        allow(Dir).to receive(:entries).with(Rails.root.join('relative/path')).and_return(['.', '..', 'test.pdf'])
-        allow(File).to receive(:directory?).with(Rails.root.join('relative/path/test.pdf').to_s).and_return(false)
+        allow(Pathname).to receive(:new).with('relative/path').and_return(relative_pathname)
+        allow(relative_pathname).to receive(:absolute?).and_return(false)
+
+        full_path = Rails.root.join('relative/path')
+        allow(Dir).to receive(:entries).with(full_path).and_return(['.', '..', 'test.pdf'])
+        allow(File).to receive(:directory?).with(full_path.join('test.pdf')).and_return(false)
+        allow(File).to receive(:directory?).with(full_path.join('.')).and_return(true)
+        allow(File).to receive(:directory?).with(full_path.join('..')).and_return(true)
 
         result = service.send(:retrieve_filenames, 'relative/path')
         expect(result).to eq([['test', 'pdf']])
@@ -556,18 +583,11 @@ RSpec.describe Tasks::PubmedIngest::PubmedIngestCoordinatorService do
     end
 
     it 'filters out directories and returns sorted unique filename pairs' do
-      test_path = Rails.root.join('spec/fixtures/files')
-      allow(Pathname).to receive(:new).with(test_path.to_s).and_return(double('pathname', absolute?: true))
-      allow(Dir).to receive(:entries).with(test_path.to_s).and_return(['.', '..', 'file1.pdf', 'file2.txt', 'file1.pdf'])
-      allow(File).to receive(:directory?).with(File.join(test_path, '.')).and_return(true)
-      allow(File).to receive(:directory?).with(File.join(test_path, '..')).and_return(true)
-      allow(File).to receive(:directory?).with(File.join(test_path, 'file1.pdf')).and_return(false)
-      allow(File).to receive(:directory?).with(File.join(test_path, 'file2.txt')).and_return(false)
-
-      result = service.send(:retrieve_filenames, test_path.to_s)
+      result = service.send(:retrieve_filenames, test_pathname)
       expect(result).to eq([['file1', 'pdf'], ['file2', 'txt']])
     end
   end
+
 
   describe '#double_log' do
     it 'logs to both puts and Rails logger with tag' do
