@@ -54,18 +54,19 @@ module Tasks
 
       def set_identifiers
         article.identifier = format_publication_identifiers
-        article.issn = [metadata.at_xpath('MedlineCitation/Article/Journal/ISSN[@IssnType="Electronic"]')&.text.presence || 'NONE']
-        epub_issn = metadata.at_xpath('MedlineCitation/Article/Journal/ISSN[@IssnType="Electronic"]')&.text.presence
-        ppub_issn = metadata.at_xpath('MedlineCitation/Article/Journal/ISSN[@IssnType="Print"]')&.text.presence
+        electronic_issn = metadata.at_xpath('MedlineCitation/Article/Journal/ISSN[@IssnType="Electronic"]')&.text.presence
+        print_issn = metadata.at_xpath('MedlineCitation/Article/Journal/ISSN[@IssnType="Print"]')&.text.presence
 
         # Fallback logic for ISSN
-        if epub_issn
-          article.issn = [epub_issn]
-        elsif ppub_issn
-          Rails.logger.warn("[Pubmed] No epub ISSN found for article #{article.title}. Using ppub ISSN.")
-          article.issn = [ppub_issn]
+        if electronic_issn
+          article.issn = [electronic_issn]
+        elsif print_issn
+          Rails.logger.warn("[Pubmed] No Electronic ISSN found for article with identifiers " \
+                            "\"#{article.identifier.inspect}\". Using Print ISSN.")
+          article.issn = [print_issn]
         else
-          Rails.logger.warn("[Pubmed] No epub or ppub ISSN found for article #{article.title}. Setting ISSN to 'NONE'.")
+          Rails.logger.warn("[Pubmed] No Electronic or Print ISSN found for article with identifiers " \
+                            "\"#{article.identifier.inspect}\". Setting ISSN to 'NONE'.")
           article.issn = ['NONE']
         end
       end

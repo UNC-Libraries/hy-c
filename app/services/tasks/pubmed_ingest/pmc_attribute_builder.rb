@@ -63,7 +63,6 @@ module Tasks
       end
 
       def set_identifiers
-        Rails.logger.info("[PMC] Setting identifiers for article #{article.title}")
         article.identifier = format_publication_identifiers
         epub_issn = metadata.at_xpath('front/journal-meta/issn[@pub-type="epub"]')&.text.presence
         ppub_issn = metadata.at_xpath('front/journal-meta/issn[@pub-type="ppub"]')&.text.presence
@@ -72,10 +71,12 @@ module Tasks
         if epub_issn
           article.issn = [epub_issn]
         elsif ppub_issn
-          Rails.logger.warn("[PMC] No epub ISSN found for article #{article.title}. Using ppub ISSN.")
+          Rails.logger.warn("[PMC] No epub ISSN found for article with identifiers " \
+                            "\"#{article.identifier.inspect}\". Using Print ISSN.")
           article.issn = [ppub_issn]
         else
-          Rails.logger.warn("[PMC] No epub or ppub ISSN found for article #{article.title}. Setting ISSN to 'NONE'.")
+          Rails.logger.warn("[PMC] No epub or ppub ISSN found for article with identifiers " \
+                            "\"#{article.identifier.inspect}\". Setting ISSN to 'NONE'.")
           article.issn = ['NONE']
         end
       end
