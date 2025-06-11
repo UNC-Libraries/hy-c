@@ -205,7 +205,7 @@ RSpec.describe Tasks::PubmedIngest::PubmedIngestCoordinatorService do
       end
       let(:work_data) do
         {
-          'id' => work.id,
+          'id' => 'test_work_id',
           'has_model_ssim' => ['Article'],
           'title_tesim' => ['Sample Work Title'],
           'admin_set_tesim' => [admin_set.title.first],
@@ -239,7 +239,7 @@ RSpec.describe Tasks::PubmedIngest::PubmedIngestCoordinatorService do
       end
       let(:work_data) do
         {
-          'id' => work.id,
+          'id' => 'test_work_id',
           'has_model_ssim' => ['Article'],
           'title_tesim' => ['Sample Work Title'],
           'admin_set_tesim' => [admin_set.title.first],
@@ -394,12 +394,9 @@ RSpec.describe Tasks::PubmedIngest::PubmedIngestCoordinatorService do
 
   describe '#find_best_work_match' do
     let(:alternate_ids) { { pmid: '12345', pmcid: 'PMC67890', doi: '10.1234/test' } }
-    let(:work) do
-      FactoryBot.create(:article, title: ['Test Article'], admin_set_id: admin_set.id)
-    end
     let(:work_data) do
       {
-        'id' => work.id,
+        'id' => 'test_work_id',
         'has_model_ssim' => ['Article'],
         'title_tesim' => ['Test Article'],
         'admin_set_tesim' => [admin_set.title.first],

@@ -26,9 +26,6 @@ RSpec.describe Tasks::PubmedIngest::PubmedIngestService do
   let(:workflow_state) do
     FactoryBot.create(:workflow_state, workflow_id: workflow.id, name: 'deposited')
   end
-  let(:work) do
-    FactoryBot.create(:article, title: ['Sample Work Title'], admin_set_id: admin_set.id)
-  end
 
   before do
     allow(Rails).to receive(:logger).and_return(logger_spy)
