@@ -87,7 +87,6 @@ module Tasks
             Rails.logger.error("Backtrace: #{e.backtrace.join("\n")}")
             article.destroy if article&.persisted?
             skipped_row['pdf_attached'] = e.message
-            @attachment_results[:failed] << skipped_row.to_h
             record_result(
               category: :failed,
               file_name: skipped_row['file_name'],

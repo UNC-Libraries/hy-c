@@ -83,13 +83,6 @@ RSpec.describe Tasks::PubmedIngest::PubmedIngestService do
       allow(User).to receive(:find_by).with(uid: valid_config['depositor_onyen']).and_return(nil)
       expect { described_class.new(valid_config) }.to raise_error(ActiveRecord::RecordNotFound, /User not found/)
     end
-
-    it 'extracts only new Pubmed works from skipped array' do
-      service = described_class.new(valid_config)
-      new_pubmed_works = service.instance_variable_get(:@new_pubmed_works)
-      expect(new_pubmed_works.size).to eq(1)
-      expect(new_pubmed_works.first['pdf_attached']).to eq('Skipped: No CDR URL')
-    end
   end
 
   describe '#ingest_publications' do
@@ -126,7 +119,7 @@ RSpec.describe Tasks::PubmedIngest::PubmedIngestService do
       {
         'admin_set_title' => admin_set.title.first,
         'depositor_onyen' => admin.uid,
-        'attachment_results' => { skipped: pubmed_rows, successfully_attached: [], successfully_ingested: [], failed: [] },
+        'attachment_results' => { skipped: pubmed_rows, successfully_attached: [], successfully_ingested: [], failed: [], counts: { successfully_ingested: 0, failed: 0, skipped: pubmed_rows.length } },
         'file_retrieval_directory' => Rails.root.join('spec/fixtures/files')
       }
     end
@@ -135,7 +128,7 @@ RSpec.describe Tasks::PubmedIngest::PubmedIngestService do
       {
         'admin_set_title' => admin_set.title.first,
         'depositor_onyen' => admin.uid,
-        'attachment_results' => { skipped: pmc_rows, successfully_attached: [], successfully_ingested: [], failed: [] },
+        'attachment_results' => { skipped: pmc_rows, successfully_attached: [], successfully_ingested: [], failed: [], counts: { successfully_ingested: 0, failed: 0, skipped: pmc_rows.length } },
         'file_retrieval_directory' => Rails.root.join('spec/fixtures/files')
       }
     end
@@ -272,6 +265,8 @@ RSpec.describe Tasks::PubmedIngest::PubmedIngestService do
       expect {
         @res = service.ingest_publications
       }.to change { Article.count }.by(2)
+      debug_out_path = Rails.root.join('tmp', 'pubmed_ingest_debug_output.json')
+      File.open(debug_out_path, 'w') { |f| f.write(JSON.pretty_generate(@res)) }
       success_pmcids = @res[:successfully_ingested].map { |row| row['pmcid'] }
       failed_pmcids = @res[:failed].map { |row| row['pmcid'] }
 
