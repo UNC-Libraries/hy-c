@@ -130,11 +130,13 @@ RSpec.describe Tasks::PubmedIngest::PubmedIngestCoordinatorService do
     end
 
     it 'creates PubmedIngestService with correct parameters' do
+      service = described_class.new(valid_config)
+      expected_path = Pathname.new(Rails.root.join('spec/fixtures/files'))
       expect(Tasks::PubmedIngest::PubmedIngestService).to have_received(:new).with(
         hash_including(
           'admin_set_title' => admin_set.title.first,
           'depositor_onyen' => admin.uid,
-          'file_retrieval_directory' => Rails.root.join('spec/fixtures/files').to_s
+          'file_retrieval_directory' => expected_path
         )
       )
     end
