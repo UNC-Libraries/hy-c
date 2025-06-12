@@ -120,7 +120,7 @@ module Tasks
           double_log("Finished ingesting skipped PDFs. Counts: #{ingest_results[:counts]}")
         rescue => e
           double_log("Error during PDF ingestion: #{e.message}", :error)
-          Rails.logger.error(e.backtrace.join("\n"))
+          Rails.logger.error "Backtrace: #{e.backtrace.join("\n")}"
         end
       end
 

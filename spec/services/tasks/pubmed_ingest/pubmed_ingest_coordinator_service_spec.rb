@@ -352,7 +352,6 @@ RSpec.describe Tasks::PubmedIngest::PubmedIngestCoordinatorService do
       end
 
       it 'handles error gracefully' do
-        # expect(service).to receive(:double_log).with('Error during PDF ingestion: Ingest error', :error)
         expect(logger_spy).to receive(:error).with(a_string_including('Error during PDF ingestion: Ingest error'))
         expect(logger_spy).to receive(:error).with(a_string_including('Backtrace:'))
         service.send(:attach_remaining_pdfs)
