@@ -141,7 +141,7 @@ module Tasks
           double_log('Email sent successfully', :info)
         rescue StandardError => e
           double_log("Failed to send email: #{e.message}", :error)
-          double_log(e.backtrace.join("\n"))
+          Rails.logger.error "Backtrace: #{e.backtrace.join("\n")}"
         end
       end
 

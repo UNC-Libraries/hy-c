@@ -348,11 +348,13 @@ RSpec.describe Tasks::PubmedIngest::PubmedIngestCoordinatorService do
           { 'file_name' => 'sample_pdf.pdf', 'pmid' => '12345', 'pdf_attached' => 'Skipped: No CDR URL' }
         ]
         allow(mock_pubmed_service).to receive(:ingest_publications).and_raise(StandardError.new('Ingest error'))
+        allow(service).to receive(:double_log).and_call_original
       end
 
       it 'handles error gracefully' do
-        expect(service).to receive(:double_log).with('Error during PDF ingestion: Ingest error', :error)
-        expect(logger_spy).to receive(:error)
+        # expect(service).to receive(:double_log).with('Error during PDF ingestion: Ingest error', :error)
+        expect(logger_spy).to receive(:error).with(a_string_including('Error during PDF ingestion: Ingest error'))
+        expect(logger_spy).to receive(:error).with(a_string_including('Backtrace:'))
         service.send(:attach_remaining_pdfs)
       end
     end
@@ -386,11 +388,12 @@ RSpec.describe Tasks::PubmedIngest::PubmedIngestCoordinatorService do
     context 'when email sending fails' do
       before do
         allow(PubmedReportMailer).to receive(:pubmed_report_email).and_raise(StandardError.new('Email error'))
+        allow(service).to receive(:double_log).and_call_original
       end
 
       it 'handles error gracefully' do
-        expect(service).to receive(:double_log).with('Failed to send email: Email error', :error)
-        expect(service).to receive(:double_log).with(/backtrace/)
+        expect(logger_spy).to receive(:error).with(a_string_including('Failed to send email'))
+        expect(logger_spy).to receive(:error).with(a_string_including('Backtrace:'))
         service.send(:finalize_report_and_notify)
       end
     end
