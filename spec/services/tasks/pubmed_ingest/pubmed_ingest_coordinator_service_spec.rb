@@ -212,12 +212,10 @@ RSpec.describe Tasks::PubmedIngest::PubmedIngestCoordinatorService do
     end
 
     context 'when work exists but no files attached' do
-      let(:work) do
-        FactoryBot.create(:article, title: ['Sample Work Title'], admin_set_id: admin_set.id)
-      end
+      let(:work_id) { 'test_work_id' }
       let(:work_data) do
         {
-          'id' => 'test_work_id',
+          'id' => work_id,
           'has_model_ssim' => ['Article'],
           'title_tesim' => ['Sample Work Title'],
           'admin_set_tesim' => [admin_set.title.first],
@@ -225,6 +223,8 @@ RSpec.describe Tasks::PubmedIngest::PubmedIngestCoordinatorService do
         }
       end
       let(:admin_set_data) { { 'id' => admin_set.id } }
+      let(:article) { { id: work_id, title: 'Sample Work Title', admin_set_id: admin_set.id } }
+
 
       before do
         allow(ActiveFedora::SolrService).to receive(:get)
@@ -234,12 +234,12 @@ RSpec.describe Tasks::PubmedIngest::PubmedIngestCoordinatorService do
           .with(/title_tesim.*AdminSet/, anything)
           .and_return({ 'response' => { 'docs' => [admin_set_data] } })
         allow(WorkUtilsHelper).to receive(:get_filenames).and_return([])
-        allow(WorkUtilsHelper).to receive(:fetch_model_instance).and_return(work)
+        allow(WorkUtilsHelper).to receive(:fetch_model_instance).and_return(article)
       end
 
       it 'attempts to attach PDF to existing work' do
         match = {
-          work_id: work.id,
+          work_id: work_id,
           work_type: 'Article',
           file_set_names: []
         }
@@ -255,7 +255,7 @@ RSpec.describe Tasks::PubmedIngest::PubmedIngestCoordinatorService do
           file_name: 'sample_pdf.pdf',
           message: 'Success',
           ids: alternate_ids,
-          article: work
+          article: article
         )
 
         service.send(:process_file_matches)
