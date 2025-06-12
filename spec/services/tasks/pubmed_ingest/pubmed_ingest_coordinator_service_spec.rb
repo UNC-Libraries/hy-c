@@ -113,9 +113,11 @@ RSpec.describe Tasks::PubmedIngest::PubmedIngestCoordinatorService do
     end
 
     it 'sets up the service with correct configuration' do
+      expected_file_retrieval_dir = Pathname.new(Rails.root.join('spec/fixtures/files'))
+      expected_output_dir = Pathname.new(Rails.root.join('tmp'))
       expect(service.instance_variable_get(:@config)).to eq(config)
-      expect(service.instance_variable_get(:@file_retrieval_directory)).to eq(Rails.root.join('spec/fixtures/files').to_s)
-      expect(service.instance_variable_get(:@output_dir)).to eq(Rails.root.join('tmp').to_s)
+      expect(service.instance_variable_get(:@file_retrieval_directory)).to eq(expected_file_retrieval_dir)
+      expect(service.instance_variable_get(:@output_dir)).to eq(expected_output_dir)
       expect(service.instance_variable_get(:@depositor_onyen)).to eq(admin.uid)
     end
 
