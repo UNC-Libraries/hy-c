@@ -61,8 +61,9 @@ module Tasks
                  next
                end
 
+              #  In case a PMID and PMCID point to the same work, we only want to process it once
                if encountered_alternate_ids.any? { |ids| has_matching_ids?(ids, alternate_ids) }
-                 log_and_label_skip(file_name, file_ext, alternate_ids, 'Already encountered this work during current run')
+                 log_and_label_skip(file_name, file_ext, alternate_ids, 'Already encountered this work during current run. Identifiers: ' + alternate_ids.to_s)
                  next
                else
                  encountered_alternate_ids << alternate_ids

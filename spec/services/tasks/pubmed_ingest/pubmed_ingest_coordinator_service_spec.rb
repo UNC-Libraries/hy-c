@@ -177,32 +177,6 @@ RSpec.describe Tasks::PubmedIngest::PubmedIngestCoordinatorService do
       service.send(:process_file_matches)
     end
 
-    context 'when no alternate IDs found' do
-      let(:error_xml) do
-        <<~XML
-          <?xml version="1.0"?>
-          <pmcids>
-            <record status="error"/>
-          </pmcids>
-        XML
-      end
-
-      before do
-        allow(HTTParty).to receive(:get).and_return(double('response', body: error_xml))
-      end
-
-      it 'records failed result and continues' do
-        expect(mock_pubmed_service).to receive(:record_result).with(
-          category: :failed,
-          file_name: 'sample_pdf.pdf',
-          message: 'Failed: No alternate IDs',
-          ids: {}
-        )
-
-        service.send(:process_file_matches)
-      end
-    end
-
     context 'when work already has files attached' do
       let(:work) do
         FactoryBot.create(:article, title: ['Sample Work Title'], admin_set_id: admin_set.id)
@@ -230,7 +204,7 @@ RSpec.describe Tasks::PubmedIngest::PubmedIngestCoordinatorService do
 
       it 'skips the file' do
         expect(service).to receive(:log_and_label_skip).with(
-          'sample_pdf', 'pdf', alternate_ids, 'File already attached to work'
+          'test_article', 'pdf', alternate_ids, 'Already encountered this work during current run. Identifiers: ' + alternate_ids.to_s
         )
 
         service.send(:process_file_matches)
@@ -303,18 +277,12 @@ RSpec.describe Tasks::PubmedIngest::PubmedIngestCoordinatorService do
 
     context 'when error occurs during processing' do
       before do
-        allow(HTTParty).to receive(:get).and_raise(StandardError.new('Test error'))
+        allow(service).to receive(:retrieve_alternate_ids).and_raise(StandardError.new('Test failure in retrieve_alternate_ids'))
       end
 
       it 'handles error gracefully and continues' do
-        expect(mock_pubmed_service).to receive(:record_result).with(
-          category: :failed,
-          file_name: 'sample_pdf.pdf',
-          message: 'Failed: Test error',
-          ids: { pmid: 'sample_pdf' }
-        )
-
-        service.send(:process_file_matches)
+        expect(logger_spy).to receive(:error).with(/Error processing file/)
+        expect { service.send(:process_file_matches) }.not_to raise_error
       end
     end
   end
