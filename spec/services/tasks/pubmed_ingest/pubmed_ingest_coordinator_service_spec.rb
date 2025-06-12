@@ -335,7 +335,7 @@ RSpec.describe Tasks::PubmedIngest::PubmedIngestCoordinatorService do
 
     context 'when no skipped items' do
       it 'logs info message and returns early' do
-        expect(service).to receive(:double_log).with('No skipped items to ingest', :info)
+        expect(logger_spy).to receive(:info).with(/No skipped items to ingest/)
         expect(mock_pubmed_service).not_to receive(:ingest_publications)
 
         service.send(:attach_remaining_pdfs)
@@ -352,8 +352,8 @@ RSpec.describe Tasks::PubmedIngest::PubmedIngestCoordinatorService do
       end
 
       it 'handles error gracefully' do
-        expect(logger_spy).to receive(:error).with(a_string_including('Error during PDF ingestion: Ingest error'))
-        expect(logger_spy).to receive(:error).with(a_string_including('Backtrace:'))
+        expect(logger_spy).to receive(:error).with(/Error during PDF ingestion: Ingest error/)
+        expect(logger_spy).to receive(:error).with(/Backtrace:/)
         service.send(:attach_remaining_pdfs)
       end
     end
@@ -369,8 +369,8 @@ RSpec.describe Tasks::PubmedIngest::PubmedIngestCoordinatorService do
     end
 
     it 'logs summary of results' do
-      expect(service).to receive(:double_log).with(/Results written to/, :info)
-      expect(service).to receive(:double_log).with(/Ingested: .*, Attached: .*, Failed: .*, Skipped: .*/, :info)
+      expect(logger_spy).to receive(:info).with(/Results written to/)
+      expect(logger_spy).to receive(:info).with(/Ingested: .*, Attached: .*, Failed: .*, Skipped: .*/)
 
       service.send(:write_results_to_file)
     end
@@ -391,8 +391,8 @@ RSpec.describe Tasks::PubmedIngest::PubmedIngestCoordinatorService do
       end
 
       it 'handles error gracefully' do
-        expect(logger_spy).to receive(:error).with(a_string_including('Failed to send email'))
-        expect(logger_spy).to receive(:error).with(a_string_including('Backtrace:'))
+        expect(logger_spy).to receive(:error).with(/Failed to send email/)
+        expect(logger_spy).to receive(:error).with(/Backtrace:/)
         service.send(:finalize_report_and_notify)
       end
     end
