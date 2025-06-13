@@ -76,8 +76,7 @@ module Tasks
           article.issn = [ppub_issn]
         else
           Rails.logger.warn('[PMC] No epub or ppub ISSN found for article with identifiers ' \
-                            "\"#{article.identifier.inspect}\". Setting ISSN to 'NONE'.")
-          article.issn = ['NONE']
+                            "\"#{article.identifier.inspect}\". Skipping ISSN assignment.")
         end
       end
 
