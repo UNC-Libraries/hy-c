@@ -49,61 +49,61 @@ module Tasks
 
         @files_in_dir.each do |file_name, file_ext|
           begin
-               alternate_ids = retrieve_alternate_ids(file_name)
-               unless alternate_ids
-                 double_log("No alternate IDs found for #{full_file_name(file_name, file_ext)}", :warn)
-                 @pubmed_ingest_service.record_result(
-                     category: :failed,
-                     file_name: full_file_name(file_name, file_ext),
-                     message: 'Failed: No alternate IDs',
-                     ids: {}
-                 )
-                 next
-               end
+            alternate_ids = retrieve_alternate_ids(file_name)
 
-              #  In case a PMID and PMCID point to the same work, we only want to process it once
-               if encountered_alternate_ids.any? { |ids| has_matching_ids?(ids, alternate_ids) }
-                 log_and_label_skip(file_name, file_ext, alternate_ids, 'Already encountered this work during current run. Identifiers: ' + alternate_ids.to_s)
-                 next
-               else
-                 encountered_alternate_ids << alternate_ids
-               end
+            unless alternate_ids
+              double_log("No alternate IDs found for #{full_file_name(file_name, file_ext)}", :warn)
+              @pubmed_ingest_service.record_result(
+                category: :failed,
+                file_name: full_file_name(file_name, file_ext),
+                message: 'Failed: No alternate IDs',
+                ids: {}
+              )
+              next
+            end
 
+            # In case a PMID and PMCID point to the same work, we only want to process it once
+            if encountered_alternate_ids.any? { |ids| has_matching_ids?(ids, alternate_ids) }
+              log_and_label_skip(file_name, file_ext, alternate_ids, 'Already encountered this work during current run. Identifiers: ' + alternate_ids.to_s)
+              next
+            else
+              encountered_alternate_ids << alternate_ids
+            end
 
-               match = find_best_work_match(alternate_ids)
+            match = find_best_work_match(alternate_ids)
 
-               if match&.dig(:file_set_names).present?
-                 log_and_label_skip(file_name, file_ext, alternate_ids, 'File already attached to work')
-               elsif match&.dig(:work_id).present?
-                 double_log("Found existing work for #{file_name}: #{match[:work_id]} with no fileset. Attempting to attach PDF.")
-                 path = File.join(@config['file_retrieval_directory'], full_file_name(file_name, file_ext))
-                 @pubmed_ingest_service.attach_pdf_for_existing_work(match, path, @depositor_onyen)
-                 @pubmed_ingest_service.record_result(
-                        category: :successfully_attached,
-                        file_name: full_file_name(file_name, file_ext),
-                        message: 'Success',
-                        ids: alternate_ids,
-                        article: WorkUtilsHelper.fetch_model_instance(match[:work_type], match[:work_id]),
-                    )
-               else
-                 double_log("No match found — will be ingested: #{full_file_name(file_name, file_ext)}", :warn)
-                 @pubmed_ingest_service.record_result(
-                        category: :skipped,
-                        file_name: full_file_name(file_name, file_ext),
-                        message: 'Skipped: No CDR URL',
-                        ids: alternate_ids
-                    )
-               end
-               rescue StandardError => e
-                 double_log("Error processing file #{file_name}: #{e.message}", :error)
-                 @pubmed_ingest_service.record_result(
-                     category: :failed,
-                     file_name: full_file_name(file_name, file_ext),
-                     message: "Failed: #{e.message}",
-                     ids: alternate_ids
-                 )
-                 next
-             end
+            if match&.dig(:file_set_names).present?
+              log_and_label_skip(file_name, file_ext, alternate_ids, 'File already attached to work')
+            elsif match&.dig(:work_id).present?
+              double_log("Found existing work for #{file_name}: #{match[:work_id]} with no fileset. Attempting to attach PDF.")
+              path = File.join(@config['file_retrieval_directory'], full_file_name(file_name, file_ext))
+              @pubmed_ingest_service.attach_pdf_for_existing_work(match, path, @depositor_onyen)
+              @pubmed_ingest_service.record_result(
+                category: :successfully_attached,
+                file_name: full_file_name(file_name, file_ext),
+                message: 'Success',
+                ids: alternate_ids,
+                article: WorkUtilsHelper.fetch_model_instance(match[:work_type], match[:work_id])
+              )
+            else
+              double_log("No match found — will be ingested: #{full_file_name(file_name, file_ext)}", :warn)
+              @pubmed_ingest_service.record_result(
+                category: :skipped,
+                file_name: full_file_name(file_name, file_ext),
+                message: 'Skipped: No CDR URL',
+                ids: alternate_ids
+              )
+            end
+          rescue StandardError => e
+            double_log("Error processing file #{file_name}: #{e.message}", :error)
+            @pubmed_ingest_service.record_result(
+              category: :failed,
+              file_name: full_file_name(file_name, file_ext),
+              message: "Failed: #{e.message}",
+              ids: alternate_ids
+            )
+            next
+          end
         end
 
         double_log("Processing complete. Results: #{@pubmed_ingest_service.attachment_results[:counts]}")
