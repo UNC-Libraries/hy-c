@@ -193,10 +193,6 @@ module Tasks
         end
       end
 
-      def generate_cdr_url(work_id)
-        "https://cdr.lib.unc.edu/concern/works/#{work_id}"
-      end
-
       def double_log(msg, level = :info)
         tagged = "[Coordinator] #{msg}"
         puts tagged
