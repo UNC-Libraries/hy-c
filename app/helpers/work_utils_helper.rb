@@ -6,7 +6,7 @@ module WorkUtilsHelper
     admin_set_name = work_data['admin_set_tesim']&.first
     admin_set_data = admin_set_name ? ActiveFedora::SolrService.get("title_tesim:#{admin_set_name} AND has_model_ssim:(\"AdminSet\")", { :rows => 1, 'df' => 'title_tesim'})['response']['docs'].first : {}
     Rails.logger.warn(self.generate_warning_message(admin_set_name, identifier)) if admin_set_data.blank?
-    {
+    result = {
       work_id: work_data['id'],
       work_type: work_data.dig('has_model_ssim', 0),
       title: work_data['title_tesim']&.first,
@@ -14,6 +14,7 @@ module WorkUtilsHelper
       admin_set_name: admin_set_name,
       file_set_ids: work_data['file_set_ids_ssim']
     }
+    result.compact.empty? ? nil : result
   end
   def self.fetch_work_data_by_fileset_id(fileset_id)
     # Retrieve the work related to the fileset
@@ -23,7 +24,7 @@ module WorkUtilsHelper
     admin_set_name = work_data['admin_set_tesim']&.first
     admin_set_data = admin_set_name ? ActiveFedora::SolrService.get("title_tesim:#{admin_set_name} AND has_model_ssim:(\"AdminSet\")", { :rows => 1, 'df' => 'title_tesim'})['response']['docs'].first : {}
     Rails.logger.warn(self.generate_warning_message(admin_set_name, fileset_id, :fileset)) if admin_set_data.blank?
-    {
+    result ={
       work_id: work_data['id'],
       work_type: work_data.dig('has_model_ssim', 0),
       title: work_data['title_tesim']&.first,
@@ -31,6 +32,7 @@ module WorkUtilsHelper
       admin_set_name: admin_set_name,
       file_set_ids: work_data['file_set_ids_ssim']
     }
+    result.compact.empty? ? nil : result
   end
   def self.fetch_work_data_by_id(work_id)
     work_data = ActiveFedora::SolrService.get("id:#{work_id}", rows: 1)['response']['docs'].first || {}
@@ -38,7 +40,7 @@ module WorkUtilsHelper
     admin_set_name = work_data['admin_set_tesim']&.first
     admin_set_data = admin_set_name ? ActiveFedora::SolrService.get("title_tesim:#{admin_set_name} AND has_model_ssim:(\"AdminSet\")", { :rows => 1, 'df' => 'title_tesim'})['response']['docs'].first : {}
     Rails.logger.warn(self.generate_warning_message(admin_set_name, work_id)) if admin_set_data.blank?
-    {
+    result ={
       work_id: work_data['id'],
       work_type: work_data.dig('has_model_ssim', 0),
       title: work_data['title_tesim']&.first,
@@ -46,6 +48,7 @@ module WorkUtilsHelper
       admin_set_name: admin_set_name,
       file_set_ids: work_data['file_set_ids_ssim']
     }
+    result.compact.empty? ? nil : result
   end
 
   def self.fetch_work_data_by_doi(doi)
@@ -54,7 +57,7 @@ module WorkUtilsHelper
     admin_set_name = work_data['admin_set_tesim']&.first
     admin_set_data = admin_set_name ? ActiveFedora::SolrService.get("title_tesim:#{admin_set_name} AND has_model_ssim:(\"AdminSet\")", { :rows => 1, 'df' => 'title_tesim'})['response']['docs'].first : {}
     Rails.logger.warn(self.generate_warning_message(admin_set_name, doi, :doi)) if admin_set_data.blank?
-    {
+    result ={
       work_id: work_data['id'],
       work_type: work_data.dig('has_model_ssim', 0),
       title: work_data['title_tesim']&.first,
@@ -62,6 +65,7 @@ module WorkUtilsHelper
       admin_set_name: admin_set_name,
       file_set_ids: work_data['file_set_ids_ssim']
     }
+    result.compact.empty? ? nil : result
   end
 
   def self.get_permissions_attributes(admin_set_id)

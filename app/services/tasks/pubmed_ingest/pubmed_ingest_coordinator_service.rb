@@ -147,20 +147,14 @@ module Tasks
       end
 
     # Helper methods
-
       def find_best_work_match(alternate_ids)
-        [alternate_ids[:doi], alternate_ids[:pmcid], alternate_ids[:pmid]].each do |id|
+        [:doi, :pmcid, :pmid].each do |key|
+          id = alternate_ids[key]
           next if id.blank?
 
-          work_data = ActiveFedora::SolrService.get("identifier_tesim:\"#{id}\"", rows: 1)['response']['docs'].first
-          next unless work_data
-
-          admin_set_name = work_data['admin_set_tesim']&.first
-          admin_set_data = admin_set_name ? ActiveFedora::SolrService.get("title_tesim:\"#{admin_set_name}\" AND has_model_ssim:(\"AdminSet\")", rows: 1)['response']['docs'].first : {}
-
-          return work_data if work_data.present? && admin_set_data.present?
+          work_data = WorkUtilsHelper.fetch_work_data_by_alternate_identifier(id)
+          return work_data if work_data.present?
         end
-
         nil
       end
 

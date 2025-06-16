@@ -390,11 +390,12 @@ RSpec.describe Tasks::PubmedIngest::PubmedIngestCoordinatorService do
       result = service.send(:find_best_work_match, alternate_ids)
 
       expect(result).to include(
-        'id' => 'test_work_id',
-        'file_set_ids_ssim' => ['fileset1'],
-        'admin_set_tesim' => ['Open_Access_Articles_and_Book_Chapters'],
-        'has_model_ssim' => ['Article'],
-        'title_tesim' => ['Test Article']
+        work_id: 'test_work_id',
+        file_set_ids: ['fileset1'],
+        admin_set_name: 'Open_Access_Articles_and_Book_Chapters',
+        admin_set_id: admin_set.id,
+        work_type: 'Article',
+        title: 'Test Article'
       )
     end
 
