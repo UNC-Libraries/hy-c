@@ -29,10 +29,14 @@ module Tasks
           'pdf_attached' => message,
           'pmid' => ids[:pmid],
           'pmcid' => ids[:pmcid],
-          'doi' => ids[:doi]
+          'doi' => ids[:doi],
         }
 
-        row['cdr_url'] = generate_cdr_url(row) if article
+        if ids[:work_id]
+          row['cdr_url'] = generate_cdr_url_for_existing_work(ids[:work_id])
+        elsif article.present?
+          row['cdr_url'] = generate_cdr_url_for_pubmed_identifier(row)
+        end
         row['article'] = article if article
         @attachment_results[:counts][category] += 1
 
@@ -65,8 +69,7 @@ module Tasks
             article.save!
 
             Rails.logger.info("[Ingest] Successfully attached PDF for article #{article.id}")
-            skipped_row['pdf_attached'] = 'Success'
-            skipped_row['cdr_url'] = generate_cdr_url(skipped_row)
+            skipped_row['cdr_url'] = generate_cdr_url_for_pubmed_identifier(skipped_row)
             skipped_row['article'] = article
             record_result(
               category: :successfully_ingested,
@@ -86,7 +89,6 @@ module Tasks
             Rails.logger.error("[Ingest] Error processing record: DOI: #{doi}, PMID: #{pmid}, PMCID: #{pmcid}, Index: #{index}, Error: #{e.message}")
             Rails.logger.error("Backtrace: #{e.backtrace.join("\n")}")
             article.destroy if article&.persisted?
-            skipped_row['pdf_attached'] = e.message
             record_result(
               category: :failed,
               file_name: skipped_row['file_name'],
@@ -200,7 +202,7 @@ module Tasks
           PmcAttributeBuilder.new(metadata, article, @admin_set, @depositor.uid)
       end
 
-      def generate_cdr_url(skipped_row)
+      def generate_cdr_url_for_pubmed_identifier(skipped_row)
         identifier = skipped_row['pmcid'] || skipped_row['pmid']
         raise ArgumentError, 'No identifier (PMCID or PMID) found in row' unless identifier.present?
 
@@ -215,10 +217,21 @@ module Tasks
         model = record['has_model_ssim']&.first&.underscore&.pluralize || 'works'
         URI.join(ENV['HYRAX_HOST'], "/concern/#{model}/#{record['id']}").to_s
       rescue => e
-        Rails.logger.warn("[generate_cdr_url] Failed for identifier: #{identifier}, error: #{e.message}")
+        Rails.logger.warn("[generate_cdr_url_for_pubmed_identifier] Failed for identifier: #{identifier}, error: #{e.message}")
         nil
       end
 
+      def generate_cdr_url_for_existing_work(work_id)
+        result = WorkUtilsHelper.fetch_work_data_by_id(work_id)
+        raise "No work found with ID: #{work_id}" if result.nil?
+        raise "Missing work_type for work with id: #{work_id}" unless result[:work_type].present?
+
+        model = result[:work_type]&.underscore&.pluralize || 'works'
+        URI.join(ENV['HYRAX_HOST'], "/concern/#{model}/#{work_id}").to_s
+      rescue => e
+        Rails.logger.warn("[generate_cdr_url_for_existing_work] Failed for work with id: #{work_id}, error: #{e.message}")
+        nil
+      end
     end
   end
 end

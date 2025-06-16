@@ -73,6 +73,8 @@ module Tasks
             match = find_best_work_match(alternate_ids)
 
             if match&.dig(:file_set_ids).present?
+              # Attach work id to generate URL for existing work (PubmedIngestService::PubmedIngest::record_result)
+              alternate_ids[:work_id] = match[:work_id]
               log_and_label_skip(file_name, file_ext, alternate_ids, 'File already attached to work')
             elsif match&.dig(:work_id).present?
               double_log("Found existing work for #{file_name}: #{match[:work_id]} with no fileset. Attempting to attach PDF.")
