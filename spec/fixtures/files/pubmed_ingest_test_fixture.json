@@ -218,7 +218,7 @@
     "depositor": "dcam",
     "file_retrieval_directory": "/opt/fake/full_text_dir/",
     "counts": {
-      "total_unique_files": 23,
+      "total": 23,
       "failed": 5,
       "successfully_ingested": 5,
       "successfully_attached": 6,

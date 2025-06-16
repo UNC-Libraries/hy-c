@@ -179,6 +179,9 @@ RSpec.describe Tasks::PubmedIngest::PubmedIngestService do
       expect(@res[:successfully_ingested].length).to eq(2)
       expect(@res[:failed].length).to eq(2)
 
+      expect(@res[:counts][:successfully_ingested]).to eq(2)
+      expect(@res[:counts][:failed]).to eq(2)
+
       # Grab the first successfully ingested article and validate metadata
       ingested_article = @res[:successfully_ingested][0]['article']
       # Sanity check and validate article title was set correctly
@@ -274,7 +277,8 @@ RSpec.describe Tasks::PubmedIngest::PubmedIngestService do
       expect(@res[:successfully_ingested].length).to eq(2)
       expect(@res[:failed].length).to eq(2)
 
-
+      expect(@res[:counts][:successfully_ingested]).to eq(2)
+      expect(@res[:counts][:failed]).to eq(2)
       # Grab the first successfully ingested article and validate metadata
       ingested_article = @res[:successfully_ingested][0]['article']
       # Sanity check and validate article title was set correctly
