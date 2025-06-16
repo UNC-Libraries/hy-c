@@ -72,7 +72,7 @@ module Tasks
 
             match = find_best_work_match(alternate_ids)
 
-            if match&.dig(:file_set_names).present?
+            if match&.dig(:file_set_ids).present?
               log_and_label_skip(file_name, file_ext, alternate_ids, 'File already attached to work')
             elsif match&.dig(:work_id).present?
               double_log("Found existing work for #{file_name}: #{match[:work_id]} with no fileset. Attempting to attach PDF.")
@@ -158,14 +158,7 @@ module Tasks
           admin_set_name = work_data['admin_set_tesim']&.first
           admin_set_data = admin_set_name ? ActiveFedora::SolrService.get("title_tesim:\"#{admin_set_name}\" AND has_model_ssim:(\"AdminSet\")", rows: 1)['response']['docs'].first : {}
 
-          return {
-            work_id: work_data['id'],
-            work_type: work_data.dig('has_model_ssim', 0),
-            title: work_data['title_tesim']&.first,
-            admin_set_id: admin_set_data['id'],
-            admin_set_name: admin_set_name,
-            file_set_names: WorkUtilsHelper.get_filenames(work_data['file_set_ids_ssim'])
-          } if work_data.present? && admin_set_data.present?
+          return work_data if work_data.present? && admin_set_data.present?
         end
 
         nil

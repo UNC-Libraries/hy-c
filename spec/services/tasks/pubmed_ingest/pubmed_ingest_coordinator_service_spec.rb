@@ -199,7 +199,6 @@ RSpec.describe Tasks::PubmedIngest::PubmedIngestCoordinatorService do
         allow(ActiveFedora::SolrService).to receive(:get)
           .with(/title_tesim.*AdminSet/, anything)
           .and_return({ 'response' => { 'docs' => [admin_set_data] } })
-        allow(WorkUtilsHelper).to receive(:get_filenames).and_return(['existing_file.pdf'])
       end
 
       it 'skips the file' do
@@ -233,7 +232,6 @@ RSpec.describe Tasks::PubmedIngest::PubmedIngestCoordinatorService do
         allow(ActiveFedora::SolrService).to receive(:get)
           .with(/title_tesim.*AdminSet/, anything)
           .and_return({ 'response' => { 'docs' => [admin_set_data] } })
-        allow(WorkUtilsHelper).to receive(:get_filenames).and_return([])
         allow(WorkUtilsHelper).to receive(:fetch_model_instance).and_return(article)
       end
 
@@ -386,19 +384,17 @@ RSpec.describe Tasks::PubmedIngest::PubmedIngestCoordinatorService do
       allow(ActiveFedora::SolrService).to receive(:get)
         .with(/title_tesim.*AdminSet/, anything)
         .and_return({ 'response' => { 'docs' => [admin_set_data] } })
-      allow(WorkUtilsHelper).to receive(:get_filenames).and_return(['existing.pdf'])
     end
 
     it 'returns work match data when found' do
       result = service.send(:find_best_work_match, alternate_ids)
 
       expect(result).to include(
-        work_id: work_data['id'],
-        work_type: 'Article',
-        title: 'Test Article',
-        admin_set_id: admin_set.id,
-        admin_set_name: admin_set.title.first,
-        file_set_names: ['existing.pdf']
+        'id' => 'test_work_id',
+        'file_set_ids_ssim' => ['fileset1'],
+        'admin_set_tesim' => ['Open_Access_Articles_and_Book_Chapters'],
+        'has_model_ssim' => ['Article'],
+        'title_tesim' => ['Test Article']
       )
     end
 
