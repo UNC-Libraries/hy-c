@@ -10,7 +10,7 @@ module Tasks
           file_retrieval_directory: ingest_output[:file_retrieval_directory],
           headers: {
             depositor: ingest_output[:depositor],
-            total: ingest_output[:counts][:total]
+            total_files: ingest_output[:counts][:total_files]
           },
           records: {
             successfully_attached: ingest_output[:successfully_attached].map(&:symbolize_keys),
