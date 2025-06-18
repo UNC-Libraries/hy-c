@@ -45,7 +45,8 @@ RSpec.describe WorkUtilsHelper, type: :module do
      work_type: 'Article',
      title: 'Key ethical issues discussed at CDC-sponsored international, regional meetings to explore cultural perspectives and contexts on pandemic influenza preparedness and response',
      admin_set_id: 'h128zk07m',
-     admin_set_name: 'Open_Access_Articles_and_Book_Chapters'
+     admin_set_name: 'Open_Access_Articles_and_Book_Chapters',
+     file_set_ids: nil
   },
   {
      work_id: '1z40m031g',
@@ -53,7 +54,7 @@ RSpec.describe WorkUtilsHelper, type: :module do
      title: 'Key ethical issues discussed at CDC-sponsored international, regional meetings to explore cultural perspectives and contexts on pandemic influenza preparedness and response',
      admin_set_id: 'h128zk07m',
      admin_set_name: 'Open_Access_Articles_and_Book_Chapters',
-     file_set_names: ['title_0', 'title_1', 'title_2', 'title_3']
+     file_set_ids:  ["file-set-id-0", "file-set-id-1", "file-set-id-2", "file-set-id-3"]
   }
   ]
   }
@@ -73,10 +74,7 @@ RSpec.describe WorkUtilsHelper, type: :module do
       result = WorkUtilsHelper.fetch_work_data_by_fileset_id(fileset_ids[0])
       expect(Rails.logger).to have_received(:warn).with("No work found associated with fileset id: #{fileset_ids[0]}")
       expect(Rails.logger).to have_received(:warn).with("Could not find an admin set, the work with fileset id: #{fileset_ids[0]} has no admin set name.")
-      expect(result[:work_id]).to be_nil
-      expect(result[:work_type]).to be_nil
-      expect(result[:title]).to be_nil
-      expect(result[:admin_set_id]).to be_nil
+      expect(result).to be_nil
     end
 
     context 'when admin set is not found' do
@@ -118,10 +116,7 @@ RSpec.describe WorkUtilsHelper, type: :module do
       result = WorkUtilsHelper.fetch_work_data_by_id(mock_record_id)
       expect(Rails.logger).to have_received(:warn).with("No work found associated with work id: #{mock_record_id}")
       expect(Rails.logger).to have_received(:warn).with("Could not find an admin set, the work with id: #{mock_record_id} has no admin set name.")
-      expect(result[:work_id]).to be_nil
-      expect(result[:work_type]).to be_nil
-      expect(result[:title]).to be_nil
-      expect(result[:admin_set_id]).to be_nil
+      expect(result).to be_nil
     end
 
     context 'when admin set is not found' do
@@ -167,11 +162,7 @@ RSpec.describe WorkUtilsHelper, type: :module do
       result = WorkUtilsHelper.fetch_work_data_by_alternate_identifier(mock_pmid)
       expect(Rails.logger).to have_received(:warn).with("No work found associated with alternate identifier: #{mock_pmid}")
       expect(Rails.logger).to have_received(:warn).with("Could not find an admin set, the work with id: #{mock_pmid} has no admin set name.")
-      expect(result[:work_id]).to be_nil
-      expect(result[:work_type]).to be_nil
-      expect(result[:title]).to be_nil
-      expect(result[:admin_set_id]).to be_nil
-      expect(result[:file_set_names]).to be_empty
+      expect(result).to be_nil
     end
 
     it 'logs a message if a fileset cannot be found with the id' do
@@ -183,8 +174,7 @@ RSpec.describe WorkUtilsHelper, type: :module do
       allow(ActiveFedora::SolrService).to receive(:get).with("id:#{fileset_ids[3]}", rows: 1).and_return('response' => { 'docs' => [] })
       allow(Rails.logger).to receive(:warn)
       result = WorkUtilsHelper.fetch_work_data_by_alternate_identifier(mock_pmid)
-      expect(Rails.logger).to have_received(:warn).with('No Fileset found for ID: file-set-id-3')
-      expect(result[:file_set_names]).to eq(['title_0', 'title_1', 'title_2'])
+      expect(result[:file_set_ids]).to eq(["file-set-id-0", "file-set-id-1", "file-set-id-2", "file-set-id-3"])
     end
 
 
@@ -196,7 +186,6 @@ RSpec.describe WorkUtilsHelper, type: :module do
         allow(Rails.logger).to receive(:warn)
         result = WorkUtilsHelper.fetch_work_data_by_alternate_identifier(mock_pmid)
         expect(Rails.logger).to have_received(:warn).with("Could not find an admin set, the work with id: #{mock_pmid} has no admin set name.")
-        expect(Rails.logger).to have_received(:warn).with('No Fileset IDs provided.')
         expect(result[:admin_set_id]).to be_nil
       end
 
@@ -207,7 +196,6 @@ RSpec.describe WorkUtilsHelper, type: :module do
         allow(Rails.logger).to receive(:warn)
         result = WorkUtilsHelper.fetch_work_data_by_alternate_identifier(mock_pmid)
         expect(Rails.logger).to have_received(:warn).with("No admin set found with title_tesim: #{admin_set_name}.")
-        expect(Rails.logger).to have_received(:warn).with('No Fileset IDs provided.')
         expect(result[:admin_set_id]).to be_nil
       end
     end
@@ -230,10 +218,7 @@ RSpec.describe WorkUtilsHelper, type: :module do
       result = WorkUtilsHelper.fetch_work_data_by_doi(mock_record_doi)
       expect(Rails.logger).to have_received(:warn).with("No work found associated with doi: #{mock_record_doi}")
       expect(Rails.logger).to have_received(:warn).with("Could not find an admin set, the work with doi: #{mock_record_doi} has no admin set name.")
-      expect(result[:work_id]).to be_nil
-      expect(result[:work_type]).to be_nil
-      expect(result[:title]).to be_nil
-      expect(result[:admin_set_id]).to be_nil
+      expect(result).to be_nil
     end
 
     context 'when admin set is not found' do
