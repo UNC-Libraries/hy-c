@@ -54,7 +54,7 @@ RSpec.describe WorkUtilsHelper, type: :module do
      title: 'Key ethical issues discussed at CDC-sponsored international, regional meetings to explore cultural perspectives and contexts on pandemic influenza preparedness and response',
      admin_set_id: 'h128zk07m',
      admin_set_name: 'Open_Access_Articles_and_Book_Chapters',
-     file_set_ids:  ["file-set-id-0", "file-set-id-1", "file-set-id-2", "file-set-id-3"]
+     file_set_ids:  ['file-set-id-0', 'file-set-id-1', 'file-set-id-2', 'file-set-id-3']
   }
   ]
   }
@@ -174,7 +174,7 @@ RSpec.describe WorkUtilsHelper, type: :module do
       allow(ActiveFedora::SolrService).to receive(:get).with("id:#{fileset_ids[3]}", rows: 1).and_return('response' => { 'docs' => [] })
       allow(Rails.logger).to receive(:warn)
       result = WorkUtilsHelper.fetch_work_data_by_alternate_identifier(mock_pmid)
-      expect(result[:file_set_ids]).to eq(["file-set-id-0", "file-set-id-1", "file-set-id-2", "file-set-id-3"])
+      expect(result[:file_set_ids]).to eq(['file-set-id-0', 'file-set-id-1', 'file-set-id-2', 'file-set-id-3'])
     end
 
 
