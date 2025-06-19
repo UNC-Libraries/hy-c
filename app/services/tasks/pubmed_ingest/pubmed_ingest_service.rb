@@ -226,7 +226,7 @@ module Tasks
         raise "No work found with ID: #{work_id}" if result.nil?
         raise "Missing work_type for work with id: #{work_id}" unless result[:work_type].present?
 
-        model = result[:work_type]&.underscore&.pluralize || 'works'
+        model = result[:work_type].underscore.pluralize
         URI.join(ENV['HYRAX_HOST'], "/concern/#{model}/#{work_id}").to_s
       rescue => e
         Rails.logger.warn("[generate_cdr_url_for_existing_work] Failed for work with id: #{work_id}, error: #{e.message}")

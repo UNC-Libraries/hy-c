@@ -388,6 +388,54 @@ RSpec.describe Tasks::PubmedIngest::PubmedIngestService do
     end
   end
 
+  describe '#generate_cdr_url_for_existing_work' do
+    let(:work_id) { 'abc123' }
+
+    context 'when work exists and has a work_type' do
+      before do
+        stub_const('ENV', ENV.to_hash.merge('HYRAX_HOST' => 'https://cdr.lib.unc.edu'))
+        allow(WorkUtilsHelper).to receive(:fetch_work_data_by_id).with(work_id).and_return(
+          {
+            work_type: 'Article',
+            work_id: work_id
+          }
+        )
+      end
+
+      it 'returns a valid CDR URL' do
+        expect(service.send(:generate_cdr_url_for_existing_work, work_id)).to eq("https://cdr.lib.unc.edu/concern/articles/#{work_id}")
+      end
+    end
+
+    context 'when the work is not found' do
+      before do
+        allow(WorkUtilsHelper).to receive(:fetch_work_data_by_id).with(work_id).and_return(nil)
+      end
+
+      it 'logs a warning and returns nil' do
+        expect(logger_spy).to receive(:warn).with(/Failed for work with id: #{work_id}/)
+        expect(service.send(:generate_cdr_url_for_existing_work, work_id)).to be_nil
+      end
+    end
+
+    context 'when work_type is missing' do
+      before do
+        allow(WorkUtilsHelper).to receive(:fetch_work_data_by_id).with(work_id).and_return(
+          {
+            work_id: work_id,
+            work_type: nil
+          }
+        )
+      end
+
+      it 'logs a warning and returns nil' do
+        expect(logger_spy).to receive(:warn).with(/Missing work_type/)
+        expect(service.send(:generate_cdr_url_for_existing_work, work_id)).to be_nil
+      end
+    end
+  end
+
+
   def active_relation_to_string(active_relation)
     active_relation.to_a.map(&:to_s).join('; ')
   end
