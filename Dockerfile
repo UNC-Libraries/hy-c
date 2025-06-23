@@ -49,6 +49,7 @@ RUN yum -y update \
 
 ENV PATH "/fits:$PATH"
 COPY docker/fits.xml /fits/fits-1.5.5/xml/fits.xml
+COPY docker/start-app.sh /hyrax/docker/start-app.sh
 
 # Install gems
 COPY Gemfile* /hyrax/

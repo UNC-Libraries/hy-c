@@ -63,7 +63,7 @@ module Tasks
           work.save!
           puts "[#{Time.now}] #{row['source_identifier']},#{work.id} saved new article"
 
-          work.update permissions_attributes: MigrationHelper.get_permissions_attributes(admin_set_id)
+          work.update permissions_attributes: WorkUtilsHelper.get_permissions_attributes(admin_set_id)
 
           # Create sipity record
           workflow = Sipity::Workflow.joins(:permission_template)

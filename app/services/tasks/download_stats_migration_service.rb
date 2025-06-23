@@ -239,7 +239,11 @@ module Tasks
     # Similar implementation to work_data in DownloadAnalyticsBehavior
     # Memoization is not necessary here since this method is called per stat
     def work_data_from_stat(stat)
-      WorkUtilsHelper.fetch_work_data_by_fileset_id(stat[:file_id])
+      WorkUtilsHelper.fetch_work_data_by_fileset_id(stat[:file_id]) || {
+        work_id: 'Unknown',
+        admin_set_id: 'Unknown',
+        work_type: 'Unknown'
+      }
     end
 
     # Method to write work stats to a CSV file

@@ -1,0 +1,74 @@
+{
+    "skipped": [
+    ],
+    "successfully_attached": [
+    ],
+    "successfully_ingested": [
+        {
+            "file_name": "PMC22168832",
+            "cdr_url": "https://cdr.lib.unc.edu/concern/articles/t248fx873",
+            "has_fileset": "false",
+            "pdf_attached": "Success",
+            "pmid": "39150868",
+            "pmcid": "PMC22168832",
+            "doi": "10.1016/j.jglr.2025.102336"
+        },
+        {
+            "file_name": "39116379",
+            "cdr_url": "https://cdr.lib.unc.edu/concern/articles/sq89c7745",
+            "has_fileset": "false",
+            "pdf_attached": "Success",
+            "pmid": "39116379",
+            "pmcid": "PMC33245172",
+            "doi": "10.1080/10888691.2023.2331437"
+        },
+        {
+            "file_name": "PMC18878324",
+            "cdr_url": "https://cdr.lib.unc.edu/concern/articles/08688218p",
+            "has_fileset": "false",
+            "pdf_attached": "Success",
+            "pmid": "31181730",
+            "pmcid": "PMC10078324",
+            "doi": "10.1155/00938548221081447"
+        }
+    ],
+    "failed": [
+        {
+            "file_name": "PMC11775656",
+            "cdr_url": "https://cdr.lib.unc.edu/concern/articles/d577s116c",
+            "has_fileset": "false",
+            "pdf_attached": "Failed: Work or Admin Set not found",
+            "pmid": "38710032",
+            "pmcid": "PMC11775656",
+            "doi": "10.1144/scitranslmed.adk8198"
+          },
+          {
+            "file_name": "11707600",
+            "cdr_url": "https://cdr.lib.unc.edu/concern/articles/dz017789p",
+            "has_fileset": "false",
+            "pdf_attached": "Failed: Test Error Stack Strace",
+            "pmid": "11707600",
+            "pmcid": "PMC11099962",
+            "doi": "10.1177/26349888831156900"
+          },
+          {
+            "file_name": "PMC11254444",
+            "cdr_url": "https://cdr.lib.unc.edu/concern/articles/707954444",
+            "has_fileset": "false",
+            "pdf_attached": "Failed: Test Error Stack Strace",
+            "pmid": "38674444",
+            "pmcid": "PMC11254444",
+            "doi": "10.1016/j.celrep.2024.114444"
+          }
+    ],
+    "time": "2025-04-14 14:26:13 -0400",
+    "depositor": "dcam",
+    "file_retrieval_directory": "/opt/fake/full_text_dir/",
+    "counts": {
+      "total_unique_files": 23,
+      "failed": 3,
+      "successfully_ingested": 3,
+      "successfully_attached": 0,
+      "skipped": 0
+    }
+  }
