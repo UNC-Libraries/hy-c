@@ -2,8 +2,9 @@
 <%
   original_file = file_set.original_file
   original_file_size = original_file&.file_size.to_i
-  file_size_mb = (original_file_size / 1.megabyte.to_f).round(2)
-  show_video = file_size_mb <= 60
+  file_size_mb = (original_file_size / 1.megabyte.to_f).round(2
+  # WIP: Temporarily set to 1MB for testing purposes, should be 6MB in production
+  show_video = file_size_mb <= 1
 
   Rails.logger.info "[VIDEO] Original file: #{original_file.inspect}".truncate(1000)
   Rails.logger.info "[VIDEO] File size (bytes): #{original_file_size}"
