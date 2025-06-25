@@ -1,7 +1,7 @@
 <%# [hyc-override] https://github.com/samvera/hyrax/tree/hyrax-v4.0.0/app/views/hyrax/file_sets/media_display/_video.html.erb %>
 <%
   # Pull size from Solr/document metadata
-  file_size_bytes = file_set['file_size_lts'].to_i    
+  file_size_bytes = file_set.solr_document['file_size_lts'].to_i    
   file_size_mb    = (file_size_bytes / 1.megabyte.to_f).round(2)
 
   # WIP: Testing limit of 1MB, but 6MB for production
