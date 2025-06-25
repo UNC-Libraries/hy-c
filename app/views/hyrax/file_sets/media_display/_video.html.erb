@@ -1,13 +1,13 @@
 <%# [hyc-override] https://github.com/samvera/hyrax/tree/hyrax-v4.0.0/app/views/hyrax/file_sets/media_display/_video.html.erb %>
 <%
-  original_file = file_set.original_file
-  original_file_size = original_file&.file_size.to_i
-  file_size_mb = (original_file_size / 1.megabyte.to_f).round(2
-  # WIP: Temporarily set to 1MB for testing purposes, should be 6MB in production
-  show_video = file_size_mb <= 1
+  # Pull size from Solr/document metadata
+  file_size_bytes = file_set['file_size_lts'].to_i    
+  file_size_mb    = (file_size_bytes / 1.megabyte.to_f).round(2)
 
-  Rails.logger.info "[VIDEO] Original file: #{original_file.inspect}".truncate(1000)
-  Rails.logger.info "[VIDEO] File size (bytes): #{original_file_size}"
+  # WIP: Testing limit of 1MB, but 6MB for production
+  show_video = file_size_bytes < 6.megabytes
+
+  Rails.logger.info "[VIDEO] File size (bytes): #{file_size_bytes}"
   Rails.logger.info "[VIDEO] File size (MB): #{file_size_mb}"
   Rails.logger.info "[VIDEO] Eligible for video preview? #{show_video}"
 %>
