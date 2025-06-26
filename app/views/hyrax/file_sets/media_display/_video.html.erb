@@ -10,7 +10,6 @@
 <% if display_media_download_link?(file_set: file_set) %>
     <div>
       <h2 class="sr-only"><%= t('hyrax.file_set.show.downloadable_content.heading') %></h2>
-      <%# [hyc-override] Show video only if file size is less than or equal to 60MB %>
       <% if show_video %>
           <video controls="controls" class="video-js vjs-default-skin" style="width:100%" data-setup="{}" controlsList="nodownload" preload="auto">
             <source src="<%= hyrax.download_path(file_set, file: 'webm') %>" type="video/webm" />
