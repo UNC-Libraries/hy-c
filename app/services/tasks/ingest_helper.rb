@@ -13,20 +13,23 @@ module Tasks
 
     def attach_file_set_to_work(work:, file_path:, user:, visibility:)
       file_set_params = { visibility: visibility }
+
       begin
-        file_set = FileSet.create
-        actor = Hyrax::Actors::FileSetActor.new(file_set, user)
-        actor.create_metadata(file_set_params)
-        file = File.open(file_path)
-        actor.create_content(file)
-        actor.attach_to_work(work, file_set_params)
+        # Ensure the work is persisted before attaching a FileSet
+        work.save! unless work.persisted?
 
-        # Apply and persist permissions
-        file_set.permissions_attributes = group_permissions(work.admin_set)
-        file_set.save!
+        File.open(file_path) do |file|
+          file_set = FileSet.create
+          actor = Hyrax::Actors::FileSetActor.new(file_set, user)
 
-        file.close
-        file_set
+          actor.create_metadata(file_set_params)
+          actor.create_content(file)
+          actor.attach_to_work(work, file_set_params)
+
+          file_set.permissions_attributes = group_permissions(work.admin_set)
+          file_set.save!
+          file_set
+        end
       rescue StandardError => e
         Rails.logger.error("Error attaching file_set for new work with #{work.identifier.first} and file_path: #{file_path}")
         Rails.logger.error [e.class.to_s, e.message, *e.backtrace].join($RS)
