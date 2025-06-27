@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 module WorkUtilsHelper
   def self.fetch_work_data_by_alternate_identifier(identifier)
-    query = "identifier_tesim:\"#{identifier}\" AND has_model_ssim:(\"Article\")"
+    query = "identifier_tesim:\"#{identifier}\" NOT has_model_ssim:(\"FileSet\")"
     work_data = ActiveFedora::SolrService.get(query, rows: 1)['response']['docs'].first || {}
     Rails.logger.warn("No work found associated with alternate identifier: #{identifier}") if work_data.blank?
     admin_set_name = work_data['admin_set_tesim']&.first
