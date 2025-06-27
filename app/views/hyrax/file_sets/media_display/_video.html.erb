@@ -1,12 +1,22 @@
 <%# [hyc-override] https://github.com/samvera/hyrax/tree/hyrax-v4.0.0/app/views/hyrax/file_sets/media_display/_video.html.erb %>
+<%
+  # [hyc-override] Pull size from Solr/document metadata
+  file_size_bytes = file_set.solr_document['file_size_lts'].to_i    
+  file_size_mb    = (file_size_bytes / 1.megabyte.to_f).round(2)
+  # [hyc-override] Show video only if file size is less than or equal to 500MB, since that's our max upload size
+  show_video = file_size_bytes =< 500.megabytes
+%>
+
 <% if display_media_download_link?(file_set: file_set) %>
     <div>
       <h2 class="sr-only"><%= t('hyrax.file_set.show.downloadable_content.heading') %></h2>
-      <video controls="controls" class="video-js vjs-default-skin" style="width:100%" data-setup="{}" controlsList="nodownload" preload="auto">
-        <source src="<%= hyrax.download_path(file_set, file: 'webm') %>" type="video/webm" />
-        <source src="<%= hyrax.download_path(file_set, file: 'mp4') %>" type="video/mp4" />
-        <%= t('hyrax.file_set.show.downloadable_content.video_tag_not_supported') %>
-      </video>
+      <% if show_video %>
+          <video controls="controls" class="video-js vjs-default-skin" style="width:100%" data-setup="{}" controlsList="nodownload" preload="auto">
+            <source src="<%= hyrax.download_path(file_set, file: 'webm') %>" type="video/webm" />
+            <source src="<%= hyrax.download_path(file_set, file: 'mp4') %>" type="video/mp4" />
+            <%= t('hyrax.file_set.show.downloadable_content.video_tag_not_supported') %>
+          </video>
+        <% end %>
       <%# [hyc-override] Style download link %>
       <%= link_to t('hyrax.file_set.show.downloadable_content.video_link'),
                   hyrax.download_path(file_set),
