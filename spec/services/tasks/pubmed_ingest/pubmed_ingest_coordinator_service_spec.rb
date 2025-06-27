@@ -401,10 +401,10 @@ RSpec.describe Tasks::PubmedIngest::PubmedIngestCoordinatorService do
 
     it 'tries DOI first, then PMCID, then PMID' do
       expect(ActiveFedora::SolrService).to receive(:get)
-        .with('identifier_tesim:"10.1234/test"', anything).ordered
+        .with('identifier_tesim:"10.1234/test" NOT has_model_ssim:("FileSet")', anything).ordered
         .and_return({ 'response' => { 'docs' => [] } })
       expect(ActiveFedora::SolrService).to receive(:get)
-        .with('identifier_tesim:"PMC67890"', anything).ordered
+        .with('identifier_tesim:"PMC67890" NOT has_model_ssim:("FileSet")', anything).ordered
         .and_return({ 'response' => { 'docs' => [work_data] } })
 
       service.send(:find_best_work_match, alternate_ids)
