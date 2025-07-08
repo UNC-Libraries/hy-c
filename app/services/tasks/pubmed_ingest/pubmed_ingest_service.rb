@@ -11,8 +11,8 @@ module Tasks
         raise ArgumentError, 'Missing required config keys' unless config['admin_set_title'] && config['depositor_onyen'] && config['attachment_results'] && config['start_date'] && config['end_date']
 
         @attachment_results = config['attachment_results'].symbolize_keys
-        @start_date = config['start_date']
-        @end_date = config['end_date']
+        @start_date = config['start_date'].strftime('%Y-%m-%d')
+        @end_date = config['end_date'].strftime('%Y-%m-%d')
 
         @admin_set = ::AdminSet.where(title: config['admin_set_title'])&.first
         raise ActiveRecord::RecordNotFound, "AdminSet not found with title: #{config['admin_set_title']}" unless @admin_set
@@ -21,6 +21,7 @@ module Tasks
         raise ActiveRecord::RecordNotFound, "User not found with onyen: #{config['depositor_onyen']}" unless @depositor
 
         @retrieved_metadata = []
+        @new_pubmed_works = []
       end
 
       # Keywords for readability
@@ -46,65 +47,66 @@ module Tasks
 
 
       def ingest_publications
+        retrieve_oa_subset
         # Update these here now that :skipped is populated
         # @new_pubmed_works = @attachment_results[:skipped].select { |row| row['pdf_attached'] == 'Skipped: No CDR URL' }
         # @attachment_results[:skipped] -= @new_pubmed_works
         # @attachment_results[:counts][:skipped] -= @new_pubmed_works.length
 
-        batch_retrieve_metadata
-        Rails.logger.info("[Ingest] Starting ingestion of #{@retrieved_metadata.size} records")
+        # batch_retrieve_metadata
+        # Rails.logger.info("[Ingest] Starting ingestion of #{@retrieved_metadata.size} records")
 
-        @retrieved_metadata.each_with_index do |metadata, index|
-          Rails.logger.info("[Ingest] Processing record ##{index + 1}")
-          begin
-            article = new_article(metadata)
-            builder = attribute_builder(metadata, article)
-            skipped_row = builder.find_skipped_row(@new_pubmed_works)
+        # @retrieved_metadata.each_with_index do |metadata, index|
+        #   Rails.logger.info("[Ingest] Processing record ##{index + 1}")
+        #   begin
+        #     article = new_article(metadata)
+        #     builder = attribute_builder(metadata, article)
+        #     skipped_row = builder.find_skipped_row(@new_pubmed_works)
 
-            Rails.logger.info("[Ingest] Found skipped row: #{skipped_row.inspect}")
-            article.save!
-            article.identifier.each { |id| Rails.logger.info("[Ingest] Article identifier: #{id}") }
-            Rails.logger.info("[Ingest] Created new article with ID #{article.id}")
+        #     Rails.logger.info("[Ingest] Found skipped row: #{skipped_row.inspect}")
+        #     article.save!
+        #     article.identifier.each { |id| Rails.logger.info("[Ingest] Article identifier: #{id}") }
+        #     Rails.logger.info("[Ingest] Created new article with ID #{article.id}")
 
-            attach_pdf(article, skipped_row)
-            article.save!
+        #     attach_pdf(article, skipped_row)
+        #     article.save!
 
-            Rails.logger.info("[Ingest] Successfully attached PDF for article #{article.id}")
-            skipped_row['cdr_url'] = generate_cdr_url_for_pubmed_identifier(skipped_row)
-            skipped_row['article'] = article
-            record_result(
-              category: :successfully_ingested,
-              file_name: skipped_row['file_name'],
-              message: 'Success',
-              ids: {
-                pmid: skipped_row['pmid'],
-                pmcid: skipped_row['pmcid'],
-                doi: skipped_row['doi']
-              },
-              article: article
-            )
-          rescue => e
-            doi = skipped_row&.[]('doi') || 'N/A'
-            pmid = skipped_row&.[]('pmid') || 'N/A'
-            pmcid = skipped_row&.[]('pmcid') || 'N/A'
-            Rails.logger.error("[Ingest] Error processing record: DOI: #{doi}, PMID: #{pmid}, PMCID: #{pmcid}, Index: #{index}, Error: #{e.message}")
-            Rails.logger.error("Backtrace: #{e.backtrace.join("\n")}")
-            article.destroy if article&.persisted?
-            record_result(
-              category: :failed,
-              file_name: skipped_row['file_name'],
-              message: "Failed: #{e.message}",
-              ids: {
-                pmid: skipped_row['pmid'],
-                pmcid: skipped_row['pmcid'],
-                doi: skipped_row['doi']
-              }
-            )
-          end
-        end
+        #     Rails.logger.info("[Ingest] Successfully attached PDF for article #{article.id}")
+        #     skipped_row['cdr_url'] = generate_cdr_url_for_pubmed_identifier(skipped_row)
+        #     skipped_row['article'] = article
+        #     record_result(
+        #       category: :successfully_ingested,
+        #       file_name: skipped_row['file_name'],
+        #       message: 'Success',
+        #       ids: {
+        #         pmid: skipped_row['pmid'],
+        #         pmcid: skipped_row['pmcid'],
+        #         doi: skipped_row['doi']
+        #       },
+        #       article: article
+        #     )
+        #   rescue => e
+        #     doi = skipped_row&.[]('doi') || 'N/A'
+        #     pmid = skipped_row&.[]('pmid') || 'N/A'
+        #     pmcid = skipped_row&.[]('pmcid') || 'N/A'
+        #     Rails.logger.error("[Ingest] Error processing record: DOI: #{doi}, PMID: #{pmid}, PMCID: #{pmcid}, Index: #{index}, Error: #{e.message}")
+        #     Rails.logger.error("Backtrace: #{e.backtrace.join("\n")}")
+        #     article.destroy if article&.persisted?
+        #     record_result(
+        #       category: :failed,
+        #       file_name: skipped_row['file_name'],
+        #       message: "Failed: #{e.message}",
+        #       ids: {
+        #         pmid: skipped_row['pmid'],
+        #         pmcid: skipped_row['pmcid'],
+        #         doi: skipped_row['doi']
+        #       }
+        #     )
+        #   end
+        # end
 
-        Rails.logger.info('[Ingest] Ingest complete')
-        @attachment_results
+        # Rails.logger.info('[Ingest] Ingest complete')
+        # @attachment_results
       end
 
       def attach_pdf_for_existing_work(work_hash, file_path, depositor_onyen)
@@ -125,6 +127,49 @@ module Tasks
       end
 
       private
+
+
+      def retrieve_oa_subset
+        Rails.logger.info('[PubmedIngestService - RetrieveOASubset] Starting OA metadata retrieval for PubMed works within the specified date range: ' \
+                            "#{@start_date} to #{@end_date}")
+        base_url = 'https://www.ncbi.nlm.nih.gov/pmc/utils/oa/oa.fcgi'
+        current_url = "#{base_url}?from=#{@start_date}&until=#{@end_date}"
+        loop do
+          res = HTTParty.get(current_url)
+
+          unless res.code == 200
+            Rails.logger.error('[PubmedIngestService - RetrieveOASubset] Failed to retrieve OA metadata: ' \
+                                  "#{res.code} - #{res.message}")
+            break
+          end
+
+          xml_doc = Nokogiri::XML(res.body)
+          records = xml_doc.xpath('//record')
+          @new_pubmed_works += records.map do |record|
+            {
+                    'pmcid' => record.at_xpath('id')&.text,
+                    'link-format' => record.at_xpath('link')&.attr('format'),
+                    'link-href' => record.at_xpath('link')&.attr('href')
+            }
+          end
+
+          Rails.logger.info("[PubmedIngestService - RetrieveOASubset] Retrieved #{records.size} records from the current page")
+
+            # Check for resumption token
+          resumption_obj = xml_doc.at_xpath('//resumption/link')
+          break unless resumption_obj
+
+          next_href = resumption_obj['href']
+          break unless next_href
+
+          current_url = next_href
+        end
+
+        Rails.logger.info("[PubmedIngestService - RetrieveOASubset] Completed OA metadata retrieval. Total records: #{@new_pubmed_works.size}")
+        @new_pubmed_works
+      end
+
+
 
       def batch_retrieve_metadata
         Rails.logger.info("Starting metadata retrieval for #{@new_pubmed_works.size} records")
