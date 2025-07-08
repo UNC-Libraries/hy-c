@@ -3,7 +3,7 @@ module Tasks
   require 'tasks/ingest_helper'
   module PubmedIngest
 
-    class PubmedIngestService
+    class PubmedBacklogIngestService
       attr_reader :attachment_results
       include Tasks::IngestHelper
 

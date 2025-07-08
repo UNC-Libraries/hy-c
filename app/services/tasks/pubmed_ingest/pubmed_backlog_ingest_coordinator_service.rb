@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 module Tasks
   module PubmedIngest
-    class PubmedIngestCoordinatorService
+    class PubmedBacklogIngestCoordinatorService
       def initialize(config)
         @config = config
         @file_retrieval_directory = config['file_retrieval_directory']
@@ -26,7 +26,7 @@ module Tasks
             failed: 0
           }
         }
-        @pubmed_ingest_service = PubmedIngestService.new({
+        @pubmed_ingest_service = PubmedBacklogIngestService.new({
             'admin_set_title' => config['admin_set_title'],
             'depositor_onyen' => config['depositor_onyen'],
             'attachment_results' => @results,
@@ -73,7 +73,7 @@ module Tasks
             match = find_best_work_match(alternate_ids)
 
             if match&.dig(:file_set_ids).present?
-              # Attach work id to generate URL for existing work (PubmedIngestService::PubmedIngest::record_result)
+              # Attach work id to generate URL for existing work (PubmedBacklogIngestService::PubmedIngest::record_result)
               alternate_ids[:work_id] = match[:work_id]
               log_and_label_skip(file_name, file_ext, alternate_ids, 'File already attached to work')
             elsif match&.dig(:work_id).present?

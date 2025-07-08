@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'rails_helper'
 
-RSpec.describe Tasks::PubmedIngest::PubmedIngestCoordinatorService do
+RSpec.describe Tasks::PubmedIngest::PubmedBacklogIngestCoordinatorService do
   let(:logger_spy) { double('Logger').as_null_object }
   let(:admin_set) do
     FactoryBot.create(:admin_set, title: ['Open_Access_Articles_and_Book_Chapters'])
@@ -28,7 +28,7 @@ RSpec.describe Tasks::PubmedIngest::PubmedIngestCoordinatorService do
   end
 
   let(:service) { described_class.new(config) }
-  let(:mock_pubmed_service) { instance_double(Tasks::PubmedIngest::PubmedIngestService) }
+  let(:mock_pubmed_service) { instance_double(Tasks::PubmedIngest::PubmedBacklogIngestService) }
   let(:mock_attachment_results) do
     {
       skipped: [],
@@ -66,8 +66,8 @@ RSpec.describe Tasks::PubmedIngest::PubmedIngestCoordinatorService do
     # Mock AdminSet lookup
     allow(AdminSet).to receive(:where).with(title: admin_set.title.first).and_return([admin_set])
 
-    # Mock PubmedIngestService
-    allow(Tasks::PubmedIngest::PubmedIngestService).to receive(:new).and_return(mock_pubmed_service)
+    # Mock PubmedBacklogIngestService
+    allow(Tasks::PubmedIngest::PubmedBacklogIngestService).to receive(:new).and_return(mock_pubmed_service)
     allow(mock_pubmed_service).to receive(:attachment_results).and_return(mock_attachment_results)
     allow(mock_pubmed_service).to receive(:record_result)
     allow(mock_pubmed_service).to receive(:attach_pdf_for_existing_work)
@@ -109,7 +109,7 @@ RSpec.describe Tasks::PubmedIngest::PubmedIngestCoordinatorService do
 
     it 'successfully initializes with a valid config' do
       service = described_class.new(valid_config)
-      expect(service).to be_a(Tasks::PubmedIngest::PubmedIngestCoordinatorService)
+      expect(service).to be_a(Tasks::PubmedIngest::PubmedBacklogIngestCoordinatorService)
     end
 
     it 'sets up the service with correct configuration' do
@@ -129,10 +129,10 @@ RSpec.describe Tasks::PubmedIngest::PubmedIngestCoordinatorService do
       expect(results[:admin_set]).to eq(admin_set.title.first)
     end
 
-    it 'creates PubmedIngestService with correct parameters' do
+    it 'creates PubmedBacklogIngestService with correct parameters' do
       service = described_class.new(valid_config)
       expected_path = Pathname.new(Rails.root.join('spec/fixtures/files'))
-      expect(Tasks::PubmedIngest::PubmedIngestService).to have_received(:new).with(
+      expect(Tasks::PubmedIngest::PubmedBacklogIngestService).to have_received(:new).with(
         hash_including(
           'admin_set_title' => admin_set.title.first,
           'depositor_onyen' => admin.uid,
