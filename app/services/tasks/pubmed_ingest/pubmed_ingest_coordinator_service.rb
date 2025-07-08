@@ -26,9 +26,9 @@ module Tasks
         @pubmed_ingest_service = PubmedIngestService.new({
             'admin_set_title' => config['admin_set_title'],
             'depositor_onyen' => config['depositor_onyen'],
-            'attachment_results' => @results
+            'attachment_results' => @results,
             'start_date' => config['start_date'],
-            'end_date' => config['end_date'],
+            'end_date' => config['end_date']
         })
       end
 
@@ -37,10 +37,12 @@ module Tasks
         # process_file_matches
         # WIP: @pubmed_ingest_service.ingest_publications in this method, move out
         # attach_remaining_pdfs  
-        @pubmed_ingest_service.ingest_publications
-        write_results_to_file
-        finalize_report_and_notify
-        @pubmed_ingest_service.attachment_results
+        output = @pubmed_ingest_service.ingest_publications
+        test_output_path =  Rails.root.join(@output_dir, "wip_test.json")
+        File.open(test_output_path, 'w') { |f| f.write(JSON.pretty_generate(output)) }
+        # write_results_to_file
+        # finalize_report_and_notify
+        # @pubmed_ingest_service.attachment_results
       end
 
       private

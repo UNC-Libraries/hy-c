@@ -48,6 +48,7 @@ module Tasks
 
       def ingest_publications
         retrieve_oa_subset
+        @new_pubmed_works
         # Update these here now that :skipped is populated
         # @new_pubmed_works = @attachment_results[:skipped].select { |row| row['pdf_attached'] == 'Skipped: No CDR URL' }
         # @attachment_results[:skipped] -= @new_pubmed_works
@@ -147,7 +148,7 @@ module Tasks
           records = xml_doc.xpath('//record')
           @new_pubmed_works += records.map do |record|
             {
-                    'pmcid' => record.at_xpath('id')&.text,
+                    'pmcid' => record['id'],
                     'link-format' => record.at_xpath('link')&.attr('format'),
                     'link-href' => record.at_xpath('link')&.attr('href')
             }

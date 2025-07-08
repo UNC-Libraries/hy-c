@@ -19,12 +19,14 @@ task :pubmed_backlog_ingest, [:file_retrieval_directory, :output_dir, :admin_set
 end
 
 desc 'Ingest works from the PubMed API within the specified date range'
-task :pubmed_ingest, [:start_date, :end_date, :admin_set_title] => :environment do |task, args|
+task :pubmed_ingest, [:start_date, :end_date, :admin_set_title, :output_dir] => :environment do |task, args|
   return unless valid_args('pubmed_ingest', args[:start_date], args[:admin_set_title])
   start_date = Date.parse(args[:start_date])
   end_date = args[:end_date].present? ? Date.parse(args[:end_date]) : Date.today
   admin_set_title = args[:admin_set_title]
-
+  output_dir = args[:output_dir].present? ? 
+               Pathname.new(args[:output_dir]).absolute : Rails.root.join('tmp')
+               
   coordinator = Tasks::PubmedIngest::PubmedIngestCoordinatorService.new({
     'start_date' => start_date,
     'end_date' => end_date,
