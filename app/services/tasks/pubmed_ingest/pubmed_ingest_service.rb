@@ -129,7 +129,7 @@ module Tasks
 
       private
 
-
+      # WIP: Merge with the batch retrieve metadata result
       def retrieve_oa_subset
         Rails.logger.info('[PubmedIngestService - RetrieveOASubset] Starting OA metadata retrieval for PubMed works within the specified date range: ' \
                             "#{@start_date} to #{@end_date}")
@@ -148,9 +148,14 @@ module Tasks
           records = xml_doc.xpath('//record')
           @new_pubmed_works += records.map do |record|
             {
-                    'pmcid' => record['id'],
-                    'link-format' => record.at_xpath('link')&.attr('format'),
-                    'link-href' => record.at_xpath('link')&.attr('href')
+                'pmcid' => record['id'],
+                'links' => record.xpath('link').map do |link|
+                    {
+                      'format' => link['format'],
+                      'href'   => link['href'],
+                      'updated' => link['updated']
+                    }
+                  end
             }
           end
 
@@ -169,6 +174,7 @@ module Tasks
         Rails.logger.info("[PubmedIngestService - RetrieveOASubset] Completed OA metadata retrieval. Total records: #{@new_pubmed_works.size}")
         @new_pubmed_works
       end
+
 
 
 
