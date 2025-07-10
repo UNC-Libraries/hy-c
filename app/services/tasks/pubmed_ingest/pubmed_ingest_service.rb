@@ -19,13 +19,16 @@ module Tasks
 
         @depositor = User.find_by(uid: config['depositor_onyen'])
         raise ActiveRecord::RecordNotFound, "User not found with onyen: #{config['depositor_onyen']}" unless @depositor
-
-        @retrieved_metadata = []
-        @new_pubmed_works = []
         @record_ids = {
           pubmed: [],
           pmc: []
         }
+        @record_ids_with_alternate_ids = {
+          pubmed: [],
+          pmc: []
+        }
+        @retrieved_metadata = []
+        @new_pubmed_works = []
       end
 
       # Keywords for readability
@@ -53,7 +56,7 @@ module Tasks
       def ingest_publications
         retrieve_pubmed_ids_within_date_range
         retrieve_oa_subset_within_date_range
-        @record_ids
+        retrieve_alternate_ids_for_record_ids
         # @new_pubmed_works
         # Update these here now that :skipped is populated
         # @new_pubmed_works = @attachment_results[:skipped].select { |row| row['pdf_attached'] == 'Skipped: No CDR URL' }
@@ -135,6 +138,55 @@ module Tasks
 
       private
 
+      def retrieve_alternate_ids_for_record_ids
+        Rails.logger.info('[PubmedIngestService - retrieve_alternate_ids_for_record_ids] Starting alternate ID retrieval for PubMed and PMC records')
+        @record_ids[:pmc].each do |pmcid|
+          @record_ids_with_alternate_ids[:pmc] << retrieve_alternate_ids(pmcid)
+        end
+        # Construct an alternate ID array hash for PubMed records not within the OA subset
+        @record_ids[:pubmed].each do |pmid|
+          alternate_ids = retrieve_alternate_ids(pmid)
+          next if @record_ids_with_alternate_ids[:pmc].any? { |id| id[:pmid] == alternate_ids[:pmid] }
+          if alternate_ids[:pmcid].blank?
+            @record_ids_with_alternate_ids[:pubmed] << alternate_ids
+          else
+            # If the alternate ID hash contains a PMCID, add it to the PMC list
+            @record_ids_with_alternate_ids[:pmc] << alternate_ids
+          end 
+        end
+        Rails.logger.info("[PubmedIngestService - retrieve_alternate_ids_for_record_ids] Retrieved alternate IDs. List sizes after retrieval and duplicate removal: ")
+        Rails.logger.info("[PubmedIngestService - retrieve_alternate_ids_for_record_ids] " \
+                          "#{@record_ids_with_alternate_ids[:pubmed].size} ID hashes from #{@record_ids[:pubmed].size} record IDs" \
+                          " and #{@record_ids_with_alternate_ids[:pmc].size} ID hashes from #{@record_ids[:pmc].size} record IDs")
+        @record_ids_with_alternate_ids
+      end
+
+      def retrieve_alternate_ids(identifier)
+        begin
+            # Use ID conversion API to resolve identifiers
+          res = HTTParty.get("https://www.ncbi.nlm.nih.gov/pmc/utils/idconv/v1.0/?ids=#{identifier}")
+          doc = Nokogiri::XML(res.body)
+          record = doc.at_xpath('//record')
+          if record.blank? || record['status'] == 'error'
+            Rails.logger.warn("[IDConv] Fallback used for identifier: #{identifier}")
+            return fallback_id_hash(identifier)
+          end
+
+          {
+          pmid:  record['pmid'],
+          pmcid: record['pmcid'],
+          doi:   record['doi']
+          }
+      rescue StandardError => e
+        Rails.logger.warn("[IDConv] HTTP failure for #{identifier}: #{e.message}")
+        return fallback_id_hash(identifier)
+        end
+      end
+
+      def fallback_id_hash(identifier)
+        identifier.start_with?('PMC') ? { pmcid: identifier } : { pmid: identifier }
+      end
+
       # Retrieve PMCIDs for works within the specified date range and links to their full-text OA content
       def retrieve_oa_subset_within_date_range
         Rails.logger.info('[PubmedIngestService - retrieve_oa_subset] Starting OA metadata retrieval for PubMed works within the specified date range: ' \
@@ -145,7 +197,7 @@ module Tasks
           res = HTTParty.get(current_url)
 
           unless res.code == 200
-            Rails.logger.error('[PubmedIngestService - RetrieveOASubset] Failed to retrieve OA metadata: ' \
+            Rails.logger.error('[PubmedIngestService - retrieve_oa_subset] Failed to retrieve OA metadata: ' \
                                   "#{res.code} - #{res.message}")
             break
           end
