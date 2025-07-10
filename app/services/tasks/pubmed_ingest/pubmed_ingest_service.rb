@@ -51,8 +51,10 @@ module Tasks
 
 
       def ingest_publications
-        retrieve_oa_subset
-        @new_pubmed_works
+        retrieve_pubmed_ids_within_date_range
+        retrieve_oa_subset_within_date_range
+        @record_ids
+        # @new_pubmed_works
         # Update these here now that :skipped is populated
         # @new_pubmed_works = @attachment_results[:skipped].select { |row| row['pdf_attached'] == 'Skipped: No CDR URL' }
         # @attachment_results[:skipped] -= @new_pubmed_works
@@ -133,9 +135,9 @@ module Tasks
 
       private
 
-      # WIP: Merge with the batch retrieve metadata result
-      def retrieve_oa_subset
-        Rails.logger.info('[PubmedIngestService - RetrieveOASubset] Starting OA metadata retrieval for PubMed works within the specified date range: ' \
+      # Retrieve PMCIDs for works within the specified date range and links to their full-text OA content
+      def retrieve_oa_subset_within_date_range
+        Rails.logger.info('[PubmedIngestService - retrieve_oa_subset] Starting OA metadata retrieval for PubMed works within the specified date range: ' \
                             "#{@start_date} to #{@end_date}")
         base_url = 'https://www.ncbi.nlm.nih.gov/pmc/utils/oa/oa.fcgi'
         current_url = "#{base_url}?from=#{@start_date}&until=#{@end_date}"
@@ -151,8 +153,11 @@ module Tasks
           xml_doc = Nokogiri::XML(res.body)
           records = xml_doc.xpath('//record')
           @new_pubmed_works += records.map do |record|
+            pmcid = record['id']
+            # Populate pmc record_ids here, the endpoint in retrieve_ids_within_date_range only retrieves pubmed ids
+            @record_ids[:pmc] << pmcid if pmcid.present?
             {
-                'pmcid' => record['id'],
+                'pmcid' => pmcid,
                 'links' => record.xpath('link').map do |link|
                              {
                                'format' => link['format'],
@@ -163,7 +168,7 @@ module Tasks
             }
           end
 
-          Rails.logger.info("[PubmedIngestService - RetrieveOASubset] Retrieved #{records.size} records from the current page")
+          Rails.logger.info("[PubmedIngestService - retrieve_oa_subset] Retrieved #{records.size} records from the current page")
 
             # Check for resumption token
           resumption_obj = xml_doc.at_xpath('//resumption/link')
@@ -175,7 +180,7 @@ module Tasks
           current_url = next_href
         end
 
-        Rails.logger.info("[PubmedIngestService - RetrieveOASubset] Completed OA metadata retrieval. Total records: #{@new_pubmed_works.size}")
+        Rails.logger.info("[PubmedIngestService - retrieve_oa_subset] Completed OA metadata retrieval. Total records: #{@new_pubmed_works.size}")
         @new_pubmed_works
       end
 
@@ -287,17 +292,17 @@ module Tasks
         nil
       end
 
-      def retrieve_ids_within_date_range(start_date, end_date, db, retmax = 1000)
-        Rails.logger.info("[PubmedIngestService - retrieve_ids_within_date_range] Fetching IDs within date range: #{start_date} - #{end_date}")
-        # Implementation for retrieving IDs within the specified date range
+      # Retrieve IDs from the esearch.fcgi, which only supports the pubmed db
+      def retrieve_pubmed_ids_within_date_range(retmax = 1000)
+        Rails.logger.info("[PubmedIngestService - retrieve_ids_within_date_range] Fetching IDs within date range: #{@start_date} - #{@end_date}")
         base_url = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi'
         count = 0
         cursor = 0
         params = {
           retmax: retmax,
-          db: db,
-          mindate: start_date,
-          maxdate: end_date
+          db: 'pubmed',
+          mindate: @start_date,
+          maxdate: @end_date
         }
         loop do
           res = HTTParty.get(base_url, query: params.merge({ retstart: cursor}))
@@ -306,16 +311,16 @@ module Tasks
             break
           end
           parsed_response = Nokogiri::XML(res.body)
-          add_to_id_list(parsed_response, db)
+          add_to_pubmed_id_list(parsed_response)
           cursor += retmax
           break if cursor > parsed_response.xpath('//Count').text.to_i
         end
-        Rails.logger.info("[PubmedIngestService - retrieve_ids_within_date_range] Retrieved #{@record_ids[db.to_sym].size} IDs from #{db} database")
+        Rails.logger.info("[PubmedIngestService - retrieve_ids_within_date_range] Retrieved #{@record_ids[:pubmed].size} IDs from pubmed database")
       end
 
-      def add_to_id_list(parsed_response, db)
-        ids = parsed_response.xpath("//IdList/Id").map(&:text)
-        @record_ids[db.to_sym].concat(ids)
+      def add_to_pubmed_id_list(parsed_response)
+        ids = parsed_response.xpath('//IdList/Id').map(&:text)
+        @record_ids[:pubmed].concat(ids)
       end
     end
   end
