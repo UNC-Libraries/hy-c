@@ -150,12 +150,12 @@ module Tasks
             {
                 'pmcid' => record['id'],
                 'links' => record.xpath('link').map do |link|
-                    {
-                      'format' => link['format'],
-                      'href'   => link['href'],
-                      'updated' => link['updated']
-                    }
-                  end
+                             {
+                               'format' => link['format'],
+                               'href'   => link['href'],
+                               'updated' => link['updated']
+                             }
+                           end
             }
           end
 
@@ -174,9 +174,6 @@ module Tasks
         Rails.logger.info("[PubmedIngestService - RetrieveOASubset] Completed OA metadata retrieval. Total records: #{@new_pubmed_works.size}")
         @new_pubmed_works
       end
-
-
-
 
       def batch_retrieve_metadata
         Rails.logger.info("Starting metadata retrieval for #{@new_pubmed_works.size} records")
@@ -284,6 +281,20 @@ module Tasks
       rescue => e
         Rails.logger.warn("[generate_cdr_url_for_existing_work] Failed for work with id: #{work_id}, error: #{e.message}")
         nil
+      end
+
+      def retrieve_ids_within_date_range(start_date, end_date, db)
+        Rails.logger.info("[PubmedIngestService - retrieve_ids_within_date_range] Fetching IDs within date range: #{start_date} - #{end_date}")
+        # Implementation for retrieving IDs within the specified date range
+        base_url = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi'
+        count = 0
+        cursor = 0
+        params = {
+          retmax: 1000,
+          db: db,
+          mindate: start_date,
+          maxdate: end_date
+        }
       end
     end
   end
