@@ -28,7 +28,7 @@ module Tasks
           pmc: []
         }
         @retrieved_metadata = []
-        @new_pubmed_works = []
+        @pmc_oa_subset = []
       end
 
       # Keywords for readability
@@ -54,14 +54,16 @@ module Tasks
 
 
       def ingest_publications
-        retrieve_pubmed_ids_within_date_range
         retrieve_oa_subset_within_date_range
+        retrieve_pubmed_ids_within_date_range
+        retrieve_pmc_ids_from_oa_subset
         retrieve_alternate_ids_for_record_ids
-        # @new_pubmed_works
+
+        # @pmc_oa_subset
         # Update these here now that :skipped is populated
-        # @new_pubmed_works = @attachment_results[:skipped].select { |row| row['pdf_attached'] == 'Skipped: No CDR URL' }
-        # @attachment_results[:skipped] -= @new_pubmed_works
-        # @attachment_results[:counts][:skipped] -= @new_pubmed_works.length
+        # @pmc_oa_subset = @attachment_results[:skipped].select { |row| row['pdf_attached'] == 'Skipped: No CDR URL' }
+        # @attachment_results[:skipped] -= @pmc_oa_subset
+        # @attachment_results[:counts][:skipped] -= @pmc_oa_subset.length
 
         # batch_retrieve_metadata
         # Rails.logger.info("[Ingest] Starting ingestion of #{@retrieved_metadata.size} records")
@@ -71,7 +73,7 @@ module Tasks
         #   begin
         #     article = new_article(metadata)
         #     builder = attribute_builder(metadata, article)
-        #     skipped_row = builder.find_skipped_row(@new_pubmed_works)
+        #     skipped_row = builder.find_skipped_row(@pmc_oa_subset)
 
         #     Rails.logger.info("[Ingest] Found skipped row: #{skipped_row.inspect}")
         #     article.save!
@@ -139,47 +141,45 @@ module Tasks
       private
 
       def retrieve_alternate_ids_for_record_ids
-        Rails.logger.info('[PubmedIngestService - retrieve_alternate_ids_for_record_ids] Starting alternate ID retrieval for PubMed and PMC records')
-        @record_ids[:pmc].each do |pmcid|
-          @record_ids_with_alternate_ids[:pmc] << retrieve_alternate_ids(pmcid)
+        batched_ids = {
+          pubmed: @record_ids[:pubmed].each_slice(200).to_a,
+          pmc: @record_ids[:pmc].each_slice(200).to_a
+        }
+
+        Rails.logger.info("[PubmedIngestService - retrieve_alternate_ids_for_record_ids] Starting alternate ID retrieval for #{@record_ids[:pmc].size} PMC records split into #{batched_ids[:pmc].size} batches of 200")
+        batched_ids[:pmc].each_with_index do |batch, index|
+          Rails.logger.debug("[PubmedIngestService - retrieve_alternate_ids_for_record_ids] Processing PMC batch #{index + 1} of #{batched_ids[:pmc].size}")
+          @record_ids_with_alternate_ids[:pmc] += retrieve_alternate_ids(batch)
         end
-        # Construct an alternate ID array hash for PubMed records not within the OA subset
-        @record_ids[:pubmed].each do |pmid|
-          alternate_ids = retrieve_alternate_ids(pmid)
-          next if @record_ids_with_alternate_ids[:pmc].any? { |id| id[:pmid] == alternate_ids[:pmid] }
-          if alternate_ids[:pmcid].blank?
-            @record_ids_with_alternate_ids[:pubmed] << alternate_ids
-          else
-            # If the alternate ID hash contains a PMCID, add it to the PMC list
-            @record_ids_with_alternate_ids[:pmc] << alternate_ids
-          end 
+
+        Rails.logger.info("[PubmedIngestService - retrieve_alternate_ids_for_record_ids] Starting alternate ID retrieval for #{@record_ids[:pubmed].size} PubMed records split into #{batched_ids[:pubmed].size} batches of 200")
+        batched_ids[:pubmed].each_with_index do |batch, index|
+          Rails.logger.debug("[PubmedIngestService - retrieve_alternate_ids_for_record_ids] Processing PubMed batch #{index + 1} of #{batched_ids[:pubmed].size}")
+          @record_ids_with_alternate_ids[:pubmed] += retrieve_alternate_ids(batch)
         end
-        Rails.logger.info("[PubmedIngestService - retrieve_alternate_ids_for_record_ids] Retrieved alternate IDs. List sizes after retrieval and duplicate removal: ")
-        Rails.logger.info("[PubmedIngestService - retrieve_alternate_ids_for_record_ids] " \
-                          "#{@record_ids_with_alternate_ids[:pubmed].size} ID hashes from #{@record_ids[:pubmed].size} record IDs" \
-                          " and #{@record_ids_with_alternate_ids[:pmc].size} ID hashes from #{@record_ids[:pmc].size} record IDs")
         @record_ids_with_alternate_ids
       end
 
-      def retrieve_alternate_ids(identifier)
+      def retrieve_alternate_ids(identifiers)
         begin
             # Use ID conversion API to resolve identifiers
-          res = HTTParty.get("https://www.ncbi.nlm.nih.gov/pmc/utils/idconv/v1.0/?ids=#{identifier}")
+          res = HTTParty.get("https://www.ncbi.nlm.nih.gov/pmc/utils/idconv/v1.0/?ids=#{identifiers.join(',')}")
           doc = Nokogiri::XML(res.body)
-          record = doc.at_xpath('//record')
-          if record.blank? || record['status'] == 'error'
-            Rails.logger.warn("[IDConv] Fallback used for identifier: #{identifier}")
-            return fallback_id_hash(identifier)
-          end
+          records = doc.xpath('//record').map do |record|
+            if record['status'] == 'error'
+              Rails.logger.debug("[IDConv] #{record['requested-id']} alternate IDs not found: #{record['errmsg']}")
+              next
+            end
 
-          {
-          pmid:  record['pmid'],
-          pmcid: record['pmcid'],
-          doi:   record['doi']
-          }
-      rescue StandardError => e
-        Rails.logger.warn("[IDConv] HTTP failure for #{identifier}: #{e.message}")
-        return fallback_id_hash(identifier)
+            {
+              pmid: record['pmid'],
+              pmcid: record['pmcid'],
+              doi: record['doi']
+            }
+          end.compact
+        rescue StandardError => e
+          Rails.logger.warn("[IDConv] HTTP failure for #{identifier}: #{e.message}")
+          return fallback_id_hash(identifier)
         end
       end
 
@@ -204,19 +204,16 @@ module Tasks
 
           xml_doc = Nokogiri::XML(res.body)
           records = xml_doc.xpath('//record')
-          @new_pubmed_works += records.map do |record|
-            pmcid = record['id']
-            # Populate pmc record_ids here, the endpoint in retrieve_ids_within_date_range only retrieves pubmed ids
-            @record_ids[:pmc] << pmcid if pmcid.present?
+          @pmc_oa_subset += records.map do |record|
             {
-                'pmcid' => pmcid,
-                'links' => record.xpath('link').map do |link|
-                             {
-                               'format' => link['format'],
-                               'href'   => link['href'],
-                               'updated' => link['updated']
+              'pmcid' => record['id'],
+              'links' => record.xpath('link').map do |link|
+                           {
+                             'format' => link['format'],
+                             'href'   => link['href'],
+                             'updated' => link['updated']
                              }
-                           end
+                         end
             }
           end
 
@@ -231,16 +228,15 @@ module Tasks
 
           current_url = next_href
         end
-
-        Rails.logger.info("[PubmedIngestService - retrieve_oa_subset] Completed OA metadata retrieval. Total records: #{@new_pubmed_works.size}")
-        @new_pubmed_works
+        Rails.logger.info("[PubmedIngestService - retrieve_oa_subset] Completed OA metadata retrieval. Total records: #{@pmc_oa_subset.size}")
+        @pmc_oa_subset
       end
 
       def batch_retrieve_metadata
-        Rails.logger.info("Starting metadata retrieval for #{@new_pubmed_works.size} records")
+        Rails.logger.info("Starting metadata retrieval for #{@pmc_oa_subset.size} records")
 
-        works_with_pmids = @new_pubmed_works.select { |w| w['pmid'].present? }
-        works_with_pmcids = @new_pubmed_works.select { |w| !w['pmid'].present?  && w['pmcid'].present? }
+        works_with_pmids = @pmc_oa_subset.select { |w| w['pmid'].present? }
+        works_with_pmcids = @pmc_oa_subset.select { |w| !w['pmid'].present?  && w['pmcid'].present? }
 
         [works_with_pmids, works_with_pmcids].each do |works|
           db = (works.equal?(works_with_pmids)) ? 'pubmed' : 'pmc'
@@ -368,6 +364,17 @@ module Tasks
           break if cursor > parsed_response.xpath('//Count').text.to_i
         end
         Rails.logger.info("[PubmedIngestService - retrieve_ids_within_date_range] Retrieved #{@record_ids[:pubmed].size} IDs from pubmed database")
+      end
+
+      def retrieve_pmc_ids_from_oa_subset
+        Rails.logger.info("[PubmedIngestService - retrieve_pmc_ids_from_oa_subset] Starting PMC ID retrieval from OA subset of size #{@pmc_oa_subset.size}")
+        @pmc_oa_subset.each do |record|
+          pmcid = record['pmcid']
+          next if pmcid.blank?
+          @record_ids[:pmc] << pmcid
+        end
+        @record_ids[:pmc].uniq!
+        Rails.logger.info("[PubmedIngestService - retrieve_pmc_ids_from_oa_subset] Retrieved #{@record_ids[:pmc].size} unique PMC IDs from OA subset")
       end
 
       def add_to_pubmed_id_list(parsed_response)
