@@ -22,6 +22,10 @@ module Tasks
 
         @retrieved_metadata = []
         @new_pubmed_works = []
+        @record_ids = {
+          pubmed: [],
+          pmc: []
+        }
       end
 
       # Keywords for readability
@@ -283,18 +287,35 @@ module Tasks
         nil
       end
 
-      def retrieve_ids_within_date_range(start_date, end_date, db)
+      def retrieve_ids_within_date_range(start_date, end_date, db, retmax = 1000)
         Rails.logger.info("[PubmedIngestService - retrieve_ids_within_date_range] Fetching IDs within date range: #{start_date} - #{end_date}")
         # Implementation for retrieving IDs within the specified date range
         base_url = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi'
         count = 0
         cursor = 0
         params = {
-          retmax: 1000,
+          retmax: retmax,
           db: db,
           mindate: start_date,
           maxdate: end_date
         }
+        loop do
+          res = HTTParty.get(base_url, query: params.merge({ retstart: cursor}))
+          if res.code != 200
+            Rails.logger.error("[PubmedIngestService - retrieve_ids_within_date_range] Failed to retrieve IDs: #{res.code} - #{res.message}")
+            break
+          end
+          parsed_response = Nokogiri::XML(res.body)
+          add_to_id_list(parsed_response, db)
+          cursor += retmax
+          break if cursor > parsed_response.xpath('//Count').text.to_i
+        end
+        Rails.logger.info("[PubmedIngestService - retrieve_ids_within_date_range] Retrieved #{@record_ids[db.to_sym].size} IDs from #{db} database")
+      end
+
+      def add_to_id_list(parsed_response, db)
+        ids = parsed_response.xpath("//IdList/Id").map(&:text)
+        @record_ids[db.to_sym].concat(ids)
       end
     end
   end
