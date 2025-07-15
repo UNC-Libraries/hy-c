@@ -20,12 +20,12 @@ module Tasks
         @depositor = User.find_by(uid: config['depositor_onyen'])
         raise ActiveRecord::RecordNotFound, "User not found with onyen: #{config['depositor_onyen']}" unless @depositor
         @record_ids = {
-          pubmed: [],
-          pmc: []
+          'pubmed' => [],
+          'pmc' => []
         }
         @record_ids_with_alternate_ids = {
-          pubmed: [],
-          pmc: []
+          'pubmed' => [],
+          'pmc' => []
         }
         @retrieved_metadata = []
         @pmc_oa_subset = []
@@ -54,10 +54,14 @@ module Tasks
 
 
       def ingest_publications
-        retrieve_oa_subset_within_date_range
-        retrieve_pubmed_ids_within_date_range
-        retrieve_pmc_ids_from_oa_subset
-        retrieve_alternate_ids_for_record_ids
+        # retrieve_oa_subset_within_date_range
+        # retrieve_pubmed_ids_within_date_range
+        # retrieve_pmc_ids_from_oa_subset
+        # retrieve_alternate_ids_for_record_ids
+        saved_test_results = process_test_file('tmp/test_results_j14.json')
+        @record_ids_with_alternate_ids = saved_test_results
+        compare_and_adjust_id_lists
+        write_test_results_to_json('tmp/test_results_j14_2.json', @record_ids_with_alternate_ids)
 
         # @pmc_oa_subset
         # Update these here now that :skipped is populated
@@ -140,22 +144,69 @@ module Tasks
 
       private
 
+      # Read test json file and process into hash
+      def process_test_file(file_path)
+        message = "Processing test file: #{file_path}"
+        puts message
+        begin
+          file_content = File.read(file_path)
+          test_data = JSON.parse(file_content)
+          message = "Successfully read test file: #{file_path}"
+          puts message
+        rescue StandardError => e
+          message = "Error parsing JSON from file #{file_path}: #{e.message}"
+          puts message
+          raise e
+        end
+        test_data
+      end
+
+      def write_test_results_to_json(file_path, results)
+        Rails.logger.info("Writing test results to JSON file: #{file_path}")
+        begin
+          File.write(file_path, JSON.pretty_generate(results))
+          message = "Successfully wrote test results to JSON file: #{file_path}"
+          puts message
+        rescue StandardError => e
+          message = "Error writing test results to JSON file #{file_path}: #{e.message}"
+          puts message
+          raise e
+        end
+      end
+
+      # Adjust lists to remove duplicates and make the PubMed list PMID only
+      def compare_and_adjust_id_lists
+        # Iterate over a copy of the array to avoid mutation issues
+        @record_ids_with_alternate_ids['pubmed'].dup.each do |alternate_id_hash|
+          puts "Processing PubMed alternate ID: #{alternate_id_hash.inspect}"
+          next if alternate_id_hash['pmcid'].blank?
+           # Add hash to the PMC list if none of the PubMed hashes have the same PMCID
+          if @record_ids_with_alternate_ids['pmc'].none? { |pmc_hash| pmc_hash['pmcid'] == alternate_id_hash['pmcid'] }
+            @record_ids_with_alternate_ids['pmc'] << alternate_id_hash
+          end
+           # Remove the hash from the PubMed list
+          @record_ids_with_alternate_ids['pubmed'].reject! do |pubmed_hash|
+            pubmed_hash['pmcid'] == alternate_id_hash['pmcid']
+          end
+        end
+      end
+
       def retrieve_alternate_ids_for_record_ids
         batched_ids = {
-          pubmed: @record_ids[:pubmed].each_slice(200).to_a,
-          pmc: @record_ids[:pmc].each_slice(200).to_a
+          'pubmed' => @record_ids['pubmed'].each_slice(200).to_a,
+          'pmc' => @record_ids['pmc'].each_slice(200).to_a
         }
 
-        Rails.logger.info("[PubmedIngestService - retrieve_alternate_ids_for_record_ids] Starting alternate ID retrieval for #{@record_ids[:pmc].size} PMC records split into #{batched_ids[:pmc].size} batches of 200")
-        batched_ids[:pmc].each_with_index do |batch, index|
-          Rails.logger.debug("[PubmedIngestService - retrieve_alternate_ids_for_record_ids] Processing PMC batch #{index + 1} of #{batched_ids[:pmc].size}")
-          @record_ids_with_alternate_ids[:pmc] += retrieve_alternate_ids(batch)
+        Rails.logger.info("[PubmedIngestService - retrieve_alternate_ids_for_record_ids] Starting alternate ID retrieval for #{@record_ids['pmc'].size} PMC records split into #{batched_ids['pmc'].size} batches of 200")
+        batched_ids['pmc'].each_with_index do |batch, index|
+          Rails.logger.debug("[PubmedIngestService - retrieve_alternate_ids_for_record_ids] Processing PMC batch #{index + 1} of #{batched_ids['pmc'].size}")
+          @record_ids_with_alternate_ids['pmc'] += retrieve_alternate_ids(batch)
         end
 
-        Rails.logger.info("[PubmedIngestService - retrieve_alternate_ids_for_record_ids] Starting alternate ID retrieval for #{@record_ids[:pubmed].size} PubMed records split into #{batched_ids[:pubmed].size} batches of 200")
-        batched_ids[:pubmed].each_with_index do |batch, index|
-          Rails.logger.debug("[PubmedIngestService - retrieve_alternate_ids_for_record_ids] Processing PubMed batch #{index + 1} of #{batched_ids[:pubmed].size}")
-          @record_ids_with_alternate_ids[:pubmed] += retrieve_alternate_ids(batch)
+        Rails.logger.info("[PubmedIngestService - retrieve_alternate_ids_for_record_ids] Starting alternate ID retrieval for #{@record_ids['pubmed'].size} PubMed records split into #{batched_ids['pubmed'].size} batches of 200")
+        batched_ids['pubmed'].each_with_index do |batch, index|
+          Rails.logger.debug("[PubmedIngestService - retrieve_alternate_ids_for_record_ids] Processing PubMed batch #{index + 1} of #{batched_ids['pubmed'].size}")
+          @record_ids_with_alternate_ids['pubmed'] += retrieve_alternate_ids(batch)
         end
         @record_ids_with_alternate_ids
       end
@@ -379,7 +430,7 @@ module Tasks
 
       def add_to_pubmed_id_list(parsed_response)
         ids = parsed_response.xpath('//IdList/Id').map(&:text)
-        @record_ids[:pubmed].concat(ids)
+        @record_ids['pubmed'].concat(ids)
       end
     end
   end
