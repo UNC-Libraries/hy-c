@@ -56,25 +56,29 @@ module Tasks
 
 
       def ingest_publications
-        # WIP: Working as intended - Start
-        # retrieve_oa_subset_within_date_range
-        # retrieve_pubmed_ids_within_date_range
-        # retrieve_pmc_ids_from_oa_subset
-        # retrieve_alternate_ids_for_record_ids
-        # compare_and_adjust_id_lists
-        # batch_retrieve_metadata
-        # WIP: Working as intended - End
+        # # WIP: Working as intended - Start 
+        # # Probably should retest - Start
+        # # Hash array => { PMCID, Links to full-text OA content }
+        @pmc_oa_subset = retrieve_oa_subset_within_date_range(@start_date, @end_date)
+        write_test_results_to_json('tmp/test_pmc_oa_subset.json', @pmc_oa_subset)
+        build_id_lists
+        batch_retrieve_metadata
+        # Retrieve additional OA subset resources to account for publication lag
+        expand_pmc_oa_subset  
+        write_test_results_to_json('tmp/test_pmc_oa_subset_expanded.json', @pmc_oa_subset)
+        # # WIP: Working as intended - End
+        # # Probably should retest - End
         # WIP: Testing - Start
-        @retrieved_metadata = process_xml_array_test_file('tmp/test_xml_arr.json')
+        # @retrieved_metadata = process_xml_array_test_file('tmp/test_xml_arr.json')
         # write_test_results_to_json('tmp/test_results_j15.json', @retrieved_metadata)
-        expand_date_range_for_full_text_retrieval
-        write_test_results_to_json('tmp/test_results_j15_2.json', 
-          { 
-            original_start_date: @start_date.strftime('%Y-%m-%d'),
-            original_end_date: @end_date.strftime('%Y-%m-%d'),
-            oa_fgci_start_date: @oa_fgci_start_date.strftime('%Y-%m-%d'),
-            oa_fgci_end_date: @oa_fgci_end_date.strftime('%Y-%m-%d')
-          })
+        # expand_date_range_for_full_text_retrieval
+        # write_test_results_to_json('tmp/test_results_j15_2.json', 
+        #   { 
+        #     original_start_date: @start_date.strftime('%Y-%m-%d'),
+        #     original_end_date: @end_date.strftime('%Y-%m-%d'),
+        #     oa_fgci_start_date: @oa_fgci_start_date.strftime('%Y-%m-%d'),
+        #     oa_fgci_end_date: @oa_fgci_end_date.strftime('%Y-%m-%d')
+        #   })
 
         # WIP: Testing - End
 
@@ -259,9 +263,9 @@ module Tasks
             end
 
             {
-              pmid: record['pmid'],
-              pmcid: record['pmcid'],
-              doi: record['doi']
+              'pmid' =>  record['pmid'],
+              'pmcid' =>  record['pmcid'],
+              'doi' => record['doi']
             }
           end.compact
         rescue StandardError => e
@@ -274,12 +278,24 @@ module Tasks
         identifier.start_with?('PMC') ? { pmcid: identifier } : { pmid: identifier }
       end
 
+      def expand_pmc_oa_subset(buffer = 2.years)
+        Rails.logger.info("[PubmedIngestService - expand_pmc_oa_subset] Expanding PMC OA subset date range by #{buffer} to account for publication lag")
+        extended_end_date = @oa_fgci_end_date + buffer
+        Rails.logger.info("[PubmedIngestService - expand_pmc_oa_subset] New OA FGCI end date: #{extended_end_date.strftime('%Y-%m-%d')}")
+        new_subset = retrieve_oa_subset_within_date_range(@oa_fgci_start_date, extended_end_date)
+        Rails.logger.info("[PubmedIngestService - expand_pmc_oa_subset] Retrieved #{new_subset.size} additional OA records")
+        @pmc_oa_subset += new_subset
+        @pmc_oa_subset.uniq! { |record| record['pmcid'] }
+        Rails.logger.info("[PubmedIngestService - expand_pmc_oa_subset] New total PMC OA subset size after expansion: #{@pmc_oa_subset.size}")
+      end
+
       # Retrieve PMCIDs for works within the specified date range and links to their full-text OA content
-      def retrieve_oa_subset_within_date_range
+      def retrieve_oa_subset_within_date_range(start_date = @start_date, end_date = @end_date)
+        subset_array = []
         Rails.logger.info('[PubmedIngestService - retrieve_oa_subset] Starting OA metadata retrieval for PubMed works within the specified date range: ' \
-                            "#{@start_date.strftime('%Y-%m-%d')} to #{@end_date.strftime('%Y-%m-%d')}")
+                            "#{start_date.strftime('%Y-%m-%d')} to #{end_date.strftime('%Y-%m-%d')}")
         base_url = 'https://www.ncbi.nlm.nih.gov/pmc/utils/oa/oa.fcgi'
-        current_url = "#{base_url}?from=#{@start_date.strftime('%Y-%m-%d')}&until=#{@end_date.strftime('%Y-%m-%d')}"
+        current_url = "#{base_url}?from=#{start_date.strftime('%Y-%m-%d')}&until=#{end_date.strftime('%Y-%m-%d')}"
         loop do
           res = HTTParty.get(current_url)
 
@@ -291,7 +307,7 @@ module Tasks
 
           xml_doc = Nokogiri::XML(res.body)
           records = xml_doc.xpath('//record')
-          @pmc_oa_subset += records.map do |record|
+          subset_array += records.map do |record|
             {
               'pmcid' => record['id'],
               'links' => record.xpath('link').map do |link|
@@ -315,8 +331,8 @@ module Tasks
 
           current_url = next_href
         end
-        Rails.logger.info("[PubmedIngestService - retrieve_oa_subset] Completed OA metadata retrieval. Total records: #{@pmc_oa_subset.size}")
-        @pmc_oa_subset
+        Rails.logger.info("[PubmedIngestService - retrieve_oa_subset] Completed OA metadata retrieval. Total records: #{subset_array.size}")
+        subset_array
       end
 
       # The OA FCGI endpoint does not accept a list of PMCIDs as an argument, so use the retrieved metadata to determine a date range
@@ -358,9 +374,10 @@ module Tasks
 
         [works_with_pmids, works_with_pmcids].each do |works|
           db = (works.equal?(works_with_pmids)) ? 'pubmed' : 'pmc'
-          works.each_slice(200) do |batch|
+          works.each_slice(100) do |batch|
             map_condition = (db == 'pubmed') ? 'pmid' : 'pmcid'
             ids = batch.map do |w|
+              puts "Inspecting: #{w.inspect}"
               db == 'pubmed' ? w['pmid'] : w['pmcid'].delete_prefix('PMC')
             end
             request_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=#{db}&id=#{ids.join(',')}&retmode=xml&tool=CDR&email=cdr@unc.edu"
@@ -376,8 +393,10 @@ module Tasks
             end
 
             xml_doc = Nokogiri::XML(res.body)
-            current_arr = xml_doc.xpath(db == 'pubmed' ? '//PubmedArticle' : '//article')
+            current_arr = xml_doc.xpath(dbN == 'pubmed' ? '//PubmedArticle' : '//article')
             @retrieved_metadata += current_arr
+
+              sleep(0.34) # Respect NCBI rate limits
           end
         end
 
@@ -488,18 +507,29 @@ module Tasks
           cursor += retmax
           break if cursor > parsed_response.xpath('//Count').text.to_i
         end
-        Rails.logger.info("[PubmedIngestService - retrieve_ids_within_date_range] Retrieved #{@record_ids[:pubmed].size} IDs from pubmed database")
+        Rails.logger.info("[PubmedIngestService - retrieve_ids_within_date_range] Retrieved #{@record_ids['pubmed'].size} IDs from pubmed database")
       end
 
-      def retrieve_pmc_ids_from_oa_subset
-        Rails.logger.info("[PubmedIngestService - retrieve_pmc_ids_from_oa_subset] Starting PMC ID retrieval from OA subset of size #{@pmc_oa_subset.size}")
+      def build_id_lists
+        Rails.logger.info("[PubmedIngestService - build_record_id_list] Starting to build record ID list")
+        extract_pmc_ids_from_oa_subset
+        retrieve_pubmed_ids_within_date_range
+        # Expand record ID list to an array of hashes with alternate IDs
+        retrieve_alternate_ids_for_record_ids
+        # Check for duplicates among the pubmed and pmc lists and make the pubmed list PMID only
+        compare_and_adjust_id_lists
+      end
+
+
+      def extract_pmc_ids_from_oa_subset
+        Rails.logger.info("[PubmedIngestService - extract_pmc_ids_from_oa_subset] Starting PMC ID retrieval from OA subset of size #{@pmc_oa_subset.size}")
         @pmc_oa_subset.each do |record|
           pmcid = record['pmcid']
           next if pmcid.blank?
-          @record_ids[:pmc] << pmcid
+          @record_ids['pmc'] << pmcid
         end
-        @record_ids[:pmc].uniq!
-        Rails.logger.info("[PubmedIngestService - retrieve_pmc_ids_from_oa_subset] Retrieved #{@record_ids[:pmc].size} unique PMC IDs from OA subset")
+        @record_ids['pmc'].uniq!
+        Rails.logger.info("[PubmedIngestService - extract_pmc_ids_from_oa_subset] Retrieved #{@record_ids['pmc'].size} unique PMC IDs from OA subset")
       end
 
       def add_to_pubmed_id_list(parsed_response)
