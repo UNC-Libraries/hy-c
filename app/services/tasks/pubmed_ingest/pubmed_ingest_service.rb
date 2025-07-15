@@ -201,6 +201,25 @@ module Tasks
         test_data
       end
 
+      # def store_md
+      def read_json(file_path)
+        return nil unless File.exist?(file_path)
+        begin
+          file_content = File.read(file_path)
+          parsed = JSON.parse(file_content)
+        rescue StandardError => e
+          Rails.logger.error("[PubmedIngestService - read_json] Error reading JSON file #{file_path}: #{e.message}")
+          raise e
+        end
+        parsed
+      end
+
+      def append_results_to_json_array(file_path, new_results)
+        existing_results = read_json(file_path) || []
+        combined_results = existing_results + new_results
+        File.write(file_path, JSON.pretty_generate(combined_results))
+      end
+
       def write_test_results_to_json(file_path, results)
         Rails.logger.info("Writing test results to JSON file: #{file_path}")
         begin
