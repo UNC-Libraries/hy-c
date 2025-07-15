@@ -57,14 +57,17 @@ module Tasks
 
 
       def ingest_publications
+        # WIP: Should probably remove works that already exist in the cdr
+        # WIP: Don't need to check for filesets, attach_pdf_for_existing_work will handle that (maybe)
         # # WIP: Working as intended - Start
         # # Hash array => { PMCID, Links to full-text OA content }
         @pmc_oa_subset = retrieve_oa_subset_within_date_range(@start_date, @end_date)
         write_test_results_to_json('tmp/test_pmc_oa_subset.json', @pmc_oa_subset)
         build_id_lists
-        batch_retrieve_metadata
+        batch_retrieve_and_process_metadata
+        puts "Retrieved and processed records from PMC and Pubmed"
         expand_pmc_oa_subset
-        process_xml_batches("#{@output_dir}/pubmed_ingest_md_intermediate_storage.json")
+        # process_xml_batches("#{@output_dir}/pubmed_ingest_md_intermediate_storage.json")
 
         # Retrieve additional OA subset resources to account for publication lag
         # # WIP: Working as intended - End
@@ -91,57 +94,57 @@ module Tasks
         # batch_retrieve_metadata
         # Rails.logger.info("[Ingest] Starting ingestion of #{@retrieved_metadata.size} records")
 
-        @retrieved_metadata.each_with_index do |metadata, index|
-          Rails.logger.info("[Ingest] Processing record ##{index + 1}")
-          begin
-            article = new_article(metadata)
-            builder = attribute_builder(metadata, article)
-            skipped_row = builder.find_skipped_row(@pmc_oa_subset)
+        # @retrieved_metadata.each_with_index do |metadata, index|
+        #   Rails.logger.info("[Ingest] Processing record ##{index + 1}")
+        #   begin
+        #     article = new_article(metadata)
+        #     builder = attribute_builder(metadata, article)
+        #     skipped_row = builder.find_skipped_row(@pmc_oa_subset)
 
-            Rails.logger.info("[Ingest] Found skipped row: #{skipped_row.inspect}")
-            article.save!
-            article.identifier.each { |id| Rails.logger.info("[Ingest] Article identifier: #{id}") }
-            Rails.logger.info("[Ingest] Created new article with ID #{article.id}")
+        #     Rails.logger.info("[Ingest] Found skipped row: #{skipped_row.inspect}")
+        #     article.save!
+        #     article.identifier.each { |id| Rails.logger.info("[Ingest] Article identifier: #{id}") }
+        #     Rails.logger.info("[Ingest] Created new article with ID #{article.id}")
 
-            attach_pdf(article, skipped_row)
-            article.save!
+        #     attach_pdf(article, skipped_row)
+        #     article.save!
 
-            Rails.logger.info("[Ingest] Successfully attached PDF for article #{article.id}")
-            skipped_row['cdr_url'] = generate_cdr_url_for_pubmed_identifier(skipped_row)
-            skipped_row['article'] = article
-            record_result(
-              category: :successfully_ingested,
-              file_name: skipped_row['file_name'],
-              message: 'Success',
-              ids: {
-                pmid: skipped_row['pmid'],
-                pmcid: skipped_row['pmcid'],
-                doi: skipped_row['doi']
-              },
-              article: article
-            )
-          rescue => e
-            doi = skipped_row&.[]('doi') || 'N/A'
-            pmid = skipped_row&.[]('pmid') || 'N/A'
-            pmcid = skipped_row&.[]('pmcid') || 'N/A'
-            Rails.logger.error("[Ingest] Error processing record: DOI: #{doi}, PMID: #{pmid}, PMCID: #{pmcid}, Index: #{index}, Error: #{e.message}")
-            Rails.logger.error("Backtrace: #{e.backtrace.join("\n")}")
-            article.destroy if article&.persisted?
-            record_result(
-              category: :failed,
-              file_name: skipped_row['file_name'],
-              message: "Failed: #{e.message}",
-              ids: {
-                pmid: skipped_row['pmid'],
-                pmcid: skipped_row['pmcid'],
-                doi: skipped_row['doi']
-              }
-            )
-          end
-        end
+        #     Rails.logger.info("[Ingest] Successfully attached PDF for article #{article.id}")
+        #     skipped_row['cdr_url'] = generate_cdr_url_for_pubmed_identifier(skipped_row)
+        #     skipped_row['article'] = article
+        #     record_result(
+        #       category: :successfully_ingested,
+        #       file_name: skipped_row['file_name'],
+        #       message: 'Success',
+        #       ids: {
+        #         pmid: skipped_row['pmid'],
+        #         pmcid: skipped_row['pmcid'],
+        #         doi: skipped_row['doi']
+        #       },
+        #       article: article
+        #     )
+        #   rescue => e
+        #     doi = skipped_row&.[]('doi') || 'N/A'
+        #     pmid = skipped_row&.[]('pmid') || 'N/A'
+        #     pmcid = skipped_row&.[]('pmcid') || 'N/A'
+        #     Rails.logger.error("[Ingest] Error processing record: DOI: #{doi}, PMID: #{pmid}, PMCID: #{pmcid}, Index: #{index}, Error: #{e.message}")
+        #     Rails.logger.error("Backtrace: #{e.backtrace.join("\n")}")
+        #     article.destroy if article&.persisted?
+        #     record_result(
+        #       category: :failed,
+        #       file_name: skipped_row['file_name'],
+        #       message: "Failed: #{e.message}",
+        #       ids: {
+        #         pmid: skipped_row['pmid'],
+        #         pmcid: skipped_row['pmcid'],
+        #         doi: skipped_row['doi']
+        #       }
+        #     )
+        #   end
+        # end
 
-        Rails.logger.info('[Ingest] Ingest complete')
-        @attachment_results
+        # Rails.logger.info('[Ingest] Ingest complete')
+        # @attachment_results
       end
 
       def attach_pdf_for_existing_work(work_hash, file_path, depositor_onyen)
@@ -426,56 +429,65 @@ module Tasks
 
       def process_batch(batch)
         batch.each do |doc|
+          alternate_ids = {
+            'pmid' => nil,
+            'pmcid' => nil,
+            'doi' => nil
+          }
           begin
             article = new_article(doc)
-            alternate_ids = alternate_ids_from_xml(doc)
+            alternate_ids = alternate_ids_from_xml(doc, article)
 
             Rails.logger.info("[Ingest] Found alternate_ids row: #{alternate_ids.inspect}")
             article.save!
             article.identifier.each { |id| Rails.logger.info("[Ingest] Article identifier: #{id}") }
-            Rails.logger.info("[Ingest] Created new article with ID #{aritcle.id}")
+            Rails.logger.info("[Ingest] Created new article with ID #{article.id}")
 
             # attach_pdf(article, skipped_row)
             # article.save!
 
             # Rails.logger.info("[Ingest] Successfully attached PDF for article #{article.id}")
             # skipped_row['cdr_url'] = generate_cdr_url_for_pubmed_identifier(skipped_row)
-            skipped_row['article'] = article
+            if alternate_ids.present? 
+              alternate_ids['article'] = article
+            end
+
             record_result(
               category: :successfully_ingested,
-              file_name: skipped_row['file_name'],
+              # WIP: Placeholder for file_name
+              file_name: "",
               message: 'Success',
               ids: {
-                pmid: skipped_row['pmid'],
-                pmcid: skipped_row['pmcid'],
-                doi: skipped_row['doi']
+                pmid: alternate_ids&.[]('pmid'),
+                pmcid: alternate_ids&.[]('pmcid'),
+                doi: alternate_ids&.[]('doi')
               },
               article: article
             )
           rescue => e
-            doi = skipped_row&.[]('doi') || 'N/A'
-            pmid = skipped_row&.[]('pmid') || 'N/A'
-            pmcid = skipped_row&.[]('pmcid') || 'N/A'
-            Rails.logger.error("[Ingest] Error processing record: DOI: #{doi}, PMID: #{pmid}, PMCID: #{pmcid}, Index: #{index}, Error: #{e.message}")
+            doi = alternate_ids&.[]('doi') || 'N/A'
+            pmid = alternate_ids&.[]('pmid') || 'N/A'
+            pmcid = alternate_ids&.[]('pmcid') || 'N/A'
+            Rails.logger.error("[Ingest] Error processing record: DOI: #{doi}, PMID: #{pmid}, PMCID: #{pmcid}, Error: #{e.message}")
             Rails.logger.error("Backtrace: #{e.backtrace.join("\n")}")
             article.destroy if article&.persisted?
             record_result(
               category: :failed,
-              file_name: skipped_row['file_name'],
+              # file_name: alternate_ids['file_name'],
               message: "Failed: #{e.message}",
               ids: {
-                pmid: skipped_row['pmid'],
-                pmcid: skipped_row['pmcid'],
-                doi: skipped_row['doi']
+                pmid: alternate_ids['pmid'],
+                pmcid: alternate_ids['pmcid'],
+                doi: alternate_ids['doi']
               }
             )
           end
         end
       end
 
-      def alternate_ids_from_xml(xml_doc)
-        builder = attribute_builder(doc, article)
-        pubmed_doc = is_pubmed?(doc)
+      def alternate_ids_from_xml(xml_doc, article)
+        builder = attribute_builder(xml_doc, article)
+        pubmed_doc = is_pubmed?(xml_doc)
         alternate_id_array = pubmed_doc ? @record_ids_with_alternate_ids['pubmed'] : @record_ids_with_alternate_ids['pmc']
         builder.find_skipped_row(alternate_id_array)
       end
@@ -486,48 +498,86 @@ module Tasks
         end
       end
 
-      def batch_retrieve_metadata
-        md_size = @record_ids_with_alternate_ids['pubmed'].size + @record_ids_with_alternate_ids['pmc'].size
-        Rails.logger.info("Starting metadata retrieval for #{md_size} records")
+      def batch_retrieve_and_process_metadata(batch_size = 100)
+      total_records = @record_ids_with_alternate_ids['pubmed'].size + @record_ids_with_alternate_ids['pmc'].size
+      Rails.logger.info("Starting metadata retrieval and processing for #{total_records} records")
 
-        works_with_pmids = @record_ids_with_alternate_ids['pubmed']
-        works_with_pmcids = @record_ids_with_alternate_ids['pmc']
+      works_with_pmids = @record_ids_with_alternate_ids['pubmed']
+      works_with_pmcids = @record_ids_with_alternate_ids['pmc']
 
-        [works_with_pmcids, works_with_pmids].each do |works|
-          db = (works.equal?(works_with_pmids)) ? 'pubmed' : 'pmc'
-          works.each_slice(50) do |batch|
-            map_condition = (db == 'pubmed') ? 'pmid' : 'pmcid'
-            ids = batch.map do |w|
-              # puts "Inspecting: #{w.inspect}"
-              db == 'pubmed' ? w['pmid'] : w['pmcid'].delete_prefix('PMC')
-            end
-            request_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=#{db}&id=#{ids.join(',')}&retmode=xml&tool=CDR&email=cdr@unc.edu"
-            # WIP: Remove later
-            message = "Fetching metadata for url: #{request_url}"
-            Rails.logger.info(message)
-            puts message
-            res = HTTParty.get(request_url)
+      [works_with_pmcids, works_with_pmids].each do |works|
+        db = (works.equal?(works_with_pmids)) ? 'pmc' : 'pubmed'
+        works.each_slice(batch_size) do |batch|
+          ids = batch.map { |w| db == 'pubmed' ? w['pmid'] : w['pmcid'].delete_prefix('PMC') }
+          request_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=#{db}&id=#{ids.join(',')}&retmode=xml&tool=CDR&email=cdr@unc.edu"
 
-            if res.code != 200
-              Rails.logger.error("Failed to fetch metadata for #{ids.join(', ')}: #{res.code} - #{res.message}")
-              next
-            end
+          Rails.logger.info("Fetching metadata for IDs: #{ids.join(', ')}")
+          res = HTTParty.get(request_url)
 
-            xml_doc = Nokogiri::XML(res.body)
-            # Retry PMC error IDs with their PMID equivalent
-            if db == 'pmc' && xml_doc.xpath('//pmc-articleset/error').any?
-              handle_pmc_errors(xml_doc, ids)
-            end
-            current_arr = xml_doc.xpath(db == 'pubmed' ? '//PubmedArticle' : '//article')
-            update_metadata_storage(file_path: "#{@output_dir}/pubmed_ingest_md_intermediate_storage.json", new_metadata: current_arr)
-
-            sleep(0.34) # Respect NCBI rate limits
+          if res.code != 200
+            Rails.logger.error("Failed to fetch metadata for #{ids.join(', ')}: #{res.code} - #{res.message}")
+            next
           end
-        end
 
-        Rails.logger.info('Metadata retrieval complete')
-        @retrieved_metadata
+          xml_doc = Nokogiri::XML(res.body)
+
+          # Handle PMC errors if needed
+          handle_pmc_errors(xml_doc, ids) if db == 'pmc' && xml_doc.xpath('//pmc-articleset/error').any?
+
+          # Process the batch immediately
+          current_batch = xml_doc.xpath(db == 'pubmed' ? '//PubmedArticle' : '//article')
+          process_batch(current_batch)
+
+          sleep(0.34) # Respect NCBI rate limits
+        end
       end
+
+      Rails.logger.info('Metadata retrieval and processing complete')
+    end
+
+
+      # def batch_retrieve_metadata
+      #   md_size = @record_ids_with_alternate_ids['pubmed'].size + @record_ids_with_alternate_ids['pmc'].size
+      #   Rails.logger.info("Starting metadata retrieval for #{md_size} records")
+
+      #   works_with_pmids = @record_ids_with_alternate_ids['pubmed']
+      #   works_with_pmcids = @record_ids_with_alternate_ids['pmc']
+
+      #   [works_with_pmcids, works_with_pmids].each do |works|
+      #     db = (works.equal?(works_with_pmids)) ? 'pubmed' : 'pmc'
+      #     works.each_slice(50) do |batch|
+      #       map_condition = (db == 'pubmed') ? 'pmid' : 'pmcid'
+      #       ids = batch.map do |w|
+      #         # puts "Inspecting: #{w.inspect}"
+      #         db == 'pubmed' ? w['pmid'] : w['pmcid'].delete_prefix('PMC')
+      #       end
+      #       request_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=#{db}&id=#{ids.join(',')}&retmode=xml&tool=CDR&email=cdr@unc.edu"
+      #       # WIP: Remove later
+      #       message = "Fetching metadata for url: #{request_url}"
+      #       Rails.logger.info(message)
+      #       puts message
+      #       res = HTTParty.get(request_url)
+
+      #       if res.code != 200
+      #         Rails.logger.error("Failed to fetch metadata for #{ids.join(', ')}: #{res.code} - #{res.message}")
+      #         next
+      #       end
+
+      #       xml_doc = Nokogiri::XML(res.body)
+      #       # Retry PMC error IDs with their PMID equivalent
+      #       if db == 'pmc' && xml_doc.xpath('//pmc-articleset/error').any?
+      #         handle_pmc_errors(xml_doc, ids)
+      #       end
+      #       current_arr = xml_doc.xpath(db == 'pubmed' ? '//PubmedArticle' : '//article')
+      #       update_metadata_storage(file_path: "#{@output_dir}/pubmed_ingest_md_intermediate_storage.json", new_metadata: current_arr)
+
+      #       sleep(0.34) # Respect NCBI rate limits
+      #     end
+      #   end
+
+      #   Rails.logger.info('Metadata retrieval complete')
+      #   @retrieved_metadata
+      # end
 
       def handle_pmc_errors(xml_doc, ids)
         Rails.logger.warn("PMC error found in response for IDs: #{ids.join(', ')}")
