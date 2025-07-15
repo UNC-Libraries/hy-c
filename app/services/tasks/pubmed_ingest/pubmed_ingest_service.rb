@@ -13,6 +13,7 @@ module Tasks
         @attachment_results = config['attachment_results'].symbolize_keys
         @start_date = config['start_date']
         @end_date = config['end_date']
+        @output_dir = config['output_dir'] || Rails.root.join('tmp')
         @oa_fgci_start_date =  @start_date
         @oa_fgci_end_date = @end_date
 
@@ -201,7 +202,16 @@ module Tasks
         test_data
       end
 
-      # def store_md
+      # Update the metadata storage with new metadata to avoid taking up too much memory
+      def update_metadata_storage(file_path:, new_metadata:)
+        @retrieved_metadata += new_metadata
+        if @retrieved_metadata.size > 500
+          Rails.logger.info("[PubmedIngestService - update_metadata_storage] Writing metadata to file: #{file_path}")
+          append_results_to_stored_json_array(file_path, @retrieved_metadata)
+          @retrieved_metadata = [] # Reset after writing
+        end
+      end
+
       def read_json(file_path)
         return nil unless File.exist?(file_path)
         begin
@@ -214,7 +224,7 @@ module Tasks
         parsed
       end
 
-      def append_results_to_json_array(file_path, new_results)
+      def append_results_to_stored_json_array(file_path, new_results)
         existing_results = read_json(file_path) || []
         combined_results = existing_results + new_results
         File.write(file_path, JSON.pretty_generate(combined_results))
@@ -401,7 +411,7 @@ module Tasks
             end
             request_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=#{db}&id=#{ids.join(',')}&retmode=xml&tool=CDR&email=cdr@unc.edu"
             # WIP: Remove later
-            message = "Fetching metadata for #{ids.join(', ')} from #{request_url}"
+            message = "Fetching metadata for url: #{request_url}"
             Rails.logger.info(message)
             puts message
             res = HTTParty.get(request_url)
@@ -412,10 +422,10 @@ module Tasks
             end
 
             xml_doc = Nokogiri::XML(res.body)
-            current_arr = xml_doc.xpath(dbN == 'pubmed' ? '//PubmedArticle' : '//article')
-            @retrieved_metadata += current_arr
+            current_arr = xml_doc.xpath(db == 'pubmed' ? '//PubmedArticle' : '//article')
+            update_metadata_storage(file_path: "#{@output_dir}/pubmed_ingest_md_intermediate_storage.json", new_metadata: current_arr)
 
-              sleep(0.34) # Respect NCBI rate limits
+            sleep(0.34) # Respect NCBI rate limits
           end
         end
 
