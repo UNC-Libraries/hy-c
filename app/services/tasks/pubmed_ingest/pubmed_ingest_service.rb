@@ -182,8 +182,6 @@ module Tasks
         complete_xml_array
       end
 
-
-
       # Read test json file and process into hash
       def process_test_file(file_path)
         message = "Processing test file: #{file_path}"
@@ -203,13 +201,32 @@ module Tasks
 
       # Update the metadata storage with new metadata to avoid taking up too much memory
       def update_metadata_storage(file_path:, new_metadata:)
-        @retrieved_metadata += new_metadata
-        if @retrieved_metadata.size > 500
-          Rails.logger.info("[PubmedIngestService - update_metadata_storage] Writing metadata to file: #{file_path}")
-          append_results_to_stored_json_array(file_path, @retrieved_metadata)
-          @retrieved_metadata = [] # Reset after writing
+        Rails.logger.info("[PubmedIngestService - update_metadata_storage] Writing metadata to file: #{file_path}")
+        
+        File.open(file_path, 'a') do |f|
+          new_metadata.each do |xml_node|
+            f.puts({ xml: xml_node.to_s }.to_json)
+          end
         end
       end
+      # def update_metadata_storage(file_path:, new_metadata:)
+      #   # @retrieved_metadata += new_metadata
+      #   # if @retrieved_metadata.size > 100
+      #   Rails.logger.info("[PubmedIngestService - update_metadata_storage] Writing metadata to file: #{file_path}")
+      #   # append_results_to_stored_json_array(file_path, new_metadata)
+      #   xml_strings = new_metadata.map(&:to_s)
+      #   append_results_to_ndjson(file_path, xml_strings)
+      #     # @retrieved_metadata = [] # Reset after writing
+      #   # end
+      # end
+
+      # def append_results_to_ndjson(file_path, xml_strings)
+      #   File.open(file_path, 'a') do |f|
+      #     xml_strings.each do |xml_str|
+      #       f.puts({ xml: xml_str }.to_json)
+      #     end
+      #   end
+      # end
 
       def read_json(file_path)
         return nil unless File.exist?(file_path)
@@ -246,7 +263,7 @@ module Tasks
       def compare_and_adjust_id_lists
         # Iterate over a copy of the array to avoid mutation issues
         @record_ids_with_alternate_ids['pubmed'].dup.each do |alternate_id_hash|
-          puts "Processing PubMed alternate ID: #{alternate_id_hash.inspect}"
+          # puts "Processing PubMed alternate ID: #{alternate_id_hash.inspect}"
           next if alternate_id_hash['pmcid'].blank?
            # Add hash to the PMC list if none of the PubMed hashes have the same PMCID
           if @record_ids_with_alternate_ids['pmc'].none? { |pmc_hash| pmc_hash['pmcid'] == alternate_id_hash['pmcid'] }
@@ -268,13 +285,13 @@ module Tasks
         Rails.logger.info("[PubmedIngestService - retrieve_alternate_ids_for_record_ids] Starting alternate ID retrieval for #{@record_ids['pmc'].size} PMC records split into #{batched_ids['pmc'].size} batches of 200")
         batched_ids['pmc'].each_with_index do |batch, index|
           Rails.logger.debug("[PubmedIngestService - retrieve_alternate_ids_for_record_ids] Processing PMC batch #{index + 1} of #{batched_ids['pmc'].size}")
-          @record_ids_with_alternate_ids['pmc'] += retrieve_alternate_ids(batch)
+          @record_ids_with_alternate_ids['pmc'] += retrieve_alternate_ids(batch, 'pmc')
         end
 
         Rails.logger.info("[PubmedIngestService - retrieve_alternate_ids_for_record_ids] Starting alternate ID retrieval for #{@record_ids['pubmed'].size} PubMed records split into #{batched_ids['pubmed'].size} batches of 200")
         batched_ids['pubmed'].each_with_index do |batch, index|
           Rails.logger.debug("[PubmedIngestService - retrieve_alternate_ids_for_record_ids] Processing PubMed batch #{index + 1} of #{batched_ids['pubmed'].size}")
-          @record_ids_with_alternate_ids['pubmed'] += retrieve_alternate_ids(batch)
+          @record_ids_with_alternate_ids['pubmed'] += retrieve_alternate_ids(batch, 'pubmed')
         end
         @record_ids_with_alternate_ids
       end
@@ -463,7 +480,6 @@ module Tasks
         builder.find_skipped_row(alternate_id_array)
       end
 
-
       def get_error_ids(xml_doc)
         xml_doc.xpath('//pmc-articleset/error').map do |error_node|
           error_node['id']
@@ -479,10 +495,10 @@ module Tasks
 
         [works_with_pmcids, works_with_pmids].each do |works|
           db = (works.equal?(works_with_pmids)) ? 'pubmed' : 'pmc'
-          works.each_slice(100) do |batch|
+          works.each_slice(50) do |batch|
             map_condition = (db == 'pubmed') ? 'pmid' : 'pmcid'
             ids = batch.map do |w|
-              puts "Inspecting: #{w.inspect}"
+              # puts "Inspecting: #{w.inspect}"
               db == 'pubmed' ? w['pmid'] : w['pmcid'].delete_prefix('PMC')
             end
             request_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=#{db}&id=#{ids.join(',')}&retmode=xml&tool=CDR&email=cdr@unc.edu"
