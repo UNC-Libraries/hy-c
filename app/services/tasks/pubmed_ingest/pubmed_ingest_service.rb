@@ -54,14 +54,19 @@ module Tasks
 
 
       def ingest_publications
+        # WIP: Working as intended - Start
         # retrieve_oa_subset_within_date_range
         # retrieve_pubmed_ids_within_date_range
         # retrieve_pmc_ids_from_oa_subset
         # retrieve_alternate_ids_for_record_ids
-        saved_test_results = process_test_file('tmp/test_results_j14.json')
+        # compare_and_adjust_id_lists
+        # WIP: Working as intended - End
+        # WIP: Testing - Start
+        saved_test_results = process_test_file('tmp/id_list_trunc.json')
         @record_ids_with_alternate_ids = saved_test_results
-        compare_and_adjust_id_lists
-        write_test_results_to_json('tmp/test_results_j14_2.json', @record_ids_with_alternate_ids)
+        batch_retrieve_metadata
+        write_test_results_to_json('tmp/test_results_j15.json', @retrieved_metadata)
+        # WIP: Testing - End
 
         # @pmc_oa_subset
         # Update these here now that :skipped is populated
@@ -284,16 +289,24 @@ module Tasks
       end
 
       def batch_retrieve_metadata
-        Rails.logger.info("Starting metadata retrieval for #{@pmc_oa_subset.size} records")
+        md_size = @record_ids_with_alternate_ids['pubmed'].size + @record_ids_with_alternate_ids['pmc'].size
+        Rails.logger.info("Starting metadata retrieval for #{md_size} records")
 
-        works_with_pmids = @pmc_oa_subset.select { |w| w['pmid'].present? }
-        works_with_pmcids = @pmc_oa_subset.select { |w| !w['pmid'].present?  && w['pmcid'].present? }
+        works_with_pmids = @record_ids_with_alternate_ids['pubmed']
+        works_with_pmcids = @record_ids_with_alternate_ids['pmc']
 
         [works_with_pmids, works_with_pmcids].each do |works|
           db = (works.equal?(works_with_pmids)) ? 'pubmed' : 'pmc'
           works.each_slice(200) do |batch|
-            ids = batch.map { |w| w['pmid'] || w['pmcid'].sub(/^PMC/, '') }
+            map_condition = (db == 'pubmed') ? 'pmid' : 'pmcid'
+            ids = batch.map do |w|
+              db == 'pubmed' ? w['pmid'] : w['pmcid'].delete_prefix('PMC')
+            end
             request_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=#{db}&id=#{ids.join(',')}&retmode=xml&tool=CDR&email=cdr@unc.edu"
+            # WIP: Remove later
+            message = "Fetching metadata for #{ids.join(', ')} from #{request_url}"
+            Rails.logger.info(message)
+            puts message
             res = HTTParty.get(request_url)
 
             if res.code != 200
