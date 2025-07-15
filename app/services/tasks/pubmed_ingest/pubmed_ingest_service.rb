@@ -58,17 +58,14 @@ module Tasks
 
       def ingest_publications
         # # WIP: Working as intended - Start 
-        # # Probably should retest - Start
         # # Hash array => { PMCID, Links to full-text OA content }
         @pmc_oa_subset = retrieve_oa_subset_within_date_range(@start_date, @end_date)
         write_test_results_to_json('tmp/test_pmc_oa_subset.json', @pmc_oa_subset)
         build_id_lists
         batch_retrieve_metadata
+        expand_pmc_oa_subset
         # Retrieve additional OA subset resources to account for publication lag
-        expand_pmc_oa_subset  
-        write_test_results_to_json('tmp/test_pmc_oa_subset_expanded.json', @pmc_oa_subset)
         # # WIP: Working as intended - End
-        # # Probably should retest - End
         # WIP: Testing - Start
         # @retrieved_metadata = process_xml_array_test_file('tmp/test_xml_arr.json')
         # write_test_results_to_json('tmp/test_results_j15.json', @retrieved_metadata)
