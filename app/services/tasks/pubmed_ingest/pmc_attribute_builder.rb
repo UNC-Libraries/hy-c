@@ -9,6 +9,14 @@ module Tasks
         new_pubmed_works.find { |row| row['pmid'] == pmid || row['pmcid'] == pmcid }
       end
 
+      def get_date_issued
+        pubdate = metadata.at_xpath('front/article-meta/pub-date[@pub-type="epub"]')
+        year  = pubdate&.at_xpath('year')&.text
+        month = pubdate&.at_xpath('month')&.text || 1
+        day   = pubdate&.at_xpath('day')&.text || 1
+        DateTime.new(year.to_i, month.to_i, day.to_i)
+      end
+
       private
 
       def generate_authors
@@ -48,18 +56,10 @@ module Tasks
       def apply_additional_basic_attributes
         article.title = [metadata.xpath('front/article-meta/title-group/article-title').text]
         article.abstract = [metadata.xpath('front/article-meta/abstract').text]
-        article.date_issued = get_date_issued
+        article.date_issued = get_date_issued.strftime('%Y-%m-%d')
         article.publisher = [metadata.at_xpath('front/journal-meta/publisher/publisher-name')&.text].compact.presence
         article.keyword = metadata.xpath('//kwd-group/kwd').map(&:text)
         article.funder = metadata.xpath('//funding-source/institution-wrap/institution').map(&:text)
-      end
-
-      def get_date_issued
-        pubdate = metadata.at_xpath('front/article-meta/pub-date[@pub-type="epub"]')
-        year  = pubdate&.at_xpath('year')&.text
-        month = pubdate&.at_xpath('month')&.text || 1
-        day   = pubdate&.at_xpath('day')&.text || 1
-        DateTime.new(year.to_i, month.to_i, day.to_i).strftime('%Y-%m-%d')
       end
 
       def set_identifiers

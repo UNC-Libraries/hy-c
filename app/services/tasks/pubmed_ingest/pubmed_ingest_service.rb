@@ -11,8 +11,10 @@ module Tasks
         raise ArgumentError, 'Missing required config keys' unless config['admin_set_title'] && config['depositor_onyen'] && config['attachment_results'] && config['start_date'] && config['end_date']
 
         @attachment_results = config['attachment_results'].symbolize_keys
-        @start_date = config['start_date'].strftime('%Y-%m-%d')
-        @end_date = config['end_date'].strftime('%Y-%m-%d')
+        @start_date = config['start_date']
+        @end_date = config['end_date']
+        @oa_fgci_start_date =  @start_date
+        @oa_fgci_end_date = @end_date
 
         @admin_set = ::AdminSet.where(title: config['admin_set_title'])&.first
         raise ActiveRecord::RecordNotFound, "AdminSet not found with title: #{config['admin_set_title']}" unless @admin_set
@@ -60,12 +62,20 @@ module Tasks
         # retrieve_pmc_ids_from_oa_subset
         # retrieve_alternate_ids_for_record_ids
         # compare_and_adjust_id_lists
+        # batch_retrieve_metadata
         # WIP: Working as intended - End
         # WIP: Testing - Start
-        saved_test_results = process_test_file('tmp/id_list_trunc.json')
-        @record_ids_with_alternate_ids = saved_test_results
-        batch_retrieve_metadata
-        write_test_results_to_json('tmp/test_results_j15.json', @retrieved_metadata)
+        @retrieved_metadata = process_xml_array_test_file('tmp/test_xml_arr.json')
+        # write_test_results_to_json('tmp/test_results_j15.json', @retrieved_metadata)
+        expand_date_range_for_full_text_retrieval
+        write_test_results_to_json('tmp/test_results_j15_2.json', 
+          { 
+            original_start_date: @start_date.strftime('%Y-%m-%d'),
+            original_end_date: @end_date.strftime('%Y-%m-%d'),
+            oa_fgci_start_date: @oa_fgci_start_date.strftime('%Y-%m-%d'),
+            oa_fgci_end_date: @oa_fgci_end_date.strftime('%Y-%m-%d')
+          })
+
         # WIP: Testing - End
 
         # @pmc_oa_subset
@@ -148,6 +158,27 @@ module Tasks
       end
 
       private
+
+      def process_xml_array_test_file(file_path)
+        complete_xml_array = []
+        message = "Processing test file: #{file_path}"
+        puts message
+        begin
+          file_content = File.read(file_path)
+          xml_array = JSON.parse(file_content)
+          xml_documents = xml_array.map { |xml_str| Nokogiri::XML(xml_str) }
+          complete_xml_array += xml_documents
+          message = "Successfully read test file: #{file_path}"
+          puts message
+        rescue StandardError => e
+          message = "Error parsing JSON from file #{file_path}: #{e.message}"
+          puts message
+          raise e
+        end
+        complete_xml_array
+      end
+
+
 
       # Read test json file and process into hash
       def process_test_file(file_path)
@@ -246,9 +277,9 @@ module Tasks
       # Retrieve PMCIDs for works within the specified date range and links to their full-text OA content
       def retrieve_oa_subset_within_date_range
         Rails.logger.info('[PubmedIngestService - retrieve_oa_subset] Starting OA metadata retrieval for PubMed works within the specified date range: ' \
-                            "#{@start_date} to #{@end_date}")
+                            "#{@start_date.strftime('%Y-%m-%d')} to #{@end_date.strftime('%Y-%m-%d')}")
         base_url = 'https://www.ncbi.nlm.nih.gov/pmc/utils/oa/oa.fcgi'
-        current_url = "#{base_url}?from=#{@start_date}&until=#{@end_date}"
+        current_url = "#{base_url}?from=#{@start_date.strftime('%Y-%m-%d')}&until=#{@end_date.strftime('%Y-%m-%d')}"
         loop do
           res = HTTParty.get(current_url)
 
@@ -287,6 +318,36 @@ module Tasks
         Rails.logger.info("[PubmedIngestService - retrieve_oa_subset] Completed OA metadata retrieval. Total records: #{@pmc_oa_subset.size}")
         @pmc_oa_subset
       end
+
+      # The OA FCGI endpoint does not accept a list of PMCIDs as an argument, so use the retrieved metadata to determine a date range
+      def expand_date_range_for_full_text_retrieval
+        Rails.logger.info("[PubmedIngestService - expand_date_range_for_full_text_retrieval] Setting date range for full-text retrieval: #{@start_date.strftime('%Y-%m-%d')} to #{@end_date.strftime('%Y-%m-%d')}")
+        @retrieved_metadata.each do |metadata|
+          next if is_pubmed?(metadata)
+
+          attribute_builder = PmcAttributeBuilder.new(metadata, nil, @admin_set, @depositor.uid)
+          date_issued = attribute_builder.get_date_issued
+          update_oa_fgci_date_range(date_issued)
+        end
+
+        # Provide a buffer of 2 years to account for lag between publication and full-text availability
+        @oa_fgci_end_date += 2.years
+      end
+
+      def update_oa_fgci_date_range(date_issued)
+        return unless date_issued.present?
+        default_date = DateTime.new(0000, 1, 1) # Default date, set in get_date_issued within attribute builders
+
+        if date_issued < @oa_fgci_start_date && date_issued > default_date
+          @oa_fgci_start_date = date_issued
+          Rails.logger.info("[PubmedIngestService - update_oa_fgci_date_range] Updated OA FGCI start date to: #{@oa_fgci_start_date}")
+        end
+        if date_issued > @oa_fgci_end_date
+          @oa_fgci_end_date = date_issued
+          Rails.logger.info("[PubmedIngestService - update_oa_fgci_date_range] Updated OA FGCI end date to: #{@oa_fgci_end_date}")
+        end
+      end
+
 
       def batch_retrieve_metadata
         md_size = @record_ids_with_alternate_ids['pubmed'].size + @record_ids_with_alternate_ids['pmc'].size
@@ -406,15 +467,15 @@ module Tasks
 
       # Retrieve IDs from the esearch.fcgi, which only supports the pubmed db
       def retrieve_pubmed_ids_within_date_range(retmax = 1000)
-        Rails.logger.info("[PubmedIngestService - retrieve_ids_within_date_range] Fetching IDs within date range: #{@start_date} - #{@end_date}")
+        Rails.logger.info("[PubmedIngestService - retrieve_ids_within_date_range] Fetching IDs within date range: #{@start_date.strftime('%Y-%m-%d')} - #{@end_date.strftime('%Y-%m-%d')}")
         base_url = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi'
         count = 0
         cursor = 0
         params = {
           retmax: retmax,
           db: 'pubmed',
-          mindate: @start_date,
-          maxdate: @end_date
+          mindate: @start_date.strftime('%Y-%m-%d'),
+          maxdate: @end_date.strftime('%Y-%m-%d')
         }
         loop do
           res = HTTParty.get(base_url, query: params.merge({ retstart: cursor}))

@@ -25,6 +25,10 @@ module Tasks
         raise NotImplementedError
       end
 
+      def get_date_issued
+        raise NotImplementedError
+      end
+
       private
 
       def set_basic_attributes
@@ -51,10 +55,6 @@ module Tasks
       end
 
       def apply_additional_basic_attributes
-        raise NotImplementedError
-      end
-
-      def get_date_issued
         raise NotImplementedError
       end
 
