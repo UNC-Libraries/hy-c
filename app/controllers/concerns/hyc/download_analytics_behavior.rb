@@ -18,7 +18,7 @@ module Hyc
             Rails.logger.warn("No work data found for fileset_id: #{fileset_id}. Skipping download tracking.")
             return
           end
-          
+
           medium = request.referrer.present? ? 'referral' : 'direct'
 
           client_ip = request.remote_ip
