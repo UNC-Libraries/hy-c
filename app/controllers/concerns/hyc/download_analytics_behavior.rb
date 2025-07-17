@@ -13,6 +13,12 @@ module Hyc
         end
         if Hyrax::Analytics.config.auth_token.present? && !request.url.match('thumbnail')
           Rails.logger.debug("Recording download event for #{fileset_id}")
+          # Return early for nil work data
+          if work_data.nil?
+            Rails.logger.warn("No work data found for fileset_id: #{fileset_id}. Skipping download tracking.")
+            return
+          end
+
           medium = request.referrer.present? ? 'referral' : 'direct'
 
           client_ip = request.remote_ip
