@@ -459,8 +459,8 @@ module Tasks
 
         def attribute_builder(metadata, article)
           is_pubmed?(metadata) ?
-            PubmedAttributeBuilder.new(metadata, article, @admin_set, @depositor.uid) :
-            PmcAttributeBuilder.new(metadata, article, @admin_set, @depositor.uid)
+            SharedUtilities::AttributeBuilders::PubmedAttributeBuilder.new(metadata, article, @admin_set, @depositor.uid) :
+            SharedUtilities::AttributeBuilders::PmcAttributeBuilder.new(metadata, article, @admin_set, @depositor.uid)
         end
 
         def generate_cdr_url_for_pubmed_identifier(skipped_row)

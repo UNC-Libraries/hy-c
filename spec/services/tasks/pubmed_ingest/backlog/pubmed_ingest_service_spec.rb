@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'rails_helper'
 
-RSpec.describe Tasks::PubmedIngest::PubmedBacklogIngestService do
+RSpec.describe Tasks::PubmedIngest::Backlog::PubmedIngestService do
   let(:logger_spy) { double('Logger').as_null_object }
   let(:admin_set) do
     FactoryBot.create(:admin_set, title: ['Open_Access_Articles_and_Book_Chapters'])
@@ -53,7 +53,7 @@ RSpec.describe Tasks::PubmedIngest::PubmedBacklogIngestService do
     end
     it 'successfully initializes with a valid config' do
       service = described_class.new(valid_config)
-      expect(service).to be_a(Tasks::PubmedIngest::PubmedBacklogIngestService)
+      expect(service).to be_a(Tasks::PubmedIngest::Backlog::PubmedIngestService)
     end
 
     it 'raises ArgumentError when admin_set_title is missing' do

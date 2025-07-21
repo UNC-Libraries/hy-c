@@ -9,7 +9,7 @@ RSpec.describe PubmedReportMailer, type: :mailer do
 
     let(:ingest_output) { JSON.parse(File.read(fixture_path), symbolize_names: true) }
 
-    let(:report) { Tasks::PubmedIngest::PubmedReportingService.generate_report(ingest_output) }
+    let(:report) { Tasks::PubmedIngest::SharedUtilities::PubmedReportingService.generate_report(ingest_output) }
 
     let(:mail) { described_class.pubmed_report_email(report) }
 
