@@ -9,7 +9,7 @@ task :pubmed_backlog_ingest, [:file_retrieval_directory, :output_dir, :admin_set
   file_retrieval_directory = Pathname.new(args[:file_retrieval_directory]).absolute? ?
                              args[:file_retrieval_directory] :
                              Rails.root.join(args[:file_retrieval_directory])
-  coordinator = Tasks::PubmedIngest::PubmedBacklogIngestCoordinatorService.new({
+  coordinator = Tasks::PubmedIngest::Backlog::PubmedIngestCoordinatorService.new({
     'admin_set_title' => args[:admin_set_title],
     'depositor_onyen' => DEPOSITOR,
     'file_retrieval_directory' => file_retrieval_directory,
@@ -24,10 +24,10 @@ task :pubmed_ingest, [:start_date, :end_date, :admin_set_title, :output_dir] => 
   start_date = Date.parse(args[:start_date])
   end_date = args[:end_date].present? ? Date.parse(args[:end_date]) : Date.today
   admin_set_title = args[:admin_set_title]
-  output_dir = args[:output_dir].present? ? 
+  output_dir = args[:output_dir].present? ?
                Pathname.new(args[:output_dir]).absolute : Rails.root.join('tmp')
-               
-  coordinator = Tasks::PubmedIngest::PubmedIngestCoordinatorService.new({
+
+  coordinator = Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService.new({
     'start_date' => start_date,
     'end_date' => end_date,
     'admin_set_title' => admin_set_title,
