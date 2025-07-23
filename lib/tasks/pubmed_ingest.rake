@@ -25,7 +25,7 @@ task :pubmed_ingest, [:start_date, :end_date, :admin_set_title, :output_dir] => 
   end_date = args[:end_date].present? ? Date.parse(args[:end_date]) : Date.today
   admin_set_title = args[:admin_set_title]
   output_dir = args[:output_dir].present? ?
-               Pathname.new(args[:output_dir]).absolute : Rails.root.join('tmp')
+               Pathname.new(args[:output_dir]).absolute? : Rails.root.join('tmp')
 
   coordinator = Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService.new({
     'start_date' => start_date,
