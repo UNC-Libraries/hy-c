@@ -25,6 +25,8 @@ module Tasks
               failed: 0
             }
           }
+          @pmc_id_path = File.join(@output_dir, 'pmc_ids.jsonl')
+          @pubmed_id_path = File.join(@output_dir, 'pubmed_ids.jsonl')
           @oa_subset_path = File.join(@output_dir, 'oa_subset.jsonl')
           @oa_extended_path = File.join(@output_dir, 'oa_subset_extended.jsonl')
           @pmc_id_path = File.join(@output_dir, 'pmc_ids.jsonl')
@@ -35,12 +37,19 @@ module Tasks
 
         def run
           write_intro_banner(config: @config)
+          id_retrieval_service = Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService.new(
+            start_date: @config['start_date'],
+            end_date: @config['end_date']
+            )
+          id_retrieval_service.retrieve_ids_within_date_range(path: @pubmed_id_path, db: 'pubmed')
+          id_retrieval_service.retrieve_ids_within_date_range(path: @pmc_id_path, db: 'pmc')
 
           # 1. Retrieve OA subset and write to JSONL file
-          oa_service = Tasks::PubmedIngest::Recurring::Utilities::OaSubsetService.new(start_date: @config['start_date'], end_date: @config['end_date'], output_path: @oa_subset_path)
-          oa_service.retrieve_oa_subset(start_date: @config['start_date'], end_date: @config['end_date'], output_path: @oa_subset_path)
+          # oa_service = Tasks::PubmedIngest::Recurring::Utilities::OaSubsetService.new(start_date: @config['start_date'], end_date: @config['end_date'], output_path: @oa_subset_path)
+          # oa_service.retrieve_oa_subset(start_date: @config['start_date'], end_date: @config['end_date'], output_path: @oa_subset_path)
           # Write OA subset to JSONL file
-          oa_service.expand_subset(buffer: 2.years, output_path: @oa_extended_path)
+          # oa_service.expand_subset(buffer: 2.years, output_path: @oa_extended_path, current_day: @results[:time])
+
 
           # 2. Extract PMCIDs and write to file
           # pmc_ids = oa_service.extract_pmc_ids # returns array
