@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
   def initialize(config:, results_tracker:)
+    @config = config
     @output_dir = config['output_dir']
     @record_ids = nil
     @results_tracker = results_tracker
@@ -14,10 +15,206 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
     unless SharedUtilities::DbType.valid?(db)
       raise ArgumentError, "Invalid database type: #{db}. Valid types are: #{SharedUtilities::DbType::ALL.join(', ')}"
     end
-    
+
     return if @record_ids.nil? || @record_ids.empty?
       # WIP: Print the number of records to be processed
-    puts "Processing #{@record_ids.size} records in batches of #{batch_size}."
+    puts "[batch_retrieve_and_process_metadata] Processing #{@record_ids.size} #{db} records in batches of #{batch_size}."
+    Rails.logger.info("[batch_retrieve_and_process_metadata] Processing #{@record_ids.size} #{db} records in batches of #{batch_size}.")
+    @record_ids.each_slice(batch_size) do |batch|
+      batch_ids = batch.map { |record| db == 'pubmed' ? record['pmid'] : record['pmcid']&.delete_prefix('PMC') }.compact
+      next if batch_ids.empty?
+      base_url = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi'
+      query_params = "?db=#{db}&id=#{batch_ids.join(',')}&retmode=xml&tool=CDR&email=cdr@unc.edu"
+      Rails.logger.info("[batch_retrieve_and_process_metadata] Fetching metadata for IDs: #{batch_ids.first(25).join(', ')}")
+      res = HTTParty.get("#{base_url}#{query_params}")
+
+      if res.code != 200
+        Rails.logger.error("[batch_retrieve_and_process_metadata] Failed to fetch for IDs: #{batch_ids.first(25).join(', ')}:" \
+        "#{res.code} - #{res.message}")
+      end
+
+      xml_doc = Nokogiri::XML(res.body)
+      handle_pmc_errors(xml_doc) if db == 'pmc' && xml_doc.xpath('//pmc-articleset/error').any?
+      handle_pubmed_errors(xml_doc, batch_ids) if db == 'pubmed'
+
+      current_batch = xml_doc.xpath(db == 'pubmed' ? '//PubmedArticle' : '//article')
+      process_batch(current_batch, db)
+
+        #Respect NCBI rate limits
+      sleep(0.34)
+    end
+
+    Rails.logger.info("[batch_retrieve_and_process_metadata] Completed processing #{@record_ids.size} #{db} records.")
   end
 
+  private
+
+  # Handles PMC errors by logging them and moving the alternate IDs to a file to retry later.
+  def handle_pmc_errors(xml_doc)
+    xml_doc.xpath('//pmc-articleset/error').each do |err|
+      pmcid = err['pmcid']
+      Rails.logger.warn("[MetadataIngestService] PMC error for #{pmcid}: #{err.text}")
+      move_to_pubmed_alternate_ids_file(retrieve_alternate_ids_for_doc(err))
+    end
+  end
+
+  def move_to_pubmed_alternate_ids_file(alternate_ids)
+    return if alternate_ids.nil? || alternate_ids.empty?
+
+    begin
+      File.open(File.join(@output_dir, 'pubmed_alternate_ids.jsonl'), 'a') do |file|
+        file.puts(alternate_ids)
+      end
+      Rails.logger.info("[MetadataIngestService] Moved #{alternate_ids.size} alternate IDs" \
+                          'to pubmed_alternate_ids.jsonl')
+      rescue => e
+        Rails.logger.error("[MetadataIngestService] Error writing to pubmed_alternate_ids.jsonl: #{e.message}")
+        Rails.logger.error("Backtrace: #{e.backtrace.join("\n")}")
+    end
+  end
+
+
+  # efetch doesn't return metadata for ids which have errors, handling it differently
+  def handle_pubmed_errors(xml_doc, ids)
+    returned_ids = xml_doc.xpath('//PubmedArticle').map do |article|
+      article.at_xpath('.//PMID')&.text
+    end.compact.to_set
+
+    missing_ids = ids.reject { |id| returned_ids.include?(id) }
+
+    unless missing_ids.empty?
+      Rails.logger.warn("[MetadataIngestService] PubMed EFetch missing #{missing_ids.size} of #{ids.size} IDs: #{missing_ids.first(10)}...")
+      missing_ids.each do |missing_id|
+        record_result(
+            category: :failed,
+            message: 'EFetch: PubMed record not found',
+            ids: { pmid: missing_id }
+        )
+      end
+    end
+  end
+
+  def process_batch(batch, db)
+    batch.each do |doc|
+      alternate_ids = { 'pmid' => nil, 'pmcid' => nil, 'doi' => nil}
+      begin
+        alternate_ids = retrieve_alternate_ids_for_doc(doc)
+        match = find_best_work_match(alternate_ids)
+        # Skip if work with these IDs already exists
+        if match&.dig(:work_id).present?
+            Rails.logger.info("[MetadataIngestService] Work with IDs #{alternate_ids.inspect} already exists: #{match[:work_id]}")
+            record_result(
+                category: :skipped,
+                message: 'Work already exists',
+                ids: alternate_ids,
+                article: WorkUtilsHelper.fetch_model_instance(match[:work_type], match[:work_id])
+            )
+            next
+        end
+
+        # If no match found, create a new article
+        Rails.logger.info("[MetadataIngestService] No existing work found for IDs: #{alternate_ids.inspect}. Creating new article.")
+
+        article = new_article(doc)
+        article.save!
+        # @result_tracker[:successfully_ingested] << {
+        #     ids: {
+        #         pmid: alternate_ids['pmid'],
+        #         pmcid: alternate_ids['pmcid'],
+        #         doi: alternate_ids['doi']
+        #     },
+        #     article: article
+        # }
+        # @result_tracker[:counts][:successfully_attached] += 1
+        record_result(
+            category: :successfully_attached,
+            message: 'Successfully attached PDF to article',
+            ids: alternate_ids,
+            article: article
+        )
+    rescue => e
+      Rails.logger.error("[MetadataIngestService] Error processing record: #{alternate_ids.inspect}, Error: #{e.message}")
+      Rails.logger.error("Backtrace: #{e.backtrace.join("\n")}")
+      article.destroy if article&.persisted
+    #   @result_tracker[:failed] << {
+    #       ids: alternate_ids,
+    #       message: e.message
+    #   }
+    #   @result_tracker[:counts][:failed] += 1
+      record_result(
+          category: :failed,
+          message: "#{e.message}",
+          ids: alternate_ids
+      )
+      end
+    end
+  end
+
+  def retrieve_alternate_ids_for_doc(doc)
+    begin
+      if is_pubmed?(doc)
+        pmid = doc.at_xpath('PubmedData/ArticleIdList/ArticleId[@IdType="pubmed"]')&.text
+        pmcid = doc.at_xpath('PubmedData/ArticleIdList/ArticleId[@IdType="pmc"]')&.text
+      else
+        pmid = doc.at_xpath('.//article-id[@pub-id-type="pmid"]')&.text
+        pmcid = doc.at_xpath('.//article-id[@pub-id-type="pmcid"]')&.text
+      end
+      @record_ids.find { |row| row['pmid'] == pmid || row['pmcid'] == pmcid }
+  rescue => e
+    Rails.logger.error("[MetadataIngestService] Error retrieving alternate IDs for document: #{e.message}")
+    Rails.logger.error("Backtrace: #{e.backtrace.join("\n")}")
+    puts "Error retrieving alternate IDs for document: #{e.message}"
+    puts "Backtrace: #{e.backtrace.join("\n")}"
+    nil
+    end
+  end
+
+  def new_article(metadata)
+    Rails.logger.debug('[MetadataIngestService] Initializing new article object')
+    article = Article.new
+    article.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
+    builder = attribute_builder(metadata, article)
+    builder.populate_article_metadata
+  end
+
+
+  def is_pubmed?(metadata)
+    metadata.name == 'PubmedArticle'
+  end
+
+  def attribute_builder(metadata, article)
+    is_pubmed?(metadata) ?
+    Tasks::PubmedIngest::SharedUtilities::AttributeBuilders::PubmedAttributeBuilder.new(metadata, article, @config['admin_set'], @config['depositor_onyen']) :
+    Tasks::PubmedIngest::SharedUtilities::AttributeBuilders::PmcAttributeBuilder.new(metadata, article, @config['admin_set'], @config['depositor_onyen'])
+  end
+
+  def record_result(category:, message:, ids: {}, article: nil)
+    row = {
+    'pdf_attached' => message,
+    'pmid' => ids['pmid'],
+    'pmcid' => ids['pmcid'],
+    'doi' => ids['doi'],
+    }
+    if article
+      row['article'] = article
+      row['cdr_url'] = generate_cdr_url_for_article(article)
+    end
+    @results_tracker[:counts][category] += 1
+    @results_tracker[category] << row
+  end
+
+  def generate_cdr_url_for_article(article)
+    "#{ENV['HYRAX_HOST']}#{Rails.application.routes.url_helpers.hyrax_article_path(article, host: ENV['HYRAX_HOST'])}"
+  end
+
+  def find_best_work_match(alternate_ids)
+          [:doi, :pmcid, :pmid].each do |key|
+            id = alternate_ids[key]
+            next if id.blank?
+
+            work_data = WorkUtilsHelper.fetch_work_data_by_alternate_identifier(id)
+            return work_data if work_data.present?
+          end
+          nil
+    end
 end

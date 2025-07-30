@@ -50,8 +50,12 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
       config: @config,
       results_tracker: @results
     )
-    md_ingest_service.load_ids_from_file(path: File.join(@output_dir, 'pubmed_alternate_ids.jsonl'))
-    md_ingest_service.batch_retrieve_and_process_metadata(batch_size: 100, db: 'pubmed')
+    # md_ingest_service.load_ids_from_file(path: File.join(@output_dir, 'pubmed_alternate_ids.jsonl'))
+    # md_ingest_service.batch_retrieve_and_process_metadata(batch_size: 100, db: 'pubmed')
+    md_ingest_service.load_ids_from_file(path: File.join(@output_dir, 'pmc_alternate_ids.jsonl'))
+    md_ingest_service.batch_retrieve_and_process_metadata(batch_size: 100, db: 'pmc')
+    flat_results = flatten_result_hash(@results)
+    JsonlFileUtils.write_jsonl(flat_results, File.join(@output_dir, 'result_out_pmc.jsonl'), mode: 'w')
     # id_retrieval_service = Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService.new(
     #   start_date: @config['start_date'],
     #   end_date: @config['end_date']
@@ -98,6 +102,18 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
 
   private
 
+  def flatten_result_hash(results)
+  flat = []
+  results.each do |category, value|
+    next unless [:skipped, :successfully_attached, :successfully_ingested, :failed].include?(category)
+    Array(value).each do |record|
+      flat << record.merge('category' => category.to_s)
+    end
+  end
+  flat
+  end
+
+
 
   def build_id_lists
     Rails.logger.info("[IdRetrievalService - build_id_lists] Retrieving record IDs for PubMed and PMC databases within the date range: #{@config['start_date'].strftime('%Y-%m-%d')} - #{@config['end_date'].strftime('%Y-%m-%d')}")
@@ -105,10 +121,10 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
       start_date: @config['start_date'],
       end_date: @config['end_date']
     )
-    # id_retrieval_service.retrieve_ids_within_date_range(output_path: File.join(@output_dir, 'pubmed_ids.jsonl'), db: 'pubmed')
-    # id_retrieval_service.retrieve_ids_within_date_range(output_path: File.join(@output_dir, 'pmc_ids.jsonl'), db: 'pmc')
-    # id_retrieval_service.stream_and_write_alternate_ids(input_path: File.join(@output_dir, 'pubmed_ids.jsonl'), output_path: File.join(@output_dir, 'pubmed_alternate_ids.jsonl'), db: 'pubmed')
-    # id_retrieval_service.stream_and_write_alternate_ids(input_path:  File.join(@output_dir, 'pmc_ids.jsonl'), output_path: File.join(@output_dir, 'pmc_alternate_ids.jsonl'), db: 'pmc')
+    id_retrieval_service.retrieve_ids_within_date_range(output_path: File.join(@output_dir, 'pubmed_ids.jsonl'), db: 'pubmed')
+    id_retrieval_service.retrieve_ids_within_date_range(output_path: File.join(@output_dir, 'pmc_ids.jsonl'), db: 'pmc')
+    id_retrieval_service.stream_and_write_alternate_ids(input_path: File.join(@output_dir, 'pubmed_ids.jsonl'), output_path: File.join(@output_dir, 'pubmed_alternate_ids.jsonl'), db: 'pubmed')
+    id_retrieval_service.stream_and_write_alternate_ids(input_path:  File.join(@output_dir, 'pmc_ids.jsonl'), output_path: File.join(@output_dir, 'pmc_alternate_ids.jsonl'), db: 'pmc')
     id_retrieval_service.adjust_id_lists(pubmed_path: File.join(@output_dir, 'pubmed_alternate_ids.jsonl'), pmc_path: File.join(@output_dir, 'pmc_alternate_ids.jsonl'))
   end
 
