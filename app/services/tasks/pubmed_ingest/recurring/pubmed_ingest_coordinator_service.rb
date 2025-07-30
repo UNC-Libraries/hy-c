@@ -27,6 +27,8 @@ module Tasks
           }
           @pmc_id_path = File.join(@output_dir, 'pmc_ids.jsonl')
           @pubmed_id_path = File.join(@output_dir, 'pubmed_ids.jsonl')
+          @pmc_alternate_ids_path = File.join(@output_dir, 'pmc_alternate_ids.jsonl')
+          @pubmed_alternate_ids_path = File.join(@output_dir, 'pubmed_alternate_ids.jsonl')
           @oa_subset_path = File.join(@output_dir, 'oa_subset.jsonl')
           @oa_extended_path = File.join(@output_dir, 'oa_subset_extended.jsonl')
           @pmc_id_path = File.join(@output_dir, 'pmc_ids.jsonl')
@@ -37,12 +39,13 @@ module Tasks
 
         def run
           write_intro_banner(config: @config)
-          id_retrieval_service = Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService.new(
-            start_date: @config['start_date'],
-            end_date: @config['end_date']
-            )
-          id_retrieval_service.retrieve_ids_within_date_range(path: @pubmed_id_path, db: 'pubmed')
-          id_retrieval_service.retrieve_ids_within_date_range(path: @pmc_id_path, db: 'pmc')
+          build_id_lists
+          # id_retrieval_service = Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService.new(
+          #   start_date: @config['start_date'],
+          #   end_date: @config['end_date']
+          #   )
+          # id_retrieval_service.retrieve_ids_within_date_range(path: @pubmed_id_path, db: 'pubmed')
+          # id_retrieval_service.retrieve_ids_within_date_range(path: @pmc_id_path, db: 'pmc')
 
           # 1. Retrieve OA subset and write to JSONL file
           # oa_service = Tasks::PubmedIngest::Recurring::Utilities::OaSubsetService.new(start_date: @config['start_date'], end_date: @config['end_date'], output_path: @oa_subset_path)
@@ -83,6 +86,19 @@ module Tasks
 
 
         private
+
+
+        def build_id_lists
+          Rails.logger.info("[IdRetrievalService - build_id_lists] Retrieving record IDs for PubMed and PMC databases within the date range: #{@config['start_date'].strftime('%Y-%m-%d')} - #{@config['end_date'].strftime('%Y-%m-%d')}")
+          id_retrieval_service = Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService.new(
+            start_date: @config['start_date'],
+            end_date: @config['end_date']
+          )
+          id_retrieval_service.retrieve_ids_within_date_range(output_path: File.join(@output_dir, 'pubmed_ids.jsonl'), db: 'pubmed')
+          id_retrieval_service.retrieve_ids_within_date_range(output_path: File.join(@output_dir, 'pmc_ids.jsonl'), db: 'pmc')
+          id_retrieval_service.stream_and_write_alternate_ids(input_path: File.join(@output_dir, 'pubmed_ids.jsonl'), output_path: File.join(@output_dir, 'pubmed_alternate_ids.jsonl'), db: 'pubmed')
+          id_retrieval_service.stream_and_write_alternate_ids(input_path:  File.join(@output_dir, 'pmc_ids.jsonl'), output_path: File.join(@output_dir, 'pmc_alternate_ids.jsonl'), db: 'pmc')
+        end
 
         def process_file_matches
           encountered_alternate_ids = []

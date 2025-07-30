@@ -220,7 +220,7 @@ module Tasks
           @record_ids_with_alternate_ids['pubmed'].dup.each do |alternate_id_hash|
             # puts "Processing PubMed alternate ID: #{alternate_id_hash.inspect}"
             next if alternate_id_hash['pmcid'].blank?
-            # Add hash to the PMC list if none of the PubMed hashes have the same PMCID
+            # Add hash to the PMC list if the PMCID is not already present
             if @record_ids_with_alternate_ids['pmc'].none? { |pmc_hash| pmc_hash['pmcid'] == alternate_id_hash['pmcid'] }
               @record_ids_with_alternate_ids['pmc'] << alternate_id_hash
             end
