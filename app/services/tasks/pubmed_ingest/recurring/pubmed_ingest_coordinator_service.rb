@@ -94,10 +94,11 @@ module Tasks
             start_date: @config['start_date'],
             end_date: @config['end_date']
           )
-          id_retrieval_service.retrieve_ids_within_date_range(output_path: File.join(@output_dir, 'pubmed_ids.jsonl'), db: 'pubmed')
-          id_retrieval_service.retrieve_ids_within_date_range(output_path: File.join(@output_dir, 'pmc_ids.jsonl'), db: 'pmc')
-          id_retrieval_service.stream_and_write_alternate_ids(input_path: File.join(@output_dir, 'pubmed_ids.jsonl'), output_path: File.join(@output_dir, 'pubmed_alternate_ids.jsonl'), db: 'pubmed')
-          id_retrieval_service.stream_and_write_alternate_ids(input_path:  File.join(@output_dir, 'pmc_ids.jsonl'), output_path: File.join(@output_dir, 'pmc_alternate_ids.jsonl'), db: 'pmc')
+          # id_retrieval_service.retrieve_ids_within_date_range(output_path: File.join(@output_dir, 'pubmed_ids.jsonl'), db: 'pubmed')
+          # id_retrieval_service.retrieve_ids_within_date_range(output_path: File.join(@output_dir, 'pmc_ids.jsonl'), db: 'pmc')
+          # id_retrieval_service.stream_and_write_alternate_ids(input_path: File.join(@output_dir, 'pubmed_ids.jsonl'), output_path: File.join(@output_dir, 'pubmed_alternate_ids.jsonl'), db: 'pubmed')
+          # id_retrieval_service.stream_and_write_alternate_ids(input_path:  File.join(@output_dir, 'pmc_ids.jsonl'), output_path: File.join(@output_dir, 'pmc_alternate_ids.jsonl'), db: 'pmc')
+          id_retrieval_service.adjust_id_lists(pubmed_path: File.join(@output_dir, 'pubmed_alternate_ids.jsonl'), pmc_path: File.join(@output_dir, 'pmc_alternate_ids.jsonl'))
         end
 
         def process_file_matches

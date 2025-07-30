@@ -84,14 +84,14 @@ module Tasks
                                   'pmcid' => record['pmcid'],
                                   'doi' => record['doi'],
                                   'error' => record['status'],
-                                  'cdr_url' => generate_cdr_url_for_pubmed_identifier({ 'pmid' => record['pmid'] })
+                                  'cdr_url' => generate_cdr_url_for_pubmed_identifier(id_hash: { 'pmid' => record['pmid'] })
                                 }
               else
                 {
                   'pmid' => record['pmid'],
                   'pmcid' => record['pmcid'],
                   'doi' => record['doi'],
-                  'cdr_url' => generate_cdr_url_for_pubmed_identifier({ 'pmid' => record['pmid'], 'pmcid' => record['pmcid'] })
+                  'cdr_url' => generate_cdr_url_for_pubmed_identifier(id_hash: { 'pmid' => record['pmid'], 'pmcid' => record['pmcid'] })
                 }
               end
               puts "Alternate IDs for #{record['id']}: #{alternate_ids.inspect}"
@@ -104,8 +104,8 @@ module Tasks
             puts e.backtrace.join("\n")
           end
 
-          def generate_cdr_url_for_pubmed_identifier(skipped_row)
-            identifier = skipped_row['pmcid'] || skipped_row['pmid']
+          def generate_cdr_url_for_pubmed_identifier(id_hash:)
+            identifier = id_hash['pmcid'] || id_hash['pmid']
             raise ArgumentError, 'No identifier (PMCID or PMID) found in row' unless identifier.present?
 
             result = Hyrax::SolrService.get(
@@ -124,6 +124,42 @@ module Tasks
           rescue => e
             Rails.logger.warn("[generate_cdr_url_for_pubmed_identifier] Failed for identifier: #{identifier}, error: #{e.message}")
             nil
+          end
+
+          def adjust_id_lists(pubmed_path:, pmc_path:)
+            # Load and parse records
+            pubmed_records = File.readlines(pubmed_path).map { |line| JSON.parse(line) }
+            pmc_records = File.readlines(pmc_path).map { |line| JSON.parse(line) }
+
+            original_pubmed_record_size = pubmed_records.size
+            original_pmc_record_size = pmc_records.size
+
+            # Set of known PMCIDs
+            pmc_ids_seen = Set.new(pmc_records.map { |rec| rec['pmcid'] }.compact)
+
+            # If any records in the PMCID set only have PMIDs, move it to the pubmed records
+            new_pubmed_records = pmc_records.select { |r| r['pmcid'].blank? }
+
+            # Move PubMed records with a unique PMCID into the PMC set
+            new_pmc_records, remaining_pubmed_records = pubmed_records.partition do |record|
+              pmcid = record['pmcid']
+              pmcid.present? && !pmc_ids_seen.include?(pmcid)
+            end
+
+            # Track new PMCID entries and update PMC list
+            new_pmc_records.each { |r| pmc_ids_seen << r['pmcid'] }
+            pmc_records.concat(new_pmc_records)
+            pmc_records.reject! { |r| r['pmcid'].blank? }
+            pmc_records.uniq!
+            remaining_pubmed_records.concat(new_pubmed_records)
+            remaining_pubmed_records.uniq!
+
+            # Overwrite files with adjusted lists
+            File.open(pubmed_path, 'w') { |f| remaining_pubmed_records.each { |r| f.puts(r.to_json) } }
+            File.open(pmc_path, 'w') { |f| pmc_records.each { |r| f.puts(r.to_json) } }
+
+            Rails.logger.info("[adjust_id_lists_in_memory] Adjusted ID lists - PubMed: #{original_pubmed_record_size} to #{remaining_pubmed_records.size} records, PMC: #{original_pmc_record_size} to #{pmc_records.size} records")
+            puts "[adjust_id_lists_in_memory] Adjusted ID lists - PubMed: #{original_pubmed_record_size} to #{remaining_pubmed_records.size} records, PMC: #{original_pmc_record_size} to #{pmc_records.size} records"
           end
         end
       end
