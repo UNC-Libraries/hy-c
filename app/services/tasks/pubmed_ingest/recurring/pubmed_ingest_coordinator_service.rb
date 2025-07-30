@@ -42,10 +42,16 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
   def run
     # Working Section:
     # Create output directory using the date and time
-    build_id_lists
+    # build_id_lists
 
 
     # WIP:
+    md_ingest_service = Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService.new(
+      config: @config,
+      results_tracker: @results
+    )
+    md_ingest_service.load_ids_from_file(path: File.join(@output_dir, 'pubmed_alternate_ids.jsonl'))
+    md_ingest_service.batch_retrieve_and_process_metadata(batch_size: 100, db: 'pubmed')
     # id_retrieval_service = Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService.new(
     #   start_date: @config['start_date'],
     #   end_date: @config['end_date']
