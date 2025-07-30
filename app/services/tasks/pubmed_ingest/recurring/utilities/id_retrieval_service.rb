@@ -127,10 +127,9 @@ module Tasks
           end
 
           def adjust_id_lists(pubmed_path:, pmc_path:)
-            # Load and parse records
+            # Load and parse records, sizes
             pubmed_records = File.readlines(pubmed_path).map { |line| JSON.parse(line) }
             pmc_records = File.readlines(pmc_path).map { |line| JSON.parse(line) }
-
             original_pubmed_record_size = pubmed_records.size
             original_pmc_record_size = pmc_records.size
 
@@ -151,6 +150,7 @@ module Tasks
             pmc_records.concat(new_pmc_records)
             pmc_records.reject! { |r| r['pmcid'].blank? }
             pmc_records.uniq!
+            # Update pubmed list
             remaining_pubmed_records.concat(new_pubmed_records)
             remaining_pubmed_records.uniq!
 
