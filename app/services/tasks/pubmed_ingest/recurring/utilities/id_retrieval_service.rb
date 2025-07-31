@@ -155,6 +155,11 @@ class Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService
   end
 
   def adjust_id_lists(pubmed_path:, pmc_path:)
+    if @tracker['progress']['adjust_id_lists']['completed']
+      LogUtilsHelper.double_log("ID lists already adjusted. Skipping adjustment step.", :info, tag: 'adjust_id_lists')
+      return
+    end
+
     LogUtilsHelper.double_log('Adjusting ID lists in memory for PubMed and PMC databases', :info, tag: 'adjust_id_lists')
     LogUtilsHelper.double_log("PubMed path: #{pubmed_path}, PMC path: #{pmc_path}", :info, tag: 'adjust_id_lists')
     # Load and parse records, sizes
@@ -163,31 +168,40 @@ class Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService
     original_pubmed_record_size = pubmed_records.size
     original_pmc_record_size = pmc_records.size
 
-    # Set of known PMCIDs
-    pmc_ids_seen = Set.new(pmc_records.map { |rec| rec['pmcid'] }.compact)
-
-    # If any records in the PMCID set only have PMIDs, move it to the pubmed records
+    # If any records in the PMCID set only have PMIDs, move it to the pubmed records later
     new_pubmed_records = pmc_records.select { |r| r['pmcid'].blank? }
 
     # Move PubMed records with a unique PMCID into the PMC set
     new_pmc_records, remaining_pubmed_records = pubmed_records.partition do |record|
-      pmcid = record['pmcid']
-      pmcid.present? && !pmc_ids_seen.include?(pmcid)
+      record['pmcid'].present?
     end
 
-    # Track new PMCID entries and update PMC list
-    new_pmc_records.each { |r| pmc_ids_seen << r['pmcid'] }
+    # Update PMC list and pubmed lists in memory
     pmc_records.concat(new_pmc_records)
     pmc_records.reject! { |r| r['pmcid'].blank? }
     pmc_records.uniq!
-    # Update pubmed list
     remaining_pubmed_records.concat(new_pubmed_records)
     remaining_pubmed_records.uniq!
 
     # Overwrite files with adjusted lists
-    File.open(pubmed_path, 'w') { |f| remaining_pubmed_records.each { |r| f.puts(r.to_json) } }
-    File.open(pmc_path, 'w') { |f| pmc_records.each { |r| f.puts(r.to_json) } }
+    File.open(pubmed_path, 'w') { |f| remaining_pubmed_records.each_with_index do |record, index|
+                                        record['index'] = index
+                                        f.puts(record.to_json)
+                                      end
+    }
 
+    File.open(pmc_path, 'w') { |f| pmc_records.each_with_index do |record, index|
+                                     record['index'] = index
+                                     f.puts(record.to_json)
+                                   end
+    }
+
+    @tracker['progress']['adjust_id_lists']['completed'] = true
+    @tracker['progress']['adjust_id_lists']['pubmed']['original_size'] = original_pubmed_record_size
+    @tracker['progress']['adjust_id_lists']['pubmed']['adjusted_size'] = remaining_pubmed_records.size
+    @tracker['progress']['adjust_id_lists']['pmc']['original_size'] = original_pmc_record_size
+    @tracker['progress']['adjust_id_lists']['pmc']['adjusted_size'] = pmc_records.size
+    @tracker.save
     LogUtilsHelper.double_log("Adjusted ID lists - PubMed: #{original_pubmed_record_size} to #{remaining_pubmed_records.size} records, PMC: #{original_pmc_record_size} to #{pmc_records.size} records", :info, tag: 'adjust_id_lists_in_memory')
   end
 end

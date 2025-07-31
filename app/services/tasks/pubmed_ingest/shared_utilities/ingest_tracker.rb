@@ -95,6 +95,11 @@ class Tasks::PubmedIngest::SharedUtilities::IngestTracker
             'pubmed' => { 'cursor' => 0, 'completed' => false },
             'pmc' => { 'cursor' => 0, 'completed' => false }
         },
+        'adjust_id_lists' => {
+            'completed' => false,
+            'pubmed' => { 'original_size' => 0, 'adjusted_size' => 0 },
+            'pmc' => { 'original_size' => 0, 'adjusted_size' => 0 }
+        }
         }
     }
   end
