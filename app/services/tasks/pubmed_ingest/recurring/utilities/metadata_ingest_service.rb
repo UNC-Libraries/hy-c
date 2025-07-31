@@ -102,14 +102,14 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
         match = find_best_work_match(alternate_ids)
         # Skip if work with these IDs already exists
         if match&.dig(:work_id).present?
-            Rails.logger.info("[MetadataIngestService] Work with IDs #{alternate_ids.inspect} already exists: #{match[:work_id]}")
-            record_result(
-                category: :skipped,
-                message: 'Work already exists',
-                ids: alternate_ids,
-                article: WorkUtilsHelper.fetch_model_instance(match[:work_type], match[:work_id])
-            )
-            next
+          Rails.logger.info("[MetadataIngestService] Work with IDs #{alternate_ids.inspect} already exists: #{match[:work_id]}")
+          record_result(
+              category: :skipped,
+              message: 'Work already exists',
+              ids: alternate_ids,
+              article: WorkUtilsHelper.fetch_model_instance(match[:work_type], match[:work_id])
+          )
+          next
         end
 
         # If no match found, create a new article
@@ -208,13 +208,13 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
   end
 
   def find_best_work_match(alternate_ids)
-          [:doi, :pmcid, :pmid].each do |key|
-            id = alternate_ids[key]
-            next if id.blank?
+    [:doi, :pmcid, :pmid].each do |key|
+      id = alternate_ids[key]
+      next if id.blank?
 
-            work_data = WorkUtilsHelper.fetch_work_data_by_alternate_identifier(id)
-            return work_data if work_data.present?
-          end
-          nil
+      work_data = WorkUtilsHelper.fetch_work_data_by_alternate_identifier(id)
+      return work_data if work_data.present?
     end
+    nil
+  end
 end

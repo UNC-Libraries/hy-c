@@ -151,16 +151,16 @@ module Tasks
 
       # Helper methods
 
-      def flatten_result_hash(results)
-        flat = []
-        results.each do |category, value|
-          next unless [:skipped, :successfully_attached, :successfully_ingested, :failed].include?(category)
-          Array(value).each do |record|
-            flat << record.merge('category' => category.to_s)
+        def flatten_result_hash(results)
+          flat = []
+          results.each do |category, value|
+            next unless [:skipped, :successfully_attached, :successfully_ingested, :failed].include?(category)
+            Array(value).each do |record|
+              flat << record.merge('category' => category.to_s)
+            end
           end
+          flat
         end
-        flat
-      end
 
         def find_best_work_match(alternate_ids)
           [:doi, :pmcid, :pmid].each do |key|

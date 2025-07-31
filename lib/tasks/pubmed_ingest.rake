@@ -3,6 +3,7 @@
 # 1. Script uses PMC-OAI API to retrieve metadata and make comparisons of alternate IDs. (PMCID, PMID)
 # 2. PMC requests scripts making >100 requests be ran outside of peak hours. (5 AM - 9 PM)
 DEPOSITOR = ENV['DIMENSIONS_INGEST_DEPOSITOR_ONYEN']
+TRACKER_FILENAME = 'ingest_tracker.json'
 desc 'Ingest new PubMed PDFs from the backlog and attach them to Hyrax works if matched'
 task :pubmed_backlog_ingest, [:file_retrieval_directory, :output_dir, :admin_set_title] => :environment do |task, args|
   return unless valid_args('pubmed_ingest', args[:file_retrieval_directory], args[:output_dir], args[:admin_set_title])
@@ -19,9 +20,9 @@ task :pubmed_backlog_ingest, [:file_retrieval_directory, :output_dir, :admin_set
 end
 
 desc 'Ingest works from the PubMed API within the specified date range'
-task :pubmed_ingest, [:start_date, :end_date, :admin_set_title, :output_dir] => :environment do |task, args|
+task :pubmed_ingest, [:start_date, :end_date, :admin_set_title, :resume, :output_dir] => :environment do |task, args|
   return unless valid_args('pubmed_ingest', args[:start_date], args[:admin_set_title])
-  # WIP: Hardcode time for testing purposes
+  # WIP: Hardcode time for testing purposes (Remove Later)
   # script_start_time = Time.now
   script_start_time = Time.parse('2023-10-01 12:00:00')
   start_date = Date.parse(args[:start_date])
@@ -30,6 +31,7 @@ task :pubmed_ingest, [:start_date, :end_date, :admin_set_title, :output_dir] => 
   output_dir = args[:output_dir].present? ?
                Pathname.new(args[:output_dir]).absolute? : Rails.root.join('tmp')
   output_dir = output_dir.join("pubmed_ingest_#{script_start_time.strftime('%Y-%m-%d_%H-%M-%S')}")
+  resume_flag = ActiveModel::Type::Boolean.new.cast(args[:resume])
   config = {
     'start_date' => start_date,
     'end_date' => end_date,
@@ -39,8 +41,26 @@ task :pubmed_ingest, [:start_date, :end_date, :admin_set_title, :output_dir] => 
     'time' => script_start_time
   }
   write_intro_banner(config: config)
-  coordinator = Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService.new(config)
   FileUtils.mkdir_p(output_dir)
+
+  if resume_flag
+    LogUtilsHelper.double_log('Resume flag is set. Attempting to resume PubMed ingest from previous state.', :info, tag: 'PubMed Ingest')
+    previous_state = load_track_json(config: config)
+
+    if previous_state
+      previous_state['restart_time'] = config['time'].strftime('%Y-%m-%d %H:%M:%S')
+      config.merge!(previous_state)
+      LogUtilsHelper.double_log("Resuming from existing state: #{previous_state}", :info, tag: 'PubMed Ingest')
+    else
+      LogUtilsHelper.double_log('No valid state found. Initializing new ingest tracker.', :warn, tag: 'PubMed Ingest')
+      init_track_json(config: config)
+    end
+  else
+    LogUtilsHelper.double_log('Resume flag is not set. Initializing new ingest tracker.', :info, tag: 'PubMed Ingest')
+    init_track_json(config: config)
+  end
+
+  coordinator = Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService.new(config)
   res = coordinator.run
 end
 
@@ -65,12 +85,47 @@ def write_intro_banner(config:)
     "  Date Range: #{config['start_date']} to #{config['end_date']}",
     '=' * 80
   ]
-  ingest_parameters_path = File.join(config['output_dir'], 'ingest_parameters.txt')
-  File.open(ingest_parameters_path, 'w') do |file|
-    banner_lines.each do |line|
-      puts line
-      Rails.logger.info(line)
-      file.puts(line)
-    end
+  banner_lines.each do |line|
+    puts line
+    Rails.logger.info(line)
+  end
+end
+
+def init_track_json(config:)
+  json_path = File.join(config['output_dir'], TRACKER_FILENAME)
+  track = {
+    'start_time' => config['time'].strftime('%Y-%m-%d %H:%M:%S'),
+    'restart_time' => nil,
+    'date_range' => {
+      'start' => config['start_date'].strftime('%Y-%m-%d'),
+      'end' => config['end_date'].strftime('%Y-%m-%d')
+    },
+    'admin_set_title' => config['admin_set_title'],
+    'depositor_onyen' => config['depositor_onyen'],
+    'output_dir' => config['output_dir'],
+    'progress' => nil
+  }
+  File.open(json_path, 'w', encoding: 'utf-8') do |file|
+    file.puts(track.to_json)
+  end
+  config.merge!(track)
+end
+
+def load_track_json(config:)
+  json_path = File.join(config['output_dir'], TRACKER_FILENAME)
+  if !File.exist?(json_path)
+    LogUtilsHelper.double_log("Ingest tracker JSON file not found: #{json_path}", :warn, tag: 'PubMed Ingest')
+    return nil
+  end
+
+  begin
+    content = File.read(json_path, encoding: 'utf-8')
+    JSON.parse(content)
+  rescue JSON::ParserError => e
+    LogUtilsHelper.double_log("Failed to parse ingest tracker JSON: #{e.message}", :error, tag: 'PubMed Ingest')
+    nil
+  rescue => e
+    LogUtilsHelper.double_log("Error reading ingest tracker: #{e.class} - #{e.message}", :error, tag: 'PubMed Ingest')
+    nil
   end
 end

@@ -103,14 +103,14 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
   private
 
   def flatten_result_hash(results)
-  flat = []
-  results.each do |category, value|
-    next unless [:skipped, :successfully_attached, :successfully_ingested, :failed].include?(category)
-    Array(value).each do |record|
-      flat << record.merge('category' => category.to_s)
+    flat = []
+    results.each do |category, value|
+      next unless [:skipped, :successfully_attached, :successfully_ingested, :failed].include?(category)
+      Array(value).each do |record|
+        flat << record.merge('category' => category.to_s)
+      end
     end
-  end
-  flat
+    flat
   end
 
 
