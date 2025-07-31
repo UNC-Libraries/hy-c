@@ -22,7 +22,7 @@ task :pubmed_ingest_help do
       RESUME=true \\
       FORCE_OVERWRITE=false \\
       OUTPUT_DIR=tmp/ingest_out \\
-      bundle exec rake pubmed_ingest:with_flags
+      bundle exec rake pubmed_ingest:with_env_args
 
     Flags:
       START_DATE         (required)  - Start date for ingest range
