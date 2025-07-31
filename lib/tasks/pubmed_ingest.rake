@@ -13,6 +13,7 @@ task 'pubmed_ingest' => :environment do
     opts.on('--start-date DATE', 'Start date for ingest (required)') { |v| options[:start_date] = v }
     opts.on('--end-date DATE', 'End date for ingest (optional)') { |v| options[:end_date] = v }
     opts.on('--admin-set-title TITLE', 'Admin Set title (required)') { |v| options[:admin_set_title] = v }
+    opts.on('--depositor ONYEN', 'Depositor onyen (optional, defaults to ENV["PUBMED_INGEST_DEPOSITOR_ONYEN"])') { |v| options[:depositor_onyen] = v || DEPOSITOR }
     opts.on('--resume [BOOLEAN]', 'Resume from tracker file (optional, automatically detected in specified output directory)') do |val|
       options[:resume] = ActiveModel::Type::Boolean.new.cast(val)
     end
@@ -68,7 +69,7 @@ task :pubmed_backlog_ingest, [:file_retrieval_directory, :output_dir, :admin_set
                              Rails.root.join(args[:file_retrieval_directory])
   coordinator = Tasks::PubmedIngest::Backlog::PubmedIngestCoordinatorService.new({
     'admin_set_title' => args[:admin_set_title],
-    'depositor_onyen' => DEPOSITOR,
+    'depositor_onyen' => args[:depositor_onyen],
     'file_retrieval_directory' => file_retrieval_directory,
     'output_dir' => args[:output_dir]
   })
@@ -80,6 +81,7 @@ def build_pubmed_ingest_config_and_tracker(args:)
   start_date       = args[:start_date]
   end_date         = args[:end_date]
   admin_set_title  = args[:admin_set_title]
+  depositor_onyen  = args[:depositor_onyen]
   resume_flag      = ActiveModel::Type::Boolean.new.cast(args[:resume])
   force_overwrite  = ActiveModel::Type::Boolean.new.cast(args[:force_overwrite])
   raw_output_dir   = args[:output_dir]
@@ -158,7 +160,7 @@ def build_pubmed_ingest_config_and_tracker(args:)
     'start_date' => parsed_start,
     'end_date' => parsed_end,
     'admin_set_title' => admin_set_title,
-    'depositor_onyen' => DEPOSITOR,
+    'depositor_onyen' => depositor_onyen,
     'output_dir' => output_dir.to_s,
     'time' => script_start_time,
   }

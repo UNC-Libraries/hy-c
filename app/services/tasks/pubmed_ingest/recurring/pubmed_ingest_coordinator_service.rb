@@ -150,6 +150,10 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
       @tracker.save
     end
 
+    id_retrieval_service.adjust_id_lists(
+      pubmed_path: File.join(@output_dir, 'pubmed_alternate_ids.jsonl'),
+      pmc_path: File.join(@output_dir, 'pmc_alternate_ids.jsonl')
+    )
     LogUtilsHelper.double_log("ID lists built successfully. Output directory: #{@output_dir}", :info, tag: 'build_id_lists')
   end
 

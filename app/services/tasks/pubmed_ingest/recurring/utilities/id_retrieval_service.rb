@@ -155,6 +155,8 @@ class Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService
   end
 
   def adjust_id_lists(pubmed_path:, pmc_path:)
+    LogUtilsHelper.double_log('Adjusting ID lists in memory for PubMed and PMC databases', :info, tag: 'adjust_id_lists')
+    LogUtilsHelper.double_log("PubMed path: #{pubmed_path}, PMC path: #{pmc_path}", :info, tag: 'adjust_id_lists')
     # Load and parse records, sizes
     pubmed_records = File.readlines(pubmed_path).map { |line| JSON.parse(line) }
     pmc_records = File.readlines(pmc_path).map { |line| JSON.parse(line) }
