@@ -6,7 +6,8 @@ class Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService
   end
 
   def retrieve_ids_within_date_range(output_path:, db:, retmax: 1000)
-    Rails.logger.info("[retrieve_ids_within_date_range] Fetching IDs within date range: #{@start_date.strftime('%Y-%m-%d')} - #{@end_date.strftime('%Y-%m-%d')} for #{db} database")
+    # Rails.logger.info("[retrieve_ids_within_date_range] Fetching IDs within date range: #{@start_date.strftime('%Y-%m-%d')} - #{@end_date.strftime('%Y-%m-%d')} for #{db} database")
+    LogUtilsHelper.double_log("Fetching IDs within date range: #{@start_date.strftime('%Y-%m-%d')} - #{@end_date.strftime('%Y-%m-%d')} for #{db} database", :info, tag: 'retrieve_ids_within_date_range')
     base_url = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi'
     count = 0
     cursor = 0
@@ -21,7 +22,8 @@ class Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService
         res = HTTParty.get(base_url, query: params.merge({ retstart: cursor }))
         puts "Response code: #{res.code}, message: #{res.message}, URL: #{base_url}?#{params.merge({ retstart: cursor }).to_query}"
         if res.code != 200
-          Rails.logger.error("[retrieve_ids_within_date_range] Failed to retrieve IDs: #{res.code} - #{res.message}")
+          # Rails.logger.error("[retrieve_ids_within_date_range] Failed to retrieve IDs: #{res.code} - #{res.message}")
+          LogUtilsHelper.double_log("Failed to retrieve IDs: #{res.code} - #{res.message}", :error, tag: 'retrieve_ids_within_date_range')
           break
         end
         parsed_response = Nokogiri::XML(res.body)
@@ -39,11 +41,13 @@ class Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService
         break if cursor > parsed_response.xpath('//Count').text.to_i
       end
     end
-    Rails.logger.info("[retrieve_ids_within_date_range] Retrieved #{count} IDs from #{db} database")
+    # Rails.logger.info("[retrieve_ids_within_date_range] Retrieved #{count} IDs from #{db} database")
+    LogUtilsHelper.double_log("Retrieved #{count} IDs from #{db} database", :info, tag: 'retrieve_ids_within_date_range')
   end
 
   def stream_and_write_alternate_ids(input_path:, output_path:, db:, batch_size: 200)
-    Rails.logger.info("[stream_and_write_alternate_ids] Streaming and writing alternate IDs from #{input_path} to #{output_path}")
+    # Rails.logger.info("[stream_and_write_alternate_ids] Streaming and writing alternate IDs from #{input_path} to #{output_path}")
+    LogUtilsHelper.double_log("Streaming and writing alternate IDs from #{input_path} to #{output_path} for #{db} database", :info, tag: 'stream_and_write_alternate_ids')
     buffer = []
     File.open(output_path, 'w') do |output_file|
       File.foreach(input_path) do |line|
@@ -56,7 +60,8 @@ class Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService
       end
       write_batch_alternate_ids(ids: buffer, db: db, output_file: output_file) unless buffer.empty?
     end
-    Rails.logger.info("[stream_and_write_alternate_ids] Finished writing alternate IDs to #{output_path} for #{db} database")
+    # Rails.logger.info("[stream_and_write_alternate_ids] Finished writing alternate IDs to #{output_path} for #{db} database")
+    LogUtilsHelper.double_log("Finished writing alternate IDs to #{output_path} for #{db} database", :info, tag: 'stream_and_write_alternate_ids')
   end
 
   def write_batch_alternate_ids(ids:, db:, output_file:)
@@ -92,10 +97,12 @@ class Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService
       output_file.puts(alternate_ids.to_json) if alternate_ids.values.any?(&:present?)
     end
   rescue StandardError => e
-    Rails.logger.error("[IdRetrievalService] Error converting IDs: #{e.message}")
-    Rails.logger.error e.backtrace.join("\n")
-    puts "Error converting IDs: #{e.message}"
-    puts e.backtrace.join("\n")
+    # Rails.logger.error("[IdRetrievalService] Error converting IDs: #{e.message}")
+    # Rails.logger.error e.backtrace.join("\n")
+    # puts "Error converting IDs: #{e.message}"
+    # puts e.backtrace.join("\n")
+    LogUtilsHelper.double_log("Error converting IDs: #{e.message}", :error, tag: 'write_batch_alternate_ids')
+    LogUtilsHelper.double_log(e.backtrace.join("\n"), :error, tag: 'write_batch_alternate_ids')
   end
 
   def generate_cdr_url_for_pubmed_identifier(id_hash:)
@@ -152,7 +159,6 @@ class Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService
     File.open(pubmed_path, 'w') { |f| remaining_pubmed_records.each { |r| f.puts(r.to_json) } }
     File.open(pmc_path, 'w') { |f| pmc_records.each { |r| f.puts(r.to_json) } }
 
-    Rails.logger.info("[adjust_id_lists_in_memory] Adjusted ID lists - PubMed: #{original_pubmed_record_size} to #{remaining_pubmed_records.size} records, PMC: #{original_pmc_record_size} to #{pmc_records.size} records")
-    puts "[adjust_id_lists_in_memory] Adjusted ID lists - PubMed: #{original_pubmed_record_size} to #{remaining_pubmed_records.size} records, PMC: #{original_pmc_record_size} to #{pmc_records.size} records"
+    LogUtilsHelper.double_log("Adjusted ID lists - PubMed: #{original_pubmed_record_size} to #{remaining_pubmed_records.size} records, PMC: #{original_pmc_record_size} to #{pmc_records.size} records", :info, tag: 'adjust_id_lists_in_memory')
   end
 end
