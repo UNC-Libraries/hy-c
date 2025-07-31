@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
-  def initialize(config)
+  def initialize(config, tracker)
     @config = config
+    @tracker = tracker
     # @file_retrieval_directory = config['file_retrieval_directory']
     # @files_in_dir = retrieve_filenames(@config['file_retrieval_directory'])
     @depositor_onyen = config['depositor_onyen']
@@ -117,16 +118,37 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
 
   def build_id_lists
     # Rails.logger.info("[IdRetrievalService - build_id_lists] Retrieving record IDs for PubMed and PMC databases within the date range: #{@config['start_date'].strftime('%Y-%m-%d')} - #{@config['end_date'].strftime('%Y-%m-%d')}")
-    LogUtilsHelper.double_log("Retrieving record IDs for PubMed and PMC databases within the date range: #{@config['start_date'].strftime('%Y-%m-%d')} - #{@config['end_date'].strftime('%Y-%m-%d')}", :info, tag: 'build_id_lists')
     id_retrieval_service = Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService.new(
       start_date: @config['start_date'],
-      end_date: @config['end_date']
+      end_date: @config['end_date'],
+      tracker: @tracker
     )
-    id_retrieval_service.retrieve_ids_within_date_range(output_path: File.join(@output_dir, 'pubmed_ids.jsonl'), db: 'pubmed')
-    id_retrieval_service.retrieve_ids_within_date_range(output_path: File.join(@output_dir, 'pmc_ids.jsonl'), db: 'pmc')
+    # id_retrieval_service.retrieve_ids_within_date_range(output_path: File.join(@output_dir, 'pubmed_ids.jsonl'), db: 'pubmed')
+    # id_retrieval_service.retrieve_ids_within_date_range(output_path: File.join(@output_dir, 'pmc_ids.jsonl'), db: 'pmc')
     # id_retrieval_service.stream_and_write_alternate_ids(input_path: File.join(@output_dir, 'pubmed_ids.jsonl'), output_path: File.join(@output_dir, 'pubmed_alternate_ids.jsonl'), db: 'pubmed')
     # id_retrieval_service.stream_and_write_alternate_ids(input_path:  File.join(@output_dir, 'pmc_ids.jsonl'), output_path: File.join(@output_dir, 'pmc_alternate_ids.jsonl'), db: 'pmc')
     # id_retrieval_service.adjust_id_lists(pubmed_path: File.join(@output_dir, 'pubmed_alternate_ids.jsonl'), pmc_path: File.join(@output_dir, 'pmc_alternate_ids.jsonl'))
+    ['pubmed', 'pmc'].each do |db|
+      LogUtilsHelper.double_log("Retrieving record IDs for PubMed and PMC databases within the date range: #{@config['start_date'].strftime('%Y-%m-%d')} - #{@config['end_date'].strftime('%Y-%m-%d')}", :info, tag: 'build_id_lists')
+      record_id_path = File.join(@output_dir, "#{db}_ids.jsonl")
+      id_retrieval_service.retrieve_ids_within_date_range(output_path: record_id_path, db: db)
+      @tracker['progress']['retrieve_ids_within_date_range'][db]['completed'] = true
+      @tracker.save
+
+      alternate_id_path = File.join(@output_dir, "#{db}_alternate_ids.jsonl")
+      id_retrieval_service.stream_and_write_alternate_ids(input_path: record_id_path, output_path: alternate_id_path, db: db)
+      @tracker['progress']['stream_and_write_alternate_ids'][db]['completed'] = true
+      @tracker.save
+    end
+
+    # ['pubmed', 'pmc'].each do |db|
+    #   alternate_id_path = File.join(@output_dir, "#{db}_alternate_ids.jsonl")
+    #   id_retrieval_service.stream_and_write_alternate_ids(input_path: record_id_path, output_path: alternate_id_path, db: db)
+    #   @tracker['progress']['retrieve_ids_within_date_range'][db]['alternate_ids_completed'] = true
+    #   @tracker.save
+    # end
+
+    LogUtilsHelper.double_log("ID lists built successfully. Output directory: #{@output_dir}", :info, tag: 'build_id_lists')
   end
 
   def process_file_matches

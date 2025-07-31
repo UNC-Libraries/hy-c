@@ -86,7 +86,12 @@ class Tasks::PubmedIngest::SharedUtilities::IngestTracker
       'admin_set_title' => config['admin_set_title'],
       'depositor_onyen' => config['depositor_onyen'],
       'output_dir' => config['output_dir'],
-      'progress' => {}
+      'progress' => {
+        'retrieve_ids_within_date_range' => {
+            'pubmed' => { 'cursor' => 0, 'completed' => false },
+            'pmc' => { 'cursor' => 0, 'completed' => false }
+        }
+    }
     }
   end
 end

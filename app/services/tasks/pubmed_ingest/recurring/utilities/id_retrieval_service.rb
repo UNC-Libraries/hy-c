@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 class Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService
-  def initialize(start_date:, end_date:)
+  def initialize(start_date:, end_date:, tracker:)
     @start_date = start_date
     @end_date = end_date
+    @tracker = tracker
   end
 
   def retrieve_ids_within_date_range(output_path:, db:, retmax: 1000)
@@ -10,7 +11,9 @@ class Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService
     LogUtilsHelper.double_log("Fetching IDs within date range: #{@start_date.strftime('%Y-%m-%d')} - #{@end_date.strftime('%Y-%m-%d')} for #{db} database", :info, tag: 'retrieve_ids_within_date_range')
     base_url = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi'
     count = 0
-    cursor = 0
+    # Initialize cursor from tracker or set to 0
+    current_job_progress = @tracker['progress']['retrieve_ids_within_date_range'][db] || {}
+    cursor = current_job_progress['cursor']
     params = {
       retmax: retmax,
       db: db,
@@ -18,7 +21,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService
     }
     File.open(output_path, 'a') do |file|
       loop do
-        break if cursor > 2000 # WIP: Remove in production
+        break if cursor > 500 # WIP: Remove in production
         res = HTTParty.get(base_url, query: params.merge({ retstart: cursor }))
         puts "Response code: #{res.code}, message: #{res.message}, URL: #{base_url}?#{params.merge({ retstart: cursor }).to_query}"
         if res.code != 200
@@ -38,6 +41,9 @@ class Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService
         file.puts(ids.join("\n"))
         count += ids.size
         cursor += retmax
+        # Update tracker progress
+        current_job_progress['cursor'] = cursor
+        @tracker.save
         break if cursor > parsed_response.xpath('//Count').text.to_i
       end
     end
