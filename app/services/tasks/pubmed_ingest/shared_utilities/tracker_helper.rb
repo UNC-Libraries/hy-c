@@ -18,7 +18,7 @@ module Tasks::PubmedIngest::SharedUtilities::TrackerHelper
     }
 
     write_tracker_file(json_path, tracker_data)
-    config.merge!(tracker_data)
+    tracker_data
   end
 
   def self.load_tracker(config)
@@ -40,31 +40,31 @@ module Tasks::PubmedIngest::SharedUtilities::TrackerHelper
     end
   end
 
-  def self.update_tracker(config, updates)
-    json_path = File.join(config['output_dir'], TRACKER_FILENAME)
-      # In-place deep merge into config
-    deep_merge!(config, updates)
-      # Write updated config to disk
-    write_tracker_file(json_path, config)
-    config
-  end
+#   def self.update_tracker(config, tracker)
+#     json_path = File.join(config['output_dir'], TRACKER_FILENAME)
+#       # In-place deep merge into config
+#     deep_merge!(config, updates)
+#       # Write updated config to disk
+#     write_tracker_file(json_path, config)
+#     config
+#   end
 
-  def self.deep_merge!(target, updates)
-    updates.each do |key, value|
-      if value.is_a?(Hash) && target[key].is_a?(Hash)
-        deep_merge!(target[key], value)
-      else
-        target[key] = value
-      end
-    end
-    target
-  end
+#   def self.deep_merge!(target, updates)
+#     updates.each do |key, value|
+#       if value.is_a?(Hash) && target[key].is_a?(Hash)
+#         deep_merge!(target[key], value)
+#       else
+#         target[key] = value
+#       end
+#     end
+#     target
+#   end
 
-  def self.write_tracker_file(path, data)
-    File.open(path, 'w', encoding: 'utf-8') do |file|
-      file.puts(JSON.pretty_generate(data))
-    end
-  end
+#   def self.write_tracker_file(path, data)
+#     File.open(path, 'w', encoding: 'utf-8') do |file|
+#       file.puts(JSON.pretty_generate(data))
+#     end
+#   end
 
   def self.check_tracker_overwrite!(config, force_overwrite: false)
     tracker_path = File.join(config['output_dir'], TRACKER_FILENAME)
@@ -78,7 +78,7 @@ module Tasks::PubmedIngest::SharedUtilities::TrackerHelper
 
     LogUtilsHelper.double_log("Tracker file already exists at #{tracker_path}. Use `force_overwrite: true` to overwrite.", :error, tag: 'PubMed Ingest')
     puts "🚫 Tracker file exists: #{tracker_path}"
-    puts '   To overwrite it, pass `force_overwrite: true` in the config or args.'
+    puts '   To overwrite it, pass `force_overwrite: true` in the args.'
     exit(1)
   end
 end

@@ -1,0 +1,92 @@
+# frozen_string_literal: true
+class Tasks::PubmedIngest::SharedUtilities::IngestTracker
+  TRACKER_FILENAME = 'ingest_tracker.json'
+  attr_reader :path, :data
+
+  def self.build(config:, resume: false, force_overwrite: false)
+    output_dir = config['output_dir']
+    path = File.join(output_dir, 'ingest_tracker.json')
+
+    if resume
+      LogUtilsHelper.double_log('Resume flag is set. Attempting to resume PubMed ingest from previous state.', :info, tag: 'PubMed Ingest')
+      instance = new(output_dir, config)
+      instance['restart_time'] = config['time'].strftime('%Y-%m-%d %H:%M:%S')
+      LogUtilsHelper.double_log("Resuming from existing state: #{instance.data}", :info, tag: 'PubMed Ingest')
+      return instance
+    end
+
+    if File.exist?(path) && !force_overwrite
+      LogUtilsHelper.double_log("Tracker file already exists at #{path}. Use `force_overwrite: true` to overwrite.", :error, tag: 'PubMed Ingest')
+      puts "🚫 Tracker file exists: #{path}"
+      puts '   To overwrite it, pass `force_overwrite: true` in the args.'
+      exit(1)
+    end
+
+    LogUtilsHelper.double_log('Resume flag is not set. Initializing new ingest tracker.', :info, tag: 'PubMed Ingest')
+    instance = new(output_dir, config)
+    instance.save
+    instance
+  end
+
+  def initialize(output_dir, config)
+    @path = File.join(output_dir, 'ingest_tracker.json')
+    @data = File.exist?(@path) ? load_tracker_file : build_initial_tracker(config)
+  end
+
+  def [](key)
+    @data[key]
+  end
+
+  def []=(key, value)
+    @data[key] = value
+  end
+
+  def save
+    File.open(@path, 'w', encoding: 'utf-8') do |f|
+      f.puts(JSON.pretty_generate(@data))
+    end
+  end
+
+  def check_tracker_overwrite!(config, force_overwrite: false)
+    tracker_path = File.join(config['output_dir'], TRACKER_FILENAME)
+
+    return if !File.exist?(tracker_path)
+
+    if force_overwrite
+      LogUtilsHelper.double_log("Overwriting existing tracker file at #{tracker_path} (force overwrite enabled).", :info, tag: 'PubMed Ingest')
+      return
+    end
+
+    LogUtilsHelper.double_log("Tracker file already exists at #{tracker_path}. Use `force_overwrite: true` to overwrite.", :error, tag: 'PubMed Ingest')
+    puts "🚫 Tracker file exists: #{tracker_path}"
+    puts '   To overwrite it, pass `force_overwrite: true` in the args.'
+    exit(1)
+  end
+
+        private
+
+  def load_tracker_file
+    LogUtilsHelper.double_log("Found existing ingest tracker at #{@path}. Loading data.", :info, tag: 'PubMed Ingest')
+    content = File.read(@path, encoding: 'utf-8')
+    JSON.parse(content)
+  rescue => e
+    LogUtilsHelper.double_log("Failed to load ingest tracker: #{e.message}", :error, tag: 'PubMed Ingest')
+    {}
+  end
+
+  def build_initial_tracker(config)
+    LogUtilsHelper.double_log("Building initial ingest tracker with config: #{config}", :info, tag: 'PubMed Ingest')
+    {
+      'start_time' => config['time'].strftime('%Y-%m-%d %H:%M:%S'),
+      'restart_time' => nil,
+      'date_range' => {
+        'start' => config['start_date'].strftime('%Y-%m-%d'),
+        'end' => config['end_date'].strftime('%Y-%m-%d')
+      },
+      'admin_set_title' => config['admin_set_title'],
+      'depositor_onyen' => config['depositor_onyen'],
+      'output_dir' => config['output_dir'],
+      'progress' => {}
+    }
+  end
+end
