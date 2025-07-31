@@ -3,49 +3,53 @@
 # 1. Script uses PMC-OAI API to retrieve metadata and make comparisons of alternate IDs. (PMCID, PMID)
 # 2. PMC requests scripts making >100 requests be ran outside of peak hours. (5 AM - 9 PM)
 DEPOSITOR = ENV['PUBMED_INGEST_DIMENSIONS_INGEST_DEPOSITOR_ONYEN']
-desc 'Display help for PubMed ingest tasks'
-task :pubmed_ingest_help do
-  puts <<~HELP
-    📘 PubMed Ingest Task Usage
+desc 'Ingest works from the PubMed API'
+task 'pubmed_ingest' => :environment do
+  options = {}
 
-    Usage with positional arguments (less readable):
-      bundle exec rake pubmed_ingest[start_date,end_date,admin_set_title,resume,force_overwrite,output_dir]
+  parser = OptionParser.new do |opts|
+    opts.banner = 'Usage: bundle exec rake pubmed_ingest:with_flags -- [options]'
 
-    Example:
-      bundle exec rake pubmed_ingest['2024-01-01','2024-01-15','My Admin Set',true,false,'tmp/ingest_out']
+    opts.on('--start-date DATE', 'Start date for ingest (required)') { |v| options[:start_date] = v }
+    opts.on('--end-date DATE', 'End date for ingest (optional)') { |v| options[:end_date] = v }
+    opts.on('--admin-set-title TITLE', 'Admin Set title (required)') { |v| options[:admin_set_title] = v }
+    opts.on('--resume [BOOLEAN]', 'Resume from tracker file') do |val|
+      options[:resume] = ActiveModel::Type::Boolean.new.cast(val)
+    end
+    opts.on('--force-overwrite [BOOLEAN]', 'Force overwrite of tracker file') do |val|
+      options[:force_overwrite] = ActiveModel::Type::Boolean.new.cast(val)
+    end
+    opts.on('--output-dir DIR', 'Output directory (optional)') { |v| options[:output_dir] = v }
+    opts.on('-h', '--help', 'Display help') do
+      puts opts
+      exit
+    end
+  end
 
-    Recommended: Use ENV-based flags for better readability:
+  # Create a copy of ARGV and clean it up
+  args_to_parse = ARGV.dup
 
-      START_DATE=2024-01-01 \\
-      END_DATE=2024-01-15 \\
-      ADMIN_SET_TITLE="My Admin Set" \\
-      RESUME=true \\
-      FORCE_OVERWRITE=false \\
-      OUTPUT_DIR=tmp/ingest_out \\
-      bundle exec rake pubmed_ingest:with_env_args
+  # Remove task name if it's the first argument
+  args_to_parse.shift if args_to_parse.first == 'pubmed_ingest:with_flags'
 
-    Flags:
-      START_DATE         (required)  - Start date for ingest range
-      END_DATE           (optional)  - End date (defaults to today)
-      ADMIN_SET_TITLE    (required)  - Admin set to ingest into
-      RESUME             (optional)  - Resume from tracker (true/false)
-      FORCE_OVERWRITE    (optional)  - Force overwrite tracker file
-      OUTPUT_DIR         (optional)  - Output directory (defaults to tmp/)
+  # Remove '--' separator if it's present
+  args_to_parse.shift if args_to_parse.first == '--'
 
-    ➕ See also: pubmed_backlog_ingest, pubmed_ingest_help
-  HELP
-end
+  begin
+    parser.parse!(args_to_parse)
+  rescue OptionParser::ParseError => e
+    puts "❌ #{e.message}"
+    puts parser
+    exit(1)
+  end
 
-task 'pubmed_ingest:with_env_args' => :environment do
-  config, ingest_tracker = build_pubmed_ingest_config_and_tracker(env: ENV)
-  # coordinator = PubmedIngestCoordinatorService.new(config, ingest_tracker)
-  # coordinator.run
-end
+  puts "Starting PubMed ingest with options: #{options.inspect}"
 
+  # Forward to shared logic
+  config, tracker = build_pubmed_ingest_config_and_tracker(args: options)
 
-task :pubmed_ingest, [:start_date, :end_date, :admin_set_title, :resume, :force_overwrite, :output_dir] => :environment do |_, args|
-  config, ingest_tracker = build_pubmed_ingest_config_and_tracker(args: args)
-  # coordinator = PubmedIngestCoordinatorService.new(config, ingest_tracker)
+  # Uncomment these when ready to actually run the coordinator
+  # coordinator = PubmedIngestCoordinatorService.new(config, tracker)
   # coordinator.run
 end
 
@@ -64,34 +68,51 @@ task :pubmed_backlog_ingest, [:file_retrieval_directory, :output_dir, :admin_set
   res = coordinator.run
 end
 
-def build_pubmed_ingest_config_and_tracker(args: nil, env: nil)
-  input = args || env
-  from_env = env.present?
+def build_pubmed_ingest_config_and_tracker(args:)
+  # Extract values
+  start_date       = args[:start_date]
+  end_date         = args[:end_date]
+  admin_set_title  = args[:admin_set_title]
+  resume_flag      = ActiveModel::Type::Boolean.new.cast(args[:resume])
+  force_overwrite  = ActiveModel::Type::Boolean.new.cast(args[:force_overwrite])
+  raw_output_dir   = args[:output_dir]
 
-  start_date = from_env ? ENV['PUBMED_INGEST_START_DATE'] : input[:start_date]
-  admin_set_title = from_env ? ENV['PUBMED_INGEST_ADMIN_SET_TITLE'] : input[:admin_set_title]
-
+  # Required check
   unless start_date && admin_set_title
-    puts "❌ Required: START_DATE and ADMIN_SET_TITLE"
-    puts "💡 Run `rake pubmed_ingest_help` for usage."
+    puts '❌ Required: --start-date and --admin-set-title'
+    puts "Provided: start-date=#{start_date}, admin-set-title=#{admin_set_title}"
+    puts '💡 Run `rake pubmed_ingest_help` for usage.'
     exit(1)
   end
 
-  resume_flag = ActiveModel::Type::Boolean.new.cast(from_env ? ENV['PUBMED_INGEST_RESUME'] : input[:resume])
-  force_overwrite = ActiveModel::Type::Boolean.new.cast(from_env ? ENV['PUBMED_INGEST_FORCE_OVERWRITE'] : input[:force_overwrite])
-  end_date = from_env ? ENV['PUBMED_INGEST_END_DATE'] : input[:end_date]
-  script_start_time = Time.now
-
+  # Conflict check
   if resume_flag && force_overwrite
-    puts "❌ You cannot set both RESUME=true and FORCE_OVERWRITE=true."
-    puts "💡 Use RESUME=true to continue an existing ingest, or FORCE_OVERWRITE=true to restart."
+    puts '❌ You cannot set both --resume=true and --force-overwrite=true.'
+    puts '💡 Use --resume=true to continue an ingest, or --force-overwrite=true to restart.'
     exit(1)
   end
 
-  parsed_start = Date.parse(start_date)
-  parsed_end = end_date.present? ? Date.parse(end_date) : Date.today
+  # Parse dates
+  script_start_time = Time.now
+  begin
+    parsed_start = Date.parse(start_date)
+  rescue ArgumentError
+    puts "❌ Invalid start date format: #{start_date}"
+    exit(1)
+  end
 
-  raw_output_dir = from_env ? ENV['PUBMED_INGEST_OUTPUT_DIR'] : input[:output_dir]
+  parsed_end = if end_date.present?
+                 begin
+                   Date.parse(end_date)
+                 rescue ArgumentError
+                   puts "❌ Invalid end date format: #{end_date}"
+                   exit(1)
+                 end
+               else
+                 Date.today
+               end
+
+  # Build output path
   output_dir = if raw_output_dir
                  path = Pathname.new(raw_output_dir)
                  path.absolute? ? path : Rails.root.join(path)
