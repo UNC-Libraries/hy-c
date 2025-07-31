@@ -13,7 +13,7 @@ task 'pubmed_ingest' => :environment do
     opts.on('--start-date DATE', 'Start date for ingest (required)') { |v| options[:start_date] = v }
     opts.on('--end-date DATE', 'End date for ingest (optional)') { |v| options[:end_date] = v }
     opts.on('--admin-set-title TITLE', 'Admin Set title (required)') { |v| options[:admin_set_title] = v }
-    opts.on('--resume [BOOLEAN]', 'Resume from tracker file') do |val|
+    opts.on('--resume [BOOLEAN]', 'Resume from tracker file (automatically detected in specified output directory)') do |val|
       options[:resume] = ActiveModel::Type::Boolean.new.cast(val)
     end
     opts.on('--force-overwrite [BOOLEAN]', 'Force overwrite of tracker file') do |val|
@@ -24,6 +24,12 @@ task 'pubmed_ingest' => :environment do
       puts opts
       exit
     end
+  end
+
+  # Detect help flag early
+  if ARGV.include?('--help') || ARGV.include?('-h')
+    puts parser
+    exit
   end
 
   # Create a copy of ARGV and clean it up
@@ -81,7 +87,6 @@ def build_pubmed_ingest_config_and_tracker(args:)
   unless start_date && admin_set_title
     puts '❌ Required: --start-date and --admin-set-title'
     puts "Provided: start-date=#{start_date}, admin-set-title=#{admin_set_title}"
-    puts '💡 Run `rake pubmed_ingest_help` for usage.'
     exit(1)
   end
 
