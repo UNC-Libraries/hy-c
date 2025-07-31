@@ -8,15 +8,15 @@ task 'pubmed_ingest' => :environment do
   options = {}
 
   parser = OptionParser.new do |opts|
-    opts.banner = 'Usage: bundle exec rake pubmed_ingest:with_flags -- [options]'
+    opts.banner = 'Usage: bundle exec rake pubmed_ingest -- [options]'
 
     opts.on('--start-date DATE', 'Start date for ingest (required)') { |v| options[:start_date] = v }
     opts.on('--end-date DATE', 'End date for ingest (optional)') { |v| options[:end_date] = v }
     opts.on('--admin-set-title TITLE', 'Admin Set title (required)') { |v| options[:admin_set_title] = v }
-    opts.on('--resume [BOOLEAN]', 'Resume from tracker file (automatically detected in specified output directory)') do |val|
+    opts.on('--resume [BOOLEAN]', 'Resume from tracker file (optional, automatically detected in specified output directory)') do |val|
       options[:resume] = ActiveModel::Type::Boolean.new.cast(val)
     end
-    opts.on('--force-overwrite [BOOLEAN]', 'Force overwrite of tracker file') do |val|
+    opts.on('--force-overwrite [BOOLEAN]', 'Force overwrite of tracker file (optional)') do |val|
       options[:force_overwrite] = ActiveModel::Type::Boolean.new.cast(val)
     end
     opts.on('--output-dir DIR', 'Output directory (optional)') { |v| options[:output_dir] = v }
@@ -26,20 +26,21 @@ task 'pubmed_ingest' => :environment do
     end
   end
 
-  # Detect help flag early
-  if ARGV.include?('--help') || ARGV.include?('-h')
-    puts parser
-    exit
-  end
-
   # Create a copy of ARGV and clean it up
   args_to_parse = ARGV.dup
 
   # Remove task name if it's the first argument
-  args_to_parse.shift if args_to_parse.first == 'pubmed_ingest:with_flags'
+  args_to_parse.shift if args_to_parse.first == 'pubmed_ingest'
 
   # Remove '--' separator if it's present
   args_to_parse.shift if args_to_parse.first == '--'
+
+    # Detect help flag early
+  if args_to_parse.include?('--help') || args_to_parse.include?('-h')
+    puts parser
+    exit
+  end
+
 
   begin
     parser.parse!(args_to_parse)
@@ -94,6 +95,12 @@ def build_pubmed_ingest_config_and_tracker(args:)
   if resume_flag && force_overwrite
     puts '❌ You cannot set both --resume=true and --force-overwrite=true.'
     puts '💡 Use --resume=true to continue an ingest, or --force-overwrite=true to restart.'
+    exit(1)
+  end
+
+  if resume_flag && raw_output_dir.blank?
+    puts '❌ You cannot resume an ingest without specifying an output directory.'
+    puts '💡 Use --output-dir to specify where the tracker file is located.'
     exit(1)
   end
 
