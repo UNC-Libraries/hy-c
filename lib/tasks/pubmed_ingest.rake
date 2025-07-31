@@ -56,8 +56,8 @@ task 'pubmed_ingest' => :environment do
   config, tracker = build_pubmed_ingest_config_and_tracker(args: options)
 
   # Uncomment these when ready to actually run the coordinator
-  # coordinator = PubmedIngestCoordinatorService.new(config, tracker)
-  # coordinator.run
+  coordinator = Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService.new(config, tracker)
+  coordinator.run
 end
 
 desc 'Ingest new PubMed PDFs from the backlog and attach them to Hyrax works if matched'
@@ -98,10 +98,27 @@ def build_pubmed_ingest_config_and_tracker(args:)
     exit(1)
   end
 
-  if resume_flag && raw_output_dir.blank?
-    puts '❌ You cannot resume an ingest without specifying an output directory.'
-    puts '💡 Use --output-dir to specify where the tracker file is located.'
-    exit(1)
+  if resume_flag
+    if raw_output_dir.blank?
+      puts '❌ You cannot resume an ingest without specifying an output directory.'
+      puts '💡 Use --output-dir to specify where the tracker file is located.'
+      exit(1)
+    else
+      # Confirm the directory exists
+      output_dir = Pathname.new(raw_output_dir)
+      unless output_dir.exist? && output_dir.directory?
+        puts "❌ Output directory does not exist or is not a directory: #{output_dir}"
+        exit(1)
+      end
+
+      # Check for existing tracker file
+      tracker_path = output_dir.join('ingest_tracker.json')
+      unless tracker_path.exist?
+        puts "❌ Tracker file not found in specified output directory: #{tracker_path}"
+        puts '💡 Use --force-overwrite=true to create a new tracker.'
+        exit(1)
+      end
+    end
   end
 
   # Parse dates
@@ -125,14 +142,17 @@ def build_pubmed_ingest_config_and_tracker(args:)
                end
 
   # Build output path
-  output_dir = if raw_output_dir
-                 path = Pathname.new(raw_output_dir)
-                 path.absolute? ? path : Rails.root.join(path)
-               else
-                 Rails.root.join('tmp')
-               end
+  output_dir = nil
 
-  output_dir = output_dir.join("pubmed_ingest_#{script_start_time.strftime('%Y-%m-%d_%H-%M-%S')}")
+  if raw_output_dir.present?
+    path = Pathname.new(raw_output_dir)
+    output_dir = path.absolute? ? path : Rails.root.join(path)
+  else
+    output_dir = Rails.root.join('tmp').join("pubmed_ingest_#{script_start_time.strftime('%Y-%m-%d_%H-%M-%S')}")
+    FileUtils.mkdir_p(output_dir)
+  end
+
+  # output_dir = output_dir.join("pubmed_ingest_#{script_start_time.strftime('%Y-%m-%d_%H-%M-%S')}")
 
   config = {
     'start_date' => parsed_start,
@@ -143,7 +163,6 @@ def build_pubmed_ingest_config_and_tracker(args:)
     'time' => script_start_time,
   }
 
-  FileUtils.mkdir_p(output_dir)
   write_intro_banner(config: config)
 
   tracker = Tasks::PubmedIngest::SharedUtilities::IngestTracker.build(

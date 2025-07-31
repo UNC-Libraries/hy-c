@@ -90,8 +90,12 @@ class Tasks::PubmedIngest::SharedUtilities::IngestTracker
         'retrieve_ids_within_date_range' => {
             'pubmed' => { 'cursor' => 0, 'completed' => false },
             'pmc' => { 'cursor' => 0, 'completed' => false }
+        },
+        'stream_and_write_alternate_ids' => {
+            'pubmed' => { 'cursor' => 0, 'completed' => false },
+            'pmc' => { 'cursor' => 0, 'completed' => false }
+        },
         }
-    }
     }
   end
 end

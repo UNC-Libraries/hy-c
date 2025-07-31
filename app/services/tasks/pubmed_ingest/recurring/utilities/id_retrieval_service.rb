@@ -12,8 +12,8 @@ class Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService
     base_url = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi'
     count = 0
     # Initialize cursor from tracker or set to 0
-    current_job_progress = @tracker['progress']['retrieve_ids_within_date_range'][db] || {}
-    cursor = current_job_progress['cursor']
+    job_progress = @tracker['progress']['retrieve_ids_within_date_range'][db]
+    cursor = job_progress['cursor']
     params = {
       retmax: retmax,
       db: db,
@@ -38,11 +38,17 @@ class Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService
                 else
                   raw_ids
                 end
-        file.puts(ids.join("\n"))
-        count += ids.size
+        # Assign indexes to the IDs
+        ids_with_indexes = ids.map.with_index { |id, index|
+          {'index' => index + cursor, 'id' => id  }
+        }
+        ids_with_indexes.each do |entry|
+          file.puts(JSON.generate(entry))
+        end
+        count += ids_with_indexes.size
         cursor += retmax
         # Update tracker progress
-        current_job_progress['cursor'] = cursor
+        job_progress['cursor'] = cursor
         @tracker.save
         break if cursor > parsed_response.xpath('//Count').text.to_i
       end
@@ -53,35 +59,49 @@ class Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService
 
   def stream_and_write_alternate_ids(input_path:, output_path:, db:, batch_size: 200)
     # Rails.logger.info("[stream_and_write_alternate_ids] Streaming and writing alternate IDs from #{input_path} to #{output_path}")
-    LogUtilsHelper.double_log("Streaming and writing alternate IDs from #{input_path} to #{output_path} for #{db} database", :info, tag: 'stream_and_write_alternate_ids')
     buffer = []
+    job_progress = @tracker['progress']['stream_and_write_alternate_ids'][db]
+    last_cursor = job_progress['cursor']
+    LogUtilsHelper.double_log("Streaming and writing alternate IDs from #{input_path} to #{output_path} for #{db} database", :info, tag: 'stream_and_write_alternate_ids')
+    LogUtilsHelper.double_log("Last cursor position: #{last_cursor}", :info, tag: 'stream_and_write_alternate_ids')
+
     File.open(output_path, 'w') do |output_file|
       File.foreach(input_path) do |line|
-        identifier = line.strip
+        identifier_hash = JSON.parse(line.strip)
+        identifier = identifier_hash['id']
+        if last_cursor > 0 && identifier_hash['index'] < last_cursor
+          # Skip IDs that are before the last cursor position
+          next
+        end
         buffer << identifier
         if buffer.size >= batch_size
-          write_batch_alternate_ids(ids: buffer, db: db, output_file: output_file)
+          write_batch_alternate_ids(ids: buffer, db: db, output_file: output_file, job_progress: job_progress)
+          # Save after batch write
+          @tracker.save
+          last_cursor = job_progress['cursor']
           buffer.clear
         end
       end
       write_batch_alternate_ids(ids: buffer, db: db, output_file: output_file) unless buffer.empty?
+      # Update tracker progress, clear buffer and increment cursor
+      job_progress['cursor'] += buffer.size
+      last_cursor = job_progress['cursor']
+      @tracker.save
     end
     # Rails.logger.info("[stream_and_write_alternate_ids] Finished writing alternate IDs to #{output_path} for #{db} database")
     LogUtilsHelper.double_log("Finished writing alternate IDs to #{output_path} for #{db} database", :info, tag: 'stream_and_write_alternate_ids')
   end
 
-  def write_batch_alternate_ids(ids:, db:, output_file:)
+  def write_batch_alternate_ids(ids:, db:, output_file:, job_progress:)
     base_url = 'https://www.ncbi.nlm.nih.gov/pmc/utils/idconv/v1.0/'
     query_string = "ids=#{ids.join(',')}&tool=CDR&email=cdr@unc.edu&retmode=xml"
     full_url = "#{base_url}?#{query_string}"
 
     res = HTTParty.get(full_url)
     Rails.logger.debug("Response code: #{res.code}, message: #{res.message}, URL: #{full_url}")
-    puts "Response code: #{res.code}, Response message: #{res.message}, URL: #{full_url}"
 
     xml = Nokogiri::XML(res.body)
     xml.xpath('//record').each do |record|
-      puts "Processing record: #{record['id']}, status: #{record['status']}, pmid: #{record['pmid']}, pmcid: #{record['pmcid']}, doi: #{record['doi']}"
       alternate_ids = if record['status'] == 'error'
                         Rails.logger.debug("[IdRetrievalService] Error for ID: #{record['id']}, status: #{record['status']}")
                         {
@@ -89,24 +109,25 @@ class Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService
                           'pmcid' => record['pmcid'],
                           'doi' => record['doi'],
                           'error' => record['status'],
-                          'cdr_url' => generate_cdr_url_for_pubmed_identifier(id_hash: { 'pmid' => record['pmid'] })
+                          'cdr_url' => generate_cdr_url_for_pubmed_identifier(id_hash: { 'pmid' => record['pmid'] }),
+                          'index' => job_progress['cursor']
                         }
       else
         {
           'pmid' => record['pmid'],
           'pmcid' => record['pmcid'],
           'doi' => record['doi'],
-          'cdr_url' => generate_cdr_url_for_pubmed_identifier(id_hash: { 'pmid' => record['pmid'], 'pmcid' => record['pmcid'] })
+          'cdr_url' => generate_cdr_url_for_pubmed_identifier(id_hash: { 'pmid' => record['pmid'], 'pmcid' => record['pmcid'] }),
+          'index' => job_progress['cursor']
         }
       end
-      puts "Alternate IDs for #{record['id']}: #{alternate_ids.inspect}"
+
+      # Update cursor
+      job_progress['cursor'] += 1
+
       output_file.puts(alternate_ids.to_json) if alternate_ids.values.any?(&:present?)
     end
   rescue StandardError => e
-    # Rails.logger.error("[IdRetrievalService] Error converting IDs: #{e.message}")
-    # Rails.logger.error e.backtrace.join("\n")
-    # puts "Error converting IDs: #{e.message}"
-    # puts e.backtrace.join("\n")
     LogUtilsHelper.double_log("Error converting IDs: #{e.message}", :error, tag: 'write_batch_alternate_ids')
     LogUtilsHelper.double_log(e.backtrace.join("\n"), :error, tag: 'write_batch_alternate_ids')
   end
