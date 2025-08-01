@@ -9,6 +9,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
   end
 
   def load_ids_from_file(path:, db:)
+    LogUtilsHelper.double_log("Loading IDs from file with alt ids: #{path}", :info, tag: 'Metadata Ingest Service')
     cursor = @tracker['progress']['metadata_ingest'][db]['cursor']
     filtered_ids = []
 
@@ -29,18 +30,18 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
     end
 
     @record_ids = filtered_ids
-    Rails.logger.info("[MetadataIngestService] Loaded #{@record_ids.size} IDs starting at cursor #{cursor}")
+    LogUtilsHelper.double_log("Loaded #{@record_ids.size} IDs starting at cursor #{cursor}", :info, tag: 'Metadata Ingest Service')
   end
 
 
   def batch_retrieve_and_process_metadata(batch_size: 100, db:)
+    LogUtilsHelper.double_log("Starting batch retrieval and processing for #{db} with batch size #{batch_size}", :info, tag: 'Metadata Ingest Service')
     unless SharedUtilities::DbType.valid?(db)
       raise ArgumentError, "Invalid database type: #{db}. Valid types are: #{SharedUtilities::DbType::ALL.join(', ')}"
     end
 
     return if @record_ids.nil? || @record_ids.empty?
       # WIP: Print the number of records to be processed
-    puts "[batch_retrieve_and_process_metadata] Processing #{@record_ids.size} #{db} records in batches of #{batch_size}."
     Rails.logger.info("[batch_retrieve_and_process_metadata] Processing #{@record_ids.size} #{db} records in batches of #{batch_size}.")
     @record_ids.each_slice(batch_size) do |batch|
       batch_ids = batch.map { |record| db == 'pubmed' ? record['pmid'] : record['pmcid']&.delete_prefix('PMC') }.compact
@@ -71,7 +72,8 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
       sleep(0.34)
     end
 
-    Rails.logger.info("[batch_retrieve_and_process_metadata] Completed processing #{@record_ids.size} #{db} records.")
+    # Rails.logger.info("[batch_retrieve_and_process_metadata] Completed processing #{@record_ids.size} #{db} records.")
+    LogUtilsHelper.double_log("Completed batch retrieval and processing for #{db}.", :info, tag: 'Metadata Ingest Service')
   end
 
   private
@@ -92,10 +94,12 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
       File.open(File.join(@output_dir, 'pubmed_alternate_ids.jsonl'), 'a') do |file|
         file.puts(alternate_ids)
       end
-      Rails.logger.info("[MetadataIngestService] Moved #{alternate_ids.size} alternate IDs" \
-                          'to pubmed_alternate_ids.jsonl')
+      # Rails.logger.info("[MetadataIngestService] Moved #{alternate_ids.size} alternate IDs" \
+      #                     'to pubmed_alternate_ids.jsonl')
+      LogUtilsHelper.double_log("Moved alternate IDs to pubmed_alternate_ids.jsonl: #{alternate_ids}", :info, tag: 'Metadata Ingest Service')
       rescue => e
-        Rails.logger.error("[MetadataIngestService] Error writing to pubmed_alternate_ids.jsonl: #{e.message}")
+        # Rails.logger.error("[MetadataIngestService] Error writing to pubmed_alternate_ids.jsonl: #{e.message}")
+        LogUtilsHelper.double_log("Error writing to pubmed_alternate_ids.jsonl: #{e.message}", :error, tag: 'Metadata Ingest Service')
         Rails.logger.error("Backtrace: #{e.backtrace.join("\n")}")
     end
   end
@@ -110,7 +114,8 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
     missing_ids = ids.reject { |id| returned_ids.include?(id) }
 
     unless missing_ids.empty?
-      Rails.logger.warn("[MetadataIngestService] PubMed EFetch missing #{missing_ids.size} of #{ids.size} IDs: #{missing_ids.first(10)}...")
+      # Rails.logger.warn("[MetadataIngestService] PubMed EFetch missing #{missing_ids.size} of #{ids.size} IDs: #{missing_ids.first(10)}...")
+      LogUtilsHelper.double_log("PubMed EFetch missing #{missing_ids.size} of #{ids.size} IDs: #{missing_ids.first(10)}...", :warn, tag: 'Metadata Ingest Service')
       missing_ids.each do |missing_id|
         record_result(
             category: :failed,

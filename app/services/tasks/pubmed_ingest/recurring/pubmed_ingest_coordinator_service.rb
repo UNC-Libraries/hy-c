@@ -44,8 +44,6 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
     # Working Section:
     # Create output directory using the date and time
     build_id_lists
-
-
     # WIP:
     load_and_ingest_metadata
 
