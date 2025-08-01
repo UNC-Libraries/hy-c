@@ -107,4 +107,32 @@ RSpec.describe Hyrax::WorksControllerBehavior, type: :controller do
       end
     end
   end
+
+  describe '#additional_response_formats' do
+    let(:user) { FactoryBot.create(:user) }
+    let(:format_collector) { double('format_collector') }
+
+    before do
+      sign_in user
+      allow(controller).to receive(:presenter).and_return(double('presenter', export_as_oai_dc_xml: '<xml>test</xml>'))
+    end
+
+    it 'adds dc_xml and xml formats' do
+      # Capture the format blocks that get registered
+      dc_xml_block = nil
+      xml_block = nil
+
+      allow(format_collector).to receive(:dc_xml) { |&block| dc_xml_block = block }
+      allow(format_collector).to receive(:xml) { |&block| xml_block = block }
+      allow(format_collector).to receive(:endnote)
+      allow(format_collector).to receive(:ttl)
+      allow(format_collector).to receive(:jsonld)
+      allow(format_collector).to receive(:nt)
+
+      controller.send(:additional_response_formats, format_collector)
+
+      expect(dc_xml_block).not_to be_nil
+      expect(xml_block).not_to be_nil
+    end
+  end
 end
