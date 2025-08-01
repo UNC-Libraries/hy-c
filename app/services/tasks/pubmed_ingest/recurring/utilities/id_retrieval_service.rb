@@ -21,7 +21,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService
     }
     File.open(output_path, 'a') do |file|
       loop do
-        break if cursor > 500 # WIP: Remove in production
+        break if cursor > 200 # WIP: Remove in production
         res = HTTParty.get(base_url, query: params.merge({ retstart: cursor }))
         puts "Response code: #{res.code}, message: #{res.message}, URL: #{base_url}?#{params.merge({ retstart: cursor }).to_query}"
         if res.code != 200

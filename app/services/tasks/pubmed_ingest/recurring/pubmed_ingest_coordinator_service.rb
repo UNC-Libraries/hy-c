@@ -36,7 +36,7 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
     @pmc_id_path = File.join(@output_dir, 'pmc_ids.jsonl')
     @pubmed_id_path = File.join(@output_dir, 'pubmed_ids.jsonl')
     @alternate_ids_path = File.join(@output_dir, 'alternate_ids.jsonl')
-    @results_path = File.join(@output_dir, 'pubmed_ingest_results.jsonl')
+    @results_path = File.join(@output_dir, 'pubmed_ingest_results.json')
 
   end
 
@@ -45,6 +45,7 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
     # Create output directory using the date and time
     build_id_lists
     # WIP:
+    load_previously_saved_results
     load_and_ingest_metadata
 
 
@@ -111,7 +112,8 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
     md_ingest_service = Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService.new(
       config: @config,
       results: @results,
-      tracker: @tracker
+      tracker: @tracker,
+      results_path: @results_path
     )
     ['pubmed', 'pmc'].each do |db|
       if @tracker['progress']['metadata_ingest'][db]['completed']
@@ -119,10 +121,26 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
         next
       end
       md_ingest_service.load_alternate_ids_from_file(path: File.join(@output_dir, "#{db}_alternate_ids.jsonl"), db: db)
-      md_ingest_service.batch_retrieve_and_process_metadata(batch_size: 100, db: db)
+      # WIP: Temporarily limit number of batches for testing
+      md_ingest_service.batch_retrieve_and_process_metadata(batch_size: 3, db: db)
       @tracker['progress']['metadata_ingest'][db]['completed'] = true
       @tracker.save
       LogUtilsHelper.double_log("Metadata ingest for #{db} completed successfully.", :info, tag: 'load_and_ingest_metadata')
+    end
+  end
+
+  def load_previously_saved_results
+    if File.exist?(@results_path)
+      LogUtilsHelper.double_log("Loading previously saved results from #{@results_path}", :info, tag: 'load_previously_saved_results')
+      begin
+        content = File.read(@results_path, encoding: 'utf-8')
+        @results = JSON.parse(content).deep_symbolize_keys
+        LogUtilsHelper.double_log("Successfully loaded results. Current counts: #{@results['counts']}", :info, tag: 'load_previously_saved_results')
+      rescue => e
+        LogUtilsHelper.double_log("Failed to load results from #{@results_path}: #{e.message}", :error, tag: 'load_previously_saved_results')
+      end
+    else
+      LogUtilsHelper.double_log("No previous results found at #{@results_path}. Starting fresh.", :info, tag: 'load_previously_saved_results')
     end
   end
 

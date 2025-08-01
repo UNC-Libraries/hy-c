@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
-  def initialize(config:, results:, tracker:)
+  def initialize(config:, results:, tracker:, results_path:)
     @config = config
     @output_dir = config['output_dir']
     @record_ids = nil
+    @results_path = results_path
     @results = results
     @tracker = tracker
   end
@@ -40,10 +41,11 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
   def batch_retrieve_and_process_metadata(batch_size: 100, db:)
     LogUtilsHelper.double_log("Starting batch retrieval and processing for #{db} with batch size #{batch_size}", :info, tag: 'MetadataIngestService')
     return if @record_ids.nil? || @record_ids.empty?
-      # WIP: Print the number of records to be processed
     number_of_batches = (@record_ids.size / batch_size.to_f).ceil
     batch_count = 1
     @record_ids.each_slice(batch_size) do |batch|
+      # WIP: Temporarily limit number of batches for testing
+      break if batch_count > 4
       batch_ids = batch.map { |record| db == 'pubmed' ? record['pmid'] : record['pmcid']&.delete_prefix('PMC') }.compact
       next if batch_ids.empty?
       base_url = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi'
@@ -70,6 +72,8 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
       @tracker['progress']['metadata_ingest'][db]['cursor'] = last_index + 1
       @tracker.save
       batch_count += 1
+      # Update results JSON after each batch
+      save_results_json(path: @results_path)
 
         #Respect NCBI rate limits
       sleep(0.34)
@@ -162,15 +166,15 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
         # }
         # @result_tracker[:counts][:successfully_attached] += 1
         record_result(
-            category: :successfully_attached,
-            message: 'Successfully attached PDF to article',
+            category: :successfully_ingested,
+            message: 'Successfully ingested metadata',
             ids: alternate_ids,
             article: article
         )
     rescue => e
       Rails.logger.error("[MetadataIngestService] Error processing record: #{alternate_ids.inspect}, Error: #{e.message}")
       Rails.logger.error("Backtrace: #{e.backtrace.join("\n")}")
-      article.destroy if article&.persisted
+      article.destroy if article&.persisted?
     #   @result_tracker[:failed] << {
     #       ids: alternate_ids,
     #       message: e.message
@@ -222,6 +226,19 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
     Tasks::PubmedIngest::SharedUtilities::AttributeBuilders::PubmedAttributeBuilder.new(metadata, article, @config['admin_set'], @config['depositor_onyen']) :
     Tasks::PubmedIngest::SharedUtilities::AttributeBuilders::PmcAttributeBuilder.new(metadata, article, @config['admin_set'], @config['depositor_onyen'])
   end
+
+
+  def save_results_json(path:)
+    LogUtilsHelper.double_log("Updating results JSON at #{path}", :info, tag: 'MetadataIngestService')
+    File.open(path, 'w') do |file|
+      file.puts(JSON.pretty_generate(@results))
+    end
+    LogUtilsHelper.double_log('Results JSON updated successfully.', :info, tag: 'MetadataIngestService')
+  rescue => e
+    LogUtilsHelper.double_log("Failed to update results JSON: #{e.message}", :error, tag: 'MetadataIngestService')
+    Rails.logger.info("Backtrace: #{e.backtrace.join("\n")}")
+  end
+
 
   def record_result(category:, message:, ids: {}, article: nil)
     row = {
