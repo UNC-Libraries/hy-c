@@ -93,6 +93,12 @@ def build_pubmed_ingest_config_and_tracker(args:)
     exit(1)
   end
 
+  admin_set = AdminSet.where(title_tesim: admin_set_title).first
+  unless admin_set
+    puts "❌ Admin Set not found with title: #{admin_set_title}"
+    exit(1)
+  end
+
   # Conflict check
   if resume_flag && force_overwrite
     puts '❌ You cannot set both --resume=true and --force-overwrite=true.'
