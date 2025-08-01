@@ -79,7 +79,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService
         end
         buffer << identifier
         if buffer.size >= batch_size
-          write_batch_alternate_ids(ids: buffer, db: db, output_file: output_file, job_progress: job_progress)
+          write_batch_alternate_ids(ids: buffer, db: db, output_file: output_file)
           # Save after batch write
           job_progress['cursor'] += buffer.size
           @tracker.save

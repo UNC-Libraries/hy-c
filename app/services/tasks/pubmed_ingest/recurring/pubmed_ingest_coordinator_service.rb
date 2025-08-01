@@ -118,7 +118,7 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
         LogUtilsHelper.double_log("Skipping metadata ingest for #{db} as it is already completed.", :info, tag: 'load_and_ingest_metadata')
         next
       end
-      md_ingest_service.load_ids_from_file(path: File.join(@output_dir, "#{db}_alternate_ids.jsonl"), db: db)
+      md_ingest_service.load_alternate_ids_from_file(path: File.join(@output_dir, "#{db}_alternate_ids.jsonl"), db: db)
       md_ingest_service.batch_retrieve_and_process_metadata(batch_size: 100, db: db)
       @tracker['progress']['metadata_ingest'][db]['completed'] = true
       @tracker.save

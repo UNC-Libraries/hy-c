@@ -42,13 +42,9 @@ class Tasks::PubmedIngest::SharedUtilities::IngestTracker
   end
 
   def save
-    begin
-        File.open(@path, 'w', encoding: 'utf-8') do |f|
-        f.puts(JSON.pretty_generate(@data))
-        end
-    rescue => e
-        LogUtilsHelper.double_log("Failed to save ingest tracker: #{e.message}", :error, tag: 'Ingest Tracker')
-    end
+    File.open(@path, 'w', encoding: 'utf-8') { |f| f.puts(JSON.pretty_generate(@data)) }
+  rescue => e
+    LogUtilsHelper.double_log("Failed to save ingest tracker: #{e.message}", :error, tag: 'Ingest Tracker')
   end
 
   def check_tracker_overwrite!(config, force_overwrite: false)
@@ -109,5 +105,6 @@ class Tasks::PubmedIngest::SharedUtilities::IngestTracker
             'pmc' => { 'cursor' => 0, 'completed' => false }
         }
     }
+}
   end
 end

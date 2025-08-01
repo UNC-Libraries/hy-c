@@ -8,13 +8,16 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
     @tracker = tracker
   end
 
-  def load_ids_from_file(path:, db:)
+  def load_alternate_ids_from_file(path:, db:)
     LogUtilsHelper.double_log("Loading IDs from file with alt ids: #{path}", :info, tag: 'Metadata Ingest Service')
     cursor = @tracker['progress']['metadata_ingest'][db]['cursor']
     filtered_ids = []
+    count = 0
 
+    LogUtilsHelper.double_log("Resuming from cursor: #{cursor} out of #{File.foreach(path).count} records for the #{db} database.", :info, tag: 'Metadata Ingest Service')
     File.foreach(path) do |line|
       record = JSON.parse(line.strip)
+      count += 1
       # Skip records before the cursor, for resuming
       next if record['index'] < cursor
 
@@ -30,25 +33,23 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
     end
 
     @record_ids = filtered_ids
-    LogUtilsHelper.double_log("Loaded #{@record_ids.size} IDs starting at cursor #{cursor}", :info, tag: 'Metadata Ingest Service')
+    LogUtilsHelper.double_log("Loaded #{@record_ids.size} remaining IDs from alternate IDs file with #{count} total records.", :info, tag: 'Metadata Ingest Service')
   end
 
 
   def batch_retrieve_and_process_metadata(batch_size: 100, db:)
     LogUtilsHelper.double_log("Starting batch retrieval and processing for #{db} with batch size #{batch_size}", :info, tag: 'Metadata Ingest Service')
-    unless SharedUtilities::DbType.valid?(db)
-      raise ArgumentError, "Invalid database type: #{db}. Valid types are: #{SharedUtilities::DbType::ALL.join(', ')}"
-    end
-
     return if @record_ids.nil? || @record_ids.empty?
       # WIP: Print the number of records to be processed
-    Rails.logger.info("[batch_retrieve_and_process_metadata] Processing #{@record_ids.size} #{db} records in batches of #{batch_size}.")
+    number_of_batches = (@record_ids.size / batch_size.to_f).ceil
+    batch_count = 1
     @record_ids.each_slice(batch_size) do |batch|
       batch_ids = batch.map { |record| db == 'pubmed' ? record['pmid'] : record['pmcid']&.delete_prefix('PMC') }.compact
       next if batch_ids.empty?
       base_url = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi'
       query_params = "?db=#{db}&id=#{batch_ids.join(',')}&retmode=xml&tool=CDR&email=cdr@unc.edu"
-      Rails.logger.info("[batch_retrieve_and_process_metadata] Fetching metadata for IDs: #{batch_ids.first(25).join(', ')}")
+      # Rails.logger.info("[batch_retrieve_and_process_metadata] Fetching metadata for IDs: #{batch_ids.first(25).join(', ')}")
+      Rails.logger.info("[MetadataIngestService] Batch #{batch_count}/#{number_of_batches} - Processing IDs: #{batch_ids.first(25).join(', ')}")
       res = HTTParty.get("#{base_url}#{query_params}")
 
       if res.code != 200
@@ -67,6 +68,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
       last_index = batch.last['index']
       @tracker['progress']['metadata_ingest'][db]['cursor'] = last_index + 1
       @tracker.save
+      batch_count += 1
 
         #Respect NCBI rate limits
       sleep(0.34)
