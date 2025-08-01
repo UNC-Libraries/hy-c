@@ -9,12 +9,12 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
   end
 
   def load_alternate_ids_from_file(path:, db:)
-    LogUtilsHelper.double_log("Loading IDs from file with alt ids: #{path}", :info, tag: 'Metadata Ingest Service')
+    LogUtilsHelper.double_log("Loading IDs from file with alt ids: #{path}", :info, tag: 'MetadataIngestService')
     cursor = @tracker['progress']['metadata_ingest'][db]['cursor']
     filtered_ids = []
     count = 0
 
-    LogUtilsHelper.double_log("Resuming from cursor: #{cursor} out of #{File.foreach(path).count} records for the #{db} database.", :info, tag: 'Metadata Ingest Service')
+    LogUtilsHelper.double_log("Resuming from cursor: #{cursor} out of #{File.foreach(path).count} records for the #{db} database.", :info, tag: 'MetadataIngestService')
     File.foreach(path) do |line|
       record = JSON.parse(line.strip)
       count += 1
@@ -33,12 +33,12 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
     end
 
     @record_ids = filtered_ids
-    LogUtilsHelper.double_log("Loaded #{@record_ids.size} remaining IDs from alternate IDs file with #{count} total records.", :info, tag: 'Metadata Ingest Service')
+    LogUtilsHelper.double_log("Loaded #{@record_ids.size} remaining IDs from alternate IDs file with #{count} total records.", :info, tag: 'MetadataIngestService')
   end
 
 
   def batch_retrieve_and_process_metadata(batch_size: 100, db:)
-    LogUtilsHelper.double_log("Starting batch retrieval and processing for #{db} with batch size #{batch_size}", :info, tag: 'Metadata Ingest Service')
+    LogUtilsHelper.double_log("Starting batch retrieval and processing for #{db} with batch size #{batch_size}", :info, tag: 'MetadataIngestService')
     return if @record_ids.nil? || @record_ids.empty?
       # WIP: Print the number of records to be processed
     number_of_batches = (@record_ids.size / batch_size.to_f).ceil
@@ -49,7 +49,8 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
       base_url = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi'
       query_params = "?db=#{db}&id=#{batch_ids.join(',')}&retmode=xml&tool=CDR&email=cdr@unc.edu"
       # Rails.logger.info("[batch_retrieve_and_process_metadata] Fetching metadata for IDs: #{batch_ids.first(25).join(', ')}")
-      Rails.logger.info("[MetadataIngestService] Batch #{batch_count}/#{number_of_batches} - Processing IDs: #{batch_ids.first(25).join(', ')}")
+      LogUtilsHelper.double_log("Processing batch #{batch_count}/#{number_of_batches}", :info, tag: 'MetadataIngestService')
+      Rails.logger.info("[MetadataIngestService] Fetching metadata for IDs: #{batch_ids.first(25).join(', ')}...")
       res = HTTParty.get("#{base_url}#{query_params}")
 
       if res.code != 200
@@ -75,7 +76,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
     end
 
     # Rails.logger.info("[batch_retrieve_and_process_metadata] Completed processing #{@record_ids.size} #{db} records.")
-    LogUtilsHelper.double_log("Completed batch retrieval and processing for #{db}.", :info, tag: 'Metadata Ingest Service')
+    LogUtilsHelper.double_log("Completed batch retrieval and processing for #{db}.", :info, tag: 'MetadataIngestService')
   end
 
   private
@@ -98,10 +99,10 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
       end
       # Rails.logger.info("[MetadataIngestService] Moved #{alternate_ids.size} alternate IDs" \
       #                     'to pubmed_alternate_ids.jsonl')
-      LogUtilsHelper.double_log("Moved alternate IDs to pubmed_alternate_ids.jsonl: #{alternate_ids}", :info, tag: 'Metadata Ingest Service')
+      LogUtilsHelper.double_log("Moved alternate IDs to pubmed_alternate_ids.jsonl: #{alternate_ids}", :info, tag: 'MetadataIngestService')
       rescue => e
         # Rails.logger.error("[MetadataIngestService] Error writing to pubmed_alternate_ids.jsonl: #{e.message}")
-        LogUtilsHelper.double_log("Error writing to pubmed_alternate_ids.jsonl: #{e.message}", :error, tag: 'Metadata Ingest Service')
+        LogUtilsHelper.double_log("Error writing to pubmed_alternate_ids.jsonl: #{e.message}", :error, tag: 'MetadataIngestService')
         Rails.logger.error("Backtrace: #{e.backtrace.join("\n")}")
     end
   end
@@ -117,7 +118,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
 
     unless missing_ids.empty?
       # Rails.logger.warn("[MetadataIngestService] PubMed EFetch missing #{missing_ids.size} of #{ids.size} IDs: #{missing_ids.first(10)}...")
-      LogUtilsHelper.double_log("PubMed EFetch missing #{missing_ids.size} of #{ids.size} IDs: #{missing_ids.first(10)}...", :warn, tag: 'Metadata Ingest Service')
+      LogUtilsHelper.double_log("PubMed EFetch missing #{missing_ids.size} of #{ids.size} IDs: #{missing_ids.first(10)}...", :warn, tag: 'MetadataIngestService')
       missing_ids.each do |missing_id|
         record_result(
             category: :failed,
