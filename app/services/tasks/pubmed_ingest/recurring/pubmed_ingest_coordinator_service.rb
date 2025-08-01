@@ -36,7 +36,7 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
     @pmc_id_path = File.join(@output_dir, 'pmc_ids.jsonl')
     @pubmed_id_path = File.join(@output_dir, 'pubmed_ids.jsonl')
     @alternate_ids_path = File.join(@output_dir, 'alternate_ids.jsonl')
-    @results_path = File.join(@output_dir, 'pubmed_ingest_results.json')
+    @results_path = File.join(@output_dir, 'pubmed_ingest_results.jsonl')
 
   end
 
@@ -45,7 +45,7 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
     # Create output directory using the date and time
     build_id_lists
     # WIP:
-    load_previously_saved_results
+    # load_previously_saved_results
     load_and_ingest_metadata
 
 

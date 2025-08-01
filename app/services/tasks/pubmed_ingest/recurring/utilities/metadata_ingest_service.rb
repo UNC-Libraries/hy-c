@@ -7,6 +7,8 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
     @results_path = results_path
     @results = results
     @tracker = tracker
+    @write_buffer = []
+    @flush_threshold = 200
   end
 
   def load_alternate_ids_from_file(path:, db:)
@@ -45,7 +47,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
     batch_count = 1
     @record_ids.each_slice(batch_size) do |batch|
       # WIP: Temporarily limit number of batches for testing
-      break if batch_count > 4
+      break if batch_count > 2
       batch_ids = batch.map { |record| db == 'pubmed' ? record['pmid'] : record['pmcid']&.delete_prefix('PMC') }.compact
       next if batch_ids.empty?
       base_url = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi'
@@ -72,13 +74,12 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
       @tracker['progress']['metadata_ingest'][db]['cursor'] = last_index + 1
       @tracker.save
       batch_count += 1
-      # Update results JSON after each batch
-      save_results_json(path: @results_path)
-
         #Respect NCBI rate limits
       sleep(0.34)
     end
 
+    # Flush any remaining write buffer to file
+    flush_buffer_to_file unless @write_buffer.empty?
     # Rails.logger.info("[batch_retrieve_and_process_metadata] Completed processing #{@record_ids.size} #{db} records.")
     LogUtilsHelper.double_log("Completed batch retrieval and processing for #{db}.", :info, tag: 'MetadataIngestService')
   end
@@ -144,7 +145,6 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
           Rails.logger.info("[MetadataIngestService] Work with IDs #{alternate_ids.inspect} already exists: #{match[:work_id]}")
           record_result(
               category: :skipped,
-              message: 'Work already exists',
               ids: alternate_ids,
               article: WorkUtilsHelper.fetch_model_instance(match[:work_type], match[:work_id])
           )
@@ -167,7 +167,6 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
         # @result_tracker[:counts][:successfully_attached] += 1
         record_result(
             category: :successfully_ingested,
-            message: 'Successfully ingested metadata',
             ids: alternate_ids,
             article: article
         )
@@ -240,7 +239,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
   end
 
 
-  def record_result(category:, message:, ids: {}, article: nil)
+  def record_result_deprecated(category:, message:, ids: {}, article: nil)
     row = {
     'pdf_attached' => message,
     'pmid' => ids['pmid'],
@@ -253,6 +252,35 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
     end
     @results[:counts][category] += 1
     @results[category] << row
+  end
+
+  def record_result(category:, message: '', ids: {}, article: nil)
+    # Merge article id into ids if article is provided
+    ids = ids.merge(article_id: article.id) if article
+    log_entry = {
+        ids: ids,
+        timestamp: Time.now.utc.iso8601,
+        category: category
+    }
+    log_entry[:message] = message if message.present?
+    @write_buffer << log_entry
+    flush_buffer_if_needed
+  end
+
+  def flush_buffer_if_needed
+    return if @write_buffer.size < @flush_threshold
+    flush_buffer_to_file
+  end
+
+  def flush_buffer_to_file
+    File.open(@results_path, 'a') do |file|
+      @write_buffer.each { |entry| file.puts(JSON.generate(entry)) }
+    end
+    LogUtilsHelper.double_log("Flushed #{@write_buffer.size} entries to #{@results_path}", :info, tag: 'MetadataIngestService')
+    @write_buffer.clear
+    rescue => e
+      LogUtilsHelper.double_log("Failed to flush buffer to file: #{e.message}", :error, tag: 'MetadataIngestService')
+      Rails.logger.error("Backtrace: #{e.backtrace.join("\n")}")
   end
 
   def generate_cdr_url_for_article(article)
