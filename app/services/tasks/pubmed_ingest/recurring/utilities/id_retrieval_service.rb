@@ -42,14 +42,18 @@ class Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService
         ids_with_indexes = ids.map.with_index { |id, index|
           {'index' => index + cursor, 'id' => id  }
         }
-        ids_with_indexes.each do |entry|
-          file.puts(JSON.generate(entry))
+        begin
+          ids_with_indexes.each do |entry|
+            file.puts(JSON.generate(entry))
+          end
+          count += ids_with_indexes.size
+          cursor += retmax
+          job_progress['cursor'] = cursor
+          @tracker.save
+        rescue => e
+          Rails.logger.error("Failed to write or save tracker: #{e.message}")
+          raise e
         end
-        count += ids_with_indexes.size
-        cursor += retmax
-        # Update tracker progress
-        job_progress['cursor'] = cursor
-        @tracker.save
         break if cursor > parsed_response.xpath('//Count').text.to_i
       end
     end
@@ -69,7 +73,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService
       File.foreach(input_path) do |line|
         identifier_hash = JSON.parse(line.strip)
         identifier = identifier_hash['id']
-        if last_cursor > 0 && identifier_hash['index'] < last_cursor
+        if identifier_hash['index'] < last_cursor
           # Skip IDs that are before the last cursor position
           next
         end
@@ -77,22 +81,24 @@ class Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService
         if buffer.size >= batch_size
           write_batch_alternate_ids(ids: buffer, db: db, output_file: output_file, job_progress: job_progress)
           # Save after batch write
+          job_progress['cursor'] += buffer.size
           @tracker.save
           last_cursor = job_progress['cursor']
           buffer.clear
         end
       end
-      write_batch_alternate_ids(ids: buffer, db: db, output_file: output_file) unless buffer.empty?
-      # Update tracker progress, clear buffer and increment cursor
-      job_progress['cursor'] += buffer.size
-      last_cursor = job_progress['cursor']
-      @tracker.save
+      unless buffer.empty?
+        write_batch_alternate_ids(ids: buffer, db: db, output_file: output_file)
+        # Update tracker progress, clear buffer and increment cursor
+        job_progress['cursor'] += buffer.size
+        @tracker.save
+      end
     end
     # Rails.logger.info("[stream_and_write_alternate_ids] Finished writing alternate IDs to #{output_path} for #{db} database")
     LogUtilsHelper.double_log("Finished writing alternate IDs to #{output_path} for #{db} database", :info, tag: 'stream_and_write_alternate_ids')
   end
 
-  def write_batch_alternate_ids(ids:, db:, output_file:, job_progress:)
+  def write_batch_alternate_ids(ids:, db:, output_file:)
     base_url = 'https://www.ncbi.nlm.nih.gov/pmc/utils/idconv/v1.0/'
     query_string = "ids=#{ids.join(',')}&tool=CDR&email=cdr@unc.edu&retmode=xml"
     full_url = "#{base_url}?#{query_string}"
@@ -110,7 +116,6 @@ class Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService
                           'doi' => record['doi'],
                           'error' => record['status'],
                           'cdr_url' => generate_cdr_url_for_pubmed_identifier(id_hash: { 'pmid' => record['pmid'] }),
-                          'index' => job_progress['cursor']
                         }
       else
         {
@@ -118,12 +123,8 @@ class Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService
           'pmcid' => record['pmcid'],
           'doi' => record['doi'],
           'cdr_url' => generate_cdr_url_for_pubmed_identifier(id_hash: { 'pmid' => record['pmid'], 'pmcid' => record['pmcid'] }),
-          'index' => job_progress['cursor']
         }
       end
-
-      # Update cursor
-      job_progress['cursor'] += 1
 
       output_file.puts(alternate_ids.to_json) if alternate_ids.values.any?(&:present?)
     end
@@ -155,53 +156,98 @@ class Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService
   end
 
   def adjust_id_lists(pubmed_path:, pmc_path:)
+    return if adjustment_already_completed?
+
+    log_adjustment_start(pubmed_path, pmc_path)
+
+    pubmed_records = read_jsonl(pubmed_path)
+    pmc_records    = read_jsonl(pmc_path)
+
+    original_sizes = {
+      pubmed: pubmed_records.size,
+      pmc: pmc_records.size
+    }
+
+    deduped_pmc, seen_keys = deduplicate_pmc_records(pmc_records)
+    deduped_pubmed         = deduplicate_pubmed_records(pubmed_records, seen_keys)
+
+    write_deduped_records(pmc_path, deduped_pmc)
+    write_deduped_records(pubmed_path, deduped_pubmed)
+
+    update_tracker_with_adjustment_stats(original_sizes, deduped_pubmed.size, deduped_pmc.size)
+
+    log_adjustment_summary(original_sizes, deduped_pubmed.size, deduped_pmc.size)
+  end
+
+
+  private
+
+  def adjustment_already_completed?
     if @tracker['progress']['adjust_id_lists']['completed']
       LogUtilsHelper.double_log('ID lists already adjusted. Skipping adjustment step.', :info, tag: 'adjust_id_lists')
-      return
+      true
+    else
+      false
     end
+  end
 
+  def log_adjustment_start(pubmed_path, pmc_path)
     LogUtilsHelper.double_log('Adjusting ID lists in memory for PubMed and PMC databases', :info, tag: 'adjust_id_lists')
     LogUtilsHelper.double_log("PubMed path: #{pubmed_path}, PMC path: #{pmc_path}", :info, tag: 'adjust_id_lists')
-    # Load and parse records, sizes
-    pubmed_records = File.readlines(pubmed_path).map { |line| JSON.parse(line) }
-    pmc_records = File.readlines(pmc_path).map { |line| JSON.parse(line) }
-    original_pubmed_record_size = pubmed_records.size
-    original_pmc_record_size = pmc_records.size
-
-    # If any records in the PMCID set only have PMIDs, move it to the pubmed records later
-    new_pubmed_records = pmc_records.select { |r| r['pmcid'].blank? }
-
-    # Move PubMed records with a unique PMCID into the PMC set
-    new_pmc_records, remaining_pubmed_records = pubmed_records.partition do |record|
-      record['pmcid'].present?
-    end
-
-    # Update PMC list and pubmed lists in memory
-    pmc_records.concat(new_pmc_records)
-    pmc_records.reject! { |r| r['pmcid'].blank? }
-    pmc_records.uniq!
-    remaining_pubmed_records.concat(new_pubmed_records)
-    remaining_pubmed_records.uniq!
-
-    # Overwrite files with adjusted lists
-    File.open(pubmed_path, 'w') { |f| remaining_pubmed_records.each_with_index do |record, index|
-                                        record['index'] = index
-                                        f.puts(record.to_json)
-                                      end
-    }
-
-    File.open(pmc_path, 'w') { |f| pmc_records.each_with_index do |record, index|
-                                     record['index'] = index
-                                     f.puts(record.to_json)
-                                   end
-    }
-
-    @tracker['progress']['adjust_id_lists']['completed'] = true
-    @tracker['progress']['adjust_id_lists']['pubmed']['original_size'] = original_pubmed_record_size
-    @tracker['progress']['adjust_id_lists']['pubmed']['adjusted_size'] = remaining_pubmed_records.size
-    @tracker['progress']['adjust_id_lists']['pmc']['original_size'] = original_pmc_record_size
-    @tracker['progress']['adjust_id_lists']['pmc']['adjusted_size'] = pmc_records.size
-    @tracker.save
-    LogUtilsHelper.double_log("Adjusted ID lists - PubMed: #{original_pubmed_record_size} to #{remaining_pubmed_records.size} records, PMC: #{original_pmc_record_size} to #{pmc_records.size} records", :info, tag: 'adjust_id_lists_in_memory')
   end
+
+  def log_adjustment_summary(original_sizes, adjusted_pubmed_size, adjusted_pmc_size)
+    LogUtilsHelper.double_log("Adjusted ID lists - PubMed: #{original_sizes[:pubmed]} ➝ #{adjusted_pubmed_size}, PMC: #{original_sizes[:pmc]} ➝ #{adjusted_pmc_size}", :info, tag: 'adjust_id_lists')
+  end
+
+  def read_jsonl(path)
+    File.readlines(path).map { |line| JSON.parse(line) }
+  end
+
+  def write_deduped_records(path, records)
+    File.open(path, 'w') do |f|
+      records.each_with_index do |record, i|
+        record['index'] = i
+        f.puts(record.to_json)
+      end
+    end
+  end
+
+  def dedup_key(record)
+    record['doi'].presence || record['pmcid'].presence || record['pmid']
+  end
+
+  def deduplicate_pmc_records(records)
+    seen_keys = Set.new
+    deduped = records.each_with_object([]) do |record, acc|
+      next if record['pmcid'].blank?
+
+      key = dedup_key(record)
+      next if key.blank? || seen_keys.include?(key)
+
+      seen_keys << key
+      acc << record
+    end
+    [deduped, seen_keys]
+  end
+
+  def deduplicate_pubmed_records(records, seen_keys)
+    records.each_with_object([]) do |record, acc|
+      key = dedup_key(record)
+      next if key.blank? || seen_keys.include?(key)
+
+      seen_keys << key
+      acc << record
+    end
+  end
+
+  def update_tracker_with_adjustment_stats(original_sizes, pubmed_new_size, pmc_new_size)
+    @tracker['progress']['adjust_id_lists']['completed'] = true
+    @tracker['progress']['adjust_id_lists']['pubmed']['original_size']  = original_sizes[:pubmed]
+    @tracker['progress']['adjust_id_lists']['pubmed']['adjusted_size']  = pubmed_new_size
+    @tracker['progress']['adjust_id_lists']['pmc']['original_size']     = original_sizes[:pmc]
+    @tracker['progress']['adjust_id_lists']['pmc']['adjusted_size']     = pmc_new_size
+    @tracker.save
+  end
+
 end

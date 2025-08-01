@@ -8,9 +8,30 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
     @tracker = tracker
   end
 
-  def load_ids_from_file(path:)
-    @record_ids = File.readlines(path).map { |line| JSON.parse(line) }.compact
+  def load_ids_from_file(path:, db:)
+    cursor = @tracker['progress']['metadata_ingest'][db]['cursor']
+    filtered_ids = []
+
+    File.foreach(path) do |line|
+      record = JSON.parse(line.strip)
+      # Skip records before the cursor, for resuming
+      next if record['index'] < cursor
+
+      # Skip existing works
+      match = find_best_work_match(record.slice('pmid', 'pmcid', 'doi'))
+      if match.present?
+        Rails.logger.info("[MetadataIngestService] Skipping #{record.inspect} — work already exists.")
+        record_result(category: :skipped, message: 'Pre-filtered: work exists', ids: record)
+        next
+      end
+
+      filtered_ids << record
+    end
+
+    @record_ids = filtered_ids
+    Rails.logger.info("[MetadataIngestService] Loaded #{@record_ids.size} IDs starting at cursor #{cursor}")
   end
+
 
   def batch_retrieve_and_process_metadata(batch_size: 100, db:)
     unless SharedUtilities::DbType.valid?(db)
