@@ -5,6 +5,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
     @output_dir = config['output_dir']
     @record_ids = nil
     @results_path = results_path
+    @admin_set = AdminSet.where(title: @config['admin_set_title']).first
     @results = results
     @tracker = tracker
     @write_buffer = []
@@ -28,7 +29,8 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
       match = find_best_work_match(record.slice('pmid', 'pmcid', 'doi'))
       if match.present?
         Rails.logger.info("[MetadataIngestService] Skipping #{record.inspect} — work already exists.")
-        record_result(category: :skipped, message: 'Pre-filtered: work exists', ids: record)
+        article = WorkUtilsHelper.fetch_model_instance(match[:work_type], match[:work_id])
+        record_result(category: :skipped, message: 'Pre-filtered: work exists', ids: record, article: article)
         next
       end
 
@@ -46,13 +48,10 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
     number_of_batches = (@record_ids.size / batch_size.to_f).ceil
     batch_count = 1
     @record_ids.each_slice(batch_size) do |batch|
-      # WIP: Temporarily limit number of batches for testing
-      break if batch_count > 2
       batch_ids = batch.map { |record| db == 'pubmed' ? record['pmid'] : record['pmcid']&.delete_prefix('PMC') }.compact
       next if batch_ids.empty?
       base_url = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi'
       query_params = "?db=#{db}&id=#{batch_ids.join(',')}&retmode=xml&tool=CDR&email=cdr@unc.edu"
-      # Rails.logger.info("[batch_retrieve_and_process_metadata] Fetching metadata for IDs: #{batch_ids.first(25).join(', ')}")
       LogUtilsHelper.double_log("Processing batch #{batch_count}/#{number_of_batches}", :info, tag: 'MetadataIngestService')
       Rails.logger.info("[MetadataIngestService] Fetching metadata for IDs: #{batch_ids.first(25).join(', ')}...")
       res = HTTParty.get("#{base_url}#{query_params}")
@@ -146,6 +145,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
           record_result(
               category: :skipped,
               ids: alternate_ids,
+              message: 'Filtered after retrieving metadata: work exists',
               article: WorkUtilsHelper.fetch_model_instance(match[:work_type], match[:work_id])
           )
           next
@@ -153,7 +153,6 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
 
         # If no match found, create a new article
         Rails.logger.info("[MetadataIngestService] No existing work found for IDs: #{alternate_ids.inspect}. Creating new article.")
-
         article = new_article(doc)
         article.save!
         # @result_tracker[:successfully_ingested] << {
@@ -222,8 +221,8 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
 
   def attribute_builder(metadata, article)
     is_pubmed?(metadata) ?
-    Tasks::PubmedIngest::SharedUtilities::AttributeBuilders::PubmedAttributeBuilder.new(metadata, article, @config['admin_set'], @config['depositor_onyen']) :
-    Tasks::PubmedIngest::SharedUtilities::AttributeBuilders::PmcAttributeBuilder.new(metadata, article, @config['admin_set'], @config['depositor_onyen'])
+    Tasks::PubmedIngest::SharedUtilities::AttributeBuilders::PubmedAttributeBuilder.new(metadata, article, @admin_set, @config['depositor_onyen']) :
+    Tasks::PubmedIngest::SharedUtilities::AttributeBuilders::PmcAttributeBuilder.new(metadata, article, @admin_set, @config['depositor_onyen'])
   end
 
 
@@ -256,9 +255,13 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
 
   def record_result(category:, message: '', ids: {}, article: nil)
     # Merge article id into ids if article is provided
-    ids = ids.merge(article_id: article.id) if article
     log_entry = {
-        ids: ids,
+        ids: {
+          pmid: ids['pmid'],
+          pmcid: ids['pmcid'],
+          doi: ids['doi'],
+          article_id: article&.id
+        },
         timestamp: Time.now.utc.iso8601,
         category: category
     }
@@ -288,8 +291,10 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
   end
 
   def find_best_work_match(alternate_ids)
-    [:doi, :pmcid, :pmid].each do |key|
-      id = alternate_ids[key]
+    # ensures string keys
+     alt_ids = alternate_ids.transform_keys(&:to_s)  
+    ['doi', 'pmcid', 'pmid'].each do |key|
+      id = alt_ids[key]
       next if id.blank?
 
       work_data = WorkUtilsHelper.fetch_work_data_by_alternate_identifier(id)

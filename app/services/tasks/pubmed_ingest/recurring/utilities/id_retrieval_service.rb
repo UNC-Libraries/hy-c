@@ -21,7 +21,6 @@ class Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService
     }
     File.open(output_path, 'a') do |file|
       loop do
-        break if cursor > 200 # WIP: Remove in production
         res = HTTParty.get(base_url, query: params.merge({ retstart: cursor }))
         puts "Response code: #{res.code}, message: #{res.message}, URL: #{base_url}?#{params.merge({ retstart: cursor }).to_query}"
         if res.code != 200
@@ -55,6 +54,8 @@ class Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService
           raise e
         end
         break if cursor > parsed_response.xpath('//Count').text.to_i
+        # WIP: Temporarily limit the number of IDs retrieved for testing
+        break if count >= 10
       end
     end
     # Rails.logger.info("[retrieve_ids_within_date_range] Retrieved #{count} IDs from #{db} database")
