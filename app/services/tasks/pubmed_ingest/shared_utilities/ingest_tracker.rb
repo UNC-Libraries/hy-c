@@ -8,21 +8,21 @@ class Tasks::PubmedIngest::SharedUtilities::IngestTracker
     path = File.join(output_dir, 'ingest_tracker.json')
 
     if resume
-      LogUtilsHelper.double_log('Resume flag is set. Attempting to resume PubMed ingest from previous state.', :info, tag: 'PubMed Ingest')
+      LogUtilsHelper.double_log('Resume flag is set. Attempting to resume PubMed ingest from previous state.', :info, tag: 'Ingest Tracker')
       instance = new(output_dir, config)
       instance['restart_time'] = config['time'].strftime('%Y-%m-%d %H:%M:%S')
-      LogUtilsHelper.double_log("Resuming from existing state: #{instance.data}", :info, tag: 'PubMed Ingest')
+      LogUtilsHelper.double_log("Resuming from existing state: #{instance.data}", :info, tag: 'Ingest Tracker')
       return instance
     end
 
     if File.exist?(path) && !force_overwrite
-      LogUtilsHelper.double_log("Tracker file already exists at #{path}. Use `force_overwrite: true` to overwrite.", :error, tag: 'PubMed Ingest')
+      LogUtilsHelper.double_log("Tracker file already exists at #{path}. Use `force_overwrite: true` to overwrite.", :error, tag: 'Ingest Tracker')
       puts "🚫 Tracker file exists: #{path}"
       puts '   To overwrite it, pass `force_overwrite: true` in the args.'
       exit(1)
     end
 
-    LogUtilsHelper.double_log('Resume flag is not set. Initializing new ingest tracker.', :info, tag: 'PubMed Ingest')
+    LogUtilsHelper.double_log('Resume flag is not set. Initializing new ingest tracker.', :info, tag: 'Ingest Tracker')
     instance = new(output_dir, config)
     instance.save
     instance
@@ -42,8 +42,12 @@ class Tasks::PubmedIngest::SharedUtilities::IngestTracker
   end
 
   def save
-    File.open(@path, 'w', encoding: 'utf-8') do |f|
-      f.puts(JSON.pretty_generate(@data))
+    begin
+        File.open(@path, 'w', encoding: 'utf-8') do |f|
+        f.puts(JSON.pretty_generate(@data))
+        end
+    rescue => e
+        LogUtilsHelper.double_log("Failed to save ingest tracker: #{e.message}", :error, tag: 'Ingest Tracker')
     end
   end
 
@@ -53,11 +57,11 @@ class Tasks::PubmedIngest::SharedUtilities::IngestTracker
     return if !File.exist?(tracker_path)
 
     if force_overwrite
-      LogUtilsHelper.double_log("Overwriting existing tracker file at #{tracker_path} (force overwrite enabled).", :info, tag: 'PubMed Ingest')
+      LogUtilsHelper.double_log("Overwriting existing tracker file at #{tracker_path} (force overwrite enabled).", :info, tag: 'Ingest Tracker')
       return
     end
 
-    LogUtilsHelper.double_log("Tracker file already exists at #{tracker_path}. Use `force_overwrite: true` to overwrite.", :error, tag: 'PubMed Ingest')
+    LogUtilsHelper.double_log("Tracker file already exists at #{tracker_path}. Use `force_overwrite: true` to overwrite.", :error, tag: 'Ingest Tracker')
     puts "🚫 Tracker file exists: #{tracker_path}"
     puts '   To overwrite it, pass `force_overwrite: true` in the args.'
     exit(1)
@@ -66,16 +70,16 @@ class Tasks::PubmedIngest::SharedUtilities::IngestTracker
         private
 
   def load_tracker_file
-    LogUtilsHelper.double_log("Found existing ingest tracker at #{@path}. Loading data.", :info, tag: 'PubMed Ingest')
+    LogUtilsHelper.double_log("Found existing ingest tracker at #{@path}. Loading data.", :info, tag: 'Ingest Tracker')
     content = File.read(@path, encoding: 'utf-8')
     JSON.parse(content)
   rescue => e
-    LogUtilsHelper.double_log("Failed to load ingest tracker: #{e.message}", :error, tag: 'PubMed Ingest')
+    LogUtilsHelper.double_log("Failed to load ingest tracker: #{e.message}", :error, tag: 'Ingest Tracker')
     {}
   end
 
   def build_initial_tracker(config)
-    LogUtilsHelper.double_log("Building initial ingest tracker with config: #{config}", :info, tag: 'PubMed Ingest')
+    LogUtilsHelper.double_log("Building initial ingest tracker with config: #{config}", :info, tag: 'Ingest Tracker')
     {
       'start_time' => config['time'].strftime('%Y-%m-%d %H:%M:%S'),
       'restart_time' => nil,
@@ -99,7 +103,10 @@ class Tasks::PubmedIngest::SharedUtilities::IngestTracker
             'completed' => false,
             'pubmed' => { 'original_size' => 0, 'adjusted_size' => 0 },
             'pmc' => { 'original_size' => 0, 'adjusted_size' => 0 }
-        }
+        },
+        'metadata_ingest' => {
+            'pubmed' => { 'cursor' => 0, 'completed' => false },
+            'pmc' => { 'cursor' => 0, 'completed' => false }
         }
     }
   end

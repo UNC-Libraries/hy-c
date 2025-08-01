@@ -44,10 +44,11 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
     # Working Section:
     # Create output directory using the date and time
     build_id_lists
-    load_and_ingest_metadata
 
 
     # WIP:
+    load_and_ingest_metadata
+
 
     # flat_results = flatten_result_hash(@results)
     # JsonlFileUtils.write_jsonl(flat_results, File.join(@output_dir, 'result_out_pmc.jsonl'), mode: 'w')
@@ -114,10 +115,17 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
       results: @results,
       tracker: @tracker
     )
-    md_ingest_service.load_ids_from_file(path: File.join(@output_dir, 'pubmed_alternate_ids.jsonl'))
-    md_ingest_service.batch_retrieve_and_process_metadata(batch_size: 100, db: 'pubmed')
-    md_ingest_service.load_ids_from_file(path: File.join(@output_dir, 'pmc_alternate_ids.jsonl'))
-    md_ingest_service.batch_retrieve_and_process_metadata(batch_size: 100, db: 'pmc')
+    ['pubmed', 'pmc'].each do |db|
+      if @tracker['progress']['metadata_ingest'][db]['completed']
+        LogUtilsHelper.double_log("Skipping metadata ingest for #{db} as it is already completed.", :info, tag: 'load_and_ingest_metadata')
+        next
+      end
+      md_ingest_service.load_ids_from_file(path: File.join(@output_dir, "#{db}_alternate_ids.jsonl"), db: db)
+      md_ingest_service.batch_retrieve_and_process_metadata(batch_size: 100, db: db)
+      @tracker['progress']['metadata_ingest'][db]['completed'] = true
+      @tracker.save
+      LogUtilsHelper.double_log("Metadata ingest for #{db} completed successfully.", :info, tag: 'load_and_ingest_metadata')
+    end
   end
 
   def build_id_lists

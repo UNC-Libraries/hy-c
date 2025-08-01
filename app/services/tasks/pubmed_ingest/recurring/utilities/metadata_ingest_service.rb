@@ -62,6 +62,11 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
       current_batch = xml_doc.xpath(db == 'pubmed' ? '//PubmedArticle' : '//article')
       process_batch(current_batch, db)
 
+      # Update tracker cursor after processing batch
+      last_index = batch.last['index']
+      @tracker['progress']['metadata_ingest'][db]['cursor'] = last_index + 1
+      @tracker.save
+
         #Respect NCBI rate limits
       sleep(0.34)
     end
