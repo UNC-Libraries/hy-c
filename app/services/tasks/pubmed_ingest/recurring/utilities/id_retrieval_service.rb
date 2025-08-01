@@ -156,7 +156,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService
 
   def adjust_id_lists(pubmed_path:, pmc_path:)
     if @tracker['progress']['adjust_id_lists']['completed']
-      LogUtilsHelper.double_log("ID lists already adjusted. Skipping adjustment step.", :info, tag: 'adjust_id_lists')
+      LogUtilsHelper.double_log('ID lists already adjusted. Skipping adjustment step.', :info, tag: 'adjust_id_lists')
       return
     end
 

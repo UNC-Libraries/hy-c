@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
-  def initialize(config:, results_tracker:)
+  def initialize(config:, results:, tracker:)
     @config = config
     @output_dir = config['output_dir']
     @record_ids = nil
-    @results_tracker = results_tracker
+    @results = results
+    @tracker = tracker
   end
 
   def load_ids_from_file(path:)
@@ -199,8 +200,8 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
       row['article'] = article
       row['cdr_url'] = generate_cdr_url_for_article(article)
     end
-    @results_tracker[:counts][category] += 1
-    @results_tracker[category] << row
+    @results[:counts][category] += 1
+    @results[category] << row
   end
 
   def generate_cdr_url_for_article(article)

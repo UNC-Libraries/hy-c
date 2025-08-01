@@ -44,17 +44,11 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
     # Working Section:
     # Create output directory using the date and time
     build_id_lists
+    load_and_ingest_metadata
 
 
     # WIP:
-    # md_ingest_service = Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService.new(
-    #   config: @config,
-    #   results_tracker: @results
-    # )
-    # md_ingest_service.load_ids_from_file(path: File.join(@output_dir, 'pubmed_alternate_ids.jsonl'))
-    # md_ingest_service.batch_retrieve_and_process_metadata(batch_size: 100, db: 'pubmed')
-    # md_ingest_service.load_ids_from_file(path: File.join(@output_dir, 'pmc_alternate_ids.jsonl'))
-    # md_ingest_service.batch_retrieve_and_process_metadata(batch_size: 100, db: 'pmc')
+
     # flat_results = flatten_result_hash(@results)
     # JsonlFileUtils.write_jsonl(flat_results, File.join(@output_dir, 'result_out_pmc.jsonl'), mode: 'w')
     # id_retrieval_service = Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService.new(
@@ -114,7 +108,17 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
     flat
   end
 
-
+  def load_and_ingest_metadata
+    md_ingest_service = Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService.new(
+      config: @config,
+      results: @results,
+      tracker: @tracker
+    )
+    md_ingest_service.load_ids_from_file(path: File.join(@output_dir, 'pubmed_alternate_ids.jsonl'))
+    md_ingest_service.batch_retrieve_and_process_metadata(batch_size: 100, db: 'pubmed')
+    md_ingest_service.load_ids_from_file(path: File.join(@output_dir, 'pmc_alternate_ids.jsonl'))
+    md_ingest_service.batch_retrieve_and_process_metadata(batch_size: 100, db: 'pmc')
+  end
 
   def build_id_lists
     id_retrieval_service = Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService.new(
