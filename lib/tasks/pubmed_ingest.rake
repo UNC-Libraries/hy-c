@@ -3,6 +3,7 @@
 # 1. Script uses PMC-OAI API to retrieve metadata and make comparisons of alternate IDs. (PMCID, PMID)
 # 2. PMC requests scripts making >100 requests be ran outside of peak hours. (5 AM - 9 PM)
 DEPOSITOR = ENV['PUBMED_INGEST_DIMENSIONS_INGEST_DEPOSITOR_ONYEN']
+SUBDIRS = %w[01_build_id_lists 02_load_and_ingest_metadata 03_attach_pdfs_to_works]
 desc 'Ingest works from the PubMed API'
 task 'pubmed_ingest' => :environment do
   options = {}
@@ -10,17 +11,15 @@ task 'pubmed_ingest' => :environment do
   parser = OptionParser.new do |opts|
     opts.banner = 'Usage: bundle exec rake pubmed_ingest -- [options]'
 
-    opts.on('--start-date DATE', 'Start date for ingest (required)') { |v| options[:start_date] = v }
-    opts.on('--end-date DATE', 'End date for ingest (optional)') { |v| options[:end_date] = v }
-    opts.on('--admin-set-title TITLE', 'Admin Set title (required)') { |v| options[:admin_set_title] = v }
-    opts.on('--depositor ONYEN', 'Depositor onyen (optional, defaults to ENV["PUBMED_INGEST_DEPOSITOR_ONYEN"])') { |v| options[:depositor_onyen] = v || DEPOSITOR }
-    opts.on('--resume [BOOLEAN]', 'Resume from tracker file (optional, automatically detected in specified output directory)') do |val|
+    opts.on('--start-date DATE', 'Start date for ingest (required for new ingest runs only)') { |v| options[:start_date] = v }
+    opts.on('--end-date DATE', 'End date for ingest (required for new ingest runs only)') { |v| options[:end_date] = v }
+    opts.on('--admin-set-title TITLE', 'Admin Set title (required for new ingest runs only)') { |v| options[:admin_set_title] = v }
+    opts.on('--depositor ONYEN', 'Depositor onyen (optional, defaults to ENV["PUBMED_INGEST_DEPOSITOR_ONYEN"])') { |v| options[:depositor_onyen] = v }
+    opts.on('--resume [BOOLEAN]', 'Resume from tracker file (optional. uses existing tracking file to populate other args besides output-dir)') do |val|
       options[:resume] = ActiveModel::Type::Boolean.new.cast(val)
     end
-    opts.on('--force-overwrite [BOOLEAN]', 'Force overwrite of tracker file (optional)') do |val|
-      options[:force_overwrite] = ActiveModel::Type::Boolean.new.cast(val)
-    end
-    opts.on('--output-dir DIR', 'Output directory (optional)') { |v| options[:output_dir] = v }
+    opts.on('--output-dir DIR', 'Output directory (optional unless resuming)') { |v| options[:output_dir] = v }
+    opts.on('--full-text-dir DIR', 'Directory containing full text PDFs (required unless --resume is used)' ) { |v| options[:full_text_dir] = v }
     opts.on('-h', '--help', 'Display help') do
       puts opts
       exit
@@ -77,106 +76,103 @@ task :pubmed_backlog_ingest, [:file_retrieval_directory, :output_dir, :admin_set
 end
 
 def build_pubmed_ingest_config_and_tracker(args:)
-  # Extract values
-  start_date       = args[:start_date]
-  end_date         = args[:end_date]
-  admin_set_title  = args[:admin_set_title]
-  depositor_onyen  = args[:depositor_onyen]
-  resume_flag      = ActiveModel::Type::Boolean.new.cast(args[:resume])
-  force_overwrite  = ActiveModel::Type::Boolean.new.cast(args[:force_overwrite])
-  raw_output_dir   = args[:output_dir]
-
-  # Required check
-  unless start_date && admin_set_title
-    puts '❌ Required: --start-date and --admin-set-title'
-    puts "Provided: start-date=#{start_date}, admin-set-title=#{admin_set_title}"
-    exit(1)
-  end
-
-  admin_set = AdminSet.where(title_tesim: admin_set_title).first
-  unless admin_set
-    puts "❌ Admin Set not found with title: #{admin_set_title}"
-    exit(1)
-  end
-
-  # Conflict check
-  if resume_flag && force_overwrite
-    puts '❌ You cannot set both --resume=true and --force-overwrite=true.'
-    puts '💡 Use --resume=true to continue an ingest, or --force-overwrite=true to restart.'
-    exit(1)
-  end
+  depositor = args[:depositor_onyen].presence || DEPOSITOR
+  resume_flag    = ActiveModel::Type::Boolean.new.cast(args[:resume])
+  raw_output_dir = args[:output_dir]
+  script_start_time = Time.now
+  output_dir = nil
+  config = {}
 
   if resume_flag
     if raw_output_dir.blank?
       puts '❌ You cannot resume an ingest without specifying an output directory.'
-      puts '💡 Use --output-dir to specify where the tracker file is located.'
       exit(1)
-    else
-      # Confirm the directory exists
-      output_dir = Pathname.new(raw_output_dir)
-      unless output_dir.exist? && output_dir.directory?
-        puts "❌ Output directory does not exist or is not a directory: #{output_dir}"
-        exit(1)
-      end
+    end
 
-      # Check for existing tracker file
-      tracker_path = output_dir.join('ingest_tracker.json')
-      unless tracker_path.exist?
-        puts "❌ Tracker file not found in specified output directory: #{tracker_path}"
-        puts '💡 Use --force-overwrite=true to create a new tracker.'
+    output_dir = Pathname.new(raw_output_dir)
+    unless output_dir.directory?
+      puts "❌ Output directory does not exist or is not a directory: #{output_dir}"
+      exit(1)
+    end
+
+    tracker_path = output_dir.join('ingest_tracker.json')
+    unless tracker_path.exist?
+      puts "❌ Tracker file not found: #{tracker_path}"
+      exit(1)
+    end
+
+    tracker = Tasks::PubmedIngest::SharedUtilities::IngestTracker.load(
+      output_dir: output_dir,
+      resume: true
+    )
+    unless tracker
+      puts '❌ Failed to load existing tracker.'
+      exit(1)
+    end
+
+    config = {
+      'start_date'     => Date.parse(tracker['date_range']['start']),
+      'end_date'       => Date.parse(tracker['date_range']['end']),
+      'admin_set_title'=> tracker['admin_set_title'],
+      'depositor_onyen'=> tracker['depositor_onyen'],
+      'output_dir'     => output_dir.to_s,
+      'time'           => Time.parse(tracker['restart_time'] || tracker['start_time']),
+      'full_text_dir'  => tracker['full_text_dir'],
+    }
+
+  else
+    %w[start_date end_date admin_set_title full_text_dir].each do |key|
+      if args[key.to_sym].blank?
+        puts "❌ Missing required option: --#{key.tr('_', '-')}"
         exit(1)
       end
     end
-  end
 
-  # Parse dates
-  script_start_time = Time.now
-  begin
-    parsed_start = Date.parse(start_date)
-  rescue ArgumentError
-    puts "❌ Invalid start date format: #{start_date}"
-    exit(1)
-  end
+    begin
+      parsed_start = Date.parse(args[:start_date])
+      parsed_end   = Date.parse(args[:end_date])
+    rescue ArgumentError => e
+      puts "❌ Invalid date format: #{e.message}"
+      exit(1)
+    end
 
-  parsed_end = if end_date.present?
-                 begin
-                   Date.parse(end_date)
-                 rescue ArgumentError
-                   puts "❌ Invalid end date format: #{end_date}"
-                   exit(1)
-                 end
-               else
-                 Date.today
-               end
+    admin_set = AdminSet.where(title_tesim: args[:admin_set_title]).first
+    unless admin_set
+      puts "❌ Admin Set not found: #{args[:admin_set_title]}"
+      exit(1)
+    end
 
-  # Build output path
-  output_dir = nil
+    # Output directory handling
+    if raw_output_dir.present?
+      base_dir = Pathname.new(raw_output_dir)
+      output_dir = base_dir.absolute? ? base_dir : Rails.root.join(base_dir)
+      output_dir = output_dir.join("pubmed_ingest_#{script_start_time.strftime('%Y-%m-%d_%H-%M-%S')}")
+    else
+      LogUtilsHelper.double_log('No output directory specified. Using default temporary directory.', :info, tag: 'PubMed Ingest')
+      output_dir = Rails.root.join('tmp', "pubmed_ingest_#{script_start_time.strftime('%Y-%m-%d_%H-%M-%S')}")
+    end
 
-  if raw_output_dir.present?
-    path = Pathname.new(raw_output_dir)
-    output_dir = path.absolute? ? path : Rails.root.join(path)
-  else
-    output_dir = Rails.root.join('tmp').join("pubmed_ingest_#{script_start_time.strftime('%Y-%m-%d_%H-%M-%S')}")
     FileUtils.mkdir_p(output_dir)
+    SUBDIRS.each do |dir|
+      FileUtils.mkdir_p(output_dir.join(dir))
+    end
+
+    config = {
+      'start_date'      => parsed_start,
+      'end_date'        => parsed_end,
+      'admin_set_title' => args[:admin_set_title],
+      'depositor_onyen' => depositor,
+      'output_dir'      => output_dir.to_s,
+      'time'            => script_start_time,
+      'full_text_dir'   => args[:full_text_dir]
+    }
   end
-
-  # output_dir = output_dir.join("pubmed_ingest_#{script_start_time.strftime('%Y-%m-%d_%H-%M-%S')}")
-
-  config = {
-    'start_date' => parsed_start,
-    'end_date' => parsed_end,
-    'admin_set_title' => admin_set_title,
-    'depositor_onyen' => depositor_onyen,
-    'output_dir' => output_dir.to_s,
-    'time' => script_start_time,
-  }
 
   write_intro_banner(config: config)
 
   tracker = Tasks::PubmedIngest::SharedUtilities::IngestTracker.build(
     config: config,
-    resume: resume_flag,
-    force_overwrite: force_overwrite
+    resume: resume_flag
   )
 
   [config, tracker]

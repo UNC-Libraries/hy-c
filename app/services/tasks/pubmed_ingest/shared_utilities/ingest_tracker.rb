@@ -3,7 +3,7 @@ class Tasks::PubmedIngest::SharedUtilities::IngestTracker
   TRACKER_FILENAME = 'ingest_tracker.json'
   attr_reader :path, :data
 
-  def self.build(config:, resume: false, force_overwrite: false)
+  def self.build(config:, resume: false)
     output_dir = config['output_dir']
     path = File.join(output_dir, 'ingest_tracker.json')
 
@@ -15,10 +15,8 @@ class Tasks::PubmedIngest::SharedUtilities::IngestTracker
       return instance
     end
 
-    if File.exist?(path) && !force_overwrite
-      LogUtilsHelper.double_log("Tracker file already exists at #{path}. Use `force_overwrite: true` to overwrite.", :error, tag: 'Ingest Tracker')
-      puts "🚫 Tracker file exists: #{path}"
-      puts '   To overwrite it, pass `force_overwrite: true` in the args.'
+    if File.exist?(path) && 
+      LogUtilsHelper.double_log("Tracker file already exists at #{path}.", :error, tag: 'Ingest Tracker')
       exit(1)
     end
 
@@ -45,22 +43,6 @@ class Tasks::PubmedIngest::SharedUtilities::IngestTracker
     File.open(@path, 'w', encoding: 'utf-8') { |f| f.puts(JSON.pretty_generate(@data)) }
   rescue => e
     LogUtilsHelper.double_log("Failed to save ingest tracker: #{e.message}", :error, tag: 'Ingest Tracker')
-  end
-
-  def check_tracker_overwrite!(config, force_overwrite: false)
-    tracker_path = File.join(config['output_dir'], TRACKER_FILENAME)
-
-    return if !File.exist?(tracker_path)
-
-    if force_overwrite
-      LogUtilsHelper.double_log("Overwriting existing tracker file at #{tracker_path} (force overwrite enabled).", :info, tag: 'Ingest Tracker')
-      return
-    end
-
-    LogUtilsHelper.double_log("Tracker file already exists at #{tracker_path}. Use `force_overwrite: true` to overwrite.", :error, tag: 'Ingest Tracker')
-    puts "🚫 Tracker file exists: #{tracker_path}"
-    puts '   To overwrite it, pass `force_overwrite: true` in the args.'
-    exit(1)
   end
 
         private
