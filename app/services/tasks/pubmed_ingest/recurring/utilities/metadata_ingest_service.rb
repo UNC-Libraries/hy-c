@@ -10,6 +10,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
     @tracker = tracker
     @write_buffer = []
     @flush_threshold = 200
+    @result_index = 0
   end
 
   def load_alternate_ids_from_file(path:, db:)
@@ -39,6 +40,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
 
     @record_ids = filtered_ids
     LogUtilsHelper.double_log("Loaded #{@record_ids.size} remaining IDs from alternate IDs file with #{count} total records.", :info, tag: 'MetadataIngestService')
+    flush_buffer_to_file unless @write_buffer.empty?
   end
 
 
@@ -256,6 +258,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
   def record_result(category:, message: '', ids: {}, article: nil)
     # Merge article id into ids if article is provided
     log_entry = {
+        index: @result_index,
         ids: {
           pmid: ids['pmid'],
           pmcid: ids['pmcid'],
@@ -267,6 +270,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
     }
     log_entry[:message] = message if message.present?
     @write_buffer << log_entry
+    @result_index += 1
     flush_buffer_if_needed
   end
 
@@ -276,6 +280,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
   end
 
   def flush_buffer_to_file
+    LogUtilsHelper.double_log("Flushing #{@write_buffer.inspect} entries to #{@results_path}", :info, tag: 'MetadataIngestService')
     File.open(@results_path, 'a') do |file|
       @write_buffer.each { |entry| file.puts(JSON.generate(entry)) }
     end

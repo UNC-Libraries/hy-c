@@ -68,6 +68,7 @@ class Tasks::PubmedIngest::SharedUtilities::IngestTracker
       'admin_set_title' => config['admin_set_title'],
       'depositor_onyen' => config['depositor_onyen'],
       'output_dir' => config['output_dir'],
+      'full_text_dir' => config['full_text_dir'],
       'progress' => {
         'retrieve_ids_within_date_range' => {
             'pubmed' => { 'cursor' => 0, 'completed' => false },
@@ -85,8 +86,11 @@ class Tasks::PubmedIngest::SharedUtilities::IngestTracker
         'metadata_ingest' => {
             'pubmed' => { 'cursor' => 0, 'completed' => false },
             'pmc' => { 'cursor' => 0, 'completed' => false }
-        }
+        },
+        'attach_pdfs_to_works' => {
+            'completed' => false,
+            'cursor' => 0
+        }}
     }
-}
   end
 end

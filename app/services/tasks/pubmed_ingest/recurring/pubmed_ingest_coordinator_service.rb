@@ -133,6 +133,7 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
       @tracker['progress']['metadata_ingest'][db]['completed'] = true
       @tracker.save
       LogUtilsHelper.double_log("Metadata ingest for #{db} completed successfully.", :info, tag: 'load_and_ingest_metadata')
+      LogUtilsHelper.double_log("Output directory: #{@metadata_ingest_output_directory}", :info, tag: 'load_and_ingest_metadata')
     end
   end
 
