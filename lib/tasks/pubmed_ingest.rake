@@ -3,7 +3,7 @@
 # 1. Script uses PMC-OAI API to retrieve metadata and make comparisons of alternate IDs. (PMCID, PMID)
 # 2. PMC requests scripts making >100 requests be ran outside of peak hours. (5 AM - 9 PM)
 DEPOSITOR = ENV['PUBMED_INGEST_DIMENSIONS_INGEST_DEPOSITOR_ONYEN']
-SUBDIRS = %w[01_build_id_lists 02_load_and_ingest_metadata 03_attach_pdfs_to_works]
+SUBDIRS = %w[01_build_id_lists 02_load_and_ingest_metadata 03_attach_files_to_works]
 REQUIRED_ARGS = %w[start_date end_date admin_set_title]
 
 desc 'Ingest works from the PubMed API'
@@ -18,7 +18,7 @@ task 'pubmed_ingest' => :environment do
     opts.on('--admin-set-title TITLE', 'Admin Set title (required for new ingest runs only)') { |v| options[:admin_set_title] = v }
     opts.on('--depositor ONYEN', 'Depositor onyen (optional, defaults to ENV["PUBMED_INGEST_DEPOSITOR_ONYEN"])') { |v| options[:depositor_onyen] = v }
     opts.on('--resume [BOOLEAN]', 'Resume from tracker file (optional. uses existing tracking file to populate other args besides output-dir)') do |val|
-      options[:resume] = ActiveModel::Type::Boolean.new.cast(val)
+      options[:resume] = true
     end
     opts.on('--output-dir DIR', 'Output directory (optional unless resuming)') { |v| options[:output_dir] = v }
     opts.on('--full-text-dir DIR', 'Directory containing full text PDFs (optional for new runs)') { |v| options[:full_text_dir] = v }
@@ -103,8 +103,23 @@ def build_pubmed_ingest_config_and_tracker(args:)
       exit(1)
     end
 
-    tracker = Tasks::PubmedIngest::SharedUtilities::IngestTracker.load(
-      output_dir: output_dir,
+    # config = {
+    #   'start_date'     => Date.parse(tracker['date_range']['start']),
+    #   'end_date'       => Date.parse(tracker['date_range']['end']),
+    #   'admin_set_title'=> tracker['admin_set_title'],
+    #   'depositor_onyen'=> tracker['depositor_onyen'],
+    #   'output_dir'     => output_dir.to_s,
+    #   'time'           => Time.parse(tracker['restart_time'] || tracker['start_time']),
+    #   'full_text_dir'  => tracker['full_text_dir'],
+    # }
+
+    config = {
+      'output_dir'      => output_dir.to_s,
+      'restart_time'   => script_start_time
+    }
+
+    tracker = Tasks::PubmedIngest::SharedUtilities::IngestTracker.build(
+      config: config,
       resume: true
     )
     unless tracker
@@ -112,15 +127,7 @@ def build_pubmed_ingest_config_and_tracker(args:)
       exit(1)
     end
 
-    config = {
-      'start_date'     => Date.parse(tracker['date_range']['start']),
-      'end_date'       => Date.parse(tracker['date_range']['end']),
-      'admin_set_title'=> tracker['admin_set_title'],
-      'depositor_onyen'=> tracker['depositor_onyen'],
-      'output_dir'     => output_dir.to_s,
-      'time'           => Time.parse(tracker['restart_time'] || tracker['start_time']),
-      'full_text_dir'  => tracker['full_text_dir'],
-    }
+   
 
   else
     REQUIRED_ARGS.each do |key|
@@ -148,6 +155,7 @@ def build_pubmed_ingest_config_and_tracker(args:)
     output_dir = resolve_output_dir(raw_output_dir, script_start_time)
     full_text_dir = resolve_full_text_dir(args[:full_text_dir], output_dir, script_start_time)
 
+    # Create necessary directories
     FileUtils.mkdir_p(output_dir)
     SUBDIRS.each do |dir|
       FileUtils.mkdir_p(output_dir.join(dir))
@@ -163,14 +171,13 @@ def build_pubmed_ingest_config_and_tracker(args:)
       'time'            => script_start_time,
       'full_text_dir'   => full_text_dir.to_s
     }
-  end
 
-  write_intro_banner(config: config)
-
-  tracker = Tasks::PubmedIngest::SharedUtilities::IngestTracker.build(
+    write_intro_banner(config: config)
+    tracker = Tasks::PubmedIngest::SharedUtilities::IngestTracker.build(
     config: config,
     resume: resume_flag
   )
+  end
 
   [config, tracker]
 end

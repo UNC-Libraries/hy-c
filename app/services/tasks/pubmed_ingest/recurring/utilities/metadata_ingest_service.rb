@@ -10,23 +10,20 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
     @tracker = tracker
     @write_buffer = []
     @flush_threshold = 200
-    @result_index = 0
   end
 
-  def load_alternate_ids_from_file(path:, db:)
+  def load_alternate_ids_from_file(path:)
     LogUtilsHelper.double_log("Loading IDs from file with alt ids: #{path}", :info, tag: 'MetadataIngestService')
-    cursor = @tracker['progress']['metadata_ingest'][db]['cursor']
     filtered_ids = []
+    existing_ids = load_last_results
     count = 0
 
-    LogUtilsHelper.double_log("Resuming from cursor: #{cursor} out of #{File.foreach(path).count} records for the #{db} database.", :info, tag: 'MetadataIngestService')
     File.foreach(path) do |line|
-      record = JSON.parse(line.strip)
       count += 1
-      # Skip records before the cursor, for resuming
-      next if record['index'] < cursor
-
-      # Skip existing works
+      record = JSON.parse(line.strip)
+      # Skip existing works in the results file
+      next if existing_ids.include?(record['pmid']) || existing_ids.include?(record['pmcid'])
+      # Skip if record is in hyrax
       match = find_best_work_match(record.slice('pmid', 'pmcid', 'doi'))
       if match.present?
         Rails.logger.info("[MetadataIngestService] Skipping #{record.inspect} — work already exists.")
@@ -39,9 +36,20 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
     end
 
     @record_ids = filtered_ids
-    LogUtilsHelper.double_log("Loaded #{@record_ids.size} remaining IDs from alternate IDs file with #{count} total records.", :info, tag: 'MetadataIngestService')
+    LogUtilsHelper.double_log("Skipped #{count - filtered_ids.size} records that already existed in results file.", :info, tag: 'MetadataIngestService')
     flush_buffer_to_file unless @write_buffer.empty?
   end
+
+    def load_last_results
+      return Set.new unless File.exist?(@results_path)
+
+      Set.new(
+        File.readlines(@results_path).map do |line|
+          result = JSON.parse(line.strip)
+          [result.dig('ids', 'pmid'), result.dig('ids', 'pmcid')]
+        end.flatten.compact
+      )
+   end
 
 
   def batch_retrieve_and_process_metadata(batch_size: 100, db:)
@@ -68,12 +76,8 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
       handle_pubmed_errors(xml_doc, batch_ids) if db == 'pubmed'
 
       current_batch = xml_doc.xpath(db == 'pubmed' ? '//PubmedArticle' : '//article')
-      process_batch(current_batch, db)
+      process_batch(current_batch)
 
-      # Update tracker cursor after processing batch
-      last_index = batch.last['index']
-      @tracker['progress']['metadata_ingest'][db]['cursor'] = last_index + 1
-      @tracker.save
       batch_count += 1
         #Respect NCBI rate limits
       sleep(0.34)
@@ -135,7 +139,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
     end
   end
 
-  def process_batch(batch, db)
+  def process_batch(batch)
     batch.each do |doc|
       alternate_ids = { 'pmid' => nil, 'pmcid' => nil, 'doi' => nil}
       begin
@@ -258,7 +262,6 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
   def record_result(category:, message: '', ids: {}, article: nil)
     # Merge article id into ids if article is provided
     log_entry = {
-        index: @result_index,
         ids: {
           pmid: ids['pmid'],
           pmcid: ids['pmcid'],
@@ -270,7 +273,6 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
     }
     log_entry[:message] = message if message.present?
     @write_buffer << log_entry
-    @result_index += 1
     flush_buffer_if_needed
   end
 

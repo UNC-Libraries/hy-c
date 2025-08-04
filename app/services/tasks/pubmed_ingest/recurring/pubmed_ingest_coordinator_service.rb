@@ -2,7 +2,7 @@
 class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
   BUILD_ID_LISTS_DIR = '01_build_id_lists'
   LOAD_METADATA_DIR  = '02_load_and_ingest_metadata'
-  ATTACH_PDFS_DIR    = '03_attach_pdfs_to_works'
+  ATTACH_FILES_DIR    = '03_attach_files_to_works'
   def initialize(config, tracker)
     @config = config
     @tracker = tracker
@@ -30,16 +30,16 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
     # timestamp = @results[:time].strftime('pubmed_ingest_%Y-%m-%d_%H-%M-%S')
     @output_dir = config['output_dir']
     # FileUtils.mkdir_p(@output_dir)
-    @pmc_id_path = File.join(@output_dir, 'pmc_ids.jsonl')
-    @pubmed_id_path = File.join(@output_dir, 'pubmed_ids.jsonl')
-    @pmc_alternate_ids_path = File.join(@output_dir, 'pmc_alternate_ids.jsonl')
-    @pubmed_alternate_ids_path = File.join(@output_dir, 'pubmed_alternate_ids.jsonl')
-    @oa_subset_path = File.join(@output_dir, 'oa_subset.jsonl')
-    @oa_extended_path = File.join(@output_dir, 'oa_subset_extended.jsonl')
-    @pmc_id_path = File.join(@output_dir, 'pmc_ids.jsonl')
-    @pubmed_id_path = File.join(@output_dir, 'pubmed_ids.jsonl')
-    @alternate_ids_path = File.join(@output_dir, 'alternate_ids.jsonl')
-    @results_path = File.join(@output_dir, 'pubmed_ingest_results.jsonl')
+    # @pmc_id_path = File.join(@output_dir, 'pmc_ids.jsonl')
+    # @pubmed_id_path = File.join(@output_dir, 'pubmed_ids.jsonl')
+    # @pmc_alternate_ids_path = File.join(@output_dir, 'pmc_alternate_ids.jsonl')
+    # @pubmed_alternate_ids_path = File.join(@output_dir, 'pubmed_alternate_ids.jsonl')
+    # @oa_subset_path = File.join(@output_dir, 'oa_subset.jsonl')
+    # @oa_extended_path = File.join(@output_dir, 'oa_subset_extended.jsonl')
+    # @pmc_id_path = File.join(@output_dir, 'pmc_ids.jsonl')
+    # @pubmed_id_path = File.join(@output_dir, 'pubmed_ids.jsonl')
+    # @alternate_ids_path = File.join(@output_dir, 'alternate_ids.jsonl')
+    # @results_path = File.join(@output_dir, 'pubmed_ingest_results.jsonl')
 
 
     @id_list_output_directory = File.join(@output_dir, BUILD_ID_LISTS_DIR)
@@ -51,58 +51,25 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
     # Working Section:
     # Create output directory using the date and time
     build_id_lists
-    # WIP:
-    # load_previously_saved_results
     load_and_ingest_metadata
-
-
-    # flat_results = flatten_result_hash(@results)
-    # JsonlFileUtils.write_jsonl(flat_results, File.join(@output_dir, 'result_out_pmc.jsonl'), mode: 'w')
-    # id_retrieval_service = Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService.new(
-    #   start_date: @config['start_date'],
-    #   end_date: @config['end_date']
-    #   )
-    # id_retrieval_service.retrieve_ids_within_date_range(path: @pubmed_id_path, db: 'pubmed')
-    # id_retrieval_service.retrieve_ids_within_date_range(path: @pmc_id_path, db: 'pmc')
-
-    # 1. Retrieve OA subset and write to JSONL file
-    # oa_service = Tasks::PubmedIngest::Recurring::Utilities::OaSubsetService.new(start_date: @config['start_date'], end_date: @config['end_date'], output_path: @oa_subset_path)
-    # oa_service.retrieve_oa_subset(start_date: @config['start_date'], end_date: @config['end_date'], output_path: @oa_subset_path)
-    # Write OA subset to JSONL file
-    # oa_service.expand_subset(buffer: 2.years, output_path: @oa_extended_path, current_day: @results[:time])
-
-
-    # 2. Extract PMCIDs and write to file
-    # pmc_ids = oa_service.extract_pmc_ids # returns array
-    # write_json(pmc_id_path, pmc_ids)
-
-    # # 3. Retrieve PubMed IDs from esearch and write to file
-    # pubmed_ids = PubmedIdService.new(start_date, end_date).fetch_ids
-    # write_json(pubmed_id_path, pubmed_ids)
-
-    # # 4. Resolve alternate IDs for PMC + PubMed records
-    # alternate_id_service = AlternateIdResolutionService.new(pmc_ids: pmc_ids, pubmed_ids: pubmed_ids)
-    # record_id_hashes = alternate_id_service.resolve_all
-    # write_json(alternate_ids_path, record_id_hashes)
-
-    # # 4.5 Expand OA subset by a buffer (e.g., 2 years) to account for delays between OA publication and full text availability
-    # oa_service.expand_subset(current_end_date: end_date, buffer: 2.years, output_file: oa_subset_path)
-    # write_json(oa_subset_path, oa_service.extract_pmc_ids_from_file)
-
-    # # 5. Ingest metadata in batches from EFetch
-    # ingest_service = MetadataIngestService.new(record_ids: record_id_hashes, result_tracker: @results)
-    # ingest_service.process_and_create_articles
-
-    # # 6. Attach PDFs for known files in file_retrieval_directory
-    # pdf_service = PdfAttachmentService.new(files_in_dir, record_id_hashes, result_tracker: @results)
-    # pdf_service.attach_existing_works
-
-    # # 7. Write results and notify
+    # WIP:
+    attach_files
     # write_results_to_file
     # finalize_report_and_notify
   end
 
   private
+
+  def attach_files
+    file_attachment_service = Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService.new(
+      config: @config,
+      tracker: @tracker,
+      output_path: File.join(@output_dir, ATTACH_FILES_DIR),
+      full_text_path: @config['full_text_dir'],
+      metadata_ingest_result_path: File.join(@metadata_ingest_output_directory, 'metadata_ingest_results.jsonl'),
+    )
+    file_attachment_service.run
+  end
 
   def flatten_result_hash(results)
     flat = []
@@ -127,7 +94,7 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
         LogUtilsHelper.double_log("Skipping metadata ingest for #{db} as it is already completed.", :info, tag: 'load_and_ingest_metadata')
         next
       end
-      md_ingest_service.load_alternate_ids_from_file(path: File.join(@id_list_output_directory, "#{db}_alternate_ids.jsonl"), db: db)
+      md_ingest_service.load_alternate_ids_from_file(path: File.join(@id_list_output_directory, "#{db}_alternate_ids.jsonl"))
       # WIP: Temporarily limit number of batches for testing
       md_ingest_service.batch_retrieve_and_process_metadata(batch_size: 3, db: db)
       @tracker['progress']['metadata_ingest'][db]['completed'] = true

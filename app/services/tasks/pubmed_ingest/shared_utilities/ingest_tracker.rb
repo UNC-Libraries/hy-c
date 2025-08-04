@@ -10,7 +10,7 @@ class Tasks::PubmedIngest::SharedUtilities::IngestTracker
     if resume
       LogUtilsHelper.double_log('Resume flag is set. Attempting to resume PubMed ingest from previous state.', :info, tag: 'Ingest Tracker')
       instance = new(output_dir, config)
-      instance['restart_time'] = config['time'].strftime('%Y-%m-%d %H:%M:%S')
+      instance['restart_time'] = config['restart_time'].strftime('%Y-%m-%d %H:%M:%S')
       LogUtilsHelper.double_log("Resuming from existing state: #{instance.data}", :info, tag: 'Ingest Tracker')
       return instance
     end
@@ -84,12 +84,13 @@ class Tasks::PubmedIngest::SharedUtilities::IngestTracker
             'pmc' => { 'original_size' => 0, 'adjusted_size' => 0 }
         },
         'metadata_ingest' => {
-            'pubmed' => { 'cursor' => 0, 'completed' => false },
-            'pmc' => { 'cursor' => 0, 'completed' => false }
+            'pubmed' => { 'cursor' => 0, 'result_index' => 0, 'completed' => false },
+            'pmc' => { 'cursor' => 0, 'result_index' => 0, 'completed' => false }
         },
-        'attach_pdfs_to_works' => {
+        'attach_files_to_works' => {
             'completed' => false,
-            'cursor' => 0
+            'cursor' => 0,
+            'result_index' => 0
         }}
     }
   end
