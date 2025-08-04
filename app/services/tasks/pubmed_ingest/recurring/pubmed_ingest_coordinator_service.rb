@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
+  BUILD_ID_LISTS_DIR = '01_build_id_lists'
+  LOAD_METADATA_DIR  = '02_load_and_ingest_metadata'
+  ATTACH_PDFS_DIR    = '03_attach_pdfs_to_works'
   def initialize(config, tracker)
     @config = config
     @tracker = tracker
@@ -37,6 +40,10 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
     @pubmed_id_path = File.join(@output_dir, 'pubmed_ids.jsonl')
     @alternate_ids_path = File.join(@output_dir, 'alternate_ids.jsonl')
     @results_path = File.join(@output_dir, 'pubmed_ingest_results.jsonl')
+
+
+    @id_list_output_directory = File.join(@output_dir, BUILD_ID_LISTS_DIR)
+    @metadata_ingest_output_directory = File.join(@output_dir, LOAD_METADATA_DIR)
 
   end
 
@@ -113,14 +120,14 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
       config: @config,
       results: @results,
       tracker: @tracker,
-      results_path: @results_path
+      results_path: File.join(@metadata_ingest_output_directory, 'metadata_ingest_results.jsonl'),
     )
     ['pubmed', 'pmc'].each do |db|
       if @tracker['progress']['metadata_ingest'][db]['completed']
         LogUtilsHelper.double_log("Skipping metadata ingest for #{db} as it is already completed.", :info, tag: 'load_and_ingest_metadata')
         next
       end
-      md_ingest_service.load_alternate_ids_from_file(path: File.join(@output_dir, "#{db}_alternate_ids.jsonl"), db: db)
+      md_ingest_service.load_alternate_ids_from_file(path: File.join(@id_list_output_directory, "#{db}_alternate_ids.jsonl"), db: db)
       # WIP: Temporarily limit number of batches for testing
       md_ingest_service.batch_retrieve_and_process_metadata(batch_size: 3, db: db)
       @tracker['progress']['metadata_ingest'][db]['completed'] = true
@@ -158,7 +165,7 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
       end
 
       LogUtilsHelper.double_log("Retrieving record IDs for PubMed and PMC databases within the date range: #{@config['start_date'].strftime('%Y-%m-%d')} - #{@config['end_date'].strftime('%Y-%m-%d')}", :info, tag: 'build_id_lists')
-      record_id_path = File.join(@output_dir, "#{db}_ids.jsonl")
+      record_id_path = File.join(@id_list_output_directory, "#{db}_ids.jsonl")
       # WIP: Temporarily limit the number of records retrieved for testing
       id_retrieval_service.retrieve_ids_within_date_range(output_path: record_id_path, db: db, retmax: 5)
       @tracker['progress']['retrieve_ids_within_date_range'][db]['completed'] = true
@@ -171,19 +178,19 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
         LogUtilsHelper.double_log("Skipping alternate ID retrieval for #{db} as it is already completed.", :info, tag: 'build_id_lists')
         next
       end
-      record_id_path = File.join(@output_dir, "#{db}_ids.jsonl")
+      record_id_path = File.join(@id_list_output_directory, "#{db}_ids.jsonl")
       LogUtilsHelper.double_log("Streaming and writing alternate IDs for the #{db} database.", :info, tag: 'build_id_lists')
-      alternate_id_path = File.join(@output_dir, "#{db}_alternate_ids.jsonl")
+      alternate_id_path = File.join(@id_list_output_directory, "#{db}_alternate_ids.jsonl")
       id_retrieval_service.stream_and_write_alternate_ids(input_path: record_id_path, output_path: alternate_id_path, db: db)
       @tracker['progress']['stream_and_write_alternate_ids'][db]['completed'] = true
       @tracker.save
     end
 
     id_retrieval_service.adjust_id_lists(
-      pubmed_path: File.join(@output_dir, 'pubmed_alternate_ids.jsonl'),
-      pmc_path: File.join(@output_dir, 'pmc_alternate_ids.jsonl')
+      pubmed_path: File.join(@id_list_output_directory, 'pubmed_alternate_ids.jsonl'),
+      pmc_path: File.join(@id_list_output_directory, 'pmc_alternate_ids.jsonl')
     )
-    LogUtilsHelper.double_log("ID lists built successfully. Output directory: #{@output_dir}", :info, tag: 'build_id_lists')
+    LogUtilsHelper.double_log("ID lists built successfully. Output directory: #{@id_list_output_directory}", :info, tag: 'build_id_lists')
   end
 
   def process_file_matches

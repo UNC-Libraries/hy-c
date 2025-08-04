@@ -15,7 +15,7 @@ class Tasks::PubmedIngest::SharedUtilities::IngestTracker
       return instance
     end
 
-    if File.exist?(path) && 
+    if File.exist?(path) &&
       LogUtilsHelper.double_log("Tracker file already exists at #{path}.", :error, tag: 'Ingest Tracker')
       exit(1)
     end

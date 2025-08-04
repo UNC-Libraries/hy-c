@@ -292,7 +292,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
 
   def find_best_work_match(alternate_ids)
     # ensures string keys
-     alt_ids = alternate_ids.transform_keys(&:to_s)  
+    alt_ids = alternate_ids.transform_keys(&:to_s)
     ['doi', 'pmcid', 'pmid'].each do |key|
       id = alt_ids[key]
       next if id.blank?

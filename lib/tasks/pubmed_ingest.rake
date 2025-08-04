@@ -21,7 +21,7 @@ task 'pubmed_ingest' => :environment do
       options[:resume] = ActiveModel::Type::Boolean.new.cast(val)
     end
     opts.on('--output-dir DIR', 'Output directory (optional unless resuming)') { |v| options[:output_dir] = v }
-    opts.on('--full-text-dir DIR', 'Directory containing full text PDFs (optional for new runs)' ) { |v| options[:full_text_dir] = v }
+    opts.on('--full-text-dir DIR', 'Directory containing full text PDFs (optional for new runs)') { |v| options[:full_text_dir] = v }
     opts.on('-h', '--help', 'Display help') do
       puts opts
       exit
