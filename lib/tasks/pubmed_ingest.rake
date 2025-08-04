@@ -4,6 +4,8 @@
 # 2. PMC requests scripts making >100 requests be ran outside of peak hours. (5 AM - 9 PM)
 DEPOSITOR = ENV['PUBMED_INGEST_DIMENSIONS_INGEST_DEPOSITOR_ONYEN']
 SUBDIRS = %w[01_build_id_lists 02_load_and_ingest_metadata 03_attach_pdfs_to_works]
+REQUIRED_ARGS = %w[start_date end_date admin_set_title]
+
 desc 'Ingest works from the PubMed API'
 task 'pubmed_ingest' => :environment do
   options = {}
@@ -19,7 +21,7 @@ task 'pubmed_ingest' => :environment do
       options[:resume] = ActiveModel::Type::Boolean.new.cast(val)
     end
     opts.on('--output-dir DIR', 'Output directory (optional unless resuming)') { |v| options[:output_dir] = v }
-    opts.on('--full-text-dir DIR', 'Directory containing full text PDFs (required unless --resume is used)' ) { |v| options[:full_text_dir] = v }
+    opts.on('--full-text-dir DIR', 'Directory containing full text PDFs (optional for new runs)' ) { |v| options[:full_text_dir] = v }
     opts.on('-h', '--help', 'Display help') do
       puts opts
       exit
@@ -121,7 +123,7 @@ def build_pubmed_ingest_config_and_tracker(args:)
     }
 
   else
-    %w[start_date end_date admin_set_title full_text_dir].each do |key|
+    REQUIRED_ARGS.each do |key|
       if args[key.to_sym].blank?
         puts "❌ Missing required option: --#{key.tr('_', '-')}"
         exit(1)
@@ -143,19 +145,14 @@ def build_pubmed_ingest_config_and_tracker(args:)
     end
 
     # Output directory handling
-    if raw_output_dir.present?
-      base_dir = Pathname.new(raw_output_dir)
-      output_dir = base_dir.absolute? ? base_dir : Rails.root.join(base_dir)
-      output_dir = output_dir.join("pubmed_ingest_#{script_start_time.strftime('%Y-%m-%d_%H-%M-%S')}")
-    else
-      LogUtilsHelper.double_log('No output directory specified. Using default temporary directory.', :info, tag: 'PubMed Ingest')
-      output_dir = Rails.root.join('tmp', "pubmed_ingest_#{script_start_time.strftime('%Y-%m-%d_%H-%M-%S')}")
-    end
+    output_dir = resolve_output_dir(raw_output_dir, script_start_time)
+    full_text_dir = resolve_full_text_dir(args[:full_text_dir], output_dir, script_start_time)
 
     FileUtils.mkdir_p(output_dir)
     SUBDIRS.each do |dir|
       FileUtils.mkdir_p(output_dir.join(dir))
     end
+    FileUtils.mkdir_p(full_text_dir)
 
     config = {
       'start_date'      => parsed_start,
@@ -164,7 +161,7 @@ def build_pubmed_ingest_config_and_tracker(args:)
       'depositor_onyen' => depositor,
       'output_dir'      => output_dir.to_s,
       'time'            => script_start_time,
-      'full_text_dir'   => args[:full_text_dir]
+      'full_text_dir'   => full_text_dir.to_s
     }
   end
 
@@ -185,6 +182,28 @@ def valid_args(function_name, *args)
     end
 
   true
+end
+
+def resolve_output_dir(raw_output_dir, script_start_time)
+  if raw_output_dir.present?
+    base_dir = Pathname.new(raw_output_dir)
+    base_dir = Rails.root.join(base_dir) unless base_dir.absolute?
+    base_dir.join("pubmed_ingest_#{script_start_time.strftime('%Y-%m-%d_%H-%M-%S')}")
+  else
+    LogUtilsHelper.double_log('No output directory specified. Using default tmp directory.', :info, tag: 'PubMed Ingest')
+    Rails.root.join('tmp', "pubmed_ingest_#{script_start_time.strftime('%Y-%m-%d_%H-%M-%S')}")
+  end
+end
+
+def resolve_full_text_dir(raw_full_text_dir, output_dir, script_start_time)
+  if raw_full_text_dir.present?
+    base = Pathname.new(raw_full_text_dir)
+    base.absolute? ? base : Rails.root.join(base)
+  else
+    default_dir = output_dir.join("full_text_pdfs_#{script_start_time.strftime('%Y-%m-%d_%H-%M-%S')}")
+    LogUtilsHelper.double_log("No full-text directory specified. Using default: #{default_dir}", :info, tag: 'PubMed Ingest')
+    default_dir
+  end
 end
 
 def write_intro_banner(config:)
