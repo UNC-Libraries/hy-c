@@ -1,5 +1,11 @@
 # frozen_string_literal: true
+require 'net/ftp'
+require 'tempfile'
+
+# frozen_string_literal: true
 class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
+  include Tasks::IngestHelper 
+  
   MAX_THREADS = 5
   RETRY_LIMIT = 3
   SLEEP_BETWEEN_REQUESTS = 0.25
@@ -51,12 +57,11 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
 
     Set.new(
         File.readlines(@log_file).map do |line|
-        result = JSON.parse(line.strip)
-        [result.dig('ids', 'pmcid'), result.dig('ids', 'pmid')]
+          result = JSON.parse(line.strip)
+          [result.dig('ids', 'pmcid'), result.dig('ids', 'pmid')]
         end.flatten.compact
     )
- end
-
+  end
 
   def filter_record?(record)
     pmcid = record.dig('ids', 'pmcid')
@@ -66,12 +71,12 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
 
     if pmcid.blank?
         # Can only retrieve files using PMCID
-        log_result(record, category: :skipped, message: 'No PMCID found')
-        return true
+      log_result(record, category: :skipped, message: 'No PMCID found')
+      return true
     end
-    if work_id.present? && has_fileset?(work_id) 
-        log_result(record, category: :skipped, message: 'Work already has files attached')
-        return true
+    if work_id.present? && has_fileset?(work_id)
+      log_result(record, category: :skipped, message: 'Work already has files attached')
+      return true
     end
 
     return false
@@ -93,25 +98,83 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
 
       doc = Nokogiri::XML(response.body)
       pdf_url = doc.at_xpath('//record/link[@format="pdf"]')&.[]('href')
-      raise 'No PDF link found' if pdf_url.blank?
+      alternate_formats = [doc.at_xpath('//record/link[@format="tgz"]')&.[]('href') ? 'TGZ' : nil,
+                            doc.at_xpath('//record/link[@format="xml"]')&.[]('href') ? 'XML' : nil].compact
+      format_clause = alternate_formats.any? ? " Alternative Formats: (#{alternate_formats.join(', ')})" : ''
+      raise "No PDF url found.#{format_clause}" unless pdf_url
+      
+      if pdf_url.start_with?('ftp://')
+        uri = URI.parse(pdf_url)
+        Net::FTP.open(uri.host) do |ftp|
+          ftp.login
+          ftp.passive = true
+          remote_path = uri.path
+          pdf_data = +''
+          ftp.getbinaryfile(remote_path, nil) do |block|
+            pdf_data << block
+          end
+          attach_pdf_to_work_with_binary(record, pdf_data)
+        end
+      else
+        pdf_response = HTTParty.get(pdf_url, timeout: 15)
+        raise "PDF fetch failed: #{pdf_response.code}" unless pdf_response.code == 200
 
-      pdf_response = HTTParty.get(pdf_url, timeout: 15)
-      raise "PDF fetch failed: #{pdf_response.code}" unless pdf_response.code == 200
-
-      file_path = File.join(@full_text_path, "#{pmcid}.pdf")
-      File.open(file_path, 'wb') { |f| f.write(pdf_response.body) }
-
-      log_result(record, category: :successfully_attached, message: 'Downloaded PDF')
+        attach_pdf_to_work_with_binary(record, pdf_response.body)
+      end
     rescue => e
       retries += 1
       if retries <= RETRY_LIMIT
         sleep(1)
         retry
       else
-        log_result(record, category: :failed, message: "Failed to download PDF: #{e.message}")
+        log_result(record, category: :failed, message: e.message)
       end
     ensure
       sleep(SLEEP_BETWEEN_REQUESTS)
+    end
+  end
+
+  def attach_pdf_to_work_with_binary(record, pdf_binary)
+    article_id = record.dig('ids', 'article_id')
+    return log_result(record, category: :skipped, message: 'No article ID found to attach PDF') unless article_id.present?
+
+    begin
+      work = Article.find(article_id)
+      depositor = ::User.find_by(uid: 'admin')
+      
+      # Create a temporary file with the PDF binary data
+      tempfile = Tempfile.new(["#{record.dig('ids', 'pmcid')}", '.pdf'])
+      tempfile.binmode
+      tempfile.write(pdf_binary)
+      tempfile.rewind
+      
+      # Use the IngestHelper method which handles everything properly
+      file_set = attach_pdf_to_work(work, tempfile.path, depositor, work.visibility)
+      
+      if file_set
+        # Update work representative/thumbnail if not already set
+        work.reload
+        work.representative_id ||= file_set.id
+        work.thumbnail_id ||= file_set.id
+        work.rendering_ids << file_set.id.to_s unless work.rendering_ids.include?(file_set.id.to_s)
+        work.save!
+        work.update_index
+        
+        log_result(record, category: :successfully_attached, message: 'Downloaded and attached PDF.')
+      else
+        log_result(record, category: :failed, message: 'FileSet creation failed')
+      end
+      
+    rescue => e
+      log_result(record, category: :failed, message: "Failed to attach PDF: #{e.message}")
+      Rails.logger.error "PDF attachment failed for #{record.dig('ids', 'pmcid')}: #{e.message}"
+      Rails.logger.error e.backtrace.join("\n")
+    ensure
+      # Clean up tempfile
+      if tempfile
+        tempfile.close
+        tempfile.unlink
+      end
     end
   end
 
