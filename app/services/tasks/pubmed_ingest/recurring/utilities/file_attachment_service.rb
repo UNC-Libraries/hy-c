@@ -4,7 +4,7 @@ require 'tempfile'
 
 # frozen_string_literal: true
 class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
-  include Tasks::IngestHelper 
+  include Tasks::IngestHelper  # Add this line
   
   MAX_THREADS = 5
   RETRY_LIMIT = 3
@@ -142,16 +142,27 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
       work = Article.find(article_id)
       depositor = ::User.find_by(uid: 'admin')
       
-      # Create a temporary file with the PDF binary data
-      tempfile = Tempfile.new(["#{record.dig('ids', 'pmcid')}", '.pdf'])
-      tempfile.binmode
-      tempfile.write(pdf_binary)
-      tempfile.rewind
+      # Create a persistent temporary file that won't be auto-deleted
+      # Use a more persistent location instead of Tempfile
+      temp_dir = Rails.root.join('tmp', 'pdf_attachments')
+      FileUtils.mkdir_p(temp_dir) unless Dir.exist?(temp_dir)
+      
+      temp_filename = "#{record.dig('ids', 'pmcid')}_#{Time.now.to_i}_#{rand(10000)}.pdf"
+      temp_path = temp_dir.join(temp_filename)
+      
+      # Write the PDF binary data to the persistent temp file
+      File.open(temp_path, 'wb') do |file|
+        file.write(pdf_binary)
+      end
+      
+      Rails.logger.info "Created temp file at: #{temp_path}, size: #{File.size(temp_path)}"
       
       # Use the IngestHelper method which handles everything properly
-      file_set = attach_pdf_to_work(work, tempfile.path, depositor, work.visibility)
+      file_set = attach_pdf_to_work(work, temp_path.to_s, depositor, work.visibility)
       
       if file_set
+        Rails.logger.info "FileSet created: #{file_set.id}"
+        
         # Update work representative/thumbnail if not already set
         work.reload
         work.representative_id ||= file_set.id
@@ -161,20 +172,21 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
         work.update_index
         
         log_result(record, category: :successfully_attached, message: 'Downloaded and attached PDF.')
+        
+        # Schedule cleanup of temp file after a delay to ensure background jobs complete
+        CleanupTempFileJob.set(wait: 5.minutes).perform_later(temp_path.to_s)
       else
+        # Clean up immediately if FileSet creation failed
+        File.delete(temp_path) if File.exist?(temp_path)
         log_result(record, category: :failed, message: 'FileSet creation failed')
       end
       
     rescue => e
+      # Clean up temp file on error
+      File.delete(temp_path) if defined?(temp_path) && temp_path && File.exist?(temp_path)
       log_result(record, category: :failed, message: "Failed to attach PDF: #{e.message}")
       Rails.logger.error "PDF attachment failed for #{record.dig('ids', 'pmcid')}: #{e.message}"
       Rails.logger.error e.backtrace.join("\n")
-    ensure
-      # Clean up tempfile
-      if tempfile
-        tempfile.close
-        tempfile.unlink
-      end
     end
   end
 
