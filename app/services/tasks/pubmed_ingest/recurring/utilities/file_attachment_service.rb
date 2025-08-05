@@ -3,9 +3,8 @@ require 'net/ftp'
 require 'tempfile'
 require 'stringio'
 
-# frozen_string_literal: true
 class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
-  include Tasks::IngestHelper  # Add this line
+  include Tasks::IngestHelper
   
   MAX_THREADS = 5
   RETRY_LIMIT = 3
