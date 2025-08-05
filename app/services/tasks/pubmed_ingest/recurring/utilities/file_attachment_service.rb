@@ -132,7 +132,9 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
       tempfile.write(pdf_binary)
       tempfile.flush
       file_path = File.join(@full_text_path, filename)
-      FileUtils.cp(tempfile.path, file_path)
+      absolute_file_path = File.expand_path(file_path)
+      FileUtils.cp(tempfile.path, absolute_file_path)
+      FileUtils.chmod(0o644, absolute_file_path) 
 
       skipped_row = {
         'file_name' => filename,
@@ -140,7 +142,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
         'pmcid' => pmcid
       }
 
-      LogUtilsHelper.double_log("Attaching PDF from #{file_path} to article #{article.id}", :info, tag: 'Attachment')
+      LogUtilsHelper.double_log("Attaching PDF from #{absolute_file_path} to article #{article.id}", :info, tag: 'Attachment')
       attach_pdf(article, skipped_row)
     end
     log_result(record, category: :successfully_attached, message: 'PDF successfully attached.')
@@ -162,9 +164,10 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
       pdf_paths = []
 
       tgz_path = File.join(@full_text_path, "#{pmcid}.tar.gz")
-      File.open(tgz_path, 'wb') { |f| f.write(tgz_binary) }
+      tgz_absolute_path = File.expand_path(tgz_path)
+      File.open(tgz_absolute_path, 'wb') { |f| f.write(tgz_binary) }
 
-      Zlib::GzipReader.open(tgz_path) do |gz|
+      Zlib::GzipReader.open(tgz_absolute_path) do |gz|
         Gem::Package::TarReader.new(gz) do |tar|
           tar.each do |entry|
             next unless entry.file?
@@ -175,8 +178,10 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
 
             filename = File.basename(rel_path)
             file_path = File.join(@full_text_path, filename)
-            File.open(file_path, 'wb') { |f| f.write(entry.read) }
-            pdf_paths << file_path
+            file_absolute_path = File.expand_path(file_path)
+            File.open(file_absolute_path, 'wb') { |f| f.write(entry.read) }
+            FileUtils.chmod(0o644, file_absolute_path)
+            pdf_paths << file_absolute_path
           end
         end
       end

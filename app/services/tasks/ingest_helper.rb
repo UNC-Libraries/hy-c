@@ -28,6 +28,7 @@ module Tasks
           actor.create_metadata(file_set_params)
 
           LogUtilsHelper.double_log("Calling create_content for FileSet #{file_set.id}", :info, tag: 'FileSetAttach')
+          attach_file_content(file_set: file_set, user: user, file: file)
           actor.create_content(file)
 
           LogUtilsHelper.double_log("Attaching FileSet #{file_set.id} to work #{work.id}", :info, tag: 'FileSetAttach')
@@ -50,6 +51,16 @@ module Tasks
 
     def group_permissions(admin_set)
       @group_permissions ||= WorkUtilsHelper.get_permissions_attributes(admin_set.id)
+    end
+
+    def attach_file_content(file_set:, user:, file:)
+      job = ::JobIoWrapper.create!(
+        user: user,
+        file_set_id: file_set.id,
+        path: File.expand_path(file.path),
+        relation: 'original_file'
+      )
+      IngestJob.new.perform(job)
     end
 
     def create_sipity_workflow(work:)
