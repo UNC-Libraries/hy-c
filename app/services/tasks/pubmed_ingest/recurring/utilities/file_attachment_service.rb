@@ -1,14 +1,12 @@
 # frozen_string_literal: true
 require 'net/ftp'
 require 'tempfile'
-require 'stringio'
 require 'zlib'
 require 'rubygems/package'
 
 class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
   include Tasks::IngestHelper
-  
-  MAX_THREADS = 5
+
   RETRY_LIMIT = 3
   SLEEP_BETWEEN_REQUESTS = 0.25
 
@@ -24,30 +22,18 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
   end
 
   def run
-    queue = Queue.new
-    @records.each { |record| queue << record }
-
-    threads = Array.new(MAX_THREADS) do
-      Thread.new do
-        while !queue.empty?
-          record = queue.pop(true) rescue nil
-          next unless record
-
-          process_record(record)
-        end
-      end
+    @records.each_with_index do |record, index|
+      LogUtilsHelper.double_log("Processing record #{index + 1} of #{@records.size}", :info, tag: 'Attachment')
+      process_record(record)
     end
-    threads.each(&:join)
   end
 
   def load_records_to_attach
     LogUtilsHelper.double_log('Loading records to attach files to.', :info, tag: 'File Attachment Service')
-
     records = []
     File.foreach(@metadata_ingest_result_path) do |line|
       record = JSON.parse(line)
       next if filter_record?(record)
-
       records << record
     end
     LogUtilsHelper.double_log("Loaded #{records.size} records to attach files to.", :info, tag: 'File Attachment Service')
@@ -56,13 +42,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
 
   def load_existing_attachment_ids
     return Set.new unless File.exist?(@log_file)
-
-    Set.new(
-        File.readlines(@log_file).map do |line|
-          result = JSON.parse(line.strip)
-          [result.dig('ids', 'pmcid'), result.dig('ids', 'pmid')]
-        end.flatten.compact
-    )
+    Set.new(File.readlines(@log_file).map { |line| JSON.parse(line.strip).values_at('ids').flat_map(&:values).compact }.flatten)
   end
 
   def filter_record?(record)
@@ -70,16 +50,16 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
     work_id = record.dig('ids', 'article_id')
     # Skip records that have already been processed if resuming
     return true if @existing_ids.include?(pmcid) || @existing_ids.include?(record.dig('ids', 'pmid'))
-
     if pmcid.blank?
         # Can only retrieve files using PMCID
       log_result(record, category: :skipped, message: 'No PMCID found')
       return true
     end
-    if work_id.present? && has_fileset?(work_id)
-      log_result(record, category: :skipped, message: 'Work already has files attached')
-      return true
-    end
+    # WIP: Temporarily do not filter out works that already have files attached
+    # if work_id.present? && has_fileset?(work_id)
+    #   log_result(record, category: :skipped, message: 'Work already has files attached')
+    #   return true
+    # end
 
     return false
   end
@@ -92,9 +72,9 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
   def process_record(record)
     pmcid = record['ids']['pmcid']
     return unless pmcid.present?
-
     retries = 0
     begin
+      LogUtilsHelper.double_log("Fetching Open Access info for #{pmcid}", :info, tag: 'OA Fetch')
       response = HTTParty.get("https://www.ncbi.nlm.nih.gov/pmc/utils/oa/oa.fcgi?id=#{pmcid}", timeout: 10)
       raise "Bad response: #{response.code}" unless response.code == 200
 
@@ -103,36 +83,25 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
       tgz_url = doc.at_xpath('//record/link[@format="tgz"]')&.[]('href')
       raise "No PDF or TGZ link found" if pdf_url.blank? && tgz_url.blank?
 
-      
-      if pdf_url.present?        
+      if pdf_url.present?
         uri = URI.parse(pdf_url)
         pdf_data = fetch_ftp_binary(uri)
         attach_pdf_to_work_with_binary(record, pdf_data)
       elsif tgz_url.present?
-         begin
-            uri = URI.parse(tgz_url)
-            tgz_data = fetch_ftp_binary(uri)
-            process_and_attach_tgz_file(record, tgz_data)
-          rescue => ftp_error
-            Rails.logger.warn("TGZ FTP fetch failed for #{pmcid}: #{ftp_error.message}")
-          end
+        uri = URI.parse(tgz_url)
+        tgz_data = fetch_ftp_binary(uri)
+        process_and_attach_tgz_file(record, tgz_data)
       end
-
-        # if tgz_url.present?
-        #   tgz_response = HTTParty.get(tgz_url, timeout: 20)
-        #   if tgz_response.code == 200
-        #     process_and_attach_tgz_file(record, tgz_response.body)
-        #   else
-        #     Rails.logger.warn("TGZ fetch failed for #{pmcid}: #{tgz_response.code}")
-        #   end
-        # end
     rescue => e
       retries += 1
       if retries <= RETRY_LIMIT
         sleep(1)
         retry
+      elsif e.message.include?('No PDF or TGZ link found')
+        log_result(record, category: :successfully_ingested, message: 'No PDF or TGZ link found, skipping attachment')
       else
         log_result(record, category: :failed, message: e.message)
+        LogUtilsHelper.double_log("Error processing record: #{e.message}", :error, tag: 'Attachment')
       end
     ensure
       sleep(SLEEP_BETWEEN_REQUESTS)
@@ -140,51 +109,44 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
   end
 
   def fetch_ftp_binary(uri)
+    LogUtilsHelper.double_log("Fetching FTP file from #{uri}", :info, tag: 'FTP')
     Net::FTP.open(uri.host) do |ftp|
       ftp.login
       ftp.passive = true
       remote_path = uri.path
-      data = +''
+      data = +' '
       ftp.getbinaryfile(remote_path, nil) { |block| data << block }
-      return data
+      data
     end
   end
 
- def attach_pdf_to_work_with_binary(record, pdf_binary)
+  def attach_pdf_to_work_with_binary(record, pdf_binary)
     article_id = record.dig('ids', 'article_id')
     return log_result(record, category: :skipped, message: 'No article ID found to attach PDF') unless article_id.present?
 
-    begin
-      work = Article.find(article_id)
-      depositor = ::User.find_by(uid: 'admin')
-      raise "No depositor found" unless depositor
+    article = Article.find(article_id)
+    pmcid = record.dig('ids', 'pmcid')
+    filename = generate_filename_for_work(article.id, pmcid)
+    Tempfile.create([File.basename(filename, '.pdf'), '.pdf']) do |tempfile|
+      tempfile.binmode
+      tempfile.write(pdf_binary)
+      tempfile.flush
+      file_path = File.join(@full_text_path, filename)
+      FileUtils.cp(tempfile.path, file_path)
 
-      filename = "#{record.dig('ids', 'pmcid')}.pdf"
-      path = File.join(@full_text_path, filename)
-      LogUtilsHelper.double_log("PDF attachment path: #{path}", :info, tag: 'File Attachment Service')
-      File.open(path, 'wb') { |f| f.write(pdf_binary) }
+      skipped_row = {
+        'file_name' => filename,
+        'pmid' => record.dig('ids', 'pmid'),
+        'pmcid' => pmcid
+      }
 
-      file_set = attach_pdf_to_work(work, path, depositor, work.visibility)
-
-      if file_set.nil?
-        raise "FileSet attachment failed via IngestHelper"
-      end
-
-      # Update work metadata if needed
-      work.reload
-      work.representative_id ||= file_set.id
-      work.thumbnail_id ||= file_set.id
-      work.rendering_ids << file_set.id.to_s unless work.rendering_ids.include?(file_set.id.to_s)
-      work.save!
-      work.update_index
-
-      log_result(record, category: :successfully_attached, message: 'PDF successfully attached.')
-
-    rescue => e
-      log_result(record, category: :failed, message: e.message)
-      Rails.logger.error "PDF attachment failed for #{record.dig('ids', 'pmcid')}: #{e.message}"
-      Rails.logger.error e.backtrace.join("\n")
+      LogUtilsHelper.double_log("Attaching PDF from #{file_path} to article #{article.id}", :info, tag: 'Attachment')
+      attach_pdf(article, skipped_row)
     end
+    log_result(record, category: :successfully_attached, message: 'PDF successfully attached.')
+  rescue => e
+    log_result(record, category: :failed, message: "PDF attachment failed: #{e.message}")
+    LogUtilsHelper.double_log("[FileAttachmentService] PDF attachment failed for #{article_id}: #{e.message}", :error, tag: 'Attachment')
   end
 
   def process_and_attach_tgz_file(record, tgz_binary)
@@ -244,6 +206,47 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
     @group_permissions ||= WorkUtilsHelper.get_permissions_attributes(admin_set.id)
   end
 
+    def attach_pdf(article, skipped_row)
+    Rails.logger.info("[AttachPDF] Attaching PDF for article #{article.id}")
+
+    file_path = File.join(@full_text_path, skipped_row['file_name'])
+    Rails.logger.info("[AttachPDF] Resolved file path: #{file_path}")
+
+    unless File.exist?(file_path)
+      error_msg = "[AttachPDF] File not found at path: #{file_path}"
+      Rails.logger.error(error_msg)
+      raise StandardError, error_msg
+    end
+
+    depositor = ::User.find_by(uid: 'admin')
+    raise "No depositor found" unless depositor
+
+    pdf_file = attach_pdf_to_work(article, file_path, depositor, article.visibility)
+
+    if pdf_file.nil?
+      ids = [skipped_row['pmid'], skipped_row['pmcid']].compact.join(', ')
+      error_msg = "[AttachPDF] ERROR: Attachment returned nil for identifiers: #{ids}"
+      Rails.logger.error(error_msg)
+      raise StandardError, error_msg
+    end
+
+    begin
+      pdf_file.update!(permissions_attributes: group_permissions(@admin_set))
+      Rails.logger.info("[AttachPDF] Permissions successfully set on file #{pdf_file.id}")
+    rescue => e
+      Rails.logger.warn("[AttachPDF] Could not update permissions: #{e.message}")
+      raise e
+    end
+  end
+
+
+  def generate_filename_for_work(work_id, pmcid)
+    work = WorkUtilsHelper.fetch_work_data_by_id(work_id)
+    return nil unless work
+    suffix = work[:file_set_ids].present? ? format('%03d', work[:file_set_ids].size + 1) : '001'
+    "#{pmcid}_#{suffix}.pdf"
+  end
+
   def log_result(record, category:, message:)
     entry = {
       ids: record['ids'],
@@ -252,7 +255,6 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
       message: message
     }
     @tracker.save
-
     File.open(@log_file, 'a') { |f| f.puts(entry.to_json) }
   end
 end
