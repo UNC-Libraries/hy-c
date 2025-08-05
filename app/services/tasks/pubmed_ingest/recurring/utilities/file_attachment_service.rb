@@ -65,7 +65,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
 
   def filter_record?(record)
     pmcid = record.dig('ids', 'pmcid')
-    work_id = record.dig('work', 'id')
+    work_id = record.dig('ids', 'article_id')
     # Skip records that have already been processed if resuming
     return true if @existing_ids.include?(pmcid) || @existing_ids.include?(record.dig('ids', 'pmid'))
 
