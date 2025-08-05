@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 require 'net/ftp'
 require 'tempfile'
+require 'stringio'
 
 # frozen_string_literal: true
 class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
@@ -134,60 +135,47 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
     end
   end
 
-  def attach_pdf_to_work_with_binary(record, pdf_binary)
-    article_id = record.dig('ids', 'article_id')
-    return log_result(record, category: :skipped, message: 'No article ID found to attach PDF') unless article_id.present?
+ def attach_pdf_to_work_with_binary(record, pdf_binary)
+  article_id = record.dig('ids', 'article_id')
+  return log_result(record, category: :skipped, message: 'No article ID found to attach PDF') unless article_id.present?
 
-    begin
-      work = Article.find(article_id)
-      depositor = ::User.find_by(uid: 'admin')
-      
-      # Create a persistent temporary file that won't be auto-deleted
-      # Use a more persistent location instead of Tempfile
-      temp_dir = Rails.root.join('tmp', 'pdf_attachments')
-      FileUtils.mkdir_p(temp_dir) unless Dir.exist?(temp_dir)
-      
-      temp_filename = "#{record.dig('ids', 'pmcid')}_#{Time.now.to_i}_#{rand(10000)}.pdf"
-      temp_path = temp_dir.join(temp_filename)
-      
-      # Write the PDF binary data to the persistent temp file
-      File.open(temp_path, 'wb') do |file|
-        file.write(pdf_binary)
-      end
-      
-      Rails.logger.info "Created temp file at: #{temp_path}, size: #{File.size(temp_path)}"
-      
-      # Use the IngestHelper method which handles everything properly
-      file_set = attach_pdf_to_work(work, temp_path.to_s, depositor, work.visibility)
-      
-      if file_set
-        Rails.logger.info "FileSet created: #{file_set.id}"
-        
-        # Update work representative/thumbnail if not already set
-        work.reload
-        work.representative_id ||= file_set.id
-        work.thumbnail_id ||= file_set.id
-        work.rendering_ids << file_set.id.to_s unless work.rendering_ids.include?(file_set.id.to_s)
-        work.save!
-        work.update_index
-        
-        log_result(record, category: :successfully_attached, message: 'Downloaded and attached PDF.')
-        
-        # Schedule cleanup of temp file after a delay to ensure background jobs complete
-        CleanupTempFileJob.set(wait: 5.minutes).perform_later(temp_path.to_s)
-      else
-        # Clean up immediately if FileSet creation failed
-        File.delete(temp_path) if File.exist?(temp_path)
-        log_result(record, category: :failed, message: 'FileSet creation failed')
-      end
-      
-    rescue => e
-      # Clean up temp file on error
-      File.delete(temp_path) if defined?(temp_path) && temp_path && File.exist?(temp_path)
-      log_result(record, category: :failed, message: "Failed to attach PDF: #{e.message}")
-      Rails.logger.error "PDF attachment failed for #{record.dig('ids', 'pmcid')}: #{e.message}"
-      Rails.logger.error e.backtrace.join("\n")
+  begin
+    work = Article.find(article_id)
+    depositor = ::User.find_by(uid: 'admin')
+    raise "No depositor found" unless depositor
+
+    filename = "#{record.dig('ids', 'pmcid')}.pdf"
+    path = File.join(@full_text_path, filename)
+    LogUtilsHelper.double_log("PDF attachment path: #{path}", :info, tag: 'File Attachment Service')
+    File.open(path, 'wb') { |f| f.write(pdf_binary) }
+
+    file_set = attach_pdf_to_work(work, path, depositor, work.visibility)
+
+    if file_set.nil?
+      raise "FileSet attachment failed via IngestHelper"
     end
+
+    # Update work metadata if needed
+    work.reload
+    work.representative_id ||= file_set.id
+    work.thumbnail_id ||= file_set.id
+    work.rendering_ids << file_set.id.to_s unless work.rendering_ids.include?(file_set.id.to_s)
+    work.save!
+    work.update_index
+
+    log_result(record, category: :successfully_attached, message: 'PDF successfully attached.')
+
+  rescue => e
+    log_result(record, category: :failed, message: e.message)
+    Rails.logger.error "PDF attachment failed for #{record.dig('ids', 'pmcid')}: #{e.message}"
+    Rails.logger.error e.backtrace.join("\n")
+  end
+end
+
+
+
+  def group_permissions(admin_set)
+    @group_permissions ||= WorkUtilsHelper.get_permissions_attributes(admin_set.id)
   end
 
   def log_result(record, category:, message:)
