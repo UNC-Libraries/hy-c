@@ -40,16 +40,16 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
     flush_buffer_to_file unless @write_buffer.empty?
   end
 
-    def load_last_results
-      return Set.new unless File.exist?(@results_path)
+  def load_last_results
+    return Set.new unless File.exist?(@results_path)
 
-      Set.new(
-        File.readlines(@results_path).map do |line|
-          result = JSON.parse(line.strip)
-          [result.dig('ids', 'pmid'), result.dig('ids', 'pmcid')]
-        end.flatten.compact
-      )
-   end
+    Set.new(
+      File.readlines(@results_path).map do |line|
+        result = JSON.parse(line.strip)
+        [result.dig('ids', 'pmid'), result.dig('ids', 'pmcid')]
+      end.flatten.compact
+    )
+  end
 
 
   def batch_retrieve_and_process_metadata(batch_size: 100, db:)
@@ -282,7 +282,6 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
   end
 
   def flush_buffer_to_file
-    LogUtilsHelper.double_log("Flushing #{@write_buffer.inspect} entries to #{@results_path}", :info, tag: 'MetadataIngestService')
     File.open(@results_path, 'a') do |file|
       @write_buffer.each { |entry| file.puts(JSON.generate(entry)) }
     end
