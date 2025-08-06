@@ -176,7 +176,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
             rel_path = entry.full_name
             next unless rel_path.downcase.end_with?('.pdf')
 
-            filename = File.basename(rel_path)
+            filename = generate_filename_for_work(work.id, pmcid)     
             file_path = File.join(@full_text_path, filename)
             file_absolute_path = File.expand_path(file_path)
             File.open(file_absolute_path, 'wb') { |f| f.write(entry.read) }
@@ -211,7 +211,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
     @group_permissions ||= WorkUtilsHelper.get_permissions_attributes(admin_set.id)
   end
 
-    def attach_pdf(article, skipped_row)
+  def attach_pdf(article, skipped_row)
     Rails.logger.info("[AttachPDF] Attaching PDF for article #{article.id}")
 
     file_path = File.join(@full_text_path, skipped_row['file_name'])

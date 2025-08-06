@@ -29,8 +29,6 @@ module Tasks
 
           LogUtilsHelper.double_log("Calling create_content for FileSet #{file_set.id}", :info, tag: 'FileSetAttach')
           attach_file_content(file_set: file_set, user: user, file: file)
-          actor.create_content(file)
-
           LogUtilsHelper.double_log("Attaching FileSet #{file_set.id} to work #{work.id}", :info, tag: 'FileSetAttach')
           actor.attach_to_work(work, file_set_params)
 
@@ -58,9 +56,13 @@ module Tasks
         user: user,
         file_set_id: file_set.id,
         path: File.expand_path(file.path),
-        relation: 'original_file'
+        relation: 'original_file',
+        mime_type: 'application/pdf',
+        original_name: File.basename(file.path) # <-- this sets the label/title
       )
-      IngestJob.new.perform(job)
+      IngestJob.perform_later(job)
+      LogUtilsHelper.double_log("Inspect Original File for FileSet #{file_set.original_file.inspect}", :info, tag: 'FileSetAttach')
+      CreateDerivativesJob.perform_later(file_set, file_set.original_file.id) if file_set.original_file.present?
     end
 
     def create_sipity_workflow(work:)
