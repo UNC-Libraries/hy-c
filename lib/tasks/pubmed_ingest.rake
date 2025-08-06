@@ -17,7 +17,7 @@ task 'pubmed_ingest' => :environment do
     opts.on('--end-date DATE', 'End date for ingest (required for new ingest runs only)') { |v| options[:end_date] = v }
     opts.on('--admin-set-title TITLE', 'Admin Set title (required for new ingest runs only)') { |v| options[:admin_set_title] = v }
     opts.on('--depositor ONYEN', 'Depositor onyen (optional, defaults to ENV["PUBMED_INGEST_DEPOSITOR_ONYEN"])') { |v| options[:depositor_onyen] = v }
-    opts.on('--resume [BOOLEAN]', 'Resume from tracker file (optional. uses existing tracking file to populate other args besides output-dir)') do |val|
+    opts.on('--resume', 'Resume from tracker file (optional. uses existing tracking file to populate other args besides output-dir)') do |val|
       options[:resume] = true
     end
     opts.on('--output-dir DIR', 'Output directory (optional unless resuming)') { |v| options[:output_dir] = v }
@@ -78,7 +78,7 @@ task :pubmed_backlog_ingest, [:file_retrieval_directory, :output_dir, :admin_set
 end
 
 def build_pubmed_ingest_config_and_tracker(args:)
-  depositor = args[:depositor_onyen].presence || DEPOSITOR
+  depositor = 'admin'
   resume_flag    = ActiveModel::Type::Boolean.new.cast(args[:resume])
   raw_output_dir = args[:output_dir]
   script_start_time = Time.now
@@ -122,12 +122,13 @@ def build_pubmed_ingest_config_and_tracker(args:)
       config: config,
       resume: true
     )
+    config['full_text_dir'] = tracker['full_text_dir'] if tracker['full_text_dir'].present?
     unless tracker
       puts '❌ Failed to load existing tracker.'
       exit(1)
     end
 
-   
+
 
   else
     REQUIRED_ARGS.each do |key|
