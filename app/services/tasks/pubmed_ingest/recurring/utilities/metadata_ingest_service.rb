@@ -25,7 +25,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
       next if existing_ids.include?(record['pmid']) || existing_ids.include?(record['pmcid'])
       # Skip if record is in hyrax
       match = find_best_work_match(record.slice('pmid', 'pmcid', 'doi'))
-      if match.present?
+      if match.present? && match[:work_id].present?
         Rails.logger.info("[MetadataIngestService] Skipping #{record.inspect} — work already exists.")
         article = WorkUtilsHelper.fetch_model_instance(match[:work_type], match[:work_id])
         record_result(category: :skipped, message: 'Pre-filtered: work exists', ids: record, article: article)
