@@ -120,36 +120,151 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
     end
   end
 
+  # def attach_pdf_to_work_with_binary(record, pdf_binary)
+  #   article_id = record.dig('ids', 'article_id')
+  #   return log_result(record, category: :skipped, message: 'No article ID found to attach PDF') unless article_id.present?
+
+  #   article = Article.find(article_id)
+  #   pmcid = record.dig('ids', 'pmcid')
+  #   filename = generate_filename_for_work(article.id, pmcid)
+
+  #   io = StringIO.new(pdf_binary)
+  #   io.set_encoding('BINARY') if io.respond_to?(:set_encoding)
+    
+  #   log_result(record, category: :successfully_attached, message: 'PDF successfully attached.')
+  # rescue => e
+  #   log_result(record, category: :failed, message: "PDF attachment failed: #{e.message}")
+  #   LogUtilsHelper.double_log("[FileAttachmentService] PDF attachment failed for #{article_id}: #{e.message}", :error, tag: 'Attachment')
+  # end
+
   def attach_pdf_to_work_with_binary(record, pdf_binary)
     article_id = record.dig('ids', 'article_id')
     return log_result(record, category: :skipped, message: 'No article ID found to attach PDF') unless article_id.present?
 
     article = Article.find(article_id)
     pmcid = record.dig('ids', 'pmcid')
+    depositor = ::User.find_by(uid: 'admin')
+    raise "No depositor found" unless depositor
+
     filename = generate_filename_for_work(article.id, pmcid)
-    Tempfile.create([File.basename(filename, '.pdf'), '.pdf']) do |tempfile|
-      tempfile.binmode
-      tempfile.write(pdf_binary)
-      tempfile.flush
-      file_path = File.join(@full_text_path, filename)
-      absolute_file_path = File.expand_path(file_path)
-      FileUtils.cp(tempfile.path, absolute_file_path)
-      FileUtils.chmod(0o644, absolute_file_path) 
+    file_path = File.join(@full_text_path, filename)
+    File.binwrite(file_path, pdf_binary)
+    FileUtils.chmod(0o644, file_path)
 
-      skipped_row = {
-        'file_name' => filename,
-        'pmid' => record.dig('ids', 'pmid'),
-        'pmcid' => pmcid
-      }
+    begin
 
-      LogUtilsHelper.double_log("Attaching PDF from #{absolute_file_path} to article #{article.id}", :info, tag: 'Attachment')
-      attach_pdf(article, skipped_row)
+      file_set = FileSet.create(
+        visibility: article.visibility,
+        label: filename,
+        title: [filename],
+        depositor: depositor.user_key
+      )
+
+      wrapper = JobIoWrapper.create!(
+        user: depositor,
+        file_set_id: file_set.id,
+        path: file_path,                    # <-- no Tempfile!
+        relation: 'original_file',
+        mime_type: 'application/pdf',
+        original_name: filename
+      )
+
+      IngestJob.perform_now(wrapper)
+
+      actor = Hyrax::Actors::FileSetActor.new(file_set, depositor)
+      actor.attach_to_work(article)
+
+      file_set.permissions_attributes = group_permissions(article.admin_set)
+      file_set.save!
+
+      article.reload
+      article.representative_id ||= file_set.id
+      article.thumbnail_id ||= file_set.id
+      article.rendering_ids << file_set.id.to_s unless article.rendering_ids.include?(file_set.id.to_s)
+      article.save!
+      article.update_index
+
+      # Wait for original_file to attach (max 5s)
+      max_wait = 10
+      waited = 0
+      until file_set.reload.original_file.present? || waited >= max_wait
+        sleep 0.5
+        waited += 0.5
+      end
+
+
+      if file_set.original_file&.id
+        CreateDerivativesJob.perform_later(file_set, file_set.original_file.id)
+      else
+        Rails.logger.warn("Original file still nil for FileSet #{file_set.id}")
+      end
+
+      log_result(record, category: :successfully_attached, message: 'PDF successfully attached.')
+      return file_set
+    rescue => e
+      log_result(record, category: :failed, message: "PDF attachment failed: #{e.message}")
+      LogUtilsHelper.double_log("[FileAttachmentService] PDF attachment failed for #{article_id}: #{e.message}", :error, tag: 'Attachment')
+      raise
     end
-    log_result(record, category: :successfully_attached, message: 'PDF successfully attached.')
-  rescue => e
-    log_result(record, category: :failed, message: "PDF attachment failed: #{e.message}")
-    LogUtilsHelper.double_log("[FileAttachmentService] PDF attachment failed for #{article_id}: #{e.message}", :error, tag: 'Attachment')
   end
+
+
+
+
+  # def attach_pdf_to_work_with_binary(record, pdf_binary)
+  #   article_id = record.dig('ids', 'article_id')
+  #   return log_result(record, category: :skipped, message: 'No article ID found to attach PDF') unless article_id.present?
+
+  #   work = Article.find(article_id)
+  #   depositor = ::User.find_by(uid: 'admin')
+  #   raise "No depositor found" unless depositor
+
+  #   file_set = FileSet.create
+  #   actor = Hyrax::Actors::FileSetActor.new(file_set, depositor)
+  #   file_set_params = { visibility: work.visibility }
+
+  #   LogUtilsHelper.double_log("Creating FileSet #{file_set.id} for work #{work.id}", :info, tag: 'AttachBinary')
+  #   LogUtilsHelper.double_log("Calling create_metadata", :info, tag: 'AttachBinary')
+  #   actor.create_metadata(file_set_params)
+
+  #   LogUtilsHelper.double_log("Preparing binary stream and calling create_content", :info, tag: 'AttachBinary')
+  #   io = StringIO.new(pdf_binary)
+  #   io.set_encoding('BINARY') if io.respond_to?(:set_encoding)
+  #   io.define_singleton_method(:path) { 'uploaded.pdf' }  # required for original_name
+
+  #   actor.create_content(io)
+
+  #   if file_set.reload.original_file.present?
+  #     of = file_set.original_file
+  #     LogUtilsHelper.double_log("Original file successfully set: id=#{of.id}, label=#{of.label}, mime_type=#{of.mime_type}", :info, tag: 'AttachBinary')
+  #   else
+  #     LogUtilsHelper.double_log("Original file is still nil after create_content", :warn, tag: 'AttachBinary')
+  #   end
+
+  #   LogUtilsHelper.double_log("Attaching FileSet #{file_set.id} to Work #{work.id}", :info, tag: 'AttachBinary')
+  #   actor.attach_to_work(work, file_set_params)
+
+  #   LogUtilsHelper.double_log("Setting permissions for FileSet #{file_set.id}", :info, tag: 'AttachBinary')
+  #   file_set.permissions_attributes = group_permissions(work.admin_set)
+  #   file_set.save!
+  #   LogUtilsHelper.double_log("Saved FileSet #{file_set.id} with group permissions", :info, tag: 'AttachBinary')
+
+  #   LogUtilsHelper.double_log("Triggering CreateDerivativesJob for FileSet #{file_set.id}", :info, tag: 'AttachBinary')
+  #   CreateDerivativesJob.perform_later(file_set, file_set.original_file.id) if file_set.original_file.present?
+
+
+  #   LogUtilsHelper.double_log("Reloading Work and updating index", :info, tag: 'AttachBinary')
+  #   work.reload
+  #   work.update_index
+
+  #   log_result(record, category: :successfully_attached, message: "PDF successfully attached to work #{work.id} via binary stream.")
+
+  # rescue => e
+  #   log_result(record, category: :failed, message: "PDF attachment failed: #{e.message}")
+  #   Rails.logger.error "[AttachBinary] PDF attachment failed for #{article_id}: #{e.message}"
+  #   Rails.logger.error e.backtrace.join("\n")
+  # end
+
 
   # def process_and_attach_tgz_file(record, tgz_binary)
   #   pmcid = record.dig('ids', 'pmcid')
@@ -241,6 +356,16 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
   # end
 
 
+  def safe_gzip_reader(path)
+    content = File.binread(path)
+    gzip_start = content.index("\x1F\x8B".b)
+    raise "No GZIP header found in file" unless gzip_start
+
+    str_io = StringIO.new(content[gzip_start..])
+    Zlib::GzipReader.new(str_io)
+  end
+
+
   def process_and_attach_tgz_file(record, tgz_binary)
     pmcid = record.dig('ids', 'pmcid')
     article_id = record.dig('ids', 'article_id')
@@ -254,33 +379,30 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
       pdf_paths = []
 
       tgz_path = File.join(@full_text_path, "#{pmcid}.tar.gz")
-      File.open(tgz_path, 'wb') { |f| f.write(tgz_binary) }
+      tgz_absolute_path = File.expand_path(tgz_path)
+      File.open(tgz_absolute_path, 'wb') { |f| f.write(tgz_binary) }
 
-      Zlib::GzipReader.open(tgz_path) do |gz|
-        Gem::Package::TarReader.new(gz) do |tar|
+      gz = safe_gzip_reader(tgz_absolute_path)
+      Gem::Package::TarReader.new(gz) do |tar|
           tar.each do |entry|
             next unless entry.file?
+            next unless entry.full_name.downcase.end_with?('.pdf')
 
-            # We only care about .pdf files 
-            rel_path = entry.full_name
-            next unless rel_path.downcase.end_with?('.pdf')
-
-            filename = generate_filename_for_work(work.id, pmcid)
-            file_path = File.join(@full_text_path, filename)
-            File.open(file_path, 'wb') { |f| f.write(entry.read) }
-            pdf_paths << file_path
+            pdf_binary = entry.read
+            attach_pdf_to_work_with_binary(record, pdf_binary)
           end
-        end
       end
+      gz.close
 
       if pdf_paths.empty?
         raise "No PDF files found in TGZ archive"
       end
 
       pdf_paths.each do |path|
-        file_set = attach_pdf_to_work(work, path, depositor, work.visibility)
-        raise "Attachment failed for #{path}" unless file_set
+        pdf_binary = File.binread(path)
+        attach_pdf_to_work_with_binary(record, pdf_binary)
       end
+
 
       work.reload
       work.update_index
