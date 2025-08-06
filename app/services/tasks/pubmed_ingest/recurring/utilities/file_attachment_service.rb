@@ -151,6 +151,96 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
     LogUtilsHelper.double_log("[FileAttachmentService] PDF attachment failed for #{article_id}: #{e.message}", :error, tag: 'Attachment')
   end
 
+  # def process_and_attach_tgz_file(record, tgz_binary)
+  #   pmcid = record.dig('ids', 'pmcid')
+  #   article_id = record.dig('ids', 'article_id')
+  #   return log_result(record, category: :skipped, message: 'No article ID found to attach TGZ') unless article_id.present?
+
+  #   begin
+  #     work = Article.find(article_id)
+  #     depositor = ::User.find_by(uid: 'admin')
+  #     raise "No depositor found" unless depositor
+
+  #     pdf_paths = []
+
+  #     tgz_path = File.join(@full_text_path, "#{pmcid}.tar.gz")
+  #     tgz_absolute_path = File.expand_path(tgz_path)
+  #     LogUtilsHelper.double_log("Processing TGZ file for PMCID #{pmcid} at #{tgz_absolute_path}", :info, tag: 'TGZ Processing')
+  #     File.open(tgz_absolute_path, 'wb') { |f| f.write(tgz_binary) }
+
+  #      # Check if the file is actually gzip compressed
+  #     if gzip_compressed?(tgz_absolute_path)
+  #       # Process as gzip-compressed tar
+  #       Zlib::GzipReader.open(tgz_absolute_path) do |gz|
+  #         Gem::Package::TarReader.new(gz) do |tar|
+  #           tar.each do |entry|
+  #             next unless entry.file?
+
+  #             # We only care about .pdf files 
+  #             rel_path = entry.full_name
+  #             next unless rel_path.downcase.end_with?('.pdf')
+
+  #             filename = generate_filename_for_work(work.id, pmcid)     
+  #             file_path = File.join(@full_text_path, filename)
+  #             file_absolute_path = File.expand_path(file_path)
+  #             File.open(file_absolute_path, 'wb') { |f| f.write(entry.read) }
+  #             FileUtils.chmod(0o644, file_absolute_path)
+  #             pdf_paths << file_absolute_path
+  #           end
+  #         end
+  #       end
+  #     else
+  #       File.open(tgz_absolute_path, 'rb') do |file|
+  #         magic = file.read(8).unpack('H*').first
+  #         LogUtilsHelper.double_log("Unrecognized TGZ file format for #{pmcid}. Magic bytes: #{magic}", :error, tag: 'TGZ Format')
+  #       end
+  #       raise "Unrecognized file format for #{pmcid}, cannot process as TGZ or tar."
+
+  #       # Process as uncompressed tar or try to handle as direct archive
+  #       LogUtilsHelper.double_log("File is not gzip compressed, trying as uncompressed tar for #{pmcid}", :info, tag: 'TGZ Processing')
+        
+  #       File.open(tgz_absolute_path, 'rb') do |file|
+  #         Gem::Package::TarReader.new(file) do |tar|
+  #           tar.each do |entry|
+  #             next unless entry.file?
+
+  #             # We only care about .pdf files 
+  #             rel_path = entry.full_name
+  #             next unless rel_path.downcase.end_with?('.pdf')
+
+  #             filename = generate_filename_for_work(work.id, pmcid)     
+  #             file_path = File.join(@full_text_path, filename)
+  #             file_absolute_path = File.expand_path(file_path)
+  #             File.open(file_absolute_path, 'wb') { |f| f.write(entry.read) }
+  #             FileUtils.chmod(0o644, file_absolute_path)
+  #             pdf_paths << file_absolute_path
+  #           end
+  #         end
+  #       end
+  #     end
+
+  #     if pdf_paths.empty?
+  #       raise "No PDF files found in TGZ archive"
+  #     end
+
+  #     pdf_paths.each do |path|
+  #       file_set = attach_pdf_to_work(work, path, depositor, work.visibility)
+  #       raise "Attachment failed for #{path}" unless file_set
+  #     end
+
+  #     work.reload
+  #     work.update_index
+
+  #     log_result(record, category: :successfully_attached, message: "Extracted and attached PDFs from TGZ: #{pdf_paths.map { |p| File.basename(p) }.join(', ')}")
+
+  #   rescue => e
+  #     log_result(record, category: :failed, message: "TGZ PDF processing failed: #{e.message}")
+  #     Rails.logger.error "TGZ PDF processing failed for #{pmcid}: #{e.message}"
+  #     Rails.logger.error e.backtrace.join("\n")
+  #   end
+  # end
+
+
   def process_and_attach_tgz_file(record, tgz_binary)
     pmcid = record.dig('ids', 'pmcid')
     article_id = record.dig('ids', 'article_id')
@@ -164,10 +254,9 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
       pdf_paths = []
 
       tgz_path = File.join(@full_text_path, "#{pmcid}.tar.gz")
-      tgz_absolute_path = File.expand_path(tgz_path)
-      File.open(tgz_absolute_path, 'wb') { |f| f.write(tgz_binary) }
+      File.open(tgz_path, 'wb') { |f| f.write(tgz_binary) }
 
-      Zlib::GzipReader.open(tgz_absolute_path) do |gz|
+      Zlib::GzipReader.open(tgz_path) do |gz|
         Gem::Package::TarReader.new(gz) do |tar|
           tar.each do |entry|
             next unless entry.file?
@@ -176,12 +265,10 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
             rel_path = entry.full_name
             next unless rel_path.downcase.end_with?('.pdf')
 
-            filename = generate_filename_for_work(work.id, pmcid)     
+            filename = generate_filename_for_work(work.id, pmcid)
             file_path = File.join(@full_text_path, filename)
-            file_absolute_path = File.expand_path(file_path)
-            File.open(file_absolute_path, 'wb') { |f| f.write(entry.read) }
-            FileUtils.chmod(0o644, file_absolute_path)
-            pdf_paths << file_absolute_path
+            File.open(file_path, 'wb') { |f| f.write(entry.read) }
+            pdf_paths << file_path
           end
         end
       end
@@ -242,6 +329,17 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
       Rails.logger.warn("[AttachPDF] Could not update permissions: #{e.message}")
       raise e
     end
+  end
+
+  def gzip_compressed?(file_path)
+    # Check if file starts with gzip magic number (1f 8b)
+    File.open(file_path, 'rb') do |file|
+      magic = file.read(2)
+      return false if magic.nil? || magic.length < 2
+      magic.unpack('C*') == [0x1f, 0x8b]
+    end
+  rescue
+    false
   end
 
 
