@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
-  BUILD_ID_LISTS_DIR = '01_build_id_lists'
-  LOAD_METADATA_DIR  = '02_load_and_ingest_metadata'
-  ATTACH_FILES_DIR    = '03_attach_files_to_works'
+  BUILD_ID_LISTS_OUTPUT_DIR = '01_build_id_lists'
+  LOAD_METADATA_OUTPUT_DIR  = '02_load_and_ingest_metadata'
+  ATTACH_FILES_OUTPUT_DIR    = '03_attach_files_to_works'
   def initialize(config, tracker)
     @config = config
     @tracker = tracker
@@ -42,8 +42,8 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
     # @results_path = File.join(@output_dir, 'pubmed_ingest_results.jsonl')
 
 
-    @id_list_output_directory = File.join(@output_dir, BUILD_ID_LISTS_DIR)
-    @metadata_ingest_output_directory = File.join(@output_dir, LOAD_METADATA_DIR)
+    @id_list_output_directory = File.join(@output_dir, BUILD_ID_LISTS_OUTPUT_DIR)
+    @metadata_ingest_output_directory = File.join(@output_dir, LOAD_METADATA_OUTPUT_DIR)
 
   end
 
@@ -52,23 +52,35 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
     # Create output directory using the date and time
     build_id_lists
     load_and_ingest_metadata
-    # WIP:
     attach_files
+    # WIP:
+    load_results
+    # Temporarily write results after loading to see what we have
+    results_path = File.join(@output_dir, "intermediate_results_#{@results[:time].strftime('%Y%m%d%H%M%S')}.json")
+    File.open(results_path, 'w') { |f| f.write(JSON.pretty_generate(@results)) }
+    finalize_report_and_notify(@results)
     # write_results_to_file
-    # finalize_report_and_notify
   end
 
   private
 
   def attach_files
+    if @tracker['progress']['attach_files_to_works']['completed']
+      LogUtilsHelper.double_log("Skipping file attachment as it is already completed.", :info, tag: 'attach_files')
+      return
+    end
+    
+    LogUtilsHelper.double_log("Starting file attachment process...", :info, tag: 'attach_files')
     file_attachment_service = Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService.new(
       config: @config,
       tracker: @tracker,
-      output_path: File.join(@output_dir, ATTACH_FILES_DIR),
+      output_path: File.join(@output_dir, ATTACH_FILES_OUTPUT_DIR),
       full_text_path: @config['full_text_dir'],
       metadata_ingest_result_path: File.join(@metadata_ingest_output_directory, 'metadata_ingest_results.jsonl'),
     )
     file_attachment_service.run
+    @tracker['progress']['attach_files_to_works']['completed'] = true
+    @tracker.save
   end
 
   def flatten_result_hash(results)
@@ -195,6 +207,7 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
           log_and_label_skip(file_name, file_ext, alternate_ids, 'File already attached to work')
         elsif match&.dig(:work_id).present?
           double_log("Found existing work for #{file_name}: #{match[:work_id]} with no fileset. Attempting to attach PDF.")
+          LogUtilsHelper.double_log("Work Inspection: #{match.inspect}", :info, tag: 'PubmedIngest')
           path = File.join(@config['file_retrieval_directory'], full_file_name(file_name, file_ext))
           @pubmed_ingest_service.attach_pdf_for_existing_work(match, path, @depositor_onyen)
           @pubmed_ingest_service.record_result(
@@ -228,6 +241,41 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
     double_log("Processing complete. Results: #{@pubmed_ingest_service.attachment_results[:counts]}")
   end
 
+  def load_results
+    path = File.join(@output_dir, ATTACH_FILES_OUTPUT_DIR, 'attachment_results.jsonl')
+    unless File.exist?(path)
+      LogUtilsHelper.double_log("Results file not found at #{path}", :error, tag: 'load_and_format_results')
+      raise "Results file not found at #{path}"
+    end
+
+    begin
+      raw_results_array = JsonlFileUtils.read_jsonl(path)
+      # Csst 
+      raw_results_array.each do |entry|
+        category = entry['category']&.to_sym
+        next unless [:skipped, :successfully_attached, :successfully_ingested, :failed].include?(category)
+
+        @results[category] << entry.except('category')
+        @results[:counts][category] += 1
+      end
+      LogUtilsHelper.double_log("Successfully loaded and formatted results from #{path}. Current counts: #{@results[:counts]}", :info, tag: 'load_and_format_results')
+    rescue => e
+      LogUtilsHelper.double_log("Failed to load or parse results from #{path}: #{e.message}", :error, tag: 'load_and_format_results')
+      raise "Failed to load or parse results from #{path}: #{e.message}"
+    end
+  end
+
+  # def format_results_for_reporting(raw_results_array)
+  #   raw_results_array.each do |entry|
+  #     category = entry['category']&.to_sym
+  #     next unless [:skipped, :successfully_attached, :successfully_ingested, :failed].include?(category)
+
+  #     formatted[category] << entry.except('category')
+  #     formatted[:counts][category] += 1
+  #   end
+  #   formatted
+  # end
+
   def attach_remaining_pdfs
     if @pubmed_ingest_service.attachment_results[:skipped].empty?
       double_log('No skipped items to ingest', :info)
@@ -252,11 +300,11 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
     double_log("Ingested: #{@pubmed_ingest_service.attachment_results[:successfully_ingested].length}, Attached: #{@pubmed_ingest_service.attachment_results[:successfully_attached].length}, Failed: #{@pubmed_ingest_service.attachment_results[:failed].length}, Skipped: #{@pubmed_ingest_service.attachment_results[:skipped].length}", :info)
   end
 
-  def finalize_report_and_notify
+  def finalize_report_and_notify(attachment_results)
     # Generate report, log, send email
     double_log('Sending email with results', :info)
     begin
-      report = Tasks::PubmedIngest::SharedUtilities::PubmedReportingService.generate_report(@pubmed_ingest_service.attachment_results)
+      report = Tasks::PubmedIngest::SharedUtilities::PubmedReportingService.generate_report(attachment_results)
       PubmedReportMailer.pubmed_report_email(report).deliver_now
       double_log('Email sent successfully', :info)
     rescue StandardError => e

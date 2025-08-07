@@ -7,17 +7,35 @@ SUBDIRS = %w[01_build_id_lists 02_load_and_ingest_metadata 03_attach_files_to_wo
 REQUIRED_ARGS = %w[start_date end_date admin_set_title]
 
 desc 'Ingest works from the PubMed API'
-task :pubmed_ingest, [:start_date, :end_date, :admin_set_title, :output_dir, :full_text_dir] => :environment do |t, args|
-  # This version of the task will be called with arguments in the order specified in the task definition.
-  # For example: rake 'pubmed_ingest[2024-01-01,2024-01-31,default]'
-  
+# Required args for a new ingest:
+#   - start_date: The start date for the ingest (format: YYYY-MM-DD)
+#   - end_date: The end date for the ingest (format: YYYY-MM-DD)
+#   - admin_set_title: The title of the AdminSet to use for the works
+# Recommended args:
+#   - depositor_onyen: The onyen of the depositor (default: PUBMED_INGEST_DIMENSIONS_INGEST_DEPOSITOR_ONYEN env var)
+#   - full_text_dir: The directory to store full-text PDFs (default: a subdirectory of the output directory. hyrax may encounter issues with the default tmp directory on remote)
+#   - output_dir: The directory to store output files (default: a subdirectory of the tmp directory. similar issues with permissions as above)
+
+# Required args for a resume:
+#   - output_dir: The directory where the previous ingest's output files are stored (must contain an ingest_tracker.json file)
+#   - resume: A flag to indicate that this is a resume operation (default: false)
+#  - All other args on resume will be ignored, and the ingest will resume from the last saved state.
+
+# Example usage:
+#   rake pubmed_ingest[true, '/path/to/output/dir']
+#   rake pubmed_ingest[false, '/path/to/output/dir', '/path/to/full_text_dir', '2023-01-01', '2023-12-31', 'My Admin Set', 'depositor_onyen']
+
+desc 'Ingest works from the PubMed API'
+task :pubmed_ingest, [:resume, :output_dir, :full_text_dir, :start_date, :end_date, :admin_set_title, :depositor_onyen] => :environment do |t, args|
   options = {}
+  options[:resume] = ActiveModel::Type::Boolean.new.cast(args[:resume])
   options[:start_date] = args[:start_date]
   options[:end_date] = args[:end_date]
   options[:admin_set_title] = args[:admin_set_title]
   options[:output_dir] = args[:output_dir]
   options[:full_text_dir] = args[:full_text_dir]
-  options[:depositor_onyen] = ENV['PUBMED_INGEST_DIMENSIONS_INGEST_DEPOSITOR_ONYEN']
+  options[:depositor_onyen] = args[:depositor_onyen] || DEPOSITOR
+
 
   puts "Starting PubMed ingest with options: #{options.inspect}"
 

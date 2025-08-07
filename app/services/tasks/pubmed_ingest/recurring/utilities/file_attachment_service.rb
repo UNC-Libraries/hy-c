@@ -81,7 +81,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
       doc = Nokogiri::XML(response.body)
       pdf_url = doc.at_xpath('//record/link[@format="pdf"]')&.[]('href')
       tgz_url = doc.at_xpath('//record/link[@format="tgz"]')&.[]('href')
-      raise "No PDF or TGZ link found" if pdf_url.blank? && tgz_url.blank?
+      raise 'No PDF or TGZ link found' if pdf_url.blank? && tgz_url.blank?
 
       if pdf_url.present?
         uri = URI.parse(pdf_url)
@@ -127,7 +127,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
     article = Article.find(article_id)
     pmcid = record.dig('ids', 'pmcid')
     depositor = ::User.find_by(uid: 'admin')
-    raise "No depositor found" unless depositor
+    raise 'No depositor found' unless depositor
 
     filename = generate_filename_for_work(article.id, pmcid)
     file_path = File.join(@full_text_path, filename)
@@ -188,7 +188,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
         Rails.logger.warn("Original file still nil for FileSet #{file_set.id}")
       end
 
-      log_result(record, category: :successfully_attached, message: 'PDF successfully attached.')
+      log_result(record, category: :successfully_attached, message: 'PDF successfully attached.', file_name: filename)
       return file_set
     rescue => e
       log_result(record, category: :failed, message: "PDF attachment failed: #{e.message}")
@@ -200,7 +200,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
   def safe_gzip_reader(path)
     content = File.binread(path)
     gzip_start = content.index("\x1F\x8B".b)
-    raise "No GZIP header found in file" unless gzip_start
+    raise 'No GZIP header found in file' unless gzip_start
 
     str_io = StringIO.new(content[gzip_start..])
     Zlib::GzipReader.new(str_io)
@@ -215,7 +215,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
     begin
       work = Article.find(article_id)
       depositor = ::User.find_by(uid: 'admin')
-      raise "No depositor found" unless depositor
+      raise 'No depositor found' unless depositor
 
       pdf_count = 0
       attached_files = []
@@ -232,7 +232,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
 
           pdf_binary = entry.read
           LogUtilsHelper.double_log("Extracting PDF from TGZ: #{entry.full_name} (#{pdf_binary.bytesize} bytes)", :info, tag: 'TGZ Processing')
-          
+
           # Attach the PDF binary directly
           file_set = attach_pdf_to_work_with_binary(record, pdf_binary)
           if file_set
@@ -247,13 +247,11 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
       File.delete(tgz_absolute_path) if File.exist?(tgz_absolute_path)
 
       if pdf_count == 0
-        raise "No PDF files found in TGZ archive"
+        raise 'No PDF files found in TGZ archive'
       end
 
       work.reload
       work.update_index
-
-      log_result(record, category: :successfully_attached, message: "Extracted and attached #{pdf_count} PDFs from TGZ: #{attached_files.join(', ')}")
 
     rescue => e
       log_result(record, category: :failed, message: "TGZ PDF processing failed: #{e.message}")
@@ -264,144 +262,144 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
 
 
   def attach_pdf_to_work_with_binary(record, pdf_binary)
-  article_id = record.dig('ids', 'article_id')
-  return log_result(record, category: :skipped, message: 'No article ID found to attach PDF') unless article_id.present?
+    article_id = record.dig('ids', 'article_id')
+    return log_result(record, category: :skipped, message: 'No article ID found to attach PDF') unless article_id.present?
 
-  article = Article.find(article_id)
-  pmcid = record.dig('ids', 'pmcid')
-  depositor = ::User.find_by(uid: 'admin')
-  raise "No depositor found" unless depositor
+    article = Article.find(article_id)
+    pmcid = record.dig('ids', 'pmcid')
+    depositor = ::User.find_by(uid: 'admin')
+    raise 'No depositor found' unless depositor
 
-  filename = generate_filename_for_work(article.id, pmcid)
+    filename = generate_filename_for_work(article.id, pmcid)
 
-  begin
-    # Create FileSet first
-    file_set = FileSet.create(
-      visibility: article.visibility,
-      label: filename,
-      title: [filename],
-      depositor: depositor.user_key
-    )
+    begin
+      # Create FileSet first
+      file_set = FileSet.create(
+        visibility: article.visibility,
+        label: filename,
+        title: [filename],
+        depositor: depositor.user_key
+      )
 
-    Rails.logger.info("Created FileSet #{file_set.id} for article #{article_id}")
+      Rails.logger.info("Created FileSet #{file_set.id} for article #{article_id}")
 
-    # Create actor
-    actor = Hyrax::Actors::FileSetActor.new(file_set, depositor)
+      # Create actor
+      actor = Hyrax::Actors::FileSetActor.new(file_set, depositor)
 
-    # Create metadata
-    file_set_params = { 
-      visibility: article.visibility,
-      title: [filename],
-      label: filename
-    }
-    
-    Rails.logger.info("Creating metadata for FileSet #{file_set.id}")
-    actor.create_metadata(file_set_params)
+      # Create metadata
+      file_set_params = {
+        visibility: article.visibility,
+        title: [filename],
+        label: filename
+      }
 
-    # Create a proper uploaded file object that mimics what Hyrax expects
-    uploaded_file = create_uploaded_file_from_binary(pdf_binary, filename)
-    
-    Rails.logger.info("Creating content for FileSet #{file_set.id} with uploaded file")
-    
-    # Use create_content with the uploaded file
-    uploaded_file.tempfile.rewind
-    actor.create_content(uploaded_file)
+      Rails.logger.info("Creating metadata for FileSet #{file_set.id}")
+      actor.create_metadata(file_set_params)
 
-    # Wait for original file to be created
-    max_attempts = 30
-    attempt = 0
-    
-    while attempt < max_attempts
-      file_set.reload
-      if file_set.original_file.present?
-        Rails.logger.info("Original file attached successfully: #{file_set.original_file.id}")
-        break
+      # Create a proper uploaded file object that mimics what Hyrax expects
+      uploaded_file = create_uploaded_file_from_binary(pdf_binary, filename)
+
+      Rails.logger.info("Creating content for FileSet #{file_set.id} with uploaded file")
+
+      # Use create_content with the uploaded file
+      uploaded_file.tempfile.rewind
+      actor.create_content(uploaded_file)
+
+      # Wait for original file to be created
+      # max_attempts = 5
+      # attempt = 0
+
+      # while attempt < max_attempts
+      #   l.reload
+      #   if file_set.original_file.present?
+      #     Rails.logger.info("Original file attached successfully: #{file_set.original_file.id}")
+      #     break
+      #   end
+
+      #   attempt += 1
+      #   Rails.logger.info("Waiting for original_file... attempt #{attempt}/#{max_attempts}")
+      #   sleep(1)
+      # end
+
+      # if file_set.original_file.blank?
+      #   raise "Original file failed to attach after #{max_attempts} attempts"
+      # end
+
+      # Attach to work
+      Rails.logger.info("Attaching FileSet #{file_set.id} to Work #{article.id}")
+      actor.attach_to_work(article)
+
+      # Set permissions
+      file_set.permissions_attributes = group_permissions(article.admin_set)
+      file_set.save!
+
+      # Update work relationships
+      article.reload
+      article.representative_id ||= file_set.id
+      article.thumbnail_id ||= file_set.id
+      unless article.rendering_ids.include?(file_set.id.to_s)
+        article.rendering_ids += [file_set.id.to_s]
       end
-      
-      attempt += 1
-      Rails.logger.info("Waiting for original_file... attempt #{attempt}/#{max_attempts}")
-      sleep(1)
-    end
+      article.save!
 
-    if file_set.original_file.blank?
-      raise "Original file failed to attach after #{max_attempts} attempts"
-    end
+      # Reindex both objects
+      file_set.update_index
+      article.update_index
 
-    # Attach to work
-    Rails.logger.info("Attaching FileSet #{file_set.id} to Work #{article.id}")
-    actor.attach_to_work(article)
+      # Create derivatives using the uploaded file path
+      Rails.logger.info("Creating derivatives for FileSet #{file_set.id}")
+      # CreateDerivativesJob.perform_now(file_set, file_set.original_file.id, uploaded_file.path)
 
-    # Set permissions
-    file_set.permissions_attributes = group_permissions(article.admin_set)
-    file_set.save!
+      # Final reindex after derivatives
+      sleep(2) # Give derivatives time to complete
+      file_set.reload
+      file_set.update_index
+      article.reload
+      article.update_index
 
-    # Update work relationships
-    article.reload
-    article.representative_id ||= file_set.id
-    article.thumbnail_id ||= file_set.id
-    unless article.rendering_ids.include?(file_set.id.to_s)
-      article.rendering_ids += [file_set.id.to_s]
-    end
-    article.save!
+      Rails.logger.info("Successfully attached PDF to FileSet #{file_set.id}")
+      log_result(record, category: :successfully_attached, message: 'PDF successfully attached.', file_name: filename)
 
-    # Reindex both objects
-    file_set.update_index
-    article.update_index
+      return [file_set, filename]
 
-    # Create derivatives using the uploaded file path
-    Rails.logger.info("Creating derivatives for FileSet #{file_set.id}")
-    CreateDerivativesJob.perform_now(file_set, file_set.original_file.id, uploaded_file.path)
-
-    # Final reindex after derivatives
-    sleep(2) # Give derivatives time to complete
-    file_set.reload
-    file_set.update_index
-    article.reload  
-    article.update_index
-
-    Rails.logger.info("Successfully attached PDF to FileSet #{file_set.id}")
-    log_result(record, category: :successfully_attached, message: 'PDF successfully attached with derivatives.')
-    
-    return file_set
-    
-  rescue => e
-    Rails.logger.error "PDF attachment failed for #{article_id}: #{e.message}"
-    Rails.logger.error e.backtrace.join("\n") if e.backtrace
-    log_result(record, category: :failed, message: "PDF attachment failed: #{e.message}")
-    raise
-  ensure
-    # Cleanup uploaded file if it exists
-    if defined?(uploaded_file) && uploaded_file&.respond_to?(:path) && uploaded_file.path && File.exist?(uploaded_file.path)
-      File.unlink(uploaded_file.path) rescue nil
+    rescue => e
+      Rails.logger.error "PDF attachment failed for #{article_id}: #{e.message}"
+      Rails.logger.error e.backtrace.join("\n") if e.backtrace
+      log_result(record, category: :failed, message: "PDF attachment failed: #{e.message}")
+      raise
+    ensure
+      # Cleanup uploaded file if it exists
+      if defined?(uploaded_file) && uploaded_file&.respond_to?(:path) && uploaded_file.path && File.exist?(uploaded_file.path)
+        File.unlink(uploaded_file.path) rescue nil
+      end
     end
   end
-end
 
 
-def create_uploaded_file_from_binary(binary_data, filename)
-    # Create a temporary file in the uploads directory
+  def create_uploaded_file_from_binary(binary_data, filename)
+      # Create a temporary file in the uploads directory
     upload_dir = File.join(Rails.root, 'tmp', 'uploads')
     FileUtils.mkdir_p(upload_dir)
-    
+
     temp_path = File.join(upload_dir, "#{SecureRandom.uuid}_#{filename}")
-    
-    # Write binary data to temp file
+
+      # Write binary data to temp file
     File.binwrite(temp_path, binary_data)
     FileUtils.chmod(0o644, temp_path)
-    
+
     Rails.logger.info("Created temporary file at #{temp_path} (#{binary_data.bytesize} bytes)")
-    
-    # Create an object that behaves like an uploaded file
+
+      # Create an object that behaves like an uploaded file
     uploaded_file = ActionDispatch::Http::UploadedFile.new(
       tempfile: File.open(temp_path, 'rb'),
       filename: filename,
       type: 'application/pdf',
       head: "Content-Disposition: form-data; name=\"file\"; filename=\"#{filename}\"\r\nContent-Type: application/pdf\r\n"
     )
-    
-    # Add path method for cleanup
+
+      # Add path method for cleanup
     uploaded_file.define_singleton_method(:path) { temp_path }
-    
+
     uploaded_file
   end
 
@@ -423,7 +421,7 @@ def create_uploaded_file_from_binary(binary_data, filename)
     end
 
     depositor = ::User.find_by(uid: 'admin')
-    raise "No depositor found" unless depositor
+    raise 'No depositor found' unless depositor
 
     pdf_file = attach_pdf_to_work(article, file_path, depositor, article.visibility)
 
@@ -462,12 +460,13 @@ def create_uploaded_file_from_binary(binary_data, filename)
     "#{pmcid}_#{suffix}.pdf"
   end
 
-  def log_result(record, category:, message:)
+  def log_result(record, category:, message:, file_name: nil)
     entry = {
       ids: record['ids'],
       timestamp: Time.now.utc.iso8601,
       category: category,
-      message: message
+      message: message,
+      file_name: file_name
     }
     @tracker.save
     File.open(@log_file, 'a') { |f| f.puts(entry.to_json) }
