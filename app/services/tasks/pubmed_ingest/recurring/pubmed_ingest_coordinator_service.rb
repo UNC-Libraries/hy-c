@@ -59,6 +59,9 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
     results_path = File.join(@output_dir, "intermediate_results_#{@results[:time].strftime('%Y%m%d%H%M%S')}.json")
     File.open(results_path, 'w') { |f| f.write(JSON.pretty_generate(@results)) }
     finalize_report_and_notify(@results)
+    @tracker['progress']['send_summary_email']['completed'] = true
+    @tracker.save
+
     # write_results_to_file
   end
 
@@ -66,11 +69,11 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
 
   def attach_files
     if @tracker['progress']['attach_files_to_works']['completed']
-      LogUtilsHelper.double_log("Skipping file attachment as it is already completed.", :info, tag: 'attach_files')
+      LogUtilsHelper.double_log('Skipping file attachment as it is already completed.', :info, tag: 'attach_files')
       return
     end
-    
-    LogUtilsHelper.double_log("Starting file attachment process...", :info, tag: 'attach_files')
+
+    LogUtilsHelper.double_log('Starting file attachment process...', :info, tag: 'attach_files')
     file_attachment_service = Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService.new(
       config: @config,
       tracker: @tracker,
@@ -250,7 +253,7 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
 
     begin
       raw_results_array = JsonlFileUtils.read_jsonl(path)
-      # Csst 
+      # Csst
       raw_results_array.each do |entry|
         category = entry['category']&.to_sym
         next unless [:skipped, :successfully_attached, :successfully_ingested, :failed].include?(category)
@@ -301,6 +304,10 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
   end
 
   def finalize_report_and_notify(attachment_results)
+    if @tracker['progress']['send_summary_email']['completed']
+      LogUtilsHelper.double_log('Skipping email notification as it has already been sent.', :info, tag: 'send_summary_email')
+      return
+    end
     # Generate report, log, send email
     double_log('Sending email with results', :info)
     begin

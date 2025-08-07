@@ -22,8 +22,9 @@ desc 'Ingest works from the PubMed API'
 #  - All other args on resume will be ignored, and the ingest will resume from the last saved state.
 
 # Example usage:
-#   rake pubmed_ingest[true, '/path/to/output/dir']
-#   rake pubmed_ingest[false, '/path/to/output/dir', '/path/to/full_text_dir', '2023-01-01', '2023-12-31', 'My Admin Set', 'depositor_onyen']
+#   bundle exec rake "pubmed_ingest[true,tmp/pubmed_ingest_2025-08-07_20-22-03,,,,]"
+#   bundle exec rake "pubmed_ingest[false,/path/to/output/dir,/path/to/full_text_dir,2024-01-01,2024-01-31,default,admin]"
+#   bundle exec rake "pubmed_ingest[false,,,2024-01-01,2024-01-31,default,admin]"
 
 desc 'Ingest works from the PubMed API'
 task :pubmed_ingest, [:resume, :output_dir, :full_text_dir, :start_date, :end_date, :admin_set_title, :depositor_onyen] => :environment do |t, args|
@@ -76,10 +77,8 @@ def build_pubmed_ingest_config_and_tracker(args:)
       exit(1)
     end
 
-    output_dir = Pathname.new(raw_output_dir)
-    unless output_dir.directory?
-      puts "❌ Output directory does not exist or is not a directory: #{output_dir}"
-      exit(1)
+    if raw_output_dir
+      output_dir = Pathname.new(raw_output_dir)
     end
 
     tracker_path = output_dir.join('ingest_tracker.json')

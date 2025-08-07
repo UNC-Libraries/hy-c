@@ -89,9 +89,9 @@ class Tasks::PubmedIngest::SharedUtilities::IngestTracker
         },
         'attach_files_to_works' => {
             'completed' => false,
-            'cursor' => 0,
-            'result_index' => 0
-        }}
+        },
+        'send_summary_email' => { 'completed' => false }
+      }
     }
   end
 end
