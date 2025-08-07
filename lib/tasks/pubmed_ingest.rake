@@ -7,50 +7,17 @@ SUBDIRS = %w[01_build_id_lists 02_load_and_ingest_metadata 03_attach_files_to_wo
 REQUIRED_ARGS = %w[start_date end_date admin_set_title]
 
 desc 'Ingest works from the PubMed API'
-task 'pubmed_ingest' => :environment do
+task :pubmed_ingest, [:start_date, :end_date, :admin_set_title, :output_dir, :full_text_dir] => :environment do |t, args|
+  # This version of the task will be called with arguments in the order specified in the task definition.
+  # For example: rake 'pubmed_ingest[2024-01-01,2024-01-31,default]'
+  
   options = {}
-
-  parser = OptionParser.new do |opts|
-    opts.banner = 'Usage: bundle exec rake pubmed_ingest -- [options]'
-
-    opts.on('--start-date DATE', 'Start date for ingest (required for new ingest runs only)') { |v| options[:start_date] = v }
-    opts.on('--end-date DATE', 'End date for ingest (required for new ingest runs only)') { |v| options[:end_date] = v }
-    opts.on('--admin-set-title TITLE', 'Admin Set title (required for new ingest runs only)') { |v| options[:admin_set_title] = v }
-    opts.on('--depositor ONYEN', 'Depositor onyen (optional, defaults to ENV["PUBMED_INGEST_DEPOSITOR_ONYEN"])') { |v| options[:depositor_onyen] = v }
-    opts.on('--resume', 'Resume from tracker file (optional. uses existing tracking file to populate other args besides output-dir)') do |val|
-      options[:resume] = true
-    end
-    opts.on('--output-dir DIR', 'Output directory (optional unless resuming)') { |v| options[:output_dir] = v }
-    opts.on('--full-text-dir DIR', 'Directory containing full text PDFs (optional for new runs)') { |v| options[:full_text_dir] = v }
-    opts.on('-h', '--help', 'Display help') do
-      puts opts
-      exit
-    end
-  end
-
-  # Create a copy of ARGV and clean it up
-  args_to_parse = ARGV.dup
-
-  # Remove task name if it's the first argument
-  args_to_parse.shift if args_to_parse.first == 'pubmed_ingest'
-
-  # Remove '--' separator if it's present
-  args_to_parse.shift if args_to_parse.first == '--'
-
-    # Detect help flag early
-  if args_to_parse.include?('--help') || args_to_parse.include?('-h')
-    puts parser
-    exit
-  end
-
-
-  begin
-    parser.parse!(args_to_parse)
-  rescue OptionParser::ParseError => e
-    puts "❌ #{e.message}"
-    puts parser
-    exit(1)
-  end
+  options[:start_date] = args[:start_date]
+  options[:end_date] = args[:end_date]
+  options[:admin_set_title] = args[:admin_set_title]
+  options[:output_dir] = args[:output_dir]
+  options[:full_text_dir] = args[:full_text_dir]
+  options[:depositor_onyen] = ENV['PUBMED_INGEST_DIMENSIONS_INGEST_DEPOSITOR_ONYEN']
 
   puts "Starting PubMed ingest with options: #{options.inspect}"
 

@@ -120,23 +120,6 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
     end
   end
 
-  # def attach_pdf_to_work_with_binary(record, pdf_binary)
-  #   article_id = record.dig('ids', 'article_id')
-  #   return log_result(record, category: :skipped, message: 'No article ID found to attach PDF') unless article_id.present?
-
-  #   article = Article.find(article_id)
-  #   pmcid = record.dig('ids', 'pmcid')
-  #   filename = generate_filename_for_work(article.id, pmcid)
-
-  #   io = StringIO.new(pdf_binary)
-  #   io.set_encoding('BINARY') if io.respond_to?(:set_encoding)
-    
-  #   log_result(record, category: :successfully_attached, message: 'PDF successfully attached.')
-  # rescue => e
-  #   log_result(record, category: :failed, message: "PDF attachment failed: #{e.message}")
-  #   LogUtilsHelper.double_log("[FileAttachmentService] PDF attachment failed for #{article_id}: #{e.message}", :error, tag: 'Attachment')
-  # end
-
   def attach_pdf_to_work_with_binary(record, pdf_binary)
     article_id = record.dig('ids', 'article_id')
     return log_result(record, category: :skipped, message: 'No article ID found to attach PDF') unless article_id.present?
