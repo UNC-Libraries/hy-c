@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 class Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService
-  def initialize(start_date:, end_date:, tracker:)
+  def initialize(start_date:, end_date:, tracker:, results:)
     @start_date = start_date
     @end_date = end_date
     @tracker = tracker
+    @results = results
   end
 
   def retrieve_ids_within_date_range(output_path:, db:, retmax: 1000)
