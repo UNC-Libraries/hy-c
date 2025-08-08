@@ -35,9 +35,7 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
     # WIP:
     load_results
     finalize_report_and_notify(@results)
-    # Write results to file
-    json_output_path = Rails.root.join(@output_dir, "pdf_attachment_results_#{@pubmed_ingest_service.attachment_results[:time].strftime('%Y%m%d%H%M%S')}.json")
-    JsonFileUtils.write_json(json_output_path, @pubmed_ingest_service.attachment_results)
+    JsonFileUtils.write_json(@results, File.join(@output_dir, 'ingest_results.json'), pretty: true)
   end
 
   private
@@ -149,7 +147,7 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
 
     begin
       raw_results_array = JsonFileUtils.read_jsonl(path)
-      @results = format_results_for_reporting(raw_results_array)
+      format_results_for_reporting(raw_results_array)
       LogUtilsHelper.double_log("Successfully loaded and formatted results from #{path}. Current counts: #{@results[:counts]}", :info, tag: 'load_and_format_results')
     rescue => e
       LogUtilsHelper.double_log("Failed to load or parse results from #{path}: #{e.message}", :error, tag: 'load_and_format_results')
@@ -164,13 +162,13 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
       next unless [:skipped, :successfully_attached, :successfully_ingested, :failed].include?(category)
 
       entry.merge!(entry.delete('ids'))
-      entry['cdr_url'] = WorkUtilsHelper.generate_cdr_url_from_id(entry['work_id']) if entry['work_id'].present?
+      entry['cdr_url'] = WorkUtilsHelper.generate_cdr_url_for_work_id(entry['work_id']) if entry['work_id'].present?
       entry['pdf_attached'] = entry.delete('message')
 
-      formatted[category] << entry.except('category')
-      formatted[:counts][category] += 1
+      # formatted[category] << entry.except('category')
+      @results[category] << entry
+      @results[:counts][category] += 1
     end
-    formatted
   end
 
   def finalize_report_and_notify(attachment_results)

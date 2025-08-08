@@ -71,31 +71,19 @@ def build_pubmed_ingest_config_and_tracker(args:)
   output_dir = nil
   config = {}
 
-  if resume_flag
-    if raw_output_dir.blank?
-      puts '❌ You cannot resume an ingest without specifying an output directory.'
-      exit(1)
-    end
+  if raw_output_dir.blank?
+    puts '❌ You cannot resume or start an ingest without specifying an output directory.'
+    exit(1)
+  end
 
-    if raw_output_dir
-      output_dir = Pathname.new(raw_output_dir)
-    end
+  if resume_flag
+    output_dir = Pathname.new(raw_output_dir)
 
     tracker_path = output_dir.join('ingest_tracker.json')
     unless tracker_path.exist?
       puts "❌ Tracker file not found: #{tracker_path}"
       exit(1)
     end
-
-    # config = {
-    #   'start_date'     => Date.parse(tracker['date_range']['start']),
-    #   'end_date'       => Date.parse(tracker['date_range']['end']),
-    #   'admin_set_title'=> tracker['admin_set_title'],
-    #   'depositor_onyen'=> tracker['depositor_onyen'],
-    #   'output_dir'     => output_dir.to_s,
-    #   'time'           => Time.parse(tracker['restart_time'] || tracker['start_time']),
-    #   'full_text_dir'  => tracker['full_text_dir'],
-    # }
 
     config = {
       'output_dir'      => output_dir.to_s,
@@ -111,9 +99,6 @@ def build_pubmed_ingest_config_and_tracker(args:)
       puts '❌ Failed to load existing tracker.'
       exit(1)
     end
-
-
-
   else
     REQUIRED_ARGS.each do |key|
       if args[key.to_sym].blank?

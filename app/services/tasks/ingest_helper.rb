@@ -13,10 +13,10 @@ module Tasks
     end
 
     def attach_pdf_to_work_with_binary!(record, pdf_binary, filename)
-      article_id = record.dig('ids', 'article_id')
-      raise ArgumentError, 'No article ID found to attach PDF' unless article_id.present?
+      work_id = record.dig('ids', 'work_id')
+      raise ArgumentError, 'No article ID found to attach PDF' unless work_id.present?
 
-      article   = Article.find(article_id)
+      article   = Article.find(work_id)
       depositor = ::User.find_by(uid: 'admin')
       raise 'No depositor found' unless depositor
 
