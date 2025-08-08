@@ -163,16 +163,21 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
     end
   end
 
-  # def format_results_for_reporting(raw_results_array)
-  #   raw_results_array.each do |entry|
-  #     category = entry['category']&.to_sym
-  #     next unless [:skipped, :successfully_attached, :successfully_ingested, :failed].include?(category)
+  def format_results_for_reporting(raw_results_array)
+    raw_results_array.each do |entry|
+      category = entry['category']&.to_sym
+      work_data = WorkUtilsHelper.fetch_work_data_by_id(entry['article_id']) if entry['article_id'].present?
+      next unless [:skipped, :successfully_attached, :successfully_ingested, :failed].include?(category)
 
-  #     formatted[category] << entry.except('category')
-  #     formatted[:counts][category] += 1
-  #   end
-  #   formatted
-  # end
+      entry.merge!(entry.delete('ids'))
+      entry['cdr_url'] = WorkUtilsHelper.generate_cdr_url_from_id(entry['article_id']) if entry['article_id'].present?
+      entry['pdf_attached'] = entry.delete('message')
+
+      formatted[category] << entry.except('category')
+      formatted[:counts][category] += 1
+    end
+    formatted
+  end
 
   def finalize_report_and_notify(attachment_results)
     if @tracker['progress']['send_summary_email']['completed']
@@ -180,15 +185,15 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
       return
     end
     # Generate report, log, send email
-    double_log('Sending email with results', :info)
+    LogUtilsHelper.double_log('Finalizing report and sending notification email...', :info, tag: 'send_summary_email')
     begin
       report = Tasks::PubmedIngest::SharedUtilities::PubmedReportingService.generate_report(attachment_results)
       PubmedReportMailer.pubmed_report_email(report).deliver_now
       @tracker['progress']['send_summary_email']['completed'] = true
       @tracker.save
-      double_log('Email sent successfully', :info)
+      LogUtilsHelper.double_log('Email notification sent successfully.', :info, tag: 'send_summary_email')
     rescue StandardError => e
-      double_log("Failed to send email: #{e.message}", :error)
+      LogUtilsHelper.double_log("Failed to send email notification: #{e.message}", :error, tag: 'send_summary_email')
       Rails.logger.error "Backtrace: #{e.backtrace.join("\n")}"
     end
   end

@@ -58,7 +58,6 @@ module JsonFileUtils
     []
   end
 
-
   def self.ensure_dir(path)
     dir = File.dirname(path.to_s)
     FileUtils.mkdir_p(dir) unless Dir.exist?(dir)

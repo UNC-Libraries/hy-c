@@ -52,12 +52,12 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
     return true if @existing_ids.include?(pmcid) || @existing_ids.include?(record.dig('ids', 'pmid'))
     if pmcid.blank?
         # Can only retrieve files using PMCID
-      log_result(record, category: :skipped, message: 'No PMCID found')
+      log_result(record, category: :skipped, message: 'No PMCID found', file_name: 'NONE')
       return true
     end
     # WIP: Temporarily do not filter out works that already have files attached
     if work_id.present? && has_fileset?(work_id)
-      log_result(record, category: :skipped, message: 'Work already has files attached')
+      log_result(record, category: :skipped, message: 'Work already has files attached', file_name: 'NONE')
       return true
     end
 
@@ -98,9 +98,9 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
         sleep(1)
         retry
       elsif e.message.include?('No PDF or TGZ link found')
-        log_result(record, category: :successfully_ingested, message: 'No PDF or TGZ link found, skipping attachment')
+        log_result(record, category: :successfully_ingested, message: 'No PDF or TGZ link found, skipping attachment', file_name: 'NONE')
       else
-        log_result(record, category: :failed, message: e.message)
+        log_result(record, category: :failed, message: e.message, file_name: 'NONE')
         LogUtilsHelper.double_log("Error processing record: #{e.message}", :error, tag: 'Attachment')
       end
     ensure
@@ -134,7 +134,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
   def process_and_attach_tgz_file(record, tgz_binary)
     pmcid = record.dig('ids', 'pmcid')
     article_id = record.dig('ids', 'article_id')
-    return log_result(record, category: :skipped, message: 'No article ID found to attach TGZ') unless article_id.present?
+    return log_result(record, category: :skipped, message: 'No article ID found to attach TGZ', file_name: 'NONE') if article_id.blank?
 
     begin
       work = Article.find(article_id)
@@ -182,7 +182,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
       work.update_index
 
     rescue => e
-      log_result(record, category: :failed, message: "TGZ PDF processing failed: #{e.message}")
+      log_result(record, category: :failed, message: "TGZ PDF processing failed: #{e.message}", file_name: 'NONE')
       Rails.logger.error "TGZ PDF processing failed for #{pmcid}: #{e.message}"
       Rails.logger.error e.backtrace.join("\n")
     end
