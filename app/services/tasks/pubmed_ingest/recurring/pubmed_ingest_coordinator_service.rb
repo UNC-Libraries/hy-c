@@ -6,8 +6,6 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
   def initialize(config, tracker)
     @config = config
     @tracker = tracker
-    # @file_retrieval_directory = config['file_retrieval_directory']
-    # @files_in_dir = retrieve_filenames(@config['file_retrieval_directory'])
     @depositor_onyen = config['depositor_onyen']
     @results = {
       skipped: [],
@@ -25,44 +23,21 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
         failed: 0
       }
     }
-    # WIP: Hardcode time for testing purposes
-    # @results[:time] = Time.parse('2023-10-01 12:00:00')
-    # timestamp = @results[:time].strftime('pubmed_ingest_%Y-%m-%d_%H-%M-%S')
     @output_dir = config['output_dir']
-    # FileUtils.mkdir_p(@output_dir)
-    # @pmc_id_path = File.join(@output_dir, 'pmc_ids.jsonl')
-    # @pubmed_id_path = File.join(@output_dir, 'pubmed_ids.jsonl')
-    # @pmc_alternate_ids_path = File.join(@output_dir, 'pmc_alternate_ids.jsonl')
-    # @pubmed_alternate_ids_path = File.join(@output_dir, 'pubmed_alternate_ids.jsonl')
-    # @oa_subset_path = File.join(@output_dir, 'oa_subset.jsonl')
-    # @oa_extended_path = File.join(@output_dir, 'oa_subset_extended.jsonl')
-    # @pmc_id_path = File.join(@output_dir, 'pmc_ids.jsonl')
-    # @pubmed_id_path = File.join(@output_dir, 'pubmed_ids.jsonl')
-    # @alternate_ids_path = File.join(@output_dir, 'alternate_ids.jsonl')
-    # @results_path = File.join(@output_dir, 'pubmed_ingest_results.jsonl')
-
-
     @id_list_output_directory = File.join(@output_dir, BUILD_ID_LISTS_OUTPUT_DIR)
     @metadata_ingest_output_directory = File.join(@output_dir, LOAD_METADATA_OUTPUT_DIR)
-
   end
 
   def run
-    # Working Section:
-    # Create output directory using the date and time
     build_id_lists
     load_and_ingest_metadata
     attach_files
     # WIP:
     load_results
-    # Temporarily write results after loading to see what we have
-    results_path = File.join(@output_dir, "intermediate_results_#{@results[:time].strftime('%Y%m%d%H%M%S')}.json")
-    File.open(results_path, 'w') { |f| f.write(JSON.pretty_generate(@results)) }
     finalize_report_and_notify(@results)
-    @tracker['progress']['send_summary_email']['completed'] = true
-    @tracker.save
-
-    # write_results_to_file
+    # Write results to file
+    json_output_path = Rails.root.join(@output_dir, "pdf_attachment_results_#{@pubmed_ingest_service.attachment_results[:time].strftime('%Y%m%d%H%M%S')}.json")
+    JsonFileUtils.write_json(json_output_path, @pubmed_ingest_service.attachment_results)
   end
 
   private
@@ -84,17 +59,6 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
     file_attachment_service.run
     @tracker['progress']['attach_files_to_works']['completed'] = true
     @tracker.save
-  end
-
-  def flatten_result_hash(results)
-    flat = []
-    results.each do |category, value|
-      next unless [:skipped, :successfully_attached, :successfully_ingested, :failed].include?(category)
-      Array(value).each do |record|
-        flat << record.merge('category' => category.to_s)
-      end
-    end
-    flat
   end
 
   def load_and_ingest_metadata
@@ -176,74 +140,6 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
     LogUtilsHelper.double_log("ID lists built successfully. Output directory: #{@id_list_output_directory}", :info, tag: 'build_id_lists')
   end
 
-  def process_file_matches
-    encountered_alternate_ids = []
-
-    @files_in_dir.each do |file_name, file_ext|
-      begin
-        alternate_ids = retrieve_alternate_ids(file_name)
-
-        unless alternate_ids
-          double_log("No alternate IDs found for #{full_file_name(file_name, file_ext)}", :warn)
-          @pubmed_ingest_service.record_result(
-            category: :failed,
-            file_name: full_file_name(file_name, file_ext),
-            message: 'Failed: No alternate IDs',
-            ids: {}
-          )
-          next
-        end
-
-        # In case a PMID and PMCID point to the same work, we only want to process it once
-        if encountered_alternate_ids.any? { |ids| has_matching_ids?(ids, alternate_ids) }
-          log_and_label_skip(file_name, file_ext, alternate_ids, 'Already encountered this work during current run. Identifiers: ' + alternate_ids.to_s)
-          next
-        else
-          encountered_alternate_ids << alternate_ids
-        end
-
-        match = find_best_work_match(alternate_ids)
-
-        if match&.dig(:file_set_ids).present?
-          # Attach work id to generate URL for existing work (PubmedIngestService::PubmedIngest::record_result)
-          alternate_ids[:work_id] = match[:work_id]
-          log_and_label_skip(file_name, file_ext, alternate_ids, 'File already attached to work')
-        elsif match&.dig(:work_id).present?
-          double_log("Found existing work for #{file_name}: #{match[:work_id]} with no fileset. Attempting to attach PDF.")
-          LogUtilsHelper.double_log("Work Inspection: #{match.inspect}", :info, tag: 'PubmedIngest')
-          path = File.join(@config['file_retrieval_directory'], full_file_name(file_name, file_ext))
-          @pubmed_ingest_service.attach_pdf_for_existing_work(match, path, @depositor_onyen)
-          @pubmed_ingest_service.record_result(
-            category: :successfully_attached,
-            file_name: full_file_name(file_name, file_ext),
-            message: 'Success',
-            ids: alternate_ids,
-            article: WorkUtilsHelper.fetch_model_instance(match[:work_type], match[:work_id])
-          )
-        else
-          double_log("No match found — will be ingested: #{full_file_name(file_name, file_ext)}", :warn)
-          @pubmed_ingest_service.record_result(
-            category: :skipped,
-            file_name: full_file_name(file_name, file_ext),
-            message: 'Skipped: No CDR URL',
-            ids: alternate_ids
-          )
-        end
-      rescue StandardError => e
-        double_log("Error processing file #{file_name}: #{e.message}", :error)
-        @pubmed_ingest_service.record_result(
-          category: :failed,
-          file_name: full_file_name(file_name, file_ext),
-          message: "Failed: #{e.message}",
-          ids: alternate_ids
-        )
-        next
-      end
-    end
-
-    double_log("Processing complete. Results: #{@pubmed_ingest_service.attachment_results[:counts]}")
-  end
-
   def load_results
     path = File.join(@output_dir, ATTACH_FILES_OUTPUT_DIR, 'attachment_results.jsonl')
     unless File.exist?(path)
@@ -252,8 +148,7 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
     end
 
     begin
-      raw_results_array = JsonlFileUtils.read_jsonl(path)
-      # Csst
+      raw_results_array = JsonFileUtils.read_jsonl(path)
       raw_results_array.each do |entry|
         category = entry['category']&.to_sym
         next unless [:skipped, :successfully_attached, :successfully_ingested, :failed].include?(category)
@@ -279,30 +174,6 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
   #   formatted
   # end
 
-  def attach_remaining_pdfs
-    if @pubmed_ingest_service.attachment_results[:skipped].empty?
-      double_log('No skipped items to ingest', :info)
-      return
-    end
-    double_log('Attaching PDFs for skipped records...', :info)
-
-    begin
-      ingest_results = @pubmed_ingest_service.ingest_publications
-      double_log("Finished ingesting skipped PDFs. Counts: #{ingest_results[:counts]}")
-    rescue => e
-      double_log("Error during PDF ingestion: #{e.message}", :error)
-      Rails.logger.error "Backtrace: #{e.backtrace.join("\n")}"
-    end
-  end
-
-  def write_results_to_file
-    json_output_path = Rails.root.join(@output_dir, "pdf_attachment_results_#{@pubmed_ingest_service.attachment_results[:time].strftime('%Y%m%d%H%M%S')}.json")
-    File.open(json_output_path, 'w') { |f| f.write(JSON.pretty_generate(@pubmed_ingest_service.attachment_results)) }
-
-    double_log("Results written to #{json_output_path}", :info)
-    double_log("Ingested: #{@pubmed_ingest_service.attachment_results[:successfully_ingested].length}, Attached: #{@pubmed_ingest_service.attachment_results[:successfully_attached].length}, Failed: #{@pubmed_ingest_service.attachment_results[:failed].length}, Skipped: #{@pubmed_ingest_service.attachment_results[:skipped].length}", :info)
-  end
-
   def finalize_report_and_notify(attachment_results)
     if @tracker['progress']['send_summary_email']['completed']
       LogUtilsHelper.double_log('Skipping email notification as it has already been sent.', :info, tag: 'send_summary_email')
@@ -313,88 +184,12 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
     begin
       report = Tasks::PubmedIngest::SharedUtilities::PubmedReportingService.generate_report(attachment_results)
       PubmedReportMailer.pubmed_report_email(report).deliver_now
+      @tracker['progress']['send_summary_email']['completed'] = true
+      @tracker.save
       double_log('Email sent successfully', :info)
     rescue StandardError => e
       double_log("Failed to send email: #{e.message}", :error)
       Rails.logger.error "Backtrace: #{e.backtrace.join("\n")}"
     end
-  end
-
-      # Helper methods
-
-  def find_best_work_match(alternate_ids)
-    [:doi, :pmcid, :pmid].each do |key|
-      id = alternate_ids[key]
-      next if id.blank?
-
-      work_data = WorkUtilsHelper.fetch_work_data_by_alternate_identifier(id)
-      return work_data if work_data.present?
-    end
-    nil
-  end
-
-  def retrieve_alternate_ids(identifier)
-    begin
-        # Use ID conversion API to resolve identifiers
-      res = HTTParty.get("https://www.ncbi.nlm.nih.gov/pmc/utils/idconv/v1.0/?ids=#{identifier}")
-      doc = Nokogiri::XML(res.body)
-      record = doc.at_xpath('//record')
-      if record.blank? || record['status'] == 'error'
-        Rails.logger.warn("[IDConv] Fallback used for identifier: #{identifier}")
-        return fallback_id_hash(identifier)
-      end
-
-      {
-      pmid:  record['pmid'],
-      pmcid: record['pmcid'],
-      doi:   record['doi']
-      }
-  rescue StandardError => e
-    Rails.logger.warn("[IDConv] HTTP failure for #{identifier}: #{e.message}")
-    return fallback_id_hash(identifier)
-    end
-  end
-
-  def double_log(msg, level = :info)
-    tagged = "[Coordinator] #{msg}"
-    puts tagged
-    case level
-    when :warn then Rails.logger.warn(tagged)
-    when :error then Rails.logger.error(tagged)
-    else Rails.logger.info(tagged)
-    end
-  end
-
-  def retrieve_filenames(directory)
-    abs_path = Pathname.new(directory).absolute? ? directory : Rails.root.join(directory)
-    Dir.entries(abs_path)
-      .select { |f| !File.directory?(File.join(abs_path, f)) }
-      .reject { |f|  ['.', '..'].include?(f) } # Exclude hidden files
-      .sort
-      .map { |f| [File.basename(f, '.*'), File.extname(f).delete('.')] }
-      .uniq
-  end
-
-  def log_and_label_skip(file_name, file_ext, alternate_ids, reason)
-    full_name = full_file_name(file_name, file_ext)
-    double_log("⏭️  #{full_name} - #{reason}", :info)
-    @pubmed_ingest_service.record_result(
-        category: :skipped,
-        file_name: full_file_name(file_name, file_ext),
-        message: reason,
-        ids: alternate_ids
-    )
-  end
-
-  def has_matching_ids?(existing, current)
-    [:pmid, :pmcid, :doi].any? { |k| existing[k] == current[k] }
-  end
-
-  def fallback_id_hash(identifier)
-    identifier.start_with?('PMC') ? { pmcid: identifier } : { pmid: identifier }
-  end
-
-  def full_file_name(name, ext)
-    "#{name}.#{ext}"
   end
 end

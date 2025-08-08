@@ -95,6 +95,10 @@ module WorkUtilsHelper
     permissions_array
   end
 
+  def generate_cdr_url_for_article(article)
+    "#{ENV['HYRAX_HOST']}#{Rails.application.routes.url_helpers.hyrax_article_path(article, host: ENV['HYRAX_HOST'])}"
+  end
+
   def self.generate_cdr_url_for_alternate_id(identifier)
     generate_cdr_url(identifier: identifier)
   end
