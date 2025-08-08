@@ -123,7 +123,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService
           'pmid' => record['pmid'],
           'pmcid' => record['pmcid'],
           'doi' => record['doi'],
-          'cdr_url' => generate_cdr_url_for_pubmed_identifier(id_hash: { 'pmid' => record['pmid'], 'pmcid' => record['pmcid'] }),
+          'cdr_url' => WorkUtilsHelper.generate_cdr_url_for_alternate_id(record['pmcid'] || record['pmid'])
         }
       end
 
@@ -132,28 +132,6 @@ class Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService
   rescue StandardError => e
     LogUtilsHelper.double_log("Error converting IDs: #{e.message}", :error, tag: 'write_batch_alternate_ids')
     LogUtilsHelper.double_log(e.backtrace.join("\n"), :error, tag: 'write_batch_alternate_ids')
-  end
-
-  def generate_cdr_url_for_pubmed_identifier(id_hash:)
-    identifier = id_hash['pmcid'] || id_hash['pmid']
-    raise ArgumentError, 'No identifier (PMCID or PMID) found in row' unless identifier.present?
-
-    result = Hyrax::SolrService.get(
-      "identifier_tesim:\"#{identifier}\"",
-      rows: 1,
-      fl: 'id,title_tesim,has_model_ssim,file_set_ids_ssim'
-    )['response']['docs']
-
-    raise "No Solr record found for identifier: #{identifier}" if result.empty?
-
-    record = result.first
-    raise "Missing `has_model_ssim` in Solr record: #{record.inspect}" unless record['has_model_ssim']&.first.present?
-
-    model = record['has_model_ssim']&.first&.underscore&.pluralize || 'works'
-    URI.join(ENV['HYRAX_HOST'], "/concern/#{model}/#{record['id']}").to_s
-  rescue => e
-    Rails.logger.warn("[generate_cdr_url_for_pubmed_identifier] Failed for identifier: #{identifier}, error: #{e.message}")
-    nil
   end
 
   def adjust_id_lists(pubmed_path:, pmc_path:)
@@ -176,7 +154,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService
     write_deduped_records(pubmed_path, deduped_pubmed)
 
     update_tracker_with_adjustment_stats(original_sizes, deduped_pubmed.size, deduped_pmc.size)
-
+    @results[:headers][:total_unique_records] = deduped_pubmed.size + deduped_pmc.size
     log_adjustment_summary(original_sizes, deduped_pubmed.size, deduped_pmc.size)
   end
 

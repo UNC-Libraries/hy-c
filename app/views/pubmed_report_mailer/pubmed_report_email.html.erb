@@ -12,8 +12,13 @@
   <strong>Depositor: </strong><%= @report[:headers][:depositor] %>
 </p>
 
+<%# Change the subject line based on the report type %>
+<% total_files = @report[:headers][:total_files].presence %>
+<% total_unique = @report[:headers][:total_unique_records].presence %>
+
 <p style="font-size: 16px; margin-bottom: 10px;">
-  <strong>Total Unique Files: </strong><%= @report[:headers][:total_files] %>
+  <strong><%= total_files ? 'Total Files' : 'Total Unique Records' %>: </strong>
+  <%= total_files || total_unique %>
 </p>
 
 <!-- Generate tables for each record category -->

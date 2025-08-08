@@ -11,6 +11,9 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
       skipped: [],
       successfully_attached: [],
       successfully_ingested: [],
+      headers: {
+        total_unique_records: 0
+      }
       failed: [],
       time: Time.now,
       depositor: config['depositor_onyen'],
