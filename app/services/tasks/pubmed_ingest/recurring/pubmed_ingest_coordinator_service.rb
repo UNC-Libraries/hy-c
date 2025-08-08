@@ -149,13 +149,7 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
 
     begin
       raw_results_array = JsonFileUtils.read_jsonl(path)
-      raw_results_array.each do |entry|
-        category = entry['category']&.to_sym
-        next unless [:skipped, :successfully_attached, :successfully_ingested, :failed].include?(category)
-
-        @results[category] << entry.except('category')
-        @results[:counts][category] += 1
-      end
+      @results = format_results_for_reporting(raw_results_array)
       LogUtilsHelper.double_log("Successfully loaded and formatted results from #{path}. Current counts: #{@results[:counts]}", :info, tag: 'load_and_format_results')
     rescue => e
       LogUtilsHelper.double_log("Failed to load or parse results from #{path}: #{e.message}", :error, tag: 'load_and_format_results')
