@@ -116,7 +116,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService
                           'pmcid' => record['pmcid'],
                           'doi' => record['doi'],
                           'error' => record['status'],
-                          'cdr_url' => generate_cdr_url_for_pubmed_identifier(id_hash: { 'pmid' => record['pmid'] }),
+                          'cdr_url' => WorkUtilsHelper.generate_cdr_url_for_alternate_id(record['pmcid'] || record['pmid'])
                         }
       else
         {

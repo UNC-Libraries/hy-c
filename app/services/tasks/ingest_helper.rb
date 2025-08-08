@@ -4,12 +4,12 @@ module Tasks
   module IngestHelper
     def attach_pdf_to_work(work, file_path, depositor, visibility)
       LogUtilsHelper.double_log("Attaching PDF to work #{work.id} from path #{file_path}", :info, tag: 'AttachPDF')
-      attach_file_set_to_work_with_logging(work: work, file_path: file_path, user: depositor, visibility: visibility)
+      attach_file_set_to_work(work: work, file_path: file_path, user: depositor, visibility: visibility)
     end
 
     def attach_xml_to_work(work, file_path, depositor)
       LogUtilsHelper.double_log("Attaching XML to work #{work.id} from path #{file_path}", :info, tag: 'AttachXML')
-      attach_file_set_to_work_with_logging(work: work, file_path: file_path, user: depositor, visibility: Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE)
+      attach_file_set_to_work(work: work, file_path: file_path, user: depositor, visibility: Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE)
     end
 
     def attach_pdf_to_work_with_binary!(record, pdf_binary, filename)
@@ -29,31 +29,35 @@ module Tasks
       [file_set, File.basename(file_path)]
     end
 
-    def attach_file_set_to_work_with_logging(work:, file_path:, user:, visibility:)
+    def attach_file_set_to_work(work:, file_path:, user:, visibility:)
       file_set_params = { visibility: visibility }
 
       begin
-        LogUtilsHelper.double_log("Ensuring work #{work.id} is persisted", :info, tag: 'FileSetAttach')
+        # LogUtilsHelper.double_log("Ensuring work #{work.id} is persisted", :info, tag: 'FileSetAttach')
+        Rails.logger.debug("Ensuring work #{work.id} is persisted")
         work.save! unless work.persisted?
 
         File.open(file_path) do |file|
-          LogUtilsHelper.double_log("Creating FileSet and Actor for user #{user.uid}", :info, tag: 'FileSetAttach')
+          # LogUtilsHelper.double_log("Creating FileSet and Actor for user #{user.uid}", :info, tag: 'FileSetAttach')
+          Rails.logger.debug("Creating FileSet and Actor for user #{user.uid}")
           file_set = FileSet.create
           actor = Hyrax::Actors::FileSetActor.new(file_set, user)
 
-          LogUtilsHelper.double_log("Calling create_metadata for FileSet #{file_set.id}", :info, tag: 'FileSetAttach')
+          # LogUtilsHelper.double_log("Calling create_metadata for FileSet #{file_set.id}", :info, tag: 'FileSetAttach')
+          Rails.logger.debug("Calling create_metadata for FileSet #{file_set.id}")
           actor.create_metadata(file_set_params)
 
-          LogUtilsHelper.double_log("Calling create_content for FileSet #{file_set.id}", :info, tag: 'FileSetAttach')
+          # LogUtilsHelper.double_log("Calling create_content for FileSet #{file_set.id}", :info, tag: 'FileSetAttach')
           attach_file_content(file_set: file_set, user: user, file: file)
-          LogUtilsHelper.double_log("Attaching FileSet #{file_set.id} to work #{work.id}", :info, tag: 'FileSetAttach')
+          # LogUtilsHelper.double_log("Attaching FileSet #{file_set.id} to work #{work.id}", :info, tag: 'FileSetAttach')
+          Rails.logger.debug("Attaching FileSet #{file_set.id} to work #{work.id}")
           actor.attach_to_work(work, file_set_params)
 
           file_set.permissions_attributes = group_permissions(work.admin_set)
-          LogUtilsHelper.double_log("Saving FileSet #{file_set.id} with permissions", :info, tag: 'FileSetAttach')
           file_set.save!
 
-          LogUtilsHelper.double_log("Successfully attached FileSet #{file_set.id} to work #{work.id}", :info, tag: 'FileSetAttach')
+          # LogUtilsHelper.double_log("Successfully attached FileSet #{file_set.id} to work #{work.id}", :info, tag: 'FileSetAttach')
+          Rails.logger.info("Successfully attached FileSet #{file_set.id} to work #{work.id}")
           file_set
         end
       rescue StandardError => e
@@ -75,7 +79,7 @@ module Tasks
         path: File.expand_path(file.path),
         relation: 'original_file',
         mime_type: 'application/pdf',
-        original_name: File.basename(file.path) # <-- this sets the label/title
+        original_name: File.basename(file.path)
       )
       IngestJob.perform_later(job)
       LogUtilsHelper.double_log("Inspect Original File for FileSet #{file_set.original_file.inspect}", :info, tag: 'FileSetAttach')

@@ -116,12 +116,6 @@ module Tasks
               article.identifier.each { |id| Rails.logger.info("[Ingest] Article identifier: #{id}") }
               Rails.logger.info("[Ingest] Created new article with ID #{article.id}")
 
-              # WIP: Skip PDF attachment for now, add as post processing step
-              # attach_pdf(article, skipped_row)
-              # article.save!
-
-              # Rails.logger.info("[Ingest] Successfully attached PDF for article #{article.id}")
-              # skipped_row['cdr_url'] = generate_cdr_url_for_pubmed_identifier(skipped_row)
               if alternate_ids.present?
                 alternate_ids['article'] = article
               end
@@ -463,37 +457,6 @@ module Tasks
             SharedUtilities::AttributeBuilders::PmcAttributeBuilder.new(metadata, article, @admin_set, @depositor.uid)
         end
 
-        # def generate_cdr_url_for_pubmed_identifier(skipped_row)
-        #   identifier = skipped_row['pmcid'] || skipped_row['pmid']
-        #   raise ArgumentError, 'No identifier (PMCID or PMID) found in row' unless identifier.present?
-
-        #   result = Hyrax::SolrService.get("identifier_tesim:\"#{identifier}\"",
-        #                         rows: 1,
-        #                         fl: 'id,title_tesim,has_model_ssim,file_set_ids_ssim')['response']['docs']
-        #   raise "No Solr record found for identifier: #{identifier}" if result.empty?
-
-        #   record = result.first
-        #   raise "Missing `has_model_ssim` in Solr record: #{record.inspect}" unless record['has_model_ssim']&.first.present?
-
-        #   model = record['has_model_ssim']&.first&.underscore&.pluralize || 'works'
-        #   URI.join(ENV['HYRAX_HOST'], "/concern/#{model}/#{record['id']}").to_s
-        # rescue => e
-        #   Rails.logger.warn("[generate_cdr_url_for_pubmed_identifier] Failed for identifier: #{identifier}, error: #{e.message}")
-        #   nil
-        # end
-
-        # def generate_cdr_url_for_existing_work(work_id)
-        #   result = WorkUtilsHelper.fetch_work_data_by_id(work_id)
-        #   raise "No work found with ID: #{work_id}" if result.nil?
-        #   raise "Missing work_type for work with id: #{work_id}" unless result[:work_type].present?
-
-        #   model = result[:work_type].underscore.pluralize
-        #   URI.join(ENV['HYRAX_HOST'], "/concern/#{model}/#{work_id}").to_s
-        # rescue => e
-        #   Rails.logger.warn("[generate_cdr_url_for_existing_work] Failed for work with id: #{work_id}, error: #{e.message}")
-        #   nil
-        # end
-
         def add_to_pubmed_id_list(parsed_response)
           ids = parsed_response.xpath('//IdList/Id').map(&:text)
           @record_ids['pubmed'].concat(ids)
@@ -510,126 +473,15 @@ module Tasks
           }
 
           if ids[:work_id]
-            row['cdr_url'] = generate_cdr_url_for_existing_work(ids[:work_id])
+            row['cdr_url'] = WorkUtilsHelper.generate_cdr_url_for_work_id(ids[:work_id])
           elsif article.present?
-            row['cdr_url'] = generate_cdr_url_for_pubmed_identifier(row)
+            row['cdr_url'] = WorkUtilsHelper.generate_cdr_url_for_article(article)
           end
           row['article'] = article if article
           @attachment_results[:counts][category] += 1
 
           @attachment_results[category] << row
         end
-
-              # The OA FCGI endpoint does not accept a list of PMCIDs as an argument, so use the retrieved metadata to determine a date range
-        # def expand_date_range_for_full_text_retrieval
-        #   Rails.logger.info("[PubmedIngestService - expand_date_range_for_full_text_retrieval] Setting date range for full-text retrieval: #{@start_date.strftime('%Y-%m-%d')} to #{@end_date.strftime('%Y-%m-%d')}")
-        #   @retrieved_metadata.each do |metadata|
-        #     next if is_pubmed?(metadata)
-
-        #     attribute_builder = PmcAttributeBuilder.new(metadata, nil, @admin_set, @depositor.uid)
-        #     date_issued = attribute_builder.get_date_issued
-        #     update_oa_fgci_date_range(date_issued)
-        #   end
-
-        #   # Provide a buffer of 2 years to account for lag between publication and full-text availability
-        #   @oa_fgci_end_date += 2.years
-        # end
-
-        # def update_oa_fgci_date_range(date_issued)
-        #   return unless date_issued.present?
-        #   default_date = DateTime.new(0000, 1, 1) # Default date, set in get_date_issued within attribute builders
-
-        #   if date_issued < @oa_fgci_start_date && date_issued > default_date
-        #     @oa_fgci_start_date = date_issued
-        #     Rails.logger.info("[PubmedIngestService - update_oa_fgci_date_range] Updated OA FGCI start date to: #{@oa_fgci_start_date}")
-        #   end
-        #   if date_issued > @oa_fgci_end_date
-        #     @oa_fgci_end_date = date_issued
-        #     Rails.logger.info("[PubmedIngestService - update_oa_fgci_date_range] Updated OA FGCI end date to: #{@oa_fgci_end_date}")
-        #   end
-        # end
-      # def attach_pdf_for_existing_work(work_hash, file_path, depositor_onyen)
-        #   begin
-        #     # Create a work object using the provided work_hash
-        #     model_class = work_hash[:work_type].constantize
-        #     work = model_class.find(work_hash[:work_id])
-        #     depositor =  User.find_by(uid: depositor_onyen)
-        #     file = attach_pdf_to_work(work, file_path, depositor, Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE)
-        #     admin_set = ::AdminSet.where(id: work_hash[:admin_set_id]).first
-        #     file.update(permissions_attributes: group_permissions(admin_set))
-        #     Rails.logger.info("[AttachPDFExisting] Successfully attached file for #{work_hash[:work_id]}")
-        #     file
-        # rescue StandardError => e
-        #   Rails.logger.error("[AttachPDFExisting] Error finding article for work ID #{work_hash[:work_id]}: #{e.message}")
-        #   raise e
-        #   end
-        # end
-
-              # Update the metadata storage with new metadata to avoid taking up too much memory
-        # def update_metadata_storage(file_path:, new_metadata:)
-        #   Rails.logger.info("[PubmedIngestService - update_metadata_storage] Writing metadata to file: #{file_path}")
-
-        #   File.open(file_path, 'a') do |f|
-        #     new_metadata.each do |xml_node|
-        #       f.puts({ xml: xml_node.to_s }.to_json)
-        #     end
-        #   end
-        # end
-        # def update_metadata_storage(file_path:, new_metadata:)
-        #   # @retrieved_metadata += new_metadata
-        #   # if @retrieved_metadata.size > 100
-        #   Rails.logger.info("[PubmedIngestService - update_metadata_storage] Writing metadata to file: #{file_path}")
-        #   # append_results_to_stored_json_array(file_path, new_metadata)
-        #   xml_strings = new_metadata.map(&:to_s)
-        #   append_results_to_ndjson(file_path, xml_strings)
-        #     # @retrieved_metadata = [] # Reset after writing
-        #   # end
-        # end
-
-        # def append_results_to_ndjson(file_path, xml_strings)
-        #   File.open(file_path, 'a') do |f|
-        #     xml_strings.each do |xml_str|
-        #       f.puts({ xml: xml_str }.to_json)
-        #     end
-        #   end
-        # end
-
-
-        # def process_xml_array_test_file(file_path)
-        #   complete_xml_array = []
-        #   message = "Processing test file: #{file_path}"
-        #   puts message
-        #   begin
-        #     file_content = File.read(file_path)
-        #     xml_array = JSON.parse(file_content)
-        #     xml_documents = xml_array.map { |xml_str| Nokogiri::XML(xml_str) }
-        #     complete_xml_array += xml_documents
-        #     message = "Successfully read test file: #{file_path}"
-        #     puts message
-        #   rescue StandardError => e
-        #     message = "Error parsing JSON from file #{file_path}: #{e.message}"
-        #     puts message
-        #     raise e
-        #   end
-        #   complete_xml_array
-        # end
-
-        # # Read test json file and process into hash
-        # def process_test_file(file_path)
-        #   message = "Processing test file: #{file_path}"
-        #   puts message
-        #   begin
-        #     file_content = File.read(file_path)
-        #     test_data = JSON.parse(file_content)
-        #     message = "Successfully read test file: #{file_path}"
-        #     puts message
-        #   rescue StandardError => e
-        #     message = "Error parsing JSON from file #{file_path}: #{e.message}"
-        #     puts message
-        #     raise e
-        #   end
-        #   test_data
-        # end
       end
     end
   end

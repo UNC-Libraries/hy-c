@@ -36,7 +36,7 @@ module Tasks
           if ids[:work_id]
             row['cdr_url'] = WorkUtilsHelper.generate_cdr_url_for_work_id(ids[:work_id])
           elsif article.present?
-            row['cdr_url'] = generate_cdr_url_for_pubmed_identifier(row)
+            row['cdr_url'] = WorkUtilsHelper.generate_cdr_url_for_article(article)
           end
           row['article'] = article if article
           @attachment_results[:counts][category] += 1
@@ -70,7 +70,7 @@ module Tasks
               article.save!
 
               Rails.logger.info("[Ingest] Successfully attached PDF for article #{article.id}")
-              skipped_row['cdr_url'] = generate_cdr_url_for_pubmed_identifier(skipped_row)
+              skipped_row['cdr_url'] = WorkUtilsHelper.generate_cdr_url_for_article(article)
               skipped_row['article'] = article
               record_result(
                 category: :successfully_ingested,

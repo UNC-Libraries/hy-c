@@ -161,15 +161,6 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
         Rails.logger.info("[MetadataIngestService] No existing work found for IDs: #{alternate_ids.inspect}. Creating new article.")
         article = new_article(doc)
         article.save!
-        # @result_tracker[:successfully_ingested] << {
-        #     ids: {
-        #         pmid: alternate_ids['pmid'],
-        #         pmcid: alternate_ids['pmcid'],
-        #         doi: alternate_ids['doi']
-        #     },
-        #     article: article
-        # }
-        # @result_tracker[:counts][:successfully_attached] += 1
         record_result(
             category: :successfully_ingested,
             ids: alternate_ids,
@@ -179,11 +170,6 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
       Rails.logger.error("[MetadataIngestService] Error processing record: #{alternate_ids.inspect}, Error: #{e.message}")
       Rails.logger.error("Backtrace: #{e.backtrace.join("\n")}")
       article.destroy if article&.persisted?
-    #   @result_tracker[:failed] << {
-    #       ids: alternate_ids,
-    #       message: e.message
-    #   }
-    #   @result_tracker[:counts][:failed] += 1
       record_result(
           category: :failed,
           message: "#{e.message}",
@@ -290,10 +276,6 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
     rescue => e
       LogUtilsHelper.double_log("Failed to flush buffer to file: #{e.message}", :error, tag: 'MetadataIngestService')
       Rails.logger.error("Backtrace: #{e.backtrace.join("\n")}")
-  end
-
-  def generate_cdr_url_for_article(article)
-    "#{ENV['HYRAX_HOST']}#{Rails.application.routes.url_helpers.hyrax_article_path(article, host: ENV['HYRAX_HOST'])}"
   end
 
   def find_best_work_match(alternate_ids)

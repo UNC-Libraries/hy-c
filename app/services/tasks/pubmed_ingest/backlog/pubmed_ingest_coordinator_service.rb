@@ -79,6 +79,7 @@ module Tasks
                 log_and_label_skip(file_name, file_ext, alternate_ids, 'File already attached to work')
               elsif match&.dig(:work_id).present?
                 double_log("Found existing work for #{file_name}: #{match[:work_id]} with no fileset. Attempting to attach PDF.")
+                LogUtilsHelper.double_log("Work Inspection: #{match.inspect}", :info, tag: 'PubmedIngest')
                 path = File.join(@config['file_retrieval_directory'], full_file_name(file_name, file_ext))
                 @pubmed_ingest_service.attach_pdf_for_existing_work(match, path, @depositor_onyen)
                 @pubmed_ingest_service.record_result(
