@@ -184,6 +184,7 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
     LogUtilsHelper.double_log('Finalizing report and sending notification email...', :info, tag: 'send_summary_email')
     begin
       report = Tasks::PubmedIngest::SharedUtilities::PubmedReportingService.generate_report(attachment_results)
+      report[:headers][:total_unique_records] = @tracker['progress']['adjust_id_lists']['pubmed']['adjusted_size'] + @tracker['progress']['adjust_id_lists']['pmc']['adjusted_size']
       PubmedReportMailer.pubmed_report_email(report).deliver_now
       @tracker['progress']['send_summary_email']['completed'] = true
       @tracker.save

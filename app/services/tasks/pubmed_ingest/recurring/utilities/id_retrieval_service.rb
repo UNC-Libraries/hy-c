@@ -1,10 +1,9 @@
 # frozen_string_literal: true
 class Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService
-  def initialize(start_date:, end_date:, tracker:, results:)
+  def initialize(start_date:, end_date:, tracker:)
     @start_date = start_date
     @end_date = end_date
     @tracker = tracker
-    @results = results
   end
 
   def retrieve_ids_within_date_range(output_path:, db:, retmax: 1000)
@@ -155,7 +154,6 @@ class Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService
     write_deduped_records(pubmed_path, deduped_pubmed)
 
     update_tracker_with_adjustment_stats(original_sizes, deduped_pubmed.size, deduped_pmc.size)
-    @results[:headers][:total_unique_records] = deduped_pubmed.size + deduped_pmc.size
     log_adjustment_summary(original_sizes, deduped_pubmed.size, deduped_pmc.size)
   end
 

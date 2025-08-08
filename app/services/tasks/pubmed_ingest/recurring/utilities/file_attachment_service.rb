@@ -87,11 +87,11 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
       if pdf_url.present?
         uri = URI.parse(pdf_url)
         pdf_data = fetch_ftp_binary(uri)
-        attach_pdf_to_work_with_binary!(record, pdf_data)
+        attach_pdf_to_work_with_binary!(record, pdf_data, generate_filename_for_work(record['ids']['work_id'], pmcid))
       elsif tgz_url.present?
         uri = URI.parse(tgz_url)
         tgz_data = fetch_ftp_binary(uri)
-        process_and_attach_tgz_file(record, tgz_data)
+        process_and_attach_tgz_file(record, tgz_data, generate_filename_for_work(record['ids']['work_id'], pmcid))
       end
     rescue => e
       retries += 1
@@ -115,7 +115,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
       ftp.login
       ftp.passive = true
       remote_path = uri.path
-      data = +' '
+      data = +''
       ftp.getbinaryfile(remote_path, nil) { |block| data << block }
       data
     end
