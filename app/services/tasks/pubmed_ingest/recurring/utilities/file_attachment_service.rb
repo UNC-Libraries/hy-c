@@ -47,7 +47,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
 
   def filter_record?(record)
     pmcid = record.dig('ids', 'pmcid')
-    work_id = record.dig('ids', 'article_id')
+    work_id = record.dig('ids', 'work_id')
     # Skip records that have already been processed if resuming
     return true if @existing_ids.include?(pmcid) || @existing_ids.include?(record.dig('ids', 'pmid'))
     if pmcid.blank?
@@ -133,11 +133,11 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
 
   def process_and_attach_tgz_file(record, tgz_binary)
     pmcid = record.dig('ids', 'pmcid')
-    article_id = record.dig('ids', 'article_id')
-    return log_result(record, category: :skipped, message: 'No article ID found to attach TGZ', file_name: 'NONE') if article_id.blank?
+    work_id = record.dig('ids', 'work_id')
+    return log_result(record, category: :skipped, message: 'No article ID found to attach TGZ', file_name: 'NONE') if work_id.blank?
 
     begin
-      work = Article.find(article_id)
+      work = Article.find(work_id)
       depositor = ::User.find_by(uid: 'admin')
       raise 'No depositor found' unless depositor
 

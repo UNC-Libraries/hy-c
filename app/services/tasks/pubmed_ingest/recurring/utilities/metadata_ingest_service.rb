@@ -252,7 +252,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
           pmid: ids['pmid'],
           pmcid: ids['pmcid'],
           doi: ids['doi'],
-          article_id: article&.id
+          work_id: article&.id
         },
         timestamp: Time.now.utc.iso8601,
         category: category
