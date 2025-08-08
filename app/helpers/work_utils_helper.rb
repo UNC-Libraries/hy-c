@@ -4,7 +4,10 @@ module WorkUtilsHelper
     query = "identifier_tesim:\"#{identifier}\" NOT has_model_ssim:(\"FileSet\")"
     work_data = ActiveFedora::SolrService.get(query, rows: 1)['response']['docs'].first || {}
     Rails.logger.warn("No work found associated with alternate identifier: #{identifier}") if work_data.blank?
-    admin_set_name = work_data['admin_set_tesim']&.first
+    # LogUtilsHelper.double_log("Fetched work data for identifier #{identifier}: #{work_data}", :info, tag: 'WorkUtils')
+    # WIP: Temporary hardcoding, broken articles
+    admin_set_name = 'default'
+    # admin_set_name = work_data['admin_set_tesim']&.first
     admin_set_data = admin_set_name ? ActiveFedora::SolrService.get("title_tesim:#{admin_set_name} AND has_model_ssim:(\"AdminSet\")", { :rows => 1, 'df' => 'title_tesim'})['response']['docs'].first : {}
     Rails.logger.warn(self.generate_warning_message(admin_set_name, identifier)) if admin_set_data.blank?
     result = {
@@ -92,8 +95,50 @@ module WorkUtilsHelper
     permissions_array
   end
 
+  def self.generate_cdr_url_for_alternate_id(identifier)
+    generate_cdr_url(identifier: identifier)
+  end
 
-  private_class_method
+  def self.generate_cdr_url_for_work_id(work_id)
+    generate_cdr_url(work_id: work_id)
+  end
+
+  def self.generate_cdr_url(work_id: nil, identifier: nil)
+    raise ArgumentError, 'Provide either work_id or identifier' if work_id.blank? && identifier.blank?
+
+    result =
+      if work_id.present?
+        self.fetch_work_data_by_id(work_id)
+      else
+        self.fetch_work_data_by_alternate_identifier(identifier)
+      end
+
+    if result.blank?
+      return log_and_nil('No Solr record found', work_id: work_id, identifier: identifier)
+    end
+
+    resolved_work_id = result[:work_id].presence || work_id
+    work_type = result[:work_type]
+
+    return log_and_nil('Missing work_id', work_id: resolved_work_id, identifier: identifier) if resolved_work_id.blank?
+    return log_and_nil('Missing work_type', work_id: resolved_work_id, identifier: identifier) if work_type.blank?
+
+    build_cdr_url(work_type, resolved_work_id)
+  rescue StandardError => e
+    Rails.logger.warn("[CDR_URL] Failed (work_id=#{work_id.inspect}, identifier=#{identifier.inspect}): #{e.class}: #{e.message}")
+    nil
+  end
+
+  def self.build_cdr_url(work_type, work_id)
+    host = ENV['HYRAX_HOST'].presence or raise 'HYRAX_HOST not set'
+    model = work_type.to_s.underscore.pluralize
+    URI.join(host, "/concern/#{model}/#{work_id}").to_s
+  end
+
+  def self.log_and_nil(msg, **ctx)
+    Rails.logger.warn("[CDR_URL] #{msg} #{ctx.compact}")
+    nil
+  end
 
   def self.generate_warning_message(admin_set_name, id, concern = :id)
     if admin_set_name.blank?

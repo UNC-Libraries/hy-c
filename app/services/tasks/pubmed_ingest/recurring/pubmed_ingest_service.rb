@@ -463,36 +463,36 @@ module Tasks
             SharedUtilities::AttributeBuilders::PmcAttributeBuilder.new(metadata, article, @admin_set, @depositor.uid)
         end
 
-        def generate_cdr_url_for_pubmed_identifier(skipped_row)
-          identifier = skipped_row['pmcid'] || skipped_row['pmid']
-          raise ArgumentError, 'No identifier (PMCID or PMID) found in row' unless identifier.present?
+        # def generate_cdr_url_for_pubmed_identifier(skipped_row)
+        #   identifier = skipped_row['pmcid'] || skipped_row['pmid']
+        #   raise ArgumentError, 'No identifier (PMCID or PMID) found in row' unless identifier.present?
 
-          result = Hyrax::SolrService.get("identifier_tesim:\"#{identifier}\"",
-                                rows: 1,
-                                fl: 'id,title_tesim,has_model_ssim,file_set_ids_ssim')['response']['docs']
-          raise "No Solr record found for identifier: #{identifier}" if result.empty?
+        #   result = Hyrax::SolrService.get("identifier_tesim:\"#{identifier}\"",
+        #                         rows: 1,
+        #                         fl: 'id,title_tesim,has_model_ssim,file_set_ids_ssim')['response']['docs']
+        #   raise "No Solr record found for identifier: #{identifier}" if result.empty?
 
-          record = result.first
-          raise "Missing `has_model_ssim` in Solr record: #{record.inspect}" unless record['has_model_ssim']&.first.present?
+        #   record = result.first
+        #   raise "Missing `has_model_ssim` in Solr record: #{record.inspect}" unless record['has_model_ssim']&.first.present?
 
-          model = record['has_model_ssim']&.first&.underscore&.pluralize || 'works'
-          URI.join(ENV['HYRAX_HOST'], "/concern/#{model}/#{record['id']}").to_s
-        rescue => e
-          Rails.logger.warn("[generate_cdr_url_for_pubmed_identifier] Failed for identifier: #{identifier}, error: #{e.message}")
-          nil
-        end
+        #   model = record['has_model_ssim']&.first&.underscore&.pluralize || 'works'
+        #   URI.join(ENV['HYRAX_HOST'], "/concern/#{model}/#{record['id']}").to_s
+        # rescue => e
+        #   Rails.logger.warn("[generate_cdr_url_for_pubmed_identifier] Failed for identifier: #{identifier}, error: #{e.message}")
+        #   nil
+        # end
 
-        def generate_cdr_url_for_existing_work(work_id)
-          result = WorkUtilsHelper.fetch_work_data_by_id(work_id)
-          raise "No work found with ID: #{work_id}" if result.nil?
-          raise "Missing work_type for work with id: #{work_id}" unless result[:work_type].present?
+        # def generate_cdr_url_for_existing_work(work_id)
+        #   result = WorkUtilsHelper.fetch_work_data_by_id(work_id)
+        #   raise "No work found with ID: #{work_id}" if result.nil?
+        #   raise "Missing work_type for work with id: #{work_id}" unless result[:work_type].present?
 
-          model = result[:work_type].underscore.pluralize
-          URI.join(ENV['HYRAX_HOST'], "/concern/#{model}/#{work_id}").to_s
-        rescue => e
-          Rails.logger.warn("[generate_cdr_url_for_existing_work] Failed for work with id: #{work_id}, error: #{e.message}")
-          nil
-        end
+        #   model = result[:work_type].underscore.pluralize
+        #   URI.join(ENV['HYRAX_HOST'], "/concern/#{model}/#{work_id}").to_s
+        # rescue => e
+        #   Rails.logger.warn("[generate_cdr_url_for_existing_work] Failed for work with id: #{work_id}, error: #{e.message}")
+        #   nil
+        # end
 
         def add_to_pubmed_id_list(parsed_response)
           ids = parsed_response.xpath('//IdList/Id').map(&:text)
