@@ -103,8 +103,7 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
     id_retrieval_service = Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService.new(
       start_date: @config['start_date'],
       end_date: @config['end_date'],
-      tracker: @tracker,
-      results: @results
+      tracker: @tracker
     )
     ['pubmed', 'pmc'].each do |db|
       completed = @tracker['progress']['retrieve_ids_within_date_range'][db]['completed']
