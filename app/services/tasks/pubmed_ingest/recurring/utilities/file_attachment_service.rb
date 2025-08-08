@@ -15,10 +15,11 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
     @config = config
     @tracker = tracker
     @output_path = output_path
-    @full_text_path = full_text_path
+    @full_text_path = File.join(full_text_path, "full_text_for_pubmed_ingest_#{Time.now.strftime('%Y%m%d%H%M%S')}")
     @metadata_ingest_result_path = metadata_ingest_result_path
     @existing_ids = load_existing_attachment_ids
     @records = load_records_to_attach
+    FileUtils.mkdir_p(@full_text_path) unless Dir.exist?(@full_text_path)
   end
 
   def run
