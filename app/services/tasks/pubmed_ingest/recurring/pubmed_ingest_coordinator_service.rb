@@ -13,7 +13,7 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
       successfully_ingested: [],
       headers: {
         total_unique_records: 0
-      }
+      },
       failed: [],
       time: Time.now,
       depositor: config['depositor_onyen'],
