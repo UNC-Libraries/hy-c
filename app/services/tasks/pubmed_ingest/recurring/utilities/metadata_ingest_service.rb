@@ -204,6 +204,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
     article.visibility = Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
     builder = attribute_builder(metadata, article)
     builder.populate_article_metadata
+    article
   end
 
 
@@ -268,11 +269,10 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
   end
 
   def flush_buffer_to_file
-    File.open(@results_path, 'a') do |file|
-      @write_buffer.each { |entry| file.puts(JSON.generate(entry)) }
-    end
-    LogUtilsHelper.double_log("Flushed #{@write_buffer.size} entries to #{@results_path}", :info, tag: 'MetadataIngestService')
+    entries = @write_buffer.dup
+    File.open(@results_path, 'a') { |file| entries.each { |entry| file.puts(entry.to_json) } }
     @write_buffer.clear
+    LogUtilsHelper.double_log("Flushed #{@write_buffer.size} entries to #{@results_path}", :info, tag: 'MetadataIngestService')
     rescue => e
       LogUtilsHelper.double_log("Failed to flush buffer to file: #{e.message}", :error, tag: 'MetadataIngestService')
       Rails.logger.error("Backtrace: #{e.backtrace.join("\n")}")
