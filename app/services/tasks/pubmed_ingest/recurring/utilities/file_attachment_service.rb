@@ -19,7 +19,6 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
     @metadata_ingest_result_path = metadata_ingest_result_path
     @existing_ids = load_existing_attachment_ids
     @records = load_records_to_attach
-    FileUtils.mkdir_p(@full_text_path) unless Dir.exist?(@full_text_path)
   end
 
   def run
@@ -67,7 +66,8 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
 
   def has_fileset?(work_id)
     work = WorkUtilsHelper.fetch_work_data_by_id(work_id)
-    work && work[:file_set_ids]&.any?
+    return false if work.nil?
+    work[:file_set_ids]&.any?
   end
 
   def process_record(record)
@@ -87,11 +87,12 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
       if pdf_url.present?
         uri = URI.parse(pdf_url)
         pdf_data = fetch_ftp_binary(uri)
-        attach_pdf_to_work_with_binary!(record, pdf_data, generate_filename_for_work(record['ids']['work_id'], pmcid))
+        filename = generate_filename_for_work(record.dig('ids', 'work_id'), pmcid)
+        attach_pdf_to_work_with_binary!(record, pdf_data, filename)
       elsif tgz_url.present?
         uri = URI.parse(tgz_url)
         tgz_data = fetch_ftp_binary(uri)
-        process_and_attach_tgz_file(record, tgz_data, generate_filename_for_work(record['ids']['work_id'], pmcid))
+        process_and_attach_tgz_file(record, tgz_data)
       end
     rescue => e
       retries += 1
@@ -115,6 +116,8 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
       ftp.login
       ftp.passive = true
       remote_path = uri.path
+      # Normalize remote path to ensure it starts with a slash
+      remote_path = "/#{remote_path}" unless remote_path.start_with?('/')
       data = +''
       ftp.getbinaryfile(remote_path, nil) { |block| data << block }
       data
