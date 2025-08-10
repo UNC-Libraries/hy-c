@@ -80,7 +80,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService
         end
         buffer << identifier
         if buffer.size >= batch_size
-          write_batch_alternate_ids(ids: buffer, db: db, output_file: output_file)
+          write_batch_alternate_ids(ids: buffer.dup, db: db, output_file: output_file)
           # Save after batch write
           job_progress['cursor'] += buffer.size
           @tracker.save
@@ -89,7 +89,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService
         end
       end
       unless buffer.empty?
-        write_batch_alternate_ids(ids: buffer, db: db, output_file: output_file)
+        write_batch_alternate_ids(ids: buffer.dup, db: db, output_file: output_file)
         # Update tracker progress, clear buffer and increment cursor
         job_progress['cursor'] += buffer.size
         @tracker.save
@@ -105,7 +105,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService
     full_url = "#{base_url}?#{query_string}"
 
     res = HTTParty.get(full_url)
-    Rails.logger.debug("Response code: #{res.code}, message: #{res.message}, URL: #{full_url}")
+    Rails.logger.debug("Response code: #{res.code}, URL: #{full_url}")
 
     xml = Nokogiri::XML(res.body)
     xml.xpath('//record').each do |record|
