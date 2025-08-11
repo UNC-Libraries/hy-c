@@ -159,7 +159,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService 
     context 'when no existing records found' do
       it 'loads all records' do
         service.load_alternate_ids_from_file(path: test_path)
-        
+
         record_ids = service.instance_variable_get(:@record_ids)
         expect(record_ids.size).to eq(2)
         expect(record_ids.first['pmid']).to eq('123456')
@@ -173,7 +173,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService 
 
       it 'skips existing records' do
         service.load_alternate_ids_from_file(path: test_path)
-        
+
         record_ids = service.instance_variable_get(:@record_ids)
         expect(record_ids.size).to eq(1)
         expect(record_ids.first['pmid']).to eq('234567')
@@ -192,7 +192,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService 
 
       it 'skips existing works and records result' do
         service.load_alternate_ids_from_file(path: test_path)
-        
+
         expect(service).to have_received(:record_result).with(
           category: :skipped,
           message: 'Pre-filtered: work exists',
@@ -222,7 +222,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService 
     context 'with PubMed database' do
       it 'fetches metadata and processes batches' do
         service.batch_retrieve_and_process_metadata(batch_size: 2, db: 'pubmed')
-        
+
         expect(HTTParty).to have_received(:get).with(
           'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=123456,234567&retmode=xml&tool=CDR&email=cdr@unc.edu'
         )
@@ -239,7 +239,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService 
 
       it 'fetches PMC metadata and strips PMC prefix from IDs' do
         service.batch_retrieve_and_process_metadata(batch_size: 2, db: 'pmc')
-        
+
         expect(HTTParty).to have_received(:get).with(
           'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pmc&id=789012,890123&retmode=xml&tool=CDR&email=cdr@unc.edu'
         )
@@ -255,7 +255,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService 
 
       it 'logs error and continues processing' do
         service.batch_retrieve_and_process_metadata(batch_size: 2, db: 'pubmed')
-        
+
         expect(Rails.logger).to have_received(:error).with(/Failed to fetch for IDs/)
       end
     end
@@ -267,7 +267,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService 
 
       it 'returns early without processing' do
         service.batch_retrieve_and_process_metadata(batch_size: 2, db: 'pubmed')
-        
+
         expect(HTTParty).not_to have_received(:get)
       end
     end
@@ -283,7 +283,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService 
 
     it 'logs PMC errors and moves alternate IDs to PubMed file' do
       service.send(:handle_pmc_errors, error_xml_doc)
-      
+
       expect(Rails.logger).to have_received(:warn).with(/PMC error for PMC789012/)
       expect(service).to have_received(:move_to_pubmed_alternate_ids_file)
     end
@@ -299,7 +299,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService 
 
     it 'identifies missing IDs and records failures' do
       service.send(:handle_pubmed_errors, pubmed_xml_doc, requested_ids)
-      
+
       expect(service).to have_received(:record_result).with(
         category: :failed,
         message: 'EFetch: PubMed record not found',
@@ -324,7 +324,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService 
     context 'when work does not exist' do
       it 'creates new article and records success' do
         service.send(:process_batch, batch_articles)
-        
+
         expect(service).to have_received(:new_article).with(batch_articles.first)
         expect(mock_article).to have_received(:save!)
         expect(service).to have_received(:record_result).with(
@@ -348,7 +348,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService 
 
       it 'skips creation and records skip' do
         service.send(:process_batch, batch_articles)
-        
+
         expect(service).not_to have_received(:new_article)
         expect(service).to have_received(:record_result).with(
           category: :skipped,
@@ -366,7 +366,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService 
 
       it 'destroys article and records failure' do
         service.send(:process_batch, batch_articles)
-        
+
         expect(mock_article).to have_received(:destroy)
         expect(service).to have_received(:record_result).with(
           category: :failed,
@@ -392,7 +392,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService 
     context 'with PubMed document' do
       it 'extracts PubMed IDs and finds matching record' do
         result = service.send(:retrieve_alternate_ids_for_doc, pubmed_article)
-        
+
         expect(result).to eq({ 'pmid' => '123456', 'pmcid' => 'PMC789012' })
       end
     end
@@ -400,7 +400,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService 
     context 'with PMC document' do
       it 'extracts PMC IDs and finds matching record' do
         result = service.send(:retrieve_alternate_ids_for_doc, pmc_article)
-        
+
         expect(result).to eq({ 'pmid' => '123456', 'pmcid' => 'PMC789012' })
       end
     end
@@ -412,7 +412,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService 
 
       it 'logs error and returns nil' do
         result = service.send(:retrieve_alternate_ids_for_doc, pubmed_article)
-        
+
         expect(Rails.logger).to have_received(:error).with(/Error retrieving alternate IDs/)
         expect(result).to be_nil
       end
@@ -432,7 +432,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService 
 
     it 'creates new article with private visibility' do
       result = service.send(:new_article, pubmed_article)
-      
+
       expect(Article).to have_received(:new)
       expect(mock_article).to have_received(:visibility=).with(
         Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE
@@ -474,7 +474,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService 
 
     it 'returns PubMed builder for PubMed documents' do
       result = service.send(:attribute_builder, pubmed_doc, mock_article)
-      
+
       expect(Tasks::PubmedIngest::SharedUtilities::AttributeBuilders::PubmedAttributeBuilder)
         .to have_received(:new).with(pubmed_doc, mock_article, mock_admin_set, 'test_user')
       expect(result).to eq(mock_pubmed_builder)
@@ -482,7 +482,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService 
 
     it 'returns PMC builder for PMC documents' do
       result = service.send(:attribute_builder, pmc_doc, mock_article)
-      
+
       expect(Tasks::PubmedIngest::SharedUtilities::AttributeBuilders::PmcAttributeBuilder)
         .to have_received(:new).with(pmc_doc, mock_article, mock_admin_set, 'test_user')
       expect(result).to eq(mock_pmc_builder)
@@ -499,7 +499,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService 
     end
 
     it 'adds entry to write buffer with correct format' do
-      service.send(:record_result, 
+      service.send(:record_result,
         category: :successfully_ingested,
         message: 'Success',
         ids: ids,
@@ -508,7 +508,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService 
 
       buffer = service.instance_variable_get(:@write_buffer)
       expect(buffer.size).to eq(1)
-      
+
       entry = buffer.first
       expect(entry[:ids][:pmid]).to eq('123456')
       expect(entry[:ids][:pmcid]).to eq('PMC789012')
@@ -536,7 +536,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService 
 
     it 'writes buffer entries to file and clears buffer' do
       service.send(:flush_buffer_to_file)
-      
+
       expect(mock_file).to have_received(:puts).with(buffer_entries[0].to_json)
       expect(mock_file).to have_received(:puts).with(buffer_entries[1].to_json)
       expect(service.instance_variable_get(:@write_buffer)).to be_empty
@@ -549,7 +549,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService 
 
       it 'logs error' do
         service.send(:flush_buffer_to_file)
-        
+
         expect(LogUtilsHelper).to have_received(:double_log).with(
           'Failed to flush buffer to file: Write failed',
           :error,
@@ -615,7 +615,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService 
 
     it 'writes results as pretty JSON' do
       service.send(:save_results_json, path: test_path)
-      
+
       expect(mock_file).to have_received(:puts).with(JSON.pretty_generate(results))
       expect(LogUtilsHelper).to have_received(:double_log).with(
         'Results JSON updated successfully.',
@@ -631,7 +631,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService 
 
       it 'logs error' do
         service.send(:save_results_json, path: test_path)
-        
+
         expect(LogUtilsHelper).to have_received(:double_log).with(
           'Failed to update results JSON: Write failed',
           :error,

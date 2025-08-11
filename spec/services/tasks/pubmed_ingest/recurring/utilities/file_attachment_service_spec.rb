@@ -130,7 +130,6 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
     context 'when record has already been processed' do
       before do
         service.instance_variable_set(:@existing_ids, Set.new(['PMC123456']))
-        # allow(service).to receive(:instance_variable_get).with(:@existing_ids).and_return(Set.new(['PMC123456']))
       end
 
       it 'returns true' do

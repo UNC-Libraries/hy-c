@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
-    let(:config) do 
+  let(:config) do
     {
         'depositor_onyen' => 'test_user',
         'output_dir'      => '/tmp/test_output',
@@ -13,41 +13,41 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
         'end_date'        => Date.parse('2024-01-31'),
         'time'            => Time.now,
     }
-    end
+  end
   let(:tracker) do
     data = {
-      'start_time'   => config['time'].strftime('%Y-%m-%d %H:%M:%S'),
-      'restart_time' => nil,
-      'date_range'   => {
-        'start' => config['start_date'].strftime('%Y-%m-%d'),
-        'end'   => config['end_date'].strftime('%Y-%m-%d')
-      },
-      'admin_set_title' => config['admin_set_title'],
-      'depositor_onyen' => config['depositor_onyen'],
-      'output_dir'      => config['output_dir'],
-      'full_text_dir'   => config['full_text_dir'],
-      'progress' => {
-        'retrieve_ids_within_date_range' => {
-          'pubmed' => { 'cursor' => 0, 'completed' => false },
-          'pmc'    => { 'cursor' => 0, 'completed' => false }
+        'start_time'   => config['time'].strftime('%Y-%m-%d %H:%M:%S'),
+        'restart_time' => nil,
+        'date_range'   => {
+          'start' => config['start_date'].strftime('%Y-%m-%d'),
+          'end'   => config['end_date'].strftime('%Y-%m-%d')
         },
-        'stream_and_write_alternate_ids' => {
-          'pubmed' => { 'cursor' => 0, 'completed' => false },
-          'pmc'    => { 'cursor' => 0, 'completed' => false }
-        },
-        'adjust_id_lists' => {
-          'completed' => false,
-          'pubmed' => { 'original_size' => 0, 'adjusted_size' => 0 },
-          'pmc'    => { 'original_size' => 0, 'adjusted_size' => 0 }
-        },
-        'metadata_ingest' => {
-          'pubmed' => { 'cursor' => 0, 'completed' => false },
-          'pmc'    => { 'cursor' => 0, 'completed' => false }
-        },
-        'attach_files_to_works' => { 'completed' => false },
-        'send_summary_email'    => { 'completed' => false }
+        'admin_set_title' => config['admin_set_title'],
+        'depositor_onyen' => config['depositor_onyen'],
+        'output_dir'      => config['output_dir'],
+        'full_text_dir'   => config['full_text_dir'],
+        'progress' => {
+          'retrieve_ids_within_date_range' => {
+            'pubmed' => { 'cursor' => 0, 'completed' => false },
+            'pmc'    => { 'cursor' => 0, 'completed' => false }
+          },
+          'stream_and_write_alternate_ids' => {
+            'pubmed' => { 'cursor' => 0, 'completed' => false },
+            'pmc'    => { 'cursor' => 0, 'completed' => false }
+          },
+          'adjust_id_lists' => {
+            'completed' => false,
+            'pubmed' => { 'original_size' => 0, 'adjusted_size' => 0 },
+            'pmc'    => { 'original_size' => 0, 'adjusted_size' => 0 }
+          },
+          'metadata_ingest' => {
+            'pubmed' => { 'cursor' => 0, 'completed' => false },
+            'pmc'    => { 'cursor' => 0, 'completed' => false }
+          },
+          'attach_files_to_works' => { 'completed' => false },
+          'send_summary_email'    => { 'completed' => false }
+        }
       }
-    }
 
     obj = Object.new
     obj.define_singleton_method(:[])   { |k| data[k] }
@@ -55,7 +55,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
     obj.define_singleton_method(:save) { true }   # no-op for tests
     obj.define_singleton_method(:to_h) { data }
     obj
-    end
+  end
 
 
   let(:service) { described_class.new(config, tracker) }
@@ -85,7 +85,6 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
       .to receive(:new).and_return(mock_metadata_ingest_service)
     allow(Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService)
       .to receive(:new).and_return(mock_file_attachment_service)
-    
 
     allow(Tasks::PubmedIngest::SharedUtilities::PubmedReportingService)
     .to receive(:generate_report)
@@ -325,7 +324,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
     it 'logs step completion' do
       service.send(:build_id_lists)
 
-     expected_dir = service.instance_variable_get(:@id_list_output_directory)
+      expected_dir = service.instance_variable_get(:@id_list_output_directory)
       expect(LogUtilsHelper).to have_received(:double_log).with(
         "ID lists built successfully. Output directory: #{expected_dir}",
         :info,
@@ -402,15 +401,15 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
       service.send(:load_and_ingest_metadata)
 
       expect(LogUtilsHelper).to have_received(:double_log).with(
-        "Metadata ingest for pubmed completed successfully.",
+        'Metadata ingest for pubmed completed successfully.',
         :info,
         tag: 'load_and_ingest_metadata'
      )
-     expect(LogUtilsHelper).to have_received(:double_log).with(
-        "Metadata ingest for pmc completed successfully.",
-        :info,
-        tag: 'load_and_ingest_metadata'
-    )
+      expect(LogUtilsHelper).to have_received(:double_log).with(
+         'Metadata ingest for pmc completed successfully.',
+         :info,
+         tag: 'load_and_ingest_metadata'
+     )
     end
 
     context 'when metadata service raises an error' do
@@ -475,7 +474,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
       service.send(:attach_files)
 
       expect(LogUtilsHelper).to have_received(:double_log).with(
-        'File attachment completed.',
+        'File attachment process completed.',
         :info,
         tag: 'attach_files'
       )
@@ -810,6 +809,203 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
       expect(mock_metadata_ingest_service).to have_received(:batch_retrieve_and_process_metadata).twice
 
       expect(mock_file_attachment_service).to have_received(:run)
+    end
+  end
+
+  describe 'class methods' do
+    let(:now) { Time.utc(2024, 1, 2, 3, 4, 5) }
+
+    before do
+      allow(Time).to receive(:now).and_return(now)
+      allow(FileUtils).to receive(:mkdir_p)
+      allow(Rails).to receive(:root).and_return(Pathname.new('/app'))
+      allow(LogUtilsHelper).to receive(:double_log)
+    end
+
+    describe '.resolve_output_dir' do
+      it 'builds a timestamped path under an absolute base' do
+        dir = described_class.send(:resolve_output_dir, '/var/out', now)
+        expect(dir.to_s).to match(%r{^/var/out/pubmed_ingest_2024-01-02_03-04-05$})
+      end
+
+      it 'builds under Rails.root for a relative base' do
+        dir = described_class.send(:resolve_output_dir, 'relative/out', now)
+        expect(dir.to_s).to match(%r{^/app/relative/out/pubmed_ingest_2024-01-02_03-04-05$})
+      end
+
+      it 'falls back to tmp when blank' do
+        dir = described_class.send(:resolve_output_dir, nil, now)
+        expect(dir.to_s).to eq('/app/tmp/pubmed_ingest_2024-01-02_03-04-05')
+        expect(LogUtilsHelper).to have_received(:double_log).with(
+            'No output directory specified. Using default tmp directory.', :info, tag: 'PubMed Ingest'
+        )
+      end
+    end
+
+    describe '.resolve_full_text_dir' do
+      let(:output_dir) { Pathname.new('/var/out/pubmed_ingest_2024-01-02_03-04-05') }
+
+      it 'returns provided absolute dir' do
+        dir = described_class.send(:resolve_full_text_dir, '/data/pdfs', output_dir, now)
+        expect(dir.to_s).to eq('/data/pdfs')
+      end
+
+      it 'resolves provided relative dir under Rails.root' do
+        dir = described_class.send(:resolve_full_text_dir, 'data/pdfs', output_dir, now)
+        expect(dir.to_s).to eq('/app/data/pdfs')
+      end
+
+      it 'builds a default timestamped dir when blank' do
+        dir = described_class.send(:resolve_full_text_dir, nil, output_dir, now)
+        expect(dir.to_s).to eq('/var/out/pubmed_ingest_2024-01-02_03-04-05/full_text_pdfs_2024-01-02_03-04-05')
+        expect(LogUtilsHelper).to have_received(:double_log).with(
+            a_string_including('No full-text directory specified. Using default:'), :info, tag: 'PubMed Ingest'
+        )
+      end
+    end
+
+    describe '.write_intro_banner' do
+      let(:cfg) do
+        {
+            'time' => now,
+            'output_dir' => '/var/out/x',
+            'depositor_onyen' => 'admin',
+            'admin_set_title' => 'default',
+            'start_date' => Date.parse('2024-01-01'),
+            'end_date' => Date.parse('2024-01-31')
+        }
+      end
+
+      it 'prints banner lines and logs them' do
+        allow(Rails.logger).to receive(:info)
+        expect {
+        described_class.send(:write_intro_banner, config: cfg)
+        }.to output(/Start Time: 2024-01-02 03:04:05/).to_stdout
+
+        expect(Rails.logger).to have_received(:info).with(a_string_matching(/PubMed Ingest/)).at_least(:once)
+      end
+    end
+
+    describe '.build_pubmed_ingest_config_and_tracker' do
+      let(:tracker_double) do
+      # minimal tracker responding to [] for resume case
+        obj = Object.new
+        data = { 'full_text_dir' => '/persisted/full_text' }
+        obj.define_singleton_method(:[]) { |k| data[k] }
+        obj
+      end
+
+      context 'new run (resume: false)' do
+        let(:args) do
+          {
+          resume: false,
+          output_dir: '/var/out',
+          full_text_dir: nil,
+          start_date: '2024-01-01',
+          end_date: '2024-01-31',
+          admin_set_title: 'default',
+          depositor_onyen: 'someone'
+          }
+        end
+
+        before do
+          admin_set_rel = double('rel', first: double('admin_set'))
+          allow(AdminSet).to receive(:where).with(title_tesim: 'default').and_return(admin_set_rel)
+
+          allow(Tasks::PubmedIngest::SharedUtilities::IngestTracker)
+          .to receive(:build)
+          .and_return(tracker_double)
+        end
+
+        it 'returns a config with parsed dates and creates directories' do
+          config, tracker = described_class.build_pubmed_ingest_config_and_tracker(args: args)
+
+          expect(config['start_date']).to eq(Date.parse('2024-01-01'))
+          expect(config['end_date']).to   eq(Date.parse('2024-01-31'))
+          expect(config['depositor_onyen']).to eq('someone')
+          expect(config['output_dir']).to match(%r{^/var/out/pubmed_ingest_2024-01-02_03-04-05$})
+          expect(config['full_text_dir']).to match(%r{/full_text_pdfs_2024-01-02_03-04-05$})
+          expect(tracker).to eq(tracker_double)
+
+            # created base + subdirs + full text
+          expect(FileUtils).to have_received(:mkdir_p).with(Pathname.new(config['output_dir']))
+          %w[01_build_id_lists 02_load_and_ingest_metadata 03_attach_files_to_works].each do |sub|
+            expect(FileUtils).to have_received(:mkdir_p).with(Pathname.new(config['output_dir']).join(sub))
+          end
+          expect(FileUtils).to have_received(:mkdir_p).with(Pathname.new(config['full_text_dir']))
+        end
+      end
+
+      context 'resume: true' do
+        let(:args) do
+          {
+          resume: true,
+          output_dir: '/var/out/existing',
+          depositor_onyen: nil
+          }
+        end
+
+        it 'loads tracker and carries forward full_text_dir' do
+            # Pretend tracker file exists
+          allow_any_instance_of(Pathname).to receive(:exist?).and_return(true)
+
+          allow(Tasks::PubmedIngest::SharedUtilities::IngestTracker)
+          .to receive(:build)
+          .with(config: hash_including('output_dir' => '/var/out/existing', 'restart_time' => now), resume: true)
+          .and_return(tracker_double)
+
+          config, tracker = described_class.build_pubmed_ingest_config_and_tracker(args: args)
+
+          expect(config['output_dir']).to eq('/var/out/existing')
+          expect(config['full_text_dir']).to eq('/persisted/full_text')
+          expect(tracker).to eq(tracker_double)
+        end
+      end
+
+      context 'validation errors' do
+        it 'exits when output_dir is blank' do
+          expect {
+            described_class.build_pubmed_ingest_config_and_tracker(args: { resume: false, output_dir: nil })
+          }.to raise_error(SystemExit)
+        end
+
+        it 'exits when required args are missing' do
+          expect {
+            described_class.build_pubmed_ingest_config_and_tracker(args: {
+                resume: false, output_dir: '/var/out',
+                start_date: nil, end_date: '2024-01-31', admin_set_title: 'default'
+            })
+          }.to raise_error(SystemExit)
+        end
+
+        it 'exits on invalid date' do
+          expect {
+            described_class.build_pubmed_ingest_config_and_tracker(args: {
+                resume: false, output_dir: '/var/out',
+                start_date: 'bogus', end_date: '2024-01-31', admin_set_title: 'default'
+            })
+          }.to raise_error(SystemExit)
+        end
+
+        it 'exits when admin set is not found' do
+          allow(AdminSet).to receive(:where).and_return(double('rel', first: nil))
+          expect {
+            described_class.build_pubmed_ingest_config_and_tracker(args: {
+                resume: false, output_dir: '/var/out',
+                start_date: '2024-01-01', end_date: '2024-01-31', admin_set_title: 'missing'
+            })
+          }.to raise_error(SystemExit)
+        end
+
+        it 'exits when resume tracker is missing' do
+          allow_any_instance_of(Pathname).to receive(:exist?).and_return(false)
+          expect {
+            described_class.build_pubmed_ingest_config_and_tracker(args: {
+                resume: true, output_dir: '/var/out/existing'
+            })
+          }.to raise_error(SystemExit)
+        end
+      end
     end
   end
 end

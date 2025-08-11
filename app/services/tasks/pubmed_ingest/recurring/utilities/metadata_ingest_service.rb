@@ -79,13 +79,12 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
       process_batch(current_batch)
 
       batch_count += 1
-        #Respect NCBI rate limits
+      # Respect NCBI rate limits
       sleep(0.34)
     end
 
     # Flush any remaining write buffer to file
     flush_buffer_to_file unless @write_buffer.empty?
-    # Rails.logger.info("[batch_retrieve_and_process_metadata] Completed processing #{@record_ids.size} #{db} records.")
     LogUtilsHelper.double_log("Completed batch retrieval and processing for #{db}.", :info, tag: 'MetadataIngestService')
   end
 
@@ -107,18 +106,15 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
       File.open(File.join(@output_dir, 'pubmed_alternate_ids.jsonl'), 'a') do |file|
         file.puts(alternate_ids)
       end
-      # Rails.logger.info("[MetadataIngestService] Moved #{alternate_ids.size} alternate IDs" \
-      #                     'to pubmed_alternate_ids.jsonl')
       LogUtilsHelper.double_log("Moved alternate IDs to pubmed_alternate_ids.jsonl: #{alternate_ids}", :info, tag: 'MetadataIngestService')
       rescue => e
-        # Rails.logger.error("[MetadataIngestService] Error writing to pubmed_alternate_ids.jsonl: #{e.message}")
         LogUtilsHelper.double_log("Error writing to pubmed_alternate_ids.jsonl: #{e.message}", :error, tag: 'MetadataIngestService')
         Rails.logger.error("Backtrace: #{e.backtrace.join("\n")}")
     end
   end
 
 
-  # efetch doesn't return metadata for ids which have errors, handling it differently
+  # Efetch doesn't return metadata for ids which have errors. Retrieve the ids that were returned and log the missing ones as failed.
   def handle_pubmed_errors(xml_doc, ids)
     returned_ids = xml_doc.xpath('//PubmedArticle').map do |article|
       article.at_xpath('.//PMID')&.text
@@ -127,7 +123,6 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
     missing_ids = ids.reject { |id| returned_ids.include?(id) }
 
     unless missing_ids.empty?
-      # Rails.logger.warn("[MetadataIngestService] PubMed EFetch missing #{missing_ids.size} of #{ids.size} IDs: #{missing_ids.first(10)}...")
       LogUtilsHelper.double_log("PubMed EFetch missing #{missing_ids.size} of #{ids.size} IDs: #{missing_ids.first(10)}...", :warn, tag: 'MetadataIngestService')
       missing_ids.each do |missing_id|
         record_result(

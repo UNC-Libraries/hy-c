@@ -54,7 +54,7 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
     LogUtilsHelper.double_log('PubMed ingest workflow completed successfully.', :info, tag: 'PubmedIngestCoordinator')
     rescue => e
       LogUtilsHelper.double_log("PubMed ingest workflow failed: #{e.message}", :error, tag: 'PubmedIngestCoordinator')
-      raise "PubMed ingest workflow failed: #{e.message}"
+      raise e
   end
 
   private
@@ -64,18 +64,24 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
       LogUtilsHelper.double_log('Skipping file attachment as it is already completed.', :info, tag: 'attach_files')
       return
     end
+    begin
+      LogUtilsHelper.double_log('Starting file attachment process...', :info, tag: 'attach_files')
+      file_attachment_service = Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService.new(
+        config: @config,
+        tracker: @tracker,
+        output_path: @attachment_output_directory,
+        full_text_path: @config['full_text_dir'],
+        metadata_ingest_result_path: File.join(@metadata_ingest_output_directory, 'metadata_ingest_results.jsonl'),
+      )
+      file_attachment_service.run
+      @tracker['progress']['attach_files_to_works']['completed'] = true
+      @tracker.save
 
-    LogUtilsHelper.double_log('Starting file attachment process...', :info, tag: 'attach_files')
-    file_attachment_service = Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService.new(
-      config: @config,
-      tracker: @tracker,
-      output_path: @attachment_output_directory,
-      full_text_path: @config['full_text_dir'],
-      metadata_ingest_result_path: File.join(@metadata_ingest_output_directory, 'metadata_ingest_results.jsonl'),
-    )
-    file_attachment_service.run
-    @tracker['progress']['attach_files_to_works']['completed'] = true
-    @tracker.save
+    rescue => e
+      LogUtilsHelper.double_log("File attachment failed: #{e.message}", :error, tag: 'attach_files') # << log exact format
+      raise e
+    end
+    LogUtilsHelper.double_log('File attachment process completed.', :info, tag: 'attach_files')
   end
 
   def load_and_ingest_metadata
@@ -91,14 +97,14 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
         next
       end
       begin
-      md_ingest_service.load_alternate_ids_from_file(path: File.join(@id_list_output_directory, "#{db}_alternate_ids.jsonl"))
-      # WIP: Temporarily limit number of batches for testing
-      md_ingest_service.batch_retrieve_and_process_metadata(batch_size: 3, db: db)
-      @tracker['progress']['metadata_ingest'][db]['completed'] = true
-      @tracker.save
-      rescue => e
-        LogUtilsHelper.double_log("Metadata ingest failed: #{e.message}", :error, tag: 'load_and_ingest_metadata')
-        raise e
+        md_ingest_service.load_alternate_ids_from_file(path: File.join(@id_list_output_directory, "#{db}_alternate_ids.jsonl"))
+        # WIP: Temporarily limit number of batches for testing
+        md_ingest_service.batch_retrieve_and_process_metadata(batch_size: 3, db: db)
+        @tracker['progress']['metadata_ingest'][db]['completed'] = true
+        @tracker.save
+        rescue => e
+          LogUtilsHelper.double_log("Metadata ingest failed: #{e.message}", :error, tag: 'load_and_ingest_metadata')
+          raise e
       end
 
       LogUtilsHelper.double_log("Metadata ingest for #{db} completed successfully.", :info, tag: 'load_and_ingest_metadata')
@@ -216,7 +222,7 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
     end
   end
 
-    def self.build_pubmed_ingest_config_and_tracker(args:)
+  def self.build_pubmed_ingest_config_and_tracker(args:)
     depositor        = args[:depositor_onyen].presence || 'admin'
     resume_flag      = ActiveModel::Type::Boolean.new.cast(args[:resume])
     raw_output_dir   = args[:output_dir]
