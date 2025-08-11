@@ -52,7 +52,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
   end
 
 
-  def batch_retrieve_and_process_metadata(batch_size: 100, db:)
+  def batch_retrieve_and_process_metadata(batch_size: 200, db:)
     LogUtilsHelper.double_log("Starting batch retrieval and processing for #{db} with batch size #{batch_size}", :info, tag: 'MetadataIngestService')
     return if @record_ids.nil? || @record_ids.empty?
     number_of_batches = (@record_ids.size / batch_size.to_f).ceil

@@ -241,13 +241,11 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
 
       expect(mock_id_retrieval_service).to have_received(:retrieve_ids_within_date_range).with(
         output_path: '/tmp/test_output/01_build_id_lists/pubmed_ids.jsonl',
-        db: 'pubmed',
-        retmax: 5
+        db: 'pubmed'
       )
       expect(mock_id_retrieval_service).to have_received(:retrieve_ids_within_date_range).with(
         output_path: '/tmp/test_output/01_build_id_lists/pmc_ids.jsonl',
-        db: 'pmc',
-        retmax: 5
+        db: 'pmc'
       )
     end
 
@@ -353,7 +351,6 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
         path: '/tmp/test_output/01_build_id_lists/pubmed_alternate_ids.jsonl'
       )
       expect(mock_metadata_ingest_service).to have_received(:batch_retrieve_and_process_metadata).with(
-        batch_size: 3,
         db: 'pubmed'
       )
 
@@ -361,7 +358,6 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
         path: '/tmp/test_output/01_build_id_lists/pmc_alternate_ids.jsonl'
       )
       expect(mock_metadata_ingest_service).to have_received(:batch_retrieve_and_process_metadata).with(
-        batch_size: 3,
         db: 'pmc'
       )
     end

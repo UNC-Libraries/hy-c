@@ -6,7 +6,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService
     @tracker = tracker
   end
 
-  def retrieve_ids_within_date_range(output_path:, db:, retmax: 1000)
+  def retrieve_ids_within_date_range(output_path:, db:, retmax: 500)
     # Rails.logger.info("[retrieve_ids_within_date_range] Fetching IDs within date range: #{@start_date.strftime('%Y-%m-%d')} - #{@end_date.strftime('%Y-%m-%d')} for #{db} database")
     LogUtilsHelper.double_log("Fetching IDs within date range: #{@start_date.strftime('%Y-%m-%d')} - #{@end_date.strftime('%Y-%m-%d')} for #{db} database", :info, tag: 'retrieve_ids_within_date_range')
     base_url = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi'

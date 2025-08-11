@@ -47,17 +47,18 @@ module Tasks
           Rails.logger.debug("Calling create_metadata for FileSet #{file_set.id}")
           actor.create_metadata(file_set_params)
 
-          # LogUtilsHelper.double_log("Calling create_content for FileSet #{file_set.id}", :info, tag: 'FileSetAttach')
-          attach_file_content(file_set: file_set, user: user, file: file)
-          # LogUtilsHelper.double_log("Attaching FileSet #{file_set.id} to work #{work.id}", :info, tag: 'FileSetAttach')
           Rails.logger.debug("Attaching FileSet #{file_set.id} to work #{work.id}")
           actor.attach_to_work(work, file_set_params)
+
+          Rails.logger.debug("Calling create_content for FileSet #{file_set.id} with file #{file.path}")
+          actor.create_content(file)
 
           file_set.permissions_attributes = group_permissions(work.admin_set)
           file_set.save!
 
-          # LogUtilsHelper.double_log("Successfully attached FileSet #{file_set.id} to work #{work.id}", :info, tag: 'FileSetAttach')
           Rails.logger.info("Successfully attached FileSet #{file_set.id} to work #{work.id}")
+          file_set.label = File.basename(file_path)
+          file_set.title = [File.basename(file_path)]
           file_set
         end
       rescue StandardError => e
@@ -72,18 +73,18 @@ module Tasks
       @group_permissions ||= WorkUtilsHelper.get_permissions_attributes(admin_set.id)
     end
 
-    def attach_file_content(file_set:, user:, file:)
-      job = ::JobIoWrapper.create!(
-        user: user,
-        file_set_id: file_set.id,
-        path: File.expand_path(file.path),
-        relation: 'original_file',
-        mime_type: 'application/pdf',
-        original_name: File.basename(file.path)
-      )
-      IngestJob.perform_later(job)
-      CreateDerivativesJob.perform_later(file_set, file_set.original_file.id) if file_set.original_file.present?
-    end
+    # def attach_file_content(file_set:, user:, file:)
+    #   job = ::JobIoWrapper.create!(
+    #     user: user,
+    #     file_set_id: file_set.id,
+    #     path: File.expand_path(file.path),
+    #     relation: 'original_file',
+    #     mime_type: 'application/pdf',
+    #     original_name: File.basename(file.path)
+    #   )
+    #   IngestJob.perform_later(job)
+    #   CreateDerivativesJob.perform_later(file_set, file_set.original_file.id) if file_set.original_file.present?
+    # end
 
     def create_sipity_workflow(work:)
       LogUtilsHelper.double_log("Creating Sipity workflow for work #{work.id}", :info, tag: 'Sipity')

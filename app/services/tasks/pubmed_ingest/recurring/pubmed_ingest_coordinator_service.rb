@@ -98,7 +98,7 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
       end
       begin
         md_ingest_service.load_alternate_ids_from_file(path: File.join(@id_list_output_directory, "#{db}_alternate_ids.jsonl"))
-        md_ingest_service.batch_retrieve_and_process_metadata(batch_size: 200, db: db)
+        md_ingest_service.batch_retrieve_and_process_metadata(db: db)
         @tracker['progress']['metadata_ingest'][db]['completed'] = true
         @tracker.save
         rescue => e
