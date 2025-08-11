@@ -3,6 +3,9 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
   BUILD_ID_LISTS_OUTPUT_DIR = '01_build_id_lists'
   LOAD_METADATA_OUTPUT_DIR  = '02_load_and_ingest_metadata'
   ATTACH_FILES_OUTPUT_DIR    = '03_attach_files_to_works'
+  SUBDIRS                   = [BUILD_ID_LISTS_OUTPUT_DIR, LOAD_METADATA_OUTPUT_DIR, ATTACH_FILES_OUTPUT_DIR].freeze
+  REQUIRED_ARGS             = %w[start_date end_date admin_set_title].freeze
+
   def initialize(config, tracker)
     @config = config
     @tracker = tracker
@@ -30,16 +33,28 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
     @id_list_output_directory = File.join(@output_dir, BUILD_ID_LISTS_OUTPUT_DIR)
     @metadata_ingest_output_directory = File.join(@output_dir, LOAD_METADATA_OUTPUT_DIR)
     @attachment_output_directory = File.join(@output_dir, ATTACH_FILES_OUTPUT_DIR)
+    @full_text_dir    = config['full_text_dir']
+    @admin_set_title  = config['admin_set_title']
+    @start_date       = config['start_date']
+    @end_date         = config['end_date']
+
+    @results[:full_text_dir] = @full_text_dir
+    @results[:start_date]    = @start_date.strftime('%Y-%m-%d') if @start_date
+    @results[:end_date]      = @end_date.strftime('%Y-%m-%d')   if @end_date
   end
 
   def run
     build_id_lists
     load_and_ingest_metadata
     attach_files
-    # WIP:
     load_results
     finalize_report_and_notify(@results)
     JsonFileUtils.write_json(@results, File.join(@output_dir, 'ingest_results.json'), pretty: true)
+
+    LogUtilsHelper.double_log('PubMed ingest workflow completed successfully.', :info, tag: 'PubmedIngestCoordinator')
+    rescue => e
+      LogUtilsHelper.double_log("PubMed ingest workflow failed: #{e.message}", :error, tag: 'PubmedIngestCoordinator')
+      raise "PubMed ingest workflow failed: #{e.message}"
   end
 
   private
@@ -75,11 +90,17 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
         LogUtilsHelper.double_log("Skipping metadata ingest for #{db} as it is already completed.", :info, tag: 'load_and_ingest_metadata')
         next
       end
+      begin
       md_ingest_service.load_alternate_ids_from_file(path: File.join(@id_list_output_directory, "#{db}_alternate_ids.jsonl"))
       # WIP: Temporarily limit number of batches for testing
       md_ingest_service.batch_retrieve_and_process_metadata(batch_size: 3, db: db)
       @tracker['progress']['metadata_ingest'][db]['completed'] = true
       @tracker.save
+      rescue => e
+        LogUtilsHelper.double_log("Metadata ingest failed: #{e.message}", :error, tag: 'load_and_ingest_metadata')
+        raise e
+      end
+
       LogUtilsHelper.double_log("Metadata ingest for #{db} completed successfully.", :info, tag: 'load_and_ingest_metadata')
       LogUtilsHelper.double_log("Output directory: #{@metadata_ingest_output_directory}", :info, tag: 'load_and_ingest_metadata')
     end
@@ -194,4 +215,128 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
       Rails.logger.error "Backtrace: #{e.backtrace.join("\n")}"
     end
   end
+
+    def self.build_pubmed_ingest_config_and_tracker(args:)
+    depositor        = args[:depositor_onyen].presence || 'admin'
+    resume_flag      = ActiveModel::Type::Boolean.new.cast(args[:resume])
+    raw_output_dir   = args[:output_dir]
+    script_start     = Time.now
+    output_dir       = nil
+    config           = {}
+
+    if raw_output_dir.blank?
+      puts '❌ You cannot resume or start an ingest without specifying an output directory.'
+      exit(1)
+    end
+
+    if resume_flag
+      output_dir = Pathname.new(raw_output_dir)
+      tracker_path = output_dir.join('ingest_tracker.json')
+      unless tracker_path.exist?
+        puts "❌ Tracker file not found: #{tracker_path}"
+        exit(1)
+      end
+
+      config = {
+        'output_dir'   => output_dir.to_s,
+        'restart_time' => script_start
+      }
+
+      tracker = Tasks::PubmedIngest::SharedUtilities::IngestTracker.build(
+        config: config,
+        resume: true
+      )
+      config['full_text_dir'] = tracker['full_text_dir'] if tracker['full_text_dir'].present?
+      unless tracker
+        puts '❌ Failed to load existing tracker.'
+        exit(1)
+      end
+    else
+      REQUIRED_ARGS.each do |key|
+        if args[key.to_sym].blank?
+          puts "❌ Missing required option: --#{key.tr('_', '-')}"
+          exit(1)
+        end
+      end
+
+      begin
+        parsed_start = Date.parse(args[:start_date])
+        parsed_end   = Date.parse(args[:end_date])
+      rescue ArgumentError => e
+        puts "❌ Invalid date format: #{e.message}"
+        exit(1)
+      end
+
+      admin_set = AdminSet.where(title_tesim: args[:admin_set_title]).first
+      unless admin_set
+        puts "❌ Admin Set not found: #{args[:admin_set_title]}"
+        exit(1)
+      end
+
+      output_dir    = resolve_output_dir(raw_output_dir, script_start)
+      full_text_dir = resolve_full_text_dir(args[:full_text_dir], output_dir, script_start)
+
+      FileUtils.mkdir_p(output_dir)
+      SUBDIRS.each { |dir| FileUtils.mkdir_p(output_dir.join(dir)) }
+      FileUtils.mkdir_p(full_text_dir)
+
+      config = {
+        'start_date'      => parsed_start,
+        'end_date'        => parsed_end,
+        'admin_set_title' => args[:admin_set_title],
+        'depositor_onyen' => depositor,
+        'output_dir'      => output_dir.to_s,
+        'time'            => script_start,
+        'full_text_dir'   => full_text_dir.to_s
+      }
+
+      write_intro_banner(config: config)
+      tracker = Tasks::PubmedIngest::SharedUtilities::IngestTracker.build(
+        config: config,
+        resume: resume_flag
+      )
+    end
+
+    [config, tracker]
+  end
+
+  def self.resolve_output_dir(raw_output_dir, script_start_time)
+    if raw_output_dir.present?
+      base_dir = Pathname.new(raw_output_dir)
+      base_dir = Rails.root.join(base_dir) unless base_dir.absolute?
+      base_dir.join("pubmed_ingest_#{script_start_time.strftime('%Y-%m-%d_%H-%M-%S')}")
+    else
+      LogUtilsHelper.double_log('No output directory specified. Using default tmp directory.', :info, tag: 'PubMed Ingest')
+      Rails.root.join('tmp', "pubmed_ingest_#{script_start_time.strftime('%Y-%m-%d_%H-%M-%S')}")
+    end
+  end
+  private_class_method :resolve_output_dir
+
+  def self.resolve_full_text_dir(raw_full_text_dir, output_dir, script_start_time)
+    if raw_full_text_dir.present?
+      base = Pathname.new(raw_full_text_dir)
+      base.absolute? ? base : Rails.root.join(base)
+    else
+      default_dir = output_dir.join("full_text_pdfs_#{script_start_time.strftime('%Y-%m-%d_%H-%M-%S')}")
+      LogUtilsHelper.double_log("No full-text directory specified. Using default: #{default_dir}", :info, tag: 'PubMed Ingest')
+      default_dir
+    end
+  end
+  private_class_method :resolve_full_text_dir
+
+  def self.write_intro_banner(config:)
+    banner_lines = [
+      '=' * 80,
+      '  PubMed Ingest',
+      '-' * 80,
+      "  Start Time: #{config['time'].strftime('%Y-%m-%d %H:%M:%S')}",
+      "  Output Dir: #{config['output_dir']}",
+      "  Depositor:  #{config['depositor_onyen']}",
+      "  Admin Set:  #{config['admin_set_title']}",
+      "  Date Range: #{config['start_date']} to #{config['end_date']}",
+      '=' * 80
+    ]
+    banner_lines.each { |line| puts(line); Rails.logger.info(line) }
+  end
+  private_class_method :write_intro_banner
 end

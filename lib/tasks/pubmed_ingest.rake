@@ -41,7 +41,8 @@ task :pubmed_ingest, [:resume, :output_dir, :full_text_dir, :start_date, :end_da
   puts "Starting PubMed ingest with options: #{options.inspect}"
 
   # Forward to shared logic
-  config, tracker = build_pubmed_ingest_config_and_tracker(args: options)
+  # config, tracker = build_pubmed_ingest_config_and_tracker(args: options)
+  config, tracker = Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService.build_pubmed_ingest_config_and_tracker(args: options)
 
   # Uncomment these when ready to actually run the coordinator
   coordinator = Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService.new(config, tracker)
@@ -63,140 +64,140 @@ task :pubmed_backlog_ingest, [:file_retrieval_directory, :output_dir, :admin_set
   res = coordinator.run
 end
 
-def build_pubmed_ingest_config_and_tracker(args:)
-  depositor = 'admin'
-  resume_flag    = ActiveModel::Type::Boolean.new.cast(args[:resume])
-  raw_output_dir = args[:output_dir]
-  script_start_time = Time.now
-  output_dir = nil
-  config = {}
+# def build_pubmed_ingest_config_and_tracker(args:)
+#   depositor = 'admin'
+#   resume_flag    = ActiveModel::Type::Boolean.new.cast(args[:resume])
+#   raw_output_dir = args[:output_dir]
+#   script_start_time = Time.now
+#   output_dir = nil
+#   config = {}
 
-  if raw_output_dir.blank?
-    puts '❌ You cannot resume or start an ingest without specifying an output directory.'
-    exit(1)
-  end
+#   if raw_output_dir.blank?
+#     puts '❌ You cannot resume or start an ingest without specifying an output directory.'
+#     exit(1)
+#   end
 
-  if resume_flag
-    output_dir = Pathname.new(raw_output_dir)
+#   if resume_flag
+#     output_dir = Pathname.new(raw_output_dir)
 
-    tracker_path = output_dir.join('ingest_tracker.json')
-    unless tracker_path.exist?
-      puts "❌ Tracker file not found: #{tracker_path}"
-      exit(1)
-    end
+#     tracker_path = output_dir.join('ingest_tracker.json')
+#     unless tracker_path.exist?
+#       puts "❌ Tracker file not found: #{tracker_path}"
+#       exit(1)
+#     end
 
-    config = {
-      'output_dir'      => output_dir.to_s,
-      'restart_time'   => script_start_time
-    }
+#     config = {
+#       'output_dir'      => output_dir.to_s,
+#       'restart_time'   => script_start_time
+#     }
 
-    tracker = Tasks::PubmedIngest::SharedUtilities::IngestTracker.build(
-      config: config,
-      resume: true
-    )
-    config['full_text_dir'] = tracker['full_text_dir'] if tracker['full_text_dir'].present?
-    unless tracker
-      puts '❌ Failed to load existing tracker.'
-      exit(1)
-    end
-  else
-    REQUIRED_ARGS.each do |key|
-      if args[key.to_sym].blank?
-        puts "❌ Missing required option: --#{key.tr('_', '-')}"
-        exit(1)
-      end
-    end
+#     tracker = Tasks::PubmedIngest::SharedUtilities::IngestTracker.build(
+#       config: config,
+#       resume: true
+#     )
+#     config['full_text_dir'] = tracker['full_text_dir'] if tracker['full_text_dir'].present?
+#     unless tracker
+#       puts '❌ Failed to load existing tracker.'
+#       exit(1)
+#     end
+#   else
+#     REQUIRED_ARGS.each do |key|
+#       if args[key.to_sym].blank?
+#         puts "❌ Missing required option: --#{key.tr('_', '-')}"
+#         exit(1)
+#       end
+#     end
 
-    begin
-      parsed_start = Date.parse(args[:start_date])
-      parsed_end   = Date.parse(args[:end_date])
-    rescue ArgumentError => e
-      puts "❌ Invalid date format: #{e.message}"
-      exit(1)
-    end
+#     begin
+#       parsed_start = Date.parse(args[:start_date])
+#       parsed_end   = Date.parse(args[:end_date])
+#     rescue ArgumentError => e
+#       puts "❌ Invalid date format: #{e.message}"
+#       exit(1)
+#     end
 
-    admin_set = AdminSet.where(title_tesim: args[:admin_set_title]).first
-    unless admin_set
-      puts "❌ Admin Set not found: #{args[:admin_set_title]}"
-      exit(1)
-    end
+#     admin_set = AdminSet.where(title_tesim: args[:admin_set_title]).first
+#     unless admin_set
+#       puts "❌ Admin Set not found: #{args[:admin_set_title]}"
+#       exit(1)
+#     end
 
-    # Output directory handling
-    output_dir = resolve_output_dir(raw_output_dir, script_start_time)
-    full_text_dir = resolve_full_text_dir(args[:full_text_dir], output_dir, script_start_time)
+#     # Output directory handling
+#     output_dir = resolve_output_dir(raw_output_dir, script_start_time)
+#     full_text_dir = resolve_full_text_dir(args[:full_text_dir], output_dir, script_start_time)
 
-    # Create necessary directories
-    FileUtils.mkdir_p(output_dir)
-    SUBDIRS.each do |dir|
-      FileUtils.mkdir_p(output_dir.join(dir))
-    end
-    FileUtils.mkdir_p(full_text_dir)
+#     # Create necessary directories
+#     FileUtils.mkdir_p(output_dir)
+#     SUBDIRS.each do |dir|
+#       FileUtils.mkdir_p(output_dir.join(dir))
+#     end
+#     FileUtils.mkdir_p(full_text_dir)
 
-    config = {
-      'start_date'      => parsed_start,
-      'end_date'        => parsed_end,
-      'admin_set_title' => args[:admin_set_title],
-      'depositor_onyen' => depositor,
-      'output_dir'      => output_dir.to_s,
-      'time'            => script_start_time,
-      'full_text_dir'   => full_text_dir.to_s
-    }
+#     config = {
+#       'start_date'      => parsed_start,
+#       'end_date'        => parsed_end,
+#       'admin_set_title' => args[:admin_set_title],
+#       'depositor_onyen' => depositor,
+#       'output_dir'      => output_dir.to_s,
+#       'time'            => script_start_time,
+#       'full_text_dir'   => full_text_dir.to_s
+#     }
 
-    write_intro_banner(config: config)
-    tracker = Tasks::PubmedIngest::SharedUtilities::IngestTracker.build(
-    config: config,
-    resume: resume_flag
-  )
-  end
+#     write_intro_banner(config: config)
+#     tracker = Tasks::PubmedIngest::SharedUtilities::IngestTracker.build(
+#     config: config,
+#     resume: resume_flag
+#   )
+#   end
 
-  [config, tracker]
-end
+#   [config, tracker]
+# end
 
-def valid_args(function_name, *args)
-  if args.any?(&:nil?)
-    puts "❌ #{function_name}: One or more required arguments are missing."
-    return false
-    end
+# def valid_args(function_name, *args)
+#   if args.any?(&:nil?)
+#     puts "❌ #{function_name}: One or more required arguments are missing."
+#     return false
+#     end
 
-  true
-end
+#   true
+# end
 
-def resolve_output_dir(raw_output_dir, script_start_time)
-  if raw_output_dir.present?
-    base_dir = Pathname.new(raw_output_dir)
-    base_dir = Rails.root.join(base_dir) unless base_dir.absolute?
-    base_dir.join("pubmed_ingest_#{script_start_time.strftime('%Y-%m-%d_%H-%M-%S')}")
-  else
-    LogUtilsHelper.double_log('No output directory specified. Using default tmp directory.', :info, tag: 'PubMed Ingest')
-    Rails.root.join('tmp', "pubmed_ingest_#{script_start_time.strftime('%Y-%m-%d_%H-%M-%S')}")
-  end
-end
+# def resolve_output_dir(raw_output_dir, script_start_time)
+#   if raw_output_dir.present?
+#     base_dir = Pathname.new(raw_output_dir)
+#     base_dir = Rails.root.join(base_dir) unless base_dir.absolute?
+#     base_dir.join("pubmed_ingest_#{script_start_time.strftime('%Y-%m-%d_%H-%M-%S')}")
+#   else
+#     LogUtilsHelper.double_log('No output directory specified. Using default tmp directory.', :info, tag: 'PubMed Ingest')
+#     Rails.root.join('tmp', "pubmed_ingest_#{script_start_time.strftime('%Y-%m-%d_%H-%M-%S')}")
+#   end
+# end
 
-def resolve_full_text_dir(raw_full_text_dir, output_dir, script_start_time)
-  if raw_full_text_dir.present?
-    base = Pathname.new(raw_full_text_dir)
-    base.absolute? ? base : Rails.root.join(base)
-  else
-    default_dir = output_dir.join("full_text_pdfs_#{script_start_time.strftime('%Y-%m-%d_%H-%M-%S')}")
-    LogUtilsHelper.double_log("No full-text directory specified. Using default: #{default_dir}", :info, tag: 'PubMed Ingest')
-    default_dir
-  end
-end
+# def resolve_full_text_dir(raw_full_text_dir, output_dir, script_start_time)
+#   if raw_full_text_dir.present?
+#     base = Pathname.new(raw_full_text_dir)
+#     base.absolute? ? base : Rails.root.join(base)
+#   else
+#     default_dir = output_dir.join("full_text_pdfs_#{script_start_time.strftime('%Y-%m-%d_%H-%M-%S')}")
+#     LogUtilsHelper.double_log("No full-text directory specified. Using default: #{default_dir}", :info, tag: 'PubMed Ingest')
+#     default_dir
+#   end
+# end
 
-def write_intro_banner(config:)
-  banner_lines = [
-    '=' * 80,
-    '  PubMed Ingest',
-    '-' * 80,
-    "  Start Time: #{config['time'].strftime('%Y-%m-%d %H:%M:%S')}",
-    "  Output Dir: #{config['output_dir']}",
-    "  Depositor:  #{config['depositor_onyen']}",
-    "  Admin Set:  #{config['admin_set_title']}",
-    "  Date Range: #{config['start_date']} to #{config['end_date']}",
-    '=' * 80
-  ]
-  banner_lines.each do |line|
-    puts line
-    Rails.logger.info(line)
-  end
-end
+# def write_intro_banner(config:)
+#   banner_lines = [
+#     '=' * 80,
+#     '  PubMed Ingest',
+#     '-' * 80,
+#     "  Start Time: #{config['time'].strftime('%Y-%m-%d %H:%M:%S')}",
+#     "  Output Dir: #{config['output_dir']}",
+#     "  Depositor:  #{config['depositor_onyen']}",
+#     "  Admin Set:  #{config['admin_set_title']}",
+#     "  Date Range: #{config['start_date']} to #{config['end_date']}",
+#     '=' * 80
+#   ]
+#   banner_lines.each do |line|
+#     puts line
+#     Rails.logger.info(line)
+#   end
+# end

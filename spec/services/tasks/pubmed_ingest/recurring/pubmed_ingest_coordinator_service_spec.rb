@@ -325,8 +325,9 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
     it 'logs step completion' do
       service.send(:build_id_lists)
 
+     expected_dir = service.instance_variable_get(:@id_list_output_directory)
       expect(LogUtilsHelper).to have_received(:double_log).with(
-        "ID lists built successfully. Output directory: #{@id_list_output_directory}",
+        "ID lists built successfully. Output directory: #{expected_dir}",
         :info,
         tag: 'build_id_lists'
       )
@@ -615,9 +616,10 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
 
     it 'logs results loading completion' do
       service.send(:load_results)
+      expected_dir = service.instance_variable_get(:@attachment_output_directory)
 
       expect(LogUtilsHelper).to have_received(:double_log).with(
-        'Results loaded and formatted successfully.',
+        a_string_including("Successfully loaded and formatted results from #{expected_dir}/attachment_results.jsonl"),
         :info,
         tag: 'load_and_format_results'
       )
