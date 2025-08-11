@@ -56,6 +56,9 @@ class Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService
         break if cursor > parsed_response.xpath('//Count').text.to_i
         # WIP: Temporarily limit the number of IDs retrieved for testing
         break if count >= 10
+
+        # Respect NCBI rate limits
+        sleep(0.34) 
       end
     end
     # Rails.logger.info("[retrieve_ids_within_date_range] Retrieved #{count} IDs from #{db} database")
