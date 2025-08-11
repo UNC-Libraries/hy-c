@@ -29,6 +29,7 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
     @output_dir = config['output_dir']
     @id_list_output_directory = File.join(@output_dir, BUILD_ID_LISTS_OUTPUT_DIR)
     @metadata_ingest_output_directory = File.join(@output_dir, LOAD_METADATA_OUTPUT_DIR)
+    @attachment_output_directory = File.join(@output_dir, ATTACH_FILES_OUTPUT_DIR)
   end
 
   def run
@@ -53,7 +54,7 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
     file_attachment_service = Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService.new(
       config: @config,
       tracker: @tracker,
-      output_path: File.join(@output_dir, ATTACH_FILES_OUTPUT_DIR),
+      output_path: @attachment_output_directory,
       full_text_path: @config['full_text_dir'],
       metadata_ingest_result_path: File.join(@metadata_ingest_output_directory, 'metadata_ingest_results.jsonl'),
     )
