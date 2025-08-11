@@ -98,8 +98,7 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
       end
       begin
         md_ingest_service.load_alternate_ids_from_file(path: File.join(@id_list_output_directory, "#{db}_alternate_ids.jsonl"))
-        # WIP: Temporarily limit number of batches for testing
-        md_ingest_service.batch_retrieve_and_process_metadata(batch_size: 3, db: db)
+        md_ingest_service.batch_retrieve_and_process_metadata(batch_size: 200, db: db)
         @tracker['progress']['metadata_ingest'][db]['completed'] = true
         @tracker.save
         rescue => e
@@ -143,7 +142,7 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
       LogUtilsHelper.double_log("Retrieving record IDs for PubMed and PMC databases within the date range: #{@config['start_date'].strftime('%Y-%m-%d')} - #{@config['end_date'].strftime('%Y-%m-%d')}", :info, tag: 'build_id_lists')
       record_id_path = File.join(@id_list_output_directory, "#{db}_ids.jsonl")
       # WIP: Temporarily limit the number of records retrieved for testing
-      id_retrieval_service.retrieve_ids_within_date_range(output_path: record_id_path, db: db, retmax: 5)
+      id_retrieval_service.retrieve_ids_within_date_range(output_path: record_id_path, db: db)
       @tracker['progress']['retrieve_ids_within_date_range'][db]['completed'] = true
       @tracker.save
     end

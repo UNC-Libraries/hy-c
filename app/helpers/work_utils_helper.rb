@@ -4,10 +4,9 @@ module WorkUtilsHelper
     query = "identifier_tesim:\"#{identifier}\" NOT has_model_ssim:(\"FileSet\")"
     work_data = ActiveFedora::SolrService.get(query, rows: 1)['response']['docs'].first || {}
     Rails.logger.warn("No work found associated with alternate identifier: #{identifier}") if work_data.blank?
-    # LogUtilsHelper.double_log("Fetched work data for identifier #{identifier}: #{work_data}", :info, tag: 'WorkUtils')
     # WIP: Temporary hardcoding, broken articles
-    admin_set_name = 'default'
-    # admin_set_name = work_data['admin_set_tesim']&.first
+    # admin_set_name = 'default'
+    admin_set_name = work_data['admin_set_tesim']&.first
     admin_set_data = admin_set_name ? ActiveFedora::SolrService.get("title_tesim:#{admin_set_name} AND has_model_ssim:(\"AdminSet\")", { :rows => 1, 'df' => 'title_tesim'})['response']['docs'].first : {}
     Rails.logger.warn(self.generate_warning_message(admin_set_name, identifier)) if admin_set_data.blank?
     result = {
