@@ -75,7 +75,6 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
     return unless pmcid.present?
     retries = 0
     begin
-      LogUtilsHelper.double_log("Fetching Open Access info for #{pmcid}", :info, tag: 'OA Fetch')
       response = HTTParty.get("https://www.ncbi.nlm.nih.gov/pmc/utils/oa/oa.fcgi?id=#{pmcid}", timeout: 10)
       raise "Bad response: #{response.code}" unless response.code == 200
 

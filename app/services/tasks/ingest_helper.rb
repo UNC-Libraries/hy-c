@@ -82,7 +82,6 @@ module Tasks
         original_name: File.basename(file.path)
       )
       IngestJob.perform_later(job)
-      LogUtilsHelper.double_log("Inspect Original File for FileSet #{file_set.original_file.inspect}", :info, tag: 'FileSetAttach')
       CreateDerivativesJob.perform_later(file_set, file_set.original_file.id) if file_set.original_file.present?
     end
 
