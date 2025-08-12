@@ -48,16 +48,22 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
   def filter_record?(record)
     pmcid = record.dig('ids', 'pmcid')
     work_id = record.dig('ids', 'work_id')
+    category = record['category']
     # Skip records that have already been processed if resuming
     return true if @existing_ids.include?(pmcid) || @existing_ids.include?(record.dig('ids', 'pmid'))
     if pmcid.blank?
         # Can only retrieve files using PMCID
-      log_result(record, category: :skipped, message: 'No PMCID found', file_name: 'NONE')
+      log_result(record, category: :skipped, message: 'No PMCID found - can only retrieve files with PMCID', file_name: 'NONE')
       return true
     end
     # WIP: Temporarily do not filter out works that already have files attached
     if work_id.present? && has_fileset?(work_id)
       log_result(record, category: :skipped, message: 'Work already has files attached', file_name: 'NONE')
+      return true
+    end
+
+    if category == 'failed'
+      log_result(record, category: :failed, message: record['message'] || 'No message provided', file_name: 'NONE')
       return true
     end
 

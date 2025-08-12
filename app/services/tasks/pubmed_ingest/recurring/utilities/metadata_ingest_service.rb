@@ -36,7 +36,8 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
     end
 
     @record_ids = filtered_ids
-    LogUtilsHelper.double_log("Skipped #{count - filtered_ids.size} records that already existed in results file.", :info, tag: 'MetadataIngestService')
+    # LogUtilsHelper.double_log("Skipped #{count - filtered_ids.size} records that already existed in results file.", :info, tag: 'MetadataIngestService')
+    LogUtilsHelper.double_log("Filtered #{count - filtered_ids.size} records that already existed in results file or were already in Hyrax.", :info, tag: 'MetadataIngestService')
     flush_buffer_to_file unless @write_buffer.empty?
   end
 
@@ -223,22 +224,6 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
   rescue => e
     LogUtilsHelper.double_log("Failed to update results JSON: #{e.message}", :error, tag: 'MetadataIngestService')
     Rails.logger.info("Backtrace: #{e.backtrace.join("\n")}")
-  end
-
-
-  def record_result_deprecated(category:, message:, ids: {}, article: nil)
-    row = {
-    'pdf_attached' => message,
-    'pmid' => ids['pmid'],
-    'pmcid' => ids['pmcid'],
-    'doi' => ids['doi'],
-    }
-    if article
-      row['article'] = article
-      row['cdr_url'] = generate_cdr_url_for_article(article)
-    end
-    @results[:counts][category] += 1
-    @results[category] << row
   end
 
   def record_result(category:, message: '', ids: {}, article: nil)

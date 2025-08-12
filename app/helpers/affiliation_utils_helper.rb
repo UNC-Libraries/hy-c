@@ -12,6 +12,34 @@ module AffiliationUtilsHelper
     Carolina(?:[-,\s]+(?:at\s+)?)?Chapel\s*Hill\b
 /ix.freeze
 
+  UNC_AFFILIATION_TERMS = [
+     # Core names
+     'University of North Carolina at Chapel Hill',
+     'University of North Carolina Chapel Hill',
+     'UNC Chapel Hill',
+     'UNC-Chapel Hill',
+     'UNCCH',
+
+     # Health system / hospitals
+     'UNC Health',
+     'UNC Health Care',
+     'UNC Hospitals',
+
+     # Major UNC-CH units that often appear as affiliation strings
+     'UNC School of Medicine',
+     'School of Medicine, University of North Carolina at Chapel Hill',
+     'UNC Eshelman School of Pharmacy',
+     'Eshelman School of Pharmacy, University of North Carolina at Chapel Hill',
+     'UNC Gillings School of Global Public Health',
+     'Gillings School of Global Public Health, University of North Carolina at Chapel Hill',
+     'UNC Lineberger Comprehensive Cancer Center',
+     'Lineberger Comprehensive Cancer Center, University of North Carolina at Chapel Hill',
+     'Cecil G. Sheps Center for Health Services Research',
+     'Carolina Population Center',
+     'Odum Institute for Research in Social Science',
+     'UNC Kenan-Flagler Business School'
+   ].freeze
+
   # Returns true if the given affiliation string likely refers to UNC-Chapel Hill
   def self.is_unc_affiliation?(affiliation_text)
     # Convert regex match to strict boolean

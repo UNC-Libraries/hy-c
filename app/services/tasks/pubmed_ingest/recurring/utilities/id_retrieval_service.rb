@@ -1,12 +1,15 @@
 # frozen_string_literal: true
+require_dependency 'affiliation_utils_helper'
+
 class Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService
+  UNC_AFFILIATION_TERMS = ::AffiliationUtilsHelper::UNC_AFFILIATION_TERMS
   def initialize(start_date:, end_date:, tracker:)
     @start_date = start_date
     @end_date = end_date
     @tracker = tracker
   end
 
-  def retrieve_ids_within_date_range(output_path:, db:, retmax: 500)
+  def retrieve_ids_within_date_range(output_path:, db:, retmax: 500, extras: nil)
     # Rails.logger.info("[retrieve_ids_within_date_range] Fetching IDs within date range: #{@start_date.strftime('%Y-%m-%d')} - #{@end_date.strftime('%Y-%m-%d')} for #{db} database")
     LogUtilsHelper.double_log("Fetching IDs within date range: #{@start_date.strftime('%Y-%m-%d')} - #{@end_date.strftime('%Y-%m-%d')} for #{db} database", :info, tag: 'retrieve_ids_within_date_range')
     base_url = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi'
@@ -14,15 +17,25 @@ class Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService
     # Initialize cursor from tracker or set to 0
     job_progress = @tracker['progress']['retrieve_ids_within_date_range'][db]
     cursor = job_progress['cursor']
-    params = {
-      retmax: retmax,
+    term_str = build_search_terms(
       db: db,
-      term: "#{@start_date.strftime('%Y/%m/%d')}:#{@end_date.strftime('%Y/%m/%d')}[PDAT]"
+      start_date: @start_date,
+      end_date:   @end_date,
+      extras: extras
+    )
+    params = {
+      db: db,
+      term: term_str,
+      retmax: retmax,
+      retmode: 'xml',
+      tool: 'CDR',
+      email: 'cdr@unc.edu'
     }
     File.open(output_path, 'a') do |file|
       loop do
         res = HTTParty.get(base_url, query: params.merge({ retstart: cursor }))
-        puts "Response code: #{res.code}, message: #{res.message}, URL: #{base_url}?#{params.merge({ retstart: cursor }).to_query}"
+        # puts "Response code: #{res.code}, message: #{res.message}, URL: #{base_url}?#{params.merge({ retstart: cursor }).to_query}"
+        LogUtilsHelper.double_log("Response code: #{res.code}, message: #{res.message}, URL: #{base_url}?#{params.merge({ retstart: cursor }).to_query}", :debug, tag: 'retrieve_ids_within_date_range')
         if res.code != 200
           # Rails.logger.error("[retrieve_ids_within_date_range] Failed to retrieve IDs: #{res.code} - #{res.message}")
           LogUtilsHelper.double_log("Failed to retrieve IDs: #{res.code} - #{res.message}", :error, tag: 'retrieve_ids_within_date_range')
@@ -55,10 +68,10 @@ class Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService
         end
         break if cursor > parsed_response.xpath('//Count').text.to_i
         # WIP: Temporarily limit the number of IDs retrieved for testing
-        break if count >= 10
+        break if count >= 20
 
         # Respect NCBI rate limits
-        sleep(0.34) 
+        sleep(0.34)
       end
     end
     # Rails.logger.info("[retrieve_ids_within_date_range] Retrieved #{count} IDs from #{db} database")
@@ -231,4 +244,33 @@ class Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService
     @tracker.save
   end
 
+  def build_search_terms(db:, start_date:, end_date:, extras: nil)
+    if db == 'pubmed'
+      build_pubmed_term(
+        start_date: start_date,
+        end_date:   end_date,
+        extras: extras
+      )
+    else
+      # Keep PMC as-is (no affiliation filter support)
+      "#{start_date.strftime('%Y/%m/%d')}:#{end_date.strftime('%Y/%m/%d')}[PDAT]"
+    end
+  end
+
+
+  # Build an [AD] (affiliation) OR-clause for PubMed
+  def pubmed_affiliation_clause(terms = UNC_AFFILIATION_TERMS)
+    parts = terms.uniq.map { |t| %("#{t}"[AD]) }
+    "(#{parts.join(' OR ')})"
+  end
+
+  # Build a PubMed term with date range + optional UNC affiliation + extras
+  def build_pubmed_term(start_date:, end_date:, extras: nil)
+    date = "#{start_date.strftime('%Y/%m/%d')}:#{end_date.strftime('%Y/%m/%d')}[PDAT]"
+
+    aff = nil
+    aff = '(' + UNC_AFFILIATION_TERMS.map { |t| %Q{"#{t}"[AD]} }.join(' OR ') + ')'
+
+    [aff, date, extras].compact.join(' AND ')
+  end
 end

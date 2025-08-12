@@ -875,7 +875,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
       it 'prints banner lines and logs them' do
         allow(Rails.logger).to receive(:info)
         expect {
-        described_class.send(:write_intro_banner, config: cfg)
+          described_class.send(:write_intro_banner, config: cfg)
         }.to output(/Start Time: 2024-01-02 03:04:05/).to_stdout
 
         expect(Rails.logger).to have_received(:info).with(a_string_matching(/PubMed Ingest/)).at_least(:once)
