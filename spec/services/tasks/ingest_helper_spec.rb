@@ -35,5 +35,33 @@ RSpec.describe Tasks::IngestHelper do
       expect(file_set).to be_a(FileSet)
       expect(file_set.read_groups).to include('public')
     end
+
+    it 'returns nil and logs when the source file is missing' do
+      missing_path = Rails.root.join('spec/fixtures/files/does_not_exist.pdf')
+
+      allow(Rails.logger).to receive(:error)
+      allow(LogUtilsHelper).to receive(:double_log)
+
+      result = helper.attach_file_set_to_work(
+        work: work,
+        file_path: missing_path,
+        user: user,
+        visibility: visibility
+      )
+
+      expect(result).to be_nil
+
+      expect(LogUtilsHelper).to have_received(:double_log).with(
+        a_string_including("Error attaching FileSet to work #{work.id}"),
+        :error,
+        tag: 'FileSetAttach'
+      )
+
+      # The rescue block logs a second error line including file_path
+      expect(Rails.logger).to have_received(:error).with(
+        a_string_including('file_path')
+      ).at_least(:once)
+    end
+
   end
 end

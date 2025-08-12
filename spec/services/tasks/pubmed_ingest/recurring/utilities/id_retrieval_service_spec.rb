@@ -91,7 +91,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService do
 
       it 'makes correct API call' do
         service.retrieve_ids_within_date_range(output_path: output_path, db: 'pubmed')
-        
+
         expect(HTTParty).to have_received(:get).with(
           'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi',
           query: hash_including(
@@ -415,19 +415,19 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService do
     end
   end
 
-describe '#build_search_terms' do
-  it 'uses pubmed term with affiliation + date' do
-    stub_const("#{described_class}::UNC_AFFILIATION_TERMS", ['UNC Chapel Hill'])
-    term = service.send(:build_search_terms, db: 'pubmed', start_date: start_date, end_date: end_date, extras: nil)
-    expect(term).to include('"UNC Chapel Hill"[AD]')
-    expect(term).to include('2024/01/01:2024/01/31[PDAT]')
-  end
+  describe '#build_search_terms' do
+    it 'uses pubmed term with affiliation + date' do
+      stub_const("#{described_class}::UNC_AFFILIATION_TERMS", ['UNC Chapel Hill'])
+      term = service.send(:build_search_terms, db: 'pubmed', start_date: start_date, end_date: end_date, extras: nil)
+      expect(term).to include('"UNC Chapel Hill"[AD]')
+      expect(term).to include('2024/01/01:2024/01/31[PDAT]')
+    end
 
-  it 'uses date-only term for pmc' do
-    term = service.send(:build_search_terms, db: 'pmc', start_date: start_date, end_date: end_date, extras: 'ignored')
-    expect(term).to eq('2024/01/01:2024/01/31[PDAT]')
+    it 'uses date-only term for pmc' do
+      term = service.send(:build_search_terms, db: 'pmc', start_date: start_date, end_date: end_date, extras: 'ignored')
+      expect(term).to eq('2024/01/01:2024/01/31[PDAT]')
+    end
   end
-end
 
 
   describe 'private methods' do
