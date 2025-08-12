@@ -640,4 +640,76 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService 
       end
     end
   end
+
+  describe '#generate_filtered_batch (pubmed)' do
+    let(:pubmed_doc) do
+      Nokogiri::XML(<<~XML)
+        <PubmedArticleSet>
+          <PubmedArticle>
+            <MedlineCitation>
+              <Article>
+                <AuthorList>
+                  <Author>
+                    <AffiliationInfo>
+                      <Affiliation>UNC Chapel Hill</Affiliation>
+                    </AffiliationInfo>
+                  </Author>
+                </AuthorList>
+              </Article>
+            </MedlineCitation>
+            <PubmedData>
+              <ArticleIdList>
+                <ArticleId IdType="pubmed">111111</ArticleId>
+                <!-- optional -->
+                <ArticleId IdType="doi">10.1000/example-111111</ArticleId>
+              </ArticleIdList>
+            </PubmedData>
+          </PubmedArticle>
+          <PubmedArticle>
+            <MedlineCitation>
+              <Article>
+                <AuthorList>
+                  <Author>
+                    <AffiliationInfo>
+                      <Affiliation>University of Nimes</Affiliation>
+                    </AffiliationInfo>
+                  </Author>
+                </AuthorList>
+              </Article>
+            </MedlineCitation>
+          </PubmedArticle>
+          <PubmedArticle>
+            <MedlineCitation>
+              <Article>
+                <AuthorList>
+                  <Author>
+                    <AffiliationInfo>
+                      <Affiliation>   </Affiliation>
+                    </AffiliationInfo>
+                  </Author>
+                </AuthorList>
+              </Article>
+            </MedlineCitation>
+          </PubmedArticle>
+        </PubmedArticleSet>
+      XML
+    end
+
+    it 'keeps only UNC-affiliated docs and logs the skip count' do
+      batch = pubmed_doc.xpath('//PubmedArticle')
+      keep  = service.send(:generate_filtered_batch, batch, db: 'pubmed')
+      kept  = keep.is_a?(Nokogiri::XML::NodeSet) ? keep.to_a : Array(keep)
+
+      expect(kept.length).to eq(1)
+      expect(kept.first.at_xpath('.//Affiliation').text).to match(/UNC/i)
+
+      expect(LogUtilsHelper).to have_received(:double_log).with(
+        a_string_matching(/Filtered out 2 pubmed records with no UNC affiliation; 1 remain/),
+        :info,
+        tag: 'MetadataIngestService'
+      )
+    end
+
+  end
+
 end

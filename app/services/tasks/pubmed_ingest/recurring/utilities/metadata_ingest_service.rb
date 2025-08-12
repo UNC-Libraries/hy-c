@@ -186,12 +186,12 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
         pmcid = doc.at_xpath('.//article-id[@pub-id-type="pmcid"]')&.text
       end
       @record_ids.find { |row| row['pmid'] == pmid || row['pmcid'] == pmcid }
-  rescue => e
-    Rails.logger.error("[MetadataIngestService] Error retrieving alternate IDs for document: #{e.message}")
-    Rails.logger.error("Backtrace: #{e.backtrace.join("\n")}")
-    puts "Error retrieving alternate IDs for document: #{e.message}"
-    puts "Backtrace: #{e.backtrace.join("\n")}"
-    nil
+    rescue => e
+      Rails.logger.error("[MetadataIngestService] Error retrieving alternate IDs for document: #{e.message}")
+      Rails.logger.error("Backtrace: #{e.backtrace.join("\n")}")
+      puts "Error retrieving alternate IDs for document: #{e.message}"
+      puts "Backtrace: #{e.backtrace.join("\n")}"
+      nil
     end
   end
 
@@ -273,12 +273,12 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
   end
 
   def pubmed_xml_has_unc_affiliation?(nokogiri_doc)
-    aff_nodes = nokogiri_doc.xpath('//AffiliationInfo/Affiliation')
+    aff_nodes = nokogiri_doc.xpath('.//AffiliationInfo/Affiliation')
     aff_nodes.any? { |n| AffiliationUtilsHelper.is_unc_affiliation?(n.text) }
   end
 
   def pmc_xml_has_unc_affiliation?(nokogiri_doc)
-    aff_nodes = nokogiri_doc.xpath('//aff | //contrib//aff | //contrib-group//aff')
+    aff_nodes = nokogiri_doc.xpath('.//aff | .//contrib//aff | .//contrib-group//aff')
     aff_nodes.any? { |n| AffiliationUtilsHelper.is_unc_affiliation?(n.text) }
   end
 
