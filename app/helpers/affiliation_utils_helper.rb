@@ -42,6 +42,7 @@ module AffiliationUtilsHelper
 
   # Returns true if the given affiliation string likely refers to UNC-Chapel Hill
   def self.is_unc_affiliation?(affiliation_text)
+    return false if affiliation_text.nil? || affiliation_text.strip.empty?
     # Convert regex match to strict boolean
     !!(affiliation_text.to_s =~ UNC_AFFILIATION_REGEX)
   end
