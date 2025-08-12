@@ -90,18 +90,20 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService do
       end
 
       it 'makes correct API call' do
-        expected_params = {
-          retmax: 1000,
-          db: 'pubmed',
-          term: '2024/01/01:2024/01/31[PDAT]',
-          retstart: 0
-        }
-
         service.retrieve_ids_within_date_range(output_path: output_path, db: 'pubmed')
-
+        
         expect(HTTParty).to have_received(:get).with(
           'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi',
-          query: expected_params
+          query: hash_including(
+            db: 'pubmed',
+            retmax: 500,
+            retmode: 'xml',
+            tool: 'CDR',
+            email: 'cdr@unc.edu',
+            retstart: 0,
+            # Contains AD affiliation OR-clause and date range
+            term: a_string_matching(/\(.*\[AD\].*OR.*\[AD\].*\)\s+AND\s+2024\/01\/01:2024\/01\/31\[PDAT\]/)
+          )
         )
       end
     end
@@ -145,13 +147,20 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService do
       end
 
       it 'starts from cursor position' do
-        expected_params = hash_including(retstart: 1000)
-
         service.retrieve_ids_within_date_range(output_path: output_path, db: 'pubmed')
 
         expect(HTTParty).to have_received(:get).with(
           'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi',
-          query: expected_params
+          query: hash_including(
+            db: 'pubmed',
+            retmax: 500,
+            retmode: 'xml',
+            tool: 'CDR',
+            email: 'cdr@unc.edu',
+            retstart: 1000,
+            # now expects UNC [AD] OR-clause AND date range
+            term: a_string_matching(/\(.*\[AD\].*OR.*\[AD\].*\)\s+AND\s+2024\/01\/01:2024\/01\/31\[PDAT\]/)
+          )
         )
       end
     end
@@ -375,6 +384,51 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService do
       end
     end
   end
+
+  describe '#pubmed_affiliation_clause' do
+    it 'wraps UNC terms as an OR [AD] clause' do
+      stub_const("#{described_class}::UNC_AFFILIATION_TERMS", ['UNC Chapel Hill', 'UNCCH'])
+      clause = service.send(:pubmed_affiliation_clause)
+      expect(clause).to eq('("UNC Chapel Hill"[AD] OR "UNCCH"[AD])')
+    end
+  end
+
+  describe '#build_pubmed_term' do
+    it 'builds affiliation AND date' do
+      stub_const("#{described_class}::UNC_AFFILIATION_TERMS", ['UNC Chapel Hill'])
+      term = service.send(:build_pubmed_term,
+        start_date: start_date,
+        end_date: end_date,
+        extras: nil
+      )
+      expect(term).to match(/^\("UNC Chapel Hill"\[AD\]\)\s+AND\s+2024\/01\/01:2024\/01\/31\[PDAT\]$/)
+    end
+
+    it 'appends extras with AND' do
+      stub_const("#{described_class}::UNC_AFFILIATION_TERMS", ['UNCCH'])
+      term = service.send(:build_pubmed_term,
+        start_date: start_date,
+        end_date: end_date,
+        extras: 'open access[filter]'
+      )
+      expect(term).to match(/\("UNCCH"\[AD\]\)\s+AND\s+2024\/01\/01:2024\/01\/31\[PDAT\]\s+AND\s+open access\[filter\]$/)
+    end
+  end
+
+describe '#build_search_terms' do
+  it 'uses pubmed term with affiliation + date' do
+    stub_const("#{described_class}::UNC_AFFILIATION_TERMS", ['UNC Chapel Hill'])
+    term = service.send(:build_search_terms, db: 'pubmed', start_date: start_date, end_date: end_date, extras: nil)
+    expect(term).to include('"UNC Chapel Hill"[AD]')
+    expect(term).to include('2024/01/01:2024/01/31[PDAT]')
+  end
+
+  it 'uses date-only term for pmc' do
+    term = service.send(:build_search_terms, db: 'pmc', start_date: start_date, end_date: end_date, extras: 'ignored')
+    expect(term).to eq('2024/01/01:2024/01/31[PDAT]')
+  end
+end
+
 
   describe 'private methods' do
     describe '#dedup_key' do
