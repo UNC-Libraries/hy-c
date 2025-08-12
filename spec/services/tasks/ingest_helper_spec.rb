@@ -72,9 +72,8 @@ RSpec.describe Tasks::IngestHelper do
     let(:admin_user)        { FactoryBot.create(:user, uid: 'admin') } 
 
     before do
-      # set where the helper will write the binary
       helper.instance_variable_set(:@full_text_path, tmp_full_text_dir)
-      admin_user # create the admin user in DB
+      admin_user # create the admin user
     end
 
     after do
@@ -97,9 +96,9 @@ RSpec.describe Tasks::IngestHelper do
       expect(file_set.read_groups).to include('public')
 
       expect(helper).to have_received(:attach_pdf_to_work).with(
-        an_instance_of(Article), # the work found by Article.find
+        an_instance_of(Article), 
         full_path,
-        admin_user,              # looked up via uid: 'admin'
+        admin_user,             
         work.visibility
       )
     end
