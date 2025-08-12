@@ -22,7 +22,6 @@ module Tasks
 
       file_path = File.join(@full_text_path, filename)
       File.binwrite(file_path, pdf_binary)
-      FileUtils.chmod(0o644, file_path)
 
       file_set = attach_pdf_to_work(article, file_path, depositor, article.visibility)
 
