@@ -16,6 +16,14 @@
 <% total_files = @report[:headers][:total_files].presence %>
 <% total_unique = @report[:headers][:total_unique_records].presence %>
 
+<%# Date range if available %>
+<% if @report[:headers][:start_date].present? && @report[:headers][:end_date].present? %>
+  <p style="font-size: 16px; margin-bottom: 10px;">
+    <strong>Date Range: </strong>
+    <%= @report[:headers][:start_date] %> to <%= @report[:headers][:end_date] %>
+  </p>
+<% end %>
+
 <p style="font-size: 16px; margin-bottom: 10px;">
   <strong><%= total_files ? 'Total Files' : 'Total Unique Records' %>: </strong>
   <%= total_files || total_unique %>
