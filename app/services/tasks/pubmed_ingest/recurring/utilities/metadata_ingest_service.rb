@@ -77,6 +77,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
       handle_pubmed_errors(xml_doc, batch_ids) if db == 'pubmed'
 
       current_batch = xml_doc.xpath(db == 'pubmed' ? '//PubmedArticle' : '//article')
+      current_batch = generate_filtered_batch(current_batch, db: db)
       process_batch(current_batch)
 
       batch_count += 1
@@ -269,5 +270,33 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
       return work_data if work_data.present?
     end
     nil
+  end
+
+  def pubmed_xml_has_unc_affiliation?(nokogiri_doc)
+    aff_nodes = nokogiri_doc.xpath('//AffiliationInfo/Affiliation')
+    aff_nodes.any? { |n| AffiliationUtilsHelper.is_unc_affiliation?(n.text) }
+  end
+
+  def pmc_xml_has_unc_affiliation?(nokogiri_doc)
+    aff_nodes = nokogiri_doc.xpath('//aff | //contrib//aff | //contrib-group//aff')
+    aff_nodes.any? { |n| AffiliationUtilsHelper.is_unc_affiliation?(n.text) }
+  end
+
+  # Extracts a filtered batch of records that have UNC affiliations
+  # Despite filters defined while retrieving IDs, this ensures we only process records with UNC affiliations.
+  # The API otherwise may return records without any affiliation or with affiliations that do not match our criteria.
+  def generate_filtered_batch(batch, db:)
+    # Always require a UNC affiliation
+    filtered_batch = batch.select do |doc|
+      db == 'pubmed' ? pubmed_xml_has_unc_affiliation?(doc) : pmc_xml_has_unc_affiliation?(doc)
+    end
+
+    skipped = batch.size - filtered_batch.size
+    LogUtilsHelper.double_log(
+      "Filtered out #{skipped} #{db} records with no UNC affiliation; #{filtered_batch.size} remain.",
+      :info,
+      tag: 'MetadataIngestService'
+    )
+    filtered_batch
   end
 end

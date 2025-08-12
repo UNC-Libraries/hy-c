@@ -142,7 +142,7 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
       LogUtilsHelper.double_log("Retrieving record IDs for PubMed and PMC databases within the date range: #{@config['start_date'].strftime('%Y-%m-%d')} - #{@config['end_date'].strftime('%Y-%m-%d')}", :info, tag: 'build_id_lists')
       record_id_path = File.join(@id_list_output_directory, "#{db}_ids.jsonl")
       # WIP: Temporarily limit the number of records retrieved for testing
-      id_retrieval_service.retrieve_ids_within_date_range(output_path: record_id_path, db: db)
+      id_retrieval_service.retrieve_ids_within_date_range(output_path: record_id_path, db: db, retmax: 10)
       @tracker['progress']['retrieve_ids_within_date_range'][db]['completed'] = true
       @tracker.save
     end
@@ -251,7 +251,7 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
         config: config,
         resume: true
       )
-      config['full_text_dir'] = tracker['full_text_dir'] if tracker['full_text_dir'].present?
+      config['full_text_dir'] = tracker['full_text_dir']
       unless tracker
         puts '❌ Failed to load existing tracker.'
         exit(1)
@@ -318,14 +318,9 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
   private_class_method :resolve_output_dir
 
   def self.resolve_full_text_dir(raw_full_text_dir, output_dir, script_start_time)
-    if raw_full_text_dir.present?
-      base = Pathname.new(raw_full_text_dir)
-      base.absolute? ? base : Rails.root.join(base)
-    else
-      default_dir = output_dir.join("full_text_pdfs_#{script_start_time.strftime('%Y-%m-%d_%H-%M-%S')}")
-      LogUtilsHelper.double_log("No full-text directory specified. Using default: #{default_dir}", :info, tag: 'PubMed Ingest')
-      default_dir
-    end
+    base = Pathname.new(raw_full_text_dir)
+    base = base.join("full_text_pdfs_#{script_start_time.strftime('%Y-%m-%d_%H-%M-%S')}")
+    base.absolute? ? base : Rails.root.join(base)
   end
   private_class_method :resolve_full_text_dir
 
