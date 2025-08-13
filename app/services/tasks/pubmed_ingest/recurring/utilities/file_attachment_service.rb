@@ -63,7 +63,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
     end
 
     if category == 'failed'
-      log_result(record, category: :failed, message: record['message'] || 'No message provided', file_name: 'NONE')
+      log_result(record, category: :failed, message: record['pdf_attached'] || 'No message provided', file_name: 'NONE')
       return true
     end
 
@@ -214,7 +214,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
       ids: record['ids'],
       timestamp: Time.now.utc.iso8601,
       category: category,
-      message: message,
+      pdf_attached: message,
       file_name: file_name
     }
     @tracker.save

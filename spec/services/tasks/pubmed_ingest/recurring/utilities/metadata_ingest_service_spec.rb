@@ -514,7 +514,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService 
       expect(entry[:ids][:pmcid]).to eq('PMC789012')
       expect(entry[:ids][:work_id]).to eq('article_123')
       expect(entry[:category]).to eq(:successfully_ingested)
-      expect(entry[:message]).to eq('Success')
+      expect(entry[:pdf_attached]).to eq('Success')
       expect(entry[:timestamp]).to eq('2024-01-01T12:00:00Z')
     end
   end

@@ -239,7 +239,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
         timestamp: Time.now.utc.iso8601,
         category: category
     }
-    log_entry[:message] = message if message.present?
+    log_entry[:pdf_attached] = message if message.present?
     @write_buffer << log_entry
     flush_buffer_if_needed
   end

@@ -571,7 +571,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
         ids: sample_record['ids'],
         timestamp: '2024-01-01T12:00:00Z',
         category: :successfully_attached,
-        message: 'File attached successfully',
+        pdf_attached: 'File attached successfully',
         file_name: 'PMC123456_001.pdf'
       }
 
