@@ -842,21 +842,13 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
       let(:output_dir) { Pathname.new('/var/out/pubmed_ingest_2024-01-02_03-04-05') }
 
       it 'returns provided absolute dir' do
-        dir = described_class.send(:resolve_full_text_dir, '/data/pdfs', output_dir, now)
-        expect(dir.to_s).to eq('/data/pdfs')
+        dir = described_class.send(:resolve_full_text_dir, '/data', output_dir, now)
+        expect(dir.to_s).to eq('/data/full_text_pdfs_2024-01-02_03-04-05')
       end
 
       it 'resolves provided relative dir under Rails.root' do
-        dir = described_class.send(:resolve_full_text_dir, 'data/pdfs', output_dir, now)
-        expect(dir.to_s).to eq('/app/data/pdfs')
-      end
-
-      it 'builds a default timestamped dir when blank' do
-        dir = described_class.send(:resolve_full_text_dir, nil, output_dir, now)
-        expect(dir.to_s).to eq('/var/out/pubmed_ingest_2024-01-02_03-04-05/full_text_pdfs_2024-01-02_03-04-05')
-        expect(LogUtilsHelper).to have_received(:double_log).with(
-            a_string_including('No full-text directory specified. Using default:'), :info, tag: 'PubMed Ingest'
-        )
+        dir = described_class.send(:resolve_full_text_dir, 'data', output_dir, now)
+        expect(dir.to_s).to eq('/app/data/full_text_pdfs_2024-01-02_03-04-05')
       end
     end
 
@@ -896,7 +888,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
           {
           resume: false,
           output_dir: '/var/out',
-          full_text_dir: nil,
+          full_text_dir: '/var/full_text',
           start_date: '2024-01-01',
           end_date: '2024-01-31',
           admin_set_title: 'default',

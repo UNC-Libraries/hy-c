@@ -210,7 +210,9 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
     LogUtilsHelper.double_log('Finalizing report and sending notification email...', :info, tag: 'send_summary_email')
     begin
       report = Tasks::PubmedIngest::SharedUtilities::PubmedReportingService.generate_report(attachment_results)
-      report[:headers][:total_unique_records] = @results[:counts][:successfully_ingested] + @results[:counts][:successfully_attached] + @results[:counts][:skipped]
+      report[:headers][:total_unique_records] = @results[:counts][:successfully_ingested] + @results[:counts][:successfully_attached] + @results[:counts][:skipped] + @results[:counts][:failed]
+      report[:headers][:start_date] = @results[:start_date]
+      report[:headers][:end_date] = @results[:end_date]
       PubmedReportMailer.pubmed_report_email(report).deliver_now
       @tracker['progress']['send_summary_email']['completed'] = true
       @tracker.save
@@ -225,12 +227,13 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
     depositor        = args[:depositor_onyen].presence || 'admin'
     resume_flag      = ActiveModel::Type::Boolean.new.cast(args[:resume])
     raw_output_dir   = args[:output_dir]
+    raw_full_text_dir = args[:full_text_dir]
     script_start     = Time.now
     output_dir       = nil
     config           = {}
 
-    if raw_output_dir.blank?
-      puts '❌ You cannot resume or start an ingest without specifying an output directory.'
+    if raw_output_dir.blank? || raw_full_text_dir.blank?
+      puts '❌ You must specify an output directory and full text directory.'
       exit(1)
     end
 
