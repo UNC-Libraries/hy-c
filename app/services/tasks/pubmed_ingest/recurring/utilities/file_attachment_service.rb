@@ -108,7 +108,8 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
         log_result(record, category: :successfully_ingested, message: 'No PDF or TGZ link found, skipping attachment', file_name: 'NONE')
       else
         log_result(record, category: :failed, message: e.message, file_name: 'NONE')
-        LogUtilsHelper.double_log("Error processing record: #{e.message}", :error, tag: 'Attachment')
+        LogUtilsHelper.double_log("Error processing record: #{e.message}. Request URL: https://www.ncbi.nlm.nih.gov/pmc/utils/oa/oa.fcgi?id=#{pmcid}", :error, tag: 'Attachment')
+        Rails.logger.error e.backtrace.join("\n")
       end
     ensure
       sleep(SLEEP_BETWEEN_REQUESTS)
