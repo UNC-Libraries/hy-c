@@ -5,7 +5,6 @@ module WorkUtilsHelper
     work_data = ActiveFedora::SolrService.get(query, rows: 1)['response']['docs'].first || {}
     Rails.logger.warn("No work found associated with alternate identifier: #{identifier}") if work_data.blank?
     # WIP: Temporary hardcoding, broken articles
-    # admin_set_name = 'default'
     admin_set_name = work_data['admin_set_tesim']&.first
     admin_set_data = admin_set_name ? ActiveFedora::SolrService.get("title_tesim:#{admin_set_name} AND has_model_ssim:(\"AdminSet\")", { :rows => 1, 'df' => 'title_tesim'})['response']['docs'].first : {}
     Rails.logger.warn(self.generate_warning_message(admin_set_name, identifier)) if admin_set_data.blank?
@@ -23,7 +22,6 @@ module WorkUtilsHelper
     # Retrieve the work related to the fileset
     work_data = ActiveFedora::SolrService.get("file_set_ids_ssim:#{fileset_id}", rows: 1)['response']['docs'].first || {}
     Rails.logger.warn("No work found associated with fileset id: #{fileset_id}") if work_data.blank?
-    # Set the admin set to an empty hash if the solr query returns nil
     admin_set_name = work_data['admin_set_tesim']&.first
     admin_set_data = admin_set_name ? ActiveFedora::SolrService.get("title_tesim:#{admin_set_name} AND has_model_ssim:(\"AdminSet\")", { :rows => 1, 'df' => 'title_tesim'})['response']['docs'].first : {}
     Rails.logger.warn(self.generate_warning_message(admin_set_name, fileset_id, :fileset)) if admin_set_data.blank?
@@ -94,7 +92,7 @@ module WorkUtilsHelper
     permissions_array
   end
 
-  def generate_cdr_url_for_article(article)
+  def self.generate_cdr_url_for_article(article)
     "#{ENV['HYRAX_HOST']}#{Rails.application.routes.url_helpers.hyrax_article_path(article, host: ENV['HYRAX_HOST'])}"
   end
 
@@ -107,6 +105,7 @@ module WorkUtilsHelper
   end
 
   def self.generate_cdr_url(work_id: nil, identifier: nil)
+    puts "=====>>>>> generate_cdr_url called with work_id: #{work_id.inspect}, identifier: #{identifier.inspect}"
     raise ArgumentError, 'Provide either work_id or identifier' if work_id.blank? && identifier.blank?
 
     result =

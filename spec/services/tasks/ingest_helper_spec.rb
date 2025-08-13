@@ -69,7 +69,7 @@ RSpec.describe Tasks::IngestHelper do
     let(:tmp_full_text_dir) { Dir.mktmpdir('fulltext') }
     let(:pdf_binary)        { File.binread(file_path) }
     let(:filename)          { 'PMC123_001.pdf' }
-    let(:admin_user)        { FactoryBot.create(:user, uid: 'admin') } 
+    let(:admin_user)        { FactoryBot.create(:user, uid: 'admin') }
 
     before do
       helper.instance_variable_set(:@full_text_path, tmp_full_text_dir)
@@ -96,9 +96,9 @@ RSpec.describe Tasks::IngestHelper do
       expect(file_set.read_groups).to include('public')
 
       expect(helper).to have_received(:attach_pdf_to_work).with(
-        an_instance_of(Article), 
+        an_instance_of(Article),
         full_path,
-        admin_user,             
+        admin_user,
         work.visibility
       )
     end

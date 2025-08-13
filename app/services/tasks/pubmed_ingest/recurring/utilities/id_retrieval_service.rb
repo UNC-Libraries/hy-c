@@ -9,7 +9,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService
     @tracker = tracker
   end
 
-  def retrieve_ids_within_date_range(output_path:, db:, retmax: 500, extras: nil)
+  def retrieve_ids_within_date_range(output_path:, db:, retmax: 200, extras: nil)
     # Rails.logger.info("[retrieve_ids_within_date_range] Fetching IDs within date range: #{@start_date.strftime('%Y-%m-%d')} - #{@end_date.strftime('%Y-%m-%d')} for #{db} database")
     LogUtilsHelper.double_log("Fetching IDs within date range: #{@start_date.strftime('%Y-%m-%d')} - #{@end_date.strftime('%Y-%m-%d')} for #{db} database", :info, tag: 'retrieve_ids_within_date_range')
     base_url = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi'
@@ -68,7 +68,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService
         end
         break if cursor > parsed_response.xpath('//Count').text.to_i
         # WIP: Temporarily limit the number of IDs retrieved for testing
-        break if count >= 20
+        break if count >= 30
 
         # Respect NCBI rate limits
         sleep(0.34)

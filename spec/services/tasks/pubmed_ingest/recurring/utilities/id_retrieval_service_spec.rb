@@ -96,7 +96,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService do
           'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi',
           query: hash_including(
             db: 'pubmed',
-            retmax: 500,
+            retmax: 200,
             retmode: 'xml',
             tool: 'CDR',
             email: 'cdr@unc.edu',
@@ -153,7 +153,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService do
           'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi',
           query: hash_including(
             db: 'pubmed',
-            retmax: 500,
+            retmax: 200,
             retmode: 'xml',
             tool: 'CDR',
             email: 'cdr@unc.edu',
