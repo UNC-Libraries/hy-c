@@ -53,7 +53,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
     return true if @existing_ids.include?(pmcid) || @existing_ids.include?(record.dig('ids', 'pmid'))
     if pmcid.blank?
         # Can only retrieve files using PMCID
-      log_result(record, category: :skipped, message: 'No PMCID found - can only retrieve files with PMCID', file_name: 'NONE')
+      log_result(record, category: :successfully_ingested, message: 'No PMCID found - can only retrieve files with PMCID', file_name: 'NONE')
       return true
     end
     # WIP: Temporarily do not filter out works that already have files attached
