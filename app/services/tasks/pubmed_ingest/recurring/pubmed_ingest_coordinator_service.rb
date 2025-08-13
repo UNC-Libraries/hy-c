@@ -49,7 +49,7 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
     attach_files
     load_results
     finalize_report_and_notify(@results)
-    JsonFileUtils.write_json(@results, File.join(@output_dir, 'ingest_results.json'), pretty: true)
+    JsonFileUtilsHelper.write_json(@results, File.join(@output_dir, 'ingest_results.json'), pretty: true)
 
     LogUtilsHelper.double_log('PubMed ingest workflow completed successfully.', :info, tag: 'PubmedIngestCoordinator')
     rescue => e
@@ -176,7 +176,7 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
     end
 
     begin
-      raw_results_array = JsonFileUtils.read_jsonl(path)
+      raw_results_array = JsonFileUtilsHelper.read_jsonl(path)
       format_results_for_reporting(raw_results_array)
       LogUtilsHelper.double_log("Successfully loaded and formatted results from #{path}. Current counts: #{@results[:counts]}", :info, tag: 'load_and_format_results')
     rescue => e

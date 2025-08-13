@@ -71,8 +71,8 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
     allow(File).to receive(:exist?).and_return(false)
     allow(File).to receive(:join).and_call_original
     allow(FileUtils).to receive(:mkdir_p)
-    allow(JsonFileUtils).to receive(:write_json)
-    allow(JsonFileUtils).to receive(:read_jsonl).and_return([])
+    allow(JsonFileUtilsHelper).to receive(:write_json)
+    allow(JsonFileUtilsHelper).to receive(:read_jsonl).and_return([])
     allow(WorkUtilsHelper).to receive(:fetch_work_data_by_id)
     allow(WorkUtilsHelper).to receive(:generate_cdr_url_for_work_id)
     allow(Tasks::PubmedIngest::SharedUtilities::PubmedReportingService).to receive(:generate_report)
@@ -167,7 +167,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
 
     before do
       allow(File).to receive(:exist?).with(/attachment_results\.jsonl/).and_return(true)
-      allow(JsonFileUtils).to receive(:read_jsonl).with(/attachment_results\.jsonl/).and_return(sample_results)
+      allow(JsonFileUtilsHelper).to receive(:read_jsonl).with(/attachment_results\.jsonl/).and_return(sample_results)
       allow(WorkUtilsHelper).to receive(:generate_cdr_url_for_work_id).with('work_123').and_return('http://example.com/work_123')
       allow(Tasks::PubmedIngest::SharedUtilities::PubmedReportingService).to receive(:generate_report).and_return({
         headers: { total_unique_records: 0 },
@@ -188,7 +188,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
     it 'writes final results to JSON file' do
       service.run
 
-      expect(JsonFileUtils).to have_received(:write_json).with(
+      expect(JsonFileUtilsHelper).to have_received(:write_json).with(
         service.instance_variable_get(:@results),
         '/tmp/test_output/ingest_results.json',
         pretty: true
@@ -526,7 +526,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
 
     before do
       allow(File).to receive(:exist?).with(results_path).and_return(true)
-      allow(JsonFileUtils).to receive(:read_jsonl).with(results_path).and_return(sample_results)
+      allow(JsonFileUtilsHelper).to receive(:read_jsonl).with(results_path).and_return(sample_results)
       allow(WorkUtilsHelper).to receive(:generate_cdr_url_for_work_id).with('work_123').and_return('http://example.com/work_123')
       allow(WorkUtilsHelper).to receive(:generate_cdr_url_for_work_id).with('work_789').and_return('http://example.com/work_789')
     end
@@ -593,7 +593,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
     context 'when JSON parsing fails' do
       before do
         allow(File).to receive(:exist?).with(results_path).and_return(true)
-        allow(JsonFileUtils).to receive(:read_jsonl).and_raise(JSON::ParserError.new('Invalid JSON'))
+        allow(JsonFileUtilsHelper).to receive(:read_jsonl).and_raise(JSON::ParserError.new('Invalid JSON'))
       end
 
       it 'raises error with descriptive message' do
@@ -772,7 +772,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
 
       # Mock files for load_results
       allow(File).to receive(:exist?).with(/attachment_results\.jsonl/).and_return(true)
-      allow(JsonFileUtils).to receive(:read_jsonl).and_return([])
+      allow(JsonFileUtilsHelper).to receive(:read_jsonl).and_return([])
 
       service.run
 
@@ -789,7 +789,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
 
     it 'properly coordinates service instantiation and method calls' do
       allow(File).to receive(:exist?).with(/attachment_results\.jsonl/).and_return(true)
-      allow(JsonFileUtils).to receive(:read_jsonl).and_return([])
+      allow(JsonFileUtilsHelper).to receive(:read_jsonl).and_return([])
 
       service.run
 

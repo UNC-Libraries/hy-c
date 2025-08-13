@@ -2,16 +2,16 @@
 require 'json'
 require 'fileutils'
 
-module JsonFileUtils
+module JsonFileUtilsHelper
   # Write a Ruby object to a JSON file.
   def self.write_json(data, path, pretty: true)
     ensure_dir(path)
     json = pretty ? JSON.pretty_generate(data) : JSON.generate(data)
     File.write(path, json, mode: 'w', encoding: 'utf-8')
-    Rails.logger.info("[JsonlFileUtils] Wrote JSON to #{path}")
+    Rails.logger.info("[JsonFileUtilsHelper] Wrote JSON to #{path}")
     true
   rescue => e
-    Rails.logger.warn("[JsonlFileUtils] write_json failed for #{path}: #{e.message}")
+    Rails.logger.warn("[JsonFileUtilsHelper] write_json failed for #{path}: #{e.message}")
     false
   end
 
@@ -21,7 +21,7 @@ module JsonFileUtils
     content = File.read(path, mode: 'r:bom|utf-8')
     JSON.parse(content, symbolize_names: symbolize_names)
   rescue => e
-    Rails.logger.warn("[JsonlFileUtils] read_json failed for #{path}: #{e.message}")
+    Rails.logger.warn("[JsonFileUtilsHelper] read_json failed for #{path}: #{e.message}")
     nil
   end
 
@@ -36,10 +36,10 @@ module JsonFileUtils
         count += 1
       end
     end
-    Rails.logger.info("[JsonlFileUtils] Wrote #{count} JSONL records to #{path}")
+    Rails.logger.info("[JsonFileUtilsHelper] Wrote #{count} JSONL records to #{path}")
     count
   rescue => e
-    Rails.logger.warn("[JsonlFileUtils] write_jsonl failed for #{path}: #{e.message}")
+    Rails.logger.warn("[JsonFileUtilsHelper] write_jsonl failed for #{path}: #{e.message}")
     0
   end
 
@@ -54,7 +54,7 @@ module JsonFileUtils
     end
     out
   rescue => e
-    Rails.logger.warn("[JsonlFileUtils] read_jsonl failed for #{path}: #{e.message}")
+    Rails.logger.warn("[JsonFileUtilsHelper] read_jsonl failed for #{path}: #{e.message}")
     []
   end
 
