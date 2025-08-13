@@ -327,8 +327,8 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
       it 'retries and eventually logs failure' do
         expect(service).to receive(:log_result).with(
           sample_record,
-          category: :failed,
-          message: /Bad response: 500/,
+          category: :successfully_ingested,
+          message: /File attachment failed -- Bad response: 500/,
           file_name: 'NONE'
         )
 
