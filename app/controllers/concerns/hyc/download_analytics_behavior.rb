@@ -4,7 +4,7 @@ module Hyc
     extend ActiveSupport::Concern
 
     included do
-      # after_action :track_download, only: :show
+      after_action :track_download, only: :show
 
       def track_download
         if bot_request?(request.user_agent)
