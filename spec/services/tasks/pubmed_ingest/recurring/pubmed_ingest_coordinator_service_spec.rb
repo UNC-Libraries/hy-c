@@ -88,7 +88,18 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
 
     allow(Tasks::PubmedIngest::SharedUtilities::PubmedReportingService)
     .to receive(:generate_report)
-    .and_return({ headers: { total_unique_records: 0 }, summary: 'Test report' })
+    .and_return(
+    {
+      headers: { total_unique_records: 0 },
+      records: {
+        successfully_ingested: [],
+        successfully_attached: [],
+        skipped: [],
+        failed: []
+      },
+      summary: 'Test report'
+    }
+  )
 
     # Mock service methods
     allow(mock_id_retrieval_service).to receive(:retrieve_ids_within_date_range)
@@ -700,10 +711,16 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
   describe '#finalize_report_and_notify' do
     let(:mock_report) do
       {
-        headers: { total_unique_records: 0 },
-        summary: 'Test report'
+        headers: {},
+        records: {
+          successfully_ingested: ['1', '2', '3', '4', '5'],
+          successfully_attached: ['6', '7', '8'],
+          skipped: ['9', '10'],
+          failed: []
+        }
       }
     end
+
 
     before do
       allow(Tasks::PubmedIngest::SharedUtilities::PubmedReportingService)
@@ -711,11 +728,14 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
     end
 
     it 'generates report and sends email' do
-      results = service.instance_variable_get(:@results)
-      results[:counts][:successfully_ingested] = 5
-      results[:counts][:successfully_attached] = 3
-      results[:counts][:skipped] = 2
-
+      # results = service.instance_variable_get(:@results)
+      results = { records: {}, headers: {} }
+      # results[:counts][:successfully_ingested] = 5
+      # results[:counts][:successfully_attached] = 3
+      # results[:counts][:skipped] = 2
+      # results[:records][:successfully_ingested] = ['1', '2', '3', '4', '5']
+      # results[:records][:successfully_attached] = ['6', '7', '8']
+      # results[:records][:skipped] = ['9', '10']
       service.send(:finalize_report_and_notify, results)
 
       expect(Tasks::PubmedIngest::SharedUtilities::PubmedReportingService)
