@@ -232,8 +232,8 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
     output_dir       = nil
     config           = {}
 
-    if raw_output_dir.blank? || raw_full_text_dir.blank?
-      puts '❌ You must specify an output directory and full text directory.'
+    if raw_output_dir.blank?
+      puts '❌ You must specify an output directory.'
       exit(1)
     end
 
@@ -260,6 +260,12 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
         exit(1)
       end
     else
+
+      if raw_full_text_dir.blank?
+        puts '❌ You must specify a full text directory when not resuming.'
+        exit(1)
+      end
+
       REQUIRED_ARGS.each do |key|
         if args[key.to_sym].blank?
           puts "❌ Missing required option: --#{key.tr('_', '-')}"
