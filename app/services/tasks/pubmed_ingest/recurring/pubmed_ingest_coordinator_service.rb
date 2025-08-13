@@ -210,9 +210,15 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
     LogUtilsHelper.double_log('Finalizing report and sending notification email...', :info, tag: 'send_summary_email')
     begin
       report = Tasks::PubmedIngest::SharedUtilities::PubmedReportingService.generate_report(attachment_results)
-      report[:headers][:total_unique_records] = @results[:counts][:successfully_ingested] + @results[:counts][:successfully_attached] + @results[:counts][:skipped] + @results[:counts][:failed]
-      report[:headers][:start_date] = @results[:start_date]
-      report[:headers][:end_date] = @results[:end_date]
+      report[:headers][:depositor] = @tracker['depositor_onyen']
+      report[:headers][:total_unique_records] =
+        report[:records][:successfully_ingested].size +
+        report[:records][:successfully_attached].size +
+        report[:records][:skipped].size +
+        report[:records][:failed].size
+      report[:headers][:start_date] = Date.parse(@tracker['date_range']['start']).strftime('%Y-%m-%d')
+      report[:headers][:end_date]   = Date.parse(@tracker['date_range']['end']).strftime('%Y-%m-%d')
+
       PubmedReportMailer.pubmed_report_email(report).deliver_now
       @tracker['progress']['send_summary_email']['completed'] = true
       @tracker.save
