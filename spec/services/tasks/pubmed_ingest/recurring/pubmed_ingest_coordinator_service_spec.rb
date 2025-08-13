@@ -167,18 +167,21 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
     let(:sample_results) do
       [
         {
-          'category' => 'successfully_attached',
-          'work_id' => 'work_123',
-          'message' => 'File attached successfully',
-          'ids' => { 'pmid' => '123456', 'pmcid' => 'PMC789012' },
-          'file_name' => 'PMC789012_001.pdf'
+          category: :successfully_attached,
+          work_id: 'work_123',
+          message: 'File attached successfully',
+          ids: { pmid: '123456', pmcid: 'PMC789012' },
+          file_name: 'PMC789012_001.pdf'
         }
       ]
     end
 
     before do
       allow(File).to receive(:exist?).with(/attachment_results\.jsonl/).and_return(true)
-      allow(JsonFileUtilsHelper).to receive(:read_jsonl).with(/attachment_results\.jsonl/).and_return(sample_results)
+      allow(JsonFileUtilsHelper)
+        .to receive(:read_jsonl)
+        .with(/attachment_results\.jsonl/, symbolize_names: true)
+        .and_return(sample_results)
       allow(WorkUtilsHelper).to receive(:generate_cdr_url_for_work_id).with('work_123').and_return('http://example.com/work_123')
       allow(Tasks::PubmedIngest::SharedUtilities::PubmedReportingService).to receive(:generate_report).and_return({
         headers: { total_unique_records: 0 },
@@ -509,35 +512,64 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
 
   describe '#load_results' do
     let(:results_path) { '/tmp/test_output/03_attach_files_to_works/attachment_results.jsonl' }
+    # let(:sample_results) do
+    #   [
+    #     {
+    #       'category' => 'successfully_attached',
+    #       'work_id' => 'work_123',
+    #       'message' => 'File attached successfully',
+    #       'ids' => { 'pmid' => '123456', 'pmcid' => 'PMC789012' },
+    #       'file_name' => 'PMC789012_001.pdf'
+    #     },
+    #     {
+    #       'category' => 'failed',
+    #       'work_id' => nil,
+    #       'message' => 'File attachment failed',
+    #       'ids' => { 'pmid' => '234567', 'pmcid' => 'PMC890123' },
+    #       'file_name' => 'NONE'
+    #     },
+    #     {
+    #       'category' => 'skipped',
+    #       'work_id' => 'work_789',
+    #       'message' => 'Already has files',
+    #       'ids' => { 'pmid' => '345678', 'pmcid' => 'PMC901234' },
+    #       'file_name' => 'NONE'
+    #     }
+    #   ]
+    # end
+
     let(:sample_results) do
       [
         {
-          'category' => 'successfully_attached',
-          'work_id' => 'work_123',
-          'message' => 'File attached successfully',
-          'ids' => { 'pmid' => '123456', 'pmcid' => 'PMC789012' },
-          'file_name' => 'PMC789012_001.pdf'
+          category: :successfully_attached,
+          work_id: 'work_123',
+          message: 'File attached successfully',
+          ids: { pmid: '123456', pmcid: 'PMC789012' },
+          file_name: 'PMC789012_001.pdf'
         },
         {
-          'category' => 'failed',
-          'work_id' => nil,
-          'message' => 'File attachment failed',
-          'ids' => { 'pmid' => '234567', 'pmcid' => 'PMC890123' },
-          'file_name' => 'NONE'
+          category: :failed,
+          work_id: nil,
+          message: 'File attachment failed',
+          ids: { pmid: '234567', pmcid: 'PMC890123' },
+          file_name: 'NONE'
         },
         {
-          'category' => 'skipped',
-          'work_id' => 'work_789',
-          'message' => 'Already has files',
-          'ids' => { 'pmid' => '345678', 'pmcid' => 'PMC901234' },
-          'file_name' => 'NONE'
+          category: :skipped,
+          work_id: 'work_789',
+          message: 'Already has files',
+          ids: { pmid: '345678', pmcid: 'PMC901234' },
+          file_name: 'NONE'
         }
       ]
     end
 
     before do
       allow(File).to receive(:exist?).with(results_path).and_return(true)
-      allow(JsonFileUtilsHelper).to receive(:read_jsonl).with(results_path).and_return(sample_results)
+      allow(JsonFileUtilsHelper)
+        .to receive(:read_jsonl)
+        .with(results_path, symbolize_names: true)
+        .and_return(sample_results)
       allow(WorkUtilsHelper).to receive(:generate_cdr_url_for_work_id).with('work_123').and_return('http://example.com/work_123')
       allow(WorkUtilsHelper).to receive(:generate_cdr_url_for_work_id).with('work_789').and_return('http://example.com/work_789')
     end
@@ -560,14 +592,15 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
       results = service.instance_variable_get(:@results)
       attached_result = results[:successfully_attached].first
 
-      expect(attached_result['pmid']).to eq('123456')
-      expect(attached_result['pmcid']).to eq('PMC789012')
-      expect(attached_result['work_id']).to eq('work_123')
-      expect(attached_result['pdf_attached']).to eq('File attached successfully')
-      expect(attached_result['file_name']).to eq('PMC789012_001.pdf')
-      expect(attached_result['cdr_url']).to eq('http://example.com/work_123')
-      expect(attached_result).not_to have_key('ids')
-      expect(attached_result).not_to have_key('message')
+      expect(attached_result[:pmid]).to eq('123456')
+      expect(attached_result[:pmcid]).to eq('PMC789012')
+      expect(attached_result[:work_id]).to eq('work_123')
+      expect(attached_result[:message]).to eq('File attached successfully')   # was pdf_attached
+      expect(attached_result[:file_name]).to eq('PMC789012_001.pdf')
+      expect(attached_result[:cdr_url]).to eq('http://example.com/work_123')
+      expect(attached_result).not_to have_key(:ids)
+      # If you want to assert we *keep* message:
+      expect(attached_result).to have_key(:message)
     end
 
     it 'handles records without work_id correctly' do
@@ -576,11 +609,11 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
       results = service.instance_variable_get(:@results)
       failed_result = results[:failed].first
 
-      expect(failed_result['pmid']).to eq('234567')
-      expect(failed_result['pmcid']).to eq('PMC890123')
-      expect(failed_result['work_id']).to be_nil
-      expect(failed_result['file_name']).to eq('NONE')
-      expect(failed_result).not_to have_key('cdr_url')
+      expect(failed_result[:pmid]).to eq('234567')
+      expect(failed_result[:pmcid]).to eq('PMC890123')
+      expect(failed_result[:work_id]).to be_nil
+      expect(failed_result[:file_name]).to eq('NONE')
+      expect(failed_result).not_to have_key(:cdr_url)
     end
 
     context 'when results file does not exist' do
@@ -636,24 +669,24 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
     let(:raw_results) do
       [
         {
-          'category' => 'successfully_ingested',
-          'work_id' => 'work_456',
-          'message' => 'Successfully ingested',
-          'ids' => { 'pmid' => '345678', 'pmcid' => 'PMC901234', 'doi' => '10.1000/example' },
-          'file_name' => 'NONE'
+          category: 'successfully_ingested',
+          work_id: 'work_456',
+          message: 'Successfully ingested',
+          ids: { pmid: '345678', pmcid: 'PMC901234', doi: '10.1000/example' },
+          file_name: 'NONE'
         },
         {
-          'category' => 'skipped',
-          'work_id' => nil,
-          'message' => 'Already exists',
-          'ids' => { 'pmid' => '456789' },
-          'file_name' => 'NONE'
+          category: 'skipped',
+          work_id: nil,
+          message: 'Already exists',
+          ids: { pmid: '456789' },
+          file_name: 'NONE'
         },
         {
-          'category' => 'invalid_category',
-          'message' => 'Should be ignored',
-          'ids' => { 'pmid' => '999999' },
-          'file_name' => 'NONE'
+          category: 'invalid_category',
+          message: 'Should be ignored',
+          ids: { pmid: '999999' },
+          file_name: 'NONE'
         }
       ]
     end
@@ -687,13 +720,13 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
       results = service.instance_variable_get(:@results)
       ingested_entry = results[:successfully_ingested].first
 
-      expect(ingested_entry['pmid']).to eq('345678')
-      expect(ingested_entry['pmcid']).to eq('PMC901234')
-      expect(ingested_entry['doi']).to eq('10.1000/example')
-      expect(ingested_entry['work_id']).to eq('work_456')
-      expect(ingested_entry['pdf_attached']).to eq('Successfully ingested')
-      expect(ingested_entry['file_name']).to eq('NONE')
-      expect(ingested_entry['cdr_url']).to eq('http://example.com/work_456')
+      expect(ingested_entry[:pmid]).to eq('345678')
+      expect(ingested_entry[:pmcid]).to eq('PMC901234')
+      expect(ingested_entry[:doi]).to eq('10.1000/example')
+      expect(ingested_entry[:work_id]).to eq('work_456')
+      expect(ingested_entry[:message]).to eq('Successfully ingested')
+      expect(ingested_entry[:file_name]).to eq('NONE')
+      expect(ingested_entry[:cdr_url]).to eq('http://example.com/work_456')
     end
 
     it 'handles entries without work_id correctly' do
@@ -702,8 +735,8 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
       results = service.instance_variable_get(:@results)
       skipped_entry = results[:skipped].first
 
-      expect(skipped_entry['pmid']).to eq('456789')
-      expect(skipped_entry['work_id']).to be_nil
+      expect(skipped_entry[:pmid]).to eq('456789')
+      expect(skipped_entry[:work_id]).to be_nil
       expect(skipped_entry).not_to have_key('cdr_url')
     end
   end

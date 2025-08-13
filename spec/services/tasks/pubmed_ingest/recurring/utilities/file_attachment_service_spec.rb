@@ -327,7 +327,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
       it 'retries and eventually logs failure' do
         expect(service).to receive(:log_result).with(
           sample_record,
-          category: :successfully_ingested,
+          category: :failed,
           message: /File attachment failed -- Bad response: 500/,
           file_name: 'NONE'
         )
@@ -571,7 +571,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService 
         ids: sample_record['ids'],
         timestamp: '2024-01-01T12:00:00Z',
         category: :successfully_attached,
-        pdf_attached: 'File attached successfully',
+        message: 'File attached successfully',
         file_name: 'PMC123456_001.pdf'
       }
 

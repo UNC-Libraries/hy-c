@@ -78,7 +78,7 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
       @tracker.save
 
     rescue => e
-      LogUtilsHelper.double_log("File attachment failed: #{e.message}", :error, tag: 'attach_files') # << log exact format
+      LogUtilsHelper.double_log("File attachment failed: #{e.message}", :error, tag: 'attach_files')
       raise e
     end
     LogUtilsHelper.double_log('File attachment process completed.', :info, tag: 'attach_files')
@@ -141,8 +141,7 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
 
       LogUtilsHelper.double_log("Retrieving record IDs for PubMed and PMC databases within the date range: #{@config['start_date'].strftime('%Y-%m-%d')} - #{@config['end_date'].strftime('%Y-%m-%d')}", :info, tag: 'build_id_lists')
       record_id_path = File.join(@id_list_output_directory, "#{db}_ids.jsonl")
-      # WIP: Temporarily limit the number of records retrieved for testing
-      id_retrieval_service.retrieve_ids_within_date_range(output_path: record_id_path, db: db, retmax: 10)
+      id_retrieval_service.retrieve_ids_within_date_range(output_path: record_id_path, db: db)
       @tracker['progress']['retrieve_ids_within_date_range'][db]['completed'] = true
       @tracker.save
     end
@@ -176,7 +175,7 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
     end
 
     begin
-      raw_results_array = JsonFileUtilsHelper.read_jsonl(path)
+      raw_results_array = JsonFileUtilsHelper.read_jsonl(path, symbolize_names: true)
       format_results_for_reporting(raw_results_array)
       LogUtilsHelper.double_log("Successfully loaded and formatted results from #{path}. Current counts: #{@results[:counts]}", :info, tag: 'load_and_format_results')
     rescue => e
@@ -187,13 +186,13 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
 
   def format_results_for_reporting(raw_results_array)
     raw_results_array.each do |entry|
-      category = entry['category']&.to_sym
-      work_data = WorkUtilsHelper.fetch_work_data_by_id(entry['work_id']) if entry['work_id'].present?
+      category = entry[:category]&.to_sym
+      # work_data = WorkUtilsHelper.fetch_work_data_by_id(entry['work_id']) if entry['work_id'].present?
       next unless [:skipped, :successfully_attached, :successfully_ingested, :failed].include?(category)
 
-      entry.merge!(entry.delete('ids'))
-      entry['cdr_url'] = WorkUtilsHelper.generate_cdr_url_for_work_id(entry['work_id']) if entry['work_id'].present?
-      entry['pdf_attached'] = entry.delete('message')
+      entry.merge!(entry.delete(:ids) || {})
+      entry[:cdr_url] = WorkUtilsHelper.generate_cdr_url_for_work_id(entry[:work_id]) if entry[:work_id].present?
+      # entry['pdf_attached'] = entry.delete('message')
 
       # formatted[category] << entry.except('category')
       @results[category] << entry

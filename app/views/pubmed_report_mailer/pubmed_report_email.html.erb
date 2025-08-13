@@ -78,8 +78,8 @@
           <td style="border:2px solid #dddddd; padding:10px; background-color:<%= index.even? ? '#f9f9f9' : '#ffffff' %>;"><%= record[:pmid] || 'NONE' %></td>
           <td style="border:2px solid #dddddd; padding:10px; background-color:<%= index.even? ? '#f9f9f9' : '#ffffff' %>;"><%= record[:pmcid] || 'NONE' %></td>
           <td style="border:2px solid #dddddd; padding:10px; background-color:<%= index.even? ? '#f9f9f9' : '#ffffff' %>;">
-            <% if [:skipped, :failed].include?(key) %>
-              <%= record[:pdf_attached].presence || 'N/A' %>
+            <% if [:skipped, :failed, :successfully_ingested].include?(key) %>
+              <%= record[:message].presence || 'N/A' %>
             <% else %>
               N/A
             <% end %>
