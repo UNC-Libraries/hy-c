@@ -105,7 +105,6 @@ module WorkUtilsHelper
   end
 
   def self.generate_cdr_url(work_id: nil, identifier: nil)
-    puts "=====>>>>> generate_cdr_url called with work_id: #{work_id.inspect}, identifier: #{identifier.inspect}"
     raise ArgumentError, 'Provide either work_id or identifier' if work_id.blank? && identifier.blank?
 
     result =
