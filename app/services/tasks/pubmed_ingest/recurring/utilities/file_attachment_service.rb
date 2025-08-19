@@ -56,7 +56,6 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
       log_result(record, category: :successfully_ingested, message: 'No PMCID found - can only retrieve files with PMCID', file_name: 'NONE')
       return true
     end
-    # WIP: Temporarily do not filter out works that already have files attached
     if work_id.present? && has_fileset?(work_id)
       log_result(record, category: :skipped, message: 'Work already has files attached', file_name: 'NONE')
       return true

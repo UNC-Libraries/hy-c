@@ -187,14 +187,12 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
   def format_results_for_reporting(raw_results_array)
     raw_results_array.each do |entry|
       category = entry[:category]&.to_sym
-      # work_data = WorkUtilsHelper.fetch_work_data_by_id(entry['work_id']) if entry['work_id'].present?
       next unless [:skipped, :successfully_attached, :successfully_ingested, :failed].include?(category)
 
+      # Move ids to the top level to match what the reporting service expects
       entry.merge!(entry.delete(:ids) || {})
       entry[:cdr_url] = WorkUtilsHelper.generate_cdr_url_for_work_id(entry[:work_id]) if entry[:work_id].present?
-      # entry['pdf_attached'] = entry.delete('message')
 
-      # formatted[category] << entry.except('category')
       @results[category] << entry
       @results[:counts][category] += 1
     end
