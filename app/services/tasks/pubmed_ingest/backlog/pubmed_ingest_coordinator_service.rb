@@ -3,6 +3,7 @@ module Tasks
   module PubmedIngest
     module Backlog
       class PubmedIngestCoordinatorService
+        include Tasks::PubmedIngest::SharedUtilities
         def initialize(config)
           @config = config
           @file_retrieval_directory = config['file_retrieval_directory']
@@ -46,7 +47,7 @@ module Tasks
         private
 
         def process_file_matches
-          encountered_alternate_ids = []
+          encountered_alternate_ids = Set.new
 
           @files_in_dir.each do |file_name, file_ext|
             begin
@@ -63,12 +64,21 @@ module Tasks
                 next
               end
 
+              # Set for identifiers that are not nil with prefixes
+              alt_ids_set = Set.new(
+                [
+                  alternate_ids[:pmid].presence && "pmid:#{alternate_ids[:pmid]}",
+                  alternate_ids[:pmcid].presence && "pmcid:#{alternate_ids[:pmcid]}",
+                  alternate_ids[:doi].presence && "doi:#{alternate_ids[:doi]}"
+                ].compact
+              )
+
               # In case a PMID and PMCID point to the same work, we only want to process it once
-              if encountered_alternate_ids.any? { |ids| has_matching_ids?(ids, alternate_ids) }
+              if (encountered_alternate_ids & alt_ids_set).any?
                 log_and_label_skip(file_name, file_ext, alternate_ids, 'Already encountered this work during current run. Identifiers: ' + alternate_ids.to_s)
                 next
               else
-                encountered_alternate_ids << alternate_ids
+                encountered_alternate_ids.merge(alt_ids_set)
               end
 
               match = find_best_work_match(alternate_ids)

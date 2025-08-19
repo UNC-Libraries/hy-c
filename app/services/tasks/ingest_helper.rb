@@ -25,7 +25,7 @@ module Tasks
 
       file_set = attach_pdf_to_work(article, file_path, depositor, article.visibility)
 
-      [file_set, File.basename(file_path)]
+      [file_set, filename]
     end
 
     def attach_file_set_to_work(work:, file_path:, user:, visibility:)
