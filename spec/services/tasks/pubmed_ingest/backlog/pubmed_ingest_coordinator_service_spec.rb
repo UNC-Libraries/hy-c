@@ -58,10 +58,8 @@ RSpec.describe Tasks::PubmedIngest::Backlog::PubmedIngestCoordinatorService do
     workflow_state
 
     # Mock file system operations
-    allow(Dir).to receive(:entries).with(Rails.root.join('spec/fixtures/files')).and_return(['.', '..', 'sample_pdf.pdf', 'test_article.pdf'])
+    allow(Dir).to receive(:children).with(Rails.root.join('spec/fixtures/files')).and_return(['sample_pdf.pdf', 'test_article.pdf'])
     allow(File).to receive(:directory?).and_return(false)
-    allow(File).to receive(:directory?).with(Rails.root.join('spec/fixtures/files') + '/.').and_return(true)
-    allow(File).to receive(:directory?).with(Rails.root.join('spec/fixtures/files') + '/..').and_return(true)
 
     # Mock AdminSet lookup
     allow(AdminSet).to receive(:where).with(title: admin_set.title.first).and_return([admin_set])
@@ -327,9 +325,13 @@ RSpec.describe Tasks::PubmedIngest::Backlog::PubmedIngestCoordinatorService do
 
   describe '#write_results_to_file' do
     it 'writes JSON results to file' do
-      expect(File).to receive(:open).with(satisfy { |arg|
-                                            arg.is_a?(Pathname) && arg.basename.to_s.match?(/pdf_attachment_results_\d{14}\.json/)
-                                          }, 'w').and_yield(double('file', write: nil))
+      expect(JsonFileUtilsHelper).to receive(:write_json).with(
+        kind_of(Hash),
+        satisfy { |arg|
+          arg.is_a?(Pathname) &&
+            arg.basename.to_s.match?(/pdf_attachment_results_\d{14}\.json/)
+        }
+      ).and_return(true)
 
       service.send(:write_results_to_file)
     end
@@ -511,9 +513,7 @@ RSpec.describe Tasks::PubmedIngest::Backlog::PubmedIngestCoordinatorService do
       allow(Pathname).to receive(:new).with('spec/fixtures/files').and_return(test_pathname)
       allow(test_pathname).to receive(:absolute?).and_return(true)
 
-      allow(Dir).to receive(:entries).with(test_pathname).and_return(['.', '..', 'file1.pdf', 'file2.txt', 'file1.pdf'])
-      allow(File).to receive(:directory?).with(test_pathname.join('.')).and_return(true)
-      allow(File).to receive(:directory?).with(test_pathname.join('..')).and_return(true)
+      allow(Dir).to receive(:children).with(test_pathname).and_return(['file1.pdf', 'file2.txt', 'file1.pdf'])
       allow(File).to receive(:directory?).with(test_pathname.join('file1.pdf')).and_return(false)
       allow(File).to receive(:directory?).with(test_pathname.join('file2.txt')).and_return(false)
     end
@@ -525,9 +525,7 @@ RSpec.describe Tasks::PubmedIngest::Backlog::PubmedIngestCoordinatorService do
         allow(Pathname).to receive(:new).with('/absolute/path').and_return(absolute_pathname)
         allow(absolute_pathname).to receive(:absolute?).and_return(true)
 
-        allow(Dir).to receive(:entries).with('/absolute/path').and_return(['.', '..', 'test.pdf'])
-        allow(File).to receive(:directory?).with(absolute_pathname.join('.')).and_return(true)
-        allow(File).to receive(:directory?).with(absolute_pathname.join('..')).and_return(true)
+        allow(Dir).to receive(:children).with('/absolute/path').and_return(['test.pdf'])
         allow(File).to receive(:directory?).with(absolute_pathname.join('test.pdf')).and_return(false)
 
         result = service.send(:retrieve_filenames, '/absolute/path')
@@ -543,10 +541,8 @@ RSpec.describe Tasks::PubmedIngest::Backlog::PubmedIngestCoordinatorService do
         allow(relative_pathname).to receive(:absolute?).and_return(false)
 
         full_path = Rails.root.join('relative/path')
-        allow(Dir).to receive(:entries).with(full_path).and_return(['.', '..', 'test.pdf'])
+        allow(Dir).to receive(:children).with(full_path).and_return(['test.pdf'])
         allow(File).to receive(:directory?).with(full_path.join('test.pdf')).and_return(false)
-        allow(File).to receive(:directory?).with(full_path.join('.')).and_return(true)
-        allow(File).to receive(:directory?).with(full_path.join('..')).and_return(true)
 
         result = service.send(:retrieve_filenames, 'relative/path')
         expect(result).to eq([['test', 'pdf']])

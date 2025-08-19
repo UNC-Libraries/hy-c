@@ -141,7 +141,7 @@ module Tasks
 
         def write_results_to_file
           json_output_path = Rails.root.join(@output_dir, "pdf_attachment_results_#{@pubmed_ingest_service.attachment_results[:time].strftime('%Y%m%d%H%M%S')}.json")
-          File.open(json_output_path, 'w') { |f| f.write(JSON.pretty_generate(@pubmed_ingest_service.attachment_results)) }
+          JsonFileUtilsHelper.write_json(@pubmed_ingest_service.attachment_results, json_output_path)
 
           double_log("Results written to #{json_output_path}", :info)
           double_log("Ingested: #{@pubmed_ingest_service.attachment_results[:successfully_ingested].length}, Attached: #{@pubmed_ingest_service.attachment_results[:successfully_attached].length}, Failed: #{@pubmed_ingest_service.attachment_results[:failed].length}, Skipped: #{@pubmed_ingest_service.attachment_results[:skipped].length}", :info)
@@ -218,9 +218,8 @@ module Tasks
 
         def retrieve_filenames(directory)
           abs_path = Pathname.new(directory).absolute? ? directory : Rails.root.join(directory)
-          Dir.entries(abs_path)
-            .select { |f| !File.directory?(File.join(abs_path, f)) }
-            .reject { |f|  ['.', '..'].include?(f) } # Exclude hidden files
+          Dir.children(abs_path)
+            .reject { |f| File.directory?(File.join(abs_path, f)) }
             .sort
             .map { |f| [File.basename(f, '.*'), File.extname(f).delete('.')] }
             .uniq
