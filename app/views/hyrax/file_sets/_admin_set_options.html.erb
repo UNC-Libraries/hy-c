@@ -1,0 +1,8 @@
+<!-- Including non-visible admin set dropdown to trigger VisibilityComponent JavaScript. -->
+<%# [hyc-override] Typecast @file_set_admin_set_option to an array to avoid issues with nil values %>
+<% if Flipflop.assign_admin_set? %>
+  <%= select_tag :admin_set_id,
+                options_for_select(@file_set_admin_set_option.to_a.map { |option| [option[0], option[1], option[2]] }),
+                include_blank: false,
+                class: 'form-control d-none' %>
+<% end %>
