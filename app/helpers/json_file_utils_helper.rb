@@ -8,7 +8,7 @@ module JsonFileUtilsHelper
     ensure_dir(path)
     json = pretty ? JSON.pretty_generate(data) : JSON.generate(data)
     File.write(path, json, mode: 'w', encoding: 'utf-8')
-    Rails.logger.info("[JsonFileUtilsHelper] Wrote JSON to #{path}")
+    Rails.logger.debug("[JsonFileUtilsHelper] Wrote JSON to #{path}")
     true
   rescue => e
     Rails.logger.warn("[JsonFileUtilsHelper] write_json failed for #{path}: #{e.message}")
@@ -36,7 +36,7 @@ module JsonFileUtilsHelper
         count += 1
       end
     end
-    Rails.logger.info("[JsonFileUtilsHelper] Wrote #{count} JSONL records to #{path}")
+    Rails.logger.debug("[JsonFileUtilsHelper] Wrote #{count} JSONL records to #{path}")
     count
   rescue => e
     Rails.logger.warn("[JsonFileUtilsHelper] write_jsonl failed for #{path}: #{e.message}")

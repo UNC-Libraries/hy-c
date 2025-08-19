@@ -281,21 +281,7 @@ RSpec.describe WorkUtilsHelper, type: :module do
     end
   end
 
-  describe '#generate_cdr_url_for_article' do
-    let(:article) { double('Article', id: 'abc123') }
-
-    it 'builds a full URL using routes and HYRAX_HOST' do
-      allow(Rails.application.routes.url_helpers)
-        .to receive(:hyrax_article_path)
-        .with(article, host: host)
-        .and_return("/concern/articles/#{article.id}")
-
-      url = WorkUtilsHelper.generate_cdr_url_for_article(article)
-      expect(url).to eq("#{host}/concern/articles/#{article.id}")
-    end
-  end
-
-  describe '.generate_cdr_url' do
+  describe '#generate_cdr_url' do
     before do
       allow(Rails.logger).to receive(:warn)
     end
@@ -307,6 +293,16 @@ RSpec.describe WorkUtilsHelper, type: :module do
 
       expect(described_class.generate_cdr_url(work_id: 'abc123'))
         .to eq("#{host}/concern/articles/abc123")
+    end
+
+    it 'raises when HYRAX_HOST is not set' do
+      allow(ENV).to receive(:[]).with('HYRAX_HOST').and_return(nil)
+
+      allow(described_class).to receive(:fetch_work_data_by_id).with('abc123')
+        .and_return({ work_id: 'abc123', work_type: 'Article' })
+
+      described_class.generate_cdr_url(work_id: 'abc123')
+      expect(Rails.logger).to have_received(:warn).with('[CDR_URL] Failed (work_id="abc123", identifier=nil): RuntimeError: HYRAX_HOST not set')
     end
 
     it 'returns nil and logs when no Solr record is found' do
@@ -343,20 +339,7 @@ RSpec.describe WorkUtilsHelper, type: :module do
     end
   end
 
-  describe '.build_cdr_url' do
-    it 'builds a concern URL for the given model and id' do
-      expect(described_class.build_cdr_url('Article', 'abc123'))
-        .to eq("#{host}/concern/articles/abc123")
-    end
-
-    it 'raises when HYRAX_HOST is not set' do
-      allow(ENV).to receive(:[]).with('HYRAX_HOST').and_return(nil)
-      expect { described_class.build_cdr_url('Article', 'abc123') }
-        .to raise_error(RuntimeError, 'HYRAX_HOST not set')
-    end
-  end
-
-  describe '.fetch_model_instance' do
+  describe '#fetch_model_instance' do
     it 'raises ArgumentError when required args are missing' do
       expect { described_class.fetch_model_instance(nil, 'id') }
         .to raise_error(ArgumentError, 'Both work_type and work_id are required')

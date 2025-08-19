@@ -91,8 +91,13 @@ module WorkUtilsHelper
     permissions_array
   end
 
-  def self.generate_cdr_url_for_article(article)
-    "#{ENV['HYRAX_HOST']}#{Rails.application.routes.url_helpers.hyrax_article_path(article, host: ENV['HYRAX_HOST'])}"
+  def self.fetch_model_instance(work_type, work_id)
+    raise ArgumentError, 'Both work_type and work_id are required' unless work_type.present? && work_id.present?
+
+    work_type.constantize.find(work_id)
+  rescue NameError, ActiveRecord::RecordNotFound => e
+    Rails.logger.error("[WorkUtils] Failed to fetch model instance: #{e.message}")
+    nil
   end
 
   def self.generate_cdr_url_for_alternate_id(identifier)
@@ -129,6 +134,7 @@ module WorkUtilsHelper
     nil
   end
 
+  # Only for when we have work_type + work_id from Solr and don’t want to use a Fedora object. Use Rails URL helpers for Fedora objects instead.
   def self.build_cdr_url(work_type, work_id)
     host = ENV['HYRAX_HOST'].presence or raise 'HYRAX_HOST not set'
     model = work_type.to_s.underscore.pluralize
@@ -155,13 +161,5 @@ module WorkUtilsHelper
     end
   end
 
-  def self.fetch_model_instance(work_type, work_id)
-    raise ArgumentError, 'Both work_type and work_id are required' unless work_type.present? && work_id.present?
-
-    work_type.constantize.find(work_id)
-  rescue NameError, ActiveRecord::RecordNotFound => e
-    Rails.logger.error("[WorkUtils] Failed to fetch model instance: #{e.message}")
-    nil
-  end
-
+  private_class_method :build_cdr_url, :log_and_nil, :generate_warning_message
 end
