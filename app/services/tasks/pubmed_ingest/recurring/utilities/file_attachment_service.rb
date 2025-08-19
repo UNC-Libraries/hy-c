@@ -78,9 +78,10 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
   def process_record(record)
     pmcid = record['ids']['pmcid']
     return unless pmcid.present?
+    url = "https://www.ncbi.nlm.nih.gov/pmc/utils/oa/oa.fcgi?id=#{pmcid}"
     retries = 0
     begin
-      response = HTTParty.get("https://www.ncbi.nlm.nih.gov/pmc/utils/oa/oa.fcgi?id=#{pmcid}", timeout: 10)
+      response = HTTParty.get(url, timeout: 10)
       raise "Bad response: #{response.code}" unless response.code == 200
 
       doc = Nokogiri::XML(response.body)
@@ -107,7 +108,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::FileAttachmentService
         log_result(record, category: :successfully_ingested, message: 'No PDF or TGZ link found, skipping attachment', file_name: 'NONE')
       else
         log_result(record, category: :failed, message: "File attachment failed -- #{e.message}", file_name: 'NONE')
-        LogUtilsHelper.double_log("Error processing record: #{e.message}. Request URL: https://www.ncbi.nlm.nih.gov/pmc/utils/oa/oa.fcgi?id=#{pmcid}", :error, tag: 'Attachment')
+        LogUtilsHelper.double_log("Error processing record: #{e.message}. Request URL: #{url}", :error, tag: 'Attachment')
         Rails.logger.error e.backtrace.join("\n")
       end
     ensure
