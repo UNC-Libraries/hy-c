@@ -352,9 +352,8 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
       expect(Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService)
         .to have_received(:new).with(
           config: config,
-          results: service.instance_variable_get(:@results),
           tracker: tracker,
-          results_path: '/tmp/test_output/02_load_and_ingest_metadata/metadata_ingest_results.jsonl'
+          md_ingest_results_path: '/tmp/test_output/02_load_and_ingest_metadata/metadata_ingest_results.jsonl'
         )
     end
 
@@ -511,7 +510,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
   end
 
   describe '#load_results' do
-    let(:results_path) { '/tmp/test_output/03_attach_files_to_works/attachment_results.jsonl' }
+    let(:md_ingest_results_path) { '/tmp/test_output/03_attach_files_to_works/attachment_results.jsonl' }
     # let(:sample_results) do
     #   [
     #     {
@@ -565,10 +564,10 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
     end
 
     before do
-      allow(File).to receive(:exist?).with(results_path).and_return(true)
+      allow(File).to receive(:exist?).with(md_ingest_results_path).and_return(true)
       allow(JsonFileUtilsHelper)
         .to receive(:read_jsonl)
-        .with(results_path, symbolize_names: true)
+        .with(md_ingest_results_path, symbolize_names: true)
         .and_return(sample_results)
       allow(WorkUtilsHelper).to receive(:generate_cdr_url_for_work_id).with('work_123').and_return('http://example.com/work_123')
       allow(WorkUtilsHelper).to receive(:generate_cdr_url_for_work_id).with('work_789').and_return('http://example.com/work_789')
@@ -618,16 +617,16 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
 
     context 'when results file does not exist' do
       before do
-        allow(File).to receive(:exist?).with(results_path).and_return(false)
+        allow(File).to receive(:exist?).with(md_ingest_results_path).and_return(false)
       end
 
       it 'raises error with descriptive message' do
         expect {
           service.send(:load_results)
-        }.to raise_error("Results file not found at #{results_path}")
+        }.to raise_error("Results file not found at #{md_ingest_results_path}")
 
         expect(LogUtilsHelper).to have_received(:double_log).with(
-          "Results file not found at #{results_path}",
+          "Results file not found at #{md_ingest_results_path}",
           :error,
           tag: 'load_and_format_results'
         )
@@ -636,7 +635,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService do
 
     context 'when JSON parsing fails' do
       before do
-        allow(File).to receive(:exist?).with(results_path).and_return(true)
+        allow(File).to receive(:exist?).with(md_ingest_results_path).and_return(true)
         allow(JsonFileUtilsHelper).to receive(:read_jsonl).and_raise(JSON::ParserError.new('Invalid JSON'))
       end
 

@@ -12,15 +12,14 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService 
   end
   let(:results) { { counts: { successfully_ingested: 0, skipped: 0, failed: 0 } } }
   let(:tracker) { double('tracker', save: true) }
-  let(:results_path) { '/tmp/test_results.jsonl' }
+  let(:md_ingest_results_path) { '/tmp/test_results.jsonl' }
   let(:mock_admin_set) { double('admin_set', id: 'admin_set_123', title: 'Test Admin Set') }
 
   let(:service) do
     described_class.new(
       config: config,
-      results: results,
       tracker: tracker,
-      results_path: results_path
+      md_ingest_results_path: md_ingest_results_path
     )
   end
 
@@ -103,9 +102,8 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService 
   describe '#initialize' do
     it 'sets up instance variables correctly' do
       expect(service.instance_variable_get(:@config)).to eq(config)
-      expect(service.instance_variable_get(:@results)).to eq(results)
       expect(service.instance_variable_get(:@tracker)).to eq(tracker)
-      expect(service.instance_variable_get(:@results_path)).to eq(results_path)
+      expect(service.instance_variable_get(:@md_ingest_results_path)).to eq(md_ingest_results_path)
       expect(service.instance_variable_get(:@admin_set)).to eq(mock_admin_set)
       expect(service.instance_variable_get(:@write_buffer)).to eq([])
       expect(service.instance_variable_get(:@flush_threshold)).to eq(200)
@@ -115,7 +113,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService 
   describe '#load_last_results' do
     context 'when results file does not exist' do
       before do
-        allow(File).to receive(:exist?).with(results_path).and_return(false)
+        allow(File).to receive(:exist?).with(md_ingest_results_path).and_return(false)
       end
 
       it 'returns empty set' do
@@ -134,8 +132,8 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService 
       end
 
       before do
-        allow(File).to receive(:exist?).with(results_path).and_return(true)
-        allow(File).to receive(:readlines).with(results_path).and_return(existing_results)
+        allow(File).to receive(:exist?).with(md_ingest_results_path).and_return(true)
+        allow(File).to receive(:readlines).with(md_ingest_results_path).and_return(existing_results)
       end
 
       it 'returns set of existing IDs' do
@@ -530,7 +528,7 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService 
 
     before do
       service.instance_variable_set(:@write_buffer, buffer_entries.dup)
-      allow(File).to receive(:open).with(results_path, 'a').and_yield(mock_file)
+      allow(File).to receive(:open).with(md_ingest_results_path, 'a').and_yield(mock_file)
       allow(mock_file).to receive(:puts)
     end
 
@@ -600,43 +598,6 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService 
       it 'returns nil' do
         result = service.send(:find_best_work_match, alternate_ids)
         expect(result).to be_nil
-      end
-    end
-  end
-
-  describe '#save_results_json' do
-    let(:test_path) { '/tmp/test_results.json' }
-    let(:mock_file) { double('file') }
-
-    before do
-      allow(File).to receive(:open).with(test_path, 'w').and_yield(mock_file)
-      allow(mock_file).to receive(:puts)
-    end
-
-    it 'writes results as pretty JSON' do
-      service.send(:save_results_json, path: test_path)
-
-      expect(mock_file).to have_received(:puts).with(JSON.pretty_generate(results))
-      expect(LogUtilsHelper).to have_received(:double_log).with(
-        'Results JSON updated successfully.',
-        :info,
-        tag: 'MetadataIngestService'
-      )
-    end
-
-    context 'when file write fails' do
-      before do
-        allow(File).to receive(:open).and_raise(StandardError.new('Write failed'))
-      end
-
-      it 'logs error' do
-        service.send(:save_results_json, path: test_path)
-
-        expect(LogUtilsHelper).to have_received(:double_log).with(
-          'Failed to update results JSON: Write failed',
-          :error,
-          tag: 'MetadataIngestService'
-        )
       end
     end
   end

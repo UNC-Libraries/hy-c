@@ -1,12 +1,11 @@
 # frozen_string_literal: true
 class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
-  def initialize(config:, results:, tracker:, results_path:)
+  def initialize(config:, tracker:, md_ingest_results_path:)
     @config = config
     @output_dir = config['output_dir']
     @record_ids = nil
-    @results_path = results_path
-    @admin_set = AdminSet.where(title: @config['admin_set_title']).first
-    @results = results
+    @md_ingest_results_path = md_ingest_results_path
+    @admin_set = AdminSet.where(title: config['admin_set_title']).first
     @tracker = tracker
     @write_buffer = []
     @flush_threshold = 200
@@ -42,10 +41,10 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
   end
 
   def load_last_results
-    return Set.new unless File.exist?(@results_path)
+    return Set.new unless File.exist?(@md_ingest_results_path)
 
     Set.new(
-      File.readlines(@results_path).map do |line|
+      File.readlines(@md_ingest_results_path).map do |line|
         result = JSON.parse(line.strip)
         [result.dig('ids', 'pmid'), result.dig('ids', 'pmcid')]
       end.flatten.compact
@@ -215,18 +214,6 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
     Tasks::PubmedIngest::SharedUtilities::AttributeBuilders::PmcAttributeBuilder.new(metadata, article, @admin_set, @config['depositor_onyen'])
   end
 
-
-  def save_results_json(path:)
-    LogUtilsHelper.double_log("Updating results JSON at #{path}", :info, tag: 'MetadataIngestService')
-    File.open(path, 'w') do |file|
-      file.puts(JSON.pretty_generate(@results))
-    end
-    LogUtilsHelper.double_log('Results JSON updated successfully.', :info, tag: 'MetadataIngestService')
-  rescue => e
-    LogUtilsHelper.double_log("Failed to update results JSON: #{e.message}", :error, tag: 'MetadataIngestService')
-    Rails.logger.info("Backtrace: #{e.backtrace.join("\n")}")
-  end
-
   def record_result(category:, message: '', ids: {}, article: nil)
     # Merge article id into ids if article is provided
     log_entry = {
@@ -251,9 +238,9 @@ class Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService
 
   def flush_buffer_to_file
     entries = @write_buffer.dup
-    File.open(@results_path, 'a') { |file| entries.each { |entry| file.puts(entry.to_json) } }
+    File.open(@md_ingest_results_path, 'a') { |file| entries.each { |entry| file.puts(entry.to_json) } }
     @write_buffer.clear
-    LogUtilsHelper.double_log("Flushed #{@write_buffer.size} entries to #{@results_path}", :info, tag: 'MetadataIngestService')
+    LogUtilsHelper.double_log("Flushed #{@write_buffer.size} entries to #{@md_ingest_results_path}", :info, tag: 'MetadataIngestService')
     rescue => e
       LogUtilsHelper.double_log("Failed to flush buffer to file: #{e.message}", :error, tag: 'MetadataIngestService')
       Rails.logger.error("Backtrace: #{e.backtrace.join("\n")}")

@@ -87,9 +87,8 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
   def load_and_ingest_metadata
     md_ingest_service = Tasks::PubmedIngest::Recurring::Utilities::MetadataIngestService.new(
       config: @config,
-      results: @results,
       tracker: @tracker,
-      results_path: File.join(@metadata_ingest_output_directory, 'metadata_ingest_results.jsonl'),
+      md_ingest_results_path: File.join(@metadata_ingest_output_directory, 'metadata_ingest_results.jsonl'),
     )
     ['pubmed', 'pmc'].each do |db|
       if @tracker['progress']['metadata_ingest'][db]['completed']
@@ -108,21 +107,6 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
 
       LogUtilsHelper.double_log("Metadata ingest for #{db} completed successfully.", :info, tag: 'load_and_ingest_metadata')
       LogUtilsHelper.double_log("Output directory: #{@metadata_ingest_output_directory}", :info, tag: 'load_and_ingest_metadata')
-    end
-  end
-
-  def load_previously_saved_results
-    if File.exist?(@results_path)
-      LogUtilsHelper.double_log("Loading previously saved results from #{@results_path}", :info, tag: 'load_previously_saved_results')
-      begin
-        content = File.read(@results_path, encoding: 'utf-8')
-        @results = JSON.parse(content).deep_symbolize_keys
-        LogUtilsHelper.double_log("Successfully loaded results. Current counts: #{@results['counts']}", :info, tag: 'load_previously_saved_results')
-      rescue => e
-        LogUtilsHelper.double_log("Failed to load results from #{@results_path}: #{e.message}", :error, tag: 'load_previously_saved_results')
-      end
-    else
-      LogUtilsHelper.double_log("No previous results found at #{@results_path}. Starting fresh.", :info, tag: 'load_previously_saved_results')
     end
   end
 
