@@ -83,10 +83,10 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService do
 
         expect(lines.size).to eq(2)
         first_entry = JSON.parse(lines[0])
-        expect(first_entry).to eq({ 'index' => 0, 'id' => '123456' })
+        expect(first_entry).to eq({ 'id' => '123456' })
 
         second_entry = JSON.parse(lines[1])
-        expect(second_entry).to eq({ 'index' => 1, 'id' => '789012' })
+        expect(second_entry).to eq({ 'id' => '789012' })
       end
 
       it 'makes correct API call' do
@@ -133,10 +133,8 @@ RSpec.describe Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService do
       it 'logs error and breaks loop' do
         service.retrieve_ids_within_date_range(output_path: output_path, db: 'pubmed')
 
-        expect(LogUtilsHelper).to have_received(:double_log).with(
-          'Failed to retrieve IDs: 500 - Internal Server Error',
-          :error,
-          tag: 'retrieve_ids_within_date_range'
+        expect(Rails.logger).to have_received(:error).with(
+          'Failed to retrieve IDs: 500 - Internal Server Error'
         )
       end
     end

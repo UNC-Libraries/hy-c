@@ -10,7 +10,6 @@ class Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService
   end
 
   def retrieve_ids_within_date_range(output_path:, db:, retmax: 200, extras: nil)
-    # Rails.logger.info("[retrieve_ids_within_date_range] Fetching IDs within date range: #{@start_date.strftime('%Y-%m-%d')} - #{@end_date.strftime('%Y-%m-%d')} for #{db} database")
     LogUtilsHelper.double_log("Fetching IDs within date range: #{@start_date.strftime('%Y-%m-%d')} - #{@end_date.strftime('%Y-%m-%d')} for #{db} database", :info, tag: 'retrieve_ids_within_date_range')
     base_url = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi'
     count = 0
@@ -34,11 +33,9 @@ class Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService
     File.open(output_path, 'a') do |file|
       loop do
         res = HTTParty.get(base_url, query: params.merge({ retstart: cursor }))
-        # puts "Response code: #{res.code}, message: #{res.message}, URL: #{base_url}?#{params.merge({ retstart: cursor }).to_query}"
-        LogUtilsHelper.double_log("Response code: #{res.code}, message: #{res.message}, URL: #{base_url}?#{params.merge({ retstart: cursor }).to_query}", :debug, tag: 'retrieve_ids_within_date_range')
+        Rails.logger.debug("Response code: #{res.code}, message: #{res.message}, URL: #{base_url}?#{params.merge({ retstart: cursor }).to_query}")
         if res.code != 200
-          # Rails.logger.error("[retrieve_ids_within_date_range] Failed to retrieve IDs: #{res.code} - #{res.message}")
-          LogUtilsHelper.double_log("Failed to retrieve IDs: #{res.code} - #{res.message}", :error, tag: 'retrieve_ids_within_date_range')
+          Rails.logger.error("Failed to retrieve IDs: #{res.code} - #{res.message}")
           break
         end
         parsed_response = Nokogiri::XML(res.body)
@@ -50,15 +47,12 @@ class Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService
                 else
                   raw_ids
                 end
-        # Assign indexes to the IDs
-        ids_with_indexes = ids.map.with_index { |id, index|
-          {'index' => index + cursor, 'id' => id  }
-        }
+        # Write IDs to file
         begin
-          ids_with_indexes.each do |entry|
-            file.puts(JSON.generate(entry))
+          ids.each do |id|
+            file.puts({ 'id' => id }.to_json)
           end
-          count += ids_with_indexes.size
+          count += ids.size
           cursor += retmax
           job_progress['cursor'] = cursor
           @tracker.save
@@ -74,12 +68,10 @@ class Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService
         sleep(0.34)
       end
     end
-    # Rails.logger.info("[retrieve_ids_within_date_range] Retrieved #{count} IDs from #{db} database")
-    LogUtilsHelper.double_log("Retrieved #{count} IDs from #{db} database", :info, tag: 'retrieve_ids_within_date_range')
+    Rails.logger.info("Retrieved #{count} IDs from #{db} database")
   end
 
   def stream_and_write_alternate_ids(input_path:, output_path:, db:, batch_size: 200)
-    # Rails.logger.info("[stream_and_write_alternate_ids] Streaming and writing alternate IDs from #{input_path} to #{output_path}")
     buffer = []
     job_progress = @tracker['progress']['stream_and_write_alternate_ids'][db]
     last_cursor = job_progress['cursor']
@@ -87,18 +79,21 @@ class Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService
     LogUtilsHelper.double_log("Last cursor position: #{last_cursor}", :info, tag: 'stream_and_write_alternate_ids')
 
     File.open(output_path, 'w') do |output_file|
+      line_index = 0
       File.foreach(input_path) do |line|
-        identifier_hash = JSON.parse(line.strip)
-        identifier = identifier_hash['id']
-        if identifier_hash['index'] < last_cursor
-          # Skip IDs that are before the last cursor position
+        if line_index < last_cursor
+          line_index += 1
           next
         end
+
+        identifier_hash = JSON.parse(line.strip)
+        identifier = identifier_hash['id']
+        line_index += 1
         buffer << identifier
         if buffer.size >= batch_size
           write_batch_alternate_ids(ids: buffer.dup, db: db, output_file: output_file)
           # Save after batch write
-          job_progress['cursor'] += buffer.size
+          job_progress['cursor'] = line_index
           @tracker.save
           last_cursor = job_progress['cursor']
           buffer.clear
@@ -107,7 +102,7 @@ class Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService
       unless buffer.empty?
         write_batch_alternate_ids(ids: buffer.dup, db: db, output_file: output_file)
         # Update tracker progress, clear buffer and increment cursor
-        job_progress['cursor'] += buffer.size
+        job_progress['cursor'] = line_index
         @tracker.save
       end
     end
@@ -268,7 +263,6 @@ class Tasks::PubmedIngest::Recurring::Utilities::IdRetrievalService
   def build_pubmed_term(start_date:, end_date:, extras: nil)
     date = "#{start_date.strftime('%Y/%m/%d')}:#{end_date.strftime('%Y/%m/%d')}[PDAT]"
 
-    aff = nil
     aff = '(' + UNC_AFFILIATION_TERMS.map { |t| %Q{"#{t}"[AD]} }.join(' OR ') + ')'
 
     [aff, date, extras].compact.join(' AND ')

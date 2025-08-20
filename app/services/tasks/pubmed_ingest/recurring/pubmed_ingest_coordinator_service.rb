@@ -139,7 +139,7 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
       time: @tracker['restart_time'] || @tracker['start_time'],
       headers: { total_unique_records: 0 },
     }
-    puts "INSPECT RAW RESULTS ARRAY: #{raw_results_array.inspect}" 
+    puts "INSPECT RAW RESULTS ARRAY: #{raw_results_array.inspect}"
 
     raw_results_array.each do |entry|
       category = entry[:category]&.to_sym
@@ -186,7 +186,7 @@ class Tasks::PubmedIngest::Recurring::PubmedIngestCoordinatorService
 
   def build_and_finalize_results
     raw_results = load_results
-    @results     = format_results_for_reporting(raw_results) 
+    @results     = format_results_for_reporting(raw_results)
     send_report_and_notify(@results)
     JsonFileUtilsHelper.write_json(@results, File.join(@config['output_dir'], 'final_ingest_results.json'), pretty: true)
   end
